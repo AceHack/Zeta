@@ -35,9 +35,10 @@
 // precise case the gate exists for, and it is also the cheapest one for an
 // attacker to arrange, since it needs only the deletion of a file.
 
-import { existsSync, readFileSync } from "node:fs";
+import { existsSync, readFileSync, writeFileSync } from "node:fs";
 import { basename, dirname, join } from "node:path";
 
+import { parseSha256Sums } from "../installer/multiboot/sha256sums.ts";
 import { sha256FileHex } from "../installer/multiboot/resolve-artifacts.ts";
 import { checkIsoAgainstManifest, type IsoRefusalReason } from "./verify.ts";
 
@@ -196,5 +197,247 @@ export function realIsoIntegrityIo(): IsoIntegrityIo {
     exists: (p) => existsSync(p),
     readText: (p) => readFileSync(p, "utf8"),
     sha256File: sha256FileHex,
+  };
+}
+
+// =====================================================================
+// SIDECAR MATERIALISATION -- what the auto-pull must fetch so the gate above
+// has something to check.
+// =====================================================================
+//
+// WHY THIS EXISTS. establishIsoIntegrity refuses an ISO with no manifest, and
+// that refusal is correct. But zflash's own auto-pull
+// (cli.ts autoDownloadFreshIsoIfNeeded) copied ONLY the `.iso` out of the CI
+// download and then deleted the temp dir, so the bare `zflash` form that both
+// metal runbooks recommend refused at its own gate. Measured on main
+// (e15299e0) against real run 32461224707:
+//
+//   as shipped ....................... manifest-missing
+//   sidecar copied verbatim .......... iso-not-in-manifest
+//   sidecar filename field rewritten .. verified
+//
+// The middle line is the one that makes the rewrite load-bearing rather than
+// cosmetic: the auto-pull renames the artifact to a run-stamped local name
+// (`zeta-installer-25.11-ci<run>-<date>-<arch>.iso`) while CI publishes it as
+// `nixos-minimal-<version>-<arch>-linux.iso`, and checkIsoAgainstManifest looks
+// the file up by EXACT basename. A verbatim copy attests a filename that is no
+// longer on disk.
+//
+// THE LINE THIS MODULE MUST NOT CROSS. The digest is transcribed from the
+// PUBLISHER's manifest and never recomputed from the bytes we just downloaded.
+// Hashing the downloaded file and writing that hash as its own "manifest" would
+// produce a gate that passes unconditionally -- a check that cannot fail, which
+// is worse than no check because it reads as one that ran. Only the FILENAME
+// field is rewritten, and only after the publisher's manifest is confirmed to
+// name the artifact we actually took.
+
+/** Where a sidecar for `isoPath` may be found inside a CI download tree. */
+export type SidecarSelection =
+  | { readonly ok: true; readonly path: string }
+  | { readonly ok: false; readonly reason: "no-manifest-in-download"; readonly searched: readonly string[] };
+
+/**
+ * Pick the manifest that covers `isoPath` out of the files in a download tree.
+ *
+ * Pure: takes the file list, returns a choice. `gh run download` places every
+ * artifact in a directory NAMED after the artifact, so the ISO and its sidecar
+ * land in SIBLING directories, not next to each other:
+ *
+ *   <dir>/nixos-minimal-…-x86_64-linux.iso/nixos-minimal-…-x86_64-linux.iso
+ *   <dir>/nixos-minimal-…-x86_64-linux.iso.sha256/nixos-minimal-…-x86_64-linux.iso.sha256
+ *   <dir>/zeta-installer-aarch64-iso/nixos-minimal-…-aarch64-linux.iso
+ *   <dir>/zeta-installer-aarch64-iso.sha256/nixos-minimal-…-aarch64-linux.iso.sha256
+ *
+ * So matching must be on the sidecar's BASENAME anywhere in the tree, not on
+ * "the file beside the ISO" -- that path is empty by construction here. Note
+ * the aarch64 artifact DIRECTORY name does not match its contents, which is
+ * exactly why the directory name is not consulted.
+ *
+ * A bare `SHA256SUMS` is accepted as a fallback, but only one covering the same
+ * ISO; preference order is exact-sidecar first because a shared SHA256SUMS in a
+ * multi-arch tree can name several images.
+ */
+export function selectManifestForIso(
+  downloadedFiles: readonly string[],
+  isoPath: string,
+): SidecarSelection {
+  const want = basename(isoPath) + ".sha256";
+  const exact = downloadedFiles.find((f) => basename(f) === want);
+  if (exact !== undefined) return { ok: true, path: exact };
+  const sums = downloadedFiles.find((f) => basename(f) === "SHA256SUMS");
+  if (sums !== undefined) return { ok: true, path: sums };
+  return { ok: false, reason: "no-manifest-in-download", searched: [want, "SHA256SUMS"] };
+}
+
+export type ManifestRewrite =
+  | { readonly ok: true; readonly text: string; readonly sha256: string }
+  | {
+      readonly ok: false;
+      readonly reason: "manifest-unparseable" | "iso-not-in-manifest";
+      readonly error: string;
+    };
+
+/**
+ * Re-render the publisher's entry for `upstreamBasename` under `localBasename`.
+ *
+ * The digest is COPIED, never computed. The only edit is the filename field,
+ * and it is made only after the publisher's manifest is confirmed to name the
+ * upstream artifact -- if it does not, this refuses rather than inventing an
+ * entry, because an entry we invented would attest nothing about what CI built.
+ *
+ * Output is GNU coreutils shape (`<hex>  <name>`), which parseSha256Sums reads
+ * and `sha256sum -c` also accepts, so an operator can re-check by hand.
+ */
+export function rewriteManifestForLocalName(
+  manifestText: string,
+  upstreamBasename: string,
+  localBasename: string,
+): ManifestRewrite {
+  const entries = parseSha256Sums(manifestText);
+  if (entries.length === 0) {
+    return {
+      ok: false,
+      reason: "manifest-unparseable",
+      error: "the CI manifest has no parseable sha256 entries",
+    };
+  }
+  const entry = entries.find((e) => e.filename === upstreamBasename);
+  if (entry === undefined) {
+    return {
+      ok: false,
+      reason: "iso-not-in-manifest",
+      error:
+        "the CI manifest does not mention " +
+        upstreamBasename +
+        " -- it lists: " +
+        entries.map((e) => e.filename).join(", "),
+    };
+  }
+  return { ok: true, text: entry.sha256 + "  " + localBasename + "\n", sha256: entry.sha256 };
+}
+
+/** The two effects sidecar materialisation needs, injected so both failure branches are testable. */
+export interface SidecarIo {
+  readonly exists: (path: string) => boolean;
+  readonly readText: (path: string) => string;
+  readonly writeText: (path: string, text: string) => void;
+}
+
+export type SidecarOutcome =
+  | { readonly ok: true; readonly sidecarPath: string; readonly sha256: string; readonly report: string }
+  | {
+      readonly ok: false;
+      readonly reason:
+        | "no-manifest-in-download"
+        | "manifest-unreadable"
+        | "manifest-unparseable"
+        | "iso-not-in-manifest"
+        | "sidecar-unwritable";
+      readonly message: string;
+    };
+
+/**
+ * Put the publisher's digest for a freshly-pulled ISO beside its local copy.
+ *
+ * Called by the auto-pull straight after it copies the ISO. On refusal the
+ * caller does NOT get to proceed quietly: the ISO simply stays unverifiable and
+ * establishIsoIntegrity stops the write later with its own message. That is the
+ * intended shape -- this function's job is to SUPPLY what the gate needs, never
+ * to relax what the gate demands.
+ *
+ * Idempotent: an existing sidecar with the right content is left alone, so a
+ * re-run over an already-populated ~/Downloads does no writes.
+ */
+export function materializeIsoSidecar(
+  io: SidecarIo,
+  args: {
+    readonly downloadedFiles: readonly string[];
+    /** The ISO as CI published it, inside the download tree. */
+    readonly isoSrcPath: string;
+    /** The ISO as it now sits in ~/Downloads, under its run-stamped name. */
+    readonly isoDestPath: string;
+  },
+): SidecarOutcome {
+  const selection = selectManifestForIso(args.downloadedFiles, args.isoSrcPath);
+  if (!selection.ok) {
+    return {
+      ok: false,
+      reason: "no-manifest-in-download",
+      message:
+        "the CI download contains no manifest for " +
+        basename(args.isoSrcPath) +
+        " (looked for " +
+        selection.searched.join(" or ") +
+        " anywhere in the download tree)",
+    };
+  }
+
+  let manifestText: string;
+  try {
+    manifestText = io.readText(selection.path);
+  } catch (err: unknown) {
+    return {
+      ok: false,
+      reason: "manifest-unreadable",
+      message:
+        "found the CI manifest at " +
+        selection.path +
+        " but could not read it: " +
+        (err instanceof Error ? err.message : String(err)),
+    };
+  }
+
+  const rewritten = rewriteManifestForLocalName(
+    manifestText,
+    basename(args.isoSrcPath),
+    basename(args.isoDestPath),
+  );
+  if (!rewritten.ok) {
+    return { ok: false, reason: rewritten.reason, message: rewritten.error };
+  }
+
+  const sidecarPath = args.isoDestPath + ".sha256";
+  if (io.exists(sidecarPath) && io.readText(sidecarPath) === rewritten.text) {
+    return {
+      ok: true,
+      sidecarPath,
+      sha256: rewritten.sha256,
+      report: "sidecar already present at " + sidecarPath,
+    };
+  }
+  try {
+    io.writeText(sidecarPath, rewritten.text);
+  } catch (err: unknown) {
+    return {
+      ok: false,
+      reason: "sidecar-unwritable",
+      message:
+        "could not write " +
+        sidecarPath +
+        ": " +
+        (err instanceof Error ? err.message : String(err)),
+    };
+  }
+  return {
+    ok: true,
+    sidecarPath,
+    sha256: rewritten.sha256,
+    report:
+      "wrote " +
+      sidecarPath +
+      " from the CI manifest " +
+      selection.path +
+      "\n  sha256 " +
+      rewritten.sha256 +
+      " (transcribed from CI, not recomputed locally)",
+  };
+}
+
+/** The real filesystem, wired once. */
+export function realSidecarIo(): SidecarIo {
+  return {
+    exists: (p) => existsSync(p),
+    readText: (p) => readFileSync(p, "utf8"),
+    writeText: (p, t) => writeFileSync(p, t, "utf8"),
   };
 }

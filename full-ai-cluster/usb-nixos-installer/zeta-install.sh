@@ -324,11 +324,27 @@ zeta_pf_classify() {
 # Prints "trusted <consecutiveFailures>" or "untrusted <reason>".
 # UNTRUSTED is NOT the same as empty. A corrupt counter that reads as zero is
 # exactly the infinite destructive loop R9 was filed for.
+#
+# The `attempt` field is a contiguous RECORD ORDINAL, not an install counter.
+# A completed install occupies TWO records -- `started` before the wipe and
+# `ok` after the last step -- and an `ok` resets the consecutive-failure count.
+# That is what makes the bound count real FAILURES instead of counting
+# installs. See zeta_ledger_append for the write side.
+#
+# `|| [ -n "$line" ]` is load-bearing, not a style tic. The installer reads this
+# ledger through `$(sudo cat ...)`, and command substitution strips trailing
+# newlines, so the final record arrives WITHOUT one. A plain `while read` sets
+# $line and then returns non-zero on such a line, silently dropping it.
+# Measured on main before this change: a ledger whose last line was garbage
+# validated as `trusted 1` on the installer's own read path while validating as
+# `untrusted` everywhere else -- a fail-OPEN hole in a fail-closed gate, kept
+# invisible because the parity test appended a newline the real caller never has.
 zeta_pf_validate_ledger() {
   local line stripped npipes expected fails a b c rest
+  line=""
   expected=1
   fails=0
-  while IFS= read -r line; do
+  while IFS= read -r line || [ -n "$line" ]; do
     case "$line" in "") continue ;; esac
     stripped="${line//|/}"
     npipes=$(( ${#line} - ${#stripped} ))
@@ -581,6 +597,50 @@ zeta_pf_open_ledger() {
   done
   return 1
 }
+
+# ZETA-LEDGER-APPEND-BEGIN ---------------------------------------
+# Append ONE record to the attempt ledger, numbered contiguously after the
+# records already on disk.
+#
+# BOTH ledger writes go through here -- the `started` record before the first
+# destructive call and the `ok` record after the last step -- so the two can
+# never disagree about numbering. Until this function existed there was only
+# ONE write site and it only ever wrote `started`, which zeta_pf_validate_ledger
+# counts as a failure. Nothing wrote `ok`, so the failure count never reset and
+# the bound counted INSTALLS rather than failures: measured on main, three
+# SUCCESSFUL installs from one stick left `trusted 3` and the fourth boot came
+# up with the breaker OPEN. A breaker that counts successes as failures strands
+# an operator who is doing nothing wrong.
+#
+# APPEND ONLY, deliberately. Rewriting the `started` line in place would need a
+# read-modify-write on a FAT ESP whose entire job is to survive a node dying
+# mid-install. A `started` with no `ok` after it IS the failure signal, so power
+# loss needs no record of its own to be counted -- which is what keeps R9
+# bounded rather than aspirational.
+#
+# $ZETA_SUDO exists so this function is reachable from a test with no root, no
+# USB and no block device. It is "sudo" everywhere in the installer itself; the
+# falsifier in installer/install-ledger-append.test.ts sets it empty.
+ZETA_SUDO="${ZETA_SUDO-sudo}"
+zeta_ledger_append() {
+  local outcome="$1" stage="$2" text n
+  [ "${ZETA_LEDGER_WRITABLE:-0}" = "1" ] || return 0
+  [ -n "${ZETA_LEDGER_FILE:-}" ] || return 0
+  text=""
+  if $ZETA_SUDO test -f "$ZETA_LEDGER_FILE"; then
+    text="$($ZETA_SUDO cat "$ZETA_LEDGER_FILE" 2>/dev/null || true)"
+  fi
+  # Count records off the FILE, never off a variable captured earlier: a stale
+  # snapshot is how two writes in one run collide on the same ordinal and turn
+  # the ledger non-contiguous, which the validator then reads as UNTRUSTED.
+  n="$(printf %s "$text" | grep -c '|' || true)"
+  n=$((n + 1))
+  printf '%s|%s|%s|%s\n' "$n" "$(date -u +%Y-%m-%dT%H:%M:%SZ)" "$outcome" "$stage" \
+    | $ZETA_SUDO tee -a "$ZETA_LEDGER_FILE" >/dev/null
+  $ZETA_SUDO sync 2>/dev/null || true
+  ZETA_ATTEMPT_N="$n"
+}
+# ZETA-LEDGER-APPEND-END -----------------------------------------
 
 zeta_pf_open_ledger || true
 ZETA_LEDGER_TEXT=""
@@ -884,11 +944,9 @@ if [ "$ZETA_LEDGER_WRITABLE" = "1" ]; then
     : | sudo tee "$ZETA_LEDGER_FILE" >/dev/null
     ZETA_LEDGER_TEXT=""
   fi
-  ZETA_ATTEMPT_N="$(printf %s "$ZETA_LEDGER_TEXT" | grep -c "|" || true)"
-  ZETA_ATTEMPT_N=$((ZETA_ATTEMPT_N + 1))
-  printf "%s|%s|started|wipe\n" "$ZETA_ATTEMPT_N" "$(date -u +%Y-%m-%dT%H:%M:%SZ)" | sudo tee -a "$ZETA_LEDGER_FILE" >/dev/null
-  sudo sync 2>/dev/null || true
+  zeta_ledger_append started wipe
   echo "[R9-breaker] recorded destructive attempt $ZETA_ATTEMPT_N in the ledger"
+  echo "[R9-breaker] this record counts as a FAILURE until the matching 'ok' is written at the end of the run"
 else
   echo "[R9-breaker] ledger not writable; this attempt is NOT counted (breaker stays blind next boot)"
 fi
@@ -2901,3 +2959,28 @@ if [ -d "/mnt/var" ]; then
   echo "[081KSGS9H0008QG0R001RR3ZXQ] post-reboot: \`cat /var/log/zeta-install.log | less\`"
 fi
 echo "[081KSGS9H0008QG0R001RR3ZXQ] live-ISO copy still available at $ZETA_INSTALL_LOG until reboot"
+
+# ── Step 8: close the R9 attempt ledger ───────────────────────────
+#
+# The install reached the end, so RECORD THE SUCCESS. Until this existed
+# nothing ever wrote an `ok`, every record in the ledger was a `started`, and
+# zeta_pf_validate_ledger counts a `started` as a failure -- so the bound
+# counted installs rather than failures and the FOURTH install from one stick
+# opened the breaker even when the first three all succeeded.
+#
+# This is deliberately the LAST statement in the script. `set -e` is on, so
+# anything that can still fail has already failed before control gets here, and
+# "we got here" is the entire evidence this record asserts. Do not move it
+# earlier and do not wrap it in a trap: a trap fires on the failure paths too,
+# which would turn the success record into an unconditional one -- a check that
+# cannot fail, and the exact way this breaker would go back to being decorative.
+#
+# The blind case stays blind. An unwritable ESP means this attempt was never
+# counted in the first place, so there is nothing to close out.
+if [ "$ZETA_LEDGER_WRITABLE" = "1" ]; then
+  zeta_ledger_append ok complete
+  echo "[R9-breaker] recorded install COMPLETION as ledger record $ZETA_ATTEMPT_N"
+  echo "[R9-breaker] consecutive-failure count is now 0; this stick can install again"
+else
+  echo "[R9-breaker] ledger not writable; completion NOT recorded (breaker stays blind next boot)"
+fi

@@ -72,7 +72,10 @@ import {
   writeFileSync,
 } from "node:fs";
 import { homedir, platform, tmpdir } from "node:os";
-import { dirname, join, resolve } from "node:path";
+// `basename` is aliased: findFlashUsbPath() has a local `const basename`, and a
+// module-level import of the same name shadowed inside one function is a
+// readability trap rather than an error.
+import { basename as pathBasename, dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import {
   buildBlob,
@@ -86,7 +89,6 @@ import {
   ISOHYBRID_ESP_OFFSET_FALLBACK_BYTES,
   parseUuidFromDiskutilInfo,
   resolveZetaTestInfraPubkeyFromZflashModule,
-  selectDownloadedIsoForArch,
   selectIsoForArch,
   stampedCiIsoFileName,
   type IsoArch,
@@ -106,6 +108,8 @@ import {
   pinToExpectFlags,
   selectPinnedTarget,
 } from "./target-pin.ts";
+import { isoManifestCandidates, materializeIsoSidecar, realSidecarIo } from "./iso-integrity.ts";
+import { discoverLocalIso, NO_LOCAL_ISO_HELP } from "./iso-discovery.ts";
 import {
   deviceKeyPath,
   userKeyringPublicPath,
@@ -114,48 +118,11 @@ import {
 import { realEffects as realTrustEffects } from "../../../tools/setup/persona-keys/github-trust.ts";
 import { onboard, formatOnboard } from "../../../tools/setup/persona-keys/onboard.ts";
 
-const ISO_GLOB_PREFIX = "zeta-installer-";
 const DEFAULT_SSH_KEY = join(homedir(), ".ssh", "id_ed25519.pub");
 
 function bail(code: number, msg: string): never {
   process.stderr.write(`zflash: ${msg}\n`);
   process.exit(code);
-}
-
-function autoDiscoverIso(wantArch: IsoArch): string {
-  const dl = join(homedir(), "Downloads");
-  if (!existsSync(dl)) {
-    bail(2, `~/Downloads does not exist; pass an ISO path explicitly`);
-  }
-  const candidates = readdirSync(dl)
-    .filter((f) => f.startsWith(ISO_GLOB_PREFIX) && f.endsWith(".iso"))
-    .map((f) => join(dl, f))
-    .filter((p) => {
-      try {
-        return statSync(p).isFile();
-      } catch {
-        return false;
-      }
-    });
-
-  if (candidates.length === 0) {
-    bail(
-      2,
-      `no Zeta installer ISO found under ~/Downloads/${ISO_GLOB_PREFIX}*.iso\n` +
-        "Either download one from a successful build-ai-cluster-iso workflow\n" +
-        "run, or pass an ISO path explicitly: zflash <path/to/iso>",
-    );
-  }
-
-  // Pick newest by mtime, then let arch decide among them (2026-08-18).
-  // Sorting first keeps "newest" the tiebreak it always was; the arch filter
-  // only prevents a wrong-arch ISO from winning purely by being recent, which
-  // is what an untagged CI pull used to do permanently.
-  candidates.sort((a, b) => statSync(b).mtimeMs - statSync(a).mtimeMs);
-  const picked = selectDownloadedIsoForArch(candidates, wantArch);
-  if (!picked.ok) bail(2, picked.error);
-  if (picked.warning !== null) process.stderr.write(`zflash: WARNING ${picked.warning}\n`);
-  return picked.path;
 }
 
 // ── iter-4.3 freshness checks (081KSGS9H0008QG0R002T3BJ2R follow-on) ──────────────────
@@ -378,11 +345,48 @@ function checkLocalCheckoutFreshness(repoRoot: string): void {
   process.stdout.write("zflash: local checkout matches origin/main on install substrate ✓\n");
 }
 
-function autoDownloadFreshIsoIfNeeded(localIso: string, wantArch: IsoArch): string {
+/**
+ * Report — early, and without touching a device — that an ISO has no manifest.
+ *
+ * This does not gate anything; establishIsoIntegrity is still the refusal. It
+ * exists so the operator learns at ISO-selection time rather than after they
+ * have identified a USB stick, and so the "local ISO is current ✓" line cannot
+ * be read as "local ISO is fine".
+ */
+function warnIfNoManifestBeside(isoPath: string | null): void {
+  if (isoPath === null) return;
+  if (isoManifestCandidates(isoPath).some((p) => existsSync(p))) return;
+  process.stderr.write(
+    `zflash: WARNING no sha256 manifest beside ${pathBasename(isoPath)}\n` +
+      "  The pre-write integrity gate WILL refuse this ISO. Looked for:\n" +
+      isoManifestCandidates(isoPath)
+        .map((p) => `    ${p}\n`)
+        .join("") +
+      "  Fetch the publisher's SHA256SUMS from the same place the ISO came from,\n" +
+      "  or let zflash pull a fresh ISO (it brings the manifest with it).\n",
+  );
+}
+
+/**
+ * Pull the latest CI ISO when it is newer than what is already on disk.
+ *
+ * `localIso === null` means "nothing on disk at all", which makes any CI build
+ * fresher by definition — that is the BOOTSTRAP case discoverLocalIso used to
+ * bail on before this function could run. The return is null only when there
+ * was no local ISO AND the pull did not produce one; the caller turns that into
+ * the operator-facing refusal.
+ *
+ * SIDECAR. Whatever ISO this returns, it also puts the publisher's `.sha256`
+ * beside it, because the ISO alone cannot satisfy zflash's own pre-write
+ * integrity gate (iso-integrity.ts). Before that was wired, the bare `zflash`
+ * form both metal runbooks recommend downloaded an ISO and then refused it with
+ * `manifest-missing`.
+ */
+function autoDownloadFreshIsoIfNeeded(localIso: string | null, wantArch: IsoArch): string | null {
   // Check the latest successful build-ai-cluster-iso workflow run on main.
   // If its updated_at > localIso.mtime, download via gh run download +
   // return the new path. Offline / no-gh → falls back to local silently.
-  const localMtime = statSync(localIso).mtimeMs;
+  const localMtime = localIso === null ? Number.NEGATIVE_INFINITY : statSync(localIso).mtimeMs;
   try {
     const runsJson = execFileSync(
       "gh",
@@ -403,6 +407,12 @@ function autoDownloadFreshIsoIfNeeded(localIso: string, wantArch: IsoArch): stri
       process.stdout.write(
         `zflash: local ISO is current with latest CI build (run ${latest.id}, ${latest.updated_at}) ✓\n`,
       );
+      // "Current" says nothing about VERIFIABLE. An ISO the operator downloaded
+      // by hand has no manifest beside it, and the pre-write gate will refuse
+      // it — correctly, and with no warning until the operator has already
+      // picked a target device. Say so here instead, while it is still cheap.
+      // Nothing is fabricated: this only reports what the gate is about to find.
+      warnIfNoManifestBeside(localIso);
       return localIso;
     }
     process.stdout.write(
@@ -417,10 +427,9 @@ function autoDownloadFreshIsoIfNeeded(localIso: string, wantArch: IsoArch): stri
     // collision-free unique path; the try/finally removes it whether
     // copy succeeded or threw.
     const dlDir = mkdtempSync(join(tmpdir(), `zflash-ci-iso-${latest.id}-`));
-    // Per #5093 Copilot P0: TS strict mode rejects `return dlDest` when
-    // dlDest is `string | null` but return type is `string`. Initialize
-    // to localIso so it's always string; overwrite on copy success.
-    let dlDest: string = localIso;
+    // Falls back to whatever was already on disk (possibly nothing) unless the
+    // copy below succeeds.
+    let dlDest: string | null = localIso;
     try {
       execFileSync(
         "gh",
@@ -433,21 +442,27 @@ function autoDownloadFreshIsoIfNeeded(localIso: string, wantArch: IsoArch): stri
       // selectIsoForArch decide — it refuses rather than guessing, because the
       // old "first .iso in readdirSync order" pick was a coin flip whose
       // failure surfaced only as "no bootable device" on the target board.
-      const collectIsosUnder = (d: string, acc: string[] = []): string[] => {
+      //
+      // Collect EVERY file, not only the ISOs: the `.sha256` sidecar the
+      // integrity gate needs is published as its own artifact, so it lands in a
+      // SIBLING directory rather than beside the ISO. Filtering to `.iso` here
+      // is what left the sidecar unreachable before it was ever looked for.
+      const collectFilesUnder = (d: string, acc: string[] = []): string[] => {
         if (!existsSync(d)) return acc;
         for (const e of readdirSync(d).sort()) {
           const p = join(d, e);
           try {
             const s = statSync(p);
-            if (s.isFile() && e.endsWith(".iso")) acc.push(p);
-            else if (s.isDirectory()) collectIsosUnder(p, acc);
+            if (s.isFile()) acc.push(p);
+            else if (s.isDirectory()) collectFilesUnder(p, acc);
           } catch {
             /* unreadable entry — skip */
           }
         }
         return acc;
       };
-      const found = collectIsosUnder(dlDir);
+      const downloadedFiles = collectFilesUnder(dlDir);
+      const found = downloadedFiles.filter((p) => p.endsWith(".iso"));
       if (found.length === 0) {
         process.stderr.write(`zflash: (CI artifact downloaded to ${dlDir} but no .iso found; falling back to local)\n`);
         return localIso;
@@ -479,6 +494,31 @@ function autoDownloadFreshIsoIfNeeded(localIso: string, wantArch: IsoArch): stri
         copyFileSync(ciIsoSrc, dlDest);
       }
       process.stdout.write(`zflash: fresh ISO at ${dlDest}\n`);
+
+      // The ISO on its own cannot pass zflash's own pre-write integrity gate,
+      // so bring the publisher's digest across with it. The filename field is
+      // rewritten to the run-stamped local basename because the gate looks the
+      // file up by EXACT basename — a verbatim copy attests a name that is no
+      // longer on disk, and refuses with `iso-not-in-manifest`.
+      //
+      // A refusal here is NOT downgraded into a pass. Nothing is fabricated
+      // from the bytes we just downloaded; the ISO simply stays unverifiable
+      // and establishIsoIntegrity stops the write later with its own message.
+      const sidecar = materializeIsoSidecar(realSidecarIo(), {
+        downloadedFiles,
+        isoSrcPath: ciIsoSrc,
+        isoDestPath: dlDest,
+      });
+      if (sidecar.ok) {
+        process.stdout.write(`zflash: ${sidecar.report}\n`);
+      } else {
+        process.stderr.write(
+          `zflash: WARNING could not establish a manifest for the pulled ISO (${sidecar.reason})\n` +
+            `  ${sidecar.message}\n` +
+            "  The pre-write integrity gate WILL refuse this ISO. Fetch the publisher's\n" +
+            `  SHA256SUMS or ${pathBasename(dlDest)}.sha256 and put it beside the ISO.\n`,
+        );
+      }
     } finally {
       // Always clean up the temp dir, whether download / copy succeeded
       // or threw. The ISO has been copied to ~/Downloads already (when
@@ -1310,14 +1350,47 @@ async function main() {
     process.stderr.write("zflash: WARN — iter-4.3 freshness check bypassed via --skip-freshness-check\n");
   }
 
-  const explicit = positional[0];
-  let isoPath = explicit ? resolve(explicit) : autoDiscoverIso(isoArch);
-
   // iter-4.3 CI-ISO auto-download: if local newest is older than the latest
-  // successful CI build on main, pull the fresh artifact. Skip when explicit
-  // ISO path passed (operator overrides), when opted out, or on failure.
-  if (!explicit && !skipIsoPull) {
-    isoPath = autoDownloadFreshIsoIfNeeded(isoPath, isoArch);
+  // successful CI build on main, pull the fresh artifact. Skip when an explicit
+  // ISO path is passed (operator overrides), when opted out, or on failure.
+  //
+  // The no-local-ISO case reaches the pull instead of bailing before it. That
+  // ordering is the whole bootstrap: the bare `zflash` form both runbooks
+  // recommend has to work on a machine that has never flashed before, and the
+  // operator who has no ISO is exactly the one the auto-pull exists for.
+  const explicit = positional[0];
+  let isoPath: string;
+  if (explicit) {
+    isoPath = resolve(explicit);
+    // An operator-supplied path is trusted as a CHOICE, never as verification.
+    warnIfNoManifestBeside(isoPath);
+  } else {
+    const found = discoverLocalIso(isoArch);
+    // A wrong-arch Downloads folder is REFUSED here and never falls through to
+    // the pull: a download that papers over a real mismatch is the kind of
+    // "fix" that turns a loud failure into a board that will not boot.
+    if (found.kind === "refused") bail(2, found.error);
+    if (found.kind === "found" && found.warning !== null) {
+      process.stderr.write(`zflash: WARNING ${found.warning}\n`);
+    }
+    const local = found.kind === "found" ? found.path : null;
+    if (skipIsoPull) {
+      if (local === null) bail(2, NO_LOCAL_ISO_HELP);
+      // --skip-iso-pull opts out of the download, not out of being told what
+      // the gate is going to say.
+      warnIfNoManifestBeside(local);
+      isoPath = local;
+    } else {
+      const pulled = autoDownloadFreshIsoIfNeeded(local, isoArch);
+      if (pulled === null) {
+        bail(
+          2,
+          NO_LOCAL_ISO_HELP +
+            "\n(the CI auto-pull ran and did not produce one either — see the diagnostics above)",
+        );
+      }
+      isoPath = pulled;
+    }
   }
 
   const flashUsb = findFlashUsbPath();
