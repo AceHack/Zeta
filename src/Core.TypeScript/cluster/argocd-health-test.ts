@@ -221,6 +221,7 @@ const DEV_INCLUDED_PROOF_DEFERRED_DIRS = new Set([
   "platform",
   "spire", // Vault upstream CA + kind PVC wiring not ready in included CI (081KSXN940008QG0R000SCP2H1)
   "temporal",
+  "vault", // comes up SEALED by design; readiness needs the gated operator-init ceremony CI must not run
 ]);
 
 /**
@@ -271,7 +272,10 @@ export const APPLIED_BUT_UNASSERTED_REASONS: ReadonlyMap<string, string> = new M
   ["redis", "requests longhorn-backed persistence; same missing-StorageClass reason as cockroachdb."],
   ["spire", "Vault upstream CA + kind PVC wiring not ready in included CI (DEV_INCLUDED_PROOF_DEFERRED_DIRS)."],
   ["tempo", "requests longhorn-backed persistence; same missing-StorageClass reason as cockroachdb."],
-  ["vault", "requests longhorn-backed persistence; same missing-StorageClass reason as cockroachdb."],
+  [
+    "vault",
+    "storage moved to zeta-local-path, so it now SYNCS in this lane -- but it comes up SEALED by design and readiness requires the gated operator-init ceremony, which CI must never run (081M0H19QD3087G0R003GV76ZY).",
+  ],
   ["weaviate", "requests longhorn-backed persistence; same missing-StorageClass reason as cockroachdb."],
 ]);
 
