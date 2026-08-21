@@ -1,6 +1,45 @@
 # HashiCorp Vault — runtime secrets engine + Vault Agent injector
 # for pods. Pair with Sealed Secrets (above): Sealed for config-style
 # secrets, Vault for dynamic + rotated secrets + audit trail.
+#
+# ── SOLE OWNER OF HELM RELEASE `vault` (2026-08-20, Dejan) ──────────────────
+# k8s/bootstrap/vault-install.yaml was DELETED and its `vault-install.source`
+# entry removed from nixos/modules/k3s-server.nix in the same commit. Until
+# then both reconcilers owned release `vault` in namespace `vault` and
+# disagreed on the storage backend. Rendered at chart vault-0.29.1:
+#   bootstrap (ha.enabled=false, replicas=1) -> storage "file"  { path = /vault/data }
+#   this file (ha.enabled=true,  replicas=3) -> storage "raft"  { path = /vault/data }
+# Same ConfigMap (`vault-config`), same namespace, both with selfHeal — so the
+# two owners would have rewritten Vault's storage stanza back and forth on
+# every reconcile. That is data loss on the cluster's secrets backend, on a
+# loop, which is why this was fixed before the six other dual-owned charts.
+#
+# ── THIS CONFIG IS NOT YET SCHEDULABLE — DO NOT READ IT AS WORKING ──────────
+# Two preconditions are UNMET on a single-node control plane today. Neither is
+# introduced by the ownership fix; both were latent under dual ownership and
+# are recorded here rather than silently "fixed" by dropping the HA intent:
+#
+#   1. NODE COUNT. `ha.replicas: 3` renders a StatefulSet whose pod template
+#      carries podAntiAffinity `requiredDuringSchedulingIgnoredDuringExecution`
+#      on topologyKey kubernetes.io/hostname (chart default, verified in the
+#      render). On one node exactly ONE of the three pods can schedule; the
+#      other two stay Pending forever and a 3-member raft never reaches its
+#      2/3 quorum, so Vault never unseals. Needs >= 3 nodes joined via
+#      nixos/modules/k3s-agent.nix. The value is kept at 3 deliberately: it is
+#      the intended end state, and lowering it to 1 would discard the raft
+#      design without a decision.
+#   2. STORAGE CLASS. dataStorage/auditStorage pin `storageClass: longhorn`,
+#      which the longhorn Application installs at sync-wave -15 — 45 waves
+#      AFTER this one (-60). ArgoCD retries, so this converges rather than
+#      deadlocks, but Vault's PVCs are Pending until longhorn lands. (This is
+#      also the reason bootstrap ownership could never have worked: k3s's
+#      first-boot roster installs no longhorn at all.)
+#
+# Separately, the readiness probe cannot pass as configured: the render sets
+# `tls_disable = 1` (plaintext listener) while VAULT_ADDR is https:// and the
+# probe runs `vault status -tls-skip-verify`, which skips VERIFICATION, not the
+# TLS handshake. Tracked with the two items above in
+# workitems/081M0H19QD3087G0R003GV76ZY-vault-is-argocd-sole-owned-but-three-preconditions-are-unmet.md
 
 apiVersion: argoproj.io/v1alpha1
 kind: Application

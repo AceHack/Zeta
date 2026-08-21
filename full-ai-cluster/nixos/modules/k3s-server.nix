@@ -112,15 +112,37 @@
       # Cilium (CNI must exist before any pod can schedule).
       cilium-namespace.source = ../../k8s/bootstrap/cilium-namespace.yaml;
       cilium-install.source = ../../k8s/bootstrap/cilium-install.yaml;
-      # cert-manager (Vault TLS source).
+      # cert-manager (issues cluster TLS).
       cert-manager-install.source = ../../k8s/bootstrap/cert-manager-install.yaml;
-      # Vault (secrets backend).
-      vault-install.source = ../../k8s/bootstrap/vault-install.yaml;
-      # SPIRE (workload identity, chains to Vault).
+      # Vault is DELIBERATELY ABSENT from this roster (2026-08-20, Dejan).
+      #
+      # It used to be here AND owned by k8s/applications/vault/Application.yaml,
+      # which carries `selfHeal: true`. Both reconcilers owned Helm release
+      # `vault` in namespace `vault`, and they DISAGREED on the storage backend:
+      # this roster rendered `storage "file"` (ha.enabled=false, replicas=1),
+      # the ArgoCD twin renders `storage "raft"` (ha.enabled=true, replicas=3).
+      # Two selfHealing owners would have converted Vault between two storage
+      # backends on a loop -- data loss on the cluster's secrets backend, every
+      # reconcile. Measured by rendering both value sets at chart vault-0.29.1.
+      #
+      # ArgoCD is the single owner because Vault has NO pre-ArgoCD consumer:
+      #   - spire-install.yaml has no `upstreamAuthority` key at all (grep: 0);
+      #     the SPIRE server self-signs. The ArgoCD twin has the Vault block
+      #     COMMENTED OUT.
+      #   - external-secrets-install.yaml installs the operator + CRDs only; its
+      #     ClusterSecretStore pointing at Vault is likewise commented out, so
+      #     ESO has nothing to sync from and does not need Vault to come up.
+      #   - argocd-install.yaml sources no secret from Vault.
+      # ...and because Vault's own PVCs pin `storageClass: longhorn`, which is
+      # installed by ArgoCD at sync-wave -15. Vault CANNOT bind storage before
+      # ArgoCD runs, so bootstrap ownership could never have worked.
+      # The ordering intent survives in ArgoCD's sync waves: cert-manager -70,
+      # vault -60, spire -50, trust-manager -45, external-secrets -40.
+      # SPIRE (workload identity; self-signed CA today).
       spire-install.source = ../../k8s/bootstrap/spire-install.yaml;
       # Trust Manager (CA bundle distribution).
       trust-manager-install.source = ../../k8s/bootstrap/trust-manager-install.yaml;
-      # External Secrets Operator (Vault → K8s Secret sync).
+      # External Secrets Operator (operator + CRDs; no store wired yet).
       external-secrets-install.source = ../../k8s/bootstrap/external-secrets-install.yaml;
       # ArgoCD (reconciler for everything else).
       argocd-namespace.source = ../../k8s/bootstrap/argocd-namespace.yaml;

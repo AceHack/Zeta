@@ -1,0 +1,107 @@
+# full-ai-cluster/k8s validation baseline
+
+<!-- Machine-readable. The ratchet parses EXACTLY this line; keep the format. -->
+
+    BASELINE_FAILURES: 23
+
+**Measured:** 2026-08-20 · **at commit:** `948dc884739dc8fc9a7d348f00c71e3259ce5706`
+**Toolchain:** helm `v4.2.0+g0646808` · kubeconform `v0.7.0` · bun `1.3.14` · `--kube-version 1.33.0`
+**Reproduce:** `bun infra/k8s/tests/ratchet-app-failures.ts` (it prints the count it measured)
+
+## What this number is
+
+A **debt ceiling**, not a target and not a pass mark. The `full-ai-cluster/k8s`
+tree does not validate clean, and there are only three honest ways to wire a
+lane at it:
+
+| option                    | why it was rejected                                                                                                                                                    |
+| ------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| plain step, no ratchet    | permanently red; a lane that is always red is a lane people learn to skim, so it stops carrying signal exactly when it matters                                         |
+| `continue-on-error: true` | can never fail. It permits anything, including a regression to 200 failures. That is the vacuity class in its purest form: a check that reports and constrains nothing |
+| **ratchet (this)**        | fails on regression, and fails on unrecorded improvement. Never green-by-permission, never ignorable-red                                                               |
+
+## Both directions are load-bearing
+
+The step fails on any count that is **not exactly** `BASELINE_FAILURES`.
+
+- **More** failures than baseline → a regression was introduced. Obvious half.
+- **Fewer** failures than baseline → a real improvement that nobody recorded.
+  This also fails, and that is the half that keeps the number honest. A ceiling
+  that only ever moves _up_ rots into a figure nobody believes; forcing the
+  commit means this file's `git log` **is** the record of the tree getting
+  better, and the date above is always the date the number was last true.
+
+Lowering it is one line, and the ratchet prints the exact delta and the new
+number to write when it refuses.
+
+## Composition of the 23 — measured, not estimated
+
+| n   | class                                                                                                                                                                                                                                                                                                                                                      | verdict                        |
+| --- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------ |
+| 13  | ArgoCD contract: missing `syncPolicy.automated.prune` / `.selfHeal`, or `CreateNamespace=true` absent from `syncOptions`                                                                                                                                                                                                                                   | **real** — but read the caveat |
+| 2   | `oz` pins `ziti-controller` **1.4.5**; the repo publishes **96** versions and the newest is **3.2.1**. The pin is fictional. Counted twice: version check + render                                                                                                                                                                                         | **real**, unambiguous          |
+| 4   | `sealed-secrets` and `forgejo` chart repos both return HTTP 404. Counted twice each: version check + render                                                                                                                                                                                                                                                | **real**, upstream gone/moved  |
+| 4   | chart refuses to render with the values we hand it: `gitlab` (no `certmanager-issuer.email`), `headscale` (no `accessMode` for PVC `headscale-data`), `temporal` (no cassandra port for the default store), `arc-runner-set` (chart does label-discovery for a `gha-rs-controller` deployment at template time; needs `controllerServiceAccount.name` set) | **real**                       |
+
+Per-app split of the 13: `cdi` 3, `kubevirt` 3, `forgejo` 2, `ollama` 2,
+`vllm` 2, `cilium-lb-ipam` 1.
+
+> **Caveat on the 13 — do not "fix" them blindly to lower this number.**
+> `root-application.yaml`'s own header documents an either/or gating convention:
+> some directories ship alternatives (`gitlab` vs `forgejo`, `ollama` vs `vllm`)
+> and _"alternatives omit an `automated:` block (manual sync only)"_ **on
+> purpose**. Where that is the intent, the manifest is correct and the
+> **validator** is what needs to learn the convention. Adding `automated:` blocks
+> to make the number go down would silently switch manual-sync alternatives to
+> auto-syncing — turning a reporting problem into a cluster change.
+
+## Why it opens at 23 and not the 29 that was first measured
+
+The first measurement of this tree was **305 passed, 29 failed**. **Seven of
+those 29 were validator-scope artifacts, not manifest defects**, and both causes
+were fixed in `validate-applications.ts` in the same commit as this file:
+
+1. **Six** from the three OCI-registry apps — `arc-controller`,
+   `arc-runner-set`, `hindsight`. Their `repoURL` is a bare
+   `ghcr.io/...` host, which is ArgoCD's convention for an OCI source. The
+   validator was fetching `<repoURL>/index.yaml` (meaningless for OCI: registries
+   do not serve a Helm repo index) and running `helm template --repo ghcr.io/...`
+   (`could not find protocol handler`). Now: OCI is detected by the absence of a
+   URL scheme, existence is checked with `helm show chart oci://...`, and the
+   render addresses the chart as a single `oci://host/path/chart` argument.
+2. **One** from Test 6 looking for `root-application.yaml` under `applications/`.
+   This tree keeps it in `bootstrap/`, because k3s applies it at first boot and
+   it must sit on the `services.k3s.manifests` roster. New `--root-app` flag.
+
+The OCI fix **added one genuine failure it had been masking** — `arc-runner-set`
+now renders far enough to fail on real values. `29 − 7 + 1 = 23`.
+
+That is the point of fixing the validator before setting the baseline: a
+baseline that banks false reds is a number that can be "improved" by fixing
+nothing.
+
+## Not covered here
+
+Only `validate-applications.ts` against `full-ai-cluster/k8s/applications`.
+The bootstrap set in the same tree is checked by
+`validate-bootstrap.ts --infra-dir full-ai-cluster`, which sits at **52 passed,
+0 failed** and is a **hard gate with no ratchet** — it carries no debt to
+amortise, so it simply has to stay green.
+
+## Known measurement hazard — the count is not perfectly stable
+
+Measured 2026-08-20: two identical runs minutes apart returned **23** and **24**
+failures. The extra entry was **helm itself crashing** while rendering `redis` —
+a Go runtime panic (`pointer to unallocated span ... span.state=0`), not a
+manifest defect. This machine was also under heavy concurrent load at the time.
+
+The ratchet handles this narrowly and visibly rather than by loosening the
+comparison: when the first measurement disagrees with the baseline it takes a
+**second** one. Two runs that **agree** are believed, whatever they say. Two runs
+that **disagree** are reported as `MEASUREMENT NOT TRUSTED` (exit 2) with the
+exact entries that moved — never a pass. It stops at two, so it cannot retry
+until the number is convenient.
+
+If that exit-2 path starts firing regularly, the flaky entry deserves its own
+ticket. An unstable gate decays into an ignored one just as surely as a
+permanently-red one does.
