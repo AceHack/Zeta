@@ -90,6 +90,38 @@
     extraGroups = [ "wheel" "networkmanager" ];
   };
 
+  # ── mDNS responder on the LIVE ISO (081KSE6WT0008QG0R000CV98PV) ──────
+  #
+  # `avahi-browse` is a D-Bus CLIENT of avahi-daemon, not a standalone
+  # socket program. With the binary present but no daemon running it exits
+  # non-zero with "Failed to create client object", which the probe maps to
+  # `responder-unavailable` -- a probe FAILURE, correctly, never an empty
+  # network. So enabling the daemon is what makes the check able to run at
+  # all; without this line the wiring below would be a check that never runs.
+  #
+  # Costs nothing in ISO bytes: pkgs.avahi is already in this closure (see the
+  # measurement beside `avahi` in systemPackages above).
+  #
+  # PUBLISHING IS OFF, and that is the inverse of nixos/modules/common.nix
+  # where an INSTALLED host publishes. An installer is not a cluster node and
+  # must never advertise itself as one -- a live ISO answering on the Zeta
+  # service type would be a phantom cluster member that vanishes at reboot.
+  # nssmdns stays off too: the decider reads an ADDRESS straight out of the
+  # SRV/A answer, so no `.local` name resolution is needed to make the join
+  # work, and an unused NSS module is closure and attack surface for nothing.
+  #
+  # openFirewall punches UDP 5353 through `networking.firewall.enable = true`
+  # above. Without it the responder's answers are dropped by our own firewall
+  # and every probe reads as silence -- the precise failure mode this whole
+  # module refuses, caused by us.
+  services.avahi = {
+    enable = true;
+    openFirewall = true;
+    publish.enable = false;
+    nssmdns4 = false;
+    nssmdns6 = false;
+  };
+
   environment.systemPackages = with pkgs; [
     # Version control: pull the cluster flake onto the target
     git
@@ -206,6 +238,51 @@
     # Invocation:
     #   disko --mode disko --flake /mnt/etc/zeta/full-ai-cluster#<host>
     disko
+
+    # ── Cluster discovery at role-decision time (081KSE6WT0008QG0R000CV98PV) ──
+    #
+    # The decider under full-ai-cluster/nixos/cluster-discovery/ answers "am I
+    # the first node, or is there a cluster here already?" from mDNS. It landed
+    # in #13110 wired to nothing, because this ISO shipped neither an mDNS
+    # responder nor a JS runtime, and the size of adding them was UNMEASURED.
+    #
+    # MEASURED 2026-08-21, nixpkgs b77b3de8 (this repo's pin), x86_64-linux,
+    # closure sizes read from cache.nixos.org narinfo, marginal = paths NOT
+    # already in this ISO's systemPackages closure:
+    #
+    #   avahi 0.8    36-path closure, 0 NEW paths, +0 bytes.
+    #                Its exact store path is ALREADY in this ISO's closure,
+    #                pulled in by mesa-demos. avahi-browse and avahi-daemon are
+    #                physically on the stick today; they are merely absent from
+    #                PATH with no daemon running. Adding avahi here costs
+    #                nothing but a symlink in the system profile.
+    #   bun 1.3.3    5-path closure, 1 NEW path, 99.4 MiB uncompressed NAR,
+    #                which is 30.5 MiB (31,944,704 bytes) once compressed --
+    #                measured by running mksquashfs over the real store path
+    #                with THIS ISO's own settings, `-b 1048576 -comp zstd
+    #                -Xcompression-level 19` (iso-image.nix squashfsCompression
+    #                default), not estimated from a ratio.
+    #
+    # So the honest ISO cost of discovery is +30.5 MiB, all of it bun. For
+    # scale, `hardware.enableRedistributableFirmware` above spends a documented
+    # ~80 MB to quiet cosmetic dmesg lines. This is under half of that, and it
+    # buys the end of a real failure: every stick cut from one ISO ships
+    # HOST=control-plane, so today the second node founds a SECOND cluster on a
+    # segment that already has one. That earns the slot.
+    #
+    # Rejected alternatives, on the same numbers rather than on taste:
+    #   - avahi-browse plus a shell/python reimplementation would cost +0 MiB
+    #     (python3 is also already in this closure, via git/zfs/neovim/mise).
+    #     Rejected because it buys 30.5 MiB with a SECOND implementation of a
+    #     split-brain-preventing decision -- 583 lines of decider carrying 755
+    #     lines of tests -- in a language with no golden-vector cross-check
+    #     against the first. Two implementations that drift is the failure this
+    #     module exists to prevent, arriving by another door.
+    #   - a hand-rolled UDP 5353 probe saves nothing at all, because the thing
+    #     it avoids (avahi) is already free here, and it adds hand-written
+    #     packet parsing where a mature responder already sits.
+    avahi
+    (import ../../../nixos/packages/zeta-cluster-discover.nix { inherit pkgs; })
 
     # Secrets management
     age
