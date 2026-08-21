@@ -73,16 +73,14 @@
 
 import { execFileSync, spawn } from "node:child_process";
 import { randomBytes } from "node:crypto";
-import { existsSync, readFileSync, statSync } from "node:fs";
+import { existsSync, statSync } from "node:fs";
 import { platform } from "node:os";
-import { basename, dirname, join } from "node:path";
 import * as readline from "node:readline/promises";
 import { stdin, stdout } from "node:process";
 
-import { sha256FileHex } from "../installer/multiboot/resolve-artifacts.ts";
+import { establishIsoIntegrity, realIsoIntegrityIo } from "./iso-integrity.ts";
 import {
   checkDeviceIdentity,
-  checkIsoAgainstManifest,
   checkStatedPin,
   classifyDeviceState,
   DEFAULT_HEAD_SAMPLE_BYTES,
@@ -364,32 +362,15 @@ async function main() {
   //
   // This is a REFUSAL, not a warning: non-zero exit, no device touched, before
   // any enumeration happens.
+  //
+  // The block that used to sit here — candidate list, read, hash, refuse — now
+  // lives in ./iso-integrity.ts, because the Linux and Windows arms need the
+  // same gate and had none. One definition, three call sites; the alternative
+  // was three copies under a comment claiming they matched.
   {
-    const isoDir = dirname(isoPath);
-    const isoBase = basename(isoPath);
-    const manifestCandidates = [
-      isoPath + ".sha256",
-      join(isoDir, isoBase + ".sha256"),
-      join(isoDir, "SHA256SUMS"),
-    ];
-    const manifestPath = manifestCandidates.find((p) => existsSync(p)) ?? null;
-    const manifestText = manifestPath === null ? null : readFileSync(manifestPath, "utf8");
-    const digest = await sha256FileHex(isoPath);
-    const integrity = checkIsoAgainstManifest(manifestText, isoBase, digest);
-    if (!integrity.ok) {
-      bail(
-        2,
-        "ISO INTEGRITY NOT ESTABLISHED (" + integrity.reason + ")\n  " +
-          integrity.error +
-          "\n  looked for a manifest at:\n    " +
-          manifestCandidates.join("\n    ") +
-          "\n  computed sha256: " + digest +
-          "\n  No device has been touched.",
-      );
-    }
-    process.stdout.write(
-      "ISO verified against " + String(manifestPath) + "\n  sha256 " + integrity.sha256 + "\n",
-    );
+    const integrity = await establishIsoIntegrity(isoPath, realIsoIntegrityIo());
+    if (!integrity.ok) bail(2, integrity.message);
+    process.stdout.write(integrity.report);
   }
 
   // ── 3. Enumerate USB devices ───────────────────────────────

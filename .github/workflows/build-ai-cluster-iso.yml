@@ -141,36 +141,28 @@ jobs:
       - name: Audit installer substrate (source-level)
         run: bun src/Core.TypeScript/ci/audit-installer-substrate.ts
 
-      # ~100 ms on a job that runs 15-180 min, so it earns its slot on cost
-      # alone. It guards a CLASS rather than an instance: a safety guard that
-      # exists on one platform arm and not the others. Three instances of that
-      # class were live on 2026-08-21 -- the integrity gate on macOS only,
-      # MIN_ISO_BYTES defined three times under a comment claiming one, and the
-      # aarch64 job emitting no digest. This workflow already triggers on
-      # `src/Core.TypeScript/zflash/**`, which is the surface it audits.
+      # NOTE ON THE PARITY AUDIT THAT USED TO RUN HERE, and where it went.
       #
-      # DEBT, stated rather than left implicit: this blocks the ISO lane, not
-      # `gate`. It belongs in gate.yml's cross-verify floor beside
-      # audit-proof-lineage-binaries.ts so it blocks EVERY PR; that file is
-      # owned elsewhere this round.
-      # HELD BACK, NOT DROPPED. The step that ran here invoked
-      # src/Core.TypeScript/hygiene/audit-flash-entrypoint-parity.ts, which does
-      # not exist on main -- it was part of a source-half change deliberately
-      # held back while another PR was in flight, and the CI half landed without
-      # it in #13093. The step therefore failed on a missing file on every run,
-      # and because the ISO upload, the digest sidecar and cosign signing are all
-      # gated behind it, the ISO artifact stopped being produced entirely.
+      # A step here once invoked src/Core.TypeScript/hygiene/audit-flash-entrypoint-parity.ts,
+      # which did not exist -- the source half was held back while another PR was
+      # in flight and the CI half landed alone in #13093. The step failed on a
+      # missing file on every run, and because the ISO upload, the digest sidecar
+      # and cosign signing are all gated behind it, ISO production stopped
+      # entirely. #13102 removed it rather than stubbing it: a stub that always
+      # passes is worse than no step, because it reports parity as CHECKED while
+      # checking nothing.
       #
-      # It is removed rather than stubbed because a stub that always passes is
-      # worse than no step: it would report parity as CHECKED while checking
-      # nothing.
+      # The gap it guarded was real -- the ISO integrity gate existed only in the
+      # macOS arm, so flash-usb-linux.ts and flash-usb-windows.ts wrote an image
+      # to a block device with no manifest verification at all. That is fixed
+      # (081M0HG7X7B087G0R002A05DAP): the gate is one definition in
+      # zflash/iso-integrity.ts and all three arms call it.
       #
-      # The gap it guards is REAL and still live: the ISO integrity check exists
-      # ONLY in the macOS arm. flash-usb-linux.ts and flash-usb-windows.ts write
-      # an image to a block device with no manifest verification at all. Filed as
-      # workitems/081M0HG7X7B087G0R002A05DAP-*, which also records why the step
-      # cannot be restored before that is fixed -- an honest parity audit fails on
-      # main today, because parity is genuinely violated.
+      # The audit now exists and RUNS -- in gate.yml's cross-verify floor, beside
+      # audit-proof-lineage-binaries.ts, which is where the note this replaces
+      # said it belonged. It is not restored here: on the gate floor it blocks
+      # every PR rather than only the pushes that touch the ISO lane, and it
+      # cannot take ISO production down with it a second time.
 
       # Layer 2a (structural-behavioral) — asserts logical relationships
       # between iter-5.4 substrate elements (gh auth setup-git is INSIDE

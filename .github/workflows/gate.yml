@@ -2082,6 +2082,22 @@ jobs:
       - name: Proof-lineage binary exception (no-binary-in-proof-lineage.md)
         run: bun src/Core.TypeScript/hygiene/audit-proof-lineage-binaries.ts
 
+      # Every zflash host arm must reach the ISO integrity gate before it writes to a block
+      # device. Measured on main 2026-08-21: the manifest check existed in the macOS arm and
+      # NOWHERE ELSE, so flash-usb-linux.ts and flash-usb-windows.ts wrote an image with no
+      # integrity verification at all (081M0HG7X7B087G0R002A05DAP). A missing check is
+      # invisible to a test suite — the arms that have one stay green, and the arms that lack
+      # one have nothing to test — so only something that reads the call sites can see it.
+      #
+      # HERE rather than in build-ai-cluster-iso.yml on purpose, and this is the placement
+      # that workflow's own note asked for. The ISO lane runs on a subset of pushes, and when
+      # this step lived there and referenced a script that did not exist it silently killed
+      # ISO production for every run (#13102). On the cross-verify floor it blocks every PR,
+      # beside the other audits whose subject is "a check that did not run must never look
+      # like a check that passed".
+      - name: zflash host-arm parity (every arm verifies the ISO before writing)
+        run: bun src/Core.TypeScript/hygiene/audit-flash-entrypoint-parity.ts
+
       # A tracked source file holding a raw 0x00 byte reads as BINARY to grep/rg, so every
       # text audit silently skips it -- a check that did not run, looking exactly like one
       # that passed. `rg 'foldChain' key-epoch-ledger.ts` printed "binary file matches" and

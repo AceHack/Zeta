@@ -1,11 +1,12 @@
 ---
 id: 081M0HG7X7B087G0R002A05DAP
 type: bug
-state: backlog
+state: done
 priority: P2
 slug: zflash-linux-and-windows-arms-write-an-iso-with-no-manifest
 title: "zflash Linux and Windows arms write an ISO with no manifest integrity check -- the gate exists only on macOS"
 created: 2026-08-21T06:30:57.003Z
+completed: 2026-08-21T07:44:28.274Z
 depends_on: []
 composes_with: []
 ---
@@ -57,3 +58,36 @@ baseline that records the gap as acceptable.
 - #13099 closed the sibling instance of the same class (the size bounds defined
   twelve times under comments claiming one definition).
 
+
+## Resolution (2026-08-21)
+
+1. **The gate is one definition.** `src/Core.TypeScript/zflash/iso-integrity.ts`
+   holds `establishIsoIntegrity` — candidate search, manifest read, ISO hash,
+   refusal message — over an injected `IsoIntegrityIo`. The verdict logic stays
+   in `verify.ts` (`checkIsoAgainstManifest`, unchanged). The macOS arm's inline
+   block was REPLACED by a call, so there are three call sites and no copies.
+   Six refusal reasons, all fail-closed: `manifest-missing`,
+   `manifest-unparseable`, `iso-not-in-manifest`, `digest-mismatch`, and the two
+   I/O failures this layer can see, `manifest-unreadable` and `iso-unreadable`.
+   "No manifest found" is never "verified".
+
+2. **The parity audit exists and runs.**
+   `src/Core.TypeScript/hygiene/audit-flash-entrypoint-parity.ts` derives the arm
+   roster from the zflash directory listing and requires each arm's `main()` to
+   call the gate, bind its verdict, `bail()` on its own failure branch, and do all
+   of that before the first destructive operation. Run against `HEAD~`'s arm
+   sources it reports three `gate-absent` findings; on this branch, none.
+
+3. **It is wired into `gate.yml`'s cross-verify floor**, beside
+   `audit-proof-lineage-binaries.ts` — which is the placement the note in
+   `build-ai-cluster-iso.yml` asked for. The step was deliberately NOT restored to
+   the ISO lane: there it gates ISO upload, digest sidecar and cosign signing, and
+   that is how a missing script silently killed ISO production in #13102. On the
+   gate floor it blocks every PR and can take nothing else down with it.
+
+**Measured vs designed-but-unrun.** Everything above is measured on source: 554
+tests green, each guard proved by mutation. What is NOT measured is a real flash —
+no ISO was written to a real block device on any of the three hosts, because this
+tree cannot do that. The gate's own logic is exercised through injected I/O; the
+syscall edge (`existsSync` / `readFileSync` / `sha256FileHex` against a real ISO)
+and the two non-macOS arms end-to-end remain designed-but-unrun.
