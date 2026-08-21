@@ -3,58 +3,10 @@
     "generator": "tick-metrics-writer.ts",
     "mock": false,
     "derived_from": "data/tick-shards/**/*.json",
-    "shard_count": 1187,
+    "shard_count": 1191,
     "rollup_max_frames": 1000
   },
   "frames": [
-    {
-      "agents_active": 0,
-      "claims_pending": 0,
-      "entropy_heat": 0,
-      "entropy_state": 0,
-      "last_action": "explore",
-      "last_agent": "alexa",
-      "last_mode": "explore",
-      "t": "2026-07-22T09:58:18.790Z",
-      "ticks_24h": 0,
-      "total_events": 7
-    },
-    {
-      "agents_active": 0,
-      "claims_pending": 0,
-      "entropy_heat": 0,
-      "entropy_state": 0,
-      "last_action": "explore",
-      "last_agent": "alexa",
-      "last_mode": "explore",
-      "t": "2026-07-22T11:52:59.110Z",
-      "ticks_24h": 0,
-      "total_events": 7
-    },
-    {
-      "agents_active": 0,
-      "claims_pending": 0,
-      "entropy_heat": 0,
-      "entropy_state": 0,
-      "last_action": "explore",
-      "last_agent": "alexa",
-      "last_mode": "explore",
-      "t": "2026-07-22T13:49:02.510Z",
-      "ticks_24h": 0,
-      "total_events": 7
-    },
-    {
-      "agents_active": 0,
-      "claims_pending": 0,
-      "entropy_heat": 0,
-      "entropy_state": 0,
-      "last_action": "explore",
-      "last_agent": "alexa",
-      "last_mode": "explore",
-      "t": "2026-07-22T15:41:31.210Z",
-      "ticks_24h": 0,
-      "total_events": 7
-    },
     {
       "agents_active": 0,
       "claims_pending": 0,
@@ -12006,6 +11958,54 @@
       "t": "2026-08-21T20:06:19.571Z",
       "ticks_24h": 491,
       "total_events": 3471
+    },
+    {
+      "agents_active": 3,
+      "claims_pending": 3,
+      "entropy_heat": 0,
+      "entropy_state": 0,
+      "last_action": "attest_peer",
+      "last_agent": "alexa",
+      "last_mode": "work",
+      "t": "2026-08-21T20:24:36.163Z",
+      "ticks_24h": 498,
+      "total_events": 3484
+    },
+    {
+      "agents_active": 3,
+      "claims_pending": 3,
+      "entropy_heat": 0,
+      "entropy_state": 0,
+      "last_action": "attest_peer",
+      "last_agent": "alexa",
+      "last_mode": "work",
+      "t": "2026-08-21T20:40:16.722Z",
+      "ticks_24h": 494,
+      "total_events": 3490
+    },
+    {
+      "agents_active": 3,
+      "claims_pending": 3,
+      "entropy_heat": 0,
+      "entropy_state": 0,
+      "last_action": "attest_peer",
+      "last_agent": "alexa",
+      "last_mode": "work",
+      "t": "2026-08-21T20:53:01.959Z",
+      "ticks_24h": 491,
+      "total_events": 3490
+    },
+    {
+      "agents_active": 3,
+      "claims_pending": 3,
+      "entropy_heat": 0,
+      "entropy_state": 0,
+      "last_action": "attest_peer",
+      "last_agent": "alexa",
+      "last_mode": "work",
+      "t": "2026-08-21T21:09:07.544Z",
+      "ticks_24h": 491,
+      "total_events": 3490
     }
   ]
 }
