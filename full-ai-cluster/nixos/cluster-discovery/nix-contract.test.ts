@@ -120,3 +120,43 @@ describe("publisher output round-trips through the reader", () => {
     expect(parsed.advertisements[0]?.trustDomain).toBe("zeta.local");
   });
 });
+
+describe("the cluster id is only published when it is the id k3s would compute", () => {
+  // VERIFIED against k3s's own source rather than assumed. pkg/clientaccess/token.go
+  // hashCA(): with a SINGLE certificate in the bundle the hash is taken over the
+  // literal bytes of the file -- what `sha256sum` computes -- but with MORE THAN
+  // ONE certificate k3s hashes the DER of the ROOT cert in the chain instead, and
+  // the file digest silently diverges from the K10 prefix.
+  //
+  // A wrong cluster id is worse than no advertisement: joiners that pin the value
+  // refuse every join while the record still looks healthy on the wire. That is
+  // the "check that did not run looking like one that passed" shape, so the
+  // publisher must REFUSE rather than publish an id it cannot compute correctly.
+
+  test("a multi-certificate bundle refuses to publish instead of guessing", () => {
+    expect(MODULE_TEXT).toContain("BEGIN CERTIFICATE");
+    // The refusal must exit non-zero, not merely warn.
+    const guard = MODULE_TEXT.slice(MODULE_TEXT.indexOf("certs="));
+    const digestAt = guard.indexOf("sha256sum");
+    expect(digestAt).toBeGreaterThan(0);
+    // `exit 1` has to come BEFORE the digest is computed, or the guard is decorative.
+    const exitAt = guard.indexOf("exit 1");
+    expect(exitAt).toBeGreaterThan(0);
+    expect(exitAt).toBeLessThan(digestAt);
+  });
+
+  test("a stale advertisement is withdrawn on that refusal, not left on the wire", () => {
+    // Refusing to publish while an old service file remains would keep announcing
+    // a cluster id nobody can join -- the failure this guard exists to prevent,
+    // simply persisted from the previous boot.
+    const guard = MODULE_TEXT.slice(MODULE_TEXT.indexOf("certs="));
+    const region = guard.slice(0, guard.indexOf("sha256sum"));
+    expect(region).toContain("rm -f");
+  });
+
+  test("the k3s source that licenses the single-cert case is cited in the module", () => {
+    // The anchor must be checkable by a reader, not folklore. If this citation is
+    // removed the next maintainer has no way to know the digest choice was verified.
+    expect(MODULE_TEXT).toContain("pkg/clientaccess/token.go");
+  });
+});
