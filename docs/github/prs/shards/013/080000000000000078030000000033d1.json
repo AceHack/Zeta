@@ -1,0 +1,12 @@
+{
+  "pr_number": 13265,
+  "archive_path": "docs/history/pr-reviews/PR-13265-cluster-the-app-of-apps-root-does-reach-depth-2-what-it-applies-is-not-what-ci-a.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-21T17:05:56.398Z",
+  "schema_version": "v1",
+  "commit_sha": "48bb994b19445fb1abab69317a31c2cc099d792b",
+  "title": "cluster: the app-of-apps root DOES reach depth 2 — what it applies is not what CI asserts",
+  "state": "MERGED",
+  "merged_at": "2026-08-21T17:05:16Z",
+  "head_ref": "fix/argocd-app-discovery-and-crd-ordering"
+}
