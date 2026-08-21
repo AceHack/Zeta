@@ -523,13 +523,28 @@ export REPO_URL
 # format → mount → clone → nixos-install. Exits with the OS still
 # booted in the USB live environment; this script then reboots so
 # the freshly installed node comes up on its own disk.
-if /run/current-system/sw/bin/zeta-install "$HOST"; then
+# Three outcomes, not two. zeta-install exits 10 when the OPERATOR cancelled at
+# the R7 window -- distinct from both success and failure. It used to exit 0
+# there, which this `if` reported as "Install complete. Rebooting in 10s": a
+# deliberate abort announced as a finished install, then a reboot. Collapsing a
+# cancel into "failed" would be the milder version of the same lie, so it gets
+# its own branch and does NOT reboot.
+set +e
+/run/current-system/sw/bin/zeta-install "$HOST"
+ZETA_INSTALL_RC=$?
+set -e
+if [ "$ZETA_INSTALL_RC" = "0" ]; then
   echo
   echo "[zeta-first-boot] Install complete. Rebooting in 10s (Ctrl-C to cancel) ..."
   sleep 10
   systemctl reboot
+elif [ "$ZETA_INSTALL_RC" = "10" ]; then
+  echo
+  echo "[zeta-first-boot] CANCELLED at the pre-wipe window. Nothing was wiped."
+  echo "                  This node is unchanged. Re-run when ready: zeta-install $HOST"
+  drop_to_shell
 else
   echo
-  echo "[zeta-first-boot] Install failed. See output above."
+  echo "[zeta-first-boot] Install failed (rc=$ZETA_INSTALL_RC). See output above."
   drop_to_shell
 fi

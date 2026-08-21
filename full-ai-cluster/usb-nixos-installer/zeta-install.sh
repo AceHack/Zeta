@@ -807,15 +807,37 @@ else
 fi
 echo
 ZETA_CANCEL_KEY=""
-ZETA_CANCEL_REMAIN="$ZETA_WINDOW"
+ZETA_CANCEL_PRESSED=0
 if [ -t 0 ]; then
-  while [ "$ZETA_CANCEL_REMAIN" -gt 0 ]; do
+  # TWO BUGS LIVED HERE, and they compounded into the opposite of the intended
+  # behaviour. Both were found by rehearsing the window rather than reading it.
+  #
+  # 1. `read -n 1` consumes Return as its DELIMITER and yields an EMPTY
+  #    variable, while still returning success. The old loop tested
+  #    `[ -n "$ZETA_CANCEL_KEY" ]`, so Enter -- the key a worried operator
+  #    actually mashes -- did NOT cancel. A successful read IS a keypress; that
+  #    is what is tested now.
+  # 2. The countdown decremented once per ITERATION, but `read` returns
+  #    IMMEDIATELY when a key arrives instead of spending its 1s timeout. So a
+  #    burst of keypresses spun the window to zero in milliseconds. Measured:
+  #    five Enters into a 5s window gave `cancelled=NO elapsed=0s`.
+  #
+  # Together: mashing Enter burned the entire window AND failed to cancel --
+  # a guard that fails precisely when someone panics. The deadline is now
+  # wall-clock, so an early return cannot spend time it did not wait.
+  #
+  # Local wall-clock is correct here and is not a shared-fold leak: this steers
+  # a LOCAL action (a UI timeout) and never enters a shared conclusion.
+  # See .claude/rules/local-time-never-enters-the-shared-fold.md.
+  ZETA_CANCEL_END=$(( $(date +%s) + ZETA_WINDOW ))
+  while :; do
+    ZETA_CANCEL_REMAIN=$(( ZETA_CANCEL_END - $(date +%s) ))
+    [ "$ZETA_CANCEL_REMAIN" -gt 0 ] || break
     printf "\r  %ss remaining ... " "$ZETA_CANCEL_REMAIN"
     if read -r -n 1 -s -t 1 ZETA_CANCEL_KEY 2>/dev/null; then
-      if [ -n "$ZETA_CANCEL_KEY" ]; then break; fi
+      ZETA_CANCEL_PRESSED=1
+      break
     fi
-    ZETA_CANCEL_REMAIN=$((ZETA_CANCEL_REMAIN - 1))
-    ZETA_CANCEL_KEY=""
   done
   echo
 else
@@ -827,7 +849,7 @@ else
 fi
 
 if [ "$ZETA_CANCEL_DEFAULT" = "abort" ]; then
-  if [ -z "$ZETA_CANCEL_KEY" ]; then
+  if [ "$ZETA_CANCEL_PRESSED" != "1" ]; then
     echo
     echo "[R7/R9] No keypress and the default is ABORT. Not wiping anything."
     echo "        Reason: $ZETA_BREAKER_STATE breaker / repair-identity refusal above."
@@ -837,11 +859,15 @@ if [ "$ZETA_CANCEL_DEFAULT" = "abort" ]; then
   fi
   echo "[R7] Keypress received; proceeding past the gate deliberately."
 else
-  if [ -n "$ZETA_CANCEL_KEY" ]; then
+  if [ "$ZETA_CANCEL_PRESSED" = "1" ]; then
     echo
     echo "[R7] CANCELLED by operator keypress. Nothing was wiped."
     echo "     Re-run when ready:  zeta-install $HOST"
-    exit 0
+    # EXIT 10, not 0. A successful cancel used to exit 0, and the caller
+    # (zeta-first-boot.sh) reads 0 as success -- so deliberately stopping the
+    # install printed "Install complete. Rebooting in 10s". The operator saw
+    # their abort reported as a finished install.
+    exit 10
   fi
   echo "[R7] No keypress; proceeding (headless default preserved)."
 fi
