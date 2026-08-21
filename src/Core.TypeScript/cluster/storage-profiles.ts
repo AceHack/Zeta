@@ -113,6 +113,25 @@ export interface ProfileClaim {
   readonly governors: Readonly<Record<string, Readonly<Record<string, string>>>>;
   /** Required (non-empty) whenever `governors` is non-empty — where each value comes from. */
   readonly governorEvidence: string;
+  /**
+   * WHERE THIS ROW'S PVC SHOWS UP IN A RENDER — the coordinate
+   * `rendered-storage-claims.ts` needs to ask the chart whether the declared
+   * number reaches a PersistentVolumeClaim at all.
+   *
+   * `renderedApp` is the Application identity (`full-ai-cluster/mimir`) and
+   * `renderedPvcPattern` is an anchored regular expression over the rendered
+   * claim's name — `<template>/<workload>` for a volumeClaimTemplate, the
+   * object name for a standalone PVC. A pattern rather than a literal because
+   * one declared claim legitimately renders as SEVERAL PVCs: mimir's ingester
+   * is three zone StatefulSets, so `^storage/mimir-ingester-zone-[a-c]$`
+   * matches the three objects that one row prices.
+   *
+   * Both are REQUIRED. A row with no rendered coordinate is a row nothing can
+   * check, and an uncheckable row that still contributes GiB to a total is the
+   * exact shape this catalogue exists to refuse.
+   */
+  readonly renderedApp: string;
+  readonly renderedPvcPattern: string;
 }
 
 export interface ProfileCatalogue {
@@ -159,6 +178,21 @@ export function parseFieldPath(field: string): readonly (string | number)[] {
 // ---------------------------------------------------------------------------
 // Loading + validation
 // ---------------------------------------------------------------------------
+
+/**
+ * A pattern that does not compile addresses NOTHING, and a row whose selector
+ * matches nothing reads exactly like a row whose chart renders nothing. Reject
+ * it at load rather than let a typo become a finding about the cluster.
+ */
+function requireRegex(value: unknown, label: string): string {
+  const text = requireString(value, label);
+  try {
+    void new RegExp(text);
+  } catch (error) {
+    throw new Error(`${label} is not a valid regular expression: ${String(error)}`);
+  }
+  return text;
+}
 
 function requireString(value: unknown, label: string): string {
   if (typeof value !== "string") throw new Error(`${label}: expected a string`);
@@ -302,6 +336,8 @@ export function loadCatalogue(path = DEFAULT_CATALOGUE_PATH, repoRoot = REPO_ROO
       pods: podsByProfile,
       governors,
       governorEvidence,
+      renderedApp: requireString(raw.renderedApp, `${path}: ${id}.renderedApp`),
+      renderedPvcPattern: requireRegex(raw.renderedPvcPattern, `${path}: ${id}.renderedPvcPattern`),
     });
   }
   return { profiles: names, claims: [...claims].sort((a, b) => stringCompare(a.id, b.id)) };

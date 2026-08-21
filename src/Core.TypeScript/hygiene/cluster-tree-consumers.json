@@ -77,6 +77,12 @@
       "migrateTo": "full-ai-cluster/k8s/applications via the validator's existing --apps-dir flag, AND move the validator out of infra/k8s/tests/. MEASURED 2026-08-17: pointed at the live tree it reports 224 passed, 14 failed — so this is not a one-line repoint. See the work item."
     },
     {
+      "path": "src/Core.TypeScript/cluster/rendered-storage-claims.ts",
+      "disposition": "derived",
+      "note": "APPLICATION_ROOTS lists `infra/k8s/applications` beside `full-ai-cluster/k8s/applications` so the render check covers BOTH declarations of the cluster. It has to: infra/cockroachdb carries a catalogue row (`infra/cockroachdb/data`, 8Gi x3), and infra/gitlab renders four PVCs totalling 76 GiB that no row declares. Nothing BREAKS when the tree is deleted -- `readdirIfPresent` returns an empty list for a missing directory rather than throwing -- but the checked-in render snapshot would keep naming apps that no longer exist and `--check-snapshot` would report them as GONE, which is drift, not a crash.",
+      "migrateTo": "drop `infra/k8s/applications` from APPLICATION_ROOTS in the deletion commit and re-run `--write-snapshot`; the infra entries leave the snapshot in the same pass. The `infra/cockroachdb/data` row in storage-profiles.json goes with them (it is already noted there as living in the other app-of-apps tree)."
+    },
+    {
       "path": ".gitignore",
       "disposition": "prose",
       "note": "Comment naming infra/nixos/hosts/<host>/hardware-configuration.nix.",

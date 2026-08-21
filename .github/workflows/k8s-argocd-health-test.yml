@@ -117,6 +117,14 @@ on:
       - "src/Core.TypeScript/cluster/single-node-readiness.test.ts"
       - "src/Core.TypeScript/cluster/storage-profiles.ts"
       - "src/Core.TypeScript/cluster/storage-profiles.test.ts"
+      # Does a DECLARED storage claim correspond to a PVC the chart actually
+      # renders? The snapshot is the measured render; the checker compares the
+      # catalogue against it offline. Editing either without re-measuring is
+      # exactly the drift this job exists to catch, so all four are watched.
+      - "src/Core.TypeScript/cluster/rendered-storage-claims.ts"
+      - "src/Core.TypeScript/cluster/rendered-storage-claims.test.ts"
+      - "src/Core.TypeScript/cluster/rendered-storage-claims.baseline.json"
+      - "src/Core.TypeScript/cluster/rendered-storage-claims.snapshot.json"
       - "docs/backlog/P1/081KSXN940008QG0R000SCP2H1-kubernetes-argocd-kind-k3d-integration-health-tests-separate.md"
       - ".github/workflows/k8s-argocd-health-test.yml"
       - ".mise.toml"
@@ -192,6 +200,14 @@ on:
       - "src/Core.TypeScript/cluster/single-node-readiness.test.ts"
       - "src/Core.TypeScript/cluster/storage-profiles.ts"
       - "src/Core.TypeScript/cluster/storage-profiles.test.ts"
+      # Does a DECLARED storage claim correspond to a PVC the chart actually
+      # renders? The snapshot is the measured render; the checker compares the
+      # catalogue against it offline. Editing either without re-measuring is
+      # exactly the drift this job exists to catch, so all four are watched.
+      - "src/Core.TypeScript/cluster/rendered-storage-claims.ts"
+      - "src/Core.TypeScript/cluster/rendered-storage-claims.test.ts"
+      - "src/Core.TypeScript/cluster/rendered-storage-claims.baseline.json"
+      - "src/Core.TypeScript/cluster/rendered-storage-claims.snapshot.json"
       - "docs/backlog/P1/081KSXN940008QG0R000SCP2H1-kubernetes-argocd-kind-k3d-integration-health-tests-separate.md"
       - ".github/workflows/k8s-argocd-health-test.yml"
       - ".mise.toml"
@@ -409,6 +425,33 @@ jobs:
       # is a check that did not run wearing the face of one that passed.
       - name: Run storage size profile unit tests
         run: bun test src/Core.TypeScript/cluster/storage-profiles.test.ts
+
+      # DOES THE DECLARED CLAIM CORRESPOND TO A PVC THE CHART RENDERS?
+      #
+      # Everything above this line reads OUR YAML on both sides: the catalogue
+      # records what we wrote into a valuesObject and the extractor reads the
+      # same scalar back. Neither asks the chart whether the value reaches a
+      # PersistentVolumeClaim. Two apps measurably show that it does not --
+      # hindsight's `postgresql.primary.*` and nats's top-level `cluster:` are
+      # both inert against their pinned charts -- and nothing detected either.
+      #
+      # OFFLINE, against the checked-in snapshot of what `helm template`
+      # produced. Not the live render: that needs the network, an upstream
+      # still serving five-month-old pinned tags, and two minutes, which is
+      # three ways for a gate to be unavailable -- and an unavailable gate is
+      # skipped, and a skipped gate reads like a passing one. The snapshot is
+      # text, so every byte of a re-measurement is a readable diff.
+      #
+      # Red in five measured directions: a declared size the chart does not
+      # render, a declared storageClass it does not render, a rendered PVC no
+      # row covers, a pod count that disagrees with the render, and an app that
+      # could not be rendered without an acknowledgement. All five were run as
+      # mutations against this checker; all five exit 1.
+      - name: Run rendered-storage-claims unit tests
+        run: bun test src/Core.TypeScript/cluster/rendered-storage-claims.test.ts
+
+      - name: Audit declared storage claims against the measured render
+        run: bun src/Core.TypeScript/cluster/rendered-storage-claims.ts --offline
 
       - name: Audit single-node readiness against the checked-in budget ledger
         run: bun src/Core.TypeScript/cluster/single-node-readiness.ts

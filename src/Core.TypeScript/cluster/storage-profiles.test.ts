@@ -89,6 +89,8 @@ function catalogueJson(overrides: Record<string, unknown> = {}): string {
         scheduledAtBringUp: true,
         bringUpNote: "automated sync",
         consequence: "minimal drops the Raft group to one member: no quorum, no replication.",
+        renderedApp: "tree/db",
+        renderedPvcPattern: "^data/db$",
         sizes: { minimal: "20Gi", large: "100Gi" },
         pods: { minimal: 1, large: 3 },
         ...overrides,
@@ -211,6 +213,23 @@ describe("loadCatalogue refusals — each one keeps the ladder from meaning noth
         }),
       ),
     ).toThrow(/no podsField/);
+  });
+
+  // A row with no rendered coordinate is a row `rendered-storage-claims.ts`
+  // cannot check — and an uncheckable row that still contributes GiB to the
+  // profile total is exactly the shape this catalogue exists to refuse.
+  test("RED: a claim with no renderedApp is refused", () => {
+    expect(() => load(catalogueJson({ renderedApp: undefined }))).toThrow(/renderedApp/);
+  });
+
+  test("RED: a claim with no renderedPvcPattern is refused", () => {
+    expect(() => load(catalogueJson({ renderedPvcPattern: undefined }))).toThrow(/renderedPvcPattern/);
+  });
+
+  test("RED: a renderedPvcPattern that does not compile is refused at load, not at use", () => {
+    expect(() => load(catalogueJson({ renderedPvcPattern: "^data/[unclosed" }))).toThrow(
+      /renderedPvcPattern is not a valid regular expression/,
+    );
   });
 
   test("RED: a duplicate claim id is refused", () => {
@@ -456,6 +475,8 @@ describe("applyProfile", () => {
       scheduledAtBringUp: true,
       bringUpNote: "",
       consequence: "a synthetic multi-document fixture, sized down in minimal to prove the applier survives it",
+      renderedApp: "t/multi",
+      renderedPvcPattern: "^data/multi$",
       sizes: { minimal: "20Gi", large: "100Gi" },
       pods: { minimal: 1, large: 1 },
     });

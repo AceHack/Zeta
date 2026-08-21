@@ -1,0 +1,168 @@
+{
+  "$comment": [
+    "ACKNOWLEDGED findings for rendered-storage-claims.ts.",
+    "",
+    "WHAT AN ENTRY IS. Not a suppression -- a dated, keyed, reasoned record that a finding is",
+    "TRUE and is not being fixed in the change that discovered it. Every acknowledged finding is",
+    "still counted in the totals the report prints; what the entry buys is a non-red gate, never",
+    "a smaller number.",
+    "",
+    "KEYED BY IDENTITY, NEVER BY LINE. `key` is the finding's own stable identity (claim id, or",
+    "app + rendered PVC name). A file that grows a line cannot silently re-arm or re-suppress a",
+    "different defect.",
+    "",
+    "`observed` PINS WHAT WAS ACKNOWLEDGED. It is compared byte-for-byte against the live finding.",
+    "If hindsight starts rendering 12Gi instead of 8Gi, this entry stops covering it and the gate",
+    "goes red -- because what was excused was a specific measured defect, not a name. A baseline",
+    "that keeps matching after the thing it excused has moved is the vacuity class with a filename.",
+    "",
+    "`liftsWhen` IS REQUIRED. An acknowledgement with no stated exit is a permanent exemption",
+    "wearing a temporary word, and the loader refuses one without it.",
+    "",
+    "STALE ENTRIES FAIL. An entry matching nothing is a claim about the tree that stopped being",
+    "true, and it is refused exactly like a catalogue row matching no claim.",
+    "",
+    "TWO OF THESE ARE LIVE DEFECTS AND THE OTHERS ARE SCOPE. hindsight (2 entries) and nats (1)",
+    "are inert valuesObject paths -- declarations that never reach the chart. Both have an exact",
+    "one-line fix named in their reason and both change what the cluster provisions, so neither is",
+    "bundled into the change that added the checker. The 14 `undeclared` entries are PVCs on the",
+    "non-longhorn class the ladder does not claim to govern; they are listed with their sizes so",
+    "the 201 GiB they represent is never invisible."
+  ],
+  "findings": [
+    {
+      "key": "class full-ai-cluster/hindsight/postgres data/hindsight-postgresql",
+      "reason": "Same root cause as `size full-ai-cluster/hindsight/postgres`, and the more serious half: with `postgresql.primary.persistence.storageClass` inert, the template's `if .Values.postgresql.persistence.storageClass` guard is false and NO storageClassName is emitted, so the volume binds the cluster default `zeta-local-path` -- `rancher.io/local-path` with `reclaimPolicy: Delete`. The semantic-memory Postgres is on node-local storage with a delete reclaim policy, not on replicated longhorn as declared.",
+      "liftsWhen": "the Application drops the `.primary` level so `postgresql.persistence.storageClass: longhorn` reaches the template",
+      "observed": "declares storageClass \"longhorn\", but data/hindsight-postgresql renders NO storageClassName, so it binds the cluster default \"zeta-local-path\" — a different disk, and on a Delete-reclaim local class a different durability"
+    },
+    {
+      "key": "pods full-ai-cluster/nats/jetstream",
+      "reason": "MEASURED DEFECT. The Application sets a TOP-LEVEL `cluster: {enabled: true, replicas: 3}`, but nats chart 1.2.7 reads `config.cluster` (values.yaml:50-55); there is no top-level `cluster` key in the chart at all. The block is inert, the StatefulSet renders `replicas: 1`, and the cluster runs a SINGLE-NODE JetStream. The catalogue row's own `consequence` text asserts the opposite -- that `measured` keeps the quorum and R3 streams still create. It does not: a stream with replicas > 1 refuses to create today. Storage-wise the row over-counts by 20 GiB; the HA claim is the bigger error and is why this is reported rather than silently repaired inside a checker PR.",
+      "liftsWhen": "the Application moves the `cluster:` block under `config:` and the render shows replicas: 3 (which ADDS 20 GiB of longhorn and two pods -- an operator decision, not a lint fix)",
+      "observed": "declares 3 pod(s), but the chart renders 1 (nats-js/nats x1) — a claim's cost is size x pod count, so the total is off by -20 GiB"
+    },
+    {
+      "key": "size full-ai-cluster/hindsight/postgres",
+      "reason": "MEASURED DEFECT, NOT AN EXEMPTION FROM ONE. hindsight chart 0.3.0 ships its own hand-rolled postgresql StatefulSet (templates/postgresql-statefulset.yaml:69) reading `postgresql.persistence.size` / `postgresql.persistence.storageClass`. The Application writes `postgresql.PRIMARY.persistence.*` -- the bitnami subchart layout, which this chart does not use -- so both values are inert and the chart default 8Gi renders instead. First measured by PR #13410; this entry records that the fix is a manifest change with real cluster consequences (+2 GiB and a move from the Delete-reclaim local class to longhorn) and is deliberately NOT bundled into the PR that added the checker.",
+      "liftsWhen": "the Application drops the `.primary` level (or the row is corrected to 8Gi), and the render agrees",
+      "observed": "declares 10Gi, but the chart renders 8Gi at data/hindsight-postgresql — the declared number never reaches the PVC"
+    },
+    {
+      "key": "undeclared full-ai-cluster/dapr dapr-scheduler-data-dir/dapr-scheduler-server",
+      "reason": "OUT OF THE LADDER'S DECLARED SCOPE, AND THE SCOPE IS NOW MEASURABLY UNDER-STATED. storage-profiles.json says 'one row per `longhorn` PVC claim in the tree', and this claim lands on `zeta-local-path` -- the cluster default StorageClass (full-ai-cluster/nixos/modules/local-storage.nix), a node-local hostPath class with reclaimPolicy: Delete. It is still real disk on the box being provisioned, so it is recorded here rather than filtered out: the rendered zeta-local-path total is 201 GiB (125 in full-ai-cluster, 76 in the infra tree) against the 103 GiB that single-node-budget.json's $comment_nodeDiskGib records.",
+      "liftsWhen": "the catalogue grows rows for the non-longhorn class, OR single-node-budget.json's zeta-local-path figure is re-derived from this render; either way this entry stops matching and fails as stale",
+      "observed": "the chart renders a PersistentVolumeClaim of 1Gi x1 on \"zeta-local-path\" (no storageClassName; cluster default) that NO catalogue row covers — 1 GiB of real disk that no profile total includes"
+    },
+    {
+      "key": "undeclared full-ai-cluster/forgejo gitea-shared-storage",
+      "reason": "OUT OF THE LADDER'S DECLARED SCOPE, AND THE SCOPE IS NOW MEASURABLY UNDER-STATED. storage-profiles.json says 'one row per `longhorn` PVC claim in the tree', and this claim lands on `zeta-local-path` -- the cluster default StorageClass (full-ai-cluster/nixos/modules/local-storage.nix), a node-local hostPath class with reclaimPolicy: Delete. It is still real disk on the box being provisioned, so it is recorded here rather than filtered out: the rendered zeta-local-path total is 201 GiB (125 in full-ai-cluster, 76 in the infra tree) against the 103 GiB that single-node-budget.json's $comment_nodeDiskGib records.",
+      "liftsWhen": "the catalogue grows rows for the non-longhorn class, OR single-node-budget.json's zeta-local-path figure is re-derived from this render; either way this entry stops matching and fails as stale",
+      "observed": "the chart renders a PersistentVolumeClaim of 20Gi x1 on \"zeta-local-path\" that NO catalogue row covers — 20 GiB of real disk that no profile total includes"
+    },
+    {
+      "key": "undeclared full-ai-cluster/loki data/loki-backend",
+      "reason": "OUT OF THE LADDER'S DECLARED SCOPE, AND THE SCOPE IS NOW MEASURABLY UNDER-STATED. storage-profiles.json says 'one row per `longhorn` PVC claim in the tree', and this claim lands on `zeta-local-path` -- the cluster default StorageClass (full-ai-cluster/nixos/modules/local-storage.nix), a node-local hostPath class with reclaimPolicy: Delete. It is still real disk on the box being provisioned, so it is recorded here rather than filtered out: the rendered zeta-local-path total is 201 GiB (125 in full-ai-cluster, 76 in the infra tree) against the 103 GiB that single-node-budget.json's $comment_nodeDiskGib records.",
+      "liftsWhen": "the catalogue grows rows for the non-longhorn class, OR single-node-budget.json's zeta-local-path figure is re-derived from this render; either way this entry stops matching and fails as stale",
+      "observed": "the chart renders a PersistentVolumeClaim of 10Gi x1 on \"zeta-local-path\" (no storageClassName; cluster default) that NO catalogue row covers — 10 GiB of real disk that no profile total includes"
+    },
+    {
+      "key": "undeclared full-ai-cluster/loki data/loki-write",
+      "reason": "OUT OF THE LADDER'S DECLARED SCOPE, AND THE SCOPE IS NOW MEASURABLY UNDER-STATED. storage-profiles.json says 'one row per `longhorn` PVC claim in the tree', and this claim lands on `zeta-local-path` -- the cluster default StorageClass (full-ai-cluster/nixos/modules/local-storage.nix), a node-local hostPath class with reclaimPolicy: Delete. It is still real disk on the box being provisioned, so it is recorded here rather than filtered out: the rendered zeta-local-path total is 201 GiB (125 in full-ai-cluster, 76 in the infra tree) against the 103 GiB that single-node-budget.json's $comment_nodeDiskGib records.",
+      "liftsWhen": "the catalogue grows rows for the non-longhorn class, OR single-node-budget.json's zeta-local-path figure is re-derived from this render; either way this entry stops matching and fails as stale",
+      "observed": "the chart renders a PersistentVolumeClaim of 10Gi x1 on \"zeta-local-path\" (no storageClassName; cluster default) that NO catalogue row covers — 10 GiB of real disk that no profile total includes"
+    },
+    {
+      "key": "undeclared full-ai-cluster/mimir storage/mimir-alertmanager",
+      "reason": "OUT OF THE LADDER'S DECLARED SCOPE, AND THE SCOPE IS NOW MEASURABLY UNDER-STATED. storage-profiles.json says 'one row per `longhorn` PVC claim in the tree', and this claim lands on `zeta-local-path` -- the cluster default StorageClass (full-ai-cluster/nixos/modules/local-storage.nix), a node-local hostPath class with reclaimPolicy: Delete. It is still real disk on the box being provisioned, so it is recorded here rather than filtered out: the rendered zeta-local-path total is 201 GiB (125 in full-ai-cluster, 76 in the infra tree) against the 103 GiB that single-node-budget.json's $comment_nodeDiskGib records.",
+      "liftsWhen": "the catalogue grows rows for the non-longhorn class, OR single-node-budget.json's zeta-local-path figure is re-derived from this render; either way this entry stops matching and fails as stale",
+      "observed": "the chart renders a PersistentVolumeClaim of 1Gi x1 on \"zeta-local-path\" (no storageClassName; cluster default) that NO catalogue row covers — 1 GiB of real disk that no profile total includes"
+    },
+    {
+      "key": "undeclared full-ai-cluster/minio blob-store",
+      "reason": "OUT OF THE LADDER'S DECLARED SCOPE, AND THE SCOPE IS NOW MEASURABLY UNDER-STATED. storage-profiles.json says 'one row per `longhorn` PVC claim in the tree', and this claim lands on `zeta-local-path` -- the cluster default StorageClass (full-ai-cluster/nixos/modules/local-storage.nix), a node-local hostPath class with reclaimPolicy: Delete. It is still real disk on the box being provisioned, so it is recorded here rather than filtered out: the rendered zeta-local-path total is 201 GiB (125 in full-ai-cluster, 76 in the infra tree) against the 103 GiB that single-node-budget.json's $comment_nodeDiskGib records.",
+      "liftsWhen": "the catalogue grows rows for the non-longhorn class, OR single-node-budget.json's zeta-local-path figure is re-derived from this render; either way this entry stops matching and fails as stale",
+      "observed": "the chart renders a PersistentVolumeClaim of 20Gi x1 on \"zeta-local-path\" that NO catalogue row covers — 20 GiB of real disk that no profile total includes"
+    },
+    {
+      "key": "undeclared full-ai-cluster/seaweedfs blob-store-seaweedfs-all-in-one-data",
+      "reason": "OUT OF THE LADDER'S DECLARED SCOPE, AND THE SCOPE IS NOW MEASURABLY UNDER-STATED. storage-profiles.json says 'one row per `longhorn` PVC claim in the tree', and this claim lands on `zeta-local-path` -- the cluster default StorageClass (full-ai-cluster/nixos/modules/local-storage.nix), a node-local hostPath class with reclaimPolicy: Delete. It is still real disk on the box being provisioned, so it is recorded here rather than filtered out: the rendered zeta-local-path total is 201 GiB (125 in full-ai-cluster, 76 in the infra tree) against the 103 GiB that single-node-budget.json's $comment_nodeDiskGib records.",
+      "liftsWhen": "the catalogue grows rows for the non-longhorn class, OR single-node-budget.json's zeta-local-path figure is re-derived from this render; either way this entry stops matching and fails as stale",
+      "observed": "the chart renders a PersistentVolumeClaim of 20Gi x1 on \"zeta-local-path\" that NO catalogue row covers — 20 GiB of real disk that no profile total includes"
+    },
+    {
+      "key": "undeclared full-ai-cluster/spire spire-data/spire-server",
+      "reason": "OUT OF THE LADDER'S DECLARED SCOPE, AND THE SCOPE IS NOW MEASURABLY UNDER-STATED. storage-profiles.json says 'one row per `longhorn` PVC claim in the tree', and this claim lands on `zeta-local-path` -- the cluster default StorageClass (full-ai-cluster/nixos/modules/local-storage.nix), a node-local hostPath class with reclaimPolicy: Delete. It is still real disk on the box being provisioned, so it is recorded here rather than filtered out: the rendered zeta-local-path total is 201 GiB (125 in full-ai-cluster, 76 in the infra tree) against the 103 GiB that single-node-budget.json's $comment_nodeDiskGib records.",
+      "liftsWhen": "the catalogue grows rows for the non-longhorn class, OR single-node-budget.json's zeta-local-path figure is re-derived from this render; either way this entry stops matching and fails as stale",
+      "observed": "the chart renders a PersistentVolumeClaim of 5Gi x1 on \"zeta-local-path\" that NO catalogue row covers — 5 GiB of real disk that no profile total includes"
+    },
+    {
+      "key": "undeclared full-ai-cluster/vault audit/vault",
+      "reason": "OUT OF THE LADDER'S DECLARED SCOPE, AND THE SCOPE IS NOW MEASURABLY UNDER-STATED. storage-profiles.json says 'one row per `longhorn` PVC claim in the tree', and this claim lands on `zeta-local-path` -- the cluster default StorageClass (full-ai-cluster/nixos/modules/local-storage.nix), a node-local hostPath class with reclaimPolicy: Delete. It is still real disk on the box being provisioned, so it is recorded here rather than filtered out: the rendered zeta-local-path total is 201 GiB (125 in full-ai-cluster, 76 in the infra tree) against the 103 GiB that single-node-budget.json's $comment_nodeDiskGib records.",
+      "liftsWhen": "the catalogue grows rows for the non-longhorn class, OR single-node-budget.json's zeta-local-path figure is re-derived from this render; either way this entry stops matching and fails as stale",
+      "observed": "the chart renders a PersistentVolumeClaim of 10Gi x1 on \"zeta-local-path\" that NO catalogue row covers — 10 GiB of real disk that no profile total includes"
+    },
+    {
+      "key": "undeclared full-ai-cluster/vault data/vault",
+      "reason": "OUT OF THE LADDER'S DECLARED SCOPE, AND THE SCOPE IS NOW MEASURABLY UNDER-STATED. storage-profiles.json says 'one row per `longhorn` PVC claim in the tree', and this claim lands on `zeta-local-path` -- the cluster default StorageClass (full-ai-cluster/nixos/modules/local-storage.nix), a node-local hostPath class with reclaimPolicy: Delete. It is still real disk on the box being provisioned, so it is recorded here rather than filtered out: the rendered zeta-local-path total is 201 GiB (125 in full-ai-cluster, 76 in the infra tree) against the 103 GiB that single-node-budget.json's $comment_nodeDiskGib records.",
+      "liftsWhen": "the catalogue grows rows for the non-longhorn class, OR single-node-budget.json's zeta-local-path figure is re-derived from this render; either way this entry stops matching and fails as stale",
+      "observed": "the chart renders a PersistentVolumeClaim of 20Gi x1 on \"zeta-local-path\" that NO catalogue row covers — 20 GiB of real disk that no profile total includes"
+    },
+    {
+      "key": "undeclared infra/gitlab data/gitlab-postgresql",
+      "reason": "OUT OF THE LADDER'S DECLARED SCOPE, AND THE SCOPE IS NOW MEASURABLY UNDER-STATED. storage-profiles.json says 'one row per `longhorn` PVC claim in the tree', and this claim lands on `zeta-local-path` -- the cluster default StorageClass (full-ai-cluster/nixos/modules/local-storage.nix), a node-local hostPath class with reclaimPolicy: Delete. It is still real disk on the box being provisioned, so it is recorded here rather than filtered out: the rendered zeta-local-path total is 201 GiB (125 in full-ai-cluster, 76 in the infra tree) against the 103 GiB that single-node-budget.json's $comment_nodeDiskGib records.",
+      "liftsWhen": "the catalogue grows rows for the non-longhorn class, OR single-node-budget.json's zeta-local-path figure is re-derived from this render; either way this entry stops matching and fails as stale",
+      "observed": "the chart renders a PersistentVolumeClaim of 8Gi x1 on \"zeta-local-path\" (no storageClassName; cluster default) that NO catalogue row covers — 8 GiB of real disk that no profile total includes"
+    },
+    {
+      "key": "undeclared infra/gitlab gitlab-minio",
+      "reason": "OUT OF THE LADDER'S DECLARED SCOPE, AND THE SCOPE IS NOW MEASURABLY UNDER-STATED. storage-profiles.json says 'one row per `longhorn` PVC claim in the tree', and this claim lands on `zeta-local-path` -- the cluster default StorageClass (full-ai-cluster/nixos/modules/local-storage.nix), a node-local hostPath class with reclaimPolicy: Delete. It is still real disk on the box being provisioned, so it is recorded here rather than filtered out: the rendered zeta-local-path total is 201 GiB (125 in full-ai-cluster, 76 in the infra tree) against the 103 GiB that single-node-budget.json's $comment_nodeDiskGib records.",
+      "liftsWhen": "the catalogue grows rows for the non-longhorn class, OR single-node-budget.json's zeta-local-path figure is re-derived from this render; either way this entry stops matching and fails as stale",
+      "observed": "the chart renders a PersistentVolumeClaim of 10Gi x1 on \"zeta-local-path\" (no storageClassName; cluster default) that NO catalogue row covers — 10 GiB of real disk that no profile total includes"
+    },
+    {
+      "key": "undeclared infra/gitlab redis-data/gitlab-redis-master",
+      "reason": "OUT OF THE LADDER'S DECLARED SCOPE, AND THE SCOPE IS NOW MEASURABLY UNDER-STATED. storage-profiles.json says 'one row per `longhorn` PVC claim in the tree', and this claim lands on `zeta-local-path` -- the cluster default StorageClass (full-ai-cluster/nixos/modules/local-storage.nix), a node-local hostPath class with reclaimPolicy: Delete. It is still real disk on the box being provisioned, so it is recorded here rather than filtered out: the rendered zeta-local-path total is 201 GiB (125 in full-ai-cluster, 76 in the infra tree) against the 103 GiB that single-node-budget.json's $comment_nodeDiskGib records.",
+      "liftsWhen": "the catalogue grows rows for the non-longhorn class, OR single-node-budget.json's zeta-local-path figure is re-derived from this render; either way this entry stops matching and fails as stale",
+      "observed": "the chart renders a PersistentVolumeClaim of 8Gi x1 on \"zeta-local-path\" (no storageClassName; cluster default) that NO catalogue row covers — 8 GiB of real disk that no profile total includes"
+    },
+    {
+      "key": "undeclared infra/gitlab repo-data/gitlab-gitaly",
+      "reason": "OUT OF THE LADDER'S DECLARED SCOPE, AND THE SCOPE IS NOW MEASURABLY UNDER-STATED. storage-profiles.json says 'one row per `longhorn` PVC claim in the tree', and this claim lands on `zeta-local-path` -- the cluster default StorageClass (full-ai-cluster/nixos/modules/local-storage.nix), a node-local hostPath class with reclaimPolicy: Delete. It is still real disk on the box being provisioned, so it is recorded here rather than filtered out: the rendered zeta-local-path total is 201 GiB (125 in full-ai-cluster, 76 in the infra tree) against the 103 GiB that single-node-budget.json's $comment_nodeDiskGib records.",
+      "liftsWhen": "the catalogue grows rows for the non-longhorn class, OR single-node-budget.json's zeta-local-path figure is re-derived from this render; either way this entry stops matching and fails as stale",
+      "observed": "the chart renders a PersistentVolumeClaim of 50Gi x1 on \"zeta-local-path\" (no storageClassName; cluster default) that NO catalogue row covers — 50 GiB of real disk that no profile total includes"
+    }
+  ],
+  "unrenderable": [
+    {
+      "key": "full-ai-cluster/arc-runner-set@0.12.1",
+      "reason": "gha-runner-scale-set 0.12.1 templates/manager_role_binding.yaml:35 uses `lookup` to discover the controller Deployment. `lookup` returns empty under `helm template`, so the chart errors out. NOT a checker limitation that can be engineered away: ArgoCD templates without cluster reads on the same path unless `controllerServiceAccount.name` is set explicitly. Leaves full-ai-cluster/arc-runner-set/model-cache (100 GiB, the single largest unchecked row) unverified -- and that row is independently known to be orphaned: no Application applies model-cache-pvc.yaml.",
+      "liftsWhen": "the Application sets controllerServiceAccount.name explicitly, which removes the lookup and makes the chart renderable offline",
+      "observed": "helm-template-failed"
+    },
+    {
+      "key": "full-ai-cluster/gitlab@8.7.0",
+      "reason": "gitlab 8.7.0 refuses to template without `certmanager-issuer.email`. No storage claim in the catalogue points at this app, so nothing is left unchecked -- but the app is also not verified to be PVC-free, which is why it is listed rather than dropped.",
+      "liftsWhen": "the Application sets certmanager-issuer.email (or disables the subchart), and the render is re-measured",
+      "observed": "helm-template-failed"
+    },
+    {
+      "key": "full-ai-cluster/headscale@0.4.0",
+      "reason": "headscale 0.4.0 templates/common.yaml:77 errors with `accessMode is required for PVC headscale-data` against this Application's own valuesObject. This is not a checker artefact: the same values would fail in ArgoCD. Leaves full-ai-cluster/headscale/data (3 GiB) unchecked.",
+      "liftsWhen": "the Application supplies persistence.data.accessMode, at which point the chart renders and the 3 GiB row becomes checkable",
+      "observed": "helm-template-failed"
+    },
+    {
+      "key": "full-ai-cluster/oz@1.4.5",
+      "reason": "ziti-controller 1.4.5 is not in https://docs.openziti.io/helm-charts/ -- the pin names a version the repository does not serve. The same pin is ALREADY recorded as fictional in this catalogue's acknowledgedUnmeasuredRequests (`oz@1.4.5 stays: that pin is still fictional`), so this is the storage-side view of a known bad pin. Leaves full-ai-cluster/oz/data (3 GiB) unchecked.",
+      "liftsWhen": "the pin is corrected to a version the repository actually serves -- and note the key carries the version, so correcting the pin invalidates this acknowledgement rather than inheriting it",
+      "observed": "helm-pull-failed"
+    },
+    {
+      "key": "full-ai-cluster/temporal@0.59.0",
+      "reason": "temporal 0.59.0 templates/server-job.yaml:73 refuses to template without a cassandra port for the default store. No catalogue row points at this app, so nothing is left unchecked.",
+      "liftsWhen": "the Application configures its datastore explicitly so the chart templates, and the render is re-measured",
+      "observed": "helm-template-failed"
+    }
+  ]
+}
