@@ -211,6 +211,75 @@ export function checkDeviceIdentity(
   return { ok: true, identity: observed };
 }
 
+/**
+ * The three fields an operator (or a wrapper) can STATE about a target before
+ * anything is enumerated: which device, how big, what model.
+ *
+ * These are separated from DeviceIdentity on purpose. The other three fields
+ * (busProtocol, removableMedia, internal) are RAILS -- the flasher already
+ * refuses a non-USB or internal device outright -- so they are not something a
+ * caller states, and folding them into the stated pin would have forced a
+ * default, and a default here means comparing the observed value to itself.
+ */
+export interface StatedTargetPin {
+  readonly devicePath: string;
+  readonly sizeBytes: number;
+  readonly mediaName: string;
+}
+
+/**
+ * Compare the CALLER-STATED pin against what enumeration actually found.
+ *
+ * This is the check that must not have a fallback. checkDeviceIdentity below
+ * compares two OBSERVATIONS taken at different times (the enumeration snapshot
+ * versus a fresh read immediately before the write), which is meaningful; this
+ * one compares a STATEMENT against an observation, which is the only form that
+ * can catch "the tool picked a different disk than the one you meant".
+ *
+ * A missing field is not defaulted. There is no expectation to check when the
+ * caller stated nothing, and calling that a pass is how a guard becomes
+ * decorative.
+ */
+export function checkStatedPin(
+  stated: StatedTargetPin,
+  observed: DeviceIdentity,
+): DeviceIdentityResult {
+  const mismatches: DeviceIdentityMismatch[] = [];
+  if (stated.devicePath !== observed.devicePath) {
+    mismatches.push({
+      field: "devicePath",
+      expected: stated.devicePath,
+      observed: observed.devicePath,
+    });
+  }
+  if (stated.sizeBytes !== observed.sizeBytes) {
+    mismatches.push({
+      field: "sizeBytes",
+      expected: String(stated.sizeBytes),
+      observed: String(observed.sizeBytes),
+    });
+  }
+  if (stated.mediaName !== observed.mediaName) {
+    mismatches.push({
+      field: "mediaName",
+      expected: stated.mediaName,
+      observed: observed.mediaName,
+    });
+  }
+  if (mismatches.length > 0) {
+    return {
+      ok: false,
+      mismatches,
+      error:
+        "the device found is NOT the device the caller pinned -- refusing.\n" +
+        mismatches
+          .map((m) => "  " + m.field + ": pinned " + m.expected + ", found " + m.observed)
+          .join("\n"),
+    };
+  }
+  return { ok: true, identity: observed };
+}
+
 // =====================================================================
 // 3. DEVICE STATE -- the partition-table read that used to be only printed
 // =====================================================================
@@ -238,7 +307,17 @@ export interface DeviceStateEvidence {
   readonly headDigestHex?: string | null;
   /** Digest of the same-length head region of the ISO we expect to be there. */
   readonly expectedHeadDigestHex?: string | null;
+  /**
+   * Why the head region could NOT be sampled, when it could not be.
+   *
+   * Absent digests are ambiguous on their own -- "the bytes match" and "nobody
+   * looked" produce the same evidence object -- so the caller says which, and
+   * the verdict below repeats it out loud rather than letting a label-only
+   * pass read as a byte-checked one.
+   */
+  readonly headSampleError?: string | null;
 }
+
 
 export interface DeviceStateClassification {
   readonly state: DeviceState;
@@ -246,7 +325,15 @@ export interface DeviceStateClassification {
   readonly rule: string;
   readonly reason: string;
   readonly allocatedBytes: number;
+  /**
+   * True only when the device head was actually read and compared with the
+   * ISO head. False means R1 never got the chance to fire -- either the device
+   * carries no ZETA_INSTALL label (nothing to check) or the sample failed.
+   * A "provisioned" verdict with this false is a LABEL-ONLY verdict.
+   */
+  readonly headDigestChecked: boolean;
 }
+
 
 function sumAllocated(partitions: readonly ObservedPartition[]): number {
   let total = 0;
@@ -278,6 +365,15 @@ function hasNoPartitionScheme(scheme: string): boolean {
  *
  * R5 as the default is the safety property. Somebody's phone, a photo backup,
  * an unfamiliar scheme -- all land in "unrecognized", never in "blank".
+ *
+ * R1 needs two inputs no caller supplied until 2026-08-21, which made it dead
+ * code on the live path: a stick that was labelled and then written wrong
+ * classified as "provisioned". The marker below is what
+ * hygiene/lint-guards-are-reachable.ts reads, so that the day some refactor
+ * drops the digests at the call site again, a check fails instead of a rule
+ * silently going quiet.
+ *
+ * @guard-input classifyDeviceState requires headDigestHex, expectedHeadDigestHex -- rule R1, the labelled-but-wrong-bytes case
  */
 export function classifyDeviceState(ev: DeviceStateEvidence): DeviceStateClassification {
   const allocated = sumAllocated(ev.partitions);
@@ -298,15 +394,38 @@ export function classifyDeviceState(ev: DeviceStateEvidence): DeviceStateClassif
           want +
           ") -- the write did not complete correctly",
         allocatedBytes: allocated,
+        headDigestChecked: true,
+      };
+    }
+    if (head !== null && want !== null) {
+      return {
+        state: "provisioned",
+        rule: "R2",
+        reason:
+          "a partition carries the " +
+          ZETA_INSTALL_VOLUME_LABEL +
+          " volume label AND the head digest matches the ISO (" +
+          head +
+          ")",
+        allocatedBytes: allocated,
+        headDigestChecked: true,
       };
     }
     return {
       state: "provisioned",
       rule: "R2",
-      reason: "a partition carries the " + ZETA_INSTALL_VOLUME_LABEL + " volume label",
+      reason:
+        "a partition carries the " +
+        ZETA_INSTALL_VOLUME_LABEL +
+        " volume label, but the head region was NOT sampled (" +
+        (ev.headSampleError ?? "no digests supplied by the caller") +
+        ") -- this verdict is LABEL-ONLY and cannot distinguish correct bytes " +
+        "from wrong ones",
       allocatedBytes: allocated,
+      headDigestChecked: false,
     };
   }
+
 
   if (ev.partitions.length === 0 && hasNoPartitionScheme(ev.partitionScheme)) {
     return {
@@ -314,6 +433,7 @@ export function classifyDeviceState(ev: DeviceStateEvidence): DeviceStateClassif
       rule: "R3",
       reason: "no partition scheme and no partitions -- raw or freshly-erased device",
       allocatedBytes: 0,
+      headDigestChecked: false,
     };
   }
 
@@ -340,6 +460,7 @@ export function classifyDeviceState(ev: DeviceStateEvidence): DeviceStateClassif
         String(MIN_ISO_BYTES) +
         "), so a write started and stopped",
       allocatedBytes: allocated,
+      headDigestChecked: false,
     };
   }
 
@@ -356,6 +477,7 @@ export function classifyDeviceState(ev: DeviceStateEvidence): DeviceStateClassif
       (anyFilesystem ? ", carrying a filesystem" : "") +
       " -- this is not a shape zflash put here, treat it as somebody else's data",
     allocatedBytes: allocated,
+    headDigestChecked: false,
   };
 }
 
@@ -477,14 +599,113 @@ export function verifyReadBack(
 }
 
 // =====================================================================
+// 4b. HEAD DIGEST SAMPLE -- the input R1 needs, and never had
+// =====================================================================
+//
+// R1 ("labelled ZETA_INSTALL but the head bytes disagree with the ISO") was
+// dead code on the live path: its two digest fields were supplied only by the
+// test file, so a stick that was labelled and then written wrong classified as
+// "provisioned" -- the exact misread R1 exists to prevent.
+//
+// This is the missing supply. It is a PURE comparison over two injected
+// ChunkReaders, deliberately the same shape verifyReadBack already uses, so
+// every branch is exercised with in-memory buffers and the only unrun code is
+// the adapter that turns a device into a reader.
+
+import { createHash } from "node:crypto";
+
+/**
+ * How much of the head to sample.
+ *
+ * 1 MiB rather than a sector: an isohybrid image puts the MBR, the partition
+ * table and the start of the bootloader in the first few hundred KiB, so a
+ * 512-byte sample would agree between two DIFFERENT Zeta ISOs, and a check
+ * that cannot tell two candidates apart is not a check. It is also small
+ * enough to read in one go.
+ */
+export const DEFAULT_HEAD_SAMPLE_BYTES = 1024 * 1024;
+
+/** sha256 of a byte range, hex, lowercase. Pure -- no I/O, no hardware. */
+export function sha256HexOfBytes(bytes: Uint8Array): string {
+  return createHash("sha256").update(bytes).digest("hex");
+}
+
+export type HeadSampleFailure = "short-read-iso" | "short-read-device" | "bad-sample-size";
+
+export type HeadSampleResult =
+  | {
+      readonly ok: true;
+      readonly isoHeadDigestHex: string;
+      readonly deviceHeadDigestHex: string;
+      readonly bytesSampled: number;
+    }
+  | { readonly ok: false; readonly reason: HeadSampleFailure; readonly error: string };
+
+/**
+ * Digest the first sampleBytes of the ISO and of the device, so R1 has
+ * something to compare.
+ *
+ * A short read is a FAILURE, never a shorter comparison. Digesting whatever
+ * came back would let a truncated device produce a confident "the bytes
+ * disagree" for the wrong reason, and a truncated ISO produce one for no
+ * reason at all. The caller gets ok=false and passes the reason to the
+ * classifier, which then says out loud that its verdict is label-only.
+ */
+export function sampleHeadDigests(
+  isoReader: ChunkReader,
+  deviceReader: ChunkReader,
+  sampleBytes: number = DEFAULT_HEAD_SAMPLE_BYTES,
+  digestOf: (bytes: Uint8Array) => string = sha256HexOfBytes,
+): HeadSampleResult {
+  if (!Number.isSafeInteger(sampleBytes) || sampleBytes <= 0) {
+    return {
+      ok: false,
+      reason: "bad-sample-size",
+      error: "refusing to call a " + String(sampleBytes) + "-byte sample a head digest",
+    };
+  }
+  const isoHead = isoReader.read(0, sampleBytes);
+  if (isoHead.length !== sampleBytes) {
+    return {
+      ok: false,
+      reason: "short-read-iso",
+      error:
+        "short read from the ISO head: wanted " +
+        String(sampleBytes) +
+        ", got " +
+        String(isoHead.length),
+    };
+  }
+  const deviceHead = deviceReader.read(0, sampleBytes);
+  if (deviceHead.length !== sampleBytes) {
+    return {
+      ok: false,
+      reason: "short-read-device",
+      error:
+        "short read from the device head: wanted " +
+        String(sampleBytes) +
+        ", got " +
+        String(deviceHead.length),
+    };
+  }
+  return {
+    ok: true,
+    isoHeadDigestHex: digestOf(isoHead),
+    deviceHeadDigestHex: digestOf(deviceHead),
+    bytesSampled: sampleBytes,
+  };
+}
+
+// =====================================================================
 // 5. ADAPTERS -- the only unrun code in this file
 // =====================================================================
 //
 // MEASURED vs DESIGNED-BUT-UNRUN, stated plainly so nobody has to guess:
 //
 //   MEASURED (verify.test.ts exercises every branch, no hardware):
-//     checkIsoAgainstManifest, checkDeviceIdentity, classifyDeviceState,
-//     verifyReadBack -- all four, including every refusal path.
+//     checkIsoAgainstManifest, checkStatedPin, checkDeviceIdentity,
+//     classifyDeviceState, sampleHeadDigests, sha256HexOfBytes,
+//     verifyReadBack -- all of them, including every refusal path.
 //
 //   DESIGNED BUT UNRUN (needs a real device, cannot be exercised here):
 //     openChunkReader below, when pointed at /dev/rdiskN. It is a thin
@@ -492,6 +713,14 @@ export function verifyReadBack(
 //     untested surface is as small as a syscall wrapper can be. Pointed at a
 //     regular file it IS covered by the round-trip test in verify.test.ts,
 //     which is the closest reachable proxy.
+//
+//     MEASURED LIMIT, 2026-08-21: on macOS this shim CANNOT open /dev/rdiskN
+//     as an unprivileged process. /dev/rdisk6 is crw-r----- root:operator and
+//     the maintainer is not in the operator group, so openSync throws EACCES.
+//     That is why the macOS arm reads devices through a privileged reader
+//     (flash-usb.ts privilegedDeviceReader) rather than through this shim.
+//     openChunkReader stays the ISO-side reader, where it works and is tested.
+
 
 import { closeSync, openSync, readSync } from "node:fs";
 

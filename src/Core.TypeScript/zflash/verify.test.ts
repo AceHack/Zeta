@@ -14,7 +14,11 @@ import { join } from "node:path";
 import {
   checkDeviceIdentity,
   checkIsoAgainstManifest,
+  checkStatedPin,
   classifyDeviceState,
+  DEFAULT_HEAD_SAMPLE_BYTES,
+  sampleHeadDigests,
+  sha256HexOfBytes,
   DEFAULT_READBACK_CHUNK_BYTES,
   MIN_ISO_BYTES,
   openChunkReader,
@@ -24,6 +28,7 @@ import {
   type DeviceIdentity,
   type DeviceStateEvidence,
   type ObservedPartition,
+  type StatedTargetPin,
 } from "./verify.ts";
 
 const ISO = "zeta-installer-25.11-x86_64.iso";
@@ -423,4 +428,185 @@ describe("5. the adapter -- covered against a regular file, unrun against /dev/r
       rmSync(dir, { recursive: true, force: true });
     }
   });
+});
+
+// ---------------------------------------------------------------------
+
+describe("6. the stated pin -- the check that must not have a fallback", () => {
+  const observed: DeviceIdentity = {
+    devicePath: "/dev/disk6",
+    sizeBytes: 123979431936,
+    mediaName: "USB 3.2.1 FD",
+    busProtocol: "USB",
+    removableMedia: true,
+    internal: false,
+  };
+  const pin: StatedTargetPin = {
+    devicePath: "/dev/disk6",
+    sizeBytes: 123979431936,
+    mediaName: "USB 3.2.1 FD",
+  };
+
+  test("a pin that matches passes", () => {
+    expect(checkStatedPin(pin, observed).ok).toBe(true);
+  });
+
+  test("THE CASE THIS EXISTS FOR: a phone enumerated where the stick was", () => {
+    const phone: DeviceIdentity = {
+      ...observed,
+      sizeBytes: 255_000_000_000,
+      mediaName: "iPhone",
+    };
+    const r = checkStatedPin(pin, phone);
+    expect(r.ok).toBe(false);
+    if (r.ok) throw new Error("unreachable");
+    expect(r.mismatches.map((m) => m.field).sort()).toEqual(["mediaName", "sizeBytes"]);
+    expect(r.error).toContain("refusing");
+  });
+
+  test("/dev/diskN recycling is caught -- same size, same model, different path", () => {
+    const r = checkStatedPin(pin, { ...observed, devicePath: "/dev/disk7" });
+    expect(r.ok).toBe(false);
+  });
+
+  test(
+    "one byte of size difference refuses -- the comparison is exact, not a range",
+    () => {
+      expect(checkStatedPin(pin, { ...observed, sizeBytes: 123979431937 }).ok).toBe(false);
+    },
+  );
+
+  test("model comparison is ordinal, so a case-folded vendor string is a MISMATCH", () => {
+    expect(checkStatedPin(pin, { ...observed, mediaName: "usb 3.2.1 fd" }).ok).toBe(false);
+  });
+});
+
+// ---------------------------------------------------------------------
+
+describe("7. head digest sample -- the input R1 never had", () => {
+  const HEAD = 4096;
+  const iso = new Uint8Array(HEAD * 3);
+  for (let i = 0; i < iso.length; i++) iso[i] = (i * 31 + 11) % 251;
+
+  test("identical heads -> two equal digests, and R1 then says provisioned", () => {
+    const r = sampleHeadDigests(bufReader(iso), bufReader(iso.slice()), HEAD);
+    expect(r.ok).toBe(true);
+    if (!r.ok) throw new Error(r.error);
+    expect(r.deviceHeadDigestHex).toBe(r.isoHeadDigestHex);
+    expect(r.bytesSampled).toBe(HEAD);
+    const c = classifyDeviceState({
+      partitionScheme: "FDisk_partition_scheme",
+      totalSizeBytes: 123979431936,
+      partitions: [
+        {
+          identifier: "disk6s1",
+          content: "0x00",
+          sizeBytes: 1_825_361_920,
+          volumeName: ZETA_INSTALL_VOLUME_LABEL,
+          filesystem: "ISO9660",
+        },
+      ],
+      headDigestHex: r.deviceHeadDigestHex,
+      expectedHeadDigestHex: r.isoHeadDigestHex,
+    });
+    expect(c.state).toBe("provisioned");
+    expect(c.headDigestChecked).toBe(true);
+  });
+
+  test(
+    "THE END-TO-END FALSIFIER: a labelled stick holding the WRONG image now " +
+      "classifies half-provisioned, where before the digests were never supplied " +
+      "and it read as provisioned",
+    () => {
+      const wrong = iso.slice();
+      wrong[17] = (wrong[17] ?? 0) ^ 0xff;
+      const r = sampleHeadDigests(bufReader(iso), bufReader(wrong), HEAD);
+      expect(r.ok).toBe(true);
+      if (!r.ok) throw new Error(r.error);
+      expect(r.deviceHeadDigestHex).not.toBe(r.isoHeadDigestHex);
+      const c = classifyDeviceState({
+        partitionScheme: "FDisk_partition_scheme",
+        totalSizeBytes: 123979431936,
+        partitions: [
+          {
+            identifier: "disk6s1",
+            content: "0x00",
+            sizeBytes: 1_825_361_920,
+            volumeName: ZETA_INSTALL_VOLUME_LABEL,
+            filesystem: "ISO9660",
+          },
+        ],
+        headDigestHex: r.deviceHeadDigestHex,
+        expectedHeadDigestHex: r.isoHeadDigestHex,
+      });
+      expect(c.state).toBe("half-provisioned");
+      expect(c.rule).toBe("R1");
+      expect(c.headDigestChecked).toBe(true);
+    },
+  );
+
+  test("a one-byte difference OUTSIDE the sampled head is not seen -- honest limit", () => {
+    const later = iso.slice();
+    later[HEAD + 5] = (later[HEAD + 5] ?? 0) ^ 0xff;
+    const r = sampleHeadDigests(bufReader(iso), bufReader(later), HEAD);
+    expect(r.ok).toBe(true);
+    if (!r.ok) throw new Error(r.error);
+    expect(r.deviceHeadDigestHex).toBe(r.isoHeadDigestHex);
+  });
+
+  test("short read from the device is a FAILURE, never a shorter comparison", () => {
+    const r = sampleHeadDigests(bufReader(iso), bufReader(iso.slice(0, 10)), HEAD);
+    expect(r.ok).toBe(false);
+    if (r.ok) throw new Error("unreachable");
+    expect(r.reason).toBe("short-read-device");
+  });
+
+  test("short read from the ISO is a FAILURE too", () => {
+    const r = sampleHeadDigests(bufReader(iso.slice(0, 10)), bufReader(iso), HEAD);
+    expect(r.ok).toBe(false);
+    if (r.ok) throw new Error("unreachable");
+    expect(r.reason).toBe("short-read-iso");
+  });
+
+  test("a zero-byte sample is refused rather than trivially equal", () => {
+    const r = sampleHeadDigests(bufReader(iso), bufReader(iso), 0);
+    expect(r.ok).toBe(false);
+    if (r.ok) throw new Error("unreachable");
+    expect(r.reason).toBe("bad-sample-size");
+  });
+
+  test("the default sample is large enough to reach past an isohybrid boot block", () => {
+    expect(DEFAULT_HEAD_SAMPLE_BYTES).toBeGreaterThanOrEqual(512 * 1024);
+  });
+
+  test("sha256HexOfBytes matches the published vector for the empty input", () => {
+    expect(sha256HexOfBytes(new Uint8Array(0))).toBe(
+      "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    );
+  });
+
+  test(
+    "LABEL-ONLY IS SAID OUT LOUD: no digests supplied -> provisioned, but the " +
+      "verdict declares that nobody looked",
+    () => {
+      const c = classifyDeviceState({
+        partitionScheme: "FDisk_partition_scheme",
+        totalSizeBytes: 123979431936,
+        partitions: [
+          {
+            identifier: "disk6s1",
+            content: "0x00",
+            sizeBytes: 1_825_361_920,
+            volumeName: ZETA_INSTALL_VOLUME_LABEL,
+            filesystem: "ISO9660",
+          },
+        ],
+        headSampleError: "sudo dd refused",
+      });
+      expect(c.state).toBe("provisioned");
+      expect(c.headDigestChecked).toBe(false);
+      expect(c.reason).toContain("LABEL-ONLY");
+      expect(c.reason).toContain("sudo dd refused");
+    },
+  );
 });

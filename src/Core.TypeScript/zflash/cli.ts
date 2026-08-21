@@ -101,6 +101,12 @@ import {
   requireLinuxBakeTools,
 } from "./linux-arm.ts";
 import {
+  describePin,
+  enumerateUsbCandidatesViaDiskutil,
+  pinToExpectFlags,
+  selectPinnedTarget,
+} from "./target-pin.ts";
+import {
   deviceKeyPath,
   userKeyringPublicPath,
   realEffects as realMachineEffects,
@@ -1033,6 +1039,9 @@ async function main() {
     "--bake-passphrase-file",
     "--bake-passphrase-env",
     "--persona",
+    "--expect-device",
+    "--expect-size",
+    "--expect-model",
   ]);
   const argv = process.argv.slice(2);
 
@@ -1053,6 +1062,12 @@ async function main() {
   let bakePassphraseFile: string | null = null;
   let bakePassphraseEnv: string | null = null;
   let bakePersona: string | null = null;
+  // The operator may STATE the target. When they do not, the pin is derived
+  // from the enumeration below and shown before it is used -- but it is always
+  // a stated pin by the time the flasher sees it. See target-pin.ts.
+  let expectDevice: string | null = null;
+  let expectSizeRaw: string | null = null;
+  let expectModel: string | null = null;
   const rawFlags: string[] = [];
   const positional: string[] = [];
   for (let i = 0; i < argv.length; i++) {
@@ -1158,6 +1173,17 @@ async function main() {
       i++;
       continue;
     }
+    if (a === "--expect-device" || a === "--expect-size" || a === "--expect-model") {
+      const next = argv[i + 1];
+      if (!next || next.startsWith("-")) {
+        bail(2, a + " requires a value (e.g. --expect-device /dev/disk6)");
+      }
+      if (a === "--expect-device") expectDevice = next;
+      else if (a === "--expect-size") expectSizeRaw = next;
+      else expectModel = next;
+      i++;
+      continue;
+    }
     if (a === "--persona") {
       const next = argv[i + 1];
       if (!next || next.startsWith("-")) {
@@ -1225,6 +1251,10 @@ async function main() {
         "                            role-stack — e.g., --host pikachu installs as pikachu\n" +
         "                            regardless of flake role config. Default: flake config name\n" +
         "                            (control-plane for the zero-typing single-node path)\n" +
+        "  --expect-device <path>    state the target device instead of accepting the\n" +
+        "                            one enumeration found (checked, then passed on)\n" +
+        "  --expect-size <bytes>     state the exact device size in bytes\n" +
+        "  --expect-model <name>     state the exact diskutil MediaName\n" +
         "  --agent                   (081KSGS9H0008QG0R001EZKNCB) agent-driven mode — spawn flash-usb with piped stdin\n" +
         "                            so the agent auto-types the 'yes <nonce>' challenge by reading\n" +
         "                            the nonce from stdout. Touch ID PAM gate STILL fires on the\n" +
@@ -1448,6 +1478,14 @@ async function main() {
   // child's allowlist. `flashUsbLinuxArgv` cannot emit it.
   let flashUsbArgs: string[];
   if (isLinux) {
+    if (expectDevice !== null || expectSizeRaw !== null || expectModel !== null) {
+      bail(
+        2,
+        "--expect-* is not accepted on the Linux arm yet: flash-usb-linux.ts has no" +
+          " stated-target flags, and its flag allowlist would abort the flash. Refusing" +
+          " rather than dropping the pin you asked for.",
+      );
+    }
     let effectiveIso = isoPath;
     // `--no-inject` suppresses the hostname write too, exactly as it does on macOS. The
     // hostname is passed to linuxBakeIsRequired only when injection is on, so the two
@@ -1464,9 +1502,38 @@ async function main() {
     if (!argv.ok) bail(2, argv.error);
     flashUsbArgs = [...argv.argv];
   } else {
+    // ── STATE THE TARGET, do not let anything downstream discover it ────────
+    //
+    // Before 2026-08-21 this wrapper passed no --expect-* at all, so the
+    // flasher built its expectation by falling back to the device it had just
+    // observed and compared it to itself. The common path -- the only path --
+    // was unpinned, and the warning it printed was the whole guard.
+    //
+    // Now the wrapper enumerates, shows the operator what it found, and states
+    // it. That is not the same as the flasher discovering it: the pin is fixed
+    // here, before the operator sees it, and the flasher refuses if the disk it
+    // finds at write time is not that one. The window a swapped stick has to
+    // slip through closes at the display rather than after it.
+    //
+    // The fully non-vacuous form is still the operator naming the target: pass
+    // --expect-device/--expect-size/--expect-model here and this step CHECKS
+    // them rather than deriving them. Stated beats derived; derived-and-shown
+    // beats discovered-and-hidden, which is what this replaced.
+    const expectSizeParsed = expectSizeRaw === null ? null : Number(expectSizeRaw);
+    if (expectSizeParsed !== null && !Number.isSafeInteger(expectSizeParsed)) {
+      bail(2, "--expect-size must be a whole number of bytes, got " + expectSizeRaw);
+    }
+    const pinned = selectPinnedTarget(enumerateUsbCandidatesViaDiskutil(), {
+      devicePath: expectDevice,
+      sizeBytes: expectSizeParsed,
+      mediaName: expectModel,
+    });
+    if (!pinned.ok) bail(2, pinned.error);
+    process.stdout.write("\n" + describePin(pinned.pin));
+    const expectFlags = [...pinToExpectFlags(pinned.pin)];
     flashUsbArgs = willInject
-      ? [flashUsb, "--short", "--no-eject", isoPath]
-      : [flashUsb, "--short", isoPath];
+      ? [flashUsb, "--short", "--no-eject", ...expectFlags, isoPath]
+      : [flashUsb, "--short", ...expectFlags, isoPath];
   }
   if (agentMode) {
     process.stdout.write(
@@ -1480,11 +1547,33 @@ async function main() {
       });
       let stdoutBuf = "";
       let challengeAnswered = false;
+      // 2026-08-21: the flasher now asks a SECOND question first, when the
+      // device is half-provisioned -- the operator acknowledges the state by
+      // name before the destroy challenge is offered. An agent that only knew
+      // about the destroy challenge would hang on it, so it is answered here
+      // too. Honest limit, stated rather than hidden: auto-typing an
+      // acknowledgement makes it a RECORD in the transcript, not a gate. The
+      // gate in agent mode is the Touch ID PAM prompt, which still fires and
+      // still cannot be answered by an agent.
+      let stateAckAnswered = false;
       child.stdout.on("data", (chunk: Buffer) => {
         const text = chunk.toString();
         process.stdout.write(text); // mirror to operator's view
         if (!challengeAnswered) {
           stdoutBuf += text;
+          if (!stateAckAnswered) {
+            // The "  ack half-provisioned" line, two-space indented exactly as
+            // flash-usb.ts prints HALF_PROVISIONED_ACK.
+            const ackMatch = stdoutBuf.match(/^ {2}(ack half-provisioned)\s*$/m);
+            if (ackMatch) {
+              const ackLine = ackMatch[1];
+              process.stdout.write(
+                `\n[agent-mode: device state is half-provisioned; auto-typing ${ackLine} -- operator visibility per glass-halo-bidirectional rule]\n`,
+              );
+              child.stdin.write(`${ackLine}\n`);
+              stateAckAnswered = true;
+            }
+          }
           // Match the "  yes <4hex>" line emitted by flash-usb.ts at
           // the runtime-acceptance prompt. The challenge is indented
           // by 2 spaces in flash-usb.ts; the nonce is exactly 4 hex
