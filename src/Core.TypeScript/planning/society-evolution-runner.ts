@@ -13,16 +13,43 @@
  *
  * Transport: Git commits (the gitSalonTransport from gossip-mesh-transport.ts).
  * Each generation is a durable G-set event: foldable, composable, verifiable.
+ *
+ * ## 2026-08-20 — who is in the society, and what generation it is
+ *
+ * This runner spent four days with a population of ONE, and that one was itself:
+ * its loader treated every distinct `by` as an agent, and every event it writes
+ * carries `by: "society"`. At n=1 `evolve()` is the identity function — one
+ * survivor, zero offspring, no crossover, no mutation — while the tick log kept
+ * advertising "score → select → crossover → mutate → replace".
+ *
+ * Both halves are now decided rather than emergent, in `society-population.ts`:
+ *
+ *   - **Population** comes from the event log minus the runner's own lane, over a
+ *     per-agent window anchored to the corpus's own latest timestamp.
+ *   - **Generation** is folded from the runner's own lane, which is exactly what
+ *     that lane is for. It used to be hardcoded `0` every tick, so the emitted
+ *     field read `1` in all 400 events ever written.
+ *
+ * The loud half is `hygiene/audit-society-population-health.ts`, which fails the
+ * gate when the population drops below two or diversity reaches zero. Nothing
+ * anywhere referenced either number before, which is why nobody noticed.
  */
 
-import { readdirSync, readFileSync, writeFileSync, mkdirSync } from "node:fs";
+import { writeFileSync, mkdirSync } from "node:fs";
 import { join } from "node:path";
-import { evolve, createAgent, createSociety, type SocietyAgent, type Society } from "./society-evolution";
+import { evolve, createSociety, type SocietyAgent, type Society } from "./society-evolution";
 import { evidenceBackedPriorHints, transportHeatReadout } from "./society-heat-readout";
 import { absorbGeneration, loadSocietyBnn, saveSocietyBnn } from "./society-bnn";
-import { founderGenome } from "./agent-genome";
-import type { CalibrationPosterior } from "./calibration-ledger";
 import { writeSocietyEventEvidence } from "./society-event-index";
+import {
+  DEFAULT_HORIZON_MS,
+  POPULATION_POLICY_ID,
+  SOCIETY_RUNNER_BY,
+  loadPopulation,
+  scanPopulation,
+  agentsFromScan,
+  type PopulationScan,
+} from "./society-population";
 
 interface CliArgs {
   eventDir: string;
@@ -41,63 +68,62 @@ function parseArgs(argv: string[]): CliArgs {
 
 /**
  * Load agents from the event log.
- * Each unique `by` field in the event log is an agent.
- * Calibration is estimated from the agent's event frequency.
+ *
+ * The body of this moved to `society-population.ts` on 2026-08-20 after it was
+ * measured collapsing the population to ONE — the runner reading its own output.
+ * The wrapper stays because it is the exported name other call sites and tests
+ * know. The two decisions that fix it live in that module and are documented
+ * there; the one-line versions are:
+ *
+ *   - the `society` lane is the loop's LINEAGE, never its POPULATION
+ *   - the window is per-agent and anchored to the corpus's own latest timestamp,
+ *     never to `Date.now()` and never to a global file count
  */
 function loadAgentsFromEventLog(eventDir: string): SocietyAgent[] {
-  const agentMap = new Map<string, { events: number; lastAt: string }>();
-  try {
-    const files = readdirSync(eventDir).filter(f => f.endsWith(".json")).sort();
-    for (const f of files.slice(-200)) { // scan last 200 events
-      try {
-        const raw = JSON.parse(readFileSync(join(eventDir, f), "utf-8"));
-        if (raw.by && raw.at) {
-          const existing = agentMap.get(raw.by) ?? { events: 0, lastAt: "" };
-          agentMap.set(raw.by, {
-            events: existing.events + 1,
-            lastAt: raw.at > existing.lastAt ? raw.at : existing.lastAt,
-          });
-        }
-      } catch { /* skip malformed */ }
-    }
-  } catch { /* no events yet */ }
+  return agentsFromScan(scanPopulation(eventDir));
+}
 
-  // Convert to SocietyAgent — fitness proxy: log(events + 1) / log(200)
-  const agents: SocietyAgent[] = [];
-  for (const [id, stats] of agentMap) {
-    const fitness = Math.log(stats.events + 1) / Math.log(200);
-    const calibration: CalibrationPosterior = {
-      zid: id, hatId: "default",
-      mu: Math.min(0.95, fitness),
-      sigma: 0.1 + (1 - fitness) * 0.2,
-      settledCount: stats.events,
-    };
-    const genome = founderGenome(
-      Math.floor(fitness * 255),
-      Math.floor((1 - fitness) * 128),
-      64,
-    );
-    agents.push(createAgent(id, genome, calibration));
-  }
-
-  if (agents.length > 0) return agents;
-  // Bootstrap with 3 agents if the event log is empty
-  const bootstrap: SocietyAgent[] = ["alexa", "otto", "soraya"].map(id =>
-    createAgent(id, founderGenome(128, 64, 32), {
-      zid: id, hatId: "default", mu: 0.5, sigma: 0.2, settledCount: 0,
-    })
+/**
+ * Print what the population scan actually decided.
+ *
+ * The collapse went unnoticed for four days partly because the tick logged
+ * `N agents loaded` and nothing else — a number with no provenance. Every input
+ * to that number is now on the line beside it, so a future collapse is readable
+ * in the run log before any audit has to catch it.
+ */
+function logScan(scan: PopulationScan): void {
+  const ids = scan.agents.map((a) => `${a.id}(${a.events})`).join(" ");
+  console.log(
+    `[society] population ${scan.agents.length}: ${ids || "(none — bootstrap)"}`,
   );
-  return bootstrap;
+  console.log(
+    `[society] window ${scan.horizonStart || "-"} .. ${scan.horizonEnd || "-"} ` +
+      `(${(DEFAULT_HORIZON_MS / 86_400_000).toFixed(0)}d, anchored to the corpus, not the clock); ` +
+      `scanned=${scan.scanned} eligible=${scan.eligible}`,
+  );
+  const excluded = Object.entries(scan.excludedByLane)
+    .map(([k, v]) => `${k}=${v}`)
+    .join(" ");
+  if (excluded.length > 0) console.log(`[society] excluded lanes (lineage, not population): ${excluded}`);
+  if (scan.agedOut.length > 0) console.log(`[society] aged out of the window: ${scan.agedOut.join(" ")}`);
+  if (scan.rejectedIds.length > 0) {
+    console.log(`[society] rejected ids (bad shape): ${scan.rejectedIds.join(" ")}`);
+  }
 }
 
 async function main(): Promise<number> {
   const args = parseArgs(process.argv.slice(2));
   console.log(`[society] loading agents from ${args.eventDir}...`);
 
-  const agents = loadAgentsFromEventLog(args.eventDir);
-  console.log(`[society] ${agents.length} agents loaded`);
+  // `generation` used to be hardcoded 0 here, so the field read `1` in all 400
+  // events ever written — a lineage counter that counted nothing. It is now
+  // folded from the runner's own `society` lane, which is the one thing that
+  // lane is legitimately for.
+  const { scan, agents, generation: priorGeneration } = loadPopulation(args.eventDir);
+  logScan(scan);
+  console.log(`[society] ${agents.length} agents loaded; resuming at generation ${priorGeneration}`);
 
-  let society: Society = createSociety(agents, 0);
+  let society: Society = createSociety(agents, priorGeneration);
   for (let g = 0; g < args.generations; g++) {
     society = evolve(society);
     console.log(`[society] generation ${society.generation}: mean fitness = ${society.meanFitness.toFixed(4)}, diversity = ${society.geneticDiversity.toFixed(4)}`);
@@ -132,8 +158,16 @@ async function main(): Promise<number> {
   const event = {
     id: eventId,
     at: eventAt,
-    by: "society",
+    // The SAME symbol `society-population.ts` excludes from the population. One
+    // constant, an emitter and a filter — they cannot drift, which is what
+    // re-opened the self-consumption hole the first time.
+    by: SOCIETY_RUNNER_BY,
     kind: "evolution",
+    // Which loader decided this event's population. `audit-society-population-health.ts`
+    // judges published events by THIS marker rather than by a date, so the 400
+    // events written under the collapsed loader stay preserved-but-unjudged
+    // (manifesto §5) without the audit's scope depending on when a PR merged.
+    populationPolicy: POPULATION_POLICY_ID,
     generation: society.generation,
     agents: society.agents.map(a => ({ id: a.id, fitness: a.fitness, generation: a.genome.generation })),
     meanFitness: society.meanFitness,
