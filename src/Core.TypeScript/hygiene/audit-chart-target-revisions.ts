@@ -506,19 +506,6 @@ export const ACKNOWLEDGED_UNPUBLISHED: ReadonlyMap<string, Acknowledgement> = ne
     },
   ],
   [
-    "full-ai-cluster/k8s/applications/sealed-secrets/Application.yaml|sealed-secrets|2.16.2",
-    {
-      workitem: "081M0JX4M7H087G0R0029R5QG6",
-      recordedOn: "2026-08-21",
-      reason:
-        "Found by this audit's own first --refresh. `bitnami-labs.github.io/sealed-secrets` " +
-        "returns GitHub Pages' `Site not found`; upstream's README now publishes the chart at " +
-        "`bitnami.github.io/sealed-secrets` (no `-labs`), whose index does carry 2.16.2 -- so " +
-        "the version is right and the host is wrong. Changing what a cluster Application " +
-        "deploys is the maintainer's call, so it is reported rather than edited here.",
-    },
-  ],
-  [
     "full-ai-cluster/k8s/applications/forgejo/Application.yaml|forgejo|9.0.6",
     {
       workitem: "081M0JX4M7H087G0R0029R5QG6",
