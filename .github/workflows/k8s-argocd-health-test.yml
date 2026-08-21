@@ -768,6 +768,33 @@ jobs:
         # parser is ever closed. It costs nothing meanwhile.
         run: bun src/Core.TypeScript/cluster/included-proof-summary.ts --log "$RUNNER_TEMP/included-proof.log"
 
+      # NAME THE RESOURCE, NOT JUST THE APPLICATION.
+      #
+      # Added 2026-08-21 after a run where `weaviate` reported
+      # `OutOfSync/Progressing` and the diagnostics could not say WHICH of its
+      # six resources was which -- so the cause was reconstructed by rendering
+      # the chart locally and reading gitops-engine, and the first reconstruction
+      # was wrong. `status.resources` carries a per-resource sync AND health
+      # verdict, and `status.conditions` carries ArgoCD's own comparison errors;
+      # both are one kubectl away and neither was being printed.
+      #
+      # Scoped to Applications that are NOT Synced+Healthy, so a green run prints
+      # nothing and a red one prints exactly the rows a human would have gone
+      # looking for. `|| true` throughout: a diagnostics step must never be the
+      # thing that fails a job, or the verdict above it stops being readable.
+      - name: Name the drifting resources (per-Application, failures only)
+        if: always()
+        run: |
+          kubectl -n argocd get applications.argoproj.io -o json 2>/dev/null \
+            | jq -r '.items[]
+                | select((.status.sync.status != "Synced") or (.status.health.status != "Healthy"))
+                | "=== \(.metadata.name): sync=\(.status.sync.status // "?") health=\(.status.health.status // "?")",
+                  (.status.conditions // [] | .[] | "    condition \(.type): \(.message)"),
+                  (.status.resources // [] | .[]
+                     | select((.status != "Synced") or ((.health.status // "Healthy") != "Healthy"))
+                     | "    \(.kind)/\(.name): sync=\(.status // "-") health=\(.health.status // "-") \(.health.message // "")")' \
+            || true
+
       - name: Print cluster diagnostics
         if: always()
         run: |

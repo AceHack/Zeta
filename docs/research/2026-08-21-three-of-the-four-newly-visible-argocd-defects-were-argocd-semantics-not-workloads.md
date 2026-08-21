@@ -3,6 +3,46 @@
 **Date:** 2026-08-21 · **Lane:** `k8s-argocd-health-test` / `live kind included Synced+Healthy proof`
 **Predecessor:** [`2026-08-21-what-each-deferred-argocd-application-needs-to-boot.md`](2026-08-21-what-each-deferred-argocd-application-needs-to-boot.md)
 
+## CORRECTION, same day, from the live run this document was written before
+
+**`weaviate` is re-deferred.** Live run 32532470499 — the first run to test the
+fixes below on a cluster — passed `cockroachdb` and `kube-prometheus-stack` and
+failed on `weaviate` alone, `OutOfSync/Progressing`, with the ~3-minute resync
+loop unchanged.
+
+The cause is one this document did not look for. weaviate renders **two
+`type: LoadBalancer` Services** (`weaviate`, `weaviate-grpc`), and gitops-engine
+`getCorev1ServiceHealth` reports a LoadBalancer Service whose
+`status.loadBalancer.ingress` is empty as **Progressing, unconditionally**. A
+kind node runs no LoadBalancer implementation, so those Services never get an
+address and the Application **could never have been Healthy in this lane** —
+whatever its sync status did. `weaviate-0` was 1/1 Running for 39 minutes while
+that held, which is exactly how the blocker stayed hidden behind the one that
+*was* found.
+
+**The error was the inference, not the measurement.** §3 below establishes, by
+byte diff, that the desired state moves — that is still true and still proven.
+What §3 then did was treat a confirmed cause of `OutOfSync` as *the* cause of the
+failure, and never ask what made it `Progressing`. Two independent blockers, one
+checked. The `ignoreDifferences` rule is **kept** (the nondeterminism is real,
+and on metal, where cilium-lb-ipam assigns LB addresses, it may be the whole
+story) but its status is now **unmetered**: implemented, plausible, and *not*
+falsified — the loop survived it live, and this lane cannot meter it until the
+health half lifts.
+
+**LIFTS WHEN:** the dev/CI substrate provides a LoadBalancer implementation
+(cloud-provider-kind or MetalLB) — the same shape as the dev `longhorn`
+StorageClass alias, one resource type over — **and** the residual `OutOfSync` is
+*named* by diagnostics rather than reconstructed by hand a second time. The lane
+now prints, on every failure, each non-Synced/non-Healthy Application's
+per-resource `status.resources` rows and `status.conditions`; that output is what
+would have named `Service/weaviate: Waiting for load balancer to be assigned` in
+the first run instead of costing a wrong fix.
+
+**Asserted roster: 28 → 30 from this work** (31 including `vault`, landed
+separately). Read §3 below as a correct account of one drift source and an
+incorrect account of why the Application failed.
+
 ## What this is
 
 PR #13326's dev `longhorn` StorageClass alias made eleven Applications reachable
@@ -11,14 +51,14 @@ volumes, ran their pods, and then failed for reasons that had nothing to do with
 storage — and those four had been invisible for as long as the storage rule hid
 them. This is what each of them actually was.
 
-The headline: **three of the four were not workload problems at all.** They were
+The headline: **three of the four were not workload problems at all** (and one of those three, `weaviate`, turned out to have a *second* non-workload blocker that re-deferred it — see the correction above). They were
 ArgoCD's own reconciliation semantics — hook phases, `helm template`'s inability
 to run `lookup`, and a Secret the chart deliberately does not create. None of the
 three needed the app to be asserted less; each is fixed and asserted under the
 full auto-sync contract. The fourth, `hindsight`, is a genuine capacity fact plus
 a defect nobody had noticed.
 
-Asserted roster: **28 → 31** of 46 discovered Applications.
+Asserted roster from this work: **28 → 30** of 46 discovered Applications.
 
 ## 1. `cockroachdb` — a deadlock between a PostSync hook and the health it produces
 

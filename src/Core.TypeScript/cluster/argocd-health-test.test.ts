@@ -1078,25 +1078,35 @@ describe("081M0JXXFV0087G0R00...: the four newly-visible non-storage defects", (
   const applicationsRoot = resolve(import.meta.dir, "../../../full-ai-cluster/k8s/applications");
   const readApp = (dir: string): string => readFileSync(join(applicationsRoot, dir, "Application.yaml"), "utf8");
 
-  test("all three fixed apps are on the asserted roster, and hindsight is not", () => {
+  test("the two LIVE-PROVEN fixes are asserted; the two unproven ones are not", () => {
     const applications = discoverExpectedApplications();
     const excluded = (dir: string): boolean => {
       const app = applications.find((candidate) => candidate.dir === dir);
       if (app === undefined) throw new Error(`no Application discovered for ${dir}`);
       return app.excludedFromDev;
     };
+    // Both reached Synced+Healthy on live run 32532470499. That run is the
+    // warrant for these two lines; nothing else is.
     expect(excluded("cockroachdb")).toBe(false);
     expect(excluded("kube-prometheus-stack")).toBe(false);
-    expect(excluded("weaviate")).toBe(false);
-    // The honest half of the same claim: hindsight was NOT fixed and must not
-    // quietly join the roster on the strength of the other three.
+    // And the honest half. `weaviate` was asserted for a few hours on the
+    // strength of an offline byte diff and the SAME live run refuted it -- two
+    // LoadBalancer Services cannot be Healthy on a kind node. `hindsight` was
+    // never fixed. Neither may drift back onto the roster without a live run
+    // saying so.
+    expect(excluded("weaviate")).toBe(true);
     expect(excluded("hindsight")).toBe(true);
   });
 
-  test("no stale registry entry survives for the three that left the shadow", () => {
-    for (const dir of ["cockroachdb", "kube-prometheus-stack", "weaviate"]) {
+  test("no stale registry entry survives for the two that left the shadow", () => {
+    for (const dir of ["cockroachdb", "kube-prometheus-stack"]) {
       expect(APPLIED_BUT_UNASSERTED_REASONS.has(dir)).toBe(false);
     }
+    // ...and the one that came BACK carries a reason again, naming the cause
+    // the first attempt missed rather than the one it found.
+    const weaviate = APPLIED_BUT_UNASSERTED_REASONS.get("weaviate") ?? "";
+    expect(weaviate).toContain("LoadBalancer");
+    expect(weaviate).toContain("LIFTS WHEN:");
     const drift = auditAppliedButUnasserted();
     expect(drift.unexplained).toEqual([]);
     expect(drift.stale).toEqual([]);
@@ -1157,7 +1167,10 @@ describe("081M0JXXFV0087G0R00...: the four newly-visible non-storage defects", (
    * mutation is a check that stopped running. This is the widening guard the
    * Application's own comment promises.
    */
-  test("weaviate's ignore rule is scoped to two keys of one named Secret", () => {
+  test("weaviate's ignore rule is KEPT and stays scoped to two keys of one named Secret", () => {
+    // The rule survives the re-deferral: the render nondeterminism it removes is
+    // proven, and on metal (where LB addresses are assigned) it may be the whole
+    // story. What is NOT claimed any more is that it closes the resync loop.
     const document = parseYaml(readApp("weaviate")) as {
       spec?: {
         ignoreDifferences?: readonly {

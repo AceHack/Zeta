@@ -365,7 +365,7 @@ export function auditDevExclusionReasons(repoRoot = REPO_ROOT): DevExclusionDrif
  * partition is 0 so `UpdatedReplicas 0 < 0 - 0` is false too). It was deferred
  * for a silo image it never pulls.
  *
- * THREE OF THE FOUR MEASURED DEFERRALS LEFT this set on 2026-08-21, and each
+ * TWO OF THE FOUR MEASURED DEFERRALS LEFT this set on 2026-08-21, and each
  * left because its DEFECT WAS FIXED -- never because the assertion was
  * weakened. They are asserted under the same full auto-sync contract as every
  * other member of the roster:
@@ -380,11 +380,11 @@ export function auditDevExclusionReasons(repoRoot = REPO_ROOT): DevExclusionDrif
  *      per dev cluster by `applyDevBootstrapSecrets`, and
  *      `assertDevGrafanaAdminSecretPresent` below refuses an included run whose
  *      cluster does not have it.
- *   `weaviate`              -- the chart mints `randAlphaNum` credentials on
- *      every render because ArgoCD's `helm template` cannot run its `lookup`,
- *      so the DESIRED state moved every reconcile. Two named keys of one named
- *      Secret are now in `ignoreDifferences`; the byte diff proving that is the
- *      whole drift is in the Application.
+ *
+ * `weaviate` was in that list for a few hours on 2026-08-21 and IS NOT NOW. The
+ * live run refuted it: two `type: LoadBalancer` Services can never be Healthy on
+ * a kind node, which no amount of sync convergence changes. It is deferred below
+ * on that measurement, and that episode is why this paragraph says TWO.
  *
  * `hindsight` stays, with a reason that now names three independent blockers
  * instead of one -- see APPLIED_BUT_UNASSERTED_REASONS.
@@ -507,6 +507,35 @@ const DEV_INCLUDED_PROOF_DEFERRED_DIRS = new Set([
   //   destroyed at the end of the run is not custody, so the lane may perform
   //   the same procedure there. `./ephemeral-vault-init.ts` is that lane, its
   //   gate refuses `--existing`, and its leak scan runs holding the material.
+  // MEASURED live, run 32532470499 -- and NOT the reason this Application was
+  // deferred for earlier on 2026-08-21, which is exactly why it is back.
+  //
+  // weaviate renders TWO `type: LoadBalancer` Services (`weaviate`,
+  // `weaviate-grpc`). gitops-engine `getCorev1ServiceHealth` reports a
+  // LoadBalancer Service whose `status.loadBalancer.ingress` is empty as
+  // PROGRESSING, unconditionally and forever. A kind node runs no LoadBalancer
+  // implementation, so those two Services never receive an address and this
+  // Application can never be Healthy in this lane -- whatever its sync status
+  // does. `weaviate-0` was 1/1 Running for 39 minutes while that held, which is
+  // exactly how the blocker stayed invisible behind the one that was found.
+  //
+  // THE HONEST ACCOUNTING OF THE ATTEMPT THAT FAILED: the `randAlphaNum` render
+  // nondeterminism is real and stays proven by byte diff, and its
+  // `ignoreDifferences` rule is KEPT (see the Application) because on metal,
+  // where cilium-lb-ipam does assign LB addresses, it may well be the whole
+  // story. What was wrong was the inference, not the measurement -- the
+  // OutOfSync cause was established and the PROGRESSING cause was never
+  // checked, so one confirmed cause was read as THE cause. The live run also
+  // shows the resync loop survived the ignore rule, so "that rule closes the
+  // loop" is UNMETERED -- implemented, plausible, unfalsified -- and this lane
+  // cannot meter it until the health half lifts.
+  //
+  // LIFTS WHEN: the dev/CI substrate provides a LoadBalancer implementation
+  // (cloud-provider-kind or MetalLB), the same shape as the dev `longhorn`
+  // StorageClass alias one resource type over, AND the residual OutOfSync is
+  // then NAMED by the per-resource diagnostics added alongside this entry
+  // rather than guessed at a second time.
+  "weaviate",
 ]);
 
 /**
@@ -562,6 +591,13 @@ export const APPLIED_BUT_UNASSERTED_REASONS: ReadonlyMap<string, string> = new M
   [
     "spire",
     "NOT Vault, and NOT storage -- both halves of the previous reason were stale. MEASURED 2026-08-21 run 32528419577: OutOfSync/Missing with `Sync operation to 0.24.2 failed: one or more synchronization tasks are not valid (retried 5 times)` and no spire pods at all. Chart 0.24.2 renders 3 ClusterSPIFFEID resources and ships no CRDs for them; the only `spire-crds` install in the repo is a k3s-only helm.cattle.io HelmChart the kind lane never applies. The `upstreamAuthority.vault` block is entirely commented out (helm template: zero occurrences of `upstream`, server self-signs), so initialising Vault does not unblock this (DEV_INCLUDED_PROOF_DEFERRED_DIRS).",
+  ],
+  [
+    "weaviate",
+    "NOT the sync loop it was briefly un-deferred for, and not storage -- MEASURED LIVE on run 32532470499, the run that refuted the fix. " +
+      "weaviate renders TWO `type: LoadBalancer` Services (`weaviate`, `weaviate-grpc`), and gitops-engine `getCorev1ServiceHealth` reports a LoadBalancer Service whose `status.loadBalancer.ingress` is empty as PROGRESSING, unconditionally. A kind node runs no LoadBalancer implementation, so those two Services never get an address and this Application can NEVER be Healthy in this lane whatever its sync status does -- `weaviate-0` was 1/1 Running for 39m while that held, which is how the blocker stayed hidden behind the one that was found. " +
+      "The `randAlphaNum` render nondeterminism established by byte diff is real and its narrow `ignoreDifferences` rule is KEPT, because on metal cilium-lb-ipam does assign LB addresses and it may there be the whole story. But the resync loop SURVIVED that rule live, so 'the rule closes the loop' is UNMETERED rather than proven: the OutOfSync cause was checked and the Progressing cause was not, and one confirmed cause was read as THE cause. " +
+      "LIFTS WHEN: the dev/CI substrate provides a LoadBalancer implementation (cloud-provider-kind or MetalLB) -- the same shape as the dev `longhorn` StorageClass alias, one resource type over -- AND the residual OutOfSync is NAMED by the per-resource diagnostics rather than guessed at a second time.",
   ],
 ]);
 
@@ -1156,7 +1192,7 @@ export function buildPlan(options: CliOptions, repoRoot = REPO_ROOT): HarnessPla
     notes: [
       "081KSXN940008QG0R000SCP2H1 is separate from 081KSNY2Z0008QG0R0008PN7RQ; this harness does not test USB reformat retention.",
       "Dev health assertions exclude cilium, the Longhorn chart itself, GPU model-SERVING (ollama/vllm), ReadWriteMany claims, and apps deferred on a named blocker recorded in APPLIED_BUT_UNASSERTED_REASONS; k3d bootstraps Cilium directly and kind CI uses its default CNI.",
-      "Longhorn-BACKED manifests are no longer storage-excluded: dev applies a StorageClass named longhorn over rancher.io/local-path (dev-cluster/manifests/longhorn.yaml), so those PVCs bind. MEASURED on run 32519516070: 6 of the 11 formerly-excluded apps reached Synced+Healthy (headscale, mimir, nats, oz, redis, tempo); the other 5 bound their volumes and then failed for named NON-storage defects, visible for the first time. THREE of those five are fixed as of 2026-08-21 and are asserted here now -- cockroachdb (the chart init Job moved out of ArgoCD PostSync, which deadlocks against the health it is needed to produce), kube-prometheus-stack (Grafana admin Secret minted at bring-up), weaviate (the chart re-mints randAlphaNum credentials on every render because ArgoCD cannot run Helm lookup, so two named keys are in ignoreDifferences). hindsight remains, on three independent blockers. Still excluded outright are ReadWriteMany claims, which no dev provisioner can serve, and the whole rule returns if that manifest is absent (081M0JXF6MS087G0R001HC34TM).",
+      "Longhorn-BACKED manifests are no longer storage-excluded: dev applies a StorageClass named longhorn over rancher.io/local-path (dev-cluster/manifests/longhorn.yaml), so those PVCs bind. MEASURED on run 32519516070: 6 of the 11 formerly-excluded apps reached Synced+Healthy (headscale, mimir, nats, oz, redis, tempo); the other 5 bound their volumes and then failed for named NON-storage defects, visible for the first time. TWO of those five are fixed as of 2026-08-21 and are PROVEN so by live run 32532470499 -- cockroachdb (the chart init Job moved out of ArgoCD PostSync, which deadlocks against the health it is needed to produce) and kube-prometheus-stack (Grafana admin Secret minted at bring-up). weaviate was asserted alongside them for a few hours and the same run refuted it: two `type: LoadBalancer` Services can never be Healthy on a kind node, a blocker independent of the render nondeterminism that was fixed. hindsight remains, on three independent blockers. Still excluded outright are ReadWriteMany claims, which no dev provisioner can serve, and the whole rule returns if that manifest is absent (081M0JXF6MS087G0R001HC34TM).",
       "ZETA_CONTAINER_RUNTIME is the repo-wide OCI runtime switch; use --runtime for one-off explicit harness runs.",
     ],
   };

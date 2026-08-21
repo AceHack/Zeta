@@ -46,8 +46,21 @@ spec:
   destination:
     server: https://kubernetes.default.svc
     namespace: weaviate
-  # THE RESYNC LOOP THIS CLOSES, and WHAT was mutating -- established by byte
-  # diff, not by guessing at an ignore rule.
+  # A REAL DRIFT SOURCE, NARROWLY IGNORED -- AND NOT, ON ITS OWN, ENOUGH.
+  #
+  # READ THIS FIRST: the live run that tested this rule (32532470499) still
+  # showed the ~3-minute resync loop, so the claim "this closes the loop" is
+  # UNMETERED -- implemented, plausible, unfalsified -- and the block below
+  # describes a drift source that is PROVEN, not a fix that is PROVEN. The rule
+  # is kept because the nondeterminism it removes is real and because on metal,
+  # where cilium-lb-ipam assigns LoadBalancer addresses, it may be the whole
+  # story. In the kind lane it cannot be metered yet: two `type: LoadBalancer`
+  # Services keep the Application PROGRESSING there regardless (gitops-engine
+  # `getCorev1ServiceHealth`), which is the blocker that was missed when the
+  # OutOfSync cause below was found and the Progressing cause was not checked.
+  # See APPLIED_BUT_UNASSERTED_REASONS['weaviate'].
+  #
+  # WHAT IS PROVEN, by byte diff rather than by guessing at an ignore rule:
   #
   # MEASURED (run 32519516070): weaviate-0 came up 1/1 Running on its bound
   # 100Gi PVC and the Application still logged `Partial sync operation to
