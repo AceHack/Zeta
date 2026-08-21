@@ -544,7 +544,12 @@ jobs:
           # belonging to Bitcoin Knots was found and parsed by the gate, which then
           # refused with `iso-not-in-manifest` while printing 28 bitcoin filenames.
           # A per-ISO sidecar cannot be hijacked that way.
-          iso_sha256_path="${iso_path_abs}.sha256"
+          # The sidecar CANNOT be written beside the ISO: `result/iso` is a Nix
+          # store symlink and the store is read-only. Measured -- run 32445604341
+          # failed with "Permission denied" on exactly that path. It goes in
+          # RUNNER_TEMP instead, and the upload step publishes it under the ISO's
+          # own name, so the operator still receives `<iso>.sha256`.
+          iso_sha256_path="${RUNNER_TEMP}/${iso_name}.sha256"
           printf '%s  %s\n' "$iso_sha256" "$iso_name" > "$iso_sha256_path"
           {
             echo "path=$iso_path_abs"
