@@ -1,0 +1,12 @@
+{
+  "pr_number": 13127,
+  "archive_path": "docs/history/pr-reviews/PR-13127-fix-zflash-every-host-arm-verifies-the-iso-before-it-writes.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-21T08:01:42.499Z",
+  "schema_version": "v1",
+  "commit_sha": "94bdcb7da15b53a498247e6325abd9649cee473d",
+  "title": "fix(zflash): every host arm verifies the ISO before it writes",
+  "state": "MERGED",
+  "merged_at": "2026-08-21T08:01:04Z",
+  "head_ref": "zflash/linux-windows-iso-integrity-gate"
+}
