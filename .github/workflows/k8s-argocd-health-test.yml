@@ -55,6 +55,8 @@ on:
       - "src/Core.TypeScript/cluster/argocd-health-test.test.ts"
       - "src/Core.TypeScript/cluster/app-of-apps-discovery.ts"
       - "src/Core.TypeScript/cluster/app-of-apps-discovery.test.ts"
+      - "src/Core.TypeScript/cluster/included-proof-summary.ts"
+      - "src/Core.TypeScript/cluster/included-proof-summary.test.ts"
       - "full-ai-cluster/dev-cluster/**"
       # WATCH WHAT THIS LANE DEPLOYS. This used to be
       # "applications/**/Application.yaml", which matched only the ArgoCD
@@ -92,6 +94,8 @@ on:
       - "src/Core.TypeScript/cluster/argocd-health-test.test.ts"
       - "src/Core.TypeScript/cluster/app-of-apps-discovery.ts"
       - "src/Core.TypeScript/cluster/app-of-apps-discovery.test.ts"
+      - "src/Core.TypeScript/cluster/included-proof-summary.ts"
+      - "src/Core.TypeScript/cluster/included-proof-summary.test.ts"
       - "full-ai-cluster/dev-cluster/**"
       # WATCH WHAT THIS LANE DEPLOYS. This used to be
       # "applications/**/Application.yaml", which matched only the ArgoCD
@@ -165,8 +169,15 @@ jobs:
       - name: Install bun dependencies
         run: bun install --frozen-lockfile
 
+      # `included-proof-summary.test.ts` is named explicitly. No job anywhere in CI
+      # runs `src/Core.TypeScript/cluster/` as a directory -- every test under it is
+      # reached by being listed by name, here or in a sibling step. So a falsifier
+      # that is not named is a falsifier that never runs.
       - name: Run 081KSXN940008QG0R000SCP2H1 harness unit tests
-        run: bun test src/Core.TypeScript/cluster/argocd-health-test.test.ts
+        run: |
+          bun test \
+            src/Core.TypeScript/cluster/argocd-health-test.test.ts \
+            src/Core.TypeScript/cluster/included-proof-summary.test.ts
 
       # WHICH Application MANIFESTS DOES A ROOT ACTUALLY REACH, AND WHICH OF
       # THOSE DOES ANY CHECK ASSERT ON. Offline, pure, ~1s -- so it lives in
@@ -304,7 +315,46 @@ jobs:
   live-kind-included:
     name: live kind included Synced+Healthy proof (${{ matrix.runner }})
     needs: dry-run
-    continue-on-error: true
+    # NOT `continue-on-error` -- removed 2026-08-21, and here is the measurement.
+    #
+    # It was added 2026-06-20 in #8789, a five-part `chore(setup)` PR whose only
+    # recorded reason is one clause of one bullet: "live kind job advisory until
+    # stable". Explicitly temporary, with an exit condition nobody ever came back
+    # to. The job had shipped BLOCKING seven days earlier (#7911) and carried no
+    # inline comment for the flag in the 62 days it stood.
+    #
+    # MEASURED over the 195 runs of this job from 2026-06-21 to 2026-08-21:
+    #   * decisive conclusions 157 -- 104 pass / 53 fail;
+    #   * ZERO failures in cluster creation, install.sh, cache restore or teardown.
+    #     Every one of the 53 was the assertion step itself. It does not fail for
+    #     environmental reasons, which is the thing that would have justified
+    #     advisory status and is the thing the data refuses;
+    #   * failures cluster into outages traceable to real, later-fixed defects.
+    #     Only 4 isolated failures in two months (~2.5%). Sampling the failing
+    #     runs by which Application missed shows ONE named defect per outage, held
+    #     until someone fixed it -- never a different app each time, which is what
+    #     flakiness looks like: `loki` (2026-07-31..08-01), `arc-controller`
+    #     (2026-08-01..08-08, fixed by #10170), `cdi`+`kubevirt`
+    #     (2026-08-16..08-21, fixed by #13084);
+    #   * 91% pass before the 2026-08-16 regression, 100% (10/10) after it was
+    #     fixed on 2026-08-21;
+    #   * a green run takes ~10 min median. Only failures run long (~45 min), and
+    #     those burn the runner today anyway.
+    #
+    # AND THE COST OF LEAVING IT: 52 of those 53 failures reported run-level
+    # `success`. The 2026-08-16..2026-08-21 window was 44 consecutive failures,
+    # 18 on `main`, all one real defect -- `cdi` and `kubevirt` asserted under the
+    # auto-sync contract when both are declared manual-sync. The job caught it on
+    # the first run. It went unseen for four and a half days because every surface
+    # that aggregates runs said green. A check that ran and failed looked exactly
+    # like a check that passed.
+    #
+    # WHAT THIS DOES AND DOES NOT CHANGE. It makes the RUN conclusion honest. It
+    # does not block merges: `gate (required)` is the only required status check on
+    # this repository and this job is not in its floor. Making it required is a
+    # policy call for the maintainer, not a cleanup, and is deliberately not done
+    # here. The summary step below is the other half -- the reason, without the
+    # 11,000-line log.
     strategy:
       fail-fast: false
       matrix:
@@ -339,10 +389,15 @@ jobs:
         run: bun install --frozen-lockfile
 
       - name: Run live kind included ArgoCD health proof
+        id: proof
         env:
           ZETA_ARGOCD_GIT_REF: ${{ github.event.pull_request.head.sha || github.sha }}
           ZETA_ARGOCD_GIT_REPO_URL: ${{ github.event.pull_request.head.repo.clone_url || 'https://github.com/Lucent-Financial-Group/Zeta' }}
         run: |
+          # `pipefail` so the HARNESS's exit code -- not tee's -- is the job verdict.
+          # Without it the tee would swallow every failure and re-create, in a subtler
+          # place, exactly the misreport that removing `continue-on-error` just closed.
+          set -o pipefail
           bun src/Core.TypeScript/cluster/argocd-health-test.ts \
             --run \
             --provider kind \
@@ -352,7 +407,27 @@ jobs:
             --cluster-name zeta-ci-included \
             --git-ref "$ZETA_ARGOCD_GIT_REF" \
             --timeout-sec 2400 \
-            --poll-sec 15
+            --poll-sec 15 \
+            | tee "$RUNNER_TEMP/included-proof.log"
+
+      # The other half of making the failure loud. Runs even when the proof failed --
+      # that is the case worth reporting -- and the timeout case, where the harness
+      # printed no verdict at all, renders as UNREADABLE rather than as either green
+      # or a specific failure.
+      #
+      # Gated on the proof step having actually RUN. If an earlier step failed, the
+      # proof is `skipped`, there is no capture file, and summarising anyway would
+      # raise "produced no verdict" over what is really a toolchain failure -- an
+      # annotation pointing at the wrong thing, which is its own species of the
+      # misreport this change exists to remove.
+      - name: Summarise the included proof
+        if: always() && steps.proof.conclusion != 'skipped'
+        # One line because audit-workflow-cli-flags.ts reads only the rest of the line
+        # after `bun <script>`, so a continuation-line flag is invisible to it. Honest
+        # limit: that audit skips this tool anyway (it only judges parsers that REJECT
+        # unknown flags, and this one does not), so the shape buys coverage only if the
+        # parser is ever closed. It costs nothing meanwhile.
+        run: bun src/Core.TypeScript/cluster/included-proof-summary.ts --log "$RUNNER_TEMP/included-proof.log"
 
       - name: Print cluster diagnostics
         if: always()
