@@ -382,6 +382,34 @@
               inherit pkgs;
               nixosConfig = self.nixosConfigurations.worker-gpu;
             };
+
+          # EVAL-ONLY (no VM, no boot): properties of the GPU NODE-LABEL
+          # PREFLIGHT -- the boot-time refusal that keeps `zeta.io/gpu=nvidia`
+          # a checked claim rather than an unconditional assertion.
+          #
+          # It reads the REAL nixosConfigurations.worker-gpu, so it proves the
+          # label is still EMITTED (deleting it would be its own regression),
+          # that the emitted flag is the one the checks file GENERATES rather
+          # than a second copy of the string, that the probe looks for the PCI
+          # vendor ID of the vendor the label names, that the unit is reachable
+          # and lands before k3s.service, and that the label's one live consumer
+          # -- the NVIDIA device-plugin DaemonSet's nodeSelector -- still selects
+          # the same string.
+          #
+          # It CANNOT say whether the check PASSES on any hardware: no host in
+          # this repo records having a GPU at all. Only a boot can, and the
+          # console marker to look for is ZETA_GPU_NODE_LABEL_PREFLIGHT_OK with
+          # devices >= 1. See nixos/tests/gpu-node-label-preflight-eval-test.nix.
+          gpu-node-label-preflight =
+            let
+              report = import ./nixos/tests/gpu-node-label-preflight-eval-test.nix {
+                inherit pkgs;
+                nixosConfig = self.nixosConfigurations.worker-gpu;
+              };
+            in
+            pkgs.runCommand "gpu-node-label-preflight" { inherit (report) status; } ''
+              echo "$status" | tee "$out"
+            '';
         };
 
         devShells.default = pkgs.mkShell {

@@ -14,9 +14,18 @@
 # the `nix flake check --no-build` step the ISO workflow already performs on every
 # PR touching full-ai-cluster/nixos/**. Forcing this attribute forces the asserts.
 #
-# It does NOT test the boot-time driver-bound unit — that needs real NVIDIA
-# silicon, which CI does not have. All it checks here is that the unit is absent
-# when `open = false` and present when `open = true`.
+# It does NOT test the boot-time driver-bound unit's VERDICT — that needs real
+# NVIDIA silicon, which CI does not have. What it checks about that unit is
+# REACHABILITY: it is installed in EVERY state, `open` or not.
+#
+# That expectation is the inverse of what this test asserted when it was
+# written, and the inversion is the point. Until 2026-08-21 the unit was
+# `lib.mkIf useOpen` and check A here pinned "as-shipped does NOT install the
+# boot-time driver-bound unit" — encoding as intended behaviour a guard that had
+# executed zero times on zero hosts, since gpu.nix ships `open = lib.mkDefault
+# false` and nothing overrides it. The module now installs it unconditionally
+# (see ../modules/nvidia-open-guard.nix), and A/D below are what stop it
+# regressing to `mkIf`.
 #
 # Robustness note: the states are compared to a BASELINE count of failing
 # assertions taken from the config as-shipped, rather than to the absolute number
@@ -44,6 +53,10 @@ let
       inherit failures;
       count = builtins.length failures;
       bootUnitPresent = cfg.systemd.services ? nvidia-open-driver-bound-check;
+
+      # Control for the presence test itself: a unit name no module defines.
+      # If this ever reads true, `?` is not asking what the checks think it is.
+      absentControl = cfg.systemd.services ? nvidia-open-driver-bound-check-absent-control;
     };
 
   # ---- the four gate states -------------------------------------------------
@@ -82,8 +95,12 @@ let
     { name = "A: as-shipped adds no failing assertion";
       ok = shipped.count == baseline; }
 
-    { name = "A: as-shipped does NOT install the boot-time driver-bound unit";
-      ok = !shipped.bootUnitPresent; }
+    # REACHABILITY, both directions. A guard only some hosts instantiate cannot
+    # fire where it matters; this unit was that guard until the boot probe was
+    # made unconditional. `open = false` is the state EVERY host in this repo is
+    # actually in, so it is the state the unit has to be present in.
+    { name = "A: as-shipped (open=false) DOES install the boot-time driver-bound unit";
+      ok = shipped.bootUnitPresent; }
 
     { name = "B: open=true without a preflight FAILS the build";
       ok = flipped.count == baseline + 1; }
@@ -102,6 +119,15 @@ let
 
     { name = "D: and it DOES install the boot-time driver-bound unit";
       ok = attested.bootUnitPresent; }
+
+    { name = "the boot unit is reachable in EVERY gate state, not only the flipped ones";
+      ok = builtins.all (st: st.bootUnitPresent) [ shipped flipped noEvidence attested ]; }
+
+    # Non-vacuity of the reachability property above. `? name` on
+    # `systemd.services` has to be capable of reading FALSE, or the four checks
+    # are asserting a constant and would survive the unit being deleted.
+    { name = "the presence test discriminates (an undefined unit name reads false)";
+      ok = !shipped.absentControl; }
   ];
 
   failed = builtins.filter (c: !c.ok) checks;

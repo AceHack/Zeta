@@ -6,9 +6,20 @@
 
 { config, pkgs, lib, ... }:
 
+let
+  # The label this host advertises AND the PCI probe that checks it, from one
+  # `vendor` value. gpu.nix takes the flag string from here rather than writing
+  # it out, so the claim and the check cannot drift apart -- see
+  # ./gpu-node-label-checks.nix.
+  gpuNodeLabel = import ./gpu-node-label-checks.nix {
+    inherit lib;
+    inherit (config.zeta.gpu.nodeLabelPreflight) vendor;
+  };
+in
 {
   imports = [
     ./nvidia-open-guard.nix
+    ./gpu-node-label-preflight.nix
   ];
 
   nixpkgs.config.allowUnfreePredicate = pkg:
@@ -73,7 +84,24 @@
     clinfo
   ];
 
-  services.k3s.extraFlags = lib.mkAfter [
-    "--node-label=zeta.io/gpu=nvidia"
-  ];
+  # A node label is a scheduling PROMISE, so it is CHECKED at boot rather than
+  # merely asserted at build time. This line used to read
+  # `"--node-label=zeta.io/gpu=nvidia"`, spelled out here, applied by every host
+  # that imports this module whether or not a card was present -- and every GPU
+  # host in this tree carries a placeholder hardware-configuration.nix, so
+  # nothing had ever established that any of them has one. The string now comes
+  # from the same file that generates the boot-time PCI probe
+  # (./gpu-node-label-preflight.nix, imported above and enabled by default), so
+  # a node making this claim is a node that refuses on the console when the
+  # claim is false. NixOS cannot condition this at eval time -- GPU presence is
+  # a runtime fact about the target box; see that module's header.
+  #
+  # The claim and the check share ONE switch. `lib.optional` on the preflight's
+  # own `enable` means there is no reachable state in which this node advertises
+  # a GPU that nothing verifies -- turning the guard off turns the claim off
+  # with it. An `enable` that silenced only the check would be exactly the knob
+  # this change exists to remove.
+  services.k3s.extraFlags = lib.mkAfter (
+    lib.optional config.zeta.gpu.nodeLabelPreflight.enable gpuNodeLabel.nodeLabelFlag
+  );
 }

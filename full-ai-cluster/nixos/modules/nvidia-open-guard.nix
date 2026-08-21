@@ -23,14 +23,39 @@
 # built to surface, but a failed unit means "the driver did not bind", which
 # has other causes too. Read it as a symptom, not a diagnosis.
 #
+# GATE 2 WAS UNREACHABLE UNTIL 2026-08-21, AND THAT IS WHY IT NOW RUNS ALWAYS
+# --------------------------------------------------------------------------
+# The boot unit below was `lib.mkIf useOpen` while gpu.nix ships
+# `open = lib.mkDefault false` and no host in this tree overrides it. So gate 2
+# was instantiated on zero hosts and had executed exactly zero times, while this
+# header advertised "two independent gates" — a check that did not run reading
+# as a check that passed. longhorn-node-preflight.nix:9-13 cites this file as
+# the in-tree example of that failure class, and
+# tests/longhorn-node-preflight-eval-test.nix:217-221 cites it again.
+#
+# It is now instantiated on every host that imports gpu.nix, because the
+# question it asks — did the nvidia driver bind to the cards in this box — is
+# worth an answer under the CLOSED module too, where nothing else asks it. The
+# remedy text branches on `open`, since only the open half has the pre-Turing
+# explanation.
+#
+# One case moved OUT of this unit rather than being answered twice: "there is no
+# NVIDIA display device at all" now belongs to gpu-node-label-preflight.nix,
+# which refuses on it because the node's `zeta.io/gpu` label claims otherwise.
+# Here it is declared vacuity — reported, and passed, because a driver-bound
+# check on zero devices has nothing to say.
+#
 # The preflight itself is ../../../tools/nvidia-open-preflight.ts (`bun` it) — run
 # it on the candidate node, while the closed module is still loaded.
 #
 # The EVAL-TIME gate has a falsifier: ../tests/nvidia-open-guard-gate.nix, wired as
 # `checks.x86_64-linux.nvidia-open-guard-gate` and evaluated by the
 # `nix flake check --no-build` step in .github/workflows/build-ai-cluster-iso.yml.
-# Making either assertion below vacuous turns that check red. The BOOT-TIME half
-# has no automated falsifier — it needs real NVIDIA silicon.
+# Making either assertion below vacuous turns that check red. That test also
+# pins the REACHABILITY of the boot unit (present in both the shipped and the
+# attested state), which is what stops gate 2 regressing to `mkIf`. What it
+# still cannot do is run the unit: its VERDICT needs real NVIDIA silicon, which
+# CI does not have.
 
 { config, lib, pkgs, ... }:
 
@@ -96,8 +121,16 @@ in
     # Boot-time symptom check. Oneshot and depended on by nothing, so a failure
     # is loud (`systemctl --failed`) without taking the node down harder than the
     # missing driver already has.
-    systemd.services.nvidia-open-driver-bound-check = lib.mkIf useOpen {
-      description = "Verify every NVIDIA display device has a driver bound (open kernel module guard)";
+    #
+    # NOT `lib.mkIf useOpen`. See the header: gating it on the open module made
+    # it a guard that had never once executed. It runs on every host importing
+    # gpu.nix; what `useOpen` still decides is the remedy text, below.
+    #
+    # The unit NAME keeps its `-open-` for continuity with any node that already
+    # has it, and is now historical rather than descriptive: the check applies
+    # under either kernel module. The description below says what it does.
+    systemd.services.nvidia-open-driver-bound-check = {
+      description = "Verify every NVIDIA display device has a driver bound (kernel module guard)";
       wantedBy = [ "multi-user.target" ];
       after = [ "systemd-modules-load.service" ];
       serviceConfig = {
@@ -144,21 +177,42 @@ in
           esac
         done
 
+        # DECLARED VACUITY. Zero devices is not this unit's question — it is
+        # gpu-node-label-preflight.nix's, which refuses on it because the node's
+        # zeta.io/gpu label claims a card. Saying so out loud is what stops
+        # "the driver-bound check passed" being read as "there are GPUs here".
         if [ "$total" -eq 0 ]; then
-          echo "PROBLEM: hardware.nvidia.open = true but no NVIDIA display device found"
-          exit 1
+          echo "nothing to check: no NVIDIA display device on the PCI bus."
+          echo "Whether this node should HAVE one is checked by"
+          echo "zeta-gpu-node-label-preflight.service, not here."
+          exit 0
         fi
 
         if [ "$unbound" -gt 0 ]; then
           echo ""
           echo "$unbound of $total NVIDIA display device(s) have no nvidia driver bound."
-          echo "The open kernel modules cannot bind pre-Turing GPUs (Maxwell, Pascal,"
-          echo "Volta) — if this node was flipped to open without a preflight, that is"
-          echo "the first thing to check:"
-          echo "    bun tools/nvidia-open-preflight.ts"
-          echo "Set hardware.nvidia.open = false and rebuild to restore the closed"
-          echo "module, UNLESS these are Blackwell or newer cards, which have no"
-          echo "proprietary kernel module at all."
+          ${
+            if useOpen then
+              ''
+                echo "This node runs the OPEN kernel modules. They cannot bind pre-Turing"
+                echo "GPUs (Maxwell, Pascal, Volta) — if this node was flipped to open"
+                echo "without a preflight, that is the first thing to check:"
+                echo "    bun tools/nvidia-open-preflight.ts"
+                echo "Set hardware.nvidia.open = false and rebuild to restore the closed"
+                echo "module, UNLESS these are Blackwell or newer cards, which have no"
+                echo "proprietary kernel module at all."
+              ''
+            else
+              ''
+                echo "This node runs the CLOSED kernel module (hardware.nvidia.open = false),"
+                echo "so the pre-Turing GSP explanation does not apply. Check that the module"
+                echo "loaded at all and what stopped it:"
+                echo "    lspci -nnk ; modprobe nvidia ; journalctl -b -k | grep -i nvidia"
+                echo "If these are Blackwell or newer cards there is NO proprietary kernel"
+                echo "module for them; that node needs hardware.nvidia.open = true, gated on"
+                echo "the preflight attestation this file enforces."
+              ''
+          }
           exit 1
         fi
 
