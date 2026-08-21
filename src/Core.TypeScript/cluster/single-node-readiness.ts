@@ -55,6 +55,15 @@ import { parseAllDocuments } from "yaml";
 // output. `stringCompare` also walks code points rather than UTF-16 code units,
 // so astral characters order the same way the other oracles order them.
 import { stringCompare } from "../collation/collation.ts";
+import {
+  DEFAULT_CATALOGUE_PATH,
+  crossCheckClaims,
+  loadCatalogue,
+  profileBringUpGib,
+  profileTotalGib,
+  verifyProfileApplied,
+  type ProfileCatalogue,
+} from "./storage-profiles.ts";
 
 const REPO_ROOT = resolve(import.meta.dir, "../../..");
 
@@ -97,13 +106,33 @@ export interface RootAppIdentity {
 }
 
 export interface Finding {
-  readonly check: "root-app-collision" | "storage-budget" | "false-redundancy" | "capacity-provenance";
+  readonly check:
+    | "root-app-collision"
+    | "storage-budget"
+    | "false-redundancy"
+    | "capacity-provenance"
+    | "storage-profile";
   readonly severity: "blocker" | "warning";
   readonly message: string;
   readonly detail: readonly string[];
 }
 
 export interface Ledger {
+  /**
+   * The storage size profile THIS deployment runs, named in
+   * `full-ai-cluster/k8s/storage-profiles.json`.
+   *
+   * It lives in the ledger rather than in the catalogue because it is a
+   * property of this cluster's hardware, not of the ladder: the catalogue is
+   * the same everywhere, the rung is not (Aaron 2026-08-20 — "some of our
+   * boxes are NASs some are regular PCs").
+   *
+   * `readLedger` REFUSES a ledger that omits it. A default here would be the
+   * quiet kind of vacuity: the auditor would compare the manifests against a
+   * profile nobody chose and report agreement, which is a check that did not
+   * run wearing the face of one that passed.
+   */
+  readonly activeStorageProfile: string;
   /** Usable disk per node in GiB, dedicated to the replicated-storage class. */
   readonly nodeDiskGib: number;
   readonly nodeCount: number;
@@ -560,17 +589,44 @@ export function capacityShortfallKey(storageClass: string, declaredGib: number, 
   return `${storageClass}=${declaredGib.toFixed(0)}GiB>>${(node.totalGib ?? 0).toFixed(0)}GiB@${node.hostname}`;
 }
 
-export function findCapacityProvenance(
+/**
+ * Per-budgeted-class declared totals.
+ *
+ * `override` is the storage-profile catalogue's number for that class, and it
+ * WINS when present. It has to: the derivation below is measurably blind in
+ * both directions — it cannot see pod counts that live in an upstream chart
+ * (mimir renders 3 ingesters and 3 store-gateways from zone-aware defaults our
+ * YAML never mentions: +200 GiB), and its nearest-enclosing-replicas heuristic
+ * invents ones that do not exist (redis master borrows the neighbouring
+ * `replica.replicaCount: 2`: -10 GiB). Comparing a disk against the smaller of
+ * two numbers because it is the one we happened to derive is how a gate stops
+ * being one.
+ */
+export function declaredTotals(
   claims: readonly StorageClaim[],
-  ledger: Ledger,
-  nodes: readonly MeasuredNode[],
-): readonly Finding[] {
-  const budgeted = [...ledger.budgetedStorageClasses].sort((a, b) => stringCompare(a, b));
+  budgeted: readonly string[],
+  override: ReadonlyMap<string, number> | null,
+): ReadonlyMap<string, number> {
   const totals = new Map<string, number>();
   for (const claim of claims) {
     if (!budgeted.includes(claim.storageClass)) continue;
     totals.set(claim.storageClass, (totals.get(claim.storageClass) ?? 0) + claim.gibibytes * claim.replicas);
   }
+  if (override === null) return totals;
+  for (const [storageClass, gib] of override) {
+    if (budgeted.includes(storageClass)) totals.set(storageClass, gib);
+  }
+  return totals;
+}
+
+export function findCapacityProvenance(
+  claims: readonly StorageClaim[],
+  ledger: Ledger,
+  nodes: readonly MeasuredNode[],
+  override: ReadonlyMap<string, number> | null = null,
+): readonly Finding[] {
+  const budgeted = [...ledger.budgetedStorageClasses].sort((a, b) => stringCompare(a, b));
+  const totals = declaredTotals(claims, budgeted, override);
   if (totals.size === 0) return [];
 
   const floor = verifiedNodeCapacity(nodes);
@@ -633,13 +689,19 @@ export function findCapacityProvenance(
 // Budget + redundancy findings
 // ---------------------------------------------------------------------------
 
-export function findStorageBudgetOverruns(claims: readonly StorageClaim[], ledger: Ledger): readonly Finding[] {
+export function findStorageBudgetOverruns(
+  claims: readonly StorageClaim[],
+  ledger: Ledger,
+  override: ReadonlyMap<string, number> | null = null,
+): readonly Finding[] {
   const budget = ledger.nodeDiskGib * ledger.nodeCount;
+  const budgeted = [...ledger.budgetedStorageClasses].sort((a, b) => stringCompare(a, b));
+  const totals = declaredTotals(claims, budgeted, override);
   const findings: Finding[] = [];
-  for (const storageClass of [...ledger.budgetedStorageClasses].sort((a, b) => stringCompare(a, b))) {
+  for (const storageClass of budgeted) {
     const matching = claims.filter((claim) => claim.storageClass === storageClass);
     if (matching.length === 0) continue;
-    const total = matching.reduce((sum, claim) => sum + claim.gibibytes * claim.replicas, 0);
+    const total = totals.get(storageClass) ?? 0;
     if (total <= budget) continue;
     findings.push({
       check: "storage-budget",
@@ -755,23 +817,96 @@ export const DEFAULT_ROOTS: readonly string[] = [
   "infra/k8s/bootstrap",
 ];
 
+/**
+ * The `storage-profile` check: does the tree actually run the profile the
+ * ledger says it runs, and does the catalogue still cover the tree?
+ *
+ * Three ways to go red, and none of them is "the total looks wrong":
+ *   - the ledger names a profile the catalogue does not define
+ *   - a manifest's size or pod count differs from the active profile's
+ *   - the two oracles disagree about what is in the tree (a claim with no row,
+ *     a row with no claim, or a pod count our own YAML answers differently)
+ *
+ * Bring-up scheduling is deliberately NOT a finding. `scheduledAtBringUp:
+ * false` is a report, because it is one `argocd app sync` away from false and
+ * a gate that discounted it would pass today and fail the moment anyone acted.
+ */
+export function findStorageProfileDrift(
+  ledger: Ledger,
+  catalogue: ProfileCatalogue,
+  storageClaims: readonly StorageClaim[],
+  repoRoot = REPO_ROOT,
+): readonly Finding[] {
+  const profile = ledger.activeStorageProfile;
+  if (!catalogue.profiles.includes(profile)) {
+    return [
+      {
+        check: "storage-profile",
+        severity: "blocker",
+        message:
+          `The ledger's activeStorageProfile is "${profile}", which the storage-profile catalogue does not ` +
+          `define. Known profiles: ${catalogue.profiles.join(", ")}. Nothing can be checked against a rung ` +
+          `that does not exist, and "cannot check" must never read as "checked".`,
+        detail: [`catalogue: ${DEFAULT_CATALOGUE_PATH}`],
+      },
+    ];
+  }
+  const drift = verifyProfileApplied(catalogue, profile, repoRoot);
+  const cross = catalogue.claims.length === 0 ? [] : crossCheckClaims(catalogue, storageClaims, "longhorn", profile);
+  const findings: Finding[] = [];
+  if (drift.length > 0) {
+    findings.push({
+      check: "storage-profile",
+      severity: "blocker",
+      message:
+        `${String(drift.length)} manifest value(s) disagree with the active storage profile "${profile}". ` +
+        `The ladder is only worth its arithmetic if the YAML matches it: switch with ` +
+        `\`bun src/Core.TypeScript/cluster/storage-profiles.ts --profile ${profile} --apply\`, or change ` +
+        `activeStorageProfile in the ledger to the rung the tree actually runs.`,
+      detail: drift.map((finding) => `${finding.claimId}: ${finding.problem}`).sort((a, b) => stringCompare(a, b)),
+    });
+  }
+  if (cross.length > 0) {
+    findings.push({
+      check: "storage-profile",
+      severity: "blocker",
+      message:
+        `${String(cross.length)} disagreement(s) between the storage-profile catalogue and this auditor's own ` +
+        `extraction of the tree. Two oracles read the same manifests; where they differ, one is wrong and the ` +
+        `declared-capacity total that guards the disk is built on the wrong one.`,
+      detail: cross.map((finding) => `${finding.claimId}: ${finding.problem}`).sort((a, b) => stringCompare(a, b)),
+    });
+  }
+  return findings;
+}
+
 export function auditAll(
   ledger: Ledger,
   roots: readonly string[] = DEFAULT_ROOTS,
   repoRoot = REPO_ROOT,
   registrationsRoot = DEFAULT_REGISTRATIONS_ROOT,
+  catalogue: ProfileCatalogue | null = null,
 ) {
   const manifests = loadManifests(roots, repoRoot);
   const measuredNodes = collectMeasuredNodes(repoRoot, registrationsRoot);
   const replicaClaims = manifests.flatMap((manifest) => extractReplicaClaims(manifest, ledger.nodeCount));
   const storageClaims = manifests.flatMap((manifest) => extractStorageClaims(manifest));
+  // The profile total REPLACES the derived one for budgeted classes when a
+  // catalogue is supplied. `main` always supplies one and `readLedger` refuses
+  // a ledger with no activeStorageProfile, so the null branch is reachable only
+  // from tests over synthetic trees that have no catalogue to be checked against.
+  const override =
+    catalogue === null || !catalogue.profiles.includes(ledger.activeStorageProfile)
+      ? null
+      : new Map<string, number>([["longhorn", profileTotalGib(catalogue, ledger.activeStorageProfile)]]);
   const findings = [
     ...findRootAppCollisions(collectRootAppIdentities(manifests), ledger.acknowledgedRootAppDuplicates),
-    ...findCapacityProvenance(storageClaims, ledger, measuredNodes),
-    ...findStorageBudgetOverruns(storageClaims, ledger),
+    ...(catalogue === null ? [] : findStorageProfileDrift(ledger, catalogue, storageClaims, repoRoot)),
+    ...findCapacityProvenance(storageClaims, ledger, measuredNodes, override),
+    ...findStorageBudgetOverruns(storageClaims, ledger, override),
     ...findFalseRedundancy(replicaClaims, ledger),
   ];
-  return { manifests: manifests.length, measuredNodes, replicaClaims, storageClaims, findings } as const;
+  return { manifests: manifests.length, measuredNodes, replicaClaims, storageClaims, catalogue, findings } as const;
 }
 
 /** Per-StorageClass declared capacity in GiB, descending. This is the hardware spec, derived. */
@@ -789,7 +924,17 @@ export function readLedger(path: string, repoRoot = REPO_ROOT): Ledger {
   if (typeof parsed.nodeDiskGib !== "number" || typeof parsed.nodeCount !== "number") {
     throw new Error(`${path}: nodeDiskGib and nodeCount are required numbers`);
   }
+  // REFUSED, not defaulted. A default rung would make the storage-profile check
+  // report agreement with a profile nobody selected — the vacuity class exactly.
+  if (typeof parsed.activeStorageProfile !== "string" || parsed.activeStorageProfile.trim().length === 0) {
+    throw new Error(
+      `${path}: activeStorageProfile is required and must name a profile in ${DEFAULT_CATALOGUE_PATH}. ` +
+        `There is no default: which rung of the storage ladder a deployment runs is a property of its hardware, ` +
+        `and guessing it would make the profile check unable to fail.`,
+    );
+  }
   return {
+    activeStorageProfile: parsed.activeStorageProfile,
     nodeDiskGib: parsed.nodeDiskGib,
     nodeCount: parsed.nodeCount,
     budgetedStorageClasses: parsed.budgetedStorageClasses ?? [],
@@ -822,22 +967,62 @@ function main(argv: readonly string[]): void {
   }
 
   let report: ReturnType<typeof auditAll>;
+  let catalogue: ProfileCatalogue;
   try {
-    report = auditAll(ledger);
+    // Loaded (and validated) BEFORE the audit, so a malformed catalogue aborts
+    // rather than quietly falling through to the derived totals.
+    catalogue = loadCatalogue(DEFAULT_CATALOGUE_PATH);
+    report = auditAll(ledger, DEFAULT_ROOTS, REPO_ROOT, DEFAULT_REGISTRATIONS_ROOT, catalogue);
   } catch (error) {
     console.error(`single-node readiness ABORTED: ${error instanceof Error ? error.message : String(error)}`);
     process.exit(1);
   }
+  const profile = ledger.activeStorageProfile;
+  const profileKnown = catalogue.profiles.includes(profile);
   if (argv.includes("--json")) {
-    console.log(JSON.stringify({ ledger, ...report, storageTotals: storageTotals(report.storageClaims) }, null, 2));
+    console.log(
+      JSON.stringify(
+        {
+          ledger,
+          ...report,
+          storageTotals: storageTotals(report.storageClaims),
+          profileTotals: Object.fromEntries(
+            catalogue.profiles.map((name) => [
+              name,
+              { declaredGib: profileTotalGib(catalogue, name), bringUpGib: profileBringUpGib(catalogue, name) },
+            ]),
+          ),
+        },
+        null,
+        2,
+      ),
+    );
   } else {
-    console.log(`single-node readiness: ${report.manifests} manifests, nodeCount=${ledger.nodeCount}`);
+    console.log(
+      `single-node readiness: ${report.manifests} manifests, nodeCount=${ledger.nodeCount}, ` +
+        `storage profile=${profile}`,
+    );
+    console.log("\nStorage profile ladder (declared = size x pods over every longhorn claim):");
+    for (const name of catalogue.profiles) {
+      const declared = profileTotalGib(catalogue, name);
+      console.log(
+        `  ${name === profile ? "*" : " "} ${name.padEnd(10)} ${declared.toFixed(0).padStart(5)} GiB declared, ` +
+          `${profileBringUpGib(catalogue, name).toFixed(0).padStart(5)} GiB provisions at bring-up` +
+          (name === profile ? "   <- ACTIVE (ledger.activeStorageProfile)" : ""),
+      );
+    }
+    console.log(
+      "  Bring-up is the subset whose Application is actually applied on a fresh sync. It is a REPORT, never a\n" +
+        "  discount: Longhorn's StorageClass is volumeBindingMode Immediate, so any PVC that gets applied\n" +
+        "  provisions with zero pods, and a manual-sync app is one `argocd app sync` from being counted.",
+    );
     console.log("\nDerived per-node storage requirement (sum of declared PVC capacity x replicas):");
     const floor = verifiedNodeCapacity(report.measuredNodes);
     for (const [storageClass, gib] of storageTotals(report.storageClaims)) {
       const budgeted = ledger.budgetedStorageClasses.includes(storageClass);
+      const authoritative = budgeted && profileKnown ? profileTotalGib(catalogue, profile) : null;
       console.log(
-        `  ${storageClass.padEnd(18)} ${gib.toFixed(0).padStart(6)} GiB` +
+        `  ${storageClass.padEnd(18)} ${gib.toFixed(0).padStart(6)} GiB derived` +
           // "aspirational" is not decoration. nodeDiskGib is unsigned by the
           // ledger's own admission, so a bare "(budget N GiB)" reads as a
           // measurement it is not.
@@ -845,6 +1030,15 @@ function main(argv: readonly string[]): void {
             ? `  (nodeDiskGib budget ${(ledger.nodeDiskGib * ledger.nodeCount).toFixed(0)} GiB, ASPIRATIONAL)`
             : "  (unbudgeted)"),
       );
+      // The derived number is printed above because it is a real second reading,
+      // and printed as SUPERSEDED here because it is the blind one: it cannot see
+      // upstream chart pod counts and it invents some of ours.
+      if (authoritative !== null && Math.abs(authoritative - gib) > 0.5) {
+        console.log(
+          `  ${" ".repeat(18)} ${authoritative.toFixed(0).padStart(6)} GiB CHECKED (profile "${profile}") ` +
+            `— supersedes the derived ${gib.toFixed(0)} GiB; the extractor cannot see chart-default pod counts`,
+        );
+      }
     }
     console.log(
       floor === null

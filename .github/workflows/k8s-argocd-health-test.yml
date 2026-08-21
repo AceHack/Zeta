@@ -74,6 +74,11 @@ on:
       - "full-ai-cluster/k8s/applications/**"
       - "full-ai-cluster/k8s/bootstrap/**"
       - "full-ai-cluster/k8s/single-node-budget.json"
+      # The storage size profile ladder. The ledger's activeStorageProfile
+      # names a rung in this catalogue and the auditor compares the manifests
+      # against it, so a change to either side moves what the capacity gate
+      # convicts on -- the same reason single-node-budget.json is watched.
+      - "full-ai-cluster/k8s/storage-profiles.json"
       # The MEASURED comparator for the capacity gate. A node registering (or
       # re-registering with different disks) moves the hardware bound the audit
       # compares against, so it has to re-run -- otherwise a smaller node could
@@ -81,6 +86,8 @@ on:
       - "maintainers/*/cluster-nodes/**"
       - "src/Core.TypeScript/cluster/single-node-readiness.ts"
       - "src/Core.TypeScript/cluster/single-node-readiness.test.ts"
+      - "src/Core.TypeScript/cluster/storage-profiles.ts"
+      - "src/Core.TypeScript/cluster/storage-profiles.test.ts"
       - "docs/backlog/P1/081KSXN940008QG0R000SCP2H1-kubernetes-argocd-kind-k3d-integration-health-tests-separate.md"
       - ".github/workflows/k8s-argocd-health-test.yml"
       - ".mise.toml"
@@ -113,6 +120,11 @@ on:
       - "full-ai-cluster/k8s/applications/**"
       - "full-ai-cluster/k8s/bootstrap/**"
       - "full-ai-cluster/k8s/single-node-budget.json"
+      # The storage size profile ladder. The ledger's activeStorageProfile
+      # names a rung in this catalogue and the auditor compares the manifests
+      # against it, so a change to either side moves what the capacity gate
+      # convicts on -- the same reason single-node-budget.json is watched.
+      - "full-ai-cluster/k8s/storage-profiles.json"
       # The MEASURED comparator for the capacity gate. A node registering (or
       # re-registering with different disks) moves the hardware bound the audit
       # compares against, so it has to re-run -- otherwise a smaller node could
@@ -120,6 +132,8 @@ on:
       - "maintainers/*/cluster-nodes/**"
       - "src/Core.TypeScript/cluster/single-node-readiness.ts"
       - "src/Core.TypeScript/cluster/single-node-readiness.test.ts"
+      - "src/Core.TypeScript/cluster/storage-profiles.ts"
+      - "src/Core.TypeScript/cluster/storage-profiles.test.ts"
       - "docs/backlog/P1/081KSXN940008QG0R000SCP2H1-kubernetes-argocd-kind-k3d-integration-health-tests-separate.md"
       - ".github/workflows/k8s-argocd-health-test.yml"
       - ".mise.toml"
@@ -229,6 +243,14 @@ jobs:
       # node-ad1efd (1047 GiB)" before that shortfall was recorded as debt.
       - name: Run single-node readiness unit tests
         run: bun test src/Core.TypeScript/cluster/single-node-readiness.test.ts
+
+      # The storage-profile ladder's own falsifiers. Run SEPARATELY rather than
+      # folded into the audit step: the audit checks the tree against the ACTIVE
+      # rung, which says nothing about whether the validator that guards the
+      # catalogue can still go red. A ladder whose refusals never execute in CI
+      # is a check that did not run wearing the face of one that passed.
+      - name: Run storage size profile unit tests
+        run: bun test src/Core.TypeScript/cluster/storage-profiles.test.ts
 
       - name: Audit single-node readiness against the checked-in budget ledger
         run: bun src/Core.TypeScript/cluster/single-node-readiness.ts

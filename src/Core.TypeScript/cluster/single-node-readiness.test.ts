@@ -35,6 +35,11 @@ import {
 } from "./single-node-readiness.ts";
 
 const LEDGER: Ledger = {
+  // Synthetic-tree fixture. The name is deliberately NOT one of the real
+  // catalogue's rungs: these tests audit trees that have no storage-profile
+  // catalogue, and pinning a real rung here would imply a check that is not
+  // running in them.
+  activeStorageProfile: "test-fixture",
   nodeDiskGib: 100,
   nodeCount: 1,
   budgetedStorageClasses: ["longhorn"],
@@ -483,6 +488,29 @@ describe("findCapacityProvenance", () => {
     expect(findings[0]?.message).toContain("UNVERIFIED");
   });
 
+  // The storage-profile override replaces the DECLARED side of the comparison.
+  // It must not be able to reach the MEASURED side: a profile small enough to
+  // fit anything still has nothing to be compared against when no hardware is
+  // registered, and "it would have fitted" is not a measurement.
+  test("RED: a storage-profile override does NOT bypass the UNVERIFIED refusal", () => {
+    const tiny = new Map<string, number>([["longhorn", 1]]);
+    const findings = findCapacityProvenance([LONGHORN_CLAIM], LEDGER, [], tiny);
+    expect(findings).toHaveLength(1);
+    expect(findings[0]?.message).toContain("UNVERIFIED");
+  });
+
+  // ...and it must not be able to make an oversubscription disappear either.
+  // The override is the CHECKED number, so it convicts on its own arithmetic.
+  test("a storage-profile override convicts on ITS total, not the derived one", () => {
+    const over = new Map<string, number>([["longhorn", 9_000]]);
+    const findings = findCapacityProvenance([LONGHORN_CLAIM], LEDGER, [big], over);
+    expect(findings).toHaveLength(1);
+    expect(findings[0]?.message).toContain("9000 GiB");
+    // ...and the same claims WITHOUT the override are fine against `big`,
+    // so the finding is the override's doing rather than the fixture's.
+    expect(findCapacityProvenance([LONGHORN_CLAIM], LEDGER, [big])).toEqual([]);
+  });
+
   test("the UNVERIFIED refusal is NOT suppressible by an acknowledgement", () => {
     const key = capacityShortfallKey("longhorn", 1500, blind);
     const ledger: Ledger = { ...LEDGER, acknowledgedCapacityShortfall: [key, "longhorn"] };
@@ -695,9 +723,44 @@ describe("auditAll end-to-end over a synthetic tree", () => {
 });
 
 describe("the checked-in ledger keeps main green", () => {
+  // Mirrors main() exactly, catalogue included. A version of this test that
+  // omitted the catalogue would audit the repo against the DERIVED longhorn
+  // total instead of the checked one -- i.e. it would assert green on a
+  // comparison the CI command does not make.
   test("the repo audits clean against its own ledger", async () => {
+    const { readLedger, DEFAULT_LEDGER_PATH, DEFAULT_ROOTS, DEFAULT_REGISTRATIONS_ROOT } =
+      await import("./single-node-readiness.ts");
+    const { loadCatalogue } = await import("./storage-profiles.ts");
+    const report = auditAll(
+      readLedger(DEFAULT_LEDGER_PATH),
+      DEFAULT_ROOTS,
+      undefined,
+      DEFAULT_REGISTRATIONS_ROOT,
+      loadCatalogue(),
+    );
+    expect(report.findings).toEqual([]);
+  });
+
+  test("RED: the same audit WITHOUT the catalogue is a different comparison", async () => {
+    // Proof the catalogue override is load-bearing rather than decorative: the
+    // acknowledged shortfall key pins 1599 GiB (the checked total), so auditing
+    // against the extractor's 1409 GiB no longer matches the acknowledgement and
+    // the capacity finding fires. If this ever goes green, the two totals have
+    // converged and the override has stopped doing anything.
     const { readLedger, DEFAULT_LEDGER_PATH } = await import("./single-node-readiness.ts");
     const report = auditAll(readLedger(DEFAULT_LEDGER_PATH));
-    expect(report.findings).toEqual([]);
+    expect(report.findings.map((finding) => finding.check)).toContain("capacity-provenance");
+  });
+
+  test("RED: readLedger refuses a ledger with no activeStorageProfile", async () => {
+    const { readLedger } = await import("./single-node-readiness.ts");
+    const dir = mkdtempSync(join(tmpdir(), "zeta-ledger-"));
+    try {
+      const path = join(dir, "ledger.json");
+      writeFileSync(path, JSON.stringify({ nodeDiskGib: 100, nodeCount: 1 }), "utf8");
+      expect(() => readLedger(path, dir)).toThrow(/activeStorageProfile/);
+    } finally {
+      rmSync(dir, { recursive: true, force: true });
+    }
   });
 });
