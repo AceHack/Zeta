@@ -1,0 +1,12 @@
+{
+  "pr_number": 13234,
+  "archive_path": "docs/history/pr-reviews/PR-13234-docs-runbooks-rehearse-the-metal-bringup-against-the-code-that-exists-the-rename.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-21T15:38:16.006Z",
+  "schema_version": "v1",
+  "commit_sha": "9f32eef0a87ba347bcf85d9bee0e800ad8f55069",
+  "title": "docs(runbooks): rehearse the metal bringup against the code that exists — the rename tolerance was never real",
+  "state": "MERGED",
+  "merged_at": "2026-08-21T15:37:32Z",
+  "head_ref": "runbook/metal-bringup-rehearsed-against-current-code"
+}
