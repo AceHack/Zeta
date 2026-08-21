@@ -153,8 +153,24 @@ jobs:
       # `gate`. It belongs in gate.yml's cross-verify floor beside
       # audit-proof-lineage-binaries.ts so it blocks EVERY PR; that file is
       # owned elsewhere this round.
-      - name: Audit flash-entry-point parity (integrity gate + sole-definition)
-        run: bun src/Core.TypeScript/hygiene/audit-flash-entrypoint-parity.ts
+      # HELD BACK, NOT DROPPED. The step that ran here invoked
+      # src/Core.TypeScript/hygiene/audit-flash-entrypoint-parity.ts, which does
+      # not exist on main -- it was part of a source-half change deliberately
+      # held back while another PR was in flight, and the CI half landed without
+      # it in #13093. The step therefore failed on a missing file on every run,
+      # and because the ISO upload, the digest sidecar and cosign signing are all
+      # gated behind it, the ISO artifact stopped being produced entirely.
+      #
+      # It is removed rather than stubbed because a stub that always passes is
+      # worse than no step: it would report parity as CHECKED while checking
+      # nothing.
+      #
+      # The gap it guards is REAL and still live: the ISO integrity check exists
+      # ONLY in the macOS arm. flash-usb-linux.ts and flash-usb-windows.ts write
+      # an image to a block device with no manifest verification at all. Filed as
+      # workitems/081M0HG7X7B087G0R002A05DAP-*, which also records why the step
+      # cannot be restored before that is fixed -- an honest parity audit fails on
+      # main today, because parity is genuinely violated.
 
       # Layer 2a (structural-behavioral) — asserts logical relationships
       # between iter-5.4 substrate elements (gh auth setup-git is INSIDE
