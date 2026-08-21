@@ -1,0 +1,12 @@
+{
+  "pr_number": 13410,
+  "archive_path": "docs/history/pr-reviews/PR-13410-fix-cluster-three-of-the-four-newly-visible-argocd-defects-were-argocd-semantics.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-21T22:33:31.234Z",
+  "schema_version": "v1",
+  "commit_sha": "eb4e9fd7bf8f17b34cecba85f12fb7beb2308009",
+  "title": "fix(cluster): three of the four newly-visible ArgoCD defects were ArgoCD semantics — 28 → 31 asserted",
+  "state": "MERGED",
+  "merged_at": "2026-08-21T22:32:52Z",
+  "head_ref": "fix/four-newly-visible-app-defects"
+}
