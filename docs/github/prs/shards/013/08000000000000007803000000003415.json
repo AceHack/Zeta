@@ -1,0 +1,15 @@
+{
+  "pr_number": 13333,
+  "archive_path": "docs/history/pr-reviews/PR-13333-feat-hygiene-verify-every-argocd-targetrevision-names-a-version-upstream-publish.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7kew4v",
+    "thread:PRRT_kwDOSF9kNM6bRqCQ"
+  ],
+  "fetched_at": "2026-08-21T20:19:25.708Z",
+  "schema_version": "v1",
+  "commit_sha": "1c84a8b2b2b10959b9604fe12834a35106084994",
+  "title": "feat(hygiene): verify every ArgoCD targetRevision names a version upstream published",
+  "state": "MERGED",
+  "merged_at": "2026-08-21T20:18:44Z",
+  "head_ref": "feat/verify-chart-target-revisions-are-published"
+}
