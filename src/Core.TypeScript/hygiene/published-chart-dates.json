@@ -2,6 +2,11 @@
   "note": "Publish dates for every chart version in published-chart-versions.json, keyed the same <repoURL>|<chart>. Collected by the SAME --refresh pass that writes the version snapshot -- a Helm index.yaml carries `created` on every entry, so these cost no extra request. Read offline by report-chart-currency.ts to tell `behind` apart from `abandoned`. A coordinate absent here, or a version absent from its `created` map, is UNKNOWN and must never render as recent.",
   "refreshCommand": "bun src/Core.TypeScript/hygiene/audit-chart-target-revisions.ts --refresh",
   "entries": {
+    "code.forgejo.org/forgejo-helm|forgejo": {
+      "source": "unavailable",
+      "unavailable": "OCI registries expose tags, not publish timestamps: /v2/<repo>/tags/list carries no `created` field, and reading one would cost a manifest fetch per tag. Publish dates for this coordinate are UNAVAILABLE, which is not the same fact as `published recently`.",
+      "created": {}
+    },
     "ghcr.io/actions/actions-runner-controller-charts|gha-runner-scale-set": {
       "source": "unavailable",
       "unavailable": "OCI registries expose tags, not publish timestamps: /v2/<repo>/tags/list carries no `created` field, and reading one would cost a manifest fetch per tag. Publish dates for this coordinate are UNAVAILABLE, which is not the same fact as `published recently`.",
@@ -3357,11 +3362,6 @@
         "1.0.1": "2025-01-02T21:34:24.923185443-08:00",
         "1.0.0": "2025-01-02T21:34:24.921774338-08:00"
       }
-    },
-    "https://code.forgejo.org/forgejo-helm|forgejo": {
-      "source": "unavailable",
-      "unavailable": "GET https://code.forgejo.org/forgejo-helm/index.yaml -> HTTP 404",
-      "created": {}
     },
     "https://dapr.github.io/helm-charts|dapr": {
       "source": "helm-index-created",
