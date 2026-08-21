@@ -1,8 +1,8 @@
 {
-  "t": "2026-08-21T21:39:14.661Z",
-  "total_events": 3510,
-  "last_action": "explore",
-  "last_mode": "explore",
+  "t": "2026-08-21T22:06:31.096Z",
+  "total_events": 3523,
+  "last_action": "attest_peer",
+  "last_mode": "work",
   "last_agent": "alexa",
   "entropy_state": 0,
   "entropy_heat": 0,
