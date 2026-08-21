@@ -126,7 +126,12 @@ tools/tla/specs/.tlacache/
 # bun + TypeScript tooling — post-setup scripting surface per
 # docs/DECISIONS/2026-04-20-tools-scripting-language.md. The
 # bun.lock file IS committed; node_modules is not.
+# Trailing slash matches a DIRECTORY only. A symlink named `node_modules`
+# slips past it -- which is exactly how one pointing at an agent scratch
+# dir (/tmp/zeta-work/node_modules) reached a PR and broke every npm
+# install on the runner. Both forms are listed so neither shape lands.
 node_modules/
+node_modules
 
 # Playwright MCP session artifacts — browser automation
 # snapshots captured during MCP-tool use. Ephemeral; one set
