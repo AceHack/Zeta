@@ -1,0 +1,12 @@
+{
+  "pr_number": 11510,
+  "archive_path": "docs/history/pr-reviews/PR-11510-feat-persona-keys-a-stalled-frost-verifier-can-tell-it-is-stalled-the-chain-gap-.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-21T08:48:51.866Z",
+  "schema_version": "v1",
+  "commit_sha": "5ae461d47ebd1cafe4417fea0797d455403ac569",
+  "title": "feat(persona-keys): a stalled FROST verifier can tell it is stalled — the chain gap probe",
+  "state": "MERGED",
+  "merged_at": "2026-08-17T14:59:46Z",
+  "head_ref": "shadow/frost-delta-rotation-revoke"
+}
