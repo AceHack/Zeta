@@ -1,0 +1,15 @@
+{
+  "pr_number": 13391,
+  "archive_path": "docs/history/pr-reviews/PR-13391-feat-cluster-ephemeral-vault-init-unseal-in-the-kind-lane-so-vault-is-asserted.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7khnnQ",
+    "thread:PRRT_kwDOSF9kNM6bTkq4"
+  ],
+  "fetched_at": "2026-08-21T22:58:11.180Z",
+  "schema_version": "v1",
+  "commit_sha": "575ce14b76d933febd966d4556387d8f4c10e469",
+  "title": "feat(cluster): ephemeral Vault init+unseal in the kind lane, so `vault` is asserted",
+  "state": "MERGED",
+  "merged_at": "2026-08-21T22:57:30Z",
+  "head_ref": "feat/ephemeral-vault-init-in-ci"
+}
