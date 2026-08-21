@@ -1,0 +1,12 @@
+{
+  "pr_number": 13280,
+  "archive_path": "docs/history/pr-reviews/PR-13280-fix-full-ai-cluster-the-gpu-node-label-was-a-scheduling-promise-nothing-checked-.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-21T17:41:07.709Z",
+  "schema_version": "v1",
+  "commit_sha": "3056e222f8f1b84d48fad57927547c56e833ec4c",
+  "title": "fix(full-ai-cluster): the GPU node label was a scheduling promise nothing checked — probe the PCI bus at boot and refuse",
+  "state": "MERGED",
+  "merged_at": "2026-08-21T17:40:27Z",
+  "head_ref": "fix/gpu-label-reflects-actual-hardware"
+}
