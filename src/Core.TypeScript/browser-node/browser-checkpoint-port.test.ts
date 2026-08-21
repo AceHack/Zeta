@@ -23,6 +23,9 @@ describe("browser checkpoint port", () => {
     expect(browserCheckpointRecordNodeId("room", "node-a")).not.toBe(
       browserCheckpointRecordNodeId("causal-corrections", "node-a"),
     );
+    expect(browserCheckpointRecordNodeId("causal-corrections", "node-a")).not.toBe(
+      browserCheckpointRecordNodeId("causal-handoffs", "node-a"),
+    );
     expect(browserCheckpointRecordNodeId("room", "")).toBe("");
   });
 

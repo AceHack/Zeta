@@ -11,7 +11,7 @@ import type {
 import type { ZetaDbTickReadout } from "../zetadb/zeta-db-node";
 import type { BrowserDatabaseIntentReadout } from "./browser-database-intent-outbox";
 
-export const BROWSER_MULTITAB_SMOKE_SCHEMA = "zeta.browser-multitab-smoke.v15" as const;
+export const BROWSER_MULTITAB_SMOKE_SCHEMA = "zeta.browser-multitab-smoke.v16" as const;
 
 interface IrisPeerReadout {
   readonly id: string;
@@ -137,11 +137,14 @@ export interface BrowserMultitabSmokeTranscript {
     readonly removed: boolean;
   };
   readonly afterRetraction: {
+    readonly pendingHandoffCheckpoint: BrowserMultitabCausalReadout;
     readonly pageCWhilePending: BrowserMultitabPageObservation;
+    readonly pageCAfterPendingReload: BrowserMultitabPageObservation;
     readonly pageCAfterFirstAcknowledgement: BrowserMultitabPageObservation;
     readonly pageC: BrowserMultitabPageObservation;
     readonly pageD: BrowserMultitabPageObservation;
     readonly pageE: BrowserMultitabPageObservation;
+    readonly finalHandoffCheckpoint: BrowserMultitabCausalReadout;
   };
   readonly intentRecovery: {
     readonly recovered: DarkHallDatabaseReadout;
@@ -755,6 +758,7 @@ function validateCausalCheckpointRestart(transcript: BrowserMultitabSmokeTranscr
 
   for (const [label, observation] of [
     ["page C", transcript.afterRestart.pageC],
+    ["page C after pending reload", transcript.afterRetraction.pageCAfterPendingReload],
     ["page D", transcript.afterRetraction.pageD],
     ["page E", transcript.afterRetraction.pageE],
   ] as const) {
@@ -805,6 +809,31 @@ function validateCausalCheckpointRestart(transcript: BrowserMultitabSmokeTranscr
     failures.push("page C failed while retaining concurrent causal peer offers");
   }
 
+  const persistedHandoffs = transcript.afterRetraction.pendingHandoffCheckpoint;
+  if (
+    persistedHandoffs.handoffCheckpoint.state !== "saved" ||
+    persistedHandoffs.handoffCheckpoint.currentRevision === null ||
+    persistedHandoffs.handoffCheckpoint.payloadBytes === null ||
+    persistedHandoffs.handoffCheckpoint.payloadBytes <= 0 ||
+    persistedHandoffs.handoff.pendingHandoffs !== 2
+  ) {
+    failures.push("page C did not durably checkpoint both pending peer offers before reload");
+  }
+  if (transcript.afterRetraction.pageCAfterPendingReload.source.ok) {
+    const recovered = transcript.afterRetraction.pageCAfterPendingReload.source.value.causal;
+    if (
+      recovered.handoff.pendingHandoffs !== 2 ||
+      recovered.handoff.maxPendingHandoffs !== 7 ||
+      recovered.handoffCheckpoint.state !== "saved" ||
+      recovered.handoffCheckpoint.recoveredRevision !== persistedHandoffs.handoffCheckpoint.currentRevision ||
+      recovered.handoffCheckpoint.currentRevision !== persistedHandoffs.handoffCheckpoint.currentRevision
+    ) {
+      failures.push("page C did not recover both identified peer offers after a real browser reload");
+    }
+  } else {
+    failures.push("page C failed while reloading its pending peer handoff checkpoint");
+  }
+
   if (transcript.afterRetraction.pageCAfterFirstAcknowledgement.source.ok) {
     const first = transcript.afterRetraction.pageCAfterFirstAcknowledgement.source.value.causal.handoff;
     if (
@@ -843,6 +872,13 @@ function validateCausalCheckpointRestart(transcript: BrowserMultitabSmokeTranscr
     }
   } else {
     failures.push("page C failed after the final concurrent acknowledgement");
+  }
+  if (
+    transcript.afterRetraction.finalHandoffCheckpoint.handoff.pendingHandoffs !== 0 ||
+    transcript.afterRetraction.finalHandoffCheckpoint.handoffCheckpoint.state !== "saved" ||
+    transcript.afterRetraction.finalHandoffCheckpoint.handoffCheckpoint.currentRevision === null
+  ) {
+    failures.push("page C did not durably remove both acknowledged peer offers");
   }
 }
 
@@ -1091,7 +1127,7 @@ export async function runBrowserMultitabSmoke(): Promise<BrowserMultitabSmokeRes
 
     stage = "restart from durable checkpoint";
     await Promise.all([pageA.close(), pageB.close()]);
-    const pageC = await context.newPage();
+    let pageC = await context.newPage();
     await pageC.addInitScript(initIrisId("iris-c"));
     await pageC.goto(`${baseUrl}?tab=tab-c&sequence=400`);
     await waitForReady(pageC);
@@ -1150,6 +1186,47 @@ export async function runBrowserMultitabSmoke(): Promise<BrowserMultitabSmokeRes
     stage = "wait for two held causal replay acknowledgements";
     await waitForPendingCausalHandoffs(pageC, 2);
     const pageCWhilePending = await observe(pageC);
+
+    stage = "persist pending causal handoffs before reload";
+    const pendingHandoffCheckpoint = await pageC.evaluate(async () => {
+      const root = globalThis as unknown as BrowserSmokeGlobal;
+      return root.__zetaBrowserSmoke.drainCausalHandoffCheckpoint();
+    });
+    if (!pendingHandoffCheckpoint.ok) {
+      return failed("smoke-failed", pendingHandoffCheckpoint.feedback.detail);
+    }
+    stage = "reload the pending causal handoff owner";
+    const stoppedPendingOwner = await pageC.evaluate(() => {
+      const root = globalThis as unknown as BrowserSmokeGlobal;
+      const result = root.__zetaBrowserSmoke.stop();
+      root.ZetaMesh.destroy();
+      return result;
+    });
+    if (!stoppedPendingOwner.ok) {
+      return failed("smoke-failed", `Pending handoff owner stop failed: ${stoppedPendingOwner.feedback.detail}`);
+    }
+    await pageC.close();
+    stage = "open reloaded causal handoff owner";
+    pageC = await context.newPage();
+    await pageC.addInitScript(initIrisId("iris-c"));
+    await pageC.goto(`${baseUrl}?tab=tab-c&sequence=700`);
+    stage = "wait for reloaded causal handoff owner";
+    await waitForReady(pageC);
+    await pageC.evaluate("globalThis.ZetaMesh.announce()");
+    stage = "reconverge three pages after causal handoff owner reload";
+    await Promise.all([waitForThreePages(pageC), waitForThreePages(pageD), waitForThreePages(pageE)]);
+    stage = "recover pending causal handoffs after owner reload";
+    const recoveredPendingReadout = await pageC.evaluate(() => {
+      const root = globalThis as unknown as BrowserSmokeGlobal;
+      return root.__zetaBrowserSmoke.read();
+    });
+    if (!recoveredPendingReadout.ok || recoveredPendingReadout.value.causal.handoff.pendingHandoffs !== 2) {
+      return failed(
+        "smoke-failed",
+        `Reloaded handoff owner did not recover two offers: ${JSON.stringify(recoveredPendingReadout)}.`,
+      );
+    }
+    const pageCAfterPendingReload = await observe(pageC);
     const pageDAfterRetraction = await observe(pageD);
     const pageEAfterRetraction = await observe(pageE);
 
@@ -1173,6 +1250,15 @@ export async function runBrowserMultitabSmoke(): Promise<BrowserMultitabSmokeRes
       return failed("smoke-failed", "Page E did not release exactly one held causal replay acknowledgement.");
     }
     await waitForCausalHandoff(pageC, "outbound", "duplicate", "tab-e", 0);
+
+    stage = "persist acknowledged causal handoff removals";
+    const finalHandoffCheckpoint = await pageC.evaluate(async () => {
+      const root = globalThis as unknown as BrowserSmokeGlobal;
+      return root.__zetaBrowserSmoke.drainCausalHandoffCheckpoint();
+    });
+    if (!finalHandoffCheckpoint.ok) {
+      return failed("smoke-failed", finalHandoffCheckpoint.feedback.detail);
+    }
 
     stage = "observe final peer handoff after room retraction";
     const pageCAfterPeerHandoff = await observe(pageC);
@@ -1213,11 +1299,14 @@ export async function runBrowserMultitabSmoke(): Promise<BrowserMultitabSmokeRes
       afterRestart: { pageC: pageCAfterRestart },
       retraction: retraction.value,
       afterRetraction: {
+        pendingHandoffCheckpoint: pendingHandoffCheckpoint.value,
         pageCWhilePending,
+        pageCAfterPendingReload,
         pageCAfterFirstAcknowledgement,
         pageC: pageCAfterPeerHandoff,
         pageD: pageDAfterRetraction,
         pageE: pageEAfterRetraction,
+        finalHandoffCheckpoint: finalHandoffCheckpoint.value,
       },
       intentRecovery,
     };

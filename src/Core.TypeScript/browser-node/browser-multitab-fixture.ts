@@ -33,7 +33,7 @@ import type {
   BrowserTabCoordinatorReadout,
 } from "./browser-tab-coordinator";
 
-export const BROWSER_MULTITAB_FIXTURE_SCHEMA = "zeta.browser-multitab-fixture.v9" as const;
+export const BROWSER_MULTITAB_FIXTURE_SCHEMA = "zeta.browser-multitab-fixture.v10" as const;
 
 type BrowserMultitabFeedback =
   | DarkHallBrowserDurableFeedback
@@ -74,6 +74,7 @@ export interface BrowserMultitabCheckpointReadout {
 export interface BrowserMultitabCausalReadout {
   readonly ledger: DarkHallBrowserDurableReadout["causal"];
   readonly handoff: DarkHallBrowserDurableReadout["causalHandoff"];
+  readonly handoffCheckpoint: DarkHallBrowserDurableReadout["causalHandoffCheckpoint"];
   readonly checkpoint: DarkHallBrowserDurableReadout["causalCheckpoint"];
 }
 
@@ -105,6 +106,7 @@ export interface BrowserMultitabFixtureApi {
     correction: Omit<BrowserCausalCorrectionNotice, "sourceTabId">,
   ): BrowserMultitabCheckpointResult<BrowserMultitabCausalReadout>;
   drainCausalCorrectionCheckpoint(): Promise<BrowserMultitabCheckpointResult<BrowserMultitabCausalReadout>>;
+  drainCausalHandoffCheckpoint(): Promise<BrowserMultitabCheckpointResult<BrowserMultitabCausalReadout>>;
   releaseCausalReplayAcknowledgements(): BrowserMultitabCheckpointResult<number>;
   databaseTick(deltas: readonly ZetaDbDelta[]): Promise<BrowserMultitabDatabaseResult>;
   databaseExecutionHeld(): boolean;
@@ -209,6 +211,7 @@ function causalReadout(current: DarkHallBrowserDurableReadout): BrowserMultitabC
   return {
     ledger: current.causal,
     handoff: current.causalHandoff,
+    handoffCheckpoint: current.causalHandoffCheckpoint,
     checkpoint: current.causalCheckpoint,
   };
 }
@@ -309,6 +312,7 @@ if (!started.ok) {
     removeCheckpoint: () => Promise.resolve(failure),
     publishCausalCorrection: () => failure,
     drainCausalCorrectionCheckpoint: () => Promise.resolve(failure),
+    drainCausalHandoffCheckpoint: () => Promise.resolve(failure),
     releaseCausalReplayAcknowledgements: () => failure,
     databaseTick: () => Promise.resolve(failure),
     databaseExecutionHeld: () => false,
@@ -382,6 +386,7 @@ if (!started.ok) {
       removeCheckpoint: () => Promise.resolve(failure),
       publishCausalCorrection: () => failure,
       drainCausalCorrectionCheckpoint: () => Promise.resolve(failure),
+      drainCausalHandoffCheckpoint: () => Promise.resolve(failure),
       releaseCausalReplayAcknowledgements: () => failure,
       databaseTick: () => Promise.resolve(failure),
       databaseExecutionHeld: () => false,
@@ -415,6 +420,10 @@ if (!started.ok) {
       },
       drainCausalCorrectionCheckpoint: async () => {
         const drained = await runtime.drainCausalCorrectionCheckpoint();
+        return drained.ok ? { ok: true, value: causalReadout(drained.value) } : drained;
+      },
+      drainCausalHandoffCheckpoint: async () => {
+        const drained = await runtime.drainCausalHandoffCheckpoint();
         return drained.ok ? { ok: true, value: causalReadout(drained.value) } : drained;
       },
       releaseCausalReplayAcknowledgements: () => {

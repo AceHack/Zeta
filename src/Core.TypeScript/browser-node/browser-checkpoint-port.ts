@@ -1,6 +1,6 @@
 export const BROWSER_CHECKPOINT_RECORD_SCHEMA = "zeta.browser-checkpoint-record.v1" as const;
 
-export type BrowserCheckpointRecordKind = "room" | "causal-corrections";
+export type BrowserCheckpointRecordKind = "room" | "causal-corrections" | "causal-handoffs";
 
 export function browserCheckpointRecordNodeId(kind: BrowserCheckpointRecordKind, nodeId: string): string {
   if (nodeId.length === 0) return nodeId;
