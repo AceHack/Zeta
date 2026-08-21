@@ -2,9 +2,9 @@
 
 <!-- Machine-readable. The ratchet parses EXACTLY this line; keep the format. -->
 
-    BASELINE_FAILURES: 21
+    BASELINE_FAILURES: 19
 
-**Measured:** 2026-08-21 · **at commit:** `sealed-secrets repoURL fix (PR #13339)`
+**Measured:** 2026-08-21 · **at commit:** `forgejo OCI repoURL + published pin (081M0JX5GQ8087G0R002TD5Z0Q)`
 **Toolchain:** helm `v4.2.0+g0646808` · kubeconform `v0.7.0` · bun `1.3.14` · `--kube-version 1.33.0`
 **Reproduce:** `bun infra/k8s/tests/ratchet-app-failures.ts` (it prints the count it measured)
 
@@ -34,17 +34,19 @@ The step fails on any count that is **not exactly** `BASELINE_FAILURES`.
 Lowering it is one line, and the ratchet prints the exact delta and the new
 number to write when it refuses.
 
-## Composition of the 23 — measured, not estimated
+## Composition of the 19 — measured, not estimated
 
 | n   | class                                                                                                                                                                                                                                                                                                                                                      | verdict                        |
 | --- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------ |
 | 13  | ArgoCD contract: missing `syncPolicy.automated.prune` / `.selfHeal`, or `CreateNamespace=true` absent from `syncOptions`                                                                                                                                                                                                                                   | **real** — but read the caveat |
 | 2   | `oz` pins `ziti-controller` **1.4.5**; the repo publishes **96** versions and the newest is **3.2.1**. The pin is fictional. Counted twice: version check + render                                                                                                                                                                                         | **real**, unambiguous          |
-| 2   | `forgejo` chart repo returns HTTP 404 (`code.forgejo.org/forgejo-helm/`; the chart is OCI-only now) AND its pin `9.0.6` was never published — the 9.x line has exactly one release, `9.0.0`. Counted twice: version check + render. `sealed-secrets` LEFT this row 2026-08-21: its repoURL moved `bitnami-labs` -> `bitnami` and was corrected, taking both of its failures with it | **real**, upstream gone/moved  |
+| 0   | _(empty — this row is kept as the ledger of what left it.)_ `sealed-secrets` LEFT 2026-08-21: repoURL moved `bitnami-labs` -> `bitnami`, corrected, both failures with it. `forgejo` LEFT 2026-08-21: `https://code.forgejo.org/forgejo-helm/` is an organisation page whose `index.yaml` 404s and the chart is OCI-only, so the source became the bare `code.forgejo.org/forgejo-helm`; and the pin `9.0.6` was never published (169 tags, exactly one 9.x — `9.0.0`), so it moved to `17.1.5` (Forgejo 15.0.7). Both of its failures — version check and render — went with it | **cleared**, both fixed        |
 | 4   | chart refuses to render with the values we hand it: `gitlab` (no `certmanager-issuer.email`), `headscale` (no `accessMode` for PVC `headscale-data`), `temporal` (no cassandra port for the default store), `arc-runner-set` (chart does label-discovery for a `gha-rs-controller` deployment at template time; needs `controllerServiceAccount.name` set) | **real**                       |
 
 Per-app split of the 13: `cdi` 3, `kubevirt` 3, `forgejo` 2, `ollama` 2,
-`vllm` 2, `cilium-lb-ipam` 1.
+`vllm` 2, `cilium-lb-ipam` 1. (`forgejo` keeps its 2 here: it is the
+manual-sync standby half of the `gitlab`/`forgejo` pair, so its missing
+`automated:` block is the documented convention, not a defect — see the caveat.)
 
 > **Caveat on the 13 — do not "fix" them blindly to lower this number.**
 > `root-application.yaml`'s own header documents an either/or gating convention:
@@ -74,7 +76,10 @@ were fixed in `validate-applications.ts` in the same commit as this file:
    it must sit on the `services.k3s.manifests` roster. New `--root-app` flag.
 
 The OCI fix **added one genuine failure it had been masking** — `arc-runner-set`
-now renders far enough to fail on real values. `29 − 7 + 1 = 23`.
+now renders far enough to fail on real values. `29 − 7 + 1 = 23`. It has since
+come down twice, each time by correcting a real manifest: `23 − 2 = 21`
+(`sealed-secrets`, PR #13339) and `21 − 2 = 19` (`forgejo`, this file's current
+measurement).
 
 That is the point of fixing the validator before setting the baseline: a
 baseline that banks false reds is a number that can be "improved" by fixing

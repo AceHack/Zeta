@@ -1250,11 +1250,11 @@ describe("the checked-in resource ladder", () => {
   test("metal is exactly what the manifests render today", () => {
     expect(verifyResourceProfileApplied(catalogue, "metal")).toEqual([]);
     const lane = resourceTotal(catalogue, "metal", devLaneAppliedDirs());
-    expect(lane.cpuMillis).toBe(4131);
-    expect(lane.memoryMib).toBe(11299);
+    expect(lane.cpuMillis).toBe(4231);
+    expect(lane.memoryMib).toBe(11427);
     const all = resourceTotal(catalogue, "metal", applicationDirs());
-    expect(all.cpuMillis).toBe(9756);
-    expect(all.memoryMib).toBe(23400);
+    expect(all.cpuMillis).toBe(9856);
+    expect(all.memoryMib).toBe(23528);
   });
 
   // Aaron 2026-08-20: "make things small enough to fit for disk and ram on the
@@ -1265,8 +1265,8 @@ describe("the checked-in resource ladder", () => {
     expect(auditRunnerBudget(catalogue, "metal").length).toBeGreaterThan(0);
     const lane = resourceTotal(catalogue, "dev", devLaneAppliedDirs());
     const budget = envelopeBudget(catalogue.envelope);
-    expect(lane.cpuMillis).toBe(1806);
-    expect(lane.memoryMib).toBe(6079);
+    expect(lane.cpuMillis).toBe(1906);
+    expect(lane.memoryMib).toBe(6207);
     expect(lane.cpuMillis).toBeLessThan(budget.cpuMillis);
     expect(lane.memoryMib).toBeLessThan(budget.memoryMib);
   });
@@ -1285,20 +1285,55 @@ describe("the checked-in resource ladder", () => {
     );
   });
 
-  // The two apps nobody could measure. The acknowledgement is keyed by the pin
-  // so a chart bump invalidates it instead of inheriting it.
-  test("the unmeasured apps are named, pinned and acknowledged — not counted as free", () => {
+  // The app nobody could measure. The acknowledgement is keyed by the pin so a
+  // chart bump invalidates it instead of inheriting it.
+  //
+  // It used to be TWO. `forgejo` left on 2026-08-21 and the way it left is the
+  // point: its pin `9.0.6` was never published, so nothing could pull the chart,
+  // so it was acknowledged. Correcting the pin to `17.1.5` moved the key and
+  // invalidated the acknowledgement exactly as designed — and the answer to that
+  // was to MEASURE the app, not to re-key it to `forgejo@17.1.5`. Re-keying would
+  // have preserved a "we cannot measure this" claim that had stopped being true,
+  // which is an acknowledgement outliving its own defect. `oz@1.4.5` stays
+  // because that pin is still fictional.
+  test("the unmeasured app is named, pinned and acknowledged — not counted as free", () => {
     const lane = resourceTotal(catalogue, "dev", devLaneAppliedDirs());
-    expect(lane.unmeasured).toEqual(["forgejo", "oz"]);
-    expect([...catalogue.acknowledgedUnmeasured].sort()).toEqual(["forgejo@9.0.6", "oz@1.4.5"]);
-    expect(pinnedChartVersion("forgejo")).toBe("9.0.6");
+    expect(lane.unmeasured).toEqual(["oz"]);
+    expect([...catalogue.acknowledgedUnmeasured].sort()).toEqual(["oz@1.4.5"]);
     expect(pinnedChartVersion("oz")).toBe("1.4.5");
   });
 
+  // forgejo is the worked example of the register releasing an app: it is now
+  // pinned to a published chart, measured, and carries NO acknowledgement.
+  test("forgejo left the acknowledged set by being measured, not by being re-keyed", () => {
+    expect(pinnedChartVersion("forgejo")).toBe("17.1.5");
+    expect(catalogue.acknowledgedUnmeasured.some((key) => key.startsWith("forgejo@"))).toBe(false);
+    const row = catalogue.ungoverned.find((app) => app.dir === "forgejo");
+    expect(row).toBeDefined();
+    // The pod's effective request is max(highest init request, sum of app-container
+    // requests) because init containers run sequentially — 100m/128Mi, not the
+    // 300m/384Mi a naive sum over all four containers would report.
+    expect(row?.cpuMillis).toBe(100);
+    expect(row?.memoryMib).toBe(128);
+    expect(resourceTotal(catalogue, "dev", ["forgejo"]).unmeasured).toEqual([]);
+  });
+
   test("an acknowledgement whose pin has moved stops applying", () => {
-    const stale: ResourceCatalogue = { ...catalogue, acknowledgedUnmeasured: ["forgejo@8.0.0", "oz@1.4.5"] };
+    const stale: ResourceCatalogue = { ...catalogue, acknowledgedUnmeasured: ["oz@9.9.9"] };
     const findings = auditRunnerBudget(stale, "dev");
-    expect(findings.some((finding) => finding.claimId === "forgejo")).toBe(true);
+    expect(findings.some((finding) => finding.claimId === "oz")).toBe(true);
+  });
+
+  // The other direction, and it is the one that just fired on forgejo: an
+  // acknowledgement for an app the total no longer reports as unmeasured is
+  // stale, and stale is a finding rather than a silent no-op.
+  test("an acknowledgement for an app that IS measured is reported stale", () => {
+    const stale: ResourceCatalogue = {
+      ...catalogue,
+      acknowledgedUnmeasured: ["forgejo@17.1.5", "oz@1.4.5"],
+    };
+    const findings = auditRunnerBudget(stale, "dev");
+    expect(findings.some((finding) => finding.claimId === "forgejo@17.1.5")).toBe(true);
   });
 
   test("every row that cuts a request states what the cut costs", () => {

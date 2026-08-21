@@ -522,21 +522,6 @@ export const ACKNOWLEDGED_UNPUBLISHED: ReadonlyMap<string, Acknowledgement> = ne
         "Recorded here so the check can land on a tree that contains the defect it reports.",
     },
   ],
-  [
-    "full-ai-cluster/k8s/applications/forgejo/Application.yaml|forgejo|9.0.6",
-    {
-      workitem: "081M0JX4M7H087G0R0029R5QG6",
-      recordedOn: "2026-08-21",
-      reason:
-        "Found by this audit's own first --refresh, and a DOUBLE defect. " +
-        "`code.forgejo.org/forgejo-helm/` is an organisation page, not a chart repository " +
-        "(index.yaml -> 404); upstream distributes via `oci://code.forgejo.org/forgejo-helm/" +
-        "forgejo`. Correcting the protocol is not enough: that registry's 169 tags contain " +
-        "exactly one 9.x -- `9.0.0` -- so 9.0.6 was never published either. Picking between " +
-        "9.0.0, 10.x and 11.x moves the values schema under a hand-written valuesObject, " +
-        "which is a maintainer decision.",
-    },
-  ],
 ]);
 
 // ---------------------------------------------------------------------------

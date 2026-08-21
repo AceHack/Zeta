@@ -167,18 +167,18 @@
     "",
     "  cohort                                       CPU        memory",
     "  asserted by --scope included (19 apps)     1221m      3.91 GiB",
-    "  applied by the dev/CI root   (33 apps)     4131m     11.03 GiB",
-    "  every Application            (45 apps)     9756m     22.85 GiB",
+    "  applied by the dev/CI root   (33 apps)     4231m     11.16 GiB",
+    "  every Application            (45 apps)     9856m     22.98 GiB",
     "",
     "So the honest answer to 'can all 45 fit in 4 vCPU / 16 GB': NO, and CPU runs out",
-    "first -- 9756m of requests against 4000m of runner. The 19 the lane asserts today",
+    "first -- 9856m of requests against 4000m of runner. The 19 the lane asserts today",
     "fit with room, which is why it is green; the 33 it APPLIES do not, and the only",
     "reason that has not bitten is that 14 of them hang `Missing` on a longhorn",
     "StorageClass the dev catalog excludes, so they never schedule a pod. That is a",
     "reprieve, not a fit, and it evaporates the moment the StorageClass exists.",
     "",
-    "At the `dev` rung the applied set is 1806m / 5.94 GiB, inside the budget.",
-    "All 45 at `dev` is still 7431m / 17.75 GiB -- over. Shrinking gitlab (2475m /",
+    "At the `dev` rung the applied set is 1906m / 6.06 GiB, inside the budget.",
+    "All 45 at `dev` is still 7531m / 17.88 GiB -- over. Shrinking gitlab (2475m /",
     "5.6 GiB) and temporal (3000m / 6.0 GiB) is what would close that, and neither is",
     "governed here because neither is applied to a dev cluster; the dev rung does not",
     "price apps the dev lane never runs.",
@@ -251,7 +251,15 @@
     "directory that is gone fails it too. `null` means the chart could not be fetched",
     "at its pinned version -- UNKNOWN, refused rather than counted as zero, unless",
     "acknowledged in `acknowledgedUnmeasuredRequests` keyed by `<dir>@<pin>` so a",
-    "version bump invalidates the acknowledgement instead of inheriting it."
+    "version bump invalidates the acknowledgement instead of inheriting it.",
+    "",
+    "2026-08-21: that invalidation fired for real. `forgejo` was acknowledged as",
+    "`forgejo@9.0.6` ONLY because the pin was fictional and nothing could be pulled.",
+    "Correcting the pin to `17.1.5` moved the key, and the honest response was to",
+    "MEASURE it rather than re-key to `forgejo@17.1.5` -- re-keying would have",
+    "preserved a 'we cannot measure this' claim that had stopped being true, which is",
+    "an acknowledgement outliving its defect. Every total above moved by its 100m /",
+    "128Mi. `oz@1.4.5` stays: that pin is still fictional."
   ],
 
   "resourceProfiles": ["dev", "metal"],
@@ -852,9 +860,9 @@
     },
     {
       "dir": "forgejo",
-      "cpuMillis": null,
-      "memoryMib": null,
-      "evidence": "UNMEASURED: `helm pull forgejo --version 9.0.6 --repo https://code.forgejo.org/forgejo-helm/` fails -- that repoURL returns 404 for index.yaml as of 2026-08-21, and 9.0.6 is not present in the forgejo-helm or forgejo-contrib package registries either. ArgoCD cannot render it from that pin any more than this measurement could."
+      "cpuMillis": 100,
+      "memoryMib": 128,
+      "evidence": "forgejo 17.1.5 (Forgejo 15.0.7) rendered with this Application's valuesObject, 2026-08-21, from `oci://code.forgejo.org/forgejo-helm/forgejo` (digest sha256:791cebc4). It was UNMEASURED only because the pin was fictional -- `helm pull` could not resolve `9.0.6` from a repoURL whose index.yaml 404s -- so correcting the pin removed the reason for the acknowledgement rather than moving it. One Deployment, replicas 1. The sole app container declares NO requests; the three init containers (init-directories, init-app-ini, configure-gitea) each declare 100m/128Mi. Init containers run SEQUENTIALLY, so the pod's effective request is max(highest init request, sum of app-container requests) = 100m / 128Mi -- NOT the 300m/384Mi a naive sum over all four containers would give (Kubernetes, \"Init Containers\" -> resource sharing within containers). The chart's `forgejo-test-connection` Pod is a `helm.sh/hook: test` that ArgoCD never applies on sync, and it declares no requests either way, so it is 0 under any convention."
     },
     {
       "dir": "gitlab",
@@ -990,7 +998,7 @@
     }
   ],
 
-  "acknowledgedUnmeasuredRequests": ["forgejo@9.0.6", "oz@1.4.5"],
+  "acknowledgedUnmeasuredRequests": ["oz@1.4.5"],
 
   "$comment_profiles": [
     "Order is smallest-first and is load-bearing: storage-profiles.ts refuses a",
