@@ -530,11 +530,28 @@ jobs:
           iso_name=$(basename "$iso_path_abs")
           iso_size=$(stat -c%s "$iso_path_abs" | numfmt --to=iec --suffix=B)
           iso_sha256=$(sha256sum "$iso_path_abs" | awk '{print $1}')
+          # ADDED 2026-08-21. The digest above was written ONLY to $GITHUB_OUTPUT
+          # and the step summary, so it existed for humans reading a run page and
+          # for nothing else. `zflash` refuses to write an ISO whose integrity it
+          # cannot establish (PR #13030), looking for `<iso>.sha256` beside the
+          # image -- and CI produced no such file, so the gate refused EVERY
+          # CI-built ISO and the flash path was hard-stopped.
+          #
+          # The manifest is written PER-ISO (`<iso>.sha256`) rather than as a bare
+          # `SHA256SUMS`, deliberately: a well-known filename in a shared download
+          # directory is a NAMESPACE COLLISION, not a manifest. Measured on the
+          # maintainer's machine 2026-08-21 -- an unrelated `~/Downloads/SHA256SUMS`
+          # belonging to Bitcoin Knots was found and parsed by the gate, which then
+          # refused with `iso-not-in-manifest` while printing 28 bitcoin filenames.
+          # A per-ISO sidecar cannot be hijacked that way.
+          iso_sha256_path="${iso_path_abs}.sha256"
+          printf '%s  %s\n' "$iso_sha256" "$iso_name" > "$iso_sha256_path"
           {
             echo "path=$iso_path_abs"
             echo "name=$iso_name"
             echo "size=$iso_size"
             echo "sha256=$iso_sha256"
+            echo "sha256_path=$iso_sha256_path"
           } >> "$GITHUB_OUTPUT"
           {
             echo "## AI-cluster installer ISO built"
@@ -636,6 +653,21 @@ jobs:
           if-no-files-found: error
           retention-days: 90
           compression-level: 0 # ISO is already compressed; re-zipping wastes time
+
+      - name: Upload the ISO digest manifest as a workflow artifact
+        if: ${{ !cancelled() && steps.iso.outcome == 'success' }}
+        # The keystone for the local flash path: `zflash` verifies the ISO against
+        # this file BEFORE it touches a device, and refuses (exit 2) without it.
+        # Uploaded separately from the ISO so an operator can fetch the manifest
+        # cheaply, and so a missing manifest is visibly absent rather than silently
+        # bundled. NOTE this proves INTEGRITY, never PROVENANCE -- the cosign bundle
+        # below is the provenance half, and nothing local verifies it yet.
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: ${{ steps.iso.outputs.name }}.sha256
+          path: ${{ steps.iso.outputs.sha256_path }}
+          if-no-files-found: error
+          retention-days: 90
 
       - name: Upload cosign bundle as workflow artifact
         if: ${{ !cancelled() && steps.sign.outcome == 'success' }}   # run only after signing produced a bundle
