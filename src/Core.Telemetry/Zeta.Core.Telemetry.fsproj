@@ -1,0 +1,32 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <RootNamespace>Zeta.Core.Telemetry</RootNamespace>
+    <AssemblyName>Zeta.Core.Telemetry</AssemblyName>
+    <!-- The OTel COMPOSITION ROOT, deliberately a separate assembly from Core.
+
+         src/Core/Metrics.fs and src/Core/Tracing.fs instrument against
+         System.Diagnostics.{Metrics,ActivitySource} only - BCL types, zero
+         third-party dependency. That property is worth keeping: a library
+         that drags an exporter stack into every consumer has decided, on the
+         consumer's behalf, that telemetry leaves the process.
+
+         So the SDK lives here. Reference Core and you get instrumentation
+         that costs ~5ns and goes nowhere. Reference this and you have opted
+         in to an exporter - and even then it exports nothing until
+         OTEL_EXPORTER_OTLP_ENDPOINT is set. -->
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="Telemetry.fs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Core\Core.fsproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="FSharp.Core" />
+    <PackageReference Include="OpenTelemetry" />
+    <PackageReference Include="OpenTelemetry.Exporter.OpenTelemetryProtocol" />
+  </ItemGroup>
+</Project>

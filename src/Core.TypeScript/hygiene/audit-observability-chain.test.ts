@@ -13,21 +13,32 @@
  * the state the repo was in.
  */
 import { describe, expect, test } from "bun:test";
-import { mkdtempSync, cpSync, readFileSync, writeFileSync } from "node:fs";
+import { mkdirSync, mkdtempSync, cpSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { parse as parseYaml, stringify as stringifyYaml } from "yaml";
 import {
   DEFAULT_APPS_DIR,
   DEFAULT_ROSTER,
+  DOTNET_METRICS_SOURCE,
+  PORTAL_METRICS_SOURCE,
+  authoredMonitoringObjects,
   checkAlertmanager,
   checkAlloyGraph,
+  checkAuthoredRules,
   checkEndpoints,
+  checkIncludedByApplication,
+  checkMonitoringSelectorLabel,
+  checkScrapeOptIn,
+  isEmittedMetric,
   parseAlloyComponents,
   parseAlloyEndpoints,
+  promqlMetricNames,
+  readAuthoredDocs,
   runAudit,
   stripAlloyComments,
   valuesHash,
+  zetaEmitterRoster,
   type Roster,
 } from "./audit-observability-chain.ts";
 
@@ -57,9 +68,10 @@ function values(doc: Record<string, unknown>): Record<string, unknown> {
 
 describe("CONTROL", () => {
   test("the real tree passes -- an audit that always fails is not a check", () => {
-    const r = runAudit(APPS, ROSTER);
+    const r = runAudit(APPS, ROSTER, REPO_ROOT);
     expect(r.failures).toEqual([]);
-    expect(r.checked.length).toBe(3);
+    // 3 chain invariants + 4 scrape/alerting invariants added 2026-08-20.
+    expect(r.checked.length).toBe(7);
   });
 });
 
@@ -267,3 +279,236 @@ describe("PARSER", () => {
     expect(comps[0]?.body ?? "").toContain("4318");
   });
 });
+
+// ===================================================================
+// THE SCRAPE HALF (added 2026-08-20).
+//
+// Same discipline as above: every rule is planted as a mutation and
+// asserted to fail with its own reason. The rule worth the most here
+// is the last one -- an alert naming a metric nothing emits, which is
+// the vacuity class at the query layer.
+// ===================================================================
+
+function appFile(dir: string, app: string, file: string): string {
+  return join(dir, "applications", app, file);
+}
+
+function readFile(dir: string, app: string, file: string): string {
+  return readFileSync(appFile(dir, app, file), "utf8");
+}
+
+function writeFile(dir: string, app: string, file: string, text: string): void {
+  writeFileSync(appFile(dir, app, file), text);
+}
+
+function appsOf(dir: string): string {
+  return join(dir, "applications");
+}
+
+describe("CONTROL -- the scrape half", () => {
+  test("the real tree has at least one authored monitoring object", () => {
+    // The state this rule was written against: ZERO. Every alert in the
+    // cluster belonged to a chart, so nothing watched Zeta at all.
+    const objects = authoredMonitoringObjects(APPS);
+    expect(objects.length).toBeGreaterThan(0);
+    expect(objects.some((o) => o.kind === "PrometheusRule")).toBe(true);
+  });
+
+  test("the emitter roster is derived from real sources and is not empty", () => {
+    const { roster, failures } = zetaEmitterRoster(REPO_ROOT);
+    expect(failures).toEqual([]);
+    expect(roster.exact).toContain("zeta_portal_build_info");
+    expect(roster.prefixes).toContain("dbsp_ticks");
+  });
+});
+
+describe("PROMQL -- what counts as a metric reference", () => {
+  test("function names are not series", () => {
+    expect(promqlMetricNames("rate(foo_total[5m])")).toEqual(["foo_total"]);
+  });
+
+  test("duration units inside a range selector are not series", () => {
+    // Caught live on the first run: changes(x[1h]) reported a metric named h.
+    expect(promqlMetricNames("changes(zeta_portal_start_time_seconds[1h]) > 3")).toEqual([
+      "zeta_portal_start_time_seconds",
+    ]);
+  });
+
+  test("label names and matcher values are not series", () => {
+    const names = promqlMetricNames("sum(rate(a_total{route=\"api\",job=\"portal\"}[5m]))");
+    expect(names).toEqual(["a_total"]);
+  });
+
+  test("aggregation keywords are not series", () => {
+    expect(promqlMetricNames("sum by (namespace) (a_total)")).toEqual(["a_total"]);
+  });
+});
+
+describe("EMITTER ROSTER -- membership", () => {
+  test("an exact portal metric is emitted", () => {
+    const roster = { exact: ["zeta_portal_build_info"], prefixes: ["dbsp_ticks"] };
+    expect(isEmittedMetric("zeta_portal_build_info", roster)).toBe(true);
+  });
+
+  test("a .NET instrument matches by prefix -- the exporter adds unit and _total suffixes", () => {
+    const roster = { exact: [], prefixes: ["dbsp_ticks"] };
+    expect(isEmittedMetric("dbsp_ticks_tick_total", roster)).toBe(true);
+    expect(isEmittedMetric("dbsp_ticks", roster)).toBe(true);
+  });
+
+  test("a near-miss is NOT emitted -- prefix matching must still discriminate", () => {
+    const roster = { exact: [], prefixes: ["dbsp_ticks"] };
+    expect(isEmittedMetric("dbsp_frobnicate_total", roster)).toBe(false);
+    expect(isEmittedMetric("dbsp_ticksomething", roster)).toBe(false);
+  });
+
+  test("scrape-synthetic series are allowed -- they are facts about the scrape", () => {
+    expect(isEmittedMetric("up", { exact: [], prefixes: [] })).toBe(true);
+  });
+});
+
+describe("MUTATION -- scrape opt-in coherence", () => {
+  test("the real tree passes both directions", () => {
+    expect(checkScrapeOptIn(readAuthoredDocs(APPS))).toEqual([]);
+  });
+
+  test("annotating a port the pod does not declare fails", () => {
+    const dir = tempTree();
+    const text = readFile(dir, "platform", "portal.yaml").replace(
+      String.fromCharCode(34) + "8080" + String.fromCharCode(34),
+      String.fromCharCode(34) + "9999" + String.fromCharCode(34),
+    );
+    writeFile(dir, "platform", "portal.yaml", text);
+    const fails = checkScrapeOptIn(readAuthoredDocs(appsOf(dir)));
+    expect(fails.join(" ")).toContain("annotated for port 9999");
+  });
+
+  test("scrape=true with no port annotation fails", () => {
+    const dir = tempTree();
+    const text = readFile(dir, "platform", "portal.yaml")
+      .split("\n")
+      .filter((l) => !l.includes("prometheus.io/port"))
+      .join("\n");
+    writeFile(dir, "platform", "portal.yaml", text);
+    const fails = checkScrapeOptIn(readAuthoredDocs(appsOf(dir)));
+    expect(fails.join(" ")).toContain("no prometheus.io/port");
+  });
+
+  test("OUR workload with a metrics port and no annotation fails -- the inverted sink", () => {
+    const dir = tempTree();
+    const text = readFile(dir, "hat-system", "deployment.yaml")
+      .split("\n")
+      .filter((l) => !/^\s*"?prometheus\.io\//.test(l))
+      .join("\n");
+    writeFile(dir, "hat-system", "deployment.yaml", text);
+    const fails = checkScrapeOptIn(readAuthoredDocs(appsOf(dir)));
+    expect(fails.join(" ")).toContain("hat-system-operator");
+    expect(fails.join(" ")).toContain("sink with no source, inverted");
+  });
+
+  test("a VENDORED third-party workload with a metrics port is out of scope", () => {
+    // cdi and kubevirt declare metrics ports and carry no annotation. The fix
+    // there is their own chart ServiceMonitor, not hand-edits to a file we
+    // re-vendor. If this ever fails, the rule has started producing upstream
+    // drift instead of finding defects.
+    const fails = checkScrapeOptIn(readAuthoredDocs(APPS)).join(" ");
+    expect(fails).not.toContain("virt-operator");
+    expect(fails).not.toContain("cdi-operator");
+  });
+});
+
+describe("MUTATION -- an alert on a metric nothing emits", () => {
+  test("the authored rules pass against the real emitter roster", () => {
+    const { roster } = zetaEmitterRoster(REPO_ROOT);
+    expect(checkAuthoredRules(authoredMonitoringObjects(APPS), roster)).toEqual([]);
+  });
+
+  test("a rule naming a metric no source emits FAILS -- the vacuity class", () => {
+    const dir = tempTree();
+    const text = readFile(dir, "platform", "monitoring.yaml").replace(
+      "zeta_portal_build_info",
+      "zeta_portal_definitely_not_emitted",
+    );
+    writeFile(dir, "platform", "monitoring.yaml", text);
+    const { roster } = zetaEmitterRoster(REPO_ROOT);
+    const fails = checkAuthoredRules(authoredMonitoringObjects(appsOf(dir)), roster).join(" ");
+    expect(fails).toContain("zeta_portal_definitely_not_emitted");
+    expect(fails).toContain("can never fire");
+  });
+
+  test("deleting the emitter turns its alerts red -- the roster is DERIVED", () => {
+    // The point of deriving rather than allowlisting: removing a metric from
+    // the source that emits it must break the alerts that watch it, in the
+    // same PR, rather than leaving them silently unfirable.
+    const fakeRoot = mkdtempSync(join(tmpdir(), "obs-emitters-"));
+    mkdirSync(join(fakeRoot, "full-ai-cluster", "portal", "src"), { recursive: true });
+    mkdirSync(join(fakeRoot, "src", "Core"), { recursive: true });
+    writeFileSync(
+      join(fakeRoot, PORTAL_METRICS_SOURCE),
+      "export const EMITTED_METRICS = [" + String.fromCharCode(34) + "zeta_portal_something_else" + String.fromCharCode(34) + "] as const;",
+    );
+    writeFileSync(join(fakeRoot, DOTNET_METRICS_SOURCE), readFileSync(join(REPO_ROOT, DOTNET_METRICS_SOURCE), "utf8"));
+    const { roster, failures } = zetaEmitterRoster(fakeRoot);
+    expect(failures).toEqual([]);
+    const fails = checkAuthoredRules(authoredMonitoringObjects(APPS), roster).join(" ");
+    expect(fails).toContain("zeta_portal_build_info");
+  });
+
+  test("a missing emitter source is a FAILURE, not an empty roster", () => {
+    // An empty roster would make this whole check pass everything, which is
+    // the vacuity failure wearing the audit as a costume.
+    const emptyRoot = mkdtempSync(join(tmpdir(), "obs-noemitters-"));
+    const { failures } = zetaEmitterRoster(emptyRoot);
+    expect(failures.length).toBeGreaterThan(0);
+    expect(failures.join(" ")).toContain("cannot be derived");
+  });
+});
+
+describe("MUTATION -- objects the ruler never selects", () => {
+  test("the authored objects carry the release label the chart selects on", () => {
+    expect(checkMonitoringSelectorLabel(authoredMonitoringObjects(APPS), "kube-prometheus-stack")).toEqual([]);
+  });
+
+  test("dropping the release label fails -- applied and never evaluated", () => {
+    const dir = tempTree();
+    const text = readFile(dir, "platform", "monitoring.yaml")
+      .split("\n")
+      .filter((l) => !l.includes("release: kube-prometheus-stack"))
+      .join("\n");
+    writeFile(dir, "platform", "monitoring.yaml", text);
+    const fails = checkMonitoringSelectorLabel(authoredMonitoringObjects(appsOf(dir)), "kube-prometheus-stack").join(" ");
+    expect(fails).toContain("carries no release label");
+    expect(fails).toContain("never evaluated");
+  });
+
+  test("renaming the helm release fails the objects that still name the old one", () => {
+    const fails = checkMonitoringSelectorLabel(authoredMonitoringObjects(APPS), "kps-renamed").join(" ");
+    expect(fails).toContain("kps-renamed");
+  });
+});
+
+describe("MUTATION -- Argo never applies the file", () => {
+  test("the authored monitoring manifest is inside its include filter", () => {
+    expect(checkIncludedByApplication(APPS, authoredMonitoringObjects(APPS))).toEqual([]);
+  });
+
+  test("dropping the file from the include glob fails -- it exists only in git", () => {
+    const dir = tempTree();
+    const text = readFile(dir, "platform", "Application.yaml").replace(",monitoring}", "}");
+    writeFile(dir, "platform", "Application.yaml", text);
+    const fails = checkIncludedByApplication(appsOf(dir), authoredMonitoringObjects(appsOf(dir))).join(" ");
+    expect(fails).toContain("never applies the file");
+  });
+});
+
+describe("MUTATION -- nothing watching Zeta at all", () => {
+  test("deleting every authored monitoring object goes red", () => {
+    // This is not a synthetic mutation either: it is the state of the repo
+    // before 2026-08-20. 35 rule groups, all of them a chart default.
+    const dir = tempTree();
+    rmSync(appFile(dir, "platform", "monitoring.yaml"));
+    const r = runAudit(appsOf(dir), ROSTER, REPO_ROOT);
+    expect(r.failures.join(" ")).toContain("no ServiceMonitor / PodMonitor / PrometheusRule is authored");
+  });
+});
+

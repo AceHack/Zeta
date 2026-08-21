@@ -22,6 +22,27 @@
  * None of the three is a syntax error, a schema violation, or a bad chart
  * pin, so helm template, kubeconform and yamllint are all green on all of
  * them. This audit is the check that is not.
+ *
+ * EXTENDED 2026-08-20 (Dejan) with the two links the first pass NAMED and did
+ * not close. Same class, one layer further out:
+ *
+ *   4. NOTHING IN ZETA WAS SCRAPED. Zero ServiceMonitors, zero PodMonitors,
+ *      zero PrometheusRules authored anywhere in the repo -- all 35 rule
+ *      groups were chart defaults watching kubelet, etcd and CoreDNS. No Zeta
+ *      workload declared a metrics port or carried a prometheus.io/scrape
+ *      annotation, so the annotation path Alloy had just grown had no users.
+ *   5. THE VACUOUS ALERT. An alert or dashboard referencing a metric no Zeta
+ *      source emits is a check that cannot fire -- it looks like coverage and
+ *      constrains nothing. This is the same defect as a sink with no source,
+ *      moved from the transport layer to the query layer, and it is the more
+ *      valuable half because a rule is what a human trusts at 3am.
+ *
+ * Two silent-ignore traps come with them, and both are refused below because
+ * both produce an object that applies cleanly and is never evaluated:
+ *   - a ServiceMonitor/PrometheusRule missing the release label the chart's
+ *     default selector requires;
+ *   - a manifest sitting in an Argo Application directory whose `include`
+ *     filter does not match it, so Argo never applies the file at all.
  */
 
 import { readFileSync, writeFileSync, existsSync, readdirSync } from "node:fs";
@@ -329,6 +350,325 @@ export function checkAlertmanager(values: Record<string, unknown> | undefined): 
   return fails;
 }
 
+// ---- Scrape opt-in + non-vacuous alerting ---------------------------------
+
+/** Where the metric names Zeta actually emits are DECLARED, not guessed. */
+/**
+ * Image prefixes that mark a workload as OURS.
+ *
+ * The reverse scrape check (a metrics port nobody collects) applies only to
+ * workloads running images this project builds. Vendored third-party operator
+ * manifests -- cdi, kubevirt -- also declare metrics ports, and the right fix
+ * there is the ServiceMonitor their own chart ships, not an annotation we add
+ * by hand to a file we re-vendor from upstream. Demanding one would trade a
+ * real check for permanent upstream drift.
+ */
+export const ZETA_IMAGE_PREFIXES = ["ghcr.io/lucent-financial-group/"];
+export const PORTAL_METRICS_SOURCE = "full-ai-cluster/portal/src/metrics.ts";
+export const DOTNET_METRICS_SOURCE = "src/Core/Metrics.fs";
+
+/**
+ * Series every scrape produces by construction, regardless of what the target
+ * exposes. Allowed in an authored rule because they are not claims about an
+ * emitter -- they are facts about the scrape itself. Deliberately tiny: this
+ * list is the one place the audit could turn into a drifting allowlist, so it
+ * carries only series Prometheus synthesises and nothing a workload emits.
+ */
+export const SCRAPE_SYNTHETIC_SERIES = ["up", "scrape_duration_seconds", "scrape_samples_scraped", "scrape_samples_post_metric_relabeling", "scrape_series_added"];
+
+/** PromQL words that are syntax, not series. */
+export const PROMQL_KEYWORDS = ["by", "without", "on", "ignoring", "group_left", "group_right", "offset", "bool", "and", "or", "unless", "start", "end", "inf", "nan"];
+
+export interface MonitoringObject {
+  file: string;
+  app: string;
+  kind: string;
+  name: string;
+  labels: Record<string, string>;
+  doc: Record<string, unknown>;
+}
+
+/** Read every non-Application YAML doc under an application directory. */
+export function readAuthoredDocs(appsDir: string): { file: string; app: string; doc: Record<string, unknown> }[] {
+  const out: { file: string; app: string; doc: Record<string, unknown> }[] = [];
+  for (const app of readdirSync(appsDir).sort()) {
+    const dir = join(appsDir, app);
+    let entries: string[];
+    try {
+      entries = readdirSync(dir);
+    } catch {
+      continue;
+    }
+    for (const entry of entries.sort()) {
+      if (!entry.endsWith(".yaml") && !entry.endsWith(".yml")) continue;
+      if (entry === "Application.yaml") continue;
+      const p = join(dir, entry);
+      let text: string;
+      try {
+        text = readFileSync(p, "utf8");
+      } catch {
+        continue;
+      }
+      for (const chunk of text.split(/^---$/m)) {
+        if (chunk.trim() === "") continue;
+        let doc: unknown;
+        try {
+          doc = parseYaml(chunk);
+        } catch {
+          continue;
+        }
+        if (doc === null || typeof doc !== "object") continue;
+        out.push({ file: entry, app, doc: doc as Record<string, unknown> });
+      }
+    }
+  }
+  return out;
+}
+
+/** The monitoring objects THIS repo authors (never the ones a chart renders). */
+export function authoredMonitoringObjects(appsDir: string): MonitoringObject[] {
+  const kinds = new Set(["ServiceMonitor", "PodMonitor", "PrometheusRule"]);
+  const out: MonitoringObject[] = [];
+  for (const { file, app, doc } of readAuthoredDocs(appsDir)) {
+    const kind = String(doc.kind ?? "");
+    if (!kinds.has(kind)) continue;
+    const md = (doc.metadata ?? {}) as Record<string, unknown>;
+    out.push({
+      file,
+      app,
+      kind,
+      name: String(md.name ?? "<unnamed>"),
+      labels: ((md.labels ?? {}) as Record<string, string>),
+      doc,
+    });
+  }
+  return out;
+}
+export interface EmitterRoster {
+  /** Exact names a Zeta process exposes in Prometheus exposition format. */
+  exact: string[];
+  /**
+   * Prefixes from the .NET meter. The OTel Prometheus exporter appends unit
+   * and _total suffixes whose exact spelling depends on the collector version,
+   * so the instrument name is matched as a PREFIX rather than pretending to
+   * model a normalisation this audit cannot verify. Refusing dbsp_frobnicate
+   * is the value; guessing dbsp_ticks_tick_total is not.
+   */
+  prefixes: string[];
+}
+
+/**
+ * Build the roster of metrics Zeta actually emits, FROM THE SOURCE that emits
+ * them. A missing source file is a failure, never an empty roster: an empty
+ * roster would make the vacuity check itself vacuous.
+ */
+export function zetaEmitterRoster(repoRoot: string): { roster: EmitterRoster; failures: string[] } {
+  const failures: string[] = [];
+  const exact: string[] = [];
+  const prefixes: string[] = [];
+
+  const portalPath = join(repoRoot, PORTAL_METRICS_SOURCE);
+  if (!existsSync(portalPath)) {
+    failures.push("emitters: " + PORTAL_METRICS_SOURCE + " is missing -- the metric roster cannot be derived, so every alert would pass unchecked");
+  } else {
+    const src = readFileSync(portalPath, "utf8");
+    const m = /EMITTED_METRICS\s*=\s*\[([\s\S]*?)\]/.exec(src);
+    if (m === null) {
+      failures.push("emitters: " + PORTAL_METRICS_SOURCE + " no longer declares EMITTED_METRICS -- the roster is derived from that array");
+    } else {
+      for (const lit of (m[1] ?? "").matchAll(/"([a-zA-Z_:][a-zA-Z0-9_:]*)"/g)) exact.push(lit[1] ?? "");
+      if (exact.length === 0) failures.push("emitters: EMITTED_METRICS is empty -- an empty roster makes the alert check vacuous");
+    }
+  }
+
+  const dotnetPath = join(repoRoot, DOTNET_METRICS_SOURCE);
+  if (!existsSync(dotnetPath)) {
+    failures.push("emitters: " + DOTNET_METRICS_SOURCE + " is missing");
+  } else {
+    const src = readFileSync(dotnetPath, "utf8");
+    for (const m of src.matchAll(/Create(?:Counter|UpDownCounter|Histogram|ObservableGauge|ObservableCounter)<[^>]*>\(\s*"([^"]+)"/g)) {
+      prefixes.push((m[1] ?? "").split(".").join("_"));
+    }
+    if (prefixes.length === 0) failures.push("emitters: " + DOTNET_METRICS_SOURCE + " declares no instruments -- the meter that motivated the OTLP exporter is gone");
+  }
+
+  return { roster: { exact, prefixes }, failures };
+}
+/** Metric identifiers referenced by a PromQL expression. */
+export function promqlMetricNames(expr: string): string[] {
+  // Strip label matchers, RANGE SELECTORS and string literals first: a label
+  // NAME is not a series, a matcher VALUE certainly is not, and the h in [1h]
+  // is a duration unit that read as a metric named h on the first run.
+  const stripped = expr
+    .replace(/\{[^{}]*\}/g, " ")
+    .replace(/\[[^\]]*\]/g, " ")
+    .replace(/\b(?:by|without|on|ignoring|group_left|group_right)\s*\([^()]*\)/g, " ")
+    .replace(/"[^"]*"/g, " ")
+    .replace(new RegExp(String.fromCharCode(39) + "[^" + String.fromCharCode(39) + "]*" + String.fromCharCode(39), "g"), " ");
+  const keywords = new Set(PROMQL_KEYWORDS);
+  const out = new Set<string>();
+  for (const m of stripped.matchAll(/([a-zA-Z_:][a-zA-Z0-9_:]*)\s*(\(?)/g)) {
+    const name = m[1] ?? "";
+    // A name immediately followed by ( is a FUNCTION call, not a series.
+    if ((m[2] ?? "") === "(") continue;
+    if (keywords.has(name.toLowerCase())) continue;
+    out.add(name);
+  }
+  return [...out].sort();
+}
+
+export function isEmittedMetric(name: string, roster: EmitterRoster): boolean {
+  if (roster.exact.includes(name)) return true;
+  if (SCRAPE_SYNTHETIC_SERIES.includes(name)) return true;
+  return roster.prefixes.some((p) => name === p || name.startsWith(p + "_"));
+}
+/**
+ * Rule 5 -- scrape opt-in must be COHERENT with what the pod serves.
+ *
+ * Two directions, because both halves lie:
+ *   - annotated but the annotated port is not a declared containerPort: the
+ *     scrape 404s or connects to nothing, the target reads DOWN, and the
+ *     manifest reads as instrumented;
+ *   - a container port literally named "metrics" with no scrape annotation:
+ *     an endpoint built, deployed, and read by nobody. That is the same
+ *     finding as a sink with no source, pointed the other way.
+ */
+export function checkScrapeOptIn(docs: { file: string; app: string; doc: Record<string, unknown> }[]): string[] {
+  const fails: string[] = [];
+  for (const { file, app, doc } of docs) {
+    const kind = String(doc.kind ?? "");
+    if (kind !== "Deployment" && kind !== "StatefulSet" && kind !== "DaemonSet") continue;
+    const spec = (doc.spec ?? {}) as Record<string, unknown>;
+    const template = (spec.template ?? {}) as Record<string, unknown>;
+    const meta = (template.metadata ?? {}) as Record<string, unknown>;
+    const annotations = ((meta.annotations ?? {}) as Record<string, unknown>);
+    const podSpec = (template.spec ?? {}) as Record<string, unknown>;
+    const containers = ((podSpec.containers ?? []) as Record<string, unknown>[]);
+
+    const declared: { name: string; port: number }[] = [];
+    for (const c of containers) {
+      for (const p of ((c.ports ?? []) as Record<string, unknown>[])) {
+        declared.push({ name: String(p.name ?? ""), port: Number(p.containerPort ?? 0) });
+      }
+    }
+
+    const where = app + "/" + file + " " + kind + " " + String(((doc.metadata ?? {}) as Record<string, unknown>).name ?? "");
+    const scrape = String(annotations["prometheus.io/scrape"] ?? "");
+
+    if (scrape === "true") {
+      const wanted = Number(annotations["prometheus.io/port"] ?? 0);
+      if (wanted === 0) {
+        fails.push("scrape: " + where + " is annotated prometheus.io/scrape=true with no prometheus.io/port -- the scraper has no address to try");
+      } else if (!declared.some((d) => d.port === wanted)) {
+        const have = declared.map((d) => String(d.port)).join(", ");
+        fails.push("scrape: " + where + " is annotated for port " + String(wanted) + " but declares containerPort(s) " + (have === "" ? "<none>" : have) + " -- an annotated pod that serves nothing reads as instrumented and shows DOWN");
+      }
+    } else if (declared.some((d) => d.name === "metrics") && containers.some((c) => ZETA_IMAGE_PREFIXES.some((p) => String(c.image ?? "").startsWith(p)))) {
+      fails.push("scrape: " + where + " declares a container port named metrics and carries no prometheus.io/scrape annotation -- an exposition endpoint nothing collects is a sink with no source, inverted");
+    }
+  }
+  return fails;
+}
+/**
+ * Rule 6 -- an authored alert must reference a metric something EMITS.
+ *
+ * The valuable half. A PrometheusRule naming a series no Zeta source produces
+ * never fires and never resolves; it renders as coverage on a dashboard and
+ * constrains nothing, which is the vacuity class this whole audit chases. The
+ * roster is DERIVED from the emitting sources (EMITTED_METRICS in the portal,
+ * the meter instruments in Metrics.fs), so deleting an emitter turns its alerts
+ * red rather than leaving them quietly unfirable.
+ *
+ * Scoped to rules WE author. Chart-shipped rules watch software we do not
+ * emit for and are none of this audit business.
+ */
+export function checkAuthoredRules(objects: MonitoringObject[], roster: EmitterRoster): string[] {
+  const fails: string[] = [];
+  for (const obj of objects) {
+    if (obj.kind !== "PrometheusRule") continue;
+    const spec = (obj.doc.spec ?? {}) as Record<string, unknown>;
+    const groups = ((spec.groups ?? []) as Record<string, unknown>[]);
+    if (groups.length === 0) {
+      fails.push("alerting: PrometheusRule " + obj.name + " declares no groups");
+      continue;
+    }
+    for (const g of groups) {
+      for (const rule of ((g.rules ?? []) as Record<string, unknown>[])) {
+        const label = String(rule.alert ?? rule.record ?? "<unnamed>");
+        const expr = String(rule.expr ?? "");
+        if (expr.trim() === "") {
+          fails.push("alerting: rule " + label + " in " + obj.name + " has an empty expr");
+          continue;
+        }
+        const referenced = promqlMetricNames(expr);
+        if (referenced.length === 0) {
+          fails.push("alerting: rule " + label + " in " + obj.name + " references no metric at all");
+          continue;
+        }
+        for (const metric of referenced) {
+          if (!isEmittedMetric(metric, roster)) {
+            fails.push("alerting: rule " + label + " in " + obj.name + " references metric " + metric + " which NO Zeta source emits -- an alert on a series nothing produces can never fire. Emitters are declared in " + PORTAL_METRICS_SOURCE + " (EMITTED_METRICS) and " + DOTNET_METRICS_SOURCE + ".");
+          }
+        }
+      }
+    }
+  }
+  return fails;
+}
+
+/**
+ * Rule 7 -- a monitoring object the ruler never selects is not applied, it is
+ * IGNORED.
+ *
+ * kube-prometheus-stack defaults serviceMonitorSelectorNilUsesHelmValues and
+ * ruleSelectorNilUsesHelmValues to true, so the Prometheus CR selects only
+ * objects labelled release=<helm release name>. Without that label the object
+ * applies cleanly, appears in kubectl get, and is never evaluated -- silent,
+ * and indistinguishable from working until an incident. The expected value is
+ * DERIVED from the Application helm.releaseName so renaming the release breaks
+ * loudly here instead of quietly in the cluster.
+ */
+export function checkMonitoringSelectorLabel(objects: MonitoringObject[], releaseName: string): string[] {
+  const fails: string[] = [];
+  for (const obj of objects) {
+    const got = obj.labels["release"] ?? "";
+    if (got === releaseName) continue;
+    const detail = got === "" ? "carries no release label" : "carries release=" + got;
+    fails.push("selector: " + obj.kind + " " + obj.name + " (" + obj.app + "/" + obj.file + ") " + detail + " but the Prometheus CR selects release=" + releaseName + " -- it would be applied and never evaluated");
+  }
+  return fails;
+}
+/**
+ * Rule 8 -- Argo must actually APPLY the file.
+ *
+ * Several Applications in this tree use a directory source with an explicit
+ * include glob. A manifest added to such a directory and left out of the glob
+ * is committed, reviewed, merged -- and never applied to anything. The file
+ * exists, the alert does not. Checked for monitoring objects specifically,
+ * because those are the ones whose absence is invisible by construction.
+ */
+export function checkIncludedByApplication(appsDir: string, objects: MonitoringObject[]): string[] {
+  const fails: string[] = [];
+  const seen = new Set<string>();
+  for (const obj of objects) {
+    const key = obj.app + "/" + obj.file;
+    if (seen.has(key)) continue;
+    seen.add(key);
+    const app = readApplication(appsDir, obj.app);
+    if (app === undefined) continue;
+    const src = ((app.spec as Record<string, unknown>).source ?? {}) as Record<string, unknown>;
+    const directory = (src.directory ?? undefined) as Record<string, unknown> | undefined;
+    const include = directory === undefined ? undefined : directory.include;
+    if (typeof include !== "string") continue;
+    const stem = obj.file.replace(/\.(yaml|yml)$/, "");
+    const inner = /\{([^}]*)\}/.exec(include);
+    const names = inner === null ? [include.replace(/\.(yaml|yml)$/, "")] : (inner[1] ?? "").split(",").map((x) => x.trim());
+    if (!names.includes(stem) && !include.includes("*")) {
+      fails.push("argo: " + obj.app + "/" + obj.file + " holds a " + obj.kind + " but the " + obj.app + " Application include filter does not match it -- Argo never applies the file, so the object exists only in git");
+    }
+  }
+  return fails;
+}
 // ---- Tree wiring ----------------------------------------------------------
 
 export function readApplication(appsDir: string, app: string): Record<string, unknown> | undefined {
@@ -353,7 +693,7 @@ export function alloyConfig(app: Record<string, unknown>): string | undefined {
 
 export interface AuditResult { failures: string[]; checked: string[]; }
 
-export function runAudit(appsDir: string, rosterPath: string): AuditResult {
+export function runAudit(appsDir: string, rosterPath: string, repoRoot: string = "."): AuditResult {
   const failures: string[] = [];
   const checked: string[] = [];
 
@@ -394,6 +734,37 @@ export function runAudit(appsDir: string, rosterPath: string): AuditResult {
     checked.push("alertmanager: alerts do not terminate in a silent no-op receiver");
     failures.push(...checkAlertmanager(helmValues(kps)));
   }
+
+  // ---- the scrape half -----------------------------------------------------
+
+  const authoredDocs = readAuthoredDocs(appsDir);
+  checked.push("scrape: scrape annotations and declared metrics ports agree");
+  failures.push(...checkScrapeOptIn(authoredDocs));
+
+  const monitoring = authoredMonitoringObjects(appsDir);
+  if (monitoring.length === 0) {
+    // NOT a soft warning. A tree with no authored monitoring object is a tree
+    // where every alert belongs to somebody else, which is where this repo was
+    // on 2026-08-20: 35 rule groups, all chart defaults, none of them ours.
+    failures.push("scrape: no ServiceMonitor / PodMonitor / PrometheusRule is authored anywhere under " + appsDir + " -- every alert in the cluster then belongs to a chart and nothing watches Zeta");
+  } else {
+    const { roster, failures: rosterFailures } = zetaEmitterRoster(repoRoot);
+    failures.push(...rosterFailures);
+    checked.push("alerting: every authored rule references a metric a Zeta source emits");
+    failures.push(...checkAuthoredRules(monitoring, roster));
+
+    if (kps !== undefined) {
+      const src = (kps.spec as Record<string, unknown>).source as Record<string, unknown>;
+      const helm = (src.helm ?? {}) as Record<string, unknown>;
+      const releaseName = String(helm.releaseName ?? "kube-prometheus-stack");
+      checked.push("alerting: authored monitoring objects carry the release label the ruler selects on");
+      failures.push(...checkMonitoringSelectorLabel(monitoring, releaseName));
+    }
+
+    checked.push("argo: authored monitoring manifests are inside their Application include filter");
+    failures.push(...checkIncludedByApplication(appsDir, monitoring));
+  }
+
   return { failures, checked };
 }
 
@@ -447,10 +818,13 @@ export function refreshRoster(appsDir: string, rosterPath: string, appNames: str
 export function main(argv: string[]): number {
   let appsDir = DEFAULT_APPS_DIR;
   let rosterPath = DEFAULT_ROSTER;
+  // Where the EMITTING sources live (portal metrics.ts, Core/Metrics.fs).
+  let repoRoot = ".";
   let refresh = false;
   for (let i = 0; i < argv.length; i += 1) {
     if (argv[i] === "--apps-dir") { appsDir = argv[i + 1] ?? appsDir; i += 1; continue; }
     if (argv[i] === "--roster") { rosterPath = argv[i + 1] ?? rosterPath; i += 1; continue; }
+    if (argv[i] === "--repo-root") { repoRoot = argv[i + 1] ?? repoRoot; i += 1; continue; }
     if (argv[i] === "--refresh") { refresh = true; continue; }
   }
   if (refresh) {
@@ -468,7 +842,7 @@ export function main(argv: string[]): number {
     console.log("refreshed " + rosterPath + ": " + Object.keys(roster.apps).join(", "));
     return 0;
   }
-  const { failures, checked } = runAudit(appsDir, rosterPath);
+  const { failures, checked } = runAudit(appsDir, rosterPath, repoRoot);
   console.log("=== observability chain audit (" + appsDir + ") ===");
   for (const c of checked) console.log("  CHECK: " + c);
   if (failures.length === 0) {

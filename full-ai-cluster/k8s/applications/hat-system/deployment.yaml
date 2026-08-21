@@ -26,6 +26,15 @@ spec:
     metadata:
       labels:
         app: hat-system-operator
+      # The container below already declares a port named metrics and passes
+      # --metrics-bind-address=:8080, so the endpoint is asserted by the
+      # manifest either way. Without this annotation nothing collects it: the
+      # Alloy DaemonSet keeps only pods carrying prometheus.io/scrape=true.
+      # A metrics port nobody scrapes is a sink with no source, inverted.
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "8080"
+        prometheus.io/path: /metrics
     spec:
       serviceAccountName: hat-system-operator
       securityContext:

@@ -60,5 +60,17 @@
          Abstractions for the port library; the full container for the proving test. -->
     <PackageVersion Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="10.0.11" />
     <PackageVersion Include="Microsoft.Extensions.DependencyInjection" Version="10.0.10" />
+    <!-- OpenTelemetry: the exporter side of the instrumentation src/Core/Metrics.fs and
+         src/Core/Tracing.fs have published since long before anything listened. Referenced
+         ONLY by src/Core.Telemetry (the composition root) and the test project that proves
+         data arrives - never by Core itself, so a consumer of the DBSP library does not
+         inherit an exporter stack it did not ask for.
+         OpenTelemetry.Exporter.InMemory is TEST-ONLY: it is the seam that turns "the code
+         compiles" into "the counters actually reach an exporter". All three held at the
+         same version - the SDK and its exporters are a matched set. Exact-pinned per the
+         supply-chain doctrine. -->
+    <PackageVersion Include="OpenTelemetry" Version="1.17.0" />
+    <PackageVersion Include="OpenTelemetry.Exporter.OpenTelemetryProtocol" Version="1.17.0" />
+    <PackageVersion Include="OpenTelemetry.Exporter.InMemory" Version="1.17.0" />
   </ItemGroup>
 </Project>

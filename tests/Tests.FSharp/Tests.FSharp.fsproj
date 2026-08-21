@@ -601,6 +601,7 @@
     <!-- Infra/ -->
     <Compile Include="Infra/Metrics.Tests.fs" />
     <Compile Include="Infra/Tracing.Tests.fs" />
+    <Compile Include="Infra/TelemetryExporter.Tests.fs" />
     <Compile Include="Infra/Watermark.Tests.fs" />
     <Compile Include="Infra/Sink.Tests.fs" />
     <Compile Include="Infra/Dsl.Tests.fs" />
@@ -694,6 +695,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\Core\Core.fsproj" />
+    <ProjectReference Include="..\..\src\Core.Telemetry\Zeta.Core.Telemetry.fsproj" />
     <ProjectReference Include="..\..\src\Core.FSharp.Cli\Zeta.Cli.fsproj" />
     <ProjectReference Include="..\..\src\Bayesian\Bayesian.fsproj" />
     <ProjectReference Include="..\..\src\Core.CSharp\Core.CSharp.csproj" />
@@ -739,5 +741,8 @@
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
     <PackageReference Include="YamlDotNet" />
+    <!-- TEST-ONLY: the in-memory exporter is the seam that turns "an OTLP exporter is
+         wired" into "the counters and spans actually arrive". Not a production dep. -->
+    <PackageReference Include="OpenTelemetry.Exporter.InMemory" />
   </ItemGroup>
 </Project>

@@ -1239,6 +1239,38 @@
       }
     },
     {
+      "id": "dotnet:src/Core.Telemetry",
+      "kind": "dotnet",
+      "sources": ["src/Core.Telemetry/**"],
+      "dependsOn": ["dotnet:src/Core"],
+      "legs": ["gate/build-and-test", "gate/lint-csharp", "gate/lint-fsharp"],
+      "origin": "derived",
+      "requiredQuorum": {
+        "tier": "T3",
+        "faultModel": {
+          "faultClass": "byzantine",
+          "f": 1
+        },
+        "reviewerClasses": ["reviewer:fsharp"],
+        "evidence": [
+          {
+            "rule": "cross-oracle-bytelock",
+            "kind": "cross-oracle",
+            "witness": "tests/Tests.FSharp/Blake3/CrossVerifyTests.fs",
+            "count": 31,
+            "holder": "dotnet:tests/Tests.FSharp"
+          },
+          {
+            "rule": "treaty-transcript",
+            "kind": "treaty-transcript",
+            "witness": "tests/Tests.FSharp/Chip9Treaty.Tests.fs",
+            "count": 6,
+            "holder": "dotnet:tests/Tests.FSharp"
+          }
+        ]
+      }
+    },
+    {
       "id": "dotnet:src/SwarmRunner",
       "kind": "dotnet",
       "sources": ["src/SwarmRunner/**"],
@@ -1433,7 +1465,8 @@
         "dotnet:src/Core.FSharp.Sha256",
         "dotnet:src/Core.FSharp.TriBoolean",
         "dotnet:src/Core.FSharp.Yaml",
-        "dotnet:src/Core.FSharp.ZetaId"
+        "dotnet:src/Core.FSharp.ZetaId",
+        "dotnet:src/Core.Telemetry"
       ],
       "legs": ["gate/build-and-test", "gate/lint-csharp", "gate/lint-fsharp"],
       "origin": "derived",
