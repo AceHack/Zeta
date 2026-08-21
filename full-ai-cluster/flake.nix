@@ -259,6 +259,32 @@
             pkgs.runCommand "k3s-first-boot-apply-order" { inherit (report) status; } ''
               echo "$status" | tee "$out"
             '';
+
+          # Properties of the LONGHORN NODE PREFLIGHT -- the boot-time refusal
+          # that says whether this node's storage substrate is actually there.
+          #
+          # NOT a VM test and NOT a boot test. It proves the mount set is
+          # DERIVED from the host's own fileSystems (never a hand-written
+          # roster), that the check which regressed in the field is present in
+          # the form that catches it (`systemctl is-active`, not `systemctl
+          # cat`), that the shim roster cannot drift from the module that
+          # creates the symlinks, and that the unit is reachable on every
+          # node's boot path. It CANNOT say whether the check PASSES on any
+          # hardware -- only a boot can, and the console marker to look for is
+          # ZETA_LONGHORN_PREFLIGHT_OK.
+          #
+          # Costs no VM, runs on every system, and its assertions fire during
+          # EVALUATION -- so `nix flake check --no-build` already runs it.
+          longhorn-node-preflight =
+            let
+              report = import ./nixos/tests/longhorn-node-preflight-eval-test.nix {
+                inherit pkgs;
+                inherit (nixpkgs) lib;
+              };
+            in
+            pkgs.runCommand "longhorn-node-preflight" { inherit (report) status; } ''
+              echo "$status" | tee "$out"
+            '';
         } // nixpkgs.lib.optionalAttrs (system == "x86_64-linux") {
           # Regression test for the k3s --cluster-init token deadlock:
           # boots the control-plane k3s module in QEMU and asserts the API

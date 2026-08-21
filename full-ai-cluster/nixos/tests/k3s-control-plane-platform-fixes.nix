@@ -23,10 +23,18 @@
 #      times over 62 days and every `longhorn` PVC sat Pending; `command -v`
 #      resolved via /run/current-system/sw/bin, which Longhorn never sees.
 #      (2026-08-16 — see modules/longhorn-prereqs.nix FHS shim.)
+#   6. The NODE ITSELF says whether all of the above actually worked:
+#      zeta-longhorn-preflight.service (modules/longhorn-node-preflight.nix)
+#      runs at boot on every node and refuses on the console when a declared
+#      Longhorn filesystem is not mounted, iscsid is not ACTIVE, iscsi_tcp is
+#      not loaded, or a shim is missing. Asserting the unit SUCCEEDED here is
+#      what makes that guard a thing CI executes, not merely a thing CI reads:
+#      nixos/tests/longhorn-node-preflight-eval-test.nix proves it is wired in
+#      and non-vacuous, and this lane proves it can go green on a real boot.
 #
 # Hermetic: runs in the Nix build sandbox with no internet, so (like
-# k3s-cluster-init.nix) we drop the image-pull bootstrap manifests. All four
-# assertions are local-only and need no network.
+# k3s-cluster-init.nix) we drop the image-pull bootstrap manifests. All six
+# assertion groups are local-only and need no network.
 #
 # Run:
 #   cd full-ai-cluster
@@ -82,7 +90,12 @@ pkgs.testers.nixosTest {
 
     # ── FIX 2: open-iscsi prerequisites for Longhorn ────────────────────
     server.succeed("command -v iscsiadm")                 # iscsi userspace
-    server.succeed("systemctl cat iscsid.service")        # unit configured
+    # `systemctl cat iscsid.service` used to stand here. It proves a unit FILE
+    # exists and passes on a dead daemon -- the same shape as assertion 5's
+    # `command -v`, and unable to distinguish a working iSCSI stack from the
+    # node-5b2dfa one. Longhorn needs the DAEMON, so ask about the daemon.
+    server.wait_for_unit("iscsid.service", timeout=120)
+    server.succeed("systemctl is-active --quiet iscsid.service")
     server.succeed("test -d /var/lib/longhorn")           # data path exists
     # iscsi_tcp is requested via boot.kernelModules; it must be loadable.
     server.succeed("modinfo iscsi_tcp >/dev/null 2>&1 || lsmod | grep -q iscsi_tcp")
@@ -111,6 +124,26 @@ pkgs.testers.nixosTest {
     assert "--disable=local-storage" in flags, "k3s missing --disable=local-storage"
     assert "--flannel-backend=none" in flags, "k3s missing --flannel-backend=none"
     assert "--disable-kube-proxy" in flags, "k3s missing --disable-kube-proxy"
+
+    # ── FIX 6: the node's OWN preflight ran and passed ───────────────────
+    # Diagnostics BEFORE the assertion. A wait_for_unit that times out prints
+    # nothing about why, and anything after it is unreachable once it fails --
+    # so surface the unit's own journal here, where it stays readable in the
+    # build log whichever way this goes.
+    print(server.succeed("systemctl status zeta-longhorn-preflight.service --no-pager || true"))
+    print(server.succeed(
+        "journalctl -u zeta-longhorn-preflight.service --no-pager | tail -n 40 || true"))
+
+    server.wait_for_unit("zeta-longhorn-preflight.service", timeout=180)
+    # The unit reaching `active` is the machine-readable verdict; the marker is
+    # the operator-readable one, and asserting BOTH is what stops a future
+    # edit that keeps the unit green while gutting what it checks.
+    server.succeed(
+        "journalctl -u zeta-longhorn-preflight.service --no-pager "
+        "| grep -q ZETA_LONGHORN_PREFLIGHT_OK")
+    server.fail(
+        "journalctl -u zeta-longhorn-preflight.service --no-pager "
+        "| grep -q ZETA_LONGHORN_PREFLIGHT_FAILED")
 
     # Post-mortem surface into the build log.
     print(server.succeed("iptables -t mangle -S | head -n 20 || true"))

@@ -21,6 +21,19 @@
 { config, pkgs, lib, ... }:
 
 {
+  imports = [
+    # The RUNTIME half of this module. Everything below is a DECLARATION --
+    # services.openiscsi, boot.kernelModules, tmpfiles symlinks -- and a
+    # declaration is not evidence that the thing is there on the node. The
+    # 62-day outage recorded above happened with all of these declared and
+    # correct; what was missing was anyone LOOKING at the running system.
+    #
+    # Imported here rather than from common.nix so the preflight travels with
+    # the prerequisites it checks: any host (or VM test) that pulls in
+    # longhorn-prereqs.nix gets the check that says whether it worked.
+    ./longhorn-node-preflight.nix
+  ];
+
   # iSCSI initiator — Longhorn's volume-attach transport. Requires a
   # globally-unique initiator name per node (derived from the hostname).
   services.openiscsi = {
