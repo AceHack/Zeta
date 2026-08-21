@@ -97,7 +97,7 @@ export interface RootAppIdentity {
 }
 
 export interface Finding {
-  readonly check: "root-app-collision" | "storage-budget" | "false-redundancy";
+  readonly check: "root-app-collision" | "storage-budget" | "false-redundancy" | "capacity-provenance";
   readonly severity: "blocker" | "warning";
   readonly message: string;
   readonly detail: readonly string[];
@@ -122,6 +122,26 @@ export interface Ledger {
    * — goes red and has to be re-stated deliberately.
    */
   readonly acknowledgedRootAppDuplicates: readonly string[];
+  /**
+   * Capacity shortfalls against MEASURED hardware that are knowingly carried,
+   * recorded as `<storageClass>=<declared>GiB>><measured>GiB@<node>`.
+   *
+   * Both numbers are in the key on purpose, for the same reason the root-app
+   * key pins its source set: acknowledging the bare storage class would make
+   * the check unfalsifiable, because any later PVC growth — or a smaller node
+   * joining — would be silently absorbed by the existing entry. Pinning the
+   * arithmetic means every movement of either side goes red and has to be
+   * re-stated deliberately.
+   *
+   * An acknowledgement suppresses the EXIT CODE, never the output: the auditor
+   * prints each acknowledged shortfall with its full arithmetic on the normal
+   * path, so "no blockers." can never stand alone beside an oversubscribed disk.
+   *
+   * The UNVERIFIED case is deliberately NOT acknowledgeable. A shortfall you
+   * can see is debt; a comparator you do not have is not a check at all, and
+   * an exemption for it would be exactly the vacuity this file exists to catch.
+   */
+  readonly acknowledgedCapacityShortfall: readonly string[];
 }
 
 // ---------------------------------------------------------------------------
@@ -391,6 +411,225 @@ export function findRootAppCollisions(
 }
 
 // ---------------------------------------------------------------------------
+// MEASURED node capacity — the comparator that has provenance.
+//
+// WHY THIS EXISTS, SEPARATELY FROM `storage-budget`
+// -------------------------------------------------
+// `storage-budget` compares the declared PVC total against `nodeDiskGib` in
+// the ledger. That number is 2048, and the ledger's own comment says of it:
+//
+//     "It is NOT a measurement of the box Aaron has today - it is the
+//      requirement the manifests imply"
+//     "STATUS: awaiting maintainer sign-off on nodeDiskGib"
+//
+// So on 2026-08-21 the auditor printed `no blockers.` and exited 0 while
+// comparing ~1409 GiB of declared `longhorn` PVCs against an unsigned
+// aspiration. A gate whose comparator is an aspiration is not a gate: it
+// cannot fail for the reason it exists, and a check that cannot fail looks
+// exactly like a check that passed.
+//
+// This check supplies a comparator that has PROVENANCE. Four ClusterNode
+// registrations are checked in under `maintainers/*/cluster-nodes/*/node.yaml`,
+// written by real metal boots: zeta-install.sh composes `spec.hardware.storage`
+// from `lsblk -ndo NAME,SIZE,TYPE -e7` on the node itself. Those are measured
+// bytes off real hardware, committed by a self-registration PR.
+//
+// THE INFERENCE IS ONE-WAY, ON PURPOSE
+// ------------------------------------
+// The bound below is the SUM of every whole block device on the node. That is
+// deliberately over-generous: it counts the USB stick, and it ignores the ESP,
+// the root filesystem, swap, and Longhorn's own reserve — none of which the
+// registration records. So:
+//
+//   declared > bound  =>  PROVEN oversubscribed. No reading of the hardware
+//                         rescues it; the disks are not there.
+//   declared <= bound =>  proves NOTHING about whether it fits.
+//
+// It convicts, never acquits — the same shape as the rest of this file's
+// verdicts, and the reason the finding says "exceeds every disk on the node"
+// rather than "will not fit".
+//
+// Note this is independent of HOW Longhorn is told about those disks (the
+// `node.longhorn.io/default-disks-config` mechanism, PR #12175): physical
+// capacity bounds every disk-set mechanism from above, broken or fixed.
+// ---------------------------------------------------------------------------
+
+/** One node's measured hardware, read off a checked-in ClusterNode registration. */
+export interface MeasuredNode {
+  /** Repo-relative path of the registration, so a finding can cite its evidence. */
+  readonly path: string;
+  readonly hostname: string;
+  /** Verbatim `spec.hardware.storage` entries, e.g. `/dev/nvme0n1 931.5G`. */
+  readonly devices: readonly string[];
+  /**
+   * Sum of every parsed device size in GiB, or `null` when the registration
+   * carries no parsable storage line at all. `null` is NOT zero: an unmeasured
+   * node must not read as a node with no disks.
+   */
+  readonly totalGib: number | null;
+}
+
+/**
+ * lsblk's human-readable sizes are BINARY (`931.5G` is 931.5 GiB), which is why
+ * this cannot reuse `quantityToGib`: there `G` is the Kubernetes SI suffix and
+ * means 10^9 bytes. Feeding an lsblk string through the Kubernetes parser would
+ * shrink every measurement by ~7% and make the bound look tighter than it is.
+ */
+export function lsblkSizeToGib(raw: string): number | null {
+  const match = /^(\d+(?:[.,]\d+)?)([BKMGTPE])$/.exec(raw.trim());
+  if (match === null) return null;
+  // Ordinal digits only — the regex already refused anything else. The comma
+  // branch is for locale-formatted lsblk output, normalised to a point.
+  const magnitude = Number((match[1] ?? "").replace(",", "."));
+  if (!Number.isFinite(magnitude)) return null;
+  const factor: Readonly<Record<string, number>> = {
+    B: 1 / 1024 ** 3,
+    K: 1 / 1024 ** 2,
+    M: 1 / 1024,
+    G: 1,
+    T: 1024,
+    P: 1024 ** 2,
+    E: 1024 ** 3,
+  };
+  const scale = factor[match[2] ?? ""];
+  return scale === undefined ? null : magnitude * scale;
+}
+
+/** `/dev/nvme0n1 931.5G` -> 931.5. Returns null for any line without a size token. */
+export function deviceLineToGib(line: string): number | null {
+  const parts = line.trim().split(/\s+/);
+  const last = parts[parts.length - 1];
+  return last === undefined ? null : lsblkSizeToGib(last);
+}
+
+export const DEFAULT_REGISTRATIONS_ROOT = "maintainers";
+
+/**
+ * Read every checked-in ClusterNode registration under
+ * `<registrationsRoot>/<maintainer>/cluster-nodes/<node>/node.yaml`.
+ *
+ * Registrations with no `spec.hardware.storage` (the post-boot self-register
+ * path never captured it) come back with `totalGib: null` and are reported as
+ * gaps rather than dropped, so an unmeasured node is visible as unmeasured.
+ */
+export function collectMeasuredNodes(
+  repoRoot = REPO_ROOT,
+  registrationsRoot = DEFAULT_REGISTRATIONS_ROOT,
+): readonly MeasuredNode[] {
+  const abs = resolve(repoRoot, registrationsRoot);
+  if (!existsSync(abs)) return [];
+  const out: MeasuredNode[] = [];
+  for (const file of listYaml(abs)) {
+    const rel = relative(repoRoot, file).split(sep).join("/");
+    if (!rel.includes("/cluster-nodes/")) continue;
+    for (const doc of parseYamlDocuments(readFileSync(file, "utf8"), rel)) {
+      if (at(doc, "kind") !== "ClusterNode") continue;
+      const spec = at(doc, "spec");
+      const rawHost = at(spec, "hostname");
+      const rawStorage = at(at(spec, "hardware"), "storage");
+      const devices = Array.isArray(rawStorage)
+        ? rawStorage.filter((entry): entry is string => typeof entry === "string")
+        : [];
+      const sizes = devices.map((entry) => deviceLineToGib(entry)).filter((gib): gib is number => gib !== null);
+      out.push({
+        path: rel,
+        hostname: typeof rawHost === "string" ? rawHost : rel,
+        devices,
+        totalGib: sizes.length === 0 ? null : sizes.reduce((sum, gib) => sum + gib, 0),
+      });
+    }
+  }
+  return out.sort((a, b) => stringCompare(a.path, b.path));
+}
+
+/**
+ * The cluster's verified per-node capacity: the SMALLEST measured node, because
+ * a catalogue that must fit on every node has to fit on the smallest one. Null
+ * when nothing is measured — the caller must then refuse, not substitute.
+ */
+export function verifiedNodeCapacity(nodes: readonly MeasuredNode[]): MeasuredNode | null {
+  let best: MeasuredNode | null = null;
+  for (const node of nodes) {
+    if (node.totalGib === null) continue;
+    if (best === null || node.totalGib < (best.totalGib ?? Infinity)) best = node;
+  }
+  return best;
+}
+
+export function capacityShortfallKey(storageClass: string, declaredGib: number, node: MeasuredNode): string {
+  return `${storageClass}=${declaredGib.toFixed(0)}GiB>>${(node.totalGib ?? 0).toFixed(0)}GiB@${node.hostname}`;
+}
+
+export function findCapacityProvenance(
+  claims: readonly StorageClaim[],
+  ledger: Ledger,
+  nodes: readonly MeasuredNode[],
+): readonly Finding[] {
+  const budgeted = [...ledger.budgetedStorageClasses].sort((a, b) => stringCompare(a, b));
+  const totals = new Map<string, number>();
+  for (const claim of claims) {
+    if (!budgeted.includes(claim.storageClass)) continue;
+    totals.set(claim.storageClass, (totals.get(claim.storageClass) ?? 0) + claim.gibibytes * claim.replicas);
+  }
+  if (totals.size === 0) return [];
+
+  const floor = verifiedNodeCapacity(nodes);
+  const unmeasured = nodes.filter((node) => node.totalGib === null);
+
+  // REFUSE. Nothing measured means there is no comparator with provenance, and
+  // the only honest verdict a gate can return without one is "I cannot know".
+  if (floor === null) {
+    return [
+      {
+        check: "capacity-provenance",
+        severity: "blocker",
+        message:
+          `Capacity UNVERIFIED: ${totals.size} budgeted StorageClass(es) declare storage, but no checked-in ` +
+          `ClusterNode registration carries a measurable spec.hardware.storage. The only other comparator is ` +
+          `ledger.nodeDiskGib=${ledger.nodeDiskGib}, which the ledger itself records as an unsigned requirement ` +
+          `rather than a measurement — so passing on it would be a check that cannot fail. Register a node ` +
+          `(zeta-install.sh writes spec.hardware.storage from lsblk) or add its measured devices by hand.`,
+        detail: [
+          ...[...totals.entries()]
+            .sort((a, b) => stringCompare(a[0], b[0]))
+            .map(([storageClass, gib]) => `${gib.toFixed(0).padStart(6)} GiB declared  ${storageClass}`),
+          ...unmeasured.map((node) => `no hardware.storage recorded: ${node.path}`).sort((a, b) => stringCompare(a, b)),
+          "this finding is NOT acknowledgeable — an absent comparator is not debt, it is an absent check",
+        ],
+      },
+    ];
+  }
+
+  const findings: Finding[] = [];
+  for (const storageClass of budgeted) {
+    const declared = totals.get(storageClass);
+    if (declared === undefined) continue;
+    const bound = (floor.totalGib ?? 0) * ledger.nodeCount;
+    if (declared <= bound) continue;
+    const key = capacityShortfallKey(storageClass, declared, floor);
+    if (ledger.acknowledgedCapacityShortfall.includes(key)) continue;
+    findings.push({
+      check: "capacity-provenance",
+      severity: "blocker",
+      message:
+        `StorageClass "${storageClass}" declares ${declared.toFixed(0)} GiB, which exceeds EVERY block device on ` +
+        `the smallest measured node (${floor.hostname}: ${bound.toFixed(0)} GiB across ${floor.devices.length} ` +
+        `device(s) x ${ledger.nodeCount} node(s)) by ${(declared - bound).toFixed(0)} GiB — ` +
+        `${(declared / Math.max(bound, 1)).toFixed(2)}x. That bound counts every disk including the boot and USB ` +
+        `devices and reserves nothing for the OS, so it is generous: exceeding it is proven oversubscription, ` +
+        `not an estimate. Buy the disk, trim the catalogue, or record the shortfall as debt.`,
+      detail: [
+        `measured evidence: ${floor.path}`,
+        ...floor.devices.map((device) => `  ${device}`).sort((a, b) => stringCompare(a, b)),
+        ...unmeasured.map((node) => `unmeasured node (not counted): ${node.path}`).sort((a, b) => stringCompare(a, b)),
+        `acknowledge with: ${key}`,
+      ],
+    });
+  }
+  return findings;
+}
+
+// ---------------------------------------------------------------------------
 // Budget + redundancy findings
 // ---------------------------------------------------------------------------
 
@@ -516,16 +755,23 @@ export const DEFAULT_ROOTS: readonly string[] = [
   "infra/k8s/bootstrap",
 ];
 
-export function auditAll(ledger: Ledger, roots: readonly string[] = DEFAULT_ROOTS, repoRoot = REPO_ROOT) {
+export function auditAll(
+  ledger: Ledger,
+  roots: readonly string[] = DEFAULT_ROOTS,
+  repoRoot = REPO_ROOT,
+  registrationsRoot = DEFAULT_REGISTRATIONS_ROOT,
+) {
   const manifests = loadManifests(roots, repoRoot);
+  const measuredNodes = collectMeasuredNodes(repoRoot, registrationsRoot);
   const replicaClaims = manifests.flatMap((manifest) => extractReplicaClaims(manifest, ledger.nodeCount));
   const storageClaims = manifests.flatMap((manifest) => extractStorageClaims(manifest));
   const findings = [
     ...findRootAppCollisions(collectRootAppIdentities(manifests), ledger.acknowledgedRootAppDuplicates),
+    ...findCapacityProvenance(storageClaims, ledger, measuredNodes),
     ...findStorageBudgetOverruns(storageClaims, ledger),
     ...findFalseRedundancy(replicaClaims, ledger),
   ];
-  return { manifests: manifests.length, replicaClaims, storageClaims, findings } as const;
+  return { manifests: manifests.length, measuredNodes, replicaClaims, storageClaims, findings } as const;
 }
 
 /** Per-StorageClass declared capacity in GiB, descending. This is the hardware spec, derived. */
@@ -549,6 +795,7 @@ export function readLedger(path: string, repoRoot = REPO_ROOT): Ledger {
     budgetedStorageClasses: parsed.budgetedStorageClasses ?? [],
     acknowledgedFalseRedundancy: parsed.acknowledgedFalseRedundancy ?? [],
     acknowledgedRootAppDuplicates: parsed.acknowledgedRootAppDuplicates ?? [],
+    acknowledgedCapacityShortfall: parsed.acknowledgedCapacityShortfall ?? [],
   };
 }
 
@@ -586,18 +833,42 @@ function main(argv: readonly string[]): void {
   } else {
     console.log(`single-node readiness: ${report.manifests} manifests, nodeCount=${ledger.nodeCount}`);
     console.log("\nDerived per-node storage requirement (sum of declared PVC capacity x replicas):");
+    const floor = verifiedNodeCapacity(report.measuredNodes);
     for (const [storageClass, gib] of storageTotals(report.storageClaims)) {
       const budgeted = ledger.budgetedStorageClasses.includes(storageClass);
       console.log(
         `  ${storageClass.padEnd(18)} ${gib.toFixed(0).padStart(6)} GiB` +
-          (budgeted ? `  (budget ${(ledger.nodeDiskGib * ledger.nodeCount).toFixed(0)} GiB)` : "  (unbudgeted)"),
+          // "aspirational" is not decoration. nodeDiskGib is unsigned by the
+          // ledger's own admission, so a bare "(budget N GiB)" reads as a
+          // measurement it is not.
+          (budgeted
+            ? `  (nodeDiskGib budget ${(ledger.nodeDiskGib * ledger.nodeCount).toFixed(0)} GiB, ASPIRATIONAL)`
+            : "  (unbudgeted)"),
       );
+    }
+    console.log(
+      floor === null
+        ? "\nMeasured node capacity: NONE — no checked-in ClusterNode registration records hardware.storage."
+        : `\nMeasured node capacity (smallest registered node, every block device counted):\n` +
+            `  ${floor.hostname.padEnd(18)} ${((floor.totalGib ?? 0) * ledger.nodeCount).toFixed(0).padStart(6)} GiB` +
+            `  (${floor.path})`,
+    );
+    // Acknowledged shortfalls suppress the exit code, never the print. A
+    // silently-acknowledged oversubscription is the same vacuity as an
+    // aspirational comparator, one layer down.
+    if (floor !== null && ledger.acknowledgedCapacityShortfall.length > 0) {
+      console.log(
+        "\nACKNOWLEDGED capacity shortfalls (debt, not clearance — exit code suppressed, arithmetic is not):",
+      );
+      for (const key of [...ledger.acknowledgedCapacityShortfall].sort((a, b) => stringCompare(a, b))) {
+        console.log(`  ${key}`);
+      }
     }
     for (const finding of report.findings) {
       console.log(`\n[${finding.severity}] ${finding.check}: ${finding.message}`);
       for (const line of finding.detail) console.log(`    ${line}`);
     }
-    if (report.findings.length === 0) console.log("no blockers.");
+    if (report.findings.length === 0) console.log("\nno blockers.");
   }
   process.exit(report.findings.some((finding) => finding.severity === "blocker") ? 1 : 0);
 }

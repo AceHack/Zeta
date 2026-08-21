@@ -70,6 +70,11 @@ on:
       - "full-ai-cluster/k8s/applications/**"
       - "full-ai-cluster/k8s/bootstrap/**"
       - "full-ai-cluster/k8s/single-node-budget.json"
+      # The MEASURED comparator for the capacity gate. A node registering (or
+      # re-registering with different disks) moves the hardware bound the audit
+      # compares against, so it has to re-run -- otherwise a smaller node could
+      # land on main without the gate that would have caught it ever firing.
+      - "maintainers/*/cluster-nodes/**"
       - "src/Core.TypeScript/cluster/single-node-readiness.ts"
       - "src/Core.TypeScript/cluster/single-node-readiness.test.ts"
       - "docs/backlog/P1/081KSXN940008QG0R000SCP2H1-kubernetes-argocd-kind-k3d-integration-health-tests-separate.md"
@@ -100,6 +105,11 @@ on:
       - "full-ai-cluster/k8s/applications/**"
       - "full-ai-cluster/k8s/bootstrap/**"
       - "full-ai-cluster/k8s/single-node-budget.json"
+      # The MEASURED comparator for the capacity gate. A node registering (or
+      # re-registering with different disks) moves the hardware bound the audit
+      # compares against, so it has to re-run -- otherwise a smaller node could
+      # land on main without the gate that would have caught it ever firing.
+      - "maintainers/*/cluster-nodes/**"
       - "src/Core.TypeScript/cluster/single-node-readiness.ts"
       - "src/Core.TypeScript/cluster/single-node-readiness.test.ts"
       - "docs/backlog/P1/081KSXN940008QG0R000SCP2H1-kubernetes-argocd-kind-k3d-integration-health-tests-separate.md"
@@ -166,6 +176,15 @@ jobs:
       # the red case, and four deliberate manifest breaks were run against the
       # live tree (over-budget PVC, unacknowledged replicas>1, tab-indented
       # YAML, a third app-of-apps root) -- all exit 1.
+      #
+      # 2026-08-21: a fifth comparator now runs, `capacity-provenance`. It
+      # compares the same declared totals against MEASURED hardware from
+      # maintainers/*/cluster-nodes/*/node.yaml (hence that path in the filters
+      # above) and REFUSES when nothing measurable is registered -- because the
+      # other comparator, ledger.nodeDiskGib, is an unsigned aspiration by the
+      # ledger's own admission. Verified red on the live tree: exit 1 with
+      # "longhorn declares 1409 GiB ... exceeds EVERY block device on
+      # node-ad1efd (1047 GiB)" before that shortfall was recorded as debt.
       - name: Run single-node readiness unit tests
         run: bun test src/Core.TypeScript/cluster/single-node-readiness.test.ts
 

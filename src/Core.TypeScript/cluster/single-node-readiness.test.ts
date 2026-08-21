@@ -13,18 +13,25 @@ import {
   antiAffinityOf,
   appNameFor,
   auditAll,
+  capacityShortfallKey,
   classifyRedundancy,
+  collectMeasuredNodes,
   collectRootAppIdentities,
+  deviceLineToGib,
   extractReplicaClaims,
   extractStorageClaims,
+  findCapacityProvenance,
   findFalseRedundancy,
   findRootAppCollisions,
   findStorageBudgetOverruns,
+  lsblkSizeToGib,
   parseYamlDocuments,
   quantityToGib,
   storageTotals,
+  verifiedNodeCapacity,
   type AppManifest,
   type Ledger,
+  type MeasuredNode,
 } from "./single-node-readiness.ts";
 
 const LEDGER: Ledger = {
@@ -33,6 +40,7 @@ const LEDGER: Ledger = {
   budgetedStorageClasses: ["longhorn"],
   acknowledgedFalseRedundancy: [],
   acknowledgedRootAppDuplicates: [],
+  acknowledgedCapacityShortfall: [],
 };
 
 function manifest(path: string, yaml: string): AppManifest {
@@ -299,6 +307,222 @@ describe("findFalseRedundancy", () => {
   });
 });
 
+// ---------------------------------------------------------------------------
+// capacity-provenance: the comparator that has provenance
+// ---------------------------------------------------------------------------
+
+const NODE_2TB = `apiVersion: zeta.lucent-financial-group.com/v1
+kind: ClusterNode
+metadata:
+  name: node-fixture
+spec:
+  hostname: node-fixture
+  hardware:
+    storage:
+      - "/dev/nvme0n1 2048G"
+`;
+
+const NODE_SMALL = NODE_2TB.replace("2048G", "200G");
+
+/** A registration written by the post-boot self-register path: no storage at all. */
+const NODE_NO_STORAGE = `apiVersion: zeta.lucent-financial-group.com/v1
+kind: ClusterNode
+metadata:
+  name: node-blind
+spec:
+  hostname: node-blind
+  hardware:
+    cpu: "Intel(R) Core(TM) Ultra 9 185H"
+`;
+
+function nodesFixture(files: Readonly<Record<string, string>>): string {
+  const root = mkdtempSync(join(tmpdir(), "zeta-snr-nodes-"));
+  for (const [rel, text] of Object.entries(files)) {
+    mkdirSync(join(root, rel.slice(0, rel.lastIndexOf("/"))), { recursive: true });
+    writeFileSync(join(root, rel), text);
+  }
+  return root;
+}
+
+const LONGHORN_CLAIM = {
+  app: "tree/crdb",
+  path: "tree/k8s/applications/crdb/Application.yaml",
+  field: "spec.storageClassName",
+  storageClass: "longhorn",
+  gibibytes: 500,
+  replicas: 3,
+} as const;
+
+describe("lsblkSizeToGib — lsblk sizes are BINARY, unlike Kubernetes quantities", () => {
+  test.each([
+    ["931.5G", 931.5],
+    ["2048G", 2048],
+    ["1T", 1024],
+    ["1024M", 1],
+    ["115.5G", 115.5],
+  ])("%s -> %p GiB", (raw, expected) => {
+    expect(lsblkSizeToGib(raw as string)).toBeCloseTo(expected as number, 6);
+  });
+
+  // The whole reason this parser exists instead of reusing quantityToGib. If
+  // lsblk's "931.5G" went through the Kubernetes parser it would read as
+  // 867.5 GiB and the hardware bound would silently tighten by ~7%.
+  test("RED: the Kubernetes parser disagrees with lsblk on the same string", () => {
+    const lsblk = lsblkSizeToGib("931.5G");
+    const kubernetes = quantityToGib("931.5G");
+    expect(lsblk).toBeCloseTo(931.5, 6);
+    expect(kubernetes).not.toBeNull();
+    expect(kubernetes as number).toBeLessThan(900);
+  });
+
+  test("RED: a non-size yields null rather than a silent zero", () => {
+    expect(lsblkSizeToGib("nvme0n1")).toBeNull();
+    expect(lsblkSizeToGib("")).toBeNull();
+    expect(lsblkSizeToGib("12X")).toBeNull();
+  });
+
+  test("deviceLineToGib reads the size off a full lsblk line", () => {
+    expect(deviceLineToGib("/dev/nvme0n1 931.5G")).toBeCloseTo(931.5, 6);
+    expect(deviceLineToGib("  /dev/sda   115.5G  ")).toBeCloseTo(115.5, 6);
+    expect(deviceLineToGib("/dev/nvme0n1")).toBeNull();
+  });
+});
+
+describe("collectMeasuredNodes / verifiedNodeCapacity", () => {
+  test("sums every block device on a registration", () => {
+    const root = nodesFixture({
+      "maintainers/a/cluster-nodes/n1/node.yaml": NODE_2TB.replace(
+        '      - "/dev/nvme0n1 2048G"\n',
+        '      - "/dev/nvme0n1 931.5G"\n      - "/dev/sda 115.5G"\n',
+      ),
+    });
+    try {
+      const nodes = collectMeasuredNodes(root);
+      expect(nodes).toHaveLength(1);
+      expect(nodes[0]?.devices).toHaveLength(2);
+      expect(nodes[0]?.totalGib).toBeCloseTo(1047, 6);
+    } finally {
+      rmSync(root, { recursive: true, force: true });
+    }
+  });
+
+  // The load-bearing distinction: an unmeasured node must not read as a node
+  // with zero disks, because `min` over a zero would drag the bound to 0 and
+  // turn every catalogue into a false blocker.
+  test("RED: a registration with no hardware.storage is null, not zero", () => {
+    const root = nodesFixture({ "maintainers/a/cluster-nodes/n1/node.yaml": NODE_NO_STORAGE });
+    try {
+      const nodes = collectMeasuredNodes(root);
+      expect(nodes).toHaveLength(1);
+      expect(nodes[0]?.totalGib).toBeNull();
+      expect(verifiedNodeCapacity(nodes)).toBeNull();
+    } finally {
+      rmSync(root, { recursive: true, force: true });
+    }
+  });
+
+  test("the floor is the SMALLEST measured node, and skips unmeasured ones", () => {
+    const root = nodesFixture({
+      "maintainers/a/cluster-nodes/big/node.yaml": NODE_2TB,
+      "maintainers/a/cluster-nodes/small/node.yaml": NODE_SMALL,
+      "maintainers/b/cluster-nodes/blind/node.yaml": NODE_NO_STORAGE,
+    });
+    try {
+      const nodes = collectMeasuredNodes(root);
+      expect(nodes).toHaveLength(3);
+      expect(verifiedNodeCapacity(nodes)?.totalGib).toBeCloseTo(200, 6);
+    } finally {
+      rmSync(root, { recursive: true, force: true });
+    }
+  });
+
+  test("a YAML file outside cluster-nodes/ is not read as a registration", () => {
+    const root = nodesFixture({ "maintainers/a/keyring.yaml": NODE_2TB });
+    try {
+      expect(collectMeasuredNodes(root)).toEqual([]);
+    } finally {
+      rmSync(root, { recursive: true, force: true });
+    }
+  });
+});
+
+describe("findCapacityProvenance", () => {
+  const big: MeasuredNode = { path: "m/n.yaml", hostname: "big", devices: ["/dev/a 2048G"], totalGib: 2048 };
+  const small: MeasuredNode = { path: "m/s.yaml", hostname: "small", devices: ["/dev/a 1047G"], totalGib: 1047 };
+  const blind: MeasuredNode = { path: "m/b.yaml", hostname: "blind", devices: [], totalGib: null };
+
+  test("green when the catalogue fits inside measured hardware", () => {
+    expect(findCapacityProvenance([LONGHORN_CLAIM], LEDGER, [big])).toEqual([]);
+  });
+
+  test("RED: exceeding every disk on the smallest node is a blocker", () => {
+    const findings = findCapacityProvenance([LONGHORN_CLAIM], LEDGER, [big, small]);
+    expect(findings).toHaveLength(1);
+    expect(findings[0]?.check).toBe("capacity-provenance");
+    expect(findings[0]?.severity).toBe("blocker");
+    expect(findings[0]?.message).toContain("small");
+    expect(findings[0]?.detail.at(-1)).toBe("acknowledge with: longhorn=1500GiB>>1047GiB@small");
+  });
+
+  // THE CORE CASE. Without a measured comparator the auditor used to compare
+  // against ledger.nodeDiskGib -- a number the ledger itself records as
+  // unsigned -- and print "no blockers.". A gate that cannot know must refuse.
+  test("RED: nothing measured REFUSES rather than falling back to nodeDiskGib", () => {
+    const generous: Ledger = { ...LEDGER, nodeDiskGib: 999_999 };
+    const findings = findCapacityProvenance([LONGHORN_CLAIM], generous, [blind]);
+    expect(findings).toHaveLength(1);
+    expect(findings[0]?.check).toBe("capacity-provenance");
+    expect(findings[0]?.severity).toBe("blocker");
+    expect(findings[0]?.message).toContain("UNVERIFIED");
+    expect(findings[0]?.detail.some((line) => line.includes("m/b.yaml"))).toBe(true);
+  });
+
+  test("RED: no registrations AT ALL refuses too — an empty set is not a pass", () => {
+    const findings = findCapacityProvenance([LONGHORN_CLAIM], LEDGER, []);
+    expect(findings).toHaveLength(1);
+    expect(findings[0]?.message).toContain("UNVERIFIED");
+  });
+
+  test("the UNVERIFIED refusal is NOT suppressible by an acknowledgement", () => {
+    const key = capacityShortfallKey("longhorn", 1500, blind);
+    const ledger: Ledger = { ...LEDGER, acknowledgedCapacityShortfall: [key, "longhorn"] };
+    expect(findCapacityProvenance([LONGHORN_CLAIM], ledger, [blind])).toHaveLength(1);
+  });
+
+  test("an acknowledgement must pin the exact arithmetic", () => {
+    const key = "longhorn=1500GiB>>1047GiB@small";
+    expect(
+      findCapacityProvenance([LONGHORN_CLAIM], { ...LEDGER, acknowledgedCapacityShortfall: [key] }, [small]),
+    ).toEqual([]);
+    // RED: the bare class, a stale declared side, and a stale measured side all
+    // fail to suppress. This is what stops the entry absorbing later drift.
+    for (const stale of ["longhorn", "longhorn=1400GiB>>1047GiB@small", "longhorn=1500GiB>>2048GiB@small"]) {
+      expect(
+        findCapacityProvenance([LONGHORN_CLAIM], { ...LEDGER, acknowledgedCapacityShortfall: [stale] }, [small]),
+      ).toHaveLength(1);
+    }
+  });
+
+  test("RED: an acknowledged shortfall re-opens when a PVC grows", () => {
+    const key = "longhorn=1500GiB>>1047GiB@small";
+    const ledger: Ledger = { ...LEDGER, acknowledgedCapacityShortfall: [key] };
+    const grown = { ...LONGHORN_CLAIM, gibibytes: 501 };
+    expect(findCapacityProvenance([grown], ledger, [small])).toHaveLength(1);
+  });
+
+  test("RED: an acknowledged shortfall re-opens when a SMALLER node registers", () => {
+    const key = "longhorn=1500GiB>>1047GiB@small";
+    const ledger: Ledger = { ...LEDGER, acknowledgedCapacityShortfall: [key] };
+    const tiny: MeasuredNode = { path: "m/t.yaml", hostname: "tiny", devices: ["/dev/a 100G"], totalGib: 100 };
+    expect(findCapacityProvenance([LONGHORN_CLAIM], ledger, [small, tiny])).toHaveLength(1);
+  });
+
+  test("an unbudgeted StorageClass is out of scope, so no comparator is demanded", () => {
+    const local = { ...LONGHORN_CLAIM, storageClass: "zeta-local-path" };
+    expect(findCapacityProvenance([local], LEDGER, [])).toEqual([]);
+  });
+});
+
 describe("appNameFor tree-qualifies, so two trees never merge", () => {
   test.each([
     ["full-ai-cluster/k8s/applications/cockroachdb/Application.yaml", "full-ai-cluster/cockroachdb"],
@@ -336,12 +560,19 @@ describe("appNameFor tree-qualifies, so two trees never merge", () => {
 });
 
 describe("auditAll end-to-end over a synthetic tree", () => {
+  // 2048 GiB measured, deliberately ABOVE the 1024 GiB nodeDiskGib these tests
+  // budget with. That gap is what keeps `storage-budget` and
+  // `capacity-provenance` separable: the budget tests below can push the
+  // catalogue past 1024 without also tripping the hardware bound, which proves
+  // the two checks are different comparators rather than one wearing two names.
   function fixture(): string {
     const root = mkdtempSync(join(tmpdir(), "zeta-snr-"));
     mkdirSync(join(root, "tree/k8s/applications/cockroachdb"), { recursive: true });
     mkdirSync(join(root, "tree/k8s/bootstrap"), { recursive: true });
+    mkdirSync(join(root, "maintainers/tester/cluster-nodes/node-fixture"), { recursive: true });
     writeFileSync(join(root, "tree/k8s/applications/cockroachdb/Application.yaml"), CRDB);
     writeFileSync(join(root, "tree/k8s/bootstrap/root-application.yaml"), ROOT_A);
+    writeFileSync(join(root, "maintainers/tester/cluster-nodes/node-fixture/node.yaml"), NODE_2TB);
     return root;
   }
 
@@ -392,6 +623,41 @@ describe("auditAll end-to-end over a synthetic tree", () => {
       );
       expect(report.findings.map((finding) => finding.check)).toEqual(["root-app-collision"]);
       expect(report.findings[0]?.detail.at(-1)).toContain("acknowledge with: argocd/zeta-root=");
+    } finally {
+      rmSync(root, { recursive: true, force: true });
+    }
+  });
+
+  // End-to-end form of the defect this check was written for: an enormous
+  // nodeDiskGib keeps `storage-budget` quiet, and with no measured registration
+  // the OLD auditor printed "no blockers." and exited 0. It must refuse instead.
+  test("RED: deleting the node registration makes the whole audit refuse, not pass", () => {
+    const root = fixture();
+    try {
+      rmSync(join(root, "maintainers"), { recursive: true, force: true });
+      const report = auditAll(
+        { ...LEDGER, nodeDiskGib: 999_999, acknowledgedFalseRedundancy: ["tree/cockroachdb"] },
+        roots,
+        root,
+      );
+      expect(report.findings.map((finding) => finding.check)).toEqual(["capacity-provenance"]);
+      expect(report.findings[0]?.message).toContain("UNVERIFIED");
+    } finally {
+      rmSync(root, { recursive: true, force: true });
+    }
+  });
+
+  test("RED: shrinking the registered node below the catalogue is caught", () => {
+    const root = fixture();
+    try {
+      writeFileSync(join(root, "maintainers/tester/cluster-nodes/node-fixture/node.yaml"), NODE_SMALL);
+      const report = auditAll(
+        { ...LEDGER, nodeDiskGib: 999_999, acknowledgedFalseRedundancy: ["tree/cockroachdb"] },
+        roots,
+        root,
+      );
+      expect(report.findings.map((finding) => finding.check)).toEqual(["capacity-provenance"]);
+      expect(report.findings[0]?.detail.at(-1)).toBe("acknowledge with: longhorn=300GiB>>200GiB@node-fixture");
     } finally {
       rmSync(root, { recursive: true, force: true });
     }
