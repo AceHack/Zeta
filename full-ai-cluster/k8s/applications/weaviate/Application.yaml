@@ -46,6 +46,78 @@ spec:
   destination:
     server: https://kubernetes.default.svc
     namespace: weaviate
+  # THE RESYNC LOOP THIS CLOSES, and WHAT was mutating -- established by byte
+  # diff, not by guessing at an ignore rule.
+  #
+  # MEASURED (run 32519516070): weaviate-0 came up 1/1 Running on its bound
+  # 100Gi PVC and the Application still logged `Partial sync operation to
+  # 17.6.0 succeeded` every ~3 minutes for the whole 40-minute window without
+  # ever reaching Synced. Nothing in the cluster was mutating the resource. The
+  # DESIRED state was moving.
+  #
+  # REPRODUCED OFFLINE with no cluster involved: render this Application's own
+  # valuesObject against weaviate 17.6.0 twice and diff the two outputs. Exactly
+  # two lines differ, both in `Secret/weaviate-cluster-api-basic-auth`:
+  #
+  #     <   username: "eVJ6bFJwREhiZnBMR1RvbmZ4cmdOUmFhZUNZT2R4bHA="
+  #     <   password: "VFR3ZlZPcUxWaU95UWVSUVFIZlZ5WW9US252eFhIRE4="
+  #     ---
+  #     >   username: "WFdDcEg5cHFFcjBoY1ZRR253cGVCWjd5b1dsVVpXQkU="
+  #     >   password: "S0twbUFyeVlpRkozZTlGOVBUdVQ1QlhMZlMwc08xQXQ="
+  #
+  # Everything else in ~1000 rendered lines is byte-identical, so this is the
+  # WHOLE of the drift and the ignore below cannot be hiding a second cause.
+  #
+  # WHY IT MOVES. templates/_helpers.tpl `cluster_api.secret` tries to be
+  # idempotent -- it `lookup`s the existing Secret and reuses it -- and falls
+  # back to `randAlphaNum 32` when the lookup is empty. ArgoCD's repo-server
+  # renders with `helm template` and no cluster connection, so `lookup` is
+  # ALWAYS empty there and the fallback is the only branch that ever runs. Each
+  # reconcile mints a fresh credential, ArgoCD sees the live Secret differ from
+  # the new desired one, auto-sync applies it, and three minutes later the same
+  # thing happens again. The chart offers no values path for these two fields,
+  # so there is nothing to pin.
+  #
+  # THIS IS THE VENDOR-DOCUMENTED REMEDY FOR THIS EXACT CAUSE, not a workaround
+  # invented here. argo-cd docs/user-guide/diffing.md lists among its reasons an
+  # Application can be OutOfSync right after a successful sync: "A Helm chart is
+  # using a template function such as `randAlphaNum`, which generates different
+  # data every time `helm template` is invoked", and `ignoreDifferences` is the
+  # mechanism it names for it.
+  #
+  # WHAT IT COSTS, stated rather than glossed: ArgoCD stops comparing these two
+  # keys, so a third party rewriting them would go unnoticed. That is not a
+  # check being switched off -- there is no desired value to compare against.
+  # Git holds noise for these two fields, and comparing live state to noise is
+  # what produced the loop. Scope is deliberately the narrowest ArgoCD allows:
+  # ONE named Secret, TWO named keys. `data` as a whole, or the Secret kind
+  # without a name, would hide real drift, and a future edit that widens it is
+  # refused by argocd-health-test.test.ts.
+  #
+  # RespectIgnoreDifferences below is the other half. Without it ArgoCD would
+  # report Synced (diff ignored) and still push the freshly-minted credential on
+  # the next sync of any OTHER resource, rotating the cluster-api password for
+  # no reason. It is only effective once the resource exists, so the FIRST sync
+  # still creates the Secret normally (sync-options.md: "only effective when the
+  # resource is already created in the cluster").
+  #
+  # AND IT DOES NOT DELETE THE KEYS UNDER ServerSideApply, which is the hazard
+  # worth checking rather than assuming: under SSA a field manager that stops
+  # sending a field it owns has that field REMOVED from the live object, so
+  # "strip the ignored fields from the desired state" would read as "delete the
+  # credential on the second sync". That is not what it does. argo-cd
+  # controller/sync.go, at the RespectIgnoreDifferences branch, says it in its
+  # own comment -- it "should normalize the target resources which in this case
+  # APPLIES THE LIVE VALUES in the configured ignore differences fields". The
+  # applied object carries the live username/password, so SSA sees them owned
+  # and unchanged.
+  ignoreDifferences:
+    - group: ""
+      kind: Secret
+      name: weaviate-cluster-api-basic-auth
+      jsonPointers:
+        - /data/username
+        - /data/password
   syncPolicy:
     automated: { prune: false, selfHeal: true }
-    syncOptions: [ CreateNamespace=true, ServerSideApply=true ]
+    syncOptions: [ CreateNamespace=true, ServerSideApply=true, RespectIgnoreDifferences=true ]

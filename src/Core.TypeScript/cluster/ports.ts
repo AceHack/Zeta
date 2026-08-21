@@ -86,6 +86,21 @@ export interface ClusterControlPlane {
   applyFileManifest(path: string, serverSideApply?: boolean): void;
   applyInlineManifest(yaml: string): void;
   ensureNamespace(name: string): void;
+  /**
+   * Is one named object present? Read-only, and the ONLY read on this port.
+   *
+   * It exists so a bring-up step can be idempotent without being destructive.
+   * The dev Grafana admin Secret is minted with fresh entropy per cluster; a
+   * bare `apply` would therefore ROTATE the credential every time a bring-up
+   * ran against an already-standing cluster, which is churn nobody asked for
+   * and would look, from Grafana's side, like a password that silently changed.
+   * Asking first makes re-running the bring-up a genuine no-op.
+   *
+   * Returns a boolean rather than exiting, like `waitForResource` and unlike
+   * everything else here: "not there" is an ANSWER, not a failure. A caller
+   * that wants absence to be fatal says so itself.
+   */
+  resourceExists(resourceRef: string, namespace: string | null): boolean;
   waitForCrdEstablished(crdName: string, timeoutSec: number, optional?: boolean): void;
   clearContextIfCurrent(context: string): void;
   /**

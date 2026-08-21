@@ -10,6 +10,8 @@ import {
   writeFileSync,
 } from "node:fs";
 import { tmpdir } from "node:os";
+import { parse as parseYaml } from "yaml";
+import { DEV_GRAFANA_ADMIN_SECRET } from "./dev-cluster/lib.ts";
 import { join, resolve } from "node:path";
 import {
   APPLIED_BUT_UNASSERTED_REASONS,
@@ -62,7 +64,8 @@ async function withFakeClusterCli(
     | "drift-read-fails"
     | "storageclass-missing"
     | "storageclass-present"
-    | "storageclass-wrong-provisioner",
+    | "storageclass-wrong-provisioner"
+    | "grafana-secret-missing",
   action: () => Promise<void>,
 ): Promise<void> {
   const cliDir = mkdtempSync(join(tmpdir(), "zeta-argocd-health-cli-"));
@@ -86,6 +89,14 @@ async function withFakeClusterCli(
     // not. An existence-only check would pass here.
     '  if [ "$mode" = storageclass-wrong-provisioner ]; then printf "driver.longhorn.io"; exit 0; fi',
     '  printf "rancher.io/local-path"',
+    "  exit 0",
+    "fi",
+    // The dev Grafana admin credential the included proof now refuses without.
+    // Present in every mode except the one that exists to remove it, so the
+    // OTHER guards' tests still reach the code they are about.
+    'if [ "${1:-}" = get ] && [ "${2:-}" = secret ]; then',
+    '  if [ "$mode" = grafana-secret-missing ]; then echo "Error from server (NotFound): secrets \\"grafana-admin-credentials\\" not found" >&2; exit 1; fi',
+    '  printf "secret/grafana-admin-credentials"',
     "  exit 0",
     "fi",
     'if [ "${1:-}" = wait ]; then exit 0; fi',
@@ -936,6 +947,48 @@ describe("081KSXN940008QG0R000SCP2H1 argocd-health-test live failure shaping", (
     });
   });
 
+  /**
+   * The same live-half discipline, for the credential
+   * `kube-prometheus-stack` needs to pre-exist. Grafana with no
+   * `grafana-admin-credentials` is `CreateContainerConfigError`, which ArgoCD
+   * reports as Progressing, so without this guard the run burns 2400s and then
+   * names a Progressing Deployment rather than a missing Secret.
+   */
+  test("included scope REFUSES when the dev Grafana admin credential is absent", async () => {
+    await withFakeClusterCli("grafana-secret-missing", async () => {
+      const parsed = parseArgs(
+        ["--run", "--provider", "kind", "--scope", "included", "--existing", "--timeout-sec", "1", "--poll-sec", "1"],
+        {},
+      );
+      if ("kind" in parsed) throw new Error(parsed.message);
+
+      const result = await runHarness(parsed);
+      expect(result.ok).toBe(false);
+      if (result.ok) throw new Error("expected a missing dev Grafana credential to fail the harness");
+      expect(result.failure.kind).toBe("DevGrafanaAdminSecretMissing");
+      expect(result.failure.message).toContain("grafana-admin-credentials");
+    });
+  });
+
+  /**
+   * And the SMOKE roster does not assert kube-prometheus-stack, so it has no
+   * business failing on that Application's credential. A guard that fires
+   * outside the scope it belongs to is a check reporting on something it was
+   * never asked about.
+   */
+  test("smoke scope does NOT refuse on the Grafana credential", async () => {
+    await withFakeClusterCli("grafana-secret-missing", async () => {
+      const parsed = parseArgs(
+        ["--run", "--provider", "kind", "--scope", "smoke", "--existing", "--timeout-sec", "1", "--poll-sec", "1"],
+        {},
+      );
+      if ("kind" in parsed) throw new Error(parsed.message);
+
+      const result = await runHarness(parsed);
+      if (!result.ok) expect(result.failure.kind).not.toBe("DevGrafanaAdminSecretMissing");
+    });
+  });
+
   test("the same run does NOT refuse when the dev StorageClass is present", async () => {
     await withFakeClusterCli("storageclass-present", async () => {
       const parsed = parseArgs(
@@ -996,5 +1049,131 @@ describe("DEV_EXCLUDED_REASONS", () => {
       const app = applications.find((candidate) => candidate.dir === dir);
       if (app !== undefined) expect(app.excludedFromDev).toBe(true);
     }
+  });
+});
+
+// ---------------------------------------------------------------------------
+// THE THREE MEASURED DEFERRALS THAT WERE FIXED RATHER THAN RE-DEFERRED
+// (cockroachdb, kube-prometheus-stack, weaviate).
+//
+// Appended as its own block for the same reason the registry block above was:
+// a concurrent change to the exclusion LOGIC and this change to the exclusion
+// RECORD must not land on the same lines.
+//
+// Each test below asserts the MECHANISM that made the app assertable, not just
+// that it is assertable. Removing a fix from a manifest while leaving the app
+// on the asserted roster is the exact shape #13084 had to remove -- an app that
+// passes because less is asked of it -- and these are what refuse it.
+// ---------------------------------------------------------------------------
+describe("081M0JXXFV0087G0R00...: the four newly-visible non-storage defects", () => {
+  const applicationsRoot = resolve(import.meta.dir, "../../../full-ai-cluster/k8s/applications");
+  const readApp = (dir: string): string => readFileSync(join(applicationsRoot, dir, "Application.yaml"), "utf8");
+
+  test("all three fixed apps are on the asserted roster, and hindsight is not", () => {
+    const applications = discoverExpectedApplications();
+    const excluded = (dir: string): boolean => {
+      const app = applications.find((candidate) => candidate.dir === dir);
+      if (app === undefined) throw new Error(`no Application discovered for ${dir}`);
+      return app.excludedFromDev;
+    };
+    expect(excluded("cockroachdb")).toBe(false);
+    expect(excluded("kube-prometheus-stack")).toBe(false);
+    expect(excluded("weaviate")).toBe(false);
+    // The honest half of the same claim: hindsight was NOT fixed and must not
+    // quietly join the roster on the strength of the other three.
+    expect(excluded("hindsight")).toBe(true);
+  });
+
+  test("no stale registry entry survives for the three that left the shadow", () => {
+    for (const dir of ["cockroachdb", "kube-prometheus-stack", "weaviate"]) {
+      expect(APPLIED_BUT_UNASSERTED_REASONS.has(dir)).toBe(false);
+    }
+    const drift = auditAppliedButUnasserted();
+    expect(drift.unexplained).toEqual([]);
+    expect(drift.stale).toEqual([]);
+  });
+
+  test("hindsight's recorded reason names its blockers and an exit condition", () => {
+    const reason = APPLIED_BUT_UNASSERTED_REASONS.get("hindsight") ?? "";
+    expect(reason).toContain("LIFTS WHEN:");
+    // The three findings, each nameable: capacity, the unreachable dev rung,
+    // and the valuesObject written against a schema the chart does not have.
+    expect(reason).toContain("Insufficient cpu");
+    expect(reason).toContain("--resource-profile dev --apply");
+    expect(reason).toContain("postgresql.persistence");
+  });
+
+  /**
+   * COCKROACHDB. The init Job must be a SYNC-phase hook. Left on the chart's
+   * `helm.sh/hook: post-install` it becomes an ArgoCD PostSync hook, and
+   * PostSync waits for the Sync phase to be healthy -- which cannot happen
+   * until the very init this Job performs. Deleting this annotation restores a
+   * deadlock that presents as 3/3 Running pods answering 503 forever.
+   */
+  test("cockroachdb pins its init Job into the Sync phase", () => {
+    const text = readApp("cockroachdb");
+    expect(text).toContain("jobAnnotations:");
+    expect(text).toContain("argocd.argoproj.io/hook: Sync");
+    // `single-node: false` is what makes the init Job render at all. If a future
+    // edit flips it to true the annotation becomes dead configuration, and this
+    // pins the pair together rather than leaving one true half.
+    expect(text).toContain("single-node: false");
+  });
+
+  /**
+   * KUBE-PROMETHEUS-STACK. The chart is deliberately configured with
+   * `existingSecret`, so the credential is minted by the dev bring-up. That is
+   * ONE constant with three consumers, and this is the consumer that reads the
+   * Application to make sure the chart still asks for exactly what the mint
+   * still creates. A rename on either side goes red here rather than in a
+   * CreateContainerConfigError forty minutes into a live run.
+   */
+  test("the Grafana credential the bring-up mints is the one the chart asks for", () => {
+    const text = readApp("kube-prometheus-stack");
+    expect(text).toContain(`existingSecret: ${DEV_GRAFANA_ADMIN_SECRET.name}`);
+    expect(text).toContain(`userKey: ${DEV_GRAFANA_ADMIN_SECRET.userKey}`);
+    expect(text).toContain(`passwordKey: ${DEV_GRAFANA_ADMIN_SECRET.passwordKey}`);
+    // The namespace the mint targets has to be the Application's destination,
+    // or the Secret lands where kubelet will not look for it.
+    expect(text).toContain(`namespace: ${DEV_GRAFANA_ADMIN_SECRET.namespace}`);
+    // And the fix must NOT have been "let the chart make its own password":
+    // that would be asserting less about the app to make the lane green.
+    expect(text).not.toContain("adminPassword");
+  });
+
+  /**
+   * WEAVIATE. The ignore rule must stay the NARROWEST one ArgoCD allows: one
+   * named Secret, two named keys. `data` as a whole, or a nameless Secret rule,
+   * would hide real drift -- and an ignoreDifferences entry that hides a real
+   * mutation is a check that stopped running. This is the widening guard the
+   * Application's own comment promises.
+   */
+  test("weaviate's ignore rule is scoped to two keys of one named Secret", () => {
+    const document = parseYaml(readApp("weaviate")) as {
+      spec?: {
+        ignoreDifferences?: readonly {
+          group?: string;
+          kind?: string;
+          name?: string;
+          jsonPointers?: readonly string[];
+          jqPathExpressions?: readonly string[];
+          managedFieldsManagers?: readonly string[];
+        }[];
+        syncPolicy?: { syncOptions?: readonly string[] };
+      };
+    };
+    const rules = document.spec?.ignoreDifferences ?? [];
+    expect(rules.length).toBe(1);
+    const rule = rules[0]!;
+    expect(rule.kind).toBe("Secret");
+    expect(rule.name).toBe("weaviate-cluster-api-basic-auth");
+    expect(rule.jsonPointers).toEqual(["/data/username", "/data/password"]);
+    // No escape hatches: a jq expression or a managed-fields manager would each
+    // be a way to widen the rule past what the pointers say.
+    expect(rule.jqPathExpressions).toBeUndefined();
+    expect(rule.managedFieldsManagers).toBeUndefined();
+    // Without this the ignored fields are still PUSHED on every sync, rotating
+    // the cluster credential for no reason.
+    expect(document.spec?.syncPolicy?.syncOptions ?? []).toContain("RespectIgnoreDifferences=true");
   });
 });

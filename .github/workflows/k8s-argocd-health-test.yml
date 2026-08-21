@@ -70,6 +70,18 @@ on:
       - "src/Core.TypeScript/cluster/cilium-kind-lane.ts"
       - "src/Core.TypeScript/cluster/cilium-kind-lane.test.ts"
       - "src/Core.TypeScript/cluster/dev-cluster/cilium-kind-up.ts"
+      # THE BRING-UP ITSELF, added 2026-08-21 (081M0JXXFV0087G0R...). These four
+      # files decide WHAT IS IN the cluster this lane asserts against -- the
+      # alias StorageClasses, and now the Grafana admin Secret that
+      # kube-prometheus-stack requires to pre-exist -- and none of them was
+      # watched. So a change that broke the substrate the proof stands on did
+      # not run the proof, which is the same defect the `applications/**`
+      # widening above was written to fix, one directory over.
+      - "src/Core.TypeScript/cluster/dev-cluster/use-cases.ts"
+      - "src/Core.TypeScript/cluster/dev-cluster/use-cases.test.ts"
+      - "src/Core.TypeScript/cluster/dev-cluster/lib.ts"
+      - "src/Core.TypeScript/cluster/dev-cluster/apply-root-app.ts"
+      - "src/Core.TypeScript/cluster/adapters/kubectl-control-plane.ts"
       - "src/Core.TypeScript/cluster/adapters/helm-package-driver.ts"
       - "src/Core.TypeScript/cluster/ports.ts"
       - "full-ai-cluster/nixos/modules/cilium-wireguard-sources.nix"
@@ -133,6 +145,18 @@ on:
       - "src/Core.TypeScript/cluster/cilium-kind-lane.ts"
       - "src/Core.TypeScript/cluster/cilium-kind-lane.test.ts"
       - "src/Core.TypeScript/cluster/dev-cluster/cilium-kind-up.ts"
+      # THE BRING-UP ITSELF, added 2026-08-21 (081M0JXXFV0087G0R...). These four
+      # files decide WHAT IS IN the cluster this lane asserts against -- the
+      # alias StorageClasses, and now the Grafana admin Secret that
+      # kube-prometheus-stack requires to pre-exist -- and none of them was
+      # watched. So a change that broke the substrate the proof stands on did
+      # not run the proof, which is the same defect the `applications/**`
+      # widening above was written to fix, one directory over.
+      - "src/Core.TypeScript/cluster/dev-cluster/use-cases.ts"
+      - "src/Core.TypeScript/cluster/dev-cluster/use-cases.test.ts"
+      - "src/Core.TypeScript/cluster/dev-cluster/lib.ts"
+      - "src/Core.TypeScript/cluster/dev-cluster/apply-root-app.ts"
+      - "src/Core.TypeScript/cluster/adapters/kubectl-control-plane.ts"
       - "src/Core.TypeScript/cluster/adapters/helm-package-driver.ts"
       - "src/Core.TypeScript/cluster/ports.ts"
       - "full-ai-cluster/nixos/modules/cilium-wireguard-sources.nix"
@@ -222,10 +246,19 @@ jobs:
       # reached by being listed by name, here or in a sibling step. So a falsifier
       # that is not named is a falsifier that never runs.
       - name: Run 081KSXN940008QG0R000SCP2H1 harness unit tests
+        # `use-cases.test.ts` added 2026-08-21, and by this step's own rule: a
+        # falsifier that is not NAMED is a falsifier that never runs here. It
+        # carries the wiring proofs for what the bring-up puts INTO the cluster
+        # this lane then asserts against -- the alias StorageClasses and the
+        # Grafana admin Secret kube-prometheus-stack requires to pre-exist. It
+        # does run in `gate`'s whole-suite job; running it beside the harness it
+        # is about means a broken bring-up reddens the lane that deploys it,
+        # rather than a lane one repository over.
         run: |
           bun test \
             src/Core.TypeScript/cluster/argocd-health-test.test.ts \
-            src/Core.TypeScript/cluster/included-proof-summary.test.ts
+            src/Core.TypeScript/cluster/included-proof-summary.test.ts \
+            src/Core.TypeScript/cluster/dev-cluster/use-cases.test.ts
 
       # WHICH Application MANIFESTS DOES A ROOT ACTUALLY REACH, AND WHICH OF
       # THOSE DOES ANY CHECK ASSERT ON. Offline, pure, ~1s -- so it lives in

@@ -28,6 +28,7 @@ import { basename, join, resolve } from "node:path";
 import { parse as parseYaml } from "yaml";
 import { bootstrapKindClusterInProcess, bootstrapK3dClusterInProcess } from "./harness/bootstrap.ts";
 import {
+  DEV_GRAFANA_ADMIN_SECRET,
   DEV_LONGHORN_ALIAS_CLASS_NAME,
   DEV_SATISFIABLE_PROVISIONERS,
   DEV_STORAGE_ALIAS_MANIFEST_RELPATHS,
@@ -49,6 +50,7 @@ export type FailureKind =
   | "ContainerRuntimeUnavailable"
   | "ClusterBootstrapFailed"
   | "DevStorageClassMissing"
+  | "DevGrafanaAdminSecretMissing"
   | "KubectlFailed"
   | "ArgoCdTimeout"
   | "ApplicationMissing"
@@ -346,6 +348,30 @@ export function auditDevExclusionReasons(repoRoot = REPO_ROOT): DevExclusionDrif
  * 0 < Replicas 0` is false, and the API-server-defaulted RollingUpdate
  * partition is 0 so `UpdatedReplicas 0 < 0 - 0` is false too). It was deferred
  * for a silo image it never pulls.
+ *
+ * THREE OF THE FOUR MEASURED DEFERRALS LEFT this set on 2026-08-21, and each
+ * left because its DEFECT WAS FIXED -- never because the assertion was
+ * weakened. They are asserted under the same full auto-sync contract as every
+ * other member of the roster:
+ *
+ *   `cockroachdb`           -- the chart's own `cockroachdb-init` Job carries
+ *      `helm.sh/hook: post-install`, which ArgoCD maps to PostSync, which runs
+ *      only after the Sync phase is HEALTHY, which cannot happen until init has
+ *      run. The Application now names `argocd.argoproj.io/hook: Sync` on that
+ *      Job (gitops-engine `Types()`: "we ignore Helm hooks if we have Argo
+ *      hook"), so the Job runs alongside the StatefulSet it unblocks.
+ *   `kube-prometheus-stack` -- Grafana's `admin.existingSecret` is now MINTED
+ *      per dev cluster by `applyDevBootstrapSecrets`, and
+ *      `assertDevGrafanaAdminSecretPresent` below refuses an included run whose
+ *      cluster does not have it.
+ *   `weaviate`              -- the chart mints `randAlphaNum` credentials on
+ *      every render because ArgoCD's `helm template` cannot run its `lookup`,
+ *      so the DESIRED state moved every reconcile. Two named keys of one named
+ *      Secret are now in `ignoreDifferences`; the byte diff proving that is the
+ *      whole drift is in the Application.
+ *
+ * `hindsight` stays, with a reason that now names three independent blockers
+ * instead of one -- see APPLIED_BUT_UNASSERTED_REASONS.
  */
 const DEV_INCLUDED_PROOF_DEFERRED_DIRS = new Set([
   // volumeClaimTemplates pin `storageClassName: longhorn`, which is excluded
@@ -360,20 +386,14 @@ const DEV_INCLUDED_PROOF_DEFERRED_DIRS = new Set([
   // stand and must not silently stop applying.
   "arc-runner-set",
   // ----------------------------------------------------------------------
-  // FOUR MEASURED DEFERRALS, marked `MEASURED 2026-08-21` inline below.
-  // Run 32519516070 was the first in which they were asserted at all. The dev
-  // `longhorn` alias WORKED for every one -- their PVCs bound and their pods
-  // ran -- and each then failed for a reason that has nothing to do with
-  // storage. They are deferred on observed evidence, not on a guess, and each
-  // carries its symptom inline so it stays findable.
-  //
-  // This is a DEFERRAL OF FOUR NAMED DEFECTS, not a restored blanket rule: the
-  // other six Applications the alias unlocked (headscale, mimir, nats, oz,
-  // redis, tempo) are asserted from that commit on.
+  // ONE OF FOUR MEASURED DEFERRALS SURVIVES, and it is `hindsight` below.
+  // Run 32519516070 was the first in which the four were asserted at all: the
+  // dev `longhorn` alias WORKED for every one -- their PVCs bound and their
+  // pods ran -- and each then failed for a reason that had nothing to do with
+  // storage. `cockroachdb`, `kube-prometheus-stack` and `weaviate` were FIXED
+  // rather than re-deferred (see the header above); `hindsight` is the one
+  // whose blockers this lane cannot reach.
   // ----------------------------------------------------------------------
-  // MEASURED 2026-08-21: 3/3 pods Running (PVCs BOUND), readiness 503 for 38m
-  // -- a 3-replica cluster nobody ran `cockroach init` on.
-  "cockroachdb",
   // Standby half of the either/or Git-host pair (gitlab is the default-on one),
   // so it ships manual-sync BY DESIGN. Asserting it here would assert the
   // manual-sync contract -- exists + compared, never synced -- which is exactly
@@ -387,17 +407,18 @@ const DEV_INCLUDED_PROOF_DEFERRED_DIRS = new Set([
   "gitlab",
   // MEASURED 2026-08-21: hindsight-postgresql-0 FailedScheduling "Insufficient
   // cpu" on the 1-node runner; api + control-plane CrashLoop waiting on it.
+  // THREE independent blockers now, only the first of which is capacity -- see
+  // APPLIED_BUT_UNASSERTED_REASONS, which carries the finding that this
+  // Application's valuesObject is written against a chart schema hindsight
+  // 0.3.0 does not have, so almost none of it takes effect.
   "hindsight",
-  // MEASURED 2026-08-21: grafana CreateContainerConfigError, secret
-  // "grafana-admin-credentials" not found. Its own prometheus + alertmanager
-  // PVCs bound and run 2/2.
-  "kube-prometheus-stack",
   // `orleans` is NOT here: main established by measurement that its
   // `replicas: 0` StatefulSet reaches Synced+Healthy, and removed it. Recorded
   // so the deferral is not reinstated by a future merge.
   //
   // Renders `monitoring.coreos.com/v1` ServiceMonitor + PrometheusRule (CRDs
-  // owned by kube-prometheus-stack, itself longhorn-blocked here) and a
+  // owned by kube-prometheus-stack, which IS asserted here as of 2026-08-21, so
+  // this half of the reason no longer stands on its own) and a
   // `gateway.networking.k8s.io/v1` Gateway, and runs two images no registry
   // serves: ghcr.io/lucent-financial-group/zeta-platform-controller:latest and
   // .../zeta-portal:latest. portal.yaml also pins `storageClassName: longhorn`,
@@ -411,8 +432,11 @@ const DEV_INCLUDED_PROOF_DEFERRED_DIRS = new Set([
   // go.temporal.io/temporal 0.59.0 with `cassandra.enabled: false` and no
   // `server.config.persistence` override: the chart is left with NO datastore,
   // so the schema-setup job has nothing to migrate against. The commented-out
-  // CockroachDB wiring is the missing half, and cockroachdb is itself
-  // longhorn-blocked in this lane.
+  // CockroachDB wiring is the missing half -- and as of 2026-08-21 the reason it
+  // is commented out has changed: cockroachdb now reaches Synced+Healthy in this
+  // lane, so the blocker is the unwritten `server.config.persistence` block
+  // alone, not an unavailable datastore. That is the next one to close, and it
+  // is a manifest change nobody has made rather than a substrate gap.
   "temporal",
   // comes up SEALED by design; readiness needs the gated operator-init ceremony
   // CI must not run -- `vault operator init` + `unseal` MINT root and unseal key
@@ -420,10 +444,6 @@ const DEV_INCLUDED_PROOF_DEFERRED_DIRS = new Set([
   // gap: a lane that could make Vault Healthy would be a lane that performs the
   // ceremony, and it must not.
   "vault",
-  // MEASURED 2026-08-21: weaviate-0 is 1/1 Running on its bound 100Gi PVC, but
-  // the Application re-syncs every ~3m ("Partial sync ... succeeded") and never
-  // reaches Synced.
-  "weaviate",
 ]);
 
 /**
@@ -468,27 +488,18 @@ export const APPLIED_BUT_UNASSERTED_REASONS: ReadonlyMap<string, string> = new M
     "arc-runner-set",
     "TWO independent blockers, either alone sufficient: it needs a GitHub App credential + a live runner registration that CI has no secret to bind, AND model-cache-pvc.yaml claims ReadWriteMany, which rancher.io/local-path behind the dev longhorn alias cannot serve (081KSXN940008QG0R000SCP2H1).",
   ],
-  [
-    "cockroachdb",
-    "NOT storage -- MEASURED run 32519516070: all three PVCs bound over the dev longhorn alias and cockroachdb-0/1/2 Run for 38m, but every readiness probe returns 503. `single-node: false` + statefulset.replicas 3 gives a cluster nobody ever ran `cockroach init` against; no init Job appears in the namespace. Fix is a cluster-init step or a single-node dev value, neither of which is a storage change.",
-  ],
   ["forgejo", "deferred until dev wiring exists (DEV_INCLUDED_PROOF_DEFERRED_DIRS)."],
   [
     "hindsight",
-    "NOT storage -- MEASURED run 32519516070: hindsight-postgresql-0 never scheduled, FailedScheduling `0/1 nodes are available: 1 Insufficient cpu`, so hindsight-api and hindsight-control-plane CrashLoopBackOff waiting on a database that has nowhere to run. A CAPACITY fact about the single control-plane CI runner (the PVC is unbound only because WaitForFirstConsumer waits for a pod that never schedules), not a fact about the StorageClass.",
-  ],
-  [
-    "kube-prometheus-stack",
-    "NOT storage -- MEASURED run 32519516070: its own prometheus and alertmanager PVCs bound over the dev longhorn alias and both pods run 2/2. Grafana is CreateContainerConfigError, `secret \"grafana-admin-credentials\" not found` -- a secret this lane has no material to mint, the same class of blocker as arc-runner-set.",
+    "THREE independent blockers, established 2026-08-21 by rendering hindsight 0.3.0 against this Application's own valuesObject; any ONE of them defers it. " +
+      "(1) CAPACITY, MEASURED run 32519516070: hindsight-postgresql-0 never scheduled -- FailedScheduling `0/1 nodes are available: 1 Insufficient cpu` -- so hindsight-api and hindsight-control-plane CrashLoopBackOff waiting on a database with nowhere to run. The chart's own defaults are 500m (api) + 250m (control-plane) + 250m (postgresql), against an applied-set total of 4131m on a 4-vCPU runner whose kind system pods already reserve ~950m. " +
+      "(2) THE `dev` RESOURCE RUNG CANNOT REACH THIS LANE, which is the part that looked like the fix and is not. `storage-profiles.ts --resource-profile dev --apply` rewrites the WORKING TREE; ArgoCD syncs the COMMITTED tree at `--git-ref`, and the only rung CI runs is `--budget`, a report. So there is no dev-only resource override today -- lowering these numbers would lower them for the metal cluster too, where the cost of an under-request is a pod that is evictable under node pressure rather than one that is refused a node. That trade is a maintainer call, not a CI convenience. " +
+      "(3) THE valuesObject IS LARGELY INERT against this chart, which is a defect in its own right: it sets `postgresql.primary.persistence.{storageClass,size}`, `api.llm.{provider,existingSecret}` and a top-level `service`, and hindsight 0.3.0 reads `postgresql.persistence.*`, `api.env`/`api.secrets`/top-level `existingSecret`, and `api.service`/`controlPlane.service`. Rendered proof: the PVC comes out with NO storageClassName (so it takes the cluster default, not longhorn) at 8Gi (the chart default, not the 10Gi the storage profile governs), and no HINDSIGHT_API_LLM_API_KEY env reaches the api container. LIFTS WHEN: the valuesObject is rewritten against the schema the pinned chart actually has, AND a per-substrate resource override exists (or the maintainer accepts the metal-side cost of the dev numbers).",
   ],
   ["spire", "Vault upstream CA + kind PVC wiring not ready in included CI (DEV_INCLUDED_PROOF_DEFERRED_DIRS)."],
   [
     "vault",
     "storage moved to zeta-local-path, so it now SYNCS in this lane -- but it comes up SEALED by design and readiness requires the gated operator-init ceremony, which CI must never run (081M0H19QD3087G0R003GV76ZY).",
-  ],
-  [
-    "weaviate",
-    "NOT storage -- MEASURED run 32519516070: weaviate-0 is 1/1 Running on a bound 100Gi PVC over the dev longhorn alias. The Application nevertheless re-syncs every ~3 minutes, logging `Partial sync operation to 17.6.0 succeeded` while staying OutOfSync/Progressing for the full 40-minute window. A sync-convergence defect against chart 17.6.0, not a volume that failed to bind.",
   ],
 ]);
 
@@ -1055,6 +1066,7 @@ export function buildPlan(options: CliOptions, repoRoot = REPO_ROOT): HarnessPla
       ...(isIncludedScope(options.scope)
         ? [
             `assert the dev alias StorageClass "${DEV_LONGHORN_ALIAS_CLASS_NAME}" the repo declares is actually present, before anything waits on a PVC that needs it`,
+            `assert the dev credential ${DEV_GRAFANA_ADMIN_SECRET.namespace}/${DEV_GRAFANA_ADMIN_SECRET.name} the bring-up mints is actually present, before Grafana waits on a Secret that must pre-exist`,
           ]
         : []),
       "assert root App-of-Apps exists",
@@ -1068,7 +1080,7 @@ export function buildPlan(options: CliOptions, repoRoot = REPO_ROOT): HarnessPla
     notes: [
       "081KSXN940008QG0R000SCP2H1 is separate from 081KSNY2Z0008QG0R0008PN7RQ; this harness does not test USB reformat retention.",
       "Dev health assertions exclude cilium, the Longhorn chart itself, GPU model-SERVING (ollama/vllm), ReadWriteMany claims, and apps deferred on a named blocker recorded in APPLIED_BUT_UNASSERTED_REASONS; k3d bootstraps Cilium directly and kind CI uses its default CNI.",
-      "Longhorn-BACKED manifests are no longer storage-excluded: dev applies a StorageClass named longhorn over rancher.io/local-path (dev-cluster/manifests/longhorn.yaml), so those PVCs bind. MEASURED on run 32519516070: 6 of the 11 formerly-excluded apps now reach Synced+Healthy (headscale, mimir, nats, oz, redis, tempo); the other 5 bound their volumes and then failed for named NON-storage defects, now visible for the first time. Still excluded outright are ReadWriteMany claims, which no dev provisioner can serve, and the whole rule returns if that manifest is absent (081M0JXF6MS087G0R001HC34TM).",
+      "Longhorn-BACKED manifests are no longer storage-excluded: dev applies a StorageClass named longhorn over rancher.io/local-path (dev-cluster/manifests/longhorn.yaml), so those PVCs bind. MEASURED on run 32519516070: 6 of the 11 formerly-excluded apps reached Synced+Healthy (headscale, mimir, nats, oz, redis, tempo); the other 5 bound their volumes and then failed for named NON-storage defects, visible for the first time. THREE of those five are fixed as of 2026-08-21 and are asserted here now -- cockroachdb (the chart init Job moved out of ArgoCD PostSync, which deadlocks against the health it is needed to produce), kube-prometheus-stack (Grafana admin Secret minted at bring-up), weaviate (the chart re-mints randAlphaNum credentials on every render because ArgoCD cannot run Helm lookup, so two named keys are in ignoreDifferences). hindsight remains, on three independent blockers. Still excluded outright are ReadWriteMany claims, which no dev provisioner can serve, and the whole rule returns if that manifest is absent (081M0JXF6MS087G0R001HC34TM).",
       "ZETA_CONTAINER_RUNTIME is the repo-wide OCI runtime switch; use --runtime for one-off explicit harness runs.",
     ],
   };
@@ -1383,6 +1395,51 @@ function assertDevStorageClassPresent(plan: HarnessPlan): Failure | null {
       stderr: result.stderr.slice(-2000),
       clusterName: plan.clusterName,
       observedProvisioner: provisioner,
+    },
+  };
+}
+
+/**
+ * The LIVE half of lifting `kube-prometheus-stack` out of the deferred set.
+ *
+ * `applyDevBootstrapSecrets` mints `monitoring/grafana-admin-credentials` at
+ * bring-up, and `use-cases.test.ts` proves the call is wired into all three
+ * doors. Neither of those observes a CLUSTER. If the Secret is absent anyway --
+ * a bring-up that predates this change, an `--existing` run against a
+ * hand-built cluster, a kubectl apply that silently failed -- Grafana returns to
+ * `CreateContainerConfigError`, ArgoCD reports the Deployment as Progressing,
+ * and the proof burns its whole 2400s and reports a symptom instead of a cause.
+ *
+ * So this refuses in seconds and NAMES the missing object, exactly as
+ * `assertDevStorageClassPresent` does for the StorageClass. Same shape, same
+ * reason: the repo-side and code-side claims are about the repo and the code;
+ * only this one is about the cluster the assertions will actually run against.
+ *
+ * Scoped to included/full, because the smoke roster does not assert
+ * kube-prometheus-stack and has no business failing on its credential.
+ */
+function assertDevGrafanaAdminSecretPresent(plan: HarnessPlan): Failure | null {
+  if (!isIncludedScope(plan.scope)) return null;
+  const { namespace, name } = DEV_GRAFANA_ADMIN_SECRET;
+  const args = ["get", "secret", name, "-n", namespace, "-o", "name"];
+  const result = runCommand("kubectl", args, 60_000);
+  if (result.status === 0) return null;
+  return {
+    kind: "DevGrafanaAdminSecretMissing",
+    message:
+      `kube-prometheus-stack sets grafana.admin.existingSecret: "${name}", so the chart never mints an admin ` +
+      `credential and kubelet cannot start Grafana without one. The dev/CI bring-up mints it into namespace ` +
+      `"${namespace}", but in cluster ${plan.clusterName} it is not present. Grafana would sit in ` +
+      `CreateContainerConfigError, which ArgoCD reports as Progressing rather than Degraded, so the run would ` +
+      `burn its whole timeout instead of failing. Failing now instead. Check that the bring-up path still ` +
+      `calls applyDevBootstrapSecrets before the app-of-apps root.`,
+    command: ["kubectl", ...args],
+    detail: {
+      stdout: result.stdout.slice(-2000),
+      stderr: result.stderr.slice(-2000),
+      clusterName: plan.clusterName,
+      secretNamespace: namespace,
+      secretName: name,
     },
   };
 }
@@ -1794,6 +1851,11 @@ export async function runHarness(options: CliOptions): Promise<HarnessResult> {
   const storageFailure = assertDevStorageClassPresent(plan);
   if (storageFailure !== null) {
     return { ok: false, plan, preflight, failure: storageFailure };
+  }
+
+  const grafanaSecretFailure = assertDevGrafanaAdminSecretPresent(plan);
+  if (grafanaSecretFailure !== null) {
+    return { ok: false, plan, preflight, failure: grafanaSecretFailure };
   }
 
   const argoFailure = await waitForArgoCd(plan, options);

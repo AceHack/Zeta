@@ -3,7 +3,7 @@
 
 import { liveDevClusterPorts } from "./deps.ts";
 import { assertGitHubRepoUrl, assertSafeGitRef, DEFAULT_GIT_REPO_URL } from "./lib.ts";
-import { applyDevStorageClassAliases } from "./use-cases.ts";
+import { applyDevBootstrapSecrets, applyDevStorageClassAliases } from "./use-cases.ts";
 
 export function applyRootApp(gitRef: string, gitRepoUrl: string = DEFAULT_GIT_REPO_URL): void {
   assertSafeGitRef(gitRef);
@@ -17,6 +17,12 @@ export function applyRootApp(gitRef: string, gitRepoUrl: string = DEFAULT_GIT_RE
   // never finishes. Applying a StorageClass that is already present is a no-op,
   // so this is safe when the cluster came up through a bring-up that did it.
   applyDevStorageClassAliases(ports);
+  // Same third-door reasoning, different substrate: Grafana's admin Secret is
+  // not part of the kube-prometheus-stack Application, so a root applied through
+  // this entrypoint into a cluster that never had one leaves Grafana in
+  // CreateContainerConfigError. Minting an already-present Secret is skipped
+  // rather than rotated, so this is safe after a bring-up that did it.
+  applyDevBootstrapSecrets(ports);
   ports.appCatalog.applyRootDevCatalog(gitRef, gitRepoUrl);
 }
 

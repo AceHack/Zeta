@@ -30,6 +30,14 @@ export function kubectlControlPlane(runner: ProcessRunner): ClusterControlPlane 
     applyInlineManifest: (yaml) =>
       runOrExit(runner, "kubectl", ["apply", "-f", "-"], { stdin: yaml, stdio: "inherit" }),
     ensureNamespace: (name) => runOptional(runner, "kubectl", ["create", "namespace", name]),
+    resourceExists: (resourceRef, namespace) => {
+      const args = ["get", resourceRef];
+      if (namespace !== null) args.push("-n", namespace);
+      // No `stdio: inherit`: a NotFound here is an expected answer, not a
+      // failure to report, and printing "Error from server" into a green
+      // bring-up log is how a reader learns to ignore errors in that log.
+      return commandSucceeded(runner, "kubectl", args);
+    },
     waitForCrdEstablished: (crdName, timeoutSec, optional = false) => {
       const args = ["wait", "--for=condition=Established", `--timeout=${timeoutSec}s`, `crd/${crdName}`];
       if (optional) {

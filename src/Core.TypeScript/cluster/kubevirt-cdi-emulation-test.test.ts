@@ -263,6 +263,13 @@ function recordingControlPlane(waitResult: (expr: string) => boolean) {
     applyFileManifest: (path, ssa) => log.push(`apply${ssa === true ? "-ssa" : "-client"}:${path}`),
     applyInlineManifest: () => {},
     ensureNamespace: () => {},
+    // The virt proof never asks; answering `false` keeps that visible -- a fake
+    // that said `true` would let a future caller's existence guard pass here
+    // without anyone having decided it should.
+    resourceExists: (ref, ns) => {
+      log.push(`exists?:${ref}@${ns ?? "-"}`);
+      return false;
+    },
     waitForCrdEstablished: (crd) => log.push(`crd:${crd}`),
     mergePatch: (ref, ns, patch) => log.push(`patch:${ref}@${ns ?? "-"}:${patch}`),
     waitForResource: (ref, _ns, expr) => {
