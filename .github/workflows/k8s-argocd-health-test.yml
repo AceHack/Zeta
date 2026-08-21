@@ -59,6 +59,18 @@ on:
       - "src/Core.TypeScript/cluster/included-proof-summary.test.ts"
       - "src/Core.TypeScript/cluster/kubevirt-cdi-emulation-test.ts"
       - "src/Core.TypeScript/cluster/kubevirt-cdi-emulation-test.test.ts"
+      # The Cilium CNI lane. `cilium-kind-lane.ts` DERIVES its roster from the
+      # nix sources file, its probe device name from the nix preflight module,
+      # and its verdict from the node ledger, so a change to any of those moves
+      # what it concludes -- which is why all three are listed here beside the
+      # TypeScript, for the same reason maintainers/*/cluster-nodes is below.
+      - "src/Core.TypeScript/cluster/cilium-kind-lane.ts"
+      - "src/Core.TypeScript/cluster/cilium-kind-lane.test.ts"
+      - "src/Core.TypeScript/cluster/dev-cluster/cilium-kind-up.ts"
+      - "src/Core.TypeScript/cluster/adapters/helm-package-driver.ts"
+      - "src/Core.TypeScript/cluster/ports.ts"
+      - "full-ai-cluster/nixos/modules/cilium-wireguard-sources.nix"
+      - "full-ai-cluster/nixos/modules/cilium-wireguard-preflight-checks.nix"
       - "full-ai-cluster/dev-cluster/**"
       # WATCH WHAT THIS LANE DEPLOYS. This used to be
       # "applications/**/Application.yaml", which matched only the ArgoCD
@@ -107,6 +119,18 @@ on:
       - "src/Core.TypeScript/cluster/included-proof-summary.test.ts"
       - "src/Core.TypeScript/cluster/kubevirt-cdi-emulation-test.ts"
       - "src/Core.TypeScript/cluster/kubevirt-cdi-emulation-test.test.ts"
+      # The Cilium CNI lane. `cilium-kind-lane.ts` DERIVES its roster from the
+      # nix sources file, its probe device name from the nix preflight module,
+      # and its verdict from the node ledger, so a change to any of those moves
+      # what it concludes -- which is why all three are listed here beside the
+      # TypeScript, for the same reason maintainers/*/cluster-nodes is below.
+      - "src/Core.TypeScript/cluster/cilium-kind-lane.ts"
+      - "src/Core.TypeScript/cluster/cilium-kind-lane.test.ts"
+      - "src/Core.TypeScript/cluster/dev-cluster/cilium-kind-up.ts"
+      - "src/Core.TypeScript/cluster/adapters/helm-package-driver.ts"
+      - "src/Core.TypeScript/cluster/ports.ts"
+      - "full-ai-cluster/nixos/modules/cilium-wireguard-sources.nix"
+      - "full-ai-cluster/nixos/modules/cilium-wireguard-preflight-checks.nix"
       - "full-ai-cluster/dev-cluster/**"
       # WATCH WHAT THIS LANE DEPLOYS. This used to be
       # "applications/**/Application.yaml", which matched only the ArgoCD
@@ -237,6 +261,24 @@ jobs:
 
       - name: Build kubevirt/cdi emulation proof plan (offline)
         run: bun src/Core.TypeScript/cluster/kubevirt-cdi-emulation-test.ts --dry-run
+
+      # THE CILIUM LANE'S OFFLINE HALF. Pure, ~1s, so it rides in this job
+      # rather than paying a fresh runner -- same reasoning as the single-node
+      # readiness steps below.
+      #
+      # NOT continue-on-error. It is green on the tree it ships with and was
+      # measured red in six directions by mutating the live tree: nodeCount
+      # 1 -> 3 in single-node-budget.json (the kind and metal encryption
+      # verdicts diverge), a new value on one Cilium surface only (UNEXPLAINED
+      # drift), making the surfaces agree on a registered delta (STALE), adding
+      # the TLSRoute CRD to the vendored bundle (STALE gap), emptying the nix
+      # roster (refusal, not a silent empty set), and adding a worker to the
+      # kind profile (REFUSED -- the lane would prove more than metal runs).
+      - name: Run Cilium kind-lane unit tests
+        run: bun test src/Core.TypeScript/cluster/cilium-kind-lane.test.ts
+
+      - name: Audit the Cilium value surfaces, CRD coverage and encryption reachability
+        run: bun src/Core.TypeScript/cluster/cilium-kind-lane.ts --plan
 
       - name: Audit app-of-apps root reach against the asserted roster
         run: bun src/Core.TypeScript/cluster/app-of-apps-discovery.ts
@@ -381,6 +423,118 @@ jobs:
       - name: Tear down kind cluster
         if: always()
         run: bun src/Core.TypeScript/cluster/dev-cluster/kind-down.ts --cluster-name zeta-ci
+
+  # THE CNI THE METAL CLUSTER WILL RUN, EXERCISED.
+  #
+  # Aaron 2026-08-20: "Also can we test cilium? This is the plan on real metal."
+  # It was not testable before this job existed: `cilium` and `cilium-lb-ipam`
+  # are excluded from the dev catalogue on BOTH sides (ports.ts excludeGlob and
+  # argocd-health-test.ts DEV_EXCLUDED_DIRS), and the other kind lanes take
+  # kind's own CNI, so the network layer under CI and the network layer under
+  # metal were different software.
+  #
+  # WHAT MAKES IT POSSIBLE, cited rather than assumed:
+  #   * kind documents `networking.disableDefaultCNI` and `networking.kubeProxyMode`
+  #     (https://kind.sigs.k8s.io/docs/user/configuration/), and Cilium documents
+  #     the kind install path (https://docs.cilium.io/en/stable/installation/kind/);
+  #   * cilium/cilium's own .github/workflows/conformance-clustermesh.yaml runs
+  #     kind on GitHub-hosted ubuntu-24.04 with encryption.type=wireguard, so the
+  #     WireGuard kernel path is exercised upstream on this runner image.
+  #
+  # WHAT IT DOES NOT CLAIM. On one node WireGuard encrypts nothing -- pod traffic
+  # never leaves the node, and control-plane nodes opt OUT of node-to-node
+  # encryption by default. That is equally true of the metal cluster, which
+  # single-node-budget.json declares as `nodeCount: 1`. So this lane runs the
+  # SHIPPED values on a cluster shaped like metal and proves they INSTALL AND
+  # SERVE; cilium-kind-lane.ts prints the reachability verdict on every run and
+  # REFUSES if the two shapes ever stop agreeing.
+  #
+  # NOT continue-on-error, and it must not become one. It installs from the
+  # checked-in valuesObject, so a red here is a real statement about a
+  # configuration metal will boot.
+  live-kind-cilium:
+    name: live kind Cilium CNI (${{ matrix.runner }})
+    needs: dry-run
+    strategy:
+      fail-fast: false
+      matrix:
+        runner: [ubuntu-24.04]
+    env:
+      ZETA_HOST_TIER: full
+      MISE_ENV: full
+    runs-on: ${{ matrix.runner }}
+    timeout-minutes: 30
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Cache install.sh outputs (mise runtimes + dotnet tools + verifier jars)
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: |
+            ~/.local/bin/mise
+            ~/.local/share/mise
+            ~/.cache/mise
+            ~/.dotnet/tools
+            ~/.elan
+            ~/.config/zeta
+          key: install-${{ runner.os }}-${{ runner.arch }}-full-${{ hashFiles('.mise.toml', '.mise.full.toml', 'tools/setup/**', 'global.json') }}
+
+      - name: Install toolchain via three-way-parity script
+        env:
+          MISE_GITHUB_TOKEN: ${{ github.token }}
+        run: ./tools/setup/install.sh
+
+      - name: Install bun dependencies
+        run: bun install --frozen-lockfile
+
+      # The same three things full-ai-cluster/nixos/modules/cilium-wireguard-node-preflight.nix
+      # checks on a metal node, run here on the runner kernel the kind node
+      # containers share. GATING, not advisory: the shipped values ask for
+      # WireGuard and cilium-agent fails closed without it, so a runner that
+      # cannot make a WireGuard device cannot host this configuration, and
+      # saying so in one line beats reading it out of a CrashLoopBackOff.
+      #
+      # THE DEVICE NAME IS READ FROM THAT NIX MODULE, NOT WRITTEN HERE. The first
+      # version of this step spelled it `zeta-wg-preflight` -- 17 characters,
+      # over IFNAMSIZ-1 -- and the kernel rejected IFLA_IFNAME with
+      # `Error: Attribute failed policy validation`, which reads exactly like
+      # "this runner has no WireGuard" and was nothing of the kind: modprobe had
+      # already succeeded. The nix module has carried the right name and the
+      # comment `Under IFNAMSIZ (16)` beside it the whole time.
+      - name: Preflight the WireGuard kernel path on the runner
+        run: |
+          set -euo pipefail
+          iface="$(bun src/Core.TypeScript/cluster/cilium-kind-lane.ts --print-wg-probe-iface)"
+          echo "probe device (from cilium-wireguard-preflight-checks.nix): $iface"
+          sudo modprobe wireguard
+          sudo ip link add dev "$iface" type wireguard
+          sudo ip link del dev "$iface"
+          echo "runner kernel can create a WireGuard device"
+
+      - name: Bring up kind with Cilium as the CNI and assert it
+        id: cilium
+        run: |
+          set -o pipefail
+          bun src/Core.TypeScript/cluster/dev-cluster/cilium-kind-up.ts \
+            --cluster-name zeta-ci-cilium \
+            --timeout-sec 600 \
+            | tee "$RUNNER_TEMP/cilium-kind.log"
+
+      - name: Print cluster diagnostics
+        if: always()
+        run: |
+          kubectl get nodes -o wide || true
+          kubectl -n kube-system get pods -o wide || true
+          kubectl -n kube-system describe daemonset cilium || true
+          kubectl -n kube-system logs daemonset/cilium -c cilium-agent --tail=200 || true
+          kubectl -n kube-system logs deployment/cilium-operator --tail=200 || true
+          kubectl get gatewayclass -o wide || true
+          kubectl get events -A --sort-by=.lastTimestamp | tail -100 || true
+
+      - name: Tear down kind cluster
+        if: always()
+        run: bun src/Core.TypeScript/cluster/dev-cluster/kind-down.ts --cluster-name zeta-ci-cilium
 
   live-kind-included:
     name: live kind included Synced+Healthy proof (${{ matrix.runner }})

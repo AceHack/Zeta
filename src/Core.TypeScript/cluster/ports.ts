@@ -120,6 +120,15 @@ export interface ChartInstallSpec {
   readonly repoAlias?: string;
   readonly repoUrl?: string;
   readonly setValues: readonly string[];
+  /**
+   * `-f` values files, applied in order AFTER the chart defaults and BEFORE
+   * `setValues`. Exists because the Cilium kind lane installs the checked-in
+   * `valuesObject` verbatim, and flattening a nested value tree into `--set`
+   * strings is lossy in exactly the places that matter (lists, nested maps) --
+   * which would quietly make the tested configuration differ from the shipped
+   * one, the failure that lane exists to avoid.
+   */
+  readonly valuesFiles?: readonly string[];
   readonly wait?: boolean;
 }
 

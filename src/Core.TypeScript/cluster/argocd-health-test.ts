@@ -221,23 +221,114 @@ const DNS_LABEL_PATTERN = /^[a-z\d]([-a-z\d]*[a-z\d])?$/;
 const SMOKE_MIN_APPLICATIONS = 20;
 
 /**
- * Never applied by the dev/CI root, and therefore never asserted. Each entry
- * names a substrate the kind/k3d lane does not have.
+ * Applications the dev/CI lane neither applies nor asserts, WITH THE REASON
+ * AND THE CONDITION THAT LIFTS EACH ONE.
  *
- * 2026-08-21: `deepseek-coder` and `qwen-coder` LEFT this set. They were listed
- * under a blanket "GPU model-serving" label, but neither declares a GPU, an
- * image, a pod or a volume -- between them they render one Namespace and two
- * ConfigMaps, and both carry `automated: { prune: true, selfHeal: true }`. The
- * GPU is a property of `ollama`/`vllm`, which SERVE those models; it was never
- * a property of the two structural Applications that describe them.
+ * This was a bare `Set` of seven directory names until 2026-08-21 -- membership
+ * with no recorded why, so no reader could tell a deliberate deferral from an
+ * accident, and no check could tell whether a deferral had outlived its cause.
+ * That is the same defect `APPLIED_BUT_UNASSERTED_REASONS` below was built to
+ * fix for the OTHER exclusion list, and the reason it was built is written
+ * there: an implicit deferral grows silently. It grew to 14 directories once
+ * already before anyone measured it.
+ *
+ * Every value must contain a `LIFTS WHEN:` clause naming a condition someone
+ * could actually bring about. "It does not work yet" is not a condition; it is
+ * the observation that produced the entry.
+ *
+ * These directories are ALSO named in `DEFAULT_ROOT_DEV_CATALOG.excludeGlob`
+ * (ports.ts), so they never reach the cluster either -- excluded on both sides,
+ * which is why they are not part of the applied-but-unasserted shadow.
+ *
+ * 2026-08-21: `deepseek-coder` and `qwen-coder` LEFT this set (081M0JXXFV0087G0R001PGEEM4).
+ * They were listed under a blanket "GPU model-serving" label, but neither
+ * declares a GPU, an image, a pod or a volume -- between them they render one
+ * Namespace and two ConfigMaps. The GPU is a property of `ollama`/`vllm`, which
+ * SERVE those models; it was never a property of the two structural
+ * Applications that describe them. They are asserted under the full contract now.
  */
-const DEV_EXCLUDED_DIRS = new Set([
-  "cilium", // kind CI uses its default CNI; k3d bootstraps Cilium outside the app-of-apps
-  "cilium-lb-ipam", // CiliumLoadBalancerIPPool CRDs exist only where cilium is installed
-  "longhorn", // needs real block devices + open-iscsi on the node; absent on a kind runner
-  "ollama", // nvidia.com/gpu request + nodeSelector zeta.io/gpu + a 200Gi longhorn PVC
-  "vllm", // CUDA image + nvidia.com/gpu request + a 200Gi longhorn PVC
+export const DEV_EXCLUDED_REASONS: ReadonlyMap<string, string> = new Map([
+  [
+    "cilium",
+    "The CNI itself. The default kind profile brings up kind's own CNI (kindnetd) BEFORE ArgoCD exists -- " +
+      "nothing can schedule otherwise -- so applying this Application there would install a second CNI over a " +
+      "working one. Meanwhile the configuration is not untested: the `live kind Cilium CNI` job installs it " +
+      "from THIS Application's own valuesObject on a profile with no default CNI " +
+      "(full-ai-cluster/dev-cluster/profiles/ci.cilium.kind-config.yaml). " +
+      "LIFTS WHEN: the app-of-apps included proof runs on that profile, so ArgoCD is reconciling a cluster " +
+      "whose CNI slot Cilium already owns.",
+  ],
+  [
+    "cilium-lb-ipam",
+    "CiliumLoadBalancerIPPool + CiliumL2AnnouncementPolicy are Cilium CRDs, so this Application cannot sync " +
+      "at all until Cilium is the CNI. Its pool is also hard-coded to 192.168.1.240-250, a LAN range with no " +
+      "meaning inside a container network -- LB IPs would be ASSIGNED (enough for ArgoCD to call it Healthy) " +
+      "and routable from nothing, which is a worse outcome than not running it. " +
+      "LIFTS WHEN: `cilium` above lifts AND the pool is parameterised per substrate rather than pinned to one " +
+      "maintainer's subnet.",
+  ],
+  [
+    "longhorn",
+    "Replicated block storage wants real disks and more than one node; a single kind node inside a runner has " +
+      "neither -- it needs real block devices plus open-iscsi on the node. This entry is also the ROOT of the " +
+      "largest deferral group in this file: every " +
+      "APPLIED_BUT_UNASSERTED_REASONS row reading 'requests storageClass: longhorn' is downstream of it, so " +
+      "lifting this one collapses several. " +
+      "LIFTS WHEN: a dev StorageClass provides the `longhorn` name in this lane, or the Applications that " +
+      "request it are parameterised to the substrate's default class.",
+  ],
+  [
+    "ollama",
+    "Requests nvidia.com/gpu with nodeSelector zeta.io/gpu, and a 200Gi longhorn PVC. A GitHub-hosted runner " +
+      "has neither, and the multi-GiB image pull alone outruns the job timeout -- so the Application would " +
+      "HANG rather than fail, which is the worse of the two. " +
+      "LIFTS WHEN: the lane runs on a GPU-bearing self-hosted runner (arc-runner-set), or this Application " +
+      "grows a CPU-only dev profile with a small model and a substrate-default StorageClass.",
+  ],
+  [
+    "vllm",
+    "Same class as ollama: CUDA image, nvidia.com/gpu request, 200Gi longhorn PVC. " +
+      "LIFTS WHEN: a GPU-bearing self-hosted runner exists for this lane, or a CPU-only dev profile ships.",
+  ],
 ]);
+
+const DEV_EXCLUDED_DIRS: ReadonlySet<string> = new Set(DEV_EXCLUDED_REASONS.keys());
+
+export interface DevExclusionDrift {
+  /** Excluded directories with no reason, or a reason naming no lift condition. */
+  readonly unreasoned: readonly string[];
+  /** Reasons for directories that no longer exist under the applications tree. */
+  readonly stale: readonly string[];
+}
+
+/**
+ * Both directions on the reasoned-exclusion registry.
+ *
+ * `unreasoned` cannot fire while `DEV_EXCLUDED_DIRS` is derived from the map's
+ * own keys -- that derivation is what makes an unreasoned entry unwritable, and
+ * the check stays so the property is asserted rather than merely arranged. It
+ * DOES fire on a reason with no `LIFTS WHEN:` clause, which is the failure mode
+ * that survives the derivation: a sentence that explains and commits to nothing.
+ */
+export function auditDevExclusionReasons(repoRoot = REPO_ROOT): DevExclusionDrift {
+  const applicationsRoot = join(repoRoot, "full-ai-cluster/k8s/applications");
+  const present = existsSync(applicationsRoot)
+    ? new Set(
+        readdirSync(applicationsRoot, { withFileTypes: true })
+          .filter((entry) => entry.isDirectory())
+          .map((entry) => entry.name),
+      )
+    : new Set<string>();
+
+  return {
+    unreasoned: [...DEV_EXCLUDED_DIRS]
+      .filter((dir) => !(DEV_EXCLUDED_REASONS.get(dir) ?? "").includes("LIFTS WHEN:"))
+      .sort(),
+    stale: [...DEV_EXCLUDED_REASONS.keys()].filter((dir) => !present.has(dir)).sort(),
+  };
+}
+
+/** Deferred from included Synced+Healthy proof until dev wiring/substrate exists (081KSXN940008QG0R000SCP2H1). */
 
 /**
  * Deferred from the included Synced+Healthy proof until dev wiring/substrate
