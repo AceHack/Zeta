@@ -1,0 +1,12 @@
+{
+  "pr_number": 12999,
+  "archive_path": "docs/history/pr-reviews/PR-12999-research-the-running-connector-measured-loopback-is-not-a-boundary-when-one-uid-.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-21T00:07:38.163Z",
+  "schema_version": "v1",
+  "commit_sha": "6eb57668bc2097d2d74f5b2ac87756bdd3c027aa",
+  "title": "research: the running connector MEASURED — loopback is not a boundary when one uid owns the host",
+  "state": "MERGED",
+  "merged_at": "2026-08-21T00:06:59Z",
+  "head_ref": "research/connector-perimeter-measured"
+}
