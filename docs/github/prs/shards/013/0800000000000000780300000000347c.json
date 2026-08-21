@@ -1,0 +1,12 @@
+{
+  "pr_number": 13436,
+  "archive_path": "docs/history/pr-reviews/PR-13436-fix-cluster-re-defer-weaviate-two-loadbalancer-services-can-never-be-healthy-on-.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-21T23:30:29.895Z",
+  "schema_version": "v1",
+  "commit_sha": "a461e81e5e462b8afe8eba5dc4619070eeb861f3",
+  "title": "fix(cluster): re-defer weaviate — two LoadBalancer Services can never be Healthy on kind",
+  "state": "MERGED",
+  "merged_at": "2026-08-21T23:29:46Z",
+  "head_ref": "fix/weaviate-loadbalancer-substrate-gap"
+}
