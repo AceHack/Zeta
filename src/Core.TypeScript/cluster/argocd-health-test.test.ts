@@ -245,12 +245,34 @@ describe("081KSXN940008QG0R000SCP2H1 argocd-health-test manifest parsing", () =>
     expect(applications.some((app) => app.dir === "vault" && app.excludedFromDev)).toBe(true);
     expect(applications.some((app) => app.dir === "agent-memory" && app.excludedFromDev)).toBe(true);
     expect(applications.some((app) => app.dir === "gitlab" && app.excludedFromDev)).toBe(true);
-    expect(applications.some((app) => app.dir === "orleans" && app.excludedFromDev)).toBe(true);
     expect(applications.some((app) => app.dir === "temporal" && app.excludedFromDev)).toBe(true);
     const included = applications.filter((app) => !app.excludedFromDev);
     expect(included.length).toBeGreaterThan(10);
     expect(included.some((app) => app.name === "trust-manager")).toBe(true);
     expect(included.some((app) => app.name === "forgejo")).toBe(false);
+  });
+
+  /**
+   * 081M0JXXFV0087G0R001PGEEM4 -- the three Applications that came OFF the
+   * deferred lists on 2026-08-21 stay asserted.
+   *
+   * Without this, a later edit could quietly return any of them to
+   * DEV_EXCLUDED_DIRS / DEV_INCLUDED_PROOF_DEFERRED_DIRS / the excludeGlob and
+   * the included proof would go green again having stopped asserting them --
+   * a check that did not run wearing the face of one that passed.
+   *
+   * They are asserted under the FULL auto-sync contract (Synced + Healthy), not
+   * the manual-sync one, which is the difference between this and the
+   * cdi/kubevirt defect: `manualSync` must be false for all three.
+   */
+  test("deepseek-coder, qwen-coder and orleans are asserted under the full Synced+Healthy contract", () => {
+    const applications = discoverExpectedApplications();
+    for (const dir of ["deepseek-coder", "qwen-coder", "orleans"]) {
+      const app = applications.find((candidate) => candidate.dir === dir);
+      expect(app, `${dir} must be discovered`).toBeDefined();
+      expect(app?.excludedFromDev, `${dir} must not be excluded from the included proof`).toBe(false);
+      expect(app?.manualSync, `${dir} must be asserted under the auto-sync contract`).toBe(false);
+    }
   });
 
   test("isExcludedFromIncludedProof catches Longhorn in child manifests", () => {
@@ -308,13 +330,10 @@ describe("081KSXN940008QG0R000SCP2H1 argocd-health-test manifest parsing", () =>
         "agent-memory",
         "cilium",
         "cilium-lb-ipam",
-        "deepseek-coder",
         "gitlab",
         "longhorn",
         "ollama",
-        "orleans",
         "platform",
-        "qwen-coder",
         "temporal",
         "vllm",
       ]),
