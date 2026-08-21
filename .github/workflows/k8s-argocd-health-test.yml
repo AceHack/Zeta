@@ -55,6 +55,9 @@ on:
       - "src/Core.TypeScript/cluster/argocd-health-test.test.ts"
       - "src/Core.TypeScript/cluster/app-of-apps-discovery.ts"
       - "src/Core.TypeScript/cluster/app-of-apps-discovery.test.ts"
+      - "src/Core.TypeScript/cluster/derive-sync-waves.ts"
+      - "src/Core.TypeScript/cluster/derive-sync-waves.test.ts"
+      - "full-ai-cluster/k8s/sync-wave-dependency-graph.yaml"
       - "src/Core.TypeScript/cluster/included-proof-summary.ts"
       - "src/Core.TypeScript/cluster/included-proof-summary.test.ts"
       - "src/Core.TypeScript/cluster/kubevirt-cdi-emulation-test.ts"
@@ -115,6 +118,9 @@ on:
       - "src/Core.TypeScript/cluster/argocd-health-test.test.ts"
       - "src/Core.TypeScript/cluster/app-of-apps-discovery.ts"
       - "src/Core.TypeScript/cluster/app-of-apps-discovery.test.ts"
+      - "src/Core.TypeScript/cluster/derive-sync-waves.ts"
+      - "src/Core.TypeScript/cluster/derive-sync-waves.test.ts"
+      - "full-ai-cluster/k8s/sync-wave-dependency-graph.yaml"
       - "src/Core.TypeScript/cluster/included-proof-summary.ts"
       - "src/Core.TypeScript/cluster/included-proof-summary.test.ts"
       - "src/Core.TypeScript/cluster/kubevirt-cdi-emulation-test.ts"
@@ -244,6 +250,35 @@ jobs:
       # red, which is the point: the semantics is the load-bearing claim.
       - name: Run app-of-apps discovery unit tests
         run: bun test src/Core.TypeScript/cluster/app-of-apps-discovery.test.ts
+
+      # SYNC-WAVE DERIVATION. The App-of-Apps bring-up order is DERIVED from
+      # full-ai-cluster/k8s/sync-wave-dependency-graph.yaml by ace's own engine
+      # (resolveGraph in src/Core.TypeScript/ace/deps.ts) and compared against
+      # the hand-written argocd.argoproj.io/sync-wave annotations.
+      #
+      # This exists because SYNC-WAVES.md was hand-maintained and named 34
+      # components while 46 Applications shipped -- twelve were in no graph at
+      # all, and nothing could see it. An Application missing from the
+      # declaration is now a FINDING, not a gap.
+      #
+      # NOT continue-on-error. Green on the tree it ships with (46 declared, 0
+      # undeclared, 0 uncited edges, 8 order disagreements all registered with a
+      # reason and PRINTED on every run). Mutation-checked, each mutation
+      # verified applied by byte `cmp` against a pristine copy before its result
+      # was read: undeclared forced empty (caught), the order comparison
+      # loosened from >= to > (caught, 4 tests), uncited edges accepted
+      # (caught, 2 tests), the CNI floor loosened from <= to < (caught), and a
+      # node deleted from the declaration -- the twelve-missing-apps defect
+      # itself -- (caught, 4 tests).
+      #
+      # It does NOT renumber. Wave order sequences bring-up on a real cluster; a
+      # wrong reorder is a broken bootstrap, so disagreements are reported for a
+      # human to adjudicate.
+      - name: Run sync-wave derivation unit tests
+        run: bun test src/Core.TypeScript/cluster/derive-sync-waves.test.ts
+
+      - name: Print the ace-derived sync-wave order and every disagreement
+        run: bun src/Core.TypeScript/cluster/derive-sync-waves.ts
 
       # The virt proof's OFFLINE half. It builds its plan from the live
       # cdi/kubevirt Application manifests -- the include glob, the
