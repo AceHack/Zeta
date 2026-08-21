@@ -87,8 +87,6 @@ import {
   classifyDeviceState,
   DEFAULT_HEAD_SAMPLE_BYTES,
   DEFAULT_READBACK_CHUNK_BYTES,
-  MAX_ISO_BYTES,
-  MIN_ISO_BYTES,
   openChunkReader,
   sampleHeadDigests,
   verifyReadBack,
@@ -98,6 +96,7 @@ import {
   type ObservedPartition,
   type StatedTargetPin,
 } from "./verify.ts";
+import { MAX_ISO_BYTES, MAX_USB_BYTES, MIN_ISO_BYTES, MIN_USB_BYTES } from "./size-bounds.ts";
 
 
 /**
@@ -111,8 +110,7 @@ import {
  */
 const HALF_PROVISIONED_ACK = "ack half-provisioned";
 
-const MIN_USB_BYTES = 4 * 1024 * 1024 * 1024;
-const MAX_USB_BYTES = 256 * 1024 * 1024 * 1024;
+
 
 function bail(code: number, msg: string): never {
   process.stderr.write(`flash-usb: ${msg}\n`);

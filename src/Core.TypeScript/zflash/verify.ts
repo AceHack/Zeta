@@ -27,11 +27,13 @@ import { parseSha256Sums } from "../installer/multiboot/sha256sums.ts";
 
 // -- Shared size floor -----------------------------------------------
 //
-// The smallest ISO flash-usb.ts will write. Exported from here so the
+// Re-exported from ./size-bounds.ts, which is the single definition. The
 // classifier rule "less is allocated than the smallest ISO we would ever
-// write" and flash-usb.ts's own sanity gate cannot drift apart.
-export const MIN_ISO_BYTES = 200 * 1024 * 1024;
-export const MAX_ISO_BYTES = 8 * 1024 * 1024 * 1024;
+// write" and flash-usb.ts's sanity gate therefore cannot drift apart --
+// previously this comment claimed that while the Linux and Windows arms
+// each defined their own copy.
+import { MAX_ISO_BYTES, MIN_ISO_BYTES } from "./size-bounds.ts";
+export { MAX_ISO_BYTES, MIN_ISO_BYTES };
 
 /** Volume label stamped by the installer. See configuration.nix volumeID. */
 export const ZETA_INSTALL_VOLUME_LABEL = "ZETA_INSTALL";
