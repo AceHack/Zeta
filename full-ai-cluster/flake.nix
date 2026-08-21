@@ -285,6 +285,34 @@
             pkgs.runCommand "longhorn-node-preflight" { inherit (report) status; } ''
               echo "$status" | tee "$out"
             '';
+
+          # Properties of the CILIUM WIREGUARD NODE PREFLIGHT -- the boot-time
+          # refusal that says whether this kernel can make the WireGuard device
+          # Cilium's own values demand.
+          #
+          # It reads the SHIPPED manifests, so its first assertion is the
+          # finding itself: k8s/bootstrap/cilium-install.yaml (first boot) and
+          # k8s/applications/cilium/Application.yaml (sync-wave -80) both set
+          # encryption.type=wireguard, while before this change nothing under
+          # nixos/ named WireGuard at all. It also proves the requirement is
+          # DERIVED from those files (an IPsec tree does not pull it in), that
+          # the module DECLARED is the module CHECKED, and that the /sys/module
+          # check runs before the netlink probe that would auto-load it --
+          # ordering those two the other way makes the first one unable to fail.
+          #
+          # It CANNOT say the check passes on any kernel. The x86_64 VM lane
+          # k3s-control-plane-platform-fixes does that; the console marker to
+          # look for on metal is ZETA_CILIUM_WG_PREFLIGHT_OK.
+          cilium-wireguard-preflight =
+            let
+              report = import ./nixos/tests/cilium-wireguard-preflight-eval-test.nix {
+                inherit pkgs;
+                inherit (nixpkgs) lib;
+              };
+            in
+            pkgs.runCommand "cilium-wireguard-preflight" { inherit (report) status; } ''
+              echo "$status" | tee "$out"
+            '';
         } // nixpkgs.lib.optionalAttrs (system == "x86_64-linux") {
           # Regression test for the k3s --cluster-init token deadlock:
           # boots the control-plane k3s module in QEMU and asserts the API

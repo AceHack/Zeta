@@ -55,6 +55,16 @@
     # `longhorn` PVC stays Pending and the whole stateful layer is dead.
     # Imported here so control-plane AND workers get them uniformly.
     ./longhorn-prereqs.nix
+    # Cilium WireGuard node prerequisites (the wireguard kernel module + wg for
+    # diagnosis) plus the boot-time preflight that says whether they took.
+    # k8s/bootstrap/cilium-install.yaml installs Cilium with
+    # encryption.type=wireguard at FIRST BOOT, and the ArgoCD Application
+    # re-asserts it at sync-wave -80; on a kernel that cannot create a WireGuard
+    # device cilium-agent refuses to initialise and this node has no CNI at all.
+    # Imported here so control-plane AND workers get it uniformly -- node-to-node
+    # encryption is a property of the PAIR, so one node missing the prerequisite
+    # is a cluster-wide fact.
+    ./cilium-wireguard-prereqs.nix
     # iter-5.4.0 (B-0794 homelab-mode): operator SSH pubkeys captured
     # via `gh ssh-key list` during zeta-install.sh Step 6.8. Composes
     # additively with iter-4.2 static maintainer keys.
