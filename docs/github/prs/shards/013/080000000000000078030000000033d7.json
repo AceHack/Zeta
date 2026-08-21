@@ -1,0 +1,15 @@
+{
+  "pr_number": 13271,
+  "archive_path": "docs/history/pr-reviews/PR-13271-feat-cluster-storage-size-profile-ladder-minimal-standard-large-checked-against-.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7kaf6H",
+    "thread:PRRT_kwDOSF9kNM6bOxjc"
+  ],
+  "fetched_at": "2026-08-21T17:44:45.247Z",
+  "schema_version": "v1",
+  "commit_sha": "b64005fdfe4ab465a94e830d2ef5e79bea9e330c",
+  "title": "feat(cluster): storage size profile ladder — minimal/standard/large, checked against measured disk",
+  "state": "MERGED",
+  "merged_at": "2026-08-21T17:44:06Z",
+  "head_ref": "feat/storage-size-profiles"
+}
