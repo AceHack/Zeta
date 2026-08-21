@@ -1,0 +1,12 @@
+{
+  "pr_number": 11579,
+  "archive_path": "docs/history/pr-reviews/PR-11579-feat-sim-sim-as-the-room-runner-addison-s-five-way-ledger-over-the-injected-seam.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-21T13:49:43.091Z",
+  "schema_version": "v1",
+  "commit_sha": "3481c339f75e38538b9103e936f2e9ab96528f3f",
+  "title": "feat(sim): `sim` as the room runner — Addison's five-way ledger over the injected seam",
+  "state": "MERGED",
+  "merged_at": "2026-08-17T17:16:25Z",
+  "head_ref": "shadow/sim-as-room-runner"
+}
