@@ -25,6 +25,14 @@
     # /etc/hosts entry that `k3s-server.nix` calls "the robust path". No-op on
     # hosts with no /etc/zeta/cluster-segment-* files — they keep DHCP.
     ./injected-cluster-address.nix
+    # 081KSE6WT0008QG0R000CV98PV (R3 of the USB design document): the PUBLISHER
+    # half of bootstrap-or-join. A control plane advertises `_zeta-k3s._tcp`
+    # so a booting node can tell "there is already a cluster here" from "there
+    # is not" -- the distinction that today only a 10-second keystroke makes.
+    #
+    # No-op on agents: the module guards its config to `services.k3s.role ==
+    # "server"`, so a worker imports the options and contributes nothing.
+    ./cluster-discovery-advertise.nix
     ./login-banner.nix
     # 081M00KTH58087G0R00120WT6F: the option surface for Secure Boot desired
     # state. At its default phase ("off") it sets NO boot option and contributes
