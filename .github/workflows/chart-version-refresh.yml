@@ -100,7 +100,15 @@ jobs:
       # Exit 1 means either "the snapshot changed" or "a registry was
       # unreachable". Both are things a human should look at and neither is a
       # reason to block anyone's merge, which is why this job is not required.
-      - name: Refresh the published-version snapshot (network; allowed to fail)
+      #
+      # There is deliberately NO `continue-on-error` on THIS step, and the step
+      # name must not imply one — the step going red IS the output, and a green
+      # step would be a check that did not run wearing a check that passed.
+      # Note the contrast with "Currency report drift" below, which does carry
+      # the flag: that one is allowed to fail in the literal sense. Here,
+      # "does not block" means only that the JOB is outside the required set,
+      # so the red stays visible without gating anyone's merge.
+      - name: Refresh the published-version snapshot (network; red here is the signal, non-required job)
         run: bun src/Core.TypeScript/hygiene/audit-chart-target-revisions.ts --refresh
 
       # Always uploaded, including on the failing path — the diff IS the output.
