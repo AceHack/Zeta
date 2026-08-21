@@ -6,6 +6,12 @@
 **Status:** SURVEY ONLY. Nothing is bumped here. The bumps are a separate, reviewable change and several of
 them are the maintainer's call.
 
+> **This document is a SNAPSHOT and it started rotting the day it landed.** The recurring version is
+> [`docs/CHART-CURRENCY.md`](../CHART-CURRENCY.md), regenerated from the weekly refresh that already
+> fetches these indexes (`report-chart-currency.ts`). Read that for the current state; read this for the
+> method, the cross-verification against `helm search repo`, and the per-chart upgrade guidance in §4,
+> none of which the generated report carries.
+
 ---
 
 ## 0. Headline

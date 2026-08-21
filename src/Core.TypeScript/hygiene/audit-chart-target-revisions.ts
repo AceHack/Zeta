@@ -85,6 +85,15 @@
 // chart's own dependencies -- ArgoCD has no equivalent for an Application's
 // `targetRevision`, which is why it must be audited rather than resolved.
 //
+// -- THE SECOND SNAPSHOT: PUBLISH DATES -----------------------------------
+// `--refresh` also writes `published-chart-dates.json` (see
+// chart-publish-dates.ts). Resolvability and CURRENCY are different questions
+// -- a pin can resolve perfectly and be twenty-three majors behind -- and the
+// currency answer needs one extra fact per version: when upstream published
+// it. That fact is ALREADY in the `index.yaml` this file downloads, so it is
+// recorded here rather than fetched again on a second schedule. Nothing in the
+// PR-blocking path above reads it; `report-chart-currency.ts` does.
+//
 // Usage:
 //   bun src/Core.TypeScript/hygiene/audit-chart-target-revisions.ts
 //   bun src/Core.TypeScript/hygiene/audit-chart-target-revisions.ts --refresh
@@ -96,6 +105,13 @@ import { readFileSync, readdirSync, writeFileSync, type Dirent } from "node:fs";
 import { join, relative, resolve } from "node:path";
 import { parseAllDocuments, parse as parseYaml } from "yaml";
 import semver from "semver";
+import {
+  DATES_FILENAME,
+  OCI_DATES_UNAVAILABLE,
+  readChartDatesOrEmpty,
+  writeChartDatesIfChanged,
+  type ChartDatesEntry,
+} from "./chart-publish-dates.ts";
 
 const REPO_ROOT = resolve(import.meta.dir, "../../..");
 const APPLICATIONS_TREE = "full-ai-cluster/k8s/applications";
@@ -103,6 +119,7 @@ export const ROSTER_FILENAME = "published-chart-versions.json";
 const ROSTER_PATH = join(import.meta.dir, ROSTER_FILENAME);
 
 const REFRESH_COMMAND = "bun src/Core.TypeScript/hygiene/audit-chart-target-revisions.ts --refresh";
+const CURRENCY_REPORT_COMMAND = "bun src/Core.TypeScript/hygiene/report-chart-currency.ts --write";
 
 // ---------------------------------------------------------------------------
 // Coordinates extracted from the tree
@@ -801,7 +818,22 @@ export function ociTarget(repoURL: string, chart: string): { host: string; repos
   return { host, repository: [...rest, chart].filter((s) => s !== "").join("/") };
 }
 
-async function fetchHelmIndexVersions(repoURL: string, chart: string): Promise<readonly string[]> {
+/**
+ * What a Helm index hands back, both halves of it.
+ *
+ * `created` rides along because it is ALREADY IN THE RESPONSE this function
+ * parses -- a Helm index entry carries `version` and `created` side by side.
+ * Currency (how far behind, and is upstream still alive) needs the dates;
+ * collecting them here costs zero additional requests and zero additional
+ * schedule, which is the only reason a second question gets to be asked at all
+ * from a lane that exists to be cheap.
+ */
+interface HelmIndexRead {
+  readonly versions: readonly string[];
+  readonly created: Readonly<Record<string, string>>;
+}
+
+async function fetchHelmIndexVersions(repoURL: string, chart: string): Promise<HelmIndexRead> {
   const url = normalizeRepoUrl(repoURL) + "/index.yaml";
   const response = await fetch(url, { headers: { accept: "application/x-yaml, text/yaml, */*" } });
   if (!response.ok) throw new Error("GET " + url + " -> HTTP " + String(response.status));
@@ -809,7 +841,20 @@ async function fetchHelmIndexVersions(repoURL: string, chart: string): Promise<r
   if (!isRecord(index) || !isRecord(index.entries)) throw new Error(url + " has no `entries` map");
   const charts = index.entries[chart];
   if (!Array.isArray(charts)) throw new Error(url + " publishes no chart named `" + chart + "`");
-  return charts.map((c) => (isRecord(c) ? stringAt(c, "version") : "")).filter((v) => v !== "");
+  const versions: string[] = [];
+  const created: Record<string, string> = {};
+  for (const entry of charts) {
+    if (!isRecord(entry)) continue;
+    const version = stringAt(entry, "version");
+    if (version === "") continue;
+    versions.push(version);
+    // An index entry without `created` is left ABSENT, never defaulted. A
+    // missing date must reach the report as "unknown"; a substituted one would
+    // be the check-that-did-not-run wearing a plausible number.
+    const when = stringAt(entry, "created");
+    if (when !== "") created[version] = when;
+  }
+  return { versions, created };
 }
 
 async function fetchOciTags(repoURL: string, chart: string): Promise<readonly string[]> {
@@ -852,15 +897,21 @@ async function refresh(repoRoot: string): Promise<number> {
 
   const fetchedAt = new Date().toISOString().replace(/\.\d{3}Z$/, "Z");
   const entries: Record<string, RosterEntry> = {};
+  const dates: Record<string, ChartDatesEntry> = {};
   const failures: string[] = [];
 
   for (const [key, coordinate] of [...wanted].sort((a, b) => (a[0] < b[0] ? -1 : 1))) {
     try {
-      const versions =
+      const read =
         coordinate.kind === "oci"
-          ? await fetchOciTags(coordinate.repoURL, coordinate.chart)
+          ? { versions: await fetchOciTags(coordinate.repoURL, coordinate.chart), created: undefined }
           : await fetchHelmIndexVersions(coordinate.repoURL, coordinate.chart);
+      const versions = read.versions;
       if (versions.length === 0) throw new Error("upstream listed zero versions");
+      dates[key] =
+        read.created === undefined
+          ? { source: "unavailable", unavailable: OCI_DATES_UNAVAILABLE, created: {} }
+          : { source: "helm-index-created", created: read.created };
       entries[key] = {
         repoURL: normalizeRepoUrl(coordinate.repoURL),
         chart: coordinate.chart,
@@ -893,7 +944,23 @@ async function refresh(repoRoot: string): Promise<number> {
     if ((err as NodeJS.ErrnoException).code !== "ENOENT") throw err;
     previous = {};
   }
+  const previousDates = readChartDatesOrEmpty().entries;
   for (const [key, coordinate] of wanted) {
+    if (dates[key] === undefined) {
+      // Same carry-forward reasoning as the versions below: an outage must not
+      // erase dates we already hold, and a coordinate never once reached gets
+      // an explicit `unavailable` rather than a silent gap.
+      const keptDates = previousDates[key];
+      const failure = failures.find((f) => f.startsWith(key + ": "));
+      dates[key] =
+        keptDates !== undefined && Object.keys(keptDates.created).length > 0
+          ? keptDates
+          : {
+              source: "unavailable",
+              unavailable: failure === undefined ? "not fetched" : failure.slice(key.length + 2),
+              created: {},
+            };
+    }
     if (entries[key] !== undefined) continue;
     const kept = previous[key];
     if (kept !== undefined && kept.versions.length > 0) {
@@ -934,14 +1001,23 @@ async function refresh(repoRoot: string): Promise<number> {
     if ((err as NodeJS.ErrnoException).code !== "ENOENT") throw err;
     before = "";
   }
-  const unchanged = sameIgnoringTimestamps(before, serialized);
+  const rosterUnchanged = sameIgnoringTimestamps(before, serialized);
+
+  // The dates snapshot is written from the SAME fetches, in the same pass, so
+  // the two files can never describe different network reads. It is written
+  // INDEPENDENTLY of the roster, and that independence is the point: folding
+  // the two into one "something changed" flag would make a dates-only change
+  // rewrite the roster, whose only difference would then be `fetchedAt` -- the
+  // timestamp-only weekly diff this function's own comment refuses to produce.
+  const datesChanged = writeChartDatesIfChanged(dates);
+  const unchanged = rosterUnchanged && !datesChanged;
 
   // Write only when something was LEARNED. Rewriting on every run would leave a
   // 35-line timestamp-only diff behind each scheduled refresh and dirty any
   // local tree that ran one, which is how a checked-in snapshot stops being
   // reviewable. The cost is stated where it lands: `fetchedAt` is then a LOWER
   // BOUND on when a list was last confirmed, not the last time it was read.
-  if (!unchanged) writeFileSync(ROSTER_PATH, serialized);
+  if (!rosterUnchanged) writeFileSync(ROSTER_PATH, serialized);
 
   if (failures.length > 0) {
     process.stderr.write("\n" + String(failures.length) + " coordinate(s) unreachable this run:\n");
@@ -973,11 +1049,20 @@ async function refresh(repoRoot: string): Promise<number> {
         String(Object.keys(entries).length) +
         " coordinate(s), no change; " +
         ROSTER_FILENAME +
+        " and " +
+        DATES_FILENAME +
         " left untouched.\n",
     );
     return 0;
   }
-  process.stdout.write("\nrefresh CHANGED " + ROSTER_FILENAME + " -- commit the diff.\n");
+  process.stdout.write(
+    "\nrefresh CHANGED " +
+      (rosterUnchanged ? "" : ROSTER_FILENAME + " ") +
+      (datesChanged ? DATES_FILENAME + " " : "") +
+      "-- commit the diff, then regenerate the currency report:\n  " +
+      CURRENCY_REPORT_COMMAND +
+      "\n",
+  );
   return 1;
 }
 

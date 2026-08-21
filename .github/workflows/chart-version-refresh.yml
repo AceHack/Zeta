@@ -1,7 +1,8 @@
 name: chart-version-refresh
 
 # THE NETWORK HALF of the ArgoCD chart-resolvability check, deliberately kept
-# out of every PR-blocking lane.
+# out of every PR-blocking lane — and the lane that answers the SECOND question,
+# currency.
 #
 # `src/Core.TypeScript/hygiene/audit-chart-target-revisions.ts` resolves every
 # `targetRevision` in full-ai-cluster/k8s/applications against a CHECKED-IN
@@ -31,9 +32,27 @@ name: chart-version-refresh
 # information. Unreachable coordinates are still printed here, and the offline
 # audit names them as findings on every PR.
 #
+# WHY CURRENCY RIDES THIS LANE RATHER THAN GETTING ITS OWN. Resolvability
+# ("does this pin resolve?") and currency ("how far behind is it, and is
+# upstream still alive?") are different questions, but they are answered from
+# the SAME bytes: a Helm `index.yaml` carries `version` and `created` side by
+# side, so the publish dates cost this job zero additional requests and zero
+# additional schedule. `--refresh` writes both snapshots from one pass, and the
+# report below is rendered offline from them.
+#
+# AND CURRENCY IS NOT A GATE ANYWHERE. On the day it landed, 34 of 35 pins in
+# this tree were behind upstream and 14 crossed a major. A check on that would
+# be red from birth and learned-to-ignore within a week. So it is a report: a
+# committed generated file whose diff shows drift, plus the job summary below.
+# The only failure `--check` can produce is "the committed report no longer
+# matches the committed data", which one command fixes.
+#
 # Composes with:
 #   src/Core.TypeScript/hygiene/audit-chart-target-revisions.ts  (both halves)
 #   src/Core.TypeScript/hygiene/published-chart-versions.json    (the snapshot)
+#   src/Core.TypeScript/hygiene/published-chart-dates.json       (publish dates)
+#   src/Core.TypeScript/hygiene/report-chart-currency.ts         (the currency report)
+#   docs/CHART-CURRENCY.md                                       (its committed output)
 #   .github/workflows/gate.yml  cross-verify                     (the offline lane)
 #   081M0JVD5YG087G0R002QDFR9H (the oz pin) · 081M0JX4M7H087G0R0029R5QG6 (the two
 #   unreachable repoURLs this lane's first run found)
@@ -51,6 +70,8 @@ on:
     # NOT in the required set, so a registry flake here cannot block a merge.
     paths:
       - "src/Core.TypeScript/hygiene/audit-chart-target-revisions.ts"
+      - "src/Core.TypeScript/hygiene/chart-publish-dates.ts"
+      - "src/Core.TypeScript/hygiene/report-chart-currency.ts"
       - ".github/workflows/chart-version-refresh.yml"
 
 permissions:
@@ -62,7 +83,7 @@ concurrency:
 
 jobs:
   refresh:
-    name: refresh published-chart-versions.json from upstream registries
+    name: refresh the chart snapshots from upstream registries, then report currency
     runs-on: ubuntu-24.04
     timeout-minutes: 15
 
@@ -99,3 +120,39 @@ jobs:
       - name: Re-audit against the freshly refreshed snapshot
         if: always()
         run: bun src/Core.TypeScript/hygiene/audit-chart-target-revisions.ts
+
+      # DRIFT, not currency. This step CANNOT fail because a chart is out of
+      # date — being behind is a standing condition and is never an error here.
+      # It fails for exactly one reason: docs/CHART-CURRENCY.md no longer
+      # matches what the committed snapshots render, i.e. the generated file is
+      # stale and one command fixes it. Non-blocking like everything in this
+      # job.
+      - name: Currency report drift (is the committed report stale?)
+        if: always()
+        continue-on-error: true
+        run: bun src/Core.TypeScript/hygiene/report-chart-currency.ts --check
+
+      - name: Regenerate the currency report from the refreshed snapshots
+        if: always()
+        run: bun src/Core.TypeScript/hygiene/report-chart-currency.ts --write
+
+      # The recurring surface Aaron asked for: the whole report in the run
+      # summary, so a reader sees the state without cloning anything. It is the
+      # same bytes as the committed file — one renderer, no second format to
+      # drift.
+      - name: Publish the currency report to the job summary
+        if: always()
+        run: cat docs/CHART-CURRENCY.md >> "$GITHUB_STEP_SUMMARY"
+
+      # Uploaded beside the version snapshot, on the failing path too: when the
+      # committed report is stale, THIS is the file that replaces it.
+      - name: Upload the currency report and the publish-date snapshot
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: chart-currency-${{ github.run_id }}
+          path: |
+            docs/CHART-CURRENCY.md
+            src/Core.TypeScript/hygiene/published-chart-dates.json
+          if-no-files-found: error
+          retention-days: 90
