@@ -38,7 +38,14 @@ metadata:
       node-5b2dfa, which carries three running production Windows guests. An
       automated sync or selfHeal could roll virt-operator into virt-handler and
       disturb live guests. Sync it by hand, off-hours, after reading argocd app
-      diff kubevirt.
+      diff kubevirt. SCOPE - this is a constraint on THAT CLUSTER, not on these
+      bytes, and it is not a claim that KubeVirt is untestable. An ephemeral kind
+      cluster has no guests to disturb, so the vendored operator plus CR are
+      deployed and asserted Available on every run of the live-kind-virt job in
+      .github/workflows/k8s-argocd-health-test.yml, driven by
+      src/Core.TypeScript/cluster/kubevirt-cdi-emulation-test.ts, which applies
+      the documented useEmulation patch on top because GitHub-hosted runners are
+      not guaranteed a /dev/kvm.
   name: kubevirt
   namespace: argocd
   finalizers: [ resources-finalizer.argocd.argoproj.io ]

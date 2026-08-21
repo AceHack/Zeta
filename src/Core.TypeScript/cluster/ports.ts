@@ -73,11 +73,43 @@ export interface ClusterControlPlane {
   waitForAllNodesReady(timeoutSec: number): void;
   waitForApiReady(maxAttempts: number, pollMs: number): void;
   applyRemoteManifest(url: string, serverSideApply?: boolean): void;
-  applyFileManifest(path: string): void;
+  /**
+   * `serverSideApply` is not a nicety. The vendored `kubevirts.kubevirt.io` CRD
+   * serialises to 238350 bytes -- 91% of the 262144-byte ceiling on the
+   * `last-applied-configuration` annotation a CLIENT-side apply writes. It fits
+   * today and would stop fitting on an upstream bump, and the failure would look
+   * like "KubeVirt cannot be installed here". It is also what the Application
+   * itself declares (`syncOptions: [ ServerSideApply=true ]`), so a proof of
+   * those bytes has to apply them the same way ArgoCD does or it is proving a
+   * different thing. Defaults false: existing callers are unchanged.
+   */
+  applyFileManifest(path: string, serverSideApply?: boolean): void;
   applyInlineManifest(yaml: string): void;
   ensureNamespace(name: string): void;
   waitForCrdEstablished(crdName: string, timeoutSec: number, optional?: boolean): void;
   clearContextIfCurrent(context: string): void;
+  /**
+   * Merge-patch one already-applied object. Separate from `applyFileManifest`
+   * on purpose: a patch is how a lane adapts a manifest it must NOT edit --
+   * `full-ai-cluster/k8s/applications/kubevirt/kubevirt-cr.yaml` is captured
+   * verbatim from node-5b2dfa and staying verbatim is the point, so the CI-only
+   * `useEmulation` flip is applied on top rather than forked into a second copy.
+   */
+  mergePatch(resourceRef: string, namespace: string | null, patchJson: string): void;
+  /**
+   * Wait for one object to satisfy a `kubectl wait --for=` expression.
+   *
+   * Returns a boolean rather than exiting, unlike every other method on this
+   * port. The virt proof runs two INDEPENDENT phases (CDI, then KubeVirt) and
+   * has to report each one; exiting on the first failure would report "CDI is
+   * broken" as "the lane is broken" and hide whichever phase never ran.
+   */
+  waitForResource(
+    resourceRef: string,
+    namespace: string | null,
+    forExpression: string,
+    timeoutSec: number,
+  ): boolean;
 }
 
 export interface ChartInstallSpec {

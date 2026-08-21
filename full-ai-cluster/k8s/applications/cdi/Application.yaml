@@ -31,7 +31,12 @@ metadata:
     zeta.io/sync-policy-reason: Adopts a CDI operator installed by hand on
       node-5b2dfa, the box running three production Windows guests. An automated
       sync could roll cdi-operator under live VM disk imports. Sync it by hand
-      after reading argocd app diff cdi.
+      after reading argocd app diff cdi. SCOPE - this is a constraint on THAT
+      CLUSTER, not on these bytes. CDI needs no virtualization at all, so it is
+      testable independently of kubevirt, and the vendored operator plus CR are
+      deployed and asserted to reach phase Deployed on every run of the
+      live-kind-virt job in .github/workflows/k8s-argocd-health-test.yml, driven
+      by src/Core.TypeScript/cluster/kubevirt-cdi-emulation-test.ts.
   name: cdi
   namespace: argocd
   finalizers: [ resources-finalizer.argocd.argoproj.io ]

@@ -21,7 +21,12 @@ export function kubectlControlPlane(runner: ProcessRunner): ClusterControlPlane 
       args.push("-f", url);
       runOrExit(runner, "kubectl", args, { stdio: "inherit" });
     },
-    applyFileManifest: (path) => runOrExit(runner, "kubectl", ["apply", "-f", path], { stdio: "inherit" }),
+    applyFileManifest: (path, serverSideApply = false) => {
+      const args = ["apply"];
+      if (serverSideApply) args.push("--server-side", "--force-conflicts");
+      args.push("-f", path);
+      runOrExit(runner, "kubectl", args, { stdio: "inherit" });
+    },
     applyInlineManifest: (yaml) =>
       runOrExit(runner, "kubectl", ["apply", "-f", "-"], { stdin: yaml, stdio: "inherit" }),
     ensureNamespace: (name) => runOptional(runner, "kubectl", ["create", "namespace", name]),
@@ -32,6 +37,18 @@ export function kubectlControlPlane(runner: ProcessRunner): ClusterControlPlane 
         return;
       }
       runOrExit(runner, "kubectl", args, { stdio: "inherit" });
+    },
+    mergePatch: (resourceRef, namespace, patchJson) => {
+      const args = ["patch", resourceRef];
+      if (namespace !== null) args.push("-n", namespace);
+      args.push("--type=merge", "--patch", patchJson);
+      runOrExit(runner, "kubectl", args, { stdio: "inherit" });
+    },
+    waitForResource: (resourceRef, namespace, forExpression, timeoutSec) => {
+      const args = ["wait", resourceRef];
+      if (namespace !== null) args.push("-n", namespace);
+      args.push(`--for=${forExpression}`, `--timeout=${timeoutSec}s`);
+      return runOptional(runner, "kubectl", args);
     },
     clearContextIfCurrent: (context) => {
       const current = runner.run("kubectl", ["config", "current-context"]).stdout.trim();

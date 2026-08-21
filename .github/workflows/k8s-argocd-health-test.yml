@@ -57,6 +57,8 @@ on:
       - "src/Core.TypeScript/cluster/app-of-apps-discovery.test.ts"
       - "src/Core.TypeScript/cluster/included-proof-summary.ts"
       - "src/Core.TypeScript/cluster/included-proof-summary.test.ts"
+      - "src/Core.TypeScript/cluster/kubevirt-cdi-emulation-test.ts"
+      - "src/Core.TypeScript/cluster/kubevirt-cdi-emulation-test.test.ts"
       - "full-ai-cluster/dev-cluster/**"
       # WATCH WHAT THIS LANE DEPLOYS. This used to be
       # "applications/**/Application.yaml", which matched only the ArgoCD
@@ -103,6 +105,8 @@ on:
       - "src/Core.TypeScript/cluster/app-of-apps-discovery.test.ts"
       - "src/Core.TypeScript/cluster/included-proof-summary.ts"
       - "src/Core.TypeScript/cluster/included-proof-summary.test.ts"
+      - "src/Core.TypeScript/cluster/kubevirt-cdi-emulation-test.ts"
+      - "src/Core.TypeScript/cluster/kubevirt-cdi-emulation-test.test.ts"
       - "full-ai-cluster/dev-cluster/**"
       # WATCH WHAT THIS LANE DEPLOYS. This used to be
       # "applications/**/Application.yaml", which matched only the ArgoCD
@@ -216,6 +220,23 @@ jobs:
       # red, which is the point: the semantics is the load-bearing claim.
       - name: Run app-of-apps discovery unit tests
         run: bun test src/Core.TypeScript/cluster/app-of-apps-discovery.test.ts
+
+      # The virt proof's OFFLINE half. It builds its plan from the live
+      # cdi/kubevirt Application manifests -- the include glob, the
+      # operator-before-CR order, the useEmulation patch landing AFTER the
+      # verbatim CR -- so a manifest edit that would make the live lane apply
+      # the wrong bytes fails here in ~1s instead of 20 minutes later.
+      #
+      # Mutation-checked, each mutation verified applied by byte `cmp` against a
+      # pristine copy before its result was read: useEmulation flipped to false,
+      # the patch moved before the CR apply, the CDI wait swapped to the
+      # operator Deployment's condition, the wildcard refusal removed, a
+      # spurious emulation patch added to the CDI phase. All five go red.
+      - name: Run kubevirt/cdi emulation proof unit tests
+        run: bun test src/Core.TypeScript/cluster/kubevirt-cdi-emulation-test.test.ts
+
+      - name: Build kubevirt/cdi emulation proof plan (offline)
+        run: bun src/Core.TypeScript/cluster/kubevirt-cdi-emulation-test.ts --dry-run
 
       - name: Audit app-of-apps root reach against the asserted roster
         run: bun src/Core.TypeScript/cluster/app-of-apps-discovery.ts
@@ -465,3 +486,99 @@ jobs:
       - name: Tear down kind cluster
         if: always()
         run: bun src/Core.TypeScript/cluster/dev-cluster/kind-down.ts --cluster-name zeta-ci-included
+
+  # ---------------------------------------------------------------------------
+  # DO THE VENDORED cdi/kubevirt BYTES ACTUALLY DEPLOY?
+  #
+  # `cdi` and `kubevirt` are the only two Applications in the catalogue whose
+  # MANIFESTS no check has ever executed. They are declared manual-sync, so the
+  # `included` lane asserts them under the weaker contract in
+  # manual-sync-policy.ts -- exists, ArgoCD completed a comparison, health not
+  # Degraded -- and that module states its own limit out loud: it "can no longer
+  # catch anything that only appears once the manifests are APPLIED". Nothing
+  # applied them. `OutOfSync`/`Missing` with `ok: true` is honest for a lane that
+  # never syncs them, and it is also the shape of a check that did not run.
+  #
+  # This job runs them. It does NOT weaken the manual-sync declaration: that
+  # reason is a PRODUCTION constraint about node-5b2dfa and its three live
+  # Windows guests, and an ephemeral kind cluster has no guests to disturb.
+  #
+  # /dev/kvm is not assumed. GitHub's own hosted-runner docs: "While nested
+  # virtualization is technically possible while using runners, it is not
+  # officially supported." KubeVirt does not need it -- software-emulation.md:
+  # "If `useEmulation` is enabled, `qemu` will be used for software emulation, in
+  # case that hardware emulation via `/dev/kvm` is unavailable." The recipe here
+  # is upstream's own: kubevirt/kubevirt.core's .github/workflows/integration.yml
+  # runs on `ubuntu-latest` + helm/kind-action and its hack/e2e-setup.sh applies
+  # exactly this merge patch when nested virt is off, then waits
+  # `--for=condition=Available kubevirt kubevirt`.
+  #
+  # NOT continue-on-error, and deliberately so -- an advisory job here would
+  # re-create in a new place the exact misreport this job exists to remove. It is
+  # also not in the `gate (required)` floor, so it reports without blocking;
+  # promoting it is a maintainer policy call, not a cleanup.
+  # ---------------------------------------------------------------------------
+  live-kind-virt:
+    name: live kind kubevirt+cdi emulation proof
+    needs: dry-run
+    env:
+      ZETA_HOST_TIER: full
+      MISE_ENV: full
+    runs-on: ubuntu-24.04
+    timeout-minutes: 40
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Cache install.sh outputs (mise runtimes + dotnet tools + verifier jars)
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: |
+            ~/.local/bin/mise
+            ~/.local/share/mise
+            ~/.cache/mise
+            ~/.dotnet/tools
+            ~/.elan
+            ~/.config/zeta
+          key: install-${{ runner.os }}-${{ runner.arch }}-full-${{ hashFiles('.mise.toml', '.mise.full.toml', 'tools/setup/**', 'global.json') }}
+
+      - name: Install toolchain via three-way-parity script
+        env:
+          MISE_GITHUB_TOKEN: ${{ github.token }}
+        run: ./tools/setup/install.sh
+
+      - name: Install bun dependencies
+        run: bun install --frozen-lockfile
+
+      # RECORD what the runner actually had, rather than asserting it. If a
+      # runner image ever does ship /dev/kvm, KubeVirt uses hardware emulation
+      # regardless of useEmulation ("Hardware emulation is always attempted
+      # first" -- software-emulation.md) and the proof still holds; this line is
+      # how a reader of the log knows which path was taken.
+      - name: Record virtualization availability on this runner
+        run: |
+          echo "kvm device: $(test -e /dev/kvm && echo present || echo ABSENT)"
+          cat /sys/module/kvm_*/parameters/nested 2>/dev/null || echo "nested: unknown"
+
+      - name: Run kubevirt+cdi emulation proof on kind
+        run: |
+          set -o pipefail
+          bun src/Core.TypeScript/cluster/kubevirt-cdi-emulation-test.ts \
+            --run \
+            --cluster-name zeta-ci-virt \
+            --config full-ai-cluster/dev-cluster/profiles/ci.kind-config.yaml \
+            --timeout-sec 900
+
+      - name: Print virt diagnostics
+        if: always()
+        run: |
+          kubectl get nodes -o wide || true
+          kubectl get cdi cdi -o wide || true
+          kubectl -n cdi get pods -o wide || true
+          kubectl -n kubevirt get kubevirt kubevirt -o yaml || true
+          kubectl -n kubevirt get pods -o wide || true
+          kubectl get events -A --sort-by=.lastTimestamp | tail -200 || true
+
+      - name: Tear down kind cluster
+        if: always()
+        run: bun src/Core.TypeScript/cluster/dev-cluster/kind-down.ts --cluster-name zeta-ci-virt

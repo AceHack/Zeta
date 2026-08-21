@@ -237,6 +237,14 @@ export interface AssertionOutcome {
  * Nothing in this lane applies them, so nothing in this lane could ever have
  * seen those. The previous assertion did not catch them either; it failed
  * unconditionally, and failing always is not detecting.
+ *
+ * That admitted gap is now covered ELSEWHERE rather than here, which is the
+ * honest place for it: `./kubevirt-cdi-emulation-test.ts` applies the same
+ * vendored bytes to a throwaway kind cluster -- where the production reason
+ * above does not apply, because there are no guests to disturb -- and asserts
+ * `CDI` reaches phase `Deployed` and `KubeVirt` reaches `condition=Available`.
+ * The weaker contract here is unchanged; what changed is that "nobody ever
+ * executes those manifests" stopped being true.
  */
 export function manualSyncAssertion(snapshot: SyncHealthSnapshot): AssertionOutcome {
   const detail = snapshot.message === "" ? "" : " (" + snapshot.message + ")";
