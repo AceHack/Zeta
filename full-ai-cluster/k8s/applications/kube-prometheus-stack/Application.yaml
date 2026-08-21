@@ -43,6 +43,56 @@ spec:
             storageClassName: longhorn
             size: 10Gi
         alertmanager:
+          # ROUTING IS DELIBERATELY UNSUPPLIED, AND SAYS SO.
+          #
+          # The chart default ships ONE receiver, literally named "null",
+          # and points the default route at it. 35 rule groups fire and
+          # every alert terminates there -- visible in the Alertmanager UI
+          # if a human opens it, pushed to nobody. A receiver named "null"
+          # and a receiver named "unrouted-REQUIRES-CONFIGURATION" deliver
+          # exactly the same zero alerts; only the second one tells the
+          # next reader the truth.
+          #
+          # WHAT THE MAINTAINER MUST SUPPLY (nobody else can -- a real
+          # destination is a decision, and its credential is a secret this
+          # repo does not hold):
+          #   1. Choose a destination: Slack webhook / PagerDuty routing key
+          #      / generic webhook / email relay.
+          #   2. Put the credential in a Secret (SealedSecret or External
+          #      Secrets, both already in this tree) -- NEVER inline here.
+          #   3. Replace the integration-less receivers below with real ones
+          #      and drop the REQUIRES- suffix from the name. The audit
+          #      refuses a REQUIRES- name that has integrations attached, so
+          #      the rename cannot be forgotten.
+          #
+          # Enforced by src/Core.TypeScript/hygiene/audit-observability-chain.ts.
+          config:
+            global:
+              resolve_timeout: 5m
+            inhibit_rules:
+              - source_matchers: [ severity = critical ]
+                target_matchers: [ severity =~ warning|info ]
+                equal: [ namespace, alertname ]
+              - source_matchers: [ severity = warning ]
+                target_matchers: [ severity = info ]
+                equal: [ namespace, alertname ]
+              - source_matchers: [ alertname = InfoInhibitor ]
+                target_matchers: [ severity = info ]
+                equal: [ namespace ]
+              - target_matchers: [ alertname = InfoInhibitor ]
+            route:
+              group_by: [ namespace ]
+              group_wait: 30s
+              group_interval: 5m
+              repeat_interval: 12h
+              receiver: unrouted-REQUIRES-CONFIGURATION
+              routes:
+                - matchers: [ alertname = "Watchdog" ]
+                  receiver: watchdog-REQUIRES-DEADMANSSWITCH
+            receivers:
+              # No integrations on purpose. The names are the finding.
+              - name: unrouted-REQUIRES-CONFIGURATION
+              - name: watchdog-REQUIRES-DEADMANSSWITCH
           alertmanagerSpec:
             storage:
               volumeClaimTemplate:

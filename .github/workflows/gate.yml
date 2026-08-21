@@ -775,6 +775,36 @@ jobs:
       - name: Cluster-tree consumer roster — mutation suite (proves it goes red)
         run: bun test src/Core.TypeScript/hygiene/audit-cluster-tree-consumers.test.ts
 
+      # ADDED 2026-08-21, and it relaxes this job's stated "node builtins only"
+      # design ON PURPOSE. The observability-chain audit below parses Helm
+      # `valuesObject` YAML, and the honest options were (a) install the `yaml`
+      # package this repo already declares, or (b) hand-roll YAML extraction
+      # with regexes. (b) was refused: a regex YAML reader that silently
+      # mis-parses a nested block would produce a GREEN audit over a config it
+      # never understood, which is precisely the false-green class this audit
+      # exists to catch. Paying ~seconds of install to avoid inventing a
+      # fragile parser is the correct trade. First observed as
+      # `Cannot find package 'yaml'` in run 96651130473.
+      - name: Install bun dependencies (the chain audit needs `yaml`)
+        run: bun install --frozen-lockfile
+
+      # 2026-08-20 — the observability chain was broken at every link and every
+      # break was values-only, so helm template, kubeconform and yamllint were
+      # all green on all of them. Measured on the tree as it shipped: Alloy had
+      # three sinks and zero sources, its Loki sink named a Service the chart
+      # does not render, and every alert routed to a receiver named "null".
+      # This audit refuses all three classes. It needs no network and no helm:
+      # Service names come from a rendered roster that is freshness-keyed to the
+      # target Application, so a chart bump without --refresh fails as STALE
+      # rather than asserting a stale render. MEASURED: 0.4 s, bun + yaml only.
+      - name: Observability chain (no sink without a source, no alert into /dev/null)
+        run: bun src/Core.TypeScript/hygiene/audit-observability-chain.ts
+
+      # Proves the audit above can go red, including against the exact pre-fix
+      # content of the tree. MEASURED: 22 tests, 40 assertions, 0.5 s.
+      - name: Observability chain — mutation suite (proves it goes red)
+        run: bun test src/Core.TypeScript/hygiene/audit-observability-chain.test.ts
+
       - name: Install narrow YAML lint tools
         run: |
           set -euo pipefail
