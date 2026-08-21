@@ -1,0 +1,12 @@
+{
+  "pr_number": 13026,
+  "archive_path": "docs/history/pr-reviews/PR-13026-research-the-tests-are-green-the-cluster-is-not-and-the-observability-chain-is-b.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-21T01:51:48.872Z",
+  "schema_version": "v1",
+  "commit_sha": "948dc884739dc8fc9a7d348f00c71e3259ce5706",
+  "title": "research: the tests are green, the cluster is not, and the observability chain is broken at every link",
+  "state": "MERGED",
+  "merged_at": "2026-08-21T01:51:05Z",
+  "head_ref": "research/tests-green-cluster-not-observability-broken"
+}
