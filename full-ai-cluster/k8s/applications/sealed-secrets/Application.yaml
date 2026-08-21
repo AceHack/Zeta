@@ -12,9 +12,24 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: https://bitnami-labs.github.io/sealed-secrets
+    # repoURL CORRECTED 2026-08-21. `bitnami-labs.github.io/sealed-secrets`
+    # 404s -- the chart moved to the `bitnami` org. ArgoCD could not fetch this
+    # chart at all; verified by fetching the old index.yaml (HTTP 404) and the
+    # new one (serves the chart, 2.16.2 still present). This was never a version
+    # problem, which is why the URL and the bump are separable.
+    repoURL: https://bitnami.github.io/sealed-secrets
     chart: sealed-secrets
-    targetRevision: 2.16.2
+    # 2.16.2 (Nov 2024, appVersion 0.27.2) -> 2.19.3 (2026-08-20, appVersion
+    # 0.39.1), read from the new index. Same chart major; the app moves 0.27 ->
+    # 0.39.
+    #
+    # STATED, NOT VERIFIED: sealed-secrets keeps its controller keypair in a
+    # Secret that survives upgrades, so existing SealedSecrets should still
+    # decrypt. Nothing here proves that -- no cluster ran this upgrade, and the
+    # only real check is a live one: after rollout, an existing SealedSecret
+    # must still reconcile into its Secret. If it does not, the sealing key was
+    # lost, which is the one failure that matters for this chart.
+    targetRevision: 2.19.3
     helm:
       releaseName: sealed-secrets
       valuesObject:

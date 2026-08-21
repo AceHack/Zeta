@@ -2,9 +2,9 @@
 
 <!-- Machine-readable. The ratchet parses EXACTLY this line; keep the format. -->
 
-    BASELINE_FAILURES: 23
+    BASELINE_FAILURES: 21
 
-**Measured:** 2026-08-20 · **at commit:** `948dc884739dc8fc9a7d348f00c71e3259ce5706`
+**Measured:** 2026-08-21 · **at commit:** `sealed-secrets repoURL fix (PR #13339)`
 **Toolchain:** helm `v4.2.0+g0646808` · kubeconform `v0.7.0` · bun `1.3.14` · `--kube-version 1.33.0`
 **Reproduce:** `bun infra/k8s/tests/ratchet-app-failures.ts` (it prints the count it measured)
 
@@ -40,7 +40,7 @@ number to write when it refuses.
 | --- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------ |
 | 13  | ArgoCD contract: missing `syncPolicy.automated.prune` / `.selfHeal`, or `CreateNamespace=true` absent from `syncOptions`                                                                                                                                                                                                                                   | **real** — but read the caveat |
 | 2   | `oz` pins `ziti-controller` **1.4.5**; the repo publishes **96** versions and the newest is **3.2.1**. The pin is fictional. Counted twice: version check + render                                                                                                                                                                                         | **real**, unambiguous          |
-| 4   | `sealed-secrets` and `forgejo` chart repos both return HTTP 404. Counted twice each: version check + render                                                                                                                                                                                                                                                | **real**, upstream gone/moved  |
+| 2   | `forgejo` chart repo returns HTTP 404 (`code.forgejo.org/forgejo-helm/`; the chart is OCI-only now) AND its pin `9.0.6` was never published — the 9.x line has exactly one release, `9.0.0`. Counted twice: version check + render. `sealed-secrets` LEFT this row 2026-08-21: its repoURL moved `bitnami-labs` -> `bitnami` and was corrected, taking both of its failures with it | **real**, upstream gone/moved  |
 | 4   | chart refuses to render with the values we hand it: `gitlab` (no `certmanager-issuer.email`), `headscale` (no `accessMode` for PVC `headscale-data`), `temporal` (no cassandra port for the default store), `arc-runner-set` (chart does label-discovery for a `gha-rs-controller` deployment at template time; needs `controllerServiceAccount.name` set) | **real**                       |
 
 Per-app split of the 13: `cdi` 3, `kubevirt` 3, `forgejo` 2, `ollama` 2,
