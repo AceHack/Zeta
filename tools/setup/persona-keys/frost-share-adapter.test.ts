@@ -13,21 +13,29 @@ import { mkdtempSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import {
+  assertNoSilentSealTierDowngrade,
   createHsmShareAdapter,
   createHsmShareAdapterStub,
   createInsecureFakeHsmShareAdapter,
   createPkcs11ShareAdapter,
   createSealedFileShareAdapter,
   createSoftwareFileShareAdapter,
+  createTpmSealEffects,
   createTpmShareAdapter,
   defaultPointerOf,
   describeAttachedPkcs11Tokens,
   FROST_SEALED_SHARE_SCHEMA_V1,
   INSECURE_FAKE_SEAL_ALG,
   isHardwareSealTier,
+  isHostRamAtUseSealTier,
+  isHsmResidentSealTier,
   parseCkTokenInfoIdentity,
   resolveSlotForTokenIdentity,
+  SEAL_TIER_KEY_RESIDENCY,
+  sealKeyEntersHostRam,
+  sealKeyResidencyOf,
   type ExtractingFrostShareAdapter,
+  type FrostSealTier,
   type FrostShareAdapter,
   type Pkcs11Lib,
   type Pkcs11PointerOf,
@@ -368,6 +376,160 @@ describe("FrostShareAdapter: no-silent-downgrade", () => {
   });
 });
 
+// ============================================================================
+// THE HSM/TPM CROSSING -- the gap between "key never in host RAM" and "key in host
+// RAM while the seal is open", made impossible to cross silently.
+// ============================================================================
+//
+// Owner call 2026-08-20: the TPM is assumed present on a Linux node, an HSM is OPTIONAL.
+// So "caller declared hardware-pkcs11 on a machine that only has a TPM" is the ORDINARY
+// configuration, and every test below is written as the common case, not the exotic one.
+
+describe("FrostShareAdapter: HSM-resident vs TPM-sealed is readable off the tier", () => {
+  test("FSA-TR1: the residency map is total, so a new tier cannot skip the question", () => {
+    // Not a restatement of the type: it asserts that every INHABITANT has a value at
+    // runtime. A tier added to the union without a row here fails to compile; a tier
+    // added to the map without a union member is caught by this equality.
+    const tiers: readonly FrostSealTier[] = [
+      "software-plaintext",
+      "software-sealed",
+      "INSECURE-SOFTWARE-FAKE-HSM",
+      "hardware-pkcs11",
+      "hardware-tpm2",
+    ];
+    expect(Object.keys(SEAL_TIER_KEY_RESIDENCY).sort()).toEqual([...tiers].sort());
+    for (const t of tiers) expect(sealKeyResidencyOf(t)).toBeDefined();
+  });
+
+  test("FSA-TR2: the two hardware tiers differ on whether the key enters host RAM", () => {
+    // THE PROPERTY, read off the tier alone -- no adapter, no host, no comment.
+    expect(sealKeyResidencyOf("hardware-pkcs11")).toBe("hardware-resident");
+    expect(sealKeyResidencyOf("hardware-tpm2")).toBe("host-ram-at-use");
+    expect(sealKeyEntersHostRam("hardware-pkcs11")).toBe(false);
+    expect(sealKeyEntersHostRam("hardware-tpm2")).toBe(true);
+
+    // And the OLD predicate cannot tell them apart, which is why it was not enough.
+    expect(isHardwareSealTier("hardware-pkcs11")).toBe(true);
+    expect(isHardwareSealTier("hardware-tpm2")).toBe(true);
+    expect(isHsmResidentSealTier("hardware-pkcs11")).toBe(true);
+    expect(isHsmResidentSealTier("hardware-tpm2")).toBe(false);
+    expect(isHostRamAtUseSealTier("hardware-tpm2")).toBe(true);
+  });
+});
+
+describe("FrostShareAdapter: a TPM-sealed backend can NEVER serve an HSM-resident caller", () => {
+  /** A TPM backend that WORKS -- so the refusal cannot be mistaken for "no TPM here". */
+  const workingTpmOpts = {
+    sealedKeyPath: "/sealed/wrap.key",
+    tpm2UnsealCmd: "tpm2_unseal",
+    run: () => new Uint8Array(32).fill(3),
+  };
+
+  test("FSA-TR3: THE INVARIANT -- a working TPM backend labelled hardware-pkcs11 THROWS", () => {
+    const { fx, root } = sandboxFx();
+    // One wrong argument. Nothing else about this call is unusual, the TPM answers, and
+    // before assertBackendCanClaimTier this produced an adapter that reported
+    // hardware-pkcs11, wrote hardware-pkcs11 into the artifact, and unsealed its wrapping
+    // key into host RAM on every load. That is the crossing.
+    expect(() =>
+      createSealedFileShareAdapter(fx, root, "ca", createTpmSealEffects(workingTpmOpts), "hardware-pkcs11"),
+    ).toThrow(/seal-tier\/backend mismatch/);
+    expect(() =>
+      createSealedFileShareAdapter(fx, root, "ca", createTpmSealEffects(workingTpmOpts), "hardware-pkcs11"),
+    ).toThrow(/HOST-COMPROMISE-AT-USE WINDOW/);
+  });
+
+  test("FSA-TR4: the same backend under its OWN tier builds and round-trips", () => {
+    // The other half of a real falsifier: the refusal above must be about the LABEL, not
+    // about the backend being broken. If this failed too, FSA-TR3 would prove nothing.
+    const { fx, root } = sandboxFx();
+    const honest = createSealedFileShareAdapter(fx, root, "ca", createTpmSealEffects(workingTpmOpts), "hardware-tpm2");
+    expect(honest.sealTier).toBe("hardware-tpm2");
+    honest.storeShare(REC, "ca");
+    expect(honest.loadShare(1)?.secretShare).toBe(REC.secretShare);
+  });
+
+  test("FSA-TR5: an UNDECLARED backend cannot wear either hardware label", () => {
+    const { fx, root } = sandboxFx();
+    const anonymous = { getSealKey: () => new Uint8Array(32).fill(5) };
+    for (const tier of ["hardware-pkcs11", "hardware-tpm2"] as const) {
+      expect(() => createSealedFileShareAdapter(fx, root, "ca", anonymous, tier)).toThrow(
+        /declares no keyResidency/,
+      );
+    }
+    // Software tiers are unaffected: an omission there cannot buy a stronger claim.
+    expect(createSealedFileShareAdapter(fx, root, "ca", anonymous, "software-sealed").sealTier).toBe(
+      "software-sealed",
+    );
+  });
+});
+
+describe("FrostShareAdapter: assertNoSilentSealTierDowngrade, as a function", () => {
+  // HONESTLY REGISTERED: the CALL SITE inside createHsmShareAdapter is defence in depth and
+  // is currently unreachable-as-a-difference -- buildForTier is a total switch and every
+  // branch constructs at the tier it was asked for, so deleting the throw there changes no
+  // end-to-end outcome and NO end-to-end test can falsify it. Measured, not assumed: a
+  // mutation that made the call site a no-op left 69/69 tests green.
+  //
+  // So the falsifier for this guard is the function itself, exercised directly. That is a
+  // real test of a real refusal; it is not a test that the call site is reached.
+  test("FSA-TR8: it throws on any mismatch, in both directions, and names the window", () => {
+    expect(() => assertNoSilentSealTierDowngrade("hardware-pkcs11", "hardware-pkcs11")).not.toThrow();
+    expect(() => assertNoSilentSealTierDowngrade("hardware-pkcs11", "hardware-tpm2")).toThrow(
+      /HOST-COMPROMISE-AT-USE WINDOW/,
+    );
+    // A silent UPGRADE is refused too: the artifact records the tier it was sealed at, so
+    // being handed a stronger adapter than declared produces files the caller cannot reopen.
+    expect(() => assertNoSilentSealTierDowngrade("hardware-tpm2", "hardware-pkcs11")).toThrow(
+      /no-silent-downgrade violation/,
+    );
+    expect(() => assertNoSilentSealTierDowngrade("hardware-tpm2", "INSECURE-SOFTWARE-FAKE-HSM")).toThrow(
+      /strictly weaker/,
+    );
+  });
+});
+
+describe("FrostShareAdapter: the factory refusal names the property, not just the string", () => {
+  test("FSA-TR6: declaring hardware-pkcs11 with only TPM options refuses and says why", () => {
+    // The ordinary node, per the owner call: a TPM is there, an HSM is not.
+    const { fx, root } = sandboxFx();
+    let message = "";
+    try {
+      createHsmShareAdapter(fx, root, "ca", {
+        requireTier: "hardware-pkcs11",
+        tpmOpts: { sealedKeyPath: "/sealed/wrap.key", run: () => new Uint8Array(32).fill(3) },
+      });
+    } catch (err) {
+      message = (err as Error).message;
+    }
+    expect(message).toMatch(/NOT a substitute/);
+    expect(message).toMatch(/HOST-COMPROMISE-AT-USE WINDOW/);
+    expect(message).toMatch(/optional hardware/);
+  });
+
+  test("FSA-TR7: a hardware-tpm2 artifact is refused by a hardware-pkcs11 adapter at rest", () => {
+    // Belt and braces, one layer lower: even if a mislabelled adapter were somehow built,
+    // the artifact records the tier it was sealed at and the tier check refuses it.
+    const { fx, root } = sandboxFx();
+    createSealedFileShareAdapter(
+      fx,
+      root,
+      "ca",
+      createTpmSealEffects({ sealedKeyPath: "/s.key", run: () => new Uint8Array(32).fill(3) }),
+      "hardware-tpm2",
+    ).storeShare(REC, "ca");
+
+    const hsmSide = createSealedFileShareAdapter(
+      fx,
+      root,
+      "ca",
+      { getSealKey: () => new Uint8Array(32).fill(3), keyResidency: "hardware-resident" },
+      "hardware-pkcs11",
+    );
+    expect(() => hsmSide.loadShare(1)).toThrow(/seal-tier mismatch/);
+  });
+});
+
 describe("FrostShareAdapter: integrity and honesty", () => {
   test("FSA-13: no adapter claims use-without-extract", () => {
     const { fx, root } = sandboxFx();
@@ -567,11 +729,17 @@ describe("FrostShareAdapter: multi-token roster", () => {
     // Same tier, same everything, but a backend that cannot say which token it is.
     const { fx: fx2, root: root2, files: files2 } = sandboxFx();
     files2.set(frostSharePath(root2, 1), raw.replaceAll(root, root2));
+    // The backend must declare hardware-resident to wear the hardware-pkcs11 label at all
+    // (assertBackendCanClaimTier). That is a DIFFERENT guard from the one under test here,
+    // and leaving the declaration off would make this test fail at construction for the
+    // wrong reason -- proving the label check, not the token-identity check. The honest
+    // shape of the scenario is a real HSM-resident backend whose module cannot report a
+    // token identity, which is exactly what is built below.
     const anonymous = createSealedFileShareAdapter(
       fx2,
       root2,
       "ca",
-      { getSealKey: () => new Uint8Array(32) },
+      { getSealKey: () => new Uint8Array(32), keyResidency: "hardware-resident" },
       "hardware-pkcs11",
     );
     expect(() => anonymous.loadShare(1)).toThrow(/reports no token identity/);

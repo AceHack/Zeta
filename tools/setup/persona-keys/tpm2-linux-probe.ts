@@ -235,6 +235,15 @@ export interface Tpm2LinuxCapture {
   readonly sysClassTpm: ListOutcome;
   readonly versionMajor: readonly { readonly path: string; readonly outcome: ReadOutcome }[];
   readonly getcapPropertiesFixed: CommandOutcome;
+  /**
+   * `tpm2_getcap ecc-curves` -- the falsifier for the secp256k1 question (see the section
+   * at the bottom of this file).
+   *
+   * OPTIONAL because captures committed before this field existed genuinely did not ask,
+   * and `undefined` is read as exactly that: `not-attempted`, never "no curves". Filling a
+   * missing field with an empty list would be the #11509 trap a third time.
+   */
+  readonly getcapEccCurves?: CommandOutcome;
 }
 
 /** Reads the host through the injected door. All IO lives here; nothing below it does IO. */
@@ -245,6 +254,7 @@ export function captureTpm2Linux(fx: Tpm2LinuxEffects = realTpm2LinuxEffects()):
     sysClassTpm: { kind: "not-attempted" },
     versionMajor: [],
     getcapPropertiesFixed: { kind: "not-attempted" },
+    getcapEccCurves: { kind: "not-attempted" },
   };
   // Not a platform-guard-as-answer: the classifier decides what non-Linux MEANS. This only
   // avoids spawning subprocesses and stat-ing Linux paths on a host that has neither.
@@ -269,6 +279,7 @@ export function captureTpm2Linux(fx: Tpm2LinuxEffects = realTpm2LinuxEffects()):
     sysClassTpm,
     versionMajor,
     getcapPropertiesFixed: fx.run("tpm2_getcap", ["properties-fixed"]),
+    getcapEccCurves: fx.run("tpm2_getcap", ["ecc-curves"]),
   };
 }
 
@@ -636,6 +647,248 @@ export function tpm2CheckRan(state: Tpm2State): boolean {
 }
 
 // ---------------------------------------------------------------------------
+// secp256k1 ON A TPM -- the falsifier for a claim that is currently CITED, NOT CHECKED
+// ---------------------------------------------------------------------------
+//
+// THE CLAIM UNDER TEST, from
+// docs/research/2026-08-20-secp256k1-rescore-of-the-hsm-survey-fips-mode-disables-the-curve-
+// and-unattended-signing-is-the-crux.md:
+//
+//   "secp256k1 is not in the TCG Algorithm Registry -- there is no TPM_ECC_SECP_P256_K1 to
+//    ask for."  ... "CITED, not measured. A registry absence is not a device enumeration;
+//    vendors may add curves. Falsifier: `tpm2_getcap ecc-curves` on each Linux node."
+//
+// If it holds, a TPM 2.0 CANNOT be an x402 wallet signer -- x402 settles ERC-3009 via an
+// EIP-712 signature verified by ecrecover, which is secp256k1 ECDSA with no curve-agility
+// knob -- and the TPM is a key PROTECTOR only. That is a large architectural consequence to
+// hang on a citation, which is why this section exists.
+//
+// WHAT IS CHECKED HERE, AND WHAT IS NOT.
+//
+//   CHECKED (source, 2026-08-20): tpm2-tools tools/tpm2_getcap.c, dump_ecc_curves,
+//   recognises exactly eight curve identifiers -- NIST P192/P224/P256/P384/P521, BN P256,
+//   BN P638, SM2 P256 -- and NONE of them is secp256k1. Its default branch prints
+//   "unknown<HEX>: 0x<HEX>". So the tool vocabulary is the registry vocabulary.
+//
+//   NOT CHECKED, AND THIS PROBE IS WHAT WOULD CHECK IT: what any actual TPM enumerates.
+//   No TPM has been contacted by this repository. See 081M00VN9P1087G0R000FYTTVS.
+//
+// THE SUBTLETY THAT DECIDES THE STATE MACHINE. Because the tool has no secp256k1 constant,
+// a device supporting it as a VENDOR EXTENSION could not print the name -- it would surface
+// as "unknown<HEX>". So "no line said secp256k1" is NOT sufficient for `absent`. A reading
+// containing any unrecognised identifier is `indeterminate`: the curve cannot be ruled out
+// and this probe must not pretend otherwise. Collapsing that into `absent` would be the
+// same defect as existsSync returning false for a denial -- an unknown wearing a negative
+// answer's clothes.
+//
+// FOUR STATES. Three of them are the three a caller must be able to tell apart -- present,
+// absent, and THE CHECK DID NOT RUN -- and the fourth (`indeterminate`) exists because the
+// honest answer is sometimes "the device answered and its answer does not settle this".
+
+/** "TPM2_ECC_NIST_P256: 0x3" -- name, then the identifier. Unknowns: "unknown10: 0x10". */
+const ECC_CURVE_LINE = /^\s*([A-Za-z0-9_]+)\s*:\s*(0[xX][0-9A-Fa-f]+|\d+)\s*$/;
+
+/** The eight identifiers tpm2-tools names. Anything else is a vendor/unregistered code point. */
+export const TCG_REGISTERED_ECC_CURVE_NAMES: readonly string[] = [
+  "TPM2_ECC_NIST_P192",
+  "TPM2_ECC_NIST_P224",
+  "TPM2_ECC_NIST_P256",
+  "TPM2_ECC_NIST_P384",
+  "TPM2_ECC_NIST_P521",
+  "TPM2_ECC_BN_P256",
+  "TPM2_ECC_BN_P638",
+  "TPM2_ECC_SM2_P256",
+];
+
+/** No TCG code point exists today; matched anyway so a future/patched tool is not missed. */
+function namesSecp256k1(curveName: string): boolean {
+  const n = curveName.toUpperCase();
+  return n.includes("SECP256K1") || n.includes("SECP_P256_K1") || n.includes("P256K1");
+}
+
+export interface EccCurveListing {
+  /** Every name/value pair the tool printed, in output order. */
+  readonly curves: readonly { readonly name: string; readonly id: string }[];
+  /** Those the tool could NOT name (unknown<HEX>) -- where secp256k1 could still hide. */
+  readonly unrecognised: readonly string[];
+}
+
+/**
+ * Parse tpm2_getcap ecc-curves output.
+ *
+ * Returns undefined when the output contains NO curve line at all. That is deliberately
+ * not an empty listing: "the tool printed nothing we recognise as a curve" and "this TPM
+ * supports zero ECC curves" are different facts, and only the second would be a negative.
+ */
+export function parseGetcapEccCurves(stdout: string): EccCurveListing | undefined {
+  const curves: { name: string; id: string }[] = [];
+  for (const line of stdout.split("\n")) {
+    const m = ECC_CURVE_LINE.exec(line);
+    const name = m?.[1];
+    const id = m?.[2];
+    if (name === undefined || id === undefined) continue;
+    curves.push({ name, id });
+  }
+  if (curves.length === 0) return undefined;
+  return {
+    curves,
+    unrecognised: curves.filter((c) => !TCG_REGISTERED_ECC_CURVE_NAMES.includes(c.name)).map((c) => c.name),
+  };
+}
+
+/**
+ * The three states a caller MUST be able to tell apart, plus the one the device can put us
+ * in. did-not-run is the sibling of Tpm2State unavailable/unreadable: no answer was
+ * obtained, and reporting it as "no secp256k1" would be the vacuity class.
+ */
+export type Secp256k1State = "present" | "absent" | "indeterminate" | "did-not-run";
+
+export interface Secp256k1Probe {
+  readonly state: Secp256k1State;
+  /** Curve identifiers the device reported, when it reported any. */
+  readonly curves: readonly string[];
+  /** Reported identifiers tpm2-tools could not name -- where the curve could still hide. */
+  readonly unrecognised: readonly string[];
+  /** One sentence naming the cause, in the terms an operator can act on. */
+  readonly reason: string;
+  readonly evidence: readonly string[];
+}
+
+/**
+ * Did the check actually RUN? false for did-not-run ONLY.
+ *
+ * indeterminate counts as having run: the device answered, and the answer was
+ * "unregistered code points are present, so this does not settle it". That is a finding
+ * about the hardware; did-not-run is not.
+ */
+export function secp256k1CheckRan(state: Secp256k1State): boolean {
+  return state !== "did-not-run";
+}
+
+const DID_NOT_RUN = (why: string, evidence: readonly string[]): Secp256k1Probe => ({
+  state: "did-not-run",
+  curves: [],
+  unrecognised: [],
+  // Same idiom as classifyTpm2Linux non-Linux branch: name the source, then say plainly
+  // that this is "not asked" rather than a finding.
+  reason: `${why} This is "not asked", NOT "no secp256k1".`,
+  evidence,
+});
+
+/**
+ * The whole decision, as a pure function of the capture. Precedence, and every rung is a
+ * kind-of-knowledge rather than a preference:
+ *
+ *   1. the tool was never consulted / is not installed / errored  -> did-not-run
+ *   2. the tool ran and printed no curve line at all              -> did-not-run
+ *   3. a reported curve NAMES secp256k1                           -> present
+ *   4. any reported identifier is UNRECOGNISED                    -> indeterminate
+ *   5. every identifier is TCG-registered, none is secp256k1      -> absent
+ *
+ * Rule 4 above rule 5 is the load-bearing one, and it is the whole reason this is not a
+ * two-line function: tpm2-tools has no secp256k1 constant, so a vendor curve prints as
+ * unknown<HEX> and CANNOT be excluded by name. Rule 5 is the only path to absent, and it
+ * requires that every single identifier was one the tool could name.
+ */
+export function classifySecp256k1(cap: Tpm2LinuxCapture): Secp256k1Probe {
+  const g: CommandOutcome = cap.getcapEccCurves ?? { kind: "not-attempted" };
+  const evidence: string[] = [`platform: ${cap.platform}`];
+
+  switch (g.kind) {
+    case "not-attempted":
+      evidence.push("tpm2_getcap ecc-curves: NOT CONSULTED");
+      return DID_NOT_RUN(
+        cap.platform === "linux"
+          ? "tpm2_getcap ecc-curves was not consulted (this capture predates the curve probe)."
+          : `platform "${cap.platform}" has no Linux TPM interface, so tpm2_getcap was never run.`,
+        evidence,
+      );
+    case "not-installed":
+      evidence.push("tpm2_getcap: NOT INSTALLED");
+      return DID_NOT_RUN(
+        "tpm2-tools is not installed, so the curve list was never asked for. A missing tool " +
+          "says nothing about the hardware.",
+        evidence,
+      );
+    case "failed":
+      evidence.push(
+        `tpm2_getcap ecc-curves: exit ${String(g.exitCode)} -- ${JSON.stringify(g.stderr.trim().slice(0, 200))}`,
+      );
+      return DID_NOT_RUN(
+        "tpm2_getcap ran and failed. A TCTI failure conflates 'no TPM', 'no permission' and " +
+          "'no resource manager', so it is recorded and never counted as a negative.",
+        evidence,
+      );
+    case "error":
+      evidence.push(`tpm2_getcap ecc-curves: error ${g.code}`);
+      return DID_NOT_RUN(`tpm2_getcap could not be run (${g.code}).`, evidence);
+    case "ran":
+      break;
+  }
+
+  const listing = parseGetcapEccCurves(g.stdout);
+  if (listing === undefined) {
+    evidence.push(
+      "tpm2_getcap ecc-curves: ran, printed NO curve line -- silence from a tool is not a negative",
+    );
+    return DID_NOT_RUN(
+      "tpm2_getcap ecc-curves ran and printed no curve line. 'The output had no curves in " +
+        "it' and 'this TPM supports zero ECC curves' are different facts and this reading " +
+        "cannot tell them apart.",
+      evidence,
+    );
+  }
+
+  const names = listing.curves.map((c) => c.name);
+  evidence.push(`tpm2_getcap ecc-curves: reported ${String(names.length)} curve(s): ${names.join(", ")}`);
+
+  const hit = listing.curves.find((c) => namesSecp256k1(c.name));
+  if (hit !== undefined) {
+    return {
+      state: "present",
+      curves: names,
+      unrecognised: listing.unrecognised,
+      reason:
+        `secp256k1 IS PRESENT: the device reported "${hit.name}" (${hit.id}). Note this has no ` +
+        "TCG-registered identifier, so it is a vendor extension -- confirm with the vendor " +
+        "before treating it as an x402 wallet-signing capability.",
+      evidence,
+    };
+  }
+
+  if (listing.unrecognised.length > 0) {
+    return {
+      state: "indeterminate",
+      curves: names,
+      unrecognised: listing.unrecognised,
+      reason:
+        `the device reported identifier(s) tpm2-tools cannot name (${listing.unrecognised.join(", ")}). ` +
+        "secp256k1 has NO TCG code point, so a vendor implementation would print exactly like " +
+        "this. The curve is NOT excluded -- resolve the identifier against the vendor's " +
+        "documentation before concluding anything.",
+      evidence,
+    };
+  }
+
+  return {
+    state: "absent",
+    curves: names,
+    unrecognised: [],
+    reason:
+      "secp256k1 is ABSENT: the device enumerated its ECC curves, every identifier it " +
+      "reported is a TCG-registered one, and none of them is secp256k1. This is a real " +
+      "negative -- the enumeration ran. Consequence: this TPM cannot produce an EIP-712 / " +
+      "ERC-3009 signature for x402, so it is a key PROTECTOR here, never a wallet signer.",
+    evidence,
+  };
+}
+
+/** Capture then classify the curve question. Sibling of probeTpm2Linux. */
+export function probeSecp256k1OnTpm(fx: Tpm2LinuxEffects = realTpm2LinuxEffects()): Secp256k1Probe {
+  return classifySecp256k1(captureTpm2Linux(fx));
+}
+
+// ---------------------------------------------------------------------------
 // CLI — capture on real silicon, classify anywhere
 // ---------------------------------------------------------------------------
 
@@ -664,5 +917,18 @@ if (import.meta.main) {
     console.log(`  Why:    ${res.reason}`);
     console.log("  Evidence:");
     for (const e of res.evidence) console.log(`    - ${e}`);
+
+    // The curve question, printed in the SAME idiom as the family question, so a reader
+    // cannot mistake "we did not ask" for "the answer was no".
+    const k1 = classifySecp256k1(cap);
+    const k1Ran = secp256k1CheckRan(k1.state) ? "yes -- this is an answer" : "NO -- this is not an answer";
+    console.log("");
+    console.log("[secp256k1 on this TPM]  (x402 / EIP-712 wallet-signing capability)");
+    console.log(`  State:  ${k1.state.toUpperCase().replace("DID-NOT-RUN", "THE CHECK DID NOT RUN")}`);
+    console.log(`  Curves: ${k1.curves.length > 0 ? k1.curves.join(", ") : "(none reported)"}`);
+    console.log(`  Ran?    ${k1Ran}`);
+    console.log(`  Why:    ${k1.reason}`);
+    console.log("  Evidence:");
+    for (const e of k1.evidence) console.log(`    - ${e}`);
   }
 }
