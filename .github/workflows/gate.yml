@@ -2143,6 +2143,33 @@ jobs:
       - name: Concept registry vs published page (docs/CONCEPT-REGISTRY.md)
         run: bun src/Core.TypeScript/hygiene/audit-concept-registry-drift.ts
 
+      # A filesystem EXISTENCE test whose result gates a later operation on the same
+      # path. Check-then-use; TOCTOU; CWE-367. THREE instances landed on 2026-08-20, in
+      # one day, from three INDEPENDENT agents, all in code that had already been
+      # written and reviewed: cluster/restricted-namespace-workloads.test.ts
+      # (readdir + statSync().isDirectory() + readFileSync),
+      # cluster/storage-profiles.ts (existsSync -> readFileSync), and
+      # hygiene/audit-chart-target-revisions.ts (three sites in one file). Each was
+      # found by CodeQL one at a time, AFTER merge, because nothing in the tree looked
+      # for the shape. The pattern READS as defensive and prevents nothing.
+      #
+      # HERE rather than in codeql.yml on purpose. CodeQL runs on a schedule and
+      # reports into the security tab, so its verdict arrives after the merge that
+      # caused it -- which is how all three shipped. This step is offline, needs no
+      # database build, and blocks the PR.
+      #
+      # --baseline grandfathers the 288 pre-existing instances measured on main when
+      # this landed (AUDIT-LIFECYCLE.md step 5: the gate has to be landable without a
+      # 288-file cleanup first). NEW instances fail, and so does an edit that renames
+      # the path expression at a grandfathered site. --min-files is the scan floor: an
+      # audit that inspected nothing must not report success.
+      - name: No check-then-use filesystem races (TOCTOU, CWE-367)
+        run: |
+          bun src/Core.TypeScript/hygiene/lint-check-then-use-file-races.ts \
+            src/Core.TypeScript \
+            --min-files 1500 \
+            --baseline src/Core.TypeScript/hygiene/lint-check-then-use-file-races.baseline.json
+
       # Executes mumps_zeta_id.m (subset interpreter). compare.ts already pins
       # the committed JSON; this step runs the routine so a layout edit in the
       # .m file cannot hide behind a stale mumps-output.json.

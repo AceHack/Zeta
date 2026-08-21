@@ -37,6 +37,7 @@
     "hygiene:no-ambient-credential-hoist": "bun ./src/Core.TypeScript/hygiene/lint-no-ambient-credential-hoist.ts",
     "hygiene:no-culture-sensitive-collation": "bun ./src/Core.TypeScript/hygiene/lint-no-culture-sensitive-collation.ts",
     "hygiene:no-decide-by-grep": "bun ./src/Core.TypeScript/hygiene/lint-no-decide-by-grep.ts",
+    "hygiene:no-check-then-use-file-races": "bun ./src/Core.TypeScript/hygiene/lint-check-then-use-file-races.ts src/Core.TypeScript --min-files 1500 --baseline src/Core.TypeScript/hygiene/lint-check-then-use-file-races.baseline.json",
     "hygiene:no-ambient-time-in-tests": "bun ./src/Core.TypeScript/hygiene/audit-ambient-time-in-tests.ts",
     "hygiene:scan-floor-routes": "bun ./src/Core.TypeScript/hygiene/audit-scan-floor-routes.ts",
     "inventory:items": "bun ./src/Core.TypeScript/inventory/generate-items-json.ts",
