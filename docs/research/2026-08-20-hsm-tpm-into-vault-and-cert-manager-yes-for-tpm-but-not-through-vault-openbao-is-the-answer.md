@@ -108,6 +108,21 @@ node-pinning.
 **No test in the repo asserts on `vault-install.yaml` or `spire-install.yaml`.** So a `seal` stanza or
 a `tpmDirect: true` flip breaks **zero** existing tests on a hardware-free machine.
 
+> **UPDATE 2026-08-21 — the seal half of that sentence is now false, deliberately.** `vault-install.yaml`
+> was deleted (#13039) and the Vault Application is audited by
+> `src/Core.TypeScript/hygiene/audit-vault-topology-coherence.ts`, which gained rule
+> `seal-stanza-requires-vault-enterprise`: an active `seal "pkcs11"` stanza in a config rendered by
+> **HashiCorp's** chart is now a finding, with the Enterprise citation in the message. It is the one
+> wrong turn this document's own recommendation makes tempting — copying OpenBao's hardware seal
+> stanza back onto the Vault chart, which reads like progress toward the TPM and is a server that
+> will not boot. The rule **retires itself**: it stands down for a source that positively identifies
+> a different chart, so the OpenBao migration in section 6 is not obstructed by it, and it treats an
+> *unnamed* chart as Vault so an Application that forgot to say what it renders is not thereby
+> exempt. The `tpmDirect` half of the sentence stands unchanged and is still unguarded.
+>
+> This does **not** touch the `tpm2-linux-probe.test.ts:333` tripwire below, which remains the
+> designed red-on-first-capture signal.
+
 The three-state idiom **already exists** and should be extended, not duplicated:
 `tpm2-linux-probe.ts:327` defines `Tpm2State = "present" | "absent" | "unreadable" | "unavailable" |
 "indeterminate"`, and `tpm2CheckRan(state)` at `:635` returns true only for `present | absent |

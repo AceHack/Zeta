@@ -20,6 +20,9 @@ import {
   effectiveAffinity,
   listenerTlsDisabled,
   retryJoinSchemes,
+  sealStanzaTypes,
+  rendersHashiCorpVault,
+  VAULT_ENTERPRISE_ONLY_SEALS,
   syncWaveOf,
   MEASURED_CHART_VERSION,
   RULES,
@@ -330,11 +333,121 @@ describe("against the real tree", () => {
     expect(world.storageClassAvailability.get("longhorn")).toBe(-15);
   });
 
+  it("TOPOLOGY.md documents every rule the audit can emit", () => {
+    // The drift this catches was made once, by hand, in the commit that added
+    // the twelfth rule: TOPOLOGY.md said "eleven coherence classes" and its
+    // table listed eleven. Prose that restates a roster it does not derive goes
+    // stale silently.
+    //
+    // HONEST LIMIT, so this is not read as more than it is: it asserts the rule
+    // NAME appears somewhere in TOPOLOGY.md in backticks -- not that the table
+    // row exists, and not that the description is accurate. It catches a rule
+    // added with no documentation at all, which is the failure that happened.
+    const doc = readFileSync(
+      join(REPO_ROOT, "full-ai-cluster", "k8s", "applications", "vault", "TOPOLOGY.md"),
+      "utf8",
+    );
+    const missing = RULES.filter((r) => !doc.includes("`" + r + "`"));
+    expect(missing).toEqual([]);
+  });
+
   it("the cert-manager claim is still false: no kind: Certificate in the tree", () => {
     // A DESIGNED TRIPWIRE. When somebody lands a real Certificate this test
     // goes red, and the correct response is to delete it in the same commit
     // that flips global.tlsDisable to false -- so the gap cannot close
     // silently and TLS cannot be claimed before it exists.
     expect(deriveWorldFacts(REPO_ROOT).certificateResourcesExist).toBe(false);
+  });
+});
+
+describe("seal-stanza-requires-vault-enterprise", () => {
+  // The gap this closes was MEASURED, not imagined: the research doc
+  // 2026-08-20-hsm-tpm-into-vault-and-cert-manager-* section 5 recorded that
+  // "a `seal` stanza or a `tpmDirect: true` flip breaks ZERO existing tests".
+  // The seal half of that sentence stops being true here.
+
+  const withSeal = (sealHcl: string, source?: Record<string, unknown>): any => {
+    const doc = healthy();
+    doc.spec.source.helm.valuesObject.server.ha.raft.config =
+      GOOD_HCL + "\n" + sealHcl;
+    if (source !== undefined) doc.spec.source = { ...doc.spec.source, ...source };
+    return doc;
+  };
+
+  const PKCS11 = ['seal "pkcs11" {', '  lib = "/usr/lib/libtpm2_pkcs11.so"', "}"].join("\n");
+
+  it("the detector reads active stanzas and ignores commented ones", () => {
+    // NON-VACUITY, both directions. Without the negative half the rule would
+    // fire on the chart's own commented gcpckms example and be useless; without
+    // the positive half it could never fire at all.
+    expect(sealStanzaTypes(PKCS11)).toEqual(["pkcs11"]);
+    expect(sealStanzaTypes('# seal "pkcs11" {\n#   lib = "x"\n# }')).toEqual([]);
+    expect(sealStanzaTypes('// seal "gcpckms" {\n// }')).toEqual([]);
+    expect(sealStanzaTypes(GOOD_HCL)).toEqual([]);
+  });
+
+  it("only pkcs11 is listed as Enterprise-gated", () => {
+    // Guards against the rule quietly widening into "no auto-unseal", which
+    // would refuse `seal "transit"` -- a Community Edition feature.
+    expect([...VAULT_ENTERPRISE_ONLY_SEALS]).toEqual(["pkcs11"]);
+  });
+
+  it("fires on a pkcs11 seal in the HashiCorp vault chart", () => {
+    expect(rules(auditVaultApplication(withSeal(PKCS11), WORLD_NO_CERTS))).toEqual([
+      "seal-stanza-requires-vault-enterprise",
+    ]);
+  });
+
+  it("does NOT fire on transit, which Community Edition actually ships", () => {
+    const transit = ['seal "transit" {', '  address = "https://vault-2:8200"', "}"].join("\n");
+    expect(rules(auditVaultApplication(withSeal(transit), WORLD_NO_CERTS))).toEqual([]);
+  });
+
+  it("fires with the real Application's explicit HashiCorp source too", () => {
+    const hashicorp = { repoURL: "https://helm.releases.hashicorp.com", chart: "vault" };
+    expect(rules(auditVaultApplication(withSeal(PKCS11, hashicorp), WORLD_NO_CERTS))).toEqual([
+      "seal-stanza-requires-vault-enterprise",
+    ]);
+  });
+
+  it("does NOT fire once the chart is OpenBao, where the stanza is MPL-2.0 and intended", () => {
+    // THE SELF-RETIRING BRANCH, EXERCISED ON PURPOSE. A gate nothing ever takes
+    // the other way is indistinguishable from a gate that is always open.
+    const openbao = { repoURL: "https://openbao.github.io/openbao-helm", chart: "openbao" };
+    expect(rules(auditVaultApplication(withSeal(PKCS11, openbao), WORLD_NO_CERTS))).toEqual([]);
+  });
+
+  it("rendersHashiCorpVault treats an unnamed chart as Vault, not as exempt", () => {
+    // Unknown is not permissive. An Application that does not say what it
+    // renders is the case with the LEAST information, and a rule that stands
+    // down there is a check that did not run.
+    expect(rendersHashiCorpVault(undefined)).toBe(true);
+    expect(rendersHashiCorpVault({})).toBe(true);
+    expect(rendersHashiCorpVault({ repoURL: "https://helm.releases.hashicorp.com", chart: "vault" })).toBe(true);
+    expect(rendersHashiCorpVault({ repoURL: "https://helm.releases.hashicorp.com", chart: "consul" })).toBe(false);
+
+    // The chart gate matches the HOST, not a substring. CodeQL flagged the
+    // original `repo.includes(...)` and it was right that the check was loose.
+    // Direction matters and is easy to overstate: a spoofed match returned TRUE,
+    // which makes the Enterprise-seal rule APPLY -- the strict branch -- so the
+    // defect was false FINDINGS, never a bypass. A coherence rule that fires on
+    // a chart it did not identify teaches reviewers to ignore it, which is why
+    // it is worth a falsifier rather than a shrug.
+    expect(
+      rendersHashiCorpVault({ repoURL: "https://example.invalid/?m=helm.releases.hashicorp.com", chart: "vault" }),
+    ).toBe(false);
+    expect(
+      rendersHashiCorpVault({ repoURL: "https://helm.releases.hashicorp.com.example.invalid", chart: "vault" }),
+    ).toBe(false);
+
+    // Still identified when it really is the HashiCorp repo, including OCI and
+    // a bare host -- the guard above must not be satisfied by rejecting all.
+    expect(rendersHashiCorpVault({ repoURL: "oci://helm.releases.hashicorp.com/vault", chart: "vault" })).toBe(true);
+    expect(rendersHashiCorpVault({ repoURL: "helm.releases.hashicorp.com", chart: "vault" })).toBe(true);
+
+    // Unparseable stays STRICT: we cannot prove it is a different chart, so the
+    // rule keeps applying rather than standing itself down on malformed input.
+    expect(rendersHashiCorpVault({ repoURL: "::not a url::", chart: "vault" })).toBe(true);
+    expect(rendersHashiCorpVault({ repoURL: "https://openbao.github.io/openbao-helm", chart: "vault" })).toBe(false);
   });
 });

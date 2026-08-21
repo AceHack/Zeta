@@ -88,6 +88,7 @@ export const RULES = [
   "raft-multinode-without-retry-join",
   "pdb-blocks-drain-at-single-replica",
   "ha-replicas-below-topology-nodes",
+  "seal-stanza-requires-vault-enterprise",
 ] as const;
 export type Rule = (typeof RULES)[number];
 
@@ -135,6 +136,104 @@ export function listenerTlsDisabled(hcl: string): boolean | undefined {
   if (match === null) return undefined;
   const raw = match[3];
   return raw === "1" || raw === "true";
+}
+
+/**
+ * Seal types of every ACTIVE `seal "<type>" {` stanza in the HCL, in source
+ * order. A commented-out stanza (`#` or `//`) is not a configuration and does
+ * not appear -- the chart's own default HCL ships a commented `seal "gcpckms"`
+ * example, and counting that as configured would make this a check that always
+ * fires, which is the same defect as one that never can.
+ *
+ * Targeted scan, not an HCL parse, matching `listenerTlsDisabled` above.
+ */
+export function sealStanzaTypes(hcl: string): string[] {
+  const out: string[] = [];
+  const re = /(^|\n)[\t ]*seal\s+"([A-Za-z0-9_-]+)"\s*\{/g;
+  let m = re.exec(hcl);
+  while (m !== null) {
+    // `noUncheckedIndexedAccess` types a capture group as `string | undefined`
+    // even when the pattern guarantees it. Guard rather than assert: a regex
+    // edit that drops the group should make this fall silent, not throw.
+    if (m[2] !== undefined) out.push(m[2]);
+    m = re.exec(hcl);
+  }
+  return out;
+}
+
+/**
+ * Seal types that exist ONLY in Vault Enterprise. Configuring one against the
+ * Community Edition binary does not degrade -- the server refuses to start.
+ *
+ * `pkcs11` is the whole list, and it is the one that matters here: it is the
+ * seal a TPM or an HSM would attach through.
+ * "Auto-unseal and seal wrapping for PKCS11 require Vault Enterprise"
+ * (developer.hashicorp.com/vault/docs/configuration/seal/pkcs11, read
+ * 2026-08-21). `transit`, `awskms`, `gcpckms`, `azurekeyvault` and `ocikms`
+ * are all Community Edition and are deliberately NOT listed -- this rule
+ * refuses one specific impossibility, not auto-unseal in general.
+ */
+export const VAULT_ENTERPRISE_ONLY_SEALS: readonly string[] = ["pkcs11"];
+
+/**
+ * True when this Application renders HashiCorp's Vault -- i.e. when a seal
+ * stanza below will be read by the Vault binary, which is Community Edition
+ * unless an Enterprise licence is mounted.
+ *
+ * UNKNOWN IS NOT PERMISSIVE. A source that names no chart at all returns TRUE.
+ * An Application that forgot to say what it renders must not thereby become
+ * exempt from the rule -- that would be a check standing down exactly when it
+ * has the least information, which is the vacuity class. The rule stands down
+ * only for a source that positively identifies a DIFFERENT chart.
+ *
+ * THE STAND-DOWN IS DELIBERATE AND IS WHY THIS RULE RETIRES ITSELF. OpenBao
+ * ships `seal "pkcs11"` under MPL-2.0, so the stanza that is impossible here is
+ * the intended destination there
+ * (docs/research/2026-08-20-hsm-tpm-into-vault-and-cert-manager-yes-for-tpm-but-not-through-vault-openbao-is-the-answer.md).
+ * Repointing this Application at the OpenBao chart stops the rule firing --
+ * correct, and exercised in both directions by the tests so the non-firing
+ * branch cannot go quietly dark.
+ */
+const HASHICORP_HELM_HOST = "helm.releases.hashicorp.com";
+
+/**
+ * Host of a Helm source, or `null` when it cannot be determined.
+ *
+ * Helm sources appear as `https://…`, `oci://…`, or occasionally a bare host,
+ * so a missing scheme is supplied rather than treated as a parse failure.
+ */
+function helmRepoHost(raw: string): string | null {
+  const candidate = /^[a-z][a-z0-9+.-]*:\/\//i.test(raw) ? raw : `https://${raw}`;
+  try {
+    return new URL(candidate).hostname.toLowerCase();
+  } catch {
+    return null;
+  }
+}
+
+export function rendersHashiCorpVault(source: unknown): boolean {
+  const s = (source ?? {}) as Record<string, unknown>;
+  const repo = typeof s["repoURL"] === "string" ? s["repoURL"] : "";
+  const chart = typeof s["chart"] === "string" ? s["chart"] : "";
+  if (chart !== "" && chart !== "vault") return false;
+  if (repo !== "") {
+    // Compare the HOST, not a substring. CodeQL flagged the original
+    // `repo.includes("helm.releases.hashicorp.com")` as incomplete URL
+    // sanitization, and it was right that the check was loose: the marker can
+    // sit anywhere, so `https://example.invalid/?m=helm.releases.hashicorp.com`
+    // matched.
+    //
+    // Stated precisely, because the direction matters and is easy to overstate:
+    // a spoofed match made this return TRUE, which makes the Enterprise-seal
+    // rule APPLY. That is the strict branch, so the defect was false FINDINGS,
+    // never a bypass. Fixed because a coherence rule that fires on a chart it
+    // did not identify teaches reviewers to ignore it.
+    const host = helmRepoHost(repo);
+    // Unparseable => we cannot prove this is a DIFFERENT chart, so stay strict
+    // rather than standing the rule down. Fail-closed on unknown, as before.
+    if (host !== null && host !== HASHICORP_HELM_HOST) return false;
+  }
+  return true;
 }
 
 /** Every `leader_api_addr` URL scheme found in the HCL, in source order. */
@@ -314,6 +413,36 @@ export function auditVaultApplication(doc: unknown, world: WorldFacts): Finding[
             addrScheme +
             ". Raft members would fail to join.",
         );
+      }
+    }
+
+    // THE ONE WRONG TURN THIS FILE EXISTS TO REFUSE, once the OpenBao thread is
+    // live: copying OpenBao's hardware seal stanza back onto the HashiCorp
+    // chart. It reads like progress toward the TPM and it is a server that will
+    // not boot. Before this rule, the research doc measured that "a `seal`
+    // stanza ... breaks ZERO existing tests" -- that sentence is what this
+    // closes.
+    if (rendersHashiCorpVault(source)) {
+      for (const sealType of sealStanzaTypes(hcl)) {
+        if (VAULT_ENTERPRISE_ONLY_SEALS.includes(sealType)) {
+          add(
+            "seal-stanza-requires-vault-enterprise",
+            'the raft HCL configures seal "' +
+              sealType +
+              '", but this' +
+              " Application renders HashiCorp's own vault chart, whose binary" +
+              " is Community Edition unless an Enterprise licence is mounted." +
+              " PKCS#11 seal is Enterprise-gated -- \"Auto-unseal and seal" +
+              ' wrapping for PKCS11 require Vault Enterprise\"' +
+              " (developer.hashicorp.com/vault/docs/configuration/seal/pkcs11)" +
+              " -- so this does not fall back to Shamir, it refuses to start." +
+              " A TPM- or HSM-backed seal is reached by changing the CHART to" +
+              " OpenBao (MPL-2.0, ships seal pkcs11), not by adding this" +
+              " stanza here. See TOPOLOGY.md section 5 and" +
+              " docs/research/2026-08-20-hsm-tpm-into-vault-and-cert-manager-" +
+              "yes-for-tpm-but-not-through-vault-openbao-is-the-answer.md.",
+          );
+        }
       }
     }
 

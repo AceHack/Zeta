@@ -209,10 +209,17 @@ That note's conditions carry over unchanged and are not re-derived here:
 OpenBao's PKCS#11 seal needs a cgo build, and it becomes an external plugin
 at v2.7.0.
 
+**And the wrong turn is now refused by a check, not by this paragraph.** The
+tempting mistake once the OpenBao thread is live is to copy that `seal "pkcs11"`
+stanza back onto the HashiCorp chart -- it reads like progress toward the TPM
+and it is a server that will not boot. `seal-stanza-requires-vault-enterprise`
+in the audit (section 6) is that refusal, and it carries the Enterprise citation
+in its message so the reason travels with the failure.
+
 ## 6. The falsifier
 
 `src/Core.TypeScript/hygiene/audit-vault-topology-coherence.ts` reads this
-Application and fails on eleven coherence classes. The sharpest is **listener
+Application and fails on twelve coherence classes. The sharpest is **listener
 TLS versus the `VAULT_ADDR` scheme**, which nothing in the repo previously
 checked and which is precisely why the broken config shipped.
 
@@ -240,7 +247,7 @@ bun src/Core.TypeScript/hygiene/audit-vault-topology-coherence.ts
   this is a check that runs when someone runs it -- more than existed before,
   and less than a gate. Handing that to Dejan is named in the findings.
 
-### The eleven rules
+### The twelve rules
 
 | rule | fires when |
 |---|---|
@@ -255,6 +262,7 @@ bun src/Core.TypeScript/hygiene/audit-vault-topology-coherence.ts
 | `storage-class-unavailable-at-sync-wave` | the class has no known provider, or its provider syncs at the same wave or later |
 | `raft-multinode-without-retry-join` | `replicas > 1` with no `retry_join` block |
 | `pdb-blocks-drain-at-single-replica` | `replicas: 1` with the PodDisruptionBudget left enabled |
+| `seal-stanza-requires-vault-enterprise` | an active `seal "pkcs11"` stanza in HCL rendered by **HashiCorp's** chart -- Enterprise-gated, so it refuses to start rather than falling back to Shamir. Stands down for a source that positively identifies a different chart (OpenBao), and treats an *unnamed* chart as Vault so a manifest that forgot to say what it renders is not exempt |
 
 Run against the file as it stood on `main` before this change, the audit
 returns **7 findings**. Against the file as it stands now it returns **0**.
