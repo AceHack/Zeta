@@ -286,6 +286,42 @@
               echo "$status" | tee "$out"
             '';
 
+          # Properties of the NODE-SIDE LONGHORN DISK SET -- which of the disks
+          # zeta-install.sh formatted this node actually hands to Longhorn.
+          #
+          # The preflight check above proves the declared Longhorn mounts are
+          # really mounted. It cannot say whether Longhorn is ever TOLD about
+          # them, and it was not: `zeta.longhorn.dataDisks` defaulted to the
+          # fixed literal [ "/var/lib/longhorn" ] -- a directory on the root
+          # filesystem -- and only hosts/worker-template ever set it. On
+          # control-plane, the host the USB installs, every dedicated Longhorn
+          # partition contributed ZERO schedulable capacity while the capture
+          # check and the boot preflight both went green, because both of them
+          # measure `fileSystems` and `fileSystems` was correct.
+          #
+          # The default is now DERIVED from the preflight's own `requiredMounts`,
+          # so the set the node must have mounted and the set Longhorn is told
+          # about are one expression. These properties pin that identity, pin the
+          # one-path delta the old literal produced so a revert is a red check,
+          # and check the mountpoint prefix zeta-install.sh writes against the
+          # prefix the derivation filters on -- the bash/nix seam neither side
+          # can see across.
+          #
+          # Complementary to PR #12175, which fixes the other half (making the
+          # list REACH Longhorn at all). Neither half is visible in the other's
+          # tests. Costs no VM; fires during EVALUATION, so
+          # `nix flake check --no-build` already runs it.
+          longhorn-disk-registration =
+            let
+              report = import ./nixos/tests/longhorn-disk-registration-eval-test.nix {
+                inherit pkgs;
+                inherit (nixpkgs) lib;
+              };
+            in
+            pkgs.runCommand "longhorn-disk-registration" { inherit (report) status; } ''
+              echo "$status" | tee "$out"
+            '';
+
           # Properties of the CILIUM WIREGUARD NODE PREFLIGHT -- the boot-time
           # refusal that says whether this kernel can make the WireGuard device
           # Cilium's own values demand.
