@@ -285,14 +285,29 @@ echo "[3/3] Running zeta-install $HOST (non-interactive) ..."
 echo
 # Non-interactive env-var trio: bypass every interactive prompt
 # zeta-install would otherwise hit.
-#   BOOT_DISK=auto      → resolves to fastest internal disk (NVMe>SSD>HDD)
-#   ZETA_AUTO_CONFIRM=WIPE → skip the typed-WIPE confirmation
-#   HOST passed as positional arg → skip the host prompt
-# Operator's destructive-install consent is the 10-second role
-# keystroke window above + the device-list display zeta-install
-# prints before wiping (Ctrl-C window). NOT delegated from
-# flash-time; the consent is at boot-time, on-screen, with
-# device-list visible.
+#   BOOT_DISK=auto      -> resolves to fastest internal disk (NVMe>SSD>HDD)
+#   ZETA_AUTO_CONFIRM=WIPE -> skip the typed-WIPE confirmation
+#   HOST passed as positional arg -> skip the host prompt
+#
+# CORRECTED 2026-08-21. This comment used to read: "Operator destructive-
+# install consent is the 10-second role keystroke window above + the device-
+# list display zeta-install prints before wiping (Ctrl-C window)."
+#
+# That described a window that did not exist. There was no sleep between the
+# device list and wipefs, so the Ctrl-C window was zero-width, and the role
+# keystroke window is a ROLE prompt, not a wipe prompt. A comment asserting a
+# guarantee the code does not provide is the failure class this repo is built
+# around, so it is named here rather than quietly replaced.
+#
+# What the consent actually is NOW: zeta-install Step 2.5 probes each in-scope
+# disk read-only and prints what is on it, then Step 2.9 runs a real countdown
+# (default 60s, 10s when every in-scope disk probes blank) whose default is
+# PROCEED and where any keypress aborts to a shell. That countdown runs on
+# THIS path too, which is why the zero-typing install still costs the window.
+# ZETA_AUTO_CONFIRM=WIPE skips the TYPED prompt; it does not skip the window.
+#
+# Flash-time consent is still NOT delegated to boot time. The gate is at boot,
+# on screen, with the device findings visible.
 export ZETA_AUTO_CONFIRM=WIPE
 export BOOT_DISK=auto
 export HOST

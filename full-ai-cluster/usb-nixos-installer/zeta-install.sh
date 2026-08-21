@@ -9,9 +9,23 @@
 #   2. Sort by speed class (NVMe first, then SSDs, then HDDs)
 #   3. Pick the fastest disk as the BOOT disk (override via $BOOT_DISK
 #      or interactive prompt; "auto" is the explicit default form)
-#   4. Confirm full wipe (typed confirmation required; bypass via
-#      ZETA_AUTO_CONFIRM=WIPE for non-interactive first-boot / QEMU CI —
-#      also skips iter-5.3 password, 081KSKBP80008QG0R003AX2A69.3b passphrase, gh-auth, vendor logins)
+#   3a. PRE-FORMAT PROBE (R6): read-only inspect every in-scope disk and
+#       PRINT what is on it (partition table, Zeta ESP, zeta-creds blob,
+#       foreign filesystems with labels and ext4 used space). Failure-closed:
+#       a disk that will not probe never reads as blank.
+#   3b. REPAIR MODE (R4): recognise a prior Zeta install, recover identity
+#       read-only so a re-paved node rejoins as ITSELF. An unvalidatable
+#       remembered identity STOPS the wipe (HWR-2: two registrations, one MAC).
+#   3c. CIRCUIT BREAKER (R9): bounded destructive attempts, counted in a
+#       ledger on the boot USB ESP. OPEN flips the cancel window default to
+#       ABORT. It never silently retries.
+#   4. CANCEL WINDOW (R7): a countdown whose default is PROCEED, so the USB
+#      still boots headless; any keypress aborts to a shell. This runs on the
+#      zero-typing path too. The typed WIPE prompt still exists for direct
+#      interactive use and is still bypassed by ZETA_AUTO_CONFIRM=WIPE, but it
+#      is NO LONGER the only gate: the countdown is unconditional.
+#      ZETA_AUTO_CONFIRM=WIPE also skips iter-5.3 password,
+#      081KSKBP80008QG0R003AX2A69.3b passphrase, gh-auth, vendor logins.
 #   5. Wipe + partition:
 #        BOOT disk: ESP 1G + root (max — fills disk) + longhorn1 (1G tail);
 #        no fixed root cap; layout is chosen at install-time partition (Step 4)
@@ -198,6 +212,548 @@ if [[ "$STORAGE_BACKEND" != "longhorn" ]]; then
 fi
 echo
 
+# ZETA-PREFLIGHT-PARITY-BEGIN ------------------------------------
+# Pure decision functions for the pre-format probe (R6), the cancel
+# window (R7) and the circuit breaker (R9).
+#
+# NOTHING IN THIS BLOCK TOUCHES A DEVICE. It consumes fact records on
+# stdin and prints decisions on stdout. The fact GATHERING lives below
+# in Step 2.5; the fact CONSUMING lives here so it can be executed by
+# src/Core.TypeScript/installer/disk-preflight-shell-parity.test.ts,
+# which extracts this block by these markers and runs it under bash
+# against the same fixtures the TypeScript spec is tested with.
+#
+# Kept to a bash-3.2 subset on purpose: the parity test has to run on
+# the maintainer macOS bash, which is 3.2.57. No mapfile, no ${v^^},
+# no associative arrays.
+#
+# Fact record format, one key per line, on stdin:
+#   pttype=<gpt|dos|>
+#   volumelabel=<label>                       (repeatable)
+#   part=<name>|<fstype>|<label>|<partlabel>  (repeatable)
+#   esp=<part>|<hascreds01>|<factor|->|<hasefi01>
+#   err=<message>                             (repeatable)
+ZETA_INSTALLER_VOLUME_LABEL="ZETA_INSTALL"
+ZETA_ESP_LABEL="boot"
+ZETA_ROOT_LABEL="nixos"
+
+# $1=fstype $2=label $3=partlabel  -> exit 0 when the partition is one we stamped.
+zeta_pf_is_zeta_owned() {
+  local fstype="$1" label="$2" partlabel="$3"
+  [ "$label" = "$ZETA_ROOT_LABEL" ] && return 0
+  case "$label" in
+    longhorn[0-9]|longhorn[0-9][0-9]) return 0 ;;
+  esac
+  if [ "$label" = "$ZETA_ESP_LABEL" ]; then
+    [ "$fstype" = "vfat" ] && return 0
+  fi
+  case "$partlabel" in
+    ESP|root|longhorn1) return 0 ;;
+  esac
+  return 1
+}
+
+# Reads a fact record on stdin. Prints exactly one line: the disposition.
+# Failure CLOSED: a probe error or an unaccountable layout never reads blank.
+zeta_pf_classify() {
+  local line key val
+  local pttype="" nparts=0 nlabels=0 nerrs=0
+  local zeta_root=0 zeta_esp=0 nzeta=0 nforeign=0
+  local esp_creds=0 esp_efi=0 is_installer=0
+  while IFS= read -r line; do
+    [ -z "$line" ] && continue
+    key="${line%%=*}"
+    val="${line#*=}"
+    case "$key" in
+      pttype) pttype="$val" ;;
+      err) nerrs=$((nerrs + 1)) ;;
+      volumelabel)
+        nlabels=$((nlabels + 1))
+        [ "$val" = "$ZETA_INSTALLER_VOLUME_LABEL" ] && is_installer=1
+        ;;
+      esp)
+        local e_hascreds e_hasefi rest
+        rest="${val#*|}"
+        e_hascreds="${rest%%|*}"
+        e_hasefi="${val##*|}"
+        [ "$e_hascreds" = "1" ] && esp_creds=1
+        [ "$e_hasefi" = "1" ] && esp_efi=1
+        ;;
+      part)
+        nparts=$((nparts + 1))
+        local p_name p_fstype p_label p_partlabel r1 r2
+        p_name="${val%%|*}"
+        r1="${val#*|}"
+        p_fstype="${r1%%|*}"
+        r2="${r1#*|}"
+        p_label="${r2%%|*}"
+        p_partlabel="${r2#*|}"
+        if zeta_pf_is_zeta_owned "$p_fstype" "$p_label" "$p_partlabel"; then
+          nzeta=$((nzeta + 1))
+          [ "$p_label" = "$ZETA_ROOT_LABEL" ] && zeta_root=1
+          [ "$p_label" = "$ZETA_ESP_LABEL" ] && zeta_esp=1
+        else
+          if [ -n "$p_fstype" ] || [ -n "$p_label" ]; then
+            nforeign=$((nforeign + 1))
+          fi
+        fi
+        ;;
+    esac
+  done
+
+  if [ "$is_installer" = "1" ]; then echo "installer-medium"; return 0; fi
+
+  local looks_zeta=0
+  [ "$esp_creds" = "1" ] && looks_zeta=1
+  [ "$esp_efi" = "1" ] && looks_zeta=1
+  [ "$zeta_root" = "1" ] && looks_zeta=1
+  if [ "$zeta_esp" = "1" ] && [ "$nzeta" -ge 2 ]; then looks_zeta=1; fi
+
+  if [ "$looks_zeta" = "1" ]; then echo "prior-zeta-install"; return 0; fi
+  if [ "$nforeign" -gt 0 ]; then echo "foreign-data"; return 0; fi
+  if [ "$nerrs" -gt 0 ]; then echo "indeterminate"; return 0; fi
+  if [ -z "$pttype" ] && [ "$nparts" -eq 0 ] && [ "$nlabels" -eq 0 ]; then
+    echo "blank"; return 0
+  fi
+  echo "indeterminate"
+}
+
+
+# Validate the attempt ledger read on stdin.
+# Text format, one record per line: attempt|startedAt|outcome|stage
+# Prints "trusted <consecutiveFailures>" or "untrusted <reason>".
+# UNTRUSTED is NOT the same as empty. A corrupt counter that reads as zero is
+# exactly the infinite destructive loop R9 was filed for.
+zeta_pf_validate_ledger() {
+  local line stripped npipes expected fails a b c rest
+  expected=1
+  fails=0
+  while IFS= read -r line; do
+    case "$line" in "") continue ;; esac
+    stripped="${line//|/}"
+    npipes=$(( ${#line} - ${#stripped} ))
+    if [ "$npipes" -ne 3 ]; then echo "untrusted ledger-line-not-4-fields"; return 0; fi
+    a="${line%%|*}"
+    rest="${line#*|}"
+    b="${rest%%|*}"
+    rest="${rest#*|}"
+    c="${rest%%|*}"
+    case "$a" in
+      "" ) echo "untrusted ledger-attempt-empty"; return 0 ;;
+      *[!0-9]* ) echo "untrusted ledger-attempt-not-integer"; return 0 ;;
+    esac
+    if [ "$a" -ne "$expected" ]; then echo "untrusted ledger-attempts-not-contiguous"; return 0; fi
+    if [ -z "$b" ]; then echo "untrusted ledger-startedat-empty"; return 0; fi
+    case "$c" in
+      started|failed) fails=$((fails + 1)) ;;
+      ok) fails=0 ;;
+      *) echo "untrusted ledger-outcome-unknown"; return 0 ;;
+    esac
+    expected=$((expected + 1))
+  done
+  echo "trusted $fails"
+}
+
+# $1=trusted01 $2=consecutiveFailures $3=maxAttempts $4=ledgerWritable01
+# Prints one of: closed | open | blind
+zeta_pf_breaker() {
+  local trusted="$1" fails="$2" maxa="$3" writable="$4"
+  if [ "$trusted" != "1" ]; then echo "open"; return 0; fi
+  if [ "$fails" -ge "$maxa" ]; then echo "open"; return 0; fi
+  if [ "$writable" != "1" ]; then echo "blind"; return 0; fi
+  echo "closed"
+}
+
+# $1=breakerState $2=fullSecs $3=blankSecs
+# stdin: one line per disk, "<device>|<disposition>"
+# stdout: mode=, window=, default=, then wipe=<dev> / refused=<dev> lines.
+#
+# R6 and R7 are NOT in tension. The greedy default (proceed) is what keeps the
+# install headless; the window is what makes it consensual.
+zeta_pf_decide_scope() {
+  local bstate="$1" full="$2" blank="$3"
+  local line dev disp mode window dflt allblank inscope
+  local wipes="" refuseds=""
+  mode="fresh-install"
+  allblank=1
+  inscope=0
+  while IFS= read -r line; do
+    case "$line" in "") continue ;; esac
+    dev="${line%%|*}"
+    disp="${line#*|}"
+    if [ "$disp" = "installer-medium" ]; then
+      refuseds="$refuseds $dev"
+      continue
+    fi
+    inscope=$((inscope + 1))
+    wipes="$wipes $dev"
+    [ "$disp" != "blank" ] && allblank=0
+    [ "$disp" = "prior-zeta-install" ] && mode="repair"
+  done
+  [ "$inscope" -eq 0 ] && allblank=0
+  if [ "$allblank" -eq 1 ]; then window="$blank"; else window="$full"; fi
+  dflt="proceed"
+  if [ "$bstate" = "open" ]; then
+    dflt="abort"
+    window="$full"
+  elif [ "$bstate" = "blind" ]; then
+    window="$full"
+  fi
+  echo "mode=$mode"
+  echo "window=$window"
+  echo "default=$dflt"
+  for dev in $wipes; do echo "wipe=$dev"; done
+  for dev in $refuseds; do echo "refused=$dev"; done
+}
+# ZETA-PREFLIGHT-PARITY-END --------------------------------------
+
+# ── Step 2.5: pre-format probe (R6 / R14, 2026-06-09) ─────────────
+#
+# Aaron 2026-06-09: "check if the partition exists every time before
+# formatting; ask the questions BEFORE formatting ... do this now".
+#
+# Everything here is READ ONLY: blkid, lsblk, dumpe2fs -h, and read-only
+# mounts. No wipefs, no sgdisk, no mkfs, no rw mount.
+ZETA_PROBE_MOUNT="/tmp/zeta-preflight-probe"
+ZETA_PROBE_ERRORS=""
+
+# $1=partition -> prints used bytes for ext4, or nothing.
+# dumpe2fs -h reads the superblock only; it does not modify the filesystem.
+zeta_pf_ext4_used_bytes() {
+  local part="$1" hdr bsz bcount bfree
+  hdr="$(sudo dumpe2fs -h "$part" 2>/dev/null || true)"
+  [ -z "$hdr" ] && return 0
+  bsz="$(printf %s "$hdr" | sed -n "s/^Block size: *\([0-9]*\)$/\1/p" | head -1)"
+  bcount="$(printf %s "$hdr" | sed -n "s/^Block count: *\([0-9]*\)$/\1/p" | head -1)"
+  bfree="$(printf %s "$hdr" | sed -n "s/^Free blocks: *\([0-9]*\)$/\1/p" | head -1)"
+  [ -z "$bsz" ] && return 0
+  [ -z "$bcount" ] && return 0
+  [ -z "$bfree" ] && return 0
+  echo $(( (bcount - bfree) * bsz ))
+}
+
+# $1=partition. Read-only mount, look for the Zeta ESP payload, unmount.
+# Prints "<hascreds01>|<factor>|<hasefi01>" or nothing when not mountable.
+# NEVER reads the CONTENT of zeta-creds.enc. Presence and the recorded factor
+# NAME only. The factor name lives in zeta-creds.factor and is not a secret.
+zeta_pf_probe_esp() {
+  local part="$1" hascreds hasefi factor
+  sudo mkdir -p "$ZETA_PROBE_MOUNT" 2>/dev/null || return 1
+  sudo mount -t vfat -o ro "$part" "$ZETA_PROBE_MOUNT" 2>/dev/null || return 1
+  hascreds=0; hasefi=0; factor="-"
+  if sudo test -f "$ZETA_PROBE_MOUNT/zeta-creds.enc"; then hascreds=1; fi
+  if sudo test -d "$ZETA_PROBE_MOUNT/EFI/ZETA"; then hasefi=1; fi
+  if sudo test -f "$ZETA_PROBE_MOUNT/zeta-creds.factor"; then
+    factor="$(sudo head -c 32 "$ZETA_PROBE_MOUNT/zeta-creds.factor" 2>/dev/null | tr -cd "A-Za-z" || true)"
+    [ -z "$factor" ] && factor="-"
+  fi
+  sudo umount "$ZETA_PROBE_MOUNT" 2>/dev/null || true
+  echo "$hascreds|$factor|$hasefi"
+  return 0
+}
+
+# $1=disk. Prints the fact record zeta_pf_classify consumes, and a parallel
+# human readable evidence block on fd 4 when one is open.
+zeta_pf_gather() {
+  local disk="$1" pttype dlabel parts p ptype plabel ppartlabel psize pused espres
+  pttype="$(sudo blkid -p -o value -s PTTYPE "$disk" 2>/dev/null || true)"
+  echo "pttype=$pttype"
+  dlabel="$(sudo blkid -o value -s LABEL "$disk" 2>/dev/null || true)"
+  if [ -n "$dlabel" ]; then echo "volumelabel=$dlabel"; fi
+  parts="$(lsblk -p -n -o NAME,TYPE "$disk" 2>/dev/null | awk "\$2==\"part\" {print \$1}" || true)"
+  for p in $parts; do
+    ptype="$(sudo blkid -o value -s TYPE "$p" 2>/dev/null || true)"
+    plabel="$(sudo blkid -o value -s LABEL "$p" 2>/dev/null || true)"
+    ppartlabel="$(sudo blkid -o value -s PARTLABEL "$p" 2>/dev/null || true)"
+    echo "part=$p|$ptype|$plabel|$ppartlabel"
+    if [ -n "$plabel" ]; then echo "volumelabel=$plabel"; fi
+    if [ "$ptype" = "vfat" ]; then
+      espres="$(zeta_pf_probe_esp "$p" || true)"
+      if [ -n "$espres" ]; then
+        echo "esp=$p|$espres"
+      else
+        echo "err=esp-probe-failed:$p"
+      fi
+    fi
+  done
+  # Explicit success: under set -e a function returning the status of its last
+  # loop iteration can abort the install for no reason. The caller guards this
+  # with || but that guard would OVERWRITE good facts with an error record.
+  return 0
+}
+
+# $1=disk $2=factfile. Prints the operator facing findings for one disk.
+# The disposition is decided by zeta_pf_classify; this only renders evidence.
+zeta_pf_print_findings() {
+  local disk="$1" factfile="$2" disp line key val used
+  disp="$(zeta_pf_classify < "$factfile")"
+  echo "  $disk: $disp   ($(lsblk -d -n -o SIZE "$disk" 2>/dev/null | tr -d " ") $(disk_class "$disk"))"
+  while IFS= read -r line; do
+    key="${line%%=*}"
+    val="${line#*=}"
+    case "$key" in
+      pttype) [ -n "$val" ] && echo "      partition table: $val" ;;
+      volumelabel) echo "      volume label: $val" ;;
+      esp) echo "      ESP payload: $val   (partition|creds-blob|binding-factor|EFI-ZETA)" ;;
+      err) echo "      PROBE ERROR: $val   (failure-closed: this disk cannot read as blank)" ;;
+      part)
+        local pn pf pl pp r
+        pn="${val%%|*}"; r="${val#*|}"
+        pf="${r%%|*}"; r="${r#*|}"
+        pl="${r%%|*}"; pp="${r#*|}"
+        used=""
+        if [ "$pf" = "ext4" ]; then
+          local ub
+          ub="$(zeta_pf_ext4_used_bytes "$pn" || true)"
+          [ -n "$ub" ] && used="  $((ub / 1073741824)) GiB used"
+        fi
+        if zeta_pf_is_zeta_owned "$pf" "$pl" "$pp"; then
+          echo "      $pn: ${pf:-raw} label=${pl:-none} partlabel=${pp:-none}$used   [ZETA-STAMPED]"
+        else
+          if [ -n "$pf" ] || [ -n "$pl" ]; then
+            echo "      $pn: ${pf:-raw} label=${pl:-none}$used   [NOT OURS]"
+          fi
+        fi
+        ;;
+    esac
+  done < "$factfile"
+  return 0
+}
+
+ZETA_PF_FACTDIR="$(mktemp -d /tmp/zeta-preflight-XXXXXX)"
+ZETA_PF_DISPFILE="$ZETA_PF_FACTDIR/dispositions"
+: > "$ZETA_PF_DISPFILE"
+
+echo
+echo "── Pre-format probe (R6): what is on these disks RIGHT NOW ──"
+for d in "$BOOT_DISK" "${DATA_DISKS[@]+"${DATA_DISKS[@]}"}"; do
+  zeta_pf_gather "$d" > "$ZETA_PF_FACTDIR/$(echo "$d" | tr "/" "_")" 2>/dev/null || echo "err=gather-failed" > "$ZETA_PF_FACTDIR/$(echo "$d" | tr "/" "_")"
+  zeta_pf_print_findings "$d" "$ZETA_PF_FACTDIR/$(echo "$d" | tr "/" "_")"
+  echo "$d|$(zeta_pf_classify < "$ZETA_PF_FACTDIR/$(echo "$d" | tr "/" "_")")" >> "$ZETA_PF_DISPFILE"
+done
+echo
+# ── Step 2.6: circuit breaker (R9, filed P0 2026-06-09) ───────────
+#
+# Aaron: "reformat-with-broken-remembered -> infinite destructive loop,
+# needs a circuit-breaker + validate-before-wipe."
+#
+# The loop R9 names is a REBOOT loop: install fails, first-boot runs again,
+# the disks get wiped again. Breaking it therefore needs a NON-VOLATILE
+# counter, and the only non-volatile writable surface that is not about to
+# be wiped is the boot USB ESP. When that surface cannot be written the
+# breaker is BLIND, and a breaker that cannot count must never read as a
+# closed one, so BLIND forces the full cancel window.
+ZETA_LEDGER_MOUNT="/tmp/zeta-attempt-ledger"
+ZETA_LEDGER_PART=""
+ZETA_LEDGER_FILE=""
+ZETA_LEDGER_WRITABLE=0
+ZETA_MAX_DESTRUCTIVE_ATTEMPTS="${ZETA_MAX_DESTRUCTIVE_ATTEMPTS:-3}"
+
+# Find the boot USB ESP by the pubkey marker zeta-install already looks for at
+# Step 6, but WITHOUT consuming it: this runs pre-wipe and only reads/writes
+# the attempt ledger. Install-target disks are skipped by construction.
+zeta_pf_open_ledger() {
+  local dev part skip data
+  sudo mkdir -p "$ZETA_LEDGER_MOUNT" 2>/dev/null || return 1
+  for dev in /dev/sd? /dev/nvme?n? /dev/vd? /dev/mmcblk?; do
+    [ -b "$dev" ] || continue
+    [ "$dev" = "$BOOT_DISK" ] && continue
+    skip=0
+    for data in "${DATA_DISKS[@]+"${DATA_DISKS[@]}"}"; do
+      [ "$dev" = "$data" ] && skip=1
+    done
+    [ "$skip" = 1 ] && continue
+    for partsfx in 1 2; do
+      case "$dev" in
+        /dev/nvme*|/dev/mmcblk*) part="${dev}p${partsfx}" ;;
+        *) part="${dev}${partsfx}" ;;
+      esac
+      [ -b "$part" ] || continue
+      sudo mount -t vfat -o rw "$part" "$ZETA_LEDGER_MOUNT" 2>/dev/null || continue
+      if sudo test -f "$ZETA_LEDGER_MOUNT/zeta-authorized-keys.pub"; then
+        ZETA_LEDGER_PART="$part"
+        ZETA_LEDGER_FILE="$ZETA_LEDGER_MOUNT/zeta-install-attempts.txt"
+        ZETA_LEDGER_WRITABLE=1
+        return 0
+      fi
+      sudo umount "$ZETA_LEDGER_MOUNT" 2>/dev/null || true
+    done
+  done
+  return 1
+}
+
+zeta_pf_open_ledger || true
+ZETA_LEDGER_TEXT=""
+if [ "$ZETA_LEDGER_WRITABLE" = "1" ]; then
+  if sudo test -f "$ZETA_LEDGER_FILE"; then
+    ZETA_LEDGER_TEXT="$(sudo cat "$ZETA_LEDGER_FILE" 2>/dev/null || true)"
+  fi
+  echo "[R9-breaker] attempt ledger: $ZETA_LEDGER_FILE"
+else
+  echo "[R9-breaker] attempt ledger surface NOT writable; breaker is BLIND"
+fi
+ZETA_LEDGER_VERDICT="$(printf %s "$ZETA_LEDGER_TEXT" | zeta_pf_validate_ledger)"
+ZETA_LEDGER_TRUSTED=0
+ZETA_LEDGER_FAILS=0
+case "$ZETA_LEDGER_VERDICT" in
+  trusted*) ZETA_LEDGER_TRUSTED=1; ZETA_LEDGER_FAILS="${ZETA_LEDGER_VERDICT##* }" ;;
+  *) ZETA_LEDGER_TRUSTED=0; ZETA_LEDGER_FAILS="$ZETA_MAX_DESTRUCTIVE_ATTEMPTS" ;;
+esac
+ZETA_BREAKER_STATE="$(zeta_pf_breaker "$ZETA_LEDGER_TRUSTED" "$ZETA_LEDGER_FAILS" "$ZETA_MAX_DESTRUCTIVE_ATTEMPTS" "$ZETA_LEDGER_WRITABLE")"
+echo "[R9-breaker] verdict=$ZETA_LEDGER_VERDICT state=$ZETA_BREAKER_STATE bound=$ZETA_MAX_DESTRUCTIVE_ATTEMPTS"
+
+# ── Step 2.7: repair mode / recognise-self (R4, 2026-05-25) ───────
+#
+# Aaron: "the USB basically says, hey, am I already running on this? I am?
+# Let me make sure I recover any hardware IDs and stuff and just reinstall
+# the image."
+#
+# Recovery is READ ONLY and uses -o ro,noload on ext4 on purpose: a plain
+# -o ro mount still REPLAYS THE JOURNAL, which is a write to a disk we have
+# not yet been given consent to touch. noload suppresses that.
+#
+# MEASURED GAP: nothing in the tree writes a ZetaId at install time.
+# /etc/zeta/cluster-node-id is the closest existing stable key, so that is
+# what is recovered. The absent ZetaId is a finding, not an omission here.
+ZETA_REPAIR_ROOT_MOUNT="/tmp/zeta-repair-root"
+ZETA_REPAIR_HOSTNAME=""
+ZETA_REPAIR_MAC=""
+ZETA_REPAIR_CIDR=""
+ZETA_REPAIR_CPIP=""
+ZETA_REPAIR_FOUND=0
+
+zeta_pf_recover_identity() {
+  local disk part plabel f
+  for disk in "$BOOT_DISK" "${DATA_DISKS[@]+"${DATA_DISKS[@]}"}"; do
+    for part in $(lsblk -p -n -o NAME,TYPE "$disk" 2>/dev/null | awk "\$2==\"part\" {print \$1}"); do
+      plabel="$(sudo blkid -o value -s LABEL "$part" 2>/dev/null || true)"
+      [ "$plabel" = "nixos" ] || continue
+      sudo mkdir -p "$ZETA_REPAIR_ROOT_MOUNT" 2>/dev/null || continue
+      sudo mount -t ext4 -o ro,noload "$part" "$ZETA_REPAIR_ROOT_MOUNT" 2>/dev/null || continue
+      ZETA_REPAIR_FOUND=1
+      f="$ZETA_REPAIR_ROOT_MOUNT/etc/zeta"
+      [ -f "$f/cluster-node-id" ] && ZETA_REPAIR_HOSTNAME="$(sudo cat "$f/cluster-node-id" 2>/dev/null | tr -d "[:space:]" || true)"
+      [ -f "$f/cluster-segment-mac" ] && ZETA_REPAIR_MAC="$(sudo cat "$f/cluster-segment-mac" 2>/dev/null | tr -d "[:space:]" || true)"
+      [ -f "$f/cluster-segment-address" ] && ZETA_REPAIR_CIDR="$(sudo cat "$f/cluster-segment-address" 2>/dev/null | tr -d "[:space:]" || true)"
+      [ -f "$f/cluster-control-plane-address" ] && ZETA_REPAIR_CPIP="$(sudo cat "$f/cluster-control-plane-address" 2>/dev/null | tr -d "[:space:]" || true)"
+      sudo umount "$ZETA_REPAIR_ROOT_MOUNT" 2>/dev/null || true
+      return 0
+    done
+  done
+  return 1
+}
+
+# Validate BEFORE trusting. All-three-or-none on the segment trio, matching the
+# discipline the installer already applies at Step 6.5.
+zeta_pf_validate_identity() {
+  local present=0 reasons=""
+  if ! printf %s "$ZETA_REPAIR_HOSTNAME" | grep -Eq "^[a-z0-9][a-z0-9-]{0,62}$"; then
+    case "$ZETA_REPAIR_HOSTNAME" in "") reasons="$reasons node-id-absent" ;; *) reasons="$reasons node-id-bad-shape" ;; esac
+  fi
+  [ -n "$ZETA_REPAIR_MAC" ] && present=$((present + 1))
+  [ -n "$ZETA_REPAIR_CIDR" ] && present=$((present + 1))
+  [ -n "$ZETA_REPAIR_CPIP" ] && present=$((present + 1))
+  if [ "$present" -ne 0 ] && [ "$present" -ne 3 ]; then
+    reasons="$reasons segment-trio-partial"
+  fi
+  if [ -n "$ZETA_REPAIR_MAC" ]; then
+    printf %s "$ZETA_REPAIR_MAC" | grep -Eq "^[0-9a-f]{2}(:[0-9a-f]{2}){5}$" || reasons="$reasons mac-bad-shape"
+  fi
+  if [ -n "$reasons" ]; then echo "untrusted$reasons"; return 0; fi
+  echo "trusted"
+}
+
+ZETA_CANCEL_WINDOW_SECS="${ZETA_CANCEL_WINDOW_SECS:-60}"
+ZETA_CANCEL_WINDOW_BLANK_SECS="${ZETA_CANCEL_WINDOW_BLANK_SECS:-10}"
+ZETA_SCOPE="$(zeta_pf_decide_scope "$ZETA_BREAKER_STATE" "$ZETA_CANCEL_WINDOW_SECS" "$ZETA_CANCEL_WINDOW_BLANK_SECS" < "$ZETA_PF_DISPFILE")"
+ZETA_MODE="$(printf %s "$ZETA_SCOPE" | sed -n "s/^mode=//p")"
+ZETA_WINDOW="$(printf %s "$ZETA_SCOPE" | sed -n "s/^window=//p")"
+ZETA_CANCEL_DEFAULT="$(printf %s "$ZETA_SCOPE" | sed -n "s/^default=//p")"
+ZETA_REFUSED="$(printf %s "$ZETA_SCOPE" | sed -n "s/^refused=//p")"
+echo "[R6/R7] mode=$ZETA_MODE window=${ZETA_WINDOW}s default=$ZETA_CANCEL_DEFAULT"
+
+# Drop refused devices from the wipe scope. A device carrying the ZETA_INSTALL
+# volume label is the medium we booted from. Measured 2026-08-21: the ONLY
+# thing keeping the boot stick out of scope until now was the TRAN != usb test
+# at Step 1, so a Zeta installer stick behind an adapter that presents as nvme
+# or virtio was IN SCOPE for wipefs. Reading the label the ISO already stamps
+# closes that.
+for r in $ZETA_REFUSED; do
+  if [ "$r" = "$BOOT_DISK" ]; then
+    bail "BOOT_DISK $r carries the ZETA_INSTALL volume label: that is the installer medium, not an install target. Pick a different disk with BOOT_DISK=/dev/..."
+  fi
+  NEW_DATA=()
+  for d in "${DATA_DISKS[@]+"${DATA_DISKS[@]}"}"; do
+    [ "$d" = "$r" ] || NEW_DATA+=("$d")
+  done
+  DATA_DISKS=("${NEW_DATA[@]+"${NEW_DATA[@]}"}")
+  echo "[R6] REFUSED $r: carries the ZETA_INSTALL volume label; removed from the wipe scope"
+done
+
+if [ "$ZETA_MODE" = "repair" ]; then
+  echo
+  echo "[R4-repair] a prior Zeta install was recognised on an in-scope disk."
+  zeta_pf_recover_identity || true
+  ZETA_IDENTITY_VERDICT="$(zeta_pf_validate_identity)"
+  echo "[R4-repair]   recovered hostname=${ZETA_REPAIR_HOSTNAME:-<none>} mac=${ZETA_REPAIR_MAC:-<none>} cidr=${ZETA_REPAIR_CIDR:-<none>} cp=${ZETA_REPAIR_CPIP:-<none>}"
+  echo "[R4-repair]   identity verdict: $ZETA_IDENTITY_VERDICT"
+  case "$ZETA_IDENTITY_VERDICT" in
+    trusted)
+      # NOT "HOST=$ZETA_REPAIR_HOSTNAME". HOST names a FLAKE OUTPUT
+      # (control-plane / worker-gpu); cluster-node-id names THIS MACHINE
+      # (zeta-a1b2c3). Conflating them would send nixos-install at a flake
+      # attribute that does not exist.
+      ZETA_REPAIR_REUSE=1
+      export ZETA_REPAIR_NODE_ID="$ZETA_REPAIR_HOSTNAME"
+      echo "[R4-repair]   REUSING identity: this node rejoins as $ZETA_REPAIR_HOSTNAME rather than registering a duplicate"
+      ;;
+    *)
+      # HWR-2 (src/Core.TypeScript/inventory/reconcile-surfaces.ts) is exactly
+      # this failure: two registrations sharing one MAC. Re-paving a node we
+      # RECOGNISE but whose identity we cannot READ is how that happens, so
+      # the wipe stops here instead of proceeding blind.
+      ZETA_REPAIR_REUSE=0
+      ZETA_CANCEL_DEFAULT="abort"
+      ZETA_WINDOW="$ZETA_CANCEL_WINDOW_SECS"
+      echo "[R4-repair]   REFUSING to proceed by default: prior install recognised but its remembered identity did not validate ($ZETA_IDENTITY_VERDICT)."
+      echo "[R4-repair]   Re-paving now would register a duplicate for a MAC already in the roster (HWR-2)."
+      echo "[R4-repair]   The cancel window below now defaults to ABORT; a keypress is required to proceed."
+      ;;
+  esac
+
+  # ── R8 SEAM: preserve -> format -> repersist is NOT wired here ──
+  #
+  # DECISION REQUIRED, AND IT IS NOT MINE: design doc 2026-08-21 section 5.2,
+  # "what is the stable key?" TPM seal (node-bound, survives a stick swap,
+  # dies on a machine swap) vs USB iSerial (stick-bound, survives a reformat,
+  # dies on a stick swap). Aaron 2026-06-09 asked for creds tied to the USB
+  # key AND a hardware key AND the UEFI boot partition; which of those is the
+  # KDF binding factor is still open, 74 days.
+  #
+  # What IS decided, on evidence rather than preference: a blob whose recorded
+  # binding factor is usbUuid is provably undecryptable after a reformat,
+  # because the KDF binds the ephemeral FAT UUID. Carrying it forward produces
+  # a dead file that LOOKS like a recovered credential, which is worse than
+  # not carrying it. See credential-binding-model.ts
+  # expectedBindingScenarioOutcome(factor, "reformat_same_stick") and
+  # disk-preflight.ts credsCarryForwardDecision.
+  ZETA_CREDS_FACTOR="$(grep -h "^esp=" "$ZETA_PF_FACTDIR"/* 2>/dev/null | head -1 | awk -F"|" "{print \$3}" || true)"
+  ZETA_CREDS_PRESENT="$(grep -h "^esp=" "$ZETA_PF_FACTDIR"/* 2>/dev/null | head -1 | awk -F"|" "{print \$2}" || true)"
+  if [ "${ZETA_CREDS_PRESENT:-0}" = "1" ]; then
+    case "${ZETA_CREDS_FACTOR:--}" in
+      usbUuid|-|"")
+        echo "[R8-seam]   zeta-creds.enc found (binding=${ZETA_CREDS_FACTOR:-unrecorded}). NOT carried forward:"
+        echo "[R8-seam]   that binding does not survive a reformat, so the blob would be dead on arrival."
+        ;;
+      *)
+        echo "[R8-seam]   zeta-creds.enc found (binding=$ZETA_CREDS_FACTOR). Carry-forward is BLOCKED, not refused:"
+        echo "[R8-seam]   the binding survives a reformat, but the DEFAULT binding is undecided (design doc section 5.2)."
+        echo "[R8-seam]   Wiring preserve/repersist before that decision would bake in the wrong key."
+        ;;
+    esac
+  fi
+fi
+
 # Non-interactive mode: ZETA_AUTO_CONFIRM=WIPE bypasses the typed-
 # confirmation prompt. Used by the first-boot systemd service when
 # the operator already accepted destructive intent at flash time
@@ -212,6 +768,104 @@ fi
 
 # Validate BOOT disk fits the layout before any destructive work.
 assert_boot_disk_large_enough "$BOOT_DISK"
+
+# ── Step 2.9: the cancel window (R7, 2026-06-09) ──────────────────
+#
+# Aaron: "it should NOT ask before format; it should ask to CANCEL for a
+# minute before format; this USB should fully boot headless."
+#
+# What was here before this block: NOTHING. There was no sleep between the
+# device list and wipefs, and zeta-first-boot.sh exported
+# ZETA_AUTO_CONFIRM=WIPE which skipped the typed prompt, so the wipe followed
+# the device list immediately. The comment in zeta-first-boot.sh claimed the
+# consent WAS that Ctrl-C window. It described a window of zero width.
+#
+# THE ANSWER TO SECTION 5.5 (does the countdown run on the zero-typing path
+# too): YES. It runs on every path, including ZETA_AUTO_CONFIRM=WIPE.
+# Reasoning: the zero-typing path is precisely where nobody is watching a
+# prompt, which makes it the one place a wrong-disk wipe is both
+# unrecoverable and unwitnessed. A gate that is absent there is absent.
+#
+# THE COST, STATED: up to 60 s per node, once, at install. It is paid against
+# an install that then runs for tens of minutes, and nodes flash in parallel
+# so it overlaps rather than accumulating. It is NOT free and it is not being
+# claimed as free.
+#
+# THE COST IS ALSO SHAPED: when every in-scope disk probes BLANK the window
+# is 10 s, because there is nothing on those disks to consent to losing.
+# Foreign data, a prior Zeta install, or a probe that FAILED all get the full
+# 60 s. Failure-closed: an unreadable disk is treated as a full disk.
+echo
+if [ "$ZETA_CANCEL_DEFAULT" = "abort" ]; then
+  echo "  !! DESTRUCTIVE STEP GATED. Default is ABORT."
+  echo "  !! Press any key within ${ZETA_WINDOW}s to PROCEED with the wipe."
+  echo "  !! Do nothing and this install stops and drops to a shell."
+else
+  echo "  Formatting the disks listed above in ${ZETA_WINDOW}s."
+  echo "  Press any key to CANCEL and drop to a shell."
+  echo "  Do nothing and the install proceeds (headless default)."
+fi
+echo
+ZETA_CANCEL_KEY=""
+ZETA_CANCEL_REMAIN="$ZETA_WINDOW"
+if [ -t 0 ]; then
+  while [ "$ZETA_CANCEL_REMAIN" -gt 0 ]; do
+    printf "\r  %ss remaining ... " "$ZETA_CANCEL_REMAIN"
+    if read -r -n 1 -s -t 1 ZETA_CANCEL_KEY 2>/dev/null; then
+      if [ -n "$ZETA_CANCEL_KEY" ]; then break; fi
+    fi
+    ZETA_CANCEL_REMAIN=$((ZETA_CANCEL_REMAIN - 1))
+    ZETA_CANCEL_KEY=""
+  done
+  echo
+else
+  # No controlling terminal. A read with a timeout would return instantly and
+  # spin the window down to nothing, which is the zero-width window this block
+  # exists to remove. Sleep the full window instead and take the default.
+  echo "  (no tty on stdin: sleeping the full ${ZETA_WINDOW}s window; the default applies)"
+  sleep "$ZETA_WINDOW"
+fi
+
+if [ "$ZETA_CANCEL_DEFAULT" = "abort" ]; then
+  if [ -z "$ZETA_CANCEL_KEY" ]; then
+    echo
+    echo "[R7/R9] No keypress and the default is ABORT. Not wiping anything."
+    echo "        Reason: $ZETA_BREAKER_STATE breaker / repair-identity refusal above."
+    echo "        Manual override once the cause is understood:"
+    echo "          ZETA_MAX_DESTRUCTIVE_ATTEMPTS=<n> zeta-install $HOST"
+    exit 0
+  fi
+  echo "[R7] Keypress received; proceeding past the gate deliberately."
+else
+  if [ -n "$ZETA_CANCEL_KEY" ]; then
+    echo
+    echo "[R7] CANCELLED by operator keypress. Nothing was wiped."
+    echo "     Re-run when ready:  zeta-install $HOST"
+    exit 0
+  fi
+  echo "[R7] No keypress; proceeding (headless default preserved)."
+fi
+
+# Record the destructive attempt BEFORE the first destructive call, so a node
+# that dies mid-wipe still counts against the bound on the next boot. This is
+# what makes R9 bounded rather than aspirational.
+if [ "$ZETA_LEDGER_WRITABLE" = "1" ]; then
+  # An untrusted ledger that the operator deliberately walked past (they had to
+  # press a key: the default was ABORT) is RESET rather than appended to, so the
+  # next boot counts from a ledger that parses instead of staying open forever.
+  if [ "$ZETA_LEDGER_TRUSTED" != "1" ]; then
+    echo "[R9-breaker] resetting an unparseable ledger at deliberate operator override"
+    : | sudo tee "$ZETA_LEDGER_FILE" >/dev/null
+    ZETA_LEDGER_TEXT=""
+  fi
+  ZETA_ATTEMPT_N="$(printf %s "$ZETA_LEDGER_TEXT" | grep -c "|" || true)"
+  ZETA_ATTEMPT_N=$((ZETA_ATTEMPT_N + 1))
+  printf "%s|%s|started|wipe\n" "$ZETA_ATTEMPT_N" "$(date -u +%Y-%m-%dT%H:%M:%SZ)" | sudo tee -a "$ZETA_LEDGER_FILE" >/dev/null
+  sudo sync 2>/dev/null || true
+  echo "[R9-breaker] recorded destructive attempt $ZETA_ATTEMPT_N in the ledger"
+else
+  echo "[R9-breaker] ledger not writable; this attempt is NOT counted (breaker stays blind next boot)"
+fi
 
 # ── Step 3: wipe every disk in scope ──────────────────────────────
 for d in "$BOOT_DISK" "${DATA_DISKS[@]}"; do
@@ -960,6 +1614,24 @@ else
   # ~16M unique names; negligible collision risk for any homelab
   # cluster size; mDNS uniqueness preserved per-node).
   echo "[iter-5.2]   no zeta-hostname.txt on USB ESP"
+  # ── R4 / HWR-2: a re-paved node must rejoin as ITSELF ──────────
+  #
+  # This generator is where HWR-2 comes from. On a re-pave with no
+  # zeta-hostname.txt on the ESP, the node draws a NEW random node-<6hex>
+  # while keeping its physical NIC, so the roster ends up with two
+  # registrations sharing one MAC. Step 2.7 recovered and VALIDATED the
+  # previous cluster-node-id read-only before the wipe; prefer it.
+  #
+  # Only a VALIDATED identity gets here: zeta_pf_validate_identity refuses
+  # anything that is not RFC1123-shaped, and an unvalidatable identity has
+  # already stopped the install at the cancel window.
+  if [ -n "${ZETA_REPAIR_NODE_ID:-}" ]; then
+    echo "[R4-repair]  reusing the recovered node id instead of generating a new one: $ZETA_REPAIR_NODE_ID"
+    sudo mkdir -p "$(dirname "$HOSTNAME_DST")"
+    echo "$ZETA_REPAIR_NODE_ID" | sudo tee "$HOSTNAME_DST" >/dev/null
+    sudo chmod 0644 "$HOSTNAME_DST"
+    echo "[R4-repair]  wrote $HOSTNAME_DST (no duplicate MAC registration)"
+  else
   echo "[iter-5.2.2] generating fresh random hostname on-node (per-install unique) ..."
   GENERATED_HOSTNAME="node-$(head -c 3 /dev/urandom | xxd -p)"
   if echo "$GENERATED_HOSTNAME" \
@@ -975,6 +1647,7 @@ else
   else
     echo "[iter-5.2.2]   WARN: generation produced invalid hostname '$GENERATED_HOSTNAME'"
     echo "[iter-5.2.2]          falling back to flake default ($HOST)"
+  fi
   fi
 fi
 echo
