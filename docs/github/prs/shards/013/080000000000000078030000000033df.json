@@ -1,0 +1,12 @@
+{
+  "pr_number": 13279,
+  "archive_path": "docs/history/pr-reviews/PR-13279-ci-k8s-the-deepest-cluster-proof-was-advisory-and-hid-a-4-5-day-real-failure.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-21T17:41:30.810Z",
+  "schema_version": "v1",
+  "commit_sha": "bb01e50c46fa097b565041709d17c193d63ac7ea",
+  "title": "ci(k8s): the deepest cluster proof was advisory — and hid a 4.5-day real failure",
+  "state": "MERGED",
+  "merged_at": "2026-08-21T17:40:52Z",
+  "head_ref": "ci/synced-healthy-proof-can-actually-fail"
+}
