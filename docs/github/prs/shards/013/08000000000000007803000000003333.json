@@ -1,0 +1,12 @@
+{
+  "pr_number": 13107,
+  "archive_path": "docs/history/pr-reviews/PR-13107-feat-installer-probe-before-wiping-a-cancel-window-that-exists-a-non-volatile-br.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-21T07:02:12.118Z",
+  "schema_version": "v1",
+  "commit_sha": "74c2054c28008d78decb8b02fdd98bf752822790",
+  "title": "feat(installer): probe before wiping, a cancel window that exists, a non-volatile breaker, and recognise-self repair (R6/R7/R9/R4)",
+  "state": "MERGED",
+  "merged_at": "2026-08-21T07:01:30Z",
+  "head_ref": "installer/destructive-path-probe-window-breaker-repair"
+}
