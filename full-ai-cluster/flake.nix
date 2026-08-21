@@ -236,6 +236,29 @@
             pkgs.runCommand "secure-boot-desired-state-model" { inherit (report) status; } ''
               echo "$status" | tee "$out"
             '';
+
+          # Properties of the FIRST-BOOT MANIFEST ROSTER -- the manifests
+          # every other test in nixos/tests/ overrides away with mkForce, so
+          # the declared boot sequence had no check of any kind.
+          #
+          # NOT a VM test and NOT a boot test. It reads the roster the two
+          # contributing modules declare, reconstructs the filename-sorted
+          # order k3s submits them in, and pins it. It CANNOT say whether an
+          # apply succeeds -- k3s-first-boot-roster (x86_64-linux, below) is
+          # the test that measures that.
+          #
+          # Costs no VM, runs on every system, and its assertions fire during
+          # EVALUATION -- so `nix flake check --no-build` already runs it.
+          k3s-first-boot-apply-order =
+            let
+              report = import ./nixos/tests/k3s-first-boot-apply-order-eval-test.nix {
+                inherit pkgs;
+                inherit (nixpkgs) lib;
+              };
+            in
+            pkgs.runCommand "k3s-first-boot-apply-order" { inherit (report) status; } ''
+              echo "$status" | tee "$out"
+            '';
         } // nixpkgs.lib.optionalAttrs (system == "x86_64-linux") {
           # Regression test for the k3s --cluster-init token deadlock:
           # boots the control-plane k3s module in QEMU and asserts the API
@@ -277,6 +300,22 @@
           # See nixos/tests/longhorn-volume-binds.nix.
           longhorn-volume-binds =
             import ./nixos/tests/longhorn-volume-binds.nix { inherit pkgs; };
+
+          # THE ONLY CHECK THAT APPLIES THE REAL FIRST-BOOT ROSTER. Every
+          # other VM test above overrides `services.k3s.manifests` away, so
+          # the declared boot sequence had never run anywhere. This one boots
+          # it whole and answers the open question: does root-application --
+          # an argoproj.io Application submitted before the ArgoCD chart has
+          # created that CRD -- apply, or stick? Three named verdicts, never
+          # a bare timeout. See nixos/tests/k3s-first-boot-roster.nix.
+          #
+          # REQUIRES internet -> build with `--option sandbox false`.
+          # THE MOST EXPENSIVE CHECK HERE: 45-70 min, ~10 GB of pulls, 10 GB
+          # RAM. Manual / nightly lane -- do NOT wire it per-PR. The per-PR
+          # half of the same question is `k3s-first-boot-apply-order`, which
+          # is eval-only and costs nothing.
+          k3s-first-boot-roster =
+            import ./nixos/tests/k3s-first-boot-roster.nix { inherit pkgs; };
 
           # EVAL-ONLY (no VM, no boot): asserts that the preflight-attestation
           # gate in nixos/modules/nvidia-open-guard.nix still REFUSES an

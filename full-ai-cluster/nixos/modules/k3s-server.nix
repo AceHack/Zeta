@@ -76,32 +76,74 @@
       "--service-cidr=10.43.0.0/16"
     ];
 
-    # K3S applies these manifests on first boot in dependency order.
-    # Each layer depends on the one(s) above it; ArgoCD comes LAST
-    # so its own pods can use cert-manager TLS + Vault secrets +
-    # SPIRE identities on bring-up.
+    # ORDERING: what the mechanism actually does.
     #
-    # Order (per Aaron 2026-05-25):
-    #   1. Cilium  (CNI + KPR + Hubble + Cilium Service Mesh + BPF MASQUERADE)
-    #   2. cert-manager  (TLS certs; Vault depends on these)
-    #   3. Vault   (most other tools depend on it)
-    #   4. SPIRE   (chains to Vault as upstream CA)
-    #   5. Trust Manager  (distributes SPIRE + cert-manager bundles)
-    #   6. External Secrets Operator  (syncs Vault secrets into K8s)
-    #   7. ArgoCD  (reconciles everything else from k8s/applications/)
+    # This block replaces a comment that was wrong on its own mechanism. It
+    # claimed alphabetical order was sufficient and that "ArgoCD comes LAST".
+    # ArgoCD is applied SECOND. The correction is below, and it is checked --
+    # nixos/tests/k3s-first-boot-apply-order-eval-test.nix pins the order this
+    # roster produces, so this comment cannot drift back without going red.
     #
-    # K3S applies manifests in alphabetical filename order, so
-    # `00-`/`10-`/`20-`/.../`70-` prefixes are NOT needed —
-    # `cert-manager-install.yaml` < `cilium-install.yaml` <
-    # `external-secrets-install.yaml` ... etc. is fine because the
-    # Helm Controller waits for each chart's pods to be Ready before
-    # the next chart's pods start contending. But Helm Controller
-    # runs the install jobs in parallel by default — the dependency
-    # ordering above is enforced by setting `spec.timeout` +
-    # `spec.repo` in a way that lets later charts retry while their
-    # dependencies finish. For deterministic ordering during
-    # bootstrap, the `bootstrapAfter` annotation pattern (TBD) would
-    # be added in a follow-up.
+    # 1. NixOS writes each attribute as ONE FLAT FILE named `<attr>.yaml` in
+    #    /var/lib/rancher/k3s/server/manifests. (nixpkgs
+    #    nixos/modules/services/cluster/rancher/default.nix: `mkManifestTarget`
+    #    appends ".yaml" unless the attr already ends .yaml/.yml/.json, and
+    #    `target` defaults to it via mkDefault.) So the attribute name IS the
+    #    filename, and no directory structure is possible here.
+    #
+    # 2. The k3s deploy controller submits those files in LEXICAL FILENAME
+    #    order -- with the ".yaml" suffix included, which is why sorting the
+    #    attribute names alone would give a different answer the moment two
+    #    names share a prefix. Today that order is:
+    #
+    #      aa-gateway-api-crds -> argocd-install -> argocd-namespace ->
+    #      cert-manager-install -> cilium-install -> cilium-namespace ->
+    #      external-secrets-install -> local-path-provisioner (from
+    #      local-storage.nix) -> root-application -> spire-install ->
+    #      trust-manager-install
+    #
+    # 3. SUBMISSION ORDER IS NOT DEPENDENCY ORDER, and no renaming can make it
+    #    one. The deploy controller submits all eleven files within seconds of
+    #    the API server starting; helm-controller then takes MINUTES per chart
+    #    Job. So every chart in this roster is in flight simultaneously
+    #    regardless of where its file sorts.
+    #
+    # 4. What survives that, and why:
+    #      - `*-install` sorting BEFORE its own `*-namespace` (argocd, cilium)
+    #        is harmless: both objects are submitted in the same pass, seconds
+    #        apart, and the namespace exists long before the chart Job runs.
+    #      - cert-manager sorting before cilium is harmless for the same
+    #        reason plus helm-controller retry: cert-manager pods stay Pending
+    #        until Cilium supplies a CNI, then schedule.
+    #      - Only `bootstrap: true` (cilium) tolerates the not-ready NoSchedule
+    #        taint; everything else waits for the node to go Ready, which is
+    #        the intended sequencing and needs no filename to express it.
+    #
+    # 5. What does NOT obviously survive it -- the one open question:
+    #      `root-application.yaml` is an argoproj.io/v1alpha1 Application, and
+    #      the CRD for that kind is created by the ArgoCD HELM CHART. The
+    #      deploy controller submits root-application seconds into boot, into
+    #      an API server that has never heard of the kind. helm-controller
+    #      retries its charts; whether the DEPLOY controller retries an
+    #      unknown-kind apply is NOT established anywhere in this repo.
+    #      If it does not, the app-of-apps root never lands and a fresh
+    #      cluster halts at the bootstrap charts with no catalog and no
+    #      reconciler -- with every pod that did come up perfectly healthy.
+    #      Renaming it `zz-root-application` would NOT fix this (see 3).
+    #      nixos/tests/k3s-first-boot-roster.nix is the VM test that decides
+    #      it, with three named verdicts instead of a timeout. UNRUN as of
+    #      2026-08-21: it needs a KVM host, internet, and ~45-70 min.
+    #
+    # The DEPENDENCY INTENT below (per Aaron 2026-05-25) is retained because
+    # it is the design, but note it is expressed in ArgoCD sync waves and in
+    # helm-controller retry -- NOT in this roster's filenames:
+    #   1. Cilium (CNI + KPR + Hubble + BPF MASQUERADE)
+    #   2. cert-manager (TLS certs)
+    #   3. Vault (NOT in this roster -- see the note below; ArgoCD owns it)
+    #   4. SPIRE (self-signed CA today)
+    #   5. Trust Manager (distributes SPIRE + cert-manager bundles)
+    #   6. External Secrets Operator
+    #   7. ArgoCD (reconciles everything else from k8s/applications/)
     manifests = {
       # Gateway API CRDs — MUST exist before Cilium (gatewayAPI.enabled) and
       # cert-manager (ExperimentalGatewayAPISupport) start, else cert-manager
