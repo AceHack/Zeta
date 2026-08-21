@@ -269,7 +269,10 @@ describe("081KSXN940008QG0R000SCP2H1 argocd-health-test manifest parsing", () =>
     expect(applications.some((app) => app.dir === "cilium" && app.excludedFromDev)).toBe(true);
     expect(applications.some((app) => app.dir === "cilium-lb-ipam" && app.excludedFromDev)).toBe(true);
     expect(applications.some((app) => app.dir === "longhorn" && app.excludedFromDev)).toBe(true);
-    expect(applications.some((app) => app.dir === "vault" && app.excludedFromDev)).toBe(true);
+    // `vault` LIFTED 2026-08-21: the ephemeral init ceremony runs in this lane,
+    // so it is asserted rather than deferred. Pinned as NOT excluded, which is
+    // the assertion that goes red if someone re-defers it.
+    expect(applications.some((app) => app.dir === "vault" && !app.excludedFromDev)).toBe(true);
     expect(applications.some((app) => app.dir === "agent-memory" && app.excludedFromDev)).toBe(true);
     expect(applications.some((app) => app.dir === "gitlab" && app.excludedFromDev)).toBe(true);
     expect(applications.some((app) => app.dir === "temporal" && app.excludedFromDev)).toBe(true);
@@ -292,9 +295,15 @@ describe("081KSXN940008QG0R000SCP2H1 argocd-health-test manifest parsing", () =>
    * the manual-sync one, which is the difference between this and the
    * cdi/kubevirt defect: `manualSync` must be false for all three.
    */
-  test("deepseek-coder, qwen-coder and orleans are asserted under the full Synced+Healthy contract", () => {
+  test("deepseek-coder, qwen-coder, orleans and vault are asserted under the full Synced+Healthy contract", () => {
     const applications = discoverExpectedApplications();
-    for (const dir of ["deepseek-coder", "qwen-coder", "orleans"]) {
+    // `vault` joined this guard on 2026-08-21. It is the one that matters most
+    // here: the whole point of running the ephemeral init ceremony is that Vault
+    // reaches GENUINELY Synced+Healthy. Asserting it under the manual-sync
+    // contract instead -- exists + compared, never synced -- would reproduce the
+    // exact cdi/kubevirt vacuity #13084 had to fix, and would let the lane go
+    // green while Vault sat sealed.
+    for (const dir of ["deepseek-coder", "qwen-coder", "orleans", "vault"]) {
       const app = applications.find((candidate) => candidate.dir === dir);
       expect(app, `${dir} must be discovered`).toBeDefined();
       expect(app?.excludedFromDev, `${dir} must not be excluded from the included proof`).toBe(false);
