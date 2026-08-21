@@ -19,7 +19,20 @@ import {
   profileBringUpGib,
   profileTotalGib,
   verifyProfileApplied,
+  applicationDirs,
+  applyResourceProfile,
+  auditEnvelopeAgainstMachine,
+  auditRunnerBudget,
+  crossCheckResourceCoverage,
+  devLaneAppliedDirs,
+  envelopeBudget,
+  loadResourceCatalogue,
+  measureRunner,
+  pinnedChartVersion,
+  resourceTotal,
+  verifyResourceProfileApplied,
   type ExtractedClaim,
+  type ResourceCatalogue,
 } from "./storage-profiles.ts";
 
 // ---------------------------------------------------------------------------
@@ -763,6 +776,557 @@ describe("the checked-in catalogue", () => {
       const drops = Math.max(...counts) > Math.min(...counts);
       if (!drops) continue;
       expect(claim.consequence).toMatch(/HA LOSS|HA is real|no quorum|Raft/i);
+    }
+  });
+});
+
+// ===========================================================================
+// The CPU / memory ladder. Same discipline: every green case is paired with
+// the red case the same code path must reject, and the checked-in catalogue is
+// pinned to the numbers that were actually measured.
+// ===========================================================================
+
+const RESOURCE_APP = `apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: svc
+spec:
+  source:
+    repoURL: https://example.invalid/charts
+    chart: svc
+    targetRevision: 1.2.3
+    helm:
+      valuesObject:
+        # the comment has to survive the applier
+        replicaCount: 1
+`;
+
+function resourceCatalogueJson(patch: {
+  claim?: Record<string, unknown>;
+  ungoverned?: readonly Record<string, unknown>[];
+  envelope?: Record<string, unknown>;
+  acknowledged?: readonly string[];
+  profiles?: readonly string[];
+}): string {
+  return JSON.stringify({
+    resourceProfiles: patch.profiles ?? ["dev", "metal"],
+    runnerEnvelope: {
+      runner: "test runner",
+      cpuMillis: 4000,
+      memoryMib: 15360,
+      freeDiskGib: 14,
+      reservedCpuMillis: 1500,
+      reservedMemoryMib: 6144,
+      reservedDiskGib: 4,
+      reservationEvidence: "a fixture, not a machine",
+      ...patch.envelope,
+    },
+    resourceClaims: [
+      {
+        id: "tree/svc/api",
+        dir: "svc",
+        path: "full-ai-cluster/k8s/applications/svc/Application.yaml",
+        docIndex: 0,
+        requestsField: "spec.source.helm.valuesObject.api.resources.requests",
+        pods: 1,
+        metalSource: "chart-default",
+        evidence: "svc 1.2.3 values.yaml api.resources.requests = 400m / 1024Mi",
+        consequence:
+          "At 128Mi the api pod is OOMKilled under load rather than running slower, which is a crash and not a slowdown.",
+        cpuMillis: { dev: 100, metal: 400 },
+        memoryMib: { dev: 128, metal: 1024 },
+        ...patch.claim,
+      },
+    ],
+    ungovernedRequests: patch.ungoverned ?? [],
+    acknowledgedUnmeasuredRequests: patch.acknowledged ?? [],
+  });
+}
+
+function resourceFixture(patch: Parameters<typeof resourceCatalogueJson>[0] = {}): Fixture {
+  return fixture({
+    "profiles.json": resourceCatalogueJson(patch),
+    "full-ai-cluster/k8s/applications/svc/Application.yaml": RESOURCE_APP,
+  });
+}
+
+describe("loadResourceCatalogue refusals — each one keeps a rung from meaning nothing", () => {
+  test("a well-formed catalogue loads", () => {
+    const fix = resourceFixture();
+    try {
+      const catalogue = loadResourceCatalogue("profiles.json", fix.root);
+      expect(catalogue.profiles).toEqual(["dev", "metal"]);
+      expect(catalogue.claims).toHaveLength(1);
+      expect(envelopeBudget(catalogue.envelope)).toEqual({ cpuMillis: 2500, memoryMib: 9216, diskGib: 10 });
+    } finally {
+      fix.cleanup();
+    }
+  });
+
+  test("refuses a rung that CLIMBS DOWN — the ladder must be smallest-first", () => {
+    const fix = resourceFixture({ claim: { cpuMillis: { dev: 900, metal: 400 } } });
+    try {
+      expect(() => loadResourceCatalogue("profiles.json", fix.root)).toThrow(/monotonically non-decreasing/);
+    } finally {
+      fix.cleanup();
+    }
+  });
+
+  test("refuses a chart-default row with no evidence — an unsourced number is an assertion", () => {
+    const fix = resourceFixture({ claim: { evidence: "  " } });
+    try {
+      expect(() => loadResourceCatalogue("profiles.json", fix.root)).toThrow(/assertion wearing a number/);
+    } finally {
+      fix.cleanup();
+    }
+  });
+
+  test("refuses a multiplied pod count with no evidence, even when the value is ours", () => {
+    const fix = resourceFixture({ claim: { metalSource: "manifest", evidence: "", pods: 3 } });
+    try {
+      expect(() => loadResourceCatalogue("profiles.json", fix.root)).toThrow(/assertion wearing a number/);
+    } finally {
+      fix.cleanup();
+    }
+  });
+
+  test("a manifest row with ONE pod needs no evidence — the bar is only where a debt is owed", () => {
+    const fix = resourceFixture({ claim: { metalSource: "manifest", evidence: "", pods: 1 } });
+    try {
+      expect(loadResourceCatalogue("profiles.json", fix.root).claims).toHaveLength(1);
+    } finally {
+      fix.cleanup();
+    }
+  });
+
+  // The rule that makes this ladder different from a table of numbers: a cut
+  // below the working set is an OOMKill with a nicer name.
+  test("refuses a row that CUTS a request without pricing the cut", () => {
+    const fix = resourceFixture({ claim: { consequence: "smaller" } });
+    try {
+      expect(() => loadResourceCatalogue("profiles.json", fix.root)).toThrow(/turns a Pending pod into an OOMKill/);
+    } finally {
+      fix.cleanup();
+    }
+  });
+
+  test("...but a row that cuts NOTHING needs no price", () => {
+    const fix = resourceFixture({
+      claim: { consequence: "not cut", cpuMillis: { dev: 400, metal: 400 }, memoryMib: { dev: 1024, metal: 1024 } },
+    });
+    try {
+      expect(loadResourceCatalogue("profiles.json", fix.root).claims).toHaveLength(1);
+    } finally {
+      fix.cleanup();
+    }
+  });
+
+  test("refuses an envelope that reserves everything it declares", () => {
+    const fix = resourceFixture({ envelope: { reservedMemoryMib: 15360 } });
+    try {
+      expect(() => loadResourceCatalogue("profiles.json", fix.root)).toThrow(/reserves everything it declares/);
+    } finally {
+      fix.cleanup();
+    }
+  });
+
+  test("refuses a half-measured ungoverned row — both numbers or neither", () => {
+    const fix = resourceFixture({
+      ungoverned: [{ dir: "other", cpuMillis: 100, memoryMib: null, evidence: "half" }],
+    });
+    try {
+      expect(() => loadResourceCatalogue("profiles.json", fix.root)).toThrow(/half-measured/);
+    } finally {
+      fix.cleanup();
+    }
+  });
+
+  test("refuses a directory counted twice — once governed, once ungoverned", () => {
+    const fix = resourceFixture({
+      ungoverned: [{ dir: "svc", cpuMillis: 0, memoryMib: 0, evidence: "duplicate" }],
+    });
+    try {
+      expect(() => loadResourceCatalogue("profiles.json", fix.root)).toThrow(/counted twice/);
+    } finally {
+      fix.cleanup();
+    }
+  });
+
+  test("a zero request is legal and is NOT the same as a missing one", () => {
+    const fix = resourceFixture({
+      claim: {
+        consequence: "not cut",
+        cpuMillis: { dev: 0, metal: 0 },
+        memoryMib: { dev: 128, metal: 128 },
+      },
+    });
+    try {
+      const catalogue = loadResourceCatalogue("profiles.json", fix.root);
+      expect(catalogue.claims[0]?.cpuMillis.dev).toBe(0);
+    } finally {
+      fix.cleanup();
+    }
+  });
+});
+
+describe("resource arithmetic and the runner budget", () => {
+  test("a claim's cost is its rung value times its pod count", () => {
+    const fix = resourceFixture({ claim: { pods: 3, metalSource: "manifest" } });
+    try {
+      const catalogue = loadResourceCatalogue("profiles.json", fix.root);
+      expect(resourceTotal(catalogue, "dev", ["svc"])).toEqual({
+        cpuMillis: 300,
+        memoryMib: 384,
+        unmeasured: [],
+      });
+    } finally {
+      fix.cleanup();
+    }
+  });
+
+  // The hole this closes: a total summed only over the apps we chose to shrink
+  // is exactly what "it fits" would be claimed from.
+  test("a cohort member the catalogue does not cover is REPORTED, never skipped", () => {
+    const fix = resourceFixture();
+    try {
+      const catalogue = loadResourceCatalogue("profiles.json", fix.root);
+      expect(resourceTotal(catalogue, "dev", ["svc", "ghost"]).unmeasured).toEqual(["ghost"]);
+    } finally {
+      fix.cleanup();
+    }
+  });
+
+  test("an UNMEASURED ungoverned row does not silently count as zero", () => {
+    const fix = resourceFixture({
+      ungoverned: [{ dir: "other", cpuMillis: null, memoryMib: null, evidence: "chart 404s at its pin" }],
+    });
+    try {
+      const catalogue = loadResourceCatalogue("profiles.json", fix.root);
+      expect(resourceTotal(catalogue, "dev", ["other"]).unmeasured).toEqual(["other"]);
+    } finally {
+      fix.cleanup();
+    }
+  });
+
+  test("coverage is cross-checked in BOTH directions against the tree", () => {
+    const fix = fixture({
+      "profiles.json": resourceCatalogueJson({
+        ungoverned: [{ dir: "gone", cpuMillis: 0, memoryMib: 0, evidence: "stale" }],
+      }),
+      "full-ai-cluster/k8s/applications/svc/Application.yaml": RESOURCE_APP,
+      "full-ai-cluster/k8s/applications/uncovered/Application.yaml": RESOURCE_APP,
+    });
+    try {
+      const catalogue = loadResourceCatalogue("profiles.json", fix.root);
+      const findings = crossCheckResourceCoverage(catalogue, fix.root);
+      expect(findings.map((finding) => finding.claimId).sort()).toEqual(["uncovered", "ungovernedRequests.gone"]);
+    } finally {
+      fix.cleanup();
+    }
+  });
+
+  test("auditRunnerBudget convicts when a rung does not fit, and is silent when it does", () => {
+    // 20 pods: metal is 8000m / 20480Mi (over the 2500m / 9216Mi budget in both
+    // dimensions), dev is 2000m / 2560Mi (under it in both). One fixture, both verdicts.
+    const fix = resourceFixture({ claim: { pods: 20, metalSource: "manifest" } });
+    try {
+      const catalogue = loadResourceCatalogue("profiles.json", fix.root);
+      const over = auditRunnerBudget(catalogue, "metal", fix.root);
+      expect(over.some((finding) => finding.problem.includes("of CPU across"))).toBe(true);
+      expect(over.some((finding) => finding.problem.includes("of memory across"))).toBe(true);
+      expect(auditRunnerBudget(catalogue, "dev", fix.root)).toEqual([]);
+    } finally {
+      fix.cleanup();
+    }
+  });
+
+  test("a rung that does not exist REFUSES rather than reporting agreement", () => {
+    const fix = resourceFixture();
+    try {
+      const catalogue = loadResourceCatalogue("profiles.json", fix.root);
+      const findings = auditRunnerBudget(catalogue, "nonexistent", fix.root);
+      expect(findings).toHaveLength(1);
+      expect(findings[0]?.problem).toMatch(/must never read as "checked"/);
+    } finally {
+      fix.cleanup();
+    }
+  });
+});
+
+describe("verifyResourceProfileApplied — absent means chart default, not 'applied'", () => {
+  test("an absent coordinate IS the metal rung for a chart-default row", () => {
+    const fix = resourceFixture();
+    try {
+      const catalogue = loadResourceCatalogue("profiles.json", fix.root);
+      expect(verifyResourceProfileApplied(catalogue, "metal", fix.root)).toEqual([]);
+    } finally {
+      fix.cleanup();
+    }
+  });
+
+  test("...and is DRIFT for any smaller rung — a rung nobody applied must not read as applied", () => {
+    const fix = resourceFixture();
+    try {
+      const catalogue = loadResourceCatalogue("profiles.json", fix.root);
+      const findings = verifyResourceProfileApplied(catalogue, "dev", fix.root);
+      expect(findings).toHaveLength(2);
+      expect(findings[0]?.problem).toMatch(/has no value at .*\.cpu/);
+    } finally {
+      fix.cleanup();
+    }
+  });
+
+  test("a zero request must be an ABSENT key, never `cpu: 0`", () => {
+    const fix = fixture({
+      "profiles.json": resourceCatalogueJson({
+        claim: {
+          consequence: "not cut",
+          cpuMillis: { dev: 0, metal: 0 },
+          memoryMib: { dev: 128, metal: 128 },
+        },
+      }),
+      "full-ai-cluster/k8s/applications/svc/Application.yaml": `apiVersion: argoproj.io/v1alpha1
+kind: Application
+spec:
+  source:
+    helm:
+      valuesObject:
+        api:
+          resources:
+            requests:
+              cpu: 0
+              memory: 128Mi
+`,
+    });
+    try {
+      const catalogue = loadResourceCatalogue("profiles.json", fix.root);
+      const findings = verifyResourceProfileApplied(catalogue, "dev", fix.root);
+      expect(findings).toHaveLength(1);
+      expect(findings[0]?.problem).toMatch(/a zero request is an ABSENT key/);
+    } finally {
+      fix.cleanup();
+    }
+  });
+});
+
+describe("applyResourceProfile", () => {
+  test("CREATES the coordinate a chart-default row names, and keeps the comments", () => {
+    const fix = resourceFixture();
+    try {
+      const catalogue = loadResourceCatalogue("profiles.json", fix.root);
+      const edits = applyResourceProfile(catalogue, "dev", fix.root);
+      expect(edits.map((edit) => edit.from)).toEqual(["(absent)", "(absent)"]);
+      const written = readFileSync(join(fix.root, "full-ai-cluster/k8s/applications/svc/Application.yaml"), "utf8");
+      expect(written).toContain("cpu: 100m");
+      expect(written).toContain("memory: 128Mi");
+      expect(written).toContain("# the comment has to survive the applier");
+      expect(verifyResourceProfileApplied(catalogue, "dev", fix.root)).toEqual([]);
+    } finally {
+      fix.cleanup();
+    }
+  });
+
+  test("round-trips: dev then metal leaves the tree agreeing with metal again", () => {
+    const fix = resourceFixture();
+    try {
+      const catalogue = loadResourceCatalogue("profiles.json", fix.root);
+      applyResourceProfile(catalogue, "dev", fix.root);
+      applyResourceProfile(catalogue, "metal", fix.root);
+      expect(verifyResourceProfileApplied(catalogue, "metal", fix.root)).toEqual([]);
+    } finally {
+      fix.cleanup();
+    }
+  });
+
+  test("never writes `cpu: 0` for a zero request", () => {
+    const fix = resourceFixture({
+      claim: {
+        consequence: "not cut",
+        cpuMillis: { dev: 0, metal: 0 },
+        memoryMib: { dev: 128, metal: 128 },
+      },
+    });
+    try {
+      const catalogue = loadResourceCatalogue("profiles.json", fix.root);
+      applyResourceProfile(catalogue, "dev", fix.root);
+      const written = readFileSync(join(fix.root, "full-ai-cluster/k8s/applications/svc/Application.yaml"), "utf8");
+      // `not.toContain("cpu: 0")` was NOT enough and the mutation check caught
+      // it: formatCpu(0) is the string "0", which the YAML writer emits QUOTED
+      // as `cpu: "0"` -- so the substring assertion passed on the exact output
+      // it existed to reject. The key must simply not be there at all.
+      expect(written).not.toMatch(/cpu:/);
+      expect(written).toContain("memory: 128Mi");
+    } finally {
+      fix.cleanup();
+    }
+  });
+
+  test("--dry-run leaves the file alone", () => {
+    const fix = resourceFixture();
+    try {
+      const catalogue = loadResourceCatalogue("profiles.json", fix.root);
+      const path = join(fix.root, "full-ai-cluster/k8s/applications/svc/Application.yaml");
+      const before = readFileSync(path, "utf8");
+      expect(applyResourceProfile(catalogue, "dev", fix.root, false)).toHaveLength(2);
+      expect(readFileSync(path, "utf8")).toBe(before);
+    } finally {
+      fix.cleanup();
+    }
+  });
+});
+
+describe("the runner envelope's own falsifier", () => {
+  test("a machine SMALLER than the envelope convicts", () => {
+    const fix = resourceFixture();
+    try {
+      const { envelope } = loadResourceCatalogue("profiles.json", fix.root);
+      const findings = auditEnvelopeAgainstMachine(envelope, { cpuMillis: 2000, memoryMib: 4096 });
+      expect(findings).toHaveLength(2);
+      expect(findings[0]?.problem).toMatch(/too generous/);
+    } finally {
+      fix.cleanup();
+    }
+  });
+
+  test("a BIGGER machine is slack, not a defect", () => {
+    const fix = resourceFixture();
+    try {
+      const { envelope } = loadResourceCatalogue("profiles.json", fix.root);
+      expect(auditEnvelopeAgainstMachine(envelope, { cpuMillis: 8000, memoryMib: 32768 })).toEqual([]);
+    } finally {
+      fix.cleanup();
+    }
+  });
+
+  // The whole point of this comparator: an unread one must not read as passing.
+  test("an unreadable machine is a REFUSAL, never a pass", () => {
+    const fix = resourceFixture();
+    try {
+      const { envelope } = loadResourceCatalogue("profiles.json", fix.root);
+      const findings = auditEnvelopeAgainstMachine(envelope, null);
+      expect(findings).toHaveLength(1);
+      expect(findings[0]?.problem).toMatch(/an unread comparator is an absent check/);
+    } finally {
+      fix.cleanup();
+    }
+  });
+
+  test("measureRunner refuses a platform with no /proc rather than guessing", () => {
+    expect(measureRunner(join(tmpdir(), "definitely-not-a-proc-filesystem"))).toBeNull();
+  });
+});
+
+describe("the checked-in resource ladder", () => {
+  const catalogue = loadResourceCatalogue();
+
+  test("covers every Application in the tree, in both directions", () => {
+    expect(crossCheckResourceCoverage(catalogue)).toEqual([]);
+    const covered = new Set([
+      ...catalogue.claims.map((claim) => claim.dir),
+      ...catalogue.ungoverned.map((app) => app.dir),
+    ]);
+    expect(covered.size).toBe(applicationDirs().length);
+  });
+
+  // The dev lane's applied set comes from ports.ts's excludeGlob, so this
+  // number moves only when that constant does.
+  test("the dev lane applies 33 of the 45 Applications", () => {
+    expect(applicationDirs()).toHaveLength(45);
+    expect(devLaneAppliedDirs()).toHaveLength(33);
+  });
+
+  // MEASURED 2026-08-21 by `helm pull` at each pinned targetRevision followed
+  // by `helm template` against that Application's own valuesObject. These are
+  // pinned so the ladder cannot drift away from what was actually rendered.
+  test("metal is exactly what the manifests render today", () => {
+    expect(verifyResourceProfileApplied(catalogue, "metal")).toEqual([]);
+    const lane = resourceTotal(catalogue, "metal", devLaneAppliedDirs());
+    expect(lane.cpuMillis).toBe(4131);
+    expect(lane.memoryMib).toBe(11299);
+    const all = resourceTotal(catalogue, "metal", applicationDirs());
+    expect(all.cpuMillis).toBe(9756);
+    expect(all.memoryMib).toBe(23400);
+  });
+
+  // Aaron 2026-08-20: "make things small enough to fit for disk and ram on the
+  // runners." This is that, and it is a test so it cannot drift upward without
+  // somebody deciding to let it.
+  test("dev fits the runner and metal does not — the ladder is not decorative", () => {
+    expect(auditRunnerBudget(catalogue, "dev")).toEqual([]);
+    expect(auditRunnerBudget(catalogue, "metal").length).toBeGreaterThan(0);
+    const lane = resourceTotal(catalogue, "dev", devLaneAppliedDirs());
+    const budget = envelopeBudget(catalogue.envelope);
+    expect(lane.cpuMillis).toBe(1806);
+    expect(lane.memoryMib).toBe(6079);
+    expect(lane.cpuMillis).toBeLessThan(budget.cpuMillis);
+    expect(lane.memoryMib).toBeLessThan(budget.memoryMib);
+  });
+
+  // Stated because it is the honest answer to the question that was asked, and
+  // a test is the only place it cannot quietly stop being true.
+  test("ALL 45 do not fit, at either rung — CPU runs out before memory does", () => {
+    const budget = envelopeBudget(catalogue.envelope);
+    for (const rung of catalogue.profiles) {
+      const all = resourceTotal(catalogue, rung, applicationDirs());
+      expect(all.cpuMillis).toBeGreaterThan(budget.cpuMillis);
+      expect(all.memoryMib).toBeGreaterThan(budget.memoryMib);
+    }
+    expect(resourceTotal(catalogue, "metal", applicationDirs()).cpuMillis).toBeGreaterThan(
+      catalogue.envelope.cpuMillis,
+    );
+  });
+
+  // The two apps nobody could measure. The acknowledgement is keyed by the pin
+  // so a chart bump invalidates it instead of inheriting it.
+  test("the unmeasured apps are named, pinned and acknowledged — not counted as free", () => {
+    const lane = resourceTotal(catalogue, "dev", devLaneAppliedDirs());
+    expect(lane.unmeasured).toEqual(["forgejo", "oz"]);
+    expect([...catalogue.acknowledgedUnmeasured].sort()).toEqual(["forgejo@9.0.6", "oz@1.4.5"]);
+    expect(pinnedChartVersion("forgejo")).toBe("9.0.6");
+    expect(pinnedChartVersion("oz")).toBe("1.4.5");
+  });
+
+  test("an acknowledgement whose pin has moved stops applying", () => {
+    const stale: ResourceCatalogue = { ...catalogue, acknowledgedUnmeasured: ["forgejo@8.0.0", "oz@1.4.5"] };
+    const findings = auditRunnerBudget(stale, "dev");
+    expect(findings.some((finding) => finding.claimId === "forgejo")).toBe(true);
+  });
+
+  test("every row that cuts a request states what the cut costs", () => {
+    for (const claim of catalogue.claims) {
+      const cuts =
+        (claim.cpuMillis.dev ?? 0) < (claim.cpuMillis.metal ?? 0) ||
+        (claim.memoryMib.dev ?? 0) < (claim.memoryMib.metal ?? 0);
+      if (!cuts) continue;
+      expect(claim.consequence.trim().length).toBeGreaterThan(60);
+    }
+  });
+
+  // A cut whose price is "it gets OOMKilled" has to say so out loud, because
+  // that is the failure this whole mechanism can cause and not prevent.
+  //
+  // Scoped to rows reserving 256Mi or more on metal, and the scope is the
+  // claim: a container with a real working set is one this ladder can starve,
+  // so its row owes a named failure mode. A 64Mi sidecar that idles on a
+  // one-node kind cluster does not, and demanding the vocabulary there would
+  // buy keyword-stuffing rather than a reason.
+  test("every memory cut on a container with a real working set names the failure mode it buys", () => {
+    const cutters = catalogue.claims.filter(
+      (claim) => (claim.memoryMib.dev ?? 0) < (claim.memoryMib.metal ?? 0) && (claim.memoryMib.metal ?? 0) >= 256,
+    );
+    expect(cutters.length).toBeGreaterThan(5);
+    for (const claim of cutters) {
+      expect(claim.consequence).toMatch(/OOMKill|crash|latency|re-fetch|rejected|pushed back|stall/i);
+    }
+  });
+
+  test("every chart-default number cites the chart, and every multiplied count cites its formula", () => {
+    for (const claim of catalogue.claims) {
+      if (claim.metalSource === "manifest" && claim.pods === 1) continue;
+      expect(claim.evidence.trim().length).toBeGreaterThan(30);
+    }
+    for (const app of catalogue.ungoverned) {
+      expect(app.evidence.trim().length).toBeGreaterThan(20);
     }
   });
 });

@@ -139,6 +139,859 @@
     "wearing the face of one that passed."
   ],
 
+  "$comment_resources": [
+    "CPU / MEMORY PROFILES -- the same ladder, for what the DEV RUNNER runs out of first.",
+    "",
+    "Read by src/Core.TypeScript/cluster/storage-profiles.ts. List with",
+    "`bun src/Core.TypeScript/cluster/storage-profiles.ts --resource-list`; check the",
+    "budget with `--resource-profile dev --budget`; write a rung into the manifests",
+    "with `--resource-profile <name> --apply`.",
+    "",
+    "Aaron 2026-08-20: 'sounds like we can set some resource limits for our dev",
+    "runners and different defaults for physical hardware, we should try to make",
+    "things small enough to fit for disk and ram on the runners.'",
+    "",
+    "== THE TWO RUNGS ========================================================",
+    "  dev     sized to fit a GitHub-hosted `ubuntu-24.04` standard runner",
+    "  metal   BYTE-FOR-BYTE what the manifests render today",
+    "",
+    "`metal` is the status quo for the same reason `large` is, one ladder up in",
+    "this file: naming what already runs is not endorsing it, and it means nothing",
+    "here shrinks the hardware deployment. Only `dev` cuts.",
+    "",
+    "== WHAT WAS MEASURED, AND HOW ===========================================",
+    "Every number below came from `helm pull <chart> --version <pinned targetRevision>`",
+    "followed by `helm template` against THAT Application's own valuesObject, on",
+    "2026-08-21, summing `resources.requests` over every rendered container times its",
+    "workload's replica count. Not estimated, not read off a values file in isolation.",
+    "",
+    "  cohort                                       CPU        memory",
+    "  asserted by --scope included (19 apps)     1221m      3.91 GiB",
+    "  applied by the dev/CI root   (33 apps)     4131m     11.03 GiB",
+    "  every Application            (45 apps)     9756m     22.85 GiB",
+    "",
+    "So the honest answer to 'can all 45 fit in 4 vCPU / 16 GB': NO, and CPU runs out",
+    "first -- 9756m of requests against 4000m of runner. The 19 the lane asserts today",
+    "fit with room, which is why it is green; the 33 it APPLIES do not, and the only",
+    "reason that has not bitten is that 14 of them hang `Missing` on a longhorn",
+    "StorageClass the dev catalog excludes, so they never schedule a pod. That is a",
+    "reprieve, not a fit, and it evaporates the moment the StorageClass exists.",
+    "",
+    "At the `dev` rung the applied set is 1806m / 5.94 GiB, inside the budget.",
+    "All 45 at `dev` is still 7431m / 17.75 GiB -- over. Shrinking gitlab (2475m /",
+    "5.6 GiB) and temporal (3000m / 6.0 GiB) is what would close that, and neither is",
+    "governed here because neither is applied to a dev cluster; the dev rung does not",
+    "price apps the dev lane never runs.",
+    "",
+    "== A REQUEST IS A RESERVATION, NOT A MEASUREMENT ========================",
+    "Cutting a request below the app's real working set does not make the app smaller.",
+    "Without a matching limit it makes the pod more over-committed, and moves the",
+    "failure from a Pending pod (loud, scheduler-attributed) to the kernel OOM killer",
+    "(quiet, arbitrary). So every row that cuts has to say what the cut costs, and the",
+    "loader refuses one that does not.",
+    "",
+    "AND THE SUM IS A FLOOR, NOT THE REQUIREMENT. 28 of the 45 Applications render",
+    "pods that request NOTHING (`resources: {}` chart defaults). Those pods are",
+    "BestEffort: the scheduler admits any number of them and no arithmetic here ever",
+    "sees them. The envelope's unreserved headroom is what they actually run in.",
+    "",
+    "== DISK IS THE TIGHTER CONSTRAINT, AND IT IS NOT PVCs ===================",
+    "MEASURED 2026-08-21 by reading each rendered image's registry manifest and summing",
+    "its layer sizes, then measuring the compressed:uncompressed ratio by streaming and",
+    "gunzipping four of them (argocd v2.13.2 x2.69, loki 3.3.2 x3.21, kube-state-metrics",
+    "v2.14.0 x3.39, cockroach v24.2.4 x2.49 -- aggregate x2.67; containerd stores layers",
+    "UNCOMPRESSED, so that is the multiplier that matters):",
+    "",
+    "  cohort         distinct images   compressed   on disk at x2.67",
+    "  asserted 19                 39      1.61 GB           ~4.3 GB",
+    "  applied 33                  73     11.77 GB          ~31 GB",
+    "  all 45                     120     28.77 GB          ~77 GB",
+    "",
+    "Against ~14 GB free SSD. The asserted set fits with room; the applied set is over",
+    "by 2x and all 45 by 5.5x. Two images carry most of it: vllm/vllm-openai:latest at",
+    "9.1 GB compressed and ghcr.io/vectorize-io/hindsight-api:0.1.1 at 8.8 GB. vllm is",
+    "glob-excluded from the dev lane. HINDSIGHT IS NOT -- it is applied today, and the",
+    "only reason its ~23 GB does not land on a 14 GB disk is the same longhorn reprieve",
+    "above. No rung in this file changes that: a CPU/memory ladder cannot shrink an",
+    "image, and 11 of the 120 images could not be sized at all (4 private ghcr, 5",
+    "bitnami tags withdrawn from Docker Hub, 1 rate-limited, 1 404).",
+    "",
+    "AND THE PVC NUMBERS ONE LADDER UP DO NOT APPLY HERE. On kind the storage class is",
+    "local-path, which is a hostPath directory with NO quota: a PVC request reserves",
+    "nothing and consumes nothing until something writes. So a storage-heavy set can",
+    "look like it fits and then fill the disk under load. The GiB in this file's",
+    "storage ladder are scheduling reservations on Longhorn; on the runner they are not",
+    "bytes at all.",
+    "",
+    "== WHAT EACH FIELD MEANS ================================================",
+    "  requestsField  dotted path of the `requests` MAP; `.cpu` and `.memory` hang off it",
+    "  pods           how many pods this ONE value is multiplied by",
+    "  metalSource    manifest    our own valuesObject already sets it",
+    "                 chart-default  the upstream chart decides; `evidence` must cite",
+    "                                chart, version and values path, because no reader",
+    "                                of our YAML can find it otherwise",
+    "  cpuMillis 0    NOT a missing value. It means the container declares no CPU",
+    "                 reservation, which is what most chart defaults do, and the",
+    "                 verifier reads it as 'this key must be ABSENT'.",
+    "",
+    "HONEST LIMIT ON THE COVERAGE CHECK: it enumerates DEPTH-1 directories, i.e. the",
+    "45 `applications/<dir>/Application.yaml` files. ArgoCD's include glob is not",
+    "path-segment bounded, so the root ALSO applies",
+    "`applications/game-hosting/gmod/Application.yaml` -- a 46th Application this",
+    "check cannot see. It contributes 0m / 0Mi today (in-repo manifests, no requests,",
+    "and it fails its sync on every reconcile against gatekeeper's webhook), so no",
+    "total above is wrong. What is not guarded HERE is a FUTURE nested Application",
+    "that does request something. That case is already caught one check over:",
+    "app-of-apps-discovery.ts enumerates depth-2 and exits 1 on a second nested",
+    "Application, so adding one forces a human to look before it can hide in here.",
+    "",
+    "`ungovernedRequests` carries every Application no rung touches, with its measured",
+    "total, so the sums are over the whole tree and not over the subset we chose to",
+    "shrink. A directory in neither list fails the coverage check; a row naming a",
+    "directory that is gone fails it too. `null` means the chart could not be fetched",
+    "at its pinned version -- UNKNOWN, refused rather than counted as zero, unless",
+    "acknowledged in `acknowledgedUnmeasuredRequests` keyed by `<dir>@<pin>` so a",
+    "version bump invalidates the acknowledgement instead of inheriting it."
+  ],
+
+  "resourceProfiles": ["dev", "metal"],
+
+  "runnerEnvelope": {
+    "runner": "github-hosted ubuntu-24.04 standard",
+    "cpuMillis": 4000,
+    "memoryMib": 15360,
+    "freeDiskGib": 14,
+    "reservedCpuMillis": 1500,
+    "reservedMemoryMib": 6144,
+    "reservedDiskGib": 4,
+    "reservationEvidence": "THE CAPACITY HALF is GitHub's published spec for a hosted `ubuntu-24.04` standard runner (4 vCPU / 16 GB RAM / 14 GB free SSD). It is a vendor number, not one we measured, which is why `--measure-runner` exists: run on the runner it reads /proc/cpuinfo and /proc/meminfo and CONVICTS when the real machine is smaller than this record claims. 16 GB is recorded as 15360Mi because GB is decimal and Kubernetes quantities are binary. THE RESERVED HALF is 1500m / 6144Mi and splits three ways. (1) ~950m / ~290Mi for the kind control plane and kube-system, which the scheduler subtracts from allocatable before any Application is placed: kubeadm's static-pod defaults (apiserver 250m, controller-manager 200m, scheduler 100m, etcd 100m/100Mi), coredns 2 x 100m/70Mi, kindnet 100m/50Mi. argo-cd 7.7.10 adds nothing -- rendered 2026-08-21, every component's `resources` is unset. (2) ~550m / ~1536Mi ESTIMATED for what lives outside the kind node's cgroup and which the scheduler therefore cannot see at all: the host OS, the Actions runner agent, dockerd/containerd, and the bun harness driving the run. kind imposes no memory limit on its node container, so the kubelet reports the HOST's capacity as the node's -- meaning this slice is real and invisible, and under-reserving it shows up as the runner OOMing rather than as a Pending pod. (3) the remaining ~4300Mi is UNRESERVED HEADROOM for BestEffort pods. 28 of the 45 Applications render pods that request nothing, so the scheduler will admit any number of them and this arithmetic will never see one. That headroom is the only thing standing between them and the kernel OOM killer, and it is the reason this budget is deliberately not tight."
+  },
+
+  "resourceClaims": [
+    {
+      "id": "full-ai-cluster/arc-controller/manager",
+      "dir": "arc-controller",
+      "path": "full-ai-cluster/k8s/applications/arc-controller/Application.yaml",
+      "docIndex": 0,
+      "requestsField": "spec.source.helm.valuesObject.resources.requests",
+      "pods": 1,
+      "metalSource": "manifest",
+      "evidence": "",
+      "consequence": "The ARC controller watches runner scale sets. In the dev lane there is no GitHub App credential to bind, so it reconciles nothing; 64Mi is sized for that idle state and would be too small for a controller managing real runner sets.",
+      "cpuMillis": {
+        "dev": 50,
+        "metal": 100
+      },
+      "memoryMib": {
+        "dev": 64,
+        "metal": 128
+      }
+    },
+    {
+      "id": "full-ai-cluster/hindsight/api",
+      "dir": "hindsight",
+      "path": "full-ai-cluster/k8s/applications/hindsight/Application.yaml",
+      "docIndex": 0,
+      "requestsField": "spec.source.helm.valuesObject.api.resources.requests",
+      "pods": 1,
+      "metalSource": "chart-default",
+      "evidence": "hindsight 0.3.0 values.yaml api.resources.requests = 500m / 1Gi. Rendered and counted 2026-08-21.",
+      "consequence": "The API pod is the single largest memory reservation in the dev lane after mimir. 512Mi is a working-set bet, not a measurement -- if the real set is larger the pod OOMKills under query load rather than running slower. Its 8.8 GB container image is a far harder constraint than this number (see $comment_resources).",
+      "cpuMillis": {
+        "dev": 200,
+        "metal": 500
+      },
+      "memoryMib": {
+        "dev": 512,
+        "metal": 1024
+      }
+    },
+    {
+      "id": "full-ai-cluster/hindsight/control-plane",
+      "dir": "hindsight",
+      "path": "full-ai-cluster/k8s/applications/hindsight/Application.yaml",
+      "docIndex": 0,
+      "requestsField": "spec.source.helm.valuesObject.controlPlane.resources.requests",
+      "pods": 1,
+      "metalSource": "chart-default",
+      "evidence": "hindsight 0.3.0 values.yaml controlPlane.resources.requests = 250m / 512Mi. Rendered 2026-08-21.",
+      "consequence": "Control-plane reconciliation loop. At 256Mi a large reconcile batch is OOMKilled and retried from the top, so the cost is reconcile latency and churn, not lost state.",
+      "cpuMillis": {
+        "dev": 100,
+        "metal": 250
+      },
+      "memoryMib": {
+        "dev": 256,
+        "metal": 512
+      }
+    },
+    {
+      "id": "full-ai-cluster/hindsight/postgresql",
+      "dir": "hindsight",
+      "path": "full-ai-cluster/k8s/applications/hindsight/Application.yaml",
+      "docIndex": 0,
+      "requestsField": "spec.source.helm.valuesObject.postgresql.resources.requests",
+      "pods": 1,
+      "metalSource": "chart-default",
+      "evidence": "hindsight 0.3.0 values.yaml postgresql.resources.requests = 250m / 256Mi. Rendered 2026-08-21.",
+      "consequence": "Postgres shared buffers plus per-connection work_mem live inside this. At 128Mi the server is fine for a smoke test and will be OOMKilled by any real query mix -- and an OOMKilled database is a crash, not a slowdown. `metal` keeps the chart default.",
+      "cpuMillis": {
+        "dev": 100,
+        "metal": 250
+      },
+      "memoryMib": {
+        "dev": 128,
+        "metal": 256
+      }
+    },
+    {
+      "id": "full-ai-cluster/mimir/alertmanager",
+      "dir": "mimir",
+      "path": "full-ai-cluster/k8s/applications/mimir/Application.yaml",
+      "docIndex": 0,
+      "requestsField": "spec.source.helm.valuesObject.alertmanager.resources.requests",
+      "pods": 1,
+      "metalSource": "chart-default",
+      "evidence": "mimir-distributed 5.5.1 values.yaml default; our valuesObject does not set it. Rendered and counted 2026-08-21 with `helm template` against this Application's own valuesObject.",
+      "consequence": "Not cut: 10m / 32Mi is already below anything worth shrinking. The row exists so mimir's total is the whole of mimir and not the part this ladder chose to touch.",
+      "cpuMillis": {
+        "dev": 10,
+        "metal": 10
+      },
+      "memoryMib": {
+        "dev": 32,
+        "metal": 32
+      }
+    },
+    {
+      "id": "full-ai-cluster/mimir/compactor",
+      "dir": "mimir",
+      "path": "full-ai-cluster/k8s/applications/mimir/Application.yaml",
+      "docIndex": 0,
+      "requestsField": "spec.source.helm.valuesObject.compactor.resources.requests",
+      "pods": 1,
+      "metalSource": "chart-default",
+      "evidence": "mimir-distributed 5.5.1 values.yaml default; our valuesObject does not set it. Rendered and counted 2026-08-21 with `helm template` against this Application's own valuesObject.",
+      "consequence": "Compaction working set. At 192Mi the compactor can only hold a smaller block set at a time; a tenant whose block set outgrows it stalls compaction and query performance degrades. Nothing is deleted -- the blocks stay in object storage uncompacted.",
+      "cpuMillis": {
+        "dev": 50,
+        "metal": 100
+      },
+      "memoryMib": {
+        "dev": 192,
+        "metal": 512
+      }
+    },
+    {
+      "id": "full-ai-cluster/mimir/distributor",
+      "dir": "mimir",
+      "path": "full-ai-cluster/k8s/applications/mimir/Application.yaml",
+      "docIndex": 0,
+      "requestsField": "spec.source.helm.valuesObject.distributor.resources.requests",
+      "pods": 1,
+      "metalSource": "chart-default",
+      "evidence": "mimir-distributed 5.5.1 values.yaml default; our valuesObject does not set it. Rendered and counted 2026-08-21 with `helm template` against this Application's own valuesObject.",
+      "consequence": "The distributor buffers incoming series before fan-out to ingesters. At 192Mi a write burst that would have been absorbed is instead pushed back on the client (429), and a burst larger than the buffer OOMKills the pod rather than queueing. Acceptable in CI, where write volume is a smoke test; NOT acceptable on metal, which is why `metal` keeps 512Mi.",
+      "cpuMillis": {
+        "dev": 50,
+        "metal": 100
+      },
+      "memoryMib": {
+        "dev": 192,
+        "metal": 512
+      }
+    },
+    {
+      "id": "full-ai-cluster/mimir/ingester",
+      "dir": "mimir",
+      "path": "full-ai-cluster/k8s/applications/mimir/Application.yaml",
+      "docIndex": 0,
+      "requestsField": "spec.source.helm.valuesObject.ingester.resources.requests",
+      "pods": 3,
+      "metalSource": "chart-default",
+      "evidence": "mimir-distributed 5.5.1 values.yaml; zoneAwareReplication.enabled=true over 3 zones and templates/_helpers.tpl:568 replicaPerZone = ceil(replicas/zones), so one `resources` key renders into 3 zone StatefulSets. Rendered and counted 2026-08-21 with `helm template` against this Application's own valuesObject.",
+      "consequence": "The ingester holds the in-flight head block in memory before shipping to object storage. 192Mi bounds how many active series one ingester can hold; past that it OOMKills and the series are re-replayed from the WAL on restart. Data already shipped to MinIO is unaffected. This value is multiplied by 3 zones.",
+      "cpuMillis": {
+        "dev": 50,
+        "metal": 100
+      },
+      "memoryMib": {
+        "dev": 192,
+        "metal": 512
+      }
+    },
+    {
+      "id": "full-ai-cluster/mimir/overrides_exporter",
+      "dir": "mimir",
+      "path": "full-ai-cluster/k8s/applications/mimir/Application.yaml",
+      "docIndex": 0,
+      "requestsField": "spec.source.helm.valuesObject.overrides_exporter.resources.requests",
+      "pods": 1,
+      "metalSource": "chart-default",
+      "evidence": "mimir-distributed 5.5.1 values.yaml default; our valuesObject does not set it. Rendered and counted 2026-08-21 with `helm template` against this Application's own valuesObject.",
+      "consequence": "Exports per-tenant limit metrics. At 64Mi it is OOMKilled once the tenant set is large enough, and what is lost is visibility into the limits -- no ingest or query path is affected, which is why this is the cheapest cut in the mimir block.",
+      "cpuMillis": {
+        "dev": 25,
+        "metal": 100
+      },
+      "memoryMib": {
+        "dev": 64,
+        "metal": 128
+      }
+    },
+    {
+      "id": "full-ai-cluster/mimir/querier",
+      "dir": "mimir",
+      "path": "full-ai-cluster/k8s/applications/mimir/Application.yaml",
+      "docIndex": 0,
+      "requestsField": "spec.source.helm.valuesObject.querier.resources.requests",
+      "pods": 2,
+      "metalSource": "chart-default",
+      "evidence": "mimir-distributed 5.5.1 values.yaml default; our valuesObject does not set it. Rendered and counted 2026-08-21 with `helm template` against this Application's own valuesObject.",
+      "consequence": "Query execution working set. Below the working set a large query is OOMKilled mid-flight and returns an error rather than a slow answer. Two replicas by chart default.",
+      "cpuMillis": {
+        "dev": 25,
+        "metal": 100
+      },
+      "memoryMib": {
+        "dev": 96,
+        "metal": 128
+      }
+    },
+    {
+      "id": "full-ai-cluster/mimir/query_frontend",
+      "dir": "mimir",
+      "path": "full-ai-cluster/k8s/applications/mimir/Application.yaml",
+      "docIndex": 0,
+      "requestsField": "spec.source.helm.valuesObject.query_frontend.resources.requests",
+      "pods": 1,
+      "metalSource": "chart-default",
+      "evidence": "mimir-distributed 5.5.1 values.yaml default; our valuesObject does not set it. Rendered and counted 2026-08-21 with `helm template` against this Application's own valuesObject.",
+      "consequence": "Query splitting/caching front end. Shrinking it reduces the in-process results cache, so repeated queries re-execute instead of being served from memory.",
+      "cpuMillis": {
+        "dev": 25,
+        "metal": 100
+      },
+      "memoryMib": {
+        "dev": 96,
+        "metal": 128
+      }
+    },
+    {
+      "id": "full-ai-cluster/mimir/query_scheduler",
+      "dir": "mimir",
+      "path": "full-ai-cluster/k8s/applications/mimir/Application.yaml",
+      "docIndex": 0,
+      "requestsField": "spec.source.helm.valuesObject.query_scheduler.resources.requests",
+      "pods": 2,
+      "metalSource": "chart-default",
+      "evidence": "mimir-distributed 5.5.1 values.yaml default; our valuesObject does not set it. Rendered and counted 2026-08-21 with `helm template` against this Application's own valuesObject.",
+      "consequence": "Holds the queue of pending queries. A smaller queue means queries are rejected sooner under load instead of waiting. Two replicas by chart default.",
+      "cpuMillis": {
+        "dev": 25,
+        "metal": 100
+      },
+      "memoryMib": {
+        "dev": 96,
+        "metal": 128
+      }
+    },
+    {
+      "id": "full-ai-cluster/mimir/rollout_operator",
+      "dir": "mimir",
+      "path": "full-ai-cluster/k8s/applications/mimir/Application.yaml",
+      "docIndex": 0,
+      "requestsField": "spec.source.helm.valuesObject.rollout_operator.resources.requests",
+      "pods": 1,
+      "metalSource": "chart-default",
+      "evidence": "mimir-distributed 5.5.1 charts/rollout-operator/values.yaml requests cpu 100m / memory 100Mi (alias `rollout_operator` in Chart.yaml). Rendered and counted 2026-08-21.",
+      "consequence": "Coordinates zone-by-zone StatefulSet rollouts. Cutting it slows or stalls a rolling upgrade; it is not on any read or write path.",
+      "cpuMillis": {
+        "dev": 50,
+        "metal": 100
+      },
+      "memoryMib": {
+        "dev": 64,
+        "metal": 100
+      }
+    },
+    {
+      "id": "full-ai-cluster/mimir/ruler",
+      "dir": "mimir",
+      "path": "full-ai-cluster/k8s/applications/mimir/Application.yaml",
+      "docIndex": 0,
+      "requestsField": "spec.source.helm.valuesObject.ruler.resources.requests",
+      "pods": 1,
+      "metalSource": "chart-default",
+      "evidence": "mimir-distributed 5.5.1 values.yaml default; our valuesObject does not set it. Rendered and counted 2026-08-21 with `helm template` against this Application's own valuesObject.",
+      "consequence": "Recording/alerting rule evaluation. Below the working set, rule evaluation is OOMKilled and alerts silently stop firing until the pod restarts -- which is the failure mode worth naming, because a dead alerting path looks exactly like a quiet system.",
+      "cpuMillis": {
+        "dev": 25,
+        "metal": 100
+      },
+      "memoryMib": {
+        "dev": 96,
+        "metal": 128
+      }
+    },
+    {
+      "id": "full-ai-cluster/mimir/store_gateway",
+      "dir": "mimir",
+      "path": "full-ai-cluster/k8s/applications/mimir/Application.yaml",
+      "docIndex": 0,
+      "requestsField": "spec.source.helm.valuesObject.store_gateway.resources.requests",
+      "pods": 3,
+      "metalSource": "chart-default",
+      "evidence": "mimir-distributed 5.5.1 values.yaml; zoneAwareReplication.enabled=true over 3 zones and templates/_helpers.tpl:568 replicaPerZone = ceil(replicas/zones), so one `resources` key renders into 3 zone StatefulSets. Rendered and counted 2026-08-21 with `helm template` against this Application's own valuesObject.",
+      "consequence": "The store-gateway keeps block index-headers resident. Shrinking it is a LATENCY cost, never a data-loss one: long-range queries re-fetch index headers from object storage instead of reading them from memory. Multiplied by 3 zones.",
+      "cpuMillis": {
+        "dev": 50,
+        "metal": 100
+      },
+      "memoryMib": {
+        "dev": 192,
+        "metal": 512
+      }
+    },
+    {
+      "id": "full-ai-cluster/minio/make-bucket-job",
+      "dir": "minio",
+      "path": "full-ai-cluster/k8s/applications/minio/Application.yaml",
+      "docIndex": 0,
+      "requestsField": "spec.source.helm.valuesObject.makeBucketJob.resources.requests",
+      "pods": 1,
+      "metalSource": "chart-default",
+      "evidence": "minio 5.4.0 values.yaml makeBucketJob.resources.requests.memory = 128Mi, no cpu request. Rendered 2026-08-21 as a container of the blob-store-post-job Job.",
+      "consequence": "Not cut. A short-lived install Job; shrinking 128Mi would save nothing that outlives the sync, and the row exists so minio's total is all of minio.",
+      "cpuMillis": {
+        "dev": 0,
+        "metal": 0
+      },
+      "memoryMib": {
+        "dev": 128,
+        "metal": 128
+      }
+    },
+    {
+      "id": "full-ai-cluster/minio/make-user-job",
+      "dir": "minio",
+      "path": "full-ai-cluster/k8s/applications/minio/Application.yaml",
+      "docIndex": 0,
+      "requestsField": "spec.source.helm.valuesObject.makeUserJob.resources.requests",
+      "pods": 1,
+      "metalSource": "chart-default",
+      "evidence": "minio 5.4.0 values.yaml makeUserJob.resources.requests.memory = 128Mi, no cpu request. Rendered 2026-08-21 as the second container of the blob-store-post-job Job.",
+      "consequence": "Not cut, same reason as the bucket Job.",
+      "cpuMillis": {
+        "dev": 0,
+        "metal": 0
+      },
+      "memoryMib": {
+        "dev": 128,
+        "metal": 128
+      }
+    },
+    {
+      "id": "full-ai-cluster/minio/server",
+      "dir": "minio",
+      "path": "full-ai-cluster/k8s/applications/minio/Application.yaml",
+      "docIndex": 0,
+      "requestsField": "spec.source.helm.valuesObject.resources.requests",
+      "pods": 1,
+      "metalSource": "manifest",
+      "evidence": "",
+      "note": "This Application's own valuesObject already sets resources.requests to 100m / 256Mi -- the minio 5.4.0 chart's own default is 16Gi of memory, which is why our tree overrides it at all.",
+      "consequence": "MinIO caches object metadata and buffers multipart uploads in this. At 128Mi a large multipart PUT is OOMKilled mid-upload and has to be retried from the start. Fine for a CI smoke set of objects; `metal` keeps 256Mi.",
+      "cpuMillis": {
+        "dev": 50,
+        "metal": 100
+      },
+      "memoryMib": {
+        "dev": 128,
+        "metal": 256
+      }
+    },
+    {
+      "id": "full-ai-cluster/node-feature-discovery/gc",
+      "dir": "node-feature-discovery",
+      "path": "full-ai-cluster/k8s/applications/node-feature-discovery/Application.yaml",
+      "docIndex": 0,
+      "requestsField": "spec.source.helm.valuesObject.gc.resources.requests",
+      "pods": 1,
+      "metalSource": "manifest",
+      "evidence": "",
+      "consequence": "Garbage-collects NodeFeature objects for departed nodes. Nothing on a one-node cluster ever departs, so this pod is idle in the dev lane.",
+      "cpuMillis": {
+        "dev": 25,
+        "metal": 50
+      },
+      "memoryMib": {
+        "dev": 48,
+        "metal": 64
+      }
+    },
+    {
+      "id": "full-ai-cluster/node-feature-discovery/master",
+      "dir": "node-feature-discovery",
+      "path": "full-ai-cluster/k8s/applications/node-feature-discovery/Application.yaml",
+      "docIndex": 0,
+      "requestsField": "spec.source.helm.valuesObject.master.resources.requests",
+      "pods": 1,
+      "metalSource": "manifest",
+      "evidence": "",
+      "consequence": "The NFD master holds the feature set of every node. On a one-node kind cluster that is a handful of labels, so 96Mi is generous; on a large fleet it is not, which is why `metal` keeps 128Mi.",
+      "cpuMillis": {
+        "dev": 50,
+        "metal": 100
+      },
+      "memoryMib": {
+        "dev": 96,
+        "metal": 128
+      }
+    },
+    {
+      "id": "full-ai-cluster/node-feature-discovery/worker",
+      "dir": "node-feature-discovery",
+      "path": "full-ai-cluster/k8s/applications/node-feature-discovery/Application.yaml",
+      "docIndex": 0,
+      "requestsField": "spec.source.helm.valuesObject.worker.resources.requests",
+      "pods": 1,
+      "metalSource": "manifest",
+      "evidence": "DaemonSet: one pod per node, and the dev lane's kind cluster is one node. On a multi-node cluster this value is multiplied by the node count and this row's arithmetic no longer holds.",
+      "consequence": "The worker probes local hardware once per interval. Cutting it costs nothing on a kind node with no real devices to enumerate.",
+      "cpuMillis": {
+        "dev": 25,
+        "metal": 50
+      },
+      "memoryMib": {
+        "dev": 48,
+        "metal": 64
+      }
+    },
+    {
+      "id": "full-ai-cluster/open-policy-agent/audit",
+      "dir": "open-policy-agent",
+      "path": "full-ai-cluster/k8s/applications/open-policy-agent/Application.yaml",
+      "docIndex": 0,
+      "requestsField": "spec.source.helm.valuesObject.audit.resources.requests",
+      "pods": 1,
+      "metalSource": "chart-default",
+      "evidence": "gatekeeper 3.18.1 values.yaml audit.resources.requests = 100m / 512Mi. Rendered 2026-08-21.",
+      "consequence": "The audit pod re-scans existing objects against every constraint and holds the working set while it does. At 256Mi a large cluster's audit pass is OOMKilled part-way, so violations on already-admitted objects go unreported. Admission itself is unaffected.",
+      "cpuMillis": {
+        "dev": 50,
+        "metal": 100
+      },
+      "memoryMib": {
+        "dev": 256,
+        "metal": 512
+      }
+    },
+    {
+      "id": "full-ai-cluster/open-policy-agent/controller-manager",
+      "dir": "open-policy-agent",
+      "path": "full-ai-cluster/k8s/applications/open-policy-agent/Application.yaml",
+      "docIndex": 0,
+      "requestsField": "spec.source.helm.valuesObject.controllerManager.resources.requests",
+      "pods": 1,
+      "metalSource": "chart-default",
+      "evidence": "gatekeeper 3.18.1 values.yaml controllerManager.resources.requests = 100m / 512Mi. Rendered 2026-08-21.",
+      "consequence": "Gatekeeper's admission webhook. It is IN THE ADMISSION PATH, so an OOMKill here does not degrade -- with failurePolicy Fail it rejects every governed create until it restarts, and with Ignore it silently stops enforcing policy. 256Mi is sized for the CI constraint set only; `metal` keeps the chart default for exactly this reason.",
+      "cpuMillis": {
+        "dev": 50,
+        "metal": 100
+      },
+      "memoryMib": {
+        "dev": 256,
+        "metal": 512
+      }
+    },
+    {
+      "id": "full-ai-cluster/redis/master",
+      "dir": "redis",
+      "path": "full-ai-cluster/k8s/applications/redis/Application.yaml",
+      "docIndex": 0,
+      "requestsField": "spec.source.helm.valuesObject.master.resources.requests",
+      "pods": 1,
+      "metalSource": "chart-default",
+      "evidence": "bitnami redis 20.5.0 ships master.resourcesPreset: nano, which renders 100m / 128Mi; the chart's own values.yaml documents that an explicit master.resources OVERRIDES the preset. Rendered and counted 2026-08-21. Setting the field therefore takes the value off the preset ladder, which is a behaviour change worth knowing about even though the metal number is identical.",
+      "consequence": "Redis holds its whole dataset in memory. 64Mi is a hard ceiling on the dataset, not a throttle: past it the master is OOMKilled and every key not yet persisted is gone. This is the cut in this ladder with the least margin, and it is only defensible because the dev lane's redis holds a smoke-test dataset.",
+      "cpuMillis": {
+        "dev": 50,
+        "metal": 100
+      },
+      "memoryMib": {
+        "dev": 64,
+        "metal": 128
+      }
+    },
+    {
+      "id": "full-ai-cluster/redis/replicas",
+      "dir": "redis",
+      "path": "full-ai-cluster/k8s/applications/redis/Application.yaml",
+      "docIndex": 0,
+      "requestsField": "spec.source.helm.valuesObject.replica.resources.requests",
+      "pods": 2,
+      "metalSource": "chart-default",
+      "evidence": "bitnami redis 20.5.0 replica.resourcesPreset: nano -> 100m / 128Mi, multiplied by this Application's replica.replicaCount: 2. Rendered and counted 2026-08-21.",
+      "consequence": "Each replica holds a full copy of the master's dataset, so the same ceiling applies twice over: a replica that OOMKills re-syncs from scratch, which on a real dataset is a full RDB transfer. Nominal redundancy only on one node -- see acknowledgedFalseRedundancy.",
+      "cpuMillis": {
+        "dev": 50,
+        "metal": 100
+      },
+      "memoryMib": {
+        "dev": 64,
+        "metal": 128
+      }
+    },
+    {
+      "id": "full-ai-cluster/seaweedfs/all-in-one",
+      "dir": "seaweedfs",
+      "path": "full-ai-cluster/k8s/applications/seaweedfs/Application.yaml",
+      "docIndex": 0,
+      "requestsField": "spec.source.helm.valuesObject.allInOne.resources.requests",
+      "pods": 1,
+      "metalSource": "chart-default",
+      "evidence": "seaweedfs 4.33.0 values.yaml allInOne.resources.requests = 500m / 1Gi. Rendered 2026-08-21.",
+      "consequence": "One pod carrying master, volume and filer. 512Mi bounds the volume server's needle-map and the filer's metadata cache; past that the pod OOMKills and every in-flight write to that volume fails. Fine for a CI smoke set of objects, not for a real object store.",
+      "cpuMillis": {
+        "dev": 200,
+        "metal": 500
+      },
+      "memoryMib": {
+        "dev": 512,
+        "metal": 1024
+      }
+    }
+  ],
+
+  "ungovernedRequests": [
+    {
+      "dir": "agent-memory",
+      "cpuMillis": 50,
+      "memoryMib": 64,
+      "evidence": "In-repo manifests under this directory; summed 2026-08-21. Glob-excluded from the dev lane."
+    },
+    {
+      "dir": "alloy",
+      "cpuMillis": 1,
+      "memoryMib": 5,
+      "evidence": "alloy 0.10.1 rendered with this Application's valuesObject, 2026-08-21: one DaemonSet pod, 1m / 5Mi. Too small to be worth a rung."
+    },
+    {
+      "dir": "arc-runner-set",
+      "cpuMillis": 0,
+      "memoryMib": 0,
+      "evidence": "gha-runner-scale-set 0.12.1 rendered 2026-08-21: no container declares requests."
+    },
+    {
+      "dir": "argo-rollouts",
+      "cpuMillis": 0,
+      "memoryMib": 0,
+      "evidence": "argo-rollouts 2.39.5 rendered 2026-08-21: chart default resources are unset."
+    },
+    {
+      "dir": "argo-workflows",
+      "cpuMillis": 0,
+      "memoryMib": 0,
+      "evidence": "argo-workflows 0.42.5 rendered 2026-08-21: chart default resources are unset."
+    },
+    {
+      "dir": "argocd",
+      "cpuMillis": 0,
+      "memoryMib": 0,
+      "evidence": "argo-cd 7.7.10 rendered 2026-08-21: chart default resources are unset for every component."
+    },
+    {
+      "dir": "cdi",
+      "cpuMillis": 100,
+      "memoryMib": 150,
+      "evidence": "In-repo vendored CDI operator manifest; summed 2026-08-21. Vendored byte-for-byte from upstream, so it is deliberately not governed -- editing it would make the checked-in copy diverge from what upstream ships."
+    },
+    {
+      "dir": "cert-manager",
+      "cpuMillis": 0,
+      "memoryMib": 0,
+      "evidence": "cert-manager v1.16.2 rendered 2026-08-21: chart default resources are unset."
+    },
+    {
+      "dir": "cilium",
+      "cpuMillis": 0,
+      "memoryMib": 0,
+      "evidence": "cilium 1.16.5 rendered 2026-08-21: chart default resources are unset. Glob-excluded from the dev lane."
+    },
+    {
+      "dir": "cilium-lb-ipam",
+      "cpuMillis": 0,
+      "memoryMib": 0,
+      "evidence": "In-repo CRs only; no pods. Glob-excluded from the dev lane."
+    },
+    {
+      "dir": "cockroachdb",
+      "cpuMillis": 0,
+      "memoryMib": 0,
+      "evidence": "cockroachdb 14.0.5 rendered with this Application's valuesObject, 2026-08-21: resources unset."
+    },
+    {
+      "dir": "dapr",
+      "cpuMillis": 0,
+      "memoryMib": 0,
+      "evidence": "dapr 1.14.4 rendered 2026-08-21: chart default resources are unset."
+    },
+    {
+      "dir": "deepseek-coder",
+      "cpuMillis": 0,
+      "memoryMib": 0,
+      "evidence": "In-repo manifests declare no requests. Glob-excluded from the dev lane."
+    },
+    {
+      "dir": "external-secrets",
+      "cpuMillis": 0,
+      "memoryMib": 0,
+      "evidence": "external-secrets 0.10.7 rendered 2026-08-21: chart default resources are unset."
+    },
+    {
+      "dir": "forgejo",
+      "cpuMillis": null,
+      "memoryMib": null,
+      "evidence": "UNMEASURED: `helm pull forgejo --version 9.0.6 --repo https://code.forgejo.org/forgejo-helm/` fails -- that repoURL returns 404 for index.yaml as of 2026-08-21, and 9.0.6 is not present in the forgejo-helm or forgejo-contrib package registries either. ArgoCD cannot render it from that pin any more than this measurement could."
+    },
+    {
+      "dir": "gitlab",
+      "cpuMillis": 2475,
+      "memoryMib": 5733,
+      "evidence": "gitlab 8.7.0 rendered 2026-08-21 (with a placeholder certmanager-issuer.email, which the chart requires to render at all): 15 workloads, 2475m / 5733Mi. The single largest Application in the tree. Glob-excluded from the dev lane."
+    },
+    {
+      "dir": "hat-system",
+      "cpuMillis": 0,
+      "memoryMib": 0,
+      "evidence": "In-repo manifests declare no requests."
+    },
+    {
+      "dir": "headlamp",
+      "cpuMillis": 0,
+      "memoryMib": 0,
+      "evidence": "headlamp 0.30.1 rendered 2026-08-21: chart default resources are unset."
+    },
+    {
+      "dir": "headscale",
+      "cpuMillis": 0,
+      "memoryMib": 0,
+      "evidence": "headscale 0.4.0 rendered from chart defaults 2026-08-21: resources unset. Rendering with this Application's valuesObject fails (`accessMode is required for PVC headscale-data`), which is a separate pre-existing defect, not a measurement problem -- the chart's resources are unset either way."
+    },
+    {
+      "dir": "kube-prometheus-stack",
+      "cpuMillis": 0,
+      "memoryMib": 0,
+      "evidence": "kube-prometheus-stack 65.5.0 rendered with this Application's valuesObject, 2026-08-21: chart default resources are unset for every component."
+    },
+    {
+      "dir": "kubevirt",
+      "cpuMillis": 20,
+      "memoryMib": 900,
+      "evidence": "In-repo vendored kubevirt-operator manifest (v1.8.4): virt-operator Deployment, replicas 2, 10m / 450Mi each. Deliberately not governed -- single-node-budget.json records that this file is vendored byte-for-byte on purpose."
+    },
+    {
+      "dir": "loki",
+      "cpuMillis": 0,
+      "memoryMib": 0,
+      "evidence": "loki 6.18.0 rendered with this Application's valuesObject, 2026-08-21: chart default resources are unset."
+    },
+    {
+      "dir": "longhorn",
+      "cpuMillis": 0,
+      "memoryMib": 0,
+      "evidence": "longhorn 1.7.2 rendered 2026-08-21: chart default resources are unset. Glob-excluded from the dev lane."
+    },
+    {
+      "dir": "nats",
+      "cpuMillis": 0,
+      "memoryMib": 0,
+      "evidence": "nats 1.2.7 rendered with this Application's valuesObject, 2026-08-21: chart default resources are unset."
+    },
+    {
+      "dir": "ollama",
+      "cpuMillis": 0,
+      "memoryMib": 0,
+      "evidence": "otwld/ollama 1.6.0 rendered 2026-08-21: resources unset, and replicaCount is 0. Glob-excluded from the dev lane."
+    },
+    {
+      "dir": "orleans",
+      "cpuMillis": 0,
+      "memoryMib": 0,
+      "evidence": "In-repo manifests declare no requests. Glob-excluded from the dev lane."
+    },
+    {
+      "dir": "oz",
+      "cpuMillis": null,
+      "memoryMib": null,
+      "evidence": "UNMEASURED: `helm pull ziti-controller --version 1.4.5 --repo https://docs.openziti.io/helm-charts/` fails -- that index carries only 3.2.x, and the GitHub release tag ziti-controller-1.4.5 404s. Same shape as forgejo: the pin does not resolve, so neither this measurement nor ArgoCD can render it."
+    },
+    {
+      "dir": "platform",
+      "cpuMillis": 100,
+      "memoryMib": 160,
+      "evidence": "In-repo manifests: platform-controller Deployment 50m/64Mi and the portal StatefulSet 50m/96Mi. Summed 2026-08-21. Glob-excluded from the dev lane."
+    },
+    {
+      "dir": "qwen-coder",
+      "cpuMillis": 0,
+      "memoryMib": 0,
+      "evidence": "In-repo manifests declare no requests. Glob-excluded from the dev lane."
+    },
+    {
+      "dir": "sealed-secrets",
+      "cpuMillis": 0,
+      "memoryMib": 0,
+      "evidence": "sealed-secrets 2.16.2 rendered 2026-08-21: chart default resources are unset. (Pulled from the GitHub release tarball; https://bitnami-labs.github.io/sealed-secrets now 404s for index.yaml, so the pinned repoURL is stale even though the chart itself resolves.)"
+    },
+    {
+      "dir": "spire",
+      "cpuMillis": 0,
+      "memoryMib": 0,
+      "evidence": "spire 0.24.2 rendered with this Application's valuesObject, 2026-08-21: chart default resources are unset."
+    },
+    {
+      "dir": "tempo",
+      "cpuMillis": 0,
+      "memoryMib": 0,
+      "evidence": "tempo 1.18.0 rendered with this Application's valuesObject, 2026-08-21: chart default resources are unset."
+    },
+    {
+      "dir": "temporal",
+      "cpuMillis": 3000,
+      "memoryMib": 6144,
+      "evidence": "temporal 0.59.0 rendered from chart defaults 2026-08-21: the bundled elasticsearch-master StatefulSet is 3 x 1000m / 2048Mi and is the whole of it. Second largest Application in the tree. Glob-excluded from the dev lane."
+    },
+    {
+      "dir": "trust-manager",
+      "cpuMillis": 0,
+      "memoryMib": 0,
+      "evidence": "trust-manager v0.15.0 rendered 2026-08-21: chart default resources are unset."
+    },
+    {
+      "dir": "vault",
+      "cpuMillis": 0,
+      "memoryMib": 0,
+      "evidence": "vault 0.29.1 rendered with this Application's valuesObject, 2026-08-21: chart default resources are unset."
+    },
+    {
+      "dir": "vllm",
+      "cpuMillis": 0,
+      "memoryMib": 0,
+      "evidence": "In-repo manifests declare no requests. Glob-excluded from the dev lane. Its 9.1 GB container image is the constraint here, not its requests -- see $comment_resources."
+    },
+    {
+      "dir": "weaviate",
+      "cpuMillis": 0,
+      "memoryMib": 0,
+      "evidence": "weaviate 17.6.0 rendered with this Application's valuesObject, 2026-08-21: chart default resources are unset."
+    }
+  ],
+
+  "acknowledgedUnmeasuredRequests": ["forgejo@9.0.6", "oz@1.4.5"],
+
   "$comment_profiles": [
     "Order is smallest-first and is load-bearing: storage-profiles.ts refuses a",
     "catalogue whose per-claim sizes are not monotonically non-decreasing along it.",
