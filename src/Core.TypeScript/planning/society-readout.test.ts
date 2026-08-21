@@ -205,15 +205,40 @@ describe("REAL CORPUS -- the readout must reproduce the measured collapse, not a
     return cached;
   }
 
-  test.if(present)("the live event log still shows the population-1 collapse", () => {
+  // REPAIRED 2026-08-21, and the repair is the point. This test used to assert
+  // `r.latest!.population === 1` and that the CURRENT alarms contain
+  // POPULATION-COLLAPSE. That was true when written and the population fix
+  // (the lexicographic-outranking bug in the loader) made it false -- the live
+  // corpus now reads pop=3 div=5.61 gen=5 flat=1t OK.
+  //
+  // It fired correctly: a tripwire that goes red when the thing it describes is
+  // repaired is the mechanism working. But asserting a TRANSIENT live value was
+  // the defect in the test, not in the fix -- it would have gone red again on
+  // any future recovery, and a test that must be edited every time the system
+  // gets better trains its reader to edit it without looking.
+  //
+  // What is asserted now is what stays true forever: the historical collapse is
+  // STILL IN THE CORPUS, and the readout can reproduce it from real data. That
+  // is the falsifier -- it dies if computeReadout stops detecting a real
+  // collapse -- without pinning today's health to a literal.
+  test.if(present)("the readout reproduces the historical collapse from the real corpus", () => {
     const samples = corpus();
     expect(samples.length).toBeGreaterThan(300);
     const r = computeReadout(samples, Date.parse(samples[samples.length - 1]!.at) + 1000);
-    expect(r.latest!.population).toBe(1);
+
+    // The 4-agent era and the 1-agent era are both in this log, permanently.
     expect(r.maxPopulation).toBe(4);
-    expect(r.alarms).toContain("POPULATION-COLLAPSE");
-    expect(r.alarms).toContain("DIVERSITY-ZERO");
-    expect(r.flatlineTicks).toBeGreaterThan(100);
+    expect(Math.min(...samples.map((s) => s.population))).toBe(1);
+
+    // And the readout detects the collapse when shown the collapsed window --
+    // which is the property, rather than "the newest sample happens to be 1".
+    const collapsed = samples.filter((s) => s.population === 1);
+    expect(collapsed.length).toBeGreaterThan(100);
+    const rc = computeReadout(collapsed, Date.parse(collapsed[collapsed.length - 1]!.at) + 1000);
+    expect(rc.latest!.population).toBe(1);
+    expect(rc.alarms).toContain("POPULATION-COLLAPSE");
+    expect(rc.alarms).toContain("DIVERSITY-ZERO");
+    expect(rc.flatlineTicks).toBeGreaterThan(100);
   });
 
   test.if(present)("the 4-agent era of the same log renders WITHOUT the collapse alarms", () => {
