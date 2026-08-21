@@ -1,0 +1,12 @@
+{
+  "pr_number": 13093,
+  "archive_path": "docs/history/pr-reviews/PR-13093-ci-emit-the-aarch64-iso-digest-too-and-refresh-the-operator-docs-that-would-prod.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-21T06:21:06.016Z",
+  "schema_version": "v1",
+  "commit_sha": "92f8d752a41a141663b2a9ec2088473c871ac0bc",
+  "title": "ci: emit the aarch64 ISO digest too, and refresh the operator docs that would produce the refusal",
+  "state": "MERGED",
+  "merged_at": "2026-08-21T06:20:29Z",
+  "head_ref": "ci/aarch64-digest-and-runbooks"
+}
