@@ -1,0 +1,12 @@
+{
+  "pr_number": 13022,
+  "archive_path": "docs/history/pr-reviews/PR-13022-society-the-population-is-one-and-that-one-is-the-loop-itself-plus-the-dead-pipe.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-21T01:49:52.719Z",
+  "schema_version": "v1",
+  "commit_sha": "c85ee7500a338cdc86608bef255e6528c8412827",
+  "title": "society: the population is ONE and that one is the loop itself — plus the dead pipe guard, fixed",
+  "state": "MERGED",
+  "merged_at": "2026-08-21T01:49:09Z",
+  "head_ref": "society/population-of-one-and-usb-inventory"
+}
