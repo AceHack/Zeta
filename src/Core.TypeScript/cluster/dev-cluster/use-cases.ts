@@ -1,6 +1,29 @@
-import { join } from "node:path";
 import type { DevClusterPorts } from "../ports.ts";
-import { DEV_CLUSTER_SUBSTRATE_DIR } from "./lib.ts";
+import { devStorageAliasManifestPath } from "./lib.ts";
+
+/**
+ * Apply the dev/CI alias StorageClasses, BEFORE the app-of-apps root syncs.
+ *
+ * Order is load-bearing: a PVC created by a synced Application before its class
+ * exists sits `Pending` and only a `WaitForFirstConsumer` retry saves it. Both
+ * aliases bind to `rancher.io/local-path`, the provisioner kind and k3s already
+ * run -- this declares NAMES, never a second provisioner Deployment.
+ *
+ * Shared by the kind and k3d bring-ups on purpose. `isExcludedFromIncludedProof`
+ * is provider-independent, so if only one provider created the `longhorn` alias
+ * the harness would assert longhorn-backed Applications on a substrate that
+ * cannot bind them, and they would hang `Pending` instead of failing.
+ *
+ * EXPORTED because `apply-root-app.ts` is a THIRD entrypoint that applies the
+ * root catalogue without going through either bring-up. Left alone it would
+ * sync longhorn-backed Applications into a cluster with no such class -- the
+ * same hazard, reached by a door the bring-up falsifiers do not watch.
+ */
+export function applyDevStorageClassAliases(ports: DevClusterPorts): void {
+  console.log("Ensuring dev/CI alias StorageClasses (zeta-local-path, longhorn) ...");
+  ports.controlPlane.applyFileManifest(devStorageAliasManifestPath("zetaLocalPath"));
+  ports.controlPlane.applyFileManifest(devStorageAliasManifestPath("longhorn"));
+}
 
 export interface KindCiBringUpOptions {
   readonly configPath: string;
@@ -40,8 +63,7 @@ export function bringUpKindCiCluster(ports: DevClusterPorts, options: KindCiBrin
     true,
   );
 
-  console.log("Ensuring zeta-local-path StorageClass alias (dev/CI parity) ...");
-  controlPlane.applyFileManifest(join(DEV_CLUSTER_SUBSTRATE_DIR, "manifests", "zeta-local-path.yaml"));
+  applyDevStorageClassAliases(ports);
 
   if (!packages.releaseInstalled("argocd", "argocd")) {
     console.log("Installing ArgoCD ...");
@@ -131,6 +153,8 @@ export function bringUpK3dDevCluster(ports: DevClusterPorts, options: K3dDevBrin
   }
 
   controlPlane.waitForCrdEstablished("applications.argoproj.io", 120, true);
+
+  applyDevStorageClassAliases(ports);
 
   appCatalog.applyRootDevCatalog(options.gitRef, options.gitRepoUrl);
 }

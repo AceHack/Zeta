@@ -27,6 +27,11 @@ import { existsSync, readdirSync, readFileSync } from "node:fs";
 import { basename, join, resolve } from "node:path";
 import { parse as parseYaml } from "yaml";
 import { bootstrapKindClusterInProcess, bootstrapK3dClusterInProcess } from "./harness/bootstrap.ts";
+import {
+  DEV_LONGHORN_ALIAS_CLASS_NAME,
+  DEV_SATISFIABLE_PROVISIONERS,
+  DEV_STORAGE_ALIAS_MANIFEST_RELPATHS,
+} from "./dev-cluster/lib.ts";
 import { DEFAULT_ROOT_DEV_CATALOG } from "./ports.ts";
 import { classifySyncPolicy, manualSyncAssertion, type AssertionOutcome } from "./manual-sync-policy.ts";
 
@@ -43,6 +48,7 @@ export type FailureKind =
   | "MissingTool"
   | "ContainerRuntimeUnavailable"
   | "ClusterBootstrapFailed"
+  | "DevStorageClassMissing"
   | "KubectlFailed"
   | "ArgoCdTimeout"
   | "ApplicationMissing"
@@ -256,6 +262,27 @@ const DEV_INCLUDED_PROOF_DEFERRED_DIRS = new Set([
   // in isExcludedFromIncludedProof -- this entry is redundant, and kept only so
   // the deferral stays legible next to its siblings.
   "agent-memory",
+  // Needs a GitHub App credential + a live runner registration that CI has no
+  // secret to bind. Listed EXPLICITLY even though `requestsReadWriteMany` below
+  // also excludes it: that rule is about storage and this reason is not, so if
+  // the RWX claim were ever narrowed to RWO the credential blocker would still
+  // stand and must not silently stop applying.
+  "arc-runner-set",
+  // ----------------------------------------------------------------------
+  // FOUR MEASURED DEFERRALS, marked `MEASURED 2026-08-21` inline below.
+  // Run 32519516070 was the first in which they were asserted at all. The dev
+  // `longhorn` alias WORKED for every one -- their PVCs bound and their pods
+  // ran -- and each then failed for a reason that has nothing to do with
+  // storage. They are deferred on observed evidence, not on a guess, and each
+  // carries its symptom inline so it stays findable.
+  //
+  // This is a DEFERRAL OF FOUR NAMED DEFECTS, not a restored blanket rule: the
+  // other six Applications the alias unlocked (headscale, mimir, nats, oz,
+  // redis, tempo) are asserted from that commit on.
+  // ----------------------------------------------------------------------
+  // MEASURED 2026-08-21: 3/3 pods Running (PVCs BOUND), readiness 503 for 38m
+  // -- a 3-replica cluster nobody ran `cockroach init` on.
+  "cockroachdb",
   // Standby half of the either/or Git-host pair (gitlab is the default-on one),
   // so it ships manual-sync BY DESIGN. Asserting it here would assert the
   // manual-sync contract -- exists + compared, never synced -- which is exactly
@@ -267,6 +294,17 @@ const DEV_INCLUDED_PROOF_DEFERRED_DIRS = new Set([
   // several PVCs plus multi-GB images. A kind runner cannot schedule that inside
   // the lane's assertion budget.
   "gitlab",
+  // MEASURED 2026-08-21: hindsight-postgresql-0 FailedScheduling "Insufficient
+  // cpu" on the 1-node runner; api + control-plane CrashLoop waiting on it.
+  "hindsight",
+  // MEASURED 2026-08-21: grafana CreateContainerConfigError, secret
+  // "grafana-admin-credentials" not found. Its own prometheus + alertmanager
+  // PVCs bound and run 2/2.
+  "kube-prometheus-stack",
+  // `orleans` is NOT here: main established by measurement that its
+  // `replicas: 0` StatefulSet reaches Synced+Healthy, and removed it. Recorded
+  // so the deferral is not reinstated by a future merge.
+  //
   // Renders `monitoring.coreos.com/v1` ServiceMonitor + PrometheusRule (CRDs
   // owned by kube-prometheus-stack, itself longhorn-blocked here) and a
   // `gateway.networking.k8s.io/v1` Gateway, and runs two images no registry
@@ -291,6 +329,10 @@ const DEV_INCLUDED_PROOF_DEFERRED_DIRS = new Set([
   // gap: a lane that could make Vault Healthy would be a lane that performs the
   // ceremony, and it must not.
   "vault",
+  // MEASURED 2026-08-21: weaviate-0 is 1/1 Running on its bound 100Gi PVC, but
+  // the Application re-syncs every ~3m ("Partial sync ... succeeded") and never
+  // reaches Synced.
+  "weaviate",
 ]);
 
 /**
@@ -302,16 +344,24 @@ const DEV_INCLUDED_PROOF_DEFERRED_DIRS = new Set([
  *   1. WHAT ARGOCD APPLIES  - `DEFAULT_ROOT_DEV_CATALOG.excludeGlob` (ports.ts).
  *      Ground truth: a directory named there never reaches the CI cluster.
  *   2. WHAT THE HARNESS ASSERTS - `DEV_EXCLUDED_DIRS` +
- *      `DEV_INCLUDED_PROOF_DEFERRED_DIRS` + the derived "references
- *      `storageClass: longhorn`" rule, via `isExcludedFromIncludedProof`.
+ *      `DEV_INCLUDED_PROOF_DEFERRED_DIRS` + the derived, now
+ *      SUBSTRATE-CONDITIONAL "requests `storageClass: longhorn` that this lane
+ *      cannot serve" rule, via `isExcludedFromIncludedProof`.
  *
  * The difference between them is a SHADOW: Applications that are applied to
  * every CI cluster and asserted by nothing. Measured on 2026-08-16 it was 14
  * directories wide, and it contained most of the stateful core of the hardware
- * PoC (cockroachdb, vault, nats, redis, spire, ...). `cockroachdb` cannot even
- * sync in that lane - it wants `storageClass: longhorn`, and `longhorn` is
- * glob-excluded, so the StorageClass never exists and the Application hangs
- * `Missing` forever while the harness reports `ok: true`.
+ * PoC (cockroachdb, vault, nats, redis, spire, ...). `cockroachdb` could not
+ * even sync in that lane - it wants `storageClass: longhorn`, `longhorn` was
+ * glob-excluded, so the StorageClass never existed and the Application hung
+ * `Missing` forever while the harness reported `ok: true`.
+ *
+ * 2026-08-21 (081M0JXF6MS087G0R001HC34TM): ten of those entries are gone, not
+ * because the reason was waived but because the reason stopped being true. The
+ * dev clusters now apply a StorageClass NAMED `longhorn` backed by
+ * `rancher.io/local-path` (`dev-cluster/manifests/longhorn.yaml`), so those
+ * Applications bind and are asserted like any other. What survives here is what
+ * the alias genuinely cannot fix.
  *
  * The shadow is not a bug on its own - deferring an Application is legitimate.
  * The bug is that the deferral was IMPLICIT, so it could grow silently. This
@@ -325,27 +375,30 @@ const DEV_INCLUDED_PROOF_DEFERRED_DIRS = new Set([
 export const APPLIED_BUT_UNASSERTED_REASONS: ReadonlyMap<string, string> = new Map([
   [
     "arc-runner-set",
-    "needs a GitHub App credential + a live runner registration; CI has no secret to bind (081KSXN940008QG0R000SCP2H1).",
+    "TWO independent blockers, either alone sufficient: it needs a GitHub App credential + a live runner registration that CI has no secret to bind, AND model-cache-pvc.yaml claims ReadWriteMany, which rancher.io/local-path behind the dev longhorn alias cannot serve (081KSXN940008QG0R000SCP2H1).",
   ],
   [
     "cockroachdb",
-    "requests storageClass: longhorn, which is glob-excluded from the dev catalog, so the StorageClass never exists in this lane.",
+    "NOT storage -- MEASURED run 32519516070: all three PVCs bound over the dev longhorn alias and cockroachdb-0/1/2 Run for 38m, but every readiness probe returns 503. `single-node: false` + statefulset.replicas 3 gives a cluster nobody ever ran `cockroach init` against; no init Job appears in the namespace. Fix is a cluster-init step or a single-node dev value, neither of which is a storage change.",
   ],
   ["forgejo", "deferred until dev wiring exists (DEV_INCLUDED_PROOF_DEFERRED_DIRS)."],
-  ["headscale", "requests longhorn-backed persistence; same missing-StorageClass reason as cockroachdb."],
-  ["hindsight", "requests longhorn-backed persistence; same missing-StorageClass reason as cockroachdb."],
-  ["kube-prometheus-stack", "requests longhorn-backed persistence; same missing-StorageClass reason as cockroachdb."],
-  ["mimir", "requests longhorn-backed persistence; same missing-StorageClass reason as cockroachdb."],
-  ["nats", "requests longhorn-backed persistence; same missing-StorageClass reason as cockroachdb."],
-  ["oz", "requests longhorn-backed persistence; same missing-StorageClass reason as cockroachdb."],
-  ["redis", "requests longhorn-backed persistence; same missing-StorageClass reason as cockroachdb."],
+  [
+    "hindsight",
+    "NOT storage -- MEASURED run 32519516070: hindsight-postgresql-0 never scheduled, FailedScheduling `0/1 nodes are available: 1 Insufficient cpu`, so hindsight-api and hindsight-control-plane CrashLoopBackOff waiting on a database that has nowhere to run. A CAPACITY fact about the single control-plane CI runner (the PVC is unbound only because WaitForFirstConsumer waits for a pod that never schedules), not a fact about the StorageClass.",
+  ],
+  [
+    "kube-prometheus-stack",
+    "NOT storage -- MEASURED run 32519516070: its own prometheus and alertmanager PVCs bound over the dev longhorn alias and both pods run 2/2. Grafana is CreateContainerConfigError, `secret \"grafana-admin-credentials\" not found` -- a secret this lane has no material to mint, the same class of blocker as arc-runner-set.",
+  ],
   ["spire", "Vault upstream CA + kind PVC wiring not ready in included CI (DEV_INCLUDED_PROOF_DEFERRED_DIRS)."],
-  ["tempo", "requests longhorn-backed persistence; same missing-StorageClass reason as cockroachdb."],
   [
     "vault",
     "storage moved to zeta-local-path, so it now SYNCS in this lane -- but it comes up SEALED by design and readiness requires the gated operator-init ceremony, which CI must never run (081M0H19QD3087G0R003GV76ZY).",
   ],
-  ["weaviate", "requests longhorn-backed persistence; same missing-StorageClass reason as cockroachdb."],
+  [
+    "weaviate",
+    "NOT storage -- MEASURED run 32519516070: weaviate-0 is 1/1 Running on a bound 100Gi PVC over the dev longhorn alias. The Application nevertheless re-syncs every ~3 minutes, logging `Partial sync operation to 17.6.0 succeeded` while staying OutOfSync/Progressing for the full 40-minute window. A sync-convergence defect against chart 17.6.0, not a volume that failed to bind.",
+  ],
 ]);
 
 /**
@@ -428,11 +481,132 @@ function yamlTreeReferencesLonghorn(appDir: string): boolean {
   return listYamlFilesUnder(appDir).some((file) => requestsLonghornStorageClass(readFileSync(file, "utf8")));
 }
 
-export function isExcludedFromIncludedProof(dir: string, appText: string, appDir: string): boolean {
+/**
+ * `ReadWriteMany` anywhere in the Application's checked-in YAML tree.
+ *
+ * EVERY class a dev cluster offers is `rancher.io/local-path` -- the `longhorn`
+ * alias, `zeta-local-path`, and kind's default `standard` alike -- and
+ * local-path is node-local and RWO-ONLY. An RWX claim against any of them never
+ * binds, the pod stays `Pending`, and ArgoCD reports a pending PVC as
+ * Progressing rather than Degraded, so the Application does not fail: it never
+ * finishes. That is why this gates on its own rather than inside the longhorn
+ * branch -- the hazard is the access mode, not the class name.
+ *
+ * Deliberately a plain substring scan rather than a structural walk:
+ * `accessModes` appears under Helm values, StatefulSet volumeClaimTemplates,
+ * bare PVCs, and inline flow sequences, and this must FAIL CLOSED -- a shape it
+ * cannot parse must read as "might need RWX", not as "safe to assert".
+ *
+ * HONEST LIMIT, and it is a large one. This reads only the CHECKED-IN tree, and
+ * every Application the alias unlocks is `spec.source.chart` against an external
+ * `repoURL` -- the repo holds a `valuesObject`, and the PVC's access mode lives
+ * in the upstream chart. So for exactly the Applications this guard exists to
+ * protect, it scans files that usually cannot contain the claim. It is a FLOOR
+ * (it catches the in-repo case, which is how `arc-runner-set` is caught), not a
+ * proof. A chart bump that introduces an RWX claim passes it, and the symptom
+ * would be a hang. The thing that would actually close this is rendering the
+ * chart, which `helm-validate.yml` already does for the k8s tree; wiring the
+ * access mode out of that render is the real fix and is not done here.
+ */
+function yamlTreeRequestsReadWriteMany(appDir: string): boolean {
+  return listYamlFilesUnder(appDir).some((file) => readFileSync(file, "utf8").includes("ReadWriteMany"));
+}
+
+/**
+ * Does the repo DECLARE a dev/CI substrate StorageClass named `longhorn`?
+ *
+ * This is the SUBSTRATE CONDITION the longhorn exclusion now hangs on. It is
+ * deliberately a fact about the checked-in tree rather than about a live
+ * cluster, because `isExcludedFromIncludedProof` is a pure, offline predicate
+ * that `app-of-apps-discovery.ts` and the unit tests call with no cluster in
+ * sight. The live half is `assertDevStorageClassPresent`, below, which refuses
+ * to run the proof if the class the repo promised is not actually in the
+ * cluster.
+ *
+ * Fail-closed in every direction: file missing, unparseable (which is also what
+ * a multi-document file yields -- `parseYaml` THROWS on `---` separators rather
+ * than silently returning the first document), not a StorageClass, named
+ * something else, or bound to a provisioner the dev substrate cannot run. Any
+ * of those is `false`, which restores the old blanket exclusion. The exclusion
+ * is made CONDITIONAL, never removed.
+ *
+ * THE PROVISIONER IS CHECKED, not merely present. "Is there a StorageClass named
+ * longhorn" is satisfied by `provisioner: driver.longhorn.io` -- precisely the
+ * thing a kind node cannot run. Accepting any non-empty string would make an
+ * edit that "restores parity" by naming the real driver silently unlock ten
+ * Applications onto a class that provisions nothing.
+ */
+export function devLonghornStorageClassAliasDeclared(repoRoot = REPO_ROOT): boolean {
+  const path = resolve(repoRoot, DEV_STORAGE_ALIAS_MANIFEST_RELPATHS.longhorn);
+  if (!existsSync(path)) return false;
+  let document: unknown;
+  try {
+    document = parseYaml(readFileSync(path, "utf8"));
+  } catch {
+    return false;
+  }
+  if (typeof document !== "object" || document === null) return false;
+  const record = document as { kind?: unknown; metadata?: unknown; provisioner?: unknown };
+  if (record.kind !== "StorageClass") return false;
+  if (typeof record.provisioner !== "string") return false;
+  if (!DEV_SATISFIABLE_PROVISIONERS.has(record.provisioner)) return false;
+  const metadata = record.metadata;
+  if (typeof metadata !== "object" || metadata === null) return false;
+  return (metadata as { name?: unknown }).name === DEV_LONGHORN_ALIAS_CLASS_NAME;
+}
+
+/**
+ * `dir` is applied by the dev root but NOT asserted by the included proof.
+ *
+ * Three mechanisms, and the third one is now SUBSTRATE-CONDITIONAL
+ * (081M0JXF6MS087G0R001HC34TM):
+ *
+ *   1. `DEV_EXCLUDED_DIRS`                  -- no dev substrate at all (GPU, CNI).
+ *   2. `DEV_INCLUDED_PROOF_DEFERRED_DIRS`   -- a named non-storage blocker.
+ *   3. claims `ReadWriteMany`               -- unservable by EVERY dev class.
+ *   4. requests `storageClass: longhorn`    -- ONLY while dev has no class by
+ *                                              that name.
+ *
+ * Rule 4 used to be unconditional, and it was circular: the apps were excluded
+ * because Longhorn was excluded, and Longhorn was excluded because a kind node
+ * has no second disk. `full-ai-cluster/dev-cluster/manifests/longhorn.yaml`
+ * cuts the circle by giving dev a StorageClass that answers to the name, so the
+ * question stops being "does this request longhorn" and becomes "can this lane
+ * satisfy what it requests".
+ *
+ * RULE 3 IS NOT NESTED INSIDE RULE 4, and the ordering is deliberate. Every dev
+ * class is `rancher.io/local-path`, so an RWX claim is unservable whether it
+ * names `longhorn`, `zeta-local-path`, kind's default, or no class at all.
+ * Checking the access mode only for longhorn-requesting apps would leave the
+ * other three shapes able to hang.
+ *
+ * WHY THIS IS NOT A DELETION OF RULE 4, which would be the dangerous change: a
+ * PVC that cannot bind stays `Pending`, and ArgoCD reports a pending PVC as
+ * Progressing -- never Degraded. So the Application does not fail; it burns the
+ * whole `--timeout-sec` (2400s in CI) and is then reported as
+ * `ApplicationUnhealthy` naming the SYMPTOM (still Progressing) rather than the
+ * cause (no such StorageClass) -- and if the 60-minute job cap trips first,
+ * there is no verdict at all. The rule therefore still applies in full whenever
+ * the substrate is absent (`aliasDeclared === false`).
+ *
+ * @param aliasDeclared substrate condition; defaults to reading the repo, and
+ *   is threaded explicitly by `discoverExpectedApplications` so one filesystem
+ *   read serves the whole roster and the unit tests can drive both branches.
+ *   NOTE the default reads the REAL repo root, so a caller passing a fixture
+ *   `appDir` must pass this explicitly or the two disagree about which tree
+ *   they are describing.
+ */
+export function isExcludedFromIncludedProof(
+  dir: string,
+  appText: string,
+  appDir: string,
+  aliasDeclared: boolean = devLonghornStorageClassAliasDeclared(),
+): boolean {
   if (DEV_EXCLUDED_DIRS.has(dir)) return true;
   if (DEV_INCLUDED_PROOF_DEFERRED_DIRS.has(dir)) return true;
-  if (requestsLonghornStorageClass(appText)) return true;
-  return yamlTreeReferencesLonghorn(appDir);
+  if (yamlTreeRequestsReadWriteMany(appDir)) return true;
+  if (aliasDeclared) return false;
+  return requestsLonghornStorageClass(appText) || yamlTreeReferencesLonghorn(appDir);
 }
 
 function usageFailure(message: string): Failure {
@@ -704,6 +878,11 @@ export function parseApplicationName(yamlText: string): string | null {
 }
 
 export function discoverExpectedApplications(repoRoot = REPO_ROOT): readonly ExpectedApplication[] {
+  // Read the substrate condition ONCE for the whole roster: it is a property of
+  // the repo, not of any one Application, and re-reading it per directory would
+  // let two Applications in the same run disagree about whether dev has a
+  // `longhorn` StorageClass.
+  const aliasDeclared = devLonghornStorageClassAliasDeclared(repoRoot);
   const appsDir = resolve(repoRoot, "full-ai-cluster/k8s/applications");
   const dirs = readdirSync(appsDir, { withFileTypes: true })
     .filter((entry) => entry.isDirectory())
@@ -724,7 +903,7 @@ export function discoverExpectedApplications(repoRoot = REPO_ROOT): readonly Exp
         dir,
         name,
         path: appPath.slice(repoRoot.length + 1),
-        excludedFromDev: isExcludedFromIncludedProof(dir, appText, appDir),
+        excludedFromDev: isExcludedFromIncludedProof(dir, appText, appDir, aliasDeclared),
         manualSync: classifySyncPolicy(appText).kind === "manual",
       },
     ];
@@ -782,6 +961,11 @@ export function buildPlan(options: CliOptions, repoRoot = REPO_ROOT): HarnessPla
       "bootstrap or select ephemeral cluster",
       "wait for argocd namespace and ArgoCD control-plane readiness",
       "wait for applications.argoproj.io CRD establishment",
+      ...(isIncludedScope(options.scope)
+        ? [
+            `assert the dev alias StorageClass "${DEV_LONGHORN_ALIAS_CLASS_NAME}" the repo declares is actually present, before anything waits on a PVC that needs it`,
+          ]
+        : []),
       "assert root App-of-Apps exists",
       options.scope === "smoke"
         ? "assert smoke anchors and a broad child Application graph"
@@ -792,7 +976,8 @@ export function buildPlan(options: CliOptions, repoRoot = REPO_ROOT): HarnessPla
     ],
     notes: [
       "081KSXN940008QG0R000SCP2H1 is separate from 081KSNY2Z0008QG0R0008PN7RQ; this harness does not test USB reformat retention.",
-      "Dev health assertions exclude cilium, Longhorn, GPU model-SERVING (ollama/vllm), Longhorn-backed manifests, and apps deferred on a named blocker (gitlab/temporal/agent-memory/platform/forgejo/spire/vault); k3d bootstraps Cilium directly and kind CI uses its default CNI.",
+      "Dev health assertions exclude cilium, the Longhorn chart itself, GPU model-SERVING (ollama/vllm), ReadWriteMany claims, and apps deferred on a named blocker recorded in APPLIED_BUT_UNASSERTED_REASONS; k3d bootstraps Cilium directly and kind CI uses its default CNI.",
+      "Longhorn-BACKED manifests are no longer storage-excluded: dev applies a StorageClass named longhorn over rancher.io/local-path (dev-cluster/manifests/longhorn.yaml), so those PVCs bind. MEASURED on run 32519516070: 6 of the 11 formerly-excluded apps now reach Synced+Healthy (headscale, mimir, nats, oz, redis, tempo); the other 5 bound their volumes and then failed for named NON-storage defects, now visible for the first time. Still excluded outright are ReadWriteMany claims, which no dev provisioner can serve, and the whole rule returns if that manifest is absent (081M0JXF6MS087G0R001HC34TM).",
       "ZETA_CONTAINER_RUNTIME is the repo-wide OCI runtime switch; use --runtime for one-off explicit harness runs.",
     ],
   };
@@ -1054,6 +1239,61 @@ function bootstrapCluster(plan: HarnessPlan, options: CliOptions): Failure | nul
       detail: { provider: "k3d", clusterName: plan.clusterName },
     };
   }
+}
+
+/**
+ * The LIVE half of the substrate condition (081M0JXF6MS087G0R001HC34TM).
+ *
+ * `devLonghornStorageClassAliasDeclared` reads the repo and answers "did we
+ * PROMISE dev a `longhorn` StorageClass". This answers "is it actually THERE",
+ * and the gap between those two questions is the whole reason this function
+ * exists. The repo can declare the alias while bring-up fails to apply it --
+ * the manifest gets renamed, the apply call gets dropped in a refactor, the
+ * kubectl apply silently no-ops against a context that is not the cluster under
+ * test. In every one of those cases the harness would go on to ASSERT
+ * Applications whose PVCs can never bind -- and an unbound PVC does not fail.
+ * ArgoCD reports a pending PVC as Progressing, never Degraded, so the run burns
+ * the full 2400s and then names the SYMPTOM ("still Progressing") rather than
+ * the cause; and if the job's 60-minute cap trips first there is no verdict at
+ * all. Three seconds and the right noun is strictly better than either.
+ *
+ * THE PROVISIONER IS COMPARED, not just the name. `kubectl get storageclass
+ * longhorn` exits 0 for a class bound to `driver.longhorn.io` too -- which is
+ * exactly the class a kind node cannot run. Checking only existence would let
+ * both halves of the substrate condition pass while nothing can provision.
+ *
+ * Scoped to `included`/`full` because `smoke` asserts a floor of Applications
+ * and never depends on the alias.
+ */
+function assertDevStorageClassPresent(plan: HarnessPlan): Failure | null {
+  if (!isIncludedScope(plan.scope)) return null;
+  if (!devLonghornStorageClassAliasDeclared()) return null;
+  const args = ["get", "storageclass", DEV_LONGHORN_ALIAS_CLASS_NAME, "-o", "jsonpath={.provisioner}"];
+  const result = runCommand("kubectl", args, 60_000);
+  const provisioner = result.stdout.trim();
+  const satisfiable = result.status === 0 && DEV_SATISFIABLE_PROVISIONERS.has(provisioner);
+  if (satisfiable) return null;
+  const cause =
+    result.status === 0
+      ? `it is bound to provisioner "${provisioner}", which this lane cannot run`
+      : "it is not present";
+  return {
+    kind: "DevStorageClassMissing",
+    message:
+      `${DEV_STORAGE_ALIAS_MANIFEST_RELPATHS.longhorn} declares a dev StorageClass named ` +
+      `"${DEV_LONGHORN_ALIAS_CLASS_NAME}" over ${[...DEV_SATISFIABLE_PROVISIONERS].join("/")}, and the ` +
+      `included proof asserts Applications that request it, but in cluster ${plan.clusterName} ${cause}. ` +
+      `Those PVCs would stay Pending, which ArgoCD reports as Progressing rather than Degraded, so the run ` +
+      `would burn its whole timeout instead of failing. Failing now instead. Check that the bring-up path ` +
+      `still applies the alias manifest.`,
+    command: ["kubectl", ...args],
+    detail: {
+      stdout: result.stdout.slice(-2000),
+      stderr: result.stderr.slice(-2000),
+      clusterName: plan.clusterName,
+      observedProvisioner: provisioner,
+    },
+  };
 }
 
 const ZETA_GITHUB_REPO_MARKER = "Lucent-Financial-Group/Zeta";
@@ -1458,6 +1698,11 @@ export async function runHarness(options: CliOptions): Promise<HarnessResult> {
   const bootstrapFailure = bootstrapCluster(plan, options);
   if (bootstrapFailure !== null) {
     return { ok: false, plan, preflight, failure: bootstrapFailure };
+  }
+
+  const storageFailure = assertDevStorageClassPresent(plan);
+  if (storageFailure !== null) {
+    return { ok: false, plan, preflight, failure: storageFailure };
   }
 
   const argoFailure = await waitForArgoCd(plan, options);

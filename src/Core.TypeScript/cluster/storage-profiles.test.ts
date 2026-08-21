@@ -1229,10 +1229,19 @@ describe("the checked-in resource ladder", () => {
   });
 
   // The dev lane's applied set comes from ports.ts's excludeGlob, so this
-  // number moves only when that constant does.
-  test("the dev lane applies 33 of the 45 Applications", () => {
+  // number moves only when that constant does -- and it just did. #13343
+  // ("boot 3 of the 12 deferred ArgoCD Applications") dropped deepseek-coder,
+  // qwen-coder and orleans from the glob after measuring them Synced+Healthy,
+  // taking the applied set from 33 to 36, but left this pin at 33. main has
+  // been red on this test since that merge; the PIN is stale, not the glob.
+  //
+  // Corrected here rather than filed, because a red `plan + unit tests` job
+  // SKIPS every live job behind it -- so a stale number in this file stops the
+  // kind lane from running at all, which is exactly the shape where a check
+  // that did not run looks like a check that passed.
+  test("the dev lane applies 36 of the 45 Applications", () => {
     expect(applicationDirs()).toHaveLength(45);
-    expect(devLaneAppliedDirs()).toHaveLength(33);
+    expect(devLaneAppliedDirs()).toHaveLength(36);
   });
 
   // MEASURED 2026-08-21 by `helm pull` at each pinned targetRevision followed
