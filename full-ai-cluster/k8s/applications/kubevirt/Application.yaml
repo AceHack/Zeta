@@ -29,6 +29,16 @@ kind: Application
 metadata:
   annotations:
     argocd.argoproj.io/sync-wave: "-5"   # virtualisation before workloads that need VMs
+    # Machine-readable form of the header above, read by
+    # src/Core.TypeScript/cluster/manual-sync-policy.ts. The comment states the
+    # intent to humans; this states it to the checkers, which otherwise cannot
+    # tell a deliberate omission from a forgotten one.
+    zeta.io/sync-policy: manual
+    zeta.io/sync-policy-reason: Adopts a virt-operator installed by hand on
+      node-5b2dfa, which carries three running production Windows guests. An
+      automated sync or selfHeal could roll virt-operator into virt-handler and
+      disturb live guests. Sync it by hand, off-hours, after reading argocd app
+      diff kubevirt.
   name: kubevirt
   namespace: argocd
   finalizers: [ resources-finalizer.argocd.argoproj.io ]

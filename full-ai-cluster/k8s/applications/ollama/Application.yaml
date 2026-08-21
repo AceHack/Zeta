@@ -14,6 +14,11 @@ kind: Application
 metadata:
   annotations:
     argocd.argoproj.io/sync-wave: "50"
+    zeta.io/sync-policy: manual
+    zeta.io/sync-policy-reason: Local-models phase is deferred; the Application
+      ships scaled to zero so the topology and the chart pin stay reviewable. An
+      automated sync would start pulling models onto GPU nodes before a
+      maintainer has re-enabled the phase.
   name: ollama
   namespace: argocd
   finalizers: [ resources-finalizer.argocd.argoproj.io ]

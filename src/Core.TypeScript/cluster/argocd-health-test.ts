@@ -28,6 +28,7 @@ import { basename, join, resolve } from "node:path";
 import { parse as parseYaml } from "yaml";
 import { bootstrapKindClusterInProcess, bootstrapK3dClusterInProcess } from "./harness/bootstrap.ts";
 import { DEFAULT_ROOT_DEV_CATALOG } from "./ports.ts";
+import { classifySyncPolicy, manualSyncAssertion, type AssertionOutcome } from "./manual-sync-policy.ts";
 
 export type Provider = "k3d" | "kind";
 export type Mode = "dry-run" | "preflight" | "run";
@@ -80,6 +81,17 @@ export interface ExpectedApplication {
   readonly dir: string;
   readonly name: string;
   readonly excludedFromDev: boolean;
+  /**
+   * Declared `zeta.io/sync-policy: manual` + a non-empty reason, with no
+   * `automated:` block (see `./manual-sync-policy.ts`). Such an Application is
+   * asserted DIFFERENTLY, never skipped: it must still exist and ArgoCD must
+   * still have compared it, but it is not required to have auto-synced -- in a
+   * lane where nothing ever syncs it, that requirement was unsatisfiable.
+   *
+   * Fail-closed: a malformed declaration is NOT manual here, so it keeps the
+   * full Synced+Healthy assertion.
+   */
+  readonly manualSync: boolean;
   readonly path: string;
 }
 
@@ -656,6 +668,7 @@ export function discoverExpectedApplications(repoRoot = REPO_ROOT): readonly Exp
         name,
         path: appPath.slice(repoRoot.length + 1),
         excludedFromDev: isExcludedFromIncludedProof(dir, appText, appDir),
+        manualSync: classifySyncPolicy(appText).kind === "manual",
       },
     ];
   });
@@ -716,7 +729,7 @@ export function buildPlan(options: CliOptions, repoRoot = REPO_ROOT): HarnessPla
       options.scope === "smoke"
         ? "assert smoke anchors and a broad child Application graph"
         : isIncludedScope(options.scope)
-          ? "assert every non-excluded dev Application is Synced and Healthy"
+          ? "assert every non-excluded dev Application is Synced and Healthy; a declared manual-sync app must instead exist, compare cleanly, and not be Degraded"
           : "assert expected dev Applications are Healthy/Synced",
       "optional safe drift-repair check through root App-of-Apps self-heal",
     ],
@@ -1177,6 +1190,26 @@ export function isApplicationSynced(snapshot: ArgoApplicationSnapshot): boolean 
   return false;
 }
 
+/**
+ * THE ASSERTION SPLIT (2026-08-21).
+ *
+ * A declared manual-sync Application is asserted DIFFERENTLY, never skipped --
+ * see ./manual-sync-policy.ts for the convention, the weaker contract, and what
+ * that contract can and cannot still catch.
+ *
+ * Fail-closed twice over: expected.manualSync is true only for a WELL-FORMED
+ * declaration (annotation + non-empty reason + no automated block), so a
+ * malformed one keeps the full Synced+Healthy contract. Adding an app name to a
+ * list is not a way in; the app has to say why, in its own manifest.
+ */
+export function applicationOutcome(expected: ExpectedApplication, snapshot: ArgoApplicationSnapshot): AssertionOutcome {
+  if (expected.manualSync) return manualSyncAssertion(snapshot);
+  const reconciled = isApplicationSynced(snapshot) ? snapshot.healthStatus === "Healthy" : false;
+  if (reconciled) return { ok: true, reason: "" };
+  const stated = snapshot.message === "" ? "expected Synced/Healthy" : snapshot.message;
+  return { ok: false, reason: stated };
+}
+
 export function classifyApplications(
   expectedApplications: readonly ExpectedApplication[],
   snapshots: readonly ArgoApplicationSnapshot[],
@@ -1195,14 +1228,15 @@ export function classifyApplications(
           reason: `Application not found; expected from ${expected.path}`,
         };
       }
-      const ok = isApplicationSynced(snapshot) && snapshot.healthStatus === "Healthy";
+      const outcome = applicationOutcome(expected, snapshot);
+      const ok = outcome.ok;
       const base = {
         name: expected.name,
         ok,
         syncStatus: snapshot.syncStatus || "Unknown",
         healthStatus: snapshot.healthStatus || "Unknown",
       };
-      return ok ? base : { ...base, reason: snapshot.message || "expected Synced/Healthy" };
+      return ok ? base : { ...base, reason: outcome.reason };
     });
 }
 

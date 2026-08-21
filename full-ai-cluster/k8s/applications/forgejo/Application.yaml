@@ -12,6 +12,11 @@ kind: Application
 metadata:
   annotations:
     argocd.argoproj.io/sync-wave: "30"
+    zeta.io/sync-policy: manual
+    zeta.io/sync-policy-reason: Standby half of the either/or Git-host pair;
+      gitlab is the default-on one. Both Applications ship for review and only
+      one may reconcile at a time, so this side stays manual until the swap
+      described in the header is performed.
   name: forgejo
   namespace: argocd
   finalizers: [ resources-finalizer.argocd.argoproj.io ]

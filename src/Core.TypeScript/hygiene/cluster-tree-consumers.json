@@ -166,14 +166,20 @@
     {
       "path": "db/mutation-findings/otto.jsonl",
       "disposition": "prose",
-      "note": "An append-only mutation-findings log, same class as soraya.jsonl and alexa.jsonl above and rostered on the same reasoning. 231 records of {source, test, mutation, outcome, address}. It names the stale tree in exactly the same TWO paths \u2014 infra/k8s/tests/validate-bootstrap.ts and its .test.ts \u2014 recording that a mutation was run against the bootstrap validator. Nothing resolves against those paths; they are the SUBJECT of a past run, logged. Arrived on main via the agent-heartbeat batch merge #12604 and turned `lint (yaml/k8s)`, `test (TS hermetic)`, and `lint (bash retirement inventory + hygiene unit tests)` red on main itself \u2014 all three assert this same roster.",
-      "migrateTo": "NONE \u2014 do not repoint, for the reason already recorded on soraya.jsonl and alexa.jsonl: the mutation genuinely ran against that file at that path, and rewriting the log to name full-ai-cluster would falsify what was measured. Drop the row with the tree; the log is append-only and content-addressed."
+      "note": "An append-only mutation-findings log, same class as soraya.jsonl and alexa.jsonl above and rostered on the same reasoning. 231 records of {source, test, mutation, outcome, address}. It names the stale tree in exactly the same TWO paths — infra/k8s/tests/validate-bootstrap.ts and its .test.ts — recording that a mutation was run against the bootstrap validator. Nothing resolves against those paths; they are the SUBJECT of a past run, logged. Arrived on main via the agent-heartbeat batch merge #12604 and turned `lint (yaml/k8s)`, `test (TS hermetic)`, and `lint (bash retirement inventory + hygiene unit tests)` red on main itself — all three assert this same roster.",
+      "migrateTo": "NONE — do not repoint, for the reason already recorded on soraya.jsonl and alexa.jsonl: the mutation genuinely ran against that file at that path, and rewriting the log to name full-ai-cluster would falsify what was measured. Drop the row with the tree; the log is append-only and content-addressed."
     },
     {
       "path": "db/mutation-findings/alexa.jsonl",
       "disposition": "prose",
       "note": "An append-only mutation-findings log, same class as soraya.jsonl above and rostered on the same reasoning. 202 records of {source, test, mutation, outcome, address}. It names the stale tree in exactly the same TWO paths — infra/k8s/tests/validate-bootstrap.ts and its .test.ts — recording that a mutation was run against the bootstrap validator. Nothing resolves against those paths; they are the SUBJECT of a past run, logged. Arrived on main via the agent-heartbeat batch merge #12466 and turned `lint (yaml/k8s)` red on main itself.",
       "migrateTo": "NONE — do not repoint, for the reason already recorded on soraya.jsonl: the mutation genuinely ran against that file at that path, and rewriting the log to name full-ai-cluster would falsify what was measured. Drop the row with the tree; the log is append-only and content-addressed."
+    },
+    {
+      "path": "src/Core.TypeScript/cluster/manual-sync-policy.ts",
+      "disposition": "prose",
+      "note": "Two DOC-COMMENT references only, no import and no path construction: it points at infra/k8s/tests/validate-applications.ts as the OTHER consumer of this same manual-sync convention, and at FULL-AI-CLUSTER-FAILURE-BASELINE.md for the failure count. Both files exist at those paths today. The pointer is the POINT -- it is what tells the next reader that the render validator must adopt this module rather than grow a parallel convention, which is the drift this repo keeps catching. Migration target: repoint both mentions when the render validator moves out of infra/.",
+      "migrateTo": ""
     }
   ]
 }

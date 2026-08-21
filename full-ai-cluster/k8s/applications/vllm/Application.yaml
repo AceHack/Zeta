@@ -12,6 +12,11 @@ kind: Application
 metadata:
   annotations:
     argocd.argoproj.io/sync-wave: "50"
+    zeta.io/sync-policy: manual
+    zeta.io/sync-policy-reason: Local-models phase is deferred; deployment.yaml
+      ships replicas 0 and this Application stays manual so ArgoCD does not
+      reconcile it until a maintainer explicitly runs argocd app sync vllm.
+      Mirrors the ollama gating.
   name: vllm
   namespace: argocd
   finalizers: [ resources-finalizer.argocd.argoproj.io ]

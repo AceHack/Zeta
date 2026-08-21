@@ -23,6 +23,15 @@ kind: Application
 metadata:
   annotations:
     argocd.argoproj.io/sync-wave: "-5"   # alongside kubevirt, before VM workloads
+    # Machine-readable form of the header above, read by
+    # src/Core.TypeScript/cluster/manual-sync-policy.ts. The comment states the
+    # intent to humans; this states it to the checkers, which otherwise cannot
+    # tell a deliberate omission from a forgotten one.
+    zeta.io/sync-policy: manual
+    zeta.io/sync-policy-reason: Adopts a CDI operator installed by hand on
+      node-5b2dfa, the box running three production Windows guests. An automated
+      sync could roll cdi-operator under live VM disk imports. Sync it by hand
+      after reading argocd app diff cdi.
   name: cdi
   namespace: argocd
   finalizers: [ resources-finalizer.argocd.argoproj.io ]
