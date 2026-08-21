@@ -183,6 +183,14 @@ jobs:
           # Run the society evolution script.
           # Exits 0 on success, non-zero on failure (non-fatal — the society
           # continues even if one evolution tick fails).
+          #
+          # `set -o pipefail` is LOAD-BEARING and must not be removed. Without it
+          # the pipeline below reports `tail`'s status, which is always 0, so the
+          # `|| echo` guard was DEAD CODE and a crashing runner was indistinguishable
+          # from a healthy tick. That is this repo's own "never read exit status
+          # through a pipe" rule, and it was violated here on main until 2026-08-20.
+          # The failure stays non-fatal by design (`|| echo`), but it is now VISIBLE.
+          set -o pipefail
           bun src/Core.TypeScript/planning/society-evolution-runner.ts \
             --event-dir docs/observe-events \
             --generations 1 \
