@@ -1,0 +1,14 @@
+{
+  "id": "080d012993023810a01300081baedd63",
+  "at": "2026-08-21T16:40:53.575Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M0JK4R26087G0R002SVJ5VW",
+    "type": "bug",
+    "title": "zeta-install.sh treats a failed hardware-configuration capture as a warning and installs the placeholder",
+    "slug": "zeta-install-sh-treats-a-failed-hardware-configuration-captu",
+    "priority": "P2",
+    "filename": "081M0JK4R26087G0R002SVJ5VW-zeta-install-sh-treats-a-failed-hardware-configuration-captu.md"
+  }
+}

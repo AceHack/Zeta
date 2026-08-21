@@ -423,6 +423,104 @@ zeta_pf_decide_scope() {
 }
 # ZETA-PREFLIGHT-PARITY-END --------------------------------------
 
+# ZETA-HWCONFIG-CAPTURE-BEGIN ------------------------------------
+# Pure decision functions for Step 6's hardware-configuration.nix capture.
+#
+# NOTHING IN THIS BLOCK TOUCHES A DEVICE, AND NOTHING IN IT WRITES.
+# It reads paths and prints a verdict on stdout, so it can be extracted by
+# src/Core.TypeScript/installer/hardware-config-capture.test.ts and executed
+# under bash against tmpdir fixtures. Same bash-3.2 subset, same reason, as
+# the ZETA-PREFLIGHT-PARITY block above.
+#
+# WHY THIS EXISTS AT ALL
+# ----------------------
+# The capture used to be:
+#
+#     if [ -f "$HW_SRC" ] && [ -e "$HW_DST" ]; then cp ...
+#     else echo "WARN: hardware-configuration not copied" >&2; fi
+#
+# A FAILED capture printed one stderr line and the install continued, baking
+# the committed placeholder -- which declares only / and /boot. The
+# longhorn{1..N} partitions this script had just created, formatted and
+# mounted therefore got no `fileSystems` entry and never mounted again on the
+# installed node.
+#
+# That compounds with the boot-time Longhorn preflight added in PR #13252:
+# nixos/modules/longhorn-preflight-checks.nix derives its must-be-mounted set
+# from the host's OWN `fileSystems`. A placeholder node declares no Longhorn
+# path, so the required set is EMPTY and the mount check passes with nothing
+# to check. A silent install-time fallback turned a brand-new guard into a
+# check that cannot fail -- a check that did not run looking exactly like a
+# check that passed.
+#
+# So the capture fails CLOSED, and it checks the CONTENT rather than the file
+# operation: the destination must declare every Longhorn mountpoint this
+# install actually mounted. `cp` returning 0 was never the property we wanted.
+#
+# NOTE ON THE COMMITTED PLACEHOLDERS: hosts/control-plane and hosts/worker-gpu
+# ship a `/`+`/boot` hardware-configuration.nix ON PURPOSE, so `nix flake
+# check` can evaluate an unprovisioned host in CI. That committed state is
+# CORRECT and is not what these functions object to. The defect was never the
+# file's contents in git -- it was the install-time capture failing quietly.
+
+# $1=hw_src $2=host_dir $3=hw_dst
+# Prints exactly one verdict line. Failure CLOSED: every path that is not a
+# proven-good capture prints REFUSE or SKIP, never blank.
+#
+#   COPY                      -- probe output exists and the host carries the
+#                                file: copy it, then verify the content.
+#   REFUSE no-generated-config
+#   REFUSE no-host-dir
+#   REFUSE host-imports-missing-file
+#   SKIP host-declares-own-filesystems
+#                             -- the host has no hardware-configuration.nix
+#                                AND imports none (the disko-shaped hosts, e.g.
+#                                hosts/worker-template). Its filesystems come
+#                                from its own declarative config, so there is
+#                                nothing for the probe output to replace. This
+#                                is the ONE legitimate non-copy, and it is
+#                                established by READING the host tree rather
+#                                than assumed from a missing file.
+zeta_hwcap_plan() {
+  local hw_src="$1" host_dir="$2" hw_dst="$3"
+  if [ ! -f "$hw_src" ]; then
+    echo "REFUSE no-generated-config"
+    return 0
+  fi
+  if [ ! -d "$host_dir" ]; then
+    echo "REFUSE no-host-dir"
+    return 0
+  fi
+  if [ -e "$hw_dst" ]; then
+    echo "COPY"
+    return 0
+  fi
+  if grep -Rql -- './hardware-configuration.nix' "$host_dir" 2>/dev/null; then
+    echo "REFUSE host-imports-missing-file"
+    return 0
+  fi
+  echo "SKIP host-declares-own-filesystems"
+}
+
+# $1=nix_file, $2..=mountpoints that MUST appear as fileSystems keys.
+# Prints "OK" when every mountpoint is declared, otherwise one
+# "MISSING <mountpoint>" line per undeclared path. An unreadable or absent
+# file reports every mountpoint missing rather than passing quietly.
+zeta_hwcap_verify() {
+  local nix_file="$1" mp missing=0
+  shift
+  for mp in "$@"; do
+    if [ -r "$nix_file" ] && grep -Fq "\"$mp\"" "$nix_file"; then
+      continue
+    fi
+    echo "MISSING $mp"
+    missing=$((missing + 1))
+  done
+  [ "$missing" -eq 0 ] && echo "OK"
+  return 0
+}
+# ZETA-HWCONFIG-CAPTURE-END --------------------------------------
+
 # ── Step 2.5: pre-format probe (R6 / R14, 2026-06-09) ─────────────
 #
 # Aaron 2026-06-09: "check if the partition exists every time before
@@ -1016,12 +1114,20 @@ sudo mkdir -p /mnt/boot /mnt/var/lib/longhorn-disk1
 sudo mount "$ESP_PART" /mnt/boot
 sudo mount "$LH1_PART" /mnt/var/lib/longhorn-disk1
 
+# The Longhorn mountpoints AS THE INSTALLED SYSTEM WILL SEE THEM (no /mnt
+# prefix -- `nixos-generate-config --root /mnt` strips it). Recorded here, at
+# the one place that actually mounts them, so Step 6's capture check is
+# derived from what this install DID rather than from a restated roster that
+# can drift. Never empty: longhorn1 is created on every install.
+LONGHORN_MOUNTS=("/var/lib/longhorn-disk1")
+
 i=2
 for d in "${DATA_DISKS[@]}"; do
   lhp=$(part_name "$d" 1)
   mp="/mnt/var/lib/longhorn-disk${i}"
   sudo mkdir -p "$mp"
   sudo mount "$lhp" "$mp"
+  LONGHORN_MOUNTS+=("${mp#/mnt}")
   i=$((i + 1))
 done
 
@@ -1147,14 +1253,62 @@ sudo nixos-generate-config --root /mnt --force
 # repo tree (stub until replaced). Without this copy, nixos-install bakes the
 # placeholder (no virtio_blk in initrd) and QEMU phase-2 UEFI boot hangs after
 # earlycon when root is on virtio (CI run 27598982580).
+#
+# FAILS CLOSED since 081M0JK4R26087G0R002SVJ5VW. The verdict + the content
+# check are the pure functions in the ZETA-HWCONFIG-CAPTURE block near the top
+# of this file; that block carries the full account of what the old
+# `else echo WARN >&2` fallback silently installed. Short version: a node
+# whose Longhorn partitions are absent from its own `fileSystems` is a node
+# whose storage does not exist AND whose boot-time storage preflight has
+# nothing to check. Refusing here costs the operator a re-run of an installer
+# whose disks are already wiped either way; continuing cost them a node that
+# looked healthy and was not.
 HW_SRC="/mnt/etc/nixos/hardware-configuration.nix"
-HW_DST="/mnt/etc/zeta/full-ai-cluster/nixos/hosts/${HOST}/hardware-configuration.nix"
-if [ -f "$HW_SRC" ] && [ -e "$HW_DST" ]; then
-  echo "[iter-5.1] installing probe-generated hardware-configuration.nix for ${HOST} ..."
-  sudo cp "$HW_SRC" "$HW_DST"
-else
-  echo "[iter-5.1] WARN: hardware-configuration not copied (src=${HW_SRC} dst=${HW_DST})" >&2
-fi
+HOST_DIR="/mnt/etc/zeta/full-ai-cluster/nixos/hosts/${HOST}"
+HW_DST="${HOST_DIR}/hardware-configuration.nix"
+HW_PLAN="$(zeta_hwcap_plan "$HW_SRC" "$HOST_DIR" "$HW_DST")"
+case "$HW_PLAN" in
+  COPY)
+    echo "[iter-5.1] installing probe-generated hardware-configuration.nix for ${HOST} ..."
+    sudo cp "$HW_SRC" "$HW_DST" \
+      || bail "could not copy $HW_SRC to $HW_DST. Without it nixos-install bakes the committed placeholder, which declares only / and /boot: the ${#LONGHORN_MOUNTS[@]} Longhorn partition(s) this installer just formatted would never mount again, and the boot-time zeta-longhorn-preflight would have an EMPTY required set and pass vacuously. Remedy: fix the copy ('sudo cp $HW_SRC $HW_DST'), then re-run this installer."
+    HW_MISSING="$(zeta_hwcap_verify "$HW_DST" "${LONGHORN_MOUNTS[@]}")"
+    if [ "$HW_MISSING" != "OK" ]; then
+      echo "[iter-5.1] $HW_MISSING" >&2
+      bail "the hardware configuration captured for ${HOST} does not declare every Longhorn mountpoint this install mounted (missing listed above; expected all of: ${LONGHORN_MOUNTS[*]}). Installing it would produce a node whose Longhorn disks are invisible to it AND whose boot-time zeta-longhorn-preflight has nothing to check. Remedy: confirm the mounts are live ('findmnt /var/lib/longhorn-disk1' under /mnt), re-run 'sudo nixos-generate-config --root /mnt --force', then re-run this installer."
+    fi
+    echo "[iter-5.1] verified: ${HW_DST} declares all ${#LONGHORN_MOUNTS[@]} Longhorn mountpoint(s): ${LONGHORN_MOUNTS[*]}"
+    ;;
+  "SKIP host-declares-own-filesystems")
+    # A disko-shaped host (hosts/worker-template today). It imports no
+    # hardware-configuration.nix, so the probe output has nothing to replace
+    # and refusing here would be wrong. What we can NOT establish from here is
+    # that its own declarative config names the disks this installer just
+    # partitioned -- disko derives those mountpoints programmatically from
+    # zeta.disko.extraDisks. So say so loudly rather than say nothing, and
+    # name the boot-time check that DOES have the node in front of it.
+    echo "[iter-5.1] NOTICE: host '${HOST}' carries no hardware-configuration.nix and imports none;"
+    echo "[iter-5.1]   its filesystems come from its OWN declarative (disko) config, not from the"
+    echo "[iter-5.1]   probe just run. This installer mounted ${#LONGHORN_MOUNTS[@]} Longhorn path(s):"
+    echo "[iter-5.1]     ${LONGHORN_MOUNTS[*]}"
+    echo "[iter-5.1]   Nothing here can prove '${HOST}' declares them. The boot-time preflight"
+    echo "[iter-5.1]   (zeta-longhorn-preflight) REFUSES on the console if any longhorn-labelled"
+    echo "[iter-5.1]   device ends up unmounted. On first boot look for ZETA_LONGHORN_PREFLIGHT_OK;"
+    echo "[iter-5.1]   ZETA_LONGHORN_PREFLIGHT_FAILED means this node's storage is not wired up."
+    ;;
+  "REFUSE no-generated-config")
+    bail "nixos-generate-config produced no $HW_SRC, so this install has NO capture of the hardware it just partitioned. Continuing would bake the committed placeholder (/ and /boot only) and leave the ${#LONGHORN_MOUNTS[@]} Longhorn partition(s) unmounted forever. Remedy: run 'sudo nixos-generate-config --root /mnt --force' and read its error, then re-run this installer."
+    ;;
+  "REFUSE no-host-dir")
+    bail "flake host '${HOST}' has no directory at ${HOST_DIR#/mnt} in the cloned repo, so there is nowhere to install the hardware configuration and 'nixos-install --flake ...#${HOST}' has no such attribute. Remedy: pick a host that exists (ls ${HOST_DIR%/*}), or add nixos/hosts/${HOST}/ plus a nixosConfigurations.${HOST} entry to full-ai-cluster/flake.nix, then re-run this installer."
+    ;;
+  "REFUSE host-imports-missing-file")
+    bail "host '${HOST}' imports ./hardware-configuration.nix but no such file exists at ${HW_DST#/mnt}. The flake cannot evaluate. Remedy: commit a hardware-configuration.nix for that host (the /-and-/boot stub in nixos/hosts/control-plane/ is the shape), or drop the import, then re-run this installer."
+    ;;
+  *)
+    bail "internal error: zeta_hwcap_plan returned an unrecognised verdict '${HW_PLAN}'. Refusing rather than guessing -- an unhandled verdict here is exactly the silent-fallback class this check exists to remove."
+    ;;
+esac
 
 # ── Step 6.5: iter-4.2 probe boot USB for operator SSH pubkey ────
 # Per 081KSGS9H0008QG0R002T3BJ2R: zflash on macOS writes ~/.ssh/id_ed25519.pub to the

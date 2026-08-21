@@ -17,7 +17,14 @@
 #   [FAILED] Failed to start Longhorn node preflight (storage devices + attach prerequisites).
 #   zeta-longhorn-preflight: REFUSED -- iscsid.service is not active. ...
 #   zeta-longhorn-preflight:   remedy: run: systemctl status iscsid.service ; ...
-#   ZETA_LONGHORN_PREFLIGHT_FAILED failures=1 mounts_checked=0
+#   ZETA_LONGHORN_PREFLIGHT_FAILED failures=1 mounts_checked=0 longhorn_devices=0 orphan_devices=0
+#
+# Read the two counts together. `mounts_checked` is what the CONFIG declared;
+# `longhorn_devices` is what the DISKS carry. mounts_checked=0 on its own has
+# never meant "nothing to check" -- it is also exactly what a node looks like
+# when its hardware-configuration capture failed at install time and the
+# committed /-and-/boot placeholder got baked in. See check 1b in
+# longhorn-preflight-checks.nix.
 #
 # on the physical console (the checks write to /dev/console, the way
 # k3s-join-observer.nix puts its contract markers on serial), and in
@@ -61,14 +68,18 @@ in
       default = true;
       description = ''
         Run the boot-time Longhorn node preflight: every filesystem this host
-        declares under /var/lib/longhorn is really mounted, iscsid is active,
-        iscsi_tcp is loaded, and the /usr/local/bin FHS shims that
+        declares under /var/lib/longhorn is really mounted, every device
+        carrying a longhorn* filesystem label is mounted there, iscsid is
+        active, iscsi_tcp is loaded, and the /usr/local/bin FHS shims that
         longhorn-manager nsenters to are executable.
 
         Default true on every node. Turn it off only for a host that
-        deliberately runs no Longhorn storage; note that the checks are derived
-        from the host's own declarations, so a host that declares nothing is
-        already checked trivially rather than needing this switch.
+        deliberately runs no Longhorn storage -- and note it should not be
+        needed even then: the mount checks are derived from the host's own
+        declarations AND from the labels on its disks, so a host with neither
+        has nothing to check without needing this switch. A host that declares
+        nothing but HAS longhorn-labelled disks is precisely the case check 1b
+        refuses, and turning this off would hide it.
       '';
     };
   };

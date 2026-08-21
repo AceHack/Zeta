@@ -162,6 +162,40 @@ let
       && countOccurrences "/usr/local/bin/iscsiadm" noDataDisks.script >= 1
     ))
 
+    # -- P2b the empty-required-set case is no longer VACUOUS ---------------
+    #
+    # P2 pins the empty set as correct-given-the-declarations. It is not
+    # correct-given-the-NODE, because a node reaches the declares-nothing state
+    # by accident: zeta-install.sh formats longhorn{1..N} and then copies the
+    # probe-generated hardware-configuration over the committed placeholder, and
+    # until 081M0JK4R26087G0R002SVJ5VW a FAILED copy was a stderr WARN and the
+    # install continued. So an empty required set is ALSO the signature of the
+    # bug, and check 1 alone cannot tell the two apart.
+    #
+    # Check 1b asks the disks. These properties are what stop a future edit
+    # from deleting it and leaving P2 reading like a clearance.
+    (check "check 1b probes the disks by label, and does so even with an EMPTY required set" (
+      countOccurrences "/dev/disk/by-label/longhorn*" noDataDisks.script == 1
+      && countOccurrences "/dev/disk/by-label/longhorn*" multiDisk.script == 1
+    ))
+    (check "an unmounted longhorn-labelled device is counted as an orphan and REFUSED" (
+      countOccurrences "lh_orphans=$((lh_orphans + 1))" noDataDisks.script == 1
+      && countOccurrences "fail \"$lh_dev carries the Longhorn label" noDataDisks.script == 1
+    ))
+    (check "1b routes through fail(), so it cannot add a second exit path" (
+      countOccurrences "exit 1" noDataDisks.script == 1
+      && countOccurrences "exit 1" multiDisk.script == 1
+    ))
+    (check "1b accepts only a mount UNDER the Longhorn root, not merely any mount" (
+      countOccurrences "${noDataDisks.longhornRoot}*)" noDataDisks.script == 1
+    ))
+    (check "the verdict reports the DEVICE count beside the declared-mount count" (
+      # mounts_checked=0 alone is what the bug looks like; the pair is what
+      # makes "there was nothing to check" a claim an operator can read.
+      countOccurrences "longhorn_devices=$lh_devices" noDataDisks.script == 2
+      && countOccurrences "mounts_checked=$checked_mounts" noDataDisks.script == 2
+    ))
+
     # -- P3 every derived mount reaches the emitted script -------------------
     # The derivation being right is worth nothing if the script drops a path.
     (check "every required mount appears in a findmnt invocation in the script" (

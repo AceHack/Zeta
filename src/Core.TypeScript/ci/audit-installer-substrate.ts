@@ -140,7 +140,19 @@ const REQUIRED_SENTINELS: readonly SentinelAssertion[] = [
       "link/ether", // MAC_ADDR parses field AFTER link/ether (not before)
       // 081KSNY2Z0008QG0R0008PN7RQ phase-2: probe-generated hardware-configuration must land in flake host tree
       "installing probe-generated hardware-configuration.nix",
-      "hosts/${HOST}/hardware-configuration.nix",
+      // 081M0JK4R26087G0R002SVJ5VW: the destination is still host-scoped, but it
+      // is now built in two steps -- HOST_DIR is needed on its own to decide
+      // whether the host imports a hardware-configuration.nix at all -- so the
+      // old single literal `hosts/${HOST}/hardware-configuration.nix` no longer
+      // appears verbatim. Both halves are pinned below, and so is the thing that
+      // actually matters: the copy is gated on a verdict and the RESULT is
+      // content-checked against the mountpoints the install mounted. A failed
+      // capture used to be a stderr WARN and the install continued, baking the
+      // committed /-and-/boot placeholder over live Longhorn partitions.
+      "hosts/${HOST}",
+      "${HOST_DIR}/hardware-configuration.nix",
+      'HW_PLAN="$(zeta_hwcap_plan "$HW_SRC" "$HOST_DIR" "$HW_DST")"',
+      'HW_MISSING="$(zeta_hwcap_verify "$HW_DST" "${LONGHORN_MOUNTS[@]}")"',
     ],
     rationale:
       "iter-4.2 + iter-5.1 + iter-5.2 + iter-5.2.2 + iter-5.4.0 + iter-5.4.1 (incl. 081KSGS9H0008QG0R00120EEHM Bug 2a/2b fixes) substrate must be present in installer script",

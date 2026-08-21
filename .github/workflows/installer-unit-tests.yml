@@ -28,6 +28,12 @@ on:
     types: [opened, reopened, synchronize, ready_for_review]
     paths:
       - "src/Core.TypeScript/installer/**"
+      # Two tests in that directory read zeta-install.sh and execute blocks
+      # extracted from it (disk-preflight-shell-parity.test.ts,
+      # hardware-config-capture.test.ts). Without this path the installer
+      # script could change the very logic they pin and this lane would not
+      # run -- a check that did not run, looking like a check that passed.
+      - "full-ai-cluster/usb-nixos-installer/zeta-install.sh"
       - ".github/workflows/installer-unit-tests.yml"
       - ".mise.toml"
       - "package.json"
@@ -37,6 +43,12 @@ on:
     branches: [main]
     paths:
       - "src/Core.TypeScript/installer/**"
+      # Two tests in that directory read zeta-install.sh and execute blocks
+      # extracted from it (disk-preflight-shell-parity.test.ts,
+      # hardware-config-capture.test.ts). Without this path the installer
+      # script could change the very logic they pin and this lane would not
+      # run -- a check that did not run, looking like a check that passed.
+      - "full-ai-cluster/usb-nixos-installer/zeta-install.sh"
       - ".github/workflows/installer-unit-tests.yml"
       - ".mise.toml"
       - "package.json"
