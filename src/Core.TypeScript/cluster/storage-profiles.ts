@@ -90,6 +90,28 @@ export interface ProfileClaim {
   readonly consequence: string;
   readonly sizes: Readonly<Record<string, string>>;
   readonly pods: Readonly<Record<string, number>>;
+  /**
+   * NON-CAPACITY scalars that GOVERN the capacity — dotted field path -> value
+   * per profile. Written and verified exactly like `sizes`.
+   *
+   * A number without its governor is not a size. `prometheus: 100Gi` means
+   * nothing without a retention bound beside it: cut the volume, leave the
+   * governor where it was, and you have not made the footprint smaller — you
+   * have made an eviction loop. Before this field existed the catalogue could
+   * only write that requirement in prose; its own prometheus row said the
+   * retention cut "is NOT rewritten by --apply" and asked whoever selected the
+   * profile to remember. An instruction to remember is the vacuity class: it
+   * reads like a guard and constrains nothing. Governors move with the profile
+   * or the profile's headline number is not the footprint.
+   *
+   * Empty for most claims, and empty is a real answer rather than an omission:
+   * a volume with no retention mechanism at all (weaviate, cockroachdb, the
+   * agent-memory store) refuses writes when it fills and there is no scalar to
+   * turn. Those rows say so in `consequence`.
+   */
+  readonly governors: Readonly<Record<string, Readonly<Record<string, string>>>>;
+  /** Required (non-empty) whenever `governors` is non-empty — where each value comes from. */
+  readonly governorEvidence: string;
 }
 
 export interface ProfileCatalogue {
@@ -224,6 +246,45 @@ export function loadCatalogue(path = DEFAULT_CATALOGUE_PATH, repoRoot = REPO_ROO
       sizeByProfile[name] = size;
       podsByProfile[name] = podCount;
     }
+    // Governors. A governor with a HOLE is worse than no governor at all: the
+    // manifest would keep whatever the previously-applied profile wrote, so the
+    // volume would be sized by one rung and bounded by another and nothing
+    // would say so. Every declared governor therefore has to carry a value for
+    // every profile, and the whole block has to cite where those values come
+    // from — the same refusal `podsEvidence` makes, for the same reason.
+    const rawGovernors = raw.governors;
+    const governors: Record<string, Record<string, string>> = {};
+    if (rawGovernors !== undefined) {
+      if (typeof rawGovernors !== "object" || rawGovernors === null || Array.isArray(rawGovernors)) {
+        throw new Error(`${path}: ${id}.governors must be an object of field -> { profile: value }`);
+      }
+      for (const [field, byProfile] of Object.entries(rawGovernors as Record<string, unknown>)) {
+        parseFieldPath(field); // throws on a malformed coordinate rather than addressing the wrong node
+        if (typeof byProfile !== "object" || byProfile === null || Array.isArray(byProfile)) {
+          throw new Error(`${path}: ${id}.governors["${field}"] must be an object of profile -> value`);
+        }
+        const values: Record<string, string> = {};
+        for (const name of names) {
+          const value = (byProfile as Record<string, unknown>)[name];
+          if (typeof value !== "string" || value.length === 0) {
+            throw new Error(
+              `${path}: ${id}.governors["${field}"].${name} missing — a governor with a hole leaves the manifest ` +
+                `bounded by whichever profile was applied last, which is drift that nothing reports`,
+            );
+          }
+          values[name] = value;
+        }
+        governors[field] = values;
+      }
+    }
+    const governorEvidence = typeof raw.governorEvidence === "string" ? raw.governorEvidence : "";
+    if (Object.keys(governors).length > 0 && governorEvidence.trim().length === 0) {
+      throw new Error(
+        `${path}: ${id} declares governors with no governorEvidence — a bound with no stated origin is a number ` +
+          `somebody picked, and the catalogue cannot tell that from a requirement`,
+      );
+    }
+
     claims.push({
       id,
       path: requireString(raw.path, `${path}: ${id}.path`),
@@ -238,6 +299,8 @@ export function loadCatalogue(path = DEFAULT_CATALOGUE_PATH, repoRoot = REPO_ROO
       consequence: requireString(raw.consequence, `${path}: ${id}.consequence`),
       sizes: sizeByProfile,
       pods: podsByProfile,
+      governors,
+      governorEvidence,
     });
   }
   return { profiles: names, claims: [...claims].sort((a, b) => stringCompare(a.id, b.id)) };
@@ -334,6 +397,26 @@ export function verifyProfileApplied(
           `${claim.path} declares ${String(size.value)} at ${claim.sizeField}, ` +
           `but profile "${profile}" says ${wantSize}`,
       });
+    }
+    for (const [field, byProfile] of [...Object.entries(claim.governors)].sort((a, b) => stringCompare(a[0], b[0]))) {
+      const wantGovernor = byProfile[profile];
+      if (wantGovernor === undefined) continue;
+      const governor = readField(repoRoot, claim, field);
+      if (!governor.found) {
+        findings.push({
+          claimId: claim.id,
+          problem:
+            `${claim.path} doc ${String(claim.docIndex)} has no value at ${field} — the profile declares a ` +
+            `governor for a coordinate the manifest does not carry, so the size it bounds is ungoverned`,
+        });
+      } else if (governor.value !== wantGovernor) {
+        findings.push({
+          claimId: claim.id,
+          problem:
+            `${claim.path} declares ${String(governor.value)} at ${field}, ` +
+            `but profile "${profile}" says ${wantGovernor}`,
+        });
+      }
     }
     if (claim.podsField === null) continue;
     const wantPods = claim.pods[profile];
@@ -496,6 +579,24 @@ export function applyProfile(
         edits.push({ path, field: claim.sizeField, from: String(currentSize), to: wantSize });
         touched = true;
       }
+      // Governors are written in the SAME pass as the size they bound, so the
+      // two can never land in separate commits. A missing coordinate is
+      // REFUSED rather than created, exactly as for the size: inventing
+      // `retentionSize` inside somebody else's values block is how a silent
+      // misconfiguration ships. The field has to be added to the manifest by a
+      // human first; after that the catalogue owns its value.
+      for (const [field, byProfile] of [...Object.entries(claim.governors)].sort((a, b) => stringCompare(a[0], b[0]))) {
+        const wantGovernor = byProfile[profile];
+        if (wantGovernor === undefined) throw new Error(`${claim.id}: no governor value for profile "${profile}"`);
+        const governorPath = parseFieldPath(field);
+        const currentGovernor: unknown = doc.getIn(governorPath, false);
+        if (currentGovernor === undefined) throw new Error(`${claim.id}: ${path} has no value at ${field}`);
+        if (currentGovernor !== wantGovernor) {
+          doc.setIn(governorPath, wantGovernor);
+          edits.push({ path, field, from: String(currentGovernor), to: wantGovernor });
+          touched = true;
+        }
+      }
       if (claim.podsField === null) continue;
       const wantPods = claim.pods[profile];
       if (wantPods === undefined) throw new Error(`${claim.id}: no pod count for profile "${profile}"`);
@@ -536,15 +637,28 @@ function main(argv: readonly string[]): void {
   const profile = flag >= 0 ? (argv[flag + 1] ?? "") : "";
   if (argv.includes("--list") || profile === "") {
     console.log("storage profiles (declared GiB = size x pods, summed over every longhorn claim):\n");
+    // TWO disk requirements per rung, because one of them was misleading on its
+    // own. A single "needs ~N GiB" derived from the DECLARED total prices in
+    // capacity that no fresh sync provisions, so a rung whose cluster comes up
+    // comfortably could be printed as needing a box nobody owns. Both are shown
+    // and labelled: the bring-up figure is what the cluster needs to STAND UP,
+    // the declared figure is what it would need if every Application in the
+    // catalogue were synced. Neither is a discount on the other.
     for (const name of catalogue.profiles) {
       const total = profileTotalGib(catalogue, name);
+      const bringUp = profileBringUpGib(catalogue, name);
+      const diskFor = (gib: number): string => (gib / 0.75 + 30).toFixed(0);
       console.log(
         `  ${name.padEnd(10)} ${total.toFixed(0).padStart(5)} GiB declared   ` +
-          `${profileBringUpGib(catalogue, name).toFixed(0).padStart(5)} GiB provisions at bring-up   ` +
-          `needs ~${(total / 0.75 + 30).toFixed(0)} GiB of disk ` +
-          `(Longhorn keeps 25% minimally-available, plus ~30 GiB of OS root)`,
+          `${bringUp.toFixed(0).padStart(5)} GiB provisions at bring-up   ` +
+          `needs ~${diskFor(bringUp).padStart(4)} GiB of disk to stand up, ` +
+          `~${diskFor(total).padStart(4)} GiB if everything is synced`,
       );
     }
+    console.log(
+      "\n  (Longhorn keeps 25% of a disk minimally-available at longhorn-1.7.2's chart default, plus ~30 GiB\n" +
+        "   of OS root, so a declared total T needs roughly T/0.75 + 30 GiB of device before replicas place.)",
+    );
     process.exit(0);
   }
   if (!catalogue.profiles.includes(profile)) {

@@ -31,7 +31,10 @@ spec:
         persistence:
           enabled: true
           storageClass: longhorn
-          size: 5Gi
+          # SIZE CUT, NOT A POD CUT: 5Gi -> 3Gi, one pod either way. Small
+          # service state. Like headscale this row exists so the profile total
+          # covers the whole tree, not because 2 GiB was worth recovering.
+          size: 3Gi
         # Admin password sourced from a Secret rather than hardcoded.
         # Create the secret BEFORE this app syncs:
         #   kubectl -n openziti create secret generic ziti-admin-credentials \
@@ -46,7 +49,7 @@ spec:
     namespace: openziti
   syncPolicy:
     automated:
-      prune: false   # never prune — would break the trust fabric
+      prune: false # never prune — would break the trust fabric
       selfHeal: true
     syncOptions:
       - CreateNamespace=true

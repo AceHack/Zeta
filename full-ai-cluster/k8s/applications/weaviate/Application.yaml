@@ -17,9 +17,19 @@ spec:
     helm:
       releaseName: weaviate
       valuesObject:
-        replicas: 1   # bump to 3 for HA once cluster has the headroom
+        replicas: 1 # bump to 3 for HA once cluster has the headroom
         storage:
-          size: 100Gi
+          # SIZE CUT, NOT A POD CUT: 100Gi -> 32Gi. `replicas: 1` above is
+          # unchanged and was never a candidate -- there is no redundancy here
+          # to trade.
+          #
+          # NO GOVERNOR EXISTS FOR THIS ONE, and that is the honest statement
+          # rather than a missing line: Weaviate does not evict. There is no
+          # retention or size bound to move alongside the volume, so when the
+          # vector store fills, INGEST FAILS. 32Gi is a working index for this
+          # cluster's corpus, not a library; the failure mode when it is
+          # outgrown is loud (write errors), not silent.
+          size: 32Gi
           storageClassName: longhorn
         modules:
           # Use the cluster's own LLM serving for vectorization +

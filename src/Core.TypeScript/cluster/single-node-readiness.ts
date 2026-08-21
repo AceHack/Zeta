@@ -585,6 +585,142 @@ export function verifiedNodeCapacity(nodes: readonly MeasuredNode[]): MeasuredNo
   return best;
 }
 
+// ---------------------------------------------------------------------------
+// SCHEDULABLE capacity — a REPORT, and the reason it is not the gate.
+//
+// The bound above is RAW: every block device on the node, summed, with nothing
+// held back. Longhorn never offers a node's raw disk to replicas. Two settings
+// bound it, and this repo leaves both at the chart's defaults in the tree that
+// owns the storage ladder:
+//
+//   storageOverProvisioningPercentage   longhorn-1.7.2/values.yaml:214,
+//                                       "The default value is 100"
+//   storageMinimalAvailablePercentage   same file:216, "The default value is 25"
+//
+// So a disk stops accepting replicas well before it is full, and the honest
+// figure to size a cluster against is ~75% of it, less the OS root. That is
+// the number `--list` has always printed in its "needs ~N GiB of disk" column;
+// what was missing is that the GATE never compared against it. It compares
+// declared capacity against the raw sum, and passes anything under it.
+//
+// WHY THIS STAYS A REPORT AND THE RAW SUM STAYS THE GATE
+// -----------------------------------------------------
+// Not timidity — the raw sum is the only comparator with no assumption in it.
+// The schedulable figure needs three things the registrations do not record:
+//
+//   1. WHICH devices Longhorn manages. `defaultDataPath: /var/lib/longhorn`
+//      puts the default disk on the ROOT filesystem, so on node-ad1efd only
+//      /dev/nvme0n1 is a Longhorn disk unless /dev/sda is mounted and added by
+//      hand. Counting both is an assumption in the generous direction.
+//   2. How big the OS root is. 30 GiB is a BUDGET CHOICE here, not a measurement.
+//   3. `storageReservedPercentageForDefaultDisk`, a THIRD reserve which the
+//      chart leaves at `~` and whose default the chart does not state
+//      (values.yaml:218 documents the field, not the number). Real schedulable
+//      capacity is therefore at most what this computes, never more.
+//
+// A bound built on three assumptions can be wrong in the acquitting direction,
+// and this file's whole discipline is that its inferences convict and never
+// acquit. So: the raw sum keeps the exit code, the schedulable estimate is
+// printed beside it, and a profile whose BRING-UP total clears the schedulable
+// estimate is one somebody has actually checked rather than hoped about.
+// ---------------------------------------------------------------------------
+
+/** longhorn-1.7.2/values.yaml:214 — "Percentage of storage that can be allocated relative to hard drive capacity. The default value is 100". */
+export const LONGHORN_CHART_DEFAULT_OVER_PROVISIONING_PERCENT = 100;
+/** longhorn-1.7.2/values.yaml:216 — "Percentage of minimum available disk capacity ... The default value is 25". */
+export const LONGHORN_CHART_DEFAULT_MINIMAL_AVAILABLE_PERCENT = 25;
+/**
+ * Held back for the OS root, swap and the ESP. A BUDGET CHOICE, not a
+ * measurement: no ClusterNode registration records a partition table, so
+ * nothing here can derive it. Named as a constant so it is one number to argue
+ * with rather than a literal sprinkled through the arithmetic.
+ */
+export const OS_ROOT_ALLOWANCE_GIB = 30;
+
+/** One deployed Longhorn Application's reserve settings. `null` means the manifest leaves the chart default in place. */
+export interface LonghornReserve {
+  readonly path: string;
+  readonly overProvisioningPercentage: number | null;
+  readonly minimalAvailablePercentage: number | null;
+  /** Fraction of a disk that replicas may occupy under these settings. */
+  readonly usableFraction: number;
+}
+
+/**
+ * Fraction of a disk Longhorn will let replicas occupy.
+ *
+ * `min` of the two, not a product. Over-provisioning is a THIN-provisioning
+ * allowance — 200 lets you schedule twice the disk on the promise that the
+ * volumes stay sparse — while the minimal-available floor is about REAL free
+ * bytes and does not care what was promised. Multiplying them would let a
+ * thin-provisioning knob buy physical capacity, which is exactly the arithmetic
+ * that produced the `ReplicaSchedulingFailure` this file's header records.
+ */
+export function longhornUsableFraction(
+  overProvisioningPercentage: number | null,
+  minimalAvailablePercentage: number | null,
+): number {
+  const over = overProvisioningPercentage ?? LONGHORN_CHART_DEFAULT_OVER_PROVISIONING_PERCENT;
+  const minimalAvailable = minimalAvailablePercentage ?? LONGHORN_CHART_DEFAULT_MINIMAL_AVAILABLE_PERCENT;
+  return Math.max(0, Math.min(over, 100 - minimalAvailable)) / 100;
+}
+
+function percentAt(value: Json, key: string): number | null {
+  const raw = at(value, key);
+  return typeof raw === "number" && Number.isFinite(raw) ? raw : null;
+}
+
+/**
+ * Every Longhorn Application in the tree, with the reserve it deploys.
+ *
+ * There are two, and they DISAGREE (full-ai-cluster leaves the chart defaults,
+ * infra sets 200/15). Only one app-of-apps root can own the cluster — that
+ * collision is already carried in the ledger as acknowledgedRootAppDuplicates —
+ * so which reserve is live is genuinely unknown from the repo. `mostConservative`
+ * below resolves that by taking the tighter of the two rather than guessing,
+ * which turns an ambiguity into a one-way bound instead of a coin flip.
+ */
+export function collectLonghornReserves(manifests: readonly AppManifest[]): readonly LonghornReserve[] {
+  const out: LonghornReserve[] = [];
+  for (const manifest of manifests) {
+    for (const doc of manifest.docs) {
+      if (at(doc, "kind") !== "Application") continue;
+      const source = at(at(doc, "spec"), "source");
+      if (at(source, "chart") !== "longhorn") continue;
+      const settings = at(at(at(source, "helm"), "valuesObject"), "defaultSettings");
+      const over = percentAt(settings, "storageOverProvisioningPercentage");
+      const minimalAvailable = percentAt(settings, "storageMinimalAvailablePercentage");
+      out.push({
+        path: manifest.path,
+        overProvisioningPercentage: over,
+        minimalAvailablePercentage: minimalAvailable,
+        usableFraction: longhornUsableFraction(over, minimalAvailable),
+      });
+    }
+  }
+  return out.sort((a, b) => stringCompare(a.path, b.path));
+}
+
+/**
+ * The tightest usable fraction any deployed Longhorn declares. Chart defaults
+ * when the tree declares no Longhorn at all — an absent manifest must not read
+ * as an unlimited disk.
+ */
+export function mostConservativeUsableFraction(reserves: readonly LonghornReserve[]): number {
+  const chartDefault = longhornUsableFraction(null, null);
+  return reserves.reduce((tightest, reserve) => Math.min(tightest, reserve.usableFraction), chartDefault);
+}
+
+/** Upper bound on GiB Longhorn will schedule across `nodeCount` nodes of this size. Never negative. */
+export function schedulableBoundGib(
+  rawGibPerNode: number,
+  usableFraction: number,
+  nodeCount: number,
+  osRootGib = OS_ROOT_ALLOWANCE_GIB,
+): number {
+  return Math.max(0, rawGibPerNode - osRootGib) * usableFraction * nodeCount;
+}
+
 export function capacityShortfallKey(storageClass: string, declaredGib: number, node: MeasuredNode): string {
   return `${storageClass}=${declaredGib.toFixed(0)}GiB>>${(node.totalGib ?? 0).toFixed(0)}GiB@${node.hostname}`;
 }
@@ -906,7 +1042,15 @@ export function auditAll(
     ...findStorageBudgetOverruns(storageClaims, ledger, override),
     ...findFalseRedundancy(replicaClaims, ledger),
   ];
-  return { manifests: manifests.length, measuredNodes, replicaClaims, storageClaims, catalogue, findings } as const;
+  return {
+    manifests: manifests.length,
+    measuredNodes,
+    longhornReserves: collectLonghornReserves(manifests),
+    replicaClaims,
+    storageClaims,
+    catalogue,
+    findings,
+  } as const;
 }
 
 /** Per-StorageClass declared capacity in GiB, descending. This is the hardware spec, derived. */
@@ -1047,6 +1191,45 @@ function main(argv: readonly string[]): void {
             `  ${floor.hostname.padEnd(18)} ${((floor.totalGib ?? 0) * ledger.nodeCount).toFixed(0).padStart(6)} GiB` +
             `  (${floor.path})`,
     );
+    // SCHEDULABLE, printed beside RAW so nobody reads the gate's comparator as
+    // the disk a profile has to fit in. This is an estimate and says so; the
+    // exit code is still the raw comparison. See the block comment above
+    // `longhornUsableFraction` for why the assumptions keep it out of the gate.
+    if (floor !== null) {
+      const fraction = mostConservativeUsableFraction(report.longhornReserves);
+      const schedulable = schedulableBoundGib(floor.totalGib ?? 0, fraction, ledger.nodeCount);
+      console.log(
+        `\nSchedulable estimate (REPORT, not the gate — the exit code is still the raw comparison above):\n` +
+          `  ${(fraction * 100).toFixed(0)}% of (${(floor.totalGib ?? 0).toFixed(0)} GiB - ${OS_ROOT_ALLOWANCE_GIB} GiB OS root) ` +
+          `x ${ledger.nodeCount} node(s) = ${schedulable.toFixed(0)} GiB Longhorn will place`,
+      );
+      for (const reserve of report.longhornReserves) {
+        const over = reserve.overProvisioningPercentage;
+        const minimalAvailable = reserve.minimalAvailablePercentage;
+        console.log(
+          `    ${reserve.path}: overProvisioning=${over === null ? "chart default 100" : over.toFixed(0)}, ` +
+            `minimalAvailable=${minimalAvailable === null ? "chart default 25" : minimalAvailable.toFixed(0)} ` +
+            `-> ${(reserve.usableFraction * 100).toFixed(0)}% usable`,
+        );
+      }
+      if (profileKnown) {
+        const declared = profileTotalGib(catalogue, profile);
+        const bringUp = profileBringUpGib(catalogue, profile);
+        const verdict = (gib: number): string =>
+          gib <= schedulable
+            ? `fits, ${(schedulable - gib).toFixed(0)} GiB spare`
+            : `DOES NOT FIT, over by ${(gib - schedulable).toFixed(0)} GiB`;
+        console.log(
+          `    profile "${profile}" bring-up  ${bringUp.toFixed(0).padStart(5)} GiB  ${verdict(bringUp)}\n` +
+            `    profile "${profile}" declared  ${declared.toFixed(0).padStart(5)} GiB  ${verdict(declared)}` +
+            (declared > schedulable && bringUp <= schedulable
+              ? `\n    -> the gap is capacity that is DECLARED but never applied on a fresh sync. It stays a\n` +
+                `       standing decision, not a passed check: syncing those Applications at their current\n` +
+                `       ceilings would ask Longhorn for storage it will refuse to place.`
+              : ""),
+        );
+      }
+    }
     // Acknowledged shortfalls suppress the exit code, never the print. A
     // silently-acknowledged oversubscription is the same vacuity as an
     // aspirational comparator, one layer down.

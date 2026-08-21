@@ -496,6 +496,123 @@ describe("applyProfile", () => {
 });
 
 // ---------------------------------------------------------------------------
+// GOVERNORS. A number without its governor is not a size: cut `prometheus`
+// from 100Gi to 32Gi and leave `retentionSize` where it was and the result is
+// not a smaller footprint, it is a full disk and a wedged WAL. These tests
+// pin that the governor moves in the SAME pass as the size, and that every way
+// of getting that wrong is refused rather than tolerated.
+// ---------------------------------------------------------------------------
+
+const GOVERNED_YAML = `apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: db
+spec:
+  source:
+    helm:
+      valuesObject:
+        statefulset:
+          # three Raft members
+          replicas: 3
+        retention: 15d
+        retentionSize: 75GiB
+        storage:
+          persistentVolume:
+            size: 100Gi
+            storageClass: longhorn
+`;
+
+function governedCatalogue(governors: unknown, evidence = "chart default is unset; see values.yaml"): string {
+  return catalogueJson({
+    governors,
+    governorEvidence: evidence,
+  });
+}
+
+describe("governors move with the size they bound", () => {
+  const GOVERNOR_FIELD = "spec.source.helm.valuesObject.retentionSize";
+  const bothProfiles = { [GOVERNOR_FIELD]: { minimal: "15GiB", large: "75GiB" } };
+
+  function load(json: string) {
+    const fx = fixture(writeCatalogue({}, json));
+    try {
+      return loadCatalogue("profiles.json", fx.root);
+    } finally {
+      fx.cleanup();
+    }
+  }
+
+  test("a claim with no governors loads with an empty map — absent is a real answer", () => {
+    expect(load(catalogueJson()).claims[0]?.governors).toEqual({});
+  });
+
+  test("RED: a governor missing a value for one profile is refused", () => {
+    // The failure this prevents is silent: the manifest would keep whatever
+    // the previously-applied rung wrote, so the volume is sized by one profile
+    // and bounded by another and nothing reports the mismatch.
+    expect(() => load(governedCatalogue({ [GOVERNOR_FIELD]: { large: "75GiB" } }))).toThrow(
+      /governors\[.*\]\.minimal missing/,
+    );
+  });
+
+  test("RED: a governor with no governorEvidence is refused", () => {
+    expect(() => load(governedCatalogue(bothProfiles, ""))).toThrow(/no governorEvidence/);
+  });
+
+  test("RED: a malformed governor coordinate is refused rather than addressing a neighbour", () => {
+    expect(() => load(governedCatalogue({ "a..b": { minimal: "1GiB", large: "2GiB" } }))).toThrow(/malformed/);
+  });
+
+  test("applyProfile writes the governor in the SAME pass as the size", () => {
+    const fx = fixture(writeCatalogue({ "apps/db/Application.yaml": GOVERNED_YAML }, governedCatalogue(bothProfiles)));
+    try {
+      const catalogue = loadCatalogue("profiles.json", fx.root);
+      const edits = applyProfile(catalogue, "minimal", fx.root);
+      // size + pods + governor, and all three land in one write.
+      expect(edits).toHaveLength(3);
+      const written = readFileSync(join(fx.root, "apps/db/Application.yaml"), "utf8");
+      expect(written).toContain("size: 20Gi");
+      expect(written).toContain("retentionSize: 15GiB");
+      // The TIME bound is not a capacity quantity and is deliberately untouched.
+      expect(written).toContain("retention: 15d");
+      expect(verifyProfileApplied(catalogue, "minimal", fx.root)).toEqual([]);
+    } finally {
+      fx.cleanup();
+    }
+  });
+
+  test("RED: a manifest whose governor drifted is a finding, even when the size is right", () => {
+    const fx = fixture(
+      writeCatalogue(
+        { "apps/db/Application.yaml": GOVERNED_YAML.replace("retentionSize: 75GiB", "retentionSize: 90GiB") },
+        governedCatalogue(bothProfiles),
+      ),
+    );
+    try {
+      const catalogue = loadCatalogue("profiles.json", fx.root);
+      const findings = verifyProfileApplied(catalogue, "large", fx.root);
+      expect(findings).toHaveLength(1);
+      expect(findings[0]?.problem).toMatch(/declares 90GiB at .*retentionSize, but profile "large" says 75GiB/);
+    } finally {
+      fx.cleanup();
+    }
+  });
+
+  test("RED: a governor coordinate the manifest does not carry is a finding, not a silent skip", () => {
+    const fx = fixture(writeCatalogue({ "apps/db/Application.yaml": APP_YAML }, governedCatalogue(bothProfiles)));
+    try {
+      const catalogue = loadCatalogue("profiles.json", fx.root);
+      expect(verifyProfileApplied(catalogue, "large", fx.root)[0]?.problem).toMatch(/ungoverned/);
+      // ...and --apply REFUSES to create it. Inventing a key inside somebody
+      // else's values block is how a silent misconfiguration ships.
+      expect(() => applyProfile(catalogue, "large", fx.root)).toThrow(/has no value at/);
+    } finally {
+      fx.cleanup();
+    }
+  });
+});
+
+// ---------------------------------------------------------------------------
 // The real catalogue. These are the claims the PR actually makes about the
 // cluster, pinned so a later edit that breaks one has to break a test too.
 // ---------------------------------------------------------------------------
@@ -503,11 +620,46 @@ describe("applyProfile", () => {
 describe("the checked-in catalogue", () => {
   const catalogue = loadCatalogue();
 
-  test("loads, and its ladder is minimal < standard < large", () => {
-    expect(catalogue.profiles).toEqual(["minimal", "standard", "large"]);
+  test("loads, and its ladder is minimal < standard < measured < large", () => {
+    expect(catalogue.profiles).toEqual(["minimal", "standard", "measured", "large"]);
     const totals = catalogue.profiles.map((name) => profileTotalGib(catalogue, name));
-    expect(totals[0]).toBeLessThan(totals[1] ?? 0);
-    expect(totals[1]).toBeLessThan(totals[2] ?? 0);
+    for (let index = 1; index < totals.length; index += 1) {
+      expect(totals[index - 1]).toBeLessThan(totals[index] ?? 0);
+    }
+  });
+
+  // `measured` is defined by a RULE, not by a size table somebody typed, and
+  // the rule is what makes it reviewable: scheduled claims take `standard`,
+  // deferred claims keep `large`. Re-derived here so a hand edit that breaks
+  // the rule cannot pass as a rung.
+  test("measured is standard where it provisions and large where it does not", () => {
+    for (const claim of catalogue.claims) {
+      const expected = claim.scheduledAtBringUp ? "standard" : "large";
+      expect([claim.id, claim.sizes.measured]).toEqual([claim.id, claim.sizes[expected]]);
+      expect([claim.id, claim.pods.measured]).toEqual([claim.id, claim.pods[expected]]);
+    }
+  });
+
+  // The headline claim of the rung: it is bought entirely with SIZE. Cutting
+  // pods is how you make a catalogue fit a disk cheaply and it is what
+  // `minimal` does; this asserts that `measured` does not, so no HA statement
+  // was quietly sold to make the arithmetic work.
+  test("measured cuts NO pod count anywhere — every reduction from large is size", () => {
+    const podCuts = catalogue.claims.filter((claim) => claim.pods.measured !== claim.pods.large).map((c) => c.id);
+    expect(podCuts).toEqual([]);
+    // ...and the cut really happened: it is smaller than large somewhere.
+    expect(profileTotalGib(catalogue, "measured")).toBeLessThan(profileTotalGib(catalogue, "large"));
+  });
+
+  // Aaron's cockroachdb question, answered as a test rather than as prose:
+  // the biggest claim in the catalogue keeps its Raft quorum.
+  test("cockroachdb keeps 3 Raft members on the active rung", () => {
+    const crdb = catalogue.claims.find((claim) => claim.id === "full-ai-cluster/cockroachdb/data");
+    expect(crdb?.pods.measured).toBe(3);
+    expect(crdb?.pods.large).toBe(3);
+    // minimal is the rung that trades it away, and it still says so out loud.
+    expect(crdb?.pods.minimal).toBe(1);
+    expect(crdb?.consequence).toMatch(/no quorum/i);
   });
 
   // Aaron 2026-08-20: "if we can get the minimum down to 200-300 gb it should
@@ -519,21 +671,48 @@ describe("the checked-in catalogue", () => {
     expect(minimal).toBeLessThanOrEqual(300);
   });
 
-  // `large` exists to be byte-for-byte what the tree already declared, so this
-  // PR changes no manifest. If it ever stops matching, either the manifests
-  // moved or the catalogue did, and both need saying out loud.
-  test("large is exactly what the manifests declare today", () => {
-    expect(verifyProfileApplied(catalogue, "large")).toEqual([]);
+  // `large` records what the tree declared BEFORE the ladder existed. It is no
+  // longer what the manifests carry — that is the point of this round — so what
+  // is pinned is its total, not its agreement with the YAML. The manifests are
+  // pinned against the ACTIVE rung below, read from the ledger, which is a
+  // check that cannot go stale by naming the wrong profile.
+  test("large is still the pre-ladder declaration, 1599 GiB", () => {
     expect(profileTotalGib(catalogue, "large")).toBe(1599);
   });
 
-  test("standard fits the smallest measured node; large does not", async () => {
+  test("the manifests declare exactly the rung the ledger says is active", async () => {
+    const { readLedger, DEFAULT_LEDGER_PATH } = await import("./single-node-readiness.ts");
+    const active = readLedger(DEFAULT_LEDGER_PATH).activeStorageProfile;
+    expect(catalogue.profiles).toContain(active);
+    expect(verifyProfileApplied(catalogue, active)).toEqual([]);
+  });
+
+  test("standard and measured fit the smallest measured node; large does not", async () => {
     const { collectMeasuredNodes, verifiedNodeCapacity } = await import("./single-node-readiness.ts");
     const floor = verifiedNodeCapacity(collectMeasuredNodes());
     expect(floor).not.toBeNull();
     const bound = floor?.totalGib ?? 0;
     expect(profileTotalGib(catalogue, "standard")).toBeLessThan(bound);
+    expect(profileTotalGib(catalogue, "measured")).toBeLessThan(bound);
     expect(profileTotalGib(catalogue, "large")).toBeGreaterThan(bound);
+  });
+
+  // The bound above is RAW — every block device, nothing held back. Longhorn
+  // will not place that much. This is the number that decides whether the
+  // cluster actually STANDS UP, and it is the one the round was sized against.
+  test("the active rung's BRING-UP total fits what Longhorn will schedule", async () => {
+    const readiness = await import("./single-node-readiness.ts");
+    const ledger = readiness.readLedger(readiness.DEFAULT_LEDGER_PATH);
+    const floor = readiness.verifiedNodeCapacity(readiness.collectMeasuredNodes());
+    expect(floor).not.toBeNull();
+    const manifests = readiness.loadManifests(readiness.DEFAULT_ROOTS);
+    const fraction = readiness.mostConservativeUsableFraction(readiness.collectLonghornReserves(manifests));
+    expect(fraction).toBe(0.75); // chart defaults: min(100, 100 - 25) / 100
+    const schedulable = readiness.schedulableBoundGib(floor?.totalGib ?? 0, fraction, ledger.nodeCount);
+    expect(profileBringUpGib(catalogue, ledger.activeStorageProfile)).toBeLessThan(schedulable);
+    // large could never have stood up on this box either, which is the fact the
+    // raw-only comparison was hiding: even its bring-up subset is over.
+    expect(profileBringUpGib(catalogue, "large")).toBeGreaterThan(schedulable);
   });
 
   // The declared-vs-scheduled split, pinned. 500 GiB of the catalogue creates

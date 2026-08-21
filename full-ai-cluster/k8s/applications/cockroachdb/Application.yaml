@@ -23,7 +23,24 @@ spec:
         storage:
           persistentVolume:
             enabled: true
-            size: 100Gi
+            # SIZE CUT, NOT A POD CUT. 100Gi -> 48Gi per member; `replicas: 3`
+            # above is UNTOUCHED. This claim was the single biggest line in the
+            # catalogue at 300 GiB, and that 300 was 100 x 3 -- so the cheap way
+            # to shrink it was to drop to one member. That was refused: a
+            # 1-member CockroachDB has no Raft quorum, no replication and no
+            # survivable failure, and trading a real guarantee for disk we
+            # actually have would be a bad deal. (The `minimal` rung DOES drop
+            # to 1 and says so; it is for a ~300 GiB box, not this one.)
+            #
+            # WHAT 48Gi COSTS: store capacity per member -- user data plus
+            # indexes plus MVCC garbage before the node hits its store limit.
+            # Nothing about durability or availability changes.
+            #
+            # Owned by full-ai-cluster/k8s/storage-profiles.json (profile
+            # `measured`). Edit the profile and re-apply, not this line. Note
+            # Kubernetes can GROW a PVC but cannot SHRINK one: this number is
+            # only free to move DOWN before the volume exists.
+            size: 48Gi
             storageClass: longhorn
         conf:
           single-node: false
@@ -36,7 +53,7 @@ spec:
               enabled: true
               caProvided: false
         prometheus:
-          enabled: true   # for kube-prometheus-stack scrape
+          enabled: true # for kube-prometheus-stack scrape
   destination:
     server: https://kubernetes.default.svc
     namespace: cockroachdb

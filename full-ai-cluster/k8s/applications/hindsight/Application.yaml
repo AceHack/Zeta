@@ -19,7 +19,7 @@ spec:
   source:
     repoURL: ghcr.io/vectorize-io/charts
     chart: hindsight
-    targetRevision: 0.3.0   # bump to latest as vectorize-io publishes
+    targetRevision: 0.3.0 # bump to latest as vectorize-io publishes
     helm:
       releaseName: hindsight
       valuesObject:
@@ -32,7 +32,18 @@ spec:
           primary:
             persistence:
               storageClass: longhorn
-              size: 20Gi
+              # SIZE CUT, NOT A POD CUT: 20Gi -> 10Gi, one primary either way.
+              #
+              # THE CUT TO REVISIT FIRST if this box gains room. This is the
+              # semantic-memory Postgres, so the bound is on how much agent
+              # memory can be retained before the database refuses writes. There
+              # is no eviction policy to move alongside it -- Postgres does not
+              # age rows out on its own -- so the governor here is whatever
+              # retention the application implements, and today that is nothing.
+              # The failure is loud (writes fail) rather than silent, and
+              # manifesto section 5 makes filling it a memory-preservation
+              # surface rather than a performance one.
+              size: 10Gi
 
         api:
           # LLM provider Hindsight uses for its own entity/relation
@@ -40,11 +51,10 @@ spec:
           # Sourced from a Vault-backed ExternalSecret rather than
           # hardcoded.
           llm:
-            provider: groq   # change per maintainer preference
+            provider: groq # change per maintainer preference
             existingSecret:
               name: hindsight-llm-api-key
               key: api-key
-
           # Database URL inferred from bundled postgresql above when
           # `postgresql.enabled: true`. Override here for external
           # CockroachDB:
@@ -54,8 +64,8 @@ spec:
           #     name: hindsight-db-credentials
           #     passwordKey: password
 
-        # Service for Hermes to reach Hindsight at:
-        #   http://hindsight.hindsight.svc.cluster.local
+          # Service for Hermes to reach Hindsight at:
+          #   http://hindsight.hindsight.svc.cluster.local
         service:
           type: ClusterIP
           port: 80
@@ -65,7 +75,7 @@ spec:
     namespace: hindsight
   syncPolicy:
     automated:
-      prune: false   # never prune — memory store is precious
+      prune: false # never prune — memory store is precious
       selfHeal: true
     syncOptions:
       - CreateNamespace=true

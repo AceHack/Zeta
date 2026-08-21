@@ -15,9 +15,14 @@ import {
   auditAll,
   capacityShortfallKey,
   classifyRedundancy,
+  collectLonghornReserves,
   collectMeasuredNodes,
   collectRootAppIdentities,
   deviceLineToGib,
+  longhornUsableFraction,
+  mostConservativeUsableFraction,
+  schedulableBoundGib,
+  OS_ROOT_ALLOWANCE_GIB,
   extractReplicaClaims,
   extractStorageClaims,
   findCapacityProvenance,
@@ -722,6 +727,121 @@ describe("auditAll end-to-end over a synthetic tree", () => {
   });
 });
 
+// ---------------------------------------------------------------------------
+// SCHEDULABLE capacity. The gate compares declared capacity against the RAW sum
+// of every block device, which Longhorn will never hand out in full. These pin
+// the estimate that gets printed beside it, and — because the estimate is a
+// report and not a gate — they also pin that it is derived from the DEPLOYED
+// settings rather than from a number somebody remembered.
+// ---------------------------------------------------------------------------
+
+function manifestOf(path: string, body: string): AppManifest {
+  return { app: path, path, docs: parseYamlDocuments(body, path) };
+}
+
+const LONGHORN_CHART_DEFAULTS = `apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata: { name: longhorn }
+spec:
+  source:
+    chart: longhorn
+    helm:
+      valuesObject:
+        defaultSettings:
+          defaultDataPath: /var/lib/longhorn
+`;
+
+const LONGHORN_EXPLICIT = `apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata: { name: longhorn }
+spec:
+  source:
+    chart: longhorn
+    helm:
+      valuesObject:
+        defaultSettings:
+          storageOverProvisioningPercentage: 200
+          storageMinimalAvailablePercentage: 15
+`;
+
+describe("longhornUsableFraction", () => {
+  test("chart defaults give 75% — min(100, 100 - 25)", () => {
+    expect(longhornUsableFraction(null, null)).toBe(0.75);
+  });
+
+  test("explicit 200/15 gives 85%", () => {
+    expect(longhornUsableFraction(200, 15)).toBe(0.85);
+  });
+
+  // The bug this shape prevents. Over-provisioning is a THIN-provisioning
+  // allowance; the minimal-available floor is about real free bytes and does
+  // not care what was promised. Multiplying them would let a thin-provisioning
+  // knob buy physical capacity — 200% x 75% = 150% of a disk — which is exactly
+  // the arithmetic behind the ReplicaSchedulingFailure in this file's header.
+  test("RED: over-provisioning cannot buy more than the disk", () => {
+    expect(longhornUsableFraction(200, 25)).toBe(0.75);
+    expect(longhornUsableFraction(200, 25)).toBeLessThanOrEqual(1);
+  });
+
+  test("a 100% minimal-available floor leaves nothing, and never goes negative", () => {
+    expect(longhornUsableFraction(100, 100)).toBe(0);
+    expect(longhornUsableFraction(100, 150)).toBe(0);
+  });
+});
+
+describe("collectLonghornReserves", () => {
+  test("an unset percentage reads as null, not as zero", () => {
+    const [reserve] = collectLonghornReserves([manifestOf("a/Application.yaml", LONGHORN_CHART_DEFAULTS)]);
+    expect(reserve?.overProvisioningPercentage).toBeNull();
+    expect(reserve?.minimalAvailablePercentage).toBeNull();
+    expect(reserve?.usableFraction).toBe(0.75);
+  });
+
+  test("a set percentage is read off the manifest", () => {
+    const [reserve] = collectLonghornReserves([manifestOf("b/Application.yaml", LONGHORN_EXPLICIT)]);
+    expect(reserve?.overProvisioningPercentage).toBe(200);
+    expect(reserve?.usableFraction).toBe(0.85);
+  });
+
+  test("Applications for other charts are not Longhorn reserves", () => {
+    expect(collectLonghornReserves([manifestOf("c/Application.yaml", CRDB)])).toEqual([]);
+  });
+
+  // The two trees disagree and only one can own the cluster, so the tighter one
+  // is taken. A guess between them would put an assumption inside a bound.
+  test("mostConservativeUsableFraction takes the tighter of a disagreeing pair", () => {
+    const reserves = collectLonghornReserves([
+      manifestOf("b/Application.yaml", LONGHORN_EXPLICIT),
+      manifestOf("a/Application.yaml", LONGHORN_CHART_DEFAULTS),
+    ]);
+    expect(reserves).toHaveLength(2);
+    expect(mostConservativeUsableFraction(reserves)).toBe(0.75);
+  });
+
+  // RED: no Longhorn in the tree must not read as an unlimited disk.
+  test("RED: an empty reserve list falls back to the chart default, not to 100%", () => {
+    expect(mostConservativeUsableFraction([])).toBe(0.75);
+  });
+});
+
+describe("schedulableBoundGib", () => {
+  test("holds back the OS root, then applies the usable fraction", () => {
+    expect(schedulableBoundGib(1047, 0.75, 1, 30)).toBeCloseTo(762.75, 2);
+  });
+
+  test("scales with node count", () => {
+    expect(schedulableBoundGib(100, 0.75, 3, 0)).toBe(225);
+  });
+
+  test("RED: a disk smaller than the OS allowance is zero schedulable, never negative", () => {
+    expect(schedulableBoundGib(10, 0.75, 1, 30)).toBe(0);
+  });
+
+  test("the OS root allowance is a named constant, not a literal", () => {
+    expect(OS_ROOT_ALLOWANCE_GIB).toBe(30);
+  });
+});
+
 describe("the checked-in ledger keeps main green", () => {
   // Mirrors main() exactly, catalogue included. A version of this test that
   // omitted the catalogue would audit the repo against the DERIVED longhorn
@@ -741,15 +861,47 @@ describe("the checked-in ledger keeps main green", () => {
     expect(report.findings).toEqual([]);
   });
 
-  test("RED: the same audit WITHOUT the catalogue is a different comparison", async () => {
-    // Proof the catalogue override is load-bearing rather than decorative: the
-    // acknowledged shortfall key pins 1599 GiB (the checked total), so auditing
-    // against the extractor's 1409 GiB no longer matches the acknowledgement and
-    // the capacity finding fires. If this ever goes green, the two totals have
-    // converged and the override has stopped doing anything.
-    const { readLedger, DEFAULT_LEDGER_PATH } = await import("./single-node-readiness.ts");
-    const report = auditAll(readLedger(DEFAULT_LEDGER_PATH));
-    expect(report.findings.map((finding) => finding.check)).toContain("capacity-provenance");
+  // Proof the catalogue override is load-bearing rather than decorative.
+  //
+  // This test used to get that proof for free: the acknowledged shortfall key
+  // pinned the CHECKED total, so auditing without the catalogue produced the
+  // DERIVED total, the key stopped matching, and the capacity finding fired.
+  // Shrinking the cluster to fit its measured hardware retired that
+  // acknowledgement -- which is the point of the round -- and took the free
+  // proof with it. Both totals now sit under the measured bound, so neither
+  // convicts, and the old assertion would have gone green for the wrong reason:
+  // a check that stopped being able to fail, wearing the face of one that
+  // passed. The same claim is therefore made directly.
+  test("RED: the catalogue override changes the verdict — the two oracles still disagree", async () => {
+    const readiness = await import("./single-node-readiness.ts");
+    const { loadCatalogue, profileTotalGib } = await import("./storage-profiles.ts");
+    const ledger = readiness.readLedger(readiness.DEFAULT_LEDGER_PATH);
+    const checked = profileTotalGib(loadCatalogue(), ledger.activeStorageProfile);
+    const claims = readiness
+      .loadManifests(readiness.DEFAULT_ROOTS)
+      .flatMap((manifest) => readiness.extractStorageClaims(manifest));
+    const derived = new Map(readiness.storageTotals(claims)).get("longhorn") ?? 0;
+
+    // The extractor cannot see mimir's zone-aware chart-default pod counts, so
+    // it reads LOW. If these ever converge the override has stopped doing
+    // anything and the mechanism should be deleted rather than believed.
+    expect(derived).toBeLessThan(checked);
+
+    // A node sized BETWEEN the two readings convicts on the checked total and
+    // acquits on the derived one. That difference is the override's whole job:
+    // comparing a disk against the smaller of two numbers because it is the one
+    // we happened to derive is how a gate stops being one.
+    const midpoint = (derived + checked) / 2;
+    const between: MeasuredNode = {
+      path: "synthetic/node.yaml",
+      hostname: "node-between",
+      devices: [`/dev/synthetic ${midpoint.toFixed(1)}G`],
+      totalGib: midpoint,
+    };
+    const withOverride = findCapacityProvenance(claims, ledger, [between], new Map([["longhorn", checked]]));
+    const withoutOverride = findCapacityProvenance(claims, ledger, [between], null);
+    expect(withOverride.map((finding) => finding.check)).toEqual(["capacity-provenance"]);
+    expect(withoutOverride).toEqual([]);
   });
 
   test("RED: readLedger refuses a ledger with no activeStorageProfile", async () => {

@@ -21,7 +21,7 @@ apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
   annotations:
-    argocd.argoproj.io/sync-wave: "1"   # after core infra (longhorn/cilium) at wave 0
+    argocd.argoproj.io/sync-wave: "1" # after core infra (longhorn/cilium) at wave 0
   name: headscale
   namespace: argocd
   finalizers: [ resources-finalizer.argocd.argoproj.io ]
@@ -38,7 +38,11 @@ spec:
           data:
             enabled: true
             storageClass: longhorn
-            size: 5Gi
+            # SIZE CUT, NOT A POD CUT: 5Gi -> 3Gi, one pod either way. A sqlite
+            # node database; 3Gi holds control-plane state for far more nodes
+            # than this cluster will ever have, so this row is bookkeeping in
+            # the profile total rather than a meaningful reduction.
+            size: 3Gi
         config:
           # PLACEHOLDER — set to the real ACME subdomain before exposing (see header TODO).
           server_url: https://headscale.zeta.local
