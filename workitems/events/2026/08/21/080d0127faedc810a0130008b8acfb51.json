@@ -1,0 +1,14 @@
+{
+  "id": "080d0127faedc810a0130008b8acfb51",
+  "at": "2026-08-21T15:45:10.585Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M0JFYQDR087G0R00229QJ5S",
+    "type": "bug",
+    "title": "raft HCL path and the chart data mountPath agree only by chart default -- nothing compares them, and divergence is a Ready pod with an empty raft store",
+    "slug": "raft-hcl-path-and-the-chart-data-mountpath-agree-only-by-cha",
+    "priority": "P2",
+    "filename": "081M0JFYQDR087G0R00229QJ5S-raft-hcl-path-and-the-chart-data-mountpath-agree-only-by-cha.md"
+  }
+}
