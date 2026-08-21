@@ -37,6 +37,21 @@
  *      moved from the transport layer to the query layer, and it is the more
  *      valuable half because a rule is what a human trusts at 3am.
  *
+ * EXTENDED 2026-08-21 (shadow) with the link BOTH earlier passes left open:
+ *
+ *   6. THE SERVICEMONITOR ITSELF WAS NEVER FOLLOWED TO A SERVICE. The audit
+ *      proved the ruler selects the object (rule 7) and that Argo applies the
+ *      file (rule 8), and never asked whether the selector matches a Service or
+ *      whether endpoints[].port names a port that Service declares. Measured
+ *      before rule 9 existed: four independent ways of severing the portal
+ *      scrape -- renaming the Service port, a selector label no Service
+ *      carries, the wrong namespace, and a port NUMBER where a port NAME is
+ *      required -- each left the audit printing "PASS: 7 invariants hold".
+ *      A ServiceMonitor that resolves to nothing yields a scrape job with zero
+ *      endpoints, and zero endpoints is not a DOWN target, it is NO target: the
+ *      series is absent rather than 0, so a health panel counting up{} stays
+ *      green while nothing is collected.
+ *
  * Two silent-ignore traps come with them, and both are refused below because
  * both produce an object that applies cleanly and is never evaluated:
  *   - a ServiceMonitor/PrometheusRule missing the release label the chart's
@@ -669,6 +684,138 @@ export function checkIncludedByApplication(appsDir: string, objects: MonitoringO
   }
   return fails;
 }
+/**
+ * Rule 9 -- a ServiceMonitor must actually RESOLVE to a Service, at a port
+ * name that Service declares.
+ *
+ * WHY THIS IS THE SHARPEST REMAINING CASE. A ServiceMonitor IS a scrape
+ * target -- the literal subject of this file's opening sentence -- and until
+ * now it was the one link nothing checked. Rule 7 proves the ruler SELECTS
+ * the object; rule 8 proves Argo APPLIES the file. Neither asks the only
+ * question that decides whether a single byte moves: does the selector match a
+ * Service, and does `endpoints[].port` name a port that Service declares?
+ *
+ * `endpoints[].port` is a **Service port name**, not a container port name and
+ * not a number. Get it wrong and prometheus-operator emits a scrape job whose
+ * endpoint role selects zero addresses. The result is worse than a broken
+ * target: the job does not appear as DOWN on the targets page, it does not
+ * appear AT ALL -- so `up` is not 0, it is absent, and a dashboard counting
+ * healthy targets stays green. That is this repo's defining failure mode --
+ * green meaning "nothing reported" -- at the one layer that had no guard.
+ *
+ * Measured on 2026-08-21 before this rule existed: renaming the portal Service
+ * port `metrics` -> `http-metrics`, pointing the selector at a label no Service
+ * carries, naming a namespace the Service is not in, and replacing the port
+ * name with the number 8080 ALL left the audit reporting "PASS: 7 invariants
+ * hold". Four ways to sever the scrape, zero of them visible.
+ *
+ * SOUNDNESS. Candidate Services are matched on `selector.matchLabels` only.
+ * `matchExpressions` can merely NARROW the matched set, so the candidate set
+ * computed here is a superset of the true one -- which makes every failure
+ * below a real failure (no false positives) while leaving the rule incomplete
+ * against selectors that rely on matchExpressions alone.
+ *
+ * SCOPE, and it is the same scope `checkScrapeOptIn` already uses: a
+ * ServiceMonitor authored HERE must target a Service authored HERE. A
+ * chart-rendered workload's ServiceMonitor is that chart's job to ship, and
+ * the roster carries port NUMBERS only, so it cannot answer a port-NAME
+ * question. Named limits, not silent ones: PodMonitor is not modelled (the
+ * tree authors none, and an unexercised branch is the vacuity this audit
+ * exists to refuse), and an endpoint selecting by `targetPort` rather than
+ * `port` is left unjudged rather than guessed at.
+ */
+export interface AuthoredService {
+  app: string;
+  file: string;
+  name: string;
+  namespace: string;
+  labels: Record<string, string>;
+  portNames: string[];
+}
+
+/** Every Service THIS repo authors (never one a chart renders). */
+export function authoredServices(appsDir: string): AuthoredService[] {
+  const out: AuthoredService[] = [];
+  for (const { file, app, doc } of readAuthoredDocs(appsDir)) {
+    if (String(doc.kind ?? "") !== "Service") continue;
+    const md = (doc.metadata ?? {}) as Record<string, unknown>;
+    const spec = (doc.spec ?? {}) as Record<string, unknown>;
+    out.push({
+      app,
+      file,
+      name: String(md.name ?? "<unnamed>"),
+      namespace: String(md.namespace ?? ""),
+      labels: ((md.labels ?? {}) as Record<string, string>),
+      portNames: ((spec.ports ?? []) as Record<string, unknown>[]).map((p) => String(p.name ?? "")),
+    });
+  }
+  return out;
+}
+
+export function checkServiceMonitorTargets(objects: MonitoringObject[], services: AuthoredService[]): string[] {
+  const fails: string[] = [];
+  for (const obj of objects) {
+    if (obj.kind !== "ServiceMonitor") continue;
+    const spec = (obj.doc.spec ?? {}) as Record<string, unknown>;
+    const md = (obj.doc.metadata ?? {}) as Record<string, unknown>;
+    const where = obj.kind + " " + obj.name + " (" + obj.app + "/" + obj.file + ")";
+
+    const selector = (spec.selector ?? {}) as Record<string, unknown>;
+    const matchLabels = ((selector.matchLabels ?? {}) as Record<string, string>);
+
+    const nsSel = (spec.namespaceSelector ?? undefined) as Record<string, unknown> | undefined;
+    const anyNs = nsSel?.any === true;
+    const nsNames = ((nsSel?.matchNames ?? []) as string[]).map((n) => String(n));
+    const scoped = anyNs ? [] : (nsNames.length > 0 ? nsNames : [String(md.namespace ?? "")]);
+
+    const inScope = (s: AuthoredService): boolean => anyNs || scoped.includes(s.namespace);
+    const labelled = (s: AuthoredService): boolean =>
+      Object.entries(matchLabels).every(([k, v]) => s.labels[k] === String(v));
+
+    const candidates = services.filter((s) => inScope(s) && labelled(s));
+    if (candidates.length === 0) {
+      const sel = Object.entries(matchLabels).map(([k, v]) => k + "=" + String(v)).join(",");
+      const nsWhere = anyNs ? "any namespace" : "namespace(s) " + scoped.join(", ");
+      fails.push(
+        "servicemonitor: " + where + " selects " + (sel === "" ? "<no labels>" : sel) + " in " + nsWhere +
+        " but NO Service authored in this tree matches -- prometheus-operator builds a scrape job with zero endpoints, which never appears on the targets page at all (not even DOWN), so nothing reports and nothing looks wrong",
+      );
+      continue;
+    }
+
+    const endpoints = ((spec.endpoints ?? []) as Record<string, unknown>[]);
+    if (endpoints.length === 0) {
+      fails.push("servicemonitor: " + where + " declares no endpoints -- it selects a Service and scrapes nothing from it");
+      continue;
+    }
+    const available = [...new Set(candidates.flatMap((s) => s.portNames))].filter((n) => n !== "").sort();
+    for (const ep of endpoints) {
+      const port = ep.port;
+      if (typeof port === "number") {
+        fails.push(
+          "servicemonitor: " + where + " endpoint names port " + String(port) +
+          " numerically, but endpoints[].port must be a Service port NAME. The operator matches names, finds none, and generates zero targets. Available name(s): " + (available.join(", ") || "<none>"),
+        );
+        continue;
+      }
+      if (typeof port !== "string" || port === "") {
+        if (ep.targetPort === undefined) {
+          fails.push("servicemonitor: " + where + " has an endpoint with neither port nor targetPort -- the scraper has no address to try");
+        }
+        continue;
+      }
+      if (!available.includes(port)) {
+        fails.push(
+          "servicemonitor: " + where + " scrapes port " + JSON.stringify(port) +
+          " but the Service(s) it selects (" + candidates.map((s) => s.namespace + "/" + s.name).join(", ") +
+          ") declare port name(s) " + (available.join(", ") || "<none>") +
+          " -- a ServiceMonitor naming a port its Service does not declare produces zero targets silently",
+        );
+      }
+    }
+  }
+  return fails;
+}
 // ---- Tree wiring ----------------------------------------------------------
 
 export function readApplication(appsDir: string, app: string): Record<string, unknown> | undefined {
@@ -763,6 +910,9 @@ export function runAudit(appsDir: string, rosterPath: string, repoRoot: string =
 
     checked.push("argo: authored monitoring manifests are inside their Application include filter");
     failures.push(...checkIncludedByApplication(appsDir, monitoring));
+
+    checked.push("servicemonitor: every authored ServiceMonitor resolves to a Service at a port name it declares");
+    failures.push(...checkServiceMonitorTargets(monitoring, authoredServices(appsDir)));
   }
 
   return { failures, checked };

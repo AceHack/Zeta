@@ -23,6 +23,7 @@ import {
   DOTNET_METRICS_SOURCE,
   PORTAL_METRICS_SOURCE,
   authoredMonitoringObjects,
+  authoredServices,
   checkAlertmanager,
   checkAlloyGraph,
   checkAuthoredRules,
@@ -30,6 +31,7 @@ import {
   checkIncludedByApplication,
   checkMonitoringSelectorLabel,
   checkScrapeOptIn,
+  checkServiceMonitorTargets,
   isEmittedMetric,
   parseAlloyComponents,
   parseAlloyEndpoints,
@@ -39,6 +41,8 @@ import {
   stripAlloyComments,
   valuesHash,
   zetaEmitterRoster,
+  type AuthoredService,
+  type MonitoringObject,
   type Roster,
 } from "./audit-observability-chain.ts";
 
@@ -70,8 +74,9 @@ describe("CONTROL", () => {
   test("the real tree passes -- an audit that always fails is not a check", () => {
     const r = runAudit(APPS, ROSTER, REPO_ROOT);
     expect(r.failures).toEqual([]);
-    // 3 chain invariants + 4 scrape/alerting invariants added 2026-08-20.
-    expect(r.checked.length).toBe(7);
+    // 3 chain invariants + 4 scrape/alerting invariants added 2026-08-20
+    // + the ServiceMonitor -> Service resolution added 2026-08-21.
+    expect(r.checked.length).toBe(8);
   });
 });
 
@@ -498,6 +503,109 @@ describe("MUTATION -- Argo never applies the file", () => {
     writeFile(dir, "platform", "Application.yaml", text);
     const fails = checkIncludedByApplication(appsOf(dir), authoredMonitoringObjects(appsOf(dir))).join(" ");
     expect(fails).toContain("never applies the file");
+  });
+});
+
+// ===================================================================
+// THE SERVICEMONITOR -> SERVICE LINK (added 2026-08-21).
+//
+// Every mutation below was RUN against the audit before rule 9 existed
+// and every one of them printed "PASS: 7 invariants hold". They are
+// recorded here as the four ways a ServiceMonitor stops resolving, so
+// that the rule cannot regress into the false-green it was written for.
+//
+// What makes this class nastier than a broken target: an unresolved
+// ServiceMonitor produces a scrape job with ZERO endpoints. The target
+// is not DOWN, it is absent -- up{} has no series at all -- so a panel
+// counting healthy targets is green because nothing reported.
+// ===================================================================
+describe("MUTATION -- a ServiceMonitor that resolves to nothing", () => {
+  test("the real tree resolves: the portal ServiceMonitor finds its Service and port", () => {
+    const fails = checkServiceMonitorTargets(authoredMonitoringObjects(APPS), authoredServices(APPS));
+    expect(fails).toEqual([]);
+  });
+
+  test("the control is not vacuous -- the tree really does author a ServiceMonitor and a Service", () => {
+    // Guards the rule against passing because it had nothing to look at:
+    // an empty object list would make every assertion above trivially true.
+    expect(authoredMonitoringObjects(APPS).some((o) => o.kind === "ServiceMonitor")).toBe(true);
+    expect(authoredServices(APPS).some((s) => s.name === "portal" && s.portNames.includes("metrics"))).toBe(true);
+  });
+
+  test("[1] renaming the Service port leaves the ServiceMonitor scraping a name nothing declares", () => {
+    const dir = tempTree();
+    const text = readFile(dir, "platform", "portal.yaml").replace(
+      "{ name: metrics, port: 8080, targetPort: http }",
+      "{ name: http-metrics, port: 8080, targetPort: http }",
+    );
+    writeFile(dir, "platform", "portal.yaml", text);
+    const r = runAudit(appsOf(dir), ROSTER, REPO_ROOT);
+    expect(r.failures.join(" ")).toContain("http-metrics");
+    expect(r.failures.join(" ")).toContain("zero targets silently");
+  });
+
+  test("[2] a selector label no Service carries selects nothing", () => {
+    const dir = tempTree();
+    const text = readFile(dir, "platform", "monitoring.yaml").replace(
+      "matchLabels: { app.kubernetes.io/name: portal }",
+      "matchLabels: { app.kubernetes.io/name: portal-typo }",
+    );
+    writeFile(dir, "platform", "monitoring.yaml", text);
+    const r = runAudit(appsOf(dir), ROSTER, REPO_ROOT);
+    expect(r.failures.join(" ")).toContain("NO Service authored in this tree matches");
+    expect(r.failures.join(" ")).toContain("not even DOWN");
+  });
+
+  test("[3] a namespaceSelector naming the wrong namespace selects nothing", () => {
+    const dir = tempTree();
+    const text = readFile(dir, "platform", "monitoring.yaml").replace(
+      "matchNames: [ zeta-platform ]",
+      "matchNames: [ zeta-nowhere ]",
+    );
+    writeFile(dir, "platform", "monitoring.yaml", text);
+    const r = runAudit(appsOf(dir), ROSTER, REPO_ROOT);
+    expect(r.failures.join(" ")).toContain("zeta-nowhere");
+    expect(r.failures.join(" ")).toContain("NO Service authored in this tree matches");
+  });
+
+  test("[4] a port NUMBER where a port NAME is required fails -- the classic operator bug", () => {
+    const dir = tempTree();
+    const text = readFile(dir, "platform", "monitoring.yaml").replace("- port: metrics", "- port: 8080");
+    writeFile(dir, "platform", "monitoring.yaml", text);
+    const r = runAudit(appsOf(dir), ROSTER, REPO_ROOT);
+    expect(r.failures.join(" ")).toContain("numerically");
+    expect(r.failures.join(" ")).toContain("must be a Service port NAME");
+  });
+
+  test("a ServiceMonitor with no endpoints at all fails", () => {
+    const objects = authoredMonitoringObjects(APPS)
+      .filter((o) => o.kind === "ServiceMonitor")
+      .map((o) => ({ ...o, doc: { ...o.doc, spec: { ...(o.doc.spec as Record<string, unknown>), endpoints: [] } } }));
+    const fails = checkServiceMonitorTargets(objects, authoredServices(APPS)).join(" ");
+    expect(fails).toContain("declares no endpoints");
+  });
+
+  test("matchExpressions-only selectors are NOT silently claimed as verified", () => {
+    // The candidate set is computed from matchLabels alone, which is a
+    // SUPERSET of the true set (matchExpressions only narrows). So a
+    // selector with no matchLabels matches every in-scope Service and this
+    // rule makes no claim about it -- an honest incompleteness, asserted
+    // here so it cannot later be mistaken for coverage.
+    const svc: AuthoredService[] = [
+      { app: "x", file: "s.yaml", name: "s", namespace: "n", labels: {}, portNames: ["metrics"] },
+    ];
+    const obj: MonitoringObject = {
+      file: "m.yaml",
+      app: "x",
+      kind: "ServiceMonitor",
+      name: "sm",
+      labels: {},
+      doc: {
+        metadata: { namespace: "n" },
+        spec: { selector: { matchExpressions: [{ key: "a", operator: "Exists" }] }, endpoints: [{ port: "metrics" }] },
+      },
+    };
+    expect(checkServiceMonitorTargets([obj], svc)).toEqual([]);
   });
 });
 
