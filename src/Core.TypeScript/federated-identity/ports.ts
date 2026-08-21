@@ -197,3 +197,106 @@ export function ordinalCompare(a: string, b: string): number {
   if (a > b) return 1;
   return 0;
 }
+
+// -- Port: node attestation (the HARDWARE-ROOT half SPIFFE has and we do not) --
+
+/**
+ * SPIRE has TWO attestation layers and this module shipped only one.
+ *
+ *   WORKLOAD attestation (above) - a process asks the node, and the node answers
+ *     from kernel-visible properties. Zeta has this.
+ *   NODE attestation (here)      - the node proves to a verifier WHAT MACHINE it
+ *     is, from evidence a hardware root produced. Zeta did not have this.
+ *
+ * This is a SEPARATE port rather than extra fields on `ObservedProcess`, for two
+ * structural reasons rather than stylistic ones:
+ *
+ *   - `WorkloadAttestor.attest` is a pure function over PASSIVELY OBSERVED
+ *     properties. A hardware root's evidence is a CHALLENGE-RESPONSE: it is only
+ *     evidence if it answers a nonce the verifier chose, because a quote with no
+ *     fresh challenge is a recording. Freshness has nowhere to live inside
+ *     `ObservedProcess`, and bolting it on would make that type's "properties the
+ *     node can see" claim false.
+ *   - The SUBJECT differs. A workload attestor's subject is a PROCESS; a hardware
+ *     root's subject is a MACHINE. Merging them lets a machine-scoped fact be
+ *     read as a per-process one - precisely the error `node-attestation.ts`
+ *     exists to refuse.
+ */
+
+/** What a verifier hands the node. The nonce is what makes a quote evidence. */
+export interface NodeAttestationChallenge {
+  readonly nodeId: string;
+  /** Verifier-chosen, single-use. Replay is defeated here or nowhere. */
+  readonly nonce: string;
+  readonly issuedAtPhase: Phase;
+}
+
+/**
+ * The class of hardware root an attestation is rooted in. A closed set: a new
+ * device family is a TYPE ERROR until its isolation profile is stated - the same
+ * closed-command-set discipline `ceremony-gate.ts` applies to operations.
+ */
+export type RootOfTrustClass =
+  | "software-only"
+  | "tpm2-shared-node"
+  | "tpm2-vtpm-per-tenant"
+  | "apple-secure-enclave"
+  | "yubihsm2-shared-connector"
+  | "yubihsm2-dedicated-device";
+
+/**
+ * Five-way, borrowed verbatim from the fleet's TPM probe
+ * (`tools/setup/persona-keys/tpm2-linux-probe.ts`) so there is ONE vocabulary
+ * for "we could not look". Never collapse these. `unreadable`, `unavailable`
+ * and `indeterminate` are not `absent`, and none of them is `present`. A check
+ * that could not run must never read as one that ran and said no.
+ */
+export type RootEvidenceState = "present" | "absent" | "unreadable" | "unavailable" | "indeterminate";
+
+export interface NodeAttestation {
+  readonly nodeId: string;
+  /** Echoed from the challenge. Compared, never trusted. */
+  readonly nonce: string;
+  readonly rootOfTrustClass: RootOfTrustClass;
+  readonly rootEvidenceState: RootEvidenceState;
+  /**
+   * Digest over whatever the root actually produced: a TPM quote, an SEP
+   * attestation, or nothing at all. Opaque on purpose. This port does not parse
+   * device blobs, and a response-path parser is exactly where this product
+   * family's CVE history lives.
+   */
+  readonly rootEvidenceDigest: string;
+  readonly attestedAtPhase: Phase;
+  /** Over `nodeAttestationSigningBytes`. Verified with the node's public key. */
+  readonly signature: string;
+  readonly signerPublicKey: string;
+}
+
+export interface NodeAttestor {
+  attest(challenge: NodeAttestationChallenge, currentPhase: Phase): Result<NodeAttestation, NodeAttestationRefusal>;
+}
+
+/**
+ * Named arms rather than an inline union, so each refusal carries its own
+ * docline saying what a caller should do about it.
+ */
+export interface NodeCeremonyRefusal {
+  readonly kind: "requires-human-ceremony";
+  /** A member of `FederatedIdentityOperation` - checked by test, not by type. */
+  readonly operation: string;
+  readonly detail: string;
+}
+
+/** The root did not answer, and WHY it did not answer is load-bearing. */
+export interface NodeRootUnavailableRefusal {
+  readonly kind: "root-unavailable";
+  readonly state: RootEvidenceState;
+  readonly detail: string;
+}
+
+export interface MalformedChallengeRefusal {
+  readonly kind: "malformed-challenge";
+  readonly field: string;
+}
+
+export type NodeAttestationRefusal = NodeCeremonyRefusal | NodeRootUnavailableRefusal | MalformedChallengeRefusal;

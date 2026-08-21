@@ -30,7 +30,21 @@ import {
   type KeyObject,
 } from "node:crypto";
 
-import { type Result, type Signer, type SignatureVerifier, type SignerRefusal, err, ok } from "./ports.ts";
+import {
+  type NodeAttestation,
+  type NodeAttestationChallenge,
+  type NodeAttestationRefusal,
+  type NodeAttestor,
+  type Result,
+  type RootEvidenceState,
+  type RootOfTrustClass,
+  type Signer,
+  type SignatureVerifier,
+  type SignerRefusal,
+  err,
+  ok,
+} from "./ports.ts";
+import { nodeAttestationSigningBytes } from "./node-attestation.ts";
 
 /**
  * An in-process ed25519 signer. TEST ONLY.
@@ -157,3 +171,79 @@ export const toyDeterministicVerifier: SignatureVerifier = {
     return createHash("sha256").update(publicKey, "utf8").update(message).digest("base64") === signature;
   },
 };
+
+// -- Node attestors: one that runs, two that honestly refuse -----------------
+
+/**
+ * A node attestor with NO hardware root. REGISTER: `toy`.
+ *
+ * The ed25519 signature is real, which is what makes the negative tests in
+ * `node-attestation.test.ts` meaningful: a forged or replayed attestation fails
+ * a cryptographic check rather than a string comparison. What is NOT real is any
+ * hardware claim - it reports `rootOfTrustClass: "software-only"` and a root
+ * evidence state of `unavailable`, meaning *we did not look for hardware*, which
+ * is a different fact from *there is none* and must never be rounded to it.
+ */
+export function toySoftwareNodeAttestor(params: {
+  readonly nodeId: string;
+  readonly signer: Signer;
+  /** Defaults to `unavailable`: this adapter looks for no hardware at all. */
+  readonly rootEvidenceState?: RootEvidenceState;
+}): NodeAttestor {
+  return {
+    attest(challenge: NodeAttestationChallenge, currentPhase: number): Result<NodeAttestation, NodeAttestationRefusal> {
+      if (challenge.nonce.length === 0) return err({ kind: "malformed-challenge", field: "nonce" });
+      if (challenge.nodeId.length === 0) return err({ kind: "malformed-challenge", field: "nodeId" });
+
+      const unsigned = {
+        nodeId: params.nodeId,
+        nonce: challenge.nonce,
+        rootOfTrustClass: "software-only" as const,
+        rootEvidenceState: params.rootEvidenceState ?? ("unavailable" as const),
+        rootEvidenceDigest: createHash("sha256").update("no-hardware-root", "utf8").digest("hex"),
+        attestedAtPhase: currentPhase,
+      };
+      const signature = params.signer.sign(nodeAttestationSigningBytes(unsigned));
+      if (!signature.ok) {
+        return err({
+          kind: "root-unavailable",
+          state: unsigned.rootEvidenceState,
+          detail: `node signer refused: ${signature.error.kind}`,
+        });
+      }
+      return ok({ ...unsigned, signature: signature.value, signerPublicKey: params.signer.publicKey() });
+    },
+  };
+}
+
+/**
+ * The hardware node attestor. It does NOT work, and this is not a stub that
+ * pretends - same shape and same reasoning as `yubiHsmSignerRequiringCeremony`
+ * directly above.
+ *
+ * Producing a real TPM 2.0 node attestation means enrolling a DevID / attestation
+ * key against the endorsement hierarchy, which is a provisioning act on a device,
+ * under owner authorization. An agent may not hold that credential and may not
+ * run that ceremony. So the honest adapter refuses every call and NAMES the
+ * ceremony - and the operation it names is a member of
+ * `FederatedIdentityOperation`, classified `biometric-ceremony` by
+ * `ceremonyRequirementFor`. `node-attestation.test.ts` asserts that linkage
+ * rather than trusting the string.
+ */
+export function hardwareNodeAttestorRequiringCeremony(params: {
+  readonly nodeId: string;
+  readonly rootOfTrustClass: RootOfTrustClass;
+}): NodeAttestor {
+  return {
+    attest: (): Result<NodeAttestation, NodeAttestationRefusal> =>
+      err({
+        kind: "requires-human-ceremony",
+        operation: "provision-or-reconfigure-hardware-token",
+        detail:
+          `node '${params.nodeId}' would attest under root class '${params.rootOfTrustClass}', which requires an ` +
+          "enrolled attestation key on the device. Enrolment is a provisioning act under owner authorization; an " +
+          "agent may not hold that credential. Aaron's biometric ceremony authorizes it, and only then may this " +
+          "adapter be replaced by one that attests.",
+      }),
+  };
+}
