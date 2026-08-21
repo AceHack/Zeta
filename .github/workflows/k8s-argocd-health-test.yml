@@ -54,7 +54,20 @@ on:
       - "src/Core.TypeScript/cluster/argocd-health-test.ts"
       - "src/Core.TypeScript/cluster/argocd-health-test.test.ts"
       - "full-ai-cluster/dev-cluster/**"
-      - "full-ai-cluster/k8s/applications/**/Application.yaml"
+      # WATCH WHAT THIS LANE DEPLOYS. This used to be
+      # "applications/**/Application.yaml", which matched only the ArgoCD
+      # Application objects and none of the manifests they point at -- yet
+      # the lane deploys those manifests. Measured: the run that caught the
+      # gatekeeper CRD-wait Job being rejected by PodSecurity created the pod
+      # from applications/hat-system/gatekeeper-crd-wait.yaml, a file this
+      # filter did not watch. So a PR breaking a workload manifest did not
+      # run the one lane that deploys it, and the PR that FIXED that Job
+      # (#13223) got no kind check either -- it was caught only because an
+      # unrelated PR happened to touch a watched path.
+      #
+      # Now the same breadth as the bootstrap entry below, which already
+      # uses "**" for the same reason.
+      - "full-ai-cluster/k8s/applications/**"
       - "full-ai-cluster/k8s/bootstrap/**"
       - "full-ai-cluster/k8s/single-node-budget.json"
       - "src/Core.TypeScript/cluster/single-node-readiness.ts"
@@ -71,7 +84,20 @@ on:
       - "src/Core.TypeScript/cluster/argocd-health-test.ts"
       - "src/Core.TypeScript/cluster/argocd-health-test.test.ts"
       - "full-ai-cluster/dev-cluster/**"
-      - "full-ai-cluster/k8s/applications/**/Application.yaml"
+      # WATCH WHAT THIS LANE DEPLOYS. This used to be
+      # "applications/**/Application.yaml", which matched only the ArgoCD
+      # Application objects and none of the manifests they point at -- yet
+      # the lane deploys those manifests. Measured: the run that caught the
+      # gatekeeper CRD-wait Job being rejected by PodSecurity created the pod
+      # from applications/hat-system/gatekeeper-crd-wait.yaml, a file this
+      # filter did not watch. So a PR breaking a workload manifest did not
+      # run the one lane that deploys it, and the PR that FIXED that Job
+      # (#13223) got no kind check either -- it was caught only because an
+      # unrelated PR happened to touch a watched path.
+      #
+      # Now the same breadth as the bootstrap entry below, which already
+      # uses "**" for the same reason.
+      - "full-ai-cluster/k8s/applications/**"
       - "full-ai-cluster/k8s/bootstrap/**"
       - "full-ai-cluster/k8s/single-node-budget.json"
       - "src/Core.TypeScript/cluster/single-node-readiness.ts"
