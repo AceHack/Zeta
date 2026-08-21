@@ -1,0 +1,101 @@
+name: chart-version-refresh
+
+# THE NETWORK HALF of the ArgoCD chart-resolvability check, deliberately kept
+# out of every PR-blocking lane.
+#
+# `src/Core.TypeScript/hygiene/audit-chart-target-revisions.ts` resolves every
+# `targetRevision` in full-ai-cluster/k8s/applications against a CHECKED-IN
+# snapshot of what each upstream repository publishes. That offline half runs in
+# gate.yml's cross-verify floor and opens no socket. This workflow is the other
+# half: it re-fetches all ~35 coordinates from their registries and rewrites
+# `src/Core.TypeScript/hygiene/published-chart-versions.json`.
+#
+# WHY THE SPLIT IS THE WHOLE DESIGN. A resolvability check that talks to twelve
+# third-party registries on every PR reddens unrelated changes the first time
+# any one of them has a bad afternoon, and gets deleted the week after. So the
+# blocking lane reads a file and this lane touches the network — and this lane
+# is ALLOWED TO FAIL. A registry outage here delays a snapshot update and blocks
+# nobody.
+#
+# WHAT THE EXIT CODE MEANS. `--refresh` returns 1 when the snapshot actually
+# CHANGED — the signal that the diff needs committing — and 0 otherwise. It does
+# NOT open a PR: the snapshot is evidence, and the run's artifact is reviewed
+# before it becomes the thing the blocking lane trusts.
+#
+# It deliberately does NOT return 1 merely because a fetch failed. Two
+# coordinates in this tree are permanently unreachable (wrong repoURLs,
+# 081M0JX4M7H087G0R0029R5QG6), so that rule would have made this lane red on
+# every run from the day it landed — and a lane nobody can ever see go green is
+# a lane nobody reads. The same reasoning is why `fetchedAt` alone is not a
+# change (sameIgnoringTimestamps): a signal that is always on carries no
+# information. Unreachable coordinates are still printed here, and the offline
+# audit names them as findings on every PR.
+#
+# Composes with:
+#   src/Core.TypeScript/hygiene/audit-chart-target-revisions.ts  (both halves)
+#   src/Core.TypeScript/hygiene/published-chart-versions.json    (the snapshot)
+#   .github/workflows/gate.yml  cross-verify                     (the offline lane)
+#   081M0JVD5YG087G0R002QDFR9H (the oz pin) · 081M0JX4M7H087G0R0029R5QG6 (the two
+#   unreachable repoURLs this lane's first run found)
+
+on:
+  schedule:
+    # Weekly Sundays 17:07 UTC — off-the-hour weekend slot, clear of
+    # budget-snapshot-cadence (16:23) and git-hotspot-cadence (16:43), per the
+    # thundering-herd convention in budget-snapshot-cadence.yml.
+    - cron: "7 17 * * 0"
+  workflow_dispatch: {}
+  pull_request:
+    # Self-test only: a change to the tool or this workflow should prove the
+    # network path still works before it is trusted on a schedule. This job is
+    # NOT in the required set, so a registry flake here cannot block a merge.
+    paths:
+      - "src/Core.TypeScript/hygiene/audit-chart-target-revisions.ts"
+      - ".github/workflows/chart-version-refresh.yml"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: chart-version-refresh-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  refresh:
+    name: refresh published-chart-versions.json from upstream registries
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Install toolchain via three-way-parity script (GOVERNANCE §24)
+        env:
+          # mise release-metadata calls authenticate (1000/hr) instead of anonymous (60/hr 403 flake)
+          MISE_GITHUB_TOKEN: ${{ github.token }}
+        run: ./tools/setup/install.sh
+
+      # Exit 1 means either "the snapshot changed" or "a registry was
+      # unreachable". Both are things a human should look at and neither is a
+      # reason to block anyone's merge, which is why this job is not required.
+      - name: Refresh the published-version snapshot (network; allowed to fail)
+        run: bun src/Core.TypeScript/hygiene/audit-chart-target-revisions.ts --refresh
+
+      # Always uploaded, including on the failing path — the diff IS the output.
+      - name: Upload the refreshed snapshot
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: published-chart-versions-${{ github.run_id }}
+          path: src/Core.TypeScript/hygiene/published-chart-versions.json
+          if-no-files-found: error
+          retention-days: 90
+
+      # The refreshed snapshot re-run through the OFFLINE audit. This is what
+      # turns a version list into a verdict: if upstream unpublished something
+      # a manifest pins, or an acknowledgement has outlived its defect, this is
+      # where it shows up — days before it would otherwise reach anyone.
+      - name: Re-audit against the freshly refreshed snapshot
+        if: always()
+        run: bun src/Core.TypeScript/hygiene/audit-chart-target-revisions.ts

@@ -2108,6 +2108,20 @@ jobs:
       - name: zflash host-arm parity (every arm verifies the ISO before writing)
         run: bun src/Core.TypeScript/hygiene/audit-flash-entrypoint-parity.ts
 
+      # Every ArgoCD `targetRevision` must name a chart version upstream actually published.
+      # Measured on main 2026-08-20: applications/oz pins ziti-controller at 1.4.5, a version
+      # OpenZiti never shipped (their 1.x line ends at 1.3.4), so that Application can never
+      # sync — invisible because `oz` is one of 26 of 45 Applications no CI lane exercises, so
+      # nothing ever asked the registry for the chart (081M0JVD5YG087G0R002QDFR9H, #13313).
+      #
+      # OFFLINE. It resolves every coordinate against the checked-in snapshot
+      # `published-chart-versions.json` and opens no socket, so this step cannot redden a PR
+      # because a third-party registry is down — which is the only reason a resolvability
+      # check survives past its first outage. The network half is `--refresh`, and it runs on
+      # a schedule in chart-version-refresh.yml where it is allowed to fail loudly.
+      - name: ArgoCD chart targetRevisions resolve (offline, against the committed snapshot)
+        run: bun src/Core.TypeScript/hygiene/audit-chart-target-revisions.ts
+
       # A tracked source file holding a raw 0x00 byte reads as BINARY to grep/rg, so every
       # text audit silently skips it -- a check that did not run, looking exactly like one
       # that passed. `rg 'foldChain' key-epoch-ledger.ts` printed "binary file matches" and
