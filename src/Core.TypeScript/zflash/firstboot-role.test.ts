@@ -17,7 +17,9 @@ import {
   K3S_AGENT_TOKEN_INSTALLED_PATH,
   planFirstbootConfFileContent,
   resolveFirstbootConfig,
+  K3S_NODE_TOKEN_WITH_CA_HASH,
   validateJoinServerUrl,
+  validateJoinTokenMaterial,
   validateTokenEspPath,
   ZETA_FIRSTBOOT_CONF_ESP_DESTINATION,
   ZETA_JOIN_TOKEN_ESP_DESTINATION,
@@ -555,5 +557,78 @@ describe("planFileBackedZflashImage role provisioning", () => {
       firstbootRole: { kind: "joiner", serverUrl: "http://control-plane.local:6443" },
     });
     expect(planned.ok).toBe(false);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// JOIN-TOKEN MATERIAL — the CA hash is what authenticates the bootstrap
+// ---------------------------------------------------------------------------
+//
+// Traced through k3s `pkg/clientaccess/token.go` on 2026-08-21 rather than
+// assumed. The three upstream facts these tests exist for:
+//
+//   parseToken       a token with no `K10` prefix is REWRITTEN to `K10:::<pw>`,
+//                    not rejected, so `caHash` silently becomes empty.
+//   getCACerts       the CA bundle is fetched with `insecureClient`, whose
+//                    tls.Config sets `InsecureSkipVerify: true`.
+//   validateCAHash   empty caHash + non-empty CACerts -> logrus.Warn, return nil.
+//
+// Net: `https://` protects nothing at bootstrap on a self-signed cluster. The
+// CA hash does. So a hash-less token is refused at flash time.
+
+const VALID_NODE_TOKEN = `K10${"a".repeat(64)}::server:0123456789abcdef`;
+
+describe("validateJoinTokenMaterial", () => {
+  test("accepts the shape k3s itself writes to node-token", () => {
+    expect(validateJoinTokenMaterial(VALID_NODE_TOKEN)).toBeNull();
+  });
+
+  test("accepts a trailing newline — WriteToken appends one", () => {
+    // pkg/server/handlers/token.go: os.WriteFile(file, []byte(token+"\n"), 0600)
+    expect(validateJoinTokenMaterial(`${VALID_NODE_TOKEN}\n`)).toBeNull();
+  });
+
+  test("REFUSES a bare shared secret (the K3S_TOKEN=hunter2 pattern)", () => {
+    const error = validateJoinTokenMaterial("hunter2");
+    expect(error).not.toBeNull();
+    expect(error).toContain("CA hash");
+    expect(error).toContain("InsecureSkipVerify");
+  });
+
+  test("REFUSES a kubeadm-style bootstrap token, which parseToken also accepts", () => {
+    // parseToken turns `abcdef.0123456789abcdef` into `K10::<that>` — parses
+    // fine upstream, still carries no CA hash.
+    expect(validateJoinTokenMaterial("abcdef.0123456789abcdef")).not.toBeNull();
+  });
+
+  test("REFUSES K10 with an empty hash — the exact `K10::creds` degenerate form", () => {
+    expect(validateJoinTokenMaterial("K10::server:secret")).not.toBeNull();
+  });
+
+  test("REFUSES a hash of the wrong length (caHashLength = sha256.Size * 2 = 64)", () => {
+    expect(validateJoinTokenMaterial(`K10${"a".repeat(63)}::server:s`)).not.toBeNull();
+    expect(validateJoinTokenMaterial(`K10${"a".repeat(65)}::server:s`)).not.toBeNull();
+  });
+
+  test("REFUSES an uppercase hash — hex.EncodeToString emits lowercase and the compare is ==", () => {
+    expect(validateJoinTokenMaterial(`K10${"A".repeat(64)}::server:s`)).not.toBeNull();
+  });
+
+  test("REFUSES a hash with no credentials after the separator", () => {
+    expect(validateJoinTokenMaterial(`K10${"a".repeat(64)}::`)).not.toBeNull();
+  });
+
+  test("REFUSES empty and whitespace-only material", () => {
+    expect(validateJoinTokenMaterial("")).toContain("empty");
+    expect(validateJoinTokenMaterial("   \n  ")).toContain("empty");
+  });
+
+  test("REFUSES multi-line material — the wrong file was passed", () => {
+    const error = validateJoinTokenMaterial(`${VALID_NODE_TOKEN}\n${VALID_NODE_TOKEN}`);
+    expect(error).toContain("one token line");
+  });
+
+  test("K3S_NODE_TOKEN_WITH_CA_HASH is anchored at both ends", () => {
+    expect(K3S_NODE_TOKEN_WITH_CA_HASH.test(`prefix K10${"a".repeat(64)}::s`)).toBe(false);
   });
 });

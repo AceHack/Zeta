@@ -366,7 +366,7 @@
             # NixOS users: tooling comes via this devShell's nix-managed
             # packages above; no install.sh equivalent needed.
             echo "  Build USB ISO:        nix build .#installer-iso"
-            echo "  Build host system:    nixos-rebuild build --flake .#<host>"
+            echo "  Build host system:    nixos-rebuild build --impure --flake .#<host>"
             echo "  Talk to cluster:      kubectl / k9s / argocd / cilium / hubble"
           '';
         };

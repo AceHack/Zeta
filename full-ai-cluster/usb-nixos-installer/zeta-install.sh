@@ -1162,7 +1162,7 @@ if [ -n "$PUBKEY_FILE" ]; then
     echo "# Generated: $(date -u +%Y-%m-%dT%H:%M:%SZ)"
     echo "#"
     echo "# Read by sibling operator-ssh-keys.nix via builtins.readFile."
-    echo "# Edit + sudo nixos-rebuild switch --flake /etc/zeta/full-ai-cluster#<host>"
+    echo "# Edit + sudo nixos-rebuild switch --impure --flake /etc/zeta/full-ai-cluster#<host>"
     echo "# to update without re-flashing the USB."
     echo
     sudo cat "$PUBKEY_FILE"
@@ -1337,10 +1337,34 @@ if [ -n "$PUBKEY_FILE" ]; then
   # sets services.k3s.tokenFile = "/var/lib/rancher/k3s/agent/token". Landing it
   # anywhere else produces a node that boots, runs an agent, and never joins.
   BOOT_USB_JOIN_TOKEN="$(dirname "$PUBKEY_FILE")/zeta-join-token"
+  #
+  # SHAPE CHECK, not just non-emptiness. The token must carry the cluster CA
+  # hash: `K10<64 lowercase hex>::<creds>`. Traced through k3s
+  # pkg/clientaccess/token.go on 2026-08-21 — a token WITHOUT that prefix is not
+  # rejected by k3s, it is rewritten by parseToken to `K10:::<password>`, the CA
+  # bundle is then fetched by getCACerts over a client with
+  # InsecureSkipVerify:true, and validateCAHash merely logs a warning. The agent
+  # would trust whatever CA answered on the segment and hand it the cluster
+  # credential. https:// in the server URL does not help; that first request is
+  # the one that ignores TLS.
+  #
+  # Re-checked here even though zflash's file-backed CLI already refused it:
+  # this is the last guard on a different substrate, and the bytes came off a
+  # FAT filesystem anyone with physical possession of the stick can rewrite.
+  # Every token k3s itself writes (server/token and its node-token symlink, both
+  # via handlers.WriteToken -> clientaccess.FormatToken) carries the prefix, so
+  # this refuses nothing an operator following the documented path would supply.
   if sudo test -f "$BOOT_USB_JOIN_TOKEN"; then
-    if sudo test -s "$BOOT_USB_JOIN_TOKEN"; then
+    if sudo test -s "$BOOT_USB_JOIN_TOKEN" \
+      && sudo head -c 4096 "$BOOT_USB_JOIN_TOKEN" | head -1 \
+         | grep -Eq '^K10[0-9a-f]{64}::.+$'; then
       sudo install -D -m 0600 "$BOOT_USB_JOIN_TOKEN" /mnt/var/lib/rancher/k3s/agent/token
       echo "[081KSNY2Z0008QG0R0008PN7RQ-role]   installed k3s node-token → /mnt/var/lib/rancher/k3s/agent/token"
+    elif sudo test -s "$BOOT_USB_JOIN_TOKEN"; then
+      echo "[081KSNY2Z0008QG0R0008PN7RQ-role]   REFUSED: zeta-join-token carries no cluster CA hash" >&2
+      echo "[081KSNY2Z0008QG0R0008PN7RQ-role]           (expected K10<64 hex>::<creds> — use the founder's" >&2
+      echo "[081KSNY2Z0008QG0R0008PN7RQ-role]            /var/lib/rancher/k3s/server/node-token verbatim). Without" >&2
+      echo "[081KSNY2Z0008QG0R0008PN7RQ-role]            the hash k3s accepts any CA served on the segment." >&2
     else
       # An empty token file is worse than an absent one: k3s would start,
       # present an empty credential, and fail the join for a reason that reads
@@ -1378,7 +1402,7 @@ else
   echo "  - install will continue with EMPTY operator-ssh-keys.nix"
   echo "  - fallback (iter-4 v1): on first boot, login as zeta/zeta-change-me,"
   echo "    passwd zeta, edit /etc/zeta/full-ai-cluster/nixos/modules/operator-ssh-keys.nix,"
-  echo "    sudo nixos-rebuild switch --flake /etc/zeta/full-ai-cluster#$HOST"
+  echo "    sudo nixos-rebuild switch --impure --flake /etc/zeta/full-ai-cluster#$HOST"
   echo "=============================="
 fi
 
@@ -2201,9 +2225,26 @@ fi
 
 echo "Running nixos-install --flake /mnt/etc/zeta/full-ai-cluster#$HOST ..."
 # --impure: required so builtins.pathExists + builtins.readFile in the
-# affected modules (injected-hostname.nix + operator-authorized-keys.nix)
-# can read the symlinked /etc/zeta/* files. Without --impure, flake
-# pure-mode refuses non-store absolute paths even with symlinks in place.
+# affected modules (injected-hostname.nix, injected-join-server.nix,
+# injected-cluster-address.nix, operator-authorized-keys.nix) can read the
+# symlinked /etc/zeta/* files.
+#
+# CORRECTION 2026-08-21 — this comment used to say "flake pure-mode REFUSES
+# non-store absolute paths", which is the readFile half only and is wrong in
+# the direction that hurts. Measured on Determinate Nix 3.21.0 / Nix 2.34.6:
+#
+#     builtins.readFile   "/etc/hosts"  in pure eval -> error, loud
+#     builtins.pathExists "/etc/hosts"  in pure eval -> false, SILENT
+#
+# Every module above guards its readFile behind a pathExists, so pure eval
+# does not refuse — it takes the "no file, keep the default" branch. A pure
+# rebuild therefore reverts the node with no error at all: hostname back to
+# the flake default, k3s serverAddr back to mkDefault, static segment
+# addressing gone, and the operator's captured pubkeys REMOVED from
+# authorized_keys. Every nixos-rebuild string this script prints now carries
+# --impure, and src/Core.TypeScript/hygiene/lint-nixos-rebuild-needs-impure.ts
+# keeps it that way.
+#
 # Safe here because:
 #   - Impure reads are operator-chosen hostname + operator's PUBLIC SSH
 #     pubkeys (NOT secrets — pubkeys are public by definition)
@@ -2810,7 +2851,7 @@ else
   echo "    1. passwd zeta            # rotate the initial password (if iter-5.3 skipped)"
   echo "    2. Edit /etc/zeta/full-ai-cluster/nixos/modules/operator-ssh-keys.nix"
   echo "       and add your ssh-ed25519 pubkey, then:"
-  echo "    3. sudo nixos-rebuild switch --flake /etc/zeta/full-ai-cluster#$HOST"
+  echo "    3. sudo nixos-rebuild switch --impure --flake /etc/zeta/full-ai-cluster#$HOST"
   echo "    4. Verify SSH from your workstation:"
   echo "       ssh zeta@\$(hostname)"
 fi

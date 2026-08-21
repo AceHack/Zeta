@@ -313,8 +313,23 @@ Replace the dead drive, then either:
   Longhorn re-registers the data path, replicas rebuild from peers.
 - **Slow path** (drive serial changed): update the `zeta.disko.bootDisk`
   or an entry in `extraDisks` in `nixos/hosts/<host>/default.nix`,
-  `nixos-rebuild switch --flake .#<host> --target-host <host>` from
+  `nixos-rebuild switch --impure --flake .#<host> --target-host <host>` from
   any admin machine, then rebuild as above.
+
+  > `--impure` is not optional. A flake ref evaluates PURE by default, and in
+  > pure eval `builtins.pathExists` on an absolute path returns **false**
+  > rather than erroring (measured 2026-08-21, Nix 2.34.6 — the measurement is
+  > recorded in `src/Core.TypeScript/hygiene/lint-nixos-rebuild-needs-impure.ts`).
+  > Every module that reads `/etc/zeta/*` guards its `readFile` behind that
+  > `pathExists`, so a pure rebuild silently reverts the node's hostname, its
+  > k3s join endpoint and segment address, and drops the operator's authorized
+  > SSH keys.
+  >
+  > **Caveat specific to `--target-host`:** evaluation happens on the ADMIN
+  > machine, so the impure reads see the *admin's* `/etc/zeta/*`, not the
+  > target's. On a remote rebuild the injected values are whatever the admin
+  > box carries — usually nothing. Run the rebuild ON the node whenever an
+  > injected value matters.
 
 OS itself: the `/` partition lives on the boot disk only, so an extra
 data-disk failure leaves the node fully bootable + Longhorn capacity

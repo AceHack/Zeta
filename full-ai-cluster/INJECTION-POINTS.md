@@ -161,6 +161,26 @@ in `src/Core.TypeScript/zflash/test-harness/scenarios.ts`.
 | **ESP filename** | `zeta-join-token` |
 | **Consumer** | `zeta-install.sh` copies it to `/mnt/var/lib/rancher/k3s/agent/token` (0600), which is exactly the path `nixos/modules/k3s-agent.nix` sets as `services.k3s.tokenFile` |
 | **Source of the value** | the founding server's `/var/lib/rancher/k3s/server/node-token` |
+| **Shape, enforced twice** | `K10<64 lowercase hex>::<creds>` — refused at flash time by `firstboot-role.ts` `validateJoinTokenMaterial`, and again by `zeta-install.sh` before install |
+
+**WHY THE SHAPE IS ENFORCED AND NOT ASSUMED (traced upstream 2026-08-21).** The
+`K10<hash>::` prefix is not decoration; it is the only thing authenticating the
+server a joiner hands its credential to. In k3s `pkg/clientaccess/token.go`:
+
+- `parseToken` does **not** reject a token lacking the prefix — it rewrites it
+  to `K10:::<password>`, so `caHash` becomes the empty string.
+- `getCACerts` downloads the cluster CA from `/cacerts` using `insecureClient`,
+  declared in that same file with `tls.Config{InsecureSkipVerify: true}`.
+- `validateCAHash` with an empty `caHash` and a non-empty CA bundle emits
+  `logrus.Warn(...)` and returns nil — the join proceeds.
+
+So a bare shared secret (`K3S_TOKEN=hunter2`) yields a joiner that accepts
+whatever CA answers first on the segment and then presents the cluster token to
+it. `https://` in the server URL does not close this: the request that ignores
+TLS is the CA download itself. Refusing the shape costs a correct operator
+nothing — `server/token` and its `node-token` symlink are both written by
+`handlers.WriteToken` → `clientaccess.FormatToken`, which always prepends the
+digest.
 
 **CONSTITUTIONAL-RAIL CAVEAT — read before using this on real hardware.** Point
 7's "Encrypted cred-blob" earns its place on the ESP by being AES-256-GCM

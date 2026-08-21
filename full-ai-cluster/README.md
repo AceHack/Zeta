@@ -87,7 +87,7 @@ full-ai-cluster/
 
 - **OS layer** is reconciled by **Nix + NixOS**. Everything in
   `./nixos/` lands on a target machine via `nixos-install --flake`
-  (initial install) or `nixos-rebuild switch --flake` (updates).
+  (initial install) or `nixos-rebuild switch --impure --flake` (updates).
 - **Cluster layer** is reconciled by **ArgoCD**. K3S auto-applies
   the bootstrap manifests at `./k8s/bootstrap/` on first boot
   (Cilium → ArgoCD → root Application); ArgoCD then reads
@@ -255,7 +255,7 @@ replacement, and network policy.
 
 - **OS layer** changes: edit the relevant file under `./nixos/`,
   commit, push. Then on each target:
-  `sudo nixos-rebuild switch --flake /etc/zeta/full-ai-cluster#<host>`
+  `sudo nixos-rebuild switch --impure --flake /etc/zeta/full-ai-cluster#<host>`
 - **Cluster layer** changes: edit the relevant `Application.yaml`
   or referenced manifest, commit, push. ArgoCD reconciles within
   ~3 minutes.

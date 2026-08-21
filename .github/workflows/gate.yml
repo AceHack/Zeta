@@ -1466,11 +1466,21 @@ jobs:
       - name: Clone-at-a-tag is still sufficient (no ace-as-resolver)
         run: bun src/Core.TypeScript/hygiene/lint-clone-at-tag-is-sufficient.ts
 
+      # A flake ref evaluates PURE by default, and pure-eval `builtins.pathExists`
+      # on an absolute path returns FALSE rather than erroring (measured 2026-08-21,
+      # Nix 2.34.6). Every full-ai-cluster module reading /etc/zeta guards its
+      # readFile behind that pathExists, so a rebuild without --impure silently
+      # reverts hostname / k3s join endpoint / segment address and DROPS the
+      # operator's authorized SSH keys. Guarded here because the failure is silent.
+      - name: Documented flake rebuilds still carry --impure (silent-revert guard)
+        run: bun src/Core.TypeScript/hygiene/lint-nixos-rebuild-needs-impure.ts
+
       - name: Audit + selector unit tests (a check that cannot fail is not a check)
         run: |
           bun test \
             src/Core.TypeScript/hygiene/audit-build-graph-completeness.test.ts \
             src/Core.TypeScript/hygiene/lint-clone-at-tag-is-sufficient.test.ts \
+            src/Core.TypeScript/hygiene/lint-nixos-rebuild-needs-impure.test.ts \
             src/Core.TypeScript/ci/affected-legs.test.ts
 
       # OBSERVE-ONLY. Nothing reads these outputs yet, and that is deliberate: the

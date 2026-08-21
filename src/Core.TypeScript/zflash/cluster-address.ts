@@ -101,8 +101,21 @@ export const LAST_HOST_INDEX = 254;
  * else name-shaped. k3s additionally SANs `127.0.0.1` and the node's own IPs,
  * but no variant carrying a suffix. So `control-plane.local` — the name
  * `multi-vm.ts` dialled before this module — is NOT in the certificate, and a
- * TLS client that verifies hostnames (the Go default; k3s does not set
- * `InsecureSkipVerify` on the agent bootstrap path) rejects it.
+ * TLS client that verifies hostnames rejects it.
+ *
+ * CORRECTED 2026-08-21 by reading upstream. This used to read "k3s does not set
+ * `InsecureSkipVerify` on the agent bootstrap path", which is FALSE:
+ * `pkg/clientaccess/token.go` declares an `insecureClient` with
+ * `tls.Config{InsecureSkipVerify: true}` and `getCACerts` uses it for the
+ * `/cacerts` download. The conclusion survives the correction, but by a
+ * different route — `getCACerts` makes three requests, and the THIRD is
+ * `GetHTTPClient(cacerts, "", "")`, which populates `RootCAs` and leaves
+ * `InsecureSkipVerify` at its zero value. That request is where a name outside
+ * the SAN list fails ("CA cert validation failed"). So hostname verification
+ * does happen on the bootstrap path; it simply is not the first thing that
+ * happens, and the difference matters — see
+ * `firstboot-role.ts` `validateJoinTokenMaterial` for what the unverified first
+ * request costs when the token carries no CA hash.
  *
  * That makes the mDNS route wrong twice over: it may not resolve, and if it
  * did resolve the handshake would still fail. Using the bare label keeps the
@@ -118,10 +131,14 @@ export const LAST_HOST_INDEX = 254;
  * So this is not a new design — it is the mechanism the existing two-node test
  * already assumes, moved onto the flash medium.
  *
- * UNVERIFIED: that a `.local` name specifically is rejected has not been run;
- * it follows from the SAN list plus the verification that test demonstrates.
- * What IS checked mechanically is the literal fact that `control-plane.local`
- * appears in no `--tls-san` flag anywhere in `full-ai-cluster/`.
+ * STILL UNVERIFIED, narrowed: that a `.local` name specifically is rejected has
+ * not been RUN. It follows from the SAN list plus the third request above, and
+ * the one thing that could still make it false is dynamic SAN addition — k3s's
+ * supervisor uses rancher/dynamiclistener, which can mint certs covering the
+ * requested host. Whether that path reaches the port a joiner dials was not
+ * settled here, so the claim stays labelled rather than promoted. What IS
+ * checked mechanically is the literal fact that `control-plane.local` appears in
+ * no `--tls-san` flag anywhere in `full-ai-cluster/`.
  */
 export const CONTROL_PLANE_STABLE_NAME = "control-plane";
 

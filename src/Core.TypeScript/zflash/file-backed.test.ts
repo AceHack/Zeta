@@ -1,4 +1,7 @@
 import { describe, expect, test } from "bun:test";
+import { mkdtempSync, writeFileSync } from "node:fs";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
 import {
   parseFileBackedZflashArgs,
   runFileBackedZflashCli,
@@ -214,5 +217,90 @@ describe("runFileBackedZflashCli", () => {
     if (!result.ok) {
       expect(result.error).not.toContain("super-secret");
     }
+  });
+});
+
+// ---------------------------------------------------------------------------
+// JOIN-TOKEN MATERIAL IS CHECKED AT THE CALL SITE, not merely validatable
+// ---------------------------------------------------------------------------
+//
+// `validateJoinTokenMaterial` is pure and has its own suite in
+// firstboot-role.test.ts. These tests exist for a different question: is it
+// REACHED? The plan only carries a `sourcePath`, so nothing downstream ever
+// opens the token file — a validator nobody calls would look exactly like a
+// guard and hold nothing. Real files on disk, real `runFileBackedZflashCli`.
+
+describe("runFileBackedZflashCli refuses a join token with no CA hash", () => {
+  const tokenDir = mkdtempSync(join(tmpdir(), "zflash-join-token-"));
+  const goodToken = join(tokenDir, "node-token");
+  const badToken = join(tokenDir, "bare-secret");
+  writeFileSync(goodToken, `K10${"a".repeat(64)}::server:0123456789abcdef\n`);
+  writeFileSync(badToken, "hunter2\n");
+
+  const joinerRole = {
+    kind: "joiner",
+    serverUrl: "https://control-plane:6443",
+    tokenEspPath: "/zeta-join-token",
+  } as const;
+
+  const baseOptions = {
+    espOffsetBytes: 1_048_576,
+    isoPath: "artifacts/zeta-installer.iso",
+    outputImagePath: "artifacts/zflash-baked.img",
+    pubkeyPath: "fixtures/id_ed25519.pub",
+  };
+
+  const noopExecutor = {
+    runCommand: () => ({ exitCode: 0, stderr: "", stdout: "" }),
+    writeFile: () => undefined,
+  };
+
+  test("a bare shared secret is refused BEFORE any command runs", () => {
+    const ran: string[] = [];
+    const result = runFileBackedZflashCli(
+      { ...baseOptions, firstbootRole: joinerRole, joinTokenSourcePath: badToken },
+      {
+        createInlineStagingDirectory: () => "/private/tmp/zflash-inline-abc123",
+        executor: {
+          runCommand: (command) => {
+            ran.push(command.command);
+            return { exitCode: 0, stderr: "", stdout: "" };
+          },
+          writeFile: () => undefined,
+        },
+      },
+    );
+
+    expect(result.ok).toBe(false);
+    if (result.ok) throw new Error("expected a refusal");
+    expect(result.error).toContain("CA hash");
+    expect(result.error).toContain(badToken);
+    // Fail-closed means fail EARLY: nothing was written to the image.
+    expect(ran).toEqual([]);
+  });
+
+  test("the token k3s itself writes passes and the bake proceeds", () => {
+    const result = runFileBackedZflashCli(
+      { ...baseOptions, firstbootRole: joinerRole, joinTokenSourcePath: goodToken },
+      {
+        createInlineStagingDirectory: () => "/private/tmp/zflash-inline-abc123",
+        executor: noopExecutor,
+      },
+    );
+    expect(result.ok).toBe(true);
+  });
+
+  test("a missing token file is refused rather than silently skipped", () => {
+    const result = runFileBackedZflashCli(
+      {
+        ...baseOptions,
+        firstbootRole: joinerRole,
+        joinTokenSourcePath: join(tokenDir, "does-not-exist"),
+      },
+      { createInlineStagingDirectory: () => "/private/tmp/x", executor: noopExecutor },
+    );
+    expect(result.ok).toBe(false);
+    if (result.ok) throw new Error("expected a refusal");
+    expect(result.error).toContain("not found");
   });
 });
