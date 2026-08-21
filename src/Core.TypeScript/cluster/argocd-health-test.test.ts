@@ -356,6 +356,22 @@ describe("081KSXN940008QG0R000SCP2H1 argocd-health-test manifest parsing", () =>
    * laptop without a real cluster. What it does is PIN the gap at its measured
    * size so it cannot grow silently: add a second nested Application and this
    * goes red, forcing the decision instead of absorbing it.
+   *
+   * TWO CORRECTIONS since this was written, both measured — see
+   * `app-of-apps-discovery.ts` for the derivation:
+   *
+   *   1. The tempting reading of "depth 1" is that ArgoCD never applies the
+   *      nested Application. FALSE. ArgoCD matches `directory.include` with
+   *      `glob.Match(include, relPath)` and passes NO separator runes, so
+   *      gobwas/glob lets `*` cross `/`. The root DOES apply
+   *      `game-hosting/gmod`, and the included lane's own diagnostics show it
+   *      in the cluster. The depth-1 assumption is OURS, not ArgoCD's.
+   *   2. `gmod` is therefore not merely unasserted, it is FAILING — its sync
+   *      is denied by gatekeeper's check-ignore-label webhook on every
+   *      reconcile — while this lane is green.
+   *
+   * This test stays as the cheap structural pin; the reach-vs-roster
+   * comparison and its registry live in `app-of-apps-discovery.ts`.
    */
   test("the depth-1 discovery gap stays exactly one known Application", () => {
     const appsDir = resolve(import.meta.dir, "../../../full-ai-cluster/k8s/applications");

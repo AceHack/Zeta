@@ -158,7 +158,9 @@ export interface SyncPolicyViolation {
  * a second, differently-scoped roster in the tree, which is the drift this
  * module exists to prevent. The one known nested Application
  * (`game-hosting/gmod`) is already pinned by the depth-1 discovery-gap test in
- * `argocd-health-test.test.ts`; when that gap is closed, this scope follows it.
+ * `argocd-health-test.test.ts` and audited by `app-of-apps-discovery.ts`, which
+ * measures the gap between what an app-of-apps root actually REACHES and what
+ * any roster ASSERTS on; when that gap is closed, this scope follows it.
  */
 export function auditSyncPolicyDeclarations(appsDir: string): readonly SyncPolicyViolation[] {
   if (!existsSync(appsDir)) return [];

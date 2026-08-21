@@ -53,6 +53,8 @@ on:
     paths:
       - "src/Core.TypeScript/cluster/argocd-health-test.ts"
       - "src/Core.TypeScript/cluster/argocd-health-test.test.ts"
+      - "src/Core.TypeScript/cluster/app-of-apps-discovery.ts"
+      - "src/Core.TypeScript/cluster/app-of-apps-discovery.test.ts"
       - "full-ai-cluster/dev-cluster/**"
       # WATCH WHAT THIS LANE DEPLOYS. This used to be
       # "applications/**/Application.yaml", which matched only the ArgoCD
@@ -88,6 +90,8 @@ on:
     paths:
       - "src/Core.TypeScript/cluster/argocd-health-test.ts"
       - "src/Core.TypeScript/cluster/argocd-health-test.test.ts"
+      - "src/Core.TypeScript/cluster/app-of-apps-discovery.ts"
+      - "src/Core.TypeScript/cluster/app-of-apps-discovery.test.ts"
       - "full-ai-cluster/dev-cluster/**"
       # WATCH WHAT THIS LANE DEPLOYS. This used to be
       # "applications/**/Application.yaml", which matched only the ArgoCD
@@ -163,6 +167,33 @@ jobs:
 
       - name: Run 081KSXN940008QG0R000SCP2H1 harness unit tests
         run: bun test src/Core.TypeScript/cluster/argocd-health-test.test.ts
+
+      # WHICH Application MANIFESTS DOES A ROOT ACTUALLY REACH, AND WHICH OF
+      # THOSE DOES ANY CHECK ASSERT ON. Offline, pure, ~1s -- so it lives in
+      # this job beside the other harness unit tests rather than paying a fresh
+      # runner.
+      #
+      # It exists because a manifest can be applied by the app-of-apps root and
+      # be invisible to every roster CI asserts on, which is the strongest form
+      # of "a check that did not run looks like a check that passed".
+      # `game-hosting/gmod/Application.yaml` is live in that gap right now: the
+      # root DOES apply it (ArgoCD's `*` is not path-segment bounded), it fails
+      # its sync on every reconcile against gatekeeper's check-ignore-label
+      # webhook, and the `--scope included` job stays green because
+      # discoverExpectedApplications() is depth-1 and never sees it.
+      #
+      # NOT continue-on-error. It is green on the tree it ships with (46
+      # manifests, 1 registered gap, 0 drift) and goes red on drift in three
+      # directions -- measured, each by mutating the live tree: a second nested
+      # Application (exit 1, UNASSERTED), the registry entry removed (exit 1,
+      # UNASSERTED), an Application no root glob matches (exit 1,
+      # NEVER-DISCOVERED). Making the glob path-segment bounded also turns it
+      # red, which is the point: the semantics is the load-bearing claim.
+      - name: Run app-of-apps discovery unit tests
+        run: bun test src/Core.TypeScript/cluster/app-of-apps-discovery.test.ts
+
+      - name: Audit app-of-apps root reach against the asserted roster
+        run: bun src/Core.TypeScript/cluster/app-of-apps-discovery.ts
 
       # Single-node readiness (081M02QMJPA087G0R000J9M39E). Lives in THIS job
       # rather than a job of its own: the toolchain and bun deps are already
