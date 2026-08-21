@@ -1,0 +1,14 @@
+{
+  "id": "080d012a1b398810a01300085e42e03b",
+  "at": "2026-08-21T16:59:29.457Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M0JM6SSG087G0R0029X3F6Z",
+    "type": "bug",
+    "title": "arc runner mounts arc-model-cache, a PVC nothing applies -- the Application sources a remote chart, not its sibling manifest",
+    "slug": "arc-runner-mounts-arc-model-cache-a-pvc-nothing-applies-the",
+    "priority": "P2",
+    "filename": "081M0JM6SSG087G0R0029X3F6Z-arc-runner-mounts-arc-model-cache-a-pvc-nothing-applies-the.md"
+  }
+}
