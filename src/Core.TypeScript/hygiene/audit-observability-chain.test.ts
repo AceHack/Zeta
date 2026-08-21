@@ -22,6 +22,7 @@ import {
   DEFAULT_ROSTER,
   DOTNET_METRICS_SOURCE,
   PORTAL_METRICS_SOURCE,
+  alloyEdges,
   authoredMonitoringObjects,
   authoredServices,
   checkAlertmanager,
@@ -620,3 +621,49 @@ describe("MUTATION -- nothing watching Zeta at all", () => {
   });
 });
 
+describe("alloyEdges escapes EVERY regex metacharacter, not just `.`", () => {
+  // The escaping in alloyEdges had no falsifier until now: reverting it to the
+  // original `.replace(/\./g, "\\.")` left the whole suite green, so a CodeQL
+  // HIGH ("Incomplete string escaping") was fixed with nothing able to prove the
+  // fix mattered or catch its regression. `producer.id` comes out of a Helm
+  // valuesObject, so a label carrying a metacharacter is reachable input.
+  //
+  // The interesting failure is NOT the crash -- it is the FALSE EDGE. This
+  // function decides whether a sink has a source, so a pattern that matches text
+  // it should not reports a sink as sourced when it is not: precisely the
+  // false-green the audit exists to prevent.
+
+  const mk = (kind: string, label: string, body: string) => ({
+    kind,
+    label,
+    id: label === "" ? kind : kind + "." + label,
+    body,
+  });
+
+  test("a `+` in a label does not quantify into a spurious edge", () => {
+    // Under `.`-only escaping the pattern becomes `prometheus\.scrape\.a+\.…`,
+    // where `a+` means "one or more a" -- so it matches `…scrape.aaa.receiver`
+    // and invents an edge to a producer that is not referenced at all.
+    const producer = mk("prometheus.scrape", "a+", "");
+    const consumer = mk("prometheus.remote_write", "sink", "forward_to = prometheus.scrape.aaa.receiver");
+    const edges = alloyEdges([producer, consumer]);
+    expect(edges.filter((e) => e.to === "prometheus.scrape.a+")).toEqual([]);
+  });
+
+  test("a literal reference to a metacharacter label IS still found", () => {
+    // The guard above must not be satisfied by matching nothing ever: the real
+    // reference to the same producer still has to produce its edge.
+    const producer = mk("prometheus.scrape", "a+", "");
+    const consumer = mk("prometheus.remote_write", "sink", "forward_to = prometheus.scrape.a+.receiver");
+    const edges = alloyEdges([producer, consumer]);
+    expect(edges).toContainEqual({ from: "prometheus.remote_write.sink", to: "prometheus.scrape.a+" });
+  });
+
+  // A third case was written and REMOVED: an unbalanced `[` in a label, asserting
+  // `new RegExp` does not throw. It passed under the pre-fix escaping too --
+  // `a[` followed by `\.` happens to form a VALID character class -- so it
+  // guarded nothing and would have padded the suite with a test that cannot
+  // fail. Recorded rather than silently dropped: the crash case is not the
+  // reachable defect here; the false edge is.
+
+});
