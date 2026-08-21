@@ -48,7 +48,9 @@ gh workflow run build-ai-cluster-iso.yml --ref main
 ls -la ~/Downloads/zeta-installer-*.iso
 ```
 
-**Success criterion:** `~/Downloads/zeta-installer-*.iso` exists; size ~1.5-2 GiB; file dated within last 30 minutes.
+**Success criterion:** `~/Downloads/zeta-installer-*.iso` exists; size ~1.5-2 GiB; file dated
+within last 30 minutes; **and `<that-file>.sha256` sits beside it** — without the sidecar CP-2
+refuses before it touches a device.
 
 **Failure recovery:** if CI is red, fix the failing build (separate fix-fwd row) before retrying. Don't proceed with stale ISO.
 
@@ -66,9 +68,12 @@ ls -la ~/Downloads/zeta-installer-*.iso
 >   --json databaseId,conclusion --jq '[.[] | select(.conclusion=="success")][0].databaseId')
 > gh api "repos/Lucent-Financial-Group/Zeta/actions/runs/$RUN/artifacts" --jq '.artifacts[].name'
 > gh run download "$RUN" -R Lucent-Financial-Group/Zeta \
->   -n '<the x86_64 iso name from above>' -n '<same>.cosign' -D /tmp/zeta-iso
-> mv /tmp/zeta-iso/nixos-minimal-*/nixos-minimal-*x86_64*.iso \
->    ~/Downloads/zeta-installer-25.11-ci$RUN-$(date +%F)-x86_64.iso
+>   -n '<the x86_64 iso name from above>' -n '<same>.sha256' -n '<same>.cosign' -D /tmp/zeta-iso
+> DEST=~/Downloads/zeta-installer-25.11-ci$RUN-$(date +%F)-x86_64.iso
+> mv /tmp/zeta-iso/nixos-minimal-*/nixos-minimal-*x86_64*.iso "$DEST"
+> # The sidecar MUST travel with the image, and MUST be named after the file as
+> # it now sits on disk -- `zflash` looks for `<iso>.sha256` beside the ISO.
+> mv /tmp/zeta-iso/*.sha256/*.sha256 "$DEST.sha256"
 > ```
 >
 > **Superseded 2026-08-18 — you no longer need any of the above.** `zflash` now selects the ISO by
@@ -78,6 +83,29 @@ ls -la ~/Downloads/zeta-installer-*.iso
 > auto-discovery globs on. Plain `zflash` is now the supported path; the block above is kept only as
 > the manual fallback for an offline machine. Hand-renaming an ISO is exactly the kind of step this
 > runbook should not be asking a human to perform.
+>
+> ### The rename and the manifest, reconciled — 2026-08-21
+>
+> `zflash` now **refuses** (exit 2, before any device is enumerated) to write an ISO whose
+> integrity it cannot establish, checking `<iso>.sha256` beside the image. That gate and the
+> rename above collided: the lookup is by **exact basename**, so renaming the artifact turned
+> `manifest-missing` into `iso-not-in-manifest` — the runbook would have PRODUCED the refusal.
+>
+> **Which gives: the lookup, narrowly — not the rename.** The rename is load-bearing and
+> deliberate. `cli.ts` stamps run id, date and **arch** into the cached filename because
+> `autoDiscoverIso` picks newest-by-mtime, so an untagged wrong-arch pull used to outrank every
+> correct older ISO and get flashed ("no bootable device" on the target board). Removing the
+> rename would trade a refusal for a wrong-arch write, which is worse.
+>
+> So the tolerance is scoped to the case where it costs nothing: a **per-ISO sidecar**
+> (`<iso>.sha256`) holding **exactly one** entry is bound to its file by its own path — there is
+> no second line to pick wrongly — and the digest is still compared byte-for-byte, so a renamed
+> *wrong* ISO cannot pass. A multi-entry manifest and a shared `SHA256SUMS` get **no** tolerance,
+> and a tolerated rename is **printed**, never swallowed. Falsifiers:
+> `src/Core.TypeScript/zflash/verify.test.ts` §8 and §8b.
+>
+> Practically: `zflash` copies the sidecar across for you on the auto-pull path. If you stage an
+> ISO by hand, carry `<iso>.sha256` with it and name it after the file as it lands on disk.
 >
 > Full pre-flight state, plus the operator-only checklist:
 > [`2026-08-16-first-metal-bringup-preflight.md`](2026-08-16-first-metal-bringup-preflight.md).
@@ -121,6 +149,14 @@ bun src/Core.TypeScript/zflash/cli.ts --agent 2>&1 | tail -100
   candidate remains, then re-run.
 - ISO not found → `~/Downloads/zeta-installer-*.iso` missing or wrong name; verify CP-1 succeeded —
   and see the CP-1 correction, the artifact is **not** named `zeta-installer-iso`
+- `ISO INTEGRITY NOT ESTABLISHED (manifest-missing)` → no `<iso>.sha256` beside the image. This is
+  a refusal, not a warning, and it happens **before** any device is enumerated. Fetch the
+  `.sha256` artifact from the same CI run as the ISO
+- `ISO INTEGRITY NOT ESTABLISHED (iso-not-in-manifest)` → the gate fell through to a **shared**
+  `~/Downloads/SHA256SUMS` owned by something else (measured: Bitcoin Knots, 28 filenames printed).
+  Supply the per-ISO sidecar; it is preferred over `SHA256SUMS`
+- `ISO INTEGRITY NOT ESTABLISHED (digest-mismatch)` → the bytes are not the bytes CI built.
+  Re-download before assuming it was a truncated transfer
 - Wrong architecture flashed (x86 target reports "no bootable device") → the iter-4.3 CI auto-pull
   selects the first `.iso` it walks with **no architecture filter**, and a run now holds both x86_64
   and aarch64. Pass the ISO path explicitly, or `--skip-iso-pull`.
@@ -337,6 +373,8 @@ iter-4.2: pubkey written; USB ejected. Safe to remove.
 | **R6** | Target PC BIOS doesn't recognize USB as bootable | Test on actual target; may need SecureBoot disable + USB-boot priority |
 | **R7** | Multi-Otto/Lior dotgit-saturation when downloading ISO | Have known-good ISO already in `~/Downloads/` (no fresh CI needed) |
 | **R8** | Wrong-passphrase boot-time fall-through loops | Per 081KSKBP80008QG0R003AX2A69.6 — 3 retries then fall-back to device-flow |
+| **R9** | ISO staged by hand without its `<iso>.sha256` sidecar | `zflash` refuses (exit 2) before enumerating devices. Fetch the `.sha256` artifact from the same run; see the 2026-08-21 block in CP-1 |
+| **R10** | A stray shared `~/Downloads/SHA256SUMS` from an unrelated project hijacks the lookup | Measured: a Bitcoin Knots manifest did exactly this. The per-ISO sidecar is preferred and cannot be hijacked; supplying it clears the refusal |
 
 ## Composes with
 

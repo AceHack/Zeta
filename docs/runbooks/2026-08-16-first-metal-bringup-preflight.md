@@ -134,6 +134,8 @@ correction there), so do not copy that path out of this document.
 
 - `zflash: local checkout matches origin/main on install substrate ✓`
 - `ISO: …zeta-installer-25.11-ci<run>-<date>-x86_64.iso` — and, because `~/Downloads` currently holds only arch-less ISOs, possibly first a line reading `zflash: WARNING no ISO here names arch x86_64; falling back to <path>, whose arch cannot be read.` **Read that warning.** If it appears and auto-pull did *not* then replace the pick, you are about to flash an eight-week-old June image
+- `ISO verified against …/<iso>.sha256` then `sha256 <64 hex>` — the integrity gate. It runs
+  **before** any device is enumerated and has no opt-out; if it refuses, no device was touched
 - `USB: /dev/diskN (…)` and a printed dump of what is on the stick now
 - `*** ALL DATA ON /dev/diskN WILL BE DESTROYED ***` and a challenge — you type `yes <nonce>`
 - **Touch ID prompt fires. Touch it.** This is the consent floor; no agent can satisfy it.
@@ -143,6 +145,23 @@ correction there), so do not copy that path out of this document.
 **Failure signatures:**
 
 - aborts at the freshness line → go back to A0
+- `ISO INTEGRITY NOT ESTABLISHED (manifest-missing)` → there is no `<iso>.sha256` beside the
+  image. Since 2026-08-21 `zflash` refuses (exit 2) rather than writing an ISO whose integrity it
+  cannot establish, and it refuses **before any device is enumerated**, so nothing was touched.
+  Fix: download the `<iso>.sha256` artifact from the **same CI run** as the ISO into the same
+  directory. `zflash`'s own auto-pull now carries the sidecar across for you; this signature means
+  you staged the ISO by hand, or the run predates the sidecar
+- `ISO INTEGRITY NOT ESTABLISHED (iso-not-in-manifest)` → the gate fell through to a **shared**
+  `~/Downloads/SHA256SUMS` that belongs to something else. Measured on this machine: the file there
+  belonged to **Bitcoin Knots**, and the refusal printed 28 bitcoin filenames. A well-known filename
+  in a shared download directory is a namespace collision, not a manifest. Fix: supply the per-ISO
+  `<iso>.sha256`; it is preferred over `SHA256SUMS` and this signature disappears
+- `ISO INTEGRITY NOT ESTABLISHED (digest-mismatch)` → the bytes on disk are **not** the bytes CI
+  built. A truncated download is the boring cause; treat it as the interesting one until you have
+  re-downloaded and it clears
+- `ISO verified against … NOTE the manifest records this image as …` → **not a failure.** Your
+  local copy was renamed (auto-pull stamps run/date/arch into the filename). The sidecar is bound to
+  the file by its own path and the digest still matched byte-for-byte
 - `no Zeta installer ISO found under ~/Downloads/zeta-installer-*.iso` → you dropped the path argument and the staged file was moved
 - Touch ID never prompts → `/etc/pam.d/sudo` lost its `pam_tid.so` line (a macOS update does this); re-run `bun src/Core.TypeScript/zflash/setup.ts --install-alias`
 - `Flash complete.` but no `pubkey written` → the ESP inject silently skipped; the node will come up **without** your SSH key and you will need the console password from A7
