@@ -9,7 +9,9 @@ import { describe, expect, it } from "bun:test";
 
 import {
   checkIdForWorkflow,
+  definitionSinceForPaths,
   expectationForWorkflow,
+  parseFirstAddDates,
   triggerClassForEvent,
   isConclusive,
   observationForRuns,
@@ -138,5 +140,81 @@ describe("triggerClassForEvent — only `schedule` counts as periodic", () => {
     // mapping were loose, that would read as "the cadence is alive".
     expect(triggerClassForEvent("pull_request")).not.toBe("periodic");
     expect(triggerClassForEvent("workflow_dispatch")).not.toBe("periodic");
+  });
+});
+
+// ───────────────────────────────────────────────────────────────────────────
+// A guard slower than the unsafe path selects for the unsafe path.
+//
+// This tool's first user timed out at 400s on the default and at 540s on
+// `--dop 8`, and went back to their hand-rolled scan — the identical dynamic that
+// killed `src/Core.TypeScript/search/grep.ts`, which was correct, existed for exactly
+// the incident it was meant to prevent, and produced no output in 300s.
+//
+// Measured with a counting shim on PATH: **73 `git` + 87 `gh` = 160 subprocesses per
+// pass**, with the 73 serialised in a phase that had no DoP knob at all. So the cost
+// shape gets falsifiers, not a promise in a comment.
+// ───────────────────────────────────────────────────────────────────────────
+
+describe("definition ages cost ONE subprocess, not one per check", () => {
+  it("issues exactly one git invocation for eighty paths", () => {
+    const calls: (readonly string[])[] = [];
+    const paths = Array.from({ length: 80 }, (_, i) => `.github/workflows/w${i}.yml`);
+    definitionSinceForPaths("/repo", paths, (args) => {
+      calls.push(args);
+      return "";
+    });
+    expect(calls).toHaveLength(1);
+  });
+
+  it("still issues exactly one for a single path — the count is O(1), not O(checks)", () => {
+    let n = 0;
+    definitionSinceForPaths("/repo", [".github/workflows/a.yml"], () => { n += 1; return ""; });
+    expect(n).toBe(1);
+  });
+
+  it("issues NO subprocess when there is nothing to ask about", () => {
+    let n = 0;
+    definitionSinceForPaths("/repo", [], () => { n += 1; return ""; });
+    expect(n).toBe(0);
+  });
+
+  it("asks git for the whole workflow directory, never for one file at a time", () => {
+    let args: readonly string[] = [];
+    definitionSinceForPaths("/repo", [".github/workflows/a.yml", ".github/workflows/b.yml"], (a) => { args = a; return ""; });
+    expect(args).toContain(".github/workflows/");
+    expect(args).not.toContain(".github/workflows/a.yml");
+  });
+
+  it("a failed git invocation yields no ages rather than throwing — unknown age declines to alarm", () => {
+    expect(definitionSinceForPaths("/repo", [".github/workflows/a.yml"], () => null).size).toBe(0);
+  });
+});
+
+describe("parseFirstAddDates — the OLDEST add wins, because git logs newest-first", () => {
+  const log = [
+    "C2026-08-21T20:18:00-04:00",
+    ".github/workflows/chart-version-refresh.yml",
+    ".github/workflows/other.yml",
+    "",
+    "C2026-04-18T17:19:36-04:00",
+    ".github/workflows/gate.yml",
+    ".github/workflows/other.yml",
+  ].join("\n");
+
+  it("maps each path to its earliest add", () => {
+    const m = parseFirstAddDates(log);
+    expect(m.get(".github/workflows/gate.yml")).toBe("2026-04-18T17:19:36-04:00");
+    expect(m.get(".github/workflows/chart-version-refresh.yml")).toBe("2026-08-21T20:18:00-04:00");
+  });
+
+  it("a path added twice reports the OLDER date — a later re-add must not reset its age", () => {
+    // Getting this backwards would make an established check look brand new, and a
+    // brand-new periodic check is `not-yet-due`: the alarm would silently switch off.
+    expect(parseFirstAddDates(log).get(".github/workflows/other.yml")).toBe("2026-04-18T17:19:36-04:00");
+  });
+
+  it("empty output yields no ages", () => {
+    expect(parseFirstAddDates("").size).toBe(0);
   });
 });

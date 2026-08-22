@@ -730,3 +730,40 @@ describe("a dark lane is red — a check that keeps being killed is not passing"
     expect(report.counts.green).toBe(0);
   });
 });
+
+describe("an empty roster is never OK — 0 of 0 must not render green", () => {
+  it("no checks known and no producer is NOT a pass", () => {
+    // Found 2026-08-22 while measuring the offline path on a fresh checkout: the
+    // report read `OK — RED 0 · UNKNOWN 0 · coverage 0/0 · green 0`. That is the exact
+    // vacuity this whole surface refuses, and the reason GitLabAdapter returns
+    // `not-supported` rather than an empty roster.
+    const report = foldDashboard({ roster: emptyRoster("main", NOW), observations: [], now: NOW });
+    expect(report.coverage.known).toBe(0);
+    expect(report.ok).toBe(false);
+    expect(headline(report)).toContain("uninitialised, not clean");
+  });
+
+  it("says the roster is empty rather than reporting zeroes that look like health", () => {
+    const h = headline(foldDashboard({ roster: emptyRoster("main", NOW), observations: [], now: NOW }));
+    expect(h).toContain("NOT OK");
+    expect(h).not.toContain("green 0");
+  });
+
+  it("one known and satisfied check IS ok — the guard is emptiness, not pessimism", () => {
+    const report = foldDashboard({
+      roster: rosterOf([def("only", { kind: "on-change", detail: "push" })]),
+      observations: [obs("only", { kind: "green" }, "2026-08-22T17:00:00.000Z")],
+      now: NOW,
+    });
+    expect(report.ok).toBe(true);
+  });
+
+  it("offline against a POPULATED roster is all-unknown and not ok — the correct offline answer", () => {
+    const defs = Array.from({ length: 66 }, (_, i) => def(`c${i}`, { kind: "on-change", detail: "push" }));
+    const report = foldDashboard({ roster: rosterOf(defs), observations: [], now: NOW });
+    expect(report.counts.unknown).toBe(66);
+    expect(report.counts.green).toBe(0);
+    expect(report.coverage.shortfall).toBe(66);
+    expect(report.ok).toBe(false);
+  });
+});

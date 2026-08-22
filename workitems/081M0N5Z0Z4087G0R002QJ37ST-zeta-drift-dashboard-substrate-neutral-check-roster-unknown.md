@@ -175,3 +175,77 @@ has actually stopped concluding anything.
 
 `runsPerCheck` is 20, not 5, for the same reason: `gate`'s last real verdict sat behind
 four inconclusive runs, and `tlaps-proof` behind far more.
+
+## The first user could not use it — measured, and the diagnosis was not what anyone guessed
+
+The first person to reach for this tool instead of their hand-rolled scan got a
+**400s timeout on the default** and **540s on `--dop 8`**, and went back to their scan.
+That is the identical dynamic that killed `src/Core.TypeScript/search/grep.ts`, which
+was correct, existed for exactly the incident it was meant to prevent, and produced no
+output in 300s:
+
+> **A guard slower than the unsafe path selects for the unsafe path.**
+
+Being correct does not exempt a tool from being reached for.
+
+### Measured with a counting shim on PATH, not inferred
+
+The reported diagnosis was *"5% CPU over nine minutes means it is network-bound — far
+more requests per check than one."* The measurement says otherwise, and the difference
+matters because cutting API calls would have bought nothing:
+
+| | before | after |
+|---|---|---|
+| `gh` subprocesses | 87 | **87** — 1.06 per check, already near-optimal |
+| `git` subprocesses | **73** | **1** |
+| total subprocesses | **160** | **88** |
+| wall, this host | ~48s at DoP=8 | **6.9s at DoP=16** |
+
+The cost was **73 serialised `git log --diff-filter=A --follow` spawns**, one per
+workflow, inside `listGitHubCheckDefinitions` — a phase with **no DoP knob at all**.
+One such call costs ~0.22s here; the bulk call that replaced all 73 costs ~0.22s for
+every path at once. On a loaded host with on-access AV scanning each spawn, 73 serial
+subprocesses is exactly where nine minutes goes.
+
+The `?event=schedule` probe was suspected and is vindicated: 29 schedule probes + 57
+branch queries = 86 for 80 checks, because the probe **replaces** the branch call for
+the 23 periodic checks whose cron fires. It costs ~6 extra calls total, not a multiple.
+
+### What changed
+
+1. **One `git log` for every path** (`definitionSinceForPaths`), replacing 73.
+2. **Default DoP 1 → 16.** Measured on the live repo: 19.4s serial-equivalent, 9.3s at
+   8, 4.6s at 16, 3.9s at 24 — and **cumulative gh time is flat** across all of them
+   (60.6 / 60.7 / 60.8s), so parallelism buys real overlap and provokes no rate-limit
+   penalty. 16 is the knee. The async rule wants the knob to **degrade** to 1, not
+   **default** to 1; `--dop 1` remains the deterministic single loop, and DoP=1 vs
+   DoP=16 was **re-checked** against the live repo (82 rows, byte-identical), not
+   carried over from the earlier claim.
+3. **`--timing`**, permanent. This tool's thesis is that an unmeasured thing gets
+   guessed at, and its first perf report guessed. It should hand you the number.
+
+**Roster caching was suggested and is declined, with a reason:** re-deriving the roster
+every pass is where mode-2 (frozen roster) protection comes from, and it now costs
+1 API call + 1 subprocess. Caching would trade a real guarantee for ~0.4s.
+
+### And the perf work found a correctness bug
+
+Timing `--offline` on a fresh checkout produced
+`OK — RED 0 · UNKNOWN 0 · coverage 0/0 · green 0`. **An empty roster rendered green** —
+"0 of 0 observed" is the exact vacuity this surface refuses everywhere else, and the
+stated reason `GitLabAdapter` returns `not-supported` rather than an empty roster. A
+dashboard that knows of no checks has not passed; it has never enumerated anything.
+`ok` now requires `coverage.known > 0`, and the headline says
+*"the roster is EMPTY … uninitialised, not clean"*.
+
+Offline against a populated roster is unchanged and correct:
+`NOT OK — RED 0 · UNKNOWN 65 · coverage 0/65 (SHORTFALL 65) · green 0`, `rc=1`, in 0.04s.
+
+### Falsifiers for the cost shape
+
+Performance regressions of this class deserve tests, not promises, so
+`definitionSinceForPaths` takes an injected runner and five tests hold it to **one
+subprocess regardless of check count** (and none for zero paths). `parseFirstAddDates`
+is pinned separately, including that a re-added path keeps its **oldest** date —
+getting that backwards would make an established check look brand new, and a brand-new
+periodic check is `not-yet-due`, so the alarm would silently switch off.

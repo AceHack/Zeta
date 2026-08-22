@@ -252,21 +252,77 @@ export function readFileOrNull(path: string): string | null {
 }
 
 /**
- * When did this workflow file first land? Read from the repository's own history —
- * the commit that ADDED the path.
+ * Parse `git log --diff-filter=A --name-only --format=C%aI` output into
+ * path → when the path was first added.
  *
- * This is what separates "a scheduled check that never fires" from "a scheduled check
- * added yesterday", and getting that wrong once, in the alarming direction, is what
- * put this function here.
+ * Pure, so the parse is testable without a repository, and separated from the spawn so
+ * the **one spawn** is a property a test can hold the implementation to.
+ *
+ * Commits arrive newest-first, so the LAST record naming a path is its earliest add;
+ * this simply overwrites and ends holding the oldest.
  */
-export function definitionSinceForPath(repoRoot: string, path: string): string | undefined {
-  const proc = Bun.spawnSync(
-    ["git", "-C", repoRoot, "log", "--diff-filter=A", "--follow", "--format=%aI", "--", path],
-    { stdout: "pipe", stderr: "pipe" },
-  );
-  if (proc.exitCode !== 0) return undefined;
-  const lines = new TextDecoder().decode(proc.stdout).trim().split("\n").filter((l) => l !== "");
-  return lines.at(-1);
+export function parseFirstAddDates(logOutput: string): ReadonlyMap<string, string> {
+  const out = new Map<string, string>();
+  let current: string | null = null;
+  for (const raw of logOutput.split("\n")) {
+    const line = raw.trim();
+    if (line === "") continue;
+    if (line.startsWith("C")) {
+      current = line.slice(1);
+      continue;
+    }
+    if (current !== null) out.set(line, current);
+  }
+  return out;
+}
+
+/**
+ * When did each workflow file first land? **ONE `git log`, for every path at once.**
+ *
+ * The shape of this function is the fix for a measured failure, so the measurement is
+ * recorded here rather than in a commit message nobody will find. The first version
+ * called `git log --diff-filter=A --follow` **once per workflow**, inside a phase with
+ * no degree-of-parallelism knob at all, via blocking `spawnSync`:
+ *
+ *   * measured with a counting shim on PATH: **73 `git` spawns + 87 `gh` spawns = 160
+ *     subprocesses per pass**;
+ *   * one `--follow` call costs ~0.22s here, so ~16s of pure serial subprocess time on
+ *     an idle machine — and the first user of this tool, on a loaded machine with
+ *     on-access AV scanning every spawn, **timed out at 540s and went back to their
+ *     hand-rolled scan**;
+ *   * the bulk call below costs **~0.22s for all 80 paths**.
+ *
+ * The lesson generalises past this function, and the sibling incident makes it a rule:
+ * `src/Core.TypeScript/search/grep.ts` was built for exactly the incident it was meant
+ * to prevent and failed because it was too slow to use. **A guard slower than the
+ * unsafe path selects for the unsafe path** — being correct does not exempt a tool
+ * from being reached for.
+ *
+ * **Honest limit:** the bulk form cannot use `--follow`, so a RENAMED workflow reports
+ * the rename date rather than its original creation. That biases `definitionSince`
+ * YOUNGER, which biases the verdict toward `not-yet-due` — the direction that declines
+ * to alarm. Given `not-yet-due` exists precisely because a false alarm gets the guard
+ * muted, trading rename fidelity for a usable tool is the right way round, and a
+ * renamed workflow re-earns its full age one period later.
+ */
+export type GitLogRunner = (args: readonly string[]) => string | null;
+
+const spawnGitLog: GitLogRunner = (args) => {
+  const proc = Bun.spawnSync(["git", ...args], { stdout: "pipe", stderr: "pipe" });
+  return proc.exitCode === 0 ? new TextDecoder().decode(proc.stdout) : null;
+};
+
+export function definitionSinceForPaths(
+  repoRoot: string,
+  paths: readonly string[],
+  // Injected so a test can COUNT the spawns. "One subprocess regardless of check
+  // count" is the property that was violated; a property that matters is one a test
+  // holds you to, not one a comment claims.
+  run: GitLogRunner = spawnGitLog,
+): ReadonlyMap<string, string> {
+  if (paths.length === 0) return new Map();
+  const out = run(["-C", repoRoot, "log", "--diff-filter=A", "--name-only", "--format=C%aI", "--", ".github/workflows/"]);
+  return out === null ? new Map() : parseFirstAddDates(out);
 }
 
 export async function listGitHubCheckDefinitions(
@@ -285,6 +341,9 @@ export async function listGitHubCheckDefinitions(
     if (workflows.length >= res.value.total_count || res.value.workflows.length === 0) break;
   }
 
+  // ONE git log for every path, before the map — not one per workflow inside it.
+  const firstAdds = definitionSinceForPaths(options.repoRoot, workflows.map((w) => w.path));
+
   const definitions = workflows
     .filter((w) => w.state === "active")
     .map((w): CheckDefinition => {
@@ -295,7 +354,7 @@ export async function listGitHubCheckDefinitions(
       // `registered-but-absent` verdict — so it must come from the read itself.
       const source = readFileOrNull(abs);
       const expectation = expectationForWorkflow(w.path, source, ref);
-      const definitionSince = source === null ? undefined : definitionSinceForPath(options.repoRoot, w.path);
+      const definitionSince = source === null ? undefined : firstAdds.get(w.path);
       return {
         checkId: checkIdForWorkflow(w.path),
         displayName: w.name,

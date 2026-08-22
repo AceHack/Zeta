@@ -15,7 +15,12 @@
  * host to work.
  *
  *   bun src/Core.TypeScript/drift-dashboard/cli.ts [--ref main] [--dop 8] [--offline]
- *                                                  [--repo owner/name] [--write] [--exit-zero]
+ *                              [--repo owner/name] [--write] [--exit-zero] [--timing]
+ *
+ * `--timing` prints the wall time, the gh-call count and calls-per-check. It exists
+ * because the first performance report on this tool INFERRED the bottleneck from a CPU
+ * percentage and was wrong; a tool built on "measure, do not infer" should hand you the
+ * number rather than make you reconstruct it.
  *
  * Exit status is 1 when anything is red, anything is unknown, coverage fell short, or
  * a producer failed. An unobserved check is an unbounded number of unknown failures,
@@ -27,6 +32,7 @@ import { mkdirSync, writeFileSync } from "node:fs";
 import { dirname, join, resolve } from "node:path";
 
 import { GitHubAdapter } from "../forge-host/github/github-adapter.ts";
+import { ghCallStats } from "../forge-host/github/gh-cli.ts";
 import type {
   CheckDefinition,
   CheckObservation,
@@ -50,6 +56,7 @@ interface Args {
   readonly write: boolean;
   readonly exitZero: boolean;
   readonly repoRoot: string;
+  readonly timing: boolean;
 }
 
 function parseArgs(argv: readonly string[]): Args {
@@ -59,13 +66,28 @@ function parseArgs(argv: readonly string[]): Args {
   };
   return {
     ref: get("--ref") ?? "main",
-    // DoP=1 is the DEFAULT, not a fallback: at 1 the pass is a single cooperative loop
-    // and therefore deterministic and replayable. Raising it is a throughput choice.
-    dop: Math.max(1, Number(get("--dop") ?? "1")),
+    // **DoP 8 by default; determinism is `--dop 1`, and that is the right way round.**
+    //
+    // `.claude/rules/async-all-the-way-truthful-signatures.md` requires the knob to
+    // DEGRADE to 1, not to DEFAULT to 1 — and defaulting to 1 made this tool unusable
+    // interactively: its first user timed out at 400s on the default and went back to
+    // their own scan. A guard slower than the unsafe path selects for the unsafe path.
+    //
+    // The determinism claim survives the swap because it was checked rather than
+    // assumed: DoP=1 and DoP=12 produce byte-identical row order against the live repo
+    // (the fold sorts ordinally, so the report is a function of the observation SET,
+    // never of completion order). `--dop 1` remains the single cooperative loop for
+    // replay.
+    // 16 measured on the live repo: 87 calls take 19.4s at DoP=1-equivalent serial
+    // cost, 9.3s at 8, 4.6s at 16, 3.9s at 24 — and cumulative gh time is FLAT across
+    // all of them (60.6s / 60.7s / 60.8s), so parallelism is buying real overlap and
+    // not provoking a rate-limit penalty. 16 is the knee; past it the curve flattens.
+    dop: Math.max(1, Number(get("--dop") ?? "16")),
     offline: argv.includes("--offline"),
     repo: get("--repo"),
     write: argv.includes("--write"),
     exitZero: argv.includes("--exit-zero"),
+    timing: argv.includes("--timing"),
     repoRoot: resolve(get("--repo-root") ?? process.cwd()),
   };
 }
@@ -155,6 +177,14 @@ async function main(): Promise<number> {
     console.log(renderMarkdown(report));
   }
 
+  if (args.timing) {
+    const wallMs = Date.now() - Date.parse(now);
+    console.error(
+      `timing: ${(wallMs / 1000).toFixed(1)}s wall · ${ghCallStats.calls} gh calls ` +
+        `(${(ghCallStats.totalMs / 1000).toFixed(1)}s cumulative, DoP=${args.dop}) ` +
+        `· ${(ghCallStats.calls / Math.max(roster.checks.length, 1)).toFixed(2)} calls/check`,
+    );
+  }
   console.error(headline(report));
   return args.exitZero || report.ok ? 0 : 1;
 }

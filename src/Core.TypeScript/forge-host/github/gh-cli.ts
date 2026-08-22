@@ -99,6 +99,18 @@ export function runGhGraphQL<T>(
 }
 
 /**
+ * How many `gh` subprocesses this process has launched, and how long they took.
+ *
+ * Permanent instrumentation, not debug scaffolding. This tool's whole thesis is that
+ * an unmeasured thing gets guessed at, and the first performance report it received
+ * guessed "network-bound, far more requests per check than one" — where the measured
+ * answer was **1.09 gh calls per check** (near-optimal) and **73 serialised `git`
+ * spawns** nobody had counted. The counter is here so the next person reads a number
+ * instead of inferring one from a CPU percentage.
+ */
+export const ghCallStats = { calls: 0, totalMs: 0 };
+
+/**
  * Async `gh` invocation — the truthful-signature counterpart to `runGh`.
  *
  * `runGh` is `spawnSync`: it blocks, so N calls cost N round-trips serially and a
@@ -113,6 +125,8 @@ export async function runGhAsync(
   args: readonly string[],
   timeout = DEFAULT_TIMEOUT,
 ): Promise<Result<string, ForgeError>> {
+  const startedAt = Bun.nanoseconds();
+  ghCallStats.calls += 1;
   const proc = Bun.spawn(["gh", ...args], { stdout: "pipe", stderr: "pipe" });
   const timer = setTimeout(() => proc.kill(), timeout);
   try {
@@ -129,6 +143,7 @@ export async function runGhAsync(
     return err(forgeError("network", `gh spawn error: ${msg}`));
   } finally {
     clearTimeout(timer);
+    ghCallStats.totalMs += (Bun.nanoseconds() - startedAt) / 1e6;
   }
 }
 

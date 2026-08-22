@@ -526,6 +526,14 @@ export function foldDashboard(input: FoldInput): DashboardReport {
     : unknownRows.reduce<number | null>((max, r) => (r.silenceSeconds !== null && (max === null || r.silenceSeconds > max) ? r.silenceSeconds : max), null);
 
   const shortfall = expected - observedExpected;
+  const coverage: Coverage = {
+    expected,
+    observed: observedExpected,
+    shortfall,
+    onDemand,
+    retired,
+    known: expected + onDemand,
+  };
   const sourceErrors = [...(input.sourceErrors ?? [])].sort(ordinal);
   const sources = [...new Set(rows.map((r) => r.source))].sort(ordinal);
 
@@ -534,19 +542,20 @@ export function foldDashboard(input: FoldInput): DashboardReport {
     at: now,
     rows,
     counts,
-    coverage: {
-      expected,
-      observed: observedExpected,
-      shortfall,
-      onDemand,
-      retired,
-      known: expected + onDemand,
-    },
+    coverage,
     oldestUnknownSilenceSeconds,
     hasNeverObserved,
     sources,
     sourceErrors,
+    // **An empty roster is never OK.** Caught 2026-08-22 while measuring the offline
+    // path: with no producer AND no persisted roster the report read
+    // `OK — RED 0 · UNKNOWN 0 · coverage 0/0 · green 0`. That is "0 of 0 observed
+    // renders green" — the exact vacuity this file refuses everywhere else, and the
+    // reason `GitLabAdapter` returns `not-supported` rather than an empty roster.
+    // A dashboard that knows of no checks has not passed; it has never successfully
+    // enumerated anything, and saying so is the whole discipline.
     ok:
+      coverage.known > 0 &&
       counts.red === 0 &&
       counts.unknown === 0 &&
       shortfall === 0 &&
@@ -604,6 +613,9 @@ export function headline(report: DashboardReport): string {
     : report.oldestUnknownSilenceSeconds === null
       ? ""
       : `, oldest silence ${humanDuration(report.oldestUnknownSilenceSeconds)}`;
+  if (cov.known === 0) {
+    return "NOT OK — the roster is EMPTY: no check has ever been enumerated, so this dashboard is uninitialised, not clean";
+  }
   const parts = [
     `RED ${c.red}`,
     `UNKNOWN ${c.unknown}${silence}`,
