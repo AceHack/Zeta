@@ -314,7 +314,19 @@ export function enumerateUniverse(root: string): readonly string[] {
     encoding: "utf8",
     maxBuffer: 256 * 1024 * 1024,
   });
-  const files = out.split("\n").filter((l) => l.length > 0);
+  return universeFromFileList(out.split("\n").filter((l) => l.length > 0));
+}
+
+/**
+ * The frame predicate, factored out of `enumerateUniverse` so it can be applied to a file list
+ * obtained some other way — specifically `git ls-tree -r <sha>` for a HISTORICAL commit, which is
+ * what `rho-series.ts` needs and what `git ls-files` (working-tree only) cannot give.
+ *
+ * `enumerateUniverse` is now exactly `universeFromFileList(git ls-files)`, so the time series and
+ * the shipped measurement share one definition of the universe by construction rather than by a
+ * comment asking you to believe they match.
+ */
+export function universeFromFileList(files: readonly string[]): readonly string[] {
   const tracked = new Set(files);
   return files
     .filter((p) => p.endsWith(".ts") && !p.endsWith(".test.ts") && !p.endsWith(".d.ts"))
@@ -330,7 +342,16 @@ export function frameCommit(root: string): string {
 
 export function readFindings(root: string, agent: string): readonly Finding[] {
   const path = join(root, "db", "mutation-findings", `${agent}.jsonl`);
-  return readFileSync(path, "utf8")
+  return parseFindings(readFileSync(path, "utf8"));
+}
+
+/**
+ * Parse one agent's JSONL corpus from TEXT. Factored out of `readFindings` for the same reason as
+ * `universeFromFileList`: the historical series reads the corpus from `git show <sha>:<path>`, not
+ * from the working tree, and must parse it with the shipped parser rather than a lookalike.
+ */
+export function parseFindings(text: string): readonly Finding[] {
+  return text
     .split("\n")
     .filter((l) => l.trim().length > 0)
     .map((l) => JSON.parse(l) as Finding);
