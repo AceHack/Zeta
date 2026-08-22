@@ -24,6 +24,7 @@ import {
   findAllSignatureBlocks,
   findSignatureBlock,
   missingRequiredKeys,
+  normalizeLineEndings,
   validateBlock,
   validateText,
 } from "./agencysignature-block.ts";
@@ -181,6 +182,23 @@ describe("PARITY: the pre-merge gate and the post-merge auditor cannot disagree"
     // the table itself discriminates.
     expect(PARITY_CASES.some((c) => c.valid)).toBe(true);
     expect(PARITY_CASES.some((c) => !c.valid)).toBe(true);
+  });
+});
+
+describe("transport line endings are not AgencySignature values", () => {
+  test("browser-style CRLF metadata remains a valid canonical block", () => {
+    const crlf = block().replace(/\n/g, "\r\n");
+    expect(normalizeLineEndings(crlf)).toBe(block());
+    expect(validateText(`## Summary\r\n\r\nWork.\r\n\r\n${crlf}\r\n`).violations).toEqual([]);
+    expect(preMergeAccepts(`## Summary\r\n\r\nWork.\r\n\r\n${crlf}\r\n`)).toBe(true);
+    expect(postMergeAccepts(crlf)).toBe(true);
+  });
+
+  test("FALSIFIER: CRLF normalization does not admit an invalid enum", () => {
+    const crlfInvalid = block({ "Action-Mode": "autonomous" }).replace(/\n/g, "\r\n");
+    const violation = validateText(crlfInvalid).violations[0];
+    expect(violation?.code).toBe("invalid-enum");
+    expect(violation?.key).toBe("Action-Mode");
   });
 });
 

@@ -149,6 +149,16 @@ const TASK_RE = new RegExp(
 );
 const MISSPELLED_VERSION_RE = /^Agent-Signature-Version:\s*\d/im;
 
+/**
+ * Normalize the transport-level line ending before parsing semantic trailers.
+ * Browser form submission may carry CRLF while GitHub API callers ordinarily
+ * carry LF. The distinction is transport encoding, not AgencySignature value
+ * data; preserving a trailing `\r` turns valid enum `1` into invalid `1\r`.
+ */
+export function normalizeLineEndings(text: string): string {
+  return text.replace(/\r\n?/g, "\n");
+}
+
 /** True when the misspelled `Agent-Signature-Version` key appears anywhere. */
 export function hasMisspelledVersionKey(text: string): boolean {
   return MISSPELLED_VERSION_RE.test(text);
@@ -178,7 +188,7 @@ function trimSpaceTab(s: string): string {
 /** The value of `key` in a newline-joined run of trailer lines, or `""`. */
 export function blockValue(blockText: string, key: string): string {
   const prefix = `${key.toLowerCase()}:`;
-  for (const line of blockText.split("\n")) {
+  for (const line of normalizeLineEndings(blockText).split("\n")) {
     if (!line.toLowerCase().startsWith(prefix)) continue;
     const idx = line.indexOf(":");
     if (idx < 0) continue;
@@ -189,7 +199,7 @@ export function blockValue(blockText: string, key: string): string {
 
 /** Required keys absent from a newline-joined run of trailer lines. */
 export function missingRequiredKeys(blockText: string): readonly string[] {
-  const lines = blockText.split("\n");
+  const lines = normalizeLineEndings(blockText).split("\n");
   return REQUIRED_KEYS.filter((key) => {
     const prefix = `${key.toLowerCase()}:`;
     return !lines.some((l) => l.toLowerCase().startsWith(prefix));
@@ -258,7 +268,7 @@ export function findSignatureBlock(text: string): readonly string[] | null {
  * exist at all.
  */
 export function findAllSignatureBlocks(text: string): readonly (readonly string[])[] {
-  const lines = text.split("\n");
+  const lines = normalizeLineEndings(text).split("\n");
   const found: (readonly string[])[] = [];
   let i = 0;
   while (i < lines.length) {
@@ -539,7 +549,9 @@ function validateV2(blockText: string): Violation | null {
 
   const missing = V2_REQUIRED_EXTRA.filter((key) => {
     const prefix = `${key.toLowerCase()}:`;
-    return !blockText.split("\n").some((l) => l.toLowerCase().startsWith(prefix));
+    return !normalizeLineEndings(blockText)
+      .split("\n")
+      .some((l) => l.toLowerCase().startsWith(prefix));
   });
   if (missing.length > 0) {
     return {
