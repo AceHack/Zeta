@@ -1090,6 +1090,23 @@ jobs:
           fi
           bun src/Core.TypeScript/observe/phase-history-cli.ts --summary 2>&1 || true
 
+      - name: Record CI drift + report trend
+        env:
+          AGENT: ${{ matrix.agent }}
+        run: |
+          # All agents record their own tick outcome — builds the denominator
+          # for per-workflow drift measurement over time.
+          bun src/Core.TypeScript/observe/drift-rate-cli.ts \
+            --record --workflow "heartbeat-$AGENT" --conclusion success 2>&1 || true
+
+          # Only otto reports the aggregate drift trend (one output per tick)
+          if [ "$AGENT" = "otto" ]; then
+            bun src/Core.TypeScript/observe/drift-rate-cli.ts --report 2>&1 || true
+          fi
+
+          # Stage the ci-runs.jsonl if it changed
+          git add data/ci-runs.jsonl 2>/dev/null || true
+
       - name: Push heartbeat branch
         env:
           AGENT: ${{ matrix.agent }}
