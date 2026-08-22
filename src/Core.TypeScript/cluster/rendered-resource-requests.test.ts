@@ -536,7 +536,10 @@ describe("eight mutations against the live validators", () => {
     // the recorded axis past a machine that matches the live record is the
     // same defect class: a claimed machine larger than the one that exists.
     const recorded = loadRecordedEnvelope();
-    expect(recorded.freeDiskGib).toBe(70);
+    // The declared envelope is the portable published runner bound. A distinct
+    // measured observation is stored as evidence, rather than silently raising
+    // this planning input.
+    expect(recorded.freeDiskGib).toBe(14);
     const measured = {
       cpuMillis: recorded.cpuMillis,
       memoryMib: recorded.memoryMib,

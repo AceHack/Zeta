@@ -992,52 +992,17 @@ jobs:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
-      - name: Cache install.sh outputs (mise runtimes + dotnet tools + verifier jars)
-        # Comprehensive cache — see lint-shell job above for the
-        # rationale (maintainer dev-CI parity input +
-        # transient 502 prevention). Same cache key shape so all
-        # lint jobs share the cache when toolchain unchanged.
-        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+      # This job executes lockfile-managed JavaScript plus tracked hygiene
+      # tests only. The 553 MB workstation/cluster apt manifest timed out on a
+      # live heartbeat PR before this guard ran; setup-bun + bun.lock is the
+      # declared minimal boundary, while full setup remains for toolchain jobs.
+      - name: Setup pinned Bun
+        uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
         with:
-          path: |
-            ~/.local/bin/mise
-            ~/.local/share/mise
-            ~/.cache/mise
-            ~/.dotnet/tools
-            ~/.elan
-            ~/.config/zeta
-            ~/.rustup/toolchains/1.87.0-*
-            ~/.rustup/settings.toml
-            ~/.rustup/update-hashes
-            ~/.cargo
-            ~/.cache/zeta/from-autotools-tarball/*.tgz
-          key: install-v2-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('.mise.toml', 'tools/setup/**', 'global.json') }}
+          bun-version: "1.3.13"
 
-      - name: Install toolchain via three-way-parity script (GOVERNANCE §24)
-        # Provides bun via mise's pin in .mise.toml. The inventory guard is
-        # intentionally separate from shellcheck: shellcheck validates the
-        # retained setup scripts, while this job fails any new non-allowlisted
-        # tracked `.sh` surface before it reaches main.
-        # See lint-shell job above for retry rationale.
-        run: |
-          set -euo pipefail
-          for attempt in 1 2 3 4 5; do
-            if ./tools/setup/install.sh; then exit 0; fi
-            [ "$attempt" = "5" ] && { echo "install.sh failed after 5 attempts"; exit 1; }
-            # Backoff: 10s, 30s, 60s, 120s — covers transient CDN
-            # blips from short-burst-and-recover up to multi-minute
-            # outages. The retry budget is five attempts because prior
-            # bun CDN 502s exhausted mise-internal retries plus a
-            # three-attempt wrapper.
-            case "$attempt" in
-              1) backoff=10 ;;
-              2) backoff=30 ;;
-              3) backoff=60 ;;
-              4) backoff=120 ;;
-            esac
-            echo "install.sh attempt $attempt failed; retrying in ${backoff}s..." >&2
-            sleep "$backoff"
-          done
+      - name: Install JavaScript dependencies from the locked graph
+        run: bun install --frozen-lockfile
 
       - name: Run bash-retirement inventory guard
         run: bun run hygiene:check-bash-retirement-inventory
@@ -1200,30 +1165,17 @@ jobs:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
-      - name: Cache install.sh outputs (mise runtimes + dotnet tools + verifier jars)
-        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+      # This order check reads one tracked Markdown file and runs one tracked
+      # TypeScript script. It does not consume any host or cluster toolchain;
+      # use the package-pinned Bun path so apt mirror stalls cannot suppress the
+      # ordering verdict.
+      - name: Setup pinned Bun
+        uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
         with:
-          path: |
-            ~/.local/bin/mise
-            ~/.local/share/mise
-            ~/.cache/mise
-            ~/.dotnet/tools
-            ~/.elan
-            ~/.config/zeta
-            ~/.rustup/toolchains/1.87.0-*
-            ~/.rustup/settings.toml
-            ~/.rustup/update-hashes
-            ~/.cargo
-            ~/.cache/zeta/from-autotools-tarball/*.tgz
-          key: install-v2-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('.mise.toml', 'tools/setup/**', 'global.json') }}
+          bun-version: "1.3.13"
 
-      - name: Install toolchain via three-way-parity script (GOVERNANCE §24)
-        # Provides bun via mise's pin in .mise.toml. Same pattern as
-        # memory-index-duplicate-lint.yml (#1377) +
-        # memory-reference-existence-lint.yml (#1378). shellenv.sh
-        # wires BASH_ENV so subsequent run: steps auto-source the
-        # managed shellenv with bun on PATH.
-        run: ./tools/setup/install.sh
+      - name: Install JavaScript dependencies from the locked graph
+        run: bun install --frozen-lockfile
 
       - name: Run check-tick-history-order
         run: bun src/Core.TypeScript/hygiene/check-tick-history-order.ts
@@ -2231,41 +2183,17 @@ jobs:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
-      - name: Cache install.sh outputs (mise runtimes + dotnet tools + verifier jars)
-        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+      # The hermetic tier is deliberately JavaScript-first. Its explicit SMT
+      # binary realizer remains below; the full apt/mise workstation graph is
+      # not an input to this suite and repeatedly consumed the job budget before
+      # any hermetic assertion ran.
+      - name: Setup pinned Bun
+        uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
         with:
-          path: |
-            ~/.local/bin/mise
-            ~/.local/share/mise
-            ~/.cache/mise
-            ~/.dotnet/tools
-            ~/.elan
-            ~/.config/zeta
-            ~/.rustup/toolchains/1.87.0-*
-            ~/.rustup/settings.toml
-            ~/.rustup/update-hashes
-            ~/.cargo
-            ~/.cache/zeta/from-autotools-tarball/*.tgz
-          key: install-v2-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('.mise.toml', 'tools/setup/**', 'global.json') }}
+          bun-version: "1.3.13"
 
-      - name: Install toolchain via three-way-parity script (GOVERNANCE §24)
-        # Provides bun via mise's `bun = "1.3"` pin in .mise.toml.
-        # See lint-shell job above for retry rationale (Aaron 2026-04-28
-        # PR #23 mise+bun-1.3.13 502).
-        run: |
-          set -euo pipefail
-          for attempt in 1 2 3 4 5; do
-            if ./tools/setup/install.sh; then exit 0; fi
-            [ "$attempt" = "5" ] && { echo "install.sh failed after 5 attempts"; exit 1; }
-            case "$attempt" in
-              1) backoff=10 ;;
-              2) backoff=30 ;;
-              3) backoff=60 ;;
-              4) backoff=120 ;;
-            esac
-            echo "install.sh attempt $attempt failed; retrying in ${backoff}s..." >&2
-            sleep "$backoff"
-          done
+      - name: Install JavaScript dependencies from the locked graph
+        run: bun install --frozen-lockfile
 
       # NO `uv sync` STEP HERE, ON PURPOSE. It provisioned the gitignored Q# venv at
       # src/Core.Python/.venv for cross-verify-ir, which is the single largest reason a
@@ -2274,11 +2202,12 @@ jobs:
       # full-verify, which is in the required floor. A tier whose green depends on a venv
       # the reader has never created cannot be the tier whose red means a regression.
 
-      - name: Install npm devDependencies
+      - name: Verify npm devDependencies are installed
         # Several suites import devDependencies directly (z3-solver among them) and
         # assert-dont-skip when the dep is absent, so a missing install reads as a real
-        # failure rather than a skip. --frozen-lockfile matches the other bun jobs.
-        run: bun install --frozen-lockfile
+        # failure rather than a skip. The preceding frozen-lockfile install is the
+        # sole dependency realization for this narrow job.
+        run: test -d node_modules
 
       - name: Pin z3 4.16.0 and cvc5 1.3.4 (081KZZ27KJ8)
         # apt on ubuntu-24.04 is z3 4.8.12 / cvc5 1.1.2; two SMT certificates

@@ -17,6 +17,7 @@ import { evaluateGrid } from "../arc-solver/grid-evaluator";
 import { CelegansController, loadFromCsv } from "../chip8/celegans-controller";
 import { BnnSocietyPredictor } from "../bayesian/bnn-key-predictor";
 import { cooperate } from "../tri-boolean/tri-boolean";
+import { readKnownSignatures } from "./swarm-known-signatures";
 import * as path from "path";
 
 import { HardwareRegistry } from "../discovery/hardware-registry";
@@ -158,22 +159,13 @@ Output a JSON array of tool calls you wish to execute. Example: [{"tool": "setWo
 
         // Persist signature to known-signatures.json
         const sigFile = path.join(__dirname, "known-signatures.json");
-        // ONE syscall, ONE answer. An `existsSync` gate in front of the read is a
-        // check-then-use race: the path can be created, deleted or replaced between
-        // the two calls, so the answer the check returned is already stale by the
-        // time the read runs. It reads as defensive and prevents nothing -- the read
-        // still has to be able to fail, so let it, and interpret the failure.
-        // Refused by src/Core.TypeScript/hygiene/lint-check-then-use-file-races.ts.
-        let known: string[] = [];
-        try {
-          known = JSON.parse(fs.readFileSync(sigFile, "utf-8"));
-        } catch (e) {
-          // A missing file is the ordinary first-run case and means "none known".
-          // Anything else -- unreadable, malformed JSON -- is a real fault and is
-          // NOT swallowed: silently starting from [] there would quietly discard
-          // every signature already on disk and rewrite the file with one entry.
-          if ((e as NodeJS.ErrnoException).code !== "ENOENT") throw e;
-        }
+        // One read, one answer: a separate existsSync gate is a check-then-use
+        // race. The shared reader treats only ENOENT as first-run empty history;
+        // unreadable or malformed persistence remains visible evidence.
+        const known = readKnownSignatures(
+          (filePath) => fs.readFileSync(filePath, "utf-8"),
+          sigFile,
+        );
         if (!known.includes(sig)) {
           known.push(sig);
           fs.writeFileSync(sigFile, JSON.stringify(known, null, 2));

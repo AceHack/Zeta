@@ -277,17 +277,13 @@ describe("the real tree", () => {
     // if someone later reads the lane count and assumes components produced it.
   });
 
-  test("all applications together do NOT fit one runner — CPU is what blows, not disk", () => {
-    // leftover-on-main #13784 measured the runner at 77 GiB free and declared
-    // 70. The 14 GiB vendor figure made this assertion look like
-    // `74.54 > 330` (budget disk 10 * 5). Against 70 the same 74.54 GiB is
-    // 1.13x a 66 GiB budget (70 - 4 reserved). CPU is 6166m against 2500m —
-    // 2.47x. Sharding is still the only route; the binding axis inverted.
-    // Pinning 70 and 74.54 makes a silent revert to 14 fail this test rather
-    // than look like the old 5x thesis coming back.
-    expect(model.catalogue.envelope.freeDiskGib).toBe(70);
+  test("all applications together do NOT fit the declared runner bound", () => {
+    // The lane model intentionally prices against the published 14 GiB bound,
+    // not a larger point measurement. The measured 77 GiB observation remains
+    // evidence about one runner and must not silently reprice every lane.
+    expect(model.catalogue.envelope.freeDiskGib).toBe(14);
     const budget = budgetOf(model.catalogue.envelope, 1);
-    expect(budget.diskGib).toBe(66);
+    expect(budget.diskGib).toBe(10);
     const all = priceSet(model, model.roster.map((r) => r.name));
     expect(all.diskGib).toBeCloseTo(74.54, 2);
     expect(all.cpuMillis).toBeGreaterThan(budget.cpuMillis);
@@ -296,8 +292,8 @@ describe("the real tree", () => {
     const cpuRatio = all.cpuMillis / budget.cpuMillis;
     expect(cpuRatio).toBeGreaterThan(2);
     expect(diskRatio).toBeGreaterThan(1);
-    expect(diskRatio).toBeLessThan(2);
-    expect(cpuRatio).toBeGreaterThan(diskRatio);
+    expect(diskRatio).toBeGreaterThan(7);
+    expect(diskRatio).toBeGreaterThan(cpuRatio);
   });
 
   test("every real lane fits the real budget on all three axes", () => {
@@ -331,32 +327,30 @@ describe("the real tree", () => {
     // "test every chart" is only true if nothing falls between the buckets.
   });
 
-  test("hindsight and vllm FIT the 70-world budget — oversize is empty", () => {
-    // Against 14 GiB they were the self-hosted case (~23 GiB each vs ~10 GiB
-    // usable). Against 70 they fit a 56.1 GiB 0.85-margin budget and pack
-    // into a lane. Claiming they are still oversize would paper 70 to look
-    // like 14.
+  test("hindsight and vllm exceed the declared runner bound and remain quarantined", () => {
+    // A larger observed runner can hold these images, but the declared 14 GiB
+    // envelope intentionally remains the portable lane-planning constraint.
     const p = packLanes(model, { margin: 0.85 });
-    expect(p.budget.diskGib).toBeCloseTo(56.1, 1);
-    expect(p.oversize.map((q) => q.name)).toEqual([]);
+    expect(p.budget.diskGib).toBeCloseTo(8.5, 1);
+    expect(p.oversize.map((q) => q.name).sort()).toEqual(["hindsight", "vllm"]);
     const hindsight = priceSet(model, ["hindsight"]);
     const vllm = priceSet(model, ["vllm"]);
     expect(hindsight.diskGib).toBeCloseTo(22.49, 1);
     expect(vllm.diskGib).toBeCloseTo(22.65, 1);
-    expect(hindsight.diskGib).toBeLessThan(p.budget.diskGib);
-    expect(vllm.diskGib).toBeLessThan(p.budget.diskGib);
+    expect(hindsight.diskGib).toBeGreaterThan(p.budget.diskGib);
+    expect(vllm.diskGib).toBeGreaterThan(p.budget.diskGib);
     const assigned = new Set(p.lanes.flatMap((l) => l.assigned));
-    expect(assigned.has("hindsight")).toBe(true);
-    expect(assigned.has("vllm")).toBe(true);
+    expect(assigned.has("hindsight")).toBe(false);
+    expect(assigned.has("vllm")).toBe(false);
   });
 
-  test("dropping intent edges DOES change the partition — hindsight/vllm now pack", () => {
-    // In the 14-world those two were oversize, so intent edges never reached
-    // the packer. In the 70-world they land in a lane, and dropping intent
-    // edges moves membership. The closure still grows when intent is kept.
+  test("at the declared runner bound, intent edges change closure but not the oversize-excluded partition", () => {
+    // The intent edge still enlarges hindsight's closure. It cannot move lane
+    // membership while hindsight is quarantined as oversize under the declared
+    // 14 GiB runner bound.
     const withIntent = packLanes(buildModel({ repoRoot: REPO_ROOT, rung: "dev" }), { margin: 0.85 });
     const without = packLanes(buildModel({ repoRoot: REPO_ROOT, rung: "dev", dropIntentEdges: true }), { margin: 0.85 });
-    expect(without.lanes.map((l) => l.members.join(","))).not.toEqual(withIntent.lanes.map((l) => l.members.join(",")));
+    expect(without.lanes.map((l) => l.members.join(","))).toEqual(withIntent.lanes.map((l) => l.members.join(",")));
     expect(without.coveredApplications).toBe(withIntent.coveredApplications);
     const closureWith = priceSet(buildModel({ repoRoot: REPO_ROOT }), closureOf(buildModel({ repoRoot: REPO_ROOT }), "hindsight"));
     const mNo = buildModel({ repoRoot: REPO_ROOT, dropIntentEdges: true });
