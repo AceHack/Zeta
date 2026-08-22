@@ -11,8 +11,9 @@
  * Exit 0 = all confirmed. Exit 1 = some still pending.
  */
 
-import { readFileSync, existsSync } from "node:fs";
 import { join } from "node:path";
+
+import { readOptionalText } from "./read-optional-text";
 
 const repoRoot = process.cwd();
 let issues = 0;
@@ -25,8 +26,9 @@ function check(name: string, ok: boolean, detail: string): void {
 
 // 1. Drift-rate accumulating
 const ciRunsPath = join(repoRoot, "data", "ci-runs.jsonl");
-if (existsSync(ciRunsPath)) {
-  const lines = readFileSync(ciRunsPath, "utf-8").trim().split("\n").filter((l) => l);
+const ciRunsText = readOptionalText(ciRunsPath);
+if (ciRunsText !== null) {
+  const lines = ciRunsText.trim().split("\n").filter((l) => l);
   check("Drift-rate", lines.length > 0, `${lines.length} run(s) recorded`);
 } else {
   check("Drift-rate", false, "data/ci-runs.jsonl does not exist yet — wait for next heartbeat tick");
@@ -34,8 +36,9 @@ if (existsSync(ciRunsPath)) {
 
 // 2. RS blocks with real phase ranges
 const rsBlocksPath = join(repoRoot, "data", "rs-blocks.jsonl");
-if (existsSync(rsBlocksPath)) {
-  const lines = readFileSync(rsBlocksPath, "utf-8").trim().split("\n").filter((l) => l);
+const rsBlocksText = readOptionalText(rsBlocksPath);
+if (rsBlocksText !== null) {
+  const lines = rsBlocksText.trim().split("\n").filter((l) => l);
   const blocks = lines.map((l) => { try { return JSON.parse(l); } catch { return null; } }).filter(Boolean);
   const realBlocks = blocks.filter((b: any) => b.endPhase - b.startPhase > 1);
   check("RS blocks", realBlocks.length > 0,
@@ -48,8 +51,9 @@ if (existsSync(rsBlocksPath)) {
 
 // 3. Vault status
 const vaultPath = join(repoRoot, "data", "vault-state.json");
-if (existsSync(vaultPath)) {
-  const vault = JSON.parse(readFileSync(vaultPath, "utf-8"));
+const vaultText = readOptionalText(vaultPath);
+if (vaultText !== null) {
+  const vault = JSON.parse(vaultText);
   const liveVaults = vault.vaults.filter((v: any) => v.status === "live").length;
   check("Vault status", liveVaults >= 3,
     `${liveVaults}/5 vaults live (action-recognition fix ${liveVaults >= 3 ? "confirmed" : "pending"})`);
@@ -58,8 +62,8 @@ if (existsSync(vaultPath)) {
 }
 
 // 4. Connectivity capped
-if (existsSync(vaultPath)) {
-  const vault = JSON.parse(readFileSync(vaultPath, "utf-8"));
+if (vaultText !== null) {
+  const vault = JSON.parse(vaultText);
   const connectivity = vault.connectivity ?? [];
   const allCapped = connectivity.every((c: any) => c.connectivity <= 1.0);
   check("Connectivity", allCapped && connectivity.length > 0,
