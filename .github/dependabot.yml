@@ -59,6 +59,30 @@ updates:
           - "patch"
           - "minor"
 
+    # Microsoft.CodeAnalysis.* is NOT an ordinary dependency: it is coupled to
+    # the SDK pinned in global.json. A generator built against a Roslyn newer
+    # than the SDK's cannot be LOADED -- CS9057 -- so the bump does not fail at
+    # runtime, it fails the build outright.
+    #
+    # Measured 2026-08-22 on PR #13590: the SDK's Roslyn was 5.6.0 and the
+    # group proposed Microsoft.CodeAnalysis.CSharp and .Analyzers at 5.9.0.
+    # `Guard -- CodeAnalysis pins <= SDK Roslyn` refused it on every platform,
+    # taking nine unrelated and perfectly good bumps down with it, because the
+    # group lands as one PR.
+    #
+    # Patches inside the SDK's Roslyn line stay allowed -- those are the safe
+    # half and there is no reason to hand-carry them.
+    #
+    # LIFTS WHEN: global.json's SDK moves to a Roslyn line >= the pin you want.
+    # That bump is deliberate and belongs with the SDK change in one commit, so
+    # the two can never disagree -- which is precisely what this ignore stops a
+    # bot from doing on its own schedule.
+    ignore:
+      - dependency-name: "Microsoft.CodeAnalysis.*"
+        update-types:
+          - "version-update:semver-major"
+          - "version-update:semver-minor"
+
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
