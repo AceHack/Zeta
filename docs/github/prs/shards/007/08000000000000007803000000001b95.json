@@ -1,0 +1,12 @@
+{
+  "pr_number": 7061,
+  "archive_path": "docs/history/pr-reviews/PR-7061-docs-test-detanglement-reframe-t-fixed-point-falsifier-dst-prod-staging-boundary.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-08T09:07:30.824Z",
+  "schema_version": "v1",
+  "commit_sha": "c2a66ccab88621dcbcabfd2c09e9a7050a50b852",
+  "title": "docs+test: detanglement reframe + T-fixed-point falsifier + DST|prod staging boundary",
+  "state": "MERGED",
+  "merged_at": "2026-06-08T09:07:03Z",
+  "head_ref": "otto/detanglement-reframe-T-falsifier-dst-production-boundary"
+}

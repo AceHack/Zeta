@@ -1,0 +1,33 @@
+{
+  "pr_number": 1207,
+  "archive_path": "docs/history/pr-reviews/PR-1207-tools-hygiene-pre-tick-mechanical-no-op-cadence-check-tick-80-op-enforcement-1.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM69XJBl",
+    "comment:PRRC_kwDOSF9kNM69XJYc",
+    "comment:PRRC_kwDOSF9kNM69XJYj",
+    "comment:PRRC_kwDOSF9kNM69XJYm",
+    "comment:PRRC_kwDOSF9kNM69XJiq",
+    "comment:PRRC_kwDOSF9kNM69XJjG",
+    "comment:PRRC_kwDOSF9kNM69XJjk",
+    "comment:PRRC_kwDOSF9kNM69XJkD",
+    "comment:PRRC_kwDOSF9kNM69XL0E",
+    "comment:PRRC_kwDOSF9kNM69XMLX",
+    "comment:PRRC_kwDOSF9kNM69XMLb",
+    "comment:PRRC_kwDOSF9kNM69XMLg",
+    "thread:PRRT_kwDOSF9kNM5_Ic3F",
+    "thread:PRRT_kwDOSF9kNM5_IdIn",
+    "thread:PRRT_kwDOSF9kNM5_IdIr",
+    "thread:PRRT_kwDOSF9kNM5_IdIu",
+    "thread:PRRT_kwDOSF9kNM5_Ie9-",
+    "thread:PRRT_kwDOSF9kNM5_IfRK",
+    "thread:PRRT_kwDOSF9kNM5_IfRN",
+    "thread:PRRT_kwDOSF9kNM5_IfRP"
+  ],
+  "fetched_at": "2026-05-06T01:23:06.452Z",
+  "schema_version": "v1",
+  "commit_sha": "ec1044614ea90862d55666293707cab16bfe1951",
+  "title": "tools(hygiene): pre-tick mechanical no-op-cadence check (Tick-80 op-enforcement #1)",
+  "state": "MERGED",
+  "merged_at": "2026-05-02T17:43:15Z",
+  "head_ref": "mechanize-no-op-cadence-pretick-check"
+}

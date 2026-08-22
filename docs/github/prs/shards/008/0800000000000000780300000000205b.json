@@ -1,0 +1,12 @@
+{
+  "pr_number": 8283,
+  "archive_path": "docs/history/pr-reviews/PR-8283-docs-multi-oracle-principle-resolves-the-oracle-capture-seam-honesty-is-what-i-m.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-15T07:33:59.569Z",
+  "schema_version": "v1",
+  "commit_sha": "9cf16100d881a4392074f8e152d748748f63e781",
+  "title": "docs: Multi-Oracle Principle resolves the oracle-capture seam; 'honesty is what I'm selling' = the one-line thesis",
+  "state": "MERGED",
+  "merged_at": "2026-06-15T07:33:37Z",
+  "head_ref": "otto/multi-oracle-commons-and-honesty-is-the-product"
+}

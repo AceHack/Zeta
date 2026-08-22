@@ -1,0 +1,12 @@
+{
+  "pr_number": 7407,
+  "archive_path": "docs/history/pr-reviews/PR-7407-docs-research-aaron-is-the-entropy-source-count-measures-the-pattern-mistakes-ze.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-09T21:07:34.970Z",
+  "schema_version": "v1",
+  "commit_sha": "ef253c59a0b0ef3b1df8313ad74390ef29648463",
+  "title": "docs(research): Aaron is the entropy source — count/ measures the pattern-mistakes, ZetaIdol tells entropy-vs-signal (held with care)",
+  "state": "MERGED",
+  "merged_at": "2026-06-09T21:07:14Z",
+  "head_ref": "otto/aaron-is-the-entropy-source-count-zetaidol-entropy-vs-signal"
+}

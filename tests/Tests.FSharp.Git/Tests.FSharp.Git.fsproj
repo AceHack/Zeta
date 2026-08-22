@@ -14,6 +14,7 @@
   <ItemGroup>
     <Compile Include="AssemblyInfo.fs" />
     <Compile Include="GitDeltaLog.Tests.fs" />
+    <Compile Include="GitDeltaLog.Erasure.Laws.Tests.fs" />
     <Compile Include="GitCommand.Tests.fs" />
     <Compile Include="CliParse.Tests.fs" />
     <Compile Include="CredentialSource.Tests.fs" />

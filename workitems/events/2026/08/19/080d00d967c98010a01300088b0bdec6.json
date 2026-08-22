@@ -1,0 +1,14 @@
+{
+  "id": "080d00d967c98010a01300088b0bdec6",
+  "at": "2026-08-19T17:58:47.344Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M0DJSY9F087G0R002HV7KA7",
+    "type": "task",
+    "title": "ClaimStrength surface does not exist -- the spine quantity of the distributed identity design is unimplemented",
+    "slug": "claimstrength-surface-does-not-exist-the-spine-quantity-of-t",
+    "priority": "P2",
+    "filename": "081M0DJSY9F087G0R002HV7KA7-claimstrength-surface-does-not-exist-the-spine-quantity-of-t.md"
+  }
+}

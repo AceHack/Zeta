@@ -24,10 +24,10 @@
 //
 // Usage:
 //
-//   bun tools/hygiene/audit-stale-worktrees.ts                # detect-only
-//   bun tools/hygiene/audit-stale-worktrees.ts --prune        # also run `git worktree prune --expire=now`
-//   bun tools/hygiene/audit-stale-worktrees.ts --report PATH  # write markdown report
-//   bun tools/hygiene/audit-stale-worktrees.ts --root PATH    # audit PATH instead of cwd
+//   bun src/Core.TypeScript/hygiene/audit-stale-worktrees.ts                # detect-only
+//   bun src/Core.TypeScript/hygiene/audit-stale-worktrees.ts --prune        # also run `git worktree prune --expire=now`
+//   bun src/Core.TypeScript/hygiene/audit-stale-worktrees.ts --report PATH  # write markdown report
+//   bun src/Core.TypeScript/hygiene/audit-stale-worktrees.ts --root PATH    # audit PATH instead of cwd
 //
 // Exit codes:
 //

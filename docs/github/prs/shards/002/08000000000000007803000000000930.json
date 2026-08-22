@@ -1,0 +1,28 @@
+{
+  "pr_number": 2352,
+  "archive_path": "docs/history/pr-reviews/PR-2352-chore-b-0350-351-352-extract-6-claude-md-bullets-to-claude-rules-113-lines.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_kNRN",
+    "comment:PRRC_kwDOSF9kNM6_kNdD",
+    "comment:PRRC_kwDOSF9kNM6_kNf-",
+    "comment:PRRC_kwDOSF9kNM6_kNf6",
+    "comment:PRRC_kwDOSF9kNM6_kNfx",
+    "comment:PRRC_kwDOSF9kNM6_kNgD",
+    "comment:PRRC_kwDOSF9kNM6_kNgK",
+    "comment:PRRC_kwDOSF9kNM6_kNgO",
+    "thread:PRRT_kwDOSF9kNM6A2xXa",
+    "thread:PRRT_kwDOSF9kNM6A2xjV",
+    "thread:PRRT_kwDOSF9kNM6A2xjc",
+    "thread:PRRT_kwDOSF9kNM6A2xjg",
+    "thread:PRRT_kwDOSF9kNM6A2xjl",
+    "thread:PRRT_kwDOSF9kNM6A2xjs",
+    "thread:PRRT_kwDOSF9kNM6A2xjw"
+  ],
+  "fetched_at": "2026-05-09T21:50:31.596Z",
+  "schema_version": "v1",
+  "commit_sha": "8e2691655435e210e2e5b5e07c2d08e526231ea0",
+  "title": "chore(B-0350/351/352): extract 6 CLAUDE.md bullets to .claude/rules/ (-113 lines)",
+  "state": "MERGED",
+  "merged_at": "2026-05-09T21:50:11Z",
+  "head_ref": "chore/extract-claude-md-bullets-to-rules"
+}

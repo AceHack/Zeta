@@ -11,7 +11,15 @@
 // the generator renders only its public veil label (blurred), NEVER its contents.
 // Consent-first (§6): the substrate cannot emit what was frosted.
 
-import { MAX_TEMPERATURE_PPM, type HeatReceipt, type HeatSignal, type TemperatureTreatyBundle } from "./heat";
+import {
+  MAX_TEMPERATURE_PPM,
+  heatReceiptReading,
+  type ChannelFidelity,
+  type HeatReceipt,
+  type HeatSignal,
+  type TemperatureTreatyBundle,
+} from "./heat";
+import type { DarkHallCausalHandoffReadout, DarkHallCausalReadout } from "./darkhall-causal-readout";
 
 /// Attention temperature — where a prediction sits on the LLMTV salience axis.
 /// hot = high-salience / rising attention, cool = settled. A DU, not a hand-coded
@@ -47,6 +55,8 @@ export interface DwellerMind {
   readonly frame?: number; // transcript-tick id (the still frame's number)
   readonly phaseClock?: PhaseClockReadout;
   readonly temperatureTreaty?: TemperatureTreatyBundle;
+  readonly causalReadout?: DarkHallCausalReadout;
+  readonly causalHandoffReadout?: DarkHallCausalHandoffReadout;
 }
 
 export type PhaseClockBasis = "seed-phase";
@@ -153,6 +163,65 @@ function renderRequiredBand(hat: string): string {
   return `<div class="band"><span class="k req" data-kind="required">required · ${escapeHtml(hat)}</span><span class="hr"></span></div>`;
 }
 
+function renderCausalLane(
+  readout: DarkHallCausalReadout | undefined,
+  handoff: DarkHallCausalHandoffReadout | undefined,
+): string {
+  const corrections = readout?.corrections ?? [];
+  const maxCorrections = readout?.maxCorrections ?? handoff?.maxCorrections ?? 0;
+  const admission = readout?.admission ?? "open";
+  const feedback = readout?.feedback;
+  return [
+    `<div class="causal-lane"`,
+    attr("data-causal-readout", readout?.schema),
+    attr("data-causal-source", readout?.sourceSchema),
+    attr("data-correction-admission", admission),
+    attr("data-correction-count", corrections.length),
+    attr("data-correction-capacity", maxCorrections),
+    attr("data-correction-remaining", readout?.remainingCapacity),
+    attr("data-correction-feedback", feedback?.code),
+    attr("data-causal-handoff-readout", handoff?.schema),
+    attr("data-causal-handoff-status", handoff?.status),
+    attr("data-causal-handoff-direction", handoff?.direction),
+    attr("data-causal-handoff-id", handoff?.handoffId ?? undefined),
+    attr("data-causal-handoff-peer", handoff?.peerTabId ?? undefined),
+    attr("data-causal-handoff-corrections", handoff?.correctionCount),
+    attr("data-causal-handoff-admitted", handoff?.admittedCorrections),
+    attr("data-causal-handoff-pending", handoff?.pendingHandoffs),
+    attr("data-causal-handoff-capacity", handoff?.maxPendingHandoffs),
+    attr("data-causal-handoff-feedback", handoff?.feedback?.code),
+    ">",
+    '<div class="causal-band">',
+    `<span>causal corrections · ${escapeHtml(admission)}</span>`,
+    `<i></i><b>${corrections.length.toString()} / ${maxCorrections.toString()}</b>`,
+    "</div>",
+    handoff === undefined
+      ? ""
+      : [
+          '<div class="causal-handoff"',
+          attr("data-handoff-status", handoff.status),
+          attr("data-handoff-direction", handoff.direction),
+          attr("data-handoff-id", handoff.handoffId ?? undefined),
+          attr("data-handoff-peer", handoff.peerTabId ?? undefined),
+          ">",
+          `<span>handoff · ${escapeHtml(handoff.status)}</span>`,
+          `<span>${escapeHtml(handoff.peerTabId ?? "no peer")}</span>`,
+          `<b>${handoff.correctionCount.toString()} records · ${handoff.admittedCorrections.toString()} new · ${handoff.pendingHandoffs.toString()} / ${handoff.maxPendingHandoffs.toString()} pending</b>`,
+          "</div>",
+        ].join(""),
+    '<ol class="causal-rows">',
+    ...corrections.map(
+      (correction) =>
+        `<li data-source="${escapeHtml(correction.sourceTabId)}" data-sequence="${escapeHtml(correction.sequence)}"><span>${escapeHtml(correction.sourceTabId)}</span><span>${escapeHtml(correction.reinterpretsThrough)} &rarr; ${escapeHtml(correction.sequence)}</span><b>+${correction.deltaRows.toString()}</b></li>`,
+    ),
+    "</ol>",
+    feedback === undefined || feedback === null
+      ? ""
+      : `<p data-severity="${feedback.severity}">${escapeHtml(feedback.code)}: ${escapeHtml(feedback.detail)}</p>`,
+    "</div>",
+  ].join("");
+}
+
 /// The frost pair: the "personal · frosted" band + the opaque veil. The veil shows
 /// only the region's public label (blurred); its contents are never in the DOM.
 function renderFrost(frost: FrostRegion): string {
@@ -163,6 +232,39 @@ function renderFrost(frost: FrostRegion): string {
     `<div class="lock">${lockSvg}&nbsp;earned · permanent</div>`,
     "</div>",
   ].join("");
+}
+
+/**
+ * The words appended to a band label when the reading is not faithful.
+ *
+ * The band token alone cannot say this — the four tokens are a four-oracle treaty
+ * and `cold` is what a blind sensor and an idle room BOTH produce. A colour
+ * change alone would not say it either: `cold` already renders in the muted
+ * `--txt3`, so a reader has no way to know whether the muteness means "quiet" or
+ * "not measured". The text is the part an operator can actually check.
+ *
+ * `exact` adds nothing, so a healthy lane is unchanged.
+ */
+function fidelitySuffix(fidelity: ChannelFidelity | undefined): string {
+  switch (fidelity) {
+    case "out-of-domain":
+      return " · SENSOR FAULT · no reading";
+    case "saturated":
+      return " · PINNED · at or above ceiling";
+    case "below-resolution":
+      return " · below resolution";
+    case "exact":
+      return "";
+    // `fidelity` is OPTIONAL on the value (`heat.ts` — `readonly fidelity?:`),
+    // so `undefined` reaches here whenever a producer never classified the
+    // channel. It must not share the `exact` branch: an empty suffix is the
+    // readout for a channel we checked and found faithful, and reusing it for
+    // one we never checked is this file's own defect — the encoder saying
+    // "exact" about a sensor whose state it does not know. Unreported and
+    // clean are different claims, so they get different readouts.
+    default:
+      return " · fidelity not reported";
+  }
 }
 
 function renderTemperatureMetric(label: string, kind: string, ppm: number): string {
@@ -182,6 +284,21 @@ function compactText(values: readonly string[], fallback: string): string {
   return values.length === 0 ? fallback : values.join(", ");
 }
 
+/**
+ * The worded half of the third state.
+ *
+ * Colour alone cannot carry it: a quiet receipt already renders muted, so a
+ * receipt that was never measured would render muted too and the eye could not
+ * tell "nothing happened" from "nothing was looked at". The words are the
+ * channel that separates them; the attribute is what CSS and an auditor read.
+ */
+function receiptReadingNote(receipt: HeatReceipt): string {
+  const reading = heatReceiptReading(receipt);
+  if (reading === "measured") return "";
+  if (reading === "unreported") return " · signal provenance not reported";
+  return ` · NOT MEASURED · ${(receipt.signalObservations ?? 0).toString()} observations — unknown, not cold`;
+}
+
 function renderHeatReceipt(receipt: HeatReceipt): string {
   const reason = compactText(receipt.reasons, compactText(receipt.heatKinds, "no detail"));
 
@@ -194,6 +311,9 @@ function renderHeatReceipt(receipt: HeatReceipt): string {
     attr("data-room", receipt.roomName),
     attr("data-tick", receipt.tick),
     attr("data-signals", compactText(receipt.signals, "cold")),
+    attr("data-signal-reading", heatReceiptReading(receipt)),
+    attr("data-signal-source", receipt.signalSource),
+    attr("data-signal-observations", receipt.signalObservations),
     attr(
       "style",
       `--heat:${ppmRatio(receipt.heatPpm)};--pressure:${ppmRatio(receipt.pressurePpm)};--storage:${ppmRatio(receipt.storagePpm)}`,
@@ -202,7 +322,7 @@ function renderHeatReceipt(receipt: HeatReceipt): string {
     `<b>${escapeHtml(receipt.outcome)}</b>`,
     '<span class="receipt-rails"><i></i><i></i><i></i></span>',
     `<em>${escapeHtml(receipt.policy)}</em>`,
-    `<small>${escapeHtml(reason)}</small>`,
+    `<small>${escapeHtml(reason + receiptReadingNote(receipt))}</small>`,
     "</span>",
   ].join("");
 }
@@ -238,11 +358,15 @@ function renderTemperatureLane(treaty: TemperatureTreatyBundle): string {
     `<div class="temp-lane"`,
     attr("data-temperature-lane", "present"),
     attr("data-temperature-band", temperature.band),
+    // Without this the lane paints a blind sensor exactly like an idle room: both
+    // are `cold`, and the CSS below has no other hook to tell them apart.
+    // 081M010WYE5087G0R003J89QVF §1.
+    attr("data-temperature-fidelity", temperature.fidelity),
     attr("data-temperature-source", temperature.source),
     attr("data-temperature-oracle", treaty.referenceOracle),
     ">",
     '<div class="temp-band">',
-    `<span>black-body · ${escapeHtml(temperature.band)}</span>`,
+    `<span>black-body · ${escapeHtml(temperature.band)}${escapeHtml(fidelitySuffix(temperature.fidelity))}</span>`,
     "<i></i>",
     "</div>",
     '<div class="temp-stack">',
@@ -267,6 +391,8 @@ export function renderDweller(mind: DwellerMind, seed: string): string {
   const blackBody = temperatureTreaty?.blackBody;
   const heatReceipts = temperatureTreaty?.heatReceipts;
   const phaseClock = mind.phaseClock;
+  const causalReadout = mind.causalReadout;
+  const causalHandoffReadout = mind.causalHandoffReadout;
   const temperatureFeedback =
     temperatureTreaty === undefined || temperatureTreaty.referenceFeedback.length === 0
       ? undefined
@@ -289,10 +415,25 @@ export function renderDweller(mind: DwellerMind, seed: string): string {
     attr("data-temperature-feedback", temperatureFeedback),
     attr("data-temperature-ppm", temperature?.temperaturePpm),
     attr("data-temperature-band", temperature?.band),
+    attr("data-temperature-fidelity", temperature?.fidelity),
     attr("data-black-body-readout", blackBody?.schema),
     attr("data-black-body-radiance", blackBody?.radiancePpm),
     attr("data-black-body-peak-frequency", blackBody?.peakFrequencyPpm),
     attr("data-heat-receipts", heatReceipts === undefined ? undefined : heatReceipts.length),
+    attr("data-causal-readout", causalReadout?.schema),
+    attr("data-correction-admission", causalReadout?.admission),
+    attr("data-correction-count", causalReadout?.corrections.length),
+    attr("data-correction-capacity", causalReadout?.maxCorrections),
+    attr("data-causal-handoff-readout", causalHandoffReadout?.schema),
+    attr("data-causal-handoff-status", causalHandoffReadout?.status),
+    attr("data-causal-handoff-direction", causalHandoffReadout?.direction),
+    attr("data-causal-handoff-id", causalHandoffReadout?.handoffId ?? undefined),
+    attr("data-causal-handoff-peer", causalHandoffReadout?.peerTabId ?? undefined),
+    attr("data-causal-handoff-corrections", causalHandoffReadout?.correctionCount),
+    attr("data-causal-handoff-admitted", causalHandoffReadout?.admittedCorrections),
+    attr("data-causal-handoff-pending", causalHandoffReadout?.pendingHandoffs),
+    attr("data-causal-handoff-capacity", causalHandoffReadout?.maxPendingHandoffs),
+    attr("data-causal-handoff-feedback", causalHandoffReadout?.feedback?.code),
     ">",
     `<div class="tv-head">`,
     `<div class="who">${escapeHtml(mind.name)} <small>${escapeHtml(mind.role)}</small></div>`,
@@ -301,6 +442,9 @@ export function renderDweller(mind: DwellerMind, seed: string): string {
     `<div class="mind">`,
     renderRequiredBand(mind.hat),
     ...mind.predictions.map(renderPrediction),
+    causalReadout === undefined && causalHandoffReadout === undefined
+      ? ""
+      : renderCausalLane(causalReadout, causalHandoffReadout),
     temperatureTreaty === undefined ? "" : renderTemperatureLane(temperatureTreaty),
     mind.frost ? renderFrost(mind.frost) : "",
     "</div>",
@@ -471,12 +615,36 @@ export const LLMTV_INLINE_CSS = `
     .band .k { font-family:var(--mono); font-size:0.56rem; letter-spacing:0.14em; text-transform:uppercase; color:var(--txt3); }
     .band .k.req { color:var(--c-warm); } .band .k.pers { color:var(--c-cool); }
     .band .hr { flex:1; height:1px; background:var(--line); }
+    .causal-lane { margin:0.7rem -0.85rem 0; padding:0.62rem 0.85rem 0; border-top:1px solid var(--line); }
+    .causal-lane[data-correction-admission="backpressure"] { border-top-color:var(--c-hot); }
+    .causal-band { display:flex; align-items:center; gap:0.4rem; font-family:var(--mono); font-size:0.56rem; letter-spacing:0.14em; text-transform:uppercase; color:var(--c-cool); }
+    .causal-lane[data-correction-admission="backpressure"] .causal-band { color:var(--c-hot); }
+    .causal-band i { flex:1; height:1px; background:currentColor; opacity:0.45; }
+    .causal-band b { color:currentColor; font-weight:400; white-space:nowrap; }
+    .causal-handoff { display:grid; grid-template-columns:minmax(4.6rem,0.8fr) minmax(0,1.2fr) auto; gap:0.35rem; align-items:center; margin-top:0.45rem; padding-left:0.4rem; border-left:2px solid var(--c-cool); color:var(--txt2); font-size:0.56rem; }
+    .causal-handoff span { min-width:0; overflow-wrap:anywhere; }
+    .causal-handoff b { color:var(--c-cool); font-weight:400; white-space:nowrap; }
+    .causal-handoff[data-handoff-status="backpressured"], .causal-handoff[data-handoff-status="heat"] { border-left-color:var(--c-hot); }
+    .causal-handoff[data-handoff-status="backpressured"] b, .causal-handoff[data-handoff-status="heat"] b { color:var(--c-hot); }
+    .causal-rows { display:grid; gap:0.25rem; margin:0.45rem 0 0; padding:0; list-style:none; }
+    .causal-rows li { display:grid; grid-template-columns:minmax(3rem,0.7fr) minmax(0,1.4fr) minmax(2rem,0.35fr); gap:0.35rem; color:var(--txt2); font-size:0.56rem; }
+    .causal-rows li span { min-width:0; overflow-wrap:anywhere; }
+    .causal-rows li b { color:var(--txt); font-weight:400; text-align:right; }
+    .causal-lane p { margin:0.45rem 0 0; color:var(--c-hot); font-family:var(--mono); font-size:0.54rem; line-height:1.35; overflow-wrap:anywhere; }
     /* temperature treaty: information-temperature and black-body reference readout, visible from attrs */
     .temp-lane { --thermal:var(--c-cool); margin:0.7rem -0.85rem 0; padding:0.62rem 0.85rem 0; border-top:1px solid var(--line); color:var(--thermal); }
     .temp-lane[data-temperature-band="cold"] { --thermal:var(--txt3); }
     .temp-lane[data-temperature-band="warm"] { --thermal:var(--c-warm); }
     .temp-lane[data-temperature-band="hot"] { --thermal:var(--c-hot); }
     .temp-lane[data-temperature-band="critical"] { --thermal:var(--c-bad); }
+    /* fidelity OVERRIDES band colour: an unfaithful reading must not be painted as
+       a measurement. Declared after the band rules so it wins on specificity ties.
+       A blind sensor and an idle room are both cold; only this tells them apart. */
+    .temp-lane[data-temperature-fidelity="out-of-domain"] { --thermal:var(--c-bad); border-top-color:var(--c-bad); }
+    .temp-lane[data-temperature-fidelity="out-of-domain"] .temp-band span { font-weight:700; }
+    .temp-lane[data-temperature-fidelity="out-of-domain"] .rail i { opacity:0.25; }
+    .temp-lane[data-temperature-fidelity="saturated"] { --thermal:var(--c-hot); }
+    .temp-lane[data-temperature-fidelity="below-resolution"] { --thermal:var(--txt2); }
     .temp-band { display:flex; align-items:center; gap:0.4rem; font-family:var(--mono); font-size:0.56rem; letter-spacing:0.14em; text-transform:uppercase; }
     .temp-band span { color:currentColor; white-space:nowrap; }
     .temp-band i { flex:1; height:1px; background:linear-gradient(90deg, currentColor, transparent); opacity:0.55; }
@@ -503,6 +671,12 @@ export const LLMTV_INLINE_CSS = `
     .receipt-rails i:nth-child(3)::before { width:calc(var(--storage) * 100%); opacity:0.54; }
     .heat-receipt em { min-width:0; font-style:normal; color:var(--txt3); font-size:0.53rem; overflow-wrap:anywhere; }
     .heat-receipt small { min-width:0; color:var(--txt2); font-size:0.53rem; line-height:1.25; overflow-wrap:anywhere; }
+    /* UNKNOWN = zero observations. A quiet receipt is ALREADY muted, so muteness cannot
+       carry "not measured" — the rails are struck through and the note says it in words. */
+    .heat-receipt[data-signal-reading="unknown"] { border-style:dashed; }
+    .heat-receipt[data-signal-reading="unknown"] .receipt-rails i {
+      background:repeating-linear-gradient(135deg, var(--line2) 0 3px, transparent 3px 6px); }
+    .heat-receipt[data-signal-reading="unknown"] small { color:var(--txt); }
     /* FROST: personal mind-parts a dweller earned permanent privacy over — priced privacy,
        never decoration; the blur means content withheld, its permanence = earned + inviolable */
     .frost { position:relative; margin:0.2rem 0; border:1px solid var(--line2); border-radius:6px; overflow:hidden;

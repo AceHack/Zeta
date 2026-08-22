@@ -1,0 +1,17 @@
+{
+  "pr_number": 7761,
+  "archive_path": "docs/history/pr-reviews/PR-7761-feat-quantum-relocate-quantum-source-files-add-ts-simulator-second-oracle-and-fi.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7Kj3ku",
+    "comment:PRRC_kwDOSF9kNM7KjwFK",
+    "thread:PRRT_kwDOSF9kNM6I6h3i",
+    "thread:PRRT_kwDOSF9kNM6I6nX7"
+  ],
+  "fetched_at": "2026-06-11T19:25:36.993Z",
+  "schema_version": "v1",
+  "commit_sha": "b3dd2cd3f99ec8cb16bf006a83489c99cffb6df7",
+  "title": "feat(quantum): relocate quantum source files, add TS simulator second-oracle, and fix C# IDE0040 formatting",
+  "state": "MERGED",
+  "merged_at": "2026-06-11T19:25:07Z",
+  "head_ref": "lior/quantum-oracle-ts"
+}

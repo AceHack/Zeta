@@ -1,0 +1,12 @@
+{
+  "pr_number": 2740,
+  "archive_path": "docs/history/pr-reviews/PR-2740-docs-memory-lost-dharma-button-punch-out-shadow-button-lineage.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-11T19:48:26.230Z",
+  "schema_version": "v1",
+  "commit_sha": "1d7d653bbcc822ce17d05ae2c7d7a2e4ae597a03",
+  "title": "docs(memory): Lost Dharma button + Punch-Out — shadow button lineage",
+  "state": "MERGED",
+  "merged_at": "2026-05-11T19:48:00Z",
+  "head_ref": "docs/lost-dharma-punch-out-shadow-2026-05-11"
+}

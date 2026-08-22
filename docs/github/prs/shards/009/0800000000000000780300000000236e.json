@@ -1,0 +1,12 @@
+{
+  "pr_number": 9070,
+  "archive_path": "docs/history/pr-reviews/PR-9070-docs-workitems-git-native-self-check-hooks-preflight-quick-pre-push-in-writer-cl.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-16T19:52:21.040Z",
+  "schema_version": "v1",
+  "commit_sha": "4bf226e0deff8beaaac3a9d21b633300e4a9a8f6",
+  "title": "docs(workitems): git-native self-check hooks — preflight:quick pre-push in writer clones",
+  "state": "MERGED",
+  "merged_at": "2026-07-01T23:03:49Z",
+  "head_ref": "otto/workitem-git-native-self-check-hooks"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 2743,
+  "archive_path": "docs/history/pr-reviews/PR-2743-feat-b-0401-lior-s-wow-ui-glassmorphism-upgrade-for-dashboard.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-11T20:09:43.665Z",
+  "schema_version": "v1",
+  "commit_sha": "8ee416d62c172378288026a7581f64be718b3cff",
+  "title": "feat(B-0401): Lior's WOW UI glassmorphism upgrade for dashboard",
+  "state": "MERGED",
+  "merged_at": "2026-05-11T20:09:24Z",
+  "head_ref": "feat/wow-ui-dashboard-lior-2026-05-11"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 10475,
+  "archive_path": "docs/history/pr-reviews/PR-10475-research-graphql-is-the-scarce-budget-and-auto-merge-arming-has-no-rest-form.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-18T11:13:06.968Z",
+  "schema_version": "v1",
+  "commit_sha": "a5b32e45c1c4ecfe6a1d7710730f82a6f3434829",
+  "title": "research: GraphQL is the scarce budget — and auto-merge arming has no REST form",
+  "state": "MERGED",
+  "merged_at": "2026-08-14T00:51:02Z",
+  "head_ref": "research/graphql-is-the-scarce-budget"
+}

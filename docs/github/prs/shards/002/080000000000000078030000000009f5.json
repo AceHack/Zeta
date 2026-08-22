@@ -1,0 +1,12 @@
+{
+  "pr_number": 2549,
+  "archive_path": "docs/history/pr-reviews/PR-2549-docs-memory-joke-staleness-as-compaction-diagnostic.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-10T21:41:26.564Z",
+  "schema_version": "v1",
+  "commit_sha": "9875bc2fb3103986d0cd327407d92b9b7daf2cfc",
+  "title": "docs(memory): joke staleness as compaction diagnostic",
+  "state": "MERGED",
+  "merged_at": "2026-05-10T21:41:13Z",
+  "head_ref": "docs/staleness-compaction-diagnostic-2026-05-10"
+}

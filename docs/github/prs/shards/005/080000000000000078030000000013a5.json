@@ -1,0 +1,19 @@
+{
+  "pr_number": 5029,
+  "archive_path": "docs/history/pr-reviews/PR-5029-backlog-b-0756-ha-control-plane-multi-master-k3s-embedded-etcd-stable-api-endpoi.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7Ets4M",
+    "comment:PRRC_kwDOSF9kNM7Ets4g",
+    "comment:PRRC_kwDOSF9kNM7Ets4r",
+    "thread:PRRT_kwDOSF9kNM6EpGE3",
+    "thread:PRRT_kwDOSF9kNM6EpGEl",
+    "thread:PRRT_kwDOSF9kNM6EpGFA"
+  ],
+  "fetched_at": "2026-05-25T23:28:32.152Z",
+  "schema_version": "v1",
+  "commit_sha": "fe8abdd8da6dd15cc0cfa2d7537464c4aa64f3c1",
+  "title": "backlog(B-0756): HA control-plane — multi-master k3s embedded etcd + stable API endpoint",
+  "state": "MERGED",
+  "merged_at": "2026-05-25T23:28:11Z",
+  "head_ref": "otto-cli/b0756-ha-control-plane-etcd-2026-05-25"
+}

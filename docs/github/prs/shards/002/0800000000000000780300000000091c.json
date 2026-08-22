@@ -1,0 +1,12 @@
+{
+  "pr_number": 2332,
+  "archive_path": "docs/history/pr-reviews/PR-2332-feat-b-0365-one-bounded-decomp-step-b-0365-01-subscribe-primitive-atomic-child.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-09T19:07:59.137Z",
+  "schema_version": "v1",
+  "commit_sha": "ffe4f91d61434a7f78a391fcf74b0c7a69ce43a4",
+  "title": "feat(B-0365): one bounded decomp step — B-0365-01 subscribe primitive atomic child",
+  "state": "MERGED",
+  "merged_at": "2026-05-09T19:07:42Z",
+  "head_ref": "claim/b0365-decompose-nirvanic-fusion-ship-research-bundle-2026-05-09"
+}

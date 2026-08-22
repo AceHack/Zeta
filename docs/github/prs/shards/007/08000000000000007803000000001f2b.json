@@ -1,0 +1,12 @@
+{
+  "pr_number": 7979,
+  "archive_path": "docs/history/pr-reviews/PR-7979-codex-ci-stryker-bound-core-csharp-mutation-target.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-12T18:25:05.484Z",
+  "schema_version": "v1",
+  "commit_sha": "7e2eb9364d7331c4a188c2d6d531f52ca525e8ee",
+  "title": "[codex] ci(stryker): bound core csharp mutation target",
+  "state": "MERGED",
+  "merged_at": "2026-06-12T18:24:41Z",
+  "head_ref": "codex/bound-stryker-core-csharp"
+}

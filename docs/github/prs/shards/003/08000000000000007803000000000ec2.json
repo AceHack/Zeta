@@ -1,0 +1,19 @@
+{
+  "pr_number": 3778,
+  "archive_path": "docs/history/pr-reviews/PR-3778-shard-tick-2026-05-16t06-29z-all-my-lane-thread-debt-cleared-3-fixes-1-ack.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7B2xm0",
+    "comment:PRRC_kwDOSF9kNM7B2xr5",
+    "comment:PRRC_kwDOSF9kNM7B2xtF",
+    "thread:PRRT_kwDOSF9kNM6CiY0y",
+    "thread:PRRT_kwDOSF9kNM6CiY14",
+    "thread:PRRT_kwDOSF9kNM6CiYxk"
+  ],
+  "fetched_at": "2026-05-16T07:33:50.267Z",
+  "schema_version": "v1",
+  "commit_sha": "74c809aa4b7dc395074a7c11d0a5256dc9da9768",
+  "title": "shard(tick): 2026-05-16T06:29Z — all my-lane thread debt cleared (3 fixes + 1 ack)",
+  "state": "MERGED",
+  "merged_at": "2026-05-16T07:33:31Z",
+  "head_ref": "shard/tick-0623z-otto-cli-2026-05-16"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 9442,
+  "archive_path": "docs/history/pr-reviews/PR-9442-feat-heat-expose-bayesian-temperature-treaty-bundle.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-04T13:31:25.441Z",
+  "schema_version": "v1",
+  "commit_sha": "509988d059c0ab2b25d00d0943a2fb0912d1a50b",
+  "title": "feat(heat): expose Bayesian temperature treaty bundle",
+  "state": "MERGED",
+  "merged_at": "2026-07-04T13:31:00Z",
+  "head_ref": "codex/temperature-heat-treaty"
+}

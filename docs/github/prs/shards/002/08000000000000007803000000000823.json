@@ -1,0 +1,12 @@
+{
+  "pr_number": 2083,
+  "archive_path": "docs/history/pr-reviews/PR-2083-fix-backlog-close-b-0305-skill-body-landed.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-08T14:15:07.373Z",
+  "schema_version": "v1",
+  "commit_sha": "00edbd0f4cf7f8ea2fade3a9df106bda81265872",
+  "title": "fix(backlog): close B-0305 — skill body landed",
+  "state": "MERGED",
+  "merged_at": "2026-05-08T14:14:49Z",
+  "head_ref": "fix/close-b0305-landed"
+}

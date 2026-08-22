@@ -1,0 +1,12 @@
+{
+  "pr_number": 3489,
+  "archive_path": "docs/history/pr-reviews/PR-3489-shard-tick-1349z-2nd-copilot-cat-n-p0-false-positive-cleared.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-15T13:53:51.243Z",
+  "schema_version": "v1",
+  "commit_sha": "e9c48b0b5c22bf2984561154da30279f886f5d46",
+  "title": "shard(tick): 1349Z — 2nd Copilot cat-n P0 false positive cleared",
+  "state": "MERGED",
+  "merged_at": "2026-05-15T13:53:30Z",
+  "head_ref": "shard/tick-1349z-otto-cli-2026-05-15"
+}

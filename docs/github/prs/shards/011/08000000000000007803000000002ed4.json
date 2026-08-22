@@ -1,0 +1,12 @@
+{
+  "pr_number": 11988,
+  "archive_path": "docs/history/pr-reviews/PR-11988-fix-archive-resolve-the-archiver-against-the-reconciler-not-the-target-repo-the-.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-18T15:27:31.332Z",
+  "schema_version": "v1",
+  "commit_sha": "6f97dc278239db5581ec87aaa6b18d248abd362d",
+  "title": "fix(archive): resolve the archiver against the reconciler, not the target repo — the sweep would have failed quietly",
+  "state": "MERGED",
+  "merged_at": "2026-08-18T15:26:51Z",
+  "head_ref": "shadow/reconcile-archiver-path-resolution"
+}

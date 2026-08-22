@@ -1,0 +1,12 @@
+{
+  "pr_number": 8229,
+  "archive_path": "docs/history/pr-reviews/PR-8229-fix-portal-url-decode-the-resource-path-segment-so-logs-events-exec-work.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-15T01:41:26.709Z",
+  "schema_version": "v1",
+  "commit_sha": "ddb46e5dc823e9e09358acf60398951d6ccfb72e",
+  "title": "fix(portal): URL-decode the resource path segment so logs/events/exec work",
+  "state": "MERGED",
+  "merged_at": "2026-06-15T01:41:04Z",
+  "head_ref": "fix/portal-resource-path-decode"
+}

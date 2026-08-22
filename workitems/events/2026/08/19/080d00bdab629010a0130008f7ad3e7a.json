@@ -1,0 +1,14 @@
+{
+  "id": "080d00bdab629010a0130008f7ad3e7a",
+  "at": "2026-08-19T01:49:20.850Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M0BVAV2H087G0R000VXRYRQ",
+    "type": "task",
+    "title": "Decide whether the Windows build-and-test legs should block the gate floor",
+    "slug": "decide-whether-the-windows-build-and-test-legs-should-block",
+    "priority": "P2",
+    "filename": "081M0BVAV2H087G0R000VXRYRQ-decide-whether-the-windows-build-and-test-legs-should-block.md"
+  }
+}

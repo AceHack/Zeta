@@ -1,0 +1,17 @@
+{
+  "pr_number": 6261,
+  "archive_path": "docs/history/pr-reviews/PR-6261-backlog-b-0952-contribute-back-dora-metrics-small-first-trust-building-external-.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7Giyyg",
+    "comment:PRRC_kwDOSF9kNM7Giyys",
+    "thread:PRRT_kwDOSF9kNM6F-bN1",
+    "thread:PRRT_kwDOSF9kNM6F-bNu"
+  ],
+  "fetched_at": "2026-05-31T22:13:39.735Z",
+  "schema_version": "v1",
+  "commit_sha": "4551e83d2cc2accf4b1bab26bc33b1db80eb746d",
+  "title": "backlog(B-0952): contribute-back DORA metrics + small-first trust-building external-contribution strategy (not-take-only)",
+  "state": "MERGED",
+  "merged_at": "2026-05-31T22:13:19Z",
+  "head_ref": "backlog/b0952-contribute-back-dora-metrics-2026-05-31"
+}

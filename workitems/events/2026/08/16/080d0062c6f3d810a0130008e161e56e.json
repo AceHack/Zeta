@@ -1,0 +1,14 @@
+{
+  "id": "080d0062c6f3d810a0130008e161e56e",
+  "at": "2026-08-16T20:52:25.851Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M065HQKT087G0R0033B3GTD",
+    "type": "bug",
+    "title": "ZetaTransportCell: a time-dilated transport never recovers — dilationFactor is written only in the failure branch, so a healed lane stays skipped forever",
+    "slug": "zetatransportcell-a-time-dilated-transport-never-recovers-di",
+    "priority": "P2",
+    "filename": "081M065HQKT087G0R0033B3GTD-zetatransportcell-a-time-dilated-transport-never-recovers-di.md"
+  }
+}

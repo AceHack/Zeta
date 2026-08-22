@@ -1,0 +1,12 @@
+{
+  "pr_number": 6673,
+  "archive_path": "docs/history/pr-reviews/PR-6673-inventory-phase-5-re-land-typed-dynamic-custom-fields-post-merge-progress-captur.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-07T13:39:32.320Z",
+  "schema_version": "v1",
+  "commit_sha": "6f8b9e97fc416dee8f9db3044595b90685e6e5df",
+  "title": "Inventory Phase 5 (re-land): typed dynamic custom fields + post-merge PROGRESS captures",
+  "state": "MERGED",
+  "merged_at": "2026-06-07T13:39:13Z",
+  "head_ref": "claude/festive-ritchie-NcXnW"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 5022,
+  "archive_path": "docs/history/pr-reviews/PR-5022-feat-pr-preservation-implement-idempotency-check-and-crlf-lf-hygiene.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-25T23:00:09.880Z",
+  "schema_version": "v1",
+  "commit_sha": "318a33f03fcacb68806848ef48c4e9b74f13ddb0",
+  "title": "feat(pr-preservation): implement idempotency check and CRLF/LF hygiene",
+  "state": "MERGED",
+  "merged_at": "2026-05-25T22:59:52Z",
+  "head_ref": "lior/archive-pr-idempotency"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 9586,
+  "archive_path": "docs/history/pr-reviews/PR-9586-feat-ci-security-drop-phase-3-legacy-escapes-usb-identity-threat-model.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-09T00:15:59.845Z",
+  "schema_version": "v1",
+  "commit_sha": "f5ff487f6cfb46195062f24f16e07d3a62d984c0",
+  "title": "feat(ci,security): drop phase-3 legacy escapes; USB identity threat model",
+  "state": "MERGED",
+  "merged_at": "2026-07-09T00:15:28Z",
+  "head_ref": "feat/qemu-phase3-no-legacy-escapes-2026-07-08"
+}

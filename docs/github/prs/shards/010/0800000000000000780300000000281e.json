@@ -1,0 +1,12 @@
+{
+  "pr_number": 10270,
+  "archive_path": "docs/history/pr-reviews/PR-10270-docs-blueprint-generation-1-s-results-and-the-generation-2-fixes.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-10T01:23:29.466Z",
+  "schema_version": "v1",
+  "commit_sha": "5cfa353ba006f44986cb4d7caedcf0672f4f08f7",
+  "title": "docs(blueprint): generation 1's results and the generation-2 fixes",
+  "state": "MERGED",
+  "merged_at": "2026-08-10T01:22:56Z",
+  "head_ref": "shadow/blueprint-generation-1-results"
+}

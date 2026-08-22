@@ -1,0 +1,12 @@
+{
+  "pr_number": 2081,
+  "archive_path": "docs/history/pr-reviews/PR-2081-fix-b-0281-resolve-tsc-type-errors-regenerate-backlog-index.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-08T13:55:43.210Z",
+  "schema_version": "v1",
+  "commit_sha": "66342595451dbf4ea7066374ce87cddba4917db8",
+  "title": "fix(B-0281): resolve tsc type errors + regenerate backlog index",
+  "state": "MERGED",
+  "merged_at": "2026-05-08T13:55:26Z",
+  "head_ref": "fix/B-0281-tsc-errors-and-backlog-index"
+}

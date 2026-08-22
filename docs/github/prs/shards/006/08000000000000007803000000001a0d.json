@@ -1,0 +1,12 @@
+{
+  "pr_number": 6669,
+  "archive_path": "docs/history/pr-reviews/PR-6669-docs-research-extend-ai-autonomy-by-extending-the-proven-ground-math-is-the-auto.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-03T11:50:50.713Z",
+  "schema_version": "v1",
+  "commit_sha": "f8e8a45feda0039d361030c4a301b4816c49ff69",
+  "title": "docs(research): extend AI autonomy by extending the proven ground — math is the autonomy lever",
+  "state": "MERGED",
+  "merged_at": "2026-06-03T11:50:26Z",
+  "head_ref": "otto-cli/extend-ai-autonomy-by-extending-proven-ground-math-lever-2026-06-03"
+}

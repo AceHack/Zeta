@@ -1,0 +1,12 @@
+{
+  "pr_number": 9956,
+  "archive_path": "docs/history/pr-reviews/PR-9956-feat-observe-the-degraded-render-path-iris-3-step-4-built-before-the-happy-path.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-02T02:34:04.597Z",
+  "schema_version": "v1",
+  "commit_sha": "167bc1541cebeb5bb44bf9632e105cc805bf38a5",
+  "title": "feat(observe): the degraded render path — Iris §3, step 4 (built BEFORE the happy path)",
+  "state": "MERGED",
+  "merged_at": "2026-08-02T02:33:38Z",
+  "head_ref": "shadow/iris-degraded-render-path"
+}

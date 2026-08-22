@@ -1,0 +1,14 @@
+{
+  "id": "080d008aa50b7010a0130008526129ad",
+  "at": "2026-08-17T20:05:54.158Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M08N98BD087G0R000ND7X38",
+    "type": "bug",
+    "title": "AgencySignature pre-merge check underscanned PRs past the 250-commit API cap",
+    "slug": "agencysignature-pre-merge-check-underscanned-prs-past-the-25",
+    "priority": "P2",
+    "filename": "081M08N98BD087G0R000ND7X38-agencysignature-pre-merge-check-underscanned-prs-past-the-25.md"
+  }
+}

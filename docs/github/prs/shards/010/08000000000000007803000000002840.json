@@ -1,0 +1,12 @@
+{
+  "pr_number": 10304,
+  "archive_path": "docs/history/pr-reviews/PR-10304-feat-observe-wire-rs-accumulator-into-production-run-loop.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-11T02:03:57.151Z",
+  "schema_version": "v1",
+  "commit_sha": "dd1bd9e5f59e42acc5af73027f35539d8353e748",
+  "title": "feat(observe): wire RS accumulator into production run-loop",
+  "state": "MERGED",
+  "merged_at": "2026-08-11T02:03:18Z",
+  "head_ref": "alexa/rs-in-runloop"
+}

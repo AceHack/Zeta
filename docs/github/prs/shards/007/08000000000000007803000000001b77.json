@@ -1,0 +1,12 @@
+{
+  "pr_number": 7031,
+  "archive_path": "docs/history/pr-reviews/PR-7031-feat-core-conjugate-two-softvalue-frames-woven-irreducible-error-residual-entrop.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-08T05:58:19.044Z",
+  "schema_version": "v1",
+  "commit_sha": "124e0e113e298ec4da0ba42f26c90cfcac82d7de",
+  "title": "feat(core): Conjugate — two SoftValue frames woven; irreducible error = residual entropy; rig algebra (#7080)",
+  "state": "MERGED",
+  "merged_at": "2026-06-08T05:57:57Z",
+  "head_ref": "otto/conjugate-two-softvalue-frames-weave-rig-algebra"
+}

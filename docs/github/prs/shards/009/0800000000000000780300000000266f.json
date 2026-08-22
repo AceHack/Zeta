@@ -1,0 +1,12 @@
+{
+  "pr_number": 9839,
+  "archive_path": "docs/history/pr-reviews/PR-9839-test-formal-gate-the-e8-coxeter-relations-on-the-8-simple-reflections-l-e.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-01T04:13:09.542Z",
+  "schema_version": "v1",
+  "commit_sha": "233fc24b061301c60787452d84f4c0a10cddbb94",
+  "title": "test(Formal): gate the E8 Coxeter relations on the 8 simple reflections (L-E)",
+  "state": "MERGED",
+  "merged_at": "2026-08-01T04:12:43Z",
+  "head_ref": "shadow/e8-coxeter-relations-gate"
+}

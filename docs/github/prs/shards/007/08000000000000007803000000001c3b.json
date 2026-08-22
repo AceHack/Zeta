@@ -1,0 +1,12 @@
+{
+  "pr_number": 7227,
+  "archive_path": "docs/history/pr-reviews/PR-7227-docs-research-ferry-shadow-sessions-court-without-judgement-qpg-cross-platform-u.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-09T08:07:12.408Z",
+  "schema_version": "v1",
+  "commit_sha": "a3ba3bfe2378d401b5739b4461fbcb7d29e97fba",
+  "title": "docs(research)+ferry: shadow-sessions (court-without-judgement, QPG) + cross-platform USB flashing over install.sh push-down base",
+  "state": "MERGED",
+  "merged_at": "2026-06-09T08:06:46Z",
+  "head_ref": "otto/research-shadow-sessions-qpg-and-xplat-flashing"
+}

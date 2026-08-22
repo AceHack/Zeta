@@ -1,0 +1,14 @@
+{
+  "id": "080d012db4be8010a013000831f7d2d7",
+  "at": "2026-08-21T19:05:18.544Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M0JVD5YG087G0R002QDFR9H",
+    "type": "bug",
+    "title": "oz pins ziti-controller 1.4.5, a chart version upstream never published -- the Application cannot resolve",
+    "slug": "oz-pins-ziti-controller-1-4-5-a-chart-version-upstream-never",
+    "priority": "P2",
+    "filename": "081M0JVD5YG087G0R002QDFR9H-oz-pins-ziti-controller-1-4-5-a-chart-version-upstream-never.md"
+  }
+}

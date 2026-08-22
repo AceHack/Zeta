@@ -5,14 +5,13 @@
  * Pure: no I/O. Composes with zeta-creds-crypto.ts (scrypt → HKDF → AES-GCM).
  *
  * Shipped today: `usbUuid` (FAT filesystem UUID — breaks on reformat).
- * Research: `usbISerial`, `uefiKeyfile`, `tpmSeal` (see threat-model matrix).
+ * Research: `tpmSeal`. `uefiKeyfile` ESP persist planner + opt-in persist
+ * (`uefi-keyfile-esp.ts` `--write`) and restore from `/boot/EFI/ZETA/keyfile`.
+ * `usbISerial` sysfs probe landed (`usb-iserial-probe.ts`). Neither is the
+ * default persist path.
  */
 
-import {
-  decrypt,
-  encryptWithBindingMaterial,
-  type Envelope,
-} from "./zeta-creds-crypto.ts";
+import { decrypt, encryptWithBindingMaterial, type Envelope } from "./zeta-creds-crypto.ts";
 
 export type CredentialBindingFactorKind = "usbUuid" | "usbISerial" | "uefiKeyfile" | "tpmSeal";
 
@@ -60,21 +59,13 @@ export const FIXTURE_ENCRYPT_CTX = {
 export const FIXTURE_PASSPHRASE = "correct horse battery staple";
 export const FIXTURE_WRONG_PASSPHRASE = "Tr0ub4dor&3";
 
-const FACTOR_ORDER: readonly CredentialBindingFactorKind[] = [
-  "usbUuid",
-  "usbISerial",
-  "uefiKeyfile",
-  "tpmSeal",
-];
+const FACTOR_ORDER: readonly CredentialBindingFactorKind[] = ["usbUuid", "usbISerial", "uefiKeyfile", "tpmSeal"];
 
 /**
  * Material bound into HKDF for a given factor kind.
  * Returns null when the factor is absent from context (decrypt impossible).
  */
-export function bindingMaterialForContext(
-  factor: CredentialBindingFactorKind,
-  ctx: BindingContext,
-): string | null {
+export function bindingMaterialForContext(factor: CredentialBindingFactorKind, ctx: BindingContext): string | null {
   switch (factor) {
     case "usbUuid":
       return ctx.usbUuid.length > 0 ? ctx.usbUuid : null;
@@ -204,10 +195,7 @@ export function expectedBindingScenarioOutcome(
 export function credentialBindingExpectationMatrix(): Readonly<
   Record<CredentialBindingFactorKind, Readonly<Record<CredentialBindingScenario, BindingScenarioOutcome>>>
 > {
-  const out = {} as Record<
-    CredentialBindingFactorKind,
-    Record<CredentialBindingScenario, BindingScenarioOutcome>
-  >;
+  const out = {} as Record<CredentialBindingFactorKind, Record<CredentialBindingScenario, BindingScenarioOutcome>>;
   for (const factor of FACTOR_ORDER) {
     const row: Record<CredentialBindingScenario, BindingScenarioOutcome> = {} as Record<
       CredentialBindingScenario,
@@ -279,8 +267,7 @@ export function attemptBindingScenarioDecrypt(input: {
     return { decryptSucceeded: false, expected };
   }
 
-  const attemptPassphrase =
-    input.scenario === "wrong_passphrase" ? FIXTURE_WRONG_PASSPHRASE : passphrase;
+  const attemptPassphrase = input.scenario === "wrong_passphrase" ? FIXTURE_WRONG_PASSPHRASE : passphrase;
   const result = decryptWithBindingMaterial(envelope, decryptMaterial, attemptPassphrase);
   const decryptSucceeded = !("error" in result);
   return { decryptSucceeded, expected };

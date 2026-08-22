@@ -1,0 +1,12 @@
+{
+  "pr_number": 9580,
+  "archive_path": "docs/history/pr-reviews/PR-9580-fix-ci-unbreak-main-round-2-githooks-pre-push-inventory-row-md032-in-trio-attest.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-09T00:11:40.117Z",
+  "schema_version": "v1",
+  "commit_sha": "129dc63d582a43c22bc96e01f53cf98ccc6545b0",
+  "title": "fix(ci): unbreak main round 2 — githooks/pre-push inventory row + MD032 in trio-attestation letter",
+  "state": "MERGED",
+  "merged_at": "2026-07-09T00:11:06Z",
+  "head_ref": "otto/unbreak-main-round2"
+}

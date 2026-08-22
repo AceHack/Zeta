@@ -1,0 +1,12 @@
+{
+  "pr_number": 2413,
+  "archive_path": "docs/history/pr-reviews/PR-2413-feat-b-0380-quant-austrian-controlled-vocabulary-four-term-precision-before-rese.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-10T04:26:10.524Z",
+  "schema_version": "v1",
+  "commit_sha": "081dc2c25926efb35c134a5eda433c786abeb8f4",
+  "title": "feat(B-0380): quant × Austrian controlled vocabulary — four-term precision before research begins",
+  "state": "MERGED",
+  "merged_at": "2026-05-10T04:25:53Z",
+  "head_ref": "feat/B-0380-quant-austrian-vocabulary-2026-05-10"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 8753,
+  "archive_path": "docs/history/pr-reviews/PR-8753-fix-ci-add-harness-oracle-for-dv-key-cloud-events-cross-verify-restore-gate-gree.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-20T17:10:32.517Z",
+  "schema_version": "v1",
+  "commit_sha": "634a55d401f327fcffcef5eeef0bc7fe23e795f1",
+  "title": "fix(ci): add harness oracle for dv-key-cloud-events cross-verify (restore gate green)",
+  "state": "MERGED",
+  "merged_at": "2026-06-20T17:10:09Z",
+  "head_ref": "otto/fix-dv-key-cloud-events-oracle"
+}

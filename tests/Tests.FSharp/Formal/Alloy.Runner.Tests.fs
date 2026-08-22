@@ -6,6 +6,7 @@ open System.Diagnostics
 open System.IO
 open FsUnit.Xunit
 open global.Xunit
+open Zeta.Tests.Support
 
 
 // ═══════════════════════════════════════════════════════════════════
@@ -63,12 +64,26 @@ let private runnerClassDir =
     Path.Combine(repoRoot, "src", "Core.Alloy", "classes")
 
 
+// Every subprocess below spawns through `Subprocess.startInfo`, which
+// REQUIRES a working directory. WHY, since these are all absolute paths
+// already: a `ProcessStartInfo` with `WorkingDirectory` unset makes the
+// child inherit the test process's global CWD at fork time, and on
+// 2026-08-14 that ambient inheritance killed
+// `Alloy spec Spine structural invariants hold` on PR #10757 — the
+// durability CWD-churn test had moved process CWD into a temp tree and
+// then deleted it, so the JVM could not resolve its own cwd and died in
+// `SystemProps$Raw.platformProperties` before reaching `main`. The
+// failure had nothing to do with that PR's diff.
+//
+// `Tlc.Runner.Tests.fs` was immune because it already set
+// `psi.WorkingDirectory` — not because it is a serialised collection.
+// Regression: `Infra/CwdChaos.Tests.fs`, which reproduces the crash on
+// demand from a seed.
 let private which (tool: string) : string option =
     try
-        let psi =
-            ProcessStartInfo("/usr/bin/env", $"which %s{tool}",
-                RedirectStandardOutput = true,
-                UseShellExecute = false)
+        let psi = Subprocess.startInfo "/usr/bin/env" repoRoot
+        psi.ArgumentList.Add "which"
+        psi.ArgumentList.Add tool
         use p = Process.Start psi
         let output = p.StandardOutput.ReadToEnd().Trim()
         p.WaitForExit()
@@ -94,16 +109,12 @@ let private compileRunnerIfNeeded () : bool =
                > (FileInfo classFile).LastWriteTimeUtc
         if not needsRebuild then true
         else
-            let psi = ProcessStartInfo()
-            psi.FileName <- "javac"
+            let psi = Subprocess.startInfo "javac" repoRoot
             psi.ArgumentList.Add "-cp"
             psi.ArgumentList.Add alloyJarPath
             psi.ArgumentList.Add "-d"
             psi.ArgumentList.Add runnerClassDir
             psi.ArgumentList.Add alloyRunnerSource
-            psi.RedirectStandardOutput <- true
-            psi.RedirectStandardError <- true
-            psi.UseShellExecute <- false
             use p = Process.Start psi
             let _stdout = p.StandardOutput.ReadToEnd()
             let stderr = p.StandardError.ReadToEnd()
@@ -121,21 +132,23 @@ let private runAlloy (specName: string) : int * string =
         failwithf "Alloy spec not found: %s" specFile
     let classpathSep = if OperatingSystem.IsWindows() then ";" else ":"
     let cp = $"{alloyJarPath}{classpathSep}{runnerClassDir}"
-    let psi = ProcessStartInfo()
-    psi.FileName <- "java"
+    let psi = Subprocess.startInfo "java" repoRoot
     psi.ArgumentList.Add "-cp"
     psi.ArgumentList.Add cp
     psi.ArgumentList.Add "AlloyRunner"
     psi.ArgumentList.Add specFile
-    psi.RedirectStandardOutput <- true
-    psi.RedirectStandardError <- true
-    psi.UseShellExecute <- false
     use p = Process.Start psi
-    let stdout = p.StandardOutput.ReadToEnd()
-    let stderr = p.StandardError.ReadToEnd()
-    if not (p.WaitForExit(60_000)) then
+    let stdoutTask = p.StandardOutput.ReadToEndAsync()
+    let stderrTask = p.StandardError.ReadToEndAsync()
+    let completed = p.WaitForExit(60_000)
+    if not completed then
         try p.Kill(true) with _ -> ()
-        failwithf "Alloy runner for %s timed out after 60 s" specName
+        p.WaitForExit()
+    let stdout = stdoutTask.GetAwaiter().GetResult()
+    let stderr = stderrTask.GetAwaiter().GetResult()
+    if not completed then
+        failwithf "Alloy runner for %s timed out after 60 s. Output:\n%s"
+            specName (stdout + stderr)
     p.ExitCode, stdout + stderr
 
 

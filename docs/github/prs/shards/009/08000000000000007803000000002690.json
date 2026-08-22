@@ -1,0 +1,12 @@
+{
+  "pr_number": 9872,
+  "archive_path": "docs/history/pr-reviews/PR-9872-fix-register-demote-z-3-sixth-broken-discharge-quarantine-the-five-void-scripts-.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-01T13:20:20.374Z",
+  "schema_version": "v1",
+  "commit_sha": "c46aa995fc013e0ff3ec38b1f4790032bb4d813c",
+  "title": "fix(register): demote Z-3 (sixth broken discharge) + quarantine the five void scripts + honest-label the constant",
+  "state": "MERGED",
+  "merged_at": "2026-08-01T13:19:50Z",
+  "head_ref": "soraya/z-conjecture-cleanup-v2"
+}

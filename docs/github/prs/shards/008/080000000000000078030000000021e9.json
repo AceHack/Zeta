@@ -1,0 +1,12 @@
+{
+  "pr_number": 8681,
+  "archive_path": "docs/history/pr-reviews/PR-8681-feat-core-demo-slice-3-mintpanel-nft-mint-panel-zeta-ntp-clock-grounding-indicat.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-20T02:10:02.638Z",
+  "schema_version": "v1",
+  "commit_sha": "358a5db218cbddfe12e76f5eb4c80d36f8156e10",
+  "title": "feat(core): demo slice 3 — MintPanel (NFT mint panel + Zeta-NTP clock + grounding indicator)",
+  "state": "MERGED",
+  "merged_at": "2026-06-20T02:09:36Z",
+  "head_ref": "otto/demo-slice3-mint-panel-ntp-grounding"
+}

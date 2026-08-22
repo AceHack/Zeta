@@ -1,0 +1,12 @@
+{
+  "pr_number": 9538,
+  "archive_path": "docs/history/pr-reviews/PR-9538-feat-observe-s6-skip-gh-continue-later-paper-review-accept.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-08T21:48:45.182Z",
+  "schema_version": "v1",
+  "commit_sha": "68adaf6798e58276c76d045e2749bfe93bd112b0",
+  "title": "feat(observe): S6 skip-gh continue-later + paper review accept",
+  "state": "MERGED",
+  "merged_at": "2026-07-08T21:48:20Z",
+  "head_ref": "feat/usb-s6-skip-gh-continue-later"
+}

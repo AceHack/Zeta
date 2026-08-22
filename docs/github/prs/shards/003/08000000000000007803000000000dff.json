@@ -1,0 +1,12 @@
+{
+  "pr_number": 3583,
+  "archive_path": "docs/history/pr-reviews/PR-3583-memory-audit-first-then-decide-discipline-three-way-pivot-pattern.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-15T20:49:40.491Z",
+  "schema_version": "v1",
+  "commit_sha": "fdedeb97a263409f3aaa3fed0451d70fcbe6729a",
+  "title": "memory: audit-first-then-decide discipline — three-way pivot pattern",
+  "state": "MERGED",
+  "merged_at": "2026-05-15T20:49:22Z",
+  "head_ref": "memory/audit-first-then-decide-discipline-otto-cli-2026-05-15"
+}

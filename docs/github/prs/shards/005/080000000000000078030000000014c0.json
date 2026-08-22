@@ -1,0 +1,12 @@
+{
+  "pr_number": 5312,
+  "archive_path": "docs/history/pr-reviews/PR-5312-feat-tonal-momentum-welfare-jiu-jitsu-carved-sentence-6-anchor-empirical-table-t.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-26T20:49:02.169Z",
+  "schema_version": "v1",
+  "commit_sha": "e9e0b07c659a0ab40660215a0d4c39f447082928",
+  "title": "feat(tonal-momentum): welfare-jiu-jitsu carved-sentence + 6-anchor empirical table + two-way discriminator + engineering-register-throughout property",
+  "state": "MERGED",
+  "merged_at": "2026-05-26T20:48:44Z",
+  "head_ref": "otto-cli/tonal-momentum-5th-6th-anchors-welfare-jiu-jitsu-aaron-2026-05-26"
+}

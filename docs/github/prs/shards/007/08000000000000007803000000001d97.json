@@ -1,0 +1,12 @@
+{
+  "pr_number": 7575,
+  "archive_path": "docs/history/pr-reviews/PR-7575-feat-core-re-land-b-1022-fusion-isrlift-fusion-by-instantiation-proof-b-1023-orp.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-11T03:05:55.876Z",
+  "schema_version": "v1",
+  "commit_sha": "d984675e673a5e4d48dc1af109d1430042d720c1",
+  "title": "feat(core): re-land B-1022 fusion (IsrLift + fusion-by-instantiation proof) + B-1023 (orphaned by #7572 race)",
+  "state": "MERGED",
+  "merged_at": "2026-06-11T03:05:33Z",
+  "head_ref": "shadow-b1022-fusion-reland"
+}

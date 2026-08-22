@@ -1,0 +1,12 @@
+{
+  "pr_number": 9903,
+  "archive_path": "docs/history/pr-reviews/PR-9903-docs-research-multi-repo-split-design-over-the-four-existing-axes-ace-zetadb-cor.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-01T17:48:31.611Z",
+  "schema_version": "v1",
+  "commit_sha": "e9915f7eb881980f2499e0ce45ce1fbf56d5e56f",
+  "title": "docs(research): multi-repo split design — over the four existing axes, ace/zetadb core, and why the cache quota is the wrong forcing function",
+  "state": "MERGED",
+  "merged_at": "2026-08-01T17:47:59Z",
+  "head_ref": "shadow/multi-repo-split-design"
+}

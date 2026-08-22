@@ -1,0 +1,12 @@
+{
+  "pr_number": 9610,
+  "archive_path": "docs/history/pr-reviews/PR-9610-docs-letters-ferry-alexa-deterministic-time-as-coordination-primitive-agree-on-s.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-09T03:50:39.362Z",
+  "schema_version": "v1",
+  "commit_sha": "bde7a00f1db252e2020f59e47c05764dfe31d5a9",
+  "title": "docs(letters)+ferry: Alexa — deterministic time as coordination primitive (agree on seed-phase, NOT wall-clock) (verbatim + honest-register note) (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-09T03:50:14Z",
+  "head_ref": "otto/ferry-alexa-deterministic-time-phase-not-wallclock"
+}

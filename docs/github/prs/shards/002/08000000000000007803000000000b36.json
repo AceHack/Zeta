@@ -1,0 +1,12 @@
+{
+  "pr_number": 2870,
+  "archive_path": "docs/history/pr-reviews/PR-2870-docs-memory-canonical-elevator-pitch-aaron-validated-as-best-ever-green-threads-.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-12T21:32:55.709Z",
+  "schema_version": "v1",
+  "commit_sha": "8b8875b68afa9a0fdd407341fabb1d96b4848300",
+  "title": "docs(memory): CANONICAL elevator pitch — Aaron-validated as 'best ever' (green-threads + durable-functions + Orleans-grain runtime for ADHD-hyperfocus humans in post-labor attention economy)",
+  "state": "MERGED",
+  "merged_at": "2026-05-12T21:32:39Z",
+  "head_ref": "otto-elevator-pitch-canonical-aaron-best-ever-validation-2026-05-12"
+}

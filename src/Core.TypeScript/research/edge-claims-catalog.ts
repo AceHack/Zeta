@@ -12,11 +12,11 @@
 //   mean-days-flag-planted-to-first-challenge
 //
 // Usage (type-check only, no runtime needed):
-//   bun --check tools/research/edge-claims-catalog.ts
+//   bun --check src/Core.TypeScript/research/edge-claims-catalog.ts
 //
 // Usage (validate catalog entries at runtime):
-//   bun tools/research/edge-claims-catalog.ts --validate
-//   bun tools/research/edge-claims-catalog.ts --summary
+//   bun src/Core.TypeScript/research/edge-claims-catalog.ts --validate
+//   bun src/Core.TypeScript/research/edge-claims-catalog.ts --summary
 
 // ── Flag state machine ────────────────────────────────────────────────────────
 

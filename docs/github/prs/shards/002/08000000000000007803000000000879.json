@@ -1,0 +1,16 @@
+{
+  "pr_number": 2169,
+  "archive_path": "docs/history/pr-reviews/PR-2169-feat-b-0277-shape-indexed-structurecatalog-with-query-by-shape-and-similarity.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_d-fx",
+    "comment:PRRC_kwDOSF9kNM6_d7Kv",
+    "thread:PRRT_kwDOSF9kNM6Ax7TR"
+  ],
+  "fetched_at": "2026-05-09T02:55:49.942Z",
+  "schema_version": "v1",
+  "commit_sha": "e6fbdf22ce77f225c3d365bb11dffc796d8823df",
+  "title": "feat(B-0277): shape-indexed StructureCatalog with query-by-shape and similarity",
+  "state": "MERGED",
+  "merged_at": "2026-05-09T02:55:30Z",
+  "head_ref": "claim/b0277-structure-catalog-smallest-slice-2026-05-08"
+}

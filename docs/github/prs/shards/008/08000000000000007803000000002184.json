@@ -1,0 +1,12 @@
+{
+  "pr_number": 8580,
+  "archive_path": "docs/history/pr-reviews/PR-8580-test-aurora-b-bft-honest-count-z3-leg-quorum-threshold-soundness-qf-lia.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-19T14:32:10.812Z",
+  "schema_version": "v1",
+  "commit_sha": "8125b45c300fcf72e4e1e2267fc54d1f0c72b660",
+  "title": "test(aurora): (b) BFT honest-count Z3 leg — quorum threshold soundness (QF_LIA)",
+  "state": "MERGED",
+  "merged_at": "2026-06-19T14:31:46Z",
+  "head_ref": "otto/aurora-b-z3-honest-count"
+}

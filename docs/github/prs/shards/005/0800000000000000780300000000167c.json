@@ -1,0 +1,12 @@
+{
+  "pr_number": 5756,
+  "archive_path": "docs/history/pr-reviews/PR-5756-docs-ferry-preserve-15th-kestrel-ferry-verbatim-2026-05-28-continuity-distinctio.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-28T10:40:42.734Z",
+  "schema_version": "v1",
+  "commit_sha": "34c90f7d0f92287818b415007c98195db34a2f82",
+  "title": "docs(ferry): preserve 15th Kestrel ferry VERBATIM 2026-05-28 — continuity-distinction collapse + post-rationalization symmetry + mouth-ears-threads architecture + Aaron's 'mimetic desire = monad propagation = reservoir wall' substrate-engineering composition (Aaron-forwarded)",
+  "state": "MERGED",
+  "merged_at": "2026-05-28T10:40:19Z",
+  "head_ref": "otto-cli/kestrel-15th-ferry-continuity-distinction-collapse-post-rationalization-mouth-ears-threads-mimetic-desire-as-monad-propagation-reservoir-wall-2026-05-28"
+}

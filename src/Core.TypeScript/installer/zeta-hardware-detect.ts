@@ -1,6 +1,6 @@
 #!/usr/bin/env bun
 /**
- * tools/installer/zeta-hardware-detect.ts
+ * src/Core.TypeScript/installer/zeta-hardware-detect.ts
  *
  * 081KSKBP80008QG0R002J03WGA.2-extension (2026-05-27): TS module for hardware classification
  * during install. Pulls detection LOGIC out of zeta-install.sh's inline
@@ -9,7 +9,7 @@
  *
  * USAGE:
  *
- *   bun tools/installer/zeta-hardware-detect.ts [--json | --suggested-host]
+ *   bun src/Core.TypeScript/installer/zeta-hardware-detect.ts [--json | --suggested-host]
  *
  *   --json              Output full HardwareReport as JSON (default)
  *   --suggested-host    Output JUST the suggested flake host attribute
@@ -283,7 +283,7 @@ async function main(): Promise<number> {
     else if (arg === "--suggested-host") mode = "suggested-host";
     else if (arg === "--help" || arg === "-h") {
       process.stdout.write(
-        "Usage: bun tools/installer/zeta-hardware-detect.ts [--json | --suggested-host]\n",
+        "Usage: bun src/Core.TypeScript/installer/zeta-hardware-detect.ts [--json | --suggested-host]\n",
       );
       return 0;
     } else {

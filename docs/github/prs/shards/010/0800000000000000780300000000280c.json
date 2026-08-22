@@ -1,0 +1,12 @@
+{
+  "pr_number": 10252,
+  "archive_path": "docs/history/pr-reviews/PR-10252-fix-docs-md001-heading-increment-on-main.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-09T23:52:01.351Z",
+  "schema_version": "v1",
+  "commit_sha": "67adb92965d0261daf0170077bc0274c15c46330",
+  "title": "fix(docs): MD001 heading-increment on main",
+  "state": "MERGED",
+  "merged_at": "2026-08-09T23:51:30Z",
+  "head_ref": "shadow/fix-md001-heading-increment"
+}

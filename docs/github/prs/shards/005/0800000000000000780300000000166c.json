@@ -1,0 +1,19 @@
+{
+  "pr_number": 5740,
+  "archive_path": "docs/history/pr-reviews/PR-5740-docs-b-0807-classifier-bypass-findings-schema-and-redaction-rules.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7FtGS5",
+    "comment:PRRC_kwDOSF9kNM7FtGTl",
+    "comment:PRRC_kwDOSF9kNM7FtGUW",
+    "thread:PRRT_kwDOSF9kNM6FXCje",
+    "thread:PRRT_kwDOSF9kNM6FXCkC",
+    "thread:PRRT_kwDOSF9kNM6FXCkr"
+  ],
+  "fetched_at": "2026-05-28T10:10:02.904Z",
+  "schema_version": "v1",
+  "commit_sha": "c26cca60b254bfdf7907a3171250ffcaf678f95c",
+  "title": "docs(B-0807): classifier-bypass findings schema and redaction rules",
+  "state": "MERGED",
+  "merged_at": "2026-05-28T10:09:38Z",
+  "head_ref": "otto-cli/b0807-classifier-bypass-findings-schema-2026-05-28"
+}

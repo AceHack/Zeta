@@ -1,0 +1,12 @@
+{
+  "pr_number": 6995,
+  "archive_path": "docs/history/pr-reviews/PR-6995-docs-db-persistence-is-pluggable-git-native-default-multi-file-fs-single-file-da.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-08T02:49:31.856Z",
+  "schema_version": "v1",
+  "commit_sha": "ff1c4ea22cd62a7b9f8f5f2cd95d4e7044bb69d1",
+  "title": "docs: db persistence is pluggable — git-native default, multi-file (fs), single-file (DagFs/ContentStore)",
+  "state": "MERGED",
+  "merged_at": "2026-06-08T02:49:13Z",
+  "head_ref": "otto/db-pluggable-persistence-backends"
+}

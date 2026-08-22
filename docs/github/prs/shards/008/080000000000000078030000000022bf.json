@@ -1,0 +1,12 @@
+{
+  "pr_number": 8895,
+  "archive_path": "docs/history/pr-reviews/PR-8895-fix-algebra-never-cache-errors-wire-specialization-into-soft-mix.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-21T06:52:58.163Z",
+  "schema_version": "v1",
+  "commit_sha": "7f9d251d5ff4ae1ce55341faaea1d9460bc37a23",
+  "title": "fix(algebra): never cache errors + wire specialization into soft-mix",
+  "state": "MERGED",
+  "merged_at": "2026-06-21T06:52:31Z",
+  "head_ref": "alexa/cache-no-error-cache"
+}

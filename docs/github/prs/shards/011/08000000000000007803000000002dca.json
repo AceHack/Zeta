@@ -1,0 +1,12 @@
+{
+  "pr_number": 11722,
+  "archive_path": "docs/history/pr-reviews/PR-11722-docs-concepts-the-geodesic-entry-s-disclosed-fracture-line-broke-amend-as-it-sai.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-17T23:52:56.266Z",
+  "schema_version": "v1",
+  "commit_sha": "5f21c2849ed8d0e3812eb03a3ed3d175dea7c908",
+  "title": "docs(concepts): the geodesic entry's disclosed fracture line broke — amend, as it said to",
+  "state": "MERGED",
+  "merged_at": "2026-08-17T23:52:21Z",
+  "head_ref": "shadow/geodesic-fracture-resolved"
+}

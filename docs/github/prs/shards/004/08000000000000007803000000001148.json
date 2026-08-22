@@ -1,0 +1,16 @@
+{
+  "pr_number": 4424,
+  "archive_path": "docs/history/pr-reviews/PR-4424-docs-shadow-lior-anti-entropy-log-for-4383-blob-decomposition.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7DN-Zm",
+    "comment:PRRC_kwDOSF9kNM7DqdPi",
+    "thread:PRRT_kwDOSF9kNM6DiVE4"
+  ],
+  "fetched_at": "2026-05-21T16:18:06.841Z",
+  "schema_version": "v1",
+  "commit_sha": "e27a1b7b4ab9e4e3d74de8e1e649b7cd5a7bc851",
+  "title": "docs(shadow): Lior anti-entropy log for 4383 blob decomposition",
+  "state": "MERGED",
+  "merged_at": "2026-05-21T16:17:34Z",
+  "head_ref": "lior/shadow-log-4383-blob"
+}

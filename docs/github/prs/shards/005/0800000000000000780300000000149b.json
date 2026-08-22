@@ -1,0 +1,15 @@
+{
+  "pr_number": 5275,
+  "archive_path": "docs/history/pr-reviews/PR-5275-feat-b-0824-the-compression-google-map-reduce-zeta-generate-join.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7FDRqv",
+    "thread:PRRT_kwDOSF9kNM6E40FN"
+  ],
+  "fetched_at": "2026-05-26T18:24:18.051Z",
+  "schema_version": "v1",
+  "commit_sha": "2648ef1adb7e9444550d0a34d5b7fbfa874858c7",
+  "title": "feat(B-0824): THE compression — google=map+reduce; zeta=generate+join",
+  "state": "MERGED",
+  "merged_at": "2026-05-26T18:23:58Z",
+  "head_ref": "otto-cli/b0824-google-mapreduce-zeta-generatejoin-2026-05-26"
+}

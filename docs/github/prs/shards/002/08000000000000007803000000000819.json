@@ -1,0 +1,12 @@
+{
+  "pr_number": 2073,
+  "archive_path": "docs/history/pr-reviews/PR-2073-fix-pr-2070-address-review-findings-layercount-degree-calc-tsc-lint.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-08T12:59:09.059Z",
+  "schema_version": "v1",
+  "commit_sha": "7cacd04caae76bac7f621b575e3c58d859cfad14",
+  "title": "fix(PR-2070): address review findings — layerCount, degree calc, tsc lint",
+  "state": "MERGED",
+  "merged_at": "2026-05-08T12:58:52Z",
+  "head_ref": "fix/pr-2070-review-findings"
+}

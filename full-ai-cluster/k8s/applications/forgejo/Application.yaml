@@ -12,15 +12,36 @@ kind: Application
 metadata:
   annotations:
     argocd.argoproj.io/sync-wave: "30"
+    zeta.io/sync-policy: manual
+    zeta.io/sync-policy-reason: Standby half of the either/or Git-host pair;
+      gitlab is the default-on one. Both Applications ship for review and only
+      one may reconcile at a time, so this side stays manual until the swap
+      described in the header is performed.
   name: forgejo
   namespace: argocd
   finalizers: [ resources-finalizer.argocd.argoproj.io ]
 spec:
   project: default
   source:
-    repoURL: https://code.forgejo.org/forgejo-helm/
+    # OCI registry, NOT a classic Helm index. `https://code.forgejo.org/forgejo-helm/`
+    # is an organisation page -- its index.yaml is a 404 -- and upstream publishes
+    # only to OCI: `helm install forgejo oci://code.forgejo.org/forgejo-helm/forgejo`.
+    # ArgoCD's declarative form takes the registry host+path with NO `oci://` scheme;
+    # ArgoCD supplies it. See https://argo-cd.readthedocs.io/en/stable/user-guide/helm/
+    # ("note: the oci:// syntax is not included"). Same shape as arc-controller/,
+    # arc-runner-set/ and hindsight/ in this tree.
+    #
+    # Chart 17.1.5 -> Forgejo 15.0.7, the newest tag. The previous pin `9.0.6` was
+    # never published: that registry's 169 tags hold exactly one 9.x, `9.0.0`.
+    #
+    # Keep repoURL/chart/targetRevision on ADJACENT lines. `pinnedChartVersion` in
+    # src/Core.TypeScript/cluster/storage-profiles.ts finds the pin by probing at
+    # most three lines either side of `chart:`, and it returns "" rather than
+    # failing when it cannot -- so a comment wedged between them would silently
+    # unpin this app from the resource catalogue's acknowledgement key.
+    repoURL: code.forgejo.org/forgejo-helm
     chart: forgejo
-    targetRevision: 9.0.6
+    targetRevision: 17.1.5
     helm:
       releaseName: forgejo
       valuesObject:
@@ -31,8 +52,29 @@ spec:
           enabled: true
           size: 20Gi
           storageClass: zeta-local-path   # or longhorn for HA
-        postgresql:
-          enabled: true   # ships its own postgres; swap to CockroachDB later
+        # NO `postgresql:` key -- deliberately, and this is a BEHAVIOUR CHANGE.
+        #
+        # This manifest used to carry `postgresql.enabled: true` ("ships its own
+        # postgres; swap to CockroachDB later"). That value never worked on any
+        # published chart:
+        #   * charts 9.x-13.x DO have the key, but ship `postgresql-ha.enabled: true`
+        #     by default, and the chart refuses both at once -- `helm template` dies
+        #     with "Only one of postgresql or postgresql-ha can be enabled at the
+        #     same time". So the old values did not render even at a real 9.x pin.
+        #   * chart 14.0.0 REMOVED the postgresql and postgresql-ha subcharts
+        #     outright, so at 14+ the key does not exist and Helm would silently
+        #     drop it -- a value that reads as configuration and constrains nothing.
+        # Upstream's stated reason for the removal is Bitnami ending its free image
+        # catalogue, and that is measurable rather than merely cited: chart 13.0.1
+        # renders `docker.io/bitnami/postgresql:17.5.0-debian-12-r18`, which now
+        # returns HTTP 404 from Docker Hub. Pinning below 14 to keep the bundled
+        # database would therefore buy an ImagePullBackOff, not a database.
+        #
+        # So the chart's own default stands: DB_TYPE=sqlite3 on the PVC above.
+        # OPEN, and a maintainer decision rather than one to guess here: whether
+        # this standby host gets an external PostgreSQL (`gitea.config.database.*`)
+        # or the CockroachDB the old comment pointed at. Nothing auto-deploys in the
+        # meantime -- this Application is manual-sync by design (see header).
   destination:
     server: https://kubernetes.default.svc
     namespace: forgejo

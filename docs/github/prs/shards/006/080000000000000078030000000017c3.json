@@ -1,0 +1,12 @@
+{
+  "pr_number": 6083,
+  "archive_path": "docs/history/pr-reviews/PR-6083-feat-health-wire-factory-checks-as-trigger-sources.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-30T05:20:12.844Z",
+  "schema_version": "v1",
+  "commit_sha": "f332b03b65814f51a26e7b1e830327d8180673c1",
+  "title": "feat(health): wire factory checks as trigger sources",
+  "state": "MERGED",
+  "merged_at": "2026-05-30T05:19:51Z",
+  "head_ref": "claim/codex-loop-standing-query-trigger-sources-20260530"
+}

@@ -1,0 +1,17 @@
+{
+  "pr_number": 2805,
+  "archive_path": "docs/history/pr-reviews/PR-2805-feat-permissions-allow-osascript-kill-pkill-open-for-browser-extraction-skill-aa.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7Aa-8_",
+    "comment:PRRC_kwDOSF9kNM7Aa-9E",
+    "thread:PRRT_kwDOSF9kNM6BfsuX",
+    "thread:PRRT_kwDOSF9kNM6Bfsua"
+  ],
+  "fetched_at": "2026-05-12T16:55:00.768Z",
+  "schema_version": "v1",
+  "commit_sha": "9b2167c9d9048e563a2a3a7e2354d947593b7ec3",
+  "title": "feat(permissions): allow osascript/kill/pkill/open for browser-extraction skill (Aaron 2026-05-12 authorization)",
+  "state": "MERGED",
+  "merged_at": "2026-05-12T16:54:39Z",
+  "head_ref": "feat/permissions-osascript-chrome-browser-extraction-2026-05-12"
+}

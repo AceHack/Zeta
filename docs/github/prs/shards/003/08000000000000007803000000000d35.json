@@ -1,0 +1,15 @@
+{
+  "pr_number": 3381,
+  "archive_path": "docs/history/pr-reviews/PR-3381-shard-tick-0742z-pr-3376-merged-7-thread-fix-on-pr-3379-critical-b-0528-free-cla.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7BhUwY",
+    "thread:PRRT_kwDOSF9kNM6CSyIx"
+  ],
+  "fetched_at": "2026-05-15T09:46:04.142Z",
+  "schema_version": "v1",
+  "commit_sha": "807e1662f6226a77acd455c525d5fa8d4bd1ce70",
+  "title": "shard(tick): 0742Z — PR #3376 merged; 7-thread fix on PR #3379; CRITICAL B-0528-free-claim correction",
+  "state": "MERGED",
+  "merged_at": "2026-05-15T09:45:45Z",
+  "head_ref": "shard/tick-0742z-otto-cli-2026-05-15"
+}

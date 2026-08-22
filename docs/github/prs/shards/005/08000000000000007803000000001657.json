@@ -1,0 +1,12 @@
+{
+  "pr_number": 5719,
+  "archive_path": "docs/history/pr-reviews/PR-5719-feat-b-0910-b-0911-chain-csam-n-6-catalog-risk-distribution-asymmetry-pricing-wi.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-28T08:15:23.499Z",
+  "schema_version": "v1",
+  "commit_sha": "7148a8d88352a1600637ab7cdc365b3e6ccfb3ae",
+  "title": "feat(B-0910 + B-0911): chain-CSAM N=6+ catalog + risk-distribution-asymmetry pricing with state-capture multi-layer-attack-timeline",
+  "state": "MERGED",
+  "merged_at": "2026-05-28T08:14:57Z",
+  "head_ref": "otto-cli/b-0910-b-0911-chain-csam-catalog-plus-risk-distribution-asymmetry-state-capture-vector-aaron-otto-2026-05-28"
+}

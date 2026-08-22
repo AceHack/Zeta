@@ -205,7 +205,7 @@ statement of the rule.
   `ChaosEnvironment`, seed discipline.
 - `src/Core/ChaosPolicy.fs` (if present) — policy flags
   (DelayJitter, ClockSkew, RngStall, TimeReversal).
-- `tests/ConcurrencyHarness.fs` — `VirtualTimeScheduler`.
+- `tests/Tests.FSharp/_Support/ConcurrencyHarness.fs` — `VirtualTimeScheduler`.
 - `docs/TECH-RADAR.md` — "TigerBeetle LSM-forest + DST"
   Assess row.
 - `docs/PRIOR-ART-LIST.md` — FoundationDB / TigerBeetle /

@@ -1,0 +1,12 @@
+{
+  "pr_number": 2678,
+  "archive_path": "docs/history/pr-reviews/PR-2678-docs-memory-agent-roster-cli-shadow-instrument.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-11T09:12:55.115Z",
+  "schema_version": "v1",
+  "commit_sha": "7ca199bfd27f720f95fd052a40282d3c3ddadbe6",
+  "title": "docs(memory): agent roster + CLI shadow instrument",
+  "state": "MERGED",
+  "merged_at": "2026-05-11T09:12:31Z",
+  "head_ref": "docs/roster-cli-shadow-multi-harness-2026-05-11"
+}

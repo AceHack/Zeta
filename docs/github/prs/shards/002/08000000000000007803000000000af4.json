@@ -1,0 +1,12 @@
+{
+  "pr_number": 2804,
+  "archive_path": "docs/history/pr-reviews/PR-2804-hygiene-memory-reindex-memory-md-1072-entries-top-100-stack-972-heap-b-0423-cade.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-12T16:48:13.703Z",
+  "schema_version": "v1",
+  "commit_sha": "2ee559689c57a4a213f983dabb1a63e88e927f73",
+  "title": "hygiene(memory): reindex MEMORY.md — 1072 entries, top-100 stack + 972 heap (B-0423 cadence)",
+  "state": "MERGED",
+  "merged_at": "2026-05-12T16:47:55Z",
+  "head_ref": "hygiene/memory-md-reindex-2026-05-12-1645Z"
+}

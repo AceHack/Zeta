@@ -1,0 +1,12 @@
+{
+  "pr_number": 8648,
+  "archive_path": "docs/history/pr-reviews/PR-8648-memory-uncertainty-build-order-start-from-the-adinkra-mirror-unfold-one-onion-eg.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-19T23:41:21.768Z",
+  "schema_version": "v1",
+  "commit_sha": "de791b4733ba29c561d07a819059ae058a7eca97",
+  "title": "memory(uncertainty): build order — start from the adinkra mirror, unfold one onion/egg layer at a time; shape-match + grounded cosmos",
+  "state": "MERGED",
+  "merged_at": "2026-06-19T23:40:57Z",
+  "head_ref": "otto/adinkra-unfold-build-order-shape-match-cosmos"
+}

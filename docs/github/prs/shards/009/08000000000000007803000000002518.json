@@ -1,0 +1,12 @@
+{
+  "pr_number": 9496,
+  "archive_path": "docs/history/pr-reviews/PR-9496-docs-ferry-ani-aperiodic-tile-brownian-suppression-higgs-ledger-homoiconic-self-.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-05T22:04:25.983Z",
+  "schema_version": "v1",
+  "commit_sha": "f75dd1586aa4a6ebaa4c0d4fbe09b324b3f9d592",
+  "title": "docs(ferry): Ani — aperiodic tile / Brownian suppression / Higgs-ledger / homoiconic self-duality → CPT (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-05T22:03:58Z",
+  "head_ref": "otto/ani-ferry-aperiodic-cpt"
+}

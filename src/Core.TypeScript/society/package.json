@@ -1,0 +1,27 @@
+{
+  "name": "@zeta/society",
+  "version": "0.1.0",
+  "description": "Standalone TypeScript society algebra — AggregationRule (the k-of-n generator and its dominating endpoints), levels/obligations, and the CTM. TypeScript twin of src/Core/{AggregationRule,Levels,Society}.fs. Bun-native; no build step required. The manifest exists so NodeNext consumers (agentic-organization's TypeScript island) infer ESM for these files rather than CommonJS — same reason @zeta/id, @zeta/merkle, and @zeta/metric carry one.",
+  "type": "module",
+  "main": "aggregation-rule.ts",
+  "exports": {
+    "./aggregation-rule": "./aggregation-rule.ts",
+    "./levels": "./levels.ts",
+    "./society": "./society.ts",
+    "./ctm": "./ctm.ts",
+    "./effective-agent-count": "./effective-agent-count.ts"
+  },
+  "keywords": [
+    "zeta",
+    "aggregation-rule",
+    "dominance-lift",
+    "society",
+    "cross-language",
+    "bun"
+  ],
+  "author": "Lucent Financial Group",
+  "license": "Apache-2.0",
+  "peerDependencies": {
+    "bun": ">=1.0.0"
+  }
+}

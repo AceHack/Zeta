@@ -1,0 +1,12 @@
+{
+  "pr_number": 8938,
+  "archive_path": "docs/history/pr-reviews/PR-8938-test-ts-guard-generated-law-test-drift.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-21T10:22:07.466Z",
+  "schema_version": "v1",
+  "commit_sha": "260d281880d82ef8ccd9e7a310bdcf253f3bf9ac",
+  "title": "test(ts): guard generated law test drift",
+  "state": "MERGED",
+  "merged_at": "2026-06-21T10:21:42Z",
+  "head_ref": "codex/law-generator-drift-guard"
+}

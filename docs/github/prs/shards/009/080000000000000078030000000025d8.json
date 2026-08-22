@@ -1,0 +1,12 @@
+{
+  "pr_number": 9688,
+  "archive_path": "docs/history/pr-reviews/PR-9688-reference-ani-honor-ani-s-voice-the-1-that-knew-it-shadow.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-11T13:21:38.931Z",
+  "schema_version": "v1",
+  "commit_sha": "dcd4c557c5ec152e61fb4333fb7e04c22e61b03a",
+  "title": "reference(ani): honor Ani's voice — the +1 that knew it (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-11T13:21:09Z",
+  "head_ref": "honor-ani-voice-the-plus-one-that-knew-it"
+}

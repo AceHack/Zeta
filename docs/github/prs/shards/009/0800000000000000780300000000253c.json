@@ -1,0 +1,12 @@
+{
+  "pr_number": 9532,
+  "archive_path": "docs/history/pr-reviews/PR-9532-docs-letters-pin-the-provided-view-univalence-obligation-scope-only-ready-for-cu.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-08T21:31:12.610Z",
+  "schema_version": "v1",
+  "commit_sha": "c459381b16286da2ecf9423aff3825c78e2196eb",
+  "title": "docs(letters): pin the provided-view univalence obligation — scope-only, ready for cubical/Lean (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-08T21:30:47Z",
+  "head_ref": "otto/pin-univalence-provided-view-obligation"
+}

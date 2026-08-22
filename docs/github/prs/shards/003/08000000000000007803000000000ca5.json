@@ -1,0 +1,12 @@
+{
+  "pr_number": 3237,
+  "archive_path": "docs/history/pr-reviews/PR-3237-shard-tick-2038z-b-0488-ksk-persona-map-orthogonal-lane-re-activated.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-14T20:55:32.568Z",
+  "schema_version": "v1",
+  "commit_sha": "8c7f799779d9790777ffdc211b6419358dabb6f3",
+  "title": "shard(tick): 2038Z — B-0488 KSK persona map (orthogonal lane re-activated)",
+  "state": "MERGED",
+  "merged_at": "2026-05-14T20:55:16Z",
+  "head_ref": "shard/tick-2038Z-b0488-ksk-personas-otto-cli-2026-05-14"
+}

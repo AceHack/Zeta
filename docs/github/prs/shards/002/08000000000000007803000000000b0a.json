@@ -1,0 +1,12 @@
+{
+  "pr_number": 2826,
+  "archive_path": "docs/history/pr-reviews/PR-2826-docs-memory-aurora-is-depin-for-lfg-wallet-substrate-already-backlogged-6-stream.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-12T18:23:32.531Z",
+  "schema_version": "v1",
+  "commit_sha": "ca8932f64bc0ce0ebccd6c6b31645cad3bde725d",
+  "title": "docs(memory): Aurora IS DePIN for LFG + wallet substrate already backlogged + 6-stream PoUW-CC (Aaron 2026-05-12)",
+  "state": "MERGED",
+  "merged_at": "2026-05-12T18:23:14Z",
+  "head_ref": "docs/aaron-depin-play-for-lfg-wallet-infrastructure-already-designed-backlogged-2026-05-12"
+}

@@ -1,0 +1,16 @@
+{
+  "pr_number": 5413,
+  "archive_path": "docs/history/pr-reviews/PR-5413-feat-b-0856-p2-deferred-path-a-tmp-zeta-cluster-state-multi-agent-coordination-s.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7FO9kY",
+    "comment:PRRC_kwDOSF9kNM7FPNaw",
+    "thread:PRRT_kwDOSF9kNM6FBSaO"
+  ],
+  "fetched_at": "2026-05-27T07:14:00.565Z",
+  "schema_version": "v1",
+  "commit_sha": "9dcc6a3ba75dac8eda199303bbd4d6a7d568423a",
+  "title": "feat(B-0856 P2 deferred): Path A — /tmp/zeta-cluster-state/ multi-agent coordination standard (filed-immediately per Aaron 2026-05-27 backlog discipline; implementation deferred until after first cluster boot)",
+  "state": "MERGED",
+  "merged_at": "2026-05-27T07:13:39Z",
+  "head_ref": "backlog/b-0856-path-a-tmp-cluster-coord-standard-2026-05-27"
+}

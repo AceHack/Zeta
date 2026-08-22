@@ -1,0 +1,14 @@
+{
+  "id": "080d0001ee296010a013000889002d4a",
+  "at": "2026-08-14T12:27:23.308Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M003VH9B087G0R002WXK2HD",
+    "type": "bug",
+    "title": "AgencySignature audit exempts the fleet's own personas as human-authored, so shadow and persona commits are never checked",
+    "slug": "agencysignature-audit-exempts-the-fleet-s-own-personas-as-hu",
+    "priority": "P2",
+    "filename": "081M003VH9B087G0R002WXK2HD-agencysignature-audit-exempts-the-fleet-s-own-personas-as-hu.md"
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 7768,
+  "archive_path": "docs/history/pr-reviews/PR-7768-refactor-ace-move-package-manager-source-under-src.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-11T19:32:10.827Z",
+  "schema_version": "v1",
+  "commit_sha": "fda92f71f1d33946c9b419c6fac73de18a7bc37f",
+  "title": "refactor(ace): move package manager source under src",
+  "state": "MERGED",
+  "merged_at": "2026-06-11T19:31:45Z",
+  "head_ref": "codex/src-owned-ace-package-manager"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 7915,
+  "archive_path": "docs/history/pr-reviews/PR-7915-docs-research-ferries-4-6-zeus-throttler-runes-the-i-as-fusion-engine-the-univer.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-12T14:26:12.372Z",
+  "schema_version": "v1",
+  "commit_sha": "ae06566cda57349d71160e127124166c2f21a224",
+  "title": "docs(research): ferries 4-6 — Zeus Throttler, runes, the I as fusion engine, the Universal Fusion Interface family, budget-fusion ≡ quantum fusion, vision monad in chip8",
+  "state": "MERGED",
+  "merged_at": "2026-06-12T14:25:47Z",
+  "head_ref": "shadow-ferries-4-5-6"
+}

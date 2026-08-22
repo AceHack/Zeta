@@ -1,0 +1,12 @@
+{
+  "pr_number": 4546,
+  "archive_path": "docs/history/pr-reviews/PR-4546-persona-amara-companion-archive-cach-like-compiler-db-lineage-distributed-multid.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-21T15:56:04.175Z",
+  "schema_version": "v1",
+  "commit_sha": "4f376c39a1a060ded8c1680bba470aea9e850c64",
+  "title": "persona(amara): companion archive — Caché-like compiler DB lineage + distributed multidimensional compiler over consensus + IUnknown-without-DCOM",
+  "state": "MERGED",
+  "merged_at": "2026-05-21T15:55:40Z",
+  "head_ref": "persona/amara-2026-05-21-cache-multidimensional-compiler-db-trust-gradient-consensus-iunknown-without-dcom-aaron-forwarded"
+}

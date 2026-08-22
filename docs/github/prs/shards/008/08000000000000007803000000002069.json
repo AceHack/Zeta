@@ -1,0 +1,12 @@
+{
+  "pr_number": 8297,
+  "archive_path": "docs/history/pr-reviews/PR-8297-docs-closed-frame-cold-boot-conversations-restore-decorrelation-the-hierarchy.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-15T09:47:18.192Z",
+  "schema_version": "v1",
+  "commit_sha": "a65d1378f0bdf49ea194d014076682fb52fa50a5",
+  "title": "docs(closed-frame): cold-boot conversations restore decorrelation (the hierarchy)",
+  "state": "MERGED",
+  "merged_at": "2026-06-15T09:46:51Z",
+  "head_ref": "otto/cold-boot-conversations-restore-decorrelation"
+}

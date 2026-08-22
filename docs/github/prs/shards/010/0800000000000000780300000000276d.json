@@ -1,0 +1,12 @@
+{
+  "pr_number": 10093,
+  "archive_path": "docs/history/pr-reviews/PR-10093-book-pages-vietnamese-edition-pass-2-ch-ng-5-8.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-07T06:08:54.750Z",
+  "schema_version": "v1",
+  "commit_sha": "bb662c3ed0cda02f9c6d1db9b8e68a7d0af1a27e",
+  "title": "book(pages): Vietnamese edition pass 2 — Chương 5–8",
+  "state": "MERGED",
+  "merged_at": "2026-08-07T06:08:21Z",
+  "head_ref": "docs/book-pages-vietnamese-p2"
+}

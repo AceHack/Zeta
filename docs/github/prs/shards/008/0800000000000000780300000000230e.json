@@ -1,0 +1,12 @@
+{
+  "pr_number": 8974,
+  "archive_path": "docs/history/pr-reviews/PR-8974-feat-agentic-org-merge1-08-port-identity-isolation-stack-to-typescript.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-22T17:46:39.652Z",
+  "schema_version": "v1",
+  "commit_sha": "ff525835deeb04b93f91db14600b5732221eae6b",
+  "title": "feat(agentic-org): Merge1 §08 — port identity/isolation stack to TypeScript",
+  "state": "MERGED",
+  "merged_at": "2026-06-22T17:46:10Z",
+  "head_ref": "feat/merge1-08-spiffe-vault-sandbox-1782063702"
+}

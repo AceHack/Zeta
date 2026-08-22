@@ -1,0 +1,12 @@
+{
+  "pr_number": 4715,
+  "archive_path": "docs/history/pr-reviews/PR-4715-deps-bump-yamldotnet-from-17-1-0-to-18-0-0.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-23T13:28:44.441Z",
+  "schema_version": "v1",
+  "commit_sha": "40efcda1ee62f18f8bffd33fc5bd21b3e22270d8",
+  "title": "deps: Bump YamlDotNet from 17.1.0 to 18.0.0",
+  "state": "MERGED",
+  "merged_at": "2026-05-23T13:28:27Z",
+  "head_ref": "dependabot/nuget/YamlDotNet-18.0.0"
+}

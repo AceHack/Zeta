@@ -1,0 +1,12 @@
+{
+  "pr_number": 9312,
+  "archive_path": "docs/history/pr-reviews/PR-9312-feat-cpu-column-b-rung-4-a-clocked-cpu-control-flow-on-the-gate-datapath-shadow.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-03T14:41:29.587Z",
+  "schema_version": "v1",
+  "commit_sha": "bccc383ef0bfe20f0d402a38700aa419e5b95c3a",
+  "title": "feat(cpu): Column B rung 4 — a clocked CPU, control flow on the gate datapath (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-03T14:41:07Z",
+  "head_ref": "otto/column-b-rung4-clocked-cpu"
+}

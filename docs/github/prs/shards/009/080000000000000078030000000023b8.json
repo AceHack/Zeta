@@ -1,0 +1,17 @@
+{
+  "pr_number": 9144,
+  "archive_path": "docs/history/pr-reviews/PR-9144-feat-lean-oracle-mirror-the-dbsp-operator-set-to-lean-machine-checked-laws.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7Rdx94",
+    "comment:PRRC_kwDOSF9kNM7Rdx99",
+    "thread:PRRT_kwDOSF9kNM6N8kgb",
+    "thread:PRRT_kwDOSF9kNM6N8kgd"
+  ],
+  "fetched_at": "2026-08-17T09:48:58.164Z",
+  "schema_version": "v1",
+  "commit_sha": "c0d3d4c064da8373f6cc4e3178b4997903a5f29d",
+  "title": "feat(lean-oracle): mirror the DBSP operator set to Lean — machine-checked laws",
+  "state": "MERGED",
+  "merged_at": "2026-07-02T15:24:27Z",
+  "head_ref": "otto/dbsp-operators-lean-oracle"
+}

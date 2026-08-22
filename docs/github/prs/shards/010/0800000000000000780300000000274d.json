@@ -1,0 +1,12 @@
+{
+  "pr_number": 10061,
+  "archive_path": "docs/history/pr-reviews/PR-10061-book-raw-add-the-payoff-being-re-seen-cops-who-saw-him-at-his-worst-got-to-see-h.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-06T08:27:49.116Z",
+  "schema_version": "v1",
+  "commit_sha": "3a6ca287642543f711ae8e9a66c6d6dd345dcab6",
+  "title": "book(RAW): add \"The payoff — being re-seen\" (cops who saw him at his worst got to see him good)",
+  "state": "MERGED",
+  "merged_at": "2026-08-06T08:27:16Z",
+  "head_ref": "docs/book-raw-cops-saw-me-good-reseen"
+}

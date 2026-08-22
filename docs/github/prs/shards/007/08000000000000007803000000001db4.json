@@ -1,0 +1,12 @@
+{
+  "pr_number": 7604,
+  "archive_path": "docs/history/pr-reviews/PR-7604-feat-core-meshpong-pong-over-the-mesh-lockstep-treaty-anti-cheat-demonstrated.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-11T05:06:38.846Z",
+  "schema_version": "v1",
+  "commit_sha": "755f89a099398390fb85acc41df0a247ab49ff8f",
+  "title": "feat(core): MeshPong — pong over the mesh; lockstep treaty + anti-cheat demonstrated",
+  "state": "MERGED",
+  "merged_at": "2026-06-11T05:06:13Z",
+  "head_ref": "shadow-mesh-pong"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 11454,
+  "archive_path": "docs/history/pr-reviews/PR-11454-docs-agent-proposal-record-that-the-patch-digest-check-cannot-fire-as-deployed.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-17T16:02:20.992Z",
+  "schema_version": "v1",
+  "commit_sha": "8dc78a93065f7106c1bd886f1deece4d9f776a4b",
+  "title": "docs(agent-proposal): record that the patch-digest check cannot fire as deployed",
+  "state": "MERGED",
+  "merged_at": "2026-08-17T16:01:37Z",
+  "head_ref": "shadow/agent-proposal-digest-is-self-supplied"
+}

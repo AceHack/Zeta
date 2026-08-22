@@ -1,0 +1,12 @@
+{
+  "pr_number": 7039,
+  "archive_path": "docs/history/pr-reviews/PR-7039-docs-the-sim-becomes-an-adversarial-generative-model-gan-agents-vs-ischeduler-70.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-08T06:30:12.763Z",
+  "schema_version": "v1",
+  "commit_sha": "e63e7387384766384af8594bbf9613a276ece9c6",
+  "title": "docs: the sim becomes an adversarial generative model (GAN) — agents vs IScheduler (#7097)",
+  "state": "MERGED",
+  "merged_at": "2026-06-08T06:29:54Z",
+  "head_ref": "otto/sim-is-adversarial-generative-model-gan-agents-vs-ischeduler"
+}

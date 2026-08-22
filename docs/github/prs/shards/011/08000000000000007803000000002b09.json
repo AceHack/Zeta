@@ -1,0 +1,12 @@
+{
+  "pr_number": 11017,
+  "archive_path": "docs/history/pr-reviews/PR-11017-fix-pages-use-hash-navigation-on-static-hosting.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-16T18:59:14.787Z",
+  "schema_version": "v1",
+  "commit_sha": "31c855bc12ab7cabe6ab7bc57dbeedc0729628e7",
+  "title": "fix(pages): use hash navigation on static hosting",
+  "state": "MERGED",
+  "merged_at": "2026-08-16T18:58:42Z",
+  "head_ref": "fix/pages-hash-navigation"
+}

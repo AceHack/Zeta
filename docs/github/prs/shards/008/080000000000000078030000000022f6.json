@@ -1,0 +1,12 @@
+{
+  "pr_number": 8950,
+  "archive_path": "docs/history/pr-reviews/PR-8950-feat-cross-lang-z-set-isa-cross-language-integration-and-js-cleanup.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-21T11:10:05.868Z",
+  "schema_version": "v1",
+  "commit_sha": "64933769d668254cd85c74417c2a633aa316cdfe",
+  "title": "feat(cross-lang): Z-set ISA cross-language integration and JS cleanup",
+  "state": "MERGED",
+  "merged_at": "2026-06-21T11:09:41Z",
+  "head_ref": "claim/cross-lang-zset-isa-capstone"
+}

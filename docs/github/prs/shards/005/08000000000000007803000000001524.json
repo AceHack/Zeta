@@ -1,0 +1,15 @@
+{
+  "pr_number": 5412,
+  "archive_path": "docs/history/pr-reviews/PR-5412-feat-b-0855-self-registration-fires-last-idempotent-across-reboots-de-duped-agai.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7FO4v3",
+    "thread:PRRT_kwDOSF9kNM6FBPAF"
+  ],
+  "fetched_at": "2026-05-27T07:02:13.886Z",
+  "schema_version": "v1",
+  "commit_sha": "36103443f7de353a64bc838057bcc50dacd080a4",
+  "title": "feat(B-0855): self-registration fires LAST + idempotent across reboots + de-duped against in-flight PRs — Otto-pushes-across-finish-line (Aaron 2026-05-27 architectural fix to B-0812)",
+  "state": "MERGED",
+  "merged_at": "2026-05-27T07:01:52Z",
+  "head_ref": "backlog/b-0855-self-registration-fires-last-idempotent-deduped-2026-05-27"
+}

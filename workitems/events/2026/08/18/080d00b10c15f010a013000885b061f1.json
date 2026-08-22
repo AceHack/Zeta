@@ -1,0 +1,14 @@
+{
+  "id": "080d00b10c15f010a013000885b061f1",
+  "at": "2026-08-18T18:28:10.046Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M0B230NW087G0R000J30VQB",
+    "type": "bug",
+    "title": "frost-hardware-probe could not see a YubiHSM 2 at all, and paired any module with any device",
+    "slug": "frost-hardware-probe-could-not-see-a-yubihsm-2-at-all-and-pa",
+    "priority": "P2",
+    "filename": "081M0B230NW087G0R000J30VQB-frost-hardware-probe-could-not-see-a-yubihsm-2-at-all-and-pa.md"
+  }
+}

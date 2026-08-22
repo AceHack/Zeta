@@ -3,7 +3,7 @@
 // against routing budget. Reports long descriptions so carving batches can
 // be targeted. TS-native, no bash.
 //
-// Usage: bun tools/skill-catalog/audit-skill-descriptions.ts
+// Usage: bun src/Core.TypeScript/skill-catalog/audit-skill-descriptions.ts
 // Focused check output is included in the PR body for this slice.
 
 import { readdirSync, readFileSync } from "node:fs";

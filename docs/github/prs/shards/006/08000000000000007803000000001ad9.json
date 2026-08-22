@@ -1,0 +1,12 @@
+{
+  "pr_number": 6873,
+  "archive_path": "docs/history/pr-reviews/PR-6873-feat-softvalueinfo-cross-entropy-kl-divergence-on-softvalue-distributions.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-07T17:01:41.579Z",
+  "schema_version": "v1",
+  "commit_sha": "573b9f214cb072317aef3e1f1013c8f21296f02e",
+  "title": "feat(SoftValueInfo): cross-entropy + KL divergence on SoftValue distributions",
+  "state": "MERGED",
+  "merged_at": "2026-06-07T17:01:21Z",
+  "head_ref": "otto/softvalue-info-cross-entropy-kl"
+}

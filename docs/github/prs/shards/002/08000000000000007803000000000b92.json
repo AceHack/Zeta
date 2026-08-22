@@ -1,0 +1,19 @@
+{
+  "pr_number": 2962,
+  "archive_path": "docs/history/pr-reviews/PR-2962-docs-memory-ip-respect-canonical-commitment-revenue-share-or-100-to-creator-if-n.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7Ap3br",
+    "comment:PRRC_kwDOSF9kNM7Ap3mb",
+    "comment:PRRC_kwDOSF9kNM7Apv8X",
+    "comment:PRRC_kwDOSF9kNM7Apwp5",
+    "thread:PRRT_kwDOSF9kNM6BqW9p",
+    "thread:PRRT_kwDOSF9kNM6BqXeD"
+  ],
+  "fetched_at": "2026-05-13T07:13:43.352Z",
+  "schema_version": "v1",
+  "commit_sha": "b869b35f53548a5a0b3f77d6f3edfcef6b52c96a",
+  "title": "docs(memory): IP-respect canonical commitment — revenue-share OR 100% to creator if negotiation impossible — Aaron has 8-Bit Theater content for style training (Aaron 2026-05-13)",
+  "state": "MERGED",
+  "merged_at": "2026-05-13T07:13:25Z",
+  "head_ref": "aaron-ip-respect-revenue-share-or-100-percent-to-original-creator-brian-clevinger-8bit-theater-derivative-work-2026-05-13"
+}

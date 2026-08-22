@@ -1,0 +1,12 @@
+{
+  "pr_number": 8616,
+  "archive_path": "docs/history/pr-reviews/PR-8616-docs-research-emotional-propagation-graph-scope-aaron-s-whole-multi-platform-soc.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-19T20:23:19.592Z",
+  "schema_version": "v1",
+  "commit_sha": "c177d2d5a2d940533df62c5ab0ce3f7f0de600ca",
+  "title": "docs(research): emotional-propagation graph scope = Aaron's whole multi-platform social graph",
+  "state": "MERGED",
+  "merged_at": "2026-06-19T20:22:51Z",
+  "head_ref": "otto/emotional-propagation-multiplatform-graph-scope"
+}

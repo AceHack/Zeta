@@ -1,0 +1,12 @@
+{
+  "pr_number": 8908,
+  "archive_path": "docs/history/pr-reviews/PR-8908-fix-wire-orphans-into-builds-fill-interface-gaps-review-response.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-21T08:01:02.291Z",
+  "schema_version": "v1",
+  "commit_sha": "93dd02ee6be1eabbc5fd8afc88305cfdd3ccb53c",
+  "title": "fix: wire orphans into builds + fill interface gaps (review response)",
+  "state": "MERGED",
+  "merged_at": "2026-06-21T08:00:38Z",
+  "head_ref": "alexa/fix-orphans-and-gaps"
+}

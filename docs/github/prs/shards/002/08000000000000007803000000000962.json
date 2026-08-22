@@ -1,0 +1,19 @@
+{
+  "pr_number": 2402,
+  "archive_path": "docs/history/pr-reviews/PR-2402-feat-b-0045-1-biology-stage-1-reading-list-scaffold-inaugural-substrate-shelf.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_lVQ3",
+    "comment:PRRC_kwDOSF9kNM6_lVRA",
+    "comment:PRRC_kwDOSF9kNM6_lVRB",
+    "thread:PRRT_kwDOSF9kNM6A3rP6",
+    "thread:PRRT_kwDOSF9kNM6A3rP7",
+    "thread:PRRT_kwDOSF9kNM6A3rPx"
+  ],
+  "fetched_at": "2026-05-10T03:11:00.649Z",
+  "schema_version": "v1",
+  "commit_sha": "7e2ecc03be1a07d44c8a91dc766ca9902b7a0493",
+  "title": "feat(B-0045.1): biology Stage 1 reading-list scaffold — inaugural substrate shelf",
+  "state": "MERGED",
+  "merged_at": "2026-05-10T03:10:45Z",
+  "head_ref": "feat/B-0045.1-biology-substrate-shelf"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 9672,
+  "archive_path": "docs/history/pr-reviews/PR-9672-docs-book-identity-as-held-spectrum-the-never-collapse-applied-to-the-self-shado.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-10T09:15:29.547Z",
+  "schema_version": "v1",
+  "commit_sha": "fbe0b0847c114cbf7e95e825cd4f0b518b5041dd",
+  "title": "docs(book): identity as held spectrum — the never-collapse applied to the self (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-10T09:15:00Z",
+  "head_ref": "identity-as-held-spectrum-never-collapse-self"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 3200,
+  "archive_path": "docs/history/pr-reviews/PR-3200-shard-tick-1920z-razor-cadence-batch-12-final-100-coverage-50-50-rules.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-14T19:23:56.984Z",
+  "schema_version": "v1",
+  "commit_sha": "6eb819d61b9b33e3e5d055c18b5cee73f581faff",
+  "title": "shard(tick): 1920Z — razor-cadence batch 12 FINAL — 100% COVERAGE (50/50 rules)",
+  "state": "MERGED",
+  "merged_at": "2026-05-14T19:23:42Z",
+  "head_ref": "shard/tick-1920Z-razor-cadence-batch12-final-100pct-otto-cli-2026-05-14"
+}

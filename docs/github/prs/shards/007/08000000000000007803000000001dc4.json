@@ -1,0 +1,12 @@
+{
+  "pr_number": 7620,
+  "archive_path": "docs/history/pr-reviews/PR-7620-docs-correction-real-build-is-rgb-cmyk-ray-tracing-of-chip-8-instructions-dna-ac.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-11T09:29:39.922Z",
+  "schema_version": "v1",
+  "commit_sha": "2d1d3e95957dedb3abb62d97fa6ee3118bdd0d5a",
+  "title": "docs(correction): real build is RGB/CMYK ray-tracing of CHIP-8 instructions — DNA/ACTG is metaphor only",
+  "state": "MERGED",
+  "merged_at": "2026-06-11T09:29:15Z",
+  "head_ref": "shadow-correction-rgb-cmyk-raytrace"
+}

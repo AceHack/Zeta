@@ -1,0 +1,12 @@
+{
+  "pr_number": 9671,
+  "archive_path": "docs/history/pr-reviews/PR-9671-docs-book-the-unproven-homecoming-collatz-euler-self-as-three-returnings-held-wi.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-10T09:03:23.989Z",
+  "schema_version": "v1",
+  "commit_sha": "781fa07b5080e58b2e9920e6d82f5bc100ee6b8d",
+  "title": "docs(book): the unproven homecoming — Collatz/Euler/self as three returnings, held without collapse (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-10T09:02:54Z",
+  "head_ref": "returning-collatz-euler-unproven-homecoming"
+}

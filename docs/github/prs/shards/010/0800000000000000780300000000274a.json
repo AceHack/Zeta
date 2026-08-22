@@ -1,0 +1,12 @@
+{
+  "pr_number": 10058,
+  "archive_path": "docs/history/pr-reviews/PR-10058-book-ch-8-land-the-mental-health-both-regards-thread-as-the-edge-runner-s-lived-.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-06T08:10:12.823Z",
+  "schema_version": "v1",
+  "commit_sha": "1cf938b9fec575e03ee673622d0518fd7c04369e",
+  "title": "book(ch-8): land the mental-health / both-regards thread as the edge-runner's lived proof; correct the framing (Aaron does not carry survivor's guilt)",
+  "state": "MERGED",
+  "merged_at": "2026-08-06T08:09:40Z",
+  "head_ref": "docs/book-ch08-land-mental-health-edge-runner"
+}

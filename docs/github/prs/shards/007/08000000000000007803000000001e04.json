@@ -1,0 +1,15 @@
+{
+  "pr_number": 7684,
+  "archive_path": "docs/history/pr-reviews/PR-7684-feat-chip9-chip9selftrace-the-smallest-fully-self-reflective-system-it-ray-trace.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7KcCaD",
+    "thread:PRRT_kwDOSF9kNM6I06Zj"
+  ],
+  "fetched_at": "2026-06-11T13:45:55.597Z",
+  "schema_version": "v1",
+  "commit_sha": "102acebbc68fecdf48a90c5573a37326a7e01f62",
+  "title": "feat(chip9): Chip9SelfTrace — the smallest fully-self-reflective system (it ray-traces its own instructions AND reads its own worldline via its own ISA)",
+  "state": "MERGED",
+  "merged_at": "2026-06-11T13:36:07Z",
+  "head_ref": "shadow-chip9-self-trace"
+}

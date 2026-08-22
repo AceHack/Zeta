@@ -1,0 +1,12 @@
+{
+  "pr_number": 9039,
+  "archive_path": "docs/history/pr-reviews/PR-9039-feat-hygiene-triage-orphan-branches-ts-productize-the-preserve-first-prune-pipel.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-30T21:04:43.098Z",
+  "schema_version": "v1",
+  "commit_sha": "659c34a2a5004ffef854a875695c2c40e96c5349",
+  "title": "feat(hygiene): triage-orphan-branches.ts — productize the preserve-first prune pipeline",
+  "state": "MERGED",
+  "merged_at": "2026-06-30T21:04:22Z",
+  "head_ref": "feat-triage-orphan-branches-tool"
+}

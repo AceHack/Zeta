@@ -1,0 +1,15 @@
+{
+  "pr_number": 5760,
+  "archive_path": "docs/history/pr-reviews/PR-5760-feat-b-0883-determineencryptionpath-discriminator-encryptioncontext-plannedencry.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7FuUd6",
+    "thread:PRRT_kwDOSF9kNM6FX6EX"
+  ],
+  "fetched_at": "2026-05-28T11:03:20.110Z",
+  "schema_version": "v1",
+  "commit_sha": "75d00fa32d13890fa8356c737cc0e9d0f257b004",
+  "title": "feat(B-0883): determineEncryptionPath discriminator — EncryptionContext → PlannedEncryptionPath Result-shape (encryption lane substantive work; parallel to PR #5758)",
+  "state": "MERGED",
+  "merged_at": "2026-05-28T11:02:59Z",
+  "head_ref": "otto-cli/b-0883-determine-encryption-path-discriminator-context-to-planned-path-result-shape-2026-05-28"
+}

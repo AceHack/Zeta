@@ -1,0 +1,12 @@
+{
+  "pr_number": 2557,
+  "archive_path": "docs/history/pr-reviews/PR-2557-docs-memory-comedy-sixth-signal-human-attention-retention-keeps-safety-model-ali.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-10T22:03:39.506Z",
+  "schema_version": "v1",
+  "commit_sha": "69353e1817aaddb1e0f05589027b421269024f80",
+  "title": "docs(memory): comedy sixth signal — human attention retention keeps safety model alive",
+  "state": "MERGED",
+  "merged_at": "2026-05-10T22:03:24Z",
+  "head_ref": "docs/comedy-sixth-signal-attention-2026-05-10"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 5946,
+  "archive_path": "docs/history/pr-reviews/PR-5946-docs-hygiene-history-0609z-cold-boot-tick-shard-own-surface-pr-triage.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-29T06:15:16.796Z",
+  "schema_version": "v1",
+  "commit_sha": "fdbaed3ad4c22a021365e261e3bbb046ab2b844c",
+  "title": "docs(hygiene-history): 0609Z cold-boot tick shard + own-surface PR triage",
+  "state": "MERGED",
+  "merged_at": "2026-05-29T06:14:57Z",
+  "head_ref": "shard/tick-0609z-otto-cli-pr-triage-investigation-2026-05-29"
+}

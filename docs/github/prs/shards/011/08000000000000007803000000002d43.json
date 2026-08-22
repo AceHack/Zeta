@@ -1,0 +1,12 @@
+{
+  "pr_number": 11587,
+  "archive_path": "docs/history/pr-reviews/PR-11587-ferry-ip-questionable-hossenfelder-on-two-time-dimensions-and-why-our-second-dir.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-17T17:41:05.721Z",
+  "schema_version": "v1",
+  "commit_sha": "80221f2b114706427af8b9197b97b0afc1bd6d7d",
+  "title": "ferry(ip-questionable): Hossenfelder on two time dimensions — and why our second direction is not that",
+  "state": "MERGED",
+  "merged_at": "2026-08-17T17:40:28Z",
+  "head_ref": "shadow/ferry-hossenfelder-two-time-dimensions"
+}

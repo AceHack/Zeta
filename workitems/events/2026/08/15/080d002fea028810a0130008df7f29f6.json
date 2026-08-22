@@ -1,0 +1,14 @@
+{
+  "id": "080d002fea028810a0130008df7f29f6",
+  "at": "2026-08-15T15:14:38.289Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M02ZTG2G087G0R002YFR8DJ",
+    "type": "task",
+    "title": "35 of 36 Core.Rust crates and the Go ZetaId codec execute in no CI job",
+    "slug": "35-of-36-core-rust-crates-and-the-go-zetaid-codec-execute-in",
+    "priority": "P2",
+    "filename": "081M02ZTG2G087G0R002YFR8DJ-35-of-36-core-rust-crates-and-the-go-zetaid-codec-execute-in.md"
+  }
+}

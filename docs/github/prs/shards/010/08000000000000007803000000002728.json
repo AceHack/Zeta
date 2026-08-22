@@ -1,0 +1,12 @@
+{
+  "pr_number": 10024,
+  "archive_path": "docs/history/pr-reviews/PR-10024-docs-anchor-credit-diana-as-pdw-meter-simulator-co-anchor-open-source-granted-bo.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-04T14:50:58.616Z",
+  "schema_version": "v1",
+  "commit_sha": "09652d76f5df4c09e75fbad802d15cbb625981de",
+  "title": "docs(anchor): credit Diana as PDW meter-simulator co-anchor (open-source granted; book gated)",
+  "state": "MERGED",
+  "merged_at": "2026-08-04T14:49:34Z",
+  "head_ref": "docs/diana-cocredit-metrology-docstring-and-ledger-20260804"
+}

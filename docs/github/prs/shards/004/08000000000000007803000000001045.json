@@ -1,0 +1,19 @@
+{
+  "pr_number": 4165,
+  "archive_path": "docs/history/pr-reviews/PR-4165-backlog-mika-batch7-cont-b-0655-all-children-equal-value-b-0658-two-invariant-ma.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7CV4_t",
+    "comment:PRRC_kwDOSF9kNM7CV5Qa",
+    "comment:PRRC_kwDOSF9kNM7CV5RB",
+    "thread:PRRT_kwDOSF9kNM6C5wFE",
+    "thread:PRRT_kwDOSF9kNM6C5wRP",
+    "thread:PRRT_kwDOSF9kNM6C5wRn"
+  ],
+  "fetched_at": "2026-05-18T16:40:56.811Z",
+  "schema_version": "v1",
+  "commit_sha": "50803505a295a808b3370d0954378c825ab159e9",
+  "title": "backlog(mika-batch7-cont): B-0655 all-children-equal-value + B-0658 two-invariant maximalist position with Mika red-team caveat",
+  "state": "MERGED",
+  "merged_at": "2026-05-18T16:40:26Z",
+  "head_ref": "otto-cli/mika-batch7-b0655-b0658-2026-05-18-1233Z"
+}

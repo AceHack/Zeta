@@ -1,0 +1,25 @@
+{
+  "pr_number": 6612,
+  "archive_path": "docs/history/pr-reviews/PR-6612-feat-b-0450-add-minimal-c-quickstart-sample.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7HSKLx",
+    "comment:PRRC_kwDOSF9kNM7HSKMu",
+    "comment:PRRC_kwDOSF9kNM7HSYLI",
+    "comment:PRRC_kwDOSF9kNM7HSYME",
+    "comment:PRRC_kwDOSF9kNM7HSlld",
+    "comment:PRRC_kwDOSF9kNM7HSloU",
+    "comment:PRRC_kwDOSF9kNM7HSlrh",
+    "comment:PRRC_kwDOSF9kNM7HSltd",
+    "thread:PRRT_kwDOSF9kNM6Gheji",
+    "thread:PRRT_kwDOSF9kNM6GhekM",
+    "thread:PRRT_kwDOSF9kNM6Gho1b",
+    "thread:PRRT_kwDOSF9kNM6Gho2M"
+  ],
+  "fetched_at": "2026-06-02T18:35:56.020Z",
+  "schema_version": "v1",
+  "commit_sha": "e90edb73c006751f9a3ec7420eace9aeb4cac70c",
+  "title": "feat(B-0450): add minimal C# quickstart sample",
+  "state": "MERGED",
+  "merged_at": "2026-06-02T18:35:25Z",
+  "head_ref": "claim/codex-loop-b0450-quickstart-sample-20260602T174101Z"
+}

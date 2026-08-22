@@ -1,0 +1,15 @@
+{
+  "pr_number": 2236,
+  "archive_path": "docs/history/pr-reviews/PR-2236-test-b-0170-add-focused-check-outcome-note-to-check-counts-regression-suite-smal.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_f1Hg",
+    "thread:PRRT_kwDOSF9kNM6AzWXt"
+  ],
+  "fetched_at": "2026-05-09T07:58:48.933Z",
+  "schema_version": "v1",
+  "commit_sha": "a832737135b434ed5ba371d137e22d347a8e69e2",
+  "title": "test(B-0170): add focused-check outcome note to check-counts regression suite (smallest safe slice)",
+  "state": "MERGED",
+  "merged_at": "2026-05-09T07:58:34Z",
+  "head_ref": "claim/b0170-substrate-claim-checker-smallest-slice-riven-2026-05-09"
+}

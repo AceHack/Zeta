@@ -1,0 +1,12 @@
+{
+  "pr_number": 9193,
+  "archive_path": "docs/history/pr-reviews/PR-9193-harden-core-asn1der-decode-is-total-on-hostile-input-no-crash-no-mis-decode.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-02T19:57:06.660Z",
+  "schema_version": "v1",
+  "commit_sha": "340e217b81bab190c32f2d62fa5665ae38ab7b88",
+  "title": "harden(core): Asn1Der.decode is total on hostile input — no crash, no mis-decode",
+  "state": "MERGED",
+  "merged_at": "2026-07-02T19:56:45Z",
+  "head_ref": "otto/asn1-der-hostile-input-hardening"
+}

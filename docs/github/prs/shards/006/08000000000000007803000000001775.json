@@ -1,0 +1,12 @@
+{
+  "pr_number": 6005,
+  "archive_path": "docs/history/pr-reviews/PR-6005-memory-index-regen-memory-md-for-part-3-fix-forward-for-6004-drift.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-29T16:02:27.772Z",
+  "schema_version": "v1",
+  "commit_sha": "b305f6741a10f88d9464c22e6eb2a35a43520776",
+  "title": "memory(index): regen MEMORY.md for part-3 (fix-forward for #6004 drift)",
+  "state": "MERGED",
+  "merged_at": "2026-05-29T16:01:57Z",
+  "head_ref": "otto-cli/memory-reindex-part3-2026-05-29"
+}

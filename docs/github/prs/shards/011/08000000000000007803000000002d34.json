@@ -1,0 +1,12 @@
+{
+  "pr_number": 11572,
+  "archive_path": "docs/history/pr-reviews/PR-11572-feat-chip8-the-cross-run-half-run-1-s-orbit-memoized-as-text-readable-at-run-2-s.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-21T12:56:11.068Z",
+  "schema_version": "v1",
+  "commit_sha": "8a1911b9d42914b3ce7315afdadd721985a11cc3",
+  "title": "feat(chip8): the cross-run half — run 1's orbit, memoized as text, readable at run 2's step 0",
+  "state": "MERGED",
+  "merged_at": "2026-08-17T17:11:14Z",
+  "head_ref": "shadow/chip8-cross-run-superdeterministic-store"
+}

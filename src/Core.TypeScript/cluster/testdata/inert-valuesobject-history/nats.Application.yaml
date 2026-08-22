@@ -1,0 +1,54 @@
+# NATS — messaging.
+
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  annotations:
+    argocd.argoproj.io/sync-wave: "0"
+  name: nats
+  namespace: argocd
+  finalizers: [ resources-finalizer.argocd.argoproj.io ]
+spec:
+  project: default
+  source:
+    repoURL: https://nats-io.github.io/k8s/helm/charts/
+    chart: nats
+    targetRevision: 1.2.7
+    helm:
+      releaseName: nats
+      valuesObject:
+        config:
+          jetstream:
+            enabled: true
+            fileStore:
+              pvc:
+                # SIZE CUT, NOT A POD CUT: 20Gi -> 10Gi per node, and
+                # `cluster.replicas: 3` below is UNTOUCHED, so JetStream keeps
+                # its quorum and R3 streams still create. (The `minimal` rung
+                # drops to 1, which makes any `replicas > 1` stream refuse to
+                # create at all -- that is a real HA loss and is why this box
+                # does not run that rung.)
+                #
+                # ITS GOVERNOR MOVES BY ITSELF, checked rather than assumed:
+                # nats 1.2.7 files/config/jetstream.yaml:17 emits
+                # `max_file_store: << {{ .pvc.size }} >>` whenever
+                # fileStore.maxSize is unset, and it is unset here. So the
+                # server's own file-store limit tracks this line automatically
+                # and cutting the volume cannot produce a server that believes
+                # it has 20Gi of disk. What still has to be sized by hand is
+                # per-STREAM limits, which are set by clients and not by this
+                # chart: a stream whose max_bytes exceeds the store will hit
+                # the limit and age out or reject publishes.
+                size: 10Gi
+                storageClassName: longhorn
+        cluster:
+          enabled: true
+          replicas: 3
+        natsBox:
+          enabled: true
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: nats
+  syncPolicy:
+    automated: { prune: false, selfHeal: true }
+    syncOptions: [ CreateNamespace=true, ServerSideApply=true ]

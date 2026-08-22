@@ -1,0 +1,12 @@
+{
+  "pr_number": 2825,
+  "archive_path": "docs/history/pr-reviews/PR-2825-docs-memory-aurora-data-sovereignty-no-central-store-gdpr-replacement-local-poli.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-12T18:20:33.724Z",
+  "schema_version": "v1",
+  "commit_sha": "4c6214a627e5c38f1969fade8ae9bccde6898924",
+  "title": "docs(memory): Aurora data sovereignty — no central store + GDPR-replacement local policies + edge computation + guardian AI accept-or-not + quad-stream PoUW-CC + cash register that keeps giving gifts (Aaron 2026-05-12)",
+  "state": "MERGED",
+  "merged_at": "2026-05-12T18:20:17Z",
+  "head_ref": "docs/aaron-aurora-no-central-store-local-policies-gdpr-replacements-edge-computation-guardian-ai-accept-or-not-2026-05-12"
+}

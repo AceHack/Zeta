@@ -1,0 +1,12 @@
+{
+  "pr_number": 12461,
+  "archive_path": "docs/history/pr-reviews/PR-12461-docs-dogfooding-the-fold-with-no-producer-measured-state-of-the-dogfooding-traje.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-19T17:35:49.190Z",
+  "schema_version": "v1",
+  "commit_sha": "a0bb4063f2ca056c22ee343cf11bd1649bd6905e",
+  "title": "docs(dogfooding): the fold with no producer -- measured state of the dogfooding trajectory",
+  "state": "MERGED",
+  "merged_at": "2026-08-19T17:35:08Z",
+  "head_ref": "daya/dogfooding-state-audit-2026-08-19"
+}

@@ -9,11 +9,31 @@ open System
 // of the game are interfaces — free, weight-free, no instance state. A concrete class
 // must be EARNED under rules/. So the verb contracts are interfaces only.
 //
-// STUB: not yet wired into a project (clis/ is a root folder). The supporting types
-// are opaque interfaces too — to be reified from git-history metadata via gen/ (F#
-// type providers + Roslyn generators). The loop is `sim |> mea |> cut` (the pipe =
-// cut(mea(sim)); bare `cut mea sim` is multi-arg application, NOT nesting — F# is
-// left-associative); res iterates it (the finalizer) until it resolves.
+// The supporting types are opaque interfaces too — to be reified from git-history
+// metadata via gen/ (F# type providers + Roslyn generators). The loop is
+// `sim |> mea |> cut` (the pipe = cut(mea(sim)); bare `cut mea sim` is multi-arg
+// application, NOT nesting — F# is left-associative); res iterates it (the finalizer)
+// until it resolves.
+//
+// COMPILED since 081M08VM385087G0R001DTM0K6 (2026-08-17) via clis/Zeta.Clis.fsproj, in
+// Zeta.sln. This header used to read "STUB: not yet wired into a project" — true when
+// written, and the reason the two defects below stood undetected: no compiler had ever
+// read this file. Aaron 2026-08-17: "clis/Verbs.fs this is our ultimate dogfood surface
+// plus our universal interfaces" — so it is compiled, not retired.
+//
+// KNOWN, UNFIXED, AND DELIBERATELY SO — the documented loop above does NOT typecheck,
+// for two INDEPENDENT reasons (both reproduced against the compiler, not inferred):
+//   A. Nothing produces the value `mea` consumes. `ISimVerb.Sim` returns `unit`;
+//      `IMeaVerb.Mea` consumes `ISim<'a>`; no member returns an `ISim<'a>`.
+//   B. `cut` does not consume what `mea` produces, even given an `ISim` from elsewhere:
+//      `ICutVerb.Cut` takes `ISim<'a>`, while `mea` yields `IMeasurement`. So fixing A
+//      alone would not make the pipe compose.
+// Deciding what `Sim` returns fixes the semantics of the interface everything else must
+// conform to, and the "produces NO output (void)" docstring below reads as intent rather
+// than oversight — so it is Aaron's call. The gap is witnessed as a type (not prose) in
+// tests/Tests.FSharp/Clis/Verbs.Tests.fs, which also records that the braid sub-family
+// (tie/braid/weave/bob) DOES compose end to end. Design analysis:
+// docs/research/2026-08-17-sim-as-the-room-runner-*.md §3, §10 Q1.
 // ─────────────────────────────────────────────────────────────────────────────
 
 // ── Supporting types (opaque stubs; reified later via gen/) ──

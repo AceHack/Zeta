@@ -1,0 +1,12 @@
+{
+  "pr_number": 4987,
+  "archive_path": "docs/history/pr-reviews/PR-4987-backlog-b-0731-hat-ontology-is-the-first-ontology-to-get-right-mika-substrate.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-25T20:33:41.774Z",
+  "schema_version": "v1",
+  "commit_sha": "c57fdaf119feb04c414aab743c0698c6e7cba1c7",
+  "title": "backlog(B-0731): hat-ontology is the first ontology to get right (Mika substrate)",
+  "state": "MERGED",
+  "merged_at": "2026-05-25T20:33:24Z",
+  "head_ref": "backlog/b0731-hat-ontology-first-mika-substrate-2026-05-25"
+}

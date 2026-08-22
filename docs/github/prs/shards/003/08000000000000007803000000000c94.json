@@ -1,0 +1,12 @@
+{
+  "pr_number": 3220,
+  "archive_path": "docs/history/pr-reviews/PR-3220-shard-tick-2018z-39-candidate-manual-triage-via-9-variant-taxonomy.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-14T20:22:39.197Z",
+  "schema_version": "v1",
+  "commit_sha": "686857fb1670e4eca40a48ffad90abbbbdea4e17",
+  "title": "shard(tick): 2018Z — 39-candidate manual triage via 9-variant taxonomy",
+  "state": "MERGED",
+  "merged_at": "2026-05-14T20:22:17Z",
+  "head_ref": "shard/tick-2018Z-39-candidate-triage-otto-cli-2026-05-14"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 12173,
+  "archive_path": "docs/history/pr-reviews/PR-12173-docs-glossary-surface-tick-source-and-the-actor-persona-disambiguation.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-18T23:01:50.235Z",
+  "schema_version": "v1",
+  "commit_sha": "cd4c12605b83f3c7d75845c34b0455f004ce5158",
+  "title": "docs(glossary): Surface, Tick source, and the actor/persona disambiguation",
+  "state": "MERGED",
+  "merged_at": "2026-08-18T23:01:14Z",
+  "head_ref": "shadow/glossary-surface-tick-source"
+}

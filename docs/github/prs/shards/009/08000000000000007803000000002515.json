@@ -1,0 +1,12 @@
+{
+  "pr_number": 9493,
+  "archive_path": "docs/history/pr-reviews/PR-9493-docs-the-falsifiability-ledger-every-claim-carries-its-checkability-status-shado.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-04T19:39:49.636Z",
+  "schema_version": "v1",
+  "commit_sha": "e68fdc74869885711d48183a019cb66ce7e78270",
+  "title": "docs: the falsifiability ledger — every claim carries its checkability status (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-04T19:39:26Z",
+  "head_ref": "otto/falsifiability-ledger-capstone"
+}

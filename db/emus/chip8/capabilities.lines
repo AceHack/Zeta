@@ -7,6 +7,7 @@ cap	fault.register	stack underflow + 16-frame overflow RECORDED, never fatal
 cap	rng.seeded	CXNN from the DST seed — no ambient entropy
 cap	meter.ticks	Ben.chip8Ticks — exact deterministic benchmark (ticks, not seconds)
 cap	trace.self	Chip9SelfTrace — the machine ray-traces its own execution onto its planes
+cap	memo.crossrun	the deterministic orbit of Chip8Cow.step, memoized as text so run 2 can consult run 1 (mu/lambda + snapshots; NOT retrocausality)
 support	isa.chip8	fsharp	live	Chip8Cow (the oracle) + Chip8 (mutable cross-check)
 support	isa.chip9	fsharp	live	treaty-locking oracle
 support	isa.chip9	csharp	live	golden conformer
@@ -19,3 +20,5 @@ support	fault.register	rust	live	fault-parity treaty 2026-06-12 (Chip9.fault/sta
 support	rng.seeded	fsharp	live	all four conformers share the golden's determinism
 support	meter.ticks	fsharp	live	Ben slice 1
 support	trace.self	fsharp	live	the reflection channels (G/cyan/B; mono stays the program's)
+support	memo.crossrun	fsharp	live	Chip8CrossRunStore — writer + reader; budget injected and attributed; open-at-bound never reads as a cycle
+support	memo.crossrun	typescript	live	chip8-cross-run-store.ts — reader/verifier parity (recomputes the F# body digest independently); cannot WRITE, chip9.ts has no delay/sound/keys/rng

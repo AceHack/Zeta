@@ -1,0 +1,12 @@
+{
+  "pr_number": 5409,
+  "archive_path": "docs/history/pr-reviews/PR-5409-docs-inventory-addison-hardware-audit-draft-2026-05-27-operator-caveat-on-miner-.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-27T06:49:41.283Z",
+  "schema_version": "v1",
+  "commit_sha": "4a333866470f7b1c9f2f0378dd4fd3e2a8b6f976",
+  "title": "docs(inventory): Addison hardware audit draft 2026-05-27 — operator caveat on miner counts (Aaron-forwarded)",
+  "state": "MERGED",
+  "merged_at": "2026-05-27T06:49:23Z",
+  "head_ref": "docs/addison-hardware-inventory-draft-2026-05-27"
+}

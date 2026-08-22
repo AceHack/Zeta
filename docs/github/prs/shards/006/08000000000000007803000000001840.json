@@ -1,0 +1,16 @@
+{
+  "pr_number": 6208,
+  "archive_path": "docs/history/pr-reviews/PR-6208-docs-b-0171-3-target-retraction-native-spec-md.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7Gf2AN",
+    "comment:PRRC_kwDOSF9kNM7Gf4Q0",
+    "thread:PRRT_kwDOSF9kNM6F8KFE"
+  ],
+  "fetched_at": "2026-05-31T13:01:16.650Z",
+  "schema_version": "v1",
+  "commit_sha": "47aa7607922185e486fe75f06cc91e1a753dfe9b",
+  "title": "docs(B-0171.3): target retraction-native spec.md",
+  "state": "MERGED",
+  "merged_at": "2026-05-31T13:00:54Z",
+  "head_ref": "claim/codex-loop-b0171-3-spec-path-20260531"
+}

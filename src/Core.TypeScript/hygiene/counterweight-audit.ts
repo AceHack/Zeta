@@ -13,7 +13,7 @@
 // agent skim the questions without opening the file.
 //
 // Usage:
-//   bun tools/hygiene/counterweight-audit.ts [--cadence quick|medium|long] [--count N]
+//   bun src/Core.TypeScript/hygiene/counterweight-audit.ts [--cadence quick|medium|long] [--count N]
 //
 // Exit codes:
 //   0  normal completion
@@ -52,7 +52,7 @@ function emitUsageError(message: string): ExitCode {
 function emitHelp(): void {
   process.stdout.write("Usage:\n");
   process.stdout.write(
-    "  bun tools/hygiene/counterweight-audit.ts [--cadence quick|medium|long] [--count N]\n",
+    "  bun src/Core.TypeScript/hygiene/counterweight-audit.ts [--cadence quick|medium|long] [--count N]\n",
   );
   process.stdout.write("\n");
   process.stdout.write("  --cadence quick   Top N most recently-modified counterweights only (default).\n");

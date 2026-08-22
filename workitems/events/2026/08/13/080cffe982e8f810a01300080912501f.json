@@ -1,0 +1,14 @@
+{
+  "id": "080cffe982e8f810a01300080912501f",
+  "at": "2026-08-13T22:13:53.055Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081KZYK0Q8Z087G0R0010Z2Z2Q",
+    "type": "task",
+    "title": "Replace OrbitalAsymmetryBudget delta-max with cancellation-safe endpoint-speed envelope (blocked on JPL Horizons golden vectors)",
+    "slug": "replace-orbitalasymmetrybudget-delta-max-with-cancellation-s",
+    "priority": "P2",
+    "filename": "081KZYK0Q8Z087G0R0010Z2Z2Q-replace-orbitalasymmetrybudget-delta-max-with-cancellation-s.md"
+  }
+}

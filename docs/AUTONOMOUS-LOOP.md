@@ -219,13 +219,33 @@ wait for instruction. Priority ladder:
 
    ```
    bun tools/authorization/check-authorization.ts
-   bun tools/hygiene/check-no-op-cadence-pattern.ts
+   bun src/Core.TypeScript/hygiene/check-no-op-cadence-pattern.ts
    grep -rE "CADENCE-TRACK" docs/hygiene-history/ticks/
    ```
 
    **Check 0a — no-op-cadence**: examines last 7 tick-shards;
    warns if ≥5 are minimal-observation OR most-recent >15 min
-   old. On warn: write a substantive shard OR do real work,
+   old. Default is advisory (exit 0 either way). `--enforce`
+   makes a detection fatal; it is opt-in and not a required
+   gate until the heuristic is calibrated (081M0085XQT087G0R003W4KFS4).
+
+   > **READ THIS BEFORE TRUSTING CHECK 0a (081M00G3QRA087G0R003GB0P4X).**
+   > Its input surface `docs/hygiene-history/ticks/` has had **no shard since
+   > 2026-05-29**. A run today reports `input-surface-absent` and judges
+   > *nothing* — that is **not** a clean bill of health, and the silent exit 0
+   > it used to give was never evidence the tick loop was healthy. Live tick
+   > telemetry is at `data/tick-shards/**/*.json`, which this tool does not
+   > read. Until the routing decision lands, use the heartbeat-via-commit
+   > check in `CLAUDE.md` (`git log --since` over `main` **and**
+   > `origin/heartbeat/*`) as the real idle counter.
+   >
+   > The minimal-observation heuristic was also measured at a **60.4%
+   > false-positive rate** before repair — it fired on 48/48 overlap windows,
+   > 29 of them while substantive commits were landing. Cause was a parse
+   > mismatch (now fixed); sensitivity is still unmeasured, so do not arm
+   > `--enforce` as a gate.
+
+   On warn: write a substantive shard OR do real work,
    not acknowledgment-only.
 
    **Check 0b — cadence-tracker**: shards mark `CADENCE-TRACK:
@@ -237,7 +257,7 @@ wait for instruction. Priority ladder:
    <trigger>` into this tick's shard.
 
    **Check 0c — authorization check** (081KR2E4K0008QG0R002S3FDXN): runs
-   `bun tools/authorization/check-authorization.ts` which
+   `bun src/Core.TypeScript/authorization/check-authorization.ts` which
    composes the pace-extractor (081KR2E4K0008QG0R0007CFSZ7) and resolver (081KR2E4K0008QG0R003CF4YHE).
    Prints two-layer DX output: raw JSON (Layer 1) then labeled
    interpretation (Layer 2). If `operative: null`, the never-idle

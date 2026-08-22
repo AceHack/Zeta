@@ -1,0 +1,12 @@
+{
+  "pr_number": 8000,
+  "archive_path": "docs/history/pr-reviews/PR-8000-docs-research-shadow-ferry-33-without-the-ledger-it-s-insanity.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-12T20:04:25.767Z",
+  "schema_version": "v1",
+  "commit_sha": "04c7d5fe0a6f38c3abff121ec95d8ba00af8d0c1",
+  "title": "docs(research)+shadow: ferry 33 — without the ledger it's insanity",
+  "state": "MERGED",
+  "merged_at": "2026-06-12T20:03:52Z",
+  "head_ref": "shadow/ferry-33-without-the-ledger"
+}

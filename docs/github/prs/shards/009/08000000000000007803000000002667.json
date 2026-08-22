@@ -1,0 +1,12 @@
+{
+  "pr_number": 9831,
+  "archive_path": "docs/history/pr-reviews/PR-9831-feat-setup-setup-machine-routes-the-cert-when-joining-a-cluster-instead-of-split.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-01T03:30:54.227Z",
+  "schema_version": "v1",
+  "commit_sha": "ea5eebbbd94a2c9e0dbc384549d052bd15312979",
+  "title": "feat(setup): setup-machine ROUTES the cert when joining a cluster instead of splitting the trust root",
+  "state": "MERGED",
+  "merged_at": "2026-08-01T03:30:21Z",
+  "head_ref": "shadow/ferry-setup-machine-wip"
+}

@@ -1,0 +1,15 @@
+{
+  "pr_number": 3909,
+  "archive_path": "docs/history/pr-reviews/PR-3909-shard-tick-2026-05-16t16-43z-otto-bg-worker-catch-43-re-arm-2-dependabot-prs-mer.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7B5wb0",
+    "thread:PRRT_kwDOSF9kNM6Cksyw"
+  ],
+  "fetched_at": "2026-05-16T17:10:43.942Z",
+  "schema_version": "v1",
+  "commit_sha": "34f543f1cf3be2271e2b4991364f13bf7dc9eb28",
+  "title": "shard(tick): 2026-05-16T16:43Z otto-bg-worker — catch-43 re-arm + 2 dependabot PRs merged (#3798, #3810)",
+  "state": "MERGED",
+  "merged_at": "2026-05-16T17:10:25Z",
+  "head_ref": "shard/tick-1643z-otto-bg-worker-2026-05-16"
+}

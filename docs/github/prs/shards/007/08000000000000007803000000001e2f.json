@@ -1,0 +1,12 @@
+{
+  "pr_number": 7727,
+  "archive_path": "docs/history/pr-reviews/PR-7727-docs-trajectory-resume-shapes-wave-7718-7725.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-11T16:55:13.347Z",
+  "schema_version": "v1",
+  "commit_sha": "92199e20225a8e3ca257dd41cadd1324280b1f04",
+  "title": "docs(trajectory): RESUME shapes wave (#7718..#7725)",
+  "state": "MERGED",
+  "merged_at": "2026-06-11T16:54:41Z",
+  "head_ref": "shadow-resume-fold-7718-7725"
+}

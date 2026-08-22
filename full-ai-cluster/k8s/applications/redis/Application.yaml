@@ -20,19 +20,30 @@ spec:
         architecture: replication
         auth:
           enabled: true
-          existingSecret: redis-auth   # create via Sealed Secret / Vault
+          existingSecret: redis-auth # create via Sealed Secret / Vault
           existingSecretPasswordKey: password
         master:
           persistence:
             enabled: true
             storageClass: longhorn
-            size: 10Gi
+            # SIZE CUT, NOT A POD CUT: 10Gi -> 8Gi. Exactly ONE master pod
+            # renders here regardless of the replicaCount below (bitnami redis
+            # 20.5.0 with architecture: replication), so this claim is 8 GiB and
+            # not 16. The volume is RDB/AOF spill, so it bounds what survives a
+            # restart, not what can be cached in memory -- maxmemory governs
+            # that and is a memory setting, not this one.
+            size: 8Gi
         replica:
           replicaCount: 2
           persistence:
             enabled: true
             storageClass: longhorn
-            size: 10Gi
+            # SIZE CUT, NOT A POD CUT: 10Gi -> 8Gi x 2 replicas. `replicaCount:
+            # 2` is UNTOUCHED, so read fan-out and the warm standby both stay.
+            # (`minimal` drops to 1; bitnami replication is ASYNCHRONOUS so
+            # there is no quorum to lose there either way, but there is one
+            # fewer warm copy.)
+            size: 8Gi
   destination:
     server: https://kubernetes.default.svc
     namespace: redis

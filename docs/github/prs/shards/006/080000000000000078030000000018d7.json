@@ -1,0 +1,12 @@
+{
+  "pr_number": 6359,
+  "archive_path": "docs/history/pr-reviews/PR-6359-docs-cross-language-primitive-registry-the-4-oracle-stable-primitives-list.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-01T06:50:45.730Z",
+  "schema_version": "v1",
+  "commit_sha": "29f0edd857d1afd9f042c10ecc4dc0728e076d68",
+  "title": "docs: Cross-Language Primitive Registry (the 4-oracle stable-primitives list)",
+  "state": "MERGED",
+  "merged_at": "2026-06-01T06:50:26Z",
+  "head_ref": "otto-cli/primitive-registry-2026-06-01"
+}

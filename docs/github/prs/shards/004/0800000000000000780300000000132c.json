@@ -1,0 +1,23 @@
+{
+  "pr_number": 4908,
+  "archive_path": "docs/history/pr-reviews/PR-4908-shard-2026-05-25-0407z-19th-dotgit-anchor-6th-0-stuck-proc-reading-first-1h-cade.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7EdWVL",
+    "comment:PRRC_kwDOSF9kNM7EdWoC",
+    "comment:PRRC_kwDOSF9kNM7EdWoT",
+    "comment:PRRC_kwDOSF9kNM7EdWob",
+    "comment:PRRC_kwDOSF9kNM7EdWoh",
+    "thread:PRRT_kwDOSF9kNM6Ec1DI",
+    "thread:PRRT_kwDOSF9kNM6Ec1O1",
+    "thread:PRRT_kwDOSF9kNM6Ec1O6",
+    "thread:PRRT_kwDOSF9kNM6Ec1O_",
+    "thread:PRRT_kwDOSF9kNM6Ec1Or"
+  ],
+  "fetched_at": "2026-05-25T04:20:28.458Z",
+  "schema_version": "v1",
+  "commit_sha": "1643bd076b50fb85d5240f2402b6fe8f198afd92",
+  "title": "shard(2026-05-25/0407Z): 19th dotgit anchor — 6th 0-stuck-proc reading + first >1h cadence gap",
+  "state": "MERGED",
+  "merged_at": "2026-05-25T04:20:07Z",
+  "head_ref": "otto-cli/0407z-shard-2026-05-25"
+}

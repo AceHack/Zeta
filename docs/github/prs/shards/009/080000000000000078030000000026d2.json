@@ -1,0 +1,12 @@
+{
+  "pr_number": 9938,
+  "archive_path": "docs/history/pr-reviews/PR-9938-test-installer-the-key-refusal-falsifier-through-the-shipped-clis-proven-able-to.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-01T23:28:48.162Z",
+  "schema_version": "v1",
+  "commit_sha": "662d2cf728d3e492716bf6bc8c4b4118b28dac8b",
+  "title": "test(installer): the key-refusal falsifier — through the shipped CLIs, proven able to fail",
+  "state": "MERGED",
+  "merged_at": "2026-08-01T23:28:20Z",
+  "head_ref": "shadow/key-refusal-falsifier"
+}

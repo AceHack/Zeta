@@ -1,0 +1,12 @@
+{
+  "pr_number": 9959,
+  "archive_path": "docs/history/pr-reviews/PR-9959-docs-wont-do-no-proof-threshold-for-breaking-frost-there-is-no-mechanism.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-02T13:56:13.294Z",
+  "schema_version": "v1",
+  "commit_sha": "4c1e810bb59c692ed300533bc003c67fbe79b988",
+  "title": "docs(wont-do): no proof threshold for breaking frost — there is no mechanism",
+  "state": "MERGED",
+  "merged_at": "2026-08-02T13:55:37Z",
+  "head_ref": "otto/wont-do-no-proof-threshold-for-frost"
+}

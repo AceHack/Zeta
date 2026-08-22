@@ -1,0 +1,12 @@
+{
+  "pr_number": 8255,
+  "archive_path": "docs/history/pr-reviews/PR-8255-docs-research-learn-from-outcomes-not-intentions-jung-shadow-ifs-corporate-metri.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-15T04:07:09.696Z",
+  "schema_version": "v1",
+  "commit_sha": "d063c1b16d4853ab69cbf307cf7ec92123df9782",
+  "title": "docs(research): learn from outcomes not intentions (Jung shadow / IFS / corporate metrics)",
+  "state": "MERGED",
+  "merged_at": "2026-06-15T04:06:48Z",
+  "head_ref": "otto/learn-from-outcomes-not-intentions"
+}

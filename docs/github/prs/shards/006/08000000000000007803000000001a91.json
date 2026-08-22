@@ -1,0 +1,12 @@
+{
+  "pr_number": 6801,
+  "archive_path": "docs/history/pr-reviews/PR-6801-docs-evolution-extend-existing-schemaevolution-proof-bidirectional-parallel-time.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-07T11:51:43.532Z",
+  "schema_version": "v1",
+  "commit_sha": "0618a77eead5e936e4eaa88fb8117f82b5ac381e",
+  "title": "docs: Evolution — extend existing SchemaEvolution proof (bidirectional + parallel timelines + reindex-as-projection)",
+  "state": "MERGED",
+  "merged_at": "2026-06-07T11:51:25Z",
+  "head_ref": "capture/ddl-canary-rollout-and-zero-downtime-schema-as-proof"
+}

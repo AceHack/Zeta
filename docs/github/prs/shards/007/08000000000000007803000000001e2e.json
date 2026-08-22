@@ -1,0 +1,12 @@
+{
+  "pr_number": 7726,
+  "archive_path": "docs/history/pr-reviews/PR-7726-feat-core-add-q-bell-coincidence-oracle.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-11T16:53:30.783Z",
+  "schema_version": "v1",
+  "commit_sha": "75dae80e69e1ece8b177ab845ee20583e199479b",
+  "title": "feat(core): add Q# Bell coincidence oracle",
+  "state": "MERGED",
+  "merged_at": "2026-06-11T16:53:07Z",
+  "head_ref": "codex/vera-qsharp-next"
+}

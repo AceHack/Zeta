@@ -1,0 +1,12 @@
+{
+  "pr_number": 5507,
+  "archive_path": "docs/history/pr-reviews/PR-5507-docs-rule-force-push-policy-follow-on-java-checked-exceptions-as-sum-type-tfeedb.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-27T16:42:11.274Z",
+  "schema_version": "v1",
+  "commit_sha": "6657335eab6ac561221a84a3514e87d137365327",
+  "title": "docs(rule): force-push-policy follow-on — Java-checked-exceptions-as-sum-type TFeedback discipline (Aaron 2026-05-27)",
+  "state": "MERGED",
+  "merged_at": "2026-05-27T16:41:46Z",
+  "head_ref": "backlog/force-push-policy-tfeedback-sum-type-extension-2026-05-27"
+}

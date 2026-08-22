@@ -1,0 +1,12 @@
+{
+  "pr_number": 10284,
+  "archive_path": "docs/history/pr-reviews/PR-10284-feat-browser-bind-semantic-controller-input.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-10T07:04:37.067Z",
+  "schema_version": "v1",
+  "commit_sha": "2c6eb88bea4353c273da96435d90bea0fe07d151",
+  "title": "feat(browser): bind semantic controller input",
+  "state": "MERGED",
+  "merged_at": "2026-08-10T07:03:52Z",
+  "head_ref": "codex/browser-controller-input"
+}

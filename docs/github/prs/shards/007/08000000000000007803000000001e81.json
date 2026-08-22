@@ -1,0 +1,12 @@
+{
+  "pr_number": 7809,
+  "archive_path": "docs/history/pr-reviews/PR-7809-docs-hand-offs-live-in-the-repo-dark-desktop-fix-resume-form-wave-fold.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-11T22:10:41.049Z",
+  "schema_version": "v1",
+  "commit_sha": "4046e182f63e8ca4d9a8ccfd45cd6bd8b4b0bd97",
+  "title": "docs: hand-offs live in the repo (dark-desktop fix) + RESUME form-wave fold",
+  "state": "MERGED",
+  "merged_at": "2026-06-11T22:10:13Z",
+  "head_ref": "shadow-b1034-outline"
+}

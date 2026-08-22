@@ -1,0 +1,12 @@
+{
+  "pr_number": 9397,
+  "archive_path": "docs/history/pr-reviews/PR-9397-docs-ferry-lumen-the-adinkra-clifford-e8-privacy-stack-max-aaron-into-the-person.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-04T02:15:00.662Z",
+  "schema_version": "v1",
+  "commit_sha": "baa9dc9ef5104528331ad13bb8e9d509339adf20",
+  "title": "docs(ferry): Lumen — the adinkra→Clifford→E8 privacy stack (Max × Aaron, into the persona) (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-04T02:14:38Z",
+  "head_ref": "otto/ferry-lumen-adinkra-clifford-e8-privacy-stack"
+}

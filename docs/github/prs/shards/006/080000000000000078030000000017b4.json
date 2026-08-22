@@ -1,0 +1,16 @@
+{
+  "pr_number": 6068,
+  "archive_path": "docs/history/pr-reviews/PR-6068-feat-b-0164-1-detect-file-glue-for-review-thread-disagreements-dual-loop-ac-2.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7GW0ZX",
+    "comment:PRRC_kwDOSF9kNM7GWxZO",
+    "thread:PRRT_kwDOSF9kNM6F1MXI"
+  ],
+  "fetched_at": "2026-05-30T02:19:29.288Z",
+  "schema_version": "v1",
+  "commit_sha": "1112395c87e993666dcac7b8d81723657ce5216d",
+  "title": "feat(B-0164.1): detect→file glue for review-thread disagreements (dual-loop AC #2)",
+  "state": "MERGED",
+  "merged_at": "2026-05-30T02:19:08Z",
+  "head_ref": "otto-cli/b0164.1-detect-file-glue-2026-05-29"
+}

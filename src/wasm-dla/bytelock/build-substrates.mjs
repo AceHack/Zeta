@@ -16,7 +16,7 @@
  */
 
 import { execSync, spawnSync } from "node:child_process";
-import { existsSync, mkdirSync, readdirSync, rmSync, writeFileSync } from "node:fs";
+import { existsSync, readFileSync } from "node:fs";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -60,11 +60,37 @@ const SUBSTRATES = [
     output: "dla-canonical-emcc.wasm",
     check: () => existsSync(join(__dir, "dla-canonical-emcc.wasm")),
     build: () => {
+      // CORRECTED 2026-08-17. This recipe was `-s SIDE_MODULE=1 -s EXPORTED_FUNCTIONS=['_run']`,
+      // and on emscripten 5.0.7 that does not reproduce the committed `dla-canonical-emcc.wasm`:
+      // it emits a RELOCATABLE side module that imports `env.__memory_base` and exports no
+      // `memory`, so the byte-lock harness cannot instantiate it at all —
+      // `LinkError: imported global env:__memory_base must be a number`. The committed module is
+      // a standalone one: two imports (`env.cos_f32`, `env.sin_f32`), its own memory, and
+      // `_initialize` / `stackSave` in its export list.
+      //
+      // So condition 3 of `.claude/rules/no-binary-in-proof-lineage.md` — "reproducible from
+      // committed source" — did not actually hold for this substrate. A recipe that cannot
+      // produce a loadable module is not a reproduction, and nothing checked, because the
+      // artifact is committed and the build is only run by hand.
+      //
+      // The flags below were bisected against the committed artifact's own import/export shape
+      // and confirmed by MEASUREMENT rather than inspection: rebuilt here they return
+      // 332 / 345 / 339 at seeds 1 / 4 / 42 — identical to the committed module.
+      //
+      // Honest limit: still NOT byte-identical on this toolchain (emcc 5.0.7-git), so the
+      // reproduction is behavioural, not bitwise. Which emscripten produced the committed bytes
+      // is recorded nowhere; pinning it is separate work.
+      //
+      // ERROR_ON_UNDEFINED_SYMBOLS=0 is load-bearing rather than a silencer: `cos_f32`/`sin_f32`
+      // are deliberately host-provided — the spec keeps trig on the host so every substrate
+      // shares one set of f32 bits — so they MUST link undefined and arrive as imports.
       run("emcc", [
         "-O2",
         "-s", "WASM=1",
-        "-s", "SIDE_MODULE=1",
-        "-s", "EXPORTED_FUNCTIONS=['_run']",
+        "-s", "STANDALONE_WASM=1",
+        "--no-entry",
+        "-s", "ERROR_ON_UNDEFINED_SYMBOLS=0",
+        "-s", "EXPORTED_FUNCTIONS=['_init','_run','_get_cluster_size','_get_max_r_bits','_get_trajectory_entry']",
         "-o", "dla-canonical-emcc.wasm",
         "dla-canonical.c",
       ]);
@@ -108,27 +134,34 @@ const SUBSTRATES = [
     output: "dla-canonical-zig.wasm",
     check: () => existsSync(join(__dir, "dla-canonical-zig.wasm")),
     build: () => {
-      // Step 1: build-lib produces an ar archive (libdla-canonical.a)
+      // SINGLE STEP. `zig build-exe -fno-entry` links a complete WebAssembly module by
+      // itself; Zig ships its own linker, so no external `wasm-ld` and no `ar` unpacking
+      // is involved. This is also the command `.mise.toml` documents for this substrate.
+      //
+      // WHY THE OLD TWO-STEP ROUTE WAS REMOVED (2026-08-15): step 1 (`zig build-lib`)
+      // emits BOTH `libdla-canonical.a` (an `ar` archive) and a same-named `.wasm` that is
+      // itself the archive, and step 2 needed `wasm-ld` on PATH. When step 2 was skipped
+      // or unavailable, step 1's archive was left sitting where a module was expected —
+      // and that is exactly what was committed: `dla-canonical-zig.wasm` starting with
+      // `!<arch>` (`21 3c 61 72`) rather than `00 61 73 6d`. It loaded in no run for two
+      // weeks. A build whose intermediate has the same name as its output is a trap; this
+      // route has no intermediate.
       run("zig", [
-        "build-lib", "dla-canonical.zig",
+        "build-exe", "dla-canonical.zig",
         "-target", "wasm32-freestanding",
-        "-O", "ReleaseSafe",
+        "-O", "ReleaseSmall",
+        "-fno-entry",
+        "--export=init",
+        "--export=run",
+        "--export=get_cluster_size",
+        "--export=get_max_r_bits",
+        "--export=get_trajectory_entry",
+        "-femit-bin=" + join(__dir, "dla-canonical-zig.wasm"),
       ]);
-      // Step 2: extract the .o and link with wasm-ld
-      const extractDir = "/tmp/zig-bytelock-extract";
-      if (existsSync(extractDir)) rmSync(extractDir, { recursive: true });
-      mkdirSync(extractDir);
-      execSync(`cp libdla-canonical.a ${extractDir}/`, { cwd: __dir });
-      execSync(`ar x libdla-canonical.a`, { cwd: extractDir });
-      const objs = readdirSync(extractDir).filter((f) => f.endsWith(".o"));
-      if (objs.length === 0) throw new Error("Zig: no .o files extracted from archive");
-      run("wasm-ld", [
-        "--no-entry",
-        "--allow-undefined",
-        "--export-all",
-        "-o", join(__dir, "dla-canonical-zig.wasm"),
-        ...objs.map((o) => join(extractDir, o)),
-      ]);
+      // Named exports rather than `--export-all`: the runner needs exactly these five, and
+      // an export list that names them fails at BUILD time if a symbol is renamed, instead
+      // of at run time as an undefined-function error midway through a seed.
+      verifyWasmHeader(join(__dir, "dla-canonical-zig.wasm"), "Zig");
     },
   },
   {
@@ -157,12 +190,13 @@ const SUBSTRATES = [
       if (!existsSync(join(__dir, "go.mod"))) {
         execSync("go mod init dla-bytelock", { cwd: __dir, stdio: "inherit" });
       }
-      const env = { ...process.env, GOOS: "js", GOARCH: "wasm" };
-      spawnSync("go", ["build", "-o", "dla-canonical-go.wasm", "."], {
-        cwd: __dir,
-        env,
-        stdio: "inherit",
+      // `run`, not a bare `spawnSync`. Until 2026-08-15 this call ignored its exit status,
+      // so a failed `go build` reported "Building Go... OK" and produced no artefact — the
+      // same false-green shape as the rest of this finding, one layer earlier.
+      run("go", ["build", "-o", "dla-canonical-go.wasm", "."], {
+        env: { ...process.env, GOOS: "js", GOARCH: "wasm" },
       });
+      verifyWasmHeader(join(__dir, "dla-canonical-go.wasm"), "Go");
     },
   },
 ];
@@ -171,10 +205,27 @@ const SUBSTRATES = [
 // Helpers
 // ─────────────────────────────────────────────────────────────────────────────
 
-function run(cmd, args) {
-  const result = spawnSync(cmd, args, { cwd: __dir, stdio: "inherit" });
+function run(cmd, args, opts = {}) {
+  const result = spawnSync(cmd, args, { cwd: __dir, stdio: "inherit", ...opts });
   if (result.status !== 0) {
     throw new Error(`${cmd} exited with status ${result.status}`);
+  }
+}
+
+// A BUILD MUST NOT BE ABLE TO EMIT A NON-MODULE AND CALL IT SUCCESS.
+// `dla-canonical-zig.wasm` was an `ar` archive on main for two weeks because the Zig
+// route's intermediate shared a name with its output. The runner now refuses to load such
+// a file (exit 3); this refuses to PRODUCE one, which is where the defect is cheapest to
+// catch. Checks the 4-byte magic plus the 4-byte binary-format version.
+function verifyWasmHeader(path, name) {
+  const WASM_HEADER = [0x00, 0x61, 0x73, 0x6d, 0x01, 0x00, 0x00, 0x00];
+  const head = readFileSync(path).subarray(0, WASM_HEADER.length);
+  if (head.length !== WASM_HEADER.length || !WASM_HEADER.every((b, i) => head[i] === b)) {
+    const found = [...head].map((b) => b.toString(16).padStart(2, "0")).join(" ");
+    throw new Error(
+      `${name}: produced ${path} but it is NOT a WebAssembly module — ` +
+        `expected header ${WASM_HEADER.map((b) => b.toString(16).padStart(2, "0")).join(" ")}, found ${found}`,
+    );
   }
 }
 

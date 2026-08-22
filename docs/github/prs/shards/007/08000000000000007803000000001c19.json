@@ -1,0 +1,12 @@
+{
+  "pr_number": 7193,
+  "archive_path": "docs/history/pr-reviews/PR-7193-docs-research-every-fingerprint-is-a-growth-surface-closed-core-dst-expand-at-ea.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-09T03:35:53.640Z",
+  "schema_version": "v1",
+  "commit_sha": "2e28fb4520ca7bb2a4eaf1c680f3c45eaad5ceda",
+  "title": "docs(research): every fingerprint is a growth surface — closed core DST, expand at each fingerprint for maximum leverage",
+  "state": "MERGED",
+  "merged_at": "2026-06-09T03:35:34Z",
+  "head_ref": "otto/research-fingerprints-are-growth-surfaces-closed-core-expand-at-edges"
+}

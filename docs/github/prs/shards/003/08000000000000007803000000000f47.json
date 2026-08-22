@@ -1,0 +1,12 @@
+{
+  "pr_number": 3911,
+  "archive_path": "docs/history/pr-reviews/PR-3911-shard-tick-2026-05-16t16-54z-otto-bg-worker-catch-43-re-arm-extreme-cost-aware-t.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-16T16:58:28.810Z",
+  "schema_version": "v1",
+  "commit_sha": "d763dfc47a7336f4acc1de24ed79de52eef2cfed",
+  "title": "shard(tick): 2026-05-16T16:54Z otto-bg-worker — catch-43 re-arm + extreme cost-aware tier + Lior cascade observed",
+  "state": "MERGED",
+  "merged_at": "2026-05-16T16:58:10Z",
+  "head_ref": "shard/tick-1654z-otto-bg-worker-2026-05-16"
+}

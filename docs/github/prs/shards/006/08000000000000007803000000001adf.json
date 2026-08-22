@@ -1,0 +1,12 @@
+{
+  "pr_number": 6879,
+  "archive_path": "docs/history/pr-reviews/PR-6879-data-pr-reviews-rescue-4049-orphaned-pr-review-archives-to-main-training-data.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-07T17:34:36.274Z",
+  "schema_version": "v1",
+  "commit_sha": "f07f46dd43f8def2f9067cc6527c072bae667c8c",
+  "title": "data(pr-reviews): rescue 4049 orphaned PR-review archives to main (training data)",
+  "state": "MERGED",
+  "merged_at": "2026-06-07T17:34:16Z",
+  "head_ref": "otto/consume-pr-review-archives-preserve-training-data"
+}

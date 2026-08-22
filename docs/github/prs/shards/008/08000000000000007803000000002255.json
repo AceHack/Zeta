@@ -1,0 +1,21 @@
+{
+  "pr_number": 8789,
+  "archive_path": "docs/history/pr-reviews/PR-8789-chore-setup-mise-trust-all-flake-pin-drift-advisory-argocd-stability.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7Nfnui",
+    "comment:PRRC_kwDOSF9kNM7Nfnuk",
+    "comment:PRRC_kwDOSF9kNM7Nfnul",
+    "comment:PRRC_kwDOSF9kNM7NfpcO",
+    "thread:PRRT_kwDOSF9kNM6LDTDI",
+    "thread:PRRT_kwDOSF9kNM6LDTDJ",
+    "thread:PRRT_kwDOSF9kNM6LDTDK",
+    "thread:PRRT_kwDOSF9kNM6LDUbI"
+  ],
+  "fetched_at": "2026-06-20T23:53:14.273Z",
+  "schema_version": "v1",
+  "commit_sha": "0c37f2bcfa633a4e71210a92c52f43d8866b400a",
+  "title": "chore(setup): mise trust --all, flake pin, drift advisory, argocd stability",
+  "state": "MERGED",
+  "merged_at": "2026-06-20T23:52:43Z",
+  "head_ref": "chore/mise-flake-drift-argocd-stability"
+}

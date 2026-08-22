@@ -1,0 +1,12 @@
+{
+  "pr_number": 9894,
+  "archive_path": "docs/history/pr-reviews/PR-9894-feat-hygiene-drift-mtth-panel-on-the-pages-monitor-081kx3ka3ew-final-scope.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-01T16:09:36.058Z",
+  "schema_version": "v1",
+  "commit_sha": "7f74fd9c167d9821eea6a011d3d3f6f638ce2dca",
+  "title": "feat(hygiene): drift MTTH panel on the Pages monitor (081KX3KA3EW, final scope)",
+  "state": "MERGED",
+  "merged_at": "2026-08-01T16:09:08Z",
+  "head_ref": "otto/drift-mtth-panel"
+}

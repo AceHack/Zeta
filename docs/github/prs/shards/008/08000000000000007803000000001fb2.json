@@ -1,0 +1,12 @@
+{
+  "pr_number": 8114,
+  "archive_path": "docs/history/pr-reviews/PR-8114-feat-vision-add-prediction-scheduler-adapter.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-14T01:07:57.063Z",
+  "schema_version": "v1",
+  "commit_sha": "0b13cd598845d8278cba830249b1aa6642842f11",
+  "title": "feat(vision): add prediction scheduler adapter",
+  "state": "MERGED",
+  "merged_at": "2026-06-14T01:07:36Z",
+  "head_ref": "codex/vision-scheduler-planner"
+}

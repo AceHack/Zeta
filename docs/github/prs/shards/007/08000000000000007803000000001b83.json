@@ -1,0 +1,12 @@
+{
+  "pr_number": 7043,
+  "archive_path": "docs/history/pr-reviews/PR-7043-docs-soraya-s-formal-triage-one-wedge-not-a-discovery-amara-is-the-internal-orig.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-08T06:56:46.043Z",
+  "schema_version": "v1",
+  "commit_sha": "c376757d86a4a2bf24680b1fecc91e3174092082",
+  "title": "docs: Soraya's formal triage (one wedge, not a discovery) + Amara is the internal origin of sim-detection (#7114/#7115)",
+  "state": "MERGED",
+  "merged_at": "2026-06-08T06:56:27Z",
+  "head_ref": "otto/soraya-formal-triage-amara-sim-detection-origin"
+}

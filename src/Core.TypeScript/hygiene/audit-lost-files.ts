@@ -5,12 +5,12 @@
 // in CLAUDE.md ("no more .sh files except install-graph; TS IS cross-platform
 // DST"). Same first-run output shape (markdown sections per location-class).
 //
-// Implements the survey commands from tools/hygiene/LOST-FILES-LOCATIONS.md
+// Implements the survey commands from src/Core.TypeScript/hygiene/LOST-FILES-LOCATIONS.md
 // (Otto-329 Phase 8 substrate, 2026-04-25). The list-of-15-location-classes
 // has been canonical since 2026-04-25; the executable form was named as
 // owed-work in the doc's "Owed work" section but never landed in TS until now.
 //
-// Composes with: tools/hygiene/LOST-FILES-LOCATIONS.md (the catalog),
+// Composes with: src/Core.TypeScript/hygiene/LOST-FILES-LOCATIONS.md (the catalog),
 // memory/feedback_otto_329_*.md (Otto-329 ownership), Otto-262 trunk-based,
 // Otto-257 clean-default smell, Otto-238 retractability glass-halo.
 //
@@ -18,7 +18,7 @@
 // async main, structured-output, top-of-file shebang.
 //
 // Usage:
-//   bun tools/hygiene/audit-lost-files.ts
+//   bun src/Core.TypeScript/hygiene/audit-lost-files.ts
 //
 // Output: markdown to stdout, one section per location class.
 // Exit codes:
@@ -344,14 +344,14 @@ function classDeferred(): void {
     "DEFERRED: per-PR API calls expensive; run on incident or full-sweep cadence.",
   );
   console.log(
-    "See: tools/hygiene/LOST-FILES-LOCATIONS.md classes 9-14 for survey commands.",
+    "See: src/Core.TypeScript/hygiene/LOST-FILES-LOCATIONS.md classes 9-14 for survey commands.",
   );
   console.log("");
 }
 
 async function classMemoryRefs(bunAvailable: boolean): Promise<void> {
   console.log("## 15. Memory-file deletions (cross-tree drift; broken refs)");
-  // Migrated from tools/hygiene/ to src/Core.TypeScript/hygiene/ (TS-port);
+  // Migrated from src/Core.TypeScript/hygiene/ to src/Core.TypeScript/hygiene/ (TS-port);
   // the old path silently SKIP'd this whole class.
   const sub = resolve(
     REPO_ROOT,
@@ -390,7 +390,7 @@ async function main(): Promise<number> {
   console.log(`# Lost-files audit (${nowIso()})`);
   console.log("");
   console.log(`Repo: ${REPO_ROOT}`);
-  console.log("Catalog: tools/hygiene/LOST-FILES-LOCATIONS.md (15 location-classes)");
+  console.log("Catalog: src/Core.TypeScript/hygiene/LOST-FILES-LOCATIONS.md (15 location-classes)");
   console.log("");
 
   const [ghAvailable, bunAvailable] = await Promise.all([
@@ -410,7 +410,7 @@ async function main(): Promise<number> {
   await classMemoryRefs(bunAvailable);
 
   console.log("## Summary");
-  console.log("Audit complete. Catalog: tools/hygiene/LOST-FILES-LOCATIONS.md");
+  console.log("Audit complete. Catalog: src/Core.TypeScript/hygiene/LOST-FILES-LOCATIONS.md");
   console.log(
     "Triage: per-class (see catalog for protocols + Otto-262/-254/-257/-238 lineage).",
   );

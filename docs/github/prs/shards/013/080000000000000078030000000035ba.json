@@ -1,0 +1,12 @@
+{
+  "pr_number": 13754,
+  "archive_path": "docs/history/pr-reviews/PR-13754-deps-bump-google-protobuf-and-6-others.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-22T15:48:59.076Z",
+  "schema_version": "v1",
+  "commit_sha": "fa9f50552f40deaaab03b0bb64ae9adcd507f653",
+  "title": "deps: Bump Google.Protobuf and 6 others",
+  "state": "MERGED",
+  "merged_at": "2026-08-22T15:48:18Z",
+  "head_ref": "dependabot/nuget/nuget-minor-patch-a6feaa3eba"
+}

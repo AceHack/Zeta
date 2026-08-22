@@ -1,0 +1,12 @@
+{
+  "pr_number": 6016,
+  "archive_path": "docs/history/pr-reviews/PR-6016-research-2026-05-29-mnpi-floor-trades-ontology-blacklist-demo-first-employer-ip-.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-29T17:18:07.323Z",
+  "schema_version": "v1",
+  "commit_sha": "9f9864c27d2922af617afa7a1892abba58ec93c5",
+  "title": "research(2026-05-29): MNPI floor + trades-ontology-blacklist + demo-first — employer-IP boundary sharpening (#6014)",
+  "state": "MERGED",
+  "merged_at": "2026-05-29T17:17:45Z",
+  "head_ref": "otto-cli/research-mnpi-floor-sharpening-employer-ip-boundary-2026-05-29"
+}

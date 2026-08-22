@@ -252,6 +252,171 @@ let ``L4 trace: one turn packages as a FourCornerOwnership with feedback on the 
     FourCorner.hasFeedback corner |> should equal true
     st.Emitted |> should equal [ 5, 1L; 30, 1L ]
 
+// The trace fixes logical direction independently of the materialized view. A later
+// interpretation can retract what an earlier turn emitted, but it appends that correction
+// at a larger sequence; it never rewrites the earlier evidence.
+[<Fact>]
+let ``L4 trace: later reinterpretation appends a correction without rewriting the past`` () =
+    let history = [ 3 ]
+
+    let first =
+        FourCornerTrace.foldRecorded 12I intStar isZeroI reread update history [ (3, 30) ] (startT history)
+
+    let earlierTurn = first.Turns |> List.exactlyOne
+    earlierTurn.Sequence |> should equal 12I
+    earlierTurn.Feedback |> should equal (3, 30)
+    earlierTurn.Delta |> should equal [ 3, -1L; 30, 1L ]
+
+    let later =
+        FourCornerTrace.foldRecorded
+            first.NextSequence
+            intStar
+            isZeroI
+            reread
+            update
+            history
+            [ (3, 40) ]
+            first.State
+
+    // The old turn is immutable; the correction is a new turn in the only time direction.
+    first.Turns |> List.exactlyOne |> should equal earlierTurn
+    let correction = later.Turns |> List.exactlyOne
+    correction.Sequence |> should equal 13I
+    correction.Delta |> should equal [ 30, -1L; 40, 1L ]
+    later.NextSequence |> should equal 14I
+    later.State.Emitted |> should equal [ 40, 1L ]
+    history |> should equal [ 3 ]
+
+[<Property(Arbitrary = [| typeof<TraceArb> |])>]
+let ``L4 trace: recorded turns preserve fold order including empty deltas``
+    (history: int list)
+    (fbs: (int * int) list)
+    =
+    let start = startT history
+    let expectedState, expectedDeltas = foldT history fbs start
+    let recorded = FourCornerTrace.foldRecorded 100I intStar isZeroI reread update history fbs start
+
+    recorded.State = expectedState
+    && recorded.NextSequence = 100I + bigint fbs.Length
+    && (recorded.Turns |> List.map _.Sequence) = [ for i in 0 .. fbs.Length - 1 -> 100I + bigint i ]
+    && (recorded.Turns |> List.map _.Feedback) = fbs
+    && (recorded.Turns |> List.map _.Delta) = expectedDeltas
+
+// Backward execution is modeled by retaining the information consolidation erased. The model
+// traverses immutable witnesses; it does not infer a unique past from a non-injective output.
+[<Fact>]
+let ``L4 trace: a witnessed turn can be rewound and replayed exactly`` () =
+    let history = [ 3 ]
+    let start = startT history
+
+    let witnessed =
+        FourCornerTrace.foldWitnessed
+            20I
+            intStar
+            isZeroI
+            reread
+            update
+            history
+            [ (3, 30); (3, 40) ]
+            start
+
+    let first, second = witnessed.Turns.[0], witnessed.Turns.[1]
+    first.Sequence |> should equal 20I
+    second.Sequence |> should equal 21I
+    FourCornerTrace.rewind second |> should equal first.After
+    FourCornerTrace.replay second |> should equal second.After
+    FourCornerTrace.rewind first |> should equal start
+    witnessed.State |> should equal second.After
+
+[<Property(Arbitrary = [| typeof<TraceArb> |])>]
+let ``L4 trace: inverse delta reconstructs each witnessed prior view``
+    (history: int list)
+    (fbs: (int * int) list)
+    =
+    let witnessed =
+        FourCornerTrace.foldWitnessed 0I intStar isZeroI reread update history fbs (startT history)
+
+    witnessed.Turns
+    |> List.forall (fun turn ->
+        let inverse = FourCornerTrace.inverseDelta intStar isZeroI turn
+
+        WSet.plus turn.After.Emitted inverse
+        |> WSet.consolidate intStar isZeroI
+        |> (=) turn.Before.Emitted)
+
+// A correction may read an earlier immutable history boundary, but the correction itself is
+// appended later. This is the executable distinction between retrospective recomputation and
+// information flowing backward.
+[<Fact>]
+let ``L4 trace: causal correction reinterprets earlier history as a later event`` () =
+    let history = [ 3 ]
+    let before = startT history
+    let snapshot = FourCornerTrace.captureHistory 12I history
+
+    let correction =
+        match
+            FourCornerTrace.appendCorrection
+                13I
+                intStar
+                isZeroI
+                reread
+                update
+                snapshot
+                (3, 30)
+                before
+        with
+        | Ok value -> value
+        | Error error -> failwithf "unexpected causal-order refusal: %A" error
+
+    correction.Sequence |> should equal 13I
+    correction.ReinterpretsThrough |> should equal 12I
+    (correction.Sequence > correction.ReinterpretsThrough) |> should equal true
+    correction.Before |> should equal before
+    correction.Delta |> should equal [ 3, -1L; 30, 1L ]
+    correction.After.Emitted |> should equal [ 30, 1L ]
+    history |> should equal [ 3 ]
+
+// Invalid order refuses before either caller-supplied function runs. Besides being Result-only,
+// this prevents a failed correction from leaking a partial reinterpretation.
+[<Fact>]
+let ``L4 trace: causal correction refuses equal or earlier sequence without executing`` () =
+    let mutable calls = 0
+
+    let guardedReread: FourCornerTrace.Generator<int list, Interp, int, int64> =
+        fun _ _ ->
+            calls <- calls + 1
+            []
+
+    let guardedUpdate (interp: Interp) (_: int * int) =
+        calls <- calls + 1
+        interp
+
+    let snapshot = FourCornerTrace.captureHistory 12I [ 3 ]
+
+    let before: FourCornerTrace.Traced<Interp, int, int64> =
+        { Interpretation = Map.empty
+          Emitted = [] }
+
+    for correctionSequence in [ 11I; 12I ] do
+        let actual =
+            FourCornerTrace.appendCorrection
+                correctionSequence
+                intStar
+                isZeroI
+                guardedReread
+                guardedUpdate
+                snapshot
+                (3, 30)
+                before
+
+        match actual with
+        | Error(FourCornerTrace.CorrectionDoesNotFollowHistory(throughSequence, refusedSequence)) ->
+            throughSequence |> should equal 12I
+            refusedSequence |> should equal correctionSequence
+        | Ok correction -> failwithf "unexpected correction at sequence %A" correction.Sequence
+
+    calls |> should equal 0
+
 // ═══════════════════════════════════════════════════════════════════
 // (L5) THE C₄ CORNER WITNESS over ℂ — retraction = i²
 // ═══════════════════════════════════════════════════════════════════

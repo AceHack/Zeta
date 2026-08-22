@@ -1,0 +1,12 @@
+{
+  "pr_number": 6034,
+  "archive_path": "docs/history/pr-reviews/PR-6034-research-2026-05-29-attention-respecting-vs-attention-greedy-safety-signals-the-.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-29T19:22:48.226Z",
+  "schema_version": "v1",
+  "commit_sha": "fe8f46813621771169d70a591b3d9c45c62a5c34",
+  "title": "research(2026-05-29): attention-respecting vs attention-greedy safety signals + the no-exit trap (Aaron+Otto)",
+  "state": "MERGED",
+  "merged_at": "2026-05-29T19:22:25Z",
+  "head_ref": "otto-cli/research-attention-respecting-safety-signals-no-exit-trap-2026-05-29"
+}

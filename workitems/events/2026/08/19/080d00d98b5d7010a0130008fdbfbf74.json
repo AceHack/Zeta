@@ -1,0 +1,14 @@
+{
+  "id": "080d00d98b5d7010a0130008fdbfbf74",
+  "at": "2026-08-19T18:03:38.798Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M0DK2TXD087G0R003674BAS",
+    "type": "task",
+    "title": "Policy.fs has one instance and no trust interpreter -- the node-local trust policy evaluator is the missing decision layer",
+    "slug": "policy-fs-has-one-instance-and-no-trust-interpreter-the-node",
+    "priority": "P2",
+    "filename": "081M0DK2TXD087G0R003674BAS-policy-fs-has-one-instance-and-no-trust-interpreter-the-node.md"
+  }
+}

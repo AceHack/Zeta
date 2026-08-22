@@ -1,0 +1,12 @@
+{
+  "pr_number": 9342,
+  "archive_path": "docs/history/pr-reviews/PR-9342-feat-mixir-reify-mix-as-data-3rd-projection-slice-1-the-fixpoint-shadow.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-03T18:47:30.880Z",
+  "schema_version": "v1",
+  "commit_sha": "a70ef40df317429e7d52b5c20694c29e5e12af08",
+  "title": "feat(mixir): reify mix-as-data — 3rd projection slice 1, the fixpoint (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-03T18:47:04Z",
+  "head_ref": "otto/mix-as-data-slice1-reify"
+}

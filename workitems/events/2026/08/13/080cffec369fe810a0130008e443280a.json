@@ -1,0 +1,14 @@
+{
+  "id": "080cffec369fe810a0130008e443280a",
+  "at": "2026-08-13T23:48:19.581Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081KZYRDMZW087G0R0012K4QA0",
+    "type": "bug",
+    "title": "TLC runner has no -config support, so BftLiveness.cfg and 12 other configs are ungated",
+    "slug": "tlc-runner-has-no-config-support-so-bftliveness-cfg-and-12-o",
+    "priority": "P2",
+    "filename": "081KZYRDMZW087G0R0012K4QA0-tlc-runner-has-no-config-support-so-bftliveness-cfg-and-12-o.md"
+  }
+}

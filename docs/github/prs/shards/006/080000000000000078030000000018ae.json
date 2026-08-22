@@ -1,0 +1,15 @@
+{
+  "pr_number": 6318,
+  "archive_path": "docs/history/pr-reviews/PR-6318-backlog-b-0958-observe-ts-agent-loop-implementation-testing-checklist-shared-tra.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7GkS8P",
+    "thread:PRRT_kwDOSF9kNM6F_kWx"
+  ],
+  "fetched_at": "2026-06-01T02:42:33.283Z",
+  "schema_version": "v1",
+  "commit_sha": "01a431689b110ed38854ed8b54767fe2e69916ef",
+  "title": "backlog(B-0958): observe.ts agent-loop — implementation + testing checklist (shared tracker)",
+  "state": "MERGED",
+  "merged_at": "2026-06-01T02:42:15Z",
+  "head_ref": "otto-cli/b0958-observe-loop-checklist-2026-05-31"
+}

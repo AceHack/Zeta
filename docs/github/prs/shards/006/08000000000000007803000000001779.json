@@ -1,0 +1,12 @@
+{
+  "pr_number": 6009,
+  "archive_path": "docs/history/pr-reviews/PR-6009-feat-b-0343-pure-parseseedblobresponse-post-git-blobs-response-blob-sha-read-sid.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-29T16:39:34.931Z",
+  "schema_version": "v1",
+  "commit_sha": "9cff4076dafe2c7ce563787a1b60dbae8d7f652d",
+  "title": "feat(B-0343): pure parseSeedBlobResponse — POST /git/blobs response → blob SHA (read-side pair of buildSeedBlobRequest)",
+  "state": "MERGED",
+  "merged_at": "2026-05-29T16:39:08Z",
+  "head_ref": "otto-cli/b0343-parse-seed-blob-response"
+}

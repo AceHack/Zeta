@@ -1,0 +1,12 @@
+{
+  "pr_number": 7522,
+  "archive_path": "docs/history/pr-reviews/PR-7522-docs-research-lensable-memory-is-shader-memory-heap-seed-lensed-gc-dissolved-unr.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-10T22:19:21.613Z",
+  "schema_version": "v1",
+  "commit_sha": "7d1d2a889a4310b824a10af487f72805a4b1a0bc",
+  "title": "docs(research): lensable memory IS shader memory — heap=seed-lensed (GC dissolved), unrolled loops, lensing finds quasi-time-crystals",
+  "state": "MERGED",
+  "merged_at": "2026-06-10T22:19:00Z",
+  "head_ref": "shadow-lensable-memory-shader-heap-seed-time-crystals"
+}

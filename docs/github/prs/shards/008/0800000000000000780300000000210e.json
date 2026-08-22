@@ -1,0 +1,12 @@
+{
+  "pr_number": 8462,
+  "archive_path": "docs/history/pr-reviews/PR-8462-chore-hygiene-untrack-gitignore-committed-tlc-checkpoint-dirs-50mb-under-src-cor.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-16T06:37:44.529Z",
+  "schema_version": "v1",
+  "commit_sha": "235ea59131aab4aa6e26046a348a5a61022824a8",
+  "title": "chore(hygiene): untrack + gitignore committed TLC checkpoint dirs (50MB under src/Core.TLA/specs/states/)",
+  "state": "MERGED",
+  "merged_at": "2026-06-16T06:37:14Z",
+  "head_ref": "otto/hygiene-untrack-tlc-states"
+}

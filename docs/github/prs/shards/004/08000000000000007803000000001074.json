@@ -1,0 +1,12 @@
+{
+  "pr_number": 4212,
+  "archive_path": "docs/history/pr-reviews/PR-4212-shards-2012z-2112z-batch-land-15-otto-cli-tick-shards-via-rest-git-data-api-mark.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-18T21:27:23.711Z",
+  "schema_version": "v1",
+  "commit_sha": "ab86fcb543f165dcf78fc766c05ea22029abb9e5",
+  "title": "shards(2012Z-2112Z): batch-land 15 Otto-CLI tick shards via REST git-data API (markdownlint-fixed; supersedes #4209)",
+  "state": "MERGED",
+  "merged_at": "2026-05-18T21:27:07Z",
+  "head_ref": "otto/2012z-batch-15-shards-markdownlint-fixed-2026-05-18"
+}

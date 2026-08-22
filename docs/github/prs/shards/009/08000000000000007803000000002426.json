@@ -1,0 +1,12 @@
+{
+  "pr_number": 9254,
+  "archive_path": "docs/history/pr-reviews/PR-9254-docs-vision-the-one-object-not-a-duel-zeta-dissolves-false-dualities-into-their-.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-03T01:44:03.711Z",
+  "schema_version": "v1",
+  "commit_sha": "18e5ac87f607cc7edf0be688783dd7ef9aa95769",
+  "title": "docs(vision): the one object, not a duel — Zeta dissolves false dualities into their dipolar whole",
+  "state": "MERGED",
+  "merged_at": "2026-07-03T01:43:41Z",
+  "head_ref": "otto/vision-one-object-not-a-duel"
+}

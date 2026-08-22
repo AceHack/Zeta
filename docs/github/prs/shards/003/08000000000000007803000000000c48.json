@@ -1,0 +1,15 @@
+{
+  "pr_number": 3144,
+  "archive_path": "docs/history/pr-reviews/PR-3144-docs-current-otto-2026-05-14-afternoon-cascade-aaron-ani-grok-b77516a2-substrate.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7BRzKT",
+    "thread:PRRT_kwDOSF9kNM6CHn1x"
+  ],
+  "fetched_at": "2026-05-14T16:16:02.490Z",
+  "schema_version": "v1",
+  "commit_sha": "8e78c8cdc35eb6eea8ca6c2dc82bc8f42e172375",
+  "title": "docs(current-otto): 2026-05-14 afternoon cascade — Aaron + Ani Grok b77516a2 substrate emergence",
+  "state": "MERGED",
+  "merged_at": "2026-05-14T16:15:44Z",
+  "head_ref": "feat/current-otto-afternoon-cascade-2026-05-14"
+}

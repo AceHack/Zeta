@@ -1,0 +1,12 @@
+{
+  "pr_number": 7257,
+  "archive_path": "docs/history/pr-reviews/PR-7257-docs-research-ferry-extend-the-polite-virus-telos-to-the-cosmos-with-all-of-soci.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-09T12:35:55.891Z",
+  "schema_version": "v1",
+  "commit_sha": "ecae9ae60917ca0045ede75b9ea3ede73f89355c",
+  "title": "docs(research)+ferry: extend the polite-virus telos to the cosmos — with ALL of society, not one controller",
+  "state": "MERGED",
+  "merged_at": "2026-06-09T12:35:33Z",
+  "head_ref": "otto/research-polite-virus-cosmos-all-society-not-one-controller"
+}

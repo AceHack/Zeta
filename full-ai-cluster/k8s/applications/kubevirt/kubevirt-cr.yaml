@@ -1,0 +1,26 @@
+# KubeVirt CR — the operator reads this and rolls out virt-api /
+# virt-controller / virt-handler.
+#
+# Spec captured VERBATIM from the live CR on node-5b2dfa (2026-08-16) via
+#   kubectl get kubevirt kubevirt -n kubevirt -o json | jq '{...,spec}'
+# so adopting this Application is a no-op against the running cluster. Do
+# not "tidy" the empty objects below — `certificateRotateStrategy: {}` etc.
+# are what the operator actually has, and removing them is a real diff.
+#
+# sync-wave 1: the CRD + operator (wave 0, kubevirt-operator.yaml) must
+# exist before this CR is applied.
+apiVersion: kubevirt.io/v1
+kind: KubeVirt
+metadata:
+  name: kubevirt
+  namespace: kubevirt
+  annotations:
+    argocd.argoproj.io/sync-wave: "1"
+spec:
+  certificateRotateStrategy: {}
+  configuration:
+    developerConfiguration: {}
+    imagePullPolicy: IfNotPresent
+  customizeComponents: {}
+  imagePullPolicy: IfNotPresent
+  workloadUpdateStrategy: {}

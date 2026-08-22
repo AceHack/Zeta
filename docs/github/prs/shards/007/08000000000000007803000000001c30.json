@@ -1,0 +1,12 @@
+{
+  "pr_number": 7216,
+  "archive_path": "docs/history/pr-reviews/PR-7216-docs-research-the-fixed-point-is-the-safe-shape-stops-infinite-recursion-attack-.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-09T05:45:52.990Z",
+  "schema_version": "v1",
+  "commit_sha": "468cbe3f531035980619c8c9c0750bc1bc9ca613",
+  "title": "docs(research): the fixed point is the safe shape — stops infinite-recursion attack vectors; the registry is a catalog of terminating safe shapes",
+  "state": "MERGED",
+  "merged_at": "2026-06-09T05:45:34Z",
+  "head_ref": "otto/research-fixed-point-safe-shape-stops-infinite-recursion-registry-terminating-shapes"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 8154,
+  "archive_path": "docs/history/pr-reviews/PR-8154-docs-preflight-wire-bun-run-preflight-into-the-contribution-flow.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-14T03:07:21.062Z",
+  "schema_version": "v1",
+  "commit_sha": "756fda9666d1310533019f104eed258335b99356",
+  "title": "docs(preflight): wire `bun run preflight` into the contribution flow",
+  "state": "MERGED",
+  "merged_at": "2026-06-14T03:06:54Z",
+  "head_ref": "otto/document-preflight-in-flow"
+}

@@ -1,6 +1,6 @@
 #!/usr/bin/env bun
 // build-index.ts — 081KR50HA0008QG0R000239VTZ
-// Entry point: bun tools/search/build-index.ts
+// Entry point: bun src/Core.TypeScript/search/build-index.ts
 // Scans memory/, docs/, .claude/skills/, .claude/rules/, .claude/agents/
 // and writes .concept-index.json (gitignored).
 

@@ -1,0 +1,12 @@
+{
+  "pr_number": 5506,
+  "archive_path": "docs/history/pr-reviews/PR-5506-docs-archive-preserve-pr-4418.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-27T17:16:48.206Z",
+  "schema_version": "v1",
+  "commit_sha": "31470b84608380f8b17192e4548b668a43629130",
+  "title": "docs(archive): Preserve PR #4418",
+  "state": "MERGED",
+  "merged_at": "2026-05-27T17:16:28Z",
+  "head_ref": "lior/archive-4418"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 2695,
+  "archive_path": "docs/history/pr-reviews/PR-2695-docs-memory-amara-corrections-start-small-e8-is-candidate-harmony-fusion.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-11T13:03:14.982Z",
+  "schema_version": "v1",
+  "commit_sha": "e6de0bc7b09ab74a44dcc3e97fc0dc3c693611fb",
+  "title": "docs(memory): Amara corrections — start small, E8 is candidate, harmony ≠ fusion",
+  "state": "MERGED",
+  "merged_at": "2026-05-11T13:02:52Z",
+  "head_ref": "docs/amara-corrections-start-small-2026-05-11"
+}

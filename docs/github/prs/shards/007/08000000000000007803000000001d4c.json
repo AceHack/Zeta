@@ -1,0 +1,12 @@
+{
+  "pr_number": 7500,
+  "archive_path": "docs/history/pr-reviews/PR-7500-feat-clis-boards-ben-chmark-verb-cut-mea-ben-sim-rgb-cut-mea-sim-combinations-pa.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-10T10:14:20.259Z",
+  "schema_version": "v1",
+  "commit_sha": "70e2723d42ec23f1ea5975d3e84830b69f574658",
+  "title": "feat(clis)+boards: ben(chmark) verb (cut mea ben sim) + RGB=cut·mea·sim combinations & pairings",
+  "state": "MERGED",
+  "merged_at": "2026-06-10T10:13:49Z",
+  "head_ref": "shadow-ben-verb-and-rgb-cmyk-combinations"
+}

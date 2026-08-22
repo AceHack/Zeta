@@ -1,0 +1,12 @@
+{
+  "pr_number": 8517,
+  "archive_path": "docs/history/pr-reviews/PR-8517-memory-feedback-semantic-mapping-developing-data-soul-internal-external-intent-c.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-16T11:37:09.001Z",
+  "schema_version": "v1",
+  "commit_sha": "3f710f3d7c361dc4a68d464d34fed9ef69563228",
+  "title": "memory(feedback): semantic mapping (DEVELOPING) — data=+, soul=× (internal & external), intent=^ ('commutative intent'); ^ = where commutativity breaks = where intent/direction enters",
+  "state": "MERGED",
+  "merged_at": "2026-06-16T11:36:40Z",
+  "head_ref": "otto/semantic-mapping-data-soul-intent-developing"
+}

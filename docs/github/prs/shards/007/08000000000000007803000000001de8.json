@@ -1,0 +1,12 @@
+{
+  "pr_number": 7656,
+  "archive_path": "docs/history/pr-reviews/PR-7656-feat-quotes-playable-quotes-for-chip-8-the-soft-tenmile-mask-theorem-tested-the-.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-11T12:00:51.464Z",
+  "schema_version": "v1",
+  "commit_sha": "e0b382cc2c5893920ef192d79e480976b7333920",
+  "title": "feat(quotes): playable quotes for CHIP-8 — the soft Tenmile (mask theorem tested) + the hard quasi-crystal arc",
+  "state": "MERGED",
+  "merged_at": "2026-06-11T12:00:20Z",
+  "head_ref": "shadow-chip8-playable-quotes"
+}

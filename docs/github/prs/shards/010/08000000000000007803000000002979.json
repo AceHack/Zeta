@@ -1,0 +1,12 @@
+{
+  "pr_number": 10617,
+  "archive_path": "docs/history/pr-reviews/PR-10617-guard-meno-copy-and-discard-are-unrepresentable-in-v-menobraided-hom-is-a-braid-.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-14T17:52:47.013Z",
+  "schema_version": "v1",
+  "commit_sha": "ba04db2645e32eb580405f8d897c9af793adec6a",
+  "title": "guard(meno): copy and discard are UNREPRESENTABLE in ⟨V⟩ — MenoBraided.Hom is a braid word, not a function",
+  "state": "MERGED",
+  "merged_at": "2026-08-14T17:52:09Z",
+  "head_ref": "shadow/meno-basis-bijection-guard"
+}

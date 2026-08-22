@@ -1,0 +1,12 @@
+{
+  "pr_number": 7800,
+  "archive_path": "docs/history/pr-reviews/PR-7800-docs-research-fingerprints-factor-graphs-iblt-is-where-they-meet.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-11T21:39:15.264Z",
+  "schema_version": "v1",
+  "commit_sha": "3b732cf71df6756a09ff5da69a98120d8e2bf3f4",
+  "title": "docs(research): fingerprints ↔ factor graphs — IBLT is where they meet",
+  "state": "MERGED",
+  "merged_at": "2026-06-11T21:38:49Z",
+  "head_ref": "shadow-fingerprint-bp-capture"
+}

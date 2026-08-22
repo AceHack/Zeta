@@ -1,0 +1,12 @@
+{
+  "pr_number": 7316,
+  "archive_path": "docs/history/pr-reviews/PR-7316-docs-research-toymodel5-scope-consolidate-the-session-s-society-game-theory-iden.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-09T15:22:01.248Z",
+  "schema_version": "v1",
+  "commit_sha": "2f7db91c3cd4090a8db46056975fdd2af55d1245",
+  "title": "docs(research): toymodel5 scope — consolidate the session's society/game-theory/identity/economy/hat layer (v4 LOCKED)",
+  "state": "MERGED",
+  "merged_at": "2026-06-09T15:21:30Z",
+  "head_ref": "otto/toymodel5-scope-society-game-theory-identity-economy-hat-layer-v4-locked"
+}

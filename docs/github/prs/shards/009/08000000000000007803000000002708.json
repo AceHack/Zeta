@@ -1,0 +1,12 @@
+{
+  "pr_number": 9992,
+  "archive_path": "docs/history/pr-reviews/PR-9992-rules-engagement-profiles-are-public-work-only-never-surveillance-dossiers.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-02T20:28:22.454Z",
+  "schema_version": "v1",
+  "commit_sha": "9909314fa6196b1afd0672cc0e5b63248c299201",
+  "title": "rules: engagement profiles are public-work-only, never surveillance dossiers",
+  "state": "MERGED",
+  "merged_at": "2026-08-02T20:27:52Z",
+  "head_ref": "rules/engagement-profiles-public-work-only-20260802"
+}

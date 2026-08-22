@@ -1,0 +1,31 @@
+{
+  "pr_number": 5027,
+  "archive_path": "docs/history/pr-reviews/PR-5027-feat-zflash-show-usb-partition-contents-vendor-serial-before-consent-prompt-flas.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7EtkFb",
+    "comment:PRRC_kwDOSF9kNM7Etl64",
+    "comment:PRRC_kwDOSF9kNM7Etl6G",
+    "comment:PRRC_kwDOSF9kNM7Etl6e",
+    "comment:PRRC_kwDOSF9kNM7Etl6o",
+    "comment:PRRC_kwDOSF9kNM7Etl6x",
+    "comment:PRRC_kwDOSF9kNM7Etl7C",
+    "comment:PRRC_kwDOSF9kNM7Etl7M",
+    "comment:PRRC_kwDOSF9kNM7Etl7T",
+    "thread:PRRT_kwDOSF9kNM6Eo_vL",
+    "thread:PRRT_kwDOSF9kNM6EpBB0",
+    "thread:PRRT_kwDOSF9kNM6EpBB4",
+    "thread:PRRT_kwDOSF9kNM6EpBBX",
+    "thread:PRRT_kwDOSF9kNM6EpBB_",
+    "thread:PRRT_kwDOSF9kNM6EpBBo",
+    "thread:PRRT_kwDOSF9kNM6EpBBw",
+    "thread:PRRT_kwDOSF9kNM6EpBCF",
+    "thread:PRRT_kwDOSF9kNM6EpBCK"
+  ],
+  "fetched_at": "2026-05-25T23:54:41.209Z",
+  "schema_version": "v1",
+  "commit_sha": "8cb9aaed6747518c69b0767dc504a7699337726d",
+  "title": "feat(zflash): show USB partition contents + vendor/serial before consent prompt + flash-cluster-iso skill",
+  "state": "MERGED",
+  "merged_at": "2026-05-25T23:54:20Z",
+  "head_ref": "otto-cli/zflash-detail-richer-display-skill-2026-05-25"
+}

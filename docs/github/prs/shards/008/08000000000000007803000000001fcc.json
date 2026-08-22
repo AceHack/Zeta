@@ -1,0 +1,12 @@
+{
+  "pr_number": 8140,
+  "archive_path": "docs/history/pr-reviews/PR-8140-feat-core-add-bounded-gset-projection.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-14T02:27:44.386Z",
+  "schema_version": "v1",
+  "commit_sha": "d841a79e7b823909fffdca125fb30f497de3de44",
+  "title": "feat(core): add bounded gset projection",
+  "state": "MERGED",
+  "merged_at": "2026-06-14T02:27:25Z",
+  "head_ref": "codex/bounded-gset"
+}

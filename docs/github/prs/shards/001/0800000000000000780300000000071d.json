@@ -1,0 +1,12 @@
+{
+  "pr_number": 1821,
+  "archive_path": "docs/history/pr-reviews/PR-1821-archive-preserve-pr-1818-review-output.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-07T07:12:57.172Z",
+  "schema_version": "v1",
+  "commit_sha": "35f5b8068a7079595713399eff1e2be46d49de0d",
+  "title": "archive: preserve PR 1818 review output",
+  "state": "MERGED",
+  "merged_at": "2026-05-07T06:55:49Z",
+  "head_ref": "claim/archive-pr-1818-review-substrate"
+}

@@ -10,8 +10,12 @@ import { join, normalize } from "node:path";
 import { STATUSES } from "./new-item";
 
 const REPO_ROOT = normalize(join(__dirname, "..", "..", ".."));
-const ITEMS_DIR = join(REPO_ROOT, "inventory", "items");
-const OUT = join(REPO_ROOT, "inventory", "items.json");
+
+/** The published read-model's path, repo-relative. Exported because the
+ *  cross-surface reconciliation check names this file in its findings, and a
+ *  second hardcoded `"inventory/items.json"` over there would be one more copy of
+ *  exactly the fact this module exists to keep single-sourced. */
+export const ITEMS_JSON_REL = "inventory/items.json";
 
 export interface Item {
   id: string;
@@ -83,7 +87,8 @@ export function parseItem(relFile: string, text: string): { item?: Item; errors:
   };
 }
 
-export function generate(): { items: Item[]; errors: string[] } {
+export function generate(root: string = REPO_ROOT): { items: Item[]; errors: string[] } {
+  const ITEMS_DIR = join(root, "inventory", "items");
   const items: Item[] = [];
   const errors: string[] = [];
   let files: string[] = [];
@@ -97,18 +102,35 @@ export function generate(): { items: Item[]; errors: string[] } {
     errors.push(...res.errors);
     if (res.item) items.push(res.item);
   }
-  // ordinal sort by id (codepoint order — culture-invariant by default)
+  // DECLARED SORT FIELD: identity, NOT time (see zeta-id/sort-key.ts).
+  // Ordinal codepoint order over the canonical base32 id — culture-invariant by
+  // default, and equal to whole-128-bit numeric order. What this site needs is a
+  // stable total order so items.json has reproducible bytes; it makes NO claim
+  // about acquisition order, and it stays correct for any future id version.
+  // That distinction is load-bearing here: item ids are Category.InventoryAsset (10),
+  // which uses the packGeneric layout and has NO Timestamp field at bits [75,123) —
+  // reading one as an observation timestamp yields the year 9200. `timeSortKey`
+  // refuses these ids for exactly that reason.
   items.sort((a, b) => (a.id < b.id ? -1 : a.id > b.id ? 1 : 0));
   return { items, errors };
 }
 
-function main(): number {
-  const checkOnly = Bun.argv.includes("--check");
-  const { items, errors } = generate();
-  if (errors.length > 0) {
-    for (const e of errors) console.error(`✗ ${e}`);
-    return 1;
-  }
+/**
+ * THE derivation: register (`inventory/items/*.md`) ⟶ published read-model bytes.
+ *
+ * There is exactly ONE definition of what `items.json` should contain, and this is
+ * it. Three consumers call it — `main()` to write, `main() --check` to compare, and
+ * `reconcile-surfaces.ts` HWR-7 to report the divergence as a surface finding — so
+ * none of them can hold a private opinion about the answer. Re-deriving the payload
+ * in a second place would rebuild the exact bug the check exists to catch, one
+ * level up: two copies, agreeing today, free to drift tomorrow.
+ *
+ * Deterministic by construction (ordinal-sorted ids, stable key order, fixed
+ * 2-space indent, trailing newline), so byte-equality is the right comparison.
+ */
+export function renderItemsJson(root: string = REPO_ROOT): { json: string; count: number; errors: string[] } {
+  const { items, errors } = generate(root);
+  if (errors.length > 0) return { json: "", count: 0, errors };
   const totalValue = items.reduce((s, i) => s + i.value_usd * i.qty, 0);
   const payload = {
     generated_by: "src/Core.TypeScript/inventory/generate-items-json.ts",
@@ -116,23 +138,36 @@ function main(): number {
     total_value_usd: Math.round(totalValue * 100) / 100,
     items,
   };
-  const json = JSON.stringify(payload, null, 2) + "\n";
+  return { json: JSON.stringify(payload, null, 2) + "\n", count: items.length, errors };
+}
+
+/** The committed read-model as it stands on disk. Absent reads as empty, which
+ *  compares unequal to any real derivation — missing is stale, never "fine". */
+export function readCommittedItemsJson(root: string = REPO_ROOT): string {
+  try {
+    return readFileSync(join(root, ITEMS_JSON_REL), "utf8");
+  } catch {
+    return "";
+  }
+}
+
+function main(): number {
+  const checkOnly = Bun.argv.includes("--check");
+  const { json, count, errors } = renderItemsJson();
+  if (errors.length > 0) {
+    for (const e of errors) console.error(`✗ ${e}`);
+    return 1;
+  }
   if (checkOnly) {
-    let current = "";
-    try {
-      current = readFileSync(OUT, "utf8");
-    } catch {
-      /* missing = stale */
-    }
-    if (current !== json) {
-      console.error("✗ inventory/items.json is stale — run: bun src/Core.TypeScript/inventory/generate-items-json.ts");
+    if (readCommittedItemsJson() !== json) {
+      console.error(`✗ ${ITEMS_JSON_REL} is stale — run: bun src/Core.TypeScript/inventory/generate-items-json.ts`);
       return 1;
     }
-    console.log(`✓ items.json current (${items.length} items)`);
+    console.log(`✓ items.json current (${count} items)`);
     return 0;
   }
-  writeFileSync(OUT, json, "utf8");
-  console.log(`wrote inventory/items.json — ${items.length} items, total value $${payload.total_value_usd}`);
+  writeFileSync(join(REPO_ROOT, ITEMS_JSON_REL), json, "utf8");
+  console.log(`wrote ${ITEMS_JSON_REL} — ${count} items`);
   return 0;
 }
 

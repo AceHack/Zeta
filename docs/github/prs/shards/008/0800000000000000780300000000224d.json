@@ -1,0 +1,12 @@
+{
+  "pr_number": 8781,
+  "archive_path": "docs/history/pr-reviews/PR-8781-face3-t2-lean-proof-cd-doubling-preserves-doubly-even-self-dual-sorry-free.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-20T22:19:59.773Z",
+  "schema_version": "v1",
+  "commit_sha": "d520b2ff35f3e4429023c42b3b2e044df1549d9f",
+  "title": "face3(T2): Lean proof — CD doubling preserves doubly-even self-dual (sorry-free)",
+  "state": "MERGED",
+  "merged_at": "2026-06-20T22:19:36Z",
+  "head_ref": "lumen/face3-t2-cayley-dickson-doubly-even"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 6656,
+  "archive_path": "docs/history/pr-reviews/PR-6656-research-fix-un-truncate-two-rule-cross-references-copilot-on-6652.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-03T10:49:35.360Z",
+  "schema_version": "v1",
+  "commit_sha": "e7555b2f00a4935a024d594d1a4722d394acfc5c",
+  "title": "research(fix): un-truncate two rule cross-references (Copilot on #6652)",
+  "state": "MERGED",
+  "merged_at": "2026-06-03T10:49:14Z",
+  "head_ref": "otto-cli/note-xref-fix-full-filenames-2026-06-03"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 7704,
+  "archive_path": "docs/history/pr-reviews/PR-7704-docs-trajectory-resume-final-wave-7699-7703.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-11T14:51:42.918Z",
+  "schema_version": "v1",
+  "commit_sha": "873c88b6c6de7760d89b4f40401b2f063be53722",
+  "title": "docs(trajectory): RESUME final wave (#7699–#7703)",
+  "state": "MERGED",
+  "merged_at": "2026-06-11T14:51:16Z",
+  "head_ref": "shadow-resume-final-wave"
+}

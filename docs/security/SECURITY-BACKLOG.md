@@ -47,6 +47,11 @@ cost) but is still worth shipping eventually.
   Zeta in their own enclave.
 - **Trigger to revisit:** a named consumer requires in-enclave
   Zeta execution and is willing to co-fund the work.
+- **Trust-base note:** TEE attestation terminates in a **silicon
+  vendor's self-signed root** (AMD ARK / Intel SGX Root CA).
+  Adopting a TEE buys a real guarantee and takes on a vendor as
+  root; if two TEE deployments are ever run, prefer *different*
+  vendors so one root is not both. (`081M00QP7FB087G0R00031BQ93`)
 - **Rough cost estimate:** L
 - **Priority:** P3
 

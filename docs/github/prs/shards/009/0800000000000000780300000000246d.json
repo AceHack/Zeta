@@ -1,0 +1,12 @@
+{
+  "pr_number": 9325,
+  "archive_path": "docs/history/pr-reviews/PR-9325-chore-backlog-close-stale-peer-call-umbrella-081kq8p5d0008qg0r002m5a2m7-all-chil.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-03T16:48:05.417Z",
+  "schema_version": "v1",
+  "commit_sha": "2037959666ae4476c2d5ff1af38d30b7f24c68b2",
+  "title": "chore(backlog): close stale peer-call umbrella 081KQ8P5D0008QG0R002M5A2M7 — all children closed, substrate verified in-tree",
+  "state": "MERGED",
+  "merged_at": "2026-07-03T16:47:42Z",
+  "head_ref": "otto/close-peer-call-umbrella"
+}

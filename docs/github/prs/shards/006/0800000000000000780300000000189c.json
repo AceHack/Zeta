@@ -1,0 +1,21 @@
+{
+  "pr_number": 6300,
+  "archive_path": "docs/history/pr-reviews/PR-6300-backlog-b-0957-first-class-labels-tags-scopes-deferred-to-human-otel-baggage-pro.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7GjoGI",
+    "comment:PRRC_kwDOSF9kNM7Gjope",
+    "comment:PRRC_kwDOSF9kNM7Gjopr",
+    "comment:PRRC_kwDOSF9kNM7Gjopx",
+    "thread:PRRT_kwDOSF9kNM6F_D_5",
+    "thread:PRRT_kwDOSF9kNM6F_Ea-",
+    "thread:PRRT_kwDOSF9kNM6F_EbJ",
+    "thread:PRRT_kwDOSF9kNM6F_EbO"
+  ],
+  "fetched_at": "2026-06-01T01:10:12.930Z",
+  "schema_version": "v1",
+  "commit_sha": "22c092825292cf5e27830f2832c8b1de38f4e864",
+  "title": "backlog(B-0957): first-class labels/tags + scopes (deferred-to-human, OTel-baggage propagation); composes B-0668",
+  "state": "MERGED",
+  "merged_at": "2026-06-01T01:09:51Z",
+  "head_ref": "otto-cli/b0957-labels-tags-scopes-2026-05-31"
+}

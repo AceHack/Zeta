@@ -1,0 +1,15 @@
+{
+  "pr_number": 2105,
+  "archive_path": "docs/history/pr-reviews/PR-2105-feat-b-0058-extend-clause-coverage-audit-to-backlog-p0-p1.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_V76N",
+    "thread:PRRT_kwDOSF9kNM6AsFyW"
+  ],
+  "fetched_at": "2026-05-08T17:12:00.588Z",
+  "schema_version": "v1",
+  "commit_sha": "d434301d07c1b3bad07a812c6812b5051b75236b",
+  "title": "feat(B-0058): extend clause coverage audit to backlog P0/P1",
+  "state": "MERGED",
+  "merged_at": "2026-05-08T17:11:37Z",
+  "head_ref": "worktree-b-0058-backlog-surface-audit"
+}

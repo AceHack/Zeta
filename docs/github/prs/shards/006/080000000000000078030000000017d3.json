@@ -1,0 +1,12 @@
+{
+  "pr_number": 6099,
+  "archive_path": "docs/history/pr-reviews/PR-6099-feat-b-0250-gate-codex-loop-run-coincidence-events.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-30T09:20:30.336Z",
+  "schema_version": "v1",
+  "commit_sha": "9ecd2b251a5dda629bab36e8d6c93fa63547559c",
+  "title": "feat(B-0250): gate Codex loop-run coincidence events",
+  "state": "MERGED",
+  "merged_at": "2026-05-30T09:20:10Z",
+  "head_ref": "claim/codex-b0250-loop-run-gating-20260530"
+}

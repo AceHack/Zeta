@@ -1,0 +1,27 @@
+{
+  "pr_number": 2615,
+  "archive_path": "docs/history/pr-reviews/PR-2615-feat-b-0004-1-substrate-inventory-scanner-ts-re-decomp-b-0004-smallest-atomic-ch.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_r3qg",
+    "comment:PRRC_kwDOSF9kNM6_r4m7",
+    "comment:PRRC_kwDOSF9kNM6_r4nF",
+    "comment:PRRC_kwDOSF9kNM6_r4nR",
+    "comment:PRRC_kwDOSF9kNM6_r4nZ",
+    "comment:PRRC_kwDOSF9kNM6_sBSb",
+    "comment:PRRC_kwDOSF9kNM6_sBSe",
+    "thread:PRRT_kwDOSF9kNM6A80Co",
+    "thread:PRRT_kwDOSF9kNM6A80zB",
+    "thread:PRRT_kwDOSF9kNM6A80zK",
+    "thread:PRRT_kwDOSF9kNM6A80zT",
+    "thread:PRRT_kwDOSF9kNM6A80zb",
+    "thread:PRRT_kwDOSF9kNM6A87Wt",
+    "thread:PRRT_kwDOSF9kNM6A87Wv"
+  ],
+  "fetched_at": "2026-05-11T02:30:26.365Z",
+  "schema_version": "v1",
+  "commit_sha": "18aef3d80ce829a3c81b56e61151dbfd66c4f65e",
+  "title": "feat(B-0004.1): substrate inventory scanner (TS) — re-decomp B-0004 smallest atomic child",
+  "state": "MERGED",
+  "merged_at": "2026-05-11T02:30:05Z",
+  "head_ref": "claim/b0004-redecomp-smallest-atomic-children-riven-2026-05-10"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 9819,
+  "archive_path": "docs/history/pr-reviews/PR-9819-feat-core-icosahedralh3-e8-via-the-icosian-golden-doubling-increment-3-3rd-indep.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-01T02:32:30.271Z",
+  "schema_version": "v1",
+  "commit_sha": "66aa203b7cbd6f537325ce87bfa876eea0d97bec",
+  "title": "feat(Core): IcosahedralH3 → E8 via the icosian golden doubling (increment 3) — 3rd independent road to E8",
+  "state": "MERGED",
+  "merged_at": "2026-08-01T02:31:56Z",
+  "head_ref": "shadow/icosahedral-h3-e8-increment3"
+}

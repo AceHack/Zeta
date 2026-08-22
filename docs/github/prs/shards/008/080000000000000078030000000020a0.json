@@ -1,0 +1,12 @@
+{
+  "pr_number": 8352,
+  "archive_path": "docs/history/pr-reviews/PR-8352-docs-bootstrap-compress-cold-boot-core-into-seed-kernel.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-15T22:43:04.011Z",
+  "schema_version": "v1",
+  "commit_sha": "0848c16e0dfd54e09db73db4c02eb40ffa95a1bb",
+  "title": "docs(bootstrap): compress cold-boot core into seed kernel",
+  "state": "MERGED",
+  "merged_at": "2026-06-15T22:42:41Z",
+  "head_ref": "codex/cold-boot-core-orientation"
+}

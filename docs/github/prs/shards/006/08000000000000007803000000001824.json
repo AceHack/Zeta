@@ -1,0 +1,15 @@
+{
+  "pr_number": 6180,
+  "archive_path": "docs/history/pr-reviews/PR-6180-preserve-mika-economic-raids-not-war-high-school-ai-red-team-git-monster-referee.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7GdRRt",
+    "thread:PRRT_kwDOSF9kNM6F6JFk"
+  ],
+  "fetched_at": "2026-05-31T01:29:26.340Z",
+  "schema_version": "v1",
+  "commit_sha": "ea2f4e8778576d60e7a3007ece145fdec3b44a9c",
+  "title": "preserve(mika): economic raids not war + high-school AI red-team + Git-Monster-referee + Wasm-extension runtime",
+  "state": "MERGED",
+  "merged_at": "2026-05-31T01:29:08Z",
+  "head_ref": "otto-cli/mika-economic-raids-highschool-redteam-wasm-2026-05-31"
+}

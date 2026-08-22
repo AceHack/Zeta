@@ -1,0 +1,12 @@
+{
+  "pr_number": 2243,
+  "archive_path": "docs/history/pr-reviews/PR-2243-fix-b-0357-replace-tautological-z3-agenda-lemmas-with-non-trivial-arithmetic-pro.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-09T08:32:17.008Z",
+  "schema_version": "v1",
+  "commit_sha": "c61e43936463775e549d1a0a11976f4dce1a3f6e",
+  "title": "fix(B-0357): replace tautological Z3 agenda lemmas with non-trivial arithmetic proofs",
+  "state": "MERGED",
+  "merged_at": "2026-05-09T08:31:55Z",
+  "head_ref": "fix/b0357-non-trivial-z3-agenda-proofs"
+}

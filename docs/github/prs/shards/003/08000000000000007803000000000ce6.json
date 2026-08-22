@@ -1,0 +1,17 @@
+{
+  "pr_number": 3302,
+  "archive_path": "docs/history/pr-reviews/PR-3302-shard-tick-2337z-off-duty-checkpoint-1-hour-mark.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7BaZMz",
+    "comment:PRRC_kwDOSF9kNM7BaZNH",
+    "thread:PRRT_kwDOSF9kNM6CN432",
+    "thread:PRRT_kwDOSF9kNM6CN43m"
+  ],
+  "fetched_at": "2026-05-14T23:40:09.925Z",
+  "schema_version": "v1",
+  "commit_sha": "82354ba022add0430739b1ce740a12dcbf27b213",
+  "title": "shard(tick): 2337Z — off-duty checkpoint 1-hour mark",
+  "state": "MERGED",
+  "merged_at": "2026-05-14T23:39:55Z",
+  "head_ref": "shard/tick-2337Z-off-duty-checkpoint-hour-mark-otto-cli-2026-05-14"
+}

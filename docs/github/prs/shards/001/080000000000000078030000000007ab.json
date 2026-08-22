@@ -1,0 +1,17 @@
+{
+  "pr_number": 1963,
+  "archive_path": "docs/history/pr-reviews/PR-1963-fix-b-0140-follow-up-lane-script-review-fixes.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_CkY9",
+    "comment:PRRC_kwDOSF9kNM6_CkZP",
+    "thread:PRRT_kwDOSF9kNM6Ad493",
+    "thread:PRRT_kwDOSF9kNM6Ad49o"
+  ],
+  "fetched_at": "2026-05-07T22:58:38.347Z",
+  "schema_version": "v1",
+  "commit_sha": "8a71ade49d2829b62e3babf8c3a2972dcbca3e82",
+  "title": "fix(B-0140): follow-up lane script review fixes",
+  "state": "MERGED",
+  "merged_at": "2026-05-07T22:58:24Z",
+  "head_ref": "codex/pr1961-lane-review-fix"
+}

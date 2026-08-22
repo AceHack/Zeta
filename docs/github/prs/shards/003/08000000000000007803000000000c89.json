@@ -1,0 +1,12 @@
+{
+  "pr_number": 3209,
+  "archive_path": "docs/history/pr-reviews/PR-3209-docs-shadow-lior-antigravity-check-shadow-log-and-preservation.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-14T21:00:41.936Z",
+  "schema_version": "v1",
+  "commit_sha": "634787e512d82b761950649e95b985664bd276d9",
+  "title": "docs(shadow): Lior antigravity check shadow log and preservation",
+  "state": "MERGED",
+  "merged_at": "2026-05-14T21:00:22Z",
+  "head_ref": "lior/task3"
+}

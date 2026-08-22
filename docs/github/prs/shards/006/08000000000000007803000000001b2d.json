@@ -1,0 +1,12 @@
+{
+  "pr_number": 6957,
+  "archive_path": "docs/history/pr-reviews/PR-6957-docs-the-zeta-cli-is-a-uniform-zeta-seam-verb-noun-grammar-zs-zc-are-shorthands.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-08T00:43:56.667Z",
+  "schema_version": "v1",
+  "commit_sha": "76a3c24f88600710d5d9b25448864e5def0eb21b",
+  "title": "docs: the Zeta CLI is a uniform 'zeta <seam> <verb> <noun>' grammar — zs/zc are shorthands",
+  "state": "MERGED",
+  "merged_at": "2026-06-08T00:43:38Z",
+  "head_ref": "otto/zeta-cli-seam-verb-noun-grammar"
+}

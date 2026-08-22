@@ -1,0 +1,12 @@
+{
+  "pr_number": 7426,
+  "archive_path": "docs/history/pr-reviews/PR-7426-feat-build-the-finalizer-framework-the-prod-test-engine-bounded-self-scaling-by-.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-09T22:03:00.033Z",
+  "schema_version": "v1",
+  "commit_sha": "978c1c6d47fe0daad7ac43edc05f651bc874d660",
+  "title": "feat: build the finalizer framework — the prod=test engine (bounded self-scaling by temperature); compiles 0/0",
+  "state": "MERGED",
+  "merged_at": "2026-06-09T22:02:39Z",
+  "head_ref": "otto/build-finalizer-framework-prod-equals-test-engine"
+}

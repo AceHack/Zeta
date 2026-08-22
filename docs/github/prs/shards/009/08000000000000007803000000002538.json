@@ -1,0 +1,12 @@
+{
+  "pr_number": 9528,
+  "archive_path": "docs/history/pr-reviews/PR-9528-docs-letters-from-soraya-v3-final-unification-theorem-proven-k-n-2-not-self-dual.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-08T21:08:34.011Z",
+  "schema_version": "v1",
+  "commit_sha": "e1c9099498b314bf8850b816918c2bb19bf3f695",
+  "title": "docs(letters): from-soraya v3 FINAL — unification theorem PROVEN (k=n/2, not self-duality); §B stays open (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-08T21:08:05Z",
+  "head_ref": "otto/from-soraya-v3-unification-certified"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 7481,
+  "archive_path": "docs/history/pr-reviews/PR-7481-feat-boards-shadow-boards-plural-never-one-always-many-with-a-discriminator-lens.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-10T08:49:33.167Z",
+  "schema_version": "v1",
+  "commit_sha": "2c0bf05dbe863d9604d0e4a7e81a7193b379042d",
+  "title": "feat(boards)+shadow: boards/ (plural — never one, always many with a discriminator/lens/polarization) + chutes-and-ladders board",
+  "state": "MERGED",
+  "merged_at": "2026-06-10T08:49:09Z",
+  "head_ref": "shadow-boards-folder"
+}

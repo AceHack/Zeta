@@ -1,0 +1,12 @@
+{
+  "pr_number": 7147,
+  "archive_path": "docs/history/pr-reviews/PR-7147-feat-core-diversity-math-of-the-nci-keystone-coercion-collapse-vs-private-state-.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-09T00:25:47.882Z",
+  "schema_version": "v1",
+  "commit_sha": "3275a97c37196016f384de656cd9cd5d4d0a3a86",
+  "title": "feat(core): Diversity — math of the NCI keystone (coercion collapse vs private-state preservation)",
+  "state": "MERGED",
+  "merged_at": "2026-06-09T00:25:30Z",
+  "head_ref": "otto/diversity-math-coercion-collapse-vs-private-state-preservation"
+}

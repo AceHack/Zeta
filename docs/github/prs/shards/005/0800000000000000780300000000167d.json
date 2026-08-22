@@ -1,0 +1,12 @@
+{
+  "pr_number": 5757,
+  "archive_path": "docs/history/pr-reviews/PR-5757-docs-ferry-preserve-amara-consolidation-pass-ferry-verbatim-2026-05-28-shared-on.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-28T10:51:28.606Z",
+  "schema_version": "v1",
+  "commit_sha": "73baeb26aff1d7178407bbb25d7771d7654af764",
+  "title": "docs(ferry): preserve Amara consolidation-pass ferry VERBATIM 2026-05-28 — shared-ontology-engine keeper + Aaron's substrate-check on 3-lane completion (Aaron-forwarded)",
+  "state": "MERGED",
+  "merged_at": "2026-05-28T10:51:06Z",
+  "head_ref": "otto-cli/amara-consolidation-ferry-preservation-2026-05-28"
+}

@@ -19,6 +19,7 @@
 
 import { readFileSync } from "node:fs";
 import { recoverPhaseBlock, N } from "./rs-phase-codec";
+import { isValidCodeword } from "./rs-syndrome";
 
 interface BlockRecord {
   agent: string;
@@ -93,8 +94,24 @@ function main(): void {
       continue;
     }
 
-    // Simulate erasures — deterministic from block seq + line index
-    const erasePositions = randomIndices(erasures, N, block.seq * 1000 + i + 42);
+    // INTEGRITY CHECK (syndrome): detect silent corruption BEFORE attempting recovery.
+    // A non-zero syndrome means at least one symbol is wrong — the block cannot be trusted.
+    if (!isValidCodeword(block.coded)) {
+      console.error(
+        `[verify-rs] CORRUPT block seq=${block.seq} agent=${block.agent}: syndrome non-zero (silent corruption detected)`,
+      );
+      failed++;
+      continue;
+    }
+
+    // Simulate erasures — seeded from block data + current time for coverage rotation.
+    // HARDENED (adversarial review 2026-08-16): the old seed was purely deterministic from
+    // (seq, line index), creating blind spots an adversary could target. Adding Date.now()
+    // rotates which positions are tested across runs, eliminating static blind spots while
+    // keeping reproducibility within a single run (all blocks in one invocation use the
+    // same time component).
+    const timeSalt = Math.floor(Date.now() / 60000); // changes every minute
+    const erasePositions = randomIndices(erasures, N, block.seq * 1000 + i + timeSalt);
     const observation = block.coded.map((v, idx) =>
       erasePositions.includes(idx) ? null : { value: v },
     );

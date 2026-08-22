@@ -1,0 +1,15 @@
+{
+  "pr_number": 4280,
+  "archive_path": "docs/history/pr-reviews/PR-4280-memory-current-otto-2026-05-18-update-dotgit-saturation-rule-rest-api-push-circu.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7CfAiQ",
+    "thread:PRRT_kwDOSF9kNM6DARz9"
+  ],
+  "fetched_at": "2026-05-19T02:09:25.365Z",
+  "schema_version": "v1",
+  "commit_sha": "5a2cc4cd1802d1d94b93111a348ebd381c2a4ca5",
+  "title": "memory(current-otto): 2026-05-18 update — dotgit-saturation rule + REST-API push-circumvention",
+  "state": "MERGED",
+  "merged_at": "2026-05-19T02:09:04Z",
+  "head_ref": "otto-cli/current-otto-2026-05-18-update-rest-pattern-2026-05-19-0011z"
+}

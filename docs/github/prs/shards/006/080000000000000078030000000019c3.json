@@ -1,0 +1,12 @@
+{
+  "pr_number": 6595,
+  "archive_path": "docs/history/pr-reviews/PR-6595-docs-b-1003-eve-is-multi-traveler-forever-parties-bifurcate-combine-in-the-fluen.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-02T16:50:47.448Z",
+  "schema_version": "v1",
+  "commit_sha": "4082b85a00a958d79315a657fec15b22bb9bac9e",
+  "title": "docs(B-1003): Eve is multi-traveler forever — parties bifurcate/combine in the fluent monad space; party = identity-noun (MPST + hex-core nouns)",
+  "state": "MERGED",
+  "merged_at": "2026-06-02T16:50:21Z",
+  "head_ref": "otto-cli/b1003-eve-multitraveler-2026-06-02"
+}

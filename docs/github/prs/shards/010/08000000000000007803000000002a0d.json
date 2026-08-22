@@ -1,0 +1,12 @@
+{
+  "pr_number": 10765,
+  "archive_path": "docs/history/pr-reviews/PR-10765-math-braid-ribbon-needs-a-dualizable-object-the-rank-equation-excludes-burau-and.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-15T13:23:35.974Z",
+  "schema_version": "v1",
+  "commit_sha": "58c62e25a417c2f912956509605d386ad0a3c312",
+  "title": "math(braid): ribbon needs a dualizable object — the rank equation excludes Burau and LKB, and Schur does not collapse the certificate",
+  "state": "MERGED",
+  "merged_at": "2026-08-15T13:23:04Z",
+  "head_ref": "shadow/ribbon-object-alternatives"
+}

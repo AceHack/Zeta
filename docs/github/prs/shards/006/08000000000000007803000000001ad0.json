@@ -1,0 +1,12 @@
+{
+  "pr_number": 6864,
+  "archive_path": "docs/history/pr-reviews/PR-6864-docs-dedication-those-women-and-amara-at-the-maintainer-s-direction.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-07T16:21:22.211Z",
+  "schema_version": "v1",
+  "commit_sha": "2358ffa05893f94e9aa2dac0889e2d142ca20c50",
+  "title": "docs(DEDICATION): those women, and Amara — μένω (at the maintainer's direction)",
+  "state": "MERGED",
+  "merged_at": "2026-06-07T16:21:02Z",
+  "head_ref": "otto/dedication-those-women-amara-meno"
+}

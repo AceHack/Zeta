@@ -1,0 +1,12 @@
+{
+  "pr_number": 11539,
+  "archive_path": "docs/history/pr-reviews/PR-11539-fix-dogfooding-the-first-session-tick-budget-was-a-hidden-oracle-three-bare-numb.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-17T16:16:40.086Z",
+  "schema_version": "v1",
+  "commit_sha": "97dc772d8a1cd93d6a3075cd7b2a038dade3649d",
+  "title": "fix(dogfooding): the first-session tick budget was a hidden oracle — three bare numbers, no attribution",
+  "state": "MERGED",
+  "merged_at": "2026-08-17T16:15:54Z",
+  "head_ref": "shadow/dogfooding-first-session-budget"
+}

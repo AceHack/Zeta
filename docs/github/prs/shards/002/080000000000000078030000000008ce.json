@@ -1,0 +1,12 @@
+{
+  "pr_number": 2254,
+  "archive_path": "docs/history/pr-reviews/PR-2254-chore-close-b-0126-parent-all-children-done.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-09T09:12:07.299Z",
+  "schema_version": "v1",
+  "commit_sha": "af1797776dd97d5dbe589410e7486376f80c6ff0",
+  "title": "chore: close B-0126 parent (all children done)",
+  "state": "MERGED",
+  "merged_at": "2026-05-09T09:11:50Z",
+  "head_ref": "fix/close-b0126-parent"
+}

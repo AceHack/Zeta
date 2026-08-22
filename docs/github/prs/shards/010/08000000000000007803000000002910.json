@@ -1,0 +1,12 @@
+{
+  "pr_number": 10512,
+  "archive_path": "docs/history/pr-reviews/PR-10512-feat-pages-authorize-and-queue-bounded-agent-proposals.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-14T11:58:00.570Z",
+  "schema_version": "v1",
+  "commit_sha": "e12a62dedb958193e170def9f5dca4d6b29399eb",
+  "title": "feat(pages): authorize and queue bounded agent proposals",
+  "state": "MERGED",
+  "merged_at": "2026-08-14T11:57:25Z",
+  "head_ref": "feat/pages-operator-clean"
+}

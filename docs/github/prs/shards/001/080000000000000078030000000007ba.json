@@ -1,0 +1,12 @@
+{
+  "pr_number": 1978,
+  "archive_path": "docs/history/pr-reviews/PR-1978-research-aaron-stainback-combined-resume.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-08T00:42:56.684Z",
+  "schema_version": "v1",
+  "commit_sha": "6c9a516d6e1755751981e18714ca673559ef9081",
+  "title": "research: Aaron Stainback combined resume",
+  "state": "MERGED",
+  "merged_at": "2026-05-08T00:42:43Z",
+  "head_ref": "research/aaron-resume-2026-05-07"
+}

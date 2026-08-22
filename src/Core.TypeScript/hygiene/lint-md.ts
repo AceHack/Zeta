@@ -10,6 +10,7 @@ const REPO_ROOT = resolve(import.meta.dir, "../../..");
 const DEFAULT_EXCLUDES = [
     "references/",
     "node_modules/",
+    ".lake/",
     "tools/lean4/.lake/",
     ".claude/worktrees/",
     "db/",

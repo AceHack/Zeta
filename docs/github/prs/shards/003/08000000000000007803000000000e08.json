@@ -1,0 +1,12 @@
+{
+  "pr_number": 3592,
+  "archive_path": "docs/history/pr-reviews/PR-3592-shard-tick-2112z-session-arc-plateau-recognized-brief-shards-from-here.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-15T21:19:42.686Z",
+  "schema_version": "v1",
+  "commit_sha": "27afd0fcc6c2f6bffc24e57a5617b149bb62b7ab",
+  "title": "shard(tick): 2112Z — session-arc plateau recognized; brief shards from here",
+  "state": "MERGED",
+  "merged_at": "2026-05-15T21:19:27Z",
+  "head_ref": "shard/tick-2112z-otto-cli-2026-05-15"
+}

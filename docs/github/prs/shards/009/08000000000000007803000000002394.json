@@ -1,0 +1,12 @@
+{
+  "pr_number": 9108,
+  "archive_path": "docs/history/pr-reviews/PR-9108-feat-core-rationalring-exact-joins-the-tower-as-iring-081kwg9jq9h-payoff-shadow.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-17T04:29:55.445Z",
+  "schema_version": "v1",
+  "commit_sha": "43ab469ffd7b92965b228b7daf768abd28a3ab61",
+  "title": "feat(core): RationalRing — exact ℚ joins the tower as IRing (081KWG9JQ9H payoff) (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-02T04:03:13Z",
+  "head_ref": "otto/rational-ring-q-joins-the-tower"
+}

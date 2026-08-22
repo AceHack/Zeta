@@ -1,0 +1,12 @@
+{
+  "pr_number": 9591,
+  "archive_path": "docs/history/pr-reviews/PR-9591-docs-security-self-similar-cluster-federation-traveler-threat-model.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-09T00:32:55.821Z",
+  "schema_version": "v1",
+  "commit_sha": "1552080e273df2d624c03242aaf68107f36f43dc",
+  "title": "docs(security): self-similar cluster/federation/traveler threat model",
+  "state": "MERGED",
+  "merged_at": "2026-07-09T00:32:22Z",
+  "head_ref": "feat/usb-threat-model-cluster-federation-self-similar-2026-07-08"
+}

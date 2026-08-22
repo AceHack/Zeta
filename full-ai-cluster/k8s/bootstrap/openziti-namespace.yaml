@@ -1,0 +1,40 @@
+# full-ai-cluster/k8s/bootstrap/openziti-namespace.yaml
+#
+# The OpenZiti namespace, created at k3s first boot — BEFORE trust-manager.
+#
+# WHY A BOOTSTRAP FILE AND NOT `CreateNamespace=true` ON THE oz APPLICATION.
+# It is not the ziti controller that needs this namespace early; it is
+# TRUST-MANAGER. trust-manager v0.15.0 resolves a Bundle's Secret sources from
+# a single trust namespace and creates its Secrets-reading Role IN that
+# namespace (`role.yaml`), and this tree points that namespace at `openziti`
+# because ziti-controller's rendered Bundle sources
+# `ziti-controller-edge-signer-secret`, which cert-manager mints there. See
+# k8s/applications/trust-manager/Application.yaml for the full derivation and
+# the upstream sentence that requires it.
+#
+# trust-manager installs at k3s first boot (trust-manager-install.yaml) and
+# again via ArgoCD at sync-wave -45. `oz` is at sync-wave 0. A Role applied
+# into a namespace that does not exist is a sync failure, so waiting 45 waves
+# for the consumer to create its own namespace is not available.
+#
+# `openziti-namespace.yaml` sorts before `trust-manager-install.yaml` in the
+# k3s deploy controller's lexical apply order; that ordering is pinned by
+# nixos/tests/k3s-first-boot-apply-order-eval-test.nix, which is evaluated by
+# `nix flake check` on every PR. Note what that ordering does and does not buy
+# (the roster comment in nixos/modules/k3s-server.nix says it plainly):
+# submission order is not completion order. Here it is enough, because a
+# Namespace is a core/v1 object the API server admits immediately, while
+# trust-manager's Role is created minutes later by a helm-controller Job.
+#
+# The dev/CI lane does not read this file — nothing under k8s/bootstrap/ is in
+# the app-of-apps catalogue. There the same namespace is created by
+# `applyDevBootstrapSecrets` in src/Core.TypeScript/cluster/dev-cluster/use-cases.ts,
+# which mints `openziti/ziti-admin-credentials` before the root Application syncs.
+
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: openziti
+  labels:
+    app.kubernetes.io/name: openziti
+    app.kubernetes.io/managed-by: zeta-bootstrap

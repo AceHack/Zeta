@@ -1,0 +1,12 @@
+{
+  "pr_number": 10320,
+  "archive_path": "docs/history/pr-reviews/PR-10320-heartbeat-announce-a-false-alarm-metric-failure-instead-of-swallowing-it.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-12T02:57:11.043Z",
+  "schema_version": "v1",
+  "commit_sha": "ec94509cc92b936fa39d285dafc416c47bef7526",
+  "title": "heartbeat: announce a false-alarm metric failure instead of swallowing it",
+  "state": "MERGED",
+  "merged_at": "2026-08-12T02:56:36Z",
+  "head_ref": "false-alarm-step-no-silent-swallow"
+}

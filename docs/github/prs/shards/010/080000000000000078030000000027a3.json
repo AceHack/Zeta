@@ -1,0 +1,12 @@
+{
+  "pr_number": 10147,
+  "archive_path": "docs/history/pr-reviews/PR-10147-bug-usb-re-check-latent-install-sh-failure-is-intermittent-081kzetp6at.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-08T18:28:34.638Z",
+  "schema_version": "v1",
+  "commit_sha": "4666c8e9f62c7a7d631fe01b2a6cdef9caa6ba75",
+  "title": "bug(usb): re-check — latent install.sh failure is INTERMITTENT (081KZETP6AT)",
+  "state": "MERGED",
+  "merged_at": "2026-08-08T18:28:05Z",
+  "head_ref": "shadow/iso-latent-recheck-intermittent"
+}

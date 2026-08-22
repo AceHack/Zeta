@@ -1,0 +1,12 @@
+{
+  "pr_number": 8749,
+  "archive_path": "docs/history/pr-reviews/PR-8749-docs-handoff-mark-math-team-row-2-z3-primary-discharged-domain-separation-proof-.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-20T16:31:45.149Z",
+  "schema_version": "v1",
+  "commit_sha": "a7fa205ea2f00cd7e165dbd027c90b864dcffd60",
+  "title": "docs(handoff): mark math-team row 2 Z3 PRIMARY discharged — domain-separation proof (#8748, verified)",
+  "state": "MERGED",
+  "merged_at": "2026-06-20T16:31:21Z",
+  "head_ref": "otto/row2-z3-primary-discharge"
+}

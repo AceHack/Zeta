@@ -1,0 +1,12 @@
+{
+  "pr_number": 9205,
+  "archive_path": "docs/history/pr-reviews/PR-9205-feat-core-grammarir-the-zeta-grammar-ir-as-a-dynamicvalue-schema-rung-3-first-st.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-02T21:55:01.089Z",
+  "schema_version": "v1",
+  "commit_sha": "75ba99126c5e27681e457ce95fc70f6c126f627b",
+  "title": "feat(core): GrammarIr — the Zeta Grammar IR as a DynamicValue schema (rung 3, first step)",
+  "state": "MERGED",
+  "merged_at": "2026-07-02T21:54:40Z",
+  "head_ref": "otto/grammar-ir-dynamicvalue-schema"
+}

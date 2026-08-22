@@ -31,9 +31,9 @@
 //     a `^ {0,3}\+ ` line.
 //
 // Usage:
-//   bun tools/hygiene/audit-md032-plus-linestart.ts              # summary
-//   bun tools/hygiene/audit-md032-plus-linestart.ts --list       # list offending lines
-//   bun tools/hygiene/audit-md032-plus-linestart.ts --enforce    # exit 2 on any gap
+//   bun src/Core.TypeScript/hygiene/audit-md032-plus-linestart.ts              # summary
+//   bun src/Core.TypeScript/hygiene/audit-md032-plus-linestart.ts --list       # list offending lines
+//   bun src/Core.TypeScript/hygiene/audit-md032-plus-linestart.ts --enforce    # exit 2 on any gap
 //
 // Exit codes:
 //   0 — clean (or --enforce not set and gaps found)

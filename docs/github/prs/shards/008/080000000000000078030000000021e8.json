@@ -1,0 +1,12 @@
+{
+  "pr_number": 8680,
+  "archive_path": "docs/history/pr-reviews/PR-8680-test-qsharp-guard-flow-bit-source-oracle.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-20T02:40:12.992Z",
+  "schema_version": "v1",
+  "commit_sha": "c79148d465f4747e616ac040c334cce79f4501aa",
+  "title": "test(qsharp): guard flow-bit source oracle",
+  "state": "MERGED",
+  "merged_at": "2026-06-20T02:39:44Z",
+  "head_ref": "codex/qsharp-flow-bit-source-guard"
+}

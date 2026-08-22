@@ -1,0 +1,12 @@
+{
+  "pr_number": 4041,
+  "archive_path": "docs/history/pr-reviews/PR-4041-memo-audit-extend-4031-29-dangling-memory-refs-across-4-substrate-surfaces-syste.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-17T04:28:09.113Z",
+  "schema_version": "v1",
+  "commit_sha": "e08e3c94be8c8050e48eceb973f36f7b77e416bc",
+  "title": "memo(audit): extend #4031 — 29 dangling memory refs across 4 substrate surfaces (systemic, not rule-local)",
+  "state": "MERGED",
+  "merged_at": "2026-05-17T04:27:52Z",
+  "head_ref": "memo/audit-dangling-memory-refs-extended-29-across-4-surfaces-2026-05-17"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 13780,
+  "archive_path": "docs/history/pr-reviews/PR-13780-ferry-ip-questionable-intel-18a-two-measurements-opposite-verdicts.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-22T16:42:06.032Z",
+  "schema_version": "v1",
+  "commit_sha": "2a153b3f4392577560cff155a9d0c4f6011d66bd",
+  "title": "ferry(ip-questionable): Intel 18A — two measurements, opposite verdicts",
+  "state": "MERGED",
+  "merged_at": "2026-08-22T16:41:21Z",
+  "head_ref": "ferry/intel-18a-two-leads-one-lost"
+}

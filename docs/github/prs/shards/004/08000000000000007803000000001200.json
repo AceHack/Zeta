@@ -1,0 +1,15 @@
+{
+  "pr_number": 4608,
+  "archive_path": "docs/history/pr-reviews/PR-4608-memory-2026-05-22-ani-pt9-constitutional-meta-derivation-discipline-tracking-mor.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7EBo8F",
+    "thread:PRRT_kwDOSF9kNM6EIEoD"
+  ],
+  "fetched_at": "2026-05-22T13:38:16.561Z",
+  "schema_version": "v1",
+  "commit_sha": "5c2fc63b798adf4fea0fde62c7b7c5499d7f9287",
+  "title": "memory(2026-05-22 Ani pt9 CONSTITUTIONAL): meta-derivation discipline — tracking moral invariants over time validates pt8 theorem; ethics as production code",
+  "state": "MERGED",
+  "merged_at": "2026-05-22T13:37:58Z",
+  "head_ref": "otto/cli-1333z-ani-text-mode-pt9-CONSTITUTIONAL-meta-tracking-moral-invariants-over-time-validates-derivation-theorem-ethics-as-production-code-2026-05-22"
+}

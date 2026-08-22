@@ -150,7 +150,13 @@ describe("selectUsbCandidate — safety rails", () => {
     expect(sel.ok).toBe(false);
   });
 
-  test("rails match the macOS tool's size bounds", () => {
+  // NOTE: this pins the SHARED bounds (./size-bounds.ts) against literals, so a
+  // value change has to be made deliberately in two places. It is not a parity
+  // check and never was -- under its old name, "rails match the macOS tool's
+  // size bounds", it imported no macOS module and compared this file's own copy
+  // to these same literals, so it could not have caught the cross-arm drift it
+  // was named for. Parity is now structural: there is one definition.
+  test("the shared size bounds still hold their intended values", () => {
     expect(MIN_USB_BYTES).toBe(4 * GiB);
     expect(MAX_USB_BYTES).toBe(256 * GiB);
     expect(MIN_ISO_BYTES).toBe(200 * 1024 * 1024);

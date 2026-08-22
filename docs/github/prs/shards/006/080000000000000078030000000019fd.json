@@ -1,0 +1,19 @@
+{
+  "pr_number": 6653,
+  "archive_path": "docs/history/pr-reviews/PR-6653-feat-ace-slice-8-6-verifyindex-3-gate-cross-language-golden-vectors.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7Hi8V_",
+    "comment:PRRC_kwDOSF9kNM7Hi8W0",
+    "comment:PRRC_kwDOSF9kNM7Hi8XR",
+    "thread:PRRT_kwDOSF9kNM6GtvgK",
+    "thread:PRRT_kwDOSF9kNM6Gtvgy",
+    "thread:PRRT_kwDOSF9kNM6GtvhL"
+  ],
+  "fetched_at": "2026-06-03T10:46:25.204Z",
+  "schema_version": "v1",
+  "commit_sha": "c3c71ab75ce4f8ec453aca6697e2d07cc429f68f",
+  "title": "feat(ace): slice 8.6 — verifyIndex 3-gate cross-language golden vectors",
+  "state": "MERGED",
+  "merged_at": "2026-06-03T10:45:59Z",
+  "head_ref": "otto-windows/ace-slice8.6-verifyindex-gate-vectors-2026-06-03"
+}

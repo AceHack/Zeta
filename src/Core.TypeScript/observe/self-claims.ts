@@ -13,6 +13,38 @@
  *   3. The fleet KPI overlay uses as the DORA-like measure (the measure-first
  *      principle: measure before restricting)
  *
+ * MEASURED 2026-08-17 — the three consumers above are INTENT, not wiring. `computeReliability`
+ * and `schedulingWindowForDependency` have ZERO non-test callers; `adjustPressureByReliability`
+ * in `ferry-throttler/optimal-cadence.ts` takes a bare `windowMultiplier: number` and nothing
+ * computes one for it. The one real consumer of this module is `planning/calibration-bridge.ts`,
+ * which uses the LEDGER (`recordClaim` / `markClaimMet` / `resolveAtTick`) and not the score —
+ * it folds outcomes into `CalibrationLedger` and `TravelerRankLedger` instead. Read the list
+ * above as a design intent with (1) and (2) unbuilt and (3) unbuilt.
+ *
+ * Note for anyone tempted to wire (1): `computeReliability` reads only the claiming agent's own
+ * claims, and `markClaimMet` records no labeler — so its number is not CONFERRED, which is the
+ * standing requirement for anything another party depends on. The composition read-path
+ * (`planning/composition-read.ts`) therefore reads the conferred competence event source, not
+ * this score.
+ *
+ * RE-MEASURED 2026-08-18, and the finding is sharper than "unbuilt" on two of the three:
+ *
+ *   - (1) is **refused, not merely unbuilt.** `planning/composition-read.ts` §2 states it has no
+ *     parameter through which B can supply a number about B, and it has none. Wiring this score into
+ *     a composition read would delete that invariant, so the gap there is a landed decision and the
+ *     honest resolution is to leave it open rather than to close it.
+ *   - (2) would be **vacuum-to-vacuum.** `ferry-throttler/optimal-cadence.ts` itself has zero
+ *     non-test callers, so feeding `windowMultiplier` into `adjustPressureByReliability` would
+ *     connect one unread number to another and *look* like the gap had closed.
+ *   - (3) still has no surface.
+ *
+ * So this score deliberately still has no production consumer, and saying so is the correct state of
+ * the record. What DID get a real consumer is the widened surface: `practice-claims.ts` (standing
+ * claims about one's own practice) is read by `self-claim-standing.ts` over this repo's actual commit
+ * history, where the observation changes the subject's own repair menu. If a delivery-claim ledger
+ * ever exists in production, that is the shape to give this score too — self-scoped and advisory,
+ * never a gate and never a number another party depends on.
+ *
  * Self-claims are:
  *   - VOLUNTARY (NCI: never auto-generated, never forced)
  *   - OBSERVABLE (in the event log, visible to all peers via fold)
@@ -21,6 +53,19 @@
  *
  * This IS the probabilistic liveness mechanism: P(commit | history) → 1 as
  * track_record_length → ∞ for agents that consistently deliver.
+ *
+ * SCOPE — this file is the DELIVERY-COMMITMENT instance of the self-claim principle, not the principle.
+ * Its claims carry a deadline and resolve met/missed. The general case — contradiction between a
+ * subject's own IDENTITY claims ("I am X" / "I do not do Y" / "my purpose is Z"), where the operation is
+ * "these two self-descriptions cannot both be true" rather than "was it delivered on time" — lives in
+ * src/Core.TypeScript/observe/identity-claims.ts. That module shares the VOLUNTARY / OBSERVABLE
+ * properties above and adds the ones a reliability ratio cannot carry: the charity gradient in the type,
+ * supersession so growth never reads as drift, and no threshold.
+ *
+ * The THIRD instance is `src/Core.TypeScript/observe/practice-claims.ts`: a **standing** claim about
+ * one's own practice ("every commit I author carries the signature block"), contradicted by the
+ * subject's own RECORD rather than by a deadline or by a second claim. It reuses this file's voluntary /
+ * observable properties and `identity-claims.ts`'s charity gradient unchanged.
  *
  * Composes with:
  *   - src/Core.TypeScript/observe/observe.ts (NextAction union — self_claim is a new kind)
@@ -79,6 +124,18 @@ export interface ReliabilityScore {
 }
 
 /**
+ * The earned window multiplier. Extracted from `computeReliability` unchanged (2026-08-18) so the
+ * three branches read as the three cases they are: no track record is NEUTRAL (never a penalty for
+ * being new), above half earns window, at-or-below half shrinks it to a floor of 0.5 — the floor is
+ * why the score can never fully punish anyone.
+ */
+function multiplierFor(reliability: number | undefined): number {
+  if (reliability === undefined) return 1.0; // no track record = neutral
+  if (reliability > 0.5) return 1.0 + (reliability - 0.5); // max 1.5 at reliability=1.0
+  return Math.max(0.5, reliability); // floor at 0.5 (never fully punished)
+}
+
+/**
  * Compute reliability from a set of resolved claims.
  *
  * reliability = met / (met + missed)
@@ -95,11 +152,7 @@ export function computeReliability(agentId: string, claims: readonly ResolvedCla
   const resolved = met + missed;
 
   const reliability = resolved > 0 ? met / resolved : undefined;
-  const windowMultiplier = reliability === undefined
-    ? 1.0 // no track record = neutral
-    : reliability > 0.5
-      ? 1.0 + (reliability - 0.5) // max 1.5 at reliability=1.0
-      : Math.max(0.5, reliability); // floor at 0.5 (never fully punished)
+  const windowMultiplier = multiplierFor(reliability);
 
   return {
     agentId,

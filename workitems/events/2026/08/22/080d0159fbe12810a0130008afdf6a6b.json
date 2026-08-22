@@ -1,0 +1,14 @@
+{
+  "id": "080d0159fbe12810a0130008afdf6a6b",
+  "at": "2026-08-22T20:52:55.973Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M0NKYZ14087G0R001DPSS8G",
+    "type": "task",
+    "title": "Record the CLAIM beside the outcome — the seam for claimed-vs-measured divergence",
+    "slug": "record-the-claim-beside-the-outcome-the-seam-for-claimed-vs",
+    "priority": "P2",
+    "filename": "081M0NKYZ14087G0R001DPSS8G-record-the-claim-beside-the-outcome-the-seam-for-claimed-vs.md"
+  }
+}

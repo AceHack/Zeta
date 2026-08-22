@@ -1,0 +1,12 @@
+{
+  "pr_number": 6540,
+  "archive_path": "docs/history/pr-reviews/PR-6540-research-fwd-fix-vision-note-33-status-6538-in-flight-referee-principle.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-02T10:34:46.475Z",
+  "schema_version": "v1",
+  "commit_sha": "c93787c119360e35cbc4d69e76ee89b4c1b3cb92",
+  "title": "research(fwd-fix): vision note §33 status + #6538-in-flight + referee principle",
+  "state": "MERGED",
+  "merged_at": "2026-06-02T10:34:23Z",
+  "head_ref": "otto-cli/vision-note-s33-status-fwdfix-referee-2026-06-02"
+}

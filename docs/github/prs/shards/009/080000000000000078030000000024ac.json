@@ -1,0 +1,12 @@
+{
+  "pr_number": 9388,
+  "archive_path": "docs/history/pr-reviews/PR-9388-ci-gate-run-core-python-pytest-in-full-verify-the-t-1-12-lemma-gate-goes-live.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-04T00:59:44.546Z",
+  "schema_version": "v1",
+  "commit_sha": "5276544ef8aaf71038fa6feade88019b8d5979a0",
+  "title": "ci(gate): run Core.Python pytest in full-verify — the T-1/12 lemma gate goes live",
+  "state": "MERGED",
+  "merged_at": "2026-07-04T00:59:17Z",
+  "head_ref": "shadow/gate-pytest-step"
+}

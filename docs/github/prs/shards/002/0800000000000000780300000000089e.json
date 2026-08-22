@@ -1,0 +1,33 @@
+{
+  "pr_number": 2206,
+  "archive_path": "docs/history/pr-reviews/PR-2206-docs-b-0339-define-keep-vs-cut-taxonomy-for-bootstrap-razor.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_fRU-",
+    "comment:PRRC_kwDOSF9kNM6_fRU0",
+    "comment:PRRC_kwDOSF9kNM6_fRUX",
+    "comment:PRRC_kwDOSF9kNM6_fRUm",
+    "comment:PRRC_kwDOSF9kNM6_fRUt",
+    "comment:PRRC_kwDOSF9kNM6_fUR-",
+    "comment:PRRC_kwDOSF9kNM6_fUR4",
+    "comment:PRRC_kwDOSF9kNM6_fUR6",
+    "comment:PRRC_kwDOSF9kNM6_fUSD",
+    "comment:PRRC_kwDOSF9kNM6_fUSH",
+    "thread:PRRT_kwDOSF9kNM6Ay8w1",
+    "thread:PRRT_kwDOSF9kNM6Ay8w_",
+    "thread:PRRT_kwDOSF9kNM6Ay8xE",
+    "thread:PRRT_kwDOSF9kNM6Ay8xJ",
+    "thread:PRRT_kwDOSF9kNM6Ay8xS",
+    "thread:PRRT_kwDOSF9kNM6Ay_Dl",
+    "thread:PRRT_kwDOSF9kNM6Ay_Dn",
+    "thread:PRRT_kwDOSF9kNM6Ay_Dq",
+    "thread:PRRT_kwDOSF9kNM6Ay_Dv",
+    "thread:PRRT_kwDOSF9kNM6Ay_Dz"
+  ],
+  "fetched_at": "2026-05-09T06:46:55.041Z",
+  "schema_version": "v1",
+  "commit_sha": "f7d8fde6446463789fad925d71077fe81f715279",
+  "title": "docs(B-0339): define keep-vs-cut taxonomy for bootstrap razor",
+  "state": "MERGED",
+  "merged_at": "2026-05-09T06:46:37Z",
+  "head_ref": "fix/b0339-keep-vs-cut-criteria"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 9854,
+  "archive_path": "docs/history/pr-reviews/PR-9854-feat-heartbeat-auto-merge-clean-prs-archive-pr-review-history.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-01T11:58:47.796Z",
+  "schema_version": "v1",
+  "commit_sha": "7867ffb88914868f89888d981c07ce57661fad18",
+  "title": "feat(heartbeat): auto-merge clean PRs + archive PR review history",
+  "state": "MERGED",
+  "merged_at": "2026-08-01T11:58:21Z",
+  "head_ref": "claim/kiro-heartbeat-automerge-archive-2026-08-01"
+}

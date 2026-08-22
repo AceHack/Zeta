@@ -1,0 +1,12 @@
+{
+  "pr_number": 7591,
+  "archive_path": "docs/history/pr-reviews/PR-7591-docs-trajectory-resume-refresh-the-qubits-flux-capacitor-night-folded-in.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-11T04:04:18.681Z",
+  "schema_version": "v1",
+  "commit_sha": "45ffb066140ae0f1257428686b9b56360da966f2",
+  "title": "docs(trajectory): RESUME refresh — the qubits/flux-capacitor night folded in",
+  "state": "MERGED",
+  "merged_at": "2026-06-11T04:03:51Z",
+  "head_ref": "shadow-resume-refresh-qubits-night"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 10247,
+  "archive_path": "docs/history/pr-reviews/PR-10247-feat-browser-wake-peer-tabs-after-zetadb-writes.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-09T22:56:32.910Z",
+  "schema_version": "v1",
+  "commit_sha": "66a6adfd5f90dc6f5f74197c7edc7e3cad099b94",
+  "title": "feat(browser): wake peer tabs after ZetaDB writes",
+  "state": "MERGED",
+  "merged_at": "2026-08-09T22:56:02Z",
+  "head_ref": "codex/browser-zetadb-peer-wake"
+}

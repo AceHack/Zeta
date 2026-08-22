@@ -16,6 +16,8 @@
     <Compile Include="Bp.Tests.fs" />
     <Compile Include="Ep.Tests.fs" />
     <Compile Include="SoftMode.Tests.fs" />
+    <Compile Include="Attested.Tests.fs" />
+    <Compile Include="HeavyTailFold.Tests.fs" />
     <Compile Include="SocietyBootstrap.Tests.fs" />
     <Compile Include="AttentionRouter.Tests.fs" />
     <Compile Include="ReticulumRouter.Tests.fs" />
@@ -29,6 +31,7 @@
     <Compile Include="CloneDetectionBenchmark.Tests.fs" />
     <Compile Include="BusRegime.Tests.fs" />
     <Compile Include="OrbitalAsymmetryBudget.Tests.fs" />
+    <Compile Include="BoundJustification.Tests.fs" />
     <Compile Include="ReticulumBusMeter.Tests.fs" />
     <Compile Include="KeptClaimOracle.Tests.fs" />
     <Compile Include="GossipTelemetry.Tests.fs" />
@@ -44,6 +47,7 @@
     <Compile Include="MutualFalsification.Tests.fs" />
     <Compile Include="CondorcetBoundary.Tests.fs" />
     <Compile Include="FigureEightEnsemble.Tests.fs" />
+    <Compile Include="FigureEightTangleClass.Tests.fs" />
     <Compile Include="LagrangeCondorcet.Tests.fs" />
     <Compile Include="ArrowEscape.Tests.fs" />
     <Compile Include="Integration.Tests.fs" />

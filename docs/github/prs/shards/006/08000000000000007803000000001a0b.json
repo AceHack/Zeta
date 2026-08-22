@@ -1,0 +1,23 @@
+{
+  "pr_number": 6667,
+  "archive_path": "docs/history/pr-reviews/PR-6667-feat-ace-slice-8-8-canonical-json-4-language-promotion-rust-oracle-ts-2-lang-byt.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7HkIDS",
+    "comment:PRRC_kwDOSF9kNM7HkK58",
+    "comment:PRRC_kwDOSF9kNM7HkK79",
+    "comment:PRRC_kwDOSF9kNM7HkK7G",
+    "comment:PRRC_kwDOSF9kNM7HkK7g",
+    "thread:PRRT_kwDOSF9kNM6GuoHN",
+    "thread:PRRT_kwDOSF9kNM6GuqQE",
+    "thread:PRRT_kwDOSF9kNM6GuqRB",
+    "thread:PRRT_kwDOSF9kNM6GuqRX",
+    "thread:PRRT_kwDOSF9kNM6GuqRt"
+  ],
+  "fetched_at": "2026-06-03T11:48:34.428Z",
+  "schema_version": "v1",
+  "commit_sha": "374a06b49eaee2e01f82749813e7e79e89401082",
+  "title": "feat(ace): slice 8.8 — canonical-JSON 4-language promotion (Rust oracle; TS→2-lang byte-lock)",
+  "state": "MERGED",
+  "merged_at": "2026-06-03T11:48:13Z",
+  "head_ref": "otto-windows/ace-slice8.8-canonical-json-rust-oracle-2026-06-03"
+}

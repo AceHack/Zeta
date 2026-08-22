@@ -1,0 +1,12 @@
+{
+  "pr_number": 5682,
+  "archive_path": "docs/history/pr-reviews/PR-5682-backlog-4-pushback-rows-from-otto-evaluative-response-on-parallel-tracks-design-.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-28T02:54:21.796Z",
+  "schema_version": "v1",
+  "commit_sha": "4a12f5b9871a8ed4a617a1473a108d032ca2c8e5",
+  "title": "backlog: 4 pushback rows from Otto evaluative response on parallel-tracks design (B-0867.15.1, B-0886.1, B-0887.1, B-0888)",
+  "state": "MERGED",
+  "merged_at": "2026-05-28T02:54:04Z",
+  "head_ref": "backlog/parallel-tracks-pushback-rows-b-0867-15-1-b-0886-1-b-0887-1-b-0888-2026-05-28"
+}

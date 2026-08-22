@@ -161,6 +161,51 @@ type WitnessDurableBackingStore<'K when 'K : comparison>
             // Release is idempotent on an empty store; safe to no-op.
             ()
 
+    /// **The declaration, beside the operations it classifies** (`ErasureClass`).
+    ///
+    /// The honest `Unmeasured` case. `Save` and `Load` raise `NotImplementedException`, so there
+    /// is no representation to sweep: the operation has no fibres because it has no behaviour. It
+    /// would be *easy* and wrong to record that as zero bits — an unimplemented durability mode
+    /// would then show up in a ledger as the cheapest one available. `Unmeasured` is not a smaller
+    /// number than `Reversible`; it is the absence of a number, and `ErasureClass.bitsErasedPpm`
+    /// returns `None` here precisely so no fold can silently treat it as free.
+    ///
+    /// `Release` is a different matter: a no-op is the identity, which is genuinely measurable and
+    /// genuinely reversible. Two operations on one type, two evidence kinds, no averaging.
+    interface IErasureDeclaring with
+        member _.ErasureProfiles =
+            [ { Representation = "WitnessDurableBackingStore"
+                Operation = "IBackingStore.Save"
+                Observation = "the store's content function (Load over every live handle)"
+                RecoveryChannel =
+                    "undefined — the call raises before touching any state, so there is no \
+                     post-state to compare a preimage against. The WDC protocol is unspecified; \
+                     selecting this mode is an intent declaration, not a durability guarantee, and \
+                     it is not a thermodynamic claim either"
+                Classification = ErasureClass.ThermodynamicClass.Unmeasured
+                Evidence =
+                    ErasureClass.Evidence.NoAdmissibleMeasurement
+                        "the operation raises NotImplementedException; an unimplemented operation has no fibres to sweep, and recording it as zero bits would make the least-finished durability mode look like the cheapest one" }
+
+              { Representation = "WitnessDurableBackingStore"
+                Operation = "IBackingStore.Load"
+                Observation = "the store's content function (Load over every live handle)"
+                RecoveryChannel = "undefined — the call raises; no witness recovery path is implemented"
+                Classification = ErasureClass.ThermodynamicClass.Unmeasured
+                Evidence =
+                    ErasureClass.Evidence.NoAdmissibleMeasurement
+                        "the operation raises NotImplementedException; there is nothing to sweep" }
+
+              { Representation = "WitnessDurableBackingStore"
+                Operation = "IBackingStore.Release"
+                Observation = "the store's content function (Load over every live handle)"
+                RecoveryChannel =
+                    "everything, trivially — the call is a no-op over a store that can never hold \
+                     anything. That is not a measurement, it is the absence of a domain to measure \
+                     over, and the two must not be recorded the same way"
+                Classification = ErasureClass.ThermodynamicClass.Unmeasured
+                Evidence = ErasureClass.Evidence.NoAdmissibleMeasurement "the store has exactly ONE reachable state, because Save raises before touching anything; a sweep of Release therefore has a one-point domain, and a one-point sweep cannot fail. Declaring it Reversible would be a vacuous pass wearing evidence's clothes, which is the defect this whole apparatus exists to refuse" } ]
+
 
 /// Async sibling of `WitnessDurableBackingStore` — the WDC skeleton on the
 /// `IAsyncBackingStore` surface. `SaveAsync`/`LoadAsync` throw until the WDC
@@ -198,6 +243,36 @@ type WitnessDurableAsyncBackingStore<'K when 'K : comparison>
         member _.ReleaseAsync(_handle, _ct) =
             // Release is idempotent on an empty store; safe to no-op.
             System.Threading.Tasks.ValueTask.CompletedTask
+
+    /// **The declaration, beside the operations it classifies** (`ErasureClass`).
+    /// Async twin of `WitnessDurableBackingStore`: the two throwing operations are `Unmeasured`,
+    /// the no-op release is measurably `Reversible`.
+    interface IErasureDeclaring with
+        member _.ErasureProfiles =
+            [ { Representation = "WitnessDurableAsyncBackingStore"
+                Operation = "IAsyncBackingStore.SaveAsync"
+                Observation = "the store's content function (LoadAsync over every live handle)"
+                RecoveryChannel = "undefined — the call raises before touching any state"
+                Classification = ErasureClass.ThermodynamicClass.Unmeasured
+                Evidence =
+                    ErasureClass.Evidence.NoAdmissibleMeasurement
+                        "the operation raises NotImplementedException; an unimplemented operation has no fibres to sweep, and zero would read as free" }
+
+              { Representation = "WitnessDurableAsyncBackingStore"
+                Operation = "IAsyncBackingStore.LoadAsync"
+                Observation = "the store's content function (LoadAsync over every live handle)"
+                RecoveryChannel = "undefined — the call raises; no witness recovery path is implemented"
+                Classification = ErasureClass.ThermodynamicClass.Unmeasured
+                Evidence =
+                    ErasureClass.Evidence.NoAdmissibleMeasurement
+                        "the operation raises NotImplementedException; there is nothing to sweep" }
+
+              { Representation = "WitnessDurableAsyncBackingStore"
+                Operation = "IAsyncBackingStore.ReleaseAsync"
+                Observation = "the store's content function (LoadAsync over every live handle)"
+                RecoveryChannel = "everything, trivially — a no-op over a store that can never hold anything"
+                Classification = ErasureClass.ThermodynamicClass.Unmeasured
+                Evidence = ErasureClass.Evidence.NoAdmissibleMeasurement "the store has exactly ONE reachable state, because Save raises before touching anything; a sweep of Release therefore has a one-point domain, and a one-point sweep cannot fail. Declaring it Reversible would be a vacuous pass wearing evidence's clothes, which is the defect this whole apparatus exists to refuse" } ]
 
 
 /// Pick the backing store that matches a declared `DurabilityMode`.

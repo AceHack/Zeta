@@ -1,0 +1,12 @@
+{
+  "pr_number": 13377,
+  "archive_path": "docs/history/pr-reviews/PR-13377-feat-hygiene-recurring-helm-chart-currency-report-behind-major-crossing-and-dorm.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-21T21:40:17.779Z",
+  "schema_version": "v1",
+  "commit_sha": "6404fa2d7dba193995969faed7d05dc44a147d68",
+  "title": "feat(hygiene): recurring Helm chart CURRENCY report — behind, major-crossing, and DORMANT are three different facts",
+  "state": "MERGED",
+  "merged_at": "2026-08-21T21:39:34Z",
+  "head_ref": "feat/recurring-chart-currency-report"
+}

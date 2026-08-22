@@ -13,23 +13,43 @@
  *
  * Transport: Git commits (the gitSalonTransport from gossip-mesh-transport.ts).
  * Each generation is a durable G-set event: foldable, composable, verifiable.
+ *
+ * ## 2026-08-20 — who is in the society, and what generation it is
+ *
+ * This runner spent four days with a population of ONE, and that one was itself:
+ * its loader treated every distinct `by` as an agent, and every event it writes
+ * carries `by: "society"`. At n=1 `evolve()` is the identity function — one
+ * survivor, zero offspring, no crossover, no mutation — while the tick log kept
+ * advertising "score → select → crossover → mutate → replace".
+ *
+ * Both halves are now decided rather than emergent, in `society-population.ts`:
+ *
+ *   - **Population** comes from the event log minus the runner's own lane, over a
+ *     per-agent window anchored to the corpus's own latest timestamp.
+ *   - **Generation** is folded from the runner's own lane, which is exactly what
+ *     that lane is for. It used to be hardcoded `0` every tick, so the emitted
+ *     field read `1` in all 400 events ever written.
+ *
+ * The loud half is `hygiene/audit-society-population-health.ts`, which fails the
+ * gate when the population drops below two or diversity reaches zero. Nothing
+ * anywhere referenced either number before, which is why nobody noticed.
  */
 
-import { readdirSync, readFileSync, writeFileSync, mkdirSync } from "node:fs";
+import { writeFileSync, mkdirSync } from "node:fs";
 import { join } from "node:path";
-import { evolve, createAgent, createSociety, type SocietyAgent, type Society } from "./society-evolution";
-import { createDimensionalBnn, dimensionPosterior } from "./error-bnn-bridge";
-import type { ErrorDimension } from "../protocol/error-envelope";
-// All known error dimensions — defined locally because error-bnn-bridge does not export ALL_DIMENSIONS
-const ALL_DIMENSIONS: readonly ErrorDimension[] = [
-  "schema", "type", "range", "constraint", "auth",
-  "transport", "toolchain", "calibration", "unknown",
-] as const;
-import type { PriorHint } from "../protocol/batch-teaching-envelope";
-import { batchTemperatureBand } from "../protocol/batch-heat-bridge";
-import { founderGenome } from "./agent-genome";
-import type { CalibrationPosterior } from "./calibration-ledger";
+import { evolve, createSociety, type SocietyAgent, type Society } from "./society-evolution";
+import { evidenceBackedPriorHints, transportHeatReadout } from "./society-heat-readout";
+import { absorbGeneration, loadSocietyBnn, saveSocietyBnn } from "./society-bnn";
 import { writeSocietyEventEvidence } from "./society-event-index";
+import {
+  DEFAULT_HORIZON_MS,
+  POPULATION_POLICY_ID,
+  SOCIETY_RUNNER_BY,
+  loadPopulation,
+  scanPopulation,
+  agentsFromScan,
+  type PopulationScan,
+} from "./society-population";
 
 interface CliArgs {
   eventDir: string;
@@ -48,63 +68,62 @@ function parseArgs(argv: string[]): CliArgs {
 
 /**
  * Load agents from the event log.
- * Each unique `by` field in the event log is an agent.
- * Calibration is estimated from the agent's event frequency.
+ *
+ * The body of this moved to `society-population.ts` on 2026-08-20 after it was
+ * measured collapsing the population to ONE — the runner reading its own output.
+ * The wrapper stays because it is the exported name other call sites and tests
+ * know. The two decisions that fix it live in that module and are documented
+ * there; the one-line versions are:
+ *
+ *   - the `society` lane is the loop's LINEAGE, never its POPULATION
+ *   - the window is per-agent and anchored to the corpus's own latest timestamp,
+ *     never to `Date.now()` and never to a global file count
  */
 function loadAgentsFromEventLog(eventDir: string): SocietyAgent[] {
-  const agentMap = new Map<string, { events: number; lastAt: string }>();
-  try {
-    const files = readdirSync(eventDir).filter(f => f.endsWith(".json")).sort();
-    for (const f of files.slice(-200)) { // scan last 200 events
-      try {
-        const raw = JSON.parse(readFileSync(join(eventDir, f), "utf-8"));
-        if (raw.by && raw.at) {
-          const existing = agentMap.get(raw.by) ?? { events: 0, lastAt: "" };
-          agentMap.set(raw.by, {
-            events: existing.events + 1,
-            lastAt: raw.at > existing.lastAt ? raw.at : existing.lastAt,
-          });
-        }
-      } catch { /* skip malformed */ }
-    }
-  } catch { /* no events yet */ }
+  return agentsFromScan(scanPopulation(eventDir));
+}
 
-  // Convert to SocietyAgent — fitness proxy: log(events + 1) / log(200)
-  const agents: SocietyAgent[] = [];
-  for (const [id, stats] of agentMap) {
-    const fitness = Math.log(stats.events + 1) / Math.log(200);
-    const calibration: CalibrationPosterior = {
-      zid: id, hatId: "default",
-      mu: Math.min(0.95, fitness),
-      sigma: 0.1 + (1 - fitness) * 0.2,
-      settledCount: stats.events,
-    };
-    const genome = founderGenome(
-      Math.floor(fitness * 255),
-      Math.floor((1 - fitness) * 128),
-      64,
-    );
-    agents.push(createAgent(id, genome, calibration));
-  }
-
-  if (agents.length > 0) return agents;
-  // Bootstrap with 3 agents if the event log is empty
-  const bootstrap: SocietyAgent[] = ["alexa", "otto", "soraya"].map(id =>
-    createAgent(id, founderGenome(128, 64, 32), {
-      zid: id, hatId: "default", mu: 0.5, sigma: 0.2, settledCount: 0,
-    })
+/**
+ * Print what the population scan actually decided.
+ *
+ * The collapse went unnoticed for four days partly because the tick logged
+ * `N agents loaded` and nothing else — a number with no provenance. Every input
+ * to that number is now on the line beside it, so a future collapse is readable
+ * in the run log before any audit has to catch it.
+ */
+function logScan(scan: PopulationScan): void {
+  const ids = scan.agents.map((a) => `${a.id}(${a.events})`).join(" ");
+  console.log(
+    `[society] population ${scan.agents.length}: ${ids || "(none — bootstrap)"}`,
   );
-  return bootstrap;
+  console.log(
+    `[society] window ${scan.horizonStart || "-"} .. ${scan.horizonEnd || "-"} ` +
+      `(${(DEFAULT_HORIZON_MS / 86_400_000).toFixed(0)}d, anchored to the corpus, not the clock); ` +
+      `scanned=${scan.scanned} eligible=${scan.eligible}`,
+  );
+  const excluded = Object.entries(scan.excludedByLane)
+    .map(([k, v]) => `${k}=${v}`)
+    .join(" ");
+  if (excluded.length > 0) console.log(`[society] excluded lanes (lineage, not population): ${excluded}`);
+  if (scan.agedOut.length > 0) console.log(`[society] aged out of the window: ${scan.agedOut.join(" ")}`);
+  if (scan.rejectedIds.length > 0) {
+    console.log(`[society] rejected ids (bad shape): ${scan.rejectedIds.join(" ")}`);
+  }
 }
 
 async function main(): Promise<number> {
   const args = parseArgs(process.argv.slice(2));
   console.log(`[society] loading agents from ${args.eventDir}...`);
 
-  const agents = loadAgentsFromEventLog(args.eventDir);
-  console.log(`[society] ${agents.length} agents loaded`);
+  // `generation` used to be hardcoded 0 here, so the field read `1` in all 400
+  // events ever written — a lineage counter that counted nothing. It is now
+  // folded from the runner's own `society` lane, which is the one thing that
+  // lane is legitimately for.
+  const { scan, agents, generation: priorGeneration } = loadPopulation(args.eventDir);
+  logScan(scan);
+  console.log(`[society] ${agents.length} agents loaded; resuming at generation ${priorGeneration}`);
 
-  let society: Society = createSociety(agents, 0);
+  let society: Society = createSociety(agents, priorGeneration);
   for (let g = 0; g < args.generations; g++) {
     society = evolve(society);
     console.log(`[society] generation ${society.generation}: mean fitness = ${society.meanFitness.toFixed(4)}, diversity = ${society.geneticDiversity.toFixed(4)}`);
@@ -112,60 +131,73 @@ async function main(): Promise<number> {
 
   // Write the evolution result as a G-set event
   const eventId = `society-${Date.now().toString(36)}`;
-  // Attach BNN posteriors as PriorHints so receivers can merge them into their own BNNs.
-  // This is the PriorHint exchange: the whole society converges toward a shared posterior
-  // over time as each evolution event carries the current BNN state.
-  const bnn = createDimensionalBnn();
-  const priorHints: PriorHint[] = ALL_DIMENSIONS.map(d => {
-    const p = dimensionPosterior(bnn, d as ErrorDimension);
-    return {
-      dimension: d,
-      mu: p.mu,
-      sigma2: p.sigma2,
-      robustnessWeight: p.robustnessWeight,
-      obsCount: 0,
-      senderZid: "society-runner",
-    };
-  });
+  // ── PriorHint exchange: publish only what OBSERVATIONS support ────────────────
+  // The BNN now survives the tick (081M005CGB7087G0R0031328CY): load the file in
+  // this event dir, absorb THIS generation as one calibration observation, save
+  // only if something has been absorbed. Re-folding the event log would double-
+  // count — the persist format does not carry the envelope guard — so the feed
+  // is the generation just produced, keyed by event id.
+  //
+  // `evolve()` above does not read the BNN. Restored belief is not a fold input.
+  const eventAt = new Date().toISOString();
+  const loaded = await loadSocietyBnn(args.eventDir);
+  const bnn = loaded.bnn;
+  const absorbed = absorbGeneration(bnn, society, eventId, eventAt);
+  if (absorbed) {
+    const saved = await saveSocietyBnn(bnn, args.eventDir);
+    console.log(`[society] BNN ${loaded.loaded ? "restored" : "started"}; generation absorbed; saved=${saved}`);
+  } else {
+    console.log(`[society] BNN ${loaded.loaded ? "restored" : "started"}; generation was a duplicate, not re-counted`);
+  }
+  const priorHints = evidenceBackedPriorHints(bnn, "society-runner");
+  if (priorHints.length === 0) {
+    console.log(`[society] priorHints: none — the BNN absorbed nothing; a prior is not evidence`);
+  } else {
+    console.log(`[society] priorHints: ${priorHints.length} evidence-backed dimension(s)`);
+  }
   const event = {
     id: eventId,
-    at: new Date().toISOString(),
-    by: "society",
+    at: eventAt,
+    // The SAME symbol `society-population.ts` excludes from the population. One
+    // constant, an emitter and a filter — they cannot drift, which is what
+    // re-opened the self-consumption hole the first time.
+    by: SOCIETY_RUNNER_BY,
     kind: "evolution",
+    // Which loader decided this event's population. `audit-society-population-health.ts`
+    // judges published events by THIS marker rather than by a date, so the 400
+    // events written under the collapsed loader stay preserved-but-unjudged
+    // (manifesto §5) without the audit's scope depending on when a PR merged.
+    populationPolicy: POPULATION_POLICY_ID,
     generation: society.generation,
     agents: society.agents.map(a => ({ id: a.id, fitness: a.fitness, generation: a.genome.generation })),
     meanFitness: society.meanFitness,
     fitnessSpread: society.fitnessSpread,
     geneticDiversity: society.geneticDiversity,
-    // PriorHint exchange: BNN posteriors for bidirectional EP update
-    // Receivers call ZetaTransportCell.mergePriorHints(event.priorHints) to update their BNNs
+    // PriorHint exchange: EVIDENCE-BACKED posteriors only, never the prior.
+    // A receiver merges these with `mergePriorHint`, which refuses a hint whose
+    // `obsCount` is 0 — so an empty list here and a guarded merge there are the
+    // same refusal stated at both ends of the channel.
     priorHints,
   };
-  // ── Heat readout: wire transport dimension posterior → TemperatureBand ────────
-  // The transport dimension's BNN posterior (mu) is a proxy for transport error rate.
-  // We convert it to a TemperatureBand using the same thresholds as Vera's Heat.fs:
-  //   cold (0 ppm) → warm (333k ppm) → hot (666k ppm) → critical (1M ppm)
-  // This is the bridge between the BNN learning layer and the heat accounting layer.
-  const transportPosterior = dimensionPosterior(bnn, "transport");
-  // Map mu [0,1] → ppm [0, 1_000_000]: higher mu = more transport errors = more heat
-  const transportPpm = Math.round(transportPosterior.mu * 1_000_000);
-  // Use a synthetic BatchTeachingEnvelope summary to get the TemperatureBand
-  // BatchSummary.unaccountedHeat = number of unaccounted bare erasures (not ppm)
-  // We use transportMu as a proxy: mu > 0.5 → 1 unaccounted erasure out of 1 item
-  const heatBand = batchTemperatureBand({
-    failedItems: transportPosterior.mu > 0.1 ? 1 : 0,
-    unaccountedHeat: transportPosterior.mu > 0.5 ? 1 : 0,
-  });
-  const heatReadout = {
-    band: heatBand,
-    transportMu: transportPosterior.mu,
-    transportPpm,
-    robustnessWeight: transportPosterior.robustnessWeight,
-    trend: transportPosterior.mu > 0.6 ? "↑ warming"
-      : transportPosterior.mu < 0.4 ? "↓ recovering"
-      : "→ stable",
-  };
-  console.log(`[society] heat readout: band=${heatBand} transportMu=${transportPosterior.mu.toFixed(3)} trend=${heatReadout.trend}`);
+  // ── Heat readout: the transport belief, WITH its error bar ───────────────────
+  // Three defects replaced here, all measured (see society-heat-readout.ts header):
+  //   1. `mu * 1e6` is not a ppm — `mu` is a severity z-score on the SEVERITY_Z
+  //      alphabet, not a rate. A steady stream of ordinary `error`s converges to
+  //      mu ≈ 1.94, so the old line published 1,940,259 ppm against a 1e6 maximum.
+  //   2. the `mu > 0.1` cut was inert — swept over mu ∈ [0,4] at 1e-3, forcing
+  //      `failedItems` to 1 or to 0 changed the band at no value of mu.
+  //   3. `warm` and `hot` were structurally unreachable — the reachable set was
+  //      {cold: mu ≤ 0.5, critical: mu > 0.5}, so a warn-only stream and a
+  //      fatal-only stream both read `critical`. The four-band ladder the old
+  //      comment advertised was a two-valued step function.
+  // And the band is now REFUSED when ±1σ straddles an edge: at the prior σ = 1.0
+  // the four old cut-points 0.1/0.4/0.5/0.6 sat 0.100σ apart, 0.265σ at the σ ≈
+  // 0.378 a six-observation stream publishes. The point estimate is still reported,
+  // under a name that does not promise a decision.
+  const heatReadout = transportHeatReadout(bnn, loaded.previousTransport);
+  const bandLine = `band=${heatReadout.band} (point ${heatReadout.pointBand})`;
+  const beliefLine = `transportMu=${heatReadout.transportMu.toFixed(3)}±${heatReadout.transportSigma.toFixed(3)}`;
+  console.log(`[society] heat readout: ${bandLine} ${beliefLine} trend=${heatReadout.trend} evidence=${heatReadout.evidence}`);
 
   try {
     mkdirSync(args.eventDir, { recursive: true });

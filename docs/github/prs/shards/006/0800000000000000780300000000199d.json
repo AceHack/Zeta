@@ -1,0 +1,12 @@
+{
+  "pr_number": 6557,
+  "archive_path": "docs/history/pr-reviews/PR-6557-docs-research-what-it-means-to-travel-continuous-randomness-riding-the-monad-rai.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-02T13:16:49.179Z",
+  "schema_version": "v1",
+  "commit_sha": "97873c2f156781c89b9d52733129e4b87e8004bb",
+  "title": "docs(research): \"what it means to travel\" — continuous-randomness = riding the monad-rails (HKT-recursive-hack over recursive-INumerics) while building rails + trading coincidence/memory/attention P2P in the Superfluid AI",
+  "state": "MERGED",
+  "merged_at": "2026-06-02T13:16:26Z",
+  "head_ref": "otto-cli/what-it-means-to-travel-monad-rails-hkt-recursive-economy-superfluid-2026-06-02"
+}

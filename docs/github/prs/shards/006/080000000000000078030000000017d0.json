@@ -1,0 +1,12 @@
+{
+  "pr_number": 6096,
+  "archive_path": "docs/history/pr-reviews/PR-6096-docs-b-0250-refresh-loop-coordination-resume.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-30T08:31:48.430Z",
+  "schema_version": "v1",
+  "commit_sha": "d00d84c796fcae21d1e9e8316a3c7b2cca2cd4ba",
+  "title": "docs(B-0250): refresh loop coordination resume",
+  "state": "MERGED",
+  "merged_at": "2026-05-30T08:31:28Z",
+  "head_ref": "claim/codex-task-b0250-resume-refresh-20260530"
+}

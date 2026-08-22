@@ -1,0 +1,14 @@
+{
+  "id": "080d00d95ce9e810a0130008c7a3e554",
+  "at": "2026-08-19T17:57:18.269Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M0DJQ79W087G0R001GNBTVP",
+    "type": "task",
+    "title": "Attestation consumers must demand proof-of-possession: a YubiHSM attestation is replayable, never-expiring evidence",
+    "slug": "attestation-consumers-must-demand-proof-of-possession-a-yubi",
+    "priority": "P1",
+    "filename": "081M0DJQ79W087G0R001GNBTVP-attestation-consumers-must-demand-proof-of-possession-a-yubi.md"
+  }
+}

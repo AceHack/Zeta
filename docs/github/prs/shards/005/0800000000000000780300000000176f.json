@@ -1,0 +1,12 @@
+{
+  "pr_number": 5999,
+  "archive_path": "docs/history/pr-reviews/PR-5999-feat-b-0343-pure-buildseedcommitrequest-seed-tree-sha-post-git-commits-payload-b.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-29T15:02:24.028Z",
+  "schema_version": "v1",
+  "commit_sha": "3fa7348b696311828777ffa27bed822027b7fe68",
+  "title": "feat(B-0343): pure buildSeedCommitRequest — seed tree SHA → POST /git/commits payload (bounded slice 7)",
+  "state": "MERGED",
+  "merged_at": "2026-05-29T15:02:02Z",
+  "head_ref": "otto-cli/b0343-slice7-commit-request"
+}

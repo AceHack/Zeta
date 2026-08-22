@@ -1,0 +1,12 @@
+{
+  "pr_number": 11958,
+  "archive_path": "docs/history/pr-reviews/PR-11958-fix-rules-three-false-claims-on-the-always-loaded-rules-surface.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-22T12:10:02.593Z",
+  "schema_version": "v1",
+  "commit_sha": "da66d552165c49aff45207227e3f88750cf2b376",
+  "title": "fix(rules): three false claims on the always-loaded rules surface",
+  "state": "MERGED",
+  "merged_at": "2026-08-18T14:03:01Z",
+  "head_ref": "rules/correct-stale-factual-claims-in-startup-surfaces"
+}

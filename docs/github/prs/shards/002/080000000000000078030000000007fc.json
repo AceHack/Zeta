@@ -1,0 +1,25 @@
+{
+  "pr_number": 2044,
+  "archive_path": "docs/history/pr-reviews/PR-2044-fix-backlog-normalize-pr-planner-branch-refs.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_IIDP",
+    "comment:PRRC_kwDOSF9kNM6_IJ09",
+    "comment:PRRC_kwDOSF9kNM6_IRc7",
+    "comment:PRRC_kwDOSF9kNM6_IRcq",
+    "comment:PRRC_kwDOSF9kNM6_IWxB",
+    "comment:PRRC_kwDOSF9kNM6_IXqY",
+    "thread:PRRT_kwDOSF9kNM6Ah-IN",
+    "thread:PRRT_kwDOSF9kNM6Ah-IX",
+    "thread:PRRT_kwDOSF9kNM6Ah3WG",
+    "thread:PRRT_kwDOSF9kNM6Ah4om",
+    "thread:PRRT_kwDOSF9kNM6AiCD1",
+    "thread:PRRT_kwDOSF9kNM6AiCvr"
+  ],
+  "fetched_at": "2026-05-08T06:16:37.664Z",
+  "schema_version": "v1",
+  "commit_sha": "17e2e982ec32a8492aafebb42b98abf33d448aa1",
+  "title": "fix(backlog): normalize PR planner branch refs",
+  "state": "MERGED",
+  "merged_at": "2026-05-08T06:16:19Z",
+  "head_ref": "claim/task-b0280-branch-ref-normalization"
+}

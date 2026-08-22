@@ -1,0 +1,12 @@
+{
+  "pr_number": 4312,
+  "archive_path": "docs/history/pr-reviews/PR-4312-fix-hygiene-clear-2026-05-18-tick-link-drift.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-19T02:41:51.924Z",
+  "schema_version": "v1",
+  "commit_sha": "adcc1c5b9826aed06159d190eb993b03a323892f",
+  "title": "fix(hygiene): clear 2026-05-18 tick-link drift",
+  "state": "MERGED",
+  "merged_at": "2026-05-19T02:41:32Z",
+  "head_ref": "claim/task-fix-20260518-tick-shard-links"
+}

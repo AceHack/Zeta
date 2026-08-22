@@ -292,7 +292,7 @@ bolted on. This is a research-paper-grade claim.
   entity-lineage sibling.
 - `.claude/skills/data-modeling-and-ontology/blueprints/data-governance-expert.md` — policy
   sibling.
-- `.claude/skills/data-catalog-expert/SKILL.md` /
+- `.claude/skills/data-modeling-and-ontology/SKILL.md` /
   `.claude/skills/storage-and-query-engines/blueprints/catalog-expert.md` — discoverability
   sibling.
 - `.claude/skills/streaming-and-execution/blueprints/streaming-incremental-expert.md` —

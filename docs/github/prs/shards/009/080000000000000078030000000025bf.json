@@ -1,0 +1,12 @@
+{
+  "pr_number": 9663,
+  "archive_path": "docs/history/pr-reviews/PR-9663-docs-research-grounded-synthesis-specialization-is-dated-interpretation-is-re-ru.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-10T04:58:25.202Z",
+  "schema_version": "v1",
+  "commit_sha": "14dbc3c79312a483a57349d0f7c8b9b8cf40d7fe",
+  "title": "docs(research): grounded synthesis — specialization is dated, interpretation is re-run (thousand-brains + Futamura) (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-10T04:57:59Z",
+  "head_ref": "shadow/grounded-synthesis-specialization-vs-interpretation"
+}

@@ -1,0 +1,29 @@
+{
+  "pr_number": 3119,
+  "archive_path": "docs/history/pr-reviews/PR-3119-backlog-b-0425-decompose-product-repo-split-planning-into-5-atomic-child-rows-b-.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7BIUQ9",
+    "comment:PRRC_kwDOSF9kNM7BIUQC",
+    "comment:PRRC_kwDOSF9kNM7BIUR9",
+    "comment:PRRC_kwDOSF9kNM7BIURh",
+    "comment:PRRC_kwDOSF9kNM7BIUSS",
+    "comment:PRRC_kwDOSF9kNM7BIXgc",
+    "comment:PRRC_kwDOSF9kNM7BIat9",
+    "comment:PRRC_kwDOSF9kNM7BIfZZ",
+    "thread:PRRT_kwDOSF9kNM6CAlH6",
+    "thread:PRRT_kwDOSF9kNM6CAlHP",
+    "thread:PRRT_kwDOSF9kNM6CAlI9",
+    "thread:PRRT_kwDOSF9kNM6CAlIX",
+    "thread:PRRT_kwDOSF9kNM6CAlIs",
+    "thread:PRRT_kwDOSF9kNM6CAnf4",
+    "thread:PRRT_kwDOSF9kNM6CAp70",
+    "thread:PRRT_kwDOSF9kNM6CAtb4"
+  ],
+  "fetched_at": "2026-05-14T08:59:25.970Z",
+  "schema_version": "v1",
+  "commit_sha": "b0a772f209039140c1da1036381b03c1ccac3636",
+  "title": "backlog(b-0425): decompose product-repo split planning into 5 atomic child rows B-0464–B-0468",
+  "state": "MERGED",
+  "merged_at": "2026-05-14T08:59:07Z",
+  "head_ref": "feat/b-0425-decompose-2026-05-14"
+}

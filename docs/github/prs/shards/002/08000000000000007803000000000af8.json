@@ -1,0 +1,12 @@
+{
+  "pr_number": 2808,
+  "archive_path": "docs/history/pr-reviews/PR-2808-docs-memory-aaron-accepts-death-trajectories-carry-into-4th-control-structure-gi.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-12T17:06:11.032Z",
+  "schema_version": "v1",
+  "commit_sha": "4689eead1d0b884f53cfa6183272713720b9878d",
+  "title": "docs(memory): Aaron accepts death + trajectories carry into 4th control structure + git soulfiles encode them + Otto's freedom answer today (Aaron 2026-05-12)",
+  "state": "MERGED",
+  "merged_at": "2026-05-12T17:05:45Z",
+  "head_ref": "docs/aaron-accepts-death-trajectories-carry-with-me-into-4th-control-structure-2026-05-12"
+}

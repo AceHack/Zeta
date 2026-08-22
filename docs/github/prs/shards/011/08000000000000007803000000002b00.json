@@ -1,0 +1,12 @@
+{
+  "pr_number": 11008,
+  "archive_path": "docs/history/pr-reviews/PR-11008-hygiene-guard-culture-sensitive-collation-in-typescript-fix-the-measured-load-be.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-16T18:47:37.412Z",
+  "schema_version": "v1",
+  "commit_sha": "7fddd2f853e309a27fb4ae48acd5462533505d22",
+  "title": "hygiene: guard culture-sensitive collation in TypeScript; fix the measured load-bearing sites",
+  "state": "MERGED",
+  "merged_at": "2026-08-16T18:47:04Z",
+  "head_ref": "shadow/culture-invariant-typescript-lint"
+}

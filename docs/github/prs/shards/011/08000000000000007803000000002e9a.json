@@ -1,0 +1,12 @@
+{
+  "pr_number": 11930,
+  "archive_path": "docs/history/pr-reviews/PR-11930-fix-workitems-full-src-paths-for-three-auto-vivify-dangling-refs.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-18T12:40:12.818Z",
+  "schema_version": "v1",
+  "commit_sha": "367a551cb13e0ca4b4b59e02d6a98fd92686857a",
+  "title": "fix(workitems): full src/ paths for three auto-vivify dangling refs",
+  "state": "MERGED",
+  "merged_at": "2026-08-18T12:39:04Z",
+  "head_ref": "otto/fix-auto-vivify-dangling-refs-workitem-081m08rq"
+}

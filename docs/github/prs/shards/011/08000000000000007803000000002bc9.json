@@ -1,0 +1,12 @@
+{
+  "pr_number": 11209,
+  "archive_path": "docs/history/pr-reviews/PR-11209-fix-zflash-add-the-missing-type-import-that-had-main-red-on-lint-ts.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-17T00:19:26.917Z",
+  "schema_version": "v1",
+  "commit_sha": "a21b7bbf0234c4c2941d6ea575e97646abfc37c1",
+  "title": "fix(zflash): add the missing type import that had main red on lint (TS)",
+  "state": "MERGED",
+  "merged_at": "2026-08-17T00:18:55Z",
+  "head_ref": "shadow/fix-run-test-missing-type-imports"
+}

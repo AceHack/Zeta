@@ -1,0 +1,12 @@
+{
+  "pr_number": 8450,
+  "archive_path": "docs/history/pr-reviews/PR-8450-feat-core-soft-select-meta-carts-by-reflection.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-16T05:35:52.056Z",
+  "schema_version": "v1",
+  "commit_sha": "06a89e4ff5639287a71907fdf63262d983de12c9",
+  "title": "feat(core): soft-select meta-carts by reflection",
+  "state": "MERGED",
+  "merged_at": "2026-06-16T05:35:25Z",
+  "head_ref": "codex/meta-cart-reflection"
+}

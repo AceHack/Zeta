@@ -1,0 +1,22 @@
+{
+  "pr_number": 3824,
+  "archive_path": "docs/history/pr-reviews/PR-3824-chore-b-0139-decompose-step-6-into-b-0559.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7B3Vs9",
+    "comment:PRRC_kwDOSF9kNM7B3VtM",
+    "comment:PRRC_kwDOSF9kNM7B3WBI",
+    "comment:PRRC_kwDOSF9kNM7B4D0F",
+    "comment:PRRC_kwDOSF9kNM7B4Dy8",
+    "comment:PRRC_kwDOSF9kNM7B4DzS",
+    "thread:PRRT_kwDOSF9kNM6Ciz4f",
+    "thread:PRRT_kwDOSF9kNM6CizoM",
+    "thread:PRRT_kwDOSF9kNM6Cizob"
+  ],
+  "fetched_at": "2026-05-16T10:56:31.602Z",
+  "schema_version": "v1",
+  "commit_sha": "80c427c163cf69560ba199f58efbdc2ead3da664",
+  "title": "chore(b-0139): decompose step 6 into B-0559",
+  "state": "MERGED",
+  "merged_at": "2026-05-16T10:56:13Z",
+  "head_ref": "lior/decompose-b0139-step6"
+}

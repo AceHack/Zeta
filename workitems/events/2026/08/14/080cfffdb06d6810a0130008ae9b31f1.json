@@ -1,0 +1,14 @@
+{
+  "id": "080cfffdb06d6810a0130008ae9b31f1",
+  "at": "2026-08-14T09:59:08.973Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081KZZVC3DD087G0R0035SZN58",
+    "type": "task",
+    "title": "Meno balanced structure: Lean certificate for theta = Garside full twist Delta_n^2",
+    "slug": "meno-balanced-structure-lean-certificate-for-theta-garside-f",
+    "priority": "P2",
+    "filename": "081KZZVC3DD087G0R0035SZN58-meno-balanced-structure-lean-certificate-for-theta-garside-f.md"
+  }
+}

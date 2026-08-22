@@ -1,0 +1,12 @@
+{
+  "pr_number": 6574,
+  "archive_path": "docs/history/pr-reviews/PR-6574-docs-b-0990-b-0991-local-cluster-dev-experience-itron-mpm-proven-geospatial-ux.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-02T14:56:15.568Z",
+  "schema_version": "v1",
+  "commit_sha": "93f9e1f5fefdfbb184942cbde9c4fcbaf82f0657",
+  "title": "docs(B-0990/B-0991): local-cluster dev-experience (Itron MPM-proven) + geospatial UX",
+  "state": "MERGED",
+  "merged_at": "2026-06-02T14:55:45Z",
+  "head_ref": "otto-cli/b0990-b0991-localcluster-dx-geospatial-ux-2026-06-02"
+}

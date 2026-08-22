@@ -1,0 +1,12 @@
+{
+  "pr_number": 11680,
+  "archive_path": "docs/history/pr-reviews/PR-11680-docs-vision-the-categorical-arena-one-place-where-every-language-and-tradition-i.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-17T22:31:41.120Z",
+  "schema_version": "v1",
+  "commit_sha": "fbbb9ea7457f89580863d0bfeee0338f0e59b34b",
+  "title": "docs(vision): the categorical arena — one place where every language and tradition is comparable",
+  "state": "MERGED",
+  "merged_at": "2026-08-17T22:31:03Z",
+  "head_ref": "shadow/vision-categorical-arena"
+}

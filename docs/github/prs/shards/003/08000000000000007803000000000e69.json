@@ -1,0 +1,12 @@
+{
+  "pr_number": 3689,
+  "archive_path": "docs/history/pr-reviews/PR-3689-fix-post-merge-add-git-prefix-to-switch-c-snippets-in-0226z-shard-copilot-p1-368.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-16T02:42:39.885Z",
+  "schema_version": "v1",
+  "commit_sha": "865035e88d655c17c79f17f3c64223944597a3d5",
+  "title": "fix(post-merge): add git prefix to switch -c snippets in 0226Z shard (Copilot P1 #3685)",
+  "state": "MERGED",
+  "merged_at": "2026-05-16T02:42:24Z",
+  "head_ref": "fix/0226z-table-pipes-and-git-prefix-otto-cli-2026-05-16"
+}

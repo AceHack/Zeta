@@ -1,0 +1,12 @@
+{
+  "pr_number": 8794,
+  "archive_path": "docs/history/pr-reviews/PR-8794-feat-lean-entropyfloorlift-machine-checked-row-1-entropy-floor-lift-nft-forgery-.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-20T22:59:18.635Z",
+  "schema_version": "v1",
+  "commit_sha": "f89e8b2957ef6413cb24a079aa4c344d2ce37a5b",
+  "title": "feat(lean): EntropyFloorLift — machine-checked row-1 entropy-floor lift (NFT forgery-resistance)",
+  "state": "MERGED",
+  "merged_at": "2026-06-20T22:58:52Z",
+  "head_ref": "otto/lean-entropy-floor-lift"
+}

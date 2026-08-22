@@ -1,0 +1,12 @@
+{
+  "pr_number": 7526,
+  "archive_path": "docs/history/pr-reviews/PR-7526-docs-trajectory-resume-for-sim-mea-cut-soft-substrate-rooms-as-sign-off-net-in-s.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-10T22:38:47.691Z",
+  "schema_version": "v1",
+  "commit_sha": "0d7844807e3e2e48603e8d50475e4d0db8776587",
+  "title": "docs(trajectory): RESUME for sim/mea/cut soft substrate -> rooms-as-sign-off -> .NET-in-shaders (the night's reload point)",
+  "state": "MERGED",
+  "merged_at": "2026-06-10T22:38:27Z",
+  "head_ref": "shadow-trajectory-resume-sim-mea-cut-soft-substrate"
+}

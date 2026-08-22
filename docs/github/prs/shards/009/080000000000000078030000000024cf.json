@@ -1,0 +1,12 @@
+{
+  "pr_number": 9423,
+  "archive_path": "docs/history/pr-reviews/PR-9423-docs-research-ferry-latency-s-trust-triangle.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-04T05:55:19.222Z",
+  "schema_version": "v1",
+  "commit_sha": "4ce9624bccdf8f8693e4dadb982729d9c97cac1c",
+  "title": "docs(research): ferry — latency's trust triangle",
+  "state": "MERGED",
+  "merged_at": "2026-07-04T05:54:50Z",
+  "head_ref": "shadow/ferry-latency-trust-triangle"
+}

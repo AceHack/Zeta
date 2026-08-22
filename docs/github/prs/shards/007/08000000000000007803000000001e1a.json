@@ -1,0 +1,12 @@
+{
+  "pr_number": 7706,
+  "archive_path": "docs/history/pr-reviews/PR-7706-feat-binding-the-cartridge-as-pure-static-html-css-no-javascript-tested-literall.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-11T14:58:09.664Z",
+  "schema_version": "v1",
+  "commit_sha": "7917628a2ff78e14c8971bb404642bc6a0e8cb81",
+  "title": "feat(binding): the cartridge as pure static HTML+CSS — no JavaScript, tested literally",
+  "state": "MERGED",
+  "merged_at": "2026-06-11T14:57:40Z",
+  "head_ref": "shadow-html-css-binding"
+}

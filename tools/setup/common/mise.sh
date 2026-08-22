@@ -167,32 +167,41 @@ for shim_dir in \
   fi
 done
 
+# The mise Rust backend installs an exact rustup toolchain, but exporting only
+# its shim directory does not carry mise's RUSTUP_TOOLCHAIN selection into this
+# child shell. Without the exact selection, rustc/rustup may refresh the channel
+# manifest before using an already-installed compiler, making an offline cache
+# depend on static.rust-lang.org. Pin the resolved mise version for every Rust
+# probe below; exact installed toolchains remain usable while the CDN is down.
+#
+# HALF A GUARD UNTIL 2026-08-16: this selection only helps if an offline copy of
+# ~/.rustup/toolchains actually exists, and on CI it did not — no workflow cached
+# any rustup path, so every job re-synced the channel and three PRs died on a CDN
+# blip (#10903, #10930, #10963). The missing half now lives in the
+# `install-v2-*` / `full-verify-v2-*` cache path lists (gate.yml,
+# installer-unit-tests.yml). Do not remove those paths without also removing
+# this comment's claim: measured 2026-08-16, with them restored and
+# static.rust-lang.org blackholed, the then-current
+# `ensure-rust-components.sh` printed "component rustfmt is up to date" and
+# install.sh completed offline; without them it printed "syncing channel
+# updates" and exited 1.
+#
+# 081M05X126V087G0R0014GR9KQ (2026-08-16) retired that script: `rustfmt`,
+# `clippy` and `wasm32-unknown-unknown` are now DECLARED on the rust entry in
+# `.mise.toml`, so the `mise install` above provisions them and nothing tops
+# them up here. The measurement above is left standing as the cache-path
+# guard's stated reason, but note what carries the offline property NOW: mise
+# skips an already-installed `rust@<version>` outright. Measured on mise
+# 2026.6.14 against an isolated install: the second `mise install rust` returned
+# in 0.04s with no output — no rustup invocation and no channel sync at all,
+# which is a stronger offline property than the probe-first script it replaces.
+# Honest limit: the /etc/hosts blackhole falsifier has NOT been re-run against
+# this shape, so the end-to-end CDN-down claim is inherited, not re-measured.
+rustup_toolchain="$(cd "$REPO_ROOT" && mise current rust 2>/dev/null || true)"
+if [ -n "$rustup_toolchain" ]; then
+  export RUSTUP_TOOLCHAIN="$rustup_toolchain"
+  echo "✓ rustup exact toolchain selected: $RUSTUP_TOOLCHAIN"
+fi
+
 # Print the resolved versions so the log is useful on a first run.
 (cd "$REPO_ROOT" && mise current)
-
-ensure_rust_components() {
-  if ! command -v rustc >/dev/null 2>&1 || ! command -v cargo >/dev/null 2>&1; then
-    return 0
-  fi
-  if ! command -v rustup >/dev/null 2>&1; then
-    echo "warning: rustup not on PATH; cannot provision rustfmt/clippy components" >&2
-    return 0
-  fi
-
-  local rust_toolchain
-  rust_toolchain="$(rustc -vV | awk -F ': ' '
-    $1 == "release" { release = $2 }
-    $1 == "host" { host = $2 }
-    END {
-      if (release != "" && host != "") print release "-" host
-    }
-  ')"
-
-  if [ -n "$rust_toolchain" ]; then
-    rustup component add --toolchain "$rust_toolchain" rustfmt clippy
-  else
-    rustup component add rustfmt clippy
-  fi
-}
-
-ensure_rust_components

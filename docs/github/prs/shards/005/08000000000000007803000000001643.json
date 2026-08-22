@@ -1,0 +1,15 @@
+{
+  "pr_number": 5699,
+  "archive_path": "docs/history/pr-reviews/PR-5699-fix-postmerge-5698-regen-docs-backlog-md-index-for-b-0867-23.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7Fna1q",
+    "thread:PRRT_kwDOSF9kNM6FTBSo"
+  ],
+  "fetched_at": "2026-05-28T05:03:51.244Z",
+  "schema_version": "v1",
+  "commit_sha": "f396d74b04368a81d6398da027a97b11773098f9",
+  "title": "fix(postmerge-5698): regen docs/BACKLOG.md index for B-0867.23",
+  "state": "MERGED",
+  "merged_at": "2026-05-28T05:03:31Z",
+  "head_ref": "otto-cli/postmerge-5698-regen-backlog-index-2026-05-28"
+}

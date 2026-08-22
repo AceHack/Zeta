@@ -1,0 +1,21 @@
+{
+  "pr_number": 6229,
+  "archive_path": "docs/history/pr-reviews/PR-6229-feat-observe-operator-channel-presence-gated-fourcornerownership-that-outranks-b.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7GhwOj",
+    "comment:PRRC_kwDOSF9kNM7GhwOy",
+    "comment:PRRC_kwDOSF9kNM7GhwPB",
+    "comment:PRRC_kwDOSF9kNM7GhwPN",
+    "thread:PRRT_kwDOSF9kNM6F9nj5",
+    "thread:PRRT_kwDOSF9kNM6F9njZ",
+    "thread:PRRT_kwDOSF9kNM6F9nji",
+    "thread:PRRT_kwDOSF9kNM6F9njw"
+  ],
+  "fetched_at": "2026-05-31T18:47:41.661Z",
+  "schema_version": "v1",
+  "commit_sha": "36ba1e3ac95a70c281e05f63fbb2542338516e94",
+  "title": "feat(observe): operator channel — presence-gated FourCornerOwnership that outranks backlog",
+  "state": "MERGED",
+  "merged_at": "2026-05-31T18:47:19Z",
+  "head_ref": "otto-cli/observe-operator-channel-slice-2026-05-31"
+}

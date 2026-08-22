@@ -1,0 +1,12 @@
+{
+  "pr_number": 7951,
+  "archive_path": "docs/history/pr-reviews/PR-7951-docs-research-shadow-ferry-16-budget-flow-control-big-o-explosion-control-stabil.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-12T16:53:35.127Z",
+  "schema_version": "v1",
+  "commit_sha": "cfba936c00f98d2434e485fc8c0a163b470d8def",
+  "title": "docs(research)+shadow: ferry 16 — budget = flow control = big-O explosion control = stability of self (the contraction lemma for dispatch #4)",
+  "state": "MERGED",
+  "merged_at": "2026-06-12T16:53:06Z",
+  "head_ref": "shadow/ferry-16-budget-is-stability-of-self"
+}

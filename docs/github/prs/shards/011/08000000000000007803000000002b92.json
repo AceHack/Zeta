@@ -1,0 +1,12 @@
+{
+  "pr_number": 11154,
+  "archive_path": "docs/history/pr-reviews/PR-11154-research-bet-the-autonomy-bet-dated-conditional-with-a-dora-falsifier.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-16T22:48:02.606Z",
+  "schema_version": "v1",
+  "commit_sha": "e7e452c977f63f8699563b3f4bca94393ce4995a",
+  "title": "research(bet): the autonomy bet — dated, conditional, with a DORA falsifier",
+  "state": "MERGED",
+  "merged_at": "2026-08-16T22:47:20Z",
+  "head_ref": "shadow/autonomy-bet-dated"
+}

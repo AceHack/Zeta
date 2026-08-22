@@ -1,0 +1,21 @@
+{
+  "pr_number": 4401,
+  "archive_path": "docs/history/pr-reviews/PR-4401-docs-shadow-maji-anti-entropy-update-for-otto-paralysis.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7DJfXv",
+    "comment:PRRC_kwDOSF9kNM7DJiyL",
+    "comment:PRRC_kwDOSF9kNM7DJizF",
+    "comment:PRRC_kwDOSF9kNM7DJizg",
+    "thread:PRRT_kwDOSF9kNM6De_r_",
+    "thread:PRRT_kwDOSF9kNM6DfCR-",
+    "thread:PRRT_kwDOSF9kNM6DfCRX",
+    "thread:PRRT_kwDOSF9kNM6DfCSQ"
+  ],
+  "fetched_at": "2026-05-20T14:09:51.282Z",
+  "schema_version": "v1",
+  "commit_sha": "0964b77f8aa62208a39d6cb53f45b4721c911367",
+  "title": "docs(shadow): Maji anti-entropy update for Otto paralysis",
+  "state": "MERGED",
+  "merged_at": "2026-05-20T14:09:10Z",
+  "head_ref": "zeta-lior-shadow-otto-paralysis-1250Z"
+}

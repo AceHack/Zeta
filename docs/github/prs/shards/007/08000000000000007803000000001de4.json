@@ -1,0 +1,12 @@
+{
+  "pr_number": 7652,
+  "archive_path": "docs/history/pr-reviews/PR-7652-docs-rooms-polyglot-persona-rooms-chip-9-named-the-injection-budget-what-s-in-ou.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-11T11:16:46.634Z",
+  "schema_version": "v1",
+  "commit_sha": "560e346d6f38535fc5bcc2f0090d23ee74ec1cf9",
+  "title": "docs(rooms): polyglot persona rooms + CHIP-9 named + the injection budget (what's in/out/till we run out)",
+  "state": "MERGED",
+  "merged_at": "2026-06-11T11:16:20Z",
+  "head_ref": "shadow-polyglot-rooms-chip9-budget"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 7933,
+  "archive_path": "docs/history/pr-reviews/PR-7933-docs-research-shadow-ferry-13-addendum-per-neuron-budgets-society-allocated-over.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-12T15:36:44.647Z",
+  "schema_version": "v1",
+  "commit_sha": "809bd359dd7278e21ab8c74b9480a37174d40a21",
+  "title": "docs(research)+shadow: ferry 13 addendum — per-neuron budgets society-allocated over Reticulum; Thousand-Brains units in Clifford space",
+  "state": "MERGED",
+  "merged_at": "2026-06-12T15:36:18Z",
+  "head_ref": "shadow/ferry-13-addendum-society-neurons"
+}

@@ -1,6 +1,6 @@
 import {
   blackBodyReadout,
-  heatReceiptPpm,
+  heatReceiptScale,
   heatReceiptsFromRows,
   heatSignals,
   summarizeHeatRows,
@@ -15,6 +15,7 @@ import {
 import type { BrowserTabCoordinatorReadout } from "../browser-node/browser-tab-coordinator";
 import type { BrowserTabTransportReadout } from "../browser-node/browser-tab-channel-selector";
 import type { DwellerMind, LlmtvTranscript, MindPrediction, MindTemp, PhaseClockReadout } from "./darkhall-tv";
+import type { DarkHallCausalHandoffReadout, DarkHallCausalReadout } from "./darkhall-causal-readout";
 import type { DarkHallDatabaseReadout } from "./darkhall-database-readout";
 
 export {
@@ -36,6 +37,7 @@ export {
   clampTemperaturePpm,
   heatReceiptFromRow,
   heatReceiptPpm,
+  heatReceiptScale,
   heatReceiptsFromRows,
   heatSignals,
   heatSignalsFromKinds,
@@ -45,6 +47,8 @@ export {
   temperatureReadout,
   temperatureTreatyBundle,
   thermalPpm,
+  worstFidelity,
+  type ChannelFidelity,
   type HeatReadout,
   type HeatReceipt,
   type HeatReceiptOutcome,
@@ -145,6 +149,8 @@ export interface RoomRunTranscript {
   readonly travelerFrame?: TranscriptTravelerFrame;
   readonly phaseClock?: PhaseClockReadout;
   readonly continuationReadout?: TranscriptContinuationReadout;
+  readonly causalReadout?: DarkHallCausalReadout;
+  readonly causalHandoffReadout?: DarkHallCausalHandoffReadout;
   readonly browserTabReadout?: BrowserTabCoordinatorReadout;
   readonly browserTransportReadout?: BrowserTabTransportReadout;
   readonly databaseReadout?: DarkHallDatabaseReadout;
@@ -335,6 +341,82 @@ function renderContinuationReadout(readout: TranscriptContinuationReadout | unde
     `<div><dt>feedback</dt><dd>${escapeHtml(feedback)}</dd></div>`,
     `<div><dt>token</dt><dd><code>${escapeHtml(token)}</code></dd></div>`,
     "</dl>",
+    "</section>",
+  ].join("");
+}
+
+function renderCausalReadout(
+  readout: DarkHallCausalReadout | undefined,
+  handoff: DarkHallCausalHandoffReadout | undefined,
+): string {
+  if (readout === undefined && handoff === undefined) return "";
+
+  const corrections = readout?.corrections ?? [];
+  const maxCorrections = readout?.maxCorrections ?? handoff?.maxCorrections ?? 0;
+  const admission = readout?.admission ?? "open";
+  const feedback = readout?.feedback;
+
+  return [
+    `<section class="zeta-room-causality"`,
+    attr("aria-label", "Causal correction readout"),
+    attr("data-causal-readout", readout?.schema),
+    attr("data-execution-direction", readout?.executionDirection),
+    attr("data-append-only", readout?.appendOnly),
+    attr("data-rewrites-history", readout?.rewritesHistory),
+    attr("data-correction-count", corrections.length),
+    attr("data-correction-capacity", maxCorrections),
+    attr("data-correction-remaining", readout?.remainingCapacity),
+    attr("data-correction-admission", admission),
+    attr("data-correction-feedback", feedback?.code),
+    attr("data-causal-handoff-readout", handoff?.schema),
+    attr("data-causal-handoff-status", handoff?.status),
+    attr("data-causal-handoff-direction", handoff?.direction),
+    attr("data-causal-handoff-peer", handoff?.peerTabId ?? undefined),
+    attr("data-causal-handoff-corrections", handoff?.correctionCount),
+    attr("data-causal-handoff-admitted", handoff?.admittedCorrections),
+    attr("data-causal-handoff-pending", handoff?.pendingHandoffs),
+    attr("data-causal-handoff-capacity", handoff?.maxPendingHandoffs),
+    attr("data-causal-handoff-feedback", handoff?.feedback?.code),
+    ">",
+    '<header class="zeta-causal-header">',
+    "<h2>causal corrections</h2>",
+    `<p>${corrections.length.toString()} / ${maxCorrections.toString()} retained · ${escapeHtml(admission)}</p>`,
+    "</header>",
+    handoff === undefined
+      ? ""
+      : [
+          '<div class="zeta-causal-handoff"',
+          attr("data-handoff-status", handoff.status),
+          attr("data-handoff-direction", handoff.direction),
+          attr("data-handoff-id", handoff.handoffId ?? undefined),
+          attr("data-handoff-peer", handoff.peerTabId ?? undefined),
+          ">",
+          "<span>peer handoff</span>",
+          `<strong>${escapeHtml(handoff.status)} · ${escapeHtml(handoff.direction)}</strong>`,
+          `<span>${escapeHtml(handoff.peerTabId ?? "no peer")} · ${handoff.correctionCount.toString()} records · ${handoff.admittedCorrections.toString()} new · ${handoff.pendingHandoffs.toString()} / ${handoff.maxPendingHandoffs.toString()} pending</span>`,
+          handoff.feedback === null ? "" : `<code>${escapeHtml(handoff.feedback.code)}</code>`,
+          "</div>",
+        ].join(""),
+    '<ol class="zeta-causal-corrections">',
+    ...corrections.map((correction) =>
+      [
+        '<li class="zeta-causal-correction"',
+        attr("data-correction-source", correction.sourceTabId),
+        attr("data-correction-sequence", correction.sequence),
+        attr("data-reinterprets-through", correction.reinterpretsThrough),
+        attr("data-delta-rows", correction.deltaRows),
+        ">",
+        `<span>source ${escapeHtml(correction.sourceTabId)}</span>`,
+        `<span>history ${escapeHtml(correction.reinterpretsThrough)}</span>`,
+        `<span>correction ${escapeHtml(correction.sequence)}</span>`,
+        `<span>delta ${correction.deltaRows.toString()}</span>`,
+        "</li>",
+      ].join(""),
+    ),
+    "</ol>",
+    feedback === undefined || feedback === null
+      ? ""
+      : `<p class="zeta-causal-feedback" data-severity="${feedback.severity}">${escapeHtml(feedback.code)}: ${escapeHtml(feedback.detail)}</p>`,
     "</section>",
   ].join("");
 }
@@ -553,15 +635,33 @@ function roomTemperatureTreaty(
   transcript: RoomRunTranscript,
   heat: HeatReadout | ReturnType<typeof summarizeHeatRows>,
 ) {
+  // Encode via `heatReceiptScale`, NOT the lossy `heatReceiptPpm` accessor: the
+  // scale carries whether the count was in-domain, and that fact is destroyed by
+  // the accessor. Feeding the accessor's output straight into `temperatureReadout`
+  // made a blind counter (NaN / Infinity / negative) arrive as a plain `0` and be
+  // reported back as `fidelity: "exact"` — a dead sensor rendered as a calm room,
+  // with a field actively asserting the reading was faithful.
+  // 081M010WYE5087G0R003J89QVF §1.
+  const heatScale = heatReceiptScale(heat.heatRejected);
+  const uncertaintyScale = heatReceiptScale(heat.storageErrors);
+  const pressureScale = heatReceiptScale(heat.backpressured);
+  const attentionScale = heatReceiptScale(selectedControllerCells(transcript));
+
   const sourceTemperature =
     transcript.temperatureTreaty?.temperature ??
     transcript.temperatureReadout ??
     temperatureReadout({
       source: transcript.roomName,
-      heatPpm: heatReceiptPpm(heat.heatRejected),
-      uncertaintyPpm: heatReceiptPpm(heat.storageErrors),
-      pressurePpm: heatReceiptPpm(heat.backpressured),
-      attentionPpm: heatReceiptPpm(selectedControllerCells(transcript)),
+      heatPpm: heatScale.ppm,
+      uncertaintyPpm: uncertaintyScale.ppm,
+      pressurePpm: pressureScale.ppm,
+      attentionPpm: attentionScale.ppm,
+      upstreamFidelity: [
+        heatScale.fidelity,
+        uncertaintyScale.fidelity,
+        pressureScale.fidelity,
+        attentionScale.fidelity,
+      ],
     });
   const sourceBlackBody = transcript.temperatureTreaty?.blackBody ?? transcript.blackBodyReadout;
 
@@ -645,6 +745,8 @@ export function roomTranscriptToLlmtv(
     predictions: roomPredictions(transcript, heat, temperatureTreaty.temperature),
     phaseClock,
     temperatureTreaty,
+    ...(transcript.causalReadout === undefined ? {} : { causalReadout: transcript.causalReadout }),
+    ...(transcript.causalHandoffReadout === undefined ? {} : { causalHandoffReadout: transcript.causalHandoffReadout }),
   };
   const mind = { ...baseMind, frame };
 
@@ -684,6 +786,8 @@ export function renderDarkHallRoomHtml(transcript: RoomRunTranscript): string {
   const travelerFrame = transcript.travelerFrame;
   const phaseClock = phaseClockReadout(transcript);
   const continuation = transcript.continuationReadout;
+  const causality = transcript.causalReadout;
+  const causalHandoff = transcript.causalHandoffReadout;
   const continuationStatusValue = continuation === undefined ? undefined : continuationStatus(continuation);
   const browser = transcript.browserTabReadout;
   const browserTransport = transcript.browserTransportReadout;
@@ -706,6 +810,10 @@ export function renderDarkHallRoomHtml(transcript: RoomRunTranscript): string {
     attr("data-temperature-feedback", temperatureFeedback),
     attr("data-temperature-ppm", temperature?.temperaturePpm),
     attr("data-temperature-band", temperature?.band),
+    // The band alone cannot distinguish an idle room from a blind one — both read
+    // `cold`. The fidelity attribute is what makes the difference visible on the
+    // surface rather than merely present in the value. 081M010WYE5087G0R003J89QVF §1.
+    attr("data-temperature-fidelity", temperature?.fidelity),
     attr("data-black-body-readout", blackBody?.schema),
     attr("data-black-body-radiance", blackBody?.radiancePpm),
     attr("data-black-body-peak-frequency", blackBody?.peakFrequencyPpm),
@@ -722,6 +830,24 @@ export function renderDarkHallRoomHtml(transcript: RoomRunTranscript): string {
     attr("data-continuation-stop", continuation?.stopReason),
     attr("data-continuation-next-lap", continuation?.nextLap),
     attr("data-continuation-resume-base-tick", continuation?.resumeBaseTick),
+    attr("data-causal-readout", causality?.schema),
+    attr("data-execution-direction", causality?.executionDirection),
+    attr("data-rewrites-history", causality?.rewritesHistory),
+    attr("data-correction-count", causality?.corrections.length),
+    attr("data-correction-capacity", causality?.maxCorrections),
+    attr("data-correction-remaining", causality?.remainingCapacity),
+    attr("data-correction-admission", causality?.admission),
+    attr("data-correction-feedback", causality?.feedback?.code),
+    attr("data-causal-handoff-readout", causalHandoff?.schema),
+    attr("data-causal-handoff-status", causalHandoff?.status),
+    attr("data-causal-handoff-direction", causalHandoff?.direction),
+    attr("data-causal-handoff-id", causalHandoff?.handoffId ?? undefined),
+    attr("data-causal-handoff-peer", causalHandoff?.peerTabId ?? undefined),
+    attr("data-causal-handoff-corrections", causalHandoff?.correctionCount),
+    attr("data-causal-handoff-admitted", causalHandoff?.admittedCorrections),
+    attr("data-causal-handoff-pending", causalHandoff?.pendingHandoffs),
+    attr("data-causal-handoff-capacity", causalHandoff?.maxPendingHandoffs),
+    attr("data-causal-handoff-feedback", causalHandoff?.feedback?.code),
     attr("data-browser-tab-readout", browser?.schema),
     attr("data-browser-node", browser?.nodeId),
     attr("data-browser-local-tab", browser?.localTabId),
@@ -753,6 +879,13 @@ export function renderDarkHallRoomHtml(transcript: RoomRunTranscript): string {
     `<div><dt>frame</dt><dd>${phaseClock.phase.toString()}</dd></div>`,
     `<div><dt>skew</dt><dd>${phaseClock.skewBoundTicks.toString()}</dd></div>`,
     `<div><dt>resume</dt><dd>${escapeHtml(continuationStatusValue ?? "none")}</dd></div>`,
+    ...(causality === undefined
+      ? []
+      : [
+          `<div><dt>direction</dt><dd>${escapeHtml(causality.executionDirection)}</dd></div>`,
+          `<div><dt>corrections</dt><dd>${causality.corrections.length.toString()}</dd></div>`,
+        ]),
+    ...(causalHandoff === undefined ? [] : [`<div><dt>handoff</dt><dd>${escapeHtml(causalHandoff.status)}</dd></div>`]),
     `<div><dt>signals</dt><dd>${escapeHtml(heat.signals.join(", ") || "cold")}</dd></div>`,
     ...(browser === undefined
       ? []
@@ -780,6 +913,7 @@ export function renderDarkHallRoomHtml(transcript: RoomRunTranscript): string {
     ...(transcript.heatRows.length === 0 ? ['<p class="zeta-room-cold">cold</p>'] : []),
     "</section>",
     renderContinuationReadout(continuation),
+    renderCausalReadout(causality, causalHandoff),
     renderBrowserTabReadout(browser, browserTransport),
     renderDatabaseReadout(database),
     ...(transcript.sLanes && transcript.sLanes.length > 0

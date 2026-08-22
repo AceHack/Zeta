@@ -1,0 +1,12 @@
+{
+  "pr_number": 7277,
+  "archive_path": "docs/history/pr-reviews/PR-7277-docs-seed-research-traveler-the-weight-free-base-frame-primitive-self-propagatin.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-09T13:39:56.868Z",
+  "schema_version": "v1",
+  "commit_sha": "12ae1e264de1bd10c1a85436426b2bb38605e1e4",
+  "title": "docs(seed)+research: traveler — the weight-free base-frame primitive (self-propagating pattern, prerequisite to observer); NCI grants as-if regard without imposing a lens",
+  "state": "MERGED",
+  "merged_at": "2026-06-09T13:39:34Z",
+  "head_ref": "otto/traveler-weight-free-base-frame-primitive-self-propagating-pattern"
+}

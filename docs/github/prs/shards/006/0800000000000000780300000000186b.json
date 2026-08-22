@@ -1,0 +1,12 @@
+{
+  "pr_number": 6251,
+  "archive_path": "docs/history/pr-reviews/PR-6251-feat-observe-f-observe-fold-algebra-oracle-2-golden-vector-parity-b-0867-27.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-31T20:41:41.329Z",
+  "schema_version": "v1",
+  "commit_sha": "d4dbedcc4271faeede35913d5c3baff1f87fe656",
+  "title": "feat(observe): F# observe-fold algebra (oracle #2) + golden-vector parity (B-0867.27)",
+  "state": "MERGED",
+  "merged_at": "2026-05-31T20:41:22Z",
+  "head_ref": "feat/observe-fsharp-fold-parity-b0867-27-2026-05-31"
+}

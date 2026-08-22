@@ -1,0 +1,14 @@
+{
+  "id": "080d00b664cff810a0130008cc48f0c9",
+  "at": "2026-08-18T21:35:02.655Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M0BCS6FZ087G0R000PN01SS",
+    "type": "task",
+    "title": "Delete the stale wall-clock allowlist handoff row after 12098 landed",
+    "slug": "delete-the-stale-wall-clock-allowlist-handoff-row-after-1209",
+    "priority": "P2",
+    "filename": "081M0BCS6FZ087G0R000PN01SS-delete-the-stale-wall-clock-allowlist-handoff-row-after-1209.md"
+  }
+}

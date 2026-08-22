@@ -1,0 +1,14 @@
+{
+  "id": "080d00d839ed8810a013000858ed91d7",
+  "at": "2026-08-19T17:17:34.513Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M0DGEFDE087G0R0032Y3VPG",
+    "type": "task",
+    "title": "Metered probe: YubiHSM 2 SSH-certificate template parser (S4) end-to-end + mutation campaign",
+    "slug": "metered-probe-yubihsm-2-ssh-certificate-template-parser-s4-e",
+    "priority": "P1",
+    "filename": "081M0DGEFDE087G0R0032Y3VPG-metered-probe-yubihsm-2-ssh-certificate-template-parser-s4-e.md"
+  }
+}

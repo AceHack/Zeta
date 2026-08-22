@@ -1,0 +1,17 @@
+{
+  "pr_number": 4835,
+  "archive_path": "docs/history/pr-reviews/PR-4835-shard-2026-05-24-1607z-dotgit-saturation-15th-observation-2h-sustained-0-reading.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7EZMpk",
+    "comment:PRRC_kwDOSF9kNM7EZMyK",
+    "thread:PRRT_kwDOSF9kNM6EZr2i",
+    "thread:PRRT_kwDOSF9kNM6EZrv9"
+  ],
+  "fetched_at": "2026-05-24T16:21:26.129Z",
+  "schema_version": "v1",
+  "commit_sha": "ae94d0ba7a6b4d849d9bd2a32c4cdcbba8b5a0e9",
+  "title": "shard(2026-05-24/1607Z): dotgit-saturation 15th observation (2h-sustained 0-reading window)",
+  "state": "MERGED",
+  "merged_at": "2026-05-24T16:21:09Z",
+  "head_ref": "otto/shard-1607z-sustained-recovery-2026-05-24"
+}

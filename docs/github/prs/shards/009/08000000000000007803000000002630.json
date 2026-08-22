@@ -1,0 +1,12 @@
+{
+  "pr_number": 9776,
+  "archive_path": "docs/history/pr-reviews/PR-9776-deps-bump-the-github-actions-minor-patch-group-across-1-directory-with-5-updates.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-31T23:28:58.282Z",
+  "schema_version": "v1",
+  "commit_sha": "05dfae98e1f2cd59f538eefedc131d9a9211366e",
+  "title": "deps: bump the github-actions-minor-patch group across 1 directory with 5 updates",
+  "state": "MERGED",
+  "merged_at": "2026-07-31T23:28:30Z",
+  "head_ref": "dependabot/github_actions/github-actions-minor-patch-28064b6add"
+}

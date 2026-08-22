@@ -1,0 +1,12 @@
+{
+  "pr_number": 4966,
+  "archive_path": "docs/history/pr-reviews/PR-4966-backlog-b-0727-federated-peer-mesh-5-resource-profiles-weight-free-routing-no-hi.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-25T17:47:44.928Z",
+  "schema_version": "v1",
+  "commit_sha": "85104dca98ce710fe3a15eb91313de7901d44f43",
+  "title": "backlog(B-0727): federated peer mesh — 5 resource profiles, weight-free routing, NO hierarchy",
+  "state": "MERGED",
+  "merged_at": "2026-05-25T17:47:25Z",
+  "head_ref": "backlog/b0727-federated-peer-mesh-weight-free-2026-05-25-c2"
+}

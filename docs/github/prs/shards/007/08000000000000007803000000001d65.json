@@ -1,0 +1,12 @@
+{
+  "pr_number": 7525,
+  "archive_path": "docs/history/pr-reviews/PR-7525-docs-research-we-recover-the-meaning-designers-think-in-repeating-patterns-time-.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-10T22:31:54.301Z",
+  "schema_version": "v1",
+  "commit_sha": "450dd2e45eda8ec49867740ac9d6a3f9925b0ba2",
+  "title": "docs(research): we recover the MEANING — designers think in repeating patterns (=time-crystals=ECS), not assembly",
+  "state": "MERGED",
+  "merged_at": "2026-06-10T22:31:33Z",
+  "head_ref": "shadow-reconstruct-meaning-patterns-ecs"
+}

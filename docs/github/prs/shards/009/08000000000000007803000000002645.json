@@ -1,0 +1,12 @@
+{
+  "pr_number": 9797,
+  "archive_path": "docs/history/pr-reviews/PR-9797-feat-orbitbraid-trajectory-braid-the-forger-map-rung-completes-the-thurston-brid.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-31T22:33:56.521Z",
+  "schema_version": "v1",
+  "commit_sha": "243e50a03688f84c7b00a6a2c7b839120bce5c76",
+  "title": "feat(OrbitBraid): trajectory → braid — the forger-map rung completes the Thurston bridge end-to-end",
+  "state": "MERGED",
+  "merged_at": "2026-07-31T22:33:18Z",
+  "head_ref": "shadow/orbitbraid-forger-map-rung"
+}

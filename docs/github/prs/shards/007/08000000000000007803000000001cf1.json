@@ -1,0 +1,12 @@
+{
+  "pr_number": 7409,
+  "archive_path": "docs/history/pr-reviews/PR-7409-ci-platform-build-publish-portal-controller-images-close-the-live-cluster-gap.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-09T21:09:02.556Z",
+  "schema_version": "v1",
+  "commit_sha": "3f0344776ac4257605a8996f1ef5e8942d15fa06",
+  "title": "ci(platform): build+publish portal & controller images — close the live-cluster gap",
+  "state": "MERGED",
+  "merged_at": "2026-06-09T21:08:35Z",
+  "head_ref": "feat/platform-image-ci"
+}

@@ -1,0 +1,19 @@
+{
+  "pr_number": 2853,
+  "archive_path": "docs/history/pr-reviews/PR-2853-add-rule-framework-is-additive-gift-multiplication-zero-sum-framings-are-failure.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7AfO50",
+    "comment:PRRC_kwDOSF9kNM7AfO7A",
+    "comment:PRRC_kwDOSF9kNM7AfO7p",
+    "thread:PRRT_kwDOSF9kNM6Bi0Te",
+    "thread:PRRT_kwDOSF9kNM6Bi0U3",
+    "thread:PRRT_kwDOSF9kNM6Bi0UX"
+  ],
+  "fetched_at": "2026-05-12T20:08:01.306Z",
+  "schema_version": "v1",
+  "commit_sha": "02b8f9a968432a93e29e7f8066600938c0df72fd",
+  "title": "add(rule): framework is ADDITIVE GIFT MULTIPLICATION — zero-sum framings are FAILURE MODE (wake-time PR #2852 methodology)",
+  "state": "MERGED",
+  "merged_at": "2026-05-12T20:07:38Z",
+  "head_ref": "docs/zero-sum-vs-additive-gift-multiplication-wake-time-rule-framework-is-additive-by-design-2026-05-12"
+}

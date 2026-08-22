@@ -1,0 +1,12 @@
+{
+  "pr_number": 7103,
+  "archive_path": "docs/history/pr-reviews/PR-7103-feat-core-frame-aware-step-60hz-tick-interleave-ghost-screen-make-the-soft-emu-l.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-08T12:44:36.254Z",
+  "schema_version": "v1",
+  "commit_sha": "a3a39d827f24373f91a4f59a15cb0ee64bb4a18d",
+  "title": "feat(core): frame-aware step (60Hz tick interleave) + ghost-screen — make the soft emu live",
+  "state": "MERGED",
+  "merged_at": "2026-06-08T12:44:14Z",
+  "head_ref": "otto/frame-aware-step-tick-interleave-live-soft-emu-ghost-screen"
+}

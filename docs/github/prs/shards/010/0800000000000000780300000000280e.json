@@ -1,0 +1,12 @@
+{
+  "pr_number": 10254,
+  "archive_path": "docs/history/pr-reviews/PR-10254-docs-blueprint-generation-0-s-defects-as-the-input-to-generation-1.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-09T23:57:34.471Z",
+  "schema_version": "v1",
+  "commit_sha": "54c9f4d1223f9bce1f7595c5e33e64336889e994",
+  "title": "docs(blueprint): generation 0's defects as the input to generation 1",
+  "state": "MERGED",
+  "merged_at": "2026-08-09T23:57:02Z",
+  "head_ref": "shadow/n-version-generation-1"
+}

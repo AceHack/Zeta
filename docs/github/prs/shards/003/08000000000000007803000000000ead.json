@@ -1,0 +1,12 @@
+{
+  "pr_number": 3757,
+  "archive_path": "docs/history/pr-reviews/PR-3757-feat-rule-backlog-item-start-gate-add-step-0-substrate-drift-discriminator.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-16T05:30:23.009Z",
+  "schema_version": "v1",
+  "commit_sha": "268f351b1b12b5490bef69b0d8943da73150701e",
+  "title": "feat(rule): backlog-item-start-gate — add step 0 substrate-drift discriminator",
+  "state": "MERGED",
+  "merged_at": "2026-05-16T05:30:07Z",
+  "head_ref": "feat/backlog-start-gate-existence-check-step-otto-cli-2026-05-16"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 5344,
+  "archive_path": "docs/history/pr-reviews/PR-5344-feat-broadcast-add-local-broadcast-schema-contract.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-26T23:00:51.567Z",
+  "schema_version": "v1",
+  "commit_sha": "262e0a179ce82b7a8016a9795c1cdd2902e2125e",
+  "title": "feat(broadcast): add local broadcast schema contract",
+  "state": "MERGED",
+  "merged_at": "2026-05-26T23:00:30Z",
+  "head_ref": "claim/codex-b0213-broadcast-bus-schema-ttl-receipts-20260526"
+}

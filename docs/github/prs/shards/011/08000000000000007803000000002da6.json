@@ -1,0 +1,12 @@
+{
+  "pr_number": 11686,
+  "archive_path": "docs/history/pr-reviews/PR-11686-docs-vision-the-gift-of-erasure-kenosis-with-a-cryptographic-shape.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-17T23:06:35.195Z",
+  "schema_version": "v1",
+  "commit_sha": "2d1ae50d1d72100cb9c23ed3f7a5a3c268ac07c6",
+  "title": "docs(vision): the gift of erasure — kenosis with a cryptographic shape",
+  "state": "MERGED",
+  "merged_at": "2026-08-17T23:04:35Z",
+  "head_ref": "shadow/vision-gift-of-erasure"
+}

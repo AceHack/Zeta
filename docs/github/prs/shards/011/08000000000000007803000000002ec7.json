@@ -1,0 +1,12 @@
+{
+  "pr_number": 11975,
+  "archive_path": "docs/history/pr-reviews/PR-11975-fix-archive-heal-and-guard-the-pr-review-merge-time-race-the-archive-kept-74-3-o.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-18T14:56:50.917Z",
+  "schema_version": "v1",
+  "commit_sha": "d2ba5b0003638ea8e787f804e15cc80723a3cfcc",
+  "title": "fix(archive): heal and guard the PR-review merge-time race — the archive kept 74.3% of review threads, not 21%",
+  "state": "MERGED",
+  "merged_at": "2026-08-18T14:55:32Z",
+  "head_ref": "shadow/pr-review-archive-merge-race-reconcile"
+}

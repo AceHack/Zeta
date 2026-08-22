@@ -1,0 +1,12 @@
+{
+  "pr_number": 7578,
+  "archive_path": "docs/history/pr-reviews/PR-7578-docs-research-sequoia-in-softvalue-over-geospatial-clifford-space-soft-tier-plac.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-11T03:15:04.832Z",
+  "schema_version": "v1",
+  "commit_sha": "6603e0349da82a70ce2da3b4c9a1f9ed9db93881",
+  "title": "docs(research): Sequoia in SoftValue over geospatial Clifford space — soft tier placement",
+  "state": "MERGED",
+  "merged_at": "2026-06-11T03:14:43Z",
+  "head_ref": "shadow-sequoia-softvalue-clifford-placement"
+}

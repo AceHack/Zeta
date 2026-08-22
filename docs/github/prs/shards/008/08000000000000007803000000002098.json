@@ -1,0 +1,12 @@
+{
+  "pr_number": 8344,
+  "archive_path": "docs/history/pr-reviews/PR-8344-docs-register-b-grand-synthesis-zeta-self-regenerates-from-one-softvalue-seed-ge.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-15T21:44:22.287Z",
+  "schema_version": "v1",
+  "commit_sha": "f1f3066a83fa824cce68c79c39fbc49b73167f8e",
+  "title": "docs(register): §B grand-synthesis — Zeta self-regenerates from one SoftValue seed (gen(gen)=space, DST=time, ace+Eve=transport+merge)",
+  "state": "MERGED",
+  "merged_at": "2026-06-15T21:43:54Z",
+  "head_ref": "docs/register-zeta-self-regenerates-seed-gen-dst-ace-eve"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 8173,
+  "archive_path": "docs/history/pr-reviews/PR-8173-fix-zset-merkle-add-cross-verify-oracle-format-python-go-restore-main-green.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-14T04:12:23.309Z",
+  "schema_version": "v1",
+  "commit_sha": "771fee93e18c2ab52e68aff88ff8f20cf0445376",
+  "title": "fix(zset-merkle): add cross-verify oracle + format Python/Go (restore main-green)",
+  "state": "MERGED",
+  "merged_at": "2026-06-14T04:12:01Z",
+  "head_ref": "otto/fix-zset-merkle-rollout-gates"
+}

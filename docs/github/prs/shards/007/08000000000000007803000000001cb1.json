@@ -1,0 +1,12 @@
+{
+  "pr_number": 7345,
+  "archive_path": "docs/history/pr-reviews/PR-7345-docs-research-prod-test-for-real-reticulum-message-routing-in-dst-same-db-same-b.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-09T17:13:21.867Z",
+  "schema_version": "v1",
+  "commit_sha": "edfbfef9bf34e5654681b6ae36524f3d460f0cd0",
+  "title": "docs(research): prod = test for real — Reticulum message routing in DST, same DB, same branch (short-lived during the bounded test)",
+  "state": "MERGED",
+  "merged_at": "2026-06-09T17:12:53Z",
+  "head_ref": "otto/prod-equals-test-for-real-reticulum-routing-same-db-same-branch-short-lived"
+}

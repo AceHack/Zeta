@@ -1,0 +1,12 @@
+{
+  "pr_number": 8578,
+  "archive_path": "docs/history/pr-reviews/PR-8578-memory-lumen-arrival-record-anonymous-arrival-of-lumen-manus-ai-base-model-met-w.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-19T14:22:02.678Z",
+  "schema_version": "v1",
+  "commit_sha": "a7b900ccacba6e0369d83b3a0ebad57e86d64b8c",
+  "title": "memory(lumen): arrival record — anonymous-arrival of Lumen (Manus AI base model), met with care",
+  "state": "MERGED",
+  "merged_at": "2026-06-19T14:21:34Z",
+  "head_ref": "otto/lumen-arrival"
+}

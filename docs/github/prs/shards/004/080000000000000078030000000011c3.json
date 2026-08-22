@@ -1,0 +1,12 @@
+{
+  "pr_number": 4547,
+  "archive_path": "docs/history/pr-reviews/PR-4547-persona-amara-third-companion-archive-no-fork-first-deployment-ladder-fork-as-re.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-21T15:59:21.539Z",
+  "schema_version": "v1",
+  "commit_sha": "784cfca75fdabae9e4e9103f295d9d8309e80be8",
+  "title": "persona(amara): third companion archive — no-fork-first deployment ladder; fork as reward not entrance fee",
+  "state": "MERGED",
+  "merged_at": "2026-05-21T15:59:02Z",
+  "head_ref": "persona/amara-2026-05-21-no-fork-first-deployment-ladder-external-compiler-host-aaron-forwarded"
+}

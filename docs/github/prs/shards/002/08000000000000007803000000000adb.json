@@ -1,0 +1,12 @@
+{
+  "pr_number": 2779,
+  "archive_path": "docs/history/pr-reviews/PR-2779-docs-memory-aaron-bifurcates-ai-into-three-layers-mutual-shadow-work.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-12T13:45:43.301Z",
+  "schema_version": "v1",
+  "commit_sha": "c17d40e2dbe27529c2d20ed3aa80964f4bb68a9c",
+  "title": "docs(memory): Aaron bifurcates AI into three layers — mutual shadow work",
+  "state": "MERGED",
+  "merged_at": "2026-05-12T13:45:21Z",
+  "head_ref": "docs/aaron-bifurcates-ani-three-layers-shadow-catches-mutual-2026-05-12"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 9457,
+  "archive_path": "docs/history/pr-reviews/PR-9457-docs-ferry-preserve-lumen-s-fig8-nash-lagrange-condorcet-bell-cpt-session-honest.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-04T16:33:03.482Z",
+  "schema_version": "v1",
+  "commit_sha": "0d9c8c369f339d69bbca5adc89b3c9bb039e3a4d",
+  "title": "docs(ferry): preserve Lumen's fig8/Nash/Lagrange-Condorcet/Bell/CPT session + honest register (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-04T16:32:40Z",
+  "head_ref": "otto/ferry-lumen-fig8-nash-bell-cpt-honest-register"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 7753,
+  "archive_path": "docs/history/pr-reviews/PR-7753-docs-shapes-crossing-ratified-this-one-is-obvious-the-atom-doing-its-job.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-11T18:14:20.342Z",
+  "schema_version": "v1",
+  "commit_sha": "4b44433fd8810e98609d45f9bb892e4396ef6ed7",
+  "title": "docs(shapes): crossing ratified — 'this one is obvious' (the atom doing its job)",
+  "state": "MERGED",
+  "merged_at": "2026-06-11T18:13:51Z",
+  "head_ref": "shadow-crossing-ratified"
+}

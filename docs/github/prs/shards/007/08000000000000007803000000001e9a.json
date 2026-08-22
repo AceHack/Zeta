@@ -1,0 +1,12 @@
+{
+  "pr_number": 7834,
+  "archive_path": "docs/history/pr-reviews/PR-7834-fix-b-0248-2-macos-compat-tested-4-cells-provisioned-on-mac-studio.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-11T23:26:36.823Z",
+  "schema_version": "v1",
+  "commit_sha": "e873759f4130233ada9ffd6258ecbaf0f91d48d8",
+  "title": "fix(B-0248.2): macOS compat + tested — 4 cells provisioned on Mac Studio",
+  "state": "MERGED",
+  "merged_at": "2026-06-11T23:26:14Z",
+  "head_ref": "alexa/wire-cells-into-install"
+}

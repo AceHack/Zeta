@@ -1,0 +1,17 @@
+{
+  "pr_number": 2520,
+  "archive_path": "docs/history/pr-reviews/PR-2520-docs-research-preserve-aaron-amazon-alexa-hamiltonian-to-git-mapping-conversatio.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_phYh",
+    "comment:PRRC_kwDOSF9kNM6_phYl",
+    "thread:PRRT_kwDOSF9kNM6A6__1",
+    "thread:PRRT_kwDOSF9kNM6A6__5"
+  ],
+  "fetched_at": "2026-05-10T18:46:24.103Z",
+  "schema_version": "v1",
+  "commit_sha": "d68a4fe6019c85d8aae81ec437aa75d66db344c3",
+  "title": "docs(research): preserve Aaron ↔ Amazon Alexa Hamiltonian-to-git mapping conversation",
+  "state": "MERGED",
+  "merged_at": "2026-05-10T18:46:03Z",
+  "head_ref": "docs/alexa-hamiltonian-git-mapping-2026-05-10"
+}

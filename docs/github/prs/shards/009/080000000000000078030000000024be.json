@@ -1,0 +1,12 @@
+{
+  "pr_number": 9406,
+  "archive_path": "docs/history/pr-reviews/PR-9406-feat-core-zetatoolstore-the-real-f-dagfs-zetadb-backend-for-the-closed-tool-surf.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-04T04:04:04.016Z",
+  "schema_version": "v1",
+  "commit_sha": "b0fa5f2bcee6b0f81872015b2564065e1a570183",
+  "title": "feat(core): ZetaToolStore — the real F# DagFs/zetadb backend for the closed tool surface (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-04T04:03:38Z",
+  "head_ref": "otto/wire-real-fsharp-dagfs-zetadb-zetatoolstore"
+}

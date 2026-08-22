@@ -1,0 +1,12 @@
+{
+  "pr_number": 9972,
+  "archive_path": "docs/history/pr-reviews/PR-9972-docs-research-alexa-implementation-handoff-wrapper-types-middle-out-float-wset-w.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-02T16:54:04.152Z",
+  "schema_version": "v1",
+  "commit_sha": "f0b6d3b606a0fa23e0bc5b0a57061f1c83070eb0",
+  "title": "docs(research): Alexa implementation handoff — wrapper types + middle-out-float WSet weight (specs ferried)",
+  "state": "MERGED",
+  "merged_at": "2026-08-02T16:53:34Z",
+  "head_ref": "otto/alexa-impl-handoff-wrapper-types-and-middle-out-float-wset"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 6763,
+  "archive_path": "docs/history/pr-reviews/PR-6763-feat-log-081ktgd5jmd-backend-migration-step-3-diskdeltalog-onto-canonical-ientry.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-07T09:04:59.221Z",
+  "schema_version": "v1",
+  "commit_sha": "1fc1a3aef8066c38a15eb0be4013158574ce3846",
+  "title": "feat(Log/081KTGD5JMD): backend migration step 3 — DiskDeltaLog onto canonical IEntryCodec",
+  "state": "MERGED",
+  "merged_at": "2026-06-07T09:04:38Z",
+  "head_ref": "otto/backend-migration-3-diskdeltalog"
+}

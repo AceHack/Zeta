@@ -1,0 +1,12 @@
+{
+  "pr_number": 7309,
+  "archive_path": "docs/history/pr-reviews/PR-7309-docs-research-roadmap-ethical-gambling-in-toysociety-v5-gated-on-v4-stable-math-.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-09T15:12:33.156Z",
+  "schema_version": "v1",
+  "commit_sha": "527562c33511c0751ba22aac2841376ca7273650",
+  "title": "docs(research): roadmap — ETHICAL gambling in toysociety v5 (gated on v4-stable + math review); care for degenerate cases, humans AND AI alike",
+  "state": "MERGED",
+  "merged_at": "2026-06-09T15:09:25Z",
+  "head_ref": "otto/roadmap-ethical-gambling-toysociety-v5-care-degenerate-cases-humans-and-ai"
+}

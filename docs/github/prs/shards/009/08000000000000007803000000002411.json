@@ -1,0 +1,12 @@
+{
+  "pr_number": 9233,
+  "archive_path": "docs/history/pr-reviews/PR-9233-docs-research-how-aaron-thinks-the-sql-server-bi-decision-forest-mental-model-ex.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-03T00:31:52.670Z",
+  "schema_version": "v1",
+  "commit_sha": "90d0be3f542ca38488e9c18c23c465a16b9aa87c",
+  "title": "docs(research): how Aaron thinks — the SQL Server BI decision-forest mental model, expanded to parse-forest inference",
+  "state": "MERGED",
+  "merged_at": "2026-07-03T00:31:28Z",
+  "head_ref": "otto/bi-forest-mental-model-synthesis"
+}

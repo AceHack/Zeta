@@ -1,0 +1,12 @@
+{
+  "pr_number": 3565,
+  "archive_path": "docs/history/pr-reviews/PR-3565-feat-b-0535-wire-backlog-id-uniqueness-lint-to-gate-yml.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-15T19:41:51.355Z",
+  "schema_version": "v1",
+  "commit_sha": "ff41427afe5b456f1ec01cb6c85a76049b6b4a7e",
+  "title": "feat(B-0535): wire backlog ID-uniqueness lint to gate.yml",
+  "state": "MERGED",
+  "merged_at": "2026-05-15T19:41:34Z",
+  "head_ref": "feat/b0535-enforce-duplicate-ids-cli-flag-gate-otto-cli-2026-05-15"
+}

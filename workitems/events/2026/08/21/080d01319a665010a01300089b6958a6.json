@@ -1,0 +1,14 @@
+{
+  "id": "080d01319a665010a01300089b6958a6",
+  "at": "2026-08-21T21:21:31.338Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M0K36K69087G0R003BYSCF8",
+    "type": "bug",
+    "title": "low-memory lane cannot fit its apt install inside ubuntu-slim's hard 15-minute cap -- no apt cache, and the budget cannot grow",
+    "slug": "low-memory-lane-cannot-fit-its-apt-install-inside-ubuntu-sli",
+    "priority": "P2",
+    "filename": "081M0K36K69087G0R003BYSCF8-low-memory-lane-cannot-fit-its-apt-install-inside-ubuntu-sli.md"
+  }
+}

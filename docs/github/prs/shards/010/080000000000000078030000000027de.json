@@ -1,0 +1,12 @@
+{
+  "pr_number": 10206,
+  "archive_path": "docs/history/pr-reviews/PR-10206-feat-zetadb-add-event-driven-browser-node.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-09T19:02:53.609Z",
+  "schema_version": "v1",
+  "commit_sha": "3f16e2ee340d1025f4cd2c3ed8cd45d542826211",
+  "title": "feat(zetadb): add event-driven browser node",
+  "state": "MERGED",
+  "merged_at": "2026-08-09T19:02:08Z",
+  "head_ref": "claim/task-browser-zetadb-node"
+}

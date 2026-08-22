@@ -1,0 +1,12 @@
+{
+  "pr_number": 9542,
+  "archive_path": "docs/history/pr-reviews/PR-9542-assert-qemu-first-session-s6-paths.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-08T22:00:26.210Z",
+  "schema_version": "v1",
+  "commit_sha": "7acc7c573ec4751b8ecc2c14e0f8b74a7f8d3ddf",
+  "title": "Assert QEMU first-session S6 paths",
+  "state": "MERGED",
+  "merged_at": "2026-07-08T22:00:00Z",
+  "head_ref": "feat/usb-qemu-first-session-paths"
+}

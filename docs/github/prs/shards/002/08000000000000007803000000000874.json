@@ -1,0 +1,15 @@
+{
+  "pr_number": 2164,
+  "archive_path": "docs/history/pr-reviews/PR-2164-feat-b-0269-extract-5-carved-sentences-from-claude-md-to-claude-rules.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_df35",
+    "thread:PRRT_kwDOSF9kNM6AxoCF"
+  ],
+  "fetched_at": "2026-05-09T01:59:42.363Z",
+  "schema_version": "v1",
+  "commit_sha": "5d1da7031132049dd4514af1da2afa8f5013f8b4",
+  "title": "feat(B-0269): extract 5 carved sentences from CLAUDE.md to .claude/rules/",
+  "state": "MERGED",
+  "merged_at": "2026-05-09T01:59:25Z",
+  "head_ref": "claim/b0269-extract-carved-sentences-to-rules-2026-05-08"
+}

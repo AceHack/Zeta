@@ -1,0 +1,12 @@
+{
+  "pr_number": 6030,
+  "archive_path": "docs/history/pr-reviews/PR-6030-docs-b-0088-4-close-memory-duplicate-lint-audit.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-29T18:43:52.049Z",
+  "schema_version": "v1",
+  "commit_sha": "e86fb94a26490fc861078e5d12e2be6912c7e431",
+  "title": "docs(B-0088.4): close memory duplicate lint audit",
+  "state": "MERGED",
+  "merged_at": "2026-05-29T18:43:26Z",
+  "head_ref": "claim/backlog-b0088-4-memory-index-duplicate-audit-20260529"
+}

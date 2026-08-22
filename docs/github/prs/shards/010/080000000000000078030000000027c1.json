@@ -1,0 +1,12 @@
+{
+  "pr_number": 10177,
+  "archive_path": "docs/history/pr-reviews/PR-10177-bug-usb-root-cause-for-081kzhjpjcf-inline-content-esp-writes-silently-don-t-land.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-09T00:10:09.298Z",
+  "schema_version": "v1",
+  "commit_sha": "da76243682e6e312ee163c67f8fca34e3450e611",
+  "title": "bug(usb): root cause for 081KZHJPJCF — inline-content ESP writes silently don't land",
+  "state": "MERGED",
+  "merged_at": "2026-08-09T00:09:38Z",
+  "head_ref": "shadow/bugB-rootcause-inline-content-esp-writes"
+}

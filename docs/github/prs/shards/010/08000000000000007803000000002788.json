@@ -1,0 +1,12 @@
+{
+  "pr_number": 10120,
+  "archive_path": "docs/history/pr-reviews/PR-10120-book-editions-vietnamese-companion-4-the-strategist-s-daughter-full-length-vi.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-07T18:17:16.534Z",
+  "schema_version": "v1",
+  "commit_sha": "6616e57171960421e12ada22104ce6a2122ca688",
+  "title": "book(editions): Vietnamese companion 4 — the Strategist's Daughter, full length (vi)",
+  "state": "MERGED",
+  "merged_at": "2026-08-07T18:15:07Z",
+  "head_ref": "book-vi-companion-strategist"
+}

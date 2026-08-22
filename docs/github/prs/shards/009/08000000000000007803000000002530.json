@@ -1,0 +1,12 @@
+{
+  "pr_number": 9520,
+  "archive_path": "docs/history/pr-reviews/PR-9520-docs-fix-self-dual-gap-markdownlint.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-08T20:15:14.157Z",
+  "schema_version": "v1",
+  "commit_sha": "8c3c92d92613249e8cd11f51cedeec4cfa63b19b",
+  "title": "docs: fix self-dual gap markdownlint",
+  "state": "MERGED",
+  "merged_at": "2026-07-08T20:14:45Z",
+  "head_ref": "codex/fix-self-dual-gap-markdownlint"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 6636,
+  "archive_path": "docs/history/pr-reviews/PR-6636-backlog-b-1011-serializer-round-trip-from-seed-all-four-formats-json-cbor-done-y.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-03T08:14:26.808Z",
+  "schema_version": "v1",
+  "commit_sha": "0c01eaac1583aab670d84b0cf2c57fafabf30faf",
+  "title": "backlog(B-1011): serializer round-trip-from-seed all four formats — JSON/CBOR done, YAML needs encoder, XML unimplemented",
+  "state": "MERGED",
+  "merged_at": "2026-06-03T08:14:05Z",
+  "head_ref": "otto-cli/b1011-serializer-roundtrip-from-seed-2026-06-03"
+}

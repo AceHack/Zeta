@@ -1,0 +1,12 @@
+{
+  "pr_number": 7530,
+  "archive_path": "docs/history/pr-reviews/PR-7530-refactor-core-softscheduler-avalanche-named-splitmix64-hex-constants-immutable.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-10T22:59:45.154Z",
+  "schema_version": "v1",
+  "commit_sha": "76e8c5ee43208d08e0bbecedc8cd00d116dc4e6d",
+  "title": "refactor(core): SoftScheduler avalanche — named SplitMix64 hex constants, immutable",
+  "state": "MERGED",
+  "merged_at": "2026-06-10T22:59:23Z",
+  "head_ref": "shadow-softscheduler-named-constants"
+}

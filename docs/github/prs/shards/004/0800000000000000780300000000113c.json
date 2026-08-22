@@ -1,0 +1,17 @@
+{
+  "pr_number": 4412,
+  "archive_path": "docs/history/pr-reviews/PR-4412-docs-rule-brief-ack-empirical-anchor-2026-05-20-cycle-1-rapid-closure-forced-6.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7DMmuu",
+    "comment:PRRC_kwDOSF9kNM7DMmwa",
+    "thread:PRRT_kwDOSF9kNM6DhTpo",
+    "thread:PRRT_kwDOSF9kNM6DhTrI"
+  ],
+  "fetched_at": "2026-05-20T14:43:57.131Z",
+  "schema_version": "v1",
+  "commit_sha": "f49b5590052481d9f8d0c9f3f759775b962882ab",
+  "title": "docs(rule): brief-ack empirical anchor — 2026-05-20 cycle-1 rapid-closure + forced-#6",
+  "state": "MERGED",
+  "merged_at": "2026-05-20T14:43:17Z",
+  "head_ref": "otto/brief-ack-rule-cycle1-skip-at-5-forced-6-empirical-2026-05-20"
+}

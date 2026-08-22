@@ -1,0 +1,15 @@
+{
+  "pr_number": 4146,
+  "archive_path": "docs/history/pr-reviews/PR-4146-feat-claude-loop-tick-self-sufficient-background-zero-pr-backoff-push-hang-worka.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7CRqVY",
+    "thread:PRRT_kwDOSF9kNM6C2nr9"
+  ],
+  "fetched_at": "2026-05-18T13:49:48.077Z",
+  "schema_version": "v1",
+  "commit_sha": "cf063457d0302b16b16947062f55e2356d511c4d",
+  "title": "feat(claude-loop-tick): self-sufficient background — zero-PR backoff + push-hang workaround + ship-rate metric",
+  "state": "MERGED",
+  "merged_at": "2026-05-18T13:49:27Z",
+  "head_ref": "otto-cli/loop-tick-zero-pr-backoff-push-hang-aware-2026-05-18-1340z"
+}

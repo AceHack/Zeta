@@ -1,0 +1,12 @@
+{
+  "pr_number": 3883,
+  "archive_path": "docs/history/pr-reviews/PR-3883-shard-tick-2026-05-16t13-31z-stale-armed-pr-triage-3871-merged-3823-closed-3817-.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-16T15:37:56.130Z",
+  "schema_version": "v1",
+  "commit_sha": "0b9c4b626c2b798a572173a467c6874eb8b41d0f",
+  "title": "shard(tick): 2026-05-16T13:31Z — stale-armed-PR triage: #3871 merged + #3823 closed + #3817 deferred",
+  "state": "MERGED",
+  "merged_at": "2026-05-16T15:37:39Z",
+  "head_ref": "otto-cli-tick-2026-05-16-1331z"
+}

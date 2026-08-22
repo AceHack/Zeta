@@ -1,0 +1,12 @@
+{
+  "pr_number": 9203,
+  "archive_path": "docs/history/pr-reviews/PR-9203-feat-setup-retire-mechanism-shell-realizers-ace-pointers-bun-081kll7.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-02T22:53:27.293Z",
+  "schema_version": "v1",
+  "commit_sha": "79f134ed0a720efda6adccefc5f6a2aab8a0256f",
+  "title": "feat(setup): retire mechanism shell realizers; Ace pointers → Bun (081KLL7)",
+  "state": "MERGED",
+  "merged_at": "2026-07-02T22:53:05Z",
+  "head_ref": "feat/081KLL7-shell-retire-ace-pointers"
+}

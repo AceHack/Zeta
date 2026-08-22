@@ -1,0 +1,12 @@
+{
+  "pr_number": 9744,
+  "archive_path": "docs/history/pr-reviews/PR-9744-docs-research-three-continual-learning-traps-for-a-bayesian-updater-ai-their-gua.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-11T21:01:08.848Z",
+  "schema_version": "v1",
+  "commit_sha": "f419806e74c54599be6624a23e6b1e8273017b35",
+  "title": "docs(research): three continual-learning traps for a Bayesian-updater AI + their guards (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-11T21:00:44Z",
+  "head_ref": "continual-learning-traps-guards"
+}

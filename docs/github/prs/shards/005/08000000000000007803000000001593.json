@@ -1,0 +1,17 @@
+{
+  "pr_number": 5523,
+  "archive_path": "docs/history/pr-reviews/PR-5523-docs-rule-function-is-tiny-control-flow-generator-ocp-applied-to-control-flow-st.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7Fc0T0",
+    "comment:PRRC_kwDOSF9kNM7Fc0UO",
+    "thread:PRRT_kwDOSF9kNM6FLcG_",
+    "thread:PRRT_kwDOSF9kNM6FLcGs"
+  ],
+  "fetched_at": "2026-05-27T17:41:15.090Z",
+  "schema_version": "v1",
+  "commit_sha": "886171f9f99d6d28c05269984b61cb88cde73ed2",
+  "title": "docs(rule): function-is-tiny-control-flow-generator + OCP-applied-to-control-flow — structural foundation underlying day's substrate-engineering cluster (operator 2026-05-27)",
+  "state": "MERGED",
+  "merged_at": "2026-05-27T17:40:51Z",
+  "head_ref": "backlog/function-is-tiny-control-flow-generator-ocp-applied-to-control-flow-2026-05-27"
+}

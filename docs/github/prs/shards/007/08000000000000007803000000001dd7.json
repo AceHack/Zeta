@@ -1,0 +1,12 @@
+{
+  "pr_number": 7639,
+  "archive_path": "docs/history/pr-reviews/PR-7639-feat-hardware-b-1024-slice-1-aarch64-iso-builds-and-boots-in-ci-qemu-virt-edk2-m.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-11T10:22:17.386Z",
+  "schema_version": "v1",
+  "commit_sha": "ff3df93f80c70c8cf8a4f614e3462b89ac27d622",
+  "title": "feat(hardware): B-1024 slice 1 — aarch64 ISO builds AND boots in CI (QEMU virt + EDK2) + multi-boot CYOA boot-screen design",
+  "state": "MERGED",
+  "merged_at": "2026-06-11T10:21:53Z",
+  "head_ref": "shadow-qemu-slice1-aarch64"
+}

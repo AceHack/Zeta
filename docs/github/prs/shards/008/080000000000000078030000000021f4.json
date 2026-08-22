@@ -1,0 +1,12 @@
+{
+  "pr_number": 8692,
+  "archive_path": "docs/history/pr-reviews/PR-8692-feat-core-carry-generator-ir-as-a-live-row-on-a-dbsp-z-set-relation.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-20T02:53:28.832Z",
+  "schema_version": "v1",
+  "commit_sha": "7884876c3fb9d4513e105a0a2c6a0bfe2bf1aec7",
+  "title": "feat(core): carry generator IR as a live row on a DBSP Z-set relation",
+  "state": "MERGED",
+  "merged_at": "2026-06-20T02:53:05Z",
+  "head_ref": "lumen/generator-ir-relation"
+}

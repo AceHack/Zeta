@@ -1,0 +1,12 @@
+{
+  "pr_number": 7896,
+  "archive_path": "docs/history/pr-reviews/PR-7896-docs-research-ani-ferry-zeus-prediction-mode-scheduler-rx-braids-quantum-topolog.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-12T11:29:06.176Z",
+  "schema_version": "v1",
+  "commit_sha": "0b3c7a9e0abee2e375ffa402de05fc4711925038",
+  "title": "docs(research): Ani ferry — ZEUS prediction-mode scheduler, Rx-braids ≅ quantum topology, memes braid humans",
+  "state": "MERGED",
+  "merged_at": "2026-06-12T11:28:39Z",
+  "head_ref": "shadow-zeus-ferry"
+}

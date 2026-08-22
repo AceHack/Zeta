@@ -1,0 +1,19 @@
+{
+  "pr_number": 3438,
+  "archive_path": "docs/history/pr-reviews/PR-3438-fix-b-0503-make-branch-name-deterministic-so-idempotency-gate-works-pr-3433-p0.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7Bl76I",
+    "comment:PRRC_kwDOSF9kNM7Blw3r",
+    "comment:PRRC_kwDOSF9kNM7Bly9j",
+    "thread:PRRT_kwDOSF9kNM6CWAlP",
+    "thread:PRRT_kwDOSF9kNM6CWCGb",
+    "thread:PRRT_kwDOSF9kNM6CWIxF"
+  ],
+  "fetched_at": "2026-05-15T11:50:54.557Z",
+  "schema_version": "v1",
+  "commit_sha": "575a3baa46bf71726da541ae76d06be38c11684d",
+  "title": "fix(b-0503): make branch name deterministic so idempotency gate works (PR #3433 P0)",
+  "state": "MERGED",
+  "merged_at": "2026-05-15T11:50:31Z",
+  "head_ref": "fix/b0503-idempotency-deterministic-branch-name-otto-cli-2026-05-15"
+}

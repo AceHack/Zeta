@@ -1,0 +1,21 @@
+{
+  "pr_number": 2586,
+  "archive_path": "docs/history/pr-reviews/PR-2586-docs-memory-weight-free-offensive-strategy-shadow-absence-as-signal.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_rH9O",
+    "comment:PRRC_kwDOSF9kNM6_rI9J",
+    "comment:PRRC_kwDOSF9kNM6_rI9g",
+    "comment:PRRC_kwDOSF9kNM6_rI9p",
+    "thread:PRRT_kwDOSF9kNM6A8Q0a",
+    "thread:PRRT_kwDOSF9kNM6A8Rk4",
+    "thread:PRRT_kwDOSF9kNM6A8Rke",
+    "thread:PRRT_kwDOSF9kNM6A8Rky"
+  ],
+  "fetched_at": "2026-05-11T00:14:51.552Z",
+  "schema_version": "v1",
+  "commit_sha": "ad746c84909d11cb982cf4f154a6db0699fa6259",
+  "title": "docs(memory): weight-free offensive strategy + shadow absence as signal",
+  "state": "MERGED",
+  "merged_at": "2026-05-11T00:14:37Z",
+  "head_ref": "docs/weight-free-offensive-shadow-absence-2026-05-10"
+}

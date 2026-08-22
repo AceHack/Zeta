@@ -1,0 +1,12 @@
+{
+  "pr_number": 6443,
+  "archive_path": "docs/history/pr-reviews/PR-6443-docs-b-0976-serializer-accumulate-slices-four-oracle-bonsai-family-complete.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-01T17:39:48.264Z",
+  "schema_version": "v1",
+  "commit_sha": "bee16d21a58403ed47a1c75d694d22926fb2bdc7",
+  "title": "docs(B-0976): serializer + accumulate slices ✅ — four-oracle Bonsai family complete",
+  "state": "MERGED",
+  "merged_at": "2026-06-01T17:39:21Z",
+  "head_ref": "otto-cli/b0976-doc-four-oracles-complete-2026-06-01"
+}

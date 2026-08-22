@@ -1,0 +1,12 @@
+{
+  "pr_number": 10191,
+  "archive_path": "docs/history/pr-reviews/PR-10191-feat-wasm-dla-real-host-side-box-counting-d-f-reveals-1-30-at-n-800-not-1-71.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-09T16:42:27.537Z",
+  "schema_version": "v1",
+  "commit_sha": "1d05fa1ceb19643abd8cca6a123e8dc7a1e2fc68",
+  "title": "feat(wasm-dla): real host-side box-counting D_f — reveals ~1.30 at N=800, not 1.71",
+  "state": "MERGED",
+  "merged_at": "2026-08-09T16:41:54Z",
+  "head_ref": "shadow/dla-real-box-counting-dimension"
+}

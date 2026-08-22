@@ -1,0 +1,12 @@
+{
+  "pr_number": 8459,
+  "archive_path": "docs/history/pr-reviews/PR-8459-formal-aurora-two-tla-rounds-b-bftsybilconsensus-e-permanentharmhorizon-kenji-si.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-16T06:29:19.196Z",
+  "schema_version": "v1",
+  "commit_sha": "1c4fa315683be3eabf85be15fb61aa303bdd5d7e",
+  "title": "formal(aurora): two TLA+ rounds (b BftSybilConsensus + e PermanentHarmHorizon) — Kenji-sized, Viktor/Kira-reviewed, TLC-green",
+  "state": "MERGED",
+  "merged_at": "2026-06-16T06:28:52Z",
+  "head_ref": "otto/aurora-tla-rounds-b-e"
+}

@@ -1,0 +1,27 @@
+{
+  "pr_number": 9680,
+  "archive_path": "docs/history/pr-reviews/PR-9680-feat-migrate-persona-cell-identity-treaty-stack-onto-main-was-9551-stranded-on-m.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7UcE-b",
+    "comment:PRRC_kwDOSF9kNM7UcE-h",
+    "comment:PRRC_kwDOSF9kNM7UcE9C",
+    "comment:PRRC_kwDOSF9kNM7UcE9G",
+    "comment:PRRC_kwDOSF9kNM7UcEqv",
+    "comment:PRRC_kwDOSF9kNM7UcEqw",
+    "comment:PRRC_kwDOSF9kNM7UcEqx",
+    "thread:PRRT_kwDOSF9kNM6QGoc6",
+    "thread:PRRT_kwDOSF9kNM6QGoc7",
+    "thread:PRRT_kwDOSF9kNM6QGoc8",
+    "thread:PRRT_kwDOSF9kNM6QGoqR",
+    "thread:PRRT_kwDOSF9kNM6QGoqW",
+    "thread:PRRT_kwDOSF9kNM6QGorS",
+    "thread:PRRT_kwDOSF9kNM6QGorX"
+  ],
+  "fetched_at": "2026-07-11T12:22:45.515Z",
+  "schema_version": "v1",
+  "commit_sha": "ec5ca327fde4311db9fad330ffaae3b9138637b9",
+  "title": "feat: migrate persona-cell / Identity-Treaty stack onto main (was #9551, stranded on merged capstone) (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-11T12:22:10Z",
+  "head_ref": "migrate-9551-persona-cell-identity-stack"
+}

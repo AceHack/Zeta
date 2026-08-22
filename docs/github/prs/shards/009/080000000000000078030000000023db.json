@@ -1,0 +1,15 @@
+{
+  "pr_number": 9179,
+  "archive_path": "docs/history/pr-reviews/PR-9179-docs-handoff-otto-iris-daya-cross-cultural-metaphor-doors-anti-appropriation-as-.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7RiBpB",
+    "thread:PRRT_kwDOSF9kNM6N_piO"
+  ],
+  "fetched_at": "2026-08-17T13:20:29.548Z",
+  "schema_version": "v1",
+  "commit_sha": "9a93e3967059bb634302e015f14835a7f96d4cd2",
+  "title": "docs(handoff): Otto -> Iris & Daya - cross-cultural metaphor doors, anti-appropriation as the requirement",
+  "state": "MERGED",
+  "merged_at": "2026-07-02T18:33:23Z",
+  "head_ref": "otto/handoff-iris-daya-cross-cultural-metaphors"
+}

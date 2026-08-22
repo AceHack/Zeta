@@ -1,0 +1,17 @@
+{
+  "pr_number": 5191,
+  "archive_path": "docs/history/pr-reviews/PR-5191-docs-archive-decomposed-preservation-from-4804.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7E-VrK",
+    "comment:PRRC_kwDOSF9kNM7E-Vsp",
+    "thread:PRRT_kwDOSF9kNM6E1NZw",
+    "thread:PRRT_kwDOSF9kNM6E1Na4"
+  ],
+  "fetched_at": "2026-05-26T15:25:24.540Z",
+  "schema_version": "v1",
+  "commit_sha": "572ce9d59dc64089ddd4306b5b3cc78c66b1bc00",
+  "title": "docs(archive): Decomposed preservation from #4804",
+  "state": "MERGED",
+  "merged_at": "2026-05-26T15:24:57Z",
+  "head_ref": "lior/pr-4804-docs-only"
+}

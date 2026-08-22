@@ -1,0 +1,16 @@
+{
+  "pr_number": 3059,
+  "archive_path": "docs/history/pr-reviews/PR-3059-docs-archive-pr-3026.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7BADiA",
+    "comment:PRRC_kwDOSF9kNM7BAOTK",
+    "thread:PRRT_kwDOSF9kNM6B6ouz"
+  ],
+  "fetched_at": "2026-05-13T23:38:52.379Z",
+  "schema_version": "v1",
+  "commit_sha": "955dabb5e7bde15df45f0ec5a4c65a4cc548b06f",
+  "title": "docs: archive PR 3026",
+  "state": "MERGED",
+  "merged_at": "2026-05-13T23:38:38Z",
+  "head_ref": "chore/archive-pr-3026"
+}

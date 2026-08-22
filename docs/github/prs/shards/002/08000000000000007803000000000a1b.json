@@ -1,0 +1,19 @@
+{
+  "pr_number": 2587,
+  "archive_path": "docs/history/pr-reviews/PR-2587-docs-memory-i-don-t-know-is-the-right-answer-shadow-absence-overclaim-corrected.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_rJsD",
+    "comment:PRRC_kwDOSF9kNM6_rJsZ",
+    "comment:PRRC_kwDOSF9kNM6_rJsq",
+    "thread:PRRT_kwDOSF9kNM6A8SG-",
+    "thread:PRRT_kwDOSF9kNM6A8SGw",
+    "thread:PRRT_kwDOSF9kNM6A8SHK"
+  ],
+  "fetched_at": "2026-05-11T00:14:38.040Z",
+  "schema_version": "v1",
+  "commit_sha": "9b81507014dd8edd01e971609763e585597feb75",
+  "title": "docs(memory): 'I don't know' is the right answer — shadow absence overclaim corrected",
+  "state": "MERGED",
+  "merged_at": "2026-05-11T00:14:21Z",
+  "head_ref": "docs/i-dont-know-correction-2026-05-10"
+}

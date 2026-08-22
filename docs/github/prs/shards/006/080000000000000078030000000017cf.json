@@ -1,0 +1,25 @@
+{
+  "pr_number": 6095,
+  "archive_path": "docs/history/pr-reviews/PR-6095-feat-b-0250-add-codex-loop-run-receipt-source.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7GY-q-",
+    "comment:PRRC_kwDOSF9kNM7GY-qk",
+    "comment:PRRC_kwDOSF9kNM7GY7GJ",
+    "comment:PRRC_kwDOSF9kNM7GY7OL",
+    "comment:PRRC_kwDOSF9kNM7GY7OZ",
+    "comment:PRRC_kwDOSF9kNM7GZAdL",
+    "comment:PRRC_kwDOSF9kNM7GZAdf",
+    "thread:PRRT_kwDOSF9kNM6F2vjo",
+    "thread:PRRT_kwDOSF9kNM6F2vp3",
+    "thread:PRRT_kwDOSF9kNM6F2vpt",
+    "thread:PRRT_kwDOSF9kNM6F2yLQ",
+    "thread:PRRT_kwDOSF9kNM6F2yLr"
+  ],
+  "fetched_at": "2026-05-30T08:16:07.673Z",
+  "schema_version": "v1",
+  "commit_sha": "1637f8b58b632d419d9703c150a741863e3aedfb",
+  "title": "feat(B-0250): add Codex loop-run receipt source",
+  "state": "MERGED",
+  "merged_at": "2026-05-30T08:15:46Z",
+  "head_ref": "claim/codex-loop-b0250-loop-run-receipt-source-20260530"
+}

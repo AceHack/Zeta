@@ -1,0 +1,12 @@
+{
+  "pr_number": 11865,
+  "archive_path": "docs/history/pr-reviews/PR-11865-archive-pr-reviews-pr-11864-on-merge.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-22T07:45:34.061Z",
+  "schema_version": "v1",
+  "commit_sha": "0d458eb492a490cbc08459e3d049ac22ff034417",
+  "title": "archive(pr-reviews): PR #11864 on merge",
+  "state": "MERGED",
+  "merged_at": "2026-08-18T10:00:03Z",
+  "head_ref": "automation/pr-archive-11864-run-32123001737-attempt-1"
+}

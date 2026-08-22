@@ -1,0 +1,12 @@
+{
+  "pr_number": 8560,
+  "archive_path": "docs/history/pr-reviews/PR-8560-docs-aurora-discharge-a-d-self-identity-axis-grounded-on-nonregistercollapse.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-19T12:16:58.026Z",
+  "schema_version": "v1",
+  "commit_sha": "d65a0a1ca452140b70f3d6ce9cc6bdb58ac21bc5",
+  "title": "docs(aurora): discharge (a) — d_self identity axis grounded on NonRegisterCollapse",
+  "state": "MERGED",
+  "merged_at": "2026-06-19T12:16:32Z",
+  "head_ref": "otto/aurora-a-dself-grounding"
+}

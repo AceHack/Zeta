@@ -1,0 +1,12 @@
+{
+  "pr_number": 6503,
+  "archive_path": "docs/history/pr-reviews/PR-6503-feat-dynamicvalue-rust-oracle-4-grown-from-the-seed-canonical-json-encoder-byte-.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-01T23:53:13.741Z",
+  "schema_version": "v1",
+  "commit_sha": "2a187a27452782d3b7482ba37bb9f8c202297b71",
+  "title": "feat(DynamicValue): Rust oracle (#4) — grown from the seed, canonical JSON encoder + byte-lock cross-verify",
+  "state": "MERGED",
+  "merged_at": "2026-06-01T23:52:54Z",
+  "head_ref": "otto-cli/dynamicvalue-rust-oracle-seed-2026-06-01"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 10031,
+  "archive_path": "docs/history/pr-reviews/PR-10031-docs-core-veridicality-anticonsensusgate-distinct-roots-independent-roots.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-04T16:18:29.433Z",
+  "schema_version": "v1",
+  "commit_sha": "4ff52d0adcbadfe877bab48a6ea9dc74b08badf5",
+  "title": "docs(core): Veridicality.antiConsensusGate — distinct roots ≠ independent roots",
+  "state": "MERGED",
+  "merged_at": "2026-08-04T16:17:49Z",
+  "head_ref": "docs/veridicality-anticonsensus-gate-distinct-not-independent-caveat-20260804"
+}

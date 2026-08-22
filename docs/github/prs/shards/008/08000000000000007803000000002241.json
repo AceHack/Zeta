@@ -1,0 +1,12 @@
+{
+  "pr_number": 8769,
+  "archive_path": "docs/history/pr-reviews/PR-8769-docs-addison-save-project-genesis-foundation-document-to-her-persona.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-20T20:07:32.155Z",
+  "schema_version": "v1",
+  "commit_sha": "565a164f93d61e77bdeeeadcb744d21975a501af",
+  "title": "docs(addison): save Project Genesis foundation document to her persona",
+  "state": "MERGED",
+  "merged_at": "2026-06-20T20:07:06Z",
+  "head_ref": "otto/addison-project-genesis"
+}

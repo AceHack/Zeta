@@ -1,0 +1,12 @@
+{
+  "pr_number": 3901,
+  "archive_path": "docs/history/pr-reviews/PR-3901-fix-rules-add-forced-escalation-finds-hidden-work-empirical-anchor.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-16T16:02:47.178Z",
+  "schema_version": "v1",
+  "commit_sha": "979270b91b416467ce0b3ef3d5fda875c251ce5e",
+  "title": "fix(rules): add forced-escalation-finds-hidden-work empirical anchor",
+  "state": "MERGED",
+  "merged_at": "2026-05-16T16:02:29Z",
+  "head_ref": "otto-cli-rule-counter-evidence-2026-05-16-1553z"
+}

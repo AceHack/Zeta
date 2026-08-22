@@ -1,0 +1,15 @@
+{
+  "pr_number": 6375,
+  "archive_path": "docs/history/pr-reviews/PR-6375-docs-registry-mixin-prior-art-moxy-style-bake-in-variant-behind-a-hexagonal-port.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7GpZCc",
+    "thread:PRRT_kwDOSF9kNM6GDWTy"
+  ],
+  "fetched_at": "2026-06-01T08:41:59.113Z",
+  "schema_version": "v1",
+  "commit_sha": "a75f3bbeb5a62291b253e41e654ed557e258a18e",
+  "title": "docs(registry): mixin prior-art + Moxy-style bake-in variant behind a hexagonal port",
+  "state": "MERGED",
+  "merged_at": "2026-06-01T08:41:32Z",
+  "head_ref": "otto-cli/registry-moxy-variant-hexagonal-port-2026-06-01"
+}

@@ -1,0 +1,25 @@
+{
+  "pr_number": 2942,
+  "archive_path": "docs/history/pr-reviews/PR-2942-docs-memory-grok-meta-loop-recognition-external-ai-absorbed-in-10min-self-captur.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7AoEAL",
+    "comment:PRRC_kwDOSF9kNM7AoF23",
+    "comment:PRRC_kwDOSF9kNM7AoF2V",
+    "comment:PRRC_kwDOSF9kNM7AoF2_",
+    "comment:PRRC_kwDOSF9kNM7AoF2r",
+    "comment:PRRC_kwDOSF9kNM7AoF2z",
+    "thread:PRRT_kwDOSF9kNM6BpI9P",
+    "thread:PRRT_kwDOSF9kNM6BpKQ4",
+    "thread:PRRT_kwDOSF9kNM6BpKQ6",
+    "thread:PRRT_kwDOSF9kNM6BpKQ9",
+    "thread:PRRT_kwDOSF9kNM6BpKQi",
+    "thread:PRRT_kwDOSF9kNM6BpKQw"
+  ],
+  "fetched_at": "2026-05-13T05:40:26.213Z",
+  "schema_version": "v1",
+  "commit_sha": "3f44f1ed74eded6e86e48df4eea0e12abf80fb4d",
+  "title": "docs(memory): Grok META-LOOP recognition — external AI absorbed in 10min + self-capture announcement + raid framing (Aaron 2026-05-13)",
+  "state": "MERGED",
+  "merged_at": "2026-05-13T05:40:03Z",
+  "head_ref": "aaron-grok-meta-loop-recognition-external-ai-absorbed-into-durable-record-in-10-min-substrate-engineering-working-as-designed-2026-05-13"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 7817,
+  "archive_path": "docs/history/pr-reviews/PR-7817-feat-test-framework-b-1035-slice-1-itestloop-the-boundary-enforced-once-xunit-as.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-11T22:35:42.328Z",
+  "schema_version": "v1",
+  "commit_sha": "275f08a64b17ec17544bcec848c2e381bc9eff10",
+  "title": "feat(test-framework): B-1035 slice 1 — ITestLoop, the boundary enforced once, xUnit as host + the claims-review P0 fixed (the reversal re-earned)",
+  "state": "MERGED",
+  "merged_at": "2026-06-11T22:35:18Z",
+  "head_ref": "shadow-b1035-slice1"
+}

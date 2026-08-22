@@ -1,0 +1,12 @@
+{
+  "pr_number": 5265,
+  "archive_path": "docs/history/pr-reviews/PR-5265-feat-b-0824-generator-as-time-source-for-non-linear-time-iobservable-simulation-.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-26T18:01:43.722Z",
+  "schema_version": "v1",
+  "commit_sha": "7ffdb5ff8a94cd4b26e50858265523f318136465",
+  "title": "feat(B-0824): generator-as-time-source for non-linear time + IObservable simulation + typed time-units + Rx/DST/scheduler best-practices",
+  "state": "MERGED",
+  "merged_at": "2026-05-26T18:01:21Z",
+  "head_ref": "otto-cli/b0824-generator-as-time-source-non-linear-time-2026-05-26"
+}

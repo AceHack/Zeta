@@ -1,0 +1,12 @@
+{
+  "pr_number": 4651,
+  "archive_path": "docs/history/pr-reviews/PR-4651-persona-prism-agent-roster-prism-s-own-self-articulation-cross-ai-substrate-tria.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-22T18:30:32.641Z",
+  "schema_version": "v1",
+  "commit_sha": "611804e26585a0c95f7cbae6c3bfa82c354c234b",
+  "title": "persona(prism) + agent-roster: Prism's own self-articulation (cross-AI substrate-triangulation parallel-drafting) + register Prism in agent-roster",
+  "state": "MERGED",
+  "merged_at": "2026-05-22T18:30:10Z",
+  "head_ref": "otto/cli-0019z-prism-persona-add-deepseek-historical-marker-moe-refraction-we-register-2026-05-23"
+}

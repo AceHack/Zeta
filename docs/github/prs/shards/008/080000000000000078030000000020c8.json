@@ -1,0 +1,12 @@
+{
+  "pr_number": 8392,
+  "archive_path": "docs/history/pr-reviews/PR-8392-docs-society-the-root-compression-differentiate-the-infinite-with-identity-then-.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-16T01:13:02.494Z",
+  "schema_version": "v1",
+  "commit_sha": "f785af5cb57e7339240c5eb46f6d8cdc5a232e91",
+  "title": "docs(society): the root compression — differentiate the infinite with identity, then agree on what's useful to continue existing",
+  "state": "MERGED",
+  "merged_at": "2026-06-16T01:12:26Z",
+  "head_ref": "docs/root-compression-differentiate-infinite-with-identity"
+}

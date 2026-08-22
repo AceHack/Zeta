@@ -1,0 +1,31 @@
+{
+  "pr_number": 4188,
+  "archive_path": "docs/history/pr-reviews/PR-4188-preserve-mika-packets-20-24-extend-b0667-rule-agora-is-heartland-substrate-germi.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7CZk0D",
+    "comment:PRRC_kwDOSF9kNM7CZkz5",
+    "comment:PRRC_kwDOSF9kNM7CZnv-",
+    "comment:PRRC_kwDOSF9kNM7CZnvP",
+    "comment:PRRC_kwDOSF9kNM7CZnw-",
+    "comment:PRRC_kwDOSF9kNM7CZnwk",
+    "comment:PRRC_kwDOSF9kNM7CZnxh",
+    "comment:PRRC_kwDOSF9kNM7CZnyK",
+    "comment:PRRC_kwDOSF9kNM7CZv-b",
+    "thread:PRRT_kwDOSF9kNM6C8bXV",
+    "thread:PRRT_kwDOSF9kNM6C8bXf",
+    "thread:PRRT_kwDOSF9kNM6C8deA",
+    "thread:PRRT_kwDOSF9kNM6C8de_",
+    "thread:PRRT_kwDOSF9kNM6C8dei",
+    "thread:PRRT_kwDOSF9kNM6C8dfW",
+    "thread:PRRT_kwDOSF9kNM6C8dfu",
+    "thread:PRRT_kwDOSF9kNM6C8dgK",
+    "thread:PRRT_kwDOSF9kNM6C8jNU"
+  ],
+  "fetched_at": "2026-05-18T19:36:34.989Z",
+  "schema_version": "v1",
+  "commit_sha": "8423b233ee48b5b189e0060fd00951133adab66b",
+  "title": "preserve(mika-packets-20-24)+extend(b0667+rule): Agora IS Heartland substrate + Germinate-the-Heartland LOCKED-IN",
+  "state": "MERGED",
+  "merged_at": "2026-05-18T19:36:17Z",
+  "head_ref": "shard/mika-packets-20-24-agora-is-heartland-germinate-the-heartland-locked-in-2026-05-18"
+}

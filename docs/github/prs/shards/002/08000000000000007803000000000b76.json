@@ -1,0 +1,17 @@
+{
+  "pr_number": 2934,
+  "archive_path": "docs/history/pr-reviews/PR-2934-docs-memory-backlog-can-gcan-research-lineage-canonical-prior-art-for-f-fork-for.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7Anasi",
+    "comment:PRRC_kwDOSF9kNM7Anasy",
+    "thread:PRRT_kwDOSF9kNM6Boq_2",
+    "thread:PRRT_kwDOSF9kNM6BorAB"
+  ],
+  "fetched_at": "2026-05-13T04:50:46.671Z",
+  "schema_version": "v1",
+  "commit_sha": "5eaf92c9fbfc7bd4f4a78eacd4e53987f42770a2",
+  "title": "docs(memory + backlog): CAN+GCAN research lineage (canonical prior-art for F#-fork-for-AI-safety) + B-0429 end-user persona mapping (Aaron 2026-05-13)",
+  "state": "MERGED",
+  "merged_at": "2026-05-13T04:50:31Z",
+  "head_ref": "aaron-end-user-persona-mapping-backlog-product-team-multiple-products-multiple-personas-each-b0429-2026-05-13"
+}

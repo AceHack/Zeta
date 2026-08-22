@@ -1,0 +1,17 @@
+{
+  "pr_number": 5407,
+  "archive_path": "docs/history/pr-reviews/PR-5407-hygiene-bash-retirement-check-stale-category-metadata.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7FOiin",
+    "comment:PRRC_kwDOSF9kNM7FOijZ",
+    "thread:PRRT_kwDOSF9kNM6FA-4-",
+    "thread:PRRT_kwDOSF9kNM6FA-5n"
+  ],
+  "fetched_at": "2026-05-27T06:58:44.709Z",
+  "schema_version": "v1",
+  "commit_sha": "118614cc727d54a4d5d3fa5d674a26ebbeb3c40a",
+  "title": "hygiene(bash-retirement): check stale category metadata",
+  "state": "MERGED",
+  "merged_at": "2026-05-27T06:58:22Z",
+  "head_ref": "claim/codex-loop-bash-retirement-category-map-integrity-20260527"
+}

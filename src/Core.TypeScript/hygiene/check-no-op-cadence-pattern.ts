@@ -6,18 +6,61 @@
  * TypeScript port of `check-no-op-cadence-pattern.sh` per the
  * DST-justifies-TS-quality-over-bash discipline (CLAUDE.md) +
  * 081KQGDBJ0008QG0R000A4EZS5 TypeScript standardization for non-install scripts.
- * The bash version remains for cross-shell compatibility; both
- * are kept in sync.
+ * (The bash original has since been retired — no `.sh` sibling remains, so the
+ * "both are kept in sync" note that used to sit here no longer applies.)
  *
  * Usage:
- *   bun tools/hygiene/check-no-op-cadence-pattern.ts
+ *   bun src/Core.TypeScript/hygiene/check-no-op-cadence-pattern.ts
+ *   bun src/Core.TypeScript/hygiene/check-no-op-cadence-pattern.ts --enforce
  *
  * Env vars (parity with bash version):
  *   NO_OP_CHECK_WINDOW=7        — window size (last N shards)
  *   NO_OP_CHECK_THRESHOLD=5     — minimal-observation threshold
  *   NO_OP_CHECK_GAP_MINUTES=15  — shard-density gap threshold
  *
- * Exit code: always 0 (informational only; never blocks the tick).
+ * Exit codes:
+ *   0 — no detection, or detection in the default advisory mode
+ *   1 — (detection OR absent input surface) AND `--enforce`
+ *   2 — unknown argument / usage error
+ *
+ * WHY `--enforce` IS OPT-IN (081M0085XQT087G0R003W4KFS4). Until 2026-08-14
+ * this process exited 0 on every path, including both detections. The
+ * warnings existed; the exit code did not. Making detection fatal by
+ * default would promote an uncalibrated heuristic to a blocking gate.
+ *
+ * ─── MEASURED CALIBRATION (081M00G3QRA087G0R003GB0P4X, 2026-08-14) ───
+ *
+ * The rate was then measured, and it says DO NOT ENFORCE the threshold
+ * heuristic. Two independent methods, both on the real 1209-shard history:
+ *
+ *   1. Commit ground truth (CLAUDE.md's own externalized idle counter),
+ *      on the only 48 windows where tick shards and dated git history
+ *      overlap (2026-05-28/29): the detector fired on 48 of 48 windows,
+ *      and 29 of those 48 firings (60.4%) happened while substantive
+ *      non-telemetry commits were landing. It fired while the fleet was
+ *      demonstrably producing.
+ *   2. Content: of the 890 shards the old classifier called "minimal",
+ *      622 (69.9%) were >=1500 bytes and contained no minimal-observation
+ *      language anywhere in the file.
+ *
+ * ROOT CAUSE was not a badly-chosen threshold; it was a parse mismatch —
+ * see `isMinimalObservation` for the 488-shard (40.4%) forced-minimal class
+ * and the repair. Post-repair the classifier flags 3.1% of shards rather
+ * than 73.6%, and fires on 0 of those same 48 windows.
+ *
+ * NOT YET EARNED even so. Sensitivity is unmeasured: there is no labelled
+ * set of known standing-by windows, so the repair is demonstrated to cut
+ * false positives and is NOT demonstrated to retain true ones. Advisory
+ * stays the default; `--enforce` stays unwired. Per
+ * `toy-is-free-metered-must-be-earned` this detector is `unmetered`.
+ *
+ * AND THE SURFACE IS DEAD. `docs/hygiene-history/ticks/` has had no shard
+ * since 2026-05-29 (77 days). Live ticks land in `data/tick-shards/**.json`
+ * as JSON telemetry with no prose body, so the minimal-observation half has
+ * no counterpart there and cannot simply be repointed. Until that routing
+ * call is made (081M00G3QRA087G0R003GB0P4X), every live run of this tool
+ * reports `surfaceEmpty` — which `--enforce` now treats as failure rather
+ * than as a pass.
  */
 
 import { readdirSync, readFileSync, existsSync } from "node:fs";
@@ -116,19 +159,54 @@ export function collectShards(dir: string, dateFlat: string): Shard[] {
 export const OBSERVATION_CLASS_REGEX =
   /minimal observation|within-basin observation|observe-only|minimal[ -]not[ -]idle|same\.[ \t]*stopping/i;
 
-export function isMinimalObservation(path: string): boolean {
-  let body = "";
+/**
+ * Content floor, in bytes: a shard with less text than this has nothing in
+ * it, whatever its format. Deliberately a *near-empty* test and NOT a
+ * "substantiveness" measure — see MEASURED CALIBRATION in the header for why
+ * the previous length proxy could not support the latter claim.
+ */
+export const MINIMAL_CONTENT_FLOOR_BYTES = 400;
+
+/**
+ * Is this shard a minimal observation?
+ *
+ * TWO signals, and neither is a length proxy for "did real work happen":
+ *   1. the shard *says so* — explicit minimal-observation language; and
+ *   2. the shard is *near-empty* — under the content floor, any format.
+ *
+ * WHAT THIS REPLACED, AND WHY (081M00G3QRA087G0R003GB0P4X). The previous
+ * implementation read `firstLine.split("|")[4]` — the summary *cell* of a
+ * markdown table row — and called any shard with a cell under 600 chars
+ * "minimal". Two measured consequences on the 1209 real shards in
+ * `docs/hygiene-history/ticks/`:
+ *
+ *   - 488 shards (40.4%) are heading-format (`# Tick shard …`), so the first
+ *     line has no 5th pipe field, `body` was `""`, and EVERY one was forced
+ *     to "minimal". Their median size is 3843 bytes — *larger* than the
+ *     median of the class the old code was willing to call non-minimal. The
+ *     detector's own largest shards were its most confident detections.
+ *   - 395 more are genuine pipe rows whose one-line summary cell is of
+ *     course under 600 chars, because it is a table cell.
+ *
+ * Net: the old classifier flagged 73.6% of all shards. This one flags 3.1%
+ * (floor 200) to 13.9% (floor 600). It claims strictly less, and what it
+ * still claims it can actually support.
+ *
+ * Unreadable is UNKNOWN, not minimal — `false` keeps an I/O error from
+ * manufacturing a detection.
+ */
+export function isMinimalObservation(
+  path: string,
+  contentFloorBytes: number = MINIMAL_CONTENT_FLOOR_BYTES
+): boolean {
   let content = "";
   try {
     content = readFileSync(path, "utf8");
-    const firstLine = content.split("\n")[0] ?? "";
-    const fields = firstLine.split("|");
-    body = fields[4] ?? "";
   } catch {
     return false;
   }
-  if (body.length < 600) return true;
-  return OBSERVATION_CLASS_REGEX.test(content);
+  if (OBSERVATION_CLASS_REGEX.test(content)) return true;
+  return content.trim().length < contentFloorBytes;
 }
 
 function pad2(n: number): string {
@@ -156,6 +234,13 @@ export type CheckResult = {
   thresholdHit: boolean;
   gapMinutes: number | null;
   gapHit: boolean;
+  /**
+   * No shards at all in today+yesterday — the detector's input surface is
+   * absent, so it judged NOTHING. Tracked separately because "could not run"
+   * and "ran and found nothing wrong" are different answers and only one of
+   * them is reassuring.
+   */
+  surfaceEmpty: boolean;
 };
 
 export function runCheck(repoRoot: string, args: CheckArgs): CheckResult {
@@ -201,6 +286,7 @@ export function runCheck(repoRoot: string, args: CheckArgs): CheckResult {
       thresholdHit: false,
       gapMinutes: null,
       gapHit: false,
+      surfaceEmpty: true,
     };
   }
 
@@ -236,27 +322,84 @@ export function runCheck(repoRoot: string, args: CheckArgs): CheckResult {
     thresholdHit,
     gapMinutes,
     gapHit,
+    surfaceEmpty: false,
   };
 }
 
-export function main(): number {
-  const repoRoot = findRepoRoot();
-  process.chdir(repoRoot);
+export type CliParse =
+  | { readonly kind: "run"; readonly enforce: boolean }
+  | { readonly kind: "help" }
+  | { readonly kind: "error"; readonly message: string };
 
-  const args: CheckArgs = {
-    windowSize: parsePositiveInt("NO_OP_CHECK_WINDOW", 7),
-    threshold: parsePositiveInt("NO_OP_CHECK_THRESHOLD", 5),
-    gapThresholdMinutes: parsePositiveInt("NO_OP_CHECK_GAP_MINUTES", 15),
-    now: new Date(),
-  };
+/**
+ * Closed flag set. Unknown args are fatal so a mistyped `--enforce` cannot
+ * silently fall back to advisory (the original defect in argv form).
+ */
+export function parseCli(argv: readonly string[]): CliParse {
+  let enforce = false;
+  for (const arg of argv) {
+    if (arg === "--enforce") {
+      enforce = true;
+      continue;
+    }
+    if (arg === "-h" || arg === "--help") return { kind: "help" };
+    return { kind: "error", message: "unknown arg: " + arg };
+  }
+  return { kind: "run", enforce };
+}
 
-  const result = runCheck(repoRoot, args);
+/** Either detection the warnings already name. */
+export function detected(result: CheckResult): boolean {
+  return result.thresholdHit || result.gapHit;
+}
 
-  if (result.totalShards === 0) {
+/**
+ * The exit code the process should carry.
+ *
+ * Advisory (default) is always 0 — the heuristic is not calibrated well
+ * enough to block, and the measured numbers in the header say so.
+ *
+ * `--enforce` fails on a detection OR on an ABSENT INPUT SURFACE. The second
+ * clause is the one that matters and it is not defensive padding: as of
+ * 2026-08-14 `docs/hygiene-history/ticks/` has had no shard since
+ * 2026-05-29, so a live run finds zero shards, judges nothing, and used to
+ * exit 0 — a check reporting success because its input vanished. Under
+ * enforcement, "I could not run" must never be spelled the same way as "I
+ * ran and it was fine".
+ *
+ * MUTATION: forcing `return 0`, dropping `enforce &&` (advisory would also
+ * exit 1), or dropping `result.surfaceEmpty` (a dead surface would pass
+ * again) each turn paired tests red.
+ */
+export function exitStatus(result: CheckResult, enforce: boolean): number {
+  if (!enforce) return 0;
+  return detected(result) || result.surfaceEmpty ? 1 : 0;
+}
+
+export const USAGE =
+  "Usage: bun src/Core.TypeScript/hygiene/check-no-op-cadence-pattern.ts [--enforce]\n";
+
+export function printReport(result: CheckResult, args: CheckArgs): void {
+  if (result.surfaceEmpty) {
+    console.error("");
     console.error(
-      `[no-op-check] No shards in window for today or yesterday; nothing to check.`
+      "WARNING: input-surface-absent — no tick shards for today or yesterday under"
     );
-    return 0;
+    console.error(
+      "  docs/hygiene-history/ticks/. This check judged NOTHING. That is not a pass."
+    );
+    console.error("");
+    console.error(
+      "  The last shard on this surface is 2026-05-29. If ticks now land somewhere"
+    );
+    console.error(
+      "  else (data/tick-shards/**/*.json is the live telemetry lane), this detector"
+    );
+    console.error(
+      "  is pointed at an abandoned directory and cannot see the fleet at all."
+    );
+    console.error("  See 081M00G3QRA087G0R003GB0P4X for the routing decision.");
+    return;
   }
 
   console.error(
@@ -351,8 +494,58 @@ export function main(): number {
       );
     }
   }
+}
 
-  return 0;
+/**
+ * Slide `now` across a list of instants and count how often the threshold
+ * heuristic fires. Empty windows are skipped so a day with no shards cannot
+ * inflate the denominator as "healthy".
+ *
+ * This is the calibration the work-item required before anyone arms
+ * `--enforce` as a required gate. It measures the surface the detector
+ * actually reads (`docs/hygiene-history/ticks/`).
+ */
+export function measureThresholdFires(
+  repoRoot: string,
+  sampleNows: readonly Date[],
+  base: Omit<CheckArgs, "now">,
+): { readonly windows: number; readonly fires: number } {
+  let windows = 0;
+  let fires = 0;
+  for (const now of sampleNows) {
+    const result = runCheck(repoRoot, { ...base, now });
+    if (result.totalShards === 0) continue;
+    windows += 1;
+    if (result.thresholdHit) fires += 1;
+  }
+  return { windows, fires };
+}
+
+export function runCli(repoRoot: string, parsed: Extract<CliParse, { kind: "run" }>): number {
+  const args: CheckArgs = {
+    windowSize: parsePositiveInt("NO_OP_CHECK_WINDOW", 7),
+    threshold: parsePositiveInt("NO_OP_CHECK_THRESHOLD", 5),
+    gapThresholdMinutes: parsePositiveInt("NO_OP_CHECK_GAP_MINUTES", 15),
+    now: new Date(),
+  };
+  const result = runCheck(repoRoot, args);
+  printReport(result, args);
+  return exitStatus(result, parsed.enforce);
+}
+
+export function main(argv: readonly string[] = process.argv.slice(2)): number {
+  const parsed = parseCli(argv);
+  if (parsed.kind === "help") {
+    process.stdout.write(USAGE);
+    return 0;
+  }
+  if (parsed.kind === "error") {
+    process.stderr.write(parsed.message + "\n" + USAGE);
+    return 2;
+  }
+  const repoRoot = findRepoRoot();
+  process.chdir(repoRoot);
+  return runCli(repoRoot, parsed);
 }
 
 if (import.meta.main) {

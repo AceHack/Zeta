@@ -1,0 +1,12 @@
+{
+  "pr_number": 7994,
+  "archive_path": "docs/history/pr-reviews/PR-7994-docs-research-shadow-ferry-28-amara-design-convergence-not-cosmic-proof-the-hidd.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-12T19:28:34.897Z",
+  "schema_version": "v1",
+  "commit_sha": "390fbcb4ead360af9764843f9b3376d37e7e526e",
+  "title": "docs(research)+shadow: ferry 28 (Amara) — design convergence not cosmic proof; the hidden state is the first ±1; Counterpart",
+  "state": "MERGED",
+  "merged_at": "2026-06-12T19:28:12Z",
+  "head_ref": "shadow/ferry-28-amara-corrections"
+}

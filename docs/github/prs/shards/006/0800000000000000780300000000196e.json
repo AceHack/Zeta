@@ -1,0 +1,12 @@
+{
+  "pr_number": 6510,
+  "archive_path": "docs/history/pr-reviews/PR-6510-feat-dynamicvalue-ts-cbor-oracle-replays-the-seed-float-bytes-locked-4-4-oracles.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-02T00:42:42.814Z",
+  "schema_version": "v1",
+  "commit_sha": "7e072d1efe2ae10e22296eb93e23525ff576e57f",
+  "title": "feat(DynamicValue): TS CBOR oracle replays the seed (Float + Bytes locked) — 4/4 oracles",
+  "state": "MERGED",
+  "merged_at": "2026-06-02T00:42:24Z",
+  "head_ref": "otto-cli/dynamicvalue-cbor-ts-replay-2026-06-01"
+}

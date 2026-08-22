@@ -1,0 +1,12 @@
+{
+  "pr_number": 10040,
+  "archive_path": "docs/history/pr-reviews/PR-10040-book-ch-03-weave-in-decode-before-dismiss-categories-lie-about-people-too.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-04T18:52:26.897Z",
+  "schema_version": "v1",
+  "commit_sha": "b5f358b47cc6fc5fc01de082bbd0614cd6bc42ca",
+  "title": "book(ch-03): weave in decode-before-dismiss — \"Categories lie about people, too\"",
+  "state": "MERGED",
+  "merged_at": "2026-08-04T18:51:58Z",
+  "head_ref": "docs/book-ch03-weave-decode-before-dismiss-20260804"
+}

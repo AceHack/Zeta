@@ -1,0 +1,12 @@
+{
+  "pr_number": 2462,
+  "archive_path": "docs/history/pr-reviews/PR-2462-feat-b-0353-condense-claude-md-to-47-line-bootstrap-process.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-10T10:37:01.873Z",
+  "schema_version": "v1",
+  "commit_sha": "012cea1271def49c2724f2a3b11df5779978d7ae",
+  "title": "feat(B-0353): condense CLAUDE.md to 47-line bootstrap process",
+  "state": "MERGED",
+  "merged_at": "2026-05-10T10:36:47Z",
+  "head_ref": "feat/B-0353-bootstrap-claude-md"
+}

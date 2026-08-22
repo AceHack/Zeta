@@ -1,0 +1,12 @@
+{
+  "pr_number": 7882,
+  "archive_path": "docs/history/pr-reviews/PR-7882-feat-chip9-the-fault-parity-treaty-fault-register-goes-four-language-live.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-12T10:23:54.103Z",
+  "schema_version": "v1",
+  "commit_sha": "6f1ff7fac962590aa48ce5f08506d3cdc22f5195",
+  "title": "feat(chip9): THE FAULT-PARITY TREATY — fault.register goes four-language-live",
+  "state": "MERGED",
+  "merged_at": "2026-06-12T10:23:30Z",
+  "head_ref": "shadow-fault-parity-treaty"
+}

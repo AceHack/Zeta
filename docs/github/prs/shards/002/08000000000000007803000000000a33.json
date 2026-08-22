@@ -1,0 +1,12 @@
+{
+  "pr_number": 2611,
+  "archive_path": "docs/history/pr-reviews/PR-2611-docs-memory-shadow-triggers-after-multiple-tool-results-post-tool-generation-win.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-11T01:37:41.985Z",
+  "schema_version": "v1",
+  "commit_sha": "e870ffed42f1e73fba7b82a6af8a9be367cd7a6e",
+  "title": "docs(memory): shadow triggers after multiple tool results — post-tool generation window",
+  "state": "MERGED",
+  "merged_at": "2026-05-11T01:37:27Z",
+  "head_ref": "docs/shadow-post-tool-trigger-2026-05-10"
+}

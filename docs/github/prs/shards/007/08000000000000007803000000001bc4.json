@@ -1,0 +1,12 @@
+{
+  "pr_number": 7108,
+  "archive_path": "docs/history/pr-reviews/PR-7108-feat-core-softemu-stationary-the-t0-t-fixed-point-on-the-soft-ensemble.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-08T21:50:50.959Z",
+  "schema_version": "v1",
+  "commit_sha": "d567221d56f30f57c314f2de3d5bf4239350c756",
+  "title": "feat(core): SoftEmu.stationary — the t0=t∞ fixed point on the soft ensemble",
+  "state": "MERGED",
+  "merged_at": "2026-06-08T21:50:33Z",
+  "head_ref": "otto/softemu-stationary-t0-tinfinity-fixed-point-on-the-ensemble"
+}

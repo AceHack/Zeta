@@ -1,0 +1,17 @@
+{
+  "pr_number": 4595,
+  "archive_path": "docs/history/pr-reviews/PR-4595-tick-1208z-orphaned-branch-verification-b-0623-adinkras-ecc-not-yet-rescued-in-a.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7D_vAM",
+    "comment:PRRC_kwDOSF9kNM7D_xYK",
+    "thread:PRRT_kwDOSF9kNM6EGqyz",
+    "thread:PRRT_kwDOSF9kNM6EGsml"
+  ],
+  "fetched_at": "2026-05-22T12:48:13.557Z",
+  "schema_version": "v1",
+  "commit_sha": "46e024db06f702ac18ab8e09e0d59b7b31e19d08",
+  "title": "tick(1208Z): orphaned-branch verification — B-0623 Adinkras+ECC not-yet-rescued, in active decomposition",
+  "state": "MERGED",
+  "merged_at": "2026-05-22T12:47:55Z",
+  "head_ref": "otto/cli-tick-1208z-coldboot-orphaned-branch-classification-2026-05-22"
+}

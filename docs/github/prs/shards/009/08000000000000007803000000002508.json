@@ -1,0 +1,12 @@
+{
+  "pr_number": 9480,
+  "archive_path": "docs/history/pr-reviews/PR-9480-test-docs-yb-7-8-braiding-earned-by-composition-the-two-op-core-ferry-continuati.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-04T18:55:04.691Z",
+  "schema_version": "v1",
+  "commit_sha": "501f3dfea2b1f4a30e9cf57becd93560aec11947",
+  "title": "test+docs: YB-7/8 — braiding EARNED by composition; the two-op core; ferry continuation 3 (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-04T18:54:41Z",
+  "head_ref": "otto/yb7-braiding-earned-by-composition"
+}

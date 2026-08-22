@@ -1,0 +1,17 @@
+{
+  "pr_number": 6609,
+  "archive_path": "docs/history/pr-reviews/PR-6609-feat-ace-slice-8-2-package-hash-as-content-identity-signature-excluded-compositi.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7HR3-r",
+    "comment:PRRC_kwDOSF9kNM7HR3_7",
+    "thread:PRRT_kwDOSF9kNM6GhRkx",
+    "thread:PRRT_kwDOSF9kNM6GhRly"
+  ],
+  "fetched_at": "2026-06-02T18:03:14.600Z",
+  "schema_version": "v1",
+  "commit_sha": "7681897b41a0b89bc1fbafa55a5a4d9d1c82a9c1",
+  "title": "feat(ace): slice 8.2 — package_hash as content identity (signature-excluded composition)",
+  "state": "MERGED",
+  "merged_at": "2026-06-02T18:02:48Z",
+  "head_ref": "otto-windows/ace-slice8.2-impl-2026-06-02"
+}

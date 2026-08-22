@@ -1,0 +1,12 @@
+{
+  "pr_number": 7444,
+  "archive_path": "docs/history/pr-reviews/PR-7444-docs-research-ray-tracing-local-small-model-superdeterminism-sonar-network-bound.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-10T04:15:12.816Z",
+  "schema_version": "v1",
+  "commit_sha": "438fcc79c9c5100949efe0ce7d39d19e21ef0c0a",
+  "title": "docs(research): ray-tracing = local small-model superdeterminism; sonar = network-boundary resolution via harmonic oscillation",
+  "state": "MERGED",
+  "merged_at": "2026-06-10T04:14:52Z",
+  "head_ref": "shadow-raytracing-sonar-definitions"
+}

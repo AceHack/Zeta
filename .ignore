@@ -1,0 +1,27 @@
+# .ignore — GENERATED. Do not hand-edit.
+#
+# Source of truth: src/Core.TypeScript/search/exclusions.ts
+# Regenerate:      bun src/Core.TypeScript/search/exclusions.ts --write-ignore
+# Checked by:      src/Core.TypeScript/search/exclusions.test.ts (drift fails CI)
+#
+# ripgrep, fd, and rga honour this file, so a BARE `rg foo` is safe here for
+# free — no flag to remember, no rule to have read.
+#
+# HONEST LIMIT, and it is the whole reason a CLI exists beside this file:
+# `grep -r` honours NONE of this. POSIX grep has no ignore-file concept, so the
+# exact tool that caused the 2026-08-22 runaway is untouched by this file. You
+# can make SOME external tools carry a constraint; you can never make all of
+# them. That asymmetry is the argument for the dogfooded tool, not against it.
+# Safe path that IS enforced:  bun src/Core.TypeScript/search/search.ts <pattern>
+
+# 8.0K on 2026-08-22 (EMPTY — .gitignore + README only)
+# mirror of OTHER repos, not our code. Currently empty on this machine; kept because the convention is repo-wide and it refills on demand.
+references/prior-art/
+
+# 6.9G on 2026-08-22 — the single largest tree in the checkout
+# Lean 4 + Mathlib build cache. Regeneratable by `lake build`; not source.
+src/Core.Lean4/.lake/
+
+# ~700M on 2026-08-22 (240M Algebra, 157M DynamicValue, 83M Durability, ...)
+# cargo build outputs across the Rust crates. Regeneratable; not source.
+src/Core.Rust.*/target/

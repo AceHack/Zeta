@@ -1,0 +1,12 @@
+{
+  "pr_number": 9940,
+  "archive_path": "docs/history/pr-reviews/PR-9940-fix-bridge-roster-default-agent-ids-retire-color-table.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-01T23:43:20.208Z",
+  "schema_version": "v1",
+  "commit_sha": "96bc1f584c8a4b4c4d5c7371d5bff35d9774fd31",
+  "title": "fix(bridge): roster default_agent_ids + retire color table",
+  "state": "MERGED",
+  "merged_at": "2026-08-01T23:42:51Z",
+  "head_ref": "claim/vault-bridge-roster-cleanup"
+}

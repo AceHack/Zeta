@@ -1,0 +1,12 @@
+{
+  "pr_number": 4172,
+  "archive_path": "docs/history/pr-reviews/PR-4172-backlog-b0666-research-emit-as-weights-english-as-lossless-neural-topology-seria.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-18T17:49:44.216Z",
+  "schema_version": "v1",
+  "commit_sha": "35c7fe4dfc94829f2572fc6d94334ee292f9496d",
+  "title": "backlog(b0666)+research: Emit-as-weights + English-as-lossless-neural-topology-serialization + I(D(x))=x identity (KEYSTONE; 6-persona convergence)",
+  "state": "MERGED",
+  "merged_at": "2026-05-18T17:49:11Z",
+  "head_ref": "shard/b0666-emit-as-weights-i-of-d-of-x-equals-x-keystone-2026-05-18"
+}

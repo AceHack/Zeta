@@ -1,0 +1,14 @@
+{
+  "id": "080d000d57954810a01300089890b401",
+  "at": "2026-08-14T19:06:15.593Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M00TNWN8087G0R002CQX6VJ",
+    "type": "task",
+    "title": "Circuit breaker in series: an outer open breaker drives the inner error rate to zero",
+    "slug": "circuit-breaker-in-series-an-outer-open-breaker-drives-the-i",
+    "priority": "P2",
+    "filename": "081M00TNWN8087G0R002CQX6VJ-circuit-breaker-in-series-an-outer-open-breaker-drives-the-i.md"
+  }
+}

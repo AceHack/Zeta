@@ -6,11 +6,11 @@
 // Reports inbound reference counts so entangled surfaces are visible.
 //
 // Usage:
-//   bun tools/alignment/audit_retractibility.ts
-//   bun tools/alignment/audit_retractibility.ts --json
-//   bun tools/alignment/audit_retractibility.ts --md
-//   bun tools/alignment/audit_retractibility.ts --gate N   # fail if any surface has >= N inbound refs
-//   bun tools/alignment/audit_retractibility.ts <path> ... # check specific files
+//   bun src/Core.TypeScript/alignment/audit_retractibility.ts
+//   bun src/Core.TypeScript/alignment/audit_retractibility.ts --json
+//   bun src/Core.TypeScript/alignment/audit_retractibility.ts --md
+//   bun src/Core.TypeScript/alignment/audit_retractibility.ts --gate N   # fail if any surface has >= N inbound refs
+//   bun src/Core.TypeScript/alignment/audit_retractibility.ts <path> ... # check specific files
 //
 // Exit codes:
 //   0  All surfaces retractible (or below gate threshold)
@@ -125,18 +125,55 @@ function isGitTracked(filePath: string): boolean {
 }
 
 export function countInboundRefs(filePath: string, root: string): { count: number; from: readonly string[] } {
-  const relPath = relative(root, `${root}/${filePath}`);
+  return countInboundRefsMany([filePath], root).get(filePath) ?? { count: 0, from: [] };
+}
+
+function countInboundRefsMany(
+  filePaths: readonly string[],
+  root: string,
+): ReadonlyMap<string, { count: number; from: readonly string[] }> {
+  const relPaths = new Map(filePaths.map((filePath) => [filePath, relative(root, `${root}/${filePath}`)] as const));
+  const grepArgs = ["grep", "-l", "-z", "--fixed-strings"];
+
+  for (const relPath of relPaths.values()) {
+    grepArgs.push("-e", relPath);
+  }
+
+  const matches = new Map<string, Set<string>>(filePaths.map((filePath) => [filePath, new Set<string>()]));
+
+  if (filePaths.length === 0) {
+    return new Map();
+  }
 
   const result = spawnSync(
     "git", // eslint-disable-line sonarjs/no-os-command-from-path
-    ["grep", "-l", "--fixed-strings", relPath],
-    { encoding: "utf8", stdio: ["pipe", "pipe", "pipe"] },
+    grepArgs,
+    { cwd: root, encoding: "utf8", stdio: ["pipe", "pipe", "pipe"] },
   );
 
-  const lines = (result.stdout ?? "").trim().split("\n").filter((l) => l.length > 0);
-  const selfExcluded = lines.filter((l) => l !== relPath).sort();
+  const matchedFiles = (result.stdout ?? "").split("\0").filter((path) => path.length > 0);
 
-  return { count: selfExcluded.length, from: selfExcluded };
+  for (const matchedFile of matchedFiles) {
+    let content: string;
+    try {
+      content = readFileSync(join(root, matchedFile), "utf8");
+    } catch {
+      continue;
+    }
+
+    for (const [filePath, relPath] of relPaths) {
+      if (matchedFile !== relPath && content.includes(relPath)) {
+        matches.get(filePath)?.add(matchedFile);
+      }
+    }
+  }
+
+  return new Map(
+    [...matches].map(([filePath, from]) => {
+      const sorted = [...from].sort();
+      return [filePath, { count: sorted.length, from: sorted }] as const;
+    }),
+  );
 }
 
 function classifyStatus(gitTracked: boolean, inboundRefs: number): RetractStatus {
@@ -209,10 +246,13 @@ function nameFromPath(p: string): string {
 export function auditRetractibility(paths: readonly string[]): RetractResult {
   const root = process.cwd();
   const surfaces: SurfaceRetract[] = [];
+  const trackedPaths = paths.filter(isGitTracked);
+  const inboundRefs = countInboundRefsMany(trackedPaths, root);
 
   for (const p of paths) {
-    const gitTracked = isGitTracked(p);
-    const { count, from } = gitTracked ? countInboundRefs(p, root) : { count: 0, from: [] as string[] };
+    const refs = inboundRefs.get(p);
+    const gitTracked = refs !== undefined;
+    const { count, from } = refs ?? { count: 0, from: [] as string[] };
     const status = classifyStatus(gitTracked, count);
 
     surfaces.push({

@@ -1,0 +1,12 @@
+{
+  "pr_number": 7397,
+  "archive_path": "docs/history/pr-reviews/PR-7397-feat-portal-real-k8sops-live-cluster-data-in-the-resource-console.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-09T20:49:46.316Z",
+  "schema_version": "v1",
+  "commit_sha": "44ea30d778aed5f4d4d5a09bd6cb189c2c29d60b",
+  "title": "feat(portal): real K8sOps — live cluster data in the resource console",
+  "state": "MERGED",
+  "merged_at": "2026-06-09T20:49:18Z",
+  "head_ref": "feat/portal-k8s-resourceops"
+}

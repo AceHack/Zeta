@@ -1,0 +1,12 @@
+{
+  "pr_number": 4542,
+  "archive_path": "docs/history/pr-reviews/PR-4542-backlog-b-0615-land-canonical-file-for-already-rule-documented-push-hang-pattern.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-21T14:45:24.252Z",
+  "schema_version": "v1",
+  "commit_sha": "faa110e3d11202009ad464c98f4008a69ff45824",
+  "title": "backlog(B-0615): land canonical file for already-rule-documented push-hang pattern (heals 4+ dangling references)",
+  "state": "MERGED",
+  "merged_at": "2026-05-21T14:45:00Z",
+  "head_ref": "backlog/b0615-land-existing-rule-substrate-2026-05-21"
+}

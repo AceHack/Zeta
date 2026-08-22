@@ -1,0 +1,12 @@
+{
+  "pr_number": 7546,
+  "archive_path": "docs/history/pr-reviews/PR-7546-docs-craft-topology-is-hairdressing-braiding-hair-is-braiding-qubits.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-10T23:52:55.757Z",
+  "schema_version": "v1",
+  "commit_sha": "11d27276b1b2ccacaa829b73c173e3a080c9e3cf",
+  "title": "docs(craft): \"Topology is hairdressing\" — braiding hair is braiding qubits",
+  "state": "MERGED",
+  "merged_at": "2026-06-10T23:52:33Z",
+  "head_ref": "shadow-craft-topology-is-hairdressing"
+}

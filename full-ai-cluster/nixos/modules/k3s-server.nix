@@ -76,32 +76,77 @@
       "--service-cidr=10.43.0.0/16"
     ];
 
-    # K3S applies these manifests on first boot in dependency order.
-    # Each layer depends on the one(s) above it; ArgoCD comes LAST
-    # so its own pods can use cert-manager TLS + Vault secrets +
-    # SPIRE identities on bring-up.
+    # ORDERING: what the mechanism actually does.
     #
-    # Order (per Aaron 2026-05-25):
-    #   1. Cilium  (CNI + KPR + Hubble + Cilium Service Mesh + BPF MASQUERADE)
-    #   2. cert-manager  (TLS certs; Vault depends on these)
-    #   3. Vault   (most other tools depend on it)
-    #   4. SPIRE   (chains to Vault as upstream CA)
-    #   5. Trust Manager  (distributes SPIRE + cert-manager bundles)
-    #   6. External Secrets Operator  (syncs Vault secrets into K8s)
-    #   7. ArgoCD  (reconciles everything else from k8s/applications/)
+    # This block replaces a comment that was wrong on its own mechanism. It
+    # claimed alphabetical order was sufficient and that "ArgoCD comes LAST".
+    # ArgoCD is applied SECOND. The correction is below, and it is checked --
+    # nixos/tests/k3s-first-boot-apply-order-eval-test.nix pins the order this
+    # roster produces, so this comment cannot drift back without going red.
     #
-    # K3S applies manifests in alphabetical filename order, so
-    # `00-`/`10-`/`20-`/.../`70-` prefixes are NOT needed —
-    # `cert-manager-install.yaml` < `cilium-install.yaml` <
-    # `external-secrets-install.yaml` ... etc. is fine because the
-    # Helm Controller waits for each chart's pods to be Ready before
-    # the next chart's pods start contending. But Helm Controller
-    # runs the install jobs in parallel by default — the dependency
-    # ordering above is enforced by setting `spec.timeout` +
-    # `spec.repo` in a way that lets later charts retry while their
-    # dependencies finish. For deterministic ordering during
-    # bootstrap, the `bootstrapAfter` annotation pattern (TBD) would
-    # be added in a follow-up.
+    # 1. NixOS writes each attribute as ONE FLAT FILE named `<attr>.yaml` in
+    #    /var/lib/rancher/k3s/server/manifests. (nixpkgs
+    #    nixos/modules/services/cluster/rancher/default.nix: `mkManifestTarget`
+    #    appends ".yaml" unless the attr already ends .yaml/.yml/.json, and
+    #    `target` defaults to it via mkDefault.) So the attribute name IS the
+    #    filename, and no directory structure is possible here.
+    #
+    # 2. The k3s deploy controller submits those files in LEXICAL FILENAME
+    #    order -- with the ".yaml" suffix included, which is why sorting the
+    #    attribute names alone would give a different answer the moment two
+    #    names share a prefix. Today that order is:
+    #
+    #      aa-gateway-api-crds -> argocd-install -> argocd-namespace ->
+    #      cert-manager-install -> cilium-install -> cilium-namespace ->
+    #      external-secrets-install -> local-path-provisioner (from
+    #      local-storage.nix) -> openziti-namespace -> root-application ->
+    #      spire-install -> trust-manager-install
+    #
+    # 3. SUBMISSION ORDER IS NOT DEPENDENCY ORDER, and no renaming can make it
+    #    one. The deploy controller submits all eleven files within seconds of
+    #    the API server starting; helm-controller then takes MINUTES per chart
+    #    Job. So every chart in this roster is in flight simultaneously
+    #    regardless of where its file sorts.
+    #
+    # 4. What survives that, and why:
+    #      - `*-install` sorting BEFORE its own `*-namespace` (argocd, cilium)
+    #        is harmless: both objects are submitted in the same pass, seconds
+    #        apart, and the namespace exists long before the chart Job runs.
+    #        `openziti-namespace` has no `openziti-install` sibling and is the
+    #        same argument read the other way: it must precede the trust-manager
+    #        CHART JOB (minutes later), not merely the trust-manager file.
+    #      - cert-manager sorting before cilium is harmless for the same
+    #        reason plus helm-controller retry: cert-manager pods stay Pending
+    #        until Cilium supplies a CNI, then schedule.
+    #      - Only `bootstrap: true` (cilium) tolerates the not-ready NoSchedule
+    #        taint; everything else waits for the node to go Ready, which is
+    #        the intended sequencing and needs no filename to express it.
+    #
+    # 5. What does NOT obviously survive it -- the one open question:
+    #      `root-application.yaml` is an argoproj.io/v1alpha1 Application, and
+    #      the CRD for that kind is created by the ArgoCD HELM CHART. The
+    #      deploy controller submits root-application seconds into boot, into
+    #      an API server that has never heard of the kind. helm-controller
+    #      retries its charts; whether the DEPLOY controller retries an
+    #      unknown-kind apply is NOT established anywhere in this repo.
+    #      If it does not, the app-of-apps root never lands and a fresh
+    #      cluster halts at the bootstrap charts with no catalog and no
+    #      reconciler -- with every pod that did come up perfectly healthy.
+    #      Renaming it `zz-root-application` would NOT fix this (see 3).
+    #      nixos/tests/k3s-first-boot-roster.nix is the VM test that decides
+    #      it, with three named verdicts instead of a timeout. UNRUN as of
+    #      2026-08-21: it needs a KVM host, internet, and ~45-70 min.
+    #
+    # The DEPENDENCY INTENT below (per Aaron 2026-05-25) is retained because
+    # it is the design, but note it is expressed in ArgoCD sync waves and in
+    # helm-controller retry -- NOT in this roster's filenames:
+    #   1. Cilium (CNI + KPR + Hubble + BPF MASQUERADE)
+    #   2. cert-manager (TLS certs)
+    #   3. Vault (NOT in this roster -- see the note below; ArgoCD owns it)
+    #   4. SPIRE (self-signed CA today)
+    #   5. Trust Manager (distributes SPIRE + cert-manager bundles)
+    #   6. External Secrets Operator
+    #   7. ArgoCD (reconciles everything else from k8s/applications/)
     manifests = {
       # Gateway API CRDs — MUST exist before Cilium (gatewayAPI.enabled) and
       # cert-manager (ExperimentalGatewayAPISupport) start, else cert-manager
@@ -112,15 +157,44 @@
       # Cilium (CNI must exist before any pod can schedule).
       cilium-namespace.source = ../../k8s/bootstrap/cilium-namespace.yaml;
       cilium-install.source = ../../k8s/bootstrap/cilium-install.yaml;
-      # cert-manager (Vault TLS source).
+      # cert-manager (issues cluster TLS).
       cert-manager-install.source = ../../k8s/bootstrap/cert-manager-install.yaml;
-      # Vault (secrets backend).
-      vault-install.source = ../../k8s/bootstrap/vault-install.yaml;
-      # SPIRE (workload identity, chains to Vault).
+      # Vault is DELIBERATELY ABSENT from this roster (2026-08-20, Dejan).
+      #
+      # It used to be here AND owned by k8s/applications/vault/Application.yaml,
+      # which carries `selfHeal: true`. Both reconcilers owned Helm release
+      # `vault` in namespace `vault`, and they DISAGREED on the storage backend:
+      # this roster rendered `storage "file"` (ha.enabled=false, replicas=1),
+      # the ArgoCD twin renders `storage "raft"` (ha.enabled=true, replicas=3).
+      # Two selfHealing owners would have converted Vault between two storage
+      # backends on a loop -- data loss on the cluster's secrets backend, every
+      # reconcile. Measured by rendering both value sets at chart vault-0.29.1.
+      #
+      # ArgoCD is the single owner because Vault has NO pre-ArgoCD consumer:
+      #   - spire-install.yaml has no `upstreamAuthority` key at all (grep: 0);
+      #     the SPIRE server self-signs. The ArgoCD twin has the Vault block
+      #     COMMENTED OUT.
+      #   - external-secrets-install.yaml installs the operator + CRDs only; its
+      #     ClusterSecretStore pointing at Vault is likewise commented out, so
+      #     ESO has nothing to sync from and does not need Vault to come up.
+      #   - argocd-install.yaml sources no secret from Vault.
+      # ...and because Vault's own PVCs pin `storageClass: longhorn`, which is
+      # installed by ArgoCD at sync-wave -15. Vault CANNOT bind storage before
+      # ArgoCD runs, so bootstrap ownership could never have worked.
+      # The ordering intent survives in ArgoCD's sync waves: cert-manager -70,
+      # vault -60, spire -50, trust-manager -45, external-secrets -40.
+      # SPIRE (workload identity; self-signed CA today).
       spire-install.source = ../../k8s/bootstrap/spire-install.yaml;
+      # The OpenZiti namespace — needed BEFORE trust-manager, not before `oz`.
+      # trust-manager's trust namespace is `openziti` (it is the only namespace
+      # from which its Bundle sources can be read, and its Secrets Role is
+      # created there), so its chart cannot install into a cluster where that
+      # namespace is absent. Sorts before trust-manager-install.yaml, which is
+      # what the apply-order eval test pins.
+      openziti-namespace.source = ../../k8s/bootstrap/openziti-namespace.yaml;
       # Trust Manager (CA bundle distribution).
       trust-manager-install.source = ../../k8s/bootstrap/trust-manager-install.yaml;
-      # External Secrets Operator (Vault → K8s Secret sync).
+      # External Secrets Operator (operator + CRDs; no store wired yet).
       external-secrets-install.source = ../../k8s/bootstrap/external-secrets-install.yaml;
       # ArgoCD (reconciler for everything else).
       argocd-namespace.source = ../../k8s/bootstrap/argocd-namespace.yaml;
@@ -145,13 +219,22 @@
   # mDNS is NOT used — `control-plane.zeta.local` was a dangling name that
   # never resolved (mDNS is single-label `.local`; nothing defined it).
   #
-  # MULTI-NODE TODO: workers (k3s-agent serverAddr = https://control-plane)
-  # need `control-plane` to resolve to the control-plane's LAN IP. mDNS is
+  # MULTI-NODE: the JOIN ITSELF IS NOT MISSING — k3s's agent-to-server join
+  # is the join (Aaron 2026-08-13, closing the open question on PR #10493:
+  # "k3s's join is the join, don't invent our own"). `k3s-agent.nix` already
+  # carries `serverAddr` + `tokenFile`, the `--tls-san=control-plane` above
+  # makes the API cert valid for that name, and `k3s-join-observer.nix` now
+  # witnesses the result on serial. `nixos/tests/k3s-agent-join.nix` boots a
+  # server and an agent on one virtual segment and proves the join lands.
+  #
+  # What IS still missing is NAME RESOLUTION on real hardware: a worker
+  # resolving `control-plane` to the control-plane's LAN IP. mDNS is
   # unreliable here and NetBIOS/nss-wins broadcast resolution did not work
   # in testing (winbindd path). The robust path is to inject a
   # `control-plane <cp-ip>` /etc/hosts entry on each worker at install
   # time (zeta-install.sh) once worker provisioning lands. Tracked
-  # separately; single-node bring-up does not depend on it.
+  # separately; single-node bring-up does not depend on it, and the VM test
+  # supplies the mapping explicitly rather than pretending it is solved.
   networking.hosts."127.0.0.1" = [ "control-plane" ];
 
   networking.firewall = {

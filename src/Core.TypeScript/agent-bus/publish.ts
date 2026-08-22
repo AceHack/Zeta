@@ -160,7 +160,7 @@ function gitPushEnvelope(path: string, from: SenderAgentId, topic: string): void
 }
 
 if (import.meta.main) {
-  // usage: bun tools/agent-bus/publish.ts <from> <to> <topic> <json-payload> [--no-push]
+  // usage: bun src/Core.TypeScript/agent-bus/publish.ts <from> <to> <topic> <json-payload> [--no-push]
   const [from, to, topic, payloadJson] = process.argv.slice(2);
   if (!from || !to || !topic || !payloadJson) {
     console.error("usage: publish.ts <from> <to> <topic> <json-payload> [--no-push]");

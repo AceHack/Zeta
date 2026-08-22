@@ -1,0 +1,12 @@
+{
+  "pr_number": 10264,
+  "archive_path": "docs/history/pr-reviews/PR-10264-docs-rule-hubs-are-enforced-oracles-are-chosen-exit-is-the-discriminator.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-10T00:42:31.200Z",
+  "schema_version": "v1",
+  "commit_sha": "ca0aa02b5f0022220d0dd5edc7c1bd82c160f0dd",
+  "title": "docs(rule): hubs are enforced, oracles are chosen — exit is the discriminator",
+  "state": "MERGED",
+  "merged_at": "2026-08-10T00:42:01Z",
+  "head_ref": "shadow/hubs-enforced-oracles-chosen"
+}

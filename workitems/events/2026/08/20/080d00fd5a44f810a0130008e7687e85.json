@@ -1,0 +1,14 @@
+{
+  "id": "080d00fd5a44f810a0130008e7687e85",
+  "at": "2026-08-20T14:55:14.079Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M0FTPJ4X087G0R000E91P3Y",
+    "type": "task",
+    "title": "Pin Cl0(p,q) = Cl0(q,p) as an FsCheck property -- the guard that keeps the Cl(1,3)/Cl(3,1) split inert",
+    "slug": "pin-cl0-p-q-cl0-q-p-as-an-fscheck-property-the-guard-that-ke",
+    "priority": "P2",
+    "filename": "081M0FTPJ4X087G0R000E91P3Y-pin-cl0-p-q-cl0-q-p-as-an-fscheck-property-the-guard-that-ke.md"
+  }
+}

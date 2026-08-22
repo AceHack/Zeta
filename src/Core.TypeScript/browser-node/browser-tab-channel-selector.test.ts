@@ -4,7 +4,11 @@ import {
   injectedBrowserTabChannelSelection,
   selectNativeBrowserTabChannel,
 } from "./browser-tab-channel-selector";
-import type { BrowserTabChannel, BrowserTabChannelMessage } from "./browser-tab-coordinator";
+import {
+  BROWSER_TAB_COORDINATOR_SCHEMA,
+  type BrowserTabChannel,
+  type BrowserTabChannelMessage,
+} from "./browser-tab-coordinator";
 
 type NativeListener = (event: { readonly data?: unknown }) => void;
 
@@ -59,7 +63,7 @@ class NativeServiceWorkerContainer {
 
 function message(): BrowserTabChannelMessage {
   return {
-    schema: "zeta.browser-tab-coordinator.v4",
+    schema: BROWSER_TAB_COORDINATOR_SCHEMA,
     nodeId: "darkhall",
     kind: "probe",
     requesterTabId: "tab-a",

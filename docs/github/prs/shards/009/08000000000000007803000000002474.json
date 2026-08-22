@@ -1,0 +1,12 @@
+{
+  "pr_number": 9332,
+  "archive_path": "docs/history/pr-reviews/PR-9332-docs-book-chapters-1-2-12-first-drafts-speakable-recording-cues.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-03T18:05:18.241Z",
+  "schema_version": "v1",
+  "commit_sha": "2fafec338188f2cbf34fed51a38ef043f69e6db2",
+  "title": "docs(book): chapters 1, 2, 12 first drafts — speakable recording cues",
+  "state": "MERGED",
+  "merged_at": "2026-07-03T18:04:55Z",
+  "head_ref": "shadow/book-ch01-ch02-ch12-scaffolds"
+}

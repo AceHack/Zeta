@@ -1,0 +1,12 @@
+{
+  "pr_number": 3139,
+  "archive_path": "docs/history/pr-reviews/PR-3139-chore-regenerate-backlog-md-index-add-missing-b-0494-b-0495-b-0496-rows.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-14T14:58:46.306Z",
+  "schema_version": "v1",
+  "commit_sha": "4ef635e57787ee5b2bb2e6ffd8d21a3bf8204a60",
+  "title": "chore: regenerate BACKLOG.md index — add missing B-0494/B-0495/B-0496 rows",
+  "state": "MERGED",
+  "merged_at": "2026-05-14T14:58:24Z",
+  "head_ref": "chore/backlog-index-regen-2026-05-14"
+}

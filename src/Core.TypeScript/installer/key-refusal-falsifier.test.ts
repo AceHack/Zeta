@@ -24,7 +24,9 @@
  * WHAT THIS DOES AND DOES NOT PROVE
  *
  * Proves: the persist/restore CLI pair refuses a foreign identity, refuses it in the same way
- * for every wrong-identity shape, and writes NOTHING when it refuses.
+ * for every semantically wrong identity shape, and writes NOTHING when it refuses. Boundary
+ * whitespace is refused as MALFORMED INPUT before key derivation -- neither silently trimmed
+ * into a valid identity nor silently accepted as a different one.
  *
  * Does NOT prove: that the machine-identity FACTOR is read correctly from real hardware.
  * `getPartitionUuid` shells out to `diskutil` (macOS-only), and no test presents a key to a
@@ -179,26 +181,55 @@ describe("THE FALSIFIER — a key presented to a foreign device is refused", () 
   });
 });
 
-describe("refusal is uniform — no wrong-identity shape is treated as special", () => {
-  const wrongIdentities: readonly [string, string][] = [
-    ["a different device", IDENTITY_B],
-    ["empty identity", ""],
-    ["identity of the right shape but all zeroes", "00000000-0000-0000-0000-000000000000"],
-    ["identity A with one character changed", IDENTITY_A.replace(/.$/, "5")],
-    ["identity A with case flipped", IDENTITY_A.toLowerCase()],
-    ["identity A with trailing whitespace", `${IDENTITY_A} `],
+describe("binding identity distinguishes semantic changes from malformed input", () => {
+  // The verdict-column shape is #11112's and it is an improvement worth keeping: it makes
+  // the reason for each refusal legible instead of asserting one blanket outcome. What
+  // changed is the whitespace row's verdict and the reason attached to it.
+  //
+  // HISTORY, because this row has now been wrong twice in opposite directions and the next
+  // reader deserves the whole sequence rather than the current answer alone:
+  //
+  //   #11016  trimmed the KDF input, so `<A> ` and `<A>` derived the SAME key. The blob
+  //           bound to one opened on the other.
+  //   #11111  removed the trim. Correct on key material, but it left `<A> ` as a silently
+  //           accepted DIFFERENT binding -- so an operator who bound with a stray space
+  //           and later typed it without one was locked out with no diagnosis.
+  //   #11112  read the trim as intended behaviour and set this row to "normalized". It was
+  //           written against the pre-#11111 selector and landed minutes after the fix, so
+  //           the contract it recorded was the defect's behaviour, not a chosen design.
+  //   now     the selector REJECTS boundary whitespace with an error, which is why this row
+  //           is "refused" again -- but for a different reason than the rows above it.
+  //
+  // So the two verdicts here are not one rule: "refused" above means the AEAD tag rejected
+  // a foreign identity; "refused" for whitespace means the CLI would not accept a malformed
+  // value in the first place. Both write nothing, which is what this file asserts.
+  const identityCases: readonly [string, string, "refused" | "malformed"][] = [
+    ["a different device", IDENTITY_B, "refused"],
+    ["empty identity", "", "refused"],
+    ["identity of the right shape but all zeroes", "00000000-0000-0000-0000-000000000000", "refused"],
+    ["identity A with one character changed", IDENTITY_A.replace(/.$/, "5"), "refused"],
+    ["identity A with case flipped", IDENTITY_A.toLowerCase(), "refused"],
+    ["identity A with trailing boundary whitespace", `${IDENTITY_A} `, "malformed"],
   ];
 
-  for (const [label, identity] of wrongIdentities) {
-    test(`refused: ${label}`, () => {
-      // Uniformity matters as much as refusal. A near-miss that behaves differently from a
-      // wild guess is an oracle: it tells an attacker they are close. Case and whitespace
-      // are here because a well-meaning "be lenient about operator input" normalisation is
-      // exactly how binding gets loosened by accident.
+  for (const [label, identity, expected] of identityCases) {
+    test(`${expected}: ${label}`, () => {
+      // Uniform refusal matters for semantic near-misses: behaving differently would reveal
+      // that an attacker is close. Whitespace is not a near-miss identity -- no probe can
+      // emit one (see probe-canonicalization-is-the-single-authority in
+      // installer-binding-cli.test.ts) -- so it is rejected as malformed input rather than
+      // silently rewritten into a valid one.
       const blob = persistBoundTo(IDENTITY_A);
       const result = attemptRestore(blob, identity);
       expect(result.status).not.toBe(0);
       expect(filesUnder(result.targetRoot)).toEqual([]);
+
+      if (expected === "malformed") {
+        // The distinguishing claim: refused BEFORE any key derivation, with a diagnosis.
+        // Asserted so "reject" cannot quietly decay back into "accept and fail at the tag",
+        // which would restore the silent-lockout footgun this verdict exists to remove.
+        expect(`${result.stdout}${result.stderr}`).toMatch(/whitespace/i);
+      }
     });
   }
 });

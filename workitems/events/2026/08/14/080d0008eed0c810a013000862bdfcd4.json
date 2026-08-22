@@ -1,0 +1,14 @@
+{
+  "id": "080d0008eed0c810a013000862bdfcd4",
+  "at": "2026-08-14T16:32:08.729Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M00HVPGS087G0R0001T4BF8",
+    "type": "bug",
+    "title": "frost-hardware-probe reported a PKCS#11 driver on disk as attached hardware",
+    "slug": "frost-hardware-probe-reported-a-pkcs-11-driver-on-disk-as-at",
+    "priority": "P2",
+    "filename": "081M00HVPGS087G0R0001T4BF8-frost-hardware-probe-reported-a-pkcs-11-driver-on-disk-as-at.md"
+  }
+}

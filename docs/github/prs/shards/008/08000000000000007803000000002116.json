@@ -1,0 +1,12 @@
+{
+  "pr_number": 8470,
+  "archive_path": "docs/history/pr-reviews/PR-8470-docs-society-9j-degeneracy-correction-naive-empowerment-max-is-degenerate-the-is.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-16T07:20:42.967Z",
+  "schema_version": "v1",
+  "commit_sha": "9f624bce070c30dc4666df753393b3387b3202f3",
+  "title": "docs(society): §9j — degeneracy correction: naive empowerment-max is degenerate; the ISociety interface structurally disallows it (§10b discharge)",
+  "state": "MERGED",
+  "merged_at": "2026-06-16T07:20:12Z",
+  "head_ref": "otto/isociety-disallows-empowerment-degeneracy"
+}

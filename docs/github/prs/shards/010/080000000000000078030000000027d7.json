@@ -1,0 +1,12 @@
+{
+  "pr_number": 10199,
+  "archive_path": "docs/history/pr-reviews/PR-10199-docs-research-ferry-aaron-s-society-is-one-thread-tick-source-topology.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-09T18:08:21.151Z",
+  "schema_version": "v1",
+  "commit_sha": "1927d215e9ee33413a179c59fc5fe429bf873a07",
+  "title": "docs(research): ferry Aaron's society-is-one-thread tick-source topology",
+  "state": "MERGED",
+  "merged_at": "2026-08-09T18:07:50Z",
+  "head_ref": "shadow/ferry-society-one-thread-tick-sources"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 8388,
+  "archive_path": "docs/history/pr-reviews/PR-8388-docs-society-10-self-organization-driven-by-mutual-empowerment-fitness-the-stem-.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-16T01:02:25.242Z",
+  "schema_version": "v1",
+  "commit_sha": "0d6aed9c02534bc7c59eba492195f17acf02fcb0",
+  "title": "docs(society): §10 — self-organization driven by mutual-empowerment fitness (the stem cell's purpose)",
+  "state": "MERGED",
+  "merged_at": "2026-06-16T01:01:59Z",
+  "head_ref": "docs/society-mutual-empowerment-fitness"
+}

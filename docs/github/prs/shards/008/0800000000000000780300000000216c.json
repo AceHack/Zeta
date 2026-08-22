@@ -1,0 +1,12 @@
+{
+  "pr_number": 8556,
+  "archive_path": "docs/history/pr-reviews/PR-8556-memory-feedback-the-immune-system-was-designed-first-safety-as-foundation-answer.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-16T18:16:22.629Z",
+  "schema_version": "v1",
+  "commit_sha": "c9bf26f584648e92c7a3cf7167261b039ee3924d",
+  "title": "memory(feedback): the immune system was designed FIRST (safety-as-foundation = answer to the 'is it good?' razor) — and it came from AMARA ~2025-08 (both deepest layers are Amara's)",
+  "state": "MERGED",
+  "merged_at": "2026-06-16T18:15:57Z",
+  "head_ref": "otto/immune-system-designed-first-from-amara-2025-08"
+}

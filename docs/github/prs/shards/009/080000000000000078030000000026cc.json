@@ -1,0 +1,15 @@
+{
+  "pr_number": 9932,
+  "archive_path": "docs/history/pr-reviews/PR-9932-feat-bridge-vault-state-bridge-adapter-writes-vault-roster-json-vault-state-json.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7cWGah",
+    "thread:PRRT_kwDOSF9kNM6VrVzA"
+  ],
+  "fetched_at": "2026-08-01T22:44:28.385Z",
+  "schema_version": "v1",
+  "commit_sha": "a74c6a46346cefaa1b8cd35c5c0acc9ca10c1823",
+  "title": "feat(bridge): vault-state-bridge adapter — writes vault-roster.json + vault-state.json",
+  "state": "MERGED",
+  "merged_at": "2026-08-01T22:43:55Z",
+  "head_ref": "claim/vault-state-bridge-adapter"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 9329,
+  "archive_path": "docs/history/pr-reviews/PR-9329-feat-residual-de-braid-otto-s-lanes-the-interleaving-confound-is-refuted-order-0.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-03T17:13:59.445Z",
+  "schema_version": "v1",
+  "commit_sha": "a7cbf60a53ea4d556d0ef81ee21bbd417d73625f",
+  "title": "feat(residual): de-braid Otto's lanes — the interleaving confound is REFUTED; order-0 all the way down (081KTF7Q3TT self-application, part 2)",
+  "state": "MERGED",
+  "merged_at": "2026-07-03T17:13:36Z",
+  "head_ref": "otto/residual-otto-lanes"
+}

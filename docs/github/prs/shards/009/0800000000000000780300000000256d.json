@@ -1,0 +1,12 @@
+{
+  "pr_number": 9581,
+  "archive_path": "docs/history/pr-reviews/PR-9581-feat-ferry-throttler-mux-transport-bridge-full-pipeline-composition.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-08T23:57:01.764Z",
+  "schema_version": "v1",
+  "commit_sha": "2449cc25058c88cced4fcf8d5c18fd840f48750a",
+  "title": "feat(ferry-throttler): mux-transport-bridge — full pipeline composition",
+  "state": "MERGED",
+  "merged_at": "2026-07-08T23:56:30Z",
+  "head_ref": "claim/kiro-mux-bridge-2026-07-08"
+}

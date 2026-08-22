@@ -1,0 +1,12 @@
+{
+  "pr_number": 8275,
+  "archive_path": "docs/history/pr-reviews/PR-8275-docs-register-1000-brains-geometric-meaning-geospatial-reference-frames-neighbor.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-15T06:49:36.314Z",
+  "schema_version": "v1",
+  "commit_sha": "07a723a46634226db952f7b332ea02fd50b8ff39",
+  "title": "docs(register): 1000-brains — geometric meaning = geospatial reference frames + neighborhood-routing",
+  "state": "MERGED",
+  "merged_at": "2026-06-15T06:49:08Z",
+  "head_ref": "otto/thousand-brains-geometric-meaning-geospatial-routing"
+}

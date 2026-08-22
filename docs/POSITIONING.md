@@ -32,7 +32,7 @@ Three in-flight substrates compose:
 |--------|---------|
 | Validate graph | `ace deps validate --graph <path>` |
 | Resolve to manifests | `ace deps resolve --graph <path> --out-dir <dir>` |
-| CI / GitOps build step | `bun tools/cluster/deps-to-engine-config.ts --graph … --out-dir …` |
+| CI / GitOps build step | `bun src/Core.TypeScript/cluster/deps-to-engine-config.ts --graph … --out-dir …` |
 
 Spec: [`APP-DEPENDENCY-GRAPH.md`](APP-DEPENDENCY-GRAPH.md)
 

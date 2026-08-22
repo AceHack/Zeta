@@ -1,0 +1,12 @@
+{
+  "pr_number": 7339,
+  "archive_path": "docs/history/pr-reviews/PR-7339-docs-research-treaty-test-rooms-4-4-4-4-langs-serializers-compilers-personas-sum.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-09T16:57:05.402Z",
+  "schema_version": "v1",
+  "commit_sha": "52fbe405a36135b8f03e2fe8e5bf1e58e45957ae",
+  "title": "docs(research): treaty test rooms — 4×4×4×4 (langs×serializers×compilers×personas) summonable meeting room from parameterized tests",
+  "state": "MERGED",
+  "merged_at": "2026-06-09T16:56:35Z",
+  "head_ref": "otto/treaty-test-rooms-4to4-matrix-summonable-meeting-room-parameterized-tests"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 6764,
+  "archive_path": "docs/history/pr-reviews/PR-6764-backlog-complete-081ktgd5jmd-log-noun-done-4-4-byte-lock-both-backends-migrated.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-07T09:06:41.166Z",
+  "schema_version": "v1",
+  "commit_sha": "61fc0938b301df2ccc939657c5d350a59d91a6ec",
+  "title": "backlog: complete 081KTGD5JMD — Log noun DONE (4/4 byte-lock + both backends migrated)",
+  "state": "MERGED",
+  "merged_at": "2026-06-07T09:06:22Z",
+  "head_ref": "otto/complete-log-noun-workitem"
+}

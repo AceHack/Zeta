@@ -1,0 +1,12 @@
+{
+  "pr_number": 11557,
+  "archive_path": "docs/history/pr-reviews/PR-11557-docs-research-record-independent-rollback-and-capability-review.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-17T16:51:05.255Z",
+  "schema_version": "v1",
+  "commit_sha": "a692a4f7244553221575a971690320d60b553d5c",
+  "title": "docs(research): record independent rollback and capability review",
+  "state": "MERGED",
+  "merged_at": "2026-08-17T16:50:30Z",
+  "head_ref": "docs/independent-review-rollback-capability-kish"
+}

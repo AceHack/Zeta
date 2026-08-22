@@ -1,0 +1,12 @@
+{
+  "pr_number": 9666,
+  "archive_path": "docs/history/pr-reviews/PR-9666-docs-book-shapes-footstone-health-hub-under-keystone-qanon-unbounded-f-fork-bomb.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-10T05:59:46.494Z",
+  "schema_version": "v1",
+  "commit_sha": "d3d84e1f8884c5acc60379fdc221511dee893494",
+  "title": "docs(book+shapes): footstone (health+hub) under keystone; QAnon = unbounded-F fork-bomb (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-10T05:59:18Z",
+  "head_ref": "shadow/book-footstone-health-and-hub-under-keystone"
+}

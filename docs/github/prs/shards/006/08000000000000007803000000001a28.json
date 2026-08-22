@@ -1,0 +1,12 @@
+{
+  "pr_number": 6696,
+  "archive_path": "docs/history/pr-reviews/PR-6696-feat-core-git-git-native-delta-log-snapshot-store-adapters-the-db-is-git.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-06T23:18:12.092Z",
+  "schema_version": "v1",
+  "commit_sha": "a37816f9013c37cef5abfaf066541599675ad7a7",
+  "title": "feat(Core.Git): git-native delta-log + snapshot-store adapters (the DB IS git)",
+  "state": "MERGED",
+  "merged_at": "2026-06-06T23:17:52Z",
+  "head_ref": "otto/git-native-backend"
+}

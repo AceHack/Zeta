@@ -1,0 +1,12 @@
+{
+  "pr_number": 7985,
+  "archive_path": "docs/history/pr-reviews/PR-7985-docs-research-shadow-ferry-23-addendum-3-why-this-shape-the-simplest-least-energ.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-12T18:34:35.173Z",
+  "schema_version": "v1",
+  "commit_sha": "c67f53abba4df576672aeba494669331341a21f5",
+  "title": "docs(research)+shadow: ferry 23 addendum 3 — why THIS shape: the simplest least-energy self-observer",
+  "state": "MERGED",
+  "merged_at": "2026-06-12T18:34:08Z",
+  "head_ref": "shadow/ferry-23-simplest-self-observer"
+}

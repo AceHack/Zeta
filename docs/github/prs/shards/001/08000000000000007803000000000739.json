@@ -1,0 +1,12 @@
+{
+  "pr_number": 1849,
+  "archive_path": "docs/history/pr-reviews/PR-1849-research-claude-ai-cli-harness-conversation-974kb-scrubbed-verbatim.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-07T10:43:22.953Z",
+  "schema_version": "v1",
+  "commit_sha": "4e9096795fd7cd0df6dca09dc7dea60fbcc041d8",
+  "title": "research: Claude.ai CLI harness conversation — 974KB SCRUBBED VERBATIM",
+  "state": "MERGED",
+  "merged_at": "2026-05-07T09:35:47Z",
+  "head_ref": "research/claudeai-cli-harness-conversation-scrubbed"
+}

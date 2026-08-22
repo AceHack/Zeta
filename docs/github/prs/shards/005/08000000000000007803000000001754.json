@@ -1,0 +1,12 @@
+{
+  "pr_number": 5972,
+  "archive_path": "docs/history/pr-reviews/PR-5972-docs-beacon-light-life-traveler-self-propagation-as-the-traveler-predicate.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-29T10:28:16.657Z",
+  "schema_version": "v1",
+  "commit_sha": "12d2d9c897ed2b25e9ae5899072314c47bd52fdf",
+  "title": "docs(beacon): LIGHT → LIFE → TRAVELER — self-propagation as the traveler-predicate",
+  "state": "MERGED",
+  "merged_at": "2026-05-29T10:27:54Z",
+  "head_ref": "otto-cli/beacon-time-as-traveler-self-reference-2026-05-29"
+}

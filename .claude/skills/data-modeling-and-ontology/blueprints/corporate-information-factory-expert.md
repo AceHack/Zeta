@@ -165,5 +165,5 @@ enforces Inmon's properties as invariants.
   the Kimball rival.
 - `.claude/skills/data-modeling-and-ontology/blueprints/anchor-modeling-expert.md` — the
   6NF temporal variant.
-- `.claude/skills/lakehouse-architecture-expert/SKILL.md` —
+- `.claude/skills/data-modeling-and-ontology/SKILL.md` —
   DW 2.0's modern descendant.

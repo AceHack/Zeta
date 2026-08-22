@@ -1,0 +1,16 @@
+{
+  "pr_number": 9820,
+  "archive_path": "docs/history/pr-reviews/PR-9820-feat-browser-node-add-progressive-capability-and-liveness-contract.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7cNDdm",
+    "comment:PRRC_kwDOSF9kNM7cNHGS",
+    "thread:PRRT_kwDOSF9kNM6VlAPI"
+  ],
+  "fetched_at": "2026-08-01T03:33:52.722Z",
+  "schema_version": "v1",
+  "commit_sha": "608b2c69f32ffbd7c202123195d58c8a4e7c965b",
+  "title": "feat(browser-node): add progressive capability and liveness contract",
+  "state": "MERGED",
+  "merged_at": "2026-08-01T03:33:21Z",
+  "head_ref": "claim/task-browser-node-capability-ladder"
+}

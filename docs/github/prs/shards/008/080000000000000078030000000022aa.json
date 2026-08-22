@@ -1,0 +1,12 @@
+{
+  "pr_number": 8874,
+  "archive_path": "docs/history/pr-reviews/PR-8874-feat-gen-codegen-v2-ring-unified-v2-emitter-all-ops-ring-generic.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-21T05:54:36.986Z",
+  "schema_version": "v1",
+  "commit_sha": "60ce60a8a1b4473745376b183f61e543259d839e",
+  "title": "feat(gen): codegen-v2-ring — unified v2 emitter (all ops, ring-generic)",
+  "state": "MERGED",
+  "merged_at": "2026-06-21T05:54:10Z",
+  "head_ref": "alexa/codegen-v2-ring"
+}

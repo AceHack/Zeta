@@ -1,0 +1,12 @@
+{
+  "pr_number": 9313,
+  "archive_path": "docs/history/pr-reviews/PR-9313-docs-bugs-file-the-z3-cvc5-cross-check-flake-cvc5-unavailable-disagreement-shado.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-03T14:44:35.583Z",
+  "schema_version": "v1",
+  "commit_sha": "b6b374191e2437f696591836b4b4329f327a8c60",
+  "title": "docs(bugs): file the Z3/CVC5 cross-check flake — CVC5-unavailable ≠ disagreement (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-03T14:44:13Z",
+  "head_ref": "otto/file-z3-cvc5-flake"
+}

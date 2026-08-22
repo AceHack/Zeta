@@ -1,0 +1,12 @@
+{
+  "pr_number": 9266,
+  "archive_path": "docs/history/pr-reviews/PR-9266-feat-parse-residual-ir-serialization-the-2nd-futamura-projection-in-our-substrat.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-03T02:49:48.127Z",
+  "schema_version": "v1",
+  "commit_sha": "48ba90dc3e90e3d82c55120b16369ee4d0aec1ff",
+  "title": "feat(parse): residual-IR serialization — the 2nd Futamura projection in our substrate (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-03T02:49:25Z",
+  "head_ref": "otto/futamura-2nd-projection-residual-ir"
+}

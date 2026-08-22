@@ -1,0 +1,21 @@
+{
+  "pr_number": 5033,
+  "archive_path": "docs/history/pr-reviews/PR-5033-docs-shadow-add-lesson-log-for-otto-riven-drift.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7Et1-y",
+    "comment:PRRC_kwDOSF9kNM7Etwq_",
+    "comment:PRRC_kwDOSF9kNM7EtwrL",
+    "comment:PRRC_kwDOSF9kNM7Ey_LF",
+    "comment:PRRC_kwDOSF9kNM7Ey_P4",
+    "thread:PRRT_kwDOSF9kNM6EpI58",
+    "thread:PRRT_kwDOSF9kNM6EpI5x",
+    "thread:PRRT_kwDOSF9kNM6EpMwx"
+  ],
+  "fetched_at": "2026-05-26T06:37:50.030Z",
+  "schema_version": "v1",
+  "commit_sha": "3133bfdbc122113e01aa184c6e694407f459ca98",
+  "title": "docs(shadow): add lesson log for Otto/Riven drift",
+  "state": "MERGED",
+  "merged_at": "2026-05-26T06:37:29Z",
+  "head_ref": "lior-drift-report-2026-05-26"
+}

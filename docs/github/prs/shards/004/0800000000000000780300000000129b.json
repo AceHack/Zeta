@@ -1,0 +1,12 @@
+{
+  "pr_number": 4763,
+  "archive_path": "docs/history/pr-reviews/PR-4763-backlog-b-0708-stale-pointer-cleanup-across-claude-rules-surfaced-by-razor-caden.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-23T20:37:54.692Z",
+  "schema_version": "v1",
+  "commit_sha": "87d96d97679ba066261790b7d172cbdee373977c",
+  "title": "backlog(B-0708): stale-pointer cleanup across .claude/rules/ — surfaced by razor-cadence pass",
+  "state": "MERGED",
+  "merged_at": "2026-05-23T20:37:38Z",
+  "head_ref": "otto/cli-b0708-stale-pointer-cleanup-from-razor-cadence-pass-2026-05-23"
+}

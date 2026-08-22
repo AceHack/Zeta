@@ -1,0 +1,12 @@
+{
+  "pr_number": 7822,
+  "archive_path": "docs/history/pr-reviews/PR-7822-docs-shapes-aaron-ratifies-softvalue-dynamicvalue-render-loop.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-11T22:51:34.211Z",
+  "schema_version": "v1",
+  "commit_sha": "c4508fba51af7a4526ebeb44f9b4636a8d738a3e",
+  "title": "docs(shapes): Aaron ratifies softvalue + dynamicvalue (render loop)",
+  "state": "MERGED",
+  "merged_at": "2026-06-11T22:51:06Z",
+  "head_ref": "shadow-ratify-two"
+}

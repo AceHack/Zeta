@@ -1,0 +1,12 @@
+{
+  "pr_number": 2460,
+  "archive_path": "docs/history/pr-reviews/PR-2460-fix-b-0086-close-backlog-item-prior-art-search-finds-all-criteria-met-pr-849.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-10T10:26:29.864Z",
+  "schema_version": "v1",
+  "commit_sha": "48bb5f2b60841b7157108f76f4f3fc4f9fef9e20",
+  "title": "fix(B-0086): close backlog item — prior-art-search finds all criteria met (PR #849)",
+  "state": "MERGED",
+  "merged_at": "2026-05-10T10:26:14Z",
+  "head_ref": "fix/B-0086-close-completed"
+}

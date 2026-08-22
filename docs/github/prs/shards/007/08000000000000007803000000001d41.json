@@ -1,0 +1,12 @@
+{
+  "pr_number": 7489,
+  "archive_path": "docs/history/pr-reviews/PR-7489-docs-research-sims-sim-infinite-resolution-on-reticulum-sim-vs-measure-ephemeral.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-10T09:36:20.078Z",
+  "schema_version": "v1",
+  "commit_sha": "8c0dfaacca7bf09aad4efa56fce925ecc706917b",
+  "title": "docs(research)+sims: `sim` = infinite resolution on Reticulum + `sim` vs `measure` (ephemeral vs committing)",
+  "state": "MERGED",
+  "merged_at": "2026-06-10T09:35:57Z",
+  "head_ref": "shadow-sim-infinite-resolution-reticulum-measure-vs-sim"
+}

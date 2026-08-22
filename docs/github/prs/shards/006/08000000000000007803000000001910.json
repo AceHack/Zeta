@@ -1,0 +1,27 @@
+{
+  "pr_number": 6416,
+  "archive_path": "docs/history/pr-reviews/PR-6416-feat-ace-slice-5-4-lockfile-ergonomics-ace-update-locked-leaf-lock.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7GuwHL",
+    "comment:PRRC_kwDOSF9kNM7Guxk-",
+    "comment:PRRC_kwDOSF9kNM7GuxlC",
+    "comment:PRRC_kwDOSF9kNM7GuxlO",
+    "comment:PRRC_kwDOSF9kNM7Guzun",
+    "comment:PRRC_kwDOSF9kNM7Guzv8",
+    "comment:PRRC_kwDOSF9kNM7Guzwr",
+    "thread:PRRT_kwDOSF9kNM6GHZg3",
+    "thread:PRRT_kwDOSF9kNM6GHamG",
+    "thread:PRRT_kwDOSF9kNM6GHamJ",
+    "thread:PRRT_kwDOSF9kNM6GHamU",
+    "thread:PRRT_kwDOSF9kNM6GHcPy",
+    "thread:PRRT_kwDOSF9kNM6GHcQ4",
+    "thread:PRRT_kwDOSF9kNM6GHcRd"
+  ],
+  "fetched_at": "2026-06-01T12:43:46.451Z",
+  "schema_version": "v1",
+  "commit_sha": "3bd26e9831487ac87cd357ac9efed261b72307e3",
+  "title": "feat(ace): slice 5.4 — lockfile ergonomics (ace update + --locked + leaf-lock)",
+  "state": "MERGED",
+  "merged_at": "2026-06-01T12:43:19Z",
+  "head_ref": "otto-windows/ace-slice5.4-impl-2026-06-01"
+}

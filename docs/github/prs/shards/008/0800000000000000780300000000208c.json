@@ -1,0 +1,12 @@
+{
+  "pr_number": 8332,
+  "archive_path": "docs/history/pr-reviews/PR-8332-docs-research-bind-to-shared-external-open-knowledge-typed-or-proven-dbpedia-dat.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-15T20:25:05.517Z",
+  "schema_version": "v1",
+  "commit_sha": "833cfbb88ae8da1b087c57f201935d353d1e1586",
+  "title": "docs(research): bind to shared external open knowledge — typed or proven (DBpedia · data.gov · Census/TIGER · CSLib)",
+  "state": "MERGED",
+  "merged_at": "2026-06-15T20:24:38Z",
+  "head_ref": "docs/ferry-bind-to-shared-external-open-knowledge-typed-or-proven"
+}

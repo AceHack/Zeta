@@ -1,0 +1,12 @@
+{
+  "pr_number": 4107,
+  "archive_path": "docs/history/pr-reviews/PR-4107-rules-rate-limit-tier-rest-pr-creation-fallback-under-pure-git-tier-pr-4105-anch.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-17T22:21:16.716Z",
+  "schema_version": "v1",
+  "commit_sha": "22b7383df7222999495d166b2a4e2ddeed3a851d",
+  "title": "rules(rate-limit-tier): REST PR-creation fallback under Pure-git tier (PR #4105 anchor)",
+  "state": "MERGED",
+  "merged_at": "2026-05-17T22:21:01Z",
+  "head_ref": "rule-anchor/rest-pr-create-pure-git-tier-fallback-2026-05-17-2203z"
+}

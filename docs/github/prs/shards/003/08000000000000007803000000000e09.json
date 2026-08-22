@@ -1,0 +1,12 @@
+{
+  "pr_number": 3593,
+  "archive_path": "docs/history/pr-reviews/PR-3593-feat-bg-b-0500-slice-3-wire-queue-state-guard-into-pollonce.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-15T21:39:23.122Z",
+  "schema_version": "v1",
+  "commit_sha": "6a6e0498a0d15891ff456a02640e3b071d911407",
+  "title": "feat(bg): B-0500 slice 3 — wire queue-state guard into pollOnce",
+  "state": "MERGED",
+  "merged_at": "2026-05-15T21:39:06Z",
+  "head_ref": "feat/b0500-backlog-notifier-queue-guard-retry"
+}

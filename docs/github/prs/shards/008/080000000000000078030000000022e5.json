@@ -1,0 +1,12 @@
+{
+  "pr_number": 8933,
+  "archive_path": "docs/history/pr-reviews/PR-8933-refactor-persona-keys-pure-key-model-machine-keys-user-independent-user-machine-.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-21T09:49:56.736Z",
+  "schema_version": "v1",
+  "commit_sha": "c258ad6513a25a358ade2be6a805c1955dd82512",
+  "title": "refactor(persona-keys): pure-key model — machine keys user-independent, user×machine = CA cert",
+  "state": "MERGED",
+  "merged_at": "2026-06-21T09:49:32Z",
+  "head_ref": "otto/pure-key-model"
+}

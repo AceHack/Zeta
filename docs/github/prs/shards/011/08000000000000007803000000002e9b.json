@@ -1,0 +1,12 @@
+{
+  "pr_number": 11931,
+  "archive_path": "docs/history/pr-reviews/PR-11931-archive-pr-reviews-pr-11926-on-merge.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-22T10:42:15.039Z",
+  "schema_version": "v1",
+  "commit_sha": "59a9d1ba718fce983ccbe3938d7978ce7501761f",
+  "title": "archive(pr-reviews): PR #11926 on merge",
+  "state": "MERGED",
+  "merged_at": "2026-08-18T12:21:28Z",
+  "head_ref": "automation/pr-archive-11926-run-32136105451-attempt-1"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 11009,
+  "archive_path": "docs/history/pr-reviews/PR-11009-docs-agencysignature-record-the-invented-namespace-failure-and-the-commit-side-f.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-16T18:41:34.296Z",
+  "schema_version": "v1",
+  "commit_sha": "57de0332d9e34867389fe3ea8f13a97f50c90e6a",
+  "title": "docs(agencysignature): record the invented-namespace failure and the commit-side fix",
+  "state": "MERGED",
+  "merged_at": "2026-08-16T18:41:01Z",
+  "head_ref": "shadow/agencysignature-invented-namespace-note"
+}

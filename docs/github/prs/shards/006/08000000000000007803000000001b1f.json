@@ -1,0 +1,12 @@
+{
+  "pr_number": 6943,
+  "archive_path": "docs/history/pr-reviews/PR-6943-docs-ace-awesome-closure-engine-backronym-names-the-closure-thread.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-07T23:08:03.440Z",
+  "schema_version": "v1",
+  "commit_sha": "cb90cf45b9833f9dde530c2a85eba3109da437d7",
+  "title": "docs: ACE = Awesome Closure Engine (backronym names the closure thread)",
+  "state": "MERGED",
+  "merged_at": "2026-06-07T23:07:44Z",
+  "head_ref": "otto/ace-awesome-closure-engine-backronym"
+}

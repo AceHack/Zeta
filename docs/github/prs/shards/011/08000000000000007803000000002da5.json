@@ -1,0 +1,12 @@
+{
+  "pr_number": 11685,
+  "archive_path": "docs/history/pr-reviews/PR-11685-test-formal-softvalue-observe-is-pointwise-bayesian-inversion-not-a-markov-categ.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-17T22:58:13.835Z",
+  "schema_version": "v1",
+  "commit_sha": "8c5467292383cbd3b1ff831a508dbff0392d1299",
+  "title": "test(formal): SoftValue.observe is pointwise Bayesian inversion, not a Markov-category morphism",
+  "state": "MERGED",
+  "merged_at": "2026-08-17T22:57:35Z",
+  "head_ref": "shadow/free-structure-bayesian-bridge"
+}

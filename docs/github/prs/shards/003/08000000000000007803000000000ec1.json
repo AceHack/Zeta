@@ -1,0 +1,12 @@
+{
+  "pr_number": 3777,
+  "archive_path": "docs/history/pr-reviews/PR-3777-backlog-b-0557-audit-tool-quality-improvements-4-pr-3758-follow-ups-peer-otto-pr.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-16T06:29:43.121Z",
+  "schema_version": "v1",
+  "commit_sha": "1e569025545f2db5b8dabc40d5a5dea49fc0cb0c",
+  "title": "backlog(B-0557): audit-tool quality improvements (4 PR #3758 follow-ups) + peer Otto PR #3768 reconcile",
+  "state": "MERGED",
+  "merged_at": "2026-05-16T06:29:28Z",
+  "head_ref": "backlog/b0557-audit-tool-quality-improvements-otto-cli-2026-05-16"
+}

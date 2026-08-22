@@ -1,0 +1,12 @@
+{
+  "pr_number": 13550,
+  "archive_path": "docs/history/pr-reviews/PR-13550-fix-cluster-headscale-ran-with-no-server-url-oz-cannot-be-healthy-unattended-mai.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-22T05:29:31.856Z",
+  "schema_version": "v1",
+  "commit_sha": "d5a60271378ce72dfebd1842908132722b614470",
+  "title": "fix(cluster): headscale ran with no server_url; oz cannot be healthy unattended — main green",
+  "state": "MERGED",
+  "merged_at": "2026-08-22T05:28:53Z",
+  "head_ref": "shadow/health-degraded-headscale-oz"
+}

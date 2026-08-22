@@ -1,0 +1,27 @@
+{
+  "pr_number": 2110,
+  "archive_path": "docs/history/pr-reviews/PR-2110-feat-b-0058-add-filter-gate-honesty-log-tool.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_Wo41",
+    "comment:PRRC_kwDOSF9kNM6_Wo5F",
+    "comment:PRRC_kwDOSF9kNM6_Wo5T",
+    "comment:PRRC_kwDOSF9kNM6_Wo5h",
+    "comment:PRRC_kwDOSF9kNM6_Wpq5",
+    "comment:PRRC_kwDOSF9kNM6_WpqW",
+    "comment:PRRC_kwDOSF9kNM6_Wpqq",
+    "thread:PRRT_kwDOSF9kNM6AsmD9",
+    "thread:PRRT_kwDOSF9kNM6AsmDy",
+    "thread:PRRT_kwDOSF9kNM6AsmEI",
+    "thread:PRRT_kwDOSF9kNM6AsmEQ",
+    "thread:PRRT_kwDOSF9kNM6AsmlK",
+    "thread:PRRT_kwDOSF9kNM6AsmlX",
+    "thread:PRRT_kwDOSF9kNM6Asmlm"
+  ],
+  "fetched_at": "2026-05-08T17:47:14.914Z",
+  "schema_version": "v1",
+  "commit_sha": "7112925c226884d281d774b16d8237e84a9455fc",
+  "title": "feat(B-0058): add filter-gate honesty log tool",
+  "state": "MERGED",
+  "merged_at": "2026-05-08T17:46:52Z",
+  "head_ref": "b-0058/filter-gate-honesty-log"
+}

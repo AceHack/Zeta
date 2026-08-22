@@ -1,0 +1,12 @@
+{
+  "pr_number": 3642,
+  "archive_path": "docs/history/pr-reviews/PR-3642-docs-shadow-lior-antigravity-check-log-drift-for-otto-vera-riven.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-16T00:41:12.833Z",
+  "schema_version": "v1",
+  "commit_sha": "a9e4369b12e1a078908794ad3ff03ffde175843c",
+  "title": "docs(shadow): Lior antigravity check - log drift for Otto, Vera, Riven",
+  "state": "MERGED",
+  "merged_at": "2026-05-16T00:40:54Z",
+  "head_ref": "lior/shadow-drift-0030z"
+}

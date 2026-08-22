@@ -1,0 +1,12 @@
+{
+  "pr_number": 5414,
+  "archive_path": "docs/history/pr-reviews/PR-5414-feat-b-0852-5-declarative-cred-manifest-schema-validator-pure-types-default-mani.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-27T07:08:27.855Z",
+  "schema_version": "v1",
+  "commit_sha": "a07b8bf8cff8b887ec5144cf264b8b97e9548c40",
+  "title": "feat(B-0852.5): declarative cred-manifest schema + validator — pure types + DEFAULT_MANIFEST (6 entries) + 21 unit tests (Aaron 2026-05-27 declarative discipline)",
+  "state": "MERGED",
+  "merged_at": "2026-05-27T07:08:08Z",
+  "head_ref": "feat/b-0852-5-cred-manifest-schema"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 10558,
+  "archive_path": "docs/history/pr-reviews/PR-10558-fix-setup-delete-an-unchecksummed-fetch-of-a-jar-nothing-loads-derive-the-versio.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-14T12:42:33.046Z",
+  "schema_version": "v1",
+  "commit_sha": "d900e05fb0fa29b4aff380b92217b14d34d4cd5a",
+  "title": "fix(setup): delete an unchecksummed fetch of a jar nothing loads, derive the version the docs claim (081M001E114087G0R001AZF4KD)",
+  "state": "MERGED",
+  "merged_at": "2026-08-14T12:41:57Z",
+  "head_ref": "fix/verifier-jar-provenance"
+}

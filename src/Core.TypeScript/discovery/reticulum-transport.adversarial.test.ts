@@ -86,8 +86,12 @@ describe("Reticulum Transport — Adversarial & Security Threat Suite (P1 #9893)
       },
     };
 
+    // `announceAuth` is REQUIRED (no silent default) — "off" here is a DECLARATION, not an
+    // omission: this test measures the maxHops loop/blast guard, which is deliberately a
+    // separate question from announce authenticity and must hold with the auth gate out of the
+    // picture. The authenticity suite lives in `reticulum-announce-auth.test.ts`.
     const reticulum = createReticulumTransport(
-      { zid: victimZid, relay: true, maxHops: 3 },
+      { zid: victimZid, relay: true, maxHops: 3, announceAuth: { mode: "off" } },
       mockLower,
       { now: () => 5000 },
     );

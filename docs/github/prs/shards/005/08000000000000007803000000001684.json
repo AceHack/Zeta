@@ -1,0 +1,12 @@
+{
+  "pr_number": 5764,
+  "archive_path": "docs/history/pr-reviews/PR-5764-feat-b-0914-1-pure-ts-trueskill-1v1-scaffold-for-workflow-engine-ranking-agent-h.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-28T11:14:53.733Z",
+  "schema_version": "v1",
+  "commit_sha": "00db2dfdf7e20fc3a6b676d0666edcd465e484b6",
+  "title": "feat(B-0914.1): pure-TS TrueSkill 1v1 scaffold for workflow engine ranking-agent (hybrid TS+.NET; cross-vendor benchmark substrate)",
+  "state": "MERGED",
+  "merged_at": "2026-05-28T11:14:31Z",
+  "head_ref": "otto-cli/b-0914-1-trueskill-ranking-agent-scaffold-workflow-engine-rank-via-trueskill-action-class-2026-05-28"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 6905,
+  "archive_path": "docs/history/pr-reviews/PR-6905-docs-research-zetaid-dcom-engineering-information-theoretic-singularity-info-lay.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-07T20:17:50.375Z",
+  "schema_version": "v1",
+  "commit_sha": "3d463a49034f98b5012bb34b1affebc553d90cdf",
+  "title": "docs(research): ZetaId = DCOM (engineering) + information-theoretic singularity (info layer)",
+  "state": "MERGED",
+  "merged_at": "2026-06-07T20:17:29Z",
+  "head_ref": "otto/zetaid-dcom-info-theoretic-singularity"
+}

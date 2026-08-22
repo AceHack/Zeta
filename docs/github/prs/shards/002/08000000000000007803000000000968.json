@@ -1,0 +1,17 @@
+{
+  "pr_number": 2408,
+  "archive_path": "docs/history/pr-reviews/PR-2408-feat-b-0049-1-mystery-schools-stage-1-eleusinian-mysteries-bibliographic-scaffol.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_leTx",
+    "comment:PRRC_kwDOSF9kNM6_leTy",
+    "thread:PRRT_kwDOSF9kNM6A3yiy",
+    "thread:PRRT_kwDOSF9kNM6A3yiz"
+  ],
+  "fetched_at": "2026-05-10T03:55:17.105Z",
+  "schema_version": "v1",
+  "commit_sha": "72e7c497c5b470aa1b80886402a3bee24c077122",
+  "title": "feat(B-0049.1): mystery schools Stage 1 — Eleusinian mysteries bibliographic scaffold",
+  "state": "MERGED",
+  "merged_at": "2026-05-10T03:55:00Z",
+  "head_ref": "feat/B-0049.1-mystery-schools-stage1-eleusinian-scaffold"
+}

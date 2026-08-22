@@ -1,0 +1,15 @@
+{
+  "pr_number": 9110,
+  "archive_path": "docs/history/pr-reviews/PR-9110-docs-backlog-supersede-the-may-zsetw-phase-2-plan-reconciled-to-what-shipped-sha.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7RPR2X",
+    "thread:PRRT_kwDOSF9kNM6Nx5Ke"
+  ],
+  "fetched_at": "2026-08-17T04:29:59.531Z",
+  "schema_version": "v1",
+  "commit_sha": "43ab469ffd7b92965b228b7daf768abd28a3ab61",
+  "title": "docs(backlog): supersede the May ZSetW-phase-2 plan — reconciled to what shipped (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-02T04:17:07Z",
+  "head_ref": "otto/reconcile-stale-zsetw-phase2-backlog"
+}

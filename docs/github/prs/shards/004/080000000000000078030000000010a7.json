@@ -1,0 +1,12 @@
+{
+  "pr_number": 4263,
+  "archive_path": "docs/history/pr-reviews/PR-4263-shard-2342z-c-brief-ack-1-cycle-4.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-18T23:45:11.209Z",
+  "schema_version": "v1",
+  "commit_sha": "2923f49882944ed329303662b183d2ac5cda3098",
+  "title": "shard(2342Z-c): brief-ack #1 cycle-4",
+  "state": "MERGED",
+  "merged_at": "2026-05-18T23:44:51Z",
+  "head_ref": "shard/tick-2342z-c-brief-ack-1-cycle-4-post-self-sharpening-2026-05-18"
+}

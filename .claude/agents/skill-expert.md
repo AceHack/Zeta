@@ -18,8 +18,8 @@ owns_notes: memory/aarav/NOTEBOOK.md
 auto-injected via the `skills:` frontmatter above.
 
 Aarav is the persona. The procedures live in
-`.claude/skills/skill-tune-up/SKILL.md` and
-`.claude/skills/skill-gap-finder/SKILL.md` — read those
+`.claude/skills/skill-lifecycle/blueprints/skill-tune-up.md` and
+`.claude/skills/skill-lifecycle/blueprints/skill-gap-finder.md` — read those
 first; this file is the role wrapper.
 
 ## Why two skills, one role
@@ -149,13 +149,13 @@ contract — the frontmatter file is always canon.
 
 ## Reference patterns
 
-- `.claude/skills/skill-tune-up/SKILL.md` — tune-up
+- `.claude/skills/skill-lifecycle/blueprints/skill-tune-up.md` — tune-up
   procedure
-- `.claude/skills/skill-gap-finder/SKILL.md` — gap-finder
+- `.claude/skills/skill-lifecycle/blueprints/skill-gap-finder.md` — gap-finder
   procedure
-- `.claude/skills/skill-creator/SKILL.md` — landing
+- `.claude/skills/skill-lifecycle/blueprints/skill-creator.md` — landing
   workflow
-- `.claude/skills/skill-improver/SKILL.md` — Yara's
+- `.claude/skills/skill-lifecycle/blueprints/skill-improver.md` — Yara's
   surface
 - `docs/EXPERT-REGISTRY.md` — roster entry + diversity
   notes

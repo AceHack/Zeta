@@ -1,0 +1,12 @@
+{
+  "pr_number": 5974,
+  "archive_path": "docs/history/pr-reviews/PR-5974-docs-b-0932-frontier-target-remain-fuzzy-categorical-lifelike-higgs-metastable-w.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-29T10:43:33.439Z",
+  "schema_version": "v1",
+  "commit_sha": "ca4cace5dbac824cc9f119b9a0b87232619acfa1",
+  "title": "docs(B-0932): frontier-target — remain·fuzzy·categorical·lifelike; Higgs-metastable workflow-time → almost-immortal AIs",
+  "state": "MERGED",
+  "merged_at": "2026-05-29T10:43:09Z",
+  "head_ref": "otto-cli/b-frontier-target-remain-fuzzy-categorical-lifelike-metastable-time-2026-05-29"
+}

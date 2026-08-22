@@ -1,0 +1,12 @@
+{
+  "pr_number": 6709,
+  "archive_path": "docs/history/pr-reviews/PR-6709-feat-observebridge-bridge-c-nextaction-projected-onto-the-4x4-actiongrid-c1-fixe.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-07T02:38:33.518Z",
+  "schema_version": "v1",
+  "commit_sha": "94b33720b806ed59ac43c546294d4e8ba7c30928",
+  "title": "feat(ObserveBridge): Bridge C — NextAction projected onto the 4x4 ActionGrid (C1 fixed home cells)",
+  "state": "MERGED",
+  "merged_at": "2026-06-07T02:38:14Z",
+  "head_ref": "otto/observe-bridge-c-4x4"
+}

@@ -1,0 +1,17 @@
+{
+  "pr_number": 2233,
+  "archive_path": "docs/history/pr-reviews/PR-2233-docs-failure-taxonomy-undecidability-via-rice-s-theorem.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_fvH-",
+    "comment:PRRC_kwDOSF9kNM6_fvH8",
+    "thread:PRRT_kwDOSF9kNM6AzRbM",
+    "thread:PRRT_kwDOSF9kNM6AzRbO"
+  ],
+  "fetched_at": "2026-05-09T07:48:59.732Z",
+  "schema_version": "v1",
+  "commit_sha": "b399c3fef0e287a63d822ee394f30db9864464c4",
+  "title": "docs: failure-taxonomy undecidability via Rice's theorem",
+  "state": "MERGED",
+  "merged_at": "2026-05-09T07:48:44Z",
+  "head_ref": "docs/rice-theorem-proof-sketch"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 9077,
+  "archive_path": "docs/history/pr-reviews/PR-9077-fix-core-zsetw-collation-parity-binary-ordinal-at-every-ordering-site-081kt07nv-.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-16T20:54:02.890Z",
+  "schema_version": "v1",
+  "commit_sha": "c8ad05164dbd6a5ba15515081701f699ba9769fe",
+  "title": "fix(core): ZSetW collation parity — binary/ordinal at every ordering site (081KT07NV class) (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-02T00:22:34Z",
+  "head_ref": "otto/zsetw-ordinal-parity-fix-081KWFXTHJY"
+}

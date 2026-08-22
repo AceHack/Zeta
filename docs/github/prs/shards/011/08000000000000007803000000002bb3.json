@@ -1,0 +1,12 @@
+{
+  "pr_number": 11187,
+  "archive_path": "docs/history/pr-reviews/PR-11187-feat-gpu-gate-hardware-nvidia-open-behind-a-preflight-measure-the-delta-refuse-t.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-16T23:52:04.228Z",
+  "schema_version": "v1",
+  "commit_sha": "9ac1aecfa7f23f4687f75437a327f77913bacda2",
+  "title": "feat(gpu): gate hardware.nvidia.open behind a preflight — measure the delta, refuse the flip",
+  "state": "MERGED",
+  "merged_at": "2026-08-16T23:51:27Z",
+  "head_ref": "shadow/nvidia-open-preflight-gate"
+}

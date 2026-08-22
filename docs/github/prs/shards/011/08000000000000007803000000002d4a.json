@@ -1,0 +1,12 @@
+{
+  "pr_number": 11594,
+  "archive_path": "docs/history/pr-reviews/PR-11594-docs-register-r-1-what-we-meter-against-to-ever-earn-the-pseudo-off-pseudo-retro.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-17T18:02:36.837Z",
+  "schema_version": "v1",
+  "commit_sha": "50868bb0b8634bd2f7410eacf78a8ffaf0949d4e",
+  "title": "docs(register): R-1 — what we meter against to ever earn the \"pseudo\" off \"pseudo-retrocausal\"",
+  "state": "MERGED",
+  "merged_at": "2026-08-17T18:01:59Z",
+  "head_ref": "shadow/register-pseudo-retrocausality-promotion"
+}

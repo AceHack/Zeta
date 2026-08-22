@@ -1,0 +1,12 @@
+{
+  "pr_number": 10255,
+  "archive_path": "docs/history/pr-reviews/PR-10255-docs-research-islands-of-stability-directed-evolution-the-synthesis.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-09T23:57:38.629Z",
+  "schema_version": "v1",
+  "commit_sha": "0dea5cff69d302595d0f25072b8148ebde85e198",
+  "title": "docs(research): islands of STABILITY + directed evolution — the synthesis",
+  "state": "MERGED",
+  "merged_at": "2026-08-09T23:57:08Z",
+  "head_ref": "shadow/directed-evolution-islands-of-stability"
+}

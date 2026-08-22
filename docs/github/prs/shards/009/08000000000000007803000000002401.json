@@ -1,0 +1,17 @@
+{
+  "pr_number": 9217,
+  "archive_path": "docs/history/pr-reviews/PR-9217-feat-llmtv-add-live-readout-cadence.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7Rm3A1",
+    "comment:PRRC_kwDOSF9kNM7Rm3A4",
+    "thread:PRRT_kwDOSF9kNM6ODLAc",
+    "thread:PRRT_kwDOSF9kNM6ODLAe"
+  ],
+  "fetched_at": "2026-07-02T23:54:22.814Z",
+  "schema_version": "v1",
+  "commit_sha": "b4829ea244741b893ebaf80b97f7e668d7054ec6",
+  "title": "feat(llmtv): add live readout cadence",
+  "state": "MERGED",
+  "merged_at": "2026-07-02T23:53:57Z",
+  "head_ref": "codex/llmtv-live-readout-cadence"
+}

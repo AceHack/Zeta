@@ -1,0 +1,12 @@
+{
+  "pr_number": 6707,
+  "archive_path": "docs/history/pr-reviews/PR-6707-test-observebridge-durable-substrate-path-conforms-to-the-cross-language-golden-.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-07T02:12:23.641Z",
+  "schema_version": "v1",
+  "commit_sha": "e0fcbc4b2e0d3b1853c83a0648c8668943d1306c",
+  "title": "test(ObserveBridge): durable substrate path conforms to the cross-language golden-vector fixture",
+  "state": "MERGED",
+  "merged_at": "2026-06-07T02:12:03Z",
+  "head_ref": "otto/observe-durable-golden-conformance"
+}

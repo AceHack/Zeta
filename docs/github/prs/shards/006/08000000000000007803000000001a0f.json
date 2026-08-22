@@ -1,0 +1,21 @@
+{
+  "pr_number": 6671,
+  "archive_path": "docs/history/pr-reviews/PR-6671-feat-ace-canonical-json-c-oracle-fourth-language-completes-the-byte-lock-slice-8.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7HmWck",
+    "comment:PRRC_kwDOSF9kNM7HmWdF",
+    "comment:PRRC_kwDOSF9kNM7HmX7P",
+    "comment:PRRC_kwDOSF9kNM7HmX8B",
+    "thread:PRRT_kwDOSF9kNM6GwRkm",
+    "thread:PRRT_kwDOSF9kNM6GwRlB",
+    "thread:PRRT_kwDOSF9kNM6GwSrq",
+    "thread:PRRT_kwDOSF9kNM6GwSsU"
+  ],
+  "fetched_at": "2026-06-03T13:18:58.163Z",
+  "schema_version": "v1",
+  "commit_sha": "60ba9f0cc525e94583e4b4bb9586bc97bc677fac",
+  "title": "feat(ace): canonical-JSON C# oracle — fourth language completes the byte-lock (slice 8.8.2)",
+  "state": "MERGED",
+  "merged_at": "2026-06-03T13:18:33Z",
+  "head_ref": "otto-windows/ace-slice8.8.2-canonical-json-csharp-oracle-2026-06-03"
+}

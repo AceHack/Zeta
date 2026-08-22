@@ -1,0 +1,29 @@
+{
+  "pr_number": 2400,
+  "archive_path": "docs/history/pr-reviews/PR-2400-feat-b-0040-actor-model-register-lens-synthesis-doc-backlog-close.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_lP5z",
+    "comment:PRRC_kwDOSF9kNM6_lPSE",
+    "comment:PRRC_kwDOSF9kNM6_lPc0",
+    "comment:PRRC_kwDOSF9kNM6_lPcn",
+    "comment:PRRC_kwDOSF9kNM6_lPcs",
+    "comment:PRRC_kwDOSF9kNM6_lPcu",
+    "comment:PRRC_kwDOSF9kNM6_lPcy",
+    "comment:PRRC_kwDOSF9kNM6_lQTy",
+    "comment:PRRC_kwDOSF9kNM6_lQUV",
+    "thread:PRRT_kwDOSF9kNM6A3m5A",
+    "thread:PRRT_kwDOSF9kNM6A3mZb",
+    "thread:PRRT_kwDOSF9kNM6A3mh2",
+    "thread:PRRT_kwDOSF9kNM6A3mh6",
+    "thread:PRRT_kwDOSF9kNM6A3mh8",
+    "thread:PRRT_kwDOSF9kNM6A3mh_",
+    "thread:PRRT_kwDOSF9kNM6A3miA"
+  ],
+  "fetched_at": "2026-05-10T02:47:30.737Z",
+  "schema_version": "v1",
+  "commit_sha": "60ee79cdb24eb4bb3b391e0728c4f6071839de54",
+  "title": "feat(B-0040): actor-model register-lens synthesis doc + backlog close",
+  "state": "MERGED",
+  "merged_at": "2026-05-10T02:47:13Z",
+  "head_ref": "feat/B-0040-actor-model-register-lens"
+}

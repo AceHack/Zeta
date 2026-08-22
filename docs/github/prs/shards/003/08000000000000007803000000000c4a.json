@@ -1,0 +1,17 @@
+{
+  "pr_number": 3146,
+  "archive_path": "docs/history/pr-reviews/PR-3146-chore-backlog-b-0499-z-i-weighted-dbsp-refinement-candidate-p3-forward-planning.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7BSDg-",
+    "comment:PRRC_kwDOSF9kNM7BSDhG",
+    "thread:PRRT_kwDOSF9kNM6CHz_L",
+    "thread:PRRT_kwDOSF9kNM6CHz_S"
+  ],
+  "fetched_at": "2026-05-14T16:21:46.550Z",
+  "schema_version": "v1",
+  "commit_sha": "5bfa0e23897b06063c0d60df51d1b7a335332d2b",
+  "title": "chore(backlog): B-0499 — Z[i]-weighted DBSP refinement candidate (P3 forward-planning)",
+  "state": "MERGED",
+  "merged_at": "2026-05-14T16:21:19Z",
+  "head_ref": "chore/b-0499-zi-dbsp-refinement-forward-planning-2026-05-14"
+}

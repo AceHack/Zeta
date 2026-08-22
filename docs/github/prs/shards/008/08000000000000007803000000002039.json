@@ -1,0 +1,12 @@
+{
+  "pr_number": 8249,
+  "archive_path": "docs/history/pr-reviews/PR-8249-docs-register-homoiconic-geometry-algebra-resolves-the-braid-diagram-vs-represen.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-15T03:34:51.983Z",
+  "schema_version": "v1",
+  "commit_sha": "67e6c8eb4d0b7bb11f2e91314e5c456096cc80b6",
+  "title": "docs(register): homoiconic geometry=algebra resolves the braid diagram-vs-representation gap (Joyal-Street)",
+  "state": "MERGED",
+  "merged_at": "2026-06-15T03:34:29Z",
+  "head_ref": "otto/homoiconic-geometry-algebra-resolution"
+}

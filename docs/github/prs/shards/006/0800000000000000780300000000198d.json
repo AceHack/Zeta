@@ -1,0 +1,19 @@
+{
+  "pr_number": 6541,
+  "archive_path": "docs/history/pr-reviews/PR-6541-research-fold-the-nullcodec-architecture-into-the-vision-note-aaron-2026-06-02.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7HHGm9",
+    "comment:PRRC_kwDOSF9kNM7HHGnq",
+    "comment:PRRC_kwDOSF9kNM7HHIiN",
+    "comment:PRRC_kwDOSF9kNM7HHIln",
+    "thread:PRRT_kwDOSF9kNM6GZT0S",
+    "thread:PRRT_kwDOSF9kNM6GZTzs"
+  ],
+  "fetched_at": "2026-06-02T10:44:24.526Z",
+  "schema_version": "v1",
+  "commit_sha": "bb9d6ac6a8eaa45cea1dd448be5483faf74e6818",
+  "title": "research: fold the nullcodec architecture into the vision note (Aaron 2026-06-02)",
+  "state": "MERGED",
+  "merged_at": "2026-06-02T10:43:59Z",
+  "head_ref": "otto-cli/vision-note-nullcodec-fold-2026-06-02"
+}

@@ -11,9 +11,9 @@ ArgoCD reads `full-ai-cluster/k8s/applications/` as an App-of-Apps,
 recursively. The dev cluster runs ArgoCD configured against the
 same path. The parity lane proves the shared App-of-Apps wiring and
 the workloads whose substrate exists in dev/CI. Workloads that require
-bare-metal-only substrate, such as Longhorn-backed storage, stay visible
-in the same manifest tree but are not claimed as healthy in dev/CI until
-that substrate is installed or overlaid.
+bare-metal-only substrate stay visible in the same manifest tree but are
+not claimed as healthy in dev/CI until that substrate is installed or
+aliased.
 
 What differs between dev and prod:
 
@@ -24,16 +24,21 @@ What differs between dev and prod:
   plus workers.
 - **CNI** - k3d runs Cilium as a kube-proxy replacement, kind CI uses
   kindnet unless a CNI test opts in, and prod runs Cilium.
-- **Storage** - dev/CI use local ephemeral storage. Prod uses
-  Longhorn multi-disk storage.
+- **Storage** - dev/CI use local ephemeral storage behind
+  `rancher.io/local-path`. Prod uses Longhorn multi-disk storage. The
+  two are reconciled by NAME, not by changing the manifests: bring-up
+  applies alias StorageClasses called `zeta-local-path` AND `longhorn`
+  (`manifests/*.yaml`), both pointing at the local-path provisioner, so
+  a chart asking for `storageClass: longhorn` binds unmodified.
 - **GPU** - dev/CI have none by default. Prod can use NVIDIA, AMD, or
   Intel GPUs.
-- **Identity** - SPIRE is present in the shared manifest tree, but the
-  current values request Longhorn storage, so dev/CI health assertions
-  exclude it until a storage overlay exists.
-- **Secrets** - Vault is present in the shared manifest tree, but the
-  current values request Longhorn storage, so dev/CI health assertions
-  exclude it until a storage overlay exists.
+- **Identity** - SPIRE is present in the shared manifest tree, but its
+  Vault upstream-CA wiring is not ready in dev/CI, so health assertions
+  exclude it. (This is no longer a storage reason.)
+- **Secrets** - Vault is present in the shared manifest tree and now
+  syncs in dev/CI, but it comes up SEALED by design and readiness needs
+  the gated operator-init ceremony CI must never run, so health
+  assertions exclude it.
 - **Network MTU** - dev/CI use the runtime default. Prod uses the real
   NIC MTU.
 - **Persistence** - dev/CI data is removed by `k3d-down` or
@@ -48,11 +53,74 @@ App-of-Apps `exclude:` glob in `apply-root-app.ts`:
   GPU. Remove from the exclude list if you have an Apple Silicon
   Mac + a model server that runs on MPS (vLLM nightly does).
 
-The 081KSXN940008QG0R000SCP2H1 health harness also excludes Applications whose
-`Application.yaml` requests Longhorn storage via `storageClass` or
-`storageClassName` from dev/CI health assertions. That includes apps
-such as Vault and SPIRE until a local Longhorn-compatible storage
-overlay exists.
+### The `longhorn` alias, and why the exclusion is conditional rather than gone
+
+The 081KSXN940008QG0R000SCP2H1 health harness used to exclude EVERY
+Application whose YAML tree mentioned `storageClass: longhorn`. That rule
+was circular: the apps were excluded because Longhorn was excluded, and
+Longhorn was excluded because a kind node has no second disk. It cost eleven
+Applications' worth of assertion — most of the stateful core — and the
+included proof covered 19 of 45.
+
+`manifests/longhorn.yaml` cuts the circle at the cheapest possible point.
+A StorageClass is a NAME bound to a provisioner, and the workloads only
+ever name it, so dev binds `longhorn` to `rancher.io/local-path` and the
+same unmodified manifests bind on a kind node. Nothing production
+requests changes; that file lives under `dev-cluster/`, which ArgoCD
+never reads, and on bare metal the Longhorn chart creates the real class
+over `driver.longhorn.io`.
+
+The exclusion is **conditional, not deleted** (081M0JXF6MS087G0R001HC34TM),
+because an unbindable PVC does not fail — it sits `Pending` until the
+harness times out, and a timeout prints no verdict at all. So:
+
+- If `manifests/longhorn.yaml` is absent or does not declare a
+  StorageClass named `longhorn`, the old blanket exclusion applies in
+  full. `devLonghornStorageClassAliasDeclared()` fails closed.
+- `ReadWriteMany` claims stay excluded even with the alias present:
+  local-path is node-local and RWO-only, so an RWX claim never binds.
+  That is read off the access mode, not off a hand-kept list.
+- Before an included-scope run waits on anything, it checks the class is
+  really in the cluster and fails in seconds if not, rather than
+  discovering it at the 2400s cap.
+
+### What it bought, measured
+
+Run `32519516070` is the first in which the eleven were asserted at all.
+**Six reach Synced+Healthy and are asserted from now on**: `headscale`,
+`mimir`, `nats`, `oz` (openziti-controller), `redis`, `tempo`. The proof
+went from **19 of 45 to 25 of 45**.
+
+> `oz` left that set for a few hours on 2026-08-22 and came back, which is
+> worth recording rather than smoothing over. It had been Healthy in run
+> `32519516070` only because its `targetRevision` named a version no registry
+> serves, so ArgoCD had never rendered it; #13471 corrected the pin, the app
+> synced for the first time, and two real blockers appeared — a trust-manager
+> `Bundle` whose source Secret lived in a namespace trust-manager was not
+> pointed at, and a missing admin Secret with the same shape as Grafana's.
+> Both are fixed at their source (trust namespace `openziti`;
+> `DEV_ZITI_ADMIN_SECRET` minted at bring-up), so the row above is true again —
+> for a different reason than it was the first time.
+
+The alias worked for the other five as well, in the sense that matters:
+their PVCs **bound** and their pods run. Each then failed for a defect
+that has nothing to do with storage — and each of those defects was
+**invisible before this change**, because the storage rule excluded the
+Application carrying it:
+
+| Application | observed | storage? |
+| --- | --- | --- |
+| `cockroachdb` | 3/3 pods Running on bound PVCs, readiness 503 for 38m — a 3-replica cluster nobody ran `cockroach init` on | no |
+| `hindsight` | `hindsight-postgresql-0` FailedScheduling, `Insufficient cpu` on the 1-node runner; api + control-plane CrashLoop waiting on it | no — capacity |
+| `kube-prometheus-stack` | prometheus + alertmanager bound and Running 2/2; grafana `CreateContainerConfigError`, secret `grafana-admin-credentials` not found | no — missing secret |
+| `weaviate` | `weaviate-0` 1/1 Running on a bound 100Gi PVC; Application re-syncs every ~3m and never converges | no — sync convergence |
+| `arc-runner-set` | `ReadWriteMany` 100Gi claim local-path cannot serve, plus a GitHub App credential CI has no secret for | partly — RWX |
+
+Those five are deferred with the measured evidence in
+`APPLIED_BUT_UNASSERTED_REASONS`, alongside the pre-existing
+`forgejo`, `spire` (Vault upstream CA wiring) and `vault` (sealed by
+design). A deferral there is not a waiver: `auditAppliedButUnasserted`
+goes red the moment one goes stale.
 
 ## Bring it up
 

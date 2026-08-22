@@ -1,0 +1,12 @@
+{
+  "pr_number": 10041,
+  "archive_path": "docs/history/pr-reviews/PR-10041-book-formation-land-the-builder-material-the-empiricist-builder-companion-the-de.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-04T19:02:34.645Z",
+  "schema_version": "v1",
+  "commit_sha": "b4b03f6e7a9567a37bcfbbbe25d56f343d6c0c02",
+  "title": "book(formation): land the builder material — the empiricist-builder companion (the deficit is the gift)",
+  "state": "MERGED",
+  "merged_at": "2026-08-04T19:02:02Z",
+  "head_ref": "docs/book-formation-companion-empiricist-builder-20260804"
+}

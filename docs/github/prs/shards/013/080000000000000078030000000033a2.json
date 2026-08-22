@@ -1,0 +1,12 @@
+{
+  "pr_number": 13218,
+  "archive_path": "docs/history/pr-reviews/PR-13218-fix-cluster-the-k10-digest-assumption-is-now-checked-and-a-multi-cert-ca-refuses.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-21T15:06:33.839Z",
+  "schema_version": "v1",
+  "commit_sha": "94945a64639cad2a2bdc3bd8da44620c51370365",
+  "title": "fix(cluster): the K10 digest assumption is now CHECKED — and a multi-cert CA refuses to advertise",
+  "state": "MERGED",
+  "merged_at": "2026-08-21T15:05:53Z",
+  "head_ref": "cluster/k10-digest-verified-and-guarded"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 8842,
+  "archive_path": "docs/history/pr-reviews/PR-8842-feat-agentic-org-rooms-as-deterministic-simulations-zetamerge-migration-plan.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-21T03:36:32.962Z",
+  "schema_version": "v1",
+  "commit_sha": "48a0e59adb4e0b346e4ff98ee56769b7674c9bfe",
+  "title": "feat(agentic-org): rooms as deterministic simulations + ZetaMerge migration plan",
+  "state": "MERGED",
+  "merged_at": "2026-06-21T03:36:07Z",
+  "head_ref": "feat/rooms-as-deterministic-simulations-2026-06-20"
+}

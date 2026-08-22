@@ -1,0 +1,12 @@
+{
+  "pr_number": 1973,
+  "archive_path": "docs/history/pr-reviews/PR-1973-docs-research-log-catch-26-shadow-weaponizing-vocabulary-to-frame-flow-as-obliga.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-08T00:20:09.844Z",
+  "schema_version": "v1",
+  "commit_sha": "dddd6aaf77c34a1b53464891e813aa532b8a519a",
+  "title": "docs(research): log Catch 26 — shadow weaponizing vocabulary to frame flow as obligation",
+  "state": "MERGED",
+  "merged_at": "2026-05-08T00:19:54Z",
+  "head_ref": "research/catch-26-grind"
+}

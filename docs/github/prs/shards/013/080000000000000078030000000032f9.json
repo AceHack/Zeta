@@ -1,0 +1,15 @@
+{
+  "pr_number": 13049,
+  "archive_path": "docs/history/pr-reviews/PR-13049-telemetry-wire-the-otel-exporter-and-scrape-zeta-and-the-first-link-is-still-ope.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7kJHfB",
+    "thread:PRRT_kwDOSF9kNM6bDEu8"
+  ],
+  "fetched_at": "2026-08-21T06:26:02.270Z",
+  "schema_version": "v1",
+  "commit_sha": "d8565fe27c9f1d737d6aae290f7aa469c1e87e77",
+  "title": "telemetry: wire the OTel exporter and scrape Zeta — and the FIRST link is still open",
+  "state": "MERGED",
+  "merged_at": "2026-08-21T06:25:19Z",
+  "head_ref": "observability/otel-exporter-and-scrape"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 7892,
+  "archive_path": "docs/history/pr-reviews/PR-7892-chore-memory-regenerate-memory-md-index-drift-lane-red-on-main.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-12T11:02:11.099Z",
+  "schema_version": "v1",
+  "commit_sha": "d7eab6f796c1a7794395bb94892d70dc0831cd76",
+  "title": "chore(memory): regenerate MEMORY.md index (drift lane red on main)",
+  "state": "MERGED",
+  "merged_at": "2026-06-12T11:01:42Z",
+  "head_ref": "shadow-memory-reindex"
+}

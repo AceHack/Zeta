@@ -3,19 +3,19 @@
 // proposer via the gemini CLI.
 //
 // TypeScript+Bun port of gemini.sh, slice 16 of the TS+Bun migration.
-// Sibling to tools/peer-call/grok.ts (slice 15, PR #896). Per the
+// Sibling to src/Core.TypeScript/peer-call/grok.ts (slice 15, PR #896). Per the
 // four-ferry consensus: Gemini proposes, Grok critiques, Amara
 // sharpens, Otto tests, Git decides. This script is Otto invoking
 // Gemini's propose role.
 //
 // Usage:
-//   bun tools/peer-call/gemini.ts "prompt text"
-//   bun tools/peer-call/gemini.ts --model gemini-2.5-pro "prompt text"
-//   bun tools/peer-call/gemini.ts --file path/to/file.fs "prompt text"
-//   bun tools/peer-call/gemini.ts --context-cmd "git diff HEAD~3..HEAD" "prompt"
-//   bun tools/peer-call/gemini.ts --json "prompt text"
-//   bun tools/peer-call/gemini.ts --stream "prompt text"
-//   bun tools/peer-call/gemini.ts --allow-empty "prompt"  # bypass firewall
+//   bun src/Core.TypeScript/peer-call/gemini.ts "prompt text"
+//   bun src/Core.TypeScript/peer-call/gemini.ts --model gemini-2.5-pro "prompt text"
+//   bun src/Core.TypeScript/peer-call/gemini.ts --file path/to/file.fs "prompt text"
+//   bun src/Core.TypeScript/peer-call/gemini.ts --context-cmd "git diff HEAD~3..HEAD" "prompt"
+//   bun src/Core.TypeScript/peer-call/gemini.ts --json "prompt text"
+//   bun src/Core.TypeScript/peer-call/gemini.ts --stream "prompt text"
+//   bun src/Core.TypeScript/peer-call/gemini.ts --allow-empty "prompt"  # bypass firewall
 //
 // Routing: wraps `gemini -p` (non-interactive headless mode).
 // Default model is whatever the gemini CLI is configured to use;
@@ -56,7 +56,7 @@ interface Args {
 
 interface ArgError {
   readonly error: string;
-  // Exit code 1 = invocation/usage error per tools/peer-call/README.md
+  // Exit code 1 = invocation/usage error per src/Core.TypeScript/peer-call/README.md
   // (uniform 0/1/2 across all three peer-call wrappers — README scope
   // is more specific than the general repo-scripting.md 0/2/64 spec
   // and wins on overlap).
@@ -164,14 +164,14 @@ function emitHelp(): void {
       `proposer via the gemini CLI.\n` +
       `\n` +
       `Usage:\n` +
-      `  bun tools/peer-call/gemini.ts "prompt text"\n` +
-      `  bun tools/peer-call/gemini.ts --model NAME "prompt text"\n` +
-      `  bun tools/peer-call/gemini.ts --file PATH "prompt text"\n` +
-      `  bun tools/peer-call/gemini.ts --context-cmd "CMD" "prompt text"\n` +
-      `  bun tools/peer-call/gemini.ts --output-file PATH "prompt text"\n` +
-      `  bun tools/peer-call/gemini.ts --json "prompt text"\n` +
-      `  bun tools/peer-call/gemini.ts --stream "prompt text"\n` +
-      `  bun tools/peer-call/gemini.ts --allow-empty "prompt"  # bypass firewall\n` +
+      `  bun src/Core.TypeScript/peer-call/gemini.ts "prompt text"\n` +
+      `  bun src/Core.TypeScript/peer-call/gemini.ts --model NAME "prompt text"\n` +
+      `  bun src/Core.TypeScript/peer-call/gemini.ts --file PATH "prompt text"\n` +
+      `  bun src/Core.TypeScript/peer-call/gemini.ts --context-cmd "CMD" "prompt text"\n` +
+      `  bun src/Core.TypeScript/peer-call/gemini.ts --output-file PATH "prompt text"\n` +
+      `  bun src/Core.TypeScript/peer-call/gemini.ts --json "prompt text"\n` +
+      `  bun src/Core.TypeScript/peer-call/gemini.ts --stream "prompt text"\n` +
+      `  bun src/Core.TypeScript/peer-call/gemini.ts --allow-empty "prompt"  # bypass firewall\n` +
       `\n` +
       `Routing: wraps gemini -p (non-interactive headless mode).\n` +
       `\n` +
@@ -476,7 +476,7 @@ export async function main(argv: readonly string[]): Promise<number> {
   }
   if (parsed.prompt.length === 0) {
     process.stderr.write("error: prompt required\n");
-    process.stderr.write("see: bun tools/peer-call/gemini.ts --help\n");
+    process.stderr.write("see: bun src/Core.TypeScript/peer-call/gemini.ts --help\n");
     return 1;
   }
 

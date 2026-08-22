@@ -1,0 +1,12 @@
+{
+  "pr_number": 7584,
+  "archive_path": "docs/history/pr-reviews/PR-7584-docs-craft-feng-shui-is-boundary-flow-design-aaron-s-mom-could-always-see-the-ch.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-11T03:30:27.876Z",
+  "schema_version": "v1",
+  "commit_sha": "ef3cb8acff4447033877e4f4ce9b8f0b49ce9c69",
+  "title": "docs(craft): \"Feng shui is boundary-flow design\" — Aaron's mom could always see the chi of a room",
+  "state": "MERGED",
+  "merged_at": "2026-06-11T03:29:57Z",
+  "head_ref": "shadow-craft-feng-shui-boundary-flow"
+}

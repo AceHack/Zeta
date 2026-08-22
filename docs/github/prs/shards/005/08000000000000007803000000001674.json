@@ -1,0 +1,12 @@
+{
+  "pr_number": 5748,
+  "archive_path": "docs/history/pr-reviews/PR-5748-docs-rule-attention-as-currency-descriptive-not-proposal-f-uom-memory-is-economy.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-28T10:12:17.653Z",
+  "schema_version": "v1",
+  "commit_sha": "b9dfb2d9adbdc800d9d5539b9a910645392ebf9e",
+  "title": "docs(rule): attention-as-currency DESCRIPTIVE not PROPOSAL — F# UOM + memory IS economy + bias-neutral empirical + contribution graph (Aaron Turn 44 + Kestrel Turn 45; 5/5)",
+  "state": "MERGED",
+  "merged_at": "2026-05-28T10:11:55Z",
+  "head_ref": "otto-cli/attention-as-currency-descriptive-not-proposal-fsharp-uom-memory-as-economy-rule-aaron-kestrel-2026-05-28"
+}

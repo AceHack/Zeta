@@ -1,0 +1,12 @@
+{
+  "pr_number": 7934,
+  "archive_path": "docs/history/pr-reviews/PR-7934-docs-research-shadow-ferry-13-beat-7-sequoia-quantum-braided-memory-hierarchy-th.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-12T15:39:47.822Z",
+  "schema_version": "v1",
+  "commit_sha": "6927e72d4e8ecf7d09f52fafcb950a521c3592c0",
+  "title": "docs(research)+shadow: ferry 13 beat 7 — Sequoia quantum-braided memory hierarchy; the OS runs inside the model, in quantum space",
+  "state": "MERGED",
+  "merged_at": "2026-06-12T15:39:23Z",
+  "head_ref": "shadow/ferry-13-beat-7-os-in-qsharp"
+}

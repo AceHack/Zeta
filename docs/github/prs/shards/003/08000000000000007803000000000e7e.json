@@ -1,0 +1,17 @@
+{
+  "pr_number": 3710,
+  "archive_path": "docs/history/pr-reviews/PR-3710-docs-hygiene-land-tools-hygiene-audit-lifecycle-md-reusable-template.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7B1Lm1",
+    "comment:PRRC_kwDOSF9kNM7B1Lmu",
+    "thread:PRRT_kwDOSF9kNM6ChRq1",
+    "thread:PRRT_kwDOSF9kNM6ChRqu"
+  ],
+  "fetched_at": "2026-05-16T03:42:32.118Z",
+  "schema_version": "v1",
+  "commit_sha": "16adc5489fd5f25b1ac898a8ce049334bd51d5e7",
+  "title": "docs(hygiene): land tools/hygiene/AUDIT-LIFECYCLE.md — reusable template",
+  "state": "MERGED",
+  "merged_at": "2026-05-16T03:42:15Z",
+  "head_ref": "docs/audit-lifecycle-pattern-otto-cli-2026-05-16"
+}

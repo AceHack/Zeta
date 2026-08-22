@@ -1,0 +1,12 @@
+{
+  "pr_number": 7585,
+  "archive_path": "docs/history/pr-reviews/PR-7585-docs-universal-noninterference-contracts-13-on-the-eight-comms-interfaces.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-11T03:34:32.470Z",
+  "schema_version": "v1",
+  "commit_sha": "1ef12081e3fc7574848ae12734b148656ddd818c",
+  "title": "docs(universal): noninterference contracts (§13) on the eight comms interfaces",
+  "state": "MERGED",
+  "merged_at": "2026-06-11T03:34:10Z",
+  "head_ref": "shadow-universal-comms-noninterference-contracts"
+}

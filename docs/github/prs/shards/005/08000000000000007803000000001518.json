@@ -1,0 +1,12 @@
+{
+  "pr_number": 5400,
+  "archive_path": "docs/history/pr-reviews/PR-5400-feat-b-0851-persona-first-guard-post-assignment-rotation-architecture-extends-b-.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-27T04:43:25.768Z",
+  "schema_version": "v1",
+  "commit_sha": "f977dcde7893707286ac1627f725a8a7591de010",
+  "title": "feat(B-0851): persona-first guard-post assignment + rotation architecture — extends B-0850 (Mika ferry; Aaron 2026-05-27)",
+  "state": "MERGED",
+  "merged_at": "2026-05-27T04:43:05Z",
+  "head_ref": "feat-b0851-persona-first-guard-post-assignment-rotation-architecture-extends-b0850-mika-2026-05-27-0610z"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 5113,
+  "archive_path": "docs/history/pr-reviews/PR-5113-fix-b-0792-iter-5-2-2-hostname-auto-gen-at-install-time-not-flash-time-multi-nod.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-26T06:38:19.443Z",
+  "schema_version": "v1",
+  "commit_sha": "7d19b95af11fcfbae967ba60436fbda8022a1f5a",
+  "title": "fix(B-0792 iter-5.2.2): hostname auto-gen at install-time NOT flash-time (multi-node reuse fix) + login-banner shows hostname pre-login (Aaron 2026-05-26)",
+  "state": "MERGED",
+  "merged_at": "2026-05-26T06:37:59Z",
+  "head_ref": "otto-cli/iter522-move-auto-hostname-from-flash-time-to-install-time-2026-05-26"
+}

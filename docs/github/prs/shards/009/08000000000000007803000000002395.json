@@ -1,0 +1,15 @@
+{
+  "pr_number": 9109,
+  "archive_path": "docs/history/pr-reviews/PR-9109-test-fsharp-harden-the-bloom-arrow-phantom-flake-proven-not-an-input-defect-shad.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7RPQac",
+    "thread:PRRT_kwDOSF9kNM6Nx4HD"
+  ],
+  "fetched_at": "2026-08-17T04:29:57.408Z",
+  "schema_version": "v1",
+  "commit_sha": "43ab469ffd7b92965b228b7daf768abd28a3ab61",
+  "title": "test(fsharp): harden the Bloom×Arrow phantom flake — proven not-an-input-defect (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-02T04:14:25Z",
+  "head_ref": "otto/bloom-arrow-flake-resolved-081KWFT03NW"
+}

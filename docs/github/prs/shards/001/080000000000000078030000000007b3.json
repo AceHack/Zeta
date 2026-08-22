@@ -1,0 +1,12 @@
+{
+  "pr_number": 1971,
+  "archive_path": "docs/history/pr-reviews/PR-1971-docs-research-log-verbatim-transcript-of-op-return-debate-and-satoshi-citation.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-08T00:14:54.118Z",
+  "schema_version": "v1",
+  "commit_sha": "5f08bdc5f3408bbcf1908c3d848acdb365a8c590",
+  "title": "docs(research): log verbatim transcript of OP_RETURN debate and Satoshi citation",
+  "state": "MERGED",
+  "merged_at": "2026-05-08T00:14:35Z",
+  "head_ref": "research/op-return-verbatim"
+}

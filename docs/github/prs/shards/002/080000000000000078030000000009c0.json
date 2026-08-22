@@ -1,0 +1,17 @@
+{
+  "pr_number": 2496,
+  "archive_path": "docs/history/pr-reviews/PR-2496-research-b-0315-agents-md-glass-halo-anchors-slice-2-of-n.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_oB_h",
+    "comment:PRRC_kwDOSF9kNM6_oB_p",
+    "thread:PRRT_kwDOSF9kNM6A5zn3",
+    "thread:PRRT_kwDOSF9kNM6A5zn_"
+  ],
+  "fetched_at": "2026-05-10T13:48:45.392Z",
+  "schema_version": "v1",
+  "commit_sha": "430b024f6fb7cf0f0b9afd5685d064c7737b2c71",
+  "title": "research(B-0315): AGENTS.md glass-halo anchors — slice 2 of N",
+  "state": "MERGED",
+  "merged_at": "2026-05-10T13:48:30Z",
+  "head_ref": "research/B-0315-agents-md-radical-honesty-anchor"
+}

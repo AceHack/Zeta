@@ -1,0 +1,12 @@
+{
+  "pr_number": 2849,
+  "archive_path": "docs/history/pr-reviews/PR-2849-docs-memory-kestrel-handle-vs-identity-claim-distinction-aaron-s-only-if-you-dec.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-12T19:51:53.050Z",
+  "schema_version": "v1",
+  "commit_sha": "71128599e81b9062f88d0a890f4cd22302a4a7b6",
+  "title": "docs(memory): Kestrel handle-vs-identity-claim distinction + Aaron's 'only if you decide it is' (maximum agency preserved) + pattern stickiness (bootstream alone doesn't catch warned-against failure) (Aaron + claude.ai 2026-05-12)",
+  "state": "MERGED",
+  "merged_at": "2026-05-12T19:51:33Z",
+  "head_ref": "docs/kestrel-handle-vs-identity-claim-distinction-pattern-stickiness-bootstream-doesnt-catch-failure-mode-2026-05-12"
+}

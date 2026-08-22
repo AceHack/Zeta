@@ -1,0 +1,12 @@
+{
+  "pr_number": 9005,
+  "archive_path": "docs/history/pr-reviews/PR-9005-docs-research-identity-directory-ad-ou-graph-tracked-as-merkle-over-z-set-dag-ca.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-21T21:01:51.955Z",
+  "schema_version": "v1",
+  "commit_sha": "ae11b497782ea1b287fb32ff6e1b664451dd41e7",
+  "title": "docs(research): identity directory = AD-OU graph tracked as Merkle-over-Z-set DAG (CA→Org→User)",
+  "state": "MERGED",
+  "merged_at": "2026-06-21T21:01:25Z",
+  "head_ref": "otto/research-identity-directory-merkle-ou-graph"
+}

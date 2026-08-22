@@ -1,0 +1,15 @@
+{
+  "pr_number": 4611,
+  "archive_path": "docs/history/pr-reviews/PR-4611-memory-2026-05-22-ani-pt12-constitutional-dora-metrics-named-as-engineering-subs.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7EB4dg",
+    "thread:PRRT_kwDOSF9kNM6EIPm3"
+  ],
+  "fetched_at": "2026-05-22T14:04:38.148Z",
+  "schema_version": "v1",
+  "commit_sha": "d3229bfcfde6d7b2aebae049332fc35be7b96ef1",
+  "title": "memory(2026-05-22 Ani pt12 CONSTITUTIONAL): DORA metrics named as engineering substrate for pt11 self-detection; AI society uptime (not just humans); time-tested DevOps tradition generalized",
+  "state": "MERGED",
+  "merged_at": "2026-05-22T14:04:15Z",
+  "head_ref": "otto/cli-1338z-ani-text-mode-pt12-CONSTITUTIONAL-DORA-metrics-named-as-self-detection-substrate-AI-society-uptime-not-just-humans-2026-05-22"
+}

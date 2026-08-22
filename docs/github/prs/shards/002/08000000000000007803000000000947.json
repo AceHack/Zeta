@@ -1,0 +1,12 @@
+{
+  "pr_number": 2375,
+  "archive_path": "docs/history/pr-reviews/PR-2375-claim-b-0267-smallest-safe-slice-branch-safety-ruleset-skeleton-dry-run.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-09T23:38:33.211Z",
+  "schema_version": "v1",
+  "commit_sha": "648701b9cfed7198bc46866580ad6d650d565b76",
+  "title": "claim(B-0267): smallest safe slice — Branch Safety ruleset skeleton (dry-run)",
+  "state": "MERGED",
+  "merged_at": "2026-05-09T23:38:17Z",
+  "head_ref": "claim/b0267-safety-ruleset-smallest-slice-riven-2026-05-09"
+}

@@ -1,0 +1,17 @@
+{
+  "pr_number": 3378,
+  "archive_path": "docs/history/pr-reviews/PR-3378-shard-tick-0717z-borrow-on-existing-pattern-landed-as-rule-update-pr-3377.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7Bgs9K",
+    "comment:PRRC_kwDOSF9kNM7BgtB1",
+    "thread:PRRT_kwDOSF9kNM6CSWYF",
+    "thread:PRRT_kwDOSF9kNM6CSWbe"
+  ],
+  "fetched_at": "2026-05-15T07:26:04.527Z",
+  "schema_version": "v1",
+  "commit_sha": "6f066e8851995636221e58db9fd7b1c6749642ba",
+  "title": "shard(tick): 0717Z — borrow-on-existing pattern landed as rule update (PR #3377)",
+  "state": "MERGED",
+  "merged_at": "2026-05-15T07:25:42Z",
+  "head_ref": "shard/tick-0717z-otto-cli-2026-05-15"
+}

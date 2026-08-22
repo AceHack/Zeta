@@ -1,0 +1,12 @@
+{
+  "pr_number": 10119,
+  "archive_path": "docs/history/pr-reviews/PR-10119-book-editions-vietnamese-companion-3-the-organizer-full-length-vi.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-07T18:16:32.704Z",
+  "schema_version": "v1",
+  "commit_sha": "dc7f6a63f577714bd262e36054e1f3862e9ed0ba",
+  "title": "book(editions): Vietnamese companion 3 — the Organizer, full length (vi)",
+  "state": "MERGED",
+  "merged_at": "2026-08-07T18:13:08Z",
+  "head_ref": "book-vi-companion-organizer"
+}

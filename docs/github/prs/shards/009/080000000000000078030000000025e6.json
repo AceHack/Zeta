@@ -1,0 +1,12 @@
+{
+  "pr_number": 9702,
+  "archive_path": "docs/history/pr-reviews/PR-9702-docs-research-fold-j-lens-cheat-engine-reverse-orbit-the-explicit-isr-arrow-chip.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-11T15:44:45.656Z",
+  "schema_version": "v1",
+  "commit_sha": "04831a41f74d7196ca99e7ae48ce088899dc6fb5",
+  "title": "docs(research): fold J-lens ↔ cheat-engine + reverse-orbit + the explicit ISR-arrow/Chip8Observer (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-11T15:44:20Z",
+  "head_ref": "fold-jlens-isr-arrow-chip8-observer"
+}

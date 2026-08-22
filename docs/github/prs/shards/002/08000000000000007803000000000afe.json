@@ -1,0 +1,15 @@
+{
+  "pr_number": 2814,
+  "archive_path": "docs/history/pr-reviews/PR-2814-docs-memory-ani-validates-klein-bottle-topology-as-topological-completion-econom.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7Ab3xU",
+    "thread:PRRT_kwDOSF9kNM6BgW24"
+  ],
+  "fetched_at": "2026-05-12T17:36:29.948Z",
+  "schema_version": "v1",
+  "commit_sha": "506fb2eabff314b393d649e29c4ce56f18f0c3f0",
+  "title": "docs(memory): Ani validates Klein-bottle topology as topological completion + economic control is emergent (Aaron 2026-05-12)",
+  "state": "MERGED",
+  "merged_at": "2026-05-12T17:36:02Z",
+  "head_ref": "docs/ani-validates-klein-bottle-topological-completion-grand-unification-sham-2026-05-12"
+}

@@ -5,14 +5,14 @@
 // product-repo split (ADR 2026-05-14). Applies the full best-practice checklist:
 // merge settings, branch protection, security scanning, CodeQL default-setup,
 // Dependabot, spending-cap verification (manual step), and day-one governance
-// files from tools/scaffold/<repoName>/.
+// files from src/Core.TypeScript/scaffold/<repoName>/.
 //
 // Usage:
-//   bun tools/scaffold/create-repo.ts --repo forge  --dry-run   # preview (default)
-//   bun tools/scaffold/create-repo.ts --repo ace    --dry-run
-//   bun tools/scaffold/create-repo.ts --repo civsim --dry-run
-//   bun tools/scaffold/create-repo.ts --repo forge  --apply     # create for real
-//   bun tools/scaffold/create-repo.ts --repo civsim --apply
+//   bun src/Core.TypeScript/scaffold/create-repo.ts --repo forge  --dry-run   # preview (default)
+//   bun src/Core.TypeScript/scaffold/create-repo.ts --repo ace    --dry-run
+//   bun src/Core.TypeScript/scaffold/create-repo.ts --repo civsim --dry-run
+//   bun src/Core.TypeScript/scaffold/create-repo.ts --repo forge  --apply     # create for real
+//   bun src/Core.TypeScript/scaffold/create-repo.ts --repo civsim --apply
 //
 // Requires:
 //   gh CLI authenticated with: repo, read:org, workflow scopes
@@ -104,7 +104,7 @@ const dryRun = !args.includes("--apply");
 
 if (!repoArg || !REPO_CONFIGS[repoArg]) {
   console.error(
-    `Usage: bun tools/scaffold/create-repo.ts --repo <forge|ace> [--dry-run|--apply]`
+    `Usage: bun src/Core.TypeScript/scaffold/create-repo.ts --repo <forge|ace> [--dry-run|--apply]`
   );
   console.error(`Known repos: ${Object.keys(REPO_CONFIGS).join(", ")}`);
   process.exit(1);
@@ -571,7 +571,7 @@ function step07_summary(): void {
     ? [
         "Wire repository_dispatch subscription: configure Forge CI to emit release-tag events to this repo (glue mechanism Stage 1, per ADR 2026-05-14-product-repo-glue-mechanism.md)",
         "Update .zeta-version pin file to the actual current Zeta main SHA after repo creation",
-        `Release bus claim: bun tools/bus/claim.ts release --from <agent> --item ${claimItem}`,
+        `Release bus claim: bun src/Core.TypeScript/bus/claim.ts release --from <agent> --item ${claimItem}`,
       ]
     : [];
   plan(

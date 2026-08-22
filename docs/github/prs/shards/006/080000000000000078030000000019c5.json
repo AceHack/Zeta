@@ -1,0 +1,28 @@
+{
+  "pr_number": 6597,
+  "archive_path": "docs/history/pr-reviews/PR-6597-docs-b-1004-conform-everything-to-the-minimal-hkt-composing-vocabulary-inumerics.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7HQfoj",
+    "comment:PRRC_kwDOSF9kNM7HQgIi",
+    "comment:PRRC_kwDOSF9kNM7HQgJD",
+    "comment:PRRC_kwDOSF9kNM7HQgJj",
+    "comment:PRRC_kwDOSF9kNM7HQgKF",
+    "comment:PRRC_kwDOSF9kNM7HQlZK",
+    "comment:PRRC_kwDOSF9kNM7HQldo",
+    "comment:PRRC_kwDOSF9kNM7HQlhi",
+    "comment:PRRC_kwDOSF9kNM7HQllX",
+    "comment:PRRC_kwDOSF9kNM7HQlpH",
+    "thread:PRRT_kwDOSF9kNM6GgR3S",
+    "thread:PRRT_kwDOSF9kNM6GgSN1",
+    "thread:PRRT_kwDOSF9kNM6GgSNc",
+    "thread:PRRT_kwDOSF9kNM6GgSOK",
+    "thread:PRRT_kwDOSF9kNM6GgSOp"
+  ],
+  "fetched_at": "2026-06-02T17:03:50.469Z",
+  "schema_version": "v1",
+  "commit_sha": "870fc9a39445863b586b07ae63ef4a7e07d5af18",
+  "title": "docs(B-1004): conform everything to the minimal HKT-composing vocabulary (INumerics + Rx/Bonsai-over-DBSP + Z-set family); constraint breeds novelty",
+  "state": "MERGED",
+  "merged_at": "2026-06-02T17:03:24Z",
+  "head_ref": "otto-cli/b1004-conform-hkt-vocabulary-2026-06-02"
+}

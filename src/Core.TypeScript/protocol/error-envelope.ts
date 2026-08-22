@@ -84,12 +84,22 @@ export type ErrorDimension = (typeof ERROR_DIMENSIONS)[number];
  */
 export type ErrorSeverity = "info" | "warn" | "error" | "fatal";
 
-const SEVERITY_Z: Record<ErrorSeverity, number> = {
+export const SEVERITY_Z: Record<ErrorSeverity, number> = {
   info: 0.5,
   warn: 1.0,
   error: 2.0,
   fatal: 4.0,
 };
+
+/**
+ * The largest z the severity alphabet can express (`fatal`).
+ *
+ * Exported because a consumer that normalises a posterior mean into a bounded
+ * scale must divide by a number that comes FROM the alphabet, not from taste.
+ * Both sides of that ratio are severity z-scores, so the ratio is dimensionless
+ * and lies in [0, 1] for any belief the alphabet can support.
+ */
+export const MAX_SEVERITY_Z: number = Math.max(...Object.values(SEVERITY_Z));
 
 // ── The envelope ───────────────────────────────────────────────────────────────
 

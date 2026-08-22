@@ -1,0 +1,15 @@
+{
+  "pr_number": 4708,
+  "archive_path": "docs/history/pr-reviews/PR-4708-feat-lean4-add-imaginary-stack-toy-model-decomposed-from-4070.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7ENI5I",
+    "thread:PRRT_kwDOSF9kNM6EQdaw"
+  ],
+  "fetched_at": "2026-05-23T01:34:40.291Z",
+  "schema_version": "v1",
+  "commit_sha": "6b0dace871329ba3b8083403f8a22d51f9558200",
+  "title": "feat(lean4): add imaginary stack toy model (decomposed from #4070)",
+  "state": "MERGED",
+  "merged_at": "2026-05-23T01:34:22Z",
+  "head_ref": "lior-decompose-4070-lean"
+}

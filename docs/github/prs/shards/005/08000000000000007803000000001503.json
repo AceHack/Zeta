@@ -1,0 +1,12 @@
+{
+  "pr_number": 5379,
+  "archive_path": "docs/history/pr-reviews/PR-5379-feat-b-0831-slice-1-starter-qemu-full-install-ci-test-with-virtual-disk-iter-5-3.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-27T02:09:56.557Z",
+  "schema_version": "v1",
+  "commit_sha": "46ac81c4acd467ecb3a139543698438564608917",
+  "title": "feat(B-0831 Slice 1 STARTER): QEMU full-install CI test with virtual disk + iter-5.3 marker",
+  "state": "MERGED",
+  "merged_at": "2026-05-27T02:09:37Z",
+  "head_ref": "feat-b0831-slice1-qemu-full-install-test-starter-otto-cli-2026-05-26"
+}

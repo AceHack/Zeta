@@ -52,7 +52,7 @@ substrate today.
 | **Skill** — agent-scope invariants | `.claude/skills/<pack>/blueprints/<name>.skill.yaml` | `alloy`, `semgrep`, `fscheck`, `tla` (per-claim hints) | two pilots landed (`prompt-protector`, `skill-tune-up`) |
 | **Agent behaviour** — empirical outcome claims | `plugin:skill-creator` eval harness (`evals/` + benchmark.json) | grader + comparator subagents | shipped (used round 42-43) |
 | **Policy / governance** — repo-wide invariants | `docs/AGENT-BEST-PRACTICES.md` (stable BP-NN rules) | `skill-tune-up` lint, reviewer roster | shipped |
-| **Ontology** — canonical-home rules | `.claude/skills/canonical-home-auditor/SKILL.md` map | `canonical-home-auditor` | shipped (round 40) |
+| **Ontology** — canonical-home rules | `.claude/skills/governance/blueprints/canonical-home-auditor.md` map | `canonical-home-auditor` | shipped (round 40) |
 
 Rows are not ranked. A P0 correctness claim can land at the
 proof layer (Lean) or the property layer (FsCheck) or the skill
@@ -173,13 +173,13 @@ verified, across all substrates.
   layer; that one is the tactical layer.
 - `openspec/README.md` — how behavioural spec files relate to
   the substrate table.
-- `.claude/skills/formal-verification-expert/SKILL.md` —
+- `.claude/skills/formal-methods/blueprints/formal-verification-expert.md` —
   Soraya's routing authority. She picks the checker per claim;
   this doc declares that every claim lives at some layer and
   carries a checker hint.
 - `.claude/skills/security/blueprints/prompt-protector.skill.yaml` — the first
   concrete skill-layer substrate, pilot for the pattern.
-- `.claude/skills/prompt-protector/SKILL.md` — the prose body
+- `.claude/skills/security/blueprints/prompt-protector.md` — the prose body
   the skill.yaml accompanies.
 - `docs/research/liquidfsharp-evaluation.md` — the refinement-
   type evaluation that, if promoted, adds a proper code-layer

@@ -1,0 +1,17 @@
+{
+  "pr_number": 2205,
+  "archive_path": "docs/history/pr-reviews/PR-2205-feat-add-gradient-falsifiability-round-not-sharp.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_fQTD",
+    "comment:PRRC_kwDOSF9kNM6_fQTN",
+    "thread:PRRT_kwDOSF9kNM6Ay7_V",
+    "thread:PRRT_kwDOSF9kNM6Ay7_e"
+  ],
+  "fetched_at": "2026-05-09T06:47:08.011Z",
+  "schema_version": "v1",
+  "commit_sha": "2a08cee3410b678498572b62e539bd29a57923cc",
+  "title": "feat: add gradient falsifiability (round, not sharp)",
+  "state": "MERGED",
+  "merged_at": "2026-05-09T06:46:52Z",
+  "head_ref": "fix/gradient-falsifiability"
+}

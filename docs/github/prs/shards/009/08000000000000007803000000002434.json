@@ -1,0 +1,12 @@
+{
+  "pr_number": 9268,
+  "archive_path": "docs/history/pr-reviews/PR-9268-feat-llmtv-build-static-pages-readout-artifact.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-03T03:23:18.386Z",
+  "schema_version": "v1",
+  "commit_sha": "06a52f923a8fd69c388ed40a5116e83048b5860d",
+  "title": "feat(llmtv): build static pages readout artifact",
+  "state": "MERGED",
+  "merged_at": "2026-07-03T03:22:56Z",
+  "head_ref": "codex/llmtv-pages-static-export"
+}

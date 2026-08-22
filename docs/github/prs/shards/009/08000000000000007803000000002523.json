@@ -1,0 +1,12 @@
+{
+  "pr_number": 9507,
+  "archive_path": "docs/history/pr-reviews/PR-9507-chore-workitem-route-the-self-audit-over-ledger-physics-formalization-to-lumen-s.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-05T23:31:40.146Z",
+  "schema_version": "v1",
+  "commit_sha": "ef59ffe421a429ca9fe11d789ed3cd2a6d4a45a8",
+  "title": "chore(workitem): route the self-audit-over-ledger physics formalization to Lumen+Soraya (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-05T23:31:12Z",
+  "head_ref": "otto/workitem-route-freeenergy-formalization-lumen-soraya"
+}

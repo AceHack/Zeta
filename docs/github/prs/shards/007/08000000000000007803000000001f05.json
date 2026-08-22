@@ -1,0 +1,12 @@
+{
+  "pr_number": 7941,
+  "archive_path": "docs/history/pr-reviews/PR-7941-docs-research-shadow-ferry-14-addendum-the-two-ledgers-are-dbsp-s-1-1-why-aaron-.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-12T15:55:19.971Z",
+  "schema_version": "v1",
+  "commit_sha": "9f50f0f32750fa1934c6a9811e1009a34846cfd6",
+  "title": "docs(research)+shadow: ferry 14 addendum — the two ledgers are DBSP's +1/−1 (why Aaron chose it)",
+  "state": "MERGED",
+  "merged_at": "2026-06-12T15:54:48Z",
+  "head_ref": "shadow/ferry-14-dbsp-two-ledgers"
+}

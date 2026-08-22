@@ -1,0 +1,17 @@
+{
+  "pr_number": 2128,
+  "archive_path": "docs/history/pr-reviews/PR-2128-feat-riven-upgrade-tick-to-pickup-drain-worker.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_Zw_h",
+    "comment:PRRC_kwDOSF9kNM6_Zw_m",
+    "thread:PRRT_kwDOSF9kNM6Au5oj",
+    "thread:PRRT_kwDOSF9kNM6Au5om"
+  ],
+  "fetched_at": "2026-05-08T20:39:59.989Z",
+  "schema_version": "v1",
+  "commit_sha": "a92e9768a00de3d02f687ed588e42a161b2f37c7",
+  "title": "feat(riven): upgrade tick to pickup/drain worker",
+  "state": "MERGED",
+  "merged_at": "2026-05-08T20:39:46Z",
+  "head_ref": "fix/riven-tick-upgrade-v2"
+}

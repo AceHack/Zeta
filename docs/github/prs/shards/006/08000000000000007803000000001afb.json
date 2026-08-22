@@ -1,0 +1,12 @@
+{
+  "pr_number": 6907,
+  "archive_path": "docs/history/pr-reviews/PR-6907-docs-research-reinterpreting-the-base-a-higgs-like-collapse-symmetry-break-confe.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-07T20:22:53.515Z",
+  "schema_version": "v1",
+  "commit_sha": "5a36290141c9d34320e934b3081c325433834a5b",
+  "title": "docs(research): reinterpreting the base = a Higgs-like collapse (symmetry-break confers meaning, revisably)",
+  "state": "MERGED",
+  "merged_at": "2026-06-07T20:22:36Z",
+  "head_ref": "otto/reinterpreting-base-is-higgs-collapse-symmetry-break"
+}

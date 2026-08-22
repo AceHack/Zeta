@@ -1,0 +1,12 @@
+{
+  "pr_number": 2302,
+  "archive_path": "docs/history/pr-reviews/PR-2302-fix-snapshot-null-guard-matchall-capture-groups-ts-strict-null.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-09T12:48:04.902Z",
+  "schema_version": "v1",
+  "commit_sha": "225696c0278001b6ebd1b05884ad9e1d1ef66767",
+  "title": "fix(snapshot): null-guard matchAll capture groups — TS strict null",
+  "state": "MERGED",
+  "merged_at": "2026-05-09T12:47:51Z",
+  "head_ref": "fix/snapshot-ts-strict-null-guards"
+}

@@ -1,0 +1,14 @@
+{
+  "id": "080d00a916a2f810a01300084adbbd3b",
+  "at": "2026-08-18T13:49:59.263Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M0AJ5N2Y087G0R003Z5YR6R",
+    "type": "task",
+    "title": "ferry: Andrew Kelley Zig interview — no-LLM policy, BDFL vs committee, nonprofit independence, LLVM removal",
+    "slug": "ferry-andrew-kelley-zig-interview-no-llm-policy-bdfl-vs-comm",
+    "priority": "P2",
+    "filename": "081M0AJ5N2Y087G0R003Z5YR6R-ferry-andrew-kelley-zig-interview-no-llm-policy-bdfl-vs-comm.md"
+  }
+}

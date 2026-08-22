@@ -1,0 +1,14 @@
+{
+  "id": "080d00dc442ce810a01300083e1f896b",
+  "at": "2026-08-19T19:38:47.069Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M0DRH1CW087G0R003Y3CAB6",
+    "type": "task",
+    "title": "Run falsifier F4: can a discriminator with the full public history beat chance on a fully-transparent agent's future choices",
+    "slug": "run-falsifier-f4-can-a-discriminator-with-the-full-public-hi",
+    "priority": "P2",
+    "filename": "081M0DRH1CW087G0R003Y3CAB6-run-falsifier-f4-can-a-discriminator-with-the-full-public-hi.md"
+  }
+}

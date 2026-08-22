@@ -1,0 +1,12 @@
+{
+  "pr_number": 8366,
+  "archive_path": "docs/history/pr-reviews/PR-8366-docs-society-8-the-arena-non-coercion-preserves-decorrelation-the-loving-battle-.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-15T23:50:59.911Z",
+  "schema_version": "v1",
+  "commit_sha": "bc8574fa7b33cb36763cbc21a20edb29f98f7d42",
+  "title": "docs(society): §8 the arena — non-coercion preserves decorrelation; the loving battle of minds",
+  "state": "MERGED",
+  "merged_at": "2026-06-15T23:50:36Z",
+  "head_ref": "docs/society-arena-section"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 7472,
+  "archive_path": "docs/history/pr-reviews/PR-7472-docs-research-multiple-antecedents-cheat-engine-debugging-find-what-writes-gener.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-10T07:22:49.260Z",
+  "schema_version": "v1",
+  "commit_sha": "452e1a245ece9415dbcf9ebab631c6ea07ba552a",
+  "title": "docs(research): multiple antecedents + Cheat-Engine debugging (find-what-writes = generate the antecedent) = how Aaron thinks",
+  "state": "MERGED",
+  "merged_at": "2026-06-10T07:22:26Z",
+  "head_ref": "shadow-multiple-antecedents"
+}

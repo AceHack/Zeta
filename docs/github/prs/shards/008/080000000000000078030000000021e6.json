@@ -1,0 +1,12 @@
+{
+  "pr_number": 8678,
+  "archive_path": "docs/history/pr-reviews/PR-8678-feat-core-coempowergraphsvg-federation-graph-svg-render-resume-refreshed-with-al.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-20T01:59:26.609Z",
+  "schema_version": "v1",
+  "commit_sha": "4532365edd75bd478b3d4986d0bf5570e748f295",
+  "title": "feat(core): CoEmpowerGraphSvg — federation-graph SVG render; + resume refreshed with all remaining follow-ons",
+  "state": "MERGED",
+  "merged_at": "2026-06-20T01:59:01Z",
+  "head_ref": "otto/coempowergraph-render-plus-resume-refresh"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 6731,
+  "archive_path": "docs/history/pr-reviews/PR-6731-docs-roadmap-git-native-db-roadmap-no-git-cli-as-item-1-the-details-we-laid-out.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-07T06:58:31.828Z",
+  "schema_version": "v1",
+  "commit_sha": "bb9d8453a6b178275989eb07217995eed252a016",
+  "title": "docs(roadmap): git-native DB roadmap — NO GIT CLI as item #1 + the details we laid out",
+  "state": "MERGED",
+  "merged_at": "2026-06-07T06:58:13Z",
+  "head_ref": "otto/roadmap-git-native-db-no-git-cli-item1"
+}

@@ -1,0 +1,15 @@
+{
+  "pr_number": 3995,
+  "archive_path": "docs/history/pr-reviews/PR-3995-test-b-0156-smoke-tests-for-tools-profile-ts-cli-dispatcher.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7B8Wf_",
+    "thread:PRRT_kwDOSF9kNM6Cmq3D"
+  ],
+  "fetched_at": "2026-05-17T01:03:12.141Z",
+  "schema_version": "v1",
+  "commit_sha": "e6df2184631d37b125ad741ce297f50499fe9b68",
+  "title": "test(B-0156): smoke tests for tools/profile.ts CLI dispatcher",
+  "state": "MERGED",
+  "merged_at": "2026-05-17T01:02:44Z",
+  "head_ref": "otto/b0156-profile-test-2026-05-16"
+}

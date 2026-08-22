@@ -1,0 +1,12 @@
+{
+  "pr_number": 1924,
+  "archive_path": "docs/history/pr-reviews/PR-1924-docs-backlog-record-b-0062-pr-1922-1923-resolutions.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-07T17:55:19.599Z",
+  "schema_version": "v1",
+  "commit_sha": "1ffa10968115618437cc9f7fb61ee3378f9f1767",
+  "title": "docs(backlog): record B-0062 PR #1922/#1923 resolutions",
+  "state": "MERGED",
+  "merged_at": "2026-05-07T17:54:54Z",
+  "head_ref": "codex/b0062-ledger-close-1922-1923"
+}

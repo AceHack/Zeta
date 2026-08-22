@@ -1,0 +1,12 @@
+{
+  "pr_number": 9875,
+  "archive_path": "docs/history/pr-reviews/PR-9875-bug-record-intermittent-dotnet-arm64-native-crashes.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-01T13:23:44.662Z",
+  "schema_version": "v1",
+  "commit_sha": "779184ec85e4624bbecdd8f85a55058333e25297",
+  "title": "bug: record intermittent dotnet arm64 native crashes",
+  "state": "MERGED",
+  "merged_at": "2026-08-01T13:23:16Z",
+  "head_ref": "codex/bug-dotnet-arm64-accessviolation"
+}

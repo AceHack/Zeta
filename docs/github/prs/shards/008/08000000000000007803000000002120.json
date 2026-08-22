@@ -1,0 +1,12 @@
+{
+  "pr_number": 8480,
+  "archive_path": "docs/history/pr-reviews/PR-8480-docs-research-scope-the-hierarchical-planning-discharge-scheduler-of-schedulers-.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-16T08:02:38.209Z",
+  "schema_version": "v1",
+  "commit_sha": "aa7581bb017ff24828dafbdf51e2c3e62850f4b3",
+  "title": "docs(research): scope the hierarchical-planning discharge (scheduler-of-schedulers over gist levels beats flat StateSpace BFS) + MVP slice",
+  "state": "MERGED",
+  "merged_at": "2026-06-16T08:02:09Z",
+  "head_ref": "otto/hierarchical-planning-discharge-scoping"
+}

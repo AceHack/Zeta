@@ -1,0 +1,12 @@
+{
+  "pr_number": 8335,
+  "archive_path": "docs/history/pr-reviews/PR-8335-fix-scenario-2-phase-2-uefi-ovmf-boot-for-installed-systemd-boot-disk.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-16T01:59:35.729Z",
+  "schema_version": "v1",
+  "commit_sha": "2eadfb0dcc27d812cd93e9bb9356891f2eb9b8aa",
+  "title": "Fix scenario 2 phase 2: UEFI/OVMF boot for installed systemd-boot disk",
+  "state": "MERGED",
+  "merged_at": "2026-06-16T01:59:07Z",
+  "head_ref": "riven/qemu-phase2-ovmf"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 8317,
+  "archive_path": "docs/history/pr-reviews/PR-8317-docs-register-generator-chain-the-common-seed-uncertainty-reducer-multiple-chain.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-15T18:51:58.216Z",
+  "schema_version": "v1",
+  "commit_sha": "13cf9a144221f5645fead72d0e781bbea2c2268e",
+  "title": "docs(register): generator chain = the common seed (uncertainty-reducer); multiple chains; E8 reached in code",
+  "state": "MERGED",
+  "merged_at": "2026-06-15T18:51:25Z",
+  "head_ref": "docs/ferry-generator-chain-is-the-common-seed-uncertainty-reducer"
+}

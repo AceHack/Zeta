@@ -1,0 +1,12 @@
+{
+  "pr_number": 6706,
+  "archive_path": "docs/history/pr-reviews/PR-6706-test-observebridge-fscheck-randomized-refinement-for-world-nextaction-round-trip.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-07T02:08:56.468Z",
+  "schema_version": "v1",
+  "commit_sha": "6cbed3cc73dd37be1368d05f02d69a1c5616fec9",
+  "title": "test(ObserveBridge): FsCheck randomized refinement for World/NextAction round-trips + fold semantics",
+  "state": "MERGED",
+  "merged_at": "2026-06-07T02:08:35Z",
+  "head_ref": "otto/observe-bridge-property-tests"
+}

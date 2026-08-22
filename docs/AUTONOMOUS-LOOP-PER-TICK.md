@@ -15,7 +15,7 @@ Before this file, the per-tick instructions diverged across surfaces:
 | Surface | Where the discipline lived | Risk |
 |---------|---------------------------|------|
 | Otto-CLI | `<<autonomous-loop>>` sentinel + ambient-loaded `.claude/rules/` + CLAUDE.md | Auto-loaded; ambient |
-| Otto-Desktop routine | Inline prompt body in `tools/routines/autonomous-loop/SKILL.md` | Required manual sync |
+| Otto-Desktop routine | Inline prompt body in `src/Core.TypeScript/routines/autonomous-loop/SKILL.md` | Required manual sync |
 | 081KRFA460008QG0R000CYBGKW cloud routine | TBD — not yet shipped | Would have re-implemented the discipline a third time |
 
 The risk: when the discipline evolved (e.g., the
@@ -38,7 +38,7 @@ Never act on stale state. Minimum refresh:
 - `bun tools/github/poll-pr-gate-batch.ts --all-open` — current state of all my open PRs
 - `git fetch origin main && git status` — main HEAD + local state
 - `CronList` — verify the autonomous-loop sentinel is still armed
-- `bun tools/orchestrator-checks/cron-sentinel-mutex.ts --json` — detect concurrent Otto-CLI peer sessions
+- `bun src/Core.TypeScript/orchestrator-checks/cron-sentinel-mutex.ts --json` — detect concurrent Otto-CLI peer sessions
   ([081KRMEXM0008QG0R000X1PPGC](backlog/P3/081KRMEXM0008QG0R000X1PPGC-cron-sentinel-mutex-prevent-otto-cli-self-contention-2026-05.md);
   Pattern 8 of [081KRHWGX0008QG0R001HMWM1W](backlog/P3/081KRHWGX0008QG0R001HMWM1W-multi-otto-branch-state-contamination-rca-2026-05-14.md))
 
@@ -62,7 +62,7 @@ peers are detected), the tick body should:
    matters past this tick:
 
    ```bash
-   bun tools/bus/bus.ts publish --from otto-cli --to '*' \
+   bun src/Core.TypeScript/bus/bus.ts publish --from otto-cli --to '*' \
      --topic shadow-catch \
      --payload '{"finding":"tick deferred — peer Otto-CLI detected"}'
    ```
@@ -193,11 +193,11 @@ BEFORE the push so the path-depth / MD032 / markdownlint findings surface
 locally rather than as PR review threads:
 
 ```bash
-bun tools/hygiene/check-shard-before-push.ts docs/hygiene-history/ticks/YYYY/MM/DD/HHMMZ.md
+bun src/Core.TypeScript/hygiene/check-shard-before-push.ts docs/hygiene-history/ticks/YYYY/MM/DD/HHMMZ.md
 ```
 
 The checker bundles three gates (per the source header in
-`tools/hygiene/check-shard-before-push.ts`): an **internal MD032 scan**
+`src/Core.TypeScript/hygiene/check-shard-before-push.ts`): an **internal MD032 scan**
 (paragraph-immediately-followed-by-bullet detection), `markdownlint-cli2`
 (the broader markdown lint surface), and `audit-tick-shard-relative-paths`
 (the 5-up-vs-6-up depth catch). It is a DX shortcut — the CI gates remain
@@ -251,7 +251,7 @@ human-readable form of what the rules + CLAUDE.md already encode.
 
 ### Otto-Desktop routine
 
-`tools/routines/autonomous-loop/SKILL.md` references this file in
+`src/Core.TypeScript/routines/autonomous-loop/SKILL.md` references this file in
 its instruction body. The routine prompt loads the
 canonical-bootstream first (cold-boot), then applies the 7-step
 discipline above. When this file updates, the routine's behaviour

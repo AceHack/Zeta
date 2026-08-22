@@ -1,0 +1,12 @@
+{
+  "pr_number": 7268,
+  "archive_path": "docs/history/pr-reviews/PR-7268-docs-research-ferry-maintainer-onboarding-key-blueprint-secure-frictionless-per-.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-09T13:09:39.394Z",
+  "schema_version": "v1",
+  "commit_sha": "aab2ea18566b28ad0c5fe556a0dacff32442fb02",
+  "title": "docs(research)+ferry: maintainer-onboarding key blueprint — secure+frictionless, per-(user,machine) SSH, per-user GPG, never passwords-in-prompts",
+  "state": "MERGED",
+  "merged_at": "2026-06-09T13:09:14Z",
+  "head_ref": "otto/research-maintainer-onboarding-key-blueprint"
+}

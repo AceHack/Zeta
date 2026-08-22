@@ -1,0 +1,12 @@
+{
+  "pr_number": 6857,
+  "archive_path": "docs/history/pr-reviews/PR-6857-feat-tensorref-content-addressed-reference-to-our-itensor-carried-in-dynamicvalu.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-07T15:43:42.003Z",
+  "schema_version": "v1",
+  "commit_sha": "afd5a1d01380914776dea45e31d3045421a3ddd5",
+  "title": "feat(TensorRef): content-addressed reference to our ITensor, carried in DynamicValue",
+  "state": "MERGED",
+  "merged_at": "2026-06-07T15:43:18Z",
+  "head_ref": "otto/tensorref-content-addressed-tensor-in-dynamicvalue"
+}

@@ -1,0 +1,33 @@
+{
+  "pr_number": 2795,
+  "archive_path": "docs/history/pr-reviews/PR-2795-docs-memory-stable-seed-5-interrogatives-as-equals-who-fuzziness-bp-ep-infer-net.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7AZm6O",
+    "comment:PRRC_kwDOSF9kNM7AZnAJ",
+    "comment:PRRC_kwDOSF9kNM7AZnBf",
+    "comment:PRRC_kwDOSF9kNM7AZxIV",
+    "comment:PRRC_kwDOSF9kNM7AZxIf",
+    "comment:PRRC_kwDOSF9kNM7AZzVY",
+    "comment:PRRC_kwDOSF9kNM7AZzWX",
+    "comment:PRRC_kwDOSF9kNM7AZzWz",
+    "comment:PRRC_kwDOSF9kNM7AZzXJ",
+    "comment:PRRC_kwDOSF9kNM7AZzXu",
+    "thread:PRRT_kwDOSF9kNM6Be1Op",
+    "thread:PRRT_kwDOSF9kNM6Be1PQ",
+    "thread:PRRT_kwDOSF9kNM6Be1Pi",
+    "thread:PRRT_kwDOSF9kNM6Be1Pz",
+    "thread:PRRT_kwDOSF9kNM6Be1QK",
+    "thread:PRRT_kwDOSF9kNM6Ber3r",
+    "thread:PRRT_kwDOSF9kNM6Ber8H",
+    "thread:PRRT_kwDOSF9kNM6Ber9D",
+    "thread:PRRT_kwDOSF9kNM6BezoE",
+    "thread:PRRT_kwDOSF9kNM6BezoN"
+  ],
+  "fetched_at": "2026-05-12T16:17:59.234Z",
+  "schema_version": "v1",
+  "commit_sha": "89f24d1c614365c91df6ebae0dcda7592a0ab5ed",
+  "title": "docs(memory): stable seed — 5 interrogatives as equals + WHO-fuzziness + BP/EP Infer.NET ground (Aaron 2026-05-12)",
+  "state": "MERGED",
+  "merged_at": "2026-05-12T16:17:35Z",
+  "head_ref": "docs/aaron-stable-seed-five-interrogatives-as-equals-2026-05-12"
+}

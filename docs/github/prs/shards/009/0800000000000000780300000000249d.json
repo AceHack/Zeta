@@ -1,0 +1,12 @@
+{
+  "pr_number": 9373,
+  "archive_path": "docs/history/pr-reviews/PR-9373-codex-add-black-body-temperature-readout.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-03T23:14:02.841Z",
+  "schema_version": "v1",
+  "commit_sha": "fc32d5f35b396fc5369f9967e48c4d066bb533a1",
+  "title": "[codex] add black-body temperature readout",
+  "state": "MERGED",
+  "merged_at": "2026-07-03T23:13:39Z",
+  "head_ref": "codex/blackbody-temperature-readout"
+}

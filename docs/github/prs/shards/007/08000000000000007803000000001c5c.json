@@ -1,0 +1,12 @@
+{
+  "pr_number": 7260,
+  "archive_path": "docs/history/pr-reviews/PR-7260-docs-research-ferry-git-native-fork-aware-trust-forks-use-own-creds-origin-deriv.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-09T12:44:44.844Z",
+  "schema_version": "v1",
+  "commit_sha": "37edea59f48ea33e24a2f553fcaf907adb967bff",
+  "title": "docs(research)+ferry: git-native fork-aware trust (forks use own creds, origin-derived) + one-repo-now vs split-later network-map tradeoff",
+  "state": "MERGED",
+  "merged_at": "2026-06-09T12:44:20Z",
+  "head_ref": "otto/research-git-native-fork-aware-trust-one-repo-vs-split-tradeoff"
+}

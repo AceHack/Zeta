@@ -1,0 +1,12 @@
+{
+  "pr_number": 5447,
+  "archive_path": "docs/history/pr-reviews/PR-5447-fix-riven-decompose-riven-loop-tick-deletion-from-4996.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-27T16:10:58.044Z",
+  "schema_version": "v1",
+  "commit_sha": "e189dd38eeee7bec78404440da0d8db34cf3f768",
+  "title": "fix(riven): Decompose riven loop tick deletion from #4996",
+  "state": "MERGED",
+  "merged_at": "2026-05-27T16:10:33Z",
+  "head_ref": "lior/decompose-4996-riven-tick-deletion-2"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 9411,
+  "archive_path": "docs/history/pr-reviews/PR-9411-test-core-the-f-oracle-conforms-to-the-golden-vector-ir-treaty-v1-convergence-pr.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-04T04:42:07.919Z",
+  "schema_version": "v1",
+  "commit_sha": "998bda6482626f9aa199346b9778b88b83b41591",
+  "title": "test(core): the F# oracle conforms to the golden-vector IR treaty v1 — convergence proven (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-04T04:41:45Z",
+  "head_ref": "otto/golden-vector-fsharp-oracle-conforms"
+}

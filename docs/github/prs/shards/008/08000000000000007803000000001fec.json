@@ -1,0 +1,12 @@
+{
+  "pr_number": 8172,
+  "archive_path": "docs/history/pr-reviews/PR-8172-fix-observe-eventdir-worktree-safe-no-commit-sink-live-tested.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-14T04:08:34.081Z",
+  "schema_version": "v1",
+  "commit_sha": "71710e7a331ed84a7d6ac2bc5fad2acdc2c9b7be",
+  "title": "fix(observe): eventDir worktree-safe + no-commit sink (live-tested)",
+  "state": "MERGED",
+  "merged_at": "2026-06-14T04:08:12Z",
+  "head_ref": "kiro/fix-observe-eventdir"
+}

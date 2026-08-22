@@ -1,0 +1,16 @@
+{
+  "pr_number": 1778,
+  "archive_path": "docs/history/pr-reviews/PR-1778-archive-preserve-pr-1777-review-output.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6-qahv",
+    "comment:PRRC_kwDOSF9kNM6-qbGz",
+    "thread:PRRT_kwDOSF9kNM6AL9XP"
+  ],
+  "fetched_at": "2026-05-07T03:35:43.909Z",
+  "schema_version": "v1",
+  "commit_sha": "3e8445f192d8a5627c9ba9bf2018423458ebb211",
+  "title": "archive: preserve PR 1777 review output",
+  "state": "MERGED",
+  "merged_at": "2026-05-07T03:29:14Z",
+  "head_ref": "claim/archive-pr-1777-review-substrate"
+}

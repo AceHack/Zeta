@@ -1,0 +1,12 @@
+{
+  "pr_number": 3273,
+  "archive_path": "docs/history/pr-reviews/PR-3273-shard-tick-2151z-temporal-provenance-discipline-citing-prs-in-flight.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-14T21:55:45.458Z",
+  "schema_version": "v1",
+  "commit_sha": "18620965b9327ffc31789761c4057f619ae42bd2",
+  "title": "shard(tick): 2151Z — temporal-provenance discipline (citing PRs in flight)",
+  "state": "MERGED",
+  "merged_at": "2026-05-14T21:55:30Z",
+  "head_ref": "shard/tick-2151Z-temporal-provenance-discipline-otto-cli-2026-05-14"
+}

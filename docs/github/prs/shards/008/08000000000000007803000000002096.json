@@ -1,0 +1,12 @@
+{
+  "pr_number": 8342,
+  "archive_path": "docs/history/pr-reviews/PR-8342-chore-workitem-add-hindsight-memory-context-provider-as-a-study-reference-for-me.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-15T21:31:03.805Z",
+  "schema_version": "v1",
+  "commit_sha": "0fef20b90c2588756993c1bc4bad274e7bb03e10",
+  "title": "chore(workitem): add Hindsight (memory/context provider) as a study reference for memory-org",
+  "state": "MERGED",
+  "merged_at": "2026-06-15T21:30:39Z",
+  "head_ref": "chore/memory-org-add-hindsight-study-reference"
+}

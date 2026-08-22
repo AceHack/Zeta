@@ -1,0 +1,12 @@
+{
+  "pr_number": 8986,
+  "archive_path": "docs/history/pr-reviews/PR-8986-codex-name-no-forget-bounded-gset-policy.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-21T19:27:23.915Z",
+  "schema_version": "v1",
+  "commit_sha": "9f92603211202676249c3ebc0e12f5cfd621791f",
+  "title": "[codex] name no-forget bounded gset policy",
+  "state": "MERGED",
+  "merged_at": "2026-06-21T19:26:54Z",
+  "head_ref": "codex/bounded-gset-heat"
+}

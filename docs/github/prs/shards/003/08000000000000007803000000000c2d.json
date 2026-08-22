@@ -1,0 +1,12 @@
+{
+  "pr_number": 3117,
+  "archive_path": "docs/history/pr-reviews/PR-3117-docs-lior-preserve-pr-discussions-batch-2.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-14T08:34:00.078Z",
+  "schema_version": "v1",
+  "commit_sha": "2df3d0950f9e9260dcf1151fb2faa590a584bdf4",
+  "title": "docs(lior): preserve PR discussions batch 2",
+  "state": "MERGED",
+  "merged_at": "2026-05-14T08:33:37Z",
+  "head_ref": "lior/preserve-prs-batch-1778747140"
+}

@@ -1,0 +1,23 @@
+{
+  "pr_number": 2184,
+  "archive_path": "docs/history/pr-reviews/PR-2184-decompose-b-0329-split-claude-md-as-process-into-8-atomic-children-b-0348-b-0355.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_ehyX",
+    "comment:PRRC_kwDOSF9kNM6_ehyk",
+    "comment:PRRC_kwDOSF9kNM6_ej_L",
+    "comment:PRRC_kwDOSF9kNM6_ekAt",
+    "comment:PRRC_kwDOSF9kNM6_ekdt",
+    "comment:PRRC_kwDOSF9kNM6_elKF",
+    "thread:PRRT_kwDOSF9kNM6AyYcj",
+    "thread:PRRT_kwDOSF9kNM6AyYct",
+    "thread:PRRT_kwDOSF9kNM6Aya8G",
+    "thread:PRRT_kwDOSF9kNM6AyaYM"
+  ],
+  "fetched_at": "2026-05-09T04:54:21.546Z",
+  "schema_version": "v1",
+  "commit_sha": "aa427add60f011407cab18f2fc8e5a6837886049",
+  "title": "decompose(B-0329): split CLAUDE.md-as-process into 8 atomic children (B-0348..B-0355)",
+  "state": "MERGED",
+  "merged_at": "2026-05-09T04:54:07Z",
+  "head_ref": "claim/b0329-decompose-claude-md-as-process-2026-05-09"
+}

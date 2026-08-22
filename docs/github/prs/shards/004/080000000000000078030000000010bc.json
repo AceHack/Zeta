@@ -1,0 +1,12 @@
+{
+  "pr_number": 4284,
+  "archive_path": "docs/history/pr-reviews/PR-4284-shard-0017z-c-kestrel-critique-absorbed-b-0668-bridge-spec-primary-target.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-19T00:25:31.279Z",
+  "schema_version": "v1",
+  "commit_sha": "8cd47f13582129ea14d75ca348099c69823343f8",
+  "title": "shard(0017Z-c): Kestrel critique absorbed; B-0668 bridge spec = primary target",
+  "state": "MERGED",
+  "merged_at": "2026-05-19T00:25:15Z",
+  "head_ref": "shard/tick-2026-05-19-0017z-c-kestrel-critique-absorbed-b-0668-bridge-spec-primary-engineering-target-2026-05-19"
+}

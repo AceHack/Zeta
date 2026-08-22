@@ -1,0 +1,12 @@
+{
+  "pr_number": 9808,
+  "archive_path": "docs/history/pr-reviews/PR-9808-deps-bump-net-sdk-10-0-203-10-0-302-restore-codeanalysis-5-6-0-cs9057-resolved-u.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-01T00:47:11.462Z",
+  "schema_version": "v1",
+  "commit_sha": "cf0a83e0d84c77526c45fead69f128583cc0900b",
+  "title": "deps: bump .NET SDK 10.0.203 → 10.0.302 + restore CodeAnalysis 5.6.0 (CS9057 resolved upward)",
+  "state": "MERGED",
+  "merged_at": "2026-08-01T00:46:45Z",
+  "head_ref": "shadow/bump-dotnet-sdk-10.0.302"
+}

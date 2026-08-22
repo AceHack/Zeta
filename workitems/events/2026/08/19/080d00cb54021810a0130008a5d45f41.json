@@ -1,0 +1,10 @@
+{
+  "id": "080d00cb54021810a0130008a5d45f41",
+  "at": "2026-08-19T09:46:45.187Z",
+  "by": "shadow",
+  "kind": "closed",
+  "payload": {
+    "workItemId": "081M0BVAV2H087G0R000VXRYRQ",
+    "reason": "Decided by Aaron 2026-08-19: 'windows and mac are drift checks ... we don't want to block on them.' Non-blocking is the intended steady state, not a temporary tolerance; the 30-clean-run promotion criterion is withdrawn as the wrong frame (and had already been met). macOS split to 081M0CPEH40087G0R0016GDSB6."
+  }
+}

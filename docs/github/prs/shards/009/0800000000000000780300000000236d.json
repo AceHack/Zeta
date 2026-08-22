@@ -1,0 +1,15 @@
+{
+  "pr_number": 9069,
+  "archive_path": "docs/history/pr-reviews/PR-9069-docs-research-design-note-polymorphic-zset-base-atom-open-generics-schema-as-eve.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7RLscz",
+    "thread:PRRT_kwDOSF9kNM6NvTca"
+  ],
+  "fetched_at": "2026-08-16T19:52:18.893Z",
+  "schema_version": "v1",
+  "commit_sha": "4bf226e0deff8beaaac3a9d21b633300e4a9a8f6",
+  "title": "docs(research): design note — polymorphic ZSet base atom (open generics + schema-as-events) (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-01T23:00:37Z",
+  "head_ref": "otto/zset-unification-design-note-081KWFXTHJY"
+}

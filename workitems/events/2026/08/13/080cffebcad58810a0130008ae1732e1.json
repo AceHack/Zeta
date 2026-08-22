@@ -1,0 +1,14 @@
+{
+  "id": "080cffebcad58810a0130008ae1732e1",
+  "at": "2026-08-13T23:33:36.561Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081KZYQJPNG087G0R002B9E9S1",
+    "type": "bug",
+    "title": "LossyUdpChannel retains a ReceiverBlock per attacker-chosen blockSeq forever: 200k packets (82 MB) retained 279 MB, and eviction only runs on a recovered block",
+    "slug": "lossyudpchannel-retains-a-receiverblock-per-attacker-chosen",
+    "priority": "P1",
+    "filename": "081KZYQJPNG087G0R002B9E9S1-lossyudpchannel-retains-a-receiverblock-per-attacker-chosen.md"
+  }
+}

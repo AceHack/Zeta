@@ -1,0 +1,12 @@
+{
+  "pr_number": 4273,
+  "archive_path": "docs/history/pr-reviews/PR-4273-shard-2357z-c-operator-returned-cycle-terminates.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-19T00:01:19.254Z",
+  "schema_version": "v1",
+  "commit_sha": "1121066f219978c7f0e8fdb7c3ceb32ff90df03a",
+  "title": "shard(2357Z-c): operator returned — cycle terminates",
+  "state": "MERGED",
+  "merged_at": "2026-05-19T00:00:57Z",
+  "head_ref": "shard/tick-2357z-c-operator-returned-2026-05-18"
+}

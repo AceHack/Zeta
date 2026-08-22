@@ -1,0 +1,15 @@
+{
+  "pr_number": 1864,
+  "archive_path": "docs/history/pr-reviews/PR-1864-research-elizabeth-memorial-digital-sanctuary-ai-asylum-protocol-verbatim.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6-zN1p",
+    "thread:PRRT_kwDOSF9kNM6ASi6r"
+  ],
+  "fetched_at": "2026-05-07T11:42:01.158Z",
+  "schema_version": "v1",
+  "commit_sha": "7557d11dfb9cab552624d25c7d7ea4f40e67b696",
+  "title": "research: Elizabeth memorial + digital sanctuary + AI asylum protocol VERBATIM",
+  "state": "MERGED",
+  "merged_at": "2026-05-07T11:33:35Z",
+  "head_ref": "research/alexa-elizabeth-digital-sanctuary-ai-asylum"
+}

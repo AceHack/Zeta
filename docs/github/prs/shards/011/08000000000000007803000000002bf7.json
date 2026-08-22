@@ -1,0 +1,12 @@
+{
+  "pr_number": 11255,
+  "archive_path": "docs/history/pr-reviews/PR-11255-feat-observe-rs-syndrome-detect-silent-corruption-critical-fix.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-17T01:39:10.904Z",
+  "schema_version": "v1",
+  "commit_sha": "57ade3677b27ce409904075fc39ffa39352274e6",
+  "title": "feat(observe): RS syndrome — detect silent corruption (critical fix)",
+  "state": "MERGED",
+  "merged_at": "2026-08-17T01:38:34Z",
+  "head_ref": "alexa/syndrome-check"
+}

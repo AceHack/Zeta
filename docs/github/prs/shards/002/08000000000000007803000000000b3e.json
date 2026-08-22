@@ -1,0 +1,12 @@
+{
+  "pr_number": 2878,
+  "archive_path": "docs/history/pr-reviews/PR-2878-docs-research-otto-canonical-bootstream-multi-foreground-surface-orchestrator-if.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-12T23:13:59.106Z",
+  "schema_version": "v1",
+  "commit_sha": "5736feca136288771e845e661127c1d00b986bcf",
+  "title": "docs(research): Otto canonical bootstream — multi-foreground-surface orchestrator (IFS-format, 13-part, parallel to Kestrel PR #2848)",
+  "state": "MERGED",
+  "merged_at": "2026-05-12T23:13:43Z",
+  "head_ref": "otto-canonical-bootstream-multi-foreground-surface-orchestrator-2026-05-12"
+}

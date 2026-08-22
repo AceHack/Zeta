@@ -1,0 +1,17 @@
+{
+  "pr_number": 5138,
+  "archive_path": "docs/history/pr-reviews/PR-5138-docs-archive-preserve-prs-5130-5134.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7E6OTd",
+    "comment:PRRC_kwDOSF9kNM7E6OUB",
+    "thread:PRRT_kwDOSF9kNM6EyK89",
+    "thread:PRRT_kwDOSF9kNM6EyK8h"
+  ],
+  "fetched_at": "2026-05-26T13:18:19.852Z",
+  "schema_version": "v1",
+  "commit_sha": "e43f95584c03dafb4d97937b2392a8926df081dd",
+  "title": "docs(archive): preserve PRs 5130-5134",
+  "state": "MERGED",
+  "merged_at": "2026-05-26T13:17:59Z",
+  "head_ref": "lior/pr-preservation-batch-1-2026-05-26"
+}

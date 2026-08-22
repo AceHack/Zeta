@@ -1,0 +1,12 @@
+{
+  "pr_number": 7475,
+  "archive_path": "docs/history/pr-reviews/PR-7475-feat-updates-triggers-home-crypto-mining-shadow-updates-triggers-roots-mynode-td.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-10T08:28:38.025Z",
+  "schema_version": "v1",
+  "commit_sha": "8a7c7ecafa6e73d6883755b7dbfa62920bac02f4",
+  "title": "feat(updates,triggers,home-crypto-mining)+shadow: updates/ + triggers/ roots + MyNode td5/td6 blueprint (inventory/USB/Zeta-update-trigger)",
+  "state": "MERGED",
+  "merged_at": "2026-06-10T08:28:10Z",
+  "head_ref": "shadow-mynode-inventory-updates-triggers"
+}

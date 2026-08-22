@@ -1,0 +1,67 @@
+---
+id: 081M089ZPAY087G0R001MYXM7N
+type: task
+state: backlog
+priority: P2
+slug: chip-8-cross-run-store-room-loop-auto-consult-io-adapter-and
+title: "CHIP-8 cross-run store: room-loop auto-consult, IO adapter, and Dark Hall browser injection"
+created: 2026-08-17T16:48:26.462Z
+depends_on: []
+composes_with: []
+---
+
+# CHIP-8 cross-run store: room-loop auto-consult, IO adapter, and Dark Hall browser injection
+
+Follow-on to **081M087DVKF087G0R002DDHMPR**, which shipped the store itself: the F# writer/reader
+(`src/Core/Chip8CrossRunStore.fs`), the TypeScript reader/verifier parity
+(`src/Core.TypeScript/chip9/chip8-cross-run-store.ts`), the committed artifacts under
+`db/emus/chip8/orbits/`, and the design doc
+`docs/research/2026-08-17-chip8-cross-run-superdeterministic-memo-store-orbit-memoization-not-retrocausality.md`.
+
+What that slice deliberately did **not** do, and why each is a separate decision:
+
+## 1. Room-loop auto-consult
+
+`Chip8CrossRunStore.fastForward` is a room-facing lookup, and it is proven byte-equal to
+`SoftChip8.lookAhead` — but no handler in `Chip8PredictionRoom` calls it yet. Wiring it means giving
+`timerExecutionHandler` an injected `Reader` and having it prefer a memo hit over
+`SoftChip8.lookAhead cyclesPerTick`.
+
+**The care needed:** the room currently spends a metered budget (`SoftChip8Flux.lookAheadFunded`) to
+speculate. A memo hit costs (almost) nothing, so auto-consult silently changes what the tank pays for.
+That is a metering change, not a caching change, and it needs the ΔU story told out loud — otherwise
+the store becomes an invisible subsidy on the budget, which is the hidden-oracle shape in a new place.
+
+## 2. The IO adapter
+
+`Chip8CrossRunStore` performs **zero** file IO, on purpose (§13 noninterference: the store is injected,
+never fetched). Something outside it must read `db/emus/chip8/orbits/*.orbit.json` and build a `Reader`.
+That adapter is where `ConfigureAwait(false)` and the no-`Task.Run` discipline apply; the pure module
+was able to sidestep both by having no async surface at all.
+
+## 3. Dark Hall browser injection — and the seam finding
+
+The original routing guess was `src/Core.TypeScript/darkhall-ui/darkhall-browser-durable-runtime.ts`.
+**Measured, that is the wrong seam.** It manages *mutable per-session* IndexedDB checkpoints of a room
+transcript, with an invalidation/replay ledger. The orbit store is the opposite lifecycle: *immutable,
+content-addressed, committed, shared, read-only*. DV2.0 says those are different change rates and
+therefore different storage shapes, and routing an immutable artifact through checkpoint-invalidation
+machinery would couple two things that have no reason to change together.
+
+The right seam is the same one F# uses: the browser room **receives** a `CrossRunReader`
+(`emptyCrossRunReader` by default), and whoever constructs the room decides whether to hand it one
+built from fetched artifacts. That is a small, honest change to the bootstrap options rather than a
+change to the durable runtime.
+
+## 4. A full TypeScript CHIP-8 executor
+
+TypeScript can currently **read and verify** these artifacts but cannot **write** them, because
+`src/Core.TypeScript/chip9/chip9.ts` is a treaty conformer for the DRAW subset: its `Frame` has no
+`delay`, `sound`, `keys`, or `rng`, and it mutates in place. A TS writer needs a full-state
+`Chip8Cow`-equivalent, which is its own byte-lock exercise against the F# oracle.
+
+## 5. Memoizing across input branches
+
+The store covers the *deterministic segment* only; at `FX0A`/`EX9E`/`EXA1` the memo stops by
+construction, because the successor depends on input that is not in the run key. Memoizing the branch
+tree needs the input sequence in the key — a different hub, not an extension of this one.

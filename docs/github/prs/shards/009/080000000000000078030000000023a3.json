@@ -1,0 +1,12 @@
+{
+  "pr_number": 9123,
+  "archive_path": "docs/history/pr-reviews/PR-9123-feat-core-cellscheduler-slice-5-recovery-free-from-durablesaga-completes-the-sch.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-17T06:29:30.547Z",
+  "schema_version": "v1",
+  "commit_sha": "5a18a5ff419d1120489d39034fa992c1122a1c85",
+  "title": "feat(core): CellScheduler slice 5 — recovery free from DurableSaga (completes the scheduler)",
+  "state": "MERGED",
+  "merged_at": "2026-07-02T05:55:03Z",
+  "head_ref": "otto/cell-scheduler-slice5-recovery"
+}

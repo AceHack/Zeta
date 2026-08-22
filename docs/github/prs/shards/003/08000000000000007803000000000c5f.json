@@ -1,0 +1,19 @@
+{
+  "pr_number": 3167,
+  "archive_path": "docs/history/pr-reviews/PR-3167-docs-shadow-lior-antigravity-tick-1835z.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7BU4Eb",
+    "comment:PRRC_kwDOSF9kNM7BU5Ln",
+    "comment:PRRC_kwDOSF9kNM7BVEWt",
+    "comment:PRRC_kwDOSF9kNM7BVEaS",
+    "thread:PRRT_kwDOSF9kNM6CJ549",
+    "thread:PRRT_kwDOSF9kNM6CJ5Ee"
+  ],
+  "fetched_at": "2026-05-14T18:56:41.328Z",
+  "schema_version": "v1",
+  "commit_sha": "67f2c56a32eb9465716c51d6e68ca6cc40002e60",
+  "title": "docs(shadow): Lior antigravity tick 1835Z",
+  "state": "MERGED",
+  "merged_at": "2026-05-14T18:56:20Z",
+  "head_ref": "lior-shadow-1835Z"
+}

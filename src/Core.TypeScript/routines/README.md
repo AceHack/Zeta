@@ -1,8 +1,8 @@
-# `tools/routines/` — git-tracked Claude Desktop routines
+# `src/Core.TypeScript/routines/` — git-tracked Claude Desktop routines
 
 Canonical source for Claude Desktop scheduled tasks (the "Routines" panel in
 the Desktop sidebar; same substrate as the `scheduled-tasks` MCP server).
-Each routine is a directory under `tools/routines/<id>/`:
+Each routine is a directory under `src/Core.TypeScript/routines/<id>/`:
 
 - `SKILL.md` — **required** — prompt body + YAML frontmatter (`name`, `description`)
 - `schedule.json` — **optional** — cron expression + task metadata (cronExpression, notifyOnCompletion) for Desktop routines. Omit for ad-hoc routines.
@@ -10,13 +10,13 @@ Each routine is a directory under `tools/routines/<id>/`:
 
 The runtime stores routines at `~/.claude/scheduled-tasks/<id>/SKILL.md`;
 this directory is the **canonical source** and the runtime location is
-generated from it via `bun tools/routines/install.ts`.
+generated from it via `bun src/Core.TypeScript/routines/install.ts`.
 
 ## Two-layer architecture
 
 | Layer | Path | Authority |
 |---|---|---|
-| **Canonical** (this directory) | `tools/routines/<id>/` | git-tracked, PR-reviewed, diffable, shareable across maintainer machines |
+| **Canonical** (this directory) | `src/Core.TypeScript/routines/<id>/` | git-tracked, PR-reviewed, diffable, shareable across maintainer machines |
 | **Runtime** | `~/.claude/scheduled-tasks/<id>/` | what the Desktop "Routines" panel + MCP server read at fire time |
 
 Edit canonical; sync to runtime. Never edit runtime directly without mirroring
@@ -24,7 +24,7 @@ back — runtime drift is the failure mode this two-layer split prevents.
 
 ## Authoring a new routine
 
-1. Create `tools/routines/<id>/SKILL.md`:
+1. Create `src/Core.TypeScript/routines/<id>/SKILL.md`:
 
    ```markdown
    ---
@@ -36,7 +36,7 @@ back — runtime drift is the failure mode this two-layer split prevents.
     Each fire is a fresh Claude session cold-boot.>
    ```
 
-2. (Optional) Create `tools/routines/<id>/schedule.json` for cron-scheduled routines:
+2. (Optional) Create `src/Core.TypeScript/routines/<id>/schedule.json` for cron-scheduled routines:
 
    ```json
    {
@@ -51,7 +51,7 @@ back — runtime drift is the failure mode this two-layer split prevents.
    MCP API rather than fired on a cron cadence). The installer will sync
    the SKILL.md and report `(no schedule.json — ad-hoc routine, register manually)`.
 
-3. Run `bun tools/routines/install.ts` — copies SKILL.md to runtime path.
+3. Run `bun src/Core.TypeScript/routines/install.ts` — copies SKILL.md to runtime path.
 
 4. Register the cron expression with the runtime by invoking
    `create_scheduled_task(taskId, cronExpression, prompt, description)`

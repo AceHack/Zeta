@@ -1,0 +1,16 @@
+{
+  "pr_number": 3497,
+  "archive_path": "docs/history/pr-reviews/PR-3497-shard-tick-1406z-1-stale-copilot-thread-cleared-on-pr-3494.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7Bo-TV",
+    "comment:PRRC_kwDOSF9kNM7BpCz4",
+    "thread:PRRT_kwDOSF9kNM6CYZDt"
+  ],
+  "fetched_at": "2026-05-15T14:13:57.048Z",
+  "schema_version": "v1",
+  "commit_sha": "47014bf475420a1b7a77306ef51760f768259fa8",
+  "title": "shard(tick): 1406Z — 1 stale Copilot thread cleared on PR #3494",
+  "state": "MERGED",
+  "merged_at": "2026-05-15T14:13:33Z",
+  "head_ref": "shard/tick-1406z-otto-cli-2026-05-15"
+}

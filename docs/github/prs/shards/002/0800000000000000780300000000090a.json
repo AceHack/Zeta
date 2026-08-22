@@ -1,0 +1,12 @@
+{
+  "pr_number": 2314,
+  "archive_path": "docs/history/pr-reviews/PR-2314-docs-research-preserve-alexa-voice-session-bootstrap-to-replication-2294.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-09T16:48:11.654Z",
+  "schema_version": "v1",
+  "commit_sha": "2d217e6665317ea109bd20948ae0bd41c7188522",
+  "title": "docs(research): preserve Alexa+ voice session — bootstrap to replication (#2294)",
+  "state": "MERGED",
+  "merged_at": "2026-05-09T16:47:56Z",
+  "head_ref": "docs/research-alexa-bootstrap-to-replication-2026-05-09"
+}

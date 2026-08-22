@@ -40,7 +40,7 @@
  * This is the same principle as the UDP transport: the external observer is required.
  */
 
-import type { DimensionalBnn } from "../planning/error-bnn-bridge";
+import type { DimensionalBnn, TailInterval } from "../planning/error-bnn-bridge";
 import type { StudentTState } from "../planning/student-t-bnn";
 // ── Serialized state format ────────────────────────────────────────────────────
 
@@ -123,39 +123,95 @@ export function serializeBnn(
  * Returns a new DimensionalBnn with the persisted posteriors pre-loaded.
  * If `tangleWarning` is true, the caller should inject an external observation
  * before trusting the posterior (homoclinic tangle avoidance).
+ *
+ * ## The tail index on the restore path
+ *
+ * Every dimension PRESENT in the file is restored at the ν the file carries, so
+ * the constructor's declared heavy endpoint never decides a restored dimension's
+ * tail — on that path it is dead. It is NOT dead in general: a dimension in
+ * `ALL_DIMENSIONS` but ABSENT from the file (a state written before the dimension
+ * existed, or a truncated one) keeps the scaffold's declared interval. That is
+ * exactly the schema-evolution path, so the default has to be defensible rather
+ * than merely unreachable — which is why it is now an interval that says it is
+ * unmeasured instead of the point `nu = 3`.
+ *
+ * ## What a restore cannot recover
+ *
+ * The persisted form carries ONE rung per dimension. The shadow rungs are
+ * re-seated at the restored posterior, so tail-dependence is measured afresh from
+ * the restore point and any divergence accumulated before the restart is gone. A
+ * dimension therefore reads `tail-independent` immediately after a restore
+ * regardless of what it was before — a real limit of the format, named here
+ * rather than papered over. Persisting the ladder would fix it and would change
+ * the on-disk schema, which this change deliberately does not touch.
  */
 export function deserializeBnn(
   state: PersistedBnnState,
+  tail?: TailInterval,
 ): { bnn: DimensionalBnn; tangleWarning: boolean } {
   // Import DimensionalBnn constructor
   const { createDimensionalBnn } = require("../planning/error-bnn-bridge") as {
-    createDimensionalBnn: (nu?: number, obsVariance?: number) => DimensionalBnn;
+    createDimensionalBnn: (
+      tail?: TailInterval,
+      obsVariance?: number,
+      rungCount?: number,
+    ) => DimensionalBnn;
   };
-  const bnn = createDimensionalBnn();
+  const bnn = tail ? createDimensionalBnn(tail) : createDimensionalBnn();
+  const states = bnn.states as Map<string, StudentTState>;
+  const shadows = bnn.shadowRungs as Map<string, readonly StudentTState[]>;
+  const weights = bnn.robustnessWeights as Map<string, number>;
+  const floorSeen = bnn.varianceOnFloorSeen as Map<string, boolean>;
+  // The observation-noise scale the scaffold was built with. The persisted form
+  // does not carry it, so a restored dimension has to inherit the BNN's — using
+  // `createStudentTState`'s own default instead would give one dimension a
+  // different noise scale from its nine siblings purely because it was new.
+  const scaffoldObsVariance = states.values().next().value?.obsVariance ?? 1.0;
+
   // Restore each dimension's EP state
   for (const dim of state.dimensions) {
-    const s = (bnn.states as Map<string, StudentTState>).get(dim.dimension);
-    if (s) {
-      // StudentTState is readonly — create a new state object with the persisted values
-      const restored: StudentTState = {
-        posterior: { mu: dim.mu, sigma2: dim.sigma2 },
-        factorMu: s.factorMu,
-        factorSigma2: s.factorSigma2,
-        nu: dim.nu,
-        obsVariance: s.obsVariance,
-        obsCount: dim.observationCount,
-      };
-      (bnn.states as Map<string, StudentTState>).set(dim.dimension, restored);
-      (bnn.robustnessWeights as Map<string, number>).set(dim.dimension, dim.lastRobustnessWeight);
-    } else {
-      // New dimension not in the default set — add it
-      const { createStudentTState: mkState } = require("../planning/student-t-bnn") as {
-        createStudentTState: (mu: number, sigma2: number, nu: number) => StudentTState;
-      };
-      const newState = mkState(dim.mu, dim.sigma2, dim.nu);
-      (bnn.states as Map<string, StudentTState>).set(dim.dimension, newState);
-      (bnn.robustnessWeights as Map<string, number>).set(dim.dimension, dim.lastRobustnessWeight);
+    // A persisted tail index that is not a tail index cannot be folded at — the
+    // filter would carry it into `(nu+1)/(nu+z^2)` and publish arithmetic. Fail
+    // fast and name the dimension: a corrupt file is an authoring condition, not
+    // a runtime one, and the previous code already threw on this in one of its
+    // two branches while silently accepting it in the other.
+    if (!Number.isFinite(dim.nu) || dim.nu <= 0) {
+      throw new RangeError(
+        `persisted nu for dimension ${dim.dimension} must be finite and > 0; got ${String(dim.nu)}`,
+      );
     }
+    const s = states.get(dim.dimension);
+    // StudentTState is readonly — create a new state object with the persisted values
+    const restored: StudentTState = {
+      posterior: { mu: dim.mu, sigma2: dim.sigma2 },
+      // A restored state has no site message of its own: the persisted form does
+      // not carry one. `factorSigma2 = Infinity` is the uniform message stated
+      // exactly, which is what a state with nothing absorbed since the restore
+      // should say. (It is diagnostic only and never divided back out.)
+      factorMu: s?.factorMu ?? dim.mu,
+      factorSigma2: s?.factorSigma2 ?? Number.POSITIVE_INFINITY,
+      nu: dim.nu,
+      obsVariance: s?.obsVariance ?? scaffoldObsVariance,
+      // Previously the "new dimension" branch dropped this and restored a state
+      // claiming zero observations, silently discarding the count the file
+      // carried. Same field, same source, both branches.
+      obsCount: dim.observationCount,
+    };
+    states.set(dim.dimension, restored);
+    weights.set(dim.dimension, dim.lastRobustnessWeight);
+    floorSeen.set(dim.dimension, false);
+    // Re-seat the shadow rungs at the restored posterior, keeping only those
+    // strictly LIGHTER than the restored tail — a rung at or below the published
+    // ν does not bracket it, and a ladder that does not bracket cannot grade.
+    // When none survive the dimension has no shadow, and `dimensionVerdict`
+    // reports `not-gradable` rather than a pass it did not earn.
+    const scaffoldShadows = shadows.get(dim.dimension) ?? [];
+    shadows.set(
+      dim.dimension,
+      scaffoldShadows
+        .filter((rung) => rung.nu > dim.nu)
+        .map((rung) => ({ ...restored, nu: rung.nu })),
+    );
   }
   return { bnn, tangleWarning: state.tangleWarning };
 }

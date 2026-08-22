@@ -1,16 +1,28 @@
-# Tick metrics writer — appends observe loop metrics to the Pages-served ledger.
+# Tick metrics writer — records observe loop metrics for the Pages-served dashboard.
 #
 # Runs on every push to main (each merge = a potential tick event landing)
-# and on a 15-minute schedule (catch ticks that landed via direct push).
+# and on a 15-minute schedule (catch ticks that landed via another lane).
 #
-# Reads: docs/observe-events/*.json (the durable event log)
-# Writes: data/tick-history.json (the append-only metrics ledger)
+# Reads:  docs/observe-events/*.json (the durable event log)
+# Writes: data/tick-shards/YYYY/MM/DD/<HHMMSSmmm>-<hash>.json (the ledger — one file
+#         per write, so no two writers ever touch the same path)
+#         data/tick-history.json + data/tick-latest.json (DERIVED, bounded rollups)
 # Served by: GitHub Pages at /data/tick-history.json (same-origin fetch)
 #
 # The data contract (from the design handoff):
-#   Frame shape: { t, action, mode, agent, entropy_state, entropy_heat, duration_ms }
-#   The file IS the ledger. Append-only. CI never deletes frames.
-#   Pages auto-deploys on push → readers see fresh data on next fetch.
+#   Frame shape: { t, total_events, last_action, last_mode, last_agent, entropy_state,
+#                  entropy_heat, ticks_24h, agents_active, claims_pending }
+#   The SHARD SET is the ledger. Append-only. CI never deletes shards.
+#   data/tick-history.json is a pure function of the shards, regenerated each run and
+#   bounded — a static page cannot list a directory, so it needs one file to fetch.
+#
+# HOW IT LANDS ON MAIN. It does not push to main. Ruleset "CI Gate" (16134995) makes
+# `gate (required)` a required status check on main with `bypass_actors: []`, and a
+# required check is evaluated at PUSH time against the pushed tip — so a commit that has
+# never been through a check run is rejected before any check could start. That is
+# intended and is not to be weakened. Instead the frame is parked on the ungated staging
+# branch `heartbeat/tick-metrics` and flushed via a PR with squash auto-merge armed.
+# See src/Core.TypeScript/forge-host/github/flush-via-staging.ts.
 
 name: tick-metrics
 
@@ -24,7 +36,15 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: write  # needs write to commit the metrics frame
+  contents: write       # push the staging branch
+  pull-requests: write  # open/arm the flush PR
+
+# One writer per lane. Without this, the push trigger and the 15-minute schedule can
+# overlap and race each other onto the same staging ref. The shard store makes the DATA
+# conflict-free; this makes the REF handling conflict-free too.
+concurrency:
+  group: tick-metrics-flush
+  cancel-in-progress: false
 
 jobs:
   append-metrics:
@@ -36,34 +56,148 @@ jobs:
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           fetch-depth: 0  # full history for accurate event counting
+          # THIS CHECKOUT'S CREDENTIAL IS THE ONE THAT PUSHES `heartbeat/tick-metrics`.
+          # `flush-via-staging.ts flush` runs `git push --force-with-lease origin
+          # HEAD:refs/heads/heartbeat/tick-metrics` with whatever credential the checkout
+          # persisted, and THAT push's actor is what decides whether `gate (required)` ever
+          # runs on the flush PR. The `GH_TOKEN` on the Flush step below is a different
+          # credential doing a different job (it is what `gh` authenticates PR creation
+          # with) and it was never the missing half.
+          #
+          # WHY THE PAT (081M05G8D36087G0R0034D3QPA, 081M010H4KE): a `pull_request` run whose
+          # triggering actor is `github-actions[bot]` is created and then immediately parked
+          # — status `completed`, conclusion `action_required` — so it never executes and
+          # never contributes a check to the PR's rollup. MEASURED ON THIS LANE, not
+          # inherited from the agent-heartbeat write-up: on PR #10588 head c79a60c8, ALL 34
+          # `pull_request` runs read `completed/action_required` with
+          # `actor=github-actions[bot]`, `gate` among them, and the PR's rollup carried 6
+          # check-runs and no gate row. That PR had then been open and unmergeable since
+          # 2026-08-14. The control observation on the same day: `heartbeat/alexa`, after
+          # #10986 put this PAT on its tick checkout, shows `gate | pull_request |
+          # in_progress | actor=AceHack` and 72 check-runs.
+          #
+          # NOTE the earlier reading — "GITHUB_TOKEN pushes do not trigger workflows at all"
+          # — is WRONG and must not be repeated: the run IS created, it is held. Same cure,
+          # different mechanism.
+          #
+          # WHY IT IS SAFE TO TRY AGAIN: #10850 did this on agent-heartbeat and killed three
+          # lanes for ~16.75h because the PAT had no `contents: write`. That grant was made
+          # by the operator on 2026-08-16. This workflow does NOT take the grant on faith —
+          # the preflight below probes it against the real remote on every run and falls
+          # back if it is wrong, so a mis-scoped or revoked PAT costs a degraded lane
+          # (telemetry still parks, gate still does not start) rather than a dead one.
+          #
+          # The `||` ladder covers ABSENCE (secret unset -> empty string -> default
+          # GITHUB_TOKEN). It cannot cover UNAUTHORIZED — a present-but-powerless token is
+          # exactly what #10850 shipped — which is the preflight's whole job. Two rungs, not
+          # the three-rung ladder on the Flush step's GH_TOKEN: `ZETA_PR_ARCHIVE_TOKEN` is
+          # scoped for PR creation and its contents-write standing is unestablished, so it
+          # is not a credential this push should silently land on.
+          persist-credentials: true
+          token: ${{ secrets.ZETA_TELEMETRY_FLUSH_TOKEN || secrets.GITHUB_TOKEN }}
+
+      # THE FALSIFIER FOR THE CREDENTIAL, RUN IN PRODUCTION ON EVERY RUN.
+      #
+      # #10913 verified a credential fix against a STUBBED git and it failed on the first
+      # real tick, because a stub models control flow and says nothing about which token git
+      # actually authenticates with. So this is not a stub and not a mock: it is a real
+      # `git push` to the real remote over the real network, with `--dry-run` so it updates
+      # nothing. GitHub performs repository-write authorization at the `git-receive-pack`
+      # advertisement, before any ref is considered, so a dry run gets the true 403/200
+      # answer.
+      #
+      # It probes a `credprobe/` ref, never `heartbeat/tick-metrics`: HEAD here is main and
+      # the lane branch has diverged (the flush squashes), so probing the real lane would be
+      # rejected as non-fast-forward and a permission answer would be indistinguishable from
+      # an ancestry answer. A ref that does not exist yet has no ancestry question to get
+      # wrong. `--dry-run` creates nothing.
+      #
+      # It runs BEFORE `prepare`, which is deliberate: `prepare` checks out a new branch and
+      # merges, so a credential fault discovered after it would be discovered with work in
+      # the tree. There is nothing to lose by answering the credential question first.
+      - name: Preflight the push credential
+        env:
+          FALLBACK_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -uo pipefail
+
+          probe() { git push --dry-run origin "HEAD:refs/heads/credprobe/tick-metrics" 2>&1; }
+
+          if OUT=$(probe); then
+            echo "[preflight] tick-metrics: push credential is authorized for this repository."
+            exit 0
+          fi
+          echo "$OUT"
+
+          # Only a CREDENTIAL answer is eligible for the swap. A network blip or an
+          # unexpected refusal must NOT silently re-point the credential — that would hide a
+          # different failure behind a credential story.
+          if ! printf '%s' "$OUT" | grep -qiE 'denied to|Authentication failed|Invalid username or token|error: 403'; then
+            echo "::warning title=tick-metrics preflight inconclusive::the probe failed, but not with a credential answer. Leaving the credential as-is; the real push below will report the true error."
+            exit 0
+          fi
+
+          echo "::error title=tick-metrics PAT cannot push::ZETA_TELEMETRY_FLUSH_TOKEN was denied by the remote. FIX: grant that fine-grained PAT 'Contents: read and write' on Lucent-Financial-Group/Zeta. Falling back to GITHUB_TOKEN: the lane keeps recording, but 'gate (required)' will NOT start on the flush PR (081M010H4KE)."
+
+          # Swap the credential the way actions/checkout itself sets it — one
+          # `--replace-all` of the extraheader, which is the key git actually authenticates
+          # with. `git -c http.<url>.extraheader=` APPENDS rather than overrides, and
+          # re-pointing the remote URL alone did not displace it in production (#10913), so
+          # neither of those is used here.
+          HDR_B64=$(printf 'x-access-token:%s' "$FALLBACK_TOKEN" | base64 | tr -d '\n')
+          echo "::add-mask::$HDR_B64"
+          git config --local --replace-all "http.https://github.com/.extraheader" "AUTHORIZATION: basic $HDR_B64"
+
+          # RE-PROBE. Without this the fallback is the vacuity class: a repair that is
+          # applied and never checked looks identical to one that worked. #10913's fallback
+          # ran, logged that it ran, and was denied under the same identity.
+          if OUT2=$(probe); then
+            echo "[preflight] tick-metrics: fallback credential verified against the remote; lane is DEGRADED but alive."
+            {
+              echo "### heartbeat/tick-metrics is running on the FALLBACK credential"
+              echo ""
+              echo "\`ZETA_TELEMETRY_FLUSH_TOKEN\` was denied by the remote; \`GITHUB_TOKEN\` is verified and in use."
+              echo "Telemetry still lands on the staging branch. \`gate (required)\` will NOT start on the flush PR until the PAT can push."
+              echo "Fix: grant that fine-grained PAT **Contents: read and write** on this repository."
+            } >> "$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
+          echo "$OUT2"
+          echo "::error title=tick-metrics has no working push credential::BOTH the PAT and GITHUB_TOKEN were denied. This is worse than #10850 and the lane is about to fail its push. Not exiting here so the frame is still computed and the push reports the authoritative error."
 
       - name: Install bun
         uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
         with:
           bun-version: latest
 
-      - name: Compute and append metrics frame
-        run: bun src/Core.TypeScript/observe/tick-metrics-writer.ts
-
-      - name: Commit and push if changed
+      - name: Configure committer
         run: |
           git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add data/tick-history.json data/tick-latest.json
-          if git diff --cached --quiet; then
-            echo "No new metrics to commit."
-          else
-            git commit -m "metrics: append tick frame [skip ci]"
-            # Rebase before pushing. This job runs every 15 minutes and appends to
-            # data/tick-*.json; the fleet pushes to main continuously, so a bare
-            # `git push` loses the race and fails non-fast-forward — which is exactly
-            # what happened on 8b4273ca9 (run 31428773872). Not a code failure: the
-            # frame was computed correctly and simply could not land.
-            #
-            # Rebase rather than merge: this lane only ever appends generated metric
-            # frames, so a merge commit here is pure noise. Matches lockfile-healer.yml
-            # and drift-sweep.yml, which already do this; tick-metrics was the one
-            # commit-back workflow still pushing bare.
-            git pull --rebase --autostash origin main
-            git push origin HEAD:main
-          fi
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+      # Start from main, then union in anything still parked on the staging branch from a
+      # previous run whose flush PR has not landed yet. Without this, a slow PR plus a
+      # fast schedule would let each run force-push over the last run's unlanded frame.
+      - name: Prepare staging working tree
+        run: bun src/Core.TypeScript/forge-host/github/flush-via-staging.ts prepare --lane tick-metrics
+
+      - name: Compute metrics frame and rebuild rollup
+        run: bun src/Core.TypeScript/observe/tick-metrics-writer.ts
+
+      # NOTE for future editors: the flush commit message must NOT carry `[skip ci]`.
+      # It becomes the PR head, and a CI-skip token there stops `gate` from ever running,
+      # so the required check never reports and the PR hangs unmergeable forever. The old
+      # message had `[skip ci]` because it was pushed straight at main, where it was
+      # harmless. flush-via-staging.ts refuses a skip token rather than open a dead PR.
+      - name: Flush to main via staging branch + PR
+        env:
+          # The enterprise forbids the Actions identity from creating pull requests, so a
+          # fine-grained PAT is required here (same constraint and same fallback ladder as
+          # pr-archive-on-merge.yml). Without one the frame still parks safely on the
+          # staging branch and the job reports the reason.
+          GH_TOKEN: ${{ secrets.ZETA_TELEMETRY_FLUSH_TOKEN || secrets.ZETA_PR_ARCHIVE_TOKEN || secrets.GITHUB_TOKEN }}
+        run: |
+          bun src/Core.TypeScript/forge-host/github/flush-via-staging.ts flush \
+            --lane tick-metrics \
+            --paths data/tick-shards data/tick-history.json data/tick-latest.json \
+            --message "metrics: append tick frame"

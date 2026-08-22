@@ -1,0 +1,12 @@
+{
+  "pr_number": 10020,
+  "archive_path": "docs/history/pr-reviews/PR-10020-docs-research-decorrelation-instrument-arc-capstone-what-survives-is-benign-shar.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-04T13:59:56.390Z",
+  "schema_version": "v1",
+  "commit_sha": "b7db44231da5fd99698e3687a01044404e1f0fb8",
+  "title": "docs(research): decorrelation-instrument arc capstone — what survives is benign shared buses",
+  "state": "MERGED",
+  "merged_at": "2026-08-04T13:59:13Z",
+  "head_ref": "docs/decorrelation-instrument-arc-capstone-20260804"
+}

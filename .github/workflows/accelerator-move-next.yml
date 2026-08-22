@@ -11,7 +11,24 @@
 # the accelerator branch), disable the workflow in the Actions UI, or remove this
 # file via a follow-up PR.
 #
-# SAFETY RAILS (be-good-to-our-host, per docs/accelerator/README.md):
+# CURRENT STATE 2026-08-15 — THIS WORKFLOW CANNOT SUCCEED. Recorded here rather
+# than left for whoever dispatches it next to discover:
+#   - It ran exactly ONCE, and it worked: run 26674800857, 2026-05-30, all 8 steps
+#     executed and passed (none skipped). It has not been dispatched since.
+#   - The branch it checks out, `accelerator/pr-less-git-monster`, was pruned from
+#     origin afterward, and is NOT recoverable from the `archive/*` recovery tags
+#     (checked: no tag tree contains `move-next-harness`).
+#   - So both halves are gone — the branch, and the harness it ran
+#     (`src/Core.TypeScript/accelerator/move-next-harness.ts`). The only surviving
+#     harness is a PRE-MIGRATION snapshot, quarantined and out of the build, at
+#     `docs/recovered-orphan-branches-2026-05/tools/accelerator/`.
+#   - The preflight steps below turn that into a NAMED failure instead of an
+#     opaque `actions/checkout` error. They are real checks, not a hardcoded
+#     refusal: restore the branch + harness and they pass again on their own.
+#   - Restoring the capability is separately priced and is NOT done here. Tracking
+#     row: 081KSNY2Z0008QG0R003X1QWYG (P1, open).
+#
+# SAFETY RAILS (be-good-to-our-host, per docs/accelerator/SUBSTRATE-GROUNDING.md):
 #   - workflow_dispatch ONLY (manual / API). No push/schedule auto-trigger —
 #     adding this file does NOT auto-run anything.
 #   - concurrency group: at most ONE run at a time (no parallel spam).
@@ -57,6 +74,8 @@ env:
 
 jobs:
   move-next:
+    # Timeout basis: observed n=1 at 0.2m; validate + append-only event commit.
+    timeout-minutes: 10
     runs-on: ubuntu-24.04
     steps:
       - name: Validate inputs (allow-list agent, numeric iterations)
@@ -72,10 +91,40 @@ jobs:
           echo "agent=$AGENT_INPUT" >> "$GITHUB_OUTPUT"
           echo "iter=$ITER_INPUT" >> "$GITHUB_OUTPUT"
 
+      # Preflight 1 — the branch this workflow runs ON must still exist. Without
+      # this, a dispatch dies inside actions/checkout with a generic "couldn't
+      # find remote ref" and nothing tells the operator WHY. A check that fails
+      # without naming its cause is barely better than one that does not run.
+      - name: Preflight — accelerator branch must exist on origin
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          ACCEL_BRANCH: accelerator/pr-less-git-monster
+        run: |
+          if gh api "repos/${GITHUB_REPOSITORY}/branches/${ACCEL_BRANCH}" >/dev/null 2>&1; then
+            echo "Preflight OK: branch '${ACCEL_BRANCH}' exists."
+            exit 0
+          fi
+          echo "::error title=Accelerator branch is gone::Branch '${ACCEL_BRANCH}' does not exist on origin. It was pruned after this workflow's only successful run (26674800857, 2026-05-30) and is NOT in the archive/* recovery tags. The harness it carried is therefore gone too; the only surviving copy is a pre-migration snapshot quarantined at docs/recovered-orphan-branches-2026-05/tools/accelerator/. Restoring it is tracked by row 081KSNY2Z0008QG0R003X1QWYG (P1, open) and is deliberately NOT done by this workflow."
+          exit 1
+
       - name: Checkout accelerator branch
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           ref: accelerator/pr-less-git-monster
+
+      # Preflight 2 — the branch existing does not imply the harness does. This
+      # is the exact path step "Run one move-next cycle" invokes below, so the
+      # two cannot drift apart silently.
+      - name: Preflight — move-next harness must exist on that branch
+        env:
+          HARNESS: src/Core.TypeScript/accelerator/move-next-harness.ts
+        run: |
+          if [ -f "$HARNESS" ]; then
+            echo "Preflight OK: harness present at $HARNESS"
+            exit 0
+          fi
+          echo "::error title=move-next harness missing::'$HARNESS' does not exist on the accelerator branch, so the cycle step below cannot run. See row 081KSNY2Z0008QG0R003X1QWYG (P1, open); a pre-migration snapshot is quarantined at docs/recovered-orphan-branches-2026-05/tools/accelerator/move-next-harness.ts."
+          exit 1
 
       - name: Kill-switch check (events/_HALT)
         id: halt

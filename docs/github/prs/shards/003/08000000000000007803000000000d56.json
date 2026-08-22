@@ -1,0 +1,12 @@
+{
+  "pr_number": 3414,
+  "archive_path": "docs/history/pr-reviews/PR-3414-shard-tick-1036z-pr-3390-merged-primary-worktree-stuck-8h-mutex-empirically-oper.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-15T10:42:18.071Z",
+  "schema_version": "v1",
+  "commit_sha": "f5ef4d7f949d33e1cd36ef80addec89fd0c551fa",
+  "title": "shard(tick): 1036Z — PR #3390 merged; primary worktree stuck >8h; mutex empirically operational",
+  "state": "MERGED",
+  "merged_at": "2026-05-15T10:41:58Z",
+  "head_ref": "shard/tick-1036z-otto-cli-2026-05-15"
+}

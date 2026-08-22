@@ -1,0 +1,12 @@
+{
+  "pr_number": 7507,
+  "archive_path": "docs/history/pr-reviews/PR-7507-feat-core-cli-verb-resolver-diskpart-style-minimum-unique-prefix-mea-measure-cut.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-10T20:42:33.363Z",
+  "schema_version": "v1",
+  "commit_sha": "ad0451b5bfee459fef928d3d5eb64d81319533f6",
+  "title": "feat(core): CLI verb resolver — diskpart-style minimum-unique-prefix (mea==measure); cut commits via finalizer",
+  "state": "MERGED",
+  "merged_at": "2026-06-10T20:41:54Z",
+  "head_ref": "shadow-cli-verb-resolver"
+}

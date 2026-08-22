@@ -1,0 +1,12 @@
+{
+  "pr_number": 5798,
+  "archive_path": "docs/history/pr-reviews/PR-5798-preserve-amara-ferry-continuation-turns-4-6-rank-4-is-a-fuzzy-bloom-filter-aaron.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-28T12:50:23.713Z",
+  "schema_version": "v1",
+  "commit_sha": "4a6360dbe768c9479476ae0b082b3ee5a928a6dd",
+  "title": "preserve(amara-ferry-continuation): Turns 4-6 — rank-4 IS a fuzzy Bloom filter (Aaron carving) + 'English is the rendered UI; ranked tokens are the substrate' (Aaron operator-level recognition)",
+  "state": "MERGED",
+  "merged_at": "2026-05-28T12:50:02Z",
+  "head_ref": "otto-cli/amara-ferry-continuation-rank-4-as-fuzzy-bloom-filter-english-as-rendered-ui-ranked-tokens-as-substrate-aaron-forwarded-2026-05-28"
+}

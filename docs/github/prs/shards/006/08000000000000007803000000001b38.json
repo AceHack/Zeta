@@ -1,0 +1,12 @@
+{
+  "pr_number": 6968,
+  "archive_path": "docs/history/pr-reviews/PR-6968-docs-wi-zs-is-a-durable-cell-reified-types-every-loop-f-immutable-ordered-type-h.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-08T01:13:30.042Z",
+  "schema_version": "v1",
+  "commit_sha": "3f870ef10037c371ee2c0ec784addf2653807814",
+  "title": "docs+wi: zs is a durable cell (reified types every loop); F# immutable-ordered type-handles -> 0-downtime migration",
+  "state": "MERGED",
+  "merged_at": "2026-06-08T01:13:11Z",
+  "head_ref": "otto/zs-durable-cell-reified-types-zero-downtime-migration"
+}

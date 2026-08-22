@@ -1,0 +1,12 @@
+{
+  "pr_number": 10342,
+  "archive_path": "docs/history/pr-reviews/PR-10342-fix-ci-bound-mux-swarm-tick-it-has-hung-every-run-since-it-shipped.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-14T00:10:50.436Z",
+  "schema_version": "v1",
+  "commit_sha": "0ac4fa80674a7e2a2049802c6b9d97709d9350e4",
+  "title": "fix(ci): bound mux-swarm-tick — it has hung every run since it shipped",
+  "state": "MERGED",
+  "merged_at": "2026-08-13T14:06:29Z",
+  "head_ref": "mux-swarm-tick-timeout"
+}

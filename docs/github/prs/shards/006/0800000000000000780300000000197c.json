@@ -1,0 +1,12 @@
+{
+  "pr_number": 6524,
+  "archive_path": "docs/history/pr-reviews/PR-6524-docs-research-ferry-note-aaron-alexa-speaker-universal-action-grammar-octarian-c.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-02T02:15:00.122Z",
+  "schema_version": "v1",
+  "commit_sha": "592817ee78b2bc4b9b574e4653694ca6a72812e5",
+  "title": "docs(research): ferry note — Aaron + Alexa-speaker universal-action-grammar / octarian / C. elegans emulator / Khaleesi=bind (verbatim)",
+  "state": "MERGED",
+  "merged_at": "2026-06-02T02:14:39Z",
+  "head_ref": "otto-cli/alexa-uag-ferry-note-2026-06-01"
+}

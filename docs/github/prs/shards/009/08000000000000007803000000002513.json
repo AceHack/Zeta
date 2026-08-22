@@ -1,0 +1,12 @@
+{
+  "pr_number": 9491,
+  "archive_path": "docs/history/pr-reviews/PR-9491-docs-addendum-aaron-s-email-dreams-are-the-no-chip-existence-proof-shadow.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-04T19:33:24.384Z",
+  "schema_version": "v1",
+  "commit_sha": "c117f0baf6c7913a74a1853ea82ff82287b4255e",
+  "title": "docs: addendum — Aaron's email-dreams are the no-chip existence proof (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-04T19:32:59Z",
+  "head_ref": "otto/email-dreams-are-the-existence-proof"
+}

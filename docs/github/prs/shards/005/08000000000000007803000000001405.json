@@ -1,0 +1,15 @@
+{
+  "pr_number": 5125,
+  "archive_path": "docs/history/pr-reviews/PR-5125-fix-ci-p0-cascade-4-audit-blocking-all-iso-builds-since-5119-bootloader-any-of.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7E0sWZ",
+    "thread:PRRT_kwDOSF9kNM6EuLON"
+  ],
+  "fetched_at": "2026-05-26T08:01:55.055Z",
+  "schema_version": "v1",
+  "commit_sha": "2774fef5ac046560f4eafce0c3e26cc7e4309942",
+  "title": "fix(ci P0): cascade #4 audit blocking ALL ISO builds since #5119 — bootloader any-of",
+  "state": "MERGED",
+  "merged_at": "2026-05-26T08:01:33Z",
+  "head_ref": "otto-cli/p0-fix-iso-audit-bootloader-any-of-2026-05-26"
+}

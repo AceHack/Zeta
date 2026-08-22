@@ -1,0 +1,12 @@
+{
+  "pr_number": 13466,
+  "archive_path": "docs/history/pr-reviews/PR-13466-fix-reticulum-announces-are-authenticated-to-the-identity-they-claim-the-eclipse.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-22T01:08:20.075Z",
+  "schema_version": "v1",
+  "commit_sha": "fffc6f4053a6b1f6bdb63da9e402b7aece5e5fcc",
+  "title": "fix(reticulum): announces are authenticated to the identity they claim — the Eclipse primitive is closed (BUGS.md P1)",
+  "state": "MERGED",
+  "merged_at": "2026-08-22T01:07:37Z",
+  "head_ref": "shadow/reticulum-announce-auth"
+}

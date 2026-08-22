@@ -88,12 +88,12 @@ Independent outage sources from the runtimes; build/install/restore breaks when 
 | Homebrew (`formulae.brew.sh`) | system-level macOS packages (mise itself + curl bootstrap) | <https://status.brew.sh/> | (formula fetch) |
 | apt (Debian/Ubuntu) | system-level Linux packages | (no canonical status; per-mirror) | (none) |
 
-### Verifiers + analyzers (jar / binary downloads)
+### Verifiers + analyzers (jars are committed; the rest are fetched)
 
 | Dependency | Used for | Status source | Factory-relevant components |
 |---|---|---|---|
-| TLA+ (`tla2tools.jar` v1.8.0) | safety/liveness specs | <https://github.com/tlaplus/tlaplus/releases> | (release host) |
-| Alloy (`alloy.jar` v6.2.0) | structural model checking | <https://github.com/AlloyTools/org.alloytools.alloy/releases> | (release host) |
+| TLA+ (`tla2tools.jar`, `TLC2 Version 2026.05.18.174321 (rev: 8ba1027)`) | safety/liveness specs | committed to git -- upstream release health does not gate our runs | (none: no fetch at install time) |
+| Alloy (`alloy.jar`, `6.2.0.202501090817 (rev: 794226d)`) | structural model checking | committed to git -- upstream release health does not gate our runs | (none: no fetch at install time) |
 | Stryker (.NET tool) | mutation testing | <https://stryker-mutator.io/blog/> | (NuGet feed) |
 | Semgrep | static analysis | <https://semgrep.dev/blog> | (CLI registry) |
 

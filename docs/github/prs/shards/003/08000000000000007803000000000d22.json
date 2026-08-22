@@ -1,0 +1,12 @@
+{
+  "pr_number": 3362,
+  "archive_path": "docs/history/pr-reviews/PR-3362-backlog-p2-b-0529-tick-shard-schema-validator-vs-current-practice-drift.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-15T05:22:32.583Z",
+  "schema_version": "v1",
+  "commit_sha": "c6f2620d12430fb56ae41c29db83d918da1f4fea",
+  "title": "backlog(P2): B-0529 — tick-shard schema validator vs current practice drift",
+  "state": "MERGED",
+  "merged_at": "2026-05-15T05:22:16Z",
+  "head_ref": "b-0529/tick-shard-schema-drift-otto-cli-2026-05-15"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 1988,
+  "archive_path": "docs/history/pr-reviews/PR-1988-fix-backlog-decompose-b-0159-update-b-0140-status.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-08T01:47:22.682Z",
+  "schema_version": "v1",
+  "commit_sha": "40d3ac8fa1de62859318bea10025bff04fa78689",
+  "title": "fix(backlog): decompose B-0159 + update B-0140 status",
+  "state": "MERGED",
+  "merged_at": "2026-05-08T01:47:03Z",
+  "head_ref": "fix/b0140-decompose-remaining"
+}

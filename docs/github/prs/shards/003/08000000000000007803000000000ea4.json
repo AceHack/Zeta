@@ -1,0 +1,21 @@
+{
+  "pr_number": 3748,
+  "archive_path": "docs/history/pr-reviews/PR-3748-memory-feedback-substrate-drift-catch-pattern-claim-acquire-existence-check.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7B1_Q9",
+    "comment:PRRC_kwDOSF9kNM7B2B5x",
+    "comment:PRRC_kwDOSF9kNM7B2B6E",
+    "comment:PRRC_kwDOSF9kNM7B2B6O",
+    "thread:PRRT_kwDOSF9kNM6Ch2L4",
+    "thread:PRRT_kwDOSF9kNM6Ch36K",
+    "thread:PRRT_kwDOSF9kNM6Ch36W",
+    "thread:PRRT_kwDOSF9kNM6Ch36b"
+  ],
+  "fetched_at": "2026-05-16T05:16:06.865Z",
+  "schema_version": "v1",
+  "commit_sha": "f4ac1259f28a492323f6b3f2646950bdce5e29c2",
+  "title": "memory(feedback): substrate-drift-catch pattern (claim acquire + existence-check)",
+  "state": "MERGED",
+  "merged_at": "2026-05-16T05:15:50Z",
+  "head_ref": "memory/substrate-drift-catch-pattern-otto-cli-2026-05-16"
+}

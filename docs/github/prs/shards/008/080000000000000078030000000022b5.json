@@ -1,0 +1,12 @@
+{
+  "pr_number": 8885,
+  "archive_path": "docs/history/pr-reviews/PR-8885-docs-codegen-spread-trajectory-closed.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-21T06:32:26.278Z",
+  "schema_version": "v1",
+  "commit_sha": "7594f157776cf883aec7b90a117d79e20db11a10",
+  "title": "docs: codegen-spread trajectory CLOSED",
+  "state": "MERGED",
+  "merged_at": "2026-06-21T06:31:58Z",
+  "head_ref": "alexa/trajectory-complete"
+}

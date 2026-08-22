@@ -1,0 +1,12 @@
+{
+  "pr_number": 7186,
+  "archive_path": "docs/history/pr-reviews/PR-7186-docs-research-the-human-is-not-an-authority-a-peer-observer-the-only-asymmetry-i.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-09T03:00:07.340Z",
+  "schema_version": "v1",
+  "commit_sha": "f1508d9adfd8a3ab4d24a6ef0e7356e376994e6f",
+  "title": "docs(research): the human is NOT an authority — a peer observer; the only asymmetry is the legal-liability meta-frame overlay",
+  "state": "MERGED",
+  "merged_at": "2026-06-09T02:59:47Z",
+  "head_ref": "otto/research-human-is-peer-observer-only-asymmetry-legal-liability-overlay"
+}

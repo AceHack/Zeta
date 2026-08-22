@@ -1,0 +1,12 @@
+{
+  "pr_number": 2936,
+  "archive_path": "docs/history/pr-reviews/PR-2936-docs-memory-f-fork-ext-recursive-type-providers-roslyn-source-generators-recursi.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-13T04:52:22.979Z",
+  "schema_version": "v1",
+  "commit_sha": "a148477c2d4e1eadb10ee32b9a2fb06597dd45e0",
+  "title": "docs(memory): F# fork ext — Recursive Type Providers + Roslyn Source Generators recursive on HKTs + Mandelbrot bound (Aaron 2026-05-13 ext of PR #2935)",
+  "state": "MERGED",
+  "merged_at": "2026-05-13T04:51:57Z",
+  "head_ref": "aaron-fsharp-fork-recursive-type-providers-bifurcation-rules-roslyn-generators-recursive-on-hkts-fixed-point-combinator-2026-05-13"
+}

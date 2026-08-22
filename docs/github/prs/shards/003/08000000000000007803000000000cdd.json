@@ -1,0 +1,19 @@
+{
+  "pr_number": 3293,
+  "archive_path": "docs/history/pr-reviews/PR-3293-shard-tick-2236z-off-duty-checkpoint-10-stable-ticks.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7BZe58",
+    "comment:PRRC_kwDOSF9kNM7BZfBM",
+    "comment:PRRC_kwDOSF9kNM7BZjE4",
+    "comment:PRRC_kwDOSF9kNM7BZjGy",
+    "thread:PRRT_kwDOSF9kNM6CNPql",
+    "thread:PRRT_kwDOSF9kNM6CNPvz"
+  ],
+  "fetched_at": "2026-05-14T22:42:47.820Z",
+  "schema_version": "v1",
+  "commit_sha": "ca34467e86275c5c72a95218659cf78ade2cf7e3",
+  "title": "shard(tick): 2236Z — off-duty checkpoint (10+ stable ticks)",
+  "state": "MERGED",
+  "merged_at": "2026-05-14T22:42:31Z",
+  "head_ref": "shard/tick-2236Z-off-duty-checkpoint-otto-cli-2026-05-14"
+}

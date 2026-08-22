@@ -1,0 +1,12 @@
+{
+  "pr_number": 7023,
+  "archive_path": "docs/history/pr-reviews/PR-7023-feat-core-storedproc-native-vs-interpreted-differential-for-db-7049-sequence-ste.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-08T05:26:12.381Z",
+  "schema_version": "v1",
+  "commit_sha": "8665fdbe83b7e9b1c208cdeb7a333b32afdafa27",
+  "title": "feat(core): StoredProc native-vs-interpreted differential for db (#7049) — sequence step 2",
+  "state": "MERGED",
+  "merged_at": "2026-06-08T05:25:50Z",
+  "head_ref": "otto/storedproc-db-differential-seq-step2"
+}

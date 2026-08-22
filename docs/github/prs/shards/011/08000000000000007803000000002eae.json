@@ -1,0 +1,12 @@
+{
+  "pr_number": 11950,
+  "archive_path": "docs/history/pr-reviews/PR-11950-fix-ci-recover-the-dpkg-database-between-apt-retries-the-3-attempt-loop-was-a-1-.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-18T13:48:10.045Z",
+  "schema_version": "v1",
+  "commit_sha": "9016a346268a8c7f5feb1bafd3954a5a63e47365",
+  "title": "fix(ci): recover the dpkg database between apt retries — the 3-attempt loop was a 1-attempt loop",
+  "state": "MERGED",
+  "merged_at": "2026-08-18T13:47:29Z",
+  "head_ref": "shadow/fix-apt-stall-dpkg-recovery"
+}

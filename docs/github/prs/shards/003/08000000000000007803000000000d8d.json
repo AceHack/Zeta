@@ -1,0 +1,17 @@
+{
+  "pr_number": 3469,
+  "archive_path": "docs/history/pr-reviews/PR-3469-chore-b-0058-decompose-candidate-failure-honesty-log-into-b-0058-3.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7Bnkre",
+    "comment:PRRC_kwDOSF9kNM7BnksO",
+    "thread:PRRT_kwDOSF9kNM6CXW17",
+    "thread:PRRT_kwDOSF9kNM6CXW1a"
+  ],
+  "fetched_at": "2026-05-15T16:10:22.038Z",
+  "schema_version": "v1",
+  "commit_sha": "ff3d8083b946bebf50c9dadf9a6c1de2d50d57e6",
+  "title": "chore(b-0058): decompose candidate-failure honesty log into B-0058.3",
+  "state": "MERGED",
+  "merged_at": "2026-05-15T16:09:58Z",
+  "head_ref": "lior/decompose-b0058-3"
+}

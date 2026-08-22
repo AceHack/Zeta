@@ -1,0 +1,12 @@
+{
+  "pr_number": 6970,
+  "archive_path": "docs/history/pr-reviews/PR-6970-feat-agent-memory-per-persona-durable-longhorn-backed-memory-statefulset.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-08T01:15:27.464Z",
+  "schema_version": "v1",
+  "commit_sha": "544967ec1e815036ddf9debcaa4c66f7e1242bcf",
+  "title": "feat(agent-memory): per-persona durable Longhorn-backed memory StatefulSet",
+  "state": "MERGED",
+  "merged_at": "2026-06-08T01:15:06Z",
+  "head_ref": "feat/agent-memory-statefulset"
+}

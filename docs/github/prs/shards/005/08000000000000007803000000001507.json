@@ -1,0 +1,21 @@
+{
+  "pr_number": 5383,
+  "archive_path": "docs/history/pr-reviews/PR-5383-fix-b-0835-feat-b-0846-zeta-install-fallback-nix-timeout-tuning-wifi-cache-nixos.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7FLLeE",
+    "comment:PRRC_kwDOSF9kNM7FLLeW",
+    "comment:PRRC_kwDOSF9kNM7FLLej",
+    "comment:PRRC_kwDOSF9kNM7FLLer",
+    "thread:PRRT_kwDOSF9kNM6E-jA-",
+    "thread:PRRT_kwDOSF9kNM6E-jBM",
+    "thread:PRRT_kwDOSF9kNM6E-jBU",
+    "thread:PRRT_kwDOSF9kNM6E-jBa"
+  ],
+  "fetched_at": "2026-05-27T02:30:33.902Z",
+  "schema_version": "v1",
+  "commit_sha": "7c9447a54c8e4a2e60555f33aa4a3a4afce86209",
+  "title": "fix(B-0835)+feat(B-0846): zeta-install --fallback + nix-timeout tuning (WiFi cache.nixos.org timeout resilience; empirical 5-files-timeout-twice over WiFi)",
+  "state": "MERGED",
+  "merged_at": "2026-05-27T02:30:15Z",
+  "head_ref": "feat-wifi-fallback-zeta-install-2026-05-26-2150z"
+}

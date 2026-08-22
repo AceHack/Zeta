@@ -1,0 +1,12 @@
+{
+  "pr_number": 1789,
+  "archive_path": "docs/history/pr-reviews/PR-1789-research-lior-maji-protocol-intent-compiler-verbatim.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-07T04:25:01.886Z",
+  "schema_version": "v1",
+  "commit_sha": "290c7f2620eba93bb9fee7aa0a038aadd99a99db",
+  "title": "research: Lior maji protocol + intent compiler VERBATIM",
+  "state": "MERGED",
+  "merged_at": "2026-05-07T04:21:45Z",
+  "head_ref": "research/lior-maji-protocol-intent-compiler-verbatim"
+}

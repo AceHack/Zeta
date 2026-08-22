@@ -1,0 +1,19 @@
+{
+  "pr_number": 3695,
+  "archive_path": "docs/history/pr-reviews/PR-3695-shard-tick-2026-05-16t02-52z-audit-filter-triage-17-10-baseline-cleanup-question.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7B0_MC",
+    "comment:PRRC_kwDOSF9kNM7B0_MK",
+    "comment:PRRC_kwDOSF9kNM7B0_MM",
+    "thread:PRRT_kwDOSF9kNM6ChIds",
+    "thread:PRRT_kwDOSF9kNM6ChIdy",
+    "thread:PRRT_kwDOSF9kNM6ChIdz"
+  ],
+  "fetched_at": "2026-05-16T03:03:03.926Z",
+  "schema_version": "v1",
+  "commit_sha": "bb4782d8c82feb142d2bc956064688a653ee3990",
+  "title": "shard(tick): 2026-05-16T02:52Z — audit filter triage (17→10) + baseline-cleanup question",
+  "state": "MERGED",
+  "merged_at": "2026-05-16T03:02:45Z",
+  "head_ref": "shard/tick-0252z-otto-cli-2026-05-16"
+}

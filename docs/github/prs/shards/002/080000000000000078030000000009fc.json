@@ -1,0 +1,15 @@
+{
+  "pr_number": 2556,
+  "archive_path": "docs/history/pr-reviews/PR-2556-docs-memory-comedy-as-debugging-is-load-bearing-1-on-the-critic-s-1.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_qg7A",
+    "thread:PRRT_kwDOSF9kNM6A7ydW"
+  ],
+  "fetched_at": "2026-05-10T22:02:18.573Z",
+  "schema_version": "v1",
+  "commit_sha": "98df1efe5a53d7776c42216c8a3d87f2420204a4",
+  "title": "docs(memory): comedy-as-debugging IS load-bearing — -1 on the critic's -1",
+  "state": "MERGED",
+  "merged_at": "2026-05-10T22:02:05Z",
+  "head_ref": "docs/comedy-load-bearing-minus1-on-critic-2026-05-10"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 10082,
+  "archive_path": "docs/history/pr-reviews/PR-10082-tools-book-build-reproducible-epub-pipeline-pandoc-in-declarative-installers.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-07T03:09:49.272Z",
+  "schema_version": "v1",
+  "commit_sha": "c5fd83da5798b1286a85302308f2de2a3d579d97",
+  "title": "tools(book-build): reproducible EPUB pipeline + pandoc in declarative installers",
+  "state": "MERGED",
+  "merged_at": "2026-08-07T03:09:13Z",
+  "head_ref": "tools/book-build-epub-pipeline"
+}

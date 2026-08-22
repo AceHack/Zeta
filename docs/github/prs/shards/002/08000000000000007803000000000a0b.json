@@ -1,0 +1,17 @@
+{
+  "pr_number": 2571,
+  "archive_path": "docs/history/pr-reviews/PR-2571-docs-b-0164-1-complete-start-gate-re-decompose-to-smallest-safe-slice-riven.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_q5U5",
+    "comment:PRRC_kwDOSF9kNM6_q5pQ",
+    "thread:PRRT_kwDOSF9kNM6A8F3c",
+    "thread:PRRT_kwDOSF9kNM6A8Fm8"
+  ],
+  "fetched_at": "2026-05-11T01:39:50.248Z",
+  "schema_version": "v1",
+  "commit_sha": "ca82a9ac6e67304fd4d97187d6a8df54e8179507",
+  "title": "docs(B-0164.1): complete start-gate + re-decompose to smallest safe slice (Riven)",
+  "state": "MERGED",
+  "merged_at": "2026-05-11T01:39:31Z",
+  "head_ref": "claim/B-0164.1-pr-review-disagreement-preservation-smallest-slice-riven-2026-05-10"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 3942,
+  "archive_path": "docs/history/pr-reviews/PR-3942-chore-b-0441-close-notifier-scope-fully-implemented.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-16T21:23:01.921Z",
+  "schema_version": "v1",
+  "commit_sha": "cc11b048053ba43e1c9763da9d610bd4c785073d",
+  "title": "chore(B-0441): close — notifier scope fully implemented",
+  "state": "MERGED",
+  "merged_at": "2026-05-16T21:22:46Z",
+  "head_ref": "chore/b-0441-status-closed-2026-05-16"
+}

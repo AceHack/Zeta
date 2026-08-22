@@ -1,0 +1,12 @@
+{
+  "pr_number": 9624,
+  "archive_path": "docs/history/pr-reviews/PR-9624-docs-letters-the-cell-the-measured-neglect-160-100-telecourt-dismissal-on-tape-s.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-09T19:26:32.456Z",
+  "schema_version": "v1",
+  "commit_sha": "3cf10ab63b987c85c299f7c92f654106ed014b3a",
+  "title": "docs(letters): The Cell — the measured neglect (160/100 + telecourt dismissal, on tape) (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-09T19:25:59Z",
+  "head_ref": "otto/the-cell-bp-reading"
+}

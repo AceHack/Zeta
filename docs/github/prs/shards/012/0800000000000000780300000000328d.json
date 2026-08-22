@@ -1,0 +1,12 @@
+{
+  "pr_number": 12941,
+  "archive_path": "docs/history/pr-reviews/PR-12941-research-surface-declarations-are-data-ace-is-one-satisfier-and-the-closure-is-t.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-20T22:21:34.911Z",
+  "schema_version": "v1",
+  "commit_sha": "962fa4cc82ae2a76054b3091b0e0a62cc6285813",
+  "title": "research: surface declarations are DATA — ace is one satisfier, and the closure is the repo split",
+  "state": "MERGED",
+  "merged_at": "2026-08-20T22:20:59Z",
+  "head_ref": "research/surface-declarations-are-data"
+}

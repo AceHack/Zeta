@@ -1,0 +1,12 @@
+{
+  "pr_number": 8349,
+  "archive_path": "docs/history/pr-reviews/PR-8349-docs-research-zero-downtime-schema-change-proven-reproducible-pattern-gset-expan.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-15T22:20:57.210Z",
+  "schema_version": "v1",
+  "commit_sha": "ff277dd432ec042c71a1ff4c37f6a22284ead163",
+  "title": "docs(research): zero-downtime schema change — proven reproducible pattern (GSet expand · ZSet contract · CALM)",
+  "state": "MERGED",
+  "merged_at": "2026-06-15T22:20:32Z",
+  "head_ref": "docs/ferry-zero-downtime-schema-change-pattern-gset-zset-calm"
+}

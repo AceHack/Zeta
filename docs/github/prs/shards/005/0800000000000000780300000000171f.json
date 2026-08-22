@@ -1,0 +1,12 @@
+{
+  "pr_number": 5919,
+  "archive_path": "docs/history/pr-reviews/PR-5919-ferry-alexa-higher-kinded-kindness-typeclass-pattern-universal-kindness-laws-ama.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-28T18:25:05.494Z",
+  "schema_version": "v1",
+  "commit_sha": "9ad3e04ff040018f74f684d7dc95a84fda4546e7",
+  "title": "ferry(alexa): higher-kinded kindness typeclass pattern + Universal Kindness Laws + Amara's blade applied (rhyme ≠ derivation) + carved sentence wake-time rule (operator option-4 disposition 2026-05-28)",
+  "state": "MERGED",
+  "merged_at": "2026-05-28T18:24:46Z",
+  "head_ref": "otto-cli/alexa-higher-kinded-kindness-2026-05-28"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 3240,
+  "archive_path": "docs/history/pr-reviews/PR-3240-shard-tick-2046z-audit-hygiene-exclude-plists-from-machine-specific-content-audi.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-14T21:06:24.677Z",
+  "schema_version": "v1",
+  "commit_sha": "2742d288a119907888e205d2611008d17690e242",
+  "title": "shard(tick): 2046Z — audit hygiene: exclude plists from machine-specific-content audit",
+  "state": "MERGED",
+  "merged_at": "2026-05-14T21:06:01Z",
+  "head_ref": "shard/tick-2046Z-audit-plist-exclusion-otto-cli-2026-05-14"
+}

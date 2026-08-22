@@ -1,0 +1,12 @@
+{
+  "pr_number": 8998,
+  "archive_path": "docs/history/pr-reviews/PR-8998-docs-resume-identity-crypto-onboarding-state-one-fingerprint-vision.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-21T20:32:20.154Z",
+  "schema_version": "v1",
+  "commit_sha": "f9d5abd257fad6801c28278db08a7f64792bb627",
+  "title": "docs(resume): identity+crypto onboarding state + one-fingerprint vision",
+  "state": "MERGED",
+  "merged_at": "2026-06-21T20:31:50Z",
+  "head_ref": "otto/resume-identity-crypto-onboarding-vision"
+}

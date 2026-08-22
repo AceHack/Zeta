@@ -1,0 +1,21 @@
+{
+  "pr_number": 4356,
+  "archive_path": "docs/history/pr-reviews/PR-4356-feat-backlog-decompose-b-0211-slice-1.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7ClipL",
+    "comment:PRRC_kwDOSF9kNM7CllCC",
+    "comment:PRRC_kwDOSF9kNM7CllDK",
+    "comment:PRRC_kwDOSF9kNM7CllDq",
+    "thread:PRRT_kwDOSF9kNM6DE-Lu",
+    "thread:PRRT_kwDOSF9kNM6DE_6o",
+    "thread:PRRT_kwDOSF9kNM6DE_7a",
+    "thread:PRRT_kwDOSF9kNM6DE_7z"
+  ],
+  "fetched_at": "2026-05-19T08:25:45.062Z",
+  "schema_version": "v1",
+  "commit_sha": "014eaeafab083b8062741283671bb657a628d96d",
+  "title": "feat(backlog): decompose B-0211 slice 1",
+  "state": "MERGED",
+  "merged_at": "2026-05-19T08:25:19Z",
+  "head_ref": "lior/decompose-b0211-slice1"
+}

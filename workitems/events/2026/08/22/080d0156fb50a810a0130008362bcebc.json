@@ -1,0 +1,14 @@
+{
+  "id": "080d0156fb50a810a0130008362bcebc",
+  "at": "2026-08-22T19:07:59.893Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M0NDYTGK087G0R00338NKP8",
+    "type": "task",
+    "title": "Dogfooded search CLI: fail-closed scope budget + .ignore so search constraints are carried by the tool, not by prose",
+    "slug": "dogfooded-search-cli-fail-closed-scope-budget-ignore-so-sear",
+    "priority": "P2",
+    "filename": "081M0NDYTGK087G0R00338NKP8-dogfooded-search-cli-fail-closed-scope-budget-ignore-so-sear.md"
+  }
+}

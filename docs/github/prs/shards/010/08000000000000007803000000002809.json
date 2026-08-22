@@ -1,0 +1,12 @@
+{
+  "pr_number": 10249,
+  "archive_path": "docs/history/pr-reviews/PR-10249-feat-key-custody-derivation-a-recovered-21-21-the-n-version-combine.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-09T23:27:55.297Z",
+  "schema_version": "v1",
+  "commit_sha": "d40fb66443b92966c54e0bdb5941b18a22e4e495",
+  "title": "feat(key-custody): derivation A (recovered, 21/21) + the N-version combine",
+  "state": "MERGED",
+  "merged_at": "2026-08-09T23:27:21Z",
+  "head_ref": "cleanside/key-custody-r8-r9-r5"
+}

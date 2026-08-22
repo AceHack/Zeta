@@ -1,0 +1,41 @@
+{
+  "id": "society-msyd0nr4",
+  "at": "2026-08-18T07:47:11.296Z",
+  "by": "society",
+  "kind": "evolution",
+  "generation": 1,
+  "agents": [
+    {
+      "id": "society",
+      "fitness": 0.6505648066545648,
+      "generation": 0
+    }
+  ],
+  "meanFitness": 0.6505648066545648,
+  "fitnessSpread": 0,
+  "geneticDiversity": 0,
+  "priorHints": [
+    {
+      "dimension": "calibration",
+      "mu": 0.9151169943783238,
+      "sigma2": 0.009081167552609263,
+      "robustnessWeight": 1.2599625532440824,
+      "obsCount": 123,
+      "senderZid": "society-runner"
+    }
+  ],
+  "heatReadout": {
+    "band": "indeterminate",
+    "pointBand": "cold",
+    "lowBand": "cold",
+    "highBand": "warm",
+    "transportMu": 0,
+    "transportSigma": 1,
+    "transportPpm": 0,
+    "transportPpmSigma": 250000,
+    "robustnessWeight": 1,
+    "obsCount": 0,
+    "evidence": "prior",
+    "trend": "indeterminate"
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 8628,
+  "archive_path": "docs/history/pr-reviews/PR-8628-memory-zeta-ntp-borders-are-the-spatial-leap-seconds-both-space-and-time-are-sof.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-19T21:20:12.779Z",
+  "schema_version": "v1",
+  "commit_sha": "0f2127eef53b29b2d7ff70cc798e8b65e2ad84b4",
+  "title": "memory(zeta-ntp): borders are the spatial leap seconds — both space and time are soft",
+  "state": "MERGED",
+  "merged_at": "2026-06-19T21:19:46Z",
+  "head_ref": "otto/borders-are-spatial-leap-seconds-both-soft"
+}

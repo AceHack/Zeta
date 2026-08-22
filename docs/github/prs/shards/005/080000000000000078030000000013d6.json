@@ -1,0 +1,19 @@
+{
+  "pr_number": 5078,
+  "archive_path": "docs/history/pr-reviews/PR-5078-docs-persona-max-recommend-otto-foreground-autonomous-loop-tick-for-onboarding.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7EwiSz",
+    "comment:PRRC_kwDOSF9kNM7EwiTY",
+    "comment:PRRC_kwDOSF9kNM7EwiTy",
+    "thread:PRRT_kwDOSF9kNM6ErIj7",
+    "thread:PRRT_kwDOSF9kNM6ErIjO",
+    "thread:PRRT_kwDOSF9kNM6ErIjp"
+  ],
+  "fetched_at": "2026-05-26T03:40:12.759Z",
+  "schema_version": "v1",
+  "commit_sha": "3b0c017feb63fd711cc41141cf5ed37df811db39",
+  "title": "docs(persona/max): recommend Otto + foreground autonomous-loop tick for onboarding",
+  "state": "MERGED",
+  "merged_at": "2026-05-26T03:39:54Z",
+  "head_ref": "otto-cli/max-otto-cron-loop-onboarding-2026-05-25"
+}

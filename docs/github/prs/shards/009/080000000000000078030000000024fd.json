@@ -1,0 +1,12 @@
+{
+  "pr_number": 9469,
+  "archive_path": "docs/history/pr-reviews/PR-9469-fix-zetaid-close-the-category-byte-lock-channel-11-inventoryasset-10-in-all-orac.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-04T17:57:36.189Z",
+  "schema_version": "v1",
+  "commit_sha": "9d0ec9df1f5b43dc76e8e498043cadc088fb018a",
+  "title": "fix(zetaid): close the Category byte-lock — Channel=11 + InventoryAsset=10 in ALL oracles (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-04T17:57:07Z",
+  "head_ref": "otto/zetaid-bytelock-channel-inventoryasset-backfill"
+}

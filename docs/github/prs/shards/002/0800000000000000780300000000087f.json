@@ -1,0 +1,15 @@
+{
+  "pr_number": 2175,
+  "archive_path": "docs/history/pr-reviews/PR-2175-formal-prove-agenda-non-fusion-preserves-autonomy.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_eLrC",
+    "thread:PRRT_kwDOSF9kNM6AyH8k"
+  ],
+  "fetched_at": "2026-05-09T03:37:20.385Z",
+  "schema_version": "v1",
+  "commit_sha": "0959840eb45c18b21380cc05971dc10bd32ca818",
+  "title": "formal: prove agenda non-fusion preserves autonomy",
+  "state": "MERGED",
+  "merged_at": "2026-05-09T03:37:03Z",
+  "head_ref": "codex/agenda-autonomy-z3"
+}

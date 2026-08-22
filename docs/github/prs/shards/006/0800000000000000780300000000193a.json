@@ -1,0 +1,12 @@
+{
+  "pr_number": 6458,
+  "archive_path": "docs/history/pr-reviews/PR-6458-feat-range-set-rangeset-rust-ferry-oracle-4-of-4-completes-the-primitive.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-01T19:22:16.157Z",
+  "schema_version": "v1",
+  "commit_sha": "78f5721699dea9593a573c42f0b65f82c1c88bb1",
+  "title": "feat(range-set): RangeSet Rust ferry (oracle #4 of 4) — completes the primitive",
+  "state": "MERGED",
+  "merged_at": "2026-06-01T19:21:53Z",
+  "head_ref": "otto-cli/rangeset-rust-ferry-2026-06-01"
+}

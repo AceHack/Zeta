@@ -1,0 +1,12 @@
+{
+  "pr_number": 7653,
+  "archive_path": "docs/history/pr-reviews/PR-7653-docs-naming-chip-9-ratified-typo-promoted-to-the-color-extension-dialect-s-name.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-11T11:17:59.840Z",
+  "schema_version": "v1",
+  "commit_sha": "ea2e1accb582db3940651f356ea3366e5b38ae2c",
+  "title": "docs(naming): CHIP-9 ratified — typo promoted to the color-extension dialect's name",
+  "state": "MERGED",
+  "merged_at": "2026-06-11T11:17:34Z",
+  "head_ref": "shadow-chip9-name-ratified"
+}

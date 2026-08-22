@@ -1,0 +1,12 @@
+{
+  "pr_number": 13457,
+  "archive_path": "docs/history/pr-reviews/PR-13457-fix-cluster-make-hindsight-s-and-nats-s-valuesobject-actually-render-30-gib-the-.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-22T00:31:56.075Z",
+  "schema_version": "v1",
+  "commit_sha": "f332a61ae7de9b2373c4c0a16a20abe010336579",
+  "title": "fix(cluster): make hindsight's and nats's valuesObject actually render — 30 GiB the cluster never provisioned, and a JetStream quorum that never existed",
+  "state": "MERGED",
+  "merged_at": "2026-08-22T00:31:18Z",
+  "head_ref": "shadow/storage-claims-inert-values"
+}

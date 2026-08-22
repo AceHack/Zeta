@@ -1,0 +1,12 @@
+{
+  "pr_number": 4432,
+  "archive_path": "docs/history/pr-reviews/PR-4432-docs-shard-rule-tick-1614z-1626z-cold-boot-pure-git-tier-fetch-head-anchor.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-20T16:48:43.607Z",
+  "schema_version": "v1",
+  "commit_sha": "1d50d0e08f2dca1a3c257f438c2b93e38434f776",
+  "title": "docs(shard,rule): tick 1614Z+1626Z cold-boot + pure-git tier FETCH_HEAD anchor",
+  "state": "MERGED",
+  "merged_at": "2026-05-20T16:47:45Z",
+  "head_ref": "shard/tick-1614z-otto-cli-cold-boot-cron-rearm-pure-git-2026-05-20"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 4901,
+  "archive_path": "docs/history/pr-reviews/PR-4901-docs-infra-infra-readme-md-bootstrap-runbook-pr-5-of-addison-s-plan.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-25T02:36:50.038Z",
+  "schema_version": "v1",
+  "commit_sha": "2495c2c3c6a56e5d950dc86cddf5f7fb8626d7bc",
+  "title": "docs(infra): infra/README.md — bootstrap runbook (PR 5 of Addison's plan)",
+  "state": "MERGED",
+  "merged_at": "2026-05-25T02:36:31Z",
+  "head_ref": "feat/addison-helpers-and-readme-2026-05-24"
+}

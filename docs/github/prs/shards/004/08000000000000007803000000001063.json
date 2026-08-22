@@ -1,0 +1,19 @@
+{
+  "pr_number": 4195,
+  "archive_path": "docs/history/pr-reviews/PR-4195-preserve-kestrel-5-card-as-wedge-weaponization-aaron-s-pattern-my-mom-has-on-me-.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7CayQX",
+    "comment:PRRC_kwDOSF9kNM7CayQ_",
+    "comment:PRRC_kwDOSF9kNM7CayRh",
+    "thread:PRRT_kwDOSF9kNM6C9RYK",
+    "thread:PRRT_kwDOSF9kNM6C9RYq",
+    "thread:PRRT_kwDOSF9kNM6C9RZB"
+  ],
+  "fetched_at": "2026-05-18T20:27:26.996Z",
+  "schema_version": "v1",
+  "commit_sha": "3bed9ec01747d1ff7bfd5b434e2bb94dfe6ee807",
+  "title": "preserve(kestrel-5): card-as-wedge weaponization + Aaron's 'pattern my mom has on me' recognition (mirror-tier; not auto-armed)",
+  "state": "MERGED",
+  "merged_at": "2026-05-18T20:27:09Z",
+  "head_ref": "shard/kestrel-fifth-intervention-card-as-wedge-aaron-mom-pattern-recognition-2026-05-18"
+}

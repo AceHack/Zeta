@@ -1,0 +1,12 @@
+{
+  "pr_number": 3335,
+  "archive_path": "docs/history/pr-reviews/PR-3335-shard-tick-0051z-pr-3330-merged-pr-3332-in-ci-bus-inbound-observed.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-15T00:54:24.194Z",
+  "schema_version": "v1",
+  "commit_sha": "ede3586698d45fa7c50afd9cf8bdd354ea38e8c2",
+  "title": "shard(tick): 0051Z — PR #3330 merged; PR #3332 in CI; bus inbound observed",
+  "state": "MERGED",
+  "merged_at": "2026-05-15T00:54:06Z",
+  "head_ref": "shard/tick-0051Z-pr3330-merged-2026-05-15"
+}

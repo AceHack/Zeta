@@ -1,0 +1,12 @@
+{
+  "pr_number": 8143,
+  "archive_path": "docs/history/pr-reviews/PR-8143-feat-hygiene-local-preflight-runner-every-gate-dimension-all-failures-at-once.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-14T02:39:04.238Z",
+  "schema_version": "v1",
+  "commit_sha": "122dcabc0cd3a332151651655b338a65d5008d0f",
+  "title": "feat(hygiene): local preflight runner — every gate dimension, all failures at once",
+  "state": "MERGED",
+  "merged_at": "2026-06-14T02:38:36Z",
+  "head_ref": "otto/preflight-runner"
+}

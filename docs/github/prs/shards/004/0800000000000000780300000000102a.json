@@ -1,0 +1,12 @@
+{
+  "pr_number": 4138,
+  "archive_path": "docs/history/pr-reviews/PR-4138-docs-shadow-maji-antigravity-check-on-4136-blob-decomposition.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-18T19:43:24.573Z",
+  "schema_version": "v1",
+  "commit_sha": "785d69368a8977806b3d2a2e5a6095ccc29d3079",
+  "title": "docs(shadow): Maji antigravity check on #4136 (blob decomposition)",
+  "state": "MERGED",
+  "merged_at": "2026-05-18T19:43:06Z",
+  "head_ref": "maji/decompose-4136"
+}

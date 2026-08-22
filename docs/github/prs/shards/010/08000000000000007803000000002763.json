@@ -1,0 +1,12 @@
+{
+  "pr_number": 10083,
+  "archive_path": "docs/history/pr-reviews/PR-10083-fix-setup-apt-manifest-pandoc-must-be-bare-tier-suffix-broke-ubuntu-install-sh-t.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-07T03:13:09.928Z",
+  "schema_version": "v1",
+  "commit_sha": "0e88a612073e1be5508f6172ba5066d91c017ed6",
+  "title": "fix(setup): apt manifest pandoc must be bare (tier= suffix broke ubuntu install-sh test)",
+  "state": "MERGED",
+  "merged_at": "2026-08-07T03:12:35Z",
+  "head_ref": "fix/apt-manifest-pandoc-tier-suffix"
+}

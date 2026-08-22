@@ -1,0 +1,12 @@
+{
+  "pr_number": 9915,
+  "archive_path": "docs/history/pr-reviews/PR-9915-fix-ci-raise-the-whole-timeout-class-5-12min-7-jobs-run-a-full-toolchain-install.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-01T20:32:24.466Z",
+  "schema_version": "v1",
+  "commit_sha": "8f0c322d2fea6ebe9c1aff603584650c1eb53ee9",
+  "title": "fix(ci): raise the whole timeout class 5→12min — 7 jobs run a full toolchain install on a 5min budget",
+  "state": "MERGED",
+  "merged_at": "2026-08-01T20:31:49Z",
+  "head_ref": "shadow/raise-timeout-class-install-sh-jobs"
+}

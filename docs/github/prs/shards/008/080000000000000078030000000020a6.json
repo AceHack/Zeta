@@ -1,0 +1,12 @@
+{
+  "pr_number": 8358,
+  "archive_path": "docs/history/pr-reviews/PR-8358-refactor-observe-phase-3-regenerate-golden-vectors-with-zetaid-shaped-test-ids.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-15T23:04:30.854Z",
+  "schema_version": "v1",
+  "commit_sha": "79b3b3d0824fda24ea1e7a5ffb4b7bed4b42c52c",
+  "title": "refactor(observe): Phase 3 — regenerate golden vectors with ZetaId-shaped test ids",
+  "state": "MERGED",
+  "merged_at": "2026-06-15T23:04:02Z",
+  "head_ref": "alexa/phase3-golden-vectors-zetaid"
+}

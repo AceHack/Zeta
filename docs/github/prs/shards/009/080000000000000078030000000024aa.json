@@ -1,0 +1,12 @@
+{
+  "pr_number": 9386,
+  "archive_path": "docs/history/pr-reviews/PR-9386-feat-model-backend-chatgpt-subscription-backend-account-login-no-api-key-shadow.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-04T00:42:45.613Z",
+  "schema_version": "v1",
+  "commit_sha": "2fa3d1108c594d35001f77d46c8e99861a5b2570",
+  "title": "feat(model-backend): ChatGPT-subscription backend — account login, NO API key (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-04T00:42:22Z",
+  "head_ref": "otto/codex-oauth-chatgpt-subscription-backend"
+}

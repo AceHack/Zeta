@@ -1,0 +1,12 @@
+{
+  "pr_number": 2235,
+  "archive_path": "docs/history/pr-reviews/PR-2235-fix-proof-sketch-correct-rice-s-theorem-application-and-weaken-inexhaustible-cla.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-09T07:55:19.371Z",
+  "schema_version": "v1",
+  "commit_sha": "0f5a6df8b09c09448b84874b335f1e4a6dd24dc2",
+  "title": "fix(proof-sketch): correct Rice's theorem application and weaken inexhaustible-classes claim",
+  "state": "MERGED",
+  "merged_at": "2026-05-09T07:55:01Z",
+  "head_ref": "fix/b0334-rice-theorem-proof-correction"
+}

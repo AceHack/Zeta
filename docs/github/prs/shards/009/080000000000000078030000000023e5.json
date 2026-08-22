@@ -1,0 +1,12 @@
+{
+  "pr_number": 9189,
+  "archive_path": "docs/history/pr-reviews/PR-9189-feat-core-asn1der-asn-1-der-codec-the-first-2-ary-value-tree-lens-our-own-zero-d.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-02T19:47:19.376Z",
+  "schema_version": "v1",
+  "commit_sha": "b3fbd1606f30061934d53c6ec972a47f320ff9d1",
+  "title": "feat(core): Asn1Der — ASN.1 DER codec, the first 2-ary value-tree lens, our-own zero-dep",
+  "state": "MERGED",
+  "merged_at": "2026-07-02T19:46:56Z",
+  "head_ref": "otto/asn1-der-codec-2ary"
+}

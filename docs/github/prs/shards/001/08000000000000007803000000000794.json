@@ -1,0 +1,19 @@
+{
+  "pr_number": 1940,
+  "archive_path": "docs/history/pr-reviews/PR-1940-research-preserve-lior-drift-report-and-antigravity-expansion.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_Ags9",
+    "comment:PRRC_kwDOSF9kNM6_AgtC",
+    "comment:PRRC_kwDOSF9kNM6_AhFw",
+    "thread:PRRT_kwDOSF9kNM6AcXVD",
+    "thread:PRRT_kwDOSF9kNM6AcXVG",
+    "thread:PRRT_kwDOSF9kNM6AcXn0"
+  ],
+  "fetched_at": "2026-05-07T20:56:02.153Z",
+  "schema_version": "v1",
+  "commit_sha": "4f8b206089e50e99a3e6a3708c75fb799bc0bdfe",
+  "title": "research: preserve Lior drift report and antigravity expansion",
+  "state": "MERGED",
+  "merged_at": "2026-05-07T20:55:42Z",
+  "head_ref": "codex/lior-drift-report-preserve"
+}

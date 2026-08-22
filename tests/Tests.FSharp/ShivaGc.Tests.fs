@@ -306,3 +306,43 @@ let ``THE WRITE BARRIER IS LOAD-BEARING: black->white mutation survives WITH the
 let ``THE TRI-COLOR STATE IS BYTE-LOCKABLE DATA`` () =
     let s = ShivaGc.tricolorStep 2 (linkedHeap 6) (ShivaGc.tricolorInit [ "root" ] (linkedHeap 6))
     Assert.Empty(ValueTreeCodec.crossVerify [ ValueTreeCodec.parity ValueTreeCodec.json; ValueTreeCodec.cbor ] s)
+
+// ── THE CONTENT-ADDRESS PRECONDITION IS UNENFORCED (falsifier, 2026-08-15, shadow*) ──
+//
+// `ShivaGc`'s header models the heap as CONTENT-ADDRESSED — "`id` is the object's content handle".
+// Nothing in the module computes or checks `id = hash(value)`: `object'` takes an arbitrary caller-
+// supplied `string`. The regeneration-lifetimes thesis needs exactly that premise ("the id determines
+// the value"), so whether it is enforced is load-bearing, not cosmetic.
+//
+// This test pins what actually happens when the premise is violated. It is a CHARACTERIZATION test:
+// it asserts today's behaviour so the boundary is visible, and it is the falsifier that moves
+// "the heap is content-addressed" from ASSERTED (docstring) to REFUTED (measured).
+[<Fact>]
+let ``THE ID IS NOT A CONTENT ADDRESS: duplicate ids trace only the LAST refs, stranding a live child`` () =
+    // Two heap objects share the id "A" with DIFFERENT values and DIFFERENT refs. Under true content-
+    // addressing this heap is UNCONSTRUCTIBLE (same id ⇒ same content ⇒ same refs). `ShivaGc` accepts it.
+    let h =
+        ShivaGc.heap
+            [ ShivaGc.object' "root" (v "r") [ "A" ]
+              ShivaGc.object' "A" (v "a1") [ "B" ] // first A points at B
+              ShivaGc.object' "A" (v "a2") [ "C" ] // second A points at C
+              ShivaGc.object' "B" (v "b") []
+              ShivaGc.object' "C" (v "c") [] ]
+    let survivors, collected = ShivaGc.collect [ "root" ] h
+    // `mark` builds its ref map with `Map.ofList`, which keeps the LAST duplicate — so only A→C is
+    // traced. B is collected even though a SURVIVING object still lists it in `refs`: a dangling ref.
+    Assert.Equal<string list>([ "B" ], collected)
+    Assert.Contains("C", ids survivors)
+    let danglingRefs =
+        match survivors with
+        | DynamicValue.Array xs ->
+            xs
+            |> List.collect (fun o ->
+                match DynamicValue.get "refs" o with
+                | Some(DynamicValue.Array rs) -> rs |> List.choose (function DynamicValue.String s -> Some s | _ -> None)
+                | _ -> [])
+            |> List.filter (fun r -> List.contains r collected)
+        | _ -> []
+    // The surviving heap references a collected object. This is impossible when ids ARE content
+    // addresses, and unguarded when they are merely labels — the precondition the thesis rests on.
+    Assert.Equal<string list>([ "B" ], danglingRefs)

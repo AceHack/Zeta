@@ -1,0 +1,12 @@
+{
+  "pr_number": 11476,
+  "archive_path": "docs/history/pr-reviews/PR-11476-fix-hygiene-the-classifier-guard-pinned-a-name-the-defect-is-arity-discover-it-i.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-17T14:05:41.895Z",
+  "schema_version": "v1",
+  "commit_sha": "badc491f0f334143b09b3ef4ef30e249638cea28",
+  "title": "fix(hygiene): the classifier guard pinned a name; the defect is arity — discover it instead",
+  "state": "MERGED",
+  "merged_at": "2026-08-17T14:05:03Z",
+  "head_ref": "shadow/heat-pressure-classifier-lint-structural-model"
+}

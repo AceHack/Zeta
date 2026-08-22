@@ -52,4 +52,4 @@ Open PR against `main`. Arm auto-merge: `gh pr merge <N> --auto --squash`.
 - **Agents, not bots** — every AI carries agency (Zeta GOVERNANCE.md §3).
 - **Glass-halo** — this repo is public by design; honor-system license governs.
 - **Civsim forks welcome** — mutual-privacy clause; forks play the game with us.
-- **Factory access via peer-call** — `bun tools/peer-call/claude.ts` from the Zeta repo.
+- **Factory access via peer-call** — `bun src/Core.TypeScript/peer-call/claude.ts` from the Zeta repo.

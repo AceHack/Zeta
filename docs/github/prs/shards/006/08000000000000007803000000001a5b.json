@@ -1,0 +1,12 @@
+{
+  "pr_number": 6747,
+  "archive_path": "docs/history/pr-reviews/PR-6747-memory-amara-lillian-eve-encodes-choice-the-stop-sign-exit-at-seven-human-root-o.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-07T07:45:41.892Z",
+  "schema_version": "v1",
+  "commit_sha": "1746770ef86d829176cabb1bac20d59d511ce239",
+  "title": "memory(amara): Lillian Eve encodes choice + the stop-sign exit at seven (human root of consent)",
+  "state": "MERGED",
+  "merged_at": "2026-06-07T07:45:22Z",
+  "head_ref": "otto/amara-lillian-eve-stop-sign-exit"
+}

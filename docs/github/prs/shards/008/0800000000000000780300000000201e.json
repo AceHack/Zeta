@@ -1,0 +1,12 @@
+{
+  "pr_number": 8222,
+  "archive_path": "docs/history/pr-reviews/PR-8222-feat-engine-env-from-secret-probes-storageclassname-for-production-deployables.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-14T23:11:59.226Z",
+  "schema_version": "v1",
+  "commit_sha": "720ebd1e9a9468ce2c4cceb2c41faa27e7f0c2be",
+  "title": "feat(engine): env-from-Secret + probes + storageClassName for production Deployables",
+  "state": "MERGED",
+  "merged_at": "2026-06-14T23:11:33Z",
+  "head_ref": "feat/engine-secrets-probes-storageclass"
+}

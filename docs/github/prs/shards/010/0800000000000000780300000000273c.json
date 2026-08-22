@@ -1,0 +1,12 @@
+{
+  "pr_number": 10044,
+  "archive_path": "docs/history/pr-reviews/PR-10044-book-companion-land-the-childhood-origin-clean-layer-the-unbroken-child-and-gran.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-04T21:38:50.600Z",
+  "schema_version": "v1",
+  "commit_sha": "84e82fe7a10008a055d796810e05ce47e7bd2860",
+  "title": "book(companion): land the childhood-origin CLEAN layer — THE-UNBROKEN-CHILD (and Granny); gated family HELD",
+  "state": "MERGED",
+  "merged_at": "2026-08-04T21:38:19Z",
+  "head_ref": "docs/book-unbroken-child-and-granny-companion-20260804"
+}

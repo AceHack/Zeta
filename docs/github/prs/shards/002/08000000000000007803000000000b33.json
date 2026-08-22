@@ -1,0 +1,12 @@
+{
+  "pr_number": 2867,
+  "archive_path": "docs/history/pr-reviews/PR-2867-shard-tick-2058z-aaron-repetition-substrate-landed-parallel-agent-absorption-sta.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-12T21:07:50.686Z",
+  "schema_version": "v1",
+  "commit_sha": "11dfd832a3d5ec8377ba585237b786cf830e766b",
+  "title": "shard(tick): 2058Z — Aaron repetition substrate landed + parallel-agent absorption + stale PR triage",
+  "state": "MERGED",
+  "merged_at": "2026-05-12T21:07:28Z",
+  "head_ref": "shard-tick-2058z-2026-05-12"
+}

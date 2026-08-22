@@ -1,0 +1,12 @@
+{
+  "pr_number": 6838,
+  "archive_path": "docs/history/pr-reviews/PR-6838-docs-orleans-on-bus-sim-time-vs-runtime-per-row-cas-may-obviate-orleans.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-07T14:25:47.045Z",
+  "schema_version": "v1",
+  "commit_sha": "8be12540c0672b69417dfc83ef2dabe0e06b08d8",
+  "title": "docs(orleans-on-bus): sim-time vs runtime — per-row CAS may obviate Orleans",
+  "state": "MERGED",
+  "merged_at": "2026-06-07T14:25:27Z",
+  "head_ref": "capture/sim-vs-runtime-per-row-cas-obviates-orleans"
+}

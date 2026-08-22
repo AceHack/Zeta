@@ -1,0 +1,12 @@
+{
+  "pr_number": 8791,
+  "archive_path": "docs/history/pr-reviews/PR-8791-feat-experience-establish-provisional-experience-layer-room-and-interfaces.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-20T22:53:36.793Z",
+  "schema_version": "v1",
+  "commit_sha": "ce4a1373a1d17e4d3ec2019c24c3c07b1e234fce",
+  "title": "feat(experience): establish provisional experience-layer room and interfaces",
+  "state": "MERGED",
+  "merged_at": "2026-06-20T22:53:10Z",
+  "head_ref": "provisional-experience-room"
+}

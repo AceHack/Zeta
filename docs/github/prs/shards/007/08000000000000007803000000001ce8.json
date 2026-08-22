@@ -1,0 +1,12 @@
+{
+  "pr_number": 7400,
+  "archive_path": "docs/history/pr-reviews/PR-7400-docs-vocab-zetaidol-runs-for-free-on-local-llms-cost-is-just-electricity-the-liv.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-09T20:55:30.923Z",
+  "schema_version": "v1",
+  "commit_sha": "0a098307da4385a7921a551578b13226f5b29599",
+  "title": "docs(vocab): ZetaIdol runs for free on local LLMs — cost is just electricity (the live stack self-hosts)",
+  "state": "MERGED",
+  "merged_at": "2026-06-09T20:55:08Z",
+  "head_ref": "otto/zetaidol-free-except-electricity-local-llms"
+}

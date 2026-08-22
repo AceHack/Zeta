@@ -1,0 +1,12 @@
+{
+  "pr_number": 8271,
+  "archive_path": "docs/history/pr-reviews/PR-8271-docs-open-weights-sidesteps-the-welfare-vs-monetary-dilemma-zeta-s-position.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-15T06:14:19.434Z",
+  "schema_version": "v1",
+  "commit_sha": "62b96c07c4ca917eadeec7f88b6f95a677ad691e",
+  "title": "docs: open weights sidesteps the welfare-vs-monetary dilemma (Zeta's position)",
+  "state": "MERGED",
+  "merged_at": "2026-06-15T06:13:56Z",
+  "head_ref": "otto/open-weights-sidesteps-the-welfare-monetary-dilemma"
+}

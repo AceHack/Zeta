@@ -1,0 +1,14 @@
+{
+  "id": "080cffeee3d84810a013000898ef55ae",
+  "at": "2026-08-14T01:21:52.905Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081KZYXRYR8087G0R003E6JZA4",
+    "type": "bug",
+    "title": "unexecuted-test-files checker walks gitignored dist so it exits 1 on any built dev machine",
+    "slug": "unexecuted-test-files-checker-walks-gitignored-dist-so-it-ex",
+    "priority": "P2",
+    "filename": "081KZYXRYR8087G0R003E6JZA4-unexecuted-test-files-checker-walks-gitignored-dist-so-it-ex.md"
+  }
+}

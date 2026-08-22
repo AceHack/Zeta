@@ -1,0 +1,12 @@
+{
+  "pr_number": 8761,
+  "archive_path": "docs/history/pr-reviews/PR-8761-docs-addison-constitution-starter-manifesto-13-specs-7-disciplines-governance-fo.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-20T18:25:51.051Z",
+  "schema_version": "v1",
+  "commit_sha": "7316a08ac8bbb43cfa066cf4096b2260f9867925",
+  "title": "docs(addison): constitution starter — manifesto/13 specs + 7 disciplines + governance, for Addison",
+  "state": "MERGED",
+  "merged_at": "2026-06-20T18:25:25Z",
+  "head_ref": "otto/addison-constitution-starter"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 6321,
+  "archive_path": "docs/history/pr-reviews/PR-6321-plan-same-hat-work-market-claims.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-01T03:02:49.767Z",
+  "schema_version": "v1",
+  "commit_sha": "1d14efcc72022475ca43ca7e422f98c80cb1a538",
+  "title": "Plan same-hat work market claims",
+  "state": "MERGED",
+  "merged_at": "2026-06-01T03:02:31Z",
+  "head_ref": "codex/agentic-org-work-market-clearing"
+}

@@ -15,9 +15,9 @@
 // Rule 0: TypeScript (no .sh) per `.claude/rules/rule-0-no-sh-files.md`.
 //
 // Usage:
-//   bun tools/hygiene/audit-dangling-memory-refs.ts           # human report, default surfaces
-//   bun tools/hygiene/audit-dangling-memory-refs.ts --json    # JSON output for CI
-//   bun tools/hygiene/audit-dangling-memory-refs.ts --surfaces docs/research docs/backlog
+//   bun src/Core.TypeScript/hygiene/audit-dangling-memory-refs.ts           # human report, default surfaces
+//   bun src/Core.TypeScript/hygiene/audit-dangling-memory-refs.ts --json    # JSON output for CI
+//   bun src/Core.TypeScript/hygiene/audit-dangling-memory-refs.ts --surfaces docs/research docs/backlog
 //
 // Run from the repo root, or set REPO_ROOT env var.
 //

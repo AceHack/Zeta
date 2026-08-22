@@ -1,0 +1,12 @@
+{
+  "pr_number": 7722,
+  "archive_path": "docs/history/pr-reviews/PR-7722-feat-shapes-the-shadow-loop-otto-s-own-cartridge-aaron-ratifies-the-braid-over-u.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-11T16:34:35.405Z",
+  "schema_version": "v1",
+  "commit_sha": "54073b724b4e14802d5c4ded103e08def55d7607",
+  "title": "feat(shapes): the shadow loop — otto's own cartridge + Aaron ratifies the braid (over-under gap named)",
+  "state": "MERGED",
+  "merged_at": "2026-06-11T16:33:55Z",
+  "head_ref": "shadow-own-shape"
+}

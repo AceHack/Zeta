@@ -1,0 +1,27 @@
+{
+  "pr_number": 2022,
+  "archive_path": "docs/history/pr-reviews/PR-2022-feat-tools-add-refresh-worldview-scaffold.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_GSij",
+    "comment:PRRC_kwDOSF9kNM6_GSil",
+    "comment:PRRC_kwDOSF9kNM6_GTg7",
+    "comment:PRRC_kwDOSF9kNM6_GTgN",
+    "comment:PRRC_kwDOSF9kNM6_GTgl",
+    "comment:PRRC_kwDOSF9kNM6_GTgx",
+    "comment:PRRC_kwDOSF9kNM6_GXdZ",
+    "thread:PRRT_kwDOSF9kNM6Aghc5",
+    "thread:PRRT_kwDOSF9kNM6Aghc7",
+    "thread:PRRT_kwDOSF9kNM6AgiN0",
+    "thread:PRRT_kwDOSF9kNM6AgiN6",
+    "thread:PRRT_kwDOSF9kNM6AgiNW",
+    "thread:PRRT_kwDOSF9kNM6AgiNp",
+    "thread:PRRT_kwDOSF9kNM6AglSL"
+  ],
+  "fetched_at": "2026-05-08T03:48:14.133Z",
+  "schema_version": "v1",
+  "commit_sha": "43279dede43bd70940f8cc6c7593c01d6247f461",
+  "title": "feat(tools): add refresh worldview scaffold",
+  "state": "MERGED",
+  "merged_at": "2026-05-08T03:47:51Z",
+  "head_ref": "codex/b0262-refresh-worldview-scaffold"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 6266,
+  "archive_path": "docs/history/pr-reviews/PR-6266-rules-numerical-algebra-shaped-the-generic-math-interface-per-language-idiom-ope.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-31T22:59:32.237Z",
+  "schema_version": "v1",
+  "commit_sha": "2435057f8f26e472974067a25b8aec4f1ce5753e",
+  "title": "rules: numerical/algebra-shaped → the generic-math interface (per-language idiom) — operator meta-rule",
+  "state": "MERGED",
+  "merged_at": "2026-05-31T22:59:13Z",
+  "head_ref": "rules/numerical-algebra-into-generic-math-interface-2026-05-31"
+}

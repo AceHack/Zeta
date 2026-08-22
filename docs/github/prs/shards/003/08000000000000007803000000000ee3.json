@@ -1,0 +1,19 @@
+{
+  "pr_number": 3811,
+  "archive_path": "docs/history/pr-reviews/PR-3811-shard-tick-2026-05-16t07-17z-b-0440-class-3-verified-no-edit-15-38-audit-candida.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7B3GOL",
+    "comment:PRRC_kwDOSF9kNM7B3GgN",
+    "comment:PRRC_kwDOSF9kNM7B3Ggk",
+    "thread:PRRT_kwDOSF9kNM6CioAR",
+    "thread:PRRT_kwDOSF9kNM6CioK5",
+    "thread:PRRT_kwDOSF9kNM6CioLR"
+  ],
+  "fetched_at": "2026-05-16T08:07:54.387Z",
+  "schema_version": "v1",
+  "commit_sha": "790537219777a624633473834545af0891aaef1a",
+  "title": "shard(tick): 2026-05-16T07:17Z — B-0440 class-#3 verified (no edit); 15/38 audit candidates triaged",
+  "state": "MERGED",
+  "merged_at": "2026-05-16T08:07:34Z",
+  "head_ref": "shard/tick-0717z-otto-cli-2026-05-16"
+}

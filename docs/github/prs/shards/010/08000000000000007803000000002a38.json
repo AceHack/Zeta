@@ -1,0 +1,12 @@
+{
+  "pr_number": 10808,
+  "archive_path": "docs/history/pr-reviews/PR-10808-audit-ci-8-of-10-299-window-artifacts-are-reproduced-by-nothing-and-they-are-not.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-16T20:56:18.068Z",
+  "schema_version": "v1",
+  "commit_sha": "bc0d764050bbff941dfba39ae88b1c0d28ab85ef",
+  "title": "audit(ci): 8 of 10,299 window artifacts are reproduced by nothing — and they are not byte-locks",
+  "state": "MERGED",
+  "merged_at": "2026-08-16T20:55:48Z",
+  "head_ref": "shadow/corruption-window-artifact-exposure-audit"
+}

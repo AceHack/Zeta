@@ -1,0 +1,25 @@
+{
+  "pr_number": 6596,
+  "archive_path": "docs/history/pr-reviews/PR-6596-feat-infernet-b-1000-slice-5-expectation-propagation-non-conjugate-factors-via-m.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7HQYp3",
+    "comment:PRRC_kwDOSF9kNM7HQden",
+    "comment:PRRC_kwDOSF9kNM7HQdfa",
+    "comment:PRRC_kwDOSF9kNM7HQj2Z",
+    "comment:PRRC_kwDOSF9kNM7HQjlZ",
+    "comment:PRRC_kwDOSF9kNM7HQjpx",
+    "comment:PRRC_kwDOSF9kNM7HQl79",
+    "comment:PRRC_kwDOSF9kNM7HQn9y",
+    "thread:PRRT_kwDOSF9kNM6GgMwA",
+    "thread:PRRT_kwDOSF9kNM6GgQTR",
+    "thread:PRRT_kwDOSF9kNM6GgQTy",
+    "thread:PRRT_kwDOSF9kNM6GgWd2"
+  ],
+  "fetched_at": "2026-06-02T17:07:58.573Z",
+  "schema_version": "v1",
+  "commit_sha": "724a6e72c1f1c6845a13d251c260edd302d24e8f",
+  "title": "feat(infernet B-1000 slice 5): Expectation Propagation — non-conjugate factors via moment-matching (probit site), plugs into runToFixpoint",
+  "state": "MERGED",
+  "merged_at": "2026-06-02T17:07:33Z",
+  "head_ref": "otto-cli/b1000-slice5-ep-2026-06-02"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 2207,
+  "archive_path": "docs/history/pr-reviews/PR-2207-docs-b-0358-file-backlog-bool-as-degenerate-distribution.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-09T06:40:57.174Z",
+  "schema_version": "v1",
+  "commit_sha": "4e5a1946a17a2a81a4a4cd26a8ad8fcad835b3b4",
+  "title": "docs(B-0358): file backlog — bool as degenerate distribution",
+  "state": "MERGED",
+  "merged_at": "2026-05-09T06:40:38Z",
+  "head_ref": "docs/b0358-bool-degenerate-distribution"
+}

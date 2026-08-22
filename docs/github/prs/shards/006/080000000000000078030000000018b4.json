@@ -1,0 +1,12 @@
+{
+  "pr_number": 6324,
+  "archive_path": "docs/history/pr-reviews/PR-6324-feat-agentic-org-model-mission-trajectory-pressure.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-01T03:15:53.628Z",
+  "schema_version": "v1",
+  "commit_sha": "e4a957d3ac20c4128ae9a6d561dc64414c4967a4",
+  "title": "feat(agentic-org): model mission trajectory pressure",
+  "state": "MERGED",
+  "merged_at": "2026-06-01T03:15:30Z",
+  "head_ref": "codex/agentic-org-mission-trajectory"
+}

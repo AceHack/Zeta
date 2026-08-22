@@ -4,6 +4,7 @@
  */
 
 import { describe, test, expect, afterEach } from "bun:test";
+import { waitUntil } from "../testing/deterministic-async";
 import { startRealtimeServer, type RealtimeServer } from "./realtime-server";
 import { createRealtimeClient, type RealtimeClient } from "./realtime-client";
 
@@ -42,8 +43,14 @@ describe("realtime client ↔ server integration", () => {
     const result = await client.push(event);
     expect(result.ok).toBe(true);
 
-    // Should have received the broadcast back
-    await new Promise((r) => setTimeout(r, 50));
+    // Should have received the broadcast back. WAS a 50ms sleep across a real localhost
+    // WebSocket -- a bet that the round trip fits in 50ms, which on a contended runner it does
+    // not. `waitUntil` inverts that: the deadline is an upper bound on PATIENCE, so a slow
+    // machine waits longer and still passes, and a red here means the broadcast never arrived.
+    // Genuine external I/O is the one case where a poll beats a barrier -- the socket is not
+    // ours to instrument.
+    await waitUntil(() => received.length >= 1, { describe: "the pushed event to be broadcast back" });
+    // Strength preserved: still EXACTLY one, so a duplicate broadcast still fails.
     expect(received.length).toBe(1);
     expect(received[0]!.event.id).toBe("test-event-001");
   });
@@ -84,7 +91,9 @@ describe("realtime client ↔ server integration", () => {
       action: { kind: "heartbeat" },
     });
 
-    await new Promise((r) => setTimeout(r, 50));
+    await waitUntil(() => client2Received.length >= 1, {
+      describe: "client2 to receive client1's broadcast",
+    });
     expect(client2Received).toContain("from-client1");
 
     client1.close();

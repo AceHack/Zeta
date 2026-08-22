@@ -1,0 +1,12 @@
+{
+  "pr_number": 13304,
+  "archive_path": "docs/history/pr-reviews/PR-13304-ops-repair-the-pr-manifest-it-fell-behind-the-shards-past-the-automated-bound.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-21T18:51:11.739Z",
+  "schema_version": "v1",
+  "commit_sha": "9a706de18499c74fac21cb1d5975319d8b5321c9",
+  "title": "ops: repair the PR manifest — it fell behind the shards past the automated bound",
+  "state": "MERGED",
+  "merged_at": "2026-08-21T18:50:33Z",
+  "head_ref": "ops/repair-pr-manifest-drift"
+}

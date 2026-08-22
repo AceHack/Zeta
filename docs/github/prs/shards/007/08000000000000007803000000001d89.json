@@ -1,0 +1,12 @@
+{
+  "pr_number": 7561,
+  "archive_path": "docs/history/pr-reviews/PR-7561-docs-research-boundary-flow-concrete-tpl-dataflow-mechanisms-parallel-web-crawle.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-11T00:38:58.130Z",
+  "schema_version": "v1",
+  "commit_sha": "b1c36dc9a9fecca28b8845ef58b1629debdb62af",
+  "title": "docs(research): boundary-flow — concrete TPL Dataflow mechanisms + parallel-web-crawler (net⨝disk IO) ~15yr prior art",
+  "state": "MERGED",
+  "merged_at": "2026-06-11T00:38:36Z",
+  "head_ref": "shadow-dataflow-mechanisms-crawler-anchor"
+}

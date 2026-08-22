@@ -1,0 +1,12 @@
+{
+  "pr_number": 7071,
+  "archive_path": "docs/history/pr-reviews/PR-7071-docs-core-re-calibrate-s-4-hole-anchor-er-epr-for-the-object-grey-hole-aaron-s-c.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-08T10:03:12.922Z",
+  "schema_version": "v1",
+  "commit_sha": "c4b8154483e38f24d159c8624c67bbc727dcd6a7",
+  "title": "docs(core): re-calibrate S=4 hole anchor — ER=EPR for the object, grey-hole = Aaron's coinage",
+  "state": "MERGED",
+  "merged_at": "2026-06-08T10:02:47Z",
+  "head_ref": "otto/belltest-anchor-recalibrate-er-epr-greyhole-is-coinage"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 9844,
+  "archive_path": "docs/history/pr-reviews/PR-9844-fix-gate-register-wasm-setup-shell-edges.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-01T04:33:56.423Z",
+  "schema_version": "v1",
+  "commit_sha": "921926fea227702b6f2d343a6e3b7581f6ee1e4f",
+  "title": "fix(gate): register WASM setup shell edges",
+  "state": "MERGED",
+  "merged_at": "2026-08-01T04:33:26Z",
+  "head_ref": "codex/fix-main-wasm-shell-gates"
+}

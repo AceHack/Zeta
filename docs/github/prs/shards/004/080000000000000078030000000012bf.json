@@ -1,0 +1,29 @@
+{
+  "pr_number": 4799,
+  "archive_path": "docs/history/pr-reviews/PR-4799-docs-archive-preserve-recently-merged-prs-decomposed-from-4767.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7EUgcI",
+    "comment:PRRC_kwDOSF9kNM7EUgcO",
+    "comment:PRRC_kwDOSF9kNM7EUgcU",
+    "comment:PRRC_kwDOSF9kNM7EUgca",
+    "comment:PRRC_kwDOSF9kNM7EUgcf",
+    "comment:PRRC_kwDOSF9kNM7EUgci",
+    "comment:PRRC_kwDOSF9kNM7EUgcl",
+    "comment:PRRC_kwDOSF9kNM7EUgcq",
+    "thread:PRRT_kwDOSF9kNM6EWIgA",
+    "thread:PRRT_kwDOSF9kNM6EWIgG",
+    "thread:PRRT_kwDOSF9kNM6EWIgJ",
+    "thread:PRRT_kwDOSF9kNM6EWIgM",
+    "thread:PRRT_kwDOSF9kNM6EWIgP",
+    "thread:PRRT_kwDOSF9kNM6EWIgS",
+    "thread:PRRT_kwDOSF9kNM6EWIgU",
+    "thread:PRRT_kwDOSF9kNM6EWIgX"
+  ],
+  "fetched_at": "2026-05-24T18:01:51.492Z",
+  "schema_version": "v1",
+  "commit_sha": "7676e207256e972832ad9a77990e63338f49c45c",
+  "title": "docs(archive): preserve recently merged PRs (decomposed from #4767)",
+  "state": "MERGED",
+  "merged_at": "2026-05-24T18:01:31Z",
+  "head_ref": "lior-decompose-4767-pr-preservation"
+}

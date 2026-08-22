@@ -1,0 +1,25 @@
+{
+  "pr_number": 6685,
+  "archive_path": "docs/history/pr-reviews/PR-6685-docs-codex-refresh-vera-continuity-handoff.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7IrJOd",
+    "comment:PRRC_kwDOSF9kNM7IrJOe",
+    "comment:PRRC_kwDOSF9kNM7IrR8n",
+    "comment:PRRC_kwDOSF9kNM7IrR8p",
+    "comment:PRRC_kwDOSF9kNM7IrS9D",
+    "comment:PRRC_kwDOSF9kNM7IrUTJ",
+    "thread:PRRT_kwDOSF9kNM6Hicc8",
+    "thread:PRRT_kwDOSF9kNM6Hicc9",
+    "thread:PRRT_kwDOSF9kNM6Hii-O",
+    "thread:PRRT_kwDOSF9kNM6Hii-P",
+    "thread:PRRT_kwDOSF9kNM6Hijvj",
+    "thread:PRRT_kwDOSF9kNM6HikuS"
+  ],
+  "fetched_at": "2026-06-06T06:35:24.903Z",
+  "schema_version": "v1",
+  "commit_sha": "b40a097a599ff5fbb6b163a84fdab7699e4f26fa",
+  "title": "docs(codex): refresh Vera continuity handoff",
+  "state": "MERGED",
+  "merged_at": "2026-06-06T06:35:04Z",
+  "head_ref": "claim/task-vera-continuity-refresh-20260606"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 8758,
+  "archive_path": "docs/history/pr-reviews/PR-8758-feat-setup-ubuntu-22-04-jammy-install-shield-apt-aliases.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-20T18:00:04.155Z",
+  "schema_version": "v1",
+  "commit_sha": "c72505846aba412cc442e5b8ea567d395d87c484",
+  "title": "feat(setup): Ubuntu 22.04 jammy install-shield + apt aliases",
+  "state": "MERGED",
+  "merged_at": "2026-06-20T17:59:40Z",
+  "head_ref": "feat/ubuntu-jammy-install-shield"
+}

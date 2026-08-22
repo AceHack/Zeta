@@ -17,8 +17,15 @@ namespace Zeta.Core
 /// (ASP.NET `System.Threading.Channels` + `System.IO.Pipelines`, Fowler-reviewed — 115k msg/s vs HttpClient
 /// 7k/s), tracked by **081KT2T2J0008QG0R002R72323 / 081KQZVQW0008QG0R001CQPQ0E**. For *strangers over the wire* it requires on-wire key exchange +
 /// authenticated encryption and must NOT deploy before Zeta's encryption-floor + an Aminata/Soraya
-/// threat-model of the negotiation handshake. This module owns the protocol *logic* behind the
-/// `IBftTransport` port (hexagonal — `bcl-interface-boundary`); the mux-WS adapter plugs in there.
+/// threat-model of the negotiation handshake. This module owns the protocol *logic* only, and it
+/// does so **without a port to sit behind**: an earlier version of this paragraph said the logic
+/// lived behind an `IBftTransport` port (hexagonal — `bcl-interface-boundary`) and that the mux-WS
+/// adapter plugs in there. **`IBftTransport` has never existed** — no such type is declared anywhere
+/// in the repo, and the phrasing described an intended design as though it were a shipped one
+/// (corrected 2026-08-16). Nothing is broken by its absence, because the reducer needs no transport
+/// abstraction: `receive` *returns* the outbound messages and never sends them, so the port is a
+/// thing an adapter would introduce, not a thing this module depends on. Declaring it is part of the
+/// gated transport work above.
 ///
 /// **Fan-out via the ferry, not `Task.Run` (Aaron 2026-06-08; `async-all-the-way-truthful-signatures`).**
 /// The adapter drains inbound and fans `outbound` through `FerryThrottler` (a bounded queue + DoP-knobbed

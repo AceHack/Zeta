@@ -1,0 +1,12 @@
+{
+  "pr_number": 3868,
+  "archive_path": "docs/history/pr-reviews/PR-3868-shard-tick-2026-05-16t11-36z-b-0037-3-class-2-2-ready-3rd-confirmed-37-38.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-16T12:04:55.315Z",
+  "schema_version": "v1",
+  "commit_sha": "80c9b67e827785476d3a96bbda47d803612e6beb",
+  "title": "shard(tick): 2026-05-16T11:36Z — B-0037.3 = class #2 + #2-Ready (3rd confirmed); 37/38",
+  "state": "MERGED",
+  "merged_at": "2026-05-16T12:04:39Z",
+  "head_ref": "otto-cli-b0037.3-audit-2026-05-16-1136z"
+}

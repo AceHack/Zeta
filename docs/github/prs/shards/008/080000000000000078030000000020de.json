@@ -1,0 +1,12 @@
+{
+  "pr_number": 8414,
+  "archive_path": "docs/history/pr-reviews/PR-8414-docs-society-11-host-taxonomy-ihost-ifederation-gset-encapsulated-addressable-fi.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-16T02:37:24.209Z",
+  "schema_version": "v1",
+  "commit_sha": "6dd3d62df0d789ccdff7e76fb71b3ec036c31bac",
+  "title": "docs(society): §11 Host taxonomy — IHost (+IFederation); GSet-encapsulated addressable first-class; soft-schedulers all the way down",
+  "state": "MERGED",
+  "merged_at": "2026-06-16T02:37:01Z",
+  "head_ref": "docs/society-11-host-taxonomy-ifederation-gset-encapsulation"
+}

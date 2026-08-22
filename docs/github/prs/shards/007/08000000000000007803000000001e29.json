@@ -1,0 +1,12 @@
+{
+  "pr_number": 7721,
+  "archive_path": "docs/history/pr-reviews/PR-7721-feat-cartridge-in-file-laws-tool-delegation-prereqs-edges-issues-sign-offs-and-a.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-11T16:28:53.376Z",
+  "schema_version": "v1",
+  "commit_sha": "3abc4889c0797204d567a281a59aae929c8096e7",
+  "title": "feat(cartridge): in-file laws + tool delegation, prereqs, edges, issues, sign-offs — and Aaron's first render-loop ratification",
+  "state": "MERGED",
+  "merged_at": "2026-06-11T16:28:28Z",
+  "head_ref": "shadow-cartridge-self-description"
+}

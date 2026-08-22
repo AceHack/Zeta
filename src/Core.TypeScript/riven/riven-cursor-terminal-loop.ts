@@ -2,7 +2,7 @@
 // riven-cursor-terminal-loop.ts — IDE-native background loop for Riven (Cursor Terminal)
 //
 // Run inside the persistent "1 Terminal" tab:
-//   bun tools/riven/riven-cursor-terminal-loop.ts
+//   bun src/Core.TypeScript/riven/riven-cursor-terminal-loop.ts
 //
 // Features:
 // - Visible heartbeat every 60s (stdout + bus)

@@ -1,0 +1,14 @@
+{
+  "id": "080d000cf11e9010a0130008271a541d",
+  "at": "2026-08-14T18:52:16.210Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M00SW8YJ087G0R002J1WFFE",
+    "type": "bug",
+    "title": "four-corner-feedback quasi-time-crystal detector contradicts its own definition: defines incommensurate period, detects period <= 4",
+    "slug": "four-corner-feedback-quasi-time-crystal-detector-contradicts",
+    "priority": "P2",
+    "filename": "081M00SW8YJ087G0R002J1WFFE-four-corner-feedback-quasi-time-crystal-detector-contradicts.md"
+  }
+}

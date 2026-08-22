@@ -1,0 +1,25 @@
+{
+  "pr_number": 1976,
+  "archive_path": "docs/history/pr-reviews/PR-1976-docs-research-restore-catch-27-and-add-riven-review-note.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_D0ZK",
+    "comment:PRRC_kwDOSF9kNM6_D0Zp",
+    "comment:PRRC_kwDOSF9kNM6_D0aG",
+    "comment:PRRC_kwDOSF9kNM6_D0ak",
+    "comment:PRRC_kwDOSF9kNM6_EZR3",
+    "comment:PRRC_kwDOSF9kNM6_EZSI",
+    "thread:PRRT_kwDOSF9kNM6AezaN",
+    "thread:PRRT_kwDOSF9kNM6Aezao",
+    "thread:PRRT_kwDOSF9kNM6AezbB",
+    "thread:PRRT_kwDOSF9kNM6Aezbb",
+    "thread:PRRT_kwDOSF9kNM6AfMVX",
+    "thread:PRRT_kwDOSF9kNM6AfMVm"
+  ],
+  "fetched_at": "2026-05-08T01:31:42.555Z",
+  "schema_version": "v1",
+  "commit_sha": "792eb17697e7387a762aafb11304831dee3fe77a",
+  "title": "docs(research): restore Catch 27 and add Riven review note",
+  "state": "MERGED",
+  "merged_at": "2026-05-08T01:31:26Z",
+  "head_ref": "research/catch-27-fix"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 5650,
+  "archive_path": "docs/history/pr-reviews/PR-5650-fix-b-0852-3b-supersede2-narrow-passphrase-env-exposure-window-step-6-56-prompt-.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-27T21:30:31.973Z",
+  "schema_version": "v1",
+  "commit_sha": "b49cd7993ab4c97cba563563c5602a53acca52a3",
+  "title": "fix(b-0852.3b-supersede2): narrow passphrase env-exposure window + Step 6.56 prompt (supersedes #5643 which went DIRTY post-#5644 merge)",
+  "state": "MERGED",
+  "merged_at": "2026-05-27T21:30:14Z",
+  "head_ref": "fix/pr-5638-passphrase-env-supersede2-post-5644-merge-2026-05-27"
+}

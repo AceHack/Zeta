@@ -1,0 +1,12 @@
+{
+  "pr_number": 6804,
+  "archive_path": "docs/history/pr-reviews/PR-6804-feat-schemaregistry-derive-per-op-inverses-migratevaluedown-over-schemas-as-rows.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-07T12:03:43.134Z",
+  "schema_version": "v1",
+  "commit_sha": "675ac6d5ae03b1ebbe661562ce9236f12fe9fff2",
+  "title": "feat(SchemaRegistry): derive per-op inverses → migrateValueDown over schemas-as-rows",
+  "state": "MERGED",
+  "merged_at": "2026-06-07T12:03:25Z",
+  "head_ref": "feat/schemaregistry-derived-inverses-migratedown"
+}

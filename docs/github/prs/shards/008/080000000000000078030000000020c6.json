@@ -1,0 +1,12 @@
+{
+  "pr_number": 8390,
+  "archive_path": "docs/history/pr-reviews/PR-8390-docs-society-10a-price-in-laziness-10b-society-mutual-empowerment-is-degeneracy-.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-16T01:08:19.231Z",
+  "schema_version": "v1",
+  "commit_sha": "a9cc15c443171a07d33e1e7ad10e49881ab78e4d",
+  "title": "docs(society): §10a price-in-laziness + §10b society-mutual-empowerment is degeneracy-free (conjecture)",
+  "state": "MERGED",
+  "merged_at": "2026-06-16T01:07:50Z",
+  "head_ref": "docs/empowerment-price-it-in-and-degeneracy-free"
+}

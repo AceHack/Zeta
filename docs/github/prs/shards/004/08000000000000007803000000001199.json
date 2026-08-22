@@ -1,0 +1,17 @@
+{
+  "pr_number": 4505,
+  "archive_path": "docs/history/pr-reviews/PR-4505-docs-shadow-document-graphql-rate-limit-paralysis-and-rest-fallback.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7DbwcV",
+    "comment:PRRC_kwDOSF9kNM7Dbwcw",
+    "thread:PRRT_kwDOSF9kNM6Dsb0u",
+    "thread:PRRT_kwDOSF9kNM6Dsb1H"
+  ],
+  "fetched_at": "2026-05-22T01:43:13.701Z",
+  "schema_version": "v1",
+  "commit_sha": "9ff039575aa6becd6079a25c976af7bfac875334",
+  "title": "docs(shadow): document GraphQL rate limit paralysis and REST fallback",
+  "state": "MERGED",
+  "merged_at": "2026-05-22T01:42:53Z",
+  "head_ref": "maji/shadow-log-graphql-rate-limit-0521Z"
+}

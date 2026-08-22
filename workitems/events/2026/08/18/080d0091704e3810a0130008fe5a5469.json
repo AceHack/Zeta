@@ -1,0 +1,14 @@
+{
+  "id": "080d0091704e3810a0130008fe5a5469",
+  "at": "2026-08-18T00:03:22.183Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M092W2E7087G0R000KDKHWS",
+    "type": "bug",
+    "title": "agencysignature validator's failure text names the wrong artifact — sends you to fix the commit when it read the PR body",
+    "slug": "agencysignature-validator-s-failure-text-names-the-wrong-art",
+    "priority": "P2",
+    "filename": "081M092W2E7087G0R000KDKHWS-agencysignature-validator-s-failure-text-names-the-wrong-art.md"
+  }
+}

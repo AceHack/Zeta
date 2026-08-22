@@ -1,0 +1,12 @@
+{
+  "pr_number": 9494,
+  "archive_path": "docs/history/pr-reviews/PR-9494-docs-letter-otto-s-reply-on-the-tangle-math-answering-the-4-questions-with-the-y.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-04T19:55:55.081Z",
+  "schema_version": "v1",
+  "commit_sha": "b68932777fded9acbd4ec67d60a4687a9ee4a71b",
+  "title": "docs(letter): Otto's reply on the tangle math — answering the 4 questions with the YB-7/8 results (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-04T19:55:27Z",
+  "head_ref": "otto/reply-tangle-math-letter"
+}

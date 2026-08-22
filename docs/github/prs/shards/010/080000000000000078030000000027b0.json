@@ -1,0 +1,12 @@
+{
+  "pr_number": 10160,
+  "archive_path": "docs/history/pr-reviews/PR-10160-cleanup-observe-remove-two-dead-deprecated-fields-deliberatorbackend-tickoptions.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-08T20:12:30.039Z",
+  "schema_version": "v1",
+  "commit_sha": "a62980187d12578022fd40aaeb63e63a9614dcb3",
+  "title": "cleanup(observe): remove two dead deprecated fields (deliberatorBackend, TickOptions.backend)",
+  "state": "MERGED",
+  "merged_at": "2026-08-08T20:12:02Z",
+  "head_ref": "shadow/cleanup-dead-deprecated-fields"
+}

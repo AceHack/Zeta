@@ -1,0 +1,12 @@
+{
+  "pr_number": 9805,
+  "archive_path": "docs/history/pr-reviews/PR-9805-chore-workitem-file-the-gate-enforcement-defect-behind-the-cs9057-main-red.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-31T23:52:15.917Z",
+  "schema_version": "v1",
+  "commit_sha": "306addeabbf0a37b6b6d79244d1cbb77647923f6",
+  "title": "chore(workitem): file the gate-enforcement defect behind the CS9057 main-red",
+  "state": "MERGED",
+  "merged_at": "2026-07-31T23:51:46Z",
+  "head_ref": "shadow/workitem-gate-enforcement-defect"
+}

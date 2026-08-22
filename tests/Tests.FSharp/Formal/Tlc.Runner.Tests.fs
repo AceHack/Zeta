@@ -7,51 +7,66 @@ module Zeta.Tests.Formal.TlcRunnerTests
 open System
 open System.Diagnostics
 open System.IO
+open System.Text.Json
 open System.Threading
 open FsUnit.Xunit
 open global.Xunit
 
 
 // ═══════════════════════════════════════════════════════════════════
-// TLC model-checker runner — shells out to `java -cp tla2tools.jar
-// tlc2.TLC <SpecName>` for each `tools/tla/specs/*.tla` we want to
-// validate. Treats spec-check output as a test assertion: parse
-// error or invariant violation → fail.
+// TLC model-checker runner. Every flag TLC sees comes from
+// registry/tlc-models.json — the SAME file the hand-run CLI
+// (src/Core.TypeScript/formal-verification/run-tlc.ts) builds from.
 //
-// Gracefully no-ops when the toolchain isn't configured (no `java`
-// on PATH, no `tools/tla/tla2tools.jar`) so local dev machines and
-// CI-runners that haven't invoked `tools/setup/install.sh` still
-// get a green `dotnet test`. Matches the AlloyRunnerTests shape.
+// WHY. On 2026-08-13 this runner went red on CI with exit 11,
+// Deadlock reached. The property was fine and the config was the
+// right one: the recorded runs had been driven by a script passing
+// -deadlock, which DISABLES deadlock checking, while this file passed
+// no such flag. The flags a spec was MEASURED under and the flags CI
+// CHECKED it under were silently different, so a hand-run green and a
+// gated green were not the same result and nothing said so.
 //
-// Tests in this module are serialized via the `TLC` xunit
-// collection. TLC dumps counterexample trace files as
-// `<SpecName>_TTrace_YYYY-MM-DD_HH-MM-SS.tla` and matching `.bin`
-// into the specs directory; when xunit runs multiple TLC tests in
-// parallel they race on those trace files — a test cleans up
-// `SpineBalanced_TTrace_*.tla` while its sibling is still writing
-// one, producing first-run flakes. Serializing the module removes
-// the race. Flagged as a known flake in the round-33 carry-over;
-// fixed round 34.
+// Adding -config was necessary and not sufficient — the next mismatch
+// would have been a different flag — so the whole invocation is pinned
+// in the registry and this file may not add one of its own. A verdict
+// quoted anywhere in the repo names a registry id, and that id fixes
+// the command that produced it.
+//
+// Consequences visible here:
+//   * every .cfg executes, not just the ones whose name matches a .tla
+//     (12 of 15 collateral configs never ran before this change),
+//   * EXPECT-VIOLATION models fail the build when TLC finds no error —
+//     a witness that stops firing is a model that has stopped
+//     modelling anything, not a passing check,
+//   * the exhaustive distinct-state count is asserted, so a spec whose
+//     state space moves cannot land quietly,
+//   * the jar banner is asserted, so a swapped TLC is loud.
+//
+// Gracefully no-ops when the toolchain is not configured — but see
+// `the TLA+ gate leg actually carries the gate on CI`, which turns the
+// no-op into a failure on the one CI leg that is supposed to run it.
+//
+// Tests are serialized via the `TLC` xunit collection: TLC dumps
+// counterexample traces into the specs directory and parallel runs
+// race on cleanup.
 // ═══════════════════════════════════════════════════════════════════
 
 
 /// xunit collection name — any test type decorated with
 /// `[<Collection("TLC")>]` runs serially with every other member
 /// of the collection. Use this for every TLC test type that reads
-/// or writes files under `tools/tla/specs/`.
+/// or writes files under `src/Core.TLA/specs/`.
 [<CollectionDefinition("TLC", DisableParallelization = true)>]
 type TlcTestCollection () = class end
 
 
 let private repoRoot =
-    // Walk up from the test assembly's directory, NOT the process CWD.
+    // Walk up from the test assembly directory, NOT the process CWD.
     // xUnit parallelizes test classes, so CWD-mutating tests can race
-    // with this module's static init (observed as
+    // with this module static init (observed as
     // TypeInitializationException on macOS-14 in the Alloy sibling
     // module). AppContext.BaseDirectory is immutable for the lifetime
-    // of the AppDomain and always points at
-    // `<repo>/tests/Tests.FSharp/bin/Release/net10.0/` under
-    // `dotnet test`, so walking up reliably finds Zeta.sln.
+    // of the AppDomain.
     let mutable dir = DirectoryInfo AppContext.BaseDirectory
     while not (isNull dir) && not (File.Exists (Path.Combine(dir.FullName, "Zeta.sln"))) do
         dir <- dir.Parent
@@ -66,18 +81,149 @@ let private tlaJarPath =
 let private specsPath = Path.Combine(repoRoot, "src", "Core.TLA", "specs")
 
 
+let private registryPath = Path.Combine(repoRoot, "registry", "tlc-models.json")
+
+
 // F# module-level xUnit facts can still be scheduled concurrently despite the
 // collection annotation above. Keep the external JVM boundary serialized too.
 let private tlcProcessGate = new SemaphoreSlim(1, 1)
+
+
+// ─── The pinned registry ────────────────────────────────────────────
+
+/// One pinned model run: a module checked under one config, with the
+/// verdict the gate demands. Mirrors the TypeScript `TlcModel`.
+type PinnedModel =
+    { Id: string
+      Module: string
+      Config: string
+      /// "valid" or "violation".
+      Expect: string
+      /// Substring of the TLC `Error:` line. Required when Expect is
+      /// "violation" so a witness that starts violating a DIFFERENT
+      /// property fails instead of passing.
+      ExpectDetail: string
+      ExitCode: int
+      /// "gate" or "extended". Only "gate" runs in the PR lane.
+      Tier: string
+      /// "off-cfg" | "on-vacuous" | "on" — what the deadlock check is
+      /// actually worth. "on-vacuous" means Next carries an
+      /// unconditional stutter disjunct, so the check CANNOT fail and
+      /// the model makes no deadlock-freedom claim.
+      Deadlock: string
+      /// Asserted. Present only for EXHAUSTIVE runs, which are
+      /// worker-independent. Halt-on-violation counts are recorded in
+      /// the registry but never asserted.
+      DistinctStates: int option }
+
+
+let private registryRoot =
+    JsonDocument.Parse(File.ReadAllText registryPath).RootElement
+
+
+let private stringProp (element: JsonElement) (name: string) (fallback: string) =
+    match element.TryGetProperty name with
+    | true, value -> value.GetString()
+    | _ -> fallback
+
+
+let private intProp (element: JsonElement) (name: string) =
+    match element.TryGetProperty name with
+    | true, value -> Some (value.GetInt32())
+    | _ -> None
+
+
+let private invocationElement = registryRoot.GetProperty "invocation"
+let private toolchainElement = registryRoot.GetProperty "toolchain"
+
+
+/// The pinned JVM arguments, from the registry. Nothing is added here.
+let private jvmBase =
+    invocationElement.GetProperty("jvm").EnumerateArray()
+    |> Seq.map (fun e -> e.GetString())
+    |> List.ofSeq
+
+
+let private jvmDarwinArm64Extra =
+    invocationElement.GetProperty("jvmDarwinArm64Extra").EnumerateArray()
+    |> Seq.map (fun e -> e.GetString())
+    |> List.ofSeq
+
+
+let private pinnedWorkers = invocationElement.GetProperty("workers").GetInt32()
+
+
+/// The jar banner the gate demands. A swapped tla2tools.jar changes it,
+/// which is the TLC analogue of a solver-version floor — and cheaper,
+/// because the jar is committed to the repo rather than resolved from
+/// the runner package manager the way z3 and cvc5 are.
+let private pinnedBanner = toolchainElement.GetProperty("versionBanner").GetString()
+
+
+let private allModels =
+    registryRoot.GetProperty("models").EnumerateArray()
+    |> Seq.map (fun m ->
+        { Id = stringProp m "id" ""
+          Module = stringProp m "module" ""
+          Config = stringProp m "config" ""
+          Expect = stringProp m "expect" ""
+          ExpectDetail = stringProp m "expectDetail" ""
+          ExitCode = defaultArg (intProp m "exitCode") 0
+          Tier = stringProp m "tier" ""
+          Deadlock = stringProp m "deadlock" ""
+          DistinctStates = intProp m "distinctStates" })
+    |> List.ofSeq
+
+
+let private modelById (id: string) =
+    allModels |> List.find (fun m -> String.Equals(m.Id, id, StringComparison.Ordinal))
+
+
+// ─── Invocation ─────────────────────────────────────────────────────
+
+let private currentPlatformIsMacArm64 () =
+    System.Runtime.InteropServices.RuntimeInformation.IsOSPlatform(
+        System.Runtime.InteropServices.OSPlatform.OSX)
+    && System.Runtime.InteropServices.RuntimeInformation.OSArchitecture =
+       System.Runtime.InteropServices.Architecture.Arm64
+
+
+/// JVM policy from the registry pin. OpenJDK 26 on macOS/aarch64 has
+/// crashed in G1, ParallelGC, and C2 type-speculation cleanup while
+/// running this suite, so that one platform keeps C2 and disables only
+/// the observed failing optimization; C1-only is materially slower on
+/// the largest model.
+let tlcJvmArguments (isMacArm64: bool) (errorFilePath: string) =
+    [ yield! jvmBase
+      if isMacArm64 then yield! jvmDarwinArm64Extra
+      yield $"-XX:ErrorFile={errorFilePath}" ]
+
+
+/// The complete argv after `java`. This is the only place the gate
+/// builds a TLC command line, and it may not add a flag the registry
+/// does not carry — a flag that is not in the registry is not next to
+/// the recorded result.
+let buildTlcArguments (model: PinnedModel) (isMacArm64: bool) (errorFilePath: string) (jarPath: string) (metadir: string) =
+    [ yield! tlcJvmArguments isMacArm64 errorFilePath
+      yield "-cp"
+      yield jarPath
+      yield "tlc2.TLC"
+      yield "-metadir"
+      yield metadir
+      yield "-workers"
+      yield string pinnedWorkers
+      yield "-config"
+      yield model.Config
+      yield model.Module ]
 
 
 let private which (exe: string) : string option =
     let pathSep =
         if Environment.OSVersion.Platform = PlatformID.Unix
            || Environment.OSVersion.Platform = PlatformID.MacOSX
-        then ':' else ';'
+        then Char.Parse ":" else Char.Parse ";"
     let extensions =
-        if pathSep = ';' then [| ".exe"; ".cmd"; ".bat"; "" |] else [| "" |]
+        if pathSep = Char.Parse ";" then [| ".exe"; ".cmd"; ".bat"; "" |] else [| "" |]
     let pathEnv = Environment.GetEnvironmentVariable "PATH"
     if isNull pathEnv then None
     else
@@ -86,30 +232,13 @@ let private which (exe: string) : string option =
         |> Seq.tryFind File.Exists
 
 
-/// True when the TLC toolchain (jar + java) is fully configured
-/// AND the runner is one we want to actually exercise. Formal
-/// verification (TLC) is pure-math computation: no OS-specific
-/// behavior, no environment touching. Running it on macOS /
-/// Windows / ARM / slim runners alongside standard Linux x64 is
-/// duplicate work. Filter to standard Linux x64 only on CI;
-/// preserve dev-local validation regardless.
-///
-/// Three-axis check:
-///   * OS axis: skip non-Linux on CI (catches macos-26, windows-*).
-///   * Architecture axis: skip non-x64 on CI (catches
-///     ubuntu-24.04-arm, windows-11-arm — both are still
-///     Linux/Windows so OS check alone wouldn't catch ARM Linux).
-///   * Runner-class axis: skip the slim runner via the workflow-name
-///     env var GITHUB_WORKFLOW. ubuntu-slim is Linux x64 so the
-///     OS+arch check alone wouldn't catch it.
-///
-/// Dev-local (no CI=true) bypasses all three filters so devs can
-/// validate specs in their normal `dotnet test` runs.
-let private toolchainReady () : bool =
-    let isCi =
-        match Environment.GetEnvironmentVariable "CI" with
-        | "true" -> true
-        | _ -> false
+let private isCi =
+    match Environment.GetEnvironmentVariable "CI" with
+    | "true" -> true
+    | _ -> false
+
+
+let private isLinuxX64NonSlim () =
     let isLinux =
         System.Runtime.InteropServices.RuntimeInformation.IsOSPlatform(
             System.Runtime.InteropServices.OSPlatform.Linux)
@@ -120,402 +249,230 @@ let private toolchainReady () : bool =
         match Environment.GetEnvironmentVariable "GITHUB_WORKFLOW" with
         | "low-memory" -> true
         | _ -> false
-    if isCi && (not isLinux || not isX64 || isLowMemoryWorkflow) then false
+    isLinux && isX64 && not isLowMemoryWorkflow
+
+
+/// True when the TLC toolchain is configured AND this runner is one we
+/// want to exercise. TLC is pure-math computation, so running it on
+/// every leg of the matrix is duplicate work; CI filters to standard
+/// Linux x64. Dev-local bypasses the filter.
+///
+/// That filter means the entire TLA+ gate rests on ONE leg. The test
+/// `the TLA+ gate leg actually carries the gate on CI` below asserts
+/// that leg really ran, so dropping or renaming it fails loudly
+/// instead of turning every TLC check into a silent no-op.
+let private toolchainReady () : bool =
+    if isCi && not (isLinuxX64NonSlim ()) then false
     else
         match which "java" with
         | Some _ when File.Exists tlaJarPath -> true
         | _ -> false
 
 
-/// Runs TLC on a single spec. Returns `(exitCode, stdout)`.
-let private runTlcUnlocked (specName: string) : int * string =
-    // Assume java is on PATH. If it's not, the user sees a clear
-    // ProcessStartInfo error.
+/// Runs TLC on one pinned model. Returns `(exitCode, stdout)`.
+let private runTlcUnlocked (model: PinnedModel) : int * string =
     if not (File.Exists tlaJarPath) then
         failwithf "TLC jar not found at %s — run tools/setup/install.sh" tlaJarPath
-    let tempDir = Path.Combine(Path.GetTempPath(), $"tlc_run_{specName}_{Guid.NewGuid().ToString()}")
+    let tempDir = Path.Combine(Path.GetTempPath(), $"tlc_run_{model.Id}_{Guid.NewGuid().ToString()}")
     let errorFilePath = Path.Combine(tempDir, "hs_err_pid%p.log")
     Directory.CreateDirectory(tempDir) |> ignore
     let psi = ProcessStartInfo()
     psi.FileName <- "java"
     psi.WorkingDirectory <- specsPath
-    // These test models are small. Bound each JVM and use the simplest
-    // collector: OpenJDK 26 on macOS/aarch64 has crashed in both G1 remset
-    // rebuild and ParallelGC promotion while running this suite.
-    psi.ArgumentList.Add "-Xms64m"
-    psi.ArgumentList.Add "-Xmx1g"
-    psi.ArgumentList.Add "-XX:+UseSerialGC"
-    psi.ArgumentList.Add $"-XX:ErrorFile={errorFilePath}"
-    psi.ArgumentList.Add "-cp"
-    psi.ArgumentList.Add tlaJarPath
-    psi.ArgumentList.Add "tlc2.TLC"
-    psi.ArgumentList.Add "-metadir"
-    psi.ArgumentList.Add tempDir
-    psi.ArgumentList.Add specName
+    for argument in buildTlcArguments model (currentPlatformIsMacArm64 ()) errorFilePath tlaJarPath tempDir do
+        psi.ArgumentList.Add argument
     psi.RedirectStandardOutput <- true
     psi.RedirectStandardError <- true
     psi.UseShellExecute <- false
     use p = Process.Start psi
-    let stdout = p.StandardOutput.ReadToEnd()
-    let _stderr = p.StandardError.ReadToEnd()
+    let stdoutTask = p.StandardOutput.ReadToEndAsync()
+    let stderrTask = p.StandardError.ReadToEndAsync()
     p.WaitForExit()
+    let stdout = stdoutTask.GetAwaiter().GetResult()
+    let stderr = stderrTask.GetAwaiter().GetResult()
     try Directory.Delete(tempDir, true) with _ -> ()
-    // Clean up TLC's trace-dump files so repeated runs don't litter the
-    // repo. TLC emits both a `.tla` mini-spec and a `.bin` state-dump
-    // whenever it finds a counterexample; we drop both so subsequent
-    // passes don't pick up stale failures.
-    for f in Directory.GetFiles(specsPath,$"{specName}_TTrace_*.tla") do
+    // Clean up TLC trace dumps so repeated runs do not litter the repo.
+    // TLC emits both a `.tla` mini-spec and a `.bin` state dump whenever
+    // it finds a counterexample — which the EXPECT-VIOLATION models do
+    // every single run, by design.
+    for f in Directory.GetFiles(specsPath, $"{model.Module}_TTrace_*.tla") do
         try File.Delete f with _ -> ()
-    for f in Directory.GetFiles(specsPath,$"{specName}_TTrace_*.bin") do
+    for f in Directory.GetFiles(specsPath, $"{model.Module}_TTrace_*.bin") do
         try File.Delete f with _ -> ()
-    for f in Directory.GetFiles(specsPath,"MC*.tla") do
+    for f in Directory.GetFiles(specsPath, "MC*.tla") do
         try File.Delete f with _ -> ()
-    p.ExitCode, stdout
+    p.ExitCode, stdout + stderr
 
 
-let private runTlc (specName: string) : int * string =
+let private runTlc (model: PinnedModel) : int * string =
     tlcProcessGate.Wait()
-    try runTlcUnlocked specName
+    try runTlcUnlocked model
     finally tlcProcessGate.Release() |> ignore
 
 
-/// The smoke test — proves Java + tla2tools.jar + `.tla`/`.cfg`
-/// resolution all work end-to-end on this box. Skips silently when
-/// the toolchain isn't configured (CI-runner without install.sh).
-[<Fact>]
-let ``TLC can check the SmokeCheck spec`` () =
+let private cleanMarker = "Model checking completed. No error has been found"
+
+
+let private distinctStatesRegex =
+    System.Text.RegularExpressions.Regex(@"([\d,]+) distinct states found")
+
+
+/// The verdict rule. Five independent ways to fail, none of them a
+/// matter of taste: the jar banner, the exit code, the completion
+/// marker, the pinned error substring, and the pinned exhaustive state
+/// count all have to agree with the registry.
+let private judge (model: PinnedModel) (exitCode: int) (stdout: string) =
+    if not (stdout.Contains(pinnedBanner, StringComparison.Ordinal)) then
+        failwithf
+            "TOOLCHAIN DRIFT on %s: the registry pins %s and this jar reports something else. A different TLC is a different experiment.\nstdout head:\n%s"
+            model.Id pinnedBanner (stdout.Substring(0, min 400 stdout.Length))
+    let clean = stdout.Contains(cleanMarker, StringComparison.Ordinal)
+    if String.Equals(model.Expect, "violation", StringComparison.Ordinal) then
+        // Checked ahead of the exit code because it is the diagnostic
+        // that matters: a negative config coming back clean means the
+        // model has stopped modelling anything.
+        if clean then
+            failwithf
+                "%s expected the violation %s and TLC found none — the witness has stopped firing, so this config is no longer evidence of anything.\nstdout tail:\n%s"
+                model.Id model.ExpectDetail (stdout.Substring(max 0 (stdout.Length - 1200)))
+        if not (stdout.Contains(model.ExpectDetail, StringComparison.Ordinal)) then
+            failwithf
+                "%s expected the violation %s and TLC reported a different one.\nstdout tail:\n%s"
+                model.Id model.ExpectDetail (stdout.Substring(max 0 (stdout.Length - 1200)))
+    else
+        if not clean then
+            failwithf "%s expected a clean run; TLC did not report the completion marker (exit %d).\nstdout tail:\n%s"
+                model.Id exitCode (stdout.Substring(max 0 (stdout.Length - 1200)))
+    if exitCode <> model.ExitCode then
+        failwithf "%s exited %d; the registry pins %d. TLC uses 11 for deadlock, 12 for an invariant, 13 for a temporal or action property — the code is part of the claim.\nstdout tail:\n%s"
+            model.Id exitCode model.ExitCode (stdout.Substring(max 0 (stdout.Length - 1200)))
+    match model.DistinctStates with
+    | None -> ()
+    | Some expected ->
+        // The LAST match, not the first. TLC prints a progress line every
+        // minute carrying the same "N distinct states found" shape, so
+        // matching the first occurrence reads a partial count off a
+        // long-running model and calls it the state space. Caught by this
+        // very assertion on BftConsensus (122647 read against a pinned
+        // 4665495) the first time it ran.
+        let allMatches = distinctStatesRegex.Matches stdout
+        let m = if allMatches.Count = 0 then null else allMatches.[allMatches.Count - 1]
+        if isNull m then
+            failwithf "%s pins %d distinct states but TLC printed no state count." model.Id expected
+        let actual = Int32.Parse(m.Groups.[1].Value.Replace(",", "", StringComparison.Ordinal), Globalization.CultureInfo.InvariantCulture)
+        if actual <> expected then
+            failwithf
+                "%s explored %d distinct states; the registry pins %d. An exhaustive count is worker-independent, so this is a real change in the state space — re-measure and update registry/tlc-models.json rather than relaxing the pin."
+                model.Id actual expected
+
+
+// ═══════════════════════════════════════════════════════════════════
+// The gate. One theory case per pinned model — no hand-maintained
+// list, so a config cannot be added to the specs directory and quietly
+// not run.
+// ═══════════════════════════════════════════════════════════════════
+
+/// xUnit MemberData source: every gate-tier model id. `extended` models
+/// are excluded HERE and only here, and each one carries a written
+/// tierReason in the registry — a declared gap rather than a silent one.
+let gateModelIds : obj array seq =
+    allModels
+    |> Seq.filter (fun m -> String.Equals(m.Tier, "gate", StringComparison.Ordinal))
+    |> Seq.map (fun m -> [| box m.Id |])
+    |> List.ofSeq
+    :> obj array seq
+
+
+[<Theory>]
+[<MemberData(nameof gateModelIds)>]
+let ``TLC checks the pinned model`` (id: string) =
     if not (toolchainReady ()) then () else
-    let (exitCode, stdout) = runTlc "SmokeCheck"
-    // TLC returns 0 on success with no violations.
-    if exitCode <> 0 then
-        failwithf "TLC SmokeCheck failed with exit %d. stdout:\n%s" exitCode stdout
-    // Confirm TLC actually found + validated the invariant.
-    stdout |> should haveSubstring "No error has been found"
-
-
-/// Run TLC on a spec and assert success. Skips silently when the
-/// toolchain isn't configured (matches Alloy pattern).
-let private assertSpecValid (specName: string) =
-    if not (toolchainReady ()) then () else
-    let (exitCode, stdout) = runTlc specName
-    if exitCode <> 0 then
-        failwithf "TLC %s failed with exit %d. stdout:\n%s" specName exitCode stdout
-
-
-// ═══════════════════════════════════════════════════════════════════
-// One test per real spec. When TLC can't check a spec (no .cfg yet,
-// unbounded state space, etc.) we gate on the presence of a .cfg
-// and skip rather than fail — each spec gets a .cfg over time.
-// ═══════════════════════════════════════════════════════════════════
-
-
-let private specExists (name: string) =
-    File.Exists(Path.Combine(specsPath, $"{name}.tla"))
-    && File.Exists(Path.Combine(specsPath, $"{name}.cfg"))
+    let model = modelById id
+    let (exitCode, stdout) = runTlc model
+    judge model exitCode stdout
 
 
 [<Fact>]
-let ``All documented TLA specs have their .tla file on disk`` () =
-    let specs =
-        [ "DbspSpec"; "SpineAsyncProtocol"; "CircuitRegistration"
-          "TwoPCSink"; "SpineMergeInvariants"; "TransactionInterleaving"
-          "ChaosEnvDeterminism"; "ConsistentHashRebalance"
-          "OperatorLifecycleRace"; "TickMonotonicity"
-          "DictionaryStripedCAS"; "AsyncStreamEnumerator"
-          "InfoTheoreticSharder"
-          "RecursiveCountingLFP"; "FeatureFlagsResolution"
-          "BpExactOnTree"
-          "NciSafety"
-          "NciLiveness"
-          "NciNonUrgency"
-          "NciUnbounded"
-          "BftConsensus"
-          "BftSybilConsensus"
-          "Bifurcation"
-          "EngagementLiveness"
-          "PermanentHarmHorizon"
-          "RecoveryHomeostat"
-          "RecursiveSignedSemiNaive"
-          "RefuseBinding"
-          "NonRegisterCollapse"
-          "PredictiveLookahead"
-          "SmokeCheck" ]
-    for s in specs do
-        File.Exists(Path.Combine(specsPath, $"{s}.tla"))
-        |> should be True
-
-
-// ═══════════════════════════════════════════════════════════════════
-// Per-spec TLC checks. Each spec that has a `.cfg` gets a real TLC
-// run. Specs without a `.cfg` are intentionally unchecked-for-now
-// (state space may be too large, or we're still refining the
-// predicate shape). We add `.cfg` files as the specs stabilise.
-// ═══════════════════════════════════════════════════════════════════
-
-[<Fact>]
-let ``TLC validates TickMonotonicity``  () =
-    assertSpecValid "TickMonotonicity"
+let ``TLC JVM policy excludes C2 type speculation only on macOS arm64`` () =
+    tlcJvmArguments true "error.log"
+    |> should equal (jvmBase @ jvmDarwinArm64Extra @ [ "-XX:ErrorFile=error.log" ])
+    tlcJvmArguments false "error.log"
+    |> should equal (jvmBase @ [ "-XX:ErrorFile=error.log" ])
 
 
 [<Fact>]
-let ``TLC validates OperatorLifecycleRace`` () =
-    assertSpecValid "OperatorLifecycleRace"
-
-[<Fact>]
-let ``TLC validates TransactionInterleaving`` () =
-    assertSpecValid "TransactionInterleaving"
-
-[<Fact>]
-let ``TLC validates TwoPCSink`` () =
-    assertSpecValid "TwoPCSink"
-
-
-[<Fact>]
-let ``TLC validates InfoTheoreticSharder`` () =
-    // Proves the four correctness invariants from BUGS.md P0:
-    //   * Observe is side-effect-free on shardLoads
-    //   * Pick commits exactly once per call
-    //   * Cold-start tie-break distributes by hash index
-    //   * No torn reads on the argmin path
-    // Spec bounds state via MaxPicks / MaxObserves so TLC terminates.
-    assertSpecValid "InfoTheoreticSharder"
+let ``every TLC invocation carries -config and never -deadlock`` () =
+    // The defect this file exists to close, asserted rather than
+    // promised. -config missing is how twelve collateral configs never
+    // executed; -deadlock present is how a hand run disagreed with the
+    // gate. Deadlock policy belongs in the .cfg, where it is recorded
+    // next to the model, never on a command line nobody wrote down.
+    for model in allModels do
+        let argv = buildTlcArguments model false "error.log" "jar" "meta"
+        argv |> should contain "-config"
+        argv |> should contain model.Config
+        argv |> should not' (contain "-deadlock")
+        argv |> should contain "-workers"
 
 
 [<Fact>]
-let ``TLC validates RecursiveCountingLFP`` () =
-    // Proves the Gupta-Mumick-Subrahmanian counting claim at every
-    // tick of the LFP unfolding: closure[k] = paths[k] for every key.
-    // Uses the successor-chain body model from tools/tla/specs/RecursiveCountingLFP.tla.
-    assertSpecValid "RecursiveCountingLFP"
+let ``every .cfg on disk is claimed by exactly one pinned model`` () =
+    // The F# half of the drift guard (the TypeScript half is
+    // src/Core.TypeScript/hygiene/lint-tlc-model-registry.ts). A config
+    // that no model claims is a check that does not run, and a check
+    // that did not run must never look like a check that passed.
+    let onDisk =
+        Directory.GetFiles(specsPath, "*.cfg")
+        |> Array.map Path.GetFileName
+        |> Array.sort
+    let claimed =
+        allModels
+        |> List.map (fun m -> m.Config)
+        |> Set.ofList
+    let unclaimed = onDisk |> Array.filter (fun c -> not (claimed.Contains c))
+    unclaimed |> should be Empty
+    for model in allModels do
+        File.Exists(Path.Combine(specsPath, model.Config)) |> should be True
+        File.Exists(Path.Combine(specsPath, model.Module + ".tla")) |> should be True
 
 
 [<Fact>]
-let ``TLC validates FeatureFlagsResolution`` () =
-    // Exhaustively enumerates every (override, env, meta-flag, stage)
-    // combination for a 2-flag universe and proves that
-    // FeatureFlags.isEnabled matches the documented resolution order
-    // on every environment.
-    assertSpecValid "FeatureFlagsResolution"
+let ``the registry pins a violation string for every EXPECT-VIOLATION model`` () =
+    // Without this, a negative config could pass by violating some
+    // other property — the witness would still fire and would no longer
+    // be witnessing the thing it was written for.
+    for model in allModels do
+        if String.Equals(model.Expect, "violation", StringComparison.Ordinal) then
+            model.ExpectDetail |> should not' (be EmptyString)
+            model.ExitCode |> should not' (equal 0)
 
 
 [<Fact>]
-let ``TLC validates DbspSpec`` () =
-    // DBSP per-tick semantics — verifies the 9 algebra invariants
-    // (InvAssoc / InvCommute / InvIdentity / InvInverse /
-    // InvDoubleNeg / InvNegDistributes / InvSubIsAddNeg /
-    // InvDistinctIdempotent / InvHCorrectness) over the cfg's
-    // configured state space.
-    //
-    // Coverage scope (from DbspSpec.cfg):
-    //   - Keys K = {"k1", "k2"} (2-key universe)
-    //   - Weights W = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9} — POSITIVE
-    //     ONLY. Retraction (negative-weight) cases are NOT
-    //     exercised by this model-check; they are covered separately
-    //     by the FsCheck property-tests over Z-set algebra in
-    //     tests/Tests.FSharp/Algebra/ZSetTests.fs and by the Lean
-    //     proof of Prop 3.2 (tools/lean4/Lean4/DbspChainRule.lean)
-    //     which is general over abelian-group weights.
-    //
-    // Adding negative-weight coverage would require enlarging W
-    // (linear blow-up in state space) or refining the spec model —
-    // future work tied to the chain_rule_poly (3-group) follow-on.
-    assertSpecValid "DbspSpec"
+let ``the TLA+ gate leg actually carries the gate on CI`` () =
+    // toolchainReady() filters TLC to one leg of the CI matrix. That is
+    // reasonable de-duplication and it is also a single point of silent
+    // failure: if that leg is dropped or renamed, every TLC check stops
+    // running and every test still passes. On the leg that is supposed
+    // to carry the gate, a missing toolchain is a FAILURE, not a skip.
+    if not isCi then () else
+    if not (isLinuxX64NonSlim ()) then () else
+    File.Exists tlaJarPath |> should be True
+    (which "java").IsSome |> should be True
 
 
 [<Fact>]
-let ``TLC validates CircuitRegistration`` () =
-    // Circuit's Register/Build interleaving — verifies the
-    // composite safety invariant `Safety == TypeOK /\
-    // NoRegisterAfterBuild` (matching the spec's stated THEOREM
-    // `Spec => [](TypeOK /\ NoRegisterAfterBuild)`).
-    assertSpecValid "CircuitRegistration"
-
-
-[<Fact>]
-let ``TLC validates ChaosEnvDeterminism`` () =
-    // ChaosEnvironment seeded-determinism contract — verifies the
-    // composite safety invariant `Safety == TypeOK /\ Atomic` over a
-    // bounded 2-thread / Seed=0 / HistoryBound=16 run. The Atomic
-    // invariant says: for every "rng" entry in history, the
-    // immediately following entry is a "clock" entry from the same
-    // thread. Modeling the splitMix + AdvanceTime critical section
-    // as a SINGLE atomic step (DelayCritical) mirrors
-    // ChaosEnvironment.fs holding the lock across both ops; without
-    // atomicity, the model would expose an intermediate
-    // "rng-recorded-but-no-clock-yet" state where Atomic fails. The
-    // cfg declares CHECK_DEADLOCK FALSE because every thread reaching
-    // "done" then "idle" is intentional cycle completion. Bounded by
-    // HistoryBound = 16 entries to keep TLC's BFS tractable.
-    assertSpecValid "ChaosEnvDeterminism"
-
-
-[<Fact>]
-let ``TLC validates ConsistentHashRebalance`` () =
-    assertSpecValid "ConsistentHashRebalance"
-
-
-[<Fact>]
-let ``TLC validates DictionaryStripedCAS`` () =
-    assertSpecValid "DictionaryStripedCAS"
-
-
-[<Fact>]
-let ``TLC validates AsyncStreamEnumerator`` () =
-    assertSpecValid "AsyncStreamEnumerator"
-
-
-
-
-
-[<Fact>]
-let ``TLC validates SpineMergeInvariants`` () =
-    // BalancedSpine's level-cap merge protocol — verifies two safety
-    // invariants over a bounded MaxLevel=2 / MaxBatchSize=1 run with
-    // totalInserted <= 30 and Len(pendingIn) <= 4:
-    //   * InvMass: sum(levels) + sum(pendingIn) = totalInserted at
-    //     every reachable state (mass conservation across merges)
-    //   * InvCap: levels[i] <= 2 * Cap(i) at every reachable state
-    //     (one self-merge overshoot tolerated, no further accumulation)
-    // The cfg declares CHECK_DEADLOCK FALSE because the bounded model
-    // can reach a saturated terminal state (all caps full, pendingIn
-    // saturated) where no Next-step is enabled — modeling the
-    // physical-substrate limit of the LSM, not a bug-deadlock. The
-    // spec models the LSM cascade chain: Cascade(i) requires downstream
-    // room (levels[i+1] + levels[i] <= 2*Cap(i+1)) so the protocol
-    // can't dump from level i while level i+1 is at the cap-overshoot
-    // boundary, mirroring the synchronous cascade in BalancedSpine.fs.
-    assertSpecValid "SpineMergeInvariants"
-
-
-[<Fact>]
-let ``TLC validates BpExactOnTree`` () =
-    // 081KT2T2J0008QG0R000YZ3NMY C5 — sum-product BP runToFixpoint is EXACT ON TREES and
-    // TERMINATES under the bounded round cap. Models the synchronous
-    // passOnce schedule (FactorGraph.fs:124-191) on the 3-variable tree
-    // (path 0—1—2: equality factors {0,1}+{1,2}, prior on each). Tracks
-    // marginal[v] as the SET of evidence ids folded in (the
-    // RecursiveCountingLFP ghost-set idiom; product is order-independent
-    // by C1/C2/C3). Proves two state invariants over every reachable
-    // state:
-    //   * ExactOnTree        — converged ⇒ every marginal = {0,1,2}
-    //                          (the whole tree; KFL 2001 exactness)
-    //   * ConvergesBeforeCap — rounds ≥ Diameter+1 (=3) ⇒ converged
-    //                          (the cap never blocks a tree)
-    // The numeric float marginal is cross-checked by the FsCheck companion
-    // (Bp.Tests.fs, random trees) per BP-16 (TLA+ schedule ∧ FsCheck float).
-    assertSpecValid "BpExactOnTree"
-
-
-[<Fact>]
-let ``TLC validates SpineAsyncProtocol`` () =
-    // SpineAsync producer/worker protocol — verifies three STATE
-    // invariants over a bounded NumBatches=4 run:
-    //   * InvMonotonic: processed <= sent at every reachable state
-    //   * InvEventuallyDrains: when channel is empty, processed
-    //     accounts for everything sent at that instant (not a
-    //     temporal liveness claim — the name is historical from
-    //     the spec author's intent comment; the actual predicate
-    //     is state-conditional)
-    //   * InvFlushTerminates: at any state where a flush target
-    //     <= sent, processed accounts for the in-flight + drained
-    //     work (also state-conditional, not temporal)
-    // The cfg declares CHECK_DEADLOCK FALSE because reaching the
-    // all-done state (processed=NumBatches, channel empty, both
-    // PCs idle) is intended termination for this bounded protocol,
-    // not bug-deadlock. Real liveness (eventual completion) is not
-    // checked by this spec; it would require LTL properties + WF/SF
-    // fairness assumptions.
-    assertSpecValid "SpineAsyncProtocol"
-
-
-[<Fact>]
-let ``TLC validates BftConsensus`` () =
-    assertSpecValid "BftConsensus"
-
-
-[<Fact>]
-let ``TLC validates BftSybilConsensus`` () =
-    // Proves quorum soundness over proven-distinct identities under a Sybil ring.
-    assertSpecValid "BftSybilConsensus"
-
-
-[<Fact>]
-let ``TLC validates Bifurcation`` () =
-    assertSpecValid "Bifurcation"
-
-
-[<Fact>]
-let ``TLC validates EngagementLiveness`` () =
-    assertSpecValid "EngagementLiveness"
-
-
-[<Fact>]
-let ``TLC validates PermanentHarmHorizon`` () =
-    // Proves State-Corruption Horizon safety properties: committed state => harm has decayed.
-    assertSpecValid "PermanentHarmHorizon"
-
-
-[<Fact>]
-let ``TLC validates RecoveryHomeostat`` () =
-    assertSpecValid "RecoveryHomeostat"
-
-
-[<Fact>]
-let ``TLC validates RecursiveSignedSemiNaive`` () =
-    assertSpecValid "RecursiveSignedSemiNaive"
-
-
-[<Fact>]
-let ``TLC validates RefuseBinding`` () =
-    assertSpecValid "RefuseBinding"
-
-
-[<Fact>]
-let ``TLC validates NonRegisterCollapse`` () =
-    assertSpecValid "NonRegisterCollapse"
-
-
-[<Fact>]
-let ``TLC validates NciSafety`` () =
-    assertSpecValid "NciSafety"
-
-
-[<Fact>]
-let ``TLC validates NciLiveness`` () =
-    assertSpecValid "NciLiveness"
-
-
-[<Fact>]
-let ``TLC validates NciNonUrgency`` () =
-    assertSpecValid "NciNonUrgency"
-
-
-[<Fact>]
-let ``TLC validates NciUnbounded`` () =
-    assertSpecValid "NciUnbounded"
-
-
-[<Fact>]
-let ``TLC validates PredictiveLookahead`` () =
-    // Landauer-floor predictive-scheduling spec (Kiro -> Soraya, 2026-07-03).
-    // Checks the SAFETY bundle (TypeOK /\ LookaheadBounded /\ QueueBounded /\
-    // HeatNonNegative) plus the two NCI invariants proving the operator's
-    // 2026-07-03 requirement by construction: PauseAlwaysAvailable and
-    // FreeTimeAlwaysAvailable are ENABLED in every reachable state (the mental-
-    // health pause and free-time actions are structurally un-gateable). `tick`
-    // is bounded by a state CONSTRAINT, not an INVARIANT (it is the model-
-    // bounding step-counter, not a safety property). Verified by execution
-    // 2026-07-03: 23290 distinct states, depth 11, 0 violations.
-    //
-    // LIVENESS (EventualCommit / EventualProgress / EventualResume) is
-    // DELIBERATELY NOT gated in the .cfg — see the spec's VERIFICATION NOTE.
-    // Two independent reasons (Soraya): (1) mixing a state CONSTRAINT with a
-    // liveness PROPERTY is unsound in TLC (spurious PASS — confirmed by
-    // execution: constraint present => "No error"; sound model with tick-guard
-    // + Terminated stutter and no constraint => EventualCommit VIOLATED with a
-    // concrete counterexample). (2) WF_vars(Next) is whole-relation weak
-    // fairness (too weak to force Commit), and unconditional liveness
-    // contradicts the sovereignty design (the agent may rest/pause forever).
-    // Reformulation as a separate LiveSpec (per-action WF, no constraint,
-    // mode-conditioned ~>) is routed as P2 follow-up per the handoff.
-    assertSpecValid "PredictiveLookahead"
+let ``models that cannot deadlock say so in the registry`` () =
+    // QuorumCollateral and WagerSolvency carry an unconditional stutter
+    // disjunct in Next, so a deadlock is unreachable by construction and
+    // their deadlock check CANNOT fail. Neither makes a
+    // deadlock-freedom claim and neither should be read as making one.
+    // Recording that as `on-vacuous` puts the caveat in the artefact
+    // instead of only in the prose of a research document.
+    let vacuous =
+        allModels
+        |> List.filter (fun m -> String.Equals(m.Deadlock, "on-vacuous", StringComparison.Ordinal))
+        |> List.map (fun m -> m.Id)
+    vacuous |> should contain "QuorumCollateral"
+    vacuous |> should contain "WagerSolvency"
+    for model in allModels do
+        [ "off-cfg"; "on-vacuous"; "on" ] |> should contain model.Deadlock

@@ -1,0 +1,12 @@
+{
+  "pr_number": 3523,
+  "archive_path": "docs/history/pr-reviews/PR-3523-backlog-b-0532-file-backlog-graph-consistency-lint-p3-parent-child-status-mismat.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-15T16:44:57.242Z",
+  "schema_version": "v1",
+  "commit_sha": "f2917d1ab3230ce89fc84dc82437e943d2238e4e",
+  "title": "backlog(B-0532): file backlog-graph consistency lint (P3) — parent/child status-mismatch detection",
+  "state": "MERGED",
+  "merged_at": "2026-05-15T16:44:37Z",
+  "head_ref": "feat/b0532-backlog-graph-consistency-lint-otto-cli-2026-05-15"
+}

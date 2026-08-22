@@ -1,0 +1,12 @@
+{
+  "pr_number": 8447,
+  "archive_path": "docs/history/pr-reviews/PR-8447-feat-core-add-host-assisted-meta-cart-launch.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-16T05:07:51.229Z",
+  "schema_version": "v1",
+  "commit_sha": "f632c2a3e1b7adfd89f1592ac2ecb18195d91375",
+  "title": "feat(core): add host-assisted meta-cart launch",
+  "state": "MERGED",
+  "merged_at": "2026-06-16T05:07:19Z",
+  "head_ref": "codex/meta-cart-host"
+}

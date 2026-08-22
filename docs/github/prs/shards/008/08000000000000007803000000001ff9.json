@@ -1,0 +1,12 @@
+{
+  "pr_number": 8185,
+  "archive_path": "docs/history/pr-reviews/PR-8185-fix-dst-spineasync-async-disposable-drain-non-blocking-dispose-no-worker-wait.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-14T14:21:46.689Z",
+  "schema_version": "v1",
+  "commit_sha": "cb6f53474585301eeae1386fdbb961ec4fdde1d9",
+  "title": "fix(dst): SpineAsync async-disposable drain; non-blocking Dispose (no worker.Wait)",
+  "state": "MERGED",
+  "merged_at": "2026-06-14T14:21:20Z",
+  "head_ref": "otto/dst-spineasync-async-dispose"
+}

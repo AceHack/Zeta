@@ -1,5 +1,6 @@
 import { spawn as nodeSpawn, spawnSync as nodeSpawnSync, type SpawnOptions } from "node:child_process";
 import { existsSync, readFileSync } from "node:fs";
+import { qemuUsbStorageDeviceArg } from "../../installer/qemu-usb-storage.ts";
 import {
   B0891_RETENTION_USB_SERIAL_MARKERS,
   HOSTNAME_AUTOGENERATION_SERIAL_MARKERS,
@@ -36,6 +37,15 @@ export interface QemuSystemBootArgsInput {
   readonly cpuCount: number;
   readonly kvmAvailable: boolean;
   readonly bootMedia: QemuSystemBootMedia;
+  /**
+   * Network backends for this VM. OMITTED means
+   * `DEFAULT_QEMU_NETWORK_DEVICES` -- a single per-VM SLIRP NAT NIC, which is
+   * byte-for-byte what this builder emitted before the field existed. Every
+   * caller that does not pass it (scenarios 1-4) therefore gets an unchanged
+   * command line; only a caller that explicitly asks for a shared L2 segment
+   * (scenario 5) sees different args.
+   */
+  readonly networkDevices?: readonly QemuNetworkDevice[];
 }
 
 export interface Qcow2SnapshotRetentionInput {
@@ -275,6 +285,215 @@ function validateInput(input: Qcow2SnapshotRetentionInput): Qcow2SnapshotRetenti
 type NormalizedQcow2SnapshotRetentionInput = Required<Omit<Qcow2SnapshotRetentionInput, "bootImagePath">> &
   Pick<Qcow2SnapshotRetentionInput, "bootImagePath">;
 
+/**
+ * 081KSNY2Z0008QG0R0008PN7RQ scenario 5 -- QEMU network backends.
+ *
+ * `user-nat` is per-VM SLIRP: it gives one VM outbound NAT and nothing else.
+ * Two `user-nat` VMs sit on two DISJOINT networks and cannot address each
+ * other at any layer. That -- not sequencing, not disk provisioning -- is why
+ * `cluster-joining` could never observe a join: the harness planned a
+ * `networkTopology` field that no emitted argument implemented.
+ *
+ * The `l2-*` backends put VMs on ONE Ethernet segment:
+ *
+ *   - `l2-socket-listen` / `l2-socket-connect` -- QEMU carries raw L2 frames
+ *     over a TCP socket between the two processes. Needs no root, no `tap`
+ *     device and no host bridge, so it runs on a stock hosted runner. The
+ *     ordering constraint is real and is the caller's to honour: the listener
+ *     must be accepting before the connector starts, or the connector exits.
+ *   - `l2-multicast` -- order-independent (VMs join the group whenever they
+ *     start, in any order) at the cost of depending on host multicast, which
+ *     not every CI sandbox delivers.
+ *
+ * A bridge/tap topology is deliberately NOT offered: creating
+ * `zflash-test-br0` requires root on the host, which a hosted runner does not
+ * grant. The previously-declared `shared-bridge` topology was undeliverable in
+ * the environment this harness has to run in.
+ */
+export type QemuNetworkBackend =
+  | { readonly kind: "user-nat" }
+  | { readonly kind: "l2-socket-listen"; readonly port: number }
+  | { readonly kind: "l2-socket-connect"; readonly host: string; readonly port: number }
+  | { readonly kind: "l2-multicast"; readonly group: string; readonly port: number };
+
+/**
+ * One guest NIC: a backend plus the MAC the guest presents.
+ *
+ * MAC DISCIPLINE -- the reason `mac` is mandatory on every `l2-*` backend:
+ * QEMU assigns EVERY guest NIC the same default MAC (52:54:00:12:34:56) when
+ * none is given. On disjoint SLIRP networks that is harmless, which is why it
+ * has never bitten scenarios 1-4. On a SHARED segment it is a duplicate-MAC
+ * collision between the two nodes, and the failure mode is the worst
+ * available: both VMs boot cleanly, the segment carries frames, and traffic
+ * misroutes silently -- which would surface as an intermittently-failing
+ * cluster join and send the reader hunting a k3s bug that is not there.
+ * `buildQemuNetworkDeviceArgs` refuses such a plan up front instead.
+ */
+export interface QemuNetworkDevice {
+  readonly id: string;
+  readonly backend: QemuNetworkBackend;
+  readonly mac?: string;
+}
+
+export type QemuNetworkDeviceArgsResult = { readonly ok: readonly string[] } | { readonly error: string };
+
+/**
+ * The pre-existing behaviour, now named: one SLIRP NAT NIC on `net0`.
+ * `buildQemuSystemBootArgs` falls back to this when no devices are injected,
+ * so scenarios 1-4 keep their exact command line.
+ */
+export const DEFAULT_QEMU_NETWORK_DEVICES: readonly QemuNetworkDevice[] = [
+  { id: "net0", backend: { kind: "user-nat" } },
+];
+
+const NETDEV_ID_PATTERN = /^[A-Za-z0-9][A-Za-z0-9_-]*$/;
+const MAC_PATTERN = /^[0-9A-Fa-f]{2}(:[0-9A-Fa-f]{2}){5}$/;
+
+function validatePort(port: number, field: string): string | null {
+  if (!Number.isInteger(port) || port < 1 || port > 65535) {
+    return `${field} must be an integer in 1..65535 (got ${String(port)})`;
+  }
+  return null;
+}
+
+function validateMac(mac: string): string | null {
+  if (!MAC_PATTERN.test(mac)) {
+    return `mac "${mac}" is not a 6-octet colon-separated MAC address`;
+  }
+  const firstOctet = Number.parseInt(mac.slice(0, 2), 16);
+  // Bit 0 of the first octet is the I/G bit. A frame source address must be
+  // unicast; a NIC configured with a multicast MAC is not a legal sender.
+  if ((firstOctet & 0x01) !== 0) {
+    return `mac "${mac}" has the multicast bit set; a NIC source address must be unicast`;
+  }
+  return null;
+}
+
+function validateMulticastGroup(group: string): string | null {
+  const octets = group.split(".");
+  if (octets.length !== 4) {
+    return `multicast group "${group}" is not a dotted-quad IPv4 address`;
+  }
+  const parsed: number[] = [];
+  for (const octet of octets) {
+    if (!/^[0-9]{1,3}$/.test(octet)) {
+      return `multicast group "${group}" is not a dotted-quad IPv4 address`;
+    }
+    const value = Number.parseInt(octet, 10);
+    if (value > 255) {
+      return `multicast group "${group}" has an octet above 255`;
+    }
+    parsed.push(value);
+  }
+  const first = parsed[0] ?? 0;
+  // 224.0.0.0/4 is the IPv4 multicast range (RFC 5771). A unicast address here
+  // would make the VMs silently fail to share a segment.
+  if (first < 224 || first > 239) {
+    return `multicast group "${group}" is outside 224.0.0.0/4`;
+  }
+  return null;
+}
+
+function netdevBackendArg(device: QemuNetworkDevice): { readonly ok: string } | { readonly error: string } {
+  const backend = device.backend;
+  switch (backend.kind) {
+    case "user-nat":
+      return { ok: `user,id=${device.id}` };
+    case "l2-socket-listen": {
+      const portError = validatePort(backend.port, `netdev "${device.id}" listen port`);
+      if (portError !== null) {
+        return { error: portError };
+      }
+      return { ok: `socket,id=${device.id},listen=:${String(backend.port)}` };
+    }
+    case "l2-socket-connect": {
+      const portError = validatePort(backend.port, `netdev "${device.id}" connect port`);
+      if (portError !== null) {
+        return { error: portError };
+      }
+      if (backend.host.trim().length === 0) {
+        return { error: `netdev "${device.id}" connect host is required` };
+      }
+      return { ok: `socket,id=${device.id},connect=${backend.host}:${String(backend.port)}` };
+    }
+    case "l2-multicast": {
+      const portError = validatePort(backend.port, `netdev "${device.id}" multicast port`);
+      if (portError !== null) {
+        return { error: portError };
+      }
+      const groupError = validateMulticastGroup(backend.group);
+      if (groupError !== null) {
+        return { error: `netdev "${device.id}": ${groupError}` };
+      }
+      return { ok: `socket,id=${device.id},mcast=${backend.group}:${String(backend.port)}` };
+    }
+  }
+}
+
+/**
+ * Build the netdev plus device argument pairs for one VM's NICs.
+ *
+ * Result-shaped rather than throwing, so a caller assembling a multi-VM plan
+ * turns a bad segment into typed feedback instead of an exception.
+ */
+export function buildQemuNetworkDeviceArgs(devices: readonly QemuNetworkDevice[]): QemuNetworkDeviceArgsResult {
+  if (devices.length === 0) {
+    return { error: "at least one network device is required" };
+  }
+
+  const seenIds = new Set<string>();
+  const seenMacs = new Set<string>();
+  const args: string[] = [];
+
+  for (const device of devices) {
+    if (!NETDEV_ID_PATTERN.test(device.id)) {
+      return { error: `netdev id "${device.id}" must be alphanumeric with optional _ or - separators` };
+    }
+    if (seenIds.has(device.id)) {
+      return { error: `netdev id "${device.id}" is used more than once` };
+    }
+    seenIds.add(device.id);
+
+    const isL2 = device.backend.kind !== "user-nat";
+    if (isL2 && device.mac === undefined) {
+      // See the MAC DISCIPLINE note on QemuNetworkDevice: the QEMU default MAC
+      // is a constant, so two shared-segment VMs would collide.
+      return {
+        error:
+          `netdev "${device.id}" is on a shared L2 segment and must declare an explicit mac -- ` +
+          "QEMU defaults every NIC to 52:54:00:12:34:56, which collides on a shared segment",
+      };
+    }
+
+    if (device.mac !== undefined) {
+      const macError = validateMac(device.mac);
+      if (macError !== null) {
+        return { error: `netdev "${device.id}": ${macError}` };
+      }
+      const normalized = device.mac.toLowerCase();
+      if (seenMacs.has(normalized)) {
+        return { error: `mac "${device.mac}" is assigned to more than one netdev` };
+      }
+      seenMacs.add(normalized);
+    }
+
+    const backendArg = netdevBackendArg(device);
+    if ("error" in backendArg) {
+      return { error: backendArg.error };
+    }
+
+    args.push("-netdev", backendArg.ok);
+    args.push(
+      "-device",
+      device.mac === undefined
+        ? `virtio-net-pci,netdev=${device.id}`
+        : `virtio-net-pci,netdev=${device.id},mac=${device.mac}`,
+    );
+  }
+
+  return { ok: args };
+}
+
 export function buildQemuSystemBootArgs(input: QemuSystemBootArgsInput): readonly string[] {
   const args: string[] = [
     "-machine",
@@ -289,20 +508,26 @@ export function buildQemuSystemBootArgs(input: QemuSystemBootArgsInput): readonl
     `file:${input.serialLogPath}`,
     "-display",
     "none",
-    "-netdev",
-    "user,id=net0",
-    "-device",
-    "virtio-net-pci,netdev=net0",
   ];
 
+  const network = buildQemuNetworkDeviceArgs(input.networkDevices ?? DEFAULT_QEMU_NETWORK_DEVICES);
+  if ("error" in network) {
+    throw new Error(network.error);
+  }
+  args.push(...network.ok);
+
   if (input.bootMedia.kind === "usb-image") {
+    const usb = qemuUsbStorageDeviceArg("zflashboot");
+    if (!usb.ok) {
+      throw new Error(usb.error);
+    }
     args.push(
       "-drive",
       `file=${input.bootMedia.path},if=none,format=raw,readonly=on,id=zflashboot`,
       "-device",
       "qemu-xhci,id=xhci",
       "-device",
-      "usb-storage,bus=xhci.0,drive=zflashboot,bootindex=1",
+      usb.device,
     );
   } else {
     args.push("-cdrom", input.bootMedia.path, "-boot", "d");

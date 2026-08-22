@@ -1,0 +1,12 @@
+{
+  "pr_number": 9990,
+  "archive_path": "docs/history/pr-reviews/PR-9990-docs-four-register-discipline-durable-twin-podcast-equal-weight-corrections-stap.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-02T20:19:52.683Z",
+  "schema_version": "v1",
+  "commit_sha": "52b627425d79850bf55a8efdacf91aa3aee21f62",
+  "title": "docs: four-register-discipline durable twin + podcast equal-weight-corrections staple",
+  "state": "MERGED",
+  "merged_at": "2026-08-02T20:19:18Z",
+  "head_ref": "docs/four-register-twin-and-podcast-correction-principle-20260802"
+}

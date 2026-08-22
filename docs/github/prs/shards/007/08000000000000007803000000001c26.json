@@ -1,0 +1,12 @@
+{
+  "pr_number": 7206,
+  "archive_path": "docs/history/pr-reviews/PR-7206-docs-research-save-broken-symmetries-as-proto-identities-regenerate-from-the-pro.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-09T05:03:10.318Z",
+  "schema_version": "v1",
+  "commit_sha": "144eb009ab571d84b91fa702e684386c82936851",
+  "title": "docs(research): save broken symmetries as proto-identities; regenerate from the proof chain, but the evolutional path can only be recorded",
+  "state": "MERGED",
+  "merged_at": "2026-06-09T05:02:50Z",
+  "head_ref": "otto/research-proto-identities-regenerate-from-proof-chain-path-only-recorded"
+}

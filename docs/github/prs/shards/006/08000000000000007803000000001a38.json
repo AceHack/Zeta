@@ -1,0 +1,12 @@
+{
+  "pr_number": 6712,
+  "archive_path": "docs/history/pr-reviews/PR-6712-feat-observebridge-persona-scoped-typed-ferries-save-the-ferry-pattern-persona-f.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-07T03:38:58.954Z",
+  "schema_version": "v1",
+  "commit_sha": "106c4b9523f4e9c12c2a8a504e1c3764f47414c9",
+  "title": "feat(ObserveBridge): persona-scoped + TYPED ferries — save the ferry pattern (persona-ferry = type 1)",
+  "state": "MERGED",
+  "merged_at": "2026-06-07T03:38:37Z",
+  "head_ref": "otto/ferry-pattern-persona-scoped"
+}

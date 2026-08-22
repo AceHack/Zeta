@@ -1,0 +1,12 @@
+{
+  "pr_number": 7886,
+  "archive_path": "docs/history/pr-reviews/PR-7886-fix-docs-remove-retraction-spec-trailing-space.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-12T10:33:03.298Z",
+  "schema_version": "v1",
+  "commit_sha": "420bb75f7accaa5515c040a2aa76109f2ab82407",
+  "title": "fix(docs): remove retraction spec trailing space",
+  "state": "MERGED",
+  "merged_at": "2026-06-12T10:32:36Z",
+  "head_ref": "codex/fix-markdownlint-retraction-spec"
+}

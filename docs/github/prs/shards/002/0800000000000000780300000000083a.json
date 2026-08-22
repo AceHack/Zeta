@@ -1,0 +1,12 @@
+{
+  "pr_number": 2106,
+  "archive_path": "docs/history/pr-reviews/PR-2106-feat-include-claim-path-signals-in-codex-backlog-runner.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-08T17:14:45.158Z",
+  "schema_version": "v1",
+  "commit_sha": "c595142edd5ab40f23ed609e3f247074cb658f86",
+  "title": "feat: include claim path signals in Codex backlog runner",
+  "state": "MERGED",
+  "merged_at": "2026-05-08T17:14:20Z",
+  "head_ref": "claim/task-codex-backlog-runner-claim-filter"
+}

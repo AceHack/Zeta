@@ -1,0 +1,12 @@
+{
+  "pr_number": 8467,
+  "archive_path": "docs/history/pr-reviews/PR-8467-docs-register-b-hierarchical-planning-lecun-s-open-problem-dischargeable-by-sche.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-16T07:15:22.304Z",
+  "schema_version": "v1",
+  "commit_sha": "8a5e2e4320813487ae5e532bf3749d8722963ebd",
+  "title": "docs(register): §B — hierarchical planning (LeCun's open problem) dischargeable by scheduler-of-schedulers + gist-ladder + least-action",
+  "state": "MERGED",
+  "merged_at": "2026-06-16T07:14:51Z",
+  "head_ref": "otto/sectionb-hierarchical-planning"
+}

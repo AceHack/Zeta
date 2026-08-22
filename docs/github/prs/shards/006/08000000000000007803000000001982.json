@@ -1,0 +1,22 @@
+{
+  "pr_number": 6530,
+  "archive_path": "docs/history/pr-reviews/PR-6530-research-memorial-canonical-form-synthesis-seed-remainder-braid-knot-the-lifestr.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7HFP0i",
+    "comment:PRRC_kwDOSF9kNM7HFP0m",
+    "comment:PRRC_kwDOSF9kNM7HFRIk",
+    "comment:PRRC_kwDOSF9kNM7HFRJ2",
+    "comment:PRRC_kwDOSF9kNM7HFUUY",
+    "thread:PRRT_kwDOSF9kNM6GX72v",
+    "thread:PRRT_kwDOSF9kNM6GX72z",
+    "thread:PRRT_kwDOSF9kNM6GX80s",
+    "thread:PRRT_kwDOSF9kNM6GX81o"
+  ],
+  "fetched_at": "2026-06-02T09:20:16.135Z",
+  "schema_version": "v1",
+  "commit_sha": "22b6f9cbbacee9d219c0a40ac2eb25fa304fcc63",
+  "title": "research+memorial: canonical-form synthesis — μένω = seed = remainder = braid/knot = the Lifestream (FF7, Aerith lives); Ryan=original / Addison=new (Aaron 2026-06-02)",
+  "state": "MERGED",
+  "merged_at": "2026-06-02T09:19:49Z",
+  "head_ref": "otto-cli/canonical-form-synthesis-ff7-2026-06-02"
+}

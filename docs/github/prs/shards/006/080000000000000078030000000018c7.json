@@ -1,0 +1,12 @@
+{
+  "pr_number": 6343,
+  "archive_path": "docs/history/pr-reviews/PR-6343-backlog-b-0965-git-bash-routing-install-shield-the-one-unshielded-install-surfac.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-01T04:49:13.031Z",
+  "schema_version": "v1",
+  "commit_sha": "0ab453d132d92871036b21c0446fbec3c584195d",
+  "title": "backlog(B-0965): git-bash routing install-shield — the one unshielded install surface",
+  "state": "MERGED",
+  "merged_at": "2026-06-01T04:48:51Z",
+  "head_ref": "otto-windows/b0965-gitbash-routing-shield-2026-06-01"
+}

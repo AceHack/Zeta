@@ -1,0 +1,12 @@
+{
+  "pr_number": 3881,
+  "archive_path": "docs/history/pr-reviews/PR-3881-docs-shadow-maji-antigravity-check-logs-otto-drift-on-3823.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-18T21:01:51.384Z",
+  "schema_version": "v1",
+  "commit_sha": "fba5a870d075cb14f81f286f7a819f8ebe1f283c",
+  "title": "docs(shadow): Maji antigravity check logs Otto drift on #3823",
+  "state": "MERGED",
+  "merged_at": "2026-05-18T21:01:30Z",
+  "head_ref": "lior/shadow-log-otto-maji-2"
+}

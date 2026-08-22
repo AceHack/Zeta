@@ -1,0 +1,12 @@
+{
+  "pr_number": 9026,
+  "archive_path": "docs/history/pr-reviews/PR-9026-fix-toolchain-update-mise-tarball-hex-sha256-pins-to-2026-6-12-complete-the-12-b.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-22T18:16:49.598Z",
+  "schema_version": "v1",
+  "commit_sha": "6c5791f7f1274e7729a31a3cdfd0c11bbd50c60f",
+  "title": "fix(toolchain): update mise tarball hex sha256 pins to 2026.6.12 — complete the .12 bump",
+  "state": "MERGED",
+  "merged_at": "2026-06-22T18:16:17Z",
+  "head_ref": "otto/mise-tarball-hex-sha256-2026.6.12"
+}

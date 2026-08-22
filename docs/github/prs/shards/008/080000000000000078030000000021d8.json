@@ -1,0 +1,12 @@
+{
+  "pr_number": 8664,
+  "archive_path": "docs/history/pr-reviews/PR-8664-feat-core-costarfederations-the-end-to-end-imdb-through-line-reverse-mint-federa.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-20T01:02:44.916Z",
+  "schema_version": "v1",
+  "commit_sha": "c43979e50b7c4501cf1b005d239fed67a8e3e471",
+  "title": "feat(core): CostarFederations — the end-to-end IMDb through-line (reverse-mint → federation health → cached)",
+  "state": "MERGED",
+  "merged_at": "2026-06-20T01:02:20Z",
+  "head_ref": "otto/costar-federations-end-to-end-pipeline"
+}

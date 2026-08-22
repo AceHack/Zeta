@@ -1,0 +1,15 @@
+{
+  "pr_number": 10976,
+  "archive_path": "docs/history/pr-reviews/PR-10976-feat-competence-event-source-for-per-agent-hat-jurisdiction-competence-use-is-th.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7iCrSl",
+    "thread:PRRT_kwDOSF9kNM6ZoXly"
+  ],
+  "fetched_at": "2026-08-16T17:45:19.098Z",
+  "schema_version": "v1",
+  "commit_sha": "191665acf17dbb7e70160fc261db61f06120ba3e",
+  "title": "feat(competence): event source for per-(agent,hat,jurisdiction) competence — use is the determinator, agreement is only the prior",
+  "state": "MERGED",
+  "merged_at": "2026-08-16T17:44:45Z",
+  "head_ref": "shadow/competence-attribution-graph"
+}

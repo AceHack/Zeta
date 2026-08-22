@@ -1,0 +1,12 @@
+{
+  "pr_number": 12805,
+  "archive_path": "docs/history/pr-reviews/PR-12805-research-the-cl-1-3-cl-3-1-split-is-inert-and-lorentzian-geometry-buys-only-the-.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-20T15:16:17.911Z",
+  "schema_version": "v1",
+  "commit_sha": "f35b79c76d6aba559ddf35c0a477d59e2576bb2c",
+  "title": "research: the Cl(1,3)/Cl(3,1) split is inert, and Lorentzian geometry buys only the conformal factor",
+  "state": "MERGED",
+  "merged_at": "2026-08-20T15:15:37Z",
+  "head_ref": "clifford-signature-audit-lorentzian-phase"
+}

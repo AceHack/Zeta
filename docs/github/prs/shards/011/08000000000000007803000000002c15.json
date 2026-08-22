@@ -1,0 +1,12 @@
+{
+  "pr_number": 11285,
+  "archive_path": "docs/history/pr-reviews/PR-11285-feat-room-expose-forward-only-causal-corrections.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-17T02:57:37.587Z",
+  "schema_version": "v1",
+  "commit_sha": "184fae49c49953ec8f79a9d7a00620a709436a21",
+  "title": "feat(room): expose forward-only causal corrections",
+  "state": "MERGED",
+  "merged_at": "2026-08-17T02:57:03Z",
+  "head_ref": "codex/room-causal-readout"
+}

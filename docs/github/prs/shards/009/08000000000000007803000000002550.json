@@ -1,0 +1,12 @@
+{
+  "pr_number": 9552,
+  "archive_path": "docs/history/pr-reviews/PR-9552-fix-heartbeat-flush-via-pr-corporate-mode.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-08T22:28:22.268Z",
+  "schema_version": "v1",
+  "commit_sha": "143c442267856fbae12a75a9a4b8a3ac0a40c6b5",
+  "title": "fix(heartbeat): flush via PR (corporate mode)",
+  "state": "MERGED",
+  "merged_at": "2026-07-08T22:27:57Z",
+  "head_ref": "claim/kiro-heartbeat-pr-flush-2026-07-08"
+}

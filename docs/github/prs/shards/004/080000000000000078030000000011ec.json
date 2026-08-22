@@ -1,0 +1,15 @@
+{
+  "pr_number": 4588,
+  "archive_path": "docs/history/pr-reviews/PR-4588-rule-the-only-way-to-lose-is-not-to-play-in-additive-games-aaron-2026-05-21.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7DyeBW",
+    "thread:PRRT_kwDOSF9kNM6D9HOD"
+  ],
+  "fetched_at": "2026-05-21T22:45:31.671Z",
+  "schema_version": "v1",
+  "commit_sha": "1734ec7ef6dc53e24fc64fb9b14268b20734408f",
+  "title": "rule: the only way to lose is not to play — in additive games (Aaron 2026-05-21)",
+  "state": "MERGED",
+  "merged_at": "2026-05-21T22:45:11Z",
+  "head_ref": "rule/only-way-to-lose-is-not-to-play-2026-05-21"
+}

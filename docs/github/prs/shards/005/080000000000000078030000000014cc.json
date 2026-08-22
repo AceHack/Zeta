@@ -1,0 +1,12 @@
+{
+  "pr_number": 5324,
+  "archive_path": "docs/history/pr-reviews/PR-5324-fix-usb-pr-3-cascade-add-console-ttys0-to-installer-kernelparams-qemu-boot-smoke.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-26T21:32:13.193Z",
+  "schema_version": "v1",
+  "commit_sha": "b3d6e9245c9a263b03eba1a2048edf2d4fadf7a2",
+  "title": "fix(USB PR 3 cascade): add console=ttyS0 to installer kernelParams — QEMU boot smoke-test couldn't capture serial output",
+  "state": "MERGED",
+  "merged_at": "2026-05-26T21:31:53Z",
+  "head_ref": "otto-cli/usb-pr3-fix-add-serial-console-to-installer-kernel-params-for-qemu-cascade-2026-05-26"
+}

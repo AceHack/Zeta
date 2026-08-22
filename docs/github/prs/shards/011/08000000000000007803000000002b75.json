@@ -1,0 +1,12 @@
+{
+  "pr_number": 11125,
+  "archive_path": "docs/history/pr-reviews/PR-11125-fix-installer-boundary-whitespace-on-a-binding-value-is-malformed-input-not-a-fo.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-16T22:18:06.758Z",
+  "schema_version": "v1",
+  "commit_sha": "9d243962067baacb761b1c8eef6c3eb77d7d8c8b",
+  "title": "fix(installer): boundary whitespace on a binding value is malformed input, not a formatting choice",
+  "state": "MERGED",
+  "merged_at": "2026-08-16T22:17:28Z",
+  "head_ref": "shadow/binding-whitespace-reject-not-rewrite"
+}

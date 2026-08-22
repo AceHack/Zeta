@@ -1,0 +1,12 @@
+{
+  "pr_number": 6593,
+  "archive_path": "docs/history/pr-reviews/PR-6593-docs-b-1001-columnar-message-passing-infra-itron-batched-throttle-concept-not-co.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-02T16:38:15.838Z",
+  "schema_version": "v1",
+  "commit_sha": "113ace03965cb4b3698f9b4433dfce9668f357ed",
+  "title": "docs(B-1001): columnar message-passing infra — Itron batched-throttle (concept-not-code) + security-surface Eve-polymorphic serialization port + reservoir-computing bridge",
+  "state": "MERGED",
+  "merged_at": "2026-06-02T16:37:48Z",
+  "head_ref": "otto-cli/b1001-columnar-msg-infra-2026-06-02"
+}

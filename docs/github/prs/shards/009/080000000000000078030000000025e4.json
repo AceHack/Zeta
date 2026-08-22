@@ -1,0 +1,12 @@
+{
+  "pr_number": 9700,
+  "archive_path": "docs/history/pr-reviews/PR-9700-docs-research-bft-is-the-mathematical-form-grace-shrinks-f-sybil-resistance-caps.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-11T15:24:05.121Z",
+  "schema_version": "v1",
+  "commit_sha": "2c59bc72c3ddac0ccede9643ba105657c7960780",
+  "title": "docs(research): BFT is the mathematical form — grace shrinks f, Sybil-resistance caps f, BFT tolerates f, math verifies (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-11T15:23:36Z",
+  "head_ref": "bft-tolerates-the-residual-byzantine"
+}

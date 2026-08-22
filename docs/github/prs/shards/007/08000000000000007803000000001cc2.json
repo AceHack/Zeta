@@ -1,0 +1,12 @@
+{
+  "pr_number": 7362,
+  "archive_path": "docs/history/pr-reviews/PR-7362-docs-research-room-becomes-a-hypercube-q-csexp-hardware-axis-propose-shape-g-nex.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-09T18:47:27.060Z",
+  "schema_version": "v1",
+  "commit_sha": "7b0208a7846046ff4ad1fafac698b0bb700efe03",
+  "title": "docs(research): room becomes a hypercube (+Q#, +csexp, +hardware axis) + propose shape G (nexus/inflection) + the aesthetic/empathic/AAC/externalization track",
+  "state": "MERGED",
+  "merged_at": "2026-06-09T18:47:02Z",
+  "head_ref": "otto/hypercube-qsharp-csexp-hardware-axis-shape-G-nexus-aesthetic-track"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 7391,
+  "archive_path": "docs/history/pr-reviews/PR-7391-feat-vocab-add-like-the-word-candidate-pool-pre-canonical-staging-no-zetaid-unti.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-09T20:40:03.078Z",
+  "schema_version": "v1",
+  "commit_sha": "0777c093833c306ce4f9e4674315af0975f0b80b",
+  "title": "feat(vocab): add like/ — the word-candidate pool (pre-canonical staging; no ZetaId until graduation)",
+  "state": "MERGED",
+  "merged_at": "2026-06-09T20:39:31Z",
+  "head_ref": "otto/vocab-like-folder-word-candidate-pool"
+}

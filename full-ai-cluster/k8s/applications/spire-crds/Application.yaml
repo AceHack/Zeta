@@ -1,0 +1,86 @@
+# SPIRE CRDs — ClusterSPIFFEID, ClusterFederatedTrustDomain, ClusterStaticEntry.
+#
+# WHY THIS APPLICATION EXISTS (081M0JXXFV0087G0R001PGEEM4 follow-on)
+# ------------------------------------------------------------------
+# The `spire` chart renders THREE `spire.spiffe.io/v1alpha1 ClusterSPIFFEID`
+# resources and ships no `crds/` directory and no `spire-crds` dependency —
+# `helm show chart spire --version 0.24.2` lists spire-lib, spire-server,
+# spire-agent, spiffe-csi-driver, spiffe-oidc-discovery-provider and
+# tornjak-frontend, and no CRD chart among them. The upstream chart states the
+# pairing itself (spire 0.24.2 README, "Upgrade notes / 0.24.X"): *"You must
+# upgrade spire-crds to 0.5.0+ before performing this upgrade."* The CRDs are a
+# SEPARATE chart on purpose — Helm's own CRD guidance — so somebody has to
+# install them, and until now only the metal lane did.
+#
+# The metal lane installs them at `k8s/bootstrap/spire-install.yaml` as a
+# `helm.cattle.io/v1 HelmChart`, which is a k3s helm-controller resource. kind
+# runs no helm-controller, so that manifest is inert there: it applies as an
+# unrecognised custom resource and nothing ever reconciles it. That is the whole
+# reason `spire` reported `Sync operation to 0.24.2 failed: one or more
+# synchronization tasks are not valid (retried 5 times)` with ZERO pods on
+# run 32528419577 — three ClusterSPIFFEID objects with no CRD to bind to.
+#
+# This Application is the substrate-independent half of that bootstrap manifest:
+# the same chart at the same version, installed by ArgoCD, so the kind lane and
+# the metal lane agree on where the CRDs come from.
+#
+# ORDERING IS DECLARED, NOT TIMED
+# -------------------------------
+# Wave -55 puts this strictly before `spire` (-50), and the edge
+# `spire -> spire-crds` is declared in
+# `full-ai-cluster/k8s/sync-wave-dependency-graph.yaml` with a citation.
+# An ordering that holds by timing is a race that fails on a slower runner, so
+# three MUTATIONS were run against that claim rather than it being asserted:
+#
+#   * delete this Application's node from the declaration -> REFUSED by ace's own
+#     resolver ("chart 'spire' depends on unknown chart 'spire-crds'").
+#   * move this wave to -45, i.e. AFTER spire -> REFUSED by
+#     derive-sync-waves.ts finding 5, as a NEW unregistered order disagreement.
+#   * delete the `spire-crds` entry from spire's `dependsOn` -> SURVIVED the
+#     whole suite on the first pass, because nothing can derive that a missing
+#     edge ought to exist. That gap is not closed in general; it is closed for
+#     THIS edge by a named pin in derive-sync-waves.test.ts, and the second
+#     mutation is refused now.
+#
+# So: the node is enforced, the wave order is enforced, and this one edge is
+# pinned by name. The general "an edge someone deleted" case remains
+# underivable, and saying so is more use than a sentence claiming otherwise.
+#
+# `spire-crds` 0.5.0 sets `helm.sh/resource-policy: keep` on all three CRDs, so
+# uninstalling the chart leaves the definitions (and therefore any live
+# ClusterSPIFFEIDs) in place. That is the chart's default and it is the one we
+# want: `syncPolicy.automated.prune` is false here for the same reason.
+
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  annotations:
+    argocd.argoproj.io/sync-wave: "-55"
+  name: spire-crds
+  namespace: argocd
+  finalizers: [ resources-finalizer.argocd.argoproj.io ]
+spec:
+  project: default
+  source:
+    repoURL: https://spiffe.github.io/helm-charts-hardened/
+    chart: spire-crds
+    # Pinned to the SAME version the k3s bootstrap installs
+    # (k8s/bootstrap/spire-install.yaml), and to the floor the spire 0.24.X
+    # upgrade notes require. Bump both together or the lanes diverge.
+    targetRevision: 0.5.0
+    helm:
+      releaseName: spire-crds
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: spire
+  syncPolicy:
+    automated: { prune: false, selfHeal: true }
+    # ServerSideApply is KEPT here, unlike the sibling `spire` Application which
+    # measured its way off it. NOTE what is NOT being claimed: the usual "CRDs
+    # are too big for client-side apply" reason does not bite at this size —
+    # `helm template` of spire-crds 0.5.0 is 19460 bytes across three CRDs, well
+    # under the 262144-byte `kubectl.kubernetes.io/last-applied-configuration`
+    # cap. It is kept because it is the tree's default AND because this
+    # Application reaches Synced/Healthy with it on (measured), so there is no
+    # reason to deviate — not because the cap was measured to require it.
+    syncOptions: [ CreateNamespace=true, ServerSideApply=true ]

@@ -1,0 +1,12 @@
+{
+  "pr_number": 8722,
+  "archive_path": "docs/history/pr-reviews/PR-8722-row4-cross-language-merkle-inclusion-proof-oracle-n-way-byte-lock-verify-against.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-20T07:00:26.745Z",
+  "schema_version": "v1",
+  "commit_sha": "a6239e6892d6b8bc58ceed4d8c96bbbceb197668",
+  "title": "row4: cross-language Merkle inclusion-proof oracle (N-way byte-lock + verify-against-root)",
+  "state": "MERGED",
+  "merged_at": "2026-06-20T07:00:00Z",
+  "head_ref": "lumen/row4-merkle-inclusion-proof-oracle"
+}

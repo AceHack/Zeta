@@ -1,0 +1,12 @@
+{
+  "pr_number": 4476,
+  "archive_path": "docs/history/pr-reviews/PR-4476-docs-archive-strictly-decompose-pr-preservation-4461-from-blob-4464.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-21T06:20:51.274Z",
+  "schema_version": "v1",
+  "commit_sha": "d65c7b00b60e446b9f133a8a8e52f7e215711791",
+  "title": "docs(archive): strictly decompose PR preservation 4461 from blob 4464",
+  "state": "MERGED",
+  "merged_at": "2026-05-21T06:20:34Z",
+  "head_ref": "lior/preserve-4461-atomic"
+}

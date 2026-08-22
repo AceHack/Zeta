@@ -1,0 +1,12 @@
+{
+  "pr_number": 7574,
+  "archive_path": "docs/history/pr-reviews/PR-7574-docs-research-heat-is-the-branch-space-limiter-the-crossing-of-streams-state-exp.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-11T03:03:33.102Z",
+  "schema_version": "v1",
+  "commit_sha": "ab6bcd84cfb71f83a1dd6cd29d54dc89bb1bb926",
+  "title": "docs(research): heat is the branch-space limiter — the crossing-of-streams state-expansion toll",
+  "state": "MERGED",
+  "merged_at": "2026-06-11T03:03:08Z",
+  "head_ref": "shadow-heat-branch-space-limiter"
+}

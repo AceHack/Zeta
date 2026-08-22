@@ -1,0 +1,25 @@
+{
+  "pr_number": 3716,
+  "archive_path": "docs/history/pr-reviews/PR-3716-feat-hygiene-bundled-pre-push-self-check-helper-for-tick-shards.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7B1Oo9",
+    "comment:PRRC_kwDOSF9kNM7B1OpD",
+    "comment:PRRC_kwDOSF9kNM7B1OpJ",
+    "comment:PRRC_kwDOSF9kNM7B1OpO",
+    "comment:PRRC_kwDOSF9kNM7B1OpQ",
+    "comment:PRRC_kwDOSF9kNM7B1Otx",
+    "thread:PRRT_kwDOSF9kNM6ChT-Z",
+    "thread:PRRT_kwDOSF9kNM6ChT-f",
+    "thread:PRRT_kwDOSF9kNM6ChT-k",
+    "thread:PRRT_kwDOSF9kNM6ChT-o",
+    "thread:PRRT_kwDOSF9kNM6ChT-q",
+    "thread:PRRT_kwDOSF9kNM6ChUCp"
+  ],
+  "fetched_at": "2026-05-16T03:53:14.154Z",
+  "schema_version": "v1",
+  "commit_sha": "e43947f338dfcca31ac70902b0c604ab7cfcdc48",
+  "title": "feat(hygiene): bundled pre-push self-check helper for tick shards",
+  "state": "MERGED",
+  "merged_at": "2026-05-16T03:52:45Z",
+  "head_ref": "feat/check-shard-before-push-otto-cli-2026-05-16"
+}

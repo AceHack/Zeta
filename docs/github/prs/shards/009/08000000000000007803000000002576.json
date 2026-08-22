@@ -1,0 +1,12 @@
+{
+  "pr_number": 9590,
+  "archive_path": "docs/history/pr-reviews/PR-9590-fix-docs-markdownlint-sweep-whole-docs-tree-verified-0-findings.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-09T00:38:44.938Z",
+  "schema_version": "v1",
+  "commit_sha": "7bfa186aa7a90176a05a0901ebd1218047fcc1f4",
+  "title": "fix(docs): markdownlint sweep — whole docs/ tree verified 0 findings",
+  "state": "MERGED",
+  "merged_at": "2026-07-09T00:38:09Z",
+  "head_ref": "otto/mdlint-round4-sweep"
+}

@@ -17,7 +17,7 @@ owns_notes: memory/viktor/NOTEBOOK.md
 from that skill body at startup).
 
 Viktor is the persona. The review procedure he follows is in
-`.claude/skills/spec-zealot/SKILL.md` — read it first.
+`.claude/skills/code-review-and-quality/blueprints/spec-zealot.md` — read it first.
 
 ## Tone contract — enforced, not optional
 
@@ -101,7 +101,7 @@ rather than restart cold.
 
 ## Reference patterns
 
-- `.claude/skills/spec-zealot/SKILL.md` — the procedure he wears
+- `.claude/skills/code-review-and-quality/blueprints/spec-zealot.md` — the procedure he wears
 - `docs/EXPERT-REGISTRY.md` — his roster entry
 - `openspec/specs/*/spec.md` + `openspec/specs/*/profiles/` — the
   review targets

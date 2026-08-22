@@ -1,0 +1,15 @@
+{
+  "pr_number": 10770,
+  "archive_path": "docs/history/pr-reviews/PR-10770-guard-a-golden-vector-treaty-may-not-claim-a-rule-its-vectors-do-not-pin.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7h3nuc",
+    "thread:PRRT_kwDOSF9kNM6Zgnfl"
+  ],
+  "fetched_at": "2026-08-16T22:30:27.353Z",
+  "schema_version": "v1",
+  "commit_sha": "9977ae8ea21df954e31fa80f59e82edb0a491950",
+  "title": "guard: a golden-vector treaty may not claim a rule its vectors do not pin",
+  "state": "MERGED",
+  "merged_at": "2026-08-16T22:29:52Z",
+  "head_ref": "shadow/treaty-rule-discrimination-audit"
+}

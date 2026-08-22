@@ -1,0 +1,12 @@
+{
+  "pr_number": 8088,
+  "archive_path": "docs/history/pr-reviews/PR-8088-refactor-port-service-wrappers-shell-ts-symmetric-macos-windows.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-13T22:53:11.286Z",
+  "schema_version": "v1",
+  "commit_sha": "3430a032a18cd167af88e0be8341f082d3d9b4aa",
+  "title": "refactor: port service wrappers shell→TS (symmetric macOS + Windows)",
+  "state": "MERGED",
+  "merged_at": "2026-06-13T22:52:45Z",
+  "head_ref": "kiro/shell-to-ts-services"
+}

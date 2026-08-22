@@ -1,0 +1,15 @@
+{
+  "pr_number": 5177,
+  "archive_path": "docs/history/pr-reviews/PR-5177-docs-shadow-add-lesson-on-agent-paralysis-and-state-inconsistency.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7E8EHL",
+    "thread:PRRT_kwDOSF9kNM6Ezi2X"
+  ],
+  "fetched_at": "2026-05-26T15:58:39.025Z",
+  "schema_version": "v1",
+  "commit_sha": "572d5c37e7dc7cfb195460127c156424e09f5c83",
+  "title": "docs(shadow): add lesson on agent paralysis and state inconsistency",
+  "state": "MERGED",
+  "merged_at": "2026-05-26T15:58:18Z",
+  "head_ref": "lior/shadow-log-2026-05-26-20260526133720"
+}

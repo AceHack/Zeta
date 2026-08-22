@@ -1,0 +1,12 @@
+{
+  "pr_number": 11659,
+  "archive_path": "docs/history/pr-reviews/PR-11659-fix-core-simloop-defaultbudget-s-three-constants-attributed-and-two-of-the-three.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-17T21:51:12.437Z",
+  "schema_version": "v1",
+  "commit_sha": "ee553928ec14cdc2379c4409226911c9e01fb081",
+  "title": "fix(core): SimLoop.defaultBudget's three constants — attributed, and two of the three derived",
+  "state": "MERGED",
+  "merged_at": "2026-08-17T21:48:07Z",
+  "head_ref": "shadow/attribute-simloop-default-budget"
+}

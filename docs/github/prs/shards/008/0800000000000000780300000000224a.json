@@ -1,0 +1,12 @@
+{
+  "pr_number": 8778,
+  "archive_path": "docs/history/pr-reviews/PR-8778-docs-addison-s-privacy-budget-economics-metaspace-visibility-funding-thesis-tsmc.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-20T21:45:35.228Z",
+  "schema_version": "v1",
+  "commit_sha": "d6b3fba38388e43472cd27e621d945a1422a5ab0",
+  "title": "docs: Addison's privacy-budget economics — metaspace visibility + funding thesis (TSMC in Time)",
+  "state": "MERGED",
+  "merged_at": "2026-06-20T21:45:07Z",
+  "head_ref": "otto/addison-privacy-budget-economics"
+}

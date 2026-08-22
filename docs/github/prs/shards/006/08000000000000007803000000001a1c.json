@@ -1,0 +1,12 @@
+{
+  "pr_number": 6684,
+  "archive_path": "docs/history/pr-reviews/PR-6684-fix-k3s-drop-tokenfile-on-cluster-init-server-to-break-first-boot-token-deadlock.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-07T01:54:28.788Z",
+  "schema_version": "v1",
+  "commit_sha": "eff81f56faaa6b8555089bed1fc39dee5c4c3e9f",
+  "title": "fix(k3s): drop tokenFile on cluster-init server to break first-boot token deadlock",
+  "state": "MERGED",
+  "merged_at": "2026-06-07T01:54:06Z",
+  "head_ref": "fix/k3s-server-cluster-init-token-deadlock"
+}

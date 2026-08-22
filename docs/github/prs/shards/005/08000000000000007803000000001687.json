@@ -1,0 +1,12 @@
+{
+  "pr_number": 5767,
+  "archive_path": "docs/history/pr-reviews/PR-5767-feat-b-0914-5-s-pure-ts-evolution-agent-mash-refine-survivors-closes-tournament-.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-28T11:17:48.889Z",
+  "schema_version": "v1",
+  "commit_sha": "1a446d0c47743636fbee036cf2c8789ddd563ea4",
+  "title": "feat(B-0914.5): S — pure-TS evolution agent (mash + refine survivors); closes tournament loop with TrueSkill (S/M/L sequence per Aaron)",
+  "state": "MERGED",
+  "merged_at": "2026-05-28T11:17:26Z",
+  "head_ref": "otto-cli/b-0914-5-evolution-mash-refine-survivors-pure-function-composes-with-trueskill-tournament-loop-2026-05-28"
+}

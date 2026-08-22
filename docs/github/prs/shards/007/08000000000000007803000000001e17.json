@@ -1,0 +1,12 @@
+{
+  "pr_number": 7703,
+  "archive_path": "docs/history/pr-reviews/PR-7703-docs-backlog-b-1028-max-s-mips-emulator-as-a-treaty-room-the-chip-8-playbook-rep.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-11T14:49:56.530Z",
+  "schema_version": "v1",
+  "commit_sha": "1645e90a8da1cfcc62285e4c78463b2a243ab14c",
+  "title": "docs(backlog): B-1028 — Max's MIPS emulator as a treaty room (the CHIP-8 playbook replayed)",
+  "state": "MERGED",
+  "merged_at": "2026-06-11T14:49:21Z",
+  "head_ref": "shadow-b1028-mips-treaty-room"
+}

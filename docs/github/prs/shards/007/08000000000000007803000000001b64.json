@@ -1,0 +1,12 @@
+{
+  "pr_number": 7012,
+  "archive_path": "docs/history/pr-reviews/PR-7012-feat-core-dynamicvalue-homoiconicity-table-stream-catalog-dep-model-qualifiers-c.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-08T04:23:44.043Z",
+  "schema_version": "v1",
+  "commit_sha": "c00a3d50b7bc2de609fe2ecd1bf9e133c059a172",
+  "title": "feat(core): DynamicValue homoiconicity (table/stream/catalog); dep model (qualifiers + criteria + canonical name/policy)",
+  "state": "MERGED",
+  "merged_at": "2026-06-08T04:23:22Z",
+  "head_ref": "otto/dynamicvalue-homoiconicity-table-stream-catalog-plus-dep-model"
+}

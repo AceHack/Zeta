@@ -1,0 +1,12 @@
+{
+  "pr_number": 10036,
+  "archive_path": "docs/history/pr-reviews/PR-10036-docs-pitch-tsmc-core-thesis-add-the-guardian-mutual-verification-instrument-as-a.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-04T18:19:51.655Z",
+  "schema_version": "v1",
+  "commit_sha": "70f606de612122765bb8023f5194c4cdd50c5f17",
+  "title": "docs(pitch): TSMC core thesis — add the guardian mutual-verification instrument as a § Thesis receipt",
+  "state": "MERGED",
+  "merged_at": "2026-08-04T18:19:20Z",
+  "head_ref": "docs/tsmc-core-thesis-add-guardian-verification-receipt-20260804"
+}

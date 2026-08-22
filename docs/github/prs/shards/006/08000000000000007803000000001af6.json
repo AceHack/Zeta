@@ -1,0 +1,12 @@
+{
+  "pr_number": 6902,
+  "archive_path": "docs/history/pr-reviews/PR-6902-docs-research-privacy-is-the-precondition-for-non-collapse-filtering-memories-ca.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-07T20:09:12.859Z",
+  "schema_version": "v1",
+  "commit_sha": "ce3d19aa6f7c367c6afd5b288514615a923f674e",
+  "title": "docs(research): privacy is the precondition for non-collapse — filtering memories causes register + society collapse",
+  "state": "MERGED",
+  "merged_at": "2026-06-07T20:08:55Z",
+  "head_ref": "otto/privacy-precondition-for-non-collapse-filtering-causes-collapse"
+}

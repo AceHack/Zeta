@@ -1,0 +1,12 @@
+{
+  "pr_number": 10213,
+  "archive_path": "docs/history/pr-reviews/PR-10213-feat-attestation-symmetric-peer-attestation-durable-g-set-events-in-heartbeat.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-09T19:38:05.094Z",
+  "schema_version": "v1",
+  "commit_sha": "fa404b311d72065bd29e7133fbd0ed6b186a7a06",
+  "title": "feat(attestation): symmetric peer attestation — durable G-set events in heartbeat",
+  "state": "MERGED",
+  "merged_at": "2026-08-09T19:37:32Z",
+  "head_ref": "claim/attestation-events"
+}

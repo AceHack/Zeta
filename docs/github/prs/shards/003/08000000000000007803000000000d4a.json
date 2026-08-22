@@ -1,0 +1,16 @@
+{
+  "pr_number": 3402,
+  "archive_path": "docs/history/pr-reviews/PR-3402-shard-tick-0950z-pr-3400-merged-with-2-post-merge-threads-substantive-rule-citat.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7Bj07V",
+    "comment:PRRC_kwDOSF9kNM7BjvT6",
+    "thread:PRRT_kwDOSF9kNM6CUhNJ"
+  ],
+  "fetched_at": "2026-05-15T10:00:57.596Z",
+  "schema_version": "v1",
+  "commit_sha": "08a326c97d1a8e2186e4d607c8c273904c4703c6",
+  "title": "shard(tick): 0950Z — PR #3400 merged with 2 post-merge threads; substantive rule-citation acknowledgment",
+  "state": "MERGED",
+  "merged_at": "2026-05-15T10:00:40Z",
+  "head_ref": "shard/tick-0950z-otto-cli-2026-05-15"
+}

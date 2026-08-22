@@ -1,0 +1,12 @@
+{
+  "pr_number": 2601,
+  "archive_path": "docs/history/pr-reviews/PR-2601-docs-memory-alephz-origin-cantor-s-for-genz-constraint-improved-the-name.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-11T01:00:46.185Z",
+  "schema_version": "v1",
+  "commit_sha": "9f9a8b9de1c96a6056446aecaca4461d708bddaa",
+  "title": "docs(memory): AlephZ origin — Cantor's ℵ₀ for GenZ, constraint improved the name",
+  "state": "MERGED",
+  "merged_at": "2026-05-11T01:00:28Z",
+  "head_ref": "docs/aleph-null-cantor-origin-2026-05-10"
+}

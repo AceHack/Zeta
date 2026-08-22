@@ -1,0 +1,12 @@
+{
+  "pr_number": 9021,
+  "archive_path": "docs/history/pr-reviews/PR-9021-backlog-credential-substrate-threshold-at-each-root-org-vs-user-ca-conflict-reso.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-21T22:07:42.322Z",
+  "schema_version": "v1",
+  "commit_sha": "bba1e55c1414f4d7de7a95fca06da7f4cc57a4ce",
+  "title": "backlog(credential-substrate): threshold-at-each-root + org-vs-user-CA conflict-resolution rule (math-findings follow-ups)",
+  "state": "MERGED",
+  "merged_at": "2026-06-21T22:07:01Z",
+  "head_ref": "otto/backlog-threshold-and-conflict-rule"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 8983,
+  "archive_path": "docs/history/pr-reviews/PR-8983-feat-setup-secret-clip-generic-clipboard-popup-masked-os-keystore-secret-primiti.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-21T19:01:49.041Z",
+  "schema_version": "v1",
+  "commit_sha": "c3fa6be3bc4d4d28a7258b5082f0d26f123ac050",
+  "title": "feat(setup): secret-clip — generic clipboard/popup/masked → OS-keystore secret primitive (macOS)",
+  "state": "MERGED",
+  "merged_at": "2026-06-21T19:01:21Z",
+  "head_ref": "otto/secret-clip-generic-primitive"
+}

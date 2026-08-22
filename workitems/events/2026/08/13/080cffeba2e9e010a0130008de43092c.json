@@ -1,0 +1,14 @@
+{
+  "id": "080cffeba2e9e010a0130008de43092c",
+  "at": "2026-08-13T23:28:09.532Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081KZYQ8Q9V087G0R0013XR3ZX",
+    "type": "bug",
+    "title": "LossyUdpChannel computes an AIMD gap and never reads it: flushBlock has no pacing, so there is no rate control at all",
+    "slug": "lossyudpchannel-computes-an-aimd-gap-and-never-reads-it-flus",
+    "priority": "P2",
+    "filename": "081KZYQ8Q9V087G0R0013XR3ZX-lossyudpchannel-computes-an-aimd-gap-and-never-reads-it-flus.md"
+  }
+}

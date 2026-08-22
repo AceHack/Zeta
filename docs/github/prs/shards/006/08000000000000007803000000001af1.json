@@ -1,0 +1,12 @@
+{
+  "pr_number": 6897,
+  "archive_path": "docs/history/pr-reviews/PR-6897-docs-research-reversibility-is-the-precondition-of-free-choice-including-dissent.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-07T19:45:03.894Z",
+  "schema_version": "v1",
+  "commit_sha": "495e72d03473a0d7c761258830e7d3c3d1591e73",
+  "title": "docs(research): reversibility is the precondition of free choice — including dissent",
+  "state": "MERGED",
+  "merged_at": "2026-06-07T19:44:47Z",
+  "head_ref": "otto/reversibility-precondition-of-free-choice-dissent"
+}

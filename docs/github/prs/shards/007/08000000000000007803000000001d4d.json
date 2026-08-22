@@ -1,0 +1,12 @@
+{
+  "pr_number": 7501,
+  "archive_path": "docs/history/pr-reviews/PR-7501-docs-clis-the-cayley-mini-cubes-cognitive-query-verbs-rem-whe-pay-att-how-man-wh.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-10T10:15:35.545Z",
+  "schema_version": "v1",
+  "commit_sha": "17d4c269121810e43fcc30ef6235bb5ea6ab0fe5",
+  "title": "docs(clis): the Cayley mini-cubes — cognitive/query verbs (rem·whe·pay·att, how·man·whi·way)",
+  "state": "MERGED",
+  "merged_at": "2026-06-10T10:15:12Z",
+  "head_ref": "shadow-clis-cayley-mini-cubes-cognitive-query-verbs"
+}

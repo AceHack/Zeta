@@ -1,0 +1,12 @@
+{
+  "pr_number": 11961,
+  "archive_path": "docs/history/pr-reviews/PR-11961-ferry-ip-questionable-andrew-kelley-on-zig-no-llm-policy-bdfl-vs-committee-llvm-.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-18T14:31:08.307Z",
+  "schema_version": "v1",
+  "commit_sha": "639f587f50f6617c0d2f9a8b2097e420bf317b30",
+  "title": "ferry(ip-questionable): Andrew Kelley on Zig — no-LLM policy, BDFL vs committee, LLVM removal",
+  "state": "MERGED",
+  "merged_at": "2026-08-18T14:30:04Z",
+  "head_ref": "shadow/ferry-zig-andrew-kelley"
+}

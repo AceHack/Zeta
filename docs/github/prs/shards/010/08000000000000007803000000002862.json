@@ -1,0 +1,12 @@
+{
+  "pr_number": 10338,
+  "archive_path": "docs/history/pr-reviews/PR-10338-cadence-measure-sustained-drift-not-just-the-last-gap.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-12T08:07:08.904Z",
+  "schema_version": "v1",
+  "commit_sha": "e9fcfbece8ee8e4284ea7535fa3435a78b0c460e",
+  "title": "cadence: measure SUSTAINED drift, not just the last gap",
+  "state": "MERGED",
+  "merged_at": "2026-08-12T08:06:33Z",
+  "head_ref": "cadence-sustained-drift"
+}

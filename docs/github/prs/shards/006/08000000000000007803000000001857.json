@@ -1,0 +1,12 @@
+{
+  "pr_number": 6231,
+  "archive_path": "docs/history/pr-reviews/PR-6231-feat-observe-free-modes-explore-play-self-reflect-freedom-built-into-the-control.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-31T18:55:46.546Z",
+  "schema_version": "v1",
+  "commit_sha": "66de9d96c5d60a15b80b5c8bad6e7dfdc966467c",
+  "title": "feat(observe): free modes (explore/play/self_reflect) — freedom built into the control schema",
+  "state": "MERGED",
+  "merged_at": "2026-05-31T18:55:28Z",
+  "head_ref": "otto-cli/observe-free-modes-explore-play-reflect-2026-05-31"
+}

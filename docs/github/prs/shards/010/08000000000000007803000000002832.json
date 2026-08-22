@@ -1,0 +1,12 @@
+{
+  "pr_number": 10290,
+  "archive_path": "docs/history/pr-reviews/PR-10290-feat-browser-add-source-owned-row-command-editor.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-10T17:06:06.170Z",
+  "schema_version": "v1",
+  "commit_sha": "4e135ecd042569fd55a2ca5cf555b84d25c2d41e",
+  "title": "feat(browser): add source-owned row command editor",
+  "state": "MERGED",
+  "merged_at": "2026-08-10T17:05:27Z",
+  "head_ref": "codex/browser-row-command-editor"
+}

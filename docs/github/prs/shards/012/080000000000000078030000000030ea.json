@@ -1,0 +1,12 @@
+{
+  "pr_number": 12522,
+  "archive_path": "docs/history/pr-reviews/PR-12522-feat-ci-the-completeness-gate-for-build-graph-job-selection-and-it-found-the-lea.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-19T22:20:57.674Z",
+  "schema_version": "v1",
+  "commit_sha": "9488e06710d4f73328336c1ebf784df04a0de36f",
+  "title": "feat(ci): the completeness gate for build-graph job selection -- and it found the Lean and TLA+ proofs were unselectable",
+  "state": "MERGED",
+  "merged_at": "2026-08-19T22:20:15Z",
+  "head_ref": "kenji/wire-build-graph-completeness"
+}

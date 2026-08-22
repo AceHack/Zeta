@@ -1,0 +1,17 @@
+{
+  "pr_number": 3191,
+  "archive_path": "docs/history/pr-reviews/PR-3191-docs-archive-preserve-pr-3123.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7BVjU-",
+    "comment:PRRC_kwDOSF9kNM7BVkpN",
+    "thread:PRRT_kwDOSF9kNM6CKYwE",
+    "thread:PRRT_kwDOSF9kNM6CKZsr"
+  ],
+  "fetched_at": "2026-05-14T22:26:14.335Z",
+  "schema_version": "v1",
+  "commit_sha": "7f98acf7895eaaaaa1c6976737318821e45ddab6",
+  "title": "docs(archive): preserve PR 3123",
+  "state": "MERGED",
+  "merged_at": "2026-05-14T22:25:57Z",
+  "head_ref": "lior-archive-3123-pr"
+}

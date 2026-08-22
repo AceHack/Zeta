@@ -1,0 +1,12 @@
+{
+  "pr_number": 7513,
+  "archive_path": "docs/history/pr-reviews/PR-7513-docs-research-forcing-lensability-chip-8-memory-space-makes-everything-a-lens-ch.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-10T21:22:08.469Z",
+  "schema_version": "v1",
+  "commit_sha": "9787219ec51b8d8c03c6d66c3efa88eba9d756ba",
+  "title": "docs(research): forcing lensability — CHIP-8 memory space makes everything a lens (Cheat-Engine; lens vs prism)",
+  "state": "MERGED",
+  "merged_at": "2026-06-10T21:21:47Z",
+  "head_ref": "shadow-forcing-lensability-chip8-memory"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 9548,
+  "archive_path": "docs/history/pr-reviews/PR-9548-feat-installer-decide-ci-auth-mock-device-code-path.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-08T22:17:18.961Z",
+  "schema_version": "v1",
+  "commit_sha": "fb0124da97643e18e3036925e97924a38458ef58",
+  "title": "feat(installer): decide CI auth mock device-code path",
+  "state": "MERGED",
+  "merged_at": "2026-07-08T22:16:44Z",
+  "head_ref": "feat/081KSGS9-ci-auth-mock-adr"
+}

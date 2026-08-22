@@ -1,0 +1,12 @@
+{
+  "pr_number": 8383,
+  "archive_path": "docs/history/pr-reviews/PR-8383-docs-society-9b-ctm-isociety-duality-is-the-yin-yang-cell-suspected-homoiconic-i.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-16T00:50:34.641Z",
+  "schema_version": "v1",
+  "commit_sha": "339b7658e056e887869667cc638a5610b7c13413",
+  "title": "docs(society): §9b — CTM⊣ISociety duality IS the yin/yang cell, (suspected) homoiconic-isomorphic to DynamicValue/Bonsai",
+  "state": "MERGED",
+  "merged_at": "2026-06-16T00:50:08Z",
+  "head_ref": "docs/duality-is-yinyang-homoiconic"
+}

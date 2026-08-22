@@ -1,0 +1,25 @@
+{
+  "pr_number": 2234,
+  "archive_path": "docs/history/pr-reviews/PR-2234-docs-b-0365-nirvanic-fusion-ship-research-bundle.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_fwL0",
+    "comment:PRRC_kwDOSF9kNM6_fwk5",
+    "comment:PRRC_kwDOSF9kNM6_fwkb",
+    "comment:PRRC_kwDOSF9kNM6_fwko",
+    "comment:PRRC_kwDOSF9kNM6_fwkw",
+    "comment:PRRC_kwDOSF9kNM6_fwkz",
+    "thread:PRRT_kwDOSF9kNM6AzSLM",
+    "thread:PRRT_kwDOSF9kNM6AzSc3",
+    "thread:PRRT_kwDOSF9kNM6AzSc_",
+    "thread:PRRT_kwDOSF9kNM6AzScj",
+    "thread:PRRT_kwDOSF9kNM6AzScv",
+    "thread:PRRT_kwDOSF9kNM6AzScz"
+  ],
+  "fetched_at": "2026-05-09T07:51:52.844Z",
+  "schema_version": "v1",
+  "commit_sha": "33e8956f33b83f68f0f08151aa5704c4c46d9bc0",
+  "title": "docs(B-0365): Nirvanic Fusion Ship research bundle",
+  "state": "MERGED",
+  "merged_at": "2026-05-09T07:51:37Z",
+  "head_ref": "docs/b0365-fusion-ship-research-bundle"
+}

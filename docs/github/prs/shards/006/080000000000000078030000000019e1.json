@@ -1,0 +1,15 @@
+{
+  "pr_number": 6625,
+  "archive_path": "docs/history/pr-reviews/PR-6625-proof-b-1007-c11-c10-c6-batch-scalar-round-trip-nan-safe-convergence-fscheck-z3-.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7HecDq",
+    "thread:PRRT_kwDOSF9kNM6GqaGb"
+  ],
+  "fetched_at": "2026-06-03T07:22:22.886Z",
+  "schema_version": "v1",
+  "commit_sha": "0cf9ea2a1eb865e863a47cd6226effa79ffd09f4",
+  "title": "proof(B-1007 C11,C10,C6): batch↔scalar + round-trip + NaN-safe convergence — FsCheck + Z3; fix false \"bit-exact\" prose",
+  "state": "MERGED",
+  "merged_at": "2026-06-03T07:22:02Z",
+  "head_ref": "otto-cli/b1007-c6-c10-c11-batch-and-nan-safe-moved-proofs-2026-06-03"
+}

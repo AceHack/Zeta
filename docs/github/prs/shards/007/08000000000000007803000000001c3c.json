@@ -1,0 +1,12 @@
+{
+  "pr_number": 7228,
+  "archive_path": "docs/history/pr-reviews/PR-7228-docs-research-fix-correct-zflash-cross-platform-record-max-shipped-windows-windo.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-09T08:15:48.543Z",
+  "schema_version": "v1",
+  "commit_sha": "f71ed9a810c9d0fc168e0b448120c42bf2de170d",
+  "title": "docs(research)+fix: correct zflash cross-platform record (Max shipped Windows) + Windows Hello auth-parity requirement",
+  "state": "MERGED",
+  "merged_at": "2026-06-09T08:15:24Z",
+  "head_ref": "otto/research-zflash-xplat-correction-windows-hello"
+}

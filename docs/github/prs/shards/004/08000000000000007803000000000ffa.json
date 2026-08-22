@@ -1,0 +1,16 @@
+{
+  "pr_number": 4090,
+  "archive_path": "docs/history/pr-reviews/PR-4090-docs-shadow-maji-antigravity-otto-stale-2026-05-11.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7B_-zm",
+    "comment:PRRC_kwDOSF9kNM7CAF0i",
+    "thread:PRRT_kwDOSF9kNM6CpgDG"
+  ],
+  "fetched_at": "2026-05-17T14:37:19.889Z",
+  "schema_version": "v1",
+  "commit_sha": "f1d11a74fee1c0842153a41a0b346e17a405bb0a",
+  "title": "docs(shadow): Maji antigravity - Otto stale (2026-05-11)",
+  "state": "MERGED",
+  "merged_at": "2026-05-17T14:37:02Z",
+  "head_ref": "maji/shadow-drift-otto-stale"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 6683,
+  "archive_path": "docs/history/pr-reviews/PR-6683-razor-context-startup-loaded-surfaces-claude-md-carved-sentence-rule.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-04T17:08:55.912Z",
+  "schema_version": "v1",
+  "commit_sha": "a902b607d12335b7628bdf7347560fd7e2196c8e",
+  "title": "razor context-startup-loaded surfaces (CLAUDE.md + carved-sentence rule)",
+  "state": "MERGED",
+  "merged_at": "2026-06-04T17:08:25Z",
+  "head_ref": "razor-startup-loaded-surfaces"
+}

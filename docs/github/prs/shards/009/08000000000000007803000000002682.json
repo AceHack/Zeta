@@ -1,0 +1,12 @@
+{
+  "pr_number": 9858,
+  "archive_path": "docs/history/pr-reviews/PR-9858-docs-handoff-the-decline-ledger-repeated-declining-is-the-escalation-signal-and-.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-01T12:15:44.244Z",
+  "schema_version": "v1",
+  "commit_sha": "15a87ecd5c91afbb4baf862fddebbbc96d0c840e",
+  "title": "docs(handoff): the decline ledger — repeated declining is the escalation signal, and it is NOT the drift signal",
+  "state": "MERGED",
+  "merged_at": "2026-08-01T12:15:13Z",
+  "head_ref": "shadow/decline-ledger-escalation"
+}

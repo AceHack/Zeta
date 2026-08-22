@@ -1,0 +1,12 @@
+{
+  "pr_number": 9981,
+  "archive_path": "docs/history/pr-reviews/PR-9981-fix-ci-route-windows-matrix-through-powershell-installer.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-02T19:22:46.885Z",
+  "schema_version": "v1",
+  "commit_sha": "a6602cd865bac161ed3b5a4dd4c031ca4c9692ca",
+  "title": "fix(ci): route Windows matrix through PowerShell installer",
+  "state": "MERGED",
+  "merged_at": "2026-08-02T19:22:14Z",
+  "head_ref": "claim/task-windows-gate-installer-routing"
+}

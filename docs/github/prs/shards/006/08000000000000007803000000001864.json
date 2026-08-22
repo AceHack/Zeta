@@ -1,0 +1,12 @@
+{
+  "pr_number": 6244,
+  "archive_path": "docs/history/pr-reviews/PR-6244-docs-observe-adr-wire-grammarpatch-into-open-questions-q7-b-0867-26.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-31T20:15:11.921Z",
+  "schema_version": "v1",
+  "commit_sha": "86da7b84014d5a4f65d71643a3d8231aa842974a",
+  "title": "docs(observe-adr): wire GrammarPatch into open-questions (Q7 → B-0867.26)",
+  "state": "MERGED",
+  "merged_at": "2026-05-31T20:14:50Z",
+  "head_ref": "otto-cli/adr-grammarpatch-openq-2026-05-31"
+}

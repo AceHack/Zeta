@@ -1,0 +1,12 @@
+{
+  "pr_number": 9732,
+  "archive_path": "docs/history/pr-reviews/PR-9732-fix-tests-clear-main-markdown-and-windows-cleanup-reds.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-11T19:28:24.456Z",
+  "schema_version": "v1",
+  "commit_sha": "c5060c91f43bfc3466dbd2deb47a213aac8a28ba",
+  "title": "fix(tests): clear main markdown and Windows cleanup reds",
+  "state": "MERGED",
+  "merged_at": "2026-07-11T19:27:56Z",
+  "head_ref": "codex/main-markdownlint-docs-fix"
+}

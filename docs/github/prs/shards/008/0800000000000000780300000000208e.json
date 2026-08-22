@@ -1,0 +1,12 @@
+{
+  "pr_number": 8334,
+  "archive_path": "docs/history/pr-reviews/PR-8334-chore-workitem-route-memory-folder-organization-research-to-the-math-team-compet.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-15T20:52:32.742Z",
+  "schema_version": "v1",
+  "commit_sha": "49e997fff2a3202cdb4d41feb74afbd85f632818",
+  "title": "chore(workitem): route memory-folder-organization research to the math team (competing pluggable strategies)",
+  "state": "MERGED",
+  "merged_at": "2026-06-15T20:51:59Z",
+  "head_ref": "docs/route-memory-folder-org-strategies-research"
+}

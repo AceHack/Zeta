@@ -1,0 +1,12 @@
+{
+  "pr_number": 13064,
+  "archive_path": "docs/history/pr-reviews/PR-13064-design-the-zeta-bootstrap-usb-full-design-doc-for-review-and-it-corrects-proven-.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-21T04:57:19.059Z",
+  "schema_version": "v1",
+  "commit_sha": "c7708fc183c8176a157d214c128eae7b76411f46",
+  "title": "design: the Zeta Bootstrap USB — full design doc for review, and it corrects \"proven-on-metal is an empty set\"",
+  "state": "MERGED",
+  "merged_at": "2026-08-21T04:56:40Z",
+  "head_ref": "design/bootstrap-usb-full-design"
+}

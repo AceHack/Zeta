@@ -1,0 +1,15 @@
+{
+  "pr_number": 2915,
+  "archive_path": "docs/history/pr-reviews/PR-2915-docs-claude-rules-dv2-0-fifth-always-active-discipline-wake-time-landing-aaron-2.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7AmHNW",
+    "thread:PRRT_kwDOSF9kNM6Bntso"
+  ],
+  "fetched_at": "2026-05-13T03:01:18.089Z",
+  "schema_version": "v1",
+  "commit_sha": "9158f7a0e955c7898b6cb687725822fe05bd8160",
+  "title": "docs(.claude/rules): DV2.0 fifth always-active discipline — wake-time landing (Aaron 2026-05-13 re-activation; speculative factory work)",
+  "state": "MERGED",
+  "merged_at": "2026-05-13T03:01:02Z",
+  "head_ref": "otto-speculative-dv2-data-split-discipline-wake-time-rule-landing-2026-05-13"
+}

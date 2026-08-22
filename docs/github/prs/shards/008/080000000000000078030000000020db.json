@@ -1,0 +1,12 @@
+{
+  "pr_number": 8411,
+  "archive_path": "docs/history/pr-reviews/PR-8411-docs-routing-the-host-abstraction-own-threads-runtimes-we-run-inside-via-a-surfa.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-16T02:28:48.343Z",
+  "schema_version": "v1",
+  "commit_sha": "2e948491c067cd8a4bd11a7065bf2490c73b9877",
+  "title": "docs(routing): the Host abstraction — own-threads runtimes we run inside via a surface seam (OS/Compiler/Forge/Cluster + open)",
+  "state": "MERGED",
+  "merged_at": "2026-06-16T02:28:21Z",
+  "head_ref": "docs/host-abstraction-four-kinds-plus-general"
+}

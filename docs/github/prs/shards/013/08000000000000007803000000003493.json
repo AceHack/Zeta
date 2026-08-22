@@ -1,0 +1,12 @@
+{
+  "pr_number": 13459,
+  "archive_path": "docs/history/pr-reviews/PR-13459-scope-cluster-hands-off-metal-what-a-node-can-provision-for-itself-and-the-three.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-22T00:35:19.350Z",
+  "schema_version": "v1",
+  "commit_sha": "3826276d89b239857533d7e476c129c09cf3297d",
+  "title": "scope(cluster): hands-off metal — what a node can provision for itself, and the three classes that need a human",
+  "state": "MERGED",
+  "merged_at": "2026-08-22T00:34:39Z",
+  "head_ref": "shadow/hands-off-metal-scoping"
+}

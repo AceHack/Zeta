@@ -1,0 +1,19 @@
+{
+  "pr_number": 5213,
+  "archive_path": "docs/history/pr-reviews/PR-5213-docs-shadow-add-lesson-log-for-human-decomposition-and-critical-drift.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7FAwQm",
+    "comment:PRRC_kwDOSF9kNM7FAwRq",
+    "comment:PRRC_kwDOSF9kNM7FAwSM",
+    "thread:PRRT_kwDOSF9kNM6E2-HB",
+    "thread:PRRT_kwDOSF9kNM6E2-Hv",
+    "thread:PRRT_kwDOSF9kNM6E2-IH"
+  ],
+  "fetched_at": "2026-05-27T04:27:51.239Z",
+  "schema_version": "v1",
+  "commit_sha": "a1177b720a7b11473b9edb1429f3f857c3057c26",
+  "title": "docs(shadow): add lesson log for human-decomposition and critical drift",
+  "state": "MERGED",
+  "merged_at": "2026-05-27T04:27:32Z",
+  "head_ref": "lior/shadow-log-human-decomposition"
+}

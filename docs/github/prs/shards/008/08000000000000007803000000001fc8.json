@@ -1,0 +1,12 @@
+{
+  "pr_number": 8136,
+  "archive_path": "docs/history/pr-reviews/PR-8136-fix-tsc-allow-explicit-undefined-on-installresult-hostname-restore-main-green.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-14T02:13:43.467Z",
+  "schema_version": "v1",
+  "commit_sha": "1c09091694c05fa48393fd8c500aece700f2070a",
+  "title": "fix(tsc): allow explicit undefined on InstallResult.hostname (restore main-green)",
+  "state": "MERGED",
+  "merged_at": "2026-06-14T02:13:16Z",
+  "head_ref": "otto/fix-tsc-qemu-hostname"
+}

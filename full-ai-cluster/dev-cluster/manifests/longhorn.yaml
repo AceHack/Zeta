@@ -1,0 +1,81 @@
+# Dev/CI alias StorageClass NAMED `longhorn`, backed by the local-path
+# provisioner that kind and k3d already run.
+#
+# WHY THIS FILE EXISTS. The included Synced+Healthy proof asserted 19 of 45
+# Applications. Eleven of the exclusions came from ONE content-based rule in
+# `argocd-health-test.ts`: an Application whose YAML tree says
+# `storageClass: longhorn` is auto-excluded, because `longhorn/**` is
+# glob-excluded from the dev catalog, so no StorageClass by that name ever
+# exists in the lane and the PVC hangs `Pending` forever. That was circular --
+# the apps were excluded because Longhorn was excluded, and Longhorn was
+# excluded because a kind node has no second disk to give it.
+#
+# WHAT IT BOUGHT, MEASURED on run 32519516070 rather than asserted. Eleven
+# Applications stopped being storage-excluded; SIX now reach Synced+Healthy in
+# the kind lane and are asserted from here on -- headscale, mimir, nats, oz,
+# redis, tempo. The alias worked for the other five too, in the sense that
+# matters: their PVCs BOUND and their pods run. They are deferred for named,
+# observed, NON-storage defects (cockroachdb never `init`ed, hindsight's
+# postgres cannot be scheduled for CPU, grafana wants a secret CI has no
+# material for, weaviate never converges its sync, arc-runner-set wants RWX +
+# a GitHub App credential) -- see APPLIED_BUT_UNASSERTED_REASONS. Those four
+# defects were INVISIBLE before this change, because the storage rule excluded
+# the apps that carried them.
+#
+# The cheapest cut through the circle is not to change what production
+# requests. It is to give dev a StorageClass that ANSWERS to that name. A
+# StorageClass is a name bound to a provisioner; the workloads only ever name
+# it. So dev binds `longhorn` to `rancher.io/local-path` and the same
+# unmodified manifests -- the same 100Gi request, the same class name -- bind
+# on a kind node.
+#
+# PRODUCTION IS UNTOUCHED, structurally and not by convention: this file lives
+# under `full-ai-cluster/dev-cluster/`, which ArgoCD never reads. Only
+# `bringUpKindCiCluster` / `bringUpK3dDevCluster` apply it, and they run only
+# against a kind/k3d substrate. On the bare-metal cluster the `longhorn`
+# StorageClass is created by the Longhorn chart itself, with
+# `provisioner: driver.longhorn.io`.
+#
+# THE COLLISION THAT CANNOT HAPPEN, and its guard: if `longhorn/**` were ever
+# dropped from `DEFAULT_ROOT_DEV_CATALOG.excludeGlob`, ArgoCD would try to
+# create a second object of this name in the same dev cluster and the two would
+# fight. `argocd-health-test.test.ts` asserts that `longhorn` is in that glob,
+# so the removal turns a unit test red rather than a cluster confusing.
+#
+# WHAT THIS ALIAS DOES NOT BUY. `rancher.io/local-path` is node-local and
+# ReadWriteOnce only. It cannot satisfy a `ReadWriteMany` claim, and it does not
+# enforce the requested capacity (the volume is a directory on the node's
+# filesystem, so a 100Gi request binds on a runner with far less). So an
+# Application asking for RWX stays excluded -- by a rule that reads the access
+# mode rather than a hand-maintained list. Honest limit on that rule: it can
+# only read the CHECKED-IN tree, and every Application this alias unlocks pulls
+# its PVC spec from an upstream chart, so the rule is a floor, not a proof.
+#
+# A DIVERGENCE FROM PROD, STATED RATHER THAN GLOSSED. Prod's Longhorn class is
+# `volumeBindingMode: Immediate`; this is `WaitForFirstConsumer`, matching
+# `zeta-local-path` and what local-path actually needs -- the provisioner has to
+# know which node the volume lands on. The consequence is real and worth knowing
+# before someone debugs one: under `WaitForFirstConsumer` a PVC does not bind
+# until a pod that mounts it is SCHEDULED. So on the single-node kind CI cluster
+# a pod that cannot be scheduled (resource pressure, hard anti-affinity) leaves
+# its PVC unbound, and a bare PVC with no consuming pod never binds at all --
+# both of which bind fine in prod. Neither fails loudly: ArgoCD reports a
+# pending PVC as Progressing, so the symptom is a slow run, not a red one.
+# `Immediate` is NOT the fix -- it would have local-path choose a node before
+# the scheduler does, which is wrong on any multi-node k3d cluster.
+#
+# Do NOT deploy a second local-path provisioner Deployment: kind already ships
+# one, and a duplicate fights it. This declares a NAME only.
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: longhorn
+  annotations:
+    zeta.io/dev-substrate-alias: "true"
+    zeta.io/dev-substrate-alias-reason: >-
+      dev/CI stand-in for driver.longhorn.io so Applications that request
+      storageClass longhorn can be asserted in the kind lane; never applied to
+      the bare-metal cluster.
+provisioner: rancher.io/local-path
+volumeBindingMode: WaitForFirstConsumer
+reclaimPolicy: Delete

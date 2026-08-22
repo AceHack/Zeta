@@ -1,0 +1,12 @@
+{
+  "pr_number": 9485,
+  "archive_path": "docs/history/pr-reviews/PR-9485-docs-ferry-is-ai-is-human-is-the-safety-layer-on-ourselves-the-reflexive-half-sh.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-04T19:09:08.458Z",
+  "schema_version": "v1",
+  "commit_sha": "817ae0ac9fdab51f656f8fc48c1969fe0aff95f8",
+  "title": "docs(ferry): is-AI/is-human is the safety layer ON OURSELVES — the reflexive half (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-04T19:08:40Z",
+  "head_ref": "otto/is-ai-is-human-safety-layer-on-ourselves"
+}

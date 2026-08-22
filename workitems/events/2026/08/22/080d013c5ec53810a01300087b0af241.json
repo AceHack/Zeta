@@ -1,0 +1,14 @@
+{
+  "id": "080d013c5ec53810a01300087b0af241",
+  "at": "2026-08-22T03:37:51.527Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M0KRQP56087G0R000BK28QS",
+    "type": "task",
+    "title": "Reason-truth: make a deferral reason's cited anchors mechanically checkable",
+    "slug": "reason-truth-make-a-deferral-reason-s-cited-anchors-mechanic",
+    "priority": "P2",
+    "filename": "081M0KRQP56087G0R000BK28QS-reason-truth-make-a-deferral-reason-s-cited-anchors-mechanic.md"
+  }
+}

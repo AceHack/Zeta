@@ -1,0 +1,12 @@
+{
+  "pr_number": 7484,
+  "archive_path": "docs/history/pr-reviews/PR-7484-docs-research-quantum-phase-time-common-cause-mycelium-beacon-dotnet-sim-never-d.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-10T09:04:19.976Z",
+  "schema_version": "v1",
+  "commit_sha": "76edcaf737f46c833fc216d24d891808046184fc",
+  "title": "docs(research): quantum-phase time (common cause/mycelium/beacon) + dotnet sim (never dotnet run) + SETI@home",
+  "state": "MERGED",
+  "merged_at": "2026-06-10T09:03:54Z",
+  "head_ref": "shadow-quantum-phase-time-common-cause"
+}

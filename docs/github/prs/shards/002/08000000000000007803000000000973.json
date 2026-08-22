@@ -1,0 +1,29 @@
+{
+  "pr_number": 2419,
+  "archive_path": "docs/history/pr-reviews/PR-2419-feat-b-0055-1-edge-claims-catalog-v0-typed-schema-11-seed-ctf-flags.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_lvSB",
+    "comment:PRRC_kwDOSF9kNM6_lvSE",
+    "comment:PRRC_kwDOSF9kNM6_lvSG",
+    "comment:PRRC_kwDOSF9kNM6_lwCZ",
+    "comment:PRRC_kwDOSF9kNM6_lwCc",
+    "comment:PRRC_kwDOSF9kNM6_lwCh",
+    "comment:PRRC_kwDOSF9kNM6_lwCk",
+    "comment:PRRC_kwDOSF9kNM6_lwCp",
+    "thread:PRRT_kwDOSF9kNM6A4AMO",
+    "thread:PRRT_kwDOSF9kNM6A4AMP",
+    "thread:PRRT_kwDOSF9kNM6A4AMR",
+    "thread:PRRT_kwDOSF9kNM6A4At0",
+    "thread:PRRT_kwDOSF9kNM6A4At3",
+    "thread:PRRT_kwDOSF9kNM6A4At8",
+    "thread:PRRT_kwDOSF9kNM6A4Atu",
+    "thread:PRRT_kwDOSF9kNM6A4Atw"
+  ],
+  "fetched_at": "2026-05-10T05:15:09.118Z",
+  "schema_version": "v1",
+  "commit_sha": "450a59a768e8ce132b3a9fdfd7be1ac2a63ecfa4",
+  "title": "feat(B-0055.1): edge-claims catalog v0 — typed schema + 11 seed CTF flags",
+  "state": "MERGED",
+  "merged_at": "2026-05-10T05:14:54Z",
+  "head_ref": "feat/B-0055.1-edge-claims-catalog-schema"
+}

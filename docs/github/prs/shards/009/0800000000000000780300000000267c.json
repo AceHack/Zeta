@@ -1,0 +1,12 @@
+{
+  "pr_number": 9852,
+  "archive_path": "docs/history/pr-reviews/PR-9852-build-deps-dev-bump-vitest-from-2-1-9-to-4-1-10-in-demo-identity-dla-site-in-the.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-18T07:29:13.948Z",
+  "schema_version": "v1",
+  "commit_sha": "a980890305f67260b12ed6b1ea0619f489fdfb5f",
+  "title": "build(deps-dev): Bump vitest from 2.1.9 to 4.1.10 in /demo/identity-dla-site in the npm_and_yarn group across 1 directory",
+  "state": "MERGED",
+  "merged_at": "2026-08-01T23:14:58Z",
+  "head_ref": "dependabot/npm_and_yarn/demo/identity-dla-site/npm_and_yarn-bc9680511c"
+}

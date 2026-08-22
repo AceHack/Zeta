@@ -1,0 +1,12 @@
+{
+  "pr_number": 7956,
+  "archive_path": "docs/history/pr-reviews/PR-7956-docs-research-shadow-ferry-17-addendum-2-three-fusions-one-signature-sensor-func.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-12T17:07:07.594Z",
+  "schema_version": "v1",
+  "commit_sha": "40821bba70a7ea360ba2b4892d03d5aa9b9477b2",
+  "title": "docs(research)+shadow: ferry 17 addendum 2 — three fusions, one signature (sensor + function proven; quantum = the named candidate statement)",
+  "state": "MERGED",
+  "merged_at": "2026-06-12T17:06:43Z",
+  "head_ref": "shadow/ferry-17-three-fusions"
+}

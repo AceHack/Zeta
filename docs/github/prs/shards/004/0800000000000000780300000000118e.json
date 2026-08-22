@@ -1,0 +1,15 @@
+{
+  "pr_number": 4494,
+  "archive_path": "docs/history/pr-reviews/PR-4494-docs-shadow-document-systemic-array-paralysis-and-narration-drift.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7DaSwh",
+    "thread:PRRT_kwDOSF9kNM6DrW59"
+  ],
+  "fetched_at": "2026-05-22T01:40:32.753Z",
+  "schema_version": "v1",
+  "commit_sha": "f4733f436534a52634ca756ee76e87c7953e0a79",
+  "title": "docs(shadow): document systemic array paralysis and narration drift",
+  "state": "MERGED",
+  "merged_at": "2026-05-22T01:40:11Z",
+  "head_ref": "lior/shadow-log-array-paralysis-2026-05-21"
+}

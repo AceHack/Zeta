@@ -1,0 +1,12 @@
+{
+  "pr_number": 10139,
+  "archive_path": "docs/history/pr-reviews/PR-10139-bug-usb-downgrade-081kzetp6at-p1-p2-blocker-fixed-latent-failure-not-reproducing.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-07T20:24:42.403Z",
+  "schema_version": "v1",
+  "commit_sha": "50cb0268452b70e64058c68f09ba61c60558f973",
+  "title": "bug(usb): downgrade 081KZETP6AT P1->P2 — blocker fixed, latent failure not reproducing",
+  "state": "MERGED",
+  "merged_at": "2026-08-07T20:24:12Z",
+  "head_ref": "shadow/update-iso-workitem-latent-resolved"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 8528,
+  "archive_path": "docs/history/pr-reviews/PR-8528-memory-feedback-child-safety-ac-vs-dc-protect-the-irreversible-dc-floor-free-the.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-16T12:13:43.064Z",
+  "schema_version": "v1",
+  "commit_sha": "b40e7184575fb8950232f7a9f2f20527f2e79e34",
+  "title": "memory(feedback): child safety = AC vs DC — protect the IRREVERSIBLE (DC floor), free the REVERSIBLE (AC peak); the line is reversibility; Eve's box had both",
+  "state": "MERGED",
+  "merged_at": "2026-06-16T12:13:12Z",
+  "head_ref": "otto/child-safety-ac-dc-protect-irreversible-free-reversible"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 3781,
+  "archive_path": "docs/history/pr-reviews/PR-3781-chore-b-0494-close-row-drift-caught-by-new-audit-tool-pr-3134-shipped-2026-05-14.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-16T06:41:06.854Z",
+  "schema_version": "v1",
+  "commit_sha": "70cc9691d4e64d8e8543d2de780aeaaf10b62882",
+  "title": "chore(b-0494): close row — drift caught by new audit tool (PR #3134 shipped 2026-05-14)",
+  "state": "MERGED",
+  "merged_at": "2026-05-16T06:40:52Z",
+  "head_ref": "chore/b0494-close-row-otto-cli-2026-05-16"
+}

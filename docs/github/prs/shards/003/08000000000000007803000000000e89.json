@@ -1,0 +1,17 @@
+{
+  "pr_number": 3721,
+  "archive_path": "docs/history/pr-reviews/PR-3721-rule-verify-reviewer-findings-extend-blocked-green-ci-rule-with-verify-before-fi.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7B1SlT",
+    "comment:PRRC_kwDOSF9kNM7B1Slg",
+    "thread:PRRT_kwDOSF9kNM6ChW4q",
+    "thread:PRRT_kwDOSF9kNM6ChW4y"
+  ],
+  "fetched_at": "2026-05-16T04:02:53.602Z",
+  "schema_version": "v1",
+  "commit_sha": "444580f548f83695de287e8b2f5eb4a78a7f5c76",
+  "title": "rule(verify-reviewer-findings): extend blocked-green-ci rule with verify-before-fix discipline",
+  "state": "MERGED",
+  "merged_at": "2026-05-16T04:02:35Z",
+  "head_ref": "rule/verify-reviewer-findings-otto-cli-2026-05-16"
+}

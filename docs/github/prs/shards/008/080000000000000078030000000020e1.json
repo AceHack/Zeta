@@ -1,0 +1,12 @@
+{
+  "pr_number": 8417,
+  "archive_path": "docs/history/pr-reviews/PR-8417-docs-society-11-ihost-as-a-verb-terraforming-a-raw-host-into-a-living-zeta-cell.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-16T02:42:14.647Z",
+  "schema_version": "v1",
+  "commit_sha": "75eccd90c90cc5358c66b34b192edd5e9f9ece9b",
+  "title": "docs(society): §11 IHost as a verb — terraforming a raw host into a living Zeta cell",
+  "state": "MERGED",
+  "merged_at": "2026-06-16T02:41:54Z",
+  "head_ref": "docs/ihost-terraform-host-into-cell"
+}

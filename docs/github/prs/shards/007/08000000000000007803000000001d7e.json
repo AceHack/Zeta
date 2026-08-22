@@ -1,0 +1,12 @@
+{
+  "pr_number": 7550,
+  "archive_path": "docs/history/pr-reviews/PR-7550-docs-research-harness-self-measurement-bigfloat-but-for-devops.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-11T00:09:09.329Z",
+  "schema_version": "v1",
+  "commit_sha": "daf52e380684d49aceea54311cb320677a3ee043",
+  "title": "docs(research): harness self-measurement — \"BigFloat, but for devops\"",
+  "state": "MERGED",
+  "merged_at": "2026-06-11T00:08:48Z",
+  "head_ref": "shadow-harness-self-measurement-bigfloat-for-devops"
+}

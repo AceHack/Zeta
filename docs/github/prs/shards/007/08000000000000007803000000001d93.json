@@ -1,0 +1,12 @@
+{
+  "pr_number": 7571,
+  "archive_path": "docs/history/pr-reviews/PR-7571-docs-research-the-convergence-map-pull-together-every-collapsed-to-one-finding.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-11T02:48:05.069Z",
+  "schema_version": "v1",
+  "commit_sha": "bc340c62b1b473869200cfa0bcbc53d7a7f6051a",
+  "title": "docs(research): the convergence map — pull together every 'collapsed to one' finding",
+  "state": "MERGED",
+  "merged_at": "2026-06-11T02:47:44Z",
+  "head_ref": "shadow-the-convergence-map"
+}

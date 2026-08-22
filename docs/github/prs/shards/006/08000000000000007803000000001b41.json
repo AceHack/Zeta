@@ -1,0 +1,12 @@
+{
+  "pr_number": 6977,
+  "archive_path": "docs/history/pr-reviews/PR-6977-docs-push-down-deps-eager-global-not-delayed-push-down-cascade-over-dependson-np.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-08T01:35:00.157Z",
+  "schema_version": "v1",
+  "commit_sha": "7a56a072fa078a8da6559040a9c7515c0b2e9b05",
+  "title": "docs: push-down deps (eager/global, not delayed) — push-down cascade over dependson; npx/uvx/pipx/dotnet-tool",
+  "state": "MERGED",
+  "merged_at": "2026-06-08T01:34:42Z",
+  "head_ref": "otto/push-down-deps-eager-global-cascade-npx-pipx"
+}

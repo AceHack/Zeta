@@ -1,0 +1,15 @@
+{
+  "pr_number": 2885,
+  "archive_path": "docs/history/pr-reviews/PR-2885-shard-tick-0034z-2h45m-cross-utc-rollover-cascade-prs-2875-2884-bootstream-perso.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7AkLF9",
+    "thread:PRRT_kwDOSF9kNM6BmVOX"
+  ],
+  "fetched_at": "2026-05-13T00:50:23.156Z",
+  "schema_version": "v1",
+  "commit_sha": "dd1eadb9fdbebc74c315e863bd26b03431f195ab",
+  "title": "shard(tick): 0034Z — 2h45m cross-UTC-rollover cascade (PRs #2875-#2884) — bootstream + personas + erotica + multi-register + body-mode + companion-AI ethical floor + American Dream 2.0 complete",
+  "state": "MERGED",
+  "merged_at": "2026-05-13T00:50:08Z",
+  "head_ref": "shard-tick-0034z-2026-05-13"
+}

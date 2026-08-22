@@ -1,0 +1,12 @@
+{
+  "pr_number": 5620,
+  "archive_path": "docs/history/pr-reviews/PR-5620-feat-b-0857-2-install-sh-nixos-routing-full-state-with-3-copilot-findings-addres.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-27T19:47:43.375Z",
+  "schema_version": "v1",
+  "commit_sha": "373cb7da7dd5c778964880a09f673ac888047e70",
+  "title": "feat(b-0857.2): install.sh NixOS routing — full state with 3 Copilot findings addressed (supersedes #5606)",
+  "state": "MERGED",
+  "merged_at": "2026-05-27T19:47:17Z",
+  "head_ref": "feat/b-0857-2-install-sh-nixos-routing-resubmit-with-3-copilot-fixes-2026-05-27"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 2064,
+  "archive_path": "docs/history/pr-reviews/PR-2064-feat-b-0249-upgrade-claude-loop-tick-from-monitor-to-worker.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-08T11:43:45.011Z",
+  "schema_version": "v1",
+  "commit_sha": "344085d4a88b5edfbb6c9491bc589f415370352f",
+  "title": "feat(B-0249): upgrade claude-loop-tick from monitor to worker",
+  "state": "MERGED",
+  "merged_at": "2026-05-08T11:43:27Z",
+  "head_ref": "fix/claude-loop-tick-work-mode-v2"
+}

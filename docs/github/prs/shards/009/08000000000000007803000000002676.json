@@ -1,0 +1,12 @@
+{
+  "pr_number": 9846,
+  "archive_path": "docs/history/pr-reviews/PR-9846-deps-bump-actions-deploy-pages-from-4-0-5-to-5-0-0.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-02T17:34:11.542Z",
+  "schema_version": "v1",
+  "commit_sha": "6bc5be90f36c4688e7374c32dfa3c80d1f503805",
+  "title": "deps: Bump actions/deploy-pages from 4.0.5 to 5.0.0",
+  "state": "MERGED",
+  "merged_at": "2026-08-02T17:33:33Z",
+  "head_ref": "dependabot/github_actions/actions/deploy-pages-5.0.0"
+}

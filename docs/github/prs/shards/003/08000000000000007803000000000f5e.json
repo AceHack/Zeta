@@ -1,0 +1,12 @@
+{
+  "pr_number": 3934,
+  "archive_path": "docs/history/pr-reviews/PR-3934-memory-feedback-saturation-ceremony-pr-3924-was-brief-ack-synonym-peer-correctio.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-16T19:14:50.383Z",
+  "schema_version": "v1",
+  "commit_sha": "7d32de700c3274c52fa7858b9d9647131d64ff77",
+  "title": "memory(feedback): saturation-ceremony PR #3924 was brief-ack synonym; peer correction PR #3927 + #3930 authoritative",
+  "state": "MERGED",
+  "merged_at": "2026-05-16T19:14:34Z",
+  "head_ref": "otto-cli-shard-1858z-saturation-correction-unique-2026-05-16"
+}

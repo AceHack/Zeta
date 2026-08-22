@@ -1,0 +1,12 @@
+{
+  "pr_number": 7846,
+  "archive_path": "docs/history/pr-reviews/PR-7846-fix-zflash-b-0891-acceptance-proof-boot-zflash-usb-retention-markers.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-12T00:03:53.306Z",
+  "schema_version": "v1",
+  "commit_sha": "fda8a3586c5580e5e5374c23364806e94aeb995e",
+  "title": "fix(zflash): B-0891 acceptance proof — boot zflash USB + retention markers",
+  "state": "MERGED",
+  "merged_at": "2026-06-12T00:03:28Z",
+  "head_ref": "fix/b-0891-acceptance-verify"
+}

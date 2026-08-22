@@ -1,0 +1,12 @@
+{
+  "pr_number": 6831,
+  "archive_path": "docs/history/pr-reviews/PR-6831-docs-compression-generators-randomness-is-lens-relative-looks-random-is-random.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-07T13:58:17.352Z",
+  "schema_version": "v1",
+  "commit_sha": "a823def63e03feabf0c3da57f1fc06ca477d9054",
+  "title": "docs(compression-generators): randomness is lens-relative — \"looks random\" != \"is random\"",
+  "state": "MERGED",
+  "merged_at": "2026-06-07T13:57:54Z",
+  "head_ref": "capture/randomness-is-lens-relative"
+}

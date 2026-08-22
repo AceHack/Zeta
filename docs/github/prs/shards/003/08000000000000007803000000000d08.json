@@ -1,0 +1,16 @@
+{
+  "pr_number": 3336,
+  "archive_path": "docs/history/pr-reviews/PR-3336-fix-shards-canonical-bun-tools-github-poll-pr-gate-ts-command-in-2-tick-shards.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7BbO-M",
+    "comment:PRRC_kwDOSF9kNM7BbRhu",
+    "thread:PRRT_kwDOSF9kNM6COfWd"
+  ],
+  "fetched_at": "2026-05-15T01:01:19.288Z",
+  "schema_version": "v1",
+  "commit_sha": "39866d69f4be2bdae0f4496a663540aff7e7efd0",
+  "title": "fix(shards): canonical bun tools/github/poll-pr-gate.ts command in 2 tick shards",
+  "state": "MERGED",
+  "merged_at": "2026-05-15T01:01:00Z",
+  "head_ref": "fix/tick-shards-canonical-poll-pr-gate-command-2026-05-15"
+}

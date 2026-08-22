@@ -1,0 +1,12 @@
+{
+  "pr_number": 7850,
+  "archive_path": "docs/history/pr-reviews/PR-7850-feat-ben-cartridge-ben-line-gate-refusal-rooms-state-their-own-cost-predictions-.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-12T00:15:03.931Z",
+  "schema_version": "v1",
+  "commit_sha": "6337fd9e4c0b96957c2d5582eb62f2fb44fa65f7",
+  "title": "feat(ben): cartridge `ben` line + gate refusal — rooms state their own cost predictions (B-1039)",
+  "state": "MERGED",
+  "merged_at": "2026-06-12T00:14:41Z",
+  "head_ref": "shadow-ben-line-gate"
+}

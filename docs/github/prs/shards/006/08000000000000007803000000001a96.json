@@ -1,0 +1,12 @@
+{
+  "pr_number": 6806,
+  "archive_path": "docs/history/pr-reviews/PR-6806-test-schemaevolution-bidirectional-round-trip-laws-via-fscheck-the-as-math-proof.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-07T12:07:35.474Z",
+  "schema_version": "v1",
+  "commit_sha": "f2fd4e046c14e2b8e571796921f092d2772f7eaa",
+  "title": "test(SchemaEvolution): bidirectional round-trip laws via FsCheck (the as-math-proof leg)",
+  "state": "MERGED",
+  "merged_at": "2026-06-07T12:07:15Z",
+  "head_ref": "test/schemaevolution-bidirectional-roundtrip-laws"
+}

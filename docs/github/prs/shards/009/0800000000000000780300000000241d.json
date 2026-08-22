@@ -1,0 +1,12 @@
+{
+  "pr_number": 9245,
+  "archive_path": "docs/history/pr-reviews/PR-9245-feat-dora-live-metrics-writer-real-dora-frames-to-the-org-root-site-shadow.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-03T01:09:49.044Z",
+  "schema_version": "v1",
+  "commit_sha": "e05e08cf686fd8b109b6747bb7dffd7475f6fa19",
+  "title": "feat(dora): live metrics writer — real DORA frames to the org root site (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-03T01:09:27Z",
+  "head_ref": "shadow/dora-live-metrics-writer"
+}

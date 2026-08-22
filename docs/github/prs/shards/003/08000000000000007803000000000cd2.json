@@ -1,0 +1,12 @@
+{
+  "pr_number": 3282,
+  "archive_path": "docs/history/pr-reviews/PR-3282-shard-tick-2209z-off-duty-minimal-shard.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-14T22:13:23.541Z",
+  "schema_version": "v1",
+  "commit_sha": "3b8bd3dcd0f110e0467ab49c3aeeaffacc0a92b4",
+  "title": "shard(tick): 2209Z — off-duty minimal shard",
+  "state": "MERGED",
+  "merged_at": "2026-05-14T22:12:58Z",
+  "head_ref": "shard/tick-2209Z-off-duty-minimal-otto-cli-2026-05-14"
+}

@@ -1,0 +1,15 @@
+{
+  "pr_number": 1942,
+  "archive_path": "docs/history/pr-reviews/PR-1942-fix-close-b-0062-red-team-shadow-catch-on-open-status.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_BJ-i",
+    "thread:PRRT_kwDOSF9kNM6Ac12E"
+  ],
+  "fetched_at": "2026-05-07T21:18:30.496Z",
+  "schema_version": "v1",
+  "commit_sha": "d3a835a32ea627bf770490a921f655ae961d370e",
+  "title": "fix: close B-0062 + red team shadow catch on open status",
+  "state": "MERGED",
+  "merged_at": "2026-05-07T21:18:05Z",
+  "head_ref": "otto/close-b0062-fix-heartbeat"
+}

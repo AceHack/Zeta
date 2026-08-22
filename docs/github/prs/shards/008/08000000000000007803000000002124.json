@@ -1,0 +1,12 @@
+{
+  "pr_number": 8484,
+  "archive_path": "docs/history/pr-reviews/PR-8484-docs-trajectory-fold-greenlit-hierarchical-planning-mvp-into-resume-full-complet.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-16T08:26:56.577Z",
+  "schema_version": "v1",
+  "commit_sha": "30946a1fcb43e3b4240b0edbf3d9c3e80e8fce5f",
+  "title": "docs(trajectory): fold greenlit hierarchical-planning MVP into resume + full completeness checklist",
+  "state": "MERGED",
+  "merged_at": "2026-06-16T08:26:25Z",
+  "head_ref": "otto/resume-fold-mvp-greenlit-completeness"
+}

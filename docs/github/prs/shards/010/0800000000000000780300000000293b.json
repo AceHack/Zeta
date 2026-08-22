@@ -1,0 +1,12 @@
+{
+  "pr_number": 10555,
+  "archive_path": "docs/history/pr-reviews/PR-10555-fix-transport-the-delivered-once-guard-now-outlives-the-block-it-belongs-to-112-.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-14T12:33:08.678Z",
+  "schema_version": "v1",
+  "commit_sha": "f474db794c30c5222f280b3540981f46cc28ebec",
+  "title": "fix(transport): the delivered-once guard now outlives the block it belongs to -- 112 duplicate payloads at reorder depth 64 (#10552 made it reachable)",
+  "state": "MERGED",
+  "merged_at": "2026-08-14T12:32:31Z",
+  "head_ref": "fix/duplicate-delivery-after-recovered-block-eviction"
+}

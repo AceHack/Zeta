@@ -1,0 +1,12 @@
+{
+  "pr_number": 7176,
+  "archive_path": "docs/history/pr-reviews/PR-7176-docs-research-execution-tier-interpreted-by-f-host-today-intrinsics-backend-next.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-09T02:10:43.161Z",
+  "schema_version": "v1",
+  "commit_sha": "d39c7e9c08d2af99e8824f2314e8a37a9627240b",
+  "title": "docs(research): execution tier — interpreted by F# host today, intrinsics backend next",
+  "state": "MERGED",
+  "merged_at": "2026-06-09T02:10:22Z",
+  "head_ref": "otto/research-execution-tier-interpreted-today-intrinsics-backend-next"
+}

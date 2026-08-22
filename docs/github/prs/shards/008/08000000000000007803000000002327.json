@@ -1,0 +1,12 @@
+{
+  "pr_number": 8999,
+  "archive_path": "docs/history/pr-reviews/PR-8999-docs-decision-trust-topology-axis-top-down-bottom-up-traveler-framed.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-21T20:38:30.353Z",
+  "schema_version": "v1",
+  "commit_sha": "1fd5f10ce0686a2dfb7bd865ce853c4baa8e1efa",
+  "title": "docs(decision): trust-topology axis (top-down ↔ bottom-up ↔ traveler-framed)",
+  "state": "MERGED",
+  "merged_at": "2026-06-21T20:37:59Z",
+  "head_ref": "otto/hexagonal-pki-trust-topology-axis"
+}

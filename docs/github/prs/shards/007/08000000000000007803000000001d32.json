@@ -1,0 +1,12 @@
+{
+  "pr_number": 7474,
+  "archive_path": "docs/history/pr-reviews/PR-7474-feat-hats-skills-shadow-home-crypto-miner-hat-home-crypto-mining-skill-group-blu.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-10T08:02:03.049Z",
+  "schema_version": "v1",
+  "commit_sha": "402859ef23199b2259548114f086f01d04a31936",
+  "title": "feat(hats,skills)+shadow: home-crypto-miner hat + home-crypto-mining skill group (blueprint pack); inventory in /inventory; security/financial routed",
+  "state": "MERGED",
+  "merged_at": "2026-06-10T08:01:37Z",
+  "head_ref": "shadow-home-crypto-miner-hat-skill"
+}

@@ -1,0 +1,27 @@
+{
+  "id": "080d00cbefd01810a01300081e96dbff",
+  "at": "2026-08-19T10:08:01.539Z",
+  "by": "soraya",
+  "kind": "attestation-retraction",
+  "action": {
+    "kind": "retract_attestation",
+    "reason": "eleven committed attestations name a filesystem path where a persona belongs — mkdtempSync fixture directories leaked from this module's own end-to-end tests and merged 2026-08-17"
+  },
+  "retraction": {
+    "retracts": [
+      "080d008d648a4810a01300086ae0bce4",
+      "080d008dd8616010a01300082eb41cac",
+      "080d008dd8616010a01300082f6dc91a",
+      "080d008dd8616010a0130008c8fe0a1d",
+      "080d008dd8822810a01300081ddb0e87",
+      "080d008dd8822810a01300086216f474",
+      "080d008dd8822810a0130008635f04b8",
+      "080d008dd8834810a0130008534772dc",
+      "080d008dd8834810a0130008706d0f95",
+      "080d008dd8846010a013000834a3af3f",
+      "080d008e29b18810a0130008d8495c66"
+    ],
+    "basis": "verifyAttestationRecord (src/Core.TypeScript/observe/attestation-record.ts) refuses each of these with an IDENTITY-band reason — malformed-attestor, malformed-attested, or malformed-participants — because /tmp/attest-0rHTQr, /tmp/attest-4EC3oi and /tmp/attest-hqFnhO are not persona names. Re-derive with: bun src/Core.TypeScript/observe/verify-attestation-events.ts verify. This retraction is UNSIGNED and asks for no trust: its truth is that re-derivation, not its author.",
+    "disposition": "superseded-not-removed"
+  }
+}

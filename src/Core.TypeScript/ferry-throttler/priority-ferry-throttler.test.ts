@@ -11,6 +11,7 @@ import { PriorityFerryThrottler } from "./priority-ferry-throttler.ts";
 import { DETERMINISTIC_CONFIG, FerryThrottler } from "./ferry-throttler.ts";
 import type { ProcessBatch } from "./ferry-throttler.ts";
 import type { PriorityFerryThrottlerConfig } from "./priority-config.ts";
+import { deferred } from "../testing/deterministic-async";
 
 // ─── Helpers ────────────────────────────────────────────────────────────────
 
@@ -273,8 +274,11 @@ describe("PriorityFerryThrottler", () => {
     let processCount = 0;
     const neverResolve = new Promise<void>(() => {});
 
+    // The ferry can SAY when it has picked up work; it does not need to be guessed at.
+    const ferryStarted = deferred();
     const processBatch: ProcessBatch<number> = async (_boat, signal) => {
       processCount++;
+      ferryStarted.resolve();
       await new Promise<void>((resolve, reject) => {
         signal.addEventListener("abort", () => reject(signal.reason as unknown), { once: true });
         void neverResolve.then(resolve);
@@ -288,13 +292,19 @@ describe("PriorityFerryThrottler", () => {
       throttler.tryEnqueue(x, 0);
     }
 
-    // Give ferry time to pick up work
-    await new Promise((r) => setTimeout(r, 10));
+    // Wait for the ferry to pick up work. WAS a 10ms sleep, which on a loaded runner could
+    // return before the ferry had started -- and the test would still pass, because of the
+    // assertion below.
+    await ferryStarted.promise;
 
     throttler.dispose();
 
-    // Ferry should have started but been aborted — processCount can be >= 1
-    // The key invariant is that dispose returns without hanging
-    expect(processCount).toBeGreaterThanOrEqual(0);
+    // ASSERTION STRENGTHENED, deliberately and in the open. This read
+    // `expect(processCount).toBeGreaterThanOrEqual(0)` -- a count is a non-negative integer,
+    // so that assertion held for every possible execution including one where the ferry never
+    // ran at all. It is the vacuity class: the comment beside it said "processCount can be >= 1"
+    // while the code checked >= 0. Removing the sleep is what makes >= 1 safe to assert, because
+    // the barrier GUARANTEES the ferry started rather than hoping 10ms was enough.
+    expect(processCount).toBeGreaterThanOrEqual(1);
   });
 });

@@ -1,0 +1,12 @@
+{
+  "pr_number": 5870,
+  "archive_path": "docs/history/pr-reviews/PR-5870-research-dst-omniscience-retrocausality-prior-art-enumeration-framework-composit.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-28T16:34:17.718Z",
+  "schema_version": "v1",
+  "commit_sha": "8122ac50e37f967ced549b47703a67b35bae0abb",
+  "title": "research(DST omniscience retrocausality): prior-art enumeration + framework composition-not-components elegance verdict (operator 2026-05-28)",
+  "state": "MERGED",
+  "merged_at": "2026-05-28T16:33:55Z",
+  "head_ref": "otto-cli/research-dst-omniscience-retrocausality-prior-art-framework-composition-elegance-2026-05-28"
+}

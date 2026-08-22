@@ -1,0 +1,16 @@
+{
+  "pr_number": 5944,
+  "archive_path": "docs/history/pr-reviews/PR-5944-docs-coordination-refresh-remote-only-resume-next-action.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7GBxFq",
+    "comment:PRRC_kwDOSF9kNM7GBy_z",
+    "thread:PRRT_kwDOSF9kNM6Fl93j"
+  ],
+  "fetched_at": "2026-05-29T05:39:20.228Z",
+  "schema_version": "v1",
+  "commit_sha": "c4966868e8c86eb5fd8f4bd28a6c557fc93d25d5",
+  "title": "docs(coordination): refresh remote-only resume next action",
+  "state": "MERGED",
+  "merged_at": "2026-05-29T05:39:01Z",
+  "head_ref": "claim/codex-loop-autonomous-coordination-resume-20260529"
+}

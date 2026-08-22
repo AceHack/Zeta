@@ -1,0 +1,12 @@
+{
+  "pr_number": 3974,
+  "archive_path": "docs/history/pr-reviews/PR-3974-backlog-b-0583-cross-machine-account-scoped-scarcity-bus-refine-b-0570-substrate.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-17T00:15:54.036Z",
+  "schema_version": "v1",
+  "commit_sha": "e3a0c771aa94b0e482f7a2ff1a5a92f37bdeaf88",
+  "title": "backlog(B-0583): cross-machine account-scoped scarcity bus — refine B-0570 substrate location",
+  "state": "MERGED",
+  "merged_at": "2026-05-17T00:15:11Z",
+  "head_ref": "backlog/b-0583-cross-machine-account-scoped-scarcity-bus-2026-05-16"
+}

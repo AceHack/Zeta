@@ -1,0 +1,19 @@
+{
+  "pr_number": 5768,
+  "archive_path": "docs/history/pr-reviews/PR-5768-feat-b-0914-4-m-generation-reflection-pairing-tracker-structurally-enforced-prod.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7Fuv4z",
+    "comment:PRRC_kwDOSF9kNM7Fuv5-",
+    "comment:PRRC_kwDOSF9kNM7Fuv5h",
+    "thread:PRRT_kwDOSF9kNM6FYOGQ",
+    "thread:PRRT_kwDOSF9kNM6FYOGw",
+    "thread:PRRT_kwDOSF9kNM6FYOHJ"
+  ],
+  "fetched_at": "2026-05-28T12:28:03.663Z",
+  "schema_version": "v1",
+  "commit_sha": "a6394677116349137b3f4c40b53a269b65c87015",
+  "title": "feat(B-0914.4): M — generation-reflection pairing tracker (structurally enforced producer-verifier mouth-ears substrate); 15 tests pass",
+  "state": "MERGED",
+  "merged_at": "2026-05-28T12:27:39Z",
+  "head_ref": "otto-cli/b-0914-4-generation-reflection-adversarial-pairing-structurally-enforced-pairing-tracker-mouth-ears-substrate-2026-05-28"
+}

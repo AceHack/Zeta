@@ -1,0 +1,12 @@
+{
+  "pr_number": 7865,
+  "archive_path": "docs/history/pr-reviews/PR-7865-fix-setup-skip-idle-skipping-nuget-package-signature-verification-updated-advert.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-12T01:34:09.545Z",
+  "schema_version": "v1",
+  "commit_sha": "b350af0c2c83d7bf0bf7db1b831bc2dfcf3d7f68",
+  "title": "fix(setup): skip idle \nSkipping NuGet package signature verification.\nUpdated advertising manifest microsoft.net.workloads.\nNo workload update found.\nNo workloads installed for this feature band. To update workloads installed with earlier SDK versions, include the --from-previous-sdk option.\nGarbage collecting for SDK feature band(s) 8.0.100 10.0.200...\n\nSuccessfully updated workload(s): . — the low-memory CI wedge (my #7839 lane)",
+  "state": "MERGED",
+  "merged_at": "2026-06-12T01:33:46Z",
+  "head_ref": "shadow-workloads-no-idle-update"
+}

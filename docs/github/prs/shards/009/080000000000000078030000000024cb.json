@@ -1,0 +1,12 @@
+{
+  "pr_number": 9419,
+  "archive_path": "docs/history/pr-reviews/PR-9419-feat-salon-monotone-safe-pruning-the-soundness-bug-the-theorem-caught.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-04T05:24:20.281Z",
+  "schema_version": "v1",
+  "commit_sha": "8d2adb38f620c245ca2c9999dd204522201d7b0d",
+  "title": "feat(salon): monotone-safe pruning + the soundness bug the theorem caught",
+  "state": "MERGED",
+  "merged_at": "2026-07-04T05:23:58Z",
+  "head_ref": "shadow/salon-pruning"
+}

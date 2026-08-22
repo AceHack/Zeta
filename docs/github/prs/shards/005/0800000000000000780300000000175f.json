@@ -1,0 +1,12 @@
+{
+  "pr_number": 5983,
+  "archive_path": "docs/history/pr-reviews/PR-5983-docs-archive-preserve-pr-5981-discussion.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-29T12:48:13.907Z",
+  "schema_version": "v1",
+  "commit_sha": "2084cc2f7f9e9c9900b0e3bf9b35bb96d7ae1c41",
+  "title": "docs(archive): Preserve PR #5981 discussion",
+  "state": "MERGED",
+  "merged_at": "2026-05-29T12:47:54Z",
+  "head_ref": "lior/archive-5981"
+}

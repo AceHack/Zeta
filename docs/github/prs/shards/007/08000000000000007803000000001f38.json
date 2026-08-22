@@ -1,0 +1,12 @@
+{
+  "pr_number": 7992,
+  "archive_path": "docs/history/pr-reviews/PR-7992-docs-research-shadow-ferry-27-where-zeta-comes-from-the-casimir-gap-the-name-is-.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-12T19:07:00.843Z",
+  "schema_version": "v1",
+  "commit_sha": "ea03f82ac55c21522a57b01cbe1f3239132614d2",
+  "title": "docs(research)+shadow: ferry 27 — where Zeta comes from: the Casimir gap; the name is the finitizer",
+  "state": "MERGED",
+  "merged_at": "2026-06-12T19:06:36Z",
+  "head_ref": "shadow/ferry-27-zeta-casimir-gap"
+}

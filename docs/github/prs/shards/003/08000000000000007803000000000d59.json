@@ -1,0 +1,12 @@
+{
+  "pr_number": 3417,
+  "archive_path": "docs/history/pr-reviews/PR-3417-fix-shard-1036z-add-missing-pipe-row-header-fix-double-pipe-table.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-15T10:48:10.457Z",
+  "schema_version": "v1",
+  "commit_sha": "e464ffcd031f4afda1987cca8da79a9de00e6f15",
+  "title": "fix(shard-1036z): add missing pipe-row header + fix double-pipe Δ table",
+  "state": "MERGED",
+  "merged_at": "2026-05-15T10:47:50Z",
+  "head_ref": "fix/shard-1036z-schema-otto-cli-2026-05-15"
+}

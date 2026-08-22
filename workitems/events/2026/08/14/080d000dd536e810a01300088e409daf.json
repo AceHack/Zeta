@@ -1,0 +1,14 @@
+{
+  "id": "080d000dd536e810a01300088e409daf",
+  "at": "2026-08-14T19:23:24.765Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M00VN9PX087G0R003W8F47T",
+    "type": "task",
+    "title": "Agent probes must never surface an interactive credential dialog to the human: a keychain ACL test parked a macOS password prompt on Aaron's screen — record 'this path requires interactive auth' as the finding instead of provoking it, use -A or a fully-listed ACL, and clean up unconditionally",
+    "slug": "agent-probes-must-never-surface-an-interactive-credential-di",
+    "priority": "P2",
+    "filename": "081M00VN9PX087G0R003W8F47T-agent-probes-must-never-surface-an-interactive-credential-di.md"
+  }
+}

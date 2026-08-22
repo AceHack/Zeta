@@ -15,6 +15,16 @@ PRs). That does not scale to concurrent agents. CI enforces the cutover:
 `lint-no-new-bnnnn.ts` rejects any new `B-*` filename under `docs/backlog/`
 or `workitems/`.
 
+**Naming an existing legacy id in prose is not minting.** You may write
+`B-0747` when discussing lineage — `lint-b-refs-resolve.ts` then requires it to
+resolve to a real row or archive artifact. What stays forbidden is using one as
+a **key**: a `B-*` filename (above) or a legacy id in a row's frontmatter.
+
+**Writing ABOUT a dangling id (an audit) is the third case** — annotate the mention,
+never exclude the file: `<!-- b-ref-adjudicated: B-NNNN landed-as-code <evidence-path> -->`
+on the same line. Checked, not trusted: the evidence path must exist, may not be the
+annotating file, and a ref that later resolves fails as STALE.
+
 ## Mint
 
 ```bash

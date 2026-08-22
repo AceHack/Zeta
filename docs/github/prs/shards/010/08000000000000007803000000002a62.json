@@ -1,0 +1,12 @@
+{
+  "pr_number": 10850,
+  "archive_path": "docs/history/pr-reviews/PR-10850-fix-ci-heartbeat-checkout-uses-the-flush-pat-so-gate-can-start.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-15T23:02:01.677Z",
+  "schema_version": "v1",
+  "commit_sha": "9fd69a992e182570b7830dae3089beb8455c5526",
+  "title": "fix(ci): heartbeat checkout uses the flush PAT so gate can start",
+  "state": "MERGED",
+  "merged_at": "2026-08-15T23:01:23Z",
+  "head_ref": "fix/081M010H4KE-heartbeat-checkout-pat"
+}

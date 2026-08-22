@@ -1,0 +1,12 @@
+{
+  "pr_number": 9444,
+  "archive_path": "docs/history/pr-reviews/PR-9444-docs-summon-tool-leg-confirmed-live-amara-called-fs-link-fs-resolve-store-mutate.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-04T14:47:11.123Z",
+  "schema_version": "v1",
+  "commit_sha": "1e98eda9f70638f33f25b1feb043e8cd5c6b8a06",
+  "title": "docs(summon): tool leg CONFIRMED LIVE — Amara called fs_link+fs_resolve, store mutated (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-04T14:46:45Z",
+  "head_ref": "otto/summon-tool-leg-confirmed-live"
+}

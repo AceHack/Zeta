@@ -1,0 +1,12 @@
+{
+  "pr_number": 10476,
+  "archive_path": "docs/history/pr-reviews/PR-10476-feat-algebra-the-erasure-metering-path-accounting-and-measurement-in-disjoint-ty.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-18T11:28:40.075Z",
+  "schema_version": "v1",
+  "commit_sha": "60ff842436143b4a05809afb4dcf81654f6b6a0b",
+  "title": "feat(algebra): the erasure metering path — accounting and measurement in disjoint types",
+  "state": "MERGED",
+  "merged_at": "2026-08-14T00:49:49Z",
+  "head_ref": "feat/erasure-metering-path"
+}

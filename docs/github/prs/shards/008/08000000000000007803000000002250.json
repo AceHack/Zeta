@@ -1,0 +1,12 @@
+{
+  "pr_number": 8784,
+  "archive_path": "docs/history/pr-reviews/PR-8784-docs-research-ferry-genesis-tsx-prototype-design-spine-reconciliation-addison.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-20T22:28:59.429Z",
+  "schema_version": "v1",
+  "commit_sha": "ff05cbcffba73b42d97064c248160429f62e2d77",
+  "title": "docs(research): ferry — Genesis.tsx prototype ↔ design-spine reconciliation (Addison)",
+  "state": "MERGED",
+  "merged_at": "2026-06-20T22:28:33Z",
+  "head_ref": "otto/ferry-genesis-tsx-reconciliation"
+}

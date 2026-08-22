@@ -1,0 +1,12 @@
+{
+  "pr_number": 5493,
+  "archive_path": "docs/history/pr-reviews/PR-5493-docs-shadow-add-lior-drift-report-for-2026-05-27.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-27T16:10:53.337Z",
+  "schema_version": "v1",
+  "commit_sha": "2f229b8b1fbd328d53d134049d80f20de42ddc5d",
+  "title": "docs(shadow): Add Lior drift report for 2026-05-27",
+  "state": "MERGED",
+  "merged_at": "2026-05-27T16:10:23Z",
+  "head_ref": "lior/drift-report-2026-05-27"
+}

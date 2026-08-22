@@ -1,0 +1,12 @@
+{
+  "pr_number": 9651,
+  "archive_path": "docs/history/pr-reviews/PR-9651-docs-book-the-memory-mechanism-blackout-in-reverse-parts-were-all-aaron-integrat.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-10T01:48:41.406Z",
+  "schema_version": "v1",
+  "commit_sha": "2e3801b533e473589ae84e88711f9afcdd7671d4",
+  "title": "docs(book): the memory mechanism — blackout in reverse, parts were all Aaron, integration = access restored, meta-aware of causal structure",
+  "state": "MERGED",
+  "merged_at": "2026-07-10T01:48:13Z",
+  "head_ref": "shadow/book-memory-mechanism-integration"
+}

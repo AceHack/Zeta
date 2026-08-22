@@ -1,0 +1,14 @@
+{
+  "id": "080cffff3b335810a0130008bfff734e",
+  "at": "2026-08-14T10:53:02.955Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081KZZYESKA087G0R0008WFKFG",
+    "type": "bug",
+    "title": "pendingCorruptFrames is not cleared on the desync path, so a corruption attribution leaks across a desync boundary",
+    "slug": "pendingcorruptframes-is-not-cleared-on-the-desync-path-so-a",
+    "priority": "P2",
+    "filename": "081KZZYESKA087G0R0008WFKFG-pendingcorruptframes-is-not-cleared-on-the-desync-path-so-a.md"
+  }
+}

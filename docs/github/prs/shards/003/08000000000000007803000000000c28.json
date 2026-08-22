@@ -1,0 +1,19 @@
+{
+  "pr_number": 3112,
+  "archive_path": "docs/history/pr-reviews/PR-3112-docs-b-0289-green-lantern-hardware-spec-local-inference-requirements.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7BHWOW",
+    "comment:PRRC_kwDOSF9kNM7BHWOb",
+    "comment:PRRC_kwDOSF9kNM7BHdBp",
+    "comment:PRRC_kwDOSF9kNM7BHdGF",
+    "thread:PRRT_kwDOSF9kNM6B_2v3",
+    "thread:PRRT_kwDOSF9kNM6B_2vy"
+  ],
+  "fetched_at": "2026-05-14T08:02:54.473Z",
+  "schema_version": "v1",
+  "commit_sha": "4f1b47e44ac3958f0dfbd273effe88ab7bd6193c",
+  "title": "docs(b-0289): Green Lantern hardware spec — local inference requirements",
+  "state": "MERGED",
+  "merged_at": "2026-05-14T08:02:37Z",
+  "head_ref": "feat/b-0289-hardware-spec-2026-05-14"
+}

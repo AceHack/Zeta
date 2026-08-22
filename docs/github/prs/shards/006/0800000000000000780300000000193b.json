@@ -1,0 +1,16 @@
+{
+  "pr_number": 6459,
+  "archive_path": "docs/history/pr-reviews/PR-6459-feat-resume-byte-lock-resume-state-wire-expectedstateatsuspension-golden-ts-foun.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7G4Mzw",
+    "comment:PRRC_kwDOSF9kNM7G4OGl",
+    "thread:PRRT_kwDOSF9kNM6GOcKS"
+  ],
+  "fetched_at": "2026-06-01T19:30:09.886Z",
+  "schema_version": "v1",
+  "commit_sha": "a165b08603f6df89e34901ee0f83077b00377e57",
+  "title": "feat(resume): byte-lock resume STATE wire — expectedStateAtSuspension golden (TS foundation)",
+  "state": "MERGED",
+  "merged_at": "2026-06-01T19:29:49Z",
+  "head_ref": "otto-cli/resume-state-bytelock-golden-ts-2026-06-01"
+}

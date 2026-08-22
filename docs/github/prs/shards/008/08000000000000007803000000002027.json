@@ -1,0 +1,12 @@
+{
+  "pr_number": 8231,
+  "archive_path": "docs/history/pr-reviews/PR-8231-fix-portal-logs-tab-406-pod-log-api-rejects-accept-text-plain.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-15T01:52:09.261Z",
+  "schema_version": "v1",
+  "commit_sha": "19a6f31b7db446d32526fb9b1edfb8d462588693",
+  "title": "fix(portal): logs tab 406 — pod-log API rejects Accept: text/plain",
+  "state": "MERGED",
+  "merged_at": "2026-06-15T01:51:45Z",
+  "head_ref": "fix/portal-logs-accept-wildcard"
+}

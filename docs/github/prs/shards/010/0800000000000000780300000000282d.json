@@ -1,0 +1,12 @@
+{
+  "pr_number": 10285,
+  "archive_path": "docs/history/pr-reviews/PR-10285-docs-ferry-fuentes-tabletop-quantum-gravity-centre-of-trap-patch-corroborates-th.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-10T15:27:56.729Z",
+  "schema_version": "v1",
+  "commit_sha": "644ea557ba943a80b2b69dcba9c222f7aae6f367",
+  "title": "docs(ferry): Fuentes tabletop quantum-gravity — centre-of-trap patch corroborates the local-time fold rule",
+  "state": "MERGED",
+  "merged_at": "2026-08-10T15:27:04Z",
+  "head_ref": "shadow/ferry-fuentes-quantum-gravity-tabletop"
+}

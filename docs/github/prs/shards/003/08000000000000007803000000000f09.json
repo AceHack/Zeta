@@ -1,0 +1,12 @@
+{
+  "pr_number": 3849,
+  "archive_path": "docs/history/pr-reviews/PR-3849-shard-tick-2026-05-16t09-57z-post-reset-batch-fired-prs-3845-3846.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-16T10:03:53.586Z",
+  "schema_version": "v1",
+  "commit_sha": "0d0422130949860384c7a7b834e5a22e753e6756",
+  "title": "shard(tick): 2026-05-16T09:57Z — post-reset batch fired (PRs #3845 + #3846)",
+  "state": "MERGED",
+  "merged_at": "2026-05-16T10:03:36Z",
+  "head_ref": "shard/tick-0957z-otto-cli-2026-05-16"
+}

@@ -1,0 +1,25 @@
+{
+  "pr_number": 3692,
+  "archive_path": "docs/history/pr-reviews/PR-3692-feat-hygiene-tick-shard-relative-path-audit-detect-only-baseline-cleanup-pending.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7B08-3",
+    "comment:PRRC_kwDOSF9kNM7B08-7",
+    "comment:PRRC_kwDOSF9kNM7B08zj",
+    "comment:PRRC_kwDOSF9kNM7B08zm",
+    "comment:PRRC_kwDOSF9kNM7B1BBc",
+    "comment:PRRC_kwDOSF9kNM7B1BBe",
+    "thread:PRRT_kwDOSF9kNM6ChG33",
+    "thread:PRRT_kwDOSF9kNM6ChG35",
+    "thread:PRRT_kwDOSF9kNM6ChGu_",
+    "thread:PRRT_kwDOSF9kNM6ChGvB",
+    "thread:PRRT_kwDOSF9kNM6ChJvO",
+    "thread:PRRT_kwDOSF9kNM6ChJvQ"
+  ],
+  "fetched_at": "2026-05-16T03:08:57.357Z",
+  "schema_version": "v1",
+  "commit_sha": "4632338c172b954106aa6377ac0e7782fe5c8993",
+  "title": "feat(hygiene): tick-shard relative-path audit (detect-only; baseline cleanup pending)",
+  "state": "MERGED",
+  "merged_at": "2026-05-16T03:08:39Z",
+  "head_ref": "feat/audit-tick-shard-relative-paths-otto-cli-2026-05-16"
+}

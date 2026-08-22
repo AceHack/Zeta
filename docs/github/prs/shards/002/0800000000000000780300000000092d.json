@@ -1,0 +1,12 @@
+{
+  "pr_number": 2349,
+  "archive_path": "docs/history/pr-reviews/PR-2349-docs-b-0365-5-infer-net-bp-ep-factor-graph-multi-agent-review-as-belief-propagat.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-09T21:26:36.479Z",
+  "schema_version": "v1",
+  "commit_sha": "35780e93d2bcadaf9c7824dcf92eaafebc8996ff",
+  "title": "docs(B-0365.5): Infer.NET BP/EP factor graph — multi-agent review as belief propagation",
+  "state": "MERGED",
+  "merged_at": "2026-05-09T21:26:20Z",
+  "head_ref": "claim/b0365.5-infernet-bp-ep-factor-graph-doc-2026-05-09"
+}

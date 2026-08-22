@@ -1,0 +1,12 @@
+{
+  "pr_number": 10262,
+  "archive_path": "docs/history/pr-reviews/PR-10262-research-e8-part-iii-the-versor-law-proven-parity-law-monomiality-code-automorph.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-18T10:45:47.678Z",
+  "schema_version": "v1",
+  "commit_sha": "3ee6ed2d4312922e9fb2ab918a50140f650406c0",
+  "title": "research(e8): Part III — the versor law proven (parity law + monomiality + code automorphism)",
+  "state": "MERGED",
+  "merged_at": "2026-08-10T00:38:11Z",
+  "head_ref": "otto/e8-versor-law-proven"
+}

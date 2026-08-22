@@ -1,0 +1,12 @@
+{
+  "pr_number": 8569,
+  "archive_path": "docs/history/pr-reviews/PR-8569-feat-darkhall-expose-meta-cart-selection-readout.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-19T13:37:49.510Z",
+  "schema_version": "v1",
+  "commit_sha": "359aabbdd9f2adc45601158067842ce52a69770b",
+  "title": "feat(darkhall): expose meta-cart selection readout",
+  "state": "MERGED",
+  "merged_at": "2026-06-19T13:37:25Z",
+  "head_ref": "codex/darkhall-readout-selector"
+}

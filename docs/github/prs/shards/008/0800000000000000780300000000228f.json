@@ -1,0 +1,12 @@
+{
+  "pr_number": 8847,
+  "archive_path": "docs/history/pr-reviews/PR-8847-feat-keys-per-machine-device-key-user-machine-status-safe-slice-of-unified-onboa.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-21T03:47:53.256Z",
+  "schema_version": "v1",
+  "commit_sha": "62bdb09d5cdd3ff037e55973db8b6a0500e41c31",
+  "title": "feat(keys): per-MACHINE device key + (user × machine) status — safe slice of unified onboarding",
+  "state": "MERGED",
+  "merged_at": "2026-06-21T03:47:29Z",
+  "head_ref": "otto/keys-machine-status-slice"
+}

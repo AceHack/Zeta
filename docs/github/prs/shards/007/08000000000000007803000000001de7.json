@@ -1,0 +1,12 @@
+{
+  "pr_number": 7655,
+  "archive_path": "docs/history/pr-reviews/PR-7655-feat-chip9-the-chip-9-treaty-f-locks-the-color-plane-golden-vectors.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-11T11:27:39.567Z",
+  "schema_version": "v1",
+  "commit_sha": "6533b14ec36832347e2d6b4d764d1c85b01a9a08",
+  "title": "feat(chip9): the CHIP-9 treaty — F# locks the color-plane golden vectors",
+  "state": "MERGED",
+  "merged_at": "2026-06-11T11:27:17Z",
+  "head_ref": "shadow-chip9-treaty-goldens"
+}

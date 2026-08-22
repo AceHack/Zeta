@@ -1,0 +1,12 @@
+{
+  "pr_number": 8124,
+  "archive_path": "docs/history/pr-reviews/PR-8124-feat-observe-tiered-chooser-sequoia-memory-model-for-decisions.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-14T01:42:26.399Z",
+  "schema_version": "v1",
+  "commit_sha": "1e6b6dde3f7f9c02a749269cefbc98fd11652381",
+  "title": "feat(observe): tiered Chooser — Sequoia memory model for decisions",
+  "state": "MERGED",
+  "merged_at": "2026-06-14T01:42:03Z",
+  "head_ref": "kiro/observe-inline-v1"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 8061,
+  "archive_path": "docs/history/pr-reviews/PR-8061-refactor-forge-host-wave-3-move-batch-resolve-readprstateasync-r4-r5.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-13T20:41:00.402Z",
+  "schema_version": "v1",
+  "commit_sha": "c4f9fc1769816fd4b9894370d32c92e2e17c1fcb",
+  "title": "refactor(forge-host): Wave 3 — move batch-resolve + readPRStateAsync (R4, R5)",
+  "state": "MERGED",
+  "merged_at": "2026-06-13T20:40:37Z",
+  "head_ref": "kiro/forge-host-wave3"
+}

@@ -1,6 +1,18 @@
-# SPIRE bootstrap install. K3S HelmChart CR — runs AFTER Vault
-# (SPIRE chains to Vault as upstream CA), BEFORE Trust Manager
+# SPIRE bootstrap install. K3S HelmChart CR — runs BEFORE Trust Manager
 # (Trust Manager distributes SPIRE's CA bundle).
+#
+# CORRECTED 2026-08-20 (Dejan). This header used to read "runs AFTER Vault
+# (SPIRE chains to Vault as upstream CA)". That was never true of this file:
+# there is no `upstreamAuthority` key below — `grep -c upstreamAuthority`
+# returns 0 — so the SPIRE server issues from its OWN self-signed CA
+# (`caSubject` below is that CA's subject). The ArgoCD twin at
+# k8s/applications/spire/Application.yaml carries the Vault block COMMENTED
+# OUT with "uncomment after vault is healthy". A comment describing a
+# dependency the manifest does not have is worse than no comment: it is what
+# made Vault look load-bearing at bootstrap when nothing consumes it.
+# Vault is no longer in the bootstrap roster at all (see k3s-server.nix).
+# Before wiring `upstreamAuthority.vault` here, see
+# docs/research/2026-08-20-hsm-tpm-into-vault-and-cert-manager-yes-for-tpm-but-not-through-vault-openbao-is-the-answer.md
 
 # SPIRE CRDs (ClusterSPIFFEID, ClusterFederatedTrustDomain, ClusterStaticEntry)
 # MUST be installed before the spire chart — the hardened chart ships them as a

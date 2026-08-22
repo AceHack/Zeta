@@ -5,6 +5,10 @@ ZETAID ; MUMPS routine to pack a ZetaObservation into a 128-bit ZetaId
  ; Bounded DST tick, 4x4x5-lang byte-locked.
  ; Bounded to standard ANSI MUMPS integer/float precision limits by splitting
  ; the 128-bit word into four 32-bit unsigned words (W3, W2, W1, W0).
+ ; compare.ts requires tests/cross-verification/zeta-id/mumps-output.json to
+ ; carry every vectors.yaml id (16 as of 2026-08-14). This packer covers the
+ ; 12 packed vectors; all-zero / max-128 / parse-reject / lenient-alias are
+ ; filled by run-mumps.ts. CI executes this file via that runner.
  ;
 PACK(VER,TS,CHR,CAT,AUTH,PER,MOM,LOC,RAND)
  NEW W3,W2,W1,W0,H3,H2,H1,H0,C

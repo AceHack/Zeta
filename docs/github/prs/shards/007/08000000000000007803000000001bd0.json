@@ -1,0 +1,12 @@
+{
+  "pr_number": 7120,
+  "archive_path": "docs/history/pr-reviews/PR-7120-feat-core-statespace-exploreguarded-invariant-guard-planto-goal-directed.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-08T22:50:53.325Z",
+  "schema_version": "v1",
+  "commit_sha": "d527127c3f9321b4d235f6fe87115e5b380f4de5",
+  "title": "feat(core): StateSpace.exploreGuarded (invariant guard) + planTo (goal-directed)",
+  "state": "MERGED",
+  "merged_at": "2026-06-08T22:50:30Z",
+  "head_ref": "otto/statespace-invariant-guard-dont-die-no-downtime-planto"
+}

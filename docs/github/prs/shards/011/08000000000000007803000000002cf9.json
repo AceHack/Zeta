@@ -1,0 +1,12 @@
+{
+  "pr_number": 11513,
+  "archive_path": "docs/history/pr-reviews/PR-11513-test-nixos-give-the-nvidia-open-preflight-gate-a-falsifier-ci-runs-do-not-flip-o.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-21T09:18:07.627Z",
+  "schema_version": "v1",
+  "commit_sha": "e8ac02b75d5a30020d7254c5e7c04bdc521223bf",
+  "title": "test(nixos): give the nvidia-open preflight gate a falsifier CI runs — do NOT flip open",
+  "state": "MERGED",
+  "merged_at": "2026-08-17T15:04:31Z",
+  "head_ref": "shadow/gpu-nodes-nvidia-open"
+}

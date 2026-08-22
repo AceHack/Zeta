@@ -1,0 +1,12 @@
+{
+  "pr_number": 8733,
+  "archive_path": "docs/history/pr-reviews/PR-8733-zeta-ir-v1-make-the-legacy-ir-json-a-single-source-of-truth-derived-from-the-v1-.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-20T07:55:59.683Z",
+  "schema_version": "v1",
+  "commit_sha": "29a6f204c2ef7bb99bb67c313c25280c60c5c016",
+  "title": "zeta-ir-v1: make the legacy *.ir.json a single source of truth derived from the v1 envelope",
+  "state": "MERGED",
+  "merged_at": "2026-06-20T07:55:35Z",
+  "head_ref": "lumen/zeta-ir-v1-legacy-single-source"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 6528,
+  "archive_path": "docs/history/pr-reviews/PR-6528-research-b-0983-topology-of-traveler-attractors-euler-characteristic-persistent-.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-02T09:07:16.399Z",
+  "schema_version": "v1",
+  "commit_sha": "6a06a7888ec396535f1078d15c3a1047a7dc5e0f",
+  "title": "research(B-0983): topology of traveler-attractors — Euler-characteristic / persistent-homology invariant across dimensions; the remainder IS the bonsai closure state (Aaron 2026-06-02)",
+  "state": "MERGED",
+  "merged_at": "2026-06-02T09:06:53Z",
+  "head_ref": "otto-cli/b0983-topology-euler-bonsai-closure-2026-06-02"
+}

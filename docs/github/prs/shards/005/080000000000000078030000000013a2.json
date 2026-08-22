@@ -1,0 +1,23 @@
+{
+  "pr_number": 5026,
+  "archive_path": "docs/history/pr-reviews/PR-5026-fix-codex-scope-backlog-pr-capacity-by-lane.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7Eti0_",
+    "comment:PRRC_kwDOSF9kNM7Etjd-",
+    "comment:PRRC_kwDOSF9kNM7Etjeh",
+    "comment:PRRC_kwDOSF9kNM7Etsp8",
+    "comment:PRRC_kwDOSF9kNM7Etspp",
+    "thread:PRRT_kwDOSF9kNM6Eo-31",
+    "thread:PRRT_kwDOSF9kNM6Eo_Sy",
+    "thread:PRRT_kwDOSF9kNM6Eo_TM",
+    "thread:PRRT_kwDOSF9kNM6EpF50",
+    "thread:PRRT_kwDOSF9kNM6EpF5i"
+  ],
+  "fetched_at": "2026-05-25T23:32:36.789Z",
+  "schema_version": "v1",
+  "commit_sha": "0bb97eb65367a8f1bfe7a26a7e3599812178112c",
+  "title": "fix(codex): scope backlog PR capacity by lane",
+  "state": "MERGED",
+  "merged_at": "2026-05-25T23:32:19Z",
+  "head_ref": "codex/lane-aware-pr-capacity"
+}

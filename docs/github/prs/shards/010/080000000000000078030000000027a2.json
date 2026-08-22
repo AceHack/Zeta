@@ -1,0 +1,12 @@
+{
+  "pr_number": 10146,
+  "archive_path": "docs/history/pr-reviews/PR-10146-deps-bump-system-reactive-from-6-1-0-to-7-0-0.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-18T10:01:39.500Z",
+  "schema_version": "v1",
+  "commit_sha": "681654df831c88a8ea70da117bdc41597742cab3",
+  "title": "deps: Bump System.Reactive from 6.1.0 to 7.0.0",
+  "state": "MERGED",
+  "merged_at": "2026-08-08T08:01:37Z",
+  "head_ref": "dependabot/nuget/System.Reactive-7.0.0"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 3373,
+  "archive_path": "docs/history/pr-reviews/PR-3373-docs-shadow-lior-antigravity-check-report-otto-and-codex-drift.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-15T06:33:57.450Z",
+  "schema_version": "v1",
+  "commit_sha": "b13c2a230b89c3d64fe84e15eb2f40bb63d0797b",
+  "title": "docs(shadow): Lior antigravity check - report Otto and Codex drift",
+  "state": "MERGED",
+  "merged_at": "2026-05-15T06:33:40Z",
+  "head_ref": "lior/shadow-drift-otto-codex-0620Z"
+}

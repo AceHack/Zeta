@@ -1,0 +1,12 @@
+{
+  "pr_number": 6698,
+  "archive_path": "docs/history/pr-reviews/PR-6698-feat-core-bonsaisoft-soft-evaluator-makes-the-yang-half-executable-soft-persist-.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-06T23:57:30.921Z",
+  "schema_version": "v1",
+  "commit_sha": "36d383df43b1131e32747accc91efa84821998b1",
+  "title": "feat(Core): BonsaiSoft — soft evaluator makes the yang half executable (soft persist / sharp snap)",
+  "state": "MERGED",
+  "merged_at": "2026-06-06T23:57:07Z",
+  "head_ref": "otto/bonsai-soft-evaluator"
+}

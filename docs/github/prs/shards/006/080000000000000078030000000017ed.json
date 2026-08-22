@@ -1,0 +1,12 @@
+{
+  "pr_number": 6125,
+  "archive_path": "docs/history/pr-reviews/PR-6125-feat-ci-slice-2b-install-ps1-desktop-loop-smoke-asserts-shared-with-docker.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-30T15:14:46.895Z",
+  "schema_version": "v1",
+  "commit_sha": "1f47e8edd0a5186b9d65a138bbbfb28e73f90e4b",
+  "title": "feat(ci): Slice 2b — install.ps1 desktop loop-smoke (asserts; shared with Docker)",
+  "state": "MERGED",
+  "merged_at": "2026-05-30T15:14:27Z",
+  "head_ref": "otto-windows/slice2b-desktop-loop-smoke-2026-05-30"
+}

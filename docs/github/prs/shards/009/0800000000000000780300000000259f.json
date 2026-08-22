@@ -1,0 +1,12 @@
+{
+  "pr_number": 9631,
+  "archive_path": "docs/history/pr-reviews/PR-9631-docs-book-grandad-dad-animal-model-the-bee-survival-story-bees-cleared-clean.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-09T21:18:42.592Z",
+  "schema_version": "v1",
+  "commit_sha": "a0287fda654e7e4d113fbfb12aae6efc55c1d49a",
+  "title": "docs(book): grandad→dad animal model + the bee survival story (bees cleared clean)",
+  "state": "MERGED",
+  "merged_at": "2026-07-09T21:18:14Z",
+  "head_ref": "shadow/book-grandad-dad-animal-lesson"
+}

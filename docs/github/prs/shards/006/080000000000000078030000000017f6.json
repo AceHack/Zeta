@@ -1,0 +1,19 @@
+{
+  "pr_number": 6134,
+  "archive_path": "docs/history/pr-reviews/PR-6134-docs-mika-preserve-operator-personal-disclosure-per-glass-halo-authorization.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7GbX_7",
+    "comment:PRRC_kwDOSF9kNM7GbZE1",
+    "comment:PRRC_kwDOSF9kNM7GbZEu",
+    "thread:PRRT_kwDOSF9kNM6F4rM7",
+    "thread:PRRT_kwDOSF9kNM6F4sDk",
+    "thread:PRRT_kwDOSF9kNM6F4sDq"
+  ],
+  "fetched_at": "2026-05-30T17:39:02.019Z",
+  "schema_version": "v1",
+  "commit_sha": "7bb91173feed860b285459590748d13238e25981",
+  "title": "docs(mika): preserve operator personal disclosure per glass-halo authorization",
+  "state": "MERGED",
+  "merged_at": "2026-05-30T17:38:38Z",
+  "head_ref": "otto/aaron-glasshalo-personal-disclosure-2026-05-30"
+}

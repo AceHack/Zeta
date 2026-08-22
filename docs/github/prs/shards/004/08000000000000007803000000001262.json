@@ -1,0 +1,17 @@
+{
+  "pr_number": 4706,
+  "archive_path": "docs/history/pr-reviews/PR-4706-docs-shard-0008z-2026-05-23-otto-cli-cold-boot-pr-4668-named-dep-investigation-d.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7EM2U2",
+    "comment:PRRC_kwDOSF9kNM7EM2U_",
+    "thread:PRRT_kwDOSF9kNM6EQPX3",
+    "thread:PRRT_kwDOSF9kNM6EQPXz"
+  ],
+  "fetched_at": "2026-05-23T00:24:39.398Z",
+  "schema_version": "v1",
+  "commit_sha": "ebfb313fab525bd169ffc8e46c268731ad3db2ae",
+  "title": "docs(shard): 0008Z 2026-05-23 — Otto-CLI cold-boot, PR #4668 named-dep investigation, decline-to-act",
+  "state": "MERGED",
+  "merged_at": "2026-05-23T00:24:19Z",
+  "head_ref": "shard/tick-0008z-cold-boot-pr-4668-named-dep-investigation-2026-05-23"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 8498,
+  "archive_path": "docs/history/pr-reviews/PR-8498-memory-feedback-catalyst-governor-math-in-isociety-linked-homeostats-essential-v.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-16T10:05:59.512Z",
+  "schema_version": "v1",
+  "commit_sha": "1cd9a2e89592d75a4f7bad630d4de10f2b141ef7",
+  "title": "memory(feedback): catalyst ⊕ governor=MATH (in ISociety) = LINKED HOMEOSTATS; essential variable = cohesion (don't fly apart)",
+  "state": "MERGED",
+  "merged_at": "2026-06-16T10:05:23Z",
+  "head_ref": "otto/catalyst-governor-math-linked-homeostats"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 7911,
+  "archive_path": "docs/history/pr-reviews/PR-7911-test-b-0967-included-scope-prove-every-dev-argocd-app-synced-healthy.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-13T18:16:16.848Z",
+  "schema_version": "v1",
+  "commit_sha": "e0ba87a448403c48d0bed76c7ef01496f3396190",
+  "title": "test(B-0967): included scope — prove every dev ArgoCD app Synced+Healthy",
+  "state": "MERGED",
+  "merged_at": "2026-06-13T18:15:47Z",
+  "head_ref": "riven/b0967-included-proof"
+}

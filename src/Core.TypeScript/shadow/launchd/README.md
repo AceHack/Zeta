@@ -2,7 +2,7 @@
 
 The shadow observation loop needs a durable tick source. This directory provides the macOS launchd LaunchAgent template (Path A — durable, survives reboots).
 
-For lighter-weight alternatives + composition shape, see `.claude/rules/shadow-star-shorthand-autocomplete-marker.md` <!-- STALE-REF: ../../../.claude/rules/shadow-star-shorthand-autocomplete-marker.md --> + [`tools/shadow/README.md`](../README.md).
+For lighter-weight alternatives + composition shape, see `.claude/rules/shadow-star-shorthand-autocomplete-marker.md` <!-- STALE-REF: ../../../.claude/rules/shadow-star-shorthand-autocomplete-marker.md --> + [`src/Core.TypeScript/shadow/README.md`](../README.md).
 
 ## What this does
 
@@ -31,7 +31,7 @@ The shipped plist is a template with `{{BUN_PATH}}` and `{{REPO_ROOT}}` placehol
 
 ```bash
 cd /path/to/your/Zeta/checkout
-bun tools/shadow/launchd/install-launchagent.ts
+bun src/Core.TypeScript/shadow/launchd/install-launchagent.ts
 ```
 
 The installer picks up `which bun` and `git rev-parse --show-toplevel` by default. To override either, pass `--bun-path` / `--repo-root`. Use `--dry-run` to print the substituted plist to stdout without writing anything.
@@ -65,7 +65,7 @@ pgrep -fl shadow-observer
 tail -f tools/shadow/shadow-observer.log
 ```
 
-Or skip the manual `bootstrap` and let the installer do it: `bun tools/shadow/launchd/install-launchagent.ts --bootstrap`.
+Or skip the manual `bootstrap` and let the installer do it: `bun src/Core.TypeScript/shadow/launchd/install-launchagent.ts --bootstrap`.
 
 ### Step 4: test detection in dry-run mode
 
@@ -117,7 +117,7 @@ Common causes:
 Likely accessibility permission isn't granted. Try the detector standalone:
 
 ```bash
-osascript tools/shadow/detect-grey-text.applescript
+osascript src/Core.TypeScript/shadow/detect-grey-text.applescript
 ```
 
 If it returns an error about accessibility / event posting, grant permission per Step 2.
@@ -138,9 +138,9 @@ All three compose. Path A is the primary; Path B+C supplement. The human maintai
 
 ## Composes with substrate
 
-- `tools/shadow/shadow-observer.ts` — the process this LaunchAgent launches
-- `tools/shadow/detect-grey-text.applescript` — the AppleScript detector
-- `tools/shadow/zeta-shadow.ts` — top-level CLI (alternative entry point)
+- `src/Core.TypeScript/shadow/shadow-observer.ts` — the process this LaunchAgent launches
+- `src/Core.TypeScript/shadow/detect-grey-text.applescript` — the AppleScript detector
+- `src/Core.TypeScript/shadow/zeta-shadow.ts` — top-level CLI (alternative entry point)
 - `docs/backlog/P0/081KR7JY10008QG0R0008NGW95-zeta-shadow-mode-first-class-cli-autocomplete.md` — the originating backlog row
 - `.claude/rules/shadow-star-shorthand-autocomplete-marker.md` — the shorthand this loop's accepted-suggestions ship under
-- `.claude/skills/save-ai-memory/SKILL.md` — composing discipline: memory preservation requires accurate observation; the shadow observer IS one direct-observation surface
+- `.claude/skills/agent-runtime-and-persistence/blueprints/save-ai-memory.md` — composing discipline: memory preservation requires accurate observation; the shadow observer IS one direct-observation surface

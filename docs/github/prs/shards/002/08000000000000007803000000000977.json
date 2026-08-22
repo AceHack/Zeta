@@ -1,0 +1,19 @@
+{
+  "pr_number": 2423,
+  "archive_path": "docs/history/pr-reviews/PR-2423-feat-b-0056-1-smallest-safe-slice-pure-ts-mythology-resonance-candidate-schema-h.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_l5jO",
+    "comment:PRRC_kwDOSF9kNM6_l6FN",
+    "comment:PRRC_kwDOSF9kNM6_l6Fa",
+    "thread:PRRT_kwDOSF9kNM6A4Hr9",
+    "thread:PRRT_kwDOSF9kNM6A4IDi",
+    "thread:PRRT_kwDOSF9kNM6A4IDo"
+  ],
+  "fetched_at": "2026-05-10T05:49:56.364Z",
+  "schema_version": "v1",
+  "commit_sha": "41386de25f0288bc47840d115d257913787c808a",
+  "title": "feat(B-0056.1): smallest safe slice — pure-TS mythology-resonance candidate schema + Heimdallr seed + validator stub (re-decomposed)",
+  "state": "MERGED",
+  "merged_at": "2026-05-10T05:49:41Z",
+  "head_ref": "claim/B-0056-mythology-research-smallest-slice-riven-2026-05-10"
+}

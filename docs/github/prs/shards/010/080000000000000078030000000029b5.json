@@ -1,0 +1,12 @@
+{
+  "pr_number": 10677,
+  "archive_path": "docs/history/pr-reviews/PR-10677-feat-persona-keys-a-subshare-transport-port-wireguard-covers-none-of-its-five-pr.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-16T22:31:34.769Z",
+  "schema_version": "v1",
+  "commit_sha": "cebc48cb664fc4972940200fcb2b2354892c7b24",
+  "title": "feat(persona-keys): a subshare transport PORT — WireGuard covers none of its five properties end to end",
+  "state": "MERGED",
+  "merged_at": "2026-08-16T22:31:02Z",
+  "head_ref": "nazar/subshare-transport-contract"
+}

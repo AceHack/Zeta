@@ -1,0 +1,12 @@
+{
+  "pr_number": 7328,
+  "archive_path": "docs/history/pr-reviews/PR-7328-docs-research-unit-tests-carry-all-dst-tools-test-loop-production-loop-save-tick.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-09T16:22:21.010Z",
+  "schema_version": "v1",
+  "commit_sha": "0effcd4060ccf53f4f858469dd168faae655fdc2",
+  "title": "docs(research): unit tests carry all DST tools — test loop = production loop (save tick-artifacts with boundary-uncertainty); benchmarks same; test=prod ⇒ prod rules (audited)",
+  "state": "MERGED",
+  "merged_at": "2026-06-09T16:21:53Z",
+  "head_ref": "otto/unit-tests-have-dst-tools-test-equals-prod-save-with-boundary-uncertainty-benchmarks-prod-rules"
+}

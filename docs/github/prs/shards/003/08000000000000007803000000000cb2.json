@@ -1,0 +1,12 @@
+{
+  "pr_number": 3250,
+  "archive_path": "docs/history/pr-reviews/PR-3250-feat-hygiene-add-duplicate-id-audit-class-to-audit-backlog-items-ts.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-14T21:20:34.123Z",
+  "schema_version": "v1",
+  "commit_sha": "47eb54780cbe77c533f26f918ad3b5cab3ac6b46",
+  "title": "feat(hygiene): add duplicate-ID audit class to audit-backlog-items.ts",
+  "state": "MERGED",
+  "merged_at": "2026-05-14T21:20:12Z",
+  "head_ref": "otto/audit-backlog-duplicate-ids-2026-05-14"
+}

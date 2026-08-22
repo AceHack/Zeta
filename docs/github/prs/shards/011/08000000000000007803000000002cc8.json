@@ -1,0 +1,12 @@
+{
+  "pr_number": 11464,
+  "archive_path": "docs/history/pr-reviews/PR-11464-fix-bus-a-breaker-cannot-report-health-it-never-measured.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-21T05:15:53.316Z",
+  "schema_version": "v1",
+  "commit_sha": "246329b0416c4b022486c4c2445d353d0010832b",
+  "title": "fix(bus): a breaker cannot report health it never measured",
+  "state": "MERGED",
+  "merged_at": "2026-08-17T13:31:13Z",
+  "head_ref": "shadow/breaker-cannot-report-unmeasured-health"
+}

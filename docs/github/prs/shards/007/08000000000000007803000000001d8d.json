@@ -1,0 +1,12 @@
+{
+  "pr_number": 7565,
+  "archive_path": "docs/history/pr-reviews/PR-7565-feat-core-the-darkhall-s-door-arcade-fs-gathers-emulator-cabinets-live-play-host.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-11T01:50:15.299Z",
+  "schema_version": "v1",
+  "commit_sha": "1ee19d88d489afed17856882048c8ff2b08e4bc7",
+  "title": "feat(core): the darkhall's door — Arcade.fs gathers emulator cabinets + live play/host",
+  "state": "MERGED",
+  "merged_at": "2026-06-11T01:49:48Z",
+  "head_ref": "shadow-darkhall-arcade-door"
+}

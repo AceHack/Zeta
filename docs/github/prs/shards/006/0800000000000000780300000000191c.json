@@ -1,0 +1,33 @@
+{
+  "pr_number": 6428,
+  "archive_path": "docs/history/pr-reviews/PR-6428-feat-b-0976-slice-1-bonsai-subset-serializer-ts-reference-oracle-cross-language.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7Gz2tQ",
+    "comment:PRRC_kwDOSF9kNM7Gzm0m",
+    "comment:PRRC_kwDOSF9kNM7Gzm0q",
+    "comment:PRRC_kwDOSF9kNM7GzqJq",
+    "comment:PRRC_kwDOSF9kNM7GzqKy",
+    "comment:PRRC_kwDOSF9kNM7GzqL2",
+    "comment:PRRC_kwDOSF9kNM7GzqLZ",
+    "comment:PRRC_kwDOSF9kNM7GzqMl",
+    "comment:PRRC_kwDOSF9kNM7GzqN7",
+    "comment:PRRC_kwDOSF9kNM7GzqNF",
+    "thread:PRRT_kwDOSF9kNM6GLCcG",
+    "thread:PRRT_kwDOSF9kNM6GLCcI",
+    "thread:PRRT_kwDOSF9kNM6GLE55",
+    "thread:PRRT_kwDOSF9kNM6GLE5C",
+    "thread:PRRT_kwDOSF9kNM6GLE6Q",
+    "thread:PRRT_kwDOSF9kNM6GLE6k",
+    "thread:PRRT_kwDOSF9kNM6GLE7M",
+    "thread:PRRT_kwDOSF9kNM6GLE7j",
+    "thread:PRRT_kwDOSF9kNM6GLE8O",
+    "thread:PRRT_kwDOSF9kNM6GLOQo"
+  ],
+  "fetched_at": "2026-06-01T16:07:57.688Z",
+  "schema_version": "v1",
+  "commit_sha": "7281f66862064b6163dc88a5d3e47d544f477fea",
+  "title": "feat(B-0976 slice 1): Bonsai-subset serializer — TS reference oracle (cross-language)",
+  "state": "MERGED",
+  "merged_at": "2026-06-01T16:07:34Z",
+  "head_ref": "otto-cli/b0976-bonsai-subset-ts-oracle-slice1-2026-06-01"
+}

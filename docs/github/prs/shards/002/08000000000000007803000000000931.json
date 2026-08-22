@@ -1,0 +1,15 @@
+{
+  "pr_number": 2353,
+  "archive_path": "docs/history/pr-reviews/PR-2353-docs-b-0005-decompose-aurora-split-into-5-dependency-ordered-atomic-rows-b-0375-.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_kQNM",
+    "thread:PRRT_kwDOSF9kNM6A2zuY"
+  ],
+  "fetched_at": "2026-05-09T22:00:46.085Z",
+  "schema_version": "v1",
+  "commit_sha": "5e8922b561235063f4c4204a4213fd7cfb6b5eb4",
+  "title": "docs(B-0005): decompose aurora-split into 5 dependency-ordered atomic rows (B-0375–B-0379)",
+  "state": "MERGED",
+  "merged_at": "2026-05-09T22:00:28Z",
+  "head_ref": "worktree-glittery-petting-wave"
+}

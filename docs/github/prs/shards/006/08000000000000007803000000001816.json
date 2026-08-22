@@ -1,0 +1,12 @@
+{
+  "pr_number": 6166,
+  "archive_path": "docs/history/pr-reviews/PR-6166-backlog-b-0947-windows-ci-checkout-fails-filename-too-long-max-path-on-long-pers.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-30T23:40:54.181Z",
+  "schema_version": "v1",
+  "commit_sha": "175b708c920ceedc2c05a8d83be9eec544230b22",
+  "title": "backlog(B-0947): Windows CI checkout fails 'Filename too long' (MAX_PATH) on long persona-archive names",
+  "state": "MERGED",
+  "merged_at": "2026-05-30T23:40:32Z",
+  "head_ref": "otto-cli/b0947-windows-ci-max-path-checkout-2026-05-30"
+}

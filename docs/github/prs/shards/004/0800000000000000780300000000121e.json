@@ -1,0 +1,12 @@
+{
+  "pr_number": 4638,
+  "archive_path": "docs/history/pr-reviews/PR-4638-trajectory-ace-package-manager-skill-crystallization-pipeline-operator-self-clai.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-22T17:28:48.445Z",
+  "schema_version": "v1",
+  "commit_sha": "6e268ae6cef29642d1d19352ac157f89f5623c81",
+  "title": "trajectory(ace-package-manager-skill-crystallization-pipeline): operator-self-claimed agenda + DeepSeek substrate-engineering pipeline mapping",
+  "state": "MERGED",
+  "merged_at": "2026-05-22T17:28:28Z",
+  "head_ref": "otto/cli-2007z-attach-deepseek-skill-crystallization-pipeline-mapping-to-ace-package-manager-backlogs-and-trajectory-2026-05-22"
+}

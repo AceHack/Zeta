@@ -1,0 +1,15 @@
+{
+  "pr_number": 9118,
+  "archive_path": "docs/history/pr-reviews/PR-9118-feat-core-cellscheduler-slice-1-dop-1-deterministic-cell-multiplexer.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7RP_u2",
+    "thread:PRRT_kwDOSF9kNM6NyayM"
+  ],
+  "fetched_at": "2026-08-17T05:46:34.144Z",
+  "schema_version": "v1",
+  "commit_sha": "0a49b8bc8f2302ed0e36843ba2ab5ed09f386750",
+  "title": "feat(core): CellScheduler slice 1 — DoP=1 deterministic cell multiplexer",
+  "state": "MERGED",
+  "merged_at": "2026-07-02T05:13:13Z",
+  "head_ref": "otto/cell-scheduler-slice1-dop1-multiplexer"
+}

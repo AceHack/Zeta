@@ -1,0 +1,14 @@
+[
+  {
+    "path": "tests/cross-verification/_harness/cross-verify-ir.test.ts",
+    "dependency": ".NET SDK 10.0.302 (global.json), go, rustc, and the gitignored Q# venv at src/Core.Python/.venv (uv sync --project src/Core.Python)",
+    "reason": "MEASURED 2026-08-16 on a fresh clone of main (macOS, bun install only): all 4 tests in this file fail, and they are 4 of the 5 failures in the whole 11,578-test suite. 'Q# lane prerequisites present' fails because src/Core.Python/.venv/bin/python3 does not exist; the other three fail because `dotnet run` cannot find SDK 10.0.302. NOT A DEFECT AND NOT A CANDIDATE FOR SOFTENING: this file deliberately asserts-don't-skip (its header says 'FAILS if expected toolchains are missing (not just warns)'), because a byte-lock oracle that reports agreement across 7 languages while one lane silently executed 0 cases is the exact lie the per-route floor was added to end. So it stays hard-failing and moves tier instead. It runs in test (TS environment-dependent), which does the uv sync, and in full-verify, which is in the required floor. Splitting the tier changes WHERE it is asserted, never WHETHER.",
+    "workitem": ""
+  },
+  {
+    "path": "src/Core.TypeScript/zflash/esp-inject.test.ts",
+    "dependency": "a physical zeta-installer-*.iso in the invoking user's ~/Downloads, plus OS permission to read that folder",
+    "reason": "MEASURED 2026-08-16 on the same fresh clone: this is the 5th failure, and it is an UNHANDLED ERROR at module scope rather than a test failure — readdirSync(~/Downloads) throws EPERM under macOS TCC, before test.skipIf can decide anything. Its verdict is a property of the host's file system and privacy settings, not of the code: on a runner ~/Downloads does not exist and the file skips, on a maintainer laptop it may run for real, and on a TCC-restricted laptop it takes the whole suite down. The scandir is made fail-soft in the same change so the answer is an attributed skip rather than a crash; the tier move is because a test gated on hardware the runner does not have belongs in the tier named for that.",
+    "workitem": ""
+  }
+]

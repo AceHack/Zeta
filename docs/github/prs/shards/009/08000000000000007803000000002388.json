@@ -1,0 +1,12 @@
+{
+  "pr_number": 9096,
+  "archive_path": "docs/history/pr-reviews/PR-9096-test-fsharp-cpt-symmetry-as-a-dst-property-shadow.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-17T01:30:29.448Z",
+  "schema_version": "v1",
+  "commit_sha": "f627277156798f6c553db98e03f7c8f9164f996d",
+  "title": "test(fsharp): CPT symmetry as a DST property (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-02T02:12:59Z",
+  "head_ref": "test/cpt-symmetry-dst-property"
+}

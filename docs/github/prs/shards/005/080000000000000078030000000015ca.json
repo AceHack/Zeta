@@ -1,0 +1,12 @@
+{
+  "pr_number": 5578,
+  "archive_path": "docs/history/pr-reviews/PR-5578-docs-research-preserve-operator-forwarded-amara-closedness-sharpening-no-feedbac.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-27T18:17:55.585Z",
+  "schema_version": "v1",
+  "commit_sha": "e051f37fb08a8e757330b37de9787c7061d14ccb",
+  "title": "docs(research): preserve operator-forwarded Amara closedness-sharpening — 'No feedback tax on closed math. No silent emissions from open substrate.'",
+  "state": "MERGED",
+  "merged_at": "2026-05-27T18:17:31Z",
+  "head_ref": "research/amara-closedness-sharpening-no-feedback-tax-on-closed-math-2026-05-27"
+}

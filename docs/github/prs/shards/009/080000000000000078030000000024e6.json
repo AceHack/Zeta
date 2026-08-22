@@ -1,0 +1,12 @@
+{
+  "pr_number": 9446,
+  "archive_path": "docs/history/pr-reviews/PR-9446-feat-darkhall-publish-temperature-treaty-transcripts.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-04T15:05:31.628Z",
+  "schema_version": "v1",
+  "commit_sha": "f69828c3079f61590e166d3cd2d8c4f2cf296e1b",
+  "title": "feat(darkhall): publish temperature treaty transcripts",
+  "state": "MERGED",
+  "merged_at": "2026-07-04T15:05:03Z",
+  "head_ref": "codex/darkhall-temperature-transcript"
+}

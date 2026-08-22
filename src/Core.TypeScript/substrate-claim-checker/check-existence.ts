@@ -352,7 +352,7 @@ export type { Finding, PathClaim };
 export function main(): number {
   const args = process.argv.slice(2);
   if (args.length === 0) {
-    console.error("usage: bun tools/substrate-claim-checker/check-existence.ts <file> [<file> ...]");
+    console.error("usage: bun src/Core.TypeScript/substrate-claim-checker/check-existence.ts <file> [<file> ...]");
     return 1;
   }
   let totalDrift = 0;

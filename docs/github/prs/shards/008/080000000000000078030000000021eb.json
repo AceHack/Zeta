@@ -1,0 +1,12 @@
+{
+  "pr_number": 8683,
+  "archive_path": "docs/history/pr-reviews/PR-8683-feat-core-demodashboard-the-unified-living-dashboard-graph-dora-dials-minted-lin.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-20T02:19:35.220Z",
+  "schema_version": "v1",
+  "commit_sha": "ebec247386119e9c4cc51f7c0faf0502b1573715",
+  "title": "feat(core): DemoDashboard — the unified living dashboard (graph + DORA dials + minted links + Zeta-NTP clock, one page)",
+  "state": "MERGED",
+  "merged_at": "2026-06-20T02:19:12Z",
+  "head_ref": "otto/demo-living-dashboard-unified"
+}

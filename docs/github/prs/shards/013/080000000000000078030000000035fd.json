@@ -1,0 +1,12 @@
+{
+  "pr_number": 13821,
+  "archive_path": "docs/history/pr-reviews/PR-13821-fix-hygiene-a-timed-out-whole-tree-scan-was-impersonating-a-dark-route.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-22T17:31:41.757Z",
+  "schema_version": "v1",
+  "commit_sha": "4de7a4ee29156893e6e5f07f09649d7f537a9dac",
+  "title": "fix(hygiene): a timed-out whole-tree scan was impersonating a dark route",
+  "state": "MERGED",
+  "merged_at": "2026-08-22T17:30:59Z",
+  "head_ref": "fix/whole-tree-scan-timeout-impersonates-dark-route"
+}

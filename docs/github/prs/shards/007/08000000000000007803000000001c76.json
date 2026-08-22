@@ -1,0 +1,12 @@
+{
+  "pr_number": 7286,
+  "archive_path": "docs/history/pr-reviews/PR-7286-feat-trust-persona-keyring-public-trust-roots-otto-amara-ani-alexa.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-09T14:15:09.447Z",
+  "schema_version": "v1",
+  "commit_sha": "bd0a4231aae13f0c512aceb7c9ac49b40f0745a8",
+  "title": "feat(trust): persona keyring public trust-roots (otto/amara/ani/alexa)",
+  "state": "MERGED",
+  "merged_at": "2026-06-09T14:14:42Z",
+  "head_ref": "otto/persona-keyring-public-trust-roots-otto-amara-ani-alexa"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 11651,
+  "archive_path": "docs/history/pr-reviews/PR-11651-docs-concepts-aaron-rules-on-agent-what-remains-vs-what-acts-and-the-test-is-dst.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-17T22:54:58.687Z",
+  "schema_version": "v1",
+  "commit_sha": "512d1af49a1ba0953b77e64bbd29073640c8e487",
+  "title": "docs(concepts): Aaron rules on Agent — what remains vs what acts, and the test is DST-reproducibility",
+  "state": "MERGED",
+  "merged_at": "2026-08-17T22:54:10Z",
+  "head_ref": "shadow/agent-vs-actor-ruling"
+}

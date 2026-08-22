@@ -1,0 +1,12 @@
+{
+  "pr_number": 8133,
+  "archive_path": "docs/history/pr-reviews/PR-8133-refactor-shim-gemini-scripts-unified-service-lior.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-14T02:19:11.542Z",
+  "schema_version": "v1",
+  "commit_sha": "89e5a97b878b50d7fd5110eeb46e775f7ce9c40c",
+  "title": "refactor: shim .gemini/ scripts → unified service (Lior)",
+  "state": "MERGED",
+  "merged_at": "2026-06-14T02:18:52Z",
+  "head_ref": "kiro/shim-gemini-lior"
+}

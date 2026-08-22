@@ -1,0 +1,12 @@
+{
+  "pr_number": 9297,
+  "archive_path": "docs/history/pr-reviews/PR-9297-codex-feat-darkhall-export-room-heat-signals-through-host-ports.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-03T07:02:42.277Z",
+  "schema_version": "v1",
+  "commit_sha": "2fc1792fd470c756d0456ff36fad56e0c189265d",
+  "title": "[codex] feat(darkhall): export room heat signals through host ports",
+  "state": "MERGED",
+  "merged_at": "2026-07-03T07:02:17Z",
+  "head_ref": "codex/room-heat-signals-io"
+}

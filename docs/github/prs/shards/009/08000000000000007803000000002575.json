@@ -1,0 +1,12 @@
+{
+  "pr_number": 9589,
+  "archive_path": "docs/history/pr-reviews/PR-9589-feat-trio-attestation-research-ferry-rebased-from-stale-pr.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-09T00:29:47.352Z",
+  "schema_version": "v1",
+  "commit_sha": "3212146e9b010a7b9f0ab65ba6a5713364ae18f8",
+  "title": "feat: trio attestation research ferry (rebased from stale PR)",
+  "state": "MERGED",
+  "merged_at": "2026-07-09T00:29:20Z",
+  "head_ref": "claim/kiro-remaining-items-2026-07-08"
+}

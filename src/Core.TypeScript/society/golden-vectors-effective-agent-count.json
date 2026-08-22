@@ -1,0 +1,237 @@
+{
+  "description": "Golden vectors pinning the TypeScript port of SocietyUsefulWork's effective-sample-size functions against the F# reference. Replayed by BOTH oracles: src/Core.TypeScript/society/effective-agent-count.test.ts and tests/Tests.FSharp/SocietyUsefulWork.CrossVerify.Tests.fs. Text only, per .claude/rules/no-binary-in-proof-lineage.md — every double is carried as its exact IEEE-754 big-endian bit pattern in hex, with a decimal rendering beside it for human audit. The hex is authoritative; the decimal is commentary.",
+  "kish": {
+    "fsharp": "SocietyUsefulWork.effectiveTrialCount",
+    "typescript": "src/Core.TypeScript/society/effective-agent-count.ts effectiveTrialCount",
+    "formula": "deff = 1 + (n - 1) * rho ; nEff = n / deff  (Kish 1965, Survey Sampling ch. 5)",
+    "comparison": "EXACT bit equality",
+    "whyExact": "The function uses only subtraction, multiplication, addition and division. IEEE-754 mandates all four be correctly rounded, so every conforming runtime must produce the identical bit pattern. A tolerance here would be weaker than the guarantee the arithmetic already gives.",
+    "vectors": [
+      {
+        "n": 0,
+        "rhoHex": "3FE0000000000000",
+        "rho": "0.50000000000000000",
+        "nEffHex": "0000000000000000",
+        "nEff": "0.0000000000000000",
+        "note": "n < 1 is refused: returns 0.0, not NaN and not an extrapolation"
+      },
+      {
+        "n": -3,
+        "rhoHex": "3FE0000000000000",
+        "rho": "0.50000000000000000",
+        "nEffHex": "0000000000000000",
+        "nEff": "0.0000000000000000",
+        "note": "negative n likewise refused"
+      },
+      {
+        "n": 1,
+        "rhoHex": "0000000000000000",
+        "rho": "0.0000000000000000",
+        "nEffHex": "3FF0000000000000",
+        "nEff": "1.0000000000000000",
+        "note": "single trial, independent"
+      },
+      {
+        "n": 1,
+        "rhoHex": "3FF0000000000000",
+        "rho": "1.0000000000000000",
+        "nEffHex": "3FF0000000000000",
+        "nEff": "1.0000000000000000",
+        "note": "single trial, fully correlated — deff = 1 regardless"
+      },
+      {
+        "n": 2,
+        "rhoHex": "0000000000000000",
+        "rho": "0.0000000000000000",
+        "nEffHex": "4000000000000000",
+        "nEff": "2.0000000000000000",
+        "note": "ENDPOINT rho = 0: nEff = n exactly"
+      },
+      {
+        "n": 2,
+        "rhoHex": "3FF0000000000000",
+        "rho": "1.0000000000000000",
+        "nEffHex": "3FF0000000000000",
+        "nEff": "1.0000000000000000",
+        "note": "ENDPOINT rho = 1: nEff = 1 exactly"
+      },
+      {
+        "n": 3,
+        "rhoHex": "0000000000000000",
+        "rho": "0.0000000000000000",
+        "nEffHex": "4008000000000000",
+        "nEff": "3.0000000000000000",
+        "note": "ENDPOINT rho = 0 at the fleet size measured here"
+      },
+      {
+        "n": 3,
+        "rhoHex": "3FF0000000000000",
+        "rho": "1.0000000000000000",
+        "nEffHex": "3FF0000000000000",
+        "nEff": "1.0000000000000000",
+        "note": "ENDPOINT rho = 1 at the fleet size measured here"
+      },
+      {
+        "n": 3,
+        "rhoHex": "3FD99D8CECC44D3B",
+        "rho": "0.40024111863859319",
+        "nEffHex": "3FFAA8D6960B667F",
+        "nEff": "1.6662202702631530",
+        "note": "THE MEASURED VALUE — ICC(1,1) over db/mutation-findings/ at the commit in effective-agent-count.ts"
+      },
+      {
+        "n": 3,
+        "rhoHex": "3FE0000000000000",
+        "rho": "0.50000000000000000",
+        "nEffHex": "3FF8000000000000",
+        "nEff": "1.5000000000000000",
+        "note": "interior"
+      },
+      {
+        "n": 5,
+        "rhoHex": "3FD0000000000000",
+        "rho": "0.25000000000000000",
+        "nEffHex": "4004000000000000",
+        "nEff": "2.5000000000000000",
+        "note": "interior"
+      },
+      {
+        "n": 10,
+        "rhoHex": "3FB999999999999A",
+        "rho": "0.10000000000000001",
+        "nEffHex": "40150D79435E50D8",
+        "nEff": "5.2631578947368425",
+        "note": "interior"
+      },
+      {
+        "n": 100,
+        "rhoHex": "3F847AE147AE147B",
+        "rho": "0.010000000000000000",
+        "nEffHex": "404920292A73C766",
+        "nEff": "50.251256281407038",
+        "note": "interior — deff = 1.99, the classic 'rho = 1/n halves you' point"
+      },
+      {
+        "n": 1000,
+        "rhoHex": "3F50624DD2F1A9FC",
+        "rho": "0.0010000000000000000",
+        "nEffHex": "407F4400832337B5",
+        "nEff": "500.25012506253125",
+        "note": "interior at scale"
+      },
+      {
+        "n": 10,
+        "rhoHex": "BFE0000000000000",
+        "rho": "-0.50000000000000000",
+        "nEffHex": "4024000000000000",
+        "nEff": "10.000000000000000",
+        "note": "CLAMP: negative intraclass correlation is refused (treated as 0), never extrapolated to nEff > n"
+      },
+      {
+        "n": 10,
+        "rhoHex": "3FF8000000000000",
+        "rho": "1.5000000000000000",
+        "nEffHex": "3FF0000000000000",
+        "nEff": "1.0000000000000000",
+        "note": "CLAMP: rho > 1 is refused (treated as 1)"
+      },
+      {
+        "n": 7,
+        "rhoHex": "3FD5555555555555",
+        "rho": "0.33333333333333331",
+        "nEffHex": "4002AAAAAAAAAAAB",
+        "nEff": "2.3333333333333335",
+        "note": "interior, non-terminating binary rho"
+      }
+    ]
+  },
+  "union": {
+    "fsharp": "SocietyUsefulWork.unionEquivalentAgentCount (and expectedSocietyIdentical's union probability)",
+    "typescript": "src/Core.TypeScript/society/effective-agent-count.ts unionEquivalentAgentCount / unionProbability",
+    "formula": "p = rho*c + (1-rho)*(1-(1-c)^n) ; m = ln(1-p) / ln(1-c)",
+    "comparison": "relative tolerance 1e-12",
+    "whyNotExact": "pow and log are NOT required to be correctly rounded by IEEE-754, and .NET's libm and a JS engine's differ in the last ulp. A hex byte-lock here would be a check that passes on one machine and fails on another for reasons unrelated to the model — the vacuity class inverted. The endpoints (rho = 0 and rho = 1) are still pinned, because those are the algebraic claims that matter.",
+    "vectors": [
+      {
+        "n": 3,
+        "c": "0.17160000000000000",
+        "cHex": "3FC5F6FD21FF2E49",
+        "rhoHex": "0000000000000000",
+        "rho": "0.0000000000000000",
+        "unionProbability": "0.43151334969599997",
+        "unionEquivalentAgentCount": "3.0000000000000004",
+        "note": "ENDPOINT rho = 0: union-equivalent count = n"
+      },
+      {
+        "n": 3,
+        "c": "0.17160000000000000",
+        "cHex": "3FC5F6FD21FF2E49",
+        "rhoHex": "3FF0000000000000",
+        "rho": "1.0000000000000000",
+        "unionProbability": "0.17160000000000000",
+        "unionEquivalentAgentCount": "1.0000000000000000",
+        "note": "ENDPOINT rho = 1: union-equivalent count = 1"
+      },
+      {
+        "n": 3,
+        "c": "0.17164532954006639",
+        "cHex": "3FC5F87962715F88",
+        "rhoHex": "3FD99D8CECC44D3B",
+        "rho": "0.40024111863859319",
+        "unionProbability": "0.32755945007985504",
+        "unionEquivalentAgentCount": "2.1073411761602534",
+        "note": "the measured corpus: mean competence and ICC rho"
+      },
+      {
+        "n": 5,
+        "c": "0.29999999999999999",
+        "cHex": "3FD3333333333333",
+        "rhoHex": "3FE0000000000000",
+        "rho": "0.50000000000000000",
+        "unionProbability": "0.56596500000000005",
+        "unionEquivalentAgentCount": "2.3400300950645305",
+        "note": "interior"
+      },
+      {
+        "n": 10,
+        "c": "0.050000000000000003",
+        "cHex": "3FA999999999999A",
+        "rhoHex": "3FC999999999999A",
+        "rho": "0.20000000000000001",
+        "unionProbability": "0.33101044860929690",
+        "unionEquivalentAgentCount": "7.8370251321488755",
+        "note": "interior"
+      },
+      {
+        "n": 3,
+        "c": "0.0000000000000000",
+        "cHex": "0000000000000000",
+        "rhoHex": "3FE0000000000000",
+        "rho": "0.50000000000000000",
+        "unionProbability": "0.0000000000000000",
+        "unionEquivalentAgentCount": "0.0000000000000000",
+        "note": "degenerate competence c <= 0 has no finite inverse: 0.0"
+      },
+      {
+        "n": 3,
+        "c": "1.0000000000000000",
+        "cHex": "3FF0000000000000",
+        "rhoHex": "3FE0000000000000",
+        "rho": "0.50000000000000000",
+        "unionProbability": "1.0000000000000000",
+        "unionEquivalentAgentCount": "0.0000000000000000",
+        "note": "degenerate competence c >= 1 has no finite inverse: 0.0"
+      },
+      {
+        "n": 0,
+        "c": "0.50000000000000000",
+        "cHex": "3FE0000000000000",
+        "rhoHex": "3FE0000000000000",
+        "rho": "0.50000000000000000",
+        "unionProbability": "0.0000000000000000",
+        "unionEquivalentAgentCount": "0.0000000000000000",
+        "note": "n < 1: 0.0"
+      }
+    ]
+  }
+}

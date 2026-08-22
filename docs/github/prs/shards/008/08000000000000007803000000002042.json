@@ -1,0 +1,12 @@
+{
+  "pr_number": 8258,
+  "archive_path": "docs/history/pr-reviews/PR-8258-docs-register-b-criticality-map-riemann-zeta-critical-line-forward-direction-hol.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-15T04:31:37.590Z",
+  "schema_version": "v1",
+  "commit_sha": "8c0a6b6e5ec7de4b6ad6dbf16d9a73f8a84cc614",
+  "title": "docs(register): §B — criticality map ↔ Riemann zeta critical line (forward direction + holographic boundary)",
+  "state": "MERGED",
+  "merged_at": "2026-06-15T04:31:17Z",
+  "head_ref": "otto/sb-criticality-map-riemann-zeta"
+}

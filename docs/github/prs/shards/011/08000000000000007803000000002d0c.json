@@ -1,0 +1,12 @@
+{
+  "pr_number": 11532,
+  "archive_path": "docs/history/pr-reviews/PR-11532-feat-darkhall-persist-causal-correction-history.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-17T15:58:48.340Z",
+  "schema_version": "v1",
+  "commit_sha": "ceed506aa23876591801fe8c9aa152a8c8c61723",
+  "title": "feat(darkhall): persist causal correction history",
+  "state": "MERGED",
+  "merged_at": "2026-08-17T15:58:01Z",
+  "head_ref": "claim/task-browser-causal-correction-checkpoint"
+}

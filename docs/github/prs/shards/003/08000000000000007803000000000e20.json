@@ -1,0 +1,19 @@
+{
+  "pr_number": 3616,
+  "archive_path": "docs/history/pr-reviews/PR-3616-chore-bg-b-0502-launchd-plist-and-docs-for-backlog-ready-notifier.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7BzJCL",
+    "comment:PRRC_kwDOSF9kNM7BzJK9",
+    "comment:PRRC_kwDOSF9kNM7BzeE2",
+    "comment:PRRC_kwDOSF9kNM7BzeFk",
+    "thread:PRRT_kwDOSF9kNM6Cfv4g",
+    "thread:PRRT_kwDOSF9kNM6Cfvyn"
+  ],
+  "fetched_at": "2026-05-15T23:31:06.579Z",
+  "schema_version": "v1",
+  "commit_sha": "bb3b393c5f180c74b7e82630a7490c9aababdfa8",
+  "title": "chore(bg): B-0502 launchd plist and docs for backlog-ready-notifier",
+  "state": "MERGED",
+  "merged_at": "2026-05-15T23:30:51Z",
+  "head_ref": "feat/b0502-launchd-plist"
+}

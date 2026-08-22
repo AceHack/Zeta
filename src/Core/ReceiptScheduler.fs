@@ -141,6 +141,57 @@ module ReceiptScheduler =
                             TotalDeltaJ = st.TotalDeltaJ + costPerTick })
             })
 
+    /// **The receipt on a CORNER instead of through a hole** (2026-08-17, work item
+    /// 081M08WE9R3087G0R003PAK63F; design `docs/research/2026-08-17-t-feedback-in-the-co-owned-fourth-
+    /// corner-at-the-tick-boundary.md`).
+    ///
+    /// `wrapHandler` / `wrapHandlerK` above take `onReceipt : (Receipt -> unit) option`. A `-> unit`
+    /// sink fired inside the tick loop cannot return its effect through `'S`, the `Source`, the seed,
+    /// `IntrCtx`, or `Result` — so the receipt this module exists to emit leaves through a **hole**,
+    /// not through the corner the module docstring above claims. That was measured, not inferred:
+    /// `TickBoundaryProbe` TICK-3 shows two runs with every declared channel byte-identical producing
+    /// different outcomes.
+    ///
+    /// This wrapper returns the receipt on `SoftScheduler`'s co-owned corner (`T In Feedback`). The
+    /// receipt reaches the caller through the returned `'F` **and through nothing else**: there is no
+    /// callback, no captured collection, and the corner is part of the value the probe compares.
+    ///
+    /// **The metering decision is NOT settled here.** Whether `onReceipt` is deleted, retired in
+    /// favour of this, or kept and metered belongs to Aaron (workitem 081M08S4DQC087G0R002SH0C88).
+    /// Both `-> unit` overloads above are untouched and keep working; what changed is that option 2
+    /// no longer costs a shipped-signature change.
+    ///
+    /// Note honestly what this handler does NOT do: it never reads the incoming corner. It writes its
+    /// half and leaves reading to whichever handler wants it — which is what "co-owned" permits, not a
+    /// claim that this particular wrapper is symmetric.
+    let wrapHandlerF
+        (ivFn: 'S -> 'S -> float)
+        (costPerTick: float)
+        (entropyFn: 'S -> float)
+        (h: SoftScheduler.HandlerK<'S>)
+        : SoftScheduler.HandlerF<Receipted<'S>, ComputeReceipt.Receipt list> =
+        SoftScheduler.handlerF (h.Name + "-receipted") h.Matches (fun intr _corner ctx st ->
+            task {
+                let prior = st.Inner
+                let! result = h.RunK intr ctx prior
+                return
+                    result
+                    |> Result.map (fun posterior ->
+                        let iv = ivFn prior posterior
+                        let entropy = entropyFn posterior
+                        let receipt = ComputeReceipt.fromIV iv costPerTick entropy
+
+                        { st with
+                            Inner = posterior
+                            Tick = st.Tick + 1
+                            HeatTicks = if receipt.DeltaU < 0.0 then st.HeatTicks + 1 else st.HeatTicks
+                            ProfitTicks = if receipt.DeltaU > 0.0 then st.ProfitTicks + 1 else st.ProfitTicks
+                            LastReceipt = Some receipt
+                            TotalIV = st.TotalIV + iv
+                            TotalDeltaJ = st.TotalDeltaJ + costPerTick },
+                        [ receipt ])
+            })
+
     /// **DeltaU-driven adaptive tick rate** — the four-corner feedback made load-bearing.
     ///
     /// Given a `Receipted<'S>` state, returns a recommended interval multiplier:

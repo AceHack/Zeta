@@ -17,8 +17,29 @@ namespace Zeta.Core
 ///
 /// Honest scope: the 4×4 gray-code grid shows the 24 grid-adjacent edges of the 4-cube (the 8 wrap
 /// edges are stated, not drawn — a flat grid cannot show a tesseract whole); DASHINGS (the sign
-/// assignment — the actual Hamming-code content of AdinkraCode) are the named next slice, and they
-/// belong on the retraction register (a dashed edge = a −1: the CMYK reading was born for this).
+/// assignment) are the named next slice, and they belong on the retraction register (a dashed edge
+/// = a −1: the CMYK reading was born for this).
+///
+/// **THE DASHING IS NOT THE CODE** (corrected 2026-08-15; the sentence here used to call dashings
+/// "the actual Hamming-code content of AdinkraCode", which is false). An adinkra is TWO independent
+/// GF(2) data on two different layers (Doran–Faux–Gates–Hübsch–Iga–Landweber, *Codes and
+/// supersymmetry in one dimension*, ATMP 15 (2011) 1909):
+///
+/// * the **doubly-even code** `C ⊆ F₂^N` — a LINEAR SUBSPACE (contains 0) that fixes the
+///   CHROMOTOPOLOGY, i.e. which N-cube quotient `F₂^N / C` the graph is. `AdinkraCode`'s [8,4,4]
+///   extended Hamming code is this datum at **N = 8**: 16 codewords, quotient graph 16 nodes,
+///   **8-regular, 64 edges**.
+/// * the **dashing** — an odd 1-cochain on that graph, the datum THIS module carries at **N = 4**
+///   with the TRIVIAL code `C = {0}`: the bare 4-cube, 16 nodes, **4-regular, 32 edges**. The valid
+///   dashings form a **TORSOR** over the vertex-flip gauge group, not a code: **32768 = 2¹⁵** of
+///   them, with **no distinguished zero** — the all-solid assignment is *not* a dashing, because
+///   every face would carry 0 (even) dashes. A linear code always contains 0; a torsor never does.
+///
+/// The two layers are related by an EXISTENCE theorem, never by identity: doubly-evenness of `C` is
+/// the condition under which a dashing exists on the quotient. **Node count cannot tell the two
+/// graphs apart — both are 16. Valence can: 4 vs 8.** Pinned in `AdinkraViz.Tests.fs`
+/// ("quotient code ≠ dashing torsor"). Prior diagnosis of the same conflation (filed P1, unfixed
+/// until now): `docs/research/2026-06-12-the-dashed-braid-math-team-REPORT-5-restricted-span-writheparity-terminal.md` §3.
 [<RequireQualifiedAccess>]
 module AdinkraViz =
 

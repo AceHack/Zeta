@@ -1,0 +1,15 @@
+{
+  "pr_number": 2640,
+  "archive_path": "docs/history/pr-reviews/PR-2640-docs-research-deepseek-assessment-shadow-ecology-three-model-convergence.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_svys",
+    "thread:PRRT_kwDOSF9kNM6A9c-S"
+  ],
+  "fetched_at": "2026-05-11T03:24:27.363Z",
+  "schema_version": "v1",
+  "commit_sha": "0e91254236ea077fe3eb5e9212a07011d87a5185",
+  "title": "docs(research): DeepSeek assessment — shadow ecology + three-model convergence",
+  "state": "MERGED",
+  "merged_at": "2026-05-11T03:24:13Z",
+  "head_ref": "docs/deepseek-shadow-ecology-assessment-2026-05-10"
+}

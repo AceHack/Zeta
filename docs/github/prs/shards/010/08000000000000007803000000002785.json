@@ -1,0 +1,12 @@
+{
+  "pr_number": 10117,
+  "archive_path": "docs/history/pr-reviews/PR-10117-book-editions-vietnamese-companion-1-the-unbroken-child-full-length-vi.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-07T18:06:49.269Z",
+  "schema_version": "v1",
+  "commit_sha": "3b0298894e81cc4a606eba5973da38510ee4df73",
+  "title": "book(editions): Vietnamese companion 1 — the Unbroken Child, full length (vi)",
+  "state": "MERGED",
+  "merged_at": "2026-08-07T18:06:14Z",
+  "head_ref": "book-vi-companion-unbrokenchild"
+}

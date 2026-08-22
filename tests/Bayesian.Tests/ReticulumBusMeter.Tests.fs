@@ -11,14 +11,14 @@ module ReticulumBusMeterTests =
     let private makeBelief mean = { Gaussian.PrecisionMean = mean * 1.0; Precision = 1.0 }
 
     let private telemetry rttSeconds =
-        { ReticulumTransport.LinkTelemetry.RttSeconds = rttSeconds
-          ReticulumTransport.LinkTelemetry.Snr = 10.0
-          ReticulumTransport.LinkTelemetry.Rssi = -60.0
-          ReticulumTransport.LinkTelemetry.CapacityBps = 1_000_000.0 }
+        { MeshLatencyModel.LinkTelemetry.RttSeconds = rttSeconds
+          MeshLatencyModel.LinkTelemetry.Snr = 10.0
+          MeshLatencyModel.LinkTelemetry.Rssi = -60.0
+          MeshLatencyModel.LinkTelemetry.CapacityBps = 1_000_000.0 }
 
     let private snapshot links =
-        { ReticulumTransport.MeshSnapshot.LocalNodeId = "local"
-          ReticulumTransport.MeshSnapshot.ActiveLinks = Map.ofList links }
+        { MeshLatencyModel.MeshSnapshot.LocalNodeId = "local"
+          MeshLatencyModel.MeshSnapshot.ActiveLinks = Map.ofList links }
 
     [<Fact>]
     let ``RBM-1: empty snapshot is honestly Unmeasured — never upgrades to evidence`` () =

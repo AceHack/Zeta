@@ -4,7 +4,7 @@
  *
  * Path-form drift sub-class checker — catches inconsistent path forms
  * within a single document. When the same physical file is referenced
- * as both `tools/substrate-claim-checker/check-counts.ts` and
+ * as both `src/Core.TypeScript/substrate-claim-checker/check-counts.ts` and
  * `check-counts.ts`, a reader may not realize they point to the same
  * file, and a grep for the full path misses the bare form.
  *
@@ -164,7 +164,7 @@ export function main(): number {
   const args = process.argv.slice(2);
   if (args.length === 0) {
     console.error(
-      "usage: bun tools/substrate-claim-checker/check-path-forms.ts <file> [<file> ...]",
+      "usage: bun src/Core.TypeScript/substrate-claim-checker/check-path-forms.ts <file> [<file> ...]",
     );
     return 1;
   }

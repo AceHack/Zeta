@@ -1,0 +1,12 @@
+{
+  "pr_number": 9562,
+  "archive_path": "docs/history/pr-reviews/PR-9562-feat-ci-assert-node-6hex-hostname-uniqueness-without-metal.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-08T22:45:54.908Z",
+  "schema_version": "v1",
+  "commit_sha": "646feb0bd421b87a9f8bbe66a49f16d8efb210c6",
+  "title": "feat(ci): assert node-<6hex> hostname uniqueness without metal",
+  "state": "MERGED",
+  "merged_at": "2026-07-08T22:45:28Z",
+  "head_ref": "feat/qemu-hostname-uniqueness-assert-2026-07-08"
+}

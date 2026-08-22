@@ -1,0 +1,12 @@
+{
+  "pr_number": 7804,
+  "archive_path": "docs/history/pr-reviews/PR-7804-feat-quantum-implement-ts-f-symmetry-for-quantum-observables-b-1029-b-1033.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-11T21:58:29.250Z",
+  "schema_version": "v1",
+  "commit_sha": "0d9c05ad76dd6edd0b03ab223959507860cc6f8b",
+  "title": "feat(quantum): implement TS-F# symmetry for quantum observables (B-1029/B-1033)",
+  "state": "MERGED",
+  "merged_at": "2026-06-11T21:58:06Z",
+  "head_ref": "lior/quantum-observable-ts-fs-symmetry-slice"
+}

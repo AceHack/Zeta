@@ -1,0 +1,12 @@
+{
+  "pr_number": 4990,
+  "archive_path": "docs/history/pr-reviews/PR-4990-feat-agentic-org-add-supervisor-signal-runtime-slice.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-25T21:55:08.573Z",
+  "schema_version": "v1",
+  "commit_sha": "e3fce0ed5f8cbc833fc623d11e457623ff6025cb",
+  "title": "feat(agentic-org): add supervisor signal runtime slice",
+  "state": "MERGED",
+  "merged_at": "2026-05-25T21:54:49Z",
+  "head_ref": "codex/agentic-org-package-ca-clean"
+}

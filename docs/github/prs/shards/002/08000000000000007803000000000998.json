@@ -1,0 +1,17 @@
+{
+  "pr_number": 2456,
+  "archive_path": "docs/history/pr-reviews/PR-2456-fix-also-skip-hooks-403-with-insufficient-token-scope-sentinel.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_nA97",
+    "comment:PRRC_kwDOSF9kNM6_nAi6",
+    "thread:PRRT_kwDOSF9kNM6A4_Ku",
+    "thread:PRRT_kwDOSF9kNM6A4_gA"
+  ],
+  "fetched_at": "2026-05-10T10:07:06.942Z",
+  "schema_version": "v1",
+  "commit_sha": "9af38c532c78770e789959a59d3f52792abd2cb5",
+  "title": "fix: also skip hooks 403 with insufficient-token-scope sentinel",
+  "state": "MERGED",
+  "merged_at": "2026-05-10T10:06:49Z",
+  "head_ref": "fix/hooks-403-gate-scope-only"
+}

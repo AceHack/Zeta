@@ -25,9 +25,9 @@
 //   - the rule-documentation files themselves
 //
 // Usage:
-//   bun tools/lint/no-directives-otto-prose.ts             # PR-diff advisory
-//   bun tools/lint/no-directives-otto-prose.ts --strict    # PR-diff strict
-//   SCOPE=worktree bun tools/lint/no-directives-otto-prose.ts
+//   bun src/Core.TypeScript/lint/no-directives-otto-prose.ts             # PR-diff advisory
+//   bun src/Core.TypeScript/lint/no-directives-otto-prose.ts --strict    # PR-diff strict
+//   SCOPE=worktree bun src/Core.TypeScript/lint/no-directives-otto-prose.ts
 //
 // Env:
 //   BASE_REF — base ref to diff against (default: origin/main)

@@ -1,0 +1,15 @@
+{
+  "pr_number": 3654,
+  "archive_path": "docs/history/pr-reviews/PR-3654-shard-tick-0051z-b-0548-step-1-5-row-filed-0043z-shard-pr-opened-post-graphql-re.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7B0UPw",
+    "thread:PRRT_kwDOSF9kNM6CgpB_"
+  ],
+  "fetched_at": "2026-05-16T01:00:22.374Z",
+  "schema_version": "v1",
+  "commit_sha": "255841e03808f92331e84c808b383df4a983c08d",
+  "title": "shard(tick): 0051Z — B-0548 Step 1.5 row filed + 0043Z shard PR opened (post-GraphQL-reset)",
+  "state": "MERGED",
+  "merged_at": "2026-05-16T01:00:04Z",
+  "head_ref": "shard/tick-0051z-otto-cli-2026-05-16"
+}

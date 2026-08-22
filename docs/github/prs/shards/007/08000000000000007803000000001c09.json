@@ -1,0 +1,12 @@
+{
+  "pr_number": 7177,
+  "archive_path": "docs/history/pr-reviews/PR-7177-docs-research-codegen-is-lowering-the-stairs-down-the-well-founded-dual-of-the-c.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-09T02:13:55.732Z",
+  "schema_version": "v1",
+  "commit_sha": "8a954c33fcd96d0bb345db3dcdfc30aaf5186538",
+  "title": "docs(research): codegen is lowering — the stairs down, the well-founded dual of the Cantor tower up",
+  "state": "MERGED",
+  "merged_at": "2026-06-09T02:13:35Z",
+  "head_ref": "otto/research-codegen-lowering-stairs-down-dual-of-cantor-tower"
+}

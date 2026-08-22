@@ -1,0 +1,33 @@
+{
+  "pr_number": 2810,
+  "archive_path": "docs/history/pr-reviews/PR-2810-feat-skill-chrome-lazy-load-chunked-extraction-reverse-scroll-virtual-list-extra.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7AbaYk",
+    "comment:PRRC_kwDOSF9kNM7AbcdY",
+    "comment:PRRC_kwDOSF9kNM7Abce6",
+    "comment:PRRC_kwDOSF9kNM7AbceA",
+    "comment:PRRC_kwDOSF9kNM7Abcea",
+    "comment:PRRC_kwDOSF9kNM7AbcfR",
+    "comment:PRRC_kwDOSF9kNM7Abcfy",
+    "comment:PRRC_kwDOSF9kNM7Abcg1",
+    "comment:PRRC_kwDOSF9kNM7AbcgJ",
+    "comment:PRRC_kwDOSF9kNM7Abcgk",
+    "thread:PRRT_kwDOSF9kNM6BgBGx",
+    "thread:PRRT_kwDOSF9kNM6BgCq9",
+    "thread:PRRT_kwDOSF9kNM6BgCrd",
+    "thread:PRRT_kwDOSF9kNM6BgCrw",
+    "thread:PRRT_kwDOSF9kNM6BgCs9",
+    "thread:PRRT_kwDOSF9kNM6BgCsG",
+    "thread:PRRT_kwDOSF9kNM6BgCsS",
+    "thread:PRRT_kwDOSF9kNM6BgCsq",
+    "thread:PRRT_kwDOSF9kNM6BgCtR",
+    "thread:PRRT_kwDOSF9kNM6BgCtc"
+  ],
+  "fetched_at": "2026-05-12T17:30:07.327Z",
+  "schema_version": "v1",
+  "commit_sha": "ba5ff2af7c322d20cb5586a4c2f89870f0d7b4bc",
+  "title": "feat(skill): chrome-lazy-load-chunked-extraction — reverse-scroll virtual-list extraction (Aaron 2026-05-12)",
+  "state": "MERGED",
+  "merged_at": "2026-05-12T17:29:39Z",
+  "head_ref": "feat/chrome-lazy-load-chunked-extraction-skill-deepseek-2026-05-12"
+}

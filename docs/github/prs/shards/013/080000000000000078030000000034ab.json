@@ -1,0 +1,12 @@
+{
+  "pr_number": 13483,
+  "archive_path": "docs/history/pr-reviews/PR-13483-fix-cluster-the-temporal-reason-i-wrote-an-hour-ago-was-already-false-and-the-au.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-22T01:24:06.775Z",
+  "schema_version": "v1",
+  "commit_sha": "ecfc185398b256275ecb2344e48559cd2b47b378",
+  "title": "fix(cluster): the `temporal` reason I wrote an hour ago was already false — and the audit stayed green through it",
+  "state": "MERGED",
+  "merged_at": "2026-08-22T01:23:29Z",
+  "head_ref": "cluster/temporal-reason-stale-on-arrival"
+}

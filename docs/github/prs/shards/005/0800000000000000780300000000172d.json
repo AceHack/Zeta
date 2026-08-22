@@ -1,0 +1,12 @@
+{
+  "pr_number": 5933,
+  "archive_path": "docs/history/pr-reviews/PR-5933-docs-trajectories-add-remote-only-dry-run-receipt.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-28T21:28:13.416Z",
+  "schema_version": "v1",
+  "commit_sha": "9d9e0bcb25b51edf459ffe9c5df9ff0499c03961",
+  "title": "docs(trajectories): add remote-only dry-run receipt",
+  "state": "MERGED",
+  "merged_at": "2026-05-28T21:27:53Z",
+  "head_ref": "claim/task-autonomous-loop-coordination-child-packet-20260528"
+}

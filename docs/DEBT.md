@@ -281,7 +281,7 @@ feature + debt budget).
 
 ### "bug-fixer description has an unprovable claim" (Kira nit)
 
-- **Site:** `.claude/skills/bug-fixer/SKILL.md:3`
+- **Site:** `.claude/skills/workflows/blueprints/bug-fixer.md:3`
 - **Found:** round 21 by Kira
 - **Effort:** S
 - **Friction:** description says "no bug-fixer expert persona
@@ -293,14 +293,14 @@ feature + debt budget).
   turning a `docs/BUGS.md` entry into a landed fix. Invoked
   by the Architect (Kenji). No persona."
 
-### `.claude/skills/skill-creator/SKILL.md` frontmatter bloat
+### `.claude/skills/skill-lifecycle/blueprints/skill-creator.md` frontmatter bloat
 
-- **Site:** `.claude/skills/skill-creator/SKILL.md` (~180 lines)
+- **Site:** `.claude/skills/skill-lifecycle/blueprints/skill-creator.md` (~180 lines)
 - **Found:** round 21 by Rune (implicit in BP-03 "skill body
   ≤ ~300 lines")
 - **Effort:** M
 - **Friction:** longest skill file; sections overlap with
-  `.claude/skills/skill-improver/SKILL.md`.
+  `.claude/skills/skill-lifecycle/blueprints/skill-improver.md`.
 - **Fix:** move the drafting template + retirement protocol
   into `memory/<persona>/skill-creator.md` so SKILL.md stays
   lean. Acceptable alternative: keep, and exempt the
@@ -409,8 +409,8 @@ Entries under the `wake-up-drift` tag defined in
 #### wake-up-drift: STYLE.md referenced 3x but absent
 
 - **Site:** `.claude/agents/maintainability-reviewer.md:68,104`,
-  `.claude/skills/maintainability-reviewer/SKILL.md:109,146-147`,
-  `.claude/skills/developer-experience-engineer/SKILL.md`
+  `.claude/skills/code-review-and-quality/blueprints/maintainability-reviewer.md:109,146-147`,
+  `.claude/skills/experience-and-product/blueprints/developer-experience-engineer.md`
 - **Found:** round 24 by Daya
 - **Effort:** S (stub STYLE.md) to M (populate with real rules)
 - **Friction:** Rune's skill + agent file both reference a file

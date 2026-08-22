@@ -1,0 +1,12 @@
+{
+  "pr_number": 8098,
+  "archive_path": "docs/history/pr-reviews/PR-8098-feat-ferry-contextualresultferrythrottler-result-arity-context-option-a-incremen.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-13T23:47:22.187Z",
+  "schema_version": "v1",
+  "commit_sha": "410aa316ea953e585122055ddc769c2a45873959",
+  "title": "feat(ferry): ContextualResultFerryThrottler — result-arity context (Option-A increment 3)",
+  "state": "MERGED",
+  "merged_at": "2026-06-13T23:46:56Z",
+  "head_ref": "shadow/ferry-result-arity-context"
+}

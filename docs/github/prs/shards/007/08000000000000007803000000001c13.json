@@ -1,0 +1,12 @@
+{
+  "pr_number": 7187,
+  "archive_path": "docs/history/pr-reviews/PR-7187-docs-research-the-s-4-ai-human-alignment-thesis-maximal-correlation-without-sign.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-09T03:04:53.112Z",
+  "schema_version": "v1",
+  "commit_sha": "315c8fc0c8c2b1955aeb020a4b12efcd2a6ea4c2",
+  "title": "docs(research): the S=4 AI-human alignment thesis — maximal correlation without signalling, decreasing at scale",
+  "state": "MERGED",
+  "merged_at": "2026-06-09T03:04:32Z",
+  "head_ref": "otto/research-s4-ai-human-alignment-thesis-degrades-at-scale"
+}

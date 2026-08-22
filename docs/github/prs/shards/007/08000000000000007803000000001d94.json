@@ -1,0 +1,12 @@
+{
+  "pr_number": 7572,
+  "archive_path": "docs/history/pr-reviews/PR-7572-feat-core-re-land-skatium-door-devroom-fourcorner-src-port-supersedes-7568-7569-.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-11T02:54:55.917Z",
+  "schema_version": "v1",
+  "commit_sha": "f0a4b9d032a605a28ad8e60e0f287500f8aebabd",
+  "title": "feat(core): re-land skatium door + DevRoom + FourCorner src port (supersedes #7568/#7569/#7570)",
+  "state": "MERGED",
+  "merged_at": "2026-06-11T02:54:30Z",
+  "head_ref": "shadow-reland-skatium-devroom-fourcorner"
+}

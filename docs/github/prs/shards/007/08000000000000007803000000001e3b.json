@@ -1,0 +1,12 @@
+{
+  "pr_number": 7739,
+  "archive_path": "docs/history/pr-reviews/PR-7739-docs-research-lior-s-adinkra-read-ferry-the-eye-confirmed-the-sign-rule-vera-pac.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-11T17:34:48.961Z",
+  "schema_version": "v1",
+  "commit_sha": "e79584803342330aa7aefba029a19068ea0f6beb",
+  "title": "docs(research): Lior's adinkra read (ferry) — the eye confirmed the sign rule; Vera package + math-team dispatch status",
+  "state": "MERGED",
+  "merged_at": "2026-06-11T17:34:20Z",
+  "head_ref": "shadow-lior-adinkra-ferry"
+}

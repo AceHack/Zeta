@@ -1,0 +1,27 @@
+{
+  "pr_number": 2646,
+  "archive_path": "docs/history/pr-reviews/PR-2646-docs-backlog-b-0051-re-decompose-into-smallest-atomic-ts-preferring-child-rows-r.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_t6-8",
+    "comment:PRRC_kwDOSF9kNM6_t9R9",
+    "comment:PRRC_kwDOSF9kNM6_t9RM",
+    "comment:PRRC_kwDOSF9kNM6_t9Rg",
+    "comment:PRRC_kwDOSF9kNM6_t9Rv",
+    "comment:PRRC_kwDOSF9kNM6_t9SE",
+    "comment:PRRC_kwDOSF9kNM6_t9SX",
+    "thread:PRRT_kwDOSF9kNM6A-Ufr",
+    "thread:PRRT_kwDOSF9kNM6A-WM8",
+    "thread:PRRT_kwDOSF9kNM6A-WMb",
+    "thread:PRRT_kwDOSF9kNM6A-WMn",
+    "thread:PRRT_kwDOSF9kNM6A-WMx",
+    "thread:PRRT_kwDOSF9kNM6A-WNC",
+    "thread:PRRT_kwDOSF9kNM6A-WNS"
+  ],
+  "fetched_at": "2026-05-11T05:25:37.257Z",
+  "schema_version": "v1",
+  "commit_sha": "9157ae2b04979a3670c748b8aa9c696e44083e8b",
+  "title": "docs(backlog): B-0051 re-decompose into smallest atomic TS-preferring child rows (Riven)",
+  "state": "MERGED",
+  "merged_at": "2026-05-11T05:25:18Z",
+  "head_ref": "claim/B-0051.2-isomorphism-catalog-smallest-ts-slice"
+}

@@ -1,0 +1,14 @@
+{
+  "id": "080d002b3b3a3810a0130008c4ead301",
+  "at": "2026-08-15T12:30:57.863Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M02PEST7087G0R00253HRV0",
+    "type": "bug",
+    "title": "consensus decide tie-break: F#/C#/TS order by UTF-16 code unit, Rust by UTF-8 byte — the four oracles disagree on an astral-straddling tie",
+    "slug": "consensus-decide-tie-break-f-c-ts-order-by-utf-16-code-unit",
+    "priority": "P2",
+    "filename": "081M02PEST7087G0R00253HRV0-consensus-decide-tie-break-f-c-ts-order-by-utf-16-code-unit.md"
+  }
+}

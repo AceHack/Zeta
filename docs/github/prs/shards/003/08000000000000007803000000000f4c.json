@@ -1,0 +1,23 @@
+{
+  "pr_number": 3916,
+  "archive_path": "docs/history/pr-reviews/PR-3916-fix-rules-add-push-time-explicit-branch-push-mitigation-to-sub-case-5.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7B59CB",
+    "comment:PRRC_kwDOSF9kNM7B59CN",
+    "comment:PRRC_kwDOSF9kNM7B59nJ",
+    "comment:PRRC_kwDOSF9kNM7B6Cn_",
+    "comment:PRRC_kwDOSF9kNM7B6F3x",
+    "thread:PRRT_kwDOSF9kNM6Ck28n",
+    "thread:PRRT_kwDOSF9kNM6Ck2i2",
+    "thread:PRRT_kwDOSF9kNM6Ck2iw",
+    "thread:PRRT_kwDOSF9kNM6Ck6oF",
+    "thread:PRRT_kwDOSF9kNM6Ck9Ti"
+  ],
+  "fetched_at": "2026-05-16T18:17:24.260Z",
+  "schema_version": "v1",
+  "commit_sha": "ad473ed8b43bc37d33d81ea03d5c346d267f5cc3",
+  "title": "fix(rules): add push-time explicit-branch-push mitigation to sub-case 5",
+  "state": "MERGED",
+  "merged_at": "2026-05-16T18:17:02Z",
+  "head_ref": "otto-cli-explicit-push-applied-2026-05-16-1713z"
+}

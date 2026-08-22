@@ -1,0 +1,12 @@
+{
+  "pr_number": 9967,
+  "archive_path": "docs/history/pr-reviews/PR-9967-fix-bridge-epsilon-sign-in-low-peer-branch-0-5-0-5.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-02T15:44:50.443Z",
+  "schema_version": "v1",
+  "commit_sha": "cb1d29b7628b9f26f4add3af25d876ff207ff6ea",
+  "title": "fix(bridge): epsilon sign in low-peer branch — 0.5 → -0.5",
+  "state": "MERGED",
+  "merged_at": "2026-08-02T15:44:18Z",
+  "head_ref": "claim/epsilon-sign-fix"
+}

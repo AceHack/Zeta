@@ -1,0 +1,12 @@
+{
+  "pr_number": 12158,
+  "archive_path": "docs/history/pr-reviews/PR-12158-fix-zflash-the-wrong-architecture-warning-named-neither-the-file-nor-the-archite.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-18T22:38:34.823Z",
+  "schema_version": "v1",
+  "commit_sha": "d6d8ec20e9c360d6b3700df7d687735ba70be027",
+  "title": "fix(zflash): the wrong-architecture warning named neither the file nor the architecture",
+  "state": "MERGED",
+  "merged_at": "2026-08-18T22:37:55Z",
+  "head_ref": "dejan/zflash-iso-arch-warning-names-nothing"
+}

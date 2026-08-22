@@ -1,0 +1,12 @@
+{
+  "pr_number": 7491,
+  "archive_path": "docs/history/pr-reviews/PR-7491-docs-research-filesystem-is-the-startup-merkledag-the-sim-mea-cut-triad-macvecto.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-10T09:45:34.027Z",
+  "schema_version": "v1",
+  "commit_sha": "9a1265ec54350cf09eeb5c8ed9467639a51e4f2a",
+  "title": "docs(research): filesystem IS the startup MerkleDAG + the sim/mea/cut triad (MacVector-for-DNA; CMYK/RGB)",
+  "state": "MERGED",
+  "merged_at": "2026-06-10T09:45:08Z",
+  "head_ref": "shadow-filesystem-startup-merkledag-and-cut-verb-macvector-dna-cli"
+}

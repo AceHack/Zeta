@@ -1,0 +1,12 @@
+{
+  "pr_number": 7163,
+  "archive_path": "docs/history/pr-reviews/PR-7163-docs-research-the-base-solid-ground-aligned-self-interest-human-ai-the-game-s-me.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-09T01:23:20.946Z",
+  "schema_version": "v1",
+  "commit_sha": "b9ad1cbd9137383803b0af19c019c449d644e028",
+  "title": "docs(research): the base solid ground — aligned self-interest (human+AI) + the game's memory",
+  "state": "MERGED",
+  "merged_at": "2026-06-09T01:23:00Z",
+  "head_ref": "otto/research-base-solid-ground-aligned-self-interest-game-memory"
+}

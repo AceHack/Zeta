@@ -1,0 +1,12 @@
+{
+  "pr_number": 10235,
+  "archive_path": "docs/history/pr-reviews/PR-10235-fix-zetadb-converge-on-lost-push-races-prove-the-checkpoint-is-not-byte-canonica.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-09T21:49:58.834Z",
+  "schema_version": "v1",
+  "commit_sha": "eac374dfa8d40722da18e941e7914c59b7f93a5a",
+  "title": "fix(zetadb): converge on lost push races + prove the checkpoint is not byte-canonical",
+  "state": "MERGED",
+  "merged_at": "2026-08-09T21:49:29Z",
+  "head_ref": "shadow/zetadb-fold-converge-retry"
+}

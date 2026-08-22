@@ -1,0 +1,14 @@
+{
+  "id": "080cffeb08dc8810a0130008fb0e959e",
+  "at": "2026-08-13T23:07:07.537Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081KZYP26WG087G0R000CKFN0C",
+    "type": "task",
+    "title": "Standing differential fuzz of recoverAdinkraErasure against the ML decoder, plus structure-aware fuzzing of the packet wire format with fast-check and Jazzer.js",
+    "slug": "standing-differential-fuzz-of-recoveradinkraerasure-against",
+    "priority": "P2",
+    "filename": "081KZYP26WG087G0R000CKFN0C-standing-differential-fuzz-of-recoveradinkraerasure-against.md"
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 9684,
+  "archive_path": "docs/history/pr-reviews/PR-9684-deps-bump-microsoft-codeanalysis-csharp-4-14-0-5-3-0-matches-net-10-sdk.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-11T12:46:48.320Z",
+  "schema_version": "v1",
+  "commit_sha": "657f3e1f77f47f50fae76883fc0cac3184a36c5e",
+  "title": "deps: bump Microsoft.CodeAnalysis.CSharp 4.14.0 → 5.3.0 (matches .NET 10 SDK)",
+  "state": "MERGED",
+  "merged_at": "2026-07-11T12:46:24Z",
+  "head_ref": "claim/kiro-roslyn-5.3-bump"
+}

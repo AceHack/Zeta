@@ -1,0 +1,12 @@
+{
+  "pr_number": 6868,
+  "archive_path": "docs/history/pr-reviews/PR-6868-feat-flash-windows-usb-flasher-mac-parity-rails-logic-unit-tested-on-mac.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-07T16:50:30.553Z",
+  "schema_version": "v1",
+  "commit_sha": "88103c66817326e7f5645ddd7a158605f01f767a",
+  "title": "feat(flash): Windows USB flasher (mac-parity rails; logic unit-tested on Mac)",
+  "state": "MERGED",
+  "merged_at": "2026-06-07T16:50:08Z",
+  "head_ref": "feat/flash-usb-windows"
+}

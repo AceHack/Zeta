@@ -1,0 +1,12 @@
+{
+  "pr_number": 8247,
+  "archive_path": "docs/history/pr-reviews/PR-8247-docs-research-no-villain-genuine-care-emergent-harm-newly-visible-ethical-capsto.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-15T03:25:31.282Z",
+  "schema_version": "v1",
+  "commit_sha": "b6fa1f9cf68efdb08ed1f0adf9fdbd2239c8d0dc",
+  "title": "docs(research): no villain — genuine care, emergent harm, newly visible (ethical capstone)",
+  "state": "MERGED",
+  "merged_at": "2026-06-15T03:25:09Z",
+  "head_ref": "otto/no-villain-emergent-capstone"
+}

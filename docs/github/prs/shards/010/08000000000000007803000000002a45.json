@@ -1,0 +1,12 @@
+{
+  "pr_number": 10821,
+  "archive_path": "docs/history/pr-reviews/PR-10821-docs-research-the-app-free-fragment-was-a-one-time-grep-not-a-check-and-by-const.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-16T19:59:05.585Z",
+  "schema_version": "v1",
+  "commit_sha": "1f3bdc7909d4496f513fbf507cbf130ce50af148",
+  "title": "docs(research): the `app`-free fragment was a one-time grep, not a check — and \"by construction\" is false for ISR",
+  "state": "MERGED",
+  "merged_at": "2026-08-16T19:58:33Z",
+  "head_ref": "shadow/app-free-fragment-claim-has-no-falsifier"
+}

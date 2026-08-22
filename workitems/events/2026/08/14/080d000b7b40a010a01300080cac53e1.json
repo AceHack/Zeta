@@ -1,0 +1,14 @@
+{
+  "id": "080d000b7b40a010a01300080cac53e1",
+  "at": "2026-08-14T18:01:13.492Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M00PYT0K087G0R002F9YSEG",
+    "type": "task",
+    "title": "per-share token addressing and a checkable FROST device roster: slot 0 is not an address and a duplicate is not a position",
+    "slug": "per-share-token-addressing-and-a-checkable-frost-device-rost",
+    "priority": "P2",
+    "filename": "081M00PYT0K087G0R002F9YSEG-per-share-token-addressing-and-a-checkable-frost-device-rost.md"
+  }
+}

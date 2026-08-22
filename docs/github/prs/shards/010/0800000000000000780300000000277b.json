@@ -1,0 +1,12 @@
+{
+  "pr_number": 10107,
+  "archive_path": "docs/history/pr-reviews/PR-10107-book-editions-full-content-pass-3-the-organizer-companion-full-length-english.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-07T17:42:18.797Z",
+  "schema_version": "v1",
+  "commit_sha": "44b693a6ab6a04bfdde5a32b25f35d9a340a4bfd",
+  "title": "book(editions): full-content pass 3 — the Organizer companion, full length (English)",
+  "state": "MERGED",
+  "merged_at": "2026-08-07T17:41:47Z",
+  "head_ref": "book-en-fullcontent-organizer"
+}

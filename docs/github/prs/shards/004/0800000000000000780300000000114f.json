@@ -1,0 +1,17 @@
+{
+  "pr_number": 4431,
+  "archive_path": "docs/history/pr-reviews/PR-4431-docs-shadow-lior-anti-entropy-log-for-otto-and-riven-paralysis-1620z.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7DPJi5",
+    "comment:PRRC_kwDOSF9kNM7DPJjb",
+    "thread:PRRT_kwDOSF9kNM6DjMqX",
+    "thread:PRRT_kwDOSF9kNM6DjMqu"
+  ],
+  "fetched_at": "2026-05-21T01:27:06.545Z",
+  "schema_version": "v1",
+  "commit_sha": "8ca94ec05d17929cd21ea7fdd5b6d20f67438ca6",
+  "title": "docs(shadow): Lior anti-entropy log for Otto and Riven paralysis 1620Z",
+  "state": "MERGED",
+  "merged_at": "2026-05-21T01:26:48Z",
+  "head_ref": "lior/shadow-log-1620Z"
+}

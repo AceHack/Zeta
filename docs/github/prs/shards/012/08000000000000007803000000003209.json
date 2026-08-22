@@ -1,0 +1,12 @@
+{
+  "pr_number": 12809,
+  "archive_path": "docs/history/pr-reviews/PR-12809-research-encov-petz-checked-the-matching-uniqueness-half-of-33-is-false-lumen.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-20T15:29:48.055Z",
+  "schema_version": "v1",
+  "commit_sha": "2f60711e1a065210d8a7963d993845a779c5501f",
+  "title": "research: Čencov/Petz CHECKED — the \"matching uniqueness\" half of §33 is false (Lumen)",
+  "state": "MERGED",
+  "merged_at": "2026-08-20T15:29:10Z",
+  "head_ref": "research/cencov-petz-checked"
+}

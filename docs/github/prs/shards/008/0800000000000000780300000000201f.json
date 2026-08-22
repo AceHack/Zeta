@@ -1,0 +1,12 @@
+{
+  "pr_number": 8223,
+  "archive_path": "docs/history/pr-reviews/PR-8223-feat-portal-create-deployable-write-path-deploy-a-service-from-the-ui.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-14T23:16:20.102Z",
+  "schema_version": "v1",
+  "commit_sha": "376b1715f5bc9c6d322a03189e171f00cc343233",
+  "title": "feat(portal): create-Deployable write path — deploy a service from the UI",
+  "state": "MERGED",
+  "merged_at": "2026-06-14T23:16:00Z",
+  "head_ref": "feat/portal-create-deployable"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 6326,
+  "archive_path": "docs/history/pr-reviews/PR-6326-docs-agentic-org-mark-simulator-evidence-gate-shipped.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-01T03:22:06.477Z",
+  "schema_version": "v1",
+  "commit_sha": "898ddc546b97395c261c2e7345ab1642954736d8",
+  "title": "docs(agentic-org): mark simulator evidence gate shipped",
+  "state": "MERGED",
+  "merged_at": "2026-06-01T03:21:45Z",
+  "head_ref": "codex/agentic-org-simulator-checkpoint"
+}

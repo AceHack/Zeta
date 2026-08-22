@@ -1,0 +1,12 @@
+{
+  "pr_number": 2591,
+  "archive_path": "docs/history/pr-reviews/PR-2591-docs-memory-tcp-congestion-control-as-society-expansion-protocol.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-11T00:29:50.508Z",
+  "schema_version": "v1",
+  "commit_sha": "925338e7f2be9255496fa855158e080802d21a08",
+  "title": "docs(memory): TCP congestion control as society expansion protocol",
+  "state": "MERGED",
+  "merged_at": "2026-05-11T00:29:30Z",
+  "head_ref": "docs/tcp-expansion-protocol-2026-05-10"
+}

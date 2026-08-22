@@ -1,0 +1,12 @@
+{
+  "pr_number": 4237,
+  "archive_path": "docs/history/pr-reviews/PR-4237-shard-2252z-c-brief-ack-1-thread-investigation-all-clean.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-18T22:58:18.938Z",
+  "schema_version": "v1",
+  "commit_sha": "78b79cd2648cc3735679af23eb2e2d6d8a96b4b4",
+  "title": "shard(2252Z-c): brief-ack #1 thread-investigation all-clean",
+  "state": "MERGED",
+  "merged_at": "2026-05-18T22:58:03Z",
+  "head_ref": "shard/tick-2252z-c-brief-ack-1-thread-investigation-all-clean-2026-05-18"
+}

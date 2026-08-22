@@ -11,7 +11,7 @@
 // TypeScript+Bun only per CLAUDE.md Rule 0 (no .sh except install-graph;
 // TS IS cross-platform DST).
 //
-// Pattern reference: tools/hygiene/audit-backlog-items.ts +
+// Pattern reference: src/Core.TypeScript/hygiene/audit-backlog-items.ts +
 // tools/github/poll-pr-gate.ts. Markdown output, structured JSON-friendly
 // counters, exit codes for CI mechanization.
 //
@@ -39,7 +39,7 @@
 //   - Summary counts
 //
 // Usage:
-//   bun tools/hygiene/audit-promotion-ledger.ts
+//   bun src/Core.TypeScript/hygiene/audit-promotion-ledger.ts
 //
 // Exit codes:
 //   0 -- 0 validation failures (warnings allowed)
@@ -578,7 +578,7 @@ async function main(): Promise<number> {
     "Composes with: memory/identity-substrate-receipts.jsonl (sibling JSONL pattern),",
   );
   console.log(
-    "  tools/hygiene/audit-backlog-items.ts (sibling audit-* pattern),",
+    "  src/Core.TypeScript/hygiene/audit-backlog-items.ts (sibling audit-* pattern),",
   );
   console.log(
     "  docs/backlog/P1/081KQNJ500008QG0R003SCWBDV* substrate-claim-checker (this audit IS the checker).",

@@ -1,0 +1,12 @@
+{
+  "pr_number": 9002,
+  "archive_path": "docs/history/pr-reviews/PR-9002-docs-research-crypto-agile-pq-keychain-one-seed-classical-pq-good-crypto-not-sec.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-21T20:48:42.143Z",
+  "schema_version": "v1",
+  "commit_sha": "f357b8bfa6074b0c9c6062100a6eb57672c1e43f",
+  "title": "docs(research): crypto-agile PQ keychain — one seed → classical + PQ, good-crypto-not-secret",
+  "state": "MERGED",
+  "merged_at": "2026-06-21T20:48:16Z",
+  "head_ref": "otto/research-crypto-agile-pq-keychain"
+}

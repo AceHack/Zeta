@@ -1,0 +1,12 @@
+{
+  "pr_number": 7204,
+  "archive_path": "docs/history/pr-reviews/PR-7204-docs-research-2x2-cubes-are-memory-uncertainty-partition-lenses-addison-s-which-.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-09T04:57:24.294Z",
+  "schema_version": "v1",
+  "commit_sha": "17bec710f79eee416bf452fe4e3ad444bd6fb525",
+  "title": "docs(research): 2x2 cubes are memory->uncertainty partition-lenses; Addison's which/way x how/many act-cube composes to the 4x4",
+  "state": "MERGED",
+  "merged_at": "2026-06-09T04:57:02Z",
+  "head_ref": "otto/research-2x2-cubes-are-partition-lenses-addison-act-cube-4x4"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 11634,
+  "archive_path": "docs/history/pr-reviews/PR-11634-fix-wasm-dla-the-last-three-site-oracle-panels-ran-second-non-byte-locked-dlas.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-17T20:26:48.192Z",
+  "schema_version": "v1",
+  "commit_sha": "3c161aa373bfa419b3b9fd59efd5187f083345e2",
+  "title": "fix(wasm-dla): the last three site oracle panels ran second, non-byte-locked DLAs",
+  "state": "MERGED",
+  "merged_at": "2026-08-17T20:26:10Z",
+  "head_ref": "shadow/emcc-dla-panel-degenerate"
+}

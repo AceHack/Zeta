@@ -1,0 +1,12 @@
+{
+  "pr_number": 6499,
+  "archive_path": "docs/history/pr-reviews/PR-6499-feat-dynamicvalue-canonical-encoding-golden-vector-seed-seed-first-byte-lock-ts-.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-01T23:41:14.041Z",
+  "schema_version": "v1",
+  "commit_sha": "8fae7f1c7d1e858f125d2c8aabaa7769fa59694d",
+  "title": "feat(DynamicValue): canonical-encoding golden-vector SEED (seed-first byte-lock) + TS encode-oracle grown from it",
+  "state": "MERGED",
+  "merged_at": "2026-06-01T23:40:53Z",
+  "head_ref": "otto-cli/dynamicvalue-golden-vectors-seed-2026-06-01"
+}

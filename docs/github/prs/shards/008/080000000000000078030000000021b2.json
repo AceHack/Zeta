@@ -1,0 +1,12 @@
+{
+  "pr_number": 8626,
+  "archive_path": "docs/history/pr-reviews/PR-8626-docs-memory-zeta-ntp-phase-grounded-network-time-across-all-space-and-time-frame.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-19T21:17:31.496Z",
+  "schema_version": "v1",
+  "commit_sha": "27feca874ade69a42ac4158e7e68bcb6a2302e06",
+  "title": "docs+memory: Zeta NTP — phase-grounded network time across all space and time (frame-independent core primitive)",
+  "state": "MERGED",
+  "merged_at": "2026-06-19T21:16:54Z",
+  "head_ref": "otto/zeta-ntp-phase-grounded-time"
+}

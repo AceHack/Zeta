@@ -31,8 +31,8 @@
 //   1 — findings present; emits `file:line` for each
 //
 // CLI usage:
-//   bun tools/hygiene/check-md032-blanks-around-lists.ts <file1> <file2> ...
-//   bun tools/hygiene/check-md032-blanks-around-lists.ts --staged
+//   bun src/Core.TypeScript/hygiene/check-md032-blanks-around-lists.ts <file1> <file2> ...
+//   bun src/Core.TypeScript/hygiene/check-md032-blanks-around-lists.ts --staged
 //
 // 081KRHWGX0008QG0R000JEBCWZ — see docs/backlog/P2/081KRHWGX0008QG0R000JEBCWZ-mechanize-md032-blanks-around-lists-pre-commit-2026-05-14.md
 

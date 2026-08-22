@@ -1,0 +1,12 @@
+{
+  "pr_number": 10518,
+  "archive_path": "docs/history/pr-reviews/PR-10518-feat-browser-publish-accepted-receipts-through-pages.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-14T03:15:55.960Z",
+  "schema_version": "v1",
+  "commit_sha": "5c5819ccd8e6de624eb17850db1a6fc17f6a35d0",
+  "title": "feat(browser): publish accepted receipts through Pages",
+  "state": "MERGED",
+  "merged_at": "2026-08-14T03:15:27Z",
+  "head_ref": "codex/browser-receipt-pages-source"
+}

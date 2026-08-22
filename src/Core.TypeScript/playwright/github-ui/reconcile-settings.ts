@@ -177,7 +177,7 @@ const DEFAULT_SETTINGS_URL =
   "https://github.com/Lucent-Financial-Group/Zeta/settings";
 const DEFAULT_SECURITY_URL =
   "https://github.com/Lucent-Financial-Group/Zeta/settings/security_analysis";
-const DEFAULT_EXPECTED_JSON = "tools/hygiene/github-settings.expected.json";
+const DEFAULT_EXPECTED_JSON = "src/Core.TypeScript/hygiene/github-settings.expected.json";
 
 interface CliArgs {
   readonly url: string;
@@ -225,7 +225,7 @@ function parseCliArgs(argv: readonly string[]): CliArgs | CliError {
 function printHelp(): void {
   process.stdout.write(
     `reconcile-settings.ts — compare live GitHub UI snapshot to expected settings\n` +
-      `\nUsage: bun tools/playwright/github-ui/reconcile-settings.ts [flags]\n` +
+      `\nUsage: bun src/Core.TypeScript/playwright/github-ui/reconcile-settings.ts [flags]\n` +
       `\nFlags:\n` +
       `  --url <url>             Settings page URL (default: Zeta general settings)\n` +
       `  --security              Use security_analysis page URL instead\n` +

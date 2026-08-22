@@ -1,0 +1,12 @@
+{
+  "pr_number": 2453,
+  "archive_path": "docs/history/pr-reviews/PR-2453-fix-b-0079-reject-max-0-in-audit-agencysignature-main-tip-ts-positive-integer-va.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-10T09:56:26.724Z",
+  "schema_version": "v1",
+  "commit_sha": "5bb827595c5e9b0f1fbdc5b3ef85a3004c87b478",
+  "title": "fix(B-0079): reject --max=0 in audit-agencysignature-main-tip.ts (positive integer validator)",
+  "state": "MERGED",
+  "merged_at": "2026-05-10T09:56:08Z",
+  "head_ref": "claim/B-0079-smallest-ts-slice-riven-2026-05-10"
+}

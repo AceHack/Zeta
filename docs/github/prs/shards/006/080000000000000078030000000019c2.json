@@ -1,0 +1,12 @@
+{
+  "pr_number": 6594,
+  "archive_path": "docs/history/pr-reviews/PR-6594-docs-b-1002-eve-transport-codecs-all-the-way-down-over-multiplexed-websocket-tcp.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-02T16:46:24.627Z",
+  "schema_version": "v1",
+  "commit_sha": "e441a0f05e8c4cdeaa39393e4a3fcc4905fff9d2",
+  "title": "docs(B-1002): Eve transport — codecs all the way down over multiplexed WebSocket/TCP for zero-trust strangers (Aaron's channels/pipelines Fowler-reviewed prior art)",
+  "state": "MERGED",
+  "merged_at": "2026-06-02T16:45:49Z",
+  "head_ref": "otto-cli/b1002-eve-transport-2026-06-02"
+}

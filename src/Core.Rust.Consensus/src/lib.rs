@@ -21,8 +21,17 @@ pub struct Decision {
 }
 
 /// Decide consensus over a list of vote VALUES (the F# `decide` ignores node/timestamp for the tally):
-/// group by value preserving first-occurrence order, stable-sort by descending count, commit the top
-/// iff its support reaches `quorum_threshold(total)`.
+/// group by value, take the highest support, commit it iff it reaches `quorum_threshold(total)`.
+///
+/// The tie-break among values sharing the highest support is the **ordinal minimum**, deliberately
+/// order-INDEPENDENT: two nodes that received the same votes in different orders must decide
+/// identically. It used to be first-occurrence, which read arrival order and diverged at
+/// n ∈ {2, 3, 6}. See `src/Core/Consensus.fs` and the shared seed
+/// `src/Core.TypeScript/consensus/golden-vectors.json` — do NOT change the rule in one oracle.
+///
+/// Collation note: `Ord for String` here is UTF-8 byte order (== Unicode codepoint order), while the
+/// F#/C#/TS oracles order by UTF-16 code unit. The two agree on every value in the seed and disagree
+/// only for a tie straddling the astral/high-BMP boundary — named, not fixed; see the decision doc.
 pub fn decide(votes: &[String]) -> Decision {
     let total = votes.len() as i64;
     if total == 0 {
@@ -33,7 +42,6 @@ pub fn decide(votes: &[String]) -> Decision {
             total: 0,
         };
     }
-    // First-occurrence-ordered (value, count) groups.
     let mut groups: Vec<(String, i64)> = Vec::new();
     for v in votes {
         if let Some(g) = groups.iter_mut().find(|(k, _)| k == v) {
@@ -42,10 +50,15 @@ pub fn decide(votes: &[String]) -> Decision {
             groups.push((v.clone(), 1));
         }
     }
-    // Stable sort by descending count (ties keep first-occurrence order).
-    groups.sort_by_key(|g| std::cmp::Reverse(g.1));
+    let count = groups.iter().map(|g| g.1).max().expect("non-empty");
+    // Order-independent tie-break: ordinal minimum among the values tied at `count`.
+    let value = groups
+        .iter()
+        .filter(|g| g.1 == count)
+        .map(|g| g.0.clone())
+        .min()
+        .expect("non-empty");
     let threshold = quorum_threshold(total);
-    let (value, count) = groups[0].clone();
     if count >= threshold {
         Decision {
             committed: true,

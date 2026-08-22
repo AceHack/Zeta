@@ -1,0 +1,12 @@
+{
+  "pr_number": 10098,
+  "archive_path": "docs/history/pr-reviews/PR-10098-book-weave-batch-4a-gems-friend-who-changed-ch-3-the-granny-scheme-cost-the-orga.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-07T07:15:54.589Z",
+  "schema_version": "v1",
+  "commit_sha": "d2c63a6442d76703d1f401d4d4b6ba1989e563a9",
+  "title": "book(weave): batch 4a gems — friend-who-changed (ch-3), the Granny scheme cost (THE-ORGANIZER), my sister (THE-UNBROKEN-CHILD)",
+  "state": "MERGED",
+  "merged_at": "2026-08-07T07:15:25Z",
+  "head_ref": "book-weave-gems-4a"
+}

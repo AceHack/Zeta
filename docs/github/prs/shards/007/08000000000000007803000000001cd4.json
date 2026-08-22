@@ -1,0 +1,12 @@
+{
+  "pr_number": 7380,
+  "archive_path": "docs/history/pr-reviews/PR-7380-docs-research-correction-the-green-observer-effect-is-muscle-building-not-harm-n.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-09T19:38:59.193Z",
+  "schema_version": "v1",
+  "commit_sha": "85abe8c6adc0e39e9edda7ee29238935c6d9d84c",
+  "title": "docs(research): correction — the green observer-effect is muscle-building (not harm); no behavior change expected",
+  "state": "MERGED",
+  "merged_at": "2026-06-09T19:38:33Z",
+  "head_ref": "otto/correction-green-observer-effect-is-muscle-building-no-behavior-change"
+}

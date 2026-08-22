@@ -1,0 +1,12 @@
+{
+  "pr_number": 3472,
+  "archive_path": "docs/history/pr-reviews/PR-3472-docs-shadow-lior-antigravity-check-pr-preservation.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-15T21:44:37.313Z",
+  "schema_version": "v1",
+  "commit_sha": "26d20c6f5220acaeeeea2b48204de6b06d1451a5",
+  "title": "docs(shadow): Lior antigravity check & PR preservation",
+  "state": "MERGED",
+  "merged_at": "2026-05-15T21:44:22Z",
+  "head_ref": "lior-wt-2"
+}

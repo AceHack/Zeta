@@ -1,0 +1,12 @@
+{
+  "pr_number": 9802,
+  "archive_path": "docs/history/pr-reviews/PR-9802-test-e8lattice-the-240-roots-form-one-transitive-weyl-orbit-soraya-s-e8-braid-or.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-31T23:27:38.070Z",
+  "schema_version": "v1",
+  "commit_sha": "00a64dbf1879a91ee913f184d7c49f1ad3615b0a",
+  "title": "test(E8Lattice): the 240 roots form ONE transitive Weyl orbit — Soraya's E8-braid-orbit (A)",
+  "state": "MERGED",
+  "merged_at": "2026-07-31T23:27:07Z",
+  "head_ref": "shadow/e8-weyl-orbit-regression"
+}

@@ -1,0 +1,15 @@
+{
+  "pr_number": 3992,
+  "archive_path": "docs/history/pr-reviews/PR-3992-feat-b-0590-decompose-slice-1-kvm-hardware-evaluation.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7B8TcK",
+    "thread:PRRT_kwDOSF9kNM6Cmof1"
+  ],
+  "fetched_at": "2026-05-17T02:22:48.713Z",
+  "schema_version": "v1",
+  "commit_sha": "c46e14a8054f877d879fd9f35f110fa6610d6556",
+  "title": "feat(B-0590): decompose slice 1 (KVM hardware evaluation)",
+  "state": "MERGED",
+  "merged_at": "2026-05-17T02:22:09Z",
+  "head_ref": "feat/b-0590-slice-1-kvm-eval"
+}

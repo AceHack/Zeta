@@ -1,0 +1,31 @@
+{
+  "pr_number": 2992,
+  "archive_path": "docs/history/pr-reviews/PR-2992-docs-memory-b-0423-2-update-memory-docs-for-heap-state-acceptable-model.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7Ay-45",
+    "comment:PRRC_kwDOSF9kNM7Ay5Nb",
+    "comment:PRRC_kwDOSF9kNM7Ay9F1",
+    "comment:PRRC_kwDOSF9kNM7Ay9G7",
+    "comment:PRRC_kwDOSF9kNM7Ay_qO",
+    "comment:PRRC_kwDOSF9kNM7Ay_tK",
+    "comment:PRRC_kwDOSF9kNM7AzCO5",
+    "comment:PRRC_kwDOSF9kNM7AzFZ1",
+    "comment:PRRC_kwDOSF9kNM7AzFZB",
+    "comment:PRRC_kwDOSF9kNM7AzHiS",
+    "comment:PRRC_kwDOSF9kNM7AzK4I",
+    "comment:PRRC_kwDOSF9kNM7AzLDZ",
+    "thread:PRRT_kwDOSF9kNM6Bw-Fb",
+    "thread:PRRT_kwDOSF9kNM6BxA7x",
+    "thread:PRRT_kwDOSF9kNM6BxA8f",
+    "thread:PRRT_kwDOSF9kNM6BxEsb",
+    "thread:PRRT_kwDOSF9kNM6BxHBy",
+    "thread:PRRT_kwDOSF9kNM6BxHCZ"
+  ],
+  "fetched_at": "2026-05-13T13:33:23.908Z",
+  "schema_version": "v1",
+  "commit_sha": "5de7f82fb06f17e5233d5cc6196143e1e16f512b",
+  "title": "docs(memory): B-0423.2 — update memory/ docs for heap-state-acceptable model",
+  "state": "MERGED",
+  "merged_at": "2026-05-13T13:33:03Z",
+  "head_ref": "feat/B-0423.2-memory-docs-heap-model"
+}

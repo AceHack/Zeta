@@ -1,0 +1,12 @@
+{
+  "pr_number": 9019,
+  "archive_path": "docs/history/pr-reviews/PR-9019-docs-research-math-team-review-brief-lucent-toy-model-ca-teardown-blast-radius-p.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-21T21:57:05.878Z",
+  "schema_version": "v1",
+  "commit_sha": "361119c0770be58f2d8f45c529359ae05397db21",
+  "title": "docs(research): math-team review brief — Lucent toy model, CA-teardown blast radius, per-user CA, anti-Sybil",
+  "state": "MERGED",
+  "merged_at": "2026-06-21T21:56:36Z",
+  "head_ref": "otto/math-review-brief-lucent-toy-model"
+}

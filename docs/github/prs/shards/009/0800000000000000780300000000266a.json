@@ -1,0 +1,12 @@
+{
+  "pr_number": 9834,
+  "archive_path": "docs/history/pr-reviews/PR-9834-docs-setup-correct-the-ca-trust-framing-no-single-trust-root-the-fault-is-an-una.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-01T03:42:04.012Z",
+  "schema_version": "v1",
+  "commit_sha": "95470cfa1d2e69f3ab78a5c5c2cc099a1bd84d44",
+  "title": "docs(setup): correct the CA trust framing — no single trust root; the fault is an UNATTESTED CA",
+  "state": "MERGED",
+  "merged_at": "2026-08-01T03:41:31Z",
+  "head_ref": "shadow/fix-ca-trust-framing-decentralized"
+}

@@ -1,0 +1,23 @@
+{
+  "pr_number": 5418,
+  "archive_path": "docs/history/pr-reviews/PR-5418-feat-b-0852-10-per-cred-type-handlers-parse-id-source-resolve-literal-file-env-v.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7FPoxx",
+    "comment:PRRC_kwDOSF9kNM7FPoyR",
+    "comment:PRRC_kwDOSF9kNM7FPoyg",
+    "comment:PRRC_kwDOSF9kNM7FPoyz",
+    "comment:PRRC_kwDOSF9kNM7FPozH",
+    "thread:PRRT_kwDOSF9kNM6FBxi3",
+    "thread:PRRT_kwDOSF9kNM6FBxj3",
+    "thread:PRRT_kwDOSF9kNM6FBxjO",
+    "thread:PRRT_kwDOSF9kNM6FBxjc",
+    "thread:PRRT_kwDOSF9kNM6FBxjp"
+  ],
+  "fetched_at": "2026-05-27T07:42:13.048Z",
+  "schema_version": "v1",
+  "commit_sha": "a39ba5095054027e2107e573735b6d0c26bdd6e3",
+  "title": "feat(B-0852.10): per-cred type handlers — parse <id>=<source> + resolve literal/@file/env:VAR + per-type validation (60 unit tests; pure TS)",
+  "state": "MERGED",
+  "merged_at": "2026-05-27T07:41:52Z",
+  "head_ref": "feat/b-0852-10-per-cred-type-handlers"
+}

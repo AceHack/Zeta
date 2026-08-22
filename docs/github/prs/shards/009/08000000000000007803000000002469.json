@@ -1,0 +1,12 @@
+{
+  "pr_number": 9321,
+  "archive_path": "docs/history/pr-reviews/PR-9321-docs-book-chapter-8-first-draft-the-handrail.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-03T15:42:40.057Z",
+  "schema_version": "v1",
+  "commit_sha": "e36fb74292c6d4861f6aad102c875da733a58bfd",
+  "title": "docs(book): chapter 8 first draft — The Handrail",
+  "state": "MERGED",
+  "merged_at": "2026-07-03T15:42:18Z",
+  "head_ref": "shadow/book-ch08-handrail-draft"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 10822,
+  "archive_path": "docs/history/pr-reviews/PR-10822-feat-ir-the-irreducible-core-both-axes-one-list-op-folds-one-does-not.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-16T19:59:05.426Z",
+  "schema_version": "v1",
+  "commit_sha": "8d7047e781300765ba30371512f79ddb41f80f25",
+  "title": "feat(ir): the irreducible core, both axes — one list op folds, one does not",
+  "state": "MERGED",
+  "merged_at": "2026-08-16T19:58:37Z",
+  "head_ref": "shadow/zeta-ir-irreducible-core-derivability-vs-portability"
+}

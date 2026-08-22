@@ -1,0 +1,12 @@
+{
+  "pr_number": 7716,
+  "archive_path": "docs/history/pr-reviews/PR-7716-feat-medialines-per-cartridge-treaties-travelers-ratify-meaning-consent-first-tr.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-11T15:43:10.473Z",
+  "schema_version": "v1",
+  "commit_sha": "b241f50bccf1066194d79ac0952fdc1317046416",
+  "title": "feat(medialines): per-cartridge treaties — travelers ratify meaning, consent first, trust at a glance",
+  "state": "MERGED",
+  "merged_at": "2026-06-11T15:42:39Z",
+  "head_ref": "shadow-cartridge-treaty"
+}

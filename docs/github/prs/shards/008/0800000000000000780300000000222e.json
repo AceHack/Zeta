@@ -1,0 +1,12 @@
+{
+  "pr_number": 8750,
+  "archive_path": "docs/history/pr-reviews/PR-8750-zeta-ir-v2-fourth-generator-hash-xoshiro256ss-rotl-grammar-extension.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-20T16:38:46.187Z",
+  "schema_version": "v1",
+  "commit_sha": "40cc003bf0a5b4c8c58d4d3e9291c7dbb78d5f88",
+  "title": "zeta-ir-v2: fourth generator hash.xoshiro256ss (rotl grammar extension)",
+  "state": "MERGED",
+  "merged_at": "2026-06-20T16:38:17Z",
+  "head_ref": "lumen/fourth-generator-xoshiro256ss"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 7340,
+  "archive_path": "docs/history/pr-reviews/PR-7340-docs-research-dst-tests-are-rooms-frames-proof-tools-closed-over-but-available-i.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-09T16:59:47.573Z",
+  "schema_version": "v1",
+  "commit_sha": "6baf5605332863e01b9412c1e8b295611d86ddd0",
+  "title": "docs(research): DST tests are rooms/frames; proof tools closed-over but available inside DST; math research = a proof-room; self-referential (shape A) in DST=prod; every room is a 4×4×n treaty",
+  "state": "MERGED",
+  "merged_at": "2026-06-09T16:59:15Z",
+  "head_ref": "otto/dst-tests-are-rooms-frames-proof-tools-inside-dst-self-referential-every-room-4x4xn-treaty"
+}

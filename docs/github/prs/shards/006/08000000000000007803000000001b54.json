@@ -1,0 +1,12 @@
+{
+  "pr_number": 6996,
+  "archive_path": "docs/history/pr-reviews/PR-6996-feat-core-db-noun-class-with-pluggable-backends-everything-is-events-on-one-dbsp.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-08T02:58:01.234Z",
+  "schema_version": "v1",
+  "commit_sha": "bef19c11a7a9c0050ba8edcf995f7cfdfc56b4ea",
+  "title": "feat(core): db noun-class with pluggable backends — everything is events on one DBSP Z-set stream",
+  "state": "MERGED",
+  "merged_at": "2026-06-08T02:57:41Z",
+  "head_ref": "otto/db-noun-class-pluggable-backends-one-zset-stream"
+}

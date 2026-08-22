@@ -1,0 +1,12 @@
+{
+  "pr_number": 7564,
+  "archive_path": "docs/history/pr-reviews/PR-7564-docs-backlog-research-b-1022-fuse-the-four-corner-harmonic-kleisli-arrow-graduat.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-11T00:52:50.405Z",
+  "schema_version": "v1",
+  "commit_sha": "fdbbfafa7ab61211726a131ed0fda0b4e0087a66",
+  "title": "docs(backlog+research): B-1022 — fuse the four-corner harmonic Kleisli arrow + graduate FourCornerOwnership tools→src",
+  "state": "MERGED",
+  "merged_at": "2026-06-11T00:52:27Z",
+  "head_ref": "shadow-b1022-fusion-plan-capture"
+}

@@ -1,0 +1,18 @@
+{
+  "pr_number": 3388,
+  "archive_path": "docs/history/pr-reviews/PR-3388-shard-tick-0820z-pr-3385-merged-pr-3384-2-copilot-fix-lior-archive-active.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7Bh-gy",
+    "comment:PRRC_kwDOSF9kNM7Bh6R3",
+    "comment:PRRC_kwDOSF9kNM7Bh6RZ",
+    "thread:PRRT_kwDOSF9kNM6CTMPq",
+    "thread:PRRT_kwDOSF9kNM6CTMQF"
+  ],
+  "fetched_at": "2026-05-15T08:34:32.510Z",
+  "schema_version": "v1",
+  "commit_sha": "250cbae8382816550cf86a7710acfe2281c59cdc",
+  "title": "shard(tick): 0820Z — PR #3385 merged; PR #3384 2-Copilot fix; Lior archive active",
+  "state": "MERGED",
+  "merged_at": "2026-05-15T08:34:13Z",
+  "head_ref": "shard/tick-0820z-otto-cli-2026-05-15"
+}

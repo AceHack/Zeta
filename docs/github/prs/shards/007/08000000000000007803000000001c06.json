@@ -1,0 +1,12 @@
+{
+  "pr_number": 7174,
+  "archive_path": "docs/history/pr-reviews/PR-7174-docs-research-the-memetic-quantum-observer-categorical-built-quantum-like-a-rig-.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-09T02:09:01.830Z",
+  "schema_version": "v1",
+  "commit_sha": "a75ab12320f7136705800cfe60bfb4ddd70f47c1",
+  "title": "docs(research): the memetic quantum observer — categorical & built; quantum-LIKE (a rig), GPU-compatible not running",
+  "state": "MERGED",
+  "merged_at": "2026-06-09T02:08:39Z",
+  "head_ref": "otto/research-memetic-quantum-observer-categorical-gpu-lowerable"
+}

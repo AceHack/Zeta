@@ -1,0 +1,12 @@
+{
+  "pr_number": 5683,
+  "archive_path": "docs/history/pr-reviews/PR-5683-backlog-p1-b-0886-2-two-priority-axes-correction-b-0889-symbiotic-cross-track-se.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-28T02:59:21.648Z",
+  "schema_version": "v1",
+  "commit_sha": "51c66e4ff81287755ad422e25916210cd83e31cd",
+  "title": "backlog(P1): B-0886.2 two-priority-axes correction + B-0889 symbiotic-cross-track-self-healing (cloud↔local KVM control + BIOS/UEFI updates) per operator 2026-05-28",
+  "state": "MERGED",
+  "merged_at": "2026-05-28T02:59:01Z",
+  "head_ref": "backlog/symbiotic-cross-track-self-healing-b-0889-and-two-priority-axes-b-0886-2-correction-2026-05-28"
+}

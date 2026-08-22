@@ -1,0 +1,12 @@
+{
+  "pr_number": 8069,
+  "archive_path": "docs/history/pr-reviews/PR-8069-codex-add-flow-bit-fusion-oracle-plugin.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-13T21:43:13.957Z",
+  "schema_version": "v1",
+  "commit_sha": "024a4e399093b191d8f930d0b6d63c7b7eb941c2",
+  "title": "[codex] Add flow-bit fusion oracle plugin",
+  "state": "MERGED",
+  "merged_at": "2026-06-13T21:42:52Z",
+  "head_ref": "codex/qsharp-fusion-plugin-poc"
+}

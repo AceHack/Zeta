@@ -1,0 +1,12 @@
+{
+  "pr_number": 1925,
+  "archive_path": "docs/history/pr-reviews/PR-1925-research-the-nirvanic-fusion-ship-canonical-equations-v1-0.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-07T18:14:33.438Z",
+  "schema_version": "v1",
+  "commit_sha": "656bacf42debfae1c69eb189d1b66f3868ace038",
+  "title": "research: The Nirvanic Fusion Ship — canonical equations v1.0",
+  "state": "MERGED",
+  "merged_at": "2026-05-07T18:14:04Z",
+  "head_ref": "otto/nirvanic-fusion-ship-v1"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 10697,
+  "archive_path": "docs/history/pr-reviews/PR-10697-docs-research-structure-first-labels-after-eve-protocol-is-the-hand-off-aut-s-is.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-14T19:37:20.510Z",
+  "schema_version": "v1",
+  "commit_sha": "80bd00f8b2f7c42da444bc19a86f68f63423ac76",
+  "title": "docs(research): structure first, labels after — Eve protocol is the hand-off, |Aut(S)| is the residue",
+  "state": "MERGED",
+  "merged_at": "2026-08-14T19:36:45Z",
+  "head_ref": "shadow/pre-linguistic-bootstrap-icons-before-symbols"
+}

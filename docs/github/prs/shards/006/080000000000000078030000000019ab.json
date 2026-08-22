@@ -1,0 +1,12 @@
+{
+  "pr_number": 6571,
+  "archive_path": "docs/history/pr-reviews/PR-6571-docs-b-0986-registry-expansion-valve-wave-correction-re-land-lost-tiles-ownershi.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-02T14:44:36.056Z",
+  "schema_version": "v1",
+  "commit_sha": "4360c809f8bdc4dbd69e8ef6aad9ceed9bfbad7b",
+  "title": "docs(B-0986/registry): expansion-VALVE→WAVE correction + re-land lost tiles-ownership section",
+  "state": "MERGED",
+  "merged_at": "2026-06-02T14:44:10Z",
+  "head_ref": "otto-cli/expansion-wave-correction-reland-tiles-2026-06-02"
+}

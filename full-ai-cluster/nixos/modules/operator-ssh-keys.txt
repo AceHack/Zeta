@@ -10,7 +10,7 @@
 # ~/.ssh/id_ed25519.pub) before nixos-install.
 #
 # Manual edit path: operators can edit this file directly + run
-#   sudo nixos-rebuild switch --flake /etc/zeta/full-ai-cluster#<host>
+#   sudo nixos-rebuild switch --impure --flake /etc/zeta/full-ai-cluster#<host>
 # to add/remove keys without re-flashing the USB.
 #
 # Example (replace with real pubkey content):

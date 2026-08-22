@@ -1,0 +1,12 @@
+{
+  "pr_number": 5664,
+  "archive_path": "docs/history/pr-reviews/PR-5664-feat-agentic-org-harden-worker-process-adapter-lifecycle.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-28T00:38:40.235Z",
+  "schema_version": "v1",
+  "commit_sha": "4d84a5e0673c3f3569b481bc233cfb6a682d34a2",
+  "title": "feat(agentic-org): harden worker process adapter lifecycle",
+  "state": "MERGED",
+  "merged_at": "2026-05-28T00:38:16Z",
+  "head_ref": "codex/agentic-org-policy-observations"
+}

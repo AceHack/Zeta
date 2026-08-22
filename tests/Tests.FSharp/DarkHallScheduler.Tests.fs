@@ -340,6 +340,115 @@ let ``heat signature classifier is the shared pressure and forgetting rule`` () 
     )
 
 [<Fact>]
+let ``heat pressure classifiers agree on live kinds and on dual-token kinds`` () =
+    // 081M010W1BP. The two routes used to disagree whenever a kind carried both a
+    // forgetting token and a pressure token: isPressureKind said yes, ofKind said
+    // Forgotten so isPressure said no. TemperatureReadout then read cold for a
+    // room under genuine backpressure. Both routes now read classifyKind.
+    //
+    // Live kinds (enumerated in ShedDisposition.Property.Tests L7 corpus) all
+    // carry one token class. Dual-token kinds are constructed by concatenation
+    // so a kind-literal lint that refuses them in source does not fire here.
+    let live =
+        [ "room-admission.backpressure"
+          "room-horizon.backpressure"
+          "room-boundary.privacy-backpressure"
+          "meta-cart.policy-backpressure"
+          "darkhall.backpressure"
+          "room-boundary.door-denied"
+          "meta-cart.denied"
+          "darkhall.machine.denied"
+          "room-horizon.forgotten"
+          "room-admission.forgotten"
+          "wset.consolidate.forgotten"
+          "soft-emu.prune"
+          "darkhall.storage-error"
+          "invalid"
+          "forgotten"
+          "backpressure"
+          "reject-cache.overwritten"
+          "denied-list.compacted"
+          "rejection-sampler.evicted"
+          "backpressure-meter.erased" ]
+
+    let forgetTokens = [ "forgotten"; "forget"; "prune" ]
+    let pressureTokens = [ "backpressure"; "denied"; "reject" ]
+
+    let dual =
+        [ for f in forgetTokens do
+              for p in pressureTokens do
+                  yield f + "-" + p
+                  yield p + "-" + f ]
+
+    for kind in live @ dual do
+        let fromKind = HeatSignature.isPressureKind kind
+        let fromSignal = HeatSignal.ofKind kind |> HeatSignal.isPressure
+        Assert.True((fromKind = fromSignal), sprintf "disagree on %s: isPressureKind=%b ofKind|>isPressure=%b" kind fromKind fromSignal)
+
+    // The workitem's measured table: dual-token kinds are pressure, explicitly.
+    // Built by concatenation so the dual-token kind-literal lint does not fire.
+    let forgetBackpressure = "forget" + "-" + "backpressure"
+    let pruneRejected = "prune" + "-" + "rejected"
+    let boundedForgetDenied = "bounded" + "-" + "forget" + "-" + "denied"
+
+    Assert.True(HeatSignature.isPressureKind forgetBackpressure)
+    Assert.Equal(HeatSignal.Backpressure, HeatSignal.ofKind forgetBackpressure)
+    Assert.True(HeatSignature.isPressureKind pruneRejected)
+    Assert.Equal(HeatSignal.Denied, HeatSignal.ofKind pruneRejected)
+    Assert.True(HeatSignature.isPressureKind boundedForgetDenied)
+    Assert.Equal(HeatSignal.Denied, HeatSignal.ofKind boundedForgetDenied)
+
+    // Fail-safe: a dual-token signature reports full pressure, not a cold room.
+    let dualSig = HeatSignature.ofMass "test" forgetBackpressure 1 1.0 "dual-token probe"
+    Assert.Equal(TemperatureReadout.MaxPpm, TemperatureReadout.ofHeatSignature(dualSig).PressurePpm)
+
+[<Fact>]
+let ``HeatSignal.classOf inverts ofKind on every class, so the one pressure table is read correctly`` () =
+    // 081M07Z23EX. `HeatSignal.isPressure` no longer enumerates the pressure bit; it recovers
+    // the KindClass with `classOf` and reads `HeatSignature.isPressureClass`. That removes the
+    // membership split and leaves exactly one residual the COMPILER CANNOT SEE: `classOf` is
+    // exhaustive whatever it maps to, so a miswired arm (`Denied -> KindClass.Forgotten`) type-
+    // checks and silently answers the pressure question wrong. This is that falsifier.
+    //
+    // The law is stated through the real string chain rather than as `classOf x = <literal>`,
+    // which would only restate `classOf`'s own table back at itself:
+    //
+    //     for every kind k:  classOf (ofKind k) = classifyKind k
+    //
+    // One representative kind per class, Other included (no vocabulary token appears in it).
+    let perClass =
+        [ "backpressure", HeatSignature.KindClass.Backpressure
+          "denied", HeatSignature.KindClass.Denied
+          "forgotten", HeatSignature.KindClass.Forgotten
+          "storage", HeatSignature.KindClass.StorageError
+          "invalid", HeatSignature.KindClass.Invalid
+          "expired", HeatSignature.KindClass.Expired
+          "stale", HeatSignature.KindClass.Stale
+          "hall.opened", HeatSignature.KindClass.Other ]
+
+    // Every class is covered — a shrunk list would make the loop below pass by not looking.
+    Assert.Equal(8, perClass |> List.map snd |> List.distinct |> List.length)
+
+    for kind, expectedClass in perClass do
+        Assert.Equal(expectedClass, HeatSignature.classifyKind kind)
+
+        let roundTripped = kind |> HeatSignal.ofKind |> HeatSignal.classOf
+
+        Assert.True(
+            (roundTripped = expectedClass),
+            sprintf "classOf (ofKind %s) = %A, expected %A — the correspondence is miswired" kind roundTripped expectedClass
+        )
+
+        // The consequence that matters: the derived signal route reads the one table correctly.
+        Assert.Equal(
+            HeatSignature.isPressureKind kind,
+            kind |> HeatSignal.ofKind |> HeatSignal.isPressure
+        )
+
+    // The payload-carrying case is a correspondence too, and its payload is irrelevant to it.
+    Assert.Equal(HeatSignature.KindClass.Other, HeatSignal.classOf(HeatSignal.Other "anything at all"))
+
+[<Fact>]
 let ``heat rows export through an injected host heat sink`` () =
     let rows: Scheduler.HeatBoundaryRow list =
         [ { Tick = 1

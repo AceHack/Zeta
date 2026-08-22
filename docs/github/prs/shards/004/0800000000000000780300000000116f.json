@@ -1,0 +1,12 @@
+{
+  "pr_number": 4463,
+  "archive_path": "docs/history/pr-reviews/PR-4463-docs-hygiene-decompose-1613z-c-out-of-4383-blob.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-21T01:26:15.826Z",
+  "schema_version": "v1",
+  "commit_sha": "3da76294a39a22ae9c8be80463259fea35e4b3a7",
+  "title": "docs(hygiene): decompose 1613Z-c out of #4383 blob",
+  "state": "MERGED",
+  "merged_at": "2026-05-21T01:25:56Z",
+  "head_ref": "lior/decompose-4383-slice-1613z"
+}

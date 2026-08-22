@@ -1,0 +1,12 @@
+{
+  "pr_number": 9762,
+  "archive_path": "docs/history/pr-reviews/PR-9762-docs-append-the-lag-is-a-spectrum-the-rainbow-measure-the-distribution-tail-shad.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-12T03:10:11.158Z",
+  "schema_version": "v1",
+  "commit_sha": "72f086fd7ebf262ea875db797587f13ff4323783",
+  "title": "docs: append 'the lag is a spectrum (the rainbow)' — measure the distribution + tail (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-12T03:09:41Z",
+  "head_ref": "lag-is-a-spectrum-append"
+}

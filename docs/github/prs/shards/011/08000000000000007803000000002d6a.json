@@ -1,0 +1,12 @@
+{
+  "pr_number": 11626,
+  "archive_path": "docs/history/pr-reviews/PR-11626-test-hygiene-the-pr-review-archive-under-reports-threads-21-100-sampled-zero-doc.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-17T20:18:07.076Z",
+  "schema_version": "v1",
+  "commit_sha": "fc6b0fcddd0195c3d51152e52555180f1d4db628",
+  "title": "test(hygiene): the PR-review archive under-reports threads -- 21/100 sampled zero-docs are wrong (race, not vacuity-by-design)",
+  "state": "MERGED",
+  "merged_at": "2026-08-17T20:13:19Z",
+  "head_ref": "shadow/review-archive-undercapture-sample"
+}

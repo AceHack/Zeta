@@ -1,0 +1,14 @@
+{
+  "id": "080d0110a6ed2810a01300081d33522a",
+  "at": "2026-08-21T02:09:47.941Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M0H19QD3087G0R003GV76ZY",
+    "type": "bug",
+    "title": "Vault is ArgoCD-sole-owned but three preconditions are unmet: node count for raft quorum, longhorn storageClass ordering, unpassable readiness probe",
+    "slug": "vault-is-argocd-sole-owned-but-three-preconditions-are-unmet",
+    "priority": "P2",
+    "filename": "081M0H19QD3087G0R003GV76ZY-vault-is-argocd-sole-owned-but-three-preconditions-are-unmet.md"
+  }
+}

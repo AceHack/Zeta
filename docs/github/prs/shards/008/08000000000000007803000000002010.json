@@ -1,0 +1,12 @@
+{
+  "pr_number": 8208,
+  "archive_path": "docs/history/pr-reviews/PR-8208-docs-vision-re-home-the-immune-system-onto-the-reticulum-mesh-agi-asi-metric-con.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-14T18:07:39.421Z",
+  "schema_version": "v1",
+  "commit_sha": "ac974a6ab5d934661bf29a24abd1eeadb54c9c1e",
+  "title": "docs(vision): re-home the immune system onto the Reticulum mesh + AGI/ASI-metric + consent-of-the-dead",
+  "state": "MERGED",
+  "merged_at": "2026-06-14T18:07:16Z",
+  "head_ref": "ferry-reticulum-rehome-vision"
+}

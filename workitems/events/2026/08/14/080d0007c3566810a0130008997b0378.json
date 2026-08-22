@@ -1,0 +1,14 @@
+{
+  "id": "080d0007c3566810a0130008997b0378",
+  "at": "2026-08-14T15:51:15.405Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M00FGTPC087G0R0014BPJFC",
+    "type": "task",
+    "title": "Classify scheduler shed paths: annihilation is loss, deferral is pressure",
+    "slug": "classify-scheduler-shed-paths-annihilation-is-loss-deferral",
+    "priority": "P2",
+    "filename": "081M00FGTPC087G0R0014BPJFC-classify-scheduler-shed-paths-annihilation-is-loss-deferral.md"
+  }
+}

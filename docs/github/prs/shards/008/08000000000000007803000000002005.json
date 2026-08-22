@@ -1,0 +1,12 @@
+{
+  "pr_number": 8197,
+  "archive_path": "docs/history/pr-reviews/PR-8197-docs-pitch-three-audience-tuned-pitch-variants-investor-1m-design-partner-role.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-14T16:16:31.430Z",
+  "schema_version": "v1",
+  "commit_sha": "985eac2e981475bb1b6401fe8d5f42d5a4361f7e",
+  "title": "docs(pitch): three audience-tuned pitch variants (investor $1M / design-partner / role)",
+  "state": "MERGED",
+  "merged_at": "2026-06-14T16:16:10Z",
+  "head_ref": "otto/pitch-variants"
+}

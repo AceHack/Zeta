@@ -1,0 +1,12 @@
+{
+  "pr_number": 2018,
+  "archive_path": "docs/history/pr-reviews/PR-2018-fix-backlog-decompose-b-0237-wiki-integration.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-08T03:15:22.893Z",
+  "schema_version": "v1",
+  "commit_sha": "e993d05d9bf25e0c1579e7f6bf85a10d99cde3b2",
+  "title": "fix(backlog): decompose B-0237 wiki integration",
+  "state": "MERGED",
+  "merged_at": "2026-05-08T03:15:09Z",
+  "head_ref": "codex/b0237-decompose-wiki-integration"
+}

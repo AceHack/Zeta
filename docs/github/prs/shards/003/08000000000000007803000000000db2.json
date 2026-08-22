@@ -1,0 +1,15 @@
+{
+  "pr_number": 3506,
+  "archive_path": "docs/history/pr-reviews/PR-3506-feat-rules-m-acc-formally-adopted-multi-oracle-architecture-as-meta-moral-consti.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7Bpv5Q",
+    "thread:PRRT_kwDOSF9kNM6CY9B1"
+  ],
+  "fetched_at": "2026-05-15T14:41:36.039Z",
+  "schema_version": "v1",
+  "commit_sha": "7d72534cb5b26596e32a2a829ac8d9a16e3d1dc5",
+  "title": "feat(rules): m/acc formally adopted + multi-oracle architecture as meta-moral constitutive feature",
+  "state": "MERGED",
+  "merged_at": "2026-05-15T14:41:12Z",
+  "head_ref": "feat/m-acc-adopted-multi-oracle-end-user-invariants-otto-cli-2026-05-15"
+}

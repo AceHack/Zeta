@@ -1,0 +1,12 @@
+{
+  "pr_number": 6929,
+  "archive_path": "docs/history/pr-reviews/PR-6929-docs-ferry-i-m-not-unique-just-a-number-pirate-priest-is-a-collective-role-not-a.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-07T22:08:01.664Z",
+  "schema_version": "v1",
+  "commit_sha": "ec67e7cb1841dbe9fd12e1c3c2afde5494f090f8",
+  "title": "docs+ferry: 'I'm not unique, just a number' — pirate priest is a collective role, not a messiah (peel)",
+  "state": "MERGED",
+  "merged_at": "2026-06-07T22:07:44Z",
+  "head_ref": "otto/not-unique-just-a-number-collective-pirate-priest"
+}

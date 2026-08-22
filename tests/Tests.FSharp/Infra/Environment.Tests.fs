@@ -86,7 +86,20 @@ let ``SystemClock ticks forward`` () =
     let c = SystemClock() :> IClock
     let t0 = c.UtcNow()
     let e0 = c.Elapsed()
-    System.Threading.Thread.Sleep 5
+    // WAS `Thread.Sleep 5` followed straight by `t1 > t0`. The default timer resolution behind
+    // DateTimeOffset.UtcNow is about 15.6 ms on Windows, so five milliseconds of sleep can hand
+    // back the SAME instant -- and the assertion then fails for the platform's granularity
+    // rather than for anything about the clock. The only reason this has not been seen red is
+    // that the Windows leg of build-and-test carries continue-on-error.
+    //
+    // Spin until the clock has actually moved instead. The ten seconds is an upper bound on
+    // PATIENCE, not a delay: a slow machine waits longer and still passes, and a red here means
+    // the clock never advanced at all, which is a real failure on any machine.
+    let advanced =
+        System.Threading.SpinWait.SpinUntil(
+            (fun () -> c.UtcNow() > t0 && c.Elapsed() > e0),
+            TimeSpan.FromSeconds 10.0)
+    Assert.True(advanced, "SystemClock did not advance within 10s -- it is not a clock")
     let t1 = c.UtcNow()
     let e1 = c.Elapsed()
     t1 |> should be (greaterThan t0)
@@ -98,6 +111,9 @@ let ``FrozenClock advances only on explicit call`` () =
     let fc = FrozenClock DateTimeOffset.UnixEpoch
     let c = fc :> IClock
     let t0 = c.UtcNow()
+    // This sleep STAYS, and unlike the one above it is the safe direction: the assertion is
+    // that the frozen clock did NOT move, so extra elapsed time on a loaded machine makes the
+    // check stricter rather than flakier. An absence has nothing to spin until.
     System.Threading.Thread.Sleep 5
     let t1 = c.UtcNow()
     // Wall time passed but frozen clock didn't move.

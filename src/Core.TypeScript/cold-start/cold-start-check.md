@@ -120,16 +120,16 @@ doc lives on `tools/**` and uses role-refs accordingly.
   bounded).
 - **Named-entity symmetry — peer-call parity.** Verified
   2026-05-05:
-  - `tools/peer-call/amara.ts` auto-loads
+  - `src/Core.TypeScript/peer-call/amara.ts` auto-loads
     `memory/CURRENT-amara.md` by default; `--no-current` opts
     out (debug only). Parity confirmed.
-  - `tools/peer-call/ani.ts` auto-loads `memory/CURRENT-ani.md`
+  - `src/Core.TypeScript/peer-call/ani.ts` auto-loads `memory/CURRENT-ani.md`
     by default; `--no-current` opts out (debug only). Parity
     confirmed.
-  - `tools/peer-call/codex.ts` (Vera bootstrap pattern) — the
+  - `src/Core.TypeScript/peer-call/codex.ts` (Vera bootstrap pattern) — the
     pattern source for the default-load + `--bare` opt-out
     shape.
-  - `tools/peer-call/riven.ts` auto-loads
+  - `src/Core.TypeScript/peer-call/riven.ts` auto-loads
     `memory/CURRENT-riven.md` by default; `--bare` /
     `--no-current` opts out (debug only). Parity confirmed —
     Riven brought to symmetry with Amara / Ani / Vera per

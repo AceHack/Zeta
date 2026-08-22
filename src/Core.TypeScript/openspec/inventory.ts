@@ -1,6 +1,6 @@
 #!/usr/bin/env bun
 /**
- * tools/openspec/inventory.ts (v0.2.0)
+ * src/Core.TypeScript/openspec/inventory.ts (v0.2.0)
  *
  * Phase 1 mechanization for 081KQNJ500008QG0R001N94412: scans openspec/specs/ and src/Core/
  * to produce a structured gap report — which code modules have specs,
@@ -358,7 +358,9 @@ function parseCliArgs(args: string[]): CliOptions {
 }
 
 function printUsage(err: (message?: unknown, ...optionalParams: unknown[]) => void): void {
-  err("Usage: bun tools/openspec/inventory.ts [--enforce] [--fail-on-unmapped-specs] [--fail-on-uncovered-modules]");
+  err(
+    "Usage: bun src/Core.TypeScript/openspec/inventory.ts [--enforce] [--fail-on-unmapped-specs] [--fail-on-uncovered-modules]",
+  );
   err("");
   err("Options:");
   err("  --enforce                    Exit nonzero when the inventory gate fails.");

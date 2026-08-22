@@ -1,0 +1,12 @@
+{
+  "pr_number": 8289,
+  "archive_path": "docs/history/pr-reviews/PR-8289-docs-register-b-conjecture-identity-society-emergence-from-proof-of-entropy-anti.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-15T08:59:51.918Z",
+  "schema_version": "v1",
+  "commit_sha": "5e4fcd65d83494fea3745e4f890e2ffdb82f8b04",
+  "title": "docs(register): §B conjecture — identity & society emergence from proof-of-entropy (anti-Sybil), marked NOT-discharged",
+  "state": "MERGED",
+  "merged_at": "2026-06-15T08:59:28Z",
+  "head_ref": "otto/conjecture-identity-society-emergence-proof-of-entropy"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 6672,
+  "archive_path": "docs/history/pr-reviews/PR-6672-codex-build-hat-curated-observe-context-packs.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-03T14:46:52.340Z",
+  "schema_version": "v1",
+  "commit_sha": "2477198d3995c5a64d63319a0f2dd9b935896c26",
+  "title": "[codex] Build hat-curated observe context packs",
+  "state": "MERGED",
+  "merged_at": "2026-06-03T14:46:22Z",
+  "head_ref": "codex/agentic-org-context-packs"
+}

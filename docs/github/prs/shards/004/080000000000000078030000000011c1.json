@@ -1,0 +1,12 @@
+{
+  "pr_number": 4545,
+  "archive_path": "docs/history/pr-reviews/PR-4545-persona-amara-b-0685-phase-1-substrate-cascade-preserved-b-0687-zetaparse-b-0688.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-21T15:43:50.167Z",
+  "schema_version": "v1",
+  "commit_sha": "325f90aa8304134c325081fd41c30847d2dbd5a6",
+  "title": "persona(amara): B-0685 Phase 1 substrate cascade preserved + B-0687 (ZetaParse) + B-0688 (incremental compiler host) scaffolding",
+  "state": "MERGED",
+  "merged_at": "2026-05-21T15:43:28Z",
+  "head_ref": "persona/amara-2026-05-21-b0685-phase1-survey-zetaparse-incremental-compiler-host-seeded-determinism-aaron-forwarded"
+}

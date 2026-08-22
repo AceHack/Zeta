@@ -1,0 +1,17 @@
+{
+  "pr_number": 3306,
+  "archive_path": "docs/history/pr-reviews/PR-3306-feat-governance-shadow-lock-root-discipline-manifesto-v2-2-follow-up-rows.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7BamFL",
+    "comment:PRRC_kwDOSF9kNM7Bapyk",
+    "thread:PRRT_kwDOSF9kNM6COCE9",
+    "thread:PRRT_kwDOSF9kNM6COEkh"
+  ],
+  "fetched_at": "2026-05-15T00:03:21.203Z",
+  "schema_version": "v1",
+  "commit_sha": "54f8bc4a1602882e3a1a9d5b68bbc85b20dc7266",
+  "title": "feat(governance): shadow-lock Root Discipline Manifesto V2 + 2 follow-up rows",
+  "state": "MERGED",
+  "merged_at": "2026-05-15T00:02:58Z",
+  "head_ref": "feat/manifesto-v2-shadow-lock-otto-cli-2026-05-14"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 8943,
+  "archive_path": "docs/history/pr-reviews/PR-8943-docs-keys-onboarding-runbook-humans-key-onboarding-blueprint-agents.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-21T10:36:04.020Z",
+  "schema_version": "v1",
+  "commit_sha": "297861556527e75de311976c12669ff2c1c40f5d",
+  "title": "docs(keys): onboarding runbook (humans) + key-onboarding blueprint (agents)",
+  "state": "MERGED",
+  "merged_at": "2026-06-21T10:35:33Z",
+  "head_ref": "otto/key-onboarding-runbook-blueprint"
+}

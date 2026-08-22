@@ -1,0 +1,12 @@
+{
+  "pr_number": 12734,
+  "archive_path": "docs/history/pr-reviews/PR-12734-feat-setup-declare-yubikey-yubihsm-tooling-across-the-os-shields.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-20T11:58:05.617Z",
+  "schema_version": "v1",
+  "commit_sha": "59beb3b506eb2dccd2422cedfc3b1cab776d6977",
+  "title": "feat(setup): declare YubiKey + YubiHSM tooling across the OS shields",
+  "state": "MERGED",
+  "merged_at": "2026-08-20T11:57:27Z",
+  "head_ref": "feat/yubikey-yubihsm-in-declarative-installers"
+}

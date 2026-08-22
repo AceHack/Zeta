@@ -1,0 +1,12 @@
+{
+  "pr_number": 9018,
+  "archive_path": "docs/history/pr-reviews/PR-9018-backlog-credential-substrate-complete-the-lifecycle-triad-per-port-rotate-revoca.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-21T21:52:18.980Z",
+  "schema_version": "v1",
+  "commit_sha": "eb38e7cc6822aaa425e627f60bef0c5473128df4",
+  "title": "backlog(credential-substrate): complete the lifecycle triad — per-port rotate + revocation + cluster teardown",
+  "state": "MERGED",
+  "merged_at": "2026-06-21T21:51:50Z",
+  "head_ref": "otto/backlog-complete-lifecycle-triad-rotate"
+}

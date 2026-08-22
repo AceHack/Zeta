@@ -1,0 +1,29 @@
+{
+  "pr_number": 9594,
+  "archive_path": "docs/history/pr-reviews/PR-9594-feat-observe-phase-clock-time-as-a-4th-traveler-hlc-seed-phase-multi-planet.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7Te75F",
+    "comment:PRRC_kwDOSF9kNM7Te75I",
+    "comment:PRRC_kwDOSF9kNM7Te75M",
+    "comment:PRRC_kwDOSF9kNM7Te_6I",
+    "comment:PRRC_kwDOSF9kNM7TfB1k",
+    "comment:PRRC_kwDOSF9kNM7Ub995",
+    "comment:PRRC_kwDOSF9kNM7UbeYp",
+    "comment:PRRC_kwDOSF9kNM7UcHJm",
+    "thread:PRRT_kwDOSF9kNM6PaoCr",
+    "thread:PRRT_kwDOSF9kNM6PaoCu",
+    "thread:PRRT_kwDOSF9kNM6PaoCy",
+    "thread:PRRT_kwDOSF9kNM6Paq93",
+    "thread:PRRT_kwDOSF9kNM6PasX3",
+    "thread:PRRT_kwDOSF9kNM6QGMCE",
+    "thread:PRRT_kwDOSF9kNM6QGjmp",
+    "thread:PRRT_kwDOSF9kNM6QGqPO"
+  ],
+  "fetched_at": "2026-07-11T12:26:09.259Z",
+  "schema_version": "v1",
+  "commit_sha": "c9169068993ac5f32f55c54921bcaf8a09492bd1",
+  "title": "feat(observe): phase-clock — time as a 4th traveler (HLC, seed-phase, multi-planet)",
+  "state": "MERGED",
+  "merged_at": "2026-07-11T12:25:42Z",
+  "head_ref": "claim/kiro-phase-clock-2026-07-08"
+}

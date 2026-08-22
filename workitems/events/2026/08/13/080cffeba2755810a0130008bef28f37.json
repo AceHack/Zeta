@@ -1,0 +1,14 @@
+{
+  "id": "080cffeba2755810a0130008bef28f37",
+  "at": "2026-08-13T23:28:05.803Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081KZYQ8KNB087G0R000G8QPRE",
+    "type": "bug",
+    "title": "AIMD backs off on corruption loss it cannot relieve: 1% channel corruption costs 39% of throughput and 2% costs 86%, with congestion held at zero",
+    "slug": "aimd-backs-off-on-corruption-loss-it-cannot-relieve-1-channe",
+    "priority": "P2",
+    "filename": "081KZYQ8KNB087G0R000G8QPRE-aimd-backs-off-on-corruption-loss-it-cannot-relieve-1-channe.md"
+  }
+}

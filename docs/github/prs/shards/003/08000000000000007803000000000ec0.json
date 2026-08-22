@@ -1,0 +1,12 @@
+{
+  "pr_number": 3776,
+  "archive_path": "docs/history/pr-reviews/PR-3776-shard-tick-2026-05-16t06-18z-thread-triage-sweep-head-desync-recovery.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-16T06:22:40.883Z",
+  "schema_version": "v1",
+  "commit_sha": "f0a7177a6406571f4c01ded8beedefb13e36d99d",
+  "title": "shard(tick): 2026-05-16T06:18Z — thread-triage sweep + HEAD-desync recovery",
+  "state": "MERGED",
+  "merged_at": "2026-05-16T06:22:24Z",
+  "head_ref": "shard/tick-0612z-otto-cli-2026-05-16"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 3803,
+  "archive_path": "docs/history/pr-reviews/PR-3803-shard-tick-2026-05-16t07-14z-b-0159-closed-new-drift-sub-class-4.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-16T07:19:37.809Z",
+  "schema_version": "v1",
+  "commit_sha": "255089431759a5cf444fb650b54fb28387f07392",
+  "title": "shard(tick): 2026-05-16T07:14Z — B-0159 closed (NEW drift sub-class #4)",
+  "state": "MERGED",
+  "merged_at": "2026-05-16T07:19:22Z",
+  "head_ref": "shard/tick-0712z-otto-cli-2026-05-16"
+}

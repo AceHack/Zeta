@@ -1,0 +1,12 @@
+{
+  "pr_number": 10855,
+  "archive_path": "docs/history/pr-reviews/PR-10855-test-polarity-f1-the-resolution-falsifier-on-an-injected-13-noise-channel-the-fl.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-16T14:05:01.442Z",
+  "schema_version": "v1",
+  "commit_sha": "a15709cbd1c421470e480a26f6d05cd0803fb576",
+  "title": "test(polarity): F1 — the resolution falsifier on an injected §13 noise channel; the floor is sqrt(sigma/|R|)",
+  "state": "MERGED",
+  "merged_at": "2026-08-16T14:04:28Z",
+  "head_ref": "shadow/f1-polarity-resolution-floor"
+}

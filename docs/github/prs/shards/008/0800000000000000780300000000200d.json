@@ -1,0 +1,12 @@
+{
+  "pr_number": 8205,
+  "archive_path": "docs/history/pr-reviews/PR-8205-fix-ci-allowlist-zeta-self-register-sh-in-bash-retirement-inventory-restore-main.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-14T17:24:41.854Z",
+  "schema_version": "v1",
+  "commit_sha": "253f94029135d77b4bb0906515fe86518add4677",
+  "title": "fix(ci): allowlist zeta-self-register.sh in bash-retirement inventory (restore main green)",
+  "state": "MERGED",
+  "merged_at": "2026-06-14T17:24:17Z",
+  "head_ref": "otto/fix-bash-retirement-self-register"
+}

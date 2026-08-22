@@ -1,0 +1,12 @@
+{
+  "pr_number": 8992,
+  "archive_path": "docs/history/pr-reviews/PR-8992-feat-setup-ace-bun-realizers-slice-2-install-router.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-01T17:32:36.557Z",
+  "schema_version": "v1",
+  "commit_sha": "a59e121324c8fd473c4a0cc38ee6b2ecc1a88e10",
+  "title": "feat(setup): Ace Bun realizers slice 2 + install router",
+  "state": "MERGED",
+  "merged_at": "2026-07-01T17:32:15Z",
+  "head_ref": "feat/081KLL7-bun-realizers-slice-2"
+}

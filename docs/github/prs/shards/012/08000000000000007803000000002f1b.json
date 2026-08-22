@@ -1,0 +1,12 @@
+{
+  "pr_number": 12059,
+  "archive_path": "docs/history/pr-reviews/PR-12059-feat-core-ihara-zeta-of-the-8-4-adinkra-graph-the-graph-is-k-8-8-ramanujan-defla.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-22T18:08:40.001Z",
+  "schema_version": "v1",
+  "commit_sha": "b6e2e3584a1441c2f3ee63bd1e4abda3b4e25bc2",
+  "title": "feat(core): Ihara zeta of the [8,4] adinkra graph — the graph is K_{8,8}; Ramanujan (deflated); silent on unfolding",
+  "state": "MERGED",
+  "merged_at": "2026-08-22T18:04:39Z",
+  "head_ref": "feat/ihara-zeta-of-the-adinkra"
+}

@@ -1,0 +1,22 @@
+{
+  "pr_number": 8738,
+  "archive_path": "docs/history/pr-reviews/PR-8738-feat-installer-promote-phase-3-push-gate-nixos-mise-bootstrap.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7Nc3jK",
+    "comment:PRRC_kwDOSF9kNM7Ncytg",
+    "comment:PRRC_kwDOSF9kNM7NdZyD",
+    "comment:PRRC_kwDOSF9kNM7Ndj08",
+    "comment:PRRC_kwDOSF9kNM7NdjcS",
+    "comment:PRRC_kwDOSF9kNM7NdjuE",
+    "thread:PRRT_kwDOSF9kNM6LBSle",
+    "thread:PRRT_kwDOSF9kNM6LBVsr",
+    "thread:PRRT_kwDOSF9kNM6LBsV1"
+  ],
+  "fetched_at": "2026-06-20T17:15:49.814Z",
+  "schema_version": "v1",
+  "commit_sha": "3a3ddee742c18cc727376f1cd676e4518030a7ca",
+  "title": "feat(installer): promote phase-3 push gate + NixOS mise bootstrap",
+  "state": "MERGED",
+  "merged_at": "2026-06-20T17:15:19Z",
+  "head_ref": "feat/promote-phase3-push-gate"
+}

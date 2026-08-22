@@ -1,0 +1,12 @@
+{
+  "pr_number": 3103,
+  "archive_path": "docs/history/pr-reviews/PR-3103-fix-backlog-regenerate-backlog-md-mark-b-0259-closed.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-14T06:15:48.813Z",
+  "schema_version": "v1",
+  "commit_sha": "a3604df4405cc8e015aaa55f575a60a2cb162f57",
+  "title": "fix(backlog): regenerate BACKLOG.md — mark B-0259 closed",
+  "state": "MERGED",
+  "merged_at": "2026-05-14T06:15:30Z",
+  "head_ref": "fix/backlog-index-b0259-closed-drift-2026-05-14"
+}

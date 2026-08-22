@@ -1,0 +1,19 @@
+{
+  "pr_number": 7823,
+  "archive_path": "docs/history/pr-reviews/PR-7823-feat-zflash-b-0891-acceptance-scenarios-1-4-harness-ci.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7KopCy",
+    "comment:PRRC_kwDOSF9kNM7KouXm",
+    "comment:PRRC_kwDOSF9kNM7KouXr",
+    "thread:PRRT_kwDOSF9kNM6I-DKV",
+    "thread:PRRT_kwDOSF9kNM6I-DKZ",
+    "thread:PRRT_kwDOSF9kNM6I9_V8"
+  ],
+  "fetched_at": "2026-06-11T23:56:17.518Z",
+  "schema_version": "v1",
+  "commit_sha": "5afa2e729e6fc4d2aa26e2ae156a1046e4f10d51",
+  "title": "feat(zflash): B-0891 acceptance scenarios 1–4 harness + CI",
+  "state": "MERGED",
+  "merged_at": "2026-06-11T23:55:45Z",
+  "head_ref": "feat/b-0891-acceptance-tests-all-green"
+}

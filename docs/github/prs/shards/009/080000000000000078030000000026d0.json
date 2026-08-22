@@ -1,0 +1,12 @@
+{
+  "pr_number": 9936,
+  "archive_path": "docs/history/pr-reviews/PR-9936-release-task-browser-multitab-real-pages-after-9935.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-01T22:51:58.715Z",
+  "schema_version": "v1",
+  "commit_sha": "33d24d2b845e30855e6e5363ba4c35a96bb7f6d0",
+  "title": "release: task-browser-multitab-real-pages after #9935",
+  "state": "MERGED",
+  "merged_at": "2026-08-01T22:51:25Z",
+  "head_ref": "codex/release-browser-multitab-real-pages"
+}

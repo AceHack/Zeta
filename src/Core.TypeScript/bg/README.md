@@ -1,4 +1,4 @@
-# tools/bg/ — Background services
+# src/Core.TypeScript/bg/ — Background services
 
 Background services that mechanize substrate-engineering disciplines.
 
@@ -46,7 +46,7 @@ Per-service slice ordering (each service decomposes into 6 slices):
 
 All services compose with:
 
-- **081KR7JY10008QG0R000R503K2 bus protocol** (`tools/bus/`) — transport via `/tmp/zeta-bus/` JSON files
+- **081KR7JY10008QG0R000R503K2 bus protocol** (`src/Core.TypeScript/bus/`) — transport via `/tmp/zeta-bus/` JSON files
 - **Existing background infrastructure** — `com.zeta.claude-loop` launchd + cron heartbeat
 
 ## Adapter pattern
@@ -71,18 +71,18 @@ production code path is exercised via the CLI entry-point only.
 
 ```bash
 # One-shot mode (cron-driven; recommended)
-bun tools/bg/standing-by-detector.ts --once
-bun tools/bg/backlog-ready-notifier.ts --once
-bun tools/bg/missed-substrate-detector.ts --once
+bun src/Core.TypeScript/bg/standing-by-detector.ts --once
+bun src/Core.TypeScript/bg/backlog-ready-notifier.ts --once
+bun src/Core.TypeScript/bg/missed-substrate-detector.ts --once
 
 # Daemon mode (standalone; runs forever)
-bun tools/bg/standing-by-detector.ts --poll-min 5 --idle-min 15
+bun src/Core.TypeScript/bg/standing-by-detector.ts --poll-min 5 --idle-min 15
 
 # Dry-run (no bus publish)
-bun tools/bg/standing-by-detector.ts --once --no-publish
+bun src/Core.TypeScript/bg/standing-by-detector.ts --once --no-publish
 
 # Send envelopes to a specific agent (default broadcast "*")
-bun tools/bg/backlog-ready-notifier.ts --once --to vera
+bun src/Core.TypeScript/bg/backlog-ready-notifier.ts --once --to vera
 ```
 
 ## What's still pending

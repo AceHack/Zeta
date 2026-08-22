@@ -1,0 +1,12 @@
+{
+  "pr_number": 6011,
+  "archive_path": "docs/history/pr-reviews/PR-6011-feat-b-0343-pure-parseseedtreeresponse-post-git-trees-response-tree-sha-read-sid.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-29T16:53:01.502Z",
+  "schema_version": "v1",
+  "commit_sha": "79d07f22e897ae0f380c808134ebb2ff17e6769b",
+  "title": "feat(B-0343): pure parseSeedTreeResponse — POST /git/trees response → tree SHA (read-side pair of buildSeedTreeRequest)",
+  "state": "MERGED",
+  "merged_at": "2026-05-29T16:52:36Z",
+  "head_ref": "otto-cli/b0343-parse-tree-response-2026-05-29"
+}

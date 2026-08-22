@@ -1,0 +1,12 @@
+{
+  "pr_number": 7032,
+  "archive_path": "docs/history/pr-reviews/PR-7032-docs-ferry-privacy-encryption-is-the-source-of-the-irreducible-error-conjugate-m.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-08T06:01:37.664Z",
+  "schema_version": "v1",
+  "commit_sha": "69b738c44d3166b4fb945341bffdc64bb3a29b2f",
+  "title": "docs+ferry: privacy/encryption is the source of the irreducible error; conjugate measures clock drift; irreversible privacy => irreversible drift (#7081-#7086)",
+  "state": "MERGED",
+  "merged_at": "2026-06-08T06:01:16Z",
+  "head_ref": "otto/privacy-encryption-source-irreducible-error-drift-raytrace-society"
+}

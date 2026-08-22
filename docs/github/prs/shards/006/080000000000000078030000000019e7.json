@@ -1,0 +1,12 @@
+{
+  "pr_number": 6631,
+  "archive_path": "docs/history/pr-reviews/PR-6631-backlog-b-1010-deserialize-safety-surfaces-listed-pure-non-side-effecting-deseri.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-03T07:54:45.756Z",
+  "schema_version": "v1",
+  "commit_sha": "b2a660e2051a0ff68e08c6f1d6454f10ba3b7367",
+  "title": "backlog(B-1010): deserialize-safety surfaces — listed pure non-side-effecting Deserialize for untrusted wire",
+  "state": "MERGED",
+  "merged_at": "2026-06-03T07:54:25Z",
+  "head_ref": "otto-cli/b1010-deserialize-safety-surfaces-2026-06-03"
+}

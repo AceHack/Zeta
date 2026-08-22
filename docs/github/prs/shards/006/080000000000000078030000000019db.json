@@ -1,0 +1,12 @@
+{
+  "pr_number": 6619,
+  "archive_path": "docs/history/pr-reviews/PR-6619-docs-b-1008-b-1009-test-hexagon-own-our-test-interfaces-z3-in-ci-follow-up-rows.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-02T18:44:35.597Z",
+  "schema_version": "v1",
+  "commit_sha": "6942e85f588112f5e2855bc6f82f381a89d9bc96",
+  "title": "docs(B-1008,B-1009): test-hexagon (own our test interfaces) + z3-in-CI follow-up rows",
+  "state": "MERGED",
+  "merged_at": "2026-06-02T18:44:13Z",
+  "head_ref": "otto-cli/b1008-test-hexagon-b1009-z3-in-ci-rows-2026-06-02"
+}

@@ -1,0 +1,29 @@
+{
+  "pr_number": 2273,
+  "archive_path": "docs/history/pr-reviews/PR-2273-feat-b-0317-playwright-github-session-auth-helper-smallest-slice.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_gh1-",
+    "comment:PRRC_kwDOSF9kNM6_gh11",
+    "comment:PRRC_kwDOSF9kNM6_gh14",
+    "comment:PRRC_kwDOSF9kNM6_gh1x",
+    "comment:PRRC_kwDOSF9kNM6_gh2G",
+    "comment:PRRC_kwDOSF9kNM6_ghYR",
+    "comment:PRRC_kwDOSF9kNM6_ghpi",
+    "comment:PRRC_kwDOSF9kNM6_gjxy",
+    "thread:PRRT_kwDOSF9kNM6Az6X2",
+    "thread:PRRT_kwDOSF9kNM6Az6lp",
+    "thread:PRRT_kwDOSF9kNM6Az6v3",
+    "thread:PRRT_kwDOSF9kNM6Az6vm",
+    "thread:PRRT_kwDOSF9kNM6Az6vn",
+    "thread:PRRT_kwDOSF9kNM6Az6vq",
+    "thread:PRRT_kwDOSF9kNM6Az6vv",
+    "thread:PRRT_kwDOSF9kNM6Az8Wk"
+  ],
+  "fetched_at": "2026-05-09T10:24:14.857Z",
+  "schema_version": "v1",
+  "commit_sha": "9e4e9ac0b30e3c0636f23181b003d842fef35722",
+  "title": "feat(B-0317): playwright GitHub session/auth helper (smallest slice)",
+  "state": "MERGED",
+  "merged_at": "2026-05-09T10:23:56Z",
+  "head_ref": "claim/b0317-playwright-github-session-auth-smallest-slice-riven-2026-05-09"
+}

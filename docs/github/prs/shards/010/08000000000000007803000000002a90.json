@@ -1,0 +1,12 @@
+{
+  "pr_number": 10896,
+  "archive_path": "docs/history/pr-reviews/PR-10896-fix-hygiene-complete-the-defect-pin-handshake-the-pin-fired-so-rewrite-it.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-16T14:15:57.962Z",
+  "schema_version": "v1",
+  "commit_sha": "6b7e04b7a22746aa48a2cc47f27c0dce07311f4f",
+  "title": "fix(hygiene): complete the defect-pin handshake — the pin fired, so rewrite it",
+  "state": "MERGED",
+  "merged_at": "2026-08-16T14:15:23Z",
+  "head_ref": "shadow/complete-closed-flag-set-pin-handshake"
+}

@@ -1,0 +1,19 @@
+{
+  "pr_number": 2336,
+  "archive_path": "docs/history/pr-reviews/PR-2336-feat-b-0373-smallest-safe-slice-causalpower-alignment-primitive-via-z3.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_jtGD",
+    "comment:PRRC_kwDOSF9kNM6_jtGR",
+    "comment:PRRC_kwDOSF9kNM6_jtGW",
+    "thread:PRRT_kwDOSF9kNM6A2Xd0",
+    "thread:PRRT_kwDOSF9kNM6A2Xdj",
+    "thread:PRRT_kwDOSF9kNM6A2Xdv"
+  ],
+  "fetched_at": "2026-05-09T19:54:33.153Z",
+  "schema_version": "v1",
+  "commit_sha": "4539f991bbfddd8f2caf5eeda869ec2eb6424bc7",
+  "title": "feat(B-0373): smallest safe slice — CausalPower alignment primitive via Z3",
+  "state": "MERGED",
+  "merged_at": "2026-05-09T19:54:16Z",
+  "head_ref": "claim/b0373-alignment-proof-primitive-2026-05-09"
+}

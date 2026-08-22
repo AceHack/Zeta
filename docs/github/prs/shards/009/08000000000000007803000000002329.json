@@ -1,0 +1,12 @@
+{
+  "pr_number": 9001,
+  "archive_path": "docs/history/pr-reviews/PR-9001-docs-research-zero-downtime-key-rotation-itron-keystate-skms-anchor-over-z-set-s.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-21T20:42:42.697Z",
+  "schema_version": "v1",
+  "commit_sha": "e5af819f700af1061023771353ee53bf8e054fa8",
+  "title": "docs(research): zero-downtime key rotation — Itron KeyState/SKMS anchor over Z-set/SchemaEvolution",
+  "state": "MERGED",
+  "merged_at": "2026-06-21T20:42:10Z",
+  "head_ref": "otto/research-zero-downtime-key-rotation-itron-anchor"
+}

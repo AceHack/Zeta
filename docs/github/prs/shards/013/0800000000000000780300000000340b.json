@@ -1,0 +1,12 @@
+{
+  "pr_number": 13323,
+  "archive_path": "docs/history/pr-reviews/PR-13323-feat-cluster-shrink-pvcs-to-fit-measured-hardware-new-measured-rung-retire-the-5.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-21T19:50:24.888Z",
+  "schema_version": "v1",
+  "commit_sha": "d97341e4bc0d4cddb67a30e81991674fd8130f00",
+  "title": "feat(cluster): shrink PVCs to fit measured hardware — new `measured` rung, retire the 552 GiB capacity debt",
+  "state": "MERGED",
+  "merged_at": "2026-08-21T19:49:42Z",
+  "head_ref": "feat/shrink-pvcs-to-fit-measured-hardware"
+}

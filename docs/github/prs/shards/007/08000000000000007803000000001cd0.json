@@ -1,0 +1,12 @@
+{
+  "pr_number": 7376,
+  "archive_path": "docs/history/pr-reviews/PR-7376-docs-research-word-partitioner-word-wrapping-boundary-layout-the-llm-s-latent-ge.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-09T19:32:25.031Z",
+  "schema_version": "v1",
+  "commit_sha": "01d4ff6f1465063d49bb4c1febfa0ad03aef1206",
+  "title": "docs(research): word-partitioner + word-wrapping/boundary-layout = the LLM's latent geospatial engine, mapped to a geographic Z-set type; geospatial is a traveler",
+  "state": "MERGED",
+  "merged_at": "2026-06-09T19:32:04Z",
+  "head_ref": "otto/word-partitioner-boundary-layout-llm-geospatial-engine-geographic-zsets"
+}

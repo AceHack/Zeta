@@ -1,0 +1,19 @@
+{
+  "pr_number": 4015,
+  "archive_path": "docs/history/pr-reviews/PR-4015-feat-routines-b-0510-autonomous-loop-cloud-routine-declaration.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7B8hTj",
+    "comment:PRRC_kwDOSF9kNM7B8hew",
+    "comment:PRRC_kwDOSF9kNM7B8hex",
+    "thread:PRRT_kwDOSF9kNM6CmzGy",
+    "thread:PRRT_kwDOSF9kNM6CmzPf",
+    "thread:PRRT_kwDOSF9kNM6CmzPg"
+  ],
+  "fetched_at": "2026-05-17T07:32:03.217Z",
+  "schema_version": "v1",
+  "commit_sha": "bcb2c5b6616eb5d24f728c142dd261a55da4ce34",
+  "title": "feat(routines): B-0510 autonomous-loop cloud routine declaration",
+  "state": "MERGED",
+  "merged_at": "2026-05-17T07:31:47Z",
+  "head_ref": "feat/b-0510-autonomous-loop-cloud-routine"
+}

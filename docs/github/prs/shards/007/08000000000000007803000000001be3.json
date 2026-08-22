@@ -1,0 +1,12 @@
+{
+  "pr_number": 7139,
+  "archive_path": "docs/history/pr-reviews/PR-7139-feat-core-gridbinding-homoiconic-4x4-controller-constant-cells-context-labels.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-08T23:58:05.547Z",
+  "schema_version": "v1",
+  "commit_sha": "bbf712e48dde25916dbd508dde20036b69a53171",
+  "title": "feat(core): GridBinding — homoiconic 4x4 controller (constant cells, context labels)",
+  "state": "MERGED",
+  "merged_at": "2026-06-08T23:57:47Z",
+  "head_ref": "otto/gridbinding-homoiconic-4x4-controller-constant-cells-context-labels"
+}

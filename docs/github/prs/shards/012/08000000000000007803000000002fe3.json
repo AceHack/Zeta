@@ -1,0 +1,12 @@
+{
+  "pr_number": 12259,
+  "archive_path": "docs/history/pr-reviews/PR-12259-feat-core-classify-erasure-by-injectivity-at-the-spine-log-and-eviction-sites-th.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-19T03:09:41.723Z",
+  "schema_version": "v1",
+  "commit_sha": "ef953c06790cfb33520d3118aa94c79e524688ea",
+  "title": "feat(core): classify erasure by injectivity at the spine, log and eviction sites — the class attaches to the representation, not the interface",
+  "state": "MERGED",
+  "merged_at": "2026-08-19T03:09:05Z",
+  "head_ref": "soraya/erasure-classification-by-representation"
+}

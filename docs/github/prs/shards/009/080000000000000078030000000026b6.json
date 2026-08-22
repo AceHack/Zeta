@@ -1,0 +1,12 @@
+{
+  "pr_number": 9910,
+  "archive_path": "docs/history/pr-reviews/PR-9910-fix-ci-raise-the-tick-shard-lint-budget-5-12min-cancelled-by-its-own-timeout-4-t.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-18T07:49:54.923Z",
+  "schema_version": "v1",
+  "commit_sha": "3d0798f52125df549d20f4d82fff33cefde5b7c8",
+  "title": "fix(ci): raise the tick-shard lint budget 5→12min — cancelled by its own timeout 4× today",
+  "state": "MERGED",
+  "merged_at": "2026-08-01T18:33:03Z",
+  "head_ref": "shadow/fix-tick-shard-timeout"
+}

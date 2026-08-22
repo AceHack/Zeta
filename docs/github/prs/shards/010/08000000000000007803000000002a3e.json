@@ -1,0 +1,12 @@
+{
+  "pr_number": 10814,
+  "archive_path": "docs/history/pr-reviews/PR-10814-fix-lint-tsc-pretty-false-so-error-ts-stays-one-token.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-15T16:02:45.392Z",
+  "schema_version": "v1",
+  "commit_sha": "7fc1e05a94105f1edf0733aa23efa60356414843",
+  "title": "fix(lint): tsc --pretty false so error TS stays one token",
+  "state": "MERGED",
+  "merged_at": "2026-08-15T16:02:12Z",
+  "head_ref": "fix/tsc-pretty-false-error-ts-is-one-token"
+}

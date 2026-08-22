@@ -38,6 +38,8 @@ concurrency:
 
 jobs:
   ping:
+    # Timeout basis: observed med 0.1m / max 0.1m (n=40).
+    timeout-minutes: 5
     runs-on: ubuntu-24.04
     steps:
       - name: Anon read-only ping (keeps the Supabase free tier awake)

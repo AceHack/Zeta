@@ -1,0 +1,12 @@
+{
+  "pr_number": 7674,
+  "archive_path": "docs/history/pr-reviews/PR-7674-fix-lint-clear-post-merge-markdown-and-chip9-tsc.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-11T13:13:14.082Z",
+  "schema_version": "v1",
+  "commit_sha": "e6132d9b00c4953763a33b75039272669bb62e2e",
+  "title": "fix(lint): clear post-merge markdown and chip9 tsc",
+  "state": "MERGED",
+  "merged_at": "2026-06-11T13:12:48Z",
+  "head_ref": "codex/vera-fix-postmerge-lints"
+}

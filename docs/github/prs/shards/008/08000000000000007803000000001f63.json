@@ -1,0 +1,12 @@
+{
+  "pr_number": 8035,
+  "archive_path": "docs/history/pr-reviews/PR-8035-feat-wire-all-9-action-kinds-observe-loop-execute-complete.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-13T17:59:28.112Z",
+  "schema_version": "v1",
+  "commit_sha": "61025b5f3d76ad10f6550782b5ab341629ede6d3",
+  "title": "feat: wire all 9 action kinds — observe loop execute() complete",
+  "state": "MERGED",
+  "merged_at": "2026-06-13T17:58:58Z",
+  "head_ref": "kiro/wire-all-9-kinds"
+}

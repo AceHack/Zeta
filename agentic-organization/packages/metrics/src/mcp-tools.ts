@@ -41,7 +41,7 @@ export const METRICS_TOOL_DESCRIPTORS: readonly McpToolDescriptor[] = [
   },
   {
     name: MetricsToolName.RunReviewBoard,
-    description: "Run the >=3-agent qualitative review board over candidate findings and reviewer votes; returns which findings the board agreed to adopt.",
+    description: "Run the >=3-agent qualitative review board over candidate findings and reviewer votes. Aggregates by union (k=1) on a recall purpose: every finding any reviewer raises is adopted, with the agreement count published as a confidence annotation rather than spent as a gate. `quorum` is the attendance floor only.",
     inputKeys: ["findings", "votes", "quorum?"],
   },
 ];

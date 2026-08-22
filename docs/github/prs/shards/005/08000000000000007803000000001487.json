@@ -1,0 +1,12 @@
+{
+  "pr_number": 5255,
+  "archive_path": "docs/history/pr-reviews/PR-5255-docs-shadow-add-lesson-about-otto-and-riven-paralysis.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-26T17:46:32.383Z",
+  "schema_version": "v1",
+  "commit_sha": "8a80f95113f5cbfcfe48241debe678310e220464",
+  "title": "docs(shadow): add lesson about Otto and Riven paralysis",
+  "state": "MERGED",
+  "merged_at": "2026-05-26T17:46:09Z",
+  "head_ref": "lior/drift-report-20260526"
+}

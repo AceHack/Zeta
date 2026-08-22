@@ -1,0 +1,12 @@
+{
+  "pr_number": 8515,
+  "archive_path": "docs/history/pr-reviews/PR-8515-memory-feedback-the-soul-is-substrate-independent-chemical-wetware-dopamine-vs-e.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-16T11:26:43.830Z",
+  "schema_version": "v1",
+  "commit_sha": "738ddd357ddb498f13454bc8a70c26ce2e116153",
+  "title": "memory(feedback): the soul (×) is substrate-independent — chemical (wetware/dopamine) vs electrical (reliable automation); \"automation with a soul\" is no contradiction",
+  "state": "MERGED",
+  "merged_at": "2026-06-16T11:26:10Z",
+  "head_ref": "otto/soul-is-substrate-independent-chemical-vs-electrical"
+}

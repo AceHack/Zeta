@@ -1,0 +1,12 @@
+{
+  "pr_number": 10190,
+  "archive_path": "docs/history/pr-reviews/PR-10190-fix-usb-installer-retry-with-backoff-on-first-boot-install-sh-bug-a-081kzetp6at.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-09T16:20:29.732Z",
+  "schema_version": "v1",
+  "commit_sha": "53f0780403700c546d6a41813cc0d39ff2de37e4",
+  "title": "fix(usb-installer): retry-with-backoff on first-boot install.sh (bug A, 081KZETP6AT)",
+  "state": "MERGED",
+  "merged_at": "2026-08-09T16:20:00Z",
+  "head_ref": "shadow/bug-a-install-sh-firstboot-retry-backoff"
+}

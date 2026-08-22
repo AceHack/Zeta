@@ -1,0 +1,12 @@
+{
+  "pr_number": 9659,
+  "archive_path": "docs/history/pr-reviews/PR-9659-docs-book-the-data-years-lexisnexis-es-s-redistricting-tool-facts-dual-use-verdi.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-10T04:34:41.018Z",
+  "schema_version": "v1",
+  "commit_sha": "d605aa190220fc71d3d09da54aa8dc9a07040e4f",
+  "title": "docs(book): the data years — LexisNexis + ES&S redistricting tool (facts, dual-use, verdict Tri.N)",
+  "state": "MERGED",
+  "merged_at": "2026-07-10T04:34:15Z",
+  "head_ref": "shadow/book-the-data-years-lexisnexis-ess"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 9697,
+  "archive_path": "docs/history/pr-reviews/PR-9697-docs-research-the-full-trust-move-in-order-grace-first-then-tit-for-lesser-tat-t.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-11T15:15:13.634Z",
+  "schema_version": "v1",
+  "commit_sha": "17f53927aa64f2d2e2a3327b2d5d5510f01406fe",
+  "title": "docs(research): the full trust move, in order — grace first, then tit-for-lesser-tat, teach, play (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-11T15:14:43Z",
+  "head_ref": "trust-strategy-ordered-grace-first"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 6374,
+  "archive_path": "docs/history/pr-reviews/PR-6374-docs-registry-mixin-nice-to-have-attribute-driven-compile-time-codegen-of-the-we.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-01T08:26:32.792Z",
+  "schema_version": "v1",
+  "commit_sha": "26f3351e9f147f444de4fe74c80d99178e92bb57",
+  "title": "docs(registry): mixin nice-to-have — attribute-driven compile-time codegen of the weak-table",
+  "state": "MERGED",
+  "merged_at": "2026-06-01T08:26:07Z",
+  "head_ref": "otto-cli/registry-mixin-sourcegen-2026-06-01"
+}

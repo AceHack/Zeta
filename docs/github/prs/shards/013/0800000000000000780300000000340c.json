@@ -1,0 +1,12 @@
+{
+  "pr_number": 13324,
+  "archive_path": "docs/history/pr-reviews/PR-13324-ferry-ip-questionable-ian-clarke-s-freenet-talk-it-rhymes-with-our-decentralisat.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-21T19:59:56.286Z",
+  "schema_version": "v1",
+  "commit_sha": "b25f406921ddf578ec1d516ad3eb0be800bc421f",
+  "title": "ferry(ip-questionable): Ian Clarke's Freenet talk — it rhymes with our decentralisation",
+  "state": "MERGED",
+  "merged_at": "2026-08-21T19:59:13Z",
+  "head_ref": "ferry/freenet-ian-clarke-talk"
+}

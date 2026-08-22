@@ -1,5 +1,9 @@
 import { describe, expect, test } from "bun:test";
 import {
+  buildQemuNetworkDeviceArgs,
+  buildQemuSystemBootArgs,
+  DEFAULT_QEMU_NETWORK_DEVICES,
+  type QemuNetworkDevice,
   assertHostnameAutogenerationSerialMarkers,
   assertHostnameInjectionSerialMarkers,
   assertRetentionSerialMarkers,
@@ -24,6 +28,7 @@ import {
   type QemuCommandExecution,
   type SpawnSyncQemuCommandOptions,
 } from "./qemu-state";
+import { qemuUsbStorageDeviceArg } from "../../installer/qemu-usb-storage.ts";
 
 function retentionPlan(): Qcow2SnapshotRetentionPlan {
   const result = planQcow2SnapshotRetention({
@@ -134,7 +139,9 @@ describe("081KSNY2Z0008QG0R0008PN7RQ QEMU state-preservation planner", () => {
       "file=/tmp/zflash-boot.img,if=none,format=raw,readonly=on,id=zflashboot",
     );
     expect(result.ok.restartFromIsoWithDisk.args).toContain("qemu-xhci,id=xhci");
-    expect(result.ok.restartFromIsoWithDisk.args).toContain("usb-storage,bus=xhci.0,drive=zflashboot,bootindex=1");
+    const usb = qemuUsbStorageDeviceArg("zflashboot");
+    if (!usb.ok) throw new Error(usb.error);
+    expect(result.ok.restartFromIsoWithDisk.args).toContain(usb.device);
     expect(result.ok.restartFromIsoWithDisk.args).toContain("file=/tmp/zeta.qcow2,if=virtio,format=qcow2");
     for (const marker of B0891_RETENTION_USB_SERIAL_MARKERS) {
       expect(result.ok.requiredSerialMarkers).toContain(marker);
@@ -660,5 +667,129 @@ describe("081KSNY2Z0008QG0R0008PN7RQ QEMU state-preservation planner", () => {
         );
       }
     }
+  });
+});
+
+const SEGMENT_BOOT_BASE = {
+  diskPath: "/tmp/d.qcow2",
+  serialLogPath: "/tmp/s.log",
+  memoryMB: 2048,
+  cpuCount: 2,
+  kvmAvailable: false,
+  bootMedia: { kind: "iso", path: "/tmp/i.iso" },
+} as const;
+
+describe("QEMU network devices (scenario 5 shared L2 segment)", () => {
+  // THE REGRESSION GUARD for scenarios 1-4. They are hard-gated on push-to-main
+  // and must not shift by one byte because scenario 5 gained a capability.
+  test("omitting networkDevices reproduces the pre-existing SLIRP command line", () => {
+    const args = buildQemuSystemBootArgs(SEGMENT_BOOT_BASE);
+    const netdevIndex = args.indexOf("-netdev");
+    expect(args[netdevIndex + 1]).toBe("user,id=net0");
+    expect(args[netdevIndex + 2]).toBe("-device");
+    expect(args[netdevIndex + 3]).toBe("virtio-net-pci,netdev=net0");
+    expect(args.filter((a) => a === "-netdev")).toHaveLength(1);
+  });
+
+  test("explicitly passing the default devices equals omitting them", () => {
+    const implicitArgs = buildQemuSystemBootArgs(SEGMENT_BOOT_BASE);
+    const explicitArgs = buildQemuSystemBootArgs({
+      ...SEGMENT_BOOT_BASE,
+      networkDevices: DEFAULT_QEMU_NETWORK_DEVICES,
+    });
+    expect(explicitArgs).toEqual(implicitArgs);
+  });
+
+  test("a listen side and a connect side name the same TCP rendezvous", () => {
+    const listen = buildQemuNetworkDeviceArgs([
+      { id: "net0", backend: { kind: "user-nat" } },
+      { id: "net1", backend: { kind: "l2-socket-listen", port: 21084 }, mac: "52:54:00:7a:f1:01" },
+    ]);
+    const connect = buildQemuNetworkDeviceArgs([
+      { id: "net0", backend: { kind: "user-nat" } },
+      {
+        id: "net1",
+        backend: { kind: "l2-socket-connect", host: "127.0.0.1", port: 21084 },
+        mac: "52:54:00:7a:f1:02",
+      },
+    ]);
+    expect("ok" in listen).toBe(true);
+    expect("ok" in connect).toBe(true);
+    if (!("ok" in listen) || !("ok" in connect)) {
+      return;
+    }
+    expect(listen.ok).toContain("socket,id=net1,listen=:21084");
+    expect(connect.ok).toContain("socket,id=net1,connect=127.0.0.1:21084");
+  });
+
+  // The silent-misroute guard. QEMU defaults every NIC to one constant MAC, so
+  // a shared segment without explicit MACs is a duplicate-address collision
+  // that still boots -- exactly the false-green shape this harness must refuse.
+  test("a shared-segment device without an explicit mac is refused", () => {
+    const result = buildQemuNetworkDeviceArgs([
+      { id: "net1", backend: { kind: "l2-socket-listen", port: 21084 } },
+    ]);
+    expect("error" in result).toBe(true);
+    if ("error" in result) {
+      expect(result.error).toContain("must declare an explicit mac");
+    }
+  });
+
+  test("two devices sharing one mac are refused", () => {
+    const result = buildQemuNetworkDeviceArgs([
+      { id: "net1", backend: { kind: "l2-socket-listen", port: 21084 }, mac: "52:54:00:7a:f1:01" },
+      { id: "net2", backend: { kind: "l2-multicast", group: "230.0.0.1", port: 21085 }, mac: "52:54:00:7A:F1:01" },
+    ]);
+    expect("error" in result).toBe(true);
+    if ("error" in result) {
+      expect(result.error).toContain("more than one netdev");
+    }
+  });
+
+  test("a multicast MAC is refused as a NIC source address", () => {
+    const result = buildQemuNetworkDeviceArgs([
+      { id: "net1", backend: { kind: "l2-socket-listen", port: 21084 }, mac: "53:54:00:7a:f1:01" },
+    ]);
+    expect("error" in result).toBe(true);
+    if ("error" in result) {
+      expect(result.error).toContain("multicast bit");
+    }
+  });
+
+  test("a unicast address is refused as a multicast group", () => {
+    const result = buildQemuNetworkDeviceArgs([
+      { id: "net1", backend: { kind: "l2-multicast", group: "10.0.0.1", port: 21085 }, mac: "52:54:00:7a:f1:03" },
+    ]);
+    expect("error" in result).toBe(true);
+    if ("error" in result) {
+      expect(result.error).toContain("outside 224.0.0.0/4");
+    }
+  });
+
+  test("duplicate netdev ids and out-of-range ports are refused", () => {
+    const dupe = buildQemuNetworkDeviceArgs([
+      { id: "net0", backend: { kind: "user-nat" } },
+      { id: "net0", backend: { kind: "user-nat" } },
+    ]);
+    expect("error" in dupe).toBe(true);
+
+    const badPort = buildQemuNetworkDeviceArgs([
+      { id: "net1", backend: { kind: "l2-socket-listen", port: 70000 }, mac: "52:54:00:7a:f1:04" },
+    ]);
+    expect("error" in badPort).toBe(true);
+
+    const empty = buildQemuNetworkDeviceArgs([]);
+    expect("error" in empty).toBe(true);
+  });
+
+  test("a segment VM keeps its NAT NIC alongside the segment NIC", () => {
+    const devices: readonly QemuNetworkDevice[] = [
+      { id: "net0", backend: { kind: "user-nat" } },
+      { id: "net1", backend: { kind: "l2-socket-listen", port: 21084 }, mac: "52:54:00:7a:f1:01" },
+    ];
+    const args = buildQemuSystemBootArgs({ ...SEGMENT_BOOT_BASE, networkDevices: devices });
+    expect(args.filter((a) => a === "-netdev")).toHaveLength(2);
+    expect(args).toContain("user,id=net0");
+    expect(args).toContain("virtio-net-pci,netdev=net1,mac=52:54:00:7a:f1:01");
   });
 });

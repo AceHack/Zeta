@@ -1,0 +1,12 @@
+{
+  "pr_number": 3729,
+  "archive_path": "docs/history/pr-reviews/PR-3729-shard-tick-2026-05-16t04-15z-pr-3722-copilot-p1-fix-thread-resolved.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-16T04:20:17.479Z",
+  "schema_version": "v1",
+  "commit_sha": "edd1b53e40e9560fe26c7be2f7fb75143f613579",
+  "title": "shard(tick): 2026-05-16T04:15Z — PR #3722 Copilot P1 fix + thread resolved",
+  "state": "MERGED",
+  "merged_at": "2026-05-16T04:20:01Z",
+  "head_ref": "shard/tick-0415z-otto-cli-2026-05-16"
+}

@@ -1,0 +1,21 @@
+{
+  "pr_number": 4892,
+  "archive_path": "docs/history/pr-reviews/PR-4892-shard-2026-05-25-0008z-otto-cli-14th-dotgit-anchor-0-stuck-procs-first-clean-rea.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7EblE9",
+    "comment:PRRC_kwDOSF9kNM7EblFK",
+    "comment:PRRC_kwDOSF9kNM7EblFS",
+    "comment:PRRC_kwDOSF9kNM7EblJf",
+    "thread:PRRT_kwDOSF9kNM6EbiJ1",
+    "thread:PRRT_kwDOSF9kNM6EbiJi",
+    "thread:PRRT_kwDOSF9kNM6EbiJv",
+    "thread:PRRT_kwDOSF9kNM6EbiNO"
+  ],
+  "fetched_at": "2026-05-25T00:12:42.136Z",
+  "schema_version": "v1",
+  "commit_sha": "64dfe386949b478a1ab0c7390143808b9c15f599",
+  "title": "shard(2026-05-25/0008Z): otto-cli — 14th dotgit anchor (0 stuck procs; first clean reading after 13 saturated anchors)",
+  "state": "MERGED",
+  "merged_at": "2026-05-25T00:12:24Z",
+  "head_ref": "otto-cli/shard-tick-0008z-dotgit-saturation-recovery-14th-anchor-2026-05-25"
+}

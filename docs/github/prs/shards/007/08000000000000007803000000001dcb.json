@@ -1,0 +1,12 @@
+{
+  "pr_number": 7627,
+  "archive_path": "docs/history/pr-reviews/PR-7627-docs-gen-the-universal-action-grammar-five-clauses-carved-from-running-originals.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-11T09:48:48.739Z",
+  "schema_version": "v1",
+  "commit_sha": "d415c79d683a4e0f4f4b5bbfef9e7bd980b445a8",
+  "title": "docs(gen): the Universal Action Grammar — five clauses carved from running originals (B-1025 slice 1, doc half)",
+  "state": "MERGED",
+  "merged_at": "2026-06-11T09:48:25Z",
+  "head_ref": "shadow-gen-action-grammar"
+}

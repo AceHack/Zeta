@@ -1,0 +1,12 @@
+{
+  "pr_number": 6807,
+  "archive_path": "docs/history/pr-reviews/PR-6807-feat-evolutionwindow-mechanize-the-backward-projection-constraint-expand-into-ga.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-07T12:10:26.129Z",
+  "schema_version": "v1",
+  "commit_sha": "58651d8496636aed0f406fbf6e8a8faa9281ad93",
+  "title": "feat(EvolutionWindow): mechanize the backward-projection constraint — expand-into gate",
+  "state": "MERGED",
+  "merged_at": "2026-06-07T12:10:06Z",
+  "head_ref": "feat/evolution-window-expand-into-gate"
+}

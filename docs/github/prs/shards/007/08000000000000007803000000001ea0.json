@@ -1,0 +1,12 @@
+{
+  "pr_number": 7840,
+  "archive_path": "docs/history/pr-reviews/PR-7840-chore-backlog-rename-b-1022-b-1036-to-zetaid-filenames-batch-1.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-11T23:50:17.900Z",
+  "schema_version": "v1",
+  "commit_sha": "5953eecdf525941319695122d7a505d0c6b641de",
+  "title": "chore(backlog): rename B-1022..B-1036 to zetaid filenames (batch 1)",
+  "state": "MERGED",
+  "merged_at": "2026-06-11T23:49:56Z",
+  "head_ref": "alexa/rename-to-zetaid-batch1"
+}

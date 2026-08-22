@@ -1,0 +1,17 @@
+{
+  "pr_number": 5965,
+  "archive_path": "docs/history/pr-reviews/PR-5965-vision-structural-forgiveness-the-atonement-engine-as-our-vision-the-moral-readi.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7GFwg2",
+    "comment:PRRC_kwDOSF9kNM7GFwhj",
+    "thread:PRRT_kwDOSF9kNM6Fo2g1",
+    "thread:PRRT_kwDOSF9kNM6Fo2ga"
+  ],
+  "fetched_at": "2026-05-29T09:23:43.215Z",
+  "schema_version": "v1",
+  "commit_sha": "fc7f3e5fe3f8b517ac33001d840276df489bfbd4",
+  "title": "vision: structural forgiveness — the atonement engine as our vision (the moral reading of retraction-native)",
+  "state": "MERGED",
+  "merged_at": "2026-05-29T09:23:19Z",
+  "head_ref": "otto-cli/vision-atonement-engine-structural-forgiveness-2026-05-29"
+}

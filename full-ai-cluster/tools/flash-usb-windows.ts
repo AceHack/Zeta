@@ -38,10 +38,12 @@ import {
   closeSync,
   existsSync,
   fstatSync,
+  mkdtempSync,
   openSync,
   readdirSync,
   readFileSync,
   readSync,
+  rmSync,
   statSync,
   unlinkSync,
   writeFileSync,
@@ -52,11 +54,9 @@ import { execFileSync } from "node:child_process";
 import { homedir, tmpdir } from "node:os";
 import { join } from "node:path";
 
-// ── Safety-rail constants (mirror flash-usb.ts exactly) ──────────────
-export const MIN_ISO_BYTES = 200 * 1024 * 1024;
-export const MAX_ISO_BYTES = 8 * 1024 * 1024 * 1024;
-export const MIN_USB_BYTES = 4 * 1024 * 1024 * 1024;
-export const MAX_USB_BYTES = 256 * 1024 * 1024 * 1024;
+// ── Safety-rail constants — shared with every arm, not mirrored ──────
+import { MAX_ISO_BYTES, MAX_USB_BYTES, MIN_ISO_BYTES, MIN_USB_BYTES } from "../../src/Core.TypeScript/zflash/size-bounds.ts";
+export { MAX_ISO_BYTES, MAX_USB_BYTES, MIN_ISO_BYTES, MIN_USB_BYTES };
 
 export const ISO_GLOB_PREFIX = "zeta-installer-";
 
@@ -327,7 +327,7 @@ export function parseGetPartitionJson(jsonText: string): WinPartition[] {
     // DriveLetter serializes as a single char, 0, null, or "" when unset.
     const dl = o.DriveLetter;
     const driveLetter =
-      dl == null || dl === 0 || dl === "0" || dl === " " ? "" : String(dl).trim().replace(/[:\\]/g, "");
+      dl == null || dl === 0 || dl === "0" || dl === "\u0000" ? "" : String(dl).trim().replace(/[:\\]/g, "");
     const gpt = flat(o.GptType).toLowerCase().replace(/[{}]/g, "");
     const mbrRaw = o.MbrType;
     return {
@@ -552,14 +552,17 @@ const realRunner: CommandRunner = {
     });
   },
   diskpart(script: string): string {
-    // diskpart reads its commands from a script file (`/s`). Use a temp file.
-    const tmp = join(tmpdir(), `zeta-diskpart-${process.pid}-${Date.now()}.txt`);
+    // diskpart reads its commands from a script file (`/s`). Use a temp dir + file
+    // (mkdtemp — CodeQL insecure-temporary-file; 081KRFA460008QG0R0022THSDJ pattern).
+    const dir = mkdtempSync(join(tmpdir(), "zeta-diskpart-"));
+    const tmp = join(dir, "script.txt");
     writeFileSync(tmp, script.endsWith("\r\n") ? script : script + "\r\n", "ascii");
     try {
       return execFileSync("diskpart", ["/s", tmp], { encoding: "utf8", maxBuffer: 4 * 1024 * 1024 });
     } finally {
       try {
         unlinkSync(tmp);
+        rmSync(dir, { recursive: true });
       } catch {
         /* best-effort cleanup */
       }

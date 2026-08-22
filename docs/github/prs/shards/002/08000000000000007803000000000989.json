@@ -1,0 +1,15 @@
+{
+  "pr_number": 2441,
+  "archive_path": "docs/history/pr-reviews/PR-2441-fix-b-0077-close-as-resolved-by-b-0063-curl-fetch-codex-findings-already-fixed.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_ml7x",
+    "thread:PRRT_kwDOSF9kNM6A4p6V"
+  ],
+  "fetched_at": "2026-05-10T08:26:32.699Z",
+  "schema_version": "v1",
+  "commit_sha": "8d6cbc44e08cfc3f73864d12972d326df1881b0a",
+  "title": "fix(B-0077): close as resolved-by-B-0063 — curl-fetch Codex findings already fixed",
+  "state": "MERGED",
+  "merged_at": "2026-05-10T08:26:16Z",
+  "head_ref": "fix/B-0077-close-curl-fetch-resolved-by-b-0063"
+}

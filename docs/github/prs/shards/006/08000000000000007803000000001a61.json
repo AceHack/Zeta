@@ -1,0 +1,12 @@
+{
+  "pr_number": 6753,
+  "archive_path": "docs/history/pr-reviews/PR-6753-docs-architecture-cells-as-geodes-cp-within-ap-across-cross-cell-sagas-as-partit.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-07T08:19:24.818Z",
+  "schema_version": "v1",
+  "commit_sha": "2a1ecb3c93449627497df3131052eb1d88494ab2",
+  "title": "docs(architecture): cells as geodes — CP-within/AP-across + cross-cell sagas as partitioned Orleans actors",
+  "state": "MERGED",
+  "merged_at": "2026-06-07T08:19:06Z",
+  "head_ref": "otto/cells-as-geodes-cp-ap-sagas"
+}

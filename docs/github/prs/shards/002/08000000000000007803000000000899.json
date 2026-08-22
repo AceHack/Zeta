@@ -1,0 +1,33 @@
+{
+  "pr_number": 2201,
+  "archive_path": "docs/history/pr-reviews/PR-2201-feat-b-0334-add-memory-cross-reference-integrity-audit.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_fM-6",
+    "comment:PRRC_kwDOSF9kNM6_fM-p",
+    "comment:PRRC_kwDOSF9kNM6_fMN-",
+    "comment:PRRC_kwDOSF9kNM6_fMN9",
+    "comment:PRRC_kwDOSF9kNM6_fM_E",
+    "comment:PRRC_kwDOSF9kNM6_fM_M",
+    "comment:PRRC_kwDOSF9kNM6_fM_V",
+    "comment:PRRC_kwDOSF9kNM6_fM_f",
+    "comment:PRRC_kwDOSF9kNM6_fM_o",
+    "comment:PRRC_kwDOSF9kNM6_fM_t",
+    "thread:PRRT_kwDOSF9kNM6Ay438",
+    "thread:PRRT_kwDOSF9kNM6Ay439",
+    "thread:PRRT_kwDOSF9kNM6Ay5e2",
+    "thread:PRRT_kwDOSF9kNM6Ay5eB",
+    "thread:PRRT_kwDOSF9kNM6Ay5eQ",
+    "thread:PRRT_kwDOSF9kNM6Ay5eX",
+    "thread:PRRT_kwDOSF9kNM6Ay5ef",
+    "thread:PRRT_kwDOSF9kNM6Ay5el",
+    "thread:PRRT_kwDOSF9kNM6Ay5es",
+    "thread:PRRT_kwDOSF9kNM6Ay5ex"
+  ],
+  "fetched_at": "2026-05-09T06:30:28.946Z",
+  "schema_version": "v1",
+  "commit_sha": "fa6515a30d4ce9fe74898deb40c1553b516088b4",
+  "title": "feat(B-0334): add memory cross-reference integrity audit",
+  "state": "MERGED",
+  "merged_at": "2026-05-09T06:30:12Z",
+  "head_ref": "fix/b0334-memory-cross-reference-audit"
+}

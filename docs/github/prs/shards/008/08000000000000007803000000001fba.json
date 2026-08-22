@@ -1,0 +1,12 @@
+{
+  "pr_number": 8122,
+  "archive_path": "docs/history/pr-reviews/PR-8122-fix-lint-green-python-rust-for-the-zeta-id-mixin-rollout-restore-main-green.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-14T01:33:40.110Z",
+  "schema_version": "v1",
+  "commit_sha": "c1698145a91ff9ca37f0d89fd9da21fc7948bd5b",
+  "title": "fix(lint): green Python + Rust for the zeta-id/mixin rollout (restore main-green)",
+  "state": "MERGED",
+  "merged_at": "2026-06-14T01:33:18Z",
+  "head_ref": "otto/fix-python-rust-rollout-format"
+}

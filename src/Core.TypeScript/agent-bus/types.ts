@@ -21,6 +21,7 @@
 import { join } from "node:path";
 import { TTL_MS, type AgentId, type SenderAgentId, type BusMessage, type MessageEnvelope } from "../bus/types";
 import { pack, DEFAULT_ENV, type SimulationEnvironment } from "../zeta-id/zeta-id";
+import { isCanonicalZetaIdHex } from "../zeta-id/canonical-hex";
 import {
   Category,
   IdVersion,
@@ -74,9 +75,19 @@ export function isCanonicalTimestamp(ts: string): boolean {
   return /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$/.test(ts);
 }
 
-/** A canonical bus id is 32 lowercase hex chars (`mintBusZetaIdHex` output). */
+/**
+ * A canonical bus id is 32 lowercase hex chars that DECODE as a ZetaId
+ * (`mintBusZetaIdHex` output).
+ *
+ * Was a bare `/^[0-9a-f]{32}$/` — an encoding check standing in for a value check. The
+ * bus is the cross-MACHINE channel, so its reader (`subscribe.ts`) is the one place
+ * here that accepts ids minted by a peer we do not control; a shape-only check there
+ * accepts whatever any producer emits. All 49 envelopes under `docs/agent-bus/` decode
+ * cleanly, so this is a tightening with no legacy carve-out. See
+ * `src/Core.TypeScript/zeta-id/canonical-hex.ts`.
+ */
 export function isCanonicalBusId(id: string): boolean {
-  return /^[0-9a-f]{32}$/.test(id);
+  return isCanonicalZetaIdHex(id);
 }
 
 /** `<root>/<persona>/<YYYY>/<MM>/<DD>/<id>.json` (UTC date partition). */

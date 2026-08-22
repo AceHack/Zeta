@@ -1,0 +1,12 @@
+{
+  "pr_number": 7091,
+  "archive_path": "docs/history/pr-reviews/PR-7091-feat-core-softdashboard-streamlength-gameable-survival-metric-empowerment-robust.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-08T11:25:19.898Z",
+  "schema_version": "v1",
+  "commit_sha": "c9f6077c860eaffdea01d62225e1071a4ed98891",
+  "title": "feat(core): SoftDashboard.streamLength — gameable survival metric; empowerment robust to its cheat",
+  "state": "MERGED",
+  "merged_at": "2026-06-08T11:24:57Z",
+  "head_ref": "otto/softdashboard-streamlength-gameable-vs-empowerment-robust"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 6456,
+  "archive_path": "docs/history/pr-reviews/PR-6456-docs-ace-slice-6-2-publish-enhancements-design.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-01T19:17:44.691Z",
+  "schema_version": "v1",
+  "commit_sha": "a17836481b26128592c06a2ef04a04114824c6c8",
+  "title": "docs(ace): slice 6.2 publish-enhancements design",
+  "state": "MERGED",
+  "merged_at": "2026-06-01T19:17:24Z",
+  "head_ref": "otto-windows/ace-slice6.2-spec-2026-06-01"
+}

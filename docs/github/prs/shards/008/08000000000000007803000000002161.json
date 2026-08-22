@@ -1,0 +1,12 @@
+{
+  "pr_number": 8545,
+  "archive_path": "docs/history/pr-reviews/PR-8545-memory-feedback-coda-helping-kids-is-upstream-prevention-prevents-them-becoming-.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-16T17:25:32.044Z",
+  "schema_version": "v1",
+  "commit_sha": "1cd0efbba2ea6307a15725cc16b842c990cc02f5",
+  "title": "memory(feedback): coda — helping kids is UPSTREAM prevention (prevents them becoming the worse later); empowerment = prevention; cycle risk-elevating not deterministic; help is the END",
+  "state": "MERGED",
+  "merged_at": "2026-06-16T17:24:56Z",
+  "head_ref": "otto/helping-kids-is-upstream-prevention-becomes-the-worse"
+}

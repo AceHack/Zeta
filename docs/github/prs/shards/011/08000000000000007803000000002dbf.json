@@ -1,0 +1,12 @@
+{
+  "pr_number": 11711,
+  "archive_path": "docs/history/pr-reviews/PR-11711-docs-research-path-independence-is-not-one-property-refuting-the-monoid-bell-hol.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-17T23:45:48.761Z",
+  "schema_version": "v1",
+  "commit_sha": "d805c91d1b843b0f4240d421e81db569e7be3480",
+  "title": "docs(research): path-independence is not one property — refuting the monoid/Bell/holonomy/CALM identification",
+  "state": "MERGED",
+  "merged_at": "2026-08-17T23:45:18Z",
+  "head_ref": "refute-path-independence-one-property"
+}

@@ -1,0 +1,19 @@
+{
+  "pr_number": 5584,
+  "archive_path": "docs/history/pr-reviews/PR-5584-test-guard-bash-retirement-package-wiring.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7Fel10",
+    "comment:PRRC_kwDOSF9kNM7Fel2i",
+    "comment:PRRC_kwDOSF9kNM7Fel3O",
+    "thread:PRRT_kwDOSF9kNM6FMtMO",
+    "thread:PRRT_kwDOSF9kNM6FMtMu",
+    "thread:PRRT_kwDOSF9kNM6FMtNH"
+  ],
+  "fetched_at": "2026-05-27T19:04:03.443Z",
+  "schema_version": "v1",
+  "commit_sha": "410cecf3a6115ff73074a142a3c3bafc4625821e",
+  "title": "test: guard bash retirement package wiring",
+  "state": "MERGED",
+  "merged_at": "2026-05-27T19:03:43Z",
+  "head_ref": "claim/codex-loop-bash-retirement-wiring-guard-20260527"
+}

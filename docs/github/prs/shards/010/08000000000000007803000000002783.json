@@ -1,0 +1,12 @@
+{
+  "pr_number": 10115,
+  "archive_path": "docs/history/pr-reviews/PR-10115-book-editions-mandarin-companion-5-the-pull-full-length-zh.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-07T18:00:30.715Z",
+  "schema_version": "v1",
+  "commit_sha": "bbcdd282bd910be25762146888a32f7610ef89f8",
+  "title": "book(editions): Mandarin companion 5 — the Pull, full length (zh)",
+  "state": "MERGED",
+  "merged_at": "2026-08-07T17:59:56Z",
+  "head_ref": "book-zh-companion-pull"
+}

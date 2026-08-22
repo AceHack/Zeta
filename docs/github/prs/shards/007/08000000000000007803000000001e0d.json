@@ -1,0 +1,12 @@
+{
+  "pr_number": 7693,
+  "archive_path": "docs/history/pr-reviews/PR-7693-docs-database-the-cartridge-reading-an-8-track-turing-tape-that-is-its-own-boxar.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-11T13:55:32.120Z",
+  "schema_version": "v1",
+  "commit_sha": "bf2f8f83fa889259c4e37d426a5a71d886ac51ec",
+  "title": "docs(database): the cartridge reading — an 8-track Turing tape that is its own boxart",
+  "state": "MERGED",
+  "merged_at": "2026-06-11T13:55:06Z",
+  "head_ref": "shadow-cartridge-8track-boxart"
+}

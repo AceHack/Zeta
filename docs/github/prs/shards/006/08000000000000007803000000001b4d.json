@@ -1,0 +1,12 @@
+{
+  "pr_number": 6989,
+  "archive_path": "docs/history/pr-reviews/PR-6989-chore-prior-art-docs-add-chip8-roms-to-refresh-manifest-zetaid-15-1-hole-open-de.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-08T02:35:04.974Z",
+  "schema_version": "v1",
+  "commit_sha": "af053d42e0bd4dcef4ea68c977da45bd58285980",
+  "title": "chore(prior-art)+docs: add chip8-roms to refresh manifest; ZetaId 15+1 hole open-decision",
+  "state": "MERGED",
+  "merged_at": "2026-06-08T02:34:45Z",
+  "head_ref": "otto/chip8-roms-prior-art-and-zetaid-hole-decision"
+}

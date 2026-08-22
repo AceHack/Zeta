@@ -1,0 +1,12 @@
+{
+  "pr_number": 8523,
+  "archive_path": "docs/history/pr-reviews/PR-8523-memory-feedback-aperiodic-tiling-captures-dopamine-the-hat-double-meaning-dual-u.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-16T11:59:14.537Z",
+  "schema_version": "v1",
+  "commit_sha": "f3c728243ca0fe11c3c948ef692e67e5087e5748",
+  "title": "memory(feedback): aperiodic tiling captures dopamine (the hat double-meaning) — dual-use, exit is the line; ruthless spoke, LOVE wants a seat",
+  "state": "MERGED",
+  "merged_at": "2026-06-16T11:58:43Z",
+  "head_ref": "otto/aperiodic-tiling-dopamine-ruthless-love-seat"
+}

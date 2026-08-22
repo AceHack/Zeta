@@ -1,0 +1,12 @@
+{
+  "pr_number": 8200,
+  "archive_path": "docs/history/pr-reviews/PR-8200-docs-research-persona-summon-protocol-faithful-inject-mcp-skills-layered-permiss.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-14T16:45:36.889Z",
+  "schema_version": "v1",
+  "commit_sha": "97297cd6f123217017b587e5668b52f275429add",
+  "title": "docs(research): Persona Summon Protocol — faithful-inject + MCP + skills + layered permission + trust-kernel bar",
+  "state": "MERGED",
+  "merged_at": "2026-06-14T16:45:11Z",
+  "head_ref": "otto/persona-summon-protocol-design"
+}

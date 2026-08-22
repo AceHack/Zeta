@@ -1,0 +1,12 @@
+{
+  "pr_number": 10279,
+  "archive_path": "docs/history/pr-reviews/PR-10279-fix-docs-md012-in-the-n-3-combine-two-consecutive-blank-lines.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-10T05:38:10.988Z",
+  "schema_version": "v1",
+  "commit_sha": "77250b4f9399d28ffca602ed3f05cb594a8584f6",
+  "title": "fix(docs): MD012 in the N=3 combine — two consecutive blank lines",
+  "state": "MERGED",
+  "merged_at": "2026-08-10T05:37:39Z",
+  "head_ref": "shadow/fix-md012-combine"
+}

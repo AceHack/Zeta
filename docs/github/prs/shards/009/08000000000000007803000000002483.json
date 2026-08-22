@@ -1,0 +1,12 @@
+{
+  "pr_number": 9347,
+  "archive_path": "docs/history/pr-reviews/PR-9347-feat-mixir-reify-the-abstract-value-evaluator-mix-as-data-slice-3-bounded-shadow.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-03T19:17:59.558Z",
+  "schema_version": "v1",
+  "commit_sha": "759fed8eeecdb58c77fd5e839241355bef11251a",
+  "title": "feat(mixir): reify the abstract-value evaluator — mix-as-data slice 3, bounded (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-03T19:17:35Z",
+  "head_ref": "otto/mix-as-data-slice3-abstract-eval"
+}

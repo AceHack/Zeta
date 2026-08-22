@@ -1,0 +1,12 @@
+{
+  "pr_number": 7902,
+  "archive_path": "docs/history/pr-reviews/PR-7902-fix-testloop-keep-chip9-host-sealed.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-12T12:04:31.650Z",
+  "schema_version": "v1",
+  "commit_sha": "adb0ae72cbecc4c780e792b0fa6902371e5c1d5e",
+  "title": "fix(testloop): keep Chip9 host sealed",
+  "state": "MERGED",
+  "merged_at": "2026-06-12T12:04:04Z",
+  "head_ref": "codex/fix-b1035-sealed-room-audit"
+}

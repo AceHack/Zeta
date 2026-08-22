@@ -1,0 +1,12 @@
+{
+  "pr_number": 9311,
+  "archive_path": "docs/history/pr-reviews/PR-9311-feat-discovery-signed-beacon-membrane-persona-key-auth-on-the-bus-wire-shadow.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-03T14:34:27.108Z",
+  "schema_version": "v1",
+  "commit_sha": "4abb0079de75f0a784082ee5d2966f496954c750",
+  "title": "feat(discovery): signed beacon membrane — persona-key auth on the bus wire (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-03T14:34:03Z",
+  "head_ref": "otto/beacon-auth-signed-membrane"
+}

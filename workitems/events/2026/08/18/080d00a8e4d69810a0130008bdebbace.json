@@ -1,0 +1,14 @@
+{
+  "id": "080d00a8e4d69810a0130008bdebbace",
+  "at": "2026-08-18T13:43:11.315Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M0AHS6PJ087G0R0039T9PFW",
+    "type": "task",
+    "title": "Widen the self-claim surface to standing practice claims checked against the claimant's own repo record, with a real consumer and no representable malice",
+    "slug": "widen-the-self-claim-surface-to-standing-practice-claims-che",
+    "priority": "P2",
+    "filename": "081M0AHS6PJ087G0R0039T9PFW-widen-the-self-claim-surface-to-standing-practice-claims-che.md"
+  }
+}

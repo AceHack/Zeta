@@ -1,0 +1,17 @@
+{
+  "pr_number": 5127,
+  "archive_path": "docs/history/pr-reviews/PR-5127-docs-b-0798-add-classifier-bypass-research-boundary.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7E062-",
+    "comment:PRRC_kwDOSF9kNM7E2CWa",
+    "thread:PRRT_kwDOSF9kNM6EuV3J",
+    "thread:PRRT_kwDOSF9kNM6EvIvE"
+  ],
+  "fetched_at": "2026-05-26T09:08:12.260Z",
+  "schema_version": "v1",
+  "commit_sha": "ddfa5b53e25c85d145801d4e01a021c54ef95b3f",
+  "title": "docs(B-0798): add classifier-bypass research boundary",
+  "state": "MERGED",
+  "merged_at": "2026-05-26T09:07:51Z",
+  "head_ref": "claim/backlog-0798"
+}

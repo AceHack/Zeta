@@ -1,0 +1,12 @@
+{
+  "pr_number": 9152,
+  "archive_path": "docs/history/pr-reviews/PR-9152-docs-trajectory-resume-for-the-name-audition-crash-safety-ferries.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-17T10:32:15.710Z",
+  "schema_version": "v1",
+  "commit_sha": "703cf8b833d2f1e32ffdab0d949d269faae15907",
+  "title": "docs(trajectory): RESUME for the ζ name-audition (crash-safety + ferries)",
+  "state": "MERGED",
+  "merged_at": "2026-07-02T16:30:25Z",
+  "head_ref": "otto/zeta-trajectory-resume"
+}

@@ -1,0 +1,17 @@
+{
+  "pr_number": 4040,
+  "archive_path": "docs/history/pr-reviews/PR-4040-persona-riven-save-2026-05-17-lean-4-sketch-handoff-to-soraya-b-0543-proof-path.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7B9KgJ",
+    "comment:PRRC_kwDOSF9kNM7B9Oa-",
+    "comment:PRRC_kwDOSF9kNM7B_VIw",
+    "thread:PRRT_kwDOSF9kNM6CnR_c"
+  ],
+  "fetched_at": "2026-05-17T12:17:09.737Z",
+  "schema_version": "v1",
+  "commit_sha": "68d08b1bc35c958f536456d71f505b3e100db8f9",
+  "title": "persona(riven): save 2026-05-17 Lean 4 sketch handoff to Soraya — B-0543 proof path",
+  "state": "MERGED",
+  "merged_at": "2026-05-17T12:16:52Z",
+  "head_ref": "persona/riven-2026-05-17-lean4-sketch-handoff-to-soraya-2026-05-17"
+}

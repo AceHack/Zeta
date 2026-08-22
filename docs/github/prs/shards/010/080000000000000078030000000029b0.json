@@ -1,0 +1,12 @@
+{
+  "pr_number": 10672,
+  "archive_path": "docs/history/pr-reviews/PR-10672-feat-cluster-single-node-readiness-audit-the-poc-box-needs-1-6-tib-and-four-quor.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-16T22:48:37.928Z",
+  "schema_version": "v1",
+  "commit_sha": "46d8770df5b1f0f017bcca9bdb62b981635bb02d",
+  "title": "feat(cluster): single-node readiness audit — the PoC box needs 1.6 TiB and four quorums are fake",
+  "state": "MERGED",
+  "merged_at": "2026-08-16T22:48:04Z",
+  "head_ref": "dejan/hardware-poc-gap-analysis"
+}

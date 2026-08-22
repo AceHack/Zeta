@@ -1,0 +1,17 @@
+{
+  "pr_number": 6484,
+  "archive_path": "docs/history/pr-reviews/PR-6484-docs-registry-z-set-4-4-native-generic-math-4-4-un-stale-the-table-numerics-line.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7G7Wk1",
+    "comment:PRRC_kwDOSF9kNM7G7Wkd",
+    "thread:PRRT_kwDOSF9kNM6GQwU_",
+    "thread:PRRT_kwDOSF9kNM6GQwVM"
+  ],
+  "fetched_at": "2026-06-01T22:07:29.473Z",
+  "schema_version": "v1",
+  "commit_sha": "239593df5fa5261eb427f5c0b6a5ed32bfd4d04c",
+  "title": "docs(registry): Z-set 4/4 native + generic-math 4/4 (un-stale the table + numerics line)",
+  "state": "MERGED",
+  "merged_at": "2026-06-01T22:06:59Z",
+  "head_ref": "otto-cli/registry-zset-generic-math-4of4-2026-06-01"
+}

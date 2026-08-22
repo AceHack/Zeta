@@ -355,8 +355,44 @@ describe("iter-5.1 hardware-configuration copy (081KSNY2Z0008QG0R0008PN7RQ phase
     expect(genIdx).toBeGreaterThan(0);
     expect(copyIdx).toBeGreaterThan(genIdx);
     expect(installIdx).toBeGreaterThan(copyIdx);
+    // 081M0JK4R26087G0R002SVJ5VW: the destination is still host-scoped, but it
+    // is now built in two steps -- HOST_DIR is needed on its own to decide
+    // whether the selected host imports a hardware-configuration.nix at all.
     expect(SCRIPT).toContain(
-      'HW_DST="/mnt/etc/zeta/full-ai-cluster/nixos/hosts/${HOST}/hardware-configuration.nix"',
+      'HOST_DIR="/mnt/etc/zeta/full-ai-cluster/nixos/hosts/${HOST}"',
     );
+    expect(SCRIPT).toContain('HW_DST="${HOST_DIR}/hardware-configuration.nix"');
+  });
+
+  test("a failed capture REFUSES; it does not warn and install the placeholder", () => {
+    // 081M0JK4R26087G0R002SVJ5VW. This block used to read
+    //   else echo "[iter-5.1] WARN: hardware-configuration not copied ..." >&2
+    // so a failed capture printed one stderr line and the install continued with
+    // the committed /-and-/boot placeholder -- leaving the longhorn{1..N}
+    // partitions this script had just mounted with no `fileSystems` entry, and
+    // leaving the boot-time Longhorn preflight (which derives its required set
+    // from the host's own fileSystems) with an EMPTY set to check.
+    //
+    // Compare EXECUTABLE lines only: zeta-install.sh's own header quotes the old
+    // fallback verbatim, and the account of why a fix exists must survive.
+    const code = SCRIPT.split("\n")
+      .filter((l) => !/^\s*#/.test(l) && l.trim() !== "")
+      .join("\n");
+    expect(code).not.toContain("WARN: hardware-configuration not copied");
+    expect(SCRIPT).toContain("WARN: hardware-configuration not copied");
+
+    // The copy is gated on a verdict, and the RESULT is content-checked against
+    // the mountpoints this install actually mounted -- not on cp's exit code.
+    expect(code).toContain('HW_PLAN="$(zeta_hwcap_plan "$HW_SRC" "$HOST_DIR" "$HW_DST")"');
+    expect(code).toContain('HW_MISSING="$(zeta_hwcap_verify "$HW_DST" "${LONGHORN_MOUNTS[@]}")"');
+
+    // Every REFUSE verdict the decision function can emit reaches a bail.
+    const verdicts = [...code.matchAll(/echo "(REFUSE [a-z-]+)"/g)].map((m) => m[1]);
+    expect(verdicts.length).toBeGreaterThanOrEqual(3);
+    for (const verdict of verdicts) {
+      const arm = code.indexOf(`"${verdict}")`);
+      expect(arm).toBeGreaterThan(-1);
+      expect(code.slice(arm, code.indexOf(";;", arm))).toContain("bail ");
+    }
   });
 });

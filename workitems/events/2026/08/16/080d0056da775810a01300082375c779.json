@@ -1,0 +1,14 @@
+{
+  "id": "080d0056da775810a01300082375c779",
+  "at": "2026-08-16T13:55:39.883Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M05DPKQA087G0R0036HE8CE",
+    "type": "task",
+    "title": "Adapter between CategoricalFactorTensor and FactorGenerator - recorded negative, blocked upstream",
+    "slug": "adapter-between-categoricalfactortensor-and-factorgenerator",
+    "priority": "P3",
+    "filename": "081M05DPKQA087G0R0036HE8CE-adapter-between-categoricalfactortensor-and-factorgenerator.md"
+  }
+}

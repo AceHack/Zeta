@@ -1,0 +1,12 @@
+{
+  "pr_number": 6159,
+  "archive_path": "docs/history/pr-reviews/PR-6159-backlog-b-0944-name-the-consensus-variant-summonable-bft-compilers-can-t-lie-bft.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-30T23:02:19.254Z",
+  "schema_version": "v1",
+  "commit_sha": "538f1acf5b50ae12825ddd5a74793f4acaac5301",
+  "title": "backlog(B-0944): name the consensus variant — summonable BFT (compilers can't lie → BFT made easy)",
+  "state": "MERGED",
+  "merged_at": "2026-05-30T23:02:01Z",
+  "head_ref": "otto/b0944-summonable-bft-naming-2026-05-30"
+}

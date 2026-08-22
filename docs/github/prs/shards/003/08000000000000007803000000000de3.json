@@ -1,0 +1,16 @@
+{
+  "pr_number": 3555,
+  "archive_path": "docs/history/pr-reviews/PR-3555-feat-b-0533-slice-b-3-b-4-enforce-flag-gate-yml-wiring.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7BvJBy",
+    "comment:PRRC_kwDOSF9kNM7Bvchs",
+    "thread:PRRT_kwDOSF9kNM6Cc3Jo"
+  ],
+  "fetched_at": "2026-05-15T19:15:25.473Z",
+  "schema_version": "v1",
+  "commit_sha": "79be127e775f01d8b2532fad1987c5a533d39972",
+  "title": "feat(B-0533): Slice B.3 + B.4 — --enforce flag + gate.yml wiring",
+  "state": "MERGED",
+  "merged_at": "2026-05-15T19:15:07Z",
+  "head_ref": "feat/b0533-slice-b3-b4-enforce-gate-wiring-otto-cli-2026-05-15"
+}

@@ -1,0 +1,14 @@
+{
+  "id": "080d005ea0e89010a01300088294c0bd",
+  "at": "2026-08-16T18:27:25.586Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M05X878G087G0R002FHTYNJ",
+    "type": "bug",
+    "title": "pairKey orders by UTF-16 code unit in both oracles, disagreeing with the code-point collation treaty",
+    "slug": "pairkey-orders-by-utf-16-code-unit-in-both-oracles-disagreei",
+    "priority": "P2",
+    "filename": "081M05X878G087G0R002FHTYNJ-pairkey-orders-by-utf-16-code-unit-in-both-oracles-disagreei.md"
+  }
+}

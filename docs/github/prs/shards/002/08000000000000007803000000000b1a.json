@@ -1,0 +1,12 @@
+{
+  "pr_number": 2842,
+  "archive_path": "docs/history/pr-reviews/PR-2842-shard-tick-19-27z-post-1854z-cascade-prs-2835-2841.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-12T19:31:34.590Z",
+  "schema_version": "v1",
+  "commit_sha": "cb6c9d52aa7a0edef383dec66e6d0674ce2399aa",
+  "title": "shard(tick): 19:27Z — post-1854Z cascade (PRs #2835-#2841)",
+  "state": "MERGED",
+  "merged_at": "2026-05-12T19:31:18Z",
+  "head_ref": "docs/tick-shard-1927Z-post-1854Z-cascade-glasshalo-bidirectional-deepseek-validation-bootstream-fsanchor-claudeai-asymmetric-critic-2026-05-12"
+}

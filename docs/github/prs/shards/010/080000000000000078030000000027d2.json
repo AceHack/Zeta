@@ -1,0 +1,12 @@
+{
+  "pr_number": 10194,
+  "archive_path": "docs/history/pr-reviews/PR-10194-test-wasm-dla-cross-conformance-for-box-counting-d-the-1-30-vs-1-41-gap-is-setup.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-09T17:28:32.302Z",
+  "schema_version": "v1",
+  "commit_sha": "14f96a161f2794961e47cfb38cf4247d387bbf85",
+  "title": "test(wasm-dla): cross-conformance for box-counting D — the 1.30 vs 1.41 gap is setup, not divergence",
+  "state": "MERGED",
+  "merged_at": "2026-08-09T17:28:03Z",
+  "head_ref": "shadow/dla-box-counting-cross-conformance"
+}

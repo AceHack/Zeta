@@ -1,0 +1,12 @@
+{
+  "pr_number": 9804,
+  "archive_path": "docs/history/pr-reviews/PR-9804-fix-deps-restore-sdk-matching-codeanalysis-5-3-0-pin-main-is-red-with-cs9057-977.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-31T23:49:46.466Z",
+  "schema_version": "v1",
+  "commit_sha": "c7e8a8ef6fde354d42399feac8317191e9d35878",
+  "title": "fix(deps): restore SDK-matching CodeAnalysis 5.3.0 pin — main is RED with CS9057 (#9774 regression)",
+  "state": "MERGED",
+  "merged_at": "2026-07-31T23:49:17Z",
+  "head_ref": "shadow/deps-fsharp-meziantou-bump"
+}

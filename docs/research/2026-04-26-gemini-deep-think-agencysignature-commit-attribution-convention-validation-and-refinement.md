@@ -620,14 +620,33 @@ Co-authored-by: Claude Opus 4.7 <noreply@anthropic.com>
 
 - `shared` — multiple identities authenticated under one credential (today: Otto + Aaron both as AceHack)
 - `dedicated-agent` — agent has its own credential (post-task-#295)
+- `operator-delegated` — an agent acting under an operator's **explicit delegation**
+  (added 2026-08-17, maintainer-authorized). Narrower than `shared`: `shared` says only
+  that the credential is not agent-exclusive; this says the operator deliberately handed
+  it over for this class of act.
 - `human-only` — human-authored commit without agent trailer
 - `unknown` — legacy commit without `Agent:` trailer at all
 
 `Action-Mode:`
 
-- `autonomous-fail-open` — greenfield/low-stakes agent action
+- `autonomous-fail-open` — greenfield/low-stakes agent action; on error it **proceeds**
+- `autonomous-fail-closed` — autonomous, but on error it **stops** (added 2026-08-17,
+  maintainer-authorized). Strictly safer than fail-open, and the distinction is
+  load-bearing: an autonomous actor that halts on error claims less reach than one that
+  continues past it, and a vocabulary that cannot say so forces the safer actor to
+  overstate itself.
 - `human-directed` — human commanded the specific implementation
 - `supervised` — human watched the execution trace
+
+> **On the 2026-08-17 extension.** Both values were coined *independently by their users
+> before they were legal here* — `autonomous-fail-closed` by
+> `.github/workflows/zetadb-scheduled-node.yml` and again by hand on the shadow lane,
+> `operator-delegated` alongside it. A coinage arrived at independently, more than once, is
+> evidence the vocabulary was missing a distinction its users needed, not that its users
+> were careless. The alternative — mapping each onto the nearest legal value — would have
+> recorded something **false**, which is the failure this whole convention exists to
+> prevent. Both are **additions, never renames**: every previously-valid block stays valid,
+> so nothing already on `main` is retroactively condemned.
 
 ### Querying (Gemini ferry-4 + Amara ferry-5 verifications)
 

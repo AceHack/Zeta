@@ -1,0 +1,12 @@
+{
+  "pr_number": 8559,
+  "archive_path": "docs/history/pr-reviews/PR-8559-fix-scenario-3-4-baseline-snapshot-install-complete-marker.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-19T12:14:03.036Z",
+  "schema_version": "v1",
+  "commit_sha": "2bce62804eea558cd2c9b1012ca02e220934bbfa",
+  "title": "Fix scenario 3/4 baseline snapshot install-complete marker",
+  "state": "MERGED",
+  "merged_at": "2026-06-19T12:13:39Z",
+  "head_ref": "riven/scenario-3-4-install-complete-marker"
+}

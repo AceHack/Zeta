@@ -22,8 +22,8 @@ None yet. We ship once the full SDL checklist
 - **Trust boundaries** described in `docs/security/THREAT-MODEL.md`
   (STRIDE-indexed).
 - **Crypto choices** rationale in `docs/security/CRYPTO.md`.
-- **Dependency audit** via `tools/audit-packages.ts` (the package
-  auditor skill reviews bumps).
+- **Dependency audit** via `src/Core.TypeScript/audit-packages/audit-packages.ts`
+  (the package auditor skill reviews bumps).
 - **Static analysis** via Semgrep (`.semgrep.yml`, 12 rules) +
   G-Research + Ionide + Meziantou F# analyzers.
 - **Formal verification** via 13 TLA+ specs (6 TLC-validated),

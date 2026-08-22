@@ -1,0 +1,12 @@
+{
+  "pr_number": 9793,
+  "archive_path": "docs/history/pr-reviews/PR-9793-feat-meno-associator-unitors-pentagon-triangle-coherence-braided-arc-increment-2.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-31T16:19:19.376Z",
+  "schema_version": "v1",
+  "commit_sha": "2324e838e677df0c4647066032a33d5e3c1f220c",
+  "title": "feat(Meno): associator + unitors + pentagon/triangle coherence (braided arc, Increment 2)",
+  "state": "MERGED",
+  "merged_at": "2026-07-31T16:18:48Z",
+  "head_ref": "shadow/meno-associator-unitors-coherence"
+}

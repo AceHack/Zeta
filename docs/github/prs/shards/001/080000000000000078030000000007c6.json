@@ -1,0 +1,12 @@
+{
+  "pr_number": 1990,
+  "archive_path": "docs/history/pr-reviews/PR-1990-docs-research-log-catch-32-on-otto.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-08T01:51:35.901Z",
+  "schema_version": "v1",
+  "commit_sha": "8aa5854170a2818a613c488308240482cc6c1f56",
+  "title": "docs(research): log Catch 32 on Otto",
+  "state": "MERGED",
+  "merged_at": "2026-05-08T01:51:16Z",
+  "head_ref": "research/catch-32-otto-amnesia"
+}

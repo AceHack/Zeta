@@ -1,0 +1,12 @@
+{
+  "pr_number": 1983,
+  "archive_path": "docs/history/pr-reviews/PR-1983-fix-land-current-otto-md-in-repo-was-stuck-in-user-scope.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-08T01:18:04.680Z",
+  "schema_version": "v1",
+  "commit_sha": "71666699618f58daacf6fb6092d187dc426c30c9",
+  "title": "fix: land CURRENT-otto.md in-repo — was stuck in user-scope",
+  "state": "MERGED",
+  "merged_at": "2026-05-08T01:17:49Z",
+  "head_ref": "fix/current-otto-in-repo"
+}

@@ -1,0 +1,15 @@
+{
+  "pr_number": 10567,
+  "archive_path": "docs/history/pr-reviews/PR-10567-feat-persona-keys-signpartial-port-the-share-is-used-never-returned.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7hhtEv",
+    "thread:PRRT_kwDOSF9kNM6ZRYNs"
+  ],
+  "fetched_at": "2026-08-14T15:23:30.778Z",
+  "schema_version": "v1",
+  "commit_sha": "bfe7573ad4ea9c8af22bec64f386aa3faf8a89aa",
+  "title": "feat(persona-keys): signPartial port -- the share is used, never returned",
+  "state": "MERGED",
+  "merged_at": "2026-08-14T15:22:54Z",
+  "head_ref": "nazar/frost-signpartial-port-use-without-extract"
+}

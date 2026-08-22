@@ -75,7 +75,7 @@ const STEPS: readonly Step[] = [
   },
 ];
 
-const RETRYABLE_WORKSPACE_FAILURES = ["The server disconnected unexpectedly", "Restore operation failed"];
+const RETRYABLE_WORKSPACE_FAILURES = ["The server disconnected unexpectedly", "Restore operation failed", "MSB4166"];
 const TRANSIENT_DOTNET_EXIT_CODES = new Set([139]);
 
 function retryReason(result: SpawnSyncReturns<string>, output: string): string | undefined {

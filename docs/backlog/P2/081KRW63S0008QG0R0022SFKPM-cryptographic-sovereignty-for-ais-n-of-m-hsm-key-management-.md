@@ -33,6 +33,13 @@ society key-guards → attestation-gated invocation → the honest debug-dump li
 with the *today* mitigation being HSM-resident ops and the *down-the-road* fix being
 confidential-computing / "Xbox-style" encrypted memory) lives at:
 
+> **What "hardware root" resolves to** (`081M00QP7FB087G0R00031BQ93`): a **silicon vendor's
+> self-signed key** — the TPM manufacturer's EK root CA, AMD's ARK, or Intel's SGX Root CA. So
+> "attest-don't-remember" buys *"the vendor vouches this is genuine silicon running this
+> measurement"* rather than a self-rooted proof of identity. That is a strong answer to Aaron's
+> question and the one every serious system uses; it is not vendor-independent, and no
+> vendor-independent option exists. Mitigation is a vendor-diverse guard roster.
+
 - **[Agent-native key-custody design](../../research/2026-05-31-agent-native-key-custody-design-otto-holds-key-aaron-cant-access-wont-lose-threshold-attestation-honest-debug-dump-limit.md)**
   — fills acceptance criteria 1–4 at the encryption-key scope.
 - **[Hardware-to-buy list](../../inventory/hardware-to-buy.md)** §2 — the HSM/TPM procurement

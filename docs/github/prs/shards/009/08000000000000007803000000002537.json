@@ -1,0 +1,12 @@
+{
+  "pr_number": 9527,
+  "archive_path": "docs/history/pr-reviews/PR-9527-docs-letters-to-lumen-v3-the-full-256-dim-walsh-gap-only-path-to-a-genuine-physi.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-08T20:49:29.980Z",
+  "schema_version": "v1",
+  "commit_sha": "c7573268608c3644f0325c0587f7659f3490c1fd",
+  "title": "docs(letters): to-lumen v3 — the full 256-dim Walsh gap, only path to a genuine physics duality (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-08T20:49:04Z",
+  "head_ref": "otto/to-lumen-v3-full-walsh-gap"
+}

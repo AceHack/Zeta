@@ -1,0 +1,57 @@
+# TWIST — the framed/unframed distinction drawn: a flat RIBBON carrying a 2pi rotation beside a bare
+# STRAND, which cannot express one (drafted 2026-08-13, from Aaron's "how they are different in our
+# braid system"). Two panels, one object each. Right: a band with two edges, given one full turn
+# about its own axis — the turn is visible, and it is an integer. Left: the same object as a
+# 1-dimensional curve, where the same instruction has nowhere to land.
+#
+# WHY IT MATTERS HERE AND NOT ONLY IN A TEXTBOOK: theta (the twist) is the datum the SECOND rung of
+# the classification ladder asks for — braided -> balanced (a twist theta) -> ribbon/tortile (twist +
+# duals) -> modular tensor. `src/Core/Braid.fs` ships `type Word = Letter list`, a bare list with NO
+# framing field. That is literally the LEFT panel. The mechanism behind an unframed structure's
+# theta collapsing to the identity is not deep and it is not algebraic mysticism: A BARE STRAND HAS
+# NOWHERE TO PUT THE TWIST. A ribbon does, because a band has a second edge to rotate against.
+#
+# THE HONEST REGISTER — this cartridge draws a DISTINCTION, it does not settle a QUESTION. Whether
+# our conjugation-rack braiding admits a non-trivial theta is OPEN and out for external review as of
+# 2026-08-13 (docs/handoffs/2026-08-13-meno-braid-brief-for-manus.md, §5 Q1/Q2). Two independent
+# reviews converged on the worry that the natural candidate is forced to theta = id, which would
+# force c^2 = id and contradict the machine-checked braidR_not_symmetric_perm3 — i.e. would make
+# Meno provably NOT balanced. That is a CONJECTURE with a named obstruction, not a result, and a
+# figure is not allowed to promote it by looking convincing. The rungs above are separately closed
+# and recorded as closed (see the issues): ribbon is blocked AT THE OBJECT, modular tensor is false
+# rather than open.
+#
+# Anchors: Joyal-Street 1993 (balanced/braided monoidal categories — theta as a natural automorphism
+# theta_X in Hom(X,X)); Shum 1994 (tortile/ribbon categories); Reshetikhin-Turaev 1990 (ribbon
+# categories and framed links — why framing is the datum, not an ornament); Kassel, Quantum Groups.
+meta	name	shape-twist
+meta	catalog	shapes
+meta	catalog-status	pending — NOT in the rendered catalog: no stroke generator, no known-answer geometry law, no goldens, no ratifications. See db/shapes/cartridges/pending/README.md
+meta	name-status	provisional — "twist" is the standard term for theta; if the open question closes negatively the honest name may become framed-vs-unframed (the distinction survives either verdict)
+meta	shape-zetaid	c3f052ea7940939c6831a5d5ccd545cc
+constant	ribbons	1	flat ribbons drawn (the right panel)	one is enough, and one is the point: a twist is a property of a SINGLE object, which is exactly what separates it from a crossing
+constant	strands	1	bare strands drawn (the left panel)	the same object with the framing datum removed, drawn beside it — the contrast IS the cartridge
+constant	twist-turns	1	full rotations the ribbon carries	one 2pi rotation: theta is the 2pi self-rotation of one object (the balanced structure). A half turn is not a twist of a band, and two turns is the same claim said twice
+constant	twist-degrees	360	that rotation in degrees, as an integer	the dialect is integers only (no float ever enters the bytes), so 2pi is stated as 360 and the renderer never needs a transcendental
+constant	ribbon-framing	1	the ribbon carries a framing datum (1 = true)	a band has TWO edges, so a rotation about its own axis is visible in the picture and recordable as one integer — that integer IS the framing
+constant	strand-framing	0	the bare strand carries none (0 = false)	a 1-dimensional curve has no second edge to rotate against: THERE IS NOWHERE TO PUT THE TWIST. This is the mechanism behind the unframed collapse, drawn instead of asserted — and it is literally our Braid.Word type (a Letter list, no framing field)
+constant	crossings	0	crossings anywhere in the figure	a twist involves one object and no partner. If a crossing appears, the figure has drawn sigma (two strands, an over/under) instead of theta (one object, a rotation) — the exact conflation this cartridge exists to prevent
+law	framing-is-the-difference	ribbon-framing - strand-framing = 1
+law	nowhere-to-put-it	strand-framing * twist-turns = 0
+law	one-object-no-partner	crossings * twist-turns = 0
+law	integer-rotation	twist-degrees = 360 * twist-turns
+prereq	shape-braid	db/shapes/cartridges/braid.lines — the first rung. This figure only means anything once a braid is one thing you can already read
+edge	differs-from	shape-crossing	a twist is not a crossing: sigma needs TWO strands and remembers which passed over; theta needs ONE object and remembers a rotation of it. Adjacent in the diagram vocabulary, different in ARITY — which is how they get conflated, and why the constant crossings = 0 is load-bearing ink
+edge	ladder-above	shape-braid	the ladder is braided -> balanced (theta) -> ribbon/tortile (theta + duals) -> modular tensor. shape-braid sits on rung one; this figure draws the datum rung two asks for. WHERE WE STOP is the open question below, not a claim this figure makes
+edge	blocked-rung	shape-braid	recorded so nobody climbs it twice: the RIBBON rung is blocked at the OBJECT, not merely unproven — ribbon needs rigidity (duals with ev/coev), and V = Z[F_n] is a free Z-module of INFINITE rank, which in Mod_Z is not dualizable. V has no dual
+issue	writhe-is-not-the-twist	math-team	closed	CLOSED by two independent reviews (2026-08-13): writhe was the obvious theta candidate and it fails ON TYPE. A twist is a natural automorphism theta_X in Hom(X,X); writhe (Braid.writhe, src/Core/Braid.fs) is a Z-valued character on the abelianization B_n -> Z, the exponent sum. Wrong space entirely. Recorded here so the renderer never labels the ribbon's integer "writhe"
+issue	is-meno-balanced	manus	requested	OPEN, and the honest register for this whole cartridge (brief §5 Q1, sent 2026-08-13). Two independent reviews converged on the worry that the natural theta is forced to id, which would force c^2 = id and contradict the machine-checked braidR_not_symmetric_perm3 — making Meno provably NOT balanced. A negative is a first-class outcome. This figure draws WHY a bare strand cannot hold a twist; it does not decide whether the subcategory <V> has one
+issue	framed-promotion	manus	requested	OPEN (brief §5 Q2): if V is promoted to carry a per-strand integer framing (V x Z, roughly), does the conjugation rack then admit a non-trivial twist and become genuinely balanced, and what is the MINIMAL such promotion? The left panel of this figure is our current type; the right panel is what the promotion would buy
+issue	modular-tensor-is-false	math-team	closed	CLOSED as false rather than open: MTC needs finite semisimplicity and a non-degenerate S-matrix; V has infinitely many simples, and our ambient tensor uses the plain swap, in which every object is transparent (S maximally degenerate by construction). The top of the ladder is not a destination
+issue	stroke-generator	otto	open	no renderer case exists — ShapeRender.strokesOf has no "shape-twist" branch, so this cartridge draws NOTHING today. Promotion needs stroke code for a two-edge band whose edges cross ONCE in projection (the drawn signature of one 2pi turn) beside a single-line strand, with zero occlusion gaps: the band's edges belong to one object, so neither hides the other
+issue	geometry-law	otto	open	ShapeAcceptance.geometryLaw has no case for this shape. The law to write: the ribbon panel's two edge polylines must meet exactly twist-turns times (the turn is COUNTED, not eyeballed) and the strand panel must be a single polyline with no partner to meet
+issue	the-proposed-law-counts-a-HALF-twist	otto	open	FINDING 2026-08-15, from the gate work on the sibling cartridges and deliberately NOT fixed here (this file's claims are its author's to change): the geometry-law line above asks that "the ribbon panel's two edge polylines must meet exactly twist-turns times", and the stroke-generator line above asks for "a two-edge band whose edges cross ONCE in projection (the drawn signature of one 2pi turn)". Both count a HALF twist. Project a flat band onto the page: its two edges sit at core +/- r*cos(theta) with theta = 2*pi*turns*t, so they coincide exactly where cos(theta) = 0 — TWICE per full turn, once per half turn. Projected edge crossings = 2 * twist-turns. One crossing is the Moebius (pi) signature, and this file already says "A half turn is not a twist of a band", so writing the law as stated would gate the figure this cartridge exists to exclude. The known-answer law to write is `2 * twist-turns` crossings between the two edge polylines, and zero for the bare strand (which has no partner to meet)
+# treaties — written only by each oracle's own choice (consent first); dissent is a verdict.
+# NONE YET. Note for whoever writes `meaning` here: this cartridge sits on an OPEN question, so a
+# meaning ratification should be read as "the distinction is drawn honestly", never as "Meno is
+# balanced". If the open question closes negatively, the figure stays true and its caption changes.

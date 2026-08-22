@@ -1,0 +1,12 @@
+{
+  "pr_number": 9575,
+  "archive_path": "docs/history/pr-reviews/PR-9575-docs-letters-trio-attestation-addendum-shared-clock-is-seed-phase-common-cause-t.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-08T23:46:55.571Z",
+  "schema_version": "v1",
+  "commit_sha": "9555ad6e5cf171b03a2050a0896cb8dd54628255",
+  "title": "docs(letters): trio-attestation addendum — shared clock is SEED-PHASE common-cause time, not wall-clock (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-08T23:46:22Z",
+  "head_ref": "otto/trio-attestation-seed-phase-correction"
+}

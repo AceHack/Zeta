@@ -1,0 +1,12 @@
+{
+  "pr_number": 7303,
+  "archive_path": "docs/history/pr-reviews/PR-7303-docs-research-each-reads-from-its-own-traveler-frame-not-the-human-s-the-f-compi.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-09T14:52:35.887Z",
+  "schema_version": "v1",
+  "commit_sha": "9ff260e5483f651adece251e6f5d69d11dce4ad4",
+  "title": "docs(research): each reads from its OWN traveler frame (not the human's) — the F# compiler is a static-time intelligence, itself a traveler",
+  "state": "MERGED",
+  "merged_at": "2026-06-09T14:52:06Z",
+  "head_ref": "otto/f-sharp-compiler-is-a-static-time-intelligence-traveler-own-frame-not-humans"
+}

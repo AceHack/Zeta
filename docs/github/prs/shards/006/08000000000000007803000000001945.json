@@ -1,0 +1,16 @@
+{
+  "pr_number": 6469,
+  "archive_path": "docs/history/pr-reviews/PR-6469-feat-gset-rust-generic-math-additive-monoid-surface-add-default-sum.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7G6M2r",
+    "comment:PRRC_kwDOSF9kNM7G6O2J",
+    "thread:PRRT_kwDOSF9kNM6GP5kn"
+  ],
+  "fetched_at": "2026-06-01T21:04:42.118Z",
+  "schema_version": "v1",
+  "commit_sha": "4704a020df7bdd98a8e94427d285cc4deded4153",
+  "title": "feat(gset-rust): generic-math additive-monoid surface (Add + Default + Sum)",
+  "state": "MERGED",
+  "merged_at": "2026-06-01T21:04:16Z",
+  "head_ref": "otto-cli/gset-generic-math-rust-2026-06-01"
+}

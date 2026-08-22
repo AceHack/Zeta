@@ -1,0 +1,17 @@
+{
+  "pr_number": 2727,
+  "archive_path": "docs/history/pr-reviews/PR-2727-feat-tools-b-0292-re-decomp-smallest-safe-slice-ts-structurepattern-no-op-recogn.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6__jL5",
+    "comment:PRRC_kwDOSF9kNM6__jL9",
+    "thread:PRRT_kwDOSF9kNM6BLX9W",
+    "thread:PRRT_kwDOSF9kNM6BLX9Z"
+  ],
+  "fetched_at": "2026-05-11T18:14:57.711Z",
+  "schema_version": "v1",
+  "commit_sha": "85091dc016995d1bc2108c3b88baa0f6c81fc6bf",
+  "title": "feat(tools): B-0292 re-decomp smallest safe slice — TS StructurePattern + no-op recognizeStructure stub (GPU-ready)",
+  "state": "MERGED",
+  "merged_at": "2026-05-11T18:14:32Z",
+  "head_ref": "claim-b0292-concordance-ai-smallest-slice-riven-2026-05-11"
+}

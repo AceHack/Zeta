@@ -143,7 +143,14 @@ describe("FerryQueue — batched commit, amortized Landauer cost", () => {
     expect(q.pending).toBe(3);
   });
 
-  test("dequeue pays 1 bit Landauer (mini-commit)", () => {
+  // ── The two corrected legs (2026-08-14) ──────────────────────────────────────
+  // `dequeue` charged 1 bit and `flush` charged `batchSize`. Both return the items they remove,
+  // so `(post-state, returned value)` determines the pre-state: they are bijections, and Bennett
+  // 1973 gives a bijection no floor. The sweep in erasure-derivation.test.ts measures both at
+  // maxFibre 1 over a 7-state domain. A meter there could only ever read zero, so the number it
+  // was reporting came from the constant, not from the operation.
+
+  test("dequeue pays NOTHING — it returns the item, so it erases nothing (Bennett)", () => {
     const tracker = createEntropyTracker();
     const q = createFerryQueue<string>(tracker);
 
@@ -152,12 +159,12 @@ describe("FerryQueue — batched commit, amortized Landauer cost", () => {
 
     const item = q.dequeue();
     expect(item).toBe("a");
-    expect(tracker.state.entropy_heat).toBe(1);  // paid 1 bit
-    expect(tracker.state.entropy_state).toBe(1); // 1 bit remains
+    expect(tracker.state.entropy_heat).toBe(0);      // reversible: no heat, at any batch size
+    expect(tracker.state.hard_measurements).toBe(0); // and it is not a measurement of size zero
     expect(q.pending).toBe(1);
   });
 
-  test("flush pays Landauer for the ENTIRE batch at once (the ferry commit)", () => {
+  test("flush pays NOTHING — the batch is handed back, so the ferry commit erases nothing", () => {
     const tracker = createEntropyTracker();
     const q = createFerryQueue<number>(tracker);
 
@@ -165,13 +172,32 @@ describe("FerryQueue — batched commit, amortized Landauer cost", () => {
     q.enqueue(2);
     q.enqueue(3);
     q.enqueue(4);
-    // State: 4 bits of uncertainty, 0 heat
 
     const batch = q.flush();
     expect(batch).toEqual([1, 2, 3, 4]);
-    expect(tracker.state.entropy_heat).toBe(4);  // paid ALL 4 bits at once
-    expect(tracker.state.entropy_state).toBe(0); // fully collapsed
+    expect(batch.length).toBe(4);
+    // The old assertion here was `entropy_heat === 4` — the batch size, echoed back by the
+    // constant that produced it. Nothing about the flush could have made it any other number.
+    expect(tracker.state.entropy_heat).toBe(0);
+    expect(tracker.state.bits_erased).toBe(0);
     expect(q.pending).toBe(0);
+  });
+
+  test("Ledger A retains the admitted bits after a drain — the residual this exposes", () => {
+    // Honest consequence, stated rather than hidden behind a fake heat charge: the tracker has an
+    // admission door (`branch`) and an erasure door (`measure`), but no reversible-egress door.
+    // A queue that hands its items back has moved information OUT of its state without destroying
+    // it, and there is nowhere to record that. So `entropy_state` over-reports what the queue
+    // holds. The previous code hid this by charging heat for a bijection, which balanced the
+    // ledger at the cost of the ledger being false.
+    const tracker = createEntropyTracker();
+    const q = createFerryQueue<number>(tracker);
+    q.enqueue(1); q.enqueue(2); q.enqueue(3);
+    q.flush();
+
+    expect(q.pending).toBe(0);              // the queue holds nothing
+    expect(tracker.state.entropy_state).toBe(3); // Ledger A still says three bits
+    expect(tracker.state.entropy_heat).toBe(0);  // and no heat was invented to reconcile it
   });
 
   test("peek is Adj (observe, zero heat)", () => {
@@ -219,9 +245,13 @@ describe("FerryQueue — batched commit, amortized Landauer cost", () => {
     q.enqueue(1); q.enqueue(2); q.enqueue(3);
     q.flush();
 
-    // Total = state + heat = 0 + 3 = 3 ≥ 0 (initial)
+    // Total = state + heat = 3 + 0 = 3. The sum is unchanged by the correction — which is the
+    // point of the entropy-tracker header's vacuity 2: `measure(k)` only ever MOVED k between the
+    // ledgers, so this sum could not tell the old charge from the new one. Heat is the field that
+    // distinguishes them, and it is checked above.
     expect(tracker.state.second_law_satisfied).toBe(true);
     expect(tracker.state.entropy_state + tracker.state.entropy_heat).toBe(3);
+    expect(tracker.state.entropy_heat).toBe(0);
   });
 });
 
@@ -242,11 +272,15 @@ describe("TRAIT_COSTS — static classification metadata", () => {
     expect(c.batchable).toBe(false);
   });
 
-  test("ferry: reads free, writes cost, irreversible, batchable", () => {
+  test("ferry: free and reversible — batching is what distinguishes it, not a Landauer cost", () => {
+    // Corrected 2026-08-14 with the implementation. Every operation createFerryQueue implements is
+    // a bijection once the returned value counts as output, so the trait had no leg that could pay
+    // a floor while declaring `landauer`. A ferry consumer that DROPS its batch is the erasing
+    // operation; it lives at the consumer.
     const c = TRAIT_COSTS.ferry;
     expect(c.readCost).toBe("zero");
-    expect(c.writeCost).toBe("landauer");
-    expect(c.reversible).toBe(false);
+    expect(c.writeCost).toBe("zero");
+    expect(c.reversible).toBe(true);
     expect(c.batchable).toBe(true);
   });
 });

@@ -1,0 +1,19 @@
+{
+  "pr_number": 6379,
+  "archive_path": "docs/history/pr-reviews/PR-6379-docs-registry-parsers-grammars-zetaparse-family-cross-language-interop-prior-art.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7Gp3r9",
+    "comment:PRRC_kwDOSF9kNM7Gp3so",
+    "comment:PRRC_kwDOSF9kNM7GqCc4",
+    "comment:PRRC_kwDOSF9kNM7GqCfV",
+    "thread:PRRT_kwDOSF9kNM6GDtVU",
+    "thread:PRRT_kwDOSF9kNM6GDtVv"
+  ],
+  "fetched_at": "2026-06-01T09:04:50.094Z",
+  "schema_version": "v1",
+  "commit_sha": "0940673b6a92880a7441e72cd8735e1a5a8824c2",
+  "title": "docs(registry): parsers/grammars (ZetaParse) family + cross-language-interop prior-art note",
+  "state": "MERGED",
+  "merged_at": "2026-06-01T09:04:25Z",
+  "head_ref": "otto-cli/registry-parsers-zetaparse-plus-prior-art-note-2026-06-01"
+}

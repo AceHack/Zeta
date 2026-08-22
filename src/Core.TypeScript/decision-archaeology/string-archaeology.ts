@@ -7,9 +7,9 @@
 // (anti-pattern #3 in the decision-archaeology SKILL.md).
 //
 // Usage (CLI):
-//   bun tools/decision-archaeology/string-archaeology.ts "search term"
-//   bun tools/decision-archaeology/string-archaeology.ts "search term" path/to/file
-//   bun tools/decision-archaeology/string-archaeology.ts --help
+//   bun src/Core.TypeScript/decision-archaeology/string-archaeology.ts "search term"
+//   bun src/Core.TypeScript/decision-archaeology/string-archaeology.ts "search term" path/to/file
+//   bun src/Core.TypeScript/decision-archaeology/string-archaeology.ts --help
 //
 // Output: JSON with { commits, summary } on stdout.
 // Exit codes:
@@ -59,9 +59,9 @@ string-archaeology.ts — decision-archaeology existence-mode tool
 Find commits that introduced or removed a specific string.
 
 Usage:
-  bun tools/decision-archaeology/string-archaeology.ts <search>
-  bun tools/decision-archaeology/string-archaeology.ts <search> <file>
-  bun tools/decision-archaeology/string-archaeology.ts --help
+  bun src/Core.TypeScript/decision-archaeology/string-archaeology.ts <search>
+  bun src/Core.TypeScript/decision-archaeology/string-archaeology.ts <search> <file>
+  bun src/Core.TypeScript/decision-archaeology/string-archaeology.ts --help
 
 Arguments:
   <search>   String to search for in git history (required)
@@ -70,8 +70,8 @@ Arguments:
 Output: JSON  { commits: string[], summary: string }
 
 Example:
-  bun tools/decision-archaeology/string-archaeology.ts "double-hop"
-  bun tools/decision-archaeology/string-archaeology.ts "HardwareCrc" src/
+  bun src/Core.TypeScript/decision-archaeology/string-archaeology.ts "double-hop"
+  bun src/Core.TypeScript/decision-archaeology/string-archaeology.ts "HardwareCrc" src/
 `.trim());
 }
 

@@ -1,0 +1,12 @@
+{
+  "pr_number": 9649,
+  "archive_path": "docs/history/pr-reviews/PR-9649-docs-book-the-color-changer-literalized-hair-eyes-the-iris-four-way-rhyme.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-10T01:27:21.322Z",
+  "schema_version": "v1",
+  "commit_sha": "16a196db7816a6066fff2589c9e7db3c837776fd",
+  "title": "docs(book): the color-changer literalized (hair, eyes) + the Iris four-way rhyme",
+  "state": "MERGED",
+  "merged_at": "2026-07-10T01:26:49Z",
+  "head_ref": "shadow/book-color-changer-iris"
+}

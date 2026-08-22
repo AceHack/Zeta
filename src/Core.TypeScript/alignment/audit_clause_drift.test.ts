@@ -30,7 +30,7 @@ describe("no-drift baseline", () => {
   test("HEAD vs HEAD shows zero drift", () => {
     const code = main(["--base", "HEAD", "--head", "HEAD"]);
     expect(code).toBe(0);
-  }, 120000);
+  });
 
   test("HEAD vs HEAD with --json returns 0", () => {
     const code = main(["--base", "HEAD", "--head", "HEAD", "--json"]);

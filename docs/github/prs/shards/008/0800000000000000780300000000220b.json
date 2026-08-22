@@ -1,0 +1,12 @@
+{
+  "pr_number": 8715,
+  "archive_path": "docs/history/pr-reviews/PR-8715-test-formal-row-3-fscheck-cross-check-for-anti-mirror-owe-dpi-soundness.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-20T06:35:40.705Z",
+  "schema_version": "v1",
+  "commit_sha": "4d0629ad035cb20593e96100b7deb591c61619ef",
+  "title": "test(formal): row 3 FsCheck cross-check for anti-mirror ρ_owe DPI/soundness",
+  "state": "MERGED",
+  "merged_at": "2026-06-20T06:35:13Z",
+  "head_ref": "otto/row3-rho-owe-dpi-crosscheck"
+}

@@ -1,0 +1,28 @@
+{
+  "pr_number": 2187,
+  "archive_path": "docs/history/pr-reviews/PR-2187-feat-b-0330-define-memory-file-format-standard.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_eu4a",
+    "comment:PRRC_kwDOSF9kNM6_ewP3",
+    "comment:PRRC_kwDOSF9kNM6_ewP6",
+    "comment:PRRC_kwDOSF9kNM6_ewPv",
+    "comment:PRRC_kwDOSF9kNM6_ewQC",
+    "comment:PRRC_kwDOSF9kNM6_ewQG",
+    "comment:PRRC_kwDOSF9kNM6_ewQK",
+    "comment:PRRC_kwDOSF9kNM6_exPZ",
+    "thread:PRRT_kwDOSF9kNM6AyiaP",
+    "thread:PRRT_kwDOSF9kNM6AyjbC",
+    "thread:PRRT_kwDOSF9kNM6AyjbJ",
+    "thread:PRRT_kwDOSF9kNM6AyjbM",
+    "thread:PRRT_kwDOSF9kNM6AyjbU",
+    "thread:PRRT_kwDOSF9kNM6AyjbY",
+    "thread:PRRT_kwDOSF9kNM6Ayjbc"
+  ],
+  "fetched_at": "2026-05-09T05:19:15.078Z",
+  "schema_version": "v1",
+  "commit_sha": "bb555a1276f5552a668c650c11e3348939e3b056",
+  "title": "feat(B-0330): define memory-file format standard",
+  "state": "MERGED",
+  "merged_at": "2026-05-09T05:18:54Z",
+  "head_ref": "claim/b0330-memory-format-standard-riven-2026-05-09"
+}

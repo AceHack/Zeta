@@ -1,0 +1,12 @@
+{
+  "pr_number": 8706,
+  "archive_path": "docs/history/pr-reviews/PR-8706-test-formal-math-team-row-8-measurability-leg-moral-lens-goodhart-resistance-ord.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-20T05:53:19.585Z",
+  "schema_version": "v1",
+  "commit_sha": "3a3d163dfcf935678e0b5387c7640f4d6ed75767",
+  "title": "test(formal): math-team row 8 MEASURABILITY leg — moral-lens Goodhart-resistance + ordering",
+  "state": "MERGED",
+  "merged_at": "2026-06-20T05:52:57Z",
+  "head_ref": "otto/row8-moral-lens-measurability"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 7442,
+  "archive_path": "docs/history/pr-reviews/PR-7442-feat-same-shadow-same-root-folder-x-y-template-sameness-common-cause-relations.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-10T04:06:25.057Z",
+  "schema_version": "v1",
+  "commit_sha": "e850418bb06e1f6966ff85d138625969111ab8ae",
+  "title": "feat(same)+shadow: same/ root folder (x-y template) — sameness / common-cause relations",
+  "state": "MERGED",
+  "merged_at": "2026-06-10T04:05:59Z",
+  "head_ref": "shadow-same-folder-common-cause"
+}

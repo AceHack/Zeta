@@ -1,0 +1,12 @@
+{
+  "pr_number": 2750,
+  "archive_path": "docs/history/pr-reviews/PR-2750-feat-dashboard-render-all-three-arrays.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-11T20:33:29.394Z",
+  "schema_version": "v1",
+  "commit_sha": "8d01c8e4327c60a3a27390d73307e6b77ac6c177",
+  "title": "feat(dashboard): render all three arrays",
+  "state": "MERGED",
+  "merged_at": "2026-05-11T20:33:09Z",
+  "head_ref": "feat/b-0416-dashboard-three-arrays"
+}

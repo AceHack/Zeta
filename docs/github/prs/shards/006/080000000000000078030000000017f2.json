@@ -1,0 +1,27 @@
+{
+  "pr_number": 6130,
+  "archive_path": "docs/history/pr-reviews/PR-6130-feat-b-0164-1-reconciliation-status-reader-read-half-dual-loop-ac-4.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7GbVIm",
+    "comment:PRRC_kwDOSF9kNM7GbVTY",
+    "comment:PRRC_kwDOSF9kNM7GbVTi",
+    "comment:PRRC_kwDOSF9kNM7GbVTq",
+    "comment:PRRC_kwDOSF9kNM7GbVTt",
+    "comment:PRRC_kwDOSF9kNM7GcEaj",
+    "comment:PRRC_kwDOSF9kNM7GcEbE",
+    "comment:PRRC_kwDOSF9kNM7GcEbU",
+    "comment:PRRC_kwDOSF9kNM7GcEbn",
+    "thread:PRRT_kwDOSF9kNM6F4o55",
+    "thread:PRRT_kwDOSF9kNM6F4pC2",
+    "thread:PRRT_kwDOSF9kNM6F4pDA",
+    "thread:PRRT_kwDOSF9kNM6F4pDG",
+    "thread:PRRT_kwDOSF9kNM6F4pDJ"
+  ],
+  "fetched_at": "2026-05-30T20:09:46.377Z",
+  "schema_version": "v1",
+  "commit_sha": "8a3b84f988886983cad9160ec8abaae2d4386e39",
+  "title": "feat(B-0164.1): reconciliation-status reader (read half, dual-loop AC #4)",
+  "state": "MERGED",
+  "merged_at": "2026-05-30T20:09:27Z",
+  "head_ref": "feat/b0164.1-reconciliation-status-reader-2026-05-30"
+}

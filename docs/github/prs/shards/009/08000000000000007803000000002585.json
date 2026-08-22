@@ -1,0 +1,12 @@
+{
+  "pr_number": 9605,
+  "archive_path": "docs/history/pr-reviews/PR-9605-docs-research-naming-doc-restore-the-dedication-aaron-s-late-sister-honest-fix-o.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-09T02:23:23.117Z",
+  "schema_version": "v1",
+  "commit_sha": "6cd85440baf5a17bf66fb8b44bc71f331e81d4c7",
+  "title": "docs(research): naming doc — restore the dedication (Aaron's late sister) + honest fix of Re(s)=1/2 ≠ Tsirelson number (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-09T02:22:57Z",
+  "head_ref": "otto/naming-doc-fix-and-dedication"
+}

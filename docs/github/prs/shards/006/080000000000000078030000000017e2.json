@@ -1,0 +1,12 @@
+{
+  "pr_number": 6114,
+  "archive_path": "docs/history/pr-reviews/PR-6114-fix-persistence-windows-loop-now-ticks-every-minute-timetrigger-repetition-durat.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-30T14:09:44.647Z",
+  "schema_version": "v1",
+  "commit_sha": "9d06b9be8ed12a26474b54a03b8c476033bd2c28",
+  "title": "fix(persistence/windows): loop now ticks every minute (TimeTrigger + Repetition Duration)",
+  "state": "MERGED",
+  "merged_at": "2026-05-30T14:09:22Z",
+  "head_ref": "otto-windows/fix-loop-repetition-timetrigger-2026-05-30"
+}

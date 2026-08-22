@@ -1,0 +1,23 @@
+{
+  "pr_number": 2566,
+  "archive_path": "docs/history/pr-reviews/PR-2566-fix-memory-add-shadow-alibi-memory-index-pointer.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_qvL1",
+    "comment:PRRC_kwDOSF9kNM6_qvL9",
+    "comment:PRRC_kwDOSF9kNM6_qvLf",
+    "comment:PRRC_kwDOSF9kNM6_qwaY",
+    "comment:PRRC_kwDOSF9kNM6_qwac",
+    "thread:PRRT_kwDOSF9kNM6A7-jm",
+    "thread:PRRT_kwDOSF9kNM6A7-jp",
+    "thread:PRRT_kwDOSF9kNM6A79kP",
+    "thread:PRRT_kwDOSF9kNM6A79kl",
+    "thread:PRRT_kwDOSF9kNM6A79kt"
+  ],
+  "fetched_at": "2026-05-10T23:02:18.922Z",
+  "schema_version": "v1",
+  "commit_sha": "10222a255570abafe81ec0e13a3bb26ab3bb3c96",
+  "title": "fix(memory): add shadow alibi memory index pointer",
+  "state": "MERGED",
+  "merged_at": "2026-05-10T23:02:00Z",
+  "head_ref": "claim/B-0354-fresh-instance-validation-smallest-slice-riven-2026-05-10"
+}

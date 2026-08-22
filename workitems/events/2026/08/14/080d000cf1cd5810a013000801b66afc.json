@@ -1,0 +1,14 @@
+{
+  "id": "080d000cf1cd5810a013000801b66afc",
+  "at": "2026-08-14T18:52:21.803Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M00SWEDB087G0R003ZRBDCA",
+    "type": "task",
+    "title": "Retire or qualify the time-crystal name in ace: one word carries four incompatible referents across five files",
+    "slug": "retire-or-qualify-the-time-crystal-name-in-ace-one-word-carr",
+    "priority": "P2",
+    "filename": "081M00SWEDB087G0R003ZRBDCA-retire-or-qualify-the-time-crystal-name-in-ace-one-word-carr.md"
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 6984,
+  "archive_path": "docs/history/pr-reviews/PR-6984-feat-core-zetagraph-dependson-dependency-graph-topological-order-resolver.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-08T02:04:40.121Z",
+  "schema_version": "v1",
+  "commit_sha": "85534e273689bff6dc03fc77001f66b1cae57886",
+  "title": "feat(core): ZetaGraph — dependson dependency graph + topological-order resolver",
+  "state": "MERGED",
+  "merged_at": "2026-06-08T02:04:18Z",
+  "head_ref": "otto/zetagraph-dependson-topo-order-resolver"
+}

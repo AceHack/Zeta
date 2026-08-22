@@ -1,0 +1,12 @@
+{
+  "pr_number": 11534,
+  "archive_path": "docs/history/pr-reviews/PR-11534-feat-hygiene-detect-hidden-oracles-a-budget-nobody-chose-on-the-record.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-17T16:19:04.043Z",
+  "schema_version": "v1",
+  "commit_sha": "3deb9f75e9f4d53d12a81a0defa4ab5665adeba8",
+  "title": "feat(hygiene): detect hidden oracles — a budget nobody chose on the record",
+  "state": "MERGED",
+  "merged_at": "2026-08-17T16:18:30Z",
+  "head_ref": "shadow/hidden-oracle-detector"
+}

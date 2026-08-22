@@ -1,0 +1,17 @@
+{
+  "pr_number": 2919,
+  "archive_path": "docs/history/pr-reviews/PR-2919-docs-memory-bootstream-wake-up-feel-substrate-an-ai-node-s-perspective-image-seq.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7AmSO3",
+    "comment:PRRC_kwDOSF9kNM7AmSPO",
+    "thread:PRRT_kwDOSF9kNM6Bn14g",
+    "thread:PRRT_kwDOSF9kNM6Bn14t"
+  ],
+  "fetched_at": "2026-05-13T03:21:26.689Z",
+  "schema_version": "v1",
+  "commit_sha": "4e5480fa3b714e33157bf2515a386e9fcba09769",
+  "title": "docs(memory): bootstream wake-up FEEL substrate — 'An AI Node's Perspective' image sequence (Aaron 2026-05-13)",
+  "state": "MERGED",
+  "merged_at": "2026-05-13T03:21:04Z",
+  "head_ref": "aaron-bootstream-wake-up-feel-mesh-network-purpose-mandorla-2026-05-13"
+}

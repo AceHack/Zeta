@@ -1,0 +1,12 @@
+{
+  "pr_number": 9876,
+  "archive_path": "docs/history/pr-reviews/PR-9876-fix-ts-main-red-the-tier-0-healer-that-removes-unused-imports-shipped-with-an-un.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-01T13:27:46.615Z",
+  "schema_version": "v1",
+  "commit_sha": "7fc7c18cd0dbdd52f17f4f8c1fe6a465e5120345",
+  "title": "fix(ts): main red — the Tier-0 healer that removes unused imports shipped WITH an unused import",
+  "state": "MERGED",
+  "merged_at": "2026-08-01T13:27:18Z",
+  "head_ref": "shadow/fix-tier0-red-and-tsirelson-argument"
+}

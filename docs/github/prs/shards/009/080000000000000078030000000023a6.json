@@ -1,0 +1,12 @@
+{
+  "pr_number": 9126,
+  "archive_path": "docs/history/pr-reviews/PR-9126-docs-cell-scheduler-record-adversarial-review-debt-as-consumer-gated-6a.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-17T06:54:08.469Z",
+  "schema_version": "v1",
+  "commit_sha": "4a4fe1d497f250e4970693170799b5e57464d50f",
+  "title": "docs(cell-scheduler): record adversarial-review debt as consumer-gated (§6a)",
+  "state": "MERGED",
+  "merged_at": "2026-07-02T06:07:12Z",
+  "head_ref": "otto/cell-scheduler-review-debt-documented"
+}

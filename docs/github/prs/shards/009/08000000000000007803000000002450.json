@@ -1,0 +1,12 @@
+{
+  "pr_number": 9296,
+  "archive_path": "docs/history/pr-reviews/PR-9296-docs-work-items-retire-otto-channels-b-nnnn-allocation-close-081ksxn-umbrella-sl.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-03T13:24:04.323Z",
+  "schema_version": "v1",
+  "commit_sha": "0d55d95401e8ab3a2c7787d81c3426325d946968",
+  "title": "docs(work-items): retire otto-channels B-NNNN allocation — close 081KSXN umbrella (slice 4)",
+  "state": "MERGED",
+  "merged_at": "2026-07-03T13:23:41Z",
+  "head_ref": "feat/081KSXN-retire-otto-channels-workitem-id-allocation"
+}

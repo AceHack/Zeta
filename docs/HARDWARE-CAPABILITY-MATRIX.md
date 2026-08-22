@@ -1,4 +1,18 @@
+<!-- hardware-surface: class=capability; keyed-by=target-class; not-an-asset-list=true -->
+
 # Hardware Capability Matrix — what we support, where, honestly (081KTSZN10008QG0R00349SM6P)
+
+> **Provenance class: CAPABILITY — this is NOT an inventory surface.** Its key is a *target class*
+> (`linux-x64`, `qemu-aarch64`, `nvidia-gpu`), never a physical asset, and a row means "this class of
+> target is proven / not proven", not "we own one". It was named as a third hardware-inventory
+> surface in 081M00R59KS087G0R001W3837V; on inspection it is a different table entirely and is
+> **deliberately not reconciled** against `inventory/items/` — a class-keyed evidence table and an
+> asset-keyed register have no common key to reconcile on.
+>
+> The one real overlap is prose: the asides below that say what is *in hand* (an RTX 4090, an RTX
+> 3090, a Pi on the bench). Those are asset claims living in a non-asset surface, and they are the
+> drift risk here. When the register carries real rows, an aside should cite the item's ZetaId rather
+> than restate the count.
 
 > **The rule (from `universal/color.md`, applied to compute):** every target declares its **honest
 > capability** — proven by a green CI cell or a recorded run, never asserted. **UNKNOWN is a first-class

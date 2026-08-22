@@ -85,6 +85,118 @@ NixOS module (declarative reader) + iter/backlog tag.
 | **Iter / backlog** | sibling exception in `zeta-first-boot.sh` (per `zeta-install.sh` line 392 comment) |
 | **Why console-only** | Same constitutional rail; WiFi PSK is secret |
 
+### 5. Node role (first control plane vs joiner)
+
+| Property | Value |
+|---|---|
+| **Stage** | macOS/Linux at flash time → USB ESP write |
+| **Content class** | Public identifier (role, flake host attribute, join endpoint) |
+| **Operator-driven via** | `--role first-control-plane\|joiner` `--flake-host <attr>` `--join-server-url https://host[:port]` on the file-backed zflash CLI and `prepare-boot-image.ts` |
+| **ESP filename** | `zeta-firstboot.conf` |
+| **NixOS reader module** | none — the conf is read by **bash**: `zeta-first-boot.sh` sources it in preference to the ISO's `/etc/zeta-firstboot.conf`, then execs `zeta-install "$HOST"`. The join URL half is read at Nix evaluation time by `full-ai-cluster/nixos/modules/injected-join-server.nix`. |
+| **Backed by file** | `/mnt/etc/zeta/cluster-join-server-url` (extracted from the conf by `zeta-install.sh`) |
+| **Composer** | `src/Core.TypeScript/zflash/firstboot-role.ts` (pure; unit-tested in `firstboot-role.test.ts`) |
+| **Validation** | flake host must match `VALID_FLAKE_HOST_ATTRIBUTE_REGEX`; join URL must be `https` host-and-port; **every emitted value passes `SHELL_SAFE_CONF_VALUE_REGEX` and is single-quoted**, because the file is `.`-sourced by bash |
+| **Iter / backlog** | 081KSNY2Z0008QG0R0008PN7RQ scenario 5; supersedes the "per-flash `--role` deferred to v2" note in `usb-nixos-installer/nixos/installer/configuration.nix` |
+
+**Why it exists:** before this, the role was fixed at ISO-BUILD time
+(`environment.etc."zeta-firstboot.conf"` ships `HOST=control-plane`), so every
+medium cut from one ISO installed a control plane and a second node could not
+be provisioned as a joiner.
+
+**UNEXERCISED.** The composer is unit-tested; the bash and Nix halves have not
+been booted. See `JoinBlocker` in `src/Core.TypeScript/zflash/test-harness/scenarios.ts`.
+
+### 5b. Cluster segment addressing — plaintext on ESP, NOT secret, but TAMPERABLE
+
+| Property | Value |
+|---|---|
+| **Stage** | flash time → USB ESP write, inside `zeta-firstboot.conf` |
+| **Content class** | Public identifiers (an IPv4 address, a prefix length, a MAC) — **not secret material** |
+| **Conf keys** | `ZETA_CLUSTER_NODE_CIDR`, `ZETA_CLUSTER_SEGMENT_MAC`, `ZETA_CLUSTER_CONTROL_PLANE_IP` |
+| **Composer** | `src/Core.TypeScript/zflash/cluster-address.ts` (pure; unit-tested in `cluster-address.test.ts`) |
+| **Consumer** | `zeta-install.sh` re-validates and stages `/mnt/etc/zeta/cluster-segment-address`, `…-segment-mac`, `…-control-plane-address`; `nixos/modules/injected-cluster-address.nix` reads them at Nix evaluation time |
+| **Validation** | derived (never free-typed): founder `.1`, joiner `.2+` in `10.88.0.0/24`; MAC must be six lowercase hex octets **and unicast**; shape re-checked independently in TypeScript, in bash, and in Nix |
+| **Iter / backlog** | 081KSNY2Z0008QG0R0008PN7RQ scenario 5, `joining-node-address-assignment` |
+
+**Why it exists:** the shared cluster segment has no DHCP server and no DNS, so
+a joining node had no address and could not resolve the host in its own
+`--server` URL. mDNS is not the fix — `k3s-server.nix` records that it was
+tried and never resolved, and it ships only `--tls-san=control-plane`, so a
+`.local` name would fail certificate verification even if it did resolve.
+
+**HONEST CAVEAT — plaintext and tamperable, stated rather than shipped quietly.**
+Unlike point 6, nothing here is secret: an address and a MAC leak nothing by
+being readable. The exposure is the other direction — **anyone with physical
+possession of the stick can REWRITE these values**, and the obvious attack is
+repointing `ZETA_CLUSTER_CONTROL_PLANE_IP` at a rogue node so a joiner dials it.
+What limits that, and what does not:
+
+- It **does not** buy a silent takeover of the joiner. The joiner still verifies
+  the API certificate against the name `control-plane`, and a rogue node cannot
+  present a certificate for it without the cluster CA. The join fails rather
+  than succeeding against the wrong cluster.
+- It **does** buy denial of service and misdirection — a joiner sent to an
+  address that answers nothing, or to a node that can now see its connection
+  attempts. Neither is authenticated away by anything on the medium.
+- The same physical access already reaches the point-6 join token, which is the
+  strictly worse exposure. This is recorded as **not making that any better**,
+  not as being safe on its own.
+- The long-term home is the same one point 6 names: the AES-256-GCM cred blob
+  bound to a passphrase and the USB UUID (081KSKBP80008QG0R003AX2A69).
+
+**UNEXERCISED.** The derivation is unit-tested with no network and no QEMU. The
+`injected-cluster-address.nix` no-op path is evaluated (it yields `{}`); the
+populated path, the NetworkManager keyfile pickup, MAC-based NIC selection, and
+reachability of 6443 across the segment are **UNVERIFIED**. See `JoinBlocker`
+in `src/Core.TypeScript/zflash/test-harness/scenarios.ts`.
+
+### 6. k3s node-token (joiner) — plaintext on ESP, opt-in
+
+| Property | Value |
+|---|---|
+| **Stage** | flash time → USB ESP write, **only when explicitly requested** |
+| **Content class** | **Secret material, stored PLAINTEXT** — see the caveat below |
+| **Operator-driven via** | `--join-token <path>` (requires `--role joiner`) |
+| **ESP filename** | `zeta-join-token` |
+| **Consumer** | `zeta-install.sh` copies it to `/mnt/var/lib/rancher/k3s/agent/token` (0600), which is exactly the path `nixos/modules/k3s-agent.nix` sets as `services.k3s.tokenFile` |
+| **Source of the value** | the founding server's `/var/lib/rancher/k3s/server/node-token` |
+| **Shape, enforced twice** | `K10<64 lowercase hex>::<creds>` — refused at flash time by `firstboot-role.ts` `validateJoinTokenMaterial`, and again by `zeta-install.sh` before install |
+
+**WHY THE SHAPE IS ENFORCED AND NOT ASSUMED (traced upstream 2026-08-21).** The
+`K10<hash>::` prefix is not decoration; it is the only thing authenticating the
+server a joiner hands its credential to. In k3s `pkg/clientaccess/token.go`:
+
+- `parseToken` does **not** reject a token lacking the prefix — it rewrites it
+  to `K10:::<password>`, so `caHash` becomes the empty string.
+- `getCACerts` downloads the cluster CA from `/cacerts` using `insecureClient`,
+  declared in that same file with `tls.Config{InsecureSkipVerify: true}`.
+- `validateCAHash` with an empty `caHash` and a non-empty CA bundle emits
+  `logrus.Warn(...)` and returns nil — the join proceeds.
+
+So a bare shared secret (`K3S_TOKEN=hunter2`) yields a joiner that accepts
+whatever CA answers first on the segment and then presents the cluster token to
+it. `https://` in the server URL does not close this: the request that ignores
+TLS is the CA download itself. Refusing the shape costs a correct operator
+nothing — `server/token` and its `node-token` symlink are both written by
+`handlers.WriteToken` → `clientaccess.FormatToken`, which always prepends the
+digest.
+
+**CONSTITUTIONAL-RAIL CAVEAT — read before using this on real hardware.** Point
+7's "Encrypted cred-blob" earns its place on the ESP by being AES-256-GCM
+encrypted and bound to an operator passphrase plus the USB UUID. **This one is
+not.** A k3s node-token written here sits in the clear on a FAT filesystem that
+anyone with physical possession of the stick can read, and it grants cluster
+membership. That is a weaker bar than the rail sets for secret material, and it
+is recorded as a gap rather than argued away:
+
+- It is **never written implicitly** — only when the operator passes `--join-token`.
+- It is intended for the QEMU harness, where the token is deterministic test
+  material and the "stick" is a file in `/tmp`.
+- The correct long-term home is the existing encrypted blob path
+  (081KSKBP80008QG0R003AX2A69), which already has the passphrase + UUID binding
+  this needs. Folding the join token into that blob is the follow-up.
+
 ## Operator-driven `zflash` flag inventory (current)
 
 Allowlist from `zflash.ts`:
@@ -106,7 +218,7 @@ Allowlist from `zflash.ts`:
 
 ## In-flight injection points (substrate-engineering targets — not yet shipped)
 
-### 5. Encrypted cred-blob on USB ESP (081KSKBP80008QG0R003AX2A69 Phase 1, in-flight)
+### 7. Encrypted cred-blob on USB ESP (081KSKBP80008QG0R003AX2A69 Phase 1, in-flight)
 
 | Property | Value |
 |---|---|
@@ -144,7 +256,7 @@ HKDF binds the stretched secret to the USB UUID via IKM concatenation. Wrong USB
 
 Both layers must reproduce identically at decrypt time for the AES-GCM auth tag to verify; salt is per-blob (generated at encrypt time; stored in envelope; required at decrypt).
 
-### 6. GitHub-creds-at-flash-time variants (081KSKBP80008QG0R003AX2A69 picker options 1 + 3)
+### 8. GitHub-creds-at-flash-time variants (081KSKBP80008QG0R003AX2A69 picker options 1 + 3)
 
 Per operator 2026-05-27 verbatim: *"the current ones on my machine OR a token i generate on the website."*
 
@@ -218,6 +330,42 @@ entry; the persist/restore code reads the manifest + iterates.
 | Time-server NTP override | Public config | USB ESP at flash time (candidate) | Cheap; non-secret |
 | Locale / timezone | Public config | USB ESP at flash time (candidate) | Cheap; non-secret |
 | Per-node disk role hints | Public config | USB ESP at flash time (candidate) | Currently in flake per-host config |
+| **GHCR pull token (`zeta-platform/ghcr-pull`)** | **Secret** | **Cluster console at install time, OR retired entirely by making the packages public** | **Live blocker, not a candidate — see below** |
+
+### The GHCR pull token is the first entry here that is BLOCKING something today
+
+Every other row above is a target. This one names why the metal platform control
+plane has never started, and it is recorded here because the constitutional rail
+already decides how it would have to arrive.
+
+**Measured 2026-08-22.** `ghcr.io/lucent-financial-group/zeta-platform-controller`
+and `.../zeta-portal` are both `visibility: private` (36 published versions each,
+built by `.github/workflows/build-platform-images.yml`). An anonymous manifest GET
+returns HTTP 401; a credentialed one returns 200. The pods therefore take
+`ImagePullBackOff` on **every** substrate, and ArgoCD reports that as
+`Progressing` rather than `Degraded`, so nothing ever went red about it.
+
+**The dev/CI half is now wired** — `applyDevRegistryPullSecret` mints
+`zeta-platform/ghcr-pull` at bring-up from a token in the environment, and both
+pod specs reference it. CI can do this because a workflow already holds a token.
+
+**Metal cannot**, and that is the finding worth stating plainly against the
+standing goal that hardware comes up with no manual step:
+
+> A registry pull token is **secret material** under the rail at the top of this
+> file, so its only sanctioned transit is **operator-typed at the cluster console
+> at install time** (or, later, the encrypted cred-blob of
+> 081KSKBP80008QG0R003AX2A69). There is no path by which an unattended node
+> obtains it. **So as long as these packages are private, unattended metal
+> bring-up of `platform` is not achievable** — not for want of automation, but
+> because the node has no way to hold a credential nobody gave it.
+
+**The exit that removes the requirement rather than satisfying it** is making the
+two packages public, after which `imagePullSecrets` becomes inert and metal needs
+no credential at all. That is a **disclosure decision and it is the maintainer's
+alone** — it is recorded here as the alternative, not advocated. The two options
+are genuinely different trades: operator-typed keeps the images closed and costs a
+manual step per cluster; public costs disclosure and buys unattended bring-up.
 
 ## Source-of-truth pointers
 

@@ -1,0 +1,12 @@
+{
+  "pr_number": 9727,
+  "archive_path": "docs/history/pr-reviews/PR-9727-docs-book-stage-raw-the-builder-arc-radioshack-wildcard-h-card-designer-crypto-s.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-11T18:49:17.871Z",
+  "schema_version": "v1",
+  "commit_sha": "b8a121490b7b1953b9b43a28bbd5f11cac1812de",
+  "title": "docs(book): stage RAW — the builder arc (RadioShack → WildCard → H-card designer → crypto stack) (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-11T18:48:47Z",
+  "head_ref": "book-raw-builder-arc-itron"
+}

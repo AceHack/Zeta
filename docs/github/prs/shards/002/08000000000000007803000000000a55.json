@@ -1,0 +1,17 @@
+{
+  "pr_number": 2645,
+  "archive_path": "docs/history/pr-reviews/PR-2645-feat-b-0048-2-re-decomp-ts-3-color-probe-with-petersen-fix-riven-smallest-slice.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_tu14",
+    "comment:PRRC_kwDOSF9kNM6_tu1m",
+    "thread:PRRT_kwDOSF9kNM6A-Lh6",
+    "thread:PRRT_kwDOSF9kNM6A-Lhp"
+  ],
+  "fetched_at": "2026-05-11T04:58:06.416Z",
+  "schema_version": "v1",
+  "commit_sha": "d0a8725a601cf0f0db93d2a08933648f604c16f6",
+  "title": "feat(B-0048.2): re-decomp TS 3-color probe with Petersen fix (Riven smallest slice)",
+  "state": "MERGED",
+  "merged_at": "2026-05-11T04:57:48Z",
+  "head_ref": "claim/B-0048.2-z3-chromatic-upper-bound-smallest-slice-riven-2026-05-11"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 10231,
+  "archive_path": "docs/history/pr-reviews/PR-10231-fix-lint-drop-unused-acebnn-import-restores-lint-ts-to-green-on-main.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-09T21:30:51.673Z",
+  "schema_version": "v1",
+  "commit_sha": "4fa739981630d94f5d16c05cdfc8244987735b1f",
+  "title": "fix(lint): drop unused aceBnn import — restores lint (TS) to green on main",
+  "state": "MERGED",
+  "merged_at": "2026-08-09T21:30:21Z",
+  "head_ref": "shadow/fix-ace-cli-unused-import"
+}

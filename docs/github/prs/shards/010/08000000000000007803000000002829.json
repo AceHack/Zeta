@@ -1,0 +1,12 @@
+{
+  "pr_number": 10281,
+  "archive_path": "docs/history/pr-reviews/PR-10281-feat-proof-close-xorshift-ecc-axiom-linear-complexity-8-sequence-in-rscode.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-10T15:49:00.052Z",
+  "schema_version": "v1",
+  "commit_sha": "d76c8ddd2495306b1acc231b06e6a817b2d4e6f9",
+  "title": "feat(proof): close xorshift ECC axiom — linear complexity 8, sequence in rsCode",
+  "state": "MERGED",
+  "merged_at": "2026-08-10T15:48:26Z",
+  "head_ref": "claim/fix-ts-lint-and-wire"
+}

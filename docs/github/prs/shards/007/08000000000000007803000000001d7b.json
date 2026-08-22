@@ -1,0 +1,12 @@
+{
+  "pr_number": 7547,
+  "archive_path": "docs/history/pr-reviews/PR-7547-feat-clis-braid-soft-topology-verb-stubs-bob-weave-braid-tie-effective-qubit-con.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-10T23:57:24.431Z",
+  "schema_version": "v1",
+  "commit_sha": "9b5c43d93a65e8c9c5276bb474cd5654f502c0c3",
+  "title": "feat(clis): braid/soft-topology verb stubs — bob · weave · braid · tie (effective-qubit constructors)",
+  "state": "MERGED",
+  "merged_at": "2026-06-10T23:57:03Z",
+  "head_ref": "shadow-braid-verbs-stubs"
+}

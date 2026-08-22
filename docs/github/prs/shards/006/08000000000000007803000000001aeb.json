@@ -1,0 +1,12 @@
+{
+  "pr_number": 6891,
+  "archive_path": "docs/history/pr-reviews/PR-6891-docs-research-firefly-sync-heartbeat-i-commit-therefore-i-am-the-network-primiti.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-07T18:55:55.242Z",
+  "schema_version": "v1",
+  "commit_sha": "1b8a084c0b473a3b085db379d138f5db84e62a4f",
+  "title": "docs(research): firefly sync/heartbeat = 'I commit therefore I am' = the network primitive that makes the network differentiable",
+  "state": "MERGED",
+  "merged_at": "2026-06-07T18:55:38Z",
+  "head_ref": "otto/firefly-heartbeat-identity-differentiable-network-capture"
+}

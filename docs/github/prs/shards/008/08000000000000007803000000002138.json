@@ -1,0 +1,12 @@
+{
+  "pr_number": 8504,
+  "archive_path": "docs/history/pr-reviews/PR-8504-memory-feedback-fairness-is-the-arena-s-fitness-function-meta-level-the-boy-girl.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-16T10:30:52.075Z",
+  "schema_version": "v1",
+  "commit_sha": "fd25c41582e6111553039ed8d29d8a11ef0ff80b",
+  "title": "memory(feedback): fairness IS the arena's fitness function (meta-level) + the boy/girl worked example",
+  "state": "MERGED",
+  "merged_at": "2026-06-16T10:30:25Z",
+  "head_ref": "otto/fairness-is-the-arenas-fitness-function"
+}

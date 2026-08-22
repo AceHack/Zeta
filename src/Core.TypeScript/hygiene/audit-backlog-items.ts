@@ -29,7 +29,7 @@
 //      downstream rows)
 //   7. Unclosed-but-merged rows (head-keyword matches recent merged-PR title)
 //   8. Duplicate IDs (multiple files claiming the same `id: B-NNNN`) —
-//      factory-wide uniqueness violation per tools/backlog/README.md.
+//      factory-wide uniqueness violation per src/Core.TypeScript/backlog/README.md.
 //      Surfaced 2026-05-14 (Copilot caught two files claiming 081KR2E4K0008QG0R001F0YB5S on
 //      PR #3247; PR #3249 added this audit class).
 //   9. Parent-child status mismatch — parent declares `status: closed`
@@ -38,10 +38,10 @@
 //      081KRHWGX0008QG0R002C038BJ; 081KRMEXM0008QG0R003FZNK3E row + this audit class capture the failure mode).
 //
 // Usage:
-//   bun tools/hygiene/audit-backlog-items.ts                            # detect-only
-//   bun tools/hygiene/audit-backlog-items.ts --enforce-duplicate-ids
+//   bun src/Core.TypeScript/hygiene/audit-backlog-items.ts                            # detect-only
+//   bun src/Core.TypeScript/hygiene/audit-backlog-items.ts --enforce-duplicate-ids
 //       # exit non-zero on duplicate-ID groups (081KRMEXM0008QG0R000HHAG77 CI gate)
-//   bun tools/hygiene/audit-backlog-items.ts --enforce-parent-child-status
+//   bun src/Core.TypeScript/hygiene/audit-backlog-items.ts --enforce-parent-child-status
 //       # exit non-zero on parent-child status-mismatch groups (081KRMEXM0008QG0R003FZNK3E CI gate)
 //
 // Exit codes:
@@ -734,7 +734,7 @@ async function main(): Promise<number> {
   console.log(`  - Parent-child status-mismatch groups: ${parentChildMismatches}`);
   console.log("");
   console.log(
-    "Composes with: tools/hygiene/audit-lost-files.ts (sibling pattern),",
+    "Composes with: src/Core.TypeScript/hygiene/audit-lost-files.ts (sibling pattern),",
   );
   console.log(
     "  memory/feedback_decision_graph_emergent_from_archaeologies_and_flywheel_aaron_2026_05_03.md",

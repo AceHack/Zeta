@@ -1,0 +1,12 @@
+{
+  "pr_number": 12478,
+  "archive_path": "docs/history/pr-reviews/PR-12478-docs-research-repo-split-round-3-the-union-is-the-bottleneck-measured-and-the-to.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-19T21:09:44.969Z",
+  "schema_version": "v1",
+  "commit_sha": "2e685f14d72076772a2fe4bdc1a1f240e0ed8191",
+  "title": "docs(research): repo-split round 3 -- the union IS the bottleneck, measured; and the tooling that would fix it is already built and unwired",
+  "state": "MERGED",
+  "merged_at": "2026-08-19T21:09:09Z",
+  "head_ref": "kenji/repo-split-dependency-closure"
+}

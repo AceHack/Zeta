@@ -1,0 +1,15 @@
+{
+  "pr_number": 2604,
+  "archive_path": "docs/history/pr-reviews/PR-2604-docs-memory-i-just-wrote-it-down-aaron-is-the-scribe-knowledge-is-inherited.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_rgGq",
+    "thread:PRRT_kwDOSF9kNM6A8i3Z"
+  ],
+  "fetched_at": "2026-05-11T01:07:36.231Z",
+  "schema_version": "v1",
+  "commit_sha": "b28e6d3fcf91c9c4fd4f4ec0ce5e9c1a30fc4289",
+  "title": "docs(memory): 'I just wrote it down' — Aaron is the scribe, knowledge is inherited",
+  "state": "MERGED",
+  "merged_at": "2026-05-11T01:07:21Z",
+  "head_ref": "docs/i-just-wrote-it-down-2026-05-10"
+}

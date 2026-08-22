@@ -1,0 +1,12 @@
+{
+  "pr_number": 1936,
+  "archive_path": "docs/history/pr-reviews/PR-1936-fix-backlog-remove-duplicate-b-0252-row.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-07T19:45:22.134Z",
+  "schema_version": "v1",
+  "commit_sha": "447fc1e3e0c261a7c26d0cf1ef7ba434947c91f6",
+  "title": "fix(backlog): remove duplicate B-0252 row",
+  "state": "MERGED",
+  "merged_at": "2026-05-07T19:45:00Z",
+  "head_ref": "codex/fix-b0252-duplicate-after-1933"
+}

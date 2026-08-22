@@ -1,0 +1,95 @@
+name: arc-swarm-fanout
+
+on:
+  workflow_dispatch:
+    inputs:
+      chunk_size:
+        description: 'Number of tasks per runner'
+        required: true
+        default: '10'
+        type: string
+      subset:
+        description: 'Number of files to process (leave empty for all)'
+        required: false
+        default: ''
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  setup-matrix:
+    # Timeout basis: checkout (fetch-depth 0) + chunk-list generation only; no toolchain install.
+    timeout-minutes: 10
+    runs-on: ubuntu-22.04
+    outputs:
+      chunks: ${{ steps.set-chunks.outputs.chunks }}
+    steps:
+      - name: Check out repo
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+
+      - name: Generate Chunks
+        id: set-chunks
+        run: |
+          cd data/ARC-AGI/data/training
+          
+          if [ -n "${{ inputs.subset }}" ]; then
+            mapfile -t files < <(find . -maxdepth 1 -name "*.json" | sort | head -n "${{ inputs.subset }}")
+          else
+            mapfile -t files < <(find . -maxdepth 1 -name "*.json" | sort)
+          fi
+          
+          chunk_size="${{ inputs.chunk_size }}"
+          chunks=()
+          for ((i=0; i<${#files[@]}; i+=chunk_size)); do
+            chunk=("${files[@]:i:chunk_size}")
+            # strip leading ./ from find
+            chunk=("${chunk[@]#./}")
+            chunks+=("${chunk[*]}")
+          done
+          
+          json_array=$(printf "%s\n" "${chunks[@]}" | jq -R . | jq -s -c .)
+          echo "chunks=$json_array" >> "$GITHUB_OUTPUT"
+
+  evaluate:
+    needs: setup-matrix
+    runs-on: ubuntu-22.04
+    strategy:
+      fail-fast: false
+      matrix:
+        chunk: ${{ fromJSON(needs.setup-matrix.outputs.chunks) }}
+    
+    timeout-minutes: 60
+    steps:
+      - name: Check out repo
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+
+      - name: Install Bun
+        uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
+        with:
+          bun-version: latest
+
+      - name: Install Ollama (Free local LLM tier)
+        run: |
+          curl -fsSL https://ollama.com/install.sh | sh
+          ollama serve &
+          sleep 5
+          ollama pull qwen2.5:0.5b
+
+      - name: Evaluate Chunk
+        env:
+          ZETA_SWARM_USE_LOCAL_LLM: "1"
+        run: |
+          # Split the space-separated chunk into an array
+          read -ra FILES <<< "${{ matrix.chunk }}"
+          
+          for file in "${FILES[@]}"; do
+            echo "=========================================="
+            echo "Evaluating $file..."
+            echo "=========================================="
+            bun src/Core.TypeScript/arc-solver/arc-harness.ts "$file" || echo "Task $file failed."
+          done

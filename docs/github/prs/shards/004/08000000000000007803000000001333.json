@@ -1,0 +1,12 @@
+{
+  "pr_number": 4915,
+  "archive_path": "docs/history/pr-reviews/PR-4915-shard-2026-05-25-1131z-3rd-otto-cli-cold-boot-today-recursion-saturation-catch-4.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-25T11:36:11.711Z",
+  "schema_version": "v1",
+  "commit_sha": "3c51679d21f776c8992bbc19074a4bf199575813",
+  "title": "shard(2026-05-25/1131Z): 3rd Otto-CLI cold-boot today — recursion-saturation + catch-43-fired-AGAIN",
+  "state": "MERGED",
+  "merged_at": "2026-05-25T11:35:49Z",
+  "head_ref": "shard/tick-2026-05-25-1131z-otto-cli-3rd-cold-boot-recursion-saturation"
+}

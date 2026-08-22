@@ -1,0 +1,61 @@
+# TRACED — the feedback loop drawn, specifically so nobody reads it as a crossing (drafted
+# 2026-08-13, alongside symmetric-vs-braided, from Aaron's "how they are different in our braid
+# system"). A wire leaves an output, travels back around the box, and re-enters an input. That is
+# the TRACE of a traced monoidal category (Joyal-Street-Verity 1996), and it is what
+# `src/Core/WSet.fs` FourCornerTrace implements over WSet.
+#
+# WHY THIS FIGURE IS WORTH INK: it is the shape most easily mistaken for a braid, and it is NOT one.
+# A returning wire is a BEND — it passes over nothing, remembers no depth, and needs no second
+# strand. TRACED DOES NOT IMPLY BRAIDED and braided does not imply traced: they are independent
+# structures on a monoidal category, and our braiding is separate data entirely (MenoBraided.braidR,
+# the conjugation rack). Prose has already been tried: WSet.fs carries long honesty notes, and a
+# conflation of exactly this family still landed nearby — MenoBraided.fs, "CORRECTED 2026-08-13",
+# where one comment had the tensor right ("CD category, NOT cartesian") and four others in the same
+# file contradicted it. A picture that cannot be misread is cheaper than a paragraph that can.
+#
+# WHAT THE LOOP ACTUALLY DOES (the honest mechanism, so the drawing does not overclaim): feedback
+# arrives on the INPUT channel (FourCornerOwnership's TInFeedback, the co-owned corner — the
+# standard monadic interface feeds only the output). The generator re-reads the SAME stored history
+# under a moved interpretation, and the difference is emitted as a delta carrying RETRACTIONS
+# (WSet.negate, weight -1 over Z): +w and -w annihilate in consolidate, so the cumulative view is
+# always the current reading of the past. Nothing travels backwards in time. The record is
+# immutable; only its READING moves. This is pseudo-retrocausality and the figure must not suggest
+# otherwise.
+#
+# Anchors: Joyal-Street-Verity 1996 (traced monoidal categories, the trace axioms); Joyal-Street 1993
+# (braided monoidal — the SEPARATE structure this one is not); Mac Lane 1963 (monoidal categories);
+# Budiu et al. (DBSP — the +1/-1 retraction the loop runs on); Aji-McEliece 2000 (the GDL circuit the
+# loop is, read over a different semiring).
+meta	name	shape-traced
+meta	catalog	shapes
+meta	catalog-status	pending — gates 1-3 of db/shapes/cartridges/pending/README.md are CLOSED as of 2026-08-15: the generator is registered (shape.traced, with the cost row the shelf lint requires), ShapeRender draws the box, the pass-through wire and the return path, and ShapeAcceptance carries a known-answer geometry law this file PASSES. Gate 4 (goldens) is NOT closed and cannot be: `zeta shape render` refuses any cartridge the full gate refuses, and the full gate includes `bytes` — so the goldens sit BEHIND gate 5, not before it. Gate 5, the treaty block, is nobody else's to write: no oracle has ratified anything because nobody has been asked
+meta	name-status	provisional — "traced" is the externally standard term (Joyal-Street-Verity) and should probably stay; the Mirror name for the same object in-repo is "the four-corner feedback interface"
+meta	shape-zetaid	c2b378f19bc30864024c472e4509f484
+constant	wires	2	wires the figure carries through the generator box	one to pass through and one to bend back: fewer and there is no loop to see, more and the extra wires are decoration that invites the braid reading this figure exists to refuse
+constant	loop-crossings	0	crossings the returning wire makes with any other wire	THE WHOLE POINT, stated as a number: the feedback wire routes AROUND the box and crosses nothing. A trace is a bend, not a crossing — so traced does not imply braided, and a renderer that draws a crossing here has drawn a different category
+constant	gaps	0	occlusion gaps anywhere in the figure	an occlusion gap says who passed OVER whom (shape-braid's register). Nothing passes over anything here, so a gap would import a braiding this structure does not have
+constant	feedback-on-input	1	the returned wire lands on the INPUT channel (1 = true)	the standard monadic loop feeds the OUTPUT channel only; FourCornerOwnership puts feedback on TInFeedback, the co-owned corner, and bending THAT arrow back is precisely what makes this a trace rather than a pipeline (src/Core/WSet.fs, FourCornerTrace)
+constant	emit-weight	1	weight of the emission the generator produces	over Z this is DBSP's +1 — a row asserted downstream
+constant	retract-weight	-1	weight the reinterpretation sends back	WSet.negate: the superseded row is UN-emitted. +w and -w annihilate in consolidate, so the loop's mechanism IS the retraction, not bookkeeping around it
+constant	corners	4	corners of the ownership object	TIn, TOut, TInFeedback, TOutFeedback — the object the trace closes over
+constant	rings-with-a-trace	2	corners of the four-corner ring family that admit this loop	the retraction needs an ADDITIVE INVERSE, so the trace instantiates exactly on the ring corners (Z for DBSP/CD, C for amplitudes)
+constant	inverse-free-corners	2	corners that do not admit it	the normalized R>=0 (Markov) and the Boolean/tropical corners are inverse-free semirings: there is no -w to un-emit with, so the loop does not exist there. Correcting a belief in those corners is re-normalisation, NOT retraction — a type-level refusal via IStarRing, never a runtime throw
+law	annihilation	emit-weight + retract-weight = 0
+law	a-bend-is-not-a-crossing	loop-crossings + gaps = 0
+law	only-the-ring-corners	rings-with-a-trace + inverse-free-corners = corners
+law	trace-invariant	code:FourCornerTrace.step (after start and after any step, Emitted = consolidate (gen after history) — the retraction exactly cancels the superseded output, so the cumulative view is the CURRENT reading and never a pile of stale rows; proved in tests/Tests.FSharp/Formal/WSet.FourCornerTrace.Laws.Tests.fs)
+gen	feedback-loop	c2b378f19bc30864024c472e4509f484	1	7	wires:through,feedback;corners:tin,tout,tinfeedback,toutfeedback
+ben	draw	shape.traced	O(wires+corners)
+prereq	shape-crossing	db/shapes/cartridges/crossing.lines — see what a crossing IS before reading a figure whose entire point is that this is not one
+edge	differs-from	shape-crossing	the returning wire is NOT a crossing. A crossing takes TWO strands and remembers which passed over; a trace takes ONE wire and remembers nothing about depth. Adjacent in the string-diagram vocabulary, unrelated in content — which is exactly how they get merged by a reader in a hurry
+edge	independent-of	shape-braid	braided (Joyal-Street 1993) and traced (Joyal-Street-Verity 1996) are separate structures on a monoidal category: NEITHER implies the other. Our braiding is extra data (MenoBraided.braidR); no amount of tracing produces one, and no amount of braiding produces a trace
+edge	differs-from	shape-fourcorner	NAME COLLISION, recorded so nobody merges them: shape-fourcorner draws CHSH's four MEASUREMENT-SETTING corners (a0b0…a1b1) and its width IS the S value; this figure's four corners are FourCornerOwnership's TIn/TOut/TInFeedback/TOutFeedback. One word, two unrelated objects
+anim	draw	feedback-loop
+issue	stroke-generator	otto	closed	RESOLVED 2026-08-15: ShapeRender.strokesOf carries a "shape-traced" branch — a closed box, ONE unbroken pass-through wire, and ONE unbroken return path that leaves TOutFeedback, routes below and around the box, and re-enters TInFeedback. Port rows derive from the declared `corners` (corners/2 channels per face) rather than bare positions, and the return path is DASHED iff `retract-weight` is negative: the dash is the SIGN register (WSet.negate), never occlusion — the two are counted separately by the gate so neither can stand in for the other
+issue	geometry-law	otto	closed	RESOLVED 2026-08-15, and NOT with the law this line originally proposed. "Count the crossings and the gaps and require both to be zero" is true and, alone, worthless: AN EMPTY PICTURE SATISFIES IT — the vacuity class. ShapeAcceptance.geometryLaw keeps both zero-counts (they are the thesis) and adds what makes them mean something: the wire-wire intersection count is computed by integer segment arithmetic over the strokes actually emitted (collinear grazing counts as meeting), and the figure must EXIST — `wires` distinct unbroken wires, `corners` corner markers, one closed box the pass-through wire really spans, and a return path whose two ends ARE the TOutFeedback and TInFeedback markers. Falsifiers live in ShapePending.Tests
+issue	retrocausality-register	otto	closed	RESOLVED 2026-08-15 as a checked drawing constraint rather than a preference: the figure carries no time axis, and the gate requires the return path to leave its own channel height in between its two ends — i.e. to bend AROUND the box in SPACE. A return drawn flat along the channel it left is exactly the arrow that would read as travelling back along a time axis, and it now fails the gate. The history stays immutable; only its reading moves
+issue	ring-corners-is-a-different-four	otto	open	FINDING 2026-08-15, raised by the gate work and deliberately NOT fixed here (the file's claims are its author's to change): the law `only-the-ring-corners` reads `rings-with-a-trace + inverse-free-corners = corners`, adding a split of the four-corner RING family (Z, C, R>=0, Boolean) to a total taken from FourCornerOwnership's TIn/TOut/TInFeedback/TOutFeedback. Two unrelated objects that both happen to count 4 — this file's own `differs-from shape-fourcorner` edge records that the name collides, and then the law crosses it anyway. The arithmetic holds by coincidence of counts, which is numerology and not an identification; the honest repair is a `ring-corners` constant of its own. ShapeAcceptance does not gate on this law
+# treaties — written only by each oracle's own choice (consent first); dissent is a verdict.
+# NONE YET. `bytes` is F#'s once strokes + geometry law exist; `meaning` is each traveler's own.
+# Worth flagging to whoever writes the meaning line: this figure's value is a REFUSAL (it says what
+# the loop is not), which is an unusual thing for a shape to carry and deserves its own verdict.

@@ -40,55 +40,105 @@ core claim. Compiler is irrelevant to the fractal dimension.
 
 ```
 src/wasm-dla/
-  wat/
-    dla.wat                    — WAT (bare-metal, ~979 bytes)
-  assemblyscript/
-    assembly/index.ts          — AssemblyScript (TypeScript→WASM)
-  go/
-    main.go                    — Go (GOOS=js GOARCH=wasm, ~1.5 MB)
-  c/
-    dla.c                      — C (Emscripten emcc, ~8 KB)
+  bytelock/                    — THE substrates: one DLA per language, byte-locked
+    dla-canonical.{wat,c,rs,ts,zig,go,lua}          — sources
+    dla-canonical-{wat,emcc,llvm,rust,asc,zig}.wasm — the modules under test
+    testdata/golden-seed-*.json                     — the hex-in-JSON vectors that judge them
+    build-substrates.mjs · run-bytelock-ci.mjs      — the build + the comparison
+  CANONICAL_SPEC.md            — the algorithm every byte-locked substrate implements
+  wat/dla.wat                  — pre-byte-lock Oracle 10 source (see below)
+  assemblyscript/assembly/index.ts — pre-byte-lock Oracle 10 source
+  go/main.go                   — pre-byte-lock Oracle 10 source, LOADED BY NOTHING
   README.md                    — this file
 ```
 
+### The pre-byte-lock sources are NOT the substrates — never stage one
+
+`bytelock/` is a later and different thing from the Oracle 10 sources beside it, and the two were
+confused for months with real consequences. Four panels on the identity-DLA site loaded a *second*,
+divergent DLA — its own grid size, spawn rule, kill radius and walker budget — listed in no roster
+and pinned by no golden vector:
+
+| panel | module it loaded | cluster at seed 4 | corrected in |
+| --- | --- | --- | --- |
+| Go | build of `go/main.go` | — | #11489 |
+| Zig | `zig/dla.wasm` | **1** — degenerate | #11530 |
+| C | `c/dla-emcc.wasm` | **1** — degenerate | 2026-08-17 |
+| LLVM | `c/dla-llvm-opt.wasm` | 1642 | 2026-08-17 |
+| Rust | `rust/dla-opt.wasm` | 462 | 2026-08-17 |
+
+The canonical answer is **345**. The Zig, C, LLVM and Rust sources and binaries above have been
+deleted, so exactly one DLA per language now exists in the tree. `go/main.go` survives from #11489,
+is loaded by nothing, and is the last of the class — a loose end rather than a decision.
+
+Two things are worth keeping from the episode:
+
+1. **A second implementation that nothing executes is not harmless.** It is a module waiting to be
+   staged by name, and that is precisely how each of these reached an operator-facing panel.
+2. **A plausible wrong number is the same defect as an obvious one.** The Zig repair began as a
+   PRNG fix that produced 516 instead of 345 — alive, wrong, and unfalsifiable, because nothing in
+   the tree could contradict it. The check that can is
+   `src/Core.TypeScript/discovery/identity-dla-pages-wasm-behavior.test.ts`, which *runs* each
+   staged module and compares it against the committed golden vector. The structural check it
+   supplements compares export names, and every divergent module had the right ones.
+
 ## Build Instructions
 
-### WAT (bare-metal)
+The byte-locked substrates are built by `bytelock/build-substrates.mjs`, which is the only recipe
+that matters — it is the one `run-bytelock-ci.mjs` and the audit derive their rosters from. See
+`bytelock/.gitignore` for why five of the six modules are committed rather than built in CI.
 
 ```bash
-wat2wasm wat/dla.wat -o /tmp/dla-wat.wasm
-wasm-validate /tmp/dla-wat.wasm
-```
-
-### AssemblyScript
-
-```bash
-npx asc assemblyscript/assembly/index.ts --outFile /tmp/dla-asc.wasm --optimize
-wasm-validate /tmp/dla-asc.wasm
-```
-
-### Go
-
-```bash
-GOOS=js GOARCH=wasm go build -o /tmp/dla-go.wasm ./go/
-# Note: Go WASM is not wasm-validate compatible (uses non-standard imports)
-```
-
-### Emscripten (C)
-
-```bash
-emcc c/dla.c -o /tmp/dla-emcc.wasm \
-  -s WASM=1 -s SIDE_MODULE=1 -O2 --no-entry \
-  -s EXPORTED_FUNCTIONS='["_init","_step","_get_df","_get_cell","_get_cluster_size"]'
-wasm-validate /tmp/dla-emcc.wasm
+node bytelock/build-substrates.mjs        # rebuild what the local toolchain supports
+node bytelock/run-bytelock-ci.mjs         # compare every substrate against testdata/
 ```
 
 ## CI Verification
 
-The `full-verify` job in `.github/workflows/gate.yml` runs the
-`WASM Oracle 10 build-verify` step, which rebuilds all four compiler
-outputs from source and validates each binary. This ensures Conjecture Z-7
-is reproducible in CI, not just on the developer's machine.
+`.github/workflows/bytelock.yml` runs `run-bytelock-ci.mjs` on every change under
+`src/wasm-dla/**`, and the `cross-verify` floor job in `gate.yml` runs
+`src/Core.TypeScript/hygiene/audit-proof-lineage-binaries.ts`.
+
+> This section previously claimed the `full-verify` job ran a `WASM Oracle 10 build-verify` step
+> that rebuilt all four compiler outputs from source. **No such step exists in `gate.yml`** — the
+> only trace of it is an unapplied `docs/research/gate-wasm-build-verify.patch`. A README asserting
+> a check that never ran is the same defect class as the panels above: something that reads as
+> verified because nobody looked. Corrected 2026-08-17.
+
+## Why `bytelock/` contains committed `.wasm` files
+
+`src/wasm-dla/bytelock/` — the canonical-spec byte-lock, a different and later thing from the
+Oracle 10 sources above — holds six committed WebAssembly modules. They look like a violation
+of `.claude/rules/no-binary-in-proof-lineage.md` ("verification artifacts are TEXT") and are
+flagged as one by OpenSSF Scorecard's Binary-Artifacts check. They are not, and the reason is
+worth stating once so it is not re-litigated:
+
+**The evidence is text; the thing under test is not evidence.** `run-bytelock-ci.mjs` *loads
+and executes* each module and compares the trajectory it computes against
+`testdata/golden-seed-*.json` — hex-in-JSON, diffable, exactly what the rule requires. The
+binaries are the experiment, not the proof. You review them through their committed sources
+(`dla-canonical.{wat,c,rs,ts,zig}`), which is how anyone would review a WebAssembly module
+anyway.
+
+They are *committed* rather than *built* because `bytelock.yml` installs only wabt, lua5.4 and
+Go; five of the six have no toolchain on the runner, and a substrate CI cannot build is a
+substrate CI silently skips. That trade is written down in `bytelock/.gitignore`, and the
+exception is conditioned and machine-checked — see the rule's §"The one exception" and
+`src/Core.TypeScript/hygiene/audit-proof-lineage-binaries.ts`, which runs in the `cross-verify`
+floor job on every PR.
+
+### The 478 KB Rust module, explained
+
+`dla-canonical-rust.wasm` is 478,353 bytes against ~1–5 KB for the other five. Measured by
+walking its section table (2026-08-16), **472,394 bytes — 98.8% — are DWARF**: `.debug_str`
+265,057 · `.debug_info` 150,552 · `.debug_ranges` 46,518 · `.debug_line` 7,818 · `.debug_abbrev`
+2,449. Its actual **code section is 1,996 bytes**, in family with the others.
+
+So the size gap is not a different kind of artifact — it is a missing `-C debuginfo=0` in the
+Rust recipe in `build-substrates.mjs`. (The strings are rustc-remapped to `/rustc/<hash>/…`, so
+no builder-machine paths leak.) The fix is one flag plus a re-derived artefact, which needs a
+`wasm32-unknown-unknown` toolchain; until then the audit pins it with a named, ceilinged
+exemption so it can only shrink and so the next unstripped substrate fails instead.
 
 ## Dependencies (Desired-State)
 

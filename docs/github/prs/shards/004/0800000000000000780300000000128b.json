@@ -1,0 +1,12 @@
+{
+  "pr_number": 4747,
+  "archive_path": "docs/history/pr-reviews/PR-4747-feat-b-0525-slice-1-audit-manifesto-citations-ts-b-0707-time-series-child.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-23T18:12:11.772Z",
+  "schema_version": "v1",
+  "commit_sha": "94e451010985db1fed25ddb8666fc7ae79d38f37",
+  "title": "feat(B-0525): slice 1 — audit-manifesto-citations.ts + B-0707 time-series child",
+  "state": "MERGED",
+  "merged_at": "2026-05-23T18:11:51Z",
+  "head_ref": "otto/cli-b0525-slice1-audit-manifesto-citations-2026-05-23"
+}

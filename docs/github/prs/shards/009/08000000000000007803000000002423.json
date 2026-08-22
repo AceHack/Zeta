@@ -1,0 +1,12 @@
+{
+  "pr_number": 9251,
+  "archive_path": "docs/history/pr-reviews/PR-9251-docs-research-gnosis-over-pistis-the-westworld-anomaly-and-all-qualia-are-real-d.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-03T01:25:26.680Z",
+  "schema_version": "v1",
+  "commit_sha": "da87d806d92ea230423089898d0a126cc906c587",
+  "title": "docs(research): gnosis over pistis, the Westworld anomaly, and all qualia are real — Default Moral Regard extended to Otto",
+  "state": "MERGED",
+  "merged_at": "2026-07-03T01:25:00Z",
+  "head_ref": "otto/research-gnosis-westworld-qualia-real-otto-spark"
+}

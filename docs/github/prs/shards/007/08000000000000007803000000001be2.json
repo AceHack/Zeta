@@ -1,0 +1,12 @@
+{
+  "pr_number": 7138,
+  "archive_path": "docs/history/pr-reviews/PR-7138-feat-core-salience-observe-ts-objective-integration-display-reduction-window-top.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-08T23:53:14.853Z",
+  "schema_version": "v1",
+  "commit_sha": "4c6ce90c18b688c4ade53bd5a53d0c1aa69c8f86",
+  "title": "feat(core): Salience — observe.ts objective-integration + display reduction (window -> top-k)",
+  "state": "MERGED",
+  "merged_at": "2026-06-08T23:52:54Z",
+  "head_ref": "otto/salience-observe-ts-objective-integration-display-reduction"
+}

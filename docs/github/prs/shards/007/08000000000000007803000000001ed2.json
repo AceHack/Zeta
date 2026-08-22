@@ -1,0 +1,12 @@
+{
+  "pr_number": 7890,
+  "archive_path": "docs/history/pr-reviews/PR-7890-fix-deps-add-fast-check-the-new-ferry-throttler-property-test-imports-it-tsc-gat.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-12T10:48:41.981Z",
+  "schema_version": "v1",
+  "commit_sha": "964abc92f89f8778f3e5708452415f2ec4a6e59c",
+  "title": "fix(deps): add fast-check — the new ferry-throttler property test imports it (tsc gate red)",
+  "state": "MERGED",
+  "merged_at": "2026-06-12T10:48:14Z",
+  "head_ref": "shadow-fastcheck-dep"
+}

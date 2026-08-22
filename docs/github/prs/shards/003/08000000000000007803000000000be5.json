@@ -1,0 +1,12 @@
+{
+  "pr_number": 3045,
+  "archive_path": "docs/history/pr-reviews/PR-3045-fix-bg-notifier-strip-yaml-inline-comments-from-depends-on-values.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-13T22:37:32.889Z",
+  "schema_version": "v1",
+  "commit_sha": "3b1e20e59f9213632710ccbdf4c9fcb4d16bb0dc",
+  "title": "fix(bg/notifier): strip YAML inline comments from depends_on values",
+  "state": "MERGED",
+  "merged_at": "2026-05-13T22:37:15Z",
+  "head_ref": "fix/notifier-strip-yaml-comments-2026-05-13"
+}

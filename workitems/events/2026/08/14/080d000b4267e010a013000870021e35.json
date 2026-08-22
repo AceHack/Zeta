@@ -1,0 +1,14 @@
+{
+  "id": "080d000b4267e010a013000870021e35",
+  "at": "2026-08-14T17:53:27.804Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M00PGK7V087G0R003XET6SC",
+    "type": "task",
+    "title": "Conservation ledger: nobody can spend what they do not own, enforced and falsifiable",
+    "slug": "conservation-ledger-nobody-can-spend-what-they-do-not-own-en",
+    "priority": "P2",
+    "filename": "081M00PGK7V087G0R003XET6SC-conservation-ledger-nobody-can-spend-what-they-do-not-own-en.md"
+  }
+}

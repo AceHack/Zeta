@@ -1,0 +1,27 @@
+{
+  "pr_number": 1952,
+  "archive_path": "docs/history/pr-reviews/PR-1952-research-preserve-gemini-aquarius-conversation-chrome-extraction.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_B85D",
+    "comment:PRRC_kwDOSF9kNM6_B85G",
+    "comment:PRRC_kwDOSF9kNM6_B97d",
+    "comment:PRRC_kwDOSF9kNM6_B987",
+    "comment:PRRC_kwDOSF9kNM6_B98S",
+    "comment:PRRC_kwDOSF9kNM6_B98j",
+    "comment:PRRC_kwDOSF9kNM6_CABg",
+    "thread:PRRT_kwDOSF9kNM6AdbWr",
+    "thread:PRRT_kwDOSF9kNM6AdbWs",
+    "thread:PRRT_kwDOSF9kNM6AdcIZ",
+    "thread:PRRT_kwDOSF9kNM6AdcJC",
+    "thread:PRRT_kwDOSF9kNM6AdcJP",
+    "thread:PRRT_kwDOSF9kNM6AdcJh",
+    "thread:PRRT_kwDOSF9kNM6AddrY"
+  ],
+  "fetched_at": "2026-05-07T22:07:53.730Z",
+  "schema_version": "v1",
+  "commit_sha": "18c45b32bf4ea8b225858b19b257b21d94e24d9f",
+  "title": "research: preserve Gemini Aquarius conversation — Chrome extraction",
+  "state": "MERGED",
+  "merged_at": "2026-05-07T22:07:36Z",
+  "head_ref": "research/gemini-aquarius-conversation-2026-05-07"
+}

@@ -1,0 +1,15 @@
+{
+  "pr_number": 6662,
+  "archive_path": "docs/history/pr-reviews/PR-6662-rules-formal-proof-first-payoff-4-proven-code-excluded-from-the-debug-surface-sy.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7Hjkip",
+    "thread:PRRT_kwDOSF9kNM6GuNoI"
+  ],
+  "fetched_at": "2026-06-03T11:14:42.358Z",
+  "schema_version": "v1",
+  "commit_sha": "2fdbf9cddd42e62aa41e972ad1d6eea6946dfc1f",
+  "title": "rules(formal-proof-first): payoff #4 — proven code excluded from the debug surface (system-level)",
+  "state": "MERGED",
+  "merged_at": "2026-06-03T11:14:18Z",
+  "head_ref": "otto-cli/formal-proof-first-debug-surface-payoff-2026-06-03"
+}

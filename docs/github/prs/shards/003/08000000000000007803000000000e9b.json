@@ -1,0 +1,12 @@
+{
+  "pr_number": 3739,
+  "archive_path": "docs/history/pr-reviews/PR-3739-docs-archive-lior-preservation-discipline-for-pr-3733.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-19T00:12:13.021Z",
+  "schema_version": "v1",
+  "commit_sha": "a5c8911aeef6273c41478b465835c163afa24722",
+  "title": "docs(archive): Lior preservation discipline for PR 3733",
+  "state": "MERGED",
+  "merged_at": "2026-05-19T00:11:55Z",
+  "head_ref": "lior/preserve-3733"
+}

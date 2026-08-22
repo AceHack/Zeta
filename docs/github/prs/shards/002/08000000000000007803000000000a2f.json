@@ -1,0 +1,12 @@
+{
+  "pr_number": 2607,
+  "archive_path": "docs/history/pr-reviews/PR-2607-docs-memory-infrastructure-not-religion-private-faith-public-tools-no-coercion.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-11T01:16:36.337Z",
+  "schema_version": "v1",
+  "commit_sha": "986096085b466a0a66bb0013b7541144c73b8761",
+  "title": "docs(memory): infrastructure not religion — private faith, public tools, no coercion",
+  "state": "MERGED",
+  "merged_at": "2026-05-11T01:16:19Z",
+  "head_ref": "docs/infrastructure-not-religion-2026-05-10"
+}

@@ -1,0 +1,15 @@
+{
+  "pr_number": 9112,
+  "archive_path": "docs/history/pr-reviews/PR-9112-docs-backlog-gate-ikleenealgebra-oracle-mirror-on-the-first-cross-language-consu.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7RPgTV",
+    "thread:PRRT_kwDOSF9kNM6NyDzF"
+  ],
+  "fetched_at": "2026-08-17T04:52:49.744Z",
+  "schema_version": "v1",
+  "commit_sha": "24e66f499241d9b4f66ef3ba44645bb323bb6370",
+  "title": "docs(backlog): gate IKleeneAlgebra oracle-mirror on the first cross-language consumer (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-02T04:36:24Z",
+  "head_ref": "otto/gate-ikleene-oracle-mirror"
+}

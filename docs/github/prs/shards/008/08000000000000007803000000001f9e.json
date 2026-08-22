@@ -1,0 +1,12 @@
+{
+  "pr_number": 8094,
+  "archive_path": "docs/history/pr-reviews/PR-8094-feat-ferry-contextualferrythrottler-explicit-context-threading-arrow-shape.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-13T23:24:49.412Z",
+  "schema_version": "v1",
+  "commit_sha": "09cdaaa3ea38c5486101283c09b79b477aee2732",
+  "title": "feat(ferry): ContextualFerryThrottler — explicit context threading (Arrow shape)",
+  "state": "MERGED",
+  "merged_at": "2026-06-13T23:24:24Z",
+  "head_ref": "shadow/ferry-contextual-arrow"
+}

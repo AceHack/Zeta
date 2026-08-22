@@ -1,0 +1,12 @@
+{
+  "pr_number": 7987,
+  "archive_path": "docs/history/pr-reviews/PR-7987-docs-research-shadow-ferry-24-the-mvp-linguistic-seed-for-self-reflection-answer.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-12T18:41:28.887Z",
+  "schema_version": "v1",
+  "commit_sha": "860d9ef111a6cee61a83c11260f37474f1b5d513",
+  "title": "docs(research)+shadow: ferry 24 — the MVP linguistic seed for self-reflection, answered (the day's closing synthesis)",
+  "state": "MERGED",
+  "merged_at": "2026-06-12T18:41:01Z",
+  "head_ref": "shadow/ferry-24-mvp-linguistic-seed"
+}

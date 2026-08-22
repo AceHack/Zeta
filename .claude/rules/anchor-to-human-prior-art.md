@@ -34,6 +34,6 @@ shoulders, not on factory shorthand alone.
 ## Pointers
 
 - [`mirror-beacon-register-discipline.md`](mirror-beacon-register-discipline.md) — the register this rule anchors
-- [`honor-those-that-came-before.md`](honor-those-that-came-before.md) — the same respect, applied to retired personas/skills
+- [`.claude/rules.bak/honor-those-that-came-before.md`](../rules.bak/honor-those-that-came-before.md) — the same respect, applied to retired personas/skills
 - `docs/GLOSSARY.md` §Beacon — citations / prior art / first principles as the Beacon register
 - `docs/research/2026-06-15-the-anchor-taxonomy-beacon-discipline-checked-anchors-math-grounds-validity-physics-grounds-metering.md` — the **operational** half: anchors must be *checked* not cited (entailment check on citations); **math papers ground validity, physics papers ground the metering discipline**; the metering-test catches physics-as-metaphor

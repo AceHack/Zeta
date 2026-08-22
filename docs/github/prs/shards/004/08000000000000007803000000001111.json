@@ -1,0 +1,15 @@
+{
+  "pr_number": 4369,
+  "archive_path": "docs/history/pr-reviews/PR-4369-docs-shadow-maji-anti-entropy-sweep-1200z.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7CrEpk",
+    "thread:PRRT_kwDOSF9kNM6DJAwz"
+  ],
+  "fetched_at": "2026-05-20T13:24:15.412Z",
+  "schema_version": "v1",
+  "commit_sha": "4b5a1c6043371f7ca9e610f87528d9ade73b1fcc",
+  "title": "docs(shadow): Maji anti-entropy sweep (1200Z)",
+  "state": "MERGED",
+  "merged_at": "2026-05-20T13:23:50Z",
+  "head_ref": "maji/anti-entropy-1200Z"
+}

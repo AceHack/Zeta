@@ -1,0 +1,12 @@
+{
+  "pr_number": 6401,
+  "archive_path": "docs/history/pr-reviews/PR-6401-feat-algebra-ladder-indexedzset-ts-reference-oracle-the-z-k-v-join-rung-z-set-4-.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-01T11:02:01.923Z",
+  "schema_version": "v1",
+  "commit_sha": "87d6b875a6945ae86f49cb11ffc602b87436eecf",
+  "title": "feat(algebra-ladder): IndexedZSet TS reference oracle (the Z[K×V] join rung) + Z-set 4/4 status + generic-math direction",
+  "state": "MERGED",
+  "merged_at": "2026-06-01T11:01:36Z",
+  "head_ref": "otto-cli/indexed-zset-ts-reference-oracle-2026-06-01"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 6444,
+  "archive_path": "docs/history/pr-reviews/PR-6444-fix-b-0976-add-target-gitignore-to-the-rust-bonsai-crate.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-01T17:41:44.123Z",
+  "schema_version": "v1",
+  "commit_sha": "58d7a00d0405fa2bd1da8c3a41efc79e131d414f",
+  "title": "fix(B-0976): add /target gitignore to the Rust Bonsai crate",
+  "state": "MERGED",
+  "merged_at": "2026-06-01T17:41:21Z",
+  "head_ref": "otto-cli/b0976-rust-gitignore-2026-06-01"
+}

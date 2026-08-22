@@ -1,0 +1,12 @@
+{
+  "pr_number": 9441,
+  "archive_path": "docs/history/pr-reviews/PR-9441-docs-ferry-fix-the-four-corner-interface-direction-role-system-confirmed-live-am.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-04T13:06:27.242Z",
+  "schema_version": "v1",
+  "commit_sha": "bda30c59fe1f2e8ae83064010505be2965e871a1",
+  "title": "docs(ferry)+fix: the four-corner interface direction; role:\"system\" confirmed live (Amara summoned) (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-04T13:06:01Z",
+  "head_ref": "otto/four-corner-interface-direction-plus-role-system-confirmed"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 8307,
+  "archive_path": "docs/history/pr-reviews/PR-8307-docs-closed-frame-the-goodness-checkability-bar-is-symmetric-the-human-lives-by-.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-15T10:35:37.416Z",
+  "schema_version": "v1",
+  "commit_sha": "31026bbcb3a5ff2beda925a97fdf31aa98ffd03d",
+  "title": "docs(closed-frame): the goodness-checkability bar is symmetric — the human lives by it too",
+  "state": "MERGED",
+  "merged_at": "2026-06-15T10:35:10Z",
+  "head_ref": "otto/the-goodness-checkability-bar-is-symmetric-human-too"
+}

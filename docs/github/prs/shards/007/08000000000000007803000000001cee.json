@@ -1,0 +1,12 @@
+{
+  "pr_number": 7406,
+  "archive_path": "docs/history/pr-reviews/PR-7406-docs-vocab-glowmotion-glomotion-drop-the-w-save-the-entropy-as-ety-ety-where-we-.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-09T21:06:05.197Z",
+  "schema_version": "v1",
+  "commit_sha": "e326703069bfbb6622db4ba22f86c3e3120a9dea",
+  "title": "docs(vocab): glowmotion -> glomotion (drop the w) + save the entropy as ety (ety/ = where we save the entropy of words)",
+  "state": "MERGED",
+  "merged_at": "2026-06-09T21:05:42Z",
+  "head_ref": "otto/glomotion-rename-drop-w-save-entropy-as-ety"
+}

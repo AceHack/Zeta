@@ -1,0 +1,14 @@
+{
+  "id": "080cffff71751810a0130008680e212a",
+  "at": "2026-08-14T11:00:27.427Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081KZZYWBN2087G0R003NAQQAF",
+    "type": "task",
+    "title": "Exact cyclotomic amplitude carrier Z[zeta_16] for the quorum interference fold",
+    "slug": "exact-cyclotomic-amplitude-carrier-z-zeta-16-for-the-quorum",
+    "priority": "P2",
+    "filename": "081KZZYWBN2087G0R003NAQQAF-exact-cyclotomic-amplitude-carrier-z-zeta-16-for-the-quorum.md"
+  }
+}

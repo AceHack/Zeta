@@ -1,0 +1,19 @@
+{
+  "pr_number": 3447,
+  "archive_path": "docs/history/pr-reviews/PR-3447-feat-b-0504-wire-auto-recover-into-pollonce-real-recoveryadapters-7-tests.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7BmTp3",
+    "comment:PRRC_kwDOSF9kNM7BmacG",
+    "comment:PRRC_kwDOSF9kNM7BmhU_",
+    "thread:PRRT_kwDOSF9kNM6CWavP",
+    "thread:PRRT_kwDOSF9kNM6CWf3j",
+    "thread:PRRT_kwDOSF9kNM6CWk-a"
+  ],
+  "fetched_at": "2026-05-15T12:17:26.532Z",
+  "schema_version": "v1",
+  "commit_sha": "87ef1c76ebd3c053c9b35408bd4f461cbcaa464b",
+  "title": "feat(b-0504): wire --auto-recover into pollOnce + real RecoveryAdapters + 7 tests",
+  "state": "MERGED",
+  "merged_at": "2026-05-15T12:17:05Z",
+  "head_ref": "feat/b0504-wire-auto-recover-pollonce-otto-cli-2026-05-15"
+}

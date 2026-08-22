@@ -1,0 +1,12 @@
+{
+  "pr_number": 7234,
+  "archive_path": "docs/history/pr-reviews/PR-7234-docs-research-ferry-schema-as-precise-text-codec-safe-defined-per-frame-change-c.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-09T08:41:13.091Z",
+  "schema_version": "v1",
+  "commit_sha": "50897e6edf607102dd36c1b2b17f813d8110c847",
+  "title": "docs(research)+ferry: schema as precise text codec ('safe' defined per frame) + change-cascade must be automatable/0-downtime/DORA-tracked",
+  "state": "MERGED",
+  "merged_at": "2026-06-09T08:40:48Z",
+  "head_ref": "otto/research-schema-codec-purpose-and-change-cascade-dora"
+}

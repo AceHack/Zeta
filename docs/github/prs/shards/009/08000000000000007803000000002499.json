@@ -1,0 +1,12 @@
+{
+  "pr_number": 9369,
+  "archive_path": "docs/history/pr-reviews/PR-9369-docs-research-brownian-experts-computed-the-plates-in-our-covariance-bernoulli-p.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-03T22:35:36.765Z",
+  "schema_version": "v1",
+  "commit_sha": "8f40d3c494e9d20ee02f0e759ad0fc1cb0f65499",
+  "title": "docs(research): Brownian experts computed — the plates in our covariance; Bernoulli prices smoothness",
+  "state": "MERGED",
+  "merged_at": "2026-07-03T22:35:12Z",
+  "head_ref": "shadow/brownian-experts-computation"
+}

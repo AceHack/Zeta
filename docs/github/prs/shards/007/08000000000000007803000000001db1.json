@@ -1,0 +1,12 @@
+{
+  "pr_number": 7601,
+  "archive_path": "docs/history/pr-reviews/PR-7601-test-core-cross-check-f-qubits-against-q-oracle.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-11T04:49:55.433Z",
+  "schema_version": "v1",
+  "commit_sha": "9d4dd7f815a5f72019918690db3cdff23aafc238",
+  "title": "test(core): cross-check F# qubits against Q# oracle",
+  "state": "MERGED",
+  "merged_at": "2026-06-11T04:49:29Z",
+  "head_ref": "codex/vera-fsharp-qsharp-oracle"
+}

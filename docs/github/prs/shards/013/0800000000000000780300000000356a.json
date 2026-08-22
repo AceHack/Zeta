@@ -1,0 +1,12 @@
+{
+  "pr_number": 13674,
+  "archive_path": "docs/history/pr-reviews/PR-13674-fix-cluster-own-the-overreach-the-trust-domain-churn-was-derived-and-the-live-ru.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-22T11:48:17.707Z",
+  "schema_version": "v1",
+  "commit_sha": "b9b6366b7260ab03bccdcb305d220fa00f424aad",
+  "title": "fix(cluster): own the overreach — the trust-domain churn was DERIVED, and the live run refuted it",
+  "state": "MERGED",
+  "merged_at": "2026-08-22T11:47:41Z",
+  "head_ref": "shadow-oz-trust-domain-claim-correction"
+}

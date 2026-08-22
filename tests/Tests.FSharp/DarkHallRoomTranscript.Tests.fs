@@ -162,8 +162,40 @@ let ``room transcript exports the source-owned contract consumed by the css UI``
     Assert.Equal(transcript.BlackBodyReadout, transcript.TemperatureTreaty.BlackBody)
     Assert.Equal("execute", transcript.Ticks.Head.Phase)
     Assert.Equal("ok", transcript.Ticks.Head.Outcome)
+    Assert.Equal(Transcript.CausalReadoutSchema, transcript.CausalReadout.Schema)
+    Assert.Equal("forward-only", transcript.CausalReadout.ExecutionDirection)
+    Assert.True(transcript.CausalReadout.AppendOnly)
+    Assert.False(transcript.CausalReadout.RewritesHistory)
+    Assert.Empty(transcript.CausalReadout.Corrections)
 
-    let json = Transcript.toJson transcript
+    let traceState: FourCornerTrace.Traced<unit, string, int> =
+        { Interpretation = ()
+          Emitted = [] }
+
+    let correction: FourCornerTrace.CausalCorrection<unit, unit, string, int> =
+        { Sequence = 9007199254740994I
+          ReinterpretsThrough = 9007199254740993I
+          Feedback = ()
+          Before = traceState
+          After = traceState
+          Delta = [ "corrected", 1 ] }
+
+    let corrected = Transcript.appendCausalCorrection correction transcript |> mustOk
+    let correctionReadout = Assert.Single(corrected.CausalReadout.Corrections)
+
+    Assert.Equal("9007199254740994", correctionReadout.Sequence)
+    Assert.Equal("9007199254740993", correctionReadout.ReinterpretsThrough)
+    Assert.Equal(1, correctionReadout.DeltaRows)
+
+    let invalid = { correction with Sequence = correction.ReinterpretsThrough }
+
+    match Transcript.appendCausalCorrection invalid transcript with
+    | Error(FourCornerTrace.CausalOrderError.CorrectionDoesNotFollowHistory(throughSequence, correctionSequence)) ->
+        Assert.Equal(invalid.ReinterpretsThrough, throughSequence)
+        Assert.Equal(invalid.Sequence, correctionSequence)
+    | other -> Assert.Fail(sprintf "expected causal-order feedback, got %A" other)
+
+    let json = Transcript.toJson corrected
 
     Assert.Contains("\"schema\": \"zeta.darkhall.room-ui.v1\"", json)
     Assert.Contains("\"heatReadout\"", json)
@@ -179,6 +211,11 @@ let ``room transcript exports the source-owned contract consumed by the css UI``
     Assert.Contains("\"appendOnly\": true", json)
     Assert.Contains("\"continuationReadout\"", json)
     Assert.Contains("\"schema\": \"zeta.darkhall.continuation-readout.v1\"", json)
+    Assert.Contains("\"causalReadout\"", json)
+    Assert.Contains("\"schema\": \"zeta.darkhall.causal-readout.v1\"", json)
+    Assert.Contains("\"executionDirection\": \"forward-only\"", json)
+    Assert.Contains("\"rewritesHistory\": false", json)
+    Assert.Contains("\"sequence\": \"9007199254740994\"", json)
     Assert.Contains("\"referenceOracle\": \"fsharp-blackbody-reference\"", json)
     Assert.Contains("\"qsharpTreaty\": \"src/Core.QSharp.ReferenceOracle/heat-signals-treaty.json\"", json)
     Assert.Contains("\"controller\"", json)

@@ -1,0 +1,12 @@
+{
+  "pr_number": 12988,
+  "archive_path": "docs/history/pr-reviews/PR-12988-federated-identity-zeta-shipped-one-of-spire-s-two-attestation-layers-add-the-mi.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-21T00:01:59.523Z",
+  "schema_version": "v1",
+  "commit_sha": "2a03b73392f3b9686bfa2748dc155b7ad9b74a07",
+  "title": "federated-identity: Zeta shipped one of SPIRE's two attestation layers — add the missing NodeAttestor port",
+  "state": "MERGED",
+  "merged_at": "2026-08-21T00:01:18Z",
+  "head_ref": "feat/node-attestor-port"
+}

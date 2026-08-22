@@ -1,0 +1,12 @@
+{
+  "pr_number": 8662,
+  "archive_path": "docs/history/pr-reviews/PR-8662-feat-core-imdbdataset-typed-offline-binding-over-imdb-non-commercial-datasets-ty.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-20T00:49:23.899Z",
+  "schema_version": "v1",
+  "commit_sha": "ece6a2ba229348518f7e2ac843894f3affc0412e",
+  "title": "feat(core): ImdbDataset — typed offline binding over IMDb non-commercial datasets (type-provider slice 1: co-star graph + Bacon number)",
+  "state": "MERGED",
+  "merged_at": "2026-06-20T00:48:59Z",
+  "head_ref": "otto/imdb-dataset-typed-binding-costar-graph"
+}

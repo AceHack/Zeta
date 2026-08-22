@@ -1,0 +1,12 @@
+{
+  "pr_number": 10015,
+  "archive_path": "docs/history/pr-reviews/PR-10015-feat-core-decorrelationexcessfusion-dag-layer-reichenbach-ancestor-stratified-nu.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-03T15:50:49.170Z",
+  "schema_version": "v1",
+  "commit_sha": "2e7424ba44491d78c1ac94450ad6bba01d5d9dd8",
+  "title": "feat(core): DecorrelationExcessFusion — DAG layer + Reichenbach ancestor-stratified null",
+  "state": "MERGED",
+  "merged_at": "2026-08-03T15:50:06Z",
+  "head_ref": "feat/decorrelation-excess-fusion-dag-reichenbach-20260803"
+}

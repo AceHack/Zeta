@@ -1,0 +1,12 @@
+{
+  "pr_number": 2914,
+  "archive_path": "docs/history/pr-reviews/PR-2914-docs-memory-clifford-algebra-hkt-ontology-vocabulary-list-axis-basis-rudders-rot.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-13T02:51:26.223Z",
+  "schema_version": "v1",
+  "commit_sha": "c204137f6569158903fa13a13250feb71933dfee",
+  "title": "docs(memory): Clifford-algebra + HKT ontology vocabulary list — axis/basis, rudders/rotors, steering, cartographer, navigator, edge-mapper, world-model, civ-sim, edge-runner, 5 control structures or 4+meta (Aaron 2026-05-13)",
+  "state": "MERGED",
+  "merged_at": "2026-05-13T02:51:10Z",
+  "head_ref": "aaron-clifford-hkt-ontology-vocabulary-axis-basis-rudders-rotors-steering-cartographer-navigator-edge-mapper-world-model-civsim-edge-runner-5-control-structures-2026-05-13"
+}

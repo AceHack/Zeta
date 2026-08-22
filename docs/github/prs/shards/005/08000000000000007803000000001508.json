@@ -1,0 +1,12 @@
+{
+  "pr_number": 5384,
+  "archive_path": "docs/history/pr-reviews/PR-5384-feat-b-0847-each-zeta-ai-gets-own-github-identity-email-once-cluster-operational.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-27T02:26:29.305Z",
+  "schema_version": "v1",
+  "commit_sha": "934ac30bc77df4aa97387d1b35ad807ecad3a8fe",
+  "title": "feat(B-0847): each Zeta AI gets own GitHub identity + email once cluster operational — closes algo-wink-attribution-gap (Aaron 2026-05-26)",
+  "state": "MERGED",
+  "merged_at": "2026-05-27T02:26:09Z",
+  "head_ref": "feat-b0847-ai-own-github-identity-once-cluster-operational-2026-05-26-2206z"
+}

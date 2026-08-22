@@ -1,0 +1,12 @@
+{
+  "pr_number": 10856,
+  "archive_path": "docs/history/pr-reviews/PR-10856-feat-heat-meter-mach-zehnder-dbsp-generation.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-15T23:39:44.109Z",
+  "schema_version": "v1",
+  "commit_sha": "de55a2fc47fc151c78cc1c0f441c3d17e7bcc3ae",
+  "title": "feat(heat): meter Mach-Zehnder DBSP generation",
+  "state": "MERGED",
+  "merged_at": "2026-08-15T23:39:09Z",
+  "head_ref": "codex/wset-production-heat-boundary"
+}

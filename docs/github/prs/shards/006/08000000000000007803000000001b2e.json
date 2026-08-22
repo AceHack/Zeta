@@ -1,0 +1,12 @@
+{
+  "pr_number": 6958,
+  "archive_path": "docs/history/pr-reviews/PR-6958-docs-a-test-seam-deterministic-simulation-of-all-nouns-and-verbs-dst-as-a-first-.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-08T00:45:05.503Z",
+  "schema_version": "v1",
+  "commit_sha": "a5b8563905cd3580821452b3dd7c22cd85231300",
+  "title": "docs: a 'test' seam — deterministic simulation of all nouns and verbs (DST as a first-class plane)",
+  "state": "MERGED",
+  "merged_at": "2026-06-08T00:44:47Z",
+  "head_ref": "otto/test-seam-deterministic-simulation-dst-plane"
+}

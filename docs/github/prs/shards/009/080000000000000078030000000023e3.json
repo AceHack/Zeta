@@ -1,0 +1,12 @@
+{
+  "pr_number": 9187,
+  "archive_path": "docs/history/pr-reviews/PR-9187-feat-core-valuetreeenvelope-versioned-parity-wrapper-0-downtime-parser-roll-proo.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-02T19:37:12.881Z",
+  "schema_version": "v1",
+  "commit_sha": "9b814775d4cbdbeb48fd9998110303f6eb5252a4",
+  "title": "feat(core): ValueTreeEnvelope — versioned parity wrapper + 0-downtime parser-roll proofs",
+  "state": "MERGED",
+  "merged_at": "2026-07-02T19:36:46Z",
+  "head_ref": "otto/value-tree-parity-envelope"
+}

@@ -1,0 +1,19 @@
+{
+  "pr_number": 5986,
+  "archive_path": "docs/history/pr-reviews/PR-5986-docs-backlog-decompose-b-0824-creating-b-0824-2.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7GJzM6",
+    "comment:PRRC_kwDOSF9kNM7GJzME",
+    "comment:PRRC_kwDOSF9kNM7GKBg6",
+    "comment:PRRC_kwDOSF9kNM7GKBlU",
+    "thread:PRRT_kwDOSF9kNM6Fr1FI",
+    "thread:PRRT_kwDOSF9kNM6Fr1Fz"
+  ],
+  "fetched_at": "2026-05-29T13:10:28.385Z",
+  "schema_version": "v1",
+  "commit_sha": "ba22dee597ff7ef50d16e326508d90a0ca07cc23",
+  "title": "docs(backlog): Decompose B-0824, creating B-0824.2",
+  "state": "MERGED",
+  "merged_at": "2026-05-29T13:10:05Z",
+  "head_ref": "lior/create-b0824.2"
+}

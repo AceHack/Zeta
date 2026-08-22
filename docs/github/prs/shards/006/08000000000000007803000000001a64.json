@@ -1,0 +1,12 @@
+{
+  "pr_number": 6756,
+  "archive_path": "docs/history/pr-reviews/PR-6756-docs-architecture-cross-cell-du-decision-criterion-transition-function-decides-c.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-07T08:27:17.569Z",
+  "schema_version": "v1",
+  "commit_sha": "9ed7ee48222ce517dc8c266a96dfcc8d1247c1f8",
+  "title": "docs(architecture): cross-cell DU decision criterion — transition function decides CRDT vs serialized",
+  "state": "MERGED",
+  "merged_at": "2026-06-07T08:26:59Z",
+  "head_ref": "otto/cross-cell-du-transition-test"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 9945,
+  "archive_path": "docs/history/pr-reviews/PR-9945-docs-ferry-scott-vokes-data-structures-the-code-that-isn-t-there-strange-loop-20.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-02T00:06:30.499Z",
+  "schema_version": "v1",
+  "commit_sha": "b307f19ce4ef1ba8f0c32ac387603bd9731e4043",
+  "title": "docs(ferry): Scott Vokes — \"Data Structures: The Code That Isn't There\" (Strange Loop 2012)",
+  "state": "MERGED",
+  "merged_at": "2026-08-02T00:06:01Z",
+  "head_ref": "shadow/ferry-vokes-data-structures-holes"
+}

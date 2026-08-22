@@ -1,0 +1,29 @@
+{
+  "pr_number": 2928,
+  "archive_path": "docs/history/pr-reviews/PR-2928-docs-memory-backlog-dbpedia-direct-dotnetrdf-f-ce-hkt-mdm-canonical-demo-path-b-.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7Am-IL",
+    "comment:PRRC_kwDOSF9kNM7Am-Ie",
+    "comment:PRRC_kwDOSF9kNM7Am-Im",
+    "comment:PRRC_kwDOSF9kNM7Am77U",
+    "comment:PRRC_kwDOSF9kNM7AnAWG",
+    "comment:PRRC_kwDOSF9kNM7AnCvn",
+    "comment:PRRC_kwDOSF9kNM7AnCwG",
+    "comment:PRRC_kwDOSF9kNM7AnCwT",
+    "thread:PRRT_kwDOSF9kNM6BoUkB",
+    "thread:PRRT_kwDOSF9kNM6BoWL2",
+    "thread:PRRT_kwDOSF9kNM6BoWMG",
+    "thread:PRRT_kwDOSF9kNM6BoWMN",
+    "thread:PRRT_kwDOSF9kNM6BoX03",
+    "thread:PRRT_kwDOSF9kNM6BoZgV",
+    "thread:PRRT_kwDOSF9kNM6BoZgr",
+    "thread:PRRT_kwDOSF9kNM6BoZgy"
+  ],
+  "fetched_at": "2026-05-13T04:18:43.880Z",
+  "schema_version": "v1",
+  "commit_sha": "e5f846e7f26fb0d83dc019f781ecc20dc355dc46",
+  "title": "docs(memory + backlog): DBpedia direct dotNetRDF + F# CE — HKT-MDM canonical demo Path B (B-0428) — Path A type provider deferred until F# fork for AI safety with real HKT over Clifford (Aaron 2026-05-13)",
+  "state": "MERGED",
+  "merged_at": "2026-05-13T04:18:26Z",
+  "head_ref": "aaron-dbpedia-is-free-master-data-with-human-curation-fsharp-type-provider-archived-resurrect-as-hkt-mdm-canonical-demo-b0428-2026-05-13"
+}

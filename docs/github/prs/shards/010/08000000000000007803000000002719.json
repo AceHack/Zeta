@@ -1,0 +1,12 @@
+{
+  "pr_number": 10009,
+  "archive_path": "docs/history/pr-reviews/PR-10009-docs-research-meter-run-causally-closed-window-resolves-truncation-0-51-upper-bo.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-02T23:05:02.725Z",
+  "schema_version": "v1",
+  "commit_sha": "e78a157c94b673e4702c9ab57154e83643ccf1b6",
+  "title": "docs(research): meter run — causally-closed window resolves truncation (0.51 upper-bound → 0.23 true)",
+  "state": "MERGED",
+  "merged_at": "2026-08-02T23:04:32Z",
+  "head_ref": "research/meter-run-causally-closed-followup-20260802"
+}

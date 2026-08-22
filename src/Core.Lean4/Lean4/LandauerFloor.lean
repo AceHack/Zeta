@@ -35,6 +35,30 @@
 
   Discipline: sorry-free where possible. Operational/combinatorial model (Nat arithmetic over bit
   counts), following the house style of EntropyFloorLift.lean and ChildFloor.lean.
+
+  ## Faithfulness to the implementation (audited 2026-08-13, Soraya)
+
+  Everything above models a ledger over `Nat`, with `measure` carrying the precondition
+  `k ≤ s.state`. **The TypeScript this file claims to formalize has neither.** Both ledgers
+  are JavaScript `number` (signed), and `measure` has no precondition at all. Two consequences
+  worth stating plainly, because they are the difference between a proof and a decoration:
+
+  1. **Theorem 2 (heat monotonicity) is free here and was FALSE there.** `s.heat ≤ (op s).heat`
+     over `Nat` is discharged by the type, not by the operations — no arrangement of these
+     definitions could have made it fail. The same property over the implementation signed
+     arithmetic is a genuine obligation, and `measure(-5)` violated it silently until
+     2026-08-13. A formal artefact that discharges an obligation using a type the
+     implementation does not have has not discharged it.
+  2. **The `k ≤ s.state` precondition is not implemented.** `physics-traits.ts`
+     `createNonAdjMap` and `observe/event-sink-folder.ts` both call `measure(1)` with nothing
+     admitted, so `state` goes negative in normal operation — a state this Nat model cannot
+     even express. That is now a documented, reported precondition on the TS side rather than
+     a silent divergence; `key-erasure-meter.ts` is the guarded path that does enforce it.
+
+  Section 5 below adds the signed model, so both claims are checked here rather than asserted
+  in a comment. Read the Nat model as the specification of the GUARDED path
+  (`key-erasure-meter.ts`), and the signed model as the specification of the UNGUARDED one
+  (`entropy-tracker.ts`).
 -/
 
 namespace Zeta.LandauerFloor
@@ -191,5 +215,58 @@ theorem n_appends_from_n_branches (n : Nat) :
   induction n with
   | zero => simp [iter, initial]
   | succ k ih => simp [iter, branch, ih]
+
+-- ═══ Theorem 5: the SIGNED model — what entropy-tracker.ts actually implements ══
+-- Sections 1-4 model a Nat ledger with a `k ≤ s.state` precondition. The TypeScript has
+-- neither: both ledgers are signed `number` and `measure` is unguarded. The theorems below
+-- are stated over that model, so the divergence is CHECKED rather than described.
+
+/-- The ledger as shipped: both counters signed, no precondition on `measure`. -/
+structure SignedState where
+  state : Int
+  heat : Int
+  deriving DecidableEq
+
+def signedInitial : SignedState := ⟨0, 0⟩
+
+def signedBranch (s : SignedState) : SignedState := { s with state := s.state + 1 }
+
+/-- No `k ≤ s.state` hypothesis and `k : Int` — exactly the shipped signature. -/
+def signedMeasure (s : SignedState) (k : Int) : SignedState :=
+  { state := s.state - k, heat := s.heat + k }
+
+/-- Heat monotonicity over the signed model holds EXACTLY WHEN the bit count is non-negative.
+    Contrast `measure_heat_monotone` above, which is unconditional — that unconditionality is
+    supplied by `Nat`, not by the model, and the implementation does not have `Nat`. This is
+    the precondition `entropy-tracker.ts` now documents and reports. -/
+theorem signed_heat_monotone_iff (s : SignedState) (k : Int) :
+    s.heat ≤ (signedMeasure s k).heat ↔ 0 ≤ k := by
+  simp [signedMeasure]; omega
+
+/-- The concrete violation, as a theorem rather than a footnote: a negative bit count refunds
+    heat that was already paid, reversing an irreversible operation. -/
+theorem signed_negative_measure_refunds_heat :
+    (signedMeasure signedInitial (-5)).heat = -5 := by
+  decide
+
+/-- Why a LEVEL test on the total could not see it. `state + heat` is invariant under
+    `signedMeasure` for EVERY `k`, negative ones included — so `state + heat ≥ 0`, the check
+    `second_law_satisfied` used until 2026-08-13, is blind to every measurement the tracker
+    ever performs. Only `branch` moves that sum, and only upward. This is the vacuity, proven. -/
+theorem signed_total_blind_to_measure (s : SignedState) (k : Int) :
+    (signedMeasure s k).state + (signedMeasure s k).heat = s.state + s.heat := by
+  simp [signedMeasure]; omega
+
+/-- And the sum is monotone under `branch`, so a level test on it can never be false at all
+    from `signedInitial`: the two facts together are why the sweep found zero counterexamples. -/
+theorem signed_branch_raises_total (s : SignedState) :
+    s.state + s.heat ≤ (signedBranch s).state + (signedBranch s).heat := by
+  simp [signedBranch]; omega
+
+/-- Erasing bits that were never admitted: expressible here, unreachable in the Nat model
+    (where `k ≤ s.state` forbids it). This is what `createNonAdjMap.put` does on every call. -/
+theorem signed_unadmitted_erasure (k : Int) (hk : 0 < k) :
+    (signedMeasure signedInitial k).state < 0 := by
+  simp [signedMeasure, signedInitial]; omega
 
 end Zeta.LandauerFloor

@@ -1,0 +1,12 @@
+{
+  "pr_number": 5356,
+  "archive_path": "docs/history/pr-reviews/PR-5356-docs-research-kestrel-v2-10th-persona-ferry-caustic-engineered-bloom-filter-disc.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-26T23:46:00.765Z",
+  "schema_version": "v1",
+  "commit_sha": "596680656b190e6cfe5c05b73824b4278fa9256e",
+  "title": "docs(research): Kestrel-v2 10th-persona ferry — caustic-engineered bloom filter discriminators + substrate-smoothness-as-load-bearing-property + gesture-to-spec workflow",
+  "state": "MERGED",
+  "merged_at": "2026-05-26T23:45:43Z",
+  "head_ref": "otto/kestrel-caustic-engineered-bloom-filter-discriminators-substrate-smoothness-load-bearing-2026-05-26"
+}

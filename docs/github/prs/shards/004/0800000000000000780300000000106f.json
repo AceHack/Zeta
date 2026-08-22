@@ -1,0 +1,15 @@
+{
+  "pr_number": 4207,
+  "archive_path": "docs/history/pr-reviews/PR-4207-shard-2112z-rebase-4204-4206-2-alexa-render-engagements-ontological-protocol-can.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7CcTz1",
+    "thread:PRRT_kwDOSF9kNM6C-WS1"
+  ],
+  "fetched_at": "2026-05-18T21:20:45.834Z",
+  "schema_version": "v1",
+  "commit_sha": "e88f289db9516db7cbb231b50c3cc8230236a9fd",
+  "title": "shard(2112Z): rebase #4204 → #4206 + 2 Alexa-render engagements + ontological-protocol candidate offered",
+  "state": "MERGED",
+  "merged_at": "2026-05-18T21:20:25Z",
+  "head_ref": "shard/tick-2112z-rebase-4204-to-4206-plus-alexa-2-renders-engagement-otto-cli-2026-05-18"
+}

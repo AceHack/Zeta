@@ -1,0 +1,12 @@
+{
+  "pr_number": 11710,
+  "archive_path": "docs/history/pr-reviews/PR-11710-docs-concepts-aaron-rules-on-the-default-geodesic-traveler-disagreement-is-curva.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-17T23:41:04.415Z",
+  "schema_version": "v1",
+  "commit_sha": "f3b21be7e78ac94f0e9332d38c1f6ea7090a0974",
+  "title": "docs(concepts): Aaron rules on the default geodesic — traveler disagreement is curvature, not force",
+  "state": "MERGED",
+  "merged_at": "2026-08-17T23:40:29Z",
+  "head_ref": "shadow/geodesic-default-oracle-v2"
+}

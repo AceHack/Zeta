@@ -1,0 +1,17 @@
+{
+  "pr_number": 5406,
+  "archive_path": "docs/history/pr-reviews/PR-5406-docs-hygiene-tick-2026-05-27t06-08z-dotgit-saturation-arc-closed-empirical-ancho.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7FOH20",
+    "comment:PRRC_kwDOSF9kNM7FOH3V",
+    "thread:PRRT_kwDOSF9kNM6FArrP",
+    "thread:PRRT_kwDOSF9kNM6FArrj"
+  ],
+  "fetched_at": "2026-05-27T06:19:48.198Z",
+  "schema_version": "v1",
+  "commit_sha": "7138c131ca1d021723853e6fa84d9243c070a960",
+  "title": "docs(hygiene): tick 2026-05-27T06:08Z — dotgit-saturation arc closed; empirical anchor",
+  "state": "MERGED",
+  "merged_at": "2026-05-27T06:19:25Z",
+  "head_ref": "otto-cli/tick-0608z-2026-05-27"
+}

@@ -1,0 +1,17 @@
+{
+  "pr_number": 2195,
+  "archive_path": "docs/history/pr-reviews/PR-2195-feat-b-0169-add-cli-runner-to-string-archaeology-closes-b-0169.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_fExZ",
+    "comment:PRRC_kwDOSF9kNM6_fExj",
+    "thread:PRRT_kwDOSF9kNM6AyzCF",
+    "thread:PRRT_kwDOSF9kNM6AyzCN"
+  ],
+  "fetched_at": "2026-05-09T06:06:07.240Z",
+  "schema_version": "v1",
+  "commit_sha": "05524fd4951b43193a863002d3e7b9e4b57fa9ef",
+  "title": "feat(B-0169): add CLI runner to string-archaeology — closes B-0169",
+  "state": "MERGED",
+  "merged_at": "2026-05-09T06:05:43Z",
+  "head_ref": "claim/b0169-cli-runner-2026-05-09"
+}

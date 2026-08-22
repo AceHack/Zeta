@@ -1,0 +1,12 @@
+{
+  "pr_number": 5115,
+  "archive_path": "docs/history/pr-reviews/PR-5115-feat-dashboard-per-agent-decompose-to-action-ratio-prs-merged-rows-filed-in-metr.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-26T06:51:43.738Z",
+  "schema_version": "v1",
+  "commit_sha": "41563328fa8d67aac7d888db83e7fe1576d2b092",
+  "title": "feat(dashboard): per-agent decompose-to-action ratio + prs_merged/rows_filed in metrics.json (Aaron 2026-05-26 per-agent health visibility)",
+  "state": "MERGED",
+  "merged_at": "2026-05-26T06:51:25Z",
+  "head_ref": "otto-cli/dashboard-per-agent-decompose-to-action-metrics-2026-05-26"
+}

@@ -1,5 +1,5 @@
 #!/usr/bin/env bun
-// tools/ci/audit-installer-substrate.ts
+// src/Core.TypeScript/ci/audit-installer-substrate.ts
 //
 // Source-level audit of the AI-cluster installer substrate. Runs in
 // CI before the ISO is uploaded as a workflow artifact, and locally
@@ -49,7 +49,7 @@ import { existsSync, readFileSync, statSync } from "node:fs";
 import { join, resolve } from "node:path";
 
 // Repo root is THREE levels up from src/Core.TypeScript/ci/ (was ../.. when
-// this lived at tools/ci/; the #8048-era relocation added a directory level).
+// this lived at src/Core.TypeScript/ci/; the #8048-era relocation added a directory level).
 const ROOT = resolve(import.meta.dir, "../../..");
 
 interface FileAssertion {
@@ -60,6 +60,15 @@ interface FileAssertion {
 interface SentinelAssertion {
   readonly path: string;
   readonly mustContain: readonly string[];
+  /**
+   * Strings whose PRESENCE is the defect (081M0BTFK85087G0R000A705AK). Some
+   * substrate properties are only expressible negatively — "this unit must not
+   * be gated on a local marker" cannot be written as a mustContain, and a
+   * positive-only sentinel set silently permits the exact regression it was
+   * added after. Use sparingly and only where the absent string names a defect,
+   * never merely an unused option.
+   */
+  readonly mustNotContain?: readonly string[];
   readonly rationale: string;
 }
 
@@ -131,9 +140,22 @@ const REQUIRED_SENTINELS: readonly SentinelAssertion[] = [
       "link/ether", // MAC_ADDR parses field AFTER link/ether (not before)
       // 081KSNY2Z0008QG0R0008PN7RQ phase-2: probe-generated hardware-configuration must land in flake host tree
       "installing probe-generated hardware-configuration.nix",
-      'hosts/${HOST}/hardware-configuration.nix',
+      // 081M0JK4R26087G0R002SVJ5VW: the destination is still host-scoped, but it
+      // is now built in two steps -- HOST_DIR is needed on its own to decide
+      // whether the host imports a hardware-configuration.nix at all -- so the
+      // old single literal `hosts/${HOST}/hardware-configuration.nix` no longer
+      // appears verbatim. Both halves are pinned below, and so is the thing that
+      // actually matters: the copy is gated on a verdict and the RESULT is
+      // content-checked against the mountpoints the install mounted. A failed
+      // capture used to be a stderr WARN and the install continued, baking the
+      // committed /-and-/boot placeholder over live Longhorn partitions.
+      "hosts/${HOST}",
+      "${HOST_DIR}/hardware-configuration.nix",
+      'HW_PLAN="$(zeta_hwcap_plan "$HW_SRC" "$HOST_DIR" "$HW_DST")"',
+      'HW_MISSING="$(zeta_hwcap_verify "$HW_DST" "${LONGHORN_MOUNTS[@]}")"',
     ],
-    rationale: "iter-4.2 + iter-5.1 + iter-5.2 + iter-5.2.2 + iter-5.4.0 + iter-5.4.1 (incl. 081KSGS9H0008QG0R00120EEHM Bug 2a/2b fixes) substrate must be present in installer script",
+    rationale:
+      "iter-4.2 + iter-5.1 + iter-5.2 + iter-5.2.2 + iter-5.4.0 + iter-5.4.1 (incl. 081KSGS9H0008QG0R00120EEHM Bug 2a/2b fixes) substrate must be present in installer script",
   },
   {
     path: "full-ai-cluster/usb-nixos-installer/zeta-first-boot.sh",
@@ -163,41 +185,56 @@ const REQUIRED_SENTINELS: readonly SentinelAssertion[] = [
     path: "full-ai-cluster/nixos/modules/zeta-self-register.nix",
     mustContain: [
       "systemd.services.zeta-self-register", // service unit exists
-      "Type = \"oneshot\"", // fires once, not a loop
-      "ConditionPathExists", // marker gate permits retries across failed first-boot attempts
-      "Restart = \"on-failure\"", // transient failures retry instead of losing first-boot opportunity
-      "RestartSec = \"30s\"", // bounded backoff before retrying registration intent
+      'Type = "oneshot"', // one convergence pass per activation; the TIMER supplies recurrence
+      "ConditionPathExists", // still guards script-present + the QEMU CI hand-off
+      'Restart = "on-failure"', // transient failures retry instead of losing first-boot opportunity
+      'RestartSec = "30s"', // bounded backoff before retrying registration intent
+      // 081M0BTFK85087G0R000A705AK bound 2: the in-boot retry must be capped, or a
+      // GitHub outage turns RestartSec into an unbounded 30s hammer.
+      "startLimitIntervalSec = 600", // retry window
+      "startLimitBurst = 5", // attempts per window
+      // 081M0BTFK85087G0R000A705AK: the re-convergence tick. Without this the unit
+      // is enrolment-only — it can never repair a registration lost after first boot.
+      "systemd.timers.zeta-self-register", // reconcile timer exists
+      "OnUnitActiveSec", // level-triggered recurrence
+      "RandomizedDelaySec", // bound 1: de-phases the fleet; no thundering herd
+      "ZETA_SELF_REGISTER_MIN_PR_INTERVAL", // bound 3: write-side attempt throttle reaches the script
       "network-online.target", // waits for network before registration intent
       "zeta-creds-restore.service", // ordered after restored creds when that service exists
       'default = "/etc/zeta";', // repoRoot = the install repo (flake source on the node)
       'default = "${cfg.repoRoot}/tools/installer/zeta-self-register.sh";', // scriptPath = the 081KSKBP80008QG0R000GPC0TB.2 bash impl
-      'default = "/var/lib/zeta-self-register/self-registered.marker";', // markerPath via systemd StateDirectory
+      'default = "/var/lib/zeta-self-register/self-registered.marker";', // receipt path via systemd StateDirectory
       "tools/installer/zeta-self-register.sh", // delegates implementation to the 081KSKBP80008QG0R000GPC0TB.2 bash script
-      'StateDirectory = "zeta-self-register"', // marker dir owned by the service user (cred-restore leaves ~/.config root-owned)
-      "ZETA_SELF_REGISTER_MARKER", // marker path exported to implementation
+      'StateDirectory = "zeta-self-register"', // receipt dir owned by the service user (cred-restore leaves ~/.config root-owned)
+      "ZETA_SELF_REGISTER_MARKER", // receipt path exported to implementation
       "systemd.services.zeta-self-register-ci", // QEMU CI dry-run sibling oneshot
       "ZETA_SELF_REGISTER_MODE=ci-dry-run", // hermetic compose; no live gh push
       "/etc/zeta/qemu-self-register-ci", // install-time WIPE marker gates CI service
     ],
-    rationale: "081KSKBP80008QG0R000GPC0TB.2 service must be a post-install marker-gated oneshot (bash impl) ordered after network and credential restore surfaces; QEMU CI dry-run sibling proves compose without live GitHub",
+    mustNotContain: [
+      // THE DEFECT ITSELF (081M0BTFK85087G0R000A705AK). This exact string gated the
+      // live unit off permanently once the marker existed, so a node whose
+      // registration was wiped after first boot could never re-register. The audit
+      // previously asserted this shape as CORRECT — it pinned the defect in place,
+      // which is why the negative sentinel exists rather than a reworded comment.
+      // The ci-dry-run sibling's own marker gate uses `"!${cfg.markerPath}"` too, so
+      // this is matched with the surrounding list context that only the live unit has.
+      '"!${cfg.markerPath}"\n          "!/etc/zeta/qemu-self-register-ci"',
+    ],
+    rationale:
+      "081KSKBP80008QG0R000GPC0TB.2 + 081M0BTFK85087G0R000A705AK: the live service must be a LEVEL-TRIGGERED converger — a oneshot pass driven by a jittered reconcile timer, ordered after network and credential restore, never gated on a local completion marker (a marker-gated oneshot cannot re-converge, and repair IS re-convergence). Its three storm bounds (read cadence, capped in-boot retry, write-side attempt throttle) are each asserted. QEMU CI dry-run sibling still proves compose without live GitHub",
   },
   {
     path: "full-ai-cluster/nixos/hosts/control-plane/hardware-configuration.nix",
-    mustContain: [
-      "virtio_pci",
-      "virtio_blk",
-      "boot.initrd.kernelModules",
-    ],
-    rationale: "081KSNY2Z0008QG0R0008PN7RQ QEMU phase-2 initrd floor: virtio modules in host stub until probe copy at install",
+    mustContain: ["virtio_pci", "virtio_blk", "boot.initrd.kernelModules"],
+    rationale:
+      "081KSNY2Z0008QG0R0008PN7RQ QEMU phase-2 initrd floor: virtio modules in host stub until probe copy at install",
   },
   {
     path: "full-ai-cluster/nixos/hosts/worker-gpu/hardware-configuration.nix",
-    mustContain: [
-      "virtio_pci",
-      "virtio_blk",
-      "boot.initrd.kernelModules",
-    ],
-    rationale: "081KSNY2Z0008QG0R0008PN7RQ QEMU phase-2 initrd floor: virtio modules in worker stub until probe copy at install",
+    mustContain: ["virtio_pci", "virtio_blk", "boot.initrd.kernelModules"],
+    rationale:
+      "081KSNY2Z0008QG0R0008PN7RQ QEMU phase-2 initrd floor: virtio modules in worker stub until probe copy at install",
   },
   {
     path: "full-ai-cluster/nixos/modules/injected-hostname.nix",
@@ -221,7 +258,13 @@ const REQUIRED_SENTINELS: readonly SentinelAssertion[] = [
 ];
 
 interface AuditFailure {
-  readonly kind: "missing-file" | "empty-file" | "missing-sentinel" | "read-error" | "cross-file-mismatch";
+  readonly kind:
+    | "missing-file"
+    | "empty-file"
+    | "missing-sentinel"
+    | "forbidden-sentinel"
+    | "read-error"
+    | "cross-file-mismatch";
   readonly path: string;
   readonly detail: string;
 }
@@ -284,7 +327,76 @@ const CROSS_FILE_ASSERTIONS: readonly CrossFileAssertion[] = [
       // failure via the cross-file-mismatch path.
       return `INVALID-producer-must-be-on-mnt-boot-got:${producer}`;
     },
-    rationale: "PR #5640 + #5644 surfaced producer/consumer path mismatch (picker --output / restore-service blobPath defaults). ESP partition is mounted at /mnt/boot during install (zeta-install.sh Step 5), /boot post-reboot (disko `mountpoint = \"/boot\"`). Same physical file across the install-vs-installed boundary. Producer MUST write to /mnt/boot/; consumer MUST read from /boot/. Drift = restore service ConditionPathExists always evaluates false = creds silently never restore.",
+    rationale:
+      'PR #5640 + #5644 surfaced producer/consumer path mismatch (picker --output / restore-service blobPath defaults). ESP partition is mounted at /mnt/boot during install (zeta-install.sh Step 5), /boot post-reboot (disko `mountpoint = "/boot"`). Same physical file across the install-vs-installed boundary. Producer MUST write to /mnt/boot/; consumer MUST read from /boot/. Drift = restore service ConditionPathExists always evaluates false = creds silently never restore.',
+  },
+  {
+    name: "cred-factor-sidecar-producer-vs-consumer",
+    producerPath: "full-ai-cluster/usb-nixos-installer/zeta-install.sh",
+    consumerPath: "full-ai-cluster/nixos/modules/zeta-creds-restore.nix",
+    producerExtract: (content) => {
+      const m = content.match(/--output\s+(\S+\/zeta-creds\.enc)/);
+      if (!m?.[1]) return null;
+      return m[1].replace(/\.enc$/u, ".factor");
+    },
+    consumerExtract: (content) => {
+      const m = content.match(/factorPath\s*=\s*lib\.mkOption\s*\{[\s\S]*?default\s*=\s*"(\S+\/zeta-creds\.factor)"/);
+      return m?.[1] ?? null;
+    },
+    consumerEquivalence: (producer) => {
+      if (producer.startsWith("/mnt/boot/")) {
+        return producer.replace(/^\/mnt\/boot\//, "/boot/");
+      }
+      return `INVALID-producer-must-be-on-mnt-boot-got:${producer}`;
+    },
+    rationale:
+      "Persist writes zeta-creds.factor next to the blob so restore does not guess the KDF factor. Install --output /mnt/boot/zeta-creds.enc ⇒ sidecar /mnt/boot/zeta-creds.factor; restore default factorPath must be /boot/zeta-creds.factor. Drift = iSerial persist + UUID restore = lockout.",
+  },
+  {
+    name: "cred-iserial-material-producer-vs-consumer",
+    producerPath: "full-ai-cluster/usb-nixos-installer/zeta-install.sh",
+    consumerPath: "full-ai-cluster/nixos/modules/zeta-creds-restore.nix",
+    producerExtract: (content) => {
+      const m = content.match(/tee\s+(\/mnt\/etc\/zeta\/usb-iserial)/);
+      return m?.[1] ?? null;
+    },
+    consumerExtract: (content) => {
+      const m = content.match(
+        /usbISerialPath\s*=\s*lib\.mkOption\s*\{[\s\S]*?default\s*=\s*"(\/etc\/zeta\/usb-iserial)"/,
+      );
+      return m?.[1] ?? null;
+    },
+    consumerEquivalence: (producer) => {
+      if (producer.startsWith("/mnt/etc/")) {
+        return producer.replace(/^\/mnt\/etc\//, "/etc/");
+      }
+      return `INVALID-producer-must-be-on-mnt-etc-got:${producer}`;
+    },
+    rationale:
+      "iSerial material is recorded on the installed rootfs the same way UUID is. Producer /mnt/etc/zeta/usb-iserial → consumer /etc/zeta/usb-iserial. Restore re-probes nothing at boot.",
+  },
+  {
+    name: "cred-uefi-keyfile-producer-vs-consumer",
+    producerPath: "full-ai-cluster/usb-nixos-installer/zeta-install.sh",
+    consumerPath: "full-ai-cluster/nixos/modules/zeta-creds-restore.nix",
+    producerExtract: (content) => {
+      const m = content.match(/KEYFILE_INSTALL=(\/mnt\/boot\/EFI\/ZETA\/keyfile)/);
+      return m?.[1] ?? null;
+    },
+    consumerExtract: (content) => {
+      const m = content.match(
+        /uefiKeyfilePath\s*=\s*lib\.mkOption\s*\{[\s\S]*?default\s*=\s*"(\/boot\/EFI\/ZETA\/keyfile)"/,
+      );
+      return m?.[1] ?? null;
+    },
+    consumerEquivalence: (producer) => {
+      if (producer.startsWith("/mnt/boot/")) {
+        return producer.replace(/^\/mnt\/boot\//, "/boot/");
+      }
+      return `INVALID-producer-must-be-on-mnt-boot-got:${producer}`;
+    },
+    rationale:
+      "UEFI keyfile binding is the ESP file. Install writes /mnt/boot/EFI/ZETA/keyfile; restore default must be /boot/EFI/ZETA/keyfile. Do not copy bytes to /etc. Drift = persist keyfile + UUID restore = lockout.",
   },
 ];
 
@@ -318,7 +430,7 @@ function auditFiles(): readonly AuditFailure[] {
 
 function auditSentinels(): readonly AuditFailure[] {
   const failures: AuditFailure[] = [];
-  for (const { path, mustContain, rationale } of REQUIRED_SENTINELS) {
+  for (const { path, mustContain, mustNotContain, rationale } of REQUIRED_SENTINELS) {
     const abs = join(ROOT, path);
     if (!existsSync(abs)) {
       failures.push({
@@ -345,6 +457,15 @@ function auditSentinels(): readonly AuditFailure[] {
           kind: "missing-sentinel",
           path,
           detail: `missing required sentinel string ${JSON.stringify(sentinel)} (rationale: ${rationale})`,
+        });
+      }
+    }
+    for (const sentinel of mustNotContain ?? []) {
+      if (content.includes(sentinel)) {
+        failures.push({
+          kind: "forbidden-sentinel",
+          path,
+          detail: `contains forbidden sentinel string ${JSON.stringify(sentinel)} (rationale: ${rationale})`,
         });
       }
     }
@@ -429,15 +550,13 @@ function main(): number {
     return 0;
   }
 
-  process.stderr.write(
-    `audit-installer-substrate: FAIL — ${total} assertion(s) failed\n\n`,
-  );
+  process.stderr.write(`audit-installer-substrate: FAIL — ${total} assertion(s) failed\n\n`);
   for (const f of [...fileFailures, ...sentinelFailures, ...crossFileFailures]) {
     process.stderr.write(`  [${f.kind}] ${f.path}\n    ${f.detail}\n`);
   }
   process.stderr.write("\n");
   process.stderr.write(
-    `  To investigate locally: bun tools/ci/audit-installer-substrate.ts\n` +
+    `  To investigate locally: bun src/Core.TypeScript/ci/audit-installer-substrate.ts\n` +
       `  To add a new iter-N module: add its path to REQUIRED_FILES + (if applicable)\n` +
       `  add its sentinels to REQUIRED_SENTINELS in this file.\n` +
       `  To add a new cross-file consistency assertion: add to CROSS_FILE_ASSERTIONS.\n`,

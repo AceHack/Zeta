@@ -52,6 +52,8 @@ concurrency:
 jobs:
   check:
     name: check frozen legacy backlog drift
+    # Timeout basis: healthy med 2.7m / p90 4.7m (n=39); uncached install.sh, so one apt stall-and-recover fits.
+    timeout-minutes: 20
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -78,8 +80,21 @@ jobs:
       - name: no-new-B-NNNN cutover guard (mint ZetaIds instead)
         run: bun src/Core.TypeScript/backlog/lint-no-new-bnnnn.ts
 
-      - name: no legacy B-NNNN prose refs (alias map is frozen history only)
-        run: bun src/Core.TypeScript/backlog/lint-no-b-refs.ts
+      # Falsifiability harness for the gate below. Its predecessor BANNED the
+      # mention of a hyphenated legacy id, which made it vacuous: with no ref
+      # allowed in tree, no STALE ref could exist, so it had no subject left to
+      # catch. The replacement permits the reference and checks that it
+      # resolves — a strictly larger claim, so these tests pin all of it: that
+      # it fires on a ref pointing at nothing, that it passes a ref pointing at
+      # something real, that alias-map presence alone is NOT resolution, and
+      # that a legacy id in row frontmatter is still refused. They run BEFORE
+      # the gate so a scope regression reports as a scope regression rather
+      # than as a suspiciously green lint.
+      - name: lint-b-refs-resolve falsifiability + boundary tests
+        run: bun test src/Core.TypeScript/backlog/lint-b-refs-resolve.test.ts
+
+      - name: legacy B-NNNN refs must resolve (naming is fine; dangling is not)
+        run: bun src/Core.TypeScript/backlog/lint-b-refs-resolve.ts
 
       - name: verify per-row + index parity
         shell: bash

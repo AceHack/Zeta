@@ -1,0 +1,25 @@
+{
+  "pr_number": 5881,
+  "archive_path": "docs/history/pr-reviews/PR-5881-feat-tools-add-semantic-equivalence-claim-checker-b-0170-1.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7F-k1K",
+    "comment:PRRC_kwDOSF9kNM7F-k4Q",
+    "comment:PRRC_kwDOSF9kNM7F-kvT",
+    "comment:PRRC_kwDOSF9kNM7F-kyz",
+    "comment:PRRC_kwDOSF9kNM7F2sJX",
+    "comment:PRRC_kwDOSF9kNM7F2sKg",
+    "comment:PRRC_kwDOSF9kNM7F2sLO",
+    "comment:PRRC_kwDOSF9kNM7F2sMA",
+    "thread:PRRT_kwDOSF9kNM6Fd_K7",
+    "thread:PRRT_kwDOSF9kNM6Fd_L6",
+    "thread:PRRT_kwDOSF9kNM6Fd_Ma",
+    "thread:PRRT_kwDOSF9kNM6Fd_NA"
+  ],
+  "fetched_at": "2026-05-29T01:07:37.614Z",
+  "schema_version": "v1",
+  "commit_sha": "aa09b811564fe9b45da75858a56a07c3c3b95446",
+  "title": "feat(tools): Add semantic equivalence claim checker (B-0170.1)",
+  "state": "MERGED",
+  "merged_at": "2026-05-29T01:07:15Z",
+  "head_ref": "lior/B-0170.1-semantic-checker"
+}

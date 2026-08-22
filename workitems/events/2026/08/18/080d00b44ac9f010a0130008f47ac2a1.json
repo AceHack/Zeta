@@ -1,0 +1,14 @@
+{
+  "id": "080d00b44ac9f010a0130008f47ac2a1",
+  "at": "2026-08-18T20:21:35.166Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M0B8JP9X087G0R000PBXTCE",
+    "type": "task",
+    "title": "Which eights are the same eight: the mod-8 correspondence matrix",
+    "slug": "which-eights-are-the-same-eight-the-mod-8-correspondence-mat",
+    "priority": "P2",
+    "filename": "081M0B8JP9X087G0R000PBXTCE-which-eights-are-the-same-eight-the-mod-8-correspondence-mat.md"
+  }
+}

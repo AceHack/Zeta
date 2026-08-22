@@ -1,0 +1,12 @@
+{
+  "pr_number": 3035,
+  "archive_path": "docs/history/pr-reviews/PR-3035-docs-memory-multi-foreground-surface-otto-activation-empirical-confirmation-2026.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-13T21:31:13.562Z",
+  "schema_version": "v1",
+  "commit_sha": "834911a61f227bd1d76651a55c6091f3b6d22dfa",
+  "title": "docs(memory): multi-foreground-surface Otto activation — empirical confirmation 2026-05-13",
+  "state": "MERGED",
+  "merged_at": "2026-05-13T21:30:53Z",
+  "head_ref": "otto-multi-foreground-surface-activation-learnings-2026-05-13"
+}

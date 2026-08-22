@@ -1,0 +1,12 @@
+{
+  "pr_number": 3785,
+  "archive_path": "docs/history/pr-reviews/PR-3785-shard-tick-2026-05-16t06-38z-drift-workflow-validated-end-to-end-b-0494-closed-v.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-16T06:46:06.101Z",
+  "schema_version": "v1",
+  "commit_sha": "7118b2402454a095230eccf5101ff4c34b20da8b",
+  "title": "shard(tick): 2026-05-16T06:38Z — drift workflow validated end-to-end (B-0494 closed via PR #3781)",
+  "state": "MERGED",
+  "merged_at": "2026-05-16T06:45:48Z",
+  "head_ref": "shard/tick-0638z-otto-cli-2026-05-16"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 4024,
+  "archive_path": "docs/history/pr-reviews/PR-4024-shard-tick-0221z-otto-cli-cold-boot-cron-sentinel-arm-state-assessment.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-17T02:32:24.034Z",
+  "schema_version": "v1",
+  "commit_sha": "13704d00310e993d984a9c8b165058a23c5c8d28",
+  "title": "shard(tick-0221z): otto-cli cold-boot + cron-sentinel arm + state assessment",
+  "state": "MERGED",
+  "merged_at": "2026-05-17T02:32:09Z",
+  "head_ref": "shard/tick-0221z-otto-cli-boot-orient-2026-05-17"
+}

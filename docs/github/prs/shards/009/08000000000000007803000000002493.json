@@ -1,0 +1,12 @@
+{
+  "pr_number": 9363,
+  "archive_path": "docs/history/pr-reviews/PR-9363-workitem-lumen-manus-harness-leaks-shell-wrapper-into-commit-messages-p2.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-03T21:31:45.258Z",
+  "schema_version": "v1",
+  "commit_sha": "624734898532ae670e7309227c3845dfc5f734b2",
+  "title": "workitem: Lumen/Manus harness leaks shell wrapper into commit messages (P2)",
+  "state": "MERGED",
+  "merged_at": "2026-07-03T21:31:23Z",
+  "head_ref": "shadow/workitem-lumen-commit-message-leak"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 4790,
+  "archive_path": "docs/history/pr-reviews/PR-4790-backlog-b-0715-file-soraya-round-52-hand-off-register-istimeinvariant-axiom-dbsp.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-23T23:18:37.649Z",
+  "schema_version": "v1",
+  "commit_sha": "2eacf216f4e0762249e92436300cdbe1bea100a4",
+  "title": "backlog(B-0715): file Soraya round-52 hand-off — register IsTimeInvariant axiom (DBSP chain rule)",
+  "state": "MERGED",
+  "merged_at": "2026-05-23T23:18:15Z",
+  "head_ref": "otto/soraya-round52-b0715-istimeinvariant-axiom-registry-2026-05-23"
+}

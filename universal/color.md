@@ -35,9 +35,11 @@ with original if that's possible."*
 
 ## Pointers
 
-- `docs/research/2026-06-11-universal-color-interface-grounding-...md` — the full grounding capture
-  (opcode-extension design space, BBS aesthetic, the CYOA playlist reference).
-- `docs/research/2026-06-11-correction-the-real-build-is-rgb-cmyk-ray-tracing-...md` — RGB=emit /
-  CMYK=retract (the duality this interface carries).
-- `lens/README.md` — **"chip8 becomes our universal lens"**: the VM as the focus everything renders through.
+- `docs/research/2026-06-11-universal-color-interface-grounding-chip8-color-opcode-extensions-bbs-dora-cyoa-observe.md`
+  — the full grounding capture (opcode-extension design space, BBS aesthetic, the CYOA playlist reference).
+- `docs/research/2026-06-11-correction-the-real-build-is-rgb-cmyk-ray-tracing-of-chip8-instructions-dna-is-metaphor.md`
+  — RGB=emit / CMYK=retract (the duality this interface carries).
+- **"chip8 becomes our universal lens"** — the VM as the focus everything renders through. **No `lens/`
+  directory exists in this repo**; the phrase is recorded here without an in-repo target rather than
+  pointing at one that resolves to nothing.
 - Moonshot #1 (DORA over LLMTV) — the TV this interface feeds.

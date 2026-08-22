@@ -1,0 +1,12 @@
+{
+  "pr_number": 7743,
+  "archive_path": "docs/history/pr-reviews/PR-7743-feat-qsharp-route-observable-oracle-checks.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-11T17:48:16.782Z",
+  "schema_version": "v1",
+  "commit_sha": "ab810768d46685573dbf57e1b9cd1b2cf39e447b",
+  "title": "feat(qsharp): route observable oracle checks",
+  "state": "MERGED",
+  "merged_at": "2026-06-11T17:47:46Z",
+  "head_ref": "codex/vera-qsharp-routed-oracles"
+}

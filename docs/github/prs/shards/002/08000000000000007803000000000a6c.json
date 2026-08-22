@@ -1,0 +1,12 @@
+{
+  "pr_number": 2668,
+  "archive_path": "docs/history/pr-reviews/PR-2668-docs-research-claude-ai-overnight-assessment-strong-weak-priorities.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-11T08:26:31.600Z",
+  "schema_version": "v1",
+  "commit_sha": "aed0becea945e680a2572a1cd93b35f9a9ebfa1c",
+  "title": "docs(research): Claude.ai overnight assessment — strong + weak + priorities",
+  "state": "MERGED",
+  "merged_at": "2026-05-11T08:26:11Z",
+  "head_ref": "docs/claudeai-overnight-critic-assessment-2026-05-11"
+}

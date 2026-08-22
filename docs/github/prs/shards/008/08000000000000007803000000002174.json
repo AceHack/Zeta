@@ -1,0 +1,12 @@
+{
+  "pr_number": 8564,
+  "archive_path": "docs/history/pr-reviews/PR-8564-test-aurora-g-fscheck-cross-check-immune-memory-decay-autoimmunity-flood-test-4-.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-19T12:38:58.250Z",
+  "schema_version": "v1",
+  "commit_sha": "41f69ad77276e08277d2697c2bbac811ace46971",
+  "title": "test(aurora): (g) FsCheck cross-check — immune-memory decay / Autoimmunity Flood (Test 4.5)",
+  "state": "MERGED",
+  "merged_at": "2026-06-19T12:38:33Z",
+  "head_ref": "otto/aurora-g-autoimmunity-decay"
+}

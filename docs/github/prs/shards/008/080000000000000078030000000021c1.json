@@ -1,0 +1,12 @@
+{
+  "pr_number": 8641,
+  "archive_path": "docs/history/pr-reviews/PR-8641-feat-core-demo-slice-2-coempowerfield-nci-co-empowerment-society-emergence-dst-s.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-19T22:49:48.890Z",
+  "schema_version": "v1",
+  "commit_sha": "56e8a982d8829452527737d40bfba082ac116d31",
+  "title": "feat(core): demo slice 2 — CoEmpowerField (NCI co-empowerment society-emergence DST sim; identities blossom, not attack)",
+  "state": "MERGED",
+  "merged_at": "2026-06-19T22:49:24Z",
+  "head_ref": "otto/demo-slice2-coempowerfield-nci"
+}

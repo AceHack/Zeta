@@ -1,0 +1,12 @@
+{
+  "pr_number": 10287,
+  "archive_path": "docs/history/pr-reviews/PR-10287-docs-letters-auto-revert-rfc-review-round-4-assents-with-conditions-awaiting-ope.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-10T16:00:05.457Z",
+  "schema_version": "v1",
+  "commit_sha": "e6f8573af55566e032097c8e4c976f95aa92f0a3",
+  "title": "docs(letters): auto-revert RFC review round — 4 assents-with-conditions, awaiting operator word",
+  "state": "MERGED",
+  "merged_at": "2026-08-10T15:59:13Z",
+  "head_ref": "otto/auto-revert-rfc-round"
+}

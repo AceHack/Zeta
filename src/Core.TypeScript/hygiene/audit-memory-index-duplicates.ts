@@ -30,9 +30,9 @@
 // before invocation.
 //
 // Usage:
-//   bun tools/hygiene/audit-memory-index-duplicates.ts              # in-repo memory/MEMORY.md
-//   bun tools/hygiene/audit-memory-index-duplicates.ts --file PATH  # custom path
-//   bun tools/hygiene/audit-memory-index-duplicates.ts --enforce    # exit 2 on any dup
+//   bun src/Core.TypeScript/hygiene/audit-memory-index-duplicates.ts              # in-repo memory/MEMORY.md
+//   bun src/Core.TypeScript/hygiene/audit-memory-index-duplicates.ts --file PATH  # custom path
+//   bun src/Core.TypeScript/hygiene/audit-memory-index-duplicates.ts --enforce    # exit 2 on any dup
 //
 // Exit codes:
 //   0 — no duplicates (or --enforce not set)

@@ -1,0 +1,12 @@
+{
+  "pr_number": 4289,
+  "archive_path": "docs/history/pr-reviews/PR-4289-shards-batch-0038z-c-0041z-c-cost-aware-batching-9-fp-thread-resolutions.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-19T00:44:37.811Z",
+  "schema_version": "v1",
+  "commit_sha": "d6428a9b7b3420c9de540f04ea5b2278b7d769ad",
+  "title": "shards(batch 0038Z-c..0041Z-c): cost-aware batching + 9 FP-thread resolutions",
+  "state": "MERGED",
+  "merged_at": "2026-05-19T00:44:22Z",
+  "head_ref": "shards/batch-0038-0041z-c-fp-thread-resolutions-2026-05-19"
+}

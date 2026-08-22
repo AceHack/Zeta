@@ -1,0 +1,12 @@
+{
+  "pr_number": 2003,
+  "archive_path": "docs/history/pr-reviews/PR-2003-fix-backlog-decompose-b-0251-durable-computation.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-08T02:35:35.224Z",
+  "schema_version": "v1",
+  "commit_sha": "f2f6cf154fde9a96167fd2abb3940c7222f8a542",
+  "title": "fix(backlog): decompose B-0251 durable computation",
+  "state": "MERGED",
+  "merged_at": "2026-05-08T02:35:19Z",
+  "head_ref": "backlog/b0251-decompose"
+}

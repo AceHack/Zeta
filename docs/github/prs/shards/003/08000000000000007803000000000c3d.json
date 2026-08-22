@@ -1,0 +1,19 @@
+{
+  "pr_number": 3133,
+  "archive_path": "docs/history/pr-reviews/PR-3133-feat-b-0435-circuit-breaker-viz-panel-slice-1-static-mock-data.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7BNaYT",
+    "comment:PRRC_kwDOSF9kNM7BNaZG",
+    "comment:PRRC_kwDOSF9kNM7BNeMp",
+    "comment:PRRC_kwDOSF9kNM7BNePY",
+    "thread:PRRT_kwDOSF9kNM6CEYAn",
+    "thread:PRRT_kwDOSF9kNM6CEYBP"
+  ],
+  "fetched_at": "2026-05-14T13:12:15.263Z",
+  "schema_version": "v1",
+  "commit_sha": "44688aca684410254eecb5fa3f971ffaf68fd97f",
+  "title": "feat(b-0435): circuit breaker viz panel — slice-1 static mock data",
+  "state": "MERGED",
+  "merged_at": "2026-05-14T13:11:54Z",
+  "head_ref": "feat/b-0435-circuit-breaker-viz-panel"
+}

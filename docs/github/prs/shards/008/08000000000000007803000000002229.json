@@ -1,0 +1,12 @@
+{
+  "pr_number": 8745,
+  "archive_path": "docs/history/pr-reviews/PR-8745-test-formal-ntp-noninterference-fscheck-leg-math-team-row-5-cross-check.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-20T16:19:37.896Z",
+  "schema_version": "v1",
+  "commit_sha": "d0eb31167272ec19b3199c79c7a21fc936f24660",
+  "title": "test(formal): NTP noninterference FsCheck leg — math-team row 5 cross-check",
+  "state": "MERGED",
+  "merged_at": "2026-06-20T16:19:14Z",
+  "head_ref": "otto/row5-ntp-noninterference-fscheck"
+}

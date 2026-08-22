@@ -1,0 +1,12 @@
+{
+  "pr_number": 4256,
+  "archive_path": "docs/history/pr-reviews/PR-4256-shard-2332z-c-brief-ack-1.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-18T23:35:09.816Z",
+  "schema_version": "v1",
+  "commit_sha": "e708ca1c25db312d09efa4333440d49745c2c8f4",
+  "title": "shard(2332Z-c): brief-ack #1",
+  "state": "MERGED",
+  "merged_at": "2026-05-18T23:34:52Z",
+  "head_ref": "shard/tick-2332z-c-brief-ack-1-cycle-3-2026-05-18"
+}

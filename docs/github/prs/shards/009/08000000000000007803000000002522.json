@@ -1,0 +1,12 @@
+{
+  "pr_number": 9506,
+  "archive_path": "docs/history/pr-reviews/PR-9506-docs-humans-and-llms-are-prediction-engine-optimizations-same-objective-same-ove.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-05T23:23:45.847Z",
+  "schema_version": "v1",
+  "commit_sha": "9806388a6fa0758c8ef35a5a44b6158b511553fa",
+  "title": "docs: humans and LLMs are prediction-engine optimizations — same objective, same overfit, different optimizer (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-05T23:23:20Z",
+  "head_ref": "otto/humans-and-llms-are-prediction-engine-optimizations"
+}

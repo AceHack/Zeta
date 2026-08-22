@@ -1,0 +1,12 @@
+{
+  "pr_number": 9210,
+  "archive_path": "docs/history/pr-reviews/PR-9210-feat-core-antlr4import-grammar-closure-ingest-g4-toward-the-homoiconic-meta-gram.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-02T22:16:06.345Z",
+  "schema_version": "v1",
+  "commit_sha": "a0e3e952f5fc759384beb46616ea6df840ca61ac",
+  "title": "feat(core): Antlr4Import + grammar closure — ingest .g4, toward the homoiconic meta-grammar",
+  "state": "MERGED",
+  "merged_at": "2026-07-02T22:15:41Z",
+  "head_ref": "otto/g4-ingester-grammar-closure-homoiconic"
+}

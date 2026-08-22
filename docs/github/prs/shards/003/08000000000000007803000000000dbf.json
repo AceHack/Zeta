@@ -1,0 +1,12 @@
+{
+  "pr_number": 3519,
+  "archive_path": "docs/history/pr-reviews/PR-3519-shard-tick-1618z-pr-3515-3517-merged-b-0442-b-0503-row-status-loose-ends-closed-.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-15T16:23:47.745Z",
+  "schema_version": "v1",
+  "commit_sha": "afc1a99b9c6e2cc94bd98d0aed89aa29114d36b3",
+  "title": "shard(tick): 1618Z — PR #3515 + #3517 merged; B-0442 + B-0503 row-status loose-ends closed (PR #3518)",
+  "state": "MERGED",
+  "merged_at": "2026-05-15T16:23:27Z",
+  "head_ref": "shard/tick-1618z-otto-cli-2026-05-15"
+}

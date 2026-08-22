@@ -1,0 +1,19 @@
+{
+  "pr_number": 5869,
+  "archive_path": "docs/history/pr-reviews/PR-5869-research-khaleesi-kleisli-severance-prior-art-backlog-b-0923-p3-preserve-operato.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7F2A4J",
+    "comment:PRRC_kwDOSF9kNM7F2A5-",
+    "comment:PRRC_kwDOSF9kNM7F2A5f",
+    "thread:PRRT_kwDOSF9kNM6Fdf8m",
+    "thread:PRRT_kwDOSF9kNM6Fdf98",
+    "thread:PRRT_kwDOSF9kNM6Fdf9o"
+  ],
+  "fetched_at": "2026-05-28T16:30:22.787Z",
+  "schema_version": "v1",
+  "commit_sha": "72d2f8aeb1ca467cca04d4623fb1024b325e5877",
+  "title": "research(KHALEESI Kleisli-severance prior-art) + backlog(B-0923 P3): preserve operator 2026-05-28 forwarded KHALEESI USENIX '22 paper + low-priority substrate-target",
+  "state": "MERGED",
+  "merged_at": "2026-05-28T16:29:59Z",
+  "head_ref": "otto-cli/research-khaleesi-kleisli-severance-privacy-defense-substrate-p3-backlog-2026-05-28"
+}

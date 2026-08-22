@@ -1,0 +1,17 @@
+{
+  "pr_number": 8433,
+  "archive_path": "docs/history/pr-reviews/PR-8433-feat-observe-workspaceport-cross-platform-permissions-multi-backend-binary.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7LuquE",
+    "comment:PRRC_kwDOSF9kNM7Luvw_",
+    "thread:PRRT_kwDOSF9kNM6JxUlW",
+    "thread:PRRT_kwDOSF9kNM6JxYTI"
+  ],
+  "fetched_at": "2026-06-20T00:25:50.144Z",
+  "schema_version": "v1",
+  "commit_sha": "70458fba75fbdac49f11fd104246e3f43111b4d7",
+  "title": "feat(observe): WorkspacePort — cross-platform permissions + multi-backend + binary",
+  "state": "MERGED",
+  "merged_at": "2026-06-20T00:25:20Z",
+  "head_ref": "alexa/executor-local-llm"
+}

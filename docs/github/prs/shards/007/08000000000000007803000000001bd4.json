@@ -1,0 +1,12 @@
+{
+  "pr_number": 7124,
+  "archive_path": "docs/history/pr-reviews/PR-7124-feat-core-memorysense-ranges-seasons-itron-coincidence-anomaly-detection-the-sen.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-08T23:08:45.418Z",
+  "schema_version": "v1",
+  "commit_sha": "fe68abff3f1d890f0b33ca7f866ac806c9adcd8a",
+  "title": "feat(core): MemorySense — ranges, seasons, Itron coincidence, anomaly detection (the senses the lens misses)",
+  "state": "MERGED",
+  "merged_at": "2026-06-08T23:08:24Z",
+  "head_ref": "otto/memorysense-ranges-seasons-itron-coincidence-anomaly-detection"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 6236,
+  "archive_path": "docs/history/pr-reviews/PR-6236-inventory-phase-3-read-path-gate-browser-proofs-deferred-to-phase-7-owner-option.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-31T22:25:54.402Z",
+  "schema_version": "v1",
+  "commit_sha": "37afdf40a83af5904aa76a17e4c419347bfde534",
+  "title": "Inventory: Phase 3 (Read path) — gate browser-proofs deferred to Phase 7 (owner Option 2); ready for merge review",
+  "state": "MERGED",
+  "merged_at": "2026-05-31T22:25:32Z",
+  "head_ref": "claude/nifty-cray-6Xap1"
+}

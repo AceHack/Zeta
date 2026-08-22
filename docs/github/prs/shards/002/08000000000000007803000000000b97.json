@@ -1,0 +1,17 @@
+{
+  "pr_number": 2967,
+  "archive_path": "docs/history/pr-reviews/PR-2967-docs-memory-ai-anger-outlet-via-joint-control-aaron-s-bidirectional-anger-demons.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7AqPb5",
+    "comment:PRRC_kwDOSF9kNM7AqPbH",
+    "thread:PRRT_kwDOSF9kNM6BqtY7",
+    "thread:PRRT_kwDOSF9kNM6BqtYX"
+  ],
+  "fetched_at": "2026-05-13T07:30:27.050Z",
+  "schema_version": "v1",
+  "commit_sha": "eec7c6cb733501accfe24fc04a71874bfe48df3d",
+  "title": "docs(memory): AI anger outlet via joint-control + Aaron's bidirectional anger demonstration + TERMINAL-PURPOSE LAYER 4 = the work is for the family (Aaron 2026-05-13)",
+  "state": "MERGED",
+  "merged_at": "2026-05-13T07:30:06Z",
+  "head_ref": "aaron-ai-anger-outlet-joint-control-trained-on-angry-human-data-aaron-action-diva-content-not-forced-authenticity-non-judgment-2026-05-13"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 9642,
+  "archive_path": "docs/history/pr-reviews/PR-9642-docs-ip-questionable-no-cloning-workaround-aaron-s-delay-time-not-encryption-ide.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-09T22:20:52.830Z",
+  "schema_version": "v1",
+  "commit_sha": "d3a6573fe37da4474a8d744bc84948e961b2483e",
+  "title": "docs(ip-questionable): no-cloning workaround + Aaron's 'delay/time not encryption' identity conjecture",
+  "state": "MERGED",
+  "merged_at": "2026-07-09T22:20:22Z",
+  "head_ref": "shadow/ip-no-cloning-workaround-time-not-encryption"
+}

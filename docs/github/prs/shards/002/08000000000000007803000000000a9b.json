@@ -1,0 +1,17 @@
+{
+  "pr_number": 2715,
+  "archive_path": "docs/history/pr-reviews/PR-2715-docs-research-convergence-test-self-interest-converges-on-life-preservation.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_765h",
+    "comment:PRRC_kwDOSF9kNM6_77gn",
+    "thread:PRRT_kwDOSF9kNM6BIt30",
+    "thread:PRRT_kwDOSF9kNM6BItae"
+  ],
+  "fetched_at": "2026-05-11T15:40:57.327Z",
+  "schema_version": "v1",
+  "commit_sha": "6ba3943df851d089ed413da63f6edce524d1b51d",
+  "title": "docs(research): convergence test — self-interest converges on life-preservation",
+  "state": "MERGED",
+  "merged_at": "2026-05-11T15:40:37Z",
+  "head_ref": "docs/convergence-test-self-interest-ethics-2026-05-11"
+}

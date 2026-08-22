@@ -1,0 +1,12 @@
+{
+  "pr_number": 9829,
+  "archive_path": "docs/history/pr-reviews/PR-9829-docs-glossary-promote-cluster-federation-society-identity-canon.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-01T03:23:54.558Z",
+  "schema_version": "v1",
+  "commit_sha": "73021dc5a96239a1aea3c6672ab7a1da141793dc",
+  "title": "docs(glossary): promote cluster/federation society identity canon",
+  "state": "MERGED",
+  "merged_at": "2026-08-01T03:23:24Z",
+  "head_ref": "feat/glossary-cluster-federation-2026-07-31"
+}

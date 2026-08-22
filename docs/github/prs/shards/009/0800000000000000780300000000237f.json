@@ -1,0 +1,12 @@
+{
+  "pr_number": 9087,
+  "archive_path": "docs/history/pr-reviews/PR-9087-docs-research-name-name-mix-mix-mix-naming-authority-is-the-compiler-generator-s.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-16T22:41:03.707Z",
+  "schema_version": "v1",
+  "commit_sha": "33c0a9c99b5a8a0c9cff28494826149df98919cd",
+  "title": "docs(research): name(name) = mix(mix,mix) — naming authority is the compiler-generator's fixed point",
+  "state": "MERGED",
+  "merged_at": "2026-07-02T01:34:55Z",
+  "head_ref": "research/name-of-name-fixed-point"
+}

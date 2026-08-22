@@ -1,0 +1,21 @@
+{
+  "pr_number": 5277,
+  "archive_path": "docs/history/pr-reviews/PR-5277-feat-b-0824-fix-postmerge-5275-write-all-software-as-generate-join-meijer-type-d.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7FDYYT",
+    "comment:PRRC_kwDOSF9kNM7FDhqU",
+    "comment:PRRC_kwDOSF9kNM7FDhqx",
+    "comment:PRRC_kwDOSF9kNM7FDp2B",
+    "thread:PRRT_kwDOSF9kNM6E45AE",
+    "thread:PRRT_kwDOSF9kNM6E4_xF",
+    "thread:PRRT_kwDOSF9kNM6E4_xc",
+    "thread:PRRT_kwDOSF9kNM6E5Ftp"
+  ],
+  "fetched_at": "2026-05-26T18:52:52.897Z",
+  "schema_version": "v1",
+  "commit_sha": "4b92ffed399aec4f2c0cd8cba314aee03f4e1e08",
+  "title": "feat(B-0824) + fix(postmerge-5275): write ALL software as generate+join — Meijer type-driven derivation + CRDT append-only starting substrate",
+  "state": "MERGED",
+  "merged_at": "2026-05-26T18:52:31Z",
+  "head_ref": "otto-cli/postmerge-5275-fix-8char-inflation-2026-05-26"
+}

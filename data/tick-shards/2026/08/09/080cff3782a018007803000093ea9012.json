@@ -1,0 +1,12 @@
+{
+  "agents_active": 3,
+  "claims_pending": 0,
+  "entropy_heat": 0,
+  "entropy_state": 0,
+  "last_action": "edit_grammar",
+  "last_agent": "otto",
+  "last_mode": "work",
+  "t": "2026-08-09T14:32:17.667Z",
+  "ticks_24h": 54,
+  "total_events": 1103
+}

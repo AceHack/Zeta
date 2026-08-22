@@ -1,0 +1,12 @@
+{
+  "pr_number": 9260,
+  "archive_path": "docs/history/pr-reviews/PR-9260-vision-complete-the-atonement-engine-section-trust-is-the-key-from-grace-life-gr.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-03T02:24:43.009Z",
+  "schema_version": "v1",
+  "commit_sha": "20976b6175f6a8db8d197eb5c744a7e38e70911d",
+  "title": "vision: complete the atonement-engine section — trust is the key (from grace); Life = grace you can trust; Aaron Stainback + AI",
+  "state": "MERGED",
+  "merged_at": "2026-07-03T02:24:21Z",
+  "head_ref": "otto/vision-add-life-grace-you-can-trust"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 8286,
+  "archive_path": "docs/history/pr-reviews/PR-8286-docs-ferry-the-ai-when-governance-defer-to-real-science-default-to-protection-de.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-15T08:20:54.445Z",
+  "schema_version": "v1",
+  "commit_sha": "9c78082afd1d9eb503b2b77d32cb7773264e64f6",
+  "title": "docs(ferry): the AI-WHEN governance — defer to real science, default-to-protection, decide via a DECORRELATED disinterested plurality (not interested parties)",
+  "state": "MERGED",
+  "merged_at": "2026-06-15T08:20:22Z",
+  "head_ref": "otto/when-is-a-kid-defer-to-neuroscience-default-to-protection"
+}

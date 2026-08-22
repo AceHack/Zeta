@@ -242,6 +242,18 @@ let ``F# TemperatureReadout matches the Q# thermal treaty`` () =
 
     let cases =
         heatTreaty.GetProperty("temperatureCases").EnumerateArray()
+        |> Seq.toList
+
+    let declaredBands =
+        expectedBands |> List.map fst |> List.sort
+
+    let reachedBands =
+        cases
+        |> List.map (fun item -> item.GetProperty("band").GetString())
+        |> List.distinct
+        |> List.sort
+
+    Assert.Equal<string list>(declaredBands, reachedBands)
 
     for item in cases do
         let id = item.GetProperty("id").GetString()
@@ -252,6 +264,7 @@ let ``F# TemperatureReadout matches the Q# thermal treaty`` () =
         let expectedTemperature = item.GetProperty("temperaturePpm").GetInt32()
         let expectedBand = item.GetProperty("band").GetString()
         let expectedCode = item.GetProperty("code").GetInt32()
+        let expectedFidelity = item.GetProperty("fidelity").GetString()
 
         let readout =
             TemperatureReadout.ofPpm id heatPpm uncertaintyPpm pressurePpm attentionPpm
@@ -261,13 +274,55 @@ let ``F# TemperatureReadout matches the Q# thermal treaty`` () =
         Assert.Equal(expectedTemperature, readout.TemperaturePpm)
         Assert.Equal(expectedBand, readout.Band)
         Assert.Equal(expectedCode, temperatureCode readout.Band)
+        // `fidelity` is a treaty key, not a TypeScript-local diagnostic. F#'s
+        // `max 0 |> min MaxPpm` discarded a negative and an above-ceiling input
+        // exactly as silently as the TypeScript clamp did; these rows are what
+        // stop it doing so quietly again.
+        Assert.Equal(expectedFidelity, readout.Fidelity)
 
     let attentionOnly =
-        heatTreaty.GetProperty("temperatureCases").EnumerateArray()
-        |> Seq.find (fun item -> item.GetProperty("id").GetString() = "attention-does-not-heat-cost")
+        cases
+        |> List.find (fun item -> item.GetProperty("id").GetString() = "attention-does-not-heat-cost")
 
     Assert.Equal(1_000_000, attentionOnly.GetProperty("attentionPpm").GetInt32())
     Assert.Equal(125_000, attentionOnly.GetProperty("temperaturePpm").GetInt32())
+
+[<Fact>]
+let ``F# fidelity separates readings that every other published key renders identically`` () =
+    // The property, stated as a falsifier rather than as prose: an out-of-domain
+    // input and a genuinely idle room produce byte-identical values in EVERY
+    // other field of `zeta.temperature.readout.v1`. Before `Fidelity` existed
+    // there was no key on which they differed, so a blind counter and a calm
+    // room were one reading. Same for at-ceiling vs above-ceiling.
+    let idle = TemperatureReadout.ofPpm "room" 0 0 0 0
+    let blind = TemperatureReadout.ofPpm "room" -1 0 0 0
+
+    Assert.Equal(idle.TemperaturePpm, blind.TemperaturePpm)
+    Assert.Equal(idle.Band, blind.Band)
+    Assert.Equal(idle.HeatPpm, blind.HeatPpm)
+    Assert.Equal("exact", idle.Fidelity)
+    Assert.Equal("out-of-domain", blind.Fidelity)
+    Assert.NotEqual<TemperatureReadout>(idle, blind)
+
+    let atCeiling = TemperatureReadout.ofPpm "room" TemperatureReadout.MaxPpm 0 0 0
+    let aboveCeiling = TemperatureReadout.ofPpm "room" (TemperatureReadout.MaxPpm * 2) 0 0 0
+
+    Assert.Equal(atCeiling.TemperaturePpm, aboveCeiling.TemperaturePpm)
+    Assert.Equal(atCeiling.Band, aboveCeiling.Band)
+    Assert.Equal("exact", atCeiling.Fidelity)
+    Assert.Equal("saturated", aboveCeiling.Fidelity)
+
+    // Out-of-domain outranks saturated: not-a-measurement is a worse fault than
+    // one the channel could not hold.
+    Assert.Equal(
+        ChannelFidelity.OutOfDomain,
+        TemperatureReadout.fidelityOfPpm -1 (TemperatureReadout.MaxPpm * 2) 0 0
+    )
+
+    // Every attention channel is covered too - attention is excluded from the
+    // thermal fold, so a bad attention input would otherwise vanish entirely.
+    Assert.Equal(ChannelFidelity.OutOfDomain, TemperatureReadout.fidelityOfPpm 0 0 0 -1)
+    Assert.Equal("out-of-domain", (TemperatureReadout.ofPpm "room" 0 0 0 -1).Fidelity)
 
 [<Fact>]
 let ``F# BlackBodyReadout matches the Q# information-radiance treaty`` () =

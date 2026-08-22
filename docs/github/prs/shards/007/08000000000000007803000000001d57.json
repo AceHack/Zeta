@@ -1,0 +1,12 @@
+{
+  "pr_number": 7511,
+  "archive_path": "docs/history/pr-reviews/PR-7511-docs-research-sim-mea-cut-is-dna-polymerase-cut-proofreading-exonuclease-poly-me.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-10T21:22:03.814Z",
+  "schema_version": "v1",
+  "commit_sha": "a8e6c01d9a1b56cfb226fcf15d1cf349013bc486",
+  "title": "docs(research): sim|>mea|>cut IS DNA polymerase (cut = proofreading exonuclease); poly-mer-ACE = close-over + room/execution framework",
+  "state": "MERGED",
+  "merged_at": "2026-06-10T21:21:40Z",
+  "head_ref": "shadow-sim-mea-cut-is-polymerase-poly-ace"
+}

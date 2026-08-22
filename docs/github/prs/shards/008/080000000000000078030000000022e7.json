@@ -1,0 +1,12 @@
+{
+  "pr_number": 8935,
+  "archive_path": "docs/history/pr-reviews/PR-8935-feat-laws-cross-language-law-verification-interface-equivalence.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-21T09:48:19.451Z",
+  "schema_version": "v1",
+  "commit_sha": "4786a69c5d58a62cf538e4338b2251f849463a72",
+  "title": "feat(laws): cross-language law verification (interface equivalence)",
+  "state": "MERGED",
+  "merged_at": "2026-06-21T09:47:54Z",
+  "head_ref": "alexa/law-cross-lang-verify"
+}

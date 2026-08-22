@@ -1,0 +1,12 @@
+{
+  "pr_number": 7347,
+  "archive_path": "docs/history/pr-reviews/PR-7347-docs-research-graduation-gate-math-review-next-toymodel-before-realmodel-crypto-.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-09T17:22:56.433Z",
+  "schema_version": "v1",
+  "commit_sha": "29b33f1bdb3e8df8ec12ddfd529d6cba53ca1c3f",
+  "title": "docs(research): graduation gate (math review + next toymodel before realmodel+crypto; no single key) + ZetaDateTime/Phase DB time type with prior art",
+  "state": "MERGED",
+  "merged_at": "2026-06-09T17:22:26Z",
+  "head_ref": "otto/graduation-gate-and-zetadatetime-phase-prior-art"
+}

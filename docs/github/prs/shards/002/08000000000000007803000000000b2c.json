@@ -1,0 +1,15 @@
+{
+  "pr_number": 2860,
+  "archive_path": "docs/history/pr-reviews/PR-2860-add-rule-methodology-hard-limits-never-break-laws-report-abuse-substrate-everyth.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7Afxgd",
+    "thread:PRRT_kwDOSF9kNM6BjMsb"
+  ],
+  "fetched_at": "2026-05-12T20:25:04.728Z",
+  "schema_version": "v1",
+  "commit_sha": "1debdd740dbbb2dccc61c4b4d6eda58bee2a915a",
+  "title": "add(rule): methodology HARD LIMITS — never break laws + report abuse + substrate-everything does NOT override legal/ethical obligations (wake-time PR #2859)",
+  "state": "MERGED",
+  "merged_at": "2026-05-12T20:24:46Z",
+  "head_ref": "docs/methodology-hard-limits-never-break-laws-report-abuse-wake-time-rule-2026-05-12"
+}

@@ -1,0 +1,21 @@
+{
+  "pr_number": 3012,
+  "archive_path": "docs/history/pr-reviews/PR-3012-feat-bg-b-0441-2-backlog-row-scan-real-readiness-detection-19-tests-pass.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7A6GFj",
+    "comment:PRRC_kwDOSF9kNM7A6HX6",
+    "comment:PRRC_kwDOSF9kNM7A6HXI",
+    "comment:PRRC_kwDOSF9kNM7A6HYn",
+    "thread:PRRT_kwDOSF9kNM6B2R-2",
+    "thread:PRRT_kwDOSF9kNM6B2R-O",
+    "thread:PRRT_kwDOSF9kNM6B2RAT",
+    "thread:PRRT_kwDOSF9kNM6B2R_Z"
+  ],
+  "fetched_at": "2026-05-13T18:18:47.243Z",
+  "schema_version": "v1",
+  "commit_sha": "e984d54ee0d8c1fe878368dba2a838a144bf7117",
+  "title": "feat(bg): B-0441.2 — backlog row scan (real readiness detection; 19 tests pass)",
+  "state": "MERGED",
+  "merged_at": "2026-05-13T18:18:28Z",
+  "head_ref": "otto-b0441-2-backlog-row-scan-slice-2-impl-2026-05-13"
+}

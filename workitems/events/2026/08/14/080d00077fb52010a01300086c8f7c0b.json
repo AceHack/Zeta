@@ -1,0 +1,14 @@
+{
+  "id": "080d00077fb52010a01300086c8f7c0b",
+  "at": "2026-08-14T15:42:01.380Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M00EZXN2087G0R003AY3WSJ",
+    "type": "task",
+    "title": "Meno: instantiate the balanced structure on <V> (braid groupoid + Artin faithfulness in Lean)",
+    "slug": "meno-instantiate-the-balanced-structure-on-v-braid-groupoid",
+    "priority": "P2",
+    "filename": "081M00EZXN2087G0R003AY3WSJ-meno-instantiate-the-balanced-structure-on-v-braid-groupoid.md"
+  }
+}

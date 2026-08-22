@@ -1,0 +1,12 @@
+{
+  "pr_number": 9976,
+  "archive_path": "docs/history/pr-reviews/PR-9976-docs-research-rainbow-spectrum-soul-radar-mirror-beacon-map-the-radar-vantage-po.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-02T17:53:53.469Z",
+  "schema_version": "v1",
+  "commit_sha": "02b5c4013ee2535081fe1ad94a1a51de5c907936",
+  "title": "docs(research): rainbow-spectrum soul-radar — Mirror↔Beacon map (the radar vantage point)",
+  "state": "MERGED",
+  "merged_at": "2026-08-02T17:53:26Z",
+  "head_ref": "otto/rainbow-spectrum-soul-radar-mirror-beacon-map"
+}

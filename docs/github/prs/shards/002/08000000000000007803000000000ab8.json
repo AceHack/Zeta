@@ -1,0 +1,19 @@
+{
+  "pr_number": 2744,
+  "archive_path": "docs/history/pr-reviews/PR-2744-fix-factory-agent-roster-reference-card-metrics-refresh.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7ACbZv",
+    "comment:PRRC_kwDOSF9kNM7ACba-",
+    "comment:PRRC_kwDOSF9kNM7ACbbd",
+    "thread:PRRT_kwDOSF9kNM6BNfpl",
+    "thread:PRRT_kwDOSF9kNM6BNfql",
+    "thread:PRRT_kwDOSF9kNM6BNfrB"
+  ],
+  "fetched_at": "2026-05-11T20:44:03.968Z",
+  "schema_version": "v1",
+  "commit_sha": "d8f5f4f0168b25425135a56db948a8781dbb8a4f",
+  "title": "fix(factory): agent roster reference card + metrics refresh",
+  "state": "MERGED",
+  "merged_at": "2026-05-11T20:43:46Z",
+  "head_ref": "feat/agent-roster-card-metrics-refresh-2026-05-11"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 13523,
+  "archive_path": "docs/history/pr-reviews/PR-13523-fix-reticulum-the-announce-gate-is-on-by-declaration-and-it-now-governs-the-whol.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-22T04:02:24.274Z",
+  "schema_version": "v1",
+  "commit_sha": "4ca4b705ffb19cfd1e2cb77bde685bb80e4ee208",
+  "title": "fix(reticulum): the announce gate is ON by declaration — and it now governs the whole frame (BUGS.md RESIDUAL 1)",
+  "state": "MERGED",
+  "merged_at": "2026-08-22T04:01:41Z",
+  "head_ref": "shadow/rns-announce-auth-consumer-migration"
+}

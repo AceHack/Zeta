@@ -1,0 +1,15 @@
+{
+  "pr_number": 9178,
+  "archive_path": "docs/history/pr-reviews/PR-9178-docs-security-red-team-as-valued-no-strangers-includes-adversaries-anti-sybil-is.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7Rh_Yf",
+    "thread:PRRT_kwDOSF9kNM6N_n4I"
+  ],
+  "fetched_at": "2026-08-17T13:20:27.839Z",
+  "schema_version": "v1",
+  "commit_sha": "9a93e3967059bb634302e015f14835a7f96d4cd2",
+  "title": "docs(security): red-team-as-valued - no strangers includes adversaries; anti-Sybil is the cost function",
+  "state": "MERGED",
+  "merged_at": "2026-07-02T18:30:40Z",
+  "head_ref": "otto/red-team-as-valued-doc"
+}

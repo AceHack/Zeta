@@ -1,0 +1,19 @@
+{
+  "pr_number": 4758,
+  "archive_path": "docs/history/pr-reviews/PR-4758-feat-b-0707-cron-cadence-wiring-daily-manifesto-citation-snapshot-workflow.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7ETUV_",
+    "comment:PRRC_kwDOSF9kNM7ETUWG",
+    "comment:PRRC_kwDOSF9kNM7ETUeo",
+    "thread:PRRT_kwDOSF9kNM6EVMLU",
+    "thread:PRRT_kwDOSF9kNM6EVMLZ",
+    "thread:PRRT_kwDOSF9kNM6EVMST"
+  ],
+  "fetched_at": "2026-05-23T19:50:45.243Z",
+  "schema_version": "v1",
+  "commit_sha": "3cf5709bbc18c94bc0b5eec82a8671a3d073f97f",
+  "title": "feat(B-0707): cron-cadence wiring — daily manifesto-citation snapshot workflow",
+  "state": "MERGED",
+  "merged_at": "2026-05-23T19:50:28Z",
+  "head_ref": "otto/cli-b0707-followup-cron-wiring-2026-05-23"
+}

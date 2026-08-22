@@ -1,0 +1,12 @@
+{
+  "pr_number": 9662,
+  "archive_path": "docs/history/pr-reviews/PR-9662-docs-book-the-masons-is-a-deliberately-sealed-secret-held-open-by-choice-for-the.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-10T04:40:19.111Z",
+  "schema_version": "v1",
+  "commit_sha": "1631aa18736de734ecfb2611b5a4809e5400cafe",
+  "title": "docs(book): 'the masons' is a deliberately sealed secret, held open by choice (for the future)",
+  "state": "MERGED",
+  "merged_at": "2026-07-10T04:39:53Z",
+  "head_ref": "shadow/book-the-masons-sealed-secret"
+}

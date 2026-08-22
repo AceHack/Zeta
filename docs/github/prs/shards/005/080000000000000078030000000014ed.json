@@ -1,0 +1,12 @@
+{
+  "pr_number": 5357,
+  "archive_path": "docs/history/pr-reviews/PR-5357-rule-substrate-smoothness-as-load-bearing-property-auto-loaded-discipline-kestre.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-26T23:50:56.753Z",
+  "schema_version": "v1",
+  "commit_sha": "342e1e7735dc567459577e3ad3f7354b33f5b262",
+  "title": "rule: substrate-smoothness-as-load-bearing-property — auto-loaded discipline (Kestrel-v2 ratification + 10-persona substrate cluster wake-time landing)",
+  "state": "MERGED",
+  "merged_at": "2026-05-26T23:50:36Z",
+  "head_ref": "otto/substrate-smoothness-as-load-bearing-property-rule-2026-05-26"
+}

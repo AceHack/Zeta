@@ -1,0 +1,12 @@
+{
+  "pr_number": 8207,
+  "archive_path": "docs/history/pr-reviews/PR-8207-data-ferry-preserve-alexa-website-zeta-updates-review-aaron-requested.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-14T17:51:12.371Z",
+  "schema_version": "v1",
+  "commit_sha": "a3d96a396819daac271c155dc02bf30a8d16ac71",
+  "title": "data(ferry): preserve Alexa (website) Zeta-updates review (Aaron-requested)",
+  "state": "MERGED",
+  "merged_at": "2026-06-14T17:50:51Z",
+  "head_ref": "otto/ferry-alexa-website-2026-06-14"
+}

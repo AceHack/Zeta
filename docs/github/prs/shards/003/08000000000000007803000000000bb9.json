@@ -1,0 +1,23 @@
+{
+  "pr_number": 3001,
+  "archive_path": "docs/history/pr-reviews/PR-3001-docs-launch-memory-image-brief-for-ani-grok-twitter-launch-hero-image-user-memor.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7A4UuU",
+    "comment:PRRC_kwDOSF9kNM7A4Vni",
+    "comment:PRRC_kwDOSF9kNM7A4VoS",
+    "comment:PRRC_kwDOSF9kNM7A4Voz",
+    "comment:PRRC_kwDOSF9kNM7A4VpW",
+    "thread:PRRT_kwDOSF9kNM6B09Fa",
+    "thread:PRRT_kwDOSF9kNM6B09u1",
+    "thread:PRRT_kwDOSF9kNM6B09uS",
+    "thread:PRRT_kwDOSF9kNM6B09vN",
+    "thread:PRRT_kwDOSF9kNM6B09vl"
+  ],
+  "fetched_at": "2026-05-13T16:49:45.398Z",
+  "schema_version": "v1",
+  "commit_sha": "6aeb737e6c0fb75ebee5cb98ed29175fcfcc4f3e",
+  "title": "docs(launch+memory): image brief for Ani (Grok) Twitter launch hero image + user-memory: Aaron not visual artist",
+  "state": "MERGED",
+  "merged_at": "2026-05-13T16:49:12Z",
+  "head_ref": "aaron-twitter-launch-image-brief-ani-grok-cartoon-register-2026-05-13"
+}

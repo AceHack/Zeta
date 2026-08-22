@@ -1,0 +1,12 @@
+{
+  "pr_number": 9803,
+  "archive_path": "docs/history/pr-reviews/PR-9803-docs-register-file-e8-braid-orbit-conjecture-c-as-ill-posed-anchor-dechant-2016.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-31T23:38:48.649Z",
+  "schema_version": "v1",
+  "commit_sha": "0d3107044924ad5c3ce89c911c92dea839741771",
+  "title": "docs(register): file E8-braid-orbit conjecture (C) as ill-posed + anchor Dechant 2016",
+  "state": "MERGED",
+  "merged_at": "2026-07-31T23:38:15Z",
+  "head_ref": "shadow/e8-braid-orbit-verdict-register"
+}

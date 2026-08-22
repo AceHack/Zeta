@@ -1,0 +1,12 @@
+{
+  "pr_number": 7240,
+  "archive_path": "docs/history/pr-reviews/PR-7240-feat-node-register-node-b1e1b5-self-registers-via-iter-5-4-1.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-09T10:49:29.038Z",
+  "schema_version": "v1",
+  "commit_sha": "da87b3bb8a01cef64b695dbdc775f4b2d9a013ef",
+  "title": "feat(node-register): node-b1e1b5 self-registers via iter-5.4.1",
+  "state": "MERGED",
+  "merged_at": "2026-06-09T10:49:08Z",
+  "head_ref": "register-node-b1e1b5-20260609T095802Z"
+}

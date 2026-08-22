@@ -121,7 +121,7 @@ must record:
       commit/mtime)
 - [ ] Per-file evidence: 0 `any` uses (or each justified inline)
 - [ ] Per-file evidence: 0 `as` casts (or each justified inline)
-- [ ] `bun x tsc --noEmit` clean on slice files
+- [ ] `bun run typecheck` clean on slice files
 - [ ] `eslint <slice files>` clean
 - [ ] Regex match groups guarded — verified by grep
 - [ ] Index accesses guarded under `noUncheckedIndexedAccess` —

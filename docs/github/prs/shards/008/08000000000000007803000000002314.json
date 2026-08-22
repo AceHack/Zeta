@@ -1,0 +1,12 @@
+{
+  "pr_number": 8980,
+  "archive_path": "docs/history/pr-reviews/PR-8980-chore-keys-drop-the-static-machines-principals-json-seed-let-the-topology-emerge.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-21T18:20:44.766Z",
+  "schema_version": "v1",
+  "commit_sha": "fbdb61f6b2b6c239f088340e58365380c457ec22",
+  "title": "chore(keys): drop the static machines/principals.json seed — let the topology emerge",
+  "state": "MERGED",
+  "merged_at": "2026-06-21T18:20:13Z",
+  "head_ref": "otto/drop-static-principals-let-it-emerge"
+}

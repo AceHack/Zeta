@@ -1,0 +1,12 @@
+{
+  "pr_number": 10985,
+  "archive_path": "docs/history/pr-reviews/PR-10985-research-costume-rho-personas-measured-a-costume-worth-1-3-of-what-distinct-weig.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-16T18:02:49.109Z",
+  "schema_version": "v1",
+  "commit_sha": "89bb4fb9ffccabce01fd5f00d837d69e30ab051f",
+  "title": "research(costume-rho): personas measured — a costume worth ~1/3 of what distinct weights buy (zero model spend)",
+  "state": "MERGED",
+  "merged_at": "2026-08-16T18:02:16Z",
+  "head_ref": "shadow/costume-experiment-rho"
+}

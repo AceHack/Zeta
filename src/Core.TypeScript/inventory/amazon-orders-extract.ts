@@ -31,9 +31,9 @@
  *     for date + price)
  *
  * Usage:
- *     bun tools/inventory/amazon-orders-extract.ts                 # current year
- *     bun tools/inventory/amazon-orders-extract.ts 2025            # specific year
- *     bun tools/inventory/amazon-orders-extract.ts 2025 --restart  # ignore partial
+ *     bun src/Core.TypeScript/inventory/amazon-orders-extract.ts                 # current year
+ *     bun src/Core.TypeScript/inventory/amazon-orders-extract.ts 2025            # specific year
+ *     bun src/Core.TypeScript/inventory/amazon-orders-extract.ts 2025 --restart  # ignore partial
  */
 
 import { chmodSync, mkdirSync, writeFileSync, readFileSync, existsSync } from "node:fs";

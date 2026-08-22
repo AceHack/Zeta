@@ -1,0 +1,17 @@
+{
+  "pr_number": 5909,
+  "archive_path": "docs/history/pr-reviews/PR-5909-fix-hygiene-parse-env-s-assignment-shebangs.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7F3sZ4",
+    "comment:PRRC_kwDOSF9kNM7F3sZS",
+    "thread:PRRT_kwDOSF9kNM6Fetw0",
+    "thread:PRRT_kwDOSF9kNM6Fetwd"
+  ],
+  "fetched_at": "2026-05-28T18:04:21.790Z",
+  "schema_version": "v1",
+  "commit_sha": "55f56e0f19cce96ea3f8eff09d1af368452e4073",
+  "title": "fix(hygiene): parse env -S assignment shebangs",
+  "state": "MERGED",
+  "merged_at": "2026-05-28T18:03:54Z",
+  "head_ref": "claim/codex-loop-bash-retirement-env-s-assignment-20260528"
+}

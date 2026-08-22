@@ -1,0 +1,12 @@
+{
+  "pr_number": 7261,
+  "archive_path": "docs/history/pr-reviews/PR-7261-feat-trust-publish-aaron-s-gpg-public-key-persona-github-verified-signed-commits.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-09T12:47:31.022Z",
+  "schema_version": "v1",
+  "commit_sha": "24efa207b3ea2c0dfbd0ea783ad4c8767deaf983",
+  "title": "feat(trust): publish Aaron's GPG public key — persona + GitHub (Verified signed commits enabled)",
+  "state": "MERGED",
+  "merged_at": "2026-06-09T12:47:03Z",
+  "head_ref": "otto/publish-aaron-gpg-key"
+}

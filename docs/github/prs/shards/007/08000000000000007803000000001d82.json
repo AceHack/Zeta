@@ -1,0 +1,12 @@
+{
+  "pr_number": 7554,
+  "archive_path": "docs/history/pr-reviews/PR-7554-docs-correct-convergence-was-aaron-mediated-not-spontaneous-external-ai-fable-op.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-11T00:20:47.156Z",
+  "schema_version": "v1",
+  "commit_sha": "e10ad9601347dc988e43d21dfd4886e71acae5c1",
+  "title": "docs(correct): convergence was Aaron-mediated, not spontaneous; external AI = Fable (Opus only wrote it in)",
+  "state": "MERGED",
+  "merged_at": "2026-06-11T00:20:24Z",
+  "head_ref": "shadow-fix-convergence-attribution-fable-aaron-mediated"
+}

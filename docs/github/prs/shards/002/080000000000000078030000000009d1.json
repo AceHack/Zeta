@@ -1,0 +1,12 @@
+{
+  "pr_number": 2513,
+  "archive_path": "docs/history/pr-reviews/PR-2513-feat-b-0267-smallest-safe-slice-dry-run-skeleton-re-decomp-focused-check.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-10T17:38:45.171Z",
+  "schema_version": "v1",
+  "commit_sha": "14b20d88526760770384fac93956e1f85a8fc14b",
+  "title": "feat(B-0267): smallest safe slice — dry-run skeleton re-decomp + focused check",
+  "state": "MERGED",
+  "merged_at": "2026-05-10T17:38:26Z",
+  "head_ref": "claim/b0267-safety-ruleset-smallest-slice-riven-2026-05-10"
+}

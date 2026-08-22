@@ -1,0 +1,12 @@
+{
+  "pr_number": 4764,
+  "archive_path": "docs/history/pr-reviews/PR-4764-feat-b-0708-slice-1-audit-resolver-improvements-1-real-stale-fix-87-17-80.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-23T20:56:00.097Z",
+  "schema_version": "v1",
+  "commit_sha": "c06b164e344008a5f3a0219b3075981a5389ca8f",
+  "title": "feat(B-0708 slice 1): audit resolver improvements + 1 real-stale fix (87 → 17, -80%)",
+  "state": "MERGED",
+  "merged_at": "2026-05-23T20:55:43Z",
+  "head_ref": "otto/cli-b0708-slice1-stale-pointer-classify-report-2026-05-23"
+}

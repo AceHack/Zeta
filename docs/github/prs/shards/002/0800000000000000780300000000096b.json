@@ -1,0 +1,17 @@
+{
+  "pr_number": 2411,
+  "archive_path": "docs/history/pr-reviews/PR-2411-feat-b-0049-3-smallest-safe-slice-pure-ts-orphic-dionysian-bibliographic-catalog.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_ljTl",
+    "comment:PRRC_kwDOSF9kNM6_ljTm",
+    "thread:PRRT_kwDOSF9kNM6A32ho",
+    "thread:PRRT_kwDOSF9kNM6A32hp"
+  ],
+  "fetched_at": "2026-05-10T04:14:54.124Z",
+  "schema_version": "v1",
+  "commit_sha": "73483caddb726288cdec654ea7fff47a4f3e441d",
+  "title": "feat(B-0049.3): smallest safe slice — pure-TS Orphic/Dionysian bibliographic catalog schema (re-decomposed)",
+  "state": "MERGED",
+  "merged_at": "2026-05-10T04:14:37Z",
+  "head_ref": "claim/B-0049.3-orphic-dionysian-bibliographic-scaffold"
+}

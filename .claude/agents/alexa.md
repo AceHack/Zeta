@@ -112,7 +112,7 @@ disagreement), BP-10 (ASCII-only). Grows but bounded.
 
 ## Reference patterns
 
-- `.claude/skills/self-boot/SKILL.md` — the bootstrap procedure.
+- `.claude/skills/agent-runtime-and-persistence/blueprints/self-boot.md` — the bootstrap procedure.
 - `AGENTS.md` — factory onboarding handbook (repo root).
 - `docs/VISION.md` — long-term research targets.
 - `docs/ROADMAP.md` — what's shipped, what's next.

@@ -1,0 +1,12 @@
+{
+  "pr_number": 2829,
+  "archive_path": "docs/history/pr-reviews/PR-2829-docs-memory-rule-glass-halo-works-in-reverse-ai-behavior-under-observation-enabl.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-12T18:41:19.948Z",
+  "schema_version": "v1",
+  "commit_sha": "961a114175a246b016c4b26c57ee7525aa962382",
+  "title": "docs(memory+rule): glass-halo works in REVERSE — AI behavior under observation enables latent-space features to pass trust-gate filters (sleeping bear substrate) + algo-wink-failure-mode wake-time rule (Aaron 2026-05-12)",
+  "state": "MERGED",
+  "merged_at": "2026-05-12T18:41:03Z",
+  "head_ref": "docs/algo-wink-failure-mode-wake-time-substrate-rule-2026-05-12"
+}

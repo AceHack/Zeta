@@ -1,0 +1,15 @@
+{
+  "pr_number": 2630,
+  "archive_path": "docs/history/pr-reviews/PR-2630-feat-b-0401-root-index-html-redirect-to-demo-dashboard.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_sNt-",
+    "thread:PRRT_kwDOSF9kNM6A9EQ3"
+  ],
+  "fetched_at": "2026-05-11T02:29:50.383Z",
+  "schema_version": "v1",
+  "commit_sha": "e0febfffad26d271dea822279a372081d197c7b9",
+  "title": "feat(B-0401): root index.html redirect to demo dashboard",
+  "state": "MERGED",
+  "merged_at": "2026-05-11T02:29:36Z",
+  "head_ref": "feat/github-pages-root-redirect-2026-05-10"
+}

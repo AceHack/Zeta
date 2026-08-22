@@ -1,0 +1,12 @@
+{
+  "pr_number": 8947,
+  "archive_path": "docs/history/pr-reviews/PR-8947-fix-setup-widen-curl-retry-window-for-release-downloads.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-21T13:34:46.683Z",
+  "schema_version": "v1",
+  "commit_sha": "9c79a4b6a366aa1e047935fecc60416a94b0a7ca",
+  "title": "fix(setup): widen curl retry window for release downloads",
+  "state": "MERGED",
+  "merged_at": "2026-06-21T13:34:16Z",
+  "head_ref": "codex/curl-fetch-backoff-ci"
+}

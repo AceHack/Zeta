@@ -1,0 +1,14 @@
+{
+  "id": "080d00d967c86810a0130008004a51a7",
+  "at": "2026-08-19T17:58:47.309Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M0DJSY88087G0R002JTPWKQ",
+    "type": "task",
+    "title": "Semgrep rule: no wall-clock read on any path feeding the shared trust fold",
+    "slug": "semgrep-rule-no-wall-clock-read-on-any-path-feeding-the-shar",
+    "priority": "P2",
+    "filename": "081M0DJSY88087G0R002JTPWKQ-semgrep-rule-no-wall-clock-read-on-any-path-feeding-the-shar.md"
+  }
+}

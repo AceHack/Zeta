@@ -1,0 +1,12 @@
+{
+  "pr_number": 9766,
+  "archive_path": "docs/history/pr-reviews/PR-9766-docs-calibrate-the-harm-detector-on-the-harm-signal-never-on-the-builder-as-base.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-12T04:10:38.439Z",
+  "schema_version": "v1",
+  "commit_sha": "f3569c1db379bee6dfb8713a0b1572bff96414b0",
+  "title": "docs: calibrate the harm-detector on the harm-signal, never on the builder-as-baseline (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-12T04:10:11Z",
+  "head_ref": "calibrate-detector-on-harm-signal"
+}

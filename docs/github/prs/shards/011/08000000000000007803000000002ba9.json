@@ -1,0 +1,12 @@
+{
+  "pr_number": 11177,
+  "archive_path": "docs/history/pr-reviews/PR-11177-research-method-middle-out-applied-to-sampling-choose-the-scale-where-the-varian.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-16T23:33:16.747Z",
+  "schema_version": "v1",
+  "commit_sha": "87fd274212add6b6448e3ddbcd566d67c5cc0bb3",
+  "title": "research(method): middle-out applied to sampling — choose the scale where the variance lives",
+  "state": "MERGED",
+  "merged_at": "2026-08-16T23:32:40Z",
+  "head_ref": "shadow/middle-out-scale-of-variance"
+}

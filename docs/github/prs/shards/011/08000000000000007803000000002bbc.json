@@ -1,0 +1,17 @@
+{
+  "pr_number": 11196,
+  "archive_path": "docs/history/pr-reviews/PR-11196-guard-pages-the-hall-cards-are-correct-the-404s-are-the-org-root-repo-s-stale-co.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7iF-_b",
+    "comment:PRRC_kwDOSF9kNM7iFix-",
+    "thread:PRRT_kwDOSF9kNM6ZqWFe",
+    "thread:PRRT_kwDOSF9kNM6Zqpkl"
+  ],
+  "fetched_at": "2026-08-17T00:58:37.258Z",
+  "schema_version": "v1",
+  "commit_sha": "d21fcdcdc8e5d29892a1bc565b828d390fdab5c6",
+  "title": "guard(pages): the hall cards are correct — the 404s are the org-root repo's stale copy",
+  "state": "MERGED",
+  "merged_at": "2026-08-17T00:58:01Z",
+  "head_ref": "shadow/dist-internal-link-check"
+}

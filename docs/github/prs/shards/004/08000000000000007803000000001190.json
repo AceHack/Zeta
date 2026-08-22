@@ -1,0 +1,12 @@
+{
+  "pr_number": 4496,
+  "archive_path": "docs/history/pr-reviews/PR-4496-docs-archive-lior-pr-memory-preservation-for-pr-4490.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-21T06:08:29.669Z",
+  "schema_version": "v1",
+  "commit_sha": "750d55348b11bebe99658afa4312525e61d2d61b",
+  "title": "docs(archive): Lior PR memory preservation for PR 4490",
+  "state": "MERGED",
+  "merged_at": "2026-05-21T06:08:08Z",
+  "head_ref": "zeta-lior-preserve-4490-b"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 9612,
+  "archive_path": "docs/history/pr-reviews/PR-9612-docs-research-addendum-7-deterministic-time-as-coordination-primitive.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-09T03:53:58.206Z",
+  "schema_version": "v1",
+  "commit_sha": "84d0221c1901b53546804431a8b21c66f55948c3",
+  "title": "docs(research): Addendum 7 — deterministic time as coordination primitive",
+  "state": "MERGED",
+  "merged_at": "2026-07-09T03:53:33Z",
+  "head_ref": "docs/deterministic-time-demon-coordination-2026-07-08"
+}

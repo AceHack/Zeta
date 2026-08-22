@@ -1,0 +1,32 @@
+{
+  "primitive": "actor-ref",
+  "version": "v1",
+  "description": "Shared invalid-vector class for ActorRef.parse and ActorRef.parseSpiffe. Every oracle (TS, F#) MUST reject each row at the named door. Adding a row here with no parser change must turn an oracle red (081M00J1EWW).",
+  "invalid": [
+    { "input": "otto/COWORK", "door": "parse", "why": "uppercase segment" },
+    { "input": "otto//fg", "door": "parse", "why": "empty surface" },
+    { "input": "otto/cli@a@b", "door": "parse", "why": "multiple @" },
+    { "input": "otto@machine-a", "door": "parse", "why": "node without surface" },
+    { "input": "kenji/cli", "door": "parse", "why": "unknown persona" },
+    { "input": "otto/cli/fg/extra", "door": "parse", "why": "too many segments" },
+    { "input": "otto-cowork", "door": "parse", "why": "fused composite" },
+    { "input": "otto/cli/FG", "door": "parse", "why": "uppercase instance" },
+    { "input": "otto/cli/", "door": "parse", "why": "empty instance" },
+    { "input": "spiffe://zeta/persona/otto/cell/COWORK", "door": "parseSpiffe", "why": "uppercase segment" },
+    { "input": "spiffe://zeta/persona/otto/cell//fg", "door": "parseSpiffe", "why": "empty surface" },
+    { "input": "spiffe://zeta/persona/otto/cell/cli@a@b", "door": "parseSpiffe", "why": "multiple @" },
+    { "input": "spiffe://zeta/persona/otto@machine-a", "door": "parseSpiffe", "why": "node without surface" },
+    { "input": "spiffe://zeta/persona/soraya@verifier-node", "door": "parseSpiffe", "why": "node without surface (F# vector)" },
+    { "input": "spiffe://zeta/persona/otto/cell/cli/fg@UPPER", "door": "parseSpiffe", "why": "uppercase node (F# vector)" },
+    { "input": "spiffe://zeta/persona/otto/cell/cli@", "door": "parseSpiffe", "why": "empty node" },
+    { "input": "spiffe://zeta/persona/otto/cell/c li", "door": "parseSpiffe", "why": "space in segment" },
+    { "input": "spiffe://zeta/persona/otto/cell/cli/FG", "door": "parseSpiffe", "why": "uppercase instance" },
+    { "input": "spiffe://zeta/persona/otto/cell/cli/", "door": "parseSpiffe", "why": "empty instance" },
+    { "input": "spiffe://zeta/persona/kenji/cell/cli", "door": "parseSpiffe", "why": "unknown persona" },
+    { "input": "spiffe://zeta/persona/otto/cell/cli/fg/extra", "door": "parseSpiffe", "why": "too many segments" },
+    { "input": "spiffe://zeta/persona/otto-cowork", "door": "parseSpiffe", "why": "fused composite" },
+    { "input": "http://zeta/persona/otto", "door": "parseSpiffe", "why": "wrong scheme" },
+    { "input": "spiffe://zeta/persona/otto/invalid/cli", "door": "parseSpiffe", "why": "missing cell label" },
+    { "input": "spiffe://zeta/persona/otto/cell", "door": "parseSpiffe", "why": "missing surface kind" }
+  ]
+}

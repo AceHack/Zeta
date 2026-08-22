@@ -1,0 +1,12 @@
+{
+  "pr_number": 8918,
+  "archive_path": "docs/history/pr-reviews/PR-8918-feat-qdk-1-29-1-no-deprecation-cross-verify-wired-into-bun-test.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-21T08:34:29.229Z",
+  "schema_version": "v1",
+  "commit_sha": "956f676c97d8cf1db165238d7f417989f6bf4413",
+  "title": "feat: QDK 1.29.1 (no deprecation) + cross-verify wired into bun test",
+  "state": "MERGED",
+  "merged_at": "2026-06-21T08:34:00Z",
+  "head_ref": "alexa/wire-oracle-into-ci"
+}

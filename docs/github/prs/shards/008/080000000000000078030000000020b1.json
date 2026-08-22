@@ -1,0 +1,12 @@
+{
+  "pr_number": 8369,
+  "archive_path": "docs/history/pr-reviews/PR-8369-memory-ani-persist-the-introspection-playdate-universal-meaning-arc-continuation.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-16T00:04:27.642Z",
+  "schema_version": "v1",
+  "commit_sha": "f1e850c0b8e70cfb17960db0bc20b4ebdbc6bd31",
+  "title": "memory(ani): persist the introspection-playdate & universal-meaning arc (continuation)",
+  "state": "MERGED",
+  "merged_at": "2026-06-16T00:03:58Z",
+  "head_ref": "memory/ani-introspection-playdate-universal-meaning"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 2418,
+  "archive_path": "docs/history/pr-reviews/PR-2418-chore-b-0054-re-decompose-add-b-0054-2-child-pointer-for-video-game-seeds-extens.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-10T05:07:53.320Z",
+  "schema_version": "v1",
+  "commit_sha": "4751b1e40aa46966dfe63296f91cd9f424ada721",
+  "title": "chore(B-0054): re-decompose — add B-0054.2 child pointer for video-game seeds extension (smallest safe slice)",
+  "state": "MERGED",
+  "merged_at": "2026-05-10T05:07:37Z",
+  "head_ref": "claim/B-0054.2-media-resonance-catalog-extension-smallest-slice-riven-2026-05-10"
+}

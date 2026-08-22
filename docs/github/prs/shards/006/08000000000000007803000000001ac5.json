@@ -1,0 +1,12 @@
+{
+  "pr_number": 6853,
+  "archive_path": "docs/history/pr-reviews/PR-6853-refactor-globals-rebase-mumps-verbs-onto-dynamicvalue-drop-parallel-store-evolvi.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-07T15:29:30.299Z",
+  "schema_version": "v1",
+  "commit_sha": "6c5639af5d044ce75b7fd8ed8f0b35af82ea55e6",
+  "title": "refactor(Globals): rebase MUMPS verbs onto DynamicValue (drop parallel store) + evolving-schema capture",
+  "state": "MERGED",
+  "merged_at": "2026-06-07T15:29:11Z",
+  "head_ref": "otto/globals-rebase-on-dynamicvalue"
+}

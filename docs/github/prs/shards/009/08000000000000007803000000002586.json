@@ -1,0 +1,12 @@
+{
+  "pr_number": 9606,
+  "archive_path": "docs/history/pr-reviews/PR-9606-docs-letters-from-soraya-drunk-session-discharge-ledger-3-facts-to-bank-1-open-o.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-09T02:44:14.989Z",
+  "schema_version": "v1",
+  "commit_sha": "4d38cbdb0e2aaf6a4e593868d16859a7eeeb696c",
+  "title": "docs(letters): from-soraya drunk-session discharge ledger — 3 facts to bank, 1 open object, the rest rhymes (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-09T02:43:51Z",
+  "head_ref": "otto/drunk-session-discharge"
+}

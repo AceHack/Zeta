@@ -1,0 +1,17 @@
+{
+  "pr_number": 2439,
+  "archive_path": "docs/history/pr-reviews/PR-2439-feat-b-0074-1-smallest-safe-ts-slice-explicit-blank-line-filter-in-audit-git-hot.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_miSq",
+    "comment:PRRC_kwDOSF9kNM6_miqo",
+    "thread:PRRT_kwDOSF9kNM6A4nBh",
+    "thread:PRRT_kwDOSF9kNM6A4nT8"
+  ],
+  "fetched_at": "2026-05-10T08:16:00.867Z",
+  "schema_version": "v1",
+  "commit_sha": "fd65b686e67a64e1d8b5df7a4bc58edfba84cb3c",
+  "title": "feat(B-0074.1): smallest safe TS slice — explicit blank-line filter in audit-git-hotspots.ts (resolves stale B-0067 item)",
+  "state": "MERGED",
+  "merged_at": "2026-05-10T08:15:41Z",
+  "head_ref": "claim/B-0074.1-stale-item-sweep-smallest-ts-slice-riven-2026-05-10"
+}

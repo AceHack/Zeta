@@ -4,12 +4,12 @@
     <CentralPackageTransitivePinningEnabled>true</CentralPackageTransitivePinningEnabled>
   </PropertyGroup>
   <ItemGroup>
-    <PackageVersion Include="FSharp.Core" Version="10.1.302" />
+    <PackageVersion Include="FSharp.Core" Version="10.1.400" />
     <PackageVersion Include="Blake3" Version="3.0.2" />
     <PackageVersion Include="G-Research.FSharp.Analyzers" Version="0.23.0" />
-    <PackageVersion Include="Ionide.Analyzers" Version="0.15.0" />
+    <PackageVersion Include="Ionide.Analyzers" Version="0.17.0" />
     <PackageVersion Include="FSharp.Analyzers.Build" Version="0.5.0" />
-    <PackageVersion Include="Meziantou.Analyzer" Version="3.0.140" />
+    <PackageVersion Include="Meziantou.Analyzer" Version="3.0.177" />
     <!-- SonarAnalyzer.CSharp pinned but NOT referenced from
          Directory.Build.props yet — surfaces 15+ real findings
          (S1905 unnecessary casts, S6966 SendAsync, S2699
@@ -27,7 +27,7 @@
     <PackageVersion Include="SonarAnalyzer.CSharp" Version="10.19.0.132793" />
     <PackageVersion Include="xunit.v3" Version="3.2.2" />
     <PackageVersion Include="xunit.runner.visualstudio" Version="3.1.5" />
-    <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="18.8.1" />
+    <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="18.9.0" />
     <PackageVersion Include="FsCheck" Version="3.3.4" />
     <PackageVersion Include="FsCheck.Xunit.v3" Version="3.3.4" />
     <PackageVersion Include="FsUnit.Xunit" Version="7.1.1" />
@@ -36,14 +36,14 @@
     <PackageVersion Include="coverlet.collector" Version="10.0.1" />
     <PackageVersion Include="coverlet.msbuild" Version="10.0.1" />
     <PackageVersion Include="Microsoft.Z3" Version="4.12.2" />
-    <PackageVersion Include="System.IO.Hashing" Version="10.0.10" />
+    <PackageVersion Include="System.IO.Hashing" Version="10.0.11" />
     <PackageVersion Include="LibGit2Sharp" Version="0.32.0" />
     <!-- Google.Protobuf: TEST-ONLY (Tests.FSharp) — the vendored protobuf lib used to prove our
          hand-rolled wire codec is byte-identical (the hexagonal swap conformance). NOT a production
          dependency of Core. Exact-pinned per the supply-chain doctrine. -->
-    <PackageVersion Include="Google.Protobuf" Version="3.35.1" />
+    <PackageVersion Include="Google.Protobuf" Version="3.36.0" />
     <PackageVersion Include="System.Reactive" Version="7.0.0" />
-    <PackageVersion Include="System.Numerics.Tensors" Version="10.0.10" />
+    <PackageVersion Include="System.Numerics.Tensors" Version="10.0.11" />
     <PackageVersion Include="FsPickler" Version="5.3.2" />
     <PackageVersion Include="MessagePack" Version="3.1.8" />
     <PackageVersion Include="Apache.Arrow" Version="23.0.0" />
@@ -58,7 +58,19 @@
     <PackageVersion Include="Mediator.SourceGenerator" Version="3.0.2" />
     <!-- Microsoft first-party DI: the IServiceCollection seam the mediator registers into.
          Abstractions for the port library; the full container for the proving test. -->
-    <PackageVersion Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="10.0.10" />
-    <PackageVersion Include="Microsoft.Extensions.DependencyInjection" Version="10.0.10" />
+    <PackageVersion Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="10.0.11" />
+    <PackageVersion Include="Microsoft.Extensions.DependencyInjection" Version="10.0.11" />
+    <!-- OpenTelemetry: the exporter side of the instrumentation src/Core/Metrics.fs and
+         src/Core/Tracing.fs have published since long before anything listened. Referenced
+         ONLY by src/Core.Telemetry (the composition root) and the test project that proves
+         data arrives - never by Core itself, so a consumer of the DBSP library does not
+         inherit an exporter stack it did not ask for.
+         OpenTelemetry.Exporter.InMemory is TEST-ONLY: it is the seam that turns "the code
+         compiles" into "the counters actually reach an exporter". All three held at the
+         same version - the SDK and its exporters are a matched set. Exact-pinned per the
+         supply-chain doctrine. -->
+    <PackageVersion Include="OpenTelemetry" Version="1.18.0" />
+    <PackageVersion Include="OpenTelemetry.Exporter.OpenTelemetryProtocol" Version="1.18.0" />
+    <PackageVersion Include="OpenTelemetry.Exporter.InMemory" Version="1.18.0" />
   </ItemGroup>
 </Project>

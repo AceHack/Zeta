@@ -1,0 +1,14 @@
+{
+  "id": "080d000ca316c810a01300089b28ac40",
+  "at": "2026-08-14T18:41:36.985Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M00S8RPS087G0R0003J5Q56",
+    "type": "task",
+    "title": "Correct the Secure Enclave and YubiHSM-as-owned claims in the code-bound key access note",
+    "slug": "correct-the-secure-enclave-and-yubihsm-as-owned-claims-in-th",
+    "priority": "P2",
+    "filename": "081M00S8RPS087G0R0003J5Q56-correct-the-secure-enclave-and-yubihsm-as-owned-claims-in-th.md"
+  }
+}

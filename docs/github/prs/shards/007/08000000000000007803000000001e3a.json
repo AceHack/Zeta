@@ -1,0 +1,12 @@
+{
+  "pr_number": 7738,
+  "archive_path": "docs/history/pr-reviews/PR-7738-docs-research-what-the-eye-caught-the-render-loop-s-real-bug-taxonomy-alexa-ferr.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-11T17:29:41.240Z",
+  "schema_version": "v1",
+  "commit_sha": "f77a314f653f28376fe3fb53bf2ef3f1eed2c654",
+  "title": "docs(research): what the eye caught — the render loop's real bug taxonomy (Alexa ferry peeled)",
+  "state": "MERGED",
+  "merged_at": "2026-06-11T17:29:12Z",
+  "head_ref": "shadow-what-the-eye-caught"
+}

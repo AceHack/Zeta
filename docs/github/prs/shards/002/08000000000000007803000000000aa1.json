@@ -1,0 +1,21 @@
+{
+  "pr_number": 2721,
+  "archive_path": "docs/history/pr-reviews/PR-2721-docs-backlog-b-0170-start-gate-proof-re-decomp-to-4-atomic-children-riven-one-bo.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_-Eyb",
+    "comment:PRRC_kwDOSF9kNM6_94n1",
+    "comment:PRRC_kwDOSF9kNM6_95f0",
+    "comment:PRRC_kwDOSF9kNM6_95fD",
+    "thread:PRRT_kwDOSF9kNM6BKKc7",
+    "thread:PRRT_kwDOSF9kNM6BKLFI",
+    "thread:PRRT_kwDOSF9kNM6BKLFs",
+    "thread:PRRT_kwDOSF9kNM6BKTQ_"
+  ],
+  "fetched_at": "2026-05-11T17:03:43.263Z",
+  "schema_version": "v1",
+  "commit_sha": "fb69982dc2792ea95b930b38f61426ea03601d5e",
+  "title": "docs(backlog): B-0170 start-gate proof + re-decomp to 4 atomic children (riven one-bounded-slice)",
+  "state": "MERGED",
+  "merged_at": "2026-05-11T17:03:22Z",
+  "head_ref": "claim/b0170-substrate-claim-checker-start-gate-redecomp-riven-2026-05-11"
+}

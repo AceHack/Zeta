@@ -1,0 +1,25 @@
+{
+  "pr_number": 6118,
+  "archive_path": "docs/history/pr-reviews/PR-6118-fix-persistence-windows-windowless-loop-conhost-headless-install-ps1-plan.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7Gao-C",
+    "comment:PRRC_kwDOSF9kNM7Gao-q",
+    "comment:PRRC_kwDOSF9kNM7GaoVV",
+    "comment:PRRC_kwDOSF9kNM7GaoVY",
+    "comment:PRRC_kwDOSF9kNM7GaoVd",
+    "comment:PRRC_kwDOSF9kNM7GaoVi",
+    "comment:PRRC_kwDOSF9kNM7Gao_A",
+    "comment:PRRC_kwDOSF9kNM7Gao_k",
+    "thread:PRRT_kwDOSF9kNM6F4Fom",
+    "thread:PRRT_kwDOSF9kNM6F4Foo",
+    "thread:PRRT_kwDOSF9kNM6F4Fot",
+    "thread:PRRT_kwDOSF9kNM6F4Fow"
+  ],
+  "fetched_at": "2026-05-30T14:33:31.648Z",
+  "schema_version": "v1",
+  "commit_sha": "9c8c56ffe484f237c4b1f9eb023237f58bc18d7b",
+  "title": "fix(persistence/windows): windowless loop (conhost --headless) + install.ps1 plan",
+  "state": "MERGED",
+  "merged_at": "2026-05-30T14:33:11Z",
+  "head_ref": "otto-windows/loop-windowless-conhost-2026-05-30"
+}

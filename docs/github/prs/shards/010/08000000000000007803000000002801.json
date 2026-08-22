@@ -1,0 +1,12 @@
+{
+  "pr_number": 10241,
+  "archive_path": "docs/history/pr-reviews/PR-10241-docs-rule-research-self-wager-clause-payout-closed-with-no-new-mechanism-custody.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-09T22:31:27.298Z",
+  "schema_version": "v1",
+  "commit_sha": "31ef27adf588bb17b1e894e0302cdf29adc4a38e",
+  "title": "docs(rule+research): self-wager clause, payout closed with no new mechanism, custody-change = DagFs fork",
+  "state": "MERGED",
+  "merged_at": "2026-08-09T22:30:55Z",
+  "head_ref": "shadow/privacy-budget-wager-clause"
+}

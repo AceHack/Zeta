@@ -1,0 +1,25 @@
+{
+  "pr_number": 2014,
+  "archive_path": "docs/history/pr-reviews/PR-2014-feat-b-0285-arc-4-arena-types-9-tests.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_F9x-",
+    "comment:PRRC_kwDOSF9kNM6_F_g6",
+    "comment:PRRC_kwDOSF9kNM6_F_gS",
+    "comment:PRRC_kwDOSF9kNM6_F_gp",
+    "comment:PRRC_kwDOSF9kNM6_F_hK",
+    "comment:PRRC_kwDOSF9kNM6_F_hZ",
+    "thread:PRRT_kwDOSF9kNM6AgSBf",
+    "thread:PRRT_kwDOSF9kNM6AgTUY",
+    "thread:PRRT_kwDOSF9kNM6AgTU_",
+    "thread:PRRT_kwDOSF9kNM6AgTUo",
+    "thread:PRRT_kwDOSF9kNM6AgTUz",
+    "thread:PRRT_kwDOSF9kNM6AgTVM"
+  ],
+  "fetched_at": "2026-05-08T03:05:59.268Z",
+  "schema_version": "v1",
+  "commit_sha": "16b0192b27a86465f87b307124ddf14c1a2b2772",
+  "title": "feat(B-0285): ARC-4 arena types + 9 tests",
+  "state": "MERGED",
+  "merged_at": "2026-05-08T03:05:39Z",
+  "head_ref": "feat/b0285-arc4-arena-types"
+}

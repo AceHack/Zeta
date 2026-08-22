@@ -1,0 +1,12 @@
+{
+  "pr_number": 9475,
+  "archive_path": "docs/history/pr-reviews/PR-9475-test-docs-soraya-round-2-yang-baxter-verdict-executable-egg-answers-p1-bug-filed.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-04T18:34:40.234Z",
+  "schema_version": "v1",
+  "commit_sha": "8382ca3828814e7ab8fe2cc34e2b241ade0f3d4c",
+  "title": "test+docs: Soraya round 2 — Yang–Baxter verdict executable; Egg answers; P1 bug filed (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-04T18:34:17Z",
+  "head_ref": "otto/soraya-r2-yang-baxter-test-egg-answers"
+}

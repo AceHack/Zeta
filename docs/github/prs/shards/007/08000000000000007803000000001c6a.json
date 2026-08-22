@@ -1,0 +1,12 @@
+{
+  "pr_number": 7274,
+  "archive_path": "docs/history/pr-reviews/PR-7274-docs-seed-tie-toymodel2-society-math-language-into-the-seed-kernel-solidground-p.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-09T13:28:16.696Z",
+  "schema_version": "v1",
+  "commit_sha": "f99cedd8586acbdbe72321c4696bf6a58854f504",
+  "title": "docs(seed): tie toymodel2 (society) math-language into the Seed kernel — SolidGround, privacy-budget/hard-money, coincidence-self-anchor, diversity-floor",
+  "state": "MERGED",
+  "merged_at": "2026-06-09T13:27:51Z",
+  "head_ref": "otto/seed-vocabulary-tie-in-toymodel2-society-math-language"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 9950,
+  "archive_path": "docs/history/pr-reviews/PR-9950-fix-bridge-roster-hat-bindings-pipefail-retire-dead-vocabulary.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-02T12:16:12.012Z",
+  "schema_version": "v1",
+  "commit_sha": "d998d6f9999050fea5fa3f791d901ec8a2751b0f",
+  "title": "fix(bridge): roster hat bindings + pipefail + retire dead vocabulary",
+  "state": "MERGED",
+  "merged_at": "2026-08-02T12:15:44Z",
+  "head_ref": "claim/vault-bridge-final-cleanup"
+}

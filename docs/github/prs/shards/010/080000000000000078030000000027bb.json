@@ -1,0 +1,15 @@
+{
+  "pr_number": 10171,
+  "archive_path": "docs/history/pr-reviews/PR-10171-feat-cleanup-batch-remove-deprecated-classifys-ts2375-healer-phase-clock-persist.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7fCLn3",
+    "thread:PRRT_kwDOSF9kNM6Xhakn"
+  ],
+  "fetched_at": "2026-08-18T10:01:47.787Z",
+  "schema_version": "v1",
+  "commit_sha": "681654df831c88a8ea70da117bdc41597742cab3",
+  "title": "feat: cleanup batch — remove deprecated classifyS + TS2375 healer + phase-clock persistence",
+  "state": "MERGED",
+  "merged_at": "2026-08-08T23:26:07Z",
+  "head_ref": "claim/cleanup-batch"
+}

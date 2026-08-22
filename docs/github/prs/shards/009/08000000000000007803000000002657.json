@@ -1,0 +1,12 @@
+{
+  "pr_number": 9815,
+  "archive_path": "docs/history/pr-reviews/PR-9815-feat-core-icosahedralh3-spinors-120-2i-600-cell-h4-increment-2-dechant-3-4.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-01T01:38:05.469Z",
+  "schema_version": "v1",
+  "commit_sha": "bf74b917686996981d4047615758067a94af4383",
+  "title": "feat(Core): IcosahedralH3 spinors — 120 = 2I / 600-cell / H4 (increment 2, Dechant 3→4)",
+  "state": "MERGED",
+  "merged_at": "2026-08-01T01:37:33Z",
+  "head_ref": "shadow/icosahedral-h3-spinors-increment2"
+}

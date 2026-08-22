@@ -1,0 +1,12 @@
+{
+  "pr_number": 8776,
+  "archive_path": "docs/history/pr-reviews/PR-8776-docs-research-amend-metaspace-ferry-vertical-axis-attention-uncertainty-visibili.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-20T21:31:25.119Z",
+  "schema_version": "v1",
+  "commit_sha": "b7637b2728cbff515440099222d0ee6c5908cc26",
+  "title": "docs(research): amend metaspace ferry — vertical axis = attention/uncertainty + visibility contract-gated",
+  "state": "MERGED",
+  "merged_at": "2026-06-20T21:31:00Z",
+  "head_ref": "otto/amend-metaspace-attention-axis-visibility"
+}

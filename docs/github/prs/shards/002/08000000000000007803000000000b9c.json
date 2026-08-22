@@ -1,0 +1,17 @@
+{
+  "pr_number": 2972,
+  "archive_path": "docs/history/pr-reviews/PR-2972-docs-memory-aaron-s-mayoral-platform-substance-four-pillars-business-in-a-box-bi.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7Aq7We",
+    "comment:PRRC_kwDOSF9kNM7Aq9qO",
+    "thread:PRRT_kwDOSF9kNM6BrNTU",
+    "thread:PRRT_kwDOSF9kNM6BrPAH"
+  ],
+  "fetched_at": "2026-05-13T08:12:13.240Z",
+  "schema_version": "v1",
+  "commit_sha": "c588b3b6025c0e7ab8e91958885eec2041af88f8",
+  "title": "docs(memory): Aaron's mayoral platform substance — FOUR pillars: business-in-a-box + bitcoin + AI ethics + legal medicinal marijuana (city ordinance) + concrete Rolesville wealth generation (Aaron 2026-05-13)",
+  "state": "MERGED",
+  "merged_at": "2026-05-13T08:11:53Z",
+  "head_ref": "aaron-mayoral-platform-substance-business-in-a-box-bitcoin-ai-ethics-rolesville-wealth-generation-2026-05-13"
+}

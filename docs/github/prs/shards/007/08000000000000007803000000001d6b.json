@@ -1,0 +1,12 @@
+{
+  "pr_number": 7531,
+  "archive_path": "docs/history/pr-reviews/PR-7531-docs-research-emulator-jit-dynarec-static-recompilation-prior-art-our-hard-soft-.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-10T23:01:44.071Z",
+  "schema_version": "v1",
+  "commit_sha": "506712b0ed4518a15dc6697becb1a910dc8fabff",
+  "title": "docs(research): emulator JIT/dynarec/static-recompilation prior art -> our hard->soft->shader pipeline",
+  "state": "MERGED",
+  "merged_at": "2026-06-10T23:01:20Z",
+  "head_ref": "shadow-emulator-jit-prior-art-survey"
+}

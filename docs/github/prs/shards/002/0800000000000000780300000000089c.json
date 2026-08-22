@@ -1,0 +1,12 @@
+{
+  "pr_number": 2204,
+  "archive_path": "docs/history/pr-reviews/PR-2204-fix-b-0357-mark-tautology-z3-agenda-proofs-for-replacement.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-09T06:34:18.262Z",
+  "schema_version": "v1",
+  "commit_sha": "4d52a9263982098a0c40049f695ae6e6707d8eda",
+  "title": "fix(B-0357): mark tautology Z3 agenda proofs for replacement",
+  "state": "MERGED",
+  "merged_at": "2026-05-09T06:34:01Z",
+  "head_ref": "fix/b0357-mark-tautology-z3-proofs"
+}

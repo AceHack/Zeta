@@ -1,0 +1,12 @@
+{
+  "pr_number": 9468,
+  "archive_path": "docs/history/pr-reviews/PR-9468-docs-fix-land-soraya-s-four-leg-routing-review-jensen-verified-sign-doc-bug-fixe.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-04T17:52:02.133Z",
+  "schema_version": "v1",
+  "commit_sha": "6e61bc0207944fb1dae3d44256f2761a0033bdae",
+  "title": "docs+fix: land Soraya's four-leg routing review — Jensen verified, sign-doc bug fixed, Lagrange closed, uniqueness corrected (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-04T17:51:39Z",
+  "head_ref": "otto/soraya-round-four-legs-landed"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 7670,
+  "archive_path": "docs/history/pr-reviews/PR-7670-docs-craft-bob-weave-tie-twist-braid-nailed-to-running-code-the-textile-frame-wa.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-11T12:46:41.574Z",
+  "schema_version": "v1",
+  "commit_sha": "35226edbeccc3d7b94eaa00d8aa40bae8dac12d1",
+  "title": "docs(craft): bob/weave/tie/twist/braid nailed to running code + the textile frame (warp/weft) + B-1027",
+  "state": "MERGED",
+  "merged_at": "2026-06-11T12:46:15Z",
+  "head_ref": "shadow-craft-verb-precision"
+}

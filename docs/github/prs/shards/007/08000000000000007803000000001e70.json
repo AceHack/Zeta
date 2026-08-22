@@ -1,0 +1,12 @@
+{
+  "pr_number": 7792,
+  "archive_path": "docs/history/pr-reviews/PR-7792-docs-adr-propose-root-folder-cleanup-move-conceptual-dirs-to-db.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-11T21:08:57.701Z",
+  "schema_version": "v1",
+  "commit_sha": "571902fed60d0db88c3e841a0a1164e7240557ec",
+  "title": "docs(ADR): propose root folder cleanup — move conceptual dirs to db/",
+  "state": "MERGED",
+  "merged_at": "2026-06-11T21:08:31Z",
+  "head_ref": "alexa/adr-root-folder-cleanup-2026-06-11"
+}

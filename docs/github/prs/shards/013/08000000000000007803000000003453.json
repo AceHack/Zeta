@@ -1,0 +1,12 @@
+{
+  "pr_number": 13395,
+  "archive_path": "docs/history/pr-reviews/PR-13395-docs-ci-step-name-said-allowed-to-fail-while-carrying-no-continue-on-error.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-21T22:09:18.523Z",
+  "schema_version": "v1",
+  "commit_sha": "a6c8e63f368e599f3390f811de8c3cf94f1405c8",
+  "title": "docs(ci): step name said \"allowed to fail\" while carrying no continue-on-error",
+  "state": "MERGED",
+  "merged_at": "2026-08-21T22:08:40Z",
+  "head_ref": "fix/chart-currency-step-naming-honest"
+}

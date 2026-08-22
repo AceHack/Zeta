@@ -1,0 +1,12 @@
+{
+  "pr_number": 1960,
+  "archive_path": "docs/history/pr-reviews/PR-1960-fix-b-0110-close-mirror-refresh-protocol-operational.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-07T22:32:58.057Z",
+  "schema_version": "v1",
+  "commit_sha": "078d6d23e4ba504426c652cb29d1e83126a2043e",
+  "title": "fix(B-0110): close — mirror-refresh protocol operational",
+  "state": "MERGED",
+  "merged_at": "2026-05-07T22:32:43Z",
+  "head_ref": "fix/b0110-mirror-protocol-close"
+}

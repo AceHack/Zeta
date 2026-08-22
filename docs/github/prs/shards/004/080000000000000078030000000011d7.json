@@ -1,0 +1,25 @@
+{
+  "pr_number": 4567,
+  "archive_path": "docs/history/pr-reviews/PR-4567-feat-core-pr-4-of-8-incrementalauto-capability-aware-dispatcher-re-land-of-4564.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7Dsih8",
+    "comment:PRRC_kwDOSF9kNM7DslkC",
+    "comment:PRRC_kwDOSF9kNM7Dsll8",
+    "comment:PRRC_kwDOSF9kNM7DsllO",
+    "comment:PRRC_kwDOSF9kNM7Dslmn",
+    "comment:PRRC_kwDOSF9kNM7DuGD5",
+    "thread:PRRT_kwDOSF9kNM6D40wi",
+    "thread:PRRT_kwDOSF9kNM6D40xQ",
+    "thread:PRRT_kwDOSF9kNM6D40xq",
+    "thread:PRRT_kwDOSF9kNM6D40yI",
+    "thread:PRRT_kwDOSF9kNM6D4ypL",
+    "thread:PRRT_kwDOSF9kNM6D57Jh"
+  ],
+  "fetched_at": "2026-05-21T19:07:47.918Z",
+  "schema_version": "v1",
+  "commit_sha": "e313a7c014a0d8d13de47ab2fc73258bdb441058",
+  "title": "feat(core): PR 4 of 8 — IncrementalAuto capability-aware dispatcher (re-land of #4564)",
+  "state": "MERGED",
+  "merged_at": "2026-05-21T19:07:28Z",
+  "head_ref": "feat/incremental-auto-rebased-2026-05-21"
+}

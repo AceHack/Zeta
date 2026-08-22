@@ -1,0 +1,12 @@
+{
+  "pr_number": 7090,
+  "archive_path": "docs/history/pr-reviews/PR-7090-feat-core-softdashboard-rx-fitness-button-glow-on-the-4x4-grid-empowerment-no-fi.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-08T11:21:36.679Z",
+  "schema_version": "v1",
+  "commit_sha": "daae68773b2e5aa41c7051fa051922809b345bf8",
+  "title": "feat(core): SoftDashboard — Rx fitness button-glow on the 4x4 grid + empowerment (no-fitness-needed)",
+  "state": "MERGED",
+  "merged_at": "2026-06-08T11:21:14Z",
+  "head_ref": "otto/soft-dashboard-fitness-glow-grid-and-empowerment-unsupervised"
+}

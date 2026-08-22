@@ -1,0 +1,14 @@
+{
+  "id": "080d0011fa63d810a01300087871d68f",
+  "at": "2026-08-14T21:48:17.915Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M013YK3T087G0R002KQ87MT",
+    "type": "bug",
+    "title": "PackGeneric/packGeneric truncate an over-cap payload instead of rejecting it (C#/F# parity with the TS bound)",
+    "slug": "packgeneric-packgeneric-truncate-an-over-cap-payload-instead",
+    "priority": "P2",
+    "filename": "081M013YK3T087G0R002KQ87MT-packgeneric-packgeneric-truncate-an-over-cap-payload-instead.md"
+  }
+}

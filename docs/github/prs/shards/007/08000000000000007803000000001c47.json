@@ -1,0 +1,12 @@
+{
+  "pr_number": 7239,
+  "archive_path": "docs/history/pr-reviews/PR-7239-docs-research-ferry-ray-trace-observer-integration-plan-hook-the-arrow-chip8-sof.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-09T09:52:50.312Z",
+  "schema_version": "v1",
+  "commit_sha": "1071b35e69a653e6eaec5c57a3029efd83cc7dbe",
+  "title": "docs(research)+ferry: ray-trace observer integration plan — hook the arrow + chip8 soft-interrupt, reflect downward into controller/emu/game",
+  "state": "MERGED",
+  "merged_at": "2026-06-09T09:52:25Z",
+  "head_ref": "otto/research-raytrace-observer-integration-plan-arrow-soft-interrupt"
+}

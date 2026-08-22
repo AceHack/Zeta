@@ -1,0 +1,26 @@
+{
+  "pr_number": 3182,
+  "archive_path": "docs/history/pr-reviews/PR-3182-docs-shadow-lior-antigravity-check-shadow-log-1849z.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7BVOIX",
+    "comment:PRRC_kwDOSF9kNM7BVQmV",
+    "comment:PRRC_kwDOSF9kNM7BVQm_",
+    "comment:PRRC_kwDOSF9kNM7BVmoX",
+    "comment:PRRC_kwDOSF9kNM7BVmqz",
+    "comment:PRRC_kwDOSF9kNM7BVmtg",
+    "comment:PRRC_kwDOSF9kNM7BVns6",
+    "comment:PRRC_kwDOSF9kNM7BVo8E",
+    "thread:PRRT_kwDOSF9kNM6CKJRB",
+    "thread:PRRT_kwDOSF9kNM6CKLF3",
+    "thread:PRRT_kwDOSF9kNM6CKLFh",
+    "thread:PRRT_kwDOSF9kNM6CKb5Y",
+    "thread:PRRT_kwDOSF9kNM6CKcxr"
+  ],
+  "fetched_at": "2026-05-14T20:14:10.943Z",
+  "schema_version": "v1",
+  "commit_sha": "a0cda2756127a99076276093eaf3e565edd983cf",
+  "title": "docs(shadow): Lior antigravity check shadow log 1849Z",
+  "state": "MERGED",
+  "merged_at": "2026-05-14T20:13:52Z",
+  "head_ref": "lior-shadow-1849Z"
+}

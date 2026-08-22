@@ -1,0 +1,19 @@
+{
+  "pr_number": 3019,
+  "archive_path": "docs/history/pr-reviews/PR-3019-feat-scaffold-b-0424-4-add-scorecard-workflow-to-forge-ace-scaffold-dirs.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7A6-XV",
+    "comment:PRRC_kwDOSF9kNM7A6-Y6",
+    "comment:PRRC_kwDOSF9kNM7A6-YP",
+    "thread:PRRT_kwDOSF9kNM6B26ny",
+    "thread:PRRT_kwDOSF9kNM6B26oe",
+    "thread:PRRT_kwDOSF9kNM6B26pE"
+  ],
+  "fetched_at": "2026-05-13T18:48:17.787Z",
+  "schema_version": "v1",
+  "commit_sha": "2bd94083ee339537d29a2cb4503975e8a8431aad",
+  "title": "feat(scaffold): B-0424.4 — add Scorecard workflow to Forge + ace scaffold dirs",
+  "state": "MERGED",
+  "merged_at": "2026-05-13T18:47:55Z",
+  "head_ref": "feat/b-0424-4-scaffold-scorecard-workflows-2026-05-13"
+}

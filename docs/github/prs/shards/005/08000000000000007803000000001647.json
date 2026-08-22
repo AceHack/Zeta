@@ -1,0 +1,15 @@
+{
+  "pr_number": 5703,
+  "archive_path": "docs/history/pr-reviews/PR-5703-fix-codex-ignore-cleanup-complete-heartbeat-claims.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7FnwQG",
+    "thread:PRRT_kwDOSF9kNM6FTQ2B"
+  ],
+  "fetched_at": "2026-05-28T06:05:23.375Z",
+  "schema_version": "v1",
+  "commit_sha": "140415f756acd9ed819efc90c70fcb286fd9ebc2",
+  "title": "fix(codex): ignore cleanup-complete heartbeat claims",
+  "state": "MERGED",
+  "merged_at": "2026-05-28T06:05:03Z",
+  "head_ref": "claim/codex-loop-heartbeat-terminal-status-20260528"
+}

@@ -1,0 +1,17 @@
+{
+  "pr_number": 4081,
+  "archive_path": "docs/history/pr-reviews/PR-4081-docs-shadow-maji-antigravity-check-on-pr-4043.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7B_wjg",
+    "comment:PRRC_kwDOSF9kNM7B_wjl",
+    "thread:PRRT_kwDOSF9kNM6CpU3Q",
+    "thread:PRRT_kwDOSF9kNM6CpU3V"
+  ],
+  "fetched_at": "2026-05-18T23:34:15.910Z",
+  "schema_version": "v1",
+  "commit_sha": "483ec1c14a09d7e13384a23355ee306c33e2bc67",
+  "title": "docs(shadow): Maji antigravity check on PR 4043",
+  "state": "MERGED",
+  "merged_at": "2026-05-18T23:33:56Z",
+  "head_ref": "maji/shadow-drift-4043"
+}

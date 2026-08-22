@@ -1,0 +1,12 @@
+{
+  "pr_number": 6944,
+  "archive_path": "docs/history/pr-reviews/PR-6944-docs-zeta-distributed-durable-reliable-intelligence-what-it-is-tagline.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-07T23:09:14.057Z",
+  "schema_version": "v1",
+  "commit_sha": "f4362072f1c963123ee9635f5fb583d324000464",
+  "title": "docs: Zeta = Distributed Durable Reliable Intelligence (what-it-is tagline)",
+  "state": "MERGED",
+  "merged_at": "2026-06-07T23:08:57Z",
+  "head_ref": "otto/zeta-distributed-durable-reliable-intelligence-tagline"
+}

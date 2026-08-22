@@ -1,0 +1,12 @@
+{
+  "pr_number": 4904,
+  "archive_path": "docs/history/pr-reviews/PR-4904-chore-perms-allow-brew-install-nix-cli-darwin-rebuild.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-25T03:16:58.545Z",
+  "schema_version": "v1",
+  "commit_sha": "7565e93208bbf35275bcb93866bd1d77f7a92090",
+  "title": "chore(perms): allow brew install + nix CLI + darwin-rebuild",
+  "state": "MERGED",
+  "merged_at": "2026-05-25T03:16:42Z",
+  "head_ref": "chore/allow-brew-nix-perms-2026-05-24"
+}

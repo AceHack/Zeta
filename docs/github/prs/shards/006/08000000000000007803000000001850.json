@@ -1,0 +1,12 @@
+{
+  "pr_number": 6224,
+  "archive_path": "docs/history/pr-reviews/PR-6224-docs-memory-add-required-created-frontmatter-moveable-cubicle-role-correction-fo.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-31T18:04:18.367Z",
+  "schema_version": "v1",
+  "commit_sha": "eb8955d907efe6206fc93cfdc7558f25e58075c0",
+  "title": "docs(memory): add required 'created' frontmatter + Moveable-Cubicle role correction (follow-up to #6223)",
+  "state": "MERGED",
+  "merged_at": "2026-05-31T18:03:59Z",
+  "head_ref": "otto-cli/career-created-field-plus-moveable-cubicle-correction-2026-05-31"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 7719,
+  "archive_path": "docs/history/pr-reviews/PR-7719-feat-selftrace-the-deep-view-selftrace-pixellens-composition-amara-s-proof-last-.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-11T15:57:20.278Z",
+  "schema_version": "v1",
+  "commit_sha": "f29b0f7d225cc45527123d63e7bbbddd660887a3",
+  "title": "feat(selftrace): THE DEEP VIEW — SelfTrace × PixelLens composition (Amara's proof, last third)",
+  "state": "MERGED",
+  "merged_at": "2026-06-11T15:56:46Z",
+  "head_ref": "shadow-selftrace-pixellens"
+}

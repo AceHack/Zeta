@@ -1,0 +1,12 @@
+{
+  "pr_number": 7524,
+  "archive_path": "docs/history/pr-reviews/PR-7524-docs-research-pgo-anchor-lens-time-crystal-jit-profile-driven-opt-arrow-tracks-s.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-10T22:29:01.065Z",
+  "schema_version": "v1",
+  "commit_sha": "ec20d03f09b67963e71d11796b28dc088cb7a481",
+  "title": "docs(research): PGO anchor (lens->time-crystal->JIT = profile-driven opt) + arrow tracks state, per-quasi-crystal ownership",
+  "state": "MERGED",
+  "merged_at": "2026-06-10T22:28:35Z",
+  "head_ref": "shadow-pgo-anchor-arrow-state-ownership-time-crystals"
+}

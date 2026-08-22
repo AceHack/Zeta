@@ -1,0 +1,12 @@
+{
+  "pr_number": 10997,
+  "archive_path": "docs/history/pr-reviews/PR-10997-fix-pages-verify-lazy-authorization-artifact.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-16T18:27:06.912Z",
+  "schema_version": "v1",
+  "commit_sha": "89aeabb75589771109a756ba5ce8a3ffb8375021",
+  "title": "fix(pages): verify lazy authorization artifact",
+  "state": "MERGED",
+  "merged_at": "2026-08-16T18:26:31Z",
+  "head_ref": "fix/pages-lazy-artifact-verifier"
+}

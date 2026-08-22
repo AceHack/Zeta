@@ -1,0 +1,12 @@
+{
+  "pr_number": 9394,
+  "archive_path": "docs/history/pr-reviews/PR-9394-docs-research-ferry-the-salon-is-guaranteed-delivery-over-udp-analog.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-04T01:43:17.970Z",
+  "schema_version": "v1",
+  "commit_sha": "488169e24a89913d70d21d3ab58e34ccf7e657a0",
+  "title": "docs(research): ferry — the salon IS guaranteed delivery over UDP/analog",
+  "state": "MERGED",
+  "merged_at": "2026-07-04T01:42:46Z",
+  "head_ref": "shadow/ferry-salon-is-guaranteed-delivery"
+}

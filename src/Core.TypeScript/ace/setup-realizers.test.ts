@@ -89,7 +89,10 @@ describe("realizeFromUvTool dry-run", () => {
     const ctx = createContext({ repoRoot, dryRun: true });
     const result = await realizeFromUvTool(ctx);
     expect(result.skipped).toBe(false);
-    expect(result.actions.some((a) => a.includes("uv tool install zeta-setup-realizer-probe-nonexistent"))).toBe(true);
+    expect(result.actions).toEqual([
+      "dry-run: uv tool upgrade --all",
+      "dry-run: uv tool install zeta-setup-realizer-probe-nonexistent",
+    ]);
   });
 });
 
@@ -107,12 +110,25 @@ describe("realizeFromUrl dry-run", () => {
     mkdirSync(manifestDir, { recursive: true });
     writeFileSync(
       join(manifestDir, "from-url"),
-      "tools/probe/jar.jar https://example.com/jar.jar\n",
+      "tools/probe/jar.jar https://example.com/jar.jar sha256=0000000000000000000000000000000000000000000000000000000000000000\n",
     );
     const ctx = createContext({ repoRoot, dryRun: true });
     const result = await realizeFromUrl(ctx);
     expect(result.skipped).toBe(false);
     expect(result.actions.some((a) => a.includes("example.com/jar.jar"))).toBe(true);
+  });
+
+  // The defect this closes: from-url was the one fetcher that never verified.
+  test("refuses a row with no sha256 pin", async () => {
+    const repoRoot = mkdtempSync(join(tmpdir(), "setup-realize-url-"));
+    const manifestDir = join(repoRoot, "tools/setup/manifests");
+    mkdirSync(manifestDir, { recursive: true });
+    writeFileSync(
+      join(manifestDir, "from-url"),
+      "tools/probe/jar.jar https://example.com/jar.jar\n",
+    );
+    const ctx = createContext({ repoRoot, dryRun: true });
+    expect(realizeFromUrl(ctx)).rejects.toThrow("sha256= pin required");
   });
 });
 

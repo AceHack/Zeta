@@ -1,0 +1,17 @@
+{
+  "pr_number": 3440,
+  "archive_path": "docs/history/pr-reviews/PR-3440-shard-tick-1140z-pr-3436-merged-pr-3437-forward-reference-thread-resolved.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7Bl7Wl",
+    "comment:PRRC_kwDOSF9kNM7Bl7XB",
+    "thread:PRRT_kwDOSF9kNM6CWIWz",
+    "thread:PRRT_kwDOSF9kNM6CWIXJ"
+  ],
+  "fetched_at": "2026-05-15T11:45:08.229Z",
+  "schema_version": "v1",
+  "commit_sha": "da35c2be4683512ab1b5b4e8091cd614678f55ea",
+  "title": "shard(tick): 1140Z — PR #3436 merged; PR #3437 forward-reference thread resolved",
+  "state": "MERGED",
+  "merged_at": "2026-05-15T11:44:52Z",
+  "head_ref": "shard/tick-1140z-otto-cli-2026-05-15"
+}

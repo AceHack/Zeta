@@ -1,0 +1,17 @@
+{
+  "pr_number": 3053,
+  "archive_path": "docs/history/pr-reviews/PR-3053-fix-backlog-resolve-b-0444-id-collision-renumber-getting-started-b-0450.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7A_vEZ",
+    "comment:PRRC_kwDOSF9kNM7A_vFA",
+    "thread:PRRT_kwDOSF9kNM6B6Z36",
+    "thread:PRRT_kwDOSF9kNM6B6Z4T"
+  ],
+  "fetched_at": "2026-05-13T23:02:03.319Z",
+  "schema_version": "v1",
+  "commit_sha": "25729ebdc70b05994429bae56149c33f8c0b033d",
+  "title": "fix(backlog): resolve B-0444 ID collision — renumber getting-started → B-0450",
+  "state": "MERGED",
+  "merged_at": "2026-05-13T23:01:41Z",
+  "head_ref": "fix/b0444-id-collision-renumber-getting-started-2026-05-13"
+}

@@ -1,0 +1,17 @@
+{
+  "pr_number": 8855,
+  "archive_path": "docs/history/pr-reviews/PR-8855-feat-port-murmur3-32-tail-as-second-add-anchor-generator-under-v4.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7Ngt02",
+    "comment:PRRC_kwDOSF9kNM7Ngt0z",
+    "thread:PRRT_kwDOSF9kNM6LEKHJ",
+    "thread:PRRT_kwDOSF9kNM6LEKHM"
+  ],
+  "fetched_at": "2026-06-21T04:34:04.325Z",
+  "schema_version": "v1",
+  "commit_sha": "eb696b4cc15bfe6ce0c2942b9e6e6bc474bc25d7",
+  "title": "feat: port murmur3_32_tail as second add-anchor generator under v4",
+  "state": "MERGED",
+  "merged_at": "2026-06-21T04:33:33Z",
+  "head_ref": "feature/lumen-murmur3-tail-add-anchor"
+}

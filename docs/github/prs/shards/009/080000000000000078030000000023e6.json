@@ -1,0 +1,15 @@
+{
+  "pr_number": 9190,
+  "archive_path": "docs/history/pr-reviews/PR-9190-feat-llmtv-add-replay-source-adapter.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7RjfQF",
+    "thread:PRRT_kwDOSF9kNM6OAt3C"
+  ],
+  "fetched_at": "2026-07-02T20:35:32.675Z",
+  "schema_version": "v1",
+  "commit_sha": "baef1ad3bd8f9328a3f13cf9d2a7f823f50b5168",
+  "title": "feat(llmtv): add replay source adapter",
+  "state": "MERGED",
+  "merged_at": "2026-07-02T20:35:10Z",
+  "head_ref": "codex/llmtv-replay-source"
+}

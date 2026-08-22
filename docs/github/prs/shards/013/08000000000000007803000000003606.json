@@ -1,0 +1,12 @@
+{
+  "pr_number": 13830,
+  "archive_path": "docs/history/pr-reviews/PR-13830-put-freediskgib-back-and-measure-what-hindsight-and-vllm-actually-cost.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-22T18:04:35.987Z",
+  "schema_version": "v1",
+  "commit_sha": "6f250f96bf73f44ca73071c43bc0f37d0b6524b5",
+  "title": "put freeDiskGib back, and measure what hindsight and vllm actually cost",
+  "state": "MERGED",
+  "merged_at": "2026-08-22T18:03:58Z",
+  "head_ref": "shadow/measure-real-image-pull"
+}

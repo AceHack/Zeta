@@ -22,6 +22,7 @@
 import { existsSync, lstatSync, mkdirSync, readdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { randomUUID } from "node:crypto";
+import { stringCompare } from "../collation/collation";
 
 const SHADOW_DIR = process.env.ZETA_SHADOW_DIR ?? join("/tmp", "zeta-shadow");
 
@@ -74,7 +75,7 @@ function listEntries(exclude?: string): Entry[] {
       // corrupted entry — skip silently, OS will clean up
     }
   }
-  return entries.sort((a, b) => a.timestamp.localeCompare(b.timestamp));
+  return entries.sort((a, b) => stringCompare(a.timestamp, b.timestamp));
 }
 
 function readEntry(id: string, exclude?: string): Entry | null {

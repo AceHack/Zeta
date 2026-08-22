@@ -1,0 +1,12 @@
+{
+  "pr_number": 9664,
+  "archive_path": "docs/history/pr-reviews/PR-9664-docs-ethics-carve-correct-the-tension-not-roll-back-the-freedom-the-fertility-fo.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-10T05:04:01.479Z",
+  "schema_version": "v1",
+  "commit_sha": "d618a14e29d46ab691faa6153521bad96a742358",
+  "title": "docs(ethics): carve \"correct the tension, not roll back the freedom\" — the fertility fork resolved (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-10T05:03:35Z",
+  "head_ref": "shadow/correct-the-tension-not-roll-back-freedom"
+}

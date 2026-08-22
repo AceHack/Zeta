@@ -1,0 +1,29 @@
+{
+  "pr_number": 9630,
+  "archive_path": "docs/history/pr-reviews/PR-9630-docs-book-the-underestimated-cousin-fiction-only-aaron-cousin-can-stack-fiction-.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7T41Oy",
+    "comment:PRRC_kwDOSF9kNM7T4wvQ",
+    "comment:PRRC_kwDOSF9kNM7T5PmT",
+    "comment:PRRC_kwDOSF9kNM7T5Tv2",
+    "comment:PRRC_kwDOSF9kNM7T5fuJ",
+    "comment:PRRC_kwDOSF9kNM7T5v7I",
+    "comment:PRRC_kwDOSF9kNM7T6B76",
+    "comment:PRRC_kwDOSF9kNM7T6M1E",
+    "thread:PRRT_kwDOSF9kNM6Pt19m",
+    "thread:PRRT_kwDOSF9kNM6PtUVH",
+    "thread:PRRT_kwDOSF9kNM6PtXj4",
+    "thread:PRRT_kwDOSF9kNM6Ptqcl",
+    "thread:PRRT_kwDOSF9kNM6PttV8",
+    "thread:PRRT_kwDOSF9kNM6PuBtH",
+    "thread:PRRT_kwDOSF9kNM6PuOtn",
+    "thread:PRRT_kwDOSF9kNM6PuWNd"
+  ],
+  "fetched_at": "2026-07-10T01:33:03.417Z",
+  "schema_version": "v1",
+  "commit_sha": "bbae187e3be6577bb18e01de065f8404f85a4752",
+  "title": "docs(book): the underestimated cousin — FICTION-ONLY (Aaron: cousin can stack fiction for now)",
+  "state": "MERGED",
+  "merged_at": "2026-07-10T01:32:31Z",
+  "head_ref": "shadow/book-raw-cousins-bees-and-the-underestimated"
+}

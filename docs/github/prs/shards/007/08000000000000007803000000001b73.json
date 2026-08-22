@@ -1,0 +1,12 @@
+{
+  "pr_number": 7027,
+  "archive_path": "docs/history/pr-reviews/PR-7027-docs-the-reorder-loophole-is-bounded-by-commutativity-non-reversible-claims-need.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-08T05:37:18.508Z",
+  "schema_version": "v1",
+  "commit_sha": "6651d4dfacd151393d80e0ceac8ca5a943b427dd",
+  "title": "docs: the reorder loophole is bounded by commutativity — non-reversible claims need saga or consensus (#7072)",
+  "state": "MERGED",
+  "merged_at": "2026-06-08T05:36:42Z",
+  "head_ref": "otto/reorder-loophole-bounded-by-commutativity-nonreversible-consensus"
+}

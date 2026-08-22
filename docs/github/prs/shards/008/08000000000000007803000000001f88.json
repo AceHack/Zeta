@@ -1,0 +1,12 @@
+{
+  "pr_number": 8072,
+  "archive_path": "docs/history/pr-reviews/PR-8072-feat-forge-host-git-data-api-forgestate-in-world.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-13T21:40:37.232Z",
+  "schema_version": "v1",
+  "commit_sha": "9a9d55ba1273436c7bd3b1743de4a5fe4d1beb1d",
+  "title": "feat(forge-host): git data API + ForgeState in World",
+  "state": "MERGED",
+  "merged_at": "2026-06-13T21:40:12Z",
+  "head_ref": "kiro/forge-host-git-data-api"
+}

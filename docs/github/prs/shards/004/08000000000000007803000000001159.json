@@ -1,0 +1,17 @@
+{
+  "pr_number": 4441,
+  "archive_path": "docs/history/pr-reviews/PR-4441-docs-shard-tick-1700z-1703z-brief-ack-blocked-with-green-ci-investigation.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7DQSDZ",
+    "comment:PRRC_kwDOSF9kNM7DQSEP",
+    "thread:PRRT_kwDOSF9kNM6DkCQ5",
+    "thread:PRRT_kwDOSF9kNM6DkCQV"
+  ],
+  "fetched_at": "2026-05-20T17:45:39.579Z",
+  "schema_version": "v1",
+  "commit_sha": "77476c6567b81156d459190d4bfd75b9738fa426",
+  "title": "docs(shard): tick 1700Z + 1703Z — brief-ack + BLOCKED-with-green-CI investigation",
+  "state": "MERGED",
+  "merged_at": "2026-05-20T17:45:13Z",
+  "head_ref": "shard/tick-1703z-pr4435-path-fix-codex-copilot-2026-05-20"
+}

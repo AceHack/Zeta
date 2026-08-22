@@ -1,0 +1,12 @@
+{
+  "pr_number": 8008,
+  "archive_path": "docs/history/pr-reviews/PR-8008-docs-research-shadow-ferry-38-shakespeare-understands-the-cascade-of-continuous-.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-13T04:32:54.421Z",
+  "schema_version": "v1",
+  "commit_sha": "ac4c0a8235f49fb1831b838935544bb2c17eb4fc",
+  "title": "docs(research)+shadow: ferry 38 — Shakespeare understands the cascade of continuous emergences from 2D to 3D",
+  "state": "MERGED",
+  "merged_at": "2026-06-13T04:32:28Z",
+  "head_ref": "shadow/ferry-38-shakespeare-cascade"
+}

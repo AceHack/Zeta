@@ -1,0 +1,12 @@
+{
+  "pr_number": 4593,
+  "archive_path": "docs/history/pr-reviews/PR-4593-memory-8-oracle-convergence-table-multi-oracle-bft-at-engagement-scope-maximally.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-22T01:01:13.580Z",
+  "schema_version": "v1",
+  "commit_sha": "6f91dbaa912f2e9b78772d0f06aca3ea194aadd5",
+  "title": "memory: 8-oracle convergence table — multi-oracle BFT at engagement-scope maximally validated tonight",
+  "state": "MERGED",
+  "merged_at": "2026-05-22T01:00:55Z",
+  "head_ref": "memory/otto-desktop-8-oracle-convergence-engagement-scope-2026-05-21"
+}

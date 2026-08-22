@@ -1,0 +1,12 @@
+{
+  "pr_number": 6332,
+  "archive_path": "docs/history/pr-reviews/PR-6332-feat-agentic-org-feed-telemetry-optimizer-outcomes-into-reputation.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-01T03:42:56.242Z",
+  "schema_version": "v1",
+  "commit_sha": "8449f2159ab8635419e2aeae91c52523efa4a4fd",
+  "title": "feat(agentic-org): feed telemetry optimizer outcomes into reputation",
+  "state": "MERGED",
+  "merged_at": "2026-06-01T03:42:38Z",
+  "head_ref": "codex/agentic-org-telemetry-optimizer-checkpoint"
+}

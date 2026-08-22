@@ -1,0 +1,12 @@
+{
+  "pr_number": 5642,
+  "archive_path": "docs/history/pr-reviews/PR-5642-feat-installer-zeta-hardware-detect-ts-ts-module-for-gpu-storage-cpu-memory-clas.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-27T21:08:32.480Z",
+  "schema_version": "v1",
+  "commit_sha": "0e5fd044f9633c542c417eb2777124e829f395ce",
+  "title": "feat(installer): zeta-hardware-detect.ts — TS module for GPU+storage+CPU+memory classification (24 unit tests; Rule 0 discipline)",
+  "state": "MERGED",
+  "merged_at": "2026-05-27T21:08:09Z",
+  "head_ref": "feat/zeta-hardware-detect-ts-rule-0-discipline-detects-gpu-storage-cpu-classes-2026-05-27"
+}

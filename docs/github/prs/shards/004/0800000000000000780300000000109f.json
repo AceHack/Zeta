@@ -1,0 +1,12 @@
+{
+  "pr_number": 4255,
+  "archive_path": "docs/history/pr-reviews/PR-4255-shard-2330z-c-pre-empt-at-5-substrate-verification-audit.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-18T23:34:50.575Z",
+  "schema_version": "v1",
+  "commit_sha": "d618e83bfb9686bfed9250cbb5aa6ea8798686ca",
+  "title": "shard(2330Z-c): pre-empt at #5 — substrate-verification audit",
+  "state": "MERGED",
+  "merged_at": "2026-05-18T23:34:34Z",
+  "head_ref": "shard/tick-2330z-c-pre-empt-5-substrate-verification-audit-2026-05-18"
+}

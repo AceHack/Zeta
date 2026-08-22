@@ -1,0 +1,12 @@
+{
+  "pr_number": 4639,
+  "archive_path": "docs/history/pr-reviews/PR-4639-trajectory-ace-package-manager-full-13-stage-pipeline-symmetric-decentralized-fr.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-22T17:34:05.476Z",
+  "schema_version": "v1",
+  "commit_sha": "55e566aa2b7e605db1f8924802901ed2bf38f129",
+  "title": "trajectory(ace-package-manager): full 13-stage pipeline + symmetric-decentralized framing (operator-self-claimed agenda extension)",
+  "state": "MERGED",
+  "merged_at": "2026-05-22T17:33:43Z",
+  "head_ref": "otto/cli-2018z-ace-trajectory-full-pipeline-crystallization-riff-sieve-map-refine-build-generate-encapsulate-distribute-grow-negotiate-2026-05-22"
+}

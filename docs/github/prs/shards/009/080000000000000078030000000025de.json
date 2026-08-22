@@ -1,0 +1,12 @@
+{
+  "pr_number": 9694,
+  "archive_path": "docs/history/pr-reviews/PR-9694-docs-research-frost-consequences-hat-failure-vs-persona-failure-switch-hats-free.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-11T15:09:52.852Z",
+  "schema_version": "v1",
+  "commit_sha": "a54f7ffb5d7162722baee4bdabcd4b50e696a0a3",
+  "title": "docs(research): frost consequences — hat-failure vs persona-failure (switch-hats free for capability, denied for deception) (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-11T15:09:27Z",
+  "head_ref": "frost-hat-vs-persona-failure"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 8449,
+  "archive_path": "docs/history/pr-reviews/PR-8449-feat-peer-call-local-llm-harness-type-runtime-persona-registration-for-isummon.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-16T05:24:42.295Z",
+  "schema_version": "v1",
+  "commit_sha": "bf76944e52f2b38edc529067b55fc89d42e8c689",
+  "title": "feat(peer-call): local-LLM harness type + runtime persona registration for ISummon",
+  "state": "MERGED",
+  "merged_at": "2026-06-16T05:24:13Z",
+  "head_ref": "alexa/local-llm-persona-summon"
+}

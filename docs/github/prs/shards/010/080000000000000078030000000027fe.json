@@ -1,0 +1,12 @@
+{
+  "pr_number": 10238,
+  "archive_path": "docs/history/pr-reviews/PR-10238-feat-observe-monitor-html-redesign-the-fleet-s-front-page.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-18T10:27:43.687Z",
+  "schema_version": "v1",
+  "commit_sha": "aa1a43c455aedd67abb3cf7cfd21a5d24f692bc3",
+  "title": "feat(observe): monitor.html redesign — the fleet's front page",
+  "state": "MERGED",
+  "merged_at": "2026-08-09T22:06:47Z",
+  "head_ref": "otto/monitor-redesign"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 6000,
+  "archive_path": "docs/history/pr-reviews/PR-6000-feat-b-0343-pure-buildseedrefupdaterequest-commit-sha-git-refs-api-payload-bound.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-29T15:17:35.019Z",
+  "schema_version": "v1",
+  "commit_sha": "250bf6c5c2d2a0b81ac3ab4955abd2144bc8ce35",
+  "title": "feat(B-0343): pure buildSeedRefUpdateRequest — commit SHA → git-refs API payload (bounded slice 8)",
+  "state": "MERGED",
+  "merged_at": "2026-05-29T15:17:04Z",
+  "head_ref": "otto-cli/b0343-build-ref-update-request-2026-05-29"
+}

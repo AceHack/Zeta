@@ -1,0 +1,14 @@
+{
+  "id": "080d000dd62bf810a0130008e9f98337",
+  "at": "2026-08-14T19:23:32.607Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M00VNHBY087G0R0024W93JY",
+    "type": "task",
+    "title": "Delete rather than port the vestigial shell surfaces: .gemini/service/lior-loop.sh (self-declared shim), install-lior-service.sh, and reclassify db/common/host-tier.sh + db/tools/setup/common/sync-prior-art.sh which are markdown carved-sentence stubs matching the *.sh glob",
+    "slug": "delete-rather-than-port-the-vestigial-shell-surfaces-gemini",
+    "priority": "P3",
+    "filename": "081M00VNHBY087G0R0024W93JY-delete-rather-than-port-the-vestigial-shell-surfaces-gemini.md"
+  }
+}

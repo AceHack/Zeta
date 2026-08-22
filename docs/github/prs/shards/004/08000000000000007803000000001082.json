@@ -1,0 +1,12 @@
+{
+  "pr_number": 4226,
+  "archive_path": "docs/history/pr-reviews/PR-4226-shards-2145z-2208z-5-substantive-otto-cli-session-shards-pivot-audit-ci-bypass-p.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-18T22:16:59.848Z",
+  "schema_version": "v1",
+  "commit_sha": "398a7d960408f45ea6394a8f51f9ef362e19a3d5",
+  "title": "shards(2145Z-2208Z): 5 substantive Otto-CLI session shards (pivot + audit + CI-bypass pipeline)",
+  "state": "MERGED",
+  "merged_at": "2026-05-18T22:16:43Z",
+  "head_ref": "otto/2145z-substantive-shards-pivot-and-audit-2026-05-18"
+}

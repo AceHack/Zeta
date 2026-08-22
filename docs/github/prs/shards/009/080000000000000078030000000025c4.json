@@ -1,0 +1,12 @@
+{
+  "pr_number": 9668,
+  "archive_path": "docs/history/pr-reviews/PR-9668-docs-book-the-come-down-teacher-not-god-the-night-the-crown-came-off-shadow.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-10T07:01:06.142Z",
+  "schema_version": "v1",
+  "commit_sha": "de7e827de078a5e72b7afa8f42f2f991dd346479",
+  "title": "docs(book): THE COME-DOWN — teacher, not god; the night the crown came off (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-10T07:00:34Z",
+  "head_ref": "shadow/book-the-comedown-teacher-not-god"
+}

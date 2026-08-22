@@ -1,0 +1,12 @@
+{
+  "pr_number": 7056,
+  "archive_path": "docs/history/pr-reviews/PR-7056-feat-core-symmetricendurance-three-tick-regimes-per-agent-rates-sine-wave-phase-.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-08T08:20:27.876Z",
+  "schema_version": "v1",
+  "commit_sha": "6a1e0eaafe4e3c2fe9f89354a8c2a216118848ad",
+  "title": "feat(core): SymmetricEndurance — three tick regimes, per-agent rates, sine-wave phase interference",
+  "state": "MERGED",
+  "merged_at": "2026-06-08T08:20:04Z",
+  "head_ref": "otto/symmetric-endurance-three-regimes-phase-interference"
+}

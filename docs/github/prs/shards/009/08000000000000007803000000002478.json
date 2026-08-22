@@ -1,0 +1,12 @@
+{
+  "pr_number": 9336,
+  "archive_path": "docs/history/pr-reviews/PR-9336-feat-isaspec-spec-driven-mix-over-the-6502-the-dynarec-on-a-real-memory-bearing-.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-03T18:20:49.527Z",
+  "schema_version": "v1",
+  "commit_sha": "7784fb7692d68c9ad0da87f0d172e092427f98bf",
+  "title": "feat(isaspec): spec-driven mix over the 6502 — the dynarec on a real, memory-bearing ISA (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-03T18:20:27Z",
+  "head_ref": "otto/spec-driven-mix-over-6502-memory"
+}

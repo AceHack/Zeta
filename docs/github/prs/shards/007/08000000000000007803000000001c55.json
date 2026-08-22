@@ -1,0 +1,12 @@
+{
+  "pr_number": 7253,
+  "archive_path": "docs/history/pr-reviews/PR-7253-docs-test-zeta-first-run-cyoa-keystone-3-lens-ux-dx-ax-test-scoped-gitignored-ze.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-09T12:22:52.744Z",
+  "schema_version": "v1",
+  "commit_sha": "77eaa602f3038fffac4026166ffa3986f1ca167a",
+  "title": "docs+test: Zeta first-run CYOA keystone (3-lens UX/DX/AX) + --test-scoped gitignored zeta-test-infra SSH key",
+  "state": "MERGED",
+  "merged_at": "2026-06-09T12:22:30Z",
+  "head_ref": "otto/zeta-first-run-cyoa-keystone-plus-test-infra-key-convention"
+}

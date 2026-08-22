@@ -1,0 +1,14 @@
+{
+  "id": "080d01181fa76810a01300084b1118c4",
+  "at": "2026-08-21T06:30:57.005Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M0HG7X7B087G0R002A05DAP",
+    "type": "bug",
+    "title": "zflash Linux and Windows arms write an ISO with no manifest integrity check -- the gate exists only on macOS",
+    "slug": "zflash-linux-and-windows-arms-write-an-iso-with-no-manifest",
+    "priority": "P2",
+    "filename": "081M0HG7X7B087G0R002A05DAP-zflash-linux-and-windows-arms-write-an-iso-with-no-manifest.md"
+  }
+}

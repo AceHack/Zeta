@@ -1,0 +1,19 @@
+{
+  "pr_number": 4002,
+  "archive_path": "docs/history/pr-reviews/PR-4002-rules-zeta-expected-branch-race-window-caveat-chain-has-sub-second-head-move-win.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7B8a3n",
+    "comment:PRRC_kwDOSF9kNM7B8cIA",
+    "comment:PRRC_kwDOSF9kNM7B8cIJ",
+    "thread:PRRT_kwDOSF9kNM6CmuOp",
+    "thread:PRRT_kwDOSF9kNM6CmvRX",
+    "thread:PRRT_kwDOSF9kNM6CmvRf"
+  ],
+  "fetched_at": "2026-05-17T05:01:38.369Z",
+  "schema_version": "v1",
+  "commit_sha": "f336de31eb0c0a02fe2887127d18f4d22c7743ac",
+  "title": "rules(zeta-expected-branch): race-window caveat — &&-chain has sub-second HEAD-move window; isolated worktree workaround",
+  "state": "MERGED",
+  "merged_at": "2026-05-17T05:01:20Z",
+  "head_ref": "shard/rule-zeb-race-window-2356z-otto-desktop-2026-05-16"
+}

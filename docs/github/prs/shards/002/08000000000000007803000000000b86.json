@@ -1,0 +1,19 @@
+{
+  "pr_number": 2950,
+  "archive_path": "docs/history/pr-reviews/PR-2950-feat-b-0421-4-peer-call-smoke-tests-verify-all-8-wrappers-respond-to-help.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7AovuI",
+    "comment:PRRC_kwDOSF9kNM7AoxAB",
+    "comment:PRRC_kwDOSF9kNM7AoxAs",
+    "thread:PRRT_kwDOSF9kNM6BpoIm",
+    "thread:PRRT_kwDOSF9kNM6BppBk",
+    "thread:PRRT_kwDOSF9kNM6BppCG"
+  ],
+  "fetched_at": "2026-05-13T06:20:57.955Z",
+  "schema_version": "v1",
+  "commit_sha": "b2dc313894f4f04db28d7040277a2d0cf429e802",
+  "title": "feat(B-0421/4): peer-call smoke tests — verify all 8 wrappers respond to --help",
+  "state": "MERGED",
+  "merged_at": "2026-05-13T06:20:40Z",
+  "head_ref": "b0421-acceptance-4-peer-call-smoke-test-help-wrappers-2026-05-13"
+}

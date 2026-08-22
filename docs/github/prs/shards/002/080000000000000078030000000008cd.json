@@ -1,0 +1,19 @@
+{
+  "pr_number": 2253,
+  "archive_path": "docs/history/pr-reviews/PR-2253-fix-b-0191-tsc-nouncheckedindexedaccess-backlog-md-index-drift.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_gNF2",
+    "comment:PRRC_kwDOSF9kNM6_gNF6",
+    "comment:PRRC_kwDOSF9kNM6_gNFy",
+    "thread:PRRT_kwDOSF9kNM6AzqSn",
+    "thread:PRRT_kwDOSF9kNM6AzqSr",
+    "thread:PRRT_kwDOSF9kNM6AzqSt"
+  ],
+  "fetched_at": "2026-05-09T09:12:54.309Z",
+  "schema_version": "v1",
+  "commit_sha": "5b76d504ceb977130a5663c9d90a0f23327b80b7",
+  "title": "fix(B-0191): tsc noUncheckedIndexedAccess + BACKLOG.md index drift",
+  "state": "MERGED",
+  "merged_at": "2026-05-09T09:12:38Z",
+  "head_ref": "fix/b0191-tsc-backlog-followup"
+}

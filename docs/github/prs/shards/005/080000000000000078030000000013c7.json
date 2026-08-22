@@ -1,0 +1,12 @@
+{
+  "pr_number": 5063,
+  "archive_path": "docs/history/pr-reviews/PR-5063-fix-pr-5020-address-post-merge-worktree-hygiene-review.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-26T01:16:32.691Z",
+  "schema_version": "v1",
+  "commit_sha": "bdf2e268f9a761493fff1f4637814752c8d143b4",
+  "title": "fix(PR-5020): address post-merge worktree hygiene review",
+  "state": "MERGED",
+  "merged_at": "2026-05-26T01:16:15Z",
+  "head_ref": "claim/task-pr5020-post-merge-review-followup-codex-2026-05-26"
+}

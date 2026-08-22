@@ -1,0 +1,12 @@
+{
+  "pr_number": 8039,
+  "archive_path": "docs/history/pr-reviews/PR-8039-feat-add-run-loop-real-ts-wired-observe-loop-entry-point.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-13T18:23:50.045Z",
+  "schema_version": "v1",
+  "commit_sha": "85d076ef8af1626ec338b1a04545a822f735d8f8",
+  "title": "feat: add run-loop-real.ts — wired observe loop entry point",
+  "state": "MERGED",
+  "merged_at": "2026-06-13T18:23:26Z",
+  "head_ref": "kiro/real-observe-loop"
+}

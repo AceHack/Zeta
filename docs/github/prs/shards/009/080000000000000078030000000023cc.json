@@ -1,0 +1,12 @@
+{
+  "pr_number": 9164,
+  "archive_path": "docs/history/pr-reviews/PR-9164-docs-architecture-doc-mark-visibility-reconciliation-resolved-followup-shadow.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-17T11:42:57.100Z",
+  "schema_version": "v1",
+  "commit_sha": "4f718eef6a2a19b8184dd07c299756f02282ace4",
+  "title": "docs: architecture doc — mark visibility reconciliation resolved (followup) (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-02T17:08:33Z",
+  "head_ref": "docs/architecture-doc-reconciliation-followup"
+}

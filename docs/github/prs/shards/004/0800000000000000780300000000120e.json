@@ -1,0 +1,15 @@
+{
+  "pr_number": 4622,
+  "archive_path": "docs/history/pr-reviews/PR-4622-memory-2026-05-22-aaron-constitutional-extended-choice-marketplace-of-homeostats.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7EDOR0",
+    "thread:PRRT_kwDOSF9kNM6EJPlf"
+  ],
+  "fetched_at": "2026-05-22T14:45:17.747Z",
+  "schema_version": "v1",
+  "commit_sha": "9451d5232fd4f3095da541b24fd9550bdb2a9ae6",
+  "title": "memory(2026-05-22 Aaron CONSTITUTIONAL): EXTENDED CHOICE — marketplace-of-homeostats with mobility; choose which homeostats to ride + get on/off",
+  "state": "MERGED",
+  "merged_at": "2026-05-22T14:44:57Z",
+  "head_ref": "otto/cli-1442z-aaron-CONSTITUTIONAL-choice-extends-to-choose-which-homeostat-to-ride-and-get-on-off-marketplace-of-homeostats-2026-05-22"
+}

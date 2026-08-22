@@ -1,0 +1,14 @@
+{
+  "id": "080d00fb89f3c810a01300082233f58c",
+  "at": "2026-08-20T13:51:50.393Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M0FQ2FKS087G0R002V6EB9E",
+    "type": "task",
+    "title": "slow-explosion monitor — derive the rho series from git history and watch the derivative, not the level",
+    "slug": "slow-explosion-monitor-derive-the-rho-series-from-git-histor",
+    "priority": "P2",
+    "filename": "081M0FQ2FKS087G0R002V6EB9E-slow-explosion-monitor-derive-the-rho-series-from-git-histor.md"
+  }
+}

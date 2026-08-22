@@ -1,0 +1,12 @@
+{
+  "pr_number": 9036,
+  "archive_path": "docs/history/pr-reviews/PR-9036-docs-preserve-quarantine-64-recovered-files-from-5-held-orphan-branches.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-30T20:34:51.448Z",
+  "schema_version": "v1",
+  "commit_sha": "532a73d22569ec4a982eabc70fd7b250e1b6d839",
+  "title": "docs(preserve): quarantine 64 recovered files from 5 held orphan branches",
+  "state": "MERGED",
+  "merged_at": "2026-06-30T20:34:24Z",
+  "head_ref": "preserve-held-orphan-content-quarantine-2026-05"
+}

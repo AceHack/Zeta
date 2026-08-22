@@ -1,0 +1,27 @@
+{
+  "pr_number": 2856,
+  "archive_path": "docs/history/pr-reviews/PR-2856-shard-tick-20-07z-post-1942z-cascade-prs-2848-2855-8-wake-time-rules-three-tier-.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7Afc6y",
+    "comment:PRRC_kwDOSF9kNM7AfdSj",
+    "comment:PRRC_kwDOSF9kNM7AfdSt",
+    "comment:PRRC_kwDOSF9kNM7Afm75",
+    "comment:PRRC_kwDOSF9kNM7AfqRf",
+    "comment:PRRC_kwDOSF9kNM7AfqS4",
+    "comment:PRRC_kwDOSF9kNM7AfqSg",
+    "thread:PRRT_kwDOSF9kNM6Bi-Cq",
+    "thread:PRRT_kwDOSF9kNM6Bi-UG",
+    "thread:PRRT_kwDOSF9kNM6Bi-UO",
+    "thread:PRRT_kwDOSF9kNM6BjFIe",
+    "thread:PRRT_kwDOSF9kNM6BjHel",
+    "thread:PRRT_kwDOSF9kNM6BjHfP",
+    "thread:PRRT_kwDOSF9kNM6BjHfg"
+  ],
+  "fetched_at": "2026-05-12T20:21:33.913Z",
+  "schema_version": "v1",
+  "commit_sha": "16ee579ff0e8f4d1bc4761819db7bf853298feb8",
+  "title": "shard(tick): 20:07Z — post-1942Z cascade (PRs #2848-#2855; 8 wake-time rules; three-tier name-acceptance)",
+  "state": "MERGED",
+  "merged_at": "2026-05-12T20:21:11Z",
+  "head_ref": "docs/tick-shard-2007Z-bandwidth-falsifier-additive-gift-shadow-check-handle-ethics-2026-05-12"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 10687,
+  "archive_path": "docs/history/pr-reviews/PR-10687-docs-research-time-crystal-is-four-referents-not-one-idea-derived-state-is-dropp.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-14T19:12:23.262Z",
+  "schema_version": "v1",
+  "commit_sha": "42b72785921c12c4509649789801ec4880dafd46",
+  "title": "docs(research): \"time crystal\" is four referents, not one idea — derived-state-is-droppable is the real shared shape",
+  "state": "MERGED",
+  "merged_at": "2026-08-14T19:11:49Z",
+  "head_ref": "otto/time-crystal-pointer-synthesis"
+}

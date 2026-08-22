@@ -1,0 +1,19 @@
+{
+  "pr_number": 5633,
+  "archive_path": "docs/history/pr-reviews/PR-5633-docs-research-add-shadow-lesson-logs-for-agent-drift.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7FgZv4",
+    "comment:PRRC_kwDOSF9kNM7FgZxv",
+    "comment:PRRC_kwDOSF9kNM7Fib6_",
+    "comment:PRRC_kwDOSF9kNM7Fibvl",
+    "thread:PRRT_kwDOSF9kNM6FOA0m",
+    "thread:PRRT_kwDOSF9kNM6FOA18"
+  ],
+  "fetched_at": "2026-05-27T22:18:21.577Z",
+  "schema_version": "v1",
+  "commit_sha": "ecfff41e345d30c427a8298da460b44cd2c2f26d",
+  "title": "docs(research): add shadow lesson logs for agent drift",
+  "state": "MERGED",
+  "merged_at": "2026-05-27T22:17:59Z",
+  "head_ref": "lior/drift-reports-2026-05-27"
+}

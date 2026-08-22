@@ -1,0 +1,12 @@
+{
+  "pr_number": 6665,
+  "archive_path": "docs/history/pr-reviews/PR-6665-docs-research-multi-tower-note-8-root-axiom-discipline-small-decomposable-basis-.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-03T11:21:56.451Z",
+  "schema_version": "v1",
+  "commit_sha": "030702b2623d96dd0cf63faaec784677dffe841d",
+  "title": "docs(research): multi-tower note §8 — root-axiom discipline (small decomposable basis of best-guesses-with-anchors)",
+  "state": "MERGED",
+  "merged_at": "2026-06-03T11:21:35Z",
+  "head_ref": "otto-cli/root-axiom-discipline-small-basis-decomposable-best-guesses-2026-06-03"
+}

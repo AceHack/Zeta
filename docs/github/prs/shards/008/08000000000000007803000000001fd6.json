@@ -1,0 +1,12 @@
+{
+  "pr_number": 8150,
+  "archive_path": "docs/history/pr-reviews/PR-8150-chore-backlog-close-workitem-081ktwfycb108qg0r000r6dp13-ben-verb-bench-port.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-14T03:04:30.602Z",
+  "schema_version": "v1",
+  "commit_sha": "7f7210bf3353662500087f895e59e826a8ecd3d9",
+  "title": "chore(backlog): close workitem 081KTWFYCB108QG0R000R6DP13 (ben verb + bench port)",
+  "state": "MERGED",
+  "merged_at": "2026-06-14T03:04:09Z",
+  "head_ref": "gemini/complete-workitem-B1039"
+}

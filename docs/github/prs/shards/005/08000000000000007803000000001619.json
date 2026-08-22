@@ -1,0 +1,12 @@
+{
+  "pr_number": 5657,
+  "archive_path": "docs/history/pr-reviews/PR-5657-feat-b-0866-otto-s-12-traveler-perspective-extensions-5-new-sub-rows-for-marketi.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-28T00:03:19.135Z",
+  "schema_version": "v1",
+  "commit_sha": "65c99af86086fb7f645394f7e2d5ed67f42b4ed7",
+  "title": "feat(B-0866): Otto's 12 traveler-perspective extensions + 5 new sub-rows for marketing-strategy (license-choice + ServiceTitan-relationship-navigation + Phase-0-iterate-verdict + 24-months-from-last-meeting-timeline + symmetric-AI-pre-review)",
+  "state": "MERGED",
+  "merged_at": "2026-05-28T00:03:00Z",
+  "head_ref": "feat/b-0866-otto-traveler-extensions-license-relationship-options-phase0-iterate-2026-05-28"
+}

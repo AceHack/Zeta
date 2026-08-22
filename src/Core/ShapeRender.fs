@@ -284,6 +284,138 @@ module ShapeRender =
                     Name = sprintf "event-%d" i
                     Mask = 7uy
                     Points = [ ex, ey - r; ex + r, ey; ex, ey + r; ex - r, ey; ex, ey - r ] } ]
+        | "shape-symmetric-vs-braided" ->
+            // THE CONTRAST: ONE word, read TWICE. The word is parsed ONCE and handed to both
+            // panels — a panel carrying its own word would prove nothing (the cartridge's
+            // stroke-generator issue says exactly that), so the two calls below differ in EXACTLY
+            // one argument: `gapped`. The braided reading carries an occlusion gap at every
+            // crossing (who went over whom is in the ink — shape-braid's over-under register); the
+            // symmetric reading carries NONE, because a symmetric swap has no over/under to
+            // remember, and a gap drawn there would be the picture lying about the category.
+            // Same input, same geometry, different REGISTER — and the register IS the category.
+            let word =
+                MediaLines.field "constant" "word" d
+                |> Option.defaultValue "1,1"
+                |> fun s ->
+                    s.Split(',')
+                    |> Array.choose (fun x ->
+                        match System.Int32.TryParse(x.Trim(), System.Globalization.NumberStyles.Integer, System.Globalization.CultureInfo.InvariantCulture) with
+                        | true, v -> Some v
+                        | _ -> None)
+                    |> Array.toList
+            let strands = constInt "strands" 2
+            let panels = constInt "panels" 2
+            let rows = constInt "rows" 24
+            // drawn-vs-gated parity (the braid family's guard): an out-of-range cartridge draws
+            // NOTHING rather than crashing on perm indexing — the gate refuses it either way.
+            if strands < 2 || panels < 2 || rows < List.length word + 1 || not (Braid.validWord strands word) then [] else
+            let top = 4
+            let bayW = 64 / panels
+            // columns are DERIVED from the file's own declared constants (panels, strands) — there
+            // are no bare positions here to go stale behind a constant change (shape-braid's
+            // stale-gen-args lesson, applied to the layout itself).
+            let colsOf (panel: int) = Array.init strands (fun i -> panel * bayW + bayW * (i + 1) / (strands + 1))
+            let rowsPerCross = rows / (List.length word + 1)
+            let strandMask = [| 1uy; 4uy; 2uy |] // the atom's own palette (shape-crossing: red over/under blue)
+            let panelStrokes (panel: int) (gapped: bool) (tag: string) =
+                let cols = colsOf panel
+                let perm = Array.init strands id // strand index occupying each column slot
+                let runs = Array.init strands (fun _ -> ResizeArray<ResizeArray<int * int>>())
+                for slot in 0 .. strands - 1 do
+                    let r = ResizeArray<int * int>()
+                    r.Add(pt cols.[slot] top)
+                    runs.[perm.[slot]].Add r
+                word
+                |> List.iteri (fun i c ->
+                    let y = top + (i + 1) * rowsPerCross
+                    let a = abs c - 1
+                    // Artin's sign decides who goes under; in the SYMMETRIC panel nobody does,
+                    // because there is no under to be — the swap keeps no record of the passage.
+                    let underSlot = if c > 0 then a + 1 else a
+                    let under = perm.[underSlot]
+                    if gapped then
+                        let x0, y0 = List.last (List.ofSeq runs.[under].[runs.[under].Count - 1])
+                        let x1, y1 = pt cols.[(if underSlot = a then a + 1 else a)] y
+                        // occlusion gap: break the under diagonal at 2/5 and 3/5 of its length
+                        let cur = runs.[under].[runs.[under].Count - 1]
+                        cur.Add(x0 + (x1 - x0) * 2 / 5, y0 + (y1 - y0) * 2 / 5)
+                        let next = ResizeArray<int * int>()
+                        next.Add(x0 + (x1 - x0) * 3 / 5, y0 + (y1 - y0) * 3 / 5)
+                        runs.[under].Add next
+                    let t = perm.[a] in perm.[a] <- perm.[a + 1]; perm.[a + 1] <- t
+                    for slot in 0 .. strands - 1 do
+                        runs.[perm.[slot]].[runs.[perm.[slot]].Count - 1].Add(pt cols.[slot] y))
+                for slot in 0 .. strands - 1 do
+                    runs.[perm.[slot]].[runs.[perm.[slot]].Count - 1].Add(pt cols.[slot] (top + rows))
+                [ for s in 0 .. strands - 1 do
+                      for r in 0 .. runs.[s].Count - 1 ->
+                          { Dash = false
+                            Name = (if r = 0 then sprintf "%s-strand-%d" tag s else sprintf "%s-strand-%d-r%d" tag s r)
+                            Mask = strandMask.[s % 3]
+                            Points = List.ofSeq runs.[s].[r] } ]
+            // LEFT = the symmetric reading (no register), RIGHT = the braided one (every crossing
+            // remembered). Both from `word`, which is bound once, above.
+            panelStrokes 0 false "sym" @ panelStrokes 1 true "brd"
+        | "shape-traced" ->
+            // THE TRACE (Joyal-Street-Verity 1996), drawn so it CANNOT be read as a braid: a wire
+            // leaves the generator's output-feedback port, routes AROUND the box, and re-enters the
+            // input-feedback port. It passes over nothing. A bend is not a crossing — that refusal is
+            // the whole cartridge, so this branch draws exactly two wires and the gate counts the
+            // intersections between them (`ShapeAcceptance`, "shape-traced").
+            //
+            // TWO REGISTERS THAT LOOK ALIKE AND ARE NOT, kept apart on purpose:
+            //   * an OCCLUSION GAP is a wire BROKEN into runs (shape-braid's over-under memory).
+            //     There is none here: each wire is one unbroken polyline, so runs = wires.
+            //   * a DASH is the SIGN (the adinkra/gc convention in this module — a minus as ink).
+            //     The feedback wire is dashed because its weight is -1 (WSet.negate: the superseded
+            //     row is un-emitted, and +w/-w annihilate in consolidate). Dashing is not occlusion.
+            //
+            // NO TIME AXIS, per the cartridge's retrocausality-register issue: the return leg bends
+            // in SPACE, around and below the box. Nothing here runs backwards along a time axis,
+            // because there is no time axis to run backwards along — the history is immutable and
+            // only its READING moves.
+            let wires = constInt "wires" 2
+            let corners = constInt "corners" 4
+            let retractWeight = constInt "retract-weight" -1
+            // out of this figure's vocabulary ⇒ draw NOTHING (the drawn-vs-gated parity the braid
+            // family established: a cartridge the gate would refuse must not half-draw either).
+            if wires <> 2 || corners <> 4 || corners % 2 <> 0 then [] else
+            let boxL, boxR, boxTop, boxBot = 22, 42, 10, 22
+            // the ports are DERIVED from the declared corner count: `corners` corners over two sides
+            // is corners/2 channels, spread evenly down the box face. corners = 4 ⇒ the main channel
+            // and the feedback channel, and nothing bare to go stale behind a constant change.
+            let perSide = corners / 2
+            let channelY i = boxTop + (boxBot - boxTop) * (i + 1) / (perSide + 1)
+            let mainY, feedbackY = channelY 0, channelY (perSide - 1)
+            let diamond (x: int) (y: int) (name: string) (mask: byte) =
+                let cx, cy = pt x y
+                { Dash = false; Name = name; Mask = mask
+                  Points = [ cx, cy - 5; cx + 5, cy; cx, cy + 5; cx - 5, cy; cx, cy - 5 ] }
+            [ // the generator box — a MORPHISM, not a wire: the gate counts crossings between wires
+              // only, because a wire meeting a box is a PORT and a wire meeting a wire is a crossing.
+              { Dash = false; Name = "box"; Mask = 6uy
+                Points = [ pt boxL boxTop; pt boxR boxTop; pt boxR boxBot; pt boxL boxBot; pt boxL boxTop ] }
+              // wire 1 — the pass-through channel: in at TIn, out at TOut. The emission, weight +1.
+              { Dash = false; Name = "wire-through"; Mask = 2uy; Points = [ pt 2 mainY; pt 62 mainY ] }
+              // wire 2 — THE TRACE: out of TOutFeedback, around the box, back into TInFeedback. One
+              // unbroken polyline (no runs ⇒ no occlusion gaps) whose every turn is a right angle in
+              // SPACE. Dashed iff its declared weight is negative — the sign, read from the file.
+              { Dash = retractWeight < 0; Name = "wire-feedback"; Mask = 1uy
+                Points =
+                  [ pt boxR feedbackY
+                    pt (boxR + 8) feedbackY
+                    pt (boxR + 8) (boxBot + 6)
+                    pt (boxL - 8) (boxBot + 6)
+                    pt (boxL - 8) feedbackY
+                    pt boxL feedbackY ] }
+              // the four corners of FourCornerOwnership. TIn/TOut carry the standard channel;
+              // TInFeedback/TOutFeedback are the CO-OWNED pair the loop lands on — marked apart,
+              // because "the feedback arrives on the INPUT channel" is the cartridge's honest
+              // mechanism and a figure that lands the loop on TOut has drawn a pipeline instead.
+              diamond boxL mainY "corner-tin" 3uy
+              diamond boxR mainY "corner-tout" 3uy
+              diamond boxL feedbackY "corner-tinfeedback" 5uy
+              diamond boxR feedbackY "corner-toutfeedback" 5uy ]
         | "shape-crossing" ->
             // THE ATOM: two strands, one crossing. Drawn big and alone — the whole figure is the
             // lesson (over keeps its line; under carries the gap; the sign decides which).

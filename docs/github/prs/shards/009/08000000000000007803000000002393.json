@@ -1,0 +1,15 @@
+{
+  "pr_number": 9107,
+  "archive_path": "docs/history/pr-reviews/PR-9107-feat-core-tropicalpaths-incremental-shortest-paths-the-novelmath-payoff-cashed-s.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7RPC6Z",
+    "thread:PRRT_kwDOSF9kNM6Nxud2"
+  ],
+  "fetched_at": "2026-08-17T04:04:34.619Z",
+  "schema_version": "v1",
+  "commit_sha": "a6bd426e3aca09ff88c78eb6f7af6788368cb41b",
+  "title": "feat(core): TropicalPaths — incremental shortest paths, the NovelMath payoff cashed (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-02T03:57:44Z",
+  "head_ref": "otto/tropical-shortest-paths-the-novelmatch-payoff"
+}

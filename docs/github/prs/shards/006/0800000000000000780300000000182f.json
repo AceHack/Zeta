@@ -1,0 +1,15 @@
+{
+  "pr_number": 6191,
+  "archive_path": "docs/history/pr-reviews/PR-6191-fix-idempotency-rule-correct-cas-z-set-claims-fix-fwd-for-codex-p2-stranded-by-6.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7GdkUn",
+    "thread:PRRT_kwDOSF9kNM6F6YcG"
+  ],
+  "fetched_at": "2026-05-31T03:15:07.732Z",
+  "schema_version": "v1",
+  "commit_sha": "e3f032135cdf662f8137211b355bb641008d794e",
+  "title": "fix(idempotency rule): correct CAS + Z-set claims (fix-fwd for Codex P2 stranded by #6189 auto-merge race)",
+  "state": "MERGED",
+  "merged_at": "2026-05-31T03:14:49Z",
+  "head_ref": "otto-cli/idempotency-cas-zset-corrections-fixfwd-2026-05-30"
+}

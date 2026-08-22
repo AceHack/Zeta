@@ -1,0 +1,12 @@
+{
+  "pr_number": 9572,
+  "archive_path": "docs/history/pr-reviews/PR-9572-fix-ci-route-qemu-scenarios-3-4-to-retention-path-fork-runtimes.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-08T23:29:29.332Z",
+  "schema_version": "v1",
+  "commit_sha": "4f98844c0f72592c9c03a3fbd8d4fcb2879368a3",
+  "title": "fix(ci): route QEMU scenarios 3/4 to retention/path-fork runtimes",
+  "state": "MERGED",
+  "merged_at": "2026-07-08T23:28:59Z",
+  "head_ref": "feat/qemu-scenario-3-4-dispatch-fix-2026-07-08"
+}

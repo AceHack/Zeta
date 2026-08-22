@@ -1,0 +1,14 @@
+{
+  "id": "080d00bee2632010a013000849748613",
+  "at": "2026-08-19T02:31:48.580Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M0BXRK34087G0R003KKAHQN",
+    "type": "task",
+    "title": "Classify erasure by injectivity at the spine, log, eviction and gift-of-erasure sites",
+    "slug": "classify-erasure-by-injectivity-at-the-spine-log-eviction-an",
+    "priority": "P2",
+    "filename": "081M0BXRK34087G0R003KKAHQN-classify-erasure-by-injectivity-at-the-spine-log-eviction-an.md"
+  }
+}

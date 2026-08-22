@@ -1,0 +1,12 @@
+{
+  "pr_number": 10874,
+  "archive_path": "docs/history/pr-reviews/PR-10874-chore-cluster-drop-tools-cluster-register-node-ts-a-byte-identical-duplicate-of-.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-16T14:07:46.105Z",
+  "schema_version": "v1",
+  "commit_sha": "8522c43ac1210af518bc4505b6b1eff49ac177e4",
+  "title": "chore(cluster): drop tools/cluster/register-node.ts — a byte-identical duplicate of deregister-node.ts, not a register tool",
+  "state": "MERGED",
+  "merged_at": "2026-08-16T14:07:12Z",
+  "head_ref": "shadow/drop-duplicate-tools-cluster-register-node"
+}

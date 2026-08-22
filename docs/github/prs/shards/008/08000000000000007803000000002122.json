@@ -1,0 +1,12 @@
+{
+  "pr_number": 8482,
+  "archive_path": "docs/history/pr-reviews/PR-8482-feat-darkhall-add-cabinet-runtime-controller.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-16T08:24:29.831Z",
+  "schema_version": "v1",
+  "commit_sha": "31e4ce4f5dc12b1c554822e2972a441aa3127dfc",
+  "title": "feat(darkhall): add cabinet runtime controller",
+  "state": "MERGED",
+  "merged_at": "2026-06-16T08:23:51Z",
+  "head_ref": "codex/darkhall-cabinet-runtime"
+}

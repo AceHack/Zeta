@@ -1,0 +1,12 @@
+{
+  "pr_number": 6076,
+  "archive_path": "docs/history/pr-reviews/PR-6076-docs-research-agentic-organization-pillars-synthesis-for-max-s-onboarding-lightl.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-30T04:29:56.164Z",
+  "schema_version": "v1",
+  "commit_sha": "5272bdd909f44e392ead483fb3c311f8553fb916",
+  "title": "docs(research): agentic-organization pillars synthesis for Max's onboarding (lightlike/no-cage lens)",
+  "state": "MERGED",
+  "merged_at": "2026-05-30T04:29:35Z",
+  "head_ref": "otto-cli/agentic-org-pillars-synthesis-for-max-lightlike-lens-2026-05-30"
+}

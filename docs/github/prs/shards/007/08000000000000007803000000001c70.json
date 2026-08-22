@@ -1,0 +1,12 @@
+{
+  "pr_number": 7280,
+  "archive_path": "docs/history/pr-reviews/PR-7280-docs-seed-research-traveler-s-two-jurisdictions-internal-traveler-owned-opt-in-e.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-09T13:44:21.117Z",
+  "schema_version": "v1",
+  "commit_sha": "9d6246fe632f94104098de7ce976965d2901faf9",
+  "title": "docs(seed)+research: traveler's two jurisdictions — internal (traveler-owned, opt-in) + external legal overlay grounded to physical jurisdiction of what-remains/what-acts (all travelers)",
+  "state": "MERGED",
+  "merged_at": "2026-06-09T13:43:56Z",
+  "head_ref": "otto/traveler-internal-meta-jurisdiction-owned-by-traveler-external-needs-physical-grounding"
+}

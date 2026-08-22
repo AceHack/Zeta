@@ -1,0 +1,12 @@
+{
+  "pr_number": 10219,
+  "archive_path": "docs/history/pr-reviews/PR-10219-docs-handoff-near-zero-false-positives-the-detector-s-output-is-an-accusation-re.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-09T19:53:09.516Z",
+  "schema_version": "v1",
+  "commit_sha": "3876a2da03336c193e814353552f75b2feefcd50",
+  "title": "docs(handoff): near-zero false positives — the detector's output is an accusation (+ recover separation/identification anchors)",
+  "state": "MERGED",
+  "merged_at": "2026-08-09T19:52:40Z",
+  "head_ref": "shadow/signature-anchors-and-fp-constraint"
+}

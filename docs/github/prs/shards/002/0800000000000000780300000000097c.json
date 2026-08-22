@@ -1,0 +1,23 @@
+{
+  "pr_number": 2428,
+  "archive_path": "docs/history/pr-reviews/PR-2428-feat-b-0059-1-etymology-resonance-catalog-v0-typed-schema-3-seed-entries-melchiz.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_mJW9",
+    "comment:PRRC_kwDOSF9kNM6_mJXC",
+    "comment:PRRC_kwDOSF9kNM6_mJXN",
+    "comment:PRRC_kwDOSF9kNM6_mJXZ",
+    "comment:PRRC_kwDOSF9kNM6_mJXg",
+    "thread:PRRT_kwDOSF9kNM6A4TlK",
+    "thread:PRRT_kwDOSF9kNM6A4TlO",
+    "thread:PRRT_kwDOSF9kNM6A4TlW",
+    "thread:PRRT_kwDOSF9kNM6A4Tli",
+    "thread:PRRT_kwDOSF9kNM6A4Tlp"
+  ],
+  "fetched_at": "2026-05-10T06:42:30.349Z",
+  "schema_version": "v1",
+  "commit_sha": "01d22a332187832ca9c553a693b06fe2479f0a59",
+  "title": "feat(B-0059.1): etymology resonance catalog v0 — typed schema + 3 seed entries (Μένω, Melchizedek, εἰμί)",
+  "state": "MERGED",
+  "merged_at": "2026-05-10T06:42:15Z",
+  "head_ref": "feat/b-0059.1-etymology-schema-seed"
+}

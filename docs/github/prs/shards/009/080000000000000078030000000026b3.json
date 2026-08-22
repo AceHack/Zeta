@@ -1,0 +1,12 @@
+{
+  "pr_number": 9907,
+  "archive_path": "docs/history/pr-reviews/PR-9907-fix-monitor-freshness-indicator-live-vs-stale-vs-offline.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-01T18:04:59.280Z",
+  "schema_version": "v1",
+  "commit_sha": "43a489a9bfcab1e45802660770dd9394247e696b",
+  "title": "fix(monitor): freshness indicator — live vs stale vs offline",
+  "state": "MERGED",
+  "merged_at": "2026-08-01T18:04:28Z",
+  "head_ref": "claim/kiro-dashboard-freshness-2026-08-01"
+}

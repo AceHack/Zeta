@@ -1,0 +1,12 @@
+{
+  "pr_number": 8211,
+  "archive_path": "docs/history/pr-reviews/PR-8211-data-ferry-confidence-track-commutative-exponential-dual-of-uncertainty-safety-g.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-14T20:08:38.196Z",
+  "schema_version": "v1",
+  "commit_sha": "c7f548c670bdf35b095f1d5615cead3e250a9170",
+  "title": "data(ferry): confidence track (commutative+exponential dual of uncertainty) + safety-gated actuator roadmap",
+  "state": "MERGED",
+  "merged_at": "2026-06-14T20:08:16Z",
+  "head_ref": "ferry-confidence-track-actuator-roadmap"
+}

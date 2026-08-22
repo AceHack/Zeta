@@ -1,0 +1,25 @@
+{
+  "pr_number": 2134,
+  "archive_path": "docs/history/pr-reviews/PR-2134-backlog-b-0310-claude-md-as-process-not-doctrine.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_aK2y",
+    "comment:PRRC_kwDOSF9kNM6_acNZ",
+    "comment:PRRC_kwDOSF9kNM6_acOB",
+    "comment:PRRC_kwDOSF9kNM6_ahiu",
+    "comment:PRRC_kwDOSF9kNM6_ahmR",
+    "comment:PRRC_kwDOSF9kNM6_ak1p",
+    "comment:PRRC_kwDOSF9kNM6_ak2P",
+    "thread:PRRT_kwDOSF9kNM6AvMKW",
+    "thread:PRRT_kwDOSF9kNM6AvYNq",
+    "thread:PRRT_kwDOSF9kNM6AvYOF",
+    "thread:PRRT_kwDOSF9kNM6AveGv",
+    "thread:PRRT_kwDOSF9kNM6AveHG"
+  ],
+  "fetched_at": "2026-05-08T21:19:54.840Z",
+  "schema_version": "v1",
+  "commit_sha": "63dfc7988ab2a0f1bd2635fd159f826ef0a7559e",
+  "title": "backlog(B-0310): CLAUDE.md as process, not doctrine",
+  "state": "MERGED",
+  "merged_at": "2026-05-08T21:19:34Z",
+  "head_ref": "backlog/b-0310-claude-md-as-process"
+}

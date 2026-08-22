@@ -55,7 +55,9 @@ module GeneratorRegistry =
           register "boundary.rotorCurve" 1
           register "kernel.rbf" 1
           register "timegen.phasor" 1
-          register "zetaid.glyph" 1
+          // v2: v1 folded only the 32-bit Randomness field into the identicon, so ids differing
+          // in timestamp/category/persona/location drew identical faces (081M0DYG9X9087G0R002JK171Z).
+          register "zetaid.glyph" 2
           register "audio.saw" 1
           register "audio.square" 1
           register "audio.triangle" 1
@@ -95,6 +97,17 @@ module GeneratorRegistry =
           register "shape.crossing" 1
           register "shape.sybil-verdict" 1
           register "shape.refraction" 1
+          // THE CONTRAST cartridge (still `pending/`): one word (σ·σ), two categories, two panels.
+          // Registered because registration is what makes its `meta shape-zetaid` CHECKABLE — the id
+          // in the file is `idOf "shape.symmetric-vs-braided" 1`, derivable, so the shelf and the
+          // cartridge cannot silently disagree. Registration is naming, NOT ratification: the file
+          // stays in pending/ until its own oracles write their treaty rows.
+          register "shape.symmetric-vs-braided" 1
+          // THE TRACE cartridge (still `pending/`): a feedback wire that bends back and crosses
+          // NOTHING. Registered for the same reason as its sibling above — registration is what makes
+          // `meta shape-zetaid` CHECKABLE (`idOf "shape.traced" 1`, derivable), and it is naming, NOT
+          // ratification: the file stays in pending/ until its own oracles write their treaty rows.
+          register "shape.traced" 1
           register "rng.splitmix64" 1
           register "rng.lcg64_mmix" 1
           register "hash.murmur3_32_tail" 1

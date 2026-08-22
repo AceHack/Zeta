@@ -1,0 +1,12 @@
+{
+  "pr_number": 9977,
+  "archive_path": "docs/history/pr-reviews/PR-9977-docs-book-research-the-reindexer-as-lived-root-marjorie-fidelity-qualia-elicitat.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-02T18:04:47.621Z",
+  "schema_version": "v1",
+  "commit_sha": "69c3d63a73272d58683c68020c795e367d882668",
+  "title": "docs(book+research): the reindexer as lived root + Marjorie/Fidelity qualia-elicitation anchor",
+  "state": "MERGED",
+  "merged_at": "2026-08-02T18:04:12Z",
+  "head_ref": "book/reindexer-lived-root-and-qualia-anchor-20260802"
+}

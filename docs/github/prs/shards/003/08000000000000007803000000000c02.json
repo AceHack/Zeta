@@ -1,0 +1,25 @@
+{
+  "pr_number": 3074,
+  "archive_path": "docs/history/pr-reviews/PR-3074-feat-pm2-add-mira-to-expert-registry-forward-radar-scaffold-b-0145.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7BA54U",
+    "comment:PRRC_kwDOSF9kNM7BA54j",
+    "comment:PRRC_kwDOSF9kNM7BA54v",
+    "comment:PRRC_kwDOSF9kNM7BA5lP",
+    "comment:PRRC_kwDOSF9kNM7BBPez",
+    "comment:PRRC_kwDOSF9kNM7BBPkx",
+    "thread:PRRT_kwDOSF9kNM6B7OGh",
+    "thread:PRRT_kwDOSF9kNM6B7OVV",
+    "thread:PRRT_kwDOSF9kNM6B7OVf",
+    "thread:PRRT_kwDOSF9kNM6B7OVo",
+    "thread:PRRT_kwDOSF9kNM6B7dtb",
+    "thread:PRRT_kwDOSF9kNM6B7dxh"
+  ],
+  "fetched_at": "2026-05-14T01:02:56.700Z",
+  "schema_version": "v1",
+  "commit_sha": "c671f36ef742bc5e36118609973bbf85e2c163ba",
+  "title": "feat(pm2): add Mira to EXPERT-REGISTRY + forward-radar scaffold (B-0145)",
+  "state": "MERGED",
+  "merged_at": "2026-05-14T01:02:38Z",
+  "head_ref": "feat/pm2-forward-radar-b0145-2026-05-13"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 6655,
+  "archive_path": "docs/history/pr-reviews/PR-6655-rules-x2-responsible-disclosure-discipline-open-source-asymmetric-advantage-ethi.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-03T10:46:42.011Z",
+  "schema_version": "v1",
+  "commit_sha": "3c49803f9aeeddd8f34a7102830b5afc62fe1c5d",
+  "title": "rules(x2): responsible-disclosure discipline + open-source-asymmetric-advantage ethic (discriminator-selected from forwarded session)",
+  "state": "MERGED",
+  "merged_at": "2026-06-03T10:46:15Z",
+  "head_ref": "otto-cli/two-grounded-rules-disclosure-opensource-2026-06-03"
+}

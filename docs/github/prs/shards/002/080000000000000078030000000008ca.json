@@ -1,0 +1,15 @@
+{
+  "pr_number": 2250,
+  "archive_path": "docs/history/pr-reviews/PR-2250-feat-b-0191-add-orchestrator-state-check-script-close-b-0191.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_gKVP",
+    "thread:PRRT_kwDOSF9kNM6AzoDE"
+  ],
+  "fetched_at": "2026-05-09T09:01:58.550Z",
+  "schema_version": "v1",
+  "commit_sha": "6418cba488d316e2893fabbed6025cddde5ef0b8",
+  "title": "feat(B-0191): add orchestrator state check script + close B-0191",
+  "state": "MERGED",
+  "merged_at": "2026-05-09T09:01:38Z",
+  "head_ref": "feat/b0191-orchestrator-state-check"
+}

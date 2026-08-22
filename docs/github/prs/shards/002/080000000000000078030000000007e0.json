@@ -1,0 +1,12 @@
+{
+  "pr_number": 2016,
+  "archive_path": "docs/history/pr-reviews/PR-2016-fix-backlog-decompose-b-0236-pages-validation.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-08T03:10:27.865Z",
+  "schema_version": "v1",
+  "commit_sha": "4e5f1df31cf7e00609c2a04f457847549492242d",
+  "title": "fix(backlog): decompose B-0236 pages validation",
+  "state": "MERGED",
+  "merged_at": "2026-05-08T03:10:08Z",
+  "head_ref": "codex/b0236-decompose-pages-validation"
+}

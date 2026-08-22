@@ -1,0 +1,21 @@
+{
+  "pr_number": 1935,
+  "archive_path": "docs/history/pr-reviews/PR-1935-fix-backlog-b-0062-state-machine-retracted-frozen-terminal-states.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6-_OPJ",
+    "comment:PRRC_kwDOSF9kNM6-_OPM",
+    "comment:PRRC_kwDOSF9kNM6-_QaD",
+    "comment:PRRC_kwDOSF9kNM6-_Qal",
+    "thread:PRRT_kwDOSF9kNM6AbaJA",
+    "thread:PRRT_kwDOSF9kNM6AbaJD",
+    "thread:PRRT_kwDOSF9kNM6Abbt6",
+    "thread:PRRT_kwDOSF9kNM6Abbti"
+  ],
+  "fetched_at": "2026-05-07T19:43:41.752Z",
+  "schema_version": "v1",
+  "commit_sha": "b0ea7695917cb8ef9ae364f49f5d7bda49b751a3",
+  "title": "fix(backlog): B-0062 state machine — retracted + frozen terminal states",
+  "state": "MERGED",
+  "merged_at": "2026-05-07T19:43:24Z",
+  "head_ref": "otto/b0062-state-machine-proposals"
+}

@@ -1,0 +1,19 @@
+{
+  "pr_number": 2436,
+  "archive_path": "docs/history/pr-reviews/PR-2436-feat-b-0072-1-smallest-safe-slice-pure-ts-memory-md-index-entry-length-auditor-r.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_md34",
+    "comment:PRRC_kwDOSF9kNM6_md3s",
+    "comment:PRRC_kwDOSF9kNM6_md3x",
+    "thread:PRRT_kwDOSF9kNM6A4jk0",
+    "thread:PRRT_kwDOSF9kNM6A4jkr",
+    "thread:PRRT_kwDOSF9kNM6A4jkw"
+  ],
+  "fetched_at": "2026-05-10T07:59:18.617Z",
+  "schema_version": "v1",
+  "commit_sha": "0741a8b19a6469359cd86a53fc9bdcda44ca3060",
+  "title": "feat(B-0072.1): smallest safe slice — pure-TS MEMORY.md index entry length auditor (Rule 0)",
+  "state": "MERGED",
+  "merged_at": "2026-05-10T07:59:00Z",
+  "head_ref": "claim/B-0072.1-memory-md-index-normalize-smallest-slice-riven-2026-05-10"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 7549,
+  "archive_path": "docs/history/pr-reviews/PR-7549-docs-research-the-dev-room-is-the-harness-ff7-debug-room-unbounded-outside-mea-b.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-11T00:07:32.074Z",
+  "schema_version": "v1",
+  "commit_sha": "f355d6b04a92f7ae5c10bb2823253e7dcc4709ea",
+  "title": "docs(research): the dev room IS the harness (FF7 debug room) — unbounded/outside-mea/borrowed; pull it inside + landmarks/salon",
+  "state": "MERGED",
+  "merged_at": "2026-06-11T00:07:09Z",
+  "head_ref": "shadow-dev-room-is-the-harness-capture"
+}

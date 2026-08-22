@@ -1,0 +1,12 @@
+{
+  "pr_number": 10978,
+  "archive_path": "docs/history/pr-reviews/PR-10978-docs-bringup-stage-first-metal-so-only-the-eleven-operator-acts-remain.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-16T17:47:39.357Z",
+  "schema_version": "v1",
+  "commit_sha": "551368ad0abf9c932a20da1a280de678a2bde916",
+  "title": "docs(bringup): stage first-metal so only the eleven operator acts remain",
+  "state": "MERGED",
+  "merged_at": "2026-08-16T17:47:03Z",
+  "head_ref": "shadow/hardware-bringup-preflight-runbook"
+}

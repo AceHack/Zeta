@@ -1,0 +1,23 @@
+{
+  "pr_number": 2434,
+  "archive_path": "docs/history/pr-reviews/PR-2434-feat-b-0071-1-smallest-safe-slice-pure-ts-reference-audit-for-otto-275-forever-m.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_mY1I",
+    "comment:PRRC_kwDOSF9kNM6_mY1L",
+    "comment:PRRC_kwDOSF9kNM6_mY1S",
+    "comment:PRRC_kwDOSF9kNM6_mY1X",
+    "comment:PRRC_kwDOSF9kNM6_mY1e",
+    "thread:PRRT_kwDOSF9kNM6A4flL",
+    "thread:PRRT_kwDOSF9kNM6A4flN",
+    "thread:PRRT_kwDOSF9kNM6A4flS",
+    "thread:PRRT_kwDOSF9kNM6A4flX",
+    "thread:PRRT_kwDOSF9kNM6A4fle"
+  ],
+  "fetched_at": "2026-05-10T07:38:02.494Z",
+  "schema_version": "v1",
+  "commit_sha": "18e3a50d06f6f074ad38d23d4cf00be65bcd42bd",
+  "title": "feat(B-0071.1): smallest safe slice — pure-TS reference audit for otto-275-forever misnomer (re-decomposed)",
+  "state": "MERGED",
+  "merged_at": "2026-05-10T07:37:45Z",
+  "head_ref": "claim/B-0071-smallest-slice-riven-2026-05-10"
+}

@@ -1,9 +1,39 @@
-# Compiled WASM binaries (built by CI/local toolchain, not stored in repo)
+# Compiled WASM binaries.
+#
+# READ THIS BEFORE TRUSTING THE HEADING BELOW. These patterns are ignore rules, not
+# statements of fact: six substrate modules ARE tracked (force-added) and are what the
+# runner actually loads — dla-canonical-{wat,llvm,emcc,rust,asc,zig}.wasm. Only the Go
+# module is genuinely built at run time, because it is ~1.9 MB.
+#
+# The gap between this file's intent and the tree cost two weeks (2026-08-15):
+# `dla-canonical-zig.wasm` was committed as an `ar` archive and nobody re-derived it,
+# because everyone read this heading and assumed it was built fresh. If you commit a
+# substrate here, `git add -f` it AND record why it is tracked rather than built.
+#
+# WHY THE SIX ARE TRACKED, recorded here as that sentence asks (2026-08-16). `bytelock.yml`
+# installs only wabt, lua5.4 and Go; it has no clang-wasm32, emcc, rustc+wasm32, asc or zig.
+# Those five substrates therefore CANNOT be rebuilt on the runner, and a substrate CI cannot
+# build is a substrate CI would silently SKIP. They are committed so the roster's nine are
+# nine. That is a trade — reproducibility given up for coverage — and it is the reason the
+# exception in `.claude/rules/no-binary-in-proof-lineage.md` is conditioned on a committed
+# build recipe and machine-checked by `hygiene/audit-proof-lineage-binaries.ts` rather than
+# just asserted. Add a toolchain to the workflow and the corresponding file should stop being
+# tracked, not start being trusted.
+#
+# `*.rcgu.o` is rustc's per-codegen-unit intermediate. One
+# (`dla_canonical_rust.…-cgu.0.rcgu.o`) was committed by accident and sat here unreferenced
+# until the audit above named it; the pattern below keeps the next one out.
 *.wasm
 *.wasm.o
 *.o
 *.a
+*.rcgu.o
 wasm_exec.js
+# The Pages build copies the JS bridge out of the $GOROOT that compiled the module, so it
+# is a build output under a distinct name — the committed `wasm_exec.js` beside it is a
+# Go 1.22-era file and MEASURED 2026-08-17 to differ from Go 1.26.4's. Two names keeps
+# that difference visible instead of letting one overwrite the other.
+wasm-exec-pages.js
 go.sum
 
 # Build artifacts

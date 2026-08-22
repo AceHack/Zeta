@@ -1,0 +1,15 @@
+{
+  "pr_number": 7506,
+  "archive_path": "docs/history/pr-reviews/PR-7506-feat-usb-grub2-multiboot-scaffold-boot-ours-others-mynode-model-two-flash-payloa.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7KI0Zn",
+    "thread:PRRT_kwDOSF9kNM6InCgO"
+  ],
+  "fetched_at": "2026-06-10T22:27:26.561Z",
+  "schema_version": "v1",
+  "commit_sha": "43b9adaa2e8a39691a162f7d4cbf4483ec258cf2",
+  "title": "feat(usb): GRUB2 multiboot scaffold — boot ours+others + MyNode Model Two flash payload (sha256-pinned)",
+  "state": "MERGED",
+  "merged_at": "2026-06-10T22:27:01Z",
+  "head_ref": "shadow-grub2-multiboot-usb"
+}

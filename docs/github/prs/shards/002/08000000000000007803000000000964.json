@@ -1,0 +1,12 @@
+{
+  "pr_number": 2404,
+  "archive_path": "docs/history/pr-reviews/PR-2404-feat-b-0046-1-economics-history-stage-1-reading-list-scaffold-inaugural-substrat.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-10T03:21:59.991Z",
+  "schema_version": "v1",
+  "commit_sha": "99efd1129b22e3505e39ee645dbc2a184f31d608",
+  "title": "feat(B-0046.1): economics + history Stage 1 reading-list scaffold — inaugural substrate shelf",
+  "state": "MERGED",
+  "merged_at": "2026-05-10T03:21:43Z",
+  "head_ref": "feat/b-0046.1-economics-history-stage1"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 6847,
+  "archive_path": "docs/history/pr-reviews/PR-6847-docs-ast-as-essence-store-code-docs-as-ast-in-yaml-render-per-developer-style-vi.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-07T14:55:06.351Z",
+  "schema_version": "v1",
+  "commit_sha": "edabfd37932f906983925e0cbe2fedb8733f9f28",
+  "title": "docs: AST-as-essence — store code/docs as AST-in-YAML, render per-developer style views",
+  "state": "MERGED",
+  "merged_at": "2026-06-07T14:54:47Z",
+  "head_ref": "capture/ast-as-essence-per-dev-style-views"
+}

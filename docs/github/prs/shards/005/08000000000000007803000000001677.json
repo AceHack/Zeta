@@ -1,0 +1,12 @@
+{
+  "pr_number": 5751,
+  "archive_path": "docs/history/pr-reviews/PR-5751-fix-fwd-33-archive-header-compliance-on-self-referential-ontology-memo-pr-5736.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-28T10:19:50.276Z",
+  "schema_version": "v1",
+  "commit_sha": "0de5a4a31cd0208172d24ddf0dd0b609cc0a6393",
+  "title": "fix-fwd: §33 archive header compliance on self-referential-ontology memo (PR #5736)",
+  "state": "MERGED",
+  "merged_at": "2026-05-28T10:19:30Z",
+  "head_ref": "otto-cli/fix-fwd-section-33-archive-header-on-self-referential-ontology-memo-2026-05-28"
+}

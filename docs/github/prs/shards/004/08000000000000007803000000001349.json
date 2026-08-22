@@ -1,0 +1,19 @@
+{
+  "pr_number": 4937,
+  "archive_path": "docs/history/pr-reviews/PR-4937-docs-hygiene-tick-1405z-3-blocked-resolve-threads-prs-audited-cross-lane-zero-fp.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7EnJEc",
+    "comment:PRRC_kwDOSF9kNM7EnLBF",
+    "comment:PRRC_kwDOSF9kNM7EnLBp",
+    "thread:PRRT_kwDOSF9kNM6EkHt2",
+    "thread:PRRT_kwDOSF9kNM6EkJNm",
+    "thread:PRRT_kwDOSF9kNM6EkJOE"
+  ],
+  "fetched_at": "2026-05-25T14:19:35.999Z",
+  "schema_version": "v1",
+  "commit_sha": "3fbd746639ae0010f72f999b327abdbf40f820f2",
+  "title": "docs(hygiene): tick 1405Z — 3 BLOCKED+resolve-threads PRs audited cross-lane (zero FPs)",
+  "state": "MERGED",
+  "merged_at": "2026-05-25T14:19:14Z",
+  "head_ref": "otto-cli/1405z-pr-triage-cross-lane-audit-2026-05-25"
+}

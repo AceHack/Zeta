@@ -1,0 +1,33 @@
+{
+  "pr_number": 4180,
+  "archive_path": "docs/history/pr-reviews/PR-4180-feat-research-lint-33-archive-boundary-header-lint-task-26-complements-b-0533-b-.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7CYUuT",
+    "comment:PRRC_kwDOSF9kNM7CYUuX",
+    "comment:PRRC_kwDOSF9kNM7CYUuZ",
+    "comment:PRRC_kwDOSF9kNM7CYUvL",
+    "comment:PRRC_kwDOSF9kNM7CYUvq",
+    "comment:PRRC_kwDOSF9kNM7CYUwN",
+    "comment:PRRC_kwDOSF9kNM7CYdL-",
+    "comment:PRRC_kwDOSF9kNM7CYlw9",
+    "comment:PRRC_kwDOSF9kNM7CYlwX",
+    "comment:PRRC_kwDOSF9kNM7CYlxf",
+    "thread:PRRT_kwDOSF9kNM6C7iDl",
+    "thread:PRRT_kwDOSF9kNM6C7iDn",
+    "thread:PRRT_kwDOSF9kNM6C7iDo",
+    "thread:PRRT_kwDOSF9kNM6C7iEN",
+    "thread:PRRT_kwDOSF9kNM6C7iEk",
+    "thread:PRRT_kwDOSF9kNM6C7iFB",
+    "thread:PRRT_kwDOSF9kNM6C7oSA",
+    "thread:PRRT_kwDOSF9kNM6C7uVE",
+    "thread:PRRT_kwDOSF9kNM6C7uVY",
+    "thread:PRRT_kwDOSF9kNM6C7uVn"
+  ],
+  "fetched_at": "2026-05-18T18:49:16.735Z",
+  "schema_version": "v1",
+  "commit_sha": "f56c2941224fea3c422632fc05d0b7a96d215aec",
+  "title": "feat(research-lint): §33 archive-boundary-header lint (Task #26; complements B-0533 + B-0663)",
+  "state": "MERGED",
+  "merged_at": "2026-05-18T18:48:43Z",
+  "head_ref": "shard/research-section-33-header-lint-task-26-2026-05-18"
+}

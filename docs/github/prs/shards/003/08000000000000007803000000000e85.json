@@ -1,0 +1,12 @@
+{
+  "pr_number": 3717,
+  "archive_path": "docs/history/pr-reviews/PR-3717-shard-tick-2026-05-16t03-44z-check-shard-before-push-helper-shipped-pr-3716.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-16T03:49:39.323Z",
+  "schema_version": "v1",
+  "commit_sha": "2a5905aeb34d3304ded5acebe1c1835edf046a94",
+  "title": "shard(tick): 2026-05-16T03:44Z — check-shard-before-push helper shipped (PR #3716)",
+  "state": "MERGED",
+  "merged_at": "2026-05-16T03:49:24Z",
+  "head_ref": "shard/tick-0344z-otto-cli-2026-05-16"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 3548,
+  "archive_path": "docs/history/pr-reviews/PR-3548-feat-b-0533-slice-b-1-33-migration-dead-xref-scanner.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-15T18:37:01.771Z",
+  "schema_version": "v1",
+  "commit_sha": "b361dea91f350b926887f0491a0f45ffd2a62c03",
+  "title": "feat(B-0533): Slice B.1 — §33 migration dead-xref scanner",
+  "state": "MERGED",
+  "merged_at": "2026-05-15T18:36:42Z",
+  "head_ref": "feat/b0533-slice-b1-section33-xref-scanner-otto-cli-2026-05-15"
+}

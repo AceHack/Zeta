@@ -1,0 +1,12 @@
+{
+  "pr_number": 9041,
+  "archive_path": "docs/history/pr-reviews/PR-9041-docs-preserve-quarantine-35-unlanded-files-from-maji-s-28-orphan-branches.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-30T21:21:36.621Z",
+  "schema_version": "v1",
+  "commit_sha": "e36e2a47b4beee2123639958825ab29b68e44842",
+  "title": "docs(preserve): quarantine 35 unlanded files from Maji's 28 orphan branches",
+  "state": "MERGED",
+  "merged_at": "2026-06-30T21:21:14Z",
+  "head_ref": "preserve-maji-unlanded-quarantine-2026-06-30"
+}

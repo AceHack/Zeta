@@ -1,0 +1,30 @@
+{
+  "pr_number": 5416,
+  "archive_path": "docs/history/pr-reviews/PR-5416-feat-b-0855-1-add-first-boot-self-register-service-module.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7FPaCX",
+    "comment:PRRC_kwDOSF9kNM7FRqXs",
+    "comment:PRRC_kwDOSF9kNM7FSMSt",
+    "comment:PRRC_kwDOSF9kNM7FSMaz",
+    "comment:PRRC_kwDOSF9kNM7FSMcB",
+    "comment:PRRC_kwDOSF9kNM7FSq84",
+    "comment:PRRC_kwDOSF9kNM7FSq91",
+    "comment:PRRC_kwDOSF9kNM7FTJsw",
+    "comment:PRRC_kwDOSF9kNM7FTJt0",
+    "thread:PRRT_kwDOSF9kNM6FBmip",
+    "thread:PRRT_kwDOSF9kNM6FDQPk",
+    "thread:PRRT_kwDOSF9kNM6FD_84",
+    "thread:PRRT_kwDOSF9kNM6FD_8M",
+    "thread:PRRT_kwDOSF9kNM6FDpSi",
+    "thread:PRRT_kwDOSF9kNM6FDpTV",
+    "thread:PRRT_kwDOSF9kNM6FEWlP",
+    "thread:PRRT_kwDOSF9kNM6FEWmK"
+  ],
+  "fetched_at": "2026-05-27T10:28:44.961Z",
+  "schema_version": "v1",
+  "commit_sha": "815f1cf2a1d375e9930b43acd2fcdf2cb4208510",
+  "title": "feat(B-0855.1): add first-boot self-register service module",
+  "state": "MERGED",
+  "merged_at": "2026-05-27T10:28:22Z",
+  "head_ref": "claim/codex-b0855-1-zeta-self-register-service-20260527"
+}

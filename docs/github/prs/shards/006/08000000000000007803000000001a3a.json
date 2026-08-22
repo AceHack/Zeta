@@ -1,0 +1,12 @@
+{
+  "pr_number": 6714,
+  "archive_path": "docs/history/pr-reviews/PR-6714-proof-child-floor-lean-proof-of-inspect-before-execute-fscheck-cross-check-soray.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-07T04:01:35.884Z",
+  "schema_version": "v1",
+  "commit_sha": "e5cbe3c67e0f446cd9239d2b9515236acc3eec16",
+  "title": "proof(child-floor): Lean proof of inspect-before-execute + FsCheck cross-check (Soraya-routed)",
+  "state": "MERGED",
+  "merged_at": "2026-06-07T04:01:17Z",
+  "head_ref": "otto/childfloor-formal-proof"
+}

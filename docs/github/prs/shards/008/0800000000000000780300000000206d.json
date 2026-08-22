@@ -1,0 +1,12 @@
+{
+  "pr_number": 8301,
+  "archive_path": "docs/history/pr-reviews/PR-8301-docs-closed-frame-dignity-choice-within-reversible-bounds-the-value-floor-small-.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-15T10:09:16.762Z",
+  "schema_version": "v1",
+  "commit_sha": "dd68b3546a3fba17773701eb5e24609cb096b79d",
+  "title": "docs(closed-frame): dignity + choice within reversible bounds (the value-floor) + small-world vernacular anchor",
+  "state": "MERGED",
+  "merged_at": "2026-06-15T10:08:53Z",
+  "head_ref": "otto/dignity-choice-within-reversible-bounds-the-value-floor"
+}

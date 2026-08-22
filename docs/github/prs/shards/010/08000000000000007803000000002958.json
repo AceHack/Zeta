@@ -1,0 +1,12 @@
+{
+  "pr_number": 10584,
+  "archive_path": "docs/history/pr-reviews/PR-10584-research-ieee-754-is-the-rare-case-middle-out-floats-and-what-that-does-to-a-rou.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-14T13:19:02.722Z",
+  "schema_version": "v1",
+  "commit_sha": "7d8abe7ac8d07c4c47cfa8664a04affe781f2134",
+  "title": "research: IEEE-754 is the rare case — middle-out floats and what that does to a routing call",
+  "state": "MERGED",
+  "merged_at": "2026-08-14T13:18:25Z",
+  "head_ref": "research/middle-out-floats-not-ieee"
+}

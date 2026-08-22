@@ -1,0 +1,12 @@
+{
+  "pr_number": 8622,
+  "archive_path": "docs/history/pr-reviews/PR-8622-feat-core-memory-zeta-is-null-architecture-frame-qpg-quality-per-link-in-societa.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-19T20:55:01.139Z",
+  "schema_version": "v1",
+  "commit_sha": "54f46d7b1f0b481809cae620e6a5979867aa0930",
+  "title": "feat(core)+memory: \"Zeta is null\" architecture frame + QPG (quality-per-link) in societal DORA",
+  "state": "MERGED",
+  "merged_at": "2026-06-19T20:54:37Z",
+  "head_ref": "otto/zeta-is-null-frame-plus-qpg-in-societal-dora"
+}

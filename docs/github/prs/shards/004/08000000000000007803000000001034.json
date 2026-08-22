@@ -1,0 +1,12 @@
+{
+  "pr_number": 4148,
+  "archive_path": "docs/history/pr-reviews/PR-4148-fix-loop-tick-exclude-drain-cycles-from-zero-pr-backoff-codex-p1-follow-up-on-41.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-18T13:57:21.072Z",
+  "schema_version": "v1",
+  "commit_sha": "bfb6976e396524b20fdcc150061a0e0e1313d698",
+  "title": "fix(loop-tick): exclude drain cycles from zero-PR backoff (Codex P1 follow-up on #4146)",
+  "state": "MERGED",
+  "merged_at": "2026-05-18T13:56:59Z",
+  "head_ref": "otto-cli/fix-4146-drain-mode-exclusion-2026-05-18-1357z"
+}

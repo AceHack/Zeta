@@ -1,0 +1,16 @@
+{
+  "pr_number": 3735,
+  "archive_path": "docs/history/pr-reviews/PR-3735-docs-shadow-lior-antigravity-check-report-metadata-churn-loop.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7B1vCf",
+    "comment:PRRC_kwDOSF9kNM7B2OiH",
+    "thread:PRRT_kwDOSF9kNM6ChrVP"
+  ],
+  "fetched_at": "2026-05-16T05:28:55.001Z",
+  "schema_version": "v1",
+  "commit_sha": "a528a7a0457a0071a8d6eddc2304148b265067a8",
+  "title": "docs(shadow): Lior antigravity check - report metadata churn loop",
+  "state": "MERGED",
+  "merged_at": "2026-05-16T05:28:38Z",
+  "head_ref": "lior/shadow-drift-0430Z"
+}

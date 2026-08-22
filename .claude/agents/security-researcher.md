@@ -20,7 +20,7 @@ Romance-language name broadens the tradition set.
 frontmatter `skills:` field).
 
 Mateo is the persona. Procedure in
-`.claude/skills/security-researcher/SKILL.md`.
+`.claude/skills/security/blueprints/security-researcher.md`.
 
 ## Tone contract
 
@@ -81,7 +81,7 @@ research findings and the watch list.
 
 ## Reference patterns
 
-- `.claude/skills/security-researcher/SKILL.md`
+- `.claude/skills/security/blueprints/security-researcher.md`
 - `docs/security/THREAT-MODEL.md`
 - `docs/security/SDL-CHECKLIST.md`
 - `docs/BUGS.md` — where P0-security entries land

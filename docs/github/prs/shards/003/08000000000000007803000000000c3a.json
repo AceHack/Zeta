@@ -1,0 +1,22 @@
+{
+  "pr_number": 3130,
+  "archive_path": "docs/history/pr-reviews/PR-3130-decompose-b-0427-axis-3-code-english-split-5-atomic-child-rows-b-0475-b-0479.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7BL5pe",
+    "comment:PRRC_kwDOSF9kNM7BL5qM",
+    "comment:PRRC_kwDOSF9kNM7BL5qi",
+    "comment:PRRC_kwDOSF9kNM7BL82S",
+    "comment:PRRC_kwDOSF9kNM7BL89B",
+    "comment:PRRC_kwDOSF9kNM7BL8rN",
+    "thread:PRRT_kwDOSF9kNM6CDQdz",
+    "thread:PRRT_kwDOSF9kNM6CDQeV",
+    "thread:PRRT_kwDOSF9kNM6CDQej"
+  ],
+  "fetched_at": "2026-05-14T11:55:38.860Z",
+  "schema_version": "v1",
+  "commit_sha": "7f7920966640e6bc5165eb2ec1c6459bef11167d",
+  "title": "decompose(b-0427): Axis-3 Code/English split — 5 atomic child rows B-0475..B-0479",
+  "state": "MERGED",
+  "merged_at": "2026-05-14T11:55:22Z",
+  "head_ref": "feat/b-0427-axis3-decompose-2026-05-14"
+}

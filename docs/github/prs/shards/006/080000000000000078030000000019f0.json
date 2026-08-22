@@ -1,0 +1,12 @@
+{
+  "pr_number": 6640,
+  "archive_path": "docs/history/pr-reviews/PR-6640-research-connect-z-set-family-canonical-connection-4-lang-byte-lock-4-tool-proof.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-03T08:40:56.005Z",
+  "schema_version": "v1",
+  "commit_sha": "5b87826c3267072aed5c749f1828db2c1a0739cf",
+  "title": "research(connect): Z-set family canonical connection — 4-lang byte-lock + 4-tool proofs (already existed, were disconnected)",
+  "state": "MERGED",
+  "merged_at": "2026-06-03T08:40:30Z",
+  "head_ref": "otto-cli/zset-canonical-connection-4lang-bytelock-4tool-proofs-2026-06-03"
+}

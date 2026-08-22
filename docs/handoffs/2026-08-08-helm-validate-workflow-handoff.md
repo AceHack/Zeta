@@ -16,6 +16,7 @@ Push one file to `Lucent-Financial-Group/Zeta` main:
 ```
 
 The file already exists locally at:
+
 ```
 /home/ubuntu/lfg/Zeta/.github/workflows/helm-validate.yml
 ```
@@ -64,10 +65,39 @@ It runs `bun infra/k8s/tests/validate-applications.ts` — a TypeScript script (
 
 ## Two jobs in the workflow
 
-| Job | Trigger | What it runs |
-|---|---|---|
-| `offline` | Every PR touching `infra/k8s/applications/**` or `validate-applications.ts` | `bun validate-applications.ts --offline` (fast, no network) |
-| `online` | Push to main + weekly schedule (Monday 09:00 UTC) + `workflow_dispatch` | `bun validate-applications.ts` (checks chart repos are reachable) |
+> **SUPERSEDED 2026-08-14 (Dejan).** The shape below is kept for lineage; the
+> live workflow differs. See `.github/workflows/helm-validate.yml`, whose
+> header carries the measurements. What changed and why:
+>
+> - The old `offline` job's YAML check **could not go red**. The validator
+>   used a hand-rolled parser that never threw: a manifest with a tab-indented
+>   line and an unterminated quote printed `PASS: ... valid YAML`, and a
+>   duplicate mapping key gave `37 passed, 0 failed`, exit 0.
+> - The old `online` job's chart check was a substring grep for
+>   `name: <chart>` in `index.yaml`. It never looked at `targetRevision`, so
+>   `999.999.999` gave `44 passed, 0 failed`, exit 0 — and it only ran on
+>   push-to-main and a weekly cron, never on a pull request.
+> - Weekly -> daily (`29 15 * * *`), per Aaron: "it should be more often than
+>   weekly on the k8s testing".
+> - The `workflow_dispatch` `offline` input is gone: the structural job is
+>   always offline and the chart job is always online, so there is nothing left
+>   for the toggle to select.
+
+| Job          | Trigger                                                     | What it runs                                                                                                                                                                   |
+| ------------ | ----------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `structural` | Every PR/push touching `infra/k8s/**`, daily cron, dispatch | `--offline` validation **plus** `bun test validate-applications.test.ts`, a 12-case mutation suite that proves the validator exits 1                                           |
+| `charts`     | Same triggers; tier=full for `helm` + `kubeconform`         | Exact chart **version** resolution against the parsed repo index, then `helm template` of every chart with its real `valuesObject`, then `kubeconform -strict` over the render |
+
+Measured 2026-08-14 (local, warm): offline validation 0.4 s; mutation suite
+1.7 s; online version check 1.4 s over ~5 MB; `helm template` of all six charts
+5.1 s; end-to-end `--render` 7.6 s. There was never a cost case for keeping
+chart validation off pull requests.
+
+Not caught by either job, stated rather than hidden: `helm template` and
+`kubeconform` validate structure and schema, not semantics. Setting
+`statefulset.replicas: "not-a-number"` on the cockroachdb chart renders
+`replicas: 0` — schema-valid, silently wrong. Only a live cluster notices no
+pod ever appears; that is the `k8s-argocd-health-test` lane's job.
 
 Both jobs use:
 
@@ -209,17 +239,17 @@ jobs:
 
 All of the following is already on `Lucent-Financial-Group/Zeta` main:
 
-| Commit | What |
-|---|---|
-| `951e2ec3` | `validate-applications.ts` (TS, replaces .sh), CockroachDB manifest, open-iscsi NixOS |
-| `ce43026b` | dla-meter e2e tests, TravelerRankLedger persistence, Longhorn + local-path manifests |
-| `8cd11af8` | dla-meter probe tests, calibration-bridge integration, GossipTelemetry orbital |
-| `ddd3a8e3` | CommitPairCorrelator → dla-meter, §A #23 TravelerRankLedger in FROZEN-CORE |
-| `ef0e3891` | Anti-Sybil tests, GossipTelemetry orbital variants, CommitPairCorrelator |
-| `bab4193a` | TravelerRankLedger F#/TS, ShapeAcceptance EVE clone-gate, OrbitalAsymmetryBudget |
+| Commit     | What                                                                                                         |
+| ---------- | ------------------------------------------------------------------------------------------------------------ |
+| `951e2ec3` | `validate-applications.ts` (TS, replaces .sh), CockroachDB manifest, open-iscsi NixOS                        |
+| `ce43026b` | dla-meter e2e tests, TravelerRankLedger persistence, Longhorn + local-path manifests                         |
+| `8cd11af8` | dla-meter probe tests, calibration-bridge integration, GossipTelemetry orbital                               |
+| `ddd3a8e3` | CommitPairCorrelator → dla-meter, §A #23 TravelerRankLedger in FROZEN-CORE                                   |
+| `ef0e3891` | Anti-Sybil tests, GossipTelemetry orbital variants, CommitPairCorrelator                                     |
+| `bab4193a` | TravelerRankLedger F#/TS, ShapeAcceptance EVE clone-gate, OrbitalAsymmetryBudget                             |
 | `1b20b6eb` | OrbitalLink in ReticulumBusMeter/GossipTelemetry, resolveAtTickBridge + rankLedger, DurableDiplomacyRankGate |
-| `ad7fb934` | BusRegime δ_max fix (Option 3), bus-meter.ts transcendental-refinement |
-| `f393c69d` | Caveat (b) research doc, anti-recurrence pointer in calibration-ledger.test.ts |
-| `c6fb5ac0` | BipartiteMachZehnder.fs, TravelerRankLedger.Tests.fs, resolveAtTickBridge |
+| `ad7fb934` | BusRegime δ_max fix (Option 3), bus-meter.ts transcendental-refinement                                       |
+| `f393c69d` | Caveat (b) research doc, anti-recurrence pointer in calibration-ledger.test.ts                               |
+| `c6fb5ac0` | BipartiteMachZehnder.fs, TravelerRankLedger.Tests.fs, resolveAtTickBridge                                    |
 
 The only thing NOT on remote is `helm-validate.yml`. Everything else is live.

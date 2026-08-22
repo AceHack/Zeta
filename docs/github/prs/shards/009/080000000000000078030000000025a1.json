@@ -1,0 +1,12 @@
+{
+  "pr_number": 9633,
+  "archive_path": "docs/history/pr-reviews/PR-9633-docs-book-granny-the-definition-of-good-the-anti-muzzle-origin-of-the-builder.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-09T21:27:56.407Z",
+  "schema_version": "v1",
+  "commit_sha": "b360be11f2584a3380634fdc8a67cbc4c08ddc89",
+  "title": "docs(book): Granny — the definition of good (the anti-muzzle, origin of the builder)",
+  "state": "MERGED",
+  "merged_at": "2026-07-09T21:27:24Z",
+  "head_ref": "shadow/book-granny-the-definition-of-good"
+}

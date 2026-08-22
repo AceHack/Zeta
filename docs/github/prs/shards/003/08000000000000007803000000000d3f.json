@@ -1,0 +1,21 @@
+{
+  "pr_number": 3391,
+  "archive_path": "docs/history/pr-reviews/PR-3391-shard-tick-0838z-pr-3388-merged-2nd-stale-codex-review-pattern-on-pr-3389-mechan.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7BiO_i",
+    "comment:PRRC_kwDOSF9kNM7BiPAF",
+    "comment:PRRC_kwDOSF9kNM7BiPAT",
+    "comment:PRRC_kwDOSF9kNM7BiPAp",
+    "thread:PRRT_kwDOSF9kNM6CTbi_",
+    "thread:PRRT_kwDOSF9kNM6CTbin",
+    "thread:PRRT_kwDOSF9kNM6CTbjM",
+    "thread:PRRT_kwDOSF9kNM6CTbjb"
+  ],
+  "fetched_at": "2026-05-15T09:02:21.010Z",
+  "schema_version": "v1",
+  "commit_sha": "0a70b60aeb71105c4959ad97c04acf724e5c1150",
+  "title": "shard(tick): 0838Z — PR #3388 merged; 2nd stale-Codex-review pattern on PR #3389; mechanization candidate filed",
+  "state": "MERGED",
+  "merged_at": "2026-05-15T09:01:57Z",
+  "head_ref": "shard/tick-0838z-otto-cli-2026-05-15"
+}

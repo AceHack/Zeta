@@ -1,0 +1,28 @@
+{
+  "pr_number": 9817,
+  "archive_path": "docs/history/pr-reviews/PR-9817-feat-hygiene-healer-idempotence-closure-harness-healers-get-golden-vectors-too-0.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7cM0tR",
+    "comment:PRRC_kwDOSF9kNM7cM0tb",
+    "comment:PRRC_kwDOSF9kNM7cM0tf",
+    "comment:PRRC_kwDOSF9kNM7cM0tn",
+    "comment:PRRC_kwDOSF9kNM7cM0tw",
+    "comment:PRRC_kwDOSF9kNM7cM3kn",
+    "comment:PRRC_kwDOSF9kNM7cM3lU",
+    "comment:PRRC_kwDOSF9kNM7cM3m-",
+    "comment:PRRC_kwDOSF9kNM7cM3mC",
+    "comment:PRRC_kwDOSF9kNM7cM3n3",
+    "thread:PRRT_kwDOSF9kNM6Vk2UP",
+    "thread:PRRT_kwDOSF9kNM6Vk2UT",
+    "thread:PRRT_kwDOSF9kNM6Vk2UV",
+    "thread:PRRT_kwDOSF9kNM6Vk2Ub",
+    "thread:PRRT_kwDOSF9kNM6Vk2Uk"
+  ],
+  "fetched_at": "2026-08-01T02:55:25.115Z",
+  "schema_version": "v1",
+  "commit_sha": "9afce4b8d7ccf9f01478b91259e2de8d751d40ab",
+  "title": "feat(hygiene): healer idempotence + closure harness — healers get golden vectors too (081KX3KA3F0)",
+  "state": "MERGED",
+  "merged_at": "2026-08-01T02:54:53Z",
+  "head_ref": "otto/healer-harness"
+}

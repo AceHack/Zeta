@@ -1,0 +1,12 @@
+{
+  "pr_number": 4527,
+  "archive_path": "docs/history/pr-reviews/PR-4527-docs-archive-lior-pr-preservation-for-4526-and-4525.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-21T12:01:27.615Z",
+  "schema_version": "v1",
+  "commit_sha": "9d12ee3c056dd33da84ddd03a1e107231d94826d",
+  "title": "docs(archive): Lior PR preservation for #4526 and #4525",
+  "state": "MERGED",
+  "merged_at": "2026-05-21T12:01:08Z",
+  "head_ref": "lior/preserve-4526-4525"
+}

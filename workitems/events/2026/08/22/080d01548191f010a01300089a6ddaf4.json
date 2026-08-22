@@ -1,0 +1,14 @@
+{
+  "id": "080d01548191f010a01300089a6ddaf4",
+  "at": "2026-08-22T17:41:28.254Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M0N90CHX087G0R0034C7NPT",
+    "type": "bug",
+    "title": "ace's loadDependencyGraphFromFile declines the sync-wave dependency graph: block scalars and non-empty flow sequences are out of the hand-rolled YAML subset, and the designed vendor fallback was never wired",
+    "slug": "ace-s-loaddependencygraphfromfile-declines-the-sync-wave-dep",
+    "priority": "P2",
+    "filename": "081M0N90CHX087G0R0034C7NPT-ace-s-loaddependencygraphfromfile-declines-the-sync-wave-dep.md"
+  }
+}

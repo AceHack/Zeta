@@ -281,7 +281,7 @@ Contest code has a specific register:
   and that vocabulary needs to be fluent.
 - `.claude/skills/mathematics-and-physics/blueprints/complexity-theory-expert.md` —
   theoretical rigor for lower-bound arguments.
-- `.claude/skills/algorithms-expert/SKILL.md` —
+- `.claude/skills/leet-code/SKILL.md` —
   genuinely research-grade algorithmic work.
 - `.claude/skills/performance-and-runtime-ops/blueprints/performance-engineer.md` —
   when asymptotic analysis collides with real-

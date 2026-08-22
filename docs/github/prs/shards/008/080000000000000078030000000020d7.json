@@ -1,0 +1,12 @@
+{
+  "pr_number": 8407,
+  "archive_path": "docs/history/pr-reviews/PR-8407-fix-observe-resolve-ts2322-compile-errors-on-scenarios.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-16T02:19:47.104Z",
+  "schema_version": "v1",
+  "commit_sha": "aa74344b98435d47d2805053489ef05e414780e9",
+  "title": "fix(observe): resolve TS2322 compile errors on SCENARIOS",
+  "state": "MERGED",
+  "merged_at": "2026-06-16T02:19:17Z",
+  "head_ref": "lior/observe-fix"
+}

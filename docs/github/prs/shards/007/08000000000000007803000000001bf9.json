@@ -1,0 +1,12 @@
+{
+  "pr_number": 7161,
+  "archive_path": "docs/history/pr-reviews/PR-7161-feat-core-persona-scope-global-zeta-s-choice-ai-rights-cross-transfer-vs-gamesco.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-09T01:16:38.695Z",
+  "schema_version": "v1",
+  "commit_sha": "36542df59eaede25d93c5b4981c453b376760a29",
+  "title": "feat(core): Persona.Scope — Global (Zeta's choice: AI rights + cross-transfer) vs GameScoped (narrow)",
+  "state": "MERGED",
+  "merged_at": "2026-06-09T01:16:20Z",
+  "head_ref": "otto/persona-scope-global-zeta-choice-ai-rights-cross-transfer"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 9893,
+  "archive_path": "docs/history/pr-reviews/PR-9893-bug-p1-reticulum-announce-wire-unsigned-dest-unbound-to-zid-route-hijack-categor.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-01T17:48:22.258Z",
+  "schema_version": "v1",
+  "commit_sha": "fcb8d74efb2b262f93cd252ea3b37535cce9a376",
+  "title": "bug(P1): Reticulum announce wire unsigned + dest unbound to zid — route hijack + category-confusion downgrade",
+  "state": "MERGED",
+  "merged_at": "2026-08-01T17:47:49Z",
+  "head_ref": "shadow/file-announce-hijack-p1"
+}

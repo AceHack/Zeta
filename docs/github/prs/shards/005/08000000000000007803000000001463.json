@@ -1,0 +1,17 @@
+{
+  "pr_number": 5219,
+  "archive_path": "docs/history/pr-reviews/PR-5219-docs-agentic-org-add-phased-development-plan.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7FBLKf",
+    "comment:PRRC_kwDOSF9kNM7FBQrr",
+    "comment:PRRC_kwDOSF9kNM7FBRNr",
+    "thread:PRRT_kwDOSF9kNM6E3RmM"
+  ],
+  "fetched_at": "2026-05-26T16:53:04.780Z",
+  "schema_version": "v1",
+  "commit_sha": "052fc1aa83af5288b72b20d990c5c223b9fbc7d7",
+  "title": "docs(agentic-org): add phased development plan",
+  "state": "MERGED",
+  "merged_at": "2026-05-26T16:52:41Z",
+  "head_ref": "codex/agentic-org-policy-observations"
+}

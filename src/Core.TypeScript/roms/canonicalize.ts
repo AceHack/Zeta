@@ -3,8 +3,8 @@
 // datfile (Logiqx XML format). Smallest safe slice of 081KR2E4K0008QG0R001QZDAMQ.
 //
 // Usage:
-//   bun tools/roms/canonicalize.ts --datfile <path.dat> --dir <rom-dir>
-//   bun tools/roms/canonicalize.ts --datfile <path.dat> --dir <rom-dir> --apply
+//   bun src/Core.TypeScript/roms/canonicalize.ts --datfile <path.dat> --dir <rom-dir>
+//   bun src/Core.TypeScript/roms/canonicalize.ts --datfile <path.dat> --dir <rom-dir> --apply
 //
 // Output (default dry-run): JSON array of
 // { file, sha1, matched, canonicalName, renamed }.

@@ -1,0 +1,12 @@
+{
+  "pr_number": 6813,
+  "archive_path": "docs/history/pr-reviews/PR-6813-feat-dagfs-multi-parent-content-addressed-file-tree-two-edit-modes-cow-store.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-07T12:32:57.983Z",
+  "schema_version": "v1",
+  "commit_sha": "eb59b8d4583e8ddd1be163dd903508898ed8e575",
+  "title": "feat(DagFs): multi-parent content-addressed file tree + two edit modes (COW store)",
+  "state": "MERGED",
+  "merged_at": "2026-06-07T12:32:40Z",
+  "head_ref": "feat/dagfs-multiparent-two-edit-modes"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 10574,
+  "archive_path": "docs/history/pr-reviews/PR-10574-workitem-heartbeat-prs-can-never-merge-required-checks-sit-in-action-required.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-14T13:09:38.257Z",
+  "schema_version": "v1",
+  "commit_sha": "c7171b4586a0ebe2403ff1f9cc8655f773ba4502",
+  "title": "workitem: heartbeat PRs can never merge — required checks sit in action_required",
+  "state": "MERGED",
+  "merged_at": "2026-08-14T13:09:05Z",
+  "head_ref": "fix/heartbeat-prs-need-run-approval"
+}

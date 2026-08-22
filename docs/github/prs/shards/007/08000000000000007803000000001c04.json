@@ -1,0 +1,12 @@
+{
+  "pr_number": 7172,
+  "archive_path": "docs/history/pr-reviews/PR-7172-docs-research-trapping-godel-in-the-middle-lawvere-fixed-point-homoiconic-dbsp-m.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-09T01:56:43.758Z",
+  "schema_version": "v1",
+  "commit_sha": "cacbc4867d37267887462de21f8a96beea2f707a",
+  "title": "docs(research): trapping Godel in the middle — Lawvere fixed point, homoiconic DBSP, memes-as-quines, Clifford space",
+  "state": "MERGED",
+  "merged_at": "2026-06-09T01:56:24Z",
+  "head_ref": "otto/research-trap-godel-lawvere-homoiconic-dbsp-memetic-clifford"
+}

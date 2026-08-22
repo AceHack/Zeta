@@ -1,0 +1,15 @@
+{
+  "pr_number": 9106,
+  "archive_path": "docs/history/pr-reviews/PR-9106-docs-backlog-close-081kwg9jq9h-081kwga0c7-the-split-shipped-shadow.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7ROocu",
+    "thread:PRRT_kwDOSF9kNM6NxbGX"
+  ],
+  "fetched_at": "2026-08-17T04:04:32.569Z",
+  "schema_version": "v1",
+  "commit_sha": "a6bd426e3aca09ff88c78eb6f7af6788368cb41b",
+  "title": "docs(backlog): close 081KWG9JQ9H + 081KWGA0C7 — the split shipped (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-02T03:25:55Z",
+  "head_ref": "otto/close-iring-split-workitems-081KWG9JQ9H"
+}

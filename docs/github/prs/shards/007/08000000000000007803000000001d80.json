@@ -1,0 +1,12 @@
+{
+  "pr_number": 7552,
+  "archive_path": "docs/history/pr-reviews/PR-7552-feat-core-linguisticseed-b-0204-kernel-substrate-seed-as-an-f-ce-with-composable.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-11T00:16:00.732Z",
+  "schema_version": "v1",
+  "commit_sha": "6d0b711f228d260998068dc75dcbcb41078b5155",
+  "title": "feat(core): LinguisticSeed — B-0204 kernel-substrate seed as an F# CE with composable extension packs (PSD by construction)",
+  "state": "MERGED",
+  "merged_at": "2026-06-11T00:15:35Z",
+  "head_ref": "shadow-linguistic-seed-kernel-ce-b0204"
+}

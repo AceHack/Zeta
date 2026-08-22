@@ -1,0 +1,12 @@
+{
+  "pr_number": 6094,
+  "archive_path": "docs/history/pr-reviews/PR-6094-deps-bump-the-nuget-minor-patch-group-with-2-updates.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-30T07:25:59.953Z",
+  "schema_version": "v1",
+  "commit_sha": "f775b46b14b3f0fef17b010d871b87da9405c664",
+  "title": "deps: Bump the nuget-minor-patch group with 2 updates",
+  "state": "MERGED",
+  "merged_at": "2026-05-30T07:25:39Z",
+  "head_ref": "dependabot/nuget/nuget-minor-patch-6638ebd5e7"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 7543,
+  "archive_path": "docs/history/pr-reviews/PR-7543-test-core-prove-the-bag-k-w-spine-collapse-zset-weightedset-integerring-bp-16.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-10T23:45:19.096Z",
+  "schema_version": "v1",
+  "commit_sha": "09efa115839f8907188738644c492bb0cbf851c8",
+  "title": "test(core): prove the Bag<'K,'W> spine collapse — ZSet == WeightedSet<IntegerRing> (BP-16)",
+  "state": "MERGED",
+  "merged_at": "2026-06-10T23:44:54Z",
+  "head_ref": "shadow-bag-spine-equivalence-proof"
+}

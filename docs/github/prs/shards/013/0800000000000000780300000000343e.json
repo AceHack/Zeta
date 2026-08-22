@@ -1,0 +1,12 @@
+{
+  "pr_number": 13374,
+  "archive_path": "docs/history/pr-reviews/PR-13374-ops-file-the-low-memory-apt-budget-that-cannot-fit-ubuntu-slim-s-hard-cap.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-21T21:34:26.810Z",
+  "schema_version": "v1",
+  "commit_sha": "524cc4787f4855d01813726df0e88e65a3a807cf",
+  "title": "ops: file the low-memory apt budget that cannot fit ubuntu-slim's hard cap",
+  "state": "MERGED",
+  "merged_at": "2026-08-21T21:33:48Z",
+  "head_ref": "ops/file-low-memory-apt-budget"
+}

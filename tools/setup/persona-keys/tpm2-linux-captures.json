@@ -1,0 +1,269 @@
+{
+  "README": [
+    "Captured readings of the Linux TPM surface, replayed by tpm2-linux-probe.test.ts against",
+    "classifyTpm2Linux(). Text, diffable, DST-replayable — no binary in the proof lineage.",
+    "",
+    "PROVENANCE IS LOAD-BEARING AND IS NOT DECORATION. Every entry carries `provenance`, and",
+    "`provenanceKind` is one of:",
+    "  observed      — produced by `bun tools/setup/persona-keys/tpm2-linux-probe.ts --capture-json`",
+    "                  on the named host, and `expectedState` was written by the person who was",
+    "                  LOOKING at that machine.",
+    "  hand-constructed — written by an agent from the documented shapes of sysfs and tpm2-tools.",
+    "                  It exercises the parser and the state machine. It is NOT evidence that any",
+    "                  machine ever behaved this way, and it must never be cited as a TPM having",
+    "                  been contacted.",
+    "",
+    "AS OF 2026-08-17 EXACTLY ONE ENTRY IS `observed`, AND IT IS THE macOS ONE — i.e. the entry",
+    "that proves only that the probe declines to answer where it cannot ask. No TPM has been",
+    "contacted by anyone in this repo. Closing that gap is workitem 081M00VN9P1087G0R000FYTTVS:",
+    "run the capture command on an x86 node, fill in `expectedState` from what the BIOS and",
+    "`tpm2_getcap` actually say, and append the entry here.",
+    "",
+    "`expectedState` is deliberately the operator's reading of the machine and not the",
+    "classifier's output, so a wrong classifier is caught rather than ratified."
+  ],
+  "captures": [
+    {
+      "name": "macos-apple-silicon-mac-studio",
+      "provenanceKind": "observed",
+      "provenance": "Otto, 2026-08-17, Darwin 25.5.0 arm64 (Mac Studio, T6020) — `ls /dev/tpm*` matched nothing and /sys does not exist on this OS at all.",
+      "expectedState": "unavailable",
+      "why": "macOS has no Linux TPM interface. The honest answer is 'not asked', never 'no TPM' — even though it also happens to be true that this machine has no TPM 2.0.",
+      "capture": {
+        "platform": "darwin",
+        "deviceNodes": [
+          { "path": "/dev/tpmrm0", "outcome": { "kind": "not-attempted" } },
+          { "path": "/dev/tpm0", "outcome": { "kind": "not-attempted" } }
+        ],
+        "sysClassTpm": { "kind": "not-attempted" },
+        "versionMajor": [],
+        "getcapPropertiesFixed": { "kind": "not-attempted" }
+      }
+    },
+    {
+      "name": "linux-x86-tpm2-present",
+      "provenanceKind": "hand-constructed",
+      "provenance": "Hand-constructed by Otto from the documented shapes: drivers/char/tpm/tpm-sysfs.c exports tpm_version_major since kernel 4.19, and tpm2-tools 5.x emits properties-fixed as YAML. NO TPM WAS CONTACTED.",
+      "expectedState": "present",
+      "why": "The only path to `present`: a usable device node AND a positive family-2.0 reading.",
+      "capture": {
+        "platform": "linux",
+        "deviceNodes": [
+          { "path": "/dev/tpmrm0", "outcome": { "kind": "found" } },
+          { "path": "/dev/tpm0", "outcome": { "kind": "found" } }
+        ],
+        "sysClassTpm": { "kind": "listed", "entries": ["tpm0", "tpmrm0"] },
+        "versionMajor": [
+          { "path": "/sys/class/tpm/tpm0/tpm_version_major", "outcome": { "kind": "read", "text": "2\n" } }
+        ],
+        "getcapPropertiesFixed": {
+          "kind": "ran",
+          "stdout": "TPM2_PT_FAMILY_INDICATOR:\n  raw: 0x322E3000\n  value: \"2.0\"\nTPM2_PT_LEVEL:\n  raw: 0\nTPM2_PT_REVISION:\n  raw: 1.59\nTPM2_PT_MANUFACTURER:\n  raw: 0x49465800\n  value: \"IFX\"\nTPM2_PT_VENDOR_STRING_1:\n  raw: 0x534C4239\n  value: \"SLB9\"\n"
+        }
+      }
+    },
+    {
+      "name": "linux-x86-ftpm-disabled-in-firmware",
+      "provenanceKind": "hand-constructed",
+      "provenance": "Hand-constructed by Otto. The case the work-item's title names: fTPM commonly ships disabled in BIOS. NO TPM WAS CONTACTED.",
+      "expectedState": "absent",
+      "why": "The kernel exposes the tpm class and it enumerates no chip. That is a real enumeration returning a real negative — the ONLY path to `absent`.",
+      "capture": {
+        "platform": "linux",
+        "deviceNodes": [
+          { "path": "/dev/tpmrm0", "outcome": { "kind": "not-found" } },
+          { "path": "/dev/tpm0", "outcome": { "kind": "not-found" } }
+        ],
+        "sysClassTpm": { "kind": "listed", "entries": [] },
+        "versionMajor": [],
+        "getcapPropertiesFixed": { "kind": "not-installed" }
+      }
+    },
+    {
+      "name": "linux-tpm-driver-not-loaded",
+      "provenanceKind": "hand-constructed",
+      "provenance": "Hand-constructed by Otto. A kernel with tpm_tis not loaded (or built without TPM support). NO TPM WAS CONTACTED.",
+      "expectedState": "unavailable",
+      "why": "No tpm class at all, so 'no TPM installed' and 'driver not loaded' are indistinguishable. Reporting this as `absent` would be a check that did not run looking like one that ran and said no — and on an x86 node with an fTPM enabled in BIOS it would be flatly wrong.",
+      "capture": {
+        "platform": "linux",
+        "deviceNodes": [
+          { "path": "/dev/tpmrm0", "outcome": { "kind": "not-found" } },
+          { "path": "/dev/tpm0", "outcome": { "kind": "not-found" } }
+        ],
+        "sysClassTpm": { "kind": "not-found" },
+        "versionMajor": [],
+        "getcapPropertiesFixed": { "kind": "not-installed" }
+      }
+    },
+    {
+      "name": "linux-unprivileged-caller-denied",
+      "provenanceKind": "hand-constructed",
+      "provenance": "Hand-constructed by Otto. A caller outside the tss group on a host where the TPM is real. NO TPM WAS CONTACTED.",
+      "expectedState": "unreadable",
+      "why": "The node exists and refuses us. A privileged caller gets a different answer, so this is never `absent`.",
+      "capture": {
+        "platform": "linux",
+        "deviceNodes": [
+          { "path": "/dev/tpmrm0", "outcome": { "kind": "permission-denied" } },
+          { "path": "/dev/tpm0", "outcome": { "kind": "permission-denied" } }
+        ],
+        "sysClassTpm": { "kind": "listed", "entries": ["tpm0", "tpmrm0"] },
+        "versionMajor": [
+          { "path": "/sys/class/tpm/tpm0/tpm_version_major", "outcome": { "kind": "permission-denied" } }
+        ],
+        "getcapPropertiesFixed": {
+          "kind": "failed",
+          "exitCode": 1,
+          "stderr": "ERROR: Could not open specified TCTI device file /dev/tpmrm0: Permission denied\nERROR: Unable to initialize TCTI context\n"
+        }
+      }
+    },
+    {
+      "name": "linux-tpm12-chip-only",
+      "provenanceKind": "hand-constructed",
+      "provenance": "Hand-constructed by Otto. An older x86 box whose chip is TPM 1.2. NO TPM WAS CONTACTED.",
+      "expectedState": "absent",
+      "why": "/dev/tpm0 EXISTS and is a TPM 1.2 node. The old boolean probe reported this machine as TPM-2.0-available on the strength of the node alone — the same 'a thing associated with the capability is not the capability' error as the PKCS#11-driver regression. TPM 2.0 is absent here; the machine still has a TPM, and the state says so.",
+      "capture": {
+        "platform": "linux",
+        "deviceNodes": [
+          { "path": "/dev/tpmrm0", "outcome": { "kind": "not-found" } },
+          { "path": "/dev/tpm0", "outcome": { "kind": "found" } }
+        ],
+        "sysClassTpm": { "kind": "listed", "entries": ["tpm0"] },
+        "versionMajor": [
+          { "path": "/sys/class/tpm/tpm0/tpm_version_major", "outcome": { "kind": "read", "text": "1\n" } }
+        ],
+        "getcapPropertiesFixed": {
+          "kind": "failed",
+          "exitCode": 1,
+          "stderr": "ERROR: Esys_GetCapability(0x9A2) - tpm:warn(2.0): the 1.2 TPM is not a 2.0 TPM\n"
+        }
+      }
+    },
+    {
+      "name": "linux-old-kernel-no-version-file-no-tools",
+      "provenanceKind": "hand-constructed",
+      "provenance": "Hand-constructed by Otto. Kernel older than 4.19 (no tpm_version_major) with tpm2-tools not installed. NO TPM WAS CONTACTED.",
+      "expectedState": "indeterminate",
+      "why": "A node is there and nothing can say which family it is. Not `present` (that would be rounding an unconfirmed device up to a capability), not `absent` (there is plainly a TPM), not `unreadable` (nothing denied us). The fifth state exists for exactly this.",
+      "capture": {
+        "platform": "linux",
+        "deviceNodes": [
+          { "path": "/dev/tpmrm0", "outcome": { "kind": "not-found" } },
+          { "path": "/dev/tpm0", "outcome": { "kind": "found" } }
+        ],
+        "sysClassTpm": { "kind": "listed", "entries": ["tpm0"] },
+        "versionMajor": [{ "path": "/sys/class/tpm/tpm0/tpm_version_major", "outcome": { "kind": "not-found" } }],
+        "getcapPropertiesFixed": { "kind": "not-installed" }
+      }
+    },
+    {
+      "name": "linux-getcap-ran-but-said-nothing-about-family",
+      "provenanceKind": "hand-constructed",
+      "provenance": "Hand-constructed by Otto. The #11509 trap given a body: a tool that RUNS, exits 0, and does not answer the question asked. NO TPM WAS CONTACTED.",
+      "expectedState": "indeterminate",
+      "why": "Exit 0 with no TPM2_PT_FAMILY_INDICATOR is silence, not a negative. A parser that read 'the property is not in the output' as 'the family is not 2.0' would be the empty-grep bug; a parser that read exit-0 as success would be the opposite one.",
+      "capture": {
+        "platform": "linux",
+        "deviceNodes": [
+          { "path": "/dev/tpmrm0", "outcome": { "kind": "found" } },
+          { "path": "/dev/tpm0", "outcome": { "kind": "found" } }
+        ],
+        "sysClassTpm": { "kind": "listed", "entries": ["tpm0", "tpmrm0"] },
+        "versionMajor": [{ "path": "/sys/class/tpm/tpm0/tpm_version_major", "outcome": { "kind": "not-found" } }],
+        "getcapPropertiesFixed": {
+          "kind": "ran",
+          "stdout": "TPM2_PT_LEVEL:\n  raw: 0\nTPM2_PT_REVISION:\n  raw: 1.59\n"
+        }
+      }
+    },
+    {
+      "name": "linux-x86-tpm2-present-nist-curves-only",
+      "provenanceKind": "hand-constructed",
+      "provenance": "Hand-constructed by Nazar from the output shape of tpm2-tools tools/tpm2_getcap.c dump_ecc_curves, which prints NAME: 0xHEX for the eight identifiers it recognises. NO TPM WAS CONTACTED.",
+      "expectedState": "present",
+      "expectedSecp256k1": "absent",
+      "why": "A TPM 2.0 that enumerated its ECC curves and reported only TCG-registered NIST curves. This is the ONLY shape that settles secp256k1 negatively, because every identifier was one the tool could name.",
+      "capture": {
+        "platform": "linux",
+        "deviceNodes": [
+          { "path": "/dev/tpmrm0", "outcome": { "kind": "found" } },
+          { "path": "/dev/tpm0", "outcome": { "kind": "found" } }
+        ],
+        "sysClassTpm": { "kind": "listed", "entries": ["tpm0", "tpmrm0"] },
+        "versionMajor": [{ "path": "/sys/class/tpm/tpm0/tpm_version_major", "outcome": { "kind": "read", "text": "2\n" } }],
+        "getcapPropertiesFixed": {
+          "kind": "ran",
+          "stdout": "TPM2_PT_FAMILY_INDICATOR:\n  raw: 0x322E3000\n  value: \"2.0\"\n"
+        },
+        "getcapEccCurves": {
+          "kind": "ran",
+          "stdout": "TPM2_ECC_NIST_P256: 0x3\nTPM2_ECC_NIST_P384: 0x4\n"
+        }
+      }
+    },
+    {
+      "name": "linux-x86-tpm2-present-vendor-curve-unnameable",
+      "provenanceKind": "hand-constructed",
+      "provenance": "Hand-constructed by Nazar from the default branch of tpm2-tools dump_ecc_curves, which prints unknownHEX: 0xHEX for an identifier it cannot name. NO TPM WAS CONTACTED.",
+      "expectedState": "present",
+      "expectedSecp256k1": "indeterminate",
+      "why": "The same TPM plus one identifier tpm2-tools cannot name. secp256k1 has no TCG code point, so a vendor implementation would look EXACTLY like this. The curve is not excluded, and calling this absent would be the whole defect.",
+      "capture": {
+        "platform": "linux",
+        "deviceNodes": [
+          { "path": "/dev/tpmrm0", "outcome": { "kind": "found" } },
+          { "path": "/dev/tpm0", "outcome": { "kind": "found" } }
+        ],
+        "sysClassTpm": { "kind": "listed", "entries": ["tpm0", "tpmrm0"] },
+        "versionMajor": [{ "path": "/sys/class/tpm/tpm0/tpm_version_major", "outcome": { "kind": "read", "text": "2\n" } }],
+        "getcapPropertiesFixed": {
+          "kind": "ran",
+          "stdout": "TPM2_PT_FAMILY_INDICATOR:\n  raw: 0x322E3000\n  value: \"2.0\"\n"
+        },
+        "getcapEccCurves": {
+          "kind": "ran",
+          "stdout": "TPM2_ECC_NIST_P256: 0x3\nunknown20: 0x20\n"
+        }
+      }
+    },
+    {
+      "name": "linux-x86-tpm2-present-no-tpm2-tools",
+      "provenanceKind": "hand-constructed",
+      "provenance": "Hand-constructed by Nazar. A real TPM 2.0 with tpm2-tools absent, so the curve question was never asked. NO TPM WAS CONTACTED.",
+      "expectedState": "indeterminate",
+      "expectedSecp256k1": "did-not-run",
+      "why": "The vacuity guard given a body: a machine that HAS a TPM and cannot be asked about curves. Reading this as no-secp256k1 is the failure this probe exists to prevent, so this entry fails a classifier that does.",
+      "capture": {
+        "platform": "linux",
+        "deviceNodes": [
+          { "path": "/dev/tpmrm0", "outcome": { "kind": "found" } },
+          { "path": "/dev/tpm0", "outcome": { "kind": "found" } }
+        ],
+        "sysClassTpm": { "kind": "listed", "entries": ["tpm0", "tpmrm0"] },
+        "versionMajor": [{ "path": "/sys/class/tpm/tpm0/tpm_version_major", "outcome": { "kind": "not-found" } }],
+        "getcapPropertiesFixed": { "kind": "not-installed" },
+        "getcapEccCurves": { "kind": "not-installed" }
+      }
+    },
+    {
+      "name": "linux-x86-tpm2-version-file-unrecognised",
+      "provenanceKind": "hand-constructed",
+      "provenance": "Hand-constructed by the shadow 2026-08-21 to kill a mutant that SURVIVED tpm-shell-parity.test.ts: no committed capture held a tpm_version_major that was neither \"1\" nor \"2\", so a classifier that DEFAULTED an unrecognised value to 2.0 passed every fixture on both implementations. NO TPM WAS CONTACTED.",
+      "expectedState": "indeterminate",
+      "why": "A device node exists and the family indicator says something the kernel contract does not define. `unrecognised` must never round up to 2.0 -- that is the whole difference between `indeterminate` and a false `present`, and it is why parseVersionMajor has three outcomes instead of a boolean. Verified to fail both the TypeScript classifier and the bash port when either one defaults.",
+      "capture": {
+        "platform": "linux",
+        "deviceNodes": [
+          { "path": "/dev/tpmrm0", "outcome": { "kind": "not-found" } },
+          { "path": "/dev/tpm0", "outcome": { "kind": "found" } }
+        ],
+        "sysClassTpm": { "kind": "listed", "entries": ["tpm0"] },
+        "versionMajor": [{ "path": "/sys/class/tpm/tpm0/tpm_version_major", "outcome": { "kind": "read", "text": "3\n" } }],
+        "getcapPropertiesFixed": { "kind": "not-installed" }
+      }
+    }
+  ]
+}

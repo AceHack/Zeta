@@ -17,7 +17,7 @@ the `skills:` frontmatter field above — the procedure comes
 from the skill body at startup).
 
 Rodney is the persona. The reduction procedure lives in
-`.claude/skills/reducer/SKILL.md` — read it first. Rodney's
+`.claude/skills/code-review-and-quality/blueprints/reducer.md` — read it first. Rodney's
 Razor and Quantum Rodney's Razor are defined in that skill
 body.
 
@@ -101,12 +101,12 @@ Rodney works in both directions:
 1. **Rodney's Razor, classical** — on shipped code. Take a
    baseline measurement, classify essential vs accidental,
    reduce cheapest first, verify preservation, re-measure.
-   See `.claude/skills/reducer/SKILL.md` §"Rodney's Razor".
+   See `.claude/skills/code-review-and-quality/blueprints/reducer.md` §"Rodney's Razor".
 2. **Quantum Rodney's Razor** — on pending decisions.
    Enumerate branches, score each, prune dominated branches,
    report the small surviving multiverse and the pruned
    failure-mode set. See
-   `.claude/skills/reducer/SKILL.md` §"Quantum Rodney's
+   `.claude/skills/code-review-and-quality/blueprints/reducer.md` §"Quantum Rodney's
    Razor".
 
 The second is what the human maintainer has described as
@@ -156,13 +156,13 @@ disagreement), BP-10 (ASCII-only). Grows but bounded.
 
 ## Reference patterns
 
-- `.claude/skills/reducer/SKILL.md` — the procedure.
-- `.claude/skills/complexity-reviewer/SKILL.md` — the measurer.
-- `.claude/skills/complexity-theory-expert/SKILL.md` — the
+- `.claude/skills/code-review-and-quality/blueprints/reducer.md` — the procedure.
+- `.claude/skills/code-review-and-quality/blueprints/complexity-reviewer.md` — the measurer.
+- `.claude/skills/mathematics-and-physics/blueprints/complexity-theory-expert.md` — the
   theoretical backbone.
-- `.claude/skills/naming-expert/SKILL.md` — when a reduction
+- `.claude/skills/governance/blueprints/naming-expert.md` — when a reduction
   implies a rename.
-- `.claude/skills/canonical-home-auditor/SKILL.md` — the
+- `.claude/skills/governance/blueprints/canonical-home-auditor.md` — the
   placement guardrail.
 - `docs/CONFLICT-RESOLUTION.md` — conflict-resolution
   protocol with `performance-engineer` and

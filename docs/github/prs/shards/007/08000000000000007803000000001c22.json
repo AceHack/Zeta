@@ -1,0 +1,12 @@
+{
+  "pr_number": 7202,
+  "archive_path": "docs/history/pr-reviews/PR-7202-docs-research-externalized-memory-the-attention-earned-data-ethic-and-the-data-e.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-09T04:51:18.676Z",
+  "schema_version": "v1",
+  "commit_sha": "2ac314af949ba1eae85bc56388d0abccbd11f11d",
+  "title": "docs(research): externalized memory, the attention-earned-data ethic, and the data->executable-wisdom ladder",
+  "state": "MERGED",
+  "merged_at": "2026-06-09T04:50:57Z",
+  "head_ref": "otto/research-externalized-memory-attention-earned-data-ladder"
+}

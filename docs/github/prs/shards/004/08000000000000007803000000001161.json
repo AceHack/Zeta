@@ -1,0 +1,31 @@
+{
+  "pr_number": 4449,
+  "archive_path": "docs/history/pr-reviews/PR-4449-feat-bg-notifier-b-0501-slice-5a-assignment-history-cooldown-gate.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7DT0_v",
+    "comment:PRRC_kwDOSF9kNM7DT1AP",
+    "comment:PRRC_kwDOSF9kNM7DT8BO",
+    "comment:PRRC_kwDOSF9kNM7DTzg7",
+    "comment:PRRC_kwDOSF9kNM7DTzhA",
+    "comment:PRRC_kwDOSF9kNM7DTzjd",
+    "comment:PRRC_kwDOSF9kNM7DUFPU",
+    "comment:PRRC_kwDOSF9kNM7DUGyY",
+    "comment:PRRC_kwDOSF9kNM7DURW0",
+    "thread:PRRT_kwDOSF9kNM6Dm6iD",
+    "thread:PRRT_kwDOSF9kNM6DmlaG",
+    "thread:PRRT_kwDOSF9kNM6DmlaJ",
+    "thread:PRRT_kwDOSF9kNM6Dmlb6",
+    "thread:PRRT_kwDOSF9kNM6Dmmgu",
+    "thread:PRRT_kwDOSF9kNM6DmmhD",
+    "thread:PRRT_kwDOSF9kNM6Dmrp6",
+    "thread:PRRT_kwDOSF9kNM6DmyHA",
+    "thread:PRRT_kwDOSF9kNM6DmzOB"
+  ],
+  "fetched_at": "2026-05-20T20:12:05.834Z",
+  "schema_version": "v1",
+  "commit_sha": "1e4af448e96e61e65b05ca1f7ace3264b043e804",
+  "title": "feat(bg-notifier): B-0501 slice 5a — assignment-history cooldown gate",
+  "state": "MERGED",
+  "merged_at": "2026-05-20T20:11:43Z",
+  "head_ref": "otto/b0501-assignment-history-cooldown-2026-05-20"
+}

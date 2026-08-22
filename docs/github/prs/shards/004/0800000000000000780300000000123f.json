@@ -1,0 +1,23 @@
+{
+  "pr_number": 4671,
+  "archive_path": "docs/history/pr-reviews/PR-4671-memory-vera-preserve-family-configuration-language-calibration.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7EKBBx",
+    "comment:PRRC_kwDOSF9kNM7EKBCY",
+    "comment:PRRC_kwDOSF9kNM7EKMvt",
+    "comment:PRRC_kwDOSF9kNM7EKMwR",
+    "comment:PRRC_kwDOSF9kNM7EKMwl",
+    "thread:PRRT_kwDOSF9kNM6EOIwC",
+    "thread:PRRT_kwDOSF9kNM6EOIwg",
+    "thread:PRRT_kwDOSF9kNM6EORXX",
+    "thread:PRRT_kwDOSF9kNM6EORXw",
+    "thread:PRRT_kwDOSF9kNM6EORYE"
+  ],
+  "fetched_at": "2026-05-22T20:28:23.550Z",
+  "schema_version": "v1",
+  "commit_sha": "7b98de6cb9278533b4b068f171a64806b81f0003",
+  "title": "memory(vera): preserve family configuration language calibration",
+  "state": "MERGED",
+  "merged_at": "2026-05-22T20:28:04Z",
+  "head_ref": "codex/vera-family-configuration-2026-05-22"
+}

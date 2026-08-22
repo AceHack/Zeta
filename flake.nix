@@ -6,7 +6,7 @@
 #
 # Bootstrap flow:
 #   1. Clone Zeta onto a workstation:    git clone https://github.com/Lucent-Financial-Group/Zeta
-#   2. Build the USB installer ISO:      cd full-ai-cluster/usb-nixos-installer && nix build .#installer-iso
+#   2. Build the USB installer ISO:      cd full-ai-cluster && nix build .#installer-iso
 #   3. Flash to USB (macOS):             bun full-ai-cluster/tools/zflash.ts
 #      (Linux/Windows fallback:          sudo dd if=result/iso/zeta-installer-*.iso of=/dev/sdX bs=4M status=progress)
 #   4. Boot a target machine on the stick.
@@ -159,7 +159,7 @@
         # installer-iso package retired from root flake 2026-05-26
         # (USB cleanup PR 2). Canonical AI-cluster ISO now lives at
         # full-ai-cluster/usb-nixos-installer/ and is built via:
-        #   cd full-ai-cluster/usb-nixos-installer && nix build .#installer-iso
+        #   cd full-ai-cluster && nix build .#installer-iso
         # CI workflow: .github/workflows/build-ai-cluster-iso.yml
         packages = { };
 
@@ -214,7 +214,7 @@
 
           shellHook = ''
             echo "zeta-admin devShell ready."
-            echo "  Build installer ISO:    cd full-ai-cluster/usb-nixos-installer && nix build .#installer-iso"
+            echo "  Build installer ISO:    cd full-ai-cluster && nix build .#installer-iso"
             echo "  Build host system:      nixos-rebuild build --flake .#<host>"
             echo "  Talk to cluster:        kubectl / k9s / argocd / helm"
             # 081KWN0JKJV — tracked commit-msg hook (Manus wrapper leak guard).

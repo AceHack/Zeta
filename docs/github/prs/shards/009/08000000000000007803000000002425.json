@@ -1,0 +1,12 @@
+{
+  "pr_number": 9253,
+  "archive_path": "docs/history/pr-reviews/PR-9253-docs-research-the-emit-retract-monad-as-theodicy-beacon-ferry-of-aaron-s-christi.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-03T01:37:35.559Z",
+  "schema_version": "v1",
+  "commit_sha": "95b2bd0cc9f287ec61f09471eadb8063bb27c5aa",
+  "title": "docs(research): the emit/retract monad as theodicy — Beacon ferry of Aaron's Christian frame",
+  "state": "MERGED",
+  "merged_at": "2026-07-03T01:37:06Z",
+  "head_ref": "otto/emit-retract-theodicy-monad-beacon"
+}

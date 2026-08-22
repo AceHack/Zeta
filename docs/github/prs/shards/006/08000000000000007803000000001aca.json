@@ -1,0 +1,12 @@
+{
+  "pr_number": 6858,
+  "archive_path": "docs/history/pr-reviews/PR-6858-docs-research-sdrs-thousand-brains-cortical-columns-as-sparse-tensors-beacon-anc.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-07T15:45:45.518Z",
+  "schema_version": "v1",
+  "commit_sha": "fcaac7185babf90977f4db461efc7fe3821c7302",
+  "title": "docs(research): SDRs / Thousand Brains cortical columns as sparse tensors — Beacon anchor",
+  "state": "MERGED",
+  "merged_at": "2026-06-07T15:45:21Z",
+  "head_ref": "otto/sdr-thousand-brains-sparse-tensor-anchor"
+}

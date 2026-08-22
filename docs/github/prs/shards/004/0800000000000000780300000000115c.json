@@ -1,0 +1,17 @@
+{
+  "pr_number": 4444,
+  "archive_path": "docs/history/pr-reviews/PR-4444-docs-shadow-lior-anti-entropy-log-stale-index-lock-paralysis-bypass.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7DRB4y",
+    "comment:PRRC_kwDOSF9kNM7DRB55",
+    "thread:PRRT_kwDOSF9kNM6DklJn",
+    "thread:PRRT_kwDOSF9kNM6DklKZ"
+  ],
+  "fetched_at": "2026-05-20T20:18:43.757Z",
+  "schema_version": "v1",
+  "commit_sha": "c7fa4fa2940b9b7f7472fb99152683105634e9e2",
+  "title": "docs(shadow): Lior anti-entropy log - stale index lock paralysis bypass",
+  "state": "MERGED",
+  "merged_at": "2026-05-20T20:18:25Z",
+  "head_ref": "lior/shadow-log-stale-lock"
+}

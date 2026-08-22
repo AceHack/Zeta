@@ -1,0 +1,12 @@
+{
+  "pr_number": 2074,
+  "archive_path": "docs/history/pr-reviews/PR-2074-feat-backlog-add-type-friction-reducer-feature-to-all-open-items.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-08T12:58:12.304Z",
+  "schema_version": "v1",
+  "commit_sha": "0064afa3e114c3ae81e37b6b5f36d943a84d957b",
+  "title": "feat(backlog): add type: friction-reducer | feature to all open items",
+  "state": "MERGED",
+  "merged_at": "2026-05-08T12:57:51Z",
+  "head_ref": "feat/backlog-type-field"
+}

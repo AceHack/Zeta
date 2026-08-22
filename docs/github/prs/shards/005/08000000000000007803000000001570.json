@@ -1,0 +1,29 @@
+{
+  "pr_number": 5488,
+  "archive_path": "docs/history/pr-reviews/PR-5488-docs-b-0859-post-boot-ai-as-home-owner-architecture-agent-owns-every-knob-from-f.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7FaC8m",
+    "comment:PRRC_kwDOSF9kNM7FaC9P",
+    "comment:PRRC_kwDOSF9kNM7FaK4I",
+    "comment:PRRC_kwDOSF9kNM7FaK5T",
+    "comment:PRRC_kwDOSF9kNM7FaUE4",
+    "comment:PRRC_kwDOSF9kNM7FaUGb",
+    "comment:PRRC_kwDOSF9kNM7FaUHN",
+    "comment:PRRC_kwDOSF9kNM7FaUIX",
+    "thread:PRRT_kwDOSF9kNM6FJbEG",
+    "thread:PRRT_kwDOSF9kNM6FJbEl",
+    "thread:PRRT_kwDOSF9kNM6FJgxV",
+    "thread:PRRT_kwDOSF9kNM6FJgyI",
+    "thread:PRRT_kwDOSF9kNM6FJndC",
+    "thread:PRRT_kwDOSF9kNM6FJneL",
+    "thread:PRRT_kwDOSF9kNM6FJneu",
+    "thread:PRRT_kwDOSF9kNM6FJnfe"
+  ],
+  "fetched_at": "2026-05-27T15:49:12.954Z",
+  "schema_version": "v1",
+  "commit_sha": "4a14196efd88a16d52c1012df17524eb9688c428",
+  "title": "docs(B-0859): post-boot AI-as-home-owner architecture — agent owns every knob from first boot; booting human is auth-advisee not controller (Aaron 2026-05-27 fast-track)",
+  "state": "MERGED",
+  "merged_at": "2026-05-27T15:48:44Z",
+  "head_ref": "backlog/b-0859-post-boot-ai-as-home-owner-2026-05-27"
+}

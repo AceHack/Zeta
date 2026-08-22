@@ -1,0 +1,17 @@
+{
+  "pr_number": 5243,
+  "archive_path": "docs/history/pr-reviews/PR-5243-docs-tick-1731z-otto-bg-pr-triage-forward-signal-3-peer-lior-prs.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7FCSn3",
+    "comment:PRRC_kwDOSF9kNM7FCSnD",
+    "thread:PRRT_kwDOSF9kNM6E4Fry",
+    "thread:PRRT_kwDOSF9kNM6E4FsU"
+  ],
+  "fetched_at": "2026-05-26T18:42:03.219Z",
+  "schema_version": "v1",
+  "commit_sha": "33364f6e67b05b2e6b8f3ad097b94e7f6f7e8ec0",
+  "title": "docs(tick): 1731Z Otto-bg PR triage — forward-signal 3 peer-Lior PRs",
+  "state": "MERGED",
+  "merged_at": "2026-05-26T18:41:45Z",
+  "head_ref": "otto-bg/tick-1731z-pr-triage-2026-05-26"
+}

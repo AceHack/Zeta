@@ -1,0 +1,12 @@
+{
+  "pr_number": 6029,
+  "archive_path": "docs/history/pr-reviews/PR-6029-feat-b-0347-4-durable-gate-for-carved-sentence-skill-descriptions.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-29T18:41:58.507Z",
+  "schema_version": "v1",
+  "commit_sha": "7abfe6fe14e53475634ea10884bc05516556e0f8",
+  "title": "feat(B-0347.4): durable gate for carved-sentence skill descriptions",
+  "state": "MERGED",
+  "merged_at": "2026-05-29T18:41:37Z",
+  "head_ref": "otto-cli/b0347-4-skill-desc-audit-2026-05-29"
+}

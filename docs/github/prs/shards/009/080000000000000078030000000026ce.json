@@ -1,0 +1,12 @@
+{
+  "pr_number": 9934,
+  "archive_path": "docs/history/pr-reviews/PR-9934-docs-letters-reply-to-manus-addison-on-the-tangle-math.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-01T22:37:04.166Z",
+  "schema_version": "v1",
+  "commit_sha": "e08f7d1e760e594897f3c32f9de1b46d2bcc3ae7",
+  "title": "docs(letters): reply to Manus/Addison on the tangle math",
+  "state": "MERGED",
+  "merged_at": "2026-08-01T22:36:33Z",
+  "head_ref": "otto/tangle-math-reply"
+}

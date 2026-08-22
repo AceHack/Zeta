@@ -1,0 +1,12 @@
+{
+  "pr_number": 9902,
+  "archive_path": "docs/history/pr-reviews/PR-9902-feat-gate-markdownlint-findings-scope-to-the-pr-s-own-diff-081kx3ka3es.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-01T17:39:47.409Z",
+  "schema_version": "v1",
+  "commit_sha": "67795bf24c452d9a87e3bf9ac603fc8d0ea6270e",
+  "title": "feat(gate): markdownlint findings scope to the PR's own diff (081KX3KA3ES)",
+  "state": "MERGED",
+  "merged_at": "2026-08-01T17:39:15Z",
+  "head_ref": "otto/gate-scoped-markdownlint"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 8985,
+  "archive_path": "docs/history/pr-reviews/PR-8985-fix-gate-secret-clip-sc2015-register-new-setup-scripts-in-bash-retirement-invent.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-21T19:17:25.240Z",
+  "schema_version": "v1",
+  "commit_sha": "fec6e5e7bdd915846d013799971388cc0a919c5b",
+  "title": "fix(gate): secret-clip SC2015 + register new setup scripts in bash-retirement inventory",
+  "state": "MERGED",
+  "merged_at": "2026-06-21T19:16:54Z",
+  "head_ref": "otto/fix-gate-secret-clip-shellcheck-inventory"
+}

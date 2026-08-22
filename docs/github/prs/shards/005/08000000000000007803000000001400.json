@@ -1,0 +1,27 @@
+{
+  "pr_number": 5120,
+  "archive_path": "docs/history/pr-reviews/PR-5120-fix-cascade-4-5-copilot-post-merge-findings-on-5119-exit-code-contract-squashfs-.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7E0AK8",
+    "comment:PRRC_kwDOSF9kNM7E0AKJ",
+    "comment:PRRC_kwDOSF9kNM7E0ALa",
+    "comment:PRRC_kwDOSF9kNM7E0AMA",
+    "comment:PRRC_kwDOSF9kNM7EzyH1",
+    "comment:PRRC_kwDOSF9kNM7EzyIt",
+    "comment:PRRC_kwDOSF9kNM7EzyJG",
+    "thread:PRRT_kwDOSF9kNM6Etg24",
+    "thread:PRRT_kwDOSF9kNM6Etg35",
+    "thread:PRRT_kwDOSF9kNM6Etg3l",
+    "thread:PRRT_kwDOSF9kNM6EtrR8",
+    "thread:PRRT_kwDOSF9kNM6EtrRU",
+    "thread:PRRT_kwDOSF9kNM6EtrSP",
+    "thread:PRRT_kwDOSF9kNM6EtrSn"
+  ],
+  "fetched_at": "2026-05-26T07:27:14.215Z",
+  "schema_version": "v1",
+  "commit_sha": "848467588078fd79659efc846b6685e7c53b8752",
+  "title": "fix(cascade-4): 5 Copilot post-merge findings on #5119 — exit-code contract + squashfs size + sonarjs + spawn-error + workflow set-u",
+  "state": "MERGED",
+  "merged_at": "2026-05-26T07:26:54Z",
+  "head_ref": "otto-cli/ci-cascade-4-fixfwd-5-copilot-findings-2026-05-26"
+}

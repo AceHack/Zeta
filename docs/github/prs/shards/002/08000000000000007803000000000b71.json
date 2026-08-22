@@ -1,0 +1,21 @@
+{
+  "pr_number": 2929,
+  "archive_path": "docs/history/pr-reviews/PR-2929-docs-memory-f-storage-no-binary-requirement-reticulum-clifford-content-based-add.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7AnCu7",
+    "comment:PRRC_kwDOSF9kNM7AnD2-",
+    "comment:PRRC_kwDOSF9kNM7AnD2v",
+    "comment:PRRC_kwDOSF9kNM7AnD3P",
+    "thread:PRRT_kwDOSF9kNM6BoZf0",
+    "thread:PRRT_kwDOSF9kNM6BoaU3",
+    "thread:PRRT_kwDOSF9kNM6BoaUp",
+    "thread:PRRT_kwDOSF9kNM6BoaVF"
+  ],
+  "fetched_at": "2026-05-13T04:23:11.087Z",
+  "schema_version": "v1",
+  "commit_sha": "bb015d530c0ef1f14a6ea885b699d9fba13a8537",
+  "title": "docs(memory): F# storage no-binary requirement + Reticulum+Clifford content-based addressing for specialized clusters (Aaron 2026-05-13)",
+  "state": "MERGED",
+  "merged_at": "2026-05-13T04:22:52Z",
+  "head_ref": "aaron-fsharp-storage-no-binary-requirement-git-native-db-snapshotting-indexes-git-friendly-binary-version-too-full-zeta-expand-to-text-viewable-cant-tell-not-git-2026-05-13"
+}

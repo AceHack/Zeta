@@ -4,7 +4,7 @@ This doc is **Forge-specific** project configuration for the
 `fork-pr-workflow` skill. The skill itself is factory-generic
 and defers the upstream-cadence choice to project-level
 configuration (see
-`Lucent-Financial-Group/Zeta: .claude/skills/fork-pr-workflow/SKILL.md`
+`Lucent-Financial-Group/Zeta: .claude/skills/workflows/blueprints/fork-pr-workflow.md`
 §"Optional overlay: batched upstream rhythm"). This doc is that
 configuration for Forge.
 

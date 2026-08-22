@@ -5,14 +5,16 @@
 // envelope serialize → writes to --output (e.g., /esp/zeta-creds.enc).
 //
 // Composes:
-//   - tools/installer/zeta-creds-crypto.ts (081KSKBP80008QG0R003AX2A69.1; encrypt)
-//   - tools/installer/zeta-creds-manifest.ts (081KSKBP80008QG0R003AX2A69.5; cred catalog)
-//   - tools/installer/zeta-cred-handlers.ts (081KSKBP80008QG0R003AX2A69.10; parse + validate args)
-//   - tools/installer/zeta-creds-envelope.ts (081KSKBP80008QG0R003AX2A69.2a; wire format + bundle)
+//   - src/Core.TypeScript/installer/zeta-creds-crypto.ts (081KSKBP80008QG0R003AX2A69.1; encrypt)
+//   - src/Core.TypeScript/installer/zeta-creds-manifest.ts (081KSKBP80008QG0R003AX2A69.5; cred catalog)
+//   - src/Core.TypeScript/installer/zeta-cred-handlers.ts (081KSKBP80008QG0R003AX2A69.10; parse + validate args)
+//   - src/Core.TypeScript/installer/zeta-creds-envelope.ts (081KSKBP80008QG0R003AX2A69.2a; wire format + bundle)
 //
 // Usage:
-//   bun tools/installer/zeta-creds-persist.ts \
+//   bun src/Core.TypeScript/installer/zeta-creds-persist.ts \
 //     --usb-uuid <uuid> \
+//     [--usb-iserial <serial>] \
+//     [--uefi-keyfile <path>] \
 //     --output /esp/zeta-creds.enc \
 //     ( --passphrase-file <path> | --passphrase-env <VAR> ) \
 //     [--persona <name>] \
@@ -31,9 +33,17 @@ import { encrypt } from "./zeta-creds-crypto";
 import { DEFAULT_HANDLERS, resolveBakeCred } from "./zeta-cred-handlers";
 import { encodeBundle, serializeEnvelope, type CredBundle } from "./zeta-creds-envelope";
 import { DEFAULT_MANIFEST } from "./zeta-creds-manifest";
+import {
+  selectCliBindingMaterial,
+  bindingFactorSidecarPath,
+  type PersistBindingFactorKind,
+} from "./installer-binding-cli.ts";
 
 interface Args {
-  readonly usbUuid: string;
+  readonly usbUuid: string | null;
+  readonly usbISerial: string | null;
+  readonly bindingFactor: PersistBindingFactorKind;
+  readonly bindingMaterial: string;
   readonly output: string;
   readonly passphrase: string;
   readonly persona: string | null;
@@ -53,6 +63,8 @@ interface Args {
  */
 export function parseArgs(argv: readonly string[], env: NodeJS.ProcessEnv): Args | { readonly error: string } {
   let usbUuid: string | null = null;
+  let usbISerial: string | null = null;
+  let uefiKeyfilePath: string | null = null;
   let output: string | null = null;
   let passphraseFile: string | null = null;
   let passphraseEnv: string | null = null;
@@ -67,6 +79,8 @@ export function parseArgs(argv: readonly string[], env: NodeJS.ProcessEnv): Args
     };
     try {
       if (arg === "--usb-uuid") usbUuid = next();
+      else if (arg === "--usb-iserial") usbISerial = next();
+      else if (arg === "--uefi-keyfile") uefiKeyfilePath = next();
       else if (arg === "--output") output = next();
       else if (arg === "--passphrase-file") passphraseFile = next();
       else if (arg === "--passphrase-env") passphraseEnv = next();
@@ -78,8 +92,20 @@ export function parseArgs(argv: readonly string[], env: NodeJS.ProcessEnv): Args
     }
   }
 
-  if (!usbUuid) return { error: "--usb-uuid required" };
   if (!output) return { error: "--output required" };
+
+  let uefiKeyfileBytes: Uint8Array | null = null;
+  if (uefiKeyfilePath !== null) {
+    if (!existsSync(uefiKeyfilePath)) return { error: "--uefi-keyfile not found" };
+    try {
+      uefiKeyfileBytes = readFileSync(uefiKeyfilePath);
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : String(err);
+      return { error: `--uefi-keyfile read failed: ${msg}` };
+    }
+  }
+  const binding = selectCliBindingMaterial({ usbUuid, usbISerial, uefiKeyfileBytes });
+  if ("error" in binding) return { error: binding.error };
 
   // Resolve passphrase source. Interactive prompt is NOT implemented in this
   // entry-point — caller must supply --passphrase-file or --passphrase-env.
@@ -106,11 +132,23 @@ export function parseArgs(argv: readonly string[], env: NodeJS.ProcessEnv): Args
       error: "passphrase source required: pass --passphrase-file <path> or --passphrase-env <VAR>",
     };
 
-  return { usbUuid, output, passphrase, persona, bakeCredArgs };
+  return {
+    usbUuid,
+    usbISerial,
+    bindingFactor: binding.factor,
+    bindingMaterial: binding.material,
+    output,
+    passphrase,
+    persona,
+    bakeCredArgs,
+  };
 }
 
 /** Compose a CredBundle from --bake-cred args + manifest. Pure (in test mode). */
-export function composeBundle(args: Args): CredBundle | { readonly error: string } {
+export function composeBundle(args: {
+  readonly persona: string | null;
+  readonly bakeCredArgs: readonly string[];
+}): CredBundle | { readonly error: string } {
   const globalCreds: Record<string, Buffer> = {};
   const personaCreds: Record<string, Record<string, Buffer>> = {};
 
@@ -135,10 +173,16 @@ export function composeBundle(args: Args): CredBundle | { readonly error: string
 }
 
 /** Pure pipeline (no FS write): bundle → encrypt → serialize. */
-export function buildBlob(bundle: CredBundle, usbUuid: string, passphrase: string): Buffer {
+export function buildBlob(bundle: CredBundle, bindingMaterial: string, passphrase: string): Buffer {
   const plaintext = encodeBundle(bundle);
-  const env = encrypt(plaintext, usbUuid, passphrase);
+  const env = encrypt(plaintext, bindingMaterial, passphrase);
   return serializeEnvelope(env);
+}
+
+/** Blob + factor sidecar. Sidecar is kind only; restore must not guess UUID. */
+export function writePersistOutputs(output: string, blob: Buffer, bindingFactor: string): void {
+  writeFileSync(output, blob);
+  writeFileSync(bindingFactorSidecarPath(output), `${bindingFactor}\n`);
 }
 
 async function main(): Promise<number> {
@@ -153,15 +197,17 @@ async function main(): Promise<number> {
     console.error(`zeta-creds-persist: ${bundle.error}`);
     return 3;
   }
-  const blob = buildBlob(bundle, parsed.usbUuid, parsed.passphrase);
+  const blob = buildBlob(bundle, parsed.bindingMaterial, parsed.passphrase);
+  const factorPath = bindingFactorSidecarPath(parsed.output);
   try {
-    writeFileSync(parsed.output, blob);
+    writePersistOutputs(parsed.output, blob, parsed.bindingFactor);
   } catch (err) {
     const msg = err instanceof Error ? err.message : String(err);
     console.error(`zeta-creds-persist: write to ${parsed.output} failed: ${msg}`);
     return 4;
   }
   console.log(`zeta-creds-persist: wrote ${blob.length} bytes to ${parsed.output}`);
+  console.log(`zeta-creds-persist: binding-factor ${parsed.bindingFactor} -> ${factorPath}`);
   console.log(`  globalCreds: ${Object.keys(bundle.globalCreds).join(", ") || "(none)"}`);
   for (const [persona, creds] of Object.entries(bundle.personaCreds)) {
     console.log(`  personaCreds[${persona}]: ${Object.keys(creds).join(", ")}`);

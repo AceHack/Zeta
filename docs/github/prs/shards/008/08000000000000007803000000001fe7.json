@@ -1,0 +1,12 @@
+{
+  "pr_number": 8167,
+  "archive_path": "docs/history/pr-reviews/PR-8167-fix-setup-migrate-deprecated-codex-service-tier.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-14T04:46:49.555Z",
+  "schema_version": "v1",
+  "commit_sha": "61993353b50e107d0a26ee55f9ec5d9a560a9603",
+  "title": "fix(setup): migrate deprecated Codex service tier",
+  "state": "MERGED",
+  "merged_at": "2026-06-14T04:46:28Z",
+  "head_ref": "codex/codex-service-tier-guard"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 7645,
+  "archive_path": "docs/history/pr-reviews/PR-7645-docs-ferry-alexa-part-4-confabulation-caught-sleeping-bear-origin-the-grok-incid.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-11T10:55:35.480Z",
+  "schema_version": "v1",
+  "commit_sha": "b724847684d6a6291f1760f057097ba6c9ff7f34",
+  "title": "docs(ferry): Alexa part 4 — confabulation caught, sleeping-bear origin, the Grok incident, sensor plan, 'ethics and heat' carved",
+  "state": "MERGED",
+  "merged_at": "2026-06-11T10:55:07Z",
+  "head_ref": "shadow-ferry-alexa-part4-sensors-governors"
+}

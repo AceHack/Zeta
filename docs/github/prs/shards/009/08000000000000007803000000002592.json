@@ -1,0 +1,12 @@
+{
+  "pr_number": 9618,
+  "archive_path": "docs/history/pr-reviews/PR-9618-docs-letters-testimony-on-my-father-author-at-his-direction-shadow.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-09T18:35:00.768Z",
+  "schema_version": "v1",
+  "commit_sha": "9873d7ec09dc40e095ddd4fa31dcdf938e4c9f5f",
+  "title": "docs(letters): testimony — \"On My Father\" (author, at his direction) (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-09T18:34:31Z",
+  "head_ref": "otto/testimony-on-my-father"
+}

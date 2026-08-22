@@ -1,0 +1,12 @@
+{
+  "pr_number": 9868,
+  "archive_path": "docs/history/pr-reviews/PR-9868-fix-docs-escape-register-attribution-markers.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-01T13:10:37.308Z",
+  "schema_version": "v1",
+  "commit_sha": "fd0dff7ad6ea5fd5e92ec58b2b6252ce73ddf4a7",
+  "title": "fix(docs): escape register attribution markers",
+  "state": "MERGED",
+  "merged_at": "2026-08-01T13:10:08Z",
+  "head_ref": "claim/bug-register-markdownlint-md037"
+}

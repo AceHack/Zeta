@@ -12,6 +12,8 @@
 // SECURITY: shares are ALL required to be protected at rest; ANY k shares reconstruct the secret.
 // Never log share bytes. This module is pure math — no filesystem/network doors.
 
+import { randomBytes as nodeRandomBytes } from "node:crypto";
+
 /** Prime field for byte-wise Shamir (257 is prime; bytes map to 0..255). */
 export const SHAMIR_PRIME = 257;
 
@@ -25,7 +27,7 @@ export interface ShamirShare {
 export interface ShamirSplitOptions {
   readonly threshold: number;
   readonly shares: number;
-  /** Optional deterministic RNG for tests — default `Math.random`. */
+  /** Optional deterministic RNG for DST/tests. Default is the OS CSPRNG, never `Math.random`. */
   readonly random?: () => number;
 }
 
@@ -78,7 +80,51 @@ function lagrangeAtZero(points: Array<{ x: number; y: number }>): number {
   return secret;
 }
 
-function randCoeff(random: () => number): number {
+/**
+ * Uniform coefficient in GF(257).
+ *
+ * P0 FIX 2026-08-14, same class as the FROST one: the default source was Math.random,
+ * a non-cryptographic PRNG whose state is recoverable from its own output. Shamir
+ * coefficients are the ONLY thing hiding the secret from a below-threshold set of
+ * shares, so a predictable coefficient collapses the threshold. The injected door is
+ * unchanged for DST; only the default moved.
+ *
+ * Debiased by MULTIPLY-SHIFT (Lemire 2019, "Fast Random Integer Generation in an
+ * Interval", ACM TOMACS 29(1)) rather than by modulo. 257 does not divide 2^16, so a
+ * bare `x % 257` would over-represent the low residues.
+ *
+ * Why not the modulo-with-rejection form this replaced: it was CORRECT, and CodeQL
+ * flagged it anyway ("Using modulo on a cryptographically secure random number
+ * produces biased results") because the rule cannot see a rejection bound sitting
+ * above the `%`. The rule is RIGHT in general — an unguarded `v % 257` really is
+ * biased, 255 against 256 — so dismissing it in a crypto file would have recorded that
+ * this rule is waveable here, in the one file where it will eventually fire on a real
+ * defect. Lemire needs no modulo on the random word at all, so the alert goes quiet
+ * because the flagged pattern is genuinely gone, not because it was silenced. It is
+ * also the faster construction: a 32-bit multiply and a shift, against a division.
+ *
+ * Same statistical outcome, verified exhaustively over all 2^16 draws: each of the 257
+ * residues occurs exactly 255 times, and exactly ONE draw is rejected — identical to
+ * the construction it replaces.
+ */
+function randCoeffCrypto(): number {
+  // Reject only when the low 16 bits fall below t = (2^16 - 257) mod 257 = 1 — i.e. when
+  // they are exactly zero. Derived from constants and written as a literal so that no `%`
+  // ever touches the random word: 65536 - 257 = 65279 = 257*254 + 1.
+  const REJECT_BELOW = 1;
+  for (;;) {
+    const b = nodeRandomBytes(2);
+    const x = (b[0]! << 8) | b[1]!;
+    // 65535 * 257 = 16_842_495 — inside 32 bits, and far inside 2^53, so the product is
+    // exact in a JS number with no BigInt and no precision loss.
+    const m = x * SHAMIR_PRIME;
+    if ((m & 0xffff) < REJECT_BELOW) continue;
+    return m >>> 16;
+  }
+}
+
+function randCoeff(random: (() => number) | undefined): number {
+  if (random === undefined) return randCoeffCrypto();
   return Math.floor(random() * SHAMIR_PRIME);
 }
 
@@ -87,7 +133,7 @@ export function shamirSplit(secret: Uint8Array, opts: ShamirSplitOptions): Shami
   const k = opts.threshold;
   const n = opts.shares;
   if (k < 1 || n < k) throw new Error("shamir: require 1 ≤ k ≤ n");
-  const random = opts.random ?? Math.random;
+  const random = opts.random;
   const shareYs: number[][] = Array.from({ length: n }, () => []);
 
   for (let b = 0; b < secret.length; b++) {

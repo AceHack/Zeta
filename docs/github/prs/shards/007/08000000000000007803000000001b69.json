@@ -1,0 +1,12 @@
+{
+  "pr_number": 7017,
+  "archive_path": "docs/history/pr-reviews/PR-7017-docs-weak-ref-mixins-on-the-synthesized-interface-for-on-demand-stored-proc-stat.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-08T04:49:49.522Z",
+  "schema_version": "v1",
+  "commit_sha": "26a0614378e9773f19474b907a5130f4b3c80e1d",
+  "title": "docs: weak-ref mixins on the synthesized interface for on-demand stored-proc state (DU/CRDT/actions)",
+  "state": "MERGED",
+  "merged_at": "2026-06-08T04:49:27Z",
+  "head_ref": "otto/interface-weakref-mixins-stored-proc-state-access"
+}

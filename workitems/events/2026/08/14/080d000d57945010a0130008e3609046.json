@@ -1,0 +1,14 @@
+{
+  "id": "080d000d57945010a0130008e3609046",
+  "at": "2026-08-14T19:06:15.562Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M00TNWM8087G0R0027ACGKY",
+    "type": "task",
+    "title": "Make deferral-vs-destruction a typed field, not a substring match on a free-form kind",
+    "slug": "make-deferral-vs-destruction-a-typed-field-not-a-substring-m",
+    "priority": "P2",
+    "filename": "081M00TNWM8087G0R0027ACGKY-make-deferral-vs-destruction-a-typed-field-not-a-substring-m.md"
+  }
+}

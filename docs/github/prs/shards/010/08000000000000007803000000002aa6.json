@@ -1,0 +1,12 @@
+{
+  "pr_number": 10918,
+  "archive_path": "docs/history/pr-reviews/PR-10918-feat-observe-phase-history-cli-query-the-ecc-timeline.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-16T14:57:24.396Z",
+  "schema_version": "v1",
+  "commit_sha": "e034c5d59075cf57ed11db3ecb42823745c525cd",
+  "title": "feat(observe): phase-history CLI — query the ECC timeline",
+  "state": "MERGED",
+  "merged_at": "2026-08-16T14:56:52Z",
+  "head_ref": "alexa/phase-history-cli"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 7121,
+  "archive_path": "docs/history/pr-reviews/PR-7121-feat-core-deltapattern-content-address-the-change-not-the-state-patterns-of-chan.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-08T22:55:23.168Z",
+  "schema_version": "v1",
+  "commit_sha": "61c572eeec546ba60bf163e10016f72d1eeda1f8",
+  "title": "feat(core): DeltaPattern — content-address the change not the state (patterns of change repeat)",
+  "state": "MERGED",
+  "merged_at": "2026-06-08T22:55:02Z",
+  "head_ref": "otto/deltapattern-content-address-the-change-not-the-state"
+}

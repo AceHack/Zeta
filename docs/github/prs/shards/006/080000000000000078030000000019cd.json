@@ -1,0 +1,12 @@
+{
+  "pr_number": 6605,
+  "archive_path": "docs/history/pr-reviews/PR-6605-docs-b-1006-the-registry-is-our-bcl-gate-quality-uniqueness-composability-codecs.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-02T17:40:05.106Z",
+  "schema_version": "v1",
+  "commit_sha": "5696c0f1416027378a473072d969d0538fb5e9be",
+  "title": "docs(B-1006): the registry IS our BCL; gate = quality+uniqueness+composability; codecs pass the same gate; Ace distributes the cross-language guarantee (Aaron)",
+  "state": "MERGED",
+  "merged_at": "2026-06-02T17:39:28Z",
+  "head_ref": "otto-cli/b1006-registry-is-bcl-three-gate-ace-2026-06-02"
+}

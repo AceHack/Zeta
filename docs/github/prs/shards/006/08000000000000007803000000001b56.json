@@ -1,0 +1,12 @@
+{
+  "pr_number": 6998,
+  "archive_path": "docs/history/pr-reviews/PR-6998-feat-core-key-noun-class-keys-travel-with-identity-events-on-the-one-stream-refe.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-08T03:06:08.520Z",
+  "schema_version": "v1",
+  "commit_sha": "556b692a1a0e2c165b4ef96e921767bf57b57b73",
+  "title": "feat(core): key noun-class — keys travel with identity, events on the one stream, reference-not-copy",
+  "state": "MERGED",
+  "merged_at": "2026-06-08T03:05:48Z",
+  "head_ref": "otto/keystore-noun-class-keys-travel-with-identity"
+}

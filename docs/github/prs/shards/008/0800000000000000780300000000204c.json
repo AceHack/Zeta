@@ -1,0 +1,12 @@
+{
+  "pr_number": 8268,
+  "archive_path": "docs/history/pr-reviews/PR-8268-docs-the-dual-bloom-anti-bloom-capability-router-pay-for-deferment-10-of-the-tim.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-15T06:04:01.842Z",
+  "schema_version": "v1",
+  "commit_sha": "e5b7677aea149637eace59b92df4870cdc435cd2",
+  "title": "docs: the dual bloom / anti-bloom capability router — pay for deferment <10% of the time",
+  "state": "MERGED",
+  "merged_at": "2026-06-15T06:03:38Z",
+  "head_ref": "otto/dual-bloom-antibloom-capability-router"
+}

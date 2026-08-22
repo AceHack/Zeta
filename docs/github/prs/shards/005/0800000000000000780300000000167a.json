@@ -1,0 +1,12 @@
+{
+  "pr_number": 5754,
+  "archive_path": "docs/history/pr-reviews/PR-5754-feat-b-0865-17-cross-vendor-benchmark-on-common-ground-via-ts-skill-via-vendor-s.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-28T10:27:35.881Z",
+  "schema_version": "v1",
+  "commit_sha": "be03f6923fba0d2268cfa61cc462f231b5c01881",
+  "title": "feat(B-0865.17): cross-vendor benchmark on common ground via TS-skill-via-vendor-skill-stores distribution lane — ADDITIVE to USB-cluster (operator 2026-05-28)",
+  "state": "MERGED",
+  "merged_at": "2026-05-28T10:27:13Z",
+  "head_ref": "otto-cli/b-0865-17-cross-vendor-benchmark-on-common-ground-via-ts-skill-via-vendor-skill-stores-2026-05-28"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 9286,
+  "archive_path": "docs/history/pr-reviews/PR-9286-feat-living-node-the-living-node-on-the-real-wire-udp-demo-discovery-2-2-exit-pr.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-03T04:31:02.941Z",
+  "schema_version": "v1",
+  "commit_sha": "36fd657d809db1615b8a511e784cb6c6b99efd44",
+  "title": "feat(living-node): the living node on the real wire — udp demo, discovery→2√2→exit proven live (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-03T04:30:37Z",
+  "head_ref": "shadow/living-node-on-the-real-wire"
+}

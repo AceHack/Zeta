@@ -1,0 +1,25 @@
+{
+  "pr_number": 1932,
+  "archive_path": "docs/history/pr-reviews/PR-1932-fix-backlog-b-0062-drawdown-oracle-classification-signal-proposals.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6--yTt",
+    "comment:PRRC_kwDOSF9kNM6--yU9",
+    "comment:PRRC_kwDOSF9kNM6--yUT",
+    "comment:PRRC_kwDOSF9kNM6--yUj",
+    "comment:PRRC_kwDOSF9kNM6--yVR",
+    "comment:PRRC_kwDOSF9kNM6--yVe",
+    "thread:PRRT_kwDOSF9kNM6AbFXI",
+    "thread:PRRT_kwDOSF9kNM6AbFXl",
+    "thread:PRRT_kwDOSF9kNM6AbFXz",
+    "thread:PRRT_kwDOSF9kNM6AbFYJ",
+    "thread:PRRT_kwDOSF9kNM6AbFYa",
+    "thread:PRRT_kwDOSF9kNM6AbFYk"
+  ],
+  "fetched_at": "2026-05-07T19:28:12.193Z",
+  "schema_version": "v1",
+  "commit_sha": "bc7839c7cb3f46940b4161a710828d043d7596c7",
+  "title": "fix(backlog): B-0062 drawdown oracle + classification signal proposals",
+  "state": "MERGED",
+  "merged_at": "2026-05-07T19:27:41Z",
+  "head_ref": "otto/b0062-oracle-classification-proposals"
+}

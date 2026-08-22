@@ -1,3 +1,6 @@
+import { readFileSync } from "node:fs";
+import { dirname, join } from "node:path";
+import { fileURLToPath } from "node:url";
 import { VALID_PERSONAS, type PersonaId } from "./generated-registry.ts";
 
 /**
@@ -58,6 +61,65 @@ function assertSegment(kind: string, value: string, source: string): void {
   }
 }
 
+/**
+ * Split off an optional `@node` suffix, rejecting multiple "@" and an invalid
+ * node segment (INVALID_VECTORS: "otto/cli@a@b").
+ *
+ * Shared by BOTH doors into `ActorRef` — the canonical-string parser and the
+ * SPIFFE-URI parser. F# parity: `ActorRef.splitNode` (`src/Core/ActorRef.fs`).
+ * One implementation is what keeps the two doors from disagreeing about the
+ * invalid-vector class; they disagreed for as long as they were separate.
+ */
+function splitNode(input: string, source: string): { remaining: string; node: string | undefined } {
+  const atIdx = input.indexOf("@");
+  if (atIdx === -1) {
+    return { remaining: input, node: undefined };
+  }
+  if (input.indexOf("@", atIdx + 1) !== -1) {
+    throw new Error(`Invalid actor ref (multiple "@"): "${source}"`);
+  }
+  const node = input.substring(atIdx + 1);
+  assertSegment("node", node, source);
+  return { remaining: input.substring(0, atIdx), node };
+}
+
+/**
+ * Assemble a validated `CellRef` from grammar pieces. Enforces the segment
+ * charset on surface/instance, rejects empty segments (INVALID_VECTORS:
+ * "otto//fg") and node-without-surface (INVALID_VECTORS: "otto@machine-a").
+ *
+ * Shared by BOTH doors. F# parity: `ActorRef.assemble` (`src/Core/ActorRef.fs`).
+ */
+function assembleCell(
+  surface: string | undefined,
+  instance: string | undefined,
+  node: string | undefined,
+  source: string,
+): CellRef {
+  const cell: CellRef = {};
+  if (surface !== undefined) {
+    if (surface === "") {
+      throw new Error(`Invalid actor ref (empty surface segment): "${source}"`);
+    }
+    assertSegment("surface", surface, source);
+    cell.surface = surface;
+  }
+  if (instance !== undefined) {
+    if (instance === "") {
+      throw new Error(`Invalid actor ref (empty instance segment): "${source}"`);
+    }
+    assertSegment("instance", instance, source);
+    cell.instance = instance;
+  }
+  if (node !== undefined) {
+    if (cell.surface === undefined) {
+      throw new Error(`Invalid actor ref (node requires a surface): "${source}"`);
+    }
+    cell.node = node;
+  }
+  return cell;
+}
+
 export function parse(str: string): ActorRef {
   if (!str) {
     throw new Error("Cannot parse empty actor reference string.");
@@ -72,19 +134,8 @@ export function parse(str: string): ActorRef {
     };
   }
 
-  let remaining = str;
-  let node: string | undefined = undefined;
-
   // Extract optional @node suffix (exactly zero or one "@")
-  const atIdx = remaining.indexOf("@");
-  if (atIdx !== -1) {
-    if (remaining.indexOf("@", atIdx + 1) !== -1) {
-      throw new Error(`Invalid canonical actor ref (multiple "@"): "${str}"`);
-    }
-    node = remaining.substring(atIdx + 1);
-    remaining = remaining.substring(0, atIdx);
-    assertSegment("node", node, str);
-  }
+  const { remaining, node } = splitNode(str, str);
 
   // Split remainder into persona, surface, instance
   const parts = remaining.split("/");
@@ -93,33 +144,16 @@ export function parse(str: string): ActorRef {
   if (!VALID_PERSONAS.has(persona)) {
     throw new Error(`Invalid persona identifier: "${persona}" in actor ref string "${str}"`);
   }
-
-  const cell: CellRef = {};
-  if (parts.length > 1) {
-    const s = parts[1];
-    if (s === undefined || s === "") {
-      throw new Error(`Invalid canonical actor ref (empty surface segment): "${str}"`);
-    }
-    assertSegment("surface", s, str);
-    cell.surface = s;
-  }
-  if (parts.length > 2) {
-    const inst = parts[2];
-    if (inst === undefined || inst === "") {
-      throw new Error(`Invalid canonical actor ref (empty instance segment): "${str}"`);
-    }
-    assertSegment("instance", inst, str);
-    cell.instance = inst;
-  }
   if (parts.length > 3) {
     throw new Error(`Invalid canonical actor ref (too many segments): "${str}"`);
   }
-  if (node !== undefined) {
-    if (cell.surface === undefined) {
-      throw new Error(`Invalid canonical actor ref (node requires a surface): "${str}"`);
-    }
-    cell.node = node;
-  }
+
+  const cell = assembleCell(
+    parts.length > 1 ? parts[1] : undefined,
+    parts.length > 2 ? parts[2] : undefined,
+    node,
+    str,
+  );
 
   return { persona, cell };
 }
@@ -178,15 +212,11 @@ export function parseSpiffe(uri: string): ActorRef {
     throw new Error(`Invalid SPIFFE URI prefix: "${uri}" (expected "${prefix}...")`);
   }
 
-  let remaining = uri.substring(prefix.length);
-  let node: string | undefined = undefined;
-
-  // Extract optional @node suffix
-  const atIdx = remaining.indexOf("@");
-  if (atIdx !== -1) {
-    node = remaining.substring(atIdx + 1);
-    remaining = remaining.substring(0, atIdx);
-  }
+  // Extract optional @node suffix. Routed through the SAME `splitNode` the
+  // canonical parser uses, so "@a@b" and an out-of-charset node are rejected
+  // here too. This door faces PEERS (a SPIFFE URI is what another node sends),
+  // so it must be at least as strict as the internal one — it was laxer.
+  const { remaining, node } = splitNode(uri.substring(prefix.length), uri);
 
   const parts = remaining.split("/");
   const persona = parts[0] as PersonaId;
@@ -195,7 +225,8 @@ export function parseSpiffe(uri: string): ActorRef {
     throw new Error(`Invalid persona identifier: "${persona}" in SPIFFE URI "${uri}"`);
   }
 
-  const cell: CellRef = {};
+  let surface: string | undefined = undefined;
+  let instance: string | undefined = undefined;
   if (parts.length > 1) {
     if (parts[1] !== "cell") {
       throw new Error(`Invalid SPIFFE URI segment: "${parts[1]}" (expected "/cell/...")`);
@@ -203,24 +234,14 @@ export function parseSpiffe(uri: string): ActorRef {
     if (parts.length < 3) {
       throw new Error(`Invalid SPIFFE URI: missing cell surface kind in "${uri}"`);
     }
-    const s = parts[2];
-    if (s !== undefined) {
-      cell.surface = s;
-    }
-    if (parts.length > 3) {
-      const inst = parts[3];
-      if (inst !== undefined) {
-        cell.instance = inst;
-      }
-    }
     if (parts.length > 4) {
       throw new Error(`Invalid SPIFFE URI (too many segments): "${uri}"`);
     }
+    surface = parts[2];
+    instance = parts.length > 3 ? parts[3] : undefined;
   }
 
-  if (node !== undefined) {
-    cell.node = node;
-  }
+  const cell = assembleCell(surface, instance, node, uri);
 
   return { persona, cell };
 }
@@ -321,17 +342,38 @@ export const GOLDEN_VECTORS: GoldenVector[] = [
 ];
 
 /**
- * Invalid-vector class of the treaty byte-lock floor: every oracle port
- * (F# ActorRef.fs, future langs) MUST reject each of these. Paired with
- * GOLDEN_VECTORS the same way vectors.yaml pairs valid/invalid in
- * tests/cross-verification/.
+ * Invalid-vector class of the treaty byte-lock floor. The list lives in
+ * `tests/cross-verification/actor-ref/vectors.json` — one file, every
+ * oracle. Adding a row there with no parser change must turn a test red
+ * (081M00J1EWW).
  */
-export const INVALID_VECTORS: readonly string[] = [
-  "otto/COWORK",        // uppercase segment
-  "otto//fg",           // empty surface
-  "otto/cli@a@b",       // multiple @
-  "otto@machine-a",     // node without surface
-  "kenji/cli",          // unknown persona
-  "otto/cli/fg/extra",  // too many segments
-  "otto-cowork",        // fused composite — the treaty's core prohibition
-];
+export const ACTOR_REF_VECTORS_PATH = join(
+  dirname(fileURLToPath(import.meta.url)),
+  "../../../tests/cross-verification/actor-ref/vectors.json",
+);
+
+function loadSharedInvalid(door: "parse" | "parseSpiffe"): readonly string[] {
+  const doc = JSON.parse(readFileSync(ACTOR_REF_VECTORS_PATH, "utf8")) as {
+    invalid: readonly { input: string; door: "parse" | "parseSpiffe" }[];
+  };
+  return doc.invalid.filter((v) => v.door === door).map((v) => v.input);
+}
+
+export const INVALID_VECTORS: readonly string[] = loadSharedInvalid("parse");
+
+/**
+ * The SAME rejection class, expressed through the SPIFFE URI port.
+ *
+ * A SPIFFE URI is the door a PEER knocks on — it arrives from another node,
+ * not from our own call sites — so it is the door that most needs the floor.
+ * Until 2026-08-14 this port enforced almost none of it: four of the seven
+ * INVALID_VECTORS above were accepted through it while the canonical parser
+ * rejected them, and two of those produced an `ActorRef` that silently LOST a
+ * segment on the way back out (`.../cell//fg` → surface "", instance "fg" →
+ * projects to bare "otto", colliding with a genuinely different identity).
+ *
+ * F# parity: `Invalid SPIFFE vectors — same rejection class through the URI
+ * port` in `tests/Tests.FSharp/ActorRef.Tests.fs`, which has asserted these
+ * since the F# port landed. The F# oracle was right and this one was wrong.
+ */
+export const INVALID_SPIFFE_VECTORS: readonly string[] = loadSharedInvalid("parseSpiffe");

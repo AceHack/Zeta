@@ -1,0 +1,12 @@
+{
+  "pr_number": 5890,
+  "archive_path": "docs/history/pr-reviews/PR-5890-feat-b-0924-custom-2600-emulator-generate-join-over-emulator-scene-ischeduler-ds.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-28T17:21:18.913Z",
+  "schema_version": "v1",
+  "commit_sha": "16c124f08fed6230189aa556dd7905f2fc82f23c",
+  "title": "feat(B-0924): custom 2600 emulator + generate+join over emulator scene + IScheduler DST bit-perfect-consensus + B-0917 hardware interrupts + ARC3-AGI (operator 2026-05-28)",
+  "state": "MERGED",
+  "merged_at": "2026-05-28T17:20:56Z",
+  "head_ref": "otto-cli/b0924-emulator-generate-join-2600-arc3-2026-05-28"
+}

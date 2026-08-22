@@ -1,0 +1,12 @@
+{
+  "pr_number": 2392,
+  "archive_path": "docs/history/pr-reviews/PR-2392-close-b-0396-mark-isemiring-iring-split-done-all-8-acceptance-criteria-met.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-10T01:47:44.258Z",
+  "schema_version": "v1",
+  "commit_sha": "ec5fc216d730332135764648a71b093273091d40",
+  "title": "close(B-0396): mark ISemiring/IRing split done — all 8 acceptance criteria met",
+  "state": "MERGED",
+  "merged_at": "2026-05-10T01:47:30Z",
+  "head_ref": "chore/close-b0396-backlog-item"
+}

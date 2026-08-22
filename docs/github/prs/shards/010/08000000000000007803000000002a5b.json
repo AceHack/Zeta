@@ -1,0 +1,12 @@
+{
+  "pr_number": 10843,
+  "archive_path": "docs/history/pr-reviews/PR-10843-docs-consent-withhold-a-private-individual-s-name-cite-the-published-ux-sources-.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-17T03:25:50.764Z",
+  "schema_version": "v1",
+  "commit_sha": "44e1f700a3700e5e3eb4d1d5da507791a4f667aa",
+  "title": "docs(consent): withhold a private individual's name; cite the published UX sources instead",
+  "state": "MERGED",
+  "merged_at": "2026-08-17T03:25:16Z",
+  "head_ref": "shadow/withhold-private-mentor-name-cite-published-ux-sources"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 5102,
+  "archive_path": "docs/history/pr-reviews/PR-5102-backlog-b-0792-p1-iter-5-wifi-credentials-injection-via-usb-esp-homelab-persona-.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-26T05:41:03.901Z",
+  "schema_version": "v1",
+  "commit_sha": "f77bd773f70bba6ba92a8149f97e72c368876120",
+  "title": "backlog(B-0792 P1): iter-5 wifi-credentials injection via USB ESP — homelab persona has NO ethernet; cluster must remember wifi on setup (Aaron 2026-05-26)",
+  "state": "MERGED",
+  "merged_at": "2026-05-26T05:40:43Z",
+  "head_ref": "otto-cli/b0792-iter5-multi-node-substrate-per-usb-hostname-mdns-cluster-join-2026-05-26"
+}

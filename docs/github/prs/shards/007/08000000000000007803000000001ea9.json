@@ -1,0 +1,12 @@
+{
+  "pr_number": 7849,
+  "archive_path": "docs/history/pr-reviews/PR-7849-fix-backlog-update-index-generator-for-zetaid-filenames-regen.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-12T00:10:33.667Z",
+  "schema_version": "v1",
+  "commit_sha": "490f9b81f392dd8893fef556a1206c5fdf022dd7",
+  "title": "fix(backlog): update index generator for zetaid filenames + regen",
+  "state": "MERGED",
+  "merged_at": "2026-06-12T00:10:08Z",
+  "head_ref": "alexa/regen-backlog-index"
+}

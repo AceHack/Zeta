@@ -1,0 +1,17 @@
+{
+  "pr_number": 2047,
+  "archive_path": "docs/history/pr-reviews/PR-2047-feat-backlog-add-b-0280-publication-commit-command.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_JWnb",
+    "comment:PRRC_kwDOSF9kNM6_JWoT",
+    "thread:PRRT_kwDOSF9kNM6AivS1",
+    "thread:PRRT_kwDOSF9kNM6AivTZ"
+  ],
+  "fetched_at": "2026-05-08T07:10:04.028Z",
+  "schema_version": "v1",
+  "commit_sha": "2efd81107751a6b7afb7df47df143aa728ea00f9",
+  "title": "feat(backlog): add B-0280 publication commit command",
+  "state": "MERGED",
+  "merged_at": "2026-05-08T07:09:48Z",
+  "head_ref": "claim/task-b0280-publication-commit-command"
+}

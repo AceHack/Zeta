@@ -1,0 +1,12 @@
+{
+  "pr_number": 3085,
+  "archive_path": "docs/history/pr-reviews/PR-3085-chore-tick-0131z-shard-pr-3081-findings-absorbed-hazard-flag-system-verified-end.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-14T01:35:08.789Z",
+  "schema_version": "v1",
+  "commit_sha": "d864a2dc657ae31cbfaae394aa7aa195a75d8512",
+  "title": "chore(tick): 0131Z shard — PR #3081 findings absorbed; hazard-flag system verified end-to-end",
+  "state": "MERGED",
+  "merged_at": "2026-05-14T01:34:53Z",
+  "head_ref": "chore/tick-shard-0131z-2026-05-14"
+}

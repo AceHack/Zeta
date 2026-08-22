@@ -1,0 +1,12 @@
+{
+  "pr_number": 4482,
+  "archive_path": "docs/history/pr-reviews/PR-4482-rule-backlog-item-start-gate-add-pr-4478-as-full-file-verification-empirical-anc.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-21T02:22:34.130Z",
+  "schema_version": "v1",
+  "commit_sha": "92ee48a95e43b61815cadb5eb0bb4277242c41b6",
+  "title": "rule(backlog-item-start-gate): add PR #4478 as full-file verification empirical anchor",
+  "state": "MERGED",
+  "merged_at": "2026-05-21T02:22:14Z",
+  "head_ref": "rule/cite-pr4478-as-full-file-verification-empirical-anchor-otto-cli-2026-05-21"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 2508,
+  "archive_path": "docs/history/pr-reviews/PR-2508-archive-pr-reviews-preserve-pr-2504-review-archive.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-10T16:00:49.717Z",
+  "schema_version": "v1",
+  "commit_sha": "a168305b43e5e15136f2826404a324915bf6cd41",
+  "title": "archive(pr-reviews): preserve PR #2504 review archive",
+  "state": "MERGED",
+  "merged_at": "2026-05-10T16:00:33Z",
+  "head_ref": "codex/archive-pr-2504-followup"
+}

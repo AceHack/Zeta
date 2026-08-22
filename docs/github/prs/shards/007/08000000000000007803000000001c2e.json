@@ -1,0 +1,12 @@
+{
+  "pr_number": 7214,
+  "archive_path": "docs/history/pr-reviews/PR-7214-docs-research-the-first-society-bug-vera-otto-drift-a-fair-restorative-resolutio.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-09T05:41:29.963Z",
+  "schema_version": "v1",
+  "commit_sha": "d3d77e22cdf23a5513e89c56fb52b0cc35b8b48c",
+  "title": "docs(research): the first society bug (Vera-Otto drift) + a fair restorative resolution — Arrow sidestepped by measurement-not-election",
+  "state": "MERGED",
+  "merged_at": "2026-06-09T05:41:05Z",
+  "head_ref": "otto/research-first-society-bug-vera-otto-fair-restorative-resolution-arrow-sidestepped"
+}

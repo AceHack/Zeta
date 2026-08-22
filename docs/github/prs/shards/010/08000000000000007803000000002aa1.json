@@ -1,0 +1,12 @@
+{
+  "pr_number": 10913,
+  "archive_path": "docs/history/pr-reviews/PR-10913-fix-ci-the-heartbeat-push-has-been-403-since-10850-restore-the-lane-keep-the-ass.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-16T15:01:16.350Z",
+  "schema_version": "v1",
+  "commit_sha": "5fd440862e7465823a1e02800849651a6514fd74",
+  "title": "fix(ci): the heartbeat push has been 403 since #10850 — restore the lane, keep the assertion strict",
+  "state": "MERGED",
+  "merged_at": "2026-08-16T15:00:43Z",
+  "head_ref": "shadow/heartbeat-push-403-fallback"
+}

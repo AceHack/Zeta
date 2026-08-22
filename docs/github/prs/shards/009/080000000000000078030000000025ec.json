@@ -1,0 +1,12 @@
+{
+  "pr_number": 9708,
+  "archive_path": "docs/history/pr-reviews/PR-9708-docs-research-multi-planet-convergence-pure-phase-time-udp-corollary-shadow.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-11T16:25:55.510Z",
+  "schema_version": "v1",
+  "commit_sha": "5fc9a24df135935ee30c0a6c69aca8771caf4d29",
+  "title": "docs(research): multi-planet convergence — pure phase time + UDP corollary (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-11T16:25:28Z",
+  "head_ref": "doc-phase-time-udp-corollary"
+}

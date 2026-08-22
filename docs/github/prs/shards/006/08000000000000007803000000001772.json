@@ -1,0 +1,12 @@
+{
+  "pr_number": 6002,
+  "archive_path": "docs/history/pr-reviews/PR-6002-feat-b-0343-pure-buildseedblobrequest-seed-bytes-post-git-blobs-body-bounded-sli.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-29T15:39:34.322Z",
+  "schema_version": "v1",
+  "commit_sha": "c009905b6b235fecc5449f69fdcfbec242d541ea",
+  "title": "feat(B-0343): pure buildSeedBlobRequest — seed bytes → POST /git/blobs body (bounded slice 9)",
+  "state": "MERGED",
+  "merged_at": "2026-05-29T15:39:12Z",
+  "head_ref": "otto-cli/b0343-blob-request-builder-slice9"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 8585,
+  "archive_path": "docs/history/pr-reviews/PR-8585-feat-n-way-cross-language-byte-diff-oracle-harness-splitmix64-as-first-primitive.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-19T15:00:38.263Z",
+  "schema_version": "v1",
+  "commit_sha": "7aba327bd1f191a0d6c42bfef346219d0953ebef",
+  "title": "feat: N-way cross-language byte-diff oracle harness; SplitMix64 as first primitive",
+  "state": "MERGED",
+  "merged_at": "2026-06-19T15:00:08Z",
+  "head_ref": "harness-nway-oracle-splitmix64"
+}

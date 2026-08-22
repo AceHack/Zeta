@@ -1,0 +1,22 @@
+{
+  "pr_number": 6253,
+  "archive_path": "docs/history/pr-reviews/PR-6253-feat-observe-c-observe-fold-algebra-oracle-3-golden-vector-parity-b-0867-27.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7GiZ32",
+    "comment:PRRC_kwDOSF9kNM7GiZ39",
+    "comment:PRRC_kwDOSF9kNM7GiZ3n",
+    "comment:PRRC_kwDOSF9kNM7GiaqR",
+    "comment:PRRC_kwDOSF9kNM7Giaqy",
+    "comment:PRRC_kwDOSF9kNM7Giarj",
+    "thread:PRRT_kwDOSF9kNM6F-HlQ",
+    "thread:PRRT_kwDOSF9kNM6F-Hlc",
+    "thread:PRRT_kwDOSF9kNM6F-Hlk"
+  ],
+  "fetched_at": "2026-05-31T20:51:43.624Z",
+  "schema_version": "v1",
+  "commit_sha": "29c91d132f8ef74004bd203e7c1b8c0c0a8b347c",
+  "title": "feat(observe): C# observe-fold algebra (oracle #3) + golden-vector parity (B-0867.27)",
+  "state": "MERGED",
+  "merged_at": "2026-05-31T20:51:26Z",
+  "head_ref": "feat/observe-csharp-fold-parity-b0867-27-2026-05-31"
+}

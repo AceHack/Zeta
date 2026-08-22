@@ -1,0 +1,12 @@
+{
+  "pr_number": 3864,
+  "archive_path": "docs/history/pr-reviews/PR-3864-fix-correct-tier-traversal-memory-file-per-codex-pr-3863-review-p2-p1.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-16T11:22:28.058Z",
+  "schema_version": "v1",
+  "commit_sha": "d34ab2a416d05e6f2f2bed9b5dd9112ef595ca46",
+  "title": "fix: correct tier-traversal memory file per Codex PR #3863 review (P2 + P1)",
+  "state": "MERGED",
+  "merged_at": "2026-05-16T11:22:12Z",
+  "head_ref": "otto-cli-tier-anchor-correction-2026-05-16"
+}

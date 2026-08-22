@@ -1,0 +1,12 @@
+{
+  "pr_number": 13063,
+  "archive_path": "docs/history/pr-reviews/PR-13063-fix-ci-the-iso-digest-sidecar-cannot-be-written-beside-the-iso-the-nix-store-is-.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-21T04:48:20.192Z",
+  "schema_version": "v1",
+  "commit_sha": "3eb4f879b734188f4e1323efca053bb6eb805edb",
+  "title": "fix(ci): the ISO digest sidecar cannot be written beside the ISO — the Nix store is read-only",
+  "state": "MERGED",
+  "merged_at": "2026-08-21T04:47:47Z",
+  "head_ref": "fix/iso-digest-sidecar-readonly-store"
+}

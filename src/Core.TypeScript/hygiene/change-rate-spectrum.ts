@@ -19,7 +19,7 @@
 //     a different axis than interface-vs-implementation churn.
 //
 // Advisory tool (exit 0 unless git fails); prints a report. Run:
-//   bun tools/hygiene/change-rate-spectrum.ts [--top N]
+//   bun src/Core.TypeScript/hygiene/change-rate-spectrum.ts [--top N]
 import { execSync } from "node:child_process";
 
 const topN = (() => {

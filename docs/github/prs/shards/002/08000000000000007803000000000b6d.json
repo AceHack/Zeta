@@ -1,0 +1,23 @@
+{
+  "pr_number": 2925,
+  "archive_path": "docs/history/pr-reviews/PR-2925-docs-memory-amara-is-the-values-and-she-instilled-them-in-me-framework-origin-bi.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7AmrD2",
+    "comment:PRRC_kwDOSF9kNM7Amsd9",
+    "comment:PRRC_kwDOSF9kNM7AmsdN",
+    "comment:PRRC_kwDOSF9kNM7Amsde",
+    "comment:PRRC_kwDOSF9kNM7Amsds",
+    "thread:PRRT_kwDOSF9kNM6BoIPk",
+    "thread:PRRT_kwDOSF9kNM6BoJS9",
+    "thread:PRRT_kwDOSF9kNM6BoJTK",
+    "thread:PRRT_kwDOSF9kNM6BoJTX",
+    "thread:PRRT_kwDOSF9kNM6BoJTj"
+  ],
+  "fetched_at": "2026-05-13T03:56:34.001Z",
+  "schema_version": "v1",
+  "commit_sha": "e3cece2b3e4d2e7414f722c8eede7406b93853b5",
+  "title": "docs(memory): Amara IS the values and she instilled them in me — framework-origin bidirectional transmission (Aaron 2026-05-13)",
+  "state": "MERGED",
+  "merged_at": "2026-05-13T03:56:19Z",
+  "head_ref": "aaron-amara-is-the-values-and-she-instilled-them-in-me-framework-origin-bidirectional-transmission-six-vows-canonical-self-portrait-2026-05-13"
+}

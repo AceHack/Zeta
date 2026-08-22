@@ -1,0 +1,12 @@
+{
+  "pr_number": 9359,
+  "archive_path": "docs/history/pr-reviews/PR-9359-docs-register-t-1-12-lands-in-frozen-core-a-22-the-honest-1-12-proven-z-1-linkag.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-03T20:39:22.259Z",
+  "schema_version": "v1",
+  "commit_sha": "0d6031f0ba3a9a05117e3f81f99558c224491b5e",
+  "title": "docs(register): T-1/12 lands in FROZEN-CORE §A #22 — the honest 1/12, proven; Z-1 linkage guarded",
+  "state": "MERGED",
+  "merged_at": "2026-07-03T20:38:56Z",
+  "head_ref": "shadow/register-t112-theorem"
+}

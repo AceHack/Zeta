@@ -8,22 +8,30 @@
 //      (folder = state; YYYY/MM from the COMPLETION date — path answers "done when",
 //      the ZetaId prefix still answers "created when"). A move is a git rename of a
 //      disjoint, ZetaId-prefixed file → conflict-free even with 500 concurrent agents.
-//   3. appends one line to the INCREMENTAL, checked-in done-index
-//      `workitems/done/index.jsonl`. Sound because a done item is IMMUTABLE: its
-//      entry is append-only and never goes stale (DV2.0 zero-change-rate satellite +
-//      idempotent append). The index gives O(1) by-id lookup of done items (whose
-//      completion-date — hence path — is NOT derivable from the ZetaId).
+//
+// NO AGGREGATE INDEX IS WRITTEN — 081KZZ3Q990087G0R003QXYVN6.
+// This used to also append a line to `workitems/done/index.jsonl`, which put a single
+// shared read-modify-write file back on a path whose whole point is disjointness: two
+// agents completing items concurrently conflicted on that one file, pairwise (observed
+// three times on 2026-08-13, each hand-union-resolved during a rebase). The done SET is
+// already the shard store — `done/YYYY/MM/<zetaid>-*.md`, one file per record, path a
+// function of the ZetaId, so a duplicate is unrepresentable — and every field the index
+// carried (id, path, completed, title) is a projection of that file. A derived aggregate
+// of a store nobody queried was pure conflict surface, so it is gone rather than
+// re-derived: at removal it had 36 lines against 76 done items (53% stale) and ZERO
+// readers in the repo, which is the evidence that it was never load-bearing.
+// Need the list? Walk `workitems/done/**/*.md` — that walk is the index.
 //
 // DST (manifesto §7): the core `completeWorkItem` is a PURE function of
 // (content, fromPath, env); the clock arrives via env. Date.now() is only in
 // SYSTEM_ENV at the CLI boundary.
 //
 // Usage:
-//   bun tools/backlog/complete-workitem.ts <zetaid|path> [--dir workitems] [--dry-run]
+//   bun src/Core.TypeScript/backlog/complete-workitem.ts <zetaid|path> [--dir workitems] [--dry-run]
 //
 // Exit codes: 0 ok · 2 usage / not-found error.
 
-import { mkdirSync, writeFileSync, readFileSync, existsSync, rmSync, readdirSync, appendFileSync } from "node:fs";
+import { mkdirSync, writeFileSync, readFileSync, existsSync, rmSync, readdirSync } from "node:fs";
 import { join, basename, dirname } from "node:path";
 import { isCanonical, ZETAID_BASE32_LEN } from "../zeta-id/encoding";
 import { SYSTEM_ENV, workItemEventsRoot, type WorkItemEnv } from "./new-workitem";
@@ -36,7 +44,6 @@ export interface CompletedWorkItem {
   readonly toPath: string;
   readonly fromState: WorkItemLifecycleState;
   readonly newContent: string;
-  readonly indexLine: string; // JSONL line for <workitems>/done/index.jsonl
 }
 
 function pad2(n: number): string {
@@ -97,11 +104,7 @@ export function completeWorkItem(content: string, fromPath: string, env: WorkIte
     }
   }
 
-  const title = extractFrontmatterField(content, "title") ?? "";
-  const indexLine =
-    JSON.stringify({ id: zetaid, path: toPath, completed: completedIso, title: title.replace(/^"|"$/g, "") }) + "\n";
-
-  return { zetaid, fromPath, toPath, fromState, newContent, indexLine };
+  return { zetaid, fromPath, toPath, fromState, newContent };
 }
 
 // ── CLI ──────────────────────────────────────────────────────────────────────
@@ -154,7 +157,7 @@ function main(argv: readonly string[]): number {
   }
 
   if (flags.has("--dry-run")) {
-    process.stdout.write(`[dry-run] ${done.fromPath} → ${done.toPath}\n  index += ${done.indexLine}`);
+    process.stdout.write(`[dry-run] ${done.fromPath} → ${done.toPath}\n`);
     return 0;
   }
 
@@ -166,7 +169,6 @@ function main(argv: readonly string[]): number {
   writeFileSync(done.toPath, done.newContent, "utf8");
   rmSync(done.fromPath);
   const workItemsDir = dirname(done.fromPath);
-  appendFileSync(join(workItemsDir, "done", "index.jsonl"), done.indexLine, "utf8");
 
   const actor = process.env.ZETA_WORKITEM_ACTOR ?? "otto-cli";
   const eventsRoot = workItemEventsRoot(workItemsDir);

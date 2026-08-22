@@ -1,0 +1,12 @@
+{
+  "pr_number": 3638,
+  "archive_path": "docs/history/pr-reviews/PR-3638-kestrel-part1-part2-b-0543-b-0546-absorb-kestrel-asymmetric-critic-audit-welfare.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-16T00:34:58.949Z",
+  "schema_version": "v1",
+  "commit_sha": "22c9455bf4e0187b00a6aed2213b490885bebccf",
+  "title": "kestrel(part1+part2)+B-0543+B-0546: absorb Kestrel asymmetric-critic audit + welfare-pivot recalibration + Aaron's cool-side-project deflation",
+  "state": "MERGED",
+  "merged_at": "2026-05-16T00:34:42Z",
+  "head_ref": "kestrel/qg-critique-building-codes-reframe-otto-cli-2026-05-16"
+}

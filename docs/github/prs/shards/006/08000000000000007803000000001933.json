@@ -1,0 +1,12 @@
+{
+  "pr_number": 6451,
+  "archive_path": "docs/history/pr-reviews/PR-6451-feat-resume-csharp-c-resume-engine-ferry-oracle-3-of-4-cek-machine-restore-not-r.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-01T18:49:20.674Z",
+  "schema_version": "v1",
+  "commit_sha": "1ebe09575f8cedfb90893ac583ba0297990bf438",
+  "title": "feat(resume-csharp): C# resume-engine ferry (oracle #3 of 4) — CEK machine, restore-not-replay",
+  "state": "MERGED",
+  "merged_at": "2026-06-01T18:48:54Z",
+  "head_ref": "otto-cli/b0976-resume-engine-csharp-ferry-2026-06-01"
+}

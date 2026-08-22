@@ -1,0 +1,12 @@
+{
+  "pr_number": 7830,
+  "archive_path": "docs/history/pr-reviews/PR-7830-feat-b-0248-2-declarative-cluster-cells-manifest-manifest-driven-provisioner.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-11T23:12:07.916Z",
+  "schema_version": "v1",
+  "commit_sha": "21a04b9556749ff355de41ecb2018ad70cc329d9",
+  "title": "feat(B-0248.2): declarative cluster-cells manifest + manifest-driven provisioner",
+  "state": "MERGED",
+  "merged_at": "2026-06-11T23:11:41Z",
+  "head_ref": "alexa/declarative-cells-manifest"
+}

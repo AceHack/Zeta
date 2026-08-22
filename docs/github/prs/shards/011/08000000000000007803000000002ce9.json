@@ -1,0 +1,12 @@
+{
+  "pr_number": 11497,
+  "archive_path": "docs/history/pr-reviews/PR-11497-fix-key-custody-derivation-b-ac-3-made-falsifiable-fold-now-honours-retractions.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-17T14:40:41.181Z",
+  "schema_version": "v1",
+  "commit_sha": "7a9d3a3db9a2ef69177a738e045b9fc296598cfe",
+  "title": "fix(key-custody): derivation B — AC#3 made falsifiable, fold now honours retractions",
+  "state": "MERGED",
+  "merged_at": "2026-08-17T14:40:04Z",
+  "head_ref": "shadow/derivation-b-key-custody-ac3"
+}

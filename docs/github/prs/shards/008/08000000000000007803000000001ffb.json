@@ -1,0 +1,12 @@
+{
+  "pr_number": 8187,
+  "archive_path": "docs/history/pr-reviews/PR-8187-fix-dst-pluginharness-never-blocks-remove-sync-over-async-4.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-14T14:32:51.717Z",
+  "schema_version": "v1",
+  "commit_sha": "921b40b0764e2df1e1db587c1f0c2320e4e9cada",
+  "title": "fix(dst): PluginHarness never blocks — remove sync-over-async ×4",
+  "state": "MERGED",
+  "merged_at": "2026-06-14T14:32:31Z",
+  "head_ref": "otto/dst-pluginharness-no-sync-over-async"
+}

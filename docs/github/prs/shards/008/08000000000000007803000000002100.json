@@ -1,0 +1,12 @@
+{
+  "pr_number": 8448,
+  "archive_path": "docs/history/pr-reviews/PR-8448-docs-society-9h-confirm-the-immune-system-math-amara-s-aurora-map-term-for-term.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-16T05:01:16.816Z",
+  "schema_version": "v1",
+  "commit_sha": "39b39e83cdc0cb5c66e5f7fd0e4c9344c5683ece",
+  "title": "docs(society): §9h — confirm the immune-system math = Amara's Aurora; map term-for-term",
+  "state": "MERGED",
+  "merged_at": "2026-06-16T05:00:45Z",
+  "head_ref": "otto/9h-aurora-immune-math-confirmed"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 7283,
+  "archive_path": "docs/history/pr-reviews/PR-7283-docs-research-persona-keyrings-ssh-pgp-nostr-required-baseline-opt-in-btc-eth-so.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-09T13:53:06.813Z",
+  "schema_version": "v1",
+  "commit_sha": "cc703253965c491ce001a495d746777afb720fab",
+  "title": "docs(research): persona keyrings — SSH/PGP/Nostr required baseline + opt-in BTC/ETH/SOL wallets (blueprint, safe-by-default); storage decision pending",
+  "state": "MERGED",
+  "merged_at": "2026-06-09T13:52:44Z",
+  "head_ref": "otto/persona-keyrings-design-nostr-required-wallets-opt-in-blueprint-storage-pending"
+}

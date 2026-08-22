@@ -1,0 +1,12 @@
+{
+  "pr_number": 2484,
+  "archive_path": "docs/history/pr-reviews/PR-2484-decompose-b-0088-smallest-dependency-ordered-atomic-children-advisory-lint-parit.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-10T12:40:19.863Z",
+  "schema_version": "v1",
+  "commit_sha": "55ba03d1e524002a7755c1979c30a67db7c62deb",
+  "title": "decompose(B-0088): smallest dependency-ordered atomic children (advisory lint parity)",
+  "state": "MERGED",
+  "merged_at": "2026-05-10T12:39:59Z",
+  "head_ref": "claim/B-0088-decompose-smallest-atomic-children-riven-2026-05-10"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 10764,
+  "archive_path": "docs/history/pr-reviews/PR-10764-fix-ci-the-archive-workflow-s-prs-could-never-pass-the-agencysignature-gate.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-15T13:28:37.749Z",
+  "schema_version": "v1",
+  "commit_sha": "5b713db1acc85adfaa4dc58e62abbbad6d947165",
+  "title": "fix(ci): the archive workflow's PRs could never pass the AgencySignature gate",
+  "state": "MERGED",
+  "merged_at": "2026-08-15T13:28:04Z",
+  "head_ref": "shadow/pr-archive-emits-agencysignature"
+}

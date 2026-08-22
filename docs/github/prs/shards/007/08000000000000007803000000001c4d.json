@@ -1,0 +1,12 @@
+{
+  "pr_number": 7245,
+  "archive_path": "docs/history/pr-reviews/PR-7245-docs-research-ferry-close-over-the-cluster-hardware-out-of-band-power-bios-kvm-i.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-09T10:54:49.759Z",
+  "schema_version": "v1",
+  "commit_sha": "319ed82264c32e456d8c1e69ba583e7e874e1911",
+  "title": "docs(research)+ferry: close over the cluster hardware (out-of-band power + BIOS KVM) + internals-known security → log IPs via self-registration → GitOps DNS → Aaron⊗Max federation",
+  "state": "MERGED",
+  "merged_at": "2026-06-09T10:54:28Z",
+  "head_ref": "otto/research-close-over-cluster-hardware-out-of-band-internals-known-dns-federation"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 7707,
+  "archive_path": "docs/history/pr-reviews/PR-7707-feat-shapes-spiral-the-catalog-s-first-cartridge-four-numbers-a-whole-boundary-l.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-11T15:03:13.981Z",
+  "schema_version": "v1",
+  "commit_sha": "c6103cc5a9a4b0170b64925f06cce82b235c2a02",
+  "title": "feat(shapes): SPIRAL — the catalog's first cartridge (four numbers, a whole boundary; lints clean; unfolds true)",
+  "state": "MERGED",
+  "merged_at": "2026-06-11T15:02:48Z",
+  "head_ref": "shadow-first-shape-cartridge"
+}

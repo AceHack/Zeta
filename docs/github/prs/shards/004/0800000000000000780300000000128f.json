@@ -1,0 +1,15 @@
+{
+  "pr_number": 4751,
+  "archive_path": "docs/history/pr-reviews/PR-4751-docs-b-0525-slice-4-close-agendas-citation-gap-0-0-3-19-ai-autonomy-encryption-z.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7ETFnA",
+    "thread:PRRT_kwDOSF9kNM6EVAuC"
+  ],
+  "fetched_at": "2026-05-23T18:56:06.218Z",
+  "schema_version": "v1",
+  "commit_sha": "7836a4dbef7bea1da8165cf12659cd399cc912a1",
+  "title": "docs(B-0525): slice 4 — close agendas-citation gap (0/0 → 3/19; ai-autonomy + encryption + zeta)",
+  "state": "MERGED",
+  "merged_at": "2026-05-23T18:55:46Z",
+  "head_ref": "otto/cli-b0525-slice4-agendas-citation-gap-fix-2026-05-23"
+}

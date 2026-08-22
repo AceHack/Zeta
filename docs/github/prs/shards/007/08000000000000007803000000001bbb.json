@@ -1,0 +1,12 @@
+{
+  "pr_number": 7099,
+  "archive_path": "docs/history/pr-reviews/PR-7099-feat-core-softmem-soft-sequoia-memory-content-addressed-by-cl3-geometric-distanc.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-08T12:19:25.300Z",
+  "schema_version": "v1",
+  "commit_sha": "1dc8863ee8f4698eefdf1d77648c98fd67c00cea",
+  "title": "feat(core): SoftMem — soft-Sequoia memory, content addressed by Cl3 geometric distance",
+  "state": "MERGED",
+  "merged_at": "2026-06-08T12:19:01Z",
+  "head_ref": "otto/softmem-soft-sequoia-distance-addressed-memory-cl3"
+}

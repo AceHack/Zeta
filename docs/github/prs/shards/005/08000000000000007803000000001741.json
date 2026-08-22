@@ -1,0 +1,12 @@
+{
+  "pr_number": 5953,
+  "archive_path": "docs/history/pr-reviews/PR-5953-research-beacon-trust-calculus-section-sleeping-bear-conjecture.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-29T07:49:50.769Z",
+  "schema_version": "v1",
+  "commit_sha": "9b438bfd778934974ab8f179cfb7b1123cbe8cff",
+  "title": "research(beacon): trust-calculus section + Sleeping Bear conjecture",
+  "state": "MERGED",
+  "merged_at": "2026-05-29T07:49:28Z",
+  "head_ref": "otto-cli/beacon-trust-calculus-section-sleeping-bear-2026-05-29"
+}

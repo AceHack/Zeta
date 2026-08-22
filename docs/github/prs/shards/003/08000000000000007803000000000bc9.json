@@ -1,0 +1,19 @@
+{
+  "pr_number": 3017,
+  "archive_path": "docs/history/pr-reviews/PR-3017-feat-bg-b-0440-4-bus-publish-on-idle-detection-full-reactive-loop-closed.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7A61_b",
+    "comment:PRRC_kwDOSF9kNM7A61_d",
+    "comment:PRRC_kwDOSF9kNM7A6y5T",
+    "thread:PRRT_kwDOSF9kNM6B20Y1",
+    "thread:PRRT_kwDOSF9kNM6B20Y3",
+    "thread:PRRT_kwDOSF9kNM6B2yDw"
+  ],
+  "fetched_at": "2026-05-13T18:49:30.166Z",
+  "schema_version": "v1",
+  "commit_sha": "2e5f2704d3b131b5eb22a9ea5694756eebf74902",
+  "title": "feat(bg): B-0440.4 — bus publish on idle detection (full reactive loop closed)",
+  "state": "MERGED",
+  "merged_at": "2026-05-13T18:49:06Z",
+  "head_ref": "otto-b0440-4-bus-publish-slice-4-impl-2026-05-13"
+}

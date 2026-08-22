@@ -1,0 +1,23 @@
+{
+  "pr_number": 5494,
+  "archive_path": "docs/history/pr-reviews/PR-5494-docs-b-0859-cluster-recovery-mechanism-eliminates-ai-worry-about-mistakes-3-mode.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7Fam-B",
+    "comment:PRRC_kwDOSF9kNM7Fam-s",
+    "comment:PRRC_kwDOSF9kNM7Fam_M",
+    "comment:PRRC_kwDOSF9kNM7Fam_m",
+    "comment:PRRC_kwDOSF9kNM7FanAD",
+    "thread:PRRT_kwDOSF9kNM6FJ1SN",
+    "thread:PRRT_kwDOSF9kNM6FJ1Sv",
+    "thread:PRRT_kwDOSF9kNM6FJ1T1",
+    "thread:PRRT_kwDOSF9kNM6FJ1TJ",
+    "thread:PRRT_kwDOSF9kNM6FJ1Te"
+  ],
+  "fetched_at": "2026-05-27T16:08:21.827Z",
+  "schema_version": "v1",
+  "commit_sha": "3282f3dbe91c259d27b7bd41517310db4d6d984d",
+  "title": "docs(B-0859): cluster-recovery-mechanism eliminates AI worry-about-mistakes (3-mode USB-boot + 3-machine quorum + external-KVM + cloud-detect-recover)",
+  "state": "MERGED",
+  "merged_at": "2026-05-27T16:07:55Z",
+  "head_ref": "backlog/b-0859-cluster-recovery-mechanism-2026-05-27"
+}

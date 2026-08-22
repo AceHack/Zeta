@@ -1,0 +1,12 @@
+{
+  "pr_number": 6079,
+  "archive_path": "docs/history/pr-reviews/PR-6079-docs-claims-audit-stale-claim-branch-residue.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-30T04:43:29.981Z",
+  "schema_version": "v1",
+  "commit_sha": "48f994205f58f4fce2e208919ad7807b2b1ed55e",
+  "title": "docs(claims): audit stale claim branch residue",
+  "state": "MERGED",
+  "merged_at": "2026-05-30T04:43:09Z",
+  "head_ref": "claim/codex-stale-claim-audit-20260530"
+}

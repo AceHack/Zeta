@@ -26,7 +26,8 @@ on:
   workflow_dispatch:         # manual trigger for testing
 
 permissions:
-  contents: write
+  contents: write       # push the staging branch
+  pull-requests: write  # open/arm the flush PR
 
 concurrency:
   group: society-heartbeat
@@ -44,6 +45,115 @@ jobs:
         with:
           fetch-depth: 0
           ref: main
+          # THIS CHECKOUT'S CREDENTIAL IS THE ONE THAT PUSHES `heartbeat/society`.
+          # This job has exactly ONE checkout and exactly ONE push: `flush-via-staging.ts
+          # flush` runs `git push --force-with-lease origin HEAD:refs/heads/heartbeat/society`
+          # with whatever credential the checkout persisted, and THAT push's actor is what
+          # decides whether `gate (required)` ever runs on the flush PR. The `GH_TOKEN` on the
+          # Flush step below is a different credential doing a different job (it is what `gh`
+          # authenticates PR creation with) and it was never the missing half.
+          #
+          # WHY THE PAT (081M05G8D36087G0R0034D3QPA, 081M010H4KE): a `pull_request` run whose
+          # triggering actor is `github-actions[bot]` is created and then immediately parked
+          # — status `completed`, conclusion `action_required` — so it never executes and
+          # never contributes a check to the PR's rollup.
+          #
+          # MEASURED ON THIS LANE, not inherited from the tick-metrics write-up. PR #10708,
+          # head 46ec2994 (the 2026-08-17T00:21Z tick): ALL 36 `pull_request` runs read
+          # `completed/action_required` with `actor=github-actions[bot]`, `gate` among them,
+          # and the PR's rollup carried 6 check-runs and no gate row. 964 such parked runs on
+          # 2026-08-16 alone. The PR has been open and unmergeable since 2026-08-14.
+          #
+          # AND THE CONTROL PAID OFF. #11034 treated tick-metrics and left this lane
+          # byte-identical on purpose. Same-day real-tick reading, ~10 minutes apart:
+          #   heartbeat/tick-metrics 00:14Z + 00:32Z (TREATED)   gate actor=AceHack, EXECUTES
+          #   heartbeat/society      00:21Z (UNTREATED CONTROL)  gate actor=github-actions[bot], PARKED
+          # One variable, two lanes, one repository, one hour. That is the attribution the
+          # control existed to buy, and it is spent here.
+          #
+          # NOTE the earlier reading — "GITHUB_TOKEN pushes do not trigger workflows at all"
+          # — is WRONG and must not be repeated: the run IS created, it is held. Same cure,
+          # different mechanism.
+          #
+          # The `||` ladder covers ABSENCE (secret unset -> empty string -> default
+          # GITHUB_TOKEN). It cannot cover UNAUTHORIZED — a present-but-powerless token is
+          # exactly what #10850 shipped, killing three lanes for ~16.75h — which is the
+          # preflight's whole job. Two rungs, not the three-rung ladder on the Flush step's
+          # GH_TOKEN: `ZETA_PR_ARCHIVE_TOKEN` is scoped for PR creation and its
+          # contents-write standing is unestablished, so it is not a credential this push
+          # should silently land on.
+          persist-credentials: true
+          token: ${{ secrets.ZETA_TELEMETRY_FLUSH_TOKEN || secrets.GITHUB_TOKEN }}
+
+      # THE FALSIFIER FOR THE CREDENTIAL, RUN IN PRODUCTION ON EVERY RUN.
+      #
+      # #10913 verified a credential fix against a STUBBED git and it failed on the first
+      # real tick, because a stub models control flow and says nothing about which token git
+      # actually authenticates with. So this is not a stub and not a mock: it is a real
+      # `git push` to the real remote over the real network, with `--dry-run` so it updates
+      # nothing. GitHub performs repository-write authorization at the `git-receive-pack`
+      # advertisement, before any ref is considered, so a dry run gets the true 403/200
+      # answer.
+      #
+      # It probes a `credprobe/` ref, never `heartbeat/society`: HEAD here is main and the
+      # lane branch has diverged (the flush squashes), so probing the real lane would be
+      # rejected as non-fast-forward and a permission answer would be indistinguishable from
+      # an ancestry answer. A ref that does not exist yet has no ancestry question to get
+      # wrong. `--dry-run` creates nothing.
+      #
+      # It runs BEFORE `prepare` and before the evolution tick, which is deliberate:
+      # `prepare` checks out a new branch and merges, so a credential fault discovered after
+      # it would be discovered with a generation's work in the tree. There is nothing to lose
+      # by answering the credential question first.
+      - name: Preflight the push credential
+        env:
+          FALLBACK_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -uo pipefail
+
+          probe() { git push --dry-run origin "HEAD:refs/heads/credprobe/society" 2>&1; }
+
+          if OUT=$(probe); then
+            echo "[preflight] society: push credential is authorized for this repository."
+            exit 0
+          fi
+          echo "$OUT"
+
+          # Only a CREDENTIAL answer is eligible for the swap. A network blip or an
+          # unexpected refusal must NOT silently re-point the credential — that would hide a
+          # different failure behind a credential story.
+          if ! printf '%s' "$OUT" | grep -qiE 'denied to|Authentication failed|Invalid username or token|error: 403'; then
+            echo "::warning title=society preflight inconclusive::the probe failed, but not with a credential answer. Leaving the credential as-is; the real push below will report the true error."
+            exit 0
+          fi
+
+          echo "::error title=society PAT cannot push::ZETA_TELEMETRY_FLUSH_TOKEN was denied by the remote. FIX: grant that fine-grained PAT 'Contents: read and write' on Lucent-Financial-Group/Zeta. Falling back to GITHUB_TOKEN: the lane keeps recording, but 'gate (required)' will NOT start on the flush PR (081M010H4KE)."
+
+          # Swap the credential the way actions/checkout itself sets it — one
+          # `--replace-all` of the extraheader, which is the key git actually authenticates
+          # with. `git -c http.<url>.extraheader=` APPENDS rather than overrides, and
+          # re-pointing the remote URL alone did not displace it in production (#10913), so
+          # neither of those is used here.
+          HDR_B64=$(printf 'x-access-token:%s' "$FALLBACK_TOKEN" | base64 | tr -d '\n')
+          echo "::add-mask::$HDR_B64"
+          git config --local --replace-all "http.https://github.com/.extraheader" "AUTHORIZATION: basic $HDR_B64"
+
+          # RE-PROBE. Without this the fallback is the vacuity class: a repair that is
+          # applied and never checked looks identical to one that worked. #10913's fallback
+          # ran, logged that it ran, and was denied under the same identity.
+          if OUT2=$(probe); then
+            echo "[preflight] society: fallback credential verified against the remote; lane is DEGRADED but alive."
+            {
+              echo "### heartbeat/society is running on the FALLBACK credential"
+              echo ""
+              echo "\`ZETA_TELEMETRY_FLUSH_TOKEN\` was denied by the remote; \`GITHUB_TOKEN\` is verified and in use."
+              echo "Evolution events still land on the staging branch. \`gate (required)\` will NOT start on the flush PR until the PAT can push."
+              echo "Fix: grant that fine-grained PAT **Contents: read and write** on this repository."
+            } >> "$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
+          echo "$OUT2"
+          echo "::error title=society has no working push credential::BOTH the PAT and GITHUB_TOKEN were denied. This is worse than #10850 and the lane is about to fail its push. Not exiting here so the generation is still computed and the push reports the authoritative error."
 
       - name: Setup bun
         uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
@@ -52,6 +162,17 @@ jobs:
 
       - name: Install dependencies
         run: bun install --frozen-lockfile
+
+      - name: Configure committer
+        run: |
+          git config user.name "society[bot]"
+          git config user.email "society[bot]@users.noreply.github.com"
+
+      # docs/observe-events/ is ALREADY per-event ZetaId-keyed — one file per event, no
+      # two writers on one path. There is nothing to shard here; the union of the staging
+      # branch and main is a plain G-Set union (commutative, idempotent).
+      - name: Prepare staging working tree
+        run: bun src/Core.TypeScript/forge-host/github/flush-via-staging.ts prepare --lane society
 
       - name: Run society evolution tick
         env:
@@ -62,26 +183,34 @@ jobs:
           # Run the society evolution script.
           # Exits 0 on success, non-zero on failure (non-fatal — the society
           # continues even if one evolution tick fails).
+          #
+          # `set -o pipefail` is LOAD-BEARING and must not be removed. Without it
+          # the pipeline below reports `tail`'s status, which is always 0, so the
+          # `|| echo` guard was DEAD CODE and a crashing runner was indistinguishable
+          # from a healthy tick. That is this repo's own "never read exit status
+          # through a pipe" rule, and it was violated here on main until 2026-08-20.
+          # The failure stays non-fatal by design (`|| echo`), but it is now VISIBLE.
+          set -o pipefail
           bun src/Core.TypeScript/planning/society-evolution-runner.ts \
             --event-dir docs/observe-events \
             --generations 1 \
             2>&1 | tail -10 || echo "[society] evolution tick failed (non-fatal)"
 
-      - name: Commit evolution event
+      # Lands via the ungated `heartbeat/society` staging branch + a squash-auto-merge PR,
+      # not a direct push: ruleset "CI Gate" requires `gate (required)` on main at push
+      # time with no bypass actors. Events are never lost if the PR is slow — they sit on
+      # the staging branch and the next tick carries them plus any new ones.
+      - name: Flush evolution events to main via staging branch + PR
+        env:
+          GH_TOKEN: ${{ secrets.ZETA_TELEMETRY_FLUSH_TOKEN || secrets.ZETA_PR_ARCHIVE_TOKEN || secrets.GITHUB_TOKEN }}
         run: |
-          git config user.name "society[bot]"
-          git config user.email "society[bot]@users.noreply.github.com"
-          git add docs/observe-events/ || true
-          if git diff --cached --quiet; then
-            echo "[society] no new evolution events to commit"
-          else
-            git commit --no-verify -m "society: evolution tick $(date -u +%Y-%m-%dT%H:%M:%SZ)
+          bun src/Core.TypeScript/forge-host/github/flush-via-staging.ts flush \
+            --lane society \
+            --paths docs/observe-events \
+            --message "society: evolution tick $(date -u +%Y-%m-%dT%H:%M:%SZ)
 
           Autonomous evolutionary loop: score → select → crossover → mutate → replace.
           Transport: Git (gitSalonTransport). One generation per tick.
 
           Co-Authored-By: Kiro <noreply@kiro.dev>"
-            git pull --rebase origin main
-            git push origin main
-          fi
 

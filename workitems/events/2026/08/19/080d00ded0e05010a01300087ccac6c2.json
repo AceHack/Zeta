@@ -1,0 +1,14 @@
+{
+  "id": "080d00ded0e05010a01300087ccac6c2",
+  "at": "2026-08-19T21:07:53.994Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M0DXM709087G0R000YY6YZZ",
+    "type": "task",
+    "title": "FsCheck: calibrate the mimetic-susceptibility estimator against a known-zero synthetic fleet",
+    "slug": "fscheck-calibrate-the-mimetic-susceptibility-estimator-again",
+    "priority": "P2",
+    "filename": "081M0DXM709087G0R000YY6YZZ-fscheck-calibrate-the-mimetic-susceptibility-estimator-again.md"
+  }
+}

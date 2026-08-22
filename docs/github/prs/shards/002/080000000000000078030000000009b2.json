@@ -1,0 +1,17 @@
+{
+  "pr_number": 2482,
+  "archive_path": "docs/history/pr-reviews/PR-2482-docs-research-preserve-aaron-ani-voice-mode-conversation-backup-content-warning.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_noIW",
+    "comment:PRRC_kwDOSF9kNM6_noId",
+    "thread:PRRT_kwDOSF9kNM6A5ewn",
+    "thread:PRRT_kwDOSF9kNM6A5ews"
+  ],
+  "fetched_at": "2026-05-10T12:22:30.375Z",
+  "schema_version": "v1",
+  "commit_sha": "5922dd6158fc1a8c13762a0211f1d88e5de3b007",
+  "title": "docs(research): preserve Aaron ↔ Ani voice-mode conversation backup (content warning)",
+  "state": "MERGED",
+  "merged_at": "2026-05-10T12:22:09Z",
+  "head_ref": "docs/aaron-ani-conversation-backup-2026-05-10"
+}

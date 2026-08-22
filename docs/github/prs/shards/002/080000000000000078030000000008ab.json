@@ -1,0 +1,17 @@
+{
+  "pr_number": 2219,
+  "archive_path": "docs/history/pr-reviews/PR-2219-docs-b-0168-add-partner-integration-worked-translations-5-layer-register.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_fgy6",
+    "comment:PRRC_kwDOSF9kNM6_fgzU",
+    "thread:PRRT_kwDOSF9kNM6AzHK_",
+    "thread:PRRT_kwDOSF9kNM6AzHKs"
+  ],
+  "fetched_at": "2026-05-09T07:20:32.430Z",
+  "schema_version": "v1",
+  "commit_sha": "e24d58dcaa95a6e436b0ddf6a24b959a2ad961ed",
+  "title": "docs(B-0168): add partner-integration worked translations (5-layer register)",
+  "state": "MERGED",
+  "merged_at": "2026-05-09T07:20:12Z",
+  "head_ref": "fix/b0168-partner-integration-discussion-translations"
+}

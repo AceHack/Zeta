@@ -1,0 +1,12 @@
+{
+  "pr_number": 9020,
+  "archive_path": "docs/history/pr-reviews/PR-9020-docs-research-math-team-findings-per-user-ca-relocates-the-spof-not-removes-anti.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-21T22:05:32.167Z",
+  "schema_version": "v1",
+  "commit_sha": "1c17c4428b3080c389313e13e598f7cb29983bee",
+  "title": "docs(research): math-team FINDINGS — per-user-CA RELOCATES the SPOF (not removes); anti-Sybil non-bypassable REFUTED; G3b open",
+  "state": "MERGED",
+  "merged_at": "2026-06-21T22:05:06Z",
+  "head_ref": "otto/math-findings-per-user-ca-relocates-spof"
+}

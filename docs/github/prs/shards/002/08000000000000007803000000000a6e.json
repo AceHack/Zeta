@@ -1,0 +1,19 @@
+{
+  "pr_number": 2670,
+  "archive_path": "docs/history/pr-reviews/PR-2670-docs-research-amara-assessment-lfg-thesis-six-category-signal-discriminator.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_xc_S",
+    "comment:PRRC_kwDOSF9kNM6_xcvT",
+    "comment:PRRC_kwDOSF9kNM6_xcvd",
+    "thread:PRRT_kwDOSF9kNM6BA84j",
+    "thread:PRRT_kwDOSF9kNM6BA84o",
+    "thread:PRRT_kwDOSF9kNM6BA9E3"
+  ],
+  "fetched_at": "2026-05-11T08:49:35.958Z",
+  "schema_version": "v1",
+  "commit_sha": "f78354cc451c52971a8d79200bb20b2039e6b4f3",
+  "title": "docs(research): Amara assessment — LFG thesis + six-category signal discriminator",
+  "state": "MERGED",
+  "merged_at": "2026-05-11T08:49:19Z",
+  "head_ref": "docs/amara-overnight-assessment-six-discriminator-2026-05-11"
+}

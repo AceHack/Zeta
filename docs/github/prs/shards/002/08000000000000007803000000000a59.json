@@ -1,0 +1,19 @@
+{
+  "pr_number": 2649,
+  "archive_path": "docs/history/pr-reviews/PR-2649-docs-backlog-b-0056-re-decompose-into-smallest-dependency-ordered-atomic-xs-chil.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_uJMN",
+    "comment:PRRC_kwDOSF9kNM6_uKd_",
+    "comment:PRRC_kwDOSF9kNM6_uKdw",
+    "thread:PRRT_kwDOSF9kNM6A-fHH",
+    "thread:PRRT_kwDOSF9kNM6A-gE1",
+    "thread:PRRT_kwDOSF9kNM6A-gFC"
+  ],
+  "fetched_at": "2026-05-11T05:39:35.388Z",
+  "schema_version": "v1",
+  "commit_sha": "7ce48deaba42c7d26808ff53bd74eeef83b3c26b",
+  "title": "docs(backlog): B-0056 re-decompose into smallest dependency-ordered atomic XS child rows (Riven)",
+  "state": "MERGED",
+  "merged_at": "2026-05-11T05:39:20Z",
+  "head_ref": "claim/b0056-decompose-smallest-atomic-mythology-children-riven-2026-05-11"
+}

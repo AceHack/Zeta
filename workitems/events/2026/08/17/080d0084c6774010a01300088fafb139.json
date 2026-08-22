@@ -1,0 +1,14 @@
+{
+  "id": "080d0084c6774010a01300088fafb139",
+  "at": "2026-08-17T16:40:45.032Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M089HKQ7087G0R003H2G8JF",
+    "type": "bug",
+    "title": "Zig byte-lock substrate runs ~900x slower per walker step than the other five oracles",
+    "slug": "zig-byte-lock-substrate-runs-900x-slower-per-walker-step-tha",
+    "priority": "P2",
+    "filename": "081M089HKQ7087G0R003H2G8JF-zig-byte-lock-substrate-runs-900x-slower-per-walker-step-tha.md"
+  }
+}

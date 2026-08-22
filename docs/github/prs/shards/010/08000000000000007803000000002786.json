@@ -1,0 +1,12 @@
+{
+  "pr_number": 10118,
+  "archive_path": "docs/history/pr-reviews/PR-10118-book-editions-vietnamese-companion-2-the-formation-full-length-vi.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-07T18:14:12.597Z",
+  "schema_version": "v1",
+  "commit_sha": "aa2267e1a1482051d14de713fc0dd73806d9cdf8",
+  "title": "book(editions): Vietnamese companion 2 — the Formation, full length (vi)",
+  "state": "MERGED",
+  "merged_at": "2026-08-07T18:10:07Z",
+  "head_ref": "book-vi-companion-formation"
+}

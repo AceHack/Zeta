@@ -1,0 +1,12 @@
+{
+  "pr_number": 2767,
+  "archive_path": "docs/history/pr-reviews/PR-2767-feat-hooks-session-start-cron-verify-catch-43-architectural-mitigation.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-12T13:15:24.898Z",
+  "schema_version": "v1",
+  "commit_sha": "bb620e83fdbdc8512aefa5cf2ca1165c3f6668be",
+  "title": "feat(hooks): session-start-cron-verify — catch 43 architectural mitigation",
+  "state": "MERGED",
+  "merged_at": "2026-05-12T13:15:06Z",
+  "head_ref": "feat/session-start-cron-verify-hook-2026-05-12"
+}

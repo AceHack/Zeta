@@ -1,0 +1,12 @@
+{
+  "pr_number": 6716,
+  "archive_path": "docs/history/pr-reviews/PR-6716-feat-observebridge-wire-extendgrammar-sovereign-self-edit-tunable-needs-auth-esc.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-07T04:17:05.649Z",
+  "schema_version": "v1",
+  "commit_sha": "0a8b2eeeb82371c9d645750f249be62fdb552724",
+  "title": "feat(ObserveBridge): wire ExtendGrammar — sovereign self-edit + TUNABLE needs-auth escalation",
+  "state": "MERGED",
+  "merged_at": "2026-06-07T04:16:40Z",
+  "head_ref": "otto/wire-extendgrammar"
+}

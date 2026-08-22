@@ -1,0 +1,12 @@
+{
+  "pr_number": 6852,
+  "archive_path": "docs/history/pr-reviews/PR-6852-refactor-blake3-rename-core-blake3-core-fsharp-blake3-per-language-oracle-family.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-07T15:24:43.340Z",
+  "schema_version": "v1",
+  "commit_sha": "6382152d552af8bc81c15fb8e79af88975603f25",
+  "title": "refactor(Blake3): rename Core.Blake3 -> Core.FSharp.Blake3 (per-language oracle family)",
+  "state": "MERGED",
+  "merged_at": "2026-06-07T15:24:24Z",
+  "head_ref": "otto/rename-blake3-to-fsharp-oracle-family"
+}

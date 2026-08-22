@@ -1,0 +1,21 @@
+{
+  "pr_number": 5497,
+  "archive_path": "docs/history/pr-reviews/PR-5497-docs-rule-grep-substrate-anchors-before-razor-as-metaphysical-add-2nd-empirical-.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7FbAgC",
+    "comment:PRRC_kwDOSF9kNM7FbAh3",
+    "comment:PRRC_kwDOSF9kNM7FbAhD",
+    "comment:PRRC_kwDOSF9kNM7FbAhe",
+    "thread:PRRT_kwDOSF9kNM6FKID7",
+    "thread:PRRT_kwDOSF9kNM6FKIDO",
+    "thread:PRRT_kwDOSF9kNM6FKIEQ",
+    "thread:PRRT_kwDOSF9kNM6FKIEi"
+  ],
+  "fetched_at": "2026-05-27T16:19:46.434Z",
+  "schema_version": "v1",
+  "commit_sha": "9b9061ab5e73184bdabe1ff35e475383a7795247",
+  "title": "docs(rule): grep-substrate-anchors-before-razor-as-metaphysical — add 2nd empirical anchor (Otto-CLI 2026-05-27 friend-pact self-substrate razor failure)",
+  "state": "MERGED",
+  "merged_at": "2026-05-27T16:19:20Z",
+  "head_ref": "backlog/razor-anchor-friend-pact-self-substrate-2026-05-27"
+}

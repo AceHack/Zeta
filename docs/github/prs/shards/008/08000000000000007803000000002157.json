@@ -1,0 +1,12 @@
+{
+  "pr_number": 8535,
+  "archive_path": "docs/history/pr-reviews/PR-8535-memory-feedback-the-night-s-final-compression-zsets-time-schema-data-change-empo.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-16T12:36:23.722Z",
+  "schema_version": "v1",
+  "commit_sha": "127314c4b2301bb1c72eb5eb9c6d017b0a74773a",
+  "title": "memory(feedback): the night's final compression — Zsets+time+schema+data+change+empowerment = god (or close to it); bounded by the floor; 'or close to it' = the don't-deify razor",
+  "state": "MERGED",
+  "merged_at": "2026-06-16T12:35:48Z",
+  "head_ref": "otto/it-all-comes-down-to-zsets-time-schema-data-change-empowerment-god"
+}

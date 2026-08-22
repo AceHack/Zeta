@@ -1,0 +1,12 @@
+{
+  "pr_number": 7558,
+  "archive_path": "docs/history/pr-reviews/PR-7558-docs-craft-in-the-wild-validation-a-year-of-math-in-an-hour-principle-6-at-max-i.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-11T00:28:35.897Z",
+  "schema_version": "v1",
+  "commit_sha": "fc1078ea6547e7ba455858ae150553711c4dd8a1",
+  "title": "docs(craft): in-the-wild validation — a year of math in an hour (principle #6 at max intensity)",
+  "state": "MERGED",
+  "merged_at": "2026-06-11T00:28:11Z",
+  "head_ref": "shadow-craft-year-of-math-in-an-hour-validation"
+}

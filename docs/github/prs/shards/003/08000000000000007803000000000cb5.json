@@ -1,0 +1,12 @@
+{
+  "pr_number": 3253,
+  "archive_path": "docs/history/pr-reviews/PR-3253-feat-b-0461-file-b-0442-slice-5-3-row-missed-substrate-cascade-handler.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-14T21:28:23.837Z",
+  "schema_version": "v1",
+  "commit_sha": "54236b4da2aabc2eec2f6953ac8dcf64e13b576a",
+  "title": "feat(b-0461): file B-0442 slice 5.3 row (missed-substrate-cascade handler)",
+  "state": "MERGED",
+  "merged_at": "2026-05-14T21:28:07Z",
+  "head_ref": "otto/b0461-missed-substrate-cascade-handler-2026-05-14"
+}

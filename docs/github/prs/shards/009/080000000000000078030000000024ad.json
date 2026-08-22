@@ -1,0 +1,12 @@
+{
+  "pr_number": 9389,
+  "archive_path": "docs/history/pr-reviews/PR-9389-feat-model-backend-the-login-runner-our-own-token-store-device-flow-executor-sha.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-04T01:02:43.038Z",
+  "schema_version": "v1",
+  "commit_sha": "f9e2d820c25e9cba04d29c8e042eba0b812911c4",
+  "title": "feat(model-backend): the login runner + our own token store — device flow executor (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-04T01:02:22Z",
+  "head_ref": "otto/login-runner-token-store"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 3666,
+  "archive_path": "docs/history/pr-reviews/PR-3666-fix-hygiene-clear-all-22-dead-33-migration-xrefs-perpetual-non-required-check.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-16T01:26:00.801Z",
+  "schema_version": "v1",
+  "commit_sha": "566acb64f9e22a516c58740328a8e38d915e3206",
+  "title": "fix(hygiene): clear all 22 dead §33 migration xrefs (perpetual non-required-check)",
+  "state": "MERGED",
+  "merged_at": "2026-05-16T01:25:46Z",
+  "head_ref": "fix/section-33-migration-xrefs-22-dead-otto-cli-2026-05-16"
+}

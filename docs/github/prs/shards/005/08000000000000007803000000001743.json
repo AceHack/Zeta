@@ -1,0 +1,19 @@
+{
+  "pr_number": 5955,
+  "archive_path": "docs/history/pr-reviews/PR-5955-backlog-b-0927-constitutional-safety-floor-kid-safety-absolute-any-death-error-c.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7GEH-M",
+    "comment:PRRC_kwDOSF9kNM7GEH-j",
+    "comment:PRRC_kwDOSF9kNM7GEM2E",
+    "comment:PRRC_kwDOSF9kNM7GEM50",
+    "thread:PRRT_kwDOSF9kNM6Fnp-8",
+    "thread:PRRT_kwDOSF9kNM6Fnp-s"
+  ],
+  "fetched_at": "2026-05-29T08:08:12.932Z",
+  "schema_version": "v1",
+  "commit_sha": "3ee77204e5bab34ae3136d4ef3e7c9bbdcc8442a",
+  "title": "backlog(B-0927): constitutional safety floor — kid-safety absolute + any-death-error-class-or-shutdown",
+  "state": "MERGED",
+  "merged_at": "2026-05-29T08:07:51Z",
+  "head_ref": "otto-cli/b-0927-constitutional-safety-floor-error-class-or-shutdown-2026-05-29"
+}

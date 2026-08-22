@@ -41,13 +41,78 @@ in
   options.zeta.longhorn = {
     dataDisks = lib.mkOption {
       type = lib.types.listOf lib.types.str;
-      default = [ "/var/lib/longhorn" ];
+
+      # DERIVED from this host's own `fileSystems`, not a fixed literal.
+      #
+      # It used to be the fixed literal [ "/var/lib/longhorn" ], and that is
+      # the node-side half of the same "use every disk" hole the multi-disk
+      # mechanism fix (PR #12175) closes on the cluster side. The two halves
+      # are independent and BOTH are required:
+      #
+      #   zeta-install.sh formats EVERY non-boot internal disk as
+      #   longhorn{2..N} and mounts them at /var/lib/longhorn-disk{2..N}
+      #   (plus longhorn1 in the boot disk's tail). hosts/control-plane and
+      #   hosts/worker-gpu -- menu options 1 and 2 of that same installer --
+      #   are hardware-configuration hosts, so nothing ever set this option
+      #   on them. Only disko-shapes/longhorn-node.nix sets it, and only
+      #   hosts/worker-template imports that shape.
+      #
+      #   So on the host the USB actually installs, the disk set handed to
+      #   Longhorn was the ONE-element literal below: /var/lib/longhorn, a
+      #   directory on the ROOT filesystem (longhorn-prereqs.nix creates it
+      #   with tmpfiles precisely so longhorn-manager can start on a node
+      #   with no data partition). Every dedicated Longhorn partition the
+      #   installer had just made contributed ZERO schedulable capacity --
+      #   while zeta-install.sh's capture check and the boot-time
+      #   zeta-longhorn-preflight both went green, because both of them
+      #   measure `fileSystems`, and `fileSystems` was correct. A check that
+      #   did not run, looking exactly like a check that passed.
+      #
+      # Deriving it from `requiredMounts` -- the SAME value
+      # longhorn-node-preflight.nix refuses to boot without -- makes the set
+      # Longhorn is TOLD about and the set the node is REQUIRED to have
+      # mounted one expression rather than two rosters that agree by
+      # coincidence. Drift between them is now impossible by construction,
+      # which is why the falsifier in
+      # tests/longhorn-disk-registration-eval-test.nix asserts identity
+      # against that file rather than against a copied list.
+      #
+      # The [ "/var/lib/longhorn" ] fallback is kept for the genuine
+      # no-Longhorn-filesystem host (hosts/control-plane's committed
+      # placeholder, and every VM test that declares no data disk): that is
+      # today's behaviour, and changing it to [ ] would disable the module
+      # via its own `lib.mkIf (cfg.dataDisks != [ ])` and take the node
+      # label with it.
+      default =
+        let
+          declared =
+            (import ./longhorn-preflight-checks.nix {
+              inherit lib;
+              inherit (config) fileSystems;
+            }).requiredMounts;
+        in
+        if declared == [ ] then [ "/var/lib/longhorn" ] else declared;
+
+      defaultText = lib.literalMD ''
+        Every mountpoint this host declares under `/var/lib/longhorn`
+        (i.e. `longhorn-preflight-checks.nix`'s `requiredMounts`), or
+        `[ "/var/lib/longhorn" ]` when the host declares none.
+      '';
+
       description = ''
         Filesystem paths that Longhorn should use as data paths on
         this node. Each path must already be a mountpoint backed by
         a real partition (typically declared via the disko-shape).
         The first entry IS Longhorn's defaultDataPath; additional
         entries get added to the Node CR as named disks.
+
+        Defaults to the host's own declared Longhorn mountpoints, so a
+        node uses every disk zeta-install.sh formatted for it without
+        anyone restating the list. Set it explicitly only to use FEWER
+        disks than the host mounts -- and that override is precisely what
+        the parity property in
+        `tests/longhorn-disk-registration-eval-test.nix` exists to make
+        visible, so state the reason where the override lives.
       '';
       example = [ "/var/lib/longhorn-disk1" "/var/lib/longhorn-disk2" ];
     };

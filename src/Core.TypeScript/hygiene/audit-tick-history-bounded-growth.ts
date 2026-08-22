@@ -12,9 +12,9 @@
 // human-readable; default terse machine-friendly.
 //
 // Usage:
-//   bun tools/hygiene/audit-tick-history-bounded-growth.ts            # terse
-//   bun tools/hygiene/audit-tick-history-bounded-growth.ts --summary  # multi-line
-//   bun tools/hygiene/audit-tick-history-bounded-growth.ts --threshold 1000
+//   bun src/Core.TypeScript/hygiene/audit-tick-history-bounded-growth.ts            # terse
+//   bun src/Core.TypeScript/hygiene/audit-tick-history-bounded-growth.ts --summary  # multi-line
+//   bun src/Core.TypeScript/hygiene/audit-tick-history-bounded-growth.ts --threshold 1000
 //
 // Exit codes:
 //   0   within bounds (or approaching but not over)

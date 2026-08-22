@@ -1,0 +1,23 @@
+{
+  "pr_number": 6199,
+  "archive_path": "docs/history/pr-reviews/PR-6199-fix-b-0250-demote-stale-loop-run-coincidence-residue.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7Gd8jk",
+    "comment:PRRC_kwDOSF9kNM7Gd93s",
+    "comment:PRRC_kwDOSF9kNM7GeBS8",
+    "comment:PRRC_kwDOSF9kNM7GeBTB",
+    "comment:PRRC_kwDOSF9kNM7GeBTJ",
+    "thread:PRRT_kwDOSF9kNM6F6rv3",
+    "thread:PRRT_kwDOSF9kNM6F6szT",
+    "thread:PRRT_kwDOSF9kNM6F6vi7",
+    "thread:PRRT_kwDOSF9kNM6F6vi_",
+    "thread:PRRT_kwDOSF9kNM6F6vjG"
+  ],
+  "fetched_at": "2026-05-31T05:36:25.287Z",
+  "schema_version": "v1",
+  "commit_sha": "fa976c5645b06495e5f91e6b0c5fe0a56155f945",
+  "title": "fix(B-0250): demote stale loop-run coincidence residue",
+  "state": "MERGED",
+  "merged_at": "2026-05-31T05:36:05Z",
+  "head_ref": "claim/task-b0250-lifecycle-residue-freshness"
+}

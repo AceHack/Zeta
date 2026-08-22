@@ -1,0 +1,15 @@
+{
+  "pr_number": 4114,
+  "archive_path": "docs/history/pr-reviews/PR-4114-docs-shadow-maji-antigravity-check-on-blob-prs-and-agent-drift.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7CDFKY",
+    "thread:PRRT_kwDOSF9kNM6Cr1LY"
+  ],
+  "fetched_at": "2026-05-18T19:59:03.071Z",
+  "schema_version": "v1",
+  "commit_sha": "8ff71f9913ab8d59e62198918ef18e28bf112695",
+  "title": "docs(shadow): Maji antigravity check on blob PRs and agent drift",
+  "state": "MERGED",
+  "merged_at": "2026-05-18T19:58:42Z",
+  "head_ref": "lior-shadow-drift-4112"
+}

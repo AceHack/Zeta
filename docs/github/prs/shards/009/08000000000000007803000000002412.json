@@ -1,0 +1,12 @@
+{
+  "pr_number": 9234,
+  "archive_path": "docs/history/pr-reviews/PR-9234-docs-design-base-corporate-sovereign-the-layered-design-language-architecture-sh.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-03T00:34:48.037Z",
+  "schema_version": "v1",
+  "commit_sha": "f565283be1dbb8ede75242bd90ba7ab8ef0b9b44",
+  "title": "docs(design): base + Corporate + Sovereign — the layered design-language architecture (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-03T00:34:26Z",
+  "head_ref": "shadow/design-language-base-corporate-sovereign"
+}

@@ -1,0 +1,14 @@
+{
+  "id": "080d00d95cebb010a01300082a1518b1",
+  "at": "2026-08-19T17:57:18.326Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M0DJQ7BP087G0R002JDZF90",
+    "type": "task",
+    "title": "yubihsm-connector reachability is the real HSM perimeter: bind scope, drain the 62-entry log ring, measure pre-auth session exhaustion",
+    "slug": "yubihsm-connector-reachability-is-the-real-hsm-perimeter-bin",
+    "priority": "P1",
+    "filename": "081M0DJQ7BP087G0R002JDZF90-yubihsm-connector-reachability-is-the-real-hsm-perimeter-bin.md"
+  }
+}

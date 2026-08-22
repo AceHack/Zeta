@@ -1,0 +1,15 @@
+{
+  "pr_number": 8087,
+  "archive_path": "docs/history/pr-reviews/PR-8087-feat-zeta-id-generate-zetaid-bit-layouts-from-canonical-schema-across-6-language.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7LLPR5",
+    "thread:PRRT_kwDOSF9kNM6JXElo"
+  ],
+  "fetched_at": "2026-06-13T23:14:30.392Z",
+  "schema_version": "v1",
+  "commit_sha": "830d75c4620bf47f2ec129f2d412b7838c3ae926",
+  "title": "feat(zeta-id): generate ZetaId bit layouts from canonical schema across 6 languages",
+  "state": "MERGED",
+  "merged_at": "2026-06-13T23:14:06Z",
+  "head_ref": "gemini/backlog-hygiene"
+}

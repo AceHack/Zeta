@@ -1,0 +1,15 @@
+{
+  "pr_number": 2451,
+  "archive_path": "docs/history/pr-reviews/PR-2451-docs-research-shadow-log-for-vera-narration-drift.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_m96A",
+    "thread:PRRT_kwDOSF9kNM6A49Bj"
+  ],
+  "fetched_at": "2026-05-10T09:53:53.540Z",
+  "schema_version": "v1",
+  "commit_sha": "b4c0a83aee0db13d34a9ddef0559904ef2345cd2",
+  "title": "docs(research): shadow log for vera narration drift",
+  "state": "MERGED",
+  "merged_at": "2026-05-10T09:53:36Z",
+  "head_ref": "lior/shadow-log-vera-drift"
+}

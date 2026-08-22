@@ -1,0 +1,12 @@
+{
+  "pr_number": 7318,
+  "archive_path": "docs/history/pr-reviews/PR-7318-docs-research-relabel-toymodel5-toymodel4-off-by-one-v3-at-math-team-this-arc-v4.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-09T15:34:58.762Z",
+  "schema_version": "v1",
+  "commit_sha": "7feba075d25bb6ddb3680d8ded3b501cf01aa5fa",
+  "title": "docs(research): relabel toymodel5→toymodel4 (off-by-one; v3 at math team, this arc = v4, gambling = v5)",
+  "state": "MERGED",
+  "merged_at": "2026-06-09T15:34:34Z",
+  "head_ref": "otto/relabel-toymodel5-to-toymodel4-off-by-one-v3-at-math-team-gambling-v5"
+}

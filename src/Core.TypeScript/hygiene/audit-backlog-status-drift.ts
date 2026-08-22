@@ -29,8 +29,8 @@
 //
 // Usage:
 //
-//   bun tools/hygiene/audit-backlog-status-drift.ts            # markdown report
-//   bun tools/hygiene/audit-backlog-status-drift.ts --json     # JSON output
+//   bun src/Core.TypeScript/hygiene/audit-backlog-status-drift.ts            # markdown report
+//   bun src/Core.TypeScript/hygiene/audit-backlog-status-drift.ts --json     # JSON output
 //
 // Exit codes:
 //
@@ -322,7 +322,7 @@ function main(): number {
         if (!KNOWN_FLAGS.has(arg)) {
             console.error(`Unknown argument: ${arg}`);
             console.error(
-                "Usage: bun tools/hygiene/audit-backlog-status-drift.ts [--json] [--check]",
+                "Usage: bun src/Core.TypeScript/hygiene/audit-backlog-status-drift.ts [--json] [--check]",
             );
             return 64;
         }
@@ -330,7 +330,7 @@ function main(): number {
 
     if (args.includes("--help") || args.includes("-h")) {
         console.log(
-            "Usage: bun tools/hygiene/audit-backlog-status-drift.ts [--json] [--check]\n\n" +
+            "Usage: bun src/Core.TypeScript/hygiene/audit-backlog-status-drift.ts [--json] [--check]\n\n" +
                 "Detects `status: open` backlog rows whose primary-artifact paths all\n" +
                 "exist on disk (substrate drift candidates).\n\n" +
                 "Options:\n" +

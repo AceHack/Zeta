@@ -1,0 +1,12 @@
+{
+  "pr_number": 2734,
+  "archive_path": "docs/history/pr-reviews/PR-2734-docs-backlog-re-decompose-b-0354-into-3-smallest-atomic-children-fresh-instance-.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-11T19:25:51.769Z",
+  "schema_version": "v1",
+  "commit_sha": "48d8bbfda7f213dfc313bafaa79c5c6405fcc146",
+  "title": "docs(backlog): re-decompose B-0354 into 3 smallest atomic children (fresh-instance validation test slices, TS-first, one bounded step) (Riven)",
+  "state": "MERGED",
+  "merged_at": "2026-05-11T19:25:29Z",
+  "head_ref": "claim/b0354-fresh-instance-validation-bootstrap-claude-md-smallest-slice-riven-2026-05-11"
+}

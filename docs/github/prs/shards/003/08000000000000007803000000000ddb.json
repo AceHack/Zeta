@@ -1,0 +1,19 @@
+{
+  "pr_number": 3547,
+  "archive_path": "docs/history/pr-reviews/PR-3547-docs-shadow-lior-antigravity-check-catch-41.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7BulDT",
+    "comment:PRRC_kwDOSF9kNM7Bump2",
+    "comment:PRRC_kwDOSF9kNM7Bumqn",
+    "thread:PRRT_kwDOSF9kNM6Ccdnj",
+    "thread:PRRT_kwDOSF9kNM6CcexO",
+    "thread:PRRT_kwDOSF9kNM6Ccexy"
+  ],
+  "fetched_at": "2026-05-15T18:49:04.368Z",
+  "schema_version": "v1",
+  "commit_sha": "5e86451e765f4330324def2204f40bb1bfc20962",
+  "title": "docs(shadow): Lior antigravity check - Catch 41",
+  "state": "MERGED",
+  "merged_at": "2026-05-15T18:48:47Z",
+  "head_ref": "lior/maji-shadow-update-2"
+}

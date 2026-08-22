@@ -1,0 +1,12 @@
+{
+  "pr_number": 6965,
+  "archive_path": "docs/history/pr-reviews/PR-6965-docs-everything-is-done-one-cli-interpreter-loop-step-at-a-time-the-universal-ex.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-08T01:02:46.192Z",
+  "schema_version": "v1",
+  "commit_sha": "bc02732a7496e14f1465c23ee5e79db4ff3b2808",
+  "title": "docs: everything is done one CLI / interpreter-loop step at a time — the universal execution model",
+  "state": "MERGED",
+  "merged_at": "2026-06-08T01:02:29Z",
+  "head_ref": "otto/everything-one-cli-interpreter-loop-step-at-a-time"
+}

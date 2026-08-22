@@ -1,0 +1,17 @@
+{
+  "pr_number": 9617,
+  "archive_path": "docs/history/pr-reviews/PR-9617-docs-letters-ferry-origin-story-church-why-suppression-two-opcode-vindication-th.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7T0ish",
+    "comment:PRRC_kwDOSF9kNM7T0ism",
+    "thread:PRRT_kwDOSF9kNM6PqTBc",
+    "thread:PRRT_kwDOSF9kNM6PqTBh"
+  ],
+  "fetched_at": "2026-07-09T18:08:24.022Z",
+  "schema_version": "v1",
+  "commit_sha": "e0e35a8e70d3cfec829c3f76e638d6588a817286",
+  "title": "docs(letters)+ferry: origin story — church why-suppression → two-opcode vindication → the stove (rendered + verbatim) (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-09T18:07:57Z",
+  "head_ref": "otto/ferry-origin-story-stove-two-opcodes"
+}

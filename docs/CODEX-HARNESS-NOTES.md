@@ -112,7 +112,7 @@ host implementation of the existing factory loop:
   exists and what Codex inherits from the Claude loop.
 - `docs/factory-crons.md`,
   `docs/research/claude-cron-durability.md`, and
-  `.claude/skills/long-term-rescheduler/SKILL.md` are the
+  `.claude/skills/agent-runtime-and-persistence/blueprints/long-term-rescheduler.md` are the
   prior art for Claude Code's `CronCreate` lifecycle. The
   Codex LaunchAgent is documented here instead of added as a
   `factory-crons` row because that registry is managed through

@@ -1,0 +1,12 @@
+{
+  "pr_number": 3423,
+  "archive_path": "docs/history/pr-reviews/PR-3423-feat-b-0528-unit-tests-for-shadow-launchd-installer-6-categories-19-tests.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-15T11:02:57.318Z",
+  "schema_version": "v1",
+  "commit_sha": "32c5997e75d098c8a8352884018d80ab541fa02d",
+  "title": "feat(b-0528): unit tests for shadow launchd installer (6 categories, 19 tests)",
+  "state": "MERGED",
+  "merged_at": "2026-05-15T11:02:36Z",
+  "head_ref": "feat/b0528-shadow-launchd-installer-tests-otto-cli-2026-05-15"
+}

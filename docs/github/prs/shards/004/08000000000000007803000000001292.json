@@ -1,0 +1,12 @@
+{
+  "pr_number": 4754,
+  "archive_path": "docs/history/pr-reviews/PR-4754-backlog-b-0581-re-land-skill-wrapping-gh-auth-refresh-interactive-flow-supersede.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-23T19:15:45.307Z",
+  "schema_version": "v1",
+  "commit_sha": "ba36ffbc438fa0bfc7b1d3d9b75d0f3fb1ca8f3c",
+  "title": "backlog(B-0581): RE-LAND skill wrapping gh auth refresh interactive flow (supersedes stale #3961)",
+  "state": "MERGED",
+  "merged_at": "2026-05-23T19:15:29Z",
+  "head_ref": "otto/cli-reland-b0581-gh-auth-refresh-skill-2026-05-23"
+}

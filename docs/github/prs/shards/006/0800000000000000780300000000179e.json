@@ -1,0 +1,12 @@
+{
+  "pr_number": 6046,
+  "archive_path": "docs/history/pr-reviews/PR-6046-chore-b-0355-close-cross-harness-bootstrap-template-completed-via-children.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-29T20:56:25.269Z",
+  "schema_version": "v1",
+  "commit_sha": "61973a46ba3fda822752db764ff84ba4bfd26436",
+  "title": "chore(B-0355): close cross-harness bootstrap template — completed via children",
+  "state": "MERGED",
+  "merged_at": "2026-05-29T20:56:04Z",
+  "head_ref": "backlog/b-0355-close-completed-via-children-2026-05-29"
+}

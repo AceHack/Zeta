@@ -1,0 +1,12 @@
+{
+  "pr_number": 3424,
+  "archive_path": "docs/history/pr-reviews/PR-3424-shard-tick-1100z-pr-3420-merged-duplicate-reviewer-threads-on-3421.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-15T11:05:01.623Z",
+  "schema_version": "v1",
+  "commit_sha": "0c650a8e126c7849a65b328eea0f2e9dfe8fd7df",
+  "title": "shard(tick): 1100Z — PR #3420 merged; duplicate-reviewer threads on #3421",
+  "state": "MERGED",
+  "merged_at": "2026-05-15T11:04:45Z",
+  "head_ref": "shard/tick-1100z-otto-cli-2026-05-15"
+}

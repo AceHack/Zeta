@@ -1,0 +1,12 @@
+{
+  "pr_number": 7320,
+  "archive_path": "docs/history/pr-reviews/PR-7320-docs-research-no-sh-inside-the-boundary-keyring-is-a-4-4-treaty-baked-into-mumps.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-09T15:41:08.503Z",
+  "schema_version": "v1",
+  "commit_sha": "708f2d87baa1b668f39825508ae30e1c78258b67",
+  "title": "docs(research): no .sh inside the boundary — keyring is a 4×4 treaty baked into MUMPS, not bash (the design already exists)",
+  "state": "MERGED",
+  "merged_at": "2026-06-09T15:40:35Z",
+  "head_ref": "otto/no-sh-inside-boundary-keyring-is-4x4-treaty-baked-into-mumps-design-exists"
+}

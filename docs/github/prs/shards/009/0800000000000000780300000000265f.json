@@ -1,0 +1,12 @@
+{
+  "pr_number": 9823,
+  "archive_path": "docs/history/pr-reviews/PR-9823-feat-core-schemalog-schema-as-an-event-log-on-the-z-set-increment-1.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-01T02:52:22.154Z",
+  "schema_version": "v1",
+  "commit_sha": "e58deb1abe1349d01ff97e7dc61af834587ff9d7",
+  "title": "feat(Core): SchemaLog — schema as an EVENT LOG on the Z-set (increment 1)",
+  "state": "MERGED",
+  "merged_at": "2026-08-01T02:51:53Z",
+  "head_ref": "shadow/schema-on-zsets-increment1"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 13017,
+  "archive_path": "docs/history/pr-reviews/PR-13017-fix-observe-vault-state-recognizes-actual-event-actions.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-21T01:04:09.227Z",
+  "schema_version": "v1",
+  "commit_sha": "71ab1b8cf3df9189aae67ceb3bfd958d4cf92f2a",
+  "title": "fix(observe): vault-state recognizes actual event actions",
+  "state": "MERGED",
+  "merged_at": "2026-08-21T01:03:28Z",
+  "head_ref": "alexa/vault-action-recognition"
+}

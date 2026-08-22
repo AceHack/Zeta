@@ -1,0 +1,12 @@
+{
+  "pr_number": 10318,
+  "archive_path": "docs/history/pr-reviews/PR-10318-outbox-refuse-an-array-shaped-indexeddb-pin-the-array-exclusion.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-12T02:32:50.230Z",
+  "schema_version": "v1",
+  "commit_sha": "926073921c8098d243d320d1294ed61b19a304ef",
+  "title": "outbox: refuse an array-shaped IndexedDB — pin the array exclusion",
+  "state": "MERGED",
+  "merged_at": "2026-08-12T02:32:13Z",
+  "head_ref": "outbox-array-shape-guard"
+}

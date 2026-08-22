@@ -1,0 +1,12 @@
+{
+  "pr_number": 10611,
+  "archive_path": "docs/history/pr-reviews/PR-10611-fix-four-corner-the-landauer-meter-was-pointed-at-the-one-operation-that-can-nev.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-14T15:50:36.643Z",
+  "schema_version": "v1",
+  "commit_sha": "98446a8d479b1d3c2281225e6b93b57e69b32513",
+  "title": "fix(four-corner): the Landauer meter was pointed at the one operation that can never pay",
+  "state": "MERGED",
+  "merged_at": "2026-08-14T15:50:03Z",
+  "head_ref": "otto/wset-erasure-classification-landauer-siting"
+}

@@ -1,0 +1,14 @@
+{
+  "id": "080cffff3aaad810a0130008b160ea67",
+  "at": "2026-08-14T10:52:58.587Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081KZZYENAT087G0R001RJ4T6W",
+    "type": "task",
+    "title": "Obtain LoRa and LEO-satellite packet-loss fits, or record them as unavailable",
+    "slug": "obtain-lora-and-leo-satellite-packet-loss-fits-or-record-the",
+    "priority": "P2",
+    "filename": "081KZZYENAT087G0R001RJ4T6W-obtain-lora-and-leo-satellite-packet-loss-fits-or-record-the.md"
+  }
+}

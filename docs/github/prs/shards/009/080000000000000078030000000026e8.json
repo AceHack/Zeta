@@ -1,0 +1,12 @@
+{
+  "pr_number": 9960,
+  "archive_path": "docs/history/pr-reviews/PR-9960-docs-research-open-question-two-eves-transparent-ledger-vs-unobservable-upgrade-.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-02T14:13:23.457Z",
+  "schema_version": "v1",
+  "commit_sha": "3a3349d85775a3ded7f277192faa922562697a02",
+  "title": "docs(research): OPEN QUESTION — two Eves + transparent-ledger vs unobservable-upgrade tension",
+  "state": "MERGED",
+  "merged_at": "2026-08-02T14:12:56Z",
+  "head_ref": "otto/two-eves-ledger-vs-unobservable-upgrade-open-question"
+}

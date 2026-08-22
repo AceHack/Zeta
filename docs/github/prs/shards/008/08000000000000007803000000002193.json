@@ -1,0 +1,12 @@
+{
+  "pr_number": 8595,
+  "archive_path": "docs/history/pr-reviews/PR-8595-docs-handoff-z-set-isa-six-operator-q-build-spec-with-anti-corner-boundaries.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-19T16:35:29.863Z",
+  "schema_version": "v1",
+  "commit_sha": "34604f80711f6f4e7d3b0f40f7807061bd9299c6",
+  "title": "docs(handoff): Z-set ISA six-operator Q# build spec (with anti-corner boundaries)",
+  "state": "MERGED",
+  "merged_at": "2026-06-19T16:35:04Z",
+  "head_ref": "otto/zset-isa-six-operators-build-spec"
+}

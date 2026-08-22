@@ -1,0 +1,33 @@
+{
+  "pr_number": 3990,
+  "archive_path": "docs/history/pr-reviews/PR-3990-feat-b-0529-add-pipe-row-header-ts-backfill-tool-for-shard-schema.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7B8P0z",
+    "comment:PRRC_kwDOSF9kNM7B8QWU",
+    "comment:PRRC_kwDOSF9kNM7B8QWY",
+    "comment:PRRC_kwDOSF9kNM7B8QWa",
+    "comment:PRRC_kwDOSF9kNM7B8RSg",
+    "comment:PRRC_kwDOSF9kNM7B8Xer",
+    "comment:PRRC_kwDOSF9kNM7B8Xes",
+    "comment:PRRC_kwDOSF9kNM7B8Xff",
+    "comment:PRRC_kwDOSF9kNM7B8Xfj",
+    "comment:PRRC_kwDOSF9kNM7B8Xfq",
+    "thread:PRRT_kwDOSF9kNM6CmlxZ",
+    "thread:PRRT_kwDOSF9kNM6Cmm4q",
+    "thread:PRRT_kwDOSF9kNM6CmmLP",
+    "thread:PRRT_kwDOSF9kNM6CmmLT",
+    "thread:PRRT_kwDOSF9kNM6CmmLV",
+    "thread:PRRT_kwDOSF9kNM6Cmrme",
+    "thread:PRRT_kwDOSF9kNM6Cmrmf",
+    "thread:PRRT_kwDOSF9kNM6CmrnH",
+    "thread:PRRT_kwDOSF9kNM6CmrnK",
+    "thread:PRRT_kwDOSF9kNM6CmrnP"
+  ],
+  "fetched_at": "2026-05-17T01:18:34.824Z",
+  "schema_version": "v1",
+  "commit_sha": "68931cebf716acd1042dd14f8143c1203b0e27d1",
+  "title": "feat(B-0529): add-pipe-row-header.ts — backfill tool for shard schema",
+  "state": "MERGED",
+  "merged_at": "2026-05-17T01:18:19Z",
+  "head_ref": "otto/b0529-add-pipe-row-header-script"
+}

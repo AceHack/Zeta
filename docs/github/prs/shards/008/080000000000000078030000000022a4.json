@@ -1,0 +1,12 @@
+{
+  "pr_number": 8868,
+  "archive_path": "docs/history/pr-reviews/PR-8868-feat-keys-trust-set-installer-mechanism-render-resolver-set-into-operator-ssh-ke.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-21T05:39:52.519Z",
+  "schema_version": "v1",
+  "commit_sha": "7f39df100ad266042e4290db87f59881ea22470e",
+  "title": "feat(keys): trust-set installer MECHANISM — render resolver set into operator-ssh-keys (gated --write, default OFF)",
+  "state": "MERGED",
+  "merged_at": "2026-06-21T05:39:28Z",
+  "head_ref": "otto/keys-install-trust-set"
+}

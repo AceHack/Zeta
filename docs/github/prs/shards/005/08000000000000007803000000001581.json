@@ -1,0 +1,29 @@
+{
+  "pr_number": 5505,
+  "archive_path": "docs/history/pr-reviews/PR-5505-docs-rule-force-push-with-lease-authorization-policy-operator-or-2nd-agent-confi.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7FbZKn",
+    "comment:PRRC_kwDOSF9kNM7FbZLc",
+    "comment:PRRC_kwDOSF9kNM7FbZM3",
+    "comment:PRRC_kwDOSF9kNM7FbZMD",
+    "comment:PRRC_kwDOSF9kNM7FbZMf",
+    "comment:PRRC_kwDOSF9kNM7FbZNK",
+    "comment:PRRC_kwDOSF9kNM7FbZNa",
+    "comment:PRRC_kwDOSF9kNM7FbZNw",
+    "thread:PRRT_kwDOSF9kNM6FKaGH",
+    "thread:PRRT_kwDOSF9kNM6FKaGy",
+    "thread:PRRT_kwDOSF9kNM6FKaHO",
+    "thread:PRRT_kwDOSF9kNM6FKaHi",
+    "thread:PRRT_kwDOSF9kNM6FKaHz",
+    "thread:PRRT_kwDOSF9kNM6FKaIE",
+    "thread:PRRT_kwDOSF9kNM6FKaIM",
+    "thread:PRRT_kwDOSF9kNM6FKaIb"
+  ],
+  "fetched_at": "2026-05-27T16:38:55.557Z",
+  "schema_version": "v1",
+  "commit_sha": "53ceffa61e6aa8ad378450d3f03d6a69866e3f8e",
+  "title": "docs(rule): force-push-with-lease authorization policy — operator OR 2nd-agent confirm OR listed acceptable situation (Aaron 2026-05-27)",
+  "state": "MERGED",
+  "merged_at": "2026-05-27T16:38:23Z",
+  "head_ref": "backlog/force-push-with-lease-authorization-policy-2026-05-27"
+}

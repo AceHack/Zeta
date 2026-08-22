@@ -1,0 +1,12 @@
+{
+  "pr_number": 8177,
+  "archive_path": "docs/history/pr-reviews/PR-8177-fix-scenario-2-ci-honor-zeta-auto-confirm-wipe-for-iter-5-3-prompts.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-15T02:17:38.335Z",
+  "schema_version": "v1",
+  "commit_sha": "01a10e416938f0bca983ad7ce3c408a8902eaf32",
+  "title": "Fix scenario 2 CI: honor ZETA_AUTO_CONFIRM=WIPE for iter-5.3 prompts",
+  "state": "MERGED",
+  "merged_at": "2026-06-15T02:17:13Z",
+  "head_ref": "riven/iter53-wipe-noninteractive"
+}

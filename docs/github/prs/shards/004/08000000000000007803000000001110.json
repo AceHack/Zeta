@@ -1,0 +1,12 @@
+{
+  "pr_number": 4368,
+  "archive_path": "docs/history/pr-reviews/PR-4368-shard-1005z-otto-cli-fresh-cold-boot-sentinel-re-arm-normal-tier-12-peer-5-lior.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-19T10:23:29.240Z",
+  "schema_version": "v1",
+  "commit_sha": "28234344db883bd7299fab4e9eb14c60a193be0a",
+  "title": "shard(1005Z): Otto-CLI fresh cold-boot — sentinel re-arm + Normal-tier + 12-peer + 5-Lior",
+  "state": "MERGED",
+  "merged_at": "2026-05-19T10:23:10Z",
+  "head_ref": "shard/tick-1005z-otto-cli-cold-boot-2026-05-19"
+}

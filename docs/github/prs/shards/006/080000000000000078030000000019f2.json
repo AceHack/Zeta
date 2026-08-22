@@ -1,0 +1,12 @@
+{
+  "pr_number": 6642,
+  "archive_path": "docs/history/pr-reviews/PR-6642-rules-formal-proof-first-layered-lemma-discipline-prove-primitives-as-connected-.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-03T08:48:04.078Z",
+  "schema_version": "v1",
+  "commit_sha": "d82ba80cb06c08df557b6f99953a30397ee92095",
+  "title": "rules(formal-proof-first): layered-lemma discipline — prove primitives as connected lemmas",
+  "state": "MERGED",
+  "merged_at": "2026-06-03T08:47:41Z",
+  "head_ref": "otto-cli/layered-lemma-extension-formal-proof-first-2026-06-03"
+}

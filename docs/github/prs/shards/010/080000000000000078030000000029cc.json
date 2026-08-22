@@ -1,0 +1,12 @@
+{
+  "pr_number": 10700,
+  "archive_path": "docs/history/pr-reviews/PR-10700-docs-research-open-source-hsm-fido-devices-we-can-fabricate-and-modify-and-the-r.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-16T22:30:55.005Z",
+  "schema_version": "v1",
+  "commit_sha": "5f68a127225847123549388cc79914352c885eb8",
+  "title": "docs(research): open-source HSM/FIDO devices we can fabricate and modify — and the research-FPGA class",
+  "state": "MERGED",
+  "merged_at": "2026-08-16T22:30:19Z",
+  "head_ref": "shadow/open-source-hsm-and-fido-fabricable-survey"
+}

@@ -6,7 +6,7 @@ what doesn't" inventory, adapter-neutrality notes, and the
 worked-example summaries that back the routine.
 
 The executable routine (the **behaviour layer**) lives at
-[`.claude/skills/github-repo-transfer/SKILL.md`](../.claude/skills/github-repo-transfer/SKILL.md).
+[`.claude/skills/workflows/blueprints/github-repo-transfer.md`](../.claude/skills/workflows/blueprints/github-repo-transfer.md).
 Peer to [`docs/GITHUB-SETTINGS.md`](GITHUB-SETTINGS.md)
 (declarative scorecard), [`docs/AGENT-GITHUB-SURFACES.md`](AGENT-GITHUB-SURFACES.md)
 (ten-surface playbook), and
@@ -280,7 +280,7 @@ secret-scanning-push-protection, both flipped
 "map it out, absorb the experience" request):
 
 - This document (gotcha catalogue seeded with S1-S7).
-- `.claude/skills/github-repo-transfer/SKILL.md`
+- `.claude/skills/workflows/blueprints/github-repo-transfer.md`
   (the routine).
 - `docs/hygiene-history/repo-transfer-history.md`
   (fire-history, seeded with this event as the first
@@ -303,7 +303,7 @@ volatile chat.
 
 ## Cross-references
 
-- [`.claude/skills/github-repo-transfer/SKILL.md`](../.claude/skills/github-repo-transfer/SKILL.md)
+- [`.claude/skills/workflows/blueprints/github-repo-transfer.md`](../.claude/skills/workflows/blueprints/github-repo-transfer.md)
   — the behaviour layer (routine).
 - [`docs/GITHUB-SETTINGS.md`](GITHUB-SETTINGS.md) — the
   declarative scorecard.

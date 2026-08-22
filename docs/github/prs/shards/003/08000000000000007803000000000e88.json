@@ -1,0 +1,15 @@
+{
+  "pr_number": 3720,
+  "archive_path": "docs/history/pr-reviews/PR-3720-shard-tick-2026-05-16t03-50z-pr-3716-round-2-3-real-fixes-3-dup-optional.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7B1RSt",
+    "thread:PRRT_kwDOSF9kNM6ChV--"
+  ],
+  "fetched_at": "2026-05-16T04:02:28.325Z",
+  "schema_version": "v1",
+  "commit_sha": "2609d68cb30870a8d75d353b851f0b4581489a7d",
+  "title": "shard(tick): 2026-05-16T03:50Z — PR #3716 round-2 (3 real fixes + 3 dup/optional)",
+  "state": "MERGED",
+  "merged_at": "2026-05-16T04:02:11Z",
+  "head_ref": "shard/tick-0350z-otto-cli-2026-05-16"
+}

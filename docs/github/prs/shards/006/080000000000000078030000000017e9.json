@@ -1,0 +1,12 @@
+{
+  "pr_number": 6121,
+  "archive_path": "docs/history/pr-reviews/PR-6121-backlog-b-0942-co-dominant-git-mirrors-git-native-crdt-coordination-no-host-need.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-30T14:40:44.900Z",
+  "schema_version": "v1",
+  "commit_sha": "d7f1c2ae45fdb245d5cda1c143371757452977dd",
+  "title": "backlog(B-0942): co-dominant git mirrors + git-native CRDT coordination (no host needed)",
+  "state": "MERGED",
+  "merged_at": "2026-05-30T14:40:23Z",
+  "head_ref": "otto/co-dominant-git-mirrors-git-native-coordination-2026-05-30"
+}

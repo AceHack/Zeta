@@ -1,0 +1,12 @@
+{
+  "pr_number": 5582,
+  "archive_path": "docs/history/pr-reviews/PR-5582-research-kestrel-backlog-b-0864-parts-5-9-du-as-implicit-state-machine-st-agent-.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-27T18:49:59.465Z",
+  "schema_version": "v1",
+  "commit_sha": "6540c709a2d4e6a795e4b7684e12f43432142c50",
+  "title": "research(kestrel)+backlog(B-0864): Parts 5-9 — DU-as-implicit-state-machine + ST-agent-pattern fix + cyclomatic-complexity benefit + B-0864 Target 6 sharpening + architectural-principle layer",
+  "state": "MERGED",
+  "merged_at": "2026-05-27T18:49:33Z",
+  "head_ref": "research/kestrel-parts-5-7-du-implicit-state-machine-bidirectional-streams-target-6-sharpening-2026-05-27"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 6157,
+  "archive_path": "docs/history/pr-reviews/PR-6157-backlog-b-0944-tri-boolean-core-primitives-digital-qubit-float-multi-language-bu.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-30T22:58:28.745Z",
+  "schema_version": "v1",
+  "commit_sha": "07a4795660c0b99ca269774b02bd073fffdde315",
+  "title": "backlog(B-0944): tri-boolean core primitives (digital qubit + float) — multi-language build = non-Byzantine BFT (compilers don't lie)",
+  "state": "MERGED",
+  "merged_at": "2026-05-30T22:58:11Z",
+  "head_ref": "otto/b0944-tri-boolean-core-primitives-multi-language-bft-2026-05-30"
+}

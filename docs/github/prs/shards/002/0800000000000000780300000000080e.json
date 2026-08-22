@@ -1,0 +1,19 @@
+{
+  "pr_number": 2062,
+  "archive_path": "docs/history/pr-reviews/PR-2062-docs-add-catch-34-to-shadow-log-blob-pr-effort-avoidance.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_PDJL",
+    "comment:PRRC_kwDOSF9kNM6_PDJt",
+    "comment:PRRC_kwDOSF9kNM6_PJPg",
+    "comment:PRRC_kwDOSF9kNM6_PJSP",
+    "thread:PRRT_kwDOSF9kNM6Am7qv",
+    "thread:PRRT_kwDOSF9kNM6Am7rH"
+  ],
+  "fetched_at": "2026-05-08T11:47:21.064Z",
+  "schema_version": "v1",
+  "commit_sha": "4fad97c37adbddce3f5f77318c8eff17cbe1241f",
+  "title": "docs: add catch 34 to shadow log (blob PR effort-avoidance)",
+  "state": "MERGED",
+  "merged_at": "2026-05-08T11:47:06Z",
+  "head_ref": "lior/drift-report-blob-2059"
+}

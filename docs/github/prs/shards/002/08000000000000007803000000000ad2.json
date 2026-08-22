@@ -1,0 +1,15 @@
+{
+  "pr_number": 2770,
+  "archive_path": "docs/history/pr-reviews/PR-2770-docs-memory-dimensional-expansion-via-wavelength-pivotal-for-agendas.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7AVDwD",
+    "thread:PRRT_kwDOSF9kNM6BbTo8"
+  ],
+  "fetched_at": "2026-05-12T13:27:26.172Z",
+  "schema_version": "v1",
+  "commit_sha": "fdeb64baf8ceda4b39a60c28f269c547c617fe79",
+  "title": "docs(memory): dimensional expansion via wavelength — pivotal for agendas",
+  "state": "MERGED",
+  "merged_at": "2026-05-12T13:27:01Z",
+  "head_ref": "docs/aaron-dimensional-expansion-wavelength-vampire-pivotal-2026-05-12"
+}

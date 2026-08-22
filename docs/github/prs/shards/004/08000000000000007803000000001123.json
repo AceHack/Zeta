@@ -1,0 +1,15 @@
+{
+  "pr_number": 4387,
+  "archive_path": "docs/history/pr-reviews/PR-4387-shard-1624z-c-4383-thread-no-op-v8-batch-ci.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7CyD3v",
+    "thread:PRRT_kwDOSF9kNM6DOIL1"
+  ],
+  "fetched_at": "2026-05-21T01:31:20.409Z",
+  "schema_version": "v1",
+  "commit_sha": "0932dbc20ae600c15add8b96371129832e594102",
+  "title": "shard(1624Z-c): 4383 thread no-op + V8 batch CI",
+  "state": "MERGED",
+  "merged_at": "2026-05-21T01:31:02Z",
+  "head_ref": "shard/tick-2026-05-19-1624z-c-4383-thread-resolved-2026-05-19"
+}

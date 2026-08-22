@@ -415,7 +415,7 @@ BP-07").
   the residual failure surface to their three-way intersection.
   The round-22 `InfoTheoreticSharder` cross-check is the anchor
   case. Routing triage lives in
-  `.claude/skills/formal-verification-expert/SKILL.md`. **stable**
+  `.claude/skills/formal-methods/blueprints/formal-verification-expert.md`. **stable**
   **External anchors:** (1) Herber, P. et al. (2018), *A Survey on Formal
   Verification Techniques for Safety-Critical Systems-on-Chip*, MDPI Electronics
   7(6) (<https://www.mdpi.com/2079-9292/7/6/81>) — peer-reviewed survey of six
@@ -434,7 +434,7 @@ BP-07").
 - **BP-17** *Every artifact in the repo has exactly one
   canonical home declared in the project's ontology (the
   canonical-home map in
-  `.claude/skills/canonical-home-auditor/SKILL.md`, anchored
+  `.claude/skills/governance/blueprints/canonical-home-auditor.md`, anchored
   by the founding ADR `2026-04-19-bp-home-rule-zero.md`).
   Artifacts out-of-place, duplicated across homes, or homeless
   are P0 findings. New artifact types require an ADR
@@ -896,6 +896,38 @@ meta-meta.
   level encoding would have missed. **stable**
 
 ---
+
+- **BP-29** *Track falsifiers, not features.*
+  A feature you cannot falsify is a claim, and **a claim that
+  cannot fail is worse than an absent feature** — it *looks*
+  like a guarantee and carries none, so it costs an audit to
+  tell apart. The unit of progress is therefore **the check
+  that could have gone red**: every positive assertion ships
+  with a negative computed by the **same code path**, and an
+  exception is either enforced in code or stated as unenforced
+  **in the same breath as the claim it qualifies**.
+  Say *"designed, not running"* at the point of the claim, not
+  only in a limits section at the bottom. A mock's green test
+  is never evidence about the real adapter.
+  **Rationale:** Aaron 2026-08-20 — *"the biggest obstical to
+  human AI trust is proper [un]implemented excetiopns of
+  vacuious claims"*. This is the vacuity class promoted from
+  engineering hygiene to the trust thesis: an unenforced
+  exception is indistinguishable from a guarantee at reading
+  distance, which is exactly the cost trust exists to remove.
+  **Meter:** `src/Core.TypeScript/hygiene/falsifier-density.ts`
+  counts test files carrying a refusal-shaped check. Baseline
+  2026-08-20: **899 / 1107 = 81.2%** of TypeScript test files,
+  so roughly one in five carries none. **No gate and no
+  threshold** — a ratcheted minimum would be gamed by adding
+  `.not.` to assertions, raising the number while lowering real
+  falsifiability. Density is the cheap wide screen; the strong
+  check is `mutation-runner.ts`, since a test that survives
+  mutation is not a falsifier however it is spelled.
+  **Promotion:** authorized by Aaron 2026-08-20 (*"yes please
+  update"*); proposal + measured baseline + the limits this
+  metric must not overclaim are in
+  `docs/DECISIONS/2026-08-20-bp-29-track-falsifiers-over-features.md`.
 
 ## How rules become stable
 

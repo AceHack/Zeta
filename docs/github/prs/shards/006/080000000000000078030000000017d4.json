@@ -1,0 +1,19 @@
+{
+  "pr_number": 6100,
+  "archive_path": "docs/history/pr-reviews/PR-6100-feat-b-0250-add-compact-coincidence-debug-surface.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7GZRTJ",
+    "comment:PRRC_kwDOSF9kNM7GZRTP",
+    "comment:PRRC_kwDOSF9kNM7GZRTV",
+    "thread:PRRT_kwDOSF9kNM6F3A43",
+    "thread:PRRT_kwDOSF9kNM6F3A48",
+    "thread:PRRT_kwDOSF9kNM6F3A5C"
+  ],
+  "fetched_at": "2026-05-30T09:38:57.629Z",
+  "schema_version": "v1",
+  "commit_sha": "271f90f2cbe84db1856c533d4e81599b121b8a4d",
+  "title": "feat(B-0250): add compact coincidence debug surface",
+  "state": "MERGED",
+  "merged_at": "2026-05-30T09:38:35Z",
+  "head_ref": "claim/codex-b0250-debug-surface-20260530"
+}

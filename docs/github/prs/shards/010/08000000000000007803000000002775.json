@@ -1,0 +1,12 @@
+{
+  "pr_number": 10101,
+  "archive_path": "docs/history/pr-reviews/PR-10101-book-weave-5a-the-childhood-parents-held-material-father-s-protective-reason-the.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-07T17:02:46.791Z",
+  "schema_version": "v1",
+  "commit_sha": "dc6010f50be66cc3d180409f41ae6f110f99ed9a",
+  "title": "book(weave): 5a — the childhood/parents held material (father's protective reason, the mother who chose him, the bulimia, Addison's assignment)",
+  "state": "MERGED",
+  "merged_at": "2026-08-07T17:02:12Z",
+  "head_ref": "book-weave-5a-parents"
+}

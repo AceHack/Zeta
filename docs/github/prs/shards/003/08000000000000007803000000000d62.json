@@ -1,0 +1,12 @@
+{
+  "pr_number": 3426,
+  "archive_path": "docs/history/pr-reviews/PR-3426-fix-b-0528-gate-plutil-tests-on-darwin-pr-3423-cross-platform-follow-up.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-15T11:12:16.830Z",
+  "schema_version": "v1",
+  "commit_sha": "5aeaffb68042602bd37fbadcfc0748b658af84c3",
+  "title": "fix(b-0528): gate plutil tests on darwin (PR #3423 cross-platform follow-up)",
+  "state": "MERGED",
+  "merged_at": "2026-05-15T11:11:57Z",
+  "head_ref": "fix/b0528-gate-plutil-tests-darwin-otto-cli-2026-05-15"
+}

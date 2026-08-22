@@ -1,0 +1,17 @@
+{
+  "pr_number": 5373,
+  "archive_path": "docs/history/pr-reviews/PR-5373-docs-research-amara-4th-ferry-b-0841-b-0842-b-0843-product-trinity-ratification-.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7FK0HW",
+    "comment:PRRC_kwDOSF9kNM7FK0Hu",
+    "thread:PRRT_kwDOSF9kNM6E-SEF",
+    "thread:PRRT_kwDOSF9kNM6E-SEb"
+  ],
+  "fetched_at": "2026-05-27T01:57:46.593Z",
+  "schema_version": "v1",
+  "commit_sha": "a8a6eba448a88a408c72a4c6d156cd6743c2f35e",
+  "title": "docs(research): Amara 4th ferry — B-0841/B-0842/B-0843 product-trinity ratification + 'Deep guides with receipts, lineage, and creator-paid attribution' positioning",
+  "state": "MERGED",
+  "merged_at": "2026-05-27T01:57:29Z",
+  "head_ref": "docs-amara-4th-ferry-b0841-b0843-product-trinity-ratification-otto-cli-2026-05-26"
+}

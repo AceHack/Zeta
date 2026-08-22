@@ -1,0 +1,15 @@
+{
+  "pr_number": 3123,
+  "archive_path": "docs/history/pr-reviews/PR-3123-docs-tick-session-shard-0940z-pr-3122-verified-merged-cron-re-armed.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7BJgzF",
+    "thread:PRRT_kwDOSF9kNM6CBdHh"
+  ],
+  "fetched_at": "2026-05-14T09:50:55.990Z",
+  "schema_version": "v1",
+  "commit_sha": "e97622e7915928dab979c8df07a6a377fbca72ec",
+  "title": "docs(tick): session shard 0940Z — PR #3122 verified merged, cron re-armed",
+  "state": "MERGED",
+  "merged_at": "2026-05-14T09:50:33Z",
+  "head_ref": "docs/tick-shard-0940z-2026-05-14"
+}

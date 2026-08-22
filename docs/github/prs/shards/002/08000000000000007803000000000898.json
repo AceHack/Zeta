@@ -1,0 +1,17 @@
+{
+  "pr_number": 2200,
+  "archive_path": "docs/history/pr-reviews/PR-2200-feat-b-0332-add-memory-load-bearing-classifier.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_fLOH",
+    "comment:PRRC_kwDOSF9kNM6_fLOJ",
+    "thread:PRRT_kwDOSF9kNM6Ay4Jn",
+    "thread:PRRT_kwDOSF9kNM6Ay4Jp"
+  ],
+  "fetched_at": "2026-05-09T06:23:48.010Z",
+  "schema_version": "v1",
+  "commit_sha": "8ad8e19049ef79b0c995eb16f8950aff588cc74a",
+  "title": "feat(B-0332): add memory load-bearing classifier",
+  "state": "MERGED",
+  "merged_at": "2026-05-09T06:23:28Z",
+  "head_ref": "fix/b0332-memory-load-bearing-classifier"
+}

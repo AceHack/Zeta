@@ -1,0 +1,23 @@
+{
+  "pr_number": 5411,
+  "archive_path": "docs/history/pr-reviews/PR-5411-feat-b-0852-1-ts-crypto-module-hkdf-sha256-aes-256-gcm-for-credential-persistenc.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7FO2R7",
+    "comment:PRRC_kwDOSF9kNM7FO2Sh",
+    "comment:PRRC_kwDOSF9kNM7FO2Sy",
+    "comment:PRRC_kwDOSF9kNM7FO2TH",
+    "comment:PRRC_kwDOSF9kNM7FO2Tm",
+    "thread:PRRT_kwDOSF9kNM6FBNKI",
+    "thread:PRRT_kwDOSF9kNM6FBNKh",
+    "thread:PRRT_kwDOSF9kNM6FBNKw",
+    "thread:PRRT_kwDOSF9kNM6FBNLF",
+    "thread:PRRT_kwDOSF9kNM6FBNLb"
+  ],
+  "fetched_at": "2026-05-27T07:05:29.581Z",
+  "schema_version": "v1",
+  "commit_sha": "0e9456a8670923f93fd32b7a66d2fe38e7b4e1f0",
+  "title": "feat(B-0852.1): TS crypto module — HKDF-SHA256 + AES-256-GCM for credential persistence (pure functions; 18 unit tests; smallest concrete substrate slice)",
+  "state": "MERGED",
+  "merged_at": "2026-05-27T07:05:08Z",
+  "head_ref": "feat/b-0852-1-crypto-module-aes-gcm-hkdf"
+}

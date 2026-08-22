@@ -1,0 +1,15 @@
+{
+  "pr_number": 4862,
+  "archive_path": "docs/history/pr-reviews/PR-4862-docs-archive-preserve-pr-4835-4853.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7EaZOl",
+    "thread:PRRT_kwDOSF9kNM6EaoDE"
+  ],
+  "fetched_at": "2026-05-25T00:16:06.412Z",
+  "schema_version": "v1",
+  "commit_sha": "f51c5c3a8caa188832ff17dcedaace6e8907c8ae",
+  "title": "docs(archive): preserve PR #4835 + #4853",
+  "state": "MERGED",
+  "merged_at": "2026-05-25T00:15:47Z",
+  "head_ref": "lior-pr-preservation-4835-2"
+}

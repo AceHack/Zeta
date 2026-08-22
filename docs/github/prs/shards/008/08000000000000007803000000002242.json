@@ -1,0 +1,12 @@
+{
+  "pr_number": 8770,
+  "archive_path": "docs/history/pr-reviews/PR-8770-docs-research-ferry-the-acceptable-experiment-everyone-is-it-vault-as-home-iff-e.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-20T20:16:44.363Z",
+  "schema_version": "v1",
+  "commit_sha": "20554f90604552ac1b606b99b8e4a24f6b42adfe",
+  "title": "docs(research): ferry — the acceptable experiment (everyone is IT) + vault-as-home-iff-exit + CaptureRate is the Vault-Tec detector",
+  "state": "MERGED",
+  "merged_at": "2026-06-20T20:16:17Z",
+  "head_ref": "otto/ferry-acceptable-experiment-note"
+}

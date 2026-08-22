@@ -1,0 +1,14 @@
+{
+  "id": "080d000e34d17010a0130008adb95a0e",
+  "at": "2026-08-14T19:36:27.950Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M00WD6HD087G0R0016TCD56",
+    "type": "task",
+    "title": "Define the category of homoiconic pairs and test whether the N=1 adinkra is initial in it",
+    "slug": "define-the-category-of-homoiconic-pairs-and-test-whether-the",
+    "priority": "P2",
+    "filename": "081M00WD6HD087G0R0016TCD56-define-the-category-of-homoiconic-pairs-and-test-whether-the.md"
+  }
+}

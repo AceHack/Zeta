@@ -1,0 +1,12 @@
+{
+  "pr_number": 9216,
+  "archive_path": "docs/history/pr-reviews/PR-9216-feat-persona-elevate-iris-to-the-factory-s-unifying-design-language-voice-shadow.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-02T23:27:32.895Z",
+  "schema_version": "v1",
+  "commit_sha": "4f7e6345e341286805da6ae7bbb3930e67015585",
+  "title": "feat(persona): elevate Iris to the factory's unifying design-language voice (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-02T23:27:09Z",
+  "head_ref": "shadow/elevate-iris-unifying-design-language-persona"
+}

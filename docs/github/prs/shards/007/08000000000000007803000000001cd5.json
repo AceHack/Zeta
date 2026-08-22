@@ -1,0 +1,12 @@
+{
+  "pr_number": 7381,
+  "archive_path": "docs/history/pr-reviews/PR-7381-feat-vocab-enforce-filesystem-uniqueness-travelers-intake-index-regenerable-sing.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-09T19:45:28.153Z",
+  "schema_version": "v1",
+  "commit_sha": "1847c866724418c241bcf3b5e6abf3dc39c4f0d0",
+  "title": "feat(vocab): enforce filesystem uniqueness + travelers/ intake-index + regenerable single-file index cache + tri-representation design + frontmatter",
+  "state": "MERGED",
+  "merged_at": "2026-06-09T19:44:55Z",
+  "head_ref": "otto/vocab-uniqueness-enforcement-travelers-index-cache-tri-representation"
+}

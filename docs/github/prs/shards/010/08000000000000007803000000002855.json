@@ -1,0 +1,12 @@
+{
+  "pr_number": 10325,
+  "archive_path": "docs/history/pr-reviews/PR-10325-observe-declare-the-golden-vector-treaty-surface-explicitly-type-the-time-travel.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-12T04:04:23.128Z",
+  "schema_version": "v1",
+  "commit_sha": "610994899d6b53d3ab9a636be0f2085572372c66",
+  "title": "observe: declare the golden-vector treaty surface explicitly; type the time-travel ledger",
+  "state": "MERGED",
+  "merged_at": "2026-08-12T04:03:49Z",
+  "head_ref": "golden-vector-treaty-surface"
+}

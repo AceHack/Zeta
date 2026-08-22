@@ -1,0 +1,14 @@
+{
+  "id": "080d00d96708a810a01300082db1fb3a",
+  "at": "2026-08-19T17:58:41.173Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M0DJSR8N087G0R000QCYBYW",
+    "type": "task",
+    "title": "Lean 4: marginals do not determine the joint -- the not-embarrassingly-parallel impossibility for witnessed self-claims",
+    "slug": "lean-4-marginals-do-not-determine-the-joint-the-not-embarras",
+    "priority": "P2",
+    "filename": "081M0DJSR8N087G0R000QCYBYW-lean-4-marginals-do-not-determine-the-joint-the-not-embarras.md"
+  }
+}

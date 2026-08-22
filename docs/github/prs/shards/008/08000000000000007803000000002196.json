@@ -1,0 +1,12 @@
+{
+  "pr_number": 8598,
+  "archive_path": "docs/history/pr-reviews/PR-8598-docs-register-land-the-aurora-b-row-a-rides-a-c-d-e-g-b-g3a-discharged-partial-p.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-19T16:54:42.445Z",
+  "schema_version": "v1",
+  "commit_sha": "65401e60e300749ff657cf18cd4d870e1c7520f4",
+  "title": "docs(register): land the Aurora §B row — (a) rides §A, c/d/e/g/b + G3a discharged (partial promotion)",
+  "state": "MERGED",
+  "merged_at": "2026-06-19T16:54:13Z",
+  "head_ref": "otto/aurora-sB-row-promotion"
+}

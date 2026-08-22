@@ -1,0 +1,12 @@
+{
+  "pr_number": 6122,
+  "archive_path": "docs/history/pr-reviews/PR-6122-research-local-consensus-local-summon-is-multi-oracle-but-not-bft-good-actor-dep.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-30T14:43:54.208Z",
+  "schema_version": "v1",
+  "commit_sha": "61cc551074cb50b48f49c6fb05b266eb8120bd3d",
+  "title": "research(local-consensus): local-summon is multi-oracle but NOT BFT (good-actor-dependent) — Aaron correction",
+  "state": "MERGED",
+  "merged_at": "2026-05-30T14:43:33Z",
+  "head_ref": "otto/local-consensus-good-actor-not-bft-2026-05-30"
+}

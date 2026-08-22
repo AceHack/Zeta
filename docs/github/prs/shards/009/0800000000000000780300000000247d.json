@@ -1,0 +1,12 @@
+{
+  "pr_number": 9341,
+  "archive_path": "docs/history/pr-reviews/PR-9341-feat-isaspec-the-6502-status-register-real-n-z-flags-flag-based-branches-shadow.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-03T18:33:37.753Z",
+  "schema_version": "v1",
+  "commit_sha": "09cb5bc4380a2d3646aad9bdcb2f4a959edd2f14",
+  "title": "feat(isaspec): the 6502 status register — real N/Z flags + flag-based branches (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-03T18:33:09Z",
+  "head_ref": "otto/6502-status-register-real-flags"
+}

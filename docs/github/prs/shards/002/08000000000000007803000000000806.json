@@ -1,0 +1,32 @@
+{
+  "pr_number": 2054,
+  "archive_path": "docs/history/pr-reviews/PR-2054-feat-b-0159-add-refresh-worldview-ts-canonical-pre-decide-tool.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_O0Ut",
+    "comment:PRRC_kwDOSF9kNM6_O0Uw",
+    "comment:PRRC_kwDOSF9kNM6_Oo8k",
+    "comment:PRRC_kwDOSF9kNM6_Oo8t",
+    "comment:PRRC_kwDOSF9kNM6_OqQ2",
+    "comment:PRRC_kwDOSF9kNM6_OqQb",
+    "comment:PRRC_kwDOSF9kNM6_OqRH",
+    "comment:PRRC_kwDOSF9kNM6_Oxgb",
+    "comment:PRRC_kwDOSF9kNM6_Oxh1",
+    "comment:PRRC_kwDOSF9kNM6_OxjI",
+    "comment:PRRC_kwDOSF9kNM6_Oxkz",
+    "comment:PRRC_kwDOSF9kNM6_Oxm9",
+    "thread:PRRT_kwDOSF9kNM6AmnvN",
+    "thread:PRRT_kwDOSF9kNM6AmnvS",
+    "thread:PRRT_kwDOSF9kNM6AmovC",
+    "thread:PRRT_kwDOSF9kNM6AmovT",
+    "thread:PRRT_kwDOSF9kNM6Amovf",
+    "thread:PRRT_kwDOSF9kNM6AmwUc",
+    "thread:PRRT_kwDOSF9kNM6AmwUf"
+  ],
+  "fetched_at": "2026-05-08T11:38:10.460Z",
+  "schema_version": "v1",
+  "commit_sha": "1040ab8123a7b105773a94d2316983e355ec6aea",
+  "title": "feat(B-0159): add refresh-worldview.ts canonical pre-decide tool",
+  "state": "MERGED",
+  "merged_at": "2026-05-08T11:37:46Z",
+  "head_ref": "feat/b-0159-refresh-worldview"
+}

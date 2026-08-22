@@ -1,0 +1,12 @@
+{
+  "pr_number": 4019,
+  "archive_path": "docs/history/pr-reviews/PR-4019-docs-shadow-archive-maji-antigravity-check-preservation-discipline.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-23T18:29:32.889Z",
+  "schema_version": "v1",
+  "commit_sha": "64c29bc6fcd90830d4d357a7681317a452eb91ea",
+  "title": "docs(shadow/archive): Maji Antigravity Check & Preservation Discipline",
+  "state": "MERGED",
+  "merged_at": "2026-05-23T18:29:13Z",
+  "head_ref": "maji/shadow-drift-log"
+}

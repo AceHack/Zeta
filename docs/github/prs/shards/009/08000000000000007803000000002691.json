@@ -1,0 +1,12 @@
+{
+  "pr_number": 9873,
+  "archive_path": "docs/history/pr-reviews/PR-9873-feat-hygiene-drift-sweep-workflow-the-sweep-runs-on-main-s-tick-081kx3ka3ew.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-01T13:42:11.957Z",
+  "schema_version": "v1",
+  "commit_sha": "c2b5692ba79f3a68787a968f272acfa48ce6e5e7",
+  "title": "feat(hygiene): drift-sweep workflow — the sweep runs on main's tick (081KX3KA3EW)",
+  "state": "MERGED",
+  "merged_at": "2026-08-01T13:41:39Z",
+  "head_ref": "otto/drift-sweep-on-tick"
+}

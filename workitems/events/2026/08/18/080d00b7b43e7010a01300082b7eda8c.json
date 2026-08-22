@@ -1,0 +1,14 @@
+{
+  "id": "080d00b7b43e7010a01300082b7eda8c",
+  "at": "2026-08-18T22:20:50.510Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M0BFD1YD087G0R000A14APN",
+    "type": "bug",
+    "title": "zflash's wrong-architecture warning named neither the file nor the architecture",
+    "slug": "zflash-s-wrong-architecture-warning-named-neither-the-file-n",
+    "priority": "P2",
+    "filename": "081M0BFD1YD087G0R000A14APN-zflash-s-wrong-architecture-warning-named-neither-the-file-n.md"
+  }
+}

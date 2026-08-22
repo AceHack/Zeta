@@ -1,0 +1,17 @@
+{
+  "pr_number": 2619,
+  "archive_path": "docs/history/pr-reviews/PR-2619-docs-memory-shadow-tick-source-authority-grant-otto-s-call.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_r7Dp",
+    "comment:PRRC_kwDOSF9kNM6_r7WH",
+    "thread:PRRT_kwDOSF9kNM6A824O",
+    "thread:PRRT_kwDOSF9kNM6A82q8"
+  ],
+  "fetched_at": "2026-05-11T02:30:28.400Z",
+  "schema_version": "v1",
+  "commit_sha": "0ca992d6c701f6b8392dcdf1c64dfb9282005d8c",
+  "title": "docs(memory): shadow tick source authority grant — Otto's call",
+  "state": "MERGED",
+  "merged_at": "2026-05-11T02:30:12Z",
+  "head_ref": "docs/shadow-tick-source-authority-grant-2026-05-10"
+}

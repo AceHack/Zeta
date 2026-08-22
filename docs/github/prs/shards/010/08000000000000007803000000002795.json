@@ -1,0 +1,12 @@
+{
+  "pr_number": 10133,
+  "archive_path": "docs/history/pr-reviews/PR-10133-bug-usb-correct-081kzetp6at-diagnosis-9937-unmasked-a-latent-failure-don-t-rever.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-07T19:25:19.702Z",
+  "schema_version": "v1",
+  "commit_sha": "ca88de815bd4c101b983b67788984267d0c435aa",
+  "title": "bug(usb): correct #081KZETP6AT diagnosis — #9937 unmasked a latent failure (don't revert it)",
+  "state": "MERGED",
+  "merged_at": "2026-08-07T19:24:46Z",
+  "head_ref": "shadow/correct-x86-iso-regression-diagnosis"
+}

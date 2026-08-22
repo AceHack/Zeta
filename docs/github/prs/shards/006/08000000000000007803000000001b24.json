@@ -1,0 +1,12 @@
+{
+  "pr_number": 6948,
+  "archive_path": "docs/history/pr-reviews/PR-6948-test-core-weightedset-octonion-sedenion-floor-coverage-add-side-retraction-envel.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-07T23:22:47.642Z",
+  "schema_version": "v1",
+  "commit_sha": "d574d407e335e0186382c1a531cf5181dd62fc69",
+  "title": "test(core): WeightedSet octonion/sedenion floor coverage (add-side retraction envelope)",
+  "state": "MERGED",
+  "merged_at": "2026-06-07T23:22:30Z",
+  "head_ref": "otto/cayley-weightedset-octonion-sedenion-floor-coverage"
+}

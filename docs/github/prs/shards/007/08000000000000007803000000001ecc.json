@@ -1,0 +1,12 @@
+{
+  "pr_number": 7884,
+  "archive_path": "docs/history/pr-reviews/PR-7884-feat-openspec-b-0171-3-author-retraction-native-semantics-spec.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-12T10:25:59.513Z",
+  "schema_version": "v1",
+  "commit_sha": "2698f2daae3c27b91eadb463302011593e78f59e",
+  "title": "feat(openspec): B-0171.3 - author Retraction-Native Semantics spec",
+  "state": "MERGED",
+  "merged_at": "2026-06-12T10:25:38Z",
+  "head_ref": "lior/openspec-retraction-native-B-0171.3"
+}

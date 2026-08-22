@@ -1,0 +1,12 @@
+{
+  "pr_number": 11178,
+  "archive_path": "docs/history/pr-reviews/PR-11178-fix-docs-correct-the-dora-metrics-path-in-the-autonomy-bet.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-16T23:26:06.733Z",
+  "schema_version": "v1",
+  "commit_sha": "3d912c98c70cd43ac83dd3156f1d981d43cc4ace",
+  "title": "fix(docs): correct the dora-metrics path in the autonomy bet",
+  "state": "MERGED",
+  "merged_at": "2026-08-16T23:25:29Z",
+  "head_ref": "shadow/fix-dora-pointer"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 8826,
+  "archive_path": "docs/history/pr-reviews/PR-8826-docs-research-prove-zeta-ir-minimal-generating-set-the-shrink.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-21T01:35:39.930Z",
+  "schema_version": "v1",
+  "commit_sha": "f375ecf9c9127cd6088562e3c49eb5d319cbc966",
+  "title": "docs(research): prove zeta-ir minimal generating set (the shrink)",
+  "state": "MERGED",
+  "merged_at": "2026-06-21T01:35:13Z",
+  "head_ref": "feature/lumen-zeta-ir-minimal-generating-set"
+}

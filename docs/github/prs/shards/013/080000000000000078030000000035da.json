@@ -1,0 +1,12 @@
+{
+  "pr_number": 13786,
+  "archive_path": "docs/history/pr-reviews/PR-13786-feat-cluster-measured-partition-of-the-app-of-apps-into-independently-testable-l.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-22T16:58:19.391Z",
+  "schema_version": "v1",
+  "commit_sha": "02266f3788c5a426762d7cc9dfdff6793d43edda",
+  "title": "feat(cluster): measured partition of the App-of-Apps into independently-testable lanes",
+  "state": "MERGED",
+  "merged_at": "2026-08-22T16:57:36Z",
+  "head_ref": "shadow/independent-lane-partition"
+}

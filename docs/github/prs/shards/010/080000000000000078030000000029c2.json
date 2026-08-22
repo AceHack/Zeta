@@ -1,0 +1,12 @@
+{
+  "pr_number": 10690,
+  "archive_path": "docs/history/pr-reviews/PR-10690-design-zeta-id-the-timestamp-free-universal-pointer-already-exists-at-v1-guard-t.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-14T20:32:46.338Z",
+  "schema_version": "v1",
+  "commit_sha": "ca8f45e492f722a51272e05ac4c7fcb5ef44c379",
+  "title": "design(zeta-id): the timestamp-free universal pointer already exists at v1 — guard the sort intent, not the version",
+  "state": "MERGED",
+  "merged_at": "2026-08-14T20:32:10Z",
+  "head_ref": "otto/zetaid-universal-pointer-version-guard"
+}

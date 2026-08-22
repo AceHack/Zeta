@@ -1,0 +1,12 @@
+{
+  "pr_number": 8401,
+  "archive_path": "docs/history/pr-reviews/PR-8401-memory-feedback-otto-default-to-built-not-design-search-repo-wide-before-claimin.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-16T01:46:16.087Z",
+  "schema_version": "v1",
+  "commit_sha": "941d4aef6572a6abd358be88d849a1d749ee0321",
+  "title": "memory(feedback): Otto default-to-built-not-design — search repo-wide before claiming absent (look better)",
+  "state": "MERGED",
+  "merged_at": "2026-06-16T01:45:48Z",
+  "head_ref": "memory/otto-default-to-built-not-design"
+}

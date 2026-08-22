@@ -1,0 +1,12 @@
+{
+  "pr_number": 13784,
+  "archive_path": "docs/history/pr-reviews/PR-13784-measure-the-runner-s-disk-and-rank-the-image-footprint-per-app.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-22T17:15:07.359Z",
+  "schema_version": "v1",
+  "commit_sha": "9e706cf11e78dd2c6ea629d04c121bf688914a74",
+  "title": "measure the runner's disk, and rank the image footprint per app",
+  "state": "MERGED",
+  "merged_at": "2026-08-22T17:14:26Z",
+  "head_ref": "shadow/runner-disk-and-image-footprint"
+}

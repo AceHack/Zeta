@@ -1,0 +1,12 @@
+{
+  "pr_number": 2987,
+  "archive_path": "docs/history/pr-reviews/PR-2987-chore-backlog-close-b-0432-slice-4-shipped-in-2985-all-criteria-verified.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-13T12:07:48.356Z",
+  "schema_version": "v1",
+  "commit_sha": "d74672dc4d4f071e9948fb386217d7fe56ecddf9",
+  "title": "chore(backlog): close B-0432 — slice-4 shipped in #2985, all criteria verified",
+  "state": "MERGED",
+  "merged_at": "2026-05-13T12:07:31Z",
+  "head_ref": "chore/close-b-0432-backlog-index-regen"
+}

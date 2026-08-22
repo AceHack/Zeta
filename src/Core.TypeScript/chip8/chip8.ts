@@ -219,10 +219,7 @@ export function step(f: Frame): Frame {
             if (f.keys[k]) { pressed = k; break; }
           }
           if (pressed === -1) f.pc -= 2; // block
-          else {
-            f.v[x] = pressed;
-            f.keys[pressed] = false; // consume it!
-          }
+          else f.v[x] = pressed;
           break;
         }
         case 0x15: f.dt = f.v[x]!; break;

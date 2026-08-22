@@ -1,0 +1,12 @@
+{
+  "pr_number": 3161,
+  "archive_path": "docs/history/pr-reviews/PR-3161-shard-tick-1822z-razor-cadence-batch-2-4-more-rules-37-37-live.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-14T18:27:23.623Z",
+  "schema_version": "v1",
+  "commit_sha": "be8d02d55ef165fde30a33f2535f97c99780475c",
+  "title": "shard(tick): 1822Z — razor-cadence batch 2 (4 more rules, 37/37 LIVE)",
+  "state": "MERGED",
+  "merged_at": "2026-05-14T18:27:02Z",
+  "head_ref": "shard/tick-1822Z-razor-cadence-batch2-2026-05-14"
+}

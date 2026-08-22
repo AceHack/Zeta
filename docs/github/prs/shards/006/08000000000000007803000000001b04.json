@@ -1,0 +1,12 @@
+{
+  "pr_number": 6916,
+  "archive_path": "docs/history/pr-reviews/PR-6916-docs-wi-bootstrap-identity-off-oauth-fido-oidc-web3-nostr-ens-did-zetaid-points-.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-07T20:59:25.579Z",
+  "schema_version": "v1",
+  "commit_sha": "68ee8b7cde5afc7d0c72d5d008be7fe0789c7a2a",
+  "title": "docs+wi: bootstrap identity off OAuth/FIDO/OIDC + Web3 (Nostr/ENS/DID); ZetaId points to all like deps & secrets",
+  "state": "MERGED",
+  "merged_at": "2026-06-07T20:59:08Z",
+  "head_ref": "otto/bootstrap-identity-anchors-oauth-fido-web3"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 5367,
+  "archive_path": "docs/history/pr-reviews/PR-5367-ci-b-0831-layer-2a-structural-behavioral-test-of-iter-5-4-install-flow.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-27T00:47:00.599Z",
+  "schema_version": "v1",
+  "commit_sha": "03d3f3662a8d242cda0624383433a773219c0373",
+  "title": "ci(B-0831 layer-2a): structural-behavioral test of iter-5.4 install flow",
+  "state": "MERGED",
+  "merged_at": "2026-05-27T00:46:38Z",
+  "head_ref": "ci-layer2-mock-gh-shim-iter54-behavioral-test-otto-cli-2026-05-26"
+}

@@ -1,0 +1,15 @@
+{
+  "pr_number": 3602,
+  "archive_path": "docs/history/pr-reviews/PR-3602-shard-tick-2214z-auto-merge-arming-sweep-3594-merged-3599-armed.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7ByrF_",
+    "thread:PRRT_kwDOSF9kNM6CfZla"
+  ],
+  "fetched_at": "2026-05-15T22:18:53.181Z",
+  "schema_version": "v1",
+  "commit_sha": "3b6df48ddc0c9a65fecc085e0808cab7da27731a",
+  "title": "shard(tick): 2214Z — auto-merge arming sweep #3594 (merged) + #3599 (armed)",
+  "state": "MERGED",
+  "merged_at": "2026-05-15T22:18:35Z",
+  "head_ref": "shard/tick-2214z-otto-cli-2026-05-15"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 9918,
+  "archive_path": "docs/history/pr-reviews/PR-9918-feat-oracle-measure-what-the-debounce-actually-did-the-declared-had-no-falsifier.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-01T20:32:43.175Z",
+  "schema_version": "v1",
+  "commit_sha": "a59f43c01e5e077b50c3043012bf28e187e59c36",
+  "title": "feat(oracle): measure what the debounce actually did — the declared ρ had no falsifier",
+  "state": "MERGED",
+  "merged_at": "2026-08-01T20:32:12Z",
+  "head_ref": "shadow/debounced-oracle-measured-rho"
+}

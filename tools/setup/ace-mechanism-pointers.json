@@ -4,20 +4,7 @@
     "purpose": "HTTPS release assets → declared repo paths (jars, binaries, etc.)",
     "realizer": "src/Core.TypeScript/ace/setup-realizers/from-url.ts",
     "manifest": "tools/setup/manifests/from-url",
-    "dependencies": [
-      {
-        "ecosystem": "from-url",
-        "spec": "tools/tla/tla2tools.jar https://github.com/tlaplus/tlaplus/releases/download/v1.8.0/tla2tools.jar",
-        "update": "pinned-url",
-        "role": "formal-verifier"
-      },
-      {
-        "ecosystem": "from-url",
-        "spec": "tools/alloy/alloy.jar https://github.com/AlloyTools/org.alloytools.alloy/releases/download/v6.2.0/org.alloytools.alloy.dist.jar",
-        "update": "pinned-url",
-        "role": "formal-verifier"
-      }
-    ]
+    "dependencies": []
   },
   {
     "schema": "zeta.ace.package-manager-pointers.v1",

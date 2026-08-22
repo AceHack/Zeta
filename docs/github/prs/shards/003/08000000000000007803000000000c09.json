@@ -1,0 +1,17 @@
+{
+  "pr_number": 3081,
+  "archive_path": "docs/history/pr-reviews/PR-3081-chore-tick-0109z-shard-flagged-stale-base-destructive-merge-hazard-on-3-prs.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7BBjx1",
+    "comment:PRRC_kwDOSF9kNM7BBjyE",
+    "thread:PRRT_kwDOSF9kNM6B7rxM",
+    "thread:PRRT_kwDOSF9kNM6B7rxY"
+  ],
+  "fetched_at": "2026-05-14T01:25:07.775Z",
+  "schema_version": "v1",
+  "commit_sha": "dbf03746a178fb76c71b3bf7cb18ba79b4482f03",
+  "title": "chore(tick): 0109Z shard — flagged stale-base destructive-merge hazard on 3 PRs",
+  "state": "MERGED",
+  "merged_at": "2026-05-14T01:24:46Z",
+  "head_ref": "chore/tick-shard-0109z-2026-05-14"
+}

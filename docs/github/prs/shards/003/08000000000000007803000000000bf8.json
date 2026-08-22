@@ -1,0 +1,25 @@
+{
+  "pr_number": 3064,
+  "archive_path": "docs/history/pr-reviews/PR-3064-feat-bg-b-0442-slice-6-launchd-integration-for-missed-substrate-detector.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7BAJle",
+    "comment:PRRC_kwDOSF9kNM7BAKHx",
+    "comment:PRRC_kwDOSF9kNM7BAKI6",
+    "comment:PRRC_kwDOSF9kNM7BAKIZ",
+    "comment:PRRC_kwDOSF9kNM7BAT8s",
+    "comment:PRRC_kwDOSF9kNM7BAUJh",
+    "comment:PRRC_kwDOSF9kNM7BAUVJ",
+    "comment:PRRC_kwDOSF9kNM7BAUea",
+    "thread:PRRT_kwDOSF9kNM6B6tKk",
+    "thread:PRRT_kwDOSF9kNM6B6tjj",
+    "thread:PRRT_kwDOSF9kNM6B6tkD",
+    "thread:PRRT_kwDOSF9kNM6B6tkZ"
+  ],
+  "fetched_at": "2026-05-13T23:46:30.905Z",
+  "schema_version": "v1",
+  "commit_sha": "86d6139dc2370c10e900dc6c4c07415dcbe79d44",
+  "title": "feat(bg): B-0442 slice 6 — launchd integration for missed-substrate-detector",
+  "state": "MERGED",
+  "merged_at": "2026-05-13T23:46:15Z",
+  "head_ref": "feat/b0442-slice-6-launchd-integration"
+}

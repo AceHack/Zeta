@@ -1,0 +1,12 @@
+{
+  "pr_number": 8660,
+  "archive_path": "docs/history/pr-reviews/PR-8660-feat-core-coempowergraph-generalize-coempowerfield-to-the-generic-network-creato.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-20T00:39:05.599Z",
+  "schema_version": "v1",
+  "commit_sha": "fdd65d833f78ca503fce6c1e43e25ff28a65731c",
+  "title": "feat(core): CoEmpowerGraph — generalize CoEmpowerField to the generic network<>creator<>audience graph",
+  "state": "MERGED",
+  "merged_at": "2026-06-20T00:38:37Z",
+  "head_ref": "otto/coempower-graph-network-creator-audience"
+}

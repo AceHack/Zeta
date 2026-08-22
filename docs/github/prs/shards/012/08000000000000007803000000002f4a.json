@@ -1,0 +1,12 @@
+{
+  "pr_number": 12106,
+  "archive_path": "docs/history/pr-reviews/PR-12106-research-clifford-which-eights-are-the-same-eight-the-mod-8-correspondence-matri.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-18T21:57:17.277Z",
+  "schema_version": "v1",
+  "commit_sha": "f484dacbb3bd592c9e71a40c4c2a57e4b4e7f1d3",
+  "title": "research(clifford): which eights are the same eight -- the mod-8 correspondence matrix",
+  "state": "MERGED",
+  "merged_at": "2026-08-18T21:56:42Z",
+  "head_ref": "shadow/which-eights-are-the-same-eight"
+}

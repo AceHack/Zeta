@@ -1,0 +1,12 @@
+{
+  "pr_number": 2325,
+  "archive_path": "docs/history/pr-reviews/PR-2325-feat-kiro-background-service-kiro-loop-tick-ts.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-09T18:25:41.853Z",
+  "schema_version": "v1",
+  "commit_sha": "4c6d7c572703a50b117447597ef20ee51bed2f4f",
+  "title": "feat: Kiro background service (kiro-loop-tick.ts)",
+  "state": "MERGED",
+  "merged_at": "2026-05-09T18:25:26Z",
+  "head_ref": "claim/kiro-background-service-2026-05-09"
+}

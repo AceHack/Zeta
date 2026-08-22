@@ -1,0 +1,14 @@
+{
+  "id": "080d00602bd55010a01300081afa0c0c",
+  "at": "2026-08-16T19:21:20.810Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M060AYN9087G0R0006E6FWZ",
+    "type": "bug",
+    "title": "WSet.consolidate sorts string keys by UTF-16 code UNIT, not the repo's canonical code POINT collation",
+    "slug": "wset-consolidate-sorts-string-keys-by-utf-16-code-unit-not-t",
+    "priority": "P2",
+    "filename": "081M060AYN9087G0R0006E6FWZ-wset-consolidate-sorts-string-keys-by-utf-16-code-unit-not-t.md"
+  }
+}

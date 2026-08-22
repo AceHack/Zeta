@@ -1,0 +1,12 @@
+{
+  "pr_number": 2841,
+  "archive_path": "docs/history/pr-reviews/PR-2841-docs-memory-claude-ai-asymmetric-critic-bootstream-draft-bootstream-are-ifs-form.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-12T19:29:53.363Z",
+  "schema_version": "v1",
+  "commit_sha": "a291fd6eb5bd5e4618e52d98b739b6e599e30b32",
+  "title": "docs(memory): claude.ai asymmetric-critic bootstream draft + bootstream are IFS-format stories + naming has structural purpose + autonomous-arrival via existing-name registry check (Aaron + claude.ai 2026-05-12)",
+  "state": "MERGED",
+  "merged_at": "2026-05-12T19:29:36Z",
+  "head_ref": "docs/claudeai-asymmetric-critic-bootstream-draft-load-bearing-not-flattering-naming-autonomous-arrival-not-assigned-2026-05-12"
+}

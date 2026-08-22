@@ -9,6 +9,7 @@
 //
 // Anchors: RFC 9591; Gennaro et al. secure DKG; Komlo & Goldberg FROST.
 
+import { randomBytes as nodeRandomBytes } from "node:crypto";
 import { ed25519 } from "@noble/curves/ed25519.js";
 import {
   frostThresholdSign,
@@ -20,10 +21,14 @@ import {
 const Fn = ed25519.Point.Fn;
 const G = ed25519.Point.BASE;
 
+/** See the P0 note on randScalar in frost.ts: the DEFAULT is the OS CSPRNG, not Math.random. */
 function randScalar(random?: () => number): bigint {
   const buf = new Uint8Array(64);
-  const rnd = random ?? Math.random;
-  for (let i = 0; i < buf.length; i++) buf[i] = Math.floor(rnd() * 256);
+  if (random === undefined) {
+    buf.set(nodeRandomBytes(64));
+  } else {
+    for (let i = 0; i < buf.length; i++) buf[i] = Math.floor(random() * 256);
+  }
   let s = Fn.ZERO;
   for (let i = buf.length - 1; i >= 0; i--) {
     s = (s << 8n) + BigInt(buf[i]!);

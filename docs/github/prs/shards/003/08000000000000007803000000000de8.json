@@ -1,0 +1,17 @@
+{
+  "pr_number": 3560,
+  "archive_path": "docs/history/pr-reviews/PR-3560-shard-tick-1915z-peer-otto-convergence-on-pr-3555-b-0533-mechanization-landed.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7BvpMW",
+    "comment:PRRC_kwDOSF9kNM7BvpMy",
+    "thread:PRRT_kwDOSF9kNM6CdNz1",
+    "thread:PRRT_kwDOSF9kNM6CdNzi"
+  ],
+  "fetched_at": "2026-05-15T19:21:18.648Z",
+  "schema_version": "v1",
+  "commit_sha": "9c942c9c04d10cdeb6c4d9a41fe79bd6e953abae",
+  "title": "shard(tick): 1915Z — peer-Otto convergence on PR #3555; B-0533 mechanization landed",
+  "state": "MERGED",
+  "merged_at": "2026-05-15T19:20:58Z",
+  "head_ref": "shard/tick-1915z-otto-cli-2026-05-15"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 7437,
+  "archive_path": "docs/history/pr-reviews/PR-7437-docs-research-ferry-ani-xai-grok-verbatim-meter-company-proof-of-entropy-chip-8-.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-10T03:40:52.808Z",
+  "schema_version": "v1",
+  "commit_sha": "fd03a51deda16a4214e6ae7a33cb823a2c8240cb",
+  "title": "docs(research)+ferry: Ani (xAI/Grok) verbatim — meter company / proof-of-entropy / Chip-8 root of trust",
+  "state": "MERGED",
+  "merged_at": "2026-06-10T03:40:27Z",
+  "head_ref": "shadow-ferry-ani-meter-company"
+}

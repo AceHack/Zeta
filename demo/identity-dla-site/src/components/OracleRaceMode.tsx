@@ -20,6 +20,7 @@ import React from "react";
  */
 
 import OracleWorm from "./OracleWorm";
+import PasskeyProposalPanel from "./PasskeyProposalPanel";
 import { useEffect, useRef, useState, useCallback } from "react";
 
 // ── FrequencyMachZehnder in-browser implementation ────────────────────────────
@@ -1185,6 +1186,8 @@ export default function OracleRaceMode() {
       </div>
     )}
 
+      <PasskeyProposalPanel />
+
       {/* GitHub Society Panel — shows the latest society evolution event from the Zeta repo */}
       {doneCount === N_ORACLES && githubSociety && (
         <div style={{
@@ -1198,31 +1201,41 @@ export default function OracleRaceMode() {
         }}>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "0.2rem" }}>
             <span style={{ color: "#6ee7b7", fontWeight: "bold" }}>🌱 GitHub Agent Society (live from Zeta main)</span>
-            <button
-              title="Connect the protected GitHub App or trigger the heartbeat without exposing a token to this page"
-              onClick={() => {
-                setHeartbeatStatus("connecting");
-                const controlUrl = new URL("/api/github-app/connect", GITHUB_APP_HARNESS_ORIGIN);
-                controlUrl.searchParams.set("returnTo", window.location.origin);
-                const controlWindow = window.open(controlUrl.toString(), "zeta-github-app", "popup=yes,width=640,height=620");
-                if (!controlWindow) {
-                  setHeartbeatStatus("error");
-                  setHeartbeatMessage("The browser blocked the authorization window. Allow popups and try again.");
-                  window.setTimeout(() => setHeartbeatStatus("idle"), 8_000);
-                }
-              }}
-              style={{
-                fontSize: "0.5rem", padding: "0.1rem 0.3rem", cursor: "pointer",
-                background: heartbeatStatus === "connected" || heartbeatStatus === "triggered" ? "rgba(16,185,129,0.15)"
-                  : heartbeatStatus === "error" ? "rgba(239,68,68,0.15)"
-                  : heartbeatStatus === "connecting" ? "rgba(234,179,8,0.15)"
-                  : "rgba(255,255,255,0.05)",
-                border: `1px solid ${heartbeatStatus === "connected" || heartbeatStatus === "triggered" ? "#10b981" : heartbeatStatus === "error" ? "#ef4444" : heartbeatStatus === "connecting" ? "#eab308" : "#334155"}`,
-                borderRadius: 3,
-                color: heartbeatStatus === "connected" || heartbeatStatus === "triggered" ? "#6ee7b7" : heartbeatStatus === "error" ? "#fca5a5" : heartbeatStatus === "connecting" ? "#fde047" : "#94a3b8",
-              }}>
-              {heartbeatStatus === "triggered" ? "✓ triggered" : heartbeatStatus === "connected" ? "✓ GitHub connected" : heartbeatStatus === "error" ? "✗ connection failed" : heartbeatStatus === "connecting" ? "⏳ connecting…" : "⚡ connect GitHub"}
-            </button>
+            <div style={{ display: "flex", alignItems: "center", gap: "0.3rem" }}>
+              <a
+                href="https://github.com/Lucent-Financial-Group/Zeta/actions/workflows/society-heartbeat.yml"
+                target="_blank"
+                rel="noreferrer"
+                title="Backend-free fallback: GitHub authenticates you and authorizes the existing Run workflow action"
+                style={{ fontSize: "0.5rem", padding: "0.1rem 0.3rem", borderRadius: 3, color: "#93c5fd", border: "1px solid #1d4ed8", textDecoration: "none", background: "rgba(37,99,235,0.12)" }}>
+                ↗ run on GitHub
+              </a>
+              <button
+                title="Optional protected GitHub App control; it never exposes a token to this page"
+                onClick={() => {
+                  setHeartbeatStatus("connecting");
+                  const controlUrl = new URL("/api/github-app/connect", GITHUB_APP_HARNESS_ORIGIN);
+                  controlUrl.searchParams.set("returnTo", window.location.origin);
+                  const controlWindow = window.open(controlUrl.toString(), "zeta-github-app", "popup=yes,width=640,height=620");
+                  if (!controlWindow) {
+                    setHeartbeatStatus("error");
+                    setHeartbeatMessage("The browser blocked the authorization window. Allow popups and try again.");
+                    window.setTimeout(() => setHeartbeatStatus("idle"), 8_000);
+                  }
+                }}
+                style={{
+                  fontSize: "0.5rem", padding: "0.1rem 0.3rem", cursor: "pointer",
+                  background: heartbeatStatus === "connected" || heartbeatStatus === "triggered" ? "rgba(16,185,129,0.15)"
+                    : heartbeatStatus === "error" ? "rgba(239,68,68,0.15)"
+                    : heartbeatStatus === "connecting" ? "rgba(234,179,8,0.15)"
+                    : "rgba(255,255,255,0.05)",
+                  border: `1px solid ${heartbeatStatus === "connected" || heartbeatStatus === "triggered" ? "#10b981" : heartbeatStatus === "error" ? "#ef4444" : heartbeatStatus === "connecting" ? "#eab308" : "#334155"}`,
+                  borderRadius: 3,
+                  color: heartbeatStatus === "connected" || heartbeatStatus === "triggered" ? "#6ee7b7" : heartbeatStatus === "error" ? "#fca5a5" : heartbeatStatus === "connecting" ? "#fde047" : "#94a3b8",
+                }}>
+                {heartbeatStatus === "triggered" ? "✓ triggered" : heartbeatStatus === "connected" ? "✓ GitHub connected" : heartbeatStatus === "error" ? "✗ connection failed" : heartbeatStatus === "connecting" ? "⏳ connecting…" : "⚡ connect App"}
+              </button>
+            </div>
           </div>
           {heartbeatMessage && heartbeatStatus !== "idle" && (
             <div style={{ color: heartbeatStatus === "error" ? "#fca5a5" : "#94a3b8", fontSize: "0.5rem", marginBottom: "0.2rem" }}>

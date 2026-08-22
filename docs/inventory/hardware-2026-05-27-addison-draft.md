@@ -1,4 +1,15 @@
+<!-- hardware-surface: class=snapshot; units=206; lines=188; body-sha256=cfc0474997f4a97a9f4b93f7c2ad51c29e7784cf2b2165f4a92ea19f513f0ac3; superseded-by=addison-re-audit; register=inventory/items/ -->
+
 # Hardware inventory — Addison draft 2026-05-27
+
+> **Provenance class: SNAPSHOT** — a human audit at a point in time. Not the register, not a live
+> list. The unit/line counts are pinned in the header above and verified by
+> `bun src/Core.TypeScript/inventory/reconcile-surfaces.ts` (081M00R59KS087G0R001W3837V): edit the
+> body and the header moves with it, or the check goes red.
+>
+> **Do not bulk-import these rows into `inventory/items/`.** Addison is re-doing the audit (Aaron
+> 2026-08-14); importing a superseded snapshot would hand her 206 rows to re-verify against her own
+> fresh numbers, and every correction would become a diff against data that was never right.
 
 Forwarded by Aaron 2026-05-27 from Addison's verification/audit pass. **Draft state** — operator note: *"the counts on the bitcoin miners are messed up there are more but it's close we can save it to lfg inventory somewhere we had started this with our amazon history in git."*
 

@@ -1,0 +1,14 @@
+{
+  "id": "080d00da4460f810a0130008f5718c4d",
+  "at": "2026-08-19T18:28:54.431Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M0DMH30Y087G0R001C2B1PT",
+    "type": "task",
+    "title": "Plot the two scarce axes against each other: decorrelation (rho, Lyapunov, effectiveN) vs reconcilability (byte-lock, collation, anchor audit) and name the operating point",
+    "slug": "plot-the-two-scarce-axes-against-each-other-decorrelation-rh",
+    "priority": "P2",
+    "filename": "081M0DMH30Y087G0R001C2B1PT-plot-the-two-scarce-axes-against-each-other-decorrelation-rh.md"
+  }
+}

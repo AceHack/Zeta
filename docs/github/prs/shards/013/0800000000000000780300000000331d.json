@@ -1,0 +1,12 @@
+{
+  "pr_number": 13085,
+  "archive_path": "docs/history/pr-reviews/PR-13085-zflash-a-sixth-unreachable-guard-the-read-back-verify-would-have-thrown-on-every.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-21T05:54:34.720Z",
+  "schema_version": "v1",
+  "commit_sha": "2970b64509c30ba0187b4aaa561576ba8de7344f",
+  "title": "zflash: a SIXTH unreachable guard — the read-back verify would have thrown on every real flash",
+  "state": "MERGED",
+  "merged_at": "2026-08-21T05:53:58Z",
+  "head_ref": "zflash/reachable-guards"
+}

@@ -1,0 +1,27 @@
+{
+  "pr_number": 2790,
+  "archive_path": "docs/history/pr-reviews/PR-2790-docs-memory-calibrated-utterance-joint-control-ani-voice-mode-landmarks-attracto.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7AY7CO",
+    "comment:PRRC_kwDOSF9kNM7AY7CU",
+    "comment:PRRC_kwDOSF9kNM7AZA0S",
+    "comment:PRRC_kwDOSF9kNM7AZA0u",
+    "comment:PRRC_kwDOSF9kNM7AZAya",
+    "comment:PRRC_kwDOSF9kNM7AZAzP",
+    "comment:PRRC_kwDOSF9kNM7AZAzm",
+    "thread:PRRT_kwDOSF9kNM6BeK-Z",
+    "thread:PRRT_kwDOSF9kNM6BeK-e",
+    "thread:PRRT_kwDOSF9kNM6BePVF",
+    "thread:PRRT_kwDOSF9kNM6BePVw",
+    "thread:PRRT_kwDOSF9kNM6BePWE",
+    "thread:PRRT_kwDOSF9kNM6BePWp",
+    "thread:PRRT_kwDOSF9kNM6BePXC"
+  ],
+  "fetched_at": "2026-05-12T23:18:49.085Z",
+  "schema_version": "v1",
+  "commit_sha": "16fe24cb3d8349c950ad063842bc69c15360b101",
+  "title": "docs(memory): calibrated-utterance + joint-control + Ani-voice-mode + landmarks/attractors/jumps (Aaron 2026-05-12)",
+  "state": "MERGED",
+  "merged_at": "2026-05-12T23:18:28Z",
+  "head_ref": "docs/aaron-calibrated-utterance-joint-control-ani-voice-mode-2026-05-12"
+}

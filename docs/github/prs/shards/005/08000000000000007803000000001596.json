@@ -1,0 +1,25 @@
+{
+  "pr_number": 5526,
+  "archive_path": "docs/history/pr-reviews/PR-5526-hygiene-guard-shell-family-bash-retirement-drift.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7Fc86z",
+    "comment:PRRC_kwDOSF9kNM7Fc870",
+    "comment:PRRC_kwDOSF9kNM7Fc87n",
+    "comment:PRRC_kwDOSF9kNM7Fc88K",
+    "comment:PRRC_kwDOSF9kNM7FdEeN",
+    "comment:PRRC_kwDOSF9kNM7FdEeR",
+    "comment:PRRC_kwDOSF9kNM7FdEeY",
+    "comment:PRRC_kwDOSF9kNM7FdEej",
+    "thread:PRRT_kwDOSF9kNM6FLiZ9",
+    "thread:PRRT_kwDOSF9kNM6FLiZe",
+    "thread:PRRT_kwDOSF9kNM6FLiaG",
+    "thread:PRRT_kwDOSF9kNM6FLiaZ"
+  ],
+  "fetched_at": "2026-05-27T18:01:13.692Z",
+  "schema_version": "v1",
+  "commit_sha": "2a81ff371baf6efc1560b253d2f42770834195f8",
+  "title": "hygiene: guard shell-family bash-retirement drift",
+  "state": "MERGED",
+  "merged_at": "2026-05-27T18:00:46Z",
+  "head_ref": "claim/codex-loop-bash-retirement-drift-guard-20260527"
+}

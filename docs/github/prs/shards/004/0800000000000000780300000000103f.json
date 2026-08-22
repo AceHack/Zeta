@@ -1,0 +1,27 @@
+{
+  "pr_number": 4159,
+  "archive_path": "docs/history/pr-reviews/PR-4159-backlog-skill-b-0648-cross-substrate-triangulation-as-first-class-skill-hat-aaro.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7CUfVb",
+    "comment:PRRC_kwDOSF9kNM7CUnGv",
+    "comment:PRRC_kwDOSF9kNM7CUnHr",
+    "comment:PRRC_kwDOSF9kNM7CUnI1",
+    "comment:PRRC_kwDOSF9kNM7CUnIT",
+    "comment:PRRC_kwDOSF9kNM7CUxH3",
+    "comment:PRRC_kwDOSF9kNM7CUxH7",
+    "thread:PRRT_kwDOSF9kNM6C40AD",
+    "thread:PRRT_kwDOSF9kNM6C47TR",
+    "thread:PRRT_kwDOSF9kNM6C47TU",
+    "thread:PRRT_kwDOSF9kNM6C4uUI",
+    "thread:PRRT_kwDOSF9kNM6C4z-c",
+    "thread:PRRT_kwDOSF9kNM6C4z_F",
+    "thread:PRRT_kwDOSF9kNM6C4z_k"
+  ],
+  "fetched_at": "2026-05-18T16:01:03.178Z",
+  "schema_version": "v1",
+  "commit_sha": "ca2c2c3d1a0a02d4be6eb7ba513cd81bc6b69cd1",
+  "title": "backlog+skill(B-0648): cross-substrate triangulation as first-class skill + hat (Aaron LOCK-IN)",
+  "state": "MERGED",
+  "merged_at": "2026-05-18T16:00:36Z",
+  "head_ref": "otto-cli/b0648-cross-substrate-triangulator-skill-2026-05-18-1135Z"
+}

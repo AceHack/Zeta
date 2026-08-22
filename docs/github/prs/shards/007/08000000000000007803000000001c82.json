@@ -1,0 +1,12 @@
+{
+  "pr_number": 7298,
+  "archive_path": "docs/history/pr-reviews/PR-7298-docs-research-the-deepest-border-is-the-metal-own-soc-secure-boot-pki-supply-cha.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-09T14:44:18.812Z",
+  "schema_version": "v1",
+  "commit_sha": "f20d500483baf1bc0928f4b127bedecab2983ef0",
+  "title": "docs(research): the deepest border is the metal — own SoC + secure boot + PKI + supply chain to manufacturing (Itron lived prior art)",
+  "state": "MERGED",
+  "merged_at": "2026-06-09T14:43:53Z",
+  "head_ref": "otto/deepest-border-is-the-metal-own-soc-secure-boot-pki-itron-prior-art"
+}

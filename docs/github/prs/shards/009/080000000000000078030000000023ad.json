@@ -1,0 +1,15 @@
+{
+  "pr_number": 9133,
+  "archive_path": "docs/history/pr-reviews/PR-9133-feat-core-dbspcellgraph-distinct-a-non-linear-stateful-operator-through-the-sche.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7RZk69",
+    "thread:PRRT_kwDOSF9kNM6N5em7"
+  ],
+  "fetched_at": "2026-08-17T07:50:43.429Z",
+  "schema_version": "v1",
+  "commit_sha": "21e8a7bd74709a43c661a2d6cb6d7b4c9c792b7f",
+  "title": "feat(core): DbspCellGraph Distinct — a non-linear stateful operator through the scheduler",
+  "state": "MERGED",
+  "merged_at": "2026-07-02T12:51:14Z",
+  "head_ref": "otto/dbsp-cell-graph-distinct-operator"
+}

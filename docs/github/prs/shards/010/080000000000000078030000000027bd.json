@@ -1,0 +1,12 @@
+{
+  "pr_number": 10173,
+  "archive_path": "docs/history/pr-reviews/PR-10173-feat-hooks-pre-push-floor-hook-the-uncompensatable-floor-on-the-sovereign-lane-0.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-08T23:24:42.897Z",
+  "schema_version": "v1",
+  "commit_sha": "6265f4f78b762b11184375f7bcfce8a0240a816b",
+  "title": "feat(hooks): pre-push floor hook — the uncompensatable floor on the sovereign lane (081KZHGP46G)",
+  "state": "MERGED",
+  "merged_at": "2026-08-08T23:24:12Z",
+  "head_ref": "otto/pre-push-floor-hook"
+}

@@ -1,0 +1,15 @@
+{
+  "pr_number": 3197,
+  "archive_path": "docs/history/pr-reviews/PR-3197-docs-shadow-lior-antigravity-check-riven-root-checkout-drift.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7BV0vb",
+    "thread:PRRT_kwDOSF9kNM6CKlXZ"
+  ],
+  "fetched_at": "2026-05-14T19:31:27.180Z",
+  "schema_version": "v1",
+  "commit_sha": "d4644f2577f69d5f4472d052759018c71cb4c939",
+  "title": "docs(shadow): Lior antigravity check - Riven root checkout drift",
+  "state": "MERGED",
+  "merged_at": "2026-05-14T19:31:11Z",
+  "head_ref": "lior-shadow-log-1778786266"
+}

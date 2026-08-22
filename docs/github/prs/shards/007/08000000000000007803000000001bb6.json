@@ -1,0 +1,12 @@
+{
+  "pr_number": 7094,
+  "archive_path": "docs/history/pr-reviews/PR-7094-feat-core-chip8cow-dynamics-step-dynamics-as-a-genuine-imonoid-surrounding-inter.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-08T11:43:39.134Z",
+  "schema_version": "v1",
+  "commit_sha": "549a665b6c78a290447456c50d59c3c19a606a07",
+  "title": "feat(core): Chip8Cow.dynamics — step-dynamics as a genuine IMonoid (surrounding interface, not IStarRing)",
+  "state": "MERGED",
+  "merged_at": "2026-06-08T11:43:14Z",
+  "head_ref": "otto/chip8cow-dynamics-imonoid-surrounding-interface-not-istarring"
+}

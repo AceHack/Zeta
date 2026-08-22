@@ -1,0 +1,12 @@
+{
+  "pr_number": 9683,
+  "archive_path": "docs/history/pr-reviews/PR-9683-docs-decision-codegen-executor-stays-gated-until-guarded-shadow.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-11T12:44:09.701Z",
+  "schema_version": "v1",
+  "commit_sha": "9c13d27b2489df893337410ad919c46caebc8336",
+  "title": "docs(decision): codegen executor stays GATED until guarded (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-11T12:43:43Z",
+  "head_ref": "decision-executor-stays-gated"
+}

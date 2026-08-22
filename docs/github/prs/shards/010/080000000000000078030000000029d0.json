@@ -1,0 +1,12 @@
+{
+  "pr_number": 10704,
+  "archive_path": "docs/history/pr-reviews/PR-10704-docs-math-adinkra-homoiconicity-is-regularity-and-the-obstruction-is-a-cocycle-n.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-16T21:14:04.524Z",
+  "schema_version": "v1",
+  "commit_sha": "e5fd8f8f7a092609e985310f96da681c226c65fc",
+  "title": "docs(math): adinkra homoiconicity is regularity, and the obstruction is a cocycle not a tangle",
+  "state": "MERGED",
+  "merged_at": "2026-08-16T21:13:29Z",
+  "head_ref": "lumen/adinkra-minimal-homoiconicity-and-the-homoclinic-obstruction"
+}

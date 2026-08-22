@@ -1,0 +1,16 @@
+{
+  "pr_number": 6097,
+  "archive_path": "docs/history/pr-reviews/PR-6097-docs-b-0250-calibrate-live-coincidence-noise.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7GZH84",
+    "comment:PRRC_kwDOSF9kNM7GZHOW",
+    "thread:PRRT_kwDOSF9kNM6F240H"
+  ],
+  "fetched_at": "2026-05-30T08:47:35.023Z",
+  "schema_version": "v1",
+  "commit_sha": "21333dc2808a3488ab40745a57419454704f604f",
+  "title": "docs(B-0250): calibrate live coincidence noise",
+  "state": "MERGED",
+  "merged_at": "2026-05-30T08:47:13Z",
+  "head_ref": "claim/codex-b0250-live-noise-calibration-20260530"
+}

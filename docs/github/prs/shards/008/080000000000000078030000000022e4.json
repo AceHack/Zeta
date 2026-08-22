@@ -1,0 +1,12 @@
+{
+  "pr_number": 8932,
+  "archive_path": "docs/history/pr-reviews/PR-8932-fix-ts-cover-star-ring-generated-law-schemas.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-21T09:53:06.273Z",
+  "schema_version": "v1",
+  "commit_sha": "d196c3e5d76cb57420527c506e004212ee91b9d5",
+  "title": "fix(ts): cover star-ring generated law schemas",
+  "state": "MERGED",
+  "merged_at": "2026-06-21T09:52:40Z",
+  "head_ref": "codex/fix-star-ring-law-ts"
+}

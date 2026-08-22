@@ -1,0 +1,12 @@
+{
+  "pr_number": 13272,
+  "archive_path": "docs/history/pr-reviews/PR-13272-ops-file-the-arc-model-cache-pvc-that-nothing-applies-a-warm-runner-mounts-a-vol.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-21T17:14:18.880Z",
+  "schema_version": "v1",
+  "commit_sha": "3ddf5a55e5ed0429265bb462b2907d6776615793",
+  "title": "ops: file the arc-model-cache PVC that nothing applies — a warm runner mounts a volume that does not exist",
+  "state": "MERGED",
+  "merged_at": "2026-08-21T17:13:34Z",
+  "head_ref": "ops/file-arc-model-cache-pvc-never-applied"
+}

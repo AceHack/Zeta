@@ -1,0 +1,12 @@
+{
+  "pr_number": 6910,
+  "archive_path": "docs/history/pr-reviews/PR-6910-docs-backlog-identity-frame-relative-accumulating-credence-query-heartbeats-uniq.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-07T20:43:11.720Z",
+  "schema_version": "v1",
+  "commit_sha": "38b05b5dbef5894dab9dc4978fbd3e1b4f802c95",
+  "title": "docs+backlog: identity = frame-relative accumulating-credence query (heartbeats unique agents+humans); Azure-LRC erasure-coding workitem",
+  "state": "MERGED",
+  "merged_at": "2026-06-07T20:42:53Z",
+  "head_ref": "otto/credence-query-identity-plus-azure-lrc-erasure-workitem"
+}

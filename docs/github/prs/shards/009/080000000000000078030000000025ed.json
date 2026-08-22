@@ -1,0 +1,12 @@
+{
+  "pr_number": 9709,
+  "archive_path": "docs/history/pr-reviews/PR-9709-docs-research-multi-planet-convergence-local-frame-proper-time-the-two-orders-gu.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-11T16:29:12.527Z",
+  "schema_version": "v1",
+  "commit_sha": "1bf2e49165d07963c985747155d87f219bd6fcc4",
+  "title": "docs(research): multi-planet convergence — local frame = proper time; the two-orders guard (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-11T16:28:42Z",
+  "head_ref": "doc-local-frame-proper-time"
+}

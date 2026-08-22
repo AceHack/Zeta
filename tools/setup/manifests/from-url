@@ -1,6 +1,25 @@
 # Mechanism: from-url — HTTPS release/asset → declared path.
-# Format: <dest>  <url>  [requires=java,...]
+# Format: <dest>  <url>  sha256=<64-hex>  [requires=java,...]
 # <dest> is repo-root-relative unless it starts with ~ or /.
-
-tools/tla/tla2tools.jar    https://github.com/tlaplus/tlaplus/releases/download/v1.8.0/tla2tools.jar    requires=java    role=formal-verifier
-tools/alloy/alloy.jar      https://github.com/AlloyTools/org.alloytools.alloy/releases/download/v6.2.0/org.alloytools.alloy.dist.jar    requires=java    role=formal-verifier
+#
+# sha256= is MANDATORY on every row and the realizer refuses a row
+# without one (matching from-elan and from-autotools-tarball). A URL is
+# a name, not a pin: GitHub release assets can be re-uploaded under an
+# unchanged tag, so only the digest says which bytes you got.
+#
+# Two rows lived here until 081M001E114087G0R001AZF4KD and both were
+# deleted rather than checksummed, because nothing read what they wrote:
+#
+#   tools/tla/tla2tools.jar   ← the runners load src/Core.TLA/tla2tools.jar
+#   tools/alloy/alloy.jar     ← the runners load src/Core.Alloy/alloy.jar
+#
+# Both verifier jars are COMMITTED to git (#8053), so the toolchain is
+# byte-pinned by the diff and no install-time fetch is involved. The TLA
+# row also demonstrated the re-upload hazard first-hand: its URL is
+# tagged v1.8.0 but that tag is a rolling PRERELEASE whose tla2tools.jar
+# asset was last re-uploaded 2026-08-11, serving a build three months
+# newer than the jar the gate actually runs.
+#
+# Before adding a row, answer both: (1) what reads this path, and
+# (2) what digest pins these bytes. A fetch that fails either question
+# is attack surface, not a dependency.

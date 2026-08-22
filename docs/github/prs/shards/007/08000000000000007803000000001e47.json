@@ -1,0 +1,12 @@
+{
+  "pr_number": 7751,
+  "archive_path": "docs/history/pr-reviews/PR-7751-feat-shapes-kitaev-chain-the-atom-shape-crossing-composition-made-first-class.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-11T18:12:24.537Z",
+  "schema_version": "v1",
+  "commit_sha": "501c0a42dbc333caa7ff6bff7df4e28a6097cbac",
+  "title": "feat(shapes): Kitaev chain + THE ATOM (shape-crossing) — composition made first-class",
+  "state": "MERGED",
+  "merged_at": "2026-06-11T18:11:59Z",
+  "head_ref": "shadow-kitaev-chain"
+}

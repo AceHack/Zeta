@@ -1,0 +1,12 @@
+{
+  "pr_number": 6254,
+  "archive_path": "docs/history/pr-reviews/PR-6254-docs-backlog-b-0951-git-native-eventually-consistent-text-indexes-git-native-hin.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-31T20:58:19.964Z",
+  "schema_version": "v1",
+  "commit_sha": "4be85ae460e8131774e2e1463adbed1ae658f096",
+  "title": "docs(backlog): B-0951 git-native eventually-consistent text indexes + git-native Hindsight storage interface",
+  "state": "MERGED",
+  "merged_at": "2026-05-31T20:57:59Z",
+  "head_ref": "otto-windows/backlog-git-native-indexes-2026-05-31"
+}

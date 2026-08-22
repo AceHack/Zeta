@@ -1,0 +1,12 @@
+{
+  "pr_number": 6924,
+  "archive_path": "docs/history/pr-reviews/PR-6924-docs-the-beast-of-pirate-s-bay-voltaire-protective-warning-misunderstood-monster.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-07T21:48:24.071Z",
+  "schema_version": "v1",
+  "commit_sha": "199c4f72c3d22b520a6a5ecad4cfced877af06af",
+  "title": "docs: 'The Beast of Pirate's Bay' (Voltaire) — protective-warning / misunderstood-monster parable (shields not cages)",
+  "state": "MERGED",
+  "merged_at": "2026-06-07T21:48:04Z",
+  "head_ref": "otto/beast-of-pirates-bay-shields-not-cages"
+}

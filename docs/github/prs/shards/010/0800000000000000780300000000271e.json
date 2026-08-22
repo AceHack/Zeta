@@ -1,0 +1,12 @@
+{
+  "pr_number": 10014,
+  "archive_path": "docs/history/pr-reviews/PR-10014-feat-core-decorrelationexcess-general-decorrelation-instrument-excess-over-null.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-03T15:26:21.460Z",
+  "schema_version": "v1",
+  "commit_sha": "b8801e86fe981cab00b2bf268e9348b8da939698",
+  "title": "feat(core): DecorrelationExcess — general decorrelation instrument (excess-over-null)",
+  "state": "MERGED",
+  "merged_at": "2026-08-03T15:25:53Z",
+  "head_ref": "feat/decorrelation-excess-over-null-instrument-20260803"
+}

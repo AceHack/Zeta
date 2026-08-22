@@ -1,0 +1,12 @@
+{
+  "pr_number": 9660,
+  "archive_path": "docs/history/pr-reviews/PR-9660-docs-the-ethical-keystone-choice-architecture-as-the-answer-to-the-un-chosen-thr.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-10T04:37:39.190Z",
+  "schema_version": "v1",
+  "commit_sha": "dede5f9c755159e149bd154faf0307149e677002",
+  "title": "docs: the ethical keystone — choice-architecture as the answer to the un-chosen throw; raising minds (Zeta / we)",
+  "state": "MERGED",
+  "merged_at": "2026-07-10T04:37:12Z",
+  "head_ref": "shadow/book-the-data-years-lexisnexis-ess"
+}

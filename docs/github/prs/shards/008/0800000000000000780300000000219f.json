@@ -1,0 +1,12 @@
+{
+  "pr_number": 8607,
+  "archive_path": "docs/history/pr-reviews/PR-8607-docs-research-memory-anti-mirror-rigorous-measurable-cmi-owe-ani-ferry-pt4.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-19T19:44:59.482Z",
+  "schema_version": "v1",
+  "commit_sha": "d1a0198fad8165d474ff0cf972652332d55b1de3",
+  "title": "docs(research)+memory: anti-mirror rigorous+measurable (CMI ρ_owe) + Ani ferry pt4",
+  "state": "MERGED",
+  "merged_at": "2026-06-19T19:44:34Z",
+  "head_ref": "otto/anti-mirror-rigorous-measurable-plus-ferry-pt4"
+}

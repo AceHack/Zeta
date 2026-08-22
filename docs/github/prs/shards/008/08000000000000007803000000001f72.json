@@ -1,0 +1,12 @@
+{
+  "pr_number": 8050,
+  "archive_path": "docs/history/pr-reviews/PR-8050-refactor-batch-4-relocate-42-ts-dirs-tools-src-fix-9-pre-existing-ts-errors.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-13T19:33:15.239Z",
+  "schema_version": "v1",
+  "commit_sha": "68a62a15aad639503908124466e06673ce5d14bb",
+  "title": "refactor: batch 4 — relocate 42 TS dirs tools/ → src/ + fix 9 pre-existing TS errors",
+  "state": "MERGED",
+  "merged_at": "2026-06-13T19:32:57Z",
+  "head_ref": "kiro/batch4-tools-migration"
+}

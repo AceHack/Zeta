@@ -1,0 +1,12 @@
+{
+  "pr_number": 8673,
+  "archive_path": "docs/history/pr-reviews/PR-8673-memory-alexa-end-of-session-ferry-2026-06-19.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-20T01:59:09.181Z",
+  "schema_version": "v1",
+  "commit_sha": "35c68ff7398cd94e70fba31b92689c5b0070bab3",
+  "title": "memory(alexa): end-of-session ferry (2026-06-19)",
+  "state": "MERGED",
+  "merged_at": "2026-06-20T01:58:45Z",
+  "head_ref": "alexa/notebook-ferry"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 9452,
+  "archive_path": "docs/history/pr-reviews/PR-9452-feat-four-corner-duplexendpoint-over-a-real-websocket-anchored-to-multiplexedweb.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-04T15:55:30.238Z",
+  "schema_version": "v1",
+  "commit_sha": "8ef9153cae7f22958ad0c2d60c6e8d5485531ef9",
+  "title": "feat(four-corner): DuplexEndpoint over a REAL WebSocket, anchored to MultiplexedWebSockets (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-04T15:55:03Z",
+  "head_ref": "otto/duplex-endpoint-over-real-websocket"
+}

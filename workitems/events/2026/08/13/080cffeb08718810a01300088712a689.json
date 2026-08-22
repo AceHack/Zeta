@@ -1,0 +1,14 @@
+{
+  "id": "080cffeb08718810a01300088712a689",
+  "at": "2026-08-13T23:07:04.113Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081KZYP23HG087G0R000117H0K",
+    "type": "task",
+    "title": "Calibrate the Gilbert-Elliott chaos harness against published loss-trace fits: free k and h, sweep the measured 802.11 parameters, and add a heavy-tailed burst option",
+    "slug": "calibrate-the-gilbert-elliott-chaos-harness-against-publishe",
+    "priority": "P2",
+    "filename": "081KZYP23HG087G0R000117H0K-calibrate-the-gilbert-elliott-chaos-harness-against-publishe.md"
+  }
+}

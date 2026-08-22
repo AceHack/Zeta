@@ -1,0 +1,14 @@
+{
+  "id": "080d00d95cead010a0130008833e5b86",
+  "at": "2026-08-19T17:57:18.298Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M0DJQ7AS087G0R001EDAAWN",
+    "type": "task",
+    "title": "put-opaque is transitively attestation-issuer-write: split the capability or pin the template",
+    "slug": "put-opaque-is-transitively-attestation-issuer-write-split-th",
+    "priority": "P1",
+    "filename": "081M0DJQ7AS087G0R001EDAAWN-put-opaque-is-transitively-attestation-issuer-write-split-th.md"
+  }
+}

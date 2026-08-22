@@ -1,0 +1,12 @@
+{
+  "pr_number": 10802,
+  "archive_path": "docs/history/pr-reviews/PR-10802-fix-chaos-derive-the-burst-length-grid-from-max-nack-gap.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-15T15:22:21.719Z",
+  "schema_version": "v1",
+  "commit_sha": "4f3be7983e3991c41a2314af498d310dc9791a2b",
+  "title": "fix(chaos): derive the burst-length grid from MAX_NACK_GAP",
+  "state": "MERGED",
+  "merged_at": "2026-08-15T15:21:47Z",
+  "head_ref": "fix/081KZZYETRX-derive-burst-grid-past-desync"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 8754,
+  "archive_path": "docs/history/pr-reviews/PR-8754-proof-formal-t1-gen-gen-gen-fixpoint-lean-4-soraya.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-20T19:07:20.978Z",
+  "schema_version": "v1",
+  "commit_sha": "a5379a8b677170a34955a5a8134f3c27d10c977f",
+  "title": "proof(formal): T1 gen(gen)=gen fixpoint — Lean 4 (Soraya)",
+  "state": "MERGED",
+  "merged_at": "2026-06-20T19:06:58Z",
+  "head_ref": "alexa/soraya-greenlight"
+}

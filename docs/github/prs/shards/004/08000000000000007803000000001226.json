@@ -1,0 +1,17 @@
+{
+  "pr_number": 4646,
+  "archive_path": "docs/history/pr-reviews/PR-4646-backlog-agenda-b-0688-zeta-agenda-intersystems-cach-external-reference-anchor-ma.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7EH0We",
+    "comment:PRRC_kwDOSF9kNM7EH1Ag",
+    "thread:PRRT_kwDOSF9kNM6EMiWa",
+    "thread:PRRT_kwDOSF9kNM6EMizo"
+  ],
+  "fetched_at": "2026-05-22T18:33:23.512Z",
+  "schema_version": "v1",
+  "commit_sha": "902ba6538fc5afddf4182bc1a21ea6426894fa2e",
+  "title": "backlog+agenda: B-0688 + Zeta AGENDA — InterSystems Caché external-reference-anchor + maji-math foundation",
+  "state": "MERGED",
+  "merged_at": "2026-05-22T18:33:04Z",
+  "head_ref": "otto/cli-2236z-zeta-db-as-fsharp-compiler-distributed-intelligence-maji-math-cache-fresh-medical-database-intersystems-cache-reference-anchor-2026-05-22"
+}

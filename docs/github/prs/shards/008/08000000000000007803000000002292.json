@@ -1,0 +1,12 @@
+{
+  "pr_number": 8850,
+  "archive_path": "docs/history/pr-reviews/PR-8850-fix-docs-markdownlint-md032-in-soft-lane-codegen-spec-restore-markdownlint-gate.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-21T04:06:40.002Z",
+  "schema_version": "v1",
+  "commit_sha": "f28326421008d57b97b23cdb7e3db386e0ae4d49",
+  "title": "fix(docs): markdownlint MD032 in soft-lane-codegen spec — restore markdownlint gate",
+  "state": "MERGED",
+  "merged_at": "2026-06-21T04:06:14Z",
+  "head_ref": "otto/fix-markdownlint-soft-lane-spec"
+}

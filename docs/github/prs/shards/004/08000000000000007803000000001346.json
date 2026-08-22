@@ -1,0 +1,15 @@
+{
+  "pr_number": 4934,
+  "archive_path": "docs/history/pr-reviews/PR-4934-docs-research-decomposed-add-shadow-lesson-log-for-2026-05-24-from-4817.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7EmzZN",
+    "thread:PRRT_kwDOSF9kNM6Ej3Rn"
+  ],
+  "fetched_at": "2026-05-25T14:37:42.303Z",
+  "schema_version": "v1",
+  "commit_sha": "7aa00fca01508cd3b20293b0fe5caa98a49722b8",
+  "title": "docs(research): DECOMPOSED - add shadow lesson log for 2026-05-24 (from #4817)",
+  "state": "MERGED",
+  "merged_at": "2026-05-25T14:37:19Z",
+  "head_ref": "lior-atomic-shadow-log-4817"
+}

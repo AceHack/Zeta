@@ -1,0 +1,16 @@
+{
+  "pr_number": 2101,
+  "archive_path": "docs/history/pr-reviews/PR-2101-docs-preserve-rift-diamond-superfluid-compression.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_VVr_",
+    "comment:PRRC_kwDOSF9kNM6_VZk-",
+    "thread:PRRT_kwDOSF9kNM6ArqBf"
+  ],
+  "fetched_at": "2026-05-08T16:45:50.027Z",
+  "schema_version": "v1",
+  "commit_sha": "3d4e71cdcc17ea0961a0df2ade2b9c4d8cbed91b",
+  "title": "docs: preserve rift diamond superfluid compression",
+  "state": "MERGED",
+  "merged_at": "2026-05-08T16:45:34Z",
+  "head_ref": "claim/task-rift-diamond-superfluid-compression"
+}

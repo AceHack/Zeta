@@ -1,0 +1,14 @@
+{
+  "id": "080d000d57934010a01300085ba88345",
+  "at": "2026-08-14T19:06:15.528Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M00TNWK7087G0R000WX9XZE",
+    "type": "task",
+    "title": "Heat.fs: two live classifiers of the deferral-vs-destruction bit disagree on mixed kind strings",
+    "slug": "heat-fs-two-live-classifiers-of-the-deferral-vs-destruction",
+    "priority": "P2",
+    "filename": "081M00TNWK7087G0R000WX9XZE-heat-fs-two-live-classifiers-of-the-deferral-vs-destruction.md"
+  }
+}

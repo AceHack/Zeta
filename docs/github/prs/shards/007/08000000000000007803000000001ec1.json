@@ -1,0 +1,12 @@
+{
+  "pr_number": 7873,
+  "archive_path": "docs/history/pr-reviews/PR-7873-fix-ci-mise-github-token-on-every-install-sh-step-kill-the-anonymous-403-flake-f.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-12T02:53:50.058Z",
+  "schema_version": "v1",
+  "commit_sha": "db924b622edef4ebe8d3915f85061beb6e34351c",
+  "title": "fix(ci): MISE_GITHUB_TOKEN on every install.sh step — kill the anonymous 403 flake fleet-wide",
+  "state": "MERGED",
+  "merged_at": "2026-06-12T02:53:27Z",
+  "head_ref": "shadow-mise-token-sweep"
+}

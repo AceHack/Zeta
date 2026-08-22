@@ -1,0 +1,16 @@
+{
+  "pr_number": 3249,
+  "archive_path": "docs/history/pr-reviews/PR-3249-shard-tick-2108z-review-thread-triage-round-2-b-0329-renumber-gh-api-graphql-fix.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7BYHPz",
+    "comment:PRRC_kwDOSF9kNM7BYN9Z",
+    "thread:PRRT_kwDOSF9kNM6CMQDb"
+  ],
+  "fetched_at": "2026-05-14T21:23:18.573Z",
+  "schema_version": "v1",
+  "commit_sha": "f74e577d5943b0dbe8de7d6d4b420d945c7e2b4a",
+  "title": "shard(tick): 2108Z — review-thread triage round 2 (B-0329 renumber + gh api graphql fix)",
+  "state": "MERGED",
+  "merged_at": "2026-05-14T21:22:57Z",
+  "head_ref": "shard/tick-2108Z-thread-triage-round2-otto-cli-2026-05-14"
+}

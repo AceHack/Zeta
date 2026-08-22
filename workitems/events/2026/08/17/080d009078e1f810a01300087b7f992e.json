@@ -1,0 +1,14 @@
+{
+  "id": "080d009078e1f810a01300087b7f992e",
+  "at": "2026-08-17T23:29:35.295Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M090Y71Y087G0R001JE2S54",
+    "type": "task",
+    "title": "Literature scout: is path-independence across CRDTs, Bell/CHSH, holonomy, and CALM one fact in four costumes?",
+    "slug": "literature-scout-is-path-independence-across-crdts-bell-chsh",
+    "priority": "P2",
+    "filename": "081M090Y71Y087G0R001JE2S54-literature-scout-is-path-independence-across-crdts-bell-chsh.md"
+  }
+}

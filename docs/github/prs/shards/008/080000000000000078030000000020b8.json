@@ -1,0 +1,12 @@
+{
+  "pr_number": 8376,
+  "archive_path": "docs/history/pr-reviews/PR-8376-docs-society-eve-preserves-meters-each-markov-boundary-identity-fusion-fission-b.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-16T00:30:01.267Z",
+  "schema_version": "v1",
+  "commit_sha": "17e3d4ef6799c1656afe7e9feb2118d4f9aa6c86",
+  "title": "docs(society): Eve preserves/meters each Markov boundary; identity fusion/fission §B-open, NCI-bounded",
+  "state": "MERGED",
+  "merged_at": "2026-06-16T00:29:33Z",
+  "head_ref": "docs/eve-markov-boundary-and-identity-fusion-fission"
+}

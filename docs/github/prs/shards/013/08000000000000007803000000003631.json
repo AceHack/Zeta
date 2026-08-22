@@ -1,0 +1,12 @@
+{
+  "pr_number": 13873,
+  "archive_path": "docs/history/pr-reviews/PR-13873-fix-cursor-skip-the-fixture-symlink-cycle-and-archive-dumps.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-22T20:23:36.149Z",
+  "schema_version": "v1",
+  "commit_sha": "764c22ed381b350c8717abfa40f33b61fa1692e7",
+  "title": "fix(cursor): skip the fixture symlink cycle and archive dumps",
+  "state": "MERGED",
+  "merged_at": "2026-08-22T20:22:55Z",
+  "head_ref": "riven/cursor-ignore-symlink-loop"
+}

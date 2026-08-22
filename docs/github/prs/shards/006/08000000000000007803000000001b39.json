@@ -1,0 +1,12 @@
+{
+  "pr_number": 6969,
+  "archive_path": "docs/history/pr-reviews/PR-6969-docs-zeta-is-one-infinite-ace-zeta-file-cyclic-graph-run-by-zs-zc-and-the-db-fil.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-08T01:14:49.469Z",
+  "schema_version": "v1",
+  "commit_sha": "5cc8535d3ddbd948433d172295f08171eb021e34",
+  "title": "docs: Zeta is one infinite .ace/.zeta file (cyclic graph) run by zs/zc — and the db/file-handler for it",
+  "state": "MERGED",
+  "merged_at": "2026-06-08T01:14:29Z",
+  "head_ref": "otto/zeta-is-one-infinite-zeta-file-run-and-db"
+}

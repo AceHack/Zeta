@@ -1,0 +1,12 @@
+{
+  "pr_number": 6534,
+  "archive_path": "docs/history/pr-reviews/PR-6534-memory-amara-research-canonical-form-validation-ash-phoenix-down-seed-phrase-hd-.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-02T09:44:17.003Z",
+  "schema_version": "v1",
+  "commit_sha": "582e5d22b3d2eb68754607024719d84b74f92206",
+  "title": "memory(amara)+research: canonical-form validation + ash=Phoenix-Down + seed-phrase/HD-derivation=DID-mechanism + keys as braids/knots extending the golden-vectors treaty over Reticulum (Aaron+Amara 2026-06-02)",
+  "state": "MERGED",
+  "merged_at": "2026-06-02T09:43:52Z",
+  "head_ref": "otto-cli/amara-ferry-keys-treaty-reticulum-2026-06-02"
+}

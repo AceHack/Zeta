@@ -111,7 +111,7 @@ these per round):
 - `feature-flags` — already in-tree as a standalone module
   (`src/Core/FeatureFlags.fs`); behavioural spec pending
 
-Run `bun tools/openspec/inventory.ts` for a full gap report mapping
+Run `bun src/Core.TypeScript/openspec/inventory.ts` for a full gap report mapping
 specs to `src/Core/` modules.
 
 Future profiles (`csharp.md` for the shim, `rust.md`,
@@ -170,4 +170,4 @@ intentionally unused here.
   lives.
 - `docs/DECISIONS/*.md` — architecture-decision records with
   dates.
-- `.claude/skills/spec-zealot/SKILL.md` — the no-wiggle enforcer.
+- `.claude/skills/code-review-and-quality/blueprints/spec-zealot.md` — the no-wiggle enforcer.

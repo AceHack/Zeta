@@ -1,0 +1,12 @@
+{
+  "pr_number": 10121,
+  "archive_path": "docs/history/pr-reviews/PR-10121-book-editions-vietnamese-companion-5-the-pull-full-length-vi.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-07T18:21:02.767Z",
+  "schema_version": "v1",
+  "commit_sha": "bee738a7775312bd8fc7359c575555d3c4658ae7",
+  "title": "book(editions): Vietnamese companion 5 — the Pull, full length (vi)",
+  "state": "MERGED",
+  "merged_at": "2026-08-07T18:17:24Z",
+  "head_ref": "book-vi-companion-pull"
+}

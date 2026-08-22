@@ -1,0 +1,12 @@
+{
+  "pr_number": 2125,
+  "archive_path": "docs/history/pr-reviews/PR-2125-fix-backlog-normalize-b-0126-1-closed-status.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-08T20:04:26.694Z",
+  "schema_version": "v1",
+  "commit_sha": "d8b4951e354f3d415b918e3b5196eebae4ac425f",
+  "title": "fix(backlog): normalize B-0126.1 closed status",
+  "state": "MERGED",
+  "merged_at": "2026-05-08T20:04:02Z",
+  "head_ref": "codex/b0126-backlog-index-drift"
+}

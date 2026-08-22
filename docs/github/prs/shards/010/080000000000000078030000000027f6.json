@@ -1,0 +1,12 @@
+{
+  "pr_number": 10230,
+  "archive_path": "docs/history/pr-reviews/PR-10230-fix-e8-pseudoscalar-closure-is-the-criterion-correct-two-wrong-explanations-atta.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-09T21:27:01.854Z",
+  "schema_version": "v1",
+  "commit_sha": "e438a554d648e073e4b74bb9b2e1034c915551f1",
+  "title": "fix(e8): pseudoscalar CLOSURE is the criterion — correct two wrong explanations + attach the labelling caveat",
+  "state": "MERGED",
+  "merged_at": "2026-08-09T21:26:28Z",
+  "head_ref": "shadow/e8-pseudoscalar-closure-correction"
+}

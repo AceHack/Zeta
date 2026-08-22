@@ -1,0 +1,47 @@
+{
+  "id": "society-mst8sspl",
+  "at": "2026-08-14T17:50:15.129Z",
+  "by": "society",
+  "kind": "evolution",
+  "generation": 1,
+  "agents": [
+    {
+      "id": "society",
+      "fitness": 0.5302498308757151,
+      "generation": 0
+    },
+    {
+      "id": "alexa",
+      "fitness": 0.15588467268264894,
+      "generation": 0
+    },
+    {
+      "id": "gen1-0",
+      "fitness": 0,
+      "generation": 2
+    },
+    {
+      "id": "gen1-1",
+      "fitness": 0,
+      "generation": 2
+    }
+  ],
+  "meanFitness": 0.171533625889591,
+  "fitnessSpread": 0.5302498308757151,
+  "geneticDiversity": 40.604264353187155,
+  "priorHints": [],
+  "heatReadout": {
+    "band": "indeterminate",
+    "pointBand": "cold",
+    "lowBand": "cold",
+    "highBand": "warm",
+    "transportMu": 0,
+    "transportSigma": 1,
+    "transportPpm": 0,
+    "transportPpmSigma": 250000,
+    "robustnessWeight": 1,
+    "obsCount": 0,
+    "evidence": "prior",
+    "trend": "indeterminate"
+  }
+}

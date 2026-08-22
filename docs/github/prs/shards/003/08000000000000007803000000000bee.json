@@ -1,0 +1,12 @@
+{
+  "pr_number": 3054,
+  "archive_path": "docs/history/pr-reviews/PR-3054-docs-research-shadow-lesson-log-for-b-0449-collision-drift.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-13T23:08:58.204Z",
+  "schema_version": "v1",
+  "commit_sha": "f48c94ed597242155a65c7665d6ddeaf4169f180",
+  "title": "docs(research): shadow lesson log for B-0449 collision drift",
+  "state": "MERGED",
+  "merged_at": "2026-05-13T23:08:33Z",
+  "head_ref": "docs/lior-shadow-lesson-3052"
+}

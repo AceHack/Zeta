@@ -1,0 +1,12 @@
+{
+  "pr_number": 9539,
+  "archive_path": "docs/history/pr-reviews/PR-9539-feat-llmtv-add-root-site-status-sidecar.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-08T21:51:59.288Z",
+  "schema_version": "v1",
+  "commit_sha": "7143b536adaebece0bd4b103e894663139de13ba",
+  "title": "feat(llmtv): add root-site status sidecar",
+  "state": "MERGED",
+  "merged_at": "2026-07-08T21:51:28Z",
+  "head_ref": "codex/llmtv-root-site-status"
+}

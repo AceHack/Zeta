@@ -1,0 +1,12 @@
+{
+  "pr_number": 8737,
+  "archive_path": "docs/history/pr-reviews/PR-8737-feat-enforce-max-nesting-depth-check-in-cbor-arrow-decoders-and-encoders-081ktdz.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-20T08:24:01.301Z",
+  "schema_version": "v1",
+  "commit_sha": "3c3eaff790e01d91884ca3f9f32413780c8f7052",
+  "title": "feat: enforce max nesting depth check in CBOR/Arrow decoders and encoders (081KTDZD7DZ)",
+  "state": "MERGED",
+  "merged_at": "2026-06-20T08:23:31Z",
+  "head_ref": "gemini/contenthash256-integration"
+}

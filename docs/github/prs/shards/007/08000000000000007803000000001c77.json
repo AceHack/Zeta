@@ -1,0 +1,12 @@
+{
+  "pr_number": 7287,
+  "archive_path": "docs/history/pr-reviews/PR-7287-refactor-setup-install-sh-ps1-know-nothing-about-personas-keyring-self-bootstrap.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-09T14:17:15.030Z",
+  "schema_version": "v1",
+  "commit_sha": "81d73c149c91fe9b71796cfd4035a869992e5b47",
+  "title": "refactor(setup): install.sh/ps1 know nothing about personas; keyring self-bootstraps; declarative ace-package is the target",
+  "state": "MERGED",
+  "merged_at": "2026-06-09T14:16:49Z",
+  "head_ref": "otto/decouple-install-from-personas-keyring-self-bootstraps-ace-package-target"
+}

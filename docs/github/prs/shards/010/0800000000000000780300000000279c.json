@@ -1,0 +1,12 @@
+{
+  "pr_number": 10140,
+  "archive_path": "docs/history/pr-reviews/PR-10140-feat-browser-relay-checkpoint-evidence-through-service-workers.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-07T20:30:00.645Z",
+  "schema_version": "v1",
+  "commit_sha": "38324dda6b2e16bb75ee0c0ef785c6810a53a52c",
+  "title": "feat(browser): relay checkpoint evidence through service workers",
+  "state": "MERGED",
+  "merged_at": "2026-08-07T20:29:25Z",
+  "head_ref": "claim/task-browser-service-worker-checkpoint-relay"
+}

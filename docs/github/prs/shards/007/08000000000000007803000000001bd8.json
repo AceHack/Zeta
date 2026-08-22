@@ -1,0 +1,12 @@
+{
+  "pr_number": 7128,
+  "archive_path": "docs/history/pr-reviews/PR-7128-feat-core-lensrouter-multi-lens-selection-moe-over-lenses-bounded-working-set.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-08T23:21:19.969Z",
+  "schema_version": "v1",
+  "commit_sha": "dc0dfd56a7d93ef20f3e0dcd5d6256f364aa7947",
+  "title": "feat(core): LensRouter — multi-lens selection (MoE over lenses, bounded working set)",
+  "state": "MERGED",
+  "merged_at": "2026-06-08T23:21:00Z",
+  "head_ref": "otto/lensrouter-multi-lens-moe-selection-bounded-working-set"
+}

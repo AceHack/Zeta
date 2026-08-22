@@ -1,0 +1,12 @@
+{
+  "pr_number": 10122,
+  "archive_path": "docs/history/pr-reviews/PR-10122-book-editions-vietnamese-companion-6-the-stand-retire-sampler-vietnamese-complet.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-07T18:22:40.137Z",
+  "schema_version": "v1",
+  "commit_sha": "c45f3af64816a68400a282ceb1e5de9a79f1ba3e",
+  "title": "book(editions): Vietnamese companion 6 — the Stand + retire sampler (Vietnamese complete)",
+  "state": "MERGED",
+  "merged_at": "2026-08-07T18:20:27Z",
+  "head_ref": "book-vi-companion-stand"
+}

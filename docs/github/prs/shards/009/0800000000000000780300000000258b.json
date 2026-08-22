@@ -1,0 +1,12 @@
+{
+  "pr_number": 9611,
+  "archive_path": "docs/history/pr-reviews/PR-9611-docs-research-deterministic-agreed-time-makes-the-demon-approximable-ferry-tick-.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-09T04:05:27.078Z",
+  "schema_version": "v1",
+  "commit_sha": "bc7071685249c315ccd80518b16386a3e5127276",
+  "title": "docs(research): deterministic agreed time makes the demon approximable — ferry + tick-indexed MTTH",
+  "state": "MERGED",
+  "merged_at": "2026-07-09T04:04:55Z",
+  "head_ref": "otto/ferry-demon-deterministic-time"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 9307,
+  "archive_path": "docs/history/pr-reviews/PR-9307-feat-chip9-cart-capture-format-v1-a-capture-compiles-to-a-self-verifying-cart-th.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-03T14:01:54.567Z",
+  "schema_version": "v1",
+  "commit_sha": "371ad924af5fbd050c414f098e00073e6bc15eb6",
+  "title": "feat(chip9-cart): capture format v1 — a capture compiles to a self-verifying cart that redraws itself (081KWJE90EZ layer-4 slice)",
+  "state": "MERGED",
+  "merged_at": "2026-07-03T14:01:32Z",
+  "head_ref": "otto/chip9-cart-capture-v1"
+}

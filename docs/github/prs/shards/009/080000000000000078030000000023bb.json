@@ -1,0 +1,15 @@
+{
+  "pr_number": 9147,
+  "archive_path": "docs/history/pr-reviews/PR-9147-feat-anti-sybil-s-spectrum-soft-rainbow-forgery-as-refraction-dual-use-neutral-s.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7ReuqN",
+    "thread:PRRT_kwDOSF9kNM6N9RFu"
+  ],
+  "fetched_at": "2026-08-17T10:14:39.347Z",
+  "schema_version": "v1",
+  "commit_sha": "18a29baee15e1579593d7399c09216df69f1c35e",
+  "title": "feat(anti-sybil): S-spectrum → soft rainbow — forgery-as-refraction, dual-use neutral (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-02T16:03:24Z",
+  "head_ref": "feat/coordination-spectrum-soft-rainbow"
+}

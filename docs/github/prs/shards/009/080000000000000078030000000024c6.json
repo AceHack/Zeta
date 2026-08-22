@@ -1,0 +1,12 @@
+{
+  "pr_number": 9414,
+  "archive_path": "docs/history/pr-reviews/PR-9414-docs-ferry-fold-in-aaron-s-resolution-network-delay-is-the-un-fakeable-honesty-p.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-04T04:58:54.699Z",
+  "schema_version": "v1",
+  "commit_sha": "5d3631b3cc1d2f041efe88588253682293c435d4",
+  "title": "docs(ferry): fold in Aaron's resolution — network delay is the un-fakeable honesty (proof-of-distance) (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-04T04:58:32Z",
+  "head_ref": "otto/ferry-condorcet-delay-resolution-followup"
+}

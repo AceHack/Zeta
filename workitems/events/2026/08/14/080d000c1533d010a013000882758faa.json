@@ -1,0 +1,14 @@
+{
+  "id": "080d000c1533d010a013000882758faa",
+  "at": "2026-08-14T18:22:14.650Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M00R59KS087G0R001W3837V",
+    "type": "task",
+    "title": "hardware inventory lives on three surfaces that do not know about each other — reconcile into the ZetaId register",
+    "slug": "hardware-inventory-lives-on-three-surfaces-that-do-not-know",
+    "priority": "P2",
+    "filename": "081M00R59KS087G0R001W3837V-hardware-inventory-lives-on-three-surfaces-that-do-not-know.md"
+  }
+}

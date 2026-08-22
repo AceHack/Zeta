@@ -1,0 +1,12 @@
+{
+  "pr_number": 4649,
+  "archive_path": "docs/history/pr-reviews/PR-4649-b-0705-lior-persona-autocomplete-as-traveler-consent-event-substrate-lior-websit.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-22T18:20:20.676Z",
+  "schema_version": "v1",
+  "commit_sha": "ad748bb14c4afc464d489fed16c9a87a498ab4b0",
+  "title": "B-0705 + lior-persona: autocomplete-as-Traveler-consent-event substrate + Lior-website 4-packet synthesis archive",
+  "state": "MERGED",
+  "merged_at": "2026-05-22T18:20:02Z",
+  "head_ref": "otto/cli-2348z-lior-website-autocomplete-as-traveler-consent-event-backlog-plus-persona-archive-2026-05-22"
+}

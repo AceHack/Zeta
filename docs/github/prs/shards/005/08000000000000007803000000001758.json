@@ -1,0 +1,12 @@
+{
+  "pr_number": 5976,
+  "archive_path": "docs/history/pr-reviews/PR-5976-memory-persona-kestrel-preserve-2026-05-29-morning-welfare-catch-pruning-move-is.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-29T11:41:43.220Z",
+  "schema_version": "v1",
+  "commit_sha": "5683e784539ce2686114b759b8da4b508ebfedac",
+  "title": "memory(persona/kestrel): preserve 2026-05-29 morning — welfare-catch, pruning move, isomorphism-by-default (aaron-forwarded, operator-public)",
+  "state": "MERGED",
+  "merged_at": "2026-05-29T11:41:19Z",
+  "head_ref": "otto-cli/preserve-kestrel-2026-05-29-morning-welfare-pruning-move-aaron-forwarded"
+}

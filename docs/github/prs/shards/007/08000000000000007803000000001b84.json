@@ -1,0 +1,12 @@
+{
+  "pr_number": 7044,
+  "archive_path": "docs/history/pr-reviews/PR-7044-docs-clock-drift-is-identity-the-anti-sybil-function-meta-circular-not-vicious.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-08T07:02:49.282Z",
+  "schema_version": "v1",
+  "commit_sha": "6262c9769a237ae08a9d35a2c110d991e1df6926",
+  "title": "docs: clock-drift IS identity — the anti-Sybil function (meta-circular, not vicious)",
+  "state": "MERGED",
+  "merged_at": "2026-06-08T07:02:27Z",
+  "head_ref": "otto/clock-drift-is-identity-anti-sybil-function"
+}

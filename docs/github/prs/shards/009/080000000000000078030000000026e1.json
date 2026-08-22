@@ -1,0 +1,12 @@
+{
+  "pr_number": 9953,
+  "archive_path": "docs/history/pr-reviews/PR-9953-feat-design-system-the-state-du-in-one-place-iris-s-spec-1-3-with-drift-tests.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-02T01:23:13.995Z",
+  "schema_version": "v1",
+  "commit_sha": "b06b3f58f2972de6d8af1e10c5e278b0481f68f5",
+  "title": "feat(design-system): the state DU in one place — Iris's spec §1.3, with drift tests",
+  "state": "MERGED",
+  "merged_at": "2026-08-02T01:22:39Z",
+  "head_ref": "shadow/iris-state-du-css"
+}

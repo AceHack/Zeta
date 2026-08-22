@@ -1,0 +1,12 @@
+{
+  "pr_number": 5030,
+  "archive_path": "docs/history/pr-reviews/PR-5030-backlog-b-0757-cluster-auto-discovery-mdns-bootstrap-or-join-for-unattended-n-th.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-25T23:27:03.626Z",
+  "schema_version": "v1",
+  "commit_sha": "61fb85865e4e05b7dd4b0019d84b64773c0c6a11",
+  "title": "backlog(B-0757): cluster auto-discovery — mDNS bootstrap-or-join for unattended N-th node growth",
+  "state": "MERGED",
+  "merged_at": "2026-05-25T23:26:45Z",
+  "head_ref": "otto-cli/b0757-cluster-auto-discovery-2026-05-25"
+}

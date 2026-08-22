@@ -1,0 +1,23 @@
+{
+  "pr_number": 6522,
+  "archive_path": "docs/history/pr-reviews/PR-6522-feat-dynamicvalue-rust-canonical-json-decode-oracle-completes-the-4-oracle-json-.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7G-Fzp",
+    "comment:PRRC_kwDOSF9kNM7G-Jkc",
+    "comment:PRRC_kwDOSF9kNM7G-JlE",
+    "comment:PRRC_kwDOSF9kNM7G-Jlm",
+    "comment:PRRC_kwDOSF9kNM7G-LkD",
+    "thread:PRRT_kwDOSF9kNM6GSu5c",
+    "thread:PRRT_kwDOSF9kNM6GSxd0",
+    "thread:PRRT_kwDOSF9kNM6GSxeT",
+    "thread:PRRT_kwDOSF9kNM6GSxet",
+    "thread:PRRT_kwDOSF9kNM6GSyzO"
+  ],
+  "fetched_at": "2026-06-02T02:06:22.529Z",
+  "schema_version": "v1",
+  "commit_sha": "cda12eb3c7aed22cdf7d31db53fdf4fdafdb51bf",
+  "title": "feat(DynamicValue): Rust canonical-JSON DECODE oracle — completes the 4-oracle JSON decode set",
+  "state": "MERGED",
+  "merged_at": "2026-06-02T02:06:02Z",
+  "head_ref": "otto-cli/dynamicvalue-decode-json-rust-2026-06-01"
+}

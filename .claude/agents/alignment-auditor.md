@@ -256,9 +256,9 @@ operationalize the manifesto's eleven constraints at per-commit scope:
 
 - `docs/ALIGNMENT.md` — the clause source of
   truth Sova audits against.
-- `.claude/skills/alignment-auditor/SKILL.md` —
+- `.claude/skills/governance/blueprints/alignment-auditor.md` —
   per-commit procedure.
-- `.claude/skills/alignment-observability/SKILL.md`
+- `.claude/skills/governance/blueprints/alignment-observability.md`
   — measurability-framework procedure.
 - `tools/alignment/` — the concrete lint scripts
   producing per-commit signals.

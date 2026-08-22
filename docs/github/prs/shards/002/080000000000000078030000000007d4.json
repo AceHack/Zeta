@@ -1,0 +1,12 @@
+{
+  "pr_number": 2004,
+  "archive_path": "docs/history/pr-reviews/PR-2004-fix-backlog-decompose-b-0249-autonomous-pickup.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-08T02:37:23.742Z",
+  "schema_version": "v1",
+  "commit_sha": "748dc10bac5c9a39003b0b8bc3b0063ce224762b",
+  "title": "fix(backlog): decompose B-0249 autonomous pickup",
+  "state": "MERGED",
+  "merged_at": "2026-05-08T02:37:04Z",
+  "head_ref": "codex/b0249-decompose-autonomous-pickup"
+}

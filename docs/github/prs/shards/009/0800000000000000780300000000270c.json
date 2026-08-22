@@ -1,0 +1,12 @@
+{
+  "pr_number": 9996,
+  "archive_path": "docs/history/pr-reviews/PR-9996-fix-setup-filter-unsupported-windows-arm-mise-tools.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-02T20:53:11.768Z",
+  "schema_version": "v1",
+  "commit_sha": "617e7adc5ad25aac828e77ae3b52a857a810e164",
+  "title": "fix(setup): filter unsupported Windows ARM mise tools",
+  "state": "MERGED",
+  "merged_at": "2026-08-02T20:52:40Z",
+  "head_ref": "codex/windows-arm-mise-filter"
+}

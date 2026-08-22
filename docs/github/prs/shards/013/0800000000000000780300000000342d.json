@@ -1,0 +1,12 @@
+{
+  "pr_number": 13357,
+  "archive_path": "docs/history/pr-reviews/PR-13357-feat-cluster-derive-app-of-apps-sync-waves-from-declared-dependencies-via-ace.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-21T22:04:16.348Z",
+  "schema_version": "v1",
+  "commit_sha": "2a13aff4836230370bf2d6341954344da34c205d",
+  "title": "feat(cluster): derive App-of-Apps sync waves from declared dependencies via ace",
+  "state": "MERGED",
+  "merged_at": "2026-08-21T22:03:37Z",
+  "head_ref": "feat/derive-sync-waves-from-ace-dependencies"
+}

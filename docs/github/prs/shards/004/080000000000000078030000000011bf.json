@@ -1,0 +1,12 @@
+{
+  "pr_number": 4543,
+  "archive_path": "docs/history/pr-reviews/PR-4543-shard-1421z-cold-boot-sentinel-re-arm-saturation-ceiling-sub-case-4-fresh-worktr.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-21T14:45:41.141Z",
+  "schema_version": "v1",
+  "commit_sha": "fb665f23dcc006df26f69afc17a5ca1fe41867e3",
+  "title": "shard(1421Z): cold-boot sentinel re-arm + saturation-ceiling sub-case 4 fresh-worktree-prune anchor",
+  "state": "MERGED",
+  "merged_at": "2026-05-21T14:45:16Z",
+  "head_ref": "shard/tick-1421z-otto-cli-cold-boot-rest-api-2026-05-21"
+}

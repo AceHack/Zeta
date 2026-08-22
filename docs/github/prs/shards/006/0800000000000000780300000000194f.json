@@ -1,0 +1,12 @@
+{
+  "pr_number": 6479,
+  "archive_path": "docs/history/pr-reviews/PR-6479-docs-research-kestrel-ferry-continuation-itron-lineage-loop-break-decentralizati.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-01T21:44:30.599Z",
+  "schema_version": "v1",
+  "commit_sha": "35b0a608214768688a666de9b764005a07d14d66",
+  "title": "docs(research): Kestrel ferry continuation — Itron lineage + loop-break + decentralization keystone",
+  "state": "MERGED",
+  "merged_at": "2026-06-01T21:44:07Z",
+  "head_ref": "otto-cli/kestrel-ferry-continuation-decentralization-keystone-2026-06-01"
+}

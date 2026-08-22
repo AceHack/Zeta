@@ -23,11 +23,37 @@
  *
  * This maps DIRECTLY onto the entropy tracker:
  *   - Adj ops call tracker.observe() (free, Bennett)
- *   - non-Adj ops call tracker.measure(1) (Landauer, 1 bit per hash collision)
- *   - Ferry ops call tracker.branch() on enqueue, tracker.measure(batchSize) on flush
+ *   - non-Adj ops call tracker.measure(mapMutationErasureBits(...)) (Landauer)
+ *   - Ferry ops call tracker.branch() on enqueue; the drain legs pay nothing (see below)
+ *
+ * ## The bit counts are DERIVED now, not asserted (2026-08-14)
+ *
+ * Every `measure()` below used to take a literal — `measure(1)` per mutation, `measure(batchSize)`
+ * per flush. Nothing computed what an operation actually destroys, so the ledger was only as
+ * honest as its constants. Each charge now comes from `erasure-derivation.ts`, where the number
+ * has a derivation, and each is checked against an exhaustive sweep in `erasure-derivation.test.ts`
+ * that measures the class from the operation itself.
+ *
+ * Two of the four charges were pointed at **reversible** operations:
+ *
+ *   - `FerryQueue.dequeue` returned the item and charged 1 bit.
+ *   - `FerryQueue.flush` returned the whole batch and charged `batchSize` bits.
+ *
+ * Both hand their payload back to the caller, so `(post-state, returned value)` determines the
+ * pre-state: they are bijections, and Bennett 1973 gives a bijection no floor. A meter there is not
+ * an imprecise meter, it is a meter with no signal — it must read zero for every input, forever.
+ * That is the same siting error PR #10611 found on `WSet.negate`, and it is the structural reason a
+ * Landauer check degenerates into a tautology. Both now call `tracker.permutation()`, the tracker's
+ * existing word for "bijective, no entropy change". A queue that returns what it stored destroys
+ * nothing; the erasure belongs to whoever drops the batch, and that is not this structure's charge
+ * to make.
+ *
+ * The map's `measure(1)` survives — but as the *floor* of `log2(|V| + 1)`, named and derived, and
+ * it becomes the exact figure as soon as a caller declares `valueDomainBits`.
  *
  * Composes with:
  *   - src/Core.TypeScript/algebra/entropy-tracker.ts (the metered door)
+ *   - src/Core.TypeScript/algebra/erasure-derivation.ts (where each bit count is derived)
  *   - src/Core.TypeScript/algebra/interfaces.ts (IGroup, IJoinSemilattice)
  *   - src/Core.Lean4/Lean4/AdjCtlOrthogonality.lean (the proof: Adj ⊥ Ctl)
  *   - src/Core.Lean4/Lean4/LandauerFloor.lean (the cost contract)
@@ -35,6 +61,7 @@
  */
 
 import type { EntropyTracker } from "./entropy-tracker";
+import { mapMutationErasureBits } from "./erasure-derivation";
 
 // ═══ Physics Trait Classification ══════════════════════════════════════════════
 
@@ -93,7 +120,9 @@ export function createAdjArray<T>(tracker: EntropyTracker, initial: T[] = []): A
       tracker.observe(); // read the old value (Adj)
       const old = data[index];
       data[index] = value;
-      // No measure() — the operation is invertible (set(i, old) undoes it).
+      // No measure(), and now for a derived reason rather than a stated one: the old value is
+      // RETURNED, so (post-state, returned value) determines the pre-state — injective, so
+      // PAYLOAD_RETURNED_ERASURE_BITS = 0. The sweep in erasure-derivation.test.ts measures it.
       return old;
     },
 
@@ -138,12 +167,36 @@ export interface NonAdjMap<K, V> extends MeteredCollection {
   entries(): ReadonlyMap<K, V>;
 }
 
+/** How a `NonAdjMap` declares what its values are, so the erasure figure can be exact. */
+export interface NonAdjMapOptions {
+  /**
+   * `log2` of the number of distinct values this map can hold, if the caller knows it.
+   *
+   * Supplying it turns the mutation charge from a floor into the derived figure
+   * `log2(2 ** valueDomainBits + 1)`. Omitting it is allowed and is not a silent guess: the charge
+   * falls back to `MAP_MUTATION_ERASURE_FLOOR_BITS`, a named constant whose doc carries the
+   * derivation showing it is a lower bound rather than a measurement.
+   */
+  readonly valueDomainBits?: number;
+}
+
 /**
- * Create an entropy-metered non-Adj hash map. Reads call `tracker.observe()`,
- * mutations call `tracker.measure(1)`.
+ * Create an entropy-metered non-Adj hash map. Reads call `tracker.observe()`; mutations call
+ * `tracker.measure(mapMutationErasureBits(opts.valueDomainBits))`.
+ *
+ * The mutation charge is derived, not asserted: for a fixed key, `put` and `delete` both send every
+ * pre-state agreeing off that key to one post-state, so the fibre has `|V| + 1` members and
+ * `bitsErased = log2(|V| + 1)`. With no declared value domain that is at least 1 bit, which is
+ * exactly the literal that used to be here — so the old `measure(1)` was the floor of a quantity
+ * nobody had computed, and it is exact only for a single-valued domain.
  */
-export function createNonAdjMap<K, V>(tracker: EntropyTracker): NonAdjMap<K, V> {
+export function createNonAdjMap<K, V>(
+  tracker: EntropyTracker,
+  opts: NonAdjMapOptions = {},
+): NonAdjMap<K, V> {
   const data = new Map<K, V>();
+  // Computed once: the figure is a property of the value domain, not of any particular mutation.
+  const mutationBits = mapMutationErasureBits(opts.valueDomainBits);
 
   return {
     trait: "non-adj",
@@ -163,16 +216,17 @@ export function createNonAdjMap<K, V>(tracker: EntropyTracker): NonAdjMap<K, V> 
     },
 
     put(key: K, value: V): void {
-      // non-Adj: the hash function erases information (many keys → one slot).
-      // Even if the key already exists, the OLD value is lost (overwritten
-      // without return). Landauer: 1 bit of heat per mutation.
-      tracker.measure(1);
+      // non-Adj: the old value is lost (overwritten, never returned), and the post-state cannot
+      // distinguish "this key was absent" from "this key held v" for any v. Fibre = |V| + 1, so
+      // the charge is log2(|V| + 1) — derived, not asserted.
+      tracker.measure(mutationBits);
       data.set(key, value);
     },
 
     delete(key: K): boolean {
-      // non-Adj: deletion erases the entry irreversibly. Landauer cost.
-      tracker.measure(1);
+      // non-Adj: same fibre as `put`. After the delete, the post-state is identical whether the
+      // key was absent or held any one of the |V| values, so log2(|V| + 1) bits are gone.
+      tracker.measure(mutationBits);
       return data.delete(key);
     },
 
@@ -212,17 +266,27 @@ export interface FerryQueue<T> extends MeteredCollection {
   enqueue(item: T): void;
   /** Peek — observe (Adj, zero heat). */
   peek(): T | undefined;
-  /** Dequeue one — mini-commit (measure 1 bit; the item leaves the possibility space). */
+  /** Dequeue one — REVERSIBLE. The item is returned, so nothing is erased and nothing is paid. */
   dequeue(): T | undefined;
-  /** Flush all — the ferry commit. Pay Landauer for the ENTIRE batch at once. */
+  /** Flush all — REVERSIBLE. The batch is returned, so nothing is erased and nothing is paid. */
   flush(): readonly T[];
   /** Snapshot without consuming — observe (Adj, zero heat). */
   snapshot(): readonly T[];
 }
 
 /**
- * Create an entropy-metered ferry queue. Enqueue calls `tracker.branch()`,
- * dequeue calls `tracker.measure(1)`, flush calls `tracker.measure(pending)`.
+ * Create an entropy-metered ferry queue. Enqueue calls `tracker.branch()`; `dequeue` and `flush`
+ * call `tracker.permutation()` and pay **nothing**.
+ *
+ * They used to call `tracker.measure(1)` and `tracker.measure(pending)`. Both were meters on
+ * bijections: each returns the items it removes, so `(post-state, returned value)` determines the
+ * pre-state, and Bennett 1973 gives a bijection no floor. The charge was a counting convention
+ * wearing a thermodynamic name. See the module header.
+ *
+ * `enqueue` still calls `branch()` for a flat +1 per item. That is the ADMISSION side of the
+ * ledger, not a heat charge, and its `+1` remains an asserted unit rather than a derived one — the
+ * queue does not know how many bits an item carries. It is named here rather than quietly fixed,
+ * because deriving it needs a declared item domain the shipped callers do not supply.
  */
 export function createFerryQueue<T>(tracker: EntropyTracker): FerryQueue<T> {
   const data: T[] = [];
@@ -247,17 +311,24 @@ export function createFerryQueue<T>(tracker: EntropyTracker): FerryQueue<T> {
 
     dequeue(): T | undefined {
       if (data.length === 0) return undefined;
-      // Mini-commit: 1 item leaves the possibility space. Pay 1 bit Landauer.
-      tracker.measure(1);
+      // REVERSIBLE, derived: the item is handed to the caller, so (tail, head) determines the
+      // queue. `Q -> (head Q, tail Q)` is a bijection on non-empty queues; its inverse is
+      // push-front. PAYLOAD_RETURNED_ERASURE_BITS = 0, so this is a permutation, not a
+      // measurement. (Was `tracker.measure(1)` — a meter on a bijection.)
+      tracker.permutation();
       return data.shift();
     },
 
     flush(): readonly T[] {
       if (data.length === 0) return [];
-      // The ferry commit: collapse ALL accumulated branches in one measurement.
-      // Pay Landauer for the entire batch. This IS accountFerryCommit(batchBits=N, ...).
-      const batchSize = data.length;
-      tracker.measure(batchSize);
+      // REVERSIBLE, derived: the whole batch is handed to the caller, so `Q -> ([], Q)` is a
+      // bijection. PAYLOAD_RETURNED_ERASURE_BITS = 0. (Was `tracker.measure(batchSize)` — the
+      // largest of the asserted charges, on the operation least able to justify one.)
+      //
+      // Batching is free (Bennett). The Landauer cost of a ferry belongs to whatever DROPS the
+      // batch, and this queue never drops anything — a consumer that destroys the batch should
+      // meter that destruction where it happens, the way `key-erasure-meter.ts` does.
+      tracker.permutation();
       const batch = [...data];
       data.length = 0;
       return batch;
@@ -290,8 +361,19 @@ export interface TraitCostSummary {
   readonly reversible: boolean;               // whether operations have inverses
 }
 
+/**
+ * Declared costs per trait.
+ *
+ * `ferry` reads `zero` / `reversible: true` as of 2026-08-14, and the change is the finding rather
+ * than a relaxation: every operation `createFerryQueue` implements — enqueue, dequeue, flush — is a
+ * bijection once the returned value is counted as part of the output, so the queue has no leg that
+ * can pay a Landauer floor. It was declared `landauer` / irreversible while metering two
+ * bijections. Batching is still what distinguishes the trait (`batchable: true`); what it does not
+ * do is destroy anything. A ferry consumer that DROPS its batch is the erasing operation, and it
+ * lives at the consumer, not here.
+ */
 export const TRAIT_COSTS: Record<PhysicsTrait, TraitCostSummary> = {
   adj: { trait: "adj", readCost: "zero", writeCost: "zero", batchable: false, reversible: true },
   "non-adj": { trait: "non-adj", readCost: "zero", writeCost: "landauer", batchable: false, reversible: false },
-  ferry: { trait: "ferry", readCost: "zero", writeCost: "landauer", batchable: true, reversible: false },
+  ferry: { trait: "ferry", readCost: "zero", writeCost: "zero", batchable: true, reversible: true },
 };

@@ -1,0 +1,23 @@
+{
+  "pr_number": 5310,
+  "archive_path": "docs/history/pr-reviews/PR-5310-feat-b-0826-b-0827-b-0828-kestrel-ferry-runme-bcl-extension-runme-md-jit-triage-.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7FGKlr",
+    "comment:PRRC_kwDOSF9kNM7FGKm9",
+    "comment:PRRC_kwDOSF9kNM7FGKmM",
+    "comment:PRRC_kwDOSF9kNM7FGKmk",
+    "comment:PRRC_kwDOSF9kNM7FGKnZ",
+    "thread:PRRT_kwDOSF9kNM6E67x9",
+    "thread:PRRT_kwDOSF9kNM6E67xP",
+    "thread:PRRT_kwDOSF9kNM6E67xt",
+    "thread:PRRT_kwDOSF9kNM6E67yO",
+    "thread:PRRT_kwDOSF9kNM6E67yi"
+  ],
+  "fetched_at": "2026-05-26T20:58:09.340Z",
+  "schema_version": "v1",
+  "commit_sha": "3f99cfa6c42334c58df7eb79f43a112ea24b1080",
+  "title": "feat(B-0826/B-0827/B-0828): Kestrel ferry — Runme BCL extension + runme.md+JIT triage pattern + multi-AI shared-checkout convention + 5th attractor-as-encryption empirical anchor",
+  "state": "MERGED",
+  "merged_at": "2026-05-26T20:57:47Z",
+  "head_ref": "otto-cli/B-0826-0827-kestrel-runme-bcl-jit-triage-decision-archaeology-aaron-2026-05-26"
+}

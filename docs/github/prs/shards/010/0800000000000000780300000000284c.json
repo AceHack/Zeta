@@ -1,0 +1,12 @@
+{
+  "pr_number": 10316,
+  "archive_path": "docs/history/pr-reviews/PR-10316-feat-browser-retain-database-execution-receipts.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-12T02:10:21.012Z",
+  "schema_version": "v1",
+  "commit_sha": "2be4bd2c0654a1c8c55b60fce921ffbc8d9b0042",
+  "title": "feat(browser): retain database execution receipts",
+  "state": "MERGED",
+  "merged_at": "2026-08-12T02:09:48Z",
+  "head_ref": "codex/browser-database-execution-receipts"
+}

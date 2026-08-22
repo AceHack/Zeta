@@ -1,0 +1,17 @@
+{
+  "pr_number": 5772,
+  "archive_path": "docs/history/pr-reviews/PR-5772-feat-b-0914-6-proximity-agent-substrate-engineering-substrate-de-duplication-can.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7FvAI4",
+    "comment:PRRC_kwDOSF9kNM7FvAIG",
+    "thread:PRRT_kwDOSF9kNM6FYZgp",
+    "thread:PRRT_kwDOSF9kNM6FYZhP"
+  ],
+  "fetched_at": "2026-05-28T12:16:45.875Z",
+  "schema_version": "v1",
+  "commit_sha": "dc66cef455a4d3a66afcb331222a5347ebfd5c22",
+  "title": "feat(B-0914.6): proximity-agent substrate-engineering substrate de-duplication (canonical-form + Jaccard clustering); 19 tests pass",
+  "state": "MERGED",
+  "merged_at": "2026-05-28T12:16:24Z",
+  "head_ref": "otto-cli/b-0914-6-proximity-agent-substrate-engineering-substrate-deduplication-canonical-form-normalization-2026-05-28"
+}

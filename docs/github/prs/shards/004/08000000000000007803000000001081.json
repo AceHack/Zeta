@@ -1,0 +1,12 @@
+{
+  "pr_number": 4225,
+  "archive_path": "docs/history/pr-reviews/PR-4225-shard-2204z-brief-ack-2.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-18T22:08:44.214Z",
+  "schema_version": "v1",
+  "commit_sha": "bc47a0f897e36602e14a49d4316fa41200c066d4",
+  "title": "shard(2204Z): brief-ack #2",
+  "state": "MERGED",
+  "merged_at": "2026-05-18T22:08:26Z",
+  "head_ref": "shard/tick-2204z-brief-ack-2-named-dep-minimal-2026-05-18"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 6670,
+  "archive_path": "docs/history/pr-reviews/PR-6670-feat-ace-canonical-json-f-oracle-third-language-in-the-byte-lock-slice-8-8-1.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-03T12:20:23.851Z",
+  "schema_version": "v1",
+  "commit_sha": "1fec719cd66caa660a92e6125d04203489587beb",
+  "title": "feat(ace): canonical-JSON F# oracle — third language in the byte-lock (slice 8.8.1)",
+  "state": "MERGED",
+  "merged_at": "2026-06-03T12:20:01Z",
+  "head_ref": "otto-windows/ace-slice8.8.1-canonical-json-fsharp-oracle-2026-06-03"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 10068,
+  "archive_path": "docs/history/pr-reviews/PR-10068-book-ch-2-add-the-capture-of-truth-facet-close-without-capturing-at-the-level-of.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-06T23:22:29.134Z",
+  "schema_version": "v1",
+  "commit_sha": "60828df2c97e82f9836db9149fa5d0df4dd1e651",
+  "title": "book(ch-2): add the capture-of-truth facet — close-without-capturing at the level of memory",
+  "state": "MERGED",
+  "merged_at": "2026-08-06T23:14:31Z",
+  "head_ref": "docs/book-ch02-one-question-deepen"
+}

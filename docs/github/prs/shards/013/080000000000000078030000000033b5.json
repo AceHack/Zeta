@@ -1,0 +1,12 @@
+{
+  "pr_number": 13237,
+  "archive_path": "docs/history/pr-reviews/PR-13237-fix-installer-enter-now-cancels-the-pre-wipe-window-and-a-cancel-stops-looking-l.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-21T15:47:41.919Z",
+  "schema_version": "v1",
+  "commit_sha": "aa252e555e8a2df9d39595a83586ace7dbd931a2",
+  "title": "fix(installer): Enter now cancels the pre-wipe window — and a cancel stops looking like a completed install",
+  "state": "MERGED",
+  "merged_at": "2026-08-21T15:42:26Z",
+  "head_ref": "fix/cancel-window-enter-cancels-and-exit-is-distinct"
+}

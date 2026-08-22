@@ -1,0 +1,12 @@
+{
+  "pr_number": 9711,
+  "archive_path": "docs/history/pr-reviews/PR-9711-docs-research-where-does-the-adinkra-clock-come-from-anticommutator-in-the-middl.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-11T16:58:08.126Z",
+  "schema_version": "v1",
+  "commit_sha": "f0f6c01899b2eca8c0a81763349cd2182f5004ee",
+  "title": "docs(research): where does the adinkra clock come from — anticommutator in the middle; homoiconic self-predictor vs just-remains (Tri.N) (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-11T16:57:40Z",
+  "head_ref": "adinkra-clock-self-predictor-fork"
+}

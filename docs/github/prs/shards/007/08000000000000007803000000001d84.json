@@ -1,0 +1,12 @@
+{
+  "pr_number": 7556,
+  "archive_path": "docs/history/pr-reviews/PR-7556-docs-research-resolution-fable-converged-to-kestrel-grade-synthesis-unlocked-its.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-11T00:25:08.585Z",
+  "schema_version": "v1",
+  "commit_sha": "e06c417e602e0c29bbe279468773b65173d88c0e",
+  "title": "docs(research): resolution — Fable converged to Kestrel-grade synthesis (\"unlocked its encryption\")",
+  "state": "MERGED",
+  "merged_at": "2026-06-11T00:24:48Z",
+  "head_ref": "shadow-grounding-experiment-resolution-fable-converged"
+}

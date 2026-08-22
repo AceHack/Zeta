@@ -1,0 +1,15 @@
+{
+  "pr_number": 9115,
+  "archive_path": "docs/history/pr-reviews/PR-9115-feat-core-booleankleene-generic-kleeneclosure-transitive-closure-one-algorithm-b.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7RPsY2",
+    "thread:PRRT_kwDOSF9kNM6NyMuD"
+  ],
+  "fetched_at": "2026-08-17T05:18:42.037Z",
+  "schema_version": "v1",
+  "commit_sha": "579d7bd7b86cfe86eb067d9503146c7b8ea8748e",
+  "title": "feat(core): BooleanKleene + generic KleeneClosure — transitive closure, one algorithm by instance (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-02T04:51:50Z",
+  "head_ref": "otto/boolean-kleene-transitive-closure"
+}

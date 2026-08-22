@@ -1,0 +1,12 @@
+{
+  "pr_number": 4087,
+  "archive_path": "docs/history/pr-reviews/PR-4087-shard-2026-05-17-1327z-autonomous-loop-tick-push-success-pr-4078-already-opened-.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-17T14:06:48.960Z",
+  "schema_version": "v1",
+  "commit_sha": "b73cfea8bbba2e8bbb85c8c8333adca877d0b516",
+  "title": "shard(2026-05-17/1327Z): autonomous-loop tick — push-success + PR #4078 already opened by peer",
+  "state": "MERGED",
+  "merged_at": "2026-05-17T14:06:31Z",
+  "head_ref": "shard/tick-1327z-pr4078-merged-2026-05-17"
+}

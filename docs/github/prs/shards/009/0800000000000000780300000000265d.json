@@ -1,0 +1,12 @@
+{
+  "pr_number": 9821,
+  "archive_path": "docs/history/pr-reviews/PR-9821-docs-trajectory-close-the-icosahedron-e8-work-item-refresh-the-resume.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-01T02:41:20.112Z",
+  "schema_version": "v1",
+  "commit_sha": "2461667ef56d2ca9782f33b06d0d9791c0b396b3",
+  "title": "docs(trajectory): close the icosahedron→E8 work-item + refresh the RESUME",
+  "state": "MERGED",
+  "merged_at": "2026-08-01T02:40:51Z",
+  "head_ref": "shadow/close-icosahedral-workitem-refresh-resume"
+}

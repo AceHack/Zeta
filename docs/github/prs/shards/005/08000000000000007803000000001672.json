@@ -1,0 +1,12 @@
+{
+  "pr_number": 5746,
+  "archive_path": "docs/history/pr-reviews/PR-5746-docs-rule-xbox-controller-universal-action-grammar-for-b-0867-substrate-inclusiv.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-28T10:10:39.948Z",
+  "schema_version": "v1",
+  "commit_sha": "4a60347f25b88c0a8b70a8272fbdf319739ee7d7",
+  "title": "docs(rule): Xbox-controller universal action grammar for B-0867 — substrate-inclusive at SUBSTRATE level not policy level (Aaron Turn 40 + Kestrel Turn 41; 4/5)",
+  "state": "MERGED",
+  "merged_at": "2026-05-28T10:10:20Z",
+  "head_ref": "otto-cli/xbox-controller-universal-action-grammar-b0867-rule-aaron-kestrel-2026-05-28"
+}

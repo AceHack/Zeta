@@ -1,0 +1,12 @@
+{
+  "pr_number": 6938,
+  "archive_path": "docs/history/pr-reviews/PR-6938-fix-k3s-disable-checkreversepath-nixos-rpfilter-black-holes-cilium-pod-host.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-07T22:53:18.229Z",
+  "schema_version": "v1",
+  "commit_sha": "4e683ff3b7ea02da74888991aa72fd30b1ceafa2",
+  "title": "fix(k3s): disable checkReversePath — NixOS rpfilter black-holes Cilium pod->host",
+  "state": "MERGED",
+  "merged_at": "2026-06-07T22:52:59Z",
+  "head_ref": "fix/cilium-rpfilter-checkreversepath"
+}

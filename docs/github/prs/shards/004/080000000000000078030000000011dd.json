@@ -1,0 +1,12 @@
+{
+  "pr_number": 4573,
+  "archive_path": "docs/history/pr-reviews/PR-4573-fix-memory-frontmatter-flatten-metadata-to-top-level-on-otto-persona-surface-mem.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-21T19:07:14.865Z",
+  "schema_version": "v1",
+  "commit_sha": "2338e91acbba97a4e8139fe6b5f01eefbef2fe1d",
+  "title": "fix(memory-frontmatter): flatten metadata.* to top-level on otto-persona-surface memo",
+  "state": "MERGED",
+  "merged_at": "2026-05-21T19:06:57Z",
+  "head_ref": "fix/memory-frontmatter-otto-persona-surface-flatten-2026-05-21"
+}

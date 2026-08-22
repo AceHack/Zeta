@@ -1,0 +1,12 @@
+{
+  "pr_number": 10468,
+  "archive_path": "docs/history/pr-reviews/PR-10468-ci-pr-archive-commit-the-pr-shard-stop-committing-the-derived-manifest.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-14T00:57:07.960Z",
+  "schema_version": "v1",
+  "commit_sha": "4f9bed6de23b0236b98d63c67f09045b84aa6e33",
+  "title": "ci(pr-archive): commit the PR shard, stop committing the derived manifest",
+  "state": "MERGED",
+  "merged_at": "2026-08-14T00:56:35Z",
+  "head_ref": "ci/pr-archive-shard-only-commit"
+}

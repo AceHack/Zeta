@@ -1,0 +1,12 @@
+{
+  "pr_number": 9003,
+  "archive_path": "docs/history/pr-reviews/PR-9003-docs-decision-crypto-is-baked-into-the-db-code-not-layered-on-db-as-pki-deepened.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-21T20:50:24.411Z",
+  "schema_version": "v1",
+  "commit_sha": "049739dc6107e3ca1b6aa230012f2a91d6a7833b",
+  "title": "docs(decision): crypto is baked INTO the DB code, not layered on (db-as-PKI deepened)",
+  "state": "MERGED",
+  "merged_at": "2026-06-21T20:49:58Z",
+  "head_ref": "otto/db-crypto-baked-in"
+}

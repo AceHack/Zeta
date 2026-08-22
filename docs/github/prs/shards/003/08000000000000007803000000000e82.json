@@ -1,0 +1,12 @@
+{
+  "pr_number": 3714,
+  "archive_path": "docs/history/pr-reviews/PR-3714-chore-b-0058-decompose-b-0058-4-alignment-clause-drift-detector.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-18T20:31:29.214Z",
+  "schema_version": "v1",
+  "commit_sha": "1fd0e48a4413ba0b62bc782bfdc1b11a24107b03",
+  "title": "chore(b-0058): decompose B-0058.4 alignment clause drift detector",
+  "state": "MERGED",
+  "merged_at": "2026-05-18T20:31:12Z",
+  "head_ref": "lior/decompose-b0058.4"
+}

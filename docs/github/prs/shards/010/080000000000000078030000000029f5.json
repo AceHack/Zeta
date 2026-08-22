@@ -1,0 +1,12 @@
+{
+  "pr_number": 10741,
+  "archive_path": "docs/history/pr-reviews/PR-10741-feat-claim-lane-the-lane-classifier-derived-not-declared-and-the-rigidity-gate-t.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-17T03:42:16.250Z",
+  "schema_version": "v1",
+  "commit_sha": "9a6b5174602cdf9e2cb3137e38953c40cc78b4a1",
+  "title": "feat(claim-lane): the lane classifier — derived not declared, and the rigidity gate that catches what per-edit predicates miss",
+  "state": "MERGED",
+  "merged_at": "2026-08-17T03:41:40Z",
+  "head_ref": "shadow/semantic-merge-lane-classifier"
+}

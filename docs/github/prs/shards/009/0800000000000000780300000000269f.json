@@ -1,0 +1,12 @@
+{
+  "pr_number": 9887,
+  "archive_path": "docs/history/pr-reviews/PR-9887-feat-heartbeat-7b-model-for-real-codegen-work-hourly-rotating-free.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-01T14:55:45.450Z",
+  "schema_version": "v1",
+  "commit_sha": "0ffcfd058a34d88231a5e8760b3b6c9d06b907d9",
+  "title": "feat(heartbeat): 7B model for real codegen work (hourly, rotating, free)",
+  "state": "MERGED",
+  "merged_at": "2026-08-01T14:55:18Z",
+  "head_ref": "claim/kiro-7b-codegen-work-2026-08-01"
+}

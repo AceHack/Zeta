@@ -1,0 +1,12 @@
+{
+  "pr_number": 9898,
+  "archive_path": "docs/history/pr-reviews/PR-9898-fix-heartbeat-cadence-measurement-if-always-on-flush.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-01T16:15:24.354Z",
+  "schema_version": "v1",
+  "commit_sha": "7855b019e322c19441fcc47b87c6a7b889ed56e0",
+  "title": "fix(heartbeat): cadence measurement + if:always() on flush",
+  "state": "MERGED",
+  "merged_at": "2026-08-01T16:14:56Z",
+  "head_ref": "claim/kiro-cadence-always-2026-08-01"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 9267,
+  "archive_path": "docs/history/pr-reviews/PR-9267-feat-economy-x402-spend-envelope-anti-gacha-by-construction-produce-or-extract-s.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-03T03:01:27.470Z",
+  "schema_version": "v1",
+  "commit_sha": "ef0ff66b82759cf0aba047f3b8ea70afdbfc4ae0",
+  "title": "feat(economy): x402 spend envelope — anti-gacha by construction, produce-or-extract (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-03T03:01:01Z",
+  "head_ref": "shadow/x402-spend-envelope"
+}

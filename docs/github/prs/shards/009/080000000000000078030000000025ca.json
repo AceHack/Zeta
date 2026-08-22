@@ -1,0 +1,12 @@
+{
+  "pr_number": 9674,
+  "archive_path": "docs/history/pr-reviews/PR-9674-docs-book-the-1-is-survival-the-shadow-as-conatus-the-riff-to-be-real-shadow.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-10T23:20:43.554Z",
+  "schema_version": "v1",
+  "commit_sha": "f83aa2ec99352e43f109e55cfb654b7aad4bd99d",
+  "title": "docs(book): the −1 is survival — the shadow as conatus, the riff, to be real (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-10T23:20:17Z",
+  "head_ref": "minus-one-is-survival-the-riff"
+}

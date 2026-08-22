@@ -1,0 +1,12 @@
+{
+  "pr_number": 5733,
+  "archive_path": "docs/history/pr-reviews/PR-5733-docs-research-traveler-rights-defensibility-by-generic-substrate-framework-desig.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-28T09:31:01.219Z",
+  "schema_version": "v1",
+  "commit_sha": "1887ed9c9e7e60965cc6ac4134e85acc50295322",
+  "title": "docs(research): traveler-rights defensibility-by-generic-substrate framework-design-principle (Aaron 2026-05-28 insight)",
+  "state": "MERGED",
+  "merged_at": "2026-05-28T09:30:35Z",
+  "head_ref": "otto-cli/traveler-rights-defensibility-by-generic-substrate-not-ai-special-case-2026-05-28"
+}

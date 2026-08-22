@@ -1,0 +1,12 @@
+{
+  "pr_number": 9757,
+  "archive_path": "docs/history/pr-reviews/PR-9757-docs-append-gossip-protocol-section-to-9756-its-failure-modes-are-the-guards-sha.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-12T02:32:22.969Z",
+  "schema_version": "v1",
+  "commit_sha": "ca376b507c8178cdca295f13a3a4472623597ffb",
+  "title": "docs: append gossip-protocol section to #9756 — its failure modes ARE the guards (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-12T02:31:55Z",
+  "head_ref": "gossip-protocol-append"
+}

@@ -8,9 +8,9 @@
 // intact), and refuses to write if any post-edit line fails to parse.
 //
 // Usage:
-//   bun tools/claude-code-recovery/repair-jsonl-strip-images.ts --scan
-//   bun tools/claude-code-recovery/repair-jsonl-strip-images.ts --session <uuid>
-//   bun tools/claude-code-recovery/repair-jsonl-strip-images.ts --session <uuid> --apply
+//   bun src/Core.TypeScript/claude-code-recovery/repair-jsonl-strip-images.ts --scan
+//   bun src/Core.TypeScript/claude-code-recovery/repair-jsonl-strip-images.ts --session <uuid>
+//   bun src/Core.TypeScript/claude-code-recovery/repair-jsonl-strip-images.ts --session <uuid> --apply
 //
 // Flags:
 //   --scan                   Scan every session in the project dir, report
@@ -126,7 +126,7 @@ function parseArgs(): Args {
 }
 
 function printUsageAndExit(code: number): never {
-  const me = "bun tools/claude-code-recovery/repair-jsonl-strip-images.ts";
+  const me = "bun src/Core.TypeScript/claude-code-recovery/repair-jsonl-strip-images.ts";
   console.error(`Usage:
   ${me} --scan
   ${me} --session <uuid>
@@ -308,7 +308,7 @@ function runScan(args: Args): number {
       );
     }
     console.log(
-      `    repair: bun tools/claude-code-recovery/repair-jsonl-strip-images.ts --session ${f.replace(/\.jsonl$/, "")} --apply`,
+      `    repair: bun src/Core.TypeScript/claude-code-recovery/repair-jsonl-strip-images.ts --session ${f.replace(/\.jsonl$/, "")} --apply`,
     );
   }
   if (anyFlagged === 0) {

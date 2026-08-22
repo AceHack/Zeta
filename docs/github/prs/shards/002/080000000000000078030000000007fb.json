@@ -1,0 +1,12 @@
+{
+  "pr_number": 2043,
+  "archive_path": "docs/history/pr-reviews/PR-2043-feat-backlog-add-pr-publication-planner.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-08T05:50:00.089Z",
+  "schema_version": "v1",
+  "commit_sha": "210d63119c80bbfced7d64d355d42c974189ba91",
+  "title": "feat(backlog): add PR publication planner",
+  "state": "MERGED",
+  "merged_at": "2026-05-08T05:49:45Z",
+  "head_ref": "claim/task-b0280-pr-publication-plan"
+}

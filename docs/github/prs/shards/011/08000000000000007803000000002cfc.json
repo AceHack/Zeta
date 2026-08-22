@@ -1,0 +1,12 @@
+{
+  "pr_number": 11516,
+  "archive_path": "docs/history/pr-reviews/PR-11516-fix-observe-block-dedup-syndrome-gate-coverage-in-ci.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-17T14:57:17.720Z",
+  "schema_version": "v1",
+  "commit_sha": "ee4bd82fa56a2ce33a5e019e7ab740feb444bda2",
+  "title": "fix(observe): block dedup + syndrome gate + coverage in CI",
+  "state": "MERGED",
+  "merged_at": "2026-08-17T14:56:38Z",
+  "head_ref": "alexa/final-hardening"
+}

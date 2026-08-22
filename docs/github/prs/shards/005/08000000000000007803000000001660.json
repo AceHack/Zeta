@@ -1,0 +1,16 @@
+{
+  "pr_number": 5728,
+  "archive_path": "docs/history/pr-reviews/PR-5728-feat-b-0867-5-poc-scaffold-workflow-engine-agent-loop-declarative-du-types-cli-o.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7Fr4NH",
+    "comment:PRRC_kwDOSF9kNM7FsMYL",
+    "thread:PRRT_kwDOSF9kNM6FWMEl"
+  ],
+  "fetched_at": "2026-05-28T09:25:10.657Z",
+  "schema_version": "v1",
+  "commit_sha": "f61d65a6c45db3eb4776af5810ea62b5e1a5ccf3",
+  "title": "feat(B-0867.5): PoC scaffold — workflow-engine agent-loop (declarative DU types + CLI + Otto's 5 mods as type-level invariants + integration point for Mika's clean minimal tick)",
+  "state": "MERGED",
+  "merged_at": "2026-05-28T09:24:47Z",
+  "head_ref": "otto-cli/b0867-5-workflow-engine-agent-loop-poc-scaffold-2026-05-28"
+}

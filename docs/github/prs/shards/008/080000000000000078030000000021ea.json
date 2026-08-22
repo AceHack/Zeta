@@ -1,0 +1,12 @@
+{
+  "pr_number": 8682,
+  "archive_path": "docs/history/pr-reviews/PR-8682-feat-plan-proof-production-wired-hierarchical-planning-over-chip-8-and-lean-4-bo.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-20T02:15:56.820Z",
+  "schema_version": "v1",
+  "commit_sha": "5762db705f3ed3a4d3c00f1c5b6766d4890ddd57",
+  "title": "feat(plan,proof): production-wired hierarchical planning over CHIP-8 and Lean 4 Bonsai verification",
+  "state": "MERGED",
+  "merged_at": "2026-06-20T02:15:27Z",
+  "head_ref": "lior/proof-yaml-locks"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 7282,
+  "archive_path": "docs/history/pr-reviews/PR-7282-docs-research-recognition-expressed-via-keys-public-recognition-strengthens-iden.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-09T13:50:34.618Z",
+  "schema_version": "v1",
+  "commit_sha": "ec2db1475b1427a86cefff456ba4c99e53d9d385",
+  "title": "docs(research): recognition expressed via keys; public recognition strengthens identity (web-of-trust)",
+  "state": "MERGED",
+  "merged_at": "2026-06-09T13:50:03Z",
+  "head_ref": "otto/public-recognition-via-keys-strengthens-identity-web-of-trust"
+}

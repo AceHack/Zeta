@@ -1,0 +1,12 @@
+{
+  "pr_number": 3476,
+  "archive_path": "docs/history/pr-reviews/PR-3476-shard-tick-1324z-pr-3473-3474-merged-1-stale-thread-cleared.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-15T13:27:49.314Z",
+  "schema_version": "v1",
+  "commit_sha": "a2d019173a19921b12750d9b6925fae8ac7a6792",
+  "title": "shard(tick): 1324Z — PR #3473 + #3474 merged; 1 stale thread cleared",
+  "state": "MERGED",
+  "merged_at": "2026-05-15T13:27:28Z",
+  "head_ref": "shard/tick-1324z-otto-cli-2026-05-15"
+}

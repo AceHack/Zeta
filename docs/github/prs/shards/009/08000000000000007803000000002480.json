@@ -1,0 +1,12 @@
+{
+  "pr_number": 9344,
+  "archive_path": "docs/history/pr-reviews/PR-9344-feat-mixir-reify-the-mix-algorithm-as-data-3rd-projection-slice-2-shadow.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-03T19:02:35.061Z",
+  "schema_version": "v1",
+  "commit_sha": "dca3fc26686ce7e1238b4e5aaa3cf059959c0fe6",
+  "title": "feat(mixir): reify the mix ALGORITHM as data — 3rd projection slice 2 (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-03T19:02:09Z",
+  "head_ref": "otto/mix-as-data-slice2-algorithm"
+}

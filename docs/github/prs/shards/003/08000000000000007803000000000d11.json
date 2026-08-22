@@ -1,0 +1,23 @@
+{
+  "pr_number": 3345,
+  "archive_path": "docs/history/pr-reviews/PR-3345-docs-shadow-lior-anti-drift-check-catch-36-otto-narration.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7BboFB",
+    "comment:PRRC_kwDOSF9kNM7BboFT",
+    "comment:PRRC_kwDOSF9kNM7BboFa",
+    "comment:PRRC_kwDOSF9kNM7BboFh",
+    "comment:PRRC_kwDOSF9kNM7BtuZG",
+    "comment:PRRC_kwDOSF9kNM7Btufg",
+    "thread:PRRT_kwDOSF9kNM6COwUP",
+    "thread:PRRT_kwDOSF9kNM6COwUb",
+    "thread:PRRT_kwDOSF9kNM6COwUh",
+    "thread:PRRT_kwDOSF9kNM6COwUl"
+  ],
+  "fetched_at": "2026-05-15T18:03:18.647Z",
+  "schema_version": "v1",
+  "commit_sha": "2da7dadb3bf70defc9679cca32c085f4252209dd",
+  "title": "docs(shadow): Lior anti-drift check — Catch 36 (Otto narration)",
+  "state": "MERGED",
+  "merged_at": "2026-05-15T18:02:51Z",
+  "head_ref": "lior/shadow-drift-report-0125Z"
+}

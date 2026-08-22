@@ -1,0 +1,12 @@
+{
+  "pr_number": 10932,
+  "archive_path": "docs/history/pr-reviews/PR-10932-docs-hygiene-the-forge-is-the-producer-squash-merge-recomputes-the-co-author-tra.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-16T15:45:10.555Z",
+  "schema_version": "v1",
+  "commit_sha": "a5e976910d9f8afc0a5cebe2c40d96e5549846e7",
+  "title": "docs(hygiene): the forge IS the producer — squash-merge recomputes the co-author trailer set",
+  "state": "MERGED",
+  "merged_at": "2026-08-16T15:44:34Z",
+  "head_ref": "shadow/agencysignature-forge-mechanism"
+}

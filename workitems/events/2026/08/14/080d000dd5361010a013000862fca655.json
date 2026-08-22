@@ -1,0 +1,14 @@
+{
+  "id": "080d000dd5361010a013000862fca655",
+  "at": "2026-08-14T19:23:24.738Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M00VN9P1087G0R000FYTTVS",
+    "type": "task",
+    "title": "Run the Linux TPM 2.0 probe on an x86 node: frost-hardware-probe.ts checks /dev/tpmrm0, /dev/tpm0, /sys/class/tpm and has never been run there — fTPM commonly ships disabled in BIOS, so the L3 rung's hardware premise is documented but unverified",
+    "slug": "run-the-linux-tpm-2-0-probe-on-an-x86-node-frost-hardware-pr",
+    "priority": "P2",
+    "filename": "081M00VN9P1087G0R000FYTTVS-run-the-linux-tpm-2-0-probe-on-an-x86-node-frost-hardware-pr.md"
+  }
+}

@@ -110,7 +110,7 @@ The framing IS the discipline. Operator demonstrates the PERSONAL INVARIANT oper
 | `.claude/rules/honor-those-that-came-before.md` | This research note's primary discipline: honor prior-art at substrate-anchor scope |
 | `.claude/rules/verify-existing-substrate-before-authoring.md` | This research note's authoring discipline: verify before claiming novelty |
 | `.claude/rules/god-tier-claims-high-signal-high-suspicion-dont-collapse.md` | PERSONAL INVARIANT applied to operator's humility-with-elegance framing |
-| `.claude/skills/algebra-owner/SKILL.md` | Framework already composes with DBSP / Z-sets / Clifford / BP-EP substrate per existing skill |
+| `.claude/skills/streaming-and-execution/blueprints/algebra-owner.md` | Framework already composes with DBSP / Z-sets / Clifford / BP-EP substrate per existing skill |
 | 081KSNY2Z0008QG0R002HB4AGT (interrupt substrate; Kleisli arrows) | Framework's interrupt-substrate-at-Kleisli-scope contribution |
 | 081KS3X9Y0008QG0R00218150M (Aurora multi-oracle BFT) | Framework's multi-oracle BFT contribution |
 

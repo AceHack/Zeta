@@ -1,0 +1,12 @@
+{
+  "pr_number": 8863,
+  "archive_path": "docs/history/pr-reviews/PR-8863-feat-keys-reuse-only-onboard-orchestrator-chains-machine-publish-github-trust-no.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-21T05:12:20.527Z",
+  "schema_version": "v1",
+  "commit_sha": "6228c82fcfb1d602f12d31a5b9a15d087b3476a1",
+  "title": "feat(keys): reuse-only `onboard` orchestrator — chains machine/publish/github-trust, no gate bypass",
+  "state": "MERGED",
+  "merged_at": "2026-06-21T05:11:55Z",
+  "head_ref": "otto/keys-onboard-orchestrator"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 6373,
+  "archive_path": "docs/history/pr-reviews/PR-6373-docs-registry-mixin-state-caveat-make-it-debugger-inspectable-debuggertypeproxy-.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-01T08:23:35.688Z",
+  "schema_version": "v1",
+  "commit_sha": "2659728757e201ebb794bbb0d34d6aff62a4afdf",
+  "title": "docs(registry): mixin-state caveat — make it debugger-inspectable (DebuggerTypeProxy/visualizer), serialization opt-in",
+  "state": "MERGED",
+  "merged_at": "2026-06-01T08:23:14Z",
+  "head_ref": "otto-cli/registry-debugger-note-2026-06-01"
+}

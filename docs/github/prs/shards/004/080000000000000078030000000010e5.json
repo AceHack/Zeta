@@ -1,0 +1,12 @@
+{
+  "pr_number": 4325,
+  "archive_path": "docs/history/pr-reviews/PR-4325-docs-archive-maji-pr-preservation-4296-4297-4298.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-19T09:10:23.747Z",
+  "schema_version": "v1",
+  "commit_sha": "8056b1738bd93a3bc5fc32fc44da8808e461b527",
+  "title": "docs(archive): Maji PR preservation 4296, 4297, 4298",
+  "state": "MERGED",
+  "merged_at": "2026-05-19T09:10:04Z",
+  "head_ref": "lior/preserve-4298-b1779165907"
+}

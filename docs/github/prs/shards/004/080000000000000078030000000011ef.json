@@ -1,0 +1,25 @@
+{
+  "pr_number": 4591,
+  "archive_path": "docs/history/pr-reviews/PR-4591-backlog-b-0704-secret-message-over-reticulum-via-spectre-tile-position-pressure-.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7Dy3as",
+    "comment:PRRC_kwDOSF9kNM7Dy5SA",
+    "comment:PRRC_kwDOSF9kNM7Dy5SV",
+    "comment:PRRC_kwDOSF9kNM7Dy5Sf",
+    "comment:PRRC_kwDOSF9kNM7Dy_ya",
+    "comment:PRRC_kwDOSF9kNM7DzKVR",
+    "thread:PRRT_kwDOSF9kNM6D9Z0w",
+    "thread:PRRT_kwDOSF9kNM6D9bHD",
+    "thread:PRRT_kwDOSF9kNM6D9bHR",
+    "thread:PRRT_kwDOSF9kNM6D9bHa",
+    "thread:PRRT_kwDOSF9kNM6D9f_i",
+    "thread:PRRT_kwDOSF9kNM6D9ngL"
+  ],
+  "fetched_at": "2026-05-21T23:41:41.168Z",
+  "schema_version": "v1",
+  "commit_sha": "12daaa7657b252b0ecfc5840967bcb7340c23ce3",
+  "title": "backlog(B-0704): secret-message-over-Reticulum via spectre-tile position-pressure — no-copy by geometry",
+  "state": "MERGED",
+  "merged_at": "2026-05-21T23:41:20Z",
+  "head_ref": "backlog/b0704-secret-message-spectre-position-reticulum-2026-05-21"
+}

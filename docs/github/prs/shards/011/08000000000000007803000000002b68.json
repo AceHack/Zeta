@@ -1,0 +1,12 @@
+{
+  "pr_number": 11112,
+  "archive_path": "docs/history/pr-reviews/PR-11112-test-installer-align-refusal-with-uuid-trimming.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-16T21:52:07.998Z",
+  "schema_version": "v1",
+  "commit_sha": "bd1b1ef0bce07ddbcae093eabb25fbbde6ecbc66",
+  "title": "test(installer): align refusal with UUID trimming",
+  "state": "MERGED",
+  "merged_at": "2026-08-16T21:51:33Z",
+  "head_ref": "codex/installer-binding-refusal-trim"
+}

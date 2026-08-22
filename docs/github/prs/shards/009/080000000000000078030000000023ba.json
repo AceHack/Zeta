@@ -1,0 +1,17 @@
+{
+  "pr_number": 9146,
+  "archive_path": "docs/history/pr-reviews/PR-9146-research-test-zeta-over-prime-shapes-the-euler-product-over-the-braided-catalog-.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7ReOj6",
+    "comment:PRRC_kwDOSF9kNM7ReOjz",
+    "thread:PRRT_kwDOSF9kNM6N85lO",
+    "thread:PRRT_kwDOSF9kNM6N85lV"
+  ],
+  "fetched_at": "2026-08-17T09:49:03.766Z",
+  "schema_version": "v1",
+  "commit_sha": "c0d3d4c064da8373f6cc4e3178b4997903a5f29d",
+  "title": "research+test: zeta over prime shapes — the Euler product over the braided catalog (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-02T15:42:55Z",
+  "head_ref": "research/zeta-over-prime-shapes"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 5351,
+  "archive_path": "docs/history/pr-reviews/PR-5351-fix-b-0835-bug-3b-password-activation-script-fixes-operationally-ignored-custom-.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-26T23:19:29.667Z",
+  "schema_version": "v1",
+  "commit_sha": "e00d322426b78f32b74a58a5b333b0b303243406",
+  "title": "fix(B-0835 Bug 3b): password activation-script — fixes operationally-ignored custom password (timing/path-mismatch root cause)",
+  "state": "MERGED",
+  "merged_at": "2026-05-26T23:19:09Z",
+  "head_ref": "otto/b-0835-bug-3b-password-activation-script-fix-timing-mismatch-2026-05-26"
+}

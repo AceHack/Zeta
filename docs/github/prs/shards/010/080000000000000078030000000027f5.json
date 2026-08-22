@@ -1,0 +1,12 @@
+{
+  "pr_number": 10229,
+  "archive_path": "docs/history/pr-reviews/PR-10229-fix-make-nothing-vacuous-lean4-builds-attestation-in-reputation-event-guard.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-09T22:47:29.978Z",
+  "schema_version": "v1",
+  "commit_sha": "e73290da25bc369de9958f708de2a47713323ea3",
+  "title": "fix: make nothing vacuous — Lean4 builds + attestation in reputation + event guard",
+  "state": "MERGED",
+  "merged_at": "2026-08-09T22:46:55Z",
+  "head_ref": "claim/verify-non-vacuous"
+}

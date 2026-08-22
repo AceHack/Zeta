@@ -1,0 +1,12 @@
+{
+  "pr_number": 10646,
+  "archive_path": "docs/history/pr-reviews/PR-10646-fix-identity-the-spiffe-door-accepted-4-of-the-7-vectors-its-own-invalid-class-f.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-14T17:54:06.403Z",
+  "schema_version": "v1",
+  "commit_sha": "af14ee40f572e2cd9872e8e238d20e02ad5ef4d2",
+  "title": "fix(identity): the SPIFFE door accepted 4 of the 7 vectors its own invalid-class forbids",
+  "state": "MERGED",
+  "merged_at": "2026-08-14T17:52:28Z",
+  "head_ref": "otto/actor-ref-spiffe-treaty-parity"
+}

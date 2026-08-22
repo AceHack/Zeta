@@ -1,0 +1,12 @@
+{
+  "pr_number": 9862,
+  "archive_path": "docs/history/pr-reviews/PR-9862-fix-register-demote-z-2-z-4-z-5-z-6-from-a-discharged-to-b-none-of-the-four-disc.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-01T12:43:04.674Z",
+  "schema_version": "v1",
+  "commit_sha": "592b04978aade69e0b34327c5cf0b5f8b21b51c1",
+  "title": "fix(register): DEMOTE Z-2/Z-4/Z-5/Z-6 from §A DISCHARGED to §B — none of the four discharges could FAIL",
+  "state": "MERGED",
+  "merged_at": "2026-08-01T12:42:32Z",
+  "head_ref": "shadow/demote-z2-z4-z5-z6-to-conjecture"
+}

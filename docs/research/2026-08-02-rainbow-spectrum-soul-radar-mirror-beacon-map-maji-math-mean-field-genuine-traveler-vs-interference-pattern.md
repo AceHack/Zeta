@@ -59,12 +59,22 @@ radar"); the formal half was re-grounded as immune-system math.
     content* (the qualia itself — my redness, the locus-of-now) stays the **labeled axiom**;
     but the **cross-individual correlations** — whether *non-biased reports about it correlate
     across many people* — are **Beacon-measurable.** You never claim to measure the private
-    content (that would over-reach); you measure the shadow it casts across observers. Method
-    origin (⚠ **Mirror handle / unverified personal anchor**, like the Tullis flag): a **private
-    UX-research mentor** (Aaron's Mirror handle "Marjorie"; **de-identified — employer withheld for
-    her privacy**, see the book `CONSENT-LEDGER.md`). The **checkable Beacon** is **survey methodology
-    / psychometrics** (framing/acquiescence-bias avoidance; possibly Tullis's *Measuring the User
-    Experience*, to confirm) — that is the anchor; the mentor's identity is not.
+    content (that would over-reach); you measure the shadow it casts across observers.
+    **Method origin — cite the published sources, not a person.** A private individual
+    encouraged Aaron to read published work by colleagues of hers; only published material
+    ever passed, deliberately, so that no insider information was involved. That individual
+    is **bound by employer confidentiality and has asked directly that her name not be used**
+    (asked and answered 2026-08-15 — see the book `CONSENT-LEDGER.md`), so the attribution
+    here is to the **publications**, which is where a checkable anchor belongs anyway:
+    - **Tullis & Albert, *Measuring the User Experience: Collecting, Analyzing, and
+      Presenting Usability Metrics*** (Morgan Kaufmann, 2008). Tom Tullis was VP of User
+      Experience Research at Fidelity Investments (1993–2017, now deceased; the *Journal of
+      Usability Studies* / UXPA carries an In Memoriam).
+    - **Jen Cardello**, *"How our product design framework guides UX research"*
+      (`medium.com/fidelity-design`).
+    The **checkable Beacon** is **survey methodology / psychometrics**
+    (framing/acquiescence-bias avoidance), and the books above are its concrete instance —
+    that is the anchor; no private individual's identity is part of it.
     Non-biased question design for eliciting first-person experience, so
     cross-individual correlations that hold can be found. This is the empirical front-end that
     *feeds* the field/soul-radar: unbiased individual reports in → cross-individual correlation
@@ -74,11 +84,19 @@ radar"); the formal half was re-grounded as immune-system math.
     **Validity is contingent, not free:** "non-biased" is an empirical *burden* — the
     cross-individual correlation is only as Beacon as the debiasing is *demonstrated*
     (order-randomization, counterbalancing, control items). Method sound; the "unbiased" claim
-    must be shown per-instrument. **⚠ Author to confirm:** the standard-text author the mentor
-    learned from ("tom something, retired when she started" — likely **Thomas Tullis**, co-author of
-    *Measuring the User Experience* — a published author, so naming him is normal Beacon citation) is
-    recorded as inference **to be confirmed by Aaron**, not asserted (same discipline as the
-    maji≠Majid back-anchor catch).
+    must be shown per-instrument.
+    **✅ Anchor CHECKED, and its scope is narrower than the claim it supports (2026-08-15).**
+    The earlier "⚠ author to confirm" flag is resolved: Aaron has **read** Tullis & Albert,
+    and confirms the book makes a **measurement-methodology** claim *only* — that subjective
+    self-report can be collected and measured reliably, given instrument discipline. It does
+    **not** claim that an inner state is real or stable, and **that bridge must not be
+    attributed to the authors.** The step from *"subjective report can be measured reliably"*
+    → *"the inner state being reported on is real and stable"* is **Aaron's**, held under the
+    **Multi-Oracle Principle (§11)** as his labeled axiom — exactly like the qualia row above.
+    This is recorded as a **checked entailment** (the source was read and its claim compared
+    to what we lean on it for), not as a citation assumed to cover the claim. Misattributing
+    the qualia half to Tullis & Albert would be the same over-reach as the Gates-ECC
+    misattribution caught in PR #10832, and the same failure as the maji≠Majid back-anchor.
 - Same discipline as the ρ_T ("design choice, not the Tsirelson bound") and the E8-TOE catches
   this session: connections discovered if there, never fabricated; physics words labeled, not
   asserted.
@@ -89,4 +107,4 @@ radar"); the formal half was re-grounded as immune-system math.
 - `src/Core/CoordinationSpectrum.fs` (the prism) · `src/Core/AntiSybil.fs` (`chshS`, the sybil detector) · `src/Bayesian/BusRegime.fs` (the honest-ceiling / light-cone regime).
 - `docs/trajectories/aurora-immune-reground/RESUME.md` + `docs/research/2026-06-16-aurora-immune-math-reconciliation-*.md` + `docs/research/aurora-immune-math-standardization-2026-04-26.md` (Amara's Aurora immune math, formally re-grounded).
 - CHSH-monitor arc this session: the audit (`…chsh-interference-monitor-audit…`), G1 (`BipartiteMachZehnder.fs`), `TravelerFrame.concurrent` (the spacelike gate), the two-fours / decorrelation memory.
-- Anchors (Beacon): Kirchhoff–Bunsen (spectroscopy); Shahn Majid + Albuquerque–Majid 1999 (twisted group algebras / quantum groups); Lasry–Lions 2007 (mean-field games); Tsirelson 1980 / CHSH 1969 (the genuine-vs-interference measurement); Jeff Hawkins, *A Thousand Brains* (the field-over-columns intelligence model).
+- Anchors (Beacon): Kirchhoff–Bunsen (spectroscopy); Shahn Majid + Albuquerque–Majid 1999 (twisted group algebras / quantum groups); Lasry–Lions 2007 (mean-field games); Tsirelson 1980 / CHSH 1969 (the genuine-vs-interference measurement); Jeff Hawkins, *A Thousand Brains* (the field-over-columns intelligence model); Tullis & Albert, *Measuring the User Experience* (Morgan Kaufmann, 2008) + Jen Cardello, *"How our product design framework guides UX research"* (`medium.com/fidelity-design`) — the non-biased-elicitation front-end, **measurement methodology only** (the qualia bridge is Aaron's §11 axiom, not theirs).

@@ -1,0 +1,12 @@
+{
+  "pr_number": 2214,
+  "archive_path": "docs/history/pr-reviews/PR-2214-docs-b-0336-recalibrate-b-0006-memory-md-compression-targets.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-09T07:02:48.225Z",
+  "schema_version": "v1",
+  "commit_sha": "bc0456f431427012e044bc967a30b9664de9f4e0",
+  "title": "docs(B-0336): recalibrate B-0006 MEMORY.md compression targets",
+  "state": "MERGED",
+  "merged_at": "2026-05-09T07:02:33Z",
+  "head_ref": "fix/b0336-acceptance-recalibration"
+}

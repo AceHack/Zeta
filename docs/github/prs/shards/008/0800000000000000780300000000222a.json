@@ -1,0 +1,12 @@
+{
+  "pr_number": 8746,
+  "archive_path": "docs/history/pr-reviews/PR-8746-docs-handoff-phase-d-scoping-resolved-green-light-to-math-team.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-20T16:22:17.170Z",
+  "schema_version": "v1",
+  "commit_sha": "3a8b422dd56827e5fbbe72695d165e5251dcc91b",
+  "title": "docs(handoff): Phase D scoping resolved — green light to math team",
+  "state": "MERGED",
+  "merged_at": "2026-06-20T16:21:53Z",
+  "head_ref": "alexa/soraya-greenlight"
+}

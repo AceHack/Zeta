@@ -1,0 +1,12 @@
+{
+  "pr_number": 6552,
+  "archive_path": "docs/history/pr-reviews/PR-6552-docs-vision-15-addendum-controller-as-frame-keeper-consistent-controls-consisten.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-02T11:47:28.364Z",
+  "schema_version": "v1",
+  "commit_sha": "b34ea45a111dcc56a986632ec5c3731e7f875ba4",
+  "title": "docs(vision): §15 addendum — controller-as-frame-keeper (consistent controls → consistent frame)",
+  "state": "MERGED",
+  "merged_at": "2026-06-02T11:47:06Z",
+  "head_ref": "otto-cli/s15-controller-design-consistent-frame-2026-06-02"
+}

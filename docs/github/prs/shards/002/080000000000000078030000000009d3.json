@@ -1,0 +1,16 @@
+{
+  "pr_number": 2515,
+  "archive_path": "docs/history/pr-reviews/PR-2515-research-b-0314-slice-4-external-anchors-bp-12-bp-13-bp-14.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_pRsc",
+    "comment:PRRC_kwDOSF9kNM6_pSB_",
+    "thread:PRRT_kwDOSF9kNM6A6zWB"
+  ],
+  "fetched_at": "2026-05-10T17:54:06.537Z",
+  "schema_version": "v1",
+  "commit_sha": "8b03ae8ba1fdf6931f02b37c1d5a7520aa5ebc66",
+  "title": "research(B-0314): slice-4 external anchors — BP-12, BP-13, BP-14",
+  "state": "MERGED",
+  "merged_at": "2026-05-10T17:53:49Z",
+  "head_ref": "fix/B-0314-bp-nn-anchor-backfill-slice4"
+}

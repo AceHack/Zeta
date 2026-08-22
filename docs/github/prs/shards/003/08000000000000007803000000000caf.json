@@ -1,0 +1,16 @@
+{
+  "pr_number": 3247,
+  "archive_path": "docs/history/pr-reviews/PR-3247-chore-backlog-regenerate-docs-backlog-md-b-0488-closed-b-0329-pickup.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7BX-dO",
+    "comment:PRRC_kwDOSF9kNM7BYCwV",
+    "thread:PRRT_kwDOSF9kNM6CMJnt"
+  ],
+  "fetched_at": "2026-05-14T21:15:44.241Z",
+  "schema_version": "v1",
+  "commit_sha": "d04481b2586605a11bad2f3d8e20227ce2142966",
+  "title": "chore(backlog): regenerate docs/BACKLOG.md — B-0488 closed + B-0329 pickup",
+  "state": "MERGED",
+  "merged_at": "2026-05-14T21:15:22Z",
+  "head_ref": "otto/backlog-regen-b0488-closed-2026-05-14"
+}

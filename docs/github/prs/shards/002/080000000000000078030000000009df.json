@@ -1,0 +1,12 @@
+{
+  "pr_number": 2527,
+  "archive_path": "docs/history/pr-reviews/PR-2527-docs-b-0314-re-decompose-remaining-bp-23-28-into-slice-9-10-riven-smallest-slice.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-10T19:45:16.616Z",
+  "schema_version": "v1",
+  "commit_sha": "df64d2816b55cece7feb13b1d0569c81cd1a1219",
+  "title": "docs(B-0314): re-decompose remaining BP-23..28 into slice-9/10 (Riven smallest slice)",
+  "state": "MERGED",
+  "merged_at": "2026-05-10T19:45:02Z",
+  "head_ref": "claim/b0314-slice9-bp23-24-25-smallest-riven-2026-05-10"
+}

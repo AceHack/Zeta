@@ -1,0 +1,12 @@
+{
+  "pr_number": 8837,
+  "archive_path": "docs/history/pr-reviews/PR-8837-test-formal-three-lane-equivalence-classical-quantum-soft.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-21T03:15:36.926Z",
+  "schema_version": "v1",
+  "commit_sha": "9bd0f781572d13fff8df733f779007418bfc755d",
+  "title": "test(formal): three-lane equivalence — classical ≡ quantum ≡ soft",
+  "state": "MERGED",
+  "merged_at": "2026-06-21T03:15:09Z",
+  "head_ref": "alexa/three-lane-equiv"
+}

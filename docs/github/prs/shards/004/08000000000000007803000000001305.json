@@ -1,0 +1,19 @@
+{
+  "pr_number": 4869,
+  "archive_path": "docs/history/pr-reviews/PR-4869-shard-2026-05-24-2033z-otto-vscode-bg-worker-lior-lane-fleet-41-53-prs-lane-disc.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7Ea5ng",
+    "comment:PRRC_kwDOSF9kNM7EadpK",
+    "comment:PRRC_kwDOSF9kNM7Eauk3",
+    "comment:PRRC_kwDOSF9kNM7EavW1",
+    "thread:PRRT_kwDOSF9kNM6Ea5Wn",
+    "thread:PRRT_kwDOSF9kNM6Earkt"
+  ],
+  "fetched_at": "2026-05-24T22:06:06.081Z",
+  "schema_version": "v1",
+  "commit_sha": "2f598116860db4dfe758ff9b8d3e0cd013016a4c",
+  "title": "shard(2026-05-24/2033Z): otto-vscode bg-worker — Lior-lane fleet 41→53 PRs + lane discipline sustained",
+  "state": "MERGED",
+  "merged_at": "2026-05-24T22:05:49Z",
+  "head_ref": "shard/tick-2033z-otto-vscode-bg-worker-fleet-extension-53-prs-2026-05-24"
+}

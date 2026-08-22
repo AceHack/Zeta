@@ -1,0 +1,12 @@
+{
+  "pr_number": 4233,
+  "archive_path": "docs/history/pr-reviews/PR-4233-shard-2233z-c-personal-invariant-rule-locked-on-main-today-s-arc-summary.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-18T22:39:03.604Z",
+  "schema_version": "v1",
+  "commit_sha": "f4cb7860ff808bb21a837f3be7551ad77be82a46",
+  "title": "shard(2233Z-c): PERSONAL INVARIANT rule locked on main + today's arc summary",
+  "state": "MERGED",
+  "merged_at": "2026-05-18T22:38:44Z",
+  "head_ref": "shard/tick-2233z-c-personal-invariant-rule-locked-on-main-arc-summary-2026-05-18"
+}

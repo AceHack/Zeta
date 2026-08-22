@@ -1,0 +1,12 @@
+{
+  "pr_number": 9246,
+  "archive_path": "docs/history/pr-reviews/PR-9246-feat-core-pcfgem-unsupervised-pcfg-weight-learning-by-inside-outside-em.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-03T01:10:24.421Z",
+  "schema_version": "v1",
+  "commit_sha": "4f83b1e03e3c75a3a804e3172f26d2e4a80cc3e6",
+  "title": "feat(core): PcfgEm — unsupervised PCFG weight learning by inside–outside EM",
+  "state": "MERGED",
+  "merged_at": "2026-07-03T01:09:59Z",
+  "head_ref": "otto/pcfg-em-weight-learning"
+}

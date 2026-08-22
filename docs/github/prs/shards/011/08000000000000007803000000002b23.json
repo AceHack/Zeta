@@ -1,0 +1,12 @@
+{
+  "pr_number": 11043,
+  "archive_path": "docs/history/pr-reviews/PR-11043-research-arrows-avoiding-app-is-what-buys-replay-interrupt-prediction-ferried.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-16T19:40:10.294Z",
+  "schema_version": "v1",
+  "commit_sha": "93339c111377c02607ab09aa3bd19c0ce475138d",
+  "title": "research(arrows): avoiding app is what buys replay — interrupt prediction, ferried",
+  "state": "MERGED",
+  "merged_at": "2026-08-16T19:39:31Z",
+  "head_ref": "shadow/ferry-avoiding-app-buys-replay"
+}

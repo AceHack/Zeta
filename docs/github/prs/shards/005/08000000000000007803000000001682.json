@@ -1,0 +1,12 @@
+{
+  "pr_number": 5762,
+  "archive_path": "docs/history/pr-reviews/PR-5762-docs-ip-questionable-preserve-youtube-ai-co-scientist-robin-video-verbatim-2026-.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-28T11:06:17.978Z",
+  "schema_version": "v1",
+  "commit_sha": "d822ab065d1fabed4a823b6184dc931962ab4bf7",
+  "title": "docs(ip-questionable): preserve YouTube AI co-scientist + Robin video VERBATIM 2026-05-28 — Aaron 'exactly what we are doing but times 10 missing a few step' framing + 7 substrate-engineering candidate gaps (Aaron-authorized)",
+  "state": "MERGED",
+  "merged_at": "2026-05-28T11:05:58Z",
+  "head_ref": "otto-cli/youtube-co-scientist-robin-multi-agent-scientific-discovery-aaron-forwarded-acceleration-times-10-missing-few-steps-2026-05-28"
+}

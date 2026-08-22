@@ -1,0 +1,12 @@
+{
+  "pr_number": 7705,
+  "archive_path": "docs/history/pr-reviews/PR-7705-feat-craft-school-max-s-self-study-starting-point-the-shape-catalog-a-cartridge-.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-11T14:55:13.346Z",
+  "schema_version": "v1",
+  "commit_sha": "b36169b0b8311e29cc6fd3c083fe7a2bf701cfe8",
+  "title": "feat(craft-school): Max's self-study starting point + the shape catalog (a cartridge per shape, each ZetaId'd)",
+  "state": "MERGED",
+  "merged_at": "2026-06-11T14:54:44Z",
+  "head_ref": "shadow-shape-catalog"
+}

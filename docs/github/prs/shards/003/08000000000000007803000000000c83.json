@@ -1,0 +1,12 @@
+{
+  "pr_number": 3203,
+  "archive_path": "docs/history/pr-reviews/PR-3203-shard-tick-1925z-razor-cadence-item-4-mechanization-shipped.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-14T19:28:51.845Z",
+  "schema_version": "v1",
+  "commit_sha": "237b1fd74c2d83c39bc3f6d22610bd9bc732aca0",
+  "title": "shard(tick): 1925Z — razor-cadence item 4 mechanization shipped",
+  "state": "MERGED",
+  "merged_at": "2026-05-14T19:28:33Z",
+  "head_ref": "shard/tick-1925Z-mechanization-shipped-otto-cli-2026-05-14"
+}

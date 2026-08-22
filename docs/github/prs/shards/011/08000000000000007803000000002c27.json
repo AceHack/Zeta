@@ -1,0 +1,12 @@
+{
+  "pr_number": 11303,
+  "archive_path": "docs/history/pr-reviews/PR-11303-fix-heartbeat-the-pr-manifest-is-append-only-too-a-fourth-path-not-a-regression.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-17T03:28:07.047Z",
+  "schema_version": "v1",
+  "commit_sha": "f398b131ed2568f198ec4f2c04752cad5750f59a",
+  "title": "fix(heartbeat): the PR manifest is append-only too — a fourth path, not a regression",
+  "state": "MERGED",
+  "merged_at": "2026-08-17T03:27:28Z",
+  "head_ref": "shadow/carry-manifest-jsonl-is-append-only-too"
+}

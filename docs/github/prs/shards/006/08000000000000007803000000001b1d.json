@@ -1,0 +1,12 @@
+{
+  "pr_number": 6941,
+  "archive_path": "docs/history/pr-reviews/PR-6941-docs-ace-pointers-span-all-layers-os-nixos-cluster-k8s-argocd-flux-not-just-midd.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-07T23:04:49.690Z",
+  "schema_version": "v1",
+  "commit_sha": "7f672a585442d8260a7a381a4d1cef65c6df378f",
+  "title": "docs: Ace pointers span all layers — OS (NixOS) + cluster (k8s/ArgoCD/Flux), not just middle",
+  "state": "MERGED",
+  "merged_at": "2026-06-07T23:04:32Z",
+  "head_ref": "otto/ace-pointers-span-all-layers-os-cluster"
+}

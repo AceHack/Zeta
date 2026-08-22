@@ -1,0 +1,12 @@
+{
+  "pr_number": 7075,
+  "archive_path": "docs/history/pr-reviews/PR-7075-docs-research-timeline-ops-homoiconic-layer-unlocks-linq-over-generator-function.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-08T10:16:20.839Z",
+  "schema_version": "v1",
+  "commit_sha": "8bbf375528a3247fa995ef679c6e0ed22c578d96",
+  "title": "docs(research): timeline-ops homoiconic layer unlocks LINQ over generator functions",
+  "state": "MERGED",
+  "merged_at": "2026-06-08T10:15:56Z",
+  "head_ref": "otto/timeline-ops-linq-over-generators"
+}

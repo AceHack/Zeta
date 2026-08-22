@@ -1,0 +1,12 @@
+{
+  "pr_number": 4202,
+  "archive_path": "docs/history/pr-reviews/PR-4202-extend-rule-aaron-clarification-what-my-bosses-want-not-what-i-want-anti-extract.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-18T20:41:43.908Z",
+  "schema_version": "v1",
+  "commit_sha": "18d64555964b344127343adc29a5b1cfbfb66a20",
+  "title": "extend(rule): Aaron clarification — 'what my bosses want not what I want' — anti-extractive vs corporate-default opposition explicit",
+  "state": "MERGED",
+  "merged_at": "2026-05-18T20:41:25Z",
+  "head_ref": "shard/auto-load-rule-anti-extractive-vs-corporate-default-aaron-clarification-2026-05-18"
+}

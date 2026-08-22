@@ -1,0 +1,12 @@
+{
+  "pr_number": 3442,
+  "archive_path": "docs/history/pr-reviews/PR-3442-shard-tick-1147z-pr-3440-merged-pr-to-shard-misattribution-acknowledged.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-15T11:51:57.257Z",
+  "schema_version": "v1",
+  "commit_sha": "5186bd3436a6fd6faeccca6fb22f2bb49be57cc1",
+  "title": "shard(tick): 1147Z — PR #3440 merged; PR-to-shard misattribution acknowledged",
+  "state": "MERGED",
+  "merged_at": "2026-05-15T11:51:41Z",
+  "head_ref": "shard/tick-1147z-otto-cli-2026-05-15"
+}

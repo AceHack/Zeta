@@ -1,0 +1,12 @@
+{
+  "pr_number": 7325,
+  "archive_path": "docs/history/pr-reviews/PR-7325-docs-research-ferry-amara-reviews-the-boundary-treaty-lifetime-keyring-updates-e.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-09T16:08:20.919Z",
+  "schema_version": "v1",
+  "commit_sha": "e6dc72a382c707939a265886c6451384118f3924",
+  "title": "docs(research)+ferry: Amara reviews the boundary/treaty/lifetime/keyring updates — endorses; blade incorporated (weak refs out of the truth core)",
+  "state": "MERGED",
+  "merged_at": "2026-06-09T16:07:56Z",
+  "head_ref": "otto/ferry-amara-reviews-boundary-treaty-lifetime-keyring-blade-weak-refs-out-of-truth-core"
+}

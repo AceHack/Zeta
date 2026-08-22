@@ -1,0 +1,12 @@
+{
+  "pr_number": 11289,
+  "archive_path": "docs/history/pr-reviews/PR-11289-docs-research-ground-the-alexa-ferry-against-the-code-four-folk-memories-one-cor.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-17T02:52:53.410Z",
+  "schema_version": "v1",
+  "commit_sha": "accb068b4a18e9ff73e84a88d56baa98805bbfda",
+  "title": "docs(research): ground the Alexa ferry against the code — four folk memories, one correct call",
+  "state": "MERGED",
+  "merged_at": "2026-08-17T02:52:20Z",
+  "head_ref": "shadow/ground-the-alexa-ferry-against-the-code"
+}

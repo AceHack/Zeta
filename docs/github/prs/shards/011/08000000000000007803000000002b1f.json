@@ -1,0 +1,12 @@
+{
+  "pr_number": 11039,
+  "archive_path": "docs/history/pr-reviews/PR-11039-feat-algebra-mirror-the-four-corner-trace-turns-to-typescript-byte-locked-to-f.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-16T19:59:17.225Z",
+  "schema_version": "v1",
+  "commit_sha": "163f09edfd37cd591a14315ece142685efd5f647",
+  "title": "feat(algebra): mirror the four-corner trace turns to TypeScript, byte-locked to F#",
+  "state": "MERGED",
+  "merged_at": "2026-08-16T19:58:40Z",
+  "head_ref": "shadow/mirror-four-corner-trace-turns-to-typescript"
+}

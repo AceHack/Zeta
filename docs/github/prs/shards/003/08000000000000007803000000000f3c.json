@@ -1,0 +1,12 @@
+{
+  "pr_number": 3900,
+  "archive_path": "docs/history/pr-reviews/PR-3900-shard-tick-2026-05-16t15-47z-b-0462-cascade-landed-pr-3897-merged-peer-contamina.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-16T15:59:11.483Z",
+  "schema_version": "v1",
+  "commit_sha": "79d8c9ddfb134b7ad30967921b65da1d4c692eee",
+  "title": "shard(tick): 2026-05-16T15:47Z — B-0462 cascade landed (PR #3897 MERGED); peer-contamination caught by branch-discipline",
+  "state": "MERGED",
+  "merged_at": "2026-05-16T15:58:55Z",
+  "head_ref": "otto-cli-tick-shard-1547z-cascade-confirm-2026-05-16"
+}

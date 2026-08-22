@@ -1,0 +1,15 @@
+{
+  "pr_number": 3036,
+  "archive_path": "docs/history/pr-reviews/PR-3036-docs-memory-otto-identity-stays-unified-across-surfaces-aaron-offered-split-otto.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7A-dzP",
+    "thread:PRRT_kwDOSF9kNM6B5eIu"
+  ],
+  "fetched_at": "2026-05-13T21:40:04.813Z",
+  "schema_version": "v1",
+  "commit_sha": "511d52fc0a878da7ecd429d38ef9e23f73d8b807",
+  "title": "docs(memory): Otto identity stays unified across surfaces — Aaron offered split, Otto chose unified (2026-05-13)",
+  "state": "MERGED",
+  "merged_at": "2026-05-13T21:39:41Z",
+  "head_ref": "otto-identity-stays-unified-across-surfaces-aaron-offered-split-2026-05-13"
+}

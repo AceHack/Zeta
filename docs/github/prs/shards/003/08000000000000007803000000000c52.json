@@ -1,0 +1,12 @@
+{
+  "pr_number": 3154,
+  "archive_path": "docs/history/pr-reviews/PR-3154-shard-tick-1813z-pr-3153-thread-resolution-verified-parallel-otto-find-portabili.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-14T18:18:44.356Z",
+  "schema_version": "v1",
+  "commit_sha": "82e908fcd996c8886d945ef7712d7202759e80b4",
+  "title": "shard(tick): 1813Z — PR #3153 thread resolution (verified parallel-Otto find-portability fix)",
+  "state": "MERGED",
+  "merged_at": "2026-05-14T18:18:24Z",
+  "head_ref": "shard/tick-1813Z-pr3153-thread-resolution-2026-05-14"
+}

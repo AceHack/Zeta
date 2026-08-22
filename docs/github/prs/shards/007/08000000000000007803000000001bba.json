@@ -1,0 +1,12 @@
+{
+  "pr_number": 7098,
+  "archive_path": "docs/history/pr-reviews/PR-7098-feat-core-cl3-geometric-clifford-algebra-cl-3-0-keystone-distance-momentum-rotor.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-08T12:13:56.355Z",
+  "schema_version": "v1",
+  "commit_sha": "770dfccde9132c4a058d805de5c8edd80d38d3be",
+  "title": "feat(core): Cl3 — geometric (Clifford) algebra Cl(3,0) keystone: distance + momentum + rotor",
+  "state": "MERGED",
+  "merged_at": "2026-06-08T12:13:36Z",
+  "head_ref": "otto/cl3-geometric-clifford-algebra-keystone-distance-momentum-rotor"
+}

@@ -1,0 +1,17 @@
+{
+  "pr_number": 1761,
+  "archive_path": "docs/history/pr-reviews/PR-1761-docs-address-launchd-checklist-review-comments.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6-pbPL",
+    "comment:PRRC_kwDOSF9kNM6-pbPl",
+    "thread:PRRT_kwDOSF9kNM6ALPGD",
+    "thread:PRRT_kwDOSF9kNM6ALPGV"
+  ],
+  "fetched_at": "2026-05-07T02:01:47.344Z",
+  "schema_version": "v1",
+  "commit_sha": "8adfbfaa2679a1a598fdd93540b6972d9f7ec1f1",
+  "title": "docs: address launchd checklist review comments",
+  "state": "MERGED",
+  "merged_at": "2026-05-07T01:59:48Z",
+  "head_ref": "claim/launchd-checklist-review-followup"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 6028,
+  "archive_path": "docs/history/pr-reviews/PR-6028-rule-god-tier-claims-add-the-confidence-calibration-decoder-operator-authorized.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-29T18:22:34.036Z",
+  "schema_version": "v1",
+  "commit_sha": "6cd44117353d7bfc0b4b78b3a1fc4f27176c714f",
+  "title": "rule(god-tier-claims): add the confidence-calibration decoder (operator-authorized)",
+  "state": "MERGED",
+  "merged_at": "2026-05-29T18:22:10Z",
+  "head_ref": "otto-cli/god-tier-rule-confidence-calibration-decoder-2026-05-29"
+}

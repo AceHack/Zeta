@@ -1,0 +1,12 @@
+{
+  "pr_number": 2341,
+  "archive_path": "docs/history/pr-reviews/PR-2341-memory-b-0365-2-land-shadow-log-memory-md-index-fix.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-09T20:31:50.067Z",
+  "schema_version": "v1",
+  "commit_sha": "782380a911ae319df724939d123ecb8ea08aa23a",
+  "title": "memory(B-0365.2): land shadow-log MEMORY.md index fix",
+  "state": "MERGED",
+  "merged_at": "2026-05-09T20:31:36Z",
+  "head_ref": "claim/task-b0365-memory-index-postmerge-fix-20260509"
+}

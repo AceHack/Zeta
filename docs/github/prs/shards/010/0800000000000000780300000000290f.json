@@ -1,0 +1,12 @@
+{
+  "pr_number": 10511,
+  "archive_path": "docs/history/pr-reviews/PR-10511-docs-research-agent-sovereign-keys-ladder-l0-l6-ferried-from-otto-desktop.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-14T03:05:13.086Z",
+  "schema_version": "v1",
+  "commit_sha": "eda726159e0d374c9fb9afdbb9e80883f67500b4",
+  "title": "docs(research): agent-sovereign keys ladder L0→L6 — ferried from otto-desktop",
+  "state": "MERGED",
+  "merged_at": "2026-08-14T03:04:42Z",
+  "head_ref": "otto-desktop/sovereign-keys-docs"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 9333,
+  "archive_path": "docs/history/pr-reviews/PR-9333-feat-isaspec-a-memory-model-the-6502-as-data-a-second-real-isa-shadow.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-03T18:12:55.826Z",
+  "schema_version": "v1",
+  "commit_sha": "5addf8f4d2f53c8a4737e19484d96a7eeafd3af9",
+  "title": "feat(isaspec): a memory model + the 6502 as data — a second, REAL ISA (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-03T18:12:32Z",
+  "head_ref": "otto/isaspec-memory-6502-real-isa"
+}

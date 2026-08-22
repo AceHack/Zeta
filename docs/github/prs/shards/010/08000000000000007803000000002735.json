@@ -1,0 +1,12 @@
+{
+  "pr_number": 10037,
+  "archive_path": "docs/history/pr-reviews/PR-10037-docs-pitch-one-pager-mutual-verification-trust-instrument-line.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-04T18:22:02.500Z",
+  "schema_version": "v1",
+  "commit_sha": "eb825d764868c7a914feef331cb6e5aa315834fe",
+  "title": "docs(pitch): one-pager — mutual-verification trust instrument line",
+  "state": "MERGED",
+  "merged_at": "2026-08-04T18:21:21Z",
+  "head_ref": "docs/pitch-one-pager-guardian-verification-line-20260804"
+}

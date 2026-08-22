@@ -1,0 +1,12 @@
+{
+  "pr_number": 9379,
+  "archive_path": "docs/history/pr-reviews/PR-9379-feat-model-backend-manus-result-retrieval-listmessages-poller-live-round-trip-pr.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-03T23:57:13.051Z",
+  "schema_version": "v1",
+  "commit_sha": "27b71036ceaeaa65d51c1e6d030f88596762ee41",
+  "title": "feat(model-backend): Manus result retrieval — listMessages poller, live round-trip proven (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-03T23:56:49Z",
+  "head_ref": "otto/manus-listmessages-result-poller"
+}

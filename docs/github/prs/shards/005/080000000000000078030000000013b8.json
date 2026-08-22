@@ -1,0 +1,12 @@
+{
+  "pr_number": 5048,
+  "archive_path": "docs/history/pr-reviews/PR-5048-backlog-b-0762-ai-auto-submit-back-telemetry-fixes-from-in-the-wild-installs-ado.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-26T00:15:11.958Z",
+  "schema_version": "v1",
+  "commit_sha": "f20a985987dfd932093877524974bb52df9440a4",
+  "title": "backlog(B-0762): AI auto-submit-back telemetry + fixes from in-the-wild installs — adoption-cost-to-zero flywheel",
+  "state": "MERGED",
+  "merged_at": "2026-05-26T00:14:55Z",
+  "head_ref": "otto-cli/b0762-ai-auto-submit-back-telemetry-flywheel-2026-05-25"
+}

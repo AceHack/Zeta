@@ -1,0 +1,12 @@
+{
+  "pr_number": 7867,
+  "archive_path": "docs/history/pr-reviews/PR-7867-feat-setup-host-tier-slice-2-shared-helper-memory-auto-detect-brew-workloads-dot.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-12T01:52:08.707Z",
+  "schema_version": "v1",
+  "commit_sha": "c063e8608344fb21305bb8454fefd01498a0833f",
+  "title": "feat(setup): host-tier slice 2 — shared helper + memory auto-detect; brew/workloads/dotnet-tools tier-aware",
+  "state": "MERGED",
+  "merged_at": "2026-06-12T01:51:44Z",
+  "head_ref": "shadow-host-tier-all-manifests"
+}

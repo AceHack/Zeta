@@ -1,0 +1,12 @@
+{
+  "pr_number": 12813,
+  "archive_path": "docs/history/pr-reviews/PR-12813-research-yubihsm-2-mechanism-enumeration-the-frost-claim-promoted-proposed-check.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-20T15:33:11.496Z",
+  "schema_version": "v1",
+  "commit_sha": "32ffc3a51f39ec268d4806dd8dc3003a02e3960a",
+  "title": "research: YubiHSM 2 mechanism enumeration — the FROST claim promoted PROPOSED → CHECKED, and secp256k1 is there",
+  "state": "MERGED",
+  "merged_at": "2026-08-20T15:32:32Z",
+  "head_ref": "research/yubihsm2-mechanism-enumeration"
+}

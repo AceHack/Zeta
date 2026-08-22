@@ -1,0 +1,14 @@
+{
+  "id": "080d000dca896810a0130008b79b3137",
+  "at": "2026-08-14T19:21:57.293Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M00VJM9C087G0R000G60B3V",
+    "type": "task",
+    "title": "ECP5 partial reconfiguration spike: LFE5U-45F zero-downtime region swap via LSC_WRITE_ADDRESS",
+    "slug": "ecp5-partial-reconfiguration-spike-lfe5u-45f-zero-downtime-r",
+    "priority": "P2",
+    "filename": "081M00VJM9C087G0R000G60B3V-ecp5-partial-reconfiguration-spike-lfe5u-45f-zero-downtime-r.md"
+  }
+}

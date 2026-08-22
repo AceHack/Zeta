@@ -1,0 +1,12 @@
+{
+  "pr_number": 9957,
+  "archive_path": "docs/history/pr-reviews/PR-9957-feat-observe-confidence-bars-the-withheld-register-iris-4-5-step-5-last.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-02T02:50:04.649Z",
+  "schema_version": "v1",
+  "commit_sha": "76a044d6c746b77eaa319f83e9f68bc728eb8980",
+  "title": "feat(observe): confidence bars + the withheld register — Iris §4/§5, step 5 (last)",
+  "state": "MERGED",
+  "merged_at": "2026-08-02T02:49:41Z",
+  "head_ref": "shadow/iris-bars-and-withheld-register"
+}

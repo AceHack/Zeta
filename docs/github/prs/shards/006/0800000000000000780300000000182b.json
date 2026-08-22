@@ -1,0 +1,19 @@
+{
+  "pr_number": 6187,
+  "archive_path": "docs/history/pr-reviews/PR-6187-docs-decisions-observe-ts-adr-v3-corporate-agentic-os-vs-sovereign-agora-dio-on-.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7Gdg3a",
+    "comment:PRRC_kwDOSF9kNM7Gdg_D",
+    "comment:PRRC_kwDOSF9kNM7Gdg_Q",
+    "thread:PRRT_kwDOSF9kNM6F6Vob",
+    "thread:PRRT_kwDOSF9kNM6F6Vu_",
+    "thread:PRRT_kwDOSF9kNM6F6Vuz"
+  ],
+  "fetched_at": "2026-05-31T03:01:03.704Z",
+  "schema_version": "v1",
+  "commit_sha": "41a2bf9609f2e94879c80e7e6a17eb4eb4d28ed8",
+  "title": "docs(DECISIONS): observe.ts ADR v3 — corporate (agentic OS) vs sovereign (Agora = DIO on DID) registers",
+  "state": "MERGED",
+  "merged_at": "2026-05-31T03:00:45Z",
+  "head_ref": "otto-cli/observe-adr-agora-dio-did-corporate-sovereign-2026-05-30"
+}

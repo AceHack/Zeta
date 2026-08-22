@@ -1,0 +1,14 @@
+{
+  "id": "080cffeb07293810a0130008f95e48c8",
+  "at": "2026-08-13T23:06:53.607Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081KZYP1S96087G0R002G8XQZP",
+    "type": "bug",
+    "title": "LossyUdpChannel builds an unbounded NACK list from an attacker-controlled 32-bit seq: one 70-byte packet broadcast 236 MB (3.4 million-fold amplification)",
+    "slug": "lossyudpchannel-builds-an-unbounded-nack-list-from-an-attack",
+    "priority": "P1",
+    "filename": "081KZYP1S96087G0R002G8XQZP-lossyudpchannel-builds-an-unbounded-nack-list-from-an-attack.md"
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 11000,
+  "archive_path": "docs/history/pr-reviews/PR-11000-feat-core-from-on-addressed-the-sender-derives-ownerinitiated-closing-10968-s-ho.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-16T18:37:34.801Z",
+  "schema_version": "v1",
+  "commit_sha": "42a3eadae1d082f212408d074c53dbf543c6441e",
+  "title": "feat(core): From on Addressed — the sender derives ownerInitiated, closing #10968's hole",
+  "state": "MERGED",
+  "merged_at": "2026-08-16T18:37:02Z",
+  "head_ref": "shadow/addressed-from-sender-derives-owner-initiated"
+}

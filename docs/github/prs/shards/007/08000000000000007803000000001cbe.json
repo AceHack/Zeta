@@ -1,0 +1,12 @@
+{
+  "pr_number": 7358,
+  "archive_path": "docs/history/pr-reviews/PR-7358-docs-research-moonshot-conference-room-tests-are-self-evolving-strange-attractor.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-09T18:31:51.300Z",
+  "schema_version": "v1",
+  "commit_sha": "e25d23430d2f3b8412ce5a33ae9e3c67242de3d7",
+  "title": "docs(research): moonshot conference room — tests are self-evolving strange attractors judged on that, judgments cascade; and every dependency becomes a room",
+  "state": "MERGED",
+  "merged_at": "2026-06-09T18:31:19Z",
+  "head_ref": "otto/moonshot-room-tests-are-attractors-judged-cascade-plus-every-dependency-is-a-room"
+}

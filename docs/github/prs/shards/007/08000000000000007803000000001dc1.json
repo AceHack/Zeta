@@ -1,0 +1,12 @@
+{
+  "pr_number": 7617,
+  "archive_path": "docs/history/pr-reviews/PR-7617-proofs-math-mercer-closure-psd-theorems-proved-t1-t10-fscheck-witness-over-rando.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-11T09:20:50.699Z",
+  "schema_version": "v1",
+  "commit_sha": "3fd7b7a4bbbe42edc732d9cbc11d4e5a8997f836",
+  "title": "proofs(math): Mercer-closure PSD theorems proved (T1–T10) + FsCheck witness over random closure kernels",
+  "state": "MERGED",
+  "merged_at": "2026-06-11T09:20:24Z",
+  "head_ref": "shadow-mercer-psd-theorems"
+}

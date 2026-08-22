@@ -1,0 +1,12 @@
+{
+  "pr_number": 11163,
+  "archive_path": "docs/history/pr-reviews/PR-11163-fix-installer-picker-forwards-iserial-and-uefi-keyfile-binding.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-16T23:04:05.051Z",
+  "schema_version": "v1",
+  "commit_sha": "4c4eefe7a240467b7bccbe414ad69edc73acd105",
+  "title": "fix(installer): picker forwards iSerial and UEFI keyfile binding",
+  "state": "MERGED",
+  "merged_at": "2026-08-16T23:03:29Z",
+  "head_ref": "riven/picker-forward-binding-factors"
+}

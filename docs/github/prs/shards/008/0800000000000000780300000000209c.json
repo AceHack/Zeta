@@ -1,0 +1,12 @@
+{
+  "pr_number": 8348,
+  "archive_path": "docs/history/pr-reviews/PR-8348-docs-research-play-interface-arity-ladder-iplay-iplaydate-2-3-4-isociety-n-rooms.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-15T22:01:24.794Z",
+  "schema_version": "v1",
+  "commit_sha": "00abc8f882723f1dbf932ffd4a08d17083784034",
+  "title": "docs(research): play-interface arity ladder — IPlay→IPlayDate(2)→3/4→ISociety(N); rooms inherit by hat-count",
+  "state": "MERGED",
+  "merged_at": "2026-06-15T22:00:58Z",
+  "head_ref": "docs/consolidation-iplaydate-arity-ladder-rooms-inherit-by-hatcount"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 9199,
+  "archive_path": "docs/history/pr-reviews/PR-9199-docs-research-parser-generator-ladder-zetaid-bits-value-tree-codecs-zetaparse-gr.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-02T21:00:46.927Z",
+  "schema_version": "v1",
+  "commit_sha": "40602e5d30d15390976ef3f1004ac910cee95a6e",
+  "title": "docs(research): parser/generator ladder — ZetaId bits → value-tree codecs → ZetaParse Grammar IR",
+  "state": "MERGED",
+  "merged_at": "2026-07-02T21:00:24Z",
+  "head_ref": "otto/parser-generator-ladder-synthesis"
+}

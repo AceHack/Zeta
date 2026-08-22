@@ -1,0 +1,12 @@
+{
+  "pr_number": 9043,
+  "archive_path": "docs/history/pr-reviews/PR-9043-ops-drain-backfill-16-manifesto-citation-snapshots-7-budget-rows-from-orphaned-o.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-30T21:41:20.730Z",
+  "schema_version": "v1",
+  "commit_sha": "191725c12a1bf87656f2a9d271be2791430d5dbc",
+  "title": "ops(drain): backfill 16 manifesto-citation snapshots + 7 budget rows from orphaned ops/ branches",
+  "state": "MERGED",
+  "merged_at": "2026-06-30T21:40:58Z",
+  "head_ref": "ops-drain-manifesto-budget-2026-06-30"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 10357,
+  "archive_path": "docs/history/pr-reviews/PR-10357-craft-the-pedagogy-doc-manus-brief-stranded-by-10351-s-squash-gamification-desig.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-14T00:11:16.439Z",
+  "schema_version": "v1",
+  "commit_sha": "0ac4fa80674a7e2a2049802c6b9d97709d9350e4",
+  "title": "craft: the pedagogy doc + Manus brief (stranded by #10351's squash) + gamification design",
+  "state": "MERGED",
+  "merged_at": "2026-08-13T19:16:31Z",
+  "head_ref": "craft-gamify"
+}

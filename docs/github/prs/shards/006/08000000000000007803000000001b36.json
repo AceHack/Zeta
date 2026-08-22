@@ -1,0 +1,12 @@
+{
+  "pr_number": 6966,
+  "archive_path": "docs/history/pr-reviews/PR-6966-fix-cluster-healthy-single-node-install-storage-open-iscsi-longhorn-gatekeeper-d.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-08T01:03:38.327Z",
+  "schema_version": "v1",
+  "commit_sha": "11ba5d8ac14a52c8c89b2513a55573a603301998",
+  "title": "fix(cluster): healthy single-node install — storage (open-iscsi/Longhorn) + gatekeeper deadlock + dup default StorageClass",
+  "state": "MERGED",
+  "merged_at": "2026-06-08T01:03:18Z",
+  "head_ref": "fix/cluster-storage-gatekeeper-hardening"
+}

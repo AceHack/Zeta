@@ -1,0 +1,12 @@
+{
+  "pr_number": 9738,
+  "archive_path": "docs/history/pr-reviews/PR-9738-fix-storage-harden-fspickler-frame-reads.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-11T20:23:31.982Z",
+  "schema_version": "v1",
+  "commit_sha": "54ff43805937ff6bf688c005a3da88c864b033ed",
+  "title": "fix(storage): harden FsPickler frame reads",
+  "state": "MERGED",
+  "merged_at": "2026-07-11T20:23:04Z",
+  "head_ref": "codex/fspickler-windows-frame-fix"
+}

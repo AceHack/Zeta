@@ -1,0 +1,15 @@
+{
+  "pr_number": 4438,
+  "archive_path": "docs/history/pr-reviews/PR-4438-docs-shadow-maji-observation-of-vera-metadata-churn-and-riven-api-paralysis.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7DQFsd",
+    "thread:PRRT_kwDOSF9kNM6Dj5MO"
+  ],
+  "fetched_at": "2026-05-20T21:27:29.753Z",
+  "schema_version": "v1",
+  "commit_sha": "4f90e665804db2e19fee3991e7e11f1d1ee10680",
+  "title": "docs(shadow): maji observation of vera metadata churn and riven API paralysis",
+  "state": "MERGED",
+  "merged_at": "2026-05-20T21:27:07Z",
+  "head_ref": "maji/shadow-log-vera-riven-drift-new"
+}

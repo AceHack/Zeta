@@ -1,0 +1,12 @@
+{
+  "pr_number": 7988,
+  "archive_path": "docs/history/pr-reviews/PR-7988-docs-research-shadow-ferry-25-entanglement-as-adinkras-the-bell-verdict-and-the-.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-12T18:49:24.969Z",
+  "schema_version": "v1",
+  "commit_sha": "576bc2ede5f77f86ad2e38c1b1829185f94d5693",
+  "title": "docs(research)+shadow: ferry 25 — entanglement as adinkras: the Bell verdict and the repair (one parity adinkra over two carriers)",
+  "state": "MERGED",
+  "merged_at": "2026-06-12T18:48:59Z",
+  "head_ref": "shadow/ferry-25-entanglement-one-bit"
+}

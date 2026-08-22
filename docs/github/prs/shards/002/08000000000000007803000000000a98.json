@@ -1,0 +1,17 @@
+{
+  "pr_number": 2712,
+  "archive_path": "docs/history/pr-reviews/PR-2712-docs-research-unified-bounty-membrane-vaccine-spread-final-spec.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_7O5i",
+    "comment:PRRC_kwDOSF9kNM6_7Qiy",
+    "thread:PRRT_kwDOSF9kNM6BIMTF",
+    "thread:PRRT_kwDOSF9kNM6BINgI"
+  ],
+  "fetched_at": "2026-05-11T15:11:51.500Z",
+  "schema_version": "v1",
+  "commit_sha": "b2c9fd9d38e13540077b469427362af8c6fe59e9",
+  "title": "docs(research): unified bounty membrane + vaccine spread — final spec",
+  "state": "MERGED",
+  "merged_at": "2026-05-11T15:11:31Z",
+  "head_ref": "docs/deepseek-unified-bounty-final-2026-05-11"
+}

@@ -1,0 +1,19 @@
+{
+  "pr_number": 3587,
+  "archive_path": "docs/history/pr-reviews/PR-3587-shard-tick-2055z-minimal-audit-findings-present-but-not-single-tick-scope.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7Bxgf4",
+    "comment:PRRC_kwDOSF9kNM7BxiXZ",
+    "comment:PRRC_kwDOSF9kNM7BxomT",
+    "comment:PRRC_kwDOSF9kNM7BxyDA",
+    "thread:PRRT_kwDOSF9kNM6Cejjz",
+    "thread:PRRT_kwDOSF9kNM6Cek6a"
+  ],
+  "fetched_at": "2026-05-15T21:18:48.185Z",
+  "schema_version": "v1",
+  "commit_sha": "5cecb9538ada858635ebf61b017b9d214d8f58b4",
+  "title": "shard(tick): 2055Z — minimal; audit findings present but not single-tick scope",
+  "state": "MERGED",
+  "merged_at": "2026-05-15T21:18:31Z",
+  "head_ref": "shard/tick-2055z-otto-cli-2026-05-15"
+}

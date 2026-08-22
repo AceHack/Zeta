@@ -1,0 +1,12 @@
+{
+  "pr_number": 3205,
+  "archive_path": "docs/history/pr-reviews/PR-3205-chore-backlog-b-0518-sharpen-holding-without-named-dependency-rule-aaron-diagnos.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-14T19:37:16.162Z",
+  "schema_version": "v1",
+  "commit_sha": "01690beff490d3855315ae4cf86f2abc88fdcdee",
+  "title": "chore(backlog): B-0518 — sharpen holding-without-named-dependency rule (Aaron-diagnosed CLAUDE.md bug)",
+  "state": "MERGED",
+  "merged_at": "2026-05-14T19:36:45Z",
+  "head_ref": "chore/b-0518-sharpen-holding-failure-rule-aaron-claude-md-bug-2026-05-14"
+}

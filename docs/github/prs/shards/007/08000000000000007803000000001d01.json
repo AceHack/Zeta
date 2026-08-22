@@ -1,0 +1,12 @@
+{
+  "pr_number": 7425,
+  "archive_path": "docs/history/pr-reviews/PR-7425-docs-vocab-qpq-llmhdtv-hd-upgrade-of-llmtv-qpg-over-dpi-all-folders-everything-c.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-09T21:52:37.340Z",
+  "schema_version": "v1",
+  "commit_sha": "560f2f4fe7901548cbd2105be0214b83586be5da",
+  "title": "docs(vocab): QPQ = LLMHDTV (HD upgrade of LLMTV=QPG-over-DPI) + all folders (everything can be a folder)",
+  "state": "MERGED",
+  "merged_at": "2026-06-09T21:52:16Z",
+  "head_ref": "otto/qpq-llmhdtv-all-folders"
+}

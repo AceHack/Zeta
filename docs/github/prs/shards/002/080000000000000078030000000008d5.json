@@ -1,0 +1,17 @@
+{
+  "pr_number": 2261,
+  "archive_path": "docs/history/pr-reviews/PR-2261-docs-b-0293-consent-first-architecture-design.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_gWBW",
+    "comment:PRRC_kwDOSF9kNM6_gWBZ",
+    "thread:PRRT_kwDOSF9kNM6Azxax",
+    "thread:PRRT_kwDOSF9kNM6Azxaz"
+  ],
+  "fetched_at": "2026-05-09T09:40:24.486Z",
+  "schema_version": "v1",
+  "commit_sha": "a35f5310948f6aeed2a01304936d0f5845c46914",
+  "title": "docs(B-0293): consent-first architecture design",
+  "state": "MERGED",
+  "merged_at": "2026-05-09T09:40:03Z",
+  "head_ref": "docs/b0293-consent-architecture"
+}

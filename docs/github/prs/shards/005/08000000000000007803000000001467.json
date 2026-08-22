@@ -1,0 +1,12 @@
+{
+  "pr_number": 5223,
+  "archive_path": "docs/history/pr-reviews/PR-5223-fix-b-0816-enrich-empirical-anchor-with-lexisnexis-github-use-cases-cloud-agnost.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-26T16:57:30.757Z",
+  "schema_version": "v1",
+  "commit_sha": "307d554a7e203b9403a0fdb5d001e4d6a3f15734",
+  "title": "fix(B-0816): enrich empirical anchor with LexisNexis + GitHub use-cases + cloud-agnostic + 0-external-vendor principle",
+  "state": "MERGED",
+  "merged_at": "2026-05-26T16:57:08Z",
+  "head_ref": "otto-cli/b0816-enrich-lexisnexis-github-use-case-cloud-agnostic-0-vendor-2026-05-26"
+}

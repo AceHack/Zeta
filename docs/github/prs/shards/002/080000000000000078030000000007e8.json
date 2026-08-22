@@ -1,0 +1,12 @@
+{
+  "pr_number": 2024,
+  "archive_path": "docs/history/pr-reviews/PR-2024-fix-b-0278-close-survey-landed.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-08T03:43:43.565Z",
+  "schema_version": "v1",
+  "commit_sha": "6b38a3e4cfb0602bee77033aabc9f4cece6155fa",
+  "title": "fix(B-0278): close — survey landed",
+  "state": "MERGED",
+  "merged_at": "2026-05-08T03:43:24Z",
+  "head_ref": "fix/b0278-close"
+}

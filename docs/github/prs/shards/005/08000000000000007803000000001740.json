@@ -1,0 +1,12 @@
+{
+  "pr_number": 5952,
+  "archive_path": "docs/history/pr-reviews/PR-5952-docs-trajectories-usb-zflash-self-healing-hardware-local-free-cloud-both.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-29T07:28:22.674Z",
+  "schema_version": "v1",
+  "commit_sha": "44033ef86b93c81bb2f24f997f73684c8c8442e2",
+  "title": "docs(trajectories): usb-zflash = self-healing hardware + local/free-cloud-both",
+  "state": "MERGED",
+  "merged_at": "2026-05-29T07:28:03Z",
+  "head_ref": "otto-cli/usb-zflash-trajectory-self-healing-two-substrate-2026-05-29"
+}

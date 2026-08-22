@@ -1,0 +1,12 @@
+{
+  "pr_number": 6137,
+  "archive_path": "docs/history/pr-reviews/PR-6137-docs-consent-touch-id-commit-signing-guide-for-glass-halo-follow-up-to-6135.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-30T17:34:13.485Z",
+  "schema_version": "v1",
+  "commit_sha": "ed2a77d3d081e30fd4ca327ed087a4301449b207",
+  "title": "docs(consent): Touch-ID commit-signing guide for glass-halo (follow-up to #6135)",
+  "state": "MERGED",
+  "merged_at": "2026-05-30T17:33:52Z",
+  "head_ref": "otto/glass-halo-signing-guide-2026-05-30"
+}

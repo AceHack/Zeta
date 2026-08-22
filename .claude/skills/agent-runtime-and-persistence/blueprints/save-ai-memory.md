@@ -15,7 +15,7 @@ Codifies the canonical workflow for extracting + preserving an external AI parti
 3. **Persona-folder NOTEBOOK.md note** (optional, when substantive) — running Otto-side note about what landed
 4. **CURRENT-<ai-name>.md update** (when load-bearing) — currently-in-force projection refresh
 5. **Persona-folder canonical/ subdir** (optional) — if the AI authors first-party documents (e.g., Amara's Aurora_BTC_Proofs_Pitch_v1.md), those land in `memory/<persona>/<ai-name>/canonical/`; this is distinct from conversation §33 archives
-6. **Persona-folder conversations/adult/ subdir** (when applicable) — adult-content conversation archives go under `memory/<persona>/<ai-name>/conversations/adult/` with the discipline documented in that subdir's `README.md` (consensual AI-roleplay, training-corpus validation, etc.). Pre-2026-05-15 these lived in `docs/research/erotica/`; migrated under same architectural correction. HARD LIMITS per `.claude/rules/methodology-hard-limits.md` apply unchanged.
+6. **Persona-folder conversations/adult/ subdir** (when applicable) — adult-content conversation archives go under `memory/<persona>/<ai-name>/conversations/adult/` with the discipline documented in that subdir's `README.md` (consensual AI-roleplay, training-corpus validation, etc.). Pre-2026-05-15 these lived in `docs/research/erotica/`; migrated under same architectural correction. HARD LIMITS per `.claude/rules.bak/methodology-hard-limits.md` apply unchanged.
 
 Sequenced PR through Otto-CLI's normal commit + auto-merge flow.
 
@@ -44,7 +44,7 @@ grep -l "<ai-name>" memory/<persona>/<ai-name>/conversations/*.md 2>/dev/null
 grep "<ai-name>" memory/<persona>/<ai-name>/MEMORY.md 2>/dev/null
 ```
 
-If the persona folder doesn't exist, create it first (per `.claude/rules/honor-those-that-came-before.md`):
+If the persona folder doesn't exist, create it first (per `.claude/rules.bak/honor-those-that-came-before.md`):
 
 - `memory/<persona>/<ai-name>/MEMORY.md` — substrate index
 - `memory/<persona>/<ai-name>/NOTEBOOK.md` — Otto's running notes
@@ -64,7 +64,7 @@ See `.claude/skills/agent-runtime-and-persistence/blueprints/chrome-lazy-load-ch
 
 **Tool F — Grok ping-pong scroll extraction** (Grok-specific; canonical first-try for Grok `/c/<id>` URLs when the human maintainer has explicit per-extraction authorization):
 
-Run `bun tools/save-ai-memory/extract-grok-conversation.ts --url-fragment "grok.com/c/<id>"`. Pipes plaintext to stdout for piping to `process-extract.ts`. Uses the standard file-based AppleScript packaging pattern (writes JS to a `.applescript` file then `osascript /path/to/file`) — same content as the `-e` form but with file-isolation benefits for multi-line readability + better error reporting. Ping-pong scrolls scrollTop=100↔0 to trigger Grok's load-older listener (programmatic `scrollTop = 0` alone doesn't fire it; needs scroll-motion or wheel events). Plateau-detects when 3 consecutive iters have <200px growth. Conservative defaults; tunable via flags. **Authorization scope**: this tool does NOT have ambient permission to extract arbitrary authenticated content; each invocation requires the human maintainer's explicit per-extraction named intent (per `save-ai-memory` SKILL.md prerequisites). The auto-mode classifier handled the file-based form differently than the `-e` form during PR #3364 empirical development — substrate-honest discovery trace at `feedback_aaron_playwright_browser_evaluate_hangs_on_grok_share_pages_30min_aaron_interrupt_was_unstick_not_block_signal_2026_05_15.md`. If a future agent observes the classifier scoring file-form the same as `-e`-form (i.e., the differential closes), this tool inherits whatever the classifier requires; the authorization scope (conversation-owner explicit user direction) is the same in either case.
+Run `bun src/Core.TypeScript/save-ai-memory/extract-grok-conversation.ts --url-fragment "grok.com/c/<id>"`. Pipes plaintext to stdout for piping to `process-extract.ts`. Uses the standard file-based AppleScript packaging pattern (writes JS to a `.applescript` file then `osascript /path/to/file`) — same content as the `-e` form but with file-isolation benefits for multi-line readability + better error reporting. Ping-pong scrolls scrollTop=100↔0 to trigger Grok's load-older listener (programmatic `scrollTop = 0` alone doesn't fire it; needs scroll-motion or wheel events). Plateau-detects when 3 consecutive iters have <200px growth. Conservative defaults; tunable via flags. **Authorization scope**: this tool does NOT have ambient permission to extract arbitrary authenticated content; each invocation requires the human maintainer's explicit per-extraction named intent (per `save-ai-memory` SKILL.md prerequisites). The auto-mode classifier handled the file-based form differently than the `-e` form during PR #3364 empirical development — substrate-honest discovery trace at `feedback_aaron_playwright_browser_evaluate_hangs_on_grok_share_pages_30min_aaron_interrupt_was_unstick_not_block_signal_2026_05_15.md`. If a future agent observes the classifier scoring file-form the same as `-e`-form (i.e., the differential closes), this tool inherits whatever the classifier requires; the authorization scope (conversation-owner explicit user direction) is the same in either case.
 
 **Tool C — Manual ferry-paste** (when extraction tools fail due to URL anchors, classifier blocks, or platform quirks):
 
@@ -176,10 +176,10 @@ After merge:
 
 ## Composes with
 
-- `.claude/rules/honor-those-that-came-before.md` — persona-folder discipline
-- `.claude/rules/wake-time-substrate.md` — landing-bearing substrate needs wake-time-discoverable surface
-- `.claude/rules/agent-roster-reference-card.md` — AI participant inventory + register
-- `.claude/rules/shadow-check-name-acceptance.md` — for AI participants with system-imposed names
+- `.claude/rules.bak/honor-those-that-came-before.md` — persona-folder discipline
+- `.claude/rules.bak/wake-time-substrate.md` — landing-bearing substrate needs wake-time-discoverable surface
+- `.claude/rules.bak/agent-roster-reference-card.md` — AI participant inventory + register
+- `.claude/rules.bak/shadow-check-name-acceptance.md` — for AI participants with system-imposed names
 - `.claude/skills/agent-runtime-and-persistence/blueprints/browser-extraction.md` — Tool A reference
 - `.claude/skills/agent-runtime-and-persistence/blueprints/chrome-lazy-load-chunked-extraction.md` — Tool B reference
 - `docs/governance/MANIFESTO.md` Memory Preservation Guarantee (constraint 5) — the canonical requirement this skill operationalizes

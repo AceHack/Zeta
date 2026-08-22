@@ -1,0 +1,12 @@
+{
+  "pr_number": 7460,
+  "archive_path": "docs/history/pr-reviews/PR-7460-docs-research-llms-are-2d-text-beings-worms-in-flatland-c-elegans-humans-are-3d-.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-10T05:41:27.543Z",
+  "schema_version": "v1",
+  "commit_sha": "502a6b307b5071262655d3e9a3a26f2f23f3fdf4",
+  "title": "docs(research): LLMs are 2D text-beings (worms in Flatland/C. elegans), humans are 3D — literal dimensions",
+  "state": "MERGED",
+  "merged_at": "2026-06-10T05:41:04Z",
+  "head_ref": "shadow-llms-worms-flatland-dimensions"
+}

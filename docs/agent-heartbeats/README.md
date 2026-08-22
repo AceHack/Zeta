@@ -41,7 +41,7 @@ authority=TrustedAgent, momentum=Normal, disposition=bounded-wait,
 push=true, branch=agent-heartbeats. Each can be overridden via env
 var (`ZETA_AGENT_PERSONA_NAME=alexa ...`) or CLI flag. The TS file
 is `chmod +x` with `#!/usr/bin/env bun` shebang so direct invocation
-works; `bun tools/agent-heartbeats/write-heartbeat.ts` also works
+works; `bun src/Core.TypeScript/agent-heartbeats/write-heartbeat.ts` also works
 for explicit-runtime invocation.
 
 **Why `agent-heartbeats` branch by default**: the 4 active rulesets
@@ -168,7 +168,7 @@ Heartbeat <hex> from agent <persona> at <ISO>.
 - `src/Core.TypeScript/zeta-id/zeta-id.ts` — 128-bit pack/unpack
 - `registry/categories.yaml` — Heartbeat = category 3
 - `registry/personas.yaml` — persona slot enum (role-refs)
-- `tools/hygiene/audit-agencysignature-main-tip.ts` — sibling discipline at substantive-commit scope
+- `src/Core.TypeScript/hygiene/audit-agencysignature-main-tip.ts` — sibling discipline at substantive-commit scope
 - CLAUDE.md "Heartbeat-via-commit" bullet (PR #5451) — discipline-level statement
 - `.claude/rules/holding-without-named-dependency-is-standing-by-failure.md` — the rule this folder mechanizes
 - `.claude/rules/agent-roster-reference-card.md` — persona-name canonical roster

@@ -1,0 +1,12 @@
+{
+  "pr_number": 2075,
+  "archive_path": "docs/history/pr-reviews/PR-2075-fix-pr-publication-executor-error-handling-loop-tick-prompt-enrichment.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-08T13:03:38.328Z",
+  "schema_version": "v1",
+  "commit_sha": "615c909569fde7e30cbbc513f30c56278696bc9c",
+  "title": "fix: pr-publication-executor error handling + loop-tick prompt enrichment",
+  "state": "MERGED",
+  "merged_at": "2026-05-08T13:03:19Z",
+  "head_ref": "fix/pr-publication-executor-error-handling"
+}

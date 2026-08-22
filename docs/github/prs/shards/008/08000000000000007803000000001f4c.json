@@ -1,0 +1,12 @@
+{
+  "pr_number": 8012,
+  "archive_path": "docs/history/pr-reviews/PR-8012-docs-research-shadow-ferry-41-the-zeta-ramanujan-critical-line-as-orientation-th.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-13T04:50:05.418Z",
+  "schema_version": "v1",
+  "commit_sha": "c7c5caa135e57354b45fca620c62e401bf158412",
+  "title": "docs(research)+shadow: ferry 41 — the zeta/Ramanujan critical line as orientation; the ledger as the anti-Mandela-effect",
+  "state": "MERGED",
+  "merged_at": "2026-06-13T04:49:39Z",
+  "head_ref": "shadow/ferry-41-critical-line-orientation"
+}

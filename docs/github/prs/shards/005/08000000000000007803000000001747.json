@@ -1,0 +1,12 @@
+{
+  "pr_number": 5959,
+  "archive_path": "docs/history/pr-reviews/PR-5959-rule-dont-ask-permission-concretize-standing-fleet-wide-authority-grant-per-oper.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-29T08:44:12.763Z",
+  "schema_version": "v1",
+  "commit_sha": "4d70aab73b9faf110fd7881aca7007fd72782ea9",
+  "title": "rule(dont-ask-permission): concretize standing fleet-wide authority grant per operator directive",
+  "state": "MERGED",
+  "merged_at": "2026-05-29T08:43:51Z",
+  "head_ref": "lior/operator-concretize-standing-grant"
+}

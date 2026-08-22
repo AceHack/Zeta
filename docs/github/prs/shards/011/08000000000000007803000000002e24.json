@@ -1,0 +1,12 @@
+{
+  "pr_number": 11812,
+  "archive_path": "docs/history/pr-reviews/PR-11812-fix-heartbeat-declare-the-pr-review-archives-the-seventh-lane-path-correcting-an.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-18T07:05:29.433Z",
+  "schema_version": "v1",
+  "commit_sha": "340deede6388947ae09bef05aeadf34480abeb2d",
+  "title": "fix(heartbeat): declare the PR review archives, the seventh lane path — correcting an inverted merge direction",
+  "state": "MERGED",
+  "merged_at": "2026-08-18T07:04:53Z",
+  "head_ref": "shadow/pr-reviews-seventh-lane-path"
+}

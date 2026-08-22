@@ -1,0 +1,12 @@
+{
+  "pr_number": 7109,
+  "archive_path": "docs/history/pr-reviews/PR-7109-feat-core-softsession-end-to-end-autonomous-soft-play-capstone.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-08T21:56:58.681Z",
+  "schema_version": "v1",
+  "commit_sha": "5e31b9fd141b1ef55a726623a370e660f470af6f",
+  "title": "feat(core): SoftSession — end-to-end autonomous soft-play capstone",
+  "state": "MERGED",
+  "merged_at": "2026-06-08T21:56:38Z",
+  "head_ref": "otto/softsession-end-to-end-autonomous-soft-play-capstone"
+}

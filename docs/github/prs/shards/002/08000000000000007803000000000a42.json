@@ -1,0 +1,12 @@
+{
+  "pr_number": 2626,
+  "archive_path": "docs/history/pr-reviews/PR-2626-docs-memory-shadow-editorial-judgment-knows-git-vs-not-git-played-otto.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-11T02:11:39.815Z",
+  "schema_version": "v1",
+  "commit_sha": "45c93f275c19c19161d8970ad804e0a4190f6f45",
+  "title": "docs(memory): shadow editorial judgment — knows git vs not-git, played Otto",
+  "state": "MERGED",
+  "merged_at": "2026-05-11T02:11:24Z",
+  "head_ref": "docs/shadow-editorial-judgment-otto-played-2026-05-10"
+}

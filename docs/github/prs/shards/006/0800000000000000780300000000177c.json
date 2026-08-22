@@ -1,0 +1,12 @@
+{
+  "pr_number": 6012,
+  "archive_path": "docs/history/pr-reviews/PR-6012-memory-persona-kestrel-part-5-engineering-half-both-axes-protection-architecture.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-29T16:57:42.040Z",
+  "schema_version": "v1",
+  "commit_sha": "acf2279a678be827d6e63f14563305e00f35740f",
+  "title": "memory(persona/kestrel): part-5 engineering half — both-axes protection architecture + OTel agent-reliability observability standard",
+  "state": "MERGED",
+  "merged_at": "2026-05-29T16:57:21Z",
+  "head_ref": "otto-cli/kestrel-part5-engineering-both-axes-otel-observability-2026-05-29"
+}

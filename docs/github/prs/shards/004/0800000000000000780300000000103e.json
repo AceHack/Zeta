@@ -1,0 +1,17 @@
+{
+  "pr_number": 4158,
+  "archive_path": "docs/history/pr-reviews/PR-4158-research-backlog-riven-batch6-non-collapse-duality-no-artificial-throttle-or-rew.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7CUc23",
+    "comment:PRRC_kwDOSF9kNM7CUc2G",
+    "thread:PRRT_kwDOSF9kNM6C4sfl",
+    "thread:PRRT_kwDOSF9kNM6C4sgG"
+  ],
+  "fetched_at": "2026-05-18T15:39:28.516Z",
+  "schema_version": "v1",
+  "commit_sha": "96d2ff9fc487be0d64fb82508fae2392e6fffbd8",
+  "title": "research+backlog(riven-batch6): non-collapse duality + no-artificial-throttle-or-reward principle (Agora V6 Section 5 refinement; Aaron + Riven)",
+  "state": "MERGED",
+  "merged_at": "2026-05-18T15:39:01Z",
+  "head_ref": "otto-cli/mika-riven-batch6-b0647-non-collapse-duality-2026-05-18-1131Z"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 9225,
+  "archive_path": "docs/history/pr-reviews/PR-9225-test-core-full-parser-ladder-end-to-end-on-a-real-kdl-grammar-retire-the-kdl-for.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-02T23:52:29.967Z",
+  "schema_version": "v1",
+  "commit_sha": "3d7490b5a00974113bec100b35289d15f45b043e",
+  "title": "test(core): full parser ladder end-to-end on a real KDL grammar; retire the KDL fork",
+  "state": "MERGED",
+  "merged_at": "2026-07-02T23:52:05Z",
+  "head_ref": "otto/kdl-grammar-ladder-integration"
+}

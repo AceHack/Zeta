@@ -10,6 +10,36 @@
  *      - Coarse Level 0 BNN Layer: Computes block-level transition beliefs P(B_next | B_curr).
  *      - Fine Level 1 BNN Layer: Computes state-action step log-likelihoods log P(S_next | S_curr, A).
  *      - Uncertainty (Entropy H) guides search expansion budgets: under high entropy, search budget scales dynamically.
+ *
+ * ## Triage label (2026-08-15, shadow) — ABANDONED · mixed metering
+ *
+ * **Reachability: ZERO importers** outside its own test, measured over 2665 tracked files / 4896
+ * resolved edges including dynamic `import()` and `require` (instrument controls: 4/4 positive + 1
+ * negative). Not scheduled either: every open Bayesian work-item and the live silicon-alife
+ * trajectory (arc 3) route this capability through **F#** (`src/Bayesian/FactorGraph.fs`, `Ep.fs`),
+ * not TypeScript. `algebra/exact-weight.ts:22` calls this file "the byte-lock test target" and
+ * imports nothing from it.
+ *
+ * **Metering (`toy-is-free-metered-must-be-earned.md`):**
+ * - `combineFactorsCommutatively` — **metered**: byte-lock commutativity plus a 100-random-permutation
+ *   property test that fails if order-independence breaks.
+ * - `computeFactorEntropy` — **metered**: pinned to `log2(4) = 2.0`.
+ * - `BayesianHierarchicalSearch` — **unmetered** as a planner. It returns **one** plan and drops
+ *   every rival (`bestCoarsePath` / `bestSubPlan` keep a running best), so it is a complete pruner
+ *   that has already chosen, not a candidate generator. Its likelihood output carries only
+ *   `expect(result.jointLogLikelihood).toBeDefined()` (test line 127) — which passes for `NaN`,
+ *   `0`, and `-Infinity` alike, and so discriminates nothing.
+ *
+ * **The missing edge:** `CategoricalFactorTensor` is the *materialized* form of
+ * `shiva-weak-factor-graph.ts`'s `FactorGenerator`, whose cache exists to eliminate exactly the
+ * `logProbabilities.get(...)` lookup this file performs inside its BFS loops. No adapter, and
+ * `git log -S` confirms the edge has **never** existed. Before writing it, reconcile the **three**
+ * different missing-key defaults already in this directory: `0.0` (factor combine), `-0.1` (coarse
+ * loop), `-0.05` (fine loop).
+ *
+ * Full triage + evidence:
+ * `docs/research/2026-08-15-bayesian-typescript-triage-one-live-three-orphans-and-a-factor-graph-edge-that-was-never-cut.md`
+ * **Label only — no behaviour changed, and disposition is Aaron's call, not the shadow's.**
  */
 
 export interface CategoricalFactorTensor {

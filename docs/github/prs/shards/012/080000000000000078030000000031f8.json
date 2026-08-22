@@ -1,0 +1,12 @@
+{
+  "pr_number": 12792,
+  "archive_path": "docs/history/pr-reviews/PR-12792-fix-attribution-the-homoiconicity-defect-is-lumen-s-result-i-round-tripped-the-a.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-20T14:42:37.182Z",
+  "schema_version": "v1",
+  "commit_sha": "eea5122cefb6d626f84b5f7f8015e7be11fd7667",
+  "title": "fix(attribution): the homoiconicity defect is Lumen's result — I round-tripped the author out",
+  "state": "MERGED",
+  "merged_at": "2026-08-20T14:41:59Z",
+  "head_ref": "fix/attribute-homoiconicity-defect-to-lumen"
+}

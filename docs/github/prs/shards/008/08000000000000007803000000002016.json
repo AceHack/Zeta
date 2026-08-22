@@ -1,0 +1,12 @@
+{
+  "pr_number": 8214,
+  "archive_path": "docs/history/pr-reviews/PR-8214-feat-hygiene-wire-rut-detector-into-the-loop-tick-append-path.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-14T20:59:22.859Z",
+  "schema_version": "v1",
+  "commit_sha": "66ea88d43d9fb32510b07a7477432f1ceaa087b8",
+  "title": "feat(hygiene): wire rut detector into the loop-tick append path",
+  "state": "MERGED",
+  "merged_at": "2026-06-14T20:58:58Z",
+  "head_ref": "hygiene-wire-rut-guard-into-tick-append"
+}

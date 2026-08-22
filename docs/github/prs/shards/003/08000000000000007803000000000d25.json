@@ -1,0 +1,12 @@
+{
+  "pr_number": 3365,
+  "archive_path": "docs/history/pr-reviews/PR-3365-shard-tick-0524z-pr-3361-3362-merged-worktree-prune-race-investigation-cleared-4.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-15T05:36:53.268Z",
+  "schema_version": "v1",
+  "commit_sha": "dc28f7d8209ee2c82db6efbdb3dafc3015c2e089",
+  "title": "shard(tick): 0524Z — PR #3361/#3362 merged + worktree-prune-race investigation cleared 4 standard agent loops",
+  "state": "MERGED",
+  "merged_at": "2026-05-15T05:36:34Z",
+  "head_ref": "shard/tick-0524z-otto-cli-2026-05-15"
+}

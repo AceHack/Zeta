@@ -1,0 +1,33 @@
+{
+  "pr_number": 5776,
+  "archive_path": "docs/history/pr-reviews/PR-5776-feat-world-hierarchy-clifford-dbsp-git-githubworld-substrate-naming-substrate-aa.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7FvJ16",
+    "comment:PRRC_kwDOSF9kNM7FvNwA",
+    "comment:PRRC_kwDOSF9kNM7FvNwe",
+    "comment:PRRC_kwDOSF9kNM7FvNwu",
+    "comment:PRRC_kwDOSF9kNM7FvNxB",
+    "comment:PRRC_kwDOSF9kNM7Fvtbf",
+    "comment:PRRC_kwDOSF9kNM7Fvtc0",
+    "comment:PRRC_kwDOSF9kNM7FvtcS",
+    "comment:PRRC_kwDOSF9kNM7FvtdY",
+    "comment:PRRC_kwDOSF9kNM7Fwp3-",
+    "thread:PRRT_kwDOSF9kNM6FY6Up",
+    "thread:PRRT_kwDOSF9kNM6FY6VV",
+    "thread:PRRT_kwDOSF9kNM6FY6Vy",
+    "thread:PRRT_kwDOSF9kNM6FY6WK",
+    "thread:PRRT_kwDOSF9kNM6FYghS",
+    "thread:PRRT_kwDOSF9kNM6FYjZ6",
+    "thread:PRRT_kwDOSF9kNM6FYjZU",
+    "thread:PRRT_kwDOSF9kNM6FYjZt",
+    "thread:PRRT_kwDOSF9kNM6FYjaH",
+    "thread:PRRT_kwDOSF9kNM6FZmLU"
+  ],
+  "fetched_at": "2026-05-28T12:49:31.823Z",
+  "schema_version": "v1",
+  "commit_sha": "4cdadc2c76125a66e80d5df62d302a6753b450ac",
+  "title": "feat(world-hierarchy): Clifford → DBSP → Git → GitHubWorld substrate-naming substrate (Aaron 2026-05-28 canonical-vote); 20 tests pass",
+  "state": "MERGED",
+  "merged_at": "2026-05-28T12:49:08Z",
+  "head_ref": "otto-cli/world-hierarchy-clifford-dbsp-git-github-substrate-naming-substrate-canonical-vote-aaron-2026-05-28"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 13423,
+  "archive_path": "docs/history/pr-reviews/PR-13423-ferry-ip-questionable-language-as-an-autonomous-organism-barenholtz-hahn-panel.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-21T23:54:28.825Z",
+  "schema_version": "v1",
+  "commit_sha": "d18ca1e8cfb499f9894abba01a28f3beb6a84258",
+  "title": "ferry(ip-questionable): language as an autonomous organism — Barenholtz & Hahn panel",
+  "state": "MERGED",
+  "merged_at": "2026-08-21T23:53:40Z",
+  "head_ref": "ferry/language-as-organism-barenholtz-hahn-shapes-before-labels"
+}

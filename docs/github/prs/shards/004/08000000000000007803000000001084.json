@@ -1,0 +1,12 @@
+{
+  "pr_number": 4228,
+  "archive_path": "docs/history/pr-reviews/PR-4228-shard-2216z-c-pre-empt-at-3-with-baseline-regen-substrate-engineering-arc-comple.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-18T22:20:40.818Z",
+  "schema_version": "v1",
+  "commit_sha": "fd5b6b955958e8e536bc8d2fa5a7e387886341f2",
+  "title": "shard(2216Z-c): pre-empt at #3 with baseline regen substrate-engineering arc complete",
+  "state": "MERGED",
+  "merged_at": "2026-05-18T22:20:21Z",
+  "head_ref": "shard/tick-2216z-c-baseline-regen-pre-empt-substrate-engineering-arc-complete-2026-05-18"
+}

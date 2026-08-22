@@ -1,0 +1,12 @@
+{
+  "pr_number": 10158,
+  "archive_path": "docs/history/pr-reviews/PR-10158-chore-workitems-complete-081kx3ka3f0-healer-harness-certified-write-access-done.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-18T10:01:41.879Z",
+  "schema_version": "v1",
+  "commit_sha": "681654df831c88a8ea70da117bdc41597742cab3",
+  "title": "chore(workitems): complete 081KX3KA3F0 — healer harness + certified write access DONE",
+  "state": "MERGED",
+  "merged_at": "2026-08-08T19:56:59Z",
+  "head_ref": "otto/complete-081KX3KA3F0"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 9966,
+  "archive_path": "docs/history/pr-reviews/PR-9966-docs-research-caveat-a-chsh-margin-unsound-on-autocorrelated-streams-math-team-h.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-02T15:31:40.894Z",
+  "schema_version": "v1",
+  "commit_sha": "c4e81a0205fa2ba7708f9a5c7c795e1dcbdb3eb3",
+  "title": "docs(research): caveat (a) — CHSH margin unsound on autocorrelated streams (math-team handoff)",
+  "state": "MERGED",
+  "merged_at": "2026-08-02T15:31:14Z",
+  "head_ref": "otto/caveat-a-chsh-margin-autocorrelation-mathteam-handoff"
+}

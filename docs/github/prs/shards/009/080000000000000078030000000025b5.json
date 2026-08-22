@@ -1,0 +1,12 @@
+{
+  "pr_number": 9653,
+  "archive_path": "docs/history/pr-reviews/PR-9653-docs-research-first-failed-resonance-instance-tele-port-leap-the-cypherpunk-bolt.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-10T02:10:14.054Z",
+  "schema_version": "v1",
+  "commit_sha": "1b25f424e91ecbd43ed6be33f7d647124019ae2c",
+  "title": "docs(research): first FAILED resonance instance — tele+port+leap (the cypherpunk bolt-on) + the biohack + invariant honesty",
+  "state": "MERGED",
+  "merged_at": "2026-07-10T02:09:45Z",
+  "head_ref": "shadow/resonance-first-failed-instance-teleport"
+}

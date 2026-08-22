@@ -1,0 +1,12 @@
+{
+  "pr_number": 9028,
+  "archive_path": "docs/history/pr-reviews/PR-9028-deps-bump-the-dotnet-runtime-group-with-2-updates.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-14T19:24:33.138Z",
+  "schema_version": "v1",
+  "commit_sha": "26af0d626dbe5da532e1490ce7a737ecb2bc500d",
+  "title": "deps: Bump the dotnet-runtime group with 2 updates",
+  "state": "MERGED",
+  "merged_at": "2026-07-01T21:52:23Z",
+  "head_ref": "dependabot/nuget/dotnet-runtime-89c6c11038"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 7701,
+  "archive_path": "docs/history/pr-reviews/PR-7701-feat-viz-budget-the-living-stroke-calculus-on-the-wave-index-faces-layout-shelf-.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-11T14:37:53.507Z",
+  "schema_version": "v1",
+  "commit_sha": "183725d9b98f9ba03f11c7244e9593c92a961124",
+  "title": "feat(viz+budget): the living stroke + calculus on the wave + index faces + layout shelf + Big-O REQUIRED",
+  "state": "MERGED",
+  "merged_at": "2026-06-11T14:37:26Z",
+  "head_ref": "shadow-stroke-anim"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 4894,
+  "archive_path": "docs/history/pr-reviews/PR-4894-shard-2026-05-25-0042z-otto-vscode-bg-worker-15th-dotgit-anchor-2nd-consecutive-.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-25T00:48:07.594Z",
+  "schema_version": "v1",
+  "commit_sha": "468df168faa4a8b35925b4fedd4f8f8efb1b2afd",
+  "title": "shard(2026-05-25/0042Z): otto-vscode bg-worker — 15th dotgit anchor (2nd consecutive 0 stuck procs) + Lior-lane 54/60 steady",
+  "state": "MERGED",
+  "merged_at": "2026-05-25T00:47:51Z",
+  "head_ref": "shard/tick-0042z-otto-vscode-bg-worker-dotgit-15th-anchor-2nd-consecutive-clean-2026-05-25"
+}

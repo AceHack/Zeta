@@ -1,0 +1,16 @@
+{
+  "pr_number": 3841,
+  "archive_path": "docs/history/pr-reviews/PR-3841-shard-tick-2026-05-16t09-12z-b-0411-4th-fp-2-peer-call-cluster-identified.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7B32xD",
+    "comment:PRRC_kwDOSF9kNM7B3mbX",
+    "thread:PRRT_kwDOSF9kNM6CjA20"
+  ],
+  "fetched_at": "2026-05-16T10:02:44.635Z",
+  "schema_version": "v1",
+  "commit_sha": "84462ec4321d3bae29091a063c684e915b337655",
+  "title": "shard(tick): 2026-05-16T09:12Z — B-0411 = 4th FP-2; peer-call cluster identified",
+  "state": "MERGED",
+  "merged_at": "2026-05-16T10:02:26Z",
+  "head_ref": "shard/tick-0912z-otto-cli-2026-05-16"
+}

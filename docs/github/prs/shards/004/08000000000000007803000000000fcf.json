@@ -1,0 +1,12 @@
+{
+  "pr_number": 4047,
+  "archive_path": "docs/history/pr-reviews/PR-4047-test-b-0156-co-located-tests-for-check-tick-history-shard-schema-ts-9-tests.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-17T08:04:49.010Z",
+  "schema_version": "v1",
+  "commit_sha": "7383c95870104ef365bbbbd220c7f6d713906043",
+  "title": "test(B-0156): co-located tests for check-tick-history-shard-schema.ts (9 tests)",
+  "state": "MERGED",
+  "merged_at": "2026-05-17T08:04:32Z",
+  "head_ref": "otto-bg/b0156-schema-test-2026-05-17"
+}

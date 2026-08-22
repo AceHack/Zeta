@@ -1,0 +1,12 @@
+{
+  "pr_number": 10569,
+  "archive_path": "docs/history/pr-reviews/PR-10569-fix-heartbeat-merge-duty-was-a-lifo-stack-with-a-cap-so-the-tail-never-merged.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-14T13:25:09.842Z",
+  "schema_version": "v1",
+  "commit_sha": "cb678af975bcf0d657cf00da34a217d6d3c5352e",
+  "title": "fix(heartbeat): merge duty was a LIFO stack with a cap, so the tail never merged",
+  "state": "MERGED",
+  "merged_at": "2026-08-14T13:24:35Z",
+  "head_ref": "fix/merge-duty-lifo-starvation"
+}

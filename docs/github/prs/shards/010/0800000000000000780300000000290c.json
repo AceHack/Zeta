@@ -1,0 +1,12 @@
+{
+  "pr_number": 10508,
+  "archive_path": "docs/history/pr-reviews/PR-10508-fix-z3-every-smt-runner-asserted-all-unsat-which-a-tautology-satisfies.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-14T02:58:55.665Z",
+  "schema_version": "v1",
+  "commit_sha": "8f874d930e4fa4504af20b2134524d1ee4815c9d",
+  "title": "fix(z3): every SMT runner asserted all-unsat, which a tautology satisfies",
+  "state": "MERGED",
+  "merged_at": "2026-08-14T02:58:18Z",
+  "head_ref": "smt-runner-non-vacuity-probes"
+}

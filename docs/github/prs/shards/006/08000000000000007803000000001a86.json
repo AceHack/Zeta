@@ -1,0 +1,12 @@
+{
+  "pr_number": 6790,
+  "archive_path": "docs/history/pr-reviews/PR-6790-docs-fs-content-hash-multi-parent-design-confirmed-zset-culture-ordering-instanc.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-07T11:11:25.275Z",
+  "schema_version": "v1",
+  "commit_sha": "5901a25584de4a461b7a6733c49e6a13d9c3c105",
+  "title": "docs: fs content-hash/multi-parent design + confirmed ZSet culture-ordering instance (B-0969 escalation)",
+  "state": "MERGED",
+  "merged_at": "2026-06-07T11:11:05Z",
+  "head_ref": "capture/fs-content-hash-multiparent-and-zset-culture-instance"
+}

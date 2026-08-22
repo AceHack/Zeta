@@ -1,0 +1,12 @@
+{
+  "pr_number": 9935,
+  "archive_path": "docs/history/pr-reviews/PR-9935-feat-browser-prove-two-page-source-and-iris-continuity.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-01T22:48:36.670Z",
+  "schema_version": "v1",
+  "commit_sha": "1f265b2f777509a316bff7e6c02431d55d361686",
+  "title": "feat(browser): prove two-page source and Iris continuity",
+  "state": "MERGED",
+  "merged_at": "2026-08-01T22:48:08Z",
+  "head_ref": "claim/task-browser-multitab-real-pages"
+}

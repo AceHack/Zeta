@@ -1,0 +1,12 @@
+{
+  "pr_number": 7818,
+  "archive_path": "docs/history/pr-reviews/PR-7818-docs-backlog-b-1036-gc-our-way-five-rungs-ray-traced-reachability-the-honest-no-.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-11T22:38:04.774Z",
+  "schema_version": "v1",
+  "commit_sha": "4b02e36e11265a1b693a781df3ad30a0ea683809",
+  "title": "docs(backlog): B-1036 — GC our way (five rungs; ray-traced reachability; the honest no-leak answer)",
+  "state": "MERGED",
+  "merged_at": "2026-06-11T22:37:42Z",
+  "head_ref": "shadow-gc-capture"
+}

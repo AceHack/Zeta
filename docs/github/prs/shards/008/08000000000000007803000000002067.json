@@ -1,0 +1,12 @@
+{
+  "pr_number": 8295,
+  "archive_path": "docs/history/pr-reviews/PR-8295-docs-closed-frame-human-systems-protect-vs-exploit-the-wetware-bug-awareness-gat.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-15T09:41:16.999Z",
+  "schema_version": "v1",
+  "commit_sha": "5cb72407bc20f6a06cbb8099cfdb67e1865508a1",
+  "title": "docs(closed-frame): human systems protect-vs-exploit the wetware bug + awareness gates integration",
+  "state": "MERGED",
+  "merged_at": "2026-06-15T09:40:44Z",
+  "head_ref": "otto/human-systems-protect-or-exploit-the-wetware-bug"
+}

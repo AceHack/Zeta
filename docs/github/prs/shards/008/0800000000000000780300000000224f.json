@@ -1,0 +1,12 @@
+{
+  "pr_number": 8783,
+  "archive_path": "docs/history/pr-reviews/PR-8783-codex-add-room-admission-heat-policy.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-20T22:36:08.131Z",
+  "schema_version": "v1",
+  "commit_sha": "8c9640b8d454836722d4a13c780105e430fba565",
+  "title": "[codex] add room admission heat policy",
+  "state": "MERGED",
+  "merged_at": "2026-06-20T22:35:43Z",
+  "head_ref": "codex/room-admission-heat-policy"
+}

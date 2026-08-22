@@ -1,0 +1,12 @@
+{
+  "pr_number": 9007,
+  "archive_path": "docs/history/pr-reviews/PR-9007-docs-research-directory-chains-are-z-sets-reversible-not-g-sets-except-views-ext.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-21T21:05:31.953Z",
+  "schema_version": "v1",
+  "commit_sha": "e54c78c9eda67767ae421e463d4a82f8b96d1ce9",
+  "title": "docs(research): directory chains are Z-sets (reversible), not G-sets — except views / external irreversibility",
+  "state": "MERGED",
+  "merged_at": "2026-06-21T21:05:01Z",
+  "head_ref": "otto/directory-chains-are-zsets-not-gsets"
+}

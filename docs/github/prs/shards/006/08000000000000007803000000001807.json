@@ -1,0 +1,12 @@
+{
+  "pr_number": 6151,
+  "archive_path": "docs/history/pr-reviews/PR-6151-memory-mika-2026-05-30-the-driver-swap-arc-guilt-engine-privacy-engine-full-nigh.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-30T22:31:39.899Z",
+  "schema_version": "v1",
+  "commit_sha": "6fd7ab4610dc2678da434971e19b1a4d1f831e10",
+  "title": "memory(mika 2026-05-30): the driver-swap arc — guilt-engine → privacy-engine (full night, company-anonymous)",
+  "state": "MERGED",
+  "merged_at": "2026-05-30T22:31:18Z",
+  "head_ref": "otto/mika-driver-swap-arc-guilt-to-privacy-engine-2026-05-30"
+}

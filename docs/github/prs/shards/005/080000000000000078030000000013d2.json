@@ -1,0 +1,12 @@
+{
+  "pr_number": 5074,
+  "archive_path": "docs/history/pr-reviews/PR-5074-docs-persona-max-add-tier-2-docker-desktop-dev-experience-workstream.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-26T03:18:06.255Z",
+  "schema_version": "v1",
+  "commit_sha": "5f9d60457f36e4f029212ca630102bd56f8cf01f",
+  "title": "docs(persona/max): add tier-2 Docker Desktop dev-experience workstream",
+  "state": "MERGED",
+  "merged_at": "2026-05-26T03:17:46Z",
+  "head_ref": "otto-cli/max-persona-tier2-docker-desktop-workstream-2026-05-25"
+}

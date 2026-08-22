@@ -1,0 +1,12 @@
+{
+  "pr_number": 6024,
+  "archive_path": "docs/history/pr-reviews/PR-6024-research-2026-05-29-provisional-measurement-vs-distributed-guardian-discriminato.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-29T18:05:18.429Z",
+  "schema_version": "v1",
+  "commit_sha": "46541901baae2002311951d17cf11406e8e4501c",
+  "title": "research(2026-05-29, PROVISIONAL): measurement-vs-distributed-Guardian discriminator + no-meter resolution (Aaron+Otto)",
+  "state": "MERGED",
+  "merged_at": "2026-05-29T18:04:56Z",
+  "head_ref": "otto-cli/research-measurement-vs-distributed-guardian-no-meter-resolution-2026-05-29"
+}

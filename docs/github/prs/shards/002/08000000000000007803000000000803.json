@@ -1,0 +1,12 @@
+{
+  "pr_number": 2051,
+  "archive_path": "docs/history/pr-reviews/PR-2051-docs-trajectories-release-merged-ts-bun-child-candidate.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-08T09:23:20.305Z",
+  "schema_version": "v1",
+  "commit_sha": "fbf25fa8b67d8fd15a49adf943597acba2fc40d6",
+  "title": "docs(trajectories): release merged TS Bun child candidate",
+  "state": "MERGED",
+  "merged_at": "2026-05-08T09:23:01Z",
+  "head_ref": "claim/trajectory-ts-bun-child-cleanup"
+}

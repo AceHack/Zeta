@@ -1,0 +1,25 @@
+{
+  "pr_number": 3945,
+  "archive_path": "docs/history/pr-reviews/PR-3945-fix-b-0441-re-open-per-parent-child-status-invariant-b-0532.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7B7Rx-",
+    "comment:PRRC_kwDOSF9kNM7B7St7",
+    "comment:PRRC_kwDOSF9kNM7B7UsN",
+    "comment:PRRC_kwDOSF9kNM7B7aNA",
+    "comment:PRRC_kwDOSF9kNM7B7aNS",
+    "comment:PRRC_kwDOSF9kNM7B7tW2",
+    "comment:PRRC_kwDOSF9kNM7B7tXc",
+    "thread:PRRT_kwDOSF9kNM6Cl35l",
+    "thread:PRRT_kwDOSF9kNM6Cl3Oz",
+    "thread:PRRT_kwDOSF9kNM6Cl5UJ",
+    "thread:PRRT_kwDOSF9kNM6Cl9Ik",
+    "thread:PRRT_kwDOSF9kNM6Cl9It"
+  ],
+  "fetched_at": "2026-05-16T22:57:22.176Z",
+  "schema_version": "v1",
+  "commit_sha": "9f2404ff0864dd573fc3edc9e4636203ef864acf",
+  "title": "fix(B-0441): re-open per parent-child status invariant (B-0532)",
+  "state": "MERGED",
+  "merged_at": "2026-05-16T22:54:23Z",
+  "head_ref": "chore/b-0441-status-closed-2026-05-16"
+}

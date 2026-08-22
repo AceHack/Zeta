@@ -1,0 +1,12 @@
+{
+  "pr_number": 8163,
+  "archive_path": "docs/history/pr-reviews/PR-8163-ci-gate-split-per-language-lint-into-5-parallel-jobs-no-short-circuit.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-14T03:45:31.134Z",
+  "schema_version": "v1",
+  "commit_sha": "db330259c1aa1766847232a14b6fb2405174e1f5",
+  "title": "ci(gate): split per-language lint into 5 parallel jobs (no short-circuit)",
+  "state": "MERGED",
+  "merged_at": "2026-06-14T03:45:02Z",
+  "head_ref": "otto/split-lint-per-language"
+}

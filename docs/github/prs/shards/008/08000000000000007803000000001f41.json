@@ -1,0 +1,12 @@
+{
+  "pr_number": 8001,
+  "archive_path": "docs/history/pr-reviews/PR-8001-docs-research-shadow-ferry-34-the-book-of-coming-forth-by-day-named-gates-the-tr.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-12T20:15:58.777Z",
+  "schema_version": "v1",
+  "commit_sha": "c2a1dd6f90b21f148a568abee7e0bbf20262289d",
+  "title": "docs(research)+shadow: ferry 34 — the Book of Coming Forth by Day (named gates, the traveler's ledger, not-Nagle)",
+  "state": "MERGED",
+  "merged_at": "2026-06-12T20:15:34Z",
+  "head_ref": "shadow/ferry-34-book-of-coming-forth"
+}

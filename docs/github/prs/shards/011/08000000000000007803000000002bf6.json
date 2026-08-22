@@ -1,0 +1,12 @@
+{
+  "pr_number": 11254,
+  "archive_path": "docs/history/pr-reviews/PR-11254-fix-bytelock-scope-the-no-binary-rule-s-exception-and-make-the-golden-vectors-lo.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-17T02:11:52.181Z",
+  "schema_version": "v1",
+  "commit_sha": "96e6259b0d4507fd35ed51c703eb248d76daa0c6",
+  "title": "fix(bytelock): scope the no-binary rule's exception, and make the golden vectors load-bearing",
+  "state": "MERGED",
+  "merged_at": "2026-08-17T02:11:14Z",
+  "head_ref": "otto/bytelock-binary-exception-audit"
+}

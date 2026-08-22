@@ -1,0 +1,12 @@
+{
+  "pr_number": 2315,
+  "archive_path": "docs/history/pr-reviews/PR-2315-fix-b-0324-guard-billing-reader-minutes-capture.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-09T17:00:42.462Z",
+  "schema_version": "v1",
+  "commit_sha": "5b2b9e7a7aec617d25e7574be1ea6e14efd4ed75",
+  "title": "fix(B-0324): guard billing-reader minutes capture",
+  "state": "MERGED",
+  "merged_at": "2026-05-09T17:00:26Z",
+  "head_ref": "claim/b0324-billing-reader-tsc-fix-codex-2026-05-09"
+}

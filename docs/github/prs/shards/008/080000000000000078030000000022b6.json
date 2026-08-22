@@ -1,0 +1,12 @@
+{
+  "pr_number": 8886,
+  "archive_path": "docs/history/pr-reviews/PR-8886-ci-build-ai-cluster-iso-widen-phase-3-gate-trigger-paths-to-bootstrap-inputs-876.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-21T06:33:29.245Z",
+  "schema_version": "v1",
+  "commit_sha": "4f7835177960dab1635703739322cd246df38b2c",
+  "title": "ci(build-ai-cluster-iso): widen phase-3 gate trigger paths to bootstrap inputs (#8760)",
+  "state": "MERGED",
+  "merged_at": "2026-06-21T06:33:03Z",
+  "head_ref": "otto/widen-iso-gate-trigger-paths"
+}

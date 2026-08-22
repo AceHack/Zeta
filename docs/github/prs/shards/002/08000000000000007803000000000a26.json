@@ -1,0 +1,12 @@
+{
+  "pr_number": 2598,
+  "archive_path": "docs/history/pr-reviews/PR-2598-docs-memory-alephz-ai-full-repo-map-prior-work-inventory-max-s-latin-square.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-11T00:53:43.895Z",
+  "schema_version": "v1",
+  "commit_sha": "efb98d459d19b595f3dbb2dfda3e446be2017c52",
+  "title": "docs(memory): AlephZ-ai full repo map — prior-work inventory, Max's Latin Square",
+  "state": "MERGED",
+  "merged_at": "2026-05-11T00:53:27Z",
+  "head_ref": "docs/alephz-ai-repo-map-2026-05-10"
+}

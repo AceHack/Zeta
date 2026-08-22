@@ -1,0 +1,12 @@
+{
+  "pr_number": 7086,
+  "archive_path": "docs/history/pr-reviews/PR-7086-feat-core-chip8-deterministic-chip-8-emulator-core-the-dst-time-emulator-first-t.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-08T10:56:37.204Z",
+  "schema_version": "v1",
+  "commit_sha": "14d0b785b04ceb73f2b5e0e0a2009554313ad1ae",
+  "title": "feat(core): Chip8 — deterministic CHIP-8 emulator core (the DST-time-emulator, first target)",
+  "state": "MERGED",
+  "merged_at": "2026-06-08T10:56:17Z",
+  "head_ref": "otto/chip8-deterministic-emulator-core-dst"
+}

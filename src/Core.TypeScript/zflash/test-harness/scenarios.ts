@@ -163,7 +163,7 @@ export const SCENARIOS: ReadonlyArray<Scenario> = [
     ],
     gates: [],
     notes:
-      "Requires multi-VM QEMU orchestration (one existing cluster VM + one joining VM). Existing harness is single-VM; multi-VM orchestration deferred to follow-up. PoC defines the contract.",
+      "FIRST blocker CLEARED 2026-08-13: a join now exists to observe. k3s's join is the join (Aaron, closing PR #10493's open question), so full-ai-cluster/nixos/modules/k3s-join-observer.nix witnesses k3s's own agent-to-server join and emits B0891_CLUSTER_JOIN_SERIAL_MARKERS to serial; nixos/tests/k3s-agent-join.nix proves it two-node against the shipped modules. Checked mechanically by join-implementation-probe.ts. STILL BLOCKED on four named items (see JoinBlocker): joining-node-role-provisioning — a carrier now exists (zflash writes /zeta-firstboot.conf + /zeta-join-token; zeta-first-boot.sh prefers the ESP copy; injected-join-server.nix overrides serverAddr for agents) but NOTHING HAS BOOTED FROM IT, so the chain is unit-tested and unexercised; joining-node-address-assignment — the shared socket segment has no DHCP and no DNS (re-checked 2026-08-17: no dnsmasq/dhcpd/kea anywhere in full-ai-cluster), and nss-mdns answers for .local names only, so k3s-agent.nix's bare `control-plane` default could not resolve there. A carrier now exists (cluster-address.ts derives a static address from the role as a pure function; zeta-install.sh stages it; injected-cluster-address.nix applies it plus the control-plane /etc/hosts entry k3s-server.nix calls 'the robust path'), and the .local join URL was CORRECTED to the bare label — k3s-server.nix ships only --tls-san=control-plane, so the mDNS form would have failed certificate verification even if it had resolved. Same standing as role-provisioning: unit-tested, NOT BOOTED; shared-l2-segment — the netdev args and the socket-segment plan now exist (distinct MACs, listen/connect), but no frame has ever crossed the segment because nothing runs the VMs concurrently; concurrent-vm-lifecycle — executeMultiVMRuntimePlan boots serially and kills each VM on marker match. Dispatching before all three clear would report a failure that has nothing to do with joining.",
   },
 ];
 
@@ -209,6 +209,76 @@ export function findScenario(id: ScenarioId): Scenario | undefined {
  */
 
 /**
+ * The blockers still standing between `cluster-joining` and an honest
+ * dispatch, measured 2026-08-13. Named individually because "multi-VM
+ * orchestration" as a single phrase hid an entire provisioning gap once
+ * already, which is what PR #10493 was about.
+ *
+ * - `joining-node-role-provisioning` — the MECHANISM half has cleared, the
+ *   PROOF half has not. Until 2026-08-17 there was no carrier at all: zflash
+ *   could write four ESP files and none of them named a role, so the decision
+ *   was made at ISO-BUILD time by `/etc/zeta-firstboot.conf` (`HOST=control-plane`)
+ *   and a zflash-prepared image installed a second control plane. There is now
+ *   a carrier — `firstboot-role.ts` composes `/zeta-firstboot.conf`,
+ *   `planFileBackedZflashImage` writes it plus an optional `/zeta-join-token`,
+ *   `zeta-first-boot.sh` sources the ESP copy in preference to the ISO's,
+ *   `zeta-install.sh` installs the token at the path `k3s-agent.nix` reads,
+ *   and `injected-join-server.nix` overrides `serverAddr` for agents.
+ *   NONE OF THAT HAS BEEN BOOTED. Every step is unit-tested as a pure
+ *   function and zero steps are observed on a running guest, so the blocker
+ *   stays listed: a provisioning chain that has never provisioned anything is
+ *   a claim, not a capability — the same standard `shared-l2-segment` is held
+ *   to below. What would clear it is a guest that boots from a joiner-flashed
+ *   image and logs `role=joiner` on serial.
+ * - `joining-node-address-assignment` — the MECHANISM half has cleared 2026-08-17,
+ *   the PROOF half has not, exactly as `joining-node-role-provisioning` above.
+ *   The gap as filed: the shared segment is a bare QEMU socket — no DHCP server,
+ *   no DNS, no router (re-checked on `main`: every `useDHCP`/NetworkManager
+ *   setting in the tree is CLIENT side and there is no dnsmasq/dhcpd/kea
+ *   anywhere) — so two guests reach RFC-3927 link-local at best and the only
+ *   name service is Avahi/nss-mdns, which answers for `.local` ONLY.
+ *   There is now a carrier: `cluster-address.ts` derives a static address from
+ *   the ROLE (founder `10.88.0.1`, joiner `10.88.0.2+`) as a pure function,
+ *   `firstboot-role.ts` emits it into `/zeta-firstboot.conf`, `zeta-install.sh`
+ *   re-validates and stages three scalars under `/etc/zeta/`, and
+ *   `injected-cluster-address.nix` applies them plus the
+ *   `control-plane -> <ip>` `/etc/hosts` entry that `k3s-server.nix` calls
+ *   "the robust path".
+ *   THE ORIGINAL ENTRY WAS WRONG ON ONE POINT, and the correction is the
+ *   reason mDNS is not the fix: it said the `.local` form was the answer.
+ *   `k3s-server.nix` ships exactly one name SAN, `--tls-san=control-plane`, and
+ *   `nixos/tests/k3s-agent-join.nix` records that removing it makes the join
+ *   fail on certificate verification. So `control-plane.local` would have
+ *   failed the handshake even if mDNS had resolved it. The same k3s-server.nix
+ *   comment also records that mDNS was already TRIED on this stack and
+ *   "never resolved". `SCENARIO5_JOIN_SERVER_URL` is now the bare label.
+ *   NONE OF THE APPLICATION HAS BEEN BOOTED. The derivation is unit-tested with
+ *   no network and no QEMU; the `injected-cluster-address.nix` no-op path is
+ *   evaluated (it yields `{}`); the POPULATED path, the NetworkManager keyfile
+ *   pickup, MAC-based NIC matching, and reachability of 6443 across the segment
+ *   are all UNVERIFIED. The existing node must still be flashed
+ *   `--host control-plane` (without it `zeta-install.sh` generates a random
+ *   `node-<6hex>`). What would clear this blocker is a joiner observed
+ *   reaching the founder's API server on the segment.
+ * - `shared-l2-segment` — the ARGUMENT half has cleared:
+ *   `buildQemuSystemBootArgs` now accepts injected netdev specs and
+ *   `planMultiVMRuntime` puts the two VMs on one rootless QEMU socket segment
+ *   (`listen` on the existing node, `connect` on the joining node) with
+ *   distinct MACs. What has NOT cleared is the PROOF half: no frame has ever
+ *   crossed that segment, because nothing has run the two VMs at once. It
+ *   stays listed until a real join is observed over it — a planned topology
+ *   that has never carried traffic is a claim, not a capability.
+ * - `concurrent-vm-lifecycle` — `executeMultiVMRuntimePlan` boots the VMs
+ *   serially and `runManagedCommandUntilSerialMarkers` SIGTERMs each VM on
+ *   marker match, so the existing node is dead before the joining node boots.
+ */
+export type JoinBlocker =
+  | "joining-node-role-provisioning"
+  | "joining-node-address-assignment"
+  | "shared-l2-segment"
+  | "concurrent-vm-lifecycle";
+
+/**
  * RunnabilityVerdict — discriminated union for whether a scenario can
  * run in the current substrate state.
  */
@@ -216,7 +286,16 @@ export type RunnabilityVerdict =
   | { kind: "can-run-now"; harnessEntry: string }
   | { kind: "blocked-on-upstream-gate"; missingGates: ReadonlyArray<ScenarioId> }
   | { kind: "blocked-on-state-preservation"; required: "tpm-equivalent" | "persisted-kv" }
-  | { kind: "blocked-on-multi-vm-orchestration" }
+  // Blocker for cluster-joining. The FIRST blocker — nothing in the guest
+  // tree emitted B0891_CLUSTER_JOIN_SERIAL_MARKERS, so there was no join for
+  // any harness to observe — HAS CLEARED: k3s-join-observer.nix now witnesses
+  // k3s's own agent-to-server join and writes those exact strings to serial
+  // (Aaron 2026-08-13: "k3s's join is the join, don't invent our own"), and
+  // nixos/tests/k3s-agent-join.nix proves it two-node.
+  //
+  // What remains is carried explicitly rather than in prose, so that dropping
+  // one is a type change and not a quiet edit.
+  | { kind: "blocked-on-multi-vm-orchestration"; remainingBlockers: ReadonlyArray<JoinBlocker> }
   | { kind: "blocked-on-test-harness-path-fork" }
   | { kind: "requires-physical-usb" };
 
@@ -258,7 +337,8 @@ export function determineRunnability(
       if (scenario.id === "initial-format") {
         return {
           kind: "can-run-now",
-          harnessEntry: "src/Core.TypeScript/ci/qemu-boot-test.ts + src/Core.TypeScript/ci/audit-installer-iso-content.ts",
+          harnessEntry:
+            "src/Core.TypeScript/ci/qemu-boot-test.ts + src/Core.TypeScript/ci/audit-installer-iso-content.ts",
         };
       }
       if (scenario.id === "boot-cluster-up") {
@@ -300,8 +380,21 @@ export function determineRunnability(
         return { kind: "blocked-on-test-harness-path-fork" };
       }
       if (scenario.id === "cluster-joining") {
-        // Requires multi-VM QEMU orchestration per scenarios.ts notes
-        return { kind: "blocked-on-multi-vm-orchestration" };
+        // The first blocker (no join to observe) has cleared — the guest now
+        // emits the markers. The scenario still does NOT dispatch, because a
+        // joining VM that installs as a control-plane on a network it cannot
+        // reach would fail for three reasons that have nothing to do with the
+        // join. Each remaining blocker is named, so clearing one is a visible
+        // type-level edit rather than a quiet prose change.
+        return {
+          kind: "blocked-on-multi-vm-orchestration",
+          remainingBlockers: [
+            "joining-node-role-provisioning",
+            "joining-node-address-assignment",
+            "shared-l2-segment",
+            "concurrent-vm-lifecycle",
+          ],
+        };
       }
       // Default scaffolded blocker:
       return {

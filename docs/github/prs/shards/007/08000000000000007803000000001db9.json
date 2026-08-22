@@ -1,0 +1,12 @@
+{
+  "pr_number": 7609,
+  "archive_path": "docs/history/pr-reviews/PR-7609-feat-core-conformalga-points-are-null-vectors-distance-is-one-inner-product-the-.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-11T05:44:42.876Z",
+  "schema_version": "v1",
+  "commit_sha": "8bbb71f48d47f2434ae07c025157c0604cef6030",
+  "title": "feat(core): ConformalGA — points are null vectors, distance is ONE inner product; the memory-RBF kernel joins the seed",
+  "state": "MERGED",
+  "merged_at": "2026-06-11T05:44:22Z",
+  "head_ref": "shadow-conformal-ga-slice"
+}

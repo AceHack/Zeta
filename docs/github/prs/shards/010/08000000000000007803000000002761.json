@@ -1,0 +1,12 @@
+{
+  "pr_number": 10081,
+  "archive_path": "docs/history/pr-reviews/PR-10081-research-quantum-identity-3-code-audit-verified-with-two-reframes-cqm-law-covera.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-07T02:37:44.843Z",
+  "schema_version": "v1",
+  "commit_sha": "cb821e3dfd839472e64e8b46623791752aef7c2d",
+  "title": "research(quantum-identity): §3 code-audit — verified with two reframes; CQM law-coverage is the remaining gap",
+  "state": "MERGED",
+  "merged_at": "2026-08-07T02:37:13Z",
+  "head_ref": "docs/research-quantum-identity-s3-code-audit"
+}

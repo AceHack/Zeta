@@ -1,0 +1,12 @@
+{
+  "pr_number": 10922,
+  "archive_path": "docs/history/pr-reviews/PR-10922-fix-hygiene-one-canonical-agencysignature-rule-two-call-sites-that-cannot-disagr.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-16T15:07:22.196Z",
+  "schema_version": "v1",
+  "commit_sha": "56f73d4146ac1d116d5fe66031fb73e56c9be3eb",
+  "title": "fix(hygiene): one canonical AgencySignature rule, two call sites that cannot disagree",
+  "state": "MERGED",
+  "merged_at": "2026-08-16T15:06:38Z",
+  "head_ref": "shadow/agencysignature-recovered-malformed-taxonomy"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 6225,
+  "archive_path": "docs/history/pr-reviews/PR-6225-ci-windows-slice-2c-server-core-docker-test-of-install-ps1-green-on-windows-2025.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-31T18:05:55.345Z",
+  "schema_version": "v1",
+  "commit_sha": "46153ee321ca627787871d0c08658a6a232a33d5",
+  "title": "ci(windows): Slice 2c — Server-Core Docker test of install.ps1, green on windows-2025 (B-0857)",
+  "state": "MERGED",
+  "merged_at": "2026-05-31T18:05:31Z",
+  "head_ref": "otto-windows/slice2c-fix-longpaths-2026-05-30"
+}

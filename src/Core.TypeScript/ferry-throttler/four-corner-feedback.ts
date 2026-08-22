@@ -81,13 +81,37 @@
  * time. The feedback corner is the "I/Eye" — the self-observation channel that
  * makes prediction possible.
  *
- * ## Homoiconicity
+ * ## Homoiconicity — CLAIMS KEPT, REGISTER ATTACHED (checked 2026-08-16)
+ *
+ * The four lines below were written as identities ("is", "same as"). Three were put under test
+ * independently and none of them is one. They are KEPT VERBATIM because the shapes they point at are
+ * real and generative; what changed is the register, not the content. Evidence for every verdict:
+ * docs/research/2026-08-16-four-corner-homoiconicity-three-claims-checked-one-analogy-two-false-…md
  *
  * The teaching feedback is homoiconic with the physics layer:
  * - The -1 retraction is the Zeta retraction (same as the Z-set retraction)
+ *     → ANALOGY on this path. `absorbError` REPORTS `isRetraction` and does not use it: the posterior
+ *       is byte-identical with and without `retractableBeliefId`. The real one is
+ *       `udp-lossy-transport.retractLoss`, which recomputes the decision without the retracted
+ *       evidence (an AGM contraction with teeth); this is a flag.
  * - The new generator function is the new EP factor (same as the BNN update)
+ *     → FALSE. `generatorFn` reaches the EP update through no path at all — `toEpObservation` reads
+ *       only `severity` and `dimension`. Two envelopes differing only in `generatorFn` produce a
+ *       byte-identical posterior (measured). The true neighbouring claim is already stated above:
+ *       the error DIMENSION selects which BNN factor updates, and THAT one is structural.
  * - The quasi-time-crystal detector is the FigureEightEnsemble (same as the tangle detector)
+ *     → ANALOGY, and both halves overstate. No shared code (TS vs F#), no shared abstraction, no
+ *       golden vector. Different statistics: this measures TEMPORAL self-agreement of one lane at
+ *       lags 1..4; `rhoProxy` measures CROSS-SECTIONAL agreement of three cells at one instant.
+ *       `FigureEightEnsemble` is also not a tangle detector — λ ≤ 0, classified `Frozen`
+ *       (tests/Bayesian.Tests/FigureEightTangleClass.Tests.fs, measured 2026-08-14).
  * - The time-dilation is the AIMD backoff (same as the UDP transport)
+ *     → FALSE, and oppositely so. AIMD steers on LOSS RATE and recovers additively
+ *       (udp-lossy-transport.ts:1063-1066). `dilationFactor` steers on PATTERN REGULARITY and has no
+ *       increase term: a 0%-loss lane and a 100%-loss lane both compute 0
+ *       (081M065HVB5087G0R002N9NPFA), and a dilated lane in `ZetaTransportCell` never recovers
+ *       (081M065HQKT087G0R0033B3GTD). The AIMD analogue in this system is
+ *       `heat-aware-scheduler.ts`, which has both halves and says "analogue".
  *
  * ## References
  *
@@ -221,12 +245,25 @@ export function upgradeAck(ack: BatchAck, laneIndex = 0): TeachingBatchAck {
  * If the autocorrelation has a peak at lag τ ∈ {1,2,3,4} with value > 0.8,
  * the lane is in a quasi-time-crystal loop with period τ.
  *
+ * CORRECTION (2026-08-16, measured): the code below computes the AGREEMENT RATE
+ * (`matches / comparisons`), not the autocorrelation. They differ exactly at the ends that matter —
+ * a mean-centred autocorrelation of a CONSTANT sequence is 0/0 (undefined), while its agreement rate
+ * is 1.0, the maximum. So `dilationFactor` reads 0 for a 100%-loss lane AND for a 0%-loss lane; it
+ * measures regularity, not health. Filed as 081M065HVB5087G0R002N9NPFA.
+ *
  * ## Chip-8 connection
  *
  * In Chip-8, a quasi-time-crystal is a game loop that cycles through the same
  * states with period τ. The optimal strategy is to collapse the loop by treating
  * it as a 0-energy bottom state — stop fighting it and let it idle. The ferry
  * throttler applies the same strategy: time-dilate the lane.
+ *
+ * CORRECTION (2026-08-16, measured): "lets it idle" is not what the one caller does. In
+ * `ZetaTransportCell`, `dilationFactor` is written only in the failure branch and a lane at 0 is
+ * filtered out of `send`, so it is never retried, never fails again, and never recovers — a healed
+ * lane delivered 0 of 200 frames. Idle and retired differ in whether there is a way back, and there
+ * is not one. Filed as 081M065HQKT087G0R0033B3GTD. The strategy itself needs no physics to be right:
+ * it is circuit-breaking (Nygard, *Release It!*, 2007), which includes a half-open retry.
  */
 export interface QuasiCrystalState {
   /** Ring buffer of last N ack outcomes (true=rejected, false=received). */

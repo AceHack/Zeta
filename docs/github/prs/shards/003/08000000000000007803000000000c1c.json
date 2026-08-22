@@ -1,0 +1,12 @@
+{
+  "pr_number": 3100,
+  "archive_path": "docs/history/pr-reviews/PR-3100-feat-b-0259-memory-md-drift-enforcement-ci-workflow-harness-hook.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-14T06:07:53.532Z",
+  "schema_version": "v1",
+  "commit_sha": "6ea4bd332bf7a49d4f8eb7159294c93b80591949",
+  "title": "feat(b-0259): MEMORY.md drift enforcement — CI workflow + harness hook",
+  "state": "MERGED",
+  "merged_at": "2026-05-14T06:07:30Z",
+  "head_ref": "feat/b0259-memory-index-drift-ci-hook-2026-05-14"
+}

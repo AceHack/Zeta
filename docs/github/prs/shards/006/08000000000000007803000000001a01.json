@@ -1,0 +1,17 @@
+{
+  "pr_number": 6657,
+  "archive_path": "docs/history/pr-reviews/PR-6657-proof-zset-complete-z3-abelian-group-cross-check-subtraction-lemma-close-stale-6.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7HjREl",
+    "comment:PRRC_kwDOSF9kNM7HjRFW",
+    "thread:PRRT_kwDOSF9kNM6Gt-_4",
+    "thread:PRRT_kwDOSF9kNM6Gt_Ae"
+  ],
+  "fetched_at": "2026-06-03T11:04:38.101Z",
+  "schema_version": "v1",
+  "commit_sha": "103dba66fe19bbfe382c5726a4cb9c289f91a95c",
+  "title": "proof(zset): complete Z3 abelian-group cross-check (subtraction lemma) + close stale #6640 gap",
+  "state": "MERGED",
+  "merged_at": "2026-06-03T11:04:16Z",
+  "head_ref": "otto-cli/zset-z3-subtraction-lemma-ledger-fix-2026-06-03"
+}

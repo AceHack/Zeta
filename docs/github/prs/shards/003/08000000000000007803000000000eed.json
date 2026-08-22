@@ -1,0 +1,12 @@
+{
+  "pr_number": 3821,
+  "archive_path": "docs/history/pr-reviews/PR-3821-fix-b-0557-truly-cwd-independent-import-meta-dir-fallback.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-16T08:12:13.978Z",
+  "schema_version": "v1",
+  "commit_sha": "58350d978517f1f96c352582b554227b8917e748",
+  "title": "fix(B-0557): truly cwd-independent — import.meta.dir fallback",
+  "state": "MERGED",
+  "merged_at": "2026-05-16T08:11:55Z",
+  "head_ref": "fix/b0557-detect-repo-root-import-meta-fallback-otto-cli-2026-05-16"
+}

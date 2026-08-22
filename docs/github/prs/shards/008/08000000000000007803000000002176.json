@@ -1,0 +1,12 @@
+{
+  "pr_number": 8566,
+  "archive_path": "docs/history/pr-reviews/PR-8566-test-aurora-c-coordrisk-spectral-cross-check-cult-cartel-topology-test-4-3.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-19T13:16:31.450Z",
+  "schema_version": "v1",
+  "commit_sha": "f41e78a745a41a4227b937d7f1a2493e4b1de045",
+  "title": "test(aurora): (c) CoordRisk spectral cross-check — Cult-Cartel Topology (Test 4.3)",
+  "state": "MERGED",
+  "merged_at": "2026-06-19T13:15:57Z",
+  "head_ref": "otto/aurora-c-coordrisk-spectral"
+}

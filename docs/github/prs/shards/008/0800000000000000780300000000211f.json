@@ -1,0 +1,12 @@
+{
+  "pr_number": 8479,
+  "archive_path": "docs/history/pr-reviews/PR-8479-docs-aurora-note-observe-ts-is-the-liveness-path-safety-liveness-deferred-there.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-16T07:58:54.999Z",
+  "schema_version": "v1",
+  "commit_sha": "469008fc4d22322dd77a21cdecfb06b2a839441f",
+  "title": "docs(aurora): note observe.ts is the liveness path (safety→liveness deferred there)",
+  "state": "MERGED",
+  "merged_at": "2026-06-16T07:58:29Z",
+  "head_ref": "otto/observe-ts-is-the-liveness-path-note"
+}

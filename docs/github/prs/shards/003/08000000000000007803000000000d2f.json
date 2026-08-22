@@ -1,0 +1,21 @@
+{
+  "pr_number": 3375,
+  "archive_path": "docs/history/pr-reviews/PR-3375-feat-b-0530-cron-sentinel-mutex-detect-concurrent-otto-cli-sessions.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7BgCik",
+    "comment:PRRC_kwDOSF9kNM7BgEXE",
+    "comment:PRRC_kwDOSF9kNM7BgUga",
+    "comment:PRRC_kwDOSF9kNM7BheWJ",
+    "thread:PRRT_kwDOSF9kNM6CR3Mn",
+    "thread:PRRT_kwDOSF9kNM6CR4ji",
+    "thread:PRRT_kwDOSF9kNM6CS4Li",
+    "thread:PRRT_kwDOSF9kNM6CSEb1"
+  ],
+  "fetched_at": "2026-05-15T08:21:59.660Z",
+  "schema_version": "v1",
+  "commit_sha": "77677881748ae73296f2f62ae202912c37d6c05b",
+  "title": "feat(b-0530): cron-sentinel-mutex — detect concurrent Otto-CLI sessions",
+  "state": "MERGED",
+  "merged_at": "2026-05-15T08:21:38Z",
+  "head_ref": "feat/cron-sentinel-mutex-b0530-otto-cli-2026-05-15"
+}

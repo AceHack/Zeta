@@ -161,7 +161,38 @@ function getMomentumFromValue(value: number): Momentum {
   return entry ? { type: entry[0] as any } : { type: "Raw", value };
 }
 
+/** The Generic layout carries 119 payload bits: id bits 0..64 plus id bits 69..122. */
+export const MAX_GENERIC_PAYLOAD: bigint = (1n << 119n) - 1n;
+
+/**
+ * Pack a Generic-layout ZetaId (categories >= 9).
+ *
+ * BOUNDED SINCE 2026-08-14 — this used to SILENTLY TRUNCATE. The masks below keep
+ * payload bits 0..64 and 65..118 and threw the rest away without a word, so an
+ * oversized payload did not fail, it ALIASED. The concrete, dated failure that
+ * motivated the bound, reproduced as a test in `sort-key.test.ts`:
+ *
+ *   `inventory/new-item.ts` builds `(BigInt(Date.now()) << 78n) | random78`. That is
+ *   exactly 119 bits while `Date.now()` fits in 41 — i.e. ZERO headroom. At
+ *   **2039-09-07T15:47:35.552Z** `Date.now()` reaches 2^41, the payload becomes 120
+ *   bits, the top ms bit is masked off, and `packGeneric(ms = 2^41)` returns an id
+ *   **byte-identical to `packGeneric(ms = 0)`** — a wrap to 1970 and a real
+ *   collision with any zero-ms id, silently, forever.
+ *
+ * `packPayload` already enforced this cap before delegating here, so callers that
+ * route through it are unaffected; the hole was direct callers. Negative payloads
+ * are rejected for the same reason: BigInt masking makes `-1n` indistinguishable
+ * from all-ones.
+ */
 export function packGeneric(version: number, category: number, payload: bigint): ZetaId {
+  if (payload < 0n || payload > MAX_GENERIC_PAYLOAD) {
+    throw new Error(
+      `ZetaId.packGeneric: payload must be 0..2^119-1 (the Generic layout's capacity), got a ` +
+        `${payload < 0n ? "negative value" : `${payload.toString(2).length}-bit value`}. ` +
+        `Out-of-range payloads used to be silently truncated, which ALIASES distinct inputs to ` +
+        `the same id rather than failing.`,
+    );
+  }
   let bits = 0n;
   bits = setBits(bits, BIT_MASKS.version.offset, BIT_MASKS.version.width, BigInt(version));
   bits = setBits(bits, BIT_MASKS.category.offset, BIT_MASKS.category.width, BigInt(category));

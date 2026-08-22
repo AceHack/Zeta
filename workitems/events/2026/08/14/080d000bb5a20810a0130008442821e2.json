@@ -1,0 +1,14 @@
+{
+  "id": "080d000bb5a20810a0130008442821e2",
+  "at": "2026-08-14T18:09:11.745Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M00QDD20087G0R002A90QT5",
+    "type": "task",
+    "title": "ace capability manifest: signed capability declaration naming code, not entity kind",
+    "slug": "ace-capability-manifest-signed-capability-declaration-naming",
+    "priority": "P2",
+    "filename": "081M00QDD20087G0R002A90QT5-ace-capability-manifest-signed-capability-declaration-naming.md"
+  }
+}

@@ -48,6 +48,7 @@ import { execFileSync } from "node:child_process";
 import { mkdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { pack, DEFAULT_ENV, type SimulationEnvironment } from "../zeta-id/zeta-id";
+import { isCanonicalZetaIdHex } from "../zeta-id/canonical-hex";
 import {
   Category,
   IdVersion,
@@ -60,6 +61,7 @@ import {
 import type { AppendOutcome, EventSink } from "./execute";
 import type { NextAction } from "./observe";
 import type { EntropyTracker } from "../algebra/entropy-tracker";
+import { APPEND_ONLY_ERASURE_BITS, decisionErasureBits } from "../algebra/erasure-derivation";
 import type { PhaseClock, PhaseStamp } from "./phase-clock";
 import { stampPhase } from "./phase-clock";
 
@@ -83,9 +85,17 @@ export function mintObserveEventIdHex(env: SimulationEnvironment = DEFAULT_ENV, 
   return pack(obs, env).toString(16).padStart(32, "0");
 }
 
-/** A canonical observe-event id is 32 lowercase hex chars (mintObserveEventIdHex output). */
+/**
+ * A canonical observe-event id is 32 lowercase hex chars that DECODE as a ZetaId
+ * (`mintObserveEventIdHex` output).
+ *
+ * This was a bare `/^[0-9a-f]{32}$/`. That tests the encoding and never the value, so it
+ * accepted any 32 hex characters — including the hex-encoded JSON that a hashless "mint"
+ * in `emit-attestation.ts` produced (`7b22` = `{"`). The shape check remains necessary
+ * and is now not the whole check; `isCanonicalZetaIdHex` decodes via the codec.
+ */
 export function isCanonicalEventId(id: string): boolean {
-  return /^[0-9a-f]{32}$/.test(id);
+  return isCanonicalZetaIdHex(id);
 }
 
 /** Entropy snapshot carried per event (the thermodynamic cost-of-commit accounting). */
@@ -120,6 +130,17 @@ export interface FolderSinkOptions {
   readonly commit?: (filePath: string, envelope: EventEnvelope) => CommitOutcome;
   /** Entropy tracker (injected effect). When present, each append stamps {entropy_state, entropy_heat}. */
   readonly entropy?: EntropyTracker;
+  /**
+   * How many candidate actions the DECISION collapsed from, for the action being appended.
+   *
+   * The append itself erases nothing (see the call site), so without this the sink charges zero.
+   * The erasure in this pipeline is the choice — `observe.ts` `buildMenu()` produces N candidates
+   * and exactly one is recorded, which destroys `log2(N)` bits. The sink never sees the menu, so it
+   * cannot derive N; a caller that knows it supplies it here and the charge becomes real. Returning
+   * `undefined` (or nothing at all) means "not declared", and the append is metered as the
+   * append-only write it is, rather than as a literal.
+   */
+  readonly decisionCandidates?: (action: NextAction) => number | undefined;
   /** Phase clock (injected — the 4th traveler). When present, each append ticks and stamps {phase, derived}. */
   readonly phaseClock?: PhaseClock;
 }
@@ -342,9 +363,27 @@ export function folderSink(opts: FolderSinkOptions): EventSink {
         // so the envelope carries the POST-commit entropy state (the cost has been paid).
         let entropySnapshot: EntropySnapshot | undefined;
         if (entropy) {
-          // Each commit erases 1 bit of decision-uncertainty from the possibility space.
-          // (The decision has collapsed from N possibilities → 1 chosen action.)
-          entropy.measure(1);
+          // ── The charge is DERIVED here, and it is zero unless a caller declares otherwise ──
+          //
+          // This used to be `entropy.measure(1)`, justified as "the decision collapsed from N
+          // possibilities to 1". Two things were wrong with it. The number 1 was a literal — the
+          // collapse costs log2(N), which is 1 only when N = 2. And the collapse does not happen
+          // here: `append` receives an action already chosen, so N is not in scope. What `append`
+          // does is add a fact to an append-only log; the post-state contains the event, so the
+          // pre-state is the post-state minus it, and a re-append of the same id is the identity
+          // (the G-Set property this file already relies on). Both are injective, so
+          // APPEND_ONLY_ERASURE_BITS = 0 — Bennett 1973 gives a bijection no floor.
+          //
+          // Charging 1 bit per append is also what drove `entropy_state` negative and stamped
+          // those negatives into durable envelopes (entropy-tracker.ts header, the
+          // `unadmittedErasureBits` deficit). Deriving the figure closes that on this path.
+          //
+          // A caller that DOES know the menu size supplies `decisionCandidates`, and the real
+          // erasure — log2(N) — is charged through the same declared door (§13).
+          const candidates = opts.decisionCandidates?.(action);
+          const bits = candidates === undefined ? APPEND_ONLY_ERASURE_BITS : decisionErasureBits(candidates);
+          if (bits > 0) entropy.measure(bits);
+          else entropy.permutation(); // bijective: recorded, not erased
           entropySnapshot = {
             entropy_state: entropy.state.entropy_state,
             entropy_heat: entropy.state.entropy_heat,

@@ -1,0 +1,12 @@
+{
+  "pr_number": 7527,
+  "archive_path": "docs/history/pr-reviews/PR-7527-feat-core-fingerprintprism-iprism-hook-to-fingerprints-hard-exact-soft-minhash-s.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-10T22:44:53.535Z",
+  "schema_version": "v1",
+  "commit_sha": "47727d7ad216c696b4cb0a2c5b3d6c021385ce81",
+  "title": "feat(core): FingerprintPrism — IPrism hook to fingerprints (hard exact + soft MinHash; switch games staying soft)",
+  "state": "MERGED",
+  "merged_at": "2026-06-10T22:44:31Z",
+  "head_ref": "shadow-fingerprint-prism-soft-game-lookup"
+}

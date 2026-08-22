@@ -1,0 +1,12 @@
+{
+  "pr_number": 9739,
+  "archive_path": "docs/history/pr-reviews/PR-9739-docs-book-stage-raw-the-mother-who-wouldn-t-let-you-lie-origin-of-radical-transp.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-11T20:30:18.742Z",
+  "schema_version": "v1",
+  "commit_sha": "2a2b09217e914b25e46cac7f248ec8d5daa322ce",
+  "title": "docs(book): stage RAW — the mother who wouldn't let you lie (origin of radical transparency) (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-11T20:29:53Z",
+  "head_ref": "book-raw-mother-transparency"
+}

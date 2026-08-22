@@ -1,0 +1,12 @@
+{
+  "pr_number": 10868,
+  "archive_path": "docs/history/pr-reviews/PR-10868-fix-hygiene-the-rule-cross-ref-auditor-stops-reading-an-archived-pointer-as-a-de.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-16T14:04:43.358Z",
+  "schema_version": "v1",
+  "commit_sha": "abf9f75bb29035e3614b747407e732bb2de4df11",
+  "title": "fix(hygiene): the rule cross-ref auditor stops reading an archived pointer as a dead one, and reads link targets",
+  "state": "MERGED",
+  "merged_at": "2026-08-16T14:04:03Z",
+  "head_ref": "shadow-auditor-rules-bak-and-link-targets"
+}

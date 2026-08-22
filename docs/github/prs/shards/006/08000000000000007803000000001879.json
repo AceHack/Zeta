@@ -1,0 +1,12 @@
+{
+  "pr_number": 6265,
+  "archive_path": "docs/history/pr-reviews/PR-6265-decision-observe-act-adr-resolve-16-slot-grammar-to-v0-free-exploration-first-cl.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-31T22:54:01.955Z",
+  "schema_version": "v1",
+  "commit_sha": "7141ffe1bf8b1da6c38e342c3bea3dad376eae8a",
+  "title": "decision(observe-act ADR): resolve 16-slot grammar to v0 + free-exploration first-class",
+  "state": "MERGED",
+  "merged_at": "2026-05-31T22:53:42Z",
+  "head_ref": "docs/observe-16slot-grammar-v0-resolved-2026-05-31"
+}

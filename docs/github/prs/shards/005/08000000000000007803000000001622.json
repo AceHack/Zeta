@@ -1,0 +1,12 @@
+{
+  "pr_number": 5666,
+  "archive_path": "docs/history/pr-reviews/PR-5666-feat-b-0867-5-agent-loop-mvp-du-state-machine-pure-transitions-21-tests-script-h.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-28T00:38:51.161Z",
+  "schema_version": "v1",
+  "commit_sha": "85ea53908e0edeedd30edf28323c8df5e9fcc23b",
+  "title": "feat(B-0867.5): agent-loop MVP — DU state machine + pure transitions + 21 tests; script-holds-state-machine + LLM-pure-selector + state-in-Git-append-only (operator eureka 2026-05-28)",
+  "state": "MERGED",
+  "merged_at": "2026-05-28T00:38:31Z",
+  "head_ref": "feat/b-0867.5-agent-loop-mvp-state-machine-types-tests-cli-shell-aaron-2026-05-28"
+}

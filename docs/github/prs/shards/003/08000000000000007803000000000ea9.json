@@ -1,0 +1,12 @@
+{
+  "pr_number": 3753,
+  "archive_path": "docs/history/pr-reviews/PR-3753-shard-tick-2026-05-16t05-16z-deferred-fix-plan-executed-3-prs-merged-this-tick.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-16T05:20:22.405Z",
+  "schema_version": "v1",
+  "commit_sha": "bb2cc32da91a706d9c9086db959fb7d76cd64a5d",
+  "title": "shard(tick): 2026-05-16T05:16Z — deferred-fix plan executed; 3 PRs merged this tick",
+  "state": "MERGED",
+  "merged_at": "2026-05-16T05:20:05Z",
+  "head_ref": "shard/tick-0516z-otto-cli-2026-05-16"
+}

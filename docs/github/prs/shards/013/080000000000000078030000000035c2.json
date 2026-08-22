@@ -1,0 +1,12 @@
+{
+  "pr_number": 13762,
+  "archive_path": "docs/history/pr-reviews/PR-13762-cluster-metal-the-metal-rung-now-has-a-measured-machine-behind-it-and-the-two-ru.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-22T15:54:36.820Z",
+  "schema_version": "v1",
+  "commit_sha": "a23fc4662f381a114feb4028bd3a23593e0108b3",
+  "title": "cluster(metal): the metal rung now has a measured machine behind it — and the two rungs are compared",
+  "state": "MERGED",
+  "merged_at": "2026-08-22T15:53:56Z",
+  "head_ref": "shadow/metal-cpu-provenance-and-rung-coverage-2026-08-22"
+}

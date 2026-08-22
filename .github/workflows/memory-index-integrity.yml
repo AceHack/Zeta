@@ -59,6 +59,8 @@ concurrency:
 jobs:
   check:
     name: check memory file frontmatter completeness
+    # Timeout basis: observed med 0.4m / max 0.6m (n=40); no install.sh.
+    timeout-minutes: 5
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1

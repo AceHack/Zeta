@@ -1,0 +1,12 @@
+{
+  "pr_number": 4418,
+  "archive_path": "docs/history/pr-reviews/PR-4418-docs-archive-maji-pr-preservation-batch-1505z.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-20T15:12:45.640Z",
+  "schema_version": "v1",
+  "commit_sha": "0a731c8aedb14b3264d71c1ce34578c82080feb7",
+  "title": "docs(archive): Maji PR preservation batch 1505Z",
+  "state": "MERGED",
+  "merged_at": "2026-05-20T15:12:24Z",
+  "head_ref": "maji/preserve-batch1505Z"
+}

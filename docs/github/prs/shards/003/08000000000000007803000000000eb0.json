@@ -1,0 +1,12 @@
+{
+  "pr_number": 3760,
+  "archive_path": "docs/history/pr-reviews/PR-3760-shard-tick-2026-05-16t05-37z-brief-ack-1-named-dep-wait-peer-otto-rate-limit-tie.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-16T05:59:50.926Z",
+  "schema_version": "v1",
+  "commit_sha": "f4515568df51d141bf9d94d3f5639aa829b1409a",
+  "title": "shard(tick): 2026-05-16T05:37Z — brief-ack #1 named-dep wait + peer Otto rate-limit-tiers rule extension",
+  "state": "MERGED",
+  "merged_at": "2026-05-16T05:59:34Z",
+  "head_ref": "shard/tick-0537z-otto-cli-2026-05-16"
+}

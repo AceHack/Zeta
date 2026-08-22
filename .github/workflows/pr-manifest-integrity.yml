@@ -1,0 +1,237 @@
+name: pr-manifest-integrity
+
+# Watchdog for the PR-archive shard store and its DERIVED index
+# (081KZYMY46P087G0R003S64V2B, 081KZYP7MNV087G0R002X0E3V9).
+#
+# WHY THIS FILE EXISTS.
+# derive-pr-manifest.ts shipped as a drift gate that no workflow ever invoked, and
+# src/Core.TypeScript/forge-host/ is in no bun test path, so the 109 tests covering the
+# archival + shard tooling never ran either. Main then sat in derive-drift for an hour after
+# #10427 and nothing reported it; a human found it by hand. A gate that never runs is worse
+# than no gate: it is a file whose stated job is to catch exactly the divergence that then
+# happened silently.
+#
+# WHAT IT ASSERTS, and what it deliberately does not.
+#   exit 2, shard-store integrity (unreadable, misfiled, or duplicate-keyed shard)
+#     -> FAIL on every trigger. That class is never legitimate and never by design.
+#   exit 1, derived-index drift that has OUTLIVED THE REPAIR BOUND
+#     -> FAIL on schedule and workflow_dispatch, REPORT on pull_request.
+#     Drift itself is legitimate and expected: an archive PR writes only its own shard (that is
+#     what retired the pairwise-conflict class), and the index is repaired by the single
+#     serialised writer in agent-heartbeat.yml (soraya archive duty, whose flush gate is
+#     MIN_INTERVAL_SECONDS=3000). On a pull_request the drift belongs to main rather than to the
+#     branch, so it is reported and never charged to the contributor.
+#
+#     THE BOUND IS NOW MEASURED, AND THIS IS THE CORRECTION OF A REAL BUG.
+#     This block used to reason: "six hours is well past the one-hour bound, so drift seen by a
+#     scheduled run means the repair cadence has STOPPED." That inference is invalid -- the
+#     check samples an INSTANT and the conclusion is about a DURATION -- and it made this
+#     workflow fail four consecutive scheduled runs (32573347920 and its three predecessors)
+#     while the repair writer was healthy the whole time. Against the writer's own commit
+#     history on docs/github/prs/manifest.jsonl:
+#
+#         scheduled run    last repair landed    verdict printed
+#         08-21T18:34       0.4 min earlier      "repair writer has stopped landing"
+#         08-22T00:34      38.2 min earlier      same
+#         08-22T06:34       5.0 min earlier      same
+#         08-22T12:34      11.6 min earlier      same
+#
+#     All four were false. derive-pr-manifest.ts now measures the age of the drift from the
+#     `fetched_at` of the oldest UNRECONCILED shard -- which is exactly "how long ago the repair
+#     writer must last have run", because the repair regenerates the whole index from all
+#     shards -- and only drift past the bound is a finding.
+#
+#     WHY 180 MINUTES, and why this is not a tolerance widened until it passed. Measured over
+#     218 repair landings in the week to 2026-08-22, the gap between repairs is p50 26.5 min,
+#     p90 47 min. 180 is ~3.8x p90 and sits above the whole healthy population (all four false
+#     positives above were <= 38.2 min) and below the pathological one: the same week contained
+#     7 gaps over 2 hours and 4 over 3 hours, and this bound still goes red on every one of
+#     them. It is drawn from the measured distribution, not from what made the run green.
+#
+#     Three classes stay red at ANY age, so the bound can never become a mute button: shard
+#     integrity (exit 2), an ORPHANED index entry with no shard behind it (substrate loss, which
+#     no late repair explains), and an unreconciled shard whose fetched_at cannot be read (a
+#     check that cannot measure must not report a pass). Falsifiers for all of it, including
+#     mutation-killed proof that the bound is not vacuous, are in derive-pr-manifest.test.ts.
+#
+# COST. 4 scheduled runs/day at roughly 2 minutes, about 8 minutes/day, plus a run on the rare
+# PR that edits the archival tooling. The path filter deliberately excludes docs/github/prs:
+# every archive PR touches that path and would trigger a by-design drift report on each one.
+#
+# SCOPE. The general problem, 612 test files of which about 95 run in CI, is #10429 and is not
+# solved here. This wires ONE directory: the one whose absence is load-bearing for the shard
+# migration. gate.yml is deliberately untouched so the two changes cannot collide.
+
+on:
+  schedule:
+    # 4x/day, offset off the hour so it does not pile onto the :00 cron surge.
+    - cron: "23 */6 * * *"
+  pull_request:
+    paths:
+      - "src/Core.TypeScript/forge-host/github/**"
+      # The telemetry-flush module is in scope because the derived index staleness bound
+      # DEPENDS on it: agent-heartbeat.yml soraya archive duty is the serialised writer that
+      # repairs the index, and it only lands through this flush. It had no CI test path
+      # either -- which is how a contract regression there stayed invisible.
+      - "src/Core.TypeScript/agent-heartbeats/**"
+      - ".github/workflows/pr-manifest-integrity.yml"
+  workflow_dispatch:
+
+permissions:
+  # Read-only, and it stays that way. This workflow REPORTS; it never repairs. Repair belongs
+  # to the single serialised writer in agent-heartbeat.yml. A second writer of the derived
+  # index would reintroduce the shared-file write this whole change set removed.
+  contents: read
+
+concurrency:
+  group: pr-manifest-integrity-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  integrity:
+    name: shard store + derived index
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+
+    permissions:
+      # Explicit at job level because the review-thread capture guard below reads
+      # pullRequest.reviewThreads, which contents:read alone does not cover. Still
+      # read-only in both scopes: this workflow reports and never repairs.
+      contents: read
+      pull-requests: read
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          # Depth 1: this job reads the working tree only. No history, no rev-parse, no push.
+          fetch-depth: 1
+          # No credentials are needed and none are wanted; nothing here writes to the repo.
+          persist-credentials: false
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
+        with:
+          bun-version: latest
+
+      - name: Unit tests for the archival, shard and telemetry-flush tooling
+        # About 140 tests across 11 files, roughly 6 seconds. Before this workflow, ZERO of
+        # them ran in CI: gate.yml enumerates its bun test targets explicitly and neither
+        # directory was ever one of them.
+        # No bun install step: these tests import node builtins and repo-local modules only.
+        run: |
+          bun test src/Core.TypeScript/forge-host/github/
+          bun test src/Core.TypeScript/agent-heartbeats/
+
+      - name: Shard store integrity + derived index drift
+        env:
+          GH_EVENT: ${{ github.event_name }}
+        run: |
+          set -uo pipefail
+
+          # Command substitution rather than a temp file: the report is a handful of lines and
+          # this keeps the step free of stray artefacts on the runner.
+          set +e
+          # --min-age-minutes 180: see the header. Drift younger than the repair bound exits 0
+          # (and still prints how far behind the index is); only drift that has outlived the
+          # bound exits 1. Integrity, orphaned entries and unreadable timestamps ignore it.
+          report=$(bun src/Core.TypeScript/forge-host/github/derive-pr-manifest.ts --min-age-minutes 180 2>&1)
+          rc=$?
+          set -e
+
+          # The tool prefixes findings with the error annotation marker so an ordinary caller
+          # gets annotations for free. Strip it here and re-raise the annotation deliberately
+          # below, so the by-design pull_request drift case does not paint a red annotation on
+          # a run that is passing on purpose.
+          clean=$(printf '%s\n' "$report" | sed -e "s/^::error:://")
+          # tee, not an append redirect: the report reaches the job log AND the step
+          # summary from one call, so the two can never disagree about what ran.
+          printf '%s\n' "### PR shard store + derived index" "" \
+            "Trigger: $GH_EVENT. derive-pr-manifest.ts exit code: $rc." "" \
+            "$clean" | tee -a "$GITHUB_STEP_SUMMARY"
+
+          if [ "$rc" -eq 2 ]; then
+            echo "::error title=Shard store integrity failure::A shard is unreadable, misfiled, or duplicate-keyed. Never by design. The shards are the ledger, so a bad shard is substrate loss and not an index nuisance."
+            exit 2
+          fi
+
+          if [ "$rc" -eq 1 ]; then
+            if [ "$GH_EVENT" = "pull_request" ]; then
+              echo "::notice title=Derived index drift (informational)::main is currently ahead of docs/github/prs/manifest.jsonl, and the drift has outlived the 180-minute repair bound. Repaired by agent-heartbeat.yml soraya archive duty. Not attributable to this PR, so not failing it."
+              exit 0
+            fi
+            echo "::error title=Derived index drift outlived the repair cadence::docs/github/prs/manifest.jsonl has been behind the shards for longer than the 180-minute repair bound (MEASURED from the oldest unreconciled shard's fetched_at, not assumed from the schedule), so the serialised repair writer (agent-heartbeat.yml, soraya archive duty) has stopped landing. Repair by hand: bun src/Core.TypeScript/forge-host/github/derive-pr-manifest.ts --write"
+            exit 1
+          fi
+
+          if [ "$rc" -ne 0 ]; then
+            echo "::error title=derive-pr-manifest.ts failed unexpectedly::exit code $rc"
+            exit "$rc"
+          fi
+
+          echo "Shard store and derived index agree."
+
+      - name: PR review-thread capture (merge-race guard)
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_EVENT: ${{ github.event_name }}
+        run: |
+          set -uo pipefail
+
+          # THE FALSIFIER FOR 081M08MVPR9087G0R000NCF8PV.
+          #
+          # pr-archive-on-merge.yml fetches review threads the instant a PR closes, and the
+          # automated reviewer posts its threads AFTER that (measured: p50 +177 s, max +283 s
+          # over the 2,000 most recent merges; the work item saw a +78 min tail on an older
+          # reviewer population). The archiver wins the race and freezes a wrong snapshot, and
+          # `| Total threads | 0 |` then reads identically to "there were none" — a check that
+          # did not run looking like one that passed.
+          #
+          # Re-measured 2026-08-18 over 150 uniformly sampled archive docs: 20.0% of docs
+          # under-report, thread-level capture 74.3%. Against what was FETCHABLE at the moment
+          # the archiver looked, capture was 191/191 = 100% — which is what rules out
+          # pagination, an API cap, a permission gap and a parse bug, and leaves the race.
+          #
+          # The repair is the bounded sweep in agent-heartbeat.yml (soraya archive duty,
+          # reconcile-review-archive.ts --write). THIS step is the guard on that repair: it
+          # asks whether any PR merged longer ago than the reviewer tail still under-reports.
+          # If the sweep stops running, or the archiver regresses, this goes red.
+          #
+          # WHY IT CANNOT PASS VACUOUSLY. Most merges here are automation and never acquire a
+          # review thread, so "everything in the window agrees" is exactly what a completely
+          # broken archiver also produces. The tool therefore requires a POSITIVE CONTROL — a
+          # doc with a recorded, nonzero count that still matches GitHub — before it will
+          # render any verdict at all, and exits 2 (INCONCLUSIVE, not pass) when it has none.
+          #
+          # Exit codes: 0 pass, 1 under-reporting found, 2 inconclusive/scan failed.
+          set +e
+          report=$(bun src/Core.TypeScript/forge-host/github/reconcile-review-archive.ts \
+            --check --since-hours 24 --min-age-minutes 30 2>&1)
+          rc=$?
+          set -e
+
+          printf '%s\n' "### PR review-thread capture" "" \
+            "Trigger: $GH_EVENT. reconcile-review-archive.ts --check exit code: $rc." "" \
+            '```' "$report" '```' | tee -a "$GITHUB_STEP_SUMMARY"
+
+          if [ "$rc" -eq 0 ]; then
+            echo "Review-thread capture matches GitHub across the window."
+            exit 0
+          fi
+
+          if [ "$rc" -eq 2 ]; then
+            # Inconclusive is NEVER reported as a pass — that is the defect class this whole
+            # workflow exists to refuse. It is also not a red: nothing is known to be wrong.
+            echo "::warning title=Review-thread capture INCONCLUSIVE::No positive control was available (or the shard store could not be read), so no verdict could be rendered. This is not a pass. See the step summary."
+            exit 0
+          fi
+
+          if [ "$GH_EVENT" = "pull_request" ]; then
+            # Same precedent as the derived-index drift above: the gap belongs to main, not
+            # to the contributor whose branch happened to touch this directory.
+            echo "::notice title=Review-thread capture gap (informational)::Archive docs on main under-report review threads. Repaired by agent-heartbeat.yml soraya archive duty; not attributable to this PR, so not failing it."
+            exit 0
+          fi
+
+          echo "::error title=Review-thread capture gap outlived the reconcile sweep::One or more PRs merged over 30 minutes ago still record fewer review threads than GitHub holds, so the merge-race repair (agent-heartbeat.yml soraya archive duty) has stopped landing. Repair by hand: bun src/Core.TypeScript/forge-host/github/reconcile-review-archive.ts --write"
+          exit 1

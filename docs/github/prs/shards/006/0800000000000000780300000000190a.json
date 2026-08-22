@@ -1,0 +1,24 @@
+{
+  "pr_number": 6410,
+  "archive_path": "docs/history/pr-reviews/PR-6410-feat-ace-slice-5-3-lockfile-write-ace-lock-frozen-replay.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7GthzG",
+    "comment:PRRC_kwDOSF9kNM7Gtiff",
+    "comment:PRRC_kwDOSF9kNM7GtigK",
+    "comment:PRRC_kwDOSF9kNM7Gtigr",
+    "comment:PRRC_kwDOSF9kNM7GtvuL",
+    "comment:PRRC_kwDOSF9kNM7Gtvw3",
+    "comment:PRRC_kwDOSF9kNM7GtvyR",
+    "thread:PRRT_kwDOSF9kNM6GGeRz",
+    "thread:PRRT_kwDOSF9kNM6GGey3",
+    "thread:PRRT_kwDOSF9kNM6GGezZ",
+    "thread:PRRT_kwDOSF9kNM6GGezy"
+  ],
+  "fetched_at": "2026-06-01T11:54:35.727Z",
+  "schema_version": "v1",
+  "commit_sha": "e01a585ebd73df623c930a95ed0c2af0801cce93",
+  "title": "feat(ace): slice 5.3 — lockfile (write ./ace.lock + --frozen replay)",
+  "state": "MERGED",
+  "merged_at": "2026-06-01T11:54:07Z",
+  "head_ref": "otto-windows/ace-slice5.3-impl-2026-06-01"
+}

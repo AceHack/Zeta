@@ -1,0 +1,15 @@
+{
+  "pr_number": 6277,
+  "archive_path": "docs/history/pr-reviews/PR-6277-feat-observe-option-a-render-slice-free-modes-collapse-under-slot-14-sub-menu.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7GjK2k",
+    "thread:PRRT_kwDOSF9kNM6F-tcL"
+  ],
+  "fetched_at": "2026-05-31T23:37:29.377Z",
+  "schema_version": "v1",
+  "commit_sha": "7b94626e25b60828a314f6d1f2a970d7b8ae4919",
+  "title": "feat(observe): Option-A render slice — free modes collapse under slot 14 sub-menu",
+  "state": "MERGED",
+  "merged_at": "2026-05-31T23:37:10Z",
+  "head_ref": "otto-cli/grammar-16-render-optionA-2026-05-31"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 5839,
+  "archive_path": "docs/history/pr-reviews/PR-5839-rule-location-pointer-index-aaron-s-cognitive-architecture-makes-source-attribut.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-28T14:28:43.363Z",
+  "schema_version": "v1",
+  "commit_sha": "f7ff33a8671630e5b5a232bd1160c94adb03bcad",
+  "title": "rule(location-pointer-index): Aaron's cognitive architecture makes source-attribution operationally load-bearing for framework substrate (Aaron 2026-05-28 shadow* authorization)",
+  "state": "MERGED",
+  "merged_at": "2026-05-28T14:28:17Z",
+  "head_ref": "otto-cli/rule-location-pointer-index-aaron-cognitive-architecture-source-attribution-load-bearing-2026-05-28"
+}

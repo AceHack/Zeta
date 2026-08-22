@@ -30,6 +30,15 @@ C#/TS sort by UTF-16 code units, Rust `str` by UTF-8 bytes — they order non-BM
 UTF-8 byte order), lock it in the golden vectors, and make every oracle + the math
 conform. The seed is the treaty.
 
+The canonical collation has a name DBAs already know: **`Latin1_General_100_BIN2_UTF8`**
+(SQL Server). It is the *only* SQL Server binary name that is exact — `_BIN` is
+first-char-then-raw-bytes, and `BIN2` over `nvarchar` is UTF-16 **code-unit** order, so both
+diverge from us above the BMP. Implemented as `Collation.binary` in all four oracles.
+**Culture-aware collations are opt-in at the EDGE and must not be shared catalog names** —
+no two runtimes ship the same collation tables, so a shared culture-aware name silently
+means different things per language. Detail + measurements + the SQL Server citations:
+`docs/research/2026-08-15-canonical-collation-is-utf8-byte-order-sql-servers-bin2-utf8-not-nvarchar-bin2.md`.
+
 ## Why
 
 4-language byte-lock and DST replay both REQUIRE it — culture comparison varies by

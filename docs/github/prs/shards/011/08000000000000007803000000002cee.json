@@ -1,0 +1,12 @@
+{
+  "pr_number": 11502,
+  "archive_path": "docs/history/pr-reviews/PR-11502-feat-zflash-joining-node-gets-an-address-static-segment-addressing-not-dhcp-or-m.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-17T14:51:10.365Z",
+  "schema_version": "v1",
+  "commit_sha": "2b1deab0e536d16277964c131a1dbb4f8acb363b",
+  "title": "feat(zflash): joining node gets an address — static segment addressing, not DHCP or mDNS",
+  "state": "MERGED",
+  "merged_at": "2026-08-17T14:49:59Z",
+  "head_ref": "shadow/zflash-joining-node-addressing"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 3226,
+  "archive_path": "docs/history/pr-reviews/PR-3226-chore-backlog-regenerate-docs-backlog-md-index-drift-cleanup-b-0517-b-0518-b-051.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-14T20:31:06.716Z",
+  "schema_version": "v1",
+  "commit_sha": "fe8a84590ab0a53243df5d5d485ce191e3d6fb86",
+  "title": "chore(backlog): regenerate docs/BACKLOG.md — index drift cleanup (B-0517/B-0518/B-0519)",
+  "state": "MERGED",
+  "merged_at": "2026-05-14T20:30:50Z",
+  "head_ref": "otto/backlog-md-regen-b0517-b0518-b0519-2026-05-14"
+}

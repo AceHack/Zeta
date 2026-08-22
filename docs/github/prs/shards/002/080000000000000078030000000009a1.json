@@ -1,0 +1,12 @@
+{
+  "pr_number": 2465,
+  "archive_path": "docs/history/pr-reviews/PR-2465-feat-b-0161-add-thoughts-free-actions-razored-asymmetry-bullet-to-claude-md.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-10T10:55:57.748Z",
+  "schema_version": "v1",
+  "commit_sha": "3c903aa326f9de63af22562e1265fb669d645392",
+  "title": "feat(B-0161): add thoughts-free-actions-razored asymmetry bullet to CLAUDE.md",
+  "state": "MERGED",
+  "merged_at": "2026-05-10T10:55:42Z",
+  "head_ref": "fix/B-0161-asymmetry-bullet"
+}

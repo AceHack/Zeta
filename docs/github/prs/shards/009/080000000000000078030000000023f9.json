@@ -1,0 +1,12 @@
+{
+  "pr_number": 9209,
+  "archive_path": "docs/history/pr-reviews/PR-9209-docs-workitems-photo-generative-vector-format-chip9-cart-render-target.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-02T22:14:07.557Z",
+  "schema_version": "v1",
+  "commit_sha": "91f32e8e4acbad8e0ff9104e513530f41a31a56a",
+  "title": "docs(workitems): photo -> generative vector format, chip9-cart render target",
+  "state": "MERGED",
+  "merged_at": "2026-07-02T22:13:44Z",
+  "head_ref": "otto/workitem-photo-to-generative-vector-chip9"
+}

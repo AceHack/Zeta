@@ -1,0 +1,28 @@
+{
+  "pr_number": 9601,
+  "archive_path": "docs/history/pr-reviews/PR-9601-docs-adr-drift-and-heal-replaces-pre-merge-gates-reconciliation-at-ai-speed-prop.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7Tf-0o",
+    "comment:PRRC_kwDOSF9kNM7Tf1lk",
+    "comment:PRRC_kwDOSF9kNM7Tf693",
+    "comment:PRRC_kwDOSF9kNM7TfmM3",
+    "comment:PRRC_kwDOSF9kNM7TfsgZ",
+    "comment:PRRC_kwDOSF9kNM7Tfuif",
+    "comment:PRRC_kwDOSF9kNM7TfyoN",
+    "comment:PRRC_kwDOSF9kNM7TgMNb",
+    "comment:PRRC_kwDOSF9kNM7TgMNf",
+    "thread:PRRT_kwDOSF9kNM6PbGc_",
+    "thread:PRRT_kwDOSF9kNM6PbMKr",
+    "thread:PRRT_kwDOSF9kNM6PbQ91",
+    "thread:PRRT_kwDOSF9kNM6PbUsP",
+    "thread:PRRT_kwDOSF9kNM6Pbgtc",
+    "thread:PRRT_kwDOSF9kNM6Pbgte"
+  ],
+  "fetched_at": "2026-07-09T02:22:35.681Z",
+  "schema_version": "v1",
+  "commit_sha": "407b2993f37656381c8088841a1e0c05bbb6487a",
+  "title": "docs(ADR): drift-and-heal replaces pre-merge gates — reconciliation at AI speed (proposed)",
+  "state": "MERGED",
+  "merged_at": "2026-07-09T02:22:07Z",
+  "head_ref": "otto/adr-drift-and-heal"
+}

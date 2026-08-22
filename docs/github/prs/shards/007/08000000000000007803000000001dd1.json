@@ -1,0 +1,12 @@
+{
+  "pr_number": 7633,
+  "archive_path": "docs/history/pr-reviews/PR-7633-test-society-swarmboard-over-the-reticulum-mesh-b-1026-stage-3-presence-as-packe.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-11T10:00:17.808Z",
+  "schema_version": "v1",
+  "commit_sha": "6962be7825bb0e5c51d008520ee4e3f6302d89e9",
+  "title": "test(society): SwarmBoard over the Reticulum mesh — B-1026 stage 3 (presence as packets, DST)",
+  "state": "MERGED",
+  "merged_at": "2026-06-11T09:59:53Z",
+  "head_ref": "shadow-board-over-mesh"
+}

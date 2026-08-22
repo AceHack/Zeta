@@ -1,0 +1,12 @@
+{
+  "pr_number": 3787,
+  "archive_path": "docs/history/pr-reviews/PR-3787-shard-tick-2026-05-16t06-44z-brief-ack-extreme-cost-aware-tier.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-16T06:49:42.557Z",
+  "schema_version": "v1",
+  "commit_sha": "4ed708586a1695bd55b99789acbf43cc0fda1088",
+  "title": "shard(tick): 2026-05-16T06:44Z — brief-ack; extreme cost-aware tier",
+  "state": "MERGED",
+  "merged_at": "2026-05-16T06:49:28Z",
+  "head_ref": "shard/tick-0644z-otto-cli-2026-05-16"
+}

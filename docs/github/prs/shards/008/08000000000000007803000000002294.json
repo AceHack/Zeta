@@ -1,0 +1,12 @@
+{
+  "pr_number": 8852,
+  "archive_path": "docs/history/pr-reviews/PR-8852-feat-persona-keys-github-temp-trust-root-resolver-read-only-idp-key-directory.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-21T04:22:06.321Z",
+  "schema_version": "v1",
+  "commit_sha": "7d86f9b1bb93e3abda3954d6eaa2a7b759d765b6",
+  "title": "feat(persona-keys): GitHub temp-trust-root resolver (read-only IdP + key directory)",
+  "state": "MERGED",
+  "merged_at": "2026-06-21T04:21:38Z",
+  "head_ref": "otto/github-temp-trust-root"
+}

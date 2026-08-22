@@ -1,0 +1,12 @@
+{
+  "pr_number": 1938,
+  "archive_path": "docs/history/pr-reviews/PR-1938-fix-backlog-avoid-multiline-inline-code-predicate.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-07T19:53:15.576Z",
+  "schema_version": "v1",
+  "commit_sha": "e4ea21ad46822b7c14a0571535516ead9c23853b",
+  "title": "fix(backlog): avoid multiline inline code predicate",
+  "state": "MERGED",
+  "merged_at": "2026-05-07T19:52:57Z",
+  "head_ref": "codex/b0062-material-spend-predicate-markdown"
+}

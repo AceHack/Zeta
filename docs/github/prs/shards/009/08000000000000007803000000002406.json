@@ -1,0 +1,12 @@
+{
+  "pr_number": 9222,
+  "archive_path": "docs/history/pr-reviews/PR-9222-feat-inventory-phase-b-lean-viewer-over-items-json-supabase-era-code-retired.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-02T23:41:32.549Z",
+  "schema_version": "v1",
+  "commit_sha": "15e876586358a480f14545c74152656b455bac71",
+  "title": "feat(inventory): phase B — lean viewer over items.json; Supabase-era code retired",
+  "state": "MERGED",
+  "merged_at": "2026-07-02T23:41:10Z",
+  "head_ref": "otto/inventory-lean-viewer-phase-b"
+}

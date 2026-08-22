@@ -1,0 +1,15 @@
+{
+  "pr_number": 5375,
+  "archive_path": "docs/history/pr-reviews/PR-5375-docs-release-merged-codex-claim-files.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7FK5BL",
+    "thread:PRRT_kwDOSF9kNM6E-VkX"
+  ],
+  "fetched_at": "2026-05-27T02:05:40.402Z",
+  "schema_version": "v1",
+  "commit_sha": "a47bc4722875b61a12a83d35daf38e4f13f4ff7f",
+  "title": "docs: release merged Codex claim files",
+  "state": "MERGED",
+  "merged_at": "2026-05-27T02:05:22Z",
+  "head_ref": "claim/codex-loop-release-merged-claims-20260527"
+}

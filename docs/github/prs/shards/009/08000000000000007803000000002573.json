@@ -1,0 +1,12 @@
+{
+  "pr_number": 9587,
+  "archive_path": "docs/history/pr-reviews/PR-9587-fix-docs-markdownlint-round-3-hadamard-code-span-cron-backticks-in-nft-adr.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-09T00:25:38.634Z",
+  "schema_version": "v1",
+  "commit_sha": "aca77fe87396418cbd26ec66b827245623bbe7d0",
+  "title": "fix(docs): markdownlint round 3 — hadamard code span + cron backticks in NFT ADR",
+  "state": "MERGED",
+  "merged_at": "2026-07-09T00:25:09Z",
+  "head_ref": "otto/mdlint-round3"
+}

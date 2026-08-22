@@ -1,0 +1,12 @@
+{
+  "pr_number": 9988,
+  "archive_path": "docs/history/pr-reviews/PR-9988-docs-research-fiction-as-prior-installer-naming-binds-it-in-the-cognitive-simula.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-02T20:12:17.811Z",
+  "schema_version": "v1",
+  "commit_sha": "a0419dae6e631e28f3070bc7cd14a92698719854",
+  "title": "docs(research): fiction as prior-installer + naming-binds-it in the cognitive-simulation cluster",
+  "state": "MERGED",
+  "merged_at": "2026-08-02T20:11:48Z",
+  "head_ref": "research/cogsim-fiction-installer-naming-binds-20260802"
+}

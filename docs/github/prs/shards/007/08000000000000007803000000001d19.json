@@ -1,0 +1,12 @@
+{
+  "pr_number": 7449,
+  "archive_path": "docs/history/pr-reviews/PR-7449-feat-workitems-shadow-p1-dangling-md-pointers-auto-vivify-into-mumps-gitfs-gover.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-10T04:41:01.337Z",
+  "schema_version": "v1",
+  "commit_sha": "4fa774841df9436caf0923c259ab55eb8114954b",
+  "title": "feat(workitems)+shadow: P1 dangling-MD-pointers auto-vivify into MUMPS+gitfs (governed ZetaId)",
+  "state": "MERGED",
+  "merged_at": "2026-06-10T04:40:39Z",
+  "head_ref": "shadow-workitem-md-pointer-autovivify"
+}

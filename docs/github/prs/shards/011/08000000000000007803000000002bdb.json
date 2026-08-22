@@ -1,0 +1,12 @@
+{
+  "pr_number": 11227,
+  "archive_path": "docs/history/pr-reviews/PR-11227-fix-ci-give-society-heartbeat-the-push-credential-that-lets-gate-start.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-17T01:05:23.085Z",
+  "schema_version": "v1",
+  "commit_sha": "4c5303238c160fa6012f5ad98fd6b1b5fb0a9ac1",
+  "title": "fix(ci): give society-heartbeat the push credential that lets gate start",
+  "state": "MERGED",
+  "merged_at": "2026-08-17T01:04:47Z",
+  "head_ref": "shadow/society-flush-push-credential"
+}

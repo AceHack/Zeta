@@ -1,12 +1,94 @@
-# HashiCorp Vault — runtime secrets engine + Vault Agent injector
-# for pods. Pair with Sealed Secrets (above): Sealed for config-style
-# secrets, Vault for dynamic + rotated secrets + audit trail.
+# HashiCorp Vault -- runtime secrets engine + Vault Agent injector for pods.
+# Pair with Sealed Secrets: Sealed for config-style secrets, Vault for dynamic
+# + rotated secrets + audit trail.
+#
+# == SOLE OWNER OF HELM RELEASE `vault` (2026-08-20, Dejan) ===================
+# k8s/bootstrap/vault-install.yaml was DELETED and its `vault-install.source`
+# entry removed from nixos/modules/k3s-server.nix in the same commit. Until
+# then both reconcilers owned release `vault` in namespace `vault` and
+# disagreed on the storage backend, rewriting it on every selfHeal pass.
+#
+# == TOPOLOGY: SINGLE NODE. Declared, not implied. (2026-08-21, Nazar) =======
+# `cluster.zeta.io/topology` below is the machine-readable declaration of the
+# node topology these values are configured for, and
+# src/Core.TypeScript/hygiene/audit-vault-topology-coherence.ts FAILS if the
+# values disagree with it. Flipping the annotation without changing the values
+# is a red check, not a silent lie.
+#
+# The three-node delta is written out in full in TOPOLOGY.md beside this file.
+# `ha.enabled: true` + `raft.enabled: true` are kept at replicas 1: raft is
+# still the storage backend, so growing to three nodes is `vault operator raft
+# join`, NOT a storage-backend migration. The downgrade that WOULD discard the
+# raft design is `ha.enabled: false` (which renders `storage "file"`), and this
+# file does not do that.
+#
+# `server.affinity: ""` and `injector.affinity: ""` remove the chart's default
+# podAntiAffinity `requiredDuringSchedulingIgnoredDuringExecution` on
+# topologyKey kubernetes.io/hostname. At replicas 1 it constrains nothing; left
+# in at replicas > 1 on one node it is what pinned two of three Vault pods and
+# one of two injector pods Pending forever. TOPOLOGY.md restores it verbatim
+# for the three-node case, where it is load-bearing.
+#
+# == TLS: OFF, END TO END, ON PURPOSE ========================================
+# This file previously carried `global.tlsDisable: false` with the comment
+# "generate TLS via cert-manager or self-signed". That was FALSE: there is not
+# and never was a `kind: Certificate` in this tree, and the chart's default HCL
+# sets `tls_disable = 1` regardless of `global.tlsDisable` -- which only steers
+# VAULT_ADDR's scheme and the port NAMES. The render was a plaintext listener
+# with an https client, and `vault status -tls-skip-verify` skips certificate
+# VERIFICATION, not the TLS handshake, so the readiness probe could never pass.
+#
+# `global.tlsDisable: true` makes the two agree: `tls_disable = 1` in the
+# listener and `http://` in VAULT_ADDR / VAULT_API_ADDR. VAULT_CLUSTER_ADDR
+# stays `https://...:8201` and that is CORRECT, not a leftover -- Vault's
+# cluster port always uses TLS with a self-signed ECDSA-P521 cert Vault
+# generates itself and distributes through the encrypted barrier
+# (developer.hashicorp.com/vault/docs/concepts/ha: cluster traffic is "always
+# forced to https since only TLS connections are used between servers").
+# The coherence audit scopes to port 8200 for exactly this reason.
+#
+# TLS ON is the target, and it is BLOCKED on a CA issuer, not on this file: the
+# only ClusterIssuers in the tree are ACME/HTTP-01 (applications/platform/
+# clusterissuer.yaml), and ACME cannot issue for `vault-0.vault-internal`.
+# Flipping `tlsDisable: false` without first wiring a Certificate + listener
+# cert paths now FAILS the coherence audit instead of shipping.
+#
+# == STORAGE: NODE-LOCAL, BECAUSE RAFT IS THE REPLICATION LAYER ==============
+# This file previously pinned `storageClass: longhorn` at sync-wave -60 while
+# longhorn installs at -15, so the PVCs pended until longhorn landed 45 waves
+# later. Rather than reshuffle waves, the pairing is corrected: integrated raft
+# storage replicates Vault's data itself, so putting it on a replicated
+# network volume is replication under replication. `zeta-local-path`
+# (nixos/modules/local-storage.nix, a k3s auto-applied manifest imported by
+# control-plane, worker-gpu and worker-template) exists at first boot on every
+# node, is WaitForFirstConsumer, and needs no wave ordering at all.
+#
+# KNOWN COST, not hidden: `zeta-local-path` is `reclaimPolicy: Delete` where
+# longhorn's app config sets Retain. A manual `kubectl delete pvc` therefore
+# destroys the raft store. `prune: false` below keeps ArgoCD from doing it, and
+# StatefulSet PVCs survive StatefulSet deletion by default, so the exposure is
+# a deliberate human `delete pvc`. Recovery is re-init + restore, which needs
+# the unseal ceremony -- see TOPOLOGY.md.
+#
+# == UNSEAL IS A GATED CEREMONY -- DESIGNED HERE, NEVER RUN BY AN AGENT ======
+# Vault comes up SEALED and stays sealed until `vault operator init` +
+# `vault operator unseal`. Those commands mint root and unseal key material and
+# are a GATED CLASS: fresh human authorization plus the biometric gate in
+# tools/setup/persona-keys/biometric.ts. No agent runs them. The procedure,
+# the OpenBao auto-unseal question, and the Shamir custody path are in
+# TOPOLOGY.md. Until the ceremony is run, Vault's readiness probe exits 2
+# (sealed) and the pod is legitimately NotReady. That is the correct state for
+# an uninitialised Vault, not a regression.
 
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
   annotations:
     argocd.argoproj.io/sync-wave: "-60"
+    # Machine-readable topology declaration. Audited by
+    # src/Core.TypeScript/hygiene/audit-vault-topology-coherence.ts.
+    # Allowed: single-node | three-node
+    cluster.zeta.io/topology: single-node
   name: vault
   namespace: argocd
   finalizers: [ resources-finalizer.argocd.argoproj.io ]
@@ -21,25 +103,57 @@ spec:
       valuesObject:
         global:
           enabled: true
-          tlsDisable: false   # generate TLS via cert-manager or self-signed
+          # http listener + http VAULT_ADDR. See the TLS section above.
+          tlsDisable: true
         server:
+          # Chart default is a REQUIRED podAntiAffinity on kubernetes.io/hostname.
+          # Empty at single-node; TOPOLOGY.md restores it for three-node.
+          affinity: ""
           ha:
             enabled: true
-            replicas: 3
+            replicas: 1
+            disruptionBudget:
+              # At replicas 1 the chart renders `maxUnavailable: 0`, which
+              # blocks `kubectl drain` on the only node FOREVER -- a NixOS
+              # host upgrade would hang. A PDB over a single replica protects
+              # no availability it did not already lack.
+              enabled: false
             raft:
               enabled: true
               setNodeId: true
+              # Supplied EXPLICITLY rather than inherited from the chart. The
+              # inherited default is why nothing could compare the listener's
+              # TLS setting against VAULT_ADDR's scheme -- the two facts lived
+              # in different files. The coherence audit REFUSES an absent
+              # config for that reason.
+              config: |
+                ui = true
+                listener "tcp" {
+                  tls_disable = 1
+                  address = "[::]:8200"
+                  cluster_address = "[::]:8201"
+                }
+                storage "raft" {
+                  path = "/vault/data"
+                }
+                service_registration "kubernetes" {}
           dataStorage:
             enabled: true
-            storageClass: longhorn
+            storageClass: zeta-local-path
             size: 20Gi
           auditStorage:
             enabled: true
-            storageClass: longhorn
+            storageClass: zeta-local-path
             size: 10Gi
         injector:
           enabled: true
-          replicas: 2
+          # Was 2 with a REQUIRED hostname anti-affinity -> one pod Pending
+          # forever on one node. The MutatingWebhookConfiguration is
+          # `failurePolicy: Ignore` (verified in the render), so the blast
+          # radius of that was a degraded ArgoCD health signal, not blocked
+          # pod admission cluster-wide.
+          replicas: 1
+          affinity: ""
         ui:
           enabled: true
           serviceType: ClusterIP

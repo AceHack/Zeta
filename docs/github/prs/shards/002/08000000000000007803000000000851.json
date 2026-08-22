@@ -1,0 +1,12 @@
+{
+  "pr_number": 2129,
+  "archive_path": "docs/history/pr-reviews/PR-2129-fix-b-0140-update-stale-sh-doc-refs-to-ts-close-migration.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-08T20:39:39.907Z",
+  "schema_version": "v1",
+  "commit_sha": "7b507a46e14203ed8c8b9c2d44c715e1366c931b",
+  "title": "fix(B-0140): update stale .sh doc-refs to .ts — close migration",
+  "state": "MERGED",
+  "merged_at": "2026-05-08T20:39:24Z",
+  "head_ref": "b0140-fix-stale-sh-doc-refs"
+}

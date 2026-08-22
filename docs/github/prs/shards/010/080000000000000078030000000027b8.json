@@ -1,0 +1,12 @@
+{
+  "pr_number": 10168,
+  "archive_path": "docs/history/pr-reviews/PR-10168-chore-workitems-complete-081kzhgp456-semgrep-floor-drift-split-done.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-08T20:59:59.820Z",
+  "schema_version": "v1",
+  "commit_sha": "871d26c97ec23d06a8a4413aa39de97f9a72794e",
+  "title": "chore(workitems): complete 081KZHGP456 — semgrep floor/drift split DONE",
+  "state": "MERGED",
+  "merged_at": "2026-08-08T20:59:35Z",
+  "head_ref": "otto/complete-081KZHGP456"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 7330,
+  "archive_path": "docs/history/pr-reviews/PR-7330-docs-research-observe-ts-the-persistent-map-deciding-which-tests-ticks-to-run-te.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-09T16:26:47.879Z",
+  "schema_version": "v1",
+  "commit_sha": "d0ae333fedf43bbeee49093c76346f4c6434ffa1",
+  "title": "docs(research): observe.ts = the persistent map deciding which tests/ticks to run; test/folder org + shape reuse critical; core shapes list (A–F)",
+  "state": "MERGED",
+  "merged_at": "2026-06-09T16:26:10Z",
+  "head_ref": "otto/observe-ts-persistent-map-decides-tests-ticks-org-shape-reuse-core-shapes-list"
+}

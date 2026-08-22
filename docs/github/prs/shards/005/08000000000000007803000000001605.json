@@ -1,0 +1,12 @@
+{
+  "pr_number": 5637,
+  "archive_path": "docs/history/pr-reviews/PR-5637-feat-b-0852-3a-prep-capture-usb-uuid-during-iter-4-2-esp-probe-closes-preconditi.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-27T20:56:21.433Z",
+  "schema_version": "v1",
+  "commit_sha": "000e1e687c13b564ec1d60a8e661c5859fd7688c",
+  "title": "feat(b-0852.3a-prep): capture USB UUID during iter-4.2 ESP probe — closes precondition #3 for Step 6.95-picker (operator-blocking 're-enter credentials over and over' pain point)",
+  "state": "MERGED",
+  "merged_at": "2026-05-27T20:56:03Z",
+  "head_ref": "feat/b-0852.3a-prep-capture-usb-uuid-during-iter-4.2-esp-probe-2026-05-27"
+}

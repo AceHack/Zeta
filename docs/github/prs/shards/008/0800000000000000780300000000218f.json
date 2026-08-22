@@ -1,0 +1,12 @@
+{
+  "pr_number": 8591,
+  "archive_path": "docs/history/pr-reviews/PR-8591-docs-aurora-fold-g3b-bell-measurement-independence-cross-link-into-g3-scoping.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-19T15:57:36.066Z",
+  "schema_version": "v1",
+  "commit_sha": "f810bb684afd782d4c68c14945d1befec977cada",
+  "title": "docs(aurora): fold G3b ≡ Bell measurement-independence cross-link into G3 scoping",
+  "state": "MERGED",
+  "merged_at": "2026-06-19T15:57:10Z",
+  "head_ref": "otto/g3b-measurement-independence-crosslink"
+}

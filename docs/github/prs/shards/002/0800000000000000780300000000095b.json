@@ -1,0 +1,15 @@
+{
+  "pr_number": 2395,
+  "archive_path": "docs/history/pr-reviews/PR-2395-feat-b-0033-1-shared-ts-harness-entrypoint-for-otto-discipline-hooks.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_lJnW",
+    "thread:PRRT_kwDOSF9kNM6A3hzd"
+  ],
+  "fetched_at": "2026-05-10T02:11:59.924Z",
+  "schema_version": "v1",
+  "commit_sha": "264c9b38c668ea9b7d26bfa805f1435780c8c079",
+  "title": "feat(B-0033.1): shared TS harness entrypoint for Otto-discipline hooks",
+  "state": "MERGED",
+  "merged_at": "2026-05-10T02:11:43Z",
+  "head_ref": "feat/b-0033.1-hooks-ts-harness-entrypoint"
+}

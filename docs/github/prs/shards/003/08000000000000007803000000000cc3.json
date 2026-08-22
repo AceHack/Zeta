@@ -1,0 +1,19 @@
+{
+  "pr_number": 3267,
+  "archive_path": "docs/history/pr-reviews/PR-3267-shard-tick-2143z-minimal-continuation-same-natural-rest-state-as-2139z.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7BYrlU",
+    "comment:PRRC_kwDOSF9kNM7BYsER",
+    "comment:PRRC_kwDOSF9kNM7BYwRp",
+    "comment:PRRC_kwDOSF9kNM7BYwTv",
+    "thread:PRRT_kwDOSF9kNM6CMq9m",
+    "thread:PRRT_kwDOSF9kNM6CMqnU"
+  ],
+  "fetched_at": "2026-05-14T21:52:11.308Z",
+  "schema_version": "v1",
+  "commit_sha": "a093da29b236dab7003f0108acd41479dece8a20",
+  "title": "shard(tick): 2143Z — minimal continuation; same natural-rest state as 2139Z",
+  "state": "MERGED",
+  "merged_at": "2026-05-14T21:51:56Z",
+  "head_ref": "shard/tick-2143Z-minimal-continuation-otto-cli-2026-05-14"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 4164,
+  "archive_path": "docs/history/pr-reviews/PR-4164-backlog-mika-batch7-partial-b-0651-two-pass-principles-b-0654-child-safety-conse.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-18T16:33:56.167Z",
+  "schema_version": "v1",
+  "commit_sha": "eb3b5d786bc96661022ff5c11d2fc489f2455563",
+  "title": "backlog(mika-batch7-partial): B-0651 two-pass principles + B-0654 Child Safety > Consent priority",
+  "state": "MERGED",
+  "merged_at": "2026-05-18T16:33:35Z",
+  "head_ref": "otto-cli/mika-batch7-b0651-b0654-2026-05-18-1230Z"
+}

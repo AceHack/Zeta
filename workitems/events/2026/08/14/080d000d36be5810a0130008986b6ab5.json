@@ -1,0 +1,14 @@
+{
+  "id": "080d000d36be5810a0130008986b6ab5",
+  "at": "2026-08-14T19:01:46.571Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M00TDNYA087G0R003AGFC7J",
+    "type": "task",
+    "title": "Route every ZetaId sort through a declared sort field (time vs identity)",
+    "slug": "route-every-zetaid-sort-through-a-declared-sort-field-time-v",
+    "priority": "P2",
+    "filename": "081M00TDNYA087G0R003AGFC7J-route-every-zetaid-sort-through-a-declared-sort-field-time-v.md"
+  }
+}

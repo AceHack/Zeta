@@ -1,0 +1,12 @@
+{
+  "pr_number": 4752,
+  "archive_path": "docs/history/pr-reviews/PR-4752-fix-b-0525-canonical-constraint-2-wording-lock-wait-free-copilot-p1-follow-up.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-23T18:59:57.922Z",
+  "schema_version": "v1",
+  "commit_sha": "04db8e07318359ee066738cb64a1339b38f6d08a",
+  "title": "fix(B-0525): canonical Constraint 2 wording \"Lock/Wait-free\" (Copilot P1 follow-up)",
+  "state": "MERGED",
+  "merged_at": "2026-05-23T18:59:40Z",
+  "head_ref": "otto/cli-b0525-wording-fix-lock-wait-free-2026-05-23"
+}

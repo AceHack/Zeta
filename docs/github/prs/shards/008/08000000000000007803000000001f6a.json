@@ -1,0 +1,12 @@
+{
+  "pr_number": 8042,
+  "archive_path": "docs/history/pr-reviews/PR-8042-refactor-relocate-tools-github-tools-shadow-src-core-typescript.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-13T18:40:05.261Z",
+  "schema_version": "v1",
+  "commit_sha": "c7300ae62acda8b5a33e658de7938b06564f1061",
+  "title": "refactor: relocate tools/github/ + tools/shadow/ → src/Core.TypeScript/",
+  "state": "MERGED",
+  "merged_at": "2026-06-13T18:39:42Z",
+  "head_ref": "kiro/move-github-shadow-to-src"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 6912,
+  "archive_path": "docs/history/pr-reviews/PR-6912-docs-research-precision-ecg-ekg-electrocardiogram-apple-labels-its-feature-ecg.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-07T20:45:14.015Z",
+  "schema_version": "v1",
+  "commit_sha": "2b60db88592cda18a35f606dfa21ed13e337f4b9",
+  "title": "docs(research): precision — ECG = EKG (electrocardiogram); Apple labels its feature 'ECG'",
+  "state": "MERGED",
+  "merged_at": "2026-06-07T20:44:56Z",
+  "head_ref": "otto/ecg-ekg-precision-fix"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 10073,
+  "archive_path": "docs/history/pr-reviews/PR-10073-book-stage-ferry-expansion-the-near-death-catalog-the-one-real-fear-self-debugge.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-07T01:41:35.873Z",
+  "schema_version": "v1",
+  "commit_sha": "ff244b684657e7bbd1bae749e8a479569c960d66",
+  "title": "book: stage ferry expansion — the near-death catalog + the one real fear (self-debugged delusion)",
+  "state": "MERGED",
+  "merged_at": "2026-08-07T01:41:07Z",
+  "head_ref": "docs/book-ferry-neardeath-catalog-and-the-one-fear"
+}

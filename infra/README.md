@@ -38,7 +38,7 @@ infra/
 # From any machine with Nix installed (canonical AI-cluster installer
 # substrate at full-ai-cluster/usb-nixos-installer/ — root-flake
 # installer-iso package retired 2026-05-26 in USB cleanup PR 2):
-cd full-ai-cluster/usb-nixos-installer && nix build .#installer-iso
+cd full-ai-cluster && nix build .#installer-iso
 # Output at result/iso/zeta-installer-*.iso
 ```
 
@@ -90,9 +90,15 @@ or any future host declared in `/flake.nix` <!-- STALE-REF: ../flake.nix --> `ni
 
 1. **Control-plane boots** → K3S server starts with embedded etcd
 2. K3S applies `infra/k8s/bootstrap/argocd-namespace.yaml`
-3. K3S applies `infra/k8s/bootstrap/argocd-install.yaml` → ArgoCD pods come up
+3. K3S applies `infra/k8s/bootstrap/argocd-install.yaml` — a `helm.cattle.io/v1`
+   HelmChart CR — and K3S's Helm Controller installs argo-cd chart 7.7.10
+   (ArgoCD v2.13.2) → ArgoCD pods come up
 4. K3S applies `infra/k8s/bootstrap/initial-orleans.yaml` → Orleans namespace + skeleton StatefulSet
-5. K3S applies `infra/k8s/applications/root-application.yaml` → App-of-Apps root
+5. K3S applies `infra/k8s/applications/root-application.yaml` → App-of-Apps root.
+   This one FAILS on its first attempt and that is expected: its
+   `argoproj.io/v1alpha1` CRD ships with ArgoCD, so until step 3 finishes the
+   API server has no such resource. K3S's addon controller retries every ~15 s
+   and it applies once the CRDs land.
 6. ArgoCD reads root Application → discovers child Apps via include glob
 7. ArgoCD reconciles `orleans/`, `gitlab/`, `argoworkflows/`, `argorollouts/` in parallel
 8. **Workers boot** → K3S agents join via `serverAddr = https://control-plane.zeta.local:6443` (scheme is required; NixOS `services.k3s.serverAddr` accepts only `https://`)
@@ -100,6 +106,27 @@ or any future host declared in `/flake.nix` <!-- STALE-REF: ../flake.nix --> `ni
 
 After step 9 the cluster is self-managing. Every subsequent change
 lands by committing to this repo.
+
+Steps 2–7 above were **measured**, not assumed, on 2026-08-18: a real K3S
+v1.31.4+k3s1 server was booted with exactly the four manifests
+`services.k3s.manifests` declares, and reached `zeta-root  Synced  Healthy`
+with all seven child Applications discovered. Run
+`bun infra/k8s/tests/validate-bootstrap.ts` before touching that set —
+the same boot against the **previous** `argocd-install.yaml` produced
+`ApplyManifestFailed: the server could not find the requested resource`
+retried forever, zero ArgoCD pods, and no reconciliation at all.
+
+### Not yet witnessed by anything
+
+Steps 1, 8 and 9 are `unmetered` — implemented, documented, never falsified.
+No CI job evaluates the root flake's `nixosConfigurations`, so the per-host
+NixOS configs (including the `hardware-configuration.nix` stubs whose stated
+purpose is "so `nix flake check` succeeds in CI") are checked by hand or not
+at all; and there is **no root `flake.lock`** despite this flake's own header
+claiming "the flake.lock pins the entire universe", so two installs of the
+same commit on different days do not resolve the same nixpkgs. Neither is
+fixed here. Both are real, and neither is a reason to trust steps 1/8/9 the
+way steps 2–7 can now be trusted.
 
 ## Add a new workload
 

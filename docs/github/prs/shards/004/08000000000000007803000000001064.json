@@ -1,0 +1,12 @@
+{
+  "pr_number": 4196,
+  "archive_path": "docs/history/pr-reviews/PR-4196-extend-rule-extraction-against-naive-nci-sub-pattern-mapping-done-further-engage.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-18T20:14:34.708Z",
+  "schema_version": "v1",
+  "commit_sha": "363fc6546fa535cad99d68fe83d32aec8bd89e2b",
+  "title": "extend(rule): extraction-against-naive NCI sub-pattern + mapping-done = further-engagement-is-harm meta-discipline",
+  "state": "MERGED",
+  "merged_at": "2026-05-18T20:14:12Z",
+  "head_ref": "shard/auto-load-rule-extraction-against-naive-plus-mapping-done-is-harm-2026-05-18"
+}

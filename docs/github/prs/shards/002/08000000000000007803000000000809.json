@@ -1,0 +1,25 @@
+{
+  "pr_number": 2057,
+  "archive_path": "docs/history/pr-reviews/PR-2057-fix-backlog-close-b-0278-land-b-0265-ci-gate-ruleset.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_Oo9u",
+    "comment:PRRC_kwDOSF9kNM6_Oqtm",
+    "comment:PRRC_kwDOSF9kNM6_OquR",
+    "comment:PRRC_kwDOSF9kNM6_Oqud",
+    "comment:PRRC_kwDOSF9kNM6_OxgD",
+    "comment:PRRC_kwDOSF9kNM6_Oxkq",
+    "comment:PRRC_kwDOSF9kNM6_Oxm5",
+    "comment:PRRC_kwDOSF9kNM6_Oxow",
+    "thread:PRRT_kwDOSF9kNM6Amnv8",
+    "thread:PRRT_kwDOSF9kNM6AmpE8",
+    "thread:PRRT_kwDOSF9kNM6AmpFd",
+    "thread:PRRT_kwDOSF9kNM6AmpFo"
+  ],
+  "fetched_at": "2026-05-08T11:27:17.770Z",
+  "schema_version": "v1",
+  "commit_sha": "cd9e0483eaecc68dd06fe06de3e647dc861a4d7a",
+  "title": "fix(backlog): close B-0278 + land B-0265 CI Gate ruleset",
+  "state": "MERGED",
+  "merged_at": "2026-05-08T11:27:00Z",
+  "head_ref": "fix/close-b0278-advance-b0265-ruleset-split"
+}

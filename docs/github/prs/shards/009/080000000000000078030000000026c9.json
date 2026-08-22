@@ -1,0 +1,12 @@
+{
+  "pr_number": 9929,
+  "archive_path": "docs/history/pr-reviews/PR-9929-fix-ci-k8s-lint-covers-all-manifest-roots-not-just-full-ai-cluster.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-01T21:55:09.141Z",
+  "schema_version": "v1",
+  "commit_sha": "a979ae36c77c2aeacacecd16d81ad07eb726b640",
+  "title": "fix(ci): k8s lint covers ALL manifest roots, not just full-ai-cluster",
+  "state": "MERGED",
+  "merged_at": "2026-08-01T21:54:30Z",
+  "head_ref": "shadow/k8s-lint-covers-all-manifests"
+}

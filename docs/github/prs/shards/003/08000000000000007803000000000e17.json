@@ -1,0 +1,12 @@
+{
+  "pr_number": 3607,
+  "archive_path": "docs/history/pr-reviews/PR-3607-shard-tick-2220z-null-arm-sweep-prior-tick-prs-landing.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-15T22:23:54.186Z",
+  "schema_version": "v1",
+  "commit_sha": "fb19b544048957af39b8ca5d2be3bb3e5eb7b582",
+  "title": "shard(tick): 2220Z — null arm-sweep; prior-tick PRs landing",
+  "state": "MERGED",
+  "merged_at": "2026-05-15T22:23:37Z",
+  "head_ref": "shard/tick-2220z-otto-cli-2026-05-15"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 10170,
+  "archive_path": "docs/history/pr-reviews/PR-10170-fix-cluster-repair-arc-included-health.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-08T23:40:45.132Z",
+  "schema_version": "v1",
+  "commit_sha": "52897eaa9c678d71e7989c8c9a8d3f468c23d52b",
+  "title": "fix(cluster): repair ARC included health",
+  "state": "MERGED",
+  "merged_at": "2026-08-08T23:40:13Z",
+  "head_ref": "claim/bug-arc-controller-kind-health"
+}

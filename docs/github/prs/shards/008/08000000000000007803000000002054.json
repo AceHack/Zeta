@@ -1,0 +1,12 @@
+{
+  "pr_number": 8276,
+  "archive_path": "docs/history/pr-reviews/PR-8276-docs-register-1000-brains-locality-preserving-via-911-mail-census-tiger-memory-d.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-15T06:58:56.489Z",
+  "schema_version": "v1",
+  "commit_sha": "a2a0100c3dd95cfda0bfe53ece21cea630cb3904",
+  "title": "docs(register): 1000-brains — locality-preserving via 911/mail/Census-TIGER; memory-distance = correlation metric (BERT/attention)",
+  "state": "MERGED",
+  "merged_at": "2026-06-15T06:58:28Z",
+  "head_ref": "otto/follow-911-mail-routes-locality-preserving-encoding"
+}

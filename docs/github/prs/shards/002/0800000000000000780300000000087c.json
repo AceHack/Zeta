@@ -1,0 +1,12 @@
+{
+  "pr_number": 2172,
+  "archive_path": "docs/history/pr-reviews/PR-2172-fix-b-0272-parse-single-quoted-dat-attributes.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-09T03:12:33.607Z",
+  "schema_version": "v1",
+  "commit_sha": "5bd591d18f6236ab1e5872ce28b7349016e2b724",
+  "title": "fix(B-0272): parse single-quoted DAT attributes",
+  "state": "MERGED",
+  "merged_at": "2026-05-09T03:12:11Z",
+  "head_ref": "codex/b0272-single-quote-dat-attrs"
+}

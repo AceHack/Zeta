@@ -1,0 +1,12 @@
+{
+  "pr_number": 6978,
+  "archive_path": "docs/history/pr-reviews/PR-6978-docs-push-down-kernel-outside-container-dynamic-di-inside-push-out-accept-in-con.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-08T01:39:22.035Z",
+  "schema_version": "v1",
+  "commit_sha": "27a311dcf394f7dd2754bf4b3643fe6bfc153c8b",
+  "title": "docs: push-down=kernel/outside-container, dynamic=DI/inside; push-out⊕accept-in consent handshake (lazy=dynamic)",
+  "state": "MERGED",
+  "merged_at": "2026-06-08T01:39:00Z",
+  "head_ref": "otto/push-out-accept-in-kernel-vs-di-container-boundary"
+}

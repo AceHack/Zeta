@@ -1,0 +1,12 @@
+{
+  "pr_number": 7042,
+  "archive_path": "docs/history/pr-reviews/PR-7042-docs-synthesis-the-1-bit-yin-yang-gan-engine-structure-prior-art-honest-novelty-.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-08T06:52:42.520Z",
+  "schema_version": "v1",
+  "commit_sha": "5c82ce3401601f6a7e092c82c74eb7ad13cf2f53",
+  "title": "docs: SYNTHESIS — the 1-bit yin/yang GAN engine (structure + prior-art + honest novelty); zeta!=RH peel; wobble regime (#7108-#7114)",
+  "state": "MERGED",
+  "merged_at": "2026-06-08T06:52:03Z",
+  "head_ref": "otto/synthesis-1bit-yinyang-gan-prior-art-novelty-zeta-peel-wobble"
+}

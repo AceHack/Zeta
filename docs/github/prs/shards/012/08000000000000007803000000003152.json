@@ -1,0 +1,12 @@
+{
+  "pr_number": 12626,
+  "archive_path": "docs/history/pr-reviews/PR-12626-docs-fence-the-variance-formula-in-vision-md-so-gate-s-markdownlint-passes-on-ma.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-20T03:22:39.615Z",
+  "schema_version": "v1",
+  "commit_sha": "fcaed3efc86b93bbbdb3b502a4985d68918fa2d0",
+  "title": "docs: fence the variance formula in VISION.md so gate's markdownlint passes on main",
+  "state": "MERGED",
+  "merged_at": "2026-08-20T03:22:00Z",
+  "head_ref": "fix/vision-md046-fenced-block"
+}

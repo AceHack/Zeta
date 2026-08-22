@@ -1,0 +1,12 @@
+{
+  "pr_number": 4586,
+  "archive_path": "docs/history/pr-reviews/PR-4586-docs-fix-quiet-state-trajectory-xrefs.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-21T22:30:45.487Z",
+  "schema_version": "v1",
+  "commit_sha": "409f88c41c38975fd992603c0a21c1d32fb986f7",
+  "title": "docs: fix quiet-state trajectory xrefs",
+  "state": "MERGED",
+  "merged_at": "2026-05-21T22:30:23Z",
+  "head_ref": "codex/fix-quiet-state-xrefs-20260521"
+}

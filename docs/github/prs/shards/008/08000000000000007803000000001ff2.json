@@ -1,0 +1,12 @@
+{
+  "pr_number": 8178,
+  "archive_path": "docs/history/pr-reviews/PR-8178-fix-pages-escape-function-term-set-braces.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-14T13:05:45.245Z",
+  "schema_version": "v1",
+  "commit_sha": "966f10be04e83fc10631014273e67299707a080f",
+  "title": "fix(pages): escape function term set braces",
+  "state": "MERGED",
+  "merged_at": "2026-06-14T13:05:22Z",
+  "head_ref": "codex/fix-pages-liquid-function-term"
+}

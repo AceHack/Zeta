@@ -1,0 +1,12 @@
+{
+  "pr_number": 8328,
+  "archive_path": "docs/history/pr-reviews/PR-8328-docs-correct-the-orthwein-skip-permissions-safety-peel-pr-gate-is-the-boundary-s.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-15T20:02:55.888Z",
+  "schema_version": "v1",
+  "commit_sha": "40920a45c9accfa61f50640bc04dced72c92d86f",
+  "title": "docs: correct the Orthwein skip-permissions safety peel — PR gate IS the boundary (same model)",
+  "state": "MERGED",
+  "merged_at": "2026-06-15T20:02:24Z",
+  "head_ref": "docs/fix-orthwein-safety-peel-pr-gate-is-the-boundary"
+}

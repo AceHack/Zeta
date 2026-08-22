@@ -1,0 +1,12 @@
+{
+  "pr_number": 7854,
+  "archive_path": "docs/history/pr-reviews/PR-7854-feat-testloop-the-glass-side-ruling-no-wall-clock-in-the-room-enforced-by-the-bo.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-12T00:25:29.528Z",
+  "schema_version": "v1",
+  "commit_sha": "efb1afb6a6ec139ba21f14ba3e76925f0eb7c043",
+  "title": "feat(testloop): THE GLASS-SIDE RULING — no wall clock in the room, enforced by the boundary (B-1039 ruling)",
+  "state": "MERGED",
+  "merged_at": "2026-06-12T00:25:07Z",
+  "head_ref": "shadow-glass-side-ruling"
+}

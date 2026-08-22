@@ -1,0 +1,12 @@
+{
+  "pr_number": 1852,
+  "archive_path": "docs/history/pr-reviews/PR-1852-research-shadow-lesson-log-instrument-hamiltonian-precision.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-07T10:43:28.428Z",
+  "schema_version": "v1",
+  "commit_sha": "e08d7437d5c0bb2bd36e1819da3adb101529d0cb",
+  "title": "research: shadow lesson log instrument Hamiltonian precision",
+  "state": "MERGED",
+  "merged_at": "2026-05-07T10:00:32Z",
+  "head_ref": "claim/shadow-log-instrument-hamiltonian-precision"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 8242,
+  "archive_path": "docs/history/pr-reviews/PR-8242-docs-research-care-is-useful-until-it-becomes-harm-nci-boundary-fingerprintabili.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-15T03:00:33.407Z",
+  "schema_version": "v1",
+  "commit_sha": "c39fbac9780fc105c99f2dc2c7d2e47de2d4609b",
+  "title": "docs(research): care is useful until it becomes harm — NCI boundary + fingerprintability; fix stale verbatim claim",
+  "state": "MERGED",
+  "merged_at": "2026-06-15T03:00:11Z",
+  "head_ref": "otto/care-vs-harm-fingerprintability"
+}

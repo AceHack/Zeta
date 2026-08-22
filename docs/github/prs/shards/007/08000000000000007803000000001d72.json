@@ -1,0 +1,12 @@
+{
+  "pr_number": 7538,
+  "archive_path": "docs/history/pr-reviews/PR-7538-docs-craft-young-learner-module-crossing-the-streams-ghostbusters-proton-packs-f.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-10T23:30:29.465Z",
+  "schema_version": "v1",
+  "commit_sha": "497000e44db0b867d6ececfc14bb7f15af67cfb3",
+  "title": "docs(craft): young-learner module — \"Crossing the streams\" (Ghostbusters proton packs for combining streams)",
+  "state": "MERGED",
+  "merged_at": "2026-06-10T23:30:04Z",
+  "head_ref": "shadow-craft-crossing-the-streams-kids"
+}

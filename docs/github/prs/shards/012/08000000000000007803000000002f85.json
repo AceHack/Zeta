@@ -1,0 +1,12 @@
+{
+  "pr_number": 12165,
+  "archive_path": "docs/history/pr-reviews/PR-12165-fix-infra-the-control-plane-s-first-boot-could-never-install-argocd-measured-on-.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-18T22:46:34.190Z",
+  "schema_version": "v1",
+  "commit_sha": "13a5f0e78278885976ab528d26c6b72daa24b998",
+  "title": "fix(infra): the control-plane's first boot could never install ArgoCD — measured on real K3S, fixed, guarded",
+  "state": "MERGED",
+  "merged_at": "2026-08-18T22:46:03Z",
+  "head_ref": "dogfood/k8s-node-bringup-gap"
+}

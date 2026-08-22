@@ -1,0 +1,111 @@
+# bunfig.hermetic.toml — the HERMETIC TIER of the TypeScript suite.
+#
+# WHAT THIS FILE BUYS. `bun --config=bunfig.hermetic.toml test` is red IF AND ONLY IF the code is
+# broken. Not if you have never run `uv sync`. Not if you have no .NET SDK. Not if macOS
+# refuses your process access to ~/Downloads. That biconditional is the whole point: a red
+# hermetic check means a real regression, so nobody has to ask "is this one real?".
+#
+# WHY IT WAS NEEDED. MEASURED 2026-08-16 over the 53 most recent completed `gate` runs:
+# `test (TS suite)` was red in 17 (32%), and in 15 of those the entire cause was ONE
+# deterministic test — a real regression that rode along for sixteen merges. MEASURED the
+# same day on a fresh clone of main (macOS, `bun install` only): the same `bun test` gave
+# 4 failures + 1 unhandled error, and not one of them was a code defect. So the same command
+# was red-for-environment where people work and red-for-regression where it mattered, with
+# nothing in either output telling them apart. The prior "this suite is always red" is
+# learned on the laptop and spent on the pull request.
+#
+# WHERE THE LINE IS DRAWN, EXACTLY. Hermetic means: reproducible from a fresh checkout plus
+#
+#     ./tools/setup/install.sh   &&   bun install --frozen-lockfile
+#
+# and nothing else. That is not an arbitrary choice — install.sh is the repo's three-way
+# parity contract (GOVERNANCE §24): the same script provisions a laptop, a devcontainer and a
+# runner, so it is the one baseline a developer and CI are guaranteed to share. Anything a
+# test needs BEYOND it — a `uv sync` venv, a cluster, a container, an attached device, a file
+# in the user's home directory — makes that test's verdict a fact about the host, and belongs
+# in the tier named for that.
+#
+# THE LINE WAS MEASURED, NOT ASSUMED. 2026-08-16, same fresh clone, `bun test` run twice:
+#   - with the machine's ordinary PATH (an install.sh-shaped environment):  5 failures,
+#     confined to the 2 files excluded below.
+#   - with PATH stripped to /usr/bin:/bin:/usr/sbin:/sbin plus bun (NO install.sh toolchain
+#     at all):                                                            49 failures,
+#     spread across git-, python3-, go-, rustc-, dotnet- and solver-dependent suites.
+# The second number is the cost of drawing the line below install.sh instead of at it: it
+# would move roughly a dozen more files out of the blocking-eligible tier, including the
+# cross-language law and Clifford byte-lock suites, and buy a property nobody needs — this
+# repo does not support a checkout without install.sh. Recorded here rather than left as an
+# unstated judgement call, because a future reader will otherwise re-litigate it from scratch.
+#
+# WHY A SECOND CONFIG RATHER THAN FILTERS IN THE WORKFLOW. `bun test` positional arguments
+# are INCLUDE filters; bun has no exclude form. `pathIgnorePatterns` is the one place this
+# repo writes down "bun must not discover this", and it already carries a discipline: every
+# entry declared with a written reason in a registry, enforced by a checker that fails on an
+# undeclared, unreasoned, or stale entry. This is that mechanism at one more tier.
+#
+# HOW THE TWO CONFIGS RELATE — enforced, not conventional:
+#
+#     ignores(bunfig.hermetic.toml)  ==  ignores(bunfig.toml)  ∪  registry paths
+#
+# by src/Core.TypeScript/hygiene/environment-dependent-test-files.ts, which is red on a
+# dropped base pattern, an undeclared addition, an addition whose entry names no dependency,
+# and — the load-bearing one — an addition that no pull_request-lane `bun test` executes.
+# Excluding a file from the hermetic tier while nothing else runs it is not a tier split, it
+# is a deletion wearing a split's face. THE DUPLICATION BELOW IS DELIBERATE AND GUARDED: the
+# two lists are compared as sets on every PR, so they cannot drift apart in silence, and a
+# generated config would trade a checked duplication for an unchecked generator.
+#
+# THE SETTINGS BELOW ARE COPIED VERBATIM FROM bunfig.toml. Read the reasoning there — in
+# particular why there is NO `[test] timeout` key (bun 1.3.14 does not implement it; the
+# effective per-test cap is 5000 ms and a slow-by-nature test carries its own explicit
+# timeout at the call site). Guarded by hygiene/bunfig-declares-no-test-timeout.test.ts.
+
+[install]
+auto = "disable"
+exact = true
+saveTextLockfile = true
+
+[test]
+coverageSkipTestFiles = true
+pathIgnorePatterns = [
+  # ── Identical to bunfig.toml. Set equality is asserted on every PR. ──────────────
+  "**/BenchmarkDotNet.Artifacts/**",
+  "**/TestResults/**",
+  "**/artifacts/**",
+  "**/node_modules/**",
+  "src/Core.TypeScript/service/persona-health.test.ts",
+  "src/Core.TypeScript/shadow/shadow-observer.test.ts",
+  "src/Core.TypeScript/backlog/empty-queue-pickup.test.ts",
+  "src/Core.TypeScript/health/factory-health-monitor.test.ts",
+  "tools/setup/persona-keys/frost-share-adapter.hardware.test.ts",
+  "**/docs/recovered-orphan-branches-2026-05/**",
+  "**/references/prior-art/**",
+  "**/bin/**",
+  "**/obj/**",
+  "**/.lake/**",
+  "**/.git/**",
+  "tools/lean4/.lake/**",
+  "tools/alloy/**",
+  "tools/tla/**",
+
+  # ── HERMETIC-TIER ONLY. Each runs in `test (TS environment-dependent)` and is
+  #    declared, with the NAME of the dependency it needs, in
+  #    registry/environment-dependent-test-files.json. ──────────────────────────────
+  "tests/cross-verification/_harness/cross-verify-ir.test.ts",
+  "src/Core.TypeScript/zflash/esp-inject.test.ts",
+]
+coveragePathIgnorePatterns = [
+  "**/BenchmarkDotNet.Artifacts/**",
+  "**/TestResults/**",
+  "**/artifacts/**",
+  "**/node_modules/**",
+  "**/docs/recovered-orphan-branches-2026-05/**",
+  "**/references/prior-art/**",
+  "**/bin/**",
+  "**/obj/**",
+  "**/.lake/**",
+  "**/.git/**",
+  "tools/lean4/.lake/**",
+  "tools/alloy/**",
+  "tools/tla/**",
+]

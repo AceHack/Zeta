@@ -1,0 +1,12 @@
+{
+  "pr_number": 3244,
+  "archive_path": "docs/history/pr-reviews/PR-3244-chore-b-0488-close-out-row-after-pr-3235-merge.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-14T21:00:33.753Z",
+  "schema_version": "v1",
+  "commit_sha": "4afd7b3261499b6941be44984011889c8db8cf29",
+  "title": "chore(b-0488): close out row after PR #3235 merge",
+  "state": "MERGED",
+  "merged_at": "2026-05-14T21:00:11Z",
+  "head_ref": "otto/b0488-close-out-row-2026-05-14"
+}

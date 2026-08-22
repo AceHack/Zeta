@@ -1,0 +1,12 @@
+{
+  "pr_number": 3152,
+  "archive_path": "docs/history/pr-reviews/PR-3152-shard-tick-1804z-razor-cadence-composes-with-audit-4-newest-rules-30-30-live.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-14T18:10:04.666Z",
+  "schema_version": "v1",
+  "commit_sha": "433a115eb4c139245bb40d4987d995d2be4bcafb",
+  "title": "shard(tick): 1804Z — razor-cadence composes-with audit (4 newest rules, 30/30 LIVE)",
+  "state": "MERGED",
+  "merged_at": "2026-05-14T18:09:47Z",
+  "head_ref": "shard/tick-1804Z-razor-cadence-composes-with-audit-2026-05-14"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 7861,
+  "archive_path": "docs/history/pr-reviews/PR-7861-feat-port-ferrythrottler-to-typescript.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-12T01:22:25.806Z",
+  "schema_version": "v1",
+  "commit_sha": "e1073f27c8b0c9c6eb64c7371734936ece4139a5",
+  "title": "feat: port FerryThrottler to TypeScript",
+  "state": "MERGED",
+  "merged_at": "2026-06-12T01:21:58Z",
+  "head_ref": "kiro/ferry-throttler-ts-port"
+}

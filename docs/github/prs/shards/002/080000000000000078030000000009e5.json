@@ -1,0 +1,12 @@
+{
+  "pr_number": 2533,
+  "archive_path": "docs/history/pr-reviews/PR-2533-docs-memory-amazon-alexa-threading-is-lossy-grab-all-trust-git.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-10T20:46:11.996Z",
+  "schema_version": "v1",
+  "commit_sha": "05cf3ced94c94aa3b19873fe2e6e2da1f36beb05",
+  "title": "docs(memory): Amazon Alexa threading is lossy — grab all, trust git",
+  "state": "MERGED",
+  "merged_at": "2026-05-10T20:45:55Z",
+  "head_ref": "docs/alexa-threading-lossy-memory-2026-05-10"
+}

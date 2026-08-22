@@ -1,0 +1,12 @@
+{
+  "pr_number": 3715,
+  "archive_path": "docs/history/pr-reviews/PR-3715-shard-tick-2026-05-16t03-40z-6-threads-triaged-2-real-fixes-4-stale-fp.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-16T03:43:52.782Z",
+  "schema_version": "v1",
+  "commit_sha": "e502289583796910692761067435af69adfad80d",
+  "title": "shard(tick): 2026-05-16T03:40Z — 6 threads triaged (2 real fixes + 4 stale/FP)",
+  "state": "MERGED",
+  "merged_at": "2026-05-16T03:43:37Z",
+  "head_ref": "shard/tick-0340z-otto-cli-2026-05-16"
+}

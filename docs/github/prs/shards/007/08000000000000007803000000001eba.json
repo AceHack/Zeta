@@ -1,0 +1,12 @@
+{
+  "pr_number": 7866,
+  "archive_path": "docs/history/pr-reviews/PR-7866-feat-setup-host-tiers-package-requirements-tier-in-manifests-zeta-host-tier-on-h.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-12T01:45:38.594Z",
+  "schema_version": "v1",
+  "commit_sha": "72f4f09a48ff1122ddf9c4ddc8464e9bacf83efc",
+  "title": "feat(setup): host tiers × package requirements — `tier=` in manifests, ZETA_HOST_TIER on hosts (workitem 081KTWQZY7F)",
+  "state": "MERGED",
+  "merged_at": "2026-06-12T01:45:17Z",
+  "head_ref": "shadow-host-tier-manifests"
+}

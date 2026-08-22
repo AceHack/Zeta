@@ -1,0 +1,12 @@
+{
+  "pr_number": 11078,
+  "archive_path": "docs/history/pr-reviews/PR-11078-docs-workitems-record-the-trailer-split-experiment-result-consistent-with-not-is.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-16T20:33:37.398Z",
+  "schema_version": "v1",
+  "commit_sha": "161386ebca1f9ae31576965e491bb38796969db2",
+  "title": "docs(workitems): record the trailer-split experiment result — consistent with, not is",
+  "state": "MERGED",
+  "merged_at": "2026-08-16T20:33:04Z",
+  "head_ref": "shadow/agencysignature-trailer-experiment-result"
+}

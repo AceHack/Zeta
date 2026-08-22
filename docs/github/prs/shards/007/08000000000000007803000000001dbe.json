@@ -1,0 +1,12 @@
+{
+  "pr_number": 7614,
+  "archive_path": "docs/history/pr-reviews/PR-7614-docs-folders-saves-resumable-save-states-futures-unfulfilled-promises-society-ma.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-11T09:06:16.154Z",
+  "schema_version": "v1",
+  "commit_sha": "0599d71270be7f5c4086954204032aa5bf7b0e89",
+  "title": "docs(folders): /saves (resumable save states) + /futures (unfulfilled promises society makes to itself)",
+  "state": "MERGED",
+  "merged_at": "2026-06-11T09:05:50Z",
+  "head_ref": "shadow-saves-futures-folders"
+}

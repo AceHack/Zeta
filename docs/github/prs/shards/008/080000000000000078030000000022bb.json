@@ -1,0 +1,12 @@
+{
+  "pr_number": 8891,
+  "archive_path": "docs/history/pr-reviews/PR-8891-feat-algebra-interface-stack-ports-rust-go-c-icodec-iport-full-stack.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-21T06:47:19.666Z",
+  "schema_version": "v1",
+  "commit_sha": "08e26bc889c99cbb6715c678a6a042fed1768391",
+  "title": "feat(algebra): interface stack ports — Rust, Go, C# (ICodec/IPort + full stack)",
+  "state": "MERGED",
+  "merged_at": "2026-06-21T06:46:52Z",
+  "head_ref": "alexa/interface-ports"
+}

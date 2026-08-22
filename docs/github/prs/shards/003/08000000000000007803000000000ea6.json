@@ -1,0 +1,21 @@
+{
+  "pr_number": 3750,
+  "archive_path": "docs/history/pr-reviews/PR-3750-backlog-b-0553-audit-backlog-status-drift-mechanize-the-substrate-drift-catch-pa.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7B2D39",
+    "comment:PRRC_kwDOSF9kNM7B2D4D",
+    "comment:PRRC_kwDOSF9kNM7B2D4G",
+    "comment:PRRC_kwDOSF9kNM7B2Ds1",
+    "thread:PRRT_kwDOSF9kNM6Ch5DM",
+    "thread:PRRT_kwDOSF9kNM6Ch5K3",
+    "thread:PRRT_kwDOSF9kNM6Ch5K5",
+    "thread:PRRT_kwDOSF9kNM6Ch5Kz"
+  ],
+  "fetched_at": "2026-05-16T05:24:39.731Z",
+  "schema_version": "v1",
+  "commit_sha": "124bff173e307d2db899f4aa3bd6a5d282ee2430",
+  "title": "backlog(B-0553): audit-backlog-status-drift — mechanize the substrate-drift-catch pattern (P3)",
+  "state": "MERGED",
+  "merged_at": "2026-05-16T05:24:21Z",
+  "head_ref": "backlog/b0553-audit-backlog-status-drift-otto-cli-2026-05-16"
+}

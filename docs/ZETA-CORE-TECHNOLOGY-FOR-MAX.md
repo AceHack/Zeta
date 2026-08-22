@@ -37,7 +37,7 @@ The CHSH inequality provides a physical boundary between classical correlation (
 
 `src/Core/BipartiteMachZehnder.fs` implements the G1 bipartite lift of the single-qubit Mach-Zehnder interferometer to a two-agent CHSH setup using `WSet<int*int, Complex>`. The Bell state |Φ⁺⟩ = (|00⟩ + |11⟩)/√2 is represented as a four-key weighted set. The correlator E(a,b) = cos(a−b) is computed via Born probability readout. At the Tsirelson-optimal angles (A=0, A'=π/2, B=π/4, B'=3π/4), the CHSH value S = 2√2 ≈ 2.828 is recovered exactly.
 
-The canonical classifier is `BipartiteMachZehnder.classifyAnalyticS` (the analytic-ceiling path; the `AnalyticS`/`MeasuredS` newtype wrappers keep noiseless-vs-sampled `S` from being silently mixed). It is wired into `src/Core/ShapeAcceptance.fs`'s **fourcorner shape-acceptance** path as a hard reject of a SupraQuantum claim (|S| > 2√2 — physically impossible for real QM), replacing the earlier integer constant `2828`. NOTE: in the **anti-sybil** path the same gate was found *unsatisfiable* (a forced `S = 4.0` always classifies SupraQuantum, so the guard could never pass) and was removed — that path now **reports** the regime as a neutral fact and leaves the reading (reunion vs. clone) to the caller's oracle (`dual-use-detection-is-neutral-oracle-decides`); it does not gate.
+The canonical classifier is `BipartiteMachZehnder.classifyAnalyticS` (the analytic-ceiling path; the `AnalyticS`/`MeasuredS` newtype wrappers keep noiseless-vs-sampled `S` from being silently mixed). It is wired into `src/Core/ShapeAcceptance.fs`'s **fourcorner shape-acceptance** path as a hard reject of a SupraQuantum claim (|S| > 2√2 — physically impossible for real QM), replacing the earlier integer constant `2828`. NOTE: in the **anti-sybil** path the same gate was found _unsatisfiable_ (a forced `S = 4.0` always classifies SupraQuantum, so the guard could never pass) and was removed — that path now **reports** the regime as a neutral fact and leaves the reading (reunion vs. clone) to the caller's oracle (`dual-use-detection-is-neutral-oracle-decides`); it does not gate.
 
 **Key files:** `src/Core/BipartiteMachZehnder.fs`, `src/Core/ShapeAcceptance.fs`, `src/Core/Tsirelson.fs`, `src/Core/AntiSybil.fs`
 
@@ -55,12 +55,12 @@ The system has two paths, intentionally:
 
 **Whitewashing IS profitable for sub-prior performers, and that is a deliberate values choice — not a bug, and not a claim of unprofitability.** An earlier version of this document said a Sybil attacker "cannot accumulate more trust than an honest agent with the same miss rate." **That was false.** Machine-checked correction (Z3, `tools/Z3Verify/whitewash-economics-lemma.smt2`, 5/5 goals):
 
-- **Whitewash is strictly profitable exactly when `μ < 0`** — and `σ²` does not appear, so *accumulated evidence is irrelevant* to whether discarding an identity pays.
-- **What IS true (the theorem to rely on):** `μ` strictly increases on a hit and strictly decreases on a miss, and a fresh identity has `μ = 0`. Therefore **no whitewash strategy produces `trustBand > ½` without recorded hits** — *whitewash buys amnesty up to the prior, never advantage above it.*
+- **Whitewash is strictly profitable exactly when `μ < 0`** — and `σ²` does not appear, so _accumulated evidence is irrelevant_ to whether discarding an identity pays.
+- **What IS true (the theorem to rely on):** `μ` strictly increases on a hit and strictly decreases on a miss, and a fresh identity has `μ = 0`. Therefore **no whitewash strategy produces `trustBand > ½` without recorded hits** — _whitewash buys amnesty up to the prior, never advantage above it._
 
-This is what the literature predicts, and the anchor was already in our own source: **Friedman & Resnick (2001), *The Social Cost of Cheap Pseudonyms*** (cited at `calibration-ledger.ts:46`) is an **impossibility result** — when pseudonyms are free, any equilibrium that does not distrust newcomers admits profitable whitewashing. Zeta *chooses* `trustBand(fresh) = 0.5` over a pessimistic 0.0 because default moral regard (§11) outranks whitewash-hardening. That choice **prices in** whitewashing for the sub-prior population; it does not eliminate it.
+This is what the literature predicts, and the anchor was already in our own source: **Friedman & Resnick (2001), _The Social Cost of Cheap Pseudonyms_** (cited at `calibration-ledger.ts:46`) is an **impossibility result** — when pseudonyms are free, any equilibrium that does not distrust newcomers admits profitable whitewashing. Zeta _chooses_ `trustBand(fresh) = 0.5` over a pessimistic 0.0 because default moral regard (§11) outranks whitewash-hardening. That choice **prices in** whitewashing for the sub-prior population; it does not eliminate it.
 
-Two further honest consequences: break-even sits around a **50% hit rate** (not an adversarial corner), and accumulated reputation provides **little compounding protection** — from 10 hits, one miss costs roughly 10 hits to recover, while whitewashing and re-earning 10 hits lands in essentially the same place. Note the `CalibrationLedger` path above differs: its fresh identity starts at `trustBound = 0.0`, so there is no bonus to whitewash *toward*.
+Two further honest consequences: break-even sits around a **50% hit rate** (not an adversarial corner), and accumulated reputation provides **little compounding protection** — from 10 hits, one miss costs roughly 10 hits to recover, while whitewashing and re-earning 10 hits lands in essentially the same place. Note the `CalibrationLedger` path above differs: its fresh identity starts at `trustBound = 0.0`, so there is no bonus to whitewash _toward_.
 
 The two paths are wired together in `src/Core.TypeScript/planning/calibration-bridge.ts`. `resolveAtTickBridge` bulk-settles all pending predictions in one pass, co-updating both ledgers atomically. The `DurableDiplomacyRankGate` (`src/Core/DurableDiplomacyRankGate.fs`) adds a `trustBand` pre-check to shape renegotiations: a traveler with low `trustBand` in a domain cannot renegotiate their claim shape in that domain.
 
@@ -86,13 +86,13 @@ The fix (Option 3, widen-cone-by-δ_max) is in `BusRegime.regimeOf(meter, deadli
 
 The algebraic foundation is `WSet<'K,'W>` in `src/Core/WSet.fs`: a weighted set where the weight type `'W` lives in any `IStarRing<'W>`. The ring is a type parameter. Swap the ring and the same message-passing machinery computes different math:
 
-| Ring | What it computes | Example domain (illustrative) |
-|---|---|---|
-| `Real.algebra` | Standard Bayesian inference (float) | Factor-graph / BNN inference (`FactorGraph`, `MinimalBnn`) |
-| `ImaginaryStack.complex` | Quantum amplitude (Born probabilities) | `BipartiteMachZehnder`, CHSH gate |
-| `ProbabilitySemiring` | Exact rational probability | Byte-lock conformance check |
+| Ring                     | What it computes                       | Example domain (illustrative)                              |
+| ------------------------ | -------------------------------------- | ---------------------------------------------------------- |
+| `Real.algebra`           | Standard Bayesian inference (float)    | Factor-graph / BNN inference (`FactorGraph`, `MinimalBnn`) |
+| `ImaginaryStack.complex` | Quantum amplitude (Born probabilities) | `BipartiteMachZehnder`, CHSH gate                          |
+| `ProbabilitySemiring`    | Exact rational probability             | Byte-lock conformance check                                |
 
-(The right column names an *illustrative* domain for each ring, not necessarily a literal `WSet` call-site: the concrete verified `WSet` instantiation is `BipartiteMachZehnder`'s `WSet<int*int, Complex>`; the trust/calibration ledgers are Real-valued Bayesian but run their own Gaussian/Beta streaming code, not the `WSet` path.)
+(The right column names an _illustrative_ domain for each ring, not necessarily a literal `WSet` call-site: the concrete verified `WSet` instantiation is `BipartiteMachZehnder`'s `WSet<int*int, Complex>`; the trust/calibration ledgers are Real-valued Bayesian but run their own Gaussian/Beta streaming code, not the `WSet` path.)
 
 The three wiring primitives form a comonoid (laws verified in `WSet.Comonoid.Laws.Tests.fs`): `WSet.copy` (fan-out Δ, line 76), `WSet.tensor` (Kronecker ⊗, line 88), `WSet.discard` (marginalise ε, line 82). These are exactly the wiring primitives a neural network needs. A single factor-graph cell (`src/Bayesian/MinimalBnn.fs`) equipped with these three operations is a composable layer.
 
@@ -112,7 +112,7 @@ The standard Futamura projections describe what a partial evaluator (mix) can do
 
 `src/Core/SpecializationCache.fs` wraps the specializer in a `WeakReference<'TInput -> 'TOutput>`: the specialized function is weakly held, regenerated on GC collection. The cache tracks `Hits`, `Misses`, and `Errors` (errors are never cached — always retried).
 
-**Honest scope boundary:** `SpecializationCache` implements the first Futamura projection. The second (`mix(mix, interpreter)` → compiler) and third (`mix(mix, mix)` → cogen) are **realized in-domain and machine-checked**, not future work: `src/Core/Cogen.fs` is the 3rd projection (cogen) for the LR-parsing domain — its self-application fixpoint is proven to exact `DynamicValue` equality, and the regenerated parser actually parses — and `src/Core/MixCogen.fs` carries the 2nd & 3rd projections as reified `DynamicValue` config. What remains future work is a *fully-general* `mix` (partial evaluation over arbitrary programs); the in-domain realizations are done and checked.
+**Honest scope boundary:** `SpecializationCache` implements the first Futamura projection. The second (`mix(mix, interpreter)` → compiler) and third (`mix(mix, mix)` → cogen) are **realized in-domain and machine-checked**, not future work: `src/Core/Cogen.fs` is the 3rd projection (cogen) for the LR-parsing domain — its self-application fixpoint is proven to exact `DynamicValue` equality, and the regenerated parser actually parses — and `src/Core/MixCogen.fs` carries the 2nd & 3rd projections as reified `DynamicValue` config. What remains future work is a _fully-general_ `mix` (partial evaluation over arbitrary programs); the in-domain realizations are done and checked.
 
 **Key files:** `src/Core/MixIr.fs`, `src/Core/SpecializationCache.fs`, `src/Core.Abstractions/SpecializationCache.cs`
 
@@ -128,14 +128,14 @@ The standard Futamura projections describe what a partial evaluator (mix) can do
 
 `src/Core/Ephemeron.fs` implements Hayes (1997) ephemeron semantics — the same structure as .NET's `ConditionalWeakTable<TKey,TValue>`. An ephemeron entry `(key, value)` survives iff the key is strongly reachable. The reachability fixpoint in `Ephemeron.reachable` handles chains: if key K₁ is strongly reachable, its ephemeron value V₁ becomes a new root, which may make K₂ reachable, and so on. Ephemeron cycles with no external root collect entirely — the property plain `WeakReference` lacks.
 
-The critical difference from .NET: a plain .NET weak cache drops the value and you must have another way to recreate it. In Zeta the **design invariant** `gen(gen) == gen` — the generator IS the error-correcting code — makes every residual reconstructible from the generator, so eviction is safe. (This holds *given a deterministic specializer*: reconstructibility is a property of the generator being pure and byte-lockable, not a runtime guarantee the cache enforces on its own.)
+The critical difference from .NET: a plain .NET weak cache drops the value and you must have another way to recreate it. In Zeta the **design invariant** `gen(gen) == gen` — the generator IS the error-correcting code — makes every residual reconstructible from the generator, so eviction is safe. (This holds _given a deterministic specializer_: reconstructibility is a property of the generator being pure and byte-lockable, not a runtime guarantee the cache enforces on its own.)
 
-| Concept | .NET primitive | Zeta equivalent | Key difference |
-|---|---|---|---|
-| Weak hold | `WeakReference<T>` | `SpecializationCache<'TInput,'TOutput>` | Errors never cached; Hits/Misses/Errors tracked |
-| Value lives as long as key | `ConditionalWeakTable<TKey,TValue>` | `Ephemeron.entry` + `Ephemeron.reachable` | Reachability fixpoint handles chains and cycles |
-| Collect unreachable | `GC.Collect()` | `ShivaGc.mark` + `ShivaGc.sweep` | Deterministic, byte-lockable, over `DynamicValue` |
-| Regenerate on eviction | No built-in | `gen(gen) == gen` design invariant | Reconstructible from a deterministic generator |
+| Concept                    | .NET primitive                      | Zeta equivalent                           | Key difference                                    |
+| -------------------------- | ----------------------------------- | ----------------------------------------- | ------------------------------------------------- |
+| Weak hold                  | `WeakReference<T>`                  | `SpecializationCache<'TInput,'TOutput>`   | Errors never cached; Hits/Misses/Errors tracked   |
+| Value lives as long as key | `ConditionalWeakTable<TKey,TValue>` | `Ephemeron.entry` + `Ephemeron.reachable` | Reachability fixpoint handles chains and cycles   |
+| Collect unreachable        | `GC.Collect()`                      | `ShivaGc.mark` + `ShivaGc.sweep`          | Deterministic, byte-lockable, over `DynamicValue` |
+| Regenerate on eviction     | No built-in                         | `gen(gen) == gen` design invariant        | Reconstructible from a deterministic generator    |
 
 **Key files:** `src/Core/ShivaGc.fs`, `src/Core/Ephemeron.fs`
 
@@ -153,20 +153,28 @@ The single chain: **identity proof → quantum gate → calibration → causalit
 
 ## The Infrastructure Stack
 
-The cluster runs on NixOS (declarative, desired-state configuration) with NixFlakes for packages. K3s Kubernetes is deployed via a NixFlake. ArgoCD manages all application deployments. The current deployed applications are:
+The cluster runs on NixOS (declarative, desired-state configuration) with NixFlakes for packages. K3s Kubernetes is deployed via a NixFlake. ArgoCD manages all application deployments.
 
-| Application | Status | Manifest |
-|---|---|---|
-| Cilium (CNI + Hubble) | Deployed | `infra/k8s/applications/cilium/` |
-| ArgoCD | Deployed | `infra/k8s/applications/argocd/` |
-| Orleans / Temporal TS / Dapr Actors | Deployed | `infra/k8s/applications/` |
-| Longhorn (distributed storage) | Manifest ready | `infra/k8s/applications/longhorn/` |
-| Local-path-provisioner | Manifest ready | `infra/k8s/applications/local-path-provisioner/` |
-| CockroachDB | Manifest ready | `infra/k8s/applications/cockroachdb/` |
+The declaration lives under `full-ai-cluster/`. That is the tree the USB installer actually installs — `full-ai-cluster/usb-nixos-installer/zeta-install.sh` ends in `nixos-install --flake /mnt/etc/zeta/full-ai-cluster#<host>` — and the only flake CI evaluates. It declares **46** ArgoCD `Application` manifests under `full-ai-cluster/k8s/applications/`, plus the app-of-apps root at `full-ai-cluster/k8s/bootstrap/root-application.yaml` (measured 2026-08-17). The older tree declares 7.
 
-All manifests are validated by `infra/k8s/tests/validate-applications.ts` (TypeScript, bun-runnable, 7 test groups, 37/37 pass offline). The CI workflow `helm-validate.yml` runs this on every PR touching `infra/k8s/applications/`.
+| Application                    | Manifest                                                                                                                                    |
+| ------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------- |
+| Cilium (CNI + Hubble)          | `full-ai-cluster/k8s/applications/cilium/`                                                                                                  |
+| ArgoCD                         | `full-ai-cluster/k8s/applications/argocd/`                                                                                                  |
+| Orleans                        | `full-ai-cluster/k8s/applications/orleans/`                                                                                                 |
+| Temporal                       | `full-ai-cluster/k8s/applications/temporal/`                                                                                                |
+| Dapr                           | `full-ai-cluster/k8s/applications/dapr/`                                                                                                    |
+| Longhorn (distributed storage) | `full-ai-cluster/k8s/applications/longhorn/`                                                                                                |
+| CockroachDB                    | `full-ai-cluster/k8s/applications/cockroachdb/`                                                                                             |
+| Local-path storage             | _not_ an Application — the `zeta-local-path` StorageClass is declared by the NixOS module `full-ai-cluster/nixos/modules/local-storage.nix` |
 
-NixOS prerequisites for Longhorn (`open-iscsi`, `nfs-common`) are declared in `infra/nixos/modules/common.nix`. All toolchains (Zig, Rust, AssemblyScript, Go, Lua, LLVM, Emscripten, bun, dotnet) are declared in `infra/nixos/modules/common.nix`, `flake.nix`, and `tools/setup/linux.sh`.
+**Status register, stated honestly.** The column this table used to carry said "Deployed" for the first three rows. That is a claim about a running cluster, and nothing in this repository can check it — what is in the repo is a _declaration_, not an observation. Every row above is therefore "declared in the manifest tree the installer installs". Whether a given workload is currently up on the PoC box is an operator observation, not a repo fact.
+
+**Correction, 2026-08-17.** The previous version of this table cited `infra/k8s/applications/cilium/` and `infra/k8s/applications/argocd/` as deployed. Neither directory exists: `infra/k8s/applications/` contains argorollouts, argoworkflows, cockroachdb, gitlab, local-path-provisioner, longhorn, orleans — no cilium, no argocd. `infra/k8s/` + `infra/nixos/` are an **older, second declaration of the same cluster** which collides with `full-ai-cluster/` on the single Kubernetes identity `Application/argocd/zeta-root`; consolidating the two is tracked as work-item `081M00QCHWA087G0R000GKKRXD` and is not yet done.
+
+Validation, measured 2026-08-17: `validate-applications.ts` (real YAML parser, exact chart-version resolution, `helm template` + `kubeconform` under `--render`) is run by the `helm-validate.yml` workflow, and it is still pointed at the **older** tree — 37 checks, all passing. Pointed at `full-ai-cluster/k8s/applications` it reports 224 passed / 14 failed, so the live tree is not yet covered by that lane. Both trees _are_ covered by `gate.yml`'s `lint (yaml/k8s)` job (yamllint + kubeconform over every manifest).
+
+NixOS prerequisites for Longhorn (`services.openiscsi`, `pkgs.nfs-utils`, and the `/usr/local/bin` symlinks Longhorn's binaries expect) are declared in `full-ai-cluster/nixos/modules/longhorn-prereqs.nix`. The byte-lock toolchains (Zig, Rust, AssemblyScript, Go, Lua, LLVM, Emscripten) are declared in the root `flake.nix` devShell and in `infra/nixos/modules/common.nix`; `full-ai-cluster/nixos/modules/common.nix` does not carry them, which is one of the open items in the consolidation above. `bun` and `dotnet` come from `mise` reading the repo's `.mise.toml` on every host, per `tools/setup/linux.sh`.
 
 ---
 
@@ -174,32 +182,32 @@ NixOS prerequisites for Longhorn (`open-iscsi`, `nfs-common`) are declared in `i
 
 The following items are open — not yet proven, not yet falsified:
 
-| Conjecture | What it claims | Status |
-|---|---|---|
-| Z-2 (Halsey amplitude) | τ(3) = D_f for DLA harmonic measure | §B open — honest re-discharge protocol written, measurement not yet definitive |
-| Z-3 (Loewner entropy) | SLE_κ entropy = DLA entropy at κ=6 | §B open |
-| Z-4 (Worm emergence) | C. elegans connectome produces DLA-like D_f | §B open |
-| Z-5 (Money velocity) | Austrian economics time-dilation maps to ρ=1/(1+L) | §B open |
-| Criticality ↔ Riemann ζ | Phase boundary maps to Re(s)=½ | §B open — four forward directions identified, full connection requires Hilbert-Pólya |
-| Rx/ZSet Majorana shape | ZSet braid has Majorana-like algebraic structure | §B open — spine confirmed, isomorphism falsified |
-| ExactProbRing | Exact rational streaming inference | §B open — designed, not fully shipped |
-| N-layer BNN | Multilayer composition with full EP backward pass | §B open — primitives present, module not shipped |
+| Conjecture              | What it claims                                     | Status                                                                               |
+| ----------------------- | -------------------------------------------------- | ------------------------------------------------------------------------------------ |
+| Z-2 (Halsey amplitude)  | τ(3) = D_f for DLA harmonic measure                | §B open — honest re-discharge protocol written, measurement not yet definitive       |
+| Z-3 (Loewner entropy)   | SLE_κ entropy = DLA entropy at κ=6                 | §B open                                                                              |
+| Z-4 (Worm emergence)    | C. elegans connectome produces DLA-like D_f        | §B open                                                                              |
+| Z-5 (Money velocity)    | Austrian economics time-dilation maps to ρ=1/(1+L) | §B open                                                                              |
+| Criticality ↔ Riemann ζ | Phase boundary maps to Re(s)=½                     | §B open — four forward directions identified, full connection requires Hilbert-Pólya |
+| Rx/ZSet Majorana shape  | ZSet braid has Majorana-like algebraic structure   | §B open — spine confirmed, isomorphism falsified                                     |
+| ExactProbRing           | Exact rational streaming inference                 | §B open — designed, not fully shipped                                                |
+| N-layer BNN             | Multilayer composition with full EP backward pass  | §B open — primitives present, module not shipped                                     |
 
 ---
 
 ## References
 
-- Aji, S. M. and McEliece, R. J. (2000). "The Generalized Distributive Law." *IEEE Transactions on Information Theory*, 46(2), 325–343.
-- Cirel'son, B. S. (1980). "Quantum generalizations of Bell's inequality." *Letters in Mathematical Physics*, 4(2), 93–100.
-- Futamura, Y. (1971). "Partial evaluation of computation process — an approach to a compiler-compiler." *Systems, Computers, Controls*, 2(5), 45–50.
+- Aji, S. M. and McEliece, R. J. (2000). "The Generalized Distributive Law." _IEEE Transactions on Information Theory_, 46(2), 325–343.
+- Cirel'son, B. S. (1980). "Quantum generalizations of Bell's inequality." _Letters in Mathematical Physics_, 4(2), 93–100.
+- Futamura, Y. (1971). "Partial evaluation of computation process — an approach to a compiler-compiler." _Systems, Computers, Controls_, 2(5), 45–50.
 - Halsey, T. C. (2026). "Exact amplitude relations for diffusion-limited aggregation." arXiv:2607.02216v1.
-- Hayes, B. (1997). "Ephemerons: A New Finalization Mechanism." *Proceedings of OOPSLA 1997*.
-- Herbrich, R., Minka, T., and Graepel, T. (2006). "TrueSkill™: A Bayesian skill rating system." *Advances in Neural Information Processing Systems 19*.
-- Kschischang, F. R., Frey, B. J., and Loeliger, H.-A. (2001). "Factor graphs and the sum-product algorithm." *IEEE Transactions on Information Theory*, 47(2), 498–519.
-- McCarthy, J. (1960). "Recursive functions of symbolic expressions and their computation by machine." *Communications of the ACM*, 3(4), 184–195.
-- Minka, T. P. (2001). "Expectation Propagation for approximate Bayesian inference." *Proceedings of UAI 2001*.
-- Murphy, A. H. (1973). "A new vector partition of the probability score." *Journal of Applied Meteorology*, 12(4), 595–600.
-- Witten, T. A. and Sander, L. M. (1981). "Diffusion-limited aggregation, a kinetic critical phenomenon." *Physical Review Letters*, 47(19), 1400–1403.
+- Hayes, B. (1997). "Ephemerons: A New Finalization Mechanism." _Proceedings of OOPSLA 1997_.
+- Herbrich, R., Minka, T., and Graepel, T. (2006). "TrueSkill™: A Bayesian skill rating system." _Advances in Neural Information Processing Systems 19_.
+- Kschischang, F. R., Frey, B. J., and Loeliger, H.-A. (2001). "Factor graphs and the sum-product algorithm." _IEEE Transactions on Information Theory_, 47(2), 498–519.
+- McCarthy, J. (1960). "Recursive functions of symbolic expressions and their computation by machine." _Communications of the ACM_, 3(4), 184–195.
+- Minka, T. P. (2001). "Expectation Propagation for approximate Bayesian inference." _Proceedings of UAI 2001_.
+- Murphy, A. H. (1973). "A new vector partition of the probability score." _Journal of Applied Meteorology_, 12(4), 595–600.
+- Witten, T. A. and Sander, L. M. (1981). "Diffusion-limited aggregation, a kinetic critical phenomenon." _Physical Review Letters_, 47(19), 1400–1403.
 
 ---
 
@@ -227,12 +235,12 @@ The Z-set algebra has three key properties that make it the right data structure
 
 **Incremental by construction.** Adding a record is a Z-set delta `+1`; removing a record is a Z-set delta `−1`. The full state is the integral of all deltas. This is DBSP's `D` (differentiate) and `I` (integrate) operators. Incremental view maintenance (IVM) is correct by construction: an incremental add equals a full recompute.
 
-**Convergent merge — an abelian group, deliberately *not* a semilattice.** Two Z-sets are merged by summing weights per key. That sum is **commutative and associative** (so any arrival order converges — reordering is free) and **invertible** (the `−1` retraction is the additive inverse). It is **not idempotent**: `a + a` doubles every weight (see `ZSet.cs`, `ZSet.fs` — the code says so explicitly). This is a deliberate mathematical fork, not an omission — a merge that is both idempotent *and* invertible forces the trivial group (`a = a + a ⇒ a = 0` for all `a`), so a structure gets **counting-with-retraction** *or* **idempotent re-merge**, never both. Z-sets take counting, because DBSP incremental view maintenance needs to count. What this means for message delivery — the practical part:
+**Convergent merge — an abelian group, deliberately _not_ a semilattice.** Two Z-sets are merged by summing weights per key. That sum is **commutative and associative** (so any arrival order converges — reordering is free) and **invertible** (the `−1` retraction is the additive inverse). It is **not idempotent**: `a + a` doubles every weight (see `ZSet.cs`, `ZSet.fs` — the code says so explicitly). This is a deliberate mathematical fork, not an omission — a merge that is both idempotent _and_ invertible forces the trivial group (`a = a + a ⇒ a = 0` for all `a`), so a structure gets **counting-with-retraction** _or_ **idempotent re-merge**, never both. Z-sets take counting, because DBSP incremental view maintenance needs to count. What this means for message delivery — the practical part:
 
 - **Out-of-order delivery is free** — commutativity means the fold converges regardless of arrival order.
-- **Duplicate delivery is handled by an idempotency key**, not by the merge. Dedup-by-natural-key (discipline #6) turns at-least-once transport into effectively-once *application*; re-summing an un-keyed delta would double-count.
+- **Duplicate delivery is handled by an idempotency key**, not by the merge. Dedup-by-natural-key (discipline #6) turns at-least-once transport into effectively-once _application_; re-summing an un-keyed delta would double-count.
 - **Missed deltas are recovered by event-sourced replay + content-addressed snapshots + the ECC/adinkra layer**, not by re-merging partial state (which would double-count). The Merkle root below is the cheap "did we miss anything?" check.
-- **Where state only grows and counting isn't needed, use the idempotent CRDT / G-set join instead** (`src/Core/Crdt.fs`, `src/Core/DeltaCrdt.fs`, or a Boolean/OR-semiring WSet) — *that* path is idempotent and coordination-free by construction. Same WSet machinery; the ring is chosen per what the state needs (count vs. presence).
+- **Where state only grows and counting isn't needed, use the idempotent CRDT / G-set join instead** (`src/Core/Crdt.fs`, `src/Core/DeltaCrdt.fs`, or a Boolean/OR-semiring WSet) — _that_ path is idempotent and coordination-free by construction. Same WSet machinery; the ring is chosen per what the state needs (count vs. presence).
 
 **Content-addressed by Merkle root.** `ZSetMerkle` computes a canonical Merkle root over any Z-set. The root is a pure function of the net state — the same state always produces the same root. This makes Z-sets byte-lockable: two nodes that agree on the Merkle root agree on the full Z-set state.
 
@@ -281,7 +289,7 @@ The distributed property is structural, not configured: because every node holds
 
 ## Layer 11: ACE — The Package Manager of Package Managers
 
-> **⚠ DESIGN-STAGE / BACKLOG — read this layer as the *target*, not shipped code.** Unlike Layers 1–10 (built and conformance-checked on `main`), ACE today is only a canonical seed project (`src/Core.FSharp.AceCanonical`). The N-dimensional resolver, holographic projection, and AI-rate upstream negotiation described below are the **design intent**; the present-tense phrasing that follows describes what ACE is meant to *do*, not what runs today. It builds on shipped primitives (the Layer 10 `SchemaEvolutionDelta`, the Layer 9 Z-set delta), which is why it belongs in this document — but it is not yet implemented.
+> **⚠ DESIGN-STAGE / BACKLOG — read this layer as the _target_, not shipped code.** Unlike Layers 1–10 (built and conformance-checked on `main`), ACE today is only a canonical seed project (`src/Core.FSharp.AceCanonical`). The N-dimensional resolver, holographic projection, and AI-rate upstream negotiation described below are the **design intent**; the present-tense phrasing that follows describes what ACE is meant to _do_, not what runs today. It builds on shipped primitives (the Layer 10 `SchemaEvolutionDelta`, the Layer 9 Z-set delta), which is why it belongs in this document — but it is not yet implemented.
 
 The final distribution layer is **ACE**, Zeta's meta-package manager. ACE is not a replacement for existing package managers (npm, Helm, NixFlakes, Cargo, Maven) — it is the layer above them that unifies them into a single N-dimensional dependency graph and adds the one capability none of them have: **AI-rate continuous upstream negotiation**.
 
@@ -291,9 +299,9 @@ Aaron's compression (2026-05-26) captures the whole architecture in four words:
 
 > **Google = map + reduce. Zeta = generate + join.**
 
-| Paradigm | Operates on | What moves between nodes | Era |
-|---|---|---|---|
-| Google = map + reduce | Data (the rows themselves) | Data — shuffle-heavy | Big-data era: Hadoop, Spark, MapReduce |
+| Paradigm               | Operates on                    | What moves between nodes         | Era                                             |
+| ---------------------- | ------------------------------ | -------------------------------- | ----------------------------------------------- |
+| Google = map + reduce  | Data (the rows themselves)     | Data — shuffle-heavy             | Big-data era: Hadoop, Spark, MapReduce          |
 | Zeta = generate + join | Functions (composition graphs) | Generator references — kilobytes | AI-rate era: ACE, CockroachDB CTEs, IObservable |
 
 In the Google paradigm, functions stay put and data moves. In the Zeta paradigm, functions move (as composition graphs, as `DynamicValue` residuals) and data materialises locally on demand. This is the same `gen(gen)==gen` property from Layer 7 applied at the distribution scale: pass generators, not data; deferred execution at massive scale.
@@ -330,16 +338,16 @@ ACE is the distribution mechanism for three kinds of artifacts:
 
 ACE is the outermost layer of the system, but it uses every layer below it:
 
-| Layer | How ACE uses it |
-|---|---|
-| Layer 9 (Z-sets) | All package updates are Z-set deltas |
-| Layer 8 (DAG-FS) | All package storage is content-addressed |
-| Layer 10 (Schema evolution) | Breaking changes are `SchemaEvolutionDelta` pairs |
-| Layer 7 (Shiva-GC) | Unused package residuals are evicted and regenerated on demand |
-| Layer 6 (Futamura) | Package code is compiled to the target ISA via `SpecializationCache` |
-| Layer 3 (Calibration) | Upstream reliability is tracked by `TravelerRankLedger` |
-| Layer 2 (CHSH gate) | Upstream identity is verified by `BipartiteMachZehnder` |
-| Layer 4 (Bus regime) | Causality boundaries in distributed negotiation |
+| Layer                       | How ACE uses it                                                      |
+| --------------------------- | -------------------------------------------------------------------- |
+| Layer 9 (Z-sets)            | All package updates are Z-set deltas                                 |
+| Layer 8 (DAG-FS)            | All package storage is content-addressed                             |
+| Layer 10 (Schema evolution) | Breaking changes are `SchemaEvolutionDelta` pairs                    |
+| Layer 7 (Shiva-GC)          | Unused package residuals are evicted and regenerated on demand       |
+| Layer 6 (Futamura)          | Package code is compiled to the target ISA via `SpecializationCache` |
+| Layer 3 (Calibration)       | Upstream reliability is tracked by `TravelerRankLedger`              |
+| Layer 2 (CHSH gate)         | Upstream identity is verified by `BipartiteMachZehnder`              |
+| Layer 4 (Bus regime)        | Causality boundaries in distributed negotiation                      |
 
 The negotiation protocol is the renegotiation protocol from `docs/ALIGNMENT.md` applied at the package level. The calibration system is the same `TravelerRankLedger` applied to package publishers. The identity verification is the same CHSH gate applied to package signers.
 
@@ -367,12 +375,12 @@ The deepest connection: the `gen(gen)==gen` fixed point (Layer 7) is the propert
 
 ### Current Status and Next Steps
 
-| Phase | Status | Next step |
-|---|---|---|
-| ZetaDB (replace CockroachDB) | DAG-FS + Z-sets + schema evolution shipped; CockroachDB bridge in progress | Distributed consensus protocol (Raft over Z-set deltas) |
-| ZetaFS (replace OS filesystem) | `DagFs.Tree<'V>` shipped; WebDAV host referenced in docstring | FUSE driver (POSIX interface over DAG operations) |
-| Zeta micro/unikernel | Shiva-GC + NCI boundary shipped; unikernel not yet started | Memory model formalisation (Shiva-GC as the kernel allocator) |
-| MultilayerBnn (replace inference stack) | Primitives shipped; N-layer composition not yet shipped | `MultilayerBnn.fs` — stack N `MinimalBnn` cells with shared EP backward pass |
-| ACE CLI (replace package managers) | Package format spec shipped; CLI not yet started | `ace install / verify / list` TypeScript commands |
+| Phase                                   | Status                                                                     | Next step                                                                    |
+| --------------------------------------- | -------------------------------------------------------------------------- | ---------------------------------------------------------------------------- |
+| ZetaDB (replace CockroachDB)            | DAG-FS + Z-sets + schema evolution shipped; CockroachDB bridge in progress | Distributed consensus protocol (Raft over Z-set deltas)                      |
+| ZetaFS (replace OS filesystem)          | `DagFs.Tree<'V>` shipped; WebDAV host referenced in docstring              | FUSE driver (POSIX interface over DAG operations)                            |
+| Zeta micro/unikernel                    | Shiva-GC + NCI boundary shipped; unikernel not yet started                 | Memory model formalisation (Shiva-GC as the kernel allocator)                |
+| MultilayerBnn (replace inference stack) | Primitives shipped; N-layer composition not yet shipped                    | `MultilayerBnn.fs` — stack N `MinimalBnn` cells with shared EP backward pass |
+| ACE CLI (replace package managers)      | Package format spec shipped; CLI not yet started                           | `ace install / verify / list` TypeScript commands                            |
 
 Max is aware of this path and is excited about it. The document you are reading is the technical foundation for all five workstreams.

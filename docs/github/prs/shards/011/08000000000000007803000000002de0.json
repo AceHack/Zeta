@@ -1,0 +1,12 @@
+{
+  "pr_number": 11744,
+  "archive_path": "docs/history/pr-reviews/PR-11744-bug-ci-the-apt-stall-root-cause-returned-gate-jobs-hang-in-the-24-toolchain-inst.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-18T08:00:45.929Z",
+  "schema_version": "v1",
+  "commit_sha": "a7c9ad0a765cd4af14956d86286650c7e01a91ad",
+  "title": "bug(ci): the apt-stall root cause returned — gate jobs hang in the §24 toolchain install",
+  "state": "MERGED",
+  "merged_at": "2026-08-18T08:00:10Z",
+  "head_ref": "shadow/toolchain-install-stall-returned"
+}

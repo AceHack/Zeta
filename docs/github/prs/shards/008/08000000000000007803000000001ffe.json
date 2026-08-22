@@ -1,0 +1,12 @@
+{
+  "pr_number": 8190,
+  "archive_path": "docs/history/pr-reviews/PR-8190-docs-research-zeta-ir-v2-lightlike-darklike-garden-algebra-neighborhood-addressi.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-14T15:09:01.260Z",
+  "schema_version": "v1",
+  "commit_sha": "c7b5b1313bf78f9f34fc431a6d5378a430553d0e",
+  "title": "docs(research): Zeta IR v2 — lightlike/darklike, garden algebra, neighborhood addressing",
+  "state": "MERGED",
+  "merged_at": "2026-06-14T15:08:38Z",
+  "head_ref": "otto/zeta-lang-ir-v2-lightlike-garden-addressing"
+}

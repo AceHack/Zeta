@@ -1,0 +1,12 @@
+{
+  "pr_number": 2319,
+  "archive_path": "docs/history/pr-reviews/PR-2319-docs-research-add-verbatim-alexa-voice-transcript-3430-lines.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-09T17:26:14.658Z",
+  "schema_version": "v1",
+  "commit_sha": "743269336bbc057a762301765dd8690560823456",
+  "title": "docs(research): add verbatim Alexa+ voice transcript (3430 lines)",
+  "state": "MERGED",
+  "merged_at": "2026-05-09T17:25:59Z",
+  "head_ref": "docs/research-alexa-bootstrap-to-replication-2026-05-09"
+}

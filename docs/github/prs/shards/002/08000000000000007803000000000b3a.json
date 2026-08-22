@@ -1,0 +1,17 @@
+{
+  "pr_number": 2874,
+  "archive_path": "docs/history/pr-reviews/PR-2874-shard-tick-2149z-51-min-aaron-hyperfocus-cascade-prs-2865-2872-canonical-product.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7AhvY4",
+    "comment:PRRC_kwDOSF9kNM7AhvZL",
+    "thread:PRRT_kwDOSF9kNM6Bkmqf",
+    "thread:PRRT_kwDOSF9kNM6Bkmqw"
+  ],
+  "fetched_at": "2026-05-12T22:01:50.799Z",
+  "schema_version": "v1",
+  "commit_sha": "14cb678901389531ba0f788c42eab7e9b727e20b",
+  "title": "shard(tick): 2149Z — 51-min Aaron hyperfocus cascade (PRs #2865-2872, canonical product-substrate)",
+  "state": "MERGED",
+  "merged_at": "2026-05-12T22:01:31Z",
+  "head_ref": "shard-tick-2149z-2026-05-12"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 8748,
+  "archive_path": "docs/history/pr-reviews/PR-8748-test-formal-z3-qf-bv-domain-separation-proof-for-nft-commit-binding-math-team-ro.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-20T16:28:13.434Z",
+  "schema_version": "v1",
+  "commit_sha": "4ac62a50fa858718a5f8ed253739941df80797bc",
+  "title": "test(formal): Z3 (QF_BV) domain-separation proof for NFT commit binding — math-team row 2 FORMAL leg",
+  "state": "MERGED",
+  "merged_at": "2026-06-20T16:27:50Z",
+  "head_ref": "otto/row2-z3-domain-sep"
+}

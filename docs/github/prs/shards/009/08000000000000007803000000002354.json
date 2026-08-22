@@ -1,0 +1,12 @@
+{
+  "pr_number": 9044,
+  "archive_path": "docs/history/pr-reviews/PR-9044-ci-ops-fix-forward-both-cadence-workflows-to-commit-to-main-stop-ops-orphaning.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-30T21:45:52.090Z",
+  "schema_version": "v1",
+  "commit_sha": "ce2da8b84d4b9caf50e50f6415b5a320d34c6424",
+  "title": "ci(ops): fix-forward both cadence workflows to commit-to-main (stop ops/ orphaning)",
+  "state": "MERGED",
+  "merged_at": "2026-06-30T21:45:31Z",
+  "head_ref": "ops-fix-forward-cadence-commit-to-main"
+}

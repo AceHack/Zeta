@@ -1,0 +1,19 @@
+{
+  "pr_number": 6411,
+  "archive_path": "docs/history/pr-reviews/PR-6411-ci-b-0891-add-zflash-qemu-dry-run-workflow.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7GuOJQ",
+    "comment:PRRC_kwDOSF9kNM7GuOKc",
+    "comment:PRRC_kwDOSF9kNM7GuVWe",
+    "thread:PRRT_kwDOSF9kNM6GG_32",
+    "thread:PRRT_kwDOSF9kNM6GG_4x",
+    "thread:PRRT_kwDOSF9kNM6GHFR5"
+  ],
+  "fetched_at": "2026-06-01T12:29:09.340Z",
+  "schema_version": "v1",
+  "commit_sha": "5af91cf8e95ca0520ba2002e103cfeb846ebe7be",
+  "title": "ci(B-0891): add zflash QEMU dry-run workflow",
+  "state": "MERGED",
+  "merged_at": "2026-06-01T12:28:46Z",
+  "head_ref": "claim/b0891-zflash-qemu-ci-dry-run-workflow-codex-20260601T1200Z"
+}

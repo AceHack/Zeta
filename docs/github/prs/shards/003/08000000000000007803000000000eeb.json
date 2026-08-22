@@ -1,0 +1,15 @@
+{
+  "pr_number": 3819,
+  "archive_path": "docs/history/pr-reviews/PR-3819-chore-b-0557-close-row-all-4-quality-slices-shipped-infrastructure-eats-itself.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7B3SPL",
+    "thread:PRRT_kwDOSF9kNM6Ciw59"
+  ],
+  "fetched_at": "2026-05-16T08:08:09.324Z",
+  "schema_version": "v1",
+  "commit_sha": "90099a29dd95659461c4360da95bad4e6ec8d19f",
+  "title": "chore(b-0557): close row — all 4 quality slices shipped (infrastructure-eats-itself)",
+  "state": "MERGED",
+  "merged_at": "2026-05-16T08:07:51Z",
+  "head_ref": "chore/b0557-close-row-otto-cli-2026-05-16"
+}

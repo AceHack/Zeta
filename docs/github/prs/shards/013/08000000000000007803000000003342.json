@@ -1,0 +1,12 @@
+{
+  "pr_number": 13122,
+  "archive_path": "docs/history/pr-reviews/PR-13122-test-hygiene-give-the-codeql-escaping-fix-a-falsifier-it-had-none.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-21T07:38:05.247Z",
+  "schema_version": "v1",
+  "commit_sha": "563d2f850fd37b269f7438b7152241b56a8ceb41",
+  "title": "test(hygiene): give the CodeQL escaping fix a falsifier — it had none",
+  "state": "MERGED",
+  "merged_at": "2026-08-21T07:37:27Z",
+  "head_ref": "hygiene/escaping-fix-gets-a-falsifier"
+}

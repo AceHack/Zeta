@@ -1,0 +1,12 @@
+{
+  "pr_number": 9864,
+  "archive_path": "docs/history/pr-reviews/PR-9864-fix-register-demote-z-7-add-the-discharge-certificate-consistency-guard-soraya-s.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-01T12:48:22.271Z",
+  "schema_version": "v1",
+  "commit_sha": "01b04ca8abc0a66f1f81fa24a1a190b99260ced2",
+  "title": "fix(register): demote Z-7 + add the discharge/certificate consistency guard (Soraya's audit)",
+  "state": "MERGED",
+  "merged_at": "2026-08-01T12:47:54Z",
+  "head_ref": "shadow/discharge-certificate-consistency-lint"
+}

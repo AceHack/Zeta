@@ -15,6 +15,7 @@ import {
   type ProcessBatch,
   type ProcessBatchWithResult,
 } from "./ferry-throttler";
+import { deferred, yieldTurns } from "../testing/deterministic-async";
 
 // ─── Helpers ────────────────────────────────────────────────────────────────
 
@@ -94,16 +95,59 @@ describe("FerryThrottler — fire-and-forget", () => {
 
   it("bounded queue applies backpressure without dropping work", async () => {
     const processed: number[] = [];
+    // WAS: an awaited `setTimeout` of 1ms -- a 1ms sleep whose only job was to
+    // make the processor slow enough that the bounded queue filled. That is a guess about
+    // machine speed dressed as a test fixture: on a loaded runner the enqueue loop is ALSO
+    // slow, so the queue may never fill and the backpressure path never runs -- a vacuous
+    // pass. The barrier below makes the wait structural: the processor blocks until the test
+    // has enqueued past `maxQueueSize`, so backpressure is EXERCISED rather than hoped for.
+    const firstBoatEntered = deferred();
+    const releaseProcessor = deferred();
+    let blockedEnqueues = 0;
     const processBatch: ProcessBatch<number> = async (boat) => {
-      await new Promise((r) => setTimeout(r, 1));
+      firstBoatEntered.resolve();
+      await releaseProcessor.promise;
       for (const item of boat) processed.push(item);
     };
     const config: FerryThrottlerConfig = { ...DETERMINISTIC_CONFIG, maxQueueSize: 2 };
     const throttler = new FerryThrottler(config, processBatch);
-    for (const x of range(1, 30)) {
-      await throttler.enqueue(x);
-    }
+
+    // Enqueue in the background so the test can observe the queue actually saturating.
+    const enqueueAll = (async () => {
+      for (const x of range(1, 30)) {
+        const pending = throttler.enqueue(x);
+        // A queue at capacity must make `enqueue` AWAIT rather than drop. Measured in TURNS,
+        // not milliseconds: five macrotask turns is five turns on any machine, so this cannot
+        // read a loaded runner as a full queue the way a millisecond threshold would.
+        const outcome = await Promise.race([
+          pending.then(() => "resolved" as const),
+          yieldTurns(5).then(() => "blocked" as const),
+        ]);
+        if (outcome === "blocked") blockedEnqueues += 1;
+        await pending;
+      }
+    })();
+
+    await firstBoatEntered.promise; // the ferry is in the processor, so the queue is filling
+
+    // Poll for saturation in TURNS. Not a timeout: 200 macrotask turns is 200 turns on an idle
+    // laptop and 200 turns on a contended runner, so this bound cannot be crossed by machine
+    // load -- only by the queue never filling, which is the thing under test.
+    for (let turn = 0; turn < 200 && blockedEnqueues === 0; turn += 1) await yieldTurns(1);
+    expect(blockedEnqueues).toBeGreaterThan(0);
+
+    releaseProcessor.resolve();
+    await enqueueAll;
     await throttler.complete();
+
+    // ANTI-VACUITY, and STRICTLY STRONGER than the sleep this replaced: the old test asserted
+    // only that 30 items came out, which an UNBOUNDED queue satisfies just as well -- the word
+    // "backpressure" in its name was doing work the assertions were not. FALSIFIER, run: raising
+    // `maxQueueSize` from 2 to 10000 leaves every other assertion in this test green and turns
+    // the saturation assertion above red. The first draft of that line raced the enqueue against
+    // `Promise.resolve()` and SURVIVED the mutation, because an `async` enqueue always costs a
+    // microtask whether or not the queue is full. Recorded rather than quietly replaced: a check
+    // that cannot fail is not a check, and that one looked exactly like one that could.
     expect(processed.length).toBe(30);
     expect(new Set(processed)).toEqual(new Set(range(1, 30)));
   });
@@ -214,11 +258,15 @@ describe("FerryThrottlerWithResult — request/response", () => {
     let resolveGate: (() => void) | undefined;
     const gate = new Promise<void>((r) => { resolveGate = r; });
     let entered = false;
+    // The processor already knew when it had been entered; it just had no way to SAY so, so
+    // the test slept 10ms and assumed. Now it announces.
+    const firstEntry = deferred();
 
     const processBatch: ProcessBatchWithResult<number, number> = async (boat) => {
       processed.push(boat[0]!);
       if (!entered) {
         entered = true;
+        firstEntry.resolve();
         await gate;
       }
       return [boat[0]!];
@@ -229,8 +277,11 @@ describe("FerryThrottlerWithResult — request/response", () => {
 
     const first = throttler.process(1);
 
-    // Wait for first to enter the processor
-    await new Promise((r) => setTimeout(r, 10));
+    // Wait for first to enter the processor. WAS: an awaited `setTimeout` of 10ms
+    // -- which on a loaded runner could return BEFORE the processor was entered, at which point
+    // the abort below races a boat that has not been assembled and the test fails for the
+    // machine rather than for the code. The barrier cannot return early.
+    await firstEntry.promise;
 
     const controller = new AbortController();
     const second = throttler.process(2, controller.signal);

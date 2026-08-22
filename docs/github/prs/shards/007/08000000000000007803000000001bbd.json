@@ -1,0 +1,12 @@
+{
+  "pr_number": 7101,
+  "archive_path": "docs/history/pr-reviews/PR-7101-feat-core-fixpoint-the-t0-t-self-consistency-solver.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-08T12:29:09.390Z",
+  "schema_version": "v1",
+  "commit_sha": "ce3b7a57cc551a4807318ed904a9cd57fb0b32f6",
+  "title": "feat(core): Fixpoint — the t0=t∞ self-consistency solver",
+  "state": "MERGED",
+  "merged_at": "2026-06-08T12:28:49Z",
+  "head_ref": "otto/fixpoint-t0-equals-tinfinity-self-consistency-solver"
+}

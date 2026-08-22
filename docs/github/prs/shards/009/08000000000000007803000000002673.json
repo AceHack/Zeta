@@ -1,0 +1,12 @@
+{
+  "pr_number": 9843,
+  "archive_path": "docs/history/pr-reviews/PR-9843-docs-workitems-annotate-the-two-db-stored-proc-items-landed-vs-remaining-both-st.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-01T04:28:32.129Z",
+  "schema_version": "v1",
+  "commit_sha": "b2eb6c24a4b8a51437d165a352c38dd8735e58e3",
+  "title": "docs(workitems): annotate the two DB stored-proc items — landed vs remaining; both stay OPEN",
+  "state": "MERGED",
+  "merged_at": "2026-08-01T04:27:58Z",
+  "head_ref": "shadow/annotate-db-storedproc-workitems"
+}

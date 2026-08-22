@@ -1,0 +1,12 @@
+{
+  "pr_number": 3431,
+  "archive_path": "docs/history/pr-reviews/PR-3431-shard-tick-1121z-pr-3428-merged-pr-3429-routine-threads.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-15T11:25:21.921Z",
+  "schema_version": "v1",
+  "commit_sha": "d953ebe535925ce353e03a4adbcbc8b40b863911",
+  "title": "shard(tick): 1121Z — PR #3428 merged; PR #3429 routine threads",
+  "state": "MERGED",
+  "merged_at": "2026-05-15T11:25:02Z",
+  "head_ref": "shard/tick-1121z-otto-cli-2026-05-15"
+}

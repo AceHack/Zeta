@@ -1,0 +1,12 @@
+{
+  "pr_number": 2222,
+  "archive_path": "docs/history/pr-reviews/PR-2222-docs-b-0362-concept-search-index-for-instant-term-lookup.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-09T07:16:21.171Z",
+  "schema_version": "v1",
+  "commit_sha": "1d16b51f12aef659e48dd9b80f427322d2c43db6",
+  "title": "docs(B-0362): concept search index for instant term lookup",
+  "state": "MERGED",
+  "merged_at": "2026-05-09T07:16:07Z",
+  "head_ref": "docs/b0362-concept-search-index"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 2673,
+  "archive_path": "docs/history/pr-reviews/PR-2673-docs-shadow-log-catches-31-33-premature-kill-claims-without-action.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-11T08:50:20.337Z",
+  "schema_version": "v1",
+  "commit_sha": "75b9a83416d08c5918485e37b9053564077ad6d0",
+  "title": "docs(shadow-log): catches 31-33 — premature kill + claims-without-action",
+  "state": "MERGED",
+  "merged_at": "2026-05-11T08:50:04Z",
+  "head_ref": "docs/shadow-catches-31-32-33-2026-05-11"
+}

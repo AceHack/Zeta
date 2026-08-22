@@ -1,0 +1,15 @@
+{
+  "pr_number": 9181,
+  "archive_path": "docs/history/pr-reviews/PR-9181-feat-core-schedulerzeta-weak-fixed-point-table-orbits-dynamically-loaded-unloade.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7RiNNg",
+    "thread:PRRT_kwDOSF9kNM6N_x6l"
+  ],
+  "fetched_at": "2026-08-17T13:47:40.708Z",
+  "schema_version": "v1",
+  "commit_sha": "8ca0ad39ea905023b38ce5620acb2e08fee35bd9",
+  "title": "feat(core): SchedulerZeta weak fixed-point table - orbits dynamically loaded/unloaded (Shiva/GC)",
+  "state": "MERGED",
+  "merged_at": "2026-07-02T18:41:36Z",
+  "head_ref": "otto/scheduler-zeta-weak-fixed-point-table"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 6132,
+  "archive_path": "docs/history/pr-reviews/PR-6132-docs-pitch-elon-negotiation-profile-agora-economy-ranks-cosmic-expansion-1.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-30T17:17:02.049Z",
+  "schema_version": "v1",
+  "commit_sha": "64f28ee38ae01d4e1caccf9c81dbbef275a08fc5",
+  "title": "docs(pitch): Elon negotiation profile — Agora economy ranks cosmic expansion #1",
+  "state": "MERGED",
+  "merged_at": "2026-05-30T17:16:40Z",
+  "head_ref": "otto/elon-negotiation-profile-2026-05-30"
+}

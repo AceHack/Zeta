@@ -1,0 +1,12 @@
+{
+  "pr_number": 8410,
+  "archive_path": "docs/history/pr-reviews/PR-8410-feat-core-make-bounded-gset-forgetting-explicit-heat.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-16T02:36:43.393Z",
+  "schema_version": "v1",
+  "commit_sha": "1f7a8c4df118b895c08e898069c90b6f228f06cd",
+  "title": "feat(core): make bounded GSet forgetting explicit heat",
+  "state": "MERGED",
+  "merged_at": "2026-06-16T02:36:15Z",
+  "head_ref": "codex/bounded-gset-forget-policy"
+}

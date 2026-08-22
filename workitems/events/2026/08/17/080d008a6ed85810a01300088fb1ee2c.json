@@ -1,0 +1,14 @@
+{
+  "id": "080d008a6ed85810a01300088fb1ee2c",
+  "at": "2026-08-17T19:58:30.155Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M08MVPR9087G0R000NCF8PV",
+    "type": "bug",
+    "title": "PR-review archive under-reports threads: on-merge fetch races the post-merge reviewers (21/100 sampled zero-thread docs are wrong)",
+    "slug": "pr-review-archive-under-reports-threads-on-merge-fetch-races",
+    "priority": "P2",
+    "filename": "081M08MVPR9087G0R000NCF8PV-pr-review-archive-under-reports-threads-on-merge-fetch-races.md"
+  }
+}

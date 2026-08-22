@@ -1,0 +1,12 @@
+{
+  "pr_number": 7003,
+  "archive_path": "docs/history/pr-reviews/PR-7003-feat-core-file-extensions-folder-templates-branch-deps-static-git-native-graph-s.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-08T03:38:13.262Z",
+  "schema_version": "v1",
+  "commit_sha": "538f8b13abd9eb7f2a5150e77143284dbc612dc2",
+  "title": "feat(core): file extensions — folder templates, branch deps, static git-native graph, self-hosting meta-recursive fs",
+  "state": "MERGED",
+  "merged_at": "2026-06-08T03:37:54Z",
+  "head_ref": "otto/file-templates-branch-deps-static-gitnative-self-hosted"
+}

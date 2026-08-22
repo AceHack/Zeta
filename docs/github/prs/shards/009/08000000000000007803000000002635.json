@@ -1,0 +1,12 @@
+{
+  "pr_number": 9781,
+  "archive_path": "docs/history/pr-reviews/PR-9781-fix-dst-determinism-bug-in-debouncedoracle-clear-the-main-wide-determinism-lint-.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-31T13:44:07.813Z",
+  "schema_version": "v1",
+  "commit_sha": "bdc981316fc38b735ea4d3e0df4b6f9e825612da",
+  "title": "fix: DST-determinism bug in DebouncedOracle + clear the main-wide determinism-lint red",
+  "state": "MERGED",
+  "merged_at": "2026-07-31T13:43:35Z",
+  "head_ref": "shadow/fix-determinism-lint-oracle-dst-bug"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 8005,
+  "archive_path": "docs/history/pr-reviews/PR-8005-fix-bootstrap-gateway-api-crds-local-path-helperpod-fresh-install-was-failing.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-13T02:08:00.009Z",
+  "schema_version": "v1",
+  "commit_sha": "bd4ce367ccbc2daecbca34dbe86ac972e8c81c4c",
+  "title": "fix(bootstrap): Gateway API CRDs + local-path helperPod — fresh install was failing",
+  "state": "MERGED",
+  "merged_at": "2026-06-13T02:07:28Z",
+  "head_ref": "fix/bootstrap-gateway-crds-storage"
+}

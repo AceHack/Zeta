@@ -1,0 +1,12 @@
+{
+  "pr_number": 9761,
+  "archive_path": "docs/history/pr-reviews/PR-9761-docs-append-money-as-value-metric-isociety-shrinks-the-fraud-window-to-9760-shad.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-12T03:06:49.157Z",
+  "schema_version": "v1",
+  "commit_sha": "d25829bd6b2d5797479d848373e8ca3f4765823d",
+  "title": "docs: append money-as-value-metric + ISociety-shrinks-the-fraud-window to #9760 (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-12T03:06:23Z",
+  "head_ref": "money-metric-append"
+}

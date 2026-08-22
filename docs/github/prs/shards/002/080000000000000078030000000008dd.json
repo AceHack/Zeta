@@ -1,0 +1,15 @@
+{
+  "pr_number": 2269,
+  "archive_path": "docs/history/pr-reviews/PR-2269-fix-resolve-6-backlog-id-collisions-b-0368-b-0373.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_gckR",
+    "thread:PRRT_kwDOSF9kNM6Az2in"
+  ],
+  "fetched_at": "2026-05-09T09:58:56.131Z",
+  "schema_version": "v1",
+  "commit_sha": "18f814a0653982af916af2637aa531ebad2726b2",
+  "title": "fix: resolve 6 backlog ID collisions (B-0368..B-0373)",
+  "state": "MERGED",
+  "merged_at": "2026-05-09T09:58:42Z",
+  "head_ref": "fix/resolve-6-backlog-id-collisions"
+}

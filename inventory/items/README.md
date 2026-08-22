@@ -43,8 +43,21 @@ Archive = `status: retired`, never file deletion (memory preservation).
 - Regenerate the index: `bun src/Core.TypeScript/inventory/generate-items-json.ts`
   → writes `inventory/items.json` (committed; the static viewer + dashboards read it).
 
+- Reconcile against the other inventory surfaces:
+  `bun run inventory:reconcile` (081M00R59KS087G0R001W3837V). It checks that every
+  `assigned_machine` resolves to a real machine identity (a `machines/` host key or a
+  self-registered cluster-node hostname) and reports how much of the audited fleet this
+  register actually covers. See `docs/inventory/README.md` for the full surface map.
+
 ## Lineage
 
 Supersedes the Supabase backend (see `../spec.md` §Pivot 2026-07-02). Items
 carrying `sample: true` frontmatter are placeholders proving the shape — they are
 replaced by the transcription of the paper register.
+
+**`sample: true` is not asset coverage.** As of 2026-08-16 both rows here are samples, so
+the register holds **0 real assets** against **206 units** in the 2026-05-27 audit snapshot.
+`inventory:reconcile` prints that number on every run and never counts a placeholder as an
+asset — the gap is held open deliberately (Addison is re-doing the audit; importing the
+superseded snapshot is explicitly out of scope), and printing it is what keeps "we have an
+audited asset register" from quietly meaning zero.

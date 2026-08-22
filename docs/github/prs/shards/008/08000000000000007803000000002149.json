@@ -1,0 +1,12 @@
+{
+  "pr_number": 8521,
+  "archive_path": "docs/history/pr-reviews/PR-8521-docs-vision-memory-cayley-dickson-control-limit-vision-never-take-control-contro.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-16T11:48:53.228Z",
+  "schema_version": "v1",
+  "commit_sha": "f2f714afbefd7f3f913d0fb67d8435484d09e346",
+  "title": "docs(VISION)+memory: Cayley-Dickson control-limit (→ VISION 'never take control') + control is frame-relative + the git tangle is our proof of existence",
+  "state": "MERGED",
+  "merged_at": "2026-06-16T11:48:22Z",
+  "head_ref": "otto/cayley-dickson-vision-frame-git-tangle"
+}

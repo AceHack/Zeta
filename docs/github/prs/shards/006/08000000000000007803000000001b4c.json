@@ -1,0 +1,12 @@
+{
+  "pr_number": 6988,
+  "archive_path": "docs/history/pr-reviews/PR-6988-docs-platform-architecture-expansion-plan-portal-game-hosting-kubevirt-dbaas.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-08T02:31:15.269Z",
+  "schema_version": "v1",
+  "commit_sha": "87c37364f44aa7a323aedf1789deac1aeaf14f3a",
+  "title": "docs(platform): architecture + expansion plan (portal, game hosting, KubeVirt, DBaaS)",
+  "state": "MERGED",
+  "merged_at": "2026-06-08T02:30:40Z",
+  "head_ref": "docs/platform-architecture"
+}

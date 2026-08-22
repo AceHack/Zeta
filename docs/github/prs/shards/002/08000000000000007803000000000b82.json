@@ -1,0 +1,21 @@
+{
+  "pr_number": 2946,
+  "archive_path": "docs/history/pr-reviews/PR-2946-fix-claude-rules-peer-call-infrastructure-rule-8-wrappers-not-6-b-0421-note-webs.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7AoeUr",
+    "comment:PRRC_kwDOSF9kNM7Aogwq",
+    "comment:PRRC_kwDOSF9kNM7AogxO",
+    "comment:PRRC_kwDOSF9kNM7Aogxh",
+    "thread:PRRT_kwDOSF9kNM6BpbvK",
+    "thread:PRRT_kwDOSF9kNM6BpdY5",
+    "thread:PRRT_kwDOSF9kNM6BpdZW",
+    "thread:PRRT_kwDOSF9kNM6BpdZm"
+  ],
+  "fetched_at": "2026-05-13T06:02:11.414Z",
+  "schema_version": "v1",
+  "commit_sha": "3b54a59994ab82d3edbd8860ae43d91716922986",
+  "title": "fix(.claude/rules): peer-call-infrastructure rule — 8 wrappers not 6 + B-0421 note + website-text-mode-git pointer",
+  "state": "MERGED",
+  "merged_at": "2026-05-13T06:01:55Z",
+  "head_ref": "fix-peer-call-infrastructure-rule-eight-wrappers-not-six-add-claude-kiro-b0421-note-website-text-mode-git-2026-05-13"
+}

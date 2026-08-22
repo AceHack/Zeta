@@ -1,0 +1,12 @@
+{
+  "pr_number": 7826,
+  "archive_path": "docs/history/pr-reviews/PR-7826-feat-b-0248-2-host-loop-bootstrap-sh-one-command-setup-for-max-addison.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-11T23:02:14.190Z",
+  "schema_version": "v1",
+  "commit_sha": "e3a8da5c110d2045158bb62bddb36ee867990e45",
+  "title": "feat(B-0248.2): host-loop-bootstrap.sh — one-command setup for Max/Addison",
+  "state": "MERGED",
+  "merged_at": "2026-06-11T23:01:48Z",
+  "head_ref": "alexa/host-loop-bootstrap-b0248.2"
+}

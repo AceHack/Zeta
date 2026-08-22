@@ -1,0 +1,12 @@
+{
+  "pr_number": 8058,
+  "archive_path": "docs/history/pr-reviews/PR-8058-feat-forge-host-forgehost-interface-types-registry-detection-wave-1.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-13T20:25:07.076Z",
+  "schema_version": "v1",
+  "commit_sha": "b960f32ebb5a61e45778d07b5081aa13472c1dea",
+  "title": "feat(forge-host): ForgeHost interface, types, registry + detection (Wave 1)",
+  "state": "MERGED",
+  "merged_at": "2026-06-13T20:24:42Z",
+  "head_ref": "kiro/forge-host-adapter"
+}

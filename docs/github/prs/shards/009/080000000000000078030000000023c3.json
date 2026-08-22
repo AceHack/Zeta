@@ -1,0 +1,12 @@
+{
+  "pr_number": 9155,
+  "archive_path": "docs/history/pr-reviews/PR-9155-test-the-isa-works-right-over-braids-emit-retract-i-is-the-non-backtracking-cond.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-17T10:57:49.734Z",
+  "schema_version": "v1",
+  "commit_sha": "e6b07cb199711b26ab303030ae04a6d2c506a711",
+  "title": "test: the ISA works right over braids — EMIT∘RETRACT=I IS the non-backtracking condition",
+  "state": "MERGED",
+  "merged_at": "2026-07-02T16:44:31Z",
+  "head_ref": "otto/braid-isa-zeta-consistency"
+}

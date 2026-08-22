@@ -1,0 +1,12 @@
+{
+  "pr_number": 9896,
+  "archive_path": "docs/history/pr-reviews/PR-9896-chore-workitems-complete-081kx3ka3ew-drift-event-schema-mtth-dashboard-done.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-01T16:22:42.962Z",
+  "schema_version": "v1",
+  "commit_sha": "a4047b75e20886e04b926f9f836036be2044c1e9",
+  "title": "chore(workitems): complete 081KX3KA3EW — drift-event schema + MTTH dashboard DONE",
+  "state": "MERGED",
+  "merged_at": "2026-08-01T16:22:13Z",
+  "head_ref": "otto/complete-081KX3KA3EW"
+}

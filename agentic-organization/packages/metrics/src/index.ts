@@ -10,13 +10,16 @@ export {
 } from "./code-metrics.ts";
 export {
   DEFAULT_REVIEW_QUORUM,
+  DEFAULT_REVIEW_RULE,
   FindingDecisionState,
+  REVIEW_BOARD_PURPOSE,
   ReviewBoardFeedbackReason,
   ReviewDimension,
   ReviewSeverity,
   ReviewStance,
   evaluateReviewBoard,
   type CandidateFinding,
+  type FindingConfidence,
   type FindingDecision,
   type ReviewBoardOutcome,
   type ReviewBoardResult,

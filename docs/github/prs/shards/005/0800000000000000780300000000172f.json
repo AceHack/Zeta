@@ -1,0 +1,12 @@
+{
+  "pr_number": 5935,
+  "archive_path": "docs/history/pr-reviews/PR-5935-fix-pr-discussions-remove-leaked-conflict-markers.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-28T21:14:20.399Z",
+  "schema_version": "v1",
+  "commit_sha": "5db29522ac4fed1c173a6e2519c4156daaf52e5c",
+  "title": "fix(pr-discussions): remove leaked conflict markers",
+  "state": "MERGED",
+  "merged_at": "2026-05-28T21:13:57Z",
+  "head_ref": "claim/task-pr-discussions-conflict-marker-fix-20260528"
+}

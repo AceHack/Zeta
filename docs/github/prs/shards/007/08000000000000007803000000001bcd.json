@@ -1,0 +1,12 @@
+{
+  "pr_number": 7117,
+  "archive_path": "docs/history/pr-reviews/PR-7117-feat-core-softevolution-watch-the-yin-soft-value-evolve-assert-stable-coherent.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-08T22:39:57.693Z",
+  "schema_version": "v1",
+  "commit_sha": "b4e9b3be18afffb94e17a1519f5a405bf3f817a0",
+  "title": "feat(core): SoftEvolution — watch the yin (soft value) evolve; assert stable + coherent",
+  "state": "MERGED",
+  "merged_at": "2026-06-08T22:39:37Z",
+  "head_ref": "otto/softevolution-yin-soft-value-stability-coherence-monitor"
+}

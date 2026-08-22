@@ -1,0 +1,12 @@
+{
+  "pr_number": 8657,
+  "archive_path": "docs/history/pr-reviews/PR-8657-docs-external-anchor-the-deeper-clifford-e8-unfold-dechant-wilson-baez-pass-to-m.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-20T00:31:29.853Z",
+  "schema_version": "v1",
+  "commit_sha": "4d15570e8921de7832b491292e1c5f80f41c88cb",
+  "title": "docs: external-anchor the deeper Clifford→E8 unfold (Dechant/Wilson/Baez) + pass to math team (row 11)",
+  "state": "MERGED",
+  "merged_at": "2026-06-20T00:30:57Z",
+  "head_ref": "otto/clifford-e8-deeper-unfold-external-anchors-mathteam"
+}

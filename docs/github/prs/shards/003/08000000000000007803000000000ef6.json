@@ -1,0 +1,15 @@
+{
+  "pr_number": 3830,
+  "archive_path": "docs/history/pr-reviews/PR-3830-memory-feedback-audit-tool-empirical-fp-rate-partial-vs-drift-skew-observation.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7B3grA",
+    "thread:PRRT_kwDOSF9kNM6Ci8UB"
+  ],
+  "fetched_at": "2026-05-16T09:20:22.171Z",
+  "schema_version": "v1",
+  "commit_sha": "964c1a0da0eeb1a8a001f504fb6bbcf0b68495f6",
+  "title": "memory(feedback): audit-tool empirical FP rate + partial-vs-drift skew observation",
+  "state": "MERGED",
+  "merged_at": "2026-05-16T09:20:05Z",
+  "head_ref": "memory/audit-tool-fp-rate-empirical-observation-otto-cli-2026-05-16"
+}

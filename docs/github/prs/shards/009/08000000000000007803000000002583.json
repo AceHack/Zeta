@@ -1,0 +1,12 @@
+{
+  "pr_number": 9603,
+  "archive_path": "docs/history/pr-reviews/PR-9603-docs-research-time-as-traveler-addenda-4-5-arrow-is-the-missing-additive-inverse.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-09T01:39:08.242Z",
+  "schema_version": "v1",
+  "commit_sha": "2859fd0e4d3fa7f01f8c07b19b218b0a21d7c758",
+  "title": "docs(research): time-as-traveler addenda 4-5 — arrow IS the missing additive inverse (WSet IStarRing:IRing vs max-plus); prism = CoordinationSpectrum (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-09T01:38:33Z",
+  "head_ref": "otto/time-traveler-addenda-4-5-algebra-prism"
+}

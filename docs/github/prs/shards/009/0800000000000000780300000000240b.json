@@ -1,0 +1,12 @@
+{
+  "pr_number": 9227,
+  "archive_path": "docs/history/pr-reviews/PR-9227-feat-core-indentation-off-side-rule-indent-dedent-lexer-indentation-sensitive-so.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-02T23:57:50.430Z",
+  "schema_version": "v1",
+  "commit_sha": "0d7cbec3af3394db744795a42ad81bc42aaa40a7",
+  "title": "feat(core): Indentation — off-side-rule INDENT/DEDENT lexer; indentation-sensitive source → CFG-parseable",
+  "state": "MERGED",
+  "merged_at": "2026-07-02T23:57:28Z",
+  "head_ref": "otto/indent-dedent-lexer"
+}

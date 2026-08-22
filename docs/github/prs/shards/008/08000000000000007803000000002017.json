@@ -1,0 +1,12 @@
+{
+  "pr_number": 8215,
+  "archive_path": "docs/history/pr-reviews/PR-8215-feat-hooks-stop-hook-runs-the-rut-detector-over-the-agent-s-own-response.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-14T21:09:47.249Z",
+  "schema_version": "v1",
+  "commit_sha": "130b27bd262d998967f31ecd9f092a82a78c1727",
+  "title": "feat(hooks): Stop hook runs the rut detector over the agent's own response",
+  "state": "MERGED",
+  "merged_at": "2026-06-14T21:09:20Z",
+  "head_ref": "hook-stop-detect-response-rut"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 10311,
+  "archive_path": "docs/history/pr-reviews/PR-10311-bftconsensus-add-the-network-model-quorum-over-received-votes-repair-item-3.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-12T00:55:30.875Z",
+  "schema_version": "v1",
+  "commit_sha": "68440898cc31c8542f10f56f7acfc0d1680f869a",
+  "title": "BftConsensus: add the network model — quorum over RECEIVED votes (repair item 3)",
+  "state": "MERGED",
+  "merged_at": "2026-08-12T00:54:57Z",
+  "head_ref": "bft-consensus-network-model"
+}

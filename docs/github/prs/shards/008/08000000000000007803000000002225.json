@@ -1,0 +1,25 @@
+{
+  "pr_number": 8741,
+  "archive_path": "docs/history/pr-reviews/PR-8741-feat-core-resume-darkhall-heat-board-snapshots.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7Nc4nw",
+    "comment:PRRC_kwDOSF9kNM7NdCNF",
+    "comment:PRRC_kwDOSF9kNM7NdCNH",
+    "comment:PRRC_kwDOSF9kNM7NdHUf",
+    "comment:PRRC_kwDOSF9kNM7NdPau",
+    "comment:PRRC_kwDOSF9kNM7NdVPm",
+    "thread:PRRT_kwDOSF9kNM6LBWYU",
+    "thread:PRRT_kwDOSF9kNM6LBc1v",
+    "thread:PRRT_kwDOSF9kNM6LBc1x",
+    "thread:PRRT_kwDOSF9kNM6LBgOd",
+    "thread:PRRT_kwDOSF9kNM6LBlkU",
+    "thread:PRRT_kwDOSF9kNM6LBpd0"
+  ],
+  "fetched_at": "2026-06-20T16:56:48.368Z",
+  "schema_version": "v1",
+  "commit_sha": "d3c4d0a4985fc26212249e3fdd840278dac2e791",
+  "title": "feat(core): resume darkhall heat board snapshots",
+  "state": "MERGED",
+  "merged_at": "2026-06-20T16:56:21Z",
+  "head_ref": "codex/darkhall-heat-snapshot-resume"
+}

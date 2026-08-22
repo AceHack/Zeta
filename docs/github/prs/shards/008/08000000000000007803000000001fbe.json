@@ -1,0 +1,12 @@
+{
+  "pr_number": 8126,
+  "archive_path": "docs/history/pr-reviews/PR-8126-feat-ci-b-0831-slice-1-qemu-full-install-reboot-login-verify.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-14T01:51:42.271Z",
+  "schema_version": "v1",
+  "commit_sha": "f01ad741abb0ceafd2abd86718ca9051d203fdf2",
+  "title": "feat(ci): B-0831 slice 1 — QEMU full install + reboot login verify",
+  "state": "MERGED",
+  "merged_at": "2026-06-14T01:51:21Z",
+  "head_ref": "riven/b0831-qemu-reboot-verify"
+}

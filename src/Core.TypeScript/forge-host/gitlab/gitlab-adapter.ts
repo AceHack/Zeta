@@ -13,11 +13,13 @@ import type {
   CheckRollup, CiRun, RepoInfo, BranchProtection,
   ThreadResolution, BatchResult, CommentRef, TreeEntry, CreateCommitOpts,
   ListPrOpts, ListMergedPrOpts, CreatePrOpts, ListIssueOpts, CreateIssueOpts, MergeMethod,
+  CheckDefinition, CheckObservationOpts, CheckObservationPass,
 } from "../types";
 import { ok, err, forgeError } from "../result";
 
 export class GitLabAdapter implements ForgeHost {
   readonly forgeName = "gitlab";
+  readonly sourceName = "gitlab";
   private readonly owner: string;
   private readonly repo: string;
 
@@ -28,6 +30,27 @@ export class GitLabAdapter implements ForgeHost {
 
   private get project(): string {
     return `${this.owner}/${this.repo}`;
+  }
+
+  // ─── Check observations ───────────────────────────────────────────────
+  //
+  // Honestly not-supported. Returning an empty roster here would be far worse than
+  // an error: a dashboard would then report "0 of 0 checks observed" and render
+  // green, which is the exact defect the whole surface exists to refuse. GitLab CI
+  // pipeline schedules map onto this contract cleanly when someone needs it.
+
+  async listCheckDefinitions(
+    _opts?: CheckObservationOpts,
+  ): Promise<Result<readonly CheckDefinition[], ForgeError>> {
+    return err(forgeError("not-supported", "listCheckDefinitions: not yet implemented for GitLab"));
+  }
+
+  async listLatestCheckObservations(
+    _ref: string,
+    _definitions: readonly CheckDefinition[],
+    _opts?: CheckObservationOpts,
+  ): Promise<Result<CheckObservationPass, ForgeError>> {
+    return err(forgeError("not-supported", "listLatestCheckObservations: not yet implemented for GitLab"));
   }
 
   // ─── Implemented: listOpenPullRequests (via glab mr list) ─────────────

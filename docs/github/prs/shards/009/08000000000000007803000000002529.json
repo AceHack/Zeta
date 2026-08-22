@@ -1,0 +1,12 @@
+{
+  "pr_number": 9513,
+  "archive_path": "docs/history/pr-reviews/PR-9513-docs-letters-pre-stage-to-soraya-proof-routing-template-soraya-leg-runs-here-not.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-08T19:53:41.264Z",
+  "schema_version": "v1",
+  "commit_sha": "999b3180807437a2935d05581410110583f9a94e",
+  "title": "docs(letters): pre-stage to-soraya proof-routing template — Soraya leg runs here, not Manus (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-08T19:53:15Z",
+  "head_ref": "otto/pre-stage-to-soraya-proof-routing"
+}

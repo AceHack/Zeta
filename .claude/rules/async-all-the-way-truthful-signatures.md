@@ -54,4 +54,4 @@ thread.
 - [`dv2-data-split-discipline-activated.md`](dv2-data-split-discipline-activated.md) — #1 scale-free, #2 lock/wait-free, #4 DST
 - [`anchor-to-human-prior-art.md`](anchor-to-human-prior-art.md) — why the anchors above are load-bearing
 - 081KT07NV0008QG0R001YDB73K — `ConfigureAwait(false)` cross-cutting default
-- Coordination: `Task.Run` sites at `src/Core/Runtime.fs` (shard fan-out) + `src/Core/SpineAsync.fs` (worker) → workitem `081KTF10R0108QG0R003P44BA2` (for Vera's in-flight async work)
+- Worked instance: `src/Core/Runtime.fs` (shard fan-out) + `src/Core/SpineAsync.fs` (worker) are **off** raw `Task.Run` — both on `FerryThrottler` since `1e012b7273`; workitem `081KTF10R0108QG0R003P44BA2`

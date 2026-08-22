@@ -1,0 +1,12 @@
+{
+  "pr_number": 8807,
+  "archive_path": "docs/history/pr-reviews/PR-8807-feat-workitems-auto-vivify-dangling-md-pointers-into-mumps-gitfs.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-20T23:37:05.349Z",
+  "schema_version": "v1",
+  "commit_sha": "938401d058f6f1278939476b0acbccab9a261738",
+  "title": "feat(workitems): auto-vivify dangling MD pointers into MUMPS + gitfs",
+  "state": "MERGED",
+  "merged_at": "2026-06-20T23:36:39Z",
+  "head_ref": "feat-dangling-md-pointers-auto-vivify"
+}

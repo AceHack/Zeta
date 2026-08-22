@@ -1,0 +1,12 @@
+{
+  "pr_number": 6939,
+  "archive_path": "docs/history/pr-reviews/PR-6939-docs-ace-is-the-external-state-closure-declarative-pointers-to-all-pms-one-env-d.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-07T22:57:27.546Z",
+  "schema_version": "v1",
+  "commit_sha": "bfffa076c40ef514b0e4c8ecf1c45a67f68317f4",
+  "title": "docs: Ace is the external-state closure — declarative pointers to all PMs, one env/dep map (NixOS+Ace+ArgoCD)",
+  "state": "MERGED",
+  "merged_at": "2026-06-07T22:57:10Z",
+  "head_ref": "otto/ace-is-external-state-closure-one-dep-map"
+}

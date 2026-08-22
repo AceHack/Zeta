@@ -1,0 +1,12 @@
+{
+  "pr_number": 12764,
+  "archive_path": "docs/history/pr-reviews/PR-12764-research-the-combination-step-is-already-in-our-code-temperature-is-already-load.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-20T13:25:41.255Z",
+  "schema_version": "v1",
+  "commit_sha": "5e06a5eacb3d52bb522f8fec1172814c6ebccad1",
+  "title": "research: the combination step is already in our code; temperature is already load-bearing; model the wall closed",
+  "state": "MERGED",
+  "merged_at": "2026-08-20T13:25:02Z",
+  "head_ref": "research/closed-hex-wall-and-combination-shape"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 7169,
+  "archive_path": "docs/history/pr-reviews/PR-7169-docs-research-peel-free-energy-as-memetic-information-theoretic-not-thermodynami.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-09T01:47:59.490Z",
+  "schema_version": "v1",
+  "commit_sha": "57980e807a9650da912cfb31f7758009b42968f5",
+  "title": "docs(research): peel 'free energy' as memetic/information-theoretic (not thermodynamic)",
+  "state": "MERGED",
+  "merged_at": "2026-06-09T01:47:35Z",
+  "head_ref": "otto/research-free-energy-is-memetic-information-theoretic"
+}

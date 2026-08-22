@@ -1,0 +1,12 @@
+{
+  "pr_number": 3408,
+  "archive_path": "docs/history/pr-reviews/PR-3408-shard-tick-1016z-pr-3406-templated-reply-session-steady-state.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-15T10:21:54.934Z",
+  "schema_version": "v1",
+  "commit_sha": "5aae26d33f5bdc232c6e1170380d0c8ad3f3bf1b",
+  "title": "shard(tick): 1016Z — PR #3406 templated reply; session steady-state",
+  "state": "MERGED",
+  "merged_at": "2026-05-15T10:21:38Z",
+  "head_ref": "shard/tick-1016z-otto-cli-2026-05-15"
+}

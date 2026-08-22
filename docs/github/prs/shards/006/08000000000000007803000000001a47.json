@@ -1,0 +1,12 @@
+{
+  "pr_number": 6727,
+  "archive_path": "docs/history/pr-reviews/PR-6727-docs-architecture-two-plane-git-native-db-minimal-noun-proven-base-cells-control.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-07T06:39:58.950Z",
+  "schema_version": "v1",
+  "commit_sha": "eff95fbdc9e7f4e22d44a516075b3555283b6ddd",
+  "title": "docs(architecture): two-plane git-native DB — minimal-noun proven base, cells control plane, 3 host substrates, DB-replaces-git-CLI done-test",
+  "state": "MERGED",
+  "merged_at": "2026-06-07T06:39:39Z",
+  "head_ref": "otto/two-plane-db-minimal-nouns-design"
+}

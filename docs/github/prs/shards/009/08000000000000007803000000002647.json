@@ -1,0 +1,12 @@
+{
+  "pr_number": 9799,
+  "archive_path": "docs/history/pr-reviews/PR-9799-feat-orbit-divergencerate2d-the-dissipation-half-classify-survivable-vs-explosiv.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-31T23:06:15.596Z",
+  "schema_version": "v1",
+  "commit_sha": "81d04185f312e5904e124b6c48ebd2d6624c2d34",
+  "title": "feat(Orbit): divergenceRate2D — the dissipation half; classify survivable vs explosive chaos (Lior #3)",
+  "state": "MERGED",
+  "merged_at": "2026-07-31T23:05:49Z",
+  "head_ref": "shadow/orbit-divergence-survivable-chaos"
+}

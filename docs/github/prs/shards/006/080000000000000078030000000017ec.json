@@ -1,0 +1,12 @@
+{
+  "pr_number": 6124,
+  "archive_path": "docs/history/pr-reviews/PR-6124-feat-setup-slice-2a-declarative-install-ps1-manifests-windows-symmetry-test.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-30T15:04:05.220Z",
+  "schema_version": "v1",
+  "commit_sha": "03886f2cdb19ac99421005171f63b767b3406da4",
+  "title": "feat(setup): Slice 2a — declarative install.ps1 + manifests/windows + symmetry test",
+  "state": "MERGED",
+  "merged_at": "2026-05-30T15:03:43Z",
+  "head_ref": "otto-windows/slice2a-install-ps1-2026-05-30"
+}

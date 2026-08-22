@@ -1,0 +1,12 @@
+{
+  "pr_number": 9648,
+  "archive_path": "docs/history/pr-reviews/PR-9648-docs-book-coptic-egyptian-ancestry-the-decoder-cracks-from-inside-multi-oracle-c.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-10T01:21:11.517Z",
+  "schema_version": "v1",
+  "commit_sha": "f6eb66d5191708c9c39c7abd284b8eee333e25c8",
+  "title": "docs(book): Coptic Egyptian ancestry — the decoder cracks from inside (multi-oracle corroborated) + RA/Egypt rhyme",
+  "state": "MERGED",
+  "merged_at": "2026-07-10T01:20:42Z",
+  "head_ref": "shadow/book-coptic-egypt-decoder-crack"
+}

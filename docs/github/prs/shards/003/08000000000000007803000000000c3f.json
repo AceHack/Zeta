@@ -1,0 +1,21 @@
+{
+  "pr_number": 3135,
+  "archive_path": "docs/history/pr-reviews/PR-3135-feat-b-0495-hamiltonian-viz-slice-1-static-phase-space-scaffold.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7BOaUZ",
+    "comment:PRRC_kwDOSF9kNM7BOaW6",
+    "comment:PRRC_kwDOSF9kNM7BOaWA",
+    "comment:PRRC_kwDOSF9kNM7BOaXU",
+    "thread:PRRT_kwDOSF9kNM6CFHPX",
+    "thread:PRRT_kwDOSF9kNM6CFHQj",
+    "thread:PRRT_kwDOSF9kNM6CFHRQ",
+    "thread:PRRT_kwDOSF9kNM6CFHRk"
+  ],
+  "fetched_at": "2026-05-14T13:55:12.884Z",
+  "schema_version": "v1",
+  "commit_sha": "90dd778478fef13dc298917e984318f79aaa0e8a",
+  "title": "feat(b-0495): Hamiltonian viz — slice-1 static phase-space scaffold",
+  "state": "MERGED",
+  "merged_at": "2026-05-14T13:54:53Z",
+  "head_ref": "feat/b-0436-hamiltonian-viz-slice-1"
+}

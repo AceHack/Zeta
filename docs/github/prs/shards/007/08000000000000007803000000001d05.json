@@ -1,0 +1,12 @@
+{
+  "pr_number": 7429,
+  "archive_path": "docs/history/pr-reviews/PR-7429-feat-core-shadow-wire-the-finalizer-into-src-core-zeta-core-finalizer.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-09T22:25:17.226Z",
+  "schema_version": "v1",
+  "commit_sha": "dccc541a30e2fdd66b42370a31b5f317197034ac",
+  "title": "feat(core)+shadow: wire the finalizer into src/Core (Zeta.Core.Finalizer)",
+  "state": "MERGED",
+  "merged_at": "2026-06-09T22:24:56Z",
+  "head_ref": "shadow-finalizer-into-src-core"
+}

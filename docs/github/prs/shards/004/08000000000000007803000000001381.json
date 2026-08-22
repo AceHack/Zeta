@@ -1,0 +1,28 @@
+{
+  "pr_number": 4993,
+  "archive_path": "docs/history/pr-reviews/PR-4993-backlog-b-0734-mika-segment-2-jit-is-implicit-self-healing-protocol-stays-at-2-p.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7EsKyC",
+    "comment:PRRC_kwDOSF9kNM7EsLaq",
+    "comment:PRRC_kwDOSF9kNM7EsLl3",
+    "comment:PRRC_kwDOSF9kNM7EsLlW",
+    "comment:PRRC_kwDOSF9kNM7EsLlo",
+    "comment:PRRC_kwDOSF9kNM7EsLlt",
+    "comment:PRRC_kwDOSF9kNM7EsMiQ",
+    "comment:PRRC_kwDOSF9kNM7EsMjm",
+    "comment:PRRC_kwDOSF9kNM7EsMlE",
+    "comment:PRRC_kwDOSF9kNM7EsMmF",
+    "thread:PRRT_kwDOSF9kNM6En-HB",
+    "thread:PRRT_kwDOSF9kNM6En-HQ",
+    "thread:PRRT_kwDOSF9kNM6En-HT",
+    "thread:PRRT_kwDOSF9kNM6En-Hc",
+    "thread:PRRT_kwDOSF9kNM6En9fJ"
+  ],
+  "fetched_at": "2026-05-25T20:58:48.647Z",
+  "schema_version": "v1",
+  "commit_sha": "992aaf93f8cf00c3d5014227b0f1ecc2776032c8",
+  "title": "backlog(B-0734)+mika-segment-2: JIT is implicit self-healing + protocol stays at 2 primitives + F# monad eventually + Notepad simplicity wins (Mika substrate segment 2)",
+  "state": "MERGED",
+  "merged_at": "2026-05-25T20:58:27Z",
+  "head_ref": "backlog/b0734-jit-implicit-no-third-primitive-mika-segment-2-2026-05-25"
+}

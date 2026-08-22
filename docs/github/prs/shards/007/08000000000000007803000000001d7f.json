@@ -1,0 +1,12 @@
+{
+  "pr_number": 7551,
+  "archive_path": "docs/history/pr-reviews/PR-7551-docs-research-metaspace-landmarks-floorplan-salon-quantum-darkhall-arcade-chip-8.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-11T00:10:44.705Z",
+  "schema_version": "v1",
+  "commit_sha": "ca4b9b061c8c18da4dbfdf6fb2523f0b1992d4c4",
+  "title": "docs(research): metaspace landmarks floorplan — salon (quantum) + darkhall (arcade/CHIP-8)",
+  "state": "MERGED",
+  "merged_at": "2026-06-11T00:10:17Z",
+  "head_ref": "shadow-metaspace-landmarks-floorplan"
+}

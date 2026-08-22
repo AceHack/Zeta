@@ -1,0 +1,12 @@
+{
+  "pr_number": 8362,
+  "archive_path": "docs/history/pr-reviews/PR-8362-chore-memory-regenerate-memory-md-index-main-red-memory-index-drift.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-15T23:25:37.147Z",
+  "schema_version": "v1",
+  "commit_sha": "1e278da83df2d3cdd147fecbb14b860e61cdd4e6",
+  "title": "chore(memory): regenerate MEMORY.md index — main-red memory-index-drift",
+  "state": "MERGED",
+  "merged_at": "2026-06-15T23:25:09Z",
+  "head_ref": "chore/regenerate-memory-md-ani-arena-entry"
+}

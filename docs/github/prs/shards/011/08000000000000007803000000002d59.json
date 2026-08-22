@@ -1,0 +1,12 @@
+{
+  "pr_number": 11609,
+  "archive_path": "docs/history/pr-reviews/PR-11609-heartbeat-batch-merge-merge-agent-heartbeats-periodic-sync-to-main-2026-08-17t19.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-21T16:28:24.331Z",
+  "schema_version": "v1",
+  "commit_sha": "4f26dca05036104e01595bbebe35494b4f4917bf",
+  "title": "[heartbeat-batch-merge] merge(agent-heartbeats): periodic sync to main (2026-08-17T19:07:09.784Z)",
+  "state": "MERGED",
+  "merged_at": "2026-08-17T19:20:41Z",
+  "head_ref": "heartbeat/alexa-flush-c24a3cabded8da74d6f546999bc7d1fa55bf651f"
+}

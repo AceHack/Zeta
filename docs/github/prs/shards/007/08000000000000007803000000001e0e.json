@@ -1,0 +1,12 @@
+{
+  "pr_number": 7694,
+  "archive_path": "docs/history/pr-reviews/PR-7694-feat-media-live-io-in-the-cartridge-declared-by-zetaid-resolved-live-injected-mo.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-11T13:57:44.573Z",
+  "schema_version": "v1",
+  "commit_sha": "45e5adc351f3e1d1eb77046467d9b342c60c3d03",
+  "title": "feat(media): live IO in the cartridge — declared by ZetaId, resolved Live/Injected/Mock (never crashes)",
+  "state": "MERGED",
+  "merged_at": "2026-06-11T13:57:18Z",
+  "head_ref": "shadow-cartridge-live-io"
+}

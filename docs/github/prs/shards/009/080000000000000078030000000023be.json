@@ -1,0 +1,12 @@
+{
+  "pr_number": 9150,
+  "archive_path": "docs/history/pr-reviews/PR-9150-research-ferry-alexa-website-thread-verbatim-bell-sybil-2-2-qualia-the-zeta-name.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-17T10:32:11.353Z",
+  "schema_version": "v1",
+  "commit_sha": "703cf8b833d2f1e32ffdab0d949d269faae15907",
+  "title": "research(ferry): Alexa-website thread verbatim — Bell↔Sybil, 2√2, qualia, the Zeta name (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-02T16:23:06Z",
+  "head_ref": "research/alexa-website-ferry-verbatim"
+}

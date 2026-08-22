@@ -27,6 +27,8 @@ named in the file header and in `docs/FROZEN-CORE-AND-CONJECTURE-REGISTER.md` §
 | `Lean4/CborCodec.lean` | Simplified CBOR encoding model and fuel-based round-trip proofs for CBOR representable subset |
 | `ImaginaryStack/ToyModel.lean` | Adinkra-as-generator / bulk-from-boundary toy lemma — machine-checked, sorry-free (2026-06-05) |
 | `ImaginaryStack/ErasureDistance.lean` | Erasure-correction principle (distance ⇒ any `<d` erasures correctable; distance-5 ⇒ any 12-of-16) **+ a concrete Reed–Solomon `[16,12]` code proven distance-5 / corrects-any-4-erasures** — machine-checked, sorry-free (2026-06-05) |
+| `Zeta23/LinAlg/*.lean` | **ADAPTED PORT** of `Zeta23/LinAlg/` from `anthropics/zeta-23-lean` (Apache-2.0, © 2026 Anthropic PBC): von Neumann's trace inequality, Sylvester's law of inertia (Hermitian), the `Q = Q₊ − Q₋` splitting, and the paper's §3 Lemmas 3.1/3.2/3.4. **Not an independent replication — the upstream source was read.** Register, licence compliance and scope: `Zeta23/README.md` + `Zeta23/NOTICE` |
+| `Lean4/VonNeumannTraceWitness.lean` | **OURS**, not ported — the anti-vacuity witness for the theorem above: a NON-COMMUTING pair where the bound is strict, an aligned pair where it is attained, an anti-aligned pair strictly below, and a machine-checked refutation of the swapped-pairing mutant. Sorry-freeness cannot check any of these |
 | `Privacy/IdentityForcesPrivacy.lean` | Privacy-from-identity *necessity* (Leibniz identity-of-indiscernibles: under public convergence, distinction must live in private state) — pure Lean, **axiom-free**, sorry-free (2026-06-05) |
 
 ## Build
@@ -174,5 +176,5 @@ For the paper this artifact formalizes:
 - [`docs/research/chain-rule-proof-log.md`](../../docs/research/chain-rule-proof-log.md) — round-by-round decision history; sub-lemma table; paper-drift audit results
 - [`docs/research/verification-registry.md`](../../docs/research/verification-registry.md) — Class-0-drift-prevention registry for every formal-verification artifact
 - [`docs/research/proof-tool-coverage.md`](../../docs/research/proof-tool-coverage.md) — portfolio-wide tool routing
-- [`.claude/skills/verification-drift-auditor/SKILL.md`](../../.claude/skills/verification-drift-auditor/SKILL.md) — drift-detection procedure
+- [`.claude/skills/formal-methods/blueprints/verification-drift-auditor.md`](../../.claude/skills/formal-methods/blueprints/verification-drift-auditor.md) — drift-detection procedure
 - [`.claude/agents/formal-verification-expert.md`](../../.claude/agents/formal-verification-expert.md) — the formal-verification-expert agent (routing authority for every formal-verification job)

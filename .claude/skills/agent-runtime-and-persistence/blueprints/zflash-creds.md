@@ -75,7 +75,7 @@ Composes 081KSGS9H0008QG0R001EZKNCB's `--agent` mode with 081KSKBP80008QG0R003AX
 
 ## Why this skill exists as a placeholder
 
-Per `.claude/rules/honor-those-that-came-before.md` + the substrate-honest framing: the pattern is well-defined (per the zflash next-steps plan Track B); the flag isn't shipped yet. The skill exists so when operator asks "how do I bake creds at flash time" the canonical pattern is documented + the implementation gap is named explicitly.
+Per `.claude/rules.bak/honor-those-that-came-before.md` + the substrate-honest framing: the pattern is well-defined (per the zflash next-steps plan Track B); the flag isn't shipped yet. The skill exists so when operator asks "how do I bake creds at flash time" the canonical pattern is documented + the implementation gap is named explicitly.
 
 Skill upgrades from `status: placeholder` to `status: active` when:
 

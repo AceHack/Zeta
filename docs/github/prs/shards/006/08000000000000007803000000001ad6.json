@@ -1,0 +1,12 @@
+{
+  "pr_number": 6870,
+  "archive_path": "docs/history/pr-reviews/PR-6870-feat-dynamicvaluenumeric-result-typed-shader-saturating-leaf-numerics-foundation.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-07T16:50:14.457Z",
+  "schema_version": "v1",
+  "commit_sha": "5cebfa925c20f6412e2100aee06f9d47feb4e8c4",
+  "title": "feat(DynamicValueNumeric): Result-typed + shader-saturating leaf numerics (foundation for SoftValue arithmetic)",
+  "state": "MERGED",
+  "merged_at": "2026-06-07T16:49:53Z",
+  "head_ref": "otto/dynamicvalue-numeric-result-and-shader-sat"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 10330,
+  "archive_path": "docs/history/pr-reviews/PR-10330-false-alarm-cover-the-read-path-a-malformed-transcript-line-must-not-derail-the-.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-12T04:46:11.246Z",
+  "schema_version": "v1",
+  "commit_sha": "b209b3763fc426b11aeff30a30ba84da52448b8b",
+  "title": "false-alarm: cover the read path — a malformed transcript line must not derail the metric",
+  "state": "MERGED",
+  "merged_at": "2026-08-12T04:45:35Z",
+  "head_ref": "false-alarm-malformed-transcript-guard"
+}

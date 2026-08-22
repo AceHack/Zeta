@@ -1,0 +1,12 @@
+{
+  "pr_number": 9906,
+  "archive_path": "docs/history/pr-reviews/PR-9906-docs-research-resolve-the-mirror-beacon-axis-repo-split-on-containment-cost-not-.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-01T21:09:46.004Z",
+  "schema_version": "v1",
+  "commit_sha": "38a3348aadce9bd4a9728516d1b2909da59958c0",
+  "title": "docs(research): resolve the Mirror/Beacon axis — repo split, on containment cost not change rate",
+  "state": "MERGED",
+  "merged_at": "2026-08-01T21:09:14Z",
+  "head_ref": "shadow/resolve-mirror-beacon-axis"
+}

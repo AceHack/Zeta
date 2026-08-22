@@ -1,0 +1,12 @@
+{
+  "pr_number": 9861,
+  "archive_path": "docs/history/pr-reviews/PR-9861-fix-core-csharp-explicit-stringcomparer-ordinal-10-meziantou-3-0-138-found-real-.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-01T12:27:57.585Z",
+  "schema_version": "v1",
+  "commit_sha": "be985ac053d1718d7f68477f0eba79af55e7e3b0",
+  "title": "fix(Core.CSharp): explicit StringComparer.Ordinal ×10 — Meziantou 3.0.138 found real culture-invariance violations",
+  "state": "MERGED",
+  "merged_at": "2026-08-01T12:27:31Z",
+  "head_ref": "shadow/verify-deps-2026-08-01"
+}

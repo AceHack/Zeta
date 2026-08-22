@@ -1,0 +1,12 @@
+{
+  "pr_number": 10675,
+  "archive_path": "docs/history/pr-reviews/PR-10675-feat-ace-signed-capability-manifest-the-declaration-half-and-ace-verify-can-now-.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-16T22:48:33.878Z",
+  "schema_version": "v1",
+  "commit_sha": "0ff84dbdf2f9746aacf498c6725c296783e9512d",
+  "title": "feat(ace): signed capability manifest — the declaration half, and ace verify can now fail",
+  "state": "MERGED",
+  "merged_at": "2026-08-16T22:48:00Z",
+  "head_ref": "feat/ace-capability-manifest"
+}

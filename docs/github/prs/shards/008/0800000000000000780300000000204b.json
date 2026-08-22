@@ -1,0 +1,12 @@
+{
+  "pr_number": 8267,
+  "archive_path": "docs/history/pr-reviews/PR-8267-docs-honest-capability-deferment-non-judgmental-capability-di-ai-tier-resilience.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-15T05:58:50.468Z",
+  "schema_version": "v1",
+  "commit_sha": "374e0f32d84c4386ec9def9ad00a55125bb76cee",
+  "title": "docs: honest capability deferment (non-judgmental capability DI) — AI-tier resilience floor + composable-frontier north star",
+  "state": "MERGED",
+  "merged_at": "2026-06-15T05:58:28Z",
+  "head_ref": "otto/composable-frontier-efficiency-north-star"
+}

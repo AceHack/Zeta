@@ -1,0 +1,15 @@
+{
+  "pr_number": 4556,
+  "archive_path": "docs/history/pr-reviews/PR-4556-backlog-b-0689-otto-vscode-third-foreground-surface-sender-ids-extension-cold-bo.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7DrbCi",
+    "thread:PRRT_kwDOSF9kNM6D3_N2"
+  ],
+  "fetched_at": "2026-05-21T16:59:26.464Z",
+  "schema_version": "v1",
+  "commit_sha": "4a15af0122cb2fd18f40898673e4ca669b4a084c",
+  "title": "backlog(B-0689): Otto-VSCode third foreground surface — SENDER_IDS extension + cold-boot bootstream + agent-roster card row",
+  "state": "MERGED",
+  "merged_at": "2026-05-21T16:59:07Z",
+  "head_ref": "backlog/b-otto-vscode-sender-ids-bootstream-2026-05-21"
+}

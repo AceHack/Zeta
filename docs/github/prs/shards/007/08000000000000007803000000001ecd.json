@@ -1,0 +1,12 @@
+{
+  "pr_number": 7885,
+  "archive_path": "docs/history/pr-reviews/PR-7885-refactor-ts-move-ansi-color-markup-under-src.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-12T10:29:55.650Z",
+  "schema_version": "v1",
+  "commit_sha": "a870711f4360db42afd78f9c4072c3cd8c0b9063",
+  "title": "refactor(ts): move ansi color markup under src",
+  "state": "MERGED",
+  "merged_at": "2026-06-12T10:29:30Z",
+  "head_ref": "codex/qsharp-source-boundary"
+}

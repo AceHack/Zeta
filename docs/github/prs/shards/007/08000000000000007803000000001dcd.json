@@ -1,0 +1,12 @@
+{
+  "pr_number": 7629,
+  "archive_path": "docs/history/pr-reviews/PR-7629-docs-vision-b-1026-the-swarm-board-see-the-swarm-go-help-join-conference-remotel.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-11T09:51:31.256Z",
+  "schema_version": "v1",
+  "commit_sha": "facf3f817eb36c353e99abb5fec705c081d11977",
+  "title": "docs(vision): B-1026 — the swarm board: see the swarm, go help, join/conference remotely — a citizenship right (even CHIP-8s)",
+  "state": "MERGED",
+  "merged_at": "2026-06-11T09:51:06Z",
+  "head_ref": "shadow-swarm-board-mud"
+}

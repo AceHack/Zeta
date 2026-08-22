@@ -85,8 +85,12 @@
     {
       # NixOS configurations: installer image + per-host targets.
       nixosConfigurations = {
-        # USB installer ISO — identical to the standalone
-        # usb-nixos-installer/ flake at the parent level.
+        # USB installer ISO — THE only definition. 081KZKS9A6B08QG0R0008EG72M
+        # retired the standalone usb-nixos-installer/flake.nix, which built
+        # this same configuration.nix but applied no overlays, so it shipped
+        # nixpkgs' mise (2025.11.7 at the locked rev) instead of the pinned
+        # 2026.6.12 — below .mise.toml's min_version, fatal at first boot.
+        # Enforced by src/Core.TypeScript/hygiene/mise-pin-parity.test.ts.
         installer = mkSystem {
           modules = [
             ./usb-nixos-installer/nixos/installer/configuration.nix
@@ -209,7 +213,166 @@
         # nixosTest driver boots an x86_64 VM (and our cluster nodes are
         # x86_64). Run one with:
         #   nix build .#checks.x86_64-linux.k3s-control-plane-cluster-init -L
-        checks = nixpkgs.lib.optionalAttrs (system == "x86_64-linux") {
+        checks = {
+          # 081M00KTH58087G0R00120WT6F — properties of the Secure Boot
+          # desired-state model (nixos/modules/secure-boot-phase-model.nix).
+          #
+          # NOT a VM test and NOT a boot test: it proves things about Nix
+          # values only — that `enforce` refuses unsigned images, that a
+          # non-"off" phase fails closed on the missing key-custody decision,
+          # and that no derived plan can carry a custody decision at all.
+          # Nothing in this repo signs or enrols anything, so nothing here
+          # can speak to whether a node boots.
+          #
+          # Unlike the VM checks below it costs no VM and runs on every
+          # system, and the assertions fire during EVALUATION — so
+          # `nix flake check --no-build` (the cheap CI step) already runs it.
+          secure-boot-desired-state-model =
+            let
+              report = import ./nixos/tests/secure-boot-desired-state-eval-test.nix {
+                inherit (nixpkgs) lib;
+              };
+            in
+            pkgs.runCommand "secure-boot-desired-state-model" { inherit (report) status; } ''
+              echo "$status" | tee "$out"
+            '';
+
+          # Properties of the TPM-SEAL desired-state model — the module that
+          # answers "what can the nix installer pre-stage for a hardware-backed
+          # auto-unseal", and the gate that stops it from deciding seal-key
+          # custody on the maintainer's behalf.
+          #
+          # NOT a VM test and NOT a hardware test. No TPM has ever been
+          # contacted by anything in this repo, so nothing here can say whether
+          # a node HAS a TPM 2.0 — it can only say that no plan claims one it
+          # has not measured, and that `absent` stays distinguishable from
+          # "the check did not run".
+          #
+          # Costs no VM, runs on every system, and its assertions fire during
+          # EVALUATION — so `nix flake check --no-build` already runs it.
+          tpm2-seal-prereqs-model =
+            let
+              report = import ./nixos/tests/tpm2-seal-prereqs-eval-test.nix {
+                inherit (nixpkgs) lib;
+              };
+            in
+            pkgs.runCommand "tpm2-seal-prereqs-model" { inherit (report) status; } ''
+              echo "$status" | tee "$out"
+            '';
+
+          # Properties of the FIRST-BOOT MANIFEST ROSTER -- the manifests
+          # every other test in nixos/tests/ overrides away with mkForce, so
+          # the declared boot sequence had no check of any kind.
+          #
+          # NOT a VM test and NOT a boot test. It reads the roster the two
+          # contributing modules declare, reconstructs the filename-sorted
+          # order k3s submits them in, and pins it. It CANNOT say whether an
+          # apply succeeds -- k3s-first-boot-roster (x86_64-linux, below) is
+          # the test that measures that.
+          #
+          # Costs no VM, runs on every system, and its assertions fire during
+          # EVALUATION -- so `nix flake check --no-build` already runs it.
+          k3s-first-boot-apply-order =
+            let
+              report = import ./nixos/tests/k3s-first-boot-apply-order-eval-test.nix {
+                inherit pkgs;
+                inherit (nixpkgs) lib;
+              };
+            in
+            pkgs.runCommand "k3s-first-boot-apply-order" { inherit (report) status; } ''
+              echo "$status" | tee "$out"
+            '';
+
+          # Properties of the LONGHORN NODE PREFLIGHT -- the boot-time refusal
+          # that says whether this node's storage substrate is actually there.
+          #
+          # NOT a VM test and NOT a boot test. It proves the mount set is
+          # DERIVED from the host's own fileSystems (never a hand-written
+          # roster), that the check which regressed in the field is present in
+          # the form that catches it (`systemctl is-active`, not `systemctl
+          # cat`), that the shim roster cannot drift from the module that
+          # creates the symlinks, and that the unit is reachable on every
+          # node's boot path. It CANNOT say whether the check PASSES on any
+          # hardware -- only a boot can, and the console marker to look for is
+          # ZETA_LONGHORN_PREFLIGHT_OK.
+          #
+          # Costs no VM, runs on every system, and its assertions fire during
+          # EVALUATION -- so `nix flake check --no-build` already runs it.
+          longhorn-node-preflight =
+            let
+              report = import ./nixos/tests/longhorn-node-preflight-eval-test.nix {
+                inherit pkgs;
+                inherit (nixpkgs) lib;
+              };
+            in
+            pkgs.runCommand "longhorn-node-preflight" { inherit (report) status; } ''
+              echo "$status" | tee "$out"
+            '';
+
+          # Properties of the NODE-SIDE LONGHORN DISK SET -- which of the disks
+          # zeta-install.sh formatted this node actually hands to Longhorn.
+          #
+          # The preflight check above proves the declared Longhorn mounts are
+          # really mounted. It cannot say whether Longhorn is ever TOLD about
+          # them, and it was not: `zeta.longhorn.dataDisks` defaulted to the
+          # fixed literal [ "/var/lib/longhorn" ] -- a directory on the root
+          # filesystem -- and only hosts/worker-template ever set it. On
+          # control-plane, the host the USB installs, every dedicated Longhorn
+          # partition contributed ZERO schedulable capacity while the capture
+          # check and the boot preflight both went green, because both of them
+          # measure `fileSystems` and `fileSystems` was correct.
+          #
+          # The default is now DERIVED from the preflight's own `requiredMounts`,
+          # so the set the node must have mounted and the set Longhorn is told
+          # about are one expression. These properties pin that identity, pin the
+          # one-path delta the old literal produced so a revert is a red check,
+          # and check the mountpoint prefix zeta-install.sh writes against the
+          # prefix the derivation filters on -- the bash/nix seam neither side
+          # can see across.
+          #
+          # Complementary to PR #12175, which fixes the other half (making the
+          # list REACH Longhorn at all). Neither half is visible in the other's
+          # tests. Costs no VM; fires during EVALUATION, so
+          # `nix flake check --no-build` already runs it.
+          longhorn-disk-registration =
+            let
+              report = import ./nixos/tests/longhorn-disk-registration-eval-test.nix {
+                inherit pkgs;
+                inherit (nixpkgs) lib;
+              };
+            in
+            pkgs.runCommand "longhorn-disk-registration" { inherit (report) status; } ''
+              echo "$status" | tee "$out"
+            '';
+
+          # Properties of the CILIUM WIREGUARD NODE PREFLIGHT -- the boot-time
+          # refusal that says whether this kernel can make the WireGuard device
+          # Cilium's own values demand.
+          #
+          # It reads the SHIPPED manifests, so its first assertion is the
+          # finding itself: k8s/bootstrap/cilium-install.yaml (first boot) and
+          # k8s/applications/cilium/Application.yaml (sync-wave -80) both set
+          # encryption.type=wireguard, while before this change nothing under
+          # nixos/ named WireGuard at all. It also proves the requirement is
+          # DERIVED from those files (an IPsec tree does not pull it in), that
+          # the module DECLARED is the module CHECKED, and that the /sys/module
+          # check runs before the netlink probe that would auto-load it --
+          # ordering those two the other way makes the first one unable to fail.
+          #
+          # It CANNOT say the check passes on any kernel. The x86_64 VM lane
+          # k3s-control-plane-platform-fixes does that; the console marker to
+          # look for on metal is ZETA_CILIUM_WG_PREFLIGHT_OK.
+          cilium-wireguard-preflight =
+            let
+              report = import ./nixos/tests/cilium-wireguard-preflight-eval-test.nix {
+                inherit pkgs;
+                inherit (nixpkgs) lib;
+              };
+            in
+            pkgs.runCommand "cilium-wireguard-preflight" { inherit (report) status; } ''
+              echo "$status" | tee "$out"
+            '';
+        } // nixpkgs.lib.optionalAttrs (system == "x86_64-linux") {
           # Regression test for the k3s --cluster-init token deadlock:
           # boots the control-plane k3s module in QEMU and asserts the API
           # comes all the way up (see nixos/tests/k3s-cluster-init.nix).
@@ -224,12 +387,88 @@
           k3s-control-plane-platform-fixes =
             import ./nixos/tests/k3s-control-plane-platform-fixes.nix { inherit pkgs; };
 
+          # TWO-NODE: an agent configured by nixos/modules/k3s-agent.nix joins
+          # a server configured by nixos/modules/k3s-server.nix on one shared
+          # virtual segment, and k3s-join-observer.nix announces it on serial
+          # in the exact strings 081KSNY2Z0008QG0R0008PN7RQ scenario 5
+          # asserts. Hermetic (membership, not readiness — no CNI image in
+          # the sandbox). See nixos/tests/k3s-agent-join.nix.
+          k3s-agent-join =
+            import ./nixos/tests/k3s-agent-join.nix { inherit pkgs; };
+
           # ONLINE end-to-end: boots the control-plane WITH internet, installs
           # Cilium for real, asserts the node reaches Ready + CoreDNS Running.
           # REQUIRES internet -> build with `--option sandbox false`.
           # See nixos/tests/k3s-cluster-online.nix.
           k3s-cluster-online =
             import ./nixos/tests/k3s-cluster-online.nix { inherit pkgs; };
+
+          # THE CLOSEST THING TO PROD without touching prod: installs the REAL
+          # Longhorn chart at the REAL version with the REAL prod values, then
+          # proves a `longhorn` PVC BINDS and a pod writes through the mount.
+          # The platform-fixes check proves iscsiadm resolves; this one proves
+          # the rest of the chain that was dead for 62 days on node-5b2dfa
+          # (manager Ready -> Node CR -> StorageClass -> PVC Bound -> data).
+          # REQUIRES internet -> build with `--option sandbox false`.
+          # See nixos/tests/longhorn-volume-binds.nix.
+          longhorn-volume-binds =
+            import ./nixos/tests/longhorn-volume-binds.nix { inherit pkgs; };
+
+          # THE ONLY CHECK THAT APPLIES THE REAL FIRST-BOOT ROSTER. Every
+          # other VM test above overrides `services.k3s.manifests` away, so
+          # the declared boot sequence had never run anywhere. This one boots
+          # it whole and answers the open question: does root-application --
+          # an argoproj.io Application submitted before the ArgoCD chart has
+          # created that CRD -- apply, or stick? Three named verdicts, never
+          # a bare timeout. See nixos/tests/k3s-first-boot-roster.nix.
+          #
+          # REQUIRES internet -> build with `--option sandbox false`.
+          # THE MOST EXPENSIVE CHECK HERE: 45-70 min, ~10 GB of pulls, 10 GB
+          # RAM. Manual / nightly lane -- do NOT wire it per-PR. The per-PR
+          # half of the same question is `k3s-first-boot-apply-order`, which
+          # is eval-only and costs nothing.
+          k3s-first-boot-roster =
+            import ./nixos/tests/k3s-first-boot-roster.nix { inherit pkgs; };
+
+          # EVAL-ONLY (no VM, no boot): asserts that the preflight-attestation
+          # gate in nixos/modules/nvidia-open-guard.nix still REFUSES an
+          # unattested `hardware.nvidia.open = true`. Runs under the existing
+          # `nix flake check --no-build` step, so it costs a PR nothing.
+          # 081M00QP33F087G0R001JKB5QM shipped that gate and nothing re-checked
+          # it. See nixos/tests/nvidia-open-guard-gate.nix.
+          nvidia-open-guard-gate =
+            import ./nixos/tests/nvidia-open-guard-gate.nix {
+              inherit pkgs;
+              nixosConfig = self.nixosConfigurations.worker-gpu;
+            };
+
+          # EVAL-ONLY (no VM, no boot): properties of the GPU NODE-LABEL
+          # PREFLIGHT -- the boot-time refusal that keeps `zeta.io/gpu=nvidia`
+          # a checked claim rather than an unconditional assertion.
+          #
+          # It reads the REAL nixosConfigurations.worker-gpu, so it proves the
+          # label is still EMITTED (deleting it would be its own regression),
+          # that the emitted flag is the one the checks file GENERATES rather
+          # than a second copy of the string, that the probe looks for the PCI
+          # vendor ID of the vendor the label names, that the unit is reachable
+          # and lands before k3s.service, and that the label's one live consumer
+          # -- the NVIDIA device-plugin DaemonSet's nodeSelector -- still selects
+          # the same string.
+          #
+          # It CANNOT say whether the check PASSES on any hardware: no host in
+          # this repo records having a GPU at all. Only a boot can, and the
+          # console marker to look for is ZETA_GPU_NODE_LABEL_PREFLIGHT_OK with
+          # devices >= 1. See nixos/tests/gpu-node-label-preflight-eval-test.nix.
+          gpu-node-label-preflight =
+            let
+              report = import ./nixos/tests/gpu-node-label-preflight-eval-test.nix {
+                inherit pkgs;
+                nixosConfig = self.nixosConfigurations.worker-gpu;
+              };
+            in
+            pkgs.runCommand "gpu-node-label-preflight" { inherit (report) status; } ''
+              echo "$status" | tee "$out"
+            '';
         };
 
         devShells.default = pkgs.mkShell {
@@ -268,7 +507,7 @@
             # NixOS users: tooling comes via this devShell's nix-managed
             # packages above; no install.sh equivalent needed.
             echo "  Build USB ISO:        nix build .#installer-iso"
-            echo "  Build host system:    nixos-rebuild build --flake .#<host>"
+            echo "  Build host system:    nixos-rebuild build --impure --flake .#<host>"
             echo "  Talk to cluster:      kubectl / k9s / argocd / cilium / hubble"
           '';
         };

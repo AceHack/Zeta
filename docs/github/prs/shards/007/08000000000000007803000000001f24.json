@@ -1,0 +1,12 @@
+{
+  "pr_number": 7972,
+  "archive_path": "docs/history/pr-reviews/PR-7972-feat-core-test-resolution-the-self-budgeting-cell-the-first-bit-that-knows-when-.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-12T18:04:36.821Z",
+  "schema_version": "v1",
+  "commit_sha": "26c0fd2ff16b57106f0422147564219773bb24dc",
+  "title": "feat(core)+test: Resolution — the self-budgeting cell (the first bit that knows when it needs more bits)",
+  "state": "MERGED",
+  "merged_at": "2026-06-12T18:04:09Z",
+  "head_ref": "shadow/ferry-21-vera-takeaway"
+}

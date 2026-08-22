@@ -1,6 +1,6 @@
 # Lost-files common locations
 
-> **Why this list exists.** Human maintainer ask 2026-04-25 (Otto-329 Phase 8): the list is the substrate, the search is the activity. (Per Otto-293, "ask" not "directive" — bidirectional language preferred. Per AGENT-BEST-PRACTICES.md "No name attribution in code, docs, or skills", `tools/hygiene/**` uses role-refs not first names; full provenance lives in the matching `memory/feedback_otto_329_*` substrate file which is an exempt history surface.)
+> **Why this list exists.** Human maintainer ask 2026-04-25 (Otto-329 Phase 8): the list is the substrate, the search is the activity. (Per Otto-293, "ask" not "directive" — bidirectional language preferred. Per AGENT-BEST-PRACTICES.md "No name attribution in code, docs, or skills", `src/Core.TypeScript/hygiene/**` uses role-refs not first names; full provenance lives in the matching `memory/feedback_otto_329_*` substrate file which is an exempt history surface.)
 >
 > The search is the activity; THIS file is the catalog of places to look. Future searches run against this list. New location-classes get added as discovered. Composes with Otto-324 (mutual-learning — past mistakes compound into substrate) + Otto-262 (trunk-based-development branch hygiene) + Otto-257 (clean-default smell triggers audit).
 
@@ -120,9 +120,9 @@ Sometimes the only record of a decision lives in the PR description, which is lo
 
 ### 15. Memory-file deletions (cross-tree drift)
 
-`memory/**/*.md` files deleted in one branch but still referenced from another. Found via the `tools/hygiene/audit-memory-references.ts` lint.
+`memory/**/*.md` files deleted in one branch but still referenced from another. Found via the `src/Core.TypeScript/hygiene/audit-memory-references.ts` lint.
 
-- **Survey command**: `bun tools/hygiene/audit-memory-references.ts` — broken refs surface deleted files.
+- **Survey command**: `bun src/Core.TypeScript/hygiene/audit-memory-references.ts` — broken refs surface deleted files.
 - **Triage**: per Otto-238 retractability, deletions should leave a visible trail; a broken ref without a deletion-trail is suspect.
 
 ### 16. Stale background shells / completed background tasks (resource-pressure class)
@@ -131,7 +131,7 @@ Completed tool/Bash/Agent invocations that linger in process state without expli
 
 - **Survey command**: no runtime command-line equivalent for grepping outside the harness. Inside the Claude Code harness, `BashOutput` / `KillShell` tools manage live background-shell IDs; the harness surface is the only enumeration path. (Documented for reference; future tooling could expose a TS/Bun listing if the harness API permits.)
 - **Triage**: kill stale completed shells via harness-level tools (`KillShell` against the shell ID returned at dispatch) when count exceeds a threshold. Cleanup-cadence is owed work — Vera per-tick compression candidate (sweep completed background shells at end of each tick rather than waiting for forced-cleanup-by-crash).
-- **Composes with**: 081KQTPYE0008QG0R0034NKE4H (Bun v1.3.14 segfault row, the empirical correlation that motivated this class), `tools/hygiene/audit-trajectories.ts` cadence-aging tracking (similar accumulation-without-cleanup shape at a different surface), the broader resource-pressure failure mode (forced-cleanup-by-crash is the worst recovery path).
+- **Composes with**: 081KQTPYE0008QG0R0034NKE4H (Bun v1.3.14 segfault row, the empirical correlation that motivated this class), `src/Core.TypeScript/hygiene/audit-trajectories.ts` cadence-aging tracking (similar accumulation-without-cleanup shape at a different surface), the broader resource-pressure failure mode (forced-cleanup-by-crash is the worst recovery path).
 
 ## Search cadence
 
@@ -144,13 +144,13 @@ Aaron's ask doesn't specify a cadence. Suggested defaults:
 
 ## Cross-tool composition
 
-This list is the doc-form. The executable form is `tools/hygiene/audit-lost-files.ts` (Bun-runtime TypeScript per CLAUDE.md Rule 0) running each survey command and reporting findings.
+This list is the doc-form. The executable form is `src/Core.TypeScript/hygiene/audit-lost-files.ts` (Bun-runtime TypeScript per CLAUDE.md Rule 0) running each survey command and reporting findings.
 
 Composes with:
 
-- `tools/hygiene/audit-memory-references.ts` — covers location-class #15
-- `tools/hygiene/audit-git-hotspots.ts` — surfaces high-churn files (proxy for "high deletion risk")
-- `tools/hygiene/audit-tick-history-bounded-growth.ts` — finds tick-history pattern violations
+- `src/Core.TypeScript/hygiene/audit-memory-references.ts` — covers location-class #15
+- `src/Core.TypeScript/hygiene/audit-git-hotspots.ts` — surfaces high-churn files (proxy for "high deletion risk")
+- `src/Core.TypeScript/hygiene/audit-tick-history-bounded-growth.ts` — finds tick-history pattern violations
 - Otto-262 trunk-based-development branch policy
 - Otto-257 clean-default smell triggers audit
 - Otto-238 retractability + glass-halo (deletions should leave visible trails)
@@ -164,7 +164,7 @@ Composes with:
 
 ## Owed work (post-Phase-8 list creation)
 
-- Extend `tools/hygiene/audit-lost-files.ts` (Bun-runtime TypeScript) to cover survey commands for all 15 location-classes (initial implementation landed; ongoing coverage expansion).
+- Extend `src/Core.TypeScript/hygiene/audit-lost-files.ts` (Bun-runtime TypeScript) to cover survey commands for all 15 location-classes (initial implementation landed; ongoing coverage expansion).
 - Add periodic-cron entry once cadence is set.
 - Append discovered location-classes back into this file.
 - Connect to Otto-329 Phase 5 PR-backup work — real-time backups should prevent most #1, #2, #14 losses.

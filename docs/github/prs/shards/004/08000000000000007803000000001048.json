@@ -1,0 +1,19 @@
+{
+  "pr_number": 4168,
+  "archive_path": "docs/history/pr-reviews/PR-4168-backlog-mika-batch7-ext-b-0661-civilizational-hygiene-rule-b-0662-closed-bidirec.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7CWL66",
+    "comment:PRRC_kwDOSF9kNM7CWL7w",
+    "comment:PRRC_kwDOSF9kNM7CWL8F",
+    "thread:PRRT_kwDOSF9kNM6C5-A4",
+    "thread:PRRT_kwDOSF9kNM6C5-AJ",
+    "thread:PRRT_kwDOSF9kNM6C5-As"
+  ],
+  "fetched_at": "2026-05-18T16:55:11.694Z",
+  "schema_version": "v1",
+  "commit_sha": "6fd22b045a25c2d9ef9128f0d7aaf77f21e5864d",
+  "title": "backlog(mika-batch7-ext): B-0661 civilizational hygiene rule + B-0662 closed bidirectional causal loop chain",
+  "state": "MERGED",
+  "merged_at": "2026-05-18T16:54:45Z",
+  "head_ref": "otto-cli/mika-batch7-ext-b0661-b0662-2026-05-18-1247Z"
+}

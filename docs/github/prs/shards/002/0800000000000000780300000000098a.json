@@ -1,0 +1,23 @@
+{
+  "pr_number": 2442,
+  "archive_path": "docs/history/pr-reviews/PR-2442-fix-b-0078-narrow-markdownlint-research-carve-out-to-verbatim-only-pattern.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_mogi",
+    "comment:PRRC_kwDOSF9kNM6_mogp",
+    "comment:PRRC_kwDOSF9kNM6_mogt",
+    "comment:PRRC_kwDOSF9kNM6_mqh7",
+    "comment:PRRC_kwDOSF9kNM6_mqiH",
+    "thread:PRRT_kwDOSF9kNM6A4r8I",
+    "thread:PRRT_kwDOSF9kNM6A4r8P",
+    "thread:PRRT_kwDOSF9kNM6A4r8T",
+    "thread:PRRT_kwDOSF9kNM6A4th0",
+    "thread:PRRT_kwDOSF9kNM6A4ths"
+  ],
+  "fetched_at": "2026-05-10T08:48:27.670Z",
+  "schema_version": "v1",
+  "commit_sha": "dbd0918a9c32d3d90c92bfc293ee438d99e6590b",
+  "title": "fix(B-0078): narrow markdownlint research carve-out to verbatim-only pattern",
+  "state": "MERGED",
+  "merged_at": "2026-05-10T08:48:12Z",
+  "head_ref": "fix/B-0078-markdownlint-carve-out-narrowing"
+}

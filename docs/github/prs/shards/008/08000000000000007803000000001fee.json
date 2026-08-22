@@ -1,0 +1,12 @@
+{
+  "pr_number": 8174,
+  "archive_path": "docs/history/pr-reviews/PR-8174-feat-algebra-complete-6-oracle-cross-language-zsetmerkle-conformance.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-14T13:00:34.282Z",
+  "schema_version": "v1",
+  "commit_sha": "72351d5e0b8ea3587acad6550eb0ff44edc5ef77",
+  "title": "feat(algebra): complete 6-oracle cross-language ZSetMerkle conformance",
+  "state": "MERGED",
+  "merged_at": "2026-06-14T13:00:14Z",
+  "head_ref": "lior/zsetmerkle-6-oracles"
+}

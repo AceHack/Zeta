@@ -1,0 +1,12 @@
+{
+  "pr_number": 9944,
+  "archive_path": "docs/history/pr-reviews/PR-9944-docs-prior-art-trim-two-over-claims-one-verified-absent-one-self-corrected.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-01T23:56:07.062Z",
+  "schema_version": "v1",
+  "commit_sha": "87b9e81d5ae3445415de10e71d25049b60d020f9",
+  "title": "docs(prior-art): trim two over-claims — one verified absent, one self-corrected",
+  "state": "MERGED",
+  "merged_at": "2026-08-01T23:55:34Z",
+  "head_ref": "shadow/trim-two-prior-art-overclaims"
+}

@@ -1,0 +1,16 @@
+{
+  "pr_number": 6370,
+  "archive_path": "docs/history/pr-reviews/PR-6370-docs-registry-di-service-container-runtime-plugin-loading-on-the-wish-list-itron.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7Go56J",
+    "comment:PRRC_kwDOSF9kNM7Go7Sp",
+    "thread:PRRT_kwDOSF9kNM6GC_C9"
+  ],
+  "fetched_at": "2026-06-01T08:13:28.467Z",
+  "schema_version": "v1",
+  "commit_sha": "a263a94324156c7424fb7d60d2f8556b7852e28d",
+  "title": "docs(registry): DI / service-container + runtime plugin-loading on the wish list (Itron Extensions + Runtime/Loader)",
+  "state": "MERGED",
+  "merged_at": "2026-06-01T08:13:07Z",
+  "head_ref": "otto-cli/registry-di-plugins-2026-06-01"
+}

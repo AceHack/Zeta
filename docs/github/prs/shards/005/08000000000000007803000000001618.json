@@ -1,0 +1,12 @@
+{
+  "pr_number": 5656,
+  "archive_path": "docs/history/pr-reviews/PR-5656-docs-workflow-engine-preserve-kestrel-designed-workflow-engine-architecture-otto.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-27T23:46:23.741Z",
+  "schema_version": "v1",
+  "commit_sha": "6082919a37ce387fed0ad833155543c6ae5059f3",
+  "title": "docs(workflow-engine): preserve Kestrel-designed workflow engine architecture + Otto's 5 modifications ratified + file B-0867 v1 (operator: 'this is Zeta coming up')",
+  "state": "MERGED",
+  "merged_at": "2026-05-27T23:46:02Z",
+  "head_ref": "docs/workflow-engine-kestrel-mika-otto-ferry-2026-05-27"
+}

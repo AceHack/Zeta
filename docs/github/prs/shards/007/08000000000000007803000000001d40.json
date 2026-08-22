@@ -1,0 +1,12 @@
+{
+  "pr_number": 7488,
+  "archive_path": "docs/history/pr-reviews/PR-7488-fix-gate-hoist-persona-keys-crypto-deps-to-root-so-root-tsc-resolves-them-in-ci.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-10T09:34:45.812Z",
+  "schema_version": "v1",
+  "commit_sha": "8d91ef4e3d7fadff4d0d38ff31a05f468295d52c",
+  "title": "fix(gate): hoist persona-keys crypto deps to root so root tsc resolves them in CI",
+  "state": "MERGED",
+  "merged_at": "2026-06-10T09:34:14Z",
+  "head_ref": "shadow-fix-gate-tsc-hoist-persona-keys-crypto-deps-to-root"
+}

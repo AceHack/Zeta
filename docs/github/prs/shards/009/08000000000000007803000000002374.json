@@ -1,0 +1,12 @@
+{
+  "pr_number": 9076,
+  "archive_path": "docs/history/pr-reviews/PR-9076-perf-core-zsetw-sumby-matches-zset-add-zero-overhead-proven-gap-closed-step-2b-3.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-16T20:54:00.706Z",
+  "schema_version": "v1",
+  "commit_sha": "c8ad05164dbd6a5ba15515081701f699ba9769fe",
+  "title": "perf(core): ZSetW sumBy matches ZSet.add — zero-overhead PROVEN, gap closed (step 2b/3) (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-02T00:04:54Z",
+  "head_ref": "otto/zsetw-step3-close-perf-gap-081KWFXTHJY"
+}

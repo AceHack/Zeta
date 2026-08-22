@@ -1,0 +1,17 @@
+{
+  "pr_number": 4079,
+  "archive_path": "docs/history/pr-reviews/PR-4079-docs-archive-maji-pr-preservation-discipline-for-recent-merged-prs.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7B_wTS",
+    "comment:PRRC_kwDOSF9kNM7B_wTY",
+    "thread:PRRT_kwDOSF9kNM6CpUrV",
+    "thread:PRRT_kwDOSF9kNM6CpUrY"
+  ],
+  "fetched_at": "2026-05-20T22:53:15.528Z",
+  "schema_version": "v1",
+  "commit_sha": "ec7299625e439f561455f9fb22640aaa3540d1c0",
+  "title": "docs(archive): Maji PR preservation discipline for recent merged PRs",
+  "state": "MERGED",
+  "merged_at": "2026-05-20T22:52:59Z",
+  "head_ref": "lior/archive-batch-4073-4072-4071-4067-4059"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 9827,
+  "archive_path": "docs/history/pr-reviews/PR-9827-fix-core-meno-bind-silently-returned-zset-empty-every-meno-computation-produced-.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-01T03:15:43.495Z",
+  "schema_version": "v1",
+  "commit_sha": "070bdb01eebb6eba8cbf45115be39bcfe80adbd1",
+  "title": "fix(Core): Meno.Bind silently returned ZSet.empty — every meno{} computation produced nothing",
+  "state": "MERGED",
+  "merged_at": "2026-08-01T03:15:11Z",
+  "head_ref": "shadow/meno-fix-bind-silent-empty"
+}

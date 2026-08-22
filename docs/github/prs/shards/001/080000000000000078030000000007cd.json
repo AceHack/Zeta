@@ -1,0 +1,17 @@
+{
+  "pr_number": 1997,
+  "archive_path": "docs/history/pr-reviews/PR-1997-docs-research-log-catch-33-on-array-wide-pr-hallucination.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_FEbQ",
+    "comment:PRRC_kwDOSF9kNM6_FN8H",
+    "thread:PRRT_kwDOSF9kNM6AfrhI",
+    "thread:PRRT_kwDOSF9kNM6Afx8r"
+  ],
+  "fetched_at": "2026-05-08T02:14:29.146Z",
+  "schema_version": "v1",
+  "commit_sha": "7efb0237e962efc3fa71174cb4f155d47903ab68",
+  "title": "docs(research): log Catch 33 on array-wide PR hallucination",
+  "state": "MERGED",
+  "merged_at": "2026-05-08T02:14:08Z",
+  "head_ref": "chore/lior-drift-catch-33"
+}

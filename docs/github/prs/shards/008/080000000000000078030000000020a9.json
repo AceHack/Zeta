@@ -1,0 +1,12 @@
+{
+  "pr_number": 8361,
+  "archive_path": "docs/history/pr-reviews/PR-8361-fix-memory-main-red-ani-ferry-frontmatter-persist-the-arena-arc.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-15T23:22:34.581Z",
+  "schema_version": "v1",
+  "commit_sha": "f432241506341a8823772d011e44f5ddf8cedf06",
+  "title": "fix(memory): main-red — Ani ferry frontmatter + persist the arena arc",
+  "state": "MERGED",
+  "merged_at": "2026-06-15T23:22:06Z",
+  "head_ref": "fix/main-red-ani-memory-frontmatter-plus-arena-arc"
+}

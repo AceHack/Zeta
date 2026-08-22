@@ -1,0 +1,12 @@
+{
+  "pr_number": 6054,
+  "archive_path": "docs/history/pr-reviews/PR-6054-fix-daemon-disable-sandboxing-on-lior-background-tick-runner-b-0751.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-29T22:41:54.634Z",
+  "schema_version": "v1",
+  "commit_sha": "a61d5a2891cc7f48509779268d762ee85cab6985",
+  "title": "fix(daemon): Disable sandboxing on Lior background tick runner (B-0751)",
+  "state": "MERGED",
+  "merged_at": "2026-05-29T22:41:35Z",
+  "head_ref": "lior/unsandbox-loop"
+}

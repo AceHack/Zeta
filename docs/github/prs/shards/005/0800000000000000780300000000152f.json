@@ -1,0 +1,12 @@
+{
+  "pr_number": 5423,
+  "archive_path": "docs/history/pr-reviews/PR-5423-feat-b-0857-p2-deferred-install-sh-becomes-universal-unix-like-os-entry-routes-b.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-27T07:53:58.872Z",
+  "schema_version": "v1",
+  "commit_sha": "7f6900a487fd15a3845f48723236ec8f93b6307c",
+  "title": "feat(B-0857 P2 deferred): install.sh becomes universal Unix-like-OS entry — routes by environment; SHORTER path than B-0854 Ace migration (Aaron 2026-05-27)",
+  "state": "MERGED",
+  "merged_at": "2026-05-27T07:53:40Z",
+  "head_ref": "backlog/b-0857-install-sh-universal-unix-entry-consolidation-2026-05-27"
+}

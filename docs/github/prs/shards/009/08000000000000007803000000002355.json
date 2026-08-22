@@ -1,0 +1,12 @@
+{
+  "pr_number": 9045,
+  "archive_path": "docs/history/pr-reviews/PR-9045-docs-research-orphan-branch-triage-campaign-retro-reusable-patterns.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-30T23:43:38.169Z",
+  "schema_version": "v1",
+  "commit_sha": "ae454fa5a3f6f472f9041948f069fe94ed1a135c",
+  "title": "docs(research): orphan-branch triage campaign retro + reusable patterns",
+  "state": "MERGED",
+  "merged_at": "2026-06-30T23:43:18Z",
+  "head_ref": "docs-orphan-triage-campaign-retro"
+}

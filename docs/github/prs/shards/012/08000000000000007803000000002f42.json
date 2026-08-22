@@ -1,0 +1,12 @@
+{
+  "pr_number": 12098,
+  "archive_path": "docs/history/pr-reviews/PR-12098-test-forge-host-the-batch-poll-orchestration-tests-kept-their-own-wall-clock.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-18T21:29:17.140Z",
+  "schema_version": "v1",
+  "commit_sha": "b7318a01a42f8814b28816c278ca6c7b16c8f4bb",
+  "title": "test(forge-host): the batch-poll orchestration tests kept their own wall clock",
+  "state": "MERGED",
+  "merged_at": "2026-08-18T21:26:17Z",
+  "head_ref": "fix/poll-pr-gate-batch-deterministic-scheduling"
+}

@@ -4,6 +4,23 @@ Claude Code reads project-level hooks from `.claude/settings.json`. Hook scripts
 
 Canonical Anthropic reference: <https://code.claude.com/docs/en/hooks>.
 
+## Tests live in `src/Core.TypeScript/claude-hooks/`, NOT here
+
+Do not add a `*.test.ts` to this directory: nothing would run it. **Measured, bun 1.3.14** — a
+test file under a dot-prefixed directory is not discovered by a bare `bun test`, and no
+positional filter reaches it either (bun answers *"the following filters did not match any test
+files"*); only an explicit `./`-prefixed path argument does. `tsc` is blind to it for the same
+reason — TypeScript's wildcard `include` skips dot-prefixed segments, so nothing here is
+type-checked either.
+
+Two test files sat here from 2026-06-21 and executed nowhere in that whole time, while their
+names promised a check ran (081KZZ1RK6A087G0R003C773WC). They now live at
+`src/Core.TypeScript/claude-hooks/` and import back across the boundary. Adjacency is a
+convenience; execution is the point.
+
+`src/Core.TypeScript/hygiene/unexecuted-test-files.ts` fails the build on any tracked
+`*.test.ts` under a dot-prefixed path, so a new one here is caught rather than counted.
+
 ## Shared harness module — `harness.ts`
 
 All Otto-discipline hook scripts (`*-hook.ts`) import from `harness.ts` for common types and utilities:

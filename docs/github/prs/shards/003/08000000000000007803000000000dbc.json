@@ -1,0 +1,15 @@
+{
+  "pr_number": 3516,
+  "archive_path": "docs/history/pr-reviews/PR-3516-feat-persona-vera-33-archive-migration-1-file-persona-folder-memory-md.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7BrrD-",
+    "thread:PRRT_kwDOSF9kNM6CaXVz"
+  ],
+  "fetched_at": "2026-05-15T16:06:28.864Z",
+  "schema_version": "v1",
+  "commit_sha": "80faa0888da2d6b7fb1a2d2a26c13f9fd852b918",
+  "title": "feat(persona-vera): §33 archive migration — 1 file + persona folder + MEMORY.md",
+  "state": "MERGED",
+  "merged_at": "2026-05-15T16:06:10Z",
+  "head_ref": "feat/persona-vera-migrate-conversations-otto-cli-2026-05-15"
+}

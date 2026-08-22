@@ -1,0 +1,12 @@
+{
+  "pr_number": 10151,
+  "archive_path": "docs/history/pr-reviews/PR-10151-docs-chsh-soraya-s-chshband-loopholeflags-design-spec-unblocks-alexa-task-a.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-08T19:27:01.866Z",
+  "schema_version": "v1",
+  "commit_sha": "c1268c89b2b531297d09e5db7e418ad4aa0ade44",
+  "title": "docs(chsh): Soraya's ChshBand + LoopholeFlags design spec (unblocks Alexa Task A)",
+  "state": "MERGED",
+  "merged_at": "2026-08-08T19:26:32Z",
+  "head_ref": "shadow/soraya-chshband-design-spec"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 10628,
+  "archive_path": "docs/history/pr-reviews/PR-10628-auth-proposals-authorize-pages-device-passkey.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-14T16:08:53.914Z",
+  "schema_version": "v1",
+  "commit_sha": "7d2cff40f0769907f220211c79ff380bd4dc8a50",
+  "title": "auth(proposals): authorize Pages device passkey",
+  "state": "MERGED",
+  "merged_at": "2026-08-14T16:08:21Z",
+  "head_ref": "auth/authorize-pages-device-passkey"
+}

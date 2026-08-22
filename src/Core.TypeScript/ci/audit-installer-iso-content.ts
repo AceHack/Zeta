@@ -1,9 +1,9 @@
 #!/usr/bin/env bun
-// tools/ci/audit-installer-iso-content.ts
+// src/Core.TypeScript/ci/audit-installer-iso-content.ts
 //
 // Inspects the BUILT installer ISO and asserts expected substrate
 // is actually present inside it. Complements
-// tools/ci/audit-installer-substrate.ts (source-level audit) by
+// src/Core.TypeScript/ci/audit-installer-substrate.ts (source-level audit) by
 // catching the bug class where the ISO build process silently drops
 // a file that's present in the source tree.
 //
@@ -25,8 +25,8 @@
 //   - Live boot behavior (nixosTest framework; cascade #5)
 //
 // Usage:
-//   bun tools/ci/audit-installer-iso-content.ts --iso <path>
-//   bun tools/ci/audit-installer-iso-content.ts --iso /tmp/iso/zeta-installer-X.iso
+//   bun src/Core.TypeScript/ci/audit-installer-iso-content.ts --iso <path>
+//   bun src/Core.TypeScript/ci/audit-installer-iso-content.ts --iso /tmp/iso/zeta-installer-X.iso
 //
 // Requires `7z` on PATH (universally available on ubuntu-latest +
 // macOS via `brew install p7zip`). The ubuntu-24.04 runner ships
@@ -63,7 +63,7 @@ function parseArgs(argv: readonly string[]): Args | ArgError {
       continue;
     }
     if (a === "-h" || a === "--help") {
-      return { error: "Usage: bun tools/ci/audit-installer-iso-content.ts --iso <path>" };
+      return { error: "Usage: bun src/Core.TypeScript/ci/audit-installer-iso-content.ts --iso <path>" };
     }
     return { error: `unknown argument: ${a}` };
   }

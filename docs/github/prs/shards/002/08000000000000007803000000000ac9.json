@@ -1,0 +1,29 @@
+{
+  "pr_number": 2761,
+  "archive_path": "docs/history/pr-reviews/PR-2761-claim-b-0164-1-smallest-safe-slice-dedicated-worktree-build-gate-verification-ri.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7AFb3-",
+    "comment:PRRC_kwDOSF9kNM7AFb37",
+    "comment:PRRC_kwDOSF9kNM7AFdH4",
+    "comment:PRRC_kwDOSF9kNM7AFdHm",
+    "comment:PRRC_kwDOSF9kNM7AFdIG",
+    "comment:PRRC_kwDOSF9kNM7AFdIQ",
+    "comment:PRRC_kwDOSF9kNM7AFdIe",
+    "comment:PRRC_kwDOSF9kNM7AYOIi",
+    "thread:PRRT_kwDOSF9kNM6BPtuo",
+    "thread:PRRT_kwDOSF9kNM6BPtur",
+    "thread:PRRT_kwDOSF9kNM6BPun6",
+    "thread:PRRT_kwDOSF9kNM6BPund",
+    "thread:PRRT_kwDOSF9kNM6BPunp",
+    "thread:PRRT_kwDOSF9kNM6BPuny",
+    "thread:PRRT_kwDOSF9kNM6BPuoE",
+    "thread:PRRT_kwDOSF9kNM6BdpmB"
+  ],
+  "fetched_at": "2026-05-12T22:53:45.961Z",
+  "schema_version": "v1",
+  "commit_sha": "c14df89b4c0a6aa4af16b84518c2c8d431fbc960",
+  "title": "claim(B-0164.1): smallest safe slice — dedicated worktree + build-gate verification (Riven)",
+  "state": "MERGED",
+  "merged_at": "2026-05-12T22:53:25Z",
+  "head_ref": "claim/b0164.1-pr-review-disagreement-preservation-protocol-smallest-slice-riven-2026-05-11"
+}

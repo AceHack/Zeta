@@ -1,0 +1,12 @@
+{
+  "pr_number": 6307,
+  "archive_path": "docs/history/pr-reviews/PR-6307-docs-research-fix-synthesis-transport-bit-both-land-on-main-dial-is-direct-folde.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-01T01:37:51.122Z",
+  "schema_version": "v1",
+  "commit_sha": "c16fa6724f02186f120a94495f2f5e0d50da1b46",
+  "title": "docs(research): fix synthesis transport bit — both land on main; dial is direct-folders vs batched (operator)",
+  "state": "MERGED",
+  "merged_at": "2026-06-01T01:37:33Z",
+  "head_ref": "otto-cli/synth-transport-fix-2026-05-31"
+}

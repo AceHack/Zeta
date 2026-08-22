@@ -1,0 +1,12 @@
+{
+  "pr_number": 7069,
+  "archive_path": "docs/history/pr-reviews/PR-7069-docs-core-anchor-belltest-s-4-to-pr-box-information-causality-not-schwarzschild-.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-08T09:58:14.383Z",
+  "schema_version": "v1",
+  "commit_sha": "b8ddea7cda0a44e22b5bb535e037f99ac5d9d8a2",
+  "title": "docs(core): anchor BellTest S=4 to PR-box + Information Causality (not Schwarzschild metaphor)",
+  "state": "MERGED",
+  "merged_at": "2026-06-08T09:57:49Z",
+  "head_ref": "otto/belltest-pr-box-information-causality-anchor"
+}

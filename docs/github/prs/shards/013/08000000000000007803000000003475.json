@@ -1,0 +1,15 @@
+{
+  "pr_number": 13429,
+  "archive_path": "docs/history/pr-reviews/PR-13429-feat-cluster-render-every-chart-and-refuse-a-storage-claim-that-no-pvc-matches-2.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7kio4e",
+    "thread:PRRT_kwDOSF9kNM6bUQUT"
+  ],
+  "fetched_at": "2026-08-21T23:31:58.228Z",
+  "schema_version": "v1",
+  "commit_sha": "905c2ab2a3c603db5d86c86b39008a8513a9a521",
+  "title": "feat(cluster): render every chart and refuse a storage claim that no PVC matches — 2 declarations govern paths that do not exist",
+  "state": "MERGED",
+  "merged_at": "2026-08-21T23:31:23Z",
+  "head_ref": "shadow/rendered-storage-claims-falsifier"
+}

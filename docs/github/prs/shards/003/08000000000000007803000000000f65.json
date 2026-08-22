@@ -1,0 +1,19 @@
+{
+  "pr_number": 3941,
+  "archive_path": "docs/history/pr-reviews/PR-3941-research-b-0562-qg-isomorphism-step-2-cube-adinkra-cayley-dickson-happy-like-qec.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7B7FaA",
+    "comment:PRRC_kwDOSF9kNM7B7FaG",
+    "comment:PRRC_kwDOSF9kNM7B7JfR",
+    "comment:PRRC_kwDOSF9kNM7B7JgY",
+    "thread:PRRT_kwDOSF9kNM6Clun-",
+    "thread:PRRT_kwDOSF9kNM6CluoD"
+  ],
+  "fetched_at": "2026-05-16T21:16:17.846Z",
+  "schema_version": "v1",
+  "commit_sha": "7a2c20f104c2d057b6d57f8b5381bdcfd33fc0fa",
+  "title": "research(B-0562): QG isomorphism Step 2 — cube + Adinkra + Cayley-Dickson → HaPPY-like QECC",
+  "state": "MERGED",
+  "merged_at": "2026-05-16T21:15:58Z",
+  "head_ref": "research/b-0562-qg-isomorphism-step-2-otto-cli-2026-05-16"
+}

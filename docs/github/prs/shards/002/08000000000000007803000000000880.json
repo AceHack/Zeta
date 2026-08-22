@@ -1,0 +1,12 @@
+{
+  "pr_number": 2176,
+  "archive_path": "docs/history/pr-reviews/PR-2176-fix-b-0288-type-ace-store-entries-precisely.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-09T03:42:34.094Z",
+  "schema_version": "v1",
+  "commit_sha": "d93ae7adadfa14adb64b69f58bc952111b2229e8",
+  "title": "fix(B-0288): type Ace store entries precisely",
+  "state": "MERGED",
+  "merged_at": "2026-05-09T03:42:14Z",
+  "head_ref": "codex/b0288-ace-store-tsc-fix"
+}

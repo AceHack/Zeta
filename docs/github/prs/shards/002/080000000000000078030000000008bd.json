@@ -1,0 +1,12 @@
+{
+  "pr_number": 2237,
+  "archive_path": "docs/history/pr-reviews/PR-2237-docs-b-0366-fpga-toffoli-gate-z-set-reversible-heat-measurement.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-09T07:58:58.037Z",
+  "schema_version": "v1",
+  "commit_sha": "ba1ea66f1d8578773a2aa74ab5ea12678701e64d",
+  "title": "docs(B-0366): FPGA Toffoli-gate Z-set reversible heat measurement",
+  "state": "MERGED",
+  "merged_at": "2026-05-09T07:58:36Z",
+  "head_ref": "docs/b0366-fpga-toffoli-zset"
+}

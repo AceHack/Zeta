@@ -1,0 +1,12 @@
+{
+  "pr_number": 12179,
+  "archive_path": "docs/history/pr-reviews/PR-12179-feat-service-the-pre-k8s-layer-is-the-recovery-plane-surfaces-are-metered-seams-.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-18T23:06:10.787Z",
+  "schema_version": "v1",
+  "commit_sha": "c8c38613efa923045937b5e902321fa423201d13",
+  "title": "feat(service): the pre-k8s layer is the RECOVERY plane -- surfaces are metered seams, the surface count is measurable; plus systemd liveness so tier A0 exists on the nodes that break",
+  "state": "MERGED",
+  "merged_at": "2026-08-18T23:05:31Z",
+  "head_ref": "kenji/pre-k8s-recovery-plane-tick-source-authority-tiers"
+}

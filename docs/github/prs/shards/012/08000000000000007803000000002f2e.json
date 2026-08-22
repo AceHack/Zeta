@@ -1,0 +1,12 @@
+{
+  "pr_number": 12078,
+  "archive_path": "docs/history/pr-reviews/PR-12078-feat-core-the-theta-series-of-the-in-tree-8-4-code-s-construction-a-lattice-is-e.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-18T20:36:58.917Z",
+  "schema_version": "v1",
+  "commit_sha": "600307ae9848966c3e6ea9bfd4f823e6f21ee889",
+  "title": "feat(core): the theta series of the in-tree [8,4] code's Construction-A lattice IS E_4 — counted, not assumed",
+  "state": "MERGED",
+  "merged_at": "2026-08-18T20:36:16Z",
+  "head_ref": "feat/construction-a-theta-series-is-e4"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 7732,
+  "archive_path": "docs/history/pr-reviews/PR-7732-fix-backlog-refresh-generated-index.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-11T17:07:00.430Z",
+  "schema_version": "v1",
+  "commit_sha": "f86cc9a3322c3249491ff00e669b6b85f1d7c805",
+  "title": "fix(backlog): refresh generated index",
+  "state": "MERGED",
+  "merged_at": "2026-06-11T17:06:26Z",
+  "head_ref": "codex/vera-refresh-backlog-index"
+}

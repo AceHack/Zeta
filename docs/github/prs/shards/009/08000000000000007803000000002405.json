@@ -1,0 +1,12 @@
+{
+  "pr_number": 9221,
+  "archive_path": "docs/history/pr-reviews/PR-9221-research-phase-5-ferry-addendum-the-ferry-commit-is-ledger-b-s-metered-membrane-.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-02T23:40:54.845Z",
+  "schema_version": "v1",
+  "commit_sha": "bc8bb20f0970a3f267add5f6f5d164aa42762c31",
+  "title": "research: Phase 5 ferry addendum — the ferry commit IS Ledger B's metered membrane (three metering-test corrections)",
+  "state": "MERGED",
+  "merged_at": "2026-07-02T23:40:29Z",
+  "head_ref": "soraya/phase5-ferry-ledger-b-membrane"
+}

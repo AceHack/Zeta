@@ -1,0 +1,19 @@
+{
+  "pr_number": 5131,
+  "archive_path": "docs/history/pr-reviews/PR-5131-rule-verify-existing-substrate-before-authoring-sibling-to-dep-pin-search-first-.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7E1hXs",
+    "comment:PRRC_kwDOSF9kNM7E1hYH",
+    "comment:PRRC_kwDOSF9kNM7E1hYf",
+    "thread:PRRT_kwDOSF9kNM6EuxYt",
+    "thread:PRRT_kwDOSF9kNM6EuxZC",
+    "thread:PRRT_kwDOSF9kNM6EuxZT"
+  ],
+  "fetched_at": "2026-05-26T08:37:59.225Z",
+  "schema_version": "v1",
+  "commit_sha": "78735f68bc2e439d362baf98a2f22e0bb496750b",
+  "title": "rule: verify-existing-substrate-before-authoring — sibling to dep-pin-search-first-authority (3-anchor empirical evidence 2026-05-26)",
+  "state": "MERGED",
+  "merged_at": "2026-05-26T08:37:39Z",
+  "head_ref": "otto-cli/rule-ext-verify-existing-substrate-before-authoring-2026-05-26"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 9012,
+  "archive_path": "docs/history/pr-reviews/PR-9012-docs-blueprint-full-credential-onboarding-one-fingerprint-forced-rotation-from-c.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-21T21:24:09.614Z",
+  "schema_version": "v1",
+  "commit_sha": "b31ae048993e000acf6e38a81c5efc7bd804a100",
+  "title": "docs(blueprint): full credential onboarding — one fingerprint, forced rotation from creation",
+  "state": "MERGED",
+  "merged_at": "2026-06-21T21:23:41Z",
+  "head_ref": "otto/blueprint-full-onboarding-forced-rotation"
+}

@@ -1,0 +1,14 @@
+{
+  "id": "080d001200190010a0130008df296a6e",
+  "at": "2026-08-14T21:49:04.672Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M01400RZ087G0R000PS3VJG",
+    "type": "task",
+    "title": "HeatReceipt rails render a blind counter as a genuine zero (no fidelity channel on zeta.heat.receipt.v1)",
+    "slug": "heatreceipt-rails-render-a-blind-counter-as-a-genuine-zero-n",
+    "priority": "P2",
+    "filename": "081M01400RZ087G0R000PS3VJG-heatreceipt-rails-render-a-blind-counter-as-a-genuine-zero-n.md"
+  }
+}

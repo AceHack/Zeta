@@ -1,0 +1,12 @@
+{
+  "pr_number": 13263,
+  "archive_path": "docs/history/pr-reviews/PR-13263-fix-installer-refuse-when-the-hardware-configuration-capture-fails-and-make-the-.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-21T17:22:23.487Z",
+  "schema_version": "v1",
+  "commit_sha": "1b7509862fec9fa7b9a02e43aeb6a5e6929ca974",
+  "title": "fix(installer): refuse when the hardware-configuration capture fails, and make the Longhorn preflight's empty set non-vacuous",
+  "state": "MERGED",
+  "merged_at": "2026-08-21T17:18:36Z",
+  "head_ref": "fix/installer-refuses-placeholder-hardware-config"
+}

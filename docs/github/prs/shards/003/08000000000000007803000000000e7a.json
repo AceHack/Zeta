@@ -1,0 +1,15 @@
+{
+  "pr_number": 3706,
+  "archive_path": "docs/history/pr-reviews/PR-3706-chore-b-0543-decompose-step-2-into-b-0551.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7B1Ith",
+    "thread:PRRT_kwDOSF9kNM6ChPa5"
+  ],
+  "fetched_at": "2026-05-16T04:17:43.498Z",
+  "schema_version": "v1",
+  "commit_sha": "ad44fe91baa0fa2081c1a0e7f0af36a8ae005cc0",
+  "title": "chore(b-0543): decompose step 2 into B-0551",
+  "state": "MERGED",
+  "merged_at": "2026-05-16T04:17:28Z",
+  "head_ref": "lior/decompose-b0543"
+}

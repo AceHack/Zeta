@@ -1,0 +1,17 @@
+{
+  "pr_number": 9300,
+  "archive_path": "docs/history/pr-reviews/PR-9300-close-081kvp2m1-krl-revoke-wire-dora-metrics-into-dashboard.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7R0a-I",
+    "comment:PRRC_kwDOSF9kNM7R0a94",
+    "thread:PRRT_kwDOSF9kNM6ONCdh",
+    "thread:PRRT_kwDOSF9kNM6ONCdr"
+  ],
+  "fetched_at": "2026-07-03T14:05:33.293Z",
+  "schema_version": "v1",
+  "commit_sha": "3782fbd953a838ad7d9c34f88a8e57f227bcfb33",
+  "title": "Close 081KVP2M1 KRL revoke + wire DORA metrics into dashboard",
+  "state": "MERGED",
+  "merged_at": "2026-07-03T14:05:09Z",
+  "head_ref": "feat/081KVP2M1-krl-revoke-dora-dashboard"
+}

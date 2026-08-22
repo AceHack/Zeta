@@ -1,0 +1,12 @@
+{
+  "pr_number": 2337,
+  "archive_path": "docs/history/pr-reviews/PR-2337-docs-b-0001-smallest-safe-slice-update-generator-ref-in-example-row.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-09T19:59:12.822Z",
+  "schema_version": "v1",
+  "commit_sha": "69393f11a224f45e622c1fc6366ba9b193d12a66",
+  "title": "docs(B-0001): smallest safe slice — update generator ref in example row",
+  "state": "MERGED",
+  "merged_at": "2026-05-09T19:58:55Z",
+  "head_ref": "claim/b0001-smallest-slice-example-schema-riven-2026-05-09"
+}

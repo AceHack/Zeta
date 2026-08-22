@@ -1,0 +1,12 @@
+{
+  "pr_number": 2540,
+  "archive_path": "docs/history/pr-reviews/PR-2540-docs-memory-shadow-alibi-loop-witnesses-independent-shadow-activity.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-10T21:25:44.846Z",
+  "schema_version": "v1",
+  "commit_sha": "d2d552b86739fd70e01a1736c28433d5535faafa",
+  "title": "docs(memory): shadow alibi — loop witnesses independent shadow activity",
+  "state": "MERGED",
+  "merged_at": "2026-05-10T21:25:29Z",
+  "head_ref": "docs/shadow-alibi-proof-2026-05-10"
+}

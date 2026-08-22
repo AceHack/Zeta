@@ -1,0 +1,12 @@
+{
+  "pr_number": 3761,
+  "archive_path": "docs/history/pr-reviews/PR-3761-chore-rules-refresh-world-model-poll-pr-gate-add-empirical-rate-limit-operationa.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-16T06:01:53.294Z",
+  "schema_version": "v1",
+  "commit_sha": "c707a425a9c5fb9715fc73791a27cf5d38a838b9",
+  "title": "chore(rules): refresh-world-model-poll-pr-gate — add empirical rate-limit operational tiers",
+  "state": "MERGED",
+  "merged_at": "2026-05-16T06:01:33Z",
+  "head_ref": "chore/refresh-pr-gate-rate-limit-tiers-otto-cli-2026-05-16"
+}

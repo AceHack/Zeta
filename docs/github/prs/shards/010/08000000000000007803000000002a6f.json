@@ -1,0 +1,12 @@
+{
+  "pr_number": 10863,
+  "archive_path": "docs/history/pr-reviews/PR-10863-docs-rules-repoint-dead-cross-references-in-claude-rules-aaron-authorized.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-16T14:04:35.631Z",
+  "schema_version": "v1",
+  "commit_sha": "325a524feb093290abc631721e9294fcac8f29b1",
+  "title": "docs(rules): repoint dead cross-references in .claude/rules (Aaron-authorized)",
+  "state": "MERGED",
+  "merged_at": "2026-08-16T14:03:58Z",
+  "head_ref": "rules-pointer-fix"
+}

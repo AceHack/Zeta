@@ -1,0 +1,12 @@
+{
+  "pr_number": 5742,
+  "archive_path": "docs/history/pr-reviews/PR-5742-docs-ferry-10th-kestrel-ferry-architecture-is-the-safety-mechanism-not-the-disci.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-28T10:03:41.038Z",
+  "schema_version": "v1",
+  "commit_sha": "3b53218efdf3719f349777519e5d8a1210af80aa",
+  "title": "docs(ferry): 10th Kestrel ferry — 'Architecture is the safety mechanism, not the discipline' + Xbox-controller-universal-action-grammar + attention-as-currency DESCRIPTIVE + Aaron 'welcome to my world' operator-relational disclosure",
+  "state": "MERGED",
+  "merged_at": "2026-05-28T10:03:21Z",
+  "head_ref": "otto-cli/kestrel-10th-ferry-architecture-is-safety-mechanism-xbox-controller-universal-action-grammar-attention-as-currency-descriptive-aaron-welcome-to-my-world-2026-05-28"
+}

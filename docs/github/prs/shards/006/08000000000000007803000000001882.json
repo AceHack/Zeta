@@ -1,0 +1,12 @@
+{
+  "pr_number": 6274,
+  "archive_path": "docs/history/pr-reviews/PR-6274-fix-correction-dvsp-dbsp-computational-omniscience-is-real-not-god-tier-operator.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-31T23:25:20.916Z",
+  "schema_version": "v1",
+  "commit_sha": "d542536de9c16f97aa08acfcaa65119a5ba1f501",
+  "title": "fix(correction): DVSP->DBSP + computational-omniscience is real-not-god-tier (operator 2026-05-31)",
+  "state": "MERGED",
+  "merged_at": "2026-05-31T23:25:01Z",
+  "head_ref": "otto-cli/dbsp-omniscience-correction-2026-05-31"
+}

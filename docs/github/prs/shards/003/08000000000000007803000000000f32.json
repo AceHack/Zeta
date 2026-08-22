@@ -1,0 +1,12 @@
+{
+  "pr_number": 3890,
+  "archive_path": "docs/history/pr-reviews/PR-3890-shard-tick-2026-05-16t14-00z-duplicate-pr-observation-3887-3888-byte-identical.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-16T14:45:52.227Z",
+  "schema_version": "v1",
+  "commit_sha": "6080b1f04d33a25ac2624e736564e0861a4bfd9e",
+  "title": "shard(tick): 2026-05-16T14:00Z — duplicate-PR observation: #3887 + #3888 byte-identical",
+  "state": "MERGED",
+  "merged_at": "2026-05-16T14:45:36Z",
+  "head_ref": "otto-cli-tick-2026-05-16-1400z"
+}

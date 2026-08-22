@@ -1,0 +1,12 @@
+{
+  "pr_number": 8227,
+  "archive_path": "docs/history/pr-reviews/PR-8227-docs-research-closed-frame-capture-precision-accuracy-external-referent-gap-affi.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-15T01:03:03.442Z",
+  "schema_version": "v1",
+  "commit_sha": "8499b9f9fed3438037c488c84ed1bcb45ca8b453",
+  "title": "docs(research): closed-frame capture — precision≠accuracy, external-referent gap, affirmation spiral (Kestrel/Aaron, glass halo)",
+  "state": "MERGED",
+  "merged_at": "2026-06-15T01:02:36Z",
+  "head_ref": "otto/ferry-closed-frame-capture-precision-accuracy"
+}

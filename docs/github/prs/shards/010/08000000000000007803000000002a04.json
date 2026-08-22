@@ -1,0 +1,12 @@
+{
+  "pr_number": 10756,
+  "archive_path": "docs/history/pr-reviews/PR-10756-docs-eve-the-non-isomorphic-case-the-imposition-budget-generalises-and-does-not-.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-16T21:13:53.527Z",
+  "schema_version": "v1",
+  "commit_sha": "ab049cf86fab707937e29abb9a89b6c1cd9f1a7a",
+  "title": "docs(eve): the non-isomorphic case — the imposition budget generalises, and does not measure loss",
+  "state": "MERGED",
+  "merged_at": "2026-08-16T21:13:18Z",
+  "head_ref": "shadow/eve-partial-morphisms-non-isomorphic-case"
+}

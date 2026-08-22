@@ -1,0 +1,12 @@
+{
+  "pr_number": 8819,
+  "archive_path": "docs/history/pr-reviews/PR-8819-inventory-phase-7-independent-security-audit-close-out-build-complete.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-21T00:49:53.359Z",
+  "schema_version": "v1",
+  "commit_sha": "84b78b254d2666402370e6484a379a84956b045b",
+  "title": "Inventory Phase 7 — independent security audit + close-out (build complete)",
+  "state": "MERGED",
+  "merged_at": "2026-06-21T00:49:26Z",
+  "head_ref": "claude/phase-7-security-audit-jt679t"
+}

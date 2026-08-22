@@ -1,0 +1,14 @@
+{
+  "id": "080d000793807810a01300080346b7e8",
+  "at": "2026-08-14T15:44:43.535Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M00F4W0F087G0R001FE36PP",
+    "type": "task",
+    "title": "symmetric-vs-braided cartridge: gates 1-3 closed, goldens+treaty remain",
+    "slug": "symmetric-vs-braided-cartridge-gates-1-3-closed-goldens-trea",
+    "priority": "P2",
+    "filename": "081M00F4W0F087G0R001FE36PP-symmetric-vs-braided-cartridge-gates-1-3-closed-goldens-trea.md"
+  }
+}

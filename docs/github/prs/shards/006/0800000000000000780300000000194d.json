@@ -1,0 +1,15 @@
+{
+  "pr_number": 6477,
+  "archive_path": "docs/history/pr-reviews/PR-6477-docs-registry-record-generic-math-retrofit-status-g-set-bag-done-4-4-z-set-pendi.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7G65f8",
+    "thread:PRRT_kwDOSF9kNM6GQa5F"
+  ],
+  "fetched_at": "2026-06-01T21:38:39.799Z",
+  "schema_version": "v1",
+  "commit_sha": "fad7231cc57121ddbe84f7e1beead87b68a4b852",
+  "title": "docs(registry): record generic-math retrofit status — G-Set + Bag DONE 4/4, Z-set pending",
+  "state": "MERGED",
+  "merged_at": "2026-06-01T21:38:19Z",
+  "head_ref": "otto-cli/registry-genmath-gset-bag-done-2026-06-01"
+}

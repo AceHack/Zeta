@@ -7,6 +7,11 @@ import {
   deserializeBnn,
   tangleBreakObservation,
 } from "./bnn-persistence";
+import {
+  declareTail,
+  dimensionVerdict,
+  DEFAULT_ERROR_TAIL,
+} from "../planning/error-bnn-bridge";
 
 // ── Minimal DimensionalBnn stub for testing ────────────────────────────────────
 
@@ -94,6 +99,82 @@ describe("bnn-persistence", () => {
     const state = serializeBnn(bnn as never, "agent-7", [0.9]);
     const { tangleWarning } = deserializeBnn(state);
     expect(tangleWarning).toBe(true);
+  });
+
+  // ── The tail index on the restore path ──────────────────────────────────────
+
+  // BP-11: the constructor default never decides a RESTORED dimension's tail
+  test("BP-11: a restored dimension folds at the nu the file carries, not the default", () => {
+    const bnn = makeMockBnn([
+      { name: "schema", mu: 0.3, sigma2: 0.04, nu: 5 },
+      { name: "transport", mu: 0.7, sigma2: 0.02, nu: 11 },
+    ]);
+    const { bnn: restored } = deserializeBnn(serializeBnn(bnn as never, "agent-8"));
+    expect(restored.states.get("schema")?.nu).toBe(5);
+    expect(restored.states.get("transport")?.nu).toBe(11);
+    // ...and neither inherited the declared heavy endpoint
+    expect(restored.states.get("schema")?.nu).not.toBe(DEFAULT_ERROR_TAIL.nuLo);
+  });
+
+  // BP-12: the default is NOT dead code -- it is live on the schema-evolution path
+  test("BP-12: a dimension absent from the file keeps the DECLARED interval", () => {
+    // `serializeBnn` writes every dimension the BNN holds, so a round-trip leaves
+    // the default unreachable. A file written before a dimension existed does not,
+    // and that is the path the default has to be defensible on.
+    const partial = serializeBnn(
+      makeMockBnn([{ name: "schema", mu: 0.3, sigma2: 0.04, nu: 5 }]) as never,
+      "agent-9",
+    );
+    const { bnn: restored } = deserializeBnn(partial);
+    expect(restored.states.get("auth")?.nu).toBe(DEFAULT_ERROR_TAIL.nuLo);
+    expect(restored.tail.checked).toBe(false);
+    // and it is gradable, because the scaffold's shadow rung is untouched
+    expect(dimensionVerdict(restored, "auth").kind).toBe("tail-independent");
+  });
+
+  // BP-13: a restored tail that the declaration cannot bracket is REFUSED, not passed
+  test("BP-13: a restored nu at or above the light endpoint is not-gradable", () => {
+    const heavier = serializeBnn(
+      makeMockBnn([{ name: "schema", mu: 0.3, sigma2: 0.04, nu: 5 }]) as never,
+      "agent-10",
+    );
+    const { bnn: bracketed } = deserializeBnn(heavier, declareTail("brackets 5", 3, 50));
+    expect(dimensionVerdict(bracketed, "schema").kind).toBe("tail-independent");
+
+    // the same file under a declaration whose light endpoint is heavier than the
+    // restored nu: nothing brackets it, so there is no verdict to publish
+    const { bnn: unbracketed } = deserializeBnn(heavier, declareTail("too heavy", 3, 4));
+    const verdict = dimensionVerdict(unbracketed, "schema");
+    expect(verdict.kind).toBe("not-gradable");
+    if (verdict.kind !== "not-gradable") throw new Error("unreachable");
+    expect(verdict.reason).toContain("point");
+  });
+
+  // BP-14: the observation count survives a dimension the scaffold does not know
+  test("BP-14: a restored unknown dimension keeps its obsCount and the BNN's obsVariance", () => {
+    // Both were lost before: the unknown-dimension branch built a fresh state, so
+    // it claimed zero observations and silently took a different observation-noise
+    // scale (0.1) from its nine siblings (1.0).
+    const state = serializeBnn(
+      makeMockBnn([{ name: "bespoke", mu: 0.42, sigma2: 0.09, nu: 6 }]) as never,
+      "agent-11",
+    );
+    const { bnn: restored } = deserializeBnn(state);
+    const bespoke = restored.states.get("bespoke" as never);
+    expect(bespoke?.obsCount).toBe(5);
+    expect(bespoke?.posterior.mu).toBeCloseTo(0.42, 9);
+    expect(bespoke?.nu).toBe(6);
+    expect(bespoke?.obsVariance).toBe(restored.states.get("schema")?.obsVariance);
+  });
+
+  // BP-15: a persisted tail index that is not a tail index is refused
+  test("BP-15: a corrupt persisted nu fails fast and names the dimension", () => {
+    const state = serializeBnn(
+      makeMockBnn([{ name: "schema", mu: 0.3, sigma2: 0.04, nu: 0 }]) as never,
+      "agent-12",
+    );
+    expect(() => deserializeBnn(state)).toThrow(RangeError);
+    expect(() => deserializeBnn(state)).toThrow(/schema/);
   });
 
   // BP-9: tangleBreakObservation returns the I-closed Adinkra codeword {0,3,4,7}

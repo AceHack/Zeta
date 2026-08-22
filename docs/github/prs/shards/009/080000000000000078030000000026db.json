@@ -1,0 +1,12 @@
+{
+  "pr_number": 9947,
+  "archive_path": "docs/history/pr-reviews/PR-9947-docs-prior-art-credit-openai-streaming-chat-completions-the-interface-four-corne.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-02T00:05:11.058Z",
+  "schema_version": "v1",
+  "commit_sha": "9bdf509841230cba2e4c5fbc8b1e1db2bbe08160",
+  "title": "docs(prior-art): credit OpenAI streaming chat-completions — the interface four-corner generalizes",
+  "state": "MERGED",
+  "merged_at": "2026-08-02T00:04:40Z",
+  "head_ref": "shadow/anchor-openai-chat-completions"
+}

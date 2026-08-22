@@ -1,0 +1,19 @@
+{
+  "pr_number": 10956,
+  "archive_path": "docs/history/pr-reviews/PR-10956-feat-pages-split-heavyweight-oracle-routes.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7iCN0i",
+    "comment:PRRC_kwDOSF9kNM7iCN0m",
+    "comment:PRRC_kwDOSF9kNM7iCN0p",
+    "thread:PRRT_kwDOSF9kNM6ZoDVf",
+    "thread:PRRT_kwDOSF9kNM6ZoDVi",
+    "thread:PRRT_kwDOSF9kNM6ZoDVl"
+  ],
+  "fetched_at": "2026-08-16T18:20:01.550Z",
+  "schema_version": "v1",
+  "commit_sha": "e66456b10877df2a6c8ca6cfb93be80450415924",
+  "title": "feat(pages): split heavyweight oracle routes",
+  "state": "MERGED",
+  "merged_at": "2026-08-16T18:19:26Z",
+  "head_ref": "feat/pages-responsive-route-split"
+}

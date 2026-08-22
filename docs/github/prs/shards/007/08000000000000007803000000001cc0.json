@@ -1,0 +1,12 @@
+{
+  "pr_number": 7360,
+  "archive_path": "docs/history/pr-reviews/PR-7360-docs-research-modeling-docket-v3-vn-reticulum-addressable-rooms-via-llmtv-whole-.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-09T18:41:14.033Z",
+  "schema_version": "v1",
+  "commit_sha": "c36b1e6975699df79db1f7302439a65ea9a519bc",
+  "title": "docs(research): modeling docket (v3->vn) + Reticulum-addressable rooms via LLMTV + whole system is SoftValue + interfaces homoiconic to proofs = cached useful PoW earning privacy budget",
+  "state": "MERGED",
+  "merged_at": "2026-06-09T18:40:48Z",
+  "head_ref": "otto/modeling-docket-rooms-mesh-softvalue-everything-interfaces-homoiconic-proofs-cached-pow"
+}

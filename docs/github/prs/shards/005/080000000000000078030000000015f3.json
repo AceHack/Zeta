@@ -1,0 +1,19 @@
+{
+  "pr_number": 5619,
+  "archive_path": "docs/history/pr-reviews/PR-5619-docs-archive-batch-archive-of-12-prs.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7Fftw9",
+    "comment:PRRC_kwDOSF9kNM7Fftx6",
+    "comment:PRRC_kwDOSF9kNM7Fftxg",
+    "thread:PRRT_kwDOSF9kNM6FNgyD",
+    "thread:PRRT_kwDOSF9kNM6FNgyc",
+    "thread:PRRT_kwDOSF9kNM6FNgyt"
+  ],
+  "fetched_at": "2026-05-27T20:20:40.390Z",
+  "schema_version": "v1",
+  "commit_sha": "985998be13ba119fca181e7004e179facd92f1fc",
+  "title": "docs(archive): Batch archive of 12 PRs",
+  "state": "MERGED",
+  "merged_at": "2026-05-27T20:20:20Z",
+  "head_ref": "lior/batch-archive-2026-05-27-16"
+}

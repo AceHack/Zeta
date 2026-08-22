@@ -1,0 +1,12 @@
+{
+  "pr_number": 6323,
+  "archive_path": "docs/history/pr-reviews/PR-6323-backlog-b-0960-ace-slice-3-1-pave-the-strict-by-default-road-dx-security-follow-.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-01T03:07:14.557Z",
+  "schema_version": "v1",
+  "commit_sha": "ea6b0ffcc5268cceebeefd1fb01d6e31977f2d36",
+  "title": "backlog(B-0960): Ace slice 3.1 — pave the strict-by-default road (DX/security follow-on)",
+  "state": "MERGED",
+  "merged_at": "2026-06-01T03:06:55Z",
+  "head_ref": "otto-windows/b0958-ace-strict-default-paving-2026-06-01"
+}

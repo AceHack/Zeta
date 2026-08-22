@@ -1,0 +1,15 @@
+{
+  "pr_number": 4911,
+  "archive_path": "docs/history/pr-reviews/PR-4911-shard-2026-05-25-0613z-otto-cli-cold-boot-composite-branch-contamination-lane-em.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7EeyPU",
+    "thread:PRRT_kwDOSF9kNM6Ed4ZK"
+  ],
+  "fetched_at": "2026-05-25T06:23:51.992Z",
+  "schema_version": "v1",
+  "commit_sha": "a228f4d8495d0100f542952f52f678cddfdf006f",
+  "title": "shard(2026-05-25/0613Z): Otto-CLI cold-boot — composite branch-contamination + lane-empty + peer-covering + dotgit-recovered anchor",
+  "state": "MERGED",
+  "merged_at": "2026-05-25T06:23:34Z",
+  "head_ref": "otto-cli/shard-tick-0613z-2026-05-25"
+}

@@ -1,0 +1,21 @@
+{
+  "pr_number": 2437,
+  "archive_path": "docs/history/pr-reviews/PR-2437-feat-b-0072-normalize-memory-md-index-entries-to-200-chars.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_meq4",
+    "comment:PRRC_kwDOSF9kNM6_merA",
+    "comment:PRRC_kwDOSF9kNM6_merG",
+    "comment:PRRC_kwDOSF9kNM6_merK",
+    "thread:PRRT_kwDOSF9kNM6A4kND",
+    "thread:PRRT_kwDOSF9kNM6A4kNJ",
+    "thread:PRRT_kwDOSF9kNM6A4kNP",
+    "thread:PRRT_kwDOSF9kNM6A4kNR"
+  ],
+  "fetched_at": "2026-05-10T08:02:26.449Z",
+  "schema_version": "v1",
+  "commit_sha": "b04d6b28c369433841268eab638a4720b8546bc1",
+  "title": "feat(B-0072): normalize MEMORY.md index entries to ≤200 chars",
+  "state": "MERGED",
+  "merged_at": "2026-05-10T08:02:07Z",
+  "head_ref": "worktree-polymorphic-growing-lake"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 8148,
+  "archive_path": "docs/history/pr-reviews/PR-8148-chore-backlog-close-workitem-081ktgywctt08qg0r001g96dxy-b-0969-audit-regen.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-14T03:23:08.628Z",
+  "schema_version": "v1",
+  "commit_sha": "bc95deaed979094f231eb98fbb888e25858aa960",
+  "title": "chore(backlog): close workitem 081KTGYWCTT08QG0R001G96DXY (B-0969 audit + regen)",
+  "state": "MERGED",
+  "merged_at": "2026-06-14T03:22:46Z",
+  "head_ref": "gemini/complete-workitem-B0969"
+}

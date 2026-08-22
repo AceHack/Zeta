@@ -1,0 +1,12 @@
+{
+  "pr_number": 10153,
+  "archive_path": "docs/history/pr-reviews/PR-10153-feat-hygiene-certify-the-production-md032-md026-fixer-gate-its-write-access-081k.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-08T19:55:23.743Z",
+  "schema_version": "v1",
+  "commit_sha": "18754e3fe4bcb7ba512ec06fe6d9769b645db17f",
+  "title": "feat(hygiene): certify the production MD032/MD026 fixer + gate its write access (081KX3KA3F0)",
+  "state": "MERGED",
+  "merged_at": "2026-08-08T19:54:55Z",
+  "head_ref": "otto/md-fixer-certified-gate"
+}

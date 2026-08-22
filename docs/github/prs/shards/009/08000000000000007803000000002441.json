@@ -1,0 +1,12 @@
+{
+  "pr_number": 9281,
+  "archive_path": "docs/history/pr-reviews/PR-9281-research-the-fitness-function-is-uncorrupted-love-the-vampire-is-what-loses-shad.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-03T03:43:05.894Z",
+  "schema_version": "v1",
+  "commit_sha": "13aa961ebb251dce49204ace8b3932d70f4419df",
+  "title": "research: the fitness function is uncorrupted love — the vampire is what loses (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-03T03:42:38Z",
+  "head_ref": "shadow/fitness-function-is-uncorrupted-love-vampire-loses"
+}

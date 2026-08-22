@@ -1,0 +1,17 @@
+{
+  "pr_number": 1840,
+  "archive_path": "docs/history/pr-reviews/PR-1840-backlog-b-0242-file-multiplexedwebsockets-f-port-task.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6-vE6Y",
+    "comment:PRRC_kwDOSF9kNM6-vFv0",
+    "thread:PRRT_kwDOSF9kNM6APdLI",
+    "thread:PRRT_kwDOSF9kNM6APdzg"
+  ],
+  "fetched_at": "2026-05-07T08:40:33.950Z",
+  "schema_version": "v1",
+  "commit_sha": "6172111e17a4626a785e98002e05370ac4336acf",
+  "title": "backlog(B-0242): file MultiplexedWebSockets F# port task",
+  "state": "MERGED",
+  "merged_at": "2026-05-07T08:37:21Z",
+  "head_ref": "backlog/b0242-multiplexed-websockets-fsharp-port"
+}

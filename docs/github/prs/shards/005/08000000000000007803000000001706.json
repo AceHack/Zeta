@@ -1,0 +1,17 @@
+{
+  "pr_number": 5894,
+  "archive_path": "docs/history/pr-reviews/PR-5894-docs-research-add-shadow-lesson-log-on-worktree-hygiene.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7F3Ta7",
+    "comment:PRRC_kwDOSF9kNM7F3TaP",
+    "thread:PRRT_kwDOSF9kNM6Febw8",
+    "thread:PRRT_kwDOSF9kNM6Febxf"
+  ],
+  "fetched_at": "2026-05-28T19:34:58.356Z",
+  "schema_version": "v1",
+  "commit_sha": "f4365a1c281924d1b777ee885483fd886cbb5176",
+  "title": "docs(research): Add shadow lesson log on worktree hygiene",
+  "state": "MERGED",
+  "merged_at": "2026-05-28T19:34:38Z",
+  "head_ref": "lior/drift-report-worktree-hygiene"
+}

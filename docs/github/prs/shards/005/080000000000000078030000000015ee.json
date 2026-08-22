@@ -1,0 +1,12 @@
+{
+  "pr_number": 5614,
+  "archive_path": "docs/history/pr-reviews/PR-5614-test-hygiene-cover-uncategorized-bash-retirement-allowlist-entries.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-27T19:42:00.847Z",
+  "schema_version": "v1",
+  "commit_sha": "17fe9d351b0ac109efa2aeded83d3988d7163df3",
+  "title": "test(hygiene): cover uncategorized bash-retirement allowlist entries",
+  "state": "MERGED",
+  "merged_at": "2026-05-27T19:41:39Z",
+  "head_ref": "claim/codex-loop-bash-retirement-case-extension-20260527"
+}

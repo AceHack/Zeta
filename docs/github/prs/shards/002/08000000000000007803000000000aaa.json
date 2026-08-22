@@ -1,0 +1,12 @@
+{
+  "pr_number": 2730,
+  "archive_path": "docs/history/pr-reviews/PR-2730-docs-research-append-symmetric-disclosure-sparring-ground-corrections.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-11T18:46:01.872Z",
+  "schema_version": "v1",
+  "commit_sha": "bbe71afdbe4bfa6871ea5cb8868ffa67e488c16b",
+  "title": "docs(research): append symmetric disclosure + sparring ground corrections",
+  "state": "MERGED",
+  "merged_at": "2026-05-11T18:45:39Z",
+  "head_ref": "docs/claudeai-ani-later-corrections-symmetric-disclosure-2026-05-11"
+}

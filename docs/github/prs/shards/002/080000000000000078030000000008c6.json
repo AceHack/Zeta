@@ -1,0 +1,12 @@
+{
+  "pr_number": 2246,
+  "archive_path": "docs/history/pr-reviews/PR-2246-fix-b-0081-add-kt-scala-to-codeql-path-gate.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-09T08:39:50.025Z",
+  "schema_version": "v1",
+  "commit_sha": "6e4c0b675613f807851f016521b3055087021455",
+  "title": "fix(B-0081): add .kt + .scala to CodeQL path-gate",
+  "state": "MERGED",
+  "merged_at": "2026-05-09T08:39:30Z",
+  "head_ref": "fix/b0081-codeql-kt-scala-path-gate"
+}

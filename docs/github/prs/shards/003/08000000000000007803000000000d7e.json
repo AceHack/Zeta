@@ -1,0 +1,12 @@
+{
+  "pr_number": 3454,
+  "archive_path": "docs/history/pr-reviews/PR-3454-fix-b-0504-git-cherry-pick-abort-on-conflict-error-to-unwedge-isworkingtreeclean.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-15T12:31:43.970Z",
+  "schema_version": "v1",
+  "commit_sha": "7e3cad76ea8a7f3c2442a345a78418be894557ff",
+  "title": "fix(b-0504): git cherry-pick --abort on conflict/error to unwedge isWorkingTreeClean",
+  "state": "MERGED",
+  "merged_at": "2026-05-15T12:31:28Z",
+  "head_ref": "fix/b0504-cherrypick-abort-on-conflict-otto-cli-2026-05-15"
+}

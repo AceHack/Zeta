@@ -1,0 +1,165 @@
+{
+  "structure": "DynamicValue shape lattice (the tag set DynamicValue actually negotiates)",
+  "workitem": "081M00V5492087G0R002QJ9A56",
+  "composes_with": "081KRW63S0008QG0R0030F8ZXA",
+  "spec": "docs/research/2026-08-14-the-eve-translation-layer-computing-the-imposition-budget-for-the-dynamicvalue-shape-lattice.md",
+  "note": [
+    "The Eve-protocol translation layer, made computable. Two parties agree on a STRUCTURE;",
+    "this table is the ladder of invariants each can VERIFY BY PERFORMING an operation, with",
+    "no shared vocabulary. |Aut| after each rung is the number of label assignments the",
+    "structure still fails to determine; log2|Aut| is the imposition budget in bits.",
+    "",
+    "Every rung must carry EVIDENCE that exists in the shipped source (checked, not cited).",
+    "Adding a rung is not free: it must name an operation a RECEIVER can perform unaided.",
+    "",
+    "Deliberately NOT a rung: payload-sort cardinality (2^64 vs aleph-0). Finiteness is not",
+    "verifiable by finite exhibition, so a receiver cannot perform it. It would have split",
+    "{Int,Float} from {String,Bytes} for free, and that would have been a check that cannot",
+    "fail rather than one the receiver can run."
+  ],
+  "source": "src/Core/DynamicValue.fs",
+  "tagPattern": "the DynamicValueType DU cases, in declaration order",
+  "tags": ["Null", "Bool", "Int", "Float", "String", "Bytes", "Array", "Object"],
+  "uncontestedCeilingBits": 1.0,
+  "ladder": [
+    {
+      "level": 1,
+      "id": "child-addressing",
+      "kind": "unary",
+      "performable": "Hand a value across and ask it for a child. Object answers to a non-numeral string key; Array answers to an ordinal position; the scalars answer to neither. No name is exchanged.",
+      "evidence": [
+        { "file": "src/Core/DynamicValue.fs", "contains": "let tryField (key: string)" },
+        { "file": "src/Core/DynamicValue.fs", "contains": "let tryItem (index: int)" }
+      ],
+      "profile": {
+        "Null": "none",
+        "Bool": "none",
+        "Int": "none",
+        "Float": "none",
+        "String": "none",
+        "Bytes": "none",
+        "Array": "by-ordinal",
+        "Object": "by-key"
+      }
+    },
+    {
+      "level": 2,
+      "id": "distinguishing-capacity",
+      "kind": "unary",
+      "performable": "Exhibit values carrying this tag and ask the other party only 'are these two equal?'. Null admits one equivalence class, Bool exactly two, the rest at least three. Capped at three on purpose: a receiver can witness 'at least three', never 'exactly 2^64'.",
+      "evidence": [
+        { "file": "src/Core/DynamicValue.fs", "contains": "    | Null" },
+        { "file": "src/Core/DynamicValue.fs", "contains": "    | Bool of bool" }
+      ],
+      "profile": {
+        "Null": "one",
+        "Bool": "two",
+        "Int": "three-or-more",
+        "Float": "three-or-more",
+        "String": "three-or-more",
+        "Bytes": "three-or-more",
+        "Array": "three-or-more",
+        "Object": "three-or-more"
+      }
+    },
+    {
+      "level": 3,
+      "id": "equality-encoding-gap",
+      "kind": "unary",
+      "performable": "Exhibit two values that the value equality calls EQUAL but whose canonical encodings are DIFFERENT byte strings. Float admits such a pair (-0.0 vs 0.0 -> f98000 vs f90000); no other tag does. The receiver needs only 'equal?' and 'are these byte strings identical?' -- neither requires knowing what any byte MEANS, so this is structural and not a borrowed label.",
+      "evidence": [
+        { "file": "src/Core/DynamicValue.fs", "contains": "`-0.0 = 0.0`" },
+        { "file": "src/Core/DynamicValue.fs", "contains": "DynamicValue.Float a, DynamicValue.Float b -> a.Equals(b)" },
+        {
+          "file": "src/Core.TypeScript/dynamic-value/golden-vectors-cbor.json",
+          "contains": "-0.0 -> f98000 (sign preserved)"
+        }
+      ],
+      "profile": {
+        "Null": "no",
+        "Bool": "no",
+        "Int": "no",
+        "Float": "yes",
+        "String": "no",
+        "Bytes": "no",
+        "Array": "no",
+        "Object": "no"
+      }
+    },
+    {
+      "level": 4,
+      "id": "key-sort-role",
+      "kind": "relation",
+      "performable": "Ask which tag's values are accepted as Object keys. Exactly the String tag's are; a non-text key is refused (DecodeError.NonTextKey). This is a relation BETWEEN two tags, so it pins String only because Object is already pinned by rung 1.",
+      "evidence": [
+        { "file": "src/Core/DynamicValue.fs", "contains": "| Object of (string * DynamicValue) list" },
+        { "file": "src/Core/DynamicValue.fs", "contains": "| NonTextKey" }
+      ],
+      "pairs": [["String", "Object"]]
+    },
+    {
+      "level": 5,
+      "id": "ordinal-sort-role",
+      "kind": "relation",
+      "contested": true,
+      "contestedBecause": "tryItem takes a System.Int32 index, while DynamicValue.Int carries an int64. Under a STRICT reading those are different sorts and Array's ordinal sort is not the Int tag, so this rung does not hold and the lattice keeps one residual bit. Under a ROLE reading (Array is ordinal-addressed, and Int is the lattice's ordinal tag) it holds and the lattice is rigid. The shipped code does not settle which reading is correct, so the budget is reported BOTH ways rather than rounded to the flattering one.",
+      "performable": "Ask which tag's values address an Array position.",
+      "evidence": [{ "file": "src/Core/DynamicValue.fs", "contains": "let tryItem (index: int)" }],
+      "pairs": [["Int", "Array"]]
+    }
+  ],
+  "claims": [
+    {
+      "id": "object-is-the-only-key-addressed-tag",
+      "invariantAt": 1,
+      "why": "Rung 1 pins Object as a singleton block, so no permutation moves it.",
+      "assignment": {
+        "Null": "not-key-addressed",
+        "Bool": "not-key-addressed",
+        "Int": "not-key-addressed",
+        "Float": "not-key-addressed",
+        "String": "not-key-addressed",
+        "Bytes": "not-key-addressed",
+        "Array": "not-key-addressed",
+        "Object": "key-addressed"
+      }
+    },
+    {
+      "id": "float-is-the-only-tag-with-an-equality-encoding-gap",
+      "invariantAt": 3,
+      "why": "Rung 3 is exactly this predicate, so it survives its own rung and everything above it.",
+      "assignment": {
+        "Null": "gapless",
+        "Bool": "gapless",
+        "Int": "gapless",
+        "Float": "has-gap",
+        "String": "gapless",
+        "Bytes": "gapless",
+        "Array": "gapless",
+        "Object": "gapless"
+      }
+    },
+    {
+      "id": "cbor-major-type-assignment",
+      "invariantAt": 5,
+      "why": [
+        "THE LOAD-BEARING ROW. RFC 8949 assigns Int major type 0 and Bytes major type 2.",
+        "Under the strict reading the residual group still swaps Int and Bytes, so this",
+        "assignment is NOT determined by the agreed structure -- it is the one shipped claim",
+        "that the residual bit pays for. Declaring it invariantAt 4 is a real, reachable",
+        "mistake and the checker rejects it (see the .test.ts). Declaring it at 5 says",
+        "honestly: this claim needs the contested rung, or it needs the ledger."
+      ],
+      "assignment": {
+        "Null": "major-7",
+        "Bool": "major-7",
+        "Int": "major-0",
+        "Float": "major-7",
+        "String": "major-3",
+        "Bytes": "major-2",
+        "Array": "major-4",
+        "Object": "major-5"
+      }
+    }
+  ]
+}

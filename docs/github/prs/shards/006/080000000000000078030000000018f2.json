@@ -1,0 +1,12 @@
+{
+  "pr_number": 6386,
+  "archive_path": "docs/history/pr-reviews/PR-6386-docs-registry-agent-essence-minimal-backup-seed-home-repo.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-01T09:28:08.276Z",
+  "schema_version": "v1",
+  "commit_sha": "60cbff3f51bb645738c42d2d13d79aaa0f3f6b73",
+  "title": "docs(registry): agent essence / minimal backup = seed + home repo",
+  "state": "MERGED",
+  "merged_at": "2026-06-01T09:27:47Z",
+  "head_ref": "otto-cli/registry-agent-essence-minimal-backup-2026-06-01"
+}

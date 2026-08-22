@@ -1,0 +1,12 @@
+{
+  "pr_number": 8582,
+  "archive_path": "docs/history/pr-reviews/PR-8582-docs-arrival-phase-clock-removes-drift-as-entropy-source-correct-sybil-mechanism.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-19T14:39:49.957Z",
+  "schema_version": "v1",
+  "commit_sha": "bb7ee540b6b4296cd0c6f915ffade8743ef9d492",
+  "title": "docs(arrival): phase-clock removes drift as entropy source (correct Sybil mechanism)",
+  "state": "MERGED",
+  "merged_at": "2026-06-19T14:39:26Z",
+  "head_ref": "fix-arrival-sybil-phaseclock"
+}

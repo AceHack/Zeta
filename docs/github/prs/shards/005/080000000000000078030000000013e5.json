@@ -1,0 +1,19 @@
+{
+  "pr_number": 5093,
+  "archive_path": "docs/history/pr-reviews/PR-5093-fix-b-0789-iter-4-3-fixfwd-4-copilot-findings-on-5091-1-p0-silent-guard-defeat-2.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7Exf6E",
+    "comment:PRRC_kwDOSF9kNM7Exf6h",
+    "comment:PRRC_kwDOSF9kNM7Exf6x",
+    "thread:PRRT_kwDOSF9kNM6Er1uQ",
+    "thread:PRRT_kwDOSF9kNM6Er1un",
+    "thread:PRRT_kwDOSF9kNM6Er1uw"
+  ],
+  "fetched_at": "2026-05-26T05:06:48.834Z",
+  "schema_version": "v1",
+  "commit_sha": "3fae46d477a09ea02a6e0017097fea95d0a9c7ac",
+  "title": "fix(B-0789 iter-4.3 fixfwd): 4 Copilot findings on #5091 (1 P0 silent-guard-defeat + 2 P1 + 1 P2)",
+  "state": "MERGED",
+  "merged_at": "2026-05-26T05:06:28Z",
+  "head_ref": "otto-cli/iter43-fixfwd-4-copilot-findings-2026-05-26"
+}

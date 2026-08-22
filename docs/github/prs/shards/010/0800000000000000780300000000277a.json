@@ -1,0 +1,12 @@
+{
+  "pr_number": 10106,
+  "archive_path": "docs/history/pr-reviews/PR-10106-book-editions-full-content-pass-2-the-unbroken-child-companion-full-length-engli.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-07T17:43:54.191Z",
+  "schema_version": "v1",
+  "commit_sha": "962f224d4e81f56ed63fea6f9fe20bc708012aa8",
+  "title": "book(editions): full-content pass 2 — the Unbroken Child companion, full length (English)",
+  "state": "MERGED",
+  "merged_at": "2026-08-07T17:39:47Z",
+  "head_ref": "book-en-fullcontent-unbrokenchild"
+}

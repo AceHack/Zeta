@@ -36,6 +36,41 @@ spec:
     helm:
       releaseName: zeta-org-runners
       valuesObject:
+        # NAMED, NOT DISCOVERED -- and this is the whole reason this chart could
+        # not be rendered offline. MEASURED 2026-08-21.
+        #
+        # gha-runner-scale-set 0.12.1 finds the controller's ServiceAccount by
+        # LISTING every Deployment in the cluster
+        # (templates/_helpers.tpl:468,525 -- `lookup "apps/v1" "Deployment" "" ""`)
+        # and reading the `actions.github.com/controller-service-account-name`
+        # label off whichever one carries `app.kubernetes.io/part-of:
+        # gha-rs-controller`. `lookup` returns empty under `helm template`, so
+        # the chart hit its own `fail` and templated NOTHING -- taking the
+        # 100 GiB `arc-model-cache` row down with it, unverified.
+        #
+        # THIS IS NOT "THE TOOL CANNOT SEE IT". The chart ships an explicit
+        # escape hatch and its own error message recommends it; setting BOTH
+        # keys short-circuits both lookups (`name` alone is not enough --
+        # measured: it then fails on the namespace lookup instead, which is why
+        # the previous acknowledgement's stated exit was incomplete).
+        #
+        # THE VALUES ARE DERIVED, NOT GUESSED. `helm template` of
+        # gha-runner-scale-set-CONTROLLER 0.12.1 -- the same pin, from
+        # ../arc-controller/Application.yaml, with that Application's own
+        # releaseName `arc-controller` and destination namespace `arc-systems`
+        # -- emits ServiceAccount `arc-controller-gha-rs-controller` in
+        # `arc-systems` and labels its Deployment
+        # `controller-service-account-name: arc-controller-gha-rs-controller`.
+        # These two lines are exactly what the discovery would have returned.
+        #
+        # THE COUPLING IS REAL AND IS PINNED BY A TEST. Naming the SA statically
+        # means renaming the arc-controller release silently binds these runners
+        # to a ServiceAccount that no longer exists; `arc-runner-manifests.test.ts`
+        # asserts these two values still agree with arc-controller's releaseName
+        # and destination namespace, so the coupling fails loudly instead.
+        controllerServiceAccount:
+          name: arc-controller-gha-rs-controller
+          namespace: arc-systems
         # ORG-WIDE. Not .../Zeta — see the header.
         githubConfigUrl: https://github.com/Lucent-Financial-Group
         # Name reference only. Materialised by external-secrets from Vault.

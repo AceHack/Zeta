@@ -1,0 +1,12 @@
+{
+  "pr_number": 9737,
+  "archive_path": "docs/history/pr-reviews/PR-9737-docs-research-genuine-attention-the-nft-attestation-between-agents-primitive-att.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-11T20:02:11.398Z",
+  "schema_version": "v1",
+  "commit_sha": "a97d5f73ab30c96ebdc901da3b266ba7096850be",
+  "title": "docs(research): genuine attention = the NFT/attestation-between-agents primitive (attestation not scarcity) (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-11T20:01:46Z",
+  "head_ref": "nft-attestation-mapping"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 8412,
+  "archive_path": "docs/history/pr-reviews/PR-8412-docs-routing-isociety-is-the-decentralized-ihost-on-top-of-the-centralized-4-clo.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-16T02:30:49.783Z",
+  "schema_version": "v1",
+  "commit_sha": "537e39ede7fa06caa4288382557d1f861ba66186",
+  "title": "docs(routing): ISociety is the decentralized IHost (on top of the centralized 4) — closest to ICluster, unlike IOperatingSystem",
+  "state": "MERGED",
+  "merged_at": "2026-06-16T02:30:26Z",
+  "head_ref": "docs/isociety-is-decentralized-host-near-icluster"
+}

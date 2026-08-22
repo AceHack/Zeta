@@ -1,0 +1,12 @@
+{
+  "pr_number": 2080,
+  "archive_path": "docs/history/pr-reviews/PR-2080-fix-b-0281-repair-empty-queue-pickup-red-checks.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-08T13:53:21.297Z",
+  "schema_version": "v1",
+  "commit_sha": "72451021347b80ac4bc7a126202ecdd9ac1c8a64",
+  "title": "fix(B-0281): repair empty-queue pickup red checks",
+  "state": "MERGED",
+  "merged_at": "2026-05-08T13:53:03Z",
+  "head_ref": "claim/fix-2079-red-checks"
+}

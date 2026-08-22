@@ -1,16 +1,16 @@
 #!/usr/bin/env bun
 // fetch-datfile.ts -- the datfile-as-dependency half of 081KQ8P5D0008QG0R001590WJ3 (tracked as
-// 081KSRGFP0008QG0R003ZH6DN3). Reads a pinned datfile manifest (tools/roms/manifests/datfiles.json),
+// 081KSRGFP0008QG0R003ZH6DN3). Reads a pinned datfile manifest (src/Core.TypeScript/roms/manifests/datfiles.json),
 // downloads the pinned datfile, verifies its SHA-256 against the pin, and writes
-// it to a gitignored cache so tools/roms/canonicalize.ts can consume it via
+// it to a gitignored cache so src/Core.TypeScript/roms/canonicalize.ts can consume it via
 // --datfile. This closes the 081KQ8P5D0008QG0R001590WJ3 "Tooling refreshes on TOSEC datfile updates"
 // + "Datfile-as-dependency (pin version + download + verify via SHA256)"
 // acceptance criteria that siblings 081KR2E4K0008QG0R001QZDAMQ/081KR2E4K0008QG0R001JC6S3N did not cover.
 //
 // Usage:
-//   bun tools/roms/fetch-datfile.ts --list
-//   bun tools/roms/fetch-datfile.ts --platform atari-2600
-//   bun tools/roms/fetch-datfile.ts --platform atari-2600 --out roms/.datfiles
+//   bun src/Core.TypeScript/roms/fetch-datfile.ts --list
+//   bun src/Core.TypeScript/roms/fetch-datfile.ts --platform atari-2600
+//   bun src/Core.TypeScript/roms/fetch-datfile.ts --platform atari-2600 --out roms/.datfiles
 //
 // Fails CLOSED on any <...> placeholder pin (per dep-pin-search-first-authority):
 // an unverified downloadUrl/sha256 is refused, never written. The operator fills
@@ -124,7 +124,7 @@ export function fetchBlockReason(pin: DatfilePin): string | null {
       `downloadUrl for "${pin.platform}" is an unverified placeholder ` +
       `(${pin.downloadUrl}). Per dep-pin-search-first-authority, download the ` +
       `datpack from ${pin.sourceUrl}, locate "${pin.datfileName}", and record ` +
-      `its direct URL + sha256 in tools/roms/manifests/datfiles.json before fetching.`
+      `its direct URL + sha256 in src/Core.TypeScript/roms/manifests/datfiles.json before fetching.`
     );
   }
   if (isPlaceholder(pin.sha256)) {
@@ -191,7 +191,7 @@ function parseArgs(argv: readonly string[]): Args {
       process.stdout.write(
         "Usage: fetch-datfile.ts [--platform <slug>] [--manifest <path>] [--out <dir>] [--list]\n\n" +
           "  --platform, -p  Platform slug to fetch (e.g. atari-2600).\n" +
-          "  --manifest, -m  Manifest path (default: tools/roms/manifests/datfiles.json).\n" +
+          "  --manifest, -m  Manifest path (default: src/Core.TypeScript/roms/manifests/datfiles.json).\n" +
           "  --out, -o       Output dir for the verified datfile (default: roms/.datfiles).\n" +
           "  --list, -l      List pinned platforms and their verification status.\n",
       );
@@ -283,7 +283,7 @@ export async function main(argv: readonly string[]): Promise<number> {
   process.stdout.write(outPath + "\n");
   process.stderr.write(
     `verified + wrote ${bytes.length} bytes to ${outPath}\n` +
-      `next: bun tools/roms/canonicalize.ts --datfile "${outPath}" --dir roms/${pin.romsDir}\n`,
+      `next: bun src/Core.TypeScript/roms/canonicalize.ts --datfile "${outPath}" --dir roms/${pin.romsDir}\n`,
   );
   return 0;
 }

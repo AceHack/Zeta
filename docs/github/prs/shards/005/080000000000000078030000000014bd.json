@@ -1,0 +1,15 @@
+{
+  "pr_number": 5309,
+  "archive_path": "docs/history/pr-reviews/PR-5309-docs-ticks-2022z-2026-05-26-fighting-past-self-discriminator-validated-0-otto-pr.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7FF3bg",
+    "thread:PRRT_kwDOSF9kNM6E6tsF"
+  ],
+  "fetched_at": "2026-05-26T20:57:38.990Z",
+  "schema_version": "v1",
+  "commit_sha": "483ec2f39b14101286e4984d4d2ba6a92911c3ee",
+  "title": "docs(ticks): 2022Z 2026-05-26 — fighting-past-self discriminator validated, 0 Otto-prefix among 108 peer-Lior open PRs",
+  "state": "MERGED",
+  "merged_at": "2026-05-26T20:57:14Z",
+  "head_ref": "otto-cli/tick-2022z-2026-05-26-discriminator-zero-otto-prs-among-108-peer-lior"
+}

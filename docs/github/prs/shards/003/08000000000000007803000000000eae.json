@@ -1,0 +1,31 @@
+{
+  "pr_number": 3758,
+  "archive_path": "docs/history/pr-reviews/PR-3758-feat-b-0553-audit-backlog-status-drift-tool-16-tests-incl-2nd-fp-class.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7B2d41",
+    "comment:PRRC_kwDOSF9kNM7B2d4o",
+    "comment:PRRC_kwDOSF9kNM7B2d87",
+    "comment:PRRC_kwDOSF9kNM7B2d88",
+    "comment:PRRC_kwDOSF9kNM7B2dcx",
+    "comment:PRRC_kwDOSF9kNM7B2lg7",
+    "comment:PRRC_kwDOSF9kNM7B2mEQ",
+    "comment:PRRC_kwDOSF9kNM7B2mEZ",
+    "comment:PRRC_kwDOSF9kNM7B2mEf",
+    "thread:PRRT_kwDOSF9kNM6CiKtK",
+    "thread:PRRT_kwDOSF9kNM6CiLBd",
+    "thread:PRRT_kwDOSF9kNM6CiLBn",
+    "thread:PRRT_kwDOSF9kNM6CiLEt",
+    "thread:PRRT_kwDOSF9kNM6CiLEu",
+    "thread:PRRT_kwDOSF9kNM6CiQzE",
+    "thread:PRRT_kwDOSF9kNM6CiRN7",
+    "thread:PRRT_kwDOSF9kNM6CiRNz",
+    "thread:PRRT_kwDOSF9kNM6CiROA"
+  ],
+  "fetched_at": "2026-05-16T06:28:04.140Z",
+  "schema_version": "v1",
+  "commit_sha": "d44162e492b6931cdcc925ac4ac90094eb2a18d8",
+  "title": "feat(B-0553): audit-backlog-status-drift tool + 16 tests (incl. 2nd FP class)",
+  "state": "MERGED",
+  "merged_at": "2026-05-16T06:27:45Z",
+  "head_ref": "feat/b0553-audit-backlog-status-drift-impl-otto-cli-2026-05-16"
+}

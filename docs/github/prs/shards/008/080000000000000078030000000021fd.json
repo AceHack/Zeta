@@ -1,0 +1,12 @@
+{
+  "pr_number": 8701,
+  "archive_path": "docs/history/pr-reviews/PR-8701-test-formal-fscheck-cross-check-coupled-empowerment-minimizer-capture-exposure-r.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-20T03:46:07.566Z",
+  "schema_version": "v1",
+  "commit_sha": "3719fbee91befbe68f1a809f3d6e34d0cfeacd92",
+  "title": "test(formal): FsCheck cross-check — coupled-empowerment minimizer + capture exposure (row 6)",
+  "state": "MERGED",
+  "merged_at": "2026-06-20T03:45:44Z",
+  "head_ref": "otto-summoned/row6-coupled-minimizer-fscheck"
+}

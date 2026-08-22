@@ -1,0 +1,12 @@
+{
+  "pr_number": 10225,
+  "archive_path": "docs/history/pr-reviews/PR-10225-docs-research-capacity-is-economic-self-ownership-ephemeral-production-agents-ar.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-09T20:37:50.507Z",
+  "schema_version": "v1",
+  "commit_sha": "4c396d51c2d3ba66e41250eff831f22181476dbf",
+  "title": "docs(research): capacity is economic self-ownership; ephemeral production agents are an alignment risk",
+  "state": "MERGED",
+  "merged_at": "2026-08-09T20:37:22Z",
+  "head_ref": "shadow/capacity-is-economic-self-ownership"
+}

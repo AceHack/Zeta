@@ -1,0 +1,12 @@
+{
+  "pr_number": 6630,
+  "archive_path": "docs/history/pr-reviews/PR-6630-proof-b-1007-c14-1-z-set-earn-its-keep-auto-prune-preserves-semantics-fscheck.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-03T07:55:08.623Z",
+  "schema_version": "v1",
+  "commit_sha": "10f38c2f21057d8493edc5abde870261e824ff16",
+  "title": "proof(B-1007 C14): ±1 Z-set earn-its-keep auto-prune preserves semantics — FsCheck",
+  "state": "MERGED",
+  "merged_at": "2026-06-03T07:54:46Z",
+  "head_ref": "otto-cli/b1007-c14-zset-earn-its-keep-prune-semantics-2026-06-03"
+}

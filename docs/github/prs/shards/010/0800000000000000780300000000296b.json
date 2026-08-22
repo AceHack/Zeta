@@ -1,0 +1,12 @@
+{
+  "pr_number": 10603,
+  "archive_path": "docs/history/pr-reviews/PR-10603-ferry-verlinde-entropic-gravity-emergent-spacetime-quantum-chaos-and-the-bottom-.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-14T14:48:40.756Z",
+  "schema_version": "v1",
+  "commit_sha": "724f599e888e5817ca1aaa9cc524b2ca68084b5f",
+  "title": "ferry(verlinde): entropic gravity, emergent spacetime, quantum chaos — and the bottom-turtle disagreement",
+  "state": "MERGED",
+  "merged_at": "2026-08-14T14:48:08Z",
+  "head_ref": "ferry/verlinde-entropic-gravity-quantum-chaos"
+}

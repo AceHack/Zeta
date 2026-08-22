@@ -1,0 +1,20 @@
+{
+  "pr_number": 1837,
+  "archive_path": "docs/history/pr-reviews/PR-1837-backlog-b-0241-red-team-hole-puncher-as-ai-safety-bypass-vector.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6-ujOQ",
+    "comment:PRRC_kwDOSF9kNM6-ulaz",
+    "comment:PRRC_kwDOSF9kNM6-ulcz",
+    "comment:PRRC_kwDOSF9kNM6-uoRn",
+    "thread:PRRT_kwDOSF9kNM6APD-y",
+    "thread:PRRT_kwDOSF9kNM6APFth",
+    "thread:PRRT_kwDOSF9kNM6APH1Y"
+  ],
+  "fetched_at": "2026-05-07T08:17:46.525Z",
+  "schema_version": "v1",
+  "commit_sha": "1baf9eb745383107a15197a52fd6669fb5a0cbb5",
+  "title": "backlog(B-0241): red team hole puncher as AI safety bypass vector",
+  "state": "MERGED",
+  "merged_at": "2026-05-07T08:14:42Z",
+  "head_ref": "backlog/b0241-hole-puncher-ai-safety-red-team"
+}

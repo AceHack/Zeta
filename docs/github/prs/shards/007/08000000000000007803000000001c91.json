@@ -1,0 +1,12 @@
+{
+  "pr_number": 7313,
+  "archive_path": "docs/history/pr-reviews/PR-7313-docs-research-future-self-most-severe-attack-vector-assume-i-m-my-own-worst-enem.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-09T15:18:44.695Z",
+  "schema_version": "v1",
+  "commit_sha": "8bcff5d9451e1f491367aa618bb6a8763927fd3c",
+  "title": "docs(research): future self = most severe attack vector (assume I'm my own worst enemy) — but bound to contracts with other members via the hat system",
+  "state": "MERGED",
+  "merged_at": "2026-06-09T15:17:08Z",
+  "head_ref": "otto/future-self-most-severe-attack-vector-but-bound-to-contracts-with-others-hat-system"
+}

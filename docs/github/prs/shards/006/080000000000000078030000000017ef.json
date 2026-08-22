@@ -1,0 +1,12 @@
+{
+  "pr_number": 6127,
+  "archive_path": "docs/history/pr-reviews/PR-6127-fix-ci-symmetry-test-windows-dispositions-for-6123-local-llm-deps-unbreak-main.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-30T15:25:16.472Z",
+  "schema_version": "v1",
+  "commit_sha": "a87e80cba2881733bfb61934b819697d4cfbfac2",
+  "title": "fix(ci): symmetry test — Windows dispositions for #6123 local-LLM deps (unbreak main)",
+  "state": "MERGED",
+  "merged_at": "2026-05-30T15:24:57Z",
+  "head_ref": "otto-windows/fix-symmetry-exceptions-local-llm-2026-05-30"
+}

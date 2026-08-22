@@ -1,0 +1,12 @@
+{
+  "pr_number": 10557,
+  "archive_path": "docs/history/pr-reviews/PR-10557-fix-pages-ship-verified-wasm-oracle-bytes.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-14T12:23:14.423Z",
+  "schema_version": "v1",
+  "commit_sha": "552d196efe5e81f23a75021da1d0dc3794bea6d4",
+  "title": "fix(pages): ship verified wasm oracle bytes",
+  "state": "MERGED",
+  "merged_at": "2026-08-14T12:22:39Z",
+  "head_ref": "fix/pages-wasm-owned-assets"
+}

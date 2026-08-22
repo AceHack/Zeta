@@ -1,0 +1,12 @@
+{
+  "pr_number": 8180,
+  "archive_path": "docs/history/pr-reviews/PR-8180-fix-zeta-id-add-go-crockford-base32-oracle-close-the-6th-language-sweep-p0.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-14T13:14:24.271Z",
+  "schema_version": "v1",
+  "commit_sha": "49355563f56343f747063212ac16537fb9121a77",
+  "title": "fix(zeta-id): add Go Crockford base32 oracle — close the 6th language (sweep P0)",
+  "state": "MERGED",
+  "merged_at": "2026-06-14T13:14:02Z",
+  "head_ref": "otto/b-zetaid-go-base32"
+}

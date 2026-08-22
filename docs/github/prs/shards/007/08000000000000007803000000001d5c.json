@@ -1,0 +1,12 @@
+{
+  "pr_number": 7516,
+  "archive_path": "docs/history/pr-reviews/PR-7516-docs-research-reification-same-data-move-on-two-boundaries-code-data-rx-static-r.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-10T22:30:09.332Z",
+  "schema_version": "v1",
+  "commit_sha": "4f6dd565369a822e560465babffec559b338bc0e",
+  "title": "docs(research): reification = same data move on two boundaries — code<->data (Rx) + static<->runtime (types)",
+  "state": "MERGED",
+  "merged_at": "2026-06-10T22:29:46Z",
+  "head_ref": "shadow-reification-code-data-static-runtime"
+}

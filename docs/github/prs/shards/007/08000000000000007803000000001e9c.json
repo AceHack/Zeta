@@ -1,0 +1,12 @@
+{
+  "pr_number": 7836,
+  "archive_path": "docs/history/pr-reviews/PR-7836-chore-backlog-backfill-zetaid-on-13-rows-b-1022-b-1036.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-11T23:40:44.698Z",
+  "schema_version": "v1",
+  "commit_sha": "e2b5a1de66fe90e5d6ffbb416fdf161465a7cfa9",
+  "title": "chore(backlog): backfill zetaid on 13 rows (B-1022..B-1036)",
+  "state": "MERGED",
+  "merged_at": "2026-06-11T23:40:13Z",
+  "head_ref": "alexa/backfill-zetaids-batch"
+}

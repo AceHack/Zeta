@@ -1,0 +1,12 @@
+{
+  "pr_number": 4358,
+  "archive_path": "docs/history/pr-reviews/PR-4358-fix-lint-correct-depth-on-0608z-0803z-tick-shards.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-19T08:24:54.575Z",
+  "schema_version": "v1",
+  "commit_sha": "ec830a477a6441b6c357966a33cf674dd3b963ef",
+  "title": "fix(lint): correct ../ depth on 0608Z + 0803Z tick shards",
+  "state": "MERGED",
+  "merged_at": "2026-05-19T08:24:34Z",
+  "head_ref": "fix/0608z-tick-shard-relative-path-depth-2026-05-19"
+}

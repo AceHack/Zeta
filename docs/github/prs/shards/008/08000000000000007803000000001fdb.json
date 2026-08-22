@@ -1,0 +1,12 @@
+{
+  "pr_number": 8155,
+  "archive_path": "docs/history/pr-reviews/PR-8155-fix-zflash-resolve-test-infra-pubkey-path-for-build-iso-scenario-1.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-14T03:12:14.896Z",
+  "schema_version": "v1",
+  "commit_sha": "1ac3d3c8d28c2daff699669241b09ed25d671da4",
+  "title": "fix(zflash): resolve test-infra pubkey path for build-iso scenario 1",
+  "state": "MERGED",
+  "merged_at": "2026-06-14T03:11:53Z",
+  "head_ref": "riven/fix-zflash-test-infra-pubkey-path"
+}

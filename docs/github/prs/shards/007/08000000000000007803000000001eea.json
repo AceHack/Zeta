@@ -1,0 +1,12 @@
+{
+  "pr_number": 7914,
+  "archive_path": "docs/history/pr-reviews/PR-7914-feat-rx-b-1036-rung-3-verified-no-leak-sentence-falsifier-found-teardown-race-fi.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-12T14:24:01.570Z",
+  "schema_version": "v1",
+  "commit_sha": "09742ea70c38c15aba5308a84923f99790bf259e",
+  "title": "feat(rx): B-1036 rung 3 — verified no-leak sentence + falsifier-found teardown race FIXED",
+  "state": "MERGED",
+  "merged_at": "2026-06-12T14:23:32Z",
+  "head_ref": "shadow-b1036-rung3-final"
+}

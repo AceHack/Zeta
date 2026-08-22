@@ -1,0 +1,17 @@
+{
+  "pr_number": 1855,
+  "archive_path": "docs/history/pr-reviews/PR-1855-research-kozyrev-mirror-bft-immune-system-riff.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6-x02l",
+    "comment:PRRC_kwDOSF9kNM6-x03L",
+    "thread:PRRT_kwDOSF9kNM6ARf2m",
+    "thread:PRRT_kwDOSF9kNM6ARf3D"
+  ],
+  "fetched_at": "2026-05-07T10:43:31.928Z",
+  "schema_version": "v1",
+  "commit_sha": "22f9cd68276c826b214fcc9b66dbb72d59913f8f",
+  "title": "research: Kozyrev Mirror BFT immune-system riff",
+  "state": "MERGED",
+  "merged_at": "2026-05-07T10:28:54Z",
+  "head_ref": "claim/kozyrev-mirror-bft-immune-riff"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 8398,
+  "archive_path": "docs/history/pr-reviews/PR-8398-docs-society-9f-brainish-multimodal-fusion-emotional-propagation-bp-ep-over-soft.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-16T01:38:18.638Z",
+  "schema_version": "v1",
+  "commit_sha": "1e10474b73d45865241ee5fa453be866e5639327",
+  "title": "docs(society): §9f — Brainish = multimodal fusion + emotional propagation (BP/EP) over SoftValue-snap",
+  "state": "MERGED",
+  "merged_at": "2026-06-16T01:37:50Z",
+  "head_ref": "docs/brainish-bp-ep-emotional-propagation-multimodal"
+}

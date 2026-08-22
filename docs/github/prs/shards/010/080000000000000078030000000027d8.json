@@ -1,0 +1,12 @@
+{
+  "pr_number": 10200,
+  "archive_path": "docs/history/pr-reviews/PR-10200-chore-workitems-complete-081kzhy9mv8-081kzhy9mvy-a1-corollary-executed-tripwire-.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-09T18:27:35.421Z",
+  "schema_version": "v1",
+  "commit_sha": "7d9f3c8345b4a876ec4ee20cb6e038b3aa4e476f",
+  "title": "chore(workitems): complete 081KZHY9MV8 + 081KZHY9MVY — A1 corollary executed, tripwire armed",
+  "state": "MERGED",
+  "merged_at": "2026-08-09T18:27:05Z",
+  "head_ref": "otto/complete-a1-corollary-pair"
+}

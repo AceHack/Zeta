@@ -13,20 +13,72 @@
  *   7. Sub-item inheritance (B-0620.4 → B-0620)
  *
  * Usage:
- *   bun src/Core.TypeScript/backlog/rebuild-legacy-b-id-aliases.ts --dry-run
- *   bun src/Core.TypeScript/backlog/rebuild-legacy-b-id-aliases.ts
+ *   bun src/Core.TypeScript/backlog/rebuild-legacy-b-id-aliases.ts            # dry run (default)
+ *   bun src/Core.TypeScript/backlog/rebuild-legacy-b-id-aliases.ts --write    # rewrite ~1,700 files
  */
 
-import { readdirSync, readFileSync, writeFileSync, statSync } from "node:fs";
+import { readdirSync, readFileSync, writeFileSync } from "node:fs";
 import { basename, join } from "node:path";
 import { spawnSync } from "node:child_process";
 import { legacyZetaIdFromBId, parentBId, timestampForLegacyBId } from "./legacy-b-id-zetaid";
+import { SKIP_DIR_NAMES, shouldSkipDir } from "./b-ref-scope";
+
+const USAGE = `rebuild-legacy-b-id-aliases.ts — rebuild the B-NNNN → ZetaId alias map and rewrite stragglers.
+
+  --write      APPLY the rewrite (writes the alias map and edits files in place)
+  --dry-run    report only; the DEFAULT, accepted for explicitness
+  --verbose    print alias conflicts and residual B-ids
+  --help, -h   this text
+
+Writing is opted INTO by name. Absence of a flag is never a write run.`;
+
+/**
+ * Argument parsing — FAIL CLOSED, and the destructive mode must be NAMED.
+ *
+ * Two properties, and the second is the load-bearing one:
+ *
+ *   1. An unrecognised argument is an error: print, exit 2, BEFORE any filesystem
+ *      write. This tool previously derived intent from flag ABSENCE
+ *      (`DRY_RUN = argv.includes("--dry-run")`), so `--help` — which it did not
+ *      have — was read as "go" and began a full ~1,700-file rewrite of the repo
+ *      (PR #10832, killed before any file changed). A rewriting tool that treats an
+ *      unknown flag as consent has no way to distinguish a typo from an intention.
+ *
+ *   2. Writing requires `--write`. Property 1 alone still leaves a tool that
+ *      rewrites the repo when you FORGET a flag; only an explicit opt-in makes the
+ *      safe mode the default. `--dry-run` is still accepted — it is now a no-op
+ *      that says out loud what the default already is — so every previously-safe
+ *      invocation stays safe and every previously-writing invocation (bare) becomes
+ *      safe rather than silently changing meaning.
+ *
+ * Parsed at module scope, above every `writeFileSync` in this file, so the exit
+ * cannot be reached after a partial rewrite.
+ */
+const ARGS = process.argv.slice(2);
+const KNOWN_FLAGS = new Set(["--write", "--dry-run", "--verbose", "--help", "-h"]);
+
+if (ARGS.includes("--help") || ARGS.includes("-h")) {
+  console.log(USAGE);
+  process.exit(0);
+}
+
+const UNKNOWN = ARGS.filter((a) => !KNOWN_FLAGS.has(a));
+if (UNKNOWN.length > 0) {
+  process.stderr.write(`unknown arg: ${UNKNOWN.join(" ")}\n\n${USAGE}\n`);
+  process.exit(2);
+}
+
+const WRITE = ARGS.includes("--write");
+if (WRITE && ARGS.includes("--dry-run")) {
+  process.stderr.write(`--write and --dry-run are contradictory; refusing to guess\n`);
+  process.exit(2);
+}
 
 const REPO_ROOT = process.cwd();
 const MAP_PATH = join(REPO_ROOT, "src", "Core.TypeScript", "backlog", "b-to-zetaid-map.json");
 const MANUAL_PATH = join(REPO_ROOT, "src", "Core.TypeScript", "backlog", "b-id-renumber-aliases.json");
-const DRY_RUN = process.argv.includes("--dry-run");
-const VERBOSE = process.argv.includes("--verbose");
+const DRY_RUN = !WRITE;
+const VERBOSE = ARGS.includes("--verbose");
 
 const SKIP_FILES = new Set([
   "b-to-zetaid-map.json",
@@ -141,18 +193,38 @@ function inheritSubItems(map: Map<string, string>): void {
   }
 }
 
+/**
+ * Discovery walk — intentionally WIDE, including archival trees.
+ *
+ * This is read-only, and the alias map exists precisely so that a legacy id
+ * found in an archive can still be resolved. Narrowing this would shrink the
+ * map's coverage of exactly the history it is meant to resolve. The narrowing
+ * belongs on `applyWalk` below, which writes.
+ */
 function scanRemainingBIds(): Set<string> {
   const found = new Set<string>();
   function walk(dir: string) {
-    for (const entry of readdirSync(dir)) {
-      if (entry === "node_modules" || entry === ".git") continue;
+    let entries: readonly import("node:fs").Dirent[];
+    try {
+      entries = readdirSync(dir, { withFileTypes: true });
+    } catch {
+      return;
+    }
+    for (const dirent of entries) {
+      const entry = dirent.name;
+      if (SKIP_DIR_NAMES.has(entry)) continue;
       const full = join(dir, entry);
-      let st;
-      try { st = statSync(full); } catch { continue; }
-      if (st.isDirectory()) walk(full);
-      else if (APPLY_EXTENSIONS.has(entry.slice(entry.lastIndexOf(".")))) {
+      if (dirent.isDirectory()) walk(full);
+      else if (dirent.isFile() && APPLY_EXTENSIONS.has(entry.slice(entry.lastIndexOf(".")))) {
         if (SKIP_FILES.has(entry)) continue;
-        const text = readFileSync(full, "utf8");
+        // Let the read BE the check: a stat-then-read is check-then-act, and the
+        // file can vanish in between (js/file-system-race).
+        let text: string;
+        try {
+          text = readFileSync(full, "utf8");
+        } catch {
+          continue;
+        }
         for (const m of text.matchAll(B_ID_RE)) found.add(m[1]!);
       }
     }
@@ -221,27 +293,70 @@ if (!DRY_RUN) {
 console.log(`Alias map: ${Object.keys(sorted).length} entries (${remaining.size} unique B-ids seen in repo)`);
 
 let changed = 0;
+/**
+ * Rewrite walk — scoped to the SAME trees `lint-b-refs-resolve.ts` polices.
+ *
+ * Previously this skipped only `node_modules`/`.git`, so the remedy the linter
+ * advertises was strictly wider than the linter itself: it rewrote the recovered
+ * orphan-branch archive, `docs/history/`, `memory/`, `.claude/rules.bak/`, and
+ * the generated PR mirror — all trees the linter deliberately refuses to police.
+ * Observed live: ~1,700 files modified, and the run exceeded 500s and was killed
+ * mid-rewrite. A remedy must not have a larger blast radius than its check.
+ *
+ * Symlinks are NOT followed (`Dirent.isFile()` is false for a symlink), and for
+ * a REWRITING tool that is the safer reading rather than a regression: writing
+ * through `universal/*.md → db/shapes/*.md` would apply the rewrite twice to one
+ * file, and `statSync` used to follow `tests/…/link_to_parent → ..`, a genuine
+ * cycle that recursed until PATH_MAX stopped it.
+ */
 function applyWalk(dir: string) {
-  for (const entry of readdirSync(dir)) {
-    if (entry === "node_modules" || entry === ".git") continue;
+  if (shouldSkipDir(dir.slice(REPO_ROOT.length + 1))) return;
+  let entries: readonly import("node:fs").Dirent[];
+  try {
+    entries = readdirSync(dir, { withFileTypes: true });
+  } catch {
+    return;
+  }
+  for (const dirent of entries) {
+    const entry = dirent.name;
+    if (SKIP_DIR_NAMES.has(entry)) continue;
     const full = join(dir, entry);
-    let st;
-    try { st = statSync(full); } catch { continue; }
-    if (st.isDirectory()) applyWalk(full);
-    else if (APPLY_EXTENSIONS.has(entry.slice(entry.lastIndexOf("."))) && !SKIP_FILES.has(entry)) {
-      const original = readFileSync(full, "utf8");
+    if (dirent.isDirectory()) applyWalk(full);
+    else if (
+      dirent.isFile() &&
+      APPLY_EXTENSIONS.has(entry.slice(entry.lastIndexOf("."))) &&
+      !SKIP_FILES.has(entry)
+    ) {
+      // Let the read BE the check (js/file-system-race): a stat-then-read is
+      // check-then-act, and a rewriting tool must not act on a stale check.
+      let original: string;
+      try {
+        original = readFileSync(full, "utf8");
+      } catch {
+        continue;
+      }
       let modified = replaceReferences(original, map);
       if (full.includes("docs/backlog/") && entry.endsWith(".md")) modified = cleanFrontmatter(modified);
       if (modified !== original) {
+        if (!DRY_RUN) {
+          try {
+            writeFileSync(full, modified);
+          } catch {
+            continue;
+          }
+        }
         changed++;
-        if (!DRY_RUN) writeFileSync(full, modified);
       }
     }
   }
 }
 applyWalk(REPO_ROOT);
 
-console.log(`${DRY_RUN ? "[DRY RUN] Would change" : "Changed"}: ${changed} files`);
+console.log(
+  DRY_RUN
+    ? `[DRY RUN] Would change: ${changed} files (nothing written — pass --write to apply)`
+    : `Changed: ${changed} files`,
+);
 const still = scanRemainingBIds().size;
 console.log(`Remaining B-ids in repo (excl. skip files): ${still}`);
 if (still > 0 && VERBOSE) {

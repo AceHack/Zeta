@@ -1,0 +1,12 @@
+{
+  "pr_number": 10030,
+  "archive_path": "docs/history/pr-reviews/PR-10030-docs-core-countmin-honest-caveat-on-the-bound-2-universal-hashing-assumption.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-04T16:15:37.988Z",
+  "schema_version": "v1",
+  "commit_sha": "6f0a6360c822fbc92c2830487541e27594b4fc92",
+  "title": "docs(core): CountMin — honest caveat on the ε/δ bound (2-universal hashing assumption)",
+  "state": "MERGED",
+  "merged_at": "2026-08-04T16:12:28Z",
+  "head_ref": "docs/countmin-honest-caveat-2universal-hashing-assumption-20260804"
+}

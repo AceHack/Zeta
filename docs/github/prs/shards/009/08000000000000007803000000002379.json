@@ -1,0 +1,12 @@
+{
+  "pr_number": 9081,
+  "archive_path": "docs/history/pr-reviews/PR-9081-docs-core-bank-naledi-s-sign-off-with-notes-variance-comment-drift-fix-follow-up.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-16T22:06:58.864Z",
+  "schema_version": "v1",
+  "commit_sha": "ec967dfb0debdf8dfe74129d49b63b727fece1fe",
+  "title": "docs(core): bank Naledi's SIGN-OFF-WITH-NOTES — variance, comment-drift fix, follow-ups (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-02T00:53:19Z",
+  "head_ref": "otto/naledi-signoff-notes-081KWFXTHJY"
+}

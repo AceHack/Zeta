@@ -1,0 +1,12 @@
+{
+  "pr_number": 8468,
+  "archive_path": "docs/history/pr-reviews/PR-8468-feat-chip9-gate-reflected-meta-cart-launch.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-16T07:23:07.654Z",
+  "schema_version": "v1",
+  "commit_sha": "10c2b8fe3b9aa56e72da6a0be91e342a8e29e6b2",
+  "title": "feat(chip9): gate reflected meta-cart launch",
+  "state": "MERGED",
+  "merged_at": "2026-06-16T07:22:35Z",
+  "head_ref": "codex/chip9-room-capability-heat"
+}

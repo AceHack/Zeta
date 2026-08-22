@@ -1,0 +1,12 @@
+{
+  "pr_number": 3930,
+  "archive_path": "docs/history/pr-reviews/PR-3930-fix-rules-add-stop-minimal-phrasing-as-explicit-brief-ack-synonym.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-16T18:58:58.156Z",
+  "schema_version": "v1",
+  "commit_sha": "e8d534d84ae51351ffd0c7b6c048cfc2688d6b10",
+  "title": "fix(rules): add \"Stop.\" / minimal-phrasing as explicit brief-ack synonym",
+  "state": "MERGED",
+  "merged_at": "2026-05-16T18:58:42Z",
+  "head_ref": "otto-cli-rule-stop-synonym-brief-ack-2026-05-16"
+}

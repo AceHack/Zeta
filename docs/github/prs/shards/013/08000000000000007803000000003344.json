@@ -1,0 +1,12 @@
+{
+  "pr_number": 13124,
+  "archive_path": "docs/history/pr-reviews/PR-13124-feat-installer-wire-mdns-bootstrap-or-join-into-the-iso-measured-at-30-5-mib-all.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-21T07:58:36.227Z",
+  "schema_version": "v1",
+  "commit_sha": "73237aebe2c1768c0afdb369d4135e28adb4fb5e",
+  "title": "feat(installer): wire mDNS bootstrap-or-join into the ISO — measured at +30.5 MiB, all of it bun",
+  "state": "MERGED",
+  "merged_at": "2026-08-21T07:57:55Z",
+  "head_ref": "cluster/wire-discovery-into-installer-iso"
+}

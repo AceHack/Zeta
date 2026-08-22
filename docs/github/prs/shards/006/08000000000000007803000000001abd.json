@@ -1,0 +1,12 @@
+{
+  "pr_number": 6845,
+  "archive_path": "docs/history/pr-reviews/PR-6845-docs-content-addressing-is-a-confluence-lemma-proving-out-of-order-events-same-r.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-07T14:47:06.524Z",
+  "schema_version": "v1",
+  "commit_sha": "f00c64befc64127259a2b81f032d214f28dd20f4",
+  "title": "docs: content-addressing is a confluence lemma — proving out-of-order events → same result",
+  "state": "MERGED",
+  "merged_at": "2026-06-07T14:46:46Z",
+  "head_ref": "capture/content-addressing-lemma-for-out-of-order-confluence"
+}

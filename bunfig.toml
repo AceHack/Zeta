@@ -4,7 +4,20 @@ exact = true
 saveTextLockfile = true
 
 [test]
-timeout = 20000
+# NO `timeout` KEY HERE -- ON PURPOSE. bun 1.3.14 does not implement `[test] timeout`,
+# and it does not validate unknown bunfig keys either, so a `timeout = 20000` line sat
+# here reading as authoritative while doing nothing. MEASURED 2026-08-14: with only that
+# line present, a test sleeping 7s failed at 5000.74ms -- exactly the built-in default,
+# ignoring a value 4x larger in the same file. A bogus key alongside it drew no warning,
+# which is why it was indistinguishable from a typo. Work-item 081KZZ3JHP1087G0R00027ARRR.
+#
+# THE EFFECTIVE PER-TEST CAP IS 5000 ms. Two mechanisms actually work, both verified:
+#   - per-test:  test("name", fn, 30_000)   <- PREFERRED; visible at the call site
+#   - whole-run: bun test --timeout <ms>     <- deliberately NOT set in gate.yml; a global
+#                                               raise hides slow tests and lets a hung one
+#                                               burn the job cap instead of failing in 5s.
+# A test that is slow BY NATURE carries its own explicit timeout. A test that is slow BY
+# ACCIDENT gets made fast. Guarded by hygiene/bunfig-declares-no-test-timeout.test.ts.
 coverageSkipTestFiles = true
 # Exclude heavy folders or bun test will walk 20+ GB of upstream clones
 # (references/prior-art), Lake build artefacts (tools/lean4/.lake),
@@ -15,6 +28,14 @@ pathIgnorePatterns = [
   "**/TestResults/**",
   "**/artifacts/**",
   "**/node_modules/**",
+  # Environment-dependent, excluded from the whole-suite gate job (081KZYPHESJ087G0R002EZ7A2H).
+  # Each is declared with a reason in registry/unexecuted-test-files.json; the checker at
+  # hygiene/unexecuted-test-files.ts fails if one loses its reason or becomes stale.
+  "src/Core.TypeScript/service/persona-health.test.ts",
+  "src/Core.TypeScript/shadow/shadow-observer.test.ts",
+  "src/Core.TypeScript/backlog/empty-queue-pickup.test.ts",
+  "src/Core.TypeScript/health/factory-health-monitor.test.ts",
+  "tools/setup/persona-keys/frost-share-adapter.hardware.test.ts",
   "**/docs/recovered-orphan-branches-2026-05/**",
   "**/references/prior-art/**",
   "**/bin/**",

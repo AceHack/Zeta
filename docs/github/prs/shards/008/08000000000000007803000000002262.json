@@ -1,0 +1,12 @@
+{
+  "pr_number": 8802,
+  "archive_path": "docs/history/pr-reviews/PR-8802-deploy-project-genesis-prototype-as-a-genesis-subfolder-of-the-pages-site.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-20T23:25:33.584Z",
+  "schema_version": "v1",
+  "commit_sha": "1d579b73d9325b0b589c92d77be732c6f1805724",
+  "title": "Deploy Project Genesis prototype as a /genesis/ subfolder of the Pages site",
+  "state": "MERGED",
+  "merged_at": "2026-06-20T23:25:07Z",
+  "head_ref": "claude/genesis-github-pages-deploy-x6pgl9"
+}

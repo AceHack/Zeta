@@ -1,0 +1,12 @@
+{
+  "pr_number": 10172,
+  "archive_path": "docs/history/pr-reviews/PR-10172-fix-ci-persist-phase-1-serial-on-wifi-esp-contract-failure-unblocks-081kzhjpjcf-.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-08T23:05:37.578Z",
+  "schema_version": "v1",
+  "commit_sha": "6aafabd1742554224d8b2b48412dff2605e6c437",
+  "title": "fix(ci): persist phase-1 serial on wifi-ESP contract failure (unblocks 081KZHJPJCF diagnosis)",
+  "state": "MERGED",
+  "merged_at": "2026-08-08T23:05:08Z",
+  "head_ref": "shadow/fix-wifi-esp-serial-artifact-not-persisted"
+}

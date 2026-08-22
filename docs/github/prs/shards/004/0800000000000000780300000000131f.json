@@ -1,0 +1,19 @@
+{
+  "pr_number": 4895,
+  "archive_path": "docs/history/pr-reviews/PR-4895-shard-2026-05-25-0112z-otto-vscode-bg-worker-16th-dotgit-anchor-3rd-consecutive-.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7EcA4f",
+    "comment:PRRC_kwDOSF9kNM7EcADf",
+    "comment:PRRC_kwDOSF9kNM7EcL75",
+    "comment:PRRC_kwDOSF9kNM7EcL9E",
+    "thread:PRRT_kwDOSF9kNM6Eb1RS",
+    "thread:PRRT_kwDOSF9kNM6Eb1zP"
+  ],
+  "fetched_at": "2026-05-25T01:47:16.328Z",
+  "schema_version": "v1",
+  "commit_sha": "83a310ff4e5293ce7a9d051ab7e4e76f07788af4",
+  "title": "shard(2026-05-25/0112Z): otto-vscode bg-worker — 16th dotgit anchor (3rd consecutive 0 stuck procs) + Lior idle",
+  "state": "MERGED",
+  "merged_at": "2026-05-25T01:47:00Z",
+  "head_ref": "shard/tick-0112z-otto-vscode-bg-worker-16th-dotgit-anchor-3rd-consecutive-clean-lior-idle-2026-05-25"
+}

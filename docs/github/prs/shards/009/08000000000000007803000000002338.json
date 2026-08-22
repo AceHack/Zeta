@@ -1,0 +1,12 @@
+{
+  "pr_number": 9016,
+  "archive_path": "docs/history/pr-reviews/PR-9016-test-persona-keys-new-fork-onboarding-round-trip-harness-setup-teardown-re-setup.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-21T21:50:36.672Z",
+  "schema_version": "v1",
+  "commit_sha": "782d4bdea8126a19da190e7e26ccd68375a6d38a",
+  "title": "test(persona-keys): new-fork onboarding round-trip harness — setup→teardown→re-setup converges (N cycles), sandbox-only",
+  "state": "MERGED",
+  "merged_at": "2026-06-21T21:50:11Z",
+  "head_ref": "otto/onboarding-roundtrip-harness"
+}

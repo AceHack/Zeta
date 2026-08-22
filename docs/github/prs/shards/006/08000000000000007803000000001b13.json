@@ -1,0 +1,12 @@
+{
+  "pr_number": 6931,
+  "archive_path": "docs/history/pr-reviews/PR-6931-docs-ferry-spaghettification-zetaid-genesis-dissolution-crystal-clear-reassembly.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-07T22:18:44.775Z",
+  "schema_version": "v1",
+  "commit_sha": "45ffbea4438a83169ec8d8d99b84338a2d983d3e",
+  "title": "docs+ferry: spaghettification — ZetaId genesis = dissolution -> crystal-clear reassembly; only time is the shortcut",
+  "state": "MERGED",
+  "merged_at": "2026-06-07T22:18:26Z",
+  "head_ref": "otto/spaghettification-zetaid-genesis-only-time"
+}

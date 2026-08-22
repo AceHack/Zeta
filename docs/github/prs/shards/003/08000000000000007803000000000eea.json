@@ -1,0 +1,12 @@
+{
+  "pr_number": 3818,
+  "archive_path": "docs/history/pr-reviews/PR-3818-rule-holding-discipline-cascade-saturation-empirical-anchor-pure-git-compatibili.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-16T07:58:35.020Z",
+  "schema_version": "v1",
+  "commit_sha": "b91fe5e3de626079bc48a5576fafe301639ef07c",
+  "title": "rule(holding-discipline): cascade-saturation empirical anchor + pure-git compatibility + sub-case 5",
+  "state": "MERGED",
+  "merged_at": "2026-05-16T07:58:16Z",
+  "head_ref": "rule/holding-discipline-cascade-saturation-otto-cli-2026-05-16"
+}

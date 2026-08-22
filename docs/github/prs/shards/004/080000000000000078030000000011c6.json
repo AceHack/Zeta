@@ -1,0 +1,25 @@
+{
+  "pr_number": 4550,
+  "archive_path": "docs/history/pr-reviews/PR-4550-docs-research-land-4-amara-design-notes-from-2026-05-21-sandbox-bundle-antlr-sur.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7DqbyB",
+    "comment:PRRC_kwDOSF9kNM7DqdZ-",
+    "comment:PRRC_kwDOSF9kNM7Dqdaq",
+    "comment:PRRC_kwDOSF9kNM7DqdbW",
+    "comment:PRRC_kwDOSF9kNM7DrBPs",
+    "comment:PRRC_kwDOSF9kNM7DrBPv",
+    "thread:PRRT_kwDOSF9kNM6D3Q9X",
+    "thread:PRRT_kwDOSF9kNM6D3SMU",
+    "thread:PRRT_kwDOSF9kNM6D3SMz",
+    "thread:PRRT_kwDOSF9kNM6D3SNW",
+    "thread:PRRT_kwDOSF9kNM6D3sgU",
+    "thread:PRRT_kwDOSF9kNM6D3sgW"
+  ],
+  "fetched_at": "2026-05-21T16:41:30.030Z",
+  "schema_version": "v1",
+  "commit_sha": "d7ff088a1a3668886ed033c2e03ce4823430ee24",
+  "title": "docs(research): land 4 Amara design notes from 2026-05-21 sandbox bundle (ANTLR survey v2 + ZetaParse + incremental compiler host + trust-gradient policy)",
+  "state": "MERGED",
+  "merged_at": "2026-05-21T16:41:10Z",
+  "head_ref": "docs/research-amara-2026-05-21-design-notes-bundle-5-files-aaron-forwarded"
+}

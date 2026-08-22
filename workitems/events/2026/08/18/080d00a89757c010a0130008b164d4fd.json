@@ -1,0 +1,14 @@
+{
+  "id": "080d00a89757c010a0130008b164d4fd",
+  "at": "2026-08-18T13:32:36.472Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M0AH5TQQ087G0R003CNFRAF",
+    "type": "task",
+    "title": "GYO alpha-acyclicity decision procedure over attribute covers (Vorob'ev/BFMY criterion), with certificates",
+    "slug": "gyo-alpha-acyclicity-decision-procedure-over-attribute-cover",
+    "priority": "P2",
+    "filename": "081M0AH5TQQ087G0R003CNFRAF-gyo-alpha-acyclicity-decision-procedure-over-attribute-cover.md"
+  }
+}

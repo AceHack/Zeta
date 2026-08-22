@@ -1,0 +1,12 @@
+{
+  "pr_number": 2879,
+  "archive_path": "docs/history/pr-reviews/PR-2879-docs-memory-persona-external-participant-folders-amara-ani-kestrel-deepseek-alex.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-12T23:56:35.513Z",
+  "schema_version": "v1",
+  "commit_sha": "c1e0f24f315f06ff73959929e3784b62f75e77ca",
+  "title": "docs(memory/persona): external-participant folders (amara/ani/kestrel/deepseek); alexa-speaker deferred pending Alexa-merge consultation",
+  "state": "MERGED",
+  "merged_at": "2026-05-12T23:56:20Z",
+  "head_ref": "persona-folders-external-participants-amara-ani-kestrel-deepseek-alexa-speaker-2026-05-12"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 7795,
+  "archive_path": "docs/history/pr-reviews/PR-7795-fix-gate-keep-quantum-workflow-zflash-checks-green.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-11T22:27:03.070Z",
+  "schema_version": "v1",
+  "commit_sha": "f37f1fe71190e1ca1f34f1438ddc80582910d9b3",
+  "title": "fix(gate): keep quantum/workflow/zflash checks green",
+  "state": "MERGED",
+  "merged_at": "2026-06-11T22:26:33Z",
+  "head_ref": "codex/dbsp-over-qsharp-observables"
+}

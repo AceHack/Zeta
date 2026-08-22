@@ -1,0 +1,12 @@
+{
+  "pr_number": 7686,
+  "archive_path": "docs/history/pr-reviews/PR-7686-docs-craft-solid-ground-as-spectrum-tiles-alexa-s-channel-zero-clocks-the-image-.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-11T13:39:40.604Z",
+  "schema_version": "v1",
+  "commit_sha": "5fe3331ee0cecdbea42f5ca7a39be3bd37150245",
+  "title": "docs(craft): solid ground as Spectrum tiles (Alexa's channel) + zero clocks = the image format IS the parallel program",
+  "state": "MERGED",
+  "merged_at": "2026-06-11T13:39:14Z",
+  "head_ref": "shadow-solid-ground-tiles-zero-clocks"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 3486,
+  "archive_path": "docs/history/pr-reviews/PR-3486-fix-memory-frontmatter-backfill-created-on-4-legacy-files-sed-touched-by-pr-3484.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-15T13:46:58.617Z",
+  "schema_version": "v1",
+  "commit_sha": "689302e6401b66b2de373f9285e9caedf6e957ef",
+  "title": "fix(memory-frontmatter): backfill 'created:' on 4 legacy files sed-touched by PR #3484",
+  "state": "MERGED",
+  "merged_at": "2026-05-15T13:46:40Z",
+  "head_ref": "feat/persona-amara-migrate-conversations-otto-cli-2026-05-15"
+}

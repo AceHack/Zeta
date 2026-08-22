@@ -1,0 +1,20 @@
+{
+  "pr_number": 3604,
+  "archive_path": "docs/history/pr-reviews/PR-3604-shard-tick-2217z-arm-sweep-continued-3601-merged-3603-armed.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7ByuC1",
+    "comment:PRRC_kwDOSF9kNM7ByuCi",
+    "comment:PRRC_kwDOSF9kNM7BzIBO",
+    "comment:PRRC_kwDOSF9kNM7BzIKn",
+    "comment:PRRC_kwDOSF9kNM7BzIT0",
+    "thread:PRRT_kwDOSF9kNM6Cfbxf",
+    "thread:PRRT_kwDOSF9kNM6Cfbxs"
+  ],
+  "fetched_at": "2026-05-15T22:58:54.305Z",
+  "schema_version": "v1",
+  "commit_sha": "5c33e2ec5ed2e5b2aaf0186587fb030a4172acf2",
+  "title": "shard(tick): 2217Z — arm-sweep continued: #3601 (merged), #3603 (armed)",
+  "state": "MERGED",
+  "merged_at": "2026-05-15T22:58:36Z",
+  "head_ref": "shard/tick-2217z-otto-cli-2026-05-15"
+}

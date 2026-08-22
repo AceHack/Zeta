@@ -1,0 +1,12 @@
+{
+  "pr_number": 6001,
+  "archive_path": "docs/history/pr-reviews/PR-6001-test-b-0366-2-1-cover-toffoli-circuit-wire-map-model.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-29T15:24:21.758Z",
+  "schema_version": "v1",
+  "commit_sha": "ddc0abd1067b717e3a37d35200243cae8542dbd2",
+  "title": "test(B-0366.2.1): cover Toffoli circuit wire-map model",
+  "state": "MERGED",
+  "merged_at": "2026-05-29T15:23:56Z",
+  "head_ref": "claim/codex-loop-b0366-2-1-toffoli-circuit-tests-20260529"
+}

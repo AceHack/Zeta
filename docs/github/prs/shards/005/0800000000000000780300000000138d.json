@@ -1,0 +1,17 @@
+{
+  "pr_number": 5005,
+  "archive_path": "docs/history/pr-reviews/PR-5005-docs-research-add-drift-report-and-preserve-prs-for-2026-05-25.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7Es7S5",
+    "comment:PRRC_kwDOSF9kNM7Es7So",
+    "thread:PRRT_kwDOSF9kNM6EohkG",
+    "thread:PRRT_kwDOSF9kNM6EohkP"
+  ],
+  "fetched_at": "2026-05-25T22:18:07.662Z",
+  "schema_version": "v1",
+  "commit_sha": "3843fee75032a12f8694ef035bd7902d9bc37d89",
+  "title": "docs(research): add drift report and preserve PRs for 2026-05-25",
+  "state": "MERGED",
+  "merged_at": "2026-05-25T22:17:49Z",
+  "head_ref": "lior-drift-report-2026-05-25"
+}

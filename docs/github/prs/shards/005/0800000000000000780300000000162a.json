@@ -1,0 +1,12 @@
+{
+  "pr_number": 5674,
+  "archive_path": "docs/history/pr-reviews/PR-5674-memory-kestrel-preserve-aaron-kestrel-2026-05-28-zetaid-128-bit-event-sourcing-w.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-28T02:08:17.326Z",
+  "schema_version": "v1",
+  "commit_sha": "02dde03cd7dc59a92195acbf130e32a580137a42",
+  "title": "memory(kestrel): preserve aaron-kestrel 2026-05-28 — ZetaID 128-bit + event-sourcing without PR + OTel composition + two-level state machine",
+  "state": "MERGED",
+  "merged_at": "2026-05-28T02:07:58Z",
+  "head_ref": "memory/kestrel-ferry-zetaid-128bit-event-sourcing-no-pr-otel-composition-two-level-state-machine-2026-05-28"
+}

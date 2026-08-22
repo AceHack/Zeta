@@ -1,0 +1,12 @@
+{
+  "pr_number": 9508,
+  "archive_path": "docs/history/pr-reviews/PR-9508-feat-observe-self-claim-in-buildmenu-choosable-by-llm.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-08T19:19:36.516Z",
+  "schema_version": "v1",
+  "commit_sha": "af66f6ba7747e82ad7174904987f8bd0bee00337",
+  "title": "feat(observe): self_claim in buildMenu — choosable by LLM",
+  "state": "MERGED",
+  "merged_at": "2026-07-08T19:18:49Z",
+  "head_ref": "claim/kiro-self-claims-grammar-2026-07-04"
+}

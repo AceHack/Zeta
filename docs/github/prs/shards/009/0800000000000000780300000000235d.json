@@ -1,0 +1,15 @@
+{
+  "pr_number": 9053,
+  "archive_path": "docs/history/pr-reviews/PR-9053-feat-core-share-heat-pressure-classification.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7RJVfK",
+    "thread:PRRT_kwDOSF9kNM6NtjsB"
+  ],
+  "fetched_at": "2026-07-01T21:02:18.789Z",
+  "schema_version": "v1",
+  "commit_sha": "58824a3f3e8840283e0a5c8d1dc0cfbfb20feb35",
+  "title": "feat(core): share heat pressure classification",
+  "state": "MERGED",
+  "merged_at": "2026-07-01T21:01:54Z",
+  "head_ref": "codex/share-heat-classifier"
+}

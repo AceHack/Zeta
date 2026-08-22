@@ -1,0 +1,12 @@
+{
+  "pr_number": 6980,
+  "archive_path": "docs/history/pr-reviews/PR-6980-docs-two-way-symmetric-crdt-zip-proven-convergent-the-cell-host-binding-is-a-bra.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-08T01:45:33.752Z",
+  "schema_version": "v1",
+  "commit_sha": "938989c6948d63bd5e136dac216ea4412b54a4ff",
+  "title": "docs: two-way symmetric CRDT zip (proven convergent) + the cell-host binding is a braid woven on the Loom",
+  "state": "MERGED",
+  "merged_at": "2026-06-08T01:45:15Z",
+  "head_ref": "otto/two-way-zip-convergence-and-braid-loom"
+}

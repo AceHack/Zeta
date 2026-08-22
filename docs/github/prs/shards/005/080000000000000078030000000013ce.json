@@ -1,0 +1,19 @@
+{
+  "pr_number": 5070,
+  "archive_path": "docs/history/pr-reviews/PR-5070-backlog-b-0788-agent-on-agent-claude-code-session-recovery-lift-operator-runs-ga.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7Ev1xH",
+    "comment:PRRC_kwDOSF9kNM7Ev1xh",
+    "comment:PRRC_kwDOSF9kNM7Ev4Hw",
+    "thread:PRRT_kwDOSF9kNM6EqpP6",
+    "thread:PRRT_kwDOSF9kNM6EqpQT",
+    "thread:PRRT_kwDOSF9kNM6Eqq9U"
+  ],
+  "fetched_at": "2026-05-26T02:45:37.943Z",
+  "schema_version": "v1",
+  "commit_sha": "230efca0f4f174dd550bd0f4eabd53a225a7aa32",
+  "title": "backlog(B-0788): agent-on-agent Claude Code session recovery — lift operator-runs gate once safety substrate stronger than classifier",
+  "state": "MERGED",
+  "merged_at": "2026-05-26T02:45:18Z",
+  "head_ref": "otto-cli/b0788-agent-on-agent-session-recovery-2026-05-25"
+}

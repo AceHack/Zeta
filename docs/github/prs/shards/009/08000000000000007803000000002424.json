@@ -1,0 +1,12 @@
+{
+  "pr_number": 9252,
+  "archive_path": "docs/history/pr-reviews/PR-9252-chore-dora-move-frame-writer-to-the-pages-repo-token-free-no-secret-shadow.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-03T01:31:56.128Z",
+  "schema_version": "v1",
+  "commit_sha": "9ab36f8cb848174df127f5941d8ff94b1149f5b9",
+  "title": "chore(dora): move frame writer to the pages repo — token-free, no secret (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-03T01:31:30Z",
+  "head_ref": "shadow/dora-workflow-move-to-pages-token-free"
+}

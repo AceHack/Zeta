@@ -1,0 +1,21 @@
+{
+  "pr_number": 3014,
+  "archive_path": "docs/history/pr-reviews/PR-3014-feat-bg-b-0442-2-merged-pr-fetch-via-gh-cli-10-tests-pass.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7A6ktH",
+    "comment:PRRC_kwDOSF9kNM7A6ktK",
+    "comment:PRRC_kwDOSF9kNM7A6mVP",
+    "comment:PRRC_kwDOSF9kNM7A6mWI",
+    "thread:PRRT_kwDOSF9kNM6B2nkW",
+    "thread:PRRT_kwDOSF9kNM6B2nkZ",
+    "thread:PRRT_kwDOSF9kNM6B2ow5",
+    "thread:PRRT_kwDOSF9kNM6B2owF"
+  ],
+  "fetched_at": "2026-05-13T18:35:10.321Z",
+  "schema_version": "v1",
+  "commit_sha": "74df41f760b9d0f8e57e70b94f9aea32191e7b37",
+  "title": "feat(bg): B-0442.2 — merged-PR fetch via gh CLI (10 tests pass)",
+  "state": "MERGED",
+  "merged_at": "2026-05-13T18:34:54Z",
+  "head_ref": "otto-b0442-2-merged-pr-fetch-slice-2-impl-2026-05-13"
+}

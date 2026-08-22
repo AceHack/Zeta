@@ -1,0 +1,12 @@
+{
+  "pr_number": 7118,
+  "archive_path": "docs/history/pr-reviews/PR-7118-feat-core-statespace-indexed-reachable-state-search-content-hash-detects-cycles-.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-08T22:44:32.615Z",
+  "schema_version": "v1",
+  "commit_sha": "d86b9a6bdc065150a031daafd4ae7c1ecd264f47",
+  "title": "feat(core): StateSpace — indexed reachable-state search; content hash detects cycles + backward plan recovery",
+  "state": "MERGED",
+  "merged_at": "2026-06-08T22:44:13Z",
+  "head_ref": "otto/statespace-indexed-search-content-hash-cycle-detection-plan-recovery"
+}

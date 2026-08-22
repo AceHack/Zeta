@@ -1,0 +1,12 @@
+{
+  "pr_number": 10823,
+  "archive_path": "docs/history/pr-reviews/PR-10823-docs-research-playbooks-resurrection-assessment-the-design-landed-in-may-what-ne.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-16T20:38:13.257Z",
+  "schema_version": "v1",
+  "commit_sha": "a0c0868bfc53997ca2fa7deeade97cb79fa5a3fb",
+  "title": "docs(research): playbooks resurrection assessment — the design landed in May; what never landed is a running instance",
+  "state": "MERGED",
+  "merged_at": "2026-08-16T20:37:39Z",
+  "head_ref": "shadow/playbooks-resurrection-assessment"
+}

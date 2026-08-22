@@ -1,0 +1,9 @@
+# Cursor Agent / Tab / Instant Grep — hard skip.
+# Do not put archive dumps here: Agent still needs to open a specific
+# PR-review or observe-event file. Those live in .cursorindexingignore.
+#
+# Keep this cycle. It is a tracked fixture for symlink-aware walkers
+# (see src/Core.TypeScript/backlog/b-ref-resolve.ts). A follow-the-link
+# walk recursed 64 levels / 793 characters until PATH_MAX. Cursor's
+# Grep/Glob already abort with "File system loop found".
+tests/cross-verification/experience/fixtures/tree1/subdir1/link_to_parent

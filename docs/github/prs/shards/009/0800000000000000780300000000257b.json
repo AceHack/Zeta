@@ -1,0 +1,12 @@
+{
+  "pr_number": 9595,
+  "archive_path": "docs/history/pr-reviews/PR-9595-docs-research-ferry-capture-time-as-a-traveler-load-bearing-core-cpt-factor-grap.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-09T00:54:12.370Z",
+  "schema_version": "v1",
+  "commit_sha": "a423907d9652e4b2d4cfe666743346829ebbce52",
+  "title": "docs(research): ferry-capture — time as a traveler (load-bearing core + CPT/factor-graph/self-similar conjecture, labeled) (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-09T00:53:44Z",
+  "head_ref": "otto/time-as-traveler-ferry"
+}

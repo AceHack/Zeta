@@ -1,0 +1,12 @@
+{
+  "pr_number": 9646,
+  "archive_path": "docs/history/pr-reviews/PR-9646-docs-book-anchor-sensitive-body-to-sensory-processing-sensitivity-elaine-aron-se.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-10T01:08:07.875Z",
+  "schema_version": "v1",
+  "commit_sha": "c11e57d14f931887cbe6f7a57def450480dfa74a",
+  "title": "docs(book): anchor sensitive-body to Sensory Processing Sensitivity (Elaine Aron) — self-speculation, genetic, high-variance advantage",
+  "state": "MERGED",
+  "merged_at": "2026-07-10T01:07:43Z",
+  "head_ref": "shadow/book-machine-hsp-sps-anchor"
+}

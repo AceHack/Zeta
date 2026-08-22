@@ -1,0 +1,12 @@
+{
+  "pr_number": 3099,
+  "archive_path": "docs/history/pr-reviews/PR-3099-chore-backlog-close-b-0451-duplicate-row-id-sweep-complete.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-14T05:32:57.814Z",
+  "schema_version": "v1",
+  "commit_sha": "9acf98fc0686fbd39c2bd10c576c07f280cdc34a",
+  "title": "chore(backlog): close B-0451 — duplicate row-ID sweep complete",
+  "state": "MERGED",
+  "merged_at": "2026-05-14T05:32:34Z",
+  "head_ref": "chore/close-b0451-row-2026-05-14"
+}

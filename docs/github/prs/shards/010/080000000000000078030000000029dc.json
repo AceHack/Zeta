@@ -1,0 +1,12 @@
+{
+  "pr_number": 10716,
+  "archive_path": "docs/history/pr-reviews/PR-10716-fix-service-the-cell-generator-emitted-a-path-deleted-two-months-ago-and-nothing.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-14T21:20:51.741Z",
+  "schema_version": "v1",
+  "commit_sha": "ebea485a123284ec8debf6c6cb69c5416796da45",
+  "title": "fix(service): the cell generator emitted a path deleted two months ago, and nothing could report the four dead loops",
+  "state": "MERGED",
+  "merged_at": "2026-08-14T21:20:20Z",
+  "head_ref": "shadow/repair-dead-persona-loop-bootstrap"
+}

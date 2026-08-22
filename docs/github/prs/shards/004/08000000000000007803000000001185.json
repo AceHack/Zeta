@@ -1,0 +1,12 @@
+{
+  "pr_number": 4485,
+  "archive_path": "docs/history/pr-reviews/PR-4485-docs-shard-0226z-52-stash-survey-drop-tier-classification-survey-only.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-21T02:43:34.344Z",
+  "schema_version": "v1",
+  "commit_sha": "51f4cde30d9b07e6a4ed0d7e31d0a55519420f7c",
+  "title": "docs(shard/0226Z): 52-stash survey + drop-tier classification (survey only)",
+  "state": "MERGED",
+  "merged_at": "2026-05-21T02:43:14Z",
+  "head_ref": "shard/tick-0226z-52-stash-survey-otto-cli-2026-05-21"
+}

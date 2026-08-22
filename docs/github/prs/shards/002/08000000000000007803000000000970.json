@@ -1,0 +1,15 @@
+{
+  "pr_number": 2416,
+  "archive_path": "docs/history/pr-reviews/PR-2416-feat-b-0051-2-smallest-safe-slice-pure-ts-if-filter-types-operator-preservation-.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_lqPF",
+    "thread:PRRT_kwDOSF9kNM6A38Ng"
+  ],
+  "fetched_at": "2026-05-10T04:50:23.322Z",
+  "schema_version": "v1",
+  "commit_sha": "ea4384e9223eae45a3d711d98a1160a071e0c190",
+  "title": "feat(B-0051.2): smallest safe slice — pure-TS IF-filter types + operator-preservation validator stub for isomorphism catalog (re-decomposed)",
+  "state": "MERGED",
+  "merged_at": "2026-05-10T04:50:08Z",
+  "head_ref": "claim/B-0051.2-isomorphism-catalog-smallest-ts-slice"
+}

@@ -1,0 +1,19 @@
+{
+  "pr_number": 3504,
+  "archive_path": "docs/history/pr-reviews/PR-3504-shard-tick-1427z-pr-3499-merged-2-stale-threads-cleared-on-pr-3500.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7Bpdmz",
+    "comment:PRRC_kwDOSF9kNM7Bpdn4",
+    "comment:PRRC_kwDOSF9kNM7BqwIM",
+    "comment:PRRC_kwDOSF9kNM7BqwM4",
+    "thread:PRRT_kwDOSF9kNM6CYwBn",
+    "thread:PRRT_kwDOSF9kNM6CYwCX"
+  ],
+  "fetched_at": "2026-05-15T15:24:01.328Z",
+  "schema_version": "v1",
+  "commit_sha": "4d60e12355f9c0dacc3c6f4f665f81d3607f7ba9",
+  "title": "shard(tick): 1427Z — PR #3499 merged; 2 stale threads cleared on PR #3500",
+  "state": "MERGED",
+  "merged_at": "2026-05-15T15:23:41Z",
+  "head_ref": "shard/tick-1427z-otto-cli-2026-05-15"
+}

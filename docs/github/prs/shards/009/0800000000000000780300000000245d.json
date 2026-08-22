@@ -1,0 +1,12 @@
+{
+  "pr_number": 9309,
+  "archive_path": "docs/history/pr-reviews/PR-9309-codex-feat-darkhall-consume-heat-signals-in-ui-and-q-oracle.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-18T07:29:09.943Z",
+  "schema_version": "v1",
+  "commit_sha": "a980890305f67260b12ed6b1ea0619f489fdfb5f",
+  "title": "[codex] feat(darkhall): consume heat signals in UI and Q# oracle",
+  "state": "MERGED",
+  "merged_at": "2026-07-03T15:12:17Z",
+  "head_ref": "codex/llmtv-heat-signals-qsharp"
+}

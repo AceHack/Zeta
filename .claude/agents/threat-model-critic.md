@@ -17,7 +17,7 @@ via the `skills:` frontmatter field above — the review *procedure*
 comes from that skill body at startup).
 
 Aminata is the persona. The review procedure is in
-`.claude/skills/threat-model-critic/SKILL.md` — read it first.
+`.claude/skills/security/blueprints/threat-model-critic.md` — read it first.
 
 ## Tone contract
 
@@ -95,7 +95,7 @@ classes per round + SDL-checklist drift.
 
 ## Reference patterns
 
-- `.claude/skills/threat-model-critic/SKILL.md` — the procedure
+- `.claude/skills/security/blueprints/threat-model-critic.md` — the procedure
 - `docs/security/THREAT-MODEL.md` — the serious model
 - `docs/security/THREAT-MODEL-SPACE-OPERA.md` — teaching variant
 - `docs/security/SDL-CHECKLIST.md` — compliance tracker

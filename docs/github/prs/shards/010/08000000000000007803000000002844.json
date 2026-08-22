@@ -1,0 +1,12 @@
+{
+  "pr_number": 10308,
+  "archive_path": "docs/history/pr-reviews/PR-10308-mutation-the-oracle-was-unsound-exit-0-conflated-three-situations.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-11T14:40:41.550Z",
+  "schema_version": "v1",
+  "commit_sha": "bacd9a937e13922fc626c015412af8abacc87fff",
+  "title": "mutation: the oracle was unsound — exit 0 conflated three situations",
+  "state": "MERGED",
+  "merged_at": "2026-08-11T14:40:01Z",
+  "head_ref": "mutation-oracle-unresolved"
+}

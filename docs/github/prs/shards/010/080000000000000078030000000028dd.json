@@ -1,0 +1,12 @@
+{
+  "pr_number": 10461,
+  "archive_path": "docs/history/pr-reviews/PR-10461-feat-bayesian-a-bound-carries-its-justification-internal-type-no-public-surface.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-14T00:32:36.389Z",
+  "schema_version": "v1",
+  "commit_sha": "8114b2cf7c26c55ea168357c04a9d40c7f3eebd3",
+  "title": "feat(bayesian): a bound carries its justification — internal type, no public surface",
+  "state": "MERGED",
+  "merged_at": "2026-08-14T00:21:51Z",
+  "head_ref": "ilyana/bound-justification-type"
+}

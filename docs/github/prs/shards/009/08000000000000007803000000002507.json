@@ -1,0 +1,12 @@
+{
+  "pr_number": 9479,
+  "archive_path": "docs/history/pr-reviews/PR-9479-docs-ferry-51-good-confirmed-the-dream-archive-decidability-tests-shadow.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-04T18:48:41.620Z",
+  "schema_version": "v1",
+  "commit_sha": "8168e8d58c48e78df5e18b743a2f5f89110bff0b",
+  "title": "docs(ferry): 51% good confirmed + the dream-archive decidability tests (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-04T18:48:12Z",
+  "head_ref": "otto/51-good-confirmed-plus-dream-archive-tests"
+}

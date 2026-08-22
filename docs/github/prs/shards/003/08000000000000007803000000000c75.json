@@ -1,0 +1,12 @@
+{
+  "pr_number": 3189,
+  "archive_path": "docs/history/pr-reviews/PR-3189-shard-tick-1903z-razor-cadence-batch-6-4-foundational-rules-20-20-live.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-14T19:07:29.321Z",
+  "schema_version": "v1",
+  "commit_sha": "8391f6e489d10b85e375de2d892bad1a65f011ca",
+  "title": "shard(tick): 1903Z — razor-cadence batch 6 (4 foundational rules, 20/20 LIVE)",
+  "state": "MERGED",
+  "merged_at": "2026-05-14T19:07:02Z",
+  "head_ref": "shard/tick-1903Z-razor-cadence-batch6-otto-cli-2026-05-14"
+}

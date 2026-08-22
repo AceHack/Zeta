@@ -1,0 +1,12 @@
+{
+  "pr_number": 6773,
+  "archive_path": "docs/history/pr-reviews/PR-6773-feat-command-roadmap-1-data-plane-command-core-dbcommand-du-interpreter-core-lib.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-07T09:45:17.275Z",
+  "schema_version": "v1",
+  "commit_sha": "887b19344f2461d0283f78fb627339be4b3a917a",
+  "title": "feat(command/roadmap-#1): data-plane command core — DbCommand DU + interpreter (core-library-first)",
+  "state": "MERGED",
+  "merged_at": "2026-06-07T09:44:59Z",
+  "head_ref": "otto/command-core-slice-1-data-plane-verbs"
+}

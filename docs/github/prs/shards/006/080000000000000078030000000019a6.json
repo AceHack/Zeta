@@ -1,0 +1,12 @@
+{
+  "pr_number": 6566,
+  "archive_path": "docs/history/pr-reviews/PR-6566-backlog-b-0643-1-ksk-defensive-architecture-build-row-p1-shields-not-cages-threa.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-02T14:02:18.232Z",
+  "schema_version": "v1",
+  "commit_sha": "49ba4cc0681dcfc68e5037ba8f5d81fca0293664",
+  "title": "backlog(B-0643.1): KSK defensive architecture build row [P1] — shields-not-cages · threat-level rings · Reticulum-hubs · anti-monopoly-BFT-4x4 · opt-in-bus-lane",
+  "state": "MERGED",
+  "merged_at": "2026-06-02T14:01:51Z",
+  "head_ref": "otto-cli/b0643-1-ksk-defensive-architecture-build-2026-06-02"
+}

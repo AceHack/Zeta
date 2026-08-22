@@ -1,0 +1,12 @@
+{
+  "pr_number": 5118,
+  "archive_path": "docs/history/pr-reviews/PR-5118-feat-b-0792-iter-5-3-prompt-for-initial-password-at-install-time-not-default-zet.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-26T07:03:01.775Z",
+  "schema_version": "v1",
+  "commit_sha": "31218c4764b7de2ca90d1b06cd0d2b4e291b3fb0",
+  "title": "feat(B-0792 iter-5.3): prompt-for-initial-password at install-time (not default zeta-change-me); injected-hashedpassword.nix substrate (Aaron 2026-05-26)",
+  "state": "MERGED",
+  "merged_at": "2026-05-26T07:02:41Z",
+  "head_ref": "otto-cli/iter53-prompt-password-instead-of-default-zeta-change-me-2026-05-26"
+}

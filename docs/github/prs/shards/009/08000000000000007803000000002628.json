@@ -1,0 +1,12 @@
+{
+  "pr_number": 9768,
+  "archive_path": "docs/history/pr-reviews/PR-9768-docs-research-radio-to-garage-perfection-erases-the-signature-imperfection-prese.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-13T13:14:56.268Z",
+  "schema_version": "v1",
+  "commit_sha": "151d200dd359a6f6201c482232bfd7d9f26e619c",
+  "title": "docs(research): radio-to-garage — perfection erases the signature, imperfection preserves it (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-13T13:14:23Z",
+  "head_ref": "shadow-radio-to-garage-arc"
+}

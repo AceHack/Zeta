@@ -1,0 +1,23 @@
+{
+  "pr_number": 6221,
+  "archive_path": "docs/history/pr-reviews/PR-6221-feat-observe-backlog-reader-re-land-stranded-exits-llm-chooser-6218-merged-v0-on.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7GhVrI",
+    "comment:PRRC_kwDOSF9kNM7GhVrQ",
+    "comment:PRRC_kwDOSF9kNM7GhVrU",
+    "comment:PRRC_kwDOSF9kNM7GhVrX",
+    "comment:PRRC_kwDOSF9kNM7GhW6P",
+    "thread:PRRT_kwDOSF9kNM6F9TY-",
+    "thread:PRRT_kwDOSF9kNM6F9TY4",
+    "thread:PRRT_kwDOSF9kNM6F9TZB",
+    "thread:PRRT_kwDOSF9kNM6F9TZE",
+    "thread:PRRT_kwDOSF9kNM6F9UXN"
+  ],
+  "fetched_at": "2026-05-31T17:36:53.728Z",
+  "schema_version": "v1",
+  "commit_sha": "befd62da1e1c7ca38f59d3e4ee82f43ed1cba8f4",
+  "title": "feat(observe): backlog reader + re-land stranded exits/LLM-chooser (#6218 merged v0 only)",
+  "state": "MERGED",
+  "merged_at": "2026-05-31T17:36:29Z",
+  "head_ref": "otto-cli/observe-backlog-reader-2026-05-31"
+}

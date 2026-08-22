@@ -1,0 +1,14 @@
+{
+  "id": "080d00b1604bc010a0130008fd22b2e2",
+  "at": "2026-08-18T18:39:39.896Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M0B2R2BQ087G0R000EC2E9Y",
+    "type": "task",
+    "title": "Widen lint-discharge-certificate-consistency to the live section-A phrasing (PROVEN / FULL PROVEN), which currently matches zero rows",
+    "slug": "widen-lint-discharge-certificate-consistency-to-the-live-sec",
+    "priority": "P2",
+    "filename": "081M0B2R2BQ087G0R000EC2E9Y-widen-lint-discharge-certificate-consistency-to-the-live-sec.md"
+  }
+}

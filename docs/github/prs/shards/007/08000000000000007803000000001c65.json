@@ -1,0 +1,12 @@
+{
+  "pr_number": 7269,
+  "archive_path": "docs/history/pr-reviews/PR-7269-docs-research-ferry-zeta-hardware-network-map-consent-only-self-reg-declared-nev.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-09T13:11:51.011Z",
+  "schema_version": "v1",
+  "commit_sha": "0b85fdd443b48552ae2c25eda8f8d75e4e3e610e",
+  "title": "docs(research)+ferry: Zeta hardware network map — consent-only (self-reg + declared, never scan), Comet+nodes, hardware-onboard blueprint, day 0/1/2/100",
+  "state": "MERGED",
+  "merged_at": "2026-06-09T13:11:26Z",
+  "head_ref": "otto/research-zeta-hardware-network-map-consent-only-blueprint-day0-1-2-100"
+}

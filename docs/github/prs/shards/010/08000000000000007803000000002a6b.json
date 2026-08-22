@@ -1,0 +1,12 @@
+{
+  "pr_number": 10859,
+  "archive_path": "docs/history/pr-reviews/PR-10859-docs-research-the-typescript-half-of-081m03ckbbx087g0r003m24fgg-has-no-far-shore.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-16T14:04:57.252Z",
+  "schema_version": "v1",
+  "commit_sha": "f0ee2ef19eb5fb89eb7a7981d6160808ecc9bba5",
+  "title": "docs(research): the TypeScript half of 081M03CKBBX087G0R003M24FGG has no far shore — measured, and nothing built",
+  "state": "MERGED",
+  "merged_at": "2026-08-16T14:04:22Z",
+  "head_ref": "shadow/ts-bayes-scheduler-edge-audit"
+}

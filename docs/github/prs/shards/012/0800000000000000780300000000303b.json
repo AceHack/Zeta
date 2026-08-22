@@ -1,0 +1,12 @@
+{
+  "pr_number": 12347,
+  "archive_path": "docs/history/pr-reviews/PR-12347-book-raw-11-the-primary-artifact-surfaced-attribution-promoted-from-testimony-to.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-19T09:55:52.668Z",
+  "schema_version": "v1",
+  "commit_sha": "5f4a7236162446f1170a355f689e06f71459c7c7",
+  "title": "book(raw): §11 — the primary artifact surfaced; attribution promoted from testimony to record",
+  "state": "MERGED",
+  "merged_at": "2026-08-19T09:55:12Z",
+  "head_ref": "shadow/book-acehack-primary-artifact-found"
+}

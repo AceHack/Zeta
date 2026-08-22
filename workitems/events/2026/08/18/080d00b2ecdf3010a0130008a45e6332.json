@@ -1,0 +1,14 @@
+{
+  "id": "080d00b2ecdf3010a0130008a45e6332",
+  "at": "2026-08-18T19:33:48.646Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M0B5V6Z5087G0R0026RANJ3",
+    "type": "task",
+    "title": "YubiHSM2 SDK on Linux nodes: nixpkgs module, udev rule, connector unit, and the NixOS pkcs11 path the probe cannot see",
+    "slug": "yubihsm2-sdk-on-linux-nodes-nixpkgs-module-udev-rule-connect",
+    "priority": "P2",
+    "filename": "081M0B5V6Z5087G0R0026RANJ3-yubihsm2-sdk-on-linux-nodes-nixpkgs-module-udev-rule-connect.md"
+  }
+}

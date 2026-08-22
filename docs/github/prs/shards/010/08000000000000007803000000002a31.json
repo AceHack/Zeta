@@ -1,0 +1,12 @@
+{
+  "pr_number": 10801,
+  "archive_path": "docs/history/pr-reviews/PR-10801-add-grok-bot-roster-map-harness-portable-personas.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-16T14:05:20.262Z",
+  "schema_version": "v1",
+  "commit_sha": "8bb84cda02c52293c09ac876b0a57c4e6a7d8e4e",
+  "title": "Add Grok Bot roster map (harness-portable personas)",
+  "state": "MERGED",
+  "merged_at": "2026-08-16T14:04:46Z",
+  "head_ref": "claim/grok-bot-roster-2026-08-15"
+}

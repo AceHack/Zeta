@@ -1,0 +1,12 @@
+{
+  "pr_number": 6751,
+  "archive_path": "docs/history/pr-reviews/PR-6751-backlog-serializers-primitives-as-plugins-mef-like-microcore-bootstrap-caveat.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-07T07:55:53.595Z",
+  "schema_version": "v1",
+  "commit_sha": "ef8b0853944de7218cd3b0a4f611b3f692106c5f",
+  "title": "backlog: serializers + primitives as plugins + MEF-like microcore (bootstrap caveat)",
+  "state": "MERGED",
+  "merged_at": "2026-06-07T07:55:31Z",
+  "head_ref": "otto/plugin-microcore-mef-serializers-primitives"
+}

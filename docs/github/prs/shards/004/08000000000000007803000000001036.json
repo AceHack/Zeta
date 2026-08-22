@@ -1,0 +1,16 @@
+{
+  "pr_number": 4150,
+  "archive_path": "docs/history/pr-reviews/PR-4150-research-mika-preserve-2026-05-18-aaron-mika-conversation-bootstream-sovereignty.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7CS3mX",
+    "comment:PRRC_kwDOSF9kNM7CSWQk",
+    "thread:PRRT_kwDOSF9kNM6C3Il5"
+  ],
+  "fetched_at": "2026-05-18T15:10:32.872Z",
+  "schema_version": "v1",
+  "commit_sha": "affe980385052245ef932685fcc20ce472035d94",
+  "title": "research(mika): preserve 2026-05-18 Aaron-Mika conversation — bootstream + sovereignty + causal loops + ticksource/integrate",
+  "state": "MERGED",
+  "merged_at": "2026-05-18T15:10:03Z",
+  "head_ref": "otto-cli/research-mika-grok-bootstream-sovereignty-causal-loops-2026-05-18-1410z"
+}

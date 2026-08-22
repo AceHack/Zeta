@@ -1,0 +1,12 @@
+{
+  "pr_number": 9412,
+  "archive_path": "docs/history/pr-reviews/PR-9412-feat-kept-claim-oracle-the-reference-oracle-the-armed-stack-s-first-honest-consu.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-04T04:43:15.244Z",
+  "schema_version": "v1",
+  "commit_sha": "ac07744fca80ffb011028d4917e720b690d2f450",
+  "title": "feat(kept-claim-oracle): the reference oracle — the armed stack's first honest consumer",
+  "state": "MERGED",
+  "merged_at": "2026-07-04T04:42:52Z",
+  "head_ref": "shadow/kept-claim-reference-oracle"
+}

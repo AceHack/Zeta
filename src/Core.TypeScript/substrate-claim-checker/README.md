@@ -34,9 +34,9 @@ empirical-output drift.
 ## Usage
 
 ```bash
-bun tools/substrate-claim-checker/check-counts.ts <file>
-bun tools/substrate-claim-checker/check-counts.ts memory/feedback_*.md
-bun tools/substrate-claim-checker/check-convention.ts docs/DECISIONS/*.md
+bun src/Core.TypeScript/substrate-claim-checker/check-counts.ts <file>
+bun src/Core.TypeScript/substrate-claim-checker/check-counts.ts memory/feedback_*.md
+bun src/Core.TypeScript/substrate-claim-checker/check-convention.ts docs/DECISIONS/*.md
 ```
 
 Exit code 0 = no drift detected (warnings alone are non-blocking per the v0.6 severity model — see "v0.6 — gitignore awareness for existence-drift" below). Exit code 1 = drift detected (or
@@ -167,8 +167,8 @@ Detected within the line + ±1 line context window.
 ### Usage
 
 ```
-bun tools/substrate-claim-checker/check-existence.ts <file>
-bun tools/substrate-claim-checker/check-existence.ts <file1> <file2> ...
+bun src/Core.TypeScript/substrate-claim-checker/check-existence.ts <file>
+bun src/Core.TypeScript/substrate-claim-checker/check-existence.ts <file1> <file2> ...
 ```
 
 Exit codes match check-counts.ts: `0` clean, `1` drift detected or input error.
@@ -200,7 +200,7 @@ The third sub-class checker, covering **path-form drift** — when the same phys
 
 A document references the same file using different string forms:
 
-- `tools/substrate-claim-checker/check-counts.ts` on line 3
+- `src/Core.TypeScript/substrate-claim-checker/check-counts.ts` on line 3
 - `check-counts.ts` on line 7
 
 Both resolve to the same on-disk file, but a reader may not realize they're the same, and a grep for the full path misses the bare form.
@@ -217,8 +217,8 @@ Non-resolving paths are skipped (that's `check-existence.ts`'s domain).
 ### Usage
 
 ```bash
-bun tools/substrate-claim-checker/check-path-forms.ts <file>
-bun tools/substrate-claim-checker/check-path-forms.ts <file1> <file2> ...
+bun src/Core.TypeScript/substrate-claim-checker/check-path-forms.ts <file>
+bun src/Core.TypeScript/substrate-claim-checker/check-path-forms.ts <file1> <file2> ...
 ```
 
 Exit codes: `0` clean, `1` drift detected or input error.
@@ -228,7 +228,7 @@ Exit codes: `0` clean, `1` drift detected or input error.
 - **Same-directory prose vs usage-example forms**: a README documenting
   its own directory naturally uses bare filenames in prose (`check-counts.ts`)
   and fully-qualified paths in usage examples
-  (`tools/substrate-claim-checker/check-counts.ts`). Both are intentional.
+  (`src/Core.TypeScript/substrate-claim-checker/check-counts.ts`). Both are intentional.
   v1 candidate: exempt paths inside fenced code blocks from grouping, since
   usage examples conventionally show repo-root-relative invocations.
 
@@ -267,8 +267,8 @@ matches.
 ### Usage
 
 ```bash
-bun tools/substrate-claim-checker/check-cross-surface.ts <file>
-bun tools/substrate-claim-checker/check-cross-surface.ts <file1> <file2> ...
+bun src/Core.TypeScript/substrate-claim-checker/check-cross-surface.ts <file>
+bun src/Core.TypeScript/substrate-claim-checker/check-cross-surface.ts <file1> <file2> ...
 ```
 
 Exit codes: `0` clean, `1` drift detected or input error.
@@ -333,8 +333,8 @@ is a 1-line dispatch each; deferred to follow-up slices per the
 ### Usage
 
 ```bash
-bun tools/substrate-claim-checker/check-self-recursive.ts <file>
-bun tools/substrate-claim-checker/check-self-recursive.ts <file> ...
+bun src/Core.TypeScript/substrate-claim-checker/check-self-recursive.ts <file>
+bun src/Core.TypeScript/substrate-claim-checker/check-self-recursive.ts <file> ...
 ```
 
 Exit codes: `0` clean (or no `self-check:` directive); `1` drift

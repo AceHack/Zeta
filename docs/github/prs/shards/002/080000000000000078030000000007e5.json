@@ -1,0 +1,12 @@
+{
+  "pr_number": 2021,
+  "archive_path": "docs/history/pr-reviews/PR-2021-fix-b-0285-close-arena-fs-landed.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-08T03:31:21.590Z",
+  "schema_version": "v1",
+  "commit_sha": "d530fa34d7f0fe65c357e112b2661e10d39ca63d",
+  "title": "fix(B-0285): close — Arena.fs landed",
+  "state": "MERGED",
+  "merged_at": "2026-05-08T03:31:08Z",
+  "head_ref": "fix/b0285-close"
+}

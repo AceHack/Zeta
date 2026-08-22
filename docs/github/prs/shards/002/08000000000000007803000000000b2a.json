@@ -1,0 +1,12 @@
+{
+  "pr_number": 2858,
+  "archive_path": "docs/history/pr-reviews/PR-2858-docs-memory-aaron-s-canonical-8-step-conversation-steering-methodology-find-acto.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-12T20:19:07.430Z",
+  "schema_version": "v1",
+  "commit_sha": "7aae9ea17ca63e98ff29a47f0e2079fa0acb63db",
+  "title": "docs(memory): Aaron's canonical 8-step conversation-steering methodology — find actor-type-shape + bounded-context + force parameter update without calling them a liar + co-conspirator framing (Aaron 2026-05-12)",
+  "state": "MERGED",
+  "merged_at": "2026-05-12T20:18:46Z",
+  "head_ref": "docs/aaron-canonical-methodology-find-actor-type-shape-generate-bounded-context-response-force-parameter-update-or-self-contradiction-without-calling-them-liar-2026-05-12"
+}

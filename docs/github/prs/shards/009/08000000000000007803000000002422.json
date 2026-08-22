@@ -1,0 +1,12 @@
+{
+  "pr_number": 9250,
+  "archive_path": "docs/history/pr-reviews/PR-9250-feat-lean4-adj-ctl-orthogonality-idempotent-monotone-non-invertible-p3.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-03T01:22:30.046Z",
+  "schema_version": "v1",
+  "commit_sha": "ca3be32ba22852816419d9e62f8e5fbcc4bb357e",
+  "title": "feat(lean4): Adj ⊥ Ctl orthogonality — idempotent+monotone ⇒ non-invertible (P3)",
+  "state": "MERGED",
+  "merged_at": "2026-07-03T01:22:04Z",
+  "head_ref": "soraya/phase5-ferry-ledger-b-membrane"
+}

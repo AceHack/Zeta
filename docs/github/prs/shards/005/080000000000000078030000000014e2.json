@@ -1,0 +1,12 @@
+{
+  "pr_number": 5346,
+  "archive_path": "docs/history/pr-reviews/PR-5346-docs-backlog-b-0833-installer-interactive-login-vs-baked-in-keys-ci-test-tension.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-26T23:06:14.745Z",
+  "schema_version": "v1",
+  "commit_sha": "fee9053c4136e6df2a0fd9bd98f2139f16a429ac",
+  "title": "docs(backlog): B-0833 — installer interactive-login vs baked-in-keys CI-test tension (resolve without shipping credentials on ISO)",
+  "state": "MERGED",
+  "merged_at": "2026-05-26T23:05:54Z",
+  "head_ref": "otto/b-0833-interactive-login-vs-baked-in-keys-ci-test-tension-aaron-2026-05-26"
+}

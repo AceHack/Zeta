@@ -1,0 +1,12 @@
+{
+  "pr_number": 9293,
+  "archive_path": "docs/history/pr-reviews/PR-9293-feat-netlist-column-b-alu-completion-sub-bitwise-comparator-each-proven-exhausti.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-03T05:34:27.068Z",
+  "schema_version": "v1",
+  "commit_sha": "50da883213f77d49e46d801cc0f9a5a36a6ffdcd",
+  "title": "feat(netlist): Column B — ALU completion (SUB, bitwise, comparator), each proven exhaustively (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-03T05:34:01Z",
+  "head_ref": "otto/netlist-alu-sub-bitwise-compare"
+}

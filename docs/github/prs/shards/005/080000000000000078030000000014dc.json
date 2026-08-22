@@ -1,0 +1,12 @@
+{
+  "pr_number": 5340,
+  "archive_path": "docs/history/pr-reviews/PR-5340-docs-release-merged-codex-claim-files.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-26T22:37:38.921Z",
+  "schema_version": "v1",
+  "commit_sha": "b0b023624cbd04d8badb13e1a73273c211a5ec47",
+  "title": "docs: release merged Codex claim files",
+  "state": "MERGED",
+  "merged_at": "2026-05-26T22:37:22Z",
+  "head_ref": "codex/release-merged-codex-claims-20260526"
+}

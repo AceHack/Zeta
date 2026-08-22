@@ -1,0 +1,19 @@
+{
+  "pr_number": 4004,
+  "archive_path": "docs/history/pr-reviews/PR-4004-docs-hygiene-endorse-hybrid-shard-format-pipe-row-h1-body-per-b-0529-option-3.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7B8b-4",
+    "comment:PRRC_kwDOSF9kNM7B8b-z",
+    "comment:PRRC_kwDOSF9kNM7B8g26",
+    "comment:PRRC_kwDOSF9kNM7B8g2M",
+    "thread:PRRT_kwDOSF9kNM6CmvJs",
+    "thread:PRRT_kwDOSF9kNM6CmvJw"
+  ],
+  "fetched_at": "2026-05-17T01:50:11.299Z",
+  "schema_version": "v1",
+  "commit_sha": "be53859b82ac22902dad52e6dd353e6d431340df",
+  "title": "docs(hygiene): endorse hybrid shard format (pipe-row + H1 body) per B-0529 Option 3",
+  "state": "MERGED",
+  "merged_at": "2026-05-17T01:49:48Z",
+  "head_ref": "otto/shard-schema-hybrid-readme-2026-05-17"
+}

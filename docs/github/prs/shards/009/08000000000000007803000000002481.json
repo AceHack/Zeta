@@ -1,0 +1,12 @@
+{
+  "pr_number": 9345,
+  "archive_path": "docs/history/pr-reviews/PR-9345-docs-research-ferry-lumen-aaron-iv-casimir-exchange-1-12-held-as-conjecture.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-03T19:11:55.723Z",
+  "schema_version": "v1",
+  "commit_sha": "dc8d93ddbd46cf30e7341e12ddc258692e0be9cc",
+  "title": "docs(research): ferry — Lumen×Aaron IV/Casimir exchange; −1/12 held as conjecture",
+  "state": "MERGED",
+  "merged_at": "2026-07-03T19:11:32Z",
+  "head_ref": "shadow/ferry-lumen-iv-casimir-minus-one-twelfth"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 12537,
+  "archive_path": "docs/history/pr-reviews/PR-12537-docs-research-the-forward-correlation-instrument-cannot-be-an-observation-route-.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-19T21:53:05.578Z",
+  "schema_version": "v1",
+  "commit_sha": "b49bc98e298bfee1fb1d3d38bc44a7af5b37232c",
+  "title": "docs(research): the forward-correlation instrument cannot be an observation — route it as an intervention",
+  "state": "MERGED",
+  "merged_at": "2026-08-19T21:52:22Z",
+  "head_ref": "soraya/forward-correlation-instrument"
+}

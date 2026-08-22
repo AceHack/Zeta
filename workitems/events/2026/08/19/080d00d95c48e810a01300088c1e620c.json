@@ -1,0 +1,14 @@
+{
+  "id": "080d00d95c48e810a01300088c1e620c",
+  "at": "2026-08-19T17:57:13.117Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M0DJQ28W087G0R003WZQ7KR",
+    "type": "task",
+    "title": "Discriminate the YubiHSM attestation issuer-DN claim: does the firmware COPY the template subject DN or SYNTHESIZE it",
+    "slug": "discriminate-the-yubihsm-attestation-issuer-dn-claim-does-th",
+    "priority": "P1",
+    "filename": "081M0DJQ28W087G0R003WZQ7KR-discriminate-the-yubihsm-attestation-issuer-dn-claim-does-th.md"
+  }
+}

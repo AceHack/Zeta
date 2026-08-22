@@ -1,0 +1,12 @@
+{
+  "pr_number": 5696,
+  "archive_path": "docs/history/pr-reviews/PR-5696-feat-b-0894-reboot-survival-worktree-location-discipline-flip-default-from-priva.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-28T04:39:22.401Z",
+  "schema_version": "v1",
+  "commit_sha": "d3962a9ef838671c049a09457926ced0d7f909f5",
+  "title": "feat(B-0894): reboot-survival worktree-location discipline — flip default from /private/tmp/ to ~/Documents/src/repos/Zeta/worktrees/",
+  "state": "MERGED",
+  "merged_at": "2026-05-28T04:39:02Z",
+  "head_ref": "otto-cli/b-0894-reboot-survival-worktree-location-2026-05-28"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 13361,
+  "archive_path": "docs/history/pr-reviews/PR-13361-fix-hygiene-retire-the-sealed-secrets-acknowledgement-its-defect-was-fixed.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-21T20:56:33.456Z",
+  "schema_version": "v1",
+  "commit_sha": "b213b8f89b1cd3c12bf073d4ecc1bf2482b9d49c",
+  "title": "fix(hygiene): retire the sealed-secrets acknowledgement — its defect was fixed",
+  "state": "MERGED",
+  "merged_at": "2026-08-21T20:55:53Z",
+  "head_ref": "fix/retire-sealed-secrets-acknowledgement"
+}

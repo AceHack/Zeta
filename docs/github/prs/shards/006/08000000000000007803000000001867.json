@@ -1,0 +1,12 @@
+{
+  "pr_number": 6247,
+  "archive_path": "docs/history/pr-reviews/PR-6247-test-ci-option-b-relocate-docker-data-root-to-d-so-windows-ci-can-install-ollama.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-31T20:24:16.465Z",
+  "schema_version": "v1",
+  "commit_sha": "750218f21f676e9d352263608298b6b1027979e7",
+  "title": "test(ci): option B — relocate docker data-root to D:\\ so Windows-CI can install ollama (B-0857)",
+  "state": "MERGED",
+  "merged_at": "2026-05-31T20:23:57Z",
+  "head_ref": "otto-windows/docker-windows-data-root-on-d-drive-option-b-2026-05-31"
+}

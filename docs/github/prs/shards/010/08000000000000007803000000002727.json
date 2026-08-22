@@ -1,0 +1,12 @@
+{
+  "pr_number": 10023,
+  "archive_path": "docs/history/pr-reviews/PR-10023-docs-research-the-permutation-null-family-two-violations-four-nulls-one-lattice.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-04T14:42:44.807Z",
+  "schema_version": "v1",
+  "commit_sha": "1517023c30b1be29a70fe620459a6542de1ffc8a",
+  "title": "docs(research): the permutation-null family — two violations, four nulls, one lattice",
+  "state": "MERGED",
+  "merged_at": "2026-08-04T14:42:14Z",
+  "head_ref": "docs/decorrelation-null-family-research-note-20260804"
+}

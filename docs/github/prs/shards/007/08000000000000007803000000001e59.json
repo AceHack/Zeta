@@ -1,0 +1,12 @@
+{
+  "pr_number": 7769,
+  "archive_path": "docs/history/pr-reviews/PR-7769-docs-trajectory-resume-round-3-fold-7767.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-11T19:33:47.060Z",
+  "schema_version": "v1",
+  "commit_sha": "6d4e125b34e10c4400773d355e504d2c5a47ef20",
+  "title": "docs(trajectory): RESUME round-3 fold (#7767)",
+  "state": "MERGED",
+  "merged_at": "2026-06-11T19:33:23Z",
+  "head_ref": "shadow-resume-fold-7767"
+}

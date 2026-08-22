@@ -1,0 +1,12 @@
+{
+  "pr_number": 8487,
+  "archive_path": "docs/history/pr-reviews/PR-8487-feat-observe-schema-evolution-golden-vectors-10-oracle-conformance-spec.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-16T08:48:02.667Z",
+  "schema_version": "v1",
+  "commit_sha": "4b593a8b617814099f5a961775a7849a5f58a15b",
+  "title": "feat(observe): schema evolution golden vectors — 10-oracle conformance spec",
+  "state": "MERGED",
+  "merged_at": "2026-06-16T08:47:33Z",
+  "head_ref": "alexa/schema-golden-vectors"
+}

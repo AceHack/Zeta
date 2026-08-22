@@ -1,0 +1,12 @@
+{
+  "pr_number": 6620,
+  "archive_path": "docs/history/pr-reviews/PR-6620-docs-b-1009-correct-z3-install-claim-z3-cli-is-installed-in-no-workflow-not-stry.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-02T18:49:21.159Z",
+  "schema_version": "v1",
+  "commit_sha": "f2d794af600a52b47a1e8240ec390844eff420c1",
+  "title": "docs(B-1009): correct z3-install claim — z3 CLI is installed in NO workflow (not stryker)",
+  "state": "MERGED",
+  "merged_at": "2026-06-02T18:48:54Z",
+  "head_ref": "otto-cli/b1009-correct-z3-not-installed-anywhere-claim-2026-06-02"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 6110,
+  "archive_path": "docs/history/pr-reviews/PR-6110-research-vision-install-graph-zflash-anti-entropy-converter-of-pcs-to-agora-subs.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-30T13:49:17.434Z",
+  "schema_version": "v1",
+  "commit_sha": "0a21512602bc82504d4c701bdc8f62b0220cc592",
+  "title": "research(vision): install-graph + zflash = anti-entropy converter of PCs to Agora substrate, self-healing",
+  "state": "MERGED",
+  "merged_at": "2026-05-30T13:49:00Z",
+  "head_ref": "otto/anti-entropy-converter-framing-2026-05-30"
+}

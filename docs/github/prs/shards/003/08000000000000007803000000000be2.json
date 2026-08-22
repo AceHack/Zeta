@@ -1,0 +1,19 @@
+{
+  "pr_number": 3042,
+  "archive_path": "docs/history/pr-reviews/PR-3042-feat-docs-rules-autonomous-loop-per-tick-discipline-canonicalized-3-surface-conv.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7A_LR4",
+    "comment:PRRC_kwDOSF9kNM7A_LTE",
+    "comment:PRRC_kwDOSF9kNM7A_RsA",
+    "thread:PRRT_kwDOSF9kNM6B5_t5",
+    "thread:PRRT_kwDOSF9kNM6B5_uy",
+    "thread:PRRT_kwDOSF9kNM6B6EeQ"
+  ],
+  "fetched_at": "2026-05-13T22:35:04.146Z",
+  "schema_version": "v1",
+  "commit_sha": "c3aae99f90ad0939c8a2ed0222812a13f7df3e72",
+  "title": "feat(docs/rules): autonomous-loop per-tick discipline canonicalized (3-surface converge)",
+  "state": "MERGED",
+  "merged_at": "2026-05-13T22:34:42Z",
+  "head_ref": "feat/autonomous-loop-per-tick-pointer-3-surface-2026-05-13"
+}

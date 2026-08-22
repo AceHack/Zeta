@@ -1,0 +1,12 @@
+{
+  "pr_number": 7878,
+  "archive_path": "docs/history/pr-reviews/PR-7878-feat-testloop-registry-b-1035-enforcement-sealed-room-audit-budget-refusal-that-.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-12T10:10:11.047Z",
+  "schema_version": "v1",
+  "commit_sha": "685de9f53af8aad1f86d72d3a1c5125abf174273",
+  "title": "feat(testloop,registry): B-1035 enforcement — SEALED-ROOM audit + budget refusal that re-plans (+ Stonehenge ferry)",
+  "state": "MERGED",
+  "merged_at": "2026-06-12T10:09:46Z",
+  "head_ref": "shadow-b1035-enforcement"
+}

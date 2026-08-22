@@ -1,0 +1,16 @@
+{
+  "pr_number": 3394,
+  "archive_path": "docs/history/pr-reviews/PR-3394-shard-tick-0903z-pr-3391-merged-pr-3392-partial-stale-pr-3393-sed-portability-fi.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7Bi0vA",
+    "comment:PRRC_kwDOSF9kNM7Bi6dr",
+    "thread:PRRT_kwDOSF9kNM6CT23N"
+  ],
+  "fetched_at": "2026-05-15T09:18:08.018Z",
+  "schema_version": "v1",
+  "commit_sha": "df3e20fbdee6846de6c3de8220dd25ab74d38e4b",
+  "title": "shard(tick): 0903Z — PR #3391 merged; PR #3392 partial-stale + PR #3393 sed portability fix",
+  "state": "MERGED",
+  "merged_at": "2026-05-15T09:17:47Z",
+  "head_ref": "shard/tick-0903z-otto-cli-2026-05-15"
+}

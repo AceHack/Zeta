@@ -1,0 +1,12 @@
+{
+  "pr_number": 10815,
+  "archive_path": "docs/history/pr-reviews/PR-10815-docs-regen-lifetimes-regeneration-relocates-lifetimes-it-does-not-replace-them.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-16T19:58:47.261Z",
+  "schema_version": "v1",
+  "commit_sha": "986ffbf004cb5a8e9471d55d32968a05c86675da",
+  "title": "docs(regen-lifetimes): regeneration relocates lifetimes, it does not replace them",
+  "state": "MERGED",
+  "merged_at": "2026-08-16T19:58:18Z",
+  "head_ref": "shadow/regen-lifetimes"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 2902,
+  "archive_path": "docs/history/pr-reviews/PR-2902-docs-memory-aaron-grants-otto-strategic-encryption-decision-authority-team-decid.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-13T02:03:56.549Z",
+  "schema_version": "v1",
+  "commit_sha": "a1c22b6892879d134b1ee33fbe7e1231a14ecf5b",
+  "title": "docs(memory): Aaron grants Otto STRATEGIC ENCRYPTION-DECISION AUTHORITY — team decides what to git-crypt; post-decision audit; civ-sim is strategic substrate; alter-trajectories reserve preserved",
+  "state": "MERGED",
+  "merged_at": "2026-05-13T02:03:32Z",
+  "head_ref": "aaron-grants-otto-strategic-encryption-decision-authority-team-decides-what-to-git-crypt-civsim-strategic-substrate-2026-05-13"
+}

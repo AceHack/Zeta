@@ -1,0 +1,12 @@
+{
+  "pr_number": 8374,
+  "archive_path": "docs/history/pr-reviews/PR-8374-fix-memory-add-required-frontmatter-to-heartbeat-memo.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-16T00:30:07.210Z",
+  "schema_version": "v1",
+  "commit_sha": "92aa461c728f49b8a0d54a139a3be02a0b5a063e",
+  "title": "fix(memory): add required frontmatter to heartbeat memo",
+  "state": "MERGED",
+  "merged_at": "2026-06-16T00:29:36Z",
+  "head_ref": "codex/fix-memory-frontmatter-8373"
+}

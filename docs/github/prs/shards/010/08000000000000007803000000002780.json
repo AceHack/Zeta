@@ -1,0 +1,12 @@
+{
+  "pr_number": 10112,
+  "archive_path": "docs/history/pr-reviews/PR-10112-book-editions-mandarin-companion-2-the-formation-full-length-zh.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-07T17:54:30.031Z",
+  "schema_version": "v1",
+  "commit_sha": "4a68a28ebf3a1918a937e8bb588a3ff9a5a1fdb8",
+  "title": "book(editions): Mandarin companion 2 — the Formation, full length (zh)",
+  "state": "MERGED",
+  "merged_at": "2026-08-07T17:53:48Z",
+  "head_ref": "book-zh-companion-formation"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 7876,
+  "archive_path": "docs/history/pr-reviews/PR-7876-fix-ci-aarch64-tcg-boot-budget-900s-1800s-the-budget-was-the-failure-not-the-boo.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-12T07:49:18.961Z",
+  "schema_version": "v1",
+  "commit_sha": "e7f34baefff0331bbfafeaa2bd6de1b227bdf8da",
+  "title": "fix(ci): aarch64 TCG boot budget 900s→1800s — the budget was the failure, not the boot",
+  "state": "MERGED",
+  "merged_at": "2026-06-12T07:48:53Z",
+  "head_ref": "shadow-tcg-timeout-bump"
+}

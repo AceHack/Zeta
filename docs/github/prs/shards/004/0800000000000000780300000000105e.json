@@ -1,0 +1,15 @@
+{
+  "pr_number": 4190,
+  "archive_path": "docs/history/pr-reviews/PR-4190-preserve-packets-30-31-aaron-direct-roles-as-hats-infinite-game-as-winning-carse.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7CZx5g",
+    "thread:PRRT_kwDOSF9kNM6C8kin"
+  ],
+  "fetched_at": "2026-05-18T19:36:18.374Z",
+  "schema_version": "v1",
+  "commit_sha": "547e6ed75672ebd155eaf66833ec065f32ec44d3",
+  "title": "preserve(packets-30-31+aaron-direct): roles-as-hats + infinite-game-as-winning (Carse) + society-governor/brakes = currently-overapplied human safety system (dual-function)",
+  "state": "MERGED",
+  "merged_at": "2026-05-18T19:35:55Z",
+  "head_ref": "shard/mika-packets-30-31-plus-society-governor-brakes-as-overapplied-safety-system-2026-05-18"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 13262,
+  "archive_path": "docs/history/pr-reviews/PR-13262-fix-full-ai-cluster-declare-check-the-wireguard-kernel-prerequisite-cilium-s-own.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-21T16:52:59.729Z",
+  "schema_version": "v1",
+  "commit_sha": "45c89e15161019c9bdb0105bb90cbc4811de89de",
+  "title": "fix(full-ai-cluster): declare + check the WireGuard kernel prerequisite Cilium's own values demand",
+  "state": "MERGED",
+  "merged_at": "2026-08-21T16:52:22Z",
+  "head_ref": "fix/cilium-wireguard-node-readiness"
+}

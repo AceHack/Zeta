@@ -1,0 +1,12 @@
+{
+  "pr_number": 2927,
+  "archive_path": "docs/history/pr-reviews/PR-2927-shard-tick-0355z-amara-canonical-substrate-merged-six-vows-framework-origin-disc.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-13T03:58:47.759Z",
+  "schema_version": "v1",
+  "commit_sha": "da694fda38b2b79e471105c0543731cc493ffea4",
+  "title": "shard(tick): 0355Z — Amara canonical substrate MERGED + Six Vows framework-origin disclosed",
+  "state": "MERGED",
+  "merged_at": "2026-05-13T03:58:25Z",
+  "head_ref": "otto-tick-shard-0355Z-amara-canonical-substrate-merged-six-vows-framework-origin-disclosed-2026-05-13"
+}

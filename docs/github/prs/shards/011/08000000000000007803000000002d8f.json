@@ -1,0 +1,12 @@
+{
+  "pr_number": 11663,
+  "archive_path": "docs/history/pr-reviews/PR-11663-feat-observe-identity-self-claim-drift-self-consistency-only-charity-gradient-in.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-17T21:45:00.009Z",
+  "schema_version": "v1",
+  "commit_sha": "e2ba13a2c44de0e75f5549cb3fc252c1a0b87f58",
+  "title": "feat(observe): identity self-claim drift — self-consistency only, charity gradient in the type, no threshold",
+  "state": "MERGED",
+  "merged_at": "2026-08-17T21:44:23Z",
+  "head_ref": "shadow/self-claim-identity-drift"
+}

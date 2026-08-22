@@ -1,0 +1,12 @@
+{
+  "pr_number": 9362,
+  "archive_path": "docs/history/pr-reviews/PR-9362-feat-shiva-gc-residency-transparent-delivery-message-passing-makes-the-runtime-d.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-03T20:50:03.891Z",
+  "schema_version": "v1",
+  "commit_sha": "f922050850958d90cca2f2563867eb93dd10618a",
+  "title": "feat(shiva-gc): residency-transparent delivery — message-passing makes the runtime distributed (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-03T20:49:41Z",
+  "head_ref": "otto/message-passing-distributed-runtime-deliver"
+}

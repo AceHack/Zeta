@@ -1,0 +1,12 @@
+{
+  "pr_number": 6985,
+  "archive_path": "docs/history/pr-reviews/PR-6985-docs-the-dark-hall-as-a-zeta-cell-metaphor-hidden-door-glows-on-entry-liminal-se.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-08T02:13:59.746Z",
+  "schema_version": "v1",
+  "commit_sha": "c1af08c2947ff2428e1187151080e13011f73c42",
+  "title": "docs: the Dark Hall as a Zeta cell metaphor (hidden door, glows on entry, liminal, selectively lit)",
+  "state": "MERGED",
+  "merged_at": "2026-06-08T02:13:41Z",
+  "head_ref": "otto/dark-hall-as-zeta-cell-metaphor"
+}

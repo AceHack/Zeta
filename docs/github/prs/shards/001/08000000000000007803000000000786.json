@@ -1,0 +1,21 @@
+{
+  "pr_number": 1926,
+  "archive_path": "docs/history/pr-reviews/PR-1926-research-reticulum-audio-sonar-distributions-with-802-11h-halo.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6-9u70",
+    "comment:PRRC_kwDOSF9kNM6-9u7t",
+    "comment:PRRC_kwDOSF9kNM6-9wsq",
+    "comment:PRRC_kwDOSF9kNM6-9wtI",
+    "thread:PRRT_kwDOSF9kNM6AaT57",
+    "thread:PRRT_kwDOSF9kNM6AaT6B",
+    "thread:PRRT_kwDOSF9kNM6AaVQM",
+    "thread:PRRT_kwDOSF9kNM6AaVQg"
+  ],
+  "fetched_at": "2026-05-07T18:37:12.634Z",
+  "schema_version": "v1",
+  "commit_sha": "d7c36001a620589e6f7119b9adc728e75e5aacd4",
+  "title": "research: Reticulum audio sonar distributions with 802.11h halo",
+  "state": "MERGED",
+  "merged_at": "2026-05-07T18:36:50Z",
+  "head_ref": "codex/reticulum-audio-sonar-distributions"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 8631,
+  "archive_path": "docs/history/pr-reviews/PR-8631-memory-cart-meaning-unbacked-cart-deception-incl-self-deception-and-that-s-what-.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-19T21:37:08.795Z",
+  "schema_version": "v1",
+  "commit_sha": "8064860c8537e1c35a7d96930105710277bc6d26",
+  "title": "memory(cart-meaning): unbacked cart = deception (incl. self-deception) — and that's what children's games are",
+  "state": "MERGED",
+  "merged_at": "2026-06-19T21:36:37Z",
+  "head_ref": "otto/cart-unbacked-is-a-childrens-game-deception-only-if-mistaken-real"
+}

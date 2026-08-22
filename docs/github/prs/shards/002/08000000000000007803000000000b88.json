@@ -1,0 +1,12 @@
+{
+  "pr_number": 2952,
+  "archive_path": "docs/history/pr-reviews/PR-2952-docs-memory-current-otto-md-2026-05-13-update-meta-loop-middle-path-3-layers-cas.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-13T06:26:24.480Z",
+  "schema_version": "v1",
+  "commit_sha": "96f574662845b4b8301b3963bb1b1f81aeb43712",
+  "title": "docs(memory): CURRENT-otto.md 2026-05-13 update — META-LOOP + middle path 3 layers + cascade pattern + 8 wrappers + B-0421 progress",
+  "state": "MERGED",
+  "merged_at": "2026-05-13T06:26:07Z",
+  "head_ref": "otto-current-md-2026-05-13-distill-session-substrate-meta-loops-middle-path-cascade-pattern-naming-2026-05-13"
+}

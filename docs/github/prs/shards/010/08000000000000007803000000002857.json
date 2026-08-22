@@ -1,0 +1,12 @@
+{
+  "pr_number": 10327,
+  "archive_path": "docs/history/pr-reviews/PR-10327-fix-ci-pin-mux-swarm-tick-actions-by-sha-the-last-blocker-on-the-required-gate.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-12T04:42:47.944Z",
+  "schema_version": "v1",
+  "commit_sha": "af3e60b72d72aab3ed2583d731bdaf136574c71b",
+  "title": "fix(ci): pin mux-swarm-tick actions by SHA — the last blocker on the required gate",
+  "state": "MERGED",
+  "merged_at": "2026-08-12T04:42:17Z",
+  "head_ref": "pin-mux-swarm-actions-by-sha"
+}

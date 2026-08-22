@@ -1,0 +1,12 @@
+{
+  "pr_number": 7814,
+  "archive_path": "docs/history/pr-reviews/PR-7814-fix-tsc-resolve-zflash-pathforkexecutionstep-watermark-erasablesyntaxonly-errors.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-11T22:21:38.622Z",
+  "schema_version": "v1",
+  "commit_sha": "f0762e97517d731b650c73460dc9cf5c6189ac77",
+  "title": "fix(tsc): resolve zflash PathForkExecutionStep + watermark erasableSyntaxOnly errors",
+  "state": "MERGED",
+  "merged_at": "2026-06-11T22:21:11Z",
+  "head_ref": "alexa/fix-tsc-zflash-watermark-2026-06-11"
+}

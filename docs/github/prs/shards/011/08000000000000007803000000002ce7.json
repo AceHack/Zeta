@@ -1,0 +1,12 @@
+{
+  "pr_number": 11495,
+  "archive_path": "docs/history/pr-reviews/PR-11495-feat-keys-crypto-agile-pq-key-type-registry-requested-but-unimplemented-is-refus.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-17T14:39:30.083Z",
+  "schema_version": "v1",
+  "commit_sha": "65c25d2789d2a0876b8f96172db9df05421e3783",
+  "title": "feat(keys): crypto-agile PQ key type registry — requested-but-unimplemented is REFUSED, never downgraded",
+  "state": "MERGED",
+  "merged_at": "2026-08-17T14:38:52Z",
+  "head_ref": "shadow/crypto-agile-pq-keychain"
+}

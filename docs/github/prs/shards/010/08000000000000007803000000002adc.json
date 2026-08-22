@@ -1,0 +1,12 @@
+{
+  "pr_number": 10972,
+  "archive_path": "docs/history/pr-reviews/PR-10972-fix-hygiene-layout-tolerance-last-block-wins-and-loud-block-disagreement.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-16T17:20:49.043Z",
+  "schema_version": "v1",
+  "commit_sha": "b0de6f38a476a5eb569e5a6ede38dc5c48e9b087",
+  "title": "fix(hygiene): layout tolerance, last-block-wins, and loud block disagreement",
+  "state": "MERGED",
+  "merged_at": "2026-08-16T17:20:14Z",
+  "head_ref": "shadow/agencysignature-layout-tolerance-last-wins-disagreement"
+}

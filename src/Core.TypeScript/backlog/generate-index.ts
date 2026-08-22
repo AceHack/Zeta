@@ -10,9 +10,9 @@
 // short pointer index sorted by (priority, id).
 //
 // Usage:
-//   bun tools/backlog/generate-index.ts              # writes docs/BACKLOG.md
-//   bun tools/backlog/generate-index.ts --check      # exit 2 if drift vs committed
-//   bun tools/backlog/generate-index.ts --stdout     # print to stdout, no write
+//   bun src/Core.TypeScript/backlog/generate-index.ts              # writes docs/BACKLOG.md
+//   bun src/Core.TypeScript/backlog/generate-index.ts --check      # exit 2 if drift vs committed
+//   bun src/Core.TypeScript/backlog/generate-index.ts --stdout     # print to stdout, no write
 //
 // Exit codes:
 //   0  success
@@ -123,7 +123,17 @@ function listBacklogFiles(tierDir: string): readonly string[] {
     if (!e.name.endsWith(".md")) continue; // accept all .md files (zetaid or legacy B-)
     out.push(join(tierDir, e.name));
   }
-  return out.sort((a, b) => basename(a).localeCompare(basename(b)));
+  // DECLARED SORT FIELD: identity, NOT time (see zeta-id/sort-key.ts). This site
+  // needs a stable total order so the generated index has reproducible bytes; it
+  // makes no claim about creation order, and it stays correct for any future id
+  // version or layout. `localeCompare` was culture-SENSITIVE (the PR #10381 bug
+  // class) and this directory deliberately mixes ZetaId- and legacy `B-`-prefixed
+  // names, so the collation is not decorative — ordinal codepoint order it is.
+  return out.sort((a, b) => {
+    const x = basename(a);
+    const y = basename(b);
+    return x < y ? -1 : x > y ? 1 : 0;
+  });
 }
 
 function checkboxFor(status: string): "[x]" | "[ ]" {

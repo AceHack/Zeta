@@ -1,0 +1,12 @@
+{
+  "pr_number": 8302,
+  "archive_path": "docs/history/pr-reviews/PR-8302-docs-closed-frame-safety-is-what-lets-the-love-scale-from-me-and-my-kids-to-all-.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-15T10:12:45.741Z",
+  "schema_version": "v1",
+  "commit_sha": "098af1588d6e5675ce6e6127d4a43c2bc1a65ee4",
+  "title": "docs(closed-frame): safety is what lets the love scale — from \"me and my kids\" to all humans",
+  "state": "MERGED",
+  "merged_at": "2026-06-15T10:12:16Z",
+  "head_ref": "otto/safety-lets-the-love-scale-from-kids-to-all-humans"
+}

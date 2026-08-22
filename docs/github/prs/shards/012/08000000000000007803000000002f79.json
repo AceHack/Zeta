@@ -1,0 +1,12 @@
+{
+  "pr_number": 12153,
+  "archive_path": "docs/history/pr-reviews/PR-12153-docs-soft-the-positive-residue-read-as-translation-changing-the-base-changes-whi.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-18T22:14:47.567Z",
+  "schema_version": "v1",
+  "commit_sha": "cbd3557ccf57cd65296aad35486a64d4423e36f5",
+  "title": "docs(soft): the positive residue read as translation — changing the base changes WHICH, not HOW MANY",
+  "state": "MERGED",
+  "merged_at": "2026-08-18T22:14:09Z",
+  "head_ref": "shadow/translation-residue"
+}

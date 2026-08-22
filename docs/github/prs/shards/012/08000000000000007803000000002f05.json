@@ -1,0 +1,12 @@
+{
+  "pr_number": 12037,
+  "archive_path": "docs/history/pr-reviews/PR-12037-fix-ci-bound-all-22-unbounded-actions-jobs-a-hung-install-sh-held-a-runner-slot-.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-19T10:00:38.205Z",
+  "schema_version": "v1",
+  "commit_sha": "01f4be1d1b671b61d8b66ff76fae7e6b094674aa",
+  "title": "fix(ci): bound all 22 unbounded Actions jobs — a hung install.sh held a runner slot 90+ minutes",
+  "state": "MERGED",
+  "merged_at": "2026-08-19T09:59:54Z",
+  "head_ref": "fix/ci-unbounded-workflow-job-timeouts"
+}

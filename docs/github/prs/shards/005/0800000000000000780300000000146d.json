@@ -1,0 +1,12 @@
+{
+  "pr_number": 5229,
+  "archive_path": "docs/history/pr-reviews/PR-5229-fix-b-0820-land-derivability-asymmetry-finding-helm-tricks-for-argocd-enrichment.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-26T17:16:21.454Z",
+  "schema_version": "v1",
+  "commit_sha": "fa1b9f4400df14d9209cc59781d52dc0d0ad0ebf",
+  "title": "fix(B-0820): land derivability-asymmetry finding + Helm-tricks-for-ArgoCD enrichment",
+  "state": "MERGED",
+  "merged_at": "2026-05-26T17:15:56Z",
+  "head_ref": "otto-cli/b0820-flux-engine-second-engine-flag-toggle-2026-05-26"
+}

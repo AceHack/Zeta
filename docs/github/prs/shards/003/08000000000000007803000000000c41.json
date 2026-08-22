@@ -1,0 +1,22 @@
+{
+  "pr_number": 3137,
+  "archive_path": "docs/history/pr-reviews/PR-3137-feat-b-0437-ux-of-math-panel-slice-2-non-orthogonal-bivector-slider.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7BPevg",
+    "comment:PRRC_kwDOSF9kNM7BPewS",
+    "comment:PRRC_kwDOSF9kNM7BPewu",
+    "comment:PRRC_kwDOSF9kNM7BPm6Z",
+    "comment:PRRC_kwDOSF9kNM7BPm9w",
+    "comment:PRRC_kwDOSF9kNM7BPnAi",
+    "thread:PRRT_kwDOSF9kNM6CF6B3",
+    "thread:PRRT_kwDOSF9kNM6CF6BF",
+    "thread:PRRT_kwDOSF9kNM6CF6Bo"
+  ],
+  "fetched_at": "2026-05-14T14:40:52.021Z",
+  "schema_version": "v1",
+  "commit_sha": "e7b35ad3fa9e4b1d5efafd8ef28bf04a86f5ca31",
+  "title": "feat(b-0437): UX-of-math panel — slice-2 non-orthogonal bivector slider",
+  "state": "MERGED",
+  "merged_at": "2026-05-14T14:40:33Z",
+  "head_ref": "feat/b-0437-ux-of-math-slice-2"
+}

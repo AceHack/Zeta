@@ -1,0 +1,17 @@
+{
+  "pr_number": 2580,
+  "archive_path": "docs/history/pr-reviews/PR-2580-docs-memory-zero-trust-four-primitives-who-what-how-where.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_rCPC",
+    "comment:PRRC_kwDOSF9kNM6_rCPH",
+    "thread:PRRT_kwDOSF9kNM6A8Mf_",
+    "thread:PRRT_kwDOSF9kNM6A8MgB"
+  ],
+  "fetched_at": "2026-05-11T00:00:20.491Z",
+  "schema_version": "v1",
+  "commit_sha": "a277f7e1ed52051b8b14f00941ce03d508d695df",
+  "title": "docs(memory): zero trust four primitives — WHO WHAT HOW WHERE",
+  "state": "MERGED",
+  "merged_at": "2026-05-11T00:00:07Z",
+  "head_ref": "docs/zero-trust-four-primitives-2026-05-10"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 6091,
+  "archive_path": "docs/history/pr-reviews/PR-6091-deps-bump-actions-checkout-from-4-2-2-to-6-0-2.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-30T07:18:00.560Z",
+  "schema_version": "v1",
+  "commit_sha": "f5b88a6730ea7fadab0e6c6f4298932640061693",
+  "title": "deps: Bump actions/checkout from 4.2.2 to 6.0.2",
+  "state": "MERGED",
+  "merged_at": "2026-05-30T07:17:38Z",
+  "head_ref": "dependabot/github_actions/actions/checkout-6.0.2"
+}

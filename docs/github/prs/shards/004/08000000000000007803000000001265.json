@@ -1,0 +1,15 @@
+{
+  "pr_number": 4709,
+  "archive_path": "docs/history/pr-reviews/PR-4709-docs-rules-sub-case-4-empirical-anchor-fresh-worktree-gitdir-prune-2026-05-23.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7ENvBl",
+    "thread:PRRT_kwDOSF9kNM6EQ5YC"
+  ],
+  "fetched_at": "2026-05-23T02:26:17.533Z",
+  "schema_version": "v1",
+  "commit_sha": "8514d3d6d92f188e180584a4f4cab7214e5784eb",
+  "title": "docs(rules): sub-case 4 empirical anchor — fresh-worktree gitdir-prune (2026-05-23)",
+  "state": "MERGED",
+  "merged_at": "2026-05-23T02:25:57Z",
+  "head_ref": "shard/sub-case-4-anchor-0220z-2026-05-23"
+}

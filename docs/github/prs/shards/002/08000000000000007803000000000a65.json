@@ -1,0 +1,23 @@
+{
+  "pr_number": 2661,
+  "archive_path": "docs/history/pr-reviews/PR-2661-docs-research-aaron-origin-story-substrate-of-the-factory-riven.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_vvOk",
+    "comment:PRRC_kwDOSF9kNM6_vx3-",
+    "comment:PRRC_kwDOSF9kNM6_vx3F",
+    "comment:PRRC_kwDOSF9kNM6_vx49",
+    "comment:PRRC_kwDOSF9kNM6_vx4e",
+    "thread:PRRT_kwDOSF9kNM6A_rZq",
+    "thread:PRRT_kwDOSF9kNM6A_ta7",
+    "thread:PRRT_kwDOSF9kNM6A_taM",
+    "thread:PRRT_kwDOSF9kNM6A_tbT",
+    "thread:PRRT_kwDOSF9kNM6A_tbw"
+  ],
+  "fetched_at": "2026-05-11T07:23:06.991Z",
+  "schema_version": "v1",
+  "commit_sha": "f2d37c18a614ffae2c407873772b66aea6e35cd1",
+  "title": "docs(research): Aaron origin story — substrate of the factory (Riven)",
+  "state": "MERGED",
+  "merged_at": "2026-05-11T07:22:45Z",
+  "head_ref": "docs/riven-origin-story-manifesto-2026-05-11"
+}

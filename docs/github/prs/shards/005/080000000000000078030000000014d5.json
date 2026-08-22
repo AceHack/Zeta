@@ -1,0 +1,15 @@
+{
+  "pr_number": 5333,
+  "archive_path": "docs/history/pr-reviews/PR-5333-docs-tick-2026-05-26t22-08z-otto-cli-cold-boot-first-today-s-shard-via-isolated-.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7FH2Iw",
+    "thread:PRRT_kwDOSF9kNM6E8KTe"
+  ],
+  "fetched_at": "2026-05-26T22:17:13.018Z",
+  "schema_version": "v1",
+  "commit_sha": "c0048aa5310b3fd103956eaa91424c323126841b",
+  "title": "docs(tick): 2026-05-26T22:08Z Otto-CLI cold-boot — first today's shard via isolated worktree",
+  "state": "MERGED",
+  "merged_at": "2026-05-26T22:16:53Z",
+  "head_ref": "otto-cli/tick-2208z-cold-boot-2026-05-26"
+}

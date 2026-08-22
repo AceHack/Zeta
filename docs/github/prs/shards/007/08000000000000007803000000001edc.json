@@ -1,0 +1,12 @@
+{
+  "pr_number": 7900,
+  "archive_path": "docs/history/pr-reviews/PR-7900-feat-shapes-shape-gc-ray-traced-reachability-the-17th-cartridge-b-1036-rung-4.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-12T12:01:27.529Z",
+  "schema_version": "v1",
+  "commit_sha": "bf54d4856d0e75e3e3d8a12552072c42bfcc92aa",
+  "title": "feat(shapes): shape-gc — ray-traced reachability, the 17th cartridge (B-1036 rung 4)",
+  "state": "MERGED",
+  "merged_at": "2026-06-12T12:01:03Z",
+  "head_ref": "shadow-shape-gc"
+}

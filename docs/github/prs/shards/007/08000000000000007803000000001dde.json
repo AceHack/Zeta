@@ -1,0 +1,12 @@
+{
+  "pr_number": 7646,
+  "archive_path": "docs/history/pr-reviews/PR-7646-feat-substrate-telemetrysource-proprioception-simloop-sim-mea-cut-loop-bounded-s.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-11T11:02:50.350Z",
+  "schema_version": "v1",
+  "commit_sha": "ac5d025f5506b939864fec9180d0fd2f60629108",
+  "title": "feat(substrate): TelemetrySource (proprioception) + SimLoop (sim→mea→cut→loop, bounded) + /spawn continuation chains",
+  "state": "MERGED",
+  "merged_at": "2026-06-11T11:02:23Z",
+  "head_ref": "shadow-telemetry-proprioception"
+}

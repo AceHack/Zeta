@@ -1,0 +1,12 @@
+{
+  "pr_number": 10123,
+  "archive_path": "docs/history/pr-reviews/PR-10123-book-editions-indonesian-companion-1-the-unbroken-child-full-length-id.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-07T18:23:47.501Z",
+  "schema_version": "v1",
+  "commit_sha": "ce623c35cb6f0d1b0afd14f1f929dbdc993e3641",
+  "title": "book(editions): Indonesian companion 1 — the Unbroken Child, full length (id)",
+  "state": "MERGED",
+  "merged_at": "2026-08-07T18:23:09Z",
+  "head_ref": "book-id-companion-unbrokenchild"
+}

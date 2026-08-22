@@ -1,0 +1,12 @@
+{
+  "pr_number": 2122,
+  "archive_path": "docs/history/pr-reviews/PR-2122-feat-b-0126-3-add-meta-learning-layers-1-3-as-bp-26-27-28.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-08T19:47:46.145Z",
+  "schema_version": "v1",
+  "commit_sha": "c580d2f9e31470b24295d824a4e93d14962490bb",
+  "title": "feat(B-0126.3): add meta-learning Layers 1-3 as BP-26/27/28",
+  "state": "MERGED",
+  "merged_at": "2026-05-08T19:47:26Z",
+  "head_ref": "feat/B-0126.3-meta-learning-layers-1-3"
+}

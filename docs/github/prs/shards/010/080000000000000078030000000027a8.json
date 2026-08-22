@@ -1,0 +1,12 @@
+{
+  "pr_number": 10152,
+  "archive_path": "docs/history/pr-reviews/PR-10152-feat-chsh-implement-chshband-loopholeflags-chshreadout-unblocks-alexa-task-a.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-08T19:39:38.018Z",
+  "schema_version": "v1",
+  "commit_sha": "ec14dfcf2669c1093078c2179e6f3768a23433cd",
+  "title": "feat(chsh): implement ChshBand + LoopholeFlags + ChshReadout (unblocks Alexa Task A)",
+  "state": "MERGED",
+  "merged_at": "2026-08-08T19:39:07Z",
+  "head_ref": "shadow/impl-chshband-loopholeflags"
+}

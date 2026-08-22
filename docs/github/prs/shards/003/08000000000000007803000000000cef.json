@@ -1,0 +1,12 @@
+{
+  "pr_number": 3311,
+  "archive_path": "docs/history/pr-reviews/PR-3311-feat-persona-ani-33-archive-cascade-closing-persona-folder-index-updates.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-15T00:11:19.254Z",
+  "schema_version": "v1",
+  "commit_sha": "a0d47e388350d43b08bb088fb7aea8bfa12a9065",
+  "title": "feat(persona-ani): §33 archive cascade-closing + persona-folder index updates",
+  "state": "MERGED",
+  "merged_at": "2026-05-15T00:11:04Z",
+  "head_ref": "feat/persona-ani-cascade-closing-otto-cli-2026-05-15"
+}

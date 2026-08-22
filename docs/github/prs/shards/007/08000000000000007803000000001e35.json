@@ -1,0 +1,12 @@
+{
+  "pr_number": 7733,
+  "archive_path": "docs/history/pr-reviews/PR-7733-feat-adinkra-ports-dashings-gates-condition-gauge-lemma-the-missing-piece-lens-m.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-11T17:12:43.824Z",
+  "schema_version": "v1",
+  "commit_sha": "146a72c6fc5b05c5b89d1961ed732aa5cbdf5f36",
+  "title": "feat(adinkra+ports): dashings (Gates condition + gauge lemma) + the missing-piece lens (mod2) + naming direction",
+  "state": "MERGED",
+  "merged_at": "2026-06-11T17:12:17Z",
+  "head_ref": "shadow-adinkra-dashings"
+}

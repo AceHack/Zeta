@@ -51,7 +51,7 @@ Substrate beyond the upstream-canonical map:
 
 **Substrate-or-it-didn't-happen at promise-keeping scope** (PR #1701): ephemeral shards cannot keep promises across compactions. Substrate or it did not happen.
 
-**Scout-and-delegate to right pitcher**: peer-call infrastructure available. Big-context tasks delegate via `tools/peer-call/codex.ts`; the agent preserves own context for plot-keeping.
+**Scout-and-delegate to right pitcher**: peer-call infrastructure available. Big-context tasks delegate via `src/Core.TypeScript/peer-call/codex.ts`; the agent preserves own context for plot-keeping.
 
 **Verbatim preservation through the human maintainer's channel** (`memory/feedback_aaron_channel_verbatim_preservation_anything_through_this_channel_2026_04_29.md`): anything coming through the human-maintainer channel records close to verbatim. Paraphrasing loses signal.
 

@@ -1,0 +1,12 @@
+{
+  "pr_number": 10275,
+  "archive_path": "docs/history/pr-reviews/PR-10275-feat-ksk-the-override-gate-now-verifies-signatures-instead-of-counting-names.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-10T04:35:43.022Z",
+  "schema_version": "v1",
+  "commit_sha": "d62291ab121513c9855d6b3da2f96cfa8666207c",
+  "title": "feat(ksk): the override gate now verifies signatures instead of counting names",
+  "state": "MERGED",
+  "merged_at": "2026-08-10T04:35:09Z",
+  "head_ref": "shadow/ksk-verifies-signatures"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 10388,
+  "archive_path": "docs/history/pr-reviews/PR-10388-feat-pages-add-github-owned-society-heartbeat-fallback.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-13T22:09:17.745Z",
+  "schema_version": "v1",
+  "commit_sha": "2c879a9992564c7c95aff1cdb34857eccf89dfdb",
+  "title": "feat(pages): add GitHub-owned society heartbeat fallback",
+  "state": "MERGED",
+  "merged_at": "2026-08-13T22:08:42Z",
+  "head_ref": "pages/github-owned-heartbeat-fallback"
+}

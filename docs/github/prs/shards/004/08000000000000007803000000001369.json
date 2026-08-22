@@ -1,0 +1,12 @@
+{
+  "pr_number": 4969,
+  "archive_path": "docs/history/pr-reviews/PR-4969-shard-1808z-pr-4953-cold-boot-triage-peer-rescue-already-landed-empirical-commen.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-25T18:21:36.668Z",
+  "schema_version": "v1",
+  "commit_sha": "14dbcfb9564ab32f383dc3fc14284104fa087188",
+  "title": "shard(1808Z): PR #4953 cold-boot triage — peer rescue already landed; empirical comment + reopen",
+  "state": "MERGED",
+  "merged_at": "2026-05-25T18:21:19Z",
+  "head_ref": "otto-cli/1808z-shard-2026-05-25"
+}

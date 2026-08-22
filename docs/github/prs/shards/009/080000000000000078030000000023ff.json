@@ -1,0 +1,12 @@
+{
+  "pr_number": 9215,
+  "archive_path": "docs/history/pr-reviews/PR-9215-feat-core-antlr4import-desugars-ebnf-bnf-real-json-grammar-fully-ingests-stays-c.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-02T23:26:00.404Z",
+  "schema_version": "v1",
+  "commit_sha": "8c7c7d28ea7a765ee8c034226e5d0e7d62521cda",
+  "title": "feat(core): Antlr4Import desugars EBNF → BNF; real JSON grammar fully ingests + stays closed",
+  "state": "MERGED",
+  "merged_at": "2026-07-02T23:25:35Z",
+  "head_ref": "otto/g4-ebnf-desugar"
+}

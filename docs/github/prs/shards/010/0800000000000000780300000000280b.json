@@ -1,0 +1,12 @@
+{
+  "pr_number": 10251,
+  "archive_path": "docs/history/pr-reviews/PR-10251-feat-derivation-n-version-derivation-as-types-a-blueprint-seed.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-09T23:52:10.314Z",
+  "schema_version": "v1",
+  "commit_sha": "f02e9017dd1b8e78963dfbdfca115b7bc3294829",
+  "title": "feat(derivation): N-version derivation as types + a blueprint seed",
+  "state": "MERGED",
+  "merged_at": "2026-08-09T23:51:34Z",
+  "head_ref": "shadow/n-version-derivation-blueprint"
+}

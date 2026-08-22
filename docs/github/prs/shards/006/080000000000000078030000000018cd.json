@@ -1,0 +1,12 @@
+{
+  "pr_number": 6349,
+  "archive_path": "docs/history/pr-reviews/PR-6349-docs-b-0962-preserve-two-round-cap-pacelc-huddle-cap-posture-note.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-01T05:50:14.902Z",
+  "schema_version": "v1",
+  "commit_sha": "b810e6f370b4b5910b30017d3365178b06ac433c",
+  "title": "docs(B-0962): preserve two-round CAP/PACELC huddle + CAP-posture note",
+  "state": "MERGED",
+  "merged_at": "2026-06-01T05:49:53Z",
+  "head_ref": "otto-cli/cap-posture-per-row-not-global-2026-06-01"
+}

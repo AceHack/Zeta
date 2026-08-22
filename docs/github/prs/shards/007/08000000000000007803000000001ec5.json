@@ -1,0 +1,12 @@
+{
+  "pr_number": 7877,
+  "archive_path": "docs/history/pr-reviews/PR-7877-docs-research-hancock-capture-polarization-lensing-to-solid-ground-species-with-.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-12T09:56:06.817Z",
+  "schema_version": "v1",
+  "commit_sha": "8abd1e7ca182d6763fc20599131349e87257db37",
+  "title": "docs(research): Hancock capture — polarization lensing to solid ground; species-with-amnesia = the founding failure mode",
+  "state": "MERGED",
+  "merged_at": "2026-06-12T09:55:41Z",
+  "head_ref": "shadow-hancock-polarization-lensing"
+}
