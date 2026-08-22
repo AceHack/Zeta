@@ -172,6 +172,10 @@ export const RETAINED_SHELL_CATEGORY_BY_FILE: Readonly<Record<string, RetainedSh
   // keyring.sh is the intentionally-retained thin security EDGE: in-process seed
   // handling (`read -s`, umask-077, shred-on-exit) that must stay in shell; the
   // typed operational logic lives in keyset.ts ("bash only calls the edge").
+  // 081M0KCWPGV dual-HSM custody ceremony: a PREFLIGHT that must run before any
+  // PKCS#11 tooling exists on the host -- it checks whether the ceremony can
+  // safely proceed, so it cannot depend on the toolchain it is gating.
+  "tools/setup/hsm/dkek-ceremony-preflight.sh": "setup/bootstrap",
   "tools/setup/persona-keys/keyring.sh": "setup/bootstrap",
 };
 
