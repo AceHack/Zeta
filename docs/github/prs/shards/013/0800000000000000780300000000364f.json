@@ -1,0 +1,12 @@
+{
+  "pr_number": 13903,
+  "archive_path": "docs/history/pr-reviews/PR-13903-revert-cluster-13871-took-the-envelope-decision-that-was-reserved-for-a-human-re.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-22T20:17:35.832Z",
+  "schema_version": "v1",
+  "commit_sha": "7dd59ae2ae676a3863655ddc180fe6a0f203edd3",
+  "title": "revert(cluster): #13871 took the envelope decision that was reserved for a human — restore 14 and green `gate`",
+  "state": "MERGED",
+  "merged_at": "2026-08-22T20:16:51Z",
+  "head_ref": "shadow/restore-reserved-envelope"
+}
