@@ -1,0 +1,12 @@
+{
+  "pr_number": 13399,
+  "archive_path": "docs/history/pr-reviews/PR-13399-fix-ci-narrow-javascript-gate-bootstrap.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-22T10:01:43.905Z",
+  "schema_version": "v1",
+  "commit_sha": "ba8e6d348fcf91890fa325130b722bcad0e4a873",
+  "title": "fix(ci): narrow JavaScript gate bootstrap",
+  "state": "MERGED",
+  "merged_at": "2026-08-22T10:00:52Z",
+  "head_ref": "fix/gate-narrow-js-bootstrap-attribution"
+}
