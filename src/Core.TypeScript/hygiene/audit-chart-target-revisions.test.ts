@@ -3,10 +3,19 @@
 // The falsifiers for the chart-resolvability audit.
 //
 // The load-bearing one is §THE LIVE TREE: a resolvability checker that passes
-// on a tree containing a pin upstream never published is worthless, so the
-// first thing pinned here is that the real `oz` manifest, resolved against the
-// real snapshot, produces a real finding. Everything else in this file is a
-// rule-level falsifier for the ways that finding could be silently lost.
+// on a tree containing a pin upstream never published is worthless. It used to
+// be pinned by asserting that the real `oz` manifest produced a real finding --
+// and on 2026-08-21 that pin was CORRECTED to ziti-controller 3.1.1, so the
+// tree no longer carries the defect and that assertion could no longer be made.
+//
+// Deleting it would have quietly removed the only thing standing between this
+// suite and a checker that passes because it stopped looking. So it is replaced
+// rather than dropped: the real tree's real coordinate, re-pinned in memory to a
+// version the real roster does not carry, must still be reported. Same property,
+// same inputs, no defect required to remain in the tree to prove it.
+//
+// Everything else in this file is a rule-level falsifier for the ways that
+// finding could be silently lost.
 
 import { describe, expect, test } from "bun:test";
 import { resolve } from "node:path";
@@ -45,29 +54,50 @@ describe("THE LIVE TREE -- the check must be able to fail, on the real repo", ()
   // The whole point. If this test ever passes for the wrong reason -- because
   // the walk stopped finding manifests, or the snapshot stopped covering the
   // coordinate -- the assertions below say so instead of quietly going green.
-  test("oz's ziti-controller 1.4.5 is reported against the real tree and the real snapshot", () => {
+  test("the real oz coordinate now RESOLVES -- the defect this audit was written for is gone", () => {
     const extraction = extractTree(REPO_ROOT);
     const oz = extraction.coordinates.find((c) => c.chart === "ziti-controller");
     expect(oz).toBeDefined();
     expect(oz?.manifest).toBe("full-ai-cluster/k8s/applications/oz/Application.yaml");
-    expect(oz?.targetRevision).toBe("1.4.5");
+    expect(oz?.targetRevision).toBe("3.1.1");
 
-    // Not merely "a finding exists": with the register empty it is FATAL, and
-    // it names the rule and the pin.
-    const bare = auditCoordinates(extraction, readRoster(), NO_ACKS);
-    const ozFinding = bare.findings.find((f) => f.subject.includes("/oz/"));
+    // With NO acknowledgements at all, the real tree against the real roster is
+    // clean. That is a stronger statement than "the shipped register makes it
+    // clean", and it is only sayable because the pin was fixed rather than
+    // excused.
+    expect(auditCoordinates(extraction, readRoster(), NO_ACKS).findings).toEqual([]);
+  });
+
+  test("and the check STILL FIRES on the real tree when a real pin names nothing", () => {
+    // THE ANTI-VACUITY TEST, and the reason the one above is not enough. A
+    // checker that has stopped walking, or a roster that has stopped covering
+    // this coordinate, would also make the tree look clean. Here the real
+    // extraction is re-pinned in memory to a version the real roster genuinely
+    // does not carry, and the finding must come back -- naming the rule and the
+    // version.
+    const extraction = extractTree(REPO_ROOT);
+    const mutated = {
+      ...extraction,
+      coordinates: extraction.coordinates.map((coordinate) =>
+        coordinate.chart === "ziti-controller" ? { ...coordinate, targetRevision: "1.4.5" } : coordinate,
+      ),
+    };
+    const report = auditCoordinates(mutated, readRoster(), NO_ACKS);
+    const ozFinding = report.findings.find((finding) => finding.subject.includes("/oz/"));
     expect(ozFinding?.rule).toBe("target-revision-unpublished");
     expect(ozFinding?.detail).toContain("1.4.5");
   });
 
-  test("the real snapshot genuinely lacks 1.4.5 and genuinely has 1.3.4 -- so the verdict is about the world", () => {
-    // Guards the vacuity case: an empty version list would also produce
-    // "unpublished", for a reason that has nothing to do with OpenZiti.
+  test("the real snapshot genuinely lacks 1.4.5 and genuinely has 3.1.1 -- so both verdicts are about the world", () => {
+    // Guards the vacuity case from both sides: an empty version list would make
+    // any pin "unpublished", and a roster that listed everything would make any
+    // pin resolve. Neither is what is happening.
     const entry = readRoster().entries[rosterKey("https://docs.openziti.io/helm-charts/", "ziti-controller")];
     expect(entry).toBeDefined();
     expect(entry?.versions.length).toBeGreaterThan(50);
     expect(entry?.versions).not.toContain("1.4.5");
     expect(entry?.versions).toContain("1.3.4");
+    expect(entry?.versions).toContain("3.1.1");
   });
 
   test("the live tree is fully classified -- every source is a chart or a git path, none dropped", () => {
@@ -75,6 +105,13 @@ describe("THE LIVE TREE -- the check must be able to fail, on the real repo", ()
     expect(extraction.findings).toEqual([]);
     expect(extraction.coordinates.length).toBeGreaterThanOrEqual(35);
     expect(extraction.gitPaths.length).toBeGreaterThanOrEqual(11);
+  });
+
+  test("the register is EMPTY, and an empty register is the target state", () => {
+    // It held exactly one entry -- oz@1.4.5 -- and it was retired by fixing the
+    // pin, not by re-keying it to oz@3.1.1. Re-keying would have preserved a
+    // "this pin does not resolve" claim that had stopped being true.
+    expect(ACKNOWLEDGED_UNPUBLISHED.size).toBe(0);
   });
 
   test("with the shipped register the live tree is clean, and every acknowledgement is still live", () => {

@@ -16,6 +16,7 @@ import {
   effectiveStorageClass,
   clusterDefaultStorageClass,
   adjudicate,
+  adjudicateUnrenderable,
   staleUnrenderableKeys,
   loadBaseline,
   loadSnapshot,
@@ -34,7 +35,7 @@ import {
   type UnrenderableApp,
   type ApplicationSource,
 } from "./rendered-storage-claims.ts";
-import { loadCatalogue, verifyProfileApplied } from "./storage-profiles.ts";
+import { loadCatalogue, loadResourceCatalogue, verifyProfileApplied } from "./storage-profiles.ts";
 
 const pvc = (over: Partial<RenderedPvc> = {}): RenderedPvc => ({
   appId: "t/app",
@@ -335,9 +336,23 @@ describe("unrenderable", () => {
   });
 
   test("the acknowledgement key carries the VERSION, so a bump invalidates rather than inherits", () => {
+    // This used to name a live entry -- `full-ai-cluster/oz@1.4.5`, then
+    // `full-ai-cluster/temporal@0.59.0`. BOTH are gone, and the list is now
+    // EMPTY, because the mechanism worked twice: each pin moved or each chart
+    // started rendering, the key stopped matching, and the entry was retired
+    // rather than re-keyed. So the shipped-entry assertion is replaced by the
+    // INVARIANT it was standing in for, which does not need a member.
     const baseline = loadBaseline();
-    expect(baseline.unrenderable.map((entry) => entry.key)).toContain("full-ai-cluster/oz@1.4.5");
-    for (const entry of baseline.unrenderable) expect(entry.key).toMatch(/@\S+$/);
+    for (const entry of baseline.unrenderable) expect(entry.key).toMatch(/^\S+@\S+$/);
+
+    // AND THE EMPTY LIST IS ASSERTED POSITIVELY, because empty is also what a
+    // checker that stopped looking produces. 53 of 53 Applications rendered:
+    // nothing is excused, and nothing went unexamined.
+    const result = auditAgainstSnapshot(loadSnapshot()!, {});
+    expect(baseline.unrenderable).toEqual([]);
+    expect(result.unrenderable).toEqual([]);
+    expect(result.appsRendered).toBe(result.appsDiscovered);
+    expect(result.appsDiscovered).toBeGreaterThanOrEqual(53);
   });
 
   // MEASURED GAP, 2026-08-22. The baseline file's own `$comment` says "STALE
@@ -390,6 +405,107 @@ describe("unrenderable", () => {
       expect(result.staleBaselineKeys).toContain(entry.key);
     }
     expect(auditExitCode(result)).toBe(1);
+  });
+
+  // ---------------------------------------------------------------------------
+  // THE SAME HOLE, FOUND FROM TWO SIDES ON THE SAME DAY, and both sets of
+  // falsifiers are kept.
+  //
+  // The temporal change found that a STALE unrenderable acknowledgement was not
+  // refused (it was retiring one). The unrenderable-apps change found that
+  // `observed` on the same list was never READ (it was retiring four). They are
+  // two halves of one defect — an acknowledgement that outlives what it excused —
+  // and they fail differently, so neither block subsumes the other. The
+  // implementations were folded into one; the tests were not, because a test
+  // that no longer distinguishes its own case has stopped being a falsifier.
+  // ---------------------------------------------------------------------------
+
+  // -------------------------------------------------------------------------
+  // `observed` ON THE UNRENDERABLE LIST IS LOAD-BEARING (2026-08-21)
+  //
+  // It was required by the loader, written on every entry, and READ BY NOTHING.
+  // These are the falsifiers for the version that reads it. Each one fails
+  // against the pre-2026-08-21 set-membership implementation.
+  // -------------------------------------------------------------------------
+  const ackBaseline = {
+    findings: [],
+    unrenderable: [
+      {
+        key: "t/app@1.0.0",
+        reason: "the pin was withdrawn upstream",
+        liftsWhen: "the pin moves to a published version",
+        observed: "helm-pull-failed",
+      },
+    ],
+  };
+
+  test("an acknowledgement covers the failure CLASS it was written about", () => {
+    expect(adjudicateUnrenderable([broken], ackBaseline).unacknowledged).toEqual([]);
+    expect(adjudicateUnrenderable([broken], ackBaseline).staleKeys).toEqual([]);
+  });
+
+  test("and STOPS covering the app when the failure class changes", () => {
+    // The pin now resolves and the chart fails to TEMPLATE instead — a different
+    // defect, needing a different fix, wearing the same key. Set membership on
+    // the key alone cannot tell these apart and would report it acknowledged.
+    const nowTemplateFails = { ...broken, reason: "helm-template-failed", detail: "values are wrong" };
+    const result = adjudicateUnrenderable([nowTemplateFails], ackBaseline);
+    expect(result.unacknowledged.length).toBe(1);
+    expect(result.unacknowledged[0]?.detail).toContain("DIFFERENT failure");
+    expect(result.unacknowledged[0]?.detail).toContain("helm-pull-failed");
+  });
+
+  test("an acknowledgement for an app that now RENDERS is stale, and stale fails", () => {
+    // Four entries in this repo's own baseline would have been left behind by the
+    // change that wrote this test if nothing required otherwise.
+    const result = adjudicateUnrenderable([], ackBaseline);
+    expect(result.staleKeys.length).toBe(1);
+    expect(result.staleKeys[0]).toContain("t/app@1.0.0");
+    expect(
+      auditExitCode({
+        profile: "measured",
+        appsDiscovered: 1,
+        appsRendered: 1,
+        unrenderable: [],
+        unacknowledgedUnrenderable: [],
+        rendered: [],
+        expectations: [],
+        refused: [],
+        acknowledged: [],
+        staleBaselineKeys: [...result.staleKeys],
+        clusterDefault: null,
+      }),
+    ).toBe(1);
+  });
+
+  test("the snapshot path adjudicates the same way the live path does", () => {
+    // Not "both are green today": the offline path is the one CI runs, so a
+    // weaker copy of the rule there is the check that reads like the check that ran.
+    const nowTemplateFails = { ...broken, reason: "helm-template-failed", detail: "values are wrong" };
+    const dir = mkdtempSync(join(tmpdir(), "unrenderable-ack-"));
+    try {
+      // An ABSOLUTE baselinePath, so the real catalogue still loads and only the
+      // baseline is substituted. The assertions below are on the unrenderable
+      // channel alone -- never on the exit code, which the real tree's other
+      // acknowledgements could satisfy for an unrelated reason (the trap this
+      // file already records against mutation M5).
+      const baselinePath = join(dir, "baseline.json");
+      writeFileSync(baselinePath, JSON.stringify(ackBaseline), "utf8");
+      const result = auditAgainstSnapshot(
+        {
+          measuredOn: "2026-08-21",
+          clusterDefaultStorageClass: null,
+          rendered: [],
+          unrenderable: [nowTemplateFails],
+          appsDiscovered: 1,
+        },
+        { baselinePath },
+      );
+      expect(result.unacknowledgedUnrenderable.map((app) => app.appId)).toEqual(["t/app"]);
+      expect(result.unacknowledgedUnrenderable[0]?.detail).toContain("DIFFERENT failure");
+    } finally {
+      rmSync(dir, { recursive: true, force: true });
+    }
   });
 });
 
@@ -480,16 +596,24 @@ describe("the live catalogue against the measured render", () => {
 
   // The numbers, pinned. Not decoration: this is what makes a declaration edit
   // that nobody re-measured go red offline, with no helm and no network.
-  test("MEASURED 2026-08-22 — declared 967 GiB, rendered 861 GiB on longhorn", () => {
+  test("MEASURED 2026-08-22 — declared 967 GiB, rendered 867 GiB on longhorn", () => {
     const result = auditAgainstSnapshot(snapshot!, {});
     expect(declaredTotalGib(result.expectations)).toBe(967);
     const totals = renderedTotalsByClass(result.rendered, result.clusterDefault);
-    // 831 -> 861 and 201 -> 193 on 2026-08-22: hindsight's postgres moved off
-    // the Delete-reclaim default class onto longhorn (+10 there, -8 here) and
-    // nats went from one JetStream pod to three (+20). Nothing else moved —
-    // the rest of the snapshot re-rendered byte-identical.
-    expect(totals.get("longhorn")).toBe(861);
-    expect(totals.get("zeta-local-path")).toBe(193);
+    // 831 -> 861 -> 867 and 201 -> 193 -> 269, in two steps on the same day.
+    //
+    // FIRST: hindsight's postgres moved off the Delete-reclaim default class onto
+    // longhorn (+10 there, -8 here) and nats went from one JetStream pod to three
+    // (+20).
+    //
+    // SECOND, and it is a different KIND of movement: four Applications that
+    // would not template at all started templating. headscale (+3) and oz (+3)
+    // had declared longhorn all along and rendered nothing; gitlab (+76 on the
+    // default class) is the same 76 GiB its sibling in infra/ already rendered.
+    // None of that disk is new. It stopped being invisible, which is the only
+    // thing an unrenderable app ever hides.
+    expect(totals.get("longhorn")).toBe(867);
+    expect(totals.get("zeta-local-path")).toBe(269);
   });
 
   // WAS "the two live inert-values defects are still exactly two apps". Both
@@ -500,7 +624,16 @@ describe("the live catalogue against the measured render", () => {
   test("the two inert-values defects are FIXED — and the render, not the declaration, says so", () => {
     const result = auditAgainstSnapshot(snapshot!, {});
     const declaredSide = result.acknowledged.filter((finding) => finding.kind !== "undeclared-rendered-pvc");
-    expect(declaredSide.map((finding) => finding.claimId)).toEqual([]);
+    // NOT empty, and the one entry is not a regression: arc-runner-set/model-cache
+    // joined this list the moment its app became renderable. Its chart calls
+    // `lookup`, so it never templated, so the 100 GiB row could never be compared
+    // against a render at all. Now that it can be, the comparison says what the
+    // catalogue's own bringUpNote has said all along — nothing applies the manifest
+    // that declares that PVC. A defect that could not be seen is not a defect that
+    // was not there.
+    expect(declaredSide.map((finding) => finding.claimId)).toEqual([
+      "full-ai-cluster/arc-runner-set/model-cache",
+    ]);
 
     const byName = new Map(result.rendered.map((pvc) => [`${pvc.appId} ${pvc.name}`, pvc]));
     const hindsight = byName.get("full-ai-cluster/hindsight data/hindsight-postgresql");
@@ -528,6 +661,38 @@ describe("the live catalogue against the measured render", () => {
     const claim = loadCatalogue().claims.find((row) => row.id === "full-ai-cluster/nats/jetstream");
     expect(claim?.podsField).toBe("spec.source.helm.valuesObject.config.cluster.replicas");
     expect(verifyProfileApplied(loadCatalogue(), "measured").map((finding) => finding.problem)).toEqual([]);
+  });
+
+  test("the four apps that could not be rendered at all now can be, and are CHECKED", () => {
+    // The strongest single assertion in this file: an app on the unrenderable list
+    // contributes no findings and no totals, so "clean" and "invisible" look the
+    // same from every other test here. These four were invisible.
+    const result = auditAgainstSnapshot(snapshot!, {});
+    const stillUnrenderable = result.unrenderable.map((app) => app.appId);
+    for (const app of [
+      "full-ai-cluster/headscale",
+      "full-ai-cluster/oz",
+      "full-ai-cluster/gitlab",
+      "full-ai-cluster/arc-runner-set",
+    ]) {
+      expect(stillUnrenderable).not.toContain(app);
+    }
+    // headscale and oz do not merely render — their declared claims now MATCH a
+    // real PVC, which is what "checked" means. Neither appears on either side of
+    // the findings list.
+    const named = [...result.refused, ...result.acknowledged].map((finding) => finding.claimId);
+    expect(named).not.toContain("full-ai-cluster/headscale/config");
+    expect(named).not.toContain("full-ai-cluster/oz/data");
+    const pvcNames = result.rendered.map((pvc) => `${pvc.appId} ${pvc.name}`);
+    expect(pvcNames).toContain("full-ai-cluster/headscale headscale-config");
+    expect(pvcNames).toContain("full-ai-cluster/oz ziti-controller");
+  });
+
+  test("nothing in the tree is excused from having its requests measured any more", () => {
+    // `acknowledgedUnmeasuredRequests` held exactly one entry, `oz@1.4.5`, a pin
+    // no registry ever served. It is empty now. An entry returning here means an
+    // app whose CPU/memory nobody could read off a rendered chart.
+    expect(loadResourceCatalogue().acknowledgedUnmeasured).toEqual([]);
   });
 
   test("every catalogue row carries a rendered coordinate, and every pattern compiles", () => {

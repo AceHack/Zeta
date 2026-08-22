@@ -53,6 +53,56 @@
       "count": 1
     },
     {
+      "appId": "full-ai-cluster/gitlab",
+      "origin": "volumeClaimTemplate",
+      "name": "data/gitlab-postgresql",
+      "workload": "StatefulSet/gitlab-postgresql",
+      "storageClassName": "",
+      "size": "8Gi",
+      "gibibytes": 8,
+      "count": 1
+    },
+    {
+      "appId": "full-ai-cluster/gitlab",
+      "origin": "PersistentVolumeClaim",
+      "name": "gitlab-minio",
+      "workload": "",
+      "storageClassName": "",
+      "size": "10Gi",
+      "gibibytes": 10,
+      "count": 1
+    },
+    {
+      "appId": "full-ai-cluster/gitlab",
+      "origin": "volumeClaimTemplate",
+      "name": "redis-data/gitlab-redis-master",
+      "workload": "StatefulSet/gitlab-redis-master",
+      "storageClassName": "",
+      "size": "8Gi",
+      "gibibytes": 8,
+      "count": 1
+    },
+    {
+      "appId": "full-ai-cluster/gitlab",
+      "origin": "volumeClaimTemplate",
+      "name": "repo-data/gitlab-gitaly",
+      "workload": "StatefulSet/gitlab-gitaly",
+      "storageClassName": "",
+      "size": "50Gi",
+      "gibibytes": 50,
+      "count": 1
+    },
+    {
+      "appId": "full-ai-cluster/headscale",
+      "origin": "PersistentVolumeClaim",
+      "name": "headscale-config",
+      "workload": "",
+      "storageClassName": "longhorn",
+      "size": "3Gi",
+      "gibibytes": 3,
+      "count": 1
+    },
+    {
       "appId": "full-ai-cluster/hindsight",
       "origin": "volumeClaimTemplate",
       "name": "data/hindsight-postgresql",
@@ -223,6 +273,16 @@
       "count": 1
     },
     {
+      "appId": "full-ai-cluster/oz",
+      "origin": "PersistentVolumeClaim",
+      "name": "ziti-controller",
+      "workload": "",
+      "storageClassName": "longhorn",
+      "size": "3Gi",
+      "gibibytes": 3,
+      "count": 1
+    },
+    {
       "appId": "full-ai-cluster/platform",
       "origin": "volumeClaimTemplate",
       "name": "rooms/portal",
@@ -373,39 +433,6 @@
       "count": 1
     }
   ],
-  "unrenderable": [
-    {
-      "appId": "full-ai-cluster/arc-runner-set",
-      "chart": "gha-runner-scale-set",
-      "targetRevision": "0.12.1",
-      "reason": "helm-template-failed",
-      "detail": "gha-runner-scale-set@0.12.1: Error: execution error at (gha-runner-scale-set/templates/manager_role_binding.yaml:35:11): No gha-rs-controller deployment found using label (app.kubernetes.io/part-of=gha-rs-controller). Consider setting controllerServiceAccount.name in values.yaml to be explicit if you think the discovery is wrong. /  / Use --debug flag to render out invalid YAML",
-      "unchecked": []
-    },
-    {
-      "appId": "full-ai-cluster/gitlab",
-      "chart": "gitlab",
-      "targetRevision": "8.7.0",
-      "reason": "helm-template-failed",
-      "detail": "gitlab@8.7.0: Error: execution error at (gitlab/charts/certmanager-issuer/templates/cert-manager.yml:14:3): You must provide an email to associate with your TLS certificates. Please set certmanager-issuer.email /  / Use --debug flag to render out invalid YAML",
-      "unchecked": []
-    },
-    {
-      "appId": "full-ai-cluster/headscale",
-      "chart": "headscale",
-      "targetRevision": "0.4.0",
-      "reason": "helm-template-failed",
-      "detail": "headscale@0.4.0: Error: execution error at (headscale/templates/common.yaml:77:3): accessMode is required for PVC headscale-data /  / Use --debug flag to render out invalid YAML",
-      "unchecked": []
-    },
-    {
-      "appId": "full-ai-cluster/oz",
-      "chart": "ziti-controller",
-      "targetRevision": "1.4.5",
-      "reason": "helm-pull-failed",
-      "detail": "ziti-controller@1.4.5 from https://docs.openziti.io/helm-charts/: Error: chart \"ziti-controller\" version \"1.4.5\" not found in https://docs.openziti.io/helm-charts/ repository",
-      "unchecked": []
-    }
-  ],
+  "unrenderable": [],
   "appsDiscovered": 53
 }

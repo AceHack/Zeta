@@ -1020,9 +1020,9 @@
     },
     {
       "dir": "oz",
-      "cpuMillis": null,
-      "memoryMib": null,
-      "evidence": "UNMEASURED: `helm pull ziti-controller --version 1.4.5 --repo https://docs.openziti.io/helm-charts/` fails -- that index carries only 3.2.x, and the GitHub release tag ziti-controller-1.4.5 404s. Same shape as forgejo: the pin does not resolve, so neither this measurement nor ArgoCD can render it."
+      "cpuMillis": 0,
+      "memoryMib": 0,
+      "evidence": "MEASURED 2026-08-21, and no longer null: ziti-controller 3.1.1 (the corrected pin -- 1.4.5 was never published) rendered with this Application's own valuesObject declares `resources: {}` on the controller container (chart values.yaml:426 leaves it unset by design). 0 is the real answer here, not a missing one: the container reserves nothing."
     },
     {
       "dir": "platform",
@@ -1080,7 +1080,12 @@
     }
   ],
 
-  "acknowledgedUnmeasuredRequests": ["oz@1.4.5"],
+  "$comment_acknowledgedUnmeasuredRequests": [
+    "EMPTY, and it is meant to stay that way. The last entry was `oz@1.4.5`, a pin\nno registry ever served; it was retired 2026-08-21 when the pin was corrected to\nziti-controller 3.1.1 and the chart was measured for real. Nothing in this tree is\nnow excused from having its requests measured.",
+    "",
+    "An entry here is keyed `<dir>@<pin>`, so it dies the moment the pin moves. Adding\none back is adding an app whose CPU/memory nobody could read off a rendered chart --\nwrite down why the fetch failed and what lifts it, or fix the pin instead."
+  ],
+  "acknowledgedUnmeasuredRequests": [],
 
   "$comment_profiles": [
     "Order is smallest-first and is load-bearing: storage-profiles.ts refuses a",
@@ -1476,19 +1481,19 @@
       "pods": { "minimal": 1, "standard": 1, "measured": 1, "large": 1 }
     },
     {
-      "id": "full-ai-cluster/headscale/data",
+      "id": "full-ai-cluster/headscale/config",
       "path": "full-ai-cluster/k8s/applications/headscale/Application.yaml",
       "docIndex": 0,
-      "storageClassField": "spec.source.helm.valuesObject.persistence.data.storageClass",
-      "sizeField": "spec.source.helm.valuesObject.persistence.data.size",
+      "storageClassField": "spec.source.helm.valuesObject.persistence.config.storageClass",
+      "sizeField": "spec.source.helm.valuesObject.persistence.config.size",
       "podsField": null,
       "podsSource": "singleton",
       "podsEvidence": "headscale runs one pod against a sqlite node database.",
       "scheduledAtBringUp": true,
       "bringUpNote": "automated sync",
-      "consequence": "sqlite node database. 2Gi holds the control-plane state for far more nodes than this cluster will have.",
+      "consequence": "sqlite node database, node private key and noise private key -- headscale 0.4.0 puts all three under /etc/headscale, which is the chart's `config` persistence item. RENAMED from `.../headscale/data` 2026-08-21: the row used to point at `persistence.data`, a key the chart mounts at /data and never writes to, while the database and both private keys sat on the container's ephemeral layer. 2Gi holds the control-plane state for far more nodes than this cluster will have.",
       "renderedApp": "full-ai-cluster/headscale",
-      "renderedPvcPattern": "^headscale-data$",
+      "renderedPvcPattern": "^headscale-config$",
       "sizes": { "minimal": "2Gi", "standard": "3Gi", "measured": "3Gi", "large": "5Gi" },
       "pods": { "minimal": 1, "standard": 1, "measured": 1, "large": 1 }
     },

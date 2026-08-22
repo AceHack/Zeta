@@ -1316,22 +1316,34 @@ describe("the checked-in resource ladder", () => {
     );
   });
 
-  // The app nobody could measure. The acknowledgement is keyed by the pin so a
-  // chart bump invalidates it instead of inheriting it.
+  // THE REGISTER IS EMPTY, and how it emptied is the whole lesson.
   //
-  // It used to be TWO. `forgejo` left on 2026-08-21 and the way it left is the
-  // point: its pin `9.0.6` was never published, so nothing could pull the chart,
-  // so it was acknowledged. Correcting the pin to `17.1.5` moved the key and
-  // invalidated the acknowledgement exactly as designed — and the answer to that
-  // was to MEASURE the app, not to re-key it to `forgejo@17.1.5`. Re-keying would
-  // have preserved a "we cannot measure this" claim that had stopped being true,
-  // which is an acknowledgement outliving its own defect. `oz@1.4.5` stays
-  // because that pin is still fictional.
-  test("the unmeasured app is named, pinned and acknowledged — not counted as free", () => {
+  // It held TWO entries. Both were the same defect wearing two names: a
+  // targetRevision no registry had ever published, so nothing could pull the
+  // chart, so nobody could measure the app, so it was acknowledged.
+  //
+  //   forgejo@9.0.6  left 2026-08-21. Correcting the pin to 17.1.5 moved the key
+  //                  and invalidated the acknowledgement exactly as designed —
+  //                  and the answer to that was to MEASURE the app, not to
+  //                  re-key it to `forgejo@17.1.5`.
+  //   oz@1.4.5       left 2026-08-21, the same way. `ziti-controller` 1.4.5 was
+  //                  never published (that repository's 1.x line ends at 1.3.4;
+  //                  `1.4.x` exists there only as an appVersion). The pin is now
+  //                  3.1.1 and the chart renders `resources: {}` — 0m/0Mi, which
+  //                  is a MEASUREMENT that the container reserves nothing, not a
+  //                  missing value.
+  //
+  // Re-keying either one would have preserved a "we cannot measure this" claim
+  // that had stopped being true — an acknowledgement outliving its own defect.
+  // Neither was re-keyed. Nothing in this tree is excused from measurement now.
+  test("nothing is acknowledged as unmeasurable any more — the register is empty", () => {
     const lane = resourceTotal(catalogue, "dev", devLaneAppliedDirs());
-    expect(lane.unmeasured).toEqual(["oz"]);
-    expect([...catalogue.acknowledgedUnmeasured].sort()).toEqual(["oz@1.4.5"]);
-    expect(pinnedChartVersion("oz")).toBe("1.4.5");
+    expect(lane.unmeasured).toEqual([]);
+    expect([...catalogue.acknowledgedUnmeasured]).toEqual([]);
+    expect(pinnedChartVersion("oz")).toBe("3.1.1");
+    const oz = catalogue.ungoverned.find((app) => app.dir === "oz");
+    expect(oz?.cpuMillis).toBe(0);
+    expect(oz?.memoryMib).toBe(0);
   });
 
   // forgejo is the worked example of the register releasing an app: it is now
@@ -1349,10 +1361,37 @@ describe("the checked-in resource ladder", () => {
     expect(resourceTotal(catalogue, "dev", ["forgejo"]).unmeasured).toEqual([]);
   });
 
+  test("the pin is read from the PARSED document, so a comment cannot change it", () => {
+    // The falsifier for the 2026-08-21 correction. The old line-scanner probed
+    // the six lines nearest `chart:` and returned "" once anything longer than
+    // that sat between the two keys -- a wrong answer that propagates into the
+    // acknowledgement key `<dir>@<pin>` rather than an error that stops.
+    // oz/Application.yaml now carries ~35 lines of comment there, on purpose.
+    expect(pinnedChartVersion("oz")).toBe("3.1.1");
+    expect(pinnedChartVersion("arc-runner-set")).toBe("0.12.1");
+    // A git-path source has no chart version, and "" is the RIGHT answer there.
+    expect(pinnedChartVersion("orleans")).toBe("");
+    expect(pinnedChartVersion("no-such-application-dir")).toBe("");
+  });
+
   test("an acknowledgement whose pin has moved stops applying", () => {
-    const stale: ResourceCatalogue = { ...catalogue, acknowledgedUnmeasured: ["oz@9.9.9"] };
-    const findings = auditRunnerBudget(stale, "dev");
+    // Synthesised now that the live register is empty: an app whose measurement
+    // is genuinely unknown (null), acknowledged at a pin that is NOT the one the
+    // tree carries. The acknowledgement must not reach it.
+    const unmeasurable: ResourceCatalogue = {
+      ...catalogue,
+      ungoverned: [
+        ...catalogue.ungoverned.filter((app) => app.dir !== "oz"),
+        { dir: "oz", cpuMillis: null, memoryMib: null, evidence: "UNMEASURED: synthesised for this test." },
+      ],
+      acknowledgedUnmeasured: ["oz@9.9.9"],
+    };
+    const findings = auditRunnerBudget(unmeasurable, "dev");
     expect(findings.some((finding) => finding.claimId === "oz")).toBe(true);
+    // ...and the SAME catalogue acknowledged at the pin the tree really carries
+    // does cover it, so the test above fails for the pin and not for the shape.
+    const covered: ResourceCatalogue = { ...unmeasurable, acknowledgedUnmeasured: ["oz@3.1.1"] };
+    expect(auditRunnerBudget(covered, "dev").some((finding) => finding.claimId === "oz")).toBe(false);
   });
 
   // The other direction, and it is the one that just fired on forgejo: an
@@ -1361,7 +1400,7 @@ describe("the checked-in resource ladder", () => {
   test("an acknowledgement for an app that IS measured is reported stale", () => {
     const stale: ResourceCatalogue = {
       ...catalogue,
-      acknowledgedUnmeasured: ["forgejo@17.1.5", "oz@1.4.5"],
+      acknowledgedUnmeasured: ["forgejo@17.1.5"],
     };
     const findings = auditRunnerBudget(stale, "dev");
     expect(findings.some((finding) => finding.claimId === "forgejo@17.1.5")).toBe(true);

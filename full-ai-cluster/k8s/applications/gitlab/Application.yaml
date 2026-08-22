@@ -21,7 +21,21 @@ spec:
           edition: ce
           hosts:
             domain: gitlab.zeta.local
-          ingress: { tls: { enabled: false } }   # turn on after cert-manager
+          ingress:
+            # `configureCertmanager: false` IS THE VALUE THAT MAKES THIS APP
+            # RENDER, measured 2026-08-21. Without it gitlab 8.7.0 refuses to
+            # template at all: charts/certmanager-issuer/templates/cert-manager.yml:14
+            # does `required ... "Please set certmanager-issuer.email"`, and
+            # `certmanager.install: false` below does NOT suppress that -- it
+            # skips installing cert-manager while still asking the issuer
+            # subchart to configure an ACME issuer. Two different switches.
+            #
+            # NOT INVENTED HERE: the sibling `infra/k8s/applications/gitlab/`
+            # Application pins the same chart at the same 8.7.0 and already
+            # carries this key, which is exactly why that one renders (and
+            # accounts for 76 GiB) while this one produced nothing at all.
+            configureCertmanager: false
+            tls: { enabled: false }   # turn on after cert-manager
           initialRootPassword:
             secret: gitlab-initial-root-password
             key: password

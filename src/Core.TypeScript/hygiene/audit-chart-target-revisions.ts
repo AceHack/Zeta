@@ -70,15 +70,26 @@
 // which is a git-path source into this repository and so has no chart version
 // to resolve either way. Nothing else in the tree declares an Application.
 //
-// -- THE ACKNOWLEDGEMENT REGISTER -----------------------------------------
-// `oz` is unpublished on main today and choosing its replacement version is a
-// human call (1.3.4 is the newest 1.x; separate 2.x and 3.x lines exist and
-// are not drop-in). So the finding is recorded in ACKNOWLEDGED_UNPUBLISHED
-// with a workitem, a date, and a reason, and printed loudly on every run --
-// never suppressed into silence. The register is drift-checked in BOTH
-// directions: an acknowledgement whose pin no longer exists, or whose pin has
-// become resolvable, is itself a finding. That is what separates a dated
-// acknowledgement from an allowlist -- an allowlist only ever grows quiet.
+// -- THE ACKNOWLEDGEMENT REGISTER, NOW EMPTY ------------------------------
+// It held one entry, for `oz`, recorded on the day this file was written and
+// retired the day after. The retirement is the register working, and the shape
+// of it is worth keeping: the entry said the replacement version was "not
+// mechanical" and "not drop-in for the pinned values in this manifest", and
+// that turned out to be FALSE when someone measured it. `helm template` of
+// 1.3.4, 2.1.2, 3.1.1 and 3.2.1 against that Application's own valuesObject
+// produces the identical storage contract in all four; every key the manifest
+// actually sets survives all three major lines. What was really blocking `oz`
+// was a different, unrecorded defect the bad pin had been hiding -- a missing
+// `clientApi.advertisedHost`, which every published version requires. So the
+// acknowledgement was carrying a REASON nobody had checked, which is the failure
+// mode a register is supposed to be immune to, and the register caught it in the
+// end only because the pin moved and the entry went stale.
+//
+// The register is drift-checked in BOTH directions: an acknowledgement whose pin
+// no longer exists, or whose pin has become resolvable, is itself a finding.
+// That is what separates a dated acknowledgement from an allowlist -- an
+// allowlist only ever grows quiet. That check is what refused this tree the
+// moment the pin was corrected and the entry was left behind.
 //
 // Anchor (Beacon): this is dependency *resolvability* checking, the property
 // `cargo`/`npm` get from a committed lockfile and Helm's `Chart.lock` gives a
@@ -508,20 +519,18 @@ export function acknowledgementKey(coordinate: {
  * the pin is audited afresh.
  */
 export const ACKNOWLEDGED_UNPUBLISHED: ReadonlyMap<string, Acknowledgement> = new Map([
-  [
-    "full-ai-cluster/k8s/applications/oz/Application.yaml|ziti-controller|1.4.5",
-    {
-      workitem: "081M0JVD5YG087G0R002QDFR9H",
-      recordedOn: "2026-08-21",
-      reason:
-        "The defect this audit was written for. OpenZiti's ziti-controller 1.x line ends at " +
-        "1.3.4 and 1.4.5 was never published (1.4.2 exists in that repository only as an " +
-        "appVersion). The replacement is not mechanical -- 1.3.4 is the newest 1.x, while " +
-        "separate 2.x and 3.x lines exist and are not drop-in for the pinned values in this " +
-        "manifest -- so the version is the maintainer's call and is left to PR #13313. " +
-        "Recorded here so the check can land on a tree that contains the defect it reports.",
-    },
-  ],
+  // EMPTY, and empty is the target state rather than a suspicious one. The only
+  // entry this register has ever held -- `oz@1.4.5`, workitem
+  // 081M0JVD5YG087G0R002QDFR9H -- was retired on 2026-08-21 when the pin was
+  // corrected to ziti-controller 3.1.1 and the app was rendered for real. It was
+  // not re-keyed to `oz@3.1.1`: re-keying preserves a "this pin does not resolve"
+  // claim that has stopped being true, which is the one thing a dated
+  // acknowledgement is supposed to make impossible.
+  //
+  // Adding an entry means a pin no registry serves, which means an Application
+  // that cannot sync. Give it a workitem, a date, and a reason that has been
+  // CHECKED -- the retired entry's reason ("not drop-in for the pinned values")
+  // was never checked and was wrong.
 ]);
 
 // ---------------------------------------------------------------------------

@@ -65,6 +65,51 @@
 // under `helm template` and can change what renders). An app that could not be
 // checked must never read as an app that passed. Every such app is named, with
 // its reason, in the report and in the exit status.
+//
+// AND "UNRENDERABLE" IS NOT ONE CLASS — 2026-08-21
+// -----------------------------------------------
+// The list read as one bucket, and it was hiding two very different things:
+//
+//   DEFECT     the manifest is wrong, and ArgoCD would fail on the same values
+//              in the same place. Nothing about the checker is involved.
+//   TOOL LIMIT the chart needs something only a live cluster has, so `helm
+//              template` cannot answer and a real sync could.
+//
+// Conflating them is expensive in both directions: a defect filed as a tool
+// limit never gets fixed, and a tool limit filed as a defect sends someone
+// looking for a bug in a working manifest. The reason codes already draw the
+// line — `helm-pull-failed` means the PIN names nothing a registry serves,
+// `helm-template-failed` means the chart is there and our VALUES are wrong —
+// and as of `adjudicateUnrenderable` below that line is CHECKED: an
+// acknowledgement pins the class it was written about and stops covering the
+// app if the class changes.
+//
+// THE MEASURED ANSWER, for the five apps that were on this list: all five were
+// DEFECTS. Four are fixed in the change that wrote this paragraph, and the fix
+// was one or two values in our own manifest every time —
+//
+//   headscale      `persistence.data` (a key the chart mounts at /data and
+//                  never writes to) with no `accessMode`, while the sqlite DB
+//                  and both private keys sat on ephemeral disk under
+//                  /etc/headscale. Now `persistence.config` + accessMode.
+//   oz             a targetRevision (1.4.5) no registry has ever served,
+//                  MASKING a second defect: every published version also
+//                  requires `clientApi.advertisedHost`, and the manifest's
+//                  `adminSecret:` block is a key ziti-controller has never had.
+//   gitlab         missing `global.ingress.configureCertmanager: false` — the
+//                  key its own sibling in infra/ already carries, which is
+//                  precisely why that one rendered and this one did not.
+//   arc-runner-set the `lookup` case, and the one that LOOKED structural. It is
+//                  not: the chart ships `controllerServiceAccount.{name,
+//                  namespace}` to skip the discovery, its own failure message
+//                  recommends them, and the values are derivable by rendering
+//                  the sibling controller chart at the same pin. A `lookup`
+//                  makes a chart unrenderable only when the chart offers no way
+//                  to supply what the lookup would have found.
+//
+// So no app in this tree is currently in the TOOL LIMIT class, and none is
+// recorded as being in it. An empty class with a member invented to justify it
+// would be the same failure one level up.
 
 import {
   readFileSync,
@@ -978,6 +1023,15 @@ export function adjudicate(findings: readonly RenderedFinding[], baseline: Basel
  * kept asserting that a chart which renders does not, forever, in a file whose
  * job is to be believed.
  *
+ * FOUND TWICE, INDEPENDENTLY, ON THE SAME DAY. The unrenderable-apps change
+ * reached this hole from the other side — it retired FOUR entries by hand and
+ * noticed nothing had required the hand — and the two branches met in a merge.
+ * That is worth recording rather than smoothing over: two agents auditing
+ * different apps derived the same missing check, which is the strongest evidence
+ * available that it was missing. The two implementations are folded into one
+ * here rather than kept side by side, because two copies of a rule are two
+ * copies free to drift.
+ *
  * Keyed `<appId>@<targetRevision>`, matching the acknowledgement lookup, so
  * bumping a pin invalidates the old entry rather than letting it inherit.
  */
@@ -987,6 +1041,63 @@ export function staleUnrenderableKeys(
 ): readonly string[] {
   const live = new Set(unrenderable.map((app) => `${app.appId}@${app.targetRevision}`));
   return baseline.unrenderable.filter((entry) => !live.has(entry.key)).map((entry) => entry.key);
+}
+
+export interface AdjudicatedUnrenderable {
+  /** Apps whose failure NO baseline entry covers — including ones covered by a DISAGREEING entry. */
+  readonly unacknowledged: readonly UnrenderableApp[];
+  /** `unrenderable` baseline keys that matched no still-unrenderable app. Stale, and refused. */
+  readonly staleKeys: readonly string[];
+}
+
+/**
+ * Adjudicate the UNRENDERABLE list the same way findings are adjudicated.
+ *
+ * Staleness is `staleUnrenderableKeys` above — ONE implementation, called from
+ * here, not a second one that agrees today. What this adds is the other half of
+ * the same hole:
+ *
+ *   `observed` WAS INERT ON THIS LIST. Every unrenderable entry carries one
+ *   (they read `helm-pull-failed`, `helm-template-failed`), the loader REQUIRES
+ *   it non-empty, and nothing ever compared it. So an app could stop failing at
+ *   `helm-pull` — the pin resolves now — and start failing at `helm-template`
+ *   for an entirely unrelated reason, and the acknowledgement written about the
+ *   FIRST defect would go on quietly covering the SECOND. That is the vacuity
+ *   class inside the file whose own header calls a baseline that keeps matching
+ *   after the thing it excused has moved "the vacuity class with a filename".
+ *   It was true of the findings half and not of this one.
+ *
+ * WHAT `observed` IS COMPARED AGAINST, and why it is the REASON and not the
+ * DETAIL. The reason is the failure CLASS — `helm-pull-failed` means the pin
+ * names nothing a registry serves; `helm-template-failed` means the chart is
+ * there and our values are wrong. Those are the two classes an operator has to
+ * tell apart, and they need different fixes. The detail is upstream's stderr:
+ * it carries template line numbers and helm's own phrasing, so pinning it would
+ * re-red the gate on a helm upgrade that changed nothing about the tree. Class
+ * is checked; detail is reported.
+ */
+export function adjudicateUnrenderable(
+  unrenderable: readonly UnrenderableApp[],
+  baseline: Baseline,
+): AdjudicatedUnrenderable {
+  const byKey = new Map(baseline.unrenderable.map((entry) => [entry.key, entry]));
+  const unacknowledged: UnrenderableApp[] = [];
+  for (const app of unrenderable) {
+    const entry = byKey.get(`${app.appId}@${app.targetRevision}`);
+    if (entry === undefined) {
+      unacknowledged.push(app);
+      continue;
+    }
+    if (entry.observed !== app.reason) {
+      unacknowledged.push({
+        ...app,
+        detail:
+          `${app.detail}\n      (acknowledged, but this is a DIFFERENT failure than the one acknowledged — ` +
+          `the baseline pinned "${entry.observed}" and this is "${app.reason}")`,
+      });
+    }
+  }
+  return { unacknowledged, staleKeys: staleUnrenderableKeys(baseline, unrenderable) };
 }
 
 // ---------------------------------------------------------------------------
@@ -1053,23 +1164,20 @@ export function auditRenderedStorageClaims(options: AuditOptions = {}): AuditRes
   });
   const adjudicated = adjudicate(findings, baseline);
 
-  const acknowledgedUnrenderable = new Map(baseline.unrenderable.map((entry) => [entry.key, entry]));
-  const unacknowledged = unrenderable.filter(
-    (app) => !acknowledgedUnrenderable.has(`${app.appId}@${app.targetRevision}`),
-  );
+  const adjudicatedUnrenderable = adjudicateUnrenderable(unrenderable, baseline);
 
   return {
     profile,
     appsDiscovered: sources.length,
     appsRendered: sources.length - unrenderable.length,
     unrenderable,
-    unacknowledgedUnrenderable: unacknowledged,
+    unacknowledgedUnrenderable: adjudicatedUnrenderable.unacknowledged,
     rendered,
     expectations,
     refused: adjudicated.refused,
     acknowledged: adjudicated.acknowledged,
-    staleBaselineKeys: [...adjudicated.staleBaselineKeys, ...staleUnrenderableKeys(baseline, unrenderable)].sort(
-      (a, b) => stringCompare(a, b),
+    staleBaselineKeys: [...adjudicated.staleBaselineKeys, ...adjudicatedUnrenderable.staleKeys].sort((a, b) =>
+      stringCompare(a, b),
     ),
     clusterDefault: clusterDefaultStorageClass(repoRoot),
   };
@@ -1204,7 +1312,6 @@ export function auditAgainstSnapshot(
     clusterDefault: snapshot.clusterDefaultStorageClass,
   });
   const adjudicated = adjudicate(findings, baseline);
-  const acknowledgedUnrenderable = new Set(baseline.unrenderable.map((entry) => entry.key));
   // The snapshot records WHICH apps failed to render; only the catalogue knows
   // which claims that leaves unchecked, so the join happens here. A snapshot
   // that carried the answer would go stale against a catalogue edit.
@@ -1213,22 +1320,24 @@ export function auditAgainstSnapshot(
     claimsByApp.set(expectation.app, [...(claimsByApp.get(expectation.app) ?? []), expectation.claimId]);
   }
   const unrenderable = snapshot.unrenderable.map((app) => ({ ...app, unchecked: claimsByApp.get(app.appId) ?? [] }));
+  // SAME adjudication as the live path, not a second one that agrees today.
+  // Two copies of this rule would be free to drift, and the offline gate is the
+  // one CI actually runs -- so a weaker copy here would be the check that reads
+  // like the check that ran.
+  const adjudicatedUnrenderable = adjudicateUnrenderable(unrenderable, baseline);
   return {
     profile,
     appsDiscovered: snapshot.appsDiscovered,
     appsRendered: snapshot.appsDiscovered - snapshot.unrenderable.length,
     unrenderable,
-    unacknowledgedUnrenderable: unrenderable.filter(
-      (app) => !acknowledgedUnrenderable.has(`${app.appId}@${app.targetRevision}`),
-    ),
+    unacknowledgedUnrenderable: adjudicatedUnrenderable.unacknowledged,
     rendered: snapshot.rendered,
     expectations,
     refused: adjudicated.refused,
     acknowledged: adjudicated.acknowledged,
-    staleBaselineKeys: [
-      ...adjudicated.staleBaselineKeys,
-      ...staleUnrenderableKeys(baseline, snapshot.unrenderable),
-    ].sort((a, b) => stringCompare(a, b)),
+    staleBaselineKeys: [...adjudicated.staleBaselineKeys, ...adjudicatedUnrenderable.staleKeys].sort((a, b) =>
+      stringCompare(a, b),
+    ),
     clusterDefault: snapshot.clusterDefaultStorageClass,
   };
 }

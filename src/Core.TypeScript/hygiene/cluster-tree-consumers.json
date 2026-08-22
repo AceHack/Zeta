@@ -77,12 +77,6 @@
       "migrateTo": "full-ai-cluster/k8s/applications via the validator's existing --apps-dir flag, AND move the validator out of infra/k8s/tests/. MEASURED 2026-08-17: pointed at the live tree it reports 224 passed, 14 failed — so this is not a one-line repoint. See the work item."
     },
     {
-      "path": "src/Core.TypeScript/cluster/rendered-storage-claims.ts",
-      "disposition": "derived",
-      "note": "APPLICATION_ROOTS lists `infra/k8s/applications` beside `full-ai-cluster/k8s/applications` so the render check covers BOTH declarations of the cluster. It has to: infra/cockroachdb carries a catalogue row (`infra/cockroachdb/data`, 8Gi x3), and infra/gitlab renders four PVCs totalling 76 GiB that no row declares. Nothing BREAKS when the tree is deleted -- `readdirIfPresent` returns an empty list for a missing directory rather than throwing -- but the checked-in render snapshot would keep naming apps that no longer exist and `--check-snapshot` would report them as GONE, which is drift, not a crash.",
-      "migrateTo": "drop `infra/k8s/applications` from APPLICATION_ROOTS in the deletion commit and re-run `--write-snapshot`; the infra entries leave the snapshot in the same pass. The `infra/cockroachdb/data` row in storage-profiles.json goes with them (it is already noted there as living in the other app-of-apps tree)."
-    },
-    {
       "path": ".gitignore",
       "disposition": "prose",
       "note": "Comment naming infra/nixos/hosts/<host>/hardware-configuration.nix.",
@@ -125,6 +119,12 @@
       "migrateTo": "UNDECIDED — full-ai-cluster/flake.nix already declares control-plane and worker-gpu, on nixpkgs 25.11 against the root flake's 24.11. Repointing crosses a nixpkgs major; dropping the outputs breaks any off-repo machine tracking .#control-plane. Maintainer decision."
     },
     {
+      "path": "full-ai-cluster/k8s/applications/gitlab/Application.yaml",
+      "disposition": "prose",
+      "note": "Comment CITING infra/k8s/applications/gitlab/Application.yaml as the evidence for one value. That sibling pins the same chart at the same 8.7.0 and already carries `global.ingress.configureCertmanager: false`, which is exactly why it renders and this one did not -- so the path is the checkable half of the reason and is named rather than paraphrased. No manifest field references the stale tree; deleting infra/ breaks nothing here but the citation.",
+      "migrateTo": "when infra/ goes away, replace the citation with the measurement itself (helm template of gitlab 8.7.0 without that key fails on certmanager-issuer.email) -- the evidence outlives the sibling."
+    },
+    {
       "path": "full-ai-cluster/k8s/single-node-budget.json",
       "disposition": "derived",
       "note": "acknowledgedRootAppDuplicates suppresses the root-app-collision blocker. VERIFIED 2026-08-17: emptying it makes single-node-readiness.ts exit 1 on the live collision.",
@@ -152,6 +152,12 @@
       "disposition": "prose",
       "note": "Two DOC-COMMENT references only, no import and no path construction: it points at infra/k8s/tests/validate-applications.ts as the OTHER consumer of this same manual-sync convention, and at FULL-AI-CLUSTER-FAILURE-BASELINE.md for the failure count. Both files exist at those paths today. The pointer is the POINT -- it is what tells the next reader that the render validator must adopt this module rather than grow a parallel convention, which is the drift this repo keeps catching. Migration target: repoint both mentions when the render validator moves out of infra/.",
       "migrateTo": ""
+    },
+    {
+      "path": "src/Core.TypeScript/cluster/rendered-storage-claims.ts",
+      "disposition": "derived",
+      "note": "APPLICATION_ROOTS lists `infra/k8s/applications` beside `full-ai-cluster/k8s/applications` so the render check covers BOTH declarations of the cluster. It has to: infra/cockroachdb carries a catalogue row (`infra/cockroachdb/data`, 8Gi x3), and infra/gitlab renders four PVCs totalling 76 GiB that no row declares. Nothing BREAKS when the tree is deleted -- `readdirIfPresent` returns an empty list for a missing directory rather than throwing -- but the checked-in render snapshot would keep naming apps that no longer exist and `--check-snapshot` would report them as GONE, which is drift, not a crash.",
+      "migrateTo": "drop `infra/k8s/applications` from APPLICATION_ROOTS in the deletion commit and re-run `--write-snapshot`; the infra entries leave the snapshot in the same pass. The `infra/cockroachdb/data` row in storage-profiles.json goes with them (it is already noted there as living in the other app-of-apps tree)."
     },
     {
       "path": "src/Core.TypeScript/cluster/single-node-readiness.test.ts",
