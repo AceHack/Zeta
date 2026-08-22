@@ -1,7 +1,7 @@
 {
   "schema": "zeta.society.event-index/v1",
-  "eventCount": 448,
-  "headDigest": "3837958758f26b1773fe89dfdaeba39630c1cc54aa07fc2732905906757c6120",
+  "eventCount": 452,
+  "headDigest": "efa5ef5b16a82fc77e3a9f9ab8dbf8bff2556dfd814eee42dc674fc664afceae",
   "events": [
     {
       "id": "society-msm7luj6",
@@ -3994,6 +3994,42 @@
       "previousDigest": "4fe09c7ab885fe5fedb32bdb11d4e733eff1b8fbc8530bc2d708360917b65dcb",
       "chainDigest": "3837958758f26b1773fe89dfdaeba39630c1cc54aa07fc2732905906757c6120",
       "sourceRevision": "9af704b90c08b0d96c6598d99e2f9c92093a26a0"
+    },
+    {
+      "id": "society-mt3re2u6",
+      "at": "2026-08-22T02:28:22.878Z",
+      "file": "society-mt3re2u6.json",
+      "eventDigest": "65626b2a2099e3a2b2145ae7c106117a8c36c08932a8451befa6a055c4e33da4",
+      "previousDigest": "3837958758f26b1773fe89dfdaeba39630c1cc54aa07fc2732905906757c6120",
+      "chainDigest": "02724c2a5224bd63dfd1ef6bf2bee3f1f41748f8b3cf203a3d83d3c1ef3713da",
+      "sourceRevision": "33fec43d524a86910c631d8fa16dd5d936c3ab63"
+    },
+    {
+      "id": "society-mt3sagb5",
+      "at": "2026-08-22T02:53:33.329Z",
+      "file": "society-mt3sagb5.json",
+      "eventDigest": "828c3667110fbf033306bb11cf3204dcdf60c16ac2e301ae3d4b67ecb32cd6b8",
+      "previousDigest": "02724c2a5224bd63dfd1ef6bf2bee3f1f41748f8b3cf203a3d83d3c1ef3713da",
+      "chainDigest": "2adcb0bc4c05c0825f9eb83a0b888a67dcb73aaef0ab5ef01453190e24842b33",
+      "sourceRevision": "48630c09568c530eb6dbb39dd0961e4d7ed08f3c"
+    },
+    {
+      "id": "society-mt3t8s8c",
+      "at": "2026-08-22T03:20:15.084Z",
+      "file": "society-mt3t8s8c.json",
+      "eventDigest": "b54cc93728cc657213ce3f815efa4f1216522f3bfd1738af21c8d2f0d3a47e39",
+      "previousDigest": "2adcb0bc4c05c0825f9eb83a0b888a67dcb73aaef0ab5ef01453190e24842b33",
+      "chainDigest": "47c530b93fcb258c94b5f10a41638a18a4a1c74bccea50e9ee0ef8972520c986",
+      "sourceRevision": "c9ba64e40bad5655831e160bcb74f1c977275475"
+    },
+    {
+      "id": "society-mt3u94eb",
+      "at": "2026-08-22T03:48:30.467Z",
+      "file": "society-mt3u94eb.json",
+      "eventDigest": "3c45baf9c87c051fb9331fa27d3a8b165a4f49a942b9dc23ef2b54873de6e95a",
+      "previousDigest": "47c530b93fcb258c94b5f10a41638a18a4a1c74bccea50e9ee0ef8972520c986",
+      "chainDigest": "efa5ef5b16a82fc77e3a9f9ab8dbf8bff2556dfd814eee42dc674fc664afceae",
+      "sourceRevision": "033dd46347c892f187a8946d01e78b8af395d781"
     }
   ]
 }
