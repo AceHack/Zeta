@@ -132,10 +132,10 @@ async function loop() {
   // Sniff Gamification Level Transitions (Mutual Sim logic)
   if (frame.v[8] === 0) {
     gameLevel = 1;
-    gameObjective = "Survive! Simulator is Hunting You.";
+    gameObjective = "Hide & Seek: Simulator is 'It'!";
   } else if (frame.v[8] === 1) {
     gameLevel = 2;
-    gameObjective = "Hunt! Simulator is Fleeing.";
+    gameObjective = "Tag! You're 'It'!";
   }
 
   if (world.history && world.history.length > 0) {
