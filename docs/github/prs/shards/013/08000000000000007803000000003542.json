@@ -1,0 +1,12 @@
+{
+  "pr_number": 13634,
+  "archive_path": "docs/history/pr-reviews/PR-13634-deps-stop-dependabot-proposing-a-roslyn-newer-than-the-pinned-sdk-can-load.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-22T10:18:30.690Z",
+  "schema_version": "v1",
+  "commit_sha": "f88abfdd1b48a41116c782e44aa56803749f0f53",
+  "title": "deps: stop Dependabot proposing a Roslyn newer than the pinned SDK can load",
+  "state": "MERGED",
+  "merged_at": "2026-08-22T10:17:51Z",
+  "head_ref": "deps/pin-codeanalysis-to-sdk-roslyn-line"
+}
