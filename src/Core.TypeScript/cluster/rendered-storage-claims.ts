@@ -10,11 +10,17 @@
 // asked the chart whether that value reaches a PersistentVolumeClaim.
 //
 // It does not always. PR #13410 measured `hindsight`'s `valuesObject` as
-// largely inert against chart 0.3.0: the row declares
+// largely inert against chart 0.3.0: the row declared
 // `postgresql.primary.persistence.{storageClass: longhorn, size: 10Gi}` and the
-// chart renders a PVC with NO storageClassName at 8Gi. The declaration has been
+// chart rendered a PVC with NO storageClassName at 8Gi. The declaration had been
 // governing a path that does not exist, and every check in the repo agreed with
 // it, because every check was reading the declaration.
+//
+// That one, and nats's inert top-level `cluster: {replicas: 3}`, were FIXED on
+// 2026-08-22 (the manifests moved, the snapshot was re-measured, and their three
+// baseline entries were retired). The motivating case is kept in the past tense
+// rather than deleted: a module's reason to exist should not evaporate the first
+// time it works.
 //
 // The `$comment_resources` block in the same catalogue already carries numbers
 // that WERE rendered — CPU and memory, "MEASURED 2026-08-21 by `helm pull` at
@@ -702,7 +708,7 @@ export function declaredExpectations(
  * The rung THIS deployment runs, from the ledger rather than from the ladder.
  *
  * Defaulting to the last profile would audit `large` — a planning ceiling
- * nothing applies — and report a 1599 GiB declaration against an 831 GiB
+ * nothing applies — and report a 1599 GiB declaration against an 861 GiB
  * render as if that gap were a defect. The gap the operator cares about is at
  * the rung the cluster is actually on, and `single-node-budget.json` is where
  * that is recorded.

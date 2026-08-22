@@ -29,21 +29,34 @@ spec:
         # is healthy.
         postgresql:
           enabled: true
-          primary:
-            persistence:
-              storageClass: longhorn
-              # SIZE CUT, NOT A POD CUT: 20Gi -> 10Gi, one primary either way.
-              #
-              # THE CUT TO REVISIT FIRST if this box gains room. This is the
-              # semantic-memory Postgres, so the bound is on how much agent
-              # memory can be retained before the database refuses writes. There
-              # is no eviction policy to move alongside it -- Postgres does not
-              # age rows out on its own -- so the governor here is whatever
-              # retention the application implements, and today that is nothing.
-              # The failure is loud (writes fail) rather than silent, and
-              # manifesto section 5 makes filling it a memory-preservation
-              # surface rather than a performance one.
-              size: 10Gi
+          # NOT `primary.persistence.*` -- that is the BITNAMI postgresql
+          # subchart layout, and this chart is not that chart. hindsight 0.3.0
+          # ships its OWN StatefulSet (templates/postgresql-statefulset.yaml:69)
+          # reading `postgresql.persistence.size` / `.storageClass`, so a
+          # `.primary` level lands on keys nothing reads.
+          #
+          # MEASURED 2026-08-21, and the inert form was not merely optimistic:
+          # `helm template` at this pin rendered the chart default 8Gi with NO
+          # storageClassName, and a blank class binds the cluster DEFAULT class
+          # -- `zeta-local-path`, rancher.io/local-path, reclaimPolicy: DELETE
+          # (full-ai-cluster/nixos/modules/local-storage.nix). The
+          # semantic-memory Postgres was on node-local delete-on-reclaim disk
+          # for as long as this file said `longhorn`. Re-rendered after the
+          # move: 10Gi, storageClassName "longhorn".
+          persistence:
+            storageClass: longhorn
+            # SIZE CUT, NOT A POD CUT: 20Gi -> 10Gi, one primary either way.
+            #
+            # THE CUT TO REVISIT FIRST if this box gains room. This is the
+            # semantic-memory Postgres, so the bound is on how much agent
+            # memory can be retained before the database refuses writes. There
+            # is no eviction policy to move alongside it -- Postgres does not
+            # age rows out on its own -- so the governor here is whatever
+            # retention the application implements, and today that is nothing.
+            # The failure is loud (writes fail) rather than silent, and
+            # manifesto section 5 makes filling it a memory-preservation
+            # surface rather than a performance one.
+            size: 10Gi
 
         api:
           # LLM provider Hindsight uses for its own entity/relation

@@ -33,7 +33,7 @@ import {
   type UnrenderableApp,
   type ApplicationSource,
 } from "./rendered-storage-claims.ts";
-import { loadCatalogue } from "./storage-profiles.ts";
+import { loadCatalogue, verifyProfileApplied } from "./storage-profiles.ts";
 
 const pvc = (over: Partial<RenderedPvc> = {}): RenderedPvc => ({
   appId: "t/app",
@@ -427,21 +427,54 @@ describe("the live catalogue against the measured render", () => {
 
   // The numbers, pinned. Not decoration: this is what makes a declaration edit
   // that nobody re-measured go red offline, with no helm and no network.
-  test("MEASURED 2026-08-21 — declared 967 GiB, rendered 831 GiB on longhorn", () => {
+  test("MEASURED 2026-08-22 — declared 967 GiB, rendered 861 GiB on longhorn", () => {
     const result = auditAgainstSnapshot(snapshot!, {});
     expect(declaredTotalGib(result.expectations)).toBe(967);
     const totals = renderedTotalsByClass(result.rendered, result.clusterDefault);
-    expect(totals.get("longhorn")).toBe(831);
-    expect(totals.get("zeta-local-path")).toBe(201);
+    // 831 -> 861 and 201 -> 193 on 2026-08-22: hindsight's postgres moved off
+    // the Delete-reclaim default class onto longhorn (+10 there, -8 here) and
+    // nats went from one JetStream pod to three (+20). Nothing else moved —
+    // the rest of the snapshot re-rendered byte-identical.
+    expect(totals.get("longhorn")).toBe(861);
+    expect(totals.get("zeta-local-path")).toBe(193);
   });
 
-  test("the two live inert-values defects are still exactly two apps", () => {
+  // WAS "the two live inert-values defects are still exactly two apps". Both
+  // were fixed on 2026-08-22, so this is INVERTED rather than deleted — and it
+  // does not stop at "the list is empty", because empty is also what a checker
+  // that has stopped looking produces. The two rows that carried the defect are
+  // asserted POSITIVELY against the render that judged them.
+  test("the two inert-values defects are FIXED — and the render, not the declaration, says so", () => {
     const result = auditAgainstSnapshot(snapshot!, {});
     const declaredSide = result.acknowledged.filter((finding) => finding.kind !== "undeclared-rendered-pvc");
-    expect([...new Set(declaredSide.map((finding) => finding.claimId))].sort()).toEqual([
-      "full-ai-cluster/hindsight/postgres",
-      "full-ai-cluster/nats/jetstream",
-    ]);
+    expect(declaredSide.map((finding) => finding.claimId)).toEqual([]);
+
+    const byName = new Map(result.rendered.map((pvc) => [`${pvc.appId} ${pvc.name}`, pvc]));
+    const hindsight = byName.get("full-ai-cluster/hindsight data/hindsight-postgresql");
+    expect(hindsight?.size).toBe("10Gi");
+    // NOT "": a blank class binds zeta-local-path, which is rancher.io/local-path
+    // with reclaimPolicy Delete. This assertion is the durability, not the size.
+    expect(hindsight?.storageClassName).toBe("longhorn");
+    expect(hindsight?.count).toBe(1);
+
+    const nats = byName.get("full-ai-cluster/nats nats-js/nats");
+    expect(nats?.size).toBe("10Gi");
+    expect(nats?.storageClassName).toBe("longhorn");
+    // Three, from `config.cluster.replicas`. At 1 there is no JetStream quorum
+    // and a stream created with replicas > 1 refuses to create.
+    expect(nats?.count).toBe(3);
+  });
+
+  // The catalogue's COORDINATES and the YAML have to move together. A field path
+  // left pointing at the old `postgresql.primary.persistence.*` or at the old
+  // top-level `cluster.replicas` reads as absent, and an absent coordinate is
+  // how a row goes back to comparing against nothing — the same inert-declaration
+  // shape one layer up. `verifyProfileApplied` reads every coordinate out of the
+  // real manifests, so it is red if either edit was made without the other.
+  test("every catalogue coordinate still resolves in the LIVE tree at the active rung", () => {
+    const claim = loadCatalogue().claims.find((row) => row.id === "full-ai-cluster/nats/jetstream");
+    expect(claim?.podsField).toBe("spec.source.helm.valuesObject.config.cluster.replicas");
+    expect(verifyProfileApplied(loadCatalogue(), "measured").map((finding) => finding.problem)).toEqual([]);
   });
 
   test("every catalogue row carries a rendered coordinate, and every pattern compiles", () => {
@@ -508,9 +541,12 @@ describe("machinery", () => {
 
   // A Blueprint is a TEMPLATE: a PVC exists only once a Deployable references
   // it. Counting one would over-state the disk, which is the opposite error to
-  // the one this module exists to catch — and it is the error already in
-  // single-node-budget.json's 103 GiB zeta-local-path figure, which includes
-  // blueprints-flowdent's 8Gi mssql template.
+  // the one this module exists to catch — and it WAS the error in
+  // single-node-budget.json's 103 GiB zeta-local-path figure, which counted
+  // blueprints-flowdent's 8Gi mssql template while missing 30 GiB of claims that
+  // render with no class and bind the default. Two errors of opposite sign,
+  // which is why the total looked plausible; corrected to 193 GiB on 2026-08-22
+  // by deriving it from the snapshot instead of from our own YAML.
   test("a platform Blueprint's spec.storage is NOT counted as a PVC", () => {
     expect(
       extractRenderedPvcs("t/platform", [
