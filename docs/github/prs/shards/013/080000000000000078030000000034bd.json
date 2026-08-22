@@ -1,0 +1,12 @@
+{
+  "pr_number": 13501,
+  "archive_path": "docs/history/pr-reviews/PR-13501-perf-ci-tier-gate-the-eprover-source-build-76s-of-make-on-a-dotnet-build-lane.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-22T02:34:57.567Z",
+  "schema_version": "v1",
+  "commit_sha": "a8740819a2f617b16026d38c0921365e1f88ac9d",
+  "title": "perf(ci): tier-gate the eprover SOURCE BUILD — 76s of `make` on a dotnet-build lane",
+  "state": "MERGED",
+  "merged_at": "2026-08-22T02:34:19Z",
+  "head_ref": "shadow/eprover-tier-gate"
+}
