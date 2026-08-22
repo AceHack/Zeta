@@ -47,5 +47,5 @@ Zero proof edits. Measured by the spike before anything was written: the 8 files
 Theorems A and B; §§4–5; anything from `Zeta23/FromPNTPlus/`. This is the engine, not the
 result. Downstream note found in passing: Mathlib has Sylvester's law of inertia only for
 **real** quadratic forms; the Hermitian version is the paper's contribution and now sits in
-`Zeta23/LinAlg/Sylvester.lean`. The paper's Prop. 4.1 shows the matrices in play are real
+`src/Core.Lean4/Zeta23/LinAlg/Sylvester.lean`. The paper's Prop. 4.1 shows the matrices in play are real
 symmetric, so the real version may suffice downstream — unverified, flagged not resolved.

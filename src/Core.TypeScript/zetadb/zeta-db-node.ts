@@ -95,6 +95,11 @@ export interface ZetaDbTickReadout {
   readonly feedback: readonly ZetaDbFeedback[];
 }
 
+export interface ZetaDbConvergencePolicy {
+  /** Total finite attempts, including the first execution. */
+  readonly maxAttempts: number;
+}
+
 const EXECUTOR_KINDS: ReadonlySet<ZetaDbExecutorKind> = new Set([
   "browser-tab",
   "dedicated-worker",
@@ -666,6 +671,46 @@ export async function runZetaDbNodeTick(
     rows: admission.value.rows.map(copyRow),
     feedback,
   });
+}
+
+/**
+ * Reapply one logical tick after concurrent writers change the durable revision.
+ *
+ * Explicit `expectedRevision` requests are compare-and-swap operations, so their
+ * predicate is never weakened by retrying. Ordinary idempotent event batches may
+ * reload and fold again, but only within the caller's finite attempt budget.
+ */
+export async function runConvergentZetaDbNodeTick(
+  port: ZetaDbImagePort,
+  request: ZetaDbTickRequest,
+  policy: ZetaDbConvergencePolicy,
+): Promise<ZetaDbResult<ZetaDbTickReadout>> {
+  if (
+    !isRecord(policy) ||
+    typeof policy.maxAttempts !== "number" ||
+    !Number.isSafeInteger(policy.maxAttempts) ||
+    policy.maxAttempts < 1
+  ) {
+    return failed(
+      "database-request-invalid",
+      "A database convergence policy requires a positive safe-integer attempt budget.",
+    );
+  }
+
+  const maxAttempts = policy.maxAttempts;
+  let lastConflict: ZetaDbFeedback | null = null;
+  for (let attempt = 1; attempt <= maxAttempts; attempt += 1) {
+    const result = await runZetaDbNodeTick(port, request);
+    if (result.ok || result.feedback.code !== "database-revision-conflict") return result;
+    if (request.expectedRevision !== undefined) return result;
+    lastConflict = result.feedback;
+  }
+
+  return failed(
+    "database-revision-conflict",
+    `Database tick spent its ${String(maxAttempts)}-attempt convergence budget. Last conflict: ${lastConflict?.detail ?? "revision changed"}`,
+    "backpressure",
+  );
 }
 
 /** Reference durable port used by local, cloud, and deterministic-simulation tests. */

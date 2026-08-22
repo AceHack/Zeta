@@ -113,9 +113,23 @@ test at all, so `zeta-db-node.test.ts` now pins that it still refuses a genuine
 two-live-payload conflict — from either arrival order. A guard relocated into a place
 that cannot fire would have been worse than the ordering bug it replaced.
 
-**Still open** (unchanged by this): the formal property for Soraya, and a test that runs
-two folds *actually concurrently* against one journal rather than folding one delta set
-in two orders.
+## RUNTIME CONVERGENCE FIX TAKEN (2026-08-22)
+
+`runConvergentZetaDbNodeTick` now composes the finite one-attempt tick with a caller-
+supplied finite attempt budget. An ordinary idempotent event batch that loses a durable
+revision race reloads the newest image and folds again. An explicit `expectedRevision`
+remains a strict compare-and-swap predicate and is never weakened by retrying. Exhausted
+attempts return typed `database-revision-conflict` backpressure; there is no lock,
+timeout, last-writer-wins path, or unbounded loop.
+
+The executable acceptance test now starts two tab executors concurrently against the
+same in-memory durable image with disjoint batches. Both initially observe revision 0;
+one writes revision 1, the loser reloads and writes revision 2, and the final canonical
+journal contains both batches. A second test pins finite exhaustion, and a third pins
+strict compare-and-swap behavior.
+
+**Still open:** the substrate-general formal property assigned to Soraya. The concrete
+runtime concurrency acceptance criterion is now closed.
 
 ---
 

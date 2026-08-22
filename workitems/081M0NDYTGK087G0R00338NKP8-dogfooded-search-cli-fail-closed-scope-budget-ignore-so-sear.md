@@ -54,7 +54,8 @@ Explicit-target, per the rule this item is about:
 
 1. **The named directory is not the heavy one.** `references/prior-art` is
    **8.0K** — a `.gitignore` and a `README.md`. The 24G checkout is
-   `src/Core.Lean4/.lake` (6.9G), `.git` (4.1G), `src/Core.Rust.*/target` (~700M),
+   the generated `.lake` directory under `src/Core.Lean4` (6.9G), `.git` (4.1G),
+   `src/Core.Rust.*/target` (~700M),
    `node_modules` (222M). An exclusion set naming only `prior-art` would have
    prevented nothing.
 2. **The cost is per-file-OPEN.** `rg --files` walks 40,984 files in 0.33s;
@@ -81,9 +82,12 @@ Explicit-target, per the rule this item is about:
   configuration, and an agent's own say-so is not authorization to edit it. Needs
   a human. **~1 line.**
 - **Migrate the ~8 call sites** that hand-roll `prior-art` handling onto
-  `exclusions.ts` (`ace/build-graph.ts`, `algebra/entropy-tracker.ts`,
-  `algebra/key-erasure-meter.ts`, `hygiene/audit-git-hotspots.ts`,
-  `hygiene/audit-hidden-oracles.ts`, `lint/no-empty-dirs.ts`, and others). Each is
+  `exclusions.ts` (`src/Core.TypeScript/ace/build-graph.ts`,
+  `src/Core.TypeScript/algebra/entropy-tracker.ts`,
+  `src/Core.TypeScript/algebra/key-erasure-meter.ts`,
+  `src/Core.TypeScript/hygiene/audit-git-hotspots.ts`,
+  `src/Core.TypeScript/hygiene/audit-hidden-oracles.ts`,
+  `src/Core.TypeScript/lint/no-empty-dirs.ts`, and others). Each is
   a 1–3 line import swap; the risk is that some intend a *different* set, so each
   needs reading rather than a blind sed. **~1 focused PR, half a day.**
 - **Retire or absorb `grep.ts`** once `search.ts` has usage. It is now a strictly

@@ -39,10 +39,10 @@ not find there was added there:
 - `CheckObservationSource` (in `forge-host.ts`) — `listCheckDefinitions` (the ROSTER,
   i.e. the denominator) + `listLatestCheckObservations` (latest per check, never a
   window). `ForgeHost extends CheckObservationSource`.
-- Host-agnostic vocabulary in `forge-host/types.ts`: `CheckId`, `Verdict`,
+- Host-agnostic vocabulary in `src/Core.TypeScript/forge-host/types.ts`: `CheckId`, `Verdict`,
   `UnknownReason`, `CheckExpectation`, `TriggerClass`, `CheckDefinition`,
   `CheckObservation`, `CheckObservationFailure`, `CheckObservationPass`.
-- `github/check-observations.ts` implements it; `gitlab` returns `not-supported`
+- `src/Core.TypeScript/forge-host/github/check-observations.ts` implements it; `gitlab` returns `not-supported`
   (an empty roster would render "0 of 0 observed" and go green — worse than an error).
 - **The future author/verifier producer is an INTERFACE ONLY.** Interfaces are free,
   a class must be earned; a stub emitting invented attestations would be exactly the

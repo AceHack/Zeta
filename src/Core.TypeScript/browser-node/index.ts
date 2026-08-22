@@ -149,6 +149,7 @@ export {
 } from "./browser-indexeddb-checkpoint";
 
 export {
+  DEFAULT_BROWSER_ZETA_DB_CONVERGENCE_POLICY,
   createBrowserZetaDbImagePort,
   loadBrowserZetaDbImage,
   openBrowserZetaDbImagePort,
