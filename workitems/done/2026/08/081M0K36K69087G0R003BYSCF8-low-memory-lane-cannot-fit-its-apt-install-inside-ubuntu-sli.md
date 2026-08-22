@@ -109,9 +109,56 @@ measurement and applied to a 1-vCPU host.
 | whole job vs the 840s cap | 637s = **75.8%** | 483s = **57.5%** |
 | apt headroom against the 420s budget | 2.8x | **9.0x** |
 
-Three post-fix runs (`32542476788`, `32542506735`, `32542696797`), all green, apt
-phase **46.8s / 66.2s / 36.8s** — 6.3x to 11.4x budget headroom, back in line with
-the ubuntu-24.04 ratio the budget was designed around.
+Ten post-fix runs. **Eight green, two killed at the 14-minute cap.** The full set
+is reported, worst included, because a table that stops at the green ones is a
+success story rather than a measurement.
+
+| run | apt phase | whole job vs the 840s cap | |
+|---|---|---|---|
+| `32542476788` | 46.8s | 483s = 57.5% | |
+| `32542506735` | 66.2s | 683s = 81.3% | |
+| `32542696797` | 36.8s | 432s = 51.4% | |
+| `32543287691` | 81.8s | 509s = 60.6% | |
+| `32543444813` | 51.3s | 764s = 91.0% | |
+| `32543842858` | 88.6s | **872s — cap** | killed in `Build low-memory Core smoke graph` |
+| `32544542294` | 40.3s | 653s = 77.7% | |
+| `32544593433` | **119.6s** | **853s — cap** | killed in `Build low-memory Core smoke graph` |
+| `32544861733` | 39.6s | 722s = 86.0% | |
+| `32545162949` | 40.6s | 611s = 72.7% | |
+
+### What the ten establish
+
+**The apt-budget failure class is gone.** apt ranges **36.8-119.6s** against the 420s
+budget — **3.5x to 11.4x headroom**, up from 2.8x — and the signature that defined
+this work-item (`apt-get install did not succeed within the 420s apt budget`) appears
+in **none** of the ten. 41 packages installed where it was 234; ~41 MB fetched where
+it was 626 MB. Note the 119.6s outlier: under heavy contention even the reduced set
+costs 2.5x its median, which is precisely why the margin had to be multiplicative
+rather than a few seconds.
+
+**The lane still exceeds its cap under load, and apt is no longer why.** Both cap
+hits died inside `Build low-memory Core smoke graph`. The pre-fix cancellations died
+inside `Post Cache mise runtimes` — later in the sequence, because everything ahead
+of the build used to take longer. `dotnet build` measured **151s to >330s** across the
+ten and was **453s** on the 91.0% run, whose install step was the SHORTEST of the set
+(207s). That is the lane's actual payload on a contended 1-vCPU runner; no
+install-side lever reaches it.
+
+**Two out of ten is not a rate.** Neither is the 26% (14/54) it replaced. What is
+comparable is the mechanism and the signature, and both moved.
+
+### Next levers, in size order
+
+1. `dotnet build` itself — the biggest and the hardest, because it is the work.
+2. The 76s `eprover` autotools **source build** (removed from slim in #13501).
+3. `Cache mise runtimes` — 122s restore on the first cap-hit, and it is a *restore*,
+   not the save; the paired save cost another 52-62s at the end of several runs.
+4. The 29s of best-effort agent-CLI installs (`claude-code`, `codex`), which a
+   `dotnet build` lane never uses.
+
+Option 1 from the filing (cache apt) is now worth far less than when it was written:
+apt fetches 41 MB, and its remaining cost is dpkg unpack on 1 vCPU, which a package
+cache does not remove.
 
 Resolved package sets, measured on `ubuntu:24.04` amd64 with universe enabled and
 `--no-install-recommends`: every row **388 packages / 713.0 MiB**; slim rows only
@@ -122,7 +169,7 @@ set resolves and installs with nothing missing.
 ### Honest residual — the lane is no longer apt-bound, and it is not yet roomy
 
 `32542506735` used **683s of 840s (81.3%)** while three slim jobs ran
-concurrently. Its apt phase was 66s; the extra went to `dotnet build` (239s vs
+concurrently — the worst of the four above, and the one to watch. Its apt phase was 66s; the extra went to `dotnet build` (239s vs
 151s) and the rest of the install step. So the remaining margin is consumed by
 runner contention, not by apt — and before this fix that same contention would
 have pushed the job past the cap rather than to 81% of it. The next levers, if
