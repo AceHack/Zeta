@@ -73,3 +73,38 @@ zeta_strip_tier() {
 zeta_tier_allows() {
   [ "$(zeta_tier_rank "$1")" -le "$ZETA_HOST_RANK" ]
 }
+
+# ── Manifest filter: bare-package-name manifests, tier-gated ─────────────────
+# For manifests whose entries are BARE package names with an optional
+# `tier=<slim|standard|full>` token (manifests/apt). Reads $1, strips `#`
+# comments + whitespace (the same awk parser linux.sh has always used — the
+# 2026-05-26 `p7zip-full  # comment` bug is guarded by it), drops entries the
+# host's tier does not allow, and prints the ALLOWED package names one per line
+# on stdout. Skips are printed to STDERR, named, with both tiers — loud, per the
+# discipline at the top of this file.
+#
+# stdout/stderr are split so a caller can do `PKGS="$(zeta_filter_manifest_by_tier f)"`
+# and still have the operator see every skip in the log.
+#
+# NOT used for manifests/brew: brew entries carry version pins and other tokens,
+# so macos.sh keeps its own line-wise parse. This helper is for the bare-name shape.
+zeta_filter_manifest_by_tier() {
+  local _manifest="$1" _line _tier _pkg
+  [ -f "$_manifest" ] || return 0
+  while IFS= read -r _line; do
+    [ -n "$_line" ] || continue
+    _tier="$(zeta_tier_of_line "$_line")"
+    _pkg="$(zeta_strip_tier "$_line")"
+    [ -n "$_pkg" ] || continue
+    if ! zeta_tier_allows "$_tier"; then
+      echo "→ $_pkg skipped: requires tier=$_tier, host is $ZETA_HOST_TIER ($ZETA_HOST_TIER_SOURCE)" >&2
+      continue
+    fi
+    printf '%s\n' "$_pkg"
+  done <<EOF2
+$(awk '
+    { sub(/#.*$/, ""); gsub(/^[[:space:]]+|[[:space:]]+$/, "") }
+    NF > 0 { print }
+  ' "$_manifest")
+EOF2
+}

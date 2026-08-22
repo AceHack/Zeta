@@ -37,6 +37,17 @@ realize_mechanisms() {
 # shellcheck source=tools/setup/common/curl-fetch.sh
 source "$SETUP_DIR/common/curl-fetch.sh"
 
+# Host tiers (081KTWQZY7F08QG0R0034KN17T). macos.sh has gated manifests/brew on
+# `tier=` since that workitem landed; the apt leg did not, which is what this
+# source line closes. Sourcing here (rather than inside the apt branch) resolves
+# the tier ONCE for the whole install: children like common/mise.sh source the
+# same file and, finding ZETA_HOST_TIER already exported, take the declared
+# branch instead of re-detecting. Same value either way — detection is a pure
+# function of the host's memory — so the only visible change downstream is that
+# their logs now read `(declared)` where they read `(detected)`.
+# shellcheck source=tools/setup/common/host-tier.sh
+source "$SETUP_DIR/common/host-tier.sh"
+
 # ── Detect NixOS — skip apt step entirely, use systemPackages instead ──
 # iter-5.5.0 (081KSGS9H0008QG0R001JNKBFD Phase 2, operator 2026-05-27 ALIGNMENT catch):
 # NixOS provides system packages declaratively via common.nix
@@ -69,18 +80,24 @@ APT_MANIFEST="$SETUP_DIR/manifests/apt"
 if [ "$IS_NIXOS" = 1 ]; then
   echo "✓ skipping apt (NixOS — see common.nix environment.systemPackages)"
 elif [ -f "$APT_MANIFEST" ]; then
-  # Extract non-comment non-empty lines via awk (doesn't fail
-  # under pipefail when manifest is all comments — unlike
-  # `grep -vE` which exits 1 on no-match).
+  # Extract non-comment non-empty lines, then DROP the ones this host's tier
+  # does not allow. The comment/whitespace parser is unchanged (it lives in
+  # common/host-tier.sh now) and still guards the maintainer's 2026-05-26 bug
+  # surface: `p7zip-full  # comment` was passed to apt-get install verbatim,
+  # producing "Unable to locate package". awk (not `grep -vE`) because grep
+  # exits 1 on no-match and would fail the script under pipefail when the
+  # manifest is all comments.
   #
-  # Strip inline `# ...` comments + trim whitespace (same parser fix
-  # as macos.sh BREW_MANIFEST per the maintainer 2026-05-26 bug
-  # surface: `p7zip-full  # comment` was passed to apt-get install
-  # verbatim, producing "Unable to locate package").
-  PKGS="$(awk '
-    { sub(/#.*$/, ""); gsub(/^[[:space:]]+|[[:space:]]+$/, "") }
-    NF > 0 { print }
-  ' "$APT_MANIFEST" | tr '\n' ' ')"
+  # WHY THE TIER GATE IS HERE (081M0K36K69087G0R003BYSCF8). manifests/apt is
+  # 388 packages / 713 MiB resolved, and it was installed IN FULL on every host
+  # including the 1-vCPU ubuntu-slim runner, whose only job is `dotnet build`
+  # on one csproj. manifests/brew has gated the same tools at tier=standard
+  # since 081KTWQZY7F, so this is the missing half of a split that already
+  # shipped — the manifest itself carried the debt in prose ("The right fix is
+  # a tier= gate for apt, which does not exist yet"). Skips are LOUD (the
+  # helper names every dropped package and both tiers on stderr): a package
+  # that silently vanished would be the absent-check failure this repo refuses.
+  PKGS="$(zeta_filter_manifest_by_tier "$APT_MANIFEST" | tr '\n' ' ')"
   # manifests/apt canonical names target Ubuntu 24.04 (Noble). Map to jammy
   # equivalents so install.sh works on 22.04 dev boxes / cloud VMs too.
   if [ -f /etc/os-release ]; then
@@ -305,12 +322,60 @@ elif [ -f "$APT_MANIFEST" ]; then
       # message instructs, and it is a no-op on a clean database, so it is
       # safe on the ordinary-error paths too. It draws from the same deadline —
       # a `dpkg --configure -a` that itself hangs must not eat the budget.
+      #
+      # AND IT MUST WAIT FOR THE LOCK, which the first version did not — so the
+      # recovery was still vacuous on exactly the failure it was written for.
+      # `timeout` signals the process it started (`sudo apt-get`); the `dpkg`
+      # that apt-get forked is NOT in that process group's kill path and keeps
+      # running, holding /var/lib/dpkg/lock. Read off run 32539... sibling
+      # 32537060851 (low-memory, 2026-08-21), where the recovery fired 40 ms
+      # after the kill and every step after it lost to the same lock:
+      #   23:37:09.80  attempt 1 hits its 237s slice, timeout fires
+      #   23:37:09.84  dpkg --configure -a -> "lock was locked by another
+      #                process with pid 1072"                      (recovery lost)
+      #   23:37:24.94  attempt 2  -> "Could not get lock ... held by 1072" rc=100
+      #   23:37:24.98  dpkg --configure -a -> same lock error       (recovery lost)
+      #   23:37:55.01  attempt 3  -> "dpkg was interrupted, you must manually
+      #                run 'sudo dpkg --configure -a'"              rc=100
+      # By 23:37:55 pid 1072 had exited and the lock was free, but nothing tried
+      # again — so a recoverable interruption spent all three attempts and the
+      # step failed. Polling turns that into a wait of a few seconds. Same 30s
+      # cap and same shared deadline as before: this loop can only spend time
+      # the budget already allowed the single call to spend.
       apt_dpkg_slice="$(apt_remaining)"
       if [ "$apt_dpkg_slice" -gt 30 ]; then apt_dpkg_slice=30; fi
       if [ "$apt_dpkg_slice" -ge 1 ]; then
-        # shellcheck disable=SC2086
-        timeout --signal=TERM --kill-after="${apt_kill_after}s" "$apt_dpkg_slice" \
-          $SUDO dpkg --configure -a || true
+        apt_dpkg_log="$(mktemp)"
+        apt_dpkg_deadline=$(( $(date +%s) + apt_dpkg_slice ))
+        apt_dpkg_waited=0
+        while :; do
+          apt_dpkg_left=$(( apt_dpkg_deadline - $(date +%s) ))
+          [ "$apt_dpkg_left" -le 0 ] && break
+          apt_dpkg_rc=0
+          # shellcheck disable=SC2086
+          timeout --signal=TERM --kill-after="${apt_kill_after}s" "$apt_dpkg_left" \
+            $SUDO dpkg --configure -a >"$apt_dpkg_log" 2>&1 || apt_dpkg_rc=$?
+          if [ "$apt_dpkg_rc" -eq 0 ]; then
+            if [ "$apt_dpkg_waited" -gt 0 ]; then
+              echo "✓ dpkg database repaired after waiting ${apt_dpkg_waited}s for the lock" >&2
+            fi
+            break
+          fi
+          # Only a LOCK error is worth waiting on: the holder is the dpkg the
+          # timeout orphaned, and it exits on its own. Any other failure is a
+          # real dpkg problem and retrying it just burns the budget.
+          if grep -qiE 'lock was locked|Could not get lock|Unable to lock|is another process using it' "$apt_dpkg_log"; then
+            if [ "$apt_dpkg_waited" -eq 0 ]; then
+              echo "↻ dpkg lock still held by the orphaned dpkg — waiting (<=${apt_dpkg_slice}s)" >&2
+            fi
+            apt_dpkg_waited=$(( apt_dpkg_waited + 2 ))
+            sleep 2
+            continue
+          fi
+          cat "$apt_dpkg_log" >&2
+          break
+        done
+        rm -f "$apt_dpkg_log"
       fi
       # Backoff is part of the budget too, so it never spends more than a
       # QUARTER of what is left. Clamping only to `remaining` was not enough: on

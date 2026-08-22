@@ -134,6 +134,22 @@ jobs:
         # slim host declaration: this lane builds+tests only — standard/full-tier manifest
         # entries (stryker, analyzers, the diagnostics suite) are skipped LOUDLY by
         # dotnet-tools.sh. Workitem 081KTWQZY7F08QG0R0034KN17T (host tiers x package requires).
+        #
+        # THIS LINE IS NOW LOAD-BEARING FOR THE APT PHASE TOO
+        # (081M0K36K69087G0R003BYSCF8). manifests/apt used to be installed in full on every
+        # host — 388 packages / 713 MiB resolved — because linux.sh had no tier gate, and on
+        # a 1-vCPU runner that phase measured 148s against ubuntu-24.04's 38s. It now honours
+        # `tier=` the way macos.sh has always honoured it for brew, so this declaration
+        # selects the 149-package / 139.7 MiB slim set. Delete the line and the lane goes
+        # back over budget with nothing red to explain why —
+        # src/Core.TypeScript/ci/apt-manifest-host-tier.test.ts asserts it is still here.
+        #
+        # WHAT THAT STOPS DETECTING, stated rather than discovered later: this lane no longer
+        # proves the standard-tier packages (agda, emscripten, llvm, r-base, pandoc, podman,
+        # qemu, opam) install on a 1-vCPU / 5 GB host. They are still installed and exercised
+        # on every ubuntu-24.04 gate job, so the packages are covered; what is uncovered is
+        # that specific pairing — and nothing in Zeta claims it, since manifests/brew has
+        # declared those same tools out of scope for a slim host since 081KTWQZY7F.
         env:
           MISE_GITHUB_TOKEN: ${{ github.token }}
           ZETA_HOST_TIER: slim
