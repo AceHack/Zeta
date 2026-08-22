@@ -20,7 +20,7 @@ composes_with: []
 
 Dual ownership of Helm release `vault` (namespace `vault`) was resolved on
 2026-08-20 by making `full-ai-cluster/k8s/applications/vault/Application.yaml`
-the sole owner and deleting `full-ai-cluster/k8s/bootstrap/vault-install.yaml`
+the sole owner and deleting the former `vault-install.yaml` bootstrap manifest
 plus its `vault-install.source` entry in
 `full-ai-cluster/nixos/modules/k3s-server.nix`.
 
@@ -40,7 +40,7 @@ any cluster.
    3-member raft never reaches 2/3 quorum, so Vault never unseals.
    `replicas` is deliberately left at 3 — it is the intended end state, and
    lowering it to 1 would discard the raft design without a decision. Either
-   join >= 3 nodes (`nixos/modules/k3s-agent.nix`) or make the replica count an
+   join >= 3 nodes (`full-ai-cluster/nixos/modules/k3s-agent.nix`) or make the replica count an
    explicit, recorded single-node decision.
 
 2. **`storageClass: longhorn` does not exist until sync-wave -15.** Vault sits
@@ -48,7 +48,7 @@ any cluster.
    the longhorn Application installs 45 waves later. ArgoCD retries, so this
    converges rather than deadlocks, but the PVCs are Pending in the interim.
    Options: move Vault later, move longhorn earlier, or pin Vault to
-   `zeta-local-path` (provided by `nixos/modules/local-storage.nix`, so it
+   `zeta-local-path` (provided by `full-ai-cluster/nixos/modules/local-storage.nix`, so it
    exists at boot) and accept node-local storage.
 
 3. **The readiness probe cannot pass.** The render sets `tls_disable = 1` — a
@@ -63,7 +63,7 @@ any cluster.
 ## Falsifier
 
 The live kind/k3s lane (`.github/workflows/k8s-argocd-health-test.yml`) going
-green on a Vault that reaches Ready. `src/Core.TypeScript/.../argocd-health-test.ts`
+green on a Vault that reaches Ready. `src/Core.TypeScript/cluster/argocd-health-test.ts`
 already registers "Vault upstream CA ... not ready" as a known shadow.
 
 ## Not in scope here

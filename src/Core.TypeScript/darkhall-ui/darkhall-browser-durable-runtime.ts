@@ -18,6 +18,7 @@ import {
   type DurableRoomRunTranscript,
 } from "../browser-node/browser-room-checkpoint";
 import type { BrowserLifecycleHostFeedback, BrowserLifecycleHostReadout } from "../browser-node/browser-lifecycle-host";
+import type { BrowserTabTransportReadout } from "../browser-node/browser-tab-channel-selector";
 import type { BrowserCheckpoint } from "../browser-node/browser-node";
 import {
   browserCausalCorrectionCheckpointNodeId,
@@ -69,7 +70,7 @@ import {
 } from "./darkhall-browser-bootstrap";
 import type { RoomRunTranscript } from "./darkhall-room";
 
-export const DARK_HALL_BROWSER_DURABLE_RUNTIME_SCHEMA = "zeta.darkhall.browser-durable-runtime.v7" as const;
+export const DARK_HALL_BROWSER_DURABLE_RUNTIME_SCHEMA = "zeta.darkhall.browser-durable-runtime.v8" as const;
 
 const MAX_CAUSAL_CHECKPOINT_SAVE_ATTEMPTS = 4;
 
@@ -133,6 +134,7 @@ export type DarkHallBrowserStarter = (
 
 export interface DarkHallBrowserDurableReadout {
   readonly schema: typeof DARK_HALL_BROWSER_DURABLE_RUNTIME_SCHEMA;
+  readonly transport: BrowserTabTransportReadout;
   readonly host: BrowserLifecycleHostReadout;
   readonly recoveredRevision: number | null;
   readonly currentRevision: number | null;
@@ -172,6 +174,7 @@ export interface DarkHallBrowserDurableReadout {
 export interface DarkHallBrowserDurableRuntime {
   read(): DarkHallBrowserDurableReadout;
   transcript(): DurableRoomRunTranscript;
+  renderTranscript(transcript: RoomRunTranscript): DarkHallBrowserDurableResult<DarkHallBrowserDurableReadout>;
   checkpoint(
     revision: number,
     transcript: RoomRunTranscript,
@@ -1031,6 +1034,7 @@ export async function startDurableDarkHallBrowser(
 
   const read = (): DarkHallBrowserDurableReadout => ({
     schema: DARK_HALL_BROWSER_DURABLE_RUNTIME_SCHEMA,
+    transport: browserRuntime.transport,
     host: browserRuntime.host.read(),
     recoveredRevision,
     currentRevision: currentRecord?.revision ?? null,
@@ -1193,6 +1197,20 @@ export async function startDurableDarkHallBrowser(
   return succeeded({
     read,
     transcript: () => currentTranscript,
+    renderTranscript: (nextTranscript) => {
+      if (finalized) {
+        return failed("browser-runtime", {
+          severity: "heat",
+          code: "host-stopped",
+          detail: "The durable browser room runtime has already stopped.",
+        });
+      }
+      const canonical = canonicalTranscript(nextTranscript);
+      if (!canonical.ok) return canonical;
+      const rendered = updateRenderedTranscript(canonical.value);
+      if (!rendered.ok) return rendered;
+      return succeeded(read());
+    },
     checkpoint: async (revision, nextTranscript) => {
       if (finalized) {
         return failed("checkpoint-store", {
