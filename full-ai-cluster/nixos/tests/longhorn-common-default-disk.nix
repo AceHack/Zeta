@@ -24,6 +24,11 @@ pkgs.testers.nixosTest {
   name = "longhorn-common-default-disk";
 
   nodes.server = { config, lib, ... }: {
+    # common.nix takes `stateVersion` from flake specialArgs. nixosTest
+    # does not pass those, and the function default is ignored once the
+    # module system queries `_module.args`.
+    _module.args.stateVersion = "25.11";
+
     imports = [
       ../modules/common.nix
       ../modules/k3s-server.nix
