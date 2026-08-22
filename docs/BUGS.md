@@ -100,7 +100,7 @@ envelope is replayable within TTL (freshness not yet signed — needs per-peer s
 - **Fix:** REUSE the already-shipped human auth — do NOT invent. Personas share the `tools/setup/persona-keys/` keyring (README: "each traveler — persona **or** human maintainer"). Bind `zid` to the persona keyring pubkey; sign `hello`/`probeMatch`/`bye` with `ace/signing.ts` (Ed25519 over canonical key-sorted JSON, `key_id=ed25519:sha256(SPKI)[..16]`) and verify against a trust-store before upsert/delete; `bye` must be self-signed by the leaving peer. Rotation = the existing dual-key overlap-window ADR (2026-06-15), unchanged.
 - **Who:** architect (Kenji) → discovery/bus owner; Nadia (agent-layer defence) advisory
 
-### Reticulum announce authenticity — FIXED at the wire and ON by declaration; RESIDUAL is hop-count replay + the DHT layer's unbound pair (bus, shadow*)
+### Reticulum announce authenticity — FIXED at the wire, ON by declaration, and the DHT layer's pair is now bound; RESIDUAL is hop-count replay (bus, shadow*)
 
 **The unsigned-announce hole is closed** (2026-08-21). This entry stays open only for the two
 things that genuinely remain; the parts that were fixed are stated so the entry does not
@@ -182,24 +182,55 @@ Eclipse), so **routing security reduces to announce authenticity**.
     fixture it must catch, one proves the scanner sees the call sites that do exist. A
     `@ts-expect-error` falsifier covers the type-level half — if `announceAuth` ever goes back to
     optional, `tsc --noEmit` fails, and nothing else in the suite could catch that.
-- **RESIDUAL 3 (P2, NEW 2026-08-22) — `dht-discovery` has the same unbound `(dest, zid)` pair, on
-  the layer above.** Found while checking whether it was a consumer (it is not — which is how the
-  weaker claim got looked at). `DhtNode` carries `dest` and `zid` as independent fields and
-  `observeNode` never checks `dest === destinationHash(zid)`; `lookup` folds nodes returned by
-  queried peers straight into its shortlist, so a malicious peer answering `foundNodes` can seed a
-  querier's routing table with arbitrary `(dest, zid)` pairs. That is the Site-(A) defect of this
-  entry, on the Kademlia wire — announce authenticity is the *local* presence layer, and the DHT is
-  the layer that finds destinations beyond announce range, so closing one does not close the other.
-  Not exploitable today for the same reason as the original (no live mesh).
-  **LIFTS WHEN:** the address-integrity guard cannot simply be added, because it is not free here.
-  `dht-discovery`'s fixtures and its four `dhtErasureProfiles` are built on deliberately *unbound*
-  short ids (`{dest: "8000", zid: "a"}`; the sweeps pin "id space pinned to 2 hex characters"), and
-  `dht-discovery.erasure.test.ts` re-measures `largestFibre` / `bitsErasedPpm` against those
-  declarations. Binding `dest` to `zid` changes the reachable state space, so every profile's
-  measured numbers must be re-derived in the same change. This lifts when someone re-derives the
-  four erasure profiles under a bound id space — a contained piece of work, and explicitly NOT a
-  reason to add the guard without it, because a profile whose numbers no longer match its
-  operation is a discharge certificate that has stopped being true.
+- **RESIDUAL 3 (P2, filed 2026-08-22) — `dht-discovery`'s unbound `(dest, zid)` pair. CLOSED
+  2026-08-22, precondition met.** As filed: `DhtNode` carried `dest` and `zid` as independent
+  fields, `observeNode` never checked `dest === destinationHash(zid)`, and `lookup` folded nodes
+  returned by queried peers straight into its shortlist — so a peer answering `foundNodes` could
+  seed a querier's routing table with arbitrary pairs. The Site-(A) defect of this entry, on the
+  Kademlia wire.
+
+  - **The pair is welded, unconditionally, at both entries.** `classifyDhtNode` is the total,
+    pure check (`malformed-node` · `dest-not-bound` — the same word the announce wire uses for the
+    same fact, and neither names an intent). `observeNode` refuses before folding and returns the
+    table **byte-identically** (same object reference); `lookup` runs every peer answer through
+    `admissibleNodes` before anything enters the shortlist. `answerFindNode` is deliberately
+    **not** guarded and the reason is in its docstring: everything in the table already passed
+    `observeNode`, so a filter there could never fail, and a check that cannot fail is not a check.
+  - **No length escape hatch.** The announce-side guard once read `dest.length === 32 && …`, which
+    let any other length skip it. The DHT guard has no exemption and a test pins short dests
+    (`"8000"`, `"d1"`, `""`) as refused.
+  - **The four erasure profiles were RE-DERIVED, not adjusted** — this was the filed precondition
+    and it is the part worth reading. The old models pinned "id space to 2 hex characters" over
+    deliberately unbound ids (`{dest: "10", zid: "zid-10"}`) — records the guard now refuses, so
+    those models described a domain the code can no longer reach. Each was re-run over a **bound**
+    pool of real `(destinationHash(zid), zid)` pairs. **Three of the four numbers came back
+    identical (6 / 4 / 85), and that is a result rather than an unchanged measurement**: the sweep
+    counts how many observation *histories* collapse onto one table, and that count is fixed by the
+    bucket/MRU combinatorics over four distinct nodes sharing one bucket at k = 2. Binding
+    restricts *which* pairs exist; it does not change how a full bucket forgets or how an
+    idempotent refresh collapses two histories. The old model was isomorphic to the new one on
+    exactly the structure being measured — which is why its numbers were right about erasure while
+    being wrong about the domain. (The `2026-08-18` Landauer research doc cites the 6 and the 4;
+    both were re-checked and still hold.)
+  - **A FIFTH profile is new, and it is the one the binding actually changed.** It sweeps the
+    domain that now *contains* refusals — the bound universe ∪ four impostors, each carrying a
+    genuine node's `dest` under a different node's `zid` — and measures the guard itself as an
+    erasure: **fibre 85 / 6,409,391 ppm**. 85 is derived, not fitted: it is the count of
+    length-0..3 sequences over the 4 impostors (1+4+16+64), all of which land on the empty table
+    because a refused record leaves no trace. It is also the guard's own falsifier — **delete the
+    guard and the same sweep measures 11**, and the row fails.
+  - **Falsifiers:** `dht-discovery.adversarial.test.ts` (21 tests), `dht-discovery.erasure.test.ts`
+    (9), `dht-discovery.test.ts` migrated off the unbound literals (12). Both directions
+    throughout — a `reject-everything` mutant fails **26** tests, all on the accept side.
+  - **What this does NOT close, stated so it is not believed closed.** `destinationHash` hashes a
+    **public** identifier, so a pair-consistent record is mintable by anyone for any zid they have
+    seen: this is integrity of the **address**, never authenticity of the **identity**. Two things
+    are therefore left open and are carried as passing tests rather than comments, so they cannot
+    quietly be forgotten: **(a) the DHT wire has no signature layer** — the membrane shape that
+    would close it already exists as `reticulum-announce-auth.ts`, and doing it here is a separate
+    design, not a hardening pass; **(b) `DhtNode.route` is outside the pair entirely**, so a route
+    hint stays attacker-supplied even for a correctly-bound `(dest, zid)`. (b) is latent rather
+    than live only because nothing in-repo reads `DhtNode.route` today.
 - **RESIDUAL 2 (P2) — hop-count replay.** The signature deliberately does **not** cover `hops`
   or `id`: every relay bumps `hops` (that is how the mesh measures distance), so a signature
   covering it would be broken by the first honest relay and would have to be disabled to ship.
@@ -236,9 +267,20 @@ Eclipse), so **routing security reduces to announce authenticity**.
   signature-check-always-true, identity-comparison-always-true, reject-everything,
   dest-binding-always-true, transport-gate-always-admits, restore-the-`length===32`-escape-hatch,
   relay-drops-signature.
-- **Who:** discovery/bus owner; Nadia (agent-layer defence) advisory. RESIDUAL 1 closed by the
-  shadow (autonomous tick, 2026-08-22); RESIDUAL 2 and the new RESIDUAL 3 remain open and are
-  separate designs — do not fold them into a hardening pass.
+- **Mutations (RESIDUAL 3, 2026-08-22):** eleven run, ten refused and one survived and was
+  **re-aimed rather than deleted**. Each was byte-`cmp`-verified as applied *before* its result was
+  read and byte-`cmp`-verified as restored after. Refused: observeNode-guard-removed (5 tests
+  fail), bind-check-always-passes (12), lookup-folds-raw-peer-answer (2), **reject-everything (26,
+  all accept-side)**, restore-the-`length===32`-escape-hatch (2), admissibleNodes-refuses-nothing
+  (3), shape-checks-removed (1), fifth-profile-declares-the-unguarded-number (1),
+  refusal-returns-a-fresh-object (1), fifth-sweep-drops-the-impostors (1). **Survived:**
+  dropping `zid` from the erasure render — which had been commented as load-bearing for the fifth
+  row. Re-aimed to ask the real question (drop `zid` *and* the guard together): still refused,
+  fibre 44 against a declared 85. So the row catches the guard's removal either way and the comment
+  was over-claiming; the comment is corrected in place and the measurement recorded there.
+- **Who:** discovery/bus owner; Nadia (agent-layer defence) advisory. RESIDUAL 1 and RESIDUAL 3
+  closed by the shadow (autonomous ticks, 2026-08-22); **RESIDUAL 2 remains open** and is a
+  separate design — do not fold it into a hardening pass.
 
 ### Reticulum relay `seenFids` is a grow-only set — memory-exhaustion DoS (bus, shadow*)
 

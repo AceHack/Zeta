@@ -13,6 +13,13 @@
  * does not cover: production `k`, collisions at full id width, and any bucket-splitting policy a
  * later revision adds. An honest small sweep beats a confident large claim.
  *
+ * WHY THE POOL IS BOUND (2026-08-22). Every node here is a real `(destinationHash(zid), zid)`
+ * pair. It used to be a short literal (`{dest: "10", zid: "zid-10"}`), and that pool is now
+ * REFUSED by `classifyDhtNode` — a sweep over records the code cannot accept measures nothing.
+ * The four original numbers were re-derived over the bound pool and three came back identical;
+ * the reason is in `dhtErasureProfiles`' header and it is structural, not luck. A fifth sweep is
+ * new: it runs the domain that now contains refusals, and it is the guard's own falsifier.
+ *
  * WHY THE TIMESTAMP IS PINNED. If each observation carried a distinct `nowMs`, every table would
  * be distinguishable by its timestamps and the sweep would report fibre 1 — a REVERSIBLE eviction,
  * which is false. The bucket would still have dropped a node; the clock would merely have made the
@@ -32,27 +39,54 @@ import {
   type ErasureProfile,
 } from "../algebra/erasure-class";
 import {
+  bucketIndex,
   dhtErasureProfiles,
   emptyTable,
   expireNodes,
+  isAddressBound,
   observeNode,
   type DhtNode,
   type RoutingTable,
 } from "./dht-discovery";
+import { destinationHash } from "./reticulum-transport";
 
 // ── the pinned model ──────────────────────────────────────────────────────────────────────────
-// Self is "00"; the four universe nodes all share bucket 3, so k = 2 forces eviction as soon as a
-// third distinct node is observed. That is the smallest model in which the operation under test
-// actually fires.
+// The ids are no longer choosable: a node's `dest` must be `destinationHash(zid)` or the fold
+// refuses it. So the universe is FOUND rather than written — the first four zids of the form
+// `dht-peer-<i>` whose destination hash lands in the same bucket as each other relative to self.
+// One shared bucket at k = 2 is what makes eviction fire, and it is the property the old literal
+// ids ("10".."13" all in bucket 3 of self "00") were chosen to have. The search is deterministic
+// (no rng), so it is DST-replayable, and its answer is pinned below so a change in
+// `destinationHash` shows up as a failing expectation rather than a silently different model.
 
-const SELF = "00";
+const SELF_ZID = "dht-self";
+const SELF = destinationHash(SELF_ZID);
 const K = 2;
 const PINNED_NOW = 100;
 const PINNED_TTL = 50;
+const SHARED_BUCKET = 3;
 
-const universe: readonly DhtNode[] = ["10", "11", "12", "13"].map((dest) => ({
-  dest,
-  zid: `zid-${dest}`,
+function peersInSharedBucket(count: number): DhtNode[] {
+  const out: DhtNode[] = [];
+  for (let i = 0; out.length < count; i++) {
+    const zid = `dht-peer-${i}`;
+    const dest = destinationHash(zid);
+    if (bucketIndex(SELF, dest) === SHARED_BUCKET) out.push({ dest, zid, lastSeenMs: 0 });
+  }
+  return out;
+}
+
+const universe: readonly DhtNode[] = peersInSharedBucket(4);
+
+/**
+ * The forgeries. Each carries a real universe node's `dest` under a DIFFERENT universe node's
+ * `zid` — an identity placed at an id it does not hash to, which is precisely what `observeNode`
+ * could not previously tell apart from a genuine record. They are the input domain of the fifth
+ * sweep, and every one of them must be refused.
+ */
+const impostors: readonly DhtNode[] = universe.map((n, i) => ({
+  dest: n.dest,
+  zid: universe[(i + 1) % universe.length]!.zid,
   lastSeenMs: 0,
 }));
 
@@ -66,15 +100,7 @@ const nonEvictingUniverse = universe.slice(0, 2);
 
 /** Every observation sequence of length 0..3 over the four-node universe — 85 states. */
 function sequences(): DhtNode[][] {
-  const out: DhtNode[][] = [[]];
-  for (const a of universe) {
-    out.push([a]);
-    for (const b of universe) {
-      out.push([a, b]);
-      for (const c of universe) out.push([a, b, c]);
-    }
-  }
-  return out;
+  return sequencesOver(universe);
 }
 
 function sequencesOver(pool: readonly DhtNode[]): DhtNode[][] {
@@ -95,12 +121,25 @@ function fold(seq: readonly DhtNode[]): RoutingTable {
   return t;
 }
 
-/** A routing table rendered exactly — bucket order is MRU and therefore load-bearing. */
+/**
+ * A routing table rendered exactly — bucket order is MRU and therefore load-bearing.
+ *
+ * `zid` is part of the render, which it was not before, because the declared observation is "the
+ * routing table" and `zid` is in the table. On the four bound-pool sweeps this changes nothing —
+ * there `zid` is a function of `dest` — so the added field can only sharpen the observation.
+ *
+ * It is NOT what makes the fifth row a falsifier, and the first version of this comment said it
+ * was. Measured rather than assumed: dropping `zid` from the render alone leaves every test
+ * passing, and dropping it TOGETHER with the `observeNode` guard still fails the row (fibre 44
+ * against a declared 85, where the guard-only removal gives 11). The row catches the guard's
+ * removal either way; `zid` only changes by how much. Recorded because a surviving mutant that is
+ * re-aimed and then found harmless is worth more written down than quietly dropped.
+ */
 function render(t: RoutingTable): string {
   const parts: string[] = [`self=${t.self}`, `k=${t.k}`];
   for (const idx of [...t.buckets.keys()].sort((a, b) => a - b)) {
     const bucket = t.buckets.get(idx) ?? [];
-    parts.push(`${idx}:[${bucket.map((n) => `${n.dest}@${n.lastSeenMs}`).join(",")}]`);
+    parts.push(`${idx}:[${bucket.map((n) => `${n.dest}/${n.zid}@${n.lastSeenMs}`).join(",")}]`);
   }
   return parts.join("|");
 }
@@ -133,6 +172,18 @@ const sweeps: readonly Sweep[] = [
     // the eviction actually accounts for and how much was already in the ordinary fold. That split
     // is the whole correction this pack exists to carry, reproduced at a site nobody expected it.
     measure: () => measureLargestFibre(sequencesOver(nonEvictingUniverse), (seq) => render(fold(seq))),
+  },
+  {
+    representation: REPRESENTATION,
+    operation: "observeNode",
+    observation:
+      "the routing table returned by observeNode, over histories that include records whose dest does not commit to their zid",
+    // The address-integrity guard, measured as the erasure it is. 585 histories over the bound
+    // universe UNION its four impostors; the 85 that consist only of impostors all land on the
+    // empty table, because a refused record leaves the table byte-identical and the guard keeps no
+    // trace that it fired. 85 is derived, not fitted: it is the count of sequences of length 0-3
+    // over 4 elements (1 + 4 + 16 + 64). Delete the guard and this measures 11.
+    measure: () => measureLargestFibre(sequencesOver([...universe, ...impostors]), (seq) => render(fold(seq))),
   },
   {
     representation: REPRESENTATION,
@@ -250,6 +301,40 @@ describe("dht-discovery erasure classification", () => {
     const bucket = [...withEviction.buckets.values()].flat();
     expect(bucket.some((n) => n.dest === a.dest)).toBe(false);
     expect(bucket.length).toBe(K);
+  });
+
+  test("the model is pinned — the bound universe and its impostors are what the sweeps claim", () => {
+    // The universe is FOUND by a deterministic search, so the search's answer is pinned here.
+    // Change `destinationHash` or the search and this fails loudly instead of silently sweeping a
+    // different model than the declarations describe.
+    expect(SELF).toBe("80e2ed443b84b9f8132e0584c2ab7de7");
+    expect(universe.map((n) => n.zid)).toEqual(["dht-peer-3", "dht-peer-62", "dht-peer-71", "dht-peer-72"]);
+    expect(new Set(universe.map((n) => bucketIndex(SELF, n.dest))).size).toBe(1);
+    expect(universe.length).toBeGreaterThan(K); // or eviction never fires and the sweep is decorative
+
+    // BOTH DIRECTIONS, on the domain the fifth sweep runs: every genuine record is admitted and
+    // every impostor is refused. A guard that refused everything would satisfy the second line
+    // and fail the first.
+    for (const n of universe) expect(isAddressBound(n)).toBe(true);
+    for (const n of impostors) expect(isAddressBound(n)).toBe(false);
+    // …and the impostors are a real forgery, not junk: each carries a genuine node's dest.
+    const genuineDests = new Set(universe.map((n) => n.dest));
+    for (const n of impostors) expect(genuineDests.has(n.dest)).toBe(true);
+  });
+
+  test("the refused record is unrecoverable — the guard's erasure, exhibited", () => {
+    // The particular statement behind the fifth sweep's 85: a history of nothing but forgeries is
+    // indistinguishable from a history of nothing at all.
+    const allRefused = fold([...impostors].slice(0, 3));
+    expect(render(allRefused)).toBe(render(emptyTable(SELF, K)));
+
+    // …and a forgery cannot displace the genuine record it impersonates.
+    const genuine = universe[0]!;
+    const forged = impostors[0]!;
+    expect(forged.dest).toBe(genuine.dest); // same address, different identity
+    const t = fold([genuine, forged]);
+    const held = [...t.buckets.values()].flat().find((n) => n.dest === genuine.dest)!;
+    expect(held.zid).toBe(genuine.zid);
   });
 
   test("no declaration reads as free by default", () => {
