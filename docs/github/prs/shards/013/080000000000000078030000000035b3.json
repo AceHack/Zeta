@@ -1,0 +1,12 @@
+{
+  "pr_number": 13747,
+  "archive_path": "docs/history/pr-reviews/PR-13747-design-reticulum-hop-count-is-not-a-claim-mutation-entitlement-picks-the-mechani.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-22T15:31:27.641Z",
+  "schema_version": "v1",
+  "commit_sha": "97c7e0bb4257950bc1744b841cb3b0503f3aa973",
+  "title": "design(reticulum): hop count is not a claim — mutation entitlement picks the mechanism, and it says hops and route are DIFFERENT problems",
+  "state": "MERGED",
+  "merged_at": "2026-08-22T15:30:46Z",
+  "head_ref": "shadow-hop-metric-chain"
+}
