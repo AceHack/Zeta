@@ -117,6 +117,15 @@ on:
       - "src/Core.TypeScript/cluster/single-node-readiness.test.ts"
       - "src/Core.TypeScript/cluster/storage-profiles.ts"
       - "src/Core.TypeScript/cluster/storage-profiles.test.ts"
+      # The disk half of the runner envelope, and its measurer.
+      - "src/Core.TypeScript/cluster/runner-disk.ts"
+      - "src/Core.TypeScript/cluster/runner-disk.test.ts"
+      # Which Applications the disk is actually spent on. The measurement is a
+      # dated artifact like the storage snapshot, so it is watched beside its
+      # reader for the same reason: editing one without the other is the drift.
+      - "src/Core.TypeScript/cluster/image-footprint.ts"
+      - "src/Core.TypeScript/cluster/image-footprint.test.ts"
+      - "src/Core.TypeScript/cluster/image-footprint.measured.json"
       # Does a DECLARED storage claim correspond to a PVC the chart actually
       # renders? The snapshot is the measured render; the checker compares the
       # catalogue against it offline. Editing either without re-measuring is
@@ -206,6 +215,15 @@ on:
       - "src/Core.TypeScript/cluster/single-node-readiness.test.ts"
       - "src/Core.TypeScript/cluster/storage-profiles.ts"
       - "src/Core.TypeScript/cluster/storage-profiles.test.ts"
+      # The disk half of the runner envelope, and its measurer.
+      - "src/Core.TypeScript/cluster/runner-disk.ts"
+      - "src/Core.TypeScript/cluster/runner-disk.test.ts"
+      # Which Applications the disk is actually spent on. The measurement is a
+      # dated artifact like the storage snapshot, so it is watched beside its
+      # reader for the same reason: editing one without the other is the drift.
+      - "src/Core.TypeScript/cluster/image-footprint.ts"
+      - "src/Core.TypeScript/cluster/image-footprint.test.ts"
+      - "src/Core.TypeScript/cluster/image-footprint.measured.json"
       # Does a DECLARED storage claim correspond to a PVC the chart actually
       # renders? The snapshot is the measured render; the checker compares the
       # catalogue against it offline. Editing either without re-measuring is
@@ -599,6 +617,20 @@ jobs:
       # pinned. It is carried today. Changing the rung on the line below
       # therefore changes what the coverage check compares, which is the point:
       # this step and that check can no longer be green about different trees.
+      - name: Run runner-disk falsifiers
+        run: bun test src/Core.TypeScript/cluster/runner-disk.test.ts
+
+      - name: Run image-footprint falsifiers
+        run: bun test src/Core.TypeScript/cluster/image-footprint.test.ts
+
+      # Printed, not gated. Gating on "the images do not fit" would be a red
+      # lane every run for a fact everyone already knows; what this buys is that
+      # the ranking is READ on every run, so a measurement nobody looks at
+      # cannot quietly go stale. The cohorts come from the live tree, so an
+      # Application added or excluded moves this output without a re-measure.
+      - name: Print the per-app image footprint (offline, from the measurement)
+        run: bun src/Core.TypeScript/cluster/image-footprint.ts --report
+
       - name: Verify the runner is as big as the catalogue claims
         run: bun src/Core.TypeScript/cluster/storage-profiles.ts --measure-runner
 
@@ -655,6 +687,26 @@ jobs:
 
       - name: Install bun dependencies
         run: bun install --frozen-lockfile
+
+      # WHAT DISK THIS RUNNER ACTUALLY HAS, measured rather than quoted.
+      #
+      # `storage-profiles.json`'s runnerEnvelope carries `freeDiskGib: 14`, and
+      # its own evidence string admits the capacity half is "a vendor number,
+      # not one we measured". `--measure-runner` reads /proc for CPU and memory
+      # and reads NO disk -- so the number the image-footprint argument divides
+      # by (~77 GB of images against ~14 GB free) had never been read off a
+      # runner. This step reads it, prints every mount (a hosted runner has a
+      # second disk at /mnt that no arithmetic here has ever counted), and
+      # measures the preinstalled toolchains a k8s lane never invokes.
+      #
+      # ARMED as of run 32585090483, which is what the first (report-only) pass
+      # bought. It measured 77.06 GiB available on `ubuntu-24.04` and 99.02 GiB
+      # on `ubuntu-24.04-arm` -- one filesystem, no /mnt -- against a declared
+      # 14. The catalogue's disk row now reads 70 GiB, a conservative floor
+      # beneath both, so this step convicts on a materially smaller machine and
+      # not on ordinary runner-image variation.
+      - name: Measure the runner's disk and check it against the envelope
+        run: bun src/Core.TypeScript/cluster/runner-disk.ts --check-envelope
 
       - name: Run live kind ArgoCD health check
         env:
@@ -953,6 +1005,26 @@ jobs:
       # This is what lets `vault` be asserted under the FULL auto-sync contract
       # rather than deferred. It is not a weakening: Vault reaches genuinely
       # Synced+Healthy, sealed-to-unsealed, or the job goes red.
+      # WHAT DISK THIS RUNNER ACTUALLY HAS, measured rather than quoted.
+      #
+      # `storage-profiles.json`'s runnerEnvelope carries `freeDiskGib: 14`, and
+      # its own evidence string admits the capacity half is "a vendor number,
+      # not one we measured". `--measure-runner` reads /proc for CPU and memory
+      # and reads NO disk -- so the number the image-footprint argument divides
+      # by (~77 GB of images against ~14 GB free) had never been read off a
+      # runner. This step reads it, prints every mount (a hosted runner has a
+      # second disk at /mnt that no arithmetic here has ever counted), and
+      # measures the preinstalled toolchains a k8s lane never invokes.
+      #
+      # ARMED as of run 32585090483, which is what the first (report-only) pass
+      # bought. It measured 77.06 GiB available on `ubuntu-24.04` and 99.02 GiB
+      # on `ubuntu-24.04-arm` -- one filesystem, no /mnt -- against a declared
+      # 14. The catalogue's disk row now reads 70 GiB, a conservative floor
+      # beneath both, so this step convicts on a materially smaller machine and
+      # not on ordinary runner-image variation.
+      - name: Measure the runner's disk and check it against the envelope
+        run: bun src/Core.TypeScript/cluster/runner-disk.ts --check-envelope
+
       - name: Run live kind included ArgoCD health proof
         id: proof
         env:

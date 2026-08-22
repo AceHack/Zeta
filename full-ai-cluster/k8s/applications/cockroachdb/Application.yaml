@@ -40,6 +40,16 @@ spec:
             # `measured`). Edit the profile and re-apply, not this line. Note
             # Kubernetes can GROW a PVC but cannot SHRINK one: this number is
             # only free to move DOWN before the volume exists.
+            # SHRINKING THIS DOES NOT FREE A BYTE OF RUNNER DISK, and it is the first
+            # thing anyone reaches for. On the dev/CI substrate this class resolves to
+            # `rancher.io/local-path`, whose node-side provisioner script (see
+            # full-ai-cluster/nixos/modules/local-storage.nix) is `mkdir -m 0777 -p
+            # "$VOL_DIR"` -- a directory, with no quota and no reference to the requested
+            # size at all. A PVC there consumes the bytes WRITTEN and nothing more, so
+            # this number is a scheduling reservation on Longhorn (metal) and is not
+            # bytes on a runner. What actually fills a runner is CONTAINER IMAGES: run
+            # `bun src/Core.TypeScript/cluster/image-footprint.ts --report` for the
+            # measured per-app ranking, and `runner-disk.ts --measure` for the disk.
             size: 48Gi
             storageClass: longhorn
         init:
