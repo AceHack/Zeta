@@ -1,0 +1,12 @@
+{
+  "pr_number": 13665,
+  "archive_path": "docs/history/pr-reviews/PR-13665-fix-dht-discovery-weld-dest-zid-on-the-kademlia-wire-residual-3-closed-erasure-p.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-22T11:29:45.350Z",
+  "schema_version": "v1",
+  "commit_sha": "ef3c4fb573dc818fcb45b38e64f67882c780066e",
+  "title": "fix(dht-discovery): weld (dest, zid) on the Kademlia wire — RESIDUAL 3 closed, erasure profiles re-derived",
+  "state": "MERGED",
+  "merged_at": "2026-08-22T11:29:03Z",
+  "head_ref": "shadow-dht-address-binding"
+}
