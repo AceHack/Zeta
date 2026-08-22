@@ -1,0 +1,12 @@
+{
+  "pr_number": 11876,
+  "archive_path": "docs/history/pr-reviews/PR-11876-heartbeat-batch-merge-merge-agent-heartbeats-periodic-sync-to-main-2026-08-18t10.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-22T07:59:10.734Z",
+  "schema_version": "v1",
+  "commit_sha": "c3ab8be8cfc0c2145bd9e323e75559554d768c1b",
+  "title": "[heartbeat-batch-merge] merge(agent-heartbeats): periodic sync to main (2026-08-18T10:03:14.852Z)",
+  "state": "MERGED",
+  "merged_at": "2026-08-18T10:16:04Z",
+  "head_ref": "heartbeat/soraya-flush-1ba8bc4049f48f12e6adea57b3abf11220f92ecf"
+}
