@@ -247,6 +247,23 @@
         "getcapPropertiesFixed": { "kind": "not-installed" },
         "getcapEccCurves": { "kind": "not-installed" }
       }
+    },
+    {
+      "name": "linux-x86-tpm2-version-file-unrecognised",
+      "provenanceKind": "hand-constructed",
+      "provenance": "Hand-constructed by the shadow 2026-08-21 to kill a mutant that SURVIVED tpm-shell-parity.test.ts: no committed capture held a tpm_version_major that was neither \"1\" nor \"2\", so a classifier that DEFAULTED an unrecognised value to 2.0 passed every fixture on both implementations. NO TPM WAS CONTACTED.",
+      "expectedState": "indeterminate",
+      "why": "A device node exists and the family indicator says something the kernel contract does not define. `unrecognised` must never round up to 2.0 -- that is the whole difference between `indeterminate` and a false `present`, and it is why parseVersionMajor has three outcomes instead of a boolean. Verified to fail both the TypeScript classifier and the bash port when either one defaults.",
+      "capture": {
+        "platform": "linux",
+        "deviceNodes": [
+          { "path": "/dev/tpmrm0", "outcome": { "kind": "not-found" } },
+          { "path": "/dev/tpm0", "outcome": { "kind": "found" } }
+        ],
+        "sysClassTpm": { "kind": "listed", "entries": ["tpm0"] },
+        "versionMajor": [{ "path": "/sys/class/tpm/tpm0/tpm_version_major", "outcome": { "kind": "read", "text": "3\n" } }],
+        "getcapPropertiesFixed": { "kind": "not-installed" }
+      }
     }
   ]
 }
