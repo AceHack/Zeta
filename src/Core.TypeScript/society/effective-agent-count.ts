@@ -76,6 +76,59 @@
  *   observation, so `nEff` is the effective number of agents for **any statistic averaged over
  *   files across agents**.
  *
+ * ## Why `rho*(N)` is NOT this meter's band — the connection, stated so it is not re-attempted
+ *
+ * `rho*(N) = (N-3)/(3(N-1))` (`docs/research/rhostar-analytic-proof.md`, frozen-core SS-A) is the
+ * obvious-looking source for a *derived* bound to replace the hardcoded level band that used to
+ * sit on this meter, and it is the wrong one. It has been reached for at least twice; the reasons
+ * it fails are machine-checked in `rho-star-not-a-gate.ts` + its test, not merely asserted here.
+ *
+ * 1. **Different aggregation rule.** `rho*` exists only under MAJORITY vote. `rhoFromUnionCoverage`
+ *    inverts `expectedSocietyIdentical`, the UNION/OR model, whose shipped gain
+ *    `(1-rho)(1-c)(1-(1-c)^(n-1))` is strictly positive for every `rho < 1` — correlation attenuates
+ *    it and never reverses it. There is no threshold in this regime to compare against.
+ *    (`src/Core/SocietyUsefulWork.fs`; the split is named in the 2026-08-16 wiring doc SS1a-1c.)
+ *
+ * 2. **Different random variable.** `rho*`'s rho is the correlation of ERROR (was this voter wrong).
+ *    This module's rho is the correlation of EXPOSURE (did this agent sample this file). They are not
+ *    the same quantity: agents drawing disjoint files can still err identically wherever they
+ *    overlap. And the draw here is not a judgement at all — `mutation-runner.ts` `selectTarget` picks
+ *    `items[FNV1a(agent) ^ tick % items.length]` from the source+test pairs among files changed in
+ *    the last 24 hours, so an agent's identity contributes one fixed 32-bit constant and nothing else.
+ *    There is no shared proposition, hence no majority, hence nothing for `rho*` to bound.
+ *
+ * 3. **`rho` is not a sufficient statistic even where `rho*` does apply.** Two-point exchangeable
+ *    mixing laws reverse the majority INSIDE the region `rho*` calls safe (`m = 51`, `rho = 0.2249`
+ *    vs `rho*(51) = 0.32`, lift `-0.2744`). By de Finetti the verdict turns on where the mixing law
+ *    sits relative to `theta = 1/2`, which a scalar correlation cannot express. `AggregationRule.fs`
+ *    already carries the standing instruction: *"No correlation threshold appears here and none
+ *    should be added."*
+ *
+ * 4. **And it could not be satisfied anyway.** `rho*` increases in N to a supremum of 1/3, while the
+ *    measured coverage rho is ~0.60. No roster size, finite or infinite, reaches it — so "add a
+ *    fourth persona" does not close this gap, though it may be worth doing for other reasons.
+ *
+ * **And the frame problem is UPSTREAM of the band question entirely.** Reason 2 above is not only an
+ * argument against `rho*` — it says the quantity this module bounds is not the quantity its own
+ * header declares. The declared universe is 757 frame files; the actual draw pool is the source+test
+ * pairs among files changed in the last 24 hours, measured at 4-176 and typically 30-70.
+ * `assertFrameContainsDraws` cannot catch that because the churn list is a SUBSET of the declared
+ * frame. Three agents hashing into a short shared list collide at a rate set by its length, so this
+ * meter substantially reads repo churn breadth — `[ran]` corr(poolFraction, rhoIcc) = -0.8555 over
+ * the 741-point series, r^2 ~ 0.73. Consequence to state plainly: **no bound, neither `rho*` nor a
+ * re-derived window, is the right answer while the frame is mis-specified** — a correct bound on the
+ * wrong quantity is still wrong. Fixing the frame (draw from the declared universe, or record the
+ * pool length per tick and condition on it) is the prerequisite; the assertions below are therefore
+ * deliberately about ESTIMATOR CONSISTENCY, which is frame-independent, and not about the level.
+ *
+ * What a level band would have to be derived from is the DOMAIN, not a constant: see
+ * `rho-series.ts` and `db/effective-agent-count/`, where a null model with agents whose behaviour
+ * never changes still drives cumulative rho from 0.156 to 0.949 as the corpus grows. That is why
+ * the level bound is REMOVED rather than re-centred. The 24h-frame finding leftover-on-main
+ * #13753 named is still open — cited, not closed. Series depth is leftover-on-main #13785's
+ * checked-in TSV (`db/effective-agent-count/rho-series-cumulative.tsv`); the 56756b29
+ * shallow-and-blind hatch was a fetch-depth bypass, not a series claim, and is not reintroduced.
+ *
  * ## Register (`.claude/rules/toy-is-free-metered-must-be-earned.md`)
  *
  * - **metered** — the rho over THIS corpus at THIS commit. It has a falsifier: the tests in
