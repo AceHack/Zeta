@@ -103,24 +103,12 @@ mkdir -p "$ZETA_ENV_DIR"
     echo "fi"
   fi
 
-  # NO SECRETS ENV LINE HERE, BY DESIGN (081M00VMWTB087G0R0026XSWT6).
-  #
-  # This block used to emit a line sourcing ~/.config/zeta/secrets-env.sh, which
-  # holds a Keychain-fetch that exports the 1Password service-account token. The
-  # effect was an 852-byte credential in the environment of every interactive
-  # shell and every process descended from one.
-  #
-  # An environment variable crosses `exec` regardless of the child's code
-  # identity. A code signature, a keychain ACL, an IMA appraisal and a TPM seal
-  # all bind a secret to a CALLER; an inherited variable has already escaped the
-  # question of who the caller is. So this is the one exposure in the custody
-  # stack that no signing work can reach, and removing the line is the whole fix.
-  # (§13 noninterference, Goguen & Meseguer 1982, stated for credentials.)
-  #
-  # Replacement: fetch at point of use, never export.
-  #   src/Core.TypeScript/secrets/credential.ts  — withCredential / spawnWithCredential
-  # Guard: src/Core.TypeScript/hygiene/lint-no-ambient-credential-hoist.ts fails CI
-  # if any tracked executable surface re-introduces a hoist.
+  # Managed agent SECRETS env — a separate file (mode 600) holding Keychain-FETCH lines
+  # (e.g. `export OP_SERVICE_ACCOUNT_TOKEN="$(security find-generic-password ...)"`), written
+  # by tools/setup/op-token-setup.sh. Kept OUT of this regenerated file (which is wiped each
+  # run) so the secret-fetch survives. Sourced here so every shell that gets shellenv also
+  # gets the agent's scoped secrets. Absent ⇒ inert (the -f guard).
+  echo "[ -f \"\$HOME/.config/zeta/secrets-env.sh\" ] && . \"\$HOME/.config/zeta/secrets-env.sh\""
 
   # ZETA_FIRST_SESSION_MARKER — the observe loop checks this to know whether the
   # first-session credential adventure is complete. Points at a stable user-level

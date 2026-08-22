@@ -23,36 +23,8 @@ tools/lean4/.lake/
 tools/alloy/
 tools/tla/
 
-# PR-archive shard store: a MACHINE-WRITTEN data store, not authored source
-# (081KZYMY46P087G0R003S64V2B). One file per archived PR (~6.3k files today, one more per
-# merge), each emitted by `pr-manifest-shards.ts` as canonical `JSON.stringify(…, 2)` bytes.
-# Two reasons it is excluded rather than formatted: prettier collapses short `source_ids`
-# arrays onto one line, which would put the FORMATTER and the GENERATOR in a permanent fight
-# (the generator must reproduce the checked-in bytes — that is what makes the derived
-# manifest a drift gate); and `--check` over the store costs ~30 s of CI for zero review
-# value on files no human hand-edits. Same stance as the `artifacts/` entries above.
-docs/github/prs/shards/
-
 # Website-traveler style boundary: a website is its own traveler with its own
 # traditional style/CSS at its own boundary — NOT enforced by Zeta's tooling
 # (the style/CSS inversion, Aaron 2026-06-10). Excludes the website's CSS from
 # prettier (stylelint excludes it too via .stylelintignore).
 full-ai-cluster/portal/web/**/*.css
-
-# Generated currency report (`report-chart-currency.ts --write`). MACHINE-WRITTEN,
-# never hand-edited, and its whole value is that re-running the generator reproduces
-# the checked-in bytes — that byte-match is what makes `--check` a drift signal and
-# what stops a weekly job dirtying the tree. Prettier re-pads markdown table cells and
-# rewrites `*em*` to `_em_`, which would put the FORMATTER and the GENERATOR in a
-# permanent fight over the same file, exactly as with `docs/github/prs/shards/` above.
-# The generator, not prettier, owns these bytes.
-docs/CHART-CURRENCY.md
-
-# VERBATIM COPIES OF GIT HISTORY. The four pre-fix `Application.yaml` files under
-# `testdata/inert-valuesobject-history/` are byte-for-byte `git show <sha>:<path>`
-# output, and `inert-valuesobject-keys.test.ts` re-verifies them against those very
-# objects. Formatting them would break that verification for the sake of tidying a
-# manifest nobody will ever deploy — and would leave the guard's four falsifiers
-# resting on files the repository could no longer confirm are the real history.
-# The commits, not prettier, own these bytes.
-src/Core.TypeScript/cluster/testdata/inert-valuesobject-history/*.yaml

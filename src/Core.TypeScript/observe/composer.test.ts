@@ -1,19 +1,8 @@
-/**
- * Unit tests for the scorer in ISOLATION, over hand-built menus.
- *
- * Read the scope honestly: every menu below is written by hand, so these tests
- * describe what `score` computes and say nothing about what the loop does with
- * it. Measured 2026-08-15: the live cascade discards this scorer's output in
- * every enumerated world, so a green suite here is compatible with the weights
- * having zero effect on any decision. That is not a defect in these tests — it
- * is the reason they are not a falsifier for the weights, and it is why
- * `composer-register.test.ts` exists alongside them.
- */
 import { describe, expect, test } from "bun:test";
-import { unmeteredHeuristicComposer, unmeteredDefaultComposer } from "./composer";
+import { heuristicComposer, defaultComposer } from "./composer";
 import type { World, NextAction } from "./observe";
 
-describe("composer — L2 heuristic scorer (unmetered; hand-built menus only)", () => {
+describe("composer — L2 heuristic scorer", () => {
   const readyItem = { id: "081KPYCJH0008QG0R003MDS51N", title: "Fix bug", ready: true, ambiguous: false };
   const ambiguousItem = { id: "081KQ0YZ80008QG0R002T6TM7Z", title: "Big refactor", ready: true, ambiguous: true };
   const workWorld: World = { backlog: [readyItem, ambiguousItem] };
@@ -25,7 +14,7 @@ describe("composer — L2 heuristic scorer (unmetered; hand-built menus only)", 
       { kind: "decompose", item: ambiguousItem },
       { kind: "explore", reason: "nothing else" },
     ];
-    const scores = await unmeteredDefaultComposer.score(menu, workWorld);
+    const scores = await defaultComposer.score(menu, workWorld);
     expect(scores[0]).toBeGreaterThan(scores[1]!);
     expect(scores[0]).toBeGreaterThan(scores[2]!);
   });
@@ -35,7 +24,7 @@ describe("composer — L2 heuristic scorer (unmetered; hand-built menus only)", 
       { kind: "do_item", item: readyItem },
       { kind: "explore", reason: "curiosity" },
     ];
-    const scores = await unmeteredDefaultComposer.score(menu, freeWorld);
+    const scores = await defaultComposer.score(menu, freeWorld);
     expect(scores[1]).toBeGreaterThan(0.3);
   });
 
@@ -46,7 +35,7 @@ describe("composer — L2 heuristic scorer (unmetered; hand-built menus only)", 
       { kind: "do_item", item: regularItem },
       { kind: "do_item", item: mergeItem },
     ];
-    const composer = unmeteredHeuristicComposer({ forgeBoost: 0.5, priority: 0.05 });
+    const composer = heuristicComposer({ forgeBoost: 0.5, priority: 0.05 });
     const scores = await composer.score(menu, workWorld);
     expect(scores[1]).toBeGreaterThan(scores[0]!);
   });
@@ -59,7 +48,7 @@ describe("composer — L2 heuristic scorer (unmetered; hand-built menus only)", 
       { kind: "play", reason: "y" },
       { kind: "free_time", reason: "z" },
     ];
-    const scores = await unmeteredDefaultComposer.score(menu, workWorld);
+    const scores = await defaultComposer.score(menu, workWorld);
     for (const s of scores) {
       expect(s).toBeGreaterThanOrEqual(0);
       expect(s).toBeLessThanOrEqual(1);
@@ -67,7 +56,7 @@ describe("composer — L2 heuristic scorer (unmetered; hand-built menus only)", 
   });
 
   test("custom weights shift scoring", async () => {
-    const freeFirst = unmeteredHeuristicComposer({ modeCoherence: 0.9, readiness: 0.05 });
+    const freeFirst = heuristicComposer({ modeCoherence: 0.9, readiness: 0.05 });
     const menu: NextAction[] = [
       { kind: "do_item", item: readyItem },
       { kind: "explore", reason: "curiosity" },

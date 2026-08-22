@@ -27,13 +27,13 @@ default, refuses to write if any post-edit line fails to parse.
 
 ```bash
 # Scan all sessions in the current project dir for oversize lines
-bun src/Core.TypeScript/claude-code-recovery/repair-jsonl-strip-images.ts --scan
+bun tools/claude-code-recovery/repair-jsonl-strip-images.ts --scan
 
 # Dry-run on one session (reports what would be stripped, no writes)
-bun src/Core.TypeScript/claude-code-recovery/repair-jsonl-strip-images.ts --session <uuid>
+bun tools/claude-code-recovery/repair-jsonl-strip-images.ts --session <uuid>
 
 # Commit the strip (auto-creates timestamped backup alongside the file)
-bun src/Core.TypeScript/claude-code-recovery/repair-jsonl-strip-images.ts --session <uuid> --apply
+bun tools/claude-code-recovery/repair-jsonl-strip-images.ts --session <uuid> --apply
 ```
 
 Useful flags:
@@ -95,7 +95,7 @@ one-off recovery.
 ## Skill invocation
 
 There is a `claude-session-recovery` skill at
-[`.claude/skills/agent-runtime-and-persistence/blueprints/claude-session-recovery.md`](../../.claude/skills/agent-runtime-and-persistence/blueprints/claude-session-recovery.md)
+[`.claude/skills/claude-session-recovery/SKILL.md`](../../.claude/skills/claude-session-recovery/SKILL.md)
 that triggers on the symptoms above and walks through this tool.
 
 ## Empirical anchor

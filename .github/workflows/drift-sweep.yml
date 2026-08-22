@@ -189,32 +189,6 @@ jobs:
           bun src/Core.TypeScript/hygiene/drift-ledger.ts slo \
             --dir docs/drift-events --config registry/drift-slo.yaml --workitems workitems
 
-      - name: Publish per-leg platform drift (the read surface for non-blocking legs)
-        # Aaron 2026-08-19: "windows and mac are drift checks ... we don't want to
-        # block on them." Non-blocking is only honest if the drift is SEEN, and the
-        # two surfaces that existed both stop short: `gate (required)`'s summary is
-        # per-run on a push run nobody opens, and BD001 above keys findings to
-        # `Zeta.sln` so it cannot say WHICH platform drifted or how often. This fold
-        # answers per-leg rate, clean streak, and coverage — the last of which is the
-        # one that bites: 265 of the 300 most recent completed gate push runs were
-        # `cancelled` before their legs ever ran, so a clean streak counted over
-        # pushes rather than over EXECUTIONS is evidence of nothing.
-        #
-        # Incremental and idempotent: run records are keyed by run id and upserted,
-        # so a tick costs one list call plus jobs for runs it has not already seen
-        # (usually zero or one). Never fatal — it reports on legs that by decision
-        # cannot block, so it must not be able to block either.
-        continue-on-error: true
-        # Safe-pattern: first-party trusted context via env only, never interpolated
-        # into the shell. `GITHUB_*` is reserved by the runner, so the repo slug rides
-        # under its own name and is passed as an argument.
-        env:
-          GH_TOKEN: ${{ github.token }}
-          REPO: ${{ github.repository }}
-        run: |
-          bun src/Core.TypeScript/ci/platform-drift-report.ts \
-            --repo "$REPO" --out data/platform-drift.json --pages 1 --max-runs 500
-
       - name: Publish the MTTH fold for the Pages monitor panel
         run: |
           bun src/Core.TypeScript/hygiene/drift-ledger.ts report \
@@ -248,7 +222,7 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add docs/drift-events docs/letters workitems data/drift-mtth.json data/drift-genome.json data/drift-evolution.json data/drift-proposal.json data/platform-drift.json
+          git add docs/drift-events docs/letters workitems data/drift-mtth.json data/drift-genome.json data/drift-evolution.json data/drift-proposal.json
           if git diff --cached --quiet; then
             echo "Nothing staged — no tick recorded."
           else

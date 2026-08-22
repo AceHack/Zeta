@@ -38,20 +38,10 @@ export type {
   GitCommitInfo,
   SearchPrOpts,
   SearchPrResult,
-  CheckId,
-  UnknownReason,
-  Verdict,
-  VerdictKind,
-  CheckExpectation,
-  CheckDefinition,
-  CheckObservation,
-  CheckObservationFailure,
-  CheckObservationPass,
-  CheckObservationOpts,
 } from "./types";
 
 // Interface
-export type { ForgeHost, CheckObservationSource } from "./forge-host";
+export type { ForgeHost } from "./forge-host";
 
 // Result helpers
 export { ok, err, forgeError } from "./result";

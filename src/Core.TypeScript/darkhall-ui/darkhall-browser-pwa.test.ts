@@ -1,12 +1,6 @@
 import { describe, expect, test } from "bun:test";
-import {
-  browserCheckpointSucceeded,
-  copyBrowserCheckpointRecord,
-  type BrowserCheckpointPort,
-  type BrowserCheckpointRecord,
-} from "../browser-node/browser-checkpoint-port";
 import type { BrowserTabChannelMessage } from "../browser-node/browser-tab-coordinator";
-import { startDurableDarkHallPwa, startNativeDarkHallPwa } from "./darkhall-browser-pwa";
+import { startNativeDarkHallPwa } from "./darkhall-browser-pwa";
 import type { RoomRunTranscript } from "./darkhall-room";
 
 type NativeListener = (event?: unknown) => void;
@@ -85,36 +79,6 @@ class NativeRoot {
   }
 }
 
-class MemoryCheckpointPort implements BrowserCheckpointPort {
-  readonly records = new Map<string, BrowserCheckpointRecord>();
-  closed = false;
-
-  load(nodeId: string) {
-    const record = this.records.get(nodeId);
-    return Promise.resolve(
-      browserCheckpointSucceeded(record === undefined ? null : copyBrowserCheckpointRecord(record)),
-    );
-  }
-
-  save(record: BrowserCheckpointRecord) {
-    const copy = copyBrowserCheckpointRecord(record);
-    this.records.set(record.nodeId, copy);
-    return Promise.resolve(browserCheckpointSucceeded(copyBrowserCheckpointRecord(copy)));
-  }
-
-  remove(nodeId: string, throughRevision: number) {
-    const record = this.records.get(nodeId);
-    const removed = record !== undefined && record.revision <= throughRevision;
-    if (removed) this.records.delete(nodeId);
-    return Promise.resolve(browserCheckpointSucceeded(removed));
-  }
-
-  close() {
-    this.closed = true;
-    return browserCheckpointSucceeded(null);
-  }
-}
-
 const transcript: RoomRunTranscript = {
   schema: "zeta.darkhall.room-ui.v1",
   roomName: "pwa-room",
@@ -142,41 +106,6 @@ function options(root: NativeRoot, mount: { innerHTML: string }) {
 }
 
 describe("Dark Hall browser PWA bootstrap", () => {
-  test("establishes worker control before opening an injected durable room", async () => {
-    NativeBroadcastChannel.instances = [];
-    const root = new NativeRoot();
-    const mount = { innerHTML: "" };
-    const checkpoint = new MemoryCheckpointPort();
-    const { transcript: initialTranscript, checkpoint: _checkpoint, ...bootstrap } = options(root, mount);
-    const result = await startDurableDarkHallPwa(
-      { ...bootstrap, initialTranscript, maxCausalCorrections: 16 },
-      checkpoint,
-    );
-
-    expect(result).toMatchObject({
-      ok: true,
-      value: {
-        registration: { status: "controlled" },
-        browser: {},
-      },
-    });
-    if (!result.ok) return;
-    expect(result.value.browser.read()).toMatchObject({
-      transport: { selected: "service-worker" },
-      host: { coordinator: { liveness: { checkpoint: "none" } } },
-      currentRevision: null,
-    });
-    expect(result.value.browser.renderTranscript({ ...transcript, roomName: "projected pwa room" })).toMatchObject({
-      ok: true,
-      value: { room: { roomName: "pwa-room" } },
-    });
-    expect(mount.innerHTML).toContain("projected pwa room");
-    const saved = await result.value.browser.checkpoint(1, { ...transcript, roomName: "recovered pwa room" });
-    expect(saved).toMatchObject({ ok: true, value: { revision: 1 } });
-    expect(result.value.browser.stop()).toMatchObject({ ok: true, value: { currentRevision: 1 } });
-    expect(checkpoint.closed).toBe(true);
-  });
-
   test("establishes worker control before starting the room", async () => {
     NativeBroadcastChannel.instances = [];
     const root = new NativeRoot();

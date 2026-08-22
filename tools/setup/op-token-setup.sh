@@ -11,22 +11,11 @@
 #     terminal echo, or the conversation transcript — it flows window/clipboard → Keychain.
 #   - At REST it lives ENCRYPTED in the login Keychain (`security add-generic-password`),
 #     NOT in any dotfile in plaintext.
-#   - It is NOT hoisted into any shell environment. This script used to write
-#     ~/.config/zeta/secrets-env.sh containing a Keychain-fetch that EXPORTED the token,
-#     and shellenv.sh sourced that from the user profile — so the 852-byte token sat in
-#     the environment of every interactive shell and every process descended from one.
-#     "The env file holds only the fetch command, not the value" was true and beside the
-#     point: after the fetch runs, the VALUE is in the environment, and an environment
-#     variable crosses `exec` regardless of the child's code identity. A signature, a
-#     keychain ACL, an IMA appraisal and a TPM seal each bind a secret to a CALLER;
-#     an inherited variable has already escaped the question of who the caller is.
-#     Removed 2026-08-14 (081M00VMWTB087G0R0026XSWT6); §13 noninterference.
-#   - Read at POINT OF USE instead: src/Core.TypeScript/secrets/credential.ts
-#       withCredential("zeta-op-service-account", async (token) => …)      # never exported
-#       spawnWithCredential("zeta-op-service-account", "OP_SERVICE_ACCOUNT_TOKEN", ["op", …])
-#     The second is the only place the token reaches an environment at all: ONE child,
-#     ONE exec, gone when it exits — because `op` takes its token from its own env and
-#     offers no stdin form. A blast radius of one process, not one session.
+#   - The shell env file holds only the FETCH command
+#     (`export OP_SERVICE_ACCOUNT_TOKEN="$(security find-generic-password -s … -w)"`),
+#     never the token value — so the secret is in-process only at use (export is export),
+#     with the plaintext window minimized. (Encrypt-at-rest yes; encrypt-in-use no — see
+#     the custody discussion 2026-06-21.)
 #   - This is the bootstrap; the desktop-app integration (Touch ID, no token) and Vault
 #     (short-lived issuance) are the later, token-free paths.
 #
@@ -83,23 +72,19 @@ esac
 security add-generic-password -a "$USER" -s "$SERVICE" -U -w "$TOKEN"
 unset TOKEN  # drop it from this process ASAP
 
-# ── Retire the ambient hoist if a previous run left one behind ──────
-# This is the operator half of 081M00VMWTB087G0R0026XSWT6. The file holds a
-# Keychain-FETCH line, not a secret, so removing it destroys nothing — the token
-# stays encrypted in the Keychain and is read at point of use from now on.
-SECRETS_ENV="$HOME/.config/zeta/secrets-env.sh"
-if [ -f "$SECRETS_ENV" ]; then
-  rm -f "$SECRETS_ENV"
-  echo "✓ removed the ambient hoist $SECRETS_ENV (it held a fetch command, not a secret)."
-  echo "  Already-running shells keep the token in their environment until they exit;"
-  echo "  open a new shell (or \`unset OP_SERVICE_ACCOUNT_TOKEN\`) to clear it."
-fi
+# ── Wire the runtime FETCH into the managed secrets-env (mode 600) ──
+ZETA_ENV_DIR="$HOME/.config/zeta"
+SECRETS_ENV="$ZETA_ENV_DIR/secrets-env.sh"
+mkdir -p "$ZETA_ENV_DIR"
+umask 077
+cat > "$SECRETS_ENV" <<EOF
+# Zeta managed agent secrets — Keychain-FETCH lines (NOT secrets). mode 600.
+# Written by tools/setup/op-token-setup.sh. Sourced by ~/.config/zeta/shellenv.sh.
+export OP_SERVICE_ACCOUNT_TOKEN="\$(security find-generic-password -s $SERVICE -w 2>/dev/null)"
+EOF
+chmod 600 "$SECRETS_ENV"
 
 echo "✓ token stored ENCRYPTED in Keychain (service: $SERVICE) — value never printed."
-echo "✓ NOT exported into any shell environment, by design."
-echo "  Read it at point of use:"
-echo "    bun -e 'import {withCredential} from \"./src/Core.TypeScript/secrets/credential.ts\";"
-echo "            await withCredential(\"$SERVICE\", async (t, u) => console.log(\"len\", u.length))'"
-echo "  Run the 1Password CLI with a scoped, one-exec environment:"
-echo "    spawnWithCredential(\"$SERVICE\", \"OP_SERVICE_ACCOUNT_TOKEN\", [\"op\", \"whoami\"])"
-echo "  (Re-run tools/setup/common/shellenv.sh so the profile stops sourcing the old file.)"
+echo "✓ fetch wired into $SECRETS_ENV (mode 600; holds the fetch command, not the token)."
+echo "  New shells get OP_SERVICE_ACCOUNT_TOKEN via profile → shellenv.sh → secrets-env.sh."
+echo "  (Re-run tools/setup/common/shellenv.sh once so it sources secrets-env.sh.)"

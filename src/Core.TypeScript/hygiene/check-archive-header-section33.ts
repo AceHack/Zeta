@@ -13,7 +13,7 @@
 //     operational; trailing whitespace tolerated).
 //
 // Usage:
-//   bun src/Core.TypeScript/hygiene/check-archive-header-section33.ts
+//   bun tools/hygiene/check-archive-header-section33.ts
 //
 // Exit codes:
 //   0   clean (or no docs/research/)

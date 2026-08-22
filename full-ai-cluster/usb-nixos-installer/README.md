@@ -7,33 +7,18 @@ bootable NixOS USB installer that can install the target operating
 system on a new machine over USB or Ethernet:
 
 1. **NixOS declarative configuration** — `nixos/installer/configuration.nix`
-2. **NixFlakes for packages** — the flake is **one level up**, at
-   `full-ai-cluster/flake.nix`. This directory deliberately has **no
-   `flake.nix` of its own** (see "One flake" below).
+2. **NixFlakes for packages** — `flake.nix` at the directory root
 3. **Git for version text storage** — every file here lives in git;
-   `../flake.nix` references inputs by Git branch and `../flake.lock`
-   pins them to exact revisions for fully-reproducible builds.
-4. **The OS Flake on a USB stick** — `nix build .#installer-iso` **run from
-   `full-ai-cluster/`** produces a bootable ISO image you `dd` to a USB
-   stick. The same ISO supports Ethernet install (boot the target on the
-   stick, then `nixos-install --flake <git-url>#<host>` over the network).
-
-## One flake — this directory has no `flake.nix`
-
-Until 081KZKS9A6B08QG0R0008EG72M this directory carried a *second* flake that
-built `nixosConfigurations.installer` from the very same
-`nixos/installer/configuration.nix` — but **without** the
-`../nixos/overlays/mise-pin.nix` overlay that `full-ai-cluster/flake.nix`
-applies to every configuration it builds. Two flakes claimed to describe one
-artifact and produced different ISOs: this one shipped nixpkgs' `mise`
-(2025.11.7 at the locked rev), which is below `.mise.toml`'s
-`min_version = 2026.6.12` and so fails the version check in
-`tools/setup/linux.sh` on first boot. The duplicate is gone; there is now
-exactly one definition of the installer ISO, and it is the one CI builds.
-
-A hygiene test enforces this — `src/Core.TypeScript/hygiene/mise-pin-parity.test.ts`
-fails if any flake in the repo builds the installer configuration without the
-overlay, or if the four mise-pin declaration sites drift apart.
+   `flake.nix` references inputs by Git branch. **Run
+   `nix flake update` and commit the resulting `flake.lock`** to
+   pin to specific revisions for fully-reproducible builds. The
+   lock file isn't committed yet (no maintainer with Nix has run
+   `nix flake update` on this branch yet); first maintainer to
+   build the ISO should commit it.
+4. **The OS Flake on a USB stick** — `nix build .#installer-iso`
+   produces a bootable ISO image you `dd` to a USB stick. The same
+   ISO supports Ethernet install (boot the target on the stick,
+   then `nixos-install --flake <git-url>#<host>` over the network).
 
 **This directory is intentionally minimal.** It does NOT contain
 K3S, ArgoCD, Orleans, GitLab, observability, GPU runtime, or any
@@ -49,7 +34,7 @@ as its starting snippet), see
 From any machine with Nix installed:
 
 ```bash
-cd full-ai-cluster          # NOT usb-nixos-installer — the flake lives here
+cd usb-nixos-installer
 nix build .#installer-iso
 # Output: result/iso/zeta-installer-*.iso (~1.5-2 GB)
 ```

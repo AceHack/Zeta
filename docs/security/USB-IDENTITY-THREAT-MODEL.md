@@ -122,27 +122,12 @@ See `zeta-creds-crypto.ts` + research note on ephemeral UUID rebind.
 |---|---|---|---|---|---|
 | Passphrase only | Operator knowledge | Yes | Yes | No | Partial (with UUID today) |
 | USB FAT UUID | This filesystem instance | **No** (reformat breaks) | No | No | **Shipped — known flaw** |
-| USB iSerial | This physical stick | Yes | No | Probe-only | Persist opt-in + restore sidecar; not default |
-| UEFI keyfile on ESP | Stick + firmware layout | Depends | No | No (QEMU-testable) | Opt-in persist + restore from `/boot/EFI/ZETA/keyfile`; not default |
+| USB iSerial | This physical stick | Yes | No | Probe-only | Research |
+| UEFI keyfile on ESP | Stick + firmware layout | Depends | No | No (QEMU-testable) | Research |
 | TPM / PCR seal | This machine | Yes | Yes (wrong machine fails) | Yes for real TPM | Phase 3 |
 | Touch ID / FIDO | Human traveler present | Yes | Yes | Yes | Metal-gated |
 | Machine SW keyfile | This OS install | Yes | Yes | No | Not chosen (weaker than TPM) |
-| **HSM-held key (YubiHSM 2)** | This *device* holds the key and will not export it; attests **which key, which capabilities, generated where** | Yes | Yes (key never leaves the device) | Yes — USB device per node | **Measured 2026-08-19** (fw 2.4.1); no consumer built. See `THREAT-MODEL.md` §Hardware root of trust |
 | Federation custody policy | Contract-chosen mix | Per constitution | Per constitution | Maybe | Future |
-
-**HSM caveats that belong in this matrix, not in a footnote**
-(all measured, 2026-08-19): the device **has no clock**, so it
-cannot express or evaluate an expiry — binding lifetime must come
-from the cluster's phase-ordered fold, never from the certificate;
-its attestation carries **no nonce**, so it is replayable evidence
-and never a proof of possession; and **reset is cheap and silent**
-(seconds, no disassembly), so an evil-maid wipe-and-re-enrol
-produces genuine on-device keys that are indistinguishable from a
-legitimate rotation unless re-registration chains to the previous
-key. Erase-not-extract is a confidentiality win *and* an
-availability loss; state both. Detail + work items:
-[`THREAT-MODEL.md`](./THREAT-MODEL.md) §Hardware root of trust
-(HRT-3, HRT-5).
 
 **Design rule:** prefer a **stable factor + passphrase** for
 "remember wifi / gh across reformat" without forcing TPM on every
@@ -160,10 +145,6 @@ portable bar for the stick that spreads a **cluster**.
   IdP must not look like OAuth phishing.
 - Cloned node / ClusterNode → post-boot self-register markers; IdP
   pairwise distinctness.
-- **Replayed hardware attestation** presented by a node that does
-  not hold the key → demand proof-of-possession over a
-  verifier-chosen challenge; the certificate alone authenticates
-  nobody (`THREAT-MODEL.md` HRT-3).
 - Multiboot unsigned ISO → `images.manifest` digests; builder verifies.
 - Fake federation (claims contracts without exits) → UI/constitution
   gate; Universal Exit Principle is non-negotiable.
@@ -245,55 +226,10 @@ GitHub-forever APIs into Nix modules. CI uses `mock`; metal may use
 
 ## 8. Software-only next slices (no metal)
 
-1. **Per-federation threat-model stub template** — landed
-   (`docs/security/federation-threat-model-stub.TEMPLATE.md` +
-   `src/Core.TypeScript/installer/federation-threat-model-stub.ts`).
-   Fill a copy under `docs/security/federations/` when a Lodge is
-   chartered; validator refuses empty exits.
-2. **QEMU UEFI menu-boot CI** (optional) — landed
-   (`src/Core.TypeScript/installer/multiboot/qemu-uefi-menu-smoke.ts` +
-   `.github/workflows/multiboot-qemu-uefi-smoke.yml`). OVMF + real
-   `grub-mkimage` EFI; skip locally when tooling is absent; required in CI.
-3. **UEFI keyfile on ESP** — planner + FAT round-trip landed
-   (`src/Core.TypeScript/installer/uefi-keyfile-esp.ts`). Writes
-   `/EFI/ZETA/keyfile` (32 bytes → hex HKDF material). Optional
-   `--uefi-keyfile` on persist/restore and picker. `ZETA_BIND_UEFI_KEYFILE=1`
-   writes the keyfile onto the target ESP (`/mnt/boot/EFI/ZETA/keyfile`)
-   and forwards `--uefi-keyfile` to the picker. Restore reads
-   `/boot/EFI/ZETA/keyfile` when the sidecar says `uefiKeyfile` — it does
-   **not** fall back to UUID, and it does **not** copy bytes to `/etc`
-   (the binding *is* the ESP file; ESP wipe must fail decrypt). Mutually
-   exclusive with `ZETA_BIND_USB_ISERIAL=1` (both set stays UUID). Default
-   persist remains `--usb-uuid`. Opt-in `QEMU_UEFI_KEYFILE_PHASE1=1`
-   (dedicated; not implied by wifi/iSerial) bakes `/zeta-bind-uefi-keyfile`
-   onto the installer USB ESP and asserts the **install-time write**
-   (`persist-opt-in --uefi-keyfile`). It does **not** prove picker bind or
-   restore decrypt. Opt-in `QEMU_UEFI_KEYFILE_PICKER=1` (dedicated; not
-   implied by PHASE1) also bakes `/zeta-qemu-creds-passphrase` (QEMU test
-   secret; never logged) so non-interactive 6.95-picker binds the blob to
-   the keyfile. That is the restore-decrypt *precondition*. Live phase-2
-   restore decrypt (`passphraseMode=file` + `/run` staging) is a later
-   slice. Default wifi/iSerial phase-1 must stay UUID and must not bake
-   the bind marker or the passphrase file. `workflow_dispatch` only; not
-   on `gate (required)`. No TPM / Touch ID claim.
-4. **USB iSerial probe** — sysfs injectable probe landed
-   (`src/Core.TypeScript/installer/usb-iserial-probe.ts`). Unique
-   non-hub serial or fail closed. Optional `--usb-iserial` on
-   persist/restore **and the install-time picker** (`zeta-creds-picker.ts`
-   forwards the same flags; default path remains `--usb-uuid`).
-   QEMU `usb-storage,serial=` is guest sysfs (`qemu-usb-storage.ts`);
-   host probe stays injectable. Guest installer prints the probe report
-   (`usb-iserial-probe.ts` CLI from `zeta-install.sh` 6.95d) and writes
-   `--serial-file` on success. Default persist remains `--usb-uuid`.
-   `ZETA_BIND_USB_ISERIAL=1` forwards `--usb-iserial` to the picker only
-   when the probe produced a serial; otherwise it stays UUID. Persist
-   writes `zeta-creds.factor` next to the blob (kind only). Restore
-   reads that sidecar and `/etc/zeta/usb-iserial` — it does **not**
-   fall back to UUID (that is a lockout). Opt-in
-   `QEMU_USB_ISERIAL_PHASE1=1` (also implied by wifi ESP USB boot)
-   asserts `serial=ZETA-QEMU-001` **and** persist-default UUID.
-   ISO/cdrom cascade-5 does not. Not on `gate (required)`. No
-   physical-stick claim.
+1. **Per-federation threat-model stub template** — same section shape
+   as §3, filled per Lodge/charter when a federation is chartered.
+2. **QEMU UEFI menu-boot CI** (optional) — run OVMF against a composite
+   built with a real `grub-mkimage` EFI (layout+embed path already lands).
 
 Cluster/federation vocabulary promoted to operational glossary
 (`docs/SEED-VOCABULARY.md` carved kernel + `docs/GLOSSARY.md` §Society

@@ -21,7 +21,7 @@ bun src/Core.TypeScript/ace/ace.ts deps validate \
 Emit Flux + ArgoCD manifests (build-time / CI path):
 
 ```bash
-bun src/Core.TypeScript/cluster/deps-to-engine-config.ts \
+bun tools/cluster/deps-to-engine-config.ts \
   --graph examples/helm-dependency-graph/my-app-postgres/zeta-deps.yaml \
   --charts-dir examples/helm-dependency-graph/charts \
   --out-dir /tmp/my-app-postgres-manifests

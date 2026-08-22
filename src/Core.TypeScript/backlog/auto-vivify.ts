@@ -98,16 +98,9 @@ export function extractPointers(text: string): DanglingPointer[] {
     }
 
     // 3. Backtick paths `path`
-    // An ABSOLUTE path (leading "/") names a location on a running node's
-    // filesystem (e.g. `/run/current-system/sw/lib/pkcs11/...` on a NixOS
-    // cluster node), never a pointer into this repo — so it is not a
-    // vivifiable reference and reporting it as dangling is a false positive.
     const backticks = line.matchAll(/`([a-zA-Z0-9_./-]+\.[a-z]{2,4})`/g);
     for (const m of backticks) {
       const target = m[1]!.trim();
-      if (target.startsWith("/")) {
-        continue;
-      }
       if (target.includes("/") || target.endsWith(".md")) {
         out.push({ raw: m[0]!, clean: target, kind: "backtick", line: lineNum });
       }

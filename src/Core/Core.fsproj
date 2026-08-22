@@ -13,8 +13,6 @@
   <ItemGroup>
     <Compile Include="AssemblyInfo.fs" />
     <Compile Include="Result.fs" />
-    <Compile Include="ErasureClass.fs" />
-    <Compile Include="ErasureCharge.fs" />
     <Compile Include="Mixin.fs" />
     <Compile Include="Finalizer.fs" />
     <Compile Include="Algebra.fs" />
@@ -31,21 +29,14 @@
     <Compile Include="ForceLayout.fs" />
     <Compile Include="MetaspaceMap.fs" />
     <Compile Include="GlassHalo.fs" />
-    <Compile Include="GiftOfErasure.fs" />
     <Compile Include="Detour.fs" />
     <Compile Include="DoorGraph.fs" />
     <Compile Include="Fixpoint.fs" />
     <Compile Include="Orbit.fs" />
-    <Compile Include="TangleNavigator.fs" />
     <Compile Include="PhasePortrait.fs" />
     <Compile Include="AdinkraCode.fs" />
-    <Compile Include="IharaZeta.fs" />
-    <Compile Include="AdinkraIharaZeta.fs" />
-    <Compile Include="CliffordPeriodicity.fs" />
     <Compile Include="BinaryCode.fs" />
     <Compile Include="E8Lattice.fs" />
-    <Compile Include="LatticeVoa.fs" />
-    <Compile Include="ConstructionATheta.fs" />
     <Compile Include="CliffordE8Bridge.fs" />
     <Compile Include="CliffordE8Roots.fs" />
     <Compile Include="CliffordE8BladeMask.fs" />
@@ -231,7 +222,6 @@
     <Compile Include="SoftThrottle.fs" />
     <Compile Include="RecordedSource.fs" />
     <Compile Include="SimFramework.fs" />
-    <Compile Include="TickBoundaryProbe.fs" />
     <Compile Include="MeshPong.fs" />
     <Compile Include="SagaBuilder.fs" />
     <Compile Include="ChaosEnv.fs" />
@@ -264,7 +254,6 @@
     <Compile Include="PredictionScheduler.fs" />
     <Compile Include="ReceiptScheduler.fs" />
     <Compile Include="Heat.fs" />
-    <Compile Include="SchedulerShedHeat.fs" />
     <Compile Include="RoomHorizon.fs" />
     <Compile Include="RoomAdmission.fs" />
     <Compile Include="RoomBoundary.fs" />
@@ -322,10 +311,6 @@
     <Compile Include="DelayDecorrelation.fs" />
     <Compile Include="DebouncedOracle.fs" />
     <Compile Include="OracleTransport.fs" />
-    <Compile Include="Society.fs" />
-    <Compile Include="Ctm.fs" />
-    <Compile Include="Levels.fs" />
-    <Compile Include="AggregationRule.fs" />
     <Compile Include="MoneyVelocityOracle.fs" />
     <Compile Include="Chip8.fs" />
     <Compile Include="Chip8Cow.fs" />
@@ -347,7 +332,6 @@
     <Compile Include="Ben.fs" />
     <Compile Include="BenPort.fs" />
     <Compile Include="WSet.fs" />
-    <Compile Include="WSetHeat.fs" />
     <Compile Include="IbltReconcile.fs" />
     <Compile Include="InferenceLadder.fs" />
     <Compile Include="TimeGen.fs" />
@@ -366,7 +350,6 @@
     <Compile Include="ZetaIrV2.fs" />
     <Compile Include="ZetaIrV3.fs" />
     <Compile Include="ZetaIrV4.fs" />
-    <Compile Include="ZetaIrEval.fs" />
     <Compile Include="SymbolicAlgebra.fs" />
     <Compile Include="ZetaIrNormalizer.fs" />
     <Compile Include="ZetaIrCanonicalizer.fs" />
@@ -377,12 +360,9 @@
     <Compile Include="Chip9SelfTrace.fs" />
     <Compile Include="TelemetrySource.fs" />
     <Compile Include="SimLoop.fs" />
-    <Compile Include="SimVerb.fs" />
     <Compile Include="WheelRoom.fs" />
     <Compile Include="Chip8Observer.fs" />
     <Compile Include="Chip8PredictionRoom.fs" />
-    <Compile Include="Chip8CrossRunStore.fs" />
-    <Compile Include="Chip8ConsultCensus.fs" />
     <Compile Include="CelegansController.fs" />
     <Compile Include="CelegansChip8Room.fs" />
     <Compile Include="SoftController.fs" />
@@ -391,10 +371,6 @@
     <Compile Include="SoftDashboard.fs" />
     <Compile Include="SoftEmu.fs" />
     <Compile Include="AmplitudeEmu.fs" />
-    <Compile Include="CyclotomicAmplitude.fs" />
-    <Compile Include="QuorumAlgebra.fs" />
-    <Compile Include="WitnessCorrelationErasure.fs" />
-    <Compile Include="ClaimLane.fs" />
     <Compile Include="HlAmplitudeEmu.fs" />
     <Compile Include="QuantumArith.fs" />
     <Compile Include="QuantumObservableTreaty.fs" />

@@ -14,7 +14,8 @@ export function assemble(source: string[]): Uint8Array {
     if (trimmed.endsWith(":")) {
       labels.set(trimmed.slice(0, -1), 0x200 + offset);
     } else {
-      offset += 2;
+      if (trimmed.startsWith("BYTE")) offset += 1;
+      else offset += 2;
     }
   }
 
@@ -84,8 +85,12 @@ export function assemble(source: string[]): Uint8Array {
       throw new Error(`Failed to parse line: "${line}" - ${e}`);
     }
 
-    rom[offset++] = (w & 0xff00) >> 8;
-    rom[offset++] = (w & 0x00ff);
+    if (op === "BYTE") {
+      rom[offset++] = (w & 0xff);
+    } else {
+      rom[offset++] = (w & 0xff00) >> 8;
+      rom[offset++] = (w & 0x00ff);
+    }
   }
 
   return rom.slice(0, offset);

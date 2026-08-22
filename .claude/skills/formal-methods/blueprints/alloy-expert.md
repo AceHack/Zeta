@@ -191,8 +191,8 @@ dump is what we debug from.
 
 ## Reference patterns
 
-- `src/Core.Alloy/specs/Spine.als`,
-  `src/Core.Alloy/specs/InfoTheoreticSharder.als` — the two
+- `tools/alloy/specs/Spine.als`,
+  `tools/alloy/specs/InfoTheoreticSharder.als` — the two
   Zeta specs
 - `tools/alloy/alloy.jar` — Alloy 6 tools jar (installed
   by `tools/setup/common/verifiers.sh`)

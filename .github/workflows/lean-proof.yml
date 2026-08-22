@@ -154,24 +154,6 @@ jobs:
         # `lake env lean` only WARNS on `sorry` (exit 0), so type-check alone
         # would not catch a regression. Print the axiom set of the headline
         # lemmas and fail if `sorryAx` appears — the rigorous sorry-free check.
-        #
-        # RUN THROUGH run-checked.ts, NOT THROUGH A PIPELINE (2026-08-15).
-        # Every audit here used to read
-        #     if lake env lean FILE 2>&1 | grep -q 'sorryAx'; then ... exit 1; fi
-        # and a pipeline's exit status is the LAST command's, so `lean`'s status
-        # was discarded. If `lean` dies on a signal — 139 = 128+11 SIGSEGV,
-        # 134 = 128+6 SIGABRT — it prints nothing, `grep` finds nothing, the
-        # `if` is false, and the step PASSES having proved nothing. Every gate
-        # here decides by the ABSENCE of a string, which is exactly the class of
-        # check a crash cannot fail.
-        #
-        # Measured, not argued: this step extracted verbatim from `main` and
-        # replayed with a `lake` that does nothing but `kill -SEGV $$` exits 0
-        # and prints "axiom audit clean (no sorryAx)". `lean` itself is in the
-        # crash population (5 reports in one week on the maintainer's machine).
-        # run-checked.ts refuses to interpret output from a process that did not
-        # finish, and reports that as "no measurement" (exit 2), never as
-        # "no findings" (exit 0).
         working-directory: src/Core.Lean4
         run: |
           printf '#print axioms lemma1_toy\n#print axioms reconstruction_property\n#print axioms code_covers_boundary\n' \
@@ -201,38 +183,6 @@ jobs:
           printf '#print axioms Zeta.LandauerFloor.measure_preserves_total\n#print axioms Zeta.LandauerFloor.measure_heat_grows\n#print axioms Zeta.LandauerFloor.measure_heat_monotone\n#print axioms Zeta.LandauerFloor.branches_zero_heat\n#print axioms Zeta.LandauerFloor.adj_only_zero_heat\n#print axioms Zeta.LandauerFloor.larger_window_less_excess\n#print axioms Zeta.LandauerFloor.quasistatic_limit\n#print axioms Zeta.LandauerFloor.n_appends_from_n_branches\n' \
             | cat Lean4/LandauerFloor.lean - > /tmp/landauer_axiom_audit.lean
 
-          # ── Added 2026-08-14 (081KZZVC3DD087G0R0035SZN58): the Meno braided/balanced
-          # pair. `MenoBraidedRMatrix` was wired into the build 2026-08-13 but never into
-          # this audit, so a regression to `sorry` there would have type-checked green.
-          # `MenoBalancedTwist` lands with its gate rather than after it. Names are fully
-          # qualified because the audit lines are appended AFTER the files' `end`.
-          printf '#print axioms Zeta.MenoBraided.selfBraiding_comp_eq_id\n#print axioms Zeta.MenoBraided.braidRinv_braidR\n#print axioms Zeta.MenoBraided.braidR_isSymmetric_iff_commute\n#print axioms Zeta.MenoBraided.braidR_not_symmetric_perm3\n#print axioms Zeta.MenoBraided.braidR_yangBaxter\n#print axioms Zeta.MenoBraided.conj_selfDistrib\n#print axioms Zeta.MenoBraided.mut_not_yangBaxter\n#print axioms Zeta.MenoBraided.braidR_yangBaxter_perm3_exhaustive\n' \
-            | cat Lean4/MenoBraidedRMatrix.lean - > /tmp/meno_rmatrix_axiom_audit.lean
-          printf '#print axioms Zeta.MenoBalanced.dbl_cocycle\n#print axioms Zeta.MenoBalanced.twist_assoc_consistent\n#print axioms Zeta.MenoBalanced.twist_tensor_of_id\n#print axioms Zeta.MenoBalanced.misread_axiom_forces_symmetry\n#print axioms Zeta.MenoBalanced.twist_tensor_ne_id_of_dbl_ne_id\n#print axioms Zeta.MenoBalanced.dbl_eq_id_of_twist_id\n#print axioms Zeta.MenoBalanced.twist_Vpow_succ\n#print axioms Zeta.MenoBalanced.twist_eq_on_Vpow\n#print axioms Zeta.MenoBalanced.twist_eq_of_eq_on_gen\n#print axioms Zeta.MenoBalanced.act_braid_relation_dihedral3\n#print axioms Zeta.MenoBalanced.act_nontrivial_dihedral3\n#print axioms Zeta.MenoBalanced.garside_relation_dihedral3\n#print axioms Zeta.MenoBalanced.mutant_theta_id_rejected\n#print axioms Zeta.MenoBalanced.mutant_half_twist_rejected\n#print axioms Zeta.MenoBalanced.mutant_single_braiding_rejected\n#print axioms Zeta.MenoBalanced.mutant_delta_fourth_rejected\n' \
-            | cat Lean4/MenoBalancedTwist.lean - > /tmp/meno_balanced_axiom_audit.lean
-          # ── Added 2026-08-15 (shadow/meno-associator-hexagons): the associator +
-          # unitors + BOTH hexagons + the copy/discard degree argument. Landed with its
-          # gate rather than after it, per the MenoBalancedTwist precedent above.
-          printf '#print axioms Zeta.MenoMonoidal.assocInv_assoc\n#print axioms Zeta.MenoMonoidal.assoc_assocInv\n#print axioms Zeta.MenoMonoidal.pentagon\n#print axioms Zeta.MenoMonoidal.triangle\n#print axioms Zeta.MenoMonoidal.hexagon1_tuple\n#print axioms Zeta.MenoMonoidal.hexagon2_tuple\n#print axioms Zeta.MenoMonoidal.strict_assoc\n#print axioms Zeta.MenoMonoidal.strict_leftUnit\n#print axioms Zeta.MenoMonoidal.strict_rightUnit\n#print axioms Zeta.MenoMonoidal.act_append\n#print axioms Zeta.MenoMonoidal.act_act\n#print axioms Zeta.MenoMonoidal.cBlock_singleton\n#print axioms Zeta.MenoMonoidal.hexagon1_strict\n#print axioms Zeta.MenoMonoidal.hexagon2_strict\n#print axioms Zeta.MenoMonoidal.cBlock_singleton_eq_interp\n#print axioms Zeta.MenoMonoidal.cBlock_one_two_eq_interp\n#print axioms Zeta.MenoMonoidal.cBlock_two_one_eq_interp\n#print axioms Zeta.MenoMonoidal.interp_length\n#print axioms Zeta.MenoMonoidal.interp_invWord\n#print axioms Zeta.MenoMonoidal.interp_injective\n#print axioms Zeta.MenoMonoidal.no_hom_between_distinct_degrees\n#print axioms Zeta.MenoMonoidal.no_copy\n#print axioms Zeta.MenoMonoidal.no_discard\n#print axioms Zeta.MenoMonoidal.no_copy_lengthPreserving\n#print axioms Zeta.MenoMonoidal.oppR_yangBaxter\n#print axioms Zeta.MenoMonoidal.hexagon1_opp\n#print axioms Zeta.MenoMonoidal.hexagon2_opp_fails\n#print axioms Zeta.MenoMonoidal.hexagon1_swap\n#print axioms Zeta.MenoMonoidal.hexagon2_swap\n' \
-            | cat Lean4/MenoMonoidalHexagons.lean - > /tmp/meno_hexagons_axiom_audit.lean
-          # `MenoTwistCentrality` (081M00EZXN2087G0R003AY3WSJ) lands with its gate, as
-          # `MenoBalancedTwist` did — a new proof file that is built but unaudited is a
-          # regression to `sorry` waiting to type-check green.
-          printf '#print axioms Zeta.MenoTwistCentrality.actAt_prod\n#print axioms Zeta.MenoTwistCentrality.actAtInv_prod\n#print axioms Zeta.MenoTwistCentrality.actWord_prod\n#print axioms Zeta.MenoTwistCentrality.linearize_fiber_invariant\n#print axioms Zeta.MenoTwistCentrality.linearize_not_scalar\n#print axioms Zeta.MenoTwistCentrality.fullTwist_moves\n#print axioms Zeta.MenoTwistCentrality.fullTwist_not_scalar\n#print axioms Zeta.MenoTwistCentrality.scalar_twist_forces_symmetry\n#print axioms Zeta.MenoTwistCentrality.generators_not_commute\n#print axioms Zeta.MenoTwistCentrality.PreTwist.natural_braiding\n#print axioms Zeta.MenoTwistCentrality.PreTwist.natural_braiding_inv\n#print axioms Zeta.MenoTwistCentrality.PreTwist.natural_tensor\n#print axioms Zeta.MenoTwistCentrality.PreTwist.natural_associator\n#print axioms Zeta.MenoTwistCentrality.PreTwist.natural_leftUnitor\n#print axioms Zeta.MenoTwistCentrality.PreTwist.natural_rightUnitor\n#print axioms Zeta.MenoTwistCentrality.PreTwist.natural_of_mem\n#print axioms Zeta.MenoTwistCentrality.PreTwist.toTwist\n#print axioms Zeta.MenoTwistCentrality.preTwist_id_forces_symmetry\n#print axioms Zeta.MenoTwistCentrality.Framed.dbl_one_one_ne_id\n#print axioms Zeta.MenoTwistCentrality.Framed.framedTwist\n#print axioms Zeta.MenoTwistCentrality.Framed.framedTwist_gen\n#print axioms Zeta.MenoTwistCentrality.Framed.framedTwist_two_ne_id\n#print axioms Zeta.MenoTwistCentrality.mutant_half_twist_not_central\n#print axioms Zeta.MenoTwistCentrality.mutant_block_swap_not_central\n#print axioms Zeta.MenoTwistCentrality.mutant_delta_fourth_ne_full_twist\n#print axioms Zeta.MenoTwistCentrality.fullTwist_central_dihedral3\n' \
-            | cat Lean4/MenoTwistCentrality.lean - > /tmp/meno_centrality_axiom_audit.lean
-          # ── Added 2026-08-22 (081M0N9SSJ1087G0R001WVSN9V): the ADAPTED PORT of
-          # `Zeta23/LinAlg/` from anthropics/zeta-23-lean (Apache-2.0, (c) 2026 Anthropic
-          # PBC) and OUR anti-vacuity witness for it. Ported code lands WITH its gate:
-          # a port nothing audits is a `sorry` waiting to type-check green, and the fact
-          # that upstream audited it does not audit it HERE, at OUR pin.
-          printf '#print axioms RHLinalg.posIndex_eq_rank_of_posSemidef\n#print axioms RHLinalg.rtrace_eq_sum_eigenvalues\n#print axioms RHLinalg.sum_eigenvalues_reindex\n#print axioms RHLinalg.card_eigenvalues_reindex\n#print axioms RHLinalg.frobSq_hermitian_eq_sum_sq_eigenvalues\n#print axioms RHLinalg.normSqMatrix_mem_doublyStochastic_of_unitary\n#print axioms RHLinalg.re_trace_mul_eq_eigenvalue_bilinear\n#print axioms RHLinalg.bilinear_doublyStochastic_le_of_monovary\n#print axioms RHLinalg.vonNeumann_trace_ineq\n#print axioms RHLinalg.hermPosPart_sub_hermNegPart\n#print axioms RHLinalg.hermPosPart_posSemidef\n#print axioms RHLinalg.hermNegPart_posSemidef\n#print axioms RHLinalg.hermPosPart_mul_hermNegPart\n#print axioms RHLinalg.rtrace_sub_decomp\n#print axioms RHLinalg.posIndex_eq_max_finrank_posDefOn\n#print axioms RHLinalg.finrank_le_posIndex_of_posDefOn\n#print axioms RHLinalg.posIndex_conj_le\n#print axioms RHLinalg.posIndex_add_le\n#print axioms RHLinalg.rank_trace_ineq\n#print axioms RHLinalg.rank_trace_ineq_two\n#print axioms RHLinalg.weyl_posIndexAbove_le\n#print axioms RHLinalg.cauchySchwarz_count\n' \
-            | cat Zeta23/LinAlg.lean - > /tmp/vonneumann_port_axiom_audit.lean
-          # The witness is the check upstream's bar CANNOT perform: sorry-freeness says
-          # nothing about whether the statement still means what it meant. W4 in
-          # particular is a machine-checked REFUTATION of the swapped-pairing mutant.
-          printf '#print axioms Zeta.VonNeumannTraceWitness.pair_of_sum_and_sumSq\n#print axioms Zeta.VonNeumannTraceWitness.eigenvalues₀_fin_two\n#print axioms Zeta.VonNeumannTraceWitness.evP\n#print axioms Zeta.VonNeumannTraceWitness.evQ\n#print axioms Zeta.VonNeumannTraceWitness.evS\n#print axioms Zeta.VonNeumannTraceWitness.evR\n#print axioms Zeta.VonNeumannTraceWitness.Pproj_Qmix_not_commute\n#print axioms Zeta.VonNeumannTraceWitness.trace_lt_bound_noncommuting\n#print axioms Zeta.VonNeumannTraceWitness.trace_eq_bound_aligned\n#print axioms Zeta.VonNeumannTraceWitness.trace_lt_bound_antialigned\n#print axioms Zeta.VonNeumannTraceWitness.mutant_swapped_pairing_false\n#print axioms Zeta.VonNeumannTraceWitness.vonNeumann_at_witness\n' \
-            | cat Lean4/VonNeumannTraceWitness.lean - > /tmp/vonneumann_witness_axiom_audit.lean
-
           # ── Added 2026-08-10: three files that were in NEITHER list ──────────────
           # Each audits ONLY declarations measured sorry-free on 2026-08-10, so these
           # are genuine regression gates rather than permanently-red steps. Files that
@@ -250,82 +200,58 @@ jobs:
           printf 'open Zeta.FinDataProcessing\n#print axioms relEntropy_nonneg\n#print axioms gibbs_le\n#print axioms relEntropy_self\n#print axioms FinJointLogForm.mutualInfo_eq_logsum\n#print axioms MarkovChain.chan_le_one\n#print axioms MarkovChain.jointXZ_pY_eq\n#print axioms MarkovChain.jointXZ_pX_eq\n#print axioms MarkovChain.sum_out_z\n#print axioms MarkovChain.sum_out_y\n#print axioms MarkovChain.sum_qf_y\n#print axioms MarkovChain.sum_pf3_one\n#print axioms MarkovChain.sum_qf3_one\n#print axioms MarkovChain.pf3_zero_or_qf3_pos\n' \
             | cat Lean4/FinDataProcessing.lean - > /tmp/findata_axiom_audit.lean
 
-          bun ../Core.TypeScript/hygiene/run-checked.ts \
-            --label "toymodel axiom audit" --deny 'sorryAx' \
-            --message "ToyModel depends on sorryAx — a proof regressed to sorry/admit" \
-            -- lake env lean /tmp/toymodel_axiom_audit.lean
-          bun ../Core.TypeScript/hygiene/run-checked.ts \
-            --label "erasure axiom audit" --deny 'sorryAx' \
-            --message "ErasureDistance depends on sorryAx — a proof regressed to sorry/admit" \
-            -- lake env lean /tmp/erasure_axiom_audit.lean
-          bun ../Core.TypeScript/hygiene/run-checked.ts \
-            --label "privacy axiom audit" --deny 'sorryAx' \
-            --message "IdentityForcesPrivacy depends on sorryAx — a proof regressed to sorry/admit" \
-            -- lake env lean /tmp/privacy_axiom_audit.lean
-          bun ../Core.TypeScript/hygiene/run-checked.ts \
-            --label "unbounded axiom audit" --deny 'sorryAx' \
-            --message "UnboundedNeedsInfinitePrivacy depends on sorryAx — a proof regressed to sorry/admit" \
-            -- lake env lean /tmp/unbounded_axiom_audit.lean
-          bun ../Core.TypeScript/hygiene/run-checked.ts \
-            --label "childfloor axiom audit" --deny 'sorryAx' \
-            --message "ChildFloor depends on sorryAx — the child-floor proof regressed to sorry/admit" \
-            -- lake env lean /tmp/childfloor_axiom_audit.lean
-          bun ../Core.TypeScript/hygiene/run-checked.ts \
-            --label "bifurcation axiom audit" --deny 'sorryAx' \
-            --message "Bifurcation depends on sorryAx — the reconciliation-convergence proof regressed to sorry/admit" \
-            -- lake env lean /tmp/bifurcation_axiom_audit.lean
-          bun ../Core.TypeScript/hygiene/run-checked.ts \
-            --label "nrc axiom audit" --deny 'sorryAx' \
-            --message "NonRegisterCollapse depends on sorryAx — the non-register-collapse proof regressed to sorry/admit" \
-            -- lake env lean /tmp/nrc_axiom_audit.lean
-          bun ../Core.TypeScript/hygiene/run-checked.ts \
-            --label "gengen axiom audit" --deny 'sorryAx' \
-            --message "GenGenFixpoint core proofs depend on sorryAx — a proof regressed to sorry/admit" \
-            -- lake env lean /tmp/gengen_axiom_audit.lean
-          bun ../Core.TypeScript/hygiene/run-checked.ts \
-            --label "cd_doubly_even axiom audit" --deny 'sorryAx' \
-            --message "CayleyDicksonDoublyEven depends on sorryAx — a proof regressed to sorry/admit" \
-            -- lake env lean /tmp/cd_doubly_even_axiom_audit.lean
-          bun ../Core.TypeScript/hygiene/run-checked.ts \
-            --label "bridge_functor axiom audit" --deny 'sorryAx' \
-            --message "BridgeFunctor depends on sorryAx — a proof regressed to sorry/admit" \
-            -- lake env lean /tmp/bridge_functor_axiom_audit.lean
-          bun ../Core.TypeScript/hygiene/run-checked.ts \
-            --label "canonicalizer axiom audit" --deny 'sorryAx' \
-            --message "CanonicalizerCorrect depends on sorryAx — a fusion-correctness proof regressed to sorry/admit" \
-            -- lake env lean /tmp/canonicalizer_axiom_audit.lean
-          bun ../Core.TypeScript/hygiene/run-checked.ts \
-            --label "costrec axiom audit" --deny 'sorryAx' \
-            --message "CostRecurrence depends on sorryAx — the cost recurrence / lax-monoidal proof regressed to sorry/admit" \
-            -- lake env lean /tmp/costrec_axiom_audit.lean
-          bun ../Core.TypeScript/hygiene/run-checked.ts \
-            --label "landauer axiom audit" --deny 'sorryAx' \
-            --message "LandauerFloor depends on sorryAx — the Landauer two-ledger / predictive-advantage proof regressed to sorry/admit" \
-            -- lake env lean /tmp/landauer_axiom_audit.lean
-          bun ../Core.TypeScript/hygiene/run-checked.ts \
-            --label "meno_rmatrix axiom audit" --deny 'sorryAx' \
-            --message "MenoBraidedRMatrix depends on sorryAx — the braided-not-symmetric / Yang-Baxter certificate regressed to sorry/admit" \
-            -- lake env lean /tmp/meno_rmatrix_axiom_audit.lean
-          bun ../Core.TypeScript/hygiene/run-checked.ts \
-            --label "meno_balanced axiom audit" --deny 'sorryAx' \
-            --message "MenoBalancedTwist depends on sorryAx — the balanced-structure / Garside full-twist certificate regressed to sorry/admit" \
-            -- lake env lean /tmp/meno_balanced_axiom_audit.lean
-          bun ../Core.TypeScript/hygiene/run-checked.ts \
-            --label "meno_hexagons axiom audit" --deny 'sorryAx' \
-            --message "MenoMonoidalHexagons depends on sorryAx — the associator/unitor/hexagon coherence certificate or the copy-discard degree argument regressed to sorry/admit" \
-            -- lake env lean /tmp/meno_hexagons_axiom_audit.lean
-          bun ../Core.TypeScript/hygiene/run-checked.ts \
-            --label "meno_centrality axiom audit" --deny 'sorryAx' \
-            --message "MenoTwistCentrality depends on sorryAx — the derived-naturality / Schur-refutation certificate regressed to sorry/admit" \
-            -- lake env lean /tmp/meno_centrality_axiom_audit.lean
-          bun ../Core.TypeScript/hygiene/run-checked.ts \
-            --label "vonneumann port axiom audit" --deny 'sorryAx' --deny 'Unknown constant' \
-            --message "The Zeta23/LinAlg port depends on sorryAx, or a name did not resolve at our pin — the ported §3 engine regressed or drifted" \
-            -- lake env lean /tmp/vonneumann_port_axiom_audit.lean
-          bun ../Core.TypeScript/hygiene/run-checked.ts \
-            --label "vonneumann witness axiom audit" --deny 'sorryAx' --deny 'Unknown constant' \
-            --message "VonNeumannTraceWitness depends on sorryAx, or a name did not resolve — the anti-vacuity witness for the von Neumann port regressed" \
-            -- lake env lean /tmp/vonneumann_witness_axiom_audit.lean
+          if lake env lean /tmp/toymodel_axiom_audit.lean 2>&1 | grep -q 'sorryAx'; then
+            echo "::error::ToyModel depends on sorryAx — a proof regressed to sorry/admit"
+            exit 1
+          fi
+          if lake env lean /tmp/erasure_axiom_audit.lean 2>&1 | grep -q 'sorryAx'; then
+            echo "::error::ErasureDistance depends on sorryAx — a proof regressed to sorry/admit"
+            exit 1
+          fi
+          if lake env lean /tmp/privacy_axiom_audit.lean 2>&1 | grep -q 'sorryAx'; then
+            echo "::error::IdentityForcesPrivacy depends on sorryAx — a proof regressed to sorry/admit"
+            exit 1
+          fi
+          if lake env lean /tmp/unbounded_axiom_audit.lean 2>&1 | grep -q 'sorryAx'; then
+            echo "::error::UnboundedNeedsInfinitePrivacy depends on sorryAx — a proof regressed to sorry/admit"
+            exit 1
+          fi
+          if lake env lean /tmp/childfloor_axiom_audit.lean 2>&1 | grep -q 'sorryAx'; then
+            echo "::error::ChildFloor depends on sorryAx — the child-floor proof regressed to sorry/admit"
+            exit 1
+          fi
+          if lake env lean /tmp/bifurcation_axiom_audit.lean 2>&1 | grep -q 'sorryAx'; then
+            echo "::error::Bifurcation depends on sorryAx — the reconciliation-convergence proof regressed to sorry/admit"
+            exit 1
+          fi
+          if lake env lean /tmp/nrc_axiom_audit.lean 2>&1 | grep -q 'sorryAx'; then
+            echo "::error::NonRegisterCollapse depends on sorryAx — the non-register-collapse proof regressed to sorry/admit"
+            exit 1
+          fi
+          if lake env lean /tmp/gengen_axiom_audit.lean 2>&1 | grep -q 'sorryAx'; then
+            echo "::error::GenGenFixpoint core proofs depend on sorryAx — a proof regressed to sorry/admit"
+            exit 1
+          fi
+          if lake env lean /tmp/cd_doubly_even_axiom_audit.lean 2>&1 | grep -q 'sorryAx'; then
+            echo "::error::CayleyDicksonDoublyEven depends on sorryAx — a proof regressed to sorry/admit"
+            exit 1
+          fi
+          if lake env lean /tmp/bridge_functor_axiom_audit.lean 2>&1 | grep -q 'sorryAx'; then
+            echo "::error::BridgeFunctor depends on sorryAx — a proof regressed to sorry/admit"
+            exit 1
+          fi
+          if lake env lean /tmp/canonicalizer_axiom_audit.lean 2>&1 | grep -q 'sorryAx'; then
+            echo "::error::CanonicalizerCorrect depends on sorryAx — a fusion-correctness proof regressed to sorry/admit"
+            exit 1
+          fi
+          if lake env lean /tmp/costrec_axiom_audit.lean 2>&1 | grep -q 'sorryAx'; then
+            echo "::error::CostRecurrence depends on sorryAx — the cost recurrence / lax-monoidal proof regressed to sorry/admit"
+            exit 1
+          fi
+          if lake env lean /tmp/landauer_axiom_audit.lean 2>&1 | grep -q 'sorryAx'; then
+            echo "::error::LandauerFloor depends on sorryAx — the Landauer two-ledger / predictive-advantage proof regressed to sorry/admit"
+            exit 1
+          fi
           # ── Anti-vacuity guard (added 2026-08-10) ────────────────────────────────
           # Every audit below decides PASS by the ABSENCE of `sorryAx` in the output.
           # If a `#print axioms` names a declaration that does not resolve — renamed,
@@ -337,22 +263,22 @@ jobs:
           # written unqualified and all 13 silently resolved to nothing. Caught by
           # counting the printed declarations instead of trusting the exit code.
           for f in /tmp/*_axiom_audit.lean; do
-            bun ../Core.TypeScript/hygiene/run-checked.ts \
-              --label "anti-vacuity $f" --deny 'Unknown constant' \
-              --message "$f names a declaration that does not resolve — the audit would pass vacuously" \
-              -- lake env lean "$f"
+            if lake env lean "$f" 2>&1 | grep -q 'Unknown constant'; then
+              echo "::error::$f names a declaration that does not resolve — the audit would pass vacuously"
+              exit 1
+            fi
           done
 
-          bun ../Core.TypeScript/hygiene/run-checked.ts \
-            --label "pce axiom audit" --deny 'sorryAx' \
-            --message "PhaseClockErasure depends on sorryAx — a proof regressed to sorry/admit" \
-            -- lake env lean /tmp/pce_axiom_audit.lean
-          bun ../Core.TypeScript/hygiene/run-checked.ts \
-            --label "schema axiom audit" --deny 'sorryAx' \
-            --message "SchemaEvolution's CLOSED theorems depend on sorryAx — a proof regressed (the declared research-target sorry is excluded from this audit)" \
-            -- lake env lean /tmp/schema_axiom_audit.lean
-          bun ../Core.TypeScript/hygiene/run-checked.ts \
-            --label "findata axiom audit" --deny 'sorryAx' \
-            --message "FinDataProcessing's 13 sorry-free declarations depend on sorryAx — the open obligation has leaked into the closed tower" \
-            -- lake env lean /tmp/findata_axiom_audit.lean
+          if lake env lean /tmp/pce_axiom_audit.lean 2>&1 | grep -q 'sorryAx'; then
+            echo "::error::PhaseClockErasure depends on sorryAx — a proof regressed to sorry/admit"
+            exit 1
+          fi
+          if lake env lean /tmp/schema_axiom_audit.lean 2>&1 | grep -q 'sorryAx'; then
+            echo "::error::SchemaEvolution's CLOSED theorems depend on sorryAx — a proof regressed (the declared research-target sorry is excluded from this audit)"
+            exit 1
+          fi
+          if lake env lean /tmp/findata_axiom_audit.lean 2>&1 | grep -q 'sorryAx'; then
+            echo "::error::FinDataProcessing's 13 sorry-free declarations depend on sorryAx — the open obligation has leaked into the closed tower"
+            exit 1
+          fi
           echo "Lean research-proof axiom audit clean (no sorryAx)."

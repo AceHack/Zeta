@@ -30,16 +30,15 @@ test("frontmatter: state → done and completed datetime added (precise, for DOR
   expect(done.newContent).toContain("created: 2026-01-15T");
 });
 
-test("emits NO aggregate index line — the done file is the record (081KZZ3Q990087G0R003QXYVN6)", () => {
+test("emits an incremental done-index JSONL line (id, path, completed, title)", () => {
   const { m, fromPath } = mintSample();
   const done = completeWorkItem(m.content, fromPath, detEnv(DONE_MS));
-  // A shared `done/index.jsonl` append is the conflict class this work removed; the result
-  // must carry no serialized aggregate row for a caller to write anywhere.
-  expect(Object.keys(done).sort()).toEqual(["fromPath", "fromState", "newContent", "toPath", "zetaid"]);
-  // Everything that line held is still on the record itself.
-  expect(done.toPath).toBe(`workitems/done/2026/06/${m.filename}`);
-  expect(done.newContent).toContain("completed: 2026-06-06T12:30:00.000Z");
-  expect(done.newContent).toContain("Wire run-tlaps into CI");
+  const entry = JSON.parse(done.indexLine);
+  expect(entry.id).toBe(m.zetaid);
+  expect(entry.path).toBe(`workitems/done/2026/06/${m.filename}`);
+  expect(entry.completed).toBe("2026-06-06T12:30:00.000Z");
+  expect(entry.title).toBe("Wire run-tlaps into CI");
+  expect(done.indexLine.endsWith("\n")).toBe(true);
 });
 
 test("DST: same (content, path, env) replays identically", () => {
@@ -48,6 +47,7 @@ test("DST: same (content, path, env) replays identically", () => {
   const b = completeWorkItem(m.content, fromPath, detEnv(DONE_MS));
   expect(a.newContent).toBe(b.newContent);
   expect(a.toPath).toBe(b.toPath);
+  expect(a.indexLine).toBe(b.indexLine);
 });
 
 test("honors custom work-items dir for done path", () => {

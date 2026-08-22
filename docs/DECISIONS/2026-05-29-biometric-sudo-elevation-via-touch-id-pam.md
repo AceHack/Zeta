@@ -35,19 +35,6 @@ How do we grant necessary execution privileges to system commands in macOS secur
 * **Cons:**
   - **Headless Limits:** Headless terminals or background cron agents cannot supply Touch ID physical presence. Headless runners must use focused NOPASSWD limits in `/etc/sudoers` or run entirely inside user-space.
 
-> **Correction, 2026-08-17 (work-item `081M06DSQ0Q087G0R000H91391`).** The "Security-Honest
-> Consent" pro above over-states what this option delivers, and the over-statement was copied
-> into the code that implements it. `auth sufficient pam_tid.so` is added to the **top** of a
-> chain that continues `auth sufficient pam_smartcard.so` / `auth required pam_opendirectory.so`,
-> and `man pam.conf(5)` is explicit that a failed `sufficient` module falls through: *"If it
-> fails, the rest of the chain still runs, but the final result will be failure unless a later
-> module succeeds."* `sudo` reports only its own exit status and never names the module that
-> satisfied PAM. So on the stock chain this option gives **operator authentication**, not
-> **biometric proof** — a smart-card PIN or the account password produces the same exit code.
-> `tools/setup/persona-keys/biometric.ts` now reports that distinction (`factor:
-> "unattributed"` vs `"biometric"`, `claimsBiometric()`); observing the biometric itself needs
-> `LocalAuthentication`/`LAContext` and is tracked as `081M06KM523087G0R002ANKAZJ`.
-
 ## Decision Outcome
 
 * **Chosen Option:** Option 2: Biometric Sudo Elevation via Touch ID PAM, because it maintains absolute file-system permission sanity (user-owned files) while providing an extremely high-security, low-friction biometric consent gate.

@@ -366,13 +366,6 @@
             color: var(--warning);
             border: 1px solid rgba(245, 158, 11, 0.3);
         }
-        /* UNKNOWN = the breaker did not measure. Rendered as absence, never as health:
-           a zero-observation reading used to arrive here as CLOSED and paint green. */
-        .cb-state.cb-unknown {
-            background: rgba(148, 163, 184, 0.12);
-            color: var(--text-dim, #94a3b8);
-            border: 1px dashed rgba(148, 163, 184, 0.45);
-        }
 
         .cb-row {
             display: flex;
@@ -892,14 +885,11 @@
                     <strong style="color:var(--text-main)">CLOSED</strong> = healthy.
                     <strong style="color:var(--danger)">OPEN</strong> = tripped.
                     <strong style="color:var(--warning)">HALF-OPEN</strong> = recovering.
-                    <strong>UNKNOWN</strong> = zero observations — the breaker did not measure, which is
-                    <em>not</em> the same as healthy.
                 </p>
                 <div class="stat-grid" id="cb-summary-stats">
                     <div class="stat"><div class="stat-label">Closed</div><div class="stat-value good" id="cb-closed-count">-</div></div>
                     <div class="stat"><div class="stat-label">Half-Open</div><div class="stat-value warn" id="cb-halfopen-count">-</div></div>
                     <div class="stat"><div class="stat-label">Open</div><div class="stat-value bad" id="cb-open-count">-</div></div>
-                    <div class="stat"><div class="stat-label">Unknown</div><div class="stat-value" id="cb-unknown-count">-</div></div>
                     <div class="stat"><div class="stat-label">Last Check</div><div class="stat-value" id="cb-last-check" style="font-size:1.2rem;margin-top:0.5rem">-</div></div>
                 </div>
             </div>
@@ -1720,7 +1710,6 @@
             CLOSED: 'cb-closed',
             OPEN: 'cb-open',
             HALF_OPEN: 'cb-half-open',
-            UNKNOWN: 'cb-unknown',
         };
 
         // Mock dataset — realistic snapshot of a running BFT array.
@@ -1779,11 +1768,7 @@
         }
 
         function formatRelTime(isoStr) {
-            // null = this identity was never observed. The exporter no longer fabricates a
-            // timestamp for a check that measured nothing, so the UI must say so.
-            if (!isoStr) return 'never';
             const ms = Date.now() - new Date(isoStr).getTime();
-            if (Number.isNaN(ms)) return 'never';
             if (ms < 2000) return 'just now';
             if (ms < 60000) return `${Math.floor(ms / 1000)}s ago`;
             return `${Math.floor(ms / 60000)}m ago`;
@@ -1796,8 +1781,7 @@
 
             // Dot
             const dotClass = entry.state === 'CLOSED' ? 'active'
-                : entry.state === 'OPEN' ? 'stale'
-                : entry.state === 'UNKNOWN' ? 'stale' : 'recent';
+                : entry.state === 'OPEN' ? 'stale' : 'recent';
             const dot = document.createElement('div');
             dot.className = `agent-dot ${dotClass}`;
 
@@ -1820,7 +1804,8 @@
 
             // State badge
             const badge = document.createElement('span');
-            const badgeClass = CB_STATES[entry.state] || CB_STATES.UNKNOWN;
+            const badgeClass = entry.state === 'CLOSED' ? CB_STATES.CLOSED
+                : entry.state === 'OPEN' ? CB_STATES.OPEN : CB_STATES.HALF_OPEN;
             badge.className = `cb-state ${badgeClass}`;
             badge.textContent = entry.state.replace('_', '-');
 
@@ -1864,12 +1849,10 @@
             const closed = entries.filter(e => e.state === 'CLOSED').length;
             const open = entries.filter(e => e.state === 'OPEN').length;
             const halfOpen = entries.filter(e => e.state === 'HALF_OPEN').length;
-            const unknown = entries.filter(e => e.state === 'UNKNOWN').length;
 
             animateValue('cb-closed-count', closed);
             animateValue('cb-halfopen-count', halfOpen);
             animateValue('cb-open-count', open);
-            animateValue('cb-unknown-count', unknown);
             animateValue('cb-last-check', new Date().toLocaleTimeString());
 
             const list = document.getElementById('cb-agent-list');

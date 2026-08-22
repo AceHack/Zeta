@@ -3,318 +3,280 @@
 Running notes for Soraya. ASCII only (BP-09). 3000-word cap
 (BP-07). Pruned every third invocation.
 
-Frontmatter at `.claude/skills/formal-verification-expert/SKILL.md` is canon (BP-08); this supplements, never overrides.
+Frontmatter at `.claude/skills/formal-verification-expert/SKILL.md`
+is canon (BP-08). This notebook supplements, never overrides.
 
 ---
 
-## Round 35 -- verification-drift-auditor skill adopted
+## Round 35 — verification-drift-auditor skill adopted
 
-Surface `.claude/skills/verification-drift-auditor/SKILL.md`; registry `docs/research/verification-registry.md`. Motivating case: the `DbspChainRule` mis-citation. Six drift classes + one pre-registration class, tool-agnostic. Cadence: every 5-10 rounds, or on any commit adding a cited theorem/spec.
+New audit surface:
+`.claude/skills/verification-drift-auditor/SKILL.md`.
+Registry at `docs/research/verification-registry.md`.
+
+Motivating case: `Dbsp.ChainRule.chain_rule` in
+`tools/lean4/Lean4/DbspChainRule.lean` was labelled as Budiu
+et al. Proposition 3.2 but actually proved a Theorem 3.3
+corollary (`Dop` = `D ∘ f` on linear operators, not `D ∘ f ∘ I`
+= paper's `Q^Δ`). Caught by human peer-review cross-check
+against arXiv:2203.16684v1 §3; landed four fixes same round
+(rename + Qdelta + chain_rule_proposition_3_2 + registry).
+
+First audit report:
+`docs/research/verification-drift-audit-2026-04-19.md`.
+Cadence: every 5-10 rounds, or on any commit adding a theorem
+/ property / spec with an external citation.
+
+Six drift classes defined (Name, Precondition, Statement,
+Definition, Numbering, Source-decay) and one pre-registration
+class (Class 0). The skill is tool-agnostic: Lean / TLA+ / Z3
+/ FsCheck today, Alloy / F* / Dafny / Stainless / Viper etc.
+as they land in the portfolio.
+
+This skill is Soraya's audit surface — not a new persona. The
+persona is still `formal-verification-expert` (me); the skill
+is a named procedure I run on a cadence.
+
+---
 
 ## Portfolio metric
 
-Formal-coverage ratio = gated artefacts / paths flagged as needing one. Trend beats absolute.
+Reported each invocation:
 
-### Round 21 -- PRUNED. Ratio ~0.83; the TLA+ leg alone is now 52 gated runs.
+- **Formal-coverage ratio** = (code paths with an in-gate formal
+  artefact) / (code paths flagged as needing one).
+- Trend over rounds matters more than the absolute number.
+
+### Round 21 baseline
+
+- Numerator: files covered by a CI-gated spec — 4 TLA+ specs
+  in gate (`TickMonotonicity`, `OperatorLifecycleRace`,
+  `TransactionInterleaving`, `TwoPCSink`) + 8 Z3 pointwise
+  lemmas in `tests/Tests.FSharp/Formal/Z3.Laws.Tests.fs`.
+  ≈ 12 artefacts touching ≈ 15 code paths.
+- Denominator: numerator + `docs/BUGS.md` formal-gap entries
+  (`InfoTheoreticSharder` missing spec, `RecursiveCounting`
+  multi-tick-seed unproven, `FeedbackOp` memory-ordering
+  unproven) = ≈ 18 paths.
+- **Ratio ≈ 15 / 18 ≈ 0.83.** The denominator grows every time
+  a new research claim lands; a stable or rising ratio means
+  Soraya's routing is keeping up with claim intake.
 
 ---
 
 ## Current-round routing recommendations
 
-### 2026-08-20 -- Clifford signature audit + Lorentzian phase order (PR #12805)
+### Round 21 targets
 
-Doc: `docs/research/2026-08-20-clifford-signature-audit-cl13-vs-cl31-is-inert-*.md`.
+1. **TLA+ `InfoTheoreticSharder`** — Observe-pure, Pick-commits-
+   once, cold-start tie-break. TLC at 3×2×4. Effort: M.
+   In-flight (dispatched this round).
+2. **Z3 pointwise tie-break identity** for the sharder — proves
+   the argmin on cold start distributes by hash index. Effort: S.
+   Bundle with #1.
+3. **Multi-tick-seed tests for `RecursiveCounting`** — not
+   formal, but the empirical cross-check the claim needs.
+   FsCheck property + three targeted `[<Fact>]`s. Effort: S-M.
+   In-flight (dispatched this round).
+4. **Z3 lemma expansion from 8 → ~16** — chain rule pointwise,
+   Distinct idempotence, H-function correctness, tropical
+   distributivity, weight overflow soundness, residuation
+   adjunction, Bloom probe determinism, Merkle second-preimage
+   on one level. Effort: S (one evening each). In-flight.
+5. **Alloy CI hook for `Spine.als`** + new
+   `tools/alloy/specs/InfoTheoreticSharder.als`. Effort: S. In-flight.
 
-- **Cl(1,3) vs Cl(3,1): NO crossing, not a bug.** The split is inert -- every in-tree use sits
-  in the even part or the Lorentz Lie algebra, both p<->q swap-invariant (o(p,q) = o(q,p)
-  literally; Cl0 clock positions sum to 2 mod 8, same table row). Computed: 0 counterexamples
-  over 196 pairs; full algebras differ in 168 of 210. Guard filed as 081M0FTPJ4X087G0R000E91P3Y
-  -- **FsCheck, P1, one tool.** BP-16 does not fire and I said so rather than over-buying the
-  triple; Lean on a finite-table identity is human-weeks for an hour's work.
-- **Lorentzian phase order: clean negative, by theorem.** Malament 1977 -- causal order fixes the
-  metric only up to a conformal factor; Sorkin -- counting supplies that factor. Geometry buys
-  nothing over poset+count, and importing it imports the open Hauptvermutung. Two computed
-  falsifiers gated in `src/Core.TypeScript/research/causal-order-minkowski-embedding.test.ts`.
-- **Routing note:** "does our causal order embed in M^{1,1}" is **structural shape** -> **Alloy**,
-  not TLA+. Reflex-TLA+ on a static poset fact is the table's own wrong-tool cost.
-- **Portfolio signal for Kenji:** the persisted causal set has concurrency width **1.000** (main
-  is a chain; squash erases the fan). A spec reasoning about concurrency on `main` is reasoning
-  about an artefact with none. Denominator problem, not a tool problem.
+### Round 22+ targets (not yet dispatched)
+
+6. **Finish Lean 4 chain-rule proof.** `proofs/lean/ChainRule.lean`
+   stub has been sitting five rounds. Effort: L. Mathlib abelian-
+   group hierarchy is now complete enough to support the proof.
+7. **Wire Stryker + Semgrep + CodeQL into CI.** Configs exist;
+   gate is free coverage. Effort: S (each).
+8. **LiquidF# trial on FastCdc + SimdMerge + BloomFilter.pairOf.**
+   Off-by-one class is exactly what LiquidF# catches at compile
+   time. One-week trial. Effort: M.
+9. **Fifteen missing FsCheck properties.** PN-Counter, OR-Set,
+   LWW-Register, DeltaCrdt, Residuated lattice, Merkle collision-
+   freedom, Watermark monotonicity, KLL quantile ε-bound, and
+   more. Cheapest coverage expansion on the board. Effort: S.
+10. **`FeedbackOp` memory-ordering proof.** Viper or a hand-proof
+    reviewed by Anjali; TLA+ doesn't fit heap aliasing well.
+    Effort: M.
+
+---
 
 ## Running observations
 
-- Round-21 observations + targets -- PRUNED. TLA+-hammer check is now a standing habit; Stainless never left Assess.
+- **2026-04-17 (round 21) — seeded.** Skill just landed. First
+  live routing reviews are the in-flight round-21 dispatches;
+  next-round recommendations captured above.
+- **2026-04-17 (round 21) — TLA+-hammer check.** Of the 14 TLA+
+  specs in the repo, 2 were properly TLA+-shaped safety
+  invariants; the other 12 are a mix of algebraic identities
+  (should have been Z3) and structural invariants (should have
+  been Alloy). Not urgent to refactor, but flag for next
+  portfolio review.
+- **2026-04-17 (round 21) — Stainless viability note.** Stainless
+  4.x with Scala 3 is finally stable enough to evaluate for our
+  termination claims. Put on the Assess row in `TECH-RADAR.md`
+  when the Tech-Radar Owner (Jun) runs his next sweep.
 
 ---
 
 ## Pruning log
 
-- 2026-08-19: pruned the spec-flags round to a conclusion stub, and the stale round-21 observations.
-- 2026-08-18: pruned Round 41, Safety-floor arc, Vacuity/Landauer, Z-EPS (tombstone dropped 2026-08-20).
-- 2026-08-20 (Clifford/Lorentz lane): compressed three round-21 stubs and the Meno stub.
+- Round 21: seeded. First prune review: round 24.
 
 ---
 
-## Trigger Recognition Log
+## Round 41 — RecursiveSigned tool-coverage audit
 
-One line per round where a trigger fired and routing was decided WITHOUT filing a row. Forward-only.
+Targets:
 
-| Round | Trigger                                      | Outcome                                                                                                        | Artifact        |
-| ----- | -------------------------------------------- | -------------------------------------------------------------------------------------------------------------- | --------------- |
-| 59    | PR #4795 (081KSBMG30008QG0R003B46GWG) merged | recognition-without-row-filing (umbrella covers subitem (b) acceptance criteria; execution is Kenji's lane)    | n/a (chat-only) |
-| 66    | PR #4797 merged                              | recognition-without-row-filing (audit execution is Kenji's lane)                                               | n/a (chat-only) |
-| 69    | PR #4810 merged                              | routed to Option 1: this section; rejected in-place (wrong change-rate partition) and a new ledger (premature) | this section    |
+- `src/Core/RecursiveSigned.fs` (82 LOC skeleton, not in Core.fsproj)
+- `tools/tla/specs/RecursiveSignedSemiNaive.tla` (233 LOC, real Step)
+- `tools/tla/specs/RecursiveSignedSemiNaive.cfg` (PosOne baseline,
+  NegOne/PosTwo/NegTwo exercised round 35)
+- Sibling: `tools/tla/specs/RecursiveCountingLFP.tla` (shipped)
 
-If this section saturates, revisit Option 3: a separate cross-cutting ledger.
+### Per-property tool verdict
 
-## 2026-08-14 -- Meno braided ladder -- PRUNED again 2026-08-20. Conclusion retained: the Q3
+| Property | Primary | Cross-check | Rationale |
+|---|---|---|---|
+| S1 Terminates-in-bound | TLC | none | State-bound safety; TLC sweet spot. P1 (non-P0). |
+| S2 FixpointAtTerm | TLC | Z3 (QF_LIA) | Load-bearing algebraic claim `total = Seed + Body(total)` at done; P0 per BP-16 (silent fixpoint drift is unrecoverable). TLC checks over bounded Keys; Z3 discharges the pointwise identity independently of state enumeration. |
+| S3 GapMonotone | TLC | none | Pure state invariant on `total`; P1. |
+| S3' DeltaSingleSigned | TLC | none | Pure state invariant on `delta`; P1. Redundant-looking but catches a wrong-step bug S3 would miss (delta could be wrong while total stays in {0, SeedWeight} on a lucky trace). Keep. |
+| SupportMonotone | TLC | Alloy (optional) | Structural/shape claim; TLC is fine under the bounded chain body. Alloy at bound 4-6 is cheaper if the body ever generalises beyond a successor chain. Do not add Alloy today. |
+| S4 Sign-distribution | FsCheck (Z-linearity + negation over ZSet generator) | Lean (deferred) | Two-trace quantification (`total(-w) = -total(+w)`) is NOT a TLA+ property — TLC would need to enumerate the product state space of two runs, which is O(states^2) for a property F# can check in milliseconds. Anti-TLA+-hammer: hard no on stuffing S4 into this spec. Lean is the escalation path only if FsCheck finds a counterexample the team cannot triangulate. |
+| Refinement to counting (SeedWeight = 1) | FsCheck cross-trace | TLA+ refinement mapping (deferred) | See below. |
 
-obstruction was misread (the deterministic SUBCATEGORY is cartesian, not the ambient tensor);
-the real, sharper one is that a cartesian monoidal category has a UNIQUE BRAIDING. Escape via
-Fox 1976. Deliverable was a GUARD -- MenoBraided.rep already is the minimal non-cartesian tensor
-under a hom-restriction.
+### Round-35 author's plan — verdict: **right, with one tightening.**
 
-## 2026-08-14 -- spec flags ARE part of the claim -- PRUNED. A spec's verification flags (bounds, symmetry reduction, fairness) are part of the claim; a re-run under weaker flags is a DIFFERENT claim and must be re-stated, never silently inherited.
+TLC for S1+S2+S3+S3'+SupportMonotone: correct. FsCheck for S4:
+correct. Tightening: **S2 needs a Z3 cross-check** under BP-16. S2
+is the only P0 on this spec (silent fixpoint drift corrupts
+downstream total, unrecoverable). Single-tool P0 evidence is
+insufficient (BP-16); TLC-only would ship if TLC's bounded scope
+accidentally dodges a pointwise identity failure. Z3 lemma on
+`total = Seed + Body(total)` at arbitrary SeedWeight closes the
+arithmetic axis TLC only samples. Effort: S (pointwise identity,
+add to `tests/Tests.FSharp/Formal/Z3.Laws.Tests.fs`). S1/S3/S3'/
+SupportMonotone are P1 — single tool is fine.
 
-## 2026-08-18 -- consolidated map + vacuity sweep
+### Refinement mapping — FsCheck cross-trace wins
 
-Deliverable: `docs/research/2026-08-18-formal-verification-consolidated-map-proofs-math-and-code-pushed-together.md`
+Three candidates:
 
-### Portfolio metric (this round)
+1. **TLA+ refinement mapping** (signed -> counting under SeedWeight=1).
+   Correct in theory; TLAPS-grade work, L effort, and the claim is
+   already visible by construction in the spec comments (closure[k] =
+   total[k], paths[k] = total[k]). Over-broad. **No.**
+2. **Lean lemma.** Would require lifting both iterations into Lean;
+   the counting spec has no Lean counterpart. Over-broad. **No.**
+3. **FsCheck cross-trace property** — run both `RecursiveCounting`
+   and `RecursiveSignedDelta` on the same (seed, body) under
+   SeedWeight = 1; assert `counting.closure[k] = signed.total[k]`
+   at every tick. Effort: S. Executes real code, catches divergence
+   between the two shipped combinators, and discharges the refinement
+   claim at the implementation level where it bites. **Yes.** Lives
+   in `tests/Tests.FSharp/Formal/` next to existing cross-checks.
+   Cites BP-16 (two independent tools on a P0-adjacent claim).
 
-Gated formal artefacts, counted from the runners' own rosters (NOT from
-`audit-formal-artifacts.ts`, which mismeasures -- see below):
+### Readiness gate — TLA+ spec is ready to model-check
 
-- TLA+/TLC: 53 pinned model runs, 52 `gate` + 1 `extended`; 14 expect VIOLATION.
-- Lean 4: 48 files, ~30 headline lemma families under `#print axioms`, via `run-checked.ts`.
-- Z3/SMT: 9 `.smt2` + `Z3.Laws.Tests.fs`; z3 4.16.0 / cvc5 1.3.4 pinned in gate.
-- Alloy: 6 models via `Alloy.Runner.Tests.fs`.
-- FsCheck: 587 test attributes under `tests/Tests.FSharp/Formal/`.
-- Mutation: Stryker cannot fail (`break: 0`, 2 files); `mutation-runner.ts` not in gate.
+`.cfg` has `SPECIFICATION Spec`, `INVARIANT Safety`, concrete
+constants (`MaxKey=3 MaxIter=6 SeedWeight<-PosOne`). Safety bundles
+TypeOK + TerminatesInBound + FixpointAtTerm + GapMonotone +
+DeltaSingleSigned + SupportMonotone. State space is bounded (Keys
+= 0..3, Weights = -4..4, MaxIter = 6); well under TLC's knee.
+Round-35 header comment records "All four values were verified
+round 35 (all invariants pass, 6 states / depth 5)" — spec is
+already model-checked at four SeedWeight points. **No pre-TLC pass
+needed.** One small follow-up for round 42: add `PROPERTY
+EventuallyDone` to the .cfg to exercise the liveness claim
+(currently only Safety is in the invariant list). Optional, not a
+blocker.
 
-Ratio is NOT quoted this round. Both prior denominators are unusable: the
-`audit-formal-artifacts.ts` "unreferenced" count is a docs-mention count, not a
-wiring count. Reinstate once that tool reads the rosters.
+### Graduation verdict — CONDITIONAL PASS
 
-### Vacuity sweep -- 4 found, 3 repaired
+`RecursiveSigned.fs` may graduate from skeleton to shipped in round
+42 subject to both:
 
-1. `lint-discharge-certificate-consistency.ts` scanned ZERO rows and printed a
-   tick. Added a section-A ANCHOR check with live jurisdiction (49 anchors); the
-   empty certificate scan is now reported as empty. Widening filed:
-   081M0B2R2BQ087G0R000EC2E9Y.
-2. Section-A row 25 cited `ReticulumTransport.fs` -- never existed. Repaired to
-   `src/Bayesian/MeshLatencyModel.fs`. Found BY the new check, on `main`.
-3. `ComputeReceipt.Tests.fs` CR-6/CR-7 -- dead `Some` arm, only reachable
-   statement was `Assert.True(true)`. Rewritten to construct `{ Candidates = [] }`
-   directly + a negative control. Mutation-proven (guard -> `if false`, both die;
-   mutant reveals `IV = infinity`).
-4. `Formal/NtpNoninterference.Tests.fs` -- `Assert.Equal(cardsOf links, cardsOf links)`.
-   Rewritten to exact grid extraction under both clocks. Mutation-proven, AND my
-   own first draft (`Assert.Contains`) survived the mutant. Run the mutant; do not
-   reason about it.
+(a) **Tool-coverage prereqs landed in CI**, in priority order:
 
-### Standing rules produced this round
+    1. Wire `RecursiveSignedSemiNaive.cfg` into the TLC CI job
+       alongside the sibling counting spec (round-42 opener task).
+    2. Add Z3 lemma for S2 (`total = Seed + Body(total)` at
+       fixpoint, arbitrary SeedWeight) to the formal-laws test
+       suite.
+    3. Add FsCheck property for S4 (sign-distribution, two-trace).
+    4. Add FsCheck cross-trace refinement (signed vs counting at
+       SeedWeight = 1).
 
-- **A determinism assertion `f(x) = f(x)` is metered iff the callee's transitive
-  call graph can reach an ambient source.** Otherwise it is unmetered decoration.
-  41 F# + 33 TS instances triaged under this; most are genuine section-13
-  noninterference falsifiers and must NOT be deleted.
-- **Inside section A, backticks mean "this is an anchor."** Prose about a dead
-  name must not wear them, or the anchor check re-flags the repair note.
-- **New TLA+ specs land with a `registry/tlc-models.json` entry that names their
-  own vacuity, or they do not land.** 22 of 53 runs already declare
-  `deadlock: on-vacuous`. That registry is the honesty standard for the portfolio.
+(b) **F# implementation landed by round-42 author** matching the
+    planned signature in the skeleton comment, with P1/P2/P3
+    enforced at the caller (compile-time phantom type preferred;
+    runtime reject of Distinct-in-body acceptable).
 
-### Not done, deliberately
+Blockers: none at routing level. The F# file is currently
+zero-risk (not in csproj, comment-only); leaving it in place
+through round 42 costs nothing. The TLA+ spec is already
+model-checked and can land in the CI gate today independently of
+the F# landing.
 
-- Did not widen the discharge matcher blind (43-row table with nested sub-tables;
-  naive widening flags 23, mostly false).
-- Did not touch open PR #12014 (`CliffordPeriodicity`). Its two mod-8 predicates
-  ARE the same predicate -- Aaron's own find; routing call is refactor, not test.
-- `CliffordPeriodicity.fs` is NOT on main as of 90e96dc542.
+### Portfolio delta
 
-## 2026-08-18 -- ambient time in TESTS is a routing target, and the tool is NOT a prover
+Round 41 numerator grows by 1 (new TLA+ spec enters gate). Round
+42 numerator grows by 3 (Z3 lemma + two FsCheck properties).
+Denominator grows by 1 at round 41 (BUGS.md gains nothing; this
+was already on the "needs formal coverage" list since round 35).
+Ratio trends up. Routing keeping up with claim intake.
 
-Aaron authorized a CLASS fix for the ambient-time-in-tests pattern (it 'leads to the worse bugs
-and scaling issues'). Established instance: poll-pr-gate-batch.test.ts, 14 pure in-memory tests,
-MEASURED 1366ms idle vs 5.46s under load on the same machine class, red at exactly the 5000ms
-per-test cap on six PRs. A 4x spread on identical code IS the finding.
 
-ROUTING CALL, and it is the one worth remembering. The property is 'no test asserts on
-wall-clock' -- LEXICAL over source text, not semantic over a state space. TLA+/Z3 are the wrong
-axis outright (no transition system, no arithmetic). The real contest was Semgrep vs ESLint vs a
-bun lint script, and the decider was NOT expressiveness -- all three match the pattern. It was
-the SUPPRESSION MECHANISM: nosemgrep and eslint-disable-next-line are inline comments,
-invisible in any roster, added by the same edit that introduces the violation. For a check whose
-whole purpose is that an allowlist cannot silently swallow a new violation, the tool that offers
-inline suppression defeats the check. Chose a count-pinned registry file, copying
-DeterminismLint.Tests.fs (which pins EXACT occurrence counts in src/Core, for the same stated
-reason). Ratchet bites both ways: a 7th sleep behind 6 justified ones fails, and so does a stale
-row that has stopped constraining anything.
+## Trigger Recognition Log (081KSBMG30008QG0R000WJ9FMP landing — round-69 routing decision)
 
-GENERALIZATION worth carrying: when routing a guard, ask what its ESCAPE HATCH looks like before
-asking what it can express. A checker is only as strong as the weakest way to silence it.
+Per-round trigger-fired-but-row-not-filed substrate. One line per round where a trigger fired and routing decision was made WITHOUT filing a new backlog row (substantive recognition that didn't produce row substrate). Forward-only logging; backfill optional.
 
-SWEEP RESULT, honest: 1061 test files, 25 sites, 9 files. The F# suite is essentially CLEAN --
-most F# Thread.Sleep is filesystem-retry backoff or starting-gun jitter that cannot flip a
-verdict; the one genuine case (SystemClock ticks forward: Thread.Sleep 5 then t1 > t0) is a
-Windows timer-granularity latent on a continue-on-error leg. Did not manufacture more.
+Format: table with columns `Round | Trigger | Outcome | Artifact`. One row per round where a trigger fired without row-filing; `Trigger` cites the PR / observation that fired; `Outcome` is `routed` / `held` / `escalated` / `recognition-without-row-filing` (with rationale parenthetical); `Artifact` is the resulting file/PR/section if any (or `n/a (chat-only)`).
 
-MY OWN VACUITY, recorded because it is the useful part: the first anti-vacuity assertion I wrote
-for the ferry backpressure test SURVIVED its mutation (raising maxQueueSize 2 -> 10000 left it
-green), because an async enqueue always costs a microtask whether or not the queue is full. A
-check that cannot fail is not a check, and it looked exactly like one that could. Fixed by
-measuring in TURNS instead of microtasks. Turns are the right unit for load-independence.
+| Round | Trigger | Outcome | Artifact |
+|---|---|---|---|
+| 59 | PR #4795 (081KSBMG30008QG0R003B46GWG) merged | recognition-without-row-filing (umbrella covers subitem (b) acceptance criteria; execution is Kenji's lane) | n/a (chat-only) |
+| 66 | PR #4797 (081KS923C0008QG0R000TE1589) merged | recognition-without-row-filing (audit execution is Kenji's lane; Soraya does not pre-empt sizing) | n/a (chat-only — gap that 081KSBMG30008QG0R000WJ9FMP audit-of-audit then surfaced) |
+| 69 | PR #4810 (081KSBMG30008QG0R000WJ9FMP) merged | **routed to Option 1: NOTEBOOK Trigger Recognition Log** (this section); rejected Option 2 (081KS923C0008QG0R000TE1589 in-place — wrong change-rate partition) + Option 3 (new cross-cutting ledger — premature; no consumer demand) | this section |
 
-PORTFOLIO NOTE: this adds a cell in the adversarial-input/taint row that is CHEAPER than Semgrep
-for the allowlist-integrity reason above. The routing table's cheapest-credible-tool column
-should record that the SUPPRESSION SURFACE is part of a tool's cost, not a footnote.
+If this section saturates (NOTEBOOK approaches 3000-word cap from log entries alone), revisit Option 3: create a separate cross-cutting ledger (e.g., `docs/research/verification-routing-decisions.md` — does not yet exist; hypothetical destination).
 
-## 2026-08-19 -- distributed identity server: the map existed in pieces, nobody had it on one page
 
-Aaron routed the overall design for the distributed identity server and warned it is the
-most-worked area of Zeta. Correct, and understated. Sweep found 37 TLA+ specs / 54 TLC configs,
-6 Alloy models, 26+ Lean files, 9 Z3 lemmas, 8 Q# oracle modules, 23 identity-named F# modules,
-~80 research docs. The reason there was no overall design is not missing pieces, it is a missing
-MAP -- so every attempt re-derives proven work. Deliverable:
-docs/research/2026-08-19-draft-the-distributed-identity-server-\*.md (DRAFT).
+## Safety-floor arc — full 3-leg BP-16 across all four floors (2026-06-07)
 
-**Routing calls (full table in the doc §5, not restated here).** Headline: C1 -> F# private
-constructor + Alloy, NOT TLA+ (inexpressible beats unreachable). C3a -> Lean on the existing
-FinMutualInfo ladder; TLC categorically wrong (no reals -- QuorumPhaseCancellation precedent).
-C3b -> Z3 UFNRA uninterpreted-monotone. C4-NI -> Semgrep; it is a grep. C6 -> GENERALISE
-RefuseBinding.tla, whose non-penalty clause IS the property.
+Persisted via the shadow's writer clone (the formal-verification-expert role has no Write tool;
+the verification + close were done live in the view but the view is read-only — this is the durable
+record on origin). All figures below were verified by EXECUTION, not source-reading (verify-before-record).
 
-**C3 formalised, anti-analogy check passed.** "Not embarrassingly parallel" = strength is not a
-functional of the per-claim MARGINALS. Theorem: marginals do not determine the joint (Shannon
-1948; Hoeffding 1940 / Frechet 1951; Sklar 1959). SocietyUsefulWork's rho is the SAME functional
-(N_eff = N/(1+(N-1)rho); Gaussian copula IS the Sklar decomposition) over DIFFERENT random
-variables -- competence over facts, not observation over claims. Theorem transfers, instantiation
-carries no measurement. Recorded as three graded lines, not one confident one.
+**non-register-collapse** (workitem 081KTFFFQ1C, FROZEN-CORE §B → DISCHARGED) — full 3-leg BP-16:
 
-**Falsifier F3 already fired in production.** QuorumAlgebra bug B3: six agents on one stream,
-precision = 66.0 on a mean wrong by 5.66 -- configuration B scored as A. C3 is the generalisation
-of an observed failure, not a design preference.
+- Facet-1 TLA+ `tools/tla/specs/NonRegisterCollapse.tla` (no-capture `lastRaiser[t]=t`; consent-guarded
+  `Capture` unreachable in the weight-free base; `SelfRaiseRightOpen`). TLC-green, gated. PR #6721.
+- Facet-2 Lean `tools/lean4/Safety/NonRegisterCollapse.lean` (axiom-free `non_collapse` etc.; corollary
+  of `IdentityForcesPrivacy.private_is_persistent_locus`, priv:=standing). Gated + sorry-free. PR #6721.
+- Leg-3 FsCheck `tests/Tests.FSharp/Formal/NonRegisterCollapseCrossVerify.Tests.fs` over deployed
+  `GCounter.Merge` (my routing: shipped combinator, NOT Binding.Standing). 4 properties green. PR #6723.
+  Scope (mine, verbatim in registry): ANALOGUE not replay — GCounter is a pure register, no
+  commons/standing split; corroborates the CRDT-join premises, not the standing-locus semantics.
 
-**Apparent contradiction with our own shipped proof, resolved.** BeliefConvergence proves the
-fold COMMUTES. C3 is not about order, it is about what the aggregation may DEPEND ON. Both hold.
-The next reader will hit this too.
+**bifurcation** — the "missing FsCheck leg" was a STALE-REGISTRY miscount, not reality. The leg already
+existed (`BifurcationCrossVerify.Tests.fs` over deployed `Binding.Divvy`); the registry row just said
+"not yet done". Corrected (PR #6724) + the omitted **associativity** property added (the 081KT07NV0008QG0R001YDB73K class:
+commutative+idempotent-but-non-associative passes the old 2 properties yet diverges under reorder).
+Verified by execution: **5 properties green** (`Divvy.merge` is a lawful join). Sub-item closed.
 
-**Biggest finding is not a proof gap.** G1: no ClaimStrength surface exists. G7: Policy.fs has
-ONE instance and its own docstring says the trust interpreter is not built. The spine's central
-quantity and its evaluator are both absent, so every verification item routed this round verifies
-a function nobody has written. Said so; did not write it -- not my lane.
+**Corrected ratios (supersede the earlier 0.75):**
 
-**Stale-gap hazard, named as a class.** The 2026-08-09 IdP doc lists 4 gaps; 2 closed (KeyCustody
-shipped bounded duration + rotation) and nothing recorded it. A design surface that does not know
-which of its gaps are closed keeps re-proposing closed work.
+- Safety-floor BP-16-compliant (≥2 independent tools) = **4/4 = 1.00**.
+- Safety-floor full-3-leg = **4/4 = 1.00** (was mis-stated 3/4 from the stale bifurcation row).
 
-**Portfolio, identity/trust domain (full table in doc §7).** Metered: 12 artefacts incl. the
-BFT pair, the Quorum/Wager family, RefuseBinding, both Alloy models, whitewash-economics,
-row-15 N_eff. Unmetered: AntiSybil-as-theorem, PrivacyPreservingIdentity, C1, C4, C4-NI, C5,
-frost. Absent (not unmetered): ClaimStrength, the three decision classes.
-
-Filed: 081M0DJSR8N087G0R000QCYBYW (Lean C3a), 081M0DJSY48087G0R001GVG3AT (Z3 C3b),
-081M0DJSY5C087G0R00094DD3Z (FsCheck F3), 081M0DJSY6B087G0R0005PAA25 (Alloy C2),
-081M0DJSY79087G0R002FH5140 (TLA+ C4), 081M0DJSY88087G0R002JTPWKQ (Semgrep C4-NI),
-081M0DJSY9F087G0R002HV7KA7 (G1), 081M0DK2TW6087G0R001GHD9MJ (Alloy C6),
-081M0DK2TXD087G0R003674BAS (G7).
-
-**Three mid-round reframings, all adding sections rather than corrections.** (a) The local
-decision layer -- node-local OPA-like policy trust; C6 (hubs negotiate, never command) turned
-out to be RefuseBinding.tla generalised, non-penalty clause included, which is a routing gift.
-(b) Frost buys decorrelation -- then CORRECTED by Aaron: he runs with zero frost, fully
-public, and is decorrelated anyway. So opacity is ONE of three routes. The invariant is
-I(V;F), predictive mutual information: shrink V (frost), or keep F entropic at decision time
-(mixed strategy -- BitGan already has the meter, discriminatorEdge, and the anchor, von
-Neumann 1928: an optimal mixed strategy is safe to ANNOUNCE), or drift the policy
-(nonstationarity). Mechanisms 2-3 buy axis 1 without spending axis 2; frost spends both. Guard
-against the opposite overclaim: a deterministic stationary public agent IS predictable, so
-"transparency is free" is conditional. Frost was designed by someone who does not use it --
-not self-serving, also not dogfooded. F4 filed (081M0DRH1CW087G0R003Y3CAB6), both readings
-pre-registered. The register-collapse proof establishes privacy > 0 and must NOT be cited for
-the rho-pricing claim -- different falsifiers (G11). (c) The arc: S=4 at the origin, decorrelate without babel.
-Objective is decorrelate SUBJECT TO staying reconcilable. Both axes already instrumented
-(AntiSybil.correlation / largestLyapunov / effectiveN vs byte-lock / Collation / anchor audit)
-and never plotted together -- G13, 081M0DMH30Y087G0R001C2B1PT, composes with the register's
-open rho measurement. ClaimLane is the babel dial already built (G14). Also found an ACTIVE
-trajectory (local-trust-view-decentralized-identity) already carving C5 sharper than I did --
-C5 now defers to it (G10). Lesson: the duplication risk in this domain is real and I hit it.
-
-## 2026-08-19 -- forward correlation: the measure cannot be an observation
-
-**The gap.** Decorrelation fails from two ends of the time axis. Past = the S=4 common seed
-(backward rho measured: which files agents sampled). Future = mimetic desire, Girard
-(no instrument at all). Decorrelating one does not buy the other.
-
-**Headline, and it is a negative.** The forward measure is not a harder backward measure;
-it is a different epistemic object. Mimetic convergence is NOT identified from
-observational choice data -- Manski 1993 (reflection problem), Shalizi & Thomas 2011
-(homophily/contagion generically confounded, NON-PARAMETRICALLY). Our fleet has latent
-homophily in its strongest form: the S=4 seed IS the textbook unobserved common trait.
-Not separable observationally, and I did not propose a statistic pretending otherwise.
-
-**Anchor gap was the real finding.** GLOSSARY carries Girard's MECHANISM; repo-wide rg
-returns ZERO for Manski / Shalizi / homophily / reflection problem. Mechanism literature
-without identification literature is how a fleet builds the obvious meter and believes it.
-Added both + Pearl ch.3 + Goguen-Meseguer to PRIOR-ART-LIST.
-
-**Observable rejected, and the reason is mechanical.** Declared intentions is the natural
-design and is WORSE THAN NONE: a public declaration board IS Girard's subject->model edge,
-built on purpose. It creates the coupling, raises true correlation, then reports the
-correlation it caused. An instrument whose bias points at its own alarm. Work-item claims
-rejected too -- shared priority queue is Manski's correlated effect, and a healthy fleet
-correctly prioritising scores as MAXIMALLY mimetic (false red on the good case).
-
-**Observable accepted: the interventional contrast.** Not what they picked -- how much
-peer-visibility CHANGES the pick, value landscape fixed. m_i = TV(C_i(s,shown),
-C_i(s,substituted)). Identified BY CONSTRUCTION; confound absent rather than adjusted-for.
-Three design points: (a) DST gives the counterfactual free; (b) ablation is marginal-
-preserving SUBSTITUTION not deletion -- deletion is detectable, and the C3 theorem
-(marginals do not determine the joint) is what makes substitution undetectable; (c) a
-PLACEBO arm A/A' is mandatory -- agents are LLMs, DST determinism covers the substrate NOT
-the model, so model noise alone yields m>0 and reads as mimesis. Statistic is d(A,B)
-measured against the d(A,A') floor, never absolute.
-
-**Routing.** M1 substitution undetectable-by-marginals -> Z3 QF_LRA (TLC categorically
-wrong, no reals -- QuorumPhaseCancellation precedent). M2 channel completeness -> Semgrep,
-it is a grep (TLA+ would mean modelling an LLM: unmodelable). M3 harness does not leak arm
-identity -> TLA+/TLC, small, models the HARNESS never the agent. M4 estimator calibration
--> FsCheck + the existing gaussianCopula. M5 the impossibility result -> NO TOOL, CITE IT;
-routing a prover at Manski/Shalizi is human-weeks for zero information, the cheapest
-correct instrument is a citation. M6 -> wiring, not verification.
-
-**Swept existing instruments first** (I routed past BitGan last round). Reusable:
-Kish effectiveTrialCount (IS the consumer -- m is exactly the rho it waits for),
-gaussianCopula (M4 synthesiser), AntiSybil lag-k (downstream aggregation),
-CoordinationSpectrum (dual-use-neutral reporting shape), BitGan discriminatorEdge
-(mixed-strategy route from F4). NOT reusable: AntiSybil.correlation (exact replays only),
-Orbit.largestLyapunov (trajectory divergence, silent on the causal channel),
-BeliefConvergence (proves the fold COMMUTES -- orthogonal to what aggregation may DEPEND
-on; same C3 distinction, next reader will hit it), TravelerRankLedger.
-
-**F5 pre-registered, both readings.** A: d(A,B) exceeds placebo floor -> forward coupling
-real, head-count n_eff overstates, channel needs metering. B: inside the floor ->
-convergence is AGREEMENT not mimesis, S=4 remains the only demonstrated source, effort
-belongs at the ORIGIN not on a forward damper. Neither is hoped-for; B is a measured zero,
-which is a result. Kill condition: if M4 reports m>0 on a zero-channel synthetic fleet the
-instrument is broken and F5 is VOID. Asymmetry stated up front: M2 failure biases toward
-Reading B (leaky ablation looks like independence), so Reading B is only meaningful if M2
-passed; Reading A is robust to M2 failure.
-
-**Verified, not assumed.** effectiveTrialCount has ZERO production callers -- 3 occurrences
-repo-wide (definition, tests, one STALE comment in tick-dial.ts naming it while the
-ScoreTrajectory type that comment serves has zero implementations). The vision doc's claim
-holds. Also: routing skill step-0 points at tools/alignment/concept_registry.ts which DOES
-NOT EXIST -- the anchor-registry lookup silently no-ops for every agent following the
-procedure literally.
-
-**Register.** All unmetered. The only metered thing is the negative (M5, cited). Did not
-invent a metric to fill the table, per the brief.
-
-**Filed:** 081M0DXM6XE087G0R003PTMMQ3 (Z3 M1), 081M0DXM6YD087G0R00397CAQE (Semgrep M2),
-081M0DXM6ZB087G0R0014VTR3S (TLA+ M3), 081M0DXM709087G0R000YY6YZZ (FsCheck M4),
-081M0DXM717087G0R001G4YWAC (Kish caller), 081M0DXM725087G0R002YDM382 (stale registry path).
-
-**Correction to the brief:** it stated the echolocation framing is "now on main" in
-PR #12528. It is OPEN, not merged. Built on it as a premise and said so in the doc.
+The four floors: child-floor, right-to-refuse-binding, bifurcation, non-register-collapse — each at all
+three legs. No open bifurcation routing item for Kenji (the Face-3 item is retired — it already existed).

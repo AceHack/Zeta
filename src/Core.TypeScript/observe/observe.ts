@@ -172,6 +172,11 @@ export interface World {
     readonly causalMask?: boolean[];
     readonly display?: boolean[];
     readonly keyPredictions?: Record<number, number>;
+    readonly activeConcept?: string;
+    readonly linguisticToken?: any;
+    readonly gameLevel?: number;
+    readonly gameObjective?: string;
+    readonly levelUpEvent?: boolean;
   };
   /** Capability labels restricting what channels this agent/world instance can access */
   readonly agentCapabilities?: string[];
@@ -881,7 +886,7 @@ export function replay(initial: World, events: readonly NextAction[]): World[] {
 }
 
 // ─── runnable demo (foreground loop): walk a few sample world states ──────────
-if (import.meta.main) {
+if (false) {
   const samples: ReadonlyArray<{ label: string; world: World }> = [
     {
       label: "operator ferried verbatim → preserve_ferry beats everything",

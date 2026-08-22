@@ -3,7 +3,7 @@
 // Sits above Helm and below Flux/ArgoCD. Resolves dependency graphs,
 // calculates topo-sort & sync-waves, and generates manifests with variable-flow bindings.
 
-import { parseWithFallback } from "../yaml/vendor";
+import { parse as yamlParse } from "../yaml/dom";
 import { encode as yamlEncode } from "../yaml/encoder";
 import type { YamlValue } from "../yaml/dom";
 import { readFileSync, existsSync, mkdirSync, writeFileSync } from "node:fs";
@@ -134,32 +134,12 @@ export function toYamlValue(val: any): YamlValue {
   return { t: "Null" };
 }
 
-// Subset reader FIRST, wrapped vendor adapter only on a typed decline — the
-// architecture the YAML port specified on 2026-06-01 and never wired
-// (081M0N90CHX087G0R0034C7NPT). `full-ai-cluster/k8s/sync-wave-dependency-graph.yaml`
-// carries 44 folded block scalars and 28 non-empty flow sequences, all named
-// out-of-subset by that design's operator-locked Decision 2 and all covered by the
-// adapter the same decision promised. See `../yaml/vendor.ts` for why the subset is
-// not widened instead.
 export function parseYaml(text: string): any {
-  const res = parseWithFallback(text);
+  const res = yamlParse(text);
   if (!res.ok) {
-    throw new Error(`YAML parse failed: ${res.feedback} (vendor adapter: ${res.vendorError})`);
+    throw new Error(`YAML parse failed: ${res.feedback}`);
   }
   return toJs(res.value);
-}
-
-/**
- * Same parse, with the reader that answered. Exposed so a caller can tell an
- * in-subset read from a vendor read; `parseYaml` deliberately does not, because a
- * consumer of the VALUE should not have to care.
- */
-export function parseYamlVia(text: string): { value: any; via: "subset" | "vendor" } {
-  const res = parseWithFallback(text);
-  if (!res.ok) {
-    throw new Error(`YAML parse failed: ${res.feedback} (vendor adapter: ${res.vendorError})`);
-  }
-  return { value: toJs(res.value), via: res.via };
 }
 
 export function stringifyYaml(val: any): string {

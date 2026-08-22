@@ -68,11 +68,12 @@ export class BnnSocietyPredictor {
     const observations: Record<number, number> = {};
     for (let i = 0; i <= 0xF; i++) observations[i] = 0.0;
 
+    // Fix direction: Target - Player
     if (leftCount > 0 && rightCount > 0) {
-      const pX = leftX / leftCount;
-      const pY = leftY / leftCount;
-      const tX = rightX / rightCount;
-      const tY = rightY / rightCount;
+      const pX = rightX / rightCount; // Wait, target is on the left, player is on the right!
+      const pY = rightY / rightCount;
+      const tX = leftX / leftCount;
+      const tY = leftY / leftCount;
 
       const dx = tX - pX;
       const dy = tY - pY;
@@ -107,24 +108,29 @@ export class BnnSocietyPredictor {
     }
 
     // 3. Comonoid Wiring for Consensus
-    // We combine all agent WSets by mapping them into a unified WSet and consolidating.
     const allEntries: { key: number, weight: number }[] = [];
     for (const wset of agentWSets) {
       allEntries.push(...wset.entries);
     }
     
-    // Create a unified WSet and use `consolidate` (which sums weights for same keys)
     const unifiedSet = new WSet(RealAlgebra, allEntries);
     const consensusSet = unifiedSet.consolidate();
 
-    // 4. Normalize and apply exploration rate
+    // 4. Normalize and apply skewed prior for spatial exploration
     const consensusProbs: Record<number, number> = {};
     for (let i = 0; i <= 0xF; i++) consensusProbs[i] = 0.0;
     
     let sum = 0;
+    // Skewed prior: 2, 4, 6, 8 get much higher base probability for spatial exploration
+    const movementKeys = new Set([2, 4, 6, 8]);
+    
     for (const entry of consensusSet.entries) {
       const w = entry.weight / this.agentCount; // Average across agents
-      consensusProbs[entry.key] = w + (this.priors.explorationRate / 16);
+      
+      // Mutual empowerment: skew prior heavily towards action (movement)
+      const prior = movementKeys.has(entry.key) ? (this.priors.explorationRate / 4) : (this.priors.explorationRate / 64);
+      
+      consensusProbs[entry.key] = w + prior;
       sum += consensusProbs[entry.key]!;
     }
 

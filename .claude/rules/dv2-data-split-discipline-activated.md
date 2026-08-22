@@ -21,7 +21,7 @@ Carved sentence:
 | 6 | **Idempotency** (added 2026-05-30) | Apply-N-times == apply-once *effect*? If not, add a natural/dedup key or name the non-idempotence. |
 | 7 | **Noninterference** (added 2026-06-10) | Does entropy/influence enter ONLY through declared, metered channels (the injected `Source`/IEffects)? If not, name the ambient leak. |
 
-All seven apply at once — see [`.claude/rules.bak/default-to-both.md`](../rules.bak/default-to-both.md).
+All seven apply at once — see [`default-to-both.md`](default-to-both.md).
 
 ## DV2.0 in one line
 

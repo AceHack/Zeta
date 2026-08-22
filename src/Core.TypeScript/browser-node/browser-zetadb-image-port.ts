@@ -8,7 +8,6 @@ import {
   type NativeIndexedDbCheckpointOptions,
 } from "./browser-indexeddb-checkpoint";
 import type {
-  ZetaDbConvergencePolicy,
   ZetaDbFeedback,
   ZetaDbImagePort,
   ZetaDbImageRecord,
@@ -16,9 +15,7 @@ import type {
   ZetaDbTickReadout,
   ZetaDbTickRequest,
 } from "../zetadb/zeta-db-node";
-import { runConvergentZetaDbNodeTick } from "../zetadb/zeta-db-node";
-
-export const DEFAULT_BROWSER_ZETA_DB_CONVERGENCE_POLICY: ZetaDbConvergencePolicy = { maxAttempts: 3 };
+import { runZetaDbNodeTick } from "../zetadb/zeta-db-node";
 
 function mapCheckpointFeedback(
   feedback: BrowserCheckpointFeedback,
@@ -129,11 +126,10 @@ export async function runBrowserZetaDbWake(
   root: unknown,
   options: NativeIndexedDbCheckpointOptions,
   request: ZetaDbTickRequest,
-  convergencePolicy: ZetaDbConvergencePolicy = DEFAULT_BROWSER_ZETA_DB_CONVERGENCE_POLICY,
 ): Promise<ZetaDbResult<ZetaDbTickReadout>> {
   const opened = await openBrowserZetaDbImagePort(root, options);
   if (!opened.ok) return opened;
-  const result = await runConvergentZetaDbNodeTick(opened.value, request, convergencePolicy);
+  const result = await runZetaDbNodeTick(opened.value, request);
   const closed = opened.value.close();
   if (result.ok && !closed.ok) return closed;
   return result;

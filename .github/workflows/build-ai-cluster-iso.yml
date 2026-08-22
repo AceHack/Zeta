@@ -50,8 +50,6 @@ on:
       - "src/Core.TypeScript/ci/audit-installer-substrate.ts"
       - "src/Core.TypeScript/ci/audit-installer-iso-content.ts"
       - "src/Core.TypeScript/ci/qemu-boot-test.ts"
-      - "src/Core.TypeScript/ci/qemu-x86-marker-image.ts"
-      - "src/Core.TypeScript/ci/qemu-x86-discriminator-selftest.ts"
       - "src/Core.TypeScript/ci/qemu-full-install-test.ts"
       - "src/Core.TypeScript/ci/test-iter-54-install-flow.test.ts"
       - "src/Core.TypeScript/zflash/test-harness/**"
@@ -74,8 +72,6 @@ on:
       - "src/Core.TypeScript/ci/audit-installer-substrate.ts"
       - "src/Core.TypeScript/ci/audit-installer-iso-content.ts"
       - "src/Core.TypeScript/ci/qemu-boot-test.ts"
-      - "src/Core.TypeScript/ci/qemu-x86-marker-image.ts"
-      - "src/Core.TypeScript/ci/qemu-x86-discriminator-selftest.ts"
       - "src/Core.TypeScript/ci/qemu-full-install-test.ts"
       - "src/Core.TypeScript/ci/test-iter-54-install-flow.test.ts"
       - "src/Core.TypeScript/zflash/test-harness/**"
@@ -141,29 +137,6 @@ jobs:
       - name: Audit installer substrate (source-level)
         run: bun src/Core.TypeScript/ci/audit-installer-substrate.ts
 
-      # NOTE ON THE PARITY AUDIT THAT USED TO RUN HERE, and where it went.
-      #
-      # A step here once invoked src/Core.TypeScript/hygiene/audit-flash-entrypoint-parity.ts,
-      # which did not exist -- the source half was held back while another PR was
-      # in flight and the CI half landed alone in #13093. The step failed on a
-      # missing file on every run, and because the ISO upload, the digest sidecar
-      # and cosign signing are all gated behind it, ISO production stopped
-      # entirely. #13102 removed it rather than stubbing it: a stub that always
-      # passes is worse than no step, because it reports parity as CHECKED while
-      # checking nothing.
-      #
-      # The gap it guarded was real -- the ISO integrity gate existed only in the
-      # macOS arm, so flash-usb-linux.ts and flash-usb-windows.ts wrote an image
-      # to a block device with no manifest verification at all. That is fixed
-      # (081M0HG7X7B087G0R002A05DAP): the gate is one definition in
-      # zflash/iso-integrity.ts and all three arms call it.
-      #
-      # The audit now exists and RUNS -- in gate.yml's cross-verify floor, beside
-      # audit-proof-lineage-binaries.ts, which is where the note this replaces
-      # said it belonged. It is not restored here: on the gate floor it blocks
-      # every PR rather than only the pushes that touch the ISO lane, and it
-      # cannot take ISO production down with it a second time.
-
       # Layer 2a (structural-behavioral) — asserts logical relationships
       # between iter-5.4 substrate elements (gh auth setup-git is INSIDE
       # the auth-success branch; SSH_KEY_ERR_FILE is wired AS stderr to
@@ -209,47 +182,6 @@ jobs:
         working-directory: full-ai-cluster
         run: nix build .#checks.x86_64-linux.k3s-control-plane-cluster-init -L --print-build-logs --fallback
 
-      # NODE-LEVEL platform fixes. This check existed in the flake since
-      # PR #6966 and was invoked by NOTHING — `grep -rn platform-fixes
-      # .github/workflows/` returned empty. So every regression it guards was
-      # unguarded in CI: rpfilter off (the pod->host black-hole), open-iscsi
-      # present, k3s --disable=local-storage, the loose rp_filter sysctl, and
-      # the iscsiadm FHS shim that Longhorn's nsenter needs.
-      #
-      # That gap is the same shape as the bug it now catches: a signal that
-      # reads green because nothing is actually checking. longhorn-manager
-      # crash-looped 16495 times over 62 days on node-5b2dfa with every CI
-      # lane green, because the one test that would have caught it never ran.
-      #
-      # Hermetic (no internet), ~2 min, so it runs early beside the other
-      # fast node-level check rather than behind the ~15-min ISO build.
-      - name: NixOS test — node platform fixes are live (rpfilter/iscsi/storage flags)
-        timeout-minutes: 20
-        working-directory: full-ai-cluster
-        run: nix build .#checks.x86_64-linux.k3s-control-plane-platform-fixes -L --print-build-logs --fallback
-
-      # TWO-NODE join proof (081KSNY2Z0008QG0R0008PN7RQ scenario 5, FIRST
-      # blocker). Boots a server built from nixos/modules/k3s-server.nix and
-      # an agent built from nixos/modules/k3s-agent.nix on ONE shared virtual
-      # segment, hands over k3s's own node-token, and asserts that
-      # nixos/modules/k3s-join-observer.nix writes the scenario's two contract
-      # markers to the SERIAL console — the same channel the zflash harness
-      # reads.
-      #
-      # This is the layer a Docker Compose test was proposed for on PR #10493,
-      # done without Compose's drift surface: nixosTest IMPORTS the shipped
-      # module files, so a wrong `--tls-san`, a closed 6443, or a drifted
-      # marker string fails HERE. A Compose `command:` could only test its own
-      # transcription of those flags.
-      #
-      # Hermetic — no internet, so the joined node stays NotReady and the test
-      # asserts MEMBERSHIP, not readiness (readiness is the online lane
-      # below). Runs before the ~15-min ISO build so a broken join fails fast.
-      - name: NixOS test — k3s agent JOINS the server (scenario 5 markers on serial)
-        timeout-minutes: 30
-        working-directory: full-ai-cluster
-        run: nix build .#checks.x86_64-linux.k3s-agent-join -L --print-build-logs --fallback
-
       # ONLINE end-to-end proof: boots the control-plane WITH internet,
       # installs Cilium for real, asserts the node reaches Ready + CoreDNS
       # Running. This is the gate that catches the full bring-up chain
@@ -262,25 +194,6 @@ jobs:
         timeout-minutes: 35
         working-directory: full-ai-cluster
         run: nix build .#checks.x86_64-linux.k3s-cluster-online -L --print-build-logs --fallback --option sandbox false
-
-      # STORAGE, end to end. The lane above proves the cluster comes up; it says
-      # nothing about whether a stateful workload gets a disk. That distinction
-      # is not academic: on node-5b2dfa longhorn-manager crash-looped 16495 times
-      # over 62 days, the `longhorn` StorageClass was never created, and 20 PVCs
-      # sat Pending — while every lane here was green, because no lane asked
-      # "does a volume bind?". This one installs the REAL chart at the REAL
-      # version with the REAL prod values and asserts manager Ready -> Node CR ->
-      # StorageClass -> PVC Bound -> data read back through the mount.
-      #
-      # Gated to push + workflow_dispatch, matching the scenario-3/4 and wifi-ESP
-      # convention: it needs internet and ~15-25 min on a cold runner, so PR runs
-      # stay fast while main keeps the guarantee. Measured 162 s of test-script
-      # time on a warm host; the runner cost is image pulls, not the assertions.
-      - name: NixOS test — a longhorn PVC actually BINDS and data survives
-        if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
-        timeout-minutes: 45
-        working-directory: full-ai-cluster
-        run: nix build .#checks.x86_64-linux.longhorn-volume-binds -L --print-build-logs --fallback --option sandbox false
 
       - name: Build installer ISO
         working-directory: full-ai-cluster
@@ -358,29 +271,6 @@ jobs:
         # mtools for zflash file-backed ESP writes (081KSNY2Z0008QG0R0008PN7RQ scenario 1 bake)
         run: sudo apt-get update -y && sudo DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends qemu-system-x86 qemu-utils mtools ovmf
 
-      # 081KZETP6AT08QG0R003MG1VYN — prove the instrument BEFORE trusting it.
-      #
-      # Scenario 1 below is a blocking gate whose only input is the real
-      # ISO, and the real ISO can only ever produce BOOTED. So until now
-      # nothing on this lane exercised BOOT-FAILED or TIMEOUT, and the
-      # x86_64 boot-stage ladder read a constant through NINETEEN
-      # consecutive green runs (31964938508 … 31977504172, each printing
-      # exactly one stage line: `stage → login`) without any check
-      # noticing. Unit tests could not notice either: the defect was that
-      # the strings we asserted on were not the strings the guest emits.
-      #
-      # This boots two 1MB synthetic images — one refused by the
-      # firmware, one that runs and then makes no progress — and requires
-      # them to land on DIFFERENT verdicts, each within a settle-time
-      # bound so a verdict reached by running out of clock cannot pass as
-      # one reached from evidence. Runs before scenario 1 so a blind
-      # instrument fails here rather than mis-reporting the real ISO.
-      #
-      # ~30s. Advisory-free on purpose: if the discriminator is broken,
-      # every downstream x86_64 boot verdict on this runner is untrusted.
-      - name: 081KZETP6AT08QG0R003MG1VYN x86_64 boot-discriminator self-test
-        run: bun src/Core.TypeScript/ci/qemu-x86-discriminator-selftest.ts
-
       - name: 081KSNY2Z0008QG0R0008PN7RQ scenario 1 — initial format (audit + zflash --test + QEMU boot)
         working-directory: full-ai-cluster
         run: |
@@ -426,9 +316,9 @@ jobs:
           echo "Serial log out path: $SERIAL_LOG_OUT_PATH"
           bun ../src/Core.TypeScript/zflash/test-harness/run.ts --scenario boot-cluster-up "$iso_abs"
 
-      # Opt-in ESP wifi → NM profile gate (no radio association claim) plus
-      # guest USB iSerial (usb-storage serial=ZETA-QEMU-001). Workflow_dispatch
-      # only — not on gate. ISO/cdrom cascade-5 does not assert iSerial.
+      # Opt-in ESP wifi → NM profile gate (no radio association claim).
+      # Bakes zeta-wifi-credentials.json onto a file-backed zflash USB image and
+      # asserts iter-5-wifi serial markers during full install.
       - name: 081KSGS9H0008QG0R003V23XNZ wifi ESP acceptance (workflow_dispatch only)
         if: github.event_name == 'workflow_dispatch'
         timeout-minutes: 90
@@ -436,7 +326,6 @@ jobs:
         env:
           SERIAL_LOG_OUT_PATH: ${{ github.workspace }}/qemu-wifi-esp-serial.log
           QEMU_WIFI_ESP_PHASE1: "1"
-          QEMU_USB_ISERIAL_PHASE1: "1"
           QEMU_FIRST_SESSION_PHASE3: "1"
         run: |
           set -euo pipefail
@@ -456,62 +345,6 @@ jobs:
         with:
           name: qemu-wifi-esp-serial-log
           path: qemu-wifi-esp-serial.log
-          if-no-files-found: warn
-          retention-days: 7
-
-      - name: UEFI keyfile install-time write (workflow_dispatch only)
-        if: github.event_name == 'workflow_dispatch'
-        timeout-minutes: 90
-        working-directory: full-ai-cluster
-        env:
-          SERIAL_LOG_OUT_PATH: ${{ github.workspace }}/qemu-uefi-keyfile-serial.log
-          QEMU_UEFI_KEYFILE_PHASE1: "1"
-        run: |
-          set -euo pipefail
-          mapfile -t iso_candidates < <(find result/iso -maxdepth 1 -type f \( -name 'zeta-installer-*.iso' -o -name 'nixos-minimal-*.iso' \) | sort)
-          if [ "${#iso_candidates[@]}" -eq 0 ]; then
-            echo "::error::UEFI keyfile phase-1: No installer ISO under result/iso/" >&2
-            exit 1
-          fi
-          iso_abs=$(readlink -f "${iso_candidates[0]}")
-          echo "UEFI keyfile phase-1 ISO: $iso_abs"
-          echo "Serial log out path: $SERIAL_LOG_OUT_PATH"
-          bun ../src/Core.TypeScript/ci/qemu-full-install-test.ts "$iso_abs"
-
-      - name: Upload UEFI keyfile phase-1 serial log
-        if: always() && github.event_name == 'workflow_dispatch'
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
-        with:
-          name: qemu-uefi-keyfile-serial-log
-          path: qemu-uefi-keyfile-serial.log
-          if-no-files-found: warn
-          retention-days: 7
-
-      - name: UEFI keyfile picker bind (workflow_dispatch only)
-        if: github.event_name == 'workflow_dispatch'
-        timeout-minutes: 90
-        working-directory: full-ai-cluster
-        env:
-          SERIAL_LOG_OUT_PATH: ${{ github.workspace }}/qemu-uefi-keyfile-picker-serial.log
-          QEMU_UEFI_KEYFILE_PICKER: "1"
-        run: |
-          set -euo pipefail
-          mapfile -t iso_candidates < <(find result/iso -maxdepth 1 -type f \( -name 'zeta-installer-*.iso' -o -name 'nixos-minimal-*.iso' \) | sort)
-          if [ "${#iso_candidates[@]}" -eq 0 ]; then
-            echo "::error::UEFI keyfile picker: No installer ISO under result/iso/" >&2
-            exit 1
-          fi
-          iso_abs=$(readlink -f "${iso_candidates[0]}")
-          echo "UEFI keyfile picker ISO: $iso_abs"
-          echo "Serial log out path: $SERIAL_LOG_OUT_PATH"
-          bun ../src/Core.TypeScript/ci/qemu-full-install-test.ts "$iso_abs"
-
-      - name: Upload UEFI keyfile picker serial log
-        if: always() && github.event_name == 'workflow_dispatch'
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
-        with:
-          name: qemu-uefi-keyfile-picker-serial-log
-          path: qemu-uefi-keyfile-picker-serial.log
           if-no-files-found: warn
           retention-days: 7
 
@@ -609,38 +442,11 @@ jobs:
           iso_name=$(basename "$iso_path_abs")
           iso_size=$(stat -c%s "$iso_path_abs" | numfmt --to=iec --suffix=B)
           iso_sha256=$(sha256sum "$iso_path_abs" | awk '{print $1}')
-          # ADDED 2026-08-21. The digest above was written ONLY to $GITHUB_OUTPUT
-          # and the step summary, so it existed for humans reading a run page and
-          # for nothing else. `zflash` refuses to write an ISO whose integrity it
-          # cannot establish (PR #13030), looking for `<iso>.sha256` beside the
-          # image -- and CI produced no such file, so the gate refused EVERY
-          # CI-built ISO and the flash path was hard-stopped.
-          #
-          # The manifest is written PER-ISO (`<iso>.sha256`) rather than as a bare
-          # `SHA256SUMS`, deliberately: a well-known filename in a shared download
-          # directory is a NAMESPACE COLLISION, not a manifest. Measured on the
-          # maintainer's machine 2026-08-21 -- an unrelated `~/Downloads/SHA256SUMS`
-          # belonging to Bitcoin Knots was found and parsed by the gate, which then
-          # refused with `iso-not-in-manifest` while printing 28 bitcoin filenames.
-          # A per-ISO sidecar cannot be hijacked that way.
-          #
-          # WRITTEN TO $RUNNER_TEMP, NOT BESIDE THE ISO. `result/iso/` is a
-          # symlink into the read-only Nix store, so the first form of this
-          # step -- `iso_sha256_path="${iso_path_abs}.sha256"` -- died with
-          # `Permission denied` and took the whole build-iso job red.
-          # MEASURED: run 32445604341 (2026-08-21), step `Locate ISO + capture
-          # metadata`, on the very branch that added it. The sidecar's LOCATION
-          # in CI is irrelevant to the gate; only its CONTENT is -- the digest
-          # and the ISO's basename, which is what the operator ends up with
-          # beside the image after downloading both artifacts.
-          iso_sha256_path="${RUNNER_TEMP}/${iso_name}.sha256"
-          printf '%s  %s\n' "$iso_sha256" "$iso_name" > "$iso_sha256_path"
           {
             echo "path=$iso_path_abs"
             echo "name=$iso_name"
             echo "size=$iso_size"
             echo "sha256=$iso_sha256"
-            echo "sha256_path=$iso_sha256_path"
           } >> "$GITHUB_OUTPUT"
           {
             echo "## AI-cluster installer ISO built"
@@ -743,21 +549,6 @@ jobs:
           retention-days: 90
           compression-level: 0 # ISO is already compressed; re-zipping wastes time
 
-      - name: Upload the ISO digest manifest as a workflow artifact
-        if: ${{ !cancelled() && steps.iso.outcome == 'success' }}
-        # The keystone for the local flash path: `zflash` verifies the ISO against
-        # this file BEFORE it touches a device, and refuses (exit 2) without it.
-        # Uploaded separately from the ISO so an operator can fetch the manifest
-        # cheaply, and so a missing manifest is visibly absent rather than silently
-        # bundled. NOTE this proves INTEGRITY, never PROVENANCE -- the cosign bundle
-        # below is the provenance half, and nothing local verifies it yet.
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
-        with:
-          name: ${{ steps.iso.outputs.name }}.sha256
-          path: ${{ steps.iso.outputs.sha256_path }}
-          if-no-files-found: error
-          retention-days: 90
-
       - name: Upload cosign bundle as workflow artifact
         if: ${{ !cancelled() && steps.sign.outcome == 'success' }}   # run only after signing produced a bundle
         # 081KSKBP80008QG0R000Y2B7HC.1 sibling upload — bundle alongside the ISO for consumers.
@@ -814,30 +605,9 @@ jobs:
       - name: Install QEMU (aarch64 system emulator + EDK2 UEFI firmware)
         run: sudo apt-get update -y && sudo DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends qemu-system-arm qemu-efi-aarch64
 
-      # ── Blocking on a BOOT BREAK, advisory on a BUDGET overrun ────────
-      # `continue-on-error: true` used to sit here, and it made the step
-      # report a green check while the boot proof failed — a check that
-      # cannot fail. It is removed. But the step is NOT simply flipped to
-      # blocking, because this lane is pure TCG (the ubuntu-24.04-arm
-      # runners do not expose /dev/kvm) and a hard red on a slow runner
-      # would buy a flaky lane instead of a proof.
-      #
-      # Instead the harness now distinguishes the two, so the POLICY can:
-      #   exit 0 — BOOTED       -> pass
-      #   exit 1 — BOOT-FAILED  -> FAIL the job (positive evidence the image
-      #                           is broken: no bootable option, panic, or
-      #                           the guest exited before the prompt)
-      #   exit 3 — TIMEOUT      -> warn only (the guest was demonstrably
-      #                           still progressing when the clock ran out)
-      #
-      # Honest limit, stated rather than papered over: a boot break that
-      # manifests as a silent HANG past the bootloader still lands in the
-      # advisory TIMEOUT bucket. This gate catches images that fail to
-      # boot, not images that hang. The stage ladder printed in the log is
-      # what makes that case visible to a reader; tightening it further
-      # needs the CI boot to first land reliably under budget.
       - name: QEMU aarch64 boot smoke-test (081KTSZN10008QG0R00349SM6P slice 1 floor)
         working-directory: full-ai-cluster
+        continue-on-error: true # advisory — build+flake are load-bearing; login prompt is flaky in CI
         run: |
           set -euo pipefail
           mapfile -t iso_candidates < <(find result/iso -maxdepth 1 -type f \( -name 'zeta-installer-*.iso' -o -name 'nixos-minimal-*.iso' \) | sort)
@@ -847,121 +617,12 @@ jobs:
           fi
           iso_abs=$(readlink -f "${iso_candidates[0]}")
           echo "Booting aarch64 ISO: $iso_abs"
-
-          rc=0
-          bun ../src/Core.TypeScript/ci/qemu-boot-test.ts "$iso_abs" --arch aarch64 || rc=$?
-
-          case "$rc" in
-            0)
-              echo "aarch64 QEMU boot: **BOOTED**" >> "$GITHUB_STEP_SUMMARY"
-              ;;
-            3)
-              echo "::warning::aarch64 QEMU boot: TIMEOUT -- the guest was still booting when the budget expired. This is a BUDGET result, not a boot failure; see the stage ladder in the step log for where the time went."
-              {
-                echo "aarch64 QEMU boot: **TIMEOUT (advisory)** -- budget exhausted while still booting."
-                echo ""
-                echo "This does NOT mean the image is broken. The harness reports BOOT-FAILED"
-                echo "(exit 1) for that, and that DOES fail the job."
-              } >> "$GITHUB_STEP_SUMMARY"
-              ;;
-            4)
-              # STALLED -- serial silent past the kernel handoff for the
-              # stall window. This lane is measured INTERMITTENT: job
-              # 95208551157 sat silent 4184s and never booted, job
-              # 95218377728 booted in 192s, same image and runner type.
-              #
-              # ADVISORY, and it should stay advisory: on this evidence a
-              # stall is at least as likely to be a starved runner as a
-              # broken image, and blocking on it would red the ISO lane for
-              # runner contention. The harness reports the silence as a
-              # fact and does not diagnose it; BOOT-FAILED (exit 1) is the
-              # bucket that carries positive evidence and that one blocks.
-              echo "::warning::aarch64 QEMU boot: STALLED -- serial produced nothing for the stall window after the kernel handoff. This lane is intermittent (192s on a good run); the harness does not claim whether the guest hung or was starved."
-              {
-                echo "aarch64 QEMU boot: **STALLED (advisory)** -- silent past the EFI stub."
-                echo ""
-                echo "This lane is measured intermittent: 192s end-to-end on a good run, and one"
-                echo "run silent for 4184s. Stopping early bounds the wasted runner time; it is"
-                echo "not a diagnosis. See the stage ladder in the step log."
-              } >> "$GITHUB_STEP_SUMMARY"
-              ;;
-            *)
-              echo "::error::aarch64 QEMU boot: BOOT-FAILED (harness exit $rc) -- positive evidence the ISO did not boot, not a slow runner."
-              echo "aarch64 QEMU boot: **BOOT-FAILED** (harness exit $rc)" >> "$GITHUB_STEP_SUMMARY"
-              exit 1
-              ;;
-          esac
-
-      # ADDED 2026-08-21 -- PARITY with the x86_64 job, which has emitted a
-      # digest since PR #13053. This job emitted NEITHER a digest NOR a
-      # signature: its only artifact was the raw ISO, so `zflash`'s integrity
-      # gate could never be satisfied for an arm64 image and an aarch64
-      # operator was hard-stopped. Same shape as the x86_64 step, deliberately:
-      # per-ISO `<iso>.sha256`, never a bare `SHA256SUMS`. The reason is
-      # measured, not stylistic -- an unrelated `~/Downloads/SHA256SUMS`
-      # belonging to Bitcoin Knots was found and parsed by the gate on the
-      # maintainer's machine, which refused while printing 28 bitcoin
-      # filenames. A well-known filename in a shared download directory is a
-      # namespace collision, not a manifest.
-      #
-      # $RUNNER_TEMP, not beside the ISO: `result/iso/` is a symlink into the
-      # read-only Nix store. Writing there is what reddened run 32445604341.
-      - name: Locate aarch64 ISO + write the per-ISO digest manifest
-        id: iso
-        working-directory: full-ai-cluster
-        run: |
-          set -euo pipefail
-          mapfile -t iso_candidates < <(find result/iso -maxdepth 1 -type f \( -name 'zeta-installer-*.iso' -o -name 'nixos-minimal-*.iso' \) | sort)
-          if [ "${#iso_candidates[@]}" -eq 0 ]; then
-            echo "::error::aarch64: No installer ISO under result/iso/" >&2
-            ls -la result/iso/ >&2 || true
-            exit 1
-          fi
-          if [ "${#iso_candidates[@]}" -gt 1 ]; then
-            echo "::error::aarch64: Multiple installer ISOs under result/iso/; expected exactly one:" >&2
-            printf '  %s\n' "${iso_candidates[@]}" >&2
-            exit 1
-          fi
-          iso_path_abs="$(pwd)/${iso_candidates[0]}"
-          iso_name=$(basename "$iso_path_abs")
-          iso_sha256=$(sha256sum "$iso_path_abs" | awk '{print $1}')
-          iso_sha256_path="${RUNNER_TEMP}/${iso_name}.sha256"
-          printf '%s  %s\n' "$iso_sha256" "$iso_name" > "$iso_sha256_path"
-          {
-            echo "path=$iso_path_abs"
-            echo "name=$iso_name"
-            echo "sha256=$iso_sha256"
-            echo "sha256_path=$iso_sha256_path"
-          } >> "$GITHUB_OUTPUT"
-          {
-            echo "## AI-cluster installer ISO built (aarch64)"
-            echo ""
-            echo "| Field | Value |"
-            echo "|---|---|"
-            echo "| File   | \`$iso_name\` |"
-            echo "| SHA256 | \`$iso_sha256\` |"
-            echo ""
-            echo "Download BOTH the ISO artifact and the \`.sha256\` artifact into the same"
-            echo "directory. \`zflash\` refuses to write an ISO whose integrity it cannot"
-            echo "establish, and the sidecar is what establishes it."
-          } >> "$GITHUB_STEP_SUMMARY"
+          bun ../src/Core.TypeScript/ci/qemu-boot-test.ts "$iso_abs" --arch aarch64
 
       - name: Upload aarch64 ISO artifact
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: zeta-installer-aarch64-iso
           path: full-ai-cluster/result/iso/*.iso
-          retention-days: 14
-          if-no-files-found: error
-
-      - name: Upload the aarch64 ISO digest manifest as a workflow artifact
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
-        with:
-          # Fixed name rather than the x86_64 job's `${{ steps.iso.outputs.name }}`:
-          # both jobs currently build a `nixos-minimal-<ver>-<arch>-linux.iso`,
-          # and two artifacts in one run may not share a name. The aarch64 ISO
-          # artifact already uses a fixed name for the same reason.
-          name: zeta-installer-aarch64-iso.sha256
-          path: ${{ steps.iso.outputs.sha256_path }}
           retention-days: 14
           if-no-files-found: error

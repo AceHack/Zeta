@@ -5,10 +5,10 @@
 // All subcommands accept --json for programmatic consumption.
 //
 // Usage:
-//   bun src/Core.TypeScript/bus/bus.ts publish --from otto --to "*" --topic heartbeat --payload '{"status":"alive"}'
-//   bun src/Core.TypeScript/bus/bus.ts list [--topic heartbeat] [--to otto] [--json]
-//   bun src/Core.TypeScript/bus/bus.ts read <id> [--json]
-//   bun src/Core.TypeScript/bus/bus.ts clean [--expired] [--from otto]
+//   bun tools/bus/bus.ts publish --from otto --to "*" --topic heartbeat --payload '{"status":"alive"}'
+//   bun tools/bus/bus.ts list [--topic heartbeat] [--to otto] [--json]
+//   bun tools/bus/bus.ts read <id> [--json]
+//   bun tools/bus/bus.ts clean [--expired] [--from otto]
 
 import { existsSync, lstatSync, mkdirSync, readdirSync, readFileSync, rmSync, statSync, writeFileSync } from "node:fs";
 import { join, resolve } from "node:path";
@@ -16,7 +16,6 @@ import { randomUUID } from "node:crypto";
 import type { AgentId, SenderAgentId, MessageEnvelope, Topic, BusMessage, HeartbeatPayload, ClaimPayload, ReviewRequestPayload } from "./types.ts";
 import { TTL_MS, SENDER_IDS, AGENT_IDS } from "./types.ts";
 import { parse as parseActorRef } from "../identity/actor-ref.ts";
-import { stringCompare } from "../collation/collation";
 
 export const BUS_DIR = process.env.ZETA_BUS_DIR ?? join("/tmp", "zeta-bus");
 
@@ -93,7 +92,7 @@ export function list(opts: { topic?: Topic; to?: AgentId; includeExpired?: boole
       // corrupted entry — skip
     }
   }
-  return results.sort((a, b) => stringCompare(a.timestamp, b.timestamp));
+  return results.sort((a, b) => a.timestamp.localeCompare(b.timestamp));
 }
 
 // ── read ──────────────────────────────────────────────────────────────────────

@@ -7,30 +7,28 @@
  */
 
 import { observeWithLlm, simulate, type World, type NextAction } from "../observe/observe";
-import { SWARM_HATS, buildHatInstruction } from "./hats";
-import type { HatDefinition } from "./hats";
+import { SWARM_HATS, buildHatInstruction, type HatDefinition } from "./hats";
 import { fetchTransport } from "../model-backend/fetch-transport";
-import { openAiCompatBackend } from "../model-backend/backend";
+import { openAiCompatBackend, type ModelBackend, type BackendConfig, type ChatMessage } from "../model-backend/backend";
 import { getPersona, localLlmPersona } from "../service/persona-registry";
 import { executeSkillSequence } from "../arc-solver/grid-skills";
 import { evaluateGrid } from "../arc-solver/grid-evaluator";
-import { CelegansController, loadFromCsv } from "../chip8/celegans-controller";
+import { CelegansController, parseCsvContent } from "../chip8/celegans-controller";
+import { SemioticsEngine } from "./semiotics-engine";
+import connectomeCsv from "../../Core/data/celegans-connectome-chemical.csv?raw";
 import { BnnSocietyPredictor } from "../bayesian/bnn-key-predictor";
 import { cooperate } from "../tri-boolean/tri-boolean";
-import { readKnownSignatures } from "./swarm-known-signatures";
-import * as path from "path";
-
 import { HardwareRegistry } from "../discovery/hardware-registry";
 
 export interface UdpMeshNode {
-  send: (data: Buffer) => void;
+  send: (data: Uint8Array) => void;
 }
 // Both parameters are part of the intended shape and unused by this stub: the mesh does not yet
 // drop anything, and the stub sink discards what it is handed. Named with `_` so the signature
 // still documents the contract without asserting behaviour the stub does not have.
 function createLossyUdpMesh(size: number, _dropRate: number): UdpMeshNode[] {
   return Array.from({ length: size }, () => ({
-    send: (_data: Buffer) => { /* dummy */ }
+    send: (_data: Uint8Array) => { /* dummy */ }
   }));
 }
 
@@ -43,22 +41,49 @@ interface SwarmNode {
 export class SwarmController {
   private nodes: SwarmNode[] = [];
   private hwRegistry: HardwareRegistry;
+  private llmBackend: ModelBackend | null = null;
   public wormSociety: CelegansController[] = [];
   public bnnSociety?: BnnSocietyPredictor;
   
   // CHIP-8 Superorganism State
   private pheromoneField: Map<number, number> = new Map();
   private scarcity: number = 0.8; // High scarcity defaults trigger tower formation
+  private semioticsEngine: SemioticsEngine = new SemioticsEngine();
+  
+  // Semantic Visual Cortex properties
+  public readonly SEMANTIC_CONCEPTS = ["Time", "Logic", "Structure", "Language", "Love", "Chaos", "Order", "Humanity", "Nature", "Technology"];
+  private currentConceptIndex = 0;
+  
+  // ARC-AGI Gamification / Level progression
+  public readonly GAME_LEVELS = ["Horizontal Bar", "Vertical Pillar", "Diagonal Staircase"];
+  private currentGameLevel = 0;
+  
+  private getSemanticVector(concept: string): number[] {
+    const vec = new Array(64).fill(0);
+    let hash = 5381;
+    for (let i = 0; i < concept.length; i++) {
+      hash = ((hash << 5) + hash) + concept.charCodeAt(i);
+    }
+    // Generate a stable pseudorandom vector for this concept
+    for (let i = 0; i < 64; i++) {
+      hash = Math.imul(hash ^ (hash >>> 16), 2246822507);
+      hash = Math.imul(hash ^ (hash >>> 13), 3266489909);
+      vec[i] = (hash >>> 0) / 4294967296; // Normalize to [0, 1]
+    }
+    return vec;
+  }
   
   constructor() {
     this.hwRegistry = new HardwareRegistry();
     this.hwRegistry.start();
   }
   
-  async init(dropRate = 0) {
-    const meshNodes = createLossyUdpMesh(4, dropRate);
-    const useLocalLlm = process.env.ZETA_SWARM_USE_LOCAL_LLM === "1";
-    
+  async init(llmConfig?: BackendConfig) {
+    if (llmConfig) {
+      this.llmBackend = openAiCompatBackend(llmConfig, fetchTransport());
+    }
+    const meshNodes = createLossyUdpMesh(4, 0);
+    const useLocalLlm = false;
     for (let i = 0; i < 4; i++) {
       const hat = SWARM_HATS[i]!;
       let config = getPersona(hat.personaName);
@@ -93,7 +118,7 @@ export class SwarmController {
     
     // Broadcast state to all nodes via UDP (simulated sync)
     for (const node of this.nodes) {
-      node.mesh.send(Buffer.from(JSON.stringify(world)));
+      node.mesh.send(new TextEncoder().encode(JSON.stringify(world)));
     }
 
     // [Causal Orbit Detection]
@@ -101,9 +126,7 @@ export class SwarmController {
     if (world.cheatEngine && world.cheatEngine.memorySectors.length > 0 && world.cheatEngine.causalMask && world.cheatEngine.display) {
       const { detectCausalSignature } = await import("./signature-detector");
       const { renderDisplay } = await import("../chip8/chip8");
-      const fs = await import("fs");
-      const path = await import("path");
-
+      
       const mem = world.cheatEngine.memorySectors[0]!;
       const mask = world.cheatEngine.causalMask;
       const display = world.cheatEngine.display;
@@ -129,28 +152,117 @@ export class SwarmController {
         // Ask LLM to optimize worm hyperparameters on orbit shift (Outer Loop)
         const activePilot = this.nodes.find(n => n.hat.name === "Pilot");
         if (activePilot && this.wormSociety.length > 0) {
-          console.log(`[SwarmController] LLM Outer Loop: Analyzing C. elegans performance and tuning hyperparameters...`);
+          console.log(`[SwarmController] LLM Outer Loop: Analyzing drawn shape to build Contextual Grammar...`);
           try {
-            const prompt = `The C. elegans worm Pilot has successfully shifted the CHIP-8 causal orbit from ${prevSig} to ${sig}.
-You are optimizing the biological controller AND the environment (Cheat Engine). 
-Available tools:
-- {"tool": "setWormCouplingGain", "args": {"gain": 1.5}}
-- {"tool": "freezeMemory", "args": {"address": 512, "value": 255}}
-- {"tool": "unfreezeMemory", "args": {"address": 512}}
-- {"tool": "injectCode", "args": {"address": 512, "hex": "1220"}}
-Output a JSON array of tool calls you wish to execute. Example: [{"tool": "setWormCouplingGain", "args": {"gain": 1.2}}, {"tool": "freezeMemory", "args": {"address": 512, "value": 255}}]`;
-            const completion = await activePilot.backend.complete({ messages: [{ role: "user", content: prompt }] });
-            if (completion.ok) {
-              const raw = completion.result.content.replace(/^```json/, "").replace(/```$/, "").trim();
-              try {
-                const parsed = JSON.parse(raw);
-                console.log(`[SwarmController] LLM Tuning Output:`, parsed);
-                if (Array.isArray(parsed)) {
-                  outerLoopActions = parsed;
+            const activePixels: string[] = [];
+            for (let y = 0; y < 32; y++) {
+              for (let x = 0; x < 64; x++) {
+                if (display[x + y * 64]) {
+                  activePixels.push(`(${x},${y})`);
                 }
-              } catch (e) {
-                // ignore LLM json parse errors on outer loop for now
               }
+            }
+            
+            const promptText = `The C. elegans biological inner loop has just completed a drawing cycle on a 64x32 canvas.
+Here are the (x,y) coordinates of the pixels drawn (if too many, focus on the general pattern):
+[${activePixels.slice(0, 150).join(", ")}${activePixels.length > 150 ? "... (truncated)" : ""}]
+
+You are the Spatial Pattern Recognizer for building a Context-Aware Shape Grammar. The biological substrate was actively stimulated by the semantic concept of: [${this.SEMANTIC_CONCEPTS[this.currentConceptIndex]}]. 
+The Swarm is currently trying to beat Level ${this.currentGameLevel + 1}: Draw a "${this.GAME_LEVELS[this.currentGameLevel] || 'Free Play'}".
+Analyze these coordinates and determine if they form a recognizable geometric shape, line, or spatial rule. Correlate the shape's meaning or poetry to the semantic concept if possible.
+Output a JSON array containing a single object describing the shape:
+[{"tool": "saveShapeGrammar", "args": {"name": "ShapeName", "grammarRule": "Description of the spatial logic used to create this shape"}}]`;
+
+            let completionContent = "";
+            
+            if (this.llmBackend) {
+              const messages: ChatMessage[] = [
+                { role: "system", content: "You are a spatial pattern recognition engine evaluating Swarm coordinates." },
+                { role: "user", content: promptText }
+              ];
+              const response = await this.llmBackend.complete({ messages });
+              if (response.ok) {
+                completionContent = response.result.content;
+              } else {
+                console.warn(`[SwarmController] LLM Call Failed: ${response.error}`);
+              }
+            }
+            
+            // Fallback to MOCK inference if backend failed or is absent
+            if (!completionContent) {
+              let shapeName = "Unknown Shape";
+              let grammarRule = "Chaotic spatial logic";
+              
+              if (activePixels.length > 0) {
+                 // Determine general bounding box aspect ratio to guess shape
+                 let minX = 64, maxX = 0, minY = 32, maxY = 0;
+                 for (const p of activePixels) {
+                    const parts = p.replace("(", "").replace(")", "").split(",");
+                    const px = parseInt(parts[0]);
+                    const py = parseInt(parts[1]);
+                    if (px < minX) minX = px;
+                    if (px > maxX) maxX = px;
+                    if (py < minY) minY = py;
+                    if (py > maxY) maxY = py;
+                 }
+                 const width = maxX - minX;
+                 const height = maxY - minY;
+                 
+                 if (width > height * 2) {
+                    shapeName = "Horizontal Bar";
+                    grammarRule = "Continuous lateral movement (x-axis dominated)";
+                 } else if (height > width * 2) {
+                    shapeName = "Vertical Pillar";
+                    grammarRule = "Continuous vertical movement (y-axis dominated)";
+                 } else if (width > 0 && height > 0) {
+                    shapeName = "Diagonal Staircase";
+                    grammarRule = "Correlated x and y axis movement creating a slope";
+                 }
+              }
+              completionContent = `[{"tool": "saveShapeGrammar", "args": {"name": "${shapeName}", "grammarRule": "${grammarRule}"}}]`;
+            }
+
+            const raw = completionContent.replace(/^```json/, "").replace(/```$/, "").trim();
+            try {
+              const parsed = JSON.parse(raw);
+              console.log(`[SwarmController] LLM Shape Grammar Evaluation:`, parsed);
+              if (Array.isArray(parsed)) {
+                outerLoopActions = parsed;
+                
+                // Check for saveShapeGrammar tool
+                for (const action of parsed) {
+                  if (action.tool === "saveShapeGrammar" && action.args) {
+                    let knownGrammar: Record<string, string> = {};
+                    try {
+                      const saved = localStorage.getItem('known-grammar');
+                      if (saved) knownGrammar = JSON.parse(saved);
+                    } catch (e) {}
+                    knownGrammar[action.args.name] = action.args.grammarRule;
+                    localStorage.setItem('known-grammar', JSON.stringify(knownGrammar));
+                    console.log(`[SwarmController] 🧠 Added new Contextual Grammar Rule: ${action.args.name}`);
+                    
+                    // Translate geometric shape to human language
+                    const linguisticToken = this.semioticsEngine.translate(action.args.name, this.SEMANTIC_CONCEPTS[this.currentConceptIndex]);
+                    console.log(`[SwarmController] 🗣️  Translated to Language: ${linguisticToken.pictogram} | ${linguisticToken.english} (${linguisticToken.meaning})`);
+                    
+                    if (world.cheatEngine) {
+                      (world.cheatEngine as any).linguisticToken = linguisticToken;
+                      
+                      // Gamification: Check Level Up
+                      const currentObjective = this.GAME_LEVELS[this.currentGameLevel];
+                      if (currentObjective && action.args.name === currentObjective) {
+                        console.log(`[SwarmController] 🏆 LEVEL UP! Swarm successfully learned: ${currentObjective}`);
+                        this.currentGameLevel++;
+                        (world.cheatEngine as any).levelUpEvent = true;
+                      } else {
+                        (world.cheatEngine as any).levelUpEvent = false;
+                      }
+                    }
+                  }
+                }
+              }
+            } catch (e) {
+              // ignore LLM json parse errors on outer loop for now
             }
           } catch(e) {
             console.error(`[SwarmController] LLM Tuning failed:`, e);
@@ -158,19 +270,26 @@ Output a JSON array of tool calls you wish to execute. Example: [{"tool": "setWo
         }
 
         // Persist signature to known-signatures.json
-        const sigFile = path.join(__dirname, "known-signatures.json");
-        // One read, one answer: a separate existsSync gate is a check-then-use
-        // race. The shared reader treats only ENOENT as first-run empty history;
-        // unreadable or malformed persistence remains visible evidence.
-        const known = readKnownSignatures(
-          (filePath) => fs.readFileSync(filePath, "utf-8"),
-          sigFile,
-        );
+        let known: string[] = [];
+        try {
+          const saved = localStorage.getItem('known-signatures');
+          if (saved) known = JSON.parse(saved);
+        } catch (e) {}
+
         if (!known.includes(sig)) {
           known.push(sig);
-          fs.writeFileSync(sigFile, JSON.stringify(known, null, 2));
-          console.log(`[SwarmController] 💾 Saved new signature ${sig} to known-signatures.json`);
+          localStorage.setItem('known-signatures', JSON.stringify(known));
+          console.log(`[SwarmController] 💾 Saved new signature ${sig} to localStorage`);
         }
+        
+        // Progress to the next concept when the visual cortex finishes a thought
+        this.currentConceptIndex = (this.currentConceptIndex + 1) % this.SEMANTIC_CONCEPTS.length;
+        console.log(`[SwarmController] 🧠 Visual Cortex shifting to next semantic concept: [${this.SEMANTIC_CONCEPTS[this.currentConceptIndex]}]`);
+      }
+      
+      const activeConcept = this.SEMANTIC_CONCEPTS[this.currentConceptIndex];
+      if (world.cheatEngine) {
+        (world.cheatEngine as any).activeConcept = activeConcept;
       }
       
       world = { 
@@ -266,13 +385,21 @@ Output ONLY a valid JSON array of strings representing the sub-tasks. Example: [
             messages: [{ role: "user", content: prompt }]
           });
           if (completion.ok) {
-            const raw = completion.result.content.replace(/^```json/, "").replace(/```$/, "").trim();
-            const parsed = JSON.parse(raw);
-            if (Array.isArray(parsed) && parsed.every(s => typeof s === "string")) {
-              chosenAction = { ...chosenAction, subTasks: parsed };
-              console.log(`[SwarmController] Successfully generated semantic sub-tasks:`, parsed);
-            } else {
-              console.error(`[SwarmController] LLM returned invalid JSON array:`, raw);
+            let raw = completion.result.content.replace(/^```json/, "").replace(/```$/, "").trim();
+            
+            // Basic fix for unterminated array
+            if (!raw.endsWith("]")) raw += "]";
+            
+            try {
+              const parsed = JSON.parse(raw);
+              if (Array.isArray(parsed) && parsed.every(s => typeof s === "string")) {
+                chosenAction = { ...chosenAction, subTasks: parsed };
+                console.log(`[SwarmController] Successfully generated semantic sub-tasks:`, parsed);
+              } else {
+                console.error(`[SwarmController] LLM returned invalid JSON array:`, raw);
+              }
+            } catch (e) {
+              console.error(`[SwarmController] Failed to parse sub-tasks JSON:`, e);
             }
           } else {
             console.error(`[SwarmController] Backend completion failed:`, completion.error);
@@ -301,8 +428,7 @@ Output ONLY a valid JSON array of strings representing the sub-tasks. Example: [
           // Inner Loop: Fast path using Society of C. elegans worms & Society of BNNs
           if (this.wormSociety.length === 0) {
             console.log("[SwarmController] Initializing Society of C. elegans biological substrates (Inner Loop)...");
-            const csvPath = path.resolve(__dirname, "../../Core/data/celegans-connectome-chemical.csv");
-            const connectome = loadFromCsv(csvPath);
+            const connectome = parseCsvContent(connectomeCsv);
             // Instantiate 5 worms cooperating
             for (let i = 0; i < 5; i++) {
               this.wormSociety.push(new CelegansController(connectome, BigInt(1337 + i)));
@@ -329,25 +455,45 @@ Output ONLY a valid JSON array of strings representing the sub-tasks. Example: [
           
           // If BNN is highly uncertain (max prob < 0.2), scarcity is high!
           let maxProb = 0;
-          let bestBnnKey = 0;
-          for (const [key, prob] of Object.entries(bnnPredictions)) {
-            if (prob > maxProb) { maxProb = prob; bestBnnKey = parseInt(key, 10); }
+          for (const [_key, prob] of Object.entries(bnnPredictions)) {
+            if (prob > maxProb) { maxProb = prob; }
           }
           this.scarcity = maxProb < 0.2 ? 0.9 : 0.4;
+          
+          // Thompson Sampling: Sample from the BNN posterior distribution for human-like non-deterministic play
+          let bnnSampledKey = 0;
+          let r = Math.random();
+          for (const [key, prob] of Object.entries(bnnPredictions)) {
+            r -= (prob as number);
+            if (r <= 0) {
+              bnnSampledKey = parseInt(key, 10);
+              break;
+            }
+          }
           
           // Tri-Boolean Cooperation: Superorganism Tower Formation (Perez & Ding 2025)
           const cooperativeThreshold = 0.15; // Requires some signal to commit to the collective
           
           let towerCount = 0;
+          // Apply to cheat engine to update dashboard UI immediately
+          if (world.cheatEngine) {
+            (world.cheatEngine as any).activeConcept = this.SEMANTIC_CONCEPTS[this.currentConceptIndex];
+            (world.cheatEngine as any).gameLevel = this.currentGameLevel + 1;
+            (world.cheatEngine as any).gameObjective = this.GAME_LEVELS[this.currentGameLevel] || "Free Play";
+          }
           let towerKey = -1;
+          
+          const currentConcept = this.SEMANTIC_CONCEPTS[this.currentConceptIndex] || "Time";
+          const semanticVector = this.getSemanticVector(currentConcept);
           
           for (const worm of this.wormSociety) {
             // Integrate-as-Choice Locus & Food Scarcity Trigger
             const result = worm.tickWithSuperorganism(
-              displayMap, 
+              world.cheatEngine!.display!,
               this.scarcity, 
               this.pheromoneField, 
-              cooperativeThreshold
+              cooperativeThreshold,
+              semanticVector
             );
             
             // Tonal Momentum: Agent emits pheromones to signal intent
@@ -375,22 +521,27 @@ Output ONLY a valid JSON array of strings representing the sub-tasks. Example: [
           let wormConsensusKey = towerCount >= 2 ? towerKey : 0;
           
           
-          // Simple Fusion Policy: if max BNN prob is strong enough, use BNN consensus; otherwise use biological tower
-          const chosenKey = maxProb > 0.4 ? bestBnnKey : wormConsensusKey;
+          // Simple Fusion Policy: if max BNN prob is strong enough, use sampled BNN key; otherwise use biological tower
+          const chosenKey = maxProb > 0.4 ? bnnSampledKey : wormConsensusKey;
 
-          if (chosenAction.kind === "do_item") {
+          if (chosenKey !== 0 && chosenAction.kind === "do_item") {
             chosenAction.actions = [
               ...(chosenAction.actions || []),
               {"tool": "pressKey", "args": {"key": chosenKey}}
             ];
           }
           const nextWorld = simulate(world, chosenAction);
-          // Attach BNN predictions to cheatEngine so TV can render them
+          // Attach chosen action to cheatEngine so TV can render it accurately
+          const displayPredictions = { ...bnnPredictions };
+          if (chosenKey !== 0) {
+            displayPredictions[chosenKey] = 1.0;
+          }
+
           return {
             ...nextWorld,
             cheatEngine: {
               ...nextWorld.cheatEngine!,
-              keyPredictions: bnnPredictions
+              keyPredictions: displayPredictions
             }
           };
         }
@@ -413,31 +564,43 @@ You MUST wrap your response in an array [ ... ]. Do NOT output a single object w
             messages: [{ role: "user", content: prompt }]
           });
           if (completion.ok) {
-            const raw = completion.result.content.replace(/^```json/, "").replace(/```$/, "").trim();
-            const parsed = JSON.parse(raw);
-            if (Array.isArray(parsed)) {
-              if (chosenAction.kind === "do_item") {
-                chosenAction.actions = parsed;
-              }
-              
-              if (item.gridData) {
-                const initialGrid = item.gridData.input;
-                const expectedGrid = item.gridData.output;
-                
-                console.log(`[SwarmController] Executing skills on grid substrate...`);
-                const actualGrid = executeSkillSequence(initialGrid, parsed);
-                
-                const evaluation = evaluateGrid(actualGrid, expectedGrid);
-                console.log(`\n[Cartographer KPI] Pixel Accuracy: ${evaluation.accuracy.toFixed(2)}%`);
-                console.log(`[Cartographer KPI] Difference: ${evaluation.diffPixels} pixels off out of ${evaluation.totalPixels} total.\n`);
+            let raw = completion.result.content.replace(/^```json/, "").replace(/```$/, "").trim();
+            
+            // Attempt basic fix for unterminated JSON array/object from LLM cutoff
+            if (!raw.endsWith("]") && raw.startsWith("[")) {
+              if (raw.endsWith("}")) raw += "]";
+              else if (raw.endsWith("\"")) raw += "}]";
+              else raw += "\"}]";
+            }
+            
+            try {
+              const parsed = JSON.parse(raw);
+              if (Array.isArray(parsed)) {
                 if (chosenAction.kind === "do_item") {
-                  chosenAction.evaluation = evaluation;
+                  chosenAction.actions = parsed;
+                }
+                
+                if (item.gridData) {
+                  const initialGrid = item.gridData.input;
+                  const expectedGrid = item.gridData.output;
+                  
+                  console.log(`[SwarmController] Executing skills on grid substrate...`);
+                  const actualGrid = executeSkillSequence(initialGrid, parsed);
+                  
+                  const evaluation = evaluateGrid(actualGrid, expectedGrid);
+                  console.log(`\n[Cartographer KPI] Pixel Accuracy: ${evaluation.accuracy.toFixed(2)}%`);
+                  console.log(`[Cartographer KPI] Difference: ${evaluation.diffPixels} pixels off out of ${evaluation.totalPixels} total.\n`);
+                  if (chosenAction.kind === "do_item") {
+                    chosenAction.evaluation = evaluation;
+                  }
+                } else {
+                  console.log(`[SwarmController] No gridData attached to item. Skipping evaluation.`);
                 }
               } else {
-                console.log(`[SwarmController] No gridData attached to item. Skipping evaluation.`);
+                console.error(`[SwarmController] LLM returned invalid JSON array for tools:`, raw);
               }
-            } else {
-              console.error(`[SwarmController] LLM returned invalid JSON array for tools:`, raw);
+            } catch (e) {
+              console.error(`[SwarmController] JSON parse error for tool calls:`, e);
             }
           } else {
             console.error(`[SwarmController] Backend completion failed for do_item:`, completion.error);
@@ -449,31 +612,4 @@ You MUST wrap your response in an array [ ... ]. Do NOT output a single object w
     }    // Advance world
     return simulate(world, chosenAction);
   }
-}
-
-async function main() {
-  console.log("Initializing Mux-Duplex Swarm (4-Roles)...");
-  const swarm = new SwarmController();
-  await swarm.init(0.0); // 0% drop rate for local test
-  
-  let world: World = {
-    // `mode` is optional and documented as "absent = unset", which is what "idle" meant here.
-    backlog: [],
-    history: [],
-    cartography: { scopeLevel: 0, timeOffset: 0 }
-  };
-  
-  // Just run 1 tick for test
-  world = await swarm.tick(world);
-  console.log("Swarm test tick complete.");
-  return 0;
-}
-
-if (import.meta.main) {
-  main().then((code) => {
-    process.exit(code);
-  }).catch(e => {
-    console.error(e);
-    process.exit(1);
-  });
 }

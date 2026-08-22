@@ -7,7 +7,6 @@ import type { RevocationMap } from "./signing.ts";
 import type { IndexSignableContent } from "./index-signature.ts";
 import { signIndex } from "./index-signature.ts";
 import type { IndexDoc } from "./registry-remote.ts";
-import { stringCompare } from "../collation/collation";
 
 /** Join a base url + filename with exactly one separator (trailing slashes normalized). */
 export function joinUrl(base: string, file: string): string {
@@ -29,7 +28,7 @@ export function buildIndexDoc(args: {
   // Null-prototype map: a package name like "__proto__" cannot pollute via bracket-assign.
   const packages: Record<string, Record<string, RegistryEntry>> = Object.create(null);
   const sorted = [...args.packages].sort((a, b) =>
-    stringCompare(a.pkg.manifest.name, b.pkg.manifest.name) || stringCompare(a.pkg.manifest.version, b.pkg.manifest.version));
+    a.pkg.manifest.name.localeCompare(b.pkg.manifest.name) || a.pkg.manifest.version.localeCompare(b.pkg.manifest.version));
   for (const entry of sorted) {
     const pkg = entry.pkg;
     const name = pkg.manifest.name;

@@ -1,6 +1,5 @@
 import {
-  runConvergentZetaDbNodeTick,
-  type ZetaDbConvergencePolicy,
+  runZetaDbNodeTick,
   type ZetaDbFeedback,
   type ZetaDbImagePort,
   type ZetaDbTickLimits,
@@ -21,7 +20,6 @@ export interface ZetaDbStoragePortOptions {
   readonly databaseNodeId: string;
   readonly executorId: string;
   readonly limits: ZetaDbTickLimits;
-  readonly convergencePolicy: ZetaDbConvergencePolicy;
 }
 
 function succeeded<T>(value: T): StorageResult<T> {
@@ -45,12 +43,6 @@ function validLimits(limits: ZetaDbTickLimits): boolean {
     Number.isSafeInteger(limits.maxCheckpointBytes) &&
     limits.maxCheckpointBytes > 0
   );
-}
-
-function validConvergencePolicy(policy: unknown): policy is ZetaDbConvergencePolicy {
-  if (policy === null || typeof policy !== "object") return false;
-  const maxAttempts = (policy as Readonly<Record<string, unknown>>).maxAttempts;
-  return typeof maxAttempts === "number" && Number.isSafeInteger(maxAttempts) && maxAttempts > 0;
 }
 
 function mapFeedback(feedback: ZetaDbFeedback): StorageResult<never> {
@@ -79,13 +71,8 @@ function recordFromRow(key: string, payload: string, weight: number): StorageRes
 
 /** Adapt the signed ZetaDB kernel into the content-addressed storage port. */
 export function createZetaDbStoragePort(options: ZetaDbStoragePortOptions): StorageResult<ZetaStoragePort> {
-  if (
-    !isIdentifier(options.databaseNodeId) ||
-    !isIdentifier(options.executorId) ||
-    !validLimits(options.limits) ||
-    !validConvergencePolicy(options.convergencePolicy)
-  ) {
-    return failed("A ZetaDB storage port requires identifiers and positive safe-integer tick and convergence budgets.");
+  if (!isIdentifier(options.databaseNodeId) || !isIdentifier(options.executorId) || !validLimits(options.limits)) {
+    return failed("A ZetaDB storage port requires identifiers and positive safe-integer tick budgets.");
   }
 
   let closed = false;
@@ -105,19 +92,15 @@ export function createZetaDbStoragePort(options: ZetaDbStoragePortOptions): Stor
   };
 
   const tick = async (
-    deltas: Parameters<typeof runConvergentZetaDbNodeTick>[1]["deltas"],
+    deltas: Parameters<typeof runZetaDbNodeTick>[1]["deltas"],
   ): Promise<StorageResult<ZetaDbTickReadout>> => {
-    const result = await runConvergentZetaDbNodeTick(
-      options.imagePort,
-      {
-        nodeId: options.databaseNodeId,
-        executorId: options.executorId,
-        executorKind: "browser-tab",
-        deltas,
-        limits: options.limits,
-      },
-      options.convergencePolicy,
-    );
+    const result = await runZetaDbNodeTick(options.imagePort, {
+      nodeId: options.databaseNodeId,
+      executorId: options.executorId,
+      executorKind: "browser-tab",
+      deltas,
+      limits: options.limits,
+    });
     return result.ok ? succeeded(result.value) : mapFeedback(result.feedback);
   };
 

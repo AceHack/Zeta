@@ -1,41 +1,22 @@
-import { webcrypto } from "node:crypto";
 import { describe, expect, test } from "bun:test";
-import {
-  browserCheckpointSucceeded,
-  copyBrowserCheckpointRecord,
-  type BrowserCheckpointPort,
-  type BrowserCheckpointRecord,
-} from "../browser-node/browser-checkpoint-port";
 import {
   createInMemoryBrowserDatabaseIntentOutbox,
   type BrowserDatabaseIntentOutboxPort,
 } from "../browser-node/browser-database-intent-outbox";
 import type { BrowserDatabaseReceiptArchivePort } from "../browser-node/browser-database-receipt-archive";
-import type { BrowserDatabaseReceiptArchiveMaintenancePort } from "../browser-node/browser-database-receipt-handoff";
-import type { BrowserDatabaseReceiptPagesFetch } from "../browser-node/browser-database-receipt-pages-source";
-import type {
-  BrowserDatabaseReceiptSyncReadout,
-  BrowserDatabaseReceiptSyncRuntime,
-} from "../browser-node/browser-database-receipt-sync-runtime";
 import { BROWSER_TAB_COORDINATOR_SCHEMA, type BrowserTabChannelMessage } from "../browser-node/browser-tab-coordinator";
 import { SLOT } from "../observe/grammar-16";
 import type { ZetaDbTickReadout, ZetaDbTickRequest } from "../zetadb/zeta-db-node";
 import {
   DARK_HALL_BROWSER_PAGE_SCHEMA,
-  DARK_HALL_BROWSER_PAGE_TRANSCRIPT,
   renderDarkHallBrowserNodeDocument,
-  startNativeDarkHallBrowserPage as startNativeDarkHallBrowserPageRuntime,
-  type NativeDarkHallBrowserPageOptions,
+  startNativeDarkHallBrowserPage,
 } from "./darkhall-browser-page";
 import { DARK_HALL_BROWSER_CONTROLLER_INPUT_SCHEMA } from "./darkhall-browser-controller-input";
 import { DARK_HALL_BROWSER_DATABASE_ROW_SELECTION_SCHEMA } from "./darkhall-browser-database-row-selection";
 import { DARK_HALL_BROWSER_ROW_COMMAND_EDITOR_SCHEMA } from "./darkhall-browser-row-command-editor";
 
 type NativeListener = (event?: unknown) => void;
-
-function startNativeDarkHallBrowserPage(options: NativeDarkHallBrowserPageOptions = {}) {
-  return startNativeDarkHallBrowserPageRuntime({ roomCheckpoint: "none", ...options });
-}
 
 function addNativeListener(entries: Map<string, Set<NativeListener>>, type: string, listener: NativeListener): void {
   const listeners = entries.get(type) ?? new Set();
@@ -143,51 +124,6 @@ class NativeDatabaseRowControl {
   }
 }
 
-class NativeReceiptSyncButton {
-  private readonly command: "submit" | "enroll";
-
-  constructor(command: "submit" | "enroll") {
-    this.command = command;
-  }
-
-  closest(selector: string): NativeReceiptSyncButton | null {
-    return selector === `[data-receipt-sync-${this.command}]` ? this : null;
-  }
-}
-
-class NativeReceiptSyncMount {
-  readonly attributes = new Map<string, string>();
-  readonly listeners = new Map<string, Set<NativeListener>>();
-  readonly output = { textContent: "" };
-  readonly enrollmentOutput = { textContent: "" };
-  readonly submitButton = new NativeReceiptSyncButton("submit");
-  readonly enrollButton = new NativeReceiptSyncButton("enroll");
-
-  querySelector(selector: string): unknown {
-    if (selector === "[data-receipt-sync-readout]") return this.output;
-    return selector === "[data-receipt-sync-enrollment]" ? this.enrollmentOutput : null;
-  }
-
-  setAttribute(name: string, value: string): void {
-    this.attributes.set(name, value);
-  }
-
-  addEventListener(type: string, listener: NativeListener): void {
-    addNativeListener(this.listeners, type, listener);
-  }
-
-  removeEventListener(type: string, listener: NativeListener): void {
-    this.listeners.get(type)?.delete(listener);
-  }
-
-  click(command: "submit" | "enroll" = "submit"): void {
-    const target = command === "submit" ? this.submitButton : this.enrollButton;
-    for (const listener of this.listeners.get("click") ?? []) {
-      listener({ button: 0, target, preventDefault: () => undefined });
-    }
-  }
-}
-
 class NativeServiceWorkerContainer {
   readonly messages: BrowserTabChannelMessage[] = [];
   readonly listeners = new Map<string, Set<NativeListener>>();
@@ -236,7 +172,6 @@ class NativeLockManager {
 class NativeBrowserRoot {
   readonly mount = new NativeMount();
   readonly editor = new NativeEditorMount();
-  readonly receiptSync = new NativeReceiptSyncMount();
   editorAvailable = true;
   readonly serviceWorker = new NativeServiceWorkerContainer();
   readonly locks = new NativeLockManager();
@@ -247,10 +182,9 @@ class NativeBrowserRoot {
   readonly pageListeners = new Map<string, Set<NativeListener>>();
   readonly document = {
     visibilityState: "visible",
-    getElementById: (id: string): NativeMount | NativeEditorMount | NativeReceiptSyncMount | null => {
+    getElementById: (id: string): NativeMount | NativeEditorMount | null => {
       if (id === "darkhall-room") return this.mount;
       if (id === "darkhall-row-command-editor") return this.editorAvailable ? this.editor : null;
-      if (id === "darkhall-receipt-sync") return this.receiptSync;
       return null;
     },
     addEventListener: (type: string, listener: NativeListener): void => {
@@ -272,111 +206,6 @@ class NativeBrowserRoot {
   emitDocument(type: string, event: unknown): void {
     for (const listener of this.documentListeners.get(type) ?? []) listener(event);
   }
-}
-
-class SharedMemoryCheckpointPort implements BrowserCheckpointPort {
-  closed = false;
-  private readonly records: Map<string, BrowserCheckpointRecord>;
-
-  constructor(records: Map<string, BrowserCheckpointRecord>) {
-    this.records = records;
-  }
-
-  load(nodeId: string) {
-    const record = this.records.get(nodeId);
-    return Promise.resolve(
-      browserCheckpointSucceeded(record === undefined ? null : copyBrowserCheckpointRecord(record)),
-    );
-  }
-
-  save(record: BrowserCheckpointRecord) {
-    const copy = copyBrowserCheckpointRecord(record);
-    this.records.set(record.nodeId, copy);
-    return Promise.resolve(browserCheckpointSucceeded(copyBrowserCheckpointRecord(copy)));
-  }
-
-  remove(nodeId: string, throughRevision: number) {
-    const record = this.records.get(nodeId);
-    const removed = record !== undefined && record.revision <= throughRevision;
-    if (removed) this.records.delete(nodeId);
-    return Promise.resolve(browserCheckpointSucceeded(removed));
-  }
-
-  close() {
-    this.closed = true;
-    return browserCheckpointSucceeded(null);
-  }
-}
-
-class NativeAssertionResponse {}
-
-class NativeAttestationResponse {
-  readonly clientDataJSON: ArrayBuffer;
-  readonly attestationObject: ArrayBuffer;
-
-  constructor(clientDataJSON: ArrayBuffer, attestationObject: ArrayBuffer) {
-    this.clientDataJSON = clientDataJSON;
-    this.attestationObject = attestationObject;
-  }
-}
-
-class NativePublicKeyCredential {
-  readonly rawId: ArrayBuffer;
-  readonly response: NativeAssertionResponse | NativeAttestationResponse;
-
-  constructor(
-    rawId: ArrayBuffer = new ArrayBuffer(0),
-    response: NativeAssertionResponse | NativeAttestationResponse = new NativeAssertionResponse(),
-  ) {
-    this.rawId = rawId;
-    this.response = response;
-  }
-}
-
-function enableNativeReceiptSync(root: NativeBrowserRoot, fetchImpl: BrowserDatabaseReceiptPagesFetch): void {
-  Reflect.set(root.location, "href", "https://lucent-financial-group.github.io/Zeta/hall/room/");
-  Reflect.set(root.location, "origin", "https://lucent-financial-group.github.io");
-  const storage = new Map<string, string>();
-  Reflect.set(root, "localStorage", {
-    getItem: (key: string): string | null => storage.get(key) ?? null,
-    setItem: (key: string, value: string): void => {
-      storage.set(key, value);
-    },
-  });
-  Reflect.set(root.crypto, "getRandomValues", (target: Uint8Array): Uint8Array => target.fill(1));
-  Reflect.set(root.crypto, "subtle", webcrypto.subtle);
-  Reflect.set(root.navigator, "credentials", {
-    get: (): Promise<null> => Promise.resolve(null),
-    create: (options: CredentialCreationOptions): Promise<Credential> => {
-      const challenge = options.publicKey?.challenge;
-      const challengeBytes =
-        challenge instanceof ArrayBuffer
-          ? challenge
-          : challenge === undefined
-            ? new ArrayBuffer(0)
-            : challenge.buffer.slice(challenge.byteOffset, challenge.byteOffset + challenge.byteLength);
-      const clientDataJSON = new TextEncoder().encode(
-        JSON.stringify({
-          type: "webauthn.create",
-          challenge: Buffer.from(challengeBytes).toString("base64url"),
-          origin: "https://lucent-financial-group.github.io",
-        }),
-      ).buffer;
-      return Promise.resolve(
-        new NativePublicKeyCredential(
-          Uint8Array.of(7, 8, 9).buffer,
-          new NativeAttestationResponse(clientDataJSON, Uint8Array.of(1, 2, 3).buffer),
-        ) as unknown as Credential,
-      );
-    },
-  });
-  Reflect.set(root, "PublicKeyCredential", NativePublicKeyCredential);
-  Reflect.set(root, "AuthenticatorAssertionResponse", NativeAssertionResponse);
-  Reflect.set(root, "AuthenticatorAttestationResponse", NativeAttestationResponse);
-  Reflect.set(root, "atob", (value: string): string => Buffer.from(value, "base64").toString("binary"));
-  Reflect.set(root, "btoa", (value: string): string => Buffer.from(value, "binary").toString("base64"));
-  Reflect.set(root, "fetch", fetchImpl);
-  Reflect.set(root, "open", (): unknown => ({ location: { href: "" }, opener: null, close: (): void => undefined }));
 }
 
 function databaseReadout(
@@ -433,41 +262,6 @@ function databaseReceiptArchive(): BrowserDatabaseReceiptArchivePort {
   };
 }
 
-function databaseReceiptSync(): {
-  readonly runtime: BrowserDatabaseReceiptSyncRuntime;
-  readonly calls: { submissions: number; polls: number };
-} {
-  const calls = { submissions: 0, polls: 0 };
-  let readout: BrowserDatabaseReceiptSyncReadout = {
-    schema: "zeta.browser-database-receipt-sync-readout.v1",
-    status: "idle",
-    databaseNodeId: "zeta-darkhall-browser-node:database",
-    archiveNodeId: "zeta-darkhall-browser-node:database:receipts",
-    receiptCount: 2,
-    highWaterSequence: 1,
-    contentHash: "blake3:" + "1".repeat(64),
-    proposal: null,
-    handoff: null,
-    feedback: null,
-  };
-  return {
-    calls,
-    runtime: {
-      read: () => ({ ...readout }),
-      submitFromUserActivation: () => {
-        calls.submissions += 1;
-        readout = { ...readout, status: "presented" };
-        return Promise.resolve({ ok: true, value: { ...readout } });
-      },
-      pollAcceptance: () => {
-        calls.polls += 1;
-        readout = { ...readout, status: "pending" };
-        return Promise.resolve({ ok: true, value: { ...readout } });
-      },
-    },
-  };
-}
-
 async function waitFor(predicate: () => boolean): Promise<void> {
   for (let attempt = 0; attempt < 100; attempt += 1) {
     if (predicate()) return;
@@ -477,56 +271,6 @@ async function waitFor(predicate: () => boolean): Promise<void> {
 }
 
 describe("Dark Hall active browser page", () => {
-  test("checkpoints and recovers the active room through an injected durable port", async () => {
-    const records = new Map<string, BrowserCheckpointRecord>();
-    const firstRoot = new NativeBrowserRoot();
-    const firstPort = new SharedMemoryCheckpointPort(records);
-    const first = await startNativeDarkHallBrowserPageRuntime({
-      root: firstRoot,
-      roomCheckpoint: firstPort,
-      databaseIntentOutbox: databaseIntentOutbox(),
-      databaseReceiptArchive: databaseReceiptArchive(),
-      databaseExecutor,
-    });
-
-    expect(first).toMatchObject({ ok: true, value: {} });
-    if (!first.ok) return;
-    expect(first.value.read().durability).toMatchObject({ recoveredRevision: null, currentRevision: null });
-    const checkpointed = await first.value.checkpointRoom(3, {
-      ...DARK_HALL_BROWSER_PAGE_TRANSCRIPT,
-      roomName: "recovered active room",
-      ticks: [
-        ...DARK_HALL_BROWSER_PAGE_TRANSCRIPT.ticks,
-        { tick: 3, phase: "measure", event: "persist active room", outcome: "ok" },
-      ],
-    });
-    expect(checkpointed).toMatchObject({ ok: true, value: { durability: { currentRevision: 3 } } });
-    expect(firstRoot.mount.innerHTML).toContain("recovered active room");
-    expect(first.value.stop()).toMatchObject({ ok: true });
-    expect(firstPort.closed).toBe(true);
-
-    const secondRoot = new NativeBrowserRoot();
-    const secondPort = new SharedMemoryCheckpointPort(records);
-    const second = await startNativeDarkHallBrowserPageRuntime({
-      root: secondRoot,
-      roomCheckpoint: secondPort,
-      databaseIntentOutbox: databaseIntentOutbox(),
-      databaseReceiptArchive: databaseReceiptArchive(),
-      databaseExecutor,
-    });
-
-    expect(second).toMatchObject({
-      ok: true,
-      value: {},
-    });
-    if (!second.ok) return;
-    expect(second.value.read().durability).toMatchObject({ recoveredRevision: 3, currentRevision: 3 });
-    expect(secondRoot.mount.innerHTML).toContain("recovered active room");
-    expect(secondRoot.mount.innerHTML).toContain("persist active room");
-    expect(second.value.stop()).toMatchObject({ ok: true });
-    expect(secondPort.closed).toBe(true);
-  });
-
   test("hydrates before live, publishes bounded writes, and projects the database readout", async () => {
     const root = new NativeBrowserRoot();
     const requests: ZetaDbTickRequest[] = [];
@@ -986,159 +730,6 @@ describe("Dark Hall active browser page", () => {
     }
   });
 
-  test("keeps signed submission on the explicit control while lifecycle events only poll acceptance", async () => {
-    const root = new NativeBrowserRoot();
-    const sync = databaseReceiptSync();
-    const started = await startNativeDarkHallBrowserPage({
-      root,
-      databaseIntentOutbox: databaseIntentOutbox(),
-      databaseReceiptArchive: databaseReceiptArchive(),
-      databaseReceiptSync: sync.runtime,
-      databaseExecutor,
-    });
-
-    expect(started.ok).toBe(true);
-    if (!started.ok) return;
-    await waitFor(() => sync.calls.polls === 1);
-    expect(sync.calls).toEqual({ submissions: 0, polls: 1 });
-    expect(started.value.read()).toMatchObject({
-      receiptHandoff: null,
-      receiptSync: {
-        status: "live",
-        polls: 1,
-        submissions: 0,
-        synchronization: { status: "pending", receiptCount: 2 },
-        last: { operation: "poll", trigger: "startup" },
-      },
-    });
-
-    root.receiptSync.click();
-    await waitFor(() => sync.calls.submissions === 1);
-    expect(sync.calls).toEqual({ submissions: 1, polls: 1 });
-    expect(root.receiptSync.attributes.get("data-receipt-sync-trigger")).toBe("user-activation");
-
-    root.emitDocument("visibilitychange", {});
-    await waitFor(() => sync.calls.polls === 2);
-    expect(sync.calls).toEqual({ submissions: 1, polls: 2 });
-    expect(root.receiptSync.attributes.get("data-receipt-sync-trigger")).toBe("visibilitychange");
-    expect(started.value.stop().ok).toBe(true);
-  });
-
-  test("selects the source-owned native receipt synchronization path when the browser supports every edge", async () => {
-    const root = new NativeBrowserRoot();
-    const fetches: { readonly input: string; readonly init: RequestInit }[] = [];
-    enableNativeReceiptSync(root, (input, init) => {
-      fetches.push({ input: input.toString(), init: init ?? {} });
-      return Promise.resolve(new Response(null, { status: 404 }));
-    });
-    const maintenance: BrowserDatabaseReceiptArchiveMaintenancePort = {
-      read: () =>
-        Promise.resolve({
-          ok: true,
-          value: {
-            schema: "zeta.browser-database-receipt-archive-snapshot.v1",
-            databaseNodeId: "zeta-darkhall-browser-node:database",
-            archiveNodeId: "zeta-darkhall-browser-node:database:receipts",
-            archiveRevision: 1,
-            receiptPayloadBytes: 64,
-            limits: { maxDeltas: 1, maxEntries: 8, maxCheckpointBytes: 32 * 1024 },
-            receipts: [
-              {
-                schema: "zeta.browser-database-execution-receipt.v1",
-                databaseNodeId: "zeta-darkhall-browser-node:database",
-                intentId: "event/0",
-                sequence: 0,
-                status: "settled",
-                executorId: "tab-a",
-                executorKind: "browser-tab",
-                revision: 1,
-                accepted: 1,
-                duplicates: 0,
-                deltaCount: 1,
-              },
-            ],
-            generation: null,
-          },
-        }),
-      compactGeneration: () => Promise.reject(new Error("an absent accepted record must not compact")),
-    };
-    const started = await startNativeDarkHallBrowserPage({
-      root,
-      databaseIntentOutbox: databaseIntentOutbox(),
-      databaseReceiptArchive: databaseReceiptArchive(),
-      databaseReceiptArchiveMaintenance: maintenance,
-      databaseReceiptHandoffLimits: { minimumReceipts: 1, maxReceipts: 8, maxBatchBytes: 32 * 1024 },
-      databaseExecutor,
-    });
-
-    expect(started.ok).toBe(true);
-    if (!started.ok) return;
-    await waitFor(() => started.value.read().receiptSync?.last !== null);
-    expect(started.value.read()).toMatchObject({
-      receiptHandoff: null,
-      receiptSync: {
-        status: "live",
-        synchronization: { status: "pending", receiptCount: 1 },
-        last: { operation: "poll", trigger: "startup", outcome: "complete" },
-      },
-    });
-    expect(fetches[0]).toMatchObject({
-      input: "https://lucent-financial-group.github.io/Zeta/hall/room/data/browser-receipts/index.json",
-      init: { method: "GET", credentials: "omit", cache: "no-store", redirect: "error" },
-    });
-    root.receiptSync.click("enroll");
-    await waitFor(() => started.value.read().receiptSync?.enrollments === 1);
-    expect(started.value.read().receiptSync).toMatchObject({
-      enrollments: 1,
-      enrollment: {
-        schema: "zeta.proposal-passkey-enrollment.v1",
-        credentialId: Buffer.from([7, 8, 9]).toString("base64url"),
-      },
-      last: { operation: "enroll", trigger: "user-activation", outcome: "complete" },
-    });
-    expect(root.receiptSync.enrollmentOutput.textContent).toContain('"schema": "zeta.proposal-passkey-enrollment.v1"');
-    expect(started.value.stop().ok).toBe(true);
-  });
-
-  test("refuses signed synchronization beside the legacy direct handoff", async () => {
-    const root = new NativeBrowserRoot();
-    const sync = databaseReceiptSync();
-    const result = await startNativeDarkHallBrowserPage({
-      root,
-      databaseIntentOutbox: databaseIntentOutbox(),
-      databaseReceiptArchive: databaseReceiptArchive(),
-      databaseReceiptSync: sync.runtime,
-      databaseReceiptHandoff: {
-        read: () => ({
-          schema: "zeta.browser-database-receipt-handoff-readout.v1",
-          status: "idle",
-          databaseNodeId: "db",
-          archiveNodeId: "archive",
-          targetNodeId: "target",
-          archiveRevision: 0,
-          retainedReceipts: 0,
-          releasedReceipts: 0,
-          receiptPayloadBytes: 0,
-          highWaterSequence: null,
-          contentHash: null,
-          disposition: null,
-          feedback: null,
-        }),
-        handoff: () => Promise.reject(new Error("must not run")),
-      },
-      databaseExecutor,
-    });
-
-    expect(result).toMatchObject({
-      ok: false,
-      feedback: {
-        code: "page-configuration-invalid",
-        detail: "Signed receipt synchronization cannot share the page with a direct receipt handoff or receipt peer.",
-      },
-    });
-    expect(sync.calls).toEqual({ submissions: 0, polls: 0 });
-  });
-
   test("refuses invalid page configuration before registering a worker", async () => {
     const root = new NativeBrowserRoot();
     root.location.search = "?tab=tab-a&sequence=-1";
@@ -1233,9 +824,6 @@ describe("Dark Hall active browser page", () => {
     const document = renderDarkHallBrowserNodeDocument();
 
     expect(document).toContain('<link rel="manifest" href="./manifest.webmanifest">');
-    expect(document).toContain('<section id="darkhall-receipt-sync" class="zeta-receipt-sync"');
-    expect(document).toContain("data-receipt-sync-enroll");
-    expect(document).toContain("data-receipt-sync-submit");
     expect(document).toContain('<section id="darkhall-row-command-editor" class="zeta-row-command-editor"');
     expect(document).toContain("data-row-command-key");
     expect(document).toContain("data-row-command-payload");

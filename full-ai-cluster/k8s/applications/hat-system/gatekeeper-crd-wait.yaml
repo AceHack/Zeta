@@ -56,45 +56,9 @@ spec:
     spec:
       serviceAccountName: gatekeeper-crd-wait
       restartPolicy: Never
-      # REQUIRED, not defensive. This namespace sets
-      # pod-security.kubernetes.io/enforce: restricted (namespace.yaml), and
-      # this pod template carried no securityContext at all -- so the pod was
-      # REJECTED AT ADMISSION and this Job could never run. Measured in CI:
-      #   pods "wait-gatekeeper-hat-constraint-crds-..." is forbidden:
-      #   violates PodSecurity "restricted:latest": allowPrivilegeEscalation
-      #   != false, unrestricted capabilities, runAsNonRoot != true,
-      #   seccompProfile
-      # all four at once. Matches the fields the sibling deployment.yaml
-      # already sets, so the namespace has one shape rather than two.
-      securityContext:
-        runAsNonRoot: true
-        runAsUser: 1001
-        seccompProfile:
-          type: RuntimeDefault
-      # readOnlyRootFilesystem is NOT one of the four things `restricted`
-      # requires -- it is carried over from deployment.yaml as defence in
-      # depth. It costs kubectl its writable discovery cache under $HOME,
-      # so the cache is pointed at an emptyDir instead. Without this the fix
-      # would trade an admission failure for a runtime one.
-      volumes:
-        - name: kubecache
-          emptyDir: {}
       containers:
         - name: wait
           image: bitnami/kubectl:1.32.3
-          securityContext:
-            allowPrivilegeEscalation: false
-            readOnlyRootFilesystem: true
-            capabilities:
-              drop: [ ALL ]
-          env:
-            - name: HOME
-              value: /tmp/kubecache
-            - name: KUBECACHEDIR
-              value: /tmp/kubecache/.kube/cache
-          volumeMounts:
-            - name: kubecache
-              mountPath: /tmp/kubecache
           command:
             - /bin/bash
             - -ec

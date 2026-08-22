@@ -11,7 +11,6 @@ import { spawnSync } from "node:child_process";
 import { existsSync, readFileSync } from "node:fs";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
-import { classifyExit, describeDisposition, type ExitDisposition } from "../hygiene/signal-death.ts";
 
 const here = dirname(fileURLToPath(import.meta.url));
 // 3 levels up from src/Core.TypeScript/lint/ to repo root.
@@ -38,9 +37,17 @@ export function packageBaseName(specifier: string): string {
 /** Every dependency name declared in the root package.json, any section. */
 function declaredDependencies(repoRoot: string): ReadonlySet<string> {
   try {
-    const pkg = JSON.parse(readFileSync(join(repoRoot, "package.json"), "utf8")) as Record<string, unknown>;
+    const pkg = JSON.parse(readFileSync(join(repoRoot, "package.json"), "utf8")) as Record<
+      string,
+      unknown
+    >;
     const names = new Set<string>();
-    for (const section of ["dependencies", "devDependencies", "optionalDependencies", "peerDependencies"]) {
+    for (const section of [
+      "dependencies",
+      "devDependencies",
+      "optionalDependencies",
+      "peerDependencies",
+    ]) {
       const block = pkg[section];
       if (block && typeof block === "object") {
         for (const name of Object.keys(block as Record<string, unknown>)) names.add(name);
@@ -97,25 +104,13 @@ interface Step {
   readonly cmd: readonly [string, ...string[]];
 }
 
-// Execute TypeScript under Node. Bun 1.3.14 can crash during teardown after a
-// successful large-repository traversal, turning a clean check into SIGTRAP.
-export const TYPESCRIPT_COMPILER_COMMAND: readonly [string, ...string[]] = [
-  "node",
-  "node_modules/typescript/bin/tsc",
-  "--noEmit",
-  "--pretty",
-  "false",
-  "-p",
-  "tsconfig.json",
+const STEPS: readonly Step[] = [
+  { label: "TypeScript type check: tsc", cmd: ["bun", "x", "tsc", "--noEmit", "-p", "tsconfig.json"] },
 ];
-
-const STEPS: readonly Step[] = [{ label: "TypeScript type check: tsc", cmd: TYPESCRIPT_COMPILER_COMMAND }];
 
 function run(step: Step): boolean {
   console.log(`=== ${step.label} ===`);
   const [bin, ...args] = step.cmd;
-  let crashedOnFirstAttempt: ExitDisposition | null = null;
-
   for (let attempt = 1; attempt <= 2; attempt++) {
     const result = spawnSync(bin, args, {
       cwd: REPO_ROOT,
@@ -125,39 +120,19 @@ function run(step: Step): boolean {
     process.stdout.write(result.stdout ?? "");
     process.stderr.write(result.stderr ?? "");
 
-    const disposition = classifyExit(result);
-
-    if (disposition.kind === "never-started") {
-      console.error(`✗ ${step.label}: failed to start — ${disposition.message}`);
+    if (result.error) {
+      console.error(`✗ ${step.label}: failed to start — ${result.error.message}`);
       return false;
     }
-    if (disposition.kind === "completed") {
-      // A RETRY BOUNDS DURATION, NOT CORRECTNESS. If the first attempt died on
-      // a signal, the green second attempt must not erase that — otherwise a
-      // nondeterministic crash is laundered into a silent pass and nobody ever
-      // learns the rate. Say it out loud, on the success path, every time.
-      if (crashedOnFirstAttempt !== null) {
-        console.warn(
-          `⚠ ${step.label}: PASSED ON RETRY after ${describeDisposition(crashedOnFirstAttempt)}. ` +
-            "This run is NOT clean — a toolchain process crashed on identical input. " +
-            "Record it (docs/research/2026-08-15-139-and-134-are-signal-deaths-*.md) — 147 such crashes were\n" +
-            "counted across every runtime on one machine in the week this was written, and a crash nobody\n" +
-            "records is a data point missing from the series that finds the cause.",
-        );
-      }
+    if (result.status === 0) {
       return true;
     }
-    if (attempt === 1 && disposition.kind === "signal") {
-      crashedOnFirstAttempt = disposition;
-      console.warn(`↻ ${step.label}: ${describeDisposition(disposition)} — retrying ONCE`);
+    if (attempt === 1 && result.signal !== null) {
+      console.warn(`↻ ${step.label}: retrying once after child process signal ${result.signal}`);
       continue;
     }
 
-    if (disposition.kind === "signal") {
-      console.error(`✗ ${step.label}: ${describeDisposition(disposition)} on both attempts`);
-    } else {
-      console.error(`✗ ${step.label}: exited with code ${disposition.code}`);
-    }
+    console.error(`✗ ${step.label}: exited with code ${result.status ?? "signal"}`);
     // 081KZKWB1FZ: before the caller treats this as a type-error failure, say
     // plainly when the real cause is an unprovisioned checkout.
     reportUnprovisionedEnvironment(`${result.stdout ?? ""}${result.stderr ?? ""}`);

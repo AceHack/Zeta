@@ -123,10 +123,6 @@ agda tier=standard
 #   Verified: brew formula `wabt` (2.0.36). Idempotent.
 wabt
 #
-# lua: Lua 5.4 bytecode/script substrate (Oracle 15). Homebrew's formula is the
-# macOS peer of apt's lua5.4 and the Windows manifest's lua package.
-lua
-#
 # binaryen: wasm-opt, wasm-as, wasm-dis — WASM optimizer and toolchain.
 #   Used by AssemblyScript (asc) internally. Bottled arm64+x86_64.
 #   Verified: brew formula `binaryen` (119). Idempotent.
@@ -154,11 +150,10 @@ zig
 llvm tier=standard
 
 # ── Rust (rustup) — wasm32-unknown-unknown target ─────────────────────────────
-# rustup is the canonical Rust toolchain manager. The wasm32 target needs no
-# manual `rustup target add` step: it is DECLARED on the mise rust entry
-# (`targets = ["wasm32-unknown-unknown"]`), so `mise install` provisions it.
+# rustup is the canonical Rust toolchain manager. The wasm32 target is added
+# via `rustup target add wasm32-unknown-unknown` after install.
 # NOTE: brew has a `rust` formula but it does NOT include rustup or target mgmt.
-# Use the official rustup.rs installer (already in mise via the `rust` entry).
+# Use the official rustup.rs installer (already in mise via `rust = "1.87.0"`).
 # rust — installed via mise rust plugin (wraps rustup, not brew)
 
 # ── pandoc (document conversion — book/EPUB build) ────────────────────────────
@@ -167,37 +162,3 @@ llvm tier=standard
 # single-source-of-truth discipline (the maintainer 2026-08-06: "download whatever
 # tools we need and link them in our declarative installers for all our OS shields").
 pandoc tier=standard
-
-# ── YubiKey hardware-token substrate ──────────────────────────────────────────
-# macOS counterpart of the block appended to manifests/apt. Deliberately SHORTER
-# than the apt block, and the asymmetry is the point:
-#
-#   - no pcscd/libpcsclite1: macOS ships its own CCID stack (verified on the
-#     maintainer's host -- the YubiKey appears under SPSmartCardsDataType with an
-#     Apple ifd-ccid driver and no daemon installed by us).
-#   - no yubihsm-shell FORMULA: there is none. `brew info yubihsm-shell` resolves
-#     to nothing (re-checked 2026-08-20 against formulae.brew.sh -- still 404, as
-#     is yubihsm-connector). Yubico ships the YubiHSM SDK as a macOS .pkg, which
-#     is why the working copy on the maintainer's host lives at /usr/local/bin
-#     rather than /opt/homebrew/bin -- it did not come from a brew FORMULA.
-#
-#     SUPERSEDED 2026-08-20: it comes from a brew CASK. `yubihsm2-sdk` is in
-#     homebrew/cask (version 2026-04) and installs that exact Yubico .pkg with a
-#     digest Homebrew maintains. The row is in manifests/brew-cask, where the
-#     evidence and the correction are written up in full. The paragraph above is
-#     kept because the 404s it reports are still true; what was wrong was the
-#     conclusion drawn from them -- a formula-namespace miss read as "no package".
-#
-# Verified against brew 2026-08-20: ykman 5.9.2, yubico-piv-tool 2.7.3.
-ykman             # YubiKey CLI — PIV/FIDO2/OpenPGP/YubiHSM-Auth applet management
-yubico-piv-tool   # PIV slot + attestation tooling
-
-# OpenSC — `pkcs11-tool`, the generic PKCS#11 CLI. MEASURED MISSING on the
-# maintainer's host 2026-08-20 (`pkcs11-tool` not on PATH) while ykman and the
-# YubiHSM SDK were present, which is the specific asymmetry this row closes: the
-# SDK ships yubihsm_pkcs11.dylib and nothing in the declared toolchain could load
-# a PKCS#11 module. It is also the vendor-neutral half — the same binary drives a
-# YubiKey PIV slot through OpenSC's own module and a YubiHSM through Yubico's, so
-# a contributor is not locked to one vendor's CLI to exercise either device.
-# Verified against the Homebrew API 2026-08-20: formula `opensc` 0.27.1, LGPL-2.1-or-later.
-opensc            # pkcs11-tool + PKCS#11 module — vendor-neutral smartcard/HSM CLI

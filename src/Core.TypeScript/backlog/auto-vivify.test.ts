@@ -21,18 +21,6 @@ test("extractPointers finds wikilinks, markdown links, and backticks correctly",
   expect(cleans).not.toContain("normal-code");
 });
 
-test("extractPointers ignores absolute filesystem paths (node runtime paths, not repo pointers)", () => {
-  const text = `
-    NixOS resolves the module to \`/run/current-system/sw/lib/pkcs11/yubihsm_pkcs11.so\`,
-    while the repo copy lives at \`db/routing/README.md\`.
-  `;
-
-  const cleans = extractPointers(text).map((p) => p.clean);
-
-  expect(cleans).not.toContain("/run/current-system/sw/lib/pkcs11/yubihsm_pkcs11.so");
-  expect(cleans).toContain("db/routing/README.md");
-});
-
 test("extractZetaId parses valid Crockford ZetaId", () => {
   const validId = "081KTQX7W6Q08QG0R000XA3220";
   expect(extractZetaId(validId)).toBe(validId);

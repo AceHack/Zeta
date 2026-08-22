@@ -89,8 +89,6 @@ describe("browser room checkpoint codec", () => {
       browserTabReadout: {} as never,
       browserTransportReadout: {} as never,
       databaseReadout: {} as never,
-      causalReadout: {} as never,
-      causalHandoffReadout: {} as never,
     });
 
     expect(result).toEqual({
@@ -99,7 +97,7 @@ describe("browser room checkpoint codec", () => {
         severity: "backpressure",
         code: "room-checkpoint-non-durable-state",
         detail:
-          "Room checkpoint input contains non-durable fields: browserTabReadout, browserTransportReadout, causalHandoffReadout, causalReadout, databaseReadout. Recompute them after recovery.",
+          "Room checkpoint input contains non-durable fields: browserTabReadout, browserTransportReadout, databaseReadout. Recompute them after recovery.",
       },
     });
   });

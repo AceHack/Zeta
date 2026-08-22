@@ -133,27 +133,17 @@ footer code { color: var(--dim); }
 </div>
 
 <div class="panel">
-  <h2>Platform drift <span class="note" id="platnote"></span></h2>
-  <div id="platform"><p class="empty">Loading platform drift…</p></div>
-</div>
-
-<div class="panel">
   <h2>Recent activity</h2>
   <div id="timeline"><p class="empty">Loading tick history…</p></div>
 </div>
 
 <footer>
-  Data: <code>data/tick-history.json</code> (derived rollup — the ledger itself is the
-  per-write shard set under <code>data/tick-shards/YYYY/MM/DD/</code>; this file is
-  rebuilt from those shards on every run and bounded to the most recent frames, so a
-  static page still has a single URL to fetch) ·
+  Data: <code>data/tick-history.json</code> (append-only observe ledger) ·
   <code>data/drift-mtth.json</code> (drift-sweep MTTH fold, tick-indexed — the
   drift-and-heal ADR's measurement surface) ·
   <code>data/drift-genome.json</code> + <code>data/drift-evolution.json</code> +
   <code>data/drift-proposal.json</code> (the gyroscope's genome, its shadow
   generation, and the consent proposer — evolution proposes, society disposes) ·
-  <code>data/platform-drift.json</code> (per-leg build matrix drift on main — the read
-  surface for the legs that are non-blocking by decision) ·
   Git is the database · Pages is the API · Tabs are the nodes
 </footer>
 
@@ -332,48 +322,8 @@ async function loadEvolution() {
   }
 }
 
-// The Windows and macOS legs are drift checks — non-blocking by decision
-// (Aaron 2026-08-19), which makes "somebody reads them" the whole load-bearing half
-// of the arrangement. This panel is that reader. Coverage is shown first on purpose:
-// most gate push runs are CANCELLED before their legs execute, so a clean streak
-// counted over pushes rather than over executions would be evidence of nothing.
-async function loadPlatformDrift() {
-  const el = document.getElementById("platform");
-  const d = await fetchFirst(["platform-drift.json", "../data/platform-drift.json"]);
-  if (!d || !d.report) {
-    el.innerHTML = `<p class="empty">No platform data yet — the drift-sweep writes it each tick.</p>`;
-    return;
-  }
-  const r = d.report;
-  const pct = v => `${(v * 100).toFixed(1)}%`;
-  document.getElementById("platnote").textContent =
-    `${r.executedRuns}/${r.runs} push runs executed the matrix (${pct(r.coverage)})`;
-  const legs = r.legs || [];
-  if (!legs.length) {
-    el.innerHTML = `<p class="empty">No legs observed in the window.</p>`;
-    return;
-  }
-  el.innerHTML = legs.map(l => {
-    const chip = l.classification === "blocking"
-      ? `<span class="chip alert">blocks</span>`
-      : l.classification === "non-blocking"
-        ? `<span class="chip">drift check</span>`
-        : `<span class="chip live">no failure seen</span>`;
-    const meta = l.failures > 0
-      ? `<b>${l.failures}</b>/${l.executedRuns} failed · ${pct(l.failureRate)} · clean streak ${l.cleanStreak}`
-      : `0/${l.executedRuns} failed · clean streak ${l.cleanStreak}`;
-    const width = Math.min(100, l.failureRate * 400);
-    return `<div class="drift-row">
-      <span class="drift-rule ${l.failures > 0 ? "open" : ""}">${l.name.replace("build-and-test ", "")}</span>
-      <div class="bar-track"><div class="bar ${l.failures > 0 ? "open" : ""}" style="width:${width}%"></div></div>
-      <span class="drift-meta">${chip} ${meta}</span>
-    </div>`;
-  }).join("");
-}
-
-load(); loadDrift(); loadEvolution(); loadPlatformDrift();
+load(); loadDrift(); loadEvolution();
 setInterval(load, 60000); setInterval(loadDrift, 60000); setInterval(loadEvolution, 60000);
-setInterval(loadPlatformDrift, 60000);
 </script>
 </body>
 </html>

@@ -1,7 +1,6 @@
 import type { Tagged } from "../dynamic-value/types";
 import { type ZSet, type ZEntry, ofEntries } from "../z-set/z-set";
 import { type Expr, serialize as serializeBonsai, parse as parseBonsai } from "../bonsai/bonsai";
-import { stringCompare } from "../collation/collation";
 
 export interface ViewDefinition {
   readonly name: string;
@@ -21,7 +20,7 @@ export interface FileTypePlugin {
  */
 export function compareTagged(a: Tagged, b: Tagged): number {
   if (a.t !== b.t) {
-    return stringCompare(a.t, b.t);
+    return a.t.localeCompare(b.t);
   }
   switch (a.t) {
     case "null":
@@ -37,20 +36,20 @@ export function compareTagged(a: Tagged, b: Tagged): number {
         const bi = BigInt(bv);
         return ai === bi ? 0 : ai > bi ? 1 : -1;
       } catch {
-        return stringCompare(a.v, bv);
+        return a.v.localeCompare(bv);
       }
     }
     case "float": {
       const bv = (b as Extract<Tagged, { t: "float" }>).v;
-      return stringCompare(a.v, bv);
+      return a.v.localeCompare(bv);
     }
     case "str": {
       const bv = (b as Extract<Tagged, { t: "str" }>).v;
-      return stringCompare(a.v, bv);
+      return a.v.localeCompare(bv);
     }
     case "bytes": {
       const bv = (b as Extract<Tagged, { t: "bytes" }>).v;
-      return stringCompare(a.v, bv);
+      return a.v.localeCompare(bv);
     }
     case "arr": {
       const bv = (b as Extract<Tagged, { t: "arr" }>).v;
@@ -63,11 +62,11 @@ export function compareTagged(a: Tagged, b: Tagged): number {
     }
     case "obj": {
       const bv = (b as Extract<Tagged, { t: "obj" }>).v;
-      const aSorted = [...a.v].sort((x, y) => stringCompare(x[0], y[0]));
-      const bSorted = [...bv].sort((x, y) => stringCompare(x[0], y[0]));
+      const aSorted = [...a.v].sort((x, y) => x[0].localeCompare(y[0]));
+      const bSorted = [...bv].sort((x, y) => x[0].localeCompare(y[0]));
       const len = Math.min(aSorted.length, bSorted.length);
       for (let i = 0; i < len; i++) {
-        const kCmp = stringCompare(aSorted[i]![0], bSorted[i]![0]);
+        const kCmp = aSorted[i]![0].localeCompare(bSorted[i]![0]);
         if (kCmp !== 0) return kCmp;
         const vCmp = compareTagged(aSorted[i]![1], bSorted[i]![1]);
         if (vCmp !== 0) return vCmp;

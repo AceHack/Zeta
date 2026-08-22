@@ -1,4 +1,4 @@
-# src/Core.TypeScript/inventory/
+# tools/inventory/
 
 Reusable utilities for inventory + asset tracking.
 
@@ -22,9 +22,9 @@ Outputs go to `~/.local/share/zeta-inventory/amazon/<year>/`:
 ### Usage
 
 ```bash
-bun src/Core.TypeScript/inventory/amazon-orders-extract.ts            # current year
-bun src/Core.TypeScript/inventory/amazon-orders-extract.ts 2025       # specific year
-bun src/Core.TypeScript/inventory/amazon-orders-extract.ts 2025 --restart   # ignore partial
+bun tools/inventory/amazon-orders-extract.ts            # current year
+bun tools/inventory/amazon-orders-extract.ts 2025       # specific year
+bun tools/inventory/amazon-orders-extract.ts 2025 --restart   # ignore partial
 ```
 
 First run auto-installs `playwright` + the chromium binary.

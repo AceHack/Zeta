@@ -101,37 +101,6 @@ in
       description = "Path to file containing the USB UUID used as KDF binding (iter-4.2 ESP write).";
     };
 
-    usbISerialPath = lib.mkOption {
-      type = lib.types.str;
-      default = "/etc/zeta/usb-iserial";
-      description = ''
-        Recorded USB iSerial when persist bound that factor
-        (ZETA_BIND_USB_ISERIAL=1). Kind is in factorPath; this file
-        is the material. Not a live sysfs probe at boot.
-      '';
-    };
-
-    uefiKeyfilePath = lib.mkOption {
-      type = lib.types.str;
-      default = "/boot/EFI/ZETA/keyfile";
-      description = ''
-        ESP keyfile when persist bound uefiKeyfile (ZETA_BIND_UEFI_KEYFILE=1).
-        The binding IS this file — not copied to /etc. Install writes it
-        at /mnt/boot/EFI/ZETA/keyfile; after reboot the same ESP is /boot.
-        Missing file = fail closed (no UUID fallback).
-      '';
-    };
-
-    factorPath = lib.mkOption {
-      type = lib.types.str;
-      default = "/boot/zeta-creds.factor";
-      description = ''
-        Sidecar next to the cred blob naming the binding factor kind
-        (usbUuid / usbISerial / uefiKeyfile). Persist writes it. Missing
-        file = usbUuid (backward compatible). Does not contain KDF material.
-      '';
-    };
-
     passphraseMode = lib.mkOption {
       type = lib.types.enum [ "file" "interactive" ];
       default = "file";
@@ -216,44 +185,12 @@ in
 
           log_restore "zeta-creds-restore: reading preserved ESP blob"
 
-          FACTOR="usbUuid"
-          if [ -f ${cfg.factorPath} ]; then
-            FACTOR="$(tr -d '[:space:]' < ${cfg.factorPath})"
-          fi
-          BIND_FLAG="--usb-uuid"
-          BIND_VALUE=""
-          if [ "$FACTOR" = "usbISerial" ]; then
-            if [ ! -s ${cfg.usbISerialPath} ]; then
-              log_restore "zeta-creds-restore: usb iSerial recorded but serial file missing; aborting (refusing UUID fallback)"
-              exit 1
-            fi
-            BIND_VALUE="$(tr -d '\r\n' < ${cfg.usbISerialPath})"
-            if [ -z "$BIND_VALUE" ]; then
-              log_restore "zeta-creds-restore: usb iSerial recorded but serial file missing; aborting (refusing UUID fallback)"
-              exit 1
-            fi
-            BIND_FLAG="--usb-iserial"
-            log_restore "zeta-creds-restore: binding-factor usbISerial (recorded; not a live probe)"
-          elif [ "$FACTOR" = "uefiKeyfile" ]; then
-            if [ ! -s ${cfg.uefiKeyfilePath} ]; then
-              log_restore "zeta-creds-restore: uefiKeyfile recorded but ESP keyfile missing; aborting (refusing UUID fallback)"
-              exit 1
-            fi
-            BIND_FLAG="--uefi-keyfile"
-            BIND_VALUE="${cfg.uefiKeyfilePath}"
-            log_restore "zeta-creds-restore: binding-factor uefiKeyfile (ESP file; not copied to /etc)"
-          elif [ -n "$FACTOR" ] && [ "$FACTOR" != "usbUuid" ]; then
-            log_restore "zeta-creds-restore: unknown binding-factor; aborting"
+          # Strip whitespace from UUID (Copilot P1 finding): `cat`
+          # includes trailing newline if file ends with one.
+          USB_UUID="$(tr -d '[:space:]' < ${cfg.usbUuidPath})"
+          if [ -z "$USB_UUID" ]; then
+            log_restore "zeta-creds-restore: empty USB UUID at ${cfg.usbUuidPath}; aborting"
             exit 1
-          else
-            # Strip whitespace from UUID (Copilot P1 finding): `cat`
-            # includes trailing newline if file ends with one.
-            BIND_VALUE="$(tr -d '[:space:]' < ${cfg.usbUuidPath})"
-            if [ -z "$BIND_VALUE" ]; then
-              log_restore "zeta-creds-restore: empty USB UUID at ${cfg.usbUuidPath}; aborting"
-              exit 1
-            fi
-            log_restore "zeta-creds-restore: binding-factor usbUuid (default)"
           fi
 
           ${
@@ -294,14 +231,14 @@ in
           # Tee CLI stdout/stderr so "already-present" / "wrote N" hit serial.
           if [ -n "$_serial" ]; then
             ${bunShimPath} ${cfg.scriptPath} \
-              "$BIND_FLAG" "$BIND_VALUE" \
+              --usb-uuid "$USB_UUID" \
               --input ${cfg.blobPath} \
               --passphrase-file "$PASSPHRASE_PATH" \
               --target-root / \
               $PERSONA_ARGS 2>&1 | ${pkgs.coreutils}/bin/tee -a "$_serial"
           else
             ${bunShimPath} ${cfg.scriptPath} \
-              "$BIND_FLAG" "$BIND_VALUE" \
+              --usb-uuid "$USB_UUID" \
               --input ${cfg.blobPath} \
               --passphrase-file "$PASSPHRASE_PATH" \
               --target-root / \

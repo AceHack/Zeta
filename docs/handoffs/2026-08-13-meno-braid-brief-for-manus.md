@@ -5,41 +5,6 @@ the open problems is reproduced inline. Nothing below requires reading our code.
 
 **What we want back:** answers to §5. A clean *negative* is as valuable as a positive — see §6.
 
-> **STATUS 2026-08-14 — ANSWERED IN-HOUSE. Do not re-send this brief as-is.**
-> Q1 and Q3 are settled; Q4 is answered. Sending this unchanged would spend an
-> external model's round on a solved problem, and its §5 framing of Q1 contains
-> the misreading that caused the confusion.
->
-> - **Q3 (checked first, as it gates Q1).** The obstruction is **NOT real** as
->   stated: the ambient `⊗_Kronecker` is not cartesian (it is not the product in
->   `Mod_ℤ`, and `unitObject` is not terminal), so Mathlib's
->   `Subsingleton (SymmetricCategory C)` does not apply. `braidR` is a braiding of
->   `⟨V⟩`, which is exactly the scope the code already claims. The premise "our
->   ambient tensor is described in our own source as cartesian" misreads
->   `Meno.fs:38`, which says the **deterministic subcategory** is cartesian. That
->   adjacent obstruction is real and sharper — see the note below.
-> - **Q1.** `⟨V⟩` **IS balanced**, uniquely, with `θ_{V^n} = ρ(Δₙ²)` (Garside full
->   twist). `θ_V = id` is forced and correct, not degenerate. The reviews' worry
->   came from reading the axiom as `θ_{A⊗B} = θ_A ⊗ θ_B`; the real axiom is
->   `θ_{A⊗B} = (θ_A ⊗ θ_B) ∘ c_{B,A} ∘ c_{A,B}`, so `θ_V = id` forces
->   `θ_{V⊗V} = c²`, not `c² = id`. CHECKED for all `m+n ≤ 7` by two independent
->   implementations, four planted mutants rejected.
-> - **Q4.** Balanced was worth the effort (it cost hours and it closed a line).
->   Above it buys nothing we need — ribbon's Markov trace is strictly weaker than
->   the faithful `Braid.equal` we already ship. **Stop here.**
->
-> Full verdicts + the sharper Q3 finding (a cartesian category has a unique
-> *braiding*, not merely a unique symmetric structure, so `⟨V⟩` must never admit
-> copy/discard): the `MenoBraided.fs` module docstring. Follow-on work:
-> `081KZZVC3DD087G0R0035SZN58` (Lean certificate), `081KZZVC6SE087G0R001SXE8BV`
-> (the copy/discard guard).
->
-> **Q2 (framed promotion) remains genuinely open** and is the only part still
-> worth an external round — but note it is now a *curiosity*, not a blocker:
-> `⟨V⟩` is already balanced without framing. The framed promotion would give the
-> free *balanced* category on one object (ribbon braids, `ℤⁿ ⋊ Bₙ`, where
-> `θ_V ≠ id`), which is a strictly larger object than we need.
-
 ---
 
 ## 1. The object

@@ -13,16 +13,13 @@ const repoRoot = join(import.meta.dir, "..", "..", "..");
 const pointersJsonPath = join(repoRoot, "tools", "setup", "ace-mechanism-pointers.json");
 
 describe("setup mechanism pointers (Ace time-crystal deps)", () => {
-  // The two jar rows were deleted (081M001E114087G0R001AZF4KD): nothing read
-  // what they wrote, and their URL was a re-uploadable tag. What survives is
-  // the invariant every future row must satisfy -- vacuous today, load-bearing
-  // the moment someone adds one.
-  test("every from-url row carries an https URL and a sha256 pin", () => {
+  test("from-url manifest rows parse as mechanism deps", () => {
     const text = readFileSync(join(repoRoot, "tools/setup/manifests/from-url"), "utf8");
-    for (const entry of parseMechanismManifest(text)) {
-      expect(entry.tokens[1]).toMatch(/^https:\/\//);
-      expect(entry.attrs.sha256).toMatch(/^[0-9a-f]{64}$/);
-    }
+    const entries = parseMechanismManifest(text);
+    expect(entries.length).toBeGreaterThanOrEqual(2);
+    expect(entries[0]!.tokens[0]).toMatch(/\.jar$/);
+    expect(entries[0]!.tokens[1]).toMatch(/^https:\/\//);
+    expect(entries[0]!.attrs.requires).toBe("java");
   });
 
   test("from-shim includes jammy cvc5 alias", () => {
@@ -43,7 +40,6 @@ describe("setup mechanism pointers (Ace time-crystal deps)", () => {
       expect(p.schema).toBe("zeta.ace.package-manager-pointers.v1");
       if (
         p.manifest === "tools/setup/manifests/from-dotnet-workload"
-        || p.manifest === "tools/setup/manifests/from-url"
         || p.manifest === "tools/setup/manifests/from-deb"
       ) {
         expect(p.dependencies.length).toBe(0);

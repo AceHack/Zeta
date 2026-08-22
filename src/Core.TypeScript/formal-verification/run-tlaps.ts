@@ -13,14 +13,14 @@
 // discipline. The difference: tlapm PROVES (∀), tlc CHECKS (bounded ∃-search).
 //
 // Usage:
-//   bun src/Core.TypeScript/formal-verification/run-tlaps.ts <SpecName>
+//   bun tools/formal-verification/run-tlaps.ts <SpecName>
 //     Prove all obligations in tools/tla/specs/<SpecName>.tla.
 //
-//   bun src/Core.TypeScript/formal-verification/run-tlaps.ts --all
+//   bun tools/formal-verification/run-tlaps.ts --all
 //     Prove every spec in the curated PROOF catalogue (specs that carry
 //     THEOREM ... PROOF blocks). Missing-from-catalogue ⇒ failure (drift).
 //
-//   bun src/Core.TypeScript/formal-verification/run-tlaps.ts --check-toolchain
+//   bun tools/formal-verification/run-tlaps.ts --check-toolchain
 //     Verify tlapm is reachable (for CI gating + dev-local diagnostics).
 //
 // Exit codes (orthogonal — each code has one semantic):
@@ -211,7 +211,7 @@ function runAll(toolchain: Toolchain): ExitCode {
     process.stderr.write("\n--- failure details ---\n");
     for (const fd of failureDetails) {
       process.stderr.write(
-        `\n[${fd.spec}] (rerun with: bun src/Core.TypeScript/formal-verification/run-tlaps.ts ${fd.spec})\n`,
+        `\n[${fd.spec}] (rerun with: bun tools/formal-verification/run-tlaps.ts ${fd.spec})\n`,
       );
       const tail = fd.result.stdout.split("\n").slice(-30).join("\n");
       process.stderr.write(tail);
@@ -232,9 +232,9 @@ function main(argv: readonly string[]): ExitCode {
 
   if (argv.length === 0 || argv[0] === "--help" || argv[0] === "-h") {
     process.stdout.write("Usage:\n");
-    process.stdout.write("  bun src/Core.TypeScript/formal-verification/run-tlaps.ts <SpecName>\n");
-    process.stdout.write("  bun src/Core.TypeScript/formal-verification/run-tlaps.ts --all\n");
-    process.stdout.write("  bun src/Core.TypeScript/formal-verification/run-tlaps.ts --check-toolchain\n");
+    process.stdout.write("  bun tools/formal-verification/run-tlaps.ts <SpecName>\n");
+    process.stdout.write("  bun tools/formal-verification/run-tlaps.ts --all\n");
+    process.stdout.write("  bun tools/formal-verification/run-tlaps.ts --check-toolchain\n");
     return 0;
   }
 

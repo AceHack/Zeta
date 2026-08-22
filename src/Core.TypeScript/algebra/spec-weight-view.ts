@@ -45,16 +45,7 @@ export interface SpecWeightView {
   readonly state: SpecWeightState;
   /** Record a branch event from the entropy tracker. Rank = nth branch. */
   recordBranch(): void;
-  /**
-   * Record a measurement (flush). Resets the accumulation window **only if bits were actually
-   * erased** — a zero-bit measurement pays nothing, so it discharges nothing.
-   *
-   * The parameter was previously ignored (`_bitsErased`), so `measure(0)` wiped the accumulated
-   * potential exactly as hard as `measure(1000)`. That mattered little while every caller passed a
-   * positive literal; it matters now that reversible operations charge a derived 0
-   * (`erasure-derivation.ts`) — the whole point of a derived zero is that nothing was paid, and a
-   * window that discharges on it is back to accounting by convention.
-   */
+  /** Record a measurement (flush). Resets the accumulation window. */
   recordFlush(bitsErased: number): void;
   /** The current weighted potential (T(n) = n(n-1)/2). */
   readonly potential: number;
@@ -94,11 +85,9 @@ export function createSpecWeightView(): SpecWeightView {
       branches += 1;
     },
 
-    recordFlush(bitsErased: number): void {
-      // The flush "pays" the accumulated potential — but only a flush that actually erased
-      // something has paid anything. A derived-zero measurement (a reversible operation) leaves
-      // the window standing.
-      if (bitsErased > 0) branches = 0;
+    recordFlush(_bitsErased: number): void {
+      // The flush "pays" the accumulated potential. Reset the window.
+      branches = 0;
     },
 
     reset(): void {

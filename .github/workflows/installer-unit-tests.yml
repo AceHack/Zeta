@@ -28,12 +28,6 @@ on:
     types: [opened, reopened, synchronize, ready_for_review]
     paths:
       - "src/Core.TypeScript/installer/**"
-      # Two tests in that directory read zeta-install.sh and execute blocks
-      # extracted from it (disk-preflight-shell-parity.test.ts,
-      # hardware-config-capture.test.ts). Without this path the installer
-      # script could change the very logic they pin and this lane would not
-      # run -- a check that did not run, looking like a check that passed.
-      - "full-ai-cluster/usb-nixos-installer/zeta-install.sh"
       - ".github/workflows/installer-unit-tests.yml"
       - ".mise.toml"
       - "package.json"
@@ -43,12 +37,6 @@ on:
     branches: [main]
     paths:
       - "src/Core.TypeScript/installer/**"
-      # Two tests in that directory read zeta-install.sh and execute blocks
-      # extracted from it (disk-preflight-shell-parity.test.ts,
-      # hardware-config-capture.test.ts). Without this path the installer
-      # script could change the very logic they pin and this lane would not
-      # run -- a check that did not run, looking like a check that passed.
-      - "full-ai-cluster/usb-nixos-installer/zeta-install.sh"
       - ".github/workflows/installer-unit-tests.yml"
       - ".mise.toml"
       - "package.json"
@@ -73,11 +61,6 @@ jobs:
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
       - name: Cache install.sh outputs (mise runtimes + dotnet tools + verifier jars)
-        # The path list and key MUST stay byte-identical to gate.yml's
-        # `install-v2-*` blocks: actions/cache identity is (key, version) and
-        # the version is a hash of the path list, so any divergence silently
-        # forks this into a SECOND ~1.5 GB entry under the same key.
-        # Rust-path rationale lives in the gate.yml header comment.
         uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
           path: |
@@ -87,12 +70,7 @@ jobs:
             ~/.dotnet/tools
             ~/.elan
             ~/.config/zeta
-            ~/.rustup/toolchains/1.87.0-*
-            ~/.rustup/settings.toml
-            ~/.rustup/update-hashes
-            ~/.cargo
-            ~/.cache/zeta/from-autotools-tarball/*.tgz
-          key: install-v2-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('.mise.toml', 'tools/setup/**', 'global.json') }}
+          key: install-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('.mise.toml', 'tools/setup/**', 'global.json') }}
 
       - name: Install toolchain via three-way-parity script (GOVERNANCE §24)
         env:

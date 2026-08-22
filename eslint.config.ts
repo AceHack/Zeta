@@ -104,40 +104,6 @@ export default defineConfig(
     },
     rules: {
       "no-console": "off",
-
-      // ── sonarjs/no-alphabetical-sort: OFF, and this is a correctness decision ──
-      //
-      // The rule's message is: "Provide a compare function that depends on
-      // `String.localeCompare`, to reliably sort elements alphabetically."
-      //
-      // In this repo that advice is **wrong, and actively harmful**.
-      // `.claude/rules/culture-invariant-by-default.md` bans `localeCompare`
-      // outright: it is linguistic and ICU-version-dependent, so two machines can
-      // order the same keys differently — which breaks DST replay and the
-      // N-oracle byte-lock. It is enforced at compiler-error level for C#
-      // (CA1304/1305/1307/1310 in .editorconfig) and, since 2026-08-16, by
-      // `src/Core.TypeScript/hygiene/lint-no-culture-sensitive-collation.ts` for
-      // TypeScript. Leaving this rule on left the two lints in direct
-      // contradiction, with this one telling every agent to introduce the very
-      // call the other one bans.
-      //
-      // It has already bitten: see the comment at
-      // `src/Core.TypeScript/hygiene/unexecuted-test-files.ts:79` —
-      // "NOT localeCompare, which the lint rule suggests".
-      //
-      // Turning it off does not lose anything real. The behaviour it warns about
-      // — bare `Array.prototype.sort()` coercing to string — is **deterministic
-      // here**: ECMA-262 SortCompare with `comparefn` undefined uses ToString plus
-      // the abstract relational comparison, i.e. UTF-16 code-unit order, with no
-      // locale consulted (verified: byte-identical output under `LC_ALL=C` and
-      // `LC_ALL=sv_SE.UTF-8`). The genuine hazard it also covers — numbers sorting
-      // as strings — is caught by `@typescript-eslint`'s type-aware rules, which
-      // have the types to know the difference.
-      //
-      // The canonical comparator is `stringCompare` in
-      // `src/Core.TypeScript/collation/collation.ts` (code point ≡ UTF-8 byte
-      // order — the collation treaty).
-      "sonarjs/no-alphabetical-sort": "off",
     },
   },
   ...typeCheckedConfigOverrides,

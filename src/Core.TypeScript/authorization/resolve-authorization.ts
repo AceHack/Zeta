@@ -7,7 +7,6 @@
  */
 
 import type { PaceInstruction } from "./pace-extractor.ts";
-import { stringCompare } from "../collation/collation";
 
 export interface AuthorizationResult {
   operative: PaceInstruction | null;
@@ -51,7 +50,7 @@ function sortByTimestamp(a: PaceInstruction, b: PaceInstruction): number {
   if (a.timestamp === b.timestamp) return 0;
   if (a.timestamp === null) return -1;
   if (b.timestamp === null) return 1;
-  return stringCompare(a.timestamp, b.timestamp);
+  return a.timestamp.localeCompare(b.timestamp);
 }
 
 export function resolveAuthorization(

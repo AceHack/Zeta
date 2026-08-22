@@ -1,6 +1,3 @@
-
-import { createHash } from "node:crypto";
-
 /**
  * Signature Detector
  * 
@@ -27,9 +24,17 @@ export function detectCausalSignature(mem: Uint8Array, mask: boolean[], display:
     }
   }
 
-  // Hash the Playable Quote footprint + Visual State
-  const hash = createHash("sha256");
-  hash.update(maskedMem);
-  hash.update(displayBytes);
-  return hash.digest("hex").substring(0, 16); // 16-char short signature
+  // FNV-1a Hash implementation (32-bit)
+  let hash = 2166136261;
+  for (let i = 0; i < maskedMem.length; i++) {
+    hash ^= maskedMem[i]!;
+    hash = Math.imul(hash, 16777619);
+  }
+  for (let i = 0; i < displayBytes.length; i++) {
+    hash ^= displayBytes[i]!;
+    hash = Math.imul(hash, 16777619);
+  }
+
+  // Convert to hex string and pad
+  return (hash >>> 0).toString(16).padStart(8, '0');
 }

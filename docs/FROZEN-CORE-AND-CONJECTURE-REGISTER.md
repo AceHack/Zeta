@@ -37,20 +37,10 @@ OR (for non-floor members) a proof / byte-lock / conformance anchor that is clos
 | 12 | **Invariant S1: Topological Soft-Mode Stability** — prevention of belief collapse | The factor graph topology guarantees that no agent can collapse to a Dirac delta (infinite precision). The EP probit factor ensures that product precision strictly exceeds each factor (learning), but product variance is strictly less (bounded confidence). The fixed point is always a proper Gaussian. This is the structural guarantee of **mutual empowerment**: every agent's prior strictly influences the shared marginal, and no agent can become so rigid that it erases the causal power of its neighbors. **✅ PROVEN (FsCheck + Z3), 2026-07-03**: Computational bounds (`SoftMode.Tests.fs` SM-1 to SM-4) + algebraic bounds (`Z3.Laws.Tests.fs` SM-Z3-1 to SM-Z3-5) + Causal Power bridge (`SM-Z3-B1` to `B3`). **✅ Gate T3 CLOSED (FsCheck), 2026-07-03**: `Stream<Gaussian>` satisfies DBSP D∘I=id and I∘D=id over the Gaussian group (natural-parameter multiplication). T3-1 through T3-5 all pass 100/100 (`BeliefStream.Tests.fs`). The belief stream of a Zeta agent is a well-typed DBSP stream; the temporal dimension of mutual empowerment is algebraically sound. | `SoftMode.Tests.fs`, `Z3.Laws.Tests.fs`, `BeliefStream.Tests.fs` |
 | 13 | **Invariant S2: Uptime Stability via Schema Evolution** — 0-downtime structural integrity | Topological soft-mode stability is meaningless if a schema migration forces a cold restart that collapses all in-flight beliefs to their priors. Schema evolution must be an *algebra* over `DynamicValue` that preserves structural invariants across version boundaries. **✅ PROVEN (FsCheck), 2026-07-03**: Forward compat (old reader ignores unknown fields), backward compat (new reader supplies defaults), involutive rename, and composition of migration chains (`SchemaEvolution.Tests.fs`). **✅ S1+S2 temporal integration CLOSED (FsCheck), 2026-07-03**: Schema evolution preserves Gaussian belief properness mid-convergence (not just at rest). SM-6 (Fact) and SM-6b (Property, 100/100) prove that `addField` applied between rounds of `runToFixpoint` leaves the belief proper and numerically identical. The live-migration scenario is formally covered. | `SchemaEvolution.Tests.fs`, `SoftMode.Tests.fs` |
 | 14 | **Tick primitive (Gate T2 / Byte-lock)** — canonical 8-byte big-endian `Versionstamp` codec | The DBSP tick index (`[<Measure>] type tick`) encoded as an unsigned 64-bit integer in network byte order. **✅ PROVEN (4-lang), 2026-07-03**: The codec byte-locks across F#, C#, TypeScript, and Rust via `src/Core.TypeScript/clock/tick-codec-golden-vectors.json`. Gate T2 is formally closed. | `tick-codec-golden-vectors.json` + 4-lang oracles |
-| 15 | **Generalized Condorcet / ΔU-aggregation theorem** — **society > best individual** <br/>*(this is the individual-vs-society ordering result. Search aliases: **individual vs society** · **society greater than individual** · **no individual exceeds the society** · **the collective outperforms its best member** · **ordering** · **dominance** · **mutual empowerment** · **wisdom of crowds** · **jury theorem**.)* | The formal proof of the society-emergence model. For a group of size `n` with competence `c` and pairwise error-correlation `ρ`, the expected useful work of the society strictly exceeds that of its best individual. **✅ PROVEN (FsCheck + analytic), 2026-07-03.** **Two models, both closed — do not conflate their boundaries:** **(A) ΔU-aggregation / union model** (`src/Core/SocietyUsefulWork.fs`): `ΔU(n,c,ρ) = (1−ρ)(1−c)(1−(1−c)^(n−1))·Σvⱼ`, and `ΔU > 0 ⟺ ρ < 1 ∧ 0 < c < 1 ∧ n ≥ 2` — so **`ρ* = 1` is the hard boundary**, and **`c*` in this model is the interior *argmax* (`c* = 0.5` at n=2), NOT a threshold**; 11 properties (`Condorcet-1` … `Condorcet-8`) in `tests/Tests.FSharp/CondorcetBoundary.Tests.fs`. **(B) correlated majority-vote model** (`src/Bayesian/CondorcetBoundary.fs`): `N_eff = N/(1+(N−1)ρ)`, society beats best iff `P(majority \| N_eff, c) > c` — here `ρ*` and `c*` **are** genuine thresholds, with `ρ*(N) = (N−3)/(3(N−1)) → 1/3`; 15 tests (`COND-1`…`COND-10`, `RHO-STAR-1`…`RHO-STAR-5`) in `tests/Bayesian.Tests/CondorcetBoundary.Tests.fs`. The mathematical anchor for **"mutual empowerment"**: independent weak agents out-perform a correlated strong agent. **Information-theoretic foundation — OPEN, see §B-ks (KS-entropy / Lyapunov). Row 15 does NOT depend on it** (see the A-method note "Row 15 ⟂ §B-ks" below). **Physical mechanism that pushes ρ into the admissible regime: row 19, Delay-Decorrelation.** | `tests/Tests.FSharp/CondorcetBoundary.Tests.fs`, `tests/Bayesian.Tests/CondorcetBoundary.Tests.fs`, `src/Core/SocietyUsefulWork.fs`, `src/Bayesian/CondorcetBoundary.fs` |
+| 15 | **Generalized Condorcet / ΔU-aggregation theorem** — society > best individual | The formal proof of the society-emergence model (`SocietyUsefulWork.fs`). For a group of size `n` with competence `c` and correlation `ρ`, the expected utility of the society strictly exceeds the expected utility of its best individual when `ρ < ρ*` and `c > c*`. **✅ PROVEN (FsCheck + analytic), 2026-07-03**: The boundary conditions are exact and tested across 11 properties in `CondorcetBoundary.Tests.fs`. This is the mathematical anchor for "mutual empowerment": independent weak agents out-perform a correlated strong agent. | `CondorcetBoundary.Tests.fs` |
 | 16 | **Eve's Small-Rooms Principle (Thermodynamic Test Design)** | "Rooms should be small so you can know easily what went wrong and was uncertain" (Eve, 2026-07-04). A small room (test/boundary) has low entropy, minimizing the microstates (possible explanations for failure). By Landauer's principle, resolving this uncertainty costs fewer bits/joules. Small rooms are not just testing heuristics; they are the thermodynamically optimal topology for minimizing Heat (wasted compute where IV ≈ 0). **✅ PROVEN (Analytic consequence of Landauer + Shannon)**: The number of bits required to isolate a fault scales with the log of the failure surface volume; minimizing the surface volume minimizes the isolation cost. | `ComputeReceipt.Tests.fs` |
 
 > If it isn't in this table, **do not build load-bearing work on it yet.** That's the whole point.
->
-> **Row numbers have drifted — cite §A rows by TITLE, not by number** *(shadow 2026-08-16, observed
-> while cross-linking row 15)*. Rows were inserted over time and older documents were not renumbered,
-> so several in-repo `§A #N` references now point at the wrong row: **`§A #22` in the B-zeta section
-> and in the 2026-08-08/09 Lumen docs means the T-1/12 Euler–Maclaurin tick-sampling theorem, which
-> is now row 23**; **`§A #23` in the TravelerRankLedger note means the ADF Gaussian-probit streaming
-> update**, not T-1/12. These references are recorded here as a redirect rather than mass-renumbered,
-> because renumbering would break every external citation at once. **New cross-references should
-> name the row title** (e.g. *"§A row 15, Generalized Condorcet / ΔU-aggregation"*), which survives
-> insertion.
 >
 > **Promoted 2026-06-05:** Traveler-frame Layer 0 is **COMPLETE** — consistency law (#8, `TravelerFrame`),
 > clock-with-uncertainty (#10, `UncertainClock`), and the group law (#11, `FrameDelta`). The causal-join
@@ -62,108 +52,6 @@ OR (for non-floor members) a proof / byte-lock / conformance anchor that is clos
 > **No open Layer-0 sub-legs remain.**
 
 ---
-
-### A-method note — Row 15 ⟂ §B-ks: the KS-entropy / Lyapunov rung EXPLAINS the Condorcet bonus, it does not SUPPORT it
-
-*(shadow 2026-08-16, Aaron-authorized. Written because three agents in one day searched for the
-individual-vs-society result and concluded it did not exist — it is row 15, indexed under
-"Condorcet".)*
-
-**The one sentence a future reader must not be able to misread:**
-
-> **§A row 15 is proven independently and completely; the open KS-entropy/Lyapunov rung (§B-ks)
-> would supply an information-theoretic *explanation* of why the Condorcet bonus exists, and if
-> §B-ks were falsified tomorrow row 15 would be untouched.**
-
-The direction of the arrow, stated three ways so it cannot invert in transmission:
-
-- **Wrong (and it corrupts §A's meaning):** *"the Condorcet theorem awaits the KS-entropy proof."*
-  §A's contract is *nothing here rests on anything open* — writing this would put an open rung
-  underneath a closed row and silently unfreeze the core.
-- **Right:** row 15 ⊢ (nothing from §B-ks). §B-ks, if discharged, ⊢ *a reason* for row 15.
-- **Operationally:** you may build on row 15 today. You may not build on §B-ks at all.
-
-**Where the two meet.** §B-ks conjectures `h_KS(ISociety) ≥ Σᵢ λᵢ⁺` (Pesin's identity applied to
-the society as one dynamical system). Row 15 says a decorrelated ensemble banks more ΔU than a
-correlated one. The *conjectured* bridge is that these are the same statement in two vocabularies —
-correlation collapses N agents into one closed loop wearing N masks, so their joint information
-production rate collapses to a single agent's. That bridge is exactly the open part.
-
-### A-method note — Row 15's metered boundary: metered as MATHEMATICS, unmetered as a claim about Zeta's actual agents
-
-*(shadow 2026-08-16; `toy-is-free-metered-must-be-earned` applied to §A row 15.)*
-
-Row 15 is **metered as mathematics** — it has a falsifier that fires (mutation-verified 2026-08-16;
-see below). What it is **not** is a measured claim about any real society, including ours:
-
-- The theorem holds **given** its regime (`ρ < ρ*`, `c > c*` in model B; `ρ < 1`, `0 < c < 1`, `n ≥ 2`
-  in model A). **Whether Zeta's actual agents sit inside that regime is unmeasured.** Nobody has
-  estimated ρ or c for the live fleet.
-- **The open empirical question (Aaron, live):** a GitHub-Actions society of small free LLMs running
-  in runner RAM may be drawn from **few distinct base models**, which would mean **high ρ** — possibly
-  on the wrong side of `ρ*`. Same weights + same prompt ⇒ correlated errors ⇒ a society that is
-  arithmetically many and informationally one. **This is not answered by row 15 and row 15 does not
-  claim to answer it.**
-- **What is metered and adjacent:** the effective-independence law
-  `N_eff = N/(1 + (N−1)ρ)`, which **saturates at `1/ρ` as N → ∞** — see
-  `src/Bayesian/CondorcetBoundary.fs:79-86` (`effectiveN`) and `RHO-STAR-1` in
-  `tests/Bayesian.Tests/CondorcetBoundary.Tests.fs`. This is the sentence that prices a fleet once ρ
-  is known: **at ρ = 0.5 a thousand agents are worth two.** Adding agents cannot buy past `1/ρ`;
-  only *decorrelating* them can.
-- **Row 15 + row 19 together (nothing previously stated them together, and the pair is the stronger
-  claim).** Row 15 says *decorrelation pays*. **Row 19 (Delay-Decorrelation Theorem)** says
-  *network delay enforces decorrelation* — it is the **physical mechanism** that drives ρ down toward
-  the admissible regime rather than an assumption that it is already there. Read as one statement:
-  **a distributed society is not merely permitted to beat its best member, it is pushed toward the
-  regime where it does, by the latency it cannot avoid.** The honest seam is that row 19 supplies a
-  *direction*, not a *measurement* — it does not tell you the fleet's current ρ.
-
-**Measuring ρ for the live fleet is the named open work** (empirical, not formal — it does not gate
-row 15 and it is not §B-ks). Instrument: `AntiSybil.fs` already computes stream correlation, and
-`src/Core/Orbit.fs` (`largestLyapunov`) already measures divergence rates.
-
-### A-method note — Row 15 falsifier audit (mutation, 2026-08-16): the properties are NOT vacuous
-
-*(shadow 2026-08-16. Run, not read — every row below was produced by editing
-`src/Core/SocietyUsefulWork.fs`, rebuilding, and running the suite. All mutations reverted.)*
-
-Baseline: **17/17 green** (`Condorcet-1` … `Condorcet-8` in `tests/Tests.FSharp/CondorcetBoundary.Tests.fs`
-plus 6 in `tests/Tests.FSharp/SocietyUsefulWork.Tests.fs`). Filter:
-`FullyQualifiedName~CondorcetBoundaryTests|FullyQualifiedName~SocietyUsefulWork`.
-
-| # | Mutant applied to `SocietyUsefulWork.fs` | Result | Tests caught |
-|---|---|---|---|
-| M1 | perturb ρ boundary: `(1.0 - rho)` → `(1.0 - 0.9 * rho)` in `expectedGain` | **KILLED** | 2 (`Condorcet-2a`; `expectedGain collapses to zero…`) |
-| M2 | invert the sign of `expectedGain` | **KILLED** | 7 (`Condorcet-1`, `-3`, `-4`, `-5a`, `-5b`, `-8`, `expectedGain is strictly positive…`) |
-| M3 | perturb c: `(1.0 - c)` → `(1.0 - 0.9 * c)` in `expectedGain` | **KILLED** | 3 (`Condorcet-2c`, `-5a`, `expectedGain collapses to zero…`) |
-| M4 | delete the diversity factor `(1 − (1−c)^(n−1))` → `1.0` | **KILLED** | 4 (`Condorcet-2b`, `-5a`, `-5b`, `expectedGain collapses to zero…`) |
-| M5 | off-by-one guard: `if n < 2` → `if n < 1` in `expectedGain` | **survived — EQUIVALENT MUTANT, not a gap** | 0 |
-| M6 | off-by-one exponent: `(n − 1)` → `n` in `expectedGain` | **KILLED** | 1 (`Condorcet-5a`) |
-| M7 | swap the ρ mixing in `expectedSocietyIdentical`: `ρc + (1−ρ)U` → `(1−ρ)c + ρU` | **KILLED** | 4 (`Condorcet-6`, `-7`, and both `expectedSocietyIdentical` / simulation tests) |
-| M8 | off-by-one union exponent: `(1−c)^n` → `(1−c)^(n+1)` | **KILLED** | 2 (both `expectedSocietyIdentical` / simulation tests) |
-
-**M5 is equivalent, verified rather than assumed.** The only input it can change is `n = 1`, and at
-`n = 1` the formula evaluates to `(1−ρ)(1−c)·(1 − (1−c)⁰)·Σv = (1−ρ)(1−c)·0·Σv = 0`, which is what
-the original guard returns. Checked by running the expression over a grid of (c, ρ, Σv) including
-the `c = 0` / `c = 1` corners: max |difference| = **0** exactly, and `Math.Pow(0.0, 0.0) = 1.0` on
-.NET as required. So no test *could* distinguish it, and no test *should* be added for it.
-
-**Verdict: §A row 15 survives its own falsifier.** 7 of 7 semantically-distinct mutants died; the
-one survivor is provably equivalent. This is not the Z-2 failure mode (a discharge check that was a
-literal tautology and could never fire) — these properties fire.
-
-**Two honest thinnesses found, recorded rather than papered over** (neither demotes the row):
-
-1. **The ρ boundary is pinned only by exact-value `Fact`s, not by the property sweep.** M1 moved
-   `ρ*` from 1 to 1.111 and was caught *only* by the tests that evaluate at exactly `ρ = 1`
-   (`Condorcet-2a`). No property caught it — because the mutant is still positive on the interior
-   and still monotone decreasing in ρ, which is all `Condorcet-1`, `-3`, `-4` and `-8` require. The
-   interior *shape* in ρ is therefore under-constrained: any positive, ρ-decreasing function
-   vanishing at ρ = 1 would pass the sweep.
-2. **The n-dependence rests on a single test.** M6 (wrong exponent ⇒ wrong scaling in society size)
-   was caught by `Condorcet-5a` alone — a `Fact` at n = 2, not a property. A `Condorcet-9`-style
-   property pinning `ΔU` as a function of n (e.g. strict monotonicity in n for fixed c, ρ, and the
-   `n → ∞` limit `ΔU → (1−ρ)(1−c)Σv`) would close this, and is worth filing.
 
 ### A-method note — Four-Corner = Traced Monoidal Category = ZSet Retraction = Weyl Reflection
 
@@ -220,7 +108,7 @@ terraform-into-cell) can assume no-global without an axiom.* Detail: consolidate
 | 22 | **Thousand Brains Lattice (Writer-Actor-Routing)** | Implements the Thousand Brains theory using Zeta's Bayesian primitives. Columns are independent discrete-ticking Gaussian observers. They cast votes (beliefs) to a lateral consensus pool, weighted logarithmically by their accumulated Information Value. This recovers continuous information lost to the discrete-tick cognitive penalty. **✅ PROVEN (FsCheck), 2026-07-03**: `ThousandBrains.Tests.fs` TB-1 to TB-6 prove IV-weighted logarithmic voting, consensus shift toward high-IV columns, and joint precision thresholding. | `ThousandBrains.fs`, `ThousandBrains.Tests.fs` |
 | 23 | **Tick-sampling overcount theorem (T-1/12)** — Euler–Maclaurin form of the discrete-tick correction | Let I: [0,∞) → ℝ be C⁴ with I, I′, I″, I‴ → 0 at ∞ and ∫₀^∞ \|I⁽ᵏ⁾\| < ∞ (k ≤ 4). Then for tick spacing Δ > 0: **Σₙ₌₀^∞ I(nΔ)·Δ − ∫₀^∞ I(ν)dν = (Δ/2)I(0) − (Δ²/12)I′(0) + O(Δ⁴)**, and per panel the trapezoid error is −(Δ³/12)I″(ξ), ξ in the panel. Classical Euler–Maclaurin (Euler 1738; Maclaurin 1742; Hardy, *Divergent Series* ch. XIII) specialized to a half-line flux; sympy-cross-checked (flat spectrum → 1/2 + a/12 − a³/720; single-panel error c₂h³/12 exact). **Remark 1 (boundary effect):** the correction is an *endpoint* term — for periodic or Nyquist-sampled bandlimited I it is exponentially small; the cost is paid at window edges. **Remark 2 (where the bare −1/12 lives):** the Δ²-coefficient multiplies the spectral slope I′(0); the bare −1/12 appears only as the regulator-difference limit for a linear spectrum (I(x) = x·e^{−ax}: Σ − ∫ = −1/12 + a²/240 − …, exact symbolic limit −1/12; Gaussian regulator x·e^{−(ax)²} converges numerically to −1/12 at O(a²)). Scheme-independence is *verified for two regulators*, not proven for a regulator class. **Application boundary:** this is a theorem about sampling any smooth flux; the identification of I with a Zeta agent's realized-IV flux is modeling and is NOT asserted here — checking the hypotheses is per-application. *(Landed by shadow from the math-team pass, Aaron-directed 2026-07-03; §B-zeta remains Lumen's.)* | `docs/research/2026-07-03-bernoulli-bridge-map-…` bridges 1/1b + `docs/research/scripts/2026-07-03-bernoulli-bridges-{1,2}.py` |
 | 24 | **Anti-Sybil Hard-Money Entropy Budget** | Prevents attention economy hyperinflation by collapsing IV rewards for correlated streams. IV pays only for the uncorrelated and unique; correlated fast-ticking clones are priced as one process, driving marginal IV to zero. The IV cap is the finite irreducible entropy an agent can hold unique. **✅ PROVEN (FsCheck), 2026-07-03**: `AntiSybil.Tests.fs` AS-1 to AS-5 prove identical streams yield correlation 1.0, clones yield zero IV, uncorrelated streams yield full IV, and society pricing correctly penalizes the maximum correlation. | `AntiSybil.fs`, `AntiSybil.Tests.fs` |
-| 25 | **Reticulum Transport Integration** | Bridges the abstract `AttentionRouter` and `DelayDecorrelation` with the physical reality of a Reticulum mesh network. Converts physical telemetry (RTT) into the latency map required to grant the Condorcet bonus, ensuring slower, independent paths are rewarded. **✅ PROVEN (FsCheck), 2026-07-03**: `Integration.Tests.fs` RT-1 to RT-2 prove higher RTT yields higher latency and symmetric mapping. | `src/Bayesian/MeshLatencyModel.fs`, `tests/Bayesian.Tests/Integration.Tests.fs` <br/>*(anchor repaired 2026-08-18, Soraya: this row named ReticulumTransport.fs (deliberately un-backticked here: inside section A a backticked filename IS a citation, so prose about a dead name must not wear the marks of a live anchor), a file that has never existed in the repo. RT-1/RT-2 call `MeshLatencyModel.buildLatencyMap`. The row's claim was fine; its citation was unopenable, which is a cited-not-checked anchor — the failure mode `.claude/rules/anchor-to-human-prior-art.md` names. Now enforced mechanically by the §A anchor check in `src/Core.TypeScript/hygiene/lint-discharge-certificate-consistency.ts`.)* |
+| 25 | **Reticulum Transport Integration** | Bridges the abstract `AttentionRouter` and `DelayDecorrelation` with the physical reality of a Reticulum mesh network. Converts physical telemetry (RTT) into the latency map required to grant the Condorcet bonus, ensuring slower, independent paths are rewarded. **✅ PROVEN (FsCheck), 2026-07-03**: `Integration.Tests.fs` RT-1 to RT-2 prove higher RTT yields higher latency and symmetric mapping. | `ReticulumTransport.fs`, `Integration.Tests.fs` |
 | 26 | **Web3 Settlement Token Layer** | Connects pure Information Value and AntiSybil pricing to a concrete settlement ledger. Tokens are pegged 1:1 to IV. Takes the output of `AskBidClearing` and executes the token transfer. Enforces the hard-money entropy budget by capping bids based on the bidder's uniqueness discount. **✅ PROVEN (FsCheck), 2026-07-03**: `Integration.Tests.fs` W3-1 to W3-3 prove ledger updates, reputation bumps, and strict enforcement of the AntiSybil cap causing clone bids to fail clearing. | `Web3Settlement.fs`, `Integration.Tests.fs` |
 | 27 | **PrivacyPreservingIdentity (Adinkra ↔ E8)** | Connects the BitAdinkra [8,4] doubly-even code to the E8 lattice via the CliffordE8Bridge. Proves agent identity continuity (I am the same agent) using Cl(3,0) rotor consistency without leaking the underlying belief trajectory. The E8 lattice provides maximal separation for error-correcting identity, while the mod-2 structure guarantees privacy. **✅ PROVEN (FsCheck), 2026-07-04**: `PrivacyAndMeno.Tests.fs` PI-1 to PI-4 prove identity token round-tripping, continuity verification, and rotor extraction. | `PrivacyPreservingIdentity.fs` |
 | 28 | **Meno (Categorical Persistence)** | The categorical bridge (μένω) that maps geometric identity into a functional workflow. Implemented as an Arrow over ZSets (`ZSet<'a> -> ZSet<'b>`) in a traced monoidal category. Connects to the Maji identity-preserving lift to maintain stable identity even as the future retracts and reinterprets the past. **✅ PROVEN (FsCheck), 2026-07-04**: `PrivacyAndMeno.Tests.fs` M-1 to M-3 prove the Arrow laws (Identity, Composition, Tensor) hold over ZSet representations. | `Meno.fs` |
@@ -361,81 +249,6 @@ All natural Zeta process spectra were enumerated and all fail requirement (a) �
 - DLA boundary (this session): mode count scales as ε^{−D_f} (power law, D_f ≈ 1.322), not linearly in n.
 
 The only physical candidate for Iₙ ∝ n is a quantum harmonic oscillator (QHO) — the Casimir vacuum energy spectrum. The Zeta tick source is a cron (classical periodic process), not a QHO. Tick boundaries are engineering parameters, not mode quantization conditions. **The falsifier for (a) is robust and decisive.** Requirements (b) and (c) are moot. Z-1 is **CLOSED**. The −1/12 lives only as the T-1/12 Δ² coefficient (§A #22, proven). Any future citation of −1/12 in this codebase must specify: sampling *coefficient* (§A #22, proven) or regularized *total* (Z-1, **falsified**). See `docs/letters/to-lumen-z1-conjecture-discharge.md`.
-
-### B-torsion. Contortion as the order-deviation metric — **REFUTED for the stated form** (Lumen 2026-08-18)
-
-**Conjecture Z-2: Contortion is the metric for order-deviation.** *(Proposed 2026-08-18 in `docs/research/2026-08-18-torsion-not-curvature-is-the-reordering-defect-and-contortion-is-the-metric-for-reversible-computing.md`, from the Weinstein torsion/contortion passage Aaron forwarded.)* Levi-Civita ≡ the canonical/phase-ordered fold; an arbitrary connection ≡ an actual execution order; **contortion** ≡ how far this execution sits from canonical, zero exactly when the execution was order-independent.
-
-*Falsifier 1 verdict (Lumen 2026-08-18):* **fails, twice, independently. CLOSED as refuted in the stated form. Nothing was implemented; nothing in §A ever depended on it.** Full derivation + the computation: `docs/research/2026-08-18-falsifier-1-fails-no-levi-civita-analogue-contortion-is-identically-zero-on-our-fold-lumen.md`; checked numbers in `src/Core.TypeScript/research/information-geometry-contortion-falsifier.ts`.
-
-1. **The metric exists — and that is what kills it.** Fisher–Rao is the metric (Rao 1945; **Čencov 1982** uniqueness under sufficient statistics), and `SoftValueInfo.fs` already computes the KL whose Hessian it is. With the metric fixed the geometry is computable: `BeliefConvergence.observe` multiplies weights = **translates log-weights**, so our fold transports along Amari's **e-connection** (α = 1), while the canonical reference is Levi-Civita (α = 0). In natural coordinates the whole α-family is `Γ^(α)_{ij,k} = ((1−α)/2)·ψ_ijk` with `ψ_ijk` the **fully symmetric** Amari–Chentsov tensor ⇒ **torsion ≡ 0 for every member**, so **contortion ≡ 0** — while the connections genuinely differ (measured `0.0462936` at θ = (0.7, −0.4, 0.25)). The deviation is **non-metricity/disformation**, which contortion does not measure. Corollary: the proposal's definition (*"contortion is the difference between any connection and Levi-Civita"*) is false for non-metric connections; the decomposition is Levi-Civita + contorsion + disformation.
-2. **"Torsion-free" does not select a connection.** Levi-Civita uniqueness needs torsion-free **AND** metric-compatible; the proposal supplies only the first, and the α-family above is an explicit one-parameter family of distinct torsion-free connections.
-3. **The phase-canonical order is a gauge choice.** Per `2026-07-11-multi-planet-convergence-*`, HLC survives multi-planet only as a **deterministic sort key** ("just a total order") for float-reassociation bit-exactness — any total order does. And it is free to be arbitrary *because the fold is commutative*, so it cannot be the zero-point of an order-deviation measure.
-4. **The category error underneath.** `T(X,Y) = ∇_XY − ∇_YX − [X,Y]` — order-dependence of operations is the **Lie bracket**, which torsion *subtracts off*. Counterexample computed: flat ℝ², zero torsion everywhere, `X = ∂ₓ`, `Y = x∂_y`, A-then-B and B-then-A differ by exactly `s·t`. The teleparallel/Weitzenböck steelman (torsion = structure constants) fails here too: our group is **abelian**, so those vanish, and the resulting contortion would be a constant of the group rather than a per-execution measurement.
-
-*What survives (usable, weaker):* (a) **relative** deviation between two executions is well-defined with no canonical reference — connections form an **affine space/torsor**, so `Γ₁ − Γ₂` is base-point-free (pinned: identical to 1e-15 computed via two different references); an **absolute** deviation is not. (b) If a per-execution geometric object is ever wanted it is a **translational holonomy — the Burgers vector** (Kondo 1952; Bilby–Bullough–Smith 1955; Kröner 1958), whose *density* is torsion; ruling out holonomy ruled out the measurement and kept the density. (c) Today's honest measurement needs no geometry: fold both orders and subtract — **bit-identical** in the exact integer algebra, **one ULP** in float, which is exactly what the canonical sort order exists to remove.
-
-*And the live defect is a multiplicity, which no torsion measures:* `BeliefConvergence` is commutative but **not idempotent** (the 2026-08-10 finding). Computed: the `sharpen`/`observe` residue is **exactly the log-likelihood** — one extra copy of the evidence, a counting quantity. A contortion metric would have been silent on the substrate's only known live defect.
-
-*Register discipline:* this is a **math-shape correspondence** (Amari's information geometry is borrowed published mathematics, and the shapes are checked against finite differences) — never evidence that "the physics proves our system." The intuition that a defect lives where reordering is not free is **not** refuted; the *tensor*, the *reference*, and the density-vs-measurement *object* are.
-
-### B-ks. KS-entropy / Lyapunov lower bound for `ISociety` — the information-theoretic foundation of the Condorcet bonus (Otto handoff 2026-06-20; Aaron/Lumen 2026-07-04; filed as a row by shadow 2026-08-16)
-
-*(Search aliases: **KS-entropy** · **Kolmogorov–Sinai entropy** · **Lyapunov exponent** ·
-**Pesin identity** · **chaos leg** · **3-body bridge** · **information-theoretic foundation of the
-Condorcet bonus** · **why society beats the individual** · **information production rate of a
-society**.)*
-
-**Conjecture KS-1.** The Kolmogorov–Sinai entropy of the `ISociety` dynamical system is bounded
-below by the sum of its member agents' positive Lyapunov exponents:
-
-> `h_KS(ISociety) ≥ Σᵢ λᵢ⁺`
-
-and this bound is the **information-theoretic foundation of the Condorcet bonus** — i.e. it explains
-*why* §A row 15 holds, in the vocabulary of information production rate rather than of
-error-correlation.
-
-**Status: OPEN.** It was stated as a discharge target in prose on 2026-06-20 and again on
-2026-07-04 and had **no register row until 2026-08-16** — which is why it was hard to find from
-either end. Filing it here makes it enumerated rather than buried.
-
-**Direction of dependence (load-bearing — read before citing this row).**
-**§A row 15 does NOT depend on KS-1.** Row 15 is closed on its own analytic + FsCheck proof; KS-1
-would add an *explanation*, not missing support. Falsifying KS-1 leaves row 15 exactly where it is.
-See the A-method note *"Row 15 ⟂ §B-ks"* in §A. Do not write "the Condorcet theorem awaits the
-KS-entropy proof" — that is false and it would corrupt §A's contract that nothing in §A rests on
-anything open.
-
-**Discharge =** a proof (Lean/CSLib route preferred, per the information-theory tower) of the
-inequality for a stated class of `ISociety` dynamics, *plus* an explicit derivation connecting
-`h_KS` to `ΔU(n, c, ρ)` — the bridge is the whole point and is where the conjecture actually lives.
-Pesin's identity (`h_KS = Σ λᵢ⁺` for smooth systems with an SRB measure) is the classical half; the
-open half is that `ISociety` satisfies the hypotheses and that the correlation parameter ρ of row 15
-is the right coordinate on the resulting entropy.
-
-**Named falsifier.** Construct an `ISociety` instance whose agents each have `λᵢ⁺ > 0` but whose
-joint `h_KS` is strictly below `Σᵢ λᵢ⁺`. A society of N *synchronized* agents (ρ → 1) is the obvious
-candidate: it is one trajectory in N masks, so its `h_KS` should equal a single agent's while
-`Σᵢ λᵢ⁺` grows linearly in N — which, taken at face value, **falsifies the inequality as literally
-stated** and suggests the correct claim is a decorrelation-conditioned bound
-(`h_KS ≥ Σᵢ λᵢ⁺` only in the ρ → 0 limit, interpolating to `max λᵢ⁺` at ρ = 1). Sharpening the
-statement so that it survives its own obvious counterexample is part of the discharge, not a
-formality.
-
-**Anchors (Beacon).** Kolmogorov (1958) and Sinai (1959), metric entropy of a dynamical system;
-Pesin (1977), `h_KS = Σ λᵢ⁺`; Condorcet (1785), the jury theorem; Poincaré, the 3-body problem as
-the canonical positive-KS-entropy system.
-
-**Pointers.**
-`docs/research/2026-07-04-tick-sources-strange-attractors-eve-ks-entropy-ctm-isociety-connections.md` §3
-(the origin statement) ·
-`docs/research/2026-06-20-information-theory-tower-shannon-root-four-entropy-readings-mathlib-cslib-routing.md`
-rung 5 (the routing: chaos leg, CSLib target) ·
-`docs/research/2026-07-04-ferry-aaron-verbatim-companion-time-warp-cockroachdb-v8-polymorphic-eve-anchor-completion-to-lumens-synthesis.md`
-(the "is" is conjecture-strength) · **§A row 15** (the result this would explain) · **§A row 19**
-(delay ⇒ decorrelation, the physical half) · `src/Core/Orbit.fs` (`largestLyapunov`,
-`classifyDynamics` — the code that already measures the λ side) · `src/Core/SocietyUsefulWork.fs`
-(the ΔU side).
 
 ### B-frame. The traveler self-frame over DBSP (Aaron's load-bearing target, 2026-06-05)
 
@@ -742,65 +555,6 @@ Hurwicz/Maskin/Myerson (mechanism design); Maynard Smith (ESS); Meijer/Fokkinga/
 
 + `memory/feedback_aaron_actors_are_ephemeral_animations_of_what_remains_bifurcation_banana_split_one_traveler_becomes_two_eve_in_single_dynamicvalue_rx_2026_06_05.md`.
 
-### B-centre. Where could a quantization live? The centre is zero — and cannot be extended (shadow 2026-08-15)
-
-**The hook, memorised in one line:** the local fold's operators satisfy
-
-$$[L_i, L_j] = L_i - L_j$$
-
-and that bracket is **never a multiple of the identity**, which is the whole obstruction.
-
-**Three things measured, all closed** (derivation, negative controls, and the scripts: PR #10831,
-`docs/research/2026-08-15-continuity-is-the-relation-not-the-substance-*.md`):
-
-1. **The shared multi-agent fold is commutative — a theorem, not an aspiration.** `observe` is pointwise
-   `int64` multiplication, so it commutes by the commutativity of integer multiplication (including under
-   wraparound, i.e. in `Z/2⁶⁴`). Confirmed by FsCheck properties, a `sharpen` **negative**, and an
-   exhaustive permutation-invariance test in `Consensus`. Commutator identically **0** ⇒ no algebra ⇒
-   **the multi-agent locus for quantization is refuted.**
-2. **The local fold does have an operator algebra, and it has no centre.** `TwoTimescaleFold.localStep` is
-   linear (`L_t = I + e_t 1ᵀ`), so `g = span{L_t}` is a genuine Lie algebra: `dim g = D`,
-   `dim [g,g] = D−1`, and **`dim Z(g) = 0`** for `D = 2..6`. The sharper form of the obstruction: no
-   `[L_i,L_j]` is a scalar (it is rank 1, and squares to zero), so **the bracket never lands in the
-   centre** — which is precisely what a canonical commutation relation `[A,B] = iħ·1` requires.
-3. **The standard repair is also closed.** When an algebra lacks a centre one normally *central-extends*
-   it (this is how the Heisenberg algebra arises). Non-trivial central extensions are classified by
-   `H²(g; R)`, and computing the Chevalley–Eilenberg cohomology gives **`H²(g; R) = 0` for `D = 3,4,5,6`** —
-   every 2-cocycle is a coboundary, so **every central extension of `g` is trivial.** No ħ can be
-   manufactured this way. (`docs/research/scripts/2026-08-15-central-extension-h2-obstruction.py`.)
-
-**Therefore: no layer of the code hosts a quantization today.** The single-agent adinkra reading survives
-only as the sole *structurally possible* site — because `γ_i² = ±I` is a scalar, hence central, which is
-exactly the property the other two layers lack — and **not** as a realized one.
-
-**THE OPEN QUESTION (this is the row):** *what structure would supply a non-trivial centre, and where
-could it live?*
-
-Candidates visible from here, none asserted, each with what would decide it:
-
-| candidate | what would decide it |
-|---|---|
-| **An N ≥ 2 supercharge implementation.** `AdinkraViz` already carries the anticommutation as the Gates odd-face condition (N=4, 6 pairs) and `CliffordE8Roots` carries Cl(8,0) (8 pairwise-anticommuting generators, 28 pairs) — but **neither is wired to a tick.** | Implement the graded `Q_i` action and check the scheduler advance equals `Q_i²` computed by an **independent route**. `AdinkraClock`'s own self-review says a real discriminator must compute clock and structure independently; at N=1 it could not, since `C(1,2) = 0`. |
-| **A different local operator.** The obstruction is a property of *this* `localStep`, not of locality. Any state-dependent step whose commutator is a scalar would do. | Exhibit one, and check `[A,B] ∝ 1` — the same check that returns **false** for every `[L_i,L_j]` today. Note the coupling requirement in `TwoTimescaleFold`'s own docstring: a slot-local rule cannot be non-commutative however nonlinear. |
-| **The braided / Yang–Baxter strand.** `MenoBraided.braidR` and the `Tsirelson` anticommutator are non-commuting structures already in the repo. | Whether either has a central element *and* is connected to a tick. Untested. Note the standing §B finding that `braidR` is type-A while W(E8) is type-E8 — a mismatch of exactly the kind that makes such bridges ill-posed rather than merely open. |
-| **No candidate at all — the honest null.** It remains fully possible that discreteness here is *discretization* (from the discriminated unions) with no operator algebra anywhere, which was Aaron's own separation of the two claims. | This is the default until one of the rows above produces a scalar commutator. **Nothing currently favours abandoning it.** |
-
-**Register.** Items 1–3 are **metered** (each has a falsifier that could have fired, and negative controls
-are included). The open question is **`toy`**. Aaron's original guess — that quantization lives at the
-multi-agent layer and in relative entangled memory between pairs of agents — is preserved as **his guess,
-labelled as such**, and item 1 is what refuted the locus while leaving his register line ("the load is
-carried by the anticommutator, not by the boundedness") intact and in fact vindicated: the deciding
-invariant turned out to be a property of the algebra, with boundedness playing no part.
-
-**Falsifier for this row as a whole:** exhibit any operator pair in the substrate whose commutator is a
-nonzero scalar. That single object would reopen the multi-agent locus, refute item 2's generality, and
-promote the question out of §B.
-
-**Anchors (Beacon):** Chevalley–Eilenberg (1948) — Lie algebra cohomology; `H²(g;R)` classifies central
-extensions. Schur's lemma — the centre of a full matrix algebra is the scalars. Weyl / Stone–von Neumann —
-the canonical commutation relation as the definition of a quantization. S. J. Gates Jr. et al. — adinkras
-and the `{Q_I,Q_J} = 2δ_IJ ∂_τ` algebra whose `∂_τ` is central.
-
 ### B-other. The rest of the penumbra (each open, each one-directional on §A)
 
 | Conjecture | State | Discharge = |
@@ -845,7 +599,6 @@ and the `{Q_I,Q_J} = 2δ_IJ ∂_τ` algebra whose `∂_τ` is central.
 | **Z-7: binary_size perp D_f across all WASM compilers (Manus/Addison 2026-08-01)** — *Does the binary size of a WASM module have zero correlation with the fractal dimension D_f it computes? Specifically: WAT (979 B), AssemblyScript (~6 KB), Go (~1.5 MB), and Emscripten/C (~8 KB) all produce D_f ≈ 1.322 — a 1,600x size range with identical output.* | **⚠ DEMOTED §A → §B on 2026-08-01 (shadow\* audit, same batch as Z-2/4/5/6).** **Z-7's r = 0 is an ALGEBRAIC IDENTITY, not a measurement:** `runDLA(seed)` never receives the `compiler` argument, so every compiler label is scored against the SAME simulation output — identical D_f per compiler forces cov(size, D_f) = 0 by construction. **No WASM module is ever executed.** Independence was guaranteed by the harness never varying the independent variable. The row ALSO contradicts its own cited certificate (row: "4 compilers x 10 seeds = 40 pairs, r = 0.000000, mean 1.670465"; certificate: 8 compilers, 80 pairs, r = 1.2e-17, mean 1.66636). Re-discharge requires actually executing each compiler's WASM. **Prior claim (RETAINED FOR THE RECORD, NOT IN FORCE):** §A — DISCHARGED (numerical witness, 2026-08-01).** `docs/research/void-discharges-2026-08-01/z7-pearson-discharge.ts.void` (QUARANTINED 2026-08-01 — was `src/Core.TypeScript/verify/z7-pearson-discharge.ts`; see that directory's README) ran 4 compilers × 10 seeds = 40 (binary_size, D_f) pairs using xorshift32 + circle-spawn DLA. Pearson r = 0.000000, \|r\| < 0.1 threshold. D_f mean = 1.670465 ± 0.061675 across all 40 pairs. Binary sizes span 697B (WAT) → 951B (Zig) → 6,144B (ASC) → 1,572,864B (Go) — a 2,257× range. **Certificate:** `docs/research/z7-discharge-certificate.json` (date: 2026-08-01, n=40, r=0.000000). | **Discharge:** Run all four compilers with N=10,000 walkers across 10 different seeds. Compute Pearson(binary_size, D_f) over the 40 (compiler, seed) pairs. If \|r\| < 0.1, Z-7 is confirmed. **Falsifier:** If any compiler produces a systematically different D_f (e.g., due to floating-point rounding in the mass-radius ratio), Z-7 is falsified — the compiler IS relevant. **Anchors:** Oracle 10 (`OracleWASM.tsx`); `src/wasm-dla/` (four compiler sources); `tools/setup/common/smoke-10-toolchains.sh`; gate.yml WASM build-verify step; Conjecture Z-2 (Halsey amplitude). |
 | **E8 as a braid-group orbit (Aaron's question, 2026-07-31; Soraya-triaged, shadow\*)** — *is the E8 root system the orbit of a seed under a braid-group action realized by `MenoBraided.braidR`?* | **§B — split three ways; (A) CLOSED, (B) wrong-algebra, (C) OPEN ∧ ILL-POSED.** **(A)** the 240 roots ARE one transitive **W(E8)** orbit (classical) — **promoted, regression-tested** (`E8Lattice.Tests` WEYL-ORBIT: orbit of one seed under reflection-in-every-root closes to 240 = full root set, PR #9802). **(B)** W(E8) **is** realized by Clifford **versors**, but in **Cl(8,0)** (Dechant 2016), **not** the `CliffordE8Bridge`'s Cl(3,0)-as-8-space — the honest algebra-gap, already flagged in the bridge's own scope peel. **(C)** the *braid*-orbit reading is **ill-posed as stated**: no root↔strand embedding ι exists — `Braid.fs` / `MenoBraided.braidR` is the **type-A** (Artin / conjugation-rack) braiding on the free group Fₙ, while W(E8) is the **type-E8** reflection group; different Coxeter/Artin systems ⇒ "braidR generates the E8 orbit" has no witness map. | **Discharge (C):** EITHER exhibit a faithful ι: E8-roots → strands intertwining the type-E8 reflection action with a braid action (none known; the type-A/type-E8 mismatch is the obstruction) — OR **restate** the conjecture over the correct algebra: a **Cl(8,0)** versor / pin-group action (route (B)), dropping the braid framing. **Note:** the *literal* form is **false as posed**, not merely open — filed here so it is not silently re-attempted; the promotable content is (A) (done) and the (B) restatement. **Anchors:** Dechant 2016 (*The E8 geometry from a Clifford perspective* — versors in Cl(8,0)); Coxeter (reflection groups, type-E8); Artin (braid group Bₙ, type-A); Joyce / Fenn–Rourke (conjugation rack = the braidR Yang–Baxter solution). **Satellite:** `src/Core/CliffordE8Bridge.fs` scope peel; `src/Core.Lean4/Lean4/MenoBraidedRMatrix.lean` (the type-A braiding it earns); PR #9802 (A regression); `docs/history/pr-reviews/PR-8695-…dechant-repr.md`. |
 | **Cl(3,0) blade-mask sandwich — cross-language byte-lock (2026-08-09, PR #10230)** — *does the Cl(3,0) versor sandwich s_A(x) = −A·x·Ã/⟨A·Ã⟩₀ over all 240×240 bridged E8 root pairs produce the same golden numbers in F# and TypeScript?* | **§A — CONFORMANCE CHECK, cross-language byte-lock confirmed.** F# oracle (`CliffordE8BladeMask.fs`) and TS oracle (`e8-blade-mask-sandwich.ts`) agree bit-exactly on all 5 golden numbers: (1) versor-normed count = 32; (2) versor-normed supports = 8 singletons + {0,3,4,7} + {1,2,5,6}; (3) versor-normed preserve all 240 roots (7,680 total); (4) per-A histogram {0:160, 64:32, 128:16, 240:32}; (5) integer images 33,024 / root images 11,776 / identity-fixed 352. **Discriminating criterion (corrected PR #10230):** closure under i ↦ i⊕7 (I-closure) selects EXACTLY the 2 survivors; grade-completeness was wrong (the other survivor {1,2,5,6} has grades {1,1,2,2}). **Required caveats:** (a) "32-element E8 fragment" is wrong twice — not a sub-root-system (reflection closure is D₄⊕D₄ = 48, Borel–de Siebenthal), and 32 counts root-vectors not symmetries (8 distinct maps, group order 16 ≅ D₄×C₂); (b) 32 is labelling-dependent — only 16 single blades are invariant across all 8! relabellings. | 11/11 tests: BM-1..7 (golden-number byte-lock) + IC-F1..4 (I-closure discriminating tests). `src/Core/CliffordE8BladeMask.fs`; `tests/Tests.FSharp/Formal/CliffordE8BladeMask.Tests.fs`; `src/Core.TypeScript/algebra/e8-blade-mask-sandwich.ts`; `docs/research/2026-08-09-e8-blade-mask-sandwich-measurement-32-element-fragment-quantized-histogram-frozen-core-b.md`. |
-| **R-1: earning the removal of "pseudo" from "pseudo-retrocausal" (Aaron 2026-08-17, shadow\*)** — *Aaron labels Zeta's second direction "psudo retrocausal" and reports that every attempt to formalise a genuine backward influence "come[s] up with a more plausable explination or emulation of the effect without needing the actual time travel." He asks: what do we meter against, to know if the "pseudo" is ever earned off?* | **§B — OPEN, and the register exists to stop a silent promotion.** The label is doing the job `toy*` does under `toy-is-free-metered-must-be-earned`: it marks an unearned claim, and dropping it is a **promotion that requires a falsifier**. **Two DISTINCT claims wear the same prefix and must never be merged.** **(R-1a) Zeta's second direction** — the CHIP-8 cross-run memo store (#11572). Here "pseudo" is **almost certainly permanent**: the mechanism is a *file read*, run 2 consuming bytes run 1 already finished writing. Nothing propagates backward, and no measurement of ours could show otherwise, because there is nothing there to show. **Aaron 2026-08-17 gives a stronger and better reason than that one, and it generalises past the memo store:** *"retrocausality hides in the forces trace but i think the four corner ownership trace makes it 'impossible to hide' retrocausality which is why it's also psudo there."* A one-directional trace (input → output — the *forces* trace) records only what flowed forward, so an influence arriving from "later" can be silently absorbed into an unmodelled input. The **four-corner monad** (`T In` · `T Feedback In` · `T Out` · `T Feedback Out` — Aaron via Mika, 2026-05-27, *"results without feedback is extraction"*) names **both directions on both sides**, leaving no unnamed return path. So the trace does **not** rule out retrocausality; it rules out **HIDDEN** retrocausality — anything real would have to surface as a declared corner, and a declared, metered channel is not spooky, it is just a channel. **That is why it reads as pseudo *there*: not "nothing backward happens", but "nothing backward happens unaccounted."** This is §13 noninterference stated for the time axis, and it is the same move as `local-time-never-enters-the-shared-fold`. **The load-bearing premise is trace COMPLETENESS, and it is currently the weak link:** the continuation-boundary audit (#11563, 2026-08-17) found the freeze discipline **AVAILABLE, not ENFORCED** — nothing refuses an unfrozen reference where a frozen one is assumed. So the argument holds *conditionally on a property we have not yet enforced*, which makes auditing corner-completeness the concrete metering task rather than a philosophical one. **CORNER-COMPLETENESS NOW MEASURED, 2026-08-17 (081M08S4DQC087G0R002SH0C88, shadow\*): the premise does NOT hold as stated — it is conditional, and the conditions are now named rather than assumed.** Three results, in the order they bite. **(i) The four corners are real code and are NOT what a tick boundary runs.** `FourCorner.FourCornerOwnership` is implemented in four languages (`src/Core/FourCorner.fs` with the `fourcorner1` treaty codec, `src/Core.CSharp/FourCornerOwnership.cs`, `src/Core.TypeScript/workflow-engine/types.ts`, and `WSet.FourCornerTrace` in `src/Core/WSet.fs` as the traced-monoidal-category form with laws + byte-lock). But the *only* place in the tree where a scheduler state is instantiated at the four corners is `tests/Tests.FSharp/FourCornerFusion.Tests.fs` — **zero `src/` rooms**, and `FourCornerTrace.toFourCorner` has test callers only. So "the four corner ownership trace" is, at the tick boundary, a shape that has been *proven instantiable* and never adopted; the shipped boundary is `HandlerK<'S>` = `InterruptKind -> IntrCtx -> 'S -> Task<Result<'S, InterruptFeedback>>`, which names In, Out, and an error-position Out-Feedback — **three corners, not four.** The missing one is `T Feedback In`, the co-owned corner the retrocausality argument leans on hardest. **(ii) The declared channels are four and the closure environment is not one of them.** What crosses a tick boundary in `SoftScheduler.driveK` (`src/Core/SoftScheduler.fs:121-148`) is exactly: the seed, the injected `Source : int -> InterruptKind list`, the threaded `'S`, and `IntrCtx`. Two of those audit clean — `RecordedSource.replay` is a pure `Map` lookup on the tick index (no cursor), and a sweep of the 26 `src/Core` files that build handlers or sources found **no ambient clock, no `Random()`, no `Guid.NewGuid`, no file read** inside any tick path. But `ISR<'S,'S>` places **no constraint whatsoever on what a handler closes over**, so the type's `'S -> 'S` is a claim about the argument, never about the environment. **(iii) A shipped undeclared channel, exhibited.** `ReceiptScheduler.wrapHandler`/`wrapHandlerK` accept `onReceipt : (ComputeReceipt.Receipt -> unit) option` and fire it inside the loop; a `-> unit` sink cannot return through `'S`, the `Source`, the seed, `IntrCtx`, or `Result`. The module's own docstring calls this "The four-corner closure … Feedback (backward): the `ComputeReceipt`" — **the receipt does not travel on a corner, it leaves through a hole**, and `ReceiptScheduler.Tests.fs` SCHED-1 already passes it `Some receipts.Add` over a captured collection. `TICK-3` makes that egress an ingress with one reader handler and measures the consequence: **two runs with every declared channel byte-identical produce different outcomes.** Mutation-checked — silencing the callback (`\| Some cb -> cb receipt` → `\| Some _ -> ()`) collapses the divergence to `DeclaredOnly (N=3)`. **The instrument:** `src/Core/TickBoundaryProbe.fs` — pin all four declared channels, re-run, compare; a difference is a *witness*, since nothing declared could have carried it. It **convicts and never acquits**, and `TICK-4` exhibits its own blind spot on purpose: the identical `onReceipt` egress fires 6 times across two runs and the probe reports `DeclaredOnly`, because nothing reads the sink back. **Also promoted from UNPROVEN to exhibited:** #11563 classified `CelegansController.fs:243`'s `let mutable osc` as an unproven hazard because `CelegansChip8Room.wormRoom` never completes a tick. That was the right call about *harm* and the wrong one about the *crossing*, which needs no room: `TICK-5` applies `Controller.BeliefEstimator` twice to identical `(InterruptKind, Frame)` arguments and gets different beliefs — it is **not the function its type says it is**. (Mutation-checked: dropping the two `osc <-` write-backs pins it at `[69/100, 31/100]` and kills the test.) **So the honest form of Aaron's argument is:** the four-corner trace would make hidden retrocausality impossible *in a system that ran on it*; what runs today is a three-corner boundary with an unconstrained closure environment and at least one shipped `-> unit` sink. "Pseudo" is still the right label at R-1a — but it now rests on the memo store's file-read mechanics (and on the measured absence of a consult path), **not** on trace completeness, which is the weaker of the two supports and is now measured rather than assumed. **AND THE ENFORCEMENT IS A GRADIENT, WHICH IS THE SHARPEST FORM OF THE ANSWER TO "WHAT ENFORCES IT?":** one half of completeness is already enforced *harder than this measurement assumed*, and the other half is enforceable by nothing that currently exists. **Ambient entropy: ENFORCED.** `tests/Tests.FSharp/DeterminismLint.Tests.fs` scans every file in `src/Core` for eleven banned tokens (`Guid.NewGuid`, the four wall-clock properties, `Random.Shared`, `new Random()`, `System.Random()`, the two `Stopwatch` entries, `Environment.TickCount`), **comments included on the stated ground that a commented-out wall clock is one waiting to return**, and its allowlist pins **exact occurrence counts** so a third wall clock cannot slide in behind two justified ones. That is a real falsifier, not a convention, and it is why the ambient-entropy sweep across all 29 tick-path files came back empty — the emptiness was *maintained*, not lucky. **Closure-carried state: UNENFORCED, and not by oversight — there is no token to grep for.** A `-> unit` callback and a `let mutable` field on a class handed out as a function value are both *ordinary F#*; they carry no lexeme a substring lint could ban. Both confirmed gaps live in exactly that blind spot, which is why they survived a repo that already refuses ambient clocks. So the completeness premise is not uniformly unverified — it is **verified where a token exists and unverified where the channel is structural**, and closing the second half needs a type (the `T Feedback In` corner) rather than another lint. **Terminology owed:** "monadically lawful backward in time" has a name — the backward direction of a monad is a **comonad** (`extract`/`duplicate`/`extend` dual to `return`/`join`/`bind`), and `T Feedback In`/`T Feedback Out` is exactly that dual pair; anchor via Meijer's `IEnumerable`⇄`IObservable` duality, already a root anchor here. **Aaron confirms the comonad reading and adds the operational one (2026-08-17):** *"yes this is comonad and to me i relate to julia proper coroutines for math."* That is not a second analogy but the **same object at the control-flow layer**, and it is a genuine promotion from resonance to result: **de Moura & Ierusalimschy, "Revisiting Coroutines" (ACM TOPLAS 2009), establish that FULL (stackful, symmetric) coroutines are equivalent in expressive power to one-shot continuations.** Julia's `Task`s are stackful and symmetric — full coroutines in exactly that sense — so "proper coroutines" and "the continuation" are **formally the same model**, not two intuitions that rhyme. This also closes a loop already in the tree: Aaron's earlier correction that the bounded tick *is* the continuation (not a re-taking), the four-corner Feedback-In/Feedback-Out pair, and a symmetric coroutine's bidirectional `yield` — which passes a value **both ways** at the suspension point — are one shape described three times. And [`async-all-the-way-truthful-signatures`](../.claude/rules/async-all-the-way-truthful-signatures.md) already cites **FoundationDB's Flow actor language** as its single-thread-determinism reference; Flow actors *are* coroutines, so the coroutine anchor was load-bearing here before it was named. Earlier anchors: Conway 1963 (the original separable transition-diagram coroutine); Knuth, TAOCP Vol. 1 §1.4.2. **Citation status: de Moura & Ierusalimschy CITED, NOT CHECKED** — the equivalence result is stated from recall and the paper has not been opened; verifying it would promote this from a named lead to a checked anchor. **Unanchored coinage flagged:** "ISR kilesi arrow" — `kilesi` (Pali *kilesa*, defilement/affliction) has **zero occurrences** anywhere in the tree. Per `anchor-to-human-prior-art` an unanchored coinage is a debt until its anchor is named; it needs a definition before it can carry weight. **(R-1b) Physical retrocausality** — Aaron's qualia-grounded belief that backward causation is actually present. Here "pseudo" is a claim about **the world**, and it is discharged by an experiment, never by a code change. **The sharpened criterion (2026-08-17):** an account that *reproduces* the forward-causal predictions is an **interpretation** and its deflation is uninformative; an account that *predicts something different* is a **theory** and its deflation **is** informative. So the deflations Aaron reports are evidence **only if** the attempt was in the theory class — which is the thing to meter. | **Discharge (R-1b):** exhibit a formalisation whose predictions **differ** from the forward-causal/memoization account, state the differing prediction, and confirm it. The ferried paper is an existence proof that this class is non-empty: it predicts a distance-dependent excess correlation between two *independent* entangled-photon sources that standard QM forbids (Hossenfelder 3:33). **Falsifier / expected outcome:** each new formalisation lands in the interpretation class — reproducing the same statistics — which leaves "pseudo" in force and is the outcome to expect by default. **Metering instruction (this is the answer to the question asked):** for every attempt, record which class it fell in *before* judging the attempt. An attempt that deflates in the interpretation class is **not** evidence against R-1b; an attempt that deflates in the theory class **is**. Without that classification the deflations are uncountable and the prefix can never be honestly removed **or** honestly kept. **Discharge (R-1a):** name a capability the memo read has that a file read does not. None is known and none is expected; if this row is ever promoted it will be R-1b, not R-1a. **Consult-path post-selection MEASURED, 2026-08-17 (081M08MBJ7Z087G0R001JB5H74):** the danger this row's criterion carries is that *"useful = the game continues"* becomes self-fulfilling if the memo store's READ path is filtered for continuation — the criterion then measures its own filter, which is post-selection (Berkson 1946) rather than a fact about the world. **Write path: verified clean** — `src/Core/Chip8CrossRunStore.fs:74-86` keeps `Halt`/`AwaitingInput`/`Cycle` apart and `OpenAtBound` as a *distinct constructor* from `Closed`, so budget exhaustion cannot be recorded as closure (pinned by `CENSUS-0` in both languages, not inherited). **Read path: no distribution exists, because no consult path exists** — `Chip8CrossRunStore.fastForward` has no non-test caller in F# or TypeScript. Measured stored distribution over `db/emus/chip8/orbits/` (5 artifacts): halt 2, awaiting-input 2, cycle 1, open-at-bound 0; read: 0, `d_TV` = **n/a**, never 0.000 — an empty read set is an *absence*, and reporting it as agreement would be a check that never ran wearing the face of one that passed. The instrument (`src/Core/Chip8ConsultCensus.fs`, `src/Core.TypeScript/chip9/consult-census.ts`, report `bun src/Core.TypeScript/chip9/consult-census-report.ts`) is deliberately built **before** the thing it measures, so the property is established rather than discovered after a skew has accumulated; it carries **no threshold** (`d_TV` is parameter-free — Levin–Peres–Wilmer 2017 §4.1; `sharesIdentical` is exact integer cross-multiplication) and returns **no verdict**. Auto-consult stays off: enabling it is a *metering* change, not a caching one (081M089ZPAY087G0R001MYXM7N §1). **Anchors (CITED, NOT CHECKED — entailment unverified):** Price 1996; Cramer 1986; Wharton & Argaman, Rev. Mod. Phys. 2020. No-signalling is the checked part. **Satellites:** `docs/research/ip-questionable/2026-08-17-hossenfelder-two-dimensions-of-time-…-verbatim.md` §§5–7; `src/Core/Chip8CrossRunStore.fs`; `docs/research/2026-08-17-chip8-cross-run-superdeterministic-memo-store-orbit-memoization-not-retrocausality.md`. |
 
 ---
 

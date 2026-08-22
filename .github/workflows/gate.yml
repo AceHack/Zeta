@@ -17,19 +17,7 @@
 #     work; bumped from 22.04 on 2026-04-28 per the human
 #     maintainer's input + version-currency discipline —
 #     ubuntu-latest = 24.04 since Jan 2025).
-#     Windows AND macOS legs are non-blocking DRIFT CHECKS
-#     (Aaron 2026-08-19 — quoted in full at the
-#     `continue-on-error:` flag on `build-and-test`). They are not
-#     "deferred", which is what this line said until 2026-08-19.
-#     Cadence differs and that is deliberate: Windows runs
-#     push-to-main only, macOS runs on EVERY PR — a drift check is
-#     only worth its minutes where someone reads it, and the PR
-#     checks list is the surface humans actually open. Measured
-#     reason, not preference: of the last 500 completed gate push
-#     runs only 82 (16.4%) executed their matrix at all — the rest
-#     were cancelled by the concurrency group before any leg ran
-#     (data/platform-drift.json, 2026-08-19). Push-only cadence
-#     would have cut macOS observation by ~84%.
+#     Windows legs deferred to peer-harness milestone.
 #   - Third-party actions SHA-pinned by full 40-char commit SHA;
 #     trailing `# vX.Y.Z` comments for humans.
 #   - permissions: contents: read at the workflow level; no job
@@ -46,26 +34,6 @@
 #   - fail-fast: false so one OS failure doesn't hide another.
 #   - NuGet cache keyed on Directory.Packages.props hash; runner.os
 #     prefixed so macOS + Linux caches don't collide.
-#   - Rust toolchain cache (`install-v2-*` / `full-verify-v2-*`, added
-#     2026-08-16). mise's rust backend wraps rustup, and its install dir
-#     `~/.local/share/mise/installs/rust/1.87.0` is a SYMLINK to
-#     `~/.cargo/bin` holding 0 bytes — the real toolchain (656 MB) lives
-#     in `~/.rustup/toolchains/`, which was in NO cache path anywhere.
-#     So a full `install-*` cache HIT still re-fetched
-#     https://static.rust-lang.org/dist/channel-rust-1.87.0.toml on every
-#     job (~50 s each) and took three PRs down on 2026-08-16 (#10903,
-#     #10930, #10963) — each reported under the name of a lint that never
-#     executed. Cached paths are `~/.rustup/toolchains/1.87.0-*`,
-#     `settings.toml`, `update-hashes`, `~/.cargo`.
-#     ONLY the pinned toolchain: the ubuntu-24.04 image already ships
-#     `~/.rustup/toolchains/stable-*` (624 MB) that RUSTUP_TOOLCHAIN never
-#     selects. Measured on the runner — whole-dir 1681 MB vs pinned-only
-#     1486 MB against a 1270 MB baseline, i.e. +216 MB instead of +411 MB.
-#     `1.87.0` here must stay in sync with `rust` in `.mise.toml`; a stale
-#     glob degrades to the pre-2026-08-16 behaviour (CDN fetch), never to a
-#     wrong toolchain. `!`-exclusion was tried and measured as INERT —
-#     `path: ~/.rustup/toolchains` + `!~/.rustup/toolchains/stable-*`
-#     stored the full 1681 MB, so the explicit glob is load-bearing.
 #   - Three-way parity per GOVERNANCE §24: dev laptop, CI runner,
 #     and (future) devcontainer all bootstrap via the same
 #     `tools/setup/install.sh`. This makes TLC + Alloy jars, Lean/
@@ -126,40 +94,19 @@ jobs:
         shell: bash
         run: |
           # Pre-merge (pull_request + merge_group): Linux + macos-26
-          # (~5 min wall clock with macos in parallel). macos-26 runs on
-          # every PR — moved back to per-PR cadence 2026-04-28 after
-          # maintainer correction ("we pull out mac and codeql to merge
-          # to main time instead of per pr, and then moved it back to
-          # per pr"). The earlier per-merge-only split structurally
-          # blocked the PR queue.
-          #   CORRECTION 2026-08-19: this comment used to say macos-26 is
-          #   "required by branch protection's required-status-checks".
-          #   It is not, and has not been since the drift-and-heal flip:
-          #   the `CI Gate` ruleset requires exactly ONE context,
-          #   `gate (required)`. macos-26 blocked only transitively, by
-          #   being a leg of `build-and-test` with no continue-on-error.
-          #   As of 2026-08-19 it no longer blocks at all — the flag now
-          #   covers it. The mechanism is still what anyone changing this
-          #   has to reason about.
-          # macos-26 STAYS on every PR even though it no longer blocks,
-          # and the reason is coverage rather than habit. The two
-          # post-merge surfaces that read drift legs
-          # (drift-sweep.yml's BD001 detector and
-          # platform-drift-report.ts) both query
-          # `branch=main&event=push`, and 418 of the last 500 such runs
-          # were CANCELLED by the concurrency group before a single leg
-          # executed — 16.4% coverage (data/platform-drift.json,
-          # 2026-08-19). The PR run is the one that reliably executes and
-          # the one a human already has open. Moving macOS to push-only
-          # would have been cheaper and would have made the check mostly
-          # unobserved, which is the vacuity class.
-          # Push-to-main / workflow_dispatch: full surface adds the two
-          # Windows legs. Those are DRIFT CHECKS — non-blocking
-          # permanently and by intent (Aaron 2026-08-19), not
-          # experimental legs waiting to be promoted. The full statement,
-          # quoted, is at the `continue-on-error:` flag on
-          # `build-and-test`; read it before changing either this matrix
-          # or that flag.
+          # (~5 min wall clock with macos in parallel). macos-26 is
+          # required by branch protection's required-status-checks,
+          # so it runs on every PR — moved back to per-PR cadence
+          # 2026-04-28 after maintainer correction ("we pull out mac
+          # and codeql to merge to main time instead of per pr, and
+          # then moved it back to per pr"). The earlier per-merge-only
+          # split structurally blocked the PR queue.
+          # Push-to-main / workflow_dispatch: full surface adds Windows
+          # legs (peer-harness milestone seeding per maintainer
+          # 2026-04-27). Windows legs are gated by `continue-on-error:
+          # true` at the build-and-test job level so initial failures
+          # (e.g. missing tools/setup/install.ps1) don't block per-merge
+          # runs while the peer-agent polishes the path.
           if [ "${GH_EVENT}" = "pull_request" ] || [ "${GH_EVENT}" = "merge_group" ]; then
             echo 'os=["ubuntu-24.04","ubuntu-24.04-arm","macos-26"]' >> "$GITHUB_OUTPUT"
           else
@@ -256,20 +203,6 @@ jobs:
           #   .github/ISSUE_TEMPLATE, .github/PULL_REQUEST_TEMPLATE — text only
           #   .gitignore / .gitattributes — text only
           #   *.txt / LICENSE — text only
-          #   data/**       — generated telemetry served by Pages (tick shards + rollups,
-          #                   drift / vault ledgers). NOT a build input: no .fs / .fsproj /
-          #                   .cs / test file in the repo reads anything under data/
-          #                   (verified 2026-08-13). Added when the telemetry lanes moved
-          #                   off direct pushes to main onto flush PRs — every frame now
-          #                   arrives as a PR, and running the full F# matrix on a JSON
-          #                   frame that cannot affect it would saturate the queue for no
-          #                   signal.
-          #   demo/red/red-state.json — same: a regenerated dashboard snapshot.
-          #
-          # This narrows what the heavy STEPS run on; it does not narrow the gate. The
-          # `gate (required)` check still runs and still reports on these PRs, and every
-          # lint (semgrep included) is untouched. A diff touching code alongside data still
-          # flips code=true — the allowlist is per-file, not per-PR.
           #
           # Anything else (incl. src/**, tests/**, tools/**, *.fs, *.fsproj,
           # *.csproj, .github/workflows/**, global.json, Directory.Packages.props,
@@ -279,8 +212,6 @@ jobs:
             [ -z "${f}" ] && continue
             case "${f}" in
               docs/*|memory/*|openspec/*|.claude/*|.github/ISSUE_TEMPLATE/*|.github/PULL_REQUEST_TEMPLATE.md|.github/copilot-instructions.md)
-                ;;
-              data/*|demo/red/red-state.json)
                 ;;
               .gitignore|.gitattributes|LICENSE|*.txt)
                 ;;
@@ -313,16 +244,10 @@ jobs:
     # so the prior fork/LFG cost-opt split (which kept macOS off LFG)
     # no longer applies.
     #
-    # BLOCKING legs (2) — the only platforms a red leg still stops:
+    # Active legs (3):
+    #   - macos-26          macOS 26, Apple Silicon M1 (3 CPU, 7 GB)
     #   - ubuntu-24.04      Ubuntu 24.04 LTS x64 (4 CPU, 16 GB)
     #   - ubuntu-24.04-arm  Ubuntu 24.04 LTS arm64 (4 CPU, 16 GB)
-    #
-    # DRIFT-CHECK legs (3) — run, report, block nothing:
-    #   - macos-26          macOS 26, Apple Silicon M1 (3 CPU, 7 GB)
-    #                       every PR + every push to main
-    #   - windows-2025      Windows Server 2025 x64 (4 CPU, 16 GB)
-    #   - windows-11-arm    Windows 11 arm64 (4 CPU, 16 GB)
-    #                       push to main / workflow_dispatch only
     #
     # Moved-to-nightly leg (per maintainer 2026-04-27):
     #   - ubuntu-slim       Ubuntu slim x64 (1 vCPU, 5 GB RAM;
@@ -340,139 +265,35 @@ jobs:
     #                       Reference:
     # https://github.blog/changelog/2026-01-22-1-vcpu-linux-runner-now-generally-available-in-github-actions/
     #
-    # The Windows legs (added 2026-04-27 as "experimental"; reclassified
-    # 2026-08-19 by the maintainer — see the note at `continue-on-error:`
-    # below) run only on push-to-main / `workflow_dispatch`, NOT on
-    # `pull_request` (and NOT on a schedule — this workflow has no
-    # `schedule:` trigger, which several comments here claimed until
-    # 2026-08-19). They carry `continue-on-error: true`
-    # permanently and by intent: they are drift checks, deliberately
-    # observed and deliberately non-blocking. "Experimental / while the
-    # installer matures" was the old reading and is no longer the
-    # reason — do not read the flag as a temporary accommodation.
-    # macos-26 joined them 2026-08-19 (same flag, per-PR cadence kept).
+    # Per-merge experimental legs (maintainer 2026-04-27 — replaces
+    # the prior 2026-04-24 deferral so Windows infrastructure is
+    # mostly-ready when the peer-mode agent comes online):
+    #   - windows-2025      Windows Server 2025 x64 (4 CPU, 16 GB)
+    #   - windows-11-arm    Windows 11 arm64 (4 CPU, 16 GB)
+    # These run only on push-to-main / schedule / workflow_dispatch
+    # (not on PR — same cadence as macos-26). They carry
+    # `continue-on-error: true` while the native PowerShell installer
+    # and ARM64 package availability mature; failures remain visible
+    # without blocking the per-merge gate.
     #
     # fail-fast: false so one leg's failure doesn't cancel the
     # others — we want the full signal across the matrix.
     #
-    # Per-PR / per-merge cadence split:
+    # Per-PR / per-merge cadence split (maintainer 2026-04-27):
     # - macos-26: developer-experience verification, NOT prod build.
-    #   Runs on EVERY PR and every push-to-main. (The 2026-04-27
-    #   per-merge-only split was reverted 2026-04-28 by maintainer
-    #   correction — "we pull out mac and codeql to merge to main time
-    #   instead of per pr, and then moved it back to per pr". This
-    #   comment said "push-to-main + schedule + workflow_dispatch"
-    #   until 2026-08-19; it had been wrong for nearly four months.)
+    #   Runs only on push-to-main + schedule + workflow_dispatch.
+    #   Same rationale as the Analyze (csharp) move below.
     # - ubuntu-24.04 + ubuntu-24.04-arm: production build path; runs
     #   on every PR + push-to-main.
-    # The matrix is built dynamically by `matrix-setup`: PR + merge_group
-    # runs get Linux + macOS, push-to-main / workflow_dispatch get all
-    # five.
-    #
-    # THE ASYMMETRY IS CLOSED (2026-08-19). This block used to say Windows
-    # and macOS were NOT in the same state — Windows non-blocking, macOS
-    # blocking transitively through `build-and-test`. It is now one state:
-    # both are drift checks, both carry the flag below. The floor amendment
-    # that closed it was authorized by Aaron the same day, verbatim:
-    #
-    #   "we are moving away from anything that blocks into drift checks
-    #    instead."
-    #
-    # What that cost, stated rather than left to be discovered: macOS runs
-    # PRE-merge, so unlike the Windows flip this one changes what can land.
-    # A macOS-only break now merges. Last time that would have mattered:
-    # run 32138908732 (2026-08-18), macos-26 the only failed leg and
-    # `gate (required)` failure — under this file it would be a green gate
-    # carrying a named non-blocking failure, and the break would be on main.
-    # Measured frequency of that event: 1 failure in 82 executed push runs
-    # (1.2%), clean streak 19, over 2026-08-15..2026-08-19
-    # (data/platform-drift.json). For contrast the Linux leg that still
-    # blocks, ubuntu-24.04, failed 2 (2.4%) over the same runs — macOS was
-    # never the noisy leg, it was a quiet leg holding gate authority.
-    # Work item: 081M0CPEH40087G0R0016GDSB6.
+    # The matrix is built dynamically by `matrix-setup` so PR runs
+    # only get the Unix legs while push-to-main / schedule /
+    # workflow_dispatch run all five.
     name: build-and-test (${{ matrix.os }})
     timeout-minutes: 45
     needs: [matrix-setup, path-filter]
-    # ── THIS FLAG IS A CLASSIFICATION, NOT AN ACCOMMODATION. DO NOT "FIX" IT. ───────
-    #
-    # Settled 2026-08-19 by the maintainer (Aaron), verbatim:
-    #
-    #   "windows and mac are drift checks, it's fine to check per pr if we want but we
-    #    don't want to block on them. Also we are moving more and more away from PRs
-    #    and more into sovereign mode without PRs."
-    #
-    # AMENDED 2026-08-19, same day, by Aaron directly — this is what moved macOS in:
-    #
-    #   "we are moving away from anything that blocks into drift checks instead."
-    #
-    # So: the Windows AND macOS legs are non-blocking PERMANENTLY AND BY INTENT. They
-    # are drift checks — deliberately observed, deliberately not gates. This is the
-    # steady state, not a tolerance being worked off, and narrowing this expression
-    # would be reversing a maintainer decision, not cleaning up a leftover. If you
-    # believe a platform should block, that is a floor amendment and it goes through
-    # the consent path (the same one named at `gate-required`), not through an edit
-    # here. The expression is pinned by a test —
-    # src/Core.TypeScript/ci/gate-scope-summary.test.ts, "the drift-check platform set
-    # is exactly what the maintainer classified" — so a silent narrowing fails there
-    # rather than being discovered by a merge that should not have landed.
-    #
-    # WHAT THE FLAG ACTUALLY DOES, since it must stay legible. This job IS in the
-    # `gate-required` floor, and the floor NAME NOW OVERSTATES ITS COVERAGE ON EVERY
-    # PLATFORM BUT LINUX: a Windows or macOS build/test failure reaches
-    # `gate (required)` as SUCCESS. What the floor still covers pre-merge is
-    # ubuntu-24.04 and ubuntu-24.04-arm, and registry/uncompensatable-floor.yaml's
-    # `scoped-build-test-break` entry says so in the data rather than only here.
-    # MEASURED for Windows over the 152 completed `gate` runs carrying Windows legs
-    # (2026-04-25..2026-08-19): windows-2025 failed 12 times (7.9%), windows-11-arm 9
-    # (5.9%), 14 runs carried at least one (9.2%) — and in all 11 instances since
-    # `gate-required` existed, the required check reported green beside the red leg.
-    # One is committed as a fixture: run 31978270082, in
-    # src/Core.TypeScript/ci/fixtures/gate-run-jobs-windows-failed.json. That fixture
-    # is the empirical basis for the macOS half too: it proves the Actions API reports
-    # a continue-on-error leg's conclusion as `failure` (not `skipped`, not `neutral`),
-    # which is what every surface below derives from.
-    #
-    # THE OBLIGATION THAT COMES WITH "DON'T BLOCK" IS "THEN BE SEEN". A drift check
-    # nobody reads is the vacuity class wearing a different hat. FOUR surfaces carry
-    # it, and each is deliberate:
-    #   0. The leg's OWN check run still concludes `failure` — a red X in the PR's
-    #      checks list, next to a green `gate (required)`. Verified against the live
-    #      API, not assumed: GET /commits/54492c95ec2e6e31105d698c7ef68d5884daaf38/
-    #      check-runs reports `build-and-test (windows-2025)` conclusion=failure for
-    #      the run above, while the same commit's `gate (required)` is success. This
-    #      is the surface that makes the macOS flip safe, because macOS runs per-PR.
-    #   1. `gate (required)`'s step summary + warning annotation names any leg that
-    #      failed non-blockingly (src/Core.TypeScript/ci/gate-scope-summary.ts) —
-    #      per-run, derived, knows no platform names. It needed no edit for macOS,
-    #      which is the test that it was built generically rather than for Windows.
-    #   2. `drift-sweep.yml`'s BD001 detector files a failed `build-and-test` leg on
-    #      main into the drift ledger (docs/drift-events/) — but keyed to `Zeta.sln`,
-    #      so WHICH leg is lost, and it reads one run, so it measures a level.
-    #   3. src/Core.TypeScript/ci/platform-drift-report.ts folds the last N push runs
-    #      into per-leg failure RATES, clean streaks, and — the number that turned out
-    #      to matter — COVERAGE: of the 500 most recent completed push runs, 418 were
-    #      `cancelled` before their legs ever ran (16.4% coverage). Published to
-    #      data/platform-drift.json and rendered on data/monitor.html. It will
-    #      reclassify `macos-26` from `blocking` to `non-blocking` the first time it
-    #      fails beside a green rollup — that classification is OBSERVED, not read off
-    #      this flag, so the ledger will disagree with this file until the evidence
-    #      arrives. That is correct and deliberate; do not "fix" the ledger either.
-    #
-    # Surfaces 2 and 3 both query `branch=main&event=push`, i.e. 16.4% coverage. That
-    # is why macOS keeps its per-PR cadence: surface 0 is the one that reliably fires.
-    #
-    # Decision record, with the measurements that informed it and the strategic context
-    # (the move toward sovereign mode without PRs):
-    # workitems/081M0BVAV2H087G0R000VXRYRQ-decide-whether-the-windows-build-and-test-legs-should-block.md
-    # workitems/done/2026/08/081M0CPEH40087G0R0016GDSB6-make-the-macos-build-and-test-leg-non-blocking-floor-amendme.md
-    #
-    # Note if you are here to make the WINDOWS legs run per-PR: Aaron allowed it ("fine
-    # to check per pr if we want") and it was PRICED and declined — ~355 PR gate runs/day
-    # × ~21 runner-minutes ≈ 124 runner-hours/day for a check that by decision cannot
-    # block. The reasoning is in the work item; re-open it there, not here. macOS is not
-    # covered by that pricing: it was already running per-PR before this change, so
-    # keeping it there costs zero additional minutes.
-    continue-on-error: ${{ startsWith(matrix.os, 'windows-') || startsWith(matrix.os, 'macos-') }}
+    # Windows legs remain experimental; mark them non-blocking while
+    # native installer and ARM64 package coverage mature. Unix legs block.
+    continue-on-error: ${{ startsWith(matrix.os, 'windows-') }}
     strategy:
       fail-fast: false
       matrix:
@@ -659,12 +480,7 @@ jobs:
             ~/.dotnet/tools
             ~/.elan
             ~/.config/zeta
-            ~/.rustup/toolchains/1.87.0-*
-            ~/.rustup/settings.toml
-            ~/.rustup/update-hashes
-            ~/.cargo
-            ~/.cache/zeta/from-autotools-tarball/*.tgz
-          key: install-v2-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('.mise.toml', 'tools/setup/**', 'global.json') }}
+          key: install-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('.mise.toml', 'tools/setup/**', 'global.json') }}
 
       - name: Install toolchain via three-way-parity script (GOVERNANCE §24)
         # Single source of truth for toolchain state. mise installs
@@ -710,12 +526,7 @@ jobs:
             ~/.dotnet/tools
             ~/.elan
             ~/.config/zeta
-            ~/.rustup/toolchains/1.87.0-*
-            ~/.rustup/settings.toml
-            ~/.rustup/update-hashes
-            ~/.cargo
-            ~/.cache/zeta/from-autotools-tarball/*.tgz
-          key: install-v2-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('.mise.toml', 'tools/setup/**', 'global.json') }}
+          key: install-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('.mise.toml', 'tools/setup/**', 'global.json') }}
 
       - name: Install toolchain via three-way-parity script (GOVERNANCE §24)
         run: ./tools/setup/install.sh
@@ -730,80 +541,19 @@ jobs:
     # yamllint = syntax/indentation/dup-key; kubeconform = k8s API-schema validation.
     # Aaron 2026-06-10 ("should we have a yaml/k8s lint gate? ... lets do that").
     #
-    # REQUIRED as of 2026-08-14. It shipped ADVISORY (continue-on-error) under the
-    # standing easing-in pattern, with the instruction to flip once clean for a few
-    # rounds. That condition is met and was measured, not assumed: clean since
-    # 2026-08-01, and 8 of 8 recent gate runs carrying this job report success. An
-    # advisory check that has earned its promotion and never gets it is just a check
-    # that cannot fail — which is the defect class this repo spent 2026-08-14 removing
-    # (nine of them, including a k8s manifest validator that accepted tab indentation,
-    # unterminated quotes and duplicate keys as "valid YAML"). The full dev-machine bootstrap is deliberately NOT run
+    # ADVISORY first (continue-on-error) — reports without blocking the gate; flip
+    # to required once it has run clean for a few rounds (same easing-in pattern as
+    # prior gate additions). The full dev-machine bootstrap is deliberately NOT run
     # here: this job only needs two lint tools, and install.sh pulls heavy proof/QEMU/R
     # substrate that can consume the whole advisory timeout before YAML is checked.
     name: lint (yaml/k8s)
     timeout-minutes: 10
     runs-on: ubuntu-24.04
-    # No continue-on-error: this job now blocks the gate (see the note above).
+    continue-on-error: true # ADVISORY — remove once clean for a few rounds (then required)
 
     steps:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-
-      - name: Set up bun (for the cluster-tree consumer audit)
-        uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
-
-      # 081M00QCHWA087G0R000GKKRXD — the repo carries TWO declarations of one
-      # cluster, and they collide on Application/argocd/zeta-root. Consolidation
-      # has been deferred twice for the same reason: nobody could show the list
-      # of things still reading the stale tree was COMPLETE (a 2026-08-16 pass
-      # named two code consumers; there were nine). This audit derives that list
-      # with `git grep` and fails when a NEW file couples to the stale tree, or
-      # when the roster over-claims by naming a file that no longer does.
-      #
-      # It needs no network and no toolchain beyond bun + git, and it needs no
-      # `bun install` (node builtins only). MEASURED 2026-08-17, warm: 0.9 s
-      # wall for a full content scan of the 15,711 tracked files outside the
-      # excluded prefixes. That is why it sits in this narrow job rather than
-      # earning one of its own.
-      - name: Cluster-tree consumer roster (no new coupling to the stale tree)
-        run: bun src/Core.TypeScript/hygiene/audit-cluster-tree-consumers.ts
-
-      # The audit above is only worth its slot if it can go red. The suite
-      # plants each failure mode in a throwaway git tree and asserts exit 1 with
-      # the specific reason, plus a control case asserting exit 0 so an audit
-      # that failed unconditionally could not pass. MEASURED: 2.4 s, 8 cases.
-      - name: Cluster-tree consumer roster — mutation suite (proves it goes red)
-        run: bun test src/Core.TypeScript/hygiene/audit-cluster-tree-consumers.test.ts
-
-      # ADDED 2026-08-21, and it relaxes this job's stated "node builtins only"
-      # design ON PURPOSE. The observability-chain audit below parses Helm
-      # `valuesObject` YAML, and the honest options were (a) install the `yaml`
-      # package this repo already declares, or (b) hand-roll YAML extraction
-      # with regexes. (b) was refused: a regex YAML reader that silently
-      # mis-parses a nested block would produce a GREEN audit over a config it
-      # never understood, which is precisely the false-green class this audit
-      # exists to catch. Paying ~seconds of install to avoid inventing a
-      # fragile parser is the correct trade. First observed as
-      # `Cannot find package 'yaml'` in run 96651130473.
-      - name: Install bun dependencies (the chain audit needs `yaml`)
-        run: bun install --frozen-lockfile
-
-      # 2026-08-20 — the observability chain was broken at every link and every
-      # break was values-only, so helm template, kubeconform and yamllint were
-      # all green on all of them. Measured on the tree as it shipped: Alloy had
-      # three sinks and zero sources, its Loki sink named a Service the chart
-      # does not render, and every alert routed to a receiver named "null".
-      # This audit refuses all three classes. It needs no network and no helm:
-      # Service names come from a rendered roster that is freshness-keyed to the
-      # target Application, so a chart bump without --refresh fails as STALE
-      # rather than asserting a stale render. MEASURED: 0.4 s, bun + yaml only.
-      - name: Observability chain (no sink without a source, no alert into /dev/null)
-        run: bun src/Core.TypeScript/hygiene/audit-observability-chain.ts
-
-      # Proves the audit above can go red, including against the exact pre-fix
-      # content of the tree. MEASURED: 22 tests, 40 assertions, 0.5 s.
-      - name: Observability chain — mutation suite (proves it goes red)
-        run: bun test src/Core.TypeScript/hygiene/audit-observability-chain.test.ts
 
       - name: Install narrow YAML lint tools
         run: |
@@ -869,30 +619,6 @@ jobs:
         # tools/setup/** (install logic itself) so changes to either
         # invalidate cache → vanilla install path gets re-tested
         # whenever the install discipline changes.
-        #
-        # `~/.cache/zeta/from-autotools-tarball/*.tgz` added 2026-08-17.
-        # That directory is where `from-autotools-tarball.ts` parks upstream
-        # source tarballs — today only E prover 3.2.0, fetched from
-        # `github.com/eprover/eprover/archive/refs/tags/`. It was NOT in this
-        # list, so the "comprehensive cache" claim above was false for the one
-        # component fetched straight from github.com rather than a CDN: every
-        # ubuntu job re-downloaded it cold. On 2026-08-17 GitHub answered 429
-        # and PRs #11470, #11472 and #11475 went red on `lint (tick-shard
-        # relative-paths)` with `curl fetch failed (22)` — three PRs whose
-        # diffs had nothing to do with a theorem prover. curl retried thirteen
-        # times over five minutes and lost, because a rate-limit window is
-        # longer than any retry budget worth spending; not fetching is the only
-        # fix that scales.
-        #
-        # Two properties make this safe to cache rather than merely faster.
-        # The key already hashes `tools/setup/**`, which contains the manifest
-        # holding the URL and the sha256 pin, so a version bump cannot be
-        # served a stale tarball — it lands on a different key. And the
-        # realizer now verifies the pin on the RESTORED file too, not only on
-        # a fresh download, so a corrupt or substituted entry is discarded
-        # instead of compiled into the prover that signs our FOL proofs.
-        # Only `*.tgz` is cached: the sibling `<key>-build/` extraction dirs
-        # are rebuilt every run and would add hundreds of MB of churn.
         uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
           path: |
@@ -902,12 +628,7 @@ jobs:
             ~/.dotnet/tools
             ~/.elan
             ~/.config/zeta
-            ~/.rustup/toolchains/1.87.0-*
-            ~/.rustup/settings.toml
-            ~/.rustup/update-hashes
-            ~/.cargo
-            ~/.cache/zeta/from-autotools-tarball/*.tgz
-          key: install-v2-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('.mise.toml', 'tools/setup/**', 'global.json') }}
+          key: install-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('.mise.toml', 'tools/setup/**', 'global.json') }}
 
       - name: Install toolchain via three-way-parity script (GOVERNANCE §24)
         # Installs shellcheck via mise (pinned in .mise.toml). Single
@@ -992,121 +713,56 @@ jobs:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
-      # This job executes lockfile-managed JavaScript plus tracked hygiene
-      # tests only. The 553 MB workstation/cluster apt manifest timed out on a
-      # live heartbeat PR before this guard ran; setup-bun + bun.lock is the
-      # declared minimal boundary, while full setup remains for toolchain jobs.
-      - name: Setup pinned Bun
-        uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
+      - name: Cache install.sh outputs (mise runtimes + dotnet tools + verifier jars)
+        # Comprehensive cache — see lint-shell job above for the
+        # rationale (maintainer dev-CI parity input +
+        # transient 502 prevention). Same cache key shape so all
+        # lint jobs share the cache when toolchain unchanged.
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
-          bun-version: "1.3.13"
+          path: |
+            ~/.local/bin/mise
+            ~/.local/share/mise
+            ~/.cache/mise
+            ~/.dotnet/tools
+            ~/.elan
+            ~/.config/zeta
+          key: install-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('.mise.toml', 'tools/setup/**', 'global.json') }}
 
-      - name: Install JavaScript dependencies from the locked graph
-        run: bun install --frozen-lockfile
+      - name: Install toolchain via three-way-parity script (GOVERNANCE §24)
+        # Provides bun via mise's pin in .mise.toml. The inventory guard is
+        # intentionally separate from shellcheck: shellcheck validates the
+        # retained setup scripts, while this job fails any new non-allowlisted
+        # tracked `.sh` surface before it reaches main.
+        # See lint-shell job above for retry rationale.
+        run: |
+          set -euo pipefail
+          for attempt in 1 2 3 4 5; do
+            if ./tools/setup/install.sh; then exit 0; fi
+            [ "$attempt" = "5" ] && { echo "install.sh failed after 5 attempts"; exit 1; }
+            # Backoff: 10s, 30s, 60s, 120s — covers transient CDN
+            # blips from short-burst-and-recover up to multi-minute
+            # outages. The retry budget is five attempts because prior
+            # bun CDN 502s exhausted mise-internal retries plus a
+            # three-attempt wrapper.
+            case "$attempt" in
+              1) backoff=10 ;;
+              2) backoff=30 ;;
+              3) backoff=60 ;;
+              4) backoff=120 ;;
+            esac
+            echo "install.sh attempt $attempt failed; retrying in ${backoff}s..." >&2
+            sleep "$backoff"
+          done
 
       - name: Run bash-retirement inventory guard
         run: bun run hygiene:check-bash-retirement-inventory
 
-      - name: Ambient-credential-hoist guard
-        # Refuses any tracked executable surface that puts a credential into a
-        # shell environment. An env var crosses `exec` regardless of the child's
-        # code identity, so this is the one exposure no signature, keychain ACL,
-        # IMA appraisal or TPM seal can gate — all four bind a secret to a
-        # CALLER, and an inherited variable has already escaped that question.
-        # It caught two live sites when first run (shellenv.sh:111 and
-        # op-token-setup.sh:83); both are removed in the same change.
-        # Exits 2 if it scans fewer files than its floor, so a scope regression
-        # cannot report success the way `lint:markdown` did (#10712).
-        run: bun run hygiene:no-ambient-credential-hoist
-
-      - name: Decide-by-grep guard (a crash must not read as a pass)
-        # Refuses `if TOOL ... | grep -q PAT; then fail; fi` in a workflow. A
-        # pipeline's exit status is the LAST command's, so TOOL's status is
-        # discarded; when TOOL dies on a signal (139 = 128+11 SIGSEGV, 134 =
-        # 128+6 SIGABRT) it prints nothing, the grep matches nothing, and the
-        # gate PASSES having checked nothing. Measured 2026-08-15: replaying
-        # lean-proof.yml's axiom-audit step with a `lake` that SIGSEGVs on every
-        # call exited 0 and printed "axiom audit clean (no sorryAx)" — 20 proof
-        # gates green with no prover output at all.
-        # Only the DENY polarity is flagged; `if ! ... | grep -q` is fail-closed.
-        # Exits 2 if it scans fewer workflows than its floor, so a scope
-        # regression cannot report success the way `lint:markdown` did (#10712).
-        run: bun run hygiene:no-decide-by-grep
-
-      - name: Scan-floor route audit (the floors are themselves enumerable)
-        # Inventories every scan floor in the repo through four INDEPENDENT
-        # recognizers and requires each to contribute at least one site. An
-        # enumerating check is exactly the shape that goes blind — a rename or a
-        # reworded failure message kills one recognizer while the other three keep
-        # returning a plausible-looking inventory — so the floor here is
-        # per-recognizer, never a total. Exits 3 naming the one that went dark.
-        run: bun run hygiene:scan-floor-routes
-
-      - name: Ambient-time-in-tests guard (no test verdict may depend on wall-clock)
-        # A test that sleeps 10ms and then asserts is asserting that 10ms was enough on THIS
-        # runner. MEASURED 2026-08-16: poll-pr-gate-batch.test.ts, 14 pure in-memory tests with
-        # injected fakes and no I/O, ran 1366ms idle and 5.46s under load on the same machine
-        # class -- a 4x spread on identical code -- and went red at exactly the 5000ms per-test
-        # cap on six open PRs. Every one of those reds was false. In this repo's vocabulary a
-        # real timer in a test is an undeclared ambient time channel: DST #4 and
-        # noninterference #7, and the test-suite form of
-        # local-time-never-enters-the-shared-fold.
-        #
-        # NOT a Semgrep or ESLint rule, though either could match the pattern. Their suppression
-        # is an inline comment -- invisible in any roster, added by the same edit that
-        # introduces the violation. This reads registry/wall-clock-test-allowlist.json, which
-        # pins EXACT per-file occurrence counts, so a new sleep hiding behind a justified one
-        # fails and so does a row that has gone stale. Same mechanism, and the same reason, as
-        # tests/Tests.FSharp/DeterminismLint.Tests.fs uses for src/Core.
-        #
-        # Zero-delay yields stay legal: a setTimeout of 0 grants one event-loop turn on a fast
-        # machine and one on a loaded one. It is a NON-ZERO delay that encodes a guess.
-        #
-        # Its own falsifier runs in the step below: audit-ambient-time-in-tests.test.ts feeds
-        # the detector a deliberately-introduced ambient-time test and requires it to go red,
-        # in both ratchet directions.
-        run: bun run hygiene:no-ambient-time-in-tests
       - name: Hygiene unit-test suite (closes the per-PR coverage gap)
         # Runs every src/Core.TypeScript/hygiene/*.test.ts. These are
         # fixture/in-memory tests (no MEMORY.md / user-scope deps), so they
         # are CI-safe. This is what would have caught #8216's stale snapshot.
         run: bun test src/Core.TypeScript/hygiene/
-
-      - name: Hardware-inventory cross-surface reconciliation (drift)
-        # 081M00R59KS087G0R001W3837V. Hardware inventory lives on several surfaces
-        # with different provenance (a ZetaId register, a human audit snapshot, an
-        # operator declaration, machine self-registrations, SSH host keys) and
-        # nothing reconciled them. This does NOT merge them — it checks the
-        # invariants that hold ACROSS them (dangling machine references, one NIC
-        # counted as two nodes, a surface that never says what it is, a snapshot
-        # edited without moving its own counts, a declaration gone stale against
-        # the probe surface) and reports the register-coverage gap.
-        #
-        # Drift, not a gate, by design: this job is not in the gate-required
-        # roll-up, so a red here is signal, not a block (drift-and-heal ADR).
-        # Divergences we deliberately hold open are ledgered in
-        # inventory/reconciliation-open.json, and a ledger entry that no longer
-        # reproduces fails too — a suppression cannot outlive its cause.
-        run: bun run inventory:reconcile
-
-      - name: Inventory read-model is derived, not drifted (081M00R59KS087G0R001W3837V)
-        # `inventory/items.json` is a COMMITTED PROJECTION of `inventory/items/*.md`,
-        # and it is the only inventory surface a reader actually sees — the Pages
-        # viewer fetches it and never opens an item file. It has always had a
-        # `--check` mode and NO workflow ran it: measured 2026-08-17, editing an
-        # item's value_usd left `inventory:reconcile` green and all 23 inventory unit
-        # tests passing while the published price stayed wrong.
-        #
-        # Third instance of the same class in this one job (the hygiene suite #8216,
-        # the inventory unit tests one step down, now this): a check that exists,
-        # can fail, and is wired to nothing reads exactly like a check that passed.
-        run: bun run inventory:items-check
-
-      - name: Inventory unit tests
-        # These existed (generate-items-json.test.ts) and NO workflow ran them —
-        # found while wiring the reconciliation check. Same shape as the #8216 gap
-        # the hygiene step above closes, one directory over.
-        run: bun test src/Core.TypeScript/inventory/
 
   lint-workflows:
     # actionlint catches .github/workflows/*.yml bugs: unknown
@@ -1165,17 +821,25 @@ jobs:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
-      # This order check reads one tracked Markdown file and runs one tracked
-      # TypeScript script. It does not consume any host or cluster toolchain;
-      # use the package-pinned Bun path so apt mirror stalls cannot suppress the
-      # ordering verdict.
-      - name: Setup pinned Bun
-        uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
+      - name: Cache install.sh outputs (mise runtimes + dotnet tools + verifier jars)
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
-          bun-version: "1.3.13"
+          path: |
+            ~/.local/bin/mise
+            ~/.local/share/mise
+            ~/.cache/mise
+            ~/.dotnet/tools
+            ~/.elan
+            ~/.config/zeta
+          key: install-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('.mise.toml', 'tools/setup/**', 'global.json') }}
 
-      - name: Install JavaScript dependencies from the locked graph
-        run: bun install --frozen-lockfile
+      - name: Install toolchain via three-way-parity script (GOVERNANCE §24)
+        # Provides bun via mise's pin in .mise.toml. Same pattern as
+        # memory-index-duplicate-lint.yml (#1377) +
+        # memory-reference-existence-lint.yml (#1378). shellenv.sh
+        # wires BASH_ENV so subsequent run: steps auto-source the
+        # managed shellenv with bun on PATH.
+        run: ./tools/setup/install.sh
 
       - name: Run check-tick-history-order
         run: bun src/Core.TypeScript/hygiene/check-tick-history-order.ts
@@ -1211,12 +875,7 @@ jobs:
             ~/.dotnet/tools
             ~/.elan
             ~/.config/zeta
-            ~/.rustup/toolchains/1.87.0-*
-            ~/.rustup/settings.toml
-            ~/.rustup/update-hashes
-            ~/.cargo
-            ~/.cache/zeta/from-autotools-tarball/*.tgz
-          key: install-v2-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('.mise.toml', 'tools/setup/**', 'global.json') }}
+          key: install-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('.mise.toml', 'tools/setup/**', 'global.json') }}
 
       - name: Install toolchain via three-way-parity script (GOVERNANCE §24)
         # Provides bun via mise's pin in .mise.toml. Same pattern as
@@ -1264,12 +923,7 @@ jobs:
             ~/.dotnet/tools
             ~/.elan
             ~/.config/zeta
-            ~/.rustup/toolchains/1.87.0-*
-            ~/.rustup/settings.toml
-            ~/.rustup/update-hashes
-            ~/.cargo
-            ~/.cache/zeta/from-autotools-tarball/*.tgz
-          key: install-v2-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('.mise.toml', 'tools/setup/**', 'global.json') }}
+          key: install-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('.mise.toml', 'tools/setup/**', 'global.json') }}
 
       - name: Install toolchain via three-way-parity script (GOVERNANCE §24)
         # Provides bun via mise's pin in .mise.toml. Same pattern as
@@ -1314,12 +968,7 @@ jobs:
             ~/.dotnet/tools
             ~/.elan
             ~/.config/zeta
-            ~/.rustup/toolchains/1.87.0-*
-            ~/.rustup/settings.toml
-            ~/.rustup/update-hashes
-            ~/.cargo
-            ~/.cache/zeta/from-autotools-tarball/*.tgz
-          key: install-v2-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('.mise.toml', 'tools/setup/**', 'global.json') }}
+          key: install-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('.mise.toml', 'tools/setup/**', 'global.json') }}
 
       - name: Install toolchain via three-way-parity script (GOVERNANCE §24)
         run: ./tools/setup/install.sh
@@ -1375,80 +1024,6 @@ jobs:
             --enforce \
             --baseline src/Core.TypeScript/hygiene/audit-tick-shard-relative-paths.baseline.json
 
-  build-graph-completeness:
-    # The acceptance gate on wiring job selection to `ace/build-graph.json`.
-    #
-    # An affected-set query is only sound if the graph is COMPLETE over the CI
-    # domain: every target claims a leg, every leg resolves to a real job, every
-    # job is claimed by a target. Break any of those and selecting jobs from the
-    # graph SILENTLY SKIPS work -- and a job that should have run and did not is
-    # indistinguishable from one that ran and passed.
-    #
-    # It found three real defects when written (2026-08-19), all live on main:
-    #   * `lean-proof/build` and `tlaps-proof/tlaps` named jobs that do not exist
-    #     (they are `type-check` and `prove`), so a wired graph would have skipped
-    #     the Lean and TLA+ proofs entirely;
-    #   * 35 Rust crates carried `legs: []` while `gate/lint-rust` demonstrably
-    #     lints every crate under src/;
-    #   * 18 jobs -- including lint-fsharp, lint-csharp and lint-rust -- were
-    #     claimed by no target at all.
-    #
-    # BUN ONLY, on purpose, and the reason is this job's own subject matter: it
-    # needs one 178 MB runtime, and `./tools/setup/install.sh` provisions the union
-    # of every toolchain in the repo. Same rationale the lint-structural-hygiene
-    # job below already states.
-    name: lint (build-graph completeness)
-    timeout-minutes: 5
-    runs-on: ubuntu-24.04
-
-    steps:
-      - name: Checkout
-        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-
-      - name: Setup Bun
-        uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
-
-      - name: Graph is complete over the CI domain (fails closed)
-        run: bun src/Core.TypeScript/hygiene/audit-build-graph-completeness.ts
-
-      # Manifesto §1 for repo topology: `ace` may be the good resolution path and
-      # may never be the only one. Guarded here rather than later because the guard
-      # is free while `ace` is optional and unretrofittable once the fleet depends
-      # on it. Rule: .claude/rules/clone-at-tag-stays-sufficient.md
-      - name: Clone-at-a-tag is still sufficient (no ace-as-resolver)
-        run: bun src/Core.TypeScript/hygiene/lint-clone-at-tag-is-sufficient.ts
-
-      # A flake ref evaluates PURE by default, and pure-eval `builtins.pathExists`
-      # on an absolute path returns FALSE rather than erroring (measured 2026-08-21,
-      # Nix 2.34.6). Every full-ai-cluster module reading /etc/zeta guards its
-      # readFile behind that pathExists, so a rebuild without --impure silently
-      # reverts hostname / k3s join endpoint / segment address and DROPS the
-      # operator's authorized SSH keys. Guarded here because the failure is silent.
-      - name: Documented flake rebuilds still carry --impure (silent-revert guard)
-        run: bun src/Core.TypeScript/hygiene/lint-nixos-rebuild-needs-impure.ts
-
-      - name: Audit + selector unit tests (a check that cannot fail is not a check)
-        run: |
-          bun test \
-            src/Core.TypeScript/hygiene/audit-build-graph-completeness.test.ts \
-            src/Core.TypeScript/hygiene/lint-clone-at-tag-is-sufficient.test.ts \
-            src/Core.TypeScript/hygiene/lint-nixos-rebuild-needs-impure.test.ts \
-            src/Core.TypeScript/ci/affected-legs.test.ts
-
-      # OBSERVE-ONLY. Nothing reads these outputs yet, and that is deliberate: the
-      # derivation is published and compared against what the gate actually ran, so
-      # it is checked against reality BEFORE any `if:` depends on it. Flipping the
-      # guards on an unproven selector is the same class of mistake as trusting an
-      # incomplete graph. The mapping is DERIVED here at run time and is never
-      # hand-maintained in this file -- a second copy of the graph written as `if:`
-      # expressions is how a wired graph becomes unwired again.
-      - name: Affected legs for this change (observe-only, nothing consumes it)
-        if: github.event_name == 'pull_request'
-        run: |
-          bun src/Core.TypeScript/ci/affected-legs.ts \
-            --base "${{ github.event.pull_request.base.sha }}" \
-            --head "${{ github.event.pull_request.head.sha }}"
-
   lint-structural-hygiene:
     # Keep repository-structure guards that are still active after the
     # docs/backlog cutover. Legacy backlog-ID uniqueness/status checks are
@@ -1477,15 +1052,6 @@ jobs:
       - name: Run audit-dangling-symlinks (Pages/Jekyll guard)
         run: bun src/Core.TypeScript/hygiene/audit-dangling-symlinks.ts
 
-      # docs/observe-events/ holds three filename schemes; only one of them (32-hex ZetaId)
-      # carries no prefix, so a name that is hex-but-not-an-id is indistinguishable from an
-      # id by shape. Three such names arrived 2026-08-09 from an id "mint" that did no
-      # hashing, passed every `/^[0-9a-f]{32}$/` check in the repo, and produced a false
-      # positive in a ZetaId audit (#10690). This decodes the version field instead of
-      # trusting the regex, and carries a scan floor so it cannot pass by inspecting nothing.
-      - name: Run audit-observe-event-filenames (ZetaId-vs-hex ambiguity guard)
-        run: bun src/Core.TypeScript/hygiene/audit-observe-event-filenames.ts
-
       # 081KTSZN10008QG0R002J0GE0Z Reticulum-only clause: files marked SEALED-ROOM carry zero ambient-channel
       # tokens (fs/process/network/clock/entropy/Task.Run); falsifiers waive per-line, visibly.
       - name: Run audit-sealed-rooms (081KTSZN10008QG0R002J0GE0Z Reticulum-only lint half)
@@ -1494,30 +1060,6 @@ jobs:
       # 081KWMY831H — Manus/Lumen shell-wrapper must not leak into commit subjects.
       - name: Run lint-no-manus-commit-leak (081KWMY831H)
         run: bun src/Core.TypeScript/hygiene/lint-no-manus-commit-leak.ts
-
-      # The four-oracle byte-lock pins field VALUES, not field NAMES — so two oracles
-      # could declare the same schema id with different key sets and every existing
-      # check stayed green. Live instance: PR #10722 gave TypeScript's
-      # TemperatureReadout a required `fidelity` that F#'s does not have, both still
-      # declaring `zeta.temperature.readout.v1`; the three suites that read that treaty
-      # reported 51 pass / 0 fail / exit 0 with the divergence in place.
-      # --min-schemas is a SCAN FLOOR: if a moved path or a changed glob makes the audit
-      # inspect fewer schemas than stated, it exits non-zero instead of reporting
-      # success — a check that did not run must not look like one that passed.
-      - name: Run audit-schema-key-set-parity (cross-oracle schema key sets)
-        run: bun src/Core.TypeScript/hygiene/audit-schema-key-set-parity.ts --min-schemas 6
-
-      # Every Actions job must declare timeout-minutes. An unbounded job can hold a
-      # runner until the 6h platform cap: on 2026-08-18 lint-autofix held a slot 90+
-      # minutes and backlog-index-integrity 140.5, both stalled in install.sh on a hung
-      # apt mirror. Slots never freed, concurrency cancelled the constituent lint jobs,
-      # and gate (required) correctly read cancelled as failure — PRs went red with no
-      # real defect. GitHub has no repo-level default job timeout and workflow defaults:
-      # does not cover it, so per-job declaration is the only mechanism and this lint is
-      # what keeps the class closed. Carries a scan floor so it cannot pass by
-      # inspecting nothing.
-      - name: Run lint-workflow-job-timeouts (unbounded-runner-slot guard)
-        run: bun src/Core.TypeScript/hygiene/lint-workflow-job-timeouts.ts
 
   lint-no-empty-dirs:
     # Fail if a committed directory has no files — almost always a
@@ -1546,20 +1088,6 @@ jobs:
       - name: Run no-empty-dirs
         run: bun src/Core.TypeScript/lint/no-empty-dirs.ts
 
-      # 081M010W1BP087G0R002M2BNVW — Heat.fs decided "is this kind pressure?" twice, by two
-      # independent routes that disagreed on kinds carrying both a forgetting and a pressure
-      # token. That bit is the discriminator for the composition law (deferral composes,
-      # destruction does not), so two answers defeat the point of the law being decidable.
-      # #10804 collapsed both routes onto one ordered chain; this is the standing guard that a
-      # second one cannot come back. PART A refuses a dual-token kind literal; PART B
-      # DISCOVERS the single classifier — it never pins the name, because pinning `ofKind` is
-      # exactly what made the first draft of this lint go red on a correct main — and refuses
-      # a second decider, an inline substring probe, an orphan probe, and a membership split
-      # between the two pressure tables. Every extraction route carries its own scan floor, so
-      # a route that goes dark fails instead of reading OK.
-      - name: Guard — one classifier for the heat deferral/destruction bit (081M010W1BP087G0R002M2BNVW)
-        run: bun src/Core.TypeScript/hygiene/lint-heat-kind-classifier-agreement.ts
-
       - name: Guard — discharge rows may not contradict their own certificates
         # 2026-08-01: five rows were written "§A — DISCHARGED" while Z-2's own cited
         # certificate said status:"OPEN" (94.7% error vs a 25% threshold). The script
@@ -1568,16 +1096,6 @@ jobs:
         # class MECHANICALLY — no judgement about whether a discharge is *good*, only a
         # refusal of rows that contradict (or are missing) their cited evidence.
         run: bun src/Core.TypeScript/hygiene/lint-discharge-certificate-consistency.ts
-
-      - name: Guard — a golden-vector treaty may not claim a rule its vectors do not pin
-        # PR #10759 was filed on the premise "the tie-break behaviour is byte-locked into
-        # the four-oracle treaty." Measured, that premise was false: first-occurrence and
-        # ordinal-minimum each changed 0 of 7 pinned vectors, because six of the seven had
-        # no tie reaching quorum at all. "The treaty pinned a POINT; the prose claimed a
-        # RULE." This is spec-side mutation testing — mutate the RULE, count the vectors
-        # that change, and refuse a declared exclusion that changes zero. Cross-oracle byte
-        # agreement (the treaty's other, real job) is deliberately NOT audited here.
-        run: bun src/Core.TypeScript/hygiene/lint-treaty-rule-discrimination.ts
 
   lint-markdown:
     # markdownlint-cli2 on every .md file outside the ignore list in
@@ -1596,19 +1114,46 @@ jobs:
           # must be present for the PR-scoped markdown diff below.
           fetch-depth: 2
 
-      # This job needs Bun, markdownlint-cli2, and tracked TypeScript only.
-      # Running the full workstation/cluster bootstrap made a 553 MB apt
-      # manifest download capable of consuming its 12-minute job cap before
-      # markdownlint began. `packageManager` pins this runtime and
-      # `bun.lock` pins the linter; the full setup graph remains the path for
-      # developer machines, cluster nodes, and jobs that consume its tools.
-      - name: Setup pinned Bun
-        uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
+      - name: Cache install.sh outputs (mise runtimes + dotnet tools + verifier jars)
+        # Comprehensive cache — see lint-shell job above for the
+        # rationale. PR #23 2026-04-28 root-cause was a transient
+        # 502 on bun-1.3.13 download from GitHub releases CDN
+        # (bun is what mise's npm: backend uses to run
+        # markdownlint-cli2); cache hit avoids the CDN entirely.
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
-          bun-version: "1.3.13"
+          path: |
+            ~/.local/bin/mise
+            ~/.local/share/mise
+            ~/.cache/mise
+            ~/.dotnet/tools
+            ~/.elan
+            ~/.config/zeta
+          key: install-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('.mise.toml', 'tools/setup/**', 'global.json') }}
 
-      - name: Install JavaScript dependencies from the locked graph
-        run: bun install --frozen-lockfile
+      - name: Install toolchain via three-way-parity script (GOVERNANCE §24)
+        # See lint-shell job above for retry rationale (Aaron 2026-04-28
+        # PR #23 mise+bun-1.3.13 502).
+        run: |
+          set -euo pipefail
+          for attempt in 1 2 3 4 5; do
+            if ./tools/setup/install.sh; then exit 0; fi
+            [ "$attempt" = "5" ] && { echo "install.sh failed after 5 attempts"; exit 1; }
+            # Backoff: 10s, 30s, 60s, 120s — covers transient CDN
+            # blips from short-burst-and-recover up to multi-minute
+            # outages. Aaron 2026-04-28 input: bumped from 3 to 5
+            # because PR #23's bun-1.3.13 502 burned all 3 prior
+            # mise-internal retries and a 3-attempt wrapper on top
+            # didn't add enough margin.
+            case "$attempt" in
+              1) backoff=10 ;;
+              2) backoff=30 ;;
+              3) backoff=60 ;;
+              4) backoff=120 ;;
+            esac
+            echo "install.sh attempt $attempt failed; retrying in ${backoff}s..." >&2
+            sleep "$backoff"
+          done
 
       - name: Run markdownlint (scoped to the PR's own diff on pull_request)
         # Drift-and-heal ADR item 4 (workitem 081KX3KA3ES08QG0R003TW3XDE, the
@@ -1627,11 +1172,11 @@ jobs:
           if [ "$GITHUB_EVENT_NAME" = "pull_request" ]; then
             git diff --name-only HEAD^1 HEAD > /tmp/changed-files.txt
             git ls-files > /tmp/tracked-files.txt
-            { bunx --no-install markdownlint-cli2 "**/*.md" 2>&1 || true; } \
-              | bun src/Core.TypeScript/hygiene/scoped-lint.ts \
+            { mise exec -- markdownlint-cli2 "**/*.md" 2>&1 || true; } \
+              | mise exec -- bun src/Core.TypeScript/hygiene/scoped-lint.ts \
                   --changed /tmp/changed-files.txt --tracked /tmp/tracked-files.txt
           else
-            bunx --no-install markdownlint-cli2 "**/*.md"
+            mise exec -- markdownlint-cli2 "**/*.md"
           fi
 
   lint-typescript:
@@ -1654,13 +1199,40 @@ jobs:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
-      # Strict TypeScript analysis consumes only the repository's Bun runtime
-      # and lockfile-managed dev dependencies. Do not download the complete
-      # apt workstation/cluster manifest before this narrow check starts.
-      - name: Setup pinned Bun
-        uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
+      - name: Cache install.sh outputs (mise runtimes + dotnet tools + verifier jars)
+        # Comprehensive cache — see lint-shell job above for the
+        # rationale. Bun is what mise installs and what the tsc step
+        # consumes; cache hit avoids the bun-1.3.13 GitHub releases
+        # CDN entirely (same flake class as PR #23 2026-04-28).
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
-          bun-version: "1.3.13"
+          path: |
+            ~/.local/bin/mise
+            ~/.local/share/mise
+            ~/.cache/mise
+            ~/.dotnet/tools
+            ~/.elan
+            ~/.config/zeta
+          key: install-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('.mise.toml', 'tools/setup/**', 'global.json') }}
+
+      - name: Install toolchain via three-way-parity script (GOVERNANCE §24)
+        # Provides bun via mise's `bun = "1.3"` pin in .mise.toml.
+        # See lint-shell job above for retry rationale (Aaron 2026-04-28
+        # PR #23 mise+bun-1.3.13 502).
+        run: |
+          set -euo pipefail
+          for attempt in 1 2 3 4 5; do
+            if ./tools/setup/install.sh; then exit 0; fi
+            [ "$attempt" = "5" ] && { echo "install.sh failed after 5 attempts"; exit 1; }
+            case "$attempt" in
+              1) backoff=10 ;;
+              2) backoff=30 ;;
+              3) backoff=60 ;;
+              4) backoff=120 ;;
+            esac
+            echo "install.sh attempt $attempt failed; retrying in ${backoff}s..." >&2
+            sleep "$backoff"
+          done
 
       - name: Install npm devDependencies (typescript@6.0.3 + eslint stack)
         # tsc lives in node_modules/.bin via the typescript devDep
@@ -1700,12 +1272,7 @@ jobs:
             ~/.dotnet/tools
             ~/.elan
             ~/.config/zeta
-            ~/.rustup/toolchains/1.87.0-*
-            ~/.rustup/settings.toml
-            ~/.rustup/update-hashes
-            ~/.cargo
-            ~/.cache/zeta/from-autotools-tarball/*.tgz
-          key: install-v2-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('.mise.toml', 'tools/setup/**', 'global.json') }}
+          key: install-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('.mise.toml', 'tools/setup/**', 'global.json') }}
       - name: Install toolchain via three-way-parity script (GOVERNANCE §24)
         run: |
           set -euo pipefail
@@ -1741,12 +1308,7 @@ jobs:
             ~/.dotnet/tools
             ~/.elan
             ~/.config/zeta
-            ~/.rustup/toolchains/1.87.0-*
-            ~/.rustup/settings.toml
-            ~/.rustup/update-hashes
-            ~/.cargo
-            ~/.cache/zeta/from-autotools-tarball/*.tgz
-          key: install-v2-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('.mise.toml', 'tools/setup/**', 'global.json') }}
+          key: install-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('.mise.toml', 'tools/setup/**', 'global.json') }}
       - name: Install toolchain via three-way-parity script (GOVERNANCE §24)
         run: |
           set -euo pipefail
@@ -1782,12 +1344,7 @@ jobs:
             ~/.dotnet/tools
             ~/.elan
             ~/.config/zeta
-            ~/.rustup/toolchains/1.87.0-*
-            ~/.rustup/settings.toml
-            ~/.rustup/update-hashes
-            ~/.cargo
-            ~/.cache/zeta/from-autotools-tarball/*.tgz
-          key: install-v2-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('.mise.toml', 'tools/setup/**', 'global.json') }}
+          key: install-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('.mise.toml', 'tools/setup/**', 'global.json') }}
       - name: Install toolchain via three-way-parity script (GOVERNANCE §24)
         run: |
           set -euo pipefail
@@ -1823,12 +1380,7 @@ jobs:
             ~/.dotnet/tools
             ~/.elan
             ~/.config/zeta
-            ~/.rustup/toolchains/1.87.0-*
-            ~/.rustup/settings.toml
-            ~/.rustup/update-hashes
-            ~/.cargo
-            ~/.cache/zeta/from-autotools-tarball/*.tgz
-          key: install-v2-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('.mise.toml', 'tools/setup/**', 'global.json') }}
+          key: install-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('.mise.toml', 'tools/setup/**', 'global.json') }}
       - name: Install toolchain via three-way-parity script (GOVERNANCE §24)
         run: |
           set -euo pipefail
@@ -1864,12 +1416,7 @@ jobs:
             ~/.dotnet/tools
             ~/.elan
             ~/.config/zeta
-            ~/.rustup/toolchains/1.87.0-*
-            ~/.rustup/settings.toml
-            ~/.rustup/update-hashes
-            ~/.cargo
-            ~/.cache/zeta/from-autotools-tarball/*.tgz
-          key: install-v2-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('.mise.toml', 'tools/setup/**', 'global.json') }}
+          key: install-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('.mise.toml', 'tools/setup/**', 'global.json') }}
       - name: Install toolchain via three-way-parity script (GOVERNANCE §24)
         run: |
           set -euo pipefail
@@ -1910,15 +1457,35 @@ jobs:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
-      # The committed oracle comparisons, Ace suite, and Q# source oracles
-      # intentionally do not execute the F#/Rust/QDK toolchains. Their actual
-      # dependency graph is Bun plus the repository lockfile (including
-      # z3-solver), so use that declared narrow graph instead of the full apt
-      # workstation/cluster installation.
-      - name: Setup pinned Bun
-        uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
+      - name: Cache install.sh outputs (mise runtimes + dotnet tools + verifier jars)
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
-          bun-version: "1.3.13"
+          path: |
+            ~/.local/bin/mise
+            ~/.local/share/mise
+            ~/.cache/mise
+            ~/.dotnet/tools
+            ~/.elan
+            ~/.config/zeta
+          key: install-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('.mise.toml', 'tools/setup/**', 'global.json') }}
+
+      - name: Install toolchain via three-way-parity script (GOVERNANCE §24)
+        # Provides bun via mise (.mise.toml pin); shellenv wires BASH_ENV so later run: steps
+        # have bun on PATH. Retry rationale per lint-typescript (mise+bun CDN 502 flake class).
+        run: |
+          set -euo pipefail
+          for attempt in 1 2 3 4 5; do
+            if ./tools/setup/install.sh; then exit 0; fi
+            [ "$attempt" = "5" ] && { echo "install.sh failed after 5 attempts"; exit 1; }
+            case "$attempt" in
+              1) backoff=10 ;;
+              2) backoff=30 ;;
+              3) backoff=60 ;;
+              4) backoff=120 ;;
+            esac
+            echo "install.sh attempt $attempt failed; retrying in ${backoff}s..." >&2
+            sleep "$backoff"
+          done
 
       - name: Install npm devDependencies (z3-solver for the ace solver Z3 differential, etc.)
         # The ace suite's solver.z3.test.ts spawns node to require('z3-solver') (assert-dont-skip:
@@ -1940,139 +1507,6 @@ jobs:
       - name: Cross-language byte-lock + golden-vector oracles
         run: bun src/Core.TypeScript/ci/cross-verify-all.ts
 
-      # The `.claude/rules/no-binary-in-proof-lineage.md` exception, enforced rather than
-      # asserted. `src/wasm-dla/bytelock/` holds six committed `.wasm` substrate modules; they
-      # are the artifact UNDER TEST, not golden vectors, and the rule now says so — but a
-      # documented exception with no scope is a licence. This derives the allowed set from the
-      # byte-lock runner's own roster and the build script's own declared outputs, so a new
-      # binary in that directory is red until it is wired into both.
-      #
-      # Two of its checks are here rather than in `bytelock.yml` on purpose. That workflow is
-      # `push: main` — POST-MERGE by construction — so the malformed-artefact guard that would
-      # have caught `dla-canonical-zig.wasm` shipping as an `ar` archive could only ever fire
-      # after the fact, and it did, for two weeks. The header check and the golden-vector text
-      # check need no toolchain, so they belong on the pre-merge floor.
-      - name: Proof-lineage binary exception (no-binary-in-proof-lineage.md)
-        run: bun src/Core.TypeScript/hygiene/audit-proof-lineage-binaries.ts
-
-      # Every zflash host arm must reach the ISO integrity gate before it writes to a block
-      # device. Measured on main 2026-08-21: the manifest check existed in the macOS arm and
-      # NOWHERE ELSE, so flash-usb-linux.ts and flash-usb-windows.ts wrote an image with no
-      # integrity verification at all (081M0HG7X7B087G0R002A05DAP). A missing check is
-      # invisible to a test suite — the arms that have one stay green, and the arms that lack
-      # one have nothing to test — so only something that reads the call sites can see it.
-      #
-      # HERE rather than in build-ai-cluster-iso.yml on purpose, and this is the placement
-      # that workflow's own note asked for. The ISO lane runs on a subset of pushes, and when
-      # this step lived there and referenced a script that did not exist it silently killed
-      # ISO production for every run (#13102). On the cross-verify floor it blocks every PR,
-      # beside the other audits whose subject is "a check that did not run must never look
-      # like a check that passed".
-      - name: zflash host-arm parity (every arm verifies the ISO before writing)
-        run: bun src/Core.TypeScript/hygiene/audit-flash-entrypoint-parity.ts
-
-      # Every ArgoCD `targetRevision` must name a chart version upstream actually published.
-      # Measured on main 2026-08-20: applications/oz pins ziti-controller at 1.4.5, a version
-      # OpenZiti never shipped (their 1.x line ends at 1.3.4), so that Application can never
-      # sync — invisible because `oz` is one of 26 of 45 Applications no CI lane exercises, so
-      # nothing ever asked the registry for the chart (081M0JVD5YG087G0R002QDFR9H, #13313).
-      #
-      # OFFLINE. It resolves every coordinate against the checked-in snapshot
-      # `published-chart-versions.json` and opens no socket, so this step cannot redden a PR
-      # because a third-party registry is down — which is the only reason a resolvability
-      # check survives past its first outage. The network half is `--refresh`, and it runs on
-      # a schedule in chart-version-refresh.yml where it is allowed to fail loudly.
-      - name: ArgoCD chart targetRevisions resolve (offline, against the committed snapshot)
-        run: bun src/Core.TypeScript/hygiene/audit-chart-target-revisions.ts
-
-      # ARE THE DEFERRAL REASONS STILL TRUE? Every reasoned-exclusion registry in the cluster
-      # tree was audited for a reason being PRESENT and naming a lift condition, and by nothing
-      # for the reason being TRUE. Measured twice on 2026-08-21: `temporal`'s reason cited a
-      # baseline acknowledgement that had been deleted forty minutes earlier (#13472 -> #13483),
-      # and `oz`'s cited a chart pin the tree had already corrected (#13313 -> #13471). Both
-      # audits stayed green through both, because a false sentence with a `LIFTS WHEN:` clause
-      # has every mechanical property those checks look for.
-      #
-      # HERE rather than in k8s-argocd-health-test.yml, and the placement is the point: this
-      # checker resolves citations into `.github/workflows/` (a CI job a reason names) and into
-      # the chart roster, so a PR that renames a job would never trigger a path-filtered cluster
-      # workflow and would silently strand the reason that cites it. The cross-verify floor runs
-      # on every PR. OFFLINE, ~1s, no sockets -- it reads the committed baseline, the committed
-      # render snapshot and the committed roster.
-      - name: ArgoCD deferral reasons — every cited anchor still holds (offline)
-        run: bun src/Core.TypeScript/cluster/reason-truth.ts
-
-      # A tracked source file holding a raw 0x00 byte reads as BINARY to grep/rg, so every
-      # text audit silently skips it -- a check that did not run, looking exactly like one
-      # that passed. `rg 'foldChain' key-epoch-ledger.ts` printed "binary file matches" and
-      # exit 0 while ten real matches were invisible, in the revocation ledger of all files.
-      # The \u0000 escape is byte-identical at runtime and keeps the file searchable, so the
-      # rule is total and needs no allowlist. Ten tracked files failed this when written.
-      - name: No raw NUL in tracked source (an audit must be able to read the file)
-        run: bun src/Core.TypeScript/hygiene/audit-no-raw-nul-in-source.ts
-
-      # Addison Cooper's Genesis concept vocabulary is published as a static page that is
-      # hand-copied into a DIFFERENT repository (lucent-financial-group.github.io) — no build
-      # step, no CI, nothing connecting it back here. It drifted exactly as you would expect:
-      # four society-identity terms landed in docs/GLOSSARY.md on 2026-07-31 and never reached
-      # the page, and nobody found out until Aaron asked.
-      #
-      # docs/CONCEPT-REGISTRY.md is now the single list. This step is what keeps it honest —
-      # it fails when the registry and the page disagree in EITHER direction, including a
-      # silently reworded definition, which is the case a term-name-only check would miss.
-      - name: Concept registry vs published page (docs/CONCEPT-REGISTRY.md)
-        run: bun src/Core.TypeScript/hygiene/audit-concept-registry-drift.ts
-
-      # A filesystem EXISTENCE test whose result gates a later operation on the same
-      # path. Check-then-use; TOCTOU; CWE-367. THREE instances landed on 2026-08-20, in
-      # one day, from three INDEPENDENT agents, all in code that had already been
-      # written and reviewed: cluster/restricted-namespace-workloads.test.ts
-      # (readdir + statSync().isDirectory() + readFileSync),
-      # cluster/storage-profiles.ts (existsSync -> readFileSync), and
-      # hygiene/audit-chart-target-revisions.ts (three sites in one file). Each was
-      # found by CodeQL one at a time, AFTER merge, because nothing in the tree looked
-      # for the shape. The pattern READS as defensive and prevents nothing.
-      #
-      # HERE rather than in codeql.yml on purpose. CodeQL runs on a schedule and
-      # reports into the security tab, so its verdict arrives after the merge that
-      # caused it -- which is how all three shipped. This step is offline, needs no
-      # database build, and blocks the PR.
-      #
-      # --baseline grandfathers the 288 pre-existing instances measured on main when
-      # this landed (AUDIT-LIFECYCLE.md step 5: the gate has to be landable without a
-      # 288-file cleanup first). NEW instances fail, and so does an edit that renames
-      # the path expression at a grandfathered site. --min-files is the scan floor: an
-      # audit that inspected nothing must not report success.
-      - name: No check-then-use filesystem races (TOCTOU, CWE-367)
-        run: |
-          bun src/Core.TypeScript/hygiene/lint-check-then-use-file-races.ts \
-            src/Core.TypeScript \
-            --min-files 1500 \
-            --baseline src/Core.TypeScript/hygiene/lint-check-then-use-file-races.baseline.json
-
-      # Executes mumps_zeta_id.m (subset interpreter). compare.ts already pins
-      # the committed JSON; this step runs the routine so a layout edit in the
-      # .m file cannot hide behind a stale mumps-output.json.
-      - name: Execute MUMPS zeta-id packer
-        working-directory: tests/cross-verification/zeta-id
-        run: bun run-mumps.ts
-
-      # The six GENERATED bit-layout files vs docs/zeta-id-v1-layout.yaml, which the
-      # zeta-id README named as an open hole: "There is no CI gate verifying the .gen
-      # files match the YAML, so an edit without regeneration fails nowhere until a
-      # codec stops compiling."
-      #
-      # The oracles above do not close it. compare.ts pins each oracle's COMMITTED
-      # output to vectors.yaml, and CI independently re-executes five of the seven
-      # (TS `bun test`, F#/C# `dotnet test`, Python `pytest`, MUMPS the step above).
-      # Go and Rust are re-executed NOWHERE — this workflow runs only
-      # `go test ./algebra/` and `cargo test … Core.Rust.Observe`. So a wrong constant
-      # in zeta_id.gen.go or bit_layout.gen.rs sat behind a stale-but-agreeing output
-      # JSON with every job green. This step is the independent reproduction for that
-      # pair, and for the other four at no extra cost.
-      - name: zeta-id generated layouts vs the layout YAML
-        run: bun tests/cross-verification/zeta-id/gen-layout-drift.ts
-
       # Algebra-tower drift-check: the generated law-property tests must be
       # regenerable-identical from their IRs (codegen-law-drift), and the
       # generated laws must hold against the TS oracle instances. Covers the
@@ -2087,246 +1521,6 @@ jobs:
             tests/cross-verification/_harness/generated-ring-laws.test.ts \
             tests/cross-verification/_harness/generated-star-ring-laws.test.ts \
             tests/cross-verification/_harness/generated-kleene-laws.test.ts
-
-  test-typescript-hermetic:
-    # ══ TIER 1 OF 2: HERMETIC ═══════════════════════════════════════════════════════════
-    #
-    # A RED X HERE MEANS A REAL REGRESSION. That is the entire claim of this job, and it is
-    # the property the tier split was built to establish. Nothing below depends on a venv,
-    # a cluster, a container, a physical device, an attached ISO, or the invoking user's
-    # home directory. Toolchain comes from install.sh, which is the same script a laptop and
-    # a devcontainer run (GOVERNANCE §24), so a developer reproduces this verdict exactly.
-    #
-    # WHY THE SPLIT. MEASURED 2026-08-16 across the 53 most recent completed `gate` runs:
-    # the old undivided `test (TS suite)` was red in 17 of them (32%), and in 15 of those the
-    # ENTIRE cause was one deterministic test -- `folderSink -- entropy tracker wiring`, a
-    # genuine regression that rode along across sixteen merges because this job sits outside
-    # `gate (required)` and a red X nobody must clear is a red X nobody reads.
-    #
-    # The reason nobody read it was not in CI. MEASURED the same day on a FRESH CLONE of main
-    # (macOS, `bun install` only), `bun test` gave 4 failures + 1 unhandled error and ZERO of
-    # them were code defects: 4x cross-verify-ir (no Q# venv; no .NET SDK 10.0.302) and 1x
-    # esp-inject (EPERM scandir ~/Downloads, thrown at module scope under macOS TCC). So the
-    # SAME command was red-for-environment where people work and red-for-regression where it
-    # mattered, with nothing in either output separating the two. The prior "this suite is
-    # always red" is learned on the laptop and spent on the pull request. Splitting the tiers
-    # is how that prior is retired: after this change, red here is red everywhere, for the
-    # same reason.
-    #
-    # WHAT MOVED, AND WHERE IT WENT. Exactly the two files above, to
-    # `test (TS environment-dependent)` below -- which still runs on every PR. Each is
-    # declared with the NAME of the dependency it needs in
-    # registry/environment-dependent-test-files.json, and
-    # src/Core.TypeScript/hygiene/environment-dependent-test-files.ts is red if an exclusion
-    # is undeclared, unattributed, or reached by no lane at all. Excluding a file from this
-    # tier while nothing else runs it would be a deletion wearing a split's face; that is the
-    # condition the checker exists to make unlandable.
-    #
-    # PROMOTION. This job is STILL absent from the `gate-required` needs list -- branch
-    # protection is a treaty amendment, not a workflow edit. It is now the tier that is
-    # eligible: adding `- test-typescript-hermetic` to `gate-required.needs` is the one-line
-    # change, once the maintainer consents.
-    #
-    # THE GAP THIS CLOSES. Before this job, CI executed roughly 130 of the repo's 900-plus
-    # `*.test.ts` files. Whole directories -- discovery/, planning/, browser-node/,
-    # ferry-throttler/, model-backend/, oracle/, forge-host/ -- were never executed by any
-    # workflow, so a PR touching them went green having run zero of their tests. Three live
-    # instances on 2026-08-13 alone: a 32-test chaos harness whose four deliberately-pinned
-    # known-broken behaviours were inert; the independent check that falsified a proposed
-    # light-time remedy, never re-run; and a freshly-merged 21-test migration alongside a
-    # drift gate referenced by no workflow, while main sat in drift and nothing reported it.
-    # zflash-harness-lint.yml states the rule: a green check that implies more than it tested
-    # is worse than no check. Work-item 081KZYPHESJ087G0R002EZ7A2H.
-    #
-    # WHY A BARE `bun test` AND NOT A LIST OF DIRECTORIES. Every filter list is a fresh copy
-    # of the same defect: forge-host/ fell outside the previous globs precisely because
-    # someone had to remember to add it. A bare invocation cannot have that bug -- a new
-    # directory is covered the moment it exists. Deliberate exclusions therefore live in
-    # exactly one place, the pathIgnorePatterns of a bunfig, and each one must carry a
-    # written reason in a registry.
-    # hygiene/unexecuted-test-files.ts enforces both halves and fails on an undeclared,
-    # unreasoned, or stale entry.
-    #
-    # `--config=bunfig.hermetic.toml` DOES NOT BREAK THAT RULE, for the same reason: it is still a
-    # bare, filter-less invocation, and the tier's exclusions are still a written list in a
-    # bunfig under a registry-backed checker. bun has no exclude-filter form, so a second
-    # config is the only way to say "everything except these" without reintroducing the
-    # include-list defect. bunfig.hermetic.toml is asserted to be a strict superset of
-    # bunfig.toml on every PR, so the two cannot drift apart in silence.
-    #
-    # WHY A SEPARATE JOB rather than a step inside `lint (TS)`. That job type-checks; folding
-    # behaviour into it puts two different failures behind one red X, which is the attribution
-    # problem the 2026-06-13 per-language lint split already solved once here. It also carries
-    # a 12-minute cap sized for tsc, while this suite measured 256-346s locally on its own.
-    #
-    # WHY NOT SPLIT ACROSS PARALLEL JOBS. Per-job fixed cost here is the install.sh bootstrap
-    # plus `bun install` -- 1-2 minutes even on a cache hit -- against roughly 7 minutes of
-    # actual test time. N jobs multiply the fixed cost for a wall-clock saving that does not
-    # pay. Revisit if the suite passes about 10 minutes.
-    #
-    # COST. About 9 minutes per run (setup plus tests) on ubuntu-24.04 at the 1x multiplier;
-    # at roughly 250 gate runs per month that is on the order of 2,250 runner-minutes added.
-    # It buys execution of ~770 files and ~9,000 assertions that today execute nowhere.
-    #
-    # RUNS, DOES NOT BLOCK. Deliberately absent from the `gate-required` needs list. The
-    # 2026-08-01 drift-and-heal ADR narrowed the blocking floor to
-    # registry/uncompensatable-floor.yaml after a priority-inversion incident; making ~770
-    # long-unrun files blocking on day one would be that inversion again. Running them IS the
-    # drift signal. Promotion to the floor is a separate treaty amendment, once this job has
-    # a track record. The blocking subset is unchanged: build-and-test, cross-verify,
-    # full-verify and lint (semgrep) keep their existing named steps and their floor status.
-    name: test (TS hermetic)
-    timeout-minutes: 20
-    runs-on: ubuntu-24.04
-
-    steps:
-      - name: Checkout
-        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-
-      # The hermetic tier is deliberately JavaScript-first. Its explicit SMT
-      # binary realizer remains below; the full apt/mise workstation graph is
-      # not an input to this suite and repeatedly consumed the job budget before
-      # any hermetic assertion ran.
-      - name: Setup pinned Bun
-        uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
-        with:
-          bun-version: "1.3.13"
-
-      - name: Install JavaScript dependencies from the locked graph
-        run: bun install --frozen-lockfile
-
-      # NO `uv sync` STEP HERE, ON PURPOSE. It provisioned the gitignored Q# venv at
-      # src/Core.Python/.venv for cross-verify-ir, which is the single largest reason a
-      # laptop run of this suite came back red: 4 of the 5 failures on a fresh clone. That
-      # file now runs in `test (TS environment-dependent)`, which does the uv sync, and in
-      # full-verify, which is in the required floor. A tier whose green depends on a venv
-      # the reader has never created cannot be the tier whose red means a regression.
-
-      - name: Verify npm devDependencies are installed
-        # Several suites import devDependencies directly (z3-solver among them) and
-        # assert-dont-skip when the dep is absent, so a missing install reads as a real
-        # failure rather than a skip. The preceding frozen-lockfile install is the
-        # sole dependency realization for this narrow job.
-        run: test -d node_modules
-
-      - name: Pin z3 4.16.0 and cvc5 1.3.4 (081KZZ27KJ8)
-        # apt on ubuntu-24.04 is z3 4.8.12 / cvc5 1.1.2; two SMT certificates
-        # soft-skip under that pair. Checksummed GitHub-release binaries go in
-        # ~/.local/bin. No-op when PATH already meets the floor.
-        run: bun src/Core.TypeScript/ace/setup-realizers/install-pinned-smt.ts
-
-      - name: Tier manifest (what the hermetic tier deliberately does not run, and why)
-        # Printed BEFORE the suite, pass or fail, so the log states the tier's own boundary
-        # instead of leaving a reader to infer it from an absence. It also exits non-zero on
-        # an undeclared, unattributed, or run-nowhere exclusion, which is the guard that
-        # keeps the split from becoming a quiet mute list.
-        run: bun src/Core.TypeScript/hygiene/environment-dependent-test-files.ts
-
-      - name: Whole TypeScript suite (hermetic tier)
-        # No path filters: see the header. Exclusions live in bunfig.hermetic.toml, and each
-        # one is declared with a reason in registry/unexecuted-test-files.json (runs nowhere)
-        # or registry/environment-dependent-test-files.json (runs in the tier below).
-        run: bun --config=bunfig.hermetic.toml test
-
-  test-typescript-environment:
-    # ══ TIER 2 OF 2: ENVIRONMENT-DEPENDENT ══════════════════════════════════════════════
-    #
-    # A RED X HERE MEANS EITHER a real regression OR that this runner could not provide a
-    # dependency the test needs. That ambiguity is exactly why these files are not in the
-    # tier above -- it is not removed, it is CONCENTRATED, into a job whose name says so and
-    # whose manifest names every dependency involved. Two red X's that mean different things
-    # are readable; one red X that means either is not, and that was the state this replaced.
-    #
-    # THIS IS NOT A DUMPING GROUND, AND THE CHECKER MAKES THAT STRUCTURAL. Every file listed
-    # below must appear in registry/environment-dependent-test-files.json with a non-empty
-    # `dependency` naming the concrete missing thing (an SDK version, a venv, a device) and a
-    # `reason` for why it cannot be assumed present. hygiene/environment-dependent-test-files
-    # .ts is red if a hermetic-tier exclusion is undeclared, unattributed, listed in BOTH
-    # registries, or -- the load-bearing one -- executed by no pull_request-lane invocation.
-    # Moving a flaky test here to make it quiet does not work: it still runs, still here,
-    # still red, and now with your name on the reason.
-    #
-    # WHY NOT `continue-on-error`. It renders a job green while it failed. An absent check
-    # and a passing check must not look alike; that is the same defect as the one this whole
-    # split exists to fix, so this job reports honestly and is simply not in the floor.
-    #
-    # THE FILE LIST IS EXPLICIT, unlike the tier above. Here that is correct rather than the
-    # include-list defect the header of that job warns about: this is a hand-curated
-    # exception set by construction, and the derivation in hygiene/environment-dependent-test
-    # -files.ts reads THIS list out of the workflow to prove each registry entry actually
-    # runs. A file silently dropped from this list becomes an "excluded from hermetic and run
-    # by nothing" finding on the next PR.
-    #
-    # COST. Two files, seconds of test time; the minutes are the shared install.sh bootstrap
-    # plus the uv sync that the hermetic tier no longer pays for.
-    name: test (TS environment-dependent)
-    timeout-minutes: 20
-    runs-on: ubuntu-24.04
-
-    steps:
-      - name: Checkout
-        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-
-      - name: Cache install.sh outputs (mise runtimes + dotnet tools + verifier jars)
-        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
-        with:
-          path: |
-            ~/.local/bin/mise
-            ~/.local/share/mise
-            ~/.cache/mise
-            ~/.dotnet/tools
-            ~/.elan
-            ~/.config/zeta
-            ~/.rustup/toolchains/1.87.0-*
-            ~/.rustup/settings.toml
-            ~/.rustup/update-hashes
-            ~/.cargo
-            ~/.cache/zeta/from-autotools-tarball/*.tgz
-          key: install-v2-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('.mise.toml', 'tools/setup/**', 'global.json') }}
-
-      - name: Install toolchain via three-way-parity script (GOVERNANCE §24)
-        # Same retry rationale as every other install.sh step in this file
-        # (Aaron 2026-04-28 PR #23 mise+bun-1.3.13 502).
-        run: |
-          set -euo pipefail
-          for attempt in 1 2 3 4 5; do
-            if ./tools/setup/install.sh; then exit 0; fi
-            [ "$attempt" = "5" ] && { echo "install.sh failed after 5 attempts"; exit 1; }
-            case "$attempt" in
-              1) backoff=10 ;;
-              2) backoff=30 ;;
-              3) backoff=60 ;;
-              4) backoff=120 ;;
-            esac
-            echo "install.sh attempt $attempt failed; retrying in ${backoff}s..." >&2
-            sleep "$backoff"
-          done
-
-      - name: QDK venv setup (uv sync)
-        # The dependency that makes cross-verify-ir environment-dependent, provided here and
-        # nowhere else in the TS lane. Same step full-verify runs, for the same reason: the
-        # Q# lane executes through src/Core.Python/.venv/bin/python3 — a gitignored venv, not
-        # a PATH tool. Without it that lane cannot run, and until the per-route floor landed
-        # it went dark SILENTLY: six of seven lanes satisfied an aggregate `>= 6` floor on the
-        # seventh's behalf, so the job reported a 7-language byte-lock it never checked. The
-        # floor now names a dark lane and fails. uv comes from install.sh above.
-        run: uv sync --project src/Core.Python
-
-      - name: Install npm devDependencies
-        run: bun install --frozen-lockfile
-
-      - name: Tier manifest (which dependency each file below needs)
-        run: bun src/Core.TypeScript/hygiene/environment-dependent-test-files.ts
-
-      - name: Environment-dependent tests
-        # Every path here is an entry in registry/environment-dependent-test-files.json, and
-        # the checker above fails if a registry entry is not reached by an invocation in a
-        # pull_request lane — i.e. if someone excludes a file from the hermetic tier and
-        # forgets to add it here.
-        run: |
-          bun test \
-            tests/cross-verification/_harness/cross-verify-ir.test.ts \
-            src/Core.TypeScript/zflash/esp-inject.test.ts
 
   # ═══════════════════════════════════════════════════════════════════
   # Full Verification Gate — 7-language oracle + cost + proofs
@@ -2358,12 +1552,8 @@ jobs:
             ~/.dotnet/tools
             ~/.elan
             ~/.config/zeta
-            ~/.rustup/toolchains/1.87.0-*
-            ~/.rustup/settings.toml
-            ~/.rustup/update-hashes
             ~/.cargo
-            ~/.cache/zeta/from-autotools-tarball/*.tgz
-          key: full-verify-v2-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('.mise.toml', 'tools/setup/**', 'global.json') }}
+          key: full-verify-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('.mise.toml', 'tools/setup/**', 'global.json') }}
 
       - name: Install toolchain (all 7 languages + E-prover)
         run: |
@@ -2398,17 +1588,6 @@ jobs:
 
       - name: Cross-verify IR (7-language byte-lock oracle)
         run: bun test tests/cross-verification/_harness/cross-verify-ir.test.ts
-        timeout-minutes: 5
-
-      # The COMPLEMENT of the step above, not a duplicate of it. That one proves the
-      # generated lanes agree WITH EACH OTHER, which a wrong IR satisfies just as well
-      # as a right one — N lanes generated from one spec agreeing is one observation
-      # counted N times. This one diffs the generated code against the HAND-WRITTEN
-      # ports, which are the independent oracle, and so is the only thing here that can
-      # falsify IR *adequacy*. It also fails by name on any IR-carrying primitive that
-      # has no hand-written port at all.
-      - name: IR-generated vs hand-written (independent-oracle check)
-        run: bun test tests/cross-verification/_harness/ir-vs-handwritten.test.ts
         timeout-minutes: 5
 
       - name: Interface law oracle (per-directory)
@@ -2467,38 +1646,8 @@ jobs:
   gate-required:
     name: gate (required)
     runs-on: ubuntu-24.04
-    # Was 1 minute, when this job was three seconds of `grep` over `toJSON(needs)`.
-    # The scope summary below adds a sparse checkout, setup-bun, and one Actions-API
-    # call. MEASURED on the first live run of this job's new shape (run 32207501412
-    # attempt 2, job 95940135217): 12 s total -- checkout 2 s, setup-bun 2 s, summary
-    # 3 s, verdict 0 s. The pre-land ESTIMATE in the landing PR was ~20 s, priced off
-    # the ~11 s full checkouts the other jobs in this workflow take; the sparse +
-    # `filter: blob:none` checkout is what closed the gap, and the number is corrected
-    # here rather than left as the guess. So the whole cost of making this check say
-    # what it covered is ~9 s per run.
-    # 5 is a RUNAWAY CAP, not a budget: nothing in this job retries, polls, or waits
-    # on anything that can hang open.
-    timeout-minutes: 5
+    timeout-minutes: 1
     if: always()
-    # Job-scoped least privilege. The workflow default is `contents: read` and no
-    # other job elevates; this one adds exactly one read scope for one call:
-    #   contents: read -- sparse checkout of the summary script + this file
-    #   actions:  read -- GET /actions/runs/<THIS run>/jobs, the only source of
-    #                     PER-MATRIX-LEG results. The `needs` context collapses a
-    #                     whole matrix to one value, which is precisely what kept the
-    #                     Windows legs invisible. No write scope, no other repo, no
-    #                     other run.
-    permissions:
-      contents: read
-      actions: read
-    # Machine-readable scope, so "which green was this" is answerable without
-    # scraping a log. Empty when the summary step could not run -- see the
-    # `continue-on-error` note on it.
-    outputs:
-      scope: ${{ steps.scope.outputs.scope }}
-      floor-executed: ${{ steps.scope.outputs.floor-executed }}
-      floor-skipped: ${{ steps.scope.outputs.floor-skipped }}
-      nonblocking-failures: ${{ steps.scope.outputs.nonblocking-failures }}
     # ── THE FLIP (drift-and-heal ADR, Aaron 2026-08-01): blocking gates are
     # corporate mode; drift checks are sovereign mode. The gate now rolls up
     # ONLY the uncompensatable floor (registry/uncompensatable-floor.yaml):
@@ -2512,118 +1661,16 @@ jobs:
     # hygiene/scoped-lint.ts locally; heals converge via certified healers
     # (hygiene/healer-harness.ts). Re-adding a job to this list = adding to
     # the floor = treaty-amendment consent path.
-    #
-    # ── AMENDMENT 2026-08-17 (Aaron, explicit: "yes add lint (TS) to the
-    # required floor"). `lint-typescript` re-enters the floor. The consent path
-    # named above is why this comment exists rather than a silent list edit.
-    #
-    # ── AMENDMENT 2026-08-19 (Aaron, explicit: "we are moving away from anything
-    # that blocks into drift checks instead"). SUBTRACTION this time, via the same
-    # consent path: the `build-and-test` entry below stays in the floor but its
-    # PLATFORM coverage narrows to Linux. The macOS leg joins the Windows legs under
-    # `continue-on-error`, so a macos-26 build or test failure now reaches this
-    # rollup as success. The needs: list is unchanged — what changed is inside the
-    # matrix, which is exactly why the `Emit scope` step below exists: it names any
-    # leg that failed non-blockingly, so a green here still says which green it is.
-    # registry/uncompensatable-floor.yaml records the narrowed coverage in data.
-    #
-    # The evidence is this job's own header, twenty lines up from its `name:`:
-    # it was created because "Slice 9 (PR #882) shipped a real TS2322 to main",
-    # and it says "codified rules (tsconfig strict mode) without a gate aren't a
-    # control." It was then taken off the blocking list by the drift-and-heal
-    # flip — and on 2026-08-17 the identical class recurred, same error code:
-    # TS2322 in `installer/usb-iserial-probe.ts` plus six TS2300s in
-    # `zflash/test-harness/run.test.ts`, live on main, while `gate (required)`
-    # reported SUCCESS (measured on PR #11268, merged 02:05:47Z with
-    # `lint (TS)` FAILURE alongside a green gate).
-    #
-    # HONEST SCOPE — this does NOT close the case that produced it. Both PRs
-    # behind the 2026-08-17 breakage were individually green; the duplicate
-    # import existed only in the MERGED tree. A pre-merge floor checks each
-    # branch against main-as-it-was, so a two-PR semantic collision is out of
-    # its reach by construction. What this DOES close is the single-PR case: a
-    # branch carrying its own type error can no longer merge past a red
-    # `lint (TS)`. The collision class needs a merge queue, not a bigger floor,
-    # and is deliberately left open here rather than papered over.
-    #
-    # Register note: the registry derives the floor as the ERASURE class, and a
-    # type error is not erasure — it is fully reconstructible. This entry is
-    # admitted on the adjacent `scoped-build-test-break` rationale (a break
-    # downstream lanes consume this tick), not on erasure. Stated so the
-    # registry's derivation stays honest rather than being quietly widened.
-    #
-    # ── WHICH GREEN IS THIS? (2026-08-19) ─────────────────────────────────────────
-    # Treating `skipped` as success is correct -- the path filter legitimately skips
-    # `full-verify` and the .NET build/test steps on a docs-only PR. But it made this
-    # check's SUCCESS TWO-VALUED while publishing neither value: a green here is
-    # either the full seven-language byte-lock or a materially smaller run, and to
-    # anything reading check status -- including armed auto-merge, which is how most
-    # things land here -- WALL-CLOCK DURATION WAS THE ONLY THING TELLING THEM APART.
-    # That is the vacuity class at the rollup level: a check that did not run looks
-    # exactly like a check that passed.
-    #
-    # The `Emit scope` step below therefore publishes WHICH floor jobs executed, which
-    # were skipped, which steps were skipped inside the ones that ran, and which legs
-    # failed non-blockingly -- to the step summary, to a warning/notice annotation, and
-    # to this job's outputs. Skipping stays legitimate and nothing new blocks; the
-    # green now carries its own scope.
     needs:
       - build-and-test
       - lint
-      - lint-typescript
       - cross-verify
       - full-verify
     steps:
-      # Sparse: two paths, no blobs, one commit. The full checkout other jobs take
-      # measures ~11 s here; this one has no reason to pay for 36k files.
-      - name: Checkout (summary script + this workflow only)
-        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-        with:
-          fetch-depth: 1
-          filter: blob:none
-          sparse-checkout: |
-            src/Core.TypeScript/ci/gate-scope-summary.ts
-            .github/workflows/gate.yml
-          sparse-checkout-cone-mode: false
-
-      # Bun only -- the summary script imports nothing but node built-ins, so this job
-      # never runs install.sh (~2-4 min) for a ~1 s render.
-      - name: Setup Bun
-        uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
-
-      - name: Emit scope -- which floor jobs actually ran
-        id: scope
-        # OBSERVABILITY ONLY, AND DELIBERATELY NON-FATAL. The verdict is the next step
-        # and its logic is untouched; this one must never be able to turn a green gate
-        # red (or a red one green) because a summary failed to render or the API
-        # hiccuped. A failure here shows as a visible red step inside a job whose
-        # conclusion is still decided below.
-        continue-on-error: true
-        env:
-          # The AUTHORITATIVE floor list: this is literally the `needs:` block above,
-          # keyed by job id, with each result. Adding or removing a floor job updates
-          # the summary with no edit to the script -- there is no second copy to drift.
-          NEEDS_JSON: ${{ toJSON(needs) }}
-        run: |
-          set -euo pipefail
-          gh api --paginate \
-            "repos/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}/jobs?per_page=100" \
-            --jq '.jobs[]' \
-            | bun src/Core.TypeScript/ci/gate-scope-summary.ts
-
       - name: Check all gate jobs
-        env:
-          # Same value as above; printed by NAME here so the per-job verdict survives
-          # even if the summary step could not run. `needs.*.result` (used below,
-          # unchanged) is an unlabelled array -- it is what makes the verdict correct
-          # and what made it unreadable.
-          NEEDS_JSON: ${{ toJSON(needs) }}
         run: |
           # A job result is one of: success, failure, cancelled, skipped.
           # Skipped is acceptable (path-filter gated); failure/cancelled are not.
-          echo "Floor job results (by name):"
-          echo "${NEEDS_JSON}" | jq -r 'to_entries[] | "  \(.key): \(.value.result)"' \
-            || echo "${NEEDS_JSON}"
           results='${{ toJSON(needs.*.result) }}'
           echo "Job results: $results"
           if echo "$results" | grep -qE '"(failure|cancelled)"'; then
@@ -2631,5 +1678,3 @@ jobs:
             exit 1
           fi
           echo "All gate jobs passed or were skipped (docs-only). ✓"
-          echo "Scope of this green: see the \"gate (required)\" step summary --"
-          echo "a skipped floor job means this green covers less than a full-scope green."

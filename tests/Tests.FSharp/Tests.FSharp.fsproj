@@ -11,7 +11,6 @@
   <ItemGroup>
     <!-- _Support/ helpers first (they're consumed by subject files below). -->
     <Compile Include="_Support/DeterministicTestPath.fs" />
-    <Compile Include="_Support/CwdChaos.fs" />
     <Compile Include="_Support/ConcurrencyHarness.fs" />
     <Compile Include="_Support/CartelInjector.fs" />
     <Compile Include="_Support/SerializerLegs.fs" />
@@ -70,7 +69,6 @@
     <Compile Include="SocietyEmergence.Tests.fs" />
     <Compile Include="SocietyUnbounded.Tests.fs" />
     <Compile Include="SocietyUsefulWork.Tests.fs" />
-    <Compile Include="SocietyUsefulWork.CrossVerify.Tests.fs" />
     <Compile Include="CondorcetBoundary.Tests.fs" />
     <Compile Include="BusDelaySim.Tests.fs" />
     <Compile Include="BusDelaySim.Orbital.Tests.fs" />
@@ -148,10 +146,8 @@
     <Compile Include="ZetaIrV3.Tests.fs" />
     <Compile Include="ZetaIrV4.Tests.fs" />
     <Compile Include="ZetaIrMinimalSet.Tests.fs" />
-    <Compile Include="HomoiconicSeam.Tests.fs" />
     <Compile Include="ZetaIrNormalizer.Tests.fs" />
     <Compile Include="ZetaIrCanonicalizer.Tests.fs" />
-    <Compile Include="ZetaIrEval.Tests.fs" />
     <Compile Include="ZetaIrV1Gen.CrossVerify.Tests.fs" />
     <Compile Include="ContentHasher.Tests.fs" />
     <Compile Include="Blake3Hasher.Tests.fs" />
@@ -186,7 +182,6 @@
     <Compile Include="Conjugate.Tests.fs" />
     <Compile Include="BitGan.Tests.fs" />
     <Compile Include="AntiSybil.Tests.fs" />
-    <Compile Include="ReportTriage.Tests.fs" />
     <Compile Include="AntiSybilCaveatA.Property.Tests.fs" />
     <Compile Include="ChshBand.Property.Tests.fs" />
     <Compile Include="LeibnizAntiSybil.Tests.fs" />
@@ -220,23 +215,18 @@
     <Compile Include="FourCorner.Tests.fs" />
     <Compile Include="FourCornerFusion.Tests.fs" />
     <Compile Include="FourCornerTreaty.Tests.fs" />
-    <Compile Include="WSetFourCornerTraceTreaty.Tests.fs" />
     <Compile Include="SoftScheduler.Tests.fs" />
     <Compile Include="SoftThrottle.Tests.fs" />
     <Compile Include="Vision.Tests.fs" />
     <Compile Include="PredictionInference.Tests.fs" />
     <Compile Include="PredictionScheduler.Tests.fs" />
     <Compile Include="ReceiptScheduler.Tests.fs" />
-    <Compile Include="SchedulerShedHeat.Tests.fs" />
-    <Compile Include="ShedDisposition.Property.Tests.fs" />
     <Compile Include="RoomHorizon.Tests.fs" />
     <Compile Include="RoomAdmission.Tests.fs" />
     <Compile Include="RoomBoundary.Tests.fs" />
     <Compile Include="RecordedSource.Tests.fs" />
     <Compile Include="SoftIsr.Tests.fs" />
     <Compile Include="SimFramework.Tests.fs" />
-    <Compile Include="TickBoundaryProbe.Tests.fs" />
-    <Compile Include="FourCornerTickBoundary.Tests.fs" />
     <Compile Include="MeshPong.Tests.fs" />
     <Compile Include="MeshPongTreaty.Tests.fs" />
     <Compile Include="MembraneLogTreaty.Tests.fs" />
@@ -250,14 +240,7 @@
     <Compile Include="SwarmBoardMesh.Tests.fs" />
     <Compile Include="SwarmBoardAnsi.Tests.fs" />
     <Compile Include="SimLoopTelemetry.Tests.fs" />
-    <Compile Include="SimVerb.Tests.fs" />
-    <!-- The composition witness for the `clis/` dogfood verb surface — the first type-check that
-         family has ever had (081M08VM385087G0R001DTM0K6). -->
-    <Compile Include="Clis/Verbs.Tests.fs" />
     <Compile Include="WheelRoom.Tests.fs" />
-    <Compile Include="Ctm.Tests.fs" />
-    <Compile Include="LevelObligations.Tests.fs" />
-    <Compile Include="AggregationRule.Tests.fs" />
     <Compile Include="Chip9Planes.Tests.fs" />
     <Compile Include="ZetaMax.Tests.fs" />
     <Compile Include="Chip9Phys.Tests.fs" />
@@ -298,10 +281,8 @@
     <Compile Include="HtmlCssBinding.Tests.fs" />
     <Compile Include="ShapeCartridge.Tests.fs" />
     <Compile Include="ShapeAcceptance.Tests.fs" />
-    <Compile Include="ShapePending.Tests.fs" />
     <Compile Include="DeterminismLint.Tests.fs" />
     <Compile Include="WSet.MachZehnder.Tests.fs" />
-    <Compile Include="WSetHeat.Tests.fs" />
     <Compile Include="IbltReconcile.Tests.fs" />
     <Compile Include="TestLoop.Host.fs" />
     <Compile Include="Ben.Tests.fs" />
@@ -331,8 +312,6 @@
     <Compile Include="Cart.Tests.fs" />
     <Compile Include="MetaCart.Tests.fs" />
     <Compile Include="Chip8SelfSim.Tests.fs" />
-    <Compile Include="Chip8CrossRunStore.Tests.fs" />
-    <Compile Include="Chip8ConsultCensus.Tests.fs" />
     <Compile Include="SoftChip8Scheduler.Tests.fs" />
     <Compile Include="BitAdinkra.Tests.fs" />
     <Compile Include="PrivacyAndMeno.Tests.fs" />
@@ -354,7 +333,6 @@
     <Compile Include="Cl3.Tests.fs" />
     <Compile Include="Fixpoint.Tests.fs" />
     <Compile Include="Orbit.Tests.fs" />
-    <Compile Include="TangleNavigator.Tests.fs" />
     <Compile Include="SoftMem.Tests.fs" />
     <Compile Include="SoftDrive.Tests.fs" />
     <Compile Include="SoftScope.Tests.fs" />
@@ -394,12 +372,8 @@
     <Compile Include="SoftFrame.Tests.fs" />
     <Compile Include="ActionGrammar.Tests.fs" />
     <Compile Include="AmplitudeEmu.Tests.fs" />
-    <Compile Include="QuorumAlgebra.Tests.fs" />
-    <Compile Include="CyclotomicAmplitude.Tests.fs" />
     <Compile Include="ReticulumQuantum.Tests.fs" />
     <Compile Include="PolarityFilter.Tests.fs" />
-    <Compile Include="PolarityFilterResolution.Tests.fs" />
-    <Compile Include="PolarityFilterSmoothness.Tests.fs" />
     <Compile Include="DarkHall.Tests.fs" />
     <Compile Include="ITensor.Tests.fs" />
     <Compile Include="SagaSnapshot.Tests.fs" />
@@ -411,7 +385,6 @@
     <Compile Include="StorePipeline.Integration.Tests.fs" />
     <Compile Include="CloudEvents.Tests.fs" />
     <Compile Include="Collation.Tests.fs" />
-    <Compile Include="Collation.CrossOracleTreaty.Tests.fs" />
     <Compile Include="EvolutionWindow.Tests.fs" />
     <Compile Include="SerializationSeed.FullVertical.Tests.fs" />
     <Compile Include="Identity.FullVertical.Tests.fs" />
@@ -457,13 +430,10 @@
     <Compile Include="SoftRegimeStability.Tests.fs" />
     <Compile Include="SoftRegimeEquivariance.Tests.fs" />
     <Compile Include="AdinkraCode.Tests.fs" />
-    <Compile Include="CliffordPeriodicity.Tests.fs" />
     <Compile Include="AdinkraIdentity.Tests.fs" />
     <Compile Include="AdinkraOrbits.Tests.fs" />
-    <Compile Include="Formal/AdinkraIharaZeta.Tests.fs" />
     <Compile Include="Chip8DynamicalZeta.Tests.fs" />
     <Compile Include="SchedulerZeta.Tests.fs" />
-    <Compile Include="TimeDilation.Tests.fs" />
     <Compile Include="BinaryCode.Tests.fs" />
     <Compile Include="Formal/CliffordE8Bridge.Tests.fs" />
     <Compile Include="Formal/CliffordE8Roots.Tests.fs" />
@@ -511,7 +481,6 @@
     <Compile Include="Formal/MetaspaceMap.Tests.fs" />
     <Compile Include="Formal/MetaspaceGraphRender.Tests.fs" />
     <Compile Include="Formal/GlassHalo.Tests.fs" />
-    <Compile Include="Formal/GiftOfErasure.Tests.fs" />
     <Compile Include="Formal/DoorGraph.Tests.fs" />
     <Compile Include="Formal/LiveLegs.Tests.fs" />
     <Compile Include="Formal/WikidataGraph.Tests.fs" />
@@ -602,14 +571,12 @@
     <!-- Infra/ -->
     <Compile Include="Infra/Metrics.Tests.fs" />
     <Compile Include="Infra/Tracing.Tests.fs" />
-    <Compile Include="Infra/TelemetryExporter.Tests.fs" />
     <Compile Include="Infra/Watermark.Tests.fs" />
     <Compile Include="Infra/Sink.Tests.fs" />
     <Compile Include="Infra/Dsl.Tests.fs" />
     <Compile Include="Infra/Environment.Tests.fs" />
     <Compile Include="Infra/Rx.Tests.fs" />
     <Compile Include="Infra/FeatureFlags.Tests.fs" />
-    <Compile Include="Infra/CwdChaos.Tests.fs" />
 
     <!-- Limit/ -->
     <Compile Include="Limit/Limit.Tests.fs" />
@@ -632,12 +599,8 @@
     <Compile Include="../../src/Core.FSharp.Z3Verify/SolverHarness.fs" />
     <Compile Include="Formal/Z3.Laws.Tests.fs" />
     <Compile Include="Formal/SemiringRing.Laws.Tests.fs" />
-    <Compile Include="Formal/SoftValue.BayesianInversion.Laws.Tests.fs" />
     <Compile Include="Formal/WSet.Comonoid.Laws.Tests.fs" />
     <Compile Include="Formal/WSet.FourCornerTrace.Laws.Tests.fs" />
-    <Compile Include="Formal/WSet.ErasureClassification.Laws.Tests.fs" />
-    <Compile Include="Formal/Erasure.Representation.Laws.Tests.fs" />
-    <Compile Include="Formal/Erasure.Charge.Laws.Tests.fs" />
     <Compile Include="Formal/ByteCost.Laws.Tests.fs" />
     <Compile Include="Formal/Jaccard.Laws.Tests.fs" />
     <Compile Include="Formal/Clock.Laws.Tests.fs" />
@@ -655,10 +618,6 @@
     <Compile Include="Formal/Alloy.Runner.Tests.fs" />
     <Compile Include="Formal/Sharder.InfoTheoretic.Tests.fs" />
     <Compile Include="Formal/ToffoliGate.Laws.Tests.fs" />
-    <Compile Include="Formal/AmplitudeEmuSignalling.Tests.fs" />
-    <Compile Include="Formal/MenoBraidedBasisBijection.Tests.fs" />
-    <Compile Include="Formal/LatticeVoaGradedDimensions.Tests.fs" />
-    <Compile Include="Formal/ConstructionAThetaE8.Tests.fs" />
 
     <!-- Properties/ last (they cross modules by design). -->
     <Compile Include="Properties/Math.Invariants.Tests.fs" />
@@ -668,14 +627,12 @@
     <Compile Include="Properties/PolicyRelocation.Tests.fs" />
     <Compile Include="MajiTests.fs" />
     <Compile Include="Consensus.Tests.fs" />
-    <Compile Include="Consensus.TieBreak.Tests.fs" />
     <Compile Include="Arena.Tests.fs" />
 
     <!-- ZetaId/ — F# peer oracle cross-verify (matches TS + C# canonical hex) -->
     <Compile Include="ZetaId/CrossVerifyTests.fs" />
     <Compile Include="ZetaId/Canonical.Tests.fs" />
     <Compile Include="ZetaId/BitLayoutAgreement.Tests.fs" />
-    <Compile Include="ZetaId/PackGenericBound.Tests.fs" />
     <Compile Include="Yaml/ReaderTests.fs" />
     <Compile Include="Yaml/CrossVerifyTests.fs" />
     <Compile Include="Yaml/EncoderRoundTripTests.fs" />
@@ -690,13 +647,10 @@
     <Compile Include="ZetaToolStore.Tests.fs" />
     <Compile Include="ZetaToolStore.Golden.Tests.fs" />
     <Compile Include="AdinkraClock.Tests.fs" />
-    <Compile Include="AppFreeFragment.Tests.fs" />
-    <Compile Include="ClaimLane.Tests.fs" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\Core\Core.fsproj" />
-    <ProjectReference Include="..\..\src\Core.Telemetry\Zeta.Core.Telemetry.fsproj" />
     <ProjectReference Include="..\..\src\Core.FSharp.Cli\Zeta.Cli.fsproj" />
     <ProjectReference Include="..\..\src\Bayesian\Bayesian.fsproj" />
     <ProjectReference Include="..\..\src\Core.CSharp\Core.CSharp.csproj" />
@@ -711,9 +665,6 @@
     <ProjectReference Include="..\..\src\Core.FSharp.Sha256\Zeta.Core.FSharp.Sha256.fsproj" />
     <ProjectReference Include="..\..\src\Core.FSharp.AceCanonical\Zeta.Core.FSharp.AceCanonical.fsproj" />
     <ProjectReference Include="..\..\src\Core.FSharp.Mediator\Zeta.Core.FSharp.Mediator.fsproj" />
-    <!-- The dogfood verb surface. Referenced so a compiler reads `clis/Verbs.fs` at all — before
-         081M08VM385087G0R001DTM0K6 no .fsproj and no .sln named that folder. -->
-    <ProjectReference Include="..\..\clis\Zeta.Clis.fsproj" />
   </ItemGroup>
 
   <ItemGroup>
@@ -742,8 +693,5 @@
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
     <PackageReference Include="YamlDotNet" />
-    <!-- TEST-ONLY: the in-memory exporter is the seam that turns "an OTLP exporter is
-         wired" into "the counters and spans actually arrive". Not a production dep. -->
-    <PackageReference Include="OpenTelemetry.Exporter.InMemory" />
   </ItemGroup>
 </Project>

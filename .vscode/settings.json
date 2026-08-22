@@ -11,8 +11,7 @@
     "**/bin/**": true,
     "**/obj/**": true,
     "**/node_modules/**": true,
-    "**/.lake/**": true,
-    "**/src/Core.Rust.*/target/**": true,
+    "**/tools/lean4/.lake/**": true,
     "**/references/prior-art/**": true
   },
   "files.watcherExclude": {
@@ -22,19 +21,8 @@
     "**/bin/**": true,
     "**/obj/**": true,
     "**/node_modules/**": true,
-    "**/.lake/**": true,
-    "**/src/Core.Rust.*/target/**": true,
-    "**/references/prior-art/**": true,
-    "**/tests/cross-verification/experience/fixtures/tree1/subdir1/link_to_parent": true,
-    "**/docs/github/**": true,
-    "**/docs/history/**": true,
-    "**/docs/observe-events/**": true,
-    "**/docs/hygiene-history/**": true,
-    "**/docs/pr-discussions/**": true,
-    "**/docs/drift-events/**": true,
-    "**/docs/recovered-orphan-branches-2026-05/**": true,
-    "**/data/tick-shards/**": true,
-    "**/workitems/events/**": true
+    "**/tools/lean4/.lake/**": true,
+    "**/references/prior-art/**": true
   },
   "search.exclude": {
     "**/BenchmarkDotNet.Artifacts/**": true,
@@ -43,19 +31,8 @@
     "**/bin/**": true,
     "**/obj/**": true,
     "**/node_modules/**": true,
-    "**/.lake/**": true,
-    "**/src/Core.Rust.*/target/**": true,
-    "**/references/prior-art/**": true,
-    "**/tests/cross-verification/experience/fixtures/tree1/subdir1/link_to_parent": true,
-    "**/docs/github/**": true,
-    "**/docs/history/**": true,
-    "**/docs/observe-events/**": true,
-    "**/docs/hygiene-history/**": true,
-    "**/docs/pr-discussions/**": true,
-    "**/docs/drift-events/**": true,
-    "**/docs/recovered-orphan-branches-2026-05/**": true,
-    "**/data/tick-shards/**": true,
-    "**/workitems/events/**": true
+    "**/tools/lean4/.lake/**": true,
+    "**/references/prior-art/**": true
   },
 
   "FSharp.excludeProjectDirectories": [
@@ -64,7 +41,6 @@
     "obj",
     "node_modules",
     "tools/lean4/.lake",
-    "src/Core.Lean4/.lake",
     "references/prior-art"
   ],
 
@@ -83,7 +59,6 @@
     "**/obj/**": true,
     "**/node_modules/**": true,
     "**/tools/lean4/.lake/**": true,
-    "**/.lake/**": true,
     "**/references/prior-art/**": true,
     "**/.vscode/**": true,
     "**/.claude/**": true,

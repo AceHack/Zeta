@@ -1,7 +1,6 @@
 import { describe, expect, test } from "bun:test";
 import {
   BROWSER_CHECKPOINT_RECORD_SCHEMA,
-  browserCheckpointRecordNodeId,
   decideBrowserCheckpointRemoval,
   decideBrowserCheckpointSave,
   validateBrowserCheckpointRecord,
@@ -18,17 +17,6 @@ function checkpoint(nodeId: string, revision: number, bytes: readonly number[]):
 }
 
 describe("browser checkpoint port", () => {
-  test("derives disjoint record identities from kind and the full logical node id", () => {
-    expect(browserCheckpointRecordNodeId("room", "a:bc")).not.toBe(browserCheckpointRecordNodeId("room", "ab:c"));
-    expect(browserCheckpointRecordNodeId("room", "node-a")).not.toBe(
-      browserCheckpointRecordNodeId("causal-corrections", "node-a"),
-    );
-    expect(browserCheckpointRecordNodeId("causal-corrections", "node-a")).not.toBe(
-      browserCheckpointRecordNodeId("causal-handoffs", "node-a"),
-    );
-    expect(browserCheckpointRecordNodeId("room", "")).toBe("");
-  });
-
   test("validates and copies checkpoint bytes", () => {
     const value = checkpoint("node-a", 7, [1, 2, 3]);
     const result = validateBrowserCheckpointRecord(value);

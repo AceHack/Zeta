@@ -7,7 +7,7 @@
  * without hitting the GitHub API directly.
  *
  * Usage:
- *   bun src/Core.TypeScript/dashboard/generate-metrics.ts
+ *   bun tools/dashboard/generate-metrics.ts
  *
  * Output:
  *   demo/metrics.json (overwritten each run)

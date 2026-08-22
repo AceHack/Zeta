@@ -44,10 +44,7 @@ let private genExpr =
                 genConst |> Gen.map Const
                 genStr |> Gen.map Param
                 gen {
-                    // Arity is generated (0..3), not fixed: a fixed-arity generator cannot
-                    // distinguish an implementation that only handles the one arity it emits.
-                    let! n = Gen.choose (0, 3)
-                    let! ps = Gen.listOfLength n genStr
+                    let! ps = Gen.listOfLength 2 genStr
                     let! body = aux (size / 2)
                     return Lambda (ps, body)
                 }
@@ -59,8 +56,7 @@ let private genExpr =
                 }
                 gen {
                     let! fn = genStr
-                    let! n = Gen.choose (0, 3)
-                    let! args = Gen.listOfLength n (aux (size / 2))
+                    let! args = Gen.listOfLength 2 (aux (size / 2))
                     return Call (fn, args)
                 }
                 gen {

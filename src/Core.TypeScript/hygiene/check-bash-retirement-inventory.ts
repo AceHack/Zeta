@@ -74,7 +74,6 @@ const ENV_OPTIONS_WITH_INLINE_OPERAND: readonly string[] = ["--argv0=", "--chdir
 const INACTIVE_SHELL_INVENTORY_PREFIXES: readonly string[] = ["db/", "docs/recovered-orphan-branches-"];
 
 export const EXPECTED_RETAINED_SHELL: readonly string[] = [
-  ".cursor/install.sh",
   ".gemini/service/install-lior-service.sh",
   ".gemini/service/lior-loop.sh",
   "full-ai-cluster/usb-nixos-installer/zeta-first-boot.sh",
@@ -100,7 +99,6 @@ export const EXPECTED_RETAINED_SHELL: readonly string[] = [
   "tools/setup/common/tlaps.sh",
   "tools/setup/doctor.sh",
   "tools/setup/host-loop-bootstrap.sh",
-  "tools/setup/hsm/dkek-ceremony-preflight.sh",
   "tools/setup/install.sh",
   "tools/setup/linux.sh",
   "tools/setup/macos.sh",
@@ -120,10 +118,6 @@ const RETAINED_SHELL_CATEGORY_ORDER: readonly RetainedShellCategory[] = [
 ];
 
 export const RETAINED_SHELL_CATEGORY_BY_FILE: Readonly<Record<string, RetainedShellCategory>> = {
-  // Cursor Cloud Agent environment bootstrap (.cursor/environment.json install):
-  // runs on a bare VM before Bun exists (it installs mise + bun), so it is
-  // retained shell at the setup/bootstrap edge, same class as tools/setup/*.sh.
-  ".cursor/install.sh": "setup/bootstrap",
   ".gemini/service/install-lior-service.sh": "host-service wrappers",
   ".gemini/service/lior-loop.sh": "host-service wrappers",
   "full-ai-cluster/usb-nixos-installer/zeta-first-boot.sh": "nixos installer",
@@ -146,11 +140,6 @@ export const RETAINED_SHELL_CATEGORY_BY_FILE: Readonly<Record<string, RetainedSh
   // installer surface as tlaps.sh (invoked via the from-agda-cubical realizer).
   "tools/setup/common/agda-cubical.sh": "setup/bootstrap",
   "tools/setup/common/curl-fetch.sh": "setup/bootstrap",
-  // NOTE (081M05X126V087G0R0014GR9KQ): `ensure-rust-components.sh` was allowlisted
-  // here by #10991 as INTERIM scaffolding to unbreak a red main, never as an end
-  // state. It is gone — rustfmt/clippy/wasm32 are declared on the rust entry in
-  // `.mise.toml`, so the retirement discipline REMOVED a shell file instead of
-  // permanently allowlisting one. Do not re-add the entry without re-adding a script.
   "tools/setup/common/fd-limits.sh": "setup/bootstrap",
   "tools/setup/common/host-tier.sh": "setup/bootstrap",
   "tools/setup/common/install-rust-wasm32.sh": "setup/bootstrap",
@@ -165,10 +154,6 @@ export const RETAINED_SHELL_CATEGORY_BY_FILE: Readonly<Record<string, RetainedSh
   "tools/setup/common/tlaps.sh": "setup/bootstrap",
   "tools/setup/doctor.sh": "setup/bootstrap",
   "tools/setup/host-loop-bootstrap.sh": "setup/bootstrap",
-  // 081M0KCWPGV dual-HSM custody ceremony: a PREFLIGHT that must run before any
-  // PKCS#11 tooling exists on the host -- it checks whether the ceremony can
-  // safely proceed, so it cannot depend on the toolchain it is gating.
-  "tools/setup/hsm/dkek-ceremony-preflight.sh": "setup/bootstrap",
   "tools/setup/install.sh": "setup/bootstrap",
   "tools/setup/linux.sh": "setup/bootstrap",
   "tools/setup/macos.sh": "setup/bootstrap",
@@ -222,17 +207,8 @@ function runGit(args: readonly string[], cwd?: string): string {
   return result.stdout;
 }
 
-/**
- * The repository root, from `git` rather than from a relative path guess.
- * Exported so sibling tools (e.g. `measure-shell-key-exposure.ts`) resolve the
- * allowlist's repo-relative paths against the same root this file uses.
- */
-export function repoRootFromGit(cwd?: string): string {
-  return runGit(["rev-parse", "--show-toplevel"], cwd).trim();
-}
-
 export function trackedNonLeanShellFilesFromGit(cwd?: string): readonly string[] {
-  const repoRoot = repoRootFromGit(cwd);
+  const repoRoot = runGit(["rev-parse", "--show-toplevel"], cwd).trim();
   return trackedGitFiles(repoRoot)
     .filter(({ path }) => existsSync(join(repoRoot, path)))
     .filter(({ path }) => !isInactiveShellInventoryPath(path))

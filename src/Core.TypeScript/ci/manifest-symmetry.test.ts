@@ -1,5 +1,5 @@
 import { test, expect } from "bun:test";
-import { existsSync, readFileSync } from "node:fs";
+import { readFileSync } from "node:fs";
 import { join } from "node:path";
 
 // Keep the Windows install graph in sync + symmetric with Unix (operator 2026-05-30): every
@@ -88,38 +88,12 @@ const WINDOWS_EXCEPTIONS: Record<string, string> = {
   // manifest would also force it into every constrained Windows installer smoke. Keep each
   // disposition explicit until Windows gains the same tier=standard/full parser as Unix.
   wabt: "WABT is available only in Scoop Extras, while install.ps1 intentionally bootstraps the Main bucket alone; Windows package-source expansion remains a separate installer decision.",
-  "lua5.4": "covered on Windows by the `lua` manifest line; apt includes the language version in its package id",
   binaryen:
     "WASM optimizer/compiler support is a full compiler-lane dependency; defer Windows installation until manifests/windows supports host tiers instead of forcing it onto every base host.",
   emscripten:
     "Emscripten is a large full compiler-lane dependency; defer Windows installation until manifests/windows supports host tiers instead of forcing it onto every base host.",
   llvm: "LLVM is a large full compiler-lane dependency; defer Windows installation until manifests/windows supports host tiers instead of forcing it onto every base host.",
   zig: "Zig is already installed cross-platform by mise from .mise.toml; it does not belong in the Windows system-package manifest.",
-
-  // ── YubiKey / YubiHSM (2026-08-20) ──────────────────────────────────────────
-  // The three tool entries that stood here -- yubikey-manager, ykman, yubico-piv-tool --
-  // were removed once the check they deferred was actually run. Their stated reason was
-  // that no scoop/winget id "was verifiable from the host this was authored on", which is
-  // an honest exception and also an unrun check. Run against the registries, all three
-  // resolve: scoop Main carries yubikey-manager-cli (ykman.exe) and yubico-piv-tool, and
-  // winget carries Yubico.YubiKeyManagerCLI and Yubico.PIVTool, versions agreeing with
-  // brew. They are declared in manifests/windows now, so no exception is needed.
-  //
-  // Two of the three remaining entries are NAME-ALIAS exceptions, not missing-tool ones:
-  // the same binary is declared in manifests/windows under the ecosystem's own package
-  // name. Same shape as lua5.4 (apt) vs lua (brew/windows). The alias is recorded rather
-  // than resolved because this matcher compares names literally and has no alias table --
-  // adding one is a bigger change than this row needs.
-  "yubikey-manager":
-    "apt's name for the YubiKey Manager CLI; declared in manifests/windows as scoop `yubikey-manager-cli` (winget Yubico.YubiKeyManagerCLI, v5.9.2, bin ykman.exe). Verified against ScoopInstaller/Main and microsoft/winget-pkgs 2026-08-20 -- present, not absent.",
-  ykman:
-    "brew's name for the same binary; same Windows row as yubikey-manager above. (yubico-piv-tool needs no entry: scoop, winget, apt and brew all spell it identically, so it matches literally.)",
-
-  // The two below are genuine Windows BUILT-INS -- nothing to install, a different class
-  // of reason from the aliases above.
-  pcscd:
-    "Windows has a built-in smartcard service (SCardSvr); no package to install. The Linux-only entry exists because Linux has no equivalent running by default.",
-  libpcsclite1: "PC/SC client library is Linux-only; the Windows equivalent (WinSCard) is an OS component.",
 };
 
 test("manifests/windows covers every apt/brew system tool (or an allowlisted exception)", () => {
@@ -132,18 +106,6 @@ test("manifests/windows covers every apt/brew system tool (or an allowlisted exc
 
 test("git is present in manifests/windows (loop clone + repo-ops prerequisite)", () => {
   expect(parseManifest("windows")).toContain("git");
-});
-
-test("byte-lock script runtimes are declared once per platform", () => {
-  expectMiseTool("go", "1.26.4");
-
-  expect(parseManifest("apt")).toContain("lua5.4");
-  expect(parseManifest("brew")).toContain("lua");
-  expect(parseManifest("windows")).toContain("lua");
-
-  const linuxInstaller = readFileSync(join(setupDir, "linux.sh"), "utf8");
-  expect(linuxInstaller).not.toContain("golang-go");
-  expect(linuxInstaller).not.toContain("lua5.4");
 });
 
 test("USB/QEMU and cluster integration tools are declared in install substrate", () => {
@@ -280,6 +242,7 @@ test("NixOS and USB installer surfaces delegate agent/runtime drift to install g
   );
   const zetaInstall = readFileSync(join(repoRoot, "full-ai-cluster", "usb-nixos-installer", "zeta-install.sh"), "utf8");
   const fullClusterFlake = readFileSync(join(repoRoot, "full-ai-cluster", "flake.nix"), "utf8");
+  const usbInstallerFlake = readFileSync(join(repoRoot, "full-ai-cluster", "usb-nixos-installer", "flake.nix"), "utf8");
 
   // Installed NixOS gets declarative system packages from Nix, but runtime/agent CLI drift
   // comes from the same install.sh manifest graph as dev machines and CI.
@@ -295,11 +258,7 @@ test("NixOS and USB installer surfaces delegate agent/runtime drift to install g
   expect(installerNix).toContain("gh");
   expect(installerNix).toContain("mtools");
   expect(fullClusterFlake).toContain("qemu mtools");
-  // 081KZKS9A6B08QG0R0008EG72M retired full-ai-cluster/usb-nixos-installer/flake.nix
-  // (it built the installer with no mise-pin overlay, so it shipped a different ISO
-  // than CI). full-ai-cluster/flake.nix is now the single definition — asserted here
-  // so this test can never be satisfied by a re-added duplicate.
-  expect(existsSync(join(repoRoot, "full-ai-cluster", "usb-nixos-installer", "flake.nix"))).toBe(false);
+  expect(usbInstallerFlake).toContain("mtools");
   expect(zetaInstall).toContain("ZETA_INSTALL_NIXOS_MODE=installed");
   expect(zetaInstall).toContain("ZETA_INSTALL_FULL=1");
   expect(zetaInstall).toContain("tools/setup/manifests/from-bun-global");

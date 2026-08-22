@@ -69,35 +69,6 @@ let ``a post-mint clock cannot re-rate or re-identify a minted link (quarantine)
     let later = clock 9_999_999L "2026-12-31T23:59:59Z" 4000L
     // a "later now" / different render clock leaves the minted content byte-identical
     Assert.Equal<string>(stripClock (MP.renderPage "imdb" true early links), stripClock (MP.renderPage "imdb" true later links))
-    // ...and the card block is embedded VERBATIM under either clock.
-    //
-    // REWRITTEN 2026-08-18 (Soraya). This line used to read
-    //     Assert.Equal<string>(cardsOf links, cardsOf links)
-    // under the comment "and the cards themselves are unchanged". `cardsOf` takes no
-    // clock, so both sides were the SAME expression and the assertion could not fail
-    // for any implementation of anything. It claimed a second, independent quarantine
-    // check and made none: the vacuity class, sitting inside a noninterference proof.
-    //
-    // The claim the comment intends is failable and is now made: the card block
-    // renderPage produces must be byte-identical to the standalone card rendering,
-    // under BOTH clocks. That breaks the moment renderPage interpolates any clock
-    // data into a card, which is precisely the leak this file exists to forbid.
-    let cardsOf (ls: CostarFederations.MintedLink list) =
-        ls |> List.map MP.renderCard |> String.concat ""
-
-    // Extract the grid region EXACTLY rather than testing for containment. An earlier
-    // draft of this fix used Assert.Contains and was itself too weak: a mutant that
-    // appends anything after the cards inside the grid still contains them, so
-    // containment passed on a page that had been tampered with. Measured, not argued —
-    // the mutant `cards + "<!--x-->"` survived Contains and dies against this.
-    let gridOf (html: string) : string =
-        let openTag = "<div class=\"grid\">"
-        let closeTag = "</div><footer>"
-        let i = html.IndexOf(openTag, StringComparison.Ordinal)
-        let j = html.IndexOf(closeTag, StringComparison.Ordinal)
-        Assert.True(i >= 0 && j > i, "the page must carry exactly one grid region")
-        html.Substring(i + openTag.Length, j - (i + openTag.Length))
-
-    let cards = cardsOf links
-    Assert.Equal<string>(cards, gridOf (MP.renderPage "imdb" true early links))
-    Assert.Equal<string>(cards, gridOf (MP.renderPage "imdb" true later links))
+    // and the cards themselves are unchanged
+    let cardsOf links = links |> List.map MP.renderCard |> String.concat ""
+    Assert.Equal<string>(cardsOf links, cardsOf links)

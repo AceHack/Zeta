@@ -202,7 +202,7 @@ might be the element just retracted.
 - `src/Core/Differential.fs` — `D` / `I` operators.
 - `src/Core/Retraction.fs` — retraction-safe aggregator
   building blocks.
-- `src/Core.Lean4/Lean4/DbspChainRule.lean` — chain-rule
+- `tools/lean4/Lean4/DbspChainRule.lean` — chain-rule
   proof.
 - `tools/tla/specs/` — streaming-invariant specs.
 - `docs/research/chain-rule-proof-log.md` — proof log.
@@ -238,4 +238,4 @@ might be the element just retracted.
 - `src/Core/Operator*.fs`,
   `src/Core/Differential.fs`,
   `src/Core/Retraction.fs`.
-- `src/Core.Lean4/Lean4/DbspChainRule.lean`.
+- `tools/lean4/Lean4/DbspChainRule.lean`.

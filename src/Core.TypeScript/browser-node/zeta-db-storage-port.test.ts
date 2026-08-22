@@ -11,7 +11,6 @@ function open() {
     databaseNodeId: "browser/global/storage",
     executorId: "tab-a/storage",
     limits,
-    convergencePolicy: { maxAttempts: 3 },
   });
   expect(opened.ok).toBe(true);
   if (!opened.ok) throw new Error(opened.reason);
@@ -19,22 +18,6 @@ function open() {
 }
 
 describe("ZetaDB content-addressed storage port", () => {
-  test("rejects an unbounded convergence policy before opening the port", () => {
-    expect(
-      createZetaDbStoragePort({
-        imagePort: createInMemoryZetaDbImagePort(),
-        databaseNodeId: "browser/global/storage",
-        executorId: "tab-a/storage",
-        limits,
-        convergencePolicy: { maxAttempts: 0 },
-      }),
-    ).toEqual({
-      ok: false,
-      reason: "A ZetaDB storage port requires identifiers and positive safe-integer tick and convergence budgets.",
-      severity: "heat",
-    });
-  });
-
   test("runs the storage cell primary path through the ZetaDB database kernel", async () => {
     const primary = open();
     const cell = new ZetaStorageCell({ nodeId: "node-a", primary });

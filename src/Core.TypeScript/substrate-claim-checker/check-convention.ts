@@ -373,7 +373,7 @@ export function main(): number {
   const args = process.argv.slice(2);
   if (args.length === 0) {
     console.error(
-      "usage: bun src/Core.TypeScript/substrate-claim-checker/check-convention.ts <file> [<file> ...]",
+      "usage: bun tools/substrate-claim-checker/check-convention.ts <file> [<file> ...]",
     );
     return 1;
   }

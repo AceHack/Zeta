@@ -28,42 +28,13 @@ min_version = "2026.6.12"
 dotnet = "10.0.302"
 go = "1.26.4"
 golangci-lint = "2.12.2"
-# Rust stable. Edition 2024 requires >=1.85. The mise `core:rust`
-# backend wraps rustup and passes `components`/`targets` straight
-# through to `rustup toolchain install`, so ONE declaration
-# provisions the compiler, the lint/format components, and the
-# wasm32 target — no `rustup component add` / `rustup target add`
-# top-up afterwards (081M05X126V087G0R0014GR9KQ; retired
-# `tools/setup/common/ensure-rust-components.sh` and the
-# "after mise install, run rustup target add" comment this
-# replaces). `wasm32-unknown-unknown` enables the Rust WASM
-# substrate (Oracle 10 sixth compiler / Conjecture Z-7).
-#
-# That mise HONOURS these options rather than ignoring them is a
-# checked fact, not a cited one. Negative control, mise 2026.6.14:
-# an isolated config adding a bogus component was rejected by rustup
-# BY NAME — "error: component
-# 'shadow-negative-control-not-a-component' for target
-# 'aarch64-apple-darwin' is unavailable for download". Had the
-# options been dropped the install would have SUCCEEDED, so the
-# check can fail, which is what makes it a check. Positive control,
-# same run: from an empty RUSTUP_HOME, `mise install rust` alone
-# produced rustfmt-preview, clippy-preview and
-# rust-std-wasm32-unknown-unknown, and that toolchain compiled a
-# real `--target wasm32-unknown-unknown` binary.
-#
-# A version bump must also move the `1.87.0-*` rustup-toolchain
-# cache globs in `.github/workflows/gate.yml` +
-# `installer-unit-tests.yml`; a stale glob silently degrades the
-# offline path to a CDN fetch.
-rust = { version = "1.87.0", components = ["rustfmt", "clippy"], targets = ["wasm32-unknown-unknown"] }
+# Rust stable. Edition 2024 requires >=1.85. The mise rust plugin
+# wraps rustup; `mise install` provisions rustc + cargo.
+# After `mise install`, run: rustup target add wasm32-unknown-unknown
+# to enable the Rust WASM substrate (Oracle 10 sixth compiler / Conjecture Z-7).
+rust = "1.87.0"
 # Zig 0.13.0 -- wasm32-freestanding compiler substrate (Oracle 11).
-# Builds the 1,314-byte `src/wasm-dla/bytelock/dla-canonical-zig.wasm` byte-lock
-# substrate; the exact command lives in `bytelock/build-substrates.mjs`. Verified
-# byte-identical on rebuild under this pin (sha256 c28210dc..., 2026-08-17).
-# The 951-byte figure quoted here previously was a SECOND, non-canonical Zig module
-# under `src/wasm-dla/zig/`, removed 2026-08-17: it was in no byte-lock roster, was
-# pinned by no golden vector, and returned cluster size 1 at every seed.
+# Produces 951B DLA binary: `zig build-exe -target wasm32-freestanding`.
 # mise zig plugin downloads the official release tarball.
 zig = "0.13.0"
 python = "3.14.6"

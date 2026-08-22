@@ -141,12 +141,7 @@ let ``malformed Reticulum observable payload returns Result error instead of thr
 [<Fact>]
 let ``WSet Mach-Zehnder observable Z-set crosses Reticulum as source-owned DBSP rows`` () =
     let s, medium, _, b, l = link ()
-    let heatSink = RecordingHeatSink()
-
-    let rows =
-        match QuantumObservableDbsp.machZehnderZSet (heatSink :> IHeatSink) "reticulum-quantum" with
-        | Ok metered -> metered.Value
-        | Error feedback -> failwithf "unexpected Mach-Zehnder heat feedback: %A" feedback
+    let rows = QuantumObservableDbsp.machZehnderZSet ()
 
     let medium', s' =
         ReticulumQuantum.sendQuantumObservableZSet l "wset-mach-zehnder" 100L rows s medium
@@ -165,9 +160,9 @@ let ``WSet Mach-Zehnder observable Z-set crosses Reticulum as source-owned DBSP 
 [<Fact>]
 let ``Reticulum quantum observable deltas preserve DBSP retractions`` () =
     let s, medium, _, b, l = link ()
-    let openRow = QuantumObservableDbsp.machZehnderOpenReferenceRow ()
+    let openRow = QuantumObservableDbsp.machZehnderOpenRow ()
     let piOver6Row =
-        QuantumObservableDbsp.machZehnderClosedReferenceRow
+        QuantumObservableDbsp.machZehnderClosedRow
             "mach-zehnder-closed-pi-over-6-phase"
             "Zeta.ReferenceOracle.ApplyMachZehnderClosedPiOver6Phase"
             (Math.PI / 6.0)

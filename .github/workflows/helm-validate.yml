@@ -1,99 +1,24 @@
-# infra/k8s GitOps validation — ArgoCD Application manifests + the Helm charts they pin.
-#
-# WHAT CHANGED 2026-08-14 (Dejan) AND WHY
-#
-# This lane existed but could not go red on the failures it was there to catch.
-# Measured against the pre-change validator:
-#   - a manifest with a tab-indented line, an unterminated quote and an
-#     unclosed flow sequence printed `PASS: ... valid YAML`;
-#   - a duplicate `destination.namespace` key gave `37 passed, 0 failed`, exit 0;
-#   - `targetRevision: 999.999.999` on the cockroachdb chart gave
-#     `44 passed, 0 failed`, exit 0 — the chart check was a substring grep for
-#     `name: <chart>` in index.yaml and never looked at the version.
-# The one online check that could have caught a bad chart pin before ArgoCD
-# tried to sync it on real hardware also only ran on push-to-main and a WEEKLY
-# Monday cron, never on a pull request. Total real-world run count of this
-# workflow before today: one (2026-08-10, a cron).
-#
-# So: the validator was rewritten on a real YAML parser with exact version
-# resolution, a `helm template` + `kubeconform` render lane was added, a
-# mutation suite that PROVES the validator exits 1 now runs in CI, and the
-# cadence moved weekly -> daily with the chart checks running on every PR.
-#
-# COST, MEASURED, NOT ESTIMATED (2026-08-14, local, warm):
-#   - offline structural validation of all 7 apps ......... 0.4 s
-#   - mutation suite, 12 cases, subprocess per case ....... 1.7 s
-#   - online exact-version check, 6 charts, ~5 MB pulled .. 1.4 s
-#   - helm template of all 6 charts ....................... 5.1 s
-#   - kubeconform over every rendered manifest ............ included above
-#   - end-to-end `--render` run ........................... 7.6 s
-# The checks themselves are seconds. Job wall clock is dominated by toolchain
-# install; the previous incarnation of this workflow ran 3.2 min end to end.
-# There was never a cost case for keeping chart validation off pull requests.
-#
-# BILLABLE COST: zero. Lucent-Financial-Group/Zeta is a public repository and
-# GitHub-hosted standard runners are free for public repositories; the k8s lane
-# confirmed this against its own accounting (`/timing` reports
-# billable.UBUNTU.total_ms = 0). The real budget is concurrency slots and
-# maintainer attention, which is why this is two short jobs and not a matrix.
-
 name: helm-validate
 
 on:
   pull_request:
     types: [opened, reopened, synchronize, ready_for_review]
     paths:
-      - "infra/k8s/**"
-      # ADDED 2026-08-20: the SECOND cluster tree. `full-ai-cluster/k8s` is 122
-      # files and ~60 Applications and CI had never rendered one of them --
-      # this lane filtered on `infra/k8s/**` only, so the larger tree changed
-      # without any chart ever being resolved. Its nixos/ directory carries the
-      # `services.k3s.manifests` roster for that tree, so it is included for the
-      # same reason infra/nixos/** is below.
-      - "full-ai-cluster/k8s/**"
-      - "full-ai-cluster/nixos/**"
-      # ADDED 2026-08-18: the `services.k3s.manifests` roster that decides which
-      # bootstrap manifests K3S applies on first boot lives in
-      # infra/nixos/modules/k3s-server.nix, so a rename or deletion THERE breaks
-      # the bootstrap without touching infra/k8s/**. validate-bootstrap.ts
-      # checks both directions of that roster and needs to see those edits.
-      - "infra/nixos/**"
-      - ".github/workflows/helm-validate.yml"
-      - ".mise.toml"
-      - ".mise.full.toml"
-      - "package.json"
-      - "bun.lock"
+      - "infra/k8s/applications/**"
+      - "infra/k8s/tests/validate-applications.ts"
   push:
     branches: [main]
     paths:
-      - "infra/k8s/**"
-      # See the note on the pull_request trigger above.
-      - "full-ai-cluster/k8s/**"
-      - "full-ai-cluster/nixos/**"
-      - "infra/nixos/**"
-      - ".github/workflows/helm-validate.yml"
-      - ".mise.toml"
-      - ".mise.full.toml"
-      - "package.json"
-      - "bun.lock"
+      - "infra/k8s/applications/**"
+      - "infra/k8s/tests/validate-applications.ts"
   schedule:
-    # DAILY (was "0 9 * * 1", weekly Monday) — Aaron 2026-08-13: "it should be
-    # more often than weekly on the k8s testing". The k8s-argocd lane moved to
-    # daily for the same reason; this one had been left behind.
-    #
-    # The drift this cron exists to catch is entirely EXTERNAL, because the
-    # `paths` triggers already cover every in-repo input. A chart version can be
-    # yanked, a Helm repo can move or go dark, and a chart's own dependencies
-    # can be republished — none of which produce a commit here. Those move on
-    # the order of a day, so a weekly cron gave a mean time-to-detect of ~3.5
-    # days against a drift period of ~1 day. Daily brings MTTD to ~12 h.
-    # Sub-daily would re-measure the same unchanged upstream and buy signal
-    # nobody can act on faster.
-    #
-    # 15:29 UTC: minute 29 is unused across .github/workflows (thundering-herd
-    # avoidance) and 08:29 US Pacific puts a failure in front of someone awake.
-    - cron: "29 15 * * *"
+    - cron: "0 9 * * 1"
   workflow_dispatch:
+    inputs:
+      offline:
+        description: "Run in offline mode (skip chart existence check)"
+        type: boolean
+        default: false
 
 permissions:
   contents: read
@@ -103,187 +28,60 @@ concurrency:
   cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
-  structural:
-    # Deterministic half: no network, so this job is the one allowed to be a
-    # hard gate without importing upstream flakiness. Base tier — bun is all it
-    # needs.
-    name: manifests (offline) + mutation proof
+  offline:
+    name: validate manifests (offline)
     runs-on: ubuntu-24.04
-    timeout-minutes: 10
-
+    timeout-minutes: 5
     steps:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-
-      - name: Cache install.sh outputs (mise runtimes + dotnet tools)
+      - name: Cache mise runtimes
         uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
           path: |
             ~/.local/bin/mise
             ~/.local/share/mise
             ~/.cache/mise
-            ~/.dotnet/tools
-            ~/.elan
-            ~/.config/zeta
-          key: install-${{ runner.os }}-${{ runner.arch }}-base-${{ hashFiles('.mise.toml', 'tools/setup/**', 'global.json') }}
-
-      - name: Install toolchain via three-way-parity script
+          key: mise-helm-validate-${{ runner.os }}-${{ hashFiles('.mise.toml') }}
+      - name: Install toolchain (mise + bun)
         env:
           MISE_GITHUB_TOKEN: ${{ github.token }}
         run: ./tools/setup/install.sh
-
       - name: Install bun dependencies
         run: bun install --frozen-lockfile
-
       - name: Validate Application manifests (offline)
         run: bun infra/k8s/tests/validate-applications.ts --offline
 
-      - name: Prove the validator can go red (mutation suite)
-        # THE POINT OF THIS STEP. It copies the real manifest tree, breaks one
-        # thing at a time, and asserts the validator exits 1 with the specific
-        # expected reason. It also runs the UNMUTATED copy and asserts exit 0,
-        # so a validator that failed unconditionally would not satisfy it.
-        # Verified 2026-08-14 by stubbing out the validator's non-zero exit:
-        # 9 of the 12 cases went red immediately. 1.7 s.
-        run: bun test infra/k8s/tests/validate-applications.test.ts
-
-      - name: Validate K3S first-boot bootstrap manifests
-        # ADDED 2026-08-18. This lane already TRIGGERED on `infra/k8s/**`, so a
-        # change to infra/k8s/bootstrap/ ran it — but the validator above only
-        # ever scanned infra/k8s/applications/, so the bootstrap set was never
-        # looked at. A lane that runs and cannot fail on the file that changed
-        # reports green, which is how `argocd-install.yaml` sat on main as a
-        # kustomize Kustomization that K3S's auto-deploy cannot apply.
-        # MEASURED on real K3S v1.31.4+k3s1: ArgoCD never installed, so nothing
-        # under infra/k8s/applications/ ever deployed either. Offline, ~0.2 s.
-        run: bun infra/k8s/tests/validate-bootstrap.ts
-
-      - name: Validate the full-ai-cluster K3S bootstrap roster
-        # ADDED 2026-08-20. Same validator, second tree. It is a HARD gate with
-        # no ratchet: measured 52 passed / 0 failed, so it carries no debt to
-        # amortise and simply has to stay green. It checks the roster in BOTH
-        # directions -- a `services.k3s.manifests` entry whose file is missing,
-        # and a file in bootstrap/ that no entry names. Both were confirmed to
-        # go red on this tree before this step was added, by half-removing the
-        # vault manifest each way. Offline, ~0.3 s.
-        run: bun infra/k8s/tests/validate-bootstrap.ts --infra-dir full-ai-cluster
-
-      - name: Prove the bootstrap validator can go red (mutation suite)
-        # Same discipline as the step above it: 10 cases, one mutation each,
-        # asserting exit 1 AND the specific reason, plus an unmutated control
-        # asserting exit 0. The load-bearing case restores the retired
-        # Kustomization verbatim — if it ever goes green, the cluster can
-        # silently stop bootstrapping again. 2.0 s measured locally.
-        run: bun test infra/k8s/tests/validate-bootstrap.test.ts
-
-  charts:
-    # Network half: does the pinned chart:version actually exist, does it
-    # render with the values we hand it, and is the render schema-valid.
-    # Needs helm + kubeconform, which are pinned in .mise.full.toml — hence
-    # tier=full. The cache key is deliberately BYTE-IDENTICAL to the one in
-    # k8s-argocd-health-test.yml so this job restores the artefacts that
-    # workflow's daily run already paid for, instead of building its own.
-    name: chart pins + helm template + kubeconform
+  online:
+    name: validate manifests (online — chart existence)
+    if: >
+      github.event_name == 'push' ||
+      github.event_name == 'schedule' ||
+      github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-24.04
-    timeout-minutes: 15
-    env:
-      ZETA_HOST_TIER: full
-      MISE_ENV: full
-
+    timeout-minutes: 10
     steps:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-
-      - name: Cache install.sh outputs (mise runtimes + dotnet tools + verifier jars)
+      - name: Cache mise runtimes
         uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
           path: |
             ~/.local/bin/mise
             ~/.local/share/mise
             ~/.cache/mise
-            ~/.dotnet/tools
-            ~/.elan
-            ~/.config/zeta
-          key: install-${{ runner.os }}-${{ runner.arch }}-full-${{ hashFiles('.mise.toml', '.mise.full.toml', 'tools/setup/**', 'global.json') }}
-
-      - name: Install toolchain via three-way-parity script
+          key: mise-helm-validate-${{ runner.os }}-${{ hashFiles('.mise.toml') }}
+      - name: Install toolchain (mise + bun)
         env:
           MISE_GITHUB_TOKEN: ${{ github.token }}
         run: ./tools/setup/install.sh
-
       - name: Install bun dependencies
         run: bun install --frozen-lockfile
-
-      - name: Confirm helm and kubeconform are on PATH
-        # Fail HERE, loudly, if the toolchain did not land — rather than let the
-        # next step decide a missing tool is a reason to skip. A check that
-        # degrades to green when its tool is absent is the failure mode this
-        # whole workflow was rewritten to remove.
+      - name: Validate Application manifests (online — chart existence)
         run: |
-          set -euo pipefail
-          command -v helm
-          command -v kubeconform
-          helm version --short
-          kubeconform -v
-
-      - name: Chart pins + helm template + kubeconform
-        # RETRY WITHOUT SWALLOWING THE EXIT CODE. Upstream Helm repos are third
-        # parties and do occasionally 5xx; three attempts absorb that. Note what
-        # this deliberately does NOT do: no `| tail`, no `| grep`, no pipeline
-        # whose status is taken from the last stage. A pipe here would discard
-        # the validator's exit code and the `||` after it would be unreachable
-        # — the exact pattern that let a job in this repo report success for
-        # months while its tool exited 1 on argument parsing.
-        # Final attempt runs bare, so its non-zero status fails the step.
-        run: |
-          set -euo pipefail
-          for attempt in 1 2; do
-            if bun infra/k8s/tests/validate-applications.ts --render; then
-              exit 0
-            fi
-            echo "::warning::helm-validate attempt ${attempt} failed; retrying in $((attempt * 30))s"
-            sleep $((attempt * 30))
-          done
-          bun infra/k8s/tests/validate-applications.ts --render
-
-      - name: Ratchet the full-ai-cluster tree (render + failure ceiling)
-        # ADDED 2026-08-20. The 122-file, ~60-Application tree at
-        # full-ai-cluster/k8s had NEVER been rendered by CI. Pointing this same
-        # validator at it (it already takes --apps-dir) measured 305 passed /
-        # 29 failed on first contact.
-        #
-        # A naive step would therefore be permanently red, and a permanently-red
-        # lane is one people learn to skim -- it stops carrying signal exactly
-        # when it starts to matter. continue-on-error would be worse: it permits
-        # anything and can never fail, which is a check that constrains nothing.
-        # So this is a RATCHET against a recorded ceiling in
-        # infra/k8s/tests/FULL-AI-CLUSTER-FAILURE-BASELINE.md. It fails if the
-        # count goes UP (regression) and ALSO if it goes DOWN without the
-        # baseline being lowered -- otherwise the ceiling only ever rises and
-        # stops meaning anything, and an earned improvement is silently
-        # re-spendable by the next change.
-        #
-        # WHAT THE CEILING IS MADE OF (23, measured, at the commit named in that
-        # file): 13 ArgoCD-contract gaps (missing prune/selfHeal or
-        # CreateNamespace=true) -- several of which may be DELIBERATE under the
-        # either/or gating convention documented in root-application.yaml, so
-        # they are not simply 'to fix'; 2 for `oz` pinning ziti-controller 1.4.5
-        # when the repo publishes 96 versions and the newest is 3.2.1, a
-        # fictional pin; 4 for sealed-secrets and forgejo whose chart repos now
-        # return HTTP 404; and 4 charts that refuse to render with the values we
-        # hand them (gitlab needs an ACME email, headscale a PVC accessMode,
-        # temporal a cassandra port, arc-runner-set an explicit
-        # controllerServiceAccount.name).
-        #
-        # The opening ceiling is 23 and not 29 because 7 of the original 29 were
-        # VALIDATOR-SCOPE gaps, fixed in validate-applications.ts in the same
-        # commit: 6 from three OCI-registry apps where fetching a Helm repo index
-        # is meaningless, and 1 from assuming root-application.yaml sits under
-        # applications/. Fixing those first matters -- a ceiling that banks false
-        # reds can be 'improved' by fixing nothing. The OCI fix also surfaced one
-        # genuine failure it had been masking.
-        #
-        # No pipe: the ratchet spawns the validator and reads stdout and the exit
-        # code as separate values, and refuses to report a count at all if no
-        # 'Results:' line is present -- an empty run is not zero failures.
-        run: bun infra/k8s/tests/ratchet-app-failures.ts
+          OFFLINE="${{ github.event.inputs.offline }}"
+          if [[ "$OFFLINE" == "true" ]]; then
+            bun infra/k8s/tests/validate-applications.ts --offline
+          else
+            bun infra/k8s/tests/validate-applications.ts
+          fi

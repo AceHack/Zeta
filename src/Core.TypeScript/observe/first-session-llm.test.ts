@@ -21,7 +21,6 @@ import {
   type FirstSessionAction,
   type NodeSessionState,
 } from "./first-session";
-import type { TickBudget } from "./tick-budget";
 
 const mock = (reply: string): ModelBackend => ({ name: "mock", complete: () => Promise.resolve(reply) });
 
@@ -119,17 +118,7 @@ describe("first-session closed-loop — fold reconstructs setup trace", () => {
   });
 
   it("runFirstSessionLoop advances via oracle-index mock (one tick)", async () => {
-    const oneTick: TickBudget = {
-      name: "one-tick-probe",
-      maxTicks: 1,
-      chosenBy: "this test",
-      rationale: "isolates a single choose→simulate step; not a production bound",
-    };
-    const { trace, finalSession } = await runFirstSessionLoop(
-      defaultNodeSession(),
-      mock("0"),
-      oneTick,
-    );
+    const { trace, finalSession } = await runFirstSessionLoop(defaultNodeSession(), mock("0"), 1);
     expect(trace).toHaveLength(1);
     expect(trace[0]?.kind).toBe("setup_credential");
     expect(finalSession.credentials.gh).toBe("ready");

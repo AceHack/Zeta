@@ -11,13 +11,13 @@
 // Then invokes zeta-creds-persist with the collected --bake-cred args.
 //
 // Composes:
-//   - src/Core.TypeScript/installer/zeta-creds-manifest.ts (081KSKBP80008QG0R003AX2A69.5; iteration source)
-//   - src/Core.TypeScript/installer/zeta-cred-handlers.ts (081KSKBP80008QG0R003AX2A69.10; per-cred source validation)
-//   - src/Core.TypeScript/installer/zeta-creds-persist.ts (081KSKBP80008QG0R003AX2A69.2b; downstream consumer)
+//   - tools/installer/zeta-creds-manifest.ts (081KSKBP80008QG0R003AX2A69.5; iteration source)
+//   - tools/installer/zeta-cred-handlers.ts (081KSKBP80008QG0R003AX2A69.10; per-cred source validation)
+//   - tools/installer/zeta-creds-persist.ts (081KSKBP80008QG0R003AX2A69.2b; downstream consumer)
 //
 // Usage (called from zeta-install.sh Step 6.95-picker or operator terminal):
-//   bun src/Core.TypeScript/installer/zeta-creds-picker.ts \
-//     ( --usb-uuid <uuid> | --usb-iserial <serial> | --uefi-keyfile <path> ) \
+//   bun tools/installer/zeta-creds-picker.ts \
+//     --usb-uuid <uuid> \
 //     --output /mnt/boot/zeta-creds.enc \
 //     ( --passphrase-file <path> | --passphrase-env <VAR> ) \
 //     [--persona <name>] \
@@ -50,9 +50,7 @@ import { DEFAULT_MANIFEST } from "./zeta-creds-manifest";
 import { DEFAULT_HANDLERS } from "./zeta-cred-handlers";
 
 interface PickerArgs {
-  readonly usbUuid: string | null;
-  readonly usbISerial: string | null;
-  readonly uefiKeyfile: string | null;
+  readonly usbUuid: string;
   readonly output: string;
   readonly passphraseFile: string | null;
   readonly passphraseEnv: string | null;
@@ -61,26 +59,8 @@ interface PickerArgs {
   readonly verify: boolean;
 }
 
-function hasPresent(value: string | null): value is string {
-  return value !== null && value.length > 0;
-}
-
-/**
- * Forward the same binding flags the picker received. Persist and restore
- * already accept --usb-iserial / --uefi-keyfile; the picker was the hole
- * (it required --usb-uuid and dropped the extras). Do not trim: KDF input
- * is the operator's bytes, and boundary whitespace is persist's to refuse.
- */
-function appendBindingFlags(args: string[], parsed: PickerArgs): void {
-  if (hasPresent(parsed.usbUuid)) args.push("--usb-uuid", parsed.usbUuid);
-  if (hasPresent(parsed.usbISerial)) args.push("--usb-iserial", parsed.usbISerial);
-  if (hasPresent(parsed.uefiKeyfile)) args.push("--uefi-keyfile", parsed.uefiKeyfile);
-}
-
 export function parseArgs(argv: readonly string[]): PickerArgs | { readonly error: string } {
   let usbUuid: string | null = null;
-  let usbISerial: string | null = null;
-  let uefiKeyfile: string | null = null;
   let output: string | null = null;
   let passphraseFile: string | null = null;
   let passphraseEnv: string | null = null;
@@ -95,8 +75,6 @@ export function parseArgs(argv: readonly string[]): PickerArgs | { readonly erro
     };
     try {
       if (arg === "--usb-uuid") usbUuid = next();
-      else if (arg === "--usb-iserial") usbISerial = next();
-      else if (arg === "--uefi-keyfile") uefiKeyfile = next();
       else if (arg === "--output") output = next();
       else if (arg === "--passphrase-file") passphraseFile = next();
       else if (arg === "--passphrase-env") passphraseEnv = next();
@@ -108,27 +86,12 @@ export function parseArgs(argv: readonly string[]): PickerArgs | { readonly erro
       return { error: err instanceof Error ? err.message : String(err) };
     }
   }
-  if (hasPresent(usbISerial) && hasPresent(uefiKeyfile)) {
-    return { error: "--usb-iserial and --uefi-keyfile are mutually exclusive" };
-  }
-  if (!hasPresent(usbUuid) && !hasPresent(usbISerial) && !hasPresent(uefiKeyfile)) {
-    return { error: "binding factor required: --usb-uuid, --usb-iserial, or --uefi-keyfile" };
-  }
+  if (!usbUuid) return { error: "--usb-uuid required" };
   if (!output) return { error: "--output required" };
   if (!passphraseFile && !passphraseEnv) {
     return { error: "passphrase source required: --passphrase-file <path> or --passphrase-env <VAR>" };
   }
-  return {
-    usbUuid,
-    usbISerial,
-    uefiKeyfile,
-    output,
-    passphraseFile,
-    passphraseEnv,
-    persona,
-    dryRun,
-    verify,
-  };
+  return { usbUuid, output, passphraseFile, passphraseEnv, persona, dryRun, verify };
 }
 
 /**
@@ -152,38 +115,15 @@ export function buildVerifyArgs(
   tmpTargetRoot: string,
 ): readonly string[] {
   const args = [
-    "src/Core.TypeScript/installer/zeta-creds-restore.ts",
-  ];
-  appendBindingFlags(args, parsed);
-  args.push(
+    "tools/installer/zeta-creds-restore.ts",
+    "--usb-uuid", parsed.usbUuid,
     "--input", parsed.output,
     "--target-root", tmpTargetRoot,
     "--dry-run",
-  );
-  if (parsed.passphraseFile) args.push("--passphrase-file", parsed.passphraseFile);
-  if (parsed.passphraseEnv) args.push("--passphrase-env", parsed.passphraseEnv);
-  if (parsed.persona) args.push("--persona", parsed.persona);
-  return args;
-}
-
-/**
- * Build the argv list for zeta-creds-persist.ts. Pure, so tests can pin
- * that optional binding factors survive the picker rather than being
- * dropped because the spawn site only knew --usb-uuid.
- */
-export function buildPersistArgs(
-  parsed: PickerArgs,
-  bakeArgs: readonly string[],
-): readonly string[] {
-  const args = [
-    "src/Core.TypeScript/installer/zeta-creds-persist.ts",
   ];
-  appendBindingFlags(args, parsed);
-  args.push("--output", parsed.output);
   if (parsed.passphraseFile) args.push("--passphrase-file", parsed.passphraseFile);
   if (parsed.passphraseEnv) args.push("--passphrase-env", parsed.passphraseEnv);
   if (parsed.persona) args.push("--persona", parsed.persona);
-  for (const a of bakeArgs) args.push("--bake-cred", a);
   return args;
 }
 
@@ -295,7 +235,15 @@ async function main(): Promise<number> {
     const id = a.split("=", 1)[0];
     console.log(`  --bake-cred ${id}=<redacted>`);
   }
-  const persistArgs = [...buildPersistArgs(parsed, bakeArgs)];
+  const persistArgs = [
+    "tools/installer/zeta-creds-persist.ts",
+    "--usb-uuid", parsed.usbUuid,
+    "--output", parsed.output,
+  ];
+  if (parsed.passphraseFile) persistArgs.push("--passphrase-file", parsed.passphraseFile);
+  if (parsed.passphraseEnv) persistArgs.push("--passphrase-env", parsed.passphraseEnv);
+  if (parsed.persona) persistArgs.push("--persona", parsed.persona);
+  for (const a of bakeArgs) persistArgs.push("--bake-cred", a);
   if (parsed.dryRun) {
     // SECURITY: build display string from KNOWN-SAFE pieces only.
     // Earlier map-based redaction kept persistArgs (tainted) in the
@@ -305,11 +253,7 @@ async function main(): Promise<number> {
     // the logged string. Sibling discipline to zeta-creds-persist.ts
     // + zeta-creds-restore.ts P0 fix on PR #5422.
     console.log(`\n=== DRY RUN — would invoke: ===`);
-    let displayCmd = `  bun src/Core.TypeScript/installer/zeta-creds-persist.ts`;
-    if (hasPresent(parsed.usbUuid)) displayCmd += ` --usb-uuid <set>`;
-    if (hasPresent(parsed.usbISerial)) displayCmd += ` --usb-iserial <set>`;
-    if (hasPresent(parsed.uefiKeyfile)) displayCmd += ` --uefi-keyfile <set>`;
-    displayCmd += ` --output <set>`;
+    let displayCmd = `  bun tools/installer/zeta-creds-persist.ts --usb-uuid <set> --output <set>`;
     if (parsed.passphraseFile) displayCmd += ` --passphrase-file <REDACTED>`;
     if (parsed.passphraseEnv) displayCmd += ` --passphrase-env <REDACTED>`;
     if (parsed.persona) displayCmd += ` --persona <set>`;

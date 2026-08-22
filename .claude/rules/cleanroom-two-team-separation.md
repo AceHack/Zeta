@@ -36,10 +36,10 @@ original — conceding the very thing the wall protects. Design from requirement
 
 ## Pointers
 
-- `feedback_metering_protocols_..._cleanroom_itron_concept_not_code_2026_06_01.md` (**not in-repo**)
+- `memory/feedback_metering_protocols_…_cleanroom_itron_concept_not_code_2026_06_01.md`
   — the origin: paid specs + hand-implementation give genuine first-hand expertise; the
   expertise is usable, the code is not.
-- `user_aaron_built_itron_mesh_hardware_firmware_pki_secure_boot_...` (**not in-repo**) — and the
+- `memory/user_aaron_built_itron_mesh_hardware_firmware_pki_secure_boot_…` — and the
   standing inversion: those patents are **centralized**, Zeta is decentralized, so
   Itron-shaped centralized designs are never the answer here anyway.
 - [`anchor-to-human-prior-art.md`](anchor-to-human-prior-art.md) — anchoring names the

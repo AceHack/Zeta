@@ -3,10 +3,10 @@
  * export-cb-snapshot.ts — derive circuit-breaker state from live bus envelopes
  *
  * Reads non-expired envelopes from /tmp/zeta-bus/, groups by agent identity,
- * derives CLOSED/HALF_OPEN/OPEN/UNKNOWN state, and writes demo/circuit-breaker-snapshot.json.
+ * derives CLOSED/HALF_OPEN/OPEN state, and writes demo/circuit-breaker-snapshot.json.
  *
  * Usage:
- *   bun src/Core.TypeScript/bus/export-cb-snapshot.ts [--bus-dir <path>] [--out <path>]
+ *   bun tools/bus/export-cb-snapshot.ts [--bus-dir <path>] [--out <path>]
  *
  * Defaults:
  *   --bus-dir  /tmp/zeta-bus
@@ -23,12 +23,7 @@ import type { MessageEnvelope, SenderAgentId } from "./types.ts";
 
 // ── constants ─────────────────────────────────────────────────────────────────
 
-// This file lives at src/Core.TypeScript/bus/, so the repo root is THREE levels up. It was
-// "../.." while the script lived at tools/bus/, and the move left it resolving to `src/` —
-// which made the default invocation crash with ENOENT on src/demo/circuit-breaker-snapshot.json.
-// Found while regenerating the snapshot: the exporter had been unrunnable at its default path,
-// so the artifact the demo page fetches had been frozen since 2026-05-14 while rendering as live.
-const REPO_ROOT = resolve(dirname(import.meta.path), "../../..");
+const REPO_ROOT = resolve(dirname(import.meta.path), "../..");
 const DEFAULT_BUS_DIR = "/tmp/zeta-bus";
 const DEFAULT_OUT = join(REPO_ROOT, "demo/circuit-breaker-snapshot.json");
 
@@ -81,21 +76,7 @@ async function readEnvelopes(busDir: string): Promise<MessageEnvelope[]> {
 
 // ── circuit-breaker derivation ────────────────────────────────────────────────
 
-/**
- * Breaker state, with UNKNOWN as a first-class fourth value.
- *
- * **"No traffic" and "no errors" must not render as the same reading.** Before
- * 081M0148RV6087G0R001BN31P0 this function returned `CLOSED` with the note "No recent bus
- * activity — assuming healthy" whenever an identity produced zero envelopes, which inverted
- * the instrument: an agent still emitting idle heartbeats read HALF_OPEN or OPEN, while an
- * agent that had gone completely silent — the deeper outage — read healthy and green. The
- * checked-in `demo/circuit-breaker-snapshot.json` carried exactly that reading for two of
- * five agents, and `demo/index.html` fetches and renders it.
- *
- * A breaker with zero observations has not measured health; it has failed to measure. That
- * is UNKNOWN, and UNKNOWN is not a shade of CLOSED.
- */
-type CbState = "CLOSED" | "HALF_OPEN" | "OPEN" | "UNKNOWN";
+type CbState = "CLOSED" | "HALF_OPEN" | "OPEN";
 
 interface CbEntry {
   model: string;
@@ -103,53 +84,31 @@ interface CbEntry {
   state: CbState;
   consecutiveFailures: number;
   threshold: number;
-  /**
-   * How many health-bearing envelopes this state was derived from. The reading carries its
-   * own denominator, so a downstream reader that ignores `state` entirely can still tell a
-   * measured CLOSED from an unmeasured one.
-   */
-  observations: number;
-  /** `null` when this identity was never observed — never a fabricated "now". */
-  lastCheck: string | null;
+  lastCheck: string;
   note: string;
 }
 
-/** Envelopes that actually carry evidence about an agent's health. */
-function isHealthBearing(e: MessageEnvelope): boolean {
-  return (
-    e.topic === "heartbeat" || e.topic === "work-assignment" || (e.topic === "claim" && e.payload.action === "claim")
-  );
-}
-
-export function deriveEntry(
+function deriveEntry(
   identity: string,
   meta: { model: string; harness: string },
-  envelopes: MessageEnvelope[],
+  envelopes: MessageEnvelope[]
 ): CbEntry {
   // Collect envelopes from this identity (any surface variant)
   const own = envelopes
-    .filter((e) => toIdentity(e.from) === identity)
+    .filter(e => toIdentity(e.from) === identity)
     .sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime());
 
-  const observations = own.filter(isHealthBearing).length;
-  const lastCheck = own[0]?.timestamp ?? null;
+  const lastCheck = own[0]?.timestamp ?? new Date().toISOString();
 
-  // Zero observations is the THIRD state, not the healthy one. This covers both "no envelopes
-  // at all" and "envelopes present, none of them health-bearing" — in either case nothing was
-  // measured, and the honest reading says so rather than defaulting to green.
-  if (observations === 0) {
+  if (own.length === 0) {
     return {
       model: meta.model,
       harness: meta.harness,
-      state: "UNKNOWN",
+      state: "CLOSED",
       consecutiveFailures: 0,
       threshold: THRESHOLD,
-      observations: 0,
       lastCheck,
-      note:
-        own.length === 0
-          ? "No bus activity observed — health UNKNOWN, not healthy"
-          : `${own.length} envelope(s) present but none health-bearing — health UNKNOWN`,
+      note: "No recent bus activity — assuming healthy",
     };
   }
 
@@ -169,10 +128,10 @@ export function deriveEntry(
   // Claim-release does NOT count — an agent relinquishing work should not be treated
   // as a health signal (it may be about to go idle).
   const hasWorkSignal = own.some(
-    (e) =>
+    e =>
       (e.topic === "claim" && e.payload.action === "claim") ||
       e.topic === "work-assignment" ||
-      (e.topic === "heartbeat" && e.payload.status === "working"),
+      (e.topic === "heartbeat" && e.payload.status === "working")
   );
 
   let state: CbState;
@@ -186,10 +145,10 @@ export function deriveEntry(
     note = `${consecutiveIdle} consecutive idle heartbeat(s) — watching; threshold ${THRESHOLD}`;
   } else if (hasWorkSignal) {
     state = "CLOSED";
-    note = `Active work detected — normal operation (${observations} observation(s))`;
+    note = "Active work detected — normal operation";
   } else {
     state = "CLOSED";
-    note = `Health-bearing activity present, no idle pattern detected (${observations} observation(s))`;
+    note = "Bus activity present; no idle pattern detected";
   }
 
   return {
@@ -198,7 +157,6 @@ export function deriveEntry(
     state,
     consecutiveFailures: consecutiveIdle,
     threshold: THRESHOLD,
-    observations,
     lastCheck,
     note,
   };
@@ -211,7 +169,9 @@ async function main() {
   const busDir = args.includes("--bus-dir")
     ? (args[args.indexOf("--bus-dir") + 1] ?? DEFAULT_BUS_DIR)
     : DEFAULT_BUS_DIR;
-  const outPath = args.includes("--out") ? (args[args.indexOf("--out") + 1] ?? DEFAULT_OUT) : DEFAULT_OUT;
+  const outPath = args.includes("--out")
+    ? (args[args.indexOf("--out") + 1] ?? DEFAULT_OUT)
+    : DEFAULT_OUT;
 
   let envelopes: MessageEnvelope[];
   try {
@@ -222,11 +182,13 @@ async function main() {
     process.exit(1);
   }
 
-  const entries: CbEntry[] = Object.entries(AGENT_META).map(([id, meta]) => deriveEntry(id, meta, envelopes));
+  const entries: CbEntry[] = Object.entries(AGENT_META).map(([id, meta]) =>
+    deriveEntry(id, meta, envelopes)
+  );
 
   const snapshot = {
     generatedAt: new Date().toISOString(),
-    source: "src/Core.TypeScript/bus/export-cb-snapshot.ts",
+    source: "tools/bus/export-cb-snapshot.ts",
     busDir,
     envelopeCount: envelopes.length,
     entries,

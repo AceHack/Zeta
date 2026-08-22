@@ -106,7 +106,7 @@ export function leadTimeSamples(timelines: ReadonlyMap<string, WorkItemTimeline>
       leadTimeMs,
     });
   }
-  return out.sort((a, b) => stringCompare(a.workItemId, b.workItemId));
+  return out.sort((a, b) => a.workItemId.localeCompare(b.workItemId));
 }
 
 export function averageLeadTimeMs(samples: readonly LeadTimeSample[]): number | null {
@@ -157,7 +157,7 @@ export function throughputByUtcWeek(events: readonly WorkItemEvent[]): Throughpu
   }
 
   return [...byWeek.entries()]
-    .sort(([a], [b]) => stringCompare(a, b))
+    .sort(([a], [b]) => a.localeCompare(b))
     .map(([weekStart, counts]) => ({
       weekStart,
       taskCompletions: counts.task,

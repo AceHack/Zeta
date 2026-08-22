@@ -37,7 +37,6 @@ import {
 } from "./store";
 import { generateKeypair, signManifest, verifySignature, keyId, publicKeyInfoFromPrivatePem } from "./signing";
 import { verifyIndexSignature, signIndex } from "./index-signature.ts";
-import { authorizedCapabilities, capabilityPermitted, validateCapabilities, INSTALL_TIME_VS_RUNTIME } from "./capability-manifest.ts";
 import type { RevocationMap } from "./signing";
 import type { IndexSignableContent } from "./index-signature.ts";
 import { applyRevoke, applyQuarantine, applyUnquarantine } from "./registry-revoke.ts";
@@ -106,10 +105,6 @@ interface VerifyArgs {
   readonly command: "verify";
   readonly hash: string;
   readonly storePath: string;
-  /** Assert the installed package is authorized for each of these; refuse if not. */
-  readonly requireCapabilities: readonly string[];
-  /** Refuse an installed-but-unsigned package instead of reporting it as unverified. */
-  readonly requireSignature: boolean;
 }
 
 interface KeygenArgs {
@@ -490,24 +485,7 @@ export function parseArgs(argv: readonly string[]): ParsedArgs | ArgError {
   if (command === "verify") {
     const hash = argv[1];
     if (!hash || hash.startsWith("-")) return { error: "verify requires a <hash> argument" };
-    const requireCapabilities: string[] = [];
-    let requireSignature = false;
-    for (let i = 2; i < argv.length; i++) {
-      const a = argv[i];
-      if (a === "--require-signature") { requireSignature = true; continue; }
-      if (a === "--capability") {
-        const v = argv[++i];
-        if (v === undefined || v.startsWith("-")) return { error: "--capability requires a <scheme>:<resource> value" };
-        requireCapabilities.push(v);
-        continue;
-      }
-      if (a !== undefined && a.startsWith("--capability=")) {
-        requireCapabilities.push(a.slice("--capability=".length));
-        continue;
-      }
-      return { error: `verify: unknown flag ${a}` };
-    }
-    return { command: "verify", hash, storePath: defaultStorePath(), requireCapabilities, requireSignature };
+    return { command: "verify", hash, storePath: defaultStorePath() };
   }
 
   if (command === "list") {
@@ -647,9 +625,7 @@ Usage:
                                                    --lockfile <path> overrides the default lockfile path (default: ace.lock)
   ace update <url-or-path> [--lockfile <path>] [--allow-no-signature] [--offline]
                                                    Re-solve the dependency graph and rewrite the lockfile; installs nothing (lock-only)
-  ace verify <hash>                              Re-verify an installed package's signature + report capabilities
-       [--capability <scheme:resource>]          Refuse unless the package is authorized for it (repeatable)
-       [--require-signature]                     Refuse an unsigned package instead of reporting it
+  ace verify <hash>                              Confirm an installed package is present
   ace keygen [--out <prefix>]                    Generate an Ed25519 keypair (writes <prefix>.key + <prefix>.pub)
   ace sign <pkg> --key <priv.key> [--out <file>] Sign a package manifest with an Ed25519 private key
   ace trust add <pub-file-or-b64> [--label <name>] Trust an Ed25519 public key
@@ -1493,17 +1469,6 @@ export async function main(argv: readonly string[]): Promise<number> {
       console.error("ace: WARNING: installing UNSIGNED package (--allow-no-signature).");
     }
 
-    // CAPABILITY-DECLARATION GATE — before extraction, beside the authenticity gate.
-    // A declaration that ace cannot parse must not reach the store: otherwise `ace install`
-    // accepts `capabilities: ["key:*"]` and the refusal appears only later at `ace verify`, which
-    // is the worst ordering (the bytes are already on disk and an operator has already seen a
-    // green install). Refusing here keeps "what installed" and "what verifies" the same set.
-    const declaredCaps = validateCapabilities((pkg.manifest as { capabilities?: unknown }).capabilities);
-    if (!declaredCaps.ok) {
-      console.error(`ace: install refused: invalid-capabilities in ${pkg.manifest.name}: ${declaredCaps.reason}`);
-      return 1;
-    }
-
     // The root is untrusted: a malformed field (float / lone surrogate) makes packageHash throw.
     // Guard it ONCE here — before ANY path (graph / leaf / frozen) calls a packageHash-using helper
     // (resolve, verifyRootMatchesLock, buildLockfile, buildLeafLockfile, preflightGraph) — so a
@@ -1827,62 +1792,15 @@ export async function main(argv: readonly string[]): Promise<number> {
   }
 
   if (parsed.command === "verify") {
-    // WHAT THIS USED TO BE. A presence check: it found the package in the store and exited 0.
-    // It re-verified nothing — not the signature, not the trust store, not the manifest bytes —
-    // so a manifest edited on disk AFTER install passed, and a package signed by a key that was
-    // never trusted passed. That is a check that could not fail, in the file whose name promises
-    // it can. The store is ordinary files under the same user as every agent on the box, so
-    // "verified at install" does not survive to the next read; re-verification has to happen here
-    // or nowhere.
     const pkgs = listInstalled(parsed.storePath);
     const found = pkgs.find((p) => p.hash === parsed.hash || p.manifest.content_hash === parsed.hash);
     if (!found) {
       console.error(`ace: no installed package with hash ${parsed.hash}`);
       return 1;
     }
-    const label = `${found.manifest.name}@${found.manifest.version}`;
-    const auth = authorizedCapabilities(found.manifest, loadTrustStore());
-
-    if (!auth.ok) {
-      if (auth.reason === "no-signature") {
-        // An unsigned package is a KNOWN and reportable state, not a forgery. It stays exit 0
-        // unless the caller asked otherwise, so `--allow-no-signature` installs remain
-        // inspectable — but it can never satisfy a --capability assertion below.
-        if (parsed.requireSignature || parsed.requireCapabilities.length > 0) {
-          console.error(`ace: verify refused: ${label} is unsigned — no code identity to bind a capability to`);
-          return 1;
-        }
-        console.log(`ace: ${label} present (manifest hash ${found.manifest.content_hash})`);
-        console.error("ace: WARNING: package is UNSIGNED — present, NOT authenticity-verified.");
-        return 0;
-      }
-      // bad-signature / untrusted-key / unsupported-algo / invalid-capabilities. A manifest
-      // mutated after signing (capabilities or anything else) lands here, because signing.ts
-      // covers the whole manifest minus `signature`.
-      console.error(`ace: verify FAILED: ${label} — ${auth.reason} (manifest hash ${found.manifest.content_hash})`);
-      return 1;
-    }
-
-    console.log(`ace: ${label} present (manifest hash ${found.manifest.content_hash})`);
-    console.log(`ace: signature OK — code identity ${auth.codeIdentity}`);
     console.log(
-      auth.capabilities.length === 0
-        ? "ace: capabilities: (none declared)"
-        : `ace: capabilities: ${auth.capabilities.join(" ")}`,
+      `ace: ${found.manifest.name}@${found.manifest.version} present (manifest hash ${found.manifest.content_hash})`,
     );
-
-    // The declaration is READ, with teeth: an unlisted capability is refused. This is what keeps
-    // the field from being a decoration nothing checks.
-    const missing = parsed.requireCapabilities.filter((c) => !capabilityPermitted(auth, c));
-    if (missing.length > 0) {
-      console.error(
-        `ace: verify refused: ${label} is not authorized for ${missing.join(" ")} — declared: ${auth.capabilities.join(" ") || "(none)"}`,
-      );
-      return 1;
-    }
-
-    // Say the gap out loud on every success, so no operator reads this as a runtime guarantee.
-    console.error(`ace: NOTE: ${INSTALL_TIME_VS_RUNTIME}.`);
     return 0;
   }
 

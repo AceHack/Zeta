@@ -20,13 +20,13 @@
 //      primitives"
 //
 // Per Otto-346 principle (recurring dynamic Python = signal a substrate
-// primitive is missing), the right home is `src/Core.TypeScript/hygiene/` checked
+// primitive is missing), the right home is `tools/hygiene/` checked
 // into substrate. This tool is the formalized version of the recurring
 // pattern.
 //
 // Usage:
-//     bun src/Core.TypeScript/hygiene/fix-markdown-md032-md026.ts FILE [FILE ...]
-//     bun src/Core.TypeScript/hygiene/fix-markdown-md032-md026.ts --dry-run FILE
+//     bun tools/hygiene/fix-markdown-md032-md026.ts FILE [FILE ...]
+//     bun tools/hygiene/fix-markdown-md032-md026.ts --dry-run FILE
 //
 // Always idempotent: running on already-clean file is no-op.
 //
@@ -480,8 +480,8 @@ function printHelp(): void {
       "fix-markdown-md032-md026.ts — mechanical MD032/MD026 fix",
       "",
       "Usage:",
-      "  bun src/Core.TypeScript/hygiene/fix-markdown-md032-md026.ts FILE [FILE ...]",
-      "  bun src/Core.TypeScript/hygiene/fix-markdown-md032-md026.ts --dry-run FILE",
+      "  bun tools/hygiene/fix-markdown-md032-md026.ts FILE [FILE ...]",
+      "  bun tools/hygiene/fix-markdown-md032-md026.ts --dry-run FILE",
       "",
       "Always idempotent: running on already-clean file is no-op.",
     ].join("\n"),

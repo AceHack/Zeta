@@ -35,8 +35,6 @@ const nonDurableFields = new Set([
   "browserTabReadout",
   "browserTransportReadout",
   "databaseReadout",
-  "causalReadout",
-  "causalHandoffReadout",
   "heatReadout",
   "temperatureReadout",
   "blackBodyReadout",
@@ -48,8 +46,6 @@ export type DurableRoomRunTranscript = Omit<
   | "browserTabReadout"
   | "browserTransportReadout"
   | "databaseReadout"
-  | "causalReadout"
-  | "causalHandoffReadout"
   | "heatReadout"
   | "temperatureReadout"
   | "blackBodyReadout"

@@ -35,50 +35,11 @@ tempted to ship.
 
 ## P0 — ship-blockers
 
-*None currently.* (The `LossyUdpChannel` NACK amplification entry was fixed 2026-08-13 — bounded by
-`MAX_NACK_GAP`, work-item `081KZYP1S96087G0R002G8XQZP`. Its **unfixed residual** did not vanish with
-it and is filed below as its own P1/P2 rows, not folded into a completed item.)
+*None currently.*
 
 ---
 
 ## P1 — serious
-
-### FROST CA keys and Shamir splits created before 2026-08-14 were generated with `Math.random`
-
-- **Site:** `tools/setup/persona-keys/frost.ts` (`randScalar`), `frost-dkg.ts` (`randScalar`),
-  `shamir.ts` (`randCoeff`) — the **defaults**, now fixed; this row is the **residual**, not the code
-- **Found:** 2026-08-14 by Nazar (security-operations-engineer), while shaping the `signPartial` port
-- **Severity:** P1 (the code defect was P0 and is fixed in the same commit; what remains is that
-  material already generated under the old default is weak and code cannot retroactively fix it)
-- **Symptom:** every production call site reached the `Math.random` default —
-  `frost-ca-custody.ts` passes no `random` to `frostKeygen`, `frostDkgKeygen`, or
-  `frostThresholdSign` — so the **CA group signing scalar**, the **Shamir polynomial
-  coefficients**, and **every FROST nonce** came from V8's xorshift128+, whose internal state is
-  recoverable from its own output. A recovered nonce yields the share directly from
-  `z_i = k_i + c * lambda_i * s_i`, and recovered Shamir coefficients collapse the threshold.
-- **Fix:** rotate any FROST CA (`~/.config/zeta/ca/frost/<ca>/`) and any Shamir split produced
-  before 2026-08-14; re-issue anything signed under the old group key. Code defaults now draw from
-  the OS CSPRNG and are guarded by `frost-csprng-default.test.ts` (counts `Math.random` calls).
-  The injected `random` door is unchanged, so DST replay is unaffected.
-- **Who:** human maintainer — key rotation is a ceremony, not an agent action (Nazar documents,
-  never fires it)
-
-### `LossyUdpChannel` retains a `ReceiverBlock` per attacker-chosen `blockSeq` forever
-
-- **Site:** `src/Core.TypeScript/discovery/udp-lossy-transport.ts` (`handleIncoming`, `recvBlocks`)
-- **Found:** 2026-08-13 by the shadow, while fixing the NACK amplification P0 (a different defect on
-  the same receive path — the *state* side rather than the *reply* side)
-- **Severity:** P1 (security — unauthenticated remote memory exhaustion, no ceiling, never freed)
-- **Symptom:** a `ReceiverBlock` is created for every unseen `header.blockSeq` (`readUInt32BE`,
-  4.29e9 distinct keys), but eviction lives **inside `if (recovered)`** — so packets that never
-  complete a block never trigger cleanup. **MEASURED:** 200,000 packets (82 MB inbound) retained
-  200,000 blocks and grew RSS by **279,134,208 bytes** — **3.40x**, 1,396 bytes per packet, zero
-  evicted. This also fires without an attacker: unrecoverable blocks under heavy loss are exactly
-  the blocks that never clean themselves up.
-- **Fix:** evict on every packet rather than only on a recovered block, and cap `recvBlocks.size` at
-  `RECV_BLOCK_WINDOW` — retaining older blocks is already useless to the [8,4,4] decoder. Range-check
-  `blockPos` to `0..7` at the same time (verified harmless today, by accident, not by design).
-- **Who:** Kenji (architect). Work-item `081KZYQJPNG087G0R002B9E9S1`.
 
 ### Discovery-beacon wire is unsigned — spoof / poison / forged-evict (bus, shadow*)
 
@@ -100,250 +61,62 @@ envelope is replayable within TTL (freshness not yet signed — needs per-peer s
 - **Fix:** REUSE the already-shipped human auth — do NOT invent. Personas share the `tools/setup/persona-keys/` keyring (README: "each traveler — persona **or** human maintainer"). Bind `zid` to the persona keyring pubkey; sign `hello`/`probeMatch`/`bye` with `ace/signing.ts` (Ed25519 over canonical key-sorted JSON, `key_id=ed25519:sha256(SPKI)[..16]`) and verify against a trust-store before upsert/delete; `bye` must be self-signed by the leaving peer. Rotation = the existing dual-key overlap-window ADR (2026-06-15), unchanged.
 - **Who:** architect (Kenji) → discovery/bus owner; Nadia (agent-layer defence) advisory
 
-### Reticulum announce authenticity — FIXED at the wire, ON by declaration, the DHT layer's pair is bound, and hop-count replay now has a CHOSEN design awaiting its wire migration (bus, shadow*)
+### Reticulum announce wire is unsigned AND `dest` is unbound to `zid` — route hijack + category-confusion downgrade (bus, shadow*)
 
-**The unsigned-announce hole is closed** (2026-08-21). This entry stays open only for the two
-things that genuinely remain; the parts that were fixed are stated so the entry does not
-re-report them. The original defect: the Reticulum announce / path-table wire carried the same
-class of claim as the discovery-beacon wire ("I am this identity, route to me here") with no
-authenticity layer at all, and `dest` was unbound to `zid` on the receive path.
+**The twin of the entry above, on the wire that never got the membrane.** `beacon-auth.ts` hardened
+the *discovery-beacon* wire. The *Reticulum announce / path-table* wire is a second, parallel wire
+carrying the same class of claim with no authenticity layer at all.
 
-**Why it was load-bearing:** an unsigned announce is an **Eclipse primitive**. A peer that can
-announce an identity it does not hold fills a victim's path table with identities the attacker
-controls, and the victim's view of the mesh becomes whatever the attacker chose — no routing
-geometry fixes that downstream. PR #13456's clean-room routing design independently narrowed the
-residual risk of a homogeneous small-world overlay to exactly this identity-side class (Sybil /
-Eclipse), so **routing security reduces to announce authenticity**.
+**TWO defects, and the ORDER MATTERS — fixing (B) without (A) verifies nothing.**
 
-- **FIXED — announces are authenticated.** `src/Core.TypeScript/discovery/reticulum-announce-auth.ts`
-  is the membrane, built as the direct twin of `beacon-auth.ts` (same keyring, same
-  `ace/signing.ts` canonical bytes, same trust-entry shape, same dual-key overlap-window
-  rotation ADR — nothing invented). Ed25519 over the canonical bytes of the identity claim
-  `(dest, zid)`. A receiver refuses anything that is not authentic to the identity it claims:
-  `untrusted-key` · `signature-invalid` · `identity-mismatch` · `dest-not-bound` ·
-  `malformed-announce` · `not-signed-envelope`. Verdicts name the **neutral fact**, never an
-  intent (dual-use §) — the caller's policy decides whether a refusal is an attack or a
-  rotation that has not landed yet.
-- **FIXED — the `dest`/`zid` pair check no longer has an escape hatch.** The guard added
-  2026-08-02 read `if (a.dest.length === 32 && ...)`, so **any `dest` of another length skipped
-  the check entirely**. Verified reachable on the live code before the fix: `{dest: "d1", zid:
-  <unrelated>}` folded straight into the path table. Now unconditional.
-- **FIXED — the docstring defect.** `:17-20` said "SELF-CERTIFYING ADDRESS"; it now says
-  self-**describing**, with the reason recorded inline. Hashing a *public* identifier certifies
-  nothing.
-- **Measured, and worth keeping in view:** the pair check alone could never have closed this.
-  `destinationHash` hashes a **public** identifier, so anyone can mint a pair-consistent
-  announce for any zid they have ever seen — confirmed by running it against the pre-fix code.
-  Step 1 of the old fix plan ("tone the pair") is necessary address integrity; only the
-  signature is identity authenticity.
-
-- **RESIDUAL 1 (P1) — the silent `off` default. CLOSED 2026-08-22, and the residual as filed was
-  MIS-SCOPED.** It said four consumers "still default to `announceAuth: {mode:"off"}`" and needed
-  routing through `off → dual → required`. Checked rather than inherited: **none of the four
-  constructs a Reticulum transport.** `mux-transport-bridge.ts` and `network-transport.ts` mention
-  `reticulum-transport.ts` only in a docstring ("composes with"); `dht-discovery.ts` mentions it in
-  its header and shares the *concept* of a destination hash without importing it;
-  `reticulum-metered-transport.ts` imports `destinationHash` and nothing else — no announce, no
-  path table, no frame. Repo-wide, the only `createReticulumTransport` call sites are this module's
-  own tests. **The migration as filed had an empty domain**, which is why "route each consumer to
-  dual" could not be done as written. What was actually wrong was the *default*, and that is fixed:
-
-  - **`announceAuth` is now a REQUIRED field of `ReticulumConfig`** — no default, silent or
-    otherwise. `{mode:"off"}` still typechecks and is still exactly as forgeable as the pre-fix
-    wire; what is gone is being able to *inherit* it without writing it down. Every construction
-    site now declares its mode, so an unmigrated consumer is visibly unmigrated instead of merely
-    looking fine. Done now because it is free now (three test files) and unretrofittable once a
-    fleet depends on the default — the argument `.claude/rules/clone-at-tag-stays-sufficient.md`
-    makes about `ace`.
-  - **The gate now governs the WHOLE FRAME, not just the path fold.** This was a live hole, not a
-    tidy-up: the gate guarded `observeAnnounce` and the two other exits ran regardless, so a node
-    in `"required"` that REFUSED a forged announce still (a) delivered the frame's payload upward
-    attributed to `frame.announce.zid` — an unverified identity handed to the upper layer as the
-    sender — and (b) relayed the frame onward, so a node that had itself detected the forgery
-    amplified it to every peer it bridges. The relay step's own comment claimed the opposite
-    ("under `required` only admitted frames reach here"), and that claim was false when written.
-    It is now true by an early return, and pinned in both directions.
-  - **Fail-closed at the JS boundary**, mirroring `llmtv-node`'s signer backstop: a caller that
-    omits `announceAuth`, or asks for a non-`off` mode with no `verify`, is refused at
-    construction. Previously the missing `verify` surfaced as a TypeError thrown from inside the
-    packet handler on the first inbound frame — a security surface failing by exception on a
-    hostile wire.
-  - **The `"off"` negative control is extended, not weakened.** `off` must still capture the
-    route, still deliver the payload, and still relay the forgery — all three exits — or the
-    control has quietly become a partial gate and stops measuring what "on" buys.
-  - **Convergence is now proven under authentication.** The two-node, three-node-relay and
-    llmtv-node integration suites run over BOTH modes and assert identical outcomes, so the
-    migration's central claim — *authentication changes nothing for honest traffic* — is
-    falsifiable. A gate that broke multi-hop relay would pass every forgery test and still be
-    undeployable, and "we had to turn it off to ship" is how a control becomes decoration.
-  - **Standing guard against re-rot:** `reticulum-announce-auth.adoption.test.ts` refuses any
-    *production* call site that declares `{mode:"off"}`. Its quantified claim ranges over ∅ today,
-    so two companion tests keep it from being vacuous: one falsifies the predicate against a
-    fixture it must catch, one proves the scanner sees the call sites that do exist. A
-    `@ts-expect-error` falsifier covers the type-level half — if `announceAuth` ever goes back to
-    optional, `tsc --noEmit` fails, and nothing else in the suite could catch that.
-- **RESIDUAL 3 (P2, filed 2026-08-22) — `dht-discovery`'s unbound `(dest, zid)` pair. CLOSED
-  2026-08-22, precondition met.** As filed: `DhtNode` carried `dest` and `zid` as independent
-  fields, `observeNode` never checked `dest === destinationHash(zid)`, and `lookup` folded nodes
-  returned by queried peers straight into its shortlist — so a peer answering `foundNodes` could
-  seed a querier's routing table with arbitrary pairs. The Site-(A) defect of this entry, on the
-  Kademlia wire.
-
-  - **The pair is welded, unconditionally, at both entries.** `classifyDhtNode` is the total,
-    pure check (`malformed-node` · `dest-not-bound` — the same word the announce wire uses for the
-    same fact, and neither names an intent). `observeNode` refuses before folding and returns the
-    table **byte-identically** (same object reference); `lookup` runs every peer answer through
-    `admissibleNodes` before anything enters the shortlist. `answerFindNode` is deliberately
-    **not** guarded and the reason is in its docstring: everything in the table already passed
-    `observeNode`, so a filter there could never fail, and a check that cannot fail is not a check.
-  - **No length escape hatch.** The announce-side guard once read `dest.length === 32 && …`, which
-    let any other length skip it. The DHT guard has no exemption and a test pins short dests
-    (`"8000"`, `"d1"`, `""`) as refused.
-  - **The four erasure profiles were RE-DERIVED, not adjusted** — this was the filed precondition
-    and it is the part worth reading. The old models pinned "id space to 2 hex characters" over
-    deliberately unbound ids (`{dest: "10", zid: "zid-10"}`) — records the guard now refuses, so
-    those models described a domain the code can no longer reach. Each was re-run over a **bound**
-    pool of real `(destinationHash(zid), zid)` pairs. **Three of the four numbers came back
-    identical (6 / 4 / 85), and that is a result rather than an unchanged measurement**: the sweep
-    counts how many observation *histories* collapse onto one table, and that count is fixed by the
-    bucket/MRU combinatorics over four distinct nodes sharing one bucket at k = 2. Binding
-    restricts *which* pairs exist; it does not change how a full bucket forgets or how an
-    idempotent refresh collapses two histories. The old model was isomorphic to the new one on
-    exactly the structure being measured — which is why its numbers were right about erasure while
-    being wrong about the domain. (The `2026-08-18` Landauer research doc cites the 6 and the 4;
-    both were re-checked and still hold.)
-  - **A FIFTH profile is new, and it is the one the binding actually changed.** It sweeps the
-    domain that now *contains* refusals — the bound universe ∪ four impostors, each carrying a
-    genuine node's `dest` under a different node's `zid` — and measures the guard itself as an
-    erasure: **fibre 85 / 6,409,391 ppm**. 85 is derived, not fitted: it is the count of
-    length-0..3 sequences over the 4 impostors (1+4+16+64), all of which land on the empty table
-    because a refused record leaves no trace. It is also the guard's own falsifier — **delete the
-    guard and the same sweep measures 11**, and the row fails.
-  - **Falsifiers:** `dht-discovery.adversarial.test.ts` (21 tests), `dht-discovery.erasure.test.ts`
-    (9), `dht-discovery.test.ts` migrated off the unbound literals (12). Both directions
-    throughout — a `reject-everything` mutant fails **26** tests, all on the accept side.
-  - **What this does NOT close, stated so it is not believed closed.** `destinationHash` hashes a
-    **public** identifier, so a pair-consistent record is mintable by anyone for any zid they have
-    seen: this is integrity of the **address**, never authenticity of the **identity**. Two things
-    are therefore left open and are carried as passing tests rather than comments, so they cannot
-    quietly be forgotten: **(a) the DHT wire has no signature layer** — the membrane shape that
-    would close it already exists as `reticulum-announce-auth.ts`, and doing it here is a separate
-    design, not a hardening pass; **(b) `DhtNode.route` is outside the pair entirely**, so a route
-    hint stays attacker-supplied even for a correctly-bound `(dest, zid)`. (b) is latent rather
-    than live only because nothing in-repo reads `DhtNode.route` today.
-  - **(b) now has a DESIGN ANSWER, and it is NOT the same mechanism as RESIDUAL 2** (2026-08-22,
-    `docs/research/2026-08-22-hop-count-is-not-a-claim-mutation-entitlement-decides-the-mechanism.md`
-    §6). Sort wire fields by **who is entitled to mutate them**: `hops` is *path-mutable* (every
-    relay), which is why no origin signature can cover it and why it needs a one-way chain. `route`
-    is *origin-mutable* (the origin alone; a relay never touches it), so it **is** signable — it
-    needs the signature plus a monotone `seq`, and no chain. The two holes share a **classifier**,
-    not a mechanism. **The pre-commitment worth making before the code exists:** when the DHT wire
-    gets its signature layer — open item (a) — the natural move is to copy the announce membrane,
-    which signs `(dest, zid)` and nothing else. That is right for the announce wire and **wrong
-    here**, because the DHT record carries an origin-mutable field the announce does not; copying it
-    would leave `route` outside the signature and reproduce RESIDUAL 2's shape on a field that only
-    ever needed to be *included*. A `RouteHint` shape check is deliberately **not** the fix and was
-    deliberately not shipped: it removes malformed routes, not attacker-supplied ones, and a
-    cosmetic guard that reads as a closure is worse than the named gap.
-- **RESIDUAL 2 (P2) — hop-count replay. DESIGN CHOSEN 2026-08-22; mechanism metered but NOT YET
-  ON THE WIRE.** The defect is unchanged: the signature deliberately does **not** cover `hops` or
-  `id` — every relay bumps `hops` (that is how the mesh measures distance), so a signature covering
-  it breaks on the first honest relay and would have to be disabled to ship. A captured **genuine**
-  announce therefore replays with a **lowered** hop count to draw traffic (blackhole / traffic
-  analysis; payload crypto unaffected). What is closed is announcing an identity you do not hold —
-  the Eclipse primitive; what is not is hop-count lying by a party already holding a valid announce.
-
-  Design: `docs/research/2026-08-22-hop-count-is-not-a-claim-mutation-entitlement-decides-the-mechanism.md`.
-  Mechanism + falsifiers: `src/Core.TypeScript/discovery/announce-metric-chain.ts` (+ `.test.ts`).
-
-  - **The fix as previously filed here was WRONG, and this is the correction.** It read "per-link
-    authentication, **or** a signed monotonic sequence". The `or` does not hold and the second
-    option does not do what this entry claimed: the attacker replays the **current** epoch, so the
-    replay carries the **same** `seq` as the genuine announce and a sequence number has nothing to
-    discriminate. A sequence number closes **stale-epoch replay** — real, and a different residual.
-    The converse is also true: a chain alone admits a stale epoch, because an old epoch's metric
-    verifies against its **own** anchor. Both halves are pinned as tests rather than argued.
-  - **Chosen: a one-way hash chain (SEAD's mechanism) PLUS the signed monotone `seq`.** Per epoch
-    the origin publishes `anchor = h^maxHops(seed)` **inside the signed claim bytes**; an announce
-    at hop `k` carries `h^k(seed)`; a verifier hashes forward to the anchor. **Cost to a relay: one
-    SHA-256** — no key material, no state, no signature. Deflation needs a preimage; inflation is
-    free and deliberately admitted, because inflation is indistinguishable from a slow link and no
-    mechanism can prevent a node from being a bad path. The requirement is one-sided: *a claimed hop
-    count may never be lower than the shortest path the claimant actually holds.*
-  - **Per-hop signatures (the BGPsec shape) are strictly stronger and are declined for now**, with
-    the cost table in §5 of the design. The deciding rows: O(hops) bytes and signatures per frame,
-    and **~no benefit under partial deployment** — a mechanism that pays nothing until every relay
-    has migrated is the "had to turn it off to ship" failure in a larger budget. It stays the named
-    upgrade path, and it is what would close the residual below.
-  - **A wall clock is refused, and so are temporal packet leashes** — the canonical wormhole defence
-    needs synchronised clocks, which is the dependency
-    `.claude/rules/local-time-never-enters-the-shared-fold.md` forbids. The epoch floor is not a
-    clock: `seq` is the origin's own counter inside the signed bytes, and `raiseFloor` is a max-join
-    (commutative, associative, idempotent — a CRDT). Falsifier, not assertion: **all 24 permutations
-    of one evidence set reach the same floor**, and a lost epoch degrades to an older floor rather
-    than a divergent one.
-  - **Composition order is encoded, because reversing it is worse than the bug.** The floor may be
-    raised only by an announce whose signature already verified; reversed, one unauthenticated packet
-    carrying `seq = 2^31` silences an identity permanently. `admitMetric` takes the verification
-    verdict as a required argument so the order cannot be got wrong silently.
-  - **What it does not close, carried as PASSING tests:** the **one-hop shave** (a node at distance
-    `d` may claim `d-1` — it can never claim better than the best value delivered to it, so a
-    **global** route-capture primitive becomes a **local** one-hop tie-break); **fresh-epoch replay
-    to a node that has never seen that epoch** (unavoidable without a clock); and identity, which is
-    the signature's job.
-  - **Falsifiers:** `announce-metric-chain.test.ts` — 29 tests / 175 assertions, both directions; the
-    accept side is an **eight-hop honest relay chain**, because that is where the naive "just sign
-    `hops`" fix dies. Seven mutations run, all refused, each byte-`cmp`-verified applied and
-    restored: verify-always-ok (7 tests fail), **reject-everything (12, every one an accept-side
-    assertion)**, signature-gate-removed (2), equal-seq-refused i.e. `>=` to `>` (2),
-    floor-is-last-write-wins (2), advance-is-identity (4), hops-range-unchecked (2).
-  - **STILL OPEN: the wire migration.** `claimBytes` gains `(seq, anchor, maxHops)`, which
-    invalidates every existing signature — a schema bump plus a dual-accept window, the same shape as
-    the `off` to `dual` to `required` migration already shipped. Cost enumerated in §7 of the design,
-    including the flag that a `seq` gate changes which announce histories are reachable, so any
-    erasure re-derivation must report unchanged numbers as a statement about the sweep's domain, not
-    as an unchanged measurement (the #13665 lesson).
-- **Claim-class constraint (unchanged, still binding on how this grows):** identity destinations
-  take an **exclusive** claim ("I am this identity" — one legitimate announcer, adjudicated by
-  signature); object destinations take a **non-exclusive custody** claim ("I can serve this
-  shape" — many legitimate custodians, adjudicated by hop count, no crypto). Today every
-  destination is identity-bearing (nothing mints shape ZetaIds), so requiring a signature of all
-  of them is correct. When addressable objects exist, dispatch on the `Category` nibble — which
-  is now safe to trust, because `dest` commits to the whole ZetaId and the receive path checks it.
-- **Found:** 2026-08-01 by Otto; **fixed** 2026-08-21 by the shadow (autonomous tick).
-- **Falsifiers (2026-08-22 additions):** `reticulum-announce-auth.test.ts` grew to 34 —
-  whole-frame refusal at all three exits (payload + relay + fold), the `"dual"` overlap window
-  (unsigned admitted and flagged; signed-but-invalid refused and NOT downgraded to the unsigned
-  path), the fail-closed construction backstops, and the extended `"off"` control.
-  `reticulum-transport.test.ts` runs its convergence suites over both modes.
-  `reticulum-announce-auth.adoption.test.ts` is the standing tripwire. Seven further mutations were
-  run and all seven refused, each byte-`cmp`-verified as applied before its result was read and
-  byte-`cmp`-verified as restored after: gate-always-admits (6 tests fail),
-  whole-frame-return-removed (3), outbound-signing-disabled (5), dual-admits-invalid-signature (1),
-  construction-backstops-removed (1), adoption-predicate-always-false (1),
-  adoption-scanner-returns-empty (2).
-- **Falsifiers (original):** `src/Core.TypeScript/discovery/reticulum-announce-auth.test.ts` — 22 tests,
-  both directions (a forged announce is rejected AND a genuine one is accepted, so a
-  reject-everything validator fails). Seven mutations were run against the fix and all seven were
-  refused, each byte-`cmp`-verified as applied before its result was read:
-  signature-check-always-true, identity-comparison-always-true, reject-everything,
-  dest-binding-always-true, transport-gate-always-admits, restore-the-`length===32`-escape-hatch,
-  relay-drops-signature.
-- **Mutations (RESIDUAL 3, 2026-08-22):** eleven run, ten refused and one survived and was
-  **re-aimed rather than deleted**. Each was byte-`cmp`-verified as applied *before* its result was
-  read and byte-`cmp`-verified as restored after. Refused: observeNode-guard-removed (5 tests
-  fail), bind-check-always-passes (12), lookup-folds-raw-peer-answer (2), **reject-everything (26,
-  all accept-side)**, restore-the-`length===32`-escape-hatch (2), admissibleNodes-refuses-nothing
-  (3), shape-checks-removed (1), fifth-profile-declares-the-unguarded-number (1),
-  refusal-returns-a-fresh-object (1), fifth-sweep-drops-the-impostors (1). **Survived:**
-  dropping `zid` from the erasure render — which had been commented as load-bearing for the fifth
-  row. Re-aimed to ask the real question (drop `zid` *and* the guard together): still refused,
-  fibre 44 against a declared 85. So the row catches the guard's removal either way and the comment
-  was over-claiming; the comment is corrected in place and the measurement recorded there.
-- **Who:** discovery/bus owner; Nadia (agent-layer defence) advisory. RESIDUAL 1 and RESIDUAL 3
-  closed by the shadow (autonomous ticks, 2026-08-22); **RESIDUAL 2's DESIGN was landed separately
-  by the shadow (2026-08-22) and its mechanism is metered but unwired** — the wire migration is the
-  remaining open step and is still not something to fold into a hardening pass.
+- **Site (A) — `dest` is never bound to `zid`:** `src/Core.TypeScript/discovery/reticulum-transport.ts:85-95`
+  (`observeAnnounce`) + `:181-183` (frame handler). `destinationHash()` is called at `:154` only —
+  where a node computes its *own* dest — and in tests. It is **never** called on the receive path.
+  So an `Announce` carries `dest` and `zid` as two independent, never-cross-checked fields, and the
+  path table stores `zid: a.zid` under `a.dest` with no established relationship between them.
+- **Site (B) — announces are unsigned:** same file. Imports are `createHash` plus two *type-only*
+  imports — no auth, no verify. `observeAnnounce` accepts any strictly-lower hop count
+  unconditionally (`if (cur && a.hops >= cur.hops) { refresh only }`), so an announce with `hops: 0`
+  replaces any existing path. Announces carry `zid` in the clear, so relaying one announce yields
+  everything needed to impersonate that destination. Tests cover fold properties
+  (idempotent / order-independent / best-hop); **zero adversarial tests**.
+- **Found:** 2026-08-01 by Otto (autonomous tick, verifying an unrelated Reticulum claim), Aaron
+  steer ("what tones the pair?")
+- **Severity:** P1. **Not exploitable today** — no live mesh deployment; latent defect in
+  infrastructure with real consumers (`dht-discovery.ts`, `reticulum-metered-transport.ts`,
+  `mux-transport-bridge.ts`, `network-transport.ts`).
+- **Symptom:** Announce `{dest: H(victimZid), hops: 0}` captures any destination's route — payload
+  crypto does not close it (blackhole/denial and traffic analysis survive encryption). Worse, (A)
+  makes the *typed* fix bypassable: ZetaIds carry a `Category` nibble selecting how lower bits parse
+  (agent vs actor vs shape), and identity-bearing destinations need a signature while inanimate
+  shapes have no key to sign with. Dispatch that requirement off `a.zid`'s category while `dest` is
+  unbound, and an attacker sends `{dest: H(agentZid), zid: <shape-category zid>, hops: 0}` —
+  declares "shape, no signature needed" and walks past the check.
+- **Claim-class note (why one rule cannot serve both):** identity destinations take an **exclusive**
+  claim ("I am this identity" — exactly one legitimate announcer, adjudicated by signature); object
+  destinations take a **non-exclusive custody** claim ("I can serve this shape" — many legitimate
+  custodians, adjudicated by hop count, no crypto needed). `observeAnnounce` currently applies
+  lowest-hop-wins to both, which is *correct* for objects and *is the hijack vector* for identities.
+  No addressable objects exist yet (`roms/chip8/` holds five test fixtures; nothing mints shape
+  ZetaIds), so the simple fix is correct today and the split is a constraint on how it may grow.
+- **Fix — in this order:**
+  1. **Tone the pair.** Reject any announce where `a.dest !== destinationHash(a.zid)`. One line, no
+     crypto, no keys. Hashing the whole ZetaId already commits to the category; the receive path
+     just never checks the commitment. Without this, steps 2-3 are decorative.
+  2. Dispatch on the now-trustworthy `Category` nibble (a bit-parse, free).
+  3. Require an Ed25519 signature for identity-bearing categories — **reuse `beacon-auth.ts`, do not
+     invent**: same trust store, same `ace/signing.ts` canonical bytes, same dual-key
+     overlap-window rotation ADR. Put the membrane in front of `observeAnnounce` exactly as it sits
+     in front of `discovery-beacon`'s `observe`. Add the adversarial tests the fold tests lack.
+- **Docstring defect (fix alongside):** `:17-20` says **"SELF-CERTIFYING ADDRESS."** Hashing a
+  *public* identifier is self-**describing**, not self-**certifying** — real RNS earns
+  self-certification from `dest = H(pubkey)` plus signed announces. The word swap states the bug in
+  the comment, and predates its discovery. Zeta's divergence (hash the ZetaId, not the key) is
+  *deliberate and correct* — it keeps address separate from identity, which `dest = H(pubkey)`
+  conflates, and it is what permits key rotation without address churn. Only the verification is
+  missing, not the design.
+- **Who:** architect (Kenji) → discovery/bus owner; Nadia (agent-layer defence) advisory; Aaron
+  (primary source — Itron/Cisco Riva mesh, Wi-SUN contributor) on the routing-hierarchy semantics
 
 ### Reticulum relay `seenFids` is a grow-only set — memory-exhaustion DoS (bus, shadow*)
 
@@ -353,6 +126,15 @@ Eclipse), so **routing security reduces to announce authenticity**.
 - **Symptom:** the relay dedup set NEVER evicts, while sibling state has GC (`paths.gc(nowMs, ttlMs)`, `PeerTable.expire()`). A relay accumulates one entry per distinct frame id forever → unbounded memory → OOM; spoofable frame ids (`${dest}:${fidSeq}`) make it trivially floodable. Idempotency §12 only needs a *recent* dedup window, not all-time.
 - **Fix:** bound it — time-windowed (add a timestamp to the fid or evict by count) or LRU/ring by insert order.
 - **Who:** architect (Kenji) → discovery/bus owner
+
+### ZetaId base32 cross-verify lacks edge vectors + has two overflow algorithms
+
+- **Site:** `tests/cross-verification/zeta-id/vectors.yaml` (12 happy-path only); `parse` in TS/Py (bigint, post-check `>MASK_128`) vs C#/F#/Rust (u128, pre-guard `firstVal>=8`)
+- **Found:** 2026-06-13 by Kira (harsh-critic), Otto anti-entropy sweep
+- **Severity:** P1
+- **Symptom:** no all-zero / max-128 / first-char-overflow (parse-reject) / lenient-alias vectors — the exact boundaries base32 breaks at, and the only place cross-language divergence would show. The overflow-reject contract is two different algorithms that agree today but are pinned only by reading, not a vector.
+- **Fix:** add all-zero, all-ones-128, first-char-overflow-reject, and lenient-alias round-trip vectors asserting uniform accept/reject across all oracles.
+- **Who:** architect (Kenji) → falsifier/vector design
 
 ### Checkpoint corruption is indistinguishable from absence (round-2 hunt, 2026-06-12)
 
@@ -480,14 +262,14 @@ Eclipse), so **routing security reduces to announce authenticity**.
 
 **STATUS (round 3, 2026-06-13): FIXED.** Provenance check is now step zero of the blueprint; BUGS.md named in the threat model as work-directing.
 
-- **Site:** `docs/BUGS.md` + `.claude/skills/workflows/blueprints/bug-fixer.md`
+- **Site:** `docs/BUGS.md` + `.claude/skills/bug-fixer/SKILL.md`
 - **Found:** round 21 by Aminata
 - **Severity:** P1
 - **Symptom:** a poisoned BUGS.md entry could steer the bug-fixer
   procedure ("drop the `Checked` guard" framed as a fix) into
   introducing a vulnerability under the guise of addressing a
   reported bug.
-- **Fix:** add a step 2 requirement to `.claude/skills/workflows/blueprints/bug-fixer.md`
+- **Fix:** add a step 2 requirement to `.claude/skills/bug-fixer/SKILL.md`
   — "verify the entry was authored by a known reviewer expert and
   is traceable to a round's review report." Paired with a threat-
   model row noting BUGS.md as an injection surface.
@@ -513,22 +295,6 @@ Eclipse), so **routing security reduces to announce authenticity**.
 ---
 
 ## P2 — nice to have
-
-### `LossyUdpChannel` has one global `expectedSeq` across all peers on a broadcast transport
-
-- **Site:** `src/Core.TypeScript/discovery/udp-lossy-transport.ts` (`expectedSeq`, `handleIncoming`)
-- **Found:** 2026-08-13 by Mateo (security-researcher) as the second half of the NACK amplification
-  P0; re-filed by the shadow as its own row when the first half was fixed without it
-- **Severity:** P2 (loss-signal availability — no amplification, no memory growth, data still flows)
-- **Symptom:** `expectedSeq = Math.max(expectedSeq, header.seq + 1)` never decreases, so one spoofed
-  `seq = 4294967295` pins it at the ceiling and no honest peer opens a gap again — NACK generation
-  is dead for the life of the channel. Related: one counter across interleaved senders means a wide
-  gap is not attributable to anyone, which is why the amplification fix reports a local desync
-  instead of a NACK past `MAX_NACK_GAP` — and why a >64-packet burst now yields no congestion signal.
-- **Fix:** per-peer sequence state. Two one-line mitigations (bounded advance; corroborate-before-
-  adopt) were tried on paper and rejected with reasons in the work-item — neither is clearly better
-  than the status quo, so this needs its own design rather than a line inside a security patch.
-- **Who:** Kenji (architect). Work-item `081KZYQJSW5087G0R001YD83TV`.
 
 ### Z3LawsTests cross-check flakes when CVC5 fails to run (build-and-test intermittent)
 

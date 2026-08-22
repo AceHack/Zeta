@@ -37,17 +37,6 @@ realize_mechanisms() {
 # shellcheck source=tools/setup/common/curl-fetch.sh
 source "$SETUP_DIR/common/curl-fetch.sh"
 
-# Host tiers (081KTWQZY7F08QG0R0034KN17T). macos.sh has gated manifests/brew on
-# `tier=` since that workitem landed; the apt leg did not, which is what this
-# source line closes. Sourcing here (rather than inside the apt branch) resolves
-# the tier ONCE for the whole install: children like common/mise.sh source the
-# same file and, finding ZETA_HOST_TIER already exported, take the declared
-# branch instead of re-detecting. Same value either way — detection is a pure
-# function of the host's memory — so the only visible change downstream is that
-# their logs now read `(declared)` where they read `(detected)`.
-# shellcheck source=tools/setup/common/host-tier.sh
-source "$SETUP_DIR/common/host-tier.sh"
-
 # ── Detect NixOS — skip apt step entirely, use systemPackages instead ──
 # iter-5.5.0 (081KSGS9H0008QG0R001JNKBFD Phase 2, operator 2026-05-27 ALIGNMENT catch):
 # NixOS provides system packages declaratively via common.nix
@@ -80,24 +69,18 @@ APT_MANIFEST="$SETUP_DIR/manifests/apt"
 if [ "$IS_NIXOS" = 1 ]; then
   echo "✓ skipping apt (NixOS — see common.nix environment.systemPackages)"
 elif [ -f "$APT_MANIFEST" ]; then
-  # Extract non-comment non-empty lines, then DROP the ones this host's tier
-  # does not allow. The comment/whitespace parser is unchanged (it lives in
-  # common/host-tier.sh now) and still guards the maintainer's 2026-05-26 bug
-  # surface: `p7zip-full  # comment` was passed to apt-get install verbatim,
-  # producing "Unable to locate package". awk (not `grep -vE`) because grep
-  # exits 1 on no-match and would fail the script under pipefail when the
-  # manifest is all comments.
+  # Extract non-comment non-empty lines via awk (doesn't fail
+  # under pipefail when manifest is all comments — unlike
+  # `grep -vE` which exits 1 on no-match).
   #
-  # WHY THE TIER GATE IS HERE (081M0K36K69087G0R003BYSCF8). manifests/apt is
-  # 388 packages / 713 MiB resolved, and it was installed IN FULL on every host
-  # including the 1-vCPU ubuntu-slim runner, whose only job is `dotnet build`
-  # on one csproj. manifests/brew has gated the same tools at tier=standard
-  # since 081KTWQZY7F, so this is the missing half of a split that already
-  # shipped — the manifest itself carried the debt in prose ("The right fix is
-  # a tier= gate for apt, which does not exist yet"). Skips are LOUD (the
-  # helper names every dropped package and both tiers on stderr): a package
-  # that silently vanished would be the absent-check failure this repo refuses.
-  PKGS="$(zeta_filter_manifest_by_tier "$APT_MANIFEST" | tr '\n' ' ')"
+  # Strip inline `# ...` comments + trim whitespace (same parser fix
+  # as macos.sh BREW_MANIFEST per the maintainer 2026-05-26 bug
+  # surface: `p7zip-full  # comment` was passed to apt-get install
+  # verbatim, producing "Unable to locate package").
+  PKGS="$(awk '
+    { sub(/#.*$/, ""); gsub(/^[[:space:]]+|[[:space:]]+$/, "") }
+    NF > 0 { print }
+  ' "$APT_MANIFEST" | tr '\n' ' ')"
   # manifests/apt canonical names target Ubuntu 24.04 (Noble). Map to jammy
   # equivalents so install.sh works on 22.04 dev boxes / cloud VMs too.
   if [ -f /etc/os-release ]; then
@@ -121,105 +104,6 @@ elif [ -f "$APT_MANIFEST" ]; then
     # Use sudo only when not already root (CI containers often run as root).
     SUDO=""
     if [ "$(id -u)" -ne 0 ]; then SUDO="sudo"; fi
-    # ── THE APT PHASE RUNS UNDER ONE SHARED WALL-CLOCK DEADLINE ──────
-    #
-    # WHY A DEADLINE AND NOT A PER-ATTEMPT TIMEOUT (the defect this closes,
-    # Dejan 2026-08-18). The 2026-08-14 hang guard bounded each `apt-get
-    # install` at 600s and retried 3 times. MEASURED, that is a worst case of
-    # 3 x 600s + 15s + 30s of backoff = 1845s = 30.75 minutes — while EVERY job
-    # that runs this script has `timeout-minutes` between 5 and 45, and the
-    # tightest ones (cross-verify, lint-shell, lint-typescript, lint-markdown,
-    # ci-cache-paths-lint, budget-snapshot-cadence, ...) are 5-12 minutes. So
-    # on a stalling mirror the JOB was killed part-way through attempt 2 and
-    # reported `cancelled`: the guard made `apt-get` RETURN, but the retry loop
-    # it returned into could never finish. A guard that cannot run to
-    # completion is the vacuity class — it looks like protection and constrains
-    # nothing. (Live instances: gate jobs 95796893156 / 95796898144 /
-    # 95797644804 / 95797644737 / 95796898139, all killed inside this step;
-    # ci-cache-paths-lint run 2026-08-18T18:26Z, killed at its 5-minute mark.)
-    #
-    # THE SHAPE. One deadline is taken once, and update + every install attempt
-    # + every backoff draw their slice from what is LEFT of it. Three attempts
-    # therefore cannot exceed the wall budget no matter what each one does, and
-    # the arithmetic stays correct if someone later changes the attempt count,
-    # the backoff, or `timeout-minutes` — which a fixed per-attempt timeout does
-    # not. `src/Core.TypeScript/hygiene/audit-apt-budget-fits-job-timeout.ts`
-    # asserts the default below still fits inside EVERY job that runs install.sh,
-    # alongside that job's own measured non-apt work, so a `timeout-minutes` edit
-    # that breaks the relation goes red instead of going silent. It also reads the
-    # `ZETA_APT_BUDGET_SECONDS` override below wherever a workflow declares it, so
-    # raising the budget for one lane is checked the same way as raising it for all.
-    #
-    # WHY TWO DEFAULTS, AND WHY THAT IS NOT PARITY DRIFT (GOVERNANCE §24).
-    # Parity is one script, one mechanism, one knob — not one constant. The
-    # constraint being reconciled here (an outer job timeout that turns an
-    # overrun into `cancelled`) EXISTS ONLY IN CI. On a laptop or in a
-    # devcontainer there is no outer killer, so the deadline's job is only to
-    # stop an unbounded hang, and a CI-sized 420s would false-fail a cold
-    # 553 MB apt fetch over a home link. Both legs run the identical deadline
-    # code path and honour the identical `ZETA_APT_BUDGET_SECONDS` override;
-    # only the default differs, and it differs because the environments
-    # genuinely differ. (Precedent: install.sh already derives ZETA_HOST_TIER
-    # from GITHUB_ACTIONS for the same reason.)
-    #
-    # MEASURED HEALTHY COST, so the budget is sized rather than guessed: on
-    # ubuntu-24.04, run 32151321559 (2026-08-18), the whole apt phase — update
-    # + install of the full manifest, 553 MB fetched — took 38.2 seconds
-    # (14:55:52.96 -> 14:56:31.13). The 420s CI default is ~11x that. It is
-    # sized by the audit's requirement, which as of 2026-08-22 reads
-    #     budget + kill_after + THIS JOB's measured non-apt seconds <= its timeout
-    # per job, not once for the tightest. The earlier form of that line said
-    # "+ 120s pre-apt reserve", and the reserve was defined in the audit itself as
-    # "the work that PRECEDES it" — with NO term for the work that FOLLOWS. It
-    # therefore passed `low-memory.yml` at 420 + 10 + 120 = 550 <= 840 while that
-    # lane's non-apt work measured 571s at p90, i.e. it certified the one lane that
-    # provably could not fit. The binding job now is helm-validate:structural —
-    # 420 + 10 + 143 = 573 <= 600 — and low-memory is a recorded, reasoned exception
-    # in audit-apt-budget-fits-job-timeout.baseline.json rather than a silent pass.
-    #
-    # A FIRST DRAFT OF THIS SHIPPED AT 150s AND WAS WRONG, which is worth
-    # recording because the failure is subtle. 150s was pinned by three
-    # FIVE-minute cadence jobs, and under the even split below it left attempt 1
-    # with 45s — 1.2x the healthy cost. That bounds a STALL correctly and
-    # false-fails a mirror that is merely SLOW, which is a worse trade than the
-    # bug it replaced. Measured on job 95859213848: slices of 45s / 38s / 8s.
-    # The three cadence jobs were raised to 12 minutes in the same commit — a
-    # timeout is a cap, not a reservation, so on the healthy path (they finish
-    # in ~2.5 min) it costs zero additional CI minutes.
-    #
-    # `timeout` converts a stall into an ordinary non-zero exit, which the
-    # retry loop below and the 5-attempt install.sh wrapper in gate.yml can
-    # both act on. Why apt's own timeouts do NOT catch this:
-    # `Acquire::http::Timeout` is an INACTIVITY timer and a slow trickle keeps
-    # resetting it — on 2026-08-14 azure.archive.ubuntu.com decayed from
-    # 8083 kB/s to ~1.5 kB/s and then stopped mid-`pandoc` without closing the
-    # socket, so apt was never idle long enough to trip.
-    if ! command -v timeout >/dev/null 2>&1; then
-      echo "error: coreutils \`timeout\` not found — it bounds the apt phase" >&2
-      echo "  (Debian/Ubuntu ship it in the \`coreutils\` package)" >&2
-      exit 1
-    fi
-    # Read by audit-apt-budget-fits-job-timeout.ts — ONE source, no duplicated
-    # constant to drift. Keep the assignments on their own line, bare integer.
-    ZETA_APT_CI_BUDGET_DEFAULT_SECONDS=420
-    ZETA_APT_LOCAL_BUDGET_DEFAULT_SECONDS=1800
-    if [ "${GITHUB_ACTIONS:-}" = "true" ]; then
-      apt_budget_default="$ZETA_APT_CI_BUDGET_DEFAULT_SECONDS"
-    else
-      apt_budget_default="$ZETA_APT_LOCAL_BUDGET_DEFAULT_SECONDS"
-    fi
-    apt_budget="${ZETA_APT_BUDGET_SECONDS:-$apt_budget_default}"
-    apt_kill_after=10
-    apt_deadline=$(( $(date +%s) + apt_budget ))
-    # Seconds left on the shared deadline, floored at 0.
-    apt_remaining() {
-      local _left
-      _left=$(( apt_deadline - $(date +%s) ))
-      if [ "$_left" -lt 0 ]; then _left=0; fi
-      printf '%s' "$_left"
-    }
-    echo "↻ apt phase budget: ${apt_budget}s (override: ZETA_APT_BUDGET_SECONDS)"
-
     # `apt-get update` refreshes EVERY configured source, including any
     # third-party PPAs the host image shipped that we don't control. Under
     # `set -euo pipefail` a single unreachable source (e.g. a launchpad PPA
@@ -245,170 +129,18 @@ elif [ -f "$APT_MANIFEST" ]; then
     # not apply here — the probe greps the FILE, not a pipe. Take apt's OWN exit
     # from PIPESTATUS[0]; the pipeline's own status would be `tee`'s, masking
     # apt. grep on the file stays line-oriented so `^Err:` still anchors per-line.
-    #
-    # BOUNDED (Dejan 2026-08-18): `update` was the half the 2026-08-14 guard did
-    # NOT wrap, so a stall in it had no ceiling at all and the job timeout was
-    # again the only thing that fired. It draws at most HALF the remaining
-    # budget, which reserves the other half for the install that actually has to
-    # succeed, and at most ZETA_APT_UPDATE_TIMEOUT_SECONDS on top of that.
-    apt_update_slice=$(( $(apt_remaining) / 2 ))
-    apt_update_cap="${ZETA_APT_UPDATE_TIMEOUT_SECONDS:-60}"
-    if [ "$apt_update_slice" -gt "$apt_update_cap" ]; then apt_update_slice="$apt_update_cap"; fi
-    if [ "$apt_update_slice" -lt 1 ]; then apt_update_slice=1; fi
     apt_log="$(mktemp)"
     apt_update_rc=0
-    # shellcheck disable=SC2086
-    if timeout --signal=TERM --kill-after="${apt_kill_after}s" "$apt_update_slice" \
-         $SUDO apt-get update -y 2>&1 | tee "$apt_log"; then :; else apt_update_rc="${PIPESTATUS[0]}"; fi
-    if [ "$apt_update_rc" -eq 124 ]; then
-      echo "⚠ apt-get update exceeded its ${apt_update_slice}s slice of the" >&2
-      echo "  ${apt_budget}s apt budget — stalled mirror. Continuing to install;" >&2
-      echo "  the install below still asserts the packages we need are present." >&2
-    elif [ "$apt_update_rc" -ne 0 ] \
+    if $SUDO apt-get update -y 2>&1 | tee "$apt_log"; then :; else apt_update_rc="${PIPESTATUS[0]}"; fi
+    if [ "$apt_update_rc" -ne 0 ] \
        || grep -qiE 'Failed to fetch|Some index files failed to download|^Err:' "$apt_log"; then
       echo "⚠ apt-get update reported errors — likely an unreachable third-party" >&2
       echo "  source the host image shipped (not a Zeta manifest source). Continuing;" >&2
       echo "  the apt-get install below still asserts the packages we need are present." >&2
     fi
     rm -f "$apt_log"
-
-    apt_attempts=3
-    apt_install_rc=0
-    for apt_attempt in 1 2 3; do
-      # EVERY attempt is sized from what is LEFT. That is what makes 3 attempts
-      # fit inside the wall budget instead of multiplying it: the sum of the
-      # slices is the remainder, not three times a constant.
-      #
-      # The share is WEIGHTED, not even, because the two failure modes want
-      # opposite things. A mirror that is merely SLOW needs continuous time —
-      # one long attempt succeeds where three short ones all fail. A mirror
-      # that is WEDGED (the 2026-08-14 case: bytes trickling, socket never
-      # closed) needs a fresh connection, which only a retry gives. So the
-      # first attempt takes 60% and the retries share the rest; the last
-      # attempt takes everything still on the clock.
-      apt_left="$(apt_remaining)"
-      if [ "$apt_left" -le 0 ]; then
-        echo "⚠ apt budget (${apt_budget}s) exhausted before attempt ${apt_attempt}/${apt_attempts}" >&2
-        if [ "$apt_install_rc" -eq 0 ]; then apt_install_rc=124; fi
-        break
-      fi
-      if [ "$apt_attempt" -eq "$apt_attempts" ]; then
-        apt_slice="$apt_left"
-      else
-        apt_slice=$(( apt_left * 3 / 5 ))
-      fi
-      if [ "$apt_slice" -lt 1 ]; then apt_slice=1; fi
-      apt_install_rc=0
-      # shellcheck disable=SC2086
-      timeout --signal=TERM --kill-after="${apt_kill_after}s" "$apt_slice" \
-        $SUDO apt-get install -y --no-install-recommends \
-          -o Acquire::Retries=3 \
-          -o Acquire::http::Timeout=30 \
-          -o Acquire::https::Timeout=30 \
-          $PKGS || apt_install_rc=$?
-      [ "$apt_install_rc" -eq 0 ] && break
-      # 124 = `timeout` fired (the stall case); anything else is a real apt error.
-      if [ "$apt_install_rc" -eq 124 ]; then
-        echo "⚠ apt-get install exceeded its ${apt_slice}s slice of the ${apt_budget}s" >&2
-        echo "  budget (attempt ${apt_attempt}/${apt_attempts}) — stalled archive mirror," >&2
-        echo "  not a package error." >&2
-      else
-        echo "⚠ apt-get install failed rc=${apt_install_rc} (attempt ${apt_attempt}/${apt_attempts})" >&2
-      fi
-      [ "$apt_attempt" -eq "$apt_attempts" ] && break
-      # DPKG RECOVERY — without this the 3-attempt loop is a 1-attempt loop.
-      # The `timeout` above TERM/KILLs apt-get MID-DPKG, which leaves the
-      # package database interrupted. The next attempt then fails INSTANTLY
-      # with rc=100 ("E: dpkg was interrupted, you must manually run
-      # 'sudo dpkg --configure -a'") and never reaches the mirror at all — so
-      # ONE stall costs ALL THREE attempts, and the retry loop above is
-      # decorative on precisely the failure it was written for.
-      #
-      # Measured 2026-08-18 from a surviving log on PR #11746 (the stall
-      # normally hangs, so the log is usually lost); filed as
-      # 081M096T3AN087G0R0008JZQ7B. This is verbatim what apt's own error
-      # message instructs, and it is a no-op on a clean database, so it is
-      # safe on the ordinary-error paths too. It draws from the same deadline —
-      # a `dpkg --configure -a` that itself hangs must not eat the budget.
-      #
-      # AND IT MUST WAIT FOR THE LOCK, which the first version did not — so the
-      # recovery was still vacuous on exactly the failure it was written for.
-      # `timeout` signals the process it started (`sudo apt-get`); the `dpkg`
-      # that apt-get forked is NOT in that process group's kill path and keeps
-      # running, holding /var/lib/dpkg/lock. Read off run 32539... sibling
-      # 32537060851 (low-memory, 2026-08-21), where the recovery fired 40 ms
-      # after the kill and every step after it lost to the same lock:
-      #   23:37:09.80  attempt 1 hits its 237s slice, timeout fires
-      #   23:37:09.84  dpkg --configure -a -> "lock was locked by another
-      #                process with pid 1072"                      (recovery lost)
-      #   23:37:24.94  attempt 2  -> "Could not get lock ... held by 1072" rc=100
-      #   23:37:24.98  dpkg --configure -a -> same lock error       (recovery lost)
-      #   23:37:55.01  attempt 3  -> "dpkg was interrupted, you must manually
-      #                run 'sudo dpkg --configure -a'"              rc=100
-      # By 23:37:55 pid 1072 had exited and the lock was free, but nothing tried
-      # again — so a recoverable interruption spent all three attempts and the
-      # step failed. Polling turns that into a wait of a few seconds. Same 30s
-      # cap and same shared deadline as before: this loop can only spend time
-      # the budget already allowed the single call to spend.
-      apt_dpkg_slice="$(apt_remaining)"
-      if [ "$apt_dpkg_slice" -gt 30 ]; then apt_dpkg_slice=30; fi
-      if [ "$apt_dpkg_slice" -ge 1 ]; then
-        apt_dpkg_log="$(mktemp)"
-        apt_dpkg_deadline=$(( $(date +%s) + apt_dpkg_slice ))
-        apt_dpkg_waited=0
-        while :; do
-          apt_dpkg_left=$(( apt_dpkg_deadline - $(date +%s) ))
-          [ "$apt_dpkg_left" -le 0 ] && break
-          apt_dpkg_rc=0
-          # shellcheck disable=SC2086
-          timeout --signal=TERM --kill-after="${apt_kill_after}s" "$apt_dpkg_left" \
-            $SUDO dpkg --configure -a >"$apt_dpkg_log" 2>&1 || apt_dpkg_rc=$?
-          if [ "$apt_dpkg_rc" -eq 0 ]; then
-            if [ "$apt_dpkg_waited" -gt 0 ]; then
-              echo "✓ dpkg database repaired after waiting ${apt_dpkg_waited}s for the lock" >&2
-            fi
-            break
-          fi
-          # Only a LOCK error is worth waiting on: the holder is the dpkg the
-          # timeout orphaned, and it exits on its own. Any other failure is a
-          # real dpkg problem and retrying it just burns the budget.
-          if grep -qiE 'lock was locked|Could not get lock|Unable to lock|is another process using it' "$apt_dpkg_log"; then
-            if [ "$apt_dpkg_waited" -eq 0 ]; then
-              echo "↻ dpkg lock still held by the orphaned dpkg — waiting (<=${apt_dpkg_slice}s)" >&2
-            fi
-            apt_dpkg_waited=$(( apt_dpkg_waited + 2 ))
-            sleep 2
-            continue
-          fi
-          cat "$apt_dpkg_log" >&2
-          break
-        done
-        rm -f "$apt_dpkg_log"
-      fi
-      # Backoff is part of the budget too, so it never spends more than a
-      # QUARTER of what is left. Clamping only to `remaining` was not enough: on
-      # a small budget the sleeps ate the clock and the later attempts were
-      # skipped for lack of time, which is the retry loop going decorative again
-      # by a different route.
-      apt_backoff=$(( apt_attempt * 15 ))
-      apt_left="$(apt_remaining)"
-      apt_backoff_cap=$(( apt_left / 4 ))
-      if [ "$apt_backoff" -gt "$apt_backoff_cap" ]; then apt_backoff="$apt_backoff_cap"; fi
-      if [ "$apt_backoff" -gt 0 ]; then sleep "$apt_backoff"; fi
-    done
-    # STRICT on exhaustion: the assert is preserved (see the update-vs-install
-    # split above) — a package we actually need being unavailable still fails
-    # loudly rather than degrading to a false-green. Failing HERE, inside the
-    # budget, is the whole point: the script exits with a readable cause instead
-    # of the job being killed mid-`apt-get` and reported as `cancelled`.
-    if [ "$apt_install_rc" -ne 0 ]; then
-      echo "✗ apt-get install did not succeed within the ${apt_budget}s apt budget" >&2
-      echo "  (${apt_attempts} attempts, rc=${apt_install_rc})." >&2
-      echo "  On a slow link this is a budget, not a package problem: re-run with" >&2
-      echo "  ZETA_APT_BUDGET_SECONDS=<larger> — but in CI the budget is sized to" >&2
-      echo "  fit inside the job's timeout-minutes, so raise that first." >&2
-      exit "$apt_install_rc"
-    fi
+    # shellcheck disable=SC2086
+    $SUDO apt-get install -y --no-install-recommends $PKGS
   else
     echo "✓ apt manifest empty; skipping"
   fi
@@ -670,9 +402,13 @@ fi
 # Substrates: WAT, LLVM/C, Emscripten, Rust, ASC, Zig (WASM)
 #             + JS/V8, Lua 5.4, Go (bytecode/script)
 #
-# WABT and Lua are declared in manifests/apt; Go is pinned cross-platform in
-# .mise.toml. Zig and Rust retain the dedicated idempotent verification scripts.
+# wabt, lua5.4, golang-go are in Ubuntu apt; Zig and Rust need dedicated scripts.
 if [ "$IS_NIXOS" != 1 ]; then
+  echo "-- installing wabt, lua5.4, golang-go via apt --"
+  SUDO=""
+  if [ "$(id -u)" -ne 0 ]; then SUDO="sudo"; fi
+  $SUDO apt-get install -y --no-install-recommends wabt lua5.4 golang-go 2>/dev/null || \
+    echo "⚠ apt install of wabt/lua5.4/golang-go failed — substrates will show TOOLING-ABSENT"
   echo "-- installing Zig (wasm32-freestanding substrate) --"
   bash "$SETUP_DIR/common/install-zig.sh"
   echo "-- installing Rust + wasm32-unknown-unknown target --"

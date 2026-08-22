@@ -22,11 +22,7 @@ export const realizeFromUvTool: SetupRealizer = async (ctx) => {
     return finishResult("from-uv-tool", ctx, true);
   }
 
-  // Dry-run is a planning surface: it must record the intended uv actions even
-  // in narrow JS-only CI jobs that deliberately do not bootstrap the Python/uv
-  // toolchain. Real execution still fails closed before any action if uv is not
-  // available.
-  if (!ctx.dryRun && !commandOnPath("uv")) {
+  if (!commandOnPath("uv")) {
     throw new Error("uv not on PATH. common/mise.sh must run first.");
   }
 
@@ -34,16 +30,13 @@ export const realizeFromUvTool: SetupRealizer = async (ctx) => {
 
   for (const entry of tools) {
     const name = entry.split(/[ <>=!~]/)[0] ?? entry;
-    const installed = !ctx.dryRun && (() => {
-      const list = Bun.spawnSync(["uv", "tool", "list"], { stdout: "pipe", stderr: "pipe" });
-      return (
-        list.exitCode === 0 &&
-        list.stdout
-          .toString()
-          .split(/\r?\n/)
-          .some((line) => line.split(/\s+/)[0] === name)
-      );
-    })();
+    const list = Bun.spawnSync(["uv", "tool", "list"], { stdout: "pipe", stderr: "pipe" });
+    const installed =
+      list.exitCode === 0 &&
+      list.stdout
+        .toString()
+        .split(/\r?\n/)
+        .some((line) => line.split(/\s+/)[0] === name);
     if (installed) continue;
     await runCommand(ctx, `↓ uv tool install ${entry}...`, ["uv", "tool", "install", entry]);
   }

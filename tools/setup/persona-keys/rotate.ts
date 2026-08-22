@@ -77,13 +77,7 @@ import {
   renderTrustSet,
   trustedUserCaKeysPath,
 } from "./setup-cluster.ts";
-import {
-  establishedFactor,
-  requireBiometric,
-  sessionBiometric,
-  type BiometricAuth,
-  type BiometricResult,
-} from "./biometric.ts";
+import { requireBiometric, sessionBiometric, type BiometricAuth, type BiometricResult } from "./biometric.ts";
 export type { BiometricAuth, BiometricResult } from "./biometric.ts";
 
 /** The ports a per-port rotate covers. Each rotates on the SAME overlap-window lifecycle. */
@@ -671,10 +665,7 @@ export function formatRotate(res: RotateResult): string {
   if (res.dryRun) {
     lines.push("  Re-run with --confirm (and approve the biometric) to execute the rotation.");
   } else if (res.confirmed && res.biometric?.ok === true) {
-    lines.push(
-      `  Operator approval: 1 approval covered the whole rotation ` +
-        `(mechanism ${res.biometric.platform}, factor established: ${establishedFactor(res.biometric)}).`,
-    );
+    lines.push(`  Biometric: 1 approval covered the whole rotation (${res.biometric.platform}).`);
     lines.push(
       `  Staged for PR: ${res.stagedPaths.length} path(s). Commit + open a PR to land the rotated public artifacts.`,
     );
