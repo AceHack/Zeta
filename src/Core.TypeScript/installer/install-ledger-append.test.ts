@@ -132,6 +132,44 @@ function runLedgerShell(
 
 /** Run one full install as the installer does: a `started` before the wipe, an `ok` at the end. */
 const ONE_SUCCESSFUL_INSTALL = "zeta_ledger_append started wipe; zeta_ledger_append ok complete";
+
+// ── The first shell spawn in this file is paid for by whichever test runs first ──
+//
+// MEASURED, on the run that went red (job 97073835706, commit 792635694):
+//
+//     four installs   ( 6 appends)   5005.65ms  -- TIMED OUT at the 5000ms default
+//     one install     ( 2 appends)   1912.43ms
+//     ten installs    (20 appends)    210.26ms
+//
+// The cost falls as the work rises, which is a warm-up curve and not a property
+// of anything under test: twenty appends run in 210ms once the binaries this
+// script execs (bash, cat, grep, date, tee, sync) are in the page cache, so the
+// per-append cost is ~10ms and the other ~4.8 seconds were one-time. This job
+// runs `tools/setup/install.sh` immediately before `bun test`, which is exactly
+// the disk churn that leaves that cache cold.
+//
+// Ruled out, so the next reader does not re-check them:
+//   * NOT a regression from #13852, which is the PR whose merge went red. It
+//     edits zeta-install.sh but BOTH blocks this file extracts are byte-identical
+//     across it (ZETA-LEDGER-APPEND md5 011a3f5b7a0ac239ad213338caeb2f95,
+//     ZETA-PREFLIGHT-PARITY d85e96cb9aa0e168f16b5d9baba0d7fc, before and after).
+//     The subject of the test did not change.
+//   * NOT the global `sync(1)` per record, which was the obvious suspect and is
+//     wrong: stubbing sync out entirely moved the same script from 1223ms to
+//     1263ms over five runs each -- inside the noise.
+//
+// So the ambient cost is moved OUT of the measured region rather than tolerated:
+// one throwaway run at module scope, before any test exists to be charged for it.
+// No assertion and no bound is touched, and the tests below get STRICTER as a
+// result -- each now measures only its own work against the same 5000ms.
+//
+// HONEST LIMIT: this is not reproducible on a warm developer machine (first spawn
+// is only ~1.5x the median here), so the evidence is the CI timing curve above,
+// not a local repro. If the timeout recurs with this in place, the warm-up is a
+// ruled-out cause rather than an untested suspicion -- which is the point of
+// paying it explicitly instead of raising the timeout.
+runLedgerShell(ONE_SUCCESSFUL_INSTALL);
+
 /** A node that died between the wipe and the end of the run leaves only the `started`. */
 const ONE_FAILED_INSTALL = "zeta_ledger_append started wipe";
 
