@@ -147,6 +147,39 @@ docs/github/prs/manifest.jsonl           merge=union
 # this line must go.
 data/rs-blocks.jsonl                     merge=union
 #
+# `data/ci-runs.jsonl` — added 2026-08-22 after it wedged otto's, alexa's and soraya's ticks at
+# 22:05Z and 22:24Z (runs on 79ff032a2 / 9f861ebef) with
+# `CONFLICT (add/add): Merge conflict in data/ci-runs.jsonl`, plus the alexa flush job. SEVENTH
+# member of the class and the drift-rate sibling of `rs-blocks.jsonl` directly above.
+#
+# WHY IT APPEARED NOW AND NOT BEFORE. The path is four hours old. Until #13928 the heartbeat step
+# ran `git add data/ci-runs.jsonl` and never committed, so every tick appended to a working-tree
+# file that was discarded with the runner — the workflow says so itself: "has never existed on
+# main ... green on every tick and produced nothing". The moment that step started COMMITTING, all
+# three lanes began creating the same brand-new path independently, which is ADD/ADD by
+# construction: the merge base has neither side.
+#
+# Measured on this tip, not assumed:
+#   - append-only — the sole writer is `appendFileSync(dataPath, ...)` in
+#     `observe/drift-rate-cli.ts` `doRecord`; no code path rewrites an existing line
+#   - every row carries a `lane` field naming the emitting agent, so this is single-writer
+#     PER ROW exactly as `rs-blocks.jsonl` is, not single-writer per file
+#   - main's copy therefore holds this lane's flushed rows plus other lanes' rows, never a
+#     rival edit to the same row
+#
+# REPRODUCED AND VERIFIED in a scratch repo rather than argued:
+#   - two branches each CREATING the file -> `CONFLICT (add/add)`, the live message verbatim
+#   - the same pair with this line present -> "Auto-merging", clean, both lanes' rows kept,
+#     zero conflict markers
+#   - the partial-flush case (both sides carry the already-flushed rows, the lane has one more)
+#     -> clean, and `sort | uniq -d` is EMPTY: identical additions on both sides resolve to one
+#     copy, so union does not duplicate a flushed row
+#
+# STATED LIMIT, same as the sibling above: no check enforces row uniqueness here. Union is safe on
+# the append-only + per-row-single-writer argument alone. If a row ever becomes editable — a
+# backfill that rewrites an outcome, say — this line must go.
+data/ci-runs.jsonl                       merge=union
+#
 # Regenerated-per-tick snapshots -> `theirs` (the lane's). `union` is WRONG for these and was
 # measured producing two concatenated objects, i.e. invalid JSON: .rs-buffer-*.json is a
 # single-line rolling buffer and vault-state/roster are whole-file rollups. The tick rewrites

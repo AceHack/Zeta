@@ -223,6 +223,38 @@ describe("prepareHeartbeatBranch", () => {
     expect(lines).not.toContain("<<<<<<< HEAD");
   });
 
+  it("carries the drift-rate CI log when two lanes CREATED it independently", () => {
+    // The path that wedged otto, alexa and soraya at 22:05Z and 22:24Z on 2026-08-22, plus the
+    // alexa flush job, with `CONFLICT (add/add): Merge conflict in data/ci-runs.jsonl`.
+    //
+    // WHY THIS CASE IS NOT THE ONE ABOVE. Every other append-only path here is tested with main
+    // holding a PREFIX of the lane's file, so the two sides overlap and the interesting question
+    // is whether union duplicates the shared rows. Here the sides are DISJOINT: the path was four
+    // hours old and had never reached main, so each lane created it from nothing with only its
+    // own first row in it. There is no shared line at all, and no merge base — which is exactly
+    // what `add/add` means and why this wedged the moment #13928 made the step actually commit.
+    const { work } = fixture();
+    const p = "data/ci-runs.jsonl";
+    seedAttributes(work);
+    partialFlush(
+      work,
+      p,
+      '{"checkId":"agent-heartbeat","outcome":"green","lane":"otto"}\n',
+      '{"checkId":"agent-heartbeat","outcome":"green","lane":"alexa"}\n',
+    );
+
+    const result = prepareHeartbeatBranch("alexa", work);
+    expect(result).toMatchObject({ ok: true, value: { remoteFound: true, carried: true } });
+
+    // Neither lane's row may be dropped: the file is the denominator of the drift rate, so a
+    // silently-lost row understates how much CI actually ran.
+    const lines = readFileSync(join(work, p), "utf8").split("\n").filter(Boolean);
+    expect(lines).toHaveLength(2);
+    expect(lines).toContain('{"checkId":"agent-heartbeat","outcome":"green","lane":"otto"}');
+    expect(lines).toContain('{"checkId":"agent-heartbeat","outcome":"green","lane":"alexa"}');
+    expect(lines).not.toContain("<<<<<<< HEAD");
+  });
+
   it("keeps a regenerated snapshot parseable when both sides rewrote it", () => {
     const { work } = fixture();
     const p = "docs/observe-events/.rs-buffer-alexa.json";
