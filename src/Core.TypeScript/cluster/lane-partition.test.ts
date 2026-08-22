@@ -277,17 +277,27 @@ describe("the real tree", () => {
     // if someone later reads the lane count and assumes components produced it.
   });
 
-  test("all applications together do NOT fit one runner — CPU is what blows, not disk", () => {
-    // leftover-on-main #13784 measured the runner at 77 GiB free and declared
-    // 70. The 14 GiB vendor figure made this assertion look like
-    // `74.54 > 330` (budget disk 10 * 5). Against 70 the same 74.54 GiB is
-    // 1.13x a 66 GiB budget (70 - 4 reserved). CPU is 6166m against 2500m —
-    // 2.47x. Sharding is still the only route; the binding axis inverted.
-    // Pinning 70 and 74.54 makes a silent revert to 14 fail this test rather
-    // than look like the old 5x thesis coming back.
-    expect(model.catalogue.envelope.freeDiskGib).toBe(70);
+  test("all applications together do NOT fit one runner — both axes blow, disk hardest", () => {
+    // THE PIN IS ON A DECISION THAT IS NOT OURS TO TAKE.
+    //
+    // `runnerEnvelope.freeDiskGib` is 14 -- the vendor figure -- and
+    // `measuredFreeDiskGib` beside it is 77, read off two live runners. The gap
+    // is real and the correction is WRITTEN DOWN AND DELIBERATELY NOT TAKEN:
+    // storage-profiles.json calls it "PROPOSED CORRECTION, for a human to take
+    // or refuse: freeDiskGib 14 -> 70", and names this assertion as one of the
+    // three that flip when it is taken.
+    //
+    // So this test pins 14, and it pins it BECAUSE the number is contested. The
+    // pin is what makes taking the correction a deliberate act that shows up as
+    // three red tests rather than a quiet re-pricing of the whole partition.
+    //
+    // WHEN A HUMAN TAKES IT, the measured 70-world values are:
+    //   budget disk 66 (70-4), all.diskGib unchanged at 74.54, diskRatio 1.13x,
+    //   cpuRatio still 2.47x, and CPU becomes the binding axis instead of disk.
+    // Nothing below needs to be re-measured, only re-pinned.
+    expect(model.catalogue.envelope.freeDiskGib).toBe(14);
     const budget = budgetOf(model.catalogue.envelope, 1);
-    expect(budget.diskGib).toBe(66);
+    expect(budget.diskGib).toBe(10);
     const all = priceSet(model, model.roster.map((r) => r.name));
     expect(all.diskGib).toBeCloseTo(74.54, 2);
     expect(all.cpuMillis).toBeGreaterThan(budget.cpuMillis);
@@ -295,9 +305,8 @@ describe("the real tree", () => {
     const diskRatio = all.diskGib / budget.diskGib;
     const cpuRatio = all.cpuMillis / budget.cpuMillis;
     expect(cpuRatio).toBeGreaterThan(2);
-    expect(diskRatio).toBeGreaterThan(1);
-    expect(diskRatio).toBeLessThan(2);
-    expect(cpuRatio).toBeGreaterThan(diskRatio);
+    expect(diskRatio).toBeGreaterThan(7);
+    expect(diskRatio).toBeGreaterThan(cpuRatio);
   });
 
   test("every real lane fits the real budget on all three axes", () => {
@@ -331,32 +340,43 @@ describe("the real tree", () => {
     // "test every chart" is only true if nothing falls between the buckets.
   });
 
-  test("hindsight and vllm FIT the 70-world budget — oversize is empty", () => {
-    // Against 14 GiB they were the self-hosted case (~23 GiB each vs ~10 GiB
-    // usable). Against 70 they fit a 56.1 GiB 0.85-margin budget and pack
-    // into a lane. Claiming they are still oversize would paper 70 to look
-    // like 14.
+  test("hindsight and vllm are the measured self-hosted case — they do not fit a lane", () => {
+    // ~22.5 GiB each against an 8.5 GiB 0.85-margin budget (10 usable * 0.85).
+    // Being oversize is not a defect in them; it is the measurement that says a
+    // hosted runner cannot carry them and something self-hosted must.
+    //
+    // WHEN THE 14 -> 70 CORRECTION IS TAKEN these two stop being oversize: the
+    // budget becomes 56.1 GiB and both pack into a lane. That is the second of
+    // the three assertions storage-profiles.json names as flipping, and the
+    // per-app figures (22.49 / 22.65) do not move -- only the budget does.
     const p = packLanes(model, { margin: 0.85 });
-    expect(p.budget.diskGib).toBeCloseTo(56.1, 1);
-    expect(p.oversize.map((q) => q.name)).toEqual([]);
+    expect(p.budget.diskGib).toBeCloseTo(8.5, 1);
+    expect(p.oversize.map((q) => q.name)).toEqual(["hindsight", "vllm"]);
     const hindsight = priceSet(model, ["hindsight"]);
     const vllm = priceSet(model, ["vllm"]);
     expect(hindsight.diskGib).toBeCloseTo(22.49, 1);
     expect(vllm.diskGib).toBeCloseTo(22.65, 1);
-    expect(hindsight.diskGib).toBeLessThan(p.budget.diskGib);
-    expect(vllm.diskGib).toBeLessThan(p.budget.diskGib);
+    expect(hindsight.diskGib).toBeGreaterThan(p.budget.diskGib);
+    expect(vllm.diskGib).toBeGreaterThan(p.budget.diskGib);
     const assigned = new Set(p.lanes.flatMap((l) => l.assigned));
-    expect(assigned.has("hindsight")).toBe(true);
-    expect(assigned.has("vllm")).toBe(true);
+    expect(assigned.has("hindsight")).toBe(false);
+    expect(assigned.has("vllm")).toBe(false);
   });
 
-  test("dropping intent edges DOES change the partition — hindsight/vllm now pack", () => {
-    // In the 14-world those two were oversize, so intent edges never reached
-    // the packer. In the 70-world they land in a lane, and dropping intent
-    // edges moves membership. The closure still grows when intent is kept.
+  test("dropping intent edges changes the partition NOT AT ALL, as claimed in the graph", () => {
+    // The honest negative result, and it is worth keeping precisely because it
+    // is unflattering: the declared-intent edges buy nothing at the LANE level.
+    // The two applications they would have moved -- hindsight and vllm -- never
+    // reach the packer, because they are oversize before intent is consulted.
+    //
+    // WHEN THE 14 -> 70 CORRECTION IS TAKEN this inverts: those two pack, and
+    // dropping intent then DOES move lane membership. Third of the three
+    // assertions storage-profiles.json names. The closure claim below holds in
+    // both worlds -- intent genuinely grows the dependency closure either way,
+    // which is why it is asserted separately from the packing claim.
     const withIntent = packLanes(buildModel({ repoRoot: REPO_ROOT, rung: "dev" }), { margin: 0.85 });
     const without = packLanes(buildModel({ repoRoot: REPO_ROOT, rung: "dev", dropIntentEdges: true }), { margin: 0.85 });
-    expect(without.lanes.map((l) => l.members.join(","))).not.toEqual(withIntent.lanes.map((l) => l.members.join(",")));
+    expect(without.lanes.map((l) => l.members.join(","))).toEqual(withIntent.lanes.map((l) => l.members.join(",")));
     expect(without.coveredApplications).toBe(withIntent.coveredApplications);
     const closureWith = priceSet(buildModel({ repoRoot: REPO_ROOT }), closureOf(buildModel({ repoRoot: REPO_ROOT }), "hindsight"));
     const mNo = buildModel({ repoRoot: REPO_ROOT, dropIntentEdges: true });
