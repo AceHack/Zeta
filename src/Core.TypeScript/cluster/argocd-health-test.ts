@@ -267,6 +267,18 @@ const SMOKE_MIN_APPLICATIONS = 20;
  */
 export const DEV_EXCLUDED_REASONS: ReadonlyMap<string, string> = new Map([
   [
+    "agent-memory",
+    "HELD BY THE GLOB, NOT BY A MEASUREMENT -- and that distinction is the honest part of this entry. It " +
+      "went into `excludeGlob` because statefulset.yaml:71-83 asks RWO/8Gi on `storageClassName: longhorn`, " +
+      "and at the time nothing in the dev lane answered to that name. `dev-cluster/manifests/longhorn.yaml` " +
+      "now does, and RWO/8Gi is exactly what `rancher.io/local-path` behind that alias serves -- the same " +
+      "condition that un-deferred ten other Applications on 2026-08-21. So the recorded blocker is very " +
+      "likely spent, and NOBODY HAS MEASURED IT, because the glob keeps this Application off every CI " +
+      "cluster and an app that never syncs never produces a verdict to read. " +
+      "LIFTS WHEN: `agent-memory/**` is dropped from `DEFAULT_ROOT_DEV_CATALOG.excludeGlob` and one included " +
+      "run reports its actual verdict -- pass or fail, either is information; the current state is neither.",
+  ],
+  [
     "cilium",
     "The CNI itself. The default kind profile brings up kind's own CNI (kindnetd) BEFORE ArgoCD exists -- " +
       "nothing can schedule otherwise -- so applying this Application there would install a second CNI over a " +
@@ -284,6 +296,21 @@ export const DEV_EXCLUDED_REASONS: ReadonlyMap<string, string> = new Map([
       "and routable from nothing, which is a worse outcome than not running it. " +
       "LIFTS WHEN: `cilium` above lifts AND the pool is parameterised per substrate rather than pinned to one " +
       "maintainer's subnet.",
+  ],
+  [
+    "gitlab",
+    "TWO independent blockers, either alone sufficient. (1) IT DOES NOT EVEN RENDER: `helm template` of " +
+      "charts.gitlab.io/gitlab 8.7.0 against this Application's own valuesObject fails with `execution error " +
+      "at (gitlab/charts/certmanager-issuer/templates/cert-manager.yml:14:3): You must provide an email to " +
+      "associate with your TLS certificates` -- measured by `rendered-storage-claims.ts` and carried as an " +
+      "acknowledged `helm-template-failed` row in its baseline, which is also why four of its PVCs sit in " +
+      "that report as undeclared. A chart that cannot render cannot sync, whatever the substrate does. " +
+      "(2) CAPACITY AND CREDENTIALS: ~40 subcharts, a `gitlab-initial-root-password` Secret this lane has no " +
+      "source for, and a Postgres/Redis/Gitaly/MinIO stack wanting several PVCs plus multi-GB images, which " +
+      "a single kind node cannot schedule inside the assertion budget. " +
+      "LIFTS WHEN: the valuesObject supplies `certmanager-issuer.email` (or disables that subchart) so the " +
+      "chart renders, AND the lane has a runner that can hold the stack plus a source for the root-password " +
+      "Secret. Blocker 1 is cheap and is the one to fix first -- it is a missing value, not a missing machine.",
   ],
   [
     "longhorn",
@@ -304,6 +331,50 @@ export const DEV_EXCLUDED_REASONS: ReadonlyMap<string, string> = new Map([
       "grows a CPU-only dev profile with a small model and a substrate-default StorageClass.",
   ],
   [
+    "platform",
+    "ITS TWO IMAGES ARE REAL AND FRESHLY PUBLISHED; WHAT IT LACKS IS A CREDENTIAL. The reason this " +
+      "Application carried until 2026-08-21 said it `runs two images no registry serves`, and that was " +
+      "FALSE in the way that matters -- it pointed at building an image that already exists. Measured: " +
+      "`full-ai-cluster/platform-controller/` is 20 committed files including six test files and a " +
+      "Dockerfile; `.github/workflows/build-platform-images.yml` builds BOTH images on every push to main " +
+      "touching those paths, pushes `:latest` + `:sha-<12>` to GHCR and cosign-signs by digest; its last " +
+      "push-to-main run (32454324648) was green at 2026-08-21T06:25:22Z, and both GHCR packages carry 36 " +
+      "versions updated at 06:25:5x the same morning. " +
+      "THE ACTUAL BLOCKER: both packages are `visibility: private`, and neither controller.yaml nor " +
+      "portal.yaml declares `imagePullSecrets` -- there is no `imagePullSecrets` on any pod spec in " +
+      "full-ai-cluster at all. An anonymous manifest GET against " +
+      "ghcr.io/v2/lucent-financial-group/zeta-platform-controller/manifests/latest returns HTTP 401; the " +
+      "same GET with a credential returns HTTP 200 and digest " +
+      "sha256:a4f3a81511b5eaec5c67761adb5f23121dfec472956bb3e37f2f18ce7c5fafaf. So the registry serves them " +
+      "to a principal that can log in, and the kubelet is not one -- the pods take ImagePullBackOff on " +
+      "EVERY substrate, CI and metal alike. This is not a dev-lane gap; it is why the metal cluster's " +
+      "platform control plane has never started either. " +
+      "SEPARATELY AND ALREADY KNOWN: both manifests pin `:latest`, so two syncs of one commit can land " +
+      "different bytes -- recorded as a follow-up at `full-ai-cluster/portal/DEPLOY.md:122` " +
+      "(`Digest-pin the manifests + have CI bump them, instead of :latest + Always`). Not fixed here " +
+      "because pinning replaces the documented `push -> rebuild -> rollout restart` delivery model with one " +
+      "that needs a manifest commit per build, and that is a maintainer's trade, not a lint's. " +
+      "LIFTS WHEN: the pull path exists -- either the two GHCR packages are made public, or the pod specs " +
+      "gain an `imagePullSecrets` bound to a token this lane can mint -- AND `platform/**` leaves " +
+      "`DEFAULT_ROOT_DEV_CATALOG.excludeGlob`. Neither half alone is enough: without the credential the " +
+      "Application would sync and then sit in ImagePullBackOff, which ArgoCD reports as Progressing rather " +
+      "than Degraded, so it would burn the whole timeout and report the symptom instead of the cause.",
+  ],
+  [
+    "temporal",
+    "ITS CHART HAS NO PERSISTENCE STORE CONFIGURED, so it does not render. Application.yaml sets " +
+      "`cassandra.enabled: false` and leaves the CockroachDB SQL block COMMENTED OUT beneath it, which " +
+      "leaves temporal 0.59.0 with a default store it cannot describe: `helm template` fails with " +
+      "`execution error at (temporal/templates/server-job.yaml:73:18): Please specify cassandra port for " +
+      "default store` -- measured by `rendered-storage-claims.ts` and carried as an acknowledged " +
+      "`helm-template-failed` row in its baseline. A commented-out block is not a pending dependency, which " +
+      "is the same error the `spire` reason had to correct: nothing about bringing CockroachDB up changes " +
+      "this, because no rendered manifest points at it. " +
+      "LIFTS WHEN: the `persistence` block is UNCOMMENTED against a reachable store (the cockroachdb " +
+      "Application is already asserted in this lane), so the chart renders -- and then a live run says " +
+      "whether anything else is in the way.",
+  ],
+  [
     "vllm",
     "Same class as ollama: CUDA image, nvidia.com/gpu request, 200Gi longhorn PVC. " +
       "LIFTS WHEN: a GPU-bearing self-hosted runner exists for this lane, or a CPU-only dev profile ships.",
@@ -317,18 +388,49 @@ export interface DevExclusionDrift {
   readonly unreasoned: readonly string[];
   /** Reasons for directories that no longer exist under the applications tree. */
   readonly stale: readonly string[];
+  /**
+   * Named in `DEFAULT_ROOT_DEV_CATALOG.excludeGlob` -- so the dev/CI lane never
+   * applies them -- and carrying NO reason in this registry. The glob is what
+   * actually defers; this registry is what has to say why.
+   */
+  readonly globExcludedWithoutReason: readonly string[];
+  /**
+   * The reverse: a reason claiming the lane does not apply a directory that the
+   * glob does apply. A deferral that stopped being real still reads as one.
+   */
+  readonly reasonedButApplied: readonly string[];
 }
 
 /**
- * Both directions on the reasoned-exclusion registry.
+ * All four directions on the reasoned-exclusion registry.
  *
  * `unreasoned` cannot fire while `DEV_EXCLUDED_DIRS` is derived from the map's
  * own keys -- that derivation is what makes an unreasoned entry unwritable, and
  * the check stays so the property is asserted rather than merely arranged. It
  * DOES fire on a reason with no `LIFTS WHEN:` clause, which is the failure mode
  * that survives the derivation: a sentence that explains and commits to nothing.
+ *
+ * THE TWO GLOB DIRECTIONS WERE MISSING, AND THAT WAS THE HOLE
+ * (081M0M9TRQ8087G0R000CS3F1X). This registry's own header says it describes
+ * "Applications the dev/CI lane neither applies nor asserts", and the thing
+ * that decides what the lane applies is `DEFAULT_ROOT_DEV_CATALOG.excludeGlob`
+ * in `ports.ts` -- which this function never read. So the registry was checked
+ * against the filesystem and against itself, and never against the list that
+ * actually defers. Measured 2026-08-21 on `main`: the glob excluded NINE
+ * directories and the registry reasoned about FIVE. `agent-memory`, `gitlab`,
+ * `platform` and `temporal` were excluded from every CI cluster with no
+ * recorded why and no lift condition, and both audit directions were green.
+ *
+ * That is the same vacuity the registry was built to remove, one list over: a
+ * check that cannot fail is not a check. `platform` is the instance that
+ * exposed it -- its only recorded reason was a source comment claiming its two
+ * images were served by no registry, which was FALSE (see the corrected reason
+ * in the map above), and no audit could notice because no audit looked.
  */
-export function auditDevExclusionReasons(repoRoot = REPO_ROOT): DevExclusionDrift {
+export function auditDevExclusionReasons(
+  repoRoot = REPO_ROOT,
+  excludeGlob: string = DEFAULT_ROOT_DEV_CATALOG.excludeGlob,
+): DevExclusionDrift {
   const applicationsRoot = join(repoRoot, "full-ai-cluster/k8s/applications");
   const present = existsSync(applicationsRoot)
     ? new Set(
@@ -337,12 +439,15 @@ export function auditDevExclusionReasons(repoRoot = REPO_ROOT): DevExclusionDrif
           .map((entry) => entry.name),
       )
     : new Set<string>();
+  const globExcluded = rootDevCatalogExcludedDirs(excludeGlob);
 
   return {
     unreasoned: [...DEV_EXCLUDED_DIRS]
       .filter((dir) => !(DEV_EXCLUDED_REASONS.get(dir) ?? "").includes("LIFTS WHEN:"))
       .sort(),
     stale: [...DEV_EXCLUDED_REASONS.keys()].filter((dir) => !present.has(dir)).sort(),
+    globExcludedWithoutReason: [...globExcluded].filter((dir) => !DEV_EXCLUDED_REASONS.has(dir)).sort(),
+    reasonedButApplied: [...DEV_EXCLUDED_REASONS.keys()].filter((dir) => !globExcluded.has(dir)).sort(),
   };
 }
 
@@ -432,13 +537,24 @@ const DEV_INCLUDED_PROOF_DEFERRED_DIRS = new Set([
   // `replicas: 0` StatefulSet reaches Synced+Healthy, and removed it. Recorded
   // so the deferral is not reinstated by a future merge.
   //
-  // Renders `monitoring.coreos.com/v1` ServiceMonitor + PrometheusRule (CRDs
-  // owned by kube-prometheus-stack, which IS asserted here as of 2026-08-21, so
-  // this half of the reason no longer stands on its own) and a
-  // `gateway.networking.k8s.io/v1` Gateway, and runs two images no registry
-  // serves: ghcr.io/lucent-financial-group/zeta-platform-controller:latest and
-  // .../zeta-portal:latest. portal.yaml also pins `storageClassName: longhorn`,
-  // so the longhorn rule catches it independently.
+  // CORRECTED 2026-08-21 (081M0M9TRQ8087G0R000CS3F1X). This comment used to end
+  // "runs two images NO REGISTRY SERVES", and that clause was false. Both
+  // images are built and pushed by `.github/workflows/build-platform-images.yml`
+  // on every push to main touching their paths, and both GHCR packages exist
+  // with 36 versions each, last updated the same morning this was written. What
+  // is true is that the packages are PRIVATE and no pod spec in full-ai-cluster
+  // declares `imagePullSecrets`, so an anonymous pull takes HTTP 401 while a
+  // credentialed one takes HTTP 200. The full measurement, and why the two read
+  // differently for anyone deciding what to do about it, is the `platform` entry
+  // in DEV_EXCLUDED_REASONS -- which is where this Application's reason now
+  // lives, because `platform/**` is in `DEFAULT_ROOT_DEV_CATALOG.excludeGlob`
+  // and that registry is the one the glob audit checks.
+  //
+  // Still true, and independent: it renders `monitoring.coreos.com/v1`
+  // ServiceMonitor + PrometheusRule (CRDs owned by kube-prometheus-stack, which
+  // IS asserted here as of 2026-08-21, so this half no longer stands on its
+  // own) and a `gateway.networking.k8s.io/v1` Gateway, and portal.yaml pins
+  // `storageClassName: longhorn`.
   "platform",
   // MEASURED 2026-08-21, run 32528419577 on `main`: `OutOfSync`/`Missing`, event
   // `Sync operation to 0.24.2 failed: one or more synchronization tasks are not
