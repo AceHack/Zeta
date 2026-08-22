@@ -191,7 +191,8 @@ export interface FileBackedEspWrite {
     // control plane. See firstboot-role.ts.
     | "/zeta-firstboot.conf"
     | "/zeta-join-token"
-    | "/zeta-bind-uefi-keyfile";
+    | "/zeta-bind-uefi-keyfile"
+    | "/zeta-qemu-creds-passphrase";
   readonly sourcePath?: string;
   readonly content?: string;
 }
@@ -223,6 +224,13 @@ export interface FileBackedZflashImagePlanInput {
    * opt-in-binds the target ESP keyfile. QEMU-only marker; not default persist.
    */
   readonly bindUefiKeyfileMarker?: boolean;
+  /**
+   * When set (non-empty after trailing-newline strip), writes
+   * `/zeta-qemu-creds-passphrase` so non-interactive QEMU can run 6.95-picker.
+   * QEMU-only test secret; not a production operator path. Errors must not
+   * echo the value.
+   */
+  readonly qemuCredsPassphrase?: string;
   /**
    * When set, writes `/zeta-firstboot.conf` so the booting node learns
    * whether it founds a cluster or joins one. Omitted → unchanged behaviour:
@@ -432,6 +440,16 @@ export function planFileBackedZflashImage(input: FileBackedZflashImagePlanInput)
     espWrites.push({
       content: "1\n",
       destination: "/zeta-bind-uefi-keyfile",
+    });
+  }
+  if (input.qemuCredsPassphrase !== undefined) {
+    const passphrase = input.qemuCredsPassphrase.replace(/\r?\n$/, "");
+    if (passphrase.length === 0) {
+      return { ok: false, error: "qemuCredsPassphrase is empty" };
+    }
+    espWrites.push({
+      content: `${passphrase}\n`,
+      destination: "/zeta-qemu-creds-passphrase",
     });
   }
   // 081KSNY2Z0008QG0R0008PN7RQ role provisioning. Ordered AFTER the existing

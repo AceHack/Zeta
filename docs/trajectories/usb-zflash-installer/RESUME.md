@@ -37,9 +37,12 @@ are mutually exclusive. Opt-in
 persist-default UUID; ISO/cdrom does not. Opt-in
 `QEMU_UEFI_KEYFILE_PHASE1=1` (dedicated; not implied by wifi/iSerial)
 bakes `/zeta-bind-uefi-keyfile` and asserts the **install-time** keyfile
-write. It does **not** prove restore decrypt (non-interactive QEMU skips
-the passphrase, so the picker never binds the blob). Default wifi/iSerial
-phase-1 must not bake that marker. Not on `gate (required)`.
+write. It does **not** prove picker bind. Opt-in
+`QEMU_UEFI_KEYFILE_PICKER=1` (dedicated; not implied by PHASE1) also
+bakes `/zeta-qemu-creds-passphrase` so 6.95-picker binds the blob to the
+keyfile (restore-decrypt precondition; not phase-2 decrypt). Default
+wifi/iSerial phase-1 must not bake that marker or the passphrase file.
+Not on `gate (required)`.
 See `docs/security/USB-IDENTITY-THREAT-MODEL.md` <!-- STALE-REF: ../../security/USB-IDENTITY-THREAT-MODEL.md -->:
 traveler → cluster → federation → ISociety/CTM, self-similar.
 Cluster/federation glossary promoted (`docs/SEED-VOCABULARY.md` +

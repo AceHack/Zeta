@@ -267,11 +267,15 @@ GitHub-forever APIs into Nix modules. CI uses `mock`; metal may use
    persist remains `--usb-uuid`. Opt-in `QEMU_UEFI_KEYFILE_PHASE1=1`
    (dedicated; not implied by wifi/iSerial) bakes `/zeta-bind-uefi-keyfile`
    onto the installer USB ESP and asserts the **install-time write**
-   (`persist-opt-in --uefi-keyfile`). It does **not** prove restore
-   decrypt: non-interactive QEMU skips the cred passphrase, so the picker
-   never binds the blob. Default wifi/iSerial phase-1 must stay UUID and
-   must not bake that marker. `workflow_dispatch` only; not on
-   `gate (required)`. No TPM / Touch ID claim.
+   (`persist-opt-in --uefi-keyfile`). It does **not** prove picker bind or
+   restore decrypt. Opt-in `QEMU_UEFI_KEYFILE_PICKER=1` (dedicated; not
+   implied by PHASE1) also bakes `/zeta-qemu-creds-passphrase` (QEMU test
+   secret; never logged) so non-interactive 6.95-picker binds the blob to
+   the keyfile. That is the restore-decrypt *precondition*. Live phase-2
+   restore decrypt (`passphraseMode=file` + `/run` staging) is a later
+   slice. Default wifi/iSerial phase-1 must stay UUID and must not bake
+   the bind marker or the passphrase file. `workflow_dispatch` only; not
+   on `gate (required)`. No TPM / Touch ID claim.
 4. **USB iSerial probe** — sysfs injectable probe landed
    (`src/Core.TypeScript/installer/usb-iserial-probe.ts`). Unique
    non-hub serial or fail closed. Optional `--usb-iserial` on

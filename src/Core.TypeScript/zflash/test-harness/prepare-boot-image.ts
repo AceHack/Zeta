@@ -64,6 +64,8 @@ export interface PrepareBootImageInput {
   readonly joinTokenSourcePath?: string;
   /** QEMU-only: bake `/zeta-bind-uefi-keyfile` so the guest writes the target ESP keyfile. */
   readonly bindUefiKeyfileMarker?: boolean;
+  /** QEMU-only: bake `/zeta-qemu-creds-passphrase` so non-interactive 6.95-picker can run. */
+  readonly qemuCredsPassphrase?: string;
 }
 
 export interface PrepareBootImageResult {
@@ -156,6 +158,7 @@ export function prepareBootImage(input: PrepareBootImageInput): PrepareBootImage
     ...(input.firstbootRole === undefined ? {} : { firstbootRole: input.firstbootRole }),
     ...(input.joinTokenSourcePath === undefined ? {} : { joinTokenSourcePath: input.joinTokenSourcePath }),
     ...(input.bindUefiKeyfileMarker === true ? { bindUefiKeyfileMarker: true } : {}),
+    ...(input.qemuCredsPassphrase === undefined ? {} : { qemuCredsPassphrase: input.qemuCredsPassphrase }),
   });
 
   if (!result.ok) {

@@ -77,6 +77,55 @@ describe("parseFileBackedZflashArgs", () => {
       },
     });
   });
+
+  test("parses --qemu-creds-passphrase-file without putting the secret in argv options as a flag name", () => {
+    const dir = mkdtempSync(join(tmpdir(), "zeta-qemu-pp-"));
+    const ppPath = join(dir, "pp.txt");
+    writeFileSync(ppPath, "qemu-test-secret\n");
+    const parsed = parseFileBackedZflashArgs([
+      "--iso",
+      "artifacts/zeta-installer.iso",
+      "--output",
+      "artifacts/zflash-baked.img",
+      "--esp-offset-bytes",
+      "1048576",
+      "--ssh-key",
+      "fixtures/id_ed25519.pub",
+      "--qemu-creds-passphrase-file",
+      ppPath,
+    ]);
+
+    expect(parsed).toEqual({
+      kind: "run",
+      options: {
+        espOffsetBytes: 1_048_576,
+        isoPath: "artifacts/zeta-installer.iso",
+        outputImagePath: "artifacts/zflash-baked.img",
+        pubkeyPath: "fixtures/id_ed25519.pub",
+        qemuCredsPassphrase: "qemu-test-secret",
+      },
+    });
+  });
+
+  test("maps a missing --qemu-creds-passphrase-file to not found without echoing the path", () => {
+    const missingPath = join(tmpdir(), "zeta-qemu-pp-missing", "no-such-passphrase.txt");
+    const parsed = parseFileBackedZflashArgs([
+      "--iso",
+      "artifacts/zeta-installer.iso",
+      "--output",
+      "artifacts/zflash-baked.img",
+      "--esp-offset-bytes",
+      "1048576",
+      "--qemu-creds-passphrase-file",
+      missingPath,
+    ]);
+
+    expect(parsed).toEqual({
+      kind: "error",
+      error: "--qemu-creds-passphrase-file not found",
+    });
+    expect(JSON.stringify(parsed)).not.toContain(missingPath);
+  });
 });
 
 describe("runFileBackedZflashCli", () => {

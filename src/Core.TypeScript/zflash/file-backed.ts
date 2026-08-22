@@ -36,6 +36,8 @@ export interface FileBackedZflashCliOptions {
   readonly firstbootRole?: ZetaFirstbootRole;
   readonly joinTokenSourcePath?: string;
   readonly bindUefiKeyfileMarker?: boolean;
+  /** QEMU-only test passphrase for `/zeta-qemu-creds-passphrase`. Never log. */
+  readonly qemuCredsPassphrase?: string;
 }
 
 export type FileBackedZflashCliParseResult =
@@ -79,7 +81,8 @@ const USAGE =
   "  --flake-host <attr>          flake host attribute for --role (defaults per role)\n" +
   "  --join-server-url <url>      https://host[:port] of the existing control plane (joiner only)\n" +
   "  --join-token <path>          copy k3s node-token material to /zeta-join-token (joiner only)\n" +
-  "  --bind-uefi-keyfile-marker   write /zeta-bind-uefi-keyfile (guest persist-opt-in; not default)\n";
+  "  --bind-uefi-keyfile-marker   write /zeta-bind-uefi-keyfile (guest persist-opt-in; not default)\n" +
+  "  --qemu-creds-passphrase-file <path>  write /zeta-qemu-creds-passphrase from a file (QEMU; not argv)\n";
 
 function resolveTestInfraPubkeyPath(): string {
   return resolveZetaTestInfraPubkeyFromZflashModule(import.meta.url);
@@ -174,6 +177,7 @@ export function parseFileBackedZflashArgs(args: readonly string[]): FileBackedZf
   let joinTokenSourcePath: string | undefined;
   let testMode = false;
   let bindUefiKeyfileMarker = false;
+  let qemuCredsPassphraseFile: string | undefined;
 
   for (let index = 0; index < args.length; index++) {
     const arg = args[index]!;
@@ -201,7 +205,8 @@ export function parseFileBackedZflashArgs(args: readonly string[]): FileBackedZf
       arg === "--role" ||
       arg === "--flake-host" ||
       arg === "--join-server-url" ||
-      arg === "--join-token"
+      arg === "--join-token" ||
+      arg === "--qemu-creds-passphrase-file"
     ) {
       const value = requireValue(args, index, arg);
       if (typeof value !== "string") return { kind: "error", error: value.error };
@@ -223,6 +228,7 @@ export function parseFileBackedZflashArgs(args: readonly string[]): FileBackedZf
       else if (arg === "--flake-host") flakeHostFlag = value;
       else if (arg === "--join-server-url") joinServerUrlFlag = value;
       else if (arg === "--join-token") joinTokenSourcePath = value;
+      else if (arg === "--qemu-creds-passphrase-file") qemuCredsPassphraseFile = value;
       else inlineStagingDirectory = value;
       index++;
       continue;
@@ -243,6 +249,24 @@ export function parseFileBackedZflashArgs(args: readonly string[]): FileBackedZf
   });
   if (!firstbootRole.ok) return { kind: "error", error: firstbootRole.error };
 
+  let qemuCredsPassphrase: string | undefined;
+  if (qemuCredsPassphraseFile !== undefined) {
+    // Read, then map ENOENT. existsSync-then-read is a check-then-use race
+    // (lint-check-then-use-file-races). Never echo the path or contents.
+    try {
+      const raw = readFileSync(qemuCredsPassphraseFile, "utf8").replace(/\r?\n$/, "");
+      if (raw.length === 0) {
+        return { kind: "error", error: "--qemu-creds-passphrase-file is empty" };
+      }
+      qemuCredsPassphrase = raw;
+    } catch (err) {
+      if ((err as NodeJS.ErrnoException).code === "ENOENT") {
+        return { kind: "error", error: "--qemu-creds-passphrase-file not found" };
+      }
+      return { kind: "error", error: "--qemu-creds-passphrase-file read failed" };
+    }
+  }
+
   return {
     kind: "run",
     options: {
@@ -260,6 +284,7 @@ export function parseFileBackedZflashArgs(args: readonly string[]): FileBackedZf
       ...(firstbootRole.value === undefined ? {} : { firstbootRole: firstbootRole.value }),
       ...(joinTokenSourcePath === undefined ? {} : { joinTokenSourcePath }),
       ...(bindUefiKeyfileMarker ? { bindUefiKeyfileMarker: true } : {}),
+      ...(qemuCredsPassphrase === undefined ? {} : { qemuCredsPassphrase }),
     },
   };
 }
@@ -336,6 +361,7 @@ export function runFileBackedZflashCli(
     ...(options.firstbootRole === undefined ? {} : { firstbootRole: options.firstbootRole }),
     ...(options.joinTokenSourcePath === undefined ? {} : { joinTokenSourcePath: options.joinTokenSourcePath }),
     ...(options.bindUefiKeyfileMarker === true ? { bindUefiKeyfileMarker: true } : {}),
+    ...(options.qemuCredsPassphrase === undefined ? {} : { qemuCredsPassphrase: options.qemuCredsPassphrase }),
   };
   const planned = planFileBackedZflashImage(planInput);
   if (!planned.ok) return { ok: false, error: planned.error };

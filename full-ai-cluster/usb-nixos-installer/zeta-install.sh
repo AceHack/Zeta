@@ -1981,6 +1981,30 @@ else
   echo "[uefi-keyfile] no zeta-bind-uefi-keyfile on boot USB ESP"
   ZETA_BIND_UEFI_FROM_ESP=0
 fi
+# QEMU-only: /zeta-qemu-creds-passphrase lets non-interactive installs run
+# 6.95-picker (Step 6.56 skips the typed prompt on non-TTY). Metal still types
+# at 6.56. Never echo the file contents. Typed passphrase wins if already set.
+QEMU_PP_FILE=""
+if [ ${#SEARCH_DIRS[@]} -gt 0 ]; then
+  QEMU_PP_FILE=$(sudo find "${SEARCH_DIRS[@]}" \
+    -maxdepth 5 -name "zeta-qemu-creds-passphrase" -type f 2>/dev/null | head -1 || true)
+fi
+if [ -z "$QEMU_PP_FILE" ] && [ -f "$PROBE_MOUNT/zeta-qemu-creds-passphrase" ]; then
+  QEMU_PP_FILE="$PROBE_MOUNT/zeta-qemu-creds-passphrase"
+fi
+if [ -n "$QEMU_PP_FILE" ]; then
+  echo "[uefi-keyfile] found zeta-qemu-creds-passphrase on boot USB ESP"
+  if [ -z "${ZETA_CREDS_PASSPHRASE_VAL:-}" ]; then
+    ZETA_CREDS_PASSPHRASE_VAL="$(sudo cat "$QEMU_PP_FILE" | tr -d '\r' | sed -n '1p' || true)"
+    if [ -n "$ZETA_CREDS_PASSPHRASE_VAL" ]; then
+      echo "[uefi-keyfile] passphrase captured from boot USB ESP (QEMU; not typed)"
+    else
+      echo "[uefi-keyfile] zeta-qemu-creds-passphrase empty; staying skip"
+    fi
+  fi
+else
+  echo "[uefi-keyfile] no zeta-qemu-creds-passphrase on boot USB ESP"
+fi
 # 081KZHJPJCF: unmount the boot USB ESP that was RE-mounted for the iter-5.2 hostname +
 # iter-5-wifi probes (see the re-mount before iter-5.2). Harmless no-op if it was never
 # re-mounted (no pubkey / empty BOOT_ESP_PART).

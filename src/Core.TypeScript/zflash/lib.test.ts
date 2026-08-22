@@ -441,6 +441,42 @@ describe("planFileBackedZflashImage", () => {
     ]);
   });
 
+  test("plans the QEMU cred passphrase as an ESP write without echoing the secret in errors", () => {
+    const result = planFileBackedZflashImage({
+      espOffsetBytes: 1_048_576,
+      isoPath: "artifacts/zeta-installer.iso",
+      outputImagePath: "artifacts/zflash-baked.img",
+      bindUefiKeyfileMarker: true,
+      qemuCredsPassphrase: "qemu-test-secret",
+    });
+
+    expect(result.ok).toBe(true);
+    if (!result.ok) throw new Error(result.error);
+    expect(result.value.espWrites).toEqual([
+      {
+        content: "1\n",
+        destination: "/zeta-bind-uefi-keyfile",
+      },
+      {
+        content: "qemu-test-secret\n",
+        destination: "/zeta-qemu-creds-passphrase",
+      },
+    ]);
+  });
+
+  test("rejects an empty QEMU cred passphrase without echoing a value", () => {
+    const result = planFileBackedZflashImage({
+      espOffsetBytes: 1_048_576,
+      isoPath: "artifacts/zeta-installer.iso",
+      outputImagePath: "artifacts/zflash-baked.img",
+      qemuCredsPassphrase: "\n",
+    });
+    expect(result.ok).toBe(false);
+    if (result.ok) throw new Error("expected empty passphrase to fail");
+    expect(result.error).toBe("qemuCredsPassphrase is empty");
+    expect(result.error).not.toContain("\n");
+  });
+
   test("rejects wifi credentials missing ssid without printing the password", () => {
     const result = planFileBackedZflashImage({
       espOffsetBytes: 1_048_576,

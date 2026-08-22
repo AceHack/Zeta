@@ -19,6 +19,14 @@ export const UEFI_KEYFILE_IMAGE_PATH = "/EFI/ZETA/keyfile" as const;
 /** Installer-USB marker: presence means persist-opt-in, same role as `ZETA_BIND_UEFI_KEYFILE=1`. */
 export const UEFI_KEYFILE_BIND_MARKER_IMAGE_PATH = "/zeta-bind-uefi-keyfile" as const;
 
+/**
+ * QEMU-only passphrase file on the installer USB ESP. Presence lets
+ * non-interactive zeta-install capture a passphrase so 6.95-picker can
+ * bind the blob. Not a production operator path; metal still types at 6.56.
+ * Never log the contents.
+ */
+export const QEMU_CREDS_PASSPHRASE_IMAGE_PATH = "/zeta-qemu-creds-passphrase" as const;
+
 /** Install-time host path (target ESP mounted at /mnt/boot). */
 export const UEFI_KEYFILE_INSTALL_PATH = `/mnt/boot${UEFI_KEYFILE_IMAGE_PATH}` as const;
 
@@ -41,6 +49,12 @@ export const UEFI_KEYFILE_SERIAL = {
   persistBothOptInsUuid: "[uefi-keyfile] ZETA_BIND_UEFI_KEYFILE and ZETA_BIND_USB_ISERIAL both set; staying --usb-uuid",
   espFound: "[uefi-keyfile] found zeta-bind-uefi-keyfile on boot USB ESP",
   espMissing: "[uefi-keyfile] no zeta-bind-uefi-keyfile on boot USB ESP",
+  espPassphraseFound: "[uefi-keyfile] found zeta-qemu-creds-passphrase on boot USB ESP",
+  espPassphraseMissing: "[uefi-keyfile] no zeta-qemu-creds-passphrase on boot USB ESP",
+  espPassphraseCaptured: "[uefi-keyfile] passphrase captured from boot USB ESP (QEMU; not typed)",
+  espPassphraseEmpty: "[uefi-keyfile] zeta-qemu-creds-passphrase empty; staying skip",
+  pickerBoundKeyfile: "[iter-5.5.0]   passphrase from Step 6.56; binding --uefi-keyfile",
+  pickerSkipped: "[iter-5.5.0]   SKIP 6.95-picker:",
 } as const;
 
 export type UefiKeyfileError = { readonly error: string };

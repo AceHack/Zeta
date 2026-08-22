@@ -1,7 +1,7 @@
 import { describe, expect, it } from "bun:test";
 import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
-import { DEFAULT_QEMU_WIFI_PASSWORD } from "../zflash/test-harness/prepare-boot-image";
+import { DEFAULT_QEMU_PASSPHRASE, DEFAULT_QEMU_WIFI_PASSWORD } from "../zflash/test-harness/prepare-boot-image";
 import { validateSelfRegCiCoherent } from "./self-reg-serial.ts";
 import {
   assertFirstBootProvisioningContract,
@@ -9,6 +9,7 @@ import {
   INSTALL_SH_START_MARKER,
   assertGeneratedNodeHostnameContract,
   assertUefiKeyfilePhase1Contract,
+  assertUefiKeyfilePickerContract,
   assertUsbISerialPhase1Contract,
   assertWifiEspPhase1Contract,
   buildQemuDiskBootArgsPure,
@@ -175,6 +176,23 @@ describe("qemu-full-install-test usb iSerial phase-1 contract", () => {
     }
   });
 
+  it("fails when the QEMU cred passphrase ESP file is baked on the default QEMU path", () => {
+    const serial = [
+      USB_ISERIAL_SERIAL.found,
+      usbISerialValueMarker(QEMU_USB_TEST_SERIAL),
+      USB_ISERIAL_SERIAL.noMetalClaim,
+      USB_ISERIAL_SERIAL.persistDefaultUuid,
+      UEFI_KEYFILE_SERIAL.espMissing,
+      UEFI_KEYFILE_SERIAL.espPassphraseFound,
+      "ZETA CLUSTER NODE INSTALL COMPLETE",
+    ].join("\n");
+    const result = assertUsbISerialPhase1Contract(serial);
+    expect(result.ok).toBe(false);
+    if (!result.ok) {
+      expect(result.reason).toContain("passphrase ESP file");
+    }
+  });
+
   it("fails when probe succeeded but persist-default marker is missing", () => {
     const serial = [
       USB_ISERIAL_SERIAL.found,
@@ -266,6 +284,66 @@ describe("qemu-full-install-test UEFI keyfile phase-1 contract", () => {
     expect(result.ok).toBe(false);
     if (!result.ok) {
       expect(result.reason).toContain("fail, not a skip");
+    }
+  });
+
+  it("fails when the QEMU passphrase ESP file appears on the write-only path", () => {
+    const serial = [
+      UEFI_KEYFILE_SERIAL.espFound,
+      UEFI_KEYFILE_SERIAL.wrote,
+      UEFI_KEYFILE_SERIAL.noMetalClaim,
+      UEFI_KEYFILE_SERIAL.persistOptInKeyfile,
+      UEFI_KEYFILE_SERIAL.espPassphraseFound,
+      "ZETA CLUSTER NODE INSTALL COMPLETE",
+    ].join("\n");
+    const result = assertUefiKeyfilePhase1Contract(serial);
+    expect(result.ok).toBe(false);
+    if (!result.ok) {
+      expect(result.reason).toContain("write-only");
+    }
+  });
+});
+
+describe("qemu-full-install-test UEFI keyfile picker contract", () => {
+  const pickerSerial = [
+    UEFI_KEYFILE_SERIAL.espFound,
+    UEFI_KEYFILE_SERIAL.wrote,
+    UEFI_KEYFILE_SERIAL.noMetalClaim,
+    UEFI_KEYFILE_SERIAL.persistOptInKeyfile,
+    UEFI_KEYFILE_SERIAL.espPassphraseFound,
+    UEFI_KEYFILE_SERIAL.espPassphraseCaptured,
+    `${UEFI_KEYFILE_SERIAL.pickerBoundKeyfile} (default FAT UUID; iSerial/keyfile only if the matching ZETA_BIND_* opt-in succeeded)`,
+    "ZETA CLUSTER NODE INSTALL COMPLETE",
+  ].join("\n");
+
+  it("accepts write markers plus passphrase capture plus --uefi-keyfile bind", () => {
+    expect(assertUefiKeyfilePickerContract(pickerSerial).ok).toBe(true);
+  });
+
+  it("fails when 6.95-picker was skipped", () => {
+    const serial = [
+      UEFI_KEYFILE_SERIAL.espFound,
+      UEFI_KEYFILE_SERIAL.wrote,
+      UEFI_KEYFILE_SERIAL.noMetalClaim,
+      UEFI_KEYFILE_SERIAL.persistOptInKeyfile,
+      UEFI_KEYFILE_SERIAL.espPassphraseFound,
+      UEFI_KEYFILE_SERIAL.espPassphraseCaptured,
+      `${UEFI_KEYFILE_SERIAL.pickerSkipped} ZETA_CREDS_PASSPHRASE_VAL empty`,
+      "ZETA CLUSTER NODE INSTALL COMPLETE",
+    ].join("\n");
+    const result = assertUefiKeyfilePickerContract(serial);
+    expect(result.ok).toBe(false);
+    if (!result.ok) {
+      expect(result.reason).toContain("skipped");
+    }
+  });
+
+  it("fails when the serial leaks the QEMU test passphrase", () => {
+    const serial = `${pickerSerial}\n${DEFAULT_QEMU_PASSPHRASE}\n`;
+    const result = assertUefiKeyfilePickerContract(serial);
+    expect(result.ok).toBe(false);
+    if (!result.ok) {
+      expect(result.reason).toContain("leaked");
     }
   });
 });
