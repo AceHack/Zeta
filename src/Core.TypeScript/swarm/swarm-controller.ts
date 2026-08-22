@@ -158,9 +158,21 @@ Output a JSON array of tool calls you wish to execute. Example: [{"tool": "setWo
 
         // Persist signature to known-signatures.json
         const sigFile = path.join(__dirname, "known-signatures.json");
-        let known = [];
-        if (fs.existsSync(sigFile)) {
+        // ONE syscall, ONE answer. An `existsSync` gate in front of the read is a
+        // check-then-use race: the path can be created, deleted or replaced between
+        // the two calls, so the answer the check returned is already stale by the
+        // time the read runs. It reads as defensive and prevents nothing -- the read
+        // still has to be able to fail, so let it, and interpret the failure.
+        // Refused by src/Core.TypeScript/hygiene/lint-check-then-use-file-races.ts.
+        let known: string[] = [];
+        try {
           known = JSON.parse(fs.readFileSync(sigFile, "utf-8"));
+        } catch (e) {
+          // A missing file is the ordinary first-run case and means "none known".
+          // Anything else -- unreadable, malformed JSON -- is a real fault and is
+          // NOT swallowed: silently starting from [] there would quietly discard
+          // every signature already on disk and rewrite the file with one entry.
+          if ((e as NodeJS.ErrnoException).code !== "ENOENT") throw e;
         }
         if (!known.includes(sig)) {
           known.push(sig);
