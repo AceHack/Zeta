@@ -1,0 +1,17 @@
+{
+  "pr_number": 13879,
+  "archive_path": "docs/history/pr-reviews/PR-13879-feat-search-dogfooded-search-cli-that-refuses-an-unbounded-scope-the-constraint-.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7ksYi-",
+    "comment:PRRC_kwDOSF9kNM7ksYi7",
+    "thread:PRRT_kwDOSF9kNM6ba2pX",
+    "thread:PRRT_kwDOSF9kNM6ba2pZ"
+  ],
+  "fetched_at": "2026-08-22T19:52:19.524Z",
+  "schema_version": "v1",
+  "commit_sha": "c36e03c2b55b8cf3274d8adb0275ddaef7fe1d0d",
+  "title": "feat(search): dogfooded search CLI that refuses an unbounded scope — the constraint in the tool, not the prose",
+  "state": "MERGED",
+  "merged_at": "2026-08-22T19:51:33Z",
+  "head_ref": "feat/dogfood-search-cli"
+}
