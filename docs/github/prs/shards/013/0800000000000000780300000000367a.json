@@ -1,0 +1,12 @@
+{
+  "pr_number": 13946,
+  "archive_path": "docs/history/pr-reviews/PR-13946-fix-ci-align-runner-policy-and-eliminate-verifier-races.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-22T22:10:57.397Z",
+  "schema_version": "v1",
+  "commit_sha": "15e926139c38bc77cb3937bf98429195efe8d540",
+  "title": "fix(ci): align runner policy and eliminate verifier races",
+  "state": "MERGED",
+  "merged_at": "2026-08-22T22:10:11Z",
+  "head_ref": "codex/runner-envelope-test-alignment"
+}
