@@ -1,11 +1,12 @@
 ---
 id: 081M0N9SSJ1087G0R001WVSN9V
 type: task
-state: in-progress
+state: done
 priority: P2
 slug: port-zeta23-linalg-von-neumann-trace-inequality-3-engine-to
 title: "Port Zeta23/LinAlg (von Neumann trace inequality + §3 engine) to our Mathlib v4.30.0-rc1 pin"
 created: 2026-08-22T17:55:20.769Z
+completed: 2026-08-22T20:34:37.117Z
 depends_on: []
 composes_with: []
 ---
