@@ -302,3 +302,12 @@ data/ARC-AGI/
 # a `git add -A` after running the audit cannot commit a chart tarball into the
 # proof lineage (.claude/rules/no-binary-in-proof-lineage.md).
 .helm-render-cache/
+
+# Per-agent scratch, kept INSIDE the clone on purpose.
+#
+# Two agents lost work on 2026-08-21 to collisions in bare `/tmp`: shared paths
+# there are not namespaced by clone, so two loops writing the same filename race
+# and the loser never finds out. Scratch belongs beside the work it is scratch
+# FOR -- one directory per clone, ignored so it can never be staged, and deleted
+# with the clone rather than outliving it in a shared tmpdir.
+.shadow-scratch/
