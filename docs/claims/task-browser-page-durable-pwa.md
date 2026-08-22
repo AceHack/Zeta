@@ -13,3 +13,5 @@
 Builds on merged PR #13007. The page must recover room and causal state through
 the owned IndexedDB checkpoint port, drain pending writes before shutdown, and
 retain typed backpressure instead of silently dropping unfinished persistence.
+The claim also carries the eight-path workitem reference repair found by the
+mandatory pre-push auto-vivify gate before this branch could publish.

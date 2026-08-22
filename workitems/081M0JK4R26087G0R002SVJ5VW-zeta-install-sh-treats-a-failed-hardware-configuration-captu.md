@@ -30,7 +30,7 @@ entry and never mount again on the node.
 
 ## Why it compounds
 
-PR #13252 added `nixos/modules/longhorn-node-preflight.nix`, a boot-time refusal
+PR #13252 added `full-ai-cluster/nixos/modules/longhorn-node-preflight.nix`, a boot-time refusal
 whose must-be-mounted set is DERIVED from the host's own `fileSystems`. On a
 placeholder node that set is EMPTY, so the mount check passes with nothing to
 check. The silent install-time fallback turned a brand-new guard into a check
@@ -38,8 +38,8 @@ that cannot fail.
 
 ## The committed placeholders are NOT the bug
 
-`hosts/control-plane/hardware-configuration.nix` and
-`hosts/worker-gpu/hardware-configuration.nix` are `/`+`/boot` stubs on purpose,
+`full-ai-cluster/nixos/hosts/control-plane/hardware-configuration.nix` and
+`full-ai-cluster/nixos/hosts/worker-gpu/hardware-configuration.nix` are `/`+`/boot` stubs on purpose,
 so `nix flake check` can evaluate an unprovisioned host in CI. That state is
 correct. The defect was the install-time capture failing quietly.
 

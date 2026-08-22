@@ -31,7 +31,7 @@ and the PVC it names lives at `arc-runner-set/model-cache-pvc.yaml:8`, a
 
 The Application sources a REMOTE Helm chart, not this git path, so it cannot
 apply its own sibling. Nothing else does either: the root app-of-apps
-(`bootstrap/root-application.yaml`) includes only
+(`full-ai-cluster/k8s/bootstrap/root-application.yaml`) includes only
 `{*/Application.yaml,Application.yaml}`, which does not match a bare
 `model-cache-pvc.yaml`.
 
@@ -71,4 +71,3 @@ against `origin/main` before filing. Note the ArgoCD reach audit added in
 PR #13265 targets the sibling class (an `Application.yaml` no root can discover)
 but would NOT catch this one, since here it is a non-Application manifest that
 is unreachable.
-
