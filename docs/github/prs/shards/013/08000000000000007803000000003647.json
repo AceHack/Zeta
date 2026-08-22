@@ -1,0 +1,12 @@
+{
+  "pr_number": 13895,
+  "archive_path": "docs/history/pr-reviews/PR-13895-skip-review-telemetry-flush-fix-deps-regenerate-bun-lock-ld001-auto-heal.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-22T19:55:26.828Z",
+  "schema_version": "v1",
+  "commit_sha": "b83e76f9e02cac39373f3754f836fb74f1888202",
+  "title": "[skip-review][telemetry-flush] fix(deps): regenerate bun.lock (LD001 auto-heal)",
+  "state": "MERGED",
+  "merged_at": "2026-08-22T19:54:43Z",
+  "head_ref": "heartbeat/lockfile-healer-probe"
+}
