@@ -79,6 +79,31 @@
 
   "activeStorageProfile": "measured",
 
+  "$comment_activeResourceProfile": [
+    "Which rung of storage-profiles.json's `resourceProfiles` THIS deployment runs.",
+    "REQUIRED - readLedger refuses a ledger without it, for the same reason it",
+    "refuses a missing activeStorageProfile.",
+    "",
+    "THIS KEY DID NOT EXIST UNTIL 2026-08-22, and its absence is the whole of the",
+    "second finding in PR #13663. Two CPU/memory rungs existed; one of them was",
+    "written into the manifests; nothing in the repo recorded which. Measured that",
+    "day, all four combinations:",
+    "",
+    "  rung    --check              --budget",
+    "  dev     exit 1, 54 drifts    exit 0     <- what CI runs",
+    "  metal   exit 0               exit 1     <- what the tree carries",
+    "",
+    "One rung checked and not budgeted, the other budgeted and not checked, each",
+    "green on the half it was measured against, and nothing comparing the two.",
+    "`findRungCoverage` is now that comparison and this key is the input it needs.",
+    "",
+    "`metal` is the honest answer today: `--resource-profile metal --check` exits 0",
+    "against the committed manifests. Writing `dev` here would make the ledger",
+    "disagree with the tree, which `findResourceProfileDrift` refuses."
+  ],
+
+  "activeResourceProfile": "metal",
+
   "$comment_nodeDiskGib": [
     "Usable disk per node, in GiB, dedicated to the replicated-storage class.",
     "",
@@ -285,6 +310,68 @@
   ],
 
   "acknowledgedCapacityShortfall": [],
+
+  "$comment_acknowledgedComputeShortfall": [
+    "EMPTY, and unlike the storage list above it has never carried an entry.",
+    "",
+    "The `metal` rung reserves 8106m / 19752Mi across the 46 Applications the",
+    "bootstrap root applies. The smallest registered node measures 16 logical CPUs",
+    "(16000m) and 62942 MiB, so the rung fits with 7894m / 43190Mi of the raw",
+    "bound unspent. That is a REPORT, not a pass: the bound reserves nothing for",
+    "the kubelet, the control plane, kube-system or the OS, and 30 of the 46",
+    "Applications render BestEffort pods that no arithmetic here ever sees.",
+    "",
+    "Carry an entry here as `cpu=<declared>m>><measured>m@<node>` or",
+    "`memory=<declared>Mi>><measured>Mi@<node>`. Both numbers are in the key for",
+    "the reason the storage key gives: acknowledging the bare dimension would let",
+    "any later growth - or a smaller node joining - be silently absorbed.",
+    "",
+    "THE UNITS ARE NOT SYMMETRIC AND THE ASYMMETRY IS MEASURED. The registration",
+    "scripts capture storage with `lsblk` (BINARY human sizes) and memory with",
+    "`free -h --si` (DECIMAL) - one line apart in the same function. So `931.5G`",
+    "of disk is 931.5 GiB and `66G` of RAM is 62942 MiB, not 67584 MiB. Reading",
+    "the memory as binary would inflate this bound by 4642 MiB per node, and",
+    "inflating a bound is the ACQUITTING direction.",
+    "",
+    "`cores` is likewise not what its name says: both scripts write `$(nproc)`,",
+    "which counts LOGICAL CPUs. maximdolphin's nodes record `cores: 22` on a",
+    "16-core / 22-thread Ultra 9 185H. The thread count is the right number here -",
+    "it is what the kubelet reports as capacity.cpu - but the field name is not.",
+    "",
+    "The UNVERIFIED case is NOT acknowledgeable here, same as above."
+  ],
+
+  "acknowledgedComputeShortfall": [],
+
+  "$comment_acknowledgedRungBudgetGap": [
+    "The one tolerated disagreement between the rung the tree CARRIES and the rung",
+    "CI BUDGETS, recorded as",
+    "`<committed>@<budgeted>-lane=<cpu>m/<mem>Mi>><budgetCpu>m/<budgetMem>Mi`.",
+    "",
+    "CARRIED, NOT RESOLVED, and it is deliberately not the auditor's call to",
+    "resolve. `metal` over the 37 Applications the dev lane applies is 4231m /",
+    "11427Mi against a 2500m / 9216Mi runner budget. The arithmetic that makes",
+    "this a maintainer decision rather than a code change:",
+    "",
+    "  dev lane at `metal` (what the tree carries)   4231m   over by 1731m",
+    "  ...with hindsight removed ENTIRELY            3231m   still over by 731m",
+    "  ...with hindsight alone cut to `dev`          3631m   still over by 1131m",
+    "  dev lane at `dev`                             1906m   fits, 594m spare",
+    "",
+    "So no app-local fix closes it; mimir at 1610m is the single largest",
+    "reservation and hindsight is 1000m. The two ways out are applying `dev` to",
+    "the committed tree, or building a per-substrate override point so one tree",
+    "can carry two rungs. bootstrap/root-application.yaml points the metal cluster",
+    "at the same path the CI lane uses, so today there is no override point at",
+    "all. Both options are costed in",
+    "docs/research/2026-08-22-one-tree-two-substrates-the-resource-rung-override-trade.md.",
+    "",
+    "Deleting this entry is the fix. While it is here the gap is stated rather",
+    "than hidden, and every one of the four numbers is pinned - move any of them",
+    "and this goes red until the trade is re-stated."
+  ],
+
+  "acknowledgedRungBudgetGap": ["metal@dev-lane=4231m/11427Mi>>2500m/9216Mi"],
 
   "$comment_acknowledgedRootAppDuplicates": [
     "argocd/zeta-root is declared TWICE with two different spec.source.path values:",

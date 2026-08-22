@@ -1,0 +1,12 @@
+{
+  "pr_number": 13740,
+  "archive_path": "docs/history/pr-reviews/PR-13740-fix-cluster-platform-s-blocker-is-a-credential-and-the-pull-path-is-now-built-bu.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-22T15:27:39.755Z",
+  "schema_version": "v1",
+  "commit_sha": "4a8b799acdf2ddc08f032a0e865057c453f11e0d",
+  "title": "fix(cluster): platform's blocker is a credential, and the pull path is now built — but not lifted",
+  "state": "MERGED",
+  "merged_at": "2026-08-22T15:26:51Z",
+  "head_ref": "shadow/platform-imagepullsecret"
+}

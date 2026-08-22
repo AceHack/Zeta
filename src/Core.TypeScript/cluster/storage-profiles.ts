@@ -1026,6 +1026,83 @@ export function devLaneAppliedDirs(
   return applicationDirs(repoRoot).filter((dir) => !excluded.has(dir));
 }
 
+/** One level of a parsed YAML mapping, or `undefined`. Total on any input. */
+function field(node: unknown, key: string): unknown {
+  return typeof node === "object" && node !== null ? (node as Record<string, unknown>)[key] : undefined;
+}
+
+export const METAL_ROOT_APPLICATION_PATH = "full-ai-cluster/k8s/bootstrap/root-application.yaml";
+
+/**
+ * The METAL cluster's applied set — every Application the checked-in bootstrap
+ * root reaches, minus whatever its own exclude glob drops.
+ *
+ * READ OFF THE ROOT, NOT ASSUMED TO BE "ALL OF THEM". The bootstrap root
+ * carries no `directory.exclude` today, so this returns the same 46 directories
+ * `applicationDirs` does — and hardcoding 46 would have been correct today and
+ * silently wrong the first time somebody narrowed the metal root. The metal
+ * cohort is the one number every hardware-facing total is computed over; it has
+ * to come from the artifact that decides it.
+ *
+ * `null` when the root Application cannot be read or does not point at the
+ * applications path. That is REFUSED by the caller, never defaulted to the full
+ * set: guessing wide would understate nothing but guessing at all is how a
+ * comparator stops having provenance.
+ */
+export function metalAppliedDirs(repoRoot = REPO_ROOT): readonly string[] | null {
+  const abs = resolve(repoRoot, METAL_ROOT_APPLICATION_PATH);
+  if (!existsSync(abs)) return null;
+  const docs = parseAllDocuments(readFileSync(abs, "utf8"));
+  for (const doc of docs) {
+    const root: unknown = doc.toJS();
+    if (field(root, "kind") !== "Application") continue;
+    const source = field(field(root, "spec"), "source");
+    if (field(source, "path") !== APPLICATIONS_DIR) continue;
+    const rawExclude = field(field(source, "directory"), "exclude");
+    const excludeGlob = typeof rawExclude === "string" ? rawExclude : "";
+    if (excludeGlob === "") return applicationDirs(repoRoot);
+    const excluded = new Set(
+      excludeGlob
+        .replace(/^\{/, "")
+        .replace(/\}$/, "")
+        .split(",")
+        .map((entry) => entry.trim().replace(/\/\*\*$/, ""))
+        .filter((entry) => entry.length > 0),
+    );
+    return applicationDirs(repoRoot).filter((dir) => !excluded.has(dir));
+  }
+  return null;
+}
+
+export const HEALTH_WORKFLOW_PATH = ".github/workflows/k8s-argocd-health-test.yml";
+
+const WORKFLOW_BUDGET_STEP = /storage-profiles\.ts\s+--resource-profile\s+([A-Za-z0-9._-]+)\s+--budget/g;
+
+/**
+ * Which rung CI actually budgets, read off the workflow's own `run:` line.
+ *
+ * DERIVED, NOT RESTATED. A constant here saying "CI budgets dev" would be a
+ * second source of truth that can disagree with the workflow, and a coverage
+ * check whose inputs can drift apart is checking its own copy of the world.
+ * The regex reads the command CI runs.
+ *
+ * Returns `null` when no step budgets a rung and refuses (also `null`) when
+ * more than one distinct rung is budgeted — two answers is not an answer, and
+ * the caller must treat it as an absent comparator rather than pick one.
+ */
+export function ciBudgetedProfile(repoRoot = REPO_ROOT, workflowPath = HEALTH_WORKFLOW_PATH): string | null {
+  const abs = resolve(repoRoot, workflowPath);
+  if (!existsSync(abs)) return null;
+  const text = readFileSync(abs, "utf8");
+  const found = new Set<string>();
+  WORKFLOW_BUDGET_STEP.lastIndex = 0;
+  for (let match = WORKFLOW_BUDGET_STEP.exec(text); match !== null; match = WORKFLOW_BUDGET_STEP.exec(text)) {
+    const name = match[1];
+    if (name !== undefined) found.add(name);
+  }
+  return found.size === 1 ? ([...found][0] ?? null) : null;
+}
+
 // ---------------------------------------------------------------------------
 // Arithmetic
 // ---------------------------------------------------------------------------
