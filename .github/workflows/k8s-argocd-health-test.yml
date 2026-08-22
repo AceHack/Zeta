@@ -125,6 +125,8 @@ on:
       - "src/Core.TypeScript/cluster/rendered-storage-claims.test.ts"
       - "src/Core.TypeScript/cluster/rendered-storage-claims.baseline.json"
       - "src/Core.TypeScript/cluster/rendered-storage-claims.snapshot.json"
+      - "src/Core.TypeScript/cluster/reason-truth.ts"
+      - "src/Core.TypeScript/cluster/reason-truth.test.ts"
       - "docs/backlog/P1/081KSXN940008QG0R000SCP2H1-kubernetes-argocd-kind-k3d-integration-health-tests-separate.md"
       - ".github/workflows/k8s-argocd-health-test.yml"
       - ".mise.toml"
@@ -208,6 +210,8 @@ on:
       - "src/Core.TypeScript/cluster/rendered-storage-claims.test.ts"
       - "src/Core.TypeScript/cluster/rendered-storage-claims.baseline.json"
       - "src/Core.TypeScript/cluster/rendered-storage-claims.snapshot.json"
+      - "src/Core.TypeScript/cluster/reason-truth.ts"
+      - "src/Core.TypeScript/cluster/reason-truth.test.ts"
       - "docs/backlog/P1/081KSXN940008QG0R000SCP2H1-kubernetes-argocd-kind-k3d-integration-health-tests-separate.md"
       - ".github/workflows/k8s-argocd-health-test.yml"
       - ".mise.toml"
@@ -452,6 +456,22 @@ jobs:
 
       - name: Audit declared storage claims against the measured render
         run: bun src/Core.TypeScript/cluster/rendered-storage-claims.ts --offline
+
+      # IS THE REASON TRUE? -- the falsifiers for `reason-truth.ts`.
+      #
+      # The registries above record WHY each Application is deferred, and until
+      # 2026-08-22 every audit over them checked that a reason was PRESENT and
+      # named a lift condition. None checked that it was TRUE, and two reasons
+      # were measured false within a day of being written while every audit
+      # stayed green (`temporal` #13472->#13483, `oz` #13313->#13471).
+      #
+      # This file reconstructs both AS THEY STOOD and runs the checker against
+      # today's tree: it goes red on both, and stays green on the clauses of the
+      # same reasons that are still true -- which is the difference between
+      # checking truth and measuring age. Named explicitly, like every other
+      # test in this job, because nothing here runs the directory.
+      - name: Run reason-truth falsifiers (the two historical false reasons)
+        run: bun test src/Core.TypeScript/cluster/reason-truth.test.ts
 
       - name: Audit single-node readiness against the checked-in budget ledger
         run: bun src/Core.TypeScript/cluster/single-node-readiness.ts

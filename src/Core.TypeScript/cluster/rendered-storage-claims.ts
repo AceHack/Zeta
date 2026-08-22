@@ -1011,10 +1011,7 @@ export function adjudicate(findings: readonly RenderedFinding[], baseline: Basel
  * Keyed `<appId>@<targetRevision>`, matching the acknowledgement lookup, so
  * bumping a pin invalidates the old entry rather than letting it inherit.
  */
-export function staleUnrenderableKeys(
-  baseline: Baseline,
-  unrenderable: readonly UnrenderableApp[],
-): readonly string[] {
+export function staleUnrenderableKeys(baseline: Baseline, unrenderable: readonly UnrenderableApp[]): readonly string[] {
   const live = new Set(unrenderable.map((app) => `${app.appId}@${app.targetRevision}`));
   return baseline.unrenderable.filter((entry) => !live.has(entry.key)).map((entry) => entry.key);
 }
@@ -1262,6 +1259,22 @@ export function snapshotDrift(live: RenderSnapshot, snapshot: RenderSnapshot): r
   const snapUnrenderable = new Set(snapshot.unrenderable.map((app) => `${app.appId}@${app.targetRevision}`));
   for (const id of liveUnrenderable) if (!snapUnrenderable.has(id)) drift.push(`NEWLY unrenderable: ${id}`);
   for (const id of snapUnrenderable) if (!liveUnrenderable.has(id)) drift.push(`NO LONGER unrenderable: ${id}`);
+  // COVERAGE, not content -- and it was missing (081M0KRQP56087G0R000BK28QS).
+  //
+  // Everything above compares the ROWS, so an Application that renders no
+  // PersistentVolumeClaim at all is invisible to every one of those loops. On
+  // 2026-08-22 the tree grew `spire-crds` (#13488), which renders none; the
+  // snapshot went on saying `appsDiscovered: 53` against a tree of 54, and
+  // `--check-snapshot` printed "snapshot matches the live render" -- true of the
+  // rows and false of the scope. A snapshot that no longer covers the tree is
+  // the load-bearing artifact for two offline gates, and under-coverage is
+  // precisely a check that did not run wearing the face of one that passed.
+  if (live.appsDiscovered !== snapshot.appsDiscovered) {
+    drift.push(
+      `COVERAGE: the snapshot measured ${String(snapshot.appsDiscovered)} Applications, the tree now has ` +
+        `${String(live.appsDiscovered)} -- rows can agree while the snapshot no longer covers the tree`,
+    );
+  }
   return [...drift].sort((a, b) => stringCompare(a, b));
 }
 

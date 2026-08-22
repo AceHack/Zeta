@@ -2122,6 +2122,23 @@ jobs:
       - name: ArgoCD chart targetRevisions resolve (offline, against the committed snapshot)
         run: bun src/Core.TypeScript/hygiene/audit-chart-target-revisions.ts
 
+      # ARE THE DEFERRAL REASONS STILL TRUE? Every reasoned-exclusion registry in the cluster
+      # tree was audited for a reason being PRESENT and naming a lift condition, and by nothing
+      # for the reason being TRUE. Measured twice on 2026-08-21: `temporal`'s reason cited a
+      # baseline acknowledgement that had been deleted forty minutes earlier (#13472 -> #13483),
+      # and `oz`'s cited a chart pin the tree had already corrected (#13313 -> #13471). Both
+      # audits stayed green through both, because a false sentence with a `LIFTS WHEN:` clause
+      # has every mechanical property those checks look for.
+      #
+      # HERE rather than in k8s-argocd-health-test.yml, and the placement is the point: this
+      # checker resolves citations into `.github/workflows/` (a CI job a reason names) and into
+      # the chart roster, so a PR that renames a job would never trigger a path-filtered cluster
+      # workflow and would silently strand the reason that cites it. The cross-verify floor runs
+      # on every PR. OFFLINE, ~1s, no sockets -- it reads the committed baseline, the committed
+      # render snapshot and the committed roster.
+      - name: ArgoCD deferral reasons — every cited anchor still holds (offline)
+        run: bun src/Core.TypeScript/cluster/reason-truth.ts
+
       # A tracked source file holding a raw 0x00 byte reads as BINARY to grep/rg, so every
       # text audit silently skips it -- a check that did not run, looking exactly like one
       # that passed. `rg 'foldChain' key-epoch-ledger.ts` printed "binary file matches" and
