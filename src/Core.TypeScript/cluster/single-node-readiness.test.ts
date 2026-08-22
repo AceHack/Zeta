@@ -38,7 +38,15 @@ import {
   parseYamlDocuments,
   quantityToGib,
   storageTotals,
+  computeShortfallKey,
+  coresToMillis,
+  findComputeProvenance,
+  findRungCoverage,
+  readLedger,
+  siMemoryToMib,
   verifiedNodeCapacity,
+  verifiedNodeCompute,
+  DEFAULT_LEDGER_PATH,
   type AppManifest,
   type Ledger,
   type MeasuredNode,
@@ -50,12 +58,18 @@ const LEDGER: Ledger = {
   // catalogue, and pinning a real rung here would imply a check that is not
   // running in them.
   activeStorageProfile: "test-fixture",
+  // Same reasoning for the resource rung: naming a real one here would imply
+  // the compute comparator is running over these synthetic trees, and it is
+  // not — they carry no resource catalogue.
+  activeResourceProfile: "test-fixture",
   nodeDiskGib: 100,
   nodeCount: 1,
   budgetedStorageClasses: ["longhorn"],
   acknowledgedFalseRedundancy: [],
   acknowledgedRootAppDuplicates: [],
   acknowledgedCapacityShortfall: [],
+  acknowledgedComputeShortfall: [],
+  acknowledgedRungBudgetGap: [],
 };
 
 function manifest(path: string, yaml: string): AppManifest {
@@ -403,6 +417,16 @@ describe("lsblkSizeToGib — lsblk sizes are BINARY, unlike Kubernetes quantitie
   });
 });
 
+/**
+ * The compute half of a synthetic `MeasuredNode`, absent.
+ *
+ * Spread rather than restated at each site so that adding a future measured
+ * field forces one edit here instead of silently defaulting five fixtures.
+ * These fixtures exercise the STORAGE comparator; leaving compute unmeasured
+ * is the honest fixture for that, and the compute comparator has its own.
+ */
+const NO_COMPUTE = { coresRaw: null, memoryRaw: null, cpuMillis: null, memoryMib: null } as const;
+
 describe("collectMeasuredNodes / verifiedNodeCapacity", () => {
   test("sums every block device on a registration", () => {
     const root = nodesFixture({
@@ -462,9 +486,9 @@ describe("collectMeasuredNodes / verifiedNodeCapacity", () => {
 });
 
 describe("findCapacityProvenance", () => {
-  const big: MeasuredNode = { path: "m/n.yaml", hostname: "big", devices: ["/dev/a 2048G"], totalGib: 2048 };
-  const small: MeasuredNode = { path: "m/s.yaml", hostname: "small", devices: ["/dev/a 1047G"], totalGib: 1047 };
-  const blind: MeasuredNode = { path: "m/b.yaml", hostname: "blind", devices: [], totalGib: null };
+  const big: MeasuredNode = { path: "m/n.yaml", hostname: "big", devices: ["/dev/a 2048G"], totalGib: 2048, ...NO_COMPUTE };
+  const small: MeasuredNode = { path: "m/s.yaml", hostname: "small", devices: ["/dev/a 1047G"], totalGib: 1047, ...NO_COMPUTE };
+  const blind: MeasuredNode = { path: "m/b.yaml", hostname: "blind", devices: [], totalGib: null, ...NO_COMPUTE };
 
   test("green when the catalogue fits inside measured hardware", () => {
     expect(findCapacityProvenance([LONGHORN_CLAIM], LEDGER, [big])).toEqual([]);
@@ -551,7 +575,7 @@ describe("findCapacityProvenance", () => {
   test("RED: an acknowledged shortfall re-opens when a SMALLER node registers", () => {
     const key = "longhorn=1500GiB>>1047GiB@small";
     const ledger: Ledger = { ...LEDGER, acknowledgedCapacityShortfall: [key] };
-    const tiny: MeasuredNode = { path: "m/t.yaml", hostname: "tiny", devices: ["/dev/a 100G"], totalGib: 100 };
+    const tiny: MeasuredNode = { path: "m/t.yaml", hostname: "tiny", devices: ["/dev/a 100G"], totalGib: 100, ...NO_COMPUTE };
     expect(findCapacityProvenance([LONGHORN_CLAIM], ledger, [small, tiny])).toHaveLength(1);
   });
 
@@ -902,6 +926,7 @@ describe("the checked-in ledger keeps main green", () => {
       hostname: "node-between",
       devices: [`/dev/synthetic ${midpoint.toFixed(1)}G`],
       totalGib: midpoint,
+      ...NO_COMPUTE,
     };
     const withOverride = findCapacityProvenance(claims, ledger, [between], new Map([["longhorn", checked]]));
     const withoutOverride = findCapacityProvenance(claims, ledger, [between], null);
@@ -1320,5 +1345,414 @@ describe("the hindsight manifest renders what it declares", () => {
     expect(obj["existingSecret"]).toBeUndefined();
     expect(text).toContain("HINDSIGHT_API_LLM_API_KEY");
     expect(text).toContain("CreateContainerConfigError");
+  });
+});
+
+// ===========================================================================
+// COMPUTE PROVENANCE + RUNG COVERAGE
+//
+// Every test below is written to fail when the thing it names stops being
+// true. The two that matter most are the REFUSALS: a comparator that cannot
+// be found must not read as a comparison that passed.
+// ===========================================================================
+
+const COMPUTE_LEDGER: Ledger = {
+  ...LEDGER,
+  activeResourceProfile: "metal",
+};
+
+function computeNode(host: string, cores: number | null, memory: string | null): string {
+  const hardware = [
+    cores === null ? "" : `    cores: ${String(cores)}`,
+    memory === null ? "" : `    memory: "${memory}"`,
+    '    storage:\n      - "/dev/nvme0n1 931.5G"',
+  ]
+    .filter((line) => line.length > 0)
+    .join("\n");
+  return `apiVersion: zeta.lucent-financial-group.com/v1
+kind: ClusterNode
+metadata:
+  name: ${host}
+spec:
+  hostname: ${host}
+  hardware:
+${hardware}
+`;
+}
+
+describe("siMemoryToMib — the registration's memory is DECIMAL, unlike its storage", () => {
+  // The number that matters: `free -h --si` is what both registration scripts
+  // run, and `--si` means 10^9. Reading 66G as binary inflates the bound by
+  // 4642 MiB, and inflating a bound is the ACQUITTING direction.
+  test("66G is 62942 MiB, not 67584", () => {
+    expect(siMemoryToMib("66G")).toBe(62942);
+    expect(siMemoryToMib("66G")).not.toBe(67584);
+  });
+
+  test("an EXPLICIT binary suffix is believed, because it is not ambiguous", () => {
+    expect(siMemoryToMib("62Gi")).toBe(63488);
+    expect(siMemoryToMib("1Ki")).toBe(0);
+  });
+
+  test("the two hardware fields on ONE node use two unit systems", () => {
+    // Same script, one line apart: lsblk (binary) and free --si (decimal).
+    // This test exists so that collapsing them onto one parser goes red.
+    expect(lsblkSizeToGib("931.5G")).toBeCloseTo(931.5, 6);
+    expect(siMemoryToMib("931.5G")).toBe(Math.floor((931.5 * 1e9) / 1024 ** 2));
+    expect(siMemoryToMib("931.5G")).toBeLessThan(931.5 * 1024);
+  });
+
+  test.each(["", "66", "sixty-six", "66Q", "0G", "-4G"])("refuses %p rather than guessing", (raw) => {
+    expect(siMemoryToMib(raw)).toBeNull();
+  });
+});
+
+describe("coresToMillis — the field says cores and the number is threads", () => {
+  test("nproc's logical-CPU count is what Kubernetes calls capacity.cpu", () => {
+    expect(coresToMillis(22)).toBe(22000);
+    expect(coresToMillis(16)).toBe(16000);
+  });
+
+  test("zero and negative are refused, not read as a node with no CPU", () => {
+    expect(coresToMillis(0)).toBeNull();
+    expect(coresToMillis(-1)).toBeNull();
+  });
+});
+
+describe("collectMeasuredNodes / verifiedNodeCompute", () => {
+  test("reads cores and memory off a registration", () => {
+    const root = nodesFixture({
+      "maintainers/a/cluster-nodes/n1/node.yaml": computeNode("n1", 22, "66G"),
+    });
+    try {
+      const nodes = collectMeasuredNodes(root);
+      expect(nodes[0]?.cpuMillis).toBe(22000);
+      expect(nodes[0]?.memoryMib).toBe(62942);
+      expect(nodes[0]?.coresRaw).toBe(22);
+      expect(nodes[0]?.memoryRaw).toBe("66G");
+    } finally {
+      rmSync(root, { recursive: true, force: true });
+    }
+  });
+
+  test("a registration with no cores comes back null, NOT zero", () => {
+    const root = nodesFixture({
+      "maintainers/a/cluster-nodes/n1/node.yaml": computeNode("n1", null, "66G"),
+    });
+    try {
+      const nodes = collectMeasuredNodes(root);
+      expect(nodes[0]?.cpuMillis).toBeNull();
+      expect(nodes[0]?.memoryMib).toBe(62942);
+    } finally {
+      rmSync(root, { recursive: true, force: true });
+    }
+  });
+
+  test("the CPU floor and the MEMORY floor may be different boxes", () => {
+    // The reason `verifiedNodeCompute` returns two nodes instead of one: on a
+    // heterogeneous fleet, picking one node and reading both of its numbers
+    // compares memory against a machine that is not the memory floor.
+    const root = nodesFixture({
+      "maintainers/a/cluster-nodes/few-cpu/node.yaml": computeNode("few-cpu", 8, "128G"),
+      "maintainers/a/cluster-nodes/few-ram/node.yaml": computeNode("few-ram", 64, "16G"),
+    });
+    try {
+      const floor = verifiedNodeCompute(collectMeasuredNodes(root));
+      expect(floor.cpu?.hostname).toBe("few-cpu");
+      expect(floor.memory?.hostname).toBe("few-ram");
+    } finally {
+      rmSync(root, { recursive: true, force: true });
+    }
+  });
+});
+
+describe("metalAppliedDirs — the metal cohort is read off the bootstrap root", () => {
+  test("it is the whole tree today, and it is a strict superset of the dev lane", async () => {
+    const { metalAppliedDirs, applicationDirs, devLaneAppliedDirs } = await import("./storage-profiles.ts");
+    const metal = metalAppliedDirs();
+    expect(metal).not.toBeNull();
+    // The bootstrap root carries no exclude glob, so today these agree. The
+    // assertion is not "46" — it is that the cohort comes from the artifact
+    // that decides it, so narrowing the root moves this number.
+    expect([...(metal ?? [])]).toEqual([...applicationDirs()]);
+    const lane = new Set(devLaneAppliedDirs());
+    expect((metal ?? []).length).toBeGreaterThan(lane.size);
+    for (const dir of lane) expect(metal).toContain(dir);
+  });
+
+  test("pricing the metal box against the DEV LANE would under-count it", async () => {
+    // The nine directories the CI root excludes include gitlab, ollama, vllm
+    // and longhorn — four of the largest reservations in the catalogue. This
+    // is why the compute comparator is computed over the metal cohort.
+    const { loadResourceCatalogue, resourceTotal, metalAppliedDirs, devLaneAppliedDirs } = await import(
+      "./storage-profiles.ts"
+    );
+    const resources = loadResourceCatalogue();
+    const metal = resourceTotal(resources, "metal", metalAppliedDirs() ?? []);
+    const lane = resourceTotal(resources, "metal", devLaneAppliedDirs());
+    expect(metal.cpuMillis).toBeGreaterThan(lane.cpuMillis);
+    expect(metal.memoryMib).toBeGreaterThan(lane.memoryMib);
+  });
+
+  test("REFUSES (null) when the bootstrap root is absent", async () => {
+    const { metalAppliedDirs } = await import("./storage-profiles.ts");
+    const dir = mkdtempSync(join(tmpdir(), "zeta-metalroot-"));
+    try {
+      expect(metalAppliedDirs(dir)).toBeNull();
+    } finally {
+      rmSync(dir, { recursive: true, force: true });
+    }
+  });
+});
+
+describe("findComputeProvenance", () => {
+  test("REFUSES when no registration records both cores and memory", async () => {
+    const { loadResourceCatalogue } = await import("./storage-profiles.ts");
+    const resources = loadResourceCatalogue();
+    const findings = findComputeProvenance(COMPUTE_LEDGER, [], resources);
+    expect(findings.map((finding) => finding.check)).toEqual(["compute-provenance"]);
+    expect(findings[0]?.message).toContain("UNVERIFIED");
+    expect(findings[0]?.detail.join("\n")).toContain("NOT acknowledgeable");
+  });
+
+  test("the runner envelope is NOT accepted as a stand-in for the box", async () => {
+    const { loadResourceCatalogue } = await import("./storage-profiles.ts");
+    const resources = loadResourceCatalogue();
+    const findings = findComputeProvenance(COMPUTE_LEDGER, [], resources);
+    // The refusal names the runner and says why it does not count. Without
+    // this, "we have a 4000m number" is exactly the substitution that let a
+    // 16-core rung be validated against a CI machine.
+    expect(findings[0]?.message).toContain(resources.envelope.runner);
+  });
+
+  test("convicts when the active rung exceeds the smallest measured node", async () => {
+    const { loadResourceCatalogue, resourceTotal, metalAppliedDirs } = await import("./storage-profiles.ts");
+    const resources = loadResourceCatalogue();
+    const dirs = metalAppliedDirs();
+    expect(dirs).not.toBeNull();
+    const total = resourceTotal(resources, "metal", dirs ?? []);
+    const root = nodesFixture({
+      // Deliberately one logical CPU short of the rung's own total, so the
+      // finding is arithmetic and not a magic small number.
+      "maintainers/a/cluster-nodes/tiny/node.yaml": computeNode("tiny", Math.floor(total.cpuMillis / 1000) - 1, "512G"),
+    });
+    try {
+      const nodes = collectMeasuredNodes(root);
+      const findings = findComputeProvenance(COMPUTE_LEDGER, nodes, resources);
+      expect(findings.map((finding) => finding.check)).toEqual(["compute-provenance"]);
+      expect(findings[0]?.message).toContain("proven oversubscription");
+    } finally {
+      rmSync(root, { recursive: true, force: true });
+    }
+  });
+
+  test("the acknowledgement key is EXACT — a stale one does not suppress", async () => {
+    const { loadResourceCatalogue, resourceTotal, metalAppliedDirs } = await import("./storage-profiles.ts");
+    const resources = loadResourceCatalogue();
+    const total = resourceTotal(resources, "metal", metalAppliedDirs() ?? []);
+    const cores = Math.floor(total.cpuMillis / 1000) - 1;
+    const root = nodesFixture({
+      "maintainers/a/cluster-nodes/tiny/node.yaml": computeNode("tiny", cores, "512G"),
+    });
+    try {
+      const nodes = collectMeasuredNodes(root);
+      const exact = computeShortfallKey("cpu", total.cpuMillis, cores * 1000, "tiny");
+      const suppressed = findComputeProvenance(
+        { ...COMPUTE_LEDGER, acknowledgedComputeShortfall: [exact] },
+        nodes,
+        resources,
+      );
+      expect(suppressed).toEqual([]);
+      // Move ONE millicore of the pinned arithmetic and the debt stops applying.
+      const stale = computeShortfallKey("cpu", total.cpuMillis - 1, cores * 1000, "tiny");
+      const notSuppressed = findComputeProvenance(
+        { ...COMPUTE_LEDGER, acknowledgedComputeShortfall: [stale] },
+        nodes,
+        resources,
+      );
+      expect(notSuppressed.length).toBe(1);
+    } finally {
+      rmSync(root, { recursive: true, force: true });
+    }
+  });
+
+  test("an unknown rung name is refused, not silently skipped", async () => {
+    const { loadResourceCatalogue } = await import("./storage-profiles.ts");
+    const findings = findComputeProvenance(
+      { ...COMPUTE_LEDGER, activeResourceProfile: "no-such-rung" },
+      [],
+      loadResourceCatalogue(),
+    );
+    expect(findings[0]?.message).toContain("is not a rung");
+  });
+
+  test("LIVE: the committed metal rung fits the smallest registered node", async () => {
+    // The check the repo did not have. It is green today and it is the number
+    // somebody about to power on hardware needs; it goes red if the catalogue
+    // outgrows the box or a smaller box registers.
+    const { loadResourceCatalogue, resourceTotal, metalAppliedDirs } = await import("./storage-profiles.ts");
+    const resources = loadResourceCatalogue();
+    const total = resourceTotal(resources, "metal", metalAppliedDirs() ?? []);
+    const floor = verifiedNodeCompute(collectMeasuredNodes());
+    expect(floor.cpu).not.toBeNull();
+    expect(floor.memory).not.toBeNull();
+    expect(total.cpuMillis).toBeLessThan(floor.cpu?.cpuMillis ?? 0);
+    expect(total.memoryMib).toBeLessThan(floor.memory?.memoryMib ?? 0);
+    // …and the gap between the two substrates, which is the reason this file
+    // needed a second comparator at all.
+    expect((floor.cpu?.cpuMillis ?? 0) / resources.envelope.cpuMillis).toBeGreaterThan(3.5);
+  });
+});
+
+describe("findRungCoverage — the budgeted rung vs the committed rung", () => {
+  test("REFUSES when the workflow does not budget exactly one rung", async () => {
+    const { loadResourceCatalogue } = await import("./storage-profiles.ts");
+    const dir = mkdtempSync(join(tmpdir(), "zeta-rung-"));
+    try {
+      const findings = findRungCoverage(COMPUTE_LEDGER, loadResourceCatalogue(), dir);
+      expect(findings.map((finding) => finding.check)).toEqual(["rung-coverage"]);
+      expect(findings[0]?.message).toContain("UNVERIFIED");
+    } finally {
+      rmSync(dir, { recursive: true, force: true });
+    }
+  });
+
+  test("the committed rung differing from the budgeted rung is a finding", async () => {
+    const { loadResourceCatalogue } = await import("./storage-profiles.ts");
+    const findings = findRungCoverage({ ...COMPUTE_LEDGER, acknowledgedRungBudgetGap: [] }, loadResourceCatalogue());
+    expect(findings.map((finding) => finding.check)).toEqual(["rung-coverage"]);
+    expect(findings[0]?.message).toContain("a rung the tree does not carry");
+  });
+
+  test("the checked-in acknowledgement suppresses it, and a moved number does not", async () => {
+    const { loadResourceCatalogue } = await import("./storage-profiles.ts");
+    const resources = loadResourceCatalogue();
+    const live = readLedger(DEFAULT_LEDGER_PATH);
+    expect(findRungCoverage(live, resources)).toEqual([]);
+    const moved = live.acknowledgedRungBudgetGap.map((key) => key.replace("4231m", "4232m"));
+    expect(findRungCoverage({ ...live, acknowledgedRungBudgetGap: moved }, resources).length).toBe(1);
+  });
+
+  test("no finding at all once the budgeted rung IS the committed rung", async () => {
+    const { loadResourceCatalogue, ciBudgetedProfile } = await import("./storage-profiles.ts");
+    const budgeted = ciBudgetedProfile();
+    expect(budgeted).toBe("dev");
+    const findings = findRungCoverage(
+      { ...COMPUTE_LEDGER, activeResourceProfile: budgeted ?? "" },
+      loadResourceCatalogue(),
+    );
+    expect(findings).toEqual([]);
+  });
+});
+
+describe("readLedger — activeResourceProfile is required", () => {
+  test("RED: a ledger with no activeResourceProfile is refused", () => {
+    const dir = mkdtempSync(join(tmpdir(), "zeta-ledger-rr-"));
+    try {
+      const path = join(dir, "budget.json");
+      writeFileSync(
+        path,
+        JSON.stringify({ activeStorageProfile: "measured", nodeDiskGib: 100, nodeCount: 1 }),
+      );
+      expect(() => readLedger(path, "/")).toThrow(/activeResourceProfile is required/);
+    } finally {
+      rmSync(dir, { recursive: true, force: true });
+    }
+  });
+
+  test("the checked-in ledger names a rung the catalogue knows AND the tree carries", async () => {
+    const { loadResourceCatalogue, verifyResourceProfileApplied } = await import("./storage-profiles.ts");
+    const resources = loadResourceCatalogue();
+    const live = readLedger(DEFAULT_LEDGER_PATH);
+    expect(resources.profiles).toContain(live.activeResourceProfile);
+    expect(verifyResourceProfileApplied(resources, live.activeResourceProfile)).toEqual([]);
+  });
+});
+
+describe("the ledger's COMPUTE prose is checked, not trusted", () => {
+  // `findLedgerFigureDrift` guards the storage figures in this file's $comment
+  // blocks, for the reason it states: prose in a checked-in ledger is read and
+  // acted on exactly like a field. The compute comments added beside it quote
+  // millicore and MiB figures, which had no such guard — so here it is, in the
+  // one shape that can fail: every `<N>m` / `<N>Mi` the compute comments quote
+  // must equal something this repo computes.
+  test("every millicore and MiB figure quoted in the compute comments is a real reading", async () => {
+    const { loadResourceCatalogue, resourceTotal, metalAppliedDirs, devLaneAppliedDirs, envelopeBudget } =
+      await import("./storage-profiles.ts");
+    const resources = loadResourceCatalogue();
+    const metalDirs = metalAppliedDirs() ?? [];
+    const laneDirs = devLaneAppliedDirs();
+    const budget = envelopeBudget(resources.envelope);
+    const floor = verifiedNodeCompute(collectMeasuredNodes());
+    const live = readLedger(DEFAULT_LEDGER_PATH);
+
+    const cpu = new Set<number>([
+      resources.envelope.cpuMillis,
+      resources.envelope.reservedCpuMillis,
+      budget.cpuMillis,
+      (floor.cpu?.cpuMillis ?? 0) * live.nodeCount,
+    ]);
+    const mem = new Set<number>([
+      resources.envelope.memoryMib,
+      resources.envelope.reservedMemoryMib,
+      budget.memoryMib,
+      (floor.memory?.memoryMib ?? 0) * live.nodeCount,
+    ]);
+    for (const rung of resources.profiles) {
+      for (const dirs of [metalDirs, laneDirs]) {
+        const total = resourceTotal(resources, rung, dirs);
+        cpu.add(total.cpuMillis);
+        mem.add(total.memoryMib);
+      }
+    }
+    // Differences the prose is entitled to quote: overage and spare on either
+    // comparator. Quoting a DIFFERENCE is not quoting a new number.
+    for (const a of [...cpu]) for (const b of [...cpu]) if (a > b) cpu.add(a - b);
+    for (const a of [...mem]) for (const b of [...mem]) if (a > b) mem.add(a - b);
+    // Per-app rung values, which the arithmetic tables name by app.
+    for (const claim of resources.claims) {
+      for (const rung of resources.profiles) {
+        cpu.add((claim.cpuMillis[rung] ?? 0) * claim.pods);
+        mem.add((claim.memoryMib[rung] ?? 0) * claim.pods);
+      }
+    }
+    // Sums of governed rows within one directory (hindsight is 3 rows, 1000m).
+    for (const dir of new Set(resources.claims.map((claim) => claim.dir))) {
+      for (const rung of resources.profiles) {
+        const total = resourceTotal(resources, rung, [dir]);
+        cpu.add(total.cpuMillis);
+        mem.add(total.memoryMib);
+      }
+    }
+    // Lane totals with one directory removed — the "still over by" arithmetic.
+    for (const dir of new Set(resources.claims.map((claim) => claim.dir))) {
+      for (const rung of resources.profiles) {
+        const without = resourceTotal(
+          resources,
+          rung,
+          laneDirs.filter((entry) => entry !== dir),
+        );
+        cpu.add(without.cpuMillis);
+        for (const b of [...cpu]) if (without.cpuMillis > b) cpu.add(without.cpuMillis - b);
+      }
+    }
+
+    const comments = ledgerComments(DEFAULT_LEDGER_PATH).filter(
+      (line) => line.includes("m ") || /\d+(m|Mi)\b/.test(line),
+    );
+    const unexplainedCpu: string[] = [];
+    const unexplainedMem: string[] = [];
+    for (const line of comments) {
+      for (const match of line.matchAll(/\b(\d+)Mi\b/g)) {
+        const value = Number(match[1]);
+        if (!mem.has(value)) unexplainedMem.push(`${String(value)}Mi in "${line.trim()}"`);
+      }
+      for (const match of line.matchAll(/\b(\d+)m\b/g)) {
+        const value = Number(match[1]);
+        if (!cpu.has(value)) unexplainedCpu.push(`${String(value)}m in "${line.trim()}"`);
+      }
+    }
+    expect(unexplainedCpu).toEqual([]);
+    expect(unexplainedMem).toEqual([]);
   });
 });

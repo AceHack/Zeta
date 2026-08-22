@@ -438,6 +438,18 @@ jobs:
       # live tree (over-budget PVC, unacknowledged replicas>1, tab-indented
       # YAML, a third app-of-apps root) -- all exit 1.
       #
+      # 2026-08-22: three more comparators run, and they are the CPU/memory
+      # half of the same discipline. `compute-provenance` compares the ACTIVE
+      # resource rung's total over the metal cohort against `hardware.cores` /
+      # `hardware.memory` on the smallest registered node and REFUSES when no
+      # registration carries both -- until it existed, `metal` was the one rung
+      # in the ladder validated against no machine at all, while the only
+      # number it was ever compared to was a 4000m runner ~4x smaller than the
+      # 16- and 22-CPU boxes actually registered. `resource-profile` checks the
+      # tree carries the rung the ledger names. `rung-coverage` compares the
+      # rung CI budgets against the rung the tree carries; see the budget step
+      # below for why that comparison could not live in the budget step.
+      #
       # 2026-08-21: a fifth comparator now runs, `capacity-provenance`. It
       # compares the same declared totals against MEASURED hardware from
       # maintainers/*/cluster-nodes/*/node.yaml (hence that path in the filters
@@ -573,9 +585,20 @@ jobs:
       # 0 and `--resource-profile dev --check` exits 1 with 54 drifts
       # (MEASURED 2026-08-22). So this step passing is not evidence that the
       # lane can schedule what it applies -- it is arithmetic about a rung
-      # nobody has applied to the manifests. Nothing here compares the two, and
-      # `hindsight-postgresql-0` taking `Insufficient cpu` on run 32519516070 is
-      # what that gap looks like from the cluster's side.
+      # nobody has applied to the manifests, and `hindsight-postgresql-0`
+      # taking `Insufficient cpu` on run 32519516070 is what that gap looks
+      # like from the cluster's side.
+      #
+      # WHAT COMPARES THE TWO is `findRungCoverage`, in the readiness auditor
+      # step above -- not this step, which cannot see past its own rung. It
+      # reads the budgeted rung off THIS run line (`ciBudgetedProfile` parses
+      # `--resource-profile <rung> --budget` out of this file, so a constant
+      # here could not drift from the command), reads the committed rung off
+      # `ledger.activeResourceProfile`, and blocks on a disagreement unless the
+      # gap is carried in `acknowledgedRungBudgetGap` with all four numbers
+      # pinned. It is carried today. Changing the rung on the line below
+      # therefore changes what the coverage check compares, which is the point:
+      # this step and that check can no longer be green about different trees.
       - name: Verify the runner is as big as the catalogue claims
         run: bun src/Core.TypeScript/cluster/storage-profiles.ts --measure-runner
 
