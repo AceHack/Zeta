@@ -104,6 +104,54 @@ spec:
         #     --from-literal=admin-password="$(openssl rand -hex 24)"
         # Or use a Sealed Secret committed to Git so the credential is
         # reproducible from the cluster definition.
+        #
+        # IN THE DEV/CI LANE THAT SECRET IS MINTED, NOT TYPED (2026-08-22). It
+        # is `DEV_ZITI_ADMIN_SECRET` in
+        # src/Core.TypeScript/cluster/dev-cluster/lib.ts, applied per cluster by
+        # `applyDevBootstrapSecrets` before the app-of-apps root syncs, drawn
+        # fresh and never committed -- the same mechanism kube-prometheus-stack
+        # uses for Grafana's `existingSecret`. `argocd-health-test.test.ts`
+        # asserts that name against this manifest, so renaming it here without
+        # renaming it there goes red. Nothing under `dev-cluster/` is read by
+        # ArgoCD, so the mint reaches dev/CI clusters only; on metal the command
+        # above is still the path.
+        #
+        # AND `useCustomAdminSecret` IS NOT NEGOTIABLE DOWNWARD. Setting it
+        # false hands the job to ziti-controller's `templates/secrets.yaml`,
+        # which builds the password from `lookup` with a `randAlphaNum 32`
+        # fallback. ArgoCD's repo-server templates with NO cluster access, so
+        # `lookup` is always empty and the fallback always draws -- MEASURED
+        # 2026-08-22: two `helm template` runs of this chart against these
+        # values with `useCustomAdminSecret: false` differ in `admin-password`.
+        # With `selfHeal: true` above, that is the controller's admin credential
+        # rotating on every reconcile. A pre-existing Secret is the ONLY
+        # deterministic option this chart offers.
+        #
+        # A SECOND NONDETERMINISTIC SECRET IS STILL HERE AND IS *NOT* FIXED BY
+        # THIS. Measured 2026-08-22 at exactly these values: two `helm template`
+        # runs of ziti-controller 3.1.1 differ in ONE line, and it is not the
+        # admin credential -- it is `ziti-controller-trust-domain`.
+        # `_helpers.tpl:253 getTrustDomain` falls through
+        # `cluster.trustDomain` -> legacy `trustDomain` -> an existing Secret via
+        # `lookup` -> `printf "spiffe://%s" (randAlphaNum 32)`, and with all
+        # three sources empty under ArgoCD's lookup-less repo-server the last
+        # arm always fires. Consequence, stated rather than guessed: the
+        # Application sits OutOfSync and `selfHeal: true` rewrites the SPIFFE
+        # trust domain of the fabric on every reconcile. It does NOT stop the
+        # pod being Healthy (kubelet resolved the env at container start and
+        # nothing restarts it), which is why this Application is asserted in the
+        # dev lane anyway and why this is a note rather than a deferral.
+        #
+        # IT IS LEFT OPEN ON PURPOSE. The fix is one value -- `cluster:
+        # {trustDomain: spiffe://<name>}` -- but the value IS the fabric's
+        # identity namespace, every certificate chains to it, and rotating it on
+        # a controller that has already issued identities invalidates them. That
+        # is an operator decision of the same class as `advertisedHost` above,
+        # and unlike `advertisedHost` the chart does not force it, so nothing
+        # here needs to guess one. LIFTS WHEN: the operator names the trust
+        # domain (or the Application gains an `ignoreDifferences` entry scoped to
+        # `data.trustDomain` of that one Secret, which suppresses the churn
+        # without deciding the identity).
   destination:
     server: https://kubernetes.default.svc
     namespace: openziti

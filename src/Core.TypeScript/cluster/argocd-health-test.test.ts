@@ -11,7 +11,7 @@ import {
 } from "node:fs";
 import { tmpdir } from "node:os";
 import { parse as parseYaml } from "yaml";
-import { DEV_GRAFANA_ADMIN_SECRET } from "./dev-cluster/lib.ts";
+import { DEV_GRAFANA_ADMIN_SECRET, DEV_ZITI_ADMIN_SECRET } from "./dev-cluster/lib.ts";
 import { join, resolve } from "node:path";
 import {
   APPLIED_BUT_UNASSERTED_REASONS,
@@ -65,7 +65,8 @@ async function withFakeClusterCli(
     | "storageclass-missing"
     | "storageclass-present"
     | "storageclass-wrong-provisioner"
-    | "grafana-secret-missing",
+    | "grafana-secret-missing"
+    | "ziti-secret-missing",
   action: () => Promise<void>,
 ): Promise<void> {
   const cliDir = mkdtempSync(join(tmpdir(), "zeta-argocd-health-cli-"));
@@ -91,12 +92,19 @@ async function withFakeClusterCli(
     '  printf "rancher.io/local-path"',
     "  exit 0",
     "fi",
-    // The dev Grafana admin credential the included proof now refuses without.
-    // Present in every mode except the one that exists to remove it, so the
-    // OTHER guards' tests still reach the code they are about.
+    // The dev bootstrap credentials the included proof now refuses without.
+    // Present in every mode except the one that exists to remove a NAMED one,
+    // so the OTHER guards' tests still reach the code they are about.
+    //
+    // IT ANSWERS PER SECRET NAME rather than uniformly. A fake that failed
+    // every `get secret` would let a harness that checks only the first entry
+    // of DEV_BOOTSTRAP_SECRETS pass the ziti test -- the guard would look
+    // proven while never having looked at the second Secret at all.
     'if [ "${1:-}" = get ] && [ "${2:-}" = secret ]; then',
-    '  if [ "$mode" = grafana-secret-missing ]; then echo "Error from server (NotFound): secrets \\"grafana-admin-credentials\\" not found" >&2; exit 1; fi',
-    '  printf "secret/grafana-admin-credentials"',
+    '  want="${3:-}"',
+    '  if [ "$mode" = grafana-secret-missing ] && [ "$want" = grafana-admin-credentials ]; then echo "Error from server (NotFound): secrets \\"grafana-admin-credentials\\" not found" >&2; exit 1; fi',
+    '  if [ "$mode" = ziti-secret-missing ] && [ "$want" = ziti-admin-credentials ]; then echo "Error from server (NotFound): secrets \\"ziti-admin-credentials\\" not found" >&2; exit 1; fi',
+    '  printf "secret/%s" "$want"',
     "  exit 0",
     "fi",
     'if [ "${1:-}" = wait ]; then exit 0; fi',
@@ -985,28 +993,59 @@ describe("081KSXN940008QG0R000SCP2H1 argocd-health-test live failure shaping", (
       const result = await runHarness(parsed);
       expect(result.ok).toBe(false);
       if (result.ok) throw new Error("expected a missing dev Grafana credential to fail the harness");
-      expect(result.failure.kind).toBe("DevGrafanaAdminSecretMissing");
+      expect(result.failure.kind).toBe("DevBootstrapSecretMissing");
       expect(result.failure.message).toContain("grafana-admin-credentials");
     });
   });
 
   /**
-   * And the SMOKE roster does not assert kube-prometheus-stack, so it has no
-   * business failing on that Application's credential. A guard that fires
-   * outside the scope it belongs to is a check reporting on something it was
-   * never asked about.
+   * THE SECOND ENTRY IN THE ROSTER, checked separately and on purpose.
+   *
+   * `oz` left the deferred set on 2026-08-22 partly because
+   * `openziti/ziti-admin-credentials` is now minted at bring-up. If the guard
+   * only ever looked at the first `DEV_BOOTSTRAP_SECRETS` entry it would still
+   * pass the Grafana test above while asserting nothing about this one, and
+   * ziti-controller would return to `CreateContainerConfigError` with the
+   * harness reporting a Progressing Deployment 2400 seconds later. The fake
+   * kubectl answers per secret NAME so that this test can only pass by the
+   * guard actually reaching the second entry.
    */
-  test("smoke scope does NOT refuse on the Grafana credential", async () => {
-    await withFakeClusterCli("grafana-secret-missing", async () => {
+  test("included scope REFUSES when the dev ziti admin credential is absent", async () => {
+    await withFakeClusterCli("ziti-secret-missing", async () => {
       const parsed = parseArgs(
-        ["--run", "--provider", "kind", "--scope", "smoke", "--existing", "--timeout-sec", "1", "--poll-sec", "1"],
+        ["--run", "--provider", "kind", "--scope", "included", "--existing", "--timeout-sec", "1", "--poll-sec", "1"],
         {},
       );
       if ("kind" in parsed) throw new Error(parsed.message);
 
       const result = await runHarness(parsed);
-      if (!result.ok) expect(result.failure.kind).not.toBe("DevGrafanaAdminSecretMissing");
+      expect(result.ok).toBe(false);
+      if (result.ok) throw new Error("expected a missing dev ziti credential to fail the harness");
+      expect(result.failure.kind).toBe("DevBootstrapSecretMissing");
+      expect(result.failure.message).toContain("ziti-admin-credentials");
+      expect(result.failure.message).toContain("openziti");
     });
+  });
+
+  /**
+   * And the SMOKE roster does not assert kube-prometheus-stack or oz, so it has
+   * no business failing on those Applications' credentials. A guard that fires
+   * outside the scope it belongs to is a check reporting on something it was
+   * never asked about.
+   */
+  test("smoke scope does NOT refuse on the bootstrap credentials", async () => {
+    for (const mode of ["grafana-secret-missing", "ziti-secret-missing"] as const) {
+      await withFakeClusterCli(mode, async () => {
+        const parsed = parseArgs(
+          ["--run", "--provider", "kind", "--scope", "smoke", "--existing", "--timeout-sec", "1", "--poll-sec", "1"],
+          {},
+        );
+        if ("kind" in parsed) throw new Error(parsed.message);
+
+        const result = await runHarness(parsed);
+        if (!result.ok) expect(result.failure.kind).not.toBe("DevBootstrapSecretMissing");
+      });
+    }
   });
 
   test("the same run does NOT refuse when the dev StorageClass is present", async () => {
@@ -1213,6 +1252,7 @@ describe("DEV_EXCLUDED_REASONS", () => {
 describe("081M0JXXFV0087G0R00...: the four newly-visible non-storage defects", () => {
   const applicationsRoot = resolve(import.meta.dir, "../../../full-ai-cluster/k8s/applications");
   const readApp = (dir: string): string => readFileSync(join(applicationsRoot, dir, "Application.yaml"), "utf8");
+  const bootstrapRoot = resolve(import.meta.dir, "../../../full-ai-cluster/k8s/bootstrap");
 
   test("the two LIVE-PROVEN fixes are asserted; the two unproven ones are not", () => {
     const applications = discoverExpectedApplications();
@@ -1294,6 +1334,58 @@ describe("081M0JXXFV0087G0R00...: the four newly-visible non-storage defects", (
     // And the fix must NOT have been "let the chart make its own password":
     // that would be asserting less about the app to make the lane green.
     expect(text).not.toContain("adminPassword");
+  });
+
+  /**
+   * OZ / OPENZITI. The other half of the same shape, and the two properties the
+   * `oz` deferral was lifted on.
+   *
+   * The Application asks for an EXISTING admin Secret by name, and the trust
+   * bundle it mounts is only resolvable if trust-manager is pointed at the
+   * namespace where that bundle's source Secret is minted. Those two facts live
+   * in three files -- oz's Application, trust-manager's Application, and
+   * `DEV_ZITI_ADMIN_SECRET` -- and nothing but this test holds them together.
+   * Move any one and it goes red here, rather than as a `FailedMount` on
+   * `ziti-controller-ctrl-plane-cas` forty minutes into a live run.
+   */
+  test("the ziti credential the bring-up mints is the one the chart asks for", () => {
+    const text = readApp("oz");
+    expect(text).toContain("useCustomAdminSecret: true");
+    expect(text).toContain(`customAdminSecretName: ${DEV_ZITI_ADMIN_SECRET.name}`);
+    // The namespace the mint targets has to be the Application's destination,
+    // or the Secret lands where kubelet will not look for it.
+    expect(text).toContain(`namespace: ${DEV_ZITI_ADMIN_SECRET.namespace}`);
+  });
+
+  test("trust-manager's trust namespace is the namespace ziti's Bundle source is minted into", () => {
+    // trust-manager v0.15.0 resolves Bundle `sources[].secret` from ONE
+    // namespace and creates its Secrets-reading Role only there, so this single
+    // value decides whether `ziti-controller-ctrl-plane-cas` is ever written.
+    // Asserted against DEV_ZITI_ADMIN_SECRET.namespace rather than the literal
+    // so the two cannot drift apart silently.
+    const application = parseYaml(readApp("trust-manager")) as {
+      spec?: { source?: { helm?: { valuesObject?: { app?: { trust?: { namespace?: string } } } } } };
+    };
+    expect(application.spec?.source?.helm?.valuesObject?.app?.trust?.namespace).toBe(
+      DEV_ZITI_ADMIN_SECRET.namespace,
+    );
+
+    // The k3s first-boot install of the SAME Helm release must agree. Two
+    // reconcilers own release `trust-manager` in namespace `cert-manager`; if
+    // they disagreed on this flag they would flip it against each other, and
+    // the Bundle would resolve or not depending on which ran last.
+    const bootstrap = readFileSync(
+      join(bootstrapRoot, "trust-manager-install.yaml"),
+      "utf8",
+    );
+    expect(bootstrap).toContain(`namespace: ${DEV_ZITI_ADMIN_SECRET.namespace}`);
+
+    // And that namespace must be created before trust-manager's Role lands in
+    // it. On metal that is a bootstrap manifest; the k3s deploy controller
+    // applies files in lexical order and `o` < `t`.
+    expect(
+      existsSync(join(bootstrapRoot, "openziti-namespace.yaml")),
+    ).toBe(true);
   });
 
   /**

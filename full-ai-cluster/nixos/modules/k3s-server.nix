@@ -99,8 +99,8 @@
     #      aa-gateway-api-crds -> argocd-install -> argocd-namespace ->
     #      cert-manager-install -> cilium-install -> cilium-namespace ->
     #      external-secrets-install -> local-path-provisioner (from
-    #      local-storage.nix) -> root-application -> spire-install ->
-    #      trust-manager-install
+    #      local-storage.nix) -> openziti-namespace -> root-application ->
+    #      spire-install -> trust-manager-install
     #
     # 3. SUBMISSION ORDER IS NOT DEPENDENCY ORDER, and no renaming can make it
     #    one. The deploy controller submits all eleven files within seconds of
@@ -112,6 +112,9 @@
     #      - `*-install` sorting BEFORE its own `*-namespace` (argocd, cilium)
     #        is harmless: both objects are submitted in the same pass, seconds
     #        apart, and the namespace exists long before the chart Job runs.
+    #        `openziti-namespace` has no `openziti-install` sibling and is the
+    #        same argument read the other way: it must precede the trust-manager
+    #        CHART JOB (minutes later), not merely the trust-manager file.
     #      - cert-manager sorting before cilium is harmless for the same
     #        reason plus helm-controller retry: cert-manager pods stay Pending
     #        until Cilium supplies a CNI, then schedule.
@@ -182,6 +185,13 @@
       # vault -60, spire -50, trust-manager -45, external-secrets -40.
       # SPIRE (workload identity; self-signed CA today).
       spire-install.source = ../../k8s/bootstrap/spire-install.yaml;
+      # The OpenZiti namespace — needed BEFORE trust-manager, not before `oz`.
+      # trust-manager's trust namespace is `openziti` (it is the only namespace
+      # from which its Bundle sources can be read, and its Secrets Role is
+      # created there), so its chart cannot install into a cluster where that
+      # namespace is absent. Sorts before trust-manager-install.yaml, which is
+      # what the apply-order eval test pins.
+      openziti-namespace.source = ../../k8s/bootstrap/openziti-namespace.yaml;
       # Trust Manager (CA bundle distribution).
       trust-manager-install.source = ../../k8s/bootstrap/trust-manager-install.yaml;
       # External Secrets Operator (operator + CRDs; no store wired yet).

@@ -28,10 +28,11 @@ import { basename, join, resolve } from "node:path";
 import { parse as parseYaml } from "yaml";
 import { bootstrapKindClusterInProcess, bootstrapK3dClusterInProcess } from "./harness/bootstrap.ts";
 import {
-  DEV_GRAFANA_ADMIN_SECRET,
+  DEV_BOOTSTRAP_SECRETS,
   DEV_LONGHORN_ALIAS_CLASS_NAME,
   DEV_SATISFIABLE_PROVISIONERS,
   DEV_STORAGE_ALIAS_MANIFEST_RELPATHS,
+  type DevBootstrapSecretSpec,
 } from "./dev-cluster/lib.ts";
 import { DEFAULT_ROOT_DEV_CATALOG } from "./ports.ts";
 import { classifySyncPolicy, manualSyncAssertion, type AssertionOutcome } from "./manual-sync-policy.ts";
@@ -56,7 +57,7 @@ export type FailureKind =
   | "ContainerRuntimeUnavailable"
   | "ClusterBootstrapFailed"
   | "DevStorageClassMissing"
-  | "DevGrafanaAdminSecretMissing"
+  | "DevBootstrapSecretMissing"
   | "KubectlFailed"
   | "ArgoCdTimeout"
   | "ApplicationMissing"
@@ -564,8 +565,14 @@ export function auditDevExclusionReasons(
  *      hook"), so the Job runs alongside the StatefulSet it unblocks.
  *   `kube-prometheus-stack` -- Grafana's `admin.existingSecret` is now MINTED
  *      per dev cluster by `applyDevBootstrapSecrets`, and
- *      `assertDevGrafanaAdminSecretPresent` below refuses an included run whose
+ *      `assertDevBootstrapSecretsPresent` below refuses an included run whose
  *      cluster does not have it.
+ *   `oz` -- deferred 2026-08-22 and lifted the same day. Its two blockers were
+ *      a trust-manager `Bundle` whose source Secret lived in a namespace
+ *      trust-manager was not pointed at, and the SAME missing-admin-Secret
+ *      shape as Grafana's. Both are closed at their source rather than waived;
+ *      the record sits where the deferral used to, in
+ *      DEV_INCLUDED_PROOF_DEFERRED_DIRS.
  *
  * `weaviate` was in that list for a few hours on 2026-08-21 and IS NOT NOW. The
  * live run refuted it: two `type: LoadBalancer` Services can never be Healthy on
@@ -670,48 +677,50 @@ const DEV_INCLUDED_PROOF_DEFERRED_DIRS = new Set([
   // own) and a `gateway.networking.k8s.io/v1` Gateway, and portal.yaml pins
   // `storageClassName: longhorn`.
   "platform",
-  // TWO INDEPENDENT BLOCKERS, either alone sufficient, and neither is an
-  // operator convenience -- MEASURED 2026-08-22 against run 32548563352, where
-  // openziti-controller was asserted for the first time (#13471 corrected a pin
-  // that had never resolved, so nothing had ever reached this app) and came up
-  // Unknown/Degraded.
+  // `oz` (openziti-controller) is NOT here. It LEFT this set on 2026-08-22,
+  // hours after it entered, and both blockers are recorded as CLOSED rather
+  // than the lines silently deleted -- the same treatment `spire` gets below.
   //
-  // (1) THE TRUST BUNDLE CANNOT RESOLVE, and this is the OBSERVED failure:
-  //     `MountVolume.SetUp failed for volume "ziti-controller-ctrl-plane-cas":
-  //     configmap "ziti-controller-ctrl-plane-cas" not found`. Everything else
-  //     the app needs is Healthy -- all 8 Certificates issued, all 5 Issuers
-  //     "Signing CA verified", PVC bound -- so this is not a cert-manager gap.
-  //     ziti-controller 3.1.1 renders a trust-manager `Bundle` whose only source
-  //     is `secret: ziti-controller-edge-signer-secret`. trust-manager resolves
-  //     Bundle secret sources from ITS OWN trust namespace, and ours is pinned
-  //     to `cert-manager` (trust-manager/Application.yaml sets
-  //     `app.trust.namespace: cert-manager`), while the certificate that mints
-  //     that secret is issued into `openziti`, this Application's destination.
-  //     The namespaces do not meet, so the target ConfigMap is never written and
-  //     the Deployment can never mount it. The rendered Bundle also declares no
-  //     `target.namespaceSelector`, so even a resolvable source would not say
-  //     out loud that it should land in `openziti`. This is a wiring decision
-  //     between two charts, not a CI substrate gap -- it would fail the same way
-  //     on metal.
+  //   WAS: "(1) THE TRUST BUNDLE CANNOT RESOLVE ... `MountVolume.SetUp failed
+  //   for volume \"ziti-controller-ctrl-plane-cas\": configmap
+  //   \"ziti-controller-ctrl-plane-cas\" not found` ... trust-manager resolves
+  //   Bundle secret sources from ITS OWN trust namespace, and ours is pinned to
+  //   `cert-manager`, while the certificate that mints that secret is issued
+  //   into `openziti`. (2) THE ADMIN CREDENTIAL IS OPERATOR-SUPPLIED BY DESIGN,
+  //   and CI has no source for it."
   //
-  // (2) THE ADMIN CREDENTIAL IS OPERATOR-SUPPLIED BY DESIGN, and CI has no
-  //     source for it. The Application sets `useCustomAdminSecret: true` +
-  //     `customAdminSecretName: ziti-admin-credentials`, so the init container
-  //     reads `secretKeyRef` keys `admin-user`/`admin-password` from a Secret
-  //     this repo deliberately does not contain, and NO chart-generated admin
-  //     Secret is rendered as a fallback (measured: zero `admin-secret` objects
-  //     in the render). Owned honestly: #13471 introduced this, by making the
-  //     manifest's own stated intent -- "admin credential sourced from a Secret
-  //     rather than generated by the chart" -- actually reach the chart, where
-  //     it had previously been an inert `adminSecret:` key ziti-controller has
-  //     never had. The intent is right and is kept; the consequence is that this
-  //     app cannot be Healthy unattended, which is a reason to stop asserting it
-  //     rather than a reason to undo it.
+  //   BLOCKER 1 CLOSED BY: k8s/applications/trust-manager/Application.yaml +
+  //   k8s/bootstrap/trust-manager-install.yaml, both now
+  //   `app.trust.namespace: openziti`. The old reason said the fix was "a
+  //   wiring decision between two charts", and it was -- but the wiring is not
+  //   ours to choose: at the pinned trust-manager v0.15.0 the Bundle CRD's only
+  //   served version offers NO per-source namespace, `deployment.yaml:86` takes
+  //   a single `--trust-namespace`, and `role.yaml` grants Secret reads in that
+  //   namespace ALONE, so the trust namespace is an RBAC boundary and not a
+  //   default. ziti-controller's own README:33 states the requirement in the
+  //   same words ("You must set the Trust Manager's 'trust namespace' to the
+  //   namespace of the Ziti controller"). The cost is named where it is paid:
+  //   the trust namespace is a cluster-wide singleton and openziti is now
+  //   spending it, which is affordable only because `kind: Bundle` appears
+  //   nowhere else in this tree and `defaultPackage.enabled` is false.
   //
-  // Recorded as TWO because fixing (1) alone would leave a pod that still cannot
-  // start -- the weaviate lesson this file already carries: one confirmed cause
-  // is not THE cause.
-  "oz",
+  //   BLOCKER 2 CLOSED BY: `DEV_ZITI_ADMIN_SECRET` in dev-cluster/lib.ts, minted
+  //   per cluster by `applyDevBootstrapSecrets` -- the SAME mechanism that
+  //   closed Grafana's, one Application over, and NOT a new one. The manifest's
+  //   intent is unchanged: `useCustomAdminSecret: true` stays, because the
+  //   alternative is worse rather than merely different. MEASURED 2026-08-22:
+  //   with `useCustomAdminSecret: false`, two `helm template` runs of the same
+  //   chart against the same values differ in `admin-password` -- the chart
+  //   builds it from `lookup` with a `randAlphaNum 32` fallback, ArgoCD's
+  //   repo-server has no cluster for `lookup` to hit, and `selfHeal: true`
+  //   would then rotate the controller's admin credential every reconcile.
+  //
+  //   AND THE `LIFTS WHEN` IT SATISFIES IS THE ONE THAT WAS WRITTEN: "(1) the
+  //   Bundle's source secret and trust-manager's trust namespace are made to
+  //   meet -- either trust-manager is given `openziti` in scope ... AND (2) the
+  //   lane is given a `ziti-admin-credentials` Secret ... Both, not either."
+  //   Both, and the first disjunct of each. A deferral whose stated condition is
+  //   met and which stays anyway is the acknowledgement that outlives its cause.
   // `spire` is NOT here. It LEFT this set on 2026-08-22, and both blockers that
   // held it are recorded as CLOSED rather than the lines silently deleted.
   //
@@ -863,19 +872,6 @@ export const APPLIED_BUT_UNASSERTED_REASONS: ReadonlyMap<string, string> = new M
     "forgejo",
     "deferred until dev wiring exists (DEV_INCLUDED_PROOF_DEFERRED_DIRS). " +
       "[cite: glob-applies forgejo] [cite: renders full-ai-cluster/forgejo]",
-  ],
-  [
-    "oz",
-    "TWO INDEPENDENT BLOCKERS, either alone sufficient, MEASURED 2026-08-22 (run 32548563352 -- the first run in which openziti-controller was ASSERTED at all; #13471 corrected a targetRevision that had never resolved, so nothing had ever reached this app). Verdict: Unknown/Degraded. " +
-      "(1) THE TRUST BUNDLE CANNOT RESOLVE -- the OBSERVED failure: `MountVolume.SetUp failed for volume \"ziti-controller-ctrl-plane-cas\": configmap \"ziti-controller-ctrl-plane-cas\" not found`. This is NOT a cert-manager gap: in the same run all 8 Certificates report `Certificate is up to date and has not expired`, all 5 Issuers report `Signing CA verified`, and the PVC is Healthy. ziti-controller 3.1.1 renders a trust-manager `Bundle` whose only source is `secret: ziti-controller-edge-signer-secret`. trust-manager resolves Bundle secret sources from its own TRUST NAMESPACE, which this tree pins to `cert-manager` (trust-manager/Application.yaml `app.trust.namespace`), while the Certificate that mints that secret is issued into `openziti`, this Application's destination namespace. The two namespaces never meet, so the target ConfigMap is never written and the Deployment can never mount it. The rendered Bundle additionally declares no `target.namespaceSelector`. This fails identically on metal -- it is a wiring decision between two charts, not a CI substrate limitation. " +
-      "(2) THE ADMIN CREDENTIAL IS OPERATOR-SUPPLIED BY DESIGN and CI has no source for it: `useCustomAdminSecret: true` + `customAdminSecretName: ziti-admin-credentials` means the init container reads `secretKeyRef` keys `admin-user`/`admin-password` from a Secret this repo deliberately does not contain, and the render emits NO chart-generated admin Secret as a fallback. Owned plainly: #13471 introduced this by making the manifest's own long-standing stated intent reach the chart, where it had been an inert `adminSecret:` key ziti-controller has never had in any published version. The intent is correct and is kept; its consequence is that this app cannot be Healthy unattended, which is a reason to stop ASSERTING it, not a reason to undo it. " +
-      "Recorded as TWO because fixing (1) alone leaves a pod that still cannot start -- the weaviate lesson this file already carries: one confirmed cause is not THE cause. " +
-      "LIFTS WHEN: (1) the Bundle's source secret and trust-manager's trust namespace are made to meet -- either trust-manager is given `openziti` in scope, or the edge-signer secret is mirrored into `cert-manager` -- AND (2) the lane is given a `ziti-admin-credentials` Secret (external-secrets/Vault, or a dev-only fixture in dev-cluster/manifests/), or this Application stops requiring one. Both, not either. " +
-      "ANCHORS, CHECKED BY `reason-truth.ts`: each names an artifact this tree holds, so a claim that outlives its artifact goes red instead of reading on. " +
-      "[cite: glob-applies oz] " +
-      "[cite: chart-pin full-ai-cluster/oz ziti-controller 3.1.1] " +
-      "[cite: path full-ai-cluster/k8s/applications/trust-manager/Application.yaml] " +
-      "[cite: pvc-class full-ai-cluster/oz longhorn] ",
   ],
   [
     "hindsight",
@@ -1478,7 +1474,10 @@ export function buildPlan(options: CliOptions, repoRoot = REPO_ROOT): HarnessPla
       ...(isIncludedScope(options.scope)
         ? [
             `assert the dev alias StorageClass "${DEV_LONGHORN_ALIAS_CLASS_NAME}" the repo declares is actually present, before anything waits on a PVC that needs it`,
-            `assert the dev credential ${DEV_GRAFANA_ADMIN_SECRET.namespace}/${DEV_GRAFANA_ADMIN_SECRET.name} the bring-up mints is actually present, before Grafana waits on a Secret that must pre-exist`,
+            ...DEV_BOOTSTRAP_SECRETS.map(
+              (spec) =>
+                `assert the dev credential ${spec.namespace}/${spec.name} the bring-up mints is actually present, before its Application waits on a Secret that must pre-exist`,
+            ),
           ]
         : []),
       "assert root App-of-Apps exists",
@@ -1812,39 +1811,46 @@ function assertDevStorageClassPresent(plan: HarnessPlan): Failure | null {
 }
 
 /**
- * The LIVE half of lifting `kube-prometheus-stack` out of the deferred set.
+ * The LIVE half of lifting `kube-prometheus-stack` and `oz` out of the deferred
+ * set.
  *
- * `applyDevBootstrapSecrets` mints `monitoring/grafana-admin-credentials` at
- * bring-up, and `use-cases.test.ts` proves the call is wired into all three
- * doors. Neither of those observes a CLUSTER. If the Secret is absent anyway --
- * a bring-up that predates this change, an `--existing` run against a
- * hand-built cluster, a kubectl apply that silently failed -- Grafana returns to
- * `CreateContainerConfigError`, ArgoCD reports the Deployment as Progressing,
- * and the proof burns its whole 2400s and reports a symptom instead of a cause.
+ * `applyDevBootstrapSecrets` mints `monitoring/grafana-admin-credentials` and
+ * `openziti/ziti-admin-credentials` at bring-up, and `use-cases.test.ts` proves
+ * the loop is wired into all three doors. Neither of those observes a CLUSTER.
+ * If a Secret is absent anyway -- a bring-up that predates this change, an
+ * `--existing` run against a hand-built cluster, a kubectl apply that silently
+ * failed -- the consuming pod returns to `CreateContainerConfigError`, ArgoCD
+ * reports its Deployment as Progressing, and the proof burns its whole 2400s
+ * and reports a symptom instead of a cause.
  *
  * So this refuses in seconds and NAMES the missing object, exactly as
  * `assertDevStorageClassPresent` does for the StorageClass. Same shape, same
  * reason: the repo-side and code-side claims are about the repo and the code;
  * only this one is about the cluster the assertions will actually run against.
  *
- * Scoped to included/full, because the smoke roster does not assert
- * kube-prometheus-stack and has no business failing on its credential.
+ * IT WALKS THE ROSTER rather than naming two Secrets, so a third entry in
+ * `DEV_BOOTSTRAP_SECRETS` is checked here without an edit. A per-Secret list
+ * here that drifted from the mint's list would be the half-wiring this file
+ * keeps catching elsewhere.
+ *
+ * Scoped to included/full, because the smoke roster asserts neither Application
+ * and has no business failing on their credentials.
  */
-function assertDevGrafanaAdminSecretPresent(plan: HarnessPlan): Failure | null {
-  if (!isIncludedScope(plan.scope)) return null;
-  const { namespace, name } = DEV_GRAFANA_ADMIN_SECRET;
+function devBootstrapSecretFailure(plan: HarnessPlan, spec: DevBootstrapSecretSpec): Failure | null {
+  const { namespace, name } = spec;
   const args = ["get", "secret", name, "-n", namespace, "-o", "name"];
   const result = runCommand("kubectl", args, 60_000);
   if (result.status === 0) return null;
   return {
-    kind: "DevGrafanaAdminSecretMissing",
+    kind: "DevBootstrapSecretMissing",
     message:
-      `kube-prometheus-stack sets grafana.admin.existingSecret: "${name}", so the chart never mints an admin ` +
-      `credential and kubelet cannot start Grafana without one. The dev/CI bring-up mints it into namespace ` +
-      `"${namespace}", but in cluster ${plan.clusterName} it is not present. Grafana would sit in ` +
-      `CreateContainerConfigError, which ArgoCD reports as Progressing rather than Degraded, so the run would ` +
-      `burn its whole timeout instead of failing. Failing now instead. Check that the bring-up path still ` +
-      `calls applyDevBootstrapSecrets before the app-of-apps root.`,
+      `An Application in this lane is configured to read an admin credential from an EXISTING Secret ` +
+      `"${name}", so its chart never mints one and kubelet cannot start the pod without it. The dev/CI ` +
+      `bring-up mints it into namespace "${namespace}", but in cluster ${plan.clusterName} it is not ` +
+      `present. The pod would sit in CreateContainerConfigError, which ArgoCD reports as Progressing ` +
+      `rather than Degraded, so the run would burn its whole timeout instead of failing. Failing now ` +
+      `instead. Check that the bring-up path still calls applyDevBootstrapSecrets before the app-of-apps ` +
+      `root, and that ${namespace}/${name} is still in DEV_BOOTSTRAP_SECRETS.`,
     command: ["kubectl", ...args],
     detail: {
       stdout: result.stdout.slice(-2000),
@@ -1854,6 +1860,15 @@ function assertDevGrafanaAdminSecretPresent(plan: HarnessPlan): Failure | null {
       secretName: name,
     },
   };
+}
+
+function assertDevBootstrapSecretsPresent(plan: HarnessPlan): Failure | null {
+  if (!isIncludedScope(plan.scope)) return null;
+  for (const spec of DEV_BOOTSTRAP_SECRETS) {
+    const failure = devBootstrapSecretFailure(plan, spec);
+    if (failure !== null) return failure;
+  }
+  return null;
 }
 
 const ZETA_GITHUB_REPO_MARKER = "Lucent-Financial-Group/Zeta";
@@ -2382,9 +2397,9 @@ export async function runHarness(options: CliOptions): Promise<HarnessResult> {
     return { ok: false, plan, preflight, failure: storageFailure };
   }
 
-  const grafanaSecretFailure = assertDevGrafanaAdminSecretPresent(plan);
-  if (grafanaSecretFailure !== null) {
-    return { ok: false, plan, preflight, failure: grafanaSecretFailure };
+  const bootstrapSecretFailure = assertDevBootstrapSecretsPresent(plan);
+  if (bootstrapSecretFailure !== null) {
+    return { ok: false, plan, preflight, failure: bootstrapSecretFailure };
   }
 
   const argoFailure = await waitForArgoCd(plan, options);

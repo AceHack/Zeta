@@ -112,6 +112,11 @@ let
     "cilium-namespace.yaml"
     "external-secrets-install.yaml"
     "local-path-provisioner.yaml"
+    # Added 2026-08-22 with the trust-manager trust-namespace move. It sorts
+    # here, which is BEFORE trust-manager-install.yaml — the one ordering
+    # property it needs, since trust-manager's Secrets Role is created in this
+    # namespace and a Role into a missing namespace fails.
+    "openziti-namespace.yaml"
     "root-application.yaml"
     "spire-install.yaml"
     "trust-manager-install.yaml"
@@ -274,6 +279,20 @@ let
         in
         !(builtins.elem ns appliedOrder) || n < ns
       ) (builtins.filter (lib.hasSuffix "-install.yaml") appliedOrder)
+    ))
+
+    # -- P3b the SECOND ordering property that is load-bearing -------------
+    # trust-manager's Role over Secrets is created in its TRUST NAMESPACE,
+    # which k8s/bootstrap/trust-manager-install.yaml points at `openziti`. A
+    # Role applied into a namespace that does not exist fails, so the Namespace
+    # must be submitted first. Unlike the `aa-` prefix below this needs no
+    # prefix -- `o` < `t` already -- which is exactly why it deserves an
+    # assertion: nothing in either filename says the order is deliberate, so a
+    # rename could silently reverse it.
+    (check "openziti-namespace.yaml is submitted before trust-manager-install.yaml" (
+      builtins.elem "openziti-namespace.yaml" appliedOrder
+      && builtins.elem "trust-manager-install.yaml" appliedOrder
+      && "openziti-namespace.yaml" < "trust-manager-install.yaml"
     ))
 
     # -- P4 the one ordering property that IS load-bearing -----------------

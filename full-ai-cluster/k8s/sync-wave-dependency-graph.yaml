@@ -364,11 +364,25 @@ spec:
           `storageClass: longhorn`.
 
     - chart: openziti-controller
-      dependsOn: [longhorn]
+      dependsOn: [longhorn, cert-manager, trust-manager]
       citations:
         longhorn: >-
           full-ai-cluster/k8s/applications/oz/Application.yaml:33 sets
           `storageClass: longhorn`.
+        cert-manager: >-
+          ziti-controller 3.1.1 renders 8 `cert-manager.io/v1` Certificates and
+          5 Issuers (measured by `helm template` against this Application's own
+          valuesObject), so the CRD provider must precede the CRD consumer. Its
+          own README:33 names cert-manager as a required prerequisite.
+        trust-manager: >-
+          the same render emits a `trust.cert-manager.io/v1alpha1` Bundle
+          (`ziti-controller-ctrl-plane-cas`) whose target ConfigMap the
+          controller Deployment MOUNTS — an unresolved Bundle is a `FailedMount`
+          on `ziti-controller-ctrl-plane-cas`, observed in run 32548563352. The
+          edge is stronger than CRD-ownership: trust-manager's trust namespace
+          is pinned to `openziti` FOR this Bundle
+          (k8s/applications/trust-manager/Application.yaml), so the two charts
+          are wired to each other by name.
 
     - chart: arc-runner-set
       dependsOn: [arc-controller, longhorn]

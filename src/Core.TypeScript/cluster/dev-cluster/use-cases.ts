@@ -1,6 +1,6 @@
 import { randomBytes } from "node:crypto";
 import type { DevClusterPorts } from "../ports.ts";
-import { buildDevGrafanaAdminSecretManifest, DEV_GRAFANA_ADMIN_SECRET, devStorageAliasManifestPath } from "./lib.ts";
+import { buildDevAdminSecretManifest, DEV_BOOTSTRAP_SECRETS, devStorageAliasManifestPath } from "./lib.ts";
 
 /**
  * Apply the dev/CI alias StorageClasses, BEFORE the app-of-apps root syncs.
@@ -30,42 +30,65 @@ export function applyDevStorageClassAliases(ports: DevClusterPorts): void {
  * Mint the dev/CI credentials that Applications expect to find ALREADY PRESENT,
  * BEFORE the app-of-apps root syncs.
  *
- * Today that is exactly one Secret: `kube-prometheus-stack` points Grafana at
- * `grafana.admin.existingSecret: grafana-admin-credentials`, on purpose, so that
- * no admin password is committed to this repository. Nothing in the dev lane
- * ever created that Secret, so Grafana sat in `CreateContainerConfigError`
- * (`secret "grafana-admin-credentials" not found`) while the rest of the
- * Application -- prometheus and alertmanager, both on bound PVCs -- ran 2/2.
+ * TWO Secrets today, both listed in `DEV_BOOTSTRAP_SECRETS`, both for the same
+ * structural reason: the Application deliberately does not let its chart invent
+ * an admin password (so none is committed here), and nothing in the dev lane
+ * ever supplied one.
+ *
+ *   `monitoring/grafana-admin-credentials` -- kube-prometheus-stack points
+ *      Grafana at `grafana.admin.existingSecret`. Without it Grafana sat in
+ *      `CreateContainerConfigError` (`secret "grafana-admin-credentials" not
+ *      found`) while the rest of the Application -- prometheus and
+ *      alertmanager, both on bound PVCs -- ran 2/2.
+ *   `openziti/ziti-admin-credentials` -- ziti-controller reads `admin-user` /
+ *      `admin-password` by `secretKeyRef` because the Application sets
+ *      `useCustomAdminSecret: true`. Its chart's generated fallback is guarded
+ *      off by that same value, and turning the fallback back on is NOT the
+ *      cheaper fix: it renders a fresh random password on every `helm template`
+ *      (ArgoCD's repo-server has no cluster for the chart's `lookup` to hit),
+ *      which under `selfHeal: true` rotates the credential forever. See
+ *      `DEV_ZITI_ADMIN_SECRET` for the measurement.
  *
  * ORDER IS LOAD-BEARING for the same reason the StorageClass aliases are:
  * kubelet resolves `envFrom`/`env.valueFrom` at container-create time and a
  * missing Secret is a hard config error, so the Secret has to exist before the
  * Application that consumes it syncs.
  *
- * THE PASSWORD IS DRAWN FRESH PER CLUSTER, never committed and never printed.
+ * `ensureNamespace` IS NOT INCIDENTAL for `openziti`. trust-manager's trust
+ * namespace is now that namespace, and its Role over Secrets is created there
+ * at sync-wave -45 -- forty-five waves before `oz` would have created it with
+ * `CreateNamespace=true`. So this call is also what keeps trust-manager's own
+ * sync from failing in the dev lane. On metal the same job is done declaratively
+ * by `k8s/bootstrap/openziti-namespace.yaml`.
+ *
+ * THE PASSWORDS ARE DRAWN FRESH PER CLUSTER, never committed and never printed.
  * A well-known constant would also have worked and would have been simpler; a
  * drawn one cannot be promoted to a real deployment by anybody copying it,
  * because there is nothing to copy. This is the ONLY place entropy enters --
- * `buildDevGrafanaAdminSecretManifest` is pure and takes the value.
+ * `buildDevAdminSecretManifest` is pure and takes the value.
  *
- * AND IT IS IDEMPOTENT BY ASKING FIRST. Re-running a bring-up against a cluster
- * that already exists is a supported path (both bring-ups say so), and a bare
- * apply would rotate Grafana's admin password every time. `resourceExists`
- * makes the second run a no-op instead.
+ * AND IT IS IDEMPOTENT BY ASKING FIRST, PER SECRET. Re-running a bring-up
+ * against a cluster that already exists is a supported path (both bring-ups say
+ * so), and a bare apply would rotate an admin password every time.
+ * `resourceExists` makes the second run a no-op for each Secret independently,
+ * so a cluster holding one and missing the other converges rather than
+ * re-rolling the one it already had.
  *
  * EXPORTED for the same reason `applyDevStorageClassAliases` is: `apply-root-app.ts`
  * is a third door into the root catalogue that neither bring-up guards.
  */
 export function applyDevBootstrapSecrets(ports: DevClusterPorts): void {
-  const { namespace, name } = DEV_GRAFANA_ADMIN_SECRET;
-  const ref = `secret/${name}`;
-  ports.controlPlane.ensureNamespace(namespace);
-  if (ports.controlPlane.resourceExists(ref, namespace)) {
-    console.log(`Dev/CI credential ${namespace}/${name} already present; leaving it alone.`);
-    return;
+  for (const spec of DEV_BOOTSTRAP_SECRETS) {
+    const { namespace, name } = spec;
+    const ref = `secret/${name}`;
+    ports.controlPlane.ensureNamespace(namespace);
+    if (ports.controlPlane.resourceExists(ref, namespace)) {
+      console.log(`Dev/CI credential ${namespace}/${name} already present; leaving it alone.`);
+      continue;
+    }
+    console.log(`Minting dev/CI credential ${namespace}/${name} (value is per-cluster and never logged) ...`);
+    ports.controlPlane.applyInlineManifest(buildDevAdminSecretManifest(spec, randomBytes(24).toString("base64url")));
   }
-  console.log(`Minting dev/CI credential ${namespace}/${name} (value is per-cluster and never logged) ...`);
-  ports.controlPlane.applyInlineManifest(buildDevGrafanaAdminSecretManifest(randomBytes(24).toString("base64url")));
 }
 
 export interface KindCiBringUpOptions {

@@ -18,4 +18,17 @@ spec:
     defaultPackage: { enabled: false }
     app:
       trust:
-        namespace: cert-manager
+        # MUST MATCH k8s/applications/trust-manager/Application.yaml, which
+        # carries the full reasoning: trust-manager v0.15.0 resolves Bundle
+        # sources from exactly one namespace and creates its Secrets-reading
+        # Role only there, and ziti-controller's Bundle sources a Secret minted
+        # into `openziti`. Two surfaces install this chart -- this one at k3s
+        # first boot, the Application at sync-wave -45 -- and they share a Helm
+        # release name and namespace, so a disagreement here would have the two
+        # reconcilers flipping the flag against each other.
+        #
+        # `openziti` is created before this file is applied by
+        # k8s/bootstrap/openziti-namespace.yaml (lexically earlier than
+        # trust-manager-install.yaml in the k3s deploy controller's apply order,
+        # and pinned as such by nixos/tests/k3s-first-boot-apply-order-eval-test.nix).
+        namespace: openziti

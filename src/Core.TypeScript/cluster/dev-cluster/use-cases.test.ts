@@ -1,7 +1,13 @@
 import { describe, expect, test } from "bun:test";
 import { readFileSync } from "node:fs";
 import { buildRootDevCatalogManifest } from "../ports.ts";
-import { buildDevGrafanaAdminSecretManifest, DEV_GRAFANA_ADMIN_SECRET, devStorageAliasManifestPath } from "./lib.ts";
+import {
+  buildDevAdminSecretManifest,
+  DEV_BOOTSTRAP_SECRETS,
+  DEV_GRAFANA_ADMIN_SECRET,
+  DEV_ZITI_ADMIN_SECRET,
+  devStorageAliasManifestPath,
+} from "./lib.ts";
 import { bringUpK3dDevCluster, bringUpKindCiCluster } from "./use-cases.ts";
 import type {
   AppCatalogApplicator,
@@ -163,40 +169,70 @@ describe("kind CI use case", () => {
 });
 
 /**
- * THE DEV/CI CREDENTIAL MINT (kube-prometheus-stack / Grafana).
+ * THE DEV/CI CREDENTIAL MINT (kube-prometheus-stack / Grafana, and oz / ziti).
  *
  * Same falsifier shape as the StorageClass aliases above, and for the same
- * reason: `argocd-health-test.ts` stops deferring `kube-prometheus-stack`
- * because this Secret is minted at bring-up. That is a claim about CODE THAT
- * RUNS, and nothing on the harness side can notice a dropped call. These tests
- * can -- delete `applyDevBootstrapSecrets(ports)` from either bring-up and they
- * go red.
+ * reason: `argocd-health-test.ts` stops deferring `kube-prometheus-stack` and
+ * `oz` because these Secrets are minted at bring-up. That is a claim about CODE
+ * THAT RUNS, and nothing on the harness side can notice a dropped call. These
+ * tests can -- delete `applyDevBootstrapSecrets(ports)` from either bring-up and
+ * they go red.
+ *
+ * THE ROSTER IS WALKED, NOT RETYPED. Every test below that enumerates Secrets
+ * enumerates `DEV_BOOTSTRAP_SECRETS`, so adding a third entry to the mint
+ * without wiring it is caught here rather than in a live run. The two named
+ * constants appear only where a specific Application's contract is the subject.
  */
-describe("dev/CI Grafana admin credential", () => {
-  const secretRef = `secret/${DEV_GRAFANA_ADMIN_SECRET.name}`;
-  const existingRef = `${secretRef}@${DEV_GRAFANA_ADMIN_SECRET.namespace}`;
+describe("dev/CI bootstrap credentials", () => {
+  const kindOptions = {
+    configPath: "/tmp/kind.yaml",
+    clusterName: "zeta-ci",
+    gitRef: "main",
+    gitRepoUrl: "https://github.com/Lucent-Financial-Group/Zeta",
+  } as const;
 
-  test("kind bring-up mints it into the right namespace BEFORE the app-of-apps root", () => {
-    const log: string[] = [];
-    bringUpKindCiCluster(fakePorts(log), {
-      configPath: "/tmp/kind.yaml",
-      clusterName: "zeta-ci",
-      gitRef: "main",
-      gitRepoUrl: "https://github.com/Lucent-Financial-Group/Zeta",
-    });
-    const mintAt = log.findIndex((entry) => entry.startsWith("inline-manifest:"));
-    const catalogAt = log.findIndex((entry) => entry.startsWith("catalog:"));
-    expect(mintAt).toBeGreaterThan(-1);
-    expect(catalogAt).toBeGreaterThan(-1);
-    // Ordering is the property, not membership: kubelet resolves a Secret at
-    // container-create time, so a Secret minted after the Application synced is
-    // a Secret that arrived after Grafana already failed to start.
-    expect(mintAt).toBeLessThan(catalogAt);
-    expect(log).toContain(`ns:${DEV_GRAFANA_ADMIN_SECRET.namespace}`);
-    expect(log.indexOf(`ns:${DEV_GRAFANA_ADMIN_SECRET.namespace}`)).toBeLessThan(mintAt);
+  /**
+   * The roster is the SUBJECT of the mint, so it is asserted before anything
+   * that walks it. A roster that silently shrank to one entry would make every
+   * "for each" test below vacuous -- passing over an empty-ish set is the
+   * classic shape of a check that cannot fail.
+   */
+  test("the roster holds both Applications' credentials, and they are distinct objects", () => {
+    expect(DEV_BOOTSTRAP_SECRETS).toContain(DEV_GRAFANA_ADMIN_SECRET);
+    expect(DEV_BOOTSTRAP_SECRETS).toContain(DEV_ZITI_ADMIN_SECRET);
+    expect(DEV_BOOTSTRAP_SECRETS.length).toBe(2);
+    const refs = DEV_BOOTSTRAP_SECRETS.map((spec) => `${spec.namespace}/${spec.name}`);
+    expect(new Set(refs).size).toBe(refs.length);
   });
 
-  test("k3d bring-up mints the same credential — the deferral was lifted provider-independently", () => {
+  test("kind bring-up mints EVERY rostered credential into its own namespace, BEFORE the app-of-apps root", () => {
+    const log: string[] = [];
+    bringUpKindCiCluster(fakePorts(log), kindOptions);
+    const catalogAt = log.findIndex((entry) => entry.startsWith("catalog:"));
+    expect(catalogAt).toBeGreaterThan(-1);
+
+    const mints = log.filter((entry) => entry.startsWith("inline-manifest:"));
+    expect(mints.length).toBe(DEV_BOOTSTRAP_SECRETS.length);
+
+    for (const spec of DEV_BOOTSTRAP_SECRETS) {
+      const mintAt = log.findIndex(
+        (entry) => entry.startsWith("inline-manifest:") && entry.includes(`name: ${spec.name}`),
+      );
+      expect(mintAt).toBeGreaterThan(-1);
+      // Ordering is the property, not membership: kubelet resolves a Secret at
+      // container-create time, so a Secret minted after the Application synced
+      // is a Secret that arrived after the pod already failed to start.
+      expect(mintAt).toBeLessThan(catalogAt);
+      // And the namespace has to be ensured BEFORE the object lands in it.
+      // For `openziti` this carries a second load: trust-manager's Secrets Role
+      // is created in that namespace at sync-wave -45, so a bring-up that never
+      // created it fails trust-manager's own sync, not just ziti's.
+      expect(log).toContain(`ns:${spec.namespace}`);
+      expect(log.indexOf(`ns:${spec.namespace}`)).toBeLessThan(mintAt);
+    }
+  });
+
+  test("k3d bring-up mints the same credentials — the deferrals lifted provider-independently", () => {
     const log: string[] = [];
     bringUpK3dDevCluster(fakePorts(log), {
       configPath: "/tmp/k3d.yaml",
@@ -206,68 +242,97 @@ describe("dev/CI Grafana admin credential", () => {
       gitRef: "main",
       gitRepoUrl: "https://github.com/Lucent-Financial-Group/Zeta",
     });
-    const mintAt = log.findIndex((entry) => entry.startsWith("inline-manifest:"));
     const catalogAt = log.findIndex((entry) => entry.startsWith("catalog:"));
-    expect(mintAt).toBeGreaterThan(-1);
-    expect(mintAt).toBeLessThan(catalogAt);
+    for (const spec of DEV_BOOTSTRAP_SECRETS) {
+      const mintAt = log.findIndex(
+        (entry) => entry.startsWith("inline-manifest:") && entry.includes(`name: ${spec.name}`),
+      );
+      expect(mintAt).toBeGreaterThan(-1);
+      expect(mintAt).toBeLessThan(catalogAt);
+    }
   });
 
   /**
    * The idempotency half. Bring-up against an already-standing cluster is a
-   * supported path, and a bare apply there would ROTATE Grafana's admin password
-   * on every invocation -- a credential silently changing under a running
-   * service. The mint asks first.
+   * supported path, and a bare apply there would ROTATE an admin password on
+   * every invocation -- a credential silently changing under a running service.
+   * The mint asks first.
    */
-  test("a second bring-up against a cluster that already has it does NOT rotate it", () => {
+  test("a second bring-up against a cluster that already has them does NOT rotate them", () => {
     const log: string[] = [];
-    bringUpKindCiCluster(fakePorts(log, [existingRef]), {
-      configPath: "/tmp/kind.yaml",
-      clusterName: "zeta-ci",
-      gitRef: "main",
-      gitRepoUrl: "https://github.com/Lucent-Financial-Group/Zeta",
-    });
-    expect(log).toContain(`exists?:${existingRef}`);
+    const existing = DEV_BOOTSTRAP_SECRETS.map((spec) => `secret/${spec.name}@${spec.namespace}`);
+    bringUpKindCiCluster(fakePorts(log, existing), kindOptions);
+    for (const ref of existing) expect(log).toContain(`exists?:${ref}`);
     expect(log.some((entry) => entry.startsWith("inline-manifest:"))).toBe(false);
   });
 
   /**
-   * WHAT IS ACTUALLY IN THE SECRET. The three tests above would pass on an
-   * empty manifest; the point of the mint is the two keys the chart reads by
-   * name, so those are asserted against the shared constant rather than against
-   * strings retyped here.
+   * PER-SECRET idempotency, which the all-present case above cannot show.
+   *
+   * A cluster can legitimately hold one and not the other -- a bring-up that
+   * predates a roster entry is exactly that state, and it is the state every
+   * existing dev cluster is in the moment `openziti/ziti-admin-credentials`
+   * joins the roster. The mint must converge it by creating ONLY the missing
+   * one. A loop that bailed on the first `resourceExists` hit, or that skipped
+   * the check entirely, would fail here and pass every other test in this file.
    */
-  test("the minted manifest carries both keys the chart names, and no committed password", () => {
-    const manifest = buildDevGrafanaAdminSecretManifest("a-test-value");
-    expect(manifest).toContain(`name: ${DEV_GRAFANA_ADMIN_SECRET.name}`);
-    expect(manifest).toContain(`namespace: ${DEV_GRAFANA_ADMIN_SECRET.namespace}`);
-    expect(manifest).toContain(`${DEV_GRAFANA_ADMIN_SECRET.userKey}: ${DEV_GRAFANA_ADMIN_SECRET.user}`);
-    expect(manifest).toContain(`${DEV_GRAFANA_ADMIN_SECRET.passwordKey}: a-test-value`);
-    expect(manifest).toContain('zeta.io/dev-substrate-credential: "true"');
+  test("a cluster holding only one converges by minting only the other", () => {
+    const log: string[] = [];
+    bringUpKindCiCluster(
+      fakePorts(log, [`secret/${DEV_GRAFANA_ADMIN_SECRET.name}@${DEV_GRAFANA_ADMIN_SECRET.namespace}`]),
+      kindOptions,
+    );
+    const mints = log.filter((entry) => entry.startsWith("inline-manifest:"));
+    expect(mints.length).toBe(1);
+    expect(mints[0]).toContain(`name: ${DEV_ZITI_ADMIN_SECRET.name}`);
+    expect(mints[0]).not.toContain(`name: ${DEV_GRAFANA_ADMIN_SECRET.name}`);
   });
 
   /**
-   * The value is DRAWN, not constant. Two bring-ups into two fresh clusters must
-   * not produce the same admin password -- otherwise the "nothing to copy"
-   * argument for not committing one is false, and the mint is a well-known
-   * credential wearing a random-looking coat.
+   * WHAT IS ACTUALLY IN EACH SECRET. The tests above would pass on an empty
+   * manifest; the point of the mint is the two keys each chart reads by name,
+   * so those are asserted against the shared constants rather than against
+   * strings retyped here.
    */
-  test("two fresh clusters get different passwords", () => {
-    const manifests = [0, 1].map((n) => {
+  test("each minted manifest carries both keys its chart names, and no committed password", () => {
+    for (const spec of DEV_BOOTSTRAP_SECRETS) {
+      const manifest = buildDevAdminSecretManifest(spec, "a-test-value");
+      expect(manifest).toContain(`name: ${spec.name}`);
+      expect(manifest).toContain(`namespace: ${spec.namespace}`);
+      expect(manifest).toContain(`${spec.userKey}: ${spec.user}`);
+      expect(manifest).toContain(`${spec.passwordKey}: a-test-value`);
+      expect(manifest).toContain('zeta.io/dev-substrate-credential: "true"');
+    }
+  });
+
+  /**
+   * The values are DRAWN, not constant, and drawn INDEPENDENTLY. Two bring-ups
+   * into two fresh clusters must not produce the same password -- otherwise the
+   * "nothing to copy" argument for not committing one is false. And the two
+   * Secrets within ONE bring-up must not share a value either: a single draw
+   * reused across the roster would make compromising one credential compromise
+   * every other, which is the same defect one blast radius wider.
+   */
+  test("two fresh clusters get different passwords, and the two Secrets never share one", () => {
+    const runs = [0, 1].map((n) => {
       const log: string[] = [];
-      bringUpKindCiCluster(fakePorts(log), {
-        configPath: `/tmp/kind-${n}.yaml`,
-        clusterName: "zeta-ci",
-        gitRef: "main",
-        gitRepoUrl: "https://github.com/Lucent-Financial-Group/Zeta",
-      });
-      return log.find((entry) => entry.startsWith("inline-manifest:")) ?? "";
+      bringUpKindCiCluster(fakePorts(log), { ...kindOptions, configPath: `/tmp/kind-${n}.yaml` });
+      return log.filter((entry) => entry.startsWith("inline-manifest:"));
     });
-    expect(manifests[0]).not.toBe("");
-    expect(manifests[0]).not.toBe(manifests[1]);
+    expect(runs[0]!.length).toBe(DEV_BOOTSTRAP_SECRETS.length);
+    // Across clusters.
+    expect(runs[0]![0]).not.toBe(runs[1]![0]);
+    // Within one cluster: strip the parts that are identical by construction
+    // (both specs use `admin-user`/`admin-password`) and compare the values.
+    const passwordOf = (manifest: string): string =>
+      manifest.split("admin-password: ")[1]?.trim() ?? "";
+    const values = runs[0]!.map(passwordOf);
+    expect(values.every((v) => v.length > 0)).toBe(true);
+    expect(new Set(values).size).toBe(values.length);
   });
 
   /** THE THIRD DOOR again — `apply-root-app.ts` cannot be driven with fakes. */
-  test("applyRootApp mints the credential too, before the catalog", () => {
+  test("applyRootApp mints the credentials too, before the catalog", () => {
     const source = readFileSync(new URL("./apply-root-app.ts", import.meta.url), "utf8");
     const mintAt = source.indexOf("applyDevBootstrapSecrets(ports)");
     const catalogAt = source.indexOf("applyRootDevCatalog(gitRef, gitRepoUrl)");

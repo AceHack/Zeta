@@ -48,6 +48,28 @@ export function devStorageAliasManifestPath(key: keyof typeof DEV_STORAGE_ALIAS_
 }
 
 /**
+ * A credential a dev/CI cluster must ALREADY HOLD before the app-of-apps root
+ * syncs, because the Application that consumes it does not mint its own.
+ *
+ * TWO Applications are in this class today, and they are in it for the SAME
+ * reason expressed by two different chart values: `kube-prometheus-stack` sets
+ * `grafana.admin.existingSecret`, and `oz` sets `useCustomAdminSecret: true` +
+ * `customAdminSecretName`. Both were deliberate -- neither chart should invent
+ * an admin password this repository then has to commit -- and in both cases the
+ * consequence is that kubelet resolves a `secretKeyRef` at container-create
+ * time and a missing Secret is a HARD config error, not a retry.
+ */
+export interface DevBootstrapSecretSpec {
+  readonly namespace: string;
+  readonly name: string;
+  readonly userKey: string;
+  readonly passwordKey: string;
+  readonly user: string;
+  /** Why this object exists, written into the manifest so it is legible in-cluster. */
+  readonly reason: string;
+}
+
+/**
  * The Grafana admin credential `kube-prometheus-stack` expects to ALREADY EXIST.
  *
  * ONE constant, THREE consumers, for the same reason the StorageClass relpaths
@@ -74,16 +96,79 @@ export function devStorageAliasManifestPath(key: keyof typeof DEV_STORAGE_ALIAS_
  * is never read by ArgoCD, so a credential minted from here reaches dev/CI
  * clusters only, structurally rather than by convention.
  */
-export const DEV_GRAFANA_ADMIN_SECRET = {
+export const DEV_GRAFANA_ADMIN_SECRET: DevBootstrapSecretSpec = {
   namespace: "monitoring",
   name: "grafana-admin-credentials",
   userKey: "admin-user",
   passwordKey: "admin-password",
   user: "admin",
+  reason:
+    "Minted per dev/CI cluster at bring-up so kube-prometheus-stack's " +
+    "grafana.admin.existingSecret resolves.",
 } as const;
 
 /**
- * The dev/CI Grafana admin Secret, as a manifest.
+ * The OpenZiti controller admin credential `oz` expects to ALREADY EXIST.
+ *
+ * SAME SHAPE AS GRAFANA ABOVE, and the same three consumers. The Application
+ * sets `useCustomAdminSecret: true` + `customAdminSecretName:
+ * ziti-admin-credentials`, and ziti-controller 3.1.1's `templates/secrets.yaml`
+ * guards its generated Secret on `not .Values.useCustomAdminSecret` -- so with
+ * the custom secret asked for, the render emits NO admin Secret at all
+ * (MEASURED 2026-08-22: `helm template` of that chart against this
+ * Application's own valuesObject yields exactly one Secret,
+ * `ziti-controller-trust-domain`). The Deployment's init and main containers
+ * both read `secretKeyRef` name `ziti-admin-credentials`, keys `admin-user` and
+ * `admin-password`, which is why those exact strings are here and not guessed.
+ *
+ * WHY NOT JUST LET THE CHART GENERATE ONE. Because the generated Secret is
+ * NON-DETERMINISTIC UNDER ARGOCD, which is strictly worse than the deferral it
+ * would lift. `secrets.yaml` builds the password as
+ * `(lookup ...).admin-password | default (randAlphaNum 32 | b64enc)`, and
+ * ArgoCD's repo-server templates with no cluster access, so `lookup` returns
+ * empty every time and the fallback draws fresh entropy. MEASURED the same day:
+ * two `helm template` runs of the same chart, same values, with
+ * `useCustomAdminSecret: false` differ in `admin-password`. With
+ * `selfHeal: true` on this Application that is a credential rotating under a
+ * running controller on every reconcile. So the manifest's stated intent is
+ * KEPT and the dev lane supplies the source, exactly as it does for Grafana.
+ *
+ * THE NAMESPACE IS LOAD-BEARING BEYOND THIS SECRET. `openziti` must exist
+ * before the app-of-apps root syncs for a second, independent reason:
+ * trust-manager's Role over Secrets is created IN ITS TRUST NAMESPACE, which
+ * this tree now points at `openziti` (see the trust-manager Application). A
+ * Role applied into a namespace that does not exist is a sync failure at
+ * wave -45, long before `oz` at wave 0 would have created it with
+ * `CreateNamespace=true`. `ensureNamespace` in the mint is what makes the
+ * ordering hold in the dev lane; `k8s/bootstrap/openziti-namespace.yaml` is
+ * what makes it hold on metal.
+ */
+export const DEV_ZITI_ADMIN_SECRET: DevBootstrapSecretSpec = {
+  namespace: "openziti",
+  name: "ziti-admin-credentials",
+  userKey: "admin-user",
+  passwordKey: "admin-password",
+  user: "admin",
+  reason:
+    "Minted per dev/CI cluster at bring-up so the ziti-controller chart's " +
+    "useCustomAdminSecret/customAdminSecretName resolves.",
+} as const;
+
+/**
+ * Every credential the dev/CI bring-up mints, in mint order.
+ *
+ * A LIST rather than two call sites, so that adding a third Application in this
+ * class is one entry and cannot be half-wired: `use-cases.ts` loops this,
+ * `argocd-health-test.ts` refuses an included run for any member that is absent
+ * from the cluster, and `use-cases.test.ts` asserts the loop covers all of it.
+ */
+export const DEV_BOOTSTRAP_SECRETS: readonly DevBootstrapSecretSpec[] = [
+  DEV_GRAFANA_ADMIN_SECRET,
+  DEV_ZITI_ADMIN_SECRET,
+] as const;
+
+/**
+ * A dev/CI admin Secret, as a manifest.
  *
  * PURE, and the password is a PARAMETER rather than drawn in here, so the shape
  * is testable without entropy and the one place entropy enters is the caller in
@@ -97,8 +182,8 @@ export const DEV_GRAFANA_ADMIN_SECRET = {
  * same reason: this object has to be legible as a CI artefact at a glance, so
  * that nobody promotes the pattern anywhere near metal.
  */
-export function buildDevGrafanaAdminSecretManifest(password: string): string {
-  const { namespace, name, userKey, passwordKey, user } = DEV_GRAFANA_ADMIN_SECRET;
+export function buildDevAdminSecretManifest(spec: DevBootstrapSecretSpec, password: string): string {
+  const { namespace, name, userKey, passwordKey, user, reason } = spec;
   return [
     "apiVersion: v1",
     "kind: Secret",
@@ -108,9 +193,9 @@ export function buildDevGrafanaAdminSecretManifest(password: string): string {
     "  annotations:",
     '    zeta.io/dev-substrate-credential: "true"',
     "    zeta.io/dev-substrate-credential-reason: >-",
-    "      Minted per dev/CI cluster at bring-up so kube-prometheus-stack's",
-    "      grafana.admin.existingSecret resolves. Never applied to the bare-metal",
-    "      cluster, never committed to git, never reused across clusters.",
+    `      ${reason}`,
+    "      Never applied to the bare-metal cluster, never committed to git,",
+    "      never reused across clusters.",
     "type: Opaque",
     "stringData:",
     `  ${userKey}: ${user}`,

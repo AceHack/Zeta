@@ -135,6 +135,7 @@ pkgs.testers.nixosTest {
         "cilium-namespace",
         "external-secrets-install",
         "local-path-provisioner",
+        "openziti-namespace",
         "root-application",
         "spire-install",
         "trust-manager-install",

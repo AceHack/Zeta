@@ -91,6 +91,17 @@ Run `32519516070` is the first in which the eleven were asserted at all.
 `mimir`, `nats`, `oz` (openziti-controller), `redis`, `tempo`. The proof
 went from **19 of 45 to 25 of 45**.
 
+> `oz` left that set for a few hours on 2026-08-22 and came back, which is
+> worth recording rather than smoothing over. It had been Healthy in run
+> `32519516070` only because its `targetRevision` named a version no registry
+> serves, so ArgoCD had never rendered it; #13471 corrected the pin, the app
+> synced for the first time, and two real blockers appeared — a trust-manager
+> `Bundle` whose source Secret lived in a namespace trust-manager was not
+> pointed at, and a missing admin Secret with the same shape as Grafana's.
+> Both are fixed at their source (trust namespace `openziti`;
+> `DEV_ZITI_ADMIN_SECRET` minted at bring-up), so the row above is true again —
+> for a different reason than it was the first time.
+
 The alias worked for the other five as well, in the sense that matters:
 their PVCs **bound** and their pods run. Each then failed for a defect
 that has nothing to do with storage — and each of those defects was
