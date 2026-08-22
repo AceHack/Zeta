@@ -1023,6 +1023,32 @@
       ]
     },
     {
+      "key": "k8s-lane-partition.yml:lane",
+      "samples": 4,
+      "nonAptP90Seconds": 311,
+      "nonAptMaxSeconds": 311,
+      "aptP90Seconds": 94,
+      "window": "2026-08-22T16:45:53Z .. 2026-08-22T16:57:40Z",
+      "runIds": [
+        32586283707,
+        32586283707,
+        32585693636,
+        32585693636
+      ]
+    },
+    {
+      "key": "k8s-lane-partition.yml:plan",
+      "samples": 2,
+      "nonAptP90Seconds": 152,
+      "nonAptMaxSeconds": 152,
+      "aptP90Seconds": 89,
+      "window": "2026-08-22T16:45:53Z .. 2026-08-22T16:57:40Z",
+      "runIds": [
+        32586283707,
+        32585693636
+      ]
+    },
+    {
       "key": "lean-proof.yml:type-check",
       "samples": 20,
       "nonAptP90Seconds": 446,

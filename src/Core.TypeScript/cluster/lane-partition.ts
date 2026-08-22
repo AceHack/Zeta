@@ -78,6 +78,7 @@ import { resolve } from "node:path";
 import { parseAllDocuments } from "yaml";
 import { listApplicationManifests } from "./app-of-apps-discovery.ts";
 import { FOOTPRINTS_PATH, type LaneFootprints } from "./measure-lane-footprints.ts";
+import { stringCompare } from "../collation/collation.ts";
 
 const REPO_ROOT = resolve(import.meta.dir, "../../..");
 
@@ -119,7 +120,7 @@ export function loadRoster(repoRoot = REPO_ROOT): readonly RosterEntry[] {
     const doc = docs.find((d): d is Record<string, unknown> => d !== null && d.kind === "Application");
     if (doc === undefined) throw new Error(`${rel}: no kind: Application document`);
     const meta = doc.metadata as Record<string, unknown> | undefined;
-    const name = typeof meta?.name === "string" ? (meta.name) : "";
+    const name = typeof meta?.name === "string" ? meta.name : "";
     if (name === "") throw new Error(`${rel}: Application has no metadata.name`);
     const dir = rel.slice(0, rel.lastIndexOf("/"));
     out.push({ name, dir, appId: `full-ai-cluster/${dir}`, catalogueKey: dir.slice(dir.lastIndexOf("/") + 1) });
@@ -257,7 +258,12 @@ export function loadCatalogue(rung: string, repoRoot = REPO_ROOT): Catalogue {
   const raw = JSON.parse(readFileSync(resolve(repoRoot, CATALOGUE_PATH), "utf8")) as {
     runnerEnvelope: RunnerEnvelope;
     resourceProfiles: string[];
-    resourceClaims: { dir: string; pods?: number; cpuMillis: Record<string, number>; memoryMib: Record<string, number> }[];
+    resourceClaims: {
+      dir: string;
+      pods?: number;
+      cpuMillis: Record<string, number>;
+      memoryMib: Record<string, number>;
+    }[];
     ungovernedRequests: { dir: string; cpuMillis: number; memoryMib: number }[];
   };
   if (!raw.resourceProfiles.includes(rung)) {
@@ -320,8 +326,7 @@ export function buildModel(options: BuildOptions = {}): PartitionModel {
   const graph = options.graph ?? loadGraph(repoRoot);
   const catalogue = options.catalogue ?? loadCatalogue(rung, repoRoot);
   const footprints =
-    options.footprints ??
-    (JSON.parse(readFileSync(resolve(repoRoot, FOOTPRINTS_PATH), "utf8")) as LaneFootprints);
+    options.footprints ?? (JSON.parse(readFileSync(resolve(repoRoot, FOOTPRINTS_PATH), "utf8")) as LaneFootprints);
 
   if (graph.unadjudicated.length > 0) {
     throw new Error(
@@ -340,7 +345,9 @@ export function buildModel(options: BuildOptions = {}): PartitionModel {
   }
   const noRender = roster.filter((r) => footprints.imagesByApp[r.appId] === undefined).map((r) => r.appId);
   if (noRender.length > 0) {
-    throw new Error(`Applications with no entry in ${FOOTPRINTS_PATH} (re-run measure-lane-footprints.ts): ${noRender.join(", ")}`);
+    throw new Error(
+      `Applications with no entry in ${FOOTPRINTS_PATH} (re-run measure-lane-footprints.ts): ${noRender.join(", ")}`,
+    );
   }
 
   const deps = new Map<string, readonly string[]>(graph.nodes.map((n) => [n, [] as readonly string[]]));
@@ -394,8 +401,8 @@ export function connectedComponents(model: PartitionModel): readonly (readonly s
     else bucket.push(n);
   }
   return [...groups.values()]
-    .map((g) => [...g].sort((a, b) => a.localeCompare(b)))
-    .sort((a, b) => b.length - a.length || (a[0] ?? "").localeCompare(b[0] ?? ""));
+    .map((g) => [...g].sort(stringCompare))
+    .sort((a, b) => b.length - a.length || stringCompare(a[0] ?? "", b[0] ?? ""));
 }
 
 /** An Application plus every dependency reachable from it. Includes itself. */
@@ -453,8 +460,8 @@ export function priceSet(model: PartitionModel, names: Iterable<string>): Footpr
     memoryMib,
     diskGib: (bytes * model.footprints.compressionRatio) / GIB,
     distinctImages: images.size,
-    unmeasurableImages: unmeasurableImages.toSorted((a, b) => a.localeCompare(b)),
-    unpricedApps: unpricedApps.toSorted((a, b) => a.localeCompare(b)),
+    unmeasurableImages: unmeasurableImages.toSorted(stringCompare),
+    unpricedApps: unpricedApps.toSorted(stringCompare),
   };
 }
 
@@ -555,7 +562,7 @@ export function packLanes(model: PartitionModel, options: PackOptions = {}): Par
     priced.push({ name: entry.name, closure, footprint });
   }
 
-  priced.sort((a, b) => b.footprint.diskGib - a.footprint.diskGib || a.name.localeCompare(b.name));
+  priced.sort((a, b) => b.footprint.diskGib - a.footprint.diskGib || stringCompare(a.name, b.name));
 
   const bins: { assigned: string[]; members: Set<string> }[] = [];
   for (const item of priced) {
@@ -574,8 +581,8 @@ export function packLanes(model: PartitionModel, options: PackOptions = {}): Par
 
   const lanes = bins.map((bin, i) => ({
     id: `lane-${String(i + 1)}`,
-    assigned: [...bin.assigned].sort((a, b) => a.localeCompare(b)),
-    members: [...bin.members].sort((a, b) => a.localeCompare(b)),
+    assigned: [...bin.assigned].sort(stringCompare),
+    members: [...bin.members].sort(stringCompare),
     footprint: priceSet(model, bin.members),
   }));
   const covered = new Set(lanes.flatMap((l) => l.members));
@@ -585,7 +592,7 @@ export function packLanes(model: PartitionModel, options: PackOptions = {}): Par
     budget,
     lanes,
     oversize: oversize.toSorted((a, b) => b.footprint.diskGib - a.footprint.diskGib),
-    unpriced: unpriced.toSorted((a, b) => a.name.localeCompare(b.name)),
+    unpriced: unpriced.toSorted((a, b) => stringCompare(a.name, b.name)),
     totalApplications: model.roster.length,
     coveredApplications: covered.size,
   };
@@ -609,7 +616,7 @@ export function laneImages(model: PartitionModel, lane: Lane): readonly string[]
     if (entry === undefined) throw new Error(`laneImages: "${member}" is not in the roster`);
     for (const img of model.footprints.imagesByApp[entry.appId] ?? []) out.add(img);
   }
-  return [...out].sort((a, b) => a.localeCompare(b));
+  return [...out].sort(stringCompare);
 }
 
 /**
@@ -626,7 +633,7 @@ export function laneRootExclude(model: PartitionModel, lane: Lane): string {
   const excluded = model.roster
     .filter((r) => !members.has(r.name))
     .map((r) => `${r.dir}/Application.yaml`)
-    .sort((a, b) => a.localeCompare(b));
+    .sort(stringCompare);
   return `{${excluded.join(",")}}`;
 }
 

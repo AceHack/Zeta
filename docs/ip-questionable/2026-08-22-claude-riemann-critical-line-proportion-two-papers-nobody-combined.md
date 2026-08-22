@@ -175,7 +175,7 @@ prior-art search, and it is the most repo-shaped detail in the whole account.
 
 ---
 
-# §1.4 — *"What the results are not."* This is the centrepiece.
+# §1.4 — *"What the results are not"* This is the centrepiece
 
 The paper has a numbered section, immediately after Context and before the proof,
 **titled with its own limits**. Nobody made it write this. Quoted in full:
