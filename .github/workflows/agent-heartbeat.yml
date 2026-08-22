@@ -1094,18 +1094,89 @@ jobs:
         env:
           AGENT: ${{ matrix.agent }}
         run: |
-          # All agents record their own tick outcome — builds the denominator
-          # for per-workflow drift measurement over time.
+          # All agents record their own tick outcome — builds the denominator for
+          # per-check drift measurement over time.
+          #
+          # CHECK IDENTITY IS SHARED WITH THE DRIFT DASHBOARD, DELIBERATELY.
+          # `--check` takes a CheckId — the workflow file's basename, the same key
+          # `db/drift-dashboard/roster.json` uses. This used to record
+          # `--workflow "heartbeat-$AGENT"`, which is not a workflow basename and is in
+          # no roster, so the two features would have accumulated separate vocabularies
+          # and told two disagreeing health stories about the same repository. The agent
+          # goes in `--lane`, which is a satellite: carried for humans, never a key.
+          set +e
           bun src/Core.TypeScript/observe/drift-rate-cli.ts \
-            --record --workflow "heartbeat-$AGENT" --conclusion success 2>&1 || true
-
-          # Only otto reports the aggregate drift trend (one output per tick)
-          if [ "$AGENT" = "otto" ]; then
-            bun src/Core.TypeScript/observe/drift-rate-cli.ts --report 2>&1 || true
+            --record --check agent-heartbeat --lane "$AGENT" --outcome green \
+            --run-id "${GITHUB_RUN_ID:-}" 2>&1
+          RECORD_RC=$?
+          set -e
+          if [ "$RECORD_RC" -ne 0 ]; then
+            echo "::warning title=drift-rate::recorder exited $RECORD_RC — this tick's outcome was NOT recorded"
           fi
 
-          # Stage the ci-runs.jsonl if it changed
-          git add data/ci-runs.jsonl 2>/dev/null || true
+          # Only otto reports the aggregate drift trend (one output per tick).
+          #
+          # WHY THIS IS NO LONGER `|| true`, AND WHY IT IS STILL NON-FATAL.
+          # Swallowing the status is defensible for telemetry — a broken reporter must
+          # not break the heartbeat — but `|| true` alone means a permanently-broken
+          # reporter and a working one produce byte-identical evidence, forever. That is
+          # the exact class this repo keeps finding (`lockfile-healer.yml` and
+          # `zetadb-scheduled-node.yml` were green today solely because they never
+          # reached their push).
+          #
+          # So the status is CAPTURED and ANNOUNCED instead of discarded. The reporter
+          # exits 0 whether the news is good or bad — it is a measurement, not a gate
+          # (SDV) — and non-zero ONLY when the reporter itself failed. A `::warning::`
+          # is therefore never noise, and it is visible in the run summary and to the
+          # dashboard without failing the tick. Same shape as `Verify RS block
+          # integrity` above; this step was the odd one out.
+          if [ "$AGENT" = "otto" ]; then
+            set +e
+            bun src/Core.TypeScript/observe/drift-rate-cli.ts --report --annotate 2>&1
+            REPORT_RC=$?
+            set -e
+            if [ "$REPORT_RC" -ne 0 ]; then
+              echo "::warning title=drift-rate::reporter exited $REPORT_RC — the drift trend for this tick is UNKNOWN, not green"
+            fi
+          fi
+
+          # COMMIT, not just stage. THIS IS THE FIX THAT MAKES THE LANE REAL.
+          # Until 2026-08-22 this step ran `git add data/ci-runs.jsonl` and nothing
+          # else. The next step is `git push`, and git does not push a staged-but-
+          # uncommitted file — so every tick appended a line to a working-tree file that
+          # was discarded when the runner was torn down. `data/ci-runs.jsonl` has never
+          # existed on `main`: `git log -- data/ci-runs.jsonl` is empty and the path is
+          # absent from `git ls-files`. The step was green on every tick and produced
+          # nothing, which is the silent-no-op pattern in its purest form.
+          if [ -f data/ci-runs.jsonl ]; then
+            git config user.name "${AGENT}[bot]"
+            git config user.email "${AGENT}[bot]@users.noreply.github.com"
+            git add data/ci-runs.jsonl
+            if git diff --cached --quiet -- data/ci-runs.jsonl; then
+              echo "[drift-rate] ci-runs.jsonl unchanged"
+            else
+              git commit --no-verify -q -m "telemetry(drift-rate): $AGENT tick outcome $(date -u +%Y-%m-%dT%H:%M:%SZ)
+
+          Appends one CI outcome to data/ci-runs.jsonl — the denominator for
+          'is the society making the code healthier or sicker?'. Flushed to main via
+          the heartbeat/* staging path, never pushed at main.
+
+          Agency-Signature-Version: 1
+          Agent: $AGENT
+          Agent-Runtime: github-actions/.github/workflows/agent-heartbeat.yml
+          Agent-Model: qwen2.5:0.5b
+          Credential-Identity: AceHack
+          Credential-Mode: shared
+          Human-Review: not-implied-by-credential
+          Human-Review-Evidence: none
+          Action-Mode: autonomous-fail-open
+          Task: 081KSKBP80008QG0R001KK9WV6
+          Co-authored-by: Kiro <noreply@kiro.dev>"
+              echo "[drift-rate] committed ci-runs.jsonl"
+            fi
+          else
+            echo "::warning title=drift-rate::data/ci-runs.jsonl absent after --record — nothing to commit"
+          fi
 
       - name: Push heartbeat branch
         env:

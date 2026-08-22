@@ -32,6 +32,8 @@
 import { readFileSync, readdirSync } from "node:fs";
 import { join } from "node:path";
 
+import { computeDrift, loadCIRuns, loadRosterCheckIds } from "./drift-rate.ts";
+
 // ═══ Data Loading (forge-agnostic — reads file contracts, not APIs) ═══════════
 
 interface TickFrame {
@@ -265,12 +267,22 @@ function display(repoRoot: string, eventDir: string): void {
   console.log(`  Agents active: ${forge.agentsActive}`);
   console.log(`  Work ratio: ${(forge.workRatio * 100).toFixed(0)}% (edit_grammar+decompose vs explore)`);
 
-  // CI drift rate (from data/ci-runs.jsonl if available)
+  // CI drift rate (from data/ci-runs.jsonl if available).
+  //
+  // Routed through drift-rate's OWN loader rather than `loadJSONL(...) as any`. The
+  // cast was the whole risk: `computeDrift` keys on `checkId`/`outcome`, a raw legacy
+  // line carries `workflow`/`conclusion`, and `as any` would have let every run through
+  // with both fields `undefined` — silently tallying the entire log as cancelled and
+  // reporting a plausible-looking summary off a completely miscounted fold. Normalizing
+  // at the boundary is what makes the legacy shape *supported* instead of *coincidental*.
+  //
+  // The roster is the shared denominator with the drift dashboard, so a check that
+  // stopped reporting still occupies a slot here.
   const ciRunsPath = join(repoRoot, "data", "ci-runs.jsonl");
-  const ciRuns = loadJSONL<{ workflow: string; conclusion: string; at: string }>(ciRunsPath);
+  const ciRuns = loadCIRuns(ciRunsPath);
   if (ciRuns.length > 0) {
-    const { computeDrift, formatDrift } = require("./drift-rate") as typeof import("./drift-rate");
-    const drift = computeDrift(ciRuns as any);
+    const roster = loadRosterCheckIds(join(repoRoot, "db", "drift-dashboard", "roster.json"));
+    const drift = computeDrift(ciRuns, { roster });
     console.log(`\nCI Drift: ${drift.summary}`);
   }
   // Vault status
