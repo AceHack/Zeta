@@ -275,7 +275,18 @@ zeta_tpm_read_facts() {
     if printf '%s' "$_lserr" | grep -qi 'permission denied'; then
       printf 'sysclass=permission-denied|\n'
     else
-      _entries="$(ls -1 /sys/class/tpm 2>/dev/null | tr '\n' ' ' || true)"
+      # A GLOB, NOT `ls` (SC2012). The consumer below is an unquoted
+      # `for _e in $_entries`, so this list was always word-split — parsing
+      # `ls` bought nothing it does not already assume, and shellcheck is
+      # right to refuse it. The glob produces the same space-joined string
+      # (including the trailing space) for sysfs names, and the `-e` guard
+      # collapses the no-match case to the empty string exactly as `ls` did.
+      # The `ls` on the line above STAYS: it is probing for EACCES, which a
+      # glob cannot report.
+      for _tpm in /sys/class/tpm/*; do
+        [ -e "$_tpm" ] || continue
+        _entries="${_entries}${_tpm##*/} "
+      done
       printf 'sysclass=listed|%s\n' "$_entries"
     fi
   else
