@@ -2,7 +2,7 @@
   "date": "2026-08-22",
   "totalCitations": 1388,
   "totalFilesWithCitation": 422,
-  "totalFilesScanned": 6499,
+  "totalFilesScanned": 6501,
   "surfaces": [
     {
       "surface": "rules",
@@ -90,7 +90,7 @@
     },
     {
       "surface": "research",
-      "filesScanned": 1715,
+      "filesScanned": 1716,
       "filesWithCitation": 279,
       "citationCount": 516,
       "byForm": {
@@ -114,7 +114,7 @@
     },
     {
       "surface": "memory",
-      "filesScanned": 1946,
+      "filesScanned": 1947,
       "filesWithCitation": 89,
       "citationCount": 612,
       "byForm": {
