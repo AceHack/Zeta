@@ -42,13 +42,26 @@
 // to announce an identity you do not hold — the Eclipse primitive, where an attacker
 // populates a victim's path table with identities it controls. What it does not yet
 // remove is hop-count lying by a party that already holds a valid announce.
-// Closing that needs per-link authentication or a signed monotonic sequence carried
-// in the agreed phase order — NOT a wall-clock freshness window: see
+// The DESIGN that closes it was chosen 2026-08-22 and the "or" this paragraph used to
+// carry was wrong: it read "per-link authentication OR a signed monotonic sequence",
+// and a sequence number alone does NOT close it — the attacker replays the CURRENT
+// epoch, so the replay carries the same seq as the genuine announce and there is
+// nothing for the sequence to discriminate. The chosen mechanism is a one-way hash
+// chain (SEAD) for deflation WITHIN an epoch, PLUS the signed monotone seq for
+// rollback ACROSS epochs; the two are halves, not alternatives. One SHA-256 per relay.
+// See `announce-metric-chain.ts` (metered, not yet on this wire) and
+// `docs/research/2026-08-22-hop-count-is-not-a-claim-mutation-entitlement-decides-the-mechanism.md`
+// for the cost table, the declined per-hop-signature alternative, and what the wire
+// migration costs (`claimBytes` gains `seq`/`anchor`/`maxHops`, so every existing
+// signature is invalidated — a schema bump plus a dual-accept window).
+// Still NOT a wall-clock freshness window: see
 // `.claude/rules/local-time-never-enters-the-shared-fold.md`. Two nodes with different
 // receive-times would fold different evidence sets and diverge, so the local clock
 // must never filter what enters this fold. `nowMs` stays what it already is here — a
 // liveness stamp WRITTEN onto an accepted path, never a predicate that decides
-// acceptance.
+// acceptance. (The epoch floor is not a clock either, and the design says why
+// mechanically: seq is the ORIGIN's counter inside the signed bytes, and the fold is a
+// max-join, so every permutation of one evidence set reaches the same floor.)
 //
 // Disciplines: pure functions, injected trust (noninterference §13 — the trust store is
 // the ONE authority door; no ambient keystore, no ambient clock, no network at verify

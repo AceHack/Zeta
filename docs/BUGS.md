@@ -100,7 +100,7 @@ envelope is replayable within TTL (freshness not yet signed — needs per-peer s
 - **Fix:** REUSE the already-shipped human auth — do NOT invent. Personas share the `tools/setup/persona-keys/` keyring (README: "each traveler — persona **or** human maintainer"). Bind `zid` to the persona keyring pubkey; sign `hello`/`probeMatch`/`bye` with `ace/signing.ts` (Ed25519 over canonical key-sorted JSON, `key_id=ed25519:sha256(SPKI)[..16]`) and verify against a trust-store before upsert/delete; `bye` must be self-signed by the leaving peer. Rotation = the existing dual-key overlap-window ADR (2026-06-15), unchanged.
 - **Who:** architect (Kenji) → discovery/bus owner; Nadia (agent-layer defence) advisory
 
-### Reticulum announce authenticity — FIXED at the wire, ON by declaration, and the DHT layer's pair is now bound; RESIDUAL is hop-count replay (bus, shadow*)
+### Reticulum announce authenticity — FIXED at the wire, ON by declaration, the DHT layer's pair is bound, and hop-count replay now has a CHOSEN design awaiting its wire migration (bus, shadow*)
 
 **The unsigned-announce hole is closed** (2026-08-21). This entry stays open only for the two
 things that genuinely remain; the parts that were fixed are stated so the entry does not
@@ -231,16 +231,78 @@ Eclipse), so **routing security reduces to announce authenticity**.
     design, not a hardening pass; **(b) `DhtNode.route` is outside the pair entirely**, so a route
     hint stays attacker-supplied even for a correctly-bound `(dest, zid)`. (b) is latent rather
     than live only because nothing in-repo reads `DhtNode.route` today.
-- **RESIDUAL 2 (P2) — hop-count replay.** The signature deliberately does **not** cover `hops`
-  or `id`: every relay bumps `hops` (that is how the mesh measures distance), so a signature
-  covering it would be broken by the first honest relay and would have to be disabled to ship.
-  Consequence: a captured **genuine** announce can be replayed with a **lowered** hop count to
-  draw traffic (blackhole / traffic analysis; payload crypto is unaffected). What is closed is
-  announcing an identity you do not hold — the Eclipse primitive. What is not is hop-count lying
-  by a party already holding a valid announce. **Fix:** per-link authentication, or a signed
-  monotonic sequence carried in the **agreed phase / logical order** — explicitly **not** a
-  wall-clock freshness window (`.claude/rules/local-time-never-enters-the-shared-fold.md`: two
-  nodes with different receive-times would fold different evidence sets and diverge).
+  - **(b) now has a DESIGN ANSWER, and it is NOT the same mechanism as RESIDUAL 2** (2026-08-22,
+    `docs/research/2026-08-22-hop-count-is-not-a-claim-mutation-entitlement-decides-the-mechanism.md`
+    §6). Sort wire fields by **who is entitled to mutate them**: `hops` is *path-mutable* (every
+    relay), which is why no origin signature can cover it and why it needs a one-way chain. `route`
+    is *origin-mutable* (the origin alone; a relay never touches it), so it **is** signable — it
+    needs the signature plus a monotone `seq`, and no chain. The two holes share a **classifier**,
+    not a mechanism. **The pre-commitment worth making before the code exists:** when the DHT wire
+    gets its signature layer — open item (a) — the natural move is to copy the announce membrane,
+    which signs `(dest, zid)` and nothing else. That is right for the announce wire and **wrong
+    here**, because the DHT record carries an origin-mutable field the announce does not; copying it
+    would leave `route` outside the signature and reproduce RESIDUAL 2's shape on a field that only
+    ever needed to be *included*. A `RouteHint` shape check is deliberately **not** the fix and was
+    deliberately not shipped: it removes malformed routes, not attacker-supplied ones, and a
+    cosmetic guard that reads as a closure is worse than the named gap.
+- **RESIDUAL 2 (P2) — hop-count replay. DESIGN CHOSEN 2026-08-22; mechanism metered but NOT YET
+  ON THE WIRE.** The defect is unchanged: the signature deliberately does **not** cover `hops` or
+  `id` — every relay bumps `hops` (that is how the mesh measures distance), so a signature covering
+  it breaks on the first honest relay and would have to be disabled to ship. A captured **genuine**
+  announce therefore replays with a **lowered** hop count to draw traffic (blackhole / traffic
+  analysis; payload crypto unaffected). What is closed is announcing an identity you do not hold —
+  the Eclipse primitive; what is not is hop-count lying by a party already holding a valid announce.
+
+  Design: `docs/research/2026-08-22-hop-count-is-not-a-claim-mutation-entitlement-decides-the-mechanism.md`.
+  Mechanism + falsifiers: `src/Core.TypeScript/discovery/announce-metric-chain.ts` (+ `.test.ts`).
+
+  - **The fix as previously filed here was WRONG, and this is the correction.** It read "per-link
+    authentication, **or** a signed monotonic sequence". The `or` does not hold and the second
+    option does not do what this entry claimed: the attacker replays the **current** epoch, so the
+    replay carries the **same** `seq` as the genuine announce and a sequence number has nothing to
+    discriminate. A sequence number closes **stale-epoch replay** — real, and a different residual.
+    The converse is also true: a chain alone admits a stale epoch, because an old epoch's metric
+    verifies against its **own** anchor. Both halves are pinned as tests rather than argued.
+  - **Chosen: a one-way hash chain (SEAD's mechanism) PLUS the signed monotone `seq`.** Per epoch
+    the origin publishes `anchor = h^maxHops(seed)` **inside the signed claim bytes**; an announce
+    at hop `k` carries `h^k(seed)`; a verifier hashes forward to the anchor. **Cost to a relay: one
+    SHA-256** — no key material, no state, no signature. Deflation needs a preimage; inflation is
+    free and deliberately admitted, because inflation is indistinguishable from a slow link and no
+    mechanism can prevent a node from being a bad path. The requirement is one-sided: *a claimed hop
+    count may never be lower than the shortest path the claimant actually holds.*
+  - **Per-hop signatures (the BGPsec shape) are strictly stronger and are declined for now**, with
+    the cost table in §5 of the design. The deciding rows: O(hops) bytes and signatures per frame,
+    and **~no benefit under partial deployment** — a mechanism that pays nothing until every relay
+    has migrated is the "had to turn it off to ship" failure in a larger budget. It stays the named
+    upgrade path, and it is what would close the residual below.
+  - **A wall clock is refused, and so are temporal packet leashes** — the canonical wormhole defence
+    needs synchronised clocks, which is the dependency
+    `.claude/rules/local-time-never-enters-the-shared-fold.md` forbids. The epoch floor is not a
+    clock: `seq` is the origin's own counter inside the signed bytes, and `raiseFloor` is a max-join
+    (commutative, associative, idempotent — a CRDT). Falsifier, not assertion: **all 24 permutations
+    of one evidence set reach the same floor**, and a lost epoch degrades to an older floor rather
+    than a divergent one.
+  - **Composition order is encoded, because reversing it is worse than the bug.** The floor may be
+    raised only by an announce whose signature already verified; reversed, one unauthenticated packet
+    carrying `seq = 2^31` silences an identity permanently. `admitMetric` takes the verification
+    verdict as a required argument so the order cannot be got wrong silently.
+  - **What it does not close, carried as PASSING tests:** the **one-hop shave** (a node at distance
+    `d` may claim `d-1` — it can never claim better than the best value delivered to it, so a
+    **global** route-capture primitive becomes a **local** one-hop tie-break); **fresh-epoch replay
+    to a node that has never seen that epoch** (unavoidable without a clock); and identity, which is
+    the signature's job.
+  - **Falsifiers:** `announce-metric-chain.test.ts` — 29 tests / 175 assertions, both directions; the
+    accept side is an **eight-hop honest relay chain**, because that is where the naive "just sign
+    `hops`" fix dies. Seven mutations run, all refused, each byte-`cmp`-verified applied and
+    restored: verify-always-ok (7 tests fail), **reject-everything (12, every one an accept-side
+    assertion)**, signature-gate-removed (2), equal-seq-refused i.e. `>=` to `>` (2),
+    floor-is-last-write-wins (2), advance-is-identity (4), hops-range-unchecked (2).
+  - **STILL OPEN: the wire migration.** `claimBytes` gains `(seq, anchor, maxHops)`, which
+    invalidates every existing signature — a schema bump plus a dual-accept window, the same shape as
+    the `off` to `dual` to `required` migration already shipped. Cost enumerated in §7 of the design,
+    including the flag that a `seq` gate changes which announce histories are reachable, so any
+    erasure re-derivation must report unchanged numbers as a statement about the sweep's domain, not
+    as an unchanged measurement (the #13665 lesson).
 - **Claim-class constraint (unchanged, still binding on how this grows):** identity destinations
   take an **exclusive** claim ("I am this identity" — one legitimate announcer, adjudicated by
   signature); object destinations take a **non-exclusive custody** claim ("I can serve this
@@ -279,8 +341,9 @@ Eclipse), so **routing security reduces to announce authenticity**.
   fibre 44 against a declared 85. So the row catches the guard's removal either way and the comment
   was over-claiming; the comment is corrected in place and the measurement recorded there.
 - **Who:** discovery/bus owner; Nadia (agent-layer defence) advisory. RESIDUAL 1 and RESIDUAL 3
-  closed by the shadow (autonomous ticks, 2026-08-22); **RESIDUAL 2 remains open** and is a
-  separate design — do not fold it into a hardening pass.
+  closed by the shadow (autonomous ticks, 2026-08-22); **RESIDUAL 2's DESIGN was landed separately
+  by the shadow (2026-08-22) and its mechanism is metered but unwired** — the wire migration is the
+  remaining open step and is still not something to fold into a hardening pass.
 
 ### Reticulum relay `seenFids` is a grow-only set — memory-exhaustion DoS (bus, shadow*)
 

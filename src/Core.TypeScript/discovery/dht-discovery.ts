@@ -32,6 +32,18 @@
 // is the membrane shape that would close it); (2) `DhtNode.route` is outside the pair entirely,
 // so a route hint remains attacker-supplied even for a correctly-bound (dest, zid).
 //
+// (2) HAS A DESIGN, and it is NOT the hop-count mechanism — read this before writing (1). Sort wire
+// fields by WHO IS ENTITLED TO MUTATE THEM: `hops` on the announce wire is PATH-mutable (every
+// relay bumps it), which is why no origin signature can cover it and why it needs a one-way chain.
+// `route` is ORIGIN-mutable — a relay never touches it — so it IS signable, and needs the signature
+// plus a monotone `seq`, no chain. The trap is specific and worth naming here rather than in a doc:
+// when this wire gets its signature layer, the natural move is to copy `reticulum-announce-auth.ts`,
+// which signs `(dest, zid)` and NOTHING ELSE. That is correct for the announce wire and WRONG here,
+// because this record carries an origin-mutable field the announce does not — copying it would
+// leave `route` outside the signature. A `RouteHint` shape check is deliberately not the fix: it
+// removes malformed routes, not attacker-supplied ones.
+// `docs/research/2026-08-22-hop-count-is-not-a-claim-mutation-entitlement-decides-the-mechanism.md` §6.
+//
 // Disciplines: PURE, DST-replayable — the lookup driver takes an INJECTED query function
 // (no ambient network), so convergence is tested deterministically over a fake global graph;
 // the real async transport wraps `query` at the edge (noninterference §13). Node ids are the

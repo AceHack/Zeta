@@ -1439,3 +1439,51 @@ paper's own theorem statement, not from a summary.
   identifiers, which is a centralization this repo declines — the socially-conferred-standing route
   (`TravelerRankLedger`, `SocietyUsefulWork`) is a different answer to the same question, and the
   two have never been compared here.
+
+## Routing-metric integrity — one-sided bounds, and why a signature is the wrong tool (added 2026-08-22, shadow)
+
+The literature behind `docs/research/2026-08-22-hop-count-is-not-a-claim-mutation-entitlement-decides-the-mechanism.md`
+and `src/Core.TypeScript/discovery/announce-metric-chain.ts`. Filed because `docs/BUGS.md`'s
+RESIDUAL 2 (hop-count replay on the Reticulum announce wire) named a fix — "per-link authentication
+**or** a signed monotonic sequence" — with no anchor attached, and the `or` turned out to be wrong
+once the attack was written out. Each mechanism below was taken from the paper's own statement of
+it, not from a summary.
+
+- **Leslie Lamport (1981) — "Password Authentication with Insecure Communication"**
+  (*CACM* 24(11):770–772). The one-way chain: publish `h^n(x)`, reveal `h^(n−i)(x)` on use `i`; a
+  party holding one element cannot produce an earlier one. **Why it is the right shape for a routing
+  metric where a signature is not:** preimage resistance is a **one-sided** integrity primitive, and
+  the routing requirement is one-sided — a hop count may be inflated freely and must never be
+  deflated. A signature is two-sided (any change breaks it), which is exactly why signing `hops`
+  breaks on the first honest relay and would have to be disabled to ship.
+- **Yih-Chun Hu, David B. Johnson & Adrian Perrig (2002/2003) — "SEAD: Secure Efficient Distance
+  Vector Routing for Mobile Wireless Ad Hoc Networks"** (*WMCSA 2002*, 3–13; *Ad Hoc Networks*
+  1(1):175–192, 2003). Lamport's chain applied to a distance-vector metric so a node **can increase
+  but cannot decrease** it, with the element indexed by (sequence number, metric) so a fresh
+  announce cannot be forged from an older one's revealed elements. **This is the construction
+  adopted**, with the epoch anchor carried inside the Ed25519 announce signature the wire already
+  has. **Scope, honest:** SEAD's guarantee is *"no better than the best value you were actually
+  given"*, so a node one hop from the origin can still claim the origin's distance — the one-hop
+  shave. It **bounds** deflation; it does not eliminate it, and the design says so in a passing test.
+- **Yih-Chun Hu, Adrian Perrig & David B. Johnson (2003) — "Packet Leashes: A Defense against
+  Wormhole Attacks in Wireless Networks"** (*INFOCOM 2003*, 1976–1986). The canonical statement of
+  the attack class hop-count deflation belongs to — and the reason we do **not** use the canonical
+  defence: a **temporal** leash needs tightly synchronised clocks, a **geographic** leash needs
+  location. Clock synchronisation is precisely what
+  `.claude/rules/local-time-never-enters-the-shared-fold.md` forbids from a shared fold, so the
+  canonical defence is declined **with a reason** rather than overlooked. The same authors'
+  **"Ariadne"** (*MobiCom 2002*; *Wireless Networks* 11:21–38, 2005) is declined identically —
+  TESLA's delayed key disclosure needs loose time sync.
+- **Stephen Kent, Charles Lynn & Karen Seo (2000) — "Secure Border Gateway Protocol (S-BGP)"**
+  (*IEEE JSAC* 18(4):582–592) and **RFC 8205 (2017) — "BGPsec Protocol Specification"**
+  (Lepinski & Sriram, eds.). The per-hop-signature alternative, and the source of the **classifier**
+  the whole design turns on: S-BGP separates *address attestations* (immutable, signed once) from
+  *route attestations* (path-mutable, signed per hop) because the two field classes admit different
+  mechanisms. **Scope, honest — and this is why the row earns its place:** BGPsec costs O(path
+  length) signatures with no aggregation, and its benefit under partial deployment is close to nil
+  (a path is only as protected as its least-deployed hop). That combination, not any doubt about its
+  correctness, is why it is the named **upgrade path** here rather than the choice.
+- **Radia Perlman (1988) — "Network Layer Protocols with Byzantine Robustness"** (MIT PhD thesis,
+  MIT/LCS/TR-429). The origin of the question *what can a routing protocol still guarantee when
+  participating routers lie?* — and the reason the requirement here is stated as a **bound** rather
+  than as correctness. A relay can always decline to forward; no mechanism makes a metric true.
