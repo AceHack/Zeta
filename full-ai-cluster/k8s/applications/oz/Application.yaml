@@ -135,12 +135,29 @@ spec:
         # `cluster.trustDomain` -> legacy `trustDomain` -> an existing Secret via
         # `lookup` -> `printf "spiffe://%s" (randAlphaNum 32)`, and with all
         # three sources empty under ArgoCD's lookup-less repo-server the last
-        # arm always fires. Consequence, stated rather than guessed: the
-        # Application sits OutOfSync and `selfHeal: true` rewrites the SPIFFE
-        # trust domain of the fabric on every reconcile. It does NOT stop the
-        # pod being Healthy (kubelet resolved the env at container start and
-        # nothing restarts it), which is why this Application is asserted in the
-        # dev lane anyway and why this is a note rather than a deferral.
+        # arm always fires.
+        #
+        # WHAT WAS PREDICTED FROM THAT, AND WHAT WAS THEN MEASURED -- the
+        # correction is left in because the overreach is the instructive part.
+        # This note first said the Application "sits OutOfSync and `selfHeal:
+        # true` rewrites the SPIFFE trust domain on every reconcile". That was
+        # DERIVED, not observed, and the first live run refuted it: in run
+        # 32569702770 (`live kind included Synced+Healthy proof`)
+        # openziti-controller reported `Synced` + `Healthy` on all four samples
+        # over the ~7 minutes it was up, and never once OutOfSync. The most
+        # likely reason is that ArgoCD's repo-server CACHES generated manifests
+        # per revision, so the random value is drawn once and reused rather than
+        # redrawn each reconcile -- but that explanation is itself unmeasured
+        # and is written here as a candidate, not a finding.
+        #
+        # SO THE HONEST CLAIM IS NARROWER THAN THE FIRST ONE. What is measured:
+        # the render is nondeterministic (two local `helm template` runs at
+        # these values differ in exactly this line). What is NOT measured: any
+        # ArgoCD-level churn. The exposure is that whenever the manifest IS
+        # re-rendered -- a new revision, a cache eviction, a repo-server restart
+        # -- the trust domain can change under a controller that has already
+        # issued identities against the old one. Nothing observed says that has
+        # happened; nothing observed says it cannot.
         #
         # IT IS LEFT OPEN ON PURPOSE. The fix is one value -- `cluster:
         # {trustDomain: spiffe://<name>}` -- but the value IS the fabric's
@@ -149,9 +166,11 @@ spec:
         # is an operator decision of the same class as `advertisedHost` above,
         # and unlike `advertisedHost` the chart does not force it, so nothing
         # here needs to guess one. LIFTS WHEN: the operator names the trust
-        # domain (or the Application gains an `ignoreDifferences` entry scoped to
-        # `data.trustDomain` of that one Secret, which suppresses the churn
-        # without deciding the identity).
+        # domain -- which also makes the render deterministic and retires the
+        # exposure above outright. (An `ignoreDifferences` entry scoped to
+        # `data.trustDomain` would only hide a diff that has not been observed,
+        # so it is the weaker option and would be treating a symptom nobody has
+        # seen.)
   destination:
     server: https://kubernetes.default.svc
     namespace: openziti
