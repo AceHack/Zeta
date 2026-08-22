@@ -1366,3 +1366,76 @@ builds the obvious forward-correlation meter and believes it. See
   **precondition of measurability**, not only a safety property — you can only ablate a
   channel if the channel list is complete, and an incomplete list biases the forward
   instrument toward falsely declaring independence.
+
+## Decentralised key-based routing — small-world navigation and DHT geometry (added 2026-08-21, clean-side derivation)
+
+The literature behind `docs/research/2026-08-21-greedy-small-world-routing-is-hub-free-by-construction-and-our-kademlia-has-less-exit-than-a-ring.md`.
+Filed because `src/Core.TypeScript/discovery/dht-discovery.ts` and `gossip-mesh-transport.ts`
+already cite Kademlia and Demers **in their headers with no rows here** — mechanism shipped ahead
+of its literature, which is the gap this list exists to close. Every bound below was read from the
+paper's own theorem statement, not from a summary.
+
+- **Jon Kleinberg (2000) — "The Small-World Phenomenon: An Algorithmic Perspective"**
+  (*STOC 2000*, 163–170; Cornell CS TR 99-1776, 1999). Greedy routing on an `n × n` grid whose
+  long-range links follow the **inverse `r`-th-power** distribution delivers in `O((log n)²)`
+  expected steps **iff `r = d`** (Thm 2); at `r = 0` — the Watts–Strogatz choice — *every*
+  decentralized algorithm needs `Ω(n^(2/3))` (Thm 1), and Thm 3 gives polynomial lower bounds on
+  both sides of `r = 2`. **The exponent is the entire result**, and the lower bounds are over all
+  decentralized algorithms, so a wrong exponent cannot be recovered by a better forwarding rule.
+  **Scope, honest:** `n` is the grid *side*, so the node count is `n²`; the bound is an expectation
+  over uniformly-random source/target on a static graph, and says nothing about churn or tail latency.
+- **Gurmeet Singh Manku, Mayank Bawa, Prabhakar Raghavan (2003) — "Symphony: Distributed Hashing
+  in a Small World"** (*USITS 2003*, 127–140). Kleinberg at `d = 1`: the harmonic pdf
+  `pₙ(x) = 1/(x ln n)` on `[1/n, 1]`, `k = O(1)` long links per node, expected path length
+  `O((1/k)·log²n)` (Thm 3.1), with `n` estimated from **three local segment lengths** and no
+  coordinator anywhere. Its falsifier is the load-bearing half: draw the same `k` links
+  **uniformly** instead and latency is `Θ(√n/k)` — polynomial. A "roughly long-range" link budget
+  spent on the wrong distribution buys nothing.
+- **Krishna P. Gummadi, Ramakrishna Gummadi, Steven D. Gribble, Sylvia Ratnasamy, Scott Shenker,
+  Ion Stoica (2003) — "The Impact of DHT Routing Geometry on Resilience and Proximity"**
+  (*SIGCOMM 2003*, 381–394). Turns "can you route **around** it?" into a number: route-selection
+  flexibility per geometry. Ring `c₁(log n)!` optimal-length alternatives plus `2c₂(log n)!` longer
+  ones and native sequential neighbours; **XOR just `1`** on optimal paths and **no** sequential
+  neighbours. At 30% node failure, equal state per node: Ring under 7% of routes failed, XOR ~20%,
+  Tree/Butterfly ~90%. **This is the mechanical instrument for the EXIT discriminator in
+  `.claude/rules/itron-hub-patent-boundary-p2p-is-the-upgrade.md`** — the first thing we have that
+  measures "oracle you may leave" vs "hub you must traverse" rather than asserting it.
+- **Duncan J. Watts & Steven H. Strogatz (1998) — "Collective dynamics of 'small-world' networks"**
+  (*Nature* 393:440–442). The local+long-range decomposition the whole family stands on.
+  **Scope, honest:** it explains why short paths *exist*, and Kleinberg's Thm 1 is exactly the proof
+  that its long-link choice makes them **unfindable** — existence and navigability are different
+  properties and WS supplies only the first.
+- **Stanley Milgram (1967) — "The small world problem"** (*Psychology Today* 1:61–67) and
+  **Jeffrey Travers & Stanley Milgram (1969) — "An experimental study of the small world problem"**
+  (*Sociometry* 32:425–443). The empirical anchor: chains of five to six, **found by people holding
+  only local information.** Kleinberg's Question (∗∗) is our routing requirement, posed in 1967.
+- **Petar Maymounkov & David Mazières (2002) — "Kademlia: A Peer-to-peer Information System Based
+  on the XOR Metric"** (*IPTPS 2002*). Already implemented at
+  `src/Core.TypeScript/discovery/dht-discovery.ts` over Reticulum destination hashes. Listed at last.
+- **Ion Stoica et al. (2001/2003) — "Chord"** (*SIGCOMM 2001*; *IEEE/ACM ToN* 11(1):17–32);
+  **Antony Rowstron & Peter Druschel (2001) — "Pastry"** (*Middleware 2001*); **Ben Y. Zhao,
+  John Kubiatowicz, Anthony D. Joseph (2001) — "Tapestry"** (UCB/CSD-01-1141; *IEEE JSAC*
+  22(1):41–53, 2004); **Dahlia Malkhi, Moni Naor, David Ratajczak (2002) — "Viceroy"**
+  (*PODC 2002*). The contrast class: the same `O(log n)` bound from a **maintained,
+  structurally-determined** table rather than a sampled one — and Viceroy is the origin of the
+  local `n`-estimator Symphony adopts.
+- **Albert-László Barabási & Réka Albert (1999) — "Emergence of scaling in random networks"**
+  (*Science* 286:509–512) and **Réka Albert, Hawoong Jeong & Albert-László Barabási (2000) —
+  "Error and attack tolerance of complex networks"** (*Nature* 406:378–382; correction *Nature*
+  409:542, 2001). Growth **plus preferential attachment** `Π(kᵢ) = kᵢ/Σkⱼ` produces `P(k) ~ k^(−γ)`;
+  scale-free networks then hold diameter under 5% random failure but **double** it when the 5% most
+  connected are removed. **Scope, honest — and this is why the row matters:** AJB scope themselves
+  out of degree-bounded overlays in their own second paragraph, calling Erdős–Rényi and
+  Watts–Strogatz *"fairly homogeneous"*. The targeted-attack fragility is a consequence of the
+  degree **distribution**, so it does not apply to a construction that caps degree. What applies
+  instead is the homogeneous class's fragmentation threshold, `f_c ≈ 0.28` under random removal.
+- **John R. Douceur (2002) — "The Sybil Attack"** (*IPTPS 2002*) and **Miguel Castro, Peter
+  Druschel, Ayalvadi Ganesh, Antony Rowstron & Dan S. Wallach (2002) — "Secure routing for
+  structured peer-to-peer overlay networks"** (*OSDI 2002*). The failure class that actually
+  threatens greedy key-based routing: without a certifying authority, distinct remote entities
+  cannot in general be distinguished, so an adversary mints identifiers until it owns the arc of the
+  space that greedy routing must cross. `docs/BUGS.md`'s unsigned-Reticulum-announce entry is this
+  attack's precondition, live in-tree today. **Scope, honest:** Castro et al.'s answer is *certified*
+  identifiers, which is a centralization this repo declines — the socially-conferred-standing route
+  (`TravelerRankLedger`, `SocietyUsefulWork`) is a different answer to the same question, and the
+  two have never been compared here.
