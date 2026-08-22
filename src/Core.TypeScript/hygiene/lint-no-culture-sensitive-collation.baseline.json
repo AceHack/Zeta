@@ -176,11 +176,6 @@
       "category": "human-report-ordering",
       "reason": "Orders rows of an audit or report read by a human, not a key, a hash input, or anything folded. Cosmetic under the rule; converting is safe but is not urgent and would enlarge this PR's review surface without reducing risk."
     },
-    "src/Core.TypeScript/cluster/argocd-health-test.ts": {
-      "count": 1,
-      "category": "load-bearing-pending-sweep",
-      "reason": "Load-bearing ordering (a key, a claim set, or a deterministic pick) that SHOULD be converted, but whose key domain was not measured in this PR. Left explicitly as named debt rather than converted blind; the ratchet stops it growing."
-    },
     "src/Core.TypeScript/discovery/gossip-salon.proof.test.ts": {
       "count": 1,
       "category": "test-local-ordering",

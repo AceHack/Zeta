@@ -36,6 +36,14 @@ import {
   type DevBootstrapSecretSpec,
 } from "./dev-cluster/lib.ts";
 import { DEFAULT_ROOT_DEV_CATALOG } from "./ports.ts";
+// Ordinal (code-point) ordering, per .claude/rules/culture-invariant-by-default.md.
+// NOT localeCompare: it is culture-SENSITIVE, so the same directory names sort
+// differently per machine locale. That matters here because this ordering is not
+// display -- it is the canonical order of the Application roster every caller of
+// discoverExpectedApplications() iterates, so a locale-dependent order is a
+// locale-dependent roster. `stringCompare` also walks code points rather than
+// UTF-16 code units, so astral characters order the way the other oracles order them.
+import { stringCompare } from "../collation/collation.ts";
 import { classifySyncPolicy, manualSyncAssertion, type AssertionOutcome } from "./manual-sync-policy.ts";
 import {
   ephemeralVaultInitGate,
@@ -1442,7 +1450,7 @@ export function discoverExpectedApplications(repoRoot = REPO_ROOT): readonly Exp
   const dirs = readdirSync(appsDir, { withFileTypes: true })
     .filter((entry) => entry.isDirectory())
     .map((entry) => entry.name)
-    .sort((a, b) => a.localeCompare(b));
+    .sort(stringCompare);
 
   return dirs.flatMap((dir) => {
     const appPath = join(appsDir, dir, "Application.yaml");
