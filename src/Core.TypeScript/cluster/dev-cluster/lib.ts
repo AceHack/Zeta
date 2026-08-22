@@ -204,6 +204,153 @@ export function buildDevAdminSecretManifest(spec: DevBootstrapSecretSpec, passwo
   ].join("\n");
 }
 
+/**
+ * A registry credential a dev/CI cluster must hold before an Application whose
+ * images live in a PRIVATE registry can pull them.
+ *
+ * WHY THIS IS A SEPARATE CLASS FROM `DevBootstrapSecretSpec` ABOVE, and not a
+ * third entry on that roster. The admin credentials up there are DRAWN: entropy
+ * enters at the mint, every cluster gets its own value, and the mint is
+ * therefore UNCONDITIONAL -- it can always succeed. A registry credential is
+ * SOURCED: it has to be a token some real registry will actually honour, so it
+ * comes from the environment and the mint can legitimately find nothing. Those
+ * are different failure modes and they want different code. Putting this on the
+ * drawn roster would also have falsified that roster's own invariants, which
+ * `use-cases.test.ts` asserts by name: "two fresh clusters get different
+ * passwords" is FALSE of a sourced token (two clusters get the SAME one, which
+ * is correct), and "mints.length === DEV_BOOTSTRAP_SECRETS.length" is false the
+ * moment a mint may skip.
+ *
+ * MEASURED 2026-08-21 (recorded in the `platform` entry of
+ * `DEV_EXCLUDED_REASONS`): an anonymous manifest GET against
+ * `ghcr.io/v2/lucent-financial-group/zeta-platform-controller/manifests/latest`
+ * returns HTTP 401, the same GET with a credential returns HTTP 200, and both
+ * GHCR packages are `visibility: private`. Neither `controller.yaml` nor
+ * `portal.yaml` declared `imagePullSecrets` -- nothing in `full-ai-cluster` did
+ * -- so the kubelet pulled anonymously and took the 401 on EVERY substrate.
+ */
+export interface DevRegistryPullSecretSpec {
+  readonly namespace: string;
+  readonly name: string;
+  /** Registry host the docker config entry is keyed by, e.g. `ghcr.io`. */
+  readonly registry: string;
+  /**
+   * Environment variables consulted IN ORDER for the token, first non-empty
+   * wins. A LIST because CI and a laptop have different names for the same
+   * thing and neither should have to know about the other.
+   */
+  readonly tokenEnvVars: readonly string[];
+  /** Environment variable for the username; GHCR ignores it for tokens, other registries do not. */
+  readonly userEnvVar: string;
+  /** Username when `userEnvVar` is unset. */
+  readonly defaultUser: string;
+  /** Why this object exists, written into the manifest so it is legible in-cluster. */
+  readonly reason: string;
+}
+
+/**
+ * The GHCR pull credential the `platform` Application's two images need.
+ *
+ * ONE constant, THREE consumers, for the same reason `DEV_GRAFANA_ADMIN_SECRET`
+ * is one constant: `use-cases.ts` mints it, `argocd-health-test.ts` refuses a
+ * run that would assert `platform` without it, and the pod specs in
+ * `k8s/applications/platform/{controller,portal}.yaml` name it in
+ * `imagePullSecrets`. The pod specs are the one consumer this file cannot
+ * import, so `use-cases.test.ts` READS THEM and asserts the string matches --
+ * a rename here that did not reach the YAML is the half-wiring that would
+ * otherwise surface only as an ImagePullBackOff.
+ *
+ * `zeta-platform` IS THE NAMESPACE AND THAT IS NOT NEGOTIABLE: an
+ * `imagePullSecrets` entry is a `LocalObjectReference`, resolved in the POD's
+ * own namespace, so this Secret cannot live anywhere else and be found.
+ */
+export const DEV_GHCR_PULL_SECRET: DevRegistryPullSecretSpec = {
+  namespace: "zeta-platform",
+  name: "ghcr-pull",
+  registry: "ghcr.io",
+  tokenEnvVars: ["ZETA_GHCR_PULL_TOKEN", "GITHUB_TOKEN", "GH_TOKEN"],
+  userEnvVar: "ZETA_GHCR_PULL_USER",
+  defaultUser: "zeta-ci",
+  reason:
+    "Minted per dev/CI cluster at bring-up so the private GHCR packages behind " +
+    "the platform controller and portal images can be pulled.",
+} as const;
+
+/**
+ * The token for a registry mint, resolved from an environment.
+ *
+ * PURE AND TOTAL -- takes the environment rather than reading `process.env`, so
+ * every branch is testable without mutating the process, and returns `null`
+ * rather than throwing because ABSENCE IS AN EXPECTED STATE. A contributor
+ * bringing up a dev cluster to work on something unrelated to `platform` has no
+ * reason to hold a GHCR token, and refusing their bring-up over it would be the
+ * coercion this substrate is supposed to be free of.
+ *
+ * WHITESPACE-ONLY IS ABSENT, not present. A workflow that sets the variable
+ * from a secret that does not exist yields the empty string, and treating that
+ * as a token would mint a Secret containing nothing -- which is the WORST of
+ * the three states, because it is indistinguishable in-cluster from a real
+ * credential that lacks permission.
+ */
+export function resolveRegistryToken(
+  spec: DevRegistryPullSecretSpec,
+  env: Readonly<Record<string, string | undefined>>,
+): string | null {
+  for (const name of spec.tokenEnvVars) {
+    const value = env[name]?.trim() ?? "";
+    if (value.length > 0) return value;
+  }
+  return null;
+}
+
+/**
+ * A dev/CI registry pull Secret, as a manifest.
+ *
+ * PURE, and the token is a PARAMETER for the same reason the admin password is:
+ * the shape is testable without a real credential, and the one place a real one
+ * is read is the caller.
+ *
+ * `kubernetes.io/dockerconfigjson` with a `.dockerconfigjson` key is not a
+ * choice -- it is the only Secret type the kubelet consults for image pulls, so
+ * an `Opaque` Secret of the same name would be found, ignored, and produce the
+ * ImagePullBackOff this exists to remove, with the Secret sitting right there
+ * looking correct.
+ *
+ * `stringData` for the same reason as the admin mint: the API server does the
+ * base64 of the outer object, so what is committed to the cluster is readable.
+ * The `auth` field inside is base64 by the docker config format itself, which
+ * is NOT encryption and is not treated as any -- the value dies with the
+ * cluster and is printed nowhere.
+ */
+export function buildDevRegistryPullSecretManifest(
+  spec: DevRegistryPullSecretSpec,
+  username: string,
+  token: string,
+): string {
+  const { namespace, name, registry, reason } = spec;
+  const auth = Buffer.from(`${username}:${token}`, "utf8").toString("base64");
+  const dockerConfig = JSON.stringify({
+    auths: { [registry]: { username, password: token, auth } },
+  });
+  return [
+    "apiVersion: v1",
+    "kind: Secret",
+    "metadata:",
+    `  name: ${name}`,
+    `  namespace: ${namespace}`,
+    "  annotations:",
+    '    zeta.io/dev-substrate-credential: "true"',
+    "    zeta.io/dev-substrate-credential-reason: >-",
+    `      ${reason}`,
+    "      Never applied to the bare-metal cluster, never committed to git,",
+    "      never reused across clusters.",
+    "type: kubernetes.io/dockerconfigjson",
+    "stringData:",
+    `  .dockerconfigjson: ${JSON.stringify(dockerConfig)}`,
+    "",
+  ].join("\n");
+}
+
 const GITHUB_REPO_URL =
   /^https:\/\/github\.com\/[A-Za-z0-9_.-]+\/[A-Za-z0-9_.-]+(\.git)?$/;
 

@@ -89,6 +89,24 @@ spec:
       labels: { app.kubernetes.io/name: platform-controller }
     spec:
       serviceAccountName: platform-controller
+      # The image below lives in a PRIVATE GHCR package -- one of the two this
+      # Application runs. An anonymous manifest GET against it takes HTTP 401, a
+      # credentialed one takes HTTP 200 (measured 2026-08-21).
+      # Without this reference the kubelet pulls anonymously and the pod sits in
+      # ImagePullBackOff on EVERY substrate -- which is why the metal platform
+      # control plane has never started either. `imagePullSecrets` is a
+      # LocalObjectReference, so `ghcr-pull` is resolved in THIS namespace
+      # (`zeta-platform`) and nowhere else.
+      #
+      # WHO CREATES IT. dev/CI: `applyDevRegistryPullSecret` at bring-up, from a
+      # token in the environment (`DEV_GHCR_PULL_SECRET` in dev-cluster/lib.ts).
+      # METAL: NOBODY YET -- it is operator-supplied secret material under the
+      # constitutional rail in `full-ai-cluster/INJECTION-POINTS.md`, or the
+      # packages are made public and this reference becomes inert. Until one of
+      # those happens this line does not fix metal; it makes metal's failure the
+      # same named, locatable one as CI's instead of a bare 401.
+      imagePullSecrets:
+        - name: ghcr-pull
       securityContext:
         runAsNonRoot: true
         runAsUser: 1000

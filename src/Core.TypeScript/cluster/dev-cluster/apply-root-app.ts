@@ -3,7 +3,11 @@
 
 import { liveDevClusterPorts } from "./deps.ts";
 import { assertGitHubRepoUrl, assertSafeGitRef, DEFAULT_GIT_REPO_URL } from "./lib.ts";
-import { applyDevBootstrapSecrets, applyDevStorageClassAliases } from "./use-cases.ts";
+import {
+  applyDevBootstrapSecrets,
+  applyDevRegistryPullSecret,
+  applyDevStorageClassAliases,
+} from "./use-cases.ts";
 
 export function applyRootApp(gitRef: string, gitRepoUrl: string = DEFAULT_GIT_REPO_URL): void {
   assertSafeGitRef(gitRef);
@@ -23,6 +27,7 @@ export function applyRootApp(gitRef: string, gitRepoUrl: string = DEFAULT_GIT_RE
   // CreateContainerConfigError. Minting an already-present Secret is skipped
   // rather than rotated, so this is safe after a bring-up that did it.
   applyDevBootstrapSecrets(ports);
+  applyDevRegistryPullSecret(ports);
   ports.appCatalog.applyRootDevCatalog(gitRef, gitRepoUrl);
 }
 

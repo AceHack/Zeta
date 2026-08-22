@@ -228,8 +228,27 @@ on:
       - "bun.lock"
   workflow_dispatch:
 
+# `packages: read` is what lets this workflow's `github.token` pull the PRIVATE
+# GHCR packages behind the `platform` Application's two images. It is additive
+# and least-privilege: no write scope of any kind, and every other job in this
+# file is unaffected by having it available.
+#
+# LIKELY SUFFICIENT, NOT YET PROVEN, and the gap is named rather than rounded off.
+# MEASURED 2026-08-22 via `gh api /orgs/Lucent-Financial-Group/packages/container/
+# zeta-{platform-controller,portal}`: both packages are private AND both report
+# `repository.full_name = Lucent-Financial-Group/Zeta`, i.e. they are linked to
+# THIS repository, which is the condition under which a repo-scoped GITHUB_TOKEN
+# is granted read access. So this is a well-founded expectation.
+#
+# It is still not a pull. `platform/**` remains in
+# `DEFAULT_ROOT_DEV_CATALOG.excludeGlob`, so no job here has actually presented
+# this token to GHCR and been served a layer, and package-to-repo linkage is
+# reported by the API rather than exercised by it. The first run with `platform`
+# un-deferred is what measures it; if the token is refused, the exit is a
+# package-level grant or a PAT in `ZETA_GHCR_PULL_TOKEN`, not a change here.
 permissions:
   contents: read
+  packages: read
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -914,6 +933,18 @@ jobs:
       - name: Run live kind included ArgoCD health proof
         id: proof
         env:
+          # Sourced by `applyDevRegistryPullSecret` during the in-process kind
+          # bring-up. GitHub does NOT put `GITHUB_TOKEN` in a step's environment
+          # on its own -- it has to be mapped, as here -- so without this line
+          # the mint finds nothing and SKIPS, silently, and the first run with
+          # `platform` un-deferred would fail on a missing Secret rather than on
+          # anything about `platform`.
+          #
+          # Harmless while `platform` is still deferred: the mint creates the
+          # `zeta-platform` namespace and one Secret in a cluster that is thrown
+          # away at the end of the job, and exercises the mint path in CI before
+          # anything depends on it.
+          ZETA_GHCR_PULL_TOKEN: ${{ github.token }}
           ZETA_ARGOCD_GIT_REF: ${{ github.event.pull_request.head.sha || github.sha }}
           ZETA_ARGOCD_GIT_REPO_URL: ${{ github.event.pull_request.head.repo.clone_url || 'https://github.com/Lucent-Financial-Group/Zeta' }}
         run: |

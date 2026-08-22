@@ -3,12 +3,15 @@ import { readFileSync } from "node:fs";
 import { buildRootDevCatalogManifest } from "../ports.ts";
 import {
   buildDevAdminSecretManifest,
+  buildDevRegistryPullSecretManifest,
   DEV_BOOTSTRAP_SECRETS,
+  DEV_GHCR_PULL_SECRET,
   DEV_GRAFANA_ADMIN_SECRET,
   DEV_ZITI_ADMIN_SECRET,
   devStorageAliasManifestPath,
+  resolveRegistryToken,
 } from "./lib.ts";
-import { bringUpK3dDevCluster, bringUpKindCiCluster } from "./use-cases.ts";
+import { applyDevRegistryPullSecret, bringUpK3dDevCluster, bringUpKindCiCluster } from "./use-cases.ts";
 import type {
   AppCatalogApplicator,
   ClusterControlPlane,
@@ -142,6 +145,7 @@ describe("kind CI use case", () => {
       kubeApiHost: "host.k3d.internal",
       gitRef: "main",
       gitRepoUrl: "https://github.com/Lucent-Financial-Group/Zeta",
+      env: {},
     });
     const longhorn = `file:${devStorageAliasManifestPath("longhorn")}`;
     expect(log).toContain(longhorn);
@@ -184,11 +188,17 @@ describe("kind CI use case", () => {
  * constants appear only where a specific Application's contract is the subject.
  */
 describe("dev/CI bootstrap credentials", () => {
+  // `env: {}` IS LOAD-BEARING, not tidiness. The bring-up also mints a registry
+  // pull credential when a token is in scope, and these tests are about the
+  // DRAWN admin roster. Left ambient, `mints.length` below would be 2 on a
+  // laptop and 3 in CI (which exports `GITHUB_TOKEN`) -- the same commit passing
+  // or failing on where it ran. The registry path has its own describe block.
   const kindOptions = {
     configPath: "/tmp/kind.yaml",
     clusterName: "zeta-ci",
     gitRef: "main",
     gitRepoUrl: "https://github.com/Lucent-Financial-Group/Zeta",
+    env: {},
   } as const;
 
   /**
@@ -241,6 +251,7 @@ describe("dev/CI bootstrap credentials", () => {
       kubeApiHost: "host.k3d.internal",
       gitRef: "main",
       gitRepoUrl: "https://github.com/Lucent-Financial-Group/Zeta",
+      env: {},
     });
     const catalogAt = log.findIndex((entry) => entry.startsWith("catalog:"));
     for (const spec of DEV_BOOTSTRAP_SECRETS) {
@@ -335,6 +346,134 @@ describe("dev/CI bootstrap credentials", () => {
   test("applyRootApp mints the credentials too, before the catalog", () => {
     const source = readFileSync(new URL("./apply-root-app.ts", import.meta.url), "utf8");
     const mintAt = source.indexOf("applyDevBootstrapSecrets(ports)");
+    const catalogAt = source.indexOf("applyRootDevCatalog(gitRef, gitRepoUrl)");
+    expect(mintAt).toBeGreaterThan(-1);
+    expect(mintAt).toBeLessThan(catalogAt);
+  });
+});
+
+/**
+ * THE REGISTRY PULL CREDENTIAL — a different class from the roster above, and
+ * these tests exist to hold the difference rather than to re-check the mint.
+ *
+ * The admin credentials are DRAWN, so their mint is unconditional and a skip
+ * would be a bug. This one is SOURCED, so a skip is a legitimate outcome and
+ * the thing that must never happen is the third state: a Secret minted around
+ * an empty token. In-cluster that is INDISTINGUISHABLE from a real credential
+ * without permission -- same ImagePullBackOff, same ArgoCD `Progressing`, and
+ * an object sitting in the namespace that makes the credential half look done.
+ * Every test below is aimed at that state.
+ */
+describe("dev/CI registry pull credential", () => {
+  const kindOptions = {
+    configPath: "/tmp/kind.yaml",
+    clusterName: "zeta-ci",
+    gitRef: "main",
+    gitRepoUrl: "https://github.com/Lucent-Financial-Group/Zeta",
+  } as const;
+
+  const pullMints = (log: readonly string[]): string[] =>
+    log.filter((e) => e.startsWith("inline-manifest:") && e.includes(`name: ${DEV_GHCR_PULL_SECRET.name}`));
+
+  test("a token in ANY of the rostered variables is found, first non-empty wins", () => {
+    const [first, second] = DEV_GHCR_PULL_SECRET.tokenEnvVars;
+    expect(first).toBeDefined();
+    expect(second).toBeDefined();
+    expect(resolveRegistryToken(DEV_GHCR_PULL_SECRET, { [first!]: "a", [second!]: "b" })).toBe("a");
+    expect(resolveRegistryToken(DEV_GHCR_PULL_SECRET, { [second!]: "b" })).toBe("b");
+  });
+
+  /**
+   * THE CENTRAL FALSIFIER. Every one of these environments is a real way to
+   * arrive at "the variable is set and holds nothing": a workflow interpolating
+   * a repository secret that was never created yields the empty string, and a
+   * shell `export TOKEN=" "` yields whitespace. Treating any of them as a token
+   * is what mints the indistinguishable Secret.
+   */
+  test("an empty, whitespace, or unset token is ABSENT — never a token", () => {
+    const [first] = DEV_GHCR_PULL_SECRET.tokenEnvVars;
+    for (const env of [{}, { [first!]: "" }, { [first!]: "   " }, { [first!]: "\t\n" }, { [first!]: undefined }]) {
+      expect(resolveRegistryToken(DEV_GHCR_PULL_SECRET, env)).toBeNull();
+    }
+  });
+
+  test("with no token the bring-up mints NOTHING for the registry, and still mints the drawn roster", () => {
+    const log: string[] = [];
+    bringUpKindCiCluster(fakePorts(log), { ...kindOptions, env: {} });
+    expect(pullMints(log)).toEqual([]);
+    // The skip must be LOCAL to this credential -- a bring-up that bailed here
+    // would leave Grafana and ziti without theirs for an unrelated reason.
+    expect(log.filter((e) => e.startsWith("inline-manifest:")).length).toBe(DEV_BOOTSTRAP_SECRETS.length);
+  });
+
+  test("with a token the bring-up mints it, into the pods' OWN namespace, before the catalog", () => {
+    const log: string[] = [];
+    const [first] = DEV_GHCR_PULL_SECRET.tokenEnvVars;
+    bringUpKindCiCluster(fakePorts(log), { ...kindOptions, env: { [first!]: "t0ken" } });
+    const mints = pullMints(log);
+    expect(mints.length).toBe(1);
+    // `imagePullSecrets` is a LocalObjectReference: minted anywhere but the pod's
+    // namespace it is simply not found, and the symptom is the 401 it was
+    // supposed to remove.
+    expect(mints[0]).toContain(`namespace: ${DEV_GHCR_PULL_SECRET.namespace}`);
+    expect(log.indexOf(`ns:${DEV_GHCR_PULL_SECRET.namespace}`)).toBeGreaterThan(-1);
+    const catalogAt = log.findIndex((e) => e.startsWith("catalog:"));
+    expect(log.indexOf(mints[0]!)).toBeLessThan(catalogAt);
+  });
+
+  test("a cluster that already holds it is left alone — a re-run does not churn a working credential", () => {
+    const log: string[] = [];
+    const [first] = DEV_GHCR_PULL_SECRET.tokenEnvVars;
+    const existing = [`secret/${DEV_GHCR_PULL_SECRET.name}@${DEV_GHCR_PULL_SECRET.namespace}`];
+    applyDevRegistryPullSecret(fakePorts(log, existing), { [first!]: "t0ken" });
+    expect(pullMints(log)).toEqual([]);
+    expect(log).toContain(`exists?:${existing[0]}`);
+  });
+
+  /**
+   * THE TYPE IS THE WHOLE POINT. An `Opaque` Secret of the same name in the
+   * right namespace is found by nobody: the kubelet consults ONLY
+   * `kubernetes.io/dockerconfigjson` for image pulls, so it would be ignored in
+   * silence while looking, to a reader, exactly like a credential that is
+   * present. This asserts the type and the key the kubelet actually reads.
+   */
+  test("the manifest is a dockerconfigjson the kubelet will actually consult", () => {
+    const manifest = buildDevRegistryPullSecretManifest(DEV_GHCR_PULL_SECRET, "someone", "t0ken");
+    expect(manifest).toContain("type: kubernetes.io/dockerconfigjson");
+    const payload = manifest.split(".dockerconfigjson: ")[1]!.trim();
+    const config = JSON.parse(JSON.parse(payload) as string) as {
+      auths: Record<string, { username: string; password: string; auth: string }>;
+    };
+    const entry = config.auths[DEV_GHCR_PULL_SECRET.registry];
+    expect(entry).toBeDefined();
+    expect(entry!.password).toBe("t0ken");
+    expect(Buffer.from(entry!.auth, "base64").toString("utf8")).toBe("someone:t0ken");
+  });
+
+  /**
+   * THE HALF-WIRING FALSIFIER, and the reason this file reads YAML.
+   *
+   * The pod specs are the one consumer `lib.ts` cannot import. Rename the
+   * constant without touching the manifests -- or add a third private-image
+   * Deployment to this Application and forget the reference -- and nothing in
+   * TypeScript notices; the only symptom is an ImagePullBackOff that ArgoCD
+   * reports as `Progressing`, so a run burns its whole timeout and reports the
+   * symptom instead of the cause. This goes red instead.
+   */
+  test("every pod spec running a private GHCR image names this exact Secret", () => {
+    const chartDir = new URL("../../../../full-ai-cluster/k8s/applications/platform/", import.meta.url);
+    for (const file of ["controller.yaml", "portal.yaml"]) {
+      const yaml = readFileSync(new URL(file, chartDir), "utf8");
+      expect(yaml).toContain("ghcr.io/lucent-financial-group/");
+      expect(yaml).toContain("imagePullSecrets:");
+      expect(yaml).toContain(`- name: ${DEV_GHCR_PULL_SECRET.name}`);
+    }
+  });
+
+  /** THE THIRD DOOR, for this credential too. */
+  test("applyRootApp mints the registry credential as well, before the catalog", () => {
+    const source = readFileSync(new URL("./apply-root-app.ts", import.meta.url), "utf8");
+    const mintAt = source.indexOf("applyDevRegistryPullSecret(ports)");
     const catalogAt = source.indexOf("applyRootDevCatalog(gitRef, gitRepoUrl)");
     expect(mintAt).toBeGreaterThan(-1);
     expect(mintAt).toBeLessThan(catalogAt);

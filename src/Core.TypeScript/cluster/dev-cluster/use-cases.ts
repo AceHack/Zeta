@@ -1,6 +1,13 @@
 import { randomBytes } from "node:crypto";
 import type { DevClusterPorts } from "../ports.ts";
-import { buildDevAdminSecretManifest, DEV_BOOTSTRAP_SECRETS, devStorageAliasManifestPath } from "./lib.ts";
+import {
+  buildDevAdminSecretManifest,
+  buildDevRegistryPullSecretManifest,
+  DEV_BOOTSTRAP_SECRETS,
+  DEV_GHCR_PULL_SECRET,
+  devStorageAliasManifestPath,
+  resolveRegistryToken,
+} from "./lib.ts";
 
 /**
  * Apply the dev/CI alias StorageClasses, BEFORE the app-of-apps root syncs.
@@ -91,11 +98,80 @@ export function applyDevBootstrapSecrets(ports: DevClusterPorts): void {
   }
 }
 
+/**
+ * Mint the dev/CI registry pull credential, IF this environment has a token to
+ * mint it from.
+ *
+ * SEPARATE FROM `applyDevBootstrapSecrets` BECAUSE IT CAN LEGITIMATELY DO
+ * NOTHING, and that difference is the whole design. The admin credentials are
+ * drawn from entropy, so their mint always succeeds and a skip would be a bug.
+ * This one needs a token GHCR will honour, and a bring-up on a laptop that has
+ * no such token is a normal, supported state -- so the honest outcomes are
+ * MINTED or SKIPPED-AND-SAID-SO, never "minted something that will not work".
+ *
+ * THE THIRD OUTCOME IS THE ONE THIS EXISTS TO REFUSE. A Secret containing an
+ * empty or whitespace token is strictly worse than no Secret at all: the
+ * kubelet finds it, uses it, GHCR rejects it, and the pod lands in
+ * ImagePullBackOff -- the SAME symptom as no credential, with an object sitting
+ * in the namespace that makes it look like the credential half is done.
+ * `resolveRegistryToken` treats whitespace-only as absent for exactly that
+ * reason, and this function skips rather than mints when it returns null.
+ *
+ * WHAT MAKES THE SKIP SAFE RATHER THAN SILENT: `platform` is currently in
+ * `DEFAULT_ROOT_DEV_CATALOG.excludeGlob`, so a cluster without this Secret
+ * simply never syncs the Application that needs it. When that deferral lifts,
+ * `assertDevRegistryPullSecretPresent` in `argocd-health-test.ts` refuses the
+ * run in seconds and NAMES this Secret -- so the skip becomes a loud failure at
+ * the moment, and only at the moment, it starts to matter.
+ *
+ * IDEMPOTENT BY ASKING FIRST, like the admin mint. Re-running a bring-up must
+ * not churn a working credential.
+ */
+export function applyDevRegistryPullSecret(
+  ports: DevClusterPorts,
+  env: Readonly<Record<string, string | undefined>> = process.env,
+): void {
+  const spec = DEV_GHCR_PULL_SECRET;
+  const { namespace, name, registry, tokenEnvVars } = spec;
+  const token = resolveRegistryToken(spec, env);
+  if (token === null) {
+    console.log(
+      `No ${registry} token in this environment (looked at ${tokenEnvVars.join(", ")}); ` +
+        `NOT minting ${namespace}/${name}. A Secret holding an empty token is indistinguishable ` +
+        `in-cluster from a real one that lacks permission, so none is created. Applications whose ` +
+        `images live in ${registry} will not start in this cluster.`,
+    );
+    return;
+  }
+  const ref = `secret/${name}`;
+  ports.controlPlane.ensureNamespace(namespace);
+  if (ports.controlPlane.resourceExists(ref, namespace)) {
+    console.log(`Dev/CI registry credential ${namespace}/${name} already present; leaving it alone.`);
+    return;
+  }
+  const username = env[spec.userEnvVar]?.trim() || spec.defaultUser;
+  console.log(`Minting dev/CI registry credential ${namespace}/${name} (token is never logged) ...`);
+  ports.controlPlane.applyInlineManifest(buildDevRegistryPullSecretManifest(spec, username, token));
+}
+
 export interface KindCiBringUpOptions {
   readonly configPath: string;
   readonly clusterName: string;
   readonly gitRef: string;
   readonly gitRepoUrl: string;
+  /**
+   * The environment the registry pull credential is sourced from.
+   *
+   * DECLARED rather than ambient (manifesto §13 noninterference): this value
+   * decides whether `applyDevRegistryPullSecret` MINTS OR SKIPS, so a bring-up
+   * reading `process.env` directly would take a different code path depending on
+   * whether the host happened to export `GITHUB_TOKEN` -- and the falsifiers in
+   * `use-cases.test.ts` would pass or fail on the same commit for the same
+   * reason. Entropy for the admin passwords is still drawn ambiently, and that
+   * is not the same thing: a drawn value changes what is IN a manifest, this
+   * changes WHETHER THERE IS ONE.
+   */
+  readonly env?: Readonly<Record<string, string | undefined>>;
 }
 
 export interface K3dDevBringUpOptions {
@@ -105,6 +181,19 @@ export interface K3dDevBringUpOptions {
   readonly kubeApiHost: string;
   readonly gitRef: string;
   readonly gitRepoUrl: string;
+  /**
+   * The environment the registry pull credential is sourced from.
+   *
+   * DECLARED rather than ambient (manifesto §13 noninterference): this value
+   * decides whether `applyDevRegistryPullSecret` MINTS OR SKIPS, so a bring-up
+   * reading `process.env` directly would take a different code path depending on
+   * whether the host happened to export `GITHUB_TOKEN` -- and the falsifiers in
+   * `use-cases.test.ts` would pass or fail on the same commit for the same
+   * reason. Entropy for the admin passwords is still drawn ambiently, and that
+   * is not the same thing: a drawn value changes what is IN a manifest, this
+   * changes WHETHER THERE IS ONE.
+   */
+  readonly env?: Readonly<Record<string, string | undefined>>;
 }
 
 export function bringUpKindCiCluster(ports: DevClusterPorts, options: KindCiBringUpOptions): void {
@@ -131,6 +220,7 @@ export function bringUpKindCiCluster(ports: DevClusterPorts, options: KindCiBrin
 
   applyDevStorageClassAliases(ports);
   applyDevBootstrapSecrets(ports);
+  applyDevRegistryPullSecret(ports, options.env ?? process.env);
 
   if (!packages.releaseInstalled("argocd", "argocd")) {
     console.log("Installing ArgoCD ...");
@@ -223,6 +313,7 @@ export function bringUpK3dDevCluster(ports: DevClusterPorts, options: K3dDevBrin
 
   applyDevStorageClassAliases(ports);
   applyDevBootstrapSecrets(ports);
+  applyDevRegistryPullSecret(ports, options.env ?? process.env);
 
   appCatalog.applyRootDevCatalog(options.gitRef, options.gitRepoUrl);
 }

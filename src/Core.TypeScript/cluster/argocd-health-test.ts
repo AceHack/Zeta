@@ -29,6 +29,7 @@ import { parse as parseYaml } from "yaml";
 import { bootstrapKindClusterInProcess, bootstrapK3dClusterInProcess } from "./harness/bootstrap.ts";
 import {
   DEV_BOOTSTRAP_SECRETS,
+  DEV_GHCR_PULL_SECRET,
   DEV_LONGHORN_ALIAS_CLASS_NAME,
   DEV_SATISFIABLE_PROVISIONERS,
   DEV_STORAGE_ALIAS_MANIFEST_RELPATHS,
@@ -58,6 +59,7 @@ export type FailureKind =
   | "ClusterBootstrapFailed"
   | "DevStorageClassMissing"
   | "DevBootstrapSecretMissing"
+  | "DevRegistryPullSecretMissing"
   | "KubectlFailed"
   | "ArgoCdTimeout"
   | "ApplicationMissing"
@@ -266,6 +268,18 @@ const SMOKE_MIN_APPLICATIONS = 20;
  * SERVE those models; it was never a property of the two structural
  * Applications that describe them. They are asserted under the full contract now.
  */
+/**
+ * The `platform` Application's directory, as ONE constant.
+ *
+ * Three surfaces need this exact string and they must not drift: its deferral
+ * reason in `DEV_EXCLUDED_REASONS` below, and the glob gate in
+ * `assertDevRegistryPullSecretPresent`, which asserts nothing while this
+ * directory is excluded and starts biting the moment it is not. A retyped
+ * literal in the gate would keep the check inert after the deferral lifted --
+ * silently, since an inert check and a passing one look identical.
+ */
+export const PLATFORM_APP_DIR = "platform";
+
 export const DEV_EXCLUDED_REASONS: ReadonlyMap<string, string> = new Map([
   [
     "agent-memory",
@@ -374,7 +388,7 @@ export const DEV_EXCLUDED_REASONS: ReadonlyMap<string, string> = new Map([
       "[cite: glob-defers ollama] ",
   ],
   [
-    "platform",
+    PLATFORM_APP_DIR,
     "ITS TWO IMAGES ARE REAL AND FRESHLY PUBLISHED; WHAT IT LACKS IS A CREDENTIAL. The reason this " +
       "Application carried until 2026-08-21 said it `runs two images no registry serves`, and that was " +
       "FALSE in the way that matters -- it pointed at building an image that already exists. Measured: " +
@@ -397,11 +411,28 @@ export const DEV_EXCLUDED_REASONS: ReadonlyMap<string, string> = new Map([
       "(`Digest-pin the manifests + have CI bump them, instead of :latest + Always`). Not fixed here " +
       "because pinning replaces the documented `push -> rebuild -> rollout restart` delivery model with one " +
       "that needs a manifest commit per build, and that is a maintainer's trade, not a lint's. " +
-      "LIFTS WHEN: the pull path exists -- either the two GHCR packages are made public, or the pod specs " +
-      "gain an `imagePullSecrets` bound to a token this lane can mint -- AND `platform/**` leaves " +
-      "`DEFAULT_ROOT_DEV_CATALOG.excludeGlob`. Neither half alone is enough: without the credential the " +
-      "Application would sync and then sit in ImagePullBackOff, which ArgoCD reports as Progressing rather " +
-      "than Degraded, so it would burn the whole timeout and report the symptom instead of the cause. " +
+      "THE CREDENTIAL HALF IS NOW BUILT, AND THE DEFERRAL STILL STANDS -- deliberately. Both pod specs " +
+      "declare `imagePullSecrets: [ghcr-pull]`; `applyDevRegistryPullSecret` mints that Secret into " +
+      "`zeta-platform` at dev/CI bring-up from a token in the environment; the health-test job now grants " +
+      "`packages: read` and maps `github.token` into `ZETA_GHCR_PULL_TOKEN`; and " +
+      "`assertDevRegistryPullSecretPresent` refuses an included run whose cluster lacks the Secret -- gated " +
+      "on this directory leaving the exclude glob, so it arms itself on the same edit that lifts this entry " +
+      "rather than needing a second one. " +
+      "WHAT IS STILL UNMEASURED, AND IS WHY THIS IS NOT LIFTED HERE. The linkage that governs whether a " +
+      "repo-scoped `GITHUB_TOKEN` may read these packages IS measured and it is favourable: `gh api " +
+      "/orgs/Lucent-Financial-Group/packages/container/zeta-{platform-controller,portal}` reports both as " +
+      "`visibility: private` with `repository.full_name = Lucent-Financial-Group/Zeta` (2026-08-22, and the " +
+      "anonymous 401 reproduced the same day). What has NOT happened is a pull: no job has presented that " +
+      "token to GHCR and been served a layer, and an API field reporting a grant is not the registry " +
+      "honouring it. Lifting on the strength of the wiring would be asserting a pull nobody has performed " +
+      "-- the same round-up this entry was rewritten on 2026-08-21 to remove. " +
+      "LIFTS WHEN: a run measures the pull succeeding -- `platform/**` is dropped from " +
+      "`DEFAULT_ROOT_DEV_CATALOG.excludeGlob` and the Application reaches Healthy. Note the gate this lane " +
+      "actually applies accepts `sync=Unknown health=Healthy` (`Unknown` is a ComparisonError on the diff, " +
+      "not a sync failure), so `Healthy` is the condition, NOT `Synced+Healthy` -- a LIFTS WHEN stricter " +
+      "than its gate is how a deferral outlives its cause. If the token is refused, the exit is a " +
+      "package-level grant to this repository, a PAT in `ZETA_GHCR_PULL_TOKEN`, or making the packages " +
+      "public -- the last being a disclosure decision that is the maintainer's alone. " +
       "ANCHORS, CHECKED BY `reason-truth.ts`: each names an artifact this tree holds, so a claim that outlives its artifact goes red instead of reading on. " +
       "[cite: path full-ai-cluster/portal/DEPLOY.md:122] " +
       "[cite: path .github/workflows/build-platform-images.yml] " +
@@ -1875,6 +1906,64 @@ function devBootstrapSecretFailure(plan: HarnessPlan, spec: DevBootstrapSecretSp
   };
 }
 
+/**
+ * Refuse an included run that will sync `platform` into a cluster holding no
+ * GHCR pull credential.
+ *
+ * SAME SHAPE, SAME REASON as `assertDevBootstrapSecretsPresent` above, one
+ * failure mode over. There the Secret is read by `secretKeyRef` and its absence
+ * is `CreateContainerConfigError`; here it is read by `imagePullSecrets` and its
+ * absence is `ImagePullBackOff`. ArgoCD reports BOTH as `Progressing` rather
+ * than `Degraded`, so in both cases a run without this check burns its entire
+ * timeout and then reports the symptom instead of the cause.
+ *
+ * THE GATE IS THE GLOB, NOT A DATE OR A FLAG. This asserts nothing while
+ * `platform/**` sits in `DEFAULT_ROOT_DEV_CATALOG.excludeGlob`, because the
+ * Application never reaches the cluster and demanding its credential would fail
+ * every current run for a workload nobody synced. The moment that glob entry is
+ * removed -- the very edit that lifts the deferral -- this check starts biting,
+ * with no second edit required. A check wired to fire only after somebody
+ * remembers to enable it is the half-wiring this file exists to catch, and a
+ * check that can never fire is the vacuity class; deriving the gate from the
+ * glob is what avoids both.
+ *
+ * IT IS DELIBERATELY NOT ON THE `DEV_BOOTSTRAP_SECRETS` WALK. Those are drawn
+ * per cluster and their mint cannot fail, so their absence is always a defect.
+ * This one is sourced from the environment and a bring-up that legitimately had
+ * no token skipped it on purpose (see `applyDevRegistryPullSecret`) -- so the
+ * absence is a defect HERE, at the point where a run is about to assert the
+ * Application, and nowhere earlier.
+ */
+function assertDevRegistryPullSecretPresent(plan: HarnessPlan): Failure | null {
+  if (!isIncludedScope(plan.scope)) return null;
+  if (rootDevCatalogExcludedDirs().has(PLATFORM_APP_DIR)) return null;
+  const { namespace, name, tokenEnvVars } = DEV_GHCR_PULL_SECRET;
+  const args = ["get", "secret", name, "-n", namespace, "-o", "name"];
+  const result = runCommand("kubectl", args, 60_000);
+  if (result.status === 0) return null;
+  return {
+    kind: "DevRegistryPullSecretMissing",
+    message:
+      `The \`${PLATFORM_APP_DIR}\` Application runs images from PRIVATE GHCR packages and its pod specs ` +
+      `reference imagePullSecrets "${name}", but that Secret is not present in namespace "${namespace}" ` +
+      `of cluster ${plan.clusterName}. The kubelet would fall back to an anonymous pull, GHCR would answer ` +
+      `HTTP 401, and the pods would sit in ImagePullBackOff -- which ArgoCD reports as Progressing rather ` +
+      `than Degraded, so this run would burn its whole timeout and report the symptom instead of the ` +
+      `cause. Failing now instead. The dev/CI bring-up mints it via applyDevRegistryPullSecret, which ` +
+      `SKIPS when no token is in scope: check that one of ${tokenEnvVars.join(", ")} is set for the ` +
+      `bring-up step, and that the job grants \`packages: read\` so the token can actually pull.`,
+    command: ["kubectl", ...args],
+    detail: {
+      stdout: result.stdout.slice(-2000),
+      stderr: result.stderr.slice(-2000),
+      clusterName: plan.clusterName,
+      secretNamespace: namespace,
+      secretName: name,
+      tokenEnvVars: [...tokenEnvVars],
+    },
+  };
+}
+
 function assertDevBootstrapSecretsPresent(plan: HarnessPlan): Failure | null {
   if (!isIncludedScope(plan.scope)) return null;
   for (const spec of DEV_BOOTSTRAP_SECRETS) {
@@ -2413,6 +2502,11 @@ export async function runHarness(options: CliOptions): Promise<HarnessResult> {
   const bootstrapSecretFailure = assertDevBootstrapSecretsPresent(plan);
   if (bootstrapSecretFailure !== null) {
     return { ok: false, plan, preflight, failure: bootstrapSecretFailure };
+  }
+
+  const pullSecretFailure = assertDevRegistryPullSecretPresent(plan);
+  if (pullSecretFailure !== null) {
+    return { ok: false, plan, preflight, failure: pullSecretFailure };
   }
 
   const argoFailure = await waitForArgoCd(plan, options);
