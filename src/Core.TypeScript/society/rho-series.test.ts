@@ -25,6 +25,7 @@
  */
 
 import { describe, expect, test } from "bun:test";
+import { execFileSync } from "node:child_process";
 
 import {
   AGENTS,
@@ -102,6 +103,25 @@ describe("the series is the same statistic as measure()", () => {
 
   test("the corpus has a real history to measure — not one point wearing a trend", () => {
     const commits = corpusCommits(ROOT);
+
+    // DISTINGUISH "no history" FROM "I CANNOT SEE IT". `actions/checkout` defaults to
+    // `fetch-depth: 1`, so in the hermetic tier `git log` over db/mutation-findings/ returns
+    // exactly ONE commit -- not because the corpus is a single point, but because the clone was
+    // truncated. Asserting >100 there fails for a reason that has nothing to do with the corpus.
+    //
+    // But shallowness ALONE must not disable the check: `--is-shallow-repository` is true whenever
+    // a `.git/shallow` marker exists, and a marked-shallow clone can still carry plenty of history
+    // (measured 2026-08-22: a dev clone reports `true` with 693 commits touching the corpus).
+    // Gating on the marker alone would silently switch this assertion off in every dev clone --
+    // trading a false red for a false green, which is the worse trade. So the escape hatch requires
+    // BOTH the marker and actual blindness, and blindness means a single visible commit.
+    const shallow =
+      execFileSync("git", ["rev-parse", "--is-shallow-repository"], { cwd: ROOT, encoding: "utf8" }).trim() === "true";
+    if (shallow && commits.length <= 1) {
+      expect(commits.length).toBeGreaterThan(0);
+      return;
+    }
+
     expect(commits.length).toBeGreaterThan(100);
     // oldest-first: a reversed series would invert every conclusion drawn from it
     expect(commits[0]?.authoredAt.localeCompare(commits[commits.length - 1]?.authoredAt ?? "")).toBeLessThan(0);
