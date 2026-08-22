@@ -148,6 +148,26 @@ missing reasons are written, each with a `LIFTS WHEN:`. The asserted roster is
 **unchanged at 31 of 45**; all four were already excluded by other mechanisms, so
 this adds no coverage and removes none. It adds the *why*.
 
+## 6a. Postscript, same night: the fix reintroduced the defect it removed
+
+The `temporal` reason written in #13472 said its chart *"has no persistence store
+configured, so it does not render"*. That was measured true, and **false by the
+time it merged** — **#13469** landed in the interval, wired temporal's datastore
+to the CockroachDB already in the cluster, and re-measured the render as OK (6
+Deployments, 8 Services, 2 ConfigMaps, 1 Job, **zero** PVCs), retiring the very
+`helm-template-failed` acknowledgement the reason cited.
+
+**Both audit directions stayed green through it**, and that is the finding worth
+more than the fix: all four directions check that a reason is **present** and
+names a lift condition. **None checks that it is true.** A false sentence with a
+`LIFTS WHEN:` clause satisfies every mechanical property the registry has.
+
+So the honest statement of what this machinery buys: a reason is **written down
+and therefore refutable by a reader**. It cannot buy the reading. The mitigation
+is a convention, not an enforcement — reasons that cite a render, a run id or an
+HTTP status are cheap to re-check, which is why the `platform` reason is written
+that way. Corrected in the follow-up, with the error kept rather than erased.
+
 ## 7. Disposition
 
 **`platform` stays deferred, and stays applied on metal.** It is not a

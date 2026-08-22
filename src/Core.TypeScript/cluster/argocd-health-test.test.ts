@@ -1126,6 +1126,36 @@ describe("DEV_EXCLUDED_REASONS", () => {
     );
   });
 
+  // -------------------------------------------------------------------------
+  // THE TEMPORAL REASON, CORRECTED WITHIN THE HOUR OF BEING WRITTEN.
+  //
+  // #13472 wrote "its chart has no persistence store configured, so it does not
+  // render". #13469 landed in between and made that false. Both audits stayed
+  // green through it, because a false sentence with a LIFTS WHEN: clause has
+  // every mechanical property the registry requires. These tests pin the
+  // corrected claim, and one of them refuses the refuted one by name.
+  // -------------------------------------------------------------------------
+
+  test("the temporal reason no longer claims the chart fails to render", () => {
+    const reason = DEV_EXCLUDED_REASONS.get("temporal") ?? "";
+    expect(reason).not.toContain("so it does not render");
+    expect(reason).not.toContain("Please specify cassandra port");
+  });
+
+  test("the temporal reason names both live blockers, not the retired one", () => {
+    const reason = DEV_EXCLUDED_REASONS.get("temporal") ?? "";
+    // (1) visibility schema, (2) TLS-only CockroachDB with no material here.
+    expect(reason).toContain("btree_gin");
+    expect(reason).toContain("`tls.enabled: true` with the selfSigner");
+  });
+
+  test("the correction records that it was the author's own stale reason", () => {
+    // A reason quietly overwritten teaches nobody. The registry's whole value
+    // is that a wrong reason is refutable by a reader, so the refutation is
+    // kept rather than the error erased.
+    expect(DEV_EXCLUDED_REASONS.get("temporal") ?? "").toContain("CORRECTED WITHIN THE HOUR, BY ITS OWN AUTHOR");
+  });
+
   test("the `:latest` pin is recorded as a separate, already-known defect", () => {
     // Two syncs of one commit can land different bytes. Recorded rather than
     // fixed, and the reason says who owns the trade -- an unrecorded known

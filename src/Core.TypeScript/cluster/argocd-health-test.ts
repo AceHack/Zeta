@@ -362,17 +362,30 @@ export const DEV_EXCLUDED_REASONS: ReadonlyMap<string, string> = new Map([
   ],
   [
     "temporal",
-    "ITS CHART HAS NO PERSISTENCE STORE CONFIGURED, so it does not render. Application.yaml sets " +
-      "`cassandra.enabled: false` and leaves the CockroachDB SQL block COMMENTED OUT beneath it, which " +
-      "leaves temporal 0.59.0 with a default store it cannot describe: `helm template` fails with " +
-      "`execution error at (temporal/templates/server-job.yaml:73:18): Please specify cassandra port for " +
-      "default store` -- measured by `rendered-storage-claims.ts` and carried as an acknowledged " +
-      "`helm-template-failed` row in its baseline. A commented-out block is not a pending dependency, which " +
-      "is the same error the `spire` reason had to correct: nothing about bringing CockroachDB up changes " +
-      "this, because no rendered manifest points at it. " +
-      "LIFTS WHEN: the `persistence` block is UNCOMMENTED against a reachable store (the cockroachdb " +
-      "Application is already asserted in this lane), so the chart renders -- and then a live run says " +
-      "whether anything else is in the way.",
+    "CORRECTED WITHIN THE HOUR, BY ITS OWN AUTHOR (#13472 -> this). The reason written into #13472 said " +
+      "temporal's chart HAS NO PERSISTENCE STORE CONFIGURED and does not render. That was true when it was " +
+      "measured and FALSE when it merged: #13469 landed between the two, wired the datastore to the " +
+      "CockroachDB already in the cluster, and re-measured the render as OK -- 6 Deployments, 8 Services, " +
+      "2 ConfigMaps, 1 Job, ZERO PVCs -- retiring the `helm-template-failed` acknowledgement this reason " +
+      "cited. Writing that down rather than quietly overwriting it is the point: a stale reason is the " +
+      "exact defect #13472 existed to remove from `platform`, and it took ten minutes to reintroduce. " +
+      "THE REAL BLOCKERS, both established by #13469 and both in temporal/Application.yaml's header with " +
+      "their own exits. (1) THE VISIBILITY SCHEMA DOES NOT APPLY TO COCKROACHDB: temporal v1.27.2's " +
+      "`schema/postgresql/v12/visibility/versioned/v1.2/advanced_visibility.sql` opens with " +
+      "`CREATE EXTENSION IF NOT EXISTS btree_gin` and uses a plpgsql function inside " +
+      "`GENERATED ALWAYS AS (...) STORED` columns; CockroachDB implements neither " +
+      "(cockroachdb/cockroach#51992 open; computed columns may not reference UDFs, #122945). The DEFAULT " +
+      "store is unaffected, which is why this is a split rather than 'temporal does not work on " +
+      "CockroachDB'. It fails at the `update-visibility-store` init container of `temporal-schema-1`. " +
+      "(2) NO TLS MATERIAL, AND THIS COCKROACHDB IS TLS-ONLY: the cockroachdb Application sets " +
+      "`tls.enabled: true` with the selfSigner, so the SQL port refuses a plaintext client; the CA lives " +
+      "in a Secret in the `cockroachdb` namespace, this app runs in `temporal`, and no `temporal` SQL user " +
+      "exists. Declaring `sql.tls` today would point a values block at a Secret nothing creates -- the " +
+      "declaration-governing-a-nonexistent-path defect -- so it is named instead of declared. " +
+      "LIFTS WHEN: the CRDB CA is distributed into the `temporal` namespace (trust-manager is already in " +
+      "the cluster for exactly this) and a `temporal` SQL user plus its sealed password Secret exist, AND " +
+      "the visibility store is pointed somewhere that accepts its schema; then `temporal/**` can leave " +
+      "`DEFAULT_ROOT_DEV_CATALOG.excludeGlob` and a live run reports the rest.",
   ],
   [
     "vllm",
@@ -426,6 +439,18 @@ export interface DevExclusionDrift {
  * exposed it -- its only recorded reason was a source comment claiming its two
  * images were served by no registry, which was FALSE (see the corrected reason
  * in the map above), and no audit could notice because no audit looked.
+ *
+ * THE HONEST LIMIT, AND IT IS NOT SMALL: all four directions check that a
+ * reason is PRESENT and names a lift condition. NONE of them checks that the
+ * reason is TRUE. Nothing here can, and the proof arrived immediately -- the
+ * `temporal` reason written in #13472 was refuted by #13469 in the interval
+ * between measuring it and merging it, and this audit stayed green through
+ * both, because a false sentence with a `LIFTS WHEN:` clause satisfies every
+ * mechanical property it has. What the registry buys is that a reason is
+ * WRITTEN DOWN and therefore refutable by a reader; what it cannot buy is the
+ * reading. Reasons citing a render, a run id or an HTTP status are cheap to
+ * re-check on purpose -- that is the mitigation, and it is a convention, not
+ * an enforcement.
  */
 export function auditDevExclusionReasons(
   repoRoot = REPO_ROOT,
