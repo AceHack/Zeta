@@ -1,6 +1,12 @@
 import { webcrypto } from "node:crypto";
 import { describe, expect, test } from "bun:test";
 import {
+  browserCheckpointSucceeded,
+  copyBrowserCheckpointRecord,
+  type BrowserCheckpointPort,
+  type BrowserCheckpointRecord,
+} from "../browser-node/browser-checkpoint-port";
+import {
   createInMemoryBrowserDatabaseIntentOutbox,
   type BrowserDatabaseIntentOutboxPort,
 } from "../browser-node/browser-database-intent-outbox";
@@ -16,14 +22,20 @@ import { SLOT } from "../observe/grammar-16";
 import type { ZetaDbTickReadout, ZetaDbTickRequest } from "../zetadb/zeta-db-node";
 import {
   DARK_HALL_BROWSER_PAGE_SCHEMA,
+  DARK_HALL_BROWSER_PAGE_TRANSCRIPT,
   renderDarkHallBrowserNodeDocument,
-  startNativeDarkHallBrowserPage,
+  startNativeDarkHallBrowserPage as startNativeDarkHallBrowserPageRuntime,
+  type NativeDarkHallBrowserPageOptions,
 } from "./darkhall-browser-page";
 import { DARK_HALL_BROWSER_CONTROLLER_INPUT_SCHEMA } from "./darkhall-browser-controller-input";
 import { DARK_HALL_BROWSER_DATABASE_ROW_SELECTION_SCHEMA } from "./darkhall-browser-database-row-selection";
 import { DARK_HALL_BROWSER_ROW_COMMAND_EDITOR_SCHEMA } from "./darkhall-browser-row-command-editor";
 
 type NativeListener = (event?: unknown) => void;
+
+function startNativeDarkHallBrowserPage(options: NativeDarkHallBrowserPageOptions = {}) {
+  return startNativeDarkHallBrowserPageRuntime({ roomCheckpoint: "none", ...options });
+}
 
 function addNativeListener(entries: Map<string, Set<NativeListener>>, type: string, listener: NativeListener): void {
   const listeners = entries.get(type) ?? new Set();
@@ -262,6 +274,40 @@ class NativeBrowserRoot {
   }
 }
 
+class SharedMemoryCheckpointPort implements BrowserCheckpointPort {
+  closed = false;
+  private readonly records: Map<string, BrowserCheckpointRecord>;
+
+  constructor(records: Map<string, BrowserCheckpointRecord>) {
+    this.records = records;
+  }
+
+  load(nodeId: string) {
+    const record = this.records.get(nodeId);
+    return Promise.resolve(
+      browserCheckpointSucceeded(record === undefined ? null : copyBrowserCheckpointRecord(record)),
+    );
+  }
+
+  save(record: BrowserCheckpointRecord) {
+    const copy = copyBrowserCheckpointRecord(record);
+    this.records.set(record.nodeId, copy);
+    return Promise.resolve(browserCheckpointSucceeded(copyBrowserCheckpointRecord(copy)));
+  }
+
+  remove(nodeId: string, throughRevision: number) {
+    const record = this.records.get(nodeId);
+    const removed = record !== undefined && record.revision <= throughRevision;
+    if (removed) this.records.delete(nodeId);
+    return Promise.resolve(browserCheckpointSucceeded(removed));
+  }
+
+  close() {
+    this.closed = true;
+    return browserCheckpointSucceeded(null);
+  }
+}
+
 class NativeAssertionResponse {}
 
 class NativeAttestationResponse {
@@ -431,6 +477,56 @@ async function waitFor(predicate: () => boolean): Promise<void> {
 }
 
 describe("Dark Hall active browser page", () => {
+  test("checkpoints and recovers the active room through an injected durable port", async () => {
+    const records = new Map<string, BrowserCheckpointRecord>();
+    const firstRoot = new NativeBrowserRoot();
+    const firstPort = new SharedMemoryCheckpointPort(records);
+    const first = await startNativeDarkHallBrowserPageRuntime({
+      root: firstRoot,
+      roomCheckpoint: firstPort,
+      databaseIntentOutbox: databaseIntentOutbox(),
+      databaseReceiptArchive: databaseReceiptArchive(),
+      databaseExecutor,
+    });
+
+    expect(first).toMatchObject({ ok: true, value: {} });
+    if (!first.ok) return;
+    expect(first.value.read().durability).toMatchObject({ recoveredRevision: null, currentRevision: null });
+    const checkpointed = await first.value.checkpointRoom(3, {
+      ...DARK_HALL_BROWSER_PAGE_TRANSCRIPT,
+      roomName: "recovered active room",
+      ticks: [
+        ...DARK_HALL_BROWSER_PAGE_TRANSCRIPT.ticks,
+        { tick: 3, phase: "measure", event: "persist active room", outcome: "ok" },
+      ],
+    });
+    expect(checkpointed).toMatchObject({ ok: true, value: { durability: { currentRevision: 3 } } });
+    expect(firstRoot.mount.innerHTML).toContain("recovered active room");
+    expect(first.value.stop()).toMatchObject({ ok: true });
+    expect(firstPort.closed).toBe(true);
+
+    const secondRoot = new NativeBrowserRoot();
+    const secondPort = new SharedMemoryCheckpointPort(records);
+    const second = await startNativeDarkHallBrowserPageRuntime({
+      root: secondRoot,
+      roomCheckpoint: secondPort,
+      databaseIntentOutbox: databaseIntentOutbox(),
+      databaseReceiptArchive: databaseReceiptArchive(),
+      databaseExecutor,
+    });
+
+    expect(second).toMatchObject({
+      ok: true,
+      value: {},
+    });
+    if (!second.ok) return;
+    expect(second.value.read().durability).toMatchObject({ recoveredRevision: 3, currentRevision: 3 });
+    expect(secondRoot.mount.innerHTML).toContain("recovered active room");
+    expect(secondRoot.mount.innerHTML).toContain("persist active room");
+    expect(second.value.stop()).toMatchObject({ ok: true });
+    expect(secondPort.closed).toBe(true);
+  });
+
   test("hydrates before live, publishes bounded writes, and projects the database readout", async () => {
     const root = new NativeBrowserRoot();
     const requests: ZetaDbTickRequest[] = [];

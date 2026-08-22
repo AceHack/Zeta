@@ -13,15 +13,18 @@ import { buildBrowserPwaAssets } from "./browser-pwa-build";
 import type { DarkHallDatabaseReadout } from "../darkhall-ui/darkhall-database-readout";
 import type { DarkHallBrowserDatabaseControllerReadout } from "../darkhall-ui/darkhall-browser-database-controller";
 import type { DarkHallBrowserControllerInputReadout } from "../darkhall-ui/darkhall-browser-controller-input";
+import type { DarkHallBrowserDurableReadout } from "../darkhall-ui/darkhall-browser-durable-runtime";
 import type { DarkHallBrowserDatabaseRowSelectionReadout } from "../darkhall-ui/darkhall-browser-database-row-selection";
 import type { DarkHallBrowserRowCommandEditorReadout } from "../darkhall-ui/darkhall-browser-row-command-editor";
+import type { RoomRunTranscript } from "../darkhall-ui/darkhall-room";
 
-export const BROWSER_PWA_SMOKE_SCHEMA = "zeta.browser-pwa-smoke.v9" as const;
+export const BROWSER_PWA_SMOKE_SCHEMA = "zeta.browser-pwa-smoke.v10" as const;
 
 interface BrowserPwaPageReadout {
   readonly registration: BrowserServiceWorkerRegistrationReadout;
   readonly transport: BrowserTabTransportReadout;
   readonly host: BrowserLifecycleHostReadout;
+  readonly durability: DarkHallBrowserDurableReadout | null;
   readonly database: DarkHallDatabaseReadout;
   readonly receiptHandoff: BrowserDatabaseReceiptHandoffReadout | null;
   readonly receiptPeer: BrowserDatabaseReceiptBroadcastPeerLinkReadout | null;
@@ -46,6 +49,7 @@ interface BrowserPwaPageGlobal {
             readonly registration: BrowserServiceWorkerRegistrationReadout;
             readonly transport: BrowserTabTransportReadout;
             readonly host: BrowserLifecycleHostReadout;
+            readonly durability: DarkHallBrowserDurableReadout | null;
             readonly database: DarkHallDatabaseReadout;
             readonly receiptHandoff: BrowserDatabaseReceiptHandoffReadout | null;
             readonly receiptPeer: BrowserDatabaseReceiptBroadcastPeerLinkReadout | null;
@@ -75,6 +79,7 @@ interface BrowserPwaPageGlobal {
             readonly value?: DarkHallBrowserDatabaseControllerReadout;
             readonly feedback?: { readonly detail: string };
           }>;
+          checkpointRoom(revision: number, transcript: RoomRunTranscript): Promise<{ readonly ok: boolean }>;
           stop(): unknown;
         };
       }
@@ -148,6 +153,7 @@ async function waitForReady(page: Page): Promise<void> {
       return (
         readout.registration.status === "controlled" &&
         readout.transport.selected === "service-worker" &&
+        readout.durability !== null &&
         readout.database.revision >= 0
       );
     },
@@ -400,6 +406,7 @@ async function observe(page: Page, pageName: string): Promise<BrowserPwaPageRead
           registration: readout.registration,
           transport: readout.transport,
           host: readout.host,
+          durability: readout.durability,
           database: readout.database,
           receiptHandoff: readout.receiptHandoff,
           receiptPeer: readout.receiptPeer,
@@ -433,6 +440,9 @@ async function observe(page: Page, pageName: string): Promise<BrowserPwaPageRead
 function validateStartingPage(pageName: string, page: BrowserPwaPageReadout, failures: string[]): void {
   if (page.registration.status !== "controlled") failures.push(`${pageName} was not worker-controlled`);
   if (page.transport.selected !== "service-worker") failures.push(`${pageName} did not select the worker channel`);
+  if (page.durability === null || page.durability.currentRevision !== null) {
+    failures.push(`${pageName} did not start through a cold durable room boundary`);
+  }
   if (page.renderedTransport !== "service-worker") failures.push(`${pageName} did not render its transport`);
   if (page.database.revision !== 0 || page.database.rows.length !== 0) {
     failures.push(`${pageName} did not start from the empty database image`);
@@ -554,6 +564,14 @@ function validateHydration(transcript: BrowserPwaSmokeTranscript, failures: stri
   }
   if (transcript.database.freshPage.host.coordinator.liveness.liveTabIds.join(",") !== "tab-c") {
     failures.push("fresh page C was not the only live page during startup hydration");
+  }
+  if (
+    transcript.database.freshPage.durability?.recoveredRevision !== 1 ||
+    transcript.database.freshPage.durability.room.roomName !== "recovered Chromium room"
+  ) {
+    failures.push(
+      `fresh page C did not recover the durable room checkpoint: ${JSON.stringify(transcript.database.freshPage.durability)}`,
+    );
   }
 }
 
@@ -751,6 +769,22 @@ export async function runBrowserPwaSmoke(): Promise<BrowserPwaSmokeResult> {
       throw new Error(`Page A did not refresh revision 64: ${JSON.stringify(peerRefresh)}`);
     }
     const peerAfterWrite = await observe(pageA, "page A after peer database write");
+
+    stage = "checkpoint the active room before every tab closes";
+    const roomCheckpoint = await pageB.evaluate(async () => {
+      const started = (globalThis as unknown as BrowserPwaPageGlobal).__zetaDarkHallPage;
+      if (started?.ok !== true) throw new Error("Page B did not expose its active runtime.");
+      return started.value.checkpointRoom(1, {
+        schema: "zeta.darkhall.room-ui.v1",
+        roomName: "recovered Chromium room",
+        seed: "browser-pwa-smoke-room",
+        generatedBy: "browser-pwa-smoke",
+        controller: [],
+        ticks: [{ tick: 1, phase: "measure", event: "persist active room", outcome: "ok" }],
+        heatRows: [],
+      });
+    });
+    if (!roomCheckpoint.ok) throw new Error(`Page B refused its room checkpoint: ${JSON.stringify(roomCheckpoint)}`);
 
     stage = "stop second page";
     const pageBShutdown = await pageB.evaluate(() => {
