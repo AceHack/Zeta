@@ -164,6 +164,10 @@ export function observationForRuns(
         ? 0
         : Math.round((Math.max(...newerTimes) - Math.min(...newerTimes, Date.parse(chosen.updated_at ?? chosen.created_at))) / 1000),
     recheckInFlight: runs[0] !== undefined && runs[0].status !== "completed",
+    concludedGreen: runs.filter((r) => r.status === "completed" && r.conclusion === "success").length,
+    concludedRed: runs.filter(
+      (r) => r.status === "completed" && ["failure", "timed_out", "startup_failure", "action_required"].includes(r.conclusion ?? ""),
+    ).length,
   };
 
   return {
@@ -216,6 +220,31 @@ export function expectationForWorkflow(
     kind: "unknown",
     reason: "definition-absent",
     detail: `workflow file '${path}' is registered ACTIVE on the forge host but is ABSENT from the repository`,
+  };
+}
+
+/**
+ * Attach a newer, different-trigger verdict to an observation as qualifying evidence.
+ *
+ * Only attaches when the rival is genuinely NEWER and genuinely from a DIFFERENT
+ * trigger — otherwise it is the same fact twice and adds noise to a row whose whole
+ * job is to be readable.
+ */
+export function withSuperseding(
+  primary: CheckObservation,
+  rival: CheckObservation | null,
+): CheckObservation {
+  if (rival === null) return primary;
+  if (rival.trigger === primary.trigger) return primary;
+  if (!(rival.observedAt > primary.observedAt)) return primary;
+  return {
+    ...primary,
+    supersededBy: {
+      verdict: rival.verdict,
+      observedAt: rival.observedAt,
+      trigger: rival.trigger ?? "unknown",
+      detail: `a later ${rival.sourceDetail?.event ?? rival.trigger ?? "non-scheduled"} run concluded '${rival.verdict.kind}'`,
+    },
   };
 }
 
@@ -406,23 +435,45 @@ export async function listGitHubCheckObservations(
         // fired still accumulates pull_request and workflow_dispatch runs, and a
         // "latest run" query happily reports one of those as the check's verdict —
         // which is how a dead cadence renders green. `chart-version-refresh` is the
-        // live instance: 14 runs in its history, every one `event=pull_request`,
-        // against a declared `7 17 * * 0`.
+        // live instance: every run in its history is `event=pull_request` against a
+        // declared `7 17 * * 0`.
+        //
+        // **But we now fetch BOTH.** Reporting only the scheduled verdict is the
+        // stronger and correct claim, and suppressing the other one entirely is what
+        // made this dashboard and a hand-rolled scanner tell different stories about
+        // three cadence lanes on 2026-08-22 with no way for a reader to see why: the
+        // lanes were fixed and manually re-run green, while this reported their last
+        // SCHEDULED failure with a `detail` that read like a plain latest-verdict.
+        // The scheduled verdict stays the verdict; the dispatch becomes `supersededBy`.
         if (def.expectation.kind === "periodic") {
-          const sched = await runGhJsonAsync<{ workflow_runs: GhRun[] }>([
-            "api",
-            `repos/${nwo}/actions/workflows/${workflowId}/runs?event=schedule&per_page=${perCheck}`,
+          const [sched, other] = await Promise.all([
+            runGhJsonAsync<{ workflow_runs: GhRun[] }>([
+              "api",
+              `repos/${nwo}/actions/workflows/${workflowId}/runs?event=schedule&per_page=${perCheck}`,
+            ]),
+            runGhJsonAsync<{ workflow_runs: GhRun[] }>([
+              "api",
+              `repos/${nwo}/actions/workflows/${workflowId}/runs?branch=${encodeURIComponent(branch)}&per_page=${perCheck}`,
+            ]),
           ]);
           if (sched.ok && sched.value.workflow_runs.length > 0) {
             const obs = observationForRuns(def.checkId, sched.value.workflow_runs, sourceName);
             if (obs !== null) {
-              observations.push(obs);
+              const rival = other.ok ? observationForRuns(def.checkId, other.value.workflow_runs, sourceName) : null;
+              observations.push(withSuperseding(obs, rival));
               continue;
             }
           }
-          // No scheduled run at all. Fall through to the ordinary query, whose
-          // observation will carry a NON-periodic trigger — which is precisely what
-          // makes the fold report "the declared schedule has never fired".
+          // No scheduled run at all. Fall through to the ordinary result, whose
+          // observation carries a NON-periodic trigger — which is precisely what makes
+          // the fold report "the declared schedule has never fired".
+          if (!other.ok) {
+            failures.push({ checkId: def.checkId, detail: `${other.error.kind}: ${other.error.message.slice(0, 160)}` });
+            continue;
+          }
+          const fallback = observationForRuns(def.checkId, other.value.workflow_runs, sourceName);
+          if (fallback !== null) observations.push(fallback);
+          continue;
         }
 
         const res = await runGhJsonAsync<{ workflow_runs: GhRun[] }>([

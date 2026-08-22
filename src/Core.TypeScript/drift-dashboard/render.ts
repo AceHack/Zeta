@@ -35,6 +35,17 @@ function detailOf(row: DashboardRow): string {
   // The annotation, and it must be visible on the row rather than implied: this is the
   // last CONCLUDED verdict and a newer run is in flight. It is not "probably fine now".
   if (row.recheckInFlight) parts.push("**recheck in flight — this is the last CONCLUDED verdict, not a current one**");
+  // The reconciling line. Without it, this dashboard and a hand-rolled scanner report
+  // different colours for the same lane and a reader has no way to see which evidence
+  // each one used.
+  if (row.supersededBy !== undefined) {
+    const sup = row.supersededBy;
+    parts.push(
+      `**awaiting scheduled confirmation** — ${cellText(sup.detail)} at ${sup.observedAt}, NEWER than the verdict above. ` +
+        "The verdict reports the DECLARED (scheduled) path, which is the stronger claim: a hand-run proves the code, not the cadence. " +
+        "This row clears when the next scheduled run passes.",
+    );
+  }
   if (row.undeclared) parts.push("**no source declared this check in this pass**");
   return parts.filter((p) => p !== "").join(" · ");
 }
@@ -121,6 +132,15 @@ export function renderMarkdown(report: DashboardReport): string {
     `\`${cellText(r.checkId)}\``, silenceCell(r), r.expectation.kind, detailOf(r),
   ])));
 
+  out.push(`\n## FLAPPING — ${c.flapping}\n`);
+  out.push("Recent CONCLUDED runs contain both passes and failures, and the newest passed. Its own");
+  out.push("state because neither neighbour is honest: green would launder a 90% claim as a 100%");
+  out.push("one, and red would make an oscillating lane permanently red until the alarm is muted.");
+  out.push("A lane whose next verdict is a coin flip has no colour, so it gets its own.\n");
+  out.push(table(["check", "expectation", "detail"], by("flapping").map((r) => [
+    `\`${cellText(r.checkId)}\``, r.expectation.kind, detailOf(r),
+  ])));
+
   out.push(`\n## UNKNOWN — ${c.unknown}\n`);
   out.push("**Longest silence first.** Silence that persists is the strongest signal and the easiest");
   out.push("to habituate to, so it is aged rather than listed. `never-observed` sorts above every");
@@ -186,6 +206,7 @@ export function renderJson(report: DashboardReport): string {
 
 const BAND_COLOR: Record<DashboardRow["band"], string> = {
   red: "#c62828",
+  flapping: "#b34700",
   unknown: "#8e6c00",
   running: "#1565c0",
   "not-yet-due": "#4a4a6a",
@@ -226,6 +247,7 @@ export function renderHtml(report: DashboardReport): string {
  th{color:#888;font-weight:400;position:sticky;top:0;background:#111}
  .dot{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:6px}
  tr.red td{background:#241111}
+ tr.flapping td{background:#2a1b0d}
  tr.unknown td{background:#241f11}
  tr.green{opacity:.45}
  tr.green:hover,tr\\.not-applicable:hover{opacity:1}
@@ -242,7 +264,7 @@ export function renderHtml(report: DashboardReport): string {
  <b>ref</b> ${escapeHtml(report.ref)} · <b>pass</b> ${escapeHtml(report.at)} · <b>producers</b> ${escapeHtml(report.sources.join(", ") || "none")}<br>
  <b>roster</b> ${cov.known} known · ${cov.expected} expected on this ref · ${cov.onDemand} on-demand · ${cov.retired} retired<br>
  <b>coverage</b> ${cov.observed}/${cov.expected}${cov.shortfall > 0 ? ` — SHORTFALL ${cov.shortfall}` : ""} ·
- <b>red</b> ${c.red} · <b>unknown</b> ${c.unknown} · <b>not-yet-due</b> ${c["not-yet-due"]} · <b>green</b> ${c.green}
+ <b>red</b> ${c.red} · <b>flapping</b> ${c.flapping} · <b>unknown</b> ${c.unknown} · <b>not-yet-due</b> ${c["not-yet-due"]} · <b>green</b> ${c.green}
 </div>
 <table><thead><tr><th>check</th><th>verdict</th><th>why</th><th>age</th><th>expectation</th><th>detail</th></tr></thead>
 <tbody>

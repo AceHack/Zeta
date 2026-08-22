@@ -16,8 +16,10 @@ import {
   isConclusive,
   observationForRuns,
   verdictForRun,
+  withSuperseding,
   type GhRun,
 } from "./check-observations.ts";
+import { isPlainApiGet, resetGitHubTokenForTest, resolveGitHubToken } from "./gh-cli.ts";
 
 function run(over: Partial<GhRun>): GhRun {
   return { id: 1, status: "completed", conclusion: "success", created_at: "2026-08-22T00:00:00Z", updated_at: "2026-08-22T00:00:00Z", ...over };
@@ -216,5 +218,96 @@ describe("parseFirstAddDates — the OLDEST add wins, because git logs newest-fi
 
   it("empty output yields no ages", () => {
     expect(parseFirstAddDates("").size).toBe(0);
+  });
+});
+
+describe("withSuperseding — carry the rival verdict only when it is genuinely newer and different", () => {
+  const base = (over = {}) => ({
+    checkId: "c", verdict: { kind: "green" } as const, observedAt: "2026-08-16T09:00:00Z",
+    source: "github-actions", trigger: "periodic" as const, ...over,
+  });
+
+  it("attaches a newer verdict from a different trigger", () => {
+    const out = withSuperseding(
+      base({ verdict: { kind: "red", detail: "failure" } }),
+      base({ observedAt: "2026-08-22T17:32:00Z", trigger: "on-request" }),
+    );
+    expect(out.supersededBy?.verdict.kind).toBe("green");
+    expect(out.supersededBy?.trigger).toBe("on-request");
+  });
+
+  it("does NOT attach an OLDER rival — superseding means newer", () => {
+    expect(withSuperseding(
+      base({ observedAt: "2026-08-22T17:32:00Z" }),
+      base({ observedAt: "2026-08-16T09:00:00Z", trigger: "on-request" }),
+    ).supersededBy).toBeUndefined();
+  });
+
+  it("does NOT attach a rival from the SAME trigger — that is the same fact twice", () => {
+    expect(withSuperseding(
+      base(),
+      base({ observedAt: "2026-08-22T17:32:00Z", trigger: "periodic" }),
+    ).supersededBy).toBeUndefined();
+  });
+
+  it("no rival leaves the observation untouched", () => {
+    expect(withSuperseding(base(), null).supersededBy).toBeUndefined();
+  });
+});
+
+describe("attempt counts feed the flapping detector", () => {
+  it("counts concluded passes and failures, ignoring cancelled and in-flight", () => {
+    const o = observationForRuns("c", [
+      run({ id: 9, status: "in_progress", conclusion: null, updated_at: "2026-08-22T21:55:00Z" }),
+      run({ id: 8, conclusion: "success", updated_at: "2026-08-22T21:53:34Z" }),
+      run({ id: 7, conclusion: "cancelled", updated_at: "2026-08-22T21:13:40Z" }),
+      run({ id: 6, conclusion: "failure", updated_at: "2026-08-22T21:18:29Z" }),
+      run({ id: 5, conclusion: "success", updated_at: "2026-08-22T20:37:03Z" }),
+      run({ id: 4, conclusion: "failure", updated_at: "2026-08-22T19:07:46Z" }),
+    ], "github-actions");
+    expect(o?.attempts?.concludedGreen).toBe(2);
+    expect(o?.attempts?.concludedRed).toBe(2);
+    expect(o?.attempts?.recheckInFlight).toBe(true);
+    // the verdict is still the newest CONCLUDED one
+    expect(o?.verdict.kind).toBe("green");
+  });
+});
+
+describe("the transport is spawn-free for plain reads, and narrowly so", () => {
+  it("recognises exactly `api <path>` and nothing else", () => {
+    expect(isPlainApiGet(["api", "repos/o/r/actions/workflows"])).toBe(true);
+    // Anything with flags, a method or a body must keep the subprocess semantics --
+    // a transport swap that quietly changed those would be worse than the latency saved.
+    expect(isPlainApiGet(["api", "repos/o/r", "-X", "POST"])).toBe(false);
+    expect(isPlainApiGet(["api", "--paginate", "repos/o/r"])).toBe(false);
+    expect(isPlainApiGet(["api"])).toBe(false);
+    expect(isPlainApiGet(["run", "list"])).toBe(false);
+    expect(isPlainApiGet(["api", "-q", ".x"])).toBe(false);
+  });
+
+  it("prefers an already-present token over spawning anything", () => {
+    resetGitHubTokenForTest();
+    const prior = process.env["GH_TOKEN"];
+    process.env["GH_TOKEN"] = "token-from-env";
+    try {
+      expect(resolveGitHubToken()).toBe("token-from-env");
+    } finally {
+      if (prior === undefined) delete process.env["GH_TOKEN"]; else process.env["GH_TOKEN"] = prior;
+      resetGitHubTokenForTest();
+    }
+  });
+
+  it("memoises, so N requests cost at most ONE token resolution", () => {
+    resetGitHubTokenForTest();
+    const prior = process.env["GH_TOKEN"];
+    process.env["GH_TOKEN"] = "t1";
+    try {
+      expect(resolveGitHubToken()).toBe("t1");
+      process.env["GH_TOKEN"] = "t2";
+      expect(resolveGitHubToken()).toBe("t1"); // memoised, not re-read
+    } finally {
+      if (prior === undefined) delete process.env["GH_TOKEN"]; else process.env["GH_TOKEN"] = prior;
+      resetGitHubTokenForTest();
+    }
   });
 });

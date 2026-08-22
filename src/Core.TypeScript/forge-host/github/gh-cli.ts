@@ -108,7 +108,7 @@ export function runGhGraphQL<T>(
  * spawns** nobody had counted. The counter is here so the next person reads a number
  * instead of inferring one from a CPU percentage.
  */
-export const ghCallStats = { calls: 0, totalMs: 0 };
+export const ghCallStats = { calls: 0, totalMs: 0, spawns: 0, fetches: 0 };
 
 /**
  * Async `gh` invocation — the truthful-signature counterpart to `runGh`.
@@ -127,6 +127,20 @@ export async function runGhAsync(
 ): Promise<Result<string, ForgeError>> {
   const startedAt = Bun.nanoseconds();
   ghCallStats.calls += 1;
+
+  // Spawn-free fast path for the plain `gh api <path>` shape. See the transport note
+  // at the bottom of this file: on an AV-scanned host, process creation — not the
+  // network — was 79 of 142 seconds.
+  if (isPlainApiGet(args)) {
+    const viaFetch = await fetchGhApi(args[1] as string, timeout);
+    if (viaFetch !== null) {
+      ghCallStats.fetches += 1;
+      ghCallStats.totalMs += (Bun.nanoseconds() - startedAt) / 1e6;
+      return viaFetch;
+    }
+  }
+
+  ghCallStats.spawns += 1;
   const proc = Bun.spawn(["gh", ...args], { stdout: "pipe", stderr: "pipe" });
   const timer = setTimeout(() => proc.kill(), timeout);
   try {
@@ -159,5 +173,93 @@ export async function runGhJsonAsync<T>(
   } catch (e) {
     const msg = e instanceof Error ? e.message : String(e);
     return err(forgeError("parse-failure", `JSON parse error: ${msg}. First 200 bytes: ${result.value.slice(0, 200)}`));
+  }
+}
+
+// ─── Spawn-free transport ───────────────────────────────────────────────────
+//
+// WHY THIS EXISTS, measured rather than assumed.
+//
+// The drift dashboard's pass makes ~87 `gh api` calls. On a clean host each costs
+// ~445ms of which ~404ms is network, so the subprocess is ~10% and nobody would
+// bother. On the host where this tool is actually used — macOS with Microsoft
+// Defender on-access scanning — **every process creation pays an authorisation**, and
+// the same pass took 142.5s wall against 63.2s of cumulative API time at DoP=16. 9%
+// CPU, and the missing 79s is not network: it is 88 process creations.
+//
+// That host is not an outlier to design around later. It is the one the first user of
+// this tool has, and a guard slower than the unsafe path selects for the unsafe path.
+//
+// So: resolve the token ONCE (one spawn, or zero when `GH_TOKEN`/`GITHUB_TOKEN` is
+// already set, as in CI) and issue the requests with `fetch`. 88 spawns become at most
+// 2. Same credential, same endpoint, same auth semantics — `gh auth token` is exactly
+// what `gh api` would have used.
+//
+// Falls back to the subprocess path whenever a token cannot be resolved, so nothing
+// that works today stops working; the fast path is an optimisation, never a new
+// requirement.
+
+const GITHUB_API = "https://api.github.com";
+
+let tokenResolved = false;
+let cachedToken: string | null = null;
+
+/** The token `gh api` would use: env first (CI supplies it), then ONE `gh auth token`. */
+export function resolveGitHubToken(): string | null {
+  if (tokenResolved) return cachedToken;
+  tokenResolved = true;
+  const fromEnv = process.env["GH_TOKEN"] ?? process.env["GITHUB_TOKEN"];
+  if (fromEnv !== undefined && fromEnv !== "") {
+    cachedToken = fromEnv;
+    return cachedToken;
+  }
+  try {
+    const proc = Bun.spawnSync(["gh", "auth", "token"], { stdout: "pipe", stderr: "pipe" });
+    const out = new TextDecoder().decode(proc.stdout).trim();
+    cachedToken = proc.exitCode === 0 && out !== "" ? out : null;
+  } catch {
+    cachedToken = null;
+  }
+  return cachedToken;
+}
+
+/** Reset the memoised token. Tests only — the resolution is process-lifetime otherwise. */
+export function resetGitHubTokenForTest(): void {
+  tokenResolved = false;
+  cachedToken = null;
+}
+
+/**
+ * Is this argv exactly the read-only `gh api <path>` shape the fetch path handles?
+ *
+ * Deliberately narrow. Anything with flags, a method, or a body falls through to the
+ * subprocess — a transport swap that quietly changed the semantics of some other call
+ * would be a far worse bug than the latency it saved.
+ */
+export function isPlainApiGet(args: readonly string[]): boolean {
+  return args.length === 2 && args[0] === "api" && typeof args[1] === "string" && !args[1].startsWith("-");
+}
+
+/** `gh api <path>` over `fetch`. `null` ⇒ caller should use the subprocess path. */
+async function fetchGhApi(path: string, timeout: number): Promise<Result<string, ForgeError> | null> {
+  const token = resolveGitHubToken();
+  if (token === null) return null;
+  const url = path.startsWith("http") ? path : `${GITHUB_API}/${path.replace(/^\/+/, "")}`;
+  try {
+    const res = await fetch(url, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        Accept: "application/vnd.github+json",
+        "X-GitHub-Api-Version": "2022-11-28",
+        "User-Agent": "zeta-drift-dashboard",
+      },
+      signal: AbortSignal.timeout(timeout),
+    });
+    const body = await res.text();
+    if (!res.ok) return err(classifyGhError(res.status, body));
+    return ok(body);
+  } catch (e) {
+    const msg = e instanceof Error ? e.message : String(e);
+    return err(forgeError("network", `fetch ${url}: ${msg}`));
   }
 }

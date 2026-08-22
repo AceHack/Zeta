@@ -38,6 +38,7 @@ import type {
   CheckObservation,
   CheckObservationFailure,
   TriggerClass,
+  SupersedingVerdict,
   UnknownReason,
   Verdict,
   VerdictKind,
@@ -65,18 +66,29 @@ export interface FoldConfig {
   readonly darkSpanSeconds: number;
   /** At least this many inconclusive attempts before "dark" is considered at all. */
   readonly darkMinAttempts: number;
+  /**
+   * Concluded FAILURES in the inspected window, at or above which a check whose newest
+   * verdict is green is reported `flapping` rather than green.
+   *
+   * 2 rather than 1: one failure among twenty concluded runs is a flake, and promoting
+   * every flake to its own band would bury the lanes that are genuinely oscillating.
+   * `build-ai-cluster-iso` sat at 2 failures in its last 8 concluded runs, inside three
+   * hours, which is the shape this is for.
+   */
+  readonly flappingMinRed: number;
 }
 
 export const DEFAULT_FOLD_CONFIG: FoldConfig = {
   stalenessFactor: 3,
   darkSpanSeconds: 6 * 3600,
   darkMinAttempts: 2,
+  flappingMinRed: 2,
 };
 
 // ─── Report shape ───────────────────────────────────────────────────────────
 
 /** Why a row sits where it sits. Rendered, so the ranking is auditable, not magic. */
-export type RowBand = "red" | "unknown" | "running" | "not-yet-due" | "skipped" | "not-applicable" | "green";
+export type RowBand = "red" | "flapping" | "unknown" | "running" | "not-yet-due" | "skipped" | "not-applicable" | "green";
 
 export interface DashboardRow {
   readonly checkId: CheckId;
@@ -102,6 +114,12 @@ export interface DashboardRow {
   readonly recheckInFlight: boolean;
   /** True when no source declared this check in this pass, though the roster remembers it. */
   readonly undeclared: boolean;
+  /**
+   * A newer verdict that arrived by a different trigger. Rendered beside the verdict so
+   * a reader can see the evidence that qualifies it rather than having to run a second
+   * instrument and wonder which one is lying.
+   */
+  readonly supersededBy?: SupersedingVerdict;
 }
 
 export interface Coverage {
@@ -357,6 +375,51 @@ export function firstOpportunityPassed(
 }
 
 /**
+ * **Is this lane FLAPPING?** — its recent concluded history contains both outcomes.
+ *
+ * The finding that produced this: on 2026-08-22 this dashboard reported
+ * `build-ai-cluster-iso` green and a hand-rolled scanner reported it red, at the same
+ * time, about the same repo. Both read the truth. Its concluded runs on `main` that
+ * afternoon were success 21:53, failure 21:18, success 20:37, success 20:03, failure
+ * 19:07 — a latest-verdict reader's answer depends on when it happened to look.
+ *
+ * A lane whose next verdict is a coin flip has no colour, so it gets its own. Green
+ * would launder a 90% claim as a 100% one; red would make an oscillating lane
+ * permanently red and get the alarm muted.
+ *
+ * Only applies when the newest verdict is GREEN — if it is red, the row is already red
+ * and saying "and also unstable" adds nothing to the action.
+ */
+export function verdictForFlapping(
+  verdict: Verdict,
+  attempts: AttemptSummary | undefined,
+  config: FoldConfig,
+): Verdict | null {
+  if (verdict.kind !== "green") return null;
+  if (attempts === undefined) return null;
+  if (attempts.concludedRed < config.flappingMinRed) return null;
+  const total = attempts.concludedGreen + attempts.concludedRed;
+
+  // **A MAJORITY of failures is RED, not flapping.** Measured on the first live pass:
+  // one band lumped `pr-manifest-integrity` (15 of 20 concluded runs failed) together
+  // with `agencysignature-enforcement` (2 of 20). Those are not the same claim. When
+  // most concluded runs fail, the newest passing run is the OUTLIER, and calling that
+  // "unstable" undersells a lane that is simply broken — which would make the red list
+  // less actionable, the opposite of the point.
+  if (attempts.concludedRed > attempts.concludedGreen) {
+    return {
+      kind: "red",
+      detail: `MOSTLY FAILING: ${attempts.concludedRed} of the last ${total} CONCLUDED runs failed. The newest run passed, and it is the outlier — a majority-failing lane is broken, not flaky.`,
+    };
+  }
+
+  return {
+    kind: "flapping",
+    detail: `FLAPPING: ${attempts.concludedRed} of the last ${total} CONCLUDED runs failed, and the newest passed. The latest verdict is green; the lane's next verdict is not predictable from it.`,
+  };
+}
+
+/**
  * **Is this lane DARK?** — inconclusive attempts piling up newer than the last verdict.
  *
  * `tlaps-proof`, measured 2026-08-22 over its last 40 runs: 33 cancelled, 7 failure,
@@ -474,12 +537,14 @@ export function foldDashboard(input: FoldInput): DashboardReport {
       // Order matters and is argued, not incidental: a DARK lane outranks everything,
       // because "we have not been able to conclude anything for weeks" is a stronger
       // fact than whatever the last stale verdict happened to say.
+      const base = applyStaleness(obs.verdict, entry.expectation, obs.observedAt, now, config);
       verdict =
         verdictForDarkLane(obs.attempts, config) ??
+        verdictForFlapping(base, obs.attempts, config) ??
         verdictForNeverFiredTrigger(
           entry.expectation, entry.lastDeclaredTriggerAt, viaDeclared, true, entry.definitionSince, now,
         ) ??
-        applyStaleness(obs.verdict, entry.expectation, obs.observedAt, now, config);
+        base;
       observedAt = obs.observedAt;
     } else if (failure !== undefined) {
       // The producer was asked and could not answer. That is an absence of evidence,
@@ -508,6 +573,7 @@ export function foldDashboard(input: FoldInput): DashboardReport {
       silenceSeconds: observedAt === null ? null : secondsBetween(observedAt, now),
       observedThisPass: obs !== undefined,
       recheckInFlight: obs?.attempts?.recheckInFlight ?? false,
+      ...(obs?.supersededBy === undefined ? {} : { supersededBy: obs.supersededBy }),
       undeclared: !entry.declaredNow,
     });
   }
@@ -515,7 +581,7 @@ export function foldDashboard(input: FoldInput): DashboardReport {
   rows.sort(compareRows);
 
   const counts: Record<RowBand, number> = {
-    red: 0, unknown: 0, running: 0, "not-yet-due": 0, skipped: 0, "not-applicable": 0, green: 0,
+    red: 0, flapping: 0, unknown: 0, running: 0, "not-yet-due": 0, skipped: 0, "not-applicable": 0, green: 0,
   };
   for (const row of rows) counts[row.band] += 1;
 
@@ -557,6 +623,7 @@ export function foldDashboard(input: FoldInput): DashboardReport {
     ok:
       coverage.known > 0 &&
       counts.red === 0 &&
+      counts.flapping === 0 &&
       counts.unknown === 0 &&
       shortfall === 0 &&
       sourceErrors.length === 0,
@@ -580,11 +647,11 @@ export function foldDashboard(input: FoldInput): DashboardReport {
  */
 export function compareRows(a: DashboardRow, b: DashboardRow): number {
   const order: Record<RowBand, number> = {
-    red: 0, unknown: 1, running: 2, "not-yet-due": 3, skipped: 4, "not-applicable": 5, green: 6,
+    red: 0, flapping: 1, unknown: 2, running: 3, "not-yet-due": 4, skipped: 5, "not-applicable": 6, green: 7,
   };
   if (order[a.band] !== order[b.band]) return order[a.band] - order[b.band];
 
-  if (a.band === "red") {
+  if (a.band === "red" || a.band === "flapping") {
     // Oldest red first: infinite silence (never observed) is the oldest of all.
     const as = a.silenceSeconds ?? Number.POSITIVE_INFINITY;
     const bs = b.silenceSeconds ?? Number.POSITIVE_INFINITY;
@@ -618,6 +685,7 @@ export function headline(report: DashboardReport): string {
   }
   const parts = [
     `RED ${c.red}`,
+    ...(c.flapping > 0 ? [`FLAPPING ${c.flapping}`] : []),
     `UNKNOWN ${c.unknown}${silence}`,
     `coverage ${cov.observed}/${cov.expected}${cov.shortfall > 0 ? ` (SHORTFALL ${cov.shortfall})` : ""}`,
     `green ${c.green}`,

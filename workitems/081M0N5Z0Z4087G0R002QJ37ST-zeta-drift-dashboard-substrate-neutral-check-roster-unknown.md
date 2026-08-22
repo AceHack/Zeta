@@ -249,3 +249,73 @@ subprocess regardless of check count** (and none for zero paths). `parseFirstAdd
 is pinned separately, including that a re-added path keeps its **oldest** date —
 getting that backwards would make an established check look brand new, and a brand-new
 periodic check is `not-yet-due`, so the alarm would silently switch off.
+
+## Two instruments disagreed, and both were right
+
+The dashboard and a hand-rolled scanner reported different colours for the same repo at
+the same time. Adjudicated by measurement; **neither was lying, and both mechanisms
+were defects in how the disagreement was presented, not in either verdict.**
+
+### `build-ai-cluster-iso` — mode 8, FLAPPING
+
+Its concluded runs on `main` that afternoon: success 21:53, failure 21:18, success
+20:37, success 20:03, failure 19:07. A latest-verdict reader sampling at 21:55 says
+green; one sampling at 21:20 says red. **Both read the truth**; the lane simply has no
+colour, because its next verdict is a coin flip.
+
+So `flapping` is its own verdict, ranked directly under red. Green would launder a 90%
+claim as a 100% one; red would make an oscillating lane permanently red until the alarm
+is muted.
+
+**The first live pass then forced a second split.** One band lumped `pr-manifest-integrity`
+(15 of 20 concluded runs failed) with `agencysignature-enforcement` (2 of 20). Those are
+not the same claim: when a MAJORITY of concluded runs fail, the newest passing run is
+the **outlier**, and the lane is broken rather than flaky. Majority-failing is now RED
+with `MOSTLY FAILING: n of m`, and the red list is actionable again.
+
+That split immediately surfaced something worth its own attention: **`gate` — the
+required check — failed 7 of its last 11 concluded runs.**
+
+### The three cadence lanes — superseding evidence
+
+`budget-snapshot-cadence`, `manifesto-citation-snapshot-cadence` and
+`context-cost-trend-cadence` were reported RED off their last SCHEDULED run, while a
+`workflow_dispatch` after the #13808 fix had come back green. The producer queried
+`?event=schedule` and never saw the dispatch, so the dispatch could not appear — and the
+`detail` column read like a plain latest-verdict.
+
+**The design intent is kept, because the alternative is a snooze button**: a hand-run
+proves the code, not the cadence, and letting a manual dispatch clear a scheduled lane's
+red is a button anyone could press. So the scheduled verdict remains the verdict.
+
+**What was wrong was suppressing the contrary evidence.** The producer now fetches both
+paths and attaches the newer, different-trigger verdict as `supersededBy`, rendered as:
+
+> **awaiting scheduled confirmation** — a later workflow_dispatch run concluded 'green'
+> at …, NEWER than the verdict above. The verdict reports the DECLARED (scheduled)
+> path, which is the stronger claim: a hand-run proves the code, not the cadence. This
+> row clears when the next scheduled run passes.
+
+Both instruments' answers are now visible in one row, and the row says what would clear
+it.
+
+## Spawn count is the cost, and it is now 2
+
+The first user's host, after the 160→88 cut: **142.5s wall, 63.2s cumulative API,
+9% CPU.** The missing 79s was not network — it was 88 process creations, each paying an
+on-access AV authorisation.
+
+`gh api` calls now go through **`fetch`**, with the token resolved once (env first, else
+one `gh auth token`). Same credential, same endpoint, same auth semantics —
+`gh auth token` is exactly what `gh api` would have used. The subprocess path remains as
+a fallback whenever a token cannot be resolved, so nothing that worked stops working.
+
+| | original | after 160→88 | now |
+|---|---|---|---|
+| subprocesses | 160 | 88 | **2** |
+| API calls | 87 | 87 | 114 (periodic checks fetch both paths) |
+| wall, this host | ~48s | 6.9s | **4.2s** |
+
+The transport recognises only the exact `gh api <path>` shape; anything with a flag,
+method or body keeps the subprocess. A transport swap that quietly changed the semantics
+of another call would be a worse bug than the latency it saved.

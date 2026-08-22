@@ -180,7 +180,7 @@ async function main(): Promise<number> {
   if (args.timing) {
     const wallMs = Date.now() - Date.parse(now);
     console.error(
-      `timing: ${(wallMs / 1000).toFixed(1)}s wall · ${ghCallStats.calls} gh calls ` +
+      `timing: ${(wallMs / 1000).toFixed(1)}s wall · ${ghCallStats.calls} api calls (${ghCallStats.fetches} via fetch, ${ghCallStats.spawns} via subprocess) ` +
         `(${(ghCallStats.totalMs / 1000).toFixed(1)}s cumulative, DoP=${args.dop}) ` +
         `· ${(ghCallStats.calls / Math.max(roster.checks.length, 1)).toFixed(2)} calls/check`,
     );
