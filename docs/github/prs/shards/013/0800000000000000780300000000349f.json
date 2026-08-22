@@ -1,0 +1,12 @@
+{
+  "pr_number": 13471,
+  "archive_path": "docs/history/pr-reviews/PR-13471-fix-cluster-four-apps-that-could-not-be-checked-were-four-defects-in-our-own-man.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-22T01:50:25.247Z",
+  "schema_version": "v1",
+  "commit_sha": "e162ecd3e400166706c118fc633db577a80e0afa",
+  "title": "fix(cluster): four apps that \"could not be checked\" were four defects in our own manifests",
+  "state": "MERGED",
+  "merged_at": "2026-08-22T01:49:38Z",
+  "head_ref": "shadow/unrenderable-apps-4"
+}
