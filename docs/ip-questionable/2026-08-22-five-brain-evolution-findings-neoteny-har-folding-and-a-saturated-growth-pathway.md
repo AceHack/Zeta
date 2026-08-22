@@ -127,16 +127,90 @@ proof-of-useful-work line): capability is paid for, in a resource that can be me
 substrate cannot pay in whatever it happens to have. Weak as an analogy, worth one line as a
 reminder that the metering framing has a biological precedent rather than being a Zeta coinage.
 
+### 3a-bis. Aaron's first correction: it is **adaptability**, and `ShivaGc` is the half I missed
+
+Aaron 2026-08-22: *"it's the ability to adapt too, like our society reseed on collapse, we have
+something around this too."*
+
+Neoteny is not merely *delaying* commitment — it is retaining the ability to commit **differently**
+later. `ShivaGc`'s own header states the duality that makes that affordable here: the generator
+(`gen/`, the free object) **emits** reified tables and Shiva **reclaims** the unreferenced —
+*"generation and collection are duals over one content-addressed data substrate, and collection is a
+Z-set retraction (−1): what `gen` posted (+1), Shiva retracts (−1)."*
+
+So **collapse is not terminal**, structurally rather than by policy: anything collected is
+re-emittable from the irreducible generator. Aaron's earlier phrase for it was *"futamura
+regeneration after garbage collection."* The principle:
+
+> **You can afford to collapse exactly to the degree you can regenerate.** Never-collapse is the
+> correct policy *while regeneration is expensive*, not a preference for indecision.
+
+**Neoteny is not the refusal to differentiate; it is keeping the pool.**
+
+### 3a-ter. Aaron's second correction: switching cartridges **without leaving the soft regime**
+
+> *"our spectral fingerprint system for loading different games' fingerprints while still in the
+> SoftValue regime also gives us extra placid nature, cause a new signature means new dynamics. we
+> worked hard in chip8 to be able to switch cartridges while still staying in soft regime, we likened
+> it to the xbox dashboard / the meta state for game selection."*
+
+This is the closest analogue of the four, and it is the one that actually earns the word *plasticity*.
+The other three describe a system that declines to commit. This one describes a system that can
+**change which dynamics it is adapting to** — and do it from inside the soft regime, without
+collapsing to select.
+
+Two in-tree pieces carry it:
+
+- **`GameFingerprint`** — a content-derived identity (size + CRC32 + SHA-256, the No-Intro/Redump/
+  TOSEC DAT convention). Its header calls it *"the first **external** index"*: the system's first
+  reference to a thing outside the agent. **That is a precondition for adaptability, not an
+  implementation detail** — you cannot switch to dynamics you have no way to name.
+- **`GamePortfolio`** — *"good is subjectively defined by the entropy in the system, which itself is
+  based on the games you decide to play… the order does not matter because uncertainty-reduction is
+  commutative — it's the set of games that matter, and the length of time in each."*
+
+**And the order-independence is not a convenience, it is the same commutativity as everywhere else in
+this thread:** `SoftValue.observe` commutes for independent evidence (posterior ∝ prior·L₁·L₂, and
+multiplication commutes). So the dashboard can load cartridges **in any order** and reach the same
+entropy. Aaron's *"uncertainty is what gives us commutativity"* shows up here as *order-free
+adaptability* — the meta-state does not have to be visited in a particular sequence to end up
+somewhere particular.
+
+**The Xbox-dashboard framing is the sharp part.** A dashboard is a **meta-state**: a place you can be
+that is not any of the games, from which any game is reachable. Biologically that is the progenitor
+pool — not a neuron of any type, and reachable to several. The four mechanisms line up as one design:
+
+| | mechanism | in the tree |
+|---|---|---|
+| 1 | do not commit while uncertain | `SoftValue.resolve → None` below threshold |
+| 2 | know whether you are still adapting | `SoftEvolution` residual / entropy / support |
+| 3 | commitment is reversible | `ShivaGc` — collection and generation are duals |
+| 4 | **switch which dynamics you adapt to, order-free** | `GameFingerprint` + `GamePortfolio` |
+
+(1) and (4) are what neoteny buys; (3) is the pool that makes it affordable; (2) is how you tell it
+is still working. The biology supplies no formalism any of these lack — it supplies the observation
+that **an organism that kept all four outgrew every relative that did not.**
+
+*Register unchanged:* structural rhyme. `ShivaGc`'s duality and `SoftValue.observe`'s commutativity
+are machine-checked in-tree; nothing here claims a shared mechanism with cortical development, and
+the design principle stands on our own code without it.
+
 ## 4. What I would actually do with this
 
 Nothing, yet — and that is the honest answer. The strong mapping (§3a) is a property
 `SoftValue` **already has**, so the finding corroborates a decision rather than suggesting a new one.
 The interesting open question it raises is narrower and testable in our own code:
 
-> **Do our BNNs collapse too early anywhere?** `MinimalBnn` / `MultilayerBnn` give exact marginals on
-> a chain (Rauch–Tung–Striebel), and `HeavyTailFold` bounds a member's influence. Is there a point in
-> the pipeline where a distribution is resolved to a point estimate for convenience, and would
-> holding it longer buy anything measurable?
+> **Where our BNNs collapse, can they reseed — and can they take on new dynamics without collapsing
+> to do it?** `MinimalBnn` / `MultilayerBnn` give exact marginals on a chain (Rauch–Tung–Striebel)
+> and `HeavyTailFold` bounds a member's influence. Three questions now, and only the first was mine:
+> (a) is a distribution resolved to a point estimate anywhere for convenience; (b) if so, **is that
+> collapse reversible**, and does `SoftEvolution`'s residual trace show adaptation resuming rather
+> than sitting flat; (c) **can a BNN be re-pointed at a new signature the way the CHIP-8 lane
+> switches cartridges** — from inside the soft regime, without a collapse-and-rebuild.
+>
+> A collapse that cannot reseed is the expensive kind, and per the principle above it is the only
+> kind worth refusing.
 
 That is answerable with the code we have, needs none of the biology, and would be a real result
 rather than a resonance.
