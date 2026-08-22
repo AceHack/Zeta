@@ -1,0 +1,12 @@
+{
+  "pr_number": 13673,
+  "archive_path": "docs/history/pr-reviews/PR-13673-fix-ci-the-apt-budget-guard-had-no-term-for-the-work-after-the-installer-measure.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-22T11:52:24.419Z",
+  "schema_version": "v1",
+  "commit_sha": "96771d30c95aec4749954d156b2f0cecd5496410",
+  "title": "fix(ci): the apt-budget guard had no term for the work AFTER the installer — measured across all 45 governed jobs",
+  "state": "MERGED",
+  "merged_at": "2026-08-22T11:51:44Z",
+  "head_ref": "shadow/apt-budget-non-apt-term"
+}
