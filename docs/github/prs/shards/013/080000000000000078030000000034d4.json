@@ -1,0 +1,12 @@
+{
+  "pr_number": 13524,
+  "archive_path": "docs/history/pr-reviews/PR-13524-fix-cluster-hindsight-s-llm-service-values-were-writing-to-keys-chart-0-3-0-has-.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-22T04:32:54.163Z",
+  "schema_version": "v1",
+  "commit_sha": "337f0c6648ddf8a9455f6266a168655b5a45c2f6",
+  "title": "fix(cluster): hindsight's LLM + service values were writing to keys chart 0.3.0 has never had, and the ledger's prose numbers were refused by nothing",
+  "state": "MERGED",
+  "merged_at": "2026-08-22T04:32:09Z",
+  "head_ref": "fix/cluster-hindsight-inert-llm-service-and-blank-storageclass-default"
+}
