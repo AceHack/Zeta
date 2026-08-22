@@ -1,0 +1,12 @@
+{
+  "pr_number": 13936,
+  "archive_path": "docs/history/pr-reviews/PR-13936-perf-drift-dashboard-160-subprocesses-per-pass-88-and-the-bottleneck-was-not-the.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-22T21:50:38.877Z",
+  "schema_version": "v1",
+  "commit_sha": "8062645bcad8dbffc63eb269fdb8a244142165d1",
+  "title": "perf(drift-dashboard): 160 subprocesses per pass -> 88, and the bottleneck was not the network",
+  "state": "MERGED",
+  "merged_at": "2026-08-22T21:49:58Z",
+  "head_ref": "perf/drift-dashboard-interactive"
+}
