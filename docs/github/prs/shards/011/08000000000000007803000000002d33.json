@@ -1,0 +1,12 @@
+{
+  "pr_number": 11571,
+  "archive_path": "docs/history/pr-reviews/PR-11571-fix-pages-teach-delegated-capability-expiry.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-21T12:56:09.040Z",
+  "schema_version": "v1",
+  "commit_sha": "8a1911b9d42914b3ce7315afdadd721985a11cc3",
+  "title": "fix(pages): teach delegated capability expiry",
+  "state": "MERGED",
+  "merged_at": "2026-08-17T17:55:56Z",
+  "head_ref": "fix/pages-delegated-capability-expiry"
+}

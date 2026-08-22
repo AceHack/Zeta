@@ -1,0 +1,12 @@
+{
+  "pr_number": 13244,
+  "archive_path": "docs/history/pr-reviews/PR-13244-ops-file-the-raft-path-mountpath-coupling-it-agrees-by-chart-default-and-nothing.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-21T16:03:10.382Z",
+  "schema_version": "v1",
+  "commit_sha": "60eb81eb4e2048a0bf9cd2b7d33ccbfc8b42c2a0",
+  "title": "ops: file the raft-path/mountPath coupling — it agrees by chart default and nothing checks it",
+  "state": "MERGED",
+  "merged_at": "2026-08-21T15:58:52Z",
+  "head_ref": "ops/file-raft-path-mountpath-coupling"
+}

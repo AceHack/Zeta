@@ -153,6 +153,72 @@ export const SELF_EXCLUDED: readonly string[] = [
 const SCANNABLE = /\.(?:ts|mts|cts|mjs|js)$/;
 const SKIP_PREFIX = /^(?:references\/|node_modules\/)|\/node_modules\//;
 
+/**
+ * THE CORPUS, READ ONCE PER PROCESS PER ROOT.
+ *
+ * This audit is a pure function of the tracked file tree (stated at the top of this
+ * file), so reading the same 2,896 sources once per `runAudit` call was pure waste: the
+ * test file alone calls `runAudit` ELEVEN times -- four single-route runs, two runs with
+ * an extra impossible route, two self-exclusion runs, three live-inventory runs -- and
+ * re-read all 29 MB every time.
+ *
+ * WHY IT WAS WORTH FIXING, which is not the obvious reason. On a CI runner each read
+ * costs ~100 ms and eleven of them are merely untidy. The cost that mattered is that the
+ * FIRST read in a fresh process is not the same price as the tenth. MEASURED 2026-08-22
+ * on the fleet's own machine, same 2,896 files, same warm page cache, one bun process:
+ *
+ *     read-only pass0: 17472 ms     pass1: 352 ms     pass2: 342 ms
+ *
+ * -- a ~50x first-pass penalty per process, reproduced identically in a months-old
+ * checkout and a minutes-old clone, so it is a property of the host and not of either
+ * tree. Against bun's 5,000 ms per-test cap that turns the first `runAudit` in the file
+ * into a coin flip, and a lost flip is reported as
+ *
+ *     (fail) route named-min-constant contributes at least one site by itself
+ *
+ * which is this file's DARK ROUTE message -- the one whose own instruction is "Fix the
+ * recognizer, never the floor." A timeout wearing that name asks a reader to retire a
+ * live recognizer. That happened on 2026-08-22 and cost several agents a morning.
+ *
+ * The cache does NOT make the audit see stale content within a process, because nothing
+ * mutates the tree while it runs; a caller that ever needs to re-read must call
+ * `clearCorpusCache()` and say why. `corpusReadsFromDisk()` exists so a test can prove
+ * the second call read nothing -- delete the memo and that test fails.
+ */
+const corpusCache = new Map<string, ReadonlyMap<string, string>>();
+let filesReadFromDisk = 0;
+
+/** Total files this process has actually read from disk. The memo's falsifier. */
+export function corpusReadsFromDisk(): number {
+  return filesReadFromDisk;
+}
+
+/** Drop the memo. For a caller that genuinely needs to observe a changed tree. */
+export function clearCorpusCache(): void {
+  corpusCache.clear();
+}
+
+/**
+ * Read (or reuse) every tracked source under `root`. Unreadable entries -- symlinks,
+ * submodules -- are absent from the map rather than present-and-empty, which keeps
+ * `filesScanned` counting what it says: files whose text was actually inspected.
+ */
+export function corpus(root: string): ReadonlyMap<string, string> {
+  const cached = corpusCache.get(root);
+  if (cached !== undefined) return cached;
+  const built = new Map<string, string>();
+  for (const file of trackedSources(root)) {
+    try {
+      built.set(file, readFileSync(join(root, file), "utf8"));
+      filesReadFromDisk++;
+    } catch {
+      continue; // symlink, submodule, unreadable: not a floor site
+    }
+  }
+  corpusCache.set(root, built);
+  return built;
+}
+
 export function trackedSources(root: string): readonly string[] {
   const out = execFileSync("git", ["ls-files"], {
     cwd: root,
@@ -203,18 +269,12 @@ export function runAudit(
   excluded: readonly string[] = SELF_EXCLUDED,
   routes: readonly Route[] = ROUTES,
 ): { readonly report: AuditReport; readonly exitCode: 0 | 3 } {
-  const files = trackedSources(root).filter((f) => !excluded.includes(f));
   const sites: Site[] = [];
   const multiRouteCandidates: string[] = [];
   let filesScanned = 0;
 
-  for (const file of files) {
-    let text: string;
-    try {
-      text = readFileSync(join(root, file), "utf8");
-    } catch {
-      continue; // symlink, submodule, unreadable: not a floor site
-    }
+  for (const [file, text] of corpus(root)) {
+    if (excluded.includes(file)) continue;
     filesScanned++;
     const found = auditText(file, text, routes);
     sites.push(...found);

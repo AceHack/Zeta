@@ -89,7 +89,10 @@ describe("realizeFromUvTool dry-run", () => {
     const ctx = createContext({ repoRoot, dryRun: true });
     const result = await realizeFromUvTool(ctx);
     expect(result.skipped).toBe(false);
-    expect(result.actions.some((a) => a.includes("uv tool install zeta-setup-realizer-probe-nonexistent"))).toBe(true);
+    expect(result.actions).toEqual([
+      "dry-run: uv tool upgrade --all",
+      "dry-run: uv tool install zeta-setup-realizer-probe-nonexistent",
+    ]);
   });
 });
 

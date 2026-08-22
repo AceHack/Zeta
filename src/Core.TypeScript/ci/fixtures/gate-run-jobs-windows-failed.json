@@ -1,0 +1,1516 @@
+{
+  "run_id": 31978270082,
+  "created_at": "2026-08-16T23:08:00Z",
+  "event": "workflow_dispatch",
+  "jobs": [
+    {
+      "name": "lint (yaml/k8s)",
+      "status": "completed",
+      "conclusion": "success",
+      "steps": [
+        {
+          "name": "Set up job",
+          "conclusion": "success"
+        },
+        {
+          "name": "Checkout",
+          "conclusion": "success"
+        },
+        {
+          "name": "Install narrow YAML lint tools",
+          "conclusion": "success"
+        },
+        {
+          "name": "yamllint (k8s manifests)",
+          "conclusion": "success"
+        },
+        {
+          "name": "kubeconform (k8s API-schema validation)",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Checkout",
+          "conclusion": "success"
+        },
+        {
+          "name": "Complete job",
+          "conclusion": "success"
+        }
+      ]
+    },
+    {
+      "name": "path filter",
+      "status": "completed",
+      "conclusion": "success",
+      "steps": [
+        {
+          "name": "Set up job",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run echo \"Event ${GH_EVENT} (not pull_request) — emitting code=true (full build), no checkout needed.\"",
+          "conclusion": "success"
+        },
+        {
+          "name": "Checkout",
+          "conclusion": "skipped"
+        },
+        {
+          "name": "Run set -euo pipefail",
+          "conclusion": "skipped"
+        },
+        {
+          "name": "Complete job",
+          "conclusion": "success"
+        }
+      ]
+    },
+    {
+      "name": "lint (no empty dirs)",
+      "status": "completed",
+      "conclusion": "success",
+      "steps": [
+        {
+          "name": "Set up job",
+          "conclusion": "success"
+        },
+        {
+          "name": "Checkout",
+          "conclusion": "success"
+        },
+        {
+          "name": "Setup Bun",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run no-empty-dirs",
+          "conclusion": "success"
+        },
+        {
+          "name": "Guard — discharge rows may not contradict their own certificates",
+          "conclusion": "success"
+        },
+        {
+          "name": "Guard — a golden-vector treaty may not claim a rule its vectors do not pin",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Setup Bun",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Checkout",
+          "conclusion": "success"
+        },
+        {
+          "name": "Complete job",
+          "conclusion": "success"
+        }
+      ]
+    },
+    {
+      "name": "lint (structural hygiene)",
+      "status": "completed",
+      "conclusion": "success",
+      "steps": [
+        {
+          "name": "Set up job",
+          "conclusion": "success"
+        },
+        {
+          "name": "Checkout",
+          "conclusion": "success"
+        },
+        {
+          "name": "Setup Bun",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run audit-dangling-symlinks (Pages/Jekyll guard)",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run audit-observe-event-filenames (ZetaId-vs-hex ambiguity guard)",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run audit-sealed-rooms (081KTSZN10008QG0R002J0GE0Z Reticulum-only lint half)",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run lint-no-manus-commit-leak (081KWMY831H)",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run audit-schema-key-set-parity (cross-oracle schema key sets)",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Setup Bun",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Checkout",
+          "conclusion": "success"
+        },
+        {
+          "name": "Complete job",
+          "conclusion": "success"
+        }
+      ]
+    },
+    {
+      "name": "lint (shellcheck)",
+      "status": "completed",
+      "conclusion": "success",
+      "steps": [
+        {
+          "name": "Set up job",
+          "conclusion": "success"
+        },
+        {
+          "name": "Checkout",
+          "conclusion": "success"
+        },
+        {
+          "name": "Cache install.sh outputs (mise runtimes + dotnet tools + verifier jars)",
+          "conclusion": "success"
+        },
+        {
+          "name": "Install toolchain via three-way-parity script (GOVERNANCE §24)",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run shellcheck",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Cache install.sh outputs (mise runtimes + dotnet tools + verifier jars)",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Checkout",
+          "conclusion": "success"
+        },
+        {
+          "name": "Complete job",
+          "conclusion": "success"
+        }
+      ]
+    },
+    {
+      "name": "lint (semgrep)",
+      "status": "completed",
+      "conclusion": "success",
+      "steps": [
+        {
+          "name": "Set up job",
+          "conclusion": "success"
+        },
+        {
+          "name": "Checkout",
+          "conclusion": "success"
+        },
+        {
+          "name": "Cache install.sh outputs (mise runtimes + dotnet tools + verifier jars)",
+          "conclusion": "success"
+        },
+        {
+          "name": "Install toolchain via three-way-parity script (GOVERNANCE §24)",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run Semgrep (floor rules only — seconds-fast floor check)",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Cache install.sh outputs (mise runtimes + dotnet tools + verifier jars)",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Checkout",
+          "conclusion": "success"
+        },
+        {
+          "name": "Complete job",
+          "conclusion": "success"
+        }
+      ]
+    },
+    {
+      "name": "lint (F#)",
+      "status": "completed",
+      "conclusion": "success",
+      "steps": [
+        {
+          "name": "Set up job",
+          "conclusion": "success"
+        },
+        {
+          "name": "Checkout",
+          "conclusion": "success"
+        },
+        {
+          "name": "Cache install.sh outputs (mise runtimes + dotnet tools + verifier jars)",
+          "conclusion": "success"
+        },
+        {
+          "name": "Install toolchain via three-way-parity script (GOVERNANCE §24)",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run F# Lint Script",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Cache install.sh outputs (mise runtimes + dotnet tools + verifier jars)",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Checkout",
+          "conclusion": "success"
+        },
+        {
+          "name": "Complete job",
+          "conclusion": "success"
+        }
+      ]
+    },
+    {
+      "name": "matrix setup",
+      "status": "completed",
+      "conclusion": "success",
+      "steps": [
+        {
+          "name": "Set up job",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run # Pre-merge (pull_request + merge_group): Linux + macos-26",
+          "conclusion": "success"
+        },
+        {
+          "name": "Complete job",
+          "conclusion": "success"
+        }
+      ]
+    },
+    {
+      "name": "test (TS suite)",
+      "status": "completed",
+      "conclusion": "failure",
+      "steps": [
+        {
+          "name": "Set up job",
+          "conclusion": "success"
+        },
+        {
+          "name": "Checkout",
+          "conclusion": "success"
+        },
+        {
+          "name": "Cache install.sh outputs (mise runtimes + dotnet tools + verifier jars)",
+          "conclusion": "success"
+        },
+        {
+          "name": "Install toolchain via three-way-parity script (GOVERNANCE §24)",
+          "conclusion": "success"
+        },
+        {
+          "name": "QDK venv setup (uv sync)",
+          "conclusion": "success"
+        },
+        {
+          "name": "Install npm devDependencies",
+          "conclusion": "success"
+        },
+        {
+          "name": "Pin z3 4.16.0 and cvc5 1.3.4 (081KZZ27KJ8)",
+          "conclusion": "success"
+        },
+        {
+          "name": "Whole TypeScript suite",
+          "conclusion": "failure"
+        },
+        {
+          "name": "Post Cache install.sh outputs (mise runtimes + dotnet tools + verifier jars)",
+          "conclusion": "skipped"
+        },
+        {
+          "name": "Post Checkout",
+          "conclusion": "success"
+        },
+        {
+          "name": "Complete job",
+          "conclusion": "success"
+        }
+      ]
+    },
+    {
+      "name": "lint (semgrep drift)",
+      "status": "completed",
+      "conclusion": "success",
+      "steps": [
+        {
+          "name": "Set up job",
+          "conclusion": "success"
+        },
+        {
+          "name": "Checkout",
+          "conclusion": "success"
+        },
+        {
+          "name": "Cache install.sh outputs (mise runtimes + dotnet tools + verifier jars)",
+          "conclusion": "success"
+        },
+        {
+          "name": "Install toolchain via three-way-parity script (GOVERNANCE §24)",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run Semgrep (full detector set — findings are drift, not locks)",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Cache install.sh outputs (mise runtimes + dotnet tools + verifier jars)",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Checkout",
+          "conclusion": "success"
+        },
+        {
+          "name": "Complete job",
+          "conclusion": "success"
+        }
+      ]
+    },
+    {
+      "name": "lint (tick-shard relative-paths)",
+      "status": "completed",
+      "conclusion": "success",
+      "steps": [
+        {
+          "name": "Set up job",
+          "conclusion": "success"
+        },
+        {
+          "name": "Checkout",
+          "conclusion": "success"
+        },
+        {
+          "name": "Install toolchain via three-way-parity script (GOVERNANCE §24)",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run audit-tick-shard-relative-paths (--enforce --baseline)",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Checkout",
+          "conclusion": "success"
+        },
+        {
+          "name": "Complete job",
+          "conclusion": "success"
+        }
+      ]
+    },
+    {
+      "name": "lint (Python)",
+      "status": "completed",
+      "conclusion": "success",
+      "steps": [
+        {
+          "name": "Set up job",
+          "conclusion": "success"
+        },
+        {
+          "name": "Checkout",
+          "conclusion": "success"
+        },
+        {
+          "name": "Cache install.sh outputs (mise runtimes + dotnet tools + verifier jars)",
+          "conclusion": "success"
+        },
+        {
+          "name": "Install toolchain via three-way-parity script (GOVERNANCE §24)",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run Python Lint Script",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Cache install.sh outputs (mise runtimes + dotnet tools + verifier jars)",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Checkout",
+          "conclusion": "success"
+        },
+        {
+          "name": "Complete job",
+          "conclusion": "success"
+        }
+      ]
+    },
+    {
+      "name": "lint (C#)",
+      "status": "completed",
+      "conclusion": "success",
+      "steps": [
+        {
+          "name": "Set up job",
+          "conclusion": "success"
+        },
+        {
+          "name": "Checkout",
+          "conclusion": "success"
+        },
+        {
+          "name": "Cache install.sh outputs (mise runtimes + dotnet tools + verifier jars)",
+          "conclusion": "success"
+        },
+        {
+          "name": "Install toolchain via three-way-parity script (GOVERNANCE §24)",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run C# Lint Script",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Cache install.sh outputs (mise runtimes + dotnet tools + verifier jars)",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Checkout",
+          "conclusion": "success"
+        },
+        {
+          "name": "Complete job",
+          "conclusion": "success"
+        }
+      ]
+    },
+    {
+      "name": "lint (§33 migration xrefs)",
+      "status": "completed",
+      "conclusion": "success",
+      "steps": [
+        {
+          "name": "Set up job",
+          "conclusion": "success"
+        },
+        {
+          "name": "Checkout",
+          "conclusion": "success"
+        },
+        {
+          "name": "Cache install.sh outputs (mise runtimes + dotnet tools + verifier jars)",
+          "conclusion": "success"
+        },
+        {
+          "name": "Install toolchain via three-way-parity script (GOVERNANCE §24)",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run audit-section-33-migration-xrefs (--enforce)",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Cache install.sh outputs (mise runtimes + dotnet tools + verifier jars)",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Checkout",
+          "conclusion": "success"
+        },
+        {
+          "name": "Complete job",
+          "conclusion": "success"
+        }
+      ]
+    },
+    {
+      "name": "lint (tick-history order)",
+      "status": "completed",
+      "conclusion": "success",
+      "steps": [
+        {
+          "name": "Set up job",
+          "conclusion": "success"
+        },
+        {
+          "name": "Checkout",
+          "conclusion": "success"
+        },
+        {
+          "name": "Cache install.sh outputs (mise runtimes + dotnet tools + verifier jars)",
+          "conclusion": "success"
+        },
+        {
+          "name": "Install toolchain via three-way-parity script (GOVERNANCE §24)",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run check-tick-history-order",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Cache install.sh outputs (mise runtimes + dotnet tools + verifier jars)",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Checkout",
+          "conclusion": "success"
+        },
+        {
+          "name": "Complete job",
+          "conclusion": "success"
+        }
+      ]
+    },
+    {
+      "name": "lint (no conflict markers)",
+      "status": "completed",
+      "conclusion": "success",
+      "steps": [
+        {
+          "name": "Set up job",
+          "conclusion": "success"
+        },
+        {
+          "name": "Checkout",
+          "conclusion": "success"
+        },
+        {
+          "name": "Cache install.sh outputs (mise runtimes + dotnet tools + verifier jars)",
+          "conclusion": "success"
+        },
+        {
+          "name": "Install toolchain via three-way-parity script (GOVERNANCE §24)",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run check-no-conflict-markers",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Cache install.sh outputs (mise runtimes + dotnet tools + verifier jars)",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Checkout",
+          "conclusion": "success"
+        },
+        {
+          "name": "Complete job",
+          "conclusion": "success"
+        }
+      ]
+    },
+    {
+      "name": "lint (Go)",
+      "status": "completed",
+      "conclusion": "success",
+      "steps": [
+        {
+          "name": "Set up job",
+          "conclusion": "success"
+        },
+        {
+          "name": "Checkout",
+          "conclusion": "success"
+        },
+        {
+          "name": "Cache install.sh outputs (mise runtimes + dotnet tools + verifier jars)",
+          "conclusion": "success"
+        },
+        {
+          "name": "Install toolchain via three-way-parity script (GOVERNANCE §24)",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run Go Lint Script",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Cache install.sh outputs (mise runtimes + dotnet tools + verifier jars)",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Checkout",
+          "conclusion": "success"
+        },
+        {
+          "name": "Complete job",
+          "conclusion": "success"
+        }
+      ]
+    },
+    {
+      "name": "lint (Rust)",
+      "status": "completed",
+      "conclusion": "success",
+      "steps": [
+        {
+          "name": "Set up job",
+          "conclusion": "success"
+        },
+        {
+          "name": "Checkout",
+          "conclusion": "success"
+        },
+        {
+          "name": "Cache install.sh outputs (mise runtimes + dotnet tools + verifier jars)",
+          "conclusion": "success"
+        },
+        {
+          "name": "Install toolchain via three-way-parity script (GOVERNANCE §24)",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run Rust Lint Script",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Cache install.sh outputs (mise runtimes + dotnet tools + verifier jars)",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Checkout",
+          "conclusion": "success"
+        },
+        {
+          "name": "Complete job",
+          "conclusion": "success"
+        }
+      ]
+    },
+    {
+      "name": "lint (archive header §33)",
+      "status": "completed",
+      "conclusion": "success",
+      "steps": [
+        {
+          "name": "Set up job",
+          "conclusion": "success"
+        },
+        {
+          "name": "Checkout",
+          "conclusion": "success"
+        },
+        {
+          "name": "Cache install.sh outputs (mise runtimes + dotnet tools + verifier jars)",
+          "conclusion": "success"
+        },
+        {
+          "name": "Install toolchain via three-way-parity script (GOVERNANCE §24)",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run check-archive-header-section33",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Cache install.sh outputs (mise runtimes + dotnet tools + verifier jars)",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Checkout",
+          "conclusion": "success"
+        },
+        {
+          "name": "Complete job",
+          "conclusion": "success"
+        }
+      ]
+    },
+    {
+      "name": "lint (bash retirement inventory + hygiene unit tests)",
+      "status": "completed",
+      "conclusion": "failure",
+      "steps": [
+        {
+          "name": "Set up job",
+          "conclusion": "success"
+        },
+        {
+          "name": "Checkout",
+          "conclusion": "success"
+        },
+        {
+          "name": "Cache install.sh outputs (mise runtimes + dotnet tools + verifier jars)",
+          "conclusion": "success"
+        },
+        {
+          "name": "Install toolchain via three-way-parity script (GOVERNANCE §24)",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run bash-retirement inventory guard",
+          "conclusion": "success"
+        },
+        {
+          "name": "Ambient-credential-hoist guard",
+          "conclusion": "success"
+        },
+        {
+          "name": "Hygiene unit-test suite (closes the per-PR coverage gap)",
+          "conclusion": "failure"
+        },
+        {
+          "name": "Post Cache install.sh outputs (mise runtimes + dotnet tools + verifier jars)",
+          "conclusion": "skipped"
+        },
+        {
+          "name": "Post Checkout",
+          "conclusion": "success"
+        },
+        {
+          "name": "Complete job",
+          "conclusion": "success"
+        }
+      ]
+    },
+    {
+      "name": "cross-verify (trust-core oracles + ace suite)",
+      "status": "completed",
+      "conclusion": "success",
+      "steps": [
+        {
+          "name": "Set up job",
+          "conclusion": "success"
+        },
+        {
+          "name": "Checkout",
+          "conclusion": "success"
+        },
+        {
+          "name": "Cache install.sh outputs (mise runtimes + dotnet tools + verifier jars)",
+          "conclusion": "success"
+        },
+        {
+          "name": "Install toolchain via three-way-parity script (GOVERNANCE §24)",
+          "conclusion": "success"
+        },
+        {
+          "name": "Install npm devDependencies (z3-solver for the ace solver Z3 differential, etc.)",
+          "conclusion": "success"
+        },
+        {
+          "name": "Ace package-manager suite",
+          "conclusion": "success"
+        },
+        {
+          "name": "Q# source-owned reference oracles",
+          "conclusion": "success"
+        },
+        {
+          "name": "Cross-language byte-lock + golden-vector oracles",
+          "conclusion": "success"
+        },
+        {
+          "name": "Execute MUMPS zeta-id packer",
+          "conclusion": "success"
+        },
+        {
+          "name": "zeta-id generated layouts vs the layout YAML",
+          "conclusion": "success"
+        },
+        {
+          "name": "Algebra-tower drift-check (semiring→ring→kleene + star-ring)",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Cache install.sh outputs (mise runtimes + dotnet tools + verifier jars)",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Checkout",
+          "conclusion": "success"
+        },
+        {
+          "name": "Complete job",
+          "conclusion": "success"
+        }
+      ]
+    },
+    {
+      "name": "lint (markdownlint)",
+      "status": "completed",
+      "conclusion": "success",
+      "steps": [
+        {
+          "name": "Set up job",
+          "conclusion": "success"
+        },
+        {
+          "name": "Checkout",
+          "conclusion": "success"
+        },
+        {
+          "name": "Cache install.sh outputs (mise runtimes + dotnet tools + verifier jars)",
+          "conclusion": "success"
+        },
+        {
+          "name": "Install toolchain via three-way-parity script (GOVERNANCE §24)",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run markdownlint (scoped to the PR's own diff on pull_request)",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Cache install.sh outputs (mise runtimes + dotnet tools + verifier jars)",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Checkout",
+          "conclusion": "success"
+        },
+        {
+          "name": "Complete job",
+          "conclusion": "success"
+        }
+      ]
+    },
+    {
+      "name": "lint (actionlint)",
+      "status": "completed",
+      "conclusion": "success",
+      "steps": [
+        {
+          "name": "Set up job",
+          "conclusion": "success"
+        },
+        {
+          "name": "Checkout",
+          "conclusion": "success"
+        },
+        {
+          "name": "Install actionlint",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actionlint",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Checkout",
+          "conclusion": "success"
+        },
+        {
+          "name": "Complete job",
+          "conclusion": "success"
+        }
+      ]
+    },
+    {
+      "name": "lint (TS)",
+      "status": "completed",
+      "conclusion": "success",
+      "steps": [
+        {
+          "name": "Set up job",
+          "conclusion": "success"
+        },
+        {
+          "name": "Checkout",
+          "conclusion": "success"
+        },
+        {
+          "name": "Cache install.sh outputs (mise runtimes + dotnet tools + verifier jars)",
+          "conclusion": "success"
+        },
+        {
+          "name": "Install toolchain via three-way-parity script (GOVERNANCE §24)",
+          "conclusion": "success"
+        },
+        {
+          "name": "Install npm devDependencies (typescript@6.0.3 + eslint stack)",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run TypeScript Lint Script",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Cache install.sh outputs (mise runtimes + dotnet tools + verifier jars)",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Checkout",
+          "conclusion": "success"
+        },
+        {
+          "name": "Complete job",
+          "conclusion": "success"
+        }
+      ]
+    },
+    {
+      "name": "full-verify (7-lang oracle + cost + proofs)",
+      "status": "completed",
+      "conclusion": "success",
+      "steps": [
+        {
+          "name": "Set up job",
+          "conclusion": "success"
+        },
+        {
+          "name": "Checkout",
+          "conclusion": "success"
+        },
+        {
+          "name": "Cache install.sh outputs (mise runtimes + cargo + dotnet)",
+          "conclusion": "success"
+        },
+        {
+          "name": "Install toolchain (all 7 languages + E-prover)",
+          "conclusion": "success"
+        },
+        {
+          "name": "QDK venv setup (uv sync)",
+          "conclusion": "success"
+        },
+        {
+          "name": "Python tests (Core.Python — incl. T-1/12 + Brownian-experts lemma gate)",
+          "conclusion": "success"
+        },
+        {
+          "name": "Smoke check (all 7 toolchains functional)",
+          "conclusion": "success"
+        },
+        {
+          "name": "Install npm devDependencies",
+          "conclusion": "success"
+        },
+        {
+          "name": "Rust tests (Core.Rust.Observe)",
+          "conclusion": "success"
+        },
+        {
+          "name": "Go tests (Core.Go/algebra)",
+          "conclusion": "success"
+        },
+        {
+          "name": "Cross-verify IR (7-language byte-lock oracle)",
+          "conclusion": "success"
+        },
+        {
+          "name": "IR-generated vs hand-written (independent-oracle check)",
+          "conclusion": "success"
+        },
+        {
+          "name": "Interface law oracle (per-directory)",
+          "conclusion": "success"
+        },
+        {
+          "name": "Law proof gate (proof references exist + tests pass)",
+          "conclusion": "success"
+        },
+        {
+          "name": "Cost tests (counter + envelope + growth)",
+          "conclusion": "success"
+        },
+        {
+          "name": "Clifford cross-verify (Cl(3,0) geometric algebra)",
+          "conclusion": "success"
+        },
+        {
+          "name": "Notify on failure",
+          "conclusion": "skipped"
+        },
+        {
+          "name": "Post Cache install.sh outputs (mise runtimes + cargo + dotnet)",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Checkout",
+          "conclusion": "success"
+        },
+        {
+          "name": "Complete job",
+          "conclusion": "success"
+        }
+      ]
+    },
+    {
+      "name": "build-and-test (ubuntu-24.04)",
+      "status": "completed",
+      "conclusion": "success",
+      "steps": [
+        {
+          "name": "Set up job",
+          "conclusion": "success"
+        },
+        {
+          "name": "Enable git long paths (Windows; pre-checkout)",
+          "conclusion": "skipped"
+        },
+        {
+          "name": "Checkout",
+          "conclusion": "success"
+        },
+        {
+          "name": "Path-filter result (081KQGDBJ0008QG0R001MK4YPC)",
+          "conclusion": "success"
+        },
+        {
+          "name": "Cache .NET SDK",
+          "conclusion": "success"
+        },
+        {
+          "name": "Cache mise runtimes (python only post round 32)",
+          "conclusion": "success"
+        },
+        {
+          "name": "Cache elan (Lean 4 toolchain)",
+          "conclusion": "success"
+        },
+        {
+          "name": "Cache NuGet packages",
+          "conclusion": "success"
+        },
+        {
+          "name": "Install toolchain via three-way-parity script (Unix; GOVERNANCE §24)",
+          "conclusion": "success"
+        },
+        {
+          "name": "Install toolchain via three-way-parity script (Windows; GOVERNANCE §24)",
+          "conclusion": "skipped"
+        },
+        {
+          "name": "Guard — CodeAnalysis pins ≤ SDK Roslyn (CS9057,",
+          "conclusion": "success"
+        },
+        {
+          "name": "Build (0 Warning(s) / 0 Error(s) required)",
+          "conclusion": "success"
+        },
+        {
+          "name": "Test",
+          "conclusion": "success"
+        },
+        {
+          "name": "Name the crashed/hung test (on failure)",
+          "conclusion": "skipped"
+        },
+        {
+          "name": "Skipped (docs-only PR)",
+          "conclusion": "skipped"
+        },
+        {
+          "name": "Post Cache NuGet packages",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Cache elan (Lean 4 toolchain)",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Cache mise runtimes (python only post round 32)",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Cache .NET SDK",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Checkout",
+          "conclusion": "success"
+        },
+        {
+          "name": "Complete job",
+          "conclusion": "success"
+        }
+      ]
+    },
+    {
+      "name": "build-and-test (ubuntu-24.04-arm)",
+      "status": "completed",
+      "conclusion": "success",
+      "steps": [
+        {
+          "name": "Set up job",
+          "conclusion": "success"
+        },
+        {
+          "name": "Enable git long paths (Windows; pre-checkout)",
+          "conclusion": "skipped"
+        },
+        {
+          "name": "Checkout",
+          "conclusion": "success"
+        },
+        {
+          "name": "Path-filter result (081KQGDBJ0008QG0R001MK4YPC)",
+          "conclusion": "success"
+        },
+        {
+          "name": "Cache .NET SDK",
+          "conclusion": "success"
+        },
+        {
+          "name": "Cache mise runtimes (python only post round 32)",
+          "conclusion": "success"
+        },
+        {
+          "name": "Cache elan (Lean 4 toolchain)",
+          "conclusion": "success"
+        },
+        {
+          "name": "Cache NuGet packages",
+          "conclusion": "success"
+        },
+        {
+          "name": "Install toolchain via three-way-parity script (Unix; GOVERNANCE §24)",
+          "conclusion": "success"
+        },
+        {
+          "name": "Install toolchain via three-way-parity script (Windows; GOVERNANCE §24)",
+          "conclusion": "skipped"
+        },
+        {
+          "name": "Guard — CodeAnalysis pins ≤ SDK Roslyn (CS9057,",
+          "conclusion": "success"
+        },
+        {
+          "name": "Build (0 Warning(s) / 0 Error(s) required)",
+          "conclusion": "success"
+        },
+        {
+          "name": "Test",
+          "conclusion": "success"
+        },
+        {
+          "name": "Name the crashed/hung test (on failure)",
+          "conclusion": "skipped"
+        },
+        {
+          "name": "Skipped (docs-only PR)",
+          "conclusion": "skipped"
+        },
+        {
+          "name": "Post Cache NuGet packages",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Cache elan (Lean 4 toolchain)",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Cache mise runtimes (python only post round 32)",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Cache .NET SDK",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Checkout",
+          "conclusion": "success"
+        },
+        {
+          "name": "Complete job",
+          "conclusion": "success"
+        }
+      ]
+    },
+    {
+      "name": "build-and-test (windows-11-arm)",
+      "status": "completed",
+      "conclusion": "success",
+      "steps": [
+        {
+          "name": "Set up job",
+          "conclusion": "success"
+        },
+        {
+          "name": "Enable git long paths (Windows; pre-checkout)",
+          "conclusion": "success"
+        },
+        {
+          "name": "Checkout",
+          "conclusion": "success"
+        },
+        {
+          "name": "Path-filter result (081KQGDBJ0008QG0R001MK4YPC)",
+          "conclusion": "success"
+        },
+        {
+          "name": "Cache .NET SDK",
+          "conclusion": "success"
+        },
+        {
+          "name": "Cache mise runtimes (python only post round 32)",
+          "conclusion": "success"
+        },
+        {
+          "name": "Cache elan (Lean 4 toolchain)",
+          "conclusion": "success"
+        },
+        {
+          "name": "Cache NuGet packages",
+          "conclusion": "success"
+        },
+        {
+          "name": "Install toolchain via three-way-parity script (Unix; GOVERNANCE §24)",
+          "conclusion": "skipped"
+        },
+        {
+          "name": "Install toolchain via three-way-parity script (Windows; GOVERNANCE §24)",
+          "conclusion": "success"
+        },
+        {
+          "name": "Guard — CodeAnalysis pins ≤ SDK Roslyn (CS9057,",
+          "conclusion": "success"
+        },
+        {
+          "name": "Build (0 Warning(s) / 0 Error(s) required)",
+          "conclusion": "success"
+        },
+        {
+          "name": "Test",
+          "conclusion": "success"
+        },
+        {
+          "name": "Name the crashed/hung test (on failure)",
+          "conclusion": "skipped"
+        },
+        {
+          "name": "Skipped (docs-only PR)",
+          "conclusion": "skipped"
+        },
+        {
+          "name": "Post Cache NuGet packages",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Cache elan (Lean 4 toolchain)",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Cache mise runtimes (python only post round 32)",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Cache .NET SDK",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Checkout",
+          "conclusion": "success"
+        },
+        {
+          "name": "Complete job",
+          "conclusion": "success"
+        }
+      ]
+    },
+    {
+      "name": "build-and-test (windows-2025)",
+      "status": "completed",
+      "conclusion": "failure",
+      "steps": [
+        {
+          "name": "Set up job",
+          "conclusion": "success"
+        },
+        {
+          "name": "Enable git long paths (Windows; pre-checkout)",
+          "conclusion": "success"
+        },
+        {
+          "name": "Checkout",
+          "conclusion": "success"
+        },
+        {
+          "name": "Path-filter result (081KQGDBJ0008QG0R001MK4YPC)",
+          "conclusion": "success"
+        },
+        {
+          "name": "Cache .NET SDK",
+          "conclusion": "success"
+        },
+        {
+          "name": "Cache mise runtimes (python only post round 32)",
+          "conclusion": "success"
+        },
+        {
+          "name": "Cache elan (Lean 4 toolchain)",
+          "conclusion": "success"
+        },
+        {
+          "name": "Cache NuGet packages",
+          "conclusion": "success"
+        },
+        {
+          "name": "Install toolchain via three-way-parity script (Unix; GOVERNANCE §24)",
+          "conclusion": "skipped"
+        },
+        {
+          "name": "Install toolchain via three-way-parity script (Windows; GOVERNANCE §24)",
+          "conclusion": "failure"
+        },
+        {
+          "name": "Guard — CodeAnalysis pins ≤ SDK Roslyn (CS9057,",
+          "conclusion": "skipped"
+        },
+        {
+          "name": "Build (0 Warning(s) / 0 Error(s) required)",
+          "conclusion": "skipped"
+        },
+        {
+          "name": "Test",
+          "conclusion": "skipped"
+        },
+        {
+          "name": "Name the crashed/hung test (on failure)",
+          "conclusion": "failure"
+        },
+        {
+          "name": "Skipped (docs-only PR)",
+          "conclusion": "skipped"
+        },
+        {
+          "name": "Post Cache NuGet packages",
+          "conclusion": "skipped"
+        },
+        {
+          "name": "Post Cache elan (Lean 4 toolchain)",
+          "conclusion": "skipped"
+        },
+        {
+          "name": "Post Cache mise runtimes (python only post round 32)",
+          "conclusion": "skipped"
+        },
+        {
+          "name": "Post Cache .NET SDK",
+          "conclusion": "skipped"
+        },
+        {
+          "name": "Post Checkout",
+          "conclusion": "success"
+        },
+        {
+          "name": "Complete job",
+          "conclusion": "success"
+        }
+      ]
+    },
+    {
+      "name": "build-and-test (macos-26)",
+      "status": "completed",
+      "conclusion": "success",
+      "steps": [
+        {
+          "name": "Set up job",
+          "conclusion": "success"
+        },
+        {
+          "name": "Enable git long paths (Windows; pre-checkout)",
+          "conclusion": "skipped"
+        },
+        {
+          "name": "Checkout",
+          "conclusion": "success"
+        },
+        {
+          "name": "Path-filter result (081KQGDBJ0008QG0R001MK4YPC)",
+          "conclusion": "success"
+        },
+        {
+          "name": "Cache .NET SDK",
+          "conclusion": "success"
+        },
+        {
+          "name": "Cache mise runtimes (python only post round 32)",
+          "conclusion": "success"
+        },
+        {
+          "name": "Cache elan (Lean 4 toolchain)",
+          "conclusion": "success"
+        },
+        {
+          "name": "Cache NuGet packages",
+          "conclusion": "success"
+        },
+        {
+          "name": "Install toolchain via three-way-parity script (Unix; GOVERNANCE §24)",
+          "conclusion": "success"
+        },
+        {
+          "name": "Install toolchain via three-way-parity script (Windows; GOVERNANCE §24)",
+          "conclusion": "skipped"
+        },
+        {
+          "name": "Guard — CodeAnalysis pins ≤ SDK Roslyn (CS9057,",
+          "conclusion": "success"
+        },
+        {
+          "name": "Build (0 Warning(s) / 0 Error(s) required)",
+          "conclusion": "success"
+        },
+        {
+          "name": "Test",
+          "conclusion": "success"
+        },
+        {
+          "name": "Name the crashed/hung test (on failure)",
+          "conclusion": "skipped"
+        },
+        {
+          "name": "Skipped (docs-only PR)",
+          "conclusion": "skipped"
+        },
+        {
+          "name": "Post Cache NuGet packages",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Cache elan (Lean 4 toolchain)",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Cache mise runtimes (python only post round 32)",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Cache .NET SDK",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Checkout",
+          "conclusion": "success"
+        },
+        {
+          "name": "Complete job",
+          "conclusion": "success"
+        }
+      ]
+    },
+    {
+      "name": "gate (required)",
+      "status": "completed",
+      "conclusion": "success",
+      "steps": [
+        {
+          "name": "Set up job",
+          "conclusion": "success"
+        },
+        {
+          "name": "Check all gate jobs",
+          "conclusion": "success"
+        },
+        {
+          "name": "Complete job",
+          "conclusion": "success"
+        }
+      ]
+    }
+  ]
+}

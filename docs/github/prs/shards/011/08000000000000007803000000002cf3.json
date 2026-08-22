@@ -1,0 +1,12 @@
+{
+  "pr_number": 11507,
+  "archive_path": "docs/history/pr-reviews/PR-11507-fix-key-custody-ac-4-self-witness-hole-a2-unconstructible-span-r12-wrong-grant-c.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-21T08:48:48.099Z",
+  "schema_version": "v1",
+  "commit_sha": "5ae461d47ebd1cafe4417fea0797d455403ac569",
+  "title": "fix(key-custody): AC#4 self-witness hole, A2 unconstructible span, R12 wrong-grant citation",
+  "state": "MERGED",
+  "merged_at": "2026-08-17T14:56:35Z",
+  "head_ref": "shadow/key-custody-ac4-span-and-citation"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 12956,
+  "archive_path": "docs/history/pr-reviews/PR-12956-research-one-surface-measured-lint-go-needs-6-of-442-and-it-adjudicates-4-agains.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-20T23:01:56.549Z",
+  "schema_version": "v1",
+  "commit_sha": "ad61f2426863d045cbcfb47d4adbaf6f0f0cd25f",
+  "title": "research: one surface MEASURED — lint (Go) needs 6 of ~442, and it adjudicates §4 against the note",
+  "state": "MERGED",
+  "merged_at": "2026-08-20T23:01:20Z",
+  "head_ref": "research/surface-closure-measured"
+}

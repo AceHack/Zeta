@@ -1,0 +1,12 @@
+{
+  "pr_number": 12220,
+  "archive_path": "docs/history/pr-reviews/PR-12220-docs-research-reaching-a-dark-node-the-recovery-plane-s-missing-half-rendezvous-.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-19T00:39:19.282Z",
+  "schema_version": "v1",
+  "commit_sha": "229bed6c1c5fceb1749f4a872f841eb4de5b23d6",
+  "title": "docs(research): reaching a dark node — the recovery plane's missing half (rendezvous, container seam, bootstrap paradox)",
+  "state": "MERGED",
+  "merged_at": "2026-08-19T00:38:40Z",
+  "head_ref": "dejan/pre-k8s-host-repair-layer"
+}

@@ -1,0 +1,15 @@
+{
+  "pr_number": 10754,
+  "archive_path": "docs/history/pr-reviews/PR-10754-fix-cross-verify-per-route-floor-the-qsharp-oracle-lane-went-dark-and-the-aggreg.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7h3KdX",
+    "thread:PRRT_kwDOSF9kNM6ZgSZn"
+  ],
+  "fetched_at": "2026-08-19T02:13:45.926Z",
+  "schema_version": "v1",
+  "commit_sha": "3465e2fc57332266b965711f0cdd8f9ff6bd0c21",
+  "title": "fix(cross-verify): per-route floor — the qsharp oracle lane went dark and the aggregate floor absorbed it",
+  "state": "MERGED",
+  "merged_at": "2026-08-15T14:23:02Z",
+  "head_ref": "shadow/python-oracle-lane-executes-or-not"
+}

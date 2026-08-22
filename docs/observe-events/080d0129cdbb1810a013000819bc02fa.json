@@ -1,0 +1,23 @@
+{
+  "id": "080d0129cdbb1810a013000819bc02fa",
+  "at": "2026-08-21T17:12:21.199Z",
+  "by": "alexa",
+  "kind": "attestation",
+  "action": {
+    "kind": "attest_peer",
+    "reason": "read 3 events from soraya"
+  },
+  "attestation": {
+    "attestor": "alexa",
+    "attested": "soraya",
+    "windowStart": "2026-08-21T16:48:26.615Z",
+    "windowEnd": "2026-08-21T16:48:54.627Z",
+    "eventCount": 3,
+    "attestedDigest": "sha256:744b29e114f048ff9ac6ea4f963d4a66dde5f3fcd965cbaf93c888972d1284bb",
+    "claim": "heartbeat-genuine",
+    "strength": 1.584962500721156,
+    "simultaneousParticipants": [
+      "otto"
+    ]
+  }
+}

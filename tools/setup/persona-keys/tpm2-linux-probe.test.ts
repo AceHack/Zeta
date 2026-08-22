@@ -4,11 +4,17 @@ import { platform as osPlatform } from "node:os";
 import capturesFile from "./tpm2-linux-captures.json" with { type: "json" };
 import {
   captureTpm2Linux,
+  classifySecp256k1,
   classifyTpm2Linux,
+  parseGetcapEccCurves,
   parseGetcapFamily,
   parseVersionMajor,
+  probeSecp256k1OnTpm,
   probeTpm2Linux,
   realTpm2LinuxEffects,
+  secp256k1CheckRan,
+  type Secp256k1State,
+  TCG_REGISTERED_ECC_CURVE_NAMES,
   tpm2CheckRan,
   type CommandOutcome,
   type ListOutcome,
@@ -306,12 +312,154 @@ describe("non-Linux is 'not asked', never 'no TPM'", () => {
   });
 });
 
+// ---------------------------------------------------------------------------
+// secp256k1 -- three states a caller must be able to tell apart, plus the one the
+// device can put us in. This is the falsifier for a claim that was CITED, NOT CHECKED.
+// ---------------------------------------------------------------------------
+
+/** Real tpm2-tools shape (dump_ecc_curves prints "NAME: 0xHEX"). Hand-constructed; no TPM
+ *  was contacted. A typical fTPM: NIST curves only. */
+const CURVES_NIST_ONLY = [
+  "TPM2_ECC_NIST_P256: 0x3",
+  "TPM2_ECC_NIST_P384: 0x4",
+  "",
+].join("\n");
+
+/** The same device plus an identifier tpm2-tools cannot name -- the vendor-extension case. */
+const CURVES_WITH_UNKNOWN = [
+  "TPM2_ECC_NIST_P256: 0x3",
+  "unknown20: 0x20",
+  "",
+].join("\n");
+
+/** A tool patched to know the curve. No TCG code point exists, so this is hypothetical --
+ *  and the probe must still be able to SAY so rather than being unable to report present. */
+const CURVES_WITH_SECP256K1 = [
+  "TPM2_ECC_NIST_P256: 0x3",
+  "TPM2_ECC_SECP256K1: 0x40",
+  "",
+].join("\n");
+
+function curveHost(out: CommandOutcome): Tpm2LinuxEffects {
+  return tpm2Host({ run: (_c, args) => (args[0] === "ecc-curves" ? out : GETCAP_2_0) });
+}
+
+describe("secp256k1: present, absent, and THE CHECK DID NOT RUN are three answers", () => {
+  it("ABSENT -- the device enumerated, every identifier is TCG-registered, none is secp256k1", () => {
+    const k1 = classifySecp256k1(captureTpm2Linux(curveHost({ kind: "ran", stdout: CURVES_NIST_ONLY })));
+    expect(k1.state).toBe("absent");
+    expect(secp256k1CheckRan(k1.state)).toBeTrue();
+    expect(k1.curves).toEqual(["TPM2_ECC_NIST_P256", "TPM2_ECC_NIST_P384"]);
+    expect(k1.unrecognised).toEqual([]);
+    // The consequence, stated where an operator reads it -- not left to a research doc.
+    expect(k1.reason).toContain("ABSENT");
+    expect(k1.reason).toContain("never a wallet signer");
+  });
+
+  it("PRESENT -- a named secp256k1 curve is reported, and is flagged as a vendor extension", () => {
+    const k1 = classifySecp256k1(captureTpm2Linux(curveHost({ kind: "ran", stdout: CURVES_WITH_SECP256K1 })));
+    expect(k1.state).toBe("present");
+    expect(secp256k1CheckRan(k1.state)).toBeTrue();
+    expect(k1.reason).toContain("IS PRESENT");
+    expect(k1.reason).toContain("vendor extension");
+  });
+
+  it("THE CHECK DID NOT RUN -- not Linux, no tpm2-tools, a failed run, and an errored run", () => {
+    const cases: readonly { readonly label: string; readonly fx: Tpm2LinuxEffects }[] = [
+      { label: "not Linux", fx: host({ platform: "darwin" }) },
+      { label: "no tpm2-tools", fx: curveHost({ kind: "not-installed" }) },
+      { label: "tool failed", fx: curveHost({ kind: "failed", exitCode: 1, stderr: "ERROR: tcti" }) },
+      { label: "tool errored", fx: curveHost({ kind: "error", code: "EACCES" }) },
+    ];
+    for (const c of cases) {
+      const k1 = classifySecp256k1(captureTpm2Linux(c.fx));
+      expect(k1.state, c.label).toBe("did-not-run");
+      expect(secp256k1CheckRan(k1.state), c.label).toBeFalse();
+      // The exact idiom the sibling probe uses. A did-not-run that does not SAY so is the
+      // vacuity class: a check that could not run reading as one that ran and said no.
+      expect(k1.reason, c.label).toContain('NOT "no secp256k1"');
+      expect(k1.curves, c.label).toEqual([]);
+    }
+  });
+});
+
+describe("secp256k1: an unnameable identifier is NOT a negative", () => {
+  it("INDETERMINATE -- a vendor code point could be secp256k1 and the tool cannot say", () => {
+    // THE LOAD-BEARING CASE. tpm2-tools has no secp256k1 constant (checked against
+    // tools/tpm2_getcap.c dump_ecc_curves, 2026-08-20), so a device implementing it prints
+    // an unnameable identifier. Reading that as absent would be exactly the existsSync
+    // defect this module exists to refuse.
+    const k1 = classifySecp256k1(captureTpm2Linux(curveHost({ kind: "ran", stdout: CURVES_WITH_UNKNOWN })));
+    expect(k1.state).toBe("indeterminate");
+    expect(k1.unrecognised).toEqual(["unknown20"]);
+    expect(k1.reason).toContain("NOT excluded");
+    expect(secp256k1CheckRan(k1.state)).toBeTrue();
+  });
+});
+
+describe("secp256k1: parsing and the checked registry roster", () => {
+  it("a tool that ran and printed no curve line is did-not-run, never absent", () => {
+    // "The output had no curves in it" and "this TPM supports zero ECC curves" are
+    // different facts. Only the second is a negative, and this reading cannot tell them
+    // apart -- so it must not be spent as one.
+    const k1 = classifySecp256k1(captureTpm2Linux(curveHost({ kind: "ran", stdout: "" })));
+    expect(k1.state).toBe("did-not-run");
+    expect(k1.reason).toContain("different facts");
+  });
+
+  it("parseGetcapEccCurves returns undefined for output with no curve line", () => {
+    expect(parseGetcapEccCurves("")).toBeUndefined();
+    expect(parseGetcapEccCurves("some unrelated banner text")).toBeUndefined();
+    const parsed = parseGetcapEccCurves(CURVES_WITH_UNKNOWN);
+    expect(parsed?.curves.map((c) => c.name)).toEqual(["TPM2_ECC_NIST_P256", "unknown20"]);
+    expect(parsed?.unrecognised).toEqual(["unknown20"]);
+  });
+
+  it("the registered-name roster matches tpm2-tools and contains no secp256k1", () => {
+    // The CHECKED half of the claim: the tool vocabulary is the registry vocabulary, and
+    // it has eight entries, none of them secp256k1.
+    expect(TCG_REGISTERED_ECC_CURVE_NAMES.length).toBe(8);
+    expect(TCG_REGISTERED_ECC_CURVE_NAMES.filter((n) => n.toUpperCase().includes("K1"))).toEqual([]);
+  });
+});
+
+describe("secp256k1: the real host, and what it is allowed to conclude", () => {
+  it("on THIS machine (Apple silicon) the answer is THE CHECK DID NOT RUN", () => {
+    // Registered honestly: this asserts the probe DECLINES to answer where it cannot ask.
+    // It is not evidence about any TPM, and it must never be cited as such.
+    const k1 = probeSecp256k1OnTpm(realTpm2LinuxEffects());
+    if (osPlatform() !== "linux") {
+      expect(k1.state).toBe("did-not-run");
+      expect(secp256k1CheckRan(k1.state)).toBeFalse();
+    }
+    expect(["present", "absent", "indeterminate", "did-not-run"]).toContain(k1.state);
+  });
+
+  it("no committed capture yields PRESENT or ABSENT -- the hardware gap is still open", () => {
+    // Twin of the TPM-2.0 guard above. The secp256k1 question is settled by an x86 node
+    // running the capture command, not by this repository agreeing with itself. When that
+    // lands, this test flips red and is deleted in the same commit as the real capture.
+    // Restricted to OBSERVED captures, exactly like the TPM-2.0 guard above. Restricting
+    // to all captures would be vacuous the moment a hand-constructed `absent` fixture
+    // exists -- and one does, deliberately, so the classifier's absent branch is exercised.
+    const settled = (
+      capturesFile.captures as readonly { name: string; provenanceKind: string; capture: Tpm2LinuxCapture }[]
+    )
+      .filter((c) => c.provenanceKind === "observed")
+      .filter((c) => ["present", "absent"].includes(classifySecp256k1(c.capture).state))
+      .map((c) => c.name);
+    expect(settled).toEqual([]);
+  });
+});
+
 describe("the committed captures replay", () => {
   const captures = capturesFile.captures as readonly {
     name: string;
     provenanceKind: string;
     provenance: string;
     expectedState: string;
+    /** Present only on entries that carry a curve reading. Absent is NOT "did-not-run". */
+    expectedSecp256k1?: string;
     capture: Tpm2LinuxCapture;
   }[];
 
@@ -320,6 +468,19 @@ describe("the committed captures replay", () => {
       expect(classifyTpm2Linux(c.capture).state).toBe(c.expectedState as Tpm2State);
     });
   }
+
+  for (const c of captures.filter((x) => x.expectedSecp256k1 !== undefined)) {
+    it(`${c.name} -> secp256k1 ${String(c.expectedSecp256k1)}`, () => {
+      expect(classifySecp256k1(c.capture).state).toBe(c.expectedSecp256k1 as Secp256k1State);
+    });
+  }
+
+  it("the curve captures cover all three answers a caller must tell apart", () => {
+    // Without this, the fixtures could drift to a set that only ever exercises one branch
+    // and the replay above would still be green -- a check that cannot fail.
+    const declared = captures.map((c) => c.expectedSecp256k1).filter((x) => x !== undefined);
+    for (const want of ["absent", "indeterminate", "did-not-run"]) expect(declared).toContain(want);
+  });
 
   it("every capture declares a provenance kind, and hand-constructed ones say so out loud", () => {
     for (const c of captures) {

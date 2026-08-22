@@ -1,0 +1,12 @@
+{
+  "pr_number": 12243,
+  "archive_path": "docs/history/pr-reviews/PR-12243-fix-ci-bind-agent-reviewer-s-approval-claim-to-the-events-it-approves.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-19T02:03:58.231Z",
+  "schema_version": "v1",
+  "commit_sha": "3465e2fc57332266b965711f0cdd8f9ff6bd0c21",
+  "title": "fix(ci): bind agent-reviewer's approval claim to the events it approves",
+  "state": "MERGED",
+  "merged_at": "2026-08-19T02:03:26Z",
+  "head_ref": "security/bind-reviewer-attestation-to-event-evidence"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 12231,
+  "archive_path": "docs/history/pr-reviews/PR-12231-correct-research-the-dark-node-doc-s-glossary-claim-is-wrong-my-brief-was-right-.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-19T00:59:53.282Z",
+  "schema_version": "v1",
+  "commit_sha": "3e6a24b809dd611f9b63eee2d1b68917e6d27117",
+  "title": "correct(research): the dark-node doc's glossary claim is wrong — my brief was right and its check was stale",
+  "state": "MERGED",
+  "merged_at": "2026-08-19T00:59:17Z",
+  "head_ref": "shadow/correct-dark-node-doc-glossary-claim"
+}

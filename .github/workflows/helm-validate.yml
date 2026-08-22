@@ -44,6 +44,14 @@ on:
     types: [opened, reopened, synchronize, ready_for_review]
     paths:
       - "infra/k8s/**"
+      # ADDED 2026-08-20: the SECOND cluster tree. `full-ai-cluster/k8s` is 122
+      # files and ~60 Applications and CI had never rendered one of them --
+      # this lane filtered on `infra/k8s/**` only, so the larger tree changed
+      # without any chart ever being resolved. Its nixos/ directory carries the
+      # `services.k3s.manifests` roster for that tree, so it is included for the
+      # same reason infra/nixos/** is below.
+      - "full-ai-cluster/k8s/**"
+      - "full-ai-cluster/nixos/**"
       # ADDED 2026-08-18: the `services.k3s.manifests` roster that decides which
       # bootstrap manifests K3S applies on first boot lives in
       # infra/nixos/modules/k3s-server.nix, so a rename or deletion THERE breaks
@@ -60,6 +68,8 @@ on:
     paths:
       - "infra/k8s/**"
       # See the note on the pull_request trigger above.
+      - "full-ai-cluster/k8s/**"
+      - "full-ai-cluster/nixos/**"
       - "infra/nixos/**"
       - ".github/workflows/helm-validate.yml"
       - ".mise.toml"
@@ -148,6 +158,16 @@ jobs:
         # under infra/k8s/applications/ ever deployed either. Offline, ~0.2 s.
         run: bun infra/k8s/tests/validate-bootstrap.ts
 
+      - name: Validate the full-ai-cluster K3S bootstrap roster
+        # ADDED 2026-08-20. Same validator, second tree. It is a HARD gate with
+        # no ratchet: measured 52 passed / 0 failed, so it carries no debt to
+        # amortise and simply has to stay green. It checks the roster in BOTH
+        # directions -- a `services.k3s.manifests` entry whose file is missing,
+        # and a file in bootstrap/ that no entry names. Both were confirmed to
+        # go red on this tree before this step was added, by half-removing the
+        # vault manifest each way. Offline, ~0.3 s.
+        run: bun infra/k8s/tests/validate-bootstrap.ts --infra-dir full-ai-cluster
+
       - name: Prove the bootstrap validator can go red (mutation suite)
         # Same discipline as the step above it: 10 cases, one mutation each,
         # asserting exit 1 AND the specific reason, plus an unmutated control
@@ -225,3 +245,45 @@ jobs:
             sleep $((attempt * 30))
           done
           bun infra/k8s/tests/validate-applications.ts --render
+
+      - name: Ratchet the full-ai-cluster tree (render + failure ceiling)
+        # ADDED 2026-08-20. The 122-file, ~60-Application tree at
+        # full-ai-cluster/k8s had NEVER been rendered by CI. Pointing this same
+        # validator at it (it already takes --apps-dir) measured 305 passed /
+        # 29 failed on first contact.
+        #
+        # A naive step would therefore be permanently red, and a permanently-red
+        # lane is one people learn to skim -- it stops carrying signal exactly
+        # when it starts to matter. continue-on-error would be worse: it permits
+        # anything and can never fail, which is a check that constrains nothing.
+        # So this is a RATCHET against a recorded ceiling in
+        # infra/k8s/tests/FULL-AI-CLUSTER-FAILURE-BASELINE.md. It fails if the
+        # count goes UP (regression) and ALSO if it goes DOWN without the
+        # baseline being lowered -- otherwise the ceiling only ever rises and
+        # stops meaning anything, and an earned improvement is silently
+        # re-spendable by the next change.
+        #
+        # WHAT THE CEILING IS MADE OF (23, measured, at the commit named in that
+        # file): 13 ArgoCD-contract gaps (missing prune/selfHeal or
+        # CreateNamespace=true) -- several of which may be DELIBERATE under the
+        # either/or gating convention documented in root-application.yaml, so
+        # they are not simply 'to fix'; 2 for `oz` pinning ziti-controller 1.4.5
+        # when the repo publishes 96 versions and the newest is 3.2.1, a
+        # fictional pin; 4 for sealed-secrets and forgejo whose chart repos now
+        # return HTTP 404; and 4 charts that refuse to render with the values we
+        # hand them (gitlab needs an ACME email, headscale a PVC accessMode,
+        # temporal a cassandra port, arc-runner-set an explicit
+        # controllerServiceAccount.name).
+        #
+        # The opening ceiling is 23 and not 29 because 7 of the original 29 were
+        # VALIDATOR-SCOPE gaps, fixed in validate-applications.ts in the same
+        # commit: 6 from three OCI-registry apps where fetching a Helm repo index
+        # is meaningless, and 1 from assuming root-application.yaml sits under
+        # applications/. Fixing those first matters -- a ceiling that banks false
+        # reds can be 'improved' by fixing nothing. The OCI fix also surfaced one
+        # genuine failure it had been masking.
+        #
+        # No pipe: the ratchet spawns the validator and reads stdout and the exit
+        # code as separate values, and refuses to report a count at all if no
+        # 'Results:' line is present -- an empty run is not zero failures.
+        run: bun infra/k8s/tests/ratchet-app-failures.ts

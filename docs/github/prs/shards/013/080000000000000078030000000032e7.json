@@ -1,0 +1,12 @@
+{
+  "pr_number": 13031,
+  "archive_path": "docs/history/pr-reviews/PR-13031-society-the-agents-never-left-they-were-lexicographically-outranked-and-the-fitn.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-21T02:29:48.162Z",
+  "schema_version": "v1",
+  "commit_sha": "d2819ee6fef5f748d7d56aa3011423d0781692fc",
+  "title": "society: the agents never left — they were LEXICOGRAPHICALLY OUTRANKED, and the fitness proxy saturated",
+  "state": "MERGED",
+  "merged_at": "2026-08-21T02:29:10Z",
+  "head_ref": "society/population-lexicographic-fix"
+}

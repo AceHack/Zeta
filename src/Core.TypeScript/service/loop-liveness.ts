@@ -58,6 +58,25 @@
 // Exit codes:
 //   0 — every INSTALLED cell is healthy (not-installed cells are not failures)
 //   1 — at least one installed cell is failing or stale
+//
+// WHY THERE ARE TWO SUPERVISORS IN HERE (2026-08-18)
+// --------------------------------------------------
+// The classifier below was pure and OS-independent from the first commit; the
+// FACT-GATHERER was macOS-only, and the CLI exited 2 on Linux with
+// "systemd support: future". That put the one liveness check we have on the
+// wrong side of the boundary: the cluster nodes are NixOS/systemd, so the check
+// could not run on the machines it exists to diagnose.
+//
+// The `systemd` half added here is the same shape as the launchd half and makes
+// the same refusal. On launchd the vacuous field was `state`, because a
+// StartInterval loop is SUPPOSED to be "not running" between ticks. The systemd
+// analogue is exact: `adapters/systemd.ts` installs a `Type=oneshot` service
+// driven by a `.timer`, so the service's `ActiveState=inactive` between ticks is
+// likewise normal — and `SystemdAdapter.status()` keys on `is-active <unit>.timer`,
+// which stays `active` while every single invocation fails. Same conflation, one
+// layer over. The discriminators are `Result` and `ExecMainStatus`, and BOTH are
+// needed: a run killed by `TimeoutStartSec` reports `Result=timeout` with
+// `ExecMainStatus=0`, so the exit code alone would call a timed-out loop healthy.
 //   2 — tooling / input error
 
 import { readFileSync, existsSync } from "node:fs";
@@ -71,16 +90,38 @@ import { defaultPaths } from "./env-schema";
 // No IO here, so it is directly testable and DST-replayable.
 // ---------------------------------------------------------------------------
 
+/**
+ * Which OS supervisor produced the facts. Names the SOURCE of the observation,
+ * never a verdict about it — the classification stays one total function over
+ * both, which is the whole reason the check is portable at all.
+ */
+export type Supervisor = "launchd" | "systemd";
+
 /** Raw facts about one cell, gathered by the IO shell (or supplied by a test). */
 export interface CellFacts {
   readonly persona: string;
   readonly label: string;
-  /** false when `launchctl print` could not find the unit at all. */
+  /** Which supervisor was probed. */
+  readonly supervisor: Supervisor;
+  /** false when the supervisor could not find the unit at all. */
   readonly unitFound: boolean;
-  /** launchd's `last exit code = N`. undefined when absent/unparsed. */
+  /**
+   * The last run's exit status: launchd `last exit code = N`,
+   * systemd `ExecMainStatus=N`. undefined when absent/unparsed.
+   */
   readonly lastExitCode: number | undefined;
-  /** launchd's `state = ...` line, verbatim. */
-  readonly launchdState: string | undefined;
+  /**
+   * The supervisor's own verdict that the last run did not succeed, INDEPENDENT
+   * of the exit code. systemd fills it from `Result=` (`timeout`, `signal`,
+   * `core-dump`, … all pair with `ExecMainStatus=0`); launchd has no separate
+   * field and leaves it undefined. Carried separately rather than folded into
+   * `lastExitCode` because a zero exit code from a killed process is a real
+   * observation, and collapsing it would rebuild the vacuity this module exists
+   * to refuse.
+   */
+  readonly lastRunFailed: boolean | undefined;
+  /** The supervisor's state line, verbatim (launchd `state = …`, systemd `ActiveState=…`). */
+  readonly supervisorState: string | undefined;
   /** ms since the heartbeat artifact's `updated_at`. undefined when no artifact. */
   readonly heartbeatAgeMs: number | undefined;
   /** Age beyond which a heartbeat is stale, in ms. */
@@ -106,7 +147,7 @@ export function classify(facts: CellFacts): CellReport {
   const base = { persona: facts.persona, label: facts.label };
 
   if (!facts.unitFound) {
-    return { ...base, verdict: "not-installed", reason: "no launchd unit for this label" };
+    return { ...base, verdict: "not-installed", reason: `no ${facts.supervisor} unit for this label` };
   }
 
   // THE discriminator the old ServiceState threw away.
@@ -114,7 +155,18 @@ export function classify(facts: CellFacts): CellReport {
     return {
       ...base,
       verdict: "failing",
-      reason: `launchd last exit code = ${facts.lastExitCode}${facts.lastExitCode === 78 ? " (EX_CONFIG — bad program path or plist)" : ""}`,
+      reason: `${facts.supervisor} last exit code = ${facts.lastExitCode}${explainExitCode(facts.supervisor, facts.lastExitCode)}`,
+    };
+  }
+
+  // The second discriminator, and it is not redundant: a run the supervisor
+  // killed reports success-shaped exit status. Checked AFTER the exit code so
+  // the more specific number is reported when both are available.
+  if (facts.lastRunFailed === true) {
+    return {
+      ...base,
+      verdict: "failing",
+      reason: `${facts.supervisor} reports the last run did not succeed (${facts.supervisorState ?? "no state reported"})`,
     };
   }
 
@@ -137,6 +189,17 @@ export function classify(facts: CellFacts): CellReport {
   };
 }
 
+/**
+ * Gloss the exit codes that each supervisor uses for "I could not start your
+ * program at all" — the failure that hid the two-month outage. They are the
+ * same defect reported by two different numbers.
+ */
+function explainExitCode(supervisor: Supervisor, code: number): string {
+  if (supervisor === "launchd" && code === 78) return " (EX_CONFIG — bad program path or plist)";
+  if (supervisor === "systemd" && code === 203) return " (EXIT_EXEC — systemd could not execute the program)";
+  return "";
+}
+
 /** A run fails when any INSTALLED cell is not healthy. */
 export function isFailure(reports: readonly CellReport[]): boolean {
   return reports.some((r) => r.verdict === "failing" || r.verdict === "stale");
@@ -156,6 +219,47 @@ export function parseLaunchctlPrint(stdout: string): {
   return {
     lastExitCode: exitMatch ? Number(exitMatch[1]) : undefined,
     launchdState: stateMatch ? stateMatch[1]!.trim() : undefined,
+  };
+}
+
+/**
+ * Parse the fields we care about out of `systemctl --user show <unit>` output.
+ *
+ * `show` emits `Key=Value` one per line and — unlike `status` — is stable,
+ * non-localised, and does not paginate, so it is the honest machine surface.
+ * A unit systemd has never heard of still exits 0 and reports
+ * `LoadState=not-found`, which is why `unitFound` is read from the field rather
+ * than from the exit status.
+ */
+export function parseSystemctlShow(stdout: string): {
+  unitFound: boolean;
+  lastExitCode: number | undefined;
+  lastRunFailed: boolean | undefined;
+  activeState: string | undefined;
+} {
+  const fields = new Map<string, string>();
+  for (const line of stdout.split(/\r?\n/)) {
+    const eq = line.indexOf("=");
+    if (eq <= 0) continue;
+    fields.set(line.slice(0, eq), line.slice(eq + 1).trim());
+  }
+
+  const loadState = fields.get("LoadState");
+  const result = fields.get("Result");
+  const execMainStatus = fields.get("ExecMainStatus");
+  const activeState = fields.get("ActiveState");
+
+  const parsedStatus = execMainStatus === undefined ? Number.NaN : Number(execMainStatus);
+
+  return {
+    // Absent LoadState means we did not get a usable answer at all; treat that
+    // as not-found rather than inventing a healthy reading (fail-closed).
+    unitFound: loadState !== undefined && loadState !== "not-found",
+    lastExitCode: Number.isNaN(parsedStatus) ? undefined : parsedStatus,
+    // `Result` is systemd's own verdict. Undefined when the field is absent so
+    // the classifier can tell "succeeded" from "was never reported".
+    lastRunFailed: result === undefined ? undefined : result !== "success",
+    activeState,
   };
 }
 
@@ -202,9 +306,60 @@ export function candidateLabels(persona: string): readonly string[] {
   return registryLabel === bootstrapLabel ? [registryLabel] : [registryLabel, bootstrapLabel];
 }
 
-/** Gather facts for one persona from the live machine. */
+/**
+ * The systemd unit `adapters/systemd.ts` installs for a persona.
+ *
+ * Only ONE name is probed here, unlike the launchd side's two-scheme drift: the
+ * systemd adapter is the sole thing that has ever written these units, so a
+ * second candidate would be a guess rather than an observed naming scheme.
+ */
+export function systemdUnitName(persona: string): string {
+  return `zeta-loop-${persona}.service`;
+}
+
+/** How stale a heartbeat may be before the cell is not doing its job. */
+function staleAfterMsFor(persona: string): number {
+  // Three missed ticks is the stale threshold: one missed tick can be a slow
+  // agent gate, three in a row is the scheduler not running the loop.
+  return (getPersona(persona)?.scheduleInterval ?? 60) * 3 * 1000;
+}
+
+/** Gather facts for one persona from a live systemd (user-session) machine. */
+export function gatherSystemd(persona: string, now: number): CellFacts {
+  const label = systemdUnitName(persona);
+  const paths = defaultPaths(persona);
+
+  const shown = spawnSync(
+    "systemctl",
+    ["--user", "show", label, "--property=LoadState,ActiveState,Result,ExecMainStatus"],
+    { encoding: "utf8" },
+  );
+
+  const parsed =
+    shown.status === 0
+      ? parseSystemctlShow(shown.stdout ?? "")
+      : { unitFound: false, lastExitCode: undefined, lastRunFailed: undefined, activeState: undefined };
+
+  return {
+    persona,
+    label,
+    supervisor: "systemd",
+    unitFound: parsed.unitFound,
+    lastExitCode: parsed.lastExitCode,
+    lastRunFailed: parsed.lastRunFailed,
+    supervisorState: parsed.activeState,
+    heartbeatAgeMs: heartbeatAgeMs(paths.stateDir, persona, now),
+    staleAfterMs: staleAfterMsFor(persona),
+  };
+}
+
+/** Gather facts for one persona from the live machine, whichever supervisor it runs. */
 export function gather(persona: string, now: number): CellFacts {
-  const config = getPersona(persona);
+  return process.platform === "darwin" ? gatherLaunchd(persona, now) : gatherSystemd(persona, now);
+}
+
+/** Gather facts for one persona from a live launchd machine. */
+export function gatherLaunchd(persona: string, now: number): CellFacts {
   const paths = defaultPaths(persona);
 
   // Probe every candidate label; the first launchd actually knows about wins.
@@ -223,18 +378,18 @@ export function gather(persona: string, now: number): CellFacts {
     }
   }
 
-  // Three missed ticks is the stale threshold: one missed tick can be a slow
-  // agent gate, three in a row is the scheduler not running the loop.
-  const staleAfterMs = (config?.scheduleInterval ?? 60) * 3 * 1000;
-
   return {
     persona,
     label,
+    supervisor: "launchd",
     unitFound,
     lastExitCode,
-    launchdState,
+    // launchd has no field separate from the exit code; saying so explicitly
+    // keeps "not reported" distinct from "reported success".
+    lastRunFailed: undefined,
+    supervisorState: launchdState,
     heartbeatAgeMs: heartbeatAgeMs(paths.stateDir, persona, now),
-    staleAfterMs,
+    staleAfterMs: staleAfterMsFor(persona),
   };
 }
 
@@ -271,11 +426,9 @@ if (import.meta.main) {
   const only = personaIdx !== -1 ? argv[personaIdx + 1] : undefined;
   const asJson = argv.includes("--json");
 
-  if (process.platform !== "darwin") {
-    console.error("loop-liveness: launchd probing is macOS-only (systemd support: future)");
-    process.exit(2);
-  }
-
+  // Deliberately NOT gated on platform any more. The check refusing to run on
+  // Linux meant the cluster nodes — the machines with the most ways to break —
+  // were the ones it could not see. `gather` dispatches on the supervisor.
   const now = Date.now();
   const targets = only ? [only] : listPersonas().map((p) => p.name);
   const reports = targets.map((p) => classify(gather(p, now)));

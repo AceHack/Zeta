@@ -181,8 +181,8 @@ layer) — the parts that live outside the engine.
 - Ryan Blue (Iceberg) — open lakehouse discussion.
 - `.claude/skills/data-modeling-and-ontology/blueprints/data-vault-expert.md` — modelling
   counterpart.
-- `.claude/skills/data-quality-expert/SKILL.md` through
-  `.claude/skills/event-sourcing-expert/SKILL.md` — the
+- `.claude/skills/data-modeling-and-ontology/SKILL.md` through
+  `.claude/skills/data-modeling-and-ontology/SKILL.md` — the
   narrower ops specialists listed in the description.
 - `.claude/skills/performance-and-runtime-ops/blueprints/observability-and-tracing-expert.md`
   — system-level sibling.

@@ -295,7 +295,7 @@ sidecar.
   — three-pillar umbrella.
 - `.claude/skills/performance-and-runtime-ops/blueprints/alerting-expert.md` — alert-rule
   design.
-- `.claude/skills/metrics-store-expert/SKILL.md` — storage
+- `.claude/skills/performance-and-runtime-ops/SKILL.md` — storage
   engine.
 - `.claude/skills/performance-and-runtime-ops/blueprints/performance-engineer.md` —
   consumer of these metrics.

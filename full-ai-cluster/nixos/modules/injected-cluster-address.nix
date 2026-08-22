@@ -65,7 +65,22 @@
 #
 # Specifically NOT verified: that NetworkManager picks up the keyfile below,
 # that MAC-based matching selects the segment NIC and not the NAT NIC, and
-# that the resulting route lets a joiner reach 6443 on the founder.
+# that the resulting route lets a joiner reach 6443 on the founder. Those three
+# need a booted guest on a real segment; the paragraph below did not.
+#
+# MEASURED 2026-08-21 (Determinate Nix 3.21.0 / Nix 2.34.6), no hardware:
+#
+#     builtins.pathExists "<absolute path>"  in pure eval -> false, no error
+#     builtins.readFile   "<absolute path>"  in pure eval -> error, loud
+#
+# A flake ref evaluates PURE by default, and `readTrimmed` below guards its
+# `readFile` behind a `pathExists`. So under a pure `nixos-rebuild switch
+# --flake ...` this module does not fail — it reports every file absent and
+# hands back `null`, the node keeps DHCP, and the whole static-addressing
+# provisioning silently disappears. `zeta-install.sh` passes `--impure` to
+# `nixos-install`; every `nixos-rebuild` string in this repo now passes it too,
+# and `src/Core.TypeScript/hygiene/lint-nixos-rebuild-needs-impure.ts` is the
+# check that keeps it true.
 
 { config, lib, ... }:
 

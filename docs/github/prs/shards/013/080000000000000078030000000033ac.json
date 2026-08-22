@@ -1,0 +1,12 @@
+{
+  "pr_number": 13228,
+  "archive_path": "docs/history/pr-reviews/PR-13228-fix-cluster-two-measure-it-on-metal-claims-settled-without-metal-and-both-were-b.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-21T15:30:57.559Z",
+  "schema_version": "v1",
+  "commit_sha": "e15299e0baf5ce00bcc7ed2d7d0b61b9c0587b2e",
+  "title": "fix(cluster): two \"measure it on metal\" claims settled without metal — and both were bugs",
+  "state": "MERGED",
+  "merged_at": "2026-08-21T15:30:17Z",
+  "head_ref": "audit/unverified-assumptions-that-need-no-hardware"
+}

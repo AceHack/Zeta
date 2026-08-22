@@ -23,6 +23,8 @@ concurrency:
 
 jobs:
   build:
+    # Timeout basis: observed med 1.1m / max 3.9m (n=26).
+    timeout-minutes: 10
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -84,6 +86,8 @@ jobs:
 
   deploy:
     needs: build
+    # Timeout basis: observed med 0.5m / max 7.0m (n=26); tail is the Pages API deployment wait.
+    timeout-minutes: 15
     runs-on: ubuntu-latest
     environment:
       name: github-pages

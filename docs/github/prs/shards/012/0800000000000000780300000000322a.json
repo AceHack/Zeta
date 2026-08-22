@@ -1,0 +1,12 @@
+{
+  "pr_number": 12842,
+  "archive_path": "docs/history/pr-reviews/PR-12842-vision-state-what-zeta-is-for-measuring-decorrelation-so-release-from-control-is.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-20T16:13:27.993Z",
+  "schema_version": "v1",
+  "commit_sha": "8658b2a8e5b7569b96581008e80af7cca5575a84",
+  "title": "vision: state what Zeta is FOR — measuring decorrelation so release-from-control is an evidence decision",
+  "state": "MERGED",
+  "merged_at": "2026-08-20T16:12:54Z",
+  "head_ref": "vision/what-zeta-is-for"
+}

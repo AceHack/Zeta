@@ -78,10 +78,37 @@ import { platform } from "node:os";
 import * as readline from "node:readline/promises";
 import { stdin, stdout } from "node:process";
 
-const MIN_ISO_BYTES = 200 * 1024 * 1024;
-const MAX_ISO_BYTES = 8 * 1024 * 1024 * 1024;
-const MIN_USB_BYTES = 4 * 1024 * 1024 * 1024;
-const MAX_USB_BYTES = 256 * 1024 * 1024 * 1024;
+import { establishIsoIntegrity, realIsoIntegrityIo } from "./iso-integrity.ts";
+import {
+  checkDeviceIdentity,
+  checkStatedPin,
+  classifyDeviceState,
+  DEFAULT_HEAD_SAMPLE_BYTES,
+  DEFAULT_READBACK_CHUNK_BYTES,
+  openChunkReader,
+  sampleHeadDigests,
+  verifyReadBack,
+  ZETA_INSTALL_VOLUME_LABEL,
+  type ChunkReader,
+  type DeviceIdentity,
+  type ObservedPartition,
+  type StatedTargetPin,
+} from "./verify.ts";
+import { MAX_ISO_BYTES, MAX_USB_BYTES, MIN_ISO_BYTES, MIN_USB_BYTES } from "./size-bounds.ts";
+
+
+/**
+ * The typed acknowledgement for a half-provisioned device.
+ *
+ * Fixed text, no nonce: the nonce belongs to the destroy challenge, where its
+ * job is to prove the runner observed THIS run. This phrase has a different
+ * job -- it proves the runner read the VERDICT -- so it names the state and
+ * nothing else. cli.ts matches this line to answer it in --agent mode, so the
+ * two-space indent it is printed with is part of the contract.
+ */
+const HALF_PROVISIONED_ACK = "ack half-provisioned";
+
+
 
 function bail(code: number, msg: string): never {
   process.stderr.write(`flash-usb: ${msg}\n`);
@@ -125,6 +152,26 @@ function diskutilInfo(device: string): Record<string, unknown> {
   return plistToJson(xml) as Record<string, unknown>;
 }
 
+/**
+ * Read the five identifying fields, as a value that can be COMPARED.
+ *
+ * These exact fields were already being read and printed. Lifting them into a
+ * value is the whole change: a printed field informs, a compared field
+ * refuses.
+ */
+function readIdentity(device: string): DeviceIdentity {
+  const info = diskutilInfo(device);
+  return {
+    devicePath: device,
+    sizeBytes: Number(info.TotalSize ?? 0),
+    mediaName: String(info.MediaName ?? info.IORegistryEntryName ?? "?"),
+    busProtocol: String(info.BusProtocol ?? ""),
+    removableMedia:
+      info.RemovableMedia === true || info.RemovableMediaOrExternalDevice === true,
+    internal: info.Internal === true,
+  };
+}
+
 function bootDiskIdentifier(): string {
   // `mount` output -> find row mounting `/` -> extract diskN.
   const mountOut = execFileSync("mount", [], { encoding: "utf8" });
@@ -132,6 +179,55 @@ function bootDiskIdentifier(): string {
   if (!rootMount) return "";
   const m = rootMount.match(/^\/dev\/(disk\d+)/);
   return m?.[1] ?? "";
+}
+
+/**
+ * Read a raw device through sudo, as a ChunkReader.
+ *
+ * MEASURED, 2026-08-21, and the reason this exists: /dev/rdisk6 on this Mac is
+ * crw-r----- root:operator and the maintainer is not in the operator group, so
+ * an unprivileged openSync("/dev/rdisk6", "r") throws EACCES. Every read of a
+ * device from this tool therefore has to go through sudo -- including the
+ * read-back verify at step 7, which until now used the unprivileged shim and
+ * would have failed on every real flash AFTER a successful dd.
+ *
+ * READ-ONLY BY CONSTRUCTION. The argv below has an if= and no of=, so dd
+ * writes to stdout and there is no code path here that can name an output
+ * device. argv-array form, never a shell string; the path is re-validated
+ * against the /dev/rdiskN shape on the way in.
+ */
+function privilegedDeviceReader(rawDevicePath: string, blockBytes: number): ChunkReader {
+  if (!/^\/dev\/rdisk\d+$/.test(rawDevicePath)) {
+    bail(2, `unsafe raw device path: ${rawDevicePath}`);
+  }
+  if (!Number.isSafeInteger(blockBytes) || blockBytes <= 0) {
+    bail(2, `invalid privileged-read block size: ${String(blockBytes)}`);
+  }
+  return {
+    read(offset: number, length: number): Uint8Array {
+      if (offset % blockBytes !== 0) {
+        bail(
+          2,
+          `internal: privileged read offset ${String(offset)} is not a multiple of ` +
+            `the ${String(blockBytes)}-byte block size; dd skip= counts blocks, so a ` +
+            `misaligned offset would silently read the WRONG range`,
+        );
+      }
+      const blocks = Math.ceil(length / blockBytes);
+      const out = execFileSync(
+        "sudo",
+        [
+          "dd",
+          `if=${rawDevicePath}`,
+          `bs=${String(blockBytes)}`,
+          `skip=${String(offset / blockBytes)}`,
+          `count=${String(blocks)}`,
+        ],
+        { maxBuffer: blocks * blockBytes + 1024 * 1024, stdio: ["ignore", "pipe", "ignore"] },
+      );
+      return new Uint8Array(out.buffer, out.byteOffset, Math.min(out.length, length));
+    },
+  };
 }
 
 // Whitelist of safe device-identifier shapes. Belt-and-suspenders
@@ -154,10 +250,24 @@ async function main() {
   // accepting unknown flags like `--dry-run` or a misspelled `--short`
   // would proceed to sudo dd despite operator intent. Bail explicitly
   // on any unrecognized flag.
-  const ALLOWED_FLAGS = new Set(["--short", "--no-eject", "-h", "--help"]);
+  const ALLOWED_FLAGS = new Set([
+    "--short",
+    "--no-eject",
+    "--accept-unrecognized",
+    "--accept-half-provisioned",
+    "-h",
+    "--help",
+  ]);
+  // Flags that carry a value as --name=value. These are the caller's stated
+  // expectation about the target device (see section 4b).
+  const VALUE_FLAGS = new Set(["--expect-device", "--expect-size", "--expect-model"]);
   const rawFlags = argv.filter((a) => a.startsWith("-"));
   const positional = argv.filter((a) => !a.startsWith("-"));
-  const unknownFlags = rawFlags.filter((f) => !ALLOWED_FLAGS.has(f));
+  const flagName = (f: string): string =>
+    f.includes("=") ? f.slice(0, f.indexOf("=")) : f;
+  const unknownFlags = rawFlags.filter(
+    (f) => !ALLOWED_FLAGS.has(f) && !VALUE_FLAGS.has(flagName(f)),
+  );
   if (unknownFlags.length > 0) {
     bail(
       2,
@@ -167,16 +277,47 @@ async function main() {
     );
   }
   const flags = new Set(rawFlags);
+  const acceptUnrecognized = flags.has("--accept-unrecognized");
+  const acceptHalfProvisioned = flags.has("--accept-half-provisioned");
+  // Value-flag extraction. A value flag with no "=value" is a refusal rather
+  // than a silent null -- an operator who meant to pin the target and
+  // mistyped the syntax must not get the unpinned path by accident.
+  const valueOf = (name: string): string | null => {
+    const hit = rawFlags.find((f) => flagName(f) === name);
+    if (hit === undefined) return null;
+    const eq = hit.indexOf("=");
+    const v = eq < 0 ? "" : hit.slice(eq + 1);
+    if (v.length === 0) bail(2, "flag " + name + " needs a value, as " + name + "=VALUE");
+    return v;
+  };
+  const expectDevice = valueOf("--expect-device");
+  const expectModel = valueOf("--expect-model");
+  const expectSizeRaw = valueOf("--expect-size");
+  const expectSize = expectSizeRaw === null ? null : Number(expectSizeRaw);
+  if (expectSize !== null && !Number.isSafeInteger(expectSize)) {
+    bail(2, "--expect-size must be a whole number of bytes, got " + String(expectSizeRaw));
+  }
   const useShortChallenge = flags.has("--short");
   const noEject = flags.has("--no-eject");
   const isHelp = flags.has("-h") || flags.has("--help");
   if (isHelp || positional.length !== 1) {
     process.stdout.write(
-      "Usage: bun full-ai-cluster/tools/flash-usb.ts [--short] [--no-eject] <path-to-iso>\n" +
-        "  --short      use shorter `yes <4-hex>` challenge format\n" +
+      "Usage: bun src/Core.TypeScript/zflash/flash-usb.ts [flags] <path-to-iso>\n" +
+        "  --short      use shorter yes-<4-hex> challenge format\n" +
         "  --no-eject   leave the USB attached after dd (for downstream tooling\n" +
-        "               like zflash's iter-4.2 ESP-mount + pubkey-inject step;\n" +
-        "               downstream MUST eject itself when done)\n",
+        "               like zflash's iter-4.2 ESP-mount + pubkey-inject step,\n" +
+        "               downstream MUST eject itself when done)\n" +
+        "  --expect-device=/dev/diskN   state the target instead of discovering it\n" +
+        "  --expect-size=BYTES          state the exact device size\n" +
+        "  --expect-model=NAME          state the exact diskutil MediaName\n" +
+        "  --accept-unrecognized        proceed on a device whose state is not a\n" +
+        "                               shape zflash put there (somebody else's data)\n" +
+        "  --accept-half-provisioned    answer the half-provisioned acknowledgement\n" +
+        "                               non-interactively (for scripted callers)\n" +
+        "\n" +
+        "The ISO is verified against a SHA256SUMS or <iso>.sha256 manifest beside it\n" +
+        "BEFORE any device is enumerated, and the written bytes are read back and\n" +
+        "compared after dd. Neither step has an opt-out.\n",
     );
     process.exit(isHelp && positional.length === 0 ? 0 : 2);
   }
@@ -211,6 +352,26 @@ async function main() {
     );
   }
   process.stdout.write(`ISO: ${isoPath} (${human(isoStat.size)})\n`);
+
+  // ── 2b. VERIFY BEFORE WRITE ────────────────────────────────
+  //
+  // Until now zflash established the ISO's SIZE and nothing else. CI cosign-
+  // signs the x86 ISO and computes a SHA-256, but writes it only to
+  // GITHUB_OUTPUT and the step summary -- so there was nothing on disk beside
+  // the ISO to check it against, and nothing checked it.
+  //
+  // This is a REFUSAL, not a warning: non-zero exit, no device touched, before
+  // any enumeration happens.
+  //
+  // The block that used to sit here — candidate list, read, hash, refuse — now
+  // lives in ./iso-integrity.ts, because the Linux and Windows arms need the
+  // same gate and had none. One definition, three call sites; the alternative
+  // was three copies under a comment claiming they matched.
+  {
+    const integrity = await establishIsoIntegrity(isoPath, realIsoIntegrityIo());
+    if (!integrity.ok) bail(2, integrity.message);
+    process.stdout.write(integrity.report);
+  }
 
   // ── 3. Enumerate USB devices ───────────────────────────────
   const list = diskutilListPlist() as {
@@ -283,9 +444,67 @@ async function main() {
 
   const bootDisk = bootDiskIdentifier();
   const deviceShort = device.replace("/dev/", "");
+  // /dev/rdiskN is the raw character device -- ~10x faster than the buffered
+  // /dev/diskN on macOS, and the only handle the privileged reader accepts.
+  // Declared here rather than at the write step because the head-digest sample
+  // below reads from it BEFORE any consent is asked for.
+  const rawDevice = `/dev/r${deviceShort}`;
   if (bootDisk && deviceShort === bootDisk) {
     bail(2, `device ${device} IS the boot disk; refusing to overwrite`);
   }
+
+  // ── 4b. DEVICE IDENTITY: STATED, then checked ──────────────
+  //
+  // The principle, stated once so the code below is legible: a tool that
+  // selects "the external disk" is one plugged-in phone away from destroying
+  // it. The target must never be discovered dynamically.
+  //
+  // Until 2026-08-21 this block built its own expectation by falling back to
+  // the OBSERVED value field by field, so with no --expect-* flag the first
+  // identity check compared the observed device to itself and printed a
+  // warning. cli.ts never passed --expect-*, so that was the only path anyone
+  // used. A check that cannot fail is not a check.
+  //
+  // There are now two comparisons, and neither has a fallback:
+  //   1. the caller STATED pin  vs  what enumeration found      (here)
+  //   2. the enumeration SNAPSHOT vs a fresh read before dd     (step 5c)
+  // (2) is the TOCTOU guard: two observations taken at different times, which
+  // is a real comparison. (1) is the wrong-disk guard, and it is the only one
+  // that can catch "the tool picked a disk you did not mean".
+  const observedIdentity = readIdentity(device);
+  if (expectDevice === null || expectSize === null || expectModel === null) {
+    bail(
+      2,
+      "UNPINNED TARGET -- this device was DISCOVERED, not stated, and a tool that\n" +
+        "  discovers its own target is one plugged-in phone away from destroying it.\n" +
+        "  Re-run naming the target:\n\n" +
+        "    --expect-device=" + observedIdentity.devicePath +
+        " --expect-size=" + String(observedIdentity.sizeBytes) +
+        " --expect-model=" + JSON.stringify(observedIdentity.mediaName) + "\n\n" +
+        "  (the zflash wrapper passes these for you, from the device it shows you)\n" +
+        "  No device has been touched.",
+    );
+  }
+  const statedPin: StatedTargetPin = {
+    devicePath: expectDevice,
+    sizeBytes: expectSize,
+    mediaName: expectModel,
+  };
+  {
+    const pinCheck = checkStatedPin(statedPin, observedIdentity);
+    if (!pinCheck.ok) bail(2, pinCheck.error);
+  }
+  process.stdout.write(
+    "Target PINNED by the caller: " +
+      statedPin.devicePath +
+      "  " +
+      String(statedPin.sizeBytes) +
+      " bytes  " +
+      statedPin.mediaName +
+      "\n",
+  );
+
+
 
   // ── 5. Display + responsibility-acceptance confirmation ────
   //
@@ -383,6 +602,165 @@ async function main() {
   }
   process.stdout.write("\n");
 
+  // ── 4c. CLASSIFY the device state ──────────────────────────
+  //
+  // The partition table above used to be printed and thrown away: blank,
+  // half-written and correctly-flashed devices all took the same code path.
+  // Now it is evidence for a closed-union verdict.
+  //
+  // The classifier reports a FACT, never an authorization -- the policy below
+  // is the policy of this tool, not a property of the classifier.
+  const observedPartitions: ObservedPartition[] = [];
+  for (const p of partitions) {
+    const partDev = "/dev/" + p.DeviceIdentifier;
+    const pInfo = diskutilInfo(partDev);
+    const fsRaw = pInfo.FilesystemName ?? pInfo.FilesystemUserVisibleName ?? null;
+    const volRaw = p.VolumeName ?? pInfo.VolumeName ?? null;
+    observedPartitions.push({
+      identifier: p.DeviceIdentifier,
+      content: String(p.Content ?? pInfo.Content ?? "?"),
+      sizeBytes: Number(p.Size ?? pInfo.TotalSize ?? 0),
+      volumeName: typeof volRaw === "string" && volRaw.length > 0 ? volRaw : null,
+      filesystem: typeof fsRaw === "string" && fsRaw.length > 0 ? fsRaw : null,
+    });
+  }
+
+  // ── 4c-i. SUPPLY R1 WITH ITS INPUTS ────────────────────────
+  //
+  // R1 of the classifier detects "labelled ZETA_INSTALL, but the head bytes
+  // disagree with the ISO" -- a stick that LOOKS provisioned and holds the
+  // wrong image. Until now the only caller that ever supplied its two digest
+  // fields was the test file, so on the live path R1 could not fire and such a
+  // stick classified as "provisioned": the precise misread R1 was written to
+  // prevent, green in tests and unreachable in life.
+  //
+  // The sample is taken ONLY when the label is present, because that is the
+  // only case R1 speaks to -- and because reading a device costs a sudo prompt
+  // (see privilegedDeviceReader for why it must).
+  const labelled = observedPartitions.some(
+    (p) => p.volumeName === ZETA_INSTALL_VOLUME_LABEL,
+  );
+  let headDigestHex: string | null = null;
+  let expectedHeadDigestHex: string | null = null;
+  let headSampleError: string | null = labelled
+    ? null
+    : "no " + ZETA_INSTALL_VOLUME_LABEL + " label on this device, so there is nothing to compare";
+  if (labelled) {
+    process.stdout.write(
+      "This device carries the " + ZETA_INSTALL_VOLUME_LABEL + " label, so the first " +
+        String(DEFAULT_HEAD_SAMPLE_BYTES) + " bytes are being read back and\n" +
+        "compared against the ISO. This is a READ. It needs sudo because " + rawDevice + "\n" +
+        "is root:operator and this process is neither.\n",
+    );
+    const isoReader = openChunkReader(isoPath);
+    try {
+      const sample = sampleHeadDigests(
+        isoReader,
+        privilegedDeviceReader(rawDevice, DEFAULT_HEAD_SAMPLE_BYTES),
+        DEFAULT_HEAD_SAMPLE_BYTES,
+      );
+      if (sample.ok) {
+        headDigestHex = sample.deviceHeadDigestHex;
+        expectedHeadDigestHex = sample.isoHeadDigestHex;
+      } else {
+        headSampleError = sample.error;
+      }
+    } catch (e: unknown) {
+      // A failed sample is reported, never swallowed. It leaves R1 unable to
+      // fire, which the classifier then says out loud as a LABEL-ONLY verdict.
+      headSampleError =
+        "could not read the device head: " + (e instanceof Error ? e.message : String(e));
+    } finally {
+      isoReader.close();
+    }
+  }
+
+  const classification = classifyDeviceState({
+    partitionScheme: partitionTable === "?" ? "" : partitionTable,
+    partitions: observedPartitions,
+    totalSizeBytes: size,
+    headDigestHex,
+    expectedHeadDigestHex,
+    headSampleError,
+  });
+  process.stdout.write(
+    "Device state:  " + classification.state + "  (" + classification.rule + ")\n" +
+      "  " + classification.reason + "\n" +
+      "  head digest checked: " + (classification.headDigestChecked ? "yes" : "NO") + "\n\n",
+  );
+
+  // ── 4d. POLICY on the classified state ─────────────────────
+  //
+  // Detection landed without policy: only "unrecognized" blocked, and
+  // "half-provisioned" was printed and then walked straight into the destroy
+  // prompt. Two states, two different answers, because the costs are not
+  // symmetric.
+  //
+  //   unrecognized -> REFUSE. Being wrong here means destroying somebody
+  //     else's data, which is the one outcome that cannot be undone by
+  //     re-running the tool. --accept-unrecognized is the deliberate override.
+  //
+  //   half-provisioned -> ACKNOWLEDGE, never refuse. An interrupted write is
+  //     one of the most common LEGITIMATE reasons to re-flash a stick. A hard
+  //     refusal would block the ordinary repair path and would train operators
+  //     to reach for an override flag by reflex, which is how an override
+  //     stops meaning anything. So the operator types the state name once, in
+  //     this same run, before the destroy challenge: it never blocks, it
+  //     cannot be satisfied without having read the verdict, and it leaves in
+  //     the transcript a record of WHAT was destroyed rather than only that
+  //     consent was given. --accept-half-provisioned exists so a
+  //     non-interactive caller can be explicit rather than hang.
+  //
+  // The destroy challenge itself is deliberately NOT changed. Its two phrase
+  // formats are a cross-arm parity contract pinned by flash-usb-linux.test.ts,
+  // and the Linux arm has no classifier with which to name a state.
+  if (classification.state === "unrecognized" && !acceptUnrecognized) {
+    bail(
+      2,
+      "device state is UNRECOGNIZED -- this is not a shape zflash put here, so it\n" +
+        "may be somebody else's data. Refusing.\n" +
+        "  " + classification.reason + "\n" +
+        "If you are certain, re-run with --accept-unrecognized.",
+    );
+  }
+
+  // One readline interface for BOTH prompts. Two interfaces in sequence would
+  // race on a piped stdin: the first buffers whatever arrived with the line it
+  // read, and closing it discards the rest, so the second would wait forever
+  // for input that had already been consumed.
+  const rl = readline.createInterface({ input: stdin, output: stdout });
+  const closeAndBail = (code: number, msg: string): never => {
+    rl.close();
+    bail(code, msg);
+  };
+
+  if (classification.state === "half-provisioned") {
+    if (acceptHalfProvisioned) {
+      process.stdout.write(
+        "(--accept-half-provisioned: state acknowledged non-interactively)\n\n",
+      );
+    } else {
+      process.stdout.write(
+        "This device is HALF-PROVISIONED. Either a previous write started and did\n" +
+          "not finish, or its label and its actual bytes disagree. Re-flashing is\n" +
+          "the normal repair for that, so this is NOT a refusal -- but the state is\n" +
+          "acknowledged deliberately before anything is destroyed.\n\n" +
+          "Type EXACTLY (case-sensitive, single line):\n\n",
+      );
+      process.stdout.write("  " + HALF_PROVISIONED_ACK + "\n\n");
+      const ack = await rl.question("> ");
+      if (ack !== HALF_PROVISIONED_ACK) {
+        closeAndBail(
+          1,
+          "device state was NOT acknowledged.\n" +
+            "  expected: " + HALF_PROVISIONED_ACK + "\n" +
+            "  got:      " + (ack || "(empty)") + "\nAborted.",
+        );
+      }
+    }
+  }
+
+
   process.stdout.write(`*** ALL DATA ON ${device} WILL BE DESTROYED ***\n\n`);
   process.stdout.write(
     "By completing the confirmation prompt below, the runner\n" +
@@ -394,7 +772,6 @@ async function main() {
   );
   process.stdout.write(`  ${acceptancePhrase}\n\n`);
 
-  const rl = readline.createInterface({ input: stdin, output: stdout });
   // readline strips the trailing newline; no .trim() — "EXACTLY" must
   // mean EXACTLY. Whitespace tolerance would undermine the gate
   // (a piped `accept-destroy ... <nonce>\n` would otherwise pass).
@@ -411,13 +788,34 @@ async function main() {
     );
   }
 
+  // ── 5c. RE-READ identity immediately before the write ──────
+  //
+  // Everything above was decided from a plist read some seconds ago, across a
+  // blocking prompt the operator may have sat on for minutes. USB enumeration
+  // is not stable and /dev/diskN is recycled, so the check that actually
+  // protects the device is this one -- the last read before the first write.
+  //
+  // It compares the ENUMERATION SNAPSHOT against a fresh read. All six fields
+  // are load-bearing here, including the three (busProtocol, removableMedia,
+  // internal) that no caller can state, because both sides are observations
+  // taken at different moments -- nothing is compared to itself.
+  {
+    const recheck = checkDeviceIdentity(observedIdentity, readIdentity(device));
+    if (!recheck.ok) {
+      bail(
+        2,
+        "the device CHANGED between the consent prompt and the write.\n" +
+          recheck.error +
+          "\nRefusing to write. Nothing has been touched.",
+      );
+    }
+  }
+
+
   // ── 6. Unmount → dd → eject ────────────────────────────────
   process.stdout.write(`\nUnmounting ${device} ...\n`);
   execFileSync("diskutil", ["unmountDisk", device], { stdio: "inherit" });
 
-  // /dev/rdiskN is the raw character device — ~10x faster than
-  // the buffered /dev/diskN on macOS.
-  const rawDevice = `/dev/r${deviceShort}`;
   process.stdout.write(
     `\nFlashing ${isoPath} → ${rawDevice} ` +
       `(${human(isoStat.size)}; this takes a few minutes) ...\n\n`,
@@ -442,6 +840,48 @@ async function main() {
 
   if (code !== 0) {
     bail(code, `dd exited ${code}; partial flash may be on device.`);
+  }
+
+  // ── 7. VERIFY BACK ─────────────────────────────────────────
+  //
+  // Ported from the Windows arm, which is the only one that had this. A dd
+  // that exits 0 has proved the syscalls returned, not that the bytes are on
+  // the stick. Fail-loud by contract: any failure here is a hard exit, and
+  // there is no flag that skips it.
+  process.stdout.write("\nRead-back verifying " + rawDevice + " against the ISO ...\n");
+  {
+    // MEASURED 2026-08-21: the device side CANNOT be the unprivileged shim.
+    // /dev/rdisk6 is crw-r----- root:operator and this process is not in that
+    // group, so openChunkReader("/dev/rdisk6") throws EACCES -- which means
+    // this read-back, the step whose own docstring says it is "fail-loud by
+    // contract" with "no flag that skips it", would have failed on every real
+    // flash AFTER a dd that had already succeeded. Present, tested, and
+    // unreachable: the same defect class as R1 above.
+    //
+    // The ISO side stays on the file shim, where it works and is covered.
+    const isoReader = openChunkReader(isoPath);
+    const deviceReader = privilegedDeviceReader(rawDevice, DEFAULT_READBACK_CHUNK_BYTES);
+    let verdict;
+    try {
+      verdict = verifyReadBack(isoReader, deviceReader, isoStat.size, DEFAULT_READBACK_CHUNK_BYTES);
+    } finally {
+      isoReader.close();
+    }
+    if (!verdict.ok) {
+      bail(
+        3,
+        "READ-BACK VERIFY FAILED after a dd that exited 0.\n  " +
+          verdict.error +
+          "\n  Compared " +
+          String(verdict.bytesCompared) +
+          " of " +
+          String(isoStat.size) +
+          " bytes. Treat this USB as unusable and re-flash.",
+      );
+    }
+    process.stdout.write(
+      "Read-back verified: " + String(verdict.bytesCompared) + " bytes match the ISO.\n",
+    );
   }
 
   if (noEject) {

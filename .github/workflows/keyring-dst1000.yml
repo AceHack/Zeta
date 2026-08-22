@@ -20,6 +20,8 @@ permissions:
 jobs:
   dst1000:
     name: keyring byte-lock + 1000x determinism
+    # Timeout basis: observed med 2.4m / max 3.4m (n=39).
+    timeout-minutes: 10
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1

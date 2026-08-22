@@ -1,0 +1,12 @@
+{
+  "pr_number": 13313,
+  "archive_path": "docs/history/pr-reviews/PR-13313-ops-file-the-oz-chart-pin-that-upstream-never-published.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-21T19:24:32.095Z",
+  "schema_version": "v1",
+  "commit_sha": "14466037b1e88e03fed93a4a0d4a99ccaa8e40a8",
+  "title": "ops: file the oz chart pin that upstream never published",
+  "state": "MERGED",
+  "merged_at": "2026-08-21T19:20:40Z",
+  "head_ref": "ops/file-oz-unpublished-chart-version"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 12213,
+  "archive_path": "docs/history/pr-reviews/PR-12213-correct-research-4-s-falsifier-fired-the-landauer-placement-claim-was-wrong.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-19T00:28:50.997Z",
+  "schema_version": "v1",
+  "commit_sha": "0ba3583cd654b92e23ccfb0b3c1fed82dae77e04",
+  "title": "correct(research): §4's falsifier fired — the Landauer placement claim was wrong",
+  "state": "MERGED",
+  "merged_at": "2026-08-19T00:28:17Z",
+  "head_ref": "shadow/correct-demon-doc-placement-claim"
+}

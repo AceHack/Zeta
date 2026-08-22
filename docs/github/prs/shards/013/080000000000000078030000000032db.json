@@ -1,0 +1,12 @@
+{
+  "pr_number": 13019,
+  "archive_path": "docs/history/pr-reviews/PR-13019-hardware-a-web-page-can-drive-the-hsm-connector-plus-the-delegated-capability-li.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-21T01:16:59.871Z",
+  "schema_version": "v1",
+  "commit_sha": "e2d38c53cfb0d7debb956a23ed4a587d53b54282",
+  "title": "hardware: a web page can drive the HSM connector — plus the delegated-capability lint, the seal-tier residency split, and the KSP verdict",
+  "state": "MERGED",
+  "merged_at": "2026-08-21T01:16:21Z",
+  "head_ref": "hardware/connector-r12-lint-sealtier-ksp"
+}

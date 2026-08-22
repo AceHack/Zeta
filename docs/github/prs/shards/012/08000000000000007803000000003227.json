@@ -1,0 +1,12 @@
+{
+  "pr_number": 12839,
+  "archive_path": "docs/history/pr-reviews/PR-12839-research-land-the-eight-orphaned-sections-consolidating-six-conflicting-prs-into.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-20T16:19:17.693Z",
+  "schema_version": "v1",
+  "commit_sha": "4ba372ed8df9013898fbfc5042f15c74d441ca84",
+  "title": "research: land the eight orphaned sections — consolidating six conflicting PRs into one merge",
+  "state": "MERGED",
+  "merged_at": "2026-08-20T16:18:37Z",
+  "head_ref": "research/land-the-orphaned-sections"
+}

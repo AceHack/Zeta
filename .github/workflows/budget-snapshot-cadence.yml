@@ -48,15 +48,26 @@ name: budget-snapshot-cadence
 # fields — per-run trailers describe the per-run state, not the
 # deployment-time authorization.
 #
-# Commit-to-main, no PR: GitHub Actions is not permitted to create
-# pull requests in this repository (enterprise security control), and
-# GITHUB_TOKEN-created PRs don't fire downstream required-status-check
-# runs, so an auto-merge would dead-end. The prior design opened a PR
-# and left it for a later pass — which instead orphaned unlanded
-# ops/budget-cadence-* branches. This workflow now commits the
-# append-only snapshot row straight to main via `git pull --rebase` +
-# `git push origin HEAD:main` — the deterministic-append, no-review-
-# gate pattern proven by context-cost-trend-cadence.yml.
+# HOW IT LANDS ON MAIN. It does not push to main. Ruleset "CI Gate"
+# (16134995) makes `gate (required)` a required status check on main with
+# `bypass_actors: []`, and a required check is evaluated at PUSH time
+# against the pushed tip — so a commit that has never been through a check
+# run is rejected before any check could start. This lane pushed
+# `HEAD:main` anyway and had been failing on `GH013: Repository rule
+# violations` since 2026-08-16 (run 31959534906); because the cadence is
+# WEEKLY it then sat red for a full week per failure and nobody saw it.
+# The ruleset is intended and is not to be weakened; the lane is what was
+# out of date.
+#
+# The row is now parked on the ungated staging branch
+# `heartbeat/budget-snapshot` and flushed via a PR with squash auto-merge
+# armed, exactly as tick-metrics/society/red-state already do. Both
+# objections quoted in the old text are handled by the shared flush tool
+# rather than by avoiding PRs: it authenticates PR creation with a
+# fine-grained PAT (the enterprise restriction), and the same PAT on the
+# checkout is what makes `gate` actually run on the flush PR instead of
+# parking as `action_required` (the dead-end auto-merge).
+# See src/Core.TypeScript/forge-host/github/flush-via-staging.ts.
 
 on:
   schedule:
@@ -87,7 +98,14 @@ concurrency:
 jobs:
   snapshot:
     runs-on: ubuntu-24.04
-    timeout-minutes: 5
+    # 12 minutes, not 5: this job runs tools/setup/install.sh, so its timeout is
+    # the CEILING on the installer's apt wall budget (audit-apt-budget-fits-job-
+    # timeout.ts). At 5 minutes these three cadence jobs pinned that budget to
+    # 150s fleet-wide, which left the first apt attempt 45s against a 38.2s
+    # healthy cost — tight enough to false-fail a merely-slow mirror. A timeout
+    # is a cap, not a reservation: this job finishes in ~2.5 min, so raising it
+    # costs zero additional CI minutes on the healthy path.
+    timeout-minutes: 12
 
     permissions:
       # Need contents:write to commit the snapshot row to main; actions:read
@@ -97,10 +115,12 @@ jobs:
       # snapshot-burn.ts falls back to empty/zeroed timing data while still
       # writing a snapshot — producing misleading evidence rather than a hard
       # failure. With explicit job permissions, omitted scopes are `none`, so
-      # actions:read MUST be listed explicitly here. No pull-requests:write —
-      # this workflow commits to main directly and opens no PR.
+      # actions:read MUST be listed explicitly here. pull-requests:write is
+      # required now that the row lands through a flush PR rather than a
+      # direct push to main.
       contents: write
       actions: read
+      pull-requests: write
 
     steps:
       - name: Checkout
@@ -109,6 +129,12 @@ jobs:
           # Need full history so snapshot-burn.ts can compute
           # factory_git_sha correctly.
           fetch-depth: 0
+          # This checkout's credential is the one that pushes
+          # `heartbeat/budget-snapshot`, and its actor is what decides whether
+          # `gate (required)` ever runs on the flush PR. See tick-metrics.yml
+          # for the measurement behind this ladder.
+          persist-credentials: true
+          token: ${{ secrets.ZETA_TELEMETRY_FLUSH_TOKEN || secrets.GITHUB_TOKEN }}
 
       - name: Install toolchain via three-way-parity script (GOVERNANCE §24)
         env:
@@ -126,6 +152,17 @@ jobs:
           command -v bun >/dev/null
           gh auth status
 
+      - name: Configure committer
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+      # Runs BEFORE the snapshot: `prepare` checks out a fresh branch off origin/main
+      # and would discard a row written ahead of it. It also unions in anything still
+      # parked on the staging branch from a previous run whose flush PR has not landed.
+      - name: Prepare staging working tree
+        run: bun src/Core.TypeScript/forge-host/github/flush-via-staging.ts prepare --lane budget-snapshot
+
       - name: Run budget snapshot
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -140,95 +177,14 @@ jobs:
           fi
           bun src/Core.TypeScript/budget/snapshot-burn.ts --note "$note"
 
-      - name: Inspect diff
-        id: diff
-        run: |
-          set -euo pipefail
-          if git diff --quiet docs/budget-history/snapshots.jsonl; then
-            echo "changed=false" >>"$GITHUB_OUTPUT"
-            echo "snapshot-burn.ts produced no diff — nothing to commit"
-            exit 0
-          fi
-          echo "changed=true" >>"$GITHUB_OUTPUT"
-
-      - name: Commit snapshot to main
-        if: steps.diff.outputs.changed == 'true'
+      # No `Inspect diff` gate: `flush` stages the paths and returns a clean no-op when
+      # nothing changed (idempotency, discipline #6), so a re-dispatch that produces an
+      # identical row is green and commits nothing.
+      - name: Flush to main via staging branch + PR
         env:
-          RUN_ID: ${{ github.run_id }}
+          GH_TOKEN: ${{ secrets.ZETA_TELEMETRY_FLUSH_TOKEN || secrets.ZETA_PR_ARCHIVE_TOKEN || secrets.GITHUB_TOKEN }}
         run: |
-          set -euo pipefail
-          ts="$(date -u +%Y-%m-%dT%H-%M-%SZ)"
-          # Configure committer identity for the workflow commit.
-          # github-actions[bot] is the canonical workflow identity;
-          # using it makes the AgencySignature Credential-Identity
-          # honest about the workflow being the actor.
-          git config user.name  "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add docs/budget-history/snapshots.jsonl
-
-          # Commit message uses the AgencySignature v1 canonical shape.
-          # Trailer block is at the end with strict blank-line discipline
-          # (one blank line before, zero within). This workflow is a
-          # named-agent acting under signed-policy authorization (the
-          # maintainer's 2026-04-22 evidence-based budgeting direction +
-          # docs/budget-history/README.md).
-          {
-            echo "ops(budget): cadence snapshot $ts — task #297"
-            echo
-            echo "Why:"
-            echo "- Weekly cadence per docs/budget-history/README.md"
-            echo "  ('catches drift when no PRs are merging')."
-            echo "- Closes task #297 by automating what task #287"
-            echo "  previously required a human maintainer or agent to"
-            echo "  trigger manually."
-            echo
-            echo "What:"
-            echo "- One JSONL row appended to"
-            echo "  docs/budget-history/snapshots.jsonl by"
-            echo "  src/Core.TypeScript/budget/snapshot-burn.ts."
-            echo
-            echo "Proof:"
-            echo "- snapshot-burn.ts ran successfully in workflow"
-            echo "  run $RUN_ID."
-            echo "- jq round-trip verifies row is valid JSON."
-            echo "- Attribution recorded via git trailers because"
-            echo "  shared GitHub credential identity makes host"
-            echo "  actor fields insufficient."
-            echo
-            echo "Limits:"
-            echo "- This does not prove consciousness, personhood,"
-            echo "  or metaphysical free will."
-            echo "- This proves operational agency mode: the"
-            echo "  budget-cadence-workflow ran under signed-policy"
-            echo "  authorization (the cadence is authorized by"
-            echo "  README + the maintainer's 2026-04-22"
-            echo "  evidence-based budgeting direction)."
-            echo "- scope_coverage in the row honestly reports what"
-            echo "  the current GH token can and cannot see."
-            echo
-            echo "Agency-Signature-Version: 1"
-            echo "Agent: budget-cadence-workflow"
-            echo "Agent-Runtime: GitHub Actions"
-            echo "Agent-Model: bash + jq + gh CLI"
-            echo "Credential-Identity: github-actions[bot]"
-            echo "Credential-Mode: dedicated-agent"
-            echo "Human-Review: not-implied-by-credential"
-            echo "Human-Review-Evidence: none"
-            echo "Action-Mode: autonomous-fail-open"
-            echo "Task: Otto-297"
-            echo "Co-authored-by: Otto <noreply@anthropic.com>"
-          } | git commit --file=-
-
-          # Fast-forward-safe push to main (Branch Safety floor: no force / linear).
-          # Rebase onto any rows landed since checkout, then push. snapshots.jsonl
-          # is append-only, so the rebase is clean.
-          git pull --rebase origin main
-          git push origin HEAD:main
-
-      - name: No-change report
-        if: steps.diff.outputs.changed == 'false'
-        run: |
-          echo "snapshot-burn.ts ran but produced no diff."
-          echo "This typically means the underlying GitHub state"
-          echo "didn't change in a way the snapshot captures."
-          echo "No commit made."
+          bun src/Core.TypeScript/forge-host/github/flush-via-staging.ts flush \
+            --lane budget-snapshot \
+            --paths docs/budget-history/snapshots.jsonl \
+            --message "ops(budget): weekly cadence burn snapshot — task #297"

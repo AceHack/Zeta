@@ -14,15 +14,45 @@ name: pr-manifest-integrity
 # WHAT IT ASSERTS, and what it deliberately does not.
 #   exit 2, shard-store integrity (unreadable, misfiled, or duplicate-keyed shard)
 #     -> FAIL on every trigger. That class is never legitimate and never by design.
-#   exit 1, derived-index drift (manifest.jsonl behind the shard set)
+#   exit 1, derived-index drift that has OUTLIVED THE REPAIR BOUND
 #     -> FAIL on schedule and workflow_dispatch, REPORT on pull_request.
-#     Drift is legitimate and expected for up to about an hour: an archive PR writes only its
-#     own shard (that is what retired the pairwise-conflict class), and the index is repaired
-#     by the single serialised writer in agent-heartbeat.yml (soraya archive duty, whose flush
-#     gate is MIN_INTERVAL_SECONDS=3000). Six hours is well past that bound, so drift seen by a
-#     scheduled run means the repair cadence has STOPPED -- which is the condition that earns a
-#     red run. On a pull_request the drift belongs to main rather than to the branch, so it is
-#     reported and never charged to the contributor.
+#     Drift itself is legitimate and expected: an archive PR writes only its own shard (that is
+#     what retired the pairwise-conflict class), and the index is repaired by the single
+#     serialised writer in agent-heartbeat.yml (soraya archive duty, whose flush gate is
+#     MIN_INTERVAL_SECONDS=3000). On a pull_request the drift belongs to main rather than to the
+#     branch, so it is reported and never charged to the contributor.
+#
+#     THE BOUND IS NOW MEASURED, AND THIS IS THE CORRECTION OF A REAL BUG.
+#     This block used to reason: "six hours is well past the one-hour bound, so drift seen by a
+#     scheduled run means the repair cadence has STOPPED." That inference is invalid -- the
+#     check samples an INSTANT and the conclusion is about a DURATION -- and it made this
+#     workflow fail four consecutive scheduled runs (32573347920 and its three predecessors)
+#     while the repair writer was healthy the whole time. Against the writer's own commit
+#     history on docs/github/prs/manifest.jsonl:
+#
+#         scheduled run    last repair landed    verdict printed
+#         08-21T18:34       0.4 min earlier      "repair writer has stopped landing"
+#         08-22T00:34      38.2 min earlier      same
+#         08-22T06:34       5.0 min earlier      same
+#         08-22T12:34      11.6 min earlier      same
+#
+#     All four were false. derive-pr-manifest.ts now measures the age of the drift from the
+#     `fetched_at` of the oldest UNRECONCILED shard -- which is exactly "how long ago the repair
+#     writer must last have run", because the repair regenerates the whole index from all
+#     shards -- and only drift past the bound is a finding.
+#
+#     WHY 180 MINUTES, and why this is not a tolerance widened until it passed. Measured over
+#     218 repair landings in the week to 2026-08-22, the gap between repairs is p50 26.5 min,
+#     p90 47 min. 180 is ~3.8x p90 and sits above the whole healthy population (all four false
+#     positives above were <= 38.2 min) and below the pathological one: the same week contained
+#     7 gaps over 2 hours and 4 over 3 hours, and this bound still goes red on every one of
+#     them. It is drawn from the measured distribution, not from what made the run green.
+#
+#     Three classes stay red at ANY age, so the bound can never become a mute button: shard
+#     integrity (exit 2), an ORPHANED index entry with no shard behind it (substrate loss, which
+#     no late repair explains), and an unreconciled shard whose fetched_at cannot be read (a
+#     check that cannot measure must not report a pass). Falsifiers for all of it, including
+#     mutation-killed proof that the bound is not vacuous, are in derive-pr-manifest.test.ts.
 #
 # COST. 4 scheduled runs/day at roughly 2 minutes, about 8 minutes/day, plus a run on the rare
 # PR that edits the archival tooling. The path filter deliberately excludes docs/github/prs:
@@ -102,7 +132,10 @@ jobs:
           # Command substitution rather than a temp file: the report is a handful of lines and
           # this keeps the step free of stray artefacts on the runner.
           set +e
-          report=$(bun src/Core.TypeScript/forge-host/github/derive-pr-manifest.ts 2>&1)
+          # --min-age-minutes 180: see the header. Drift younger than the repair bound exits 0
+          # (and still prints how far behind the index is); only drift that has outlived the
+          # bound exits 1. Integrity, orphaned entries and unreadable timestamps ignore it.
+          report=$(bun src/Core.TypeScript/forge-host/github/derive-pr-manifest.ts --min-age-minutes 180 2>&1)
           rc=$?
           set -e
 
@@ -124,10 +157,10 @@ jobs:
 
           if [ "$rc" -eq 1 ]; then
             if [ "$GH_EVENT" = "pull_request" ]; then
-              echo "::notice title=Derived index drift (informational)::main is currently ahead of docs/github/prs/manifest.jsonl. Expected for up to about an hour after an archive PR merges, and repaired by agent-heartbeat.yml soraya archive duty. Not attributable to this PR, so not failing it."
+              echo "::notice title=Derived index drift (informational)::main is currently ahead of docs/github/prs/manifest.jsonl, and the drift has outlived the 180-minute repair bound. Repaired by agent-heartbeat.yml soraya archive duty. Not attributable to this PR, so not failing it."
               exit 0
             fi
-            echo "::error title=Derived index drift outlived the repair cadence::docs/github/prs/manifest.jsonl has been behind the shards for longer than the roughly one-hour repair bound, so the serialised repair writer (agent-heartbeat.yml, soraya archive duty) has stopped landing. Repair by hand: bun src/Core.TypeScript/forge-host/github/derive-pr-manifest.ts --write"
+            echo "::error title=Derived index drift outlived the repair cadence::docs/github/prs/manifest.jsonl has been behind the shards for longer than the 180-minute repair bound (MEASURED from the oldest unreconciled shard's fetched_at, not assumed from the schedule), so the serialised repair writer (agent-heartbeat.yml, soraya archive duty) has stopped landing. Repair by hand: bun src/Core.TypeScript/forge-host/github/derive-pr-manifest.ts --write"
             exit 1
           fi
 

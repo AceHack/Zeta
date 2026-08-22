@@ -1,0 +1,12 @@
+{
+  "pr_number": 12733,
+  "archive_path": "docs/history/pr-reviews/PR-12733-fix-society-the-rho-band-was-a-slower-snapshot-pin-and-it-expired-on-schedule.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-20T11:48:44.230Z",
+  "schema_version": "v1",
+  "commit_sha": "549e2094ee979dcfa2cb751659fe92ae764ca326",
+  "title": "fix(society): the rho band was a slower snapshot pin, and it expired on schedule",
+  "state": "MERGED",
+  "merged_at": "2026-08-20T11:48:01Z",
+  "head_ref": "fix/rho-band-is-a-slow-snapshot-pin"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 12202,
+  "archive_path": "docs/history/pr-reviews/PR-12202-ferry-research-xbox-360-root-of-trust-precedents-maxwell-s-demon-unmetered-chann.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-19T00:02:28.431Z",
+  "schema_version": "v1",
+  "commit_sha": "ad814912b01e75b95999d640cc07074c6aa7f093",
+  "title": "ferry(research): Xbox/360 root-of-trust precedents, Maxwell's demon = unmetered channel, CTMU §8",
+  "state": "MERGED",
+  "merged_at": "2026-08-19T00:01:56Z",
+  "head_ref": "shadow/ferry-xbox-root-of-trust-below-update-boundary"
+}

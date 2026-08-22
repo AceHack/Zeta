@@ -1,5 +1,10 @@
-# Alloy — Grafana's OpenTelemetry collector. Ships logs to Loki,
-# metrics to Mimir/Prometheus, traces to Tempo.
+# Alloy -- Grafana OpenTelemetry collector, one per node (DaemonSet).
+# Ships logs to Loki, metrics to Mimir/Prometheus, traces to Tempo.
+#
+# Until 2026-08-20 that header was false: the config held three SINKS
+# and no source, so the DaemonSet ran on every node and moved zero bytes.
+# Sources added below; the invariant is now machine-checked by
+# src/Core.TypeScript/hygiene/audit-observability-chain.ts.
 
 apiVersion: argoproj.io/v1alpha1
 kind: Application
@@ -21,24 +26,183 @@ spec:
         controller:
           type: daemonset   # collect from every node
         alloy:
+          # OTLP ingress. The chart opens only 12345 (Alloy own UI/metrics);
+          # otelcol.receiver.otlp below listens on 4317/4318, and without
+          # these entries neither the DaemonSet nor the Service ever binds
+          # them -- a receiver nothing can reach is the same zero-byte
+          # failure as a sink with no source.
+          extraPorts:
+            - name: otlp-grpc
+              port: 4317
+              targetPort: 4317
+              protocol: TCP
+            - name: otlp-http
+              port: 4318
+              targetPort: 4318
+              protocol: TCP
           configMap:
             create: true
             content: |
               logging {
-                level = "info"
+                level  = "info"
                 format = "logfmt"
               }
-              // Logs -> Loki
+
+              // ---------------------------------------------------------------------
+              // SOURCES. Every sink below this line has an input. A sink with no source
+              // is a pipeline that moves zero bytes while looking configured -- which is
+              // exactly what this file was until 2026-08-20.
+              //
+              // This is a DaemonSet: one Alloy per node. Every discovery is FIELD-FILTERED
+              // to its own node (the chart sets HOSTNAME from spec.nodeName). Without that
+              // filter each of N nodes collects every pod in the cluster and the ingest
+              // volume is N x correct.
+              // ---------------------------------------------------------------------
+
+              discovery.kubernetes "pods_on_this_node" {
+                role = "pod"
+
+                selectors {
+                  role  = "pod"
+                  field = "spec.nodeName=" + sys.env("HOSTNAME")
+                }
+              }
+
+              // Logs: every container on this node -> loki.write.loki
+              discovery.relabel "pod_logs" {
+                targets = discovery.kubernetes.pods_on_this_node.targets
+
+                rule {
+                  source_labels = ["__meta_kubernetes_namespace"]
+                  target_label  = "namespace"
+                }
+                rule {
+                  source_labels = ["__meta_kubernetes_pod_name"]
+                  target_label  = "pod"
+                }
+                rule {
+                  source_labels = ["__meta_kubernetes_pod_container_name"]
+                  target_label  = "container"
+                }
+                rule {
+                  source_labels = ["__meta_kubernetes_node_name"]
+                  target_label  = "node"
+                }
+              }
+
+              loki.source.kubernetes "pod_logs" {
+                targets    = discovery.relabel.pod_logs.output
+                forward_to = [loki.write.loki.receiver]
+              }
+
+              // Metrics: opt-in per pod via the prometheus.io/scrape annotation -> mimir.
+              // Zero cost until a workload asks for it; today nothing in Zeta is scraped
+              // at all, so this is the only path by which a Zeta pod can be.
+              discovery.relabel "annotated_pods" {
+                targets = discovery.kubernetes.pods_on_this_node.targets
+
+                rule {
+                  source_labels = ["__meta_kubernetes_pod_annotation_prometheus_io_scrape"]
+                  regex         = "true"
+                  action        = "keep"
+                }
+                rule {
+                  source_labels = ["__meta_kubernetes_pod_annotation_prometheus_io_path"]
+                  regex         = "(.+)"
+                  target_label  = "__metrics_path__"
+                }
+                rule {
+                  source_labels = ["__address__", "__meta_kubernetes_pod_annotation_prometheus_io_port"]
+                  regex         = "([^:]+)(?::[0-9]+)?;([0-9]+)"
+                  replacement   = "$1:$2"
+                  target_label  = "__address__"
+                }
+                rule {
+                  source_labels = ["__meta_kubernetes_namespace"]
+                  target_label  = "namespace"
+                }
+                rule {
+                  source_labels = ["__meta_kubernetes_pod_name"]
+                  target_label  = "pod"
+                }
+              }
+
+              prometheus.scrape "annotated_pods" {
+                targets    = discovery.relabel.annotated_pods.output
+                forward_to = [prometheus.remote_write.mimir.receiver]
+              }
+
+              // Alloy scraping itself. Cheap, and it is the liveness proof for the
+              // metrics chain: if this series is absent in Mimir, remote_write is down,
+              // and you learn that without needing a workload to be instrumented first.
+              prometheus.exporter.self "alloy" {}
+
+              prometheus.scrape "alloy" {
+                targets    = prometheus.exporter.self.alloy.targets
+                forward_to = [prometheus.remote_write.mimir.receiver]
+              }
+
+              // OTLP in. This is the port the .NET side will export to once
+              // Zeta.Core.Circuit gets an OTel exporter; it is wired now so the
+              // receiver exists before the emitter does, not after.
+              otelcol.receiver.otlp "otlp" {
+                grpc {
+                  endpoint = "0.0.0.0:4317"
+                }
+
+                http {
+                  endpoint = "0.0.0.0:4318"
+                }
+
+                output {
+                  traces  = [otelcol.processor.batch.default.input]
+                  metrics = [otelcol.processor.batch.default.input]
+                  logs    = [otelcol.processor.batch.default.input]
+                }
+              }
+
+              otelcol.processor.batch "default" {
+                output {
+                  traces  = [otelcol.exporter.otlp.tempo.input]
+                  metrics = [otelcol.exporter.prometheus.to_mimir.input]
+                  logs    = [otelcol.exporter.loki.to_loki.input]
+                }
+              }
+
+              otelcol.exporter.prometheus "to_mimir" {
+                forward_to = [prometheus.remote_write.mimir.receiver]
+              }
+
+              otelcol.exporter.loki "to_loki" {
+                forward_to = [loki.write.loki.receiver]
+              }
+
+              // ---------------------------------------------------------------------
+              // SINKS.
+              // ---------------------------------------------------------------------
+
+              // Logs -> Loki. The endpoint is loki-GATEWAY: rendering the loki chart in
+              // SimpleScalable mode produces loki-backend/-canary/-gateway/-memberlist/
+              // -read/-write and NO Service named "loki". The old "loki:3100" target
+              // resolved to nothing.
               loki.write "loki" {
-                endpoint { url = "http://loki.loki.svc.cluster.local:3100/loki/api/v1/push" }
+                endpoint {
+                  url = "http://loki-gateway.loki.svc.cluster.local:80/loki/api/v1/push"
+                }
               }
-              // Traces -> Tempo
+
+              // Traces -> Tempo (endpoint unchanged: it already resolves)
               otelcol.exporter.otlp "tempo" {
-                client { endpoint = "http://tempo.tempo.svc.cluster.local:4317" }
+                client {
+                  endpoint = "http://tempo.tempo.svc.cluster.local:4317"
+                }
               }
-              // Metrics -> Mimir (or fall back to local Prometheus)
+
+              // Metrics -> Mimir
               prometheus.remote_write "mimir" {
-                endpoint { url = "http://mimir-distributor.mimir.svc.cluster.local:8080/api/v1/push" }
+                endpoint {
+                  url = "http://mimir-distributor.mimir.svc.cluster.local:8080/api/v1/push"
+                }
               }
   destination:
     server: https://kubernetes.default.svc

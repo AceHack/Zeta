@@ -1,0 +1,12 @@
+{
+  "pr_number": 13486,
+  "archive_path": "docs/history/pr-reviews/PR-13486-chore-workitems-close-081m0k36k69-apt-tier-gate-measured-before-after-on-file.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-22T01:35:30.904Z",
+  "schema_version": "v1",
+  "commit_sha": "cb3288cf789032d332cdc00a0f6f650ce95c82bc",
+  "title": "chore(workitems): close 081M0K36K69 — apt tier gate measured, before/after on file",
+  "state": "MERGED",
+  "merged_at": "2026-08-22T01:34:43Z",
+  "head_ref": "shadow/close-081M0K36K69-apt-budget"
+}

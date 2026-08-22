@@ -199,6 +199,11 @@ let ``reversible operations erase exactly zero bits and erasing operations erase
         | WSetHeat.ThermodynamicClass.Erasing ->
             fibre |> should be (greaterThan 1)
             bits |> should be (greaterThan 0.0)
+        | WSetHeat.ThermodynamicClass.Unmeasured ->
+            // A swept operation always has a class. Reaching here means a profile claimed the
+            // absence of a measurement while this pack was measuring it — a contradiction, and a
+            // failure rather than a skip, because "unmeasured" must never read as "costs nothing".
+            failwith "a WSet operation swept by this pack declared itself Unmeasured"
 
 // ═══ 3. Drift guard — the table must cover the WHOLE public surface ═══
 // A meter nobody updates is the same defect one level out. Add a tenth public

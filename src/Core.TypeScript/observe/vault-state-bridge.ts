@@ -474,15 +474,18 @@ function buildSystemVault(
   reputations: Map<string, { value: number; epsilon: number; silent: boolean; history: number[] }>,
   nowMs: number,
 ): VaultSnapshot {
-  const mergeEvents = events.filter((e) => e.by === "alexa" && e.action.kind.includes("merge"));
-  const archiveEvents = events.filter((e) => e.by === "soraya" && e.action.kind.includes("archive"));
-  const recentMerge = mergeEvents.filter((e) => new Date(e.at).getTime() > nowMs - TWO_HOURS_MS);
-  const recentArchive = archiveEvents.filter((e) => new Date(e.at).getTime() > nowMs - TWO_HOURS_MS);
+  // System vault status: derived from the assigned agents' activity, not just merge/archive
+  // action kinds (which don't exist in the current event log). The merge-floor shows alexa's
+  // work; archive-stacks shows soraya's work. Status is "live" if either has recent activity.
+  const alexaEvents = events.filter((e) => e.by === "alexa");
+  const sorayaEvents = events.filter((e) => e.by === "soraya");
+  const recentAlexa = alexaEvents.filter((e) => new Date(e.at).getTime() > nowMs - TWO_HOURS_MS);
+  const recentSoraya = sorayaEvents.filter((e) => new Date(e.at).getTime() > nowMs - TWO_HOURS_MS);
 
-  const anyRecent = recentMerge.length > 0 || recentArchive.length > 0;
+  const anyRecent = recentAlexa.length > 0 || recentSoraya.length > 0;
   return {
     id: "system",
-    status: anyRecent ? "live" : (mergeEvents.length > 0 || archiveEvents.length > 0) ? "stale" : "cold",
+    status: anyRecent ? "live" : (alexaEvents.length > 0 || sorayaEvents.length > 0) ? "stale" : "cold",
     confidence: anyRecent ? { value: 0.8, epsilon: 0.1 } : { value: 0.4, epsilon: 0.3 },
     rooms: [
       buildRoom("merge-floor", events, agentLatest, hatAssignments, reputations, nowMs,
@@ -500,7 +503,8 @@ function buildTrainingVault(
   reputations: Map<string, { value: number; epsilon: number; silent: boolean; history: number[] }>,
   nowMs: number,
 ): VaultSnapshot {
-  const workEvents = events.filter((e) => e.mode === "codegen" || e.action.kind.includes("work"));
+  const workEvents = events.filter((e) => e.mode === "codegen" || e.action.kind.includes("work") ||
+    e.action.kind === "edit_grammar" || e.action.kind === "decompose");
   const recentWork = workEvents.filter((e) => new Date(e.at).getTime() > nowMs - TWO_HOURS_MS);
 
   const hatAssignments = new Map<string, string>();
@@ -514,7 +518,8 @@ function buildTrainingVault(
       : { value: 0.3, epsilon: 0.3 },
     rooms: [
       buildRoom("codegen-lab", events, agentLatest, hatAssignments, reputations, nowMs,
-        (e) => e.mode === "codegen" || e.action.kind.includes("work"), "codegen execution"),
+        (e) => e.mode === "codegen" || e.action.kind.includes("work") ||
+          e.action.kind === "edit_grammar" || e.action.kind === "decompose", "codegen execution"),
     ],
   };
 }

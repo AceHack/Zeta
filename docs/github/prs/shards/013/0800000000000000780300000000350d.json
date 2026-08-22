@@ -1,0 +1,12 @@
+{
+  "pr_number": 13581,
+  "archive_path": "docs/history/pr-reviews/PR-13581-feat-cluster-close-the-inert-valuesobject-class-every-key-checked-against-its-pi.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-22T07:39:39.601Z",
+  "schema_version": "v1",
+  "commit_sha": "3ef6ea6d83737b735bbb6ad8921454d1748872ad",
+  "title": "feat(cluster): close the inert-valuesObject class — every key checked against its pinned chart's schema",
+  "state": "MERGED",
+  "merged_at": "2026-08-22T07:38:57Z",
+  "head_ref": "fix/inert-valuesobject-keys-general-guard"
+}

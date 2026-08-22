@@ -1,0 +1,12 @@
+{
+  "pr_number": 13099,
+  "archive_path": "docs/history/pr-reviews/PR-13099-refactor-zflash-one-home-for-the-flash-size-bounds-the-prose-said-they-could-not.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-21T06:35:44.208Z",
+  "schema_version": "v1",
+  "commit_sha": "d38f3bf711399e7a96a5f6ece6b46b370f0a0d4c",
+  "title": "refactor(zflash): one home for the flash size bounds — the prose said they could not drift, nothing made that true",
+  "state": "MERGED",
+  "merged_at": "2026-08-21T06:35:04Z",
+  "head_ref": "zflash/one-home-for-size-bounds"
+}

@@ -4,10 +4,48 @@ open Zeta.Core
 open Zeta.Bayesian
 
 /// <summary>
-/// Upgrades AntiSybil from a grade-0 scalar Pearson correlation to a 
+/// Upgrades AntiSybil from a grade-0 scalar Pearson correlation to a
 /// full geometric product in Clifford algebra (Cl3).
 /// A Sybil is literally a rotated copy of the same trajectory in belief space.
 /// This module detects if two trajectories are related by a rotor.
+///
+/// <para><b>MEASURED LIMITATION (Lumen 2026-08-20) — this detector is UNMETERED, and its
+/// falsifier now exists and FAILS.</b> Read
+/// <c>docs/research/2026-08-20-the-belief-manifold-is-hyperbolic-not-spherical-cl21-not-cl41-and-the-flat-rotor-verdict-moves-with-the-units-lumen.md</c>
+/// before trusting a score from here. The short version:</para>
+///
+/// <para><b>The verdict depends on the measurement UNIT of the believed quantity.</b>
+/// <c>PrecisionMean</c> carries units [x]^-1 and <c>Precision</c> carries [x]^-2, so the
+/// <c>Cl3.norm</c> below adds [x]^-2 to [x]^-4 — dimensionally incoherent. Measured: rescaling
+/// x -> k*x across five decades moves the score on ONE UNCHANGED pair of streams from 0.999752
+/// to 0.000006. An <i>exact</i> clone still scores 1.0 under any unit, so the extremes are sound;
+/// what is unit-dependent is the entire graded middle, i.e. the decision boundary.</para>
+///
+/// <para><b>It misses the real mask and catches an impossible one.</b> The only mask an agent can
+/// actually perform is to relabel what it believes about (x -> a*x + b) — scored 0.70, missed at
+/// a 0.9 threshold. A 90-degree rotation of the (PrecisionMean, Precision) plane scores 1.00 and
+/// drives Precision NEGATIVE, i.e. off the manifold of beliefs entirely (see the domain contract
+/// in Message.fs). Test CAS-4 asserts that behaviour as if it were a requirement, on beliefs that
+/// are all <c>Gaussian.One</c> (sigma = infinity).</para>
+///
+/// <para><b>Why, and what is actually right here.</b> The canonical metric on a belief manifold is
+/// Fisher–Rao (Rao 1945; Cencov 1982 uniqueness), and on this location-scale family it is
+/// HYPERBOLIC with constant curvature K = -1/2 (Atkinson &amp; Mitchell 1981) — not the sphere of
+/// the categorical family, and not flat. But CURVATURE IS NOT THE DEFECT: that term is second
+/// order and reaches 1% of the score only at D_KL ~ 0.038 nats per step, and real streams sit
+/// well inside it. The defect is the CHART. Flat-chart angles differ from Fisher–Rao angles by an
+/// amount that converges to ~116 degrees and does NOT shrink as the steps shrink; the flat chart
+/// is conformally correct at exactly one belief in the whole manifold, N(0, 2).</para>
+///
+/// <para>What the (PrecisionMean, Precision) plane DOES get right: it is an affine image of the
+/// natural parameters, i.e. the affine coordinates of Amari's e-connection, and Bayesian updating
+/// (<c>Gaussian.( * )</c>) is literally translation in it. So the AFFINE structure is earned; the
+/// Euclidean METRIC laid on top of it is not — and the rotor test consumes exactly the metric.</para>
+///
+/// <para>The fix is contained and is filed as work-item <c>081M0FT2JZV087G0R003HXFCEW</c>: keep the
+/// statistic, keep the score curve, keep the signature, and change only how the angle is measured
+/// (Fisher–Rao geodesic angles; Cl(2,1) rotors for the isometry hypothesis — a Sybil's rescaling
+/// mask is a BOOST, which the compact rotor group of Cl(3,0) cannot express).</para>
 /// </summary>
 [<RequireQualifiedAccess>]
 module CliffordAntiSybil =

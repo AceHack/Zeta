@@ -8,7 +8,8 @@
     "./aggregation-rule": "./aggregation-rule.ts",
     "./levels": "./levels.ts",
     "./society": "./society.ts",
-    "./ctm": "./ctm.ts"
+    "./ctm": "./ctm.ts",
+    "./effective-agent-count": "./effective-agent-count.ts"
   },
   "keywords": [
     "zeta",

@@ -1,0 +1,12 @@
+{
+  "pr_number": 12856,
+  "archive_path": "docs/history/pr-reviews/PR-12856-fix-hygiene-clear-7-dangling-auto-vivify-refs-re-issued-on-current-main.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-20T16:47:35.416Z",
+  "schema_version": "v1",
+  "commit_sha": "31f371787941dac19eb7eee94b7100b4e0c8ba35",
+  "title": "fix(hygiene): clear 7 dangling auto-vivify refs — re-issued on current main",
+  "state": "MERGED",
+  "merged_at": "2026-08-20T16:46:55Z",
+  "head_ref": "fix/auto-vivify-dangling-refs-v2"
+}

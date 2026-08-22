@@ -1,0 +1,12 @@
+{
+  "pr_number": 12178,
+  "archive_path": "docs/history/pr-reviews/PR-12178-research-security-a-shared-yubihsm-connector-is-not-an-isolation-boundary-what-p.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-18T23:06:38.310Z",
+  "schema_version": "v1",
+  "commit_sha": "657999f5be9e3870ed554971585551a4e39a8bc9",
+  "title": "research(security): a shared yubihsm-connector is not an isolation boundary — what \"prove-ish\" can honestly mean",
+  "state": "MERGED",
+  "merged_at": "2026-08-18T23:06:04Z",
+  "head_ref": "mateo/hsm-container-isolation-model"
+}

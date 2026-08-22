@@ -27,10 +27,13 @@ import {
 import type {
   BrowserCausalCorrectionNotice,
   BrowserDatabaseInvalidation,
+  BrowserTabChannel,
+  BrowserTabChannelMessage,
+  BrowserTabCoordinatorFeedback,
   BrowserTabCoordinatorReadout,
 } from "./browser-tab-coordinator";
 
-export const BROWSER_MULTITAB_FIXTURE_SCHEMA = "zeta.browser-multitab-fixture.v8" as const;
+export const BROWSER_MULTITAB_FIXTURE_SCHEMA = "zeta.browser-multitab-fixture.v10" as const;
 
 type BrowserMultitabFeedback =
   | DarkHallBrowserDurableFeedback
@@ -38,6 +41,7 @@ type BrowserMultitabFeedback =
   | BrowserDatabaseReceiptArchiveFeedback
   | BrowserExecutionAdmissionFeedback
   | BrowserZetaDbTabFeedback
+  | BrowserTabCoordinatorFeedback
   | ZetaDbFeedback;
 
 export type BrowserMultitabFixtureReadout =
@@ -70,6 +74,7 @@ export interface BrowserMultitabCheckpointReadout {
 export interface BrowserMultitabCausalReadout {
   readonly ledger: DarkHallBrowserDurableReadout["causal"];
   readonly handoff: DarkHallBrowserDurableReadout["causalHandoff"];
+  readonly handoffCheckpoint: DarkHallBrowserDurableReadout["causalHandoffCheckpoint"];
   readonly checkpoint: DarkHallBrowserDurableReadout["causalCheckpoint"];
 }
 
@@ -101,6 +106,8 @@ export interface BrowserMultitabFixtureApi {
     correction: Omit<BrowserCausalCorrectionNotice, "sourceTabId">,
   ): BrowserMultitabCheckpointResult<BrowserMultitabCausalReadout>;
   drainCausalCorrectionCheckpoint(): Promise<BrowserMultitabCheckpointResult<BrowserMultitabCausalReadout>>;
+  drainCausalHandoffCheckpoint(): Promise<BrowserMultitabCheckpointResult<BrowserMultitabCausalReadout>>;
+  releaseCausalReplayAcknowledgements(): BrowserMultitabCheckpointResult<number>;
   databaseTick(deltas: readonly ZetaDbDelta[]): Promise<BrowserMultitabDatabaseResult>;
   databaseExecutionHeld(): boolean;
   readDatabaseOutbox(): Promise<BrowserMultitabDatabaseOutboxResult>;
@@ -204,6 +211,7 @@ function causalReadout(current: DarkHallBrowserDurableReadout): BrowserMultitabC
   return {
     ledger: current.causal,
     handoff: current.causalHandoff,
+    handoffCheckpoint: current.causalHandoffCheckpoint,
     checkpoint: current.causalCheckpoint,
   };
 }
@@ -213,6 +221,8 @@ const nodeId = queryParameter("node") ?? "llmtv-browser-smoke";
 const tabId = queryParameter("tab") ?? "tab-unknown";
 const databaseNodeId = `${nodeId}:database`;
 const holdDatabaseExecution = queryParameter("holdDatabase") === "1";
+const heldCausalReplayAcknowledgementTarget = queryParameter("holdCausalAcksFor");
+const heldCausalReplayAcknowledgements: BrowserTabChannelMessage[] = [];
 let databaseExecutionHeld = false;
 let receiveDatabaseInvalidation: ((invalidation: BrowserDatabaseInvalidation) => void) | null = null;
 let startupDatabaseInvalidation: BrowserDatabaseInvalidation | null = null;
@@ -242,13 +252,35 @@ const onTabReadout = (readout: BrowserTabCoordinatorReadout): BrowserReadoutSink
   return { ok: true, value: null };
 };
 const serviceWorkerChannel = createNativeServiceWorkerTabChannel(globalThis);
-const started = serviceWorkerChannel.ok
+const selectedServiceWorkerChannel = serviceWorkerChannel.ok
+  ? {
+      ok: true as const,
+      value:
+        heldCausalReplayAcknowledgementTarget !== null
+          ? ({
+              publish: (message) => {
+                if (
+                  message.kind === "causal-correction-replay-acknowledged" &&
+                  message.acknowledgement.targetTabId === heldCausalReplayAcknowledgementTarget
+                ) {
+                  heldCausalReplayAcknowledgements.push(message);
+                  return { ok: true, value: null };
+                }
+                return serviceWorkerChannel.value.publish(message);
+              },
+              subscribe: (listener) => serviceWorkerChannel.value.subscribe(listener),
+              close: () => serviceWorkerChannel.value.close(),
+            } satisfies BrowserTabChannel)
+          : serviceWorkerChannel.value,
+    }
+  : serviceWorkerChannel;
+const started = selectedServiceWorkerChannel.ok
   ? await startNativeDurableDarkHallBrowser({
       databaseName: "zeta-browser-smoke",
       storeName: "node-checkpoints",
       mount,
       channelName: queryParameter("channel") ?? "zeta-darkhall-browser-smoke",
-      channel: serviceWorkerChannel.value,
+      channel: selectedServiceWorkerChannel.value,
       initialTranscript,
       nodeId,
       tabId,
@@ -263,10 +295,10 @@ const started = serviceWorkerChannel.ok
   : ({
       ok: false,
       feedback: {
-        severity: serviceWorkerChannel.feedback.severity,
+        severity: selectedServiceWorkerChannel.feedback.severity,
         code: "channel-start-failed",
         source: "browser-runtime",
-        detail: `${serviceWorkerChannel.feedback.code}: ${serviceWorkerChannel.feedback.detail}`,
+        detail: `${selectedServiceWorkerChannel.feedback.code}: ${selectedServiceWorkerChannel.feedback.detail}`,
         cleanup: [],
       },
     } as const);
@@ -280,6 +312,8 @@ if (!started.ok) {
     removeCheckpoint: () => Promise.resolve(failure),
     publishCausalCorrection: () => failure,
     drainCausalCorrectionCheckpoint: () => Promise.resolve(failure),
+    drainCausalHandoffCheckpoint: () => Promise.resolve(failure),
+    releaseCausalReplayAcknowledgements: () => failure,
     databaseTick: () => Promise.resolve(failure),
     databaseExecutionHeld: () => false,
     readDatabaseOutbox: () => Promise.resolve(failure),
@@ -352,6 +386,8 @@ if (!started.ok) {
       removeCheckpoint: () => Promise.resolve(failure),
       publishCausalCorrection: () => failure,
       drainCausalCorrectionCheckpoint: () => Promise.resolve(failure),
+      drainCausalHandoffCheckpoint: () => Promise.resolve(failure),
+      releaseCausalReplayAcknowledgements: () => failure,
       databaseTick: () => Promise.resolve(failure),
       databaseExecutionHeld: () => false,
       readDatabaseOutbox: () => Promise.resolve(failure),
@@ -385,6 +421,22 @@ if (!started.ok) {
       drainCausalCorrectionCheckpoint: async () => {
         const drained = await runtime.drainCausalCorrectionCheckpoint();
         return drained.ok ? { ok: true, value: causalReadout(drained.value) } : drained;
+      },
+      drainCausalHandoffCheckpoint: async () => {
+        const drained = await runtime.drainCausalHandoffCheckpoint();
+        return drained.ok ? { ok: true, value: causalReadout(drained.value) } : drained;
+      },
+      releaseCausalReplayAcknowledgements: () => {
+        let released = 0;
+        while (heldCausalReplayAcknowledgements.length > 0) {
+          const message = heldCausalReplayAcknowledgements[0];
+          if (message === undefined || !serviceWorkerChannel.ok) break;
+          const published = serviceWorkerChannel.value.publish(message);
+          if (!published.ok) return published;
+          heldCausalReplayAcknowledgements.shift();
+          released += 1;
+        }
+        return { ok: true, value: released };
       },
       databaseTick: (deltas) => database.tick(deltas),
       databaseExecutionHeld: () => databaseExecutionHeld,

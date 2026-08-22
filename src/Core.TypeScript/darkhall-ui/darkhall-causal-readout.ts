@@ -9,7 +9,7 @@ import type {
 } from "../browser-node/browser-tab-coordinator";
 
 export const DARK_HALL_CAUSAL_READOUT_SCHEMA = "zeta.darkhall.causal-readout.v2" as const;
-export const DARK_HALL_CAUSAL_HANDOFF_READOUT_SCHEMA = "zeta.darkhall.causal-handoff-readout.v2" as const;
+export const DARK_HALL_CAUSAL_HANDOFF_READOUT_SCHEMA = "zeta.darkhall.causal-handoff-readout.v3" as const;
 
 export interface DarkHallCausalReadout {
   readonly schema: typeof DARK_HALL_CAUSAL_READOUT_SCHEMA;
@@ -38,18 +38,24 @@ export interface DarkHallCausalHandoffReadout extends DarkHallCausalHandoffState
   readonly schema: typeof DARK_HALL_CAUSAL_HANDOFF_READOUT_SCHEMA;
   readonly localTabId: string;
   readonly maxCorrections: number;
+  readonly pendingHandoffs: number;
+  readonly maxPendingHandoffs: number;
 }
 
 /** Project the latest bounded peer exchange without claiming delivery beyond the observed edge. */
 export function darkHallCausalHandoffReadout(
   localTabId: string,
   maxCorrections: number,
+  pendingHandoffs: number,
+  maxPendingHandoffs: number,
   state: DarkHallCausalHandoffState,
 ): DarkHallCausalHandoffReadout {
   return {
     schema: DARK_HALL_CAUSAL_HANDOFF_READOUT_SCHEMA,
     localTabId,
     maxCorrections,
+    pendingHandoffs,
+    maxPendingHandoffs,
     ...state,
     feedback: state.feedback === null ? null : { ...state.feedback },
   };

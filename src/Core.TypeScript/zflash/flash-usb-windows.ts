@@ -54,11 +54,11 @@ import { execFileSync } from "node:child_process";
 import { homedir, tmpdir } from "node:os";
 import { join } from "node:path";
 
-// ── Safety-rail constants (mirror flash-usb.ts exactly) ──────────────
-export const MIN_ISO_BYTES = 200 * 1024 * 1024;
-export const MAX_ISO_BYTES = 8 * 1024 * 1024 * 1024;
-export const MIN_USB_BYTES = 4 * 1024 * 1024 * 1024;
-export const MAX_USB_BYTES = 256 * 1024 * 1024 * 1024;
+import { establishIsoIntegrity, realIsoIntegrityIo } from "./iso-integrity.ts";
+
+// ── Safety-rail constants — shared with every arm, not mirrored ──────
+import { MAX_ISO_BYTES, MAX_USB_BYTES, MIN_ISO_BYTES, MIN_USB_BYTES } from "./size-bounds.ts";
+export { MAX_ISO_BYTES, MAX_USB_BYTES, MIN_ISO_BYTES, MIN_USB_BYTES };
 
 export const ISO_GLOB_PREFIX = "zeta-installer-";
 
@@ -806,6 +806,23 @@ async function main(runner: CommandRunner = realRunner): Promise<void> {
   const iso = validateIso(isoPath, st.size, st.isFile());
   if (!iso.ok) bail(2, iso.message);
   process.stdout.write(`ISO: ${isoPath} (${human(st.size)})\n`);
+
+  // ── VERIFY BEFORE WRITE ──────────────────────────────────────────────
+  //
+  // validateIso above establishes the ISO's SIZE and nothing else. Until
+  // 081M0HG7X7B087G0R002A05DAP this arm stopped there, so on Windows zflash
+  // wrote whatever bytes were at that path to \\.\PhysicalDriveN. The gate
+  // is the same one the macOS arm runs, imported rather than copied, and it
+  // fails CLOSED: no manifest beside the ISO is a refusal, never a pass.
+  //
+  // This matters more here than anywhere: the default ISO path is whatever
+  // autoDiscoverIso found in the operator's Downloads folder, which is the
+  // least trustworthy directory on the machine.
+  {
+    const integrity = await establishIsoIntegrity(isoPath, realIsoIntegrityIo());
+    if (!integrity.ok) bail(2, integrity.message);
+    process.stdout.write(integrity.report);
+  }
 
   // Resolve the operator SSH pubkey NOW — BEFORE the destructive write — so a
   // missing/malformed key fails before the USB is wiped (not after).

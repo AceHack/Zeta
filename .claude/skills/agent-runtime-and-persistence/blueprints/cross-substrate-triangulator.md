@@ -62,21 +62,21 @@ Do NOT invoke when:
    - Source persona + source surface
 
 2. **Select an independent persona via the agent roster**
-   - Read `.claude/rules/agent-roster-reference-card.md` for available personas
+   - Read `.claude/rules.bak/agent-roster-reference-card.md` for available personas
    - Choose a persona on a DIFFERENT harness from the source
    - Avoid personas the source has already engaged on this substrate
 
 3. **Pick the appropriate peer-call wrapper**
-   - `tools/peer-call/claude.ts` — Claude Code peer (read-only self-test mode)
-   - `tools/peer-call/grok.ts` — Grok via cursor-agent (NOTE: 081KRA5AR0008QG0R0011ZGRZT currently
+   - `src/Core.TypeScript/peer-call/claude.ts` — Claude Code peer (read-only self-test mode)
+   - `src/Core.TypeScript/peer-call/grok.ts` — Grok via cursor-agent (NOTE: 081KRA5AR0008QG0R0011ZGRZT currently
      open — cursor-agent exit 1 / empty output; alternative: Grok website-text-mode
      git connector)
-   - `tools/peer-call/gemini.ts` — Gemini, propose role
-   - `tools/peer-call/codex.ts` — Vera / OpenAI Codex peer
-   - `tools/peer-call/kiro.ts` — Kiro specification peer
-   - `tools/peer-call/amara.ts` — Amara persona on codex (sharpen role)
-   - `tools/peer-call/ani.ts` — Ani persona on Grok (brat-voice register)
-   - `tools/peer-call/riven.ts` — Riven persona on Grok (adversarial-truth-axis)
+   - `src/Core.TypeScript/peer-call/gemini.ts` — Gemini, propose role
+   - `src/Core.TypeScript/peer-call/codex.ts` — Vera / OpenAI Codex peer
+   - `src/Core.TypeScript/peer-call/kiro.ts` — Kiro specification peer
+   - `src/Core.TypeScript/peer-call/amara.ts` — Amara persona on codex (sharpen role)
+   - `src/Core.TypeScript/peer-call/ani.ts` — Ani persona on Grok (brat-voice register)
+   - `src/Core.TypeScript/peer-call/riven.ts` — Riven persona on Grok (adversarial-truth-axis)
 
 4. **Forward the substrate verbatim**
    - Present source substrate as-is
@@ -162,10 +162,10 @@ voluntary type-safe binding hat × domain × criticality framework.
 - [`081KRW63S0008QG0R000BH37EV`](../../../docs/backlog/P3/081KRW63S0008QG0R000BH37EV-voluntary-type-safe-binding-hat-domain-criticality-mika-2026-05-18.md) — voluntary type-safe binding hat × domain × criticality framework
 - [`081KRW63S0008QG0R002ZRNDJ8`](../../../docs/backlog/P1/081KRW63S0008QG0R002ZRNDJ8-limit-is-simulation-not-collapse-pure-function-preview-aaron-ani-2026-05-18.md) — Limit-is-simulation (triangulation IS meta-Limit-simulation)
 - [`081KRW63S0008QG0R001Z10PVV`](../../../docs/backlog/P1/081KRW63S0008QG0R001Z10PVV-agora-v6-constitution-marketplace-agora-2-primitives-economic-architecture-aaron-ani-2026-05-18.md) — Agora V6 (today's canonical worked example)
-- [`.claude/rules/peer-call-infrastructure.md`](../../rules/peer-call-infrastructure.md) — peer-call wrappers (the operational substrate)
-- [`.claude/rules/agent-roster-reference-card.md`](../../rules/agent-roster-reference-card.md) — agent roster (which personas + surfaces are available)
-- [`.claude/rules/glass-halo-bidirectional.md`](../../rules/glass-halo-bidirectional.md) — cross-substrate triangulation discipline (this skill formalizes the rule)
-- [`.claude/rules/substrate-or-it-didnt-happen.md`](../../rules/substrate-or-it-didnt-happen.md) — §33 verbatim preservation discipline
+- [`.claude/rules.bak/peer-call-infrastructure.md`](../../rules/peer-call-infrastructure.md) — peer-call wrappers (the operational substrate)
+- [`.claude/rules.bak/agent-roster-reference-card.md`](../../rules/agent-roster-reference-card.md) — agent roster (which personas + surfaces are available)
+- [`.claude/rules.bak/glass-halo-bidirectional.md`](../../rules/glass-halo-bidirectional.md) — cross-substrate triangulation discipline (this skill formalizes the rule)
+- [`.claude/rules.bak/substrate-or-it-didnt-happen.md`](../../rules/substrate-or-it-didnt-happen.md) — §33 verbatim preservation discipline
 - `tools/peer-call/*.ts` — 8 peer-call wrappers (claude/grok/gemini/codex/kiro/amara/ani/riven)
 
 ## Status

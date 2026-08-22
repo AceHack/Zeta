@@ -1,0 +1,12 @@
+{
+  "pr_number": 12265,
+  "archive_path": "docs/history/pr-reviews/PR-12265-fix-ci-the-gate-scope-cost-comment-carried-the-estimate-not-the-measurement.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-19T03:22:47.903Z",
+  "schema_version": "v1",
+  "commit_sha": "c6c4a6574fe86f42166607d377eae3cf54e236ef",
+  "title": "fix(ci): the gate-scope cost comment carried the estimate, not the measurement",
+  "state": "MERGED",
+  "merged_at": "2026-08-19T03:22:12Z",
+  "head_ref": "dejan/gate-scope-measured-cost"
+}

@@ -38,3 +38,21 @@ docs/github/prs/shards/
 # (the style/CSS inversion, Aaron 2026-06-10). Excludes the website's CSS from
 # prettier (stylelint excludes it too via .stylelintignore).
 full-ai-cluster/portal/web/**/*.css
+
+# Generated currency report (`report-chart-currency.ts --write`). MACHINE-WRITTEN,
+# never hand-edited, and its whole value is that re-running the generator reproduces
+# the checked-in bytes — that byte-match is what makes `--check` a drift signal and
+# what stops a weekly job dirtying the tree. Prettier re-pads markdown table cells and
+# rewrites `*em*` to `_em_`, which would put the FORMATTER and the GENERATOR in a
+# permanent fight over the same file, exactly as with `docs/github/prs/shards/` above.
+# The generator, not prettier, owns these bytes.
+docs/CHART-CURRENCY.md
+
+# VERBATIM COPIES OF GIT HISTORY. The four pre-fix `Application.yaml` files under
+# `testdata/inert-valuesobject-history/` are byte-for-byte `git show <sha>:<path>`
+# output, and `inert-valuesobject-keys.test.ts` re-verifies them against those very
+# objects. Formatting them would break that verification for the sake of tidying a
+# manifest nobody will ever deploy — and would leave the guard's four falsifiers
+# resting on files the repository could no longer confirm are the real history.
+# The commits, not prettier, own these bytes.
+src/Core.TypeScript/cluster/testdata/inert-valuesobject-history/*.yaml

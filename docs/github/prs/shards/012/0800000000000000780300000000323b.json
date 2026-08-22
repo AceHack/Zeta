@@ -1,0 +1,12 @@
+{
+  "pr_number": 12859,
+  "archive_path": "docs/history/pr-reviews/PR-12859-vision-declared-vs-discovered-n-grams-antlr-and-cluster-federation-are-one-axis-.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-20T17:02:50.455Z",
+  "schema_version": "v1",
+  "commit_sha": "d37a9b8eb22af49bd60f41643313a236c5a6b245",
+  "title": "vision: declared vs discovered — n-grams/ANTLR and cluster/federation are one axis at two layers",
+  "state": "MERGED",
+  "merged_at": "2026-08-20T16:58:33Z",
+  "head_ref": "vision/declared-vs-discovered"
+}

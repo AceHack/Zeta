@@ -72,7 +72,10 @@ import {
   writeFileSync,
 } from "node:fs";
 import { homedir, platform, tmpdir } from "node:os";
-import { dirname, join, resolve } from "node:path";
+// `basename` is aliased: findFlashUsbPath() has a local `const basename`, and a
+// module-level import of the same name shadowed inside one function is a
+// readability trap rather than an error.
+import { basename as pathBasename, dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import {
   buildBlob,
@@ -86,7 +89,6 @@ import {
   ISOHYBRID_ESP_OFFSET_FALLBACK_BYTES,
   parseUuidFromDiskutilInfo,
   resolveZetaTestInfraPubkeyFromZflashModule,
-  selectDownloadedIsoForArch,
   selectIsoForArch,
   stampedCiIsoFileName,
   type IsoArch,
@@ -101,6 +103,14 @@ import {
   requireLinuxBakeTools,
 } from "./linux-arm.ts";
 import {
+  describePin,
+  enumerateUsbCandidatesViaDiskutil,
+  pinToExpectFlags,
+  selectPinnedTarget,
+} from "./target-pin.ts";
+import { isoManifestCandidates, materializeIsoSidecar, realSidecarIo } from "./iso-integrity.ts";
+import { discoverLocalIso, NO_LOCAL_ISO_HELP } from "./iso-discovery.ts";
+import {
   deviceKeyPath,
   userKeyringPublicPath,
   realEffects as realMachineEffects,
@@ -108,48 +118,11 @@ import {
 import { realEffects as realTrustEffects } from "../../../tools/setup/persona-keys/github-trust.ts";
 import { onboard, formatOnboard } from "../../../tools/setup/persona-keys/onboard.ts";
 
-const ISO_GLOB_PREFIX = "zeta-installer-";
 const DEFAULT_SSH_KEY = join(homedir(), ".ssh", "id_ed25519.pub");
 
 function bail(code: number, msg: string): never {
   process.stderr.write(`zflash: ${msg}\n`);
   process.exit(code);
-}
-
-function autoDiscoverIso(wantArch: IsoArch): string {
-  const dl = join(homedir(), "Downloads");
-  if (!existsSync(dl)) {
-    bail(2, `~/Downloads does not exist; pass an ISO path explicitly`);
-  }
-  const candidates = readdirSync(dl)
-    .filter((f) => f.startsWith(ISO_GLOB_PREFIX) && f.endsWith(".iso"))
-    .map((f) => join(dl, f))
-    .filter((p) => {
-      try {
-        return statSync(p).isFile();
-      } catch {
-        return false;
-      }
-    });
-
-  if (candidates.length === 0) {
-    bail(
-      2,
-      `no Zeta installer ISO found under ~/Downloads/${ISO_GLOB_PREFIX}*.iso\n` +
-        "Either download one from a successful build-ai-cluster-iso workflow\n" +
-        "run, or pass an ISO path explicitly: zflash <path/to/iso>",
-    );
-  }
-
-  // Pick newest by mtime, then let arch decide among them (2026-08-18).
-  // Sorting first keeps "newest" the tiebreak it always was; the arch filter
-  // only prevents a wrong-arch ISO from winning purely by being recent, which
-  // is what an untagged CI pull used to do permanently.
-  candidates.sort((a, b) => statSync(b).mtimeMs - statSync(a).mtimeMs);
-  const picked = selectDownloadedIsoForArch(candidates, wantArch);
-  if (!picked.ok) bail(2, picked.error);
-  if (picked.warning !== null) process.stderr.write(`zflash: WARNING ${picked.warning}\n`);
-  return picked.path;
 }
 
 // ── iter-4.3 freshness checks (081KSGS9H0008QG0R002T3BJ2R follow-on) ──────────────────
@@ -372,11 +345,48 @@ function checkLocalCheckoutFreshness(repoRoot: string): void {
   process.stdout.write("zflash: local checkout matches origin/main on install substrate ✓\n");
 }
 
-function autoDownloadFreshIsoIfNeeded(localIso: string, wantArch: IsoArch): string {
+/**
+ * Report — early, and without touching a device — that an ISO has no manifest.
+ *
+ * This does not gate anything; establishIsoIntegrity is still the refusal. It
+ * exists so the operator learns at ISO-selection time rather than after they
+ * have identified a USB stick, and so the "local ISO is current ✓" line cannot
+ * be read as "local ISO is fine".
+ */
+function warnIfNoManifestBeside(isoPath: string | null): void {
+  if (isoPath === null) return;
+  if (isoManifestCandidates(isoPath).some((p) => existsSync(p))) return;
+  process.stderr.write(
+    `zflash: WARNING no sha256 manifest beside ${pathBasename(isoPath)}\n` +
+      "  The pre-write integrity gate WILL refuse this ISO. Looked for:\n" +
+      isoManifestCandidates(isoPath)
+        .map((p) => `    ${p}\n`)
+        .join("") +
+      "  Fetch the publisher's SHA256SUMS from the same place the ISO came from,\n" +
+      "  or let zflash pull a fresh ISO (it brings the manifest with it).\n",
+  );
+}
+
+/**
+ * Pull the latest CI ISO when it is newer than what is already on disk.
+ *
+ * `localIso === null` means "nothing on disk at all", which makes any CI build
+ * fresher by definition — that is the BOOTSTRAP case discoverLocalIso used to
+ * bail on before this function could run. The return is null only when there
+ * was no local ISO AND the pull did not produce one; the caller turns that into
+ * the operator-facing refusal.
+ *
+ * SIDECAR. Whatever ISO this returns, it also puts the publisher's `.sha256`
+ * beside it, because the ISO alone cannot satisfy zflash's own pre-write
+ * integrity gate (iso-integrity.ts). Before that was wired, the bare `zflash`
+ * form both metal runbooks recommend downloaded an ISO and then refused it with
+ * `manifest-missing`.
+ */
+function autoDownloadFreshIsoIfNeeded(localIso: string | null, wantArch: IsoArch): string | null {
   // Check the latest successful build-ai-cluster-iso workflow run on main.
   // If its updated_at > localIso.mtime, download via gh run download +
   // return the new path. Offline / no-gh → falls back to local silently.
-  const localMtime = statSync(localIso).mtimeMs;
+  const localMtime = localIso === null ? Number.NEGATIVE_INFINITY : statSync(localIso).mtimeMs;
   try {
     const runsJson = execFileSync(
       "gh",
@@ -397,6 +407,12 @@ function autoDownloadFreshIsoIfNeeded(localIso: string, wantArch: IsoArch): stri
       process.stdout.write(
         `zflash: local ISO is current with latest CI build (run ${latest.id}, ${latest.updated_at}) ✓\n`,
       );
+      // "Current" says nothing about VERIFIABLE. An ISO the operator downloaded
+      // by hand has no manifest beside it, and the pre-write gate will refuse
+      // it — correctly, and with no warning until the operator has already
+      // picked a target device. Say so here instead, while it is still cheap.
+      // Nothing is fabricated: this only reports what the gate is about to find.
+      warnIfNoManifestBeside(localIso);
       return localIso;
     }
     process.stdout.write(
@@ -411,10 +427,9 @@ function autoDownloadFreshIsoIfNeeded(localIso: string, wantArch: IsoArch): stri
     // collision-free unique path; the try/finally removes it whether
     // copy succeeded or threw.
     const dlDir = mkdtempSync(join(tmpdir(), `zflash-ci-iso-${latest.id}-`));
-    // Per #5093 Copilot P0: TS strict mode rejects `return dlDest` when
-    // dlDest is `string | null` but return type is `string`. Initialize
-    // to localIso so it's always string; overwrite on copy success.
-    let dlDest: string = localIso;
+    // Falls back to whatever was already on disk (possibly nothing) unless the
+    // copy below succeeds.
+    let dlDest: string | null = localIso;
     try {
       execFileSync(
         "gh",
@@ -427,21 +442,27 @@ function autoDownloadFreshIsoIfNeeded(localIso: string, wantArch: IsoArch): stri
       // selectIsoForArch decide — it refuses rather than guessing, because the
       // old "first .iso in readdirSync order" pick was a coin flip whose
       // failure surfaced only as "no bootable device" on the target board.
-      const collectIsosUnder = (d: string, acc: string[] = []): string[] => {
+      //
+      // Collect EVERY file, not only the ISOs: the `.sha256` sidecar the
+      // integrity gate needs is published as its own artifact, so it lands in a
+      // SIBLING directory rather than beside the ISO. Filtering to `.iso` here
+      // is what left the sidecar unreachable before it was ever looked for.
+      const collectFilesUnder = (d: string, acc: string[] = []): string[] => {
         if (!existsSync(d)) return acc;
         for (const e of readdirSync(d).sort()) {
           const p = join(d, e);
           try {
             const s = statSync(p);
-            if (s.isFile() && e.endsWith(".iso")) acc.push(p);
-            else if (s.isDirectory()) collectIsosUnder(p, acc);
+            if (s.isFile()) acc.push(p);
+            else if (s.isDirectory()) collectFilesUnder(p, acc);
           } catch {
             /* unreadable entry — skip */
           }
         }
         return acc;
       };
-      const found = collectIsosUnder(dlDir);
+      const downloadedFiles = collectFilesUnder(dlDir);
+      const found = downloadedFiles.filter((p) => p.endsWith(".iso"));
       if (found.length === 0) {
         process.stderr.write(`zflash: (CI artifact downloaded to ${dlDir} but no .iso found; falling back to local)\n`);
         return localIso;
@@ -473,6 +494,31 @@ function autoDownloadFreshIsoIfNeeded(localIso: string, wantArch: IsoArch): stri
         copyFileSync(ciIsoSrc, dlDest);
       }
       process.stdout.write(`zflash: fresh ISO at ${dlDest}\n`);
+
+      // The ISO on its own cannot pass zflash's own pre-write integrity gate,
+      // so bring the publisher's digest across with it. The filename field is
+      // rewritten to the run-stamped local basename because the gate looks the
+      // file up by EXACT basename — a verbatim copy attests a name that is no
+      // longer on disk, and refuses with `iso-not-in-manifest`.
+      //
+      // A refusal here is NOT downgraded into a pass. Nothing is fabricated
+      // from the bytes we just downloaded; the ISO simply stays unverifiable
+      // and establishIsoIntegrity stops the write later with its own message.
+      const sidecar = materializeIsoSidecar(realSidecarIo(), {
+        downloadedFiles,
+        isoSrcPath: ciIsoSrc,
+        isoDestPath: dlDest,
+      });
+      if (sidecar.ok) {
+        process.stdout.write(`zflash: ${sidecar.report}\n`);
+      } else {
+        process.stderr.write(
+          `zflash: WARNING could not establish a manifest for the pulled ISO (${sidecar.reason})\n` +
+            `  ${sidecar.message}\n` +
+            "  The pre-write integrity gate WILL refuse this ISO. Fetch the publisher's\n" +
+            `  SHA256SUMS or ${pathBasename(dlDest)}.sha256 and put it beside the ISO.\n`,
+        );
+      }
     } finally {
       // Always clean up the temp dir, whether download / copy succeeded
       // or threw. The ISO has been copied to ~/Downloads already (when
@@ -1033,6 +1079,9 @@ async function main() {
     "--bake-passphrase-file",
     "--bake-passphrase-env",
     "--persona",
+    "--expect-device",
+    "--expect-size",
+    "--expect-model",
   ]);
   const argv = process.argv.slice(2);
 
@@ -1053,6 +1102,12 @@ async function main() {
   let bakePassphraseFile: string | null = null;
   let bakePassphraseEnv: string | null = null;
   let bakePersona: string | null = null;
+  // The operator may STATE the target. When they do not, the pin is derived
+  // from the enumeration below and shown before it is used -- but it is always
+  // a stated pin by the time the flasher sees it. See target-pin.ts.
+  let expectDevice: string | null = null;
+  let expectSizeRaw: string | null = null;
+  let expectModel: string | null = null;
   const rawFlags: string[] = [];
   const positional: string[] = [];
   for (let i = 0; i < argv.length; i++) {
@@ -1158,6 +1213,17 @@ async function main() {
       i++;
       continue;
     }
+    if (a === "--expect-device" || a === "--expect-size" || a === "--expect-model") {
+      const next = argv[i + 1];
+      if (!next || next.startsWith("-")) {
+        bail(2, a + " requires a value (e.g. --expect-device /dev/disk6)");
+      }
+      if (a === "--expect-device") expectDevice = next;
+      else if (a === "--expect-size") expectSizeRaw = next;
+      else expectModel = next;
+      i++;
+      continue;
+    }
     if (a === "--persona") {
       const next = argv[i + 1];
       if (!next || next.startsWith("-")) {
@@ -1225,6 +1291,10 @@ async function main() {
         "                            role-stack — e.g., --host pikachu installs as pikachu\n" +
         "                            regardless of flake role config. Default: flake config name\n" +
         "                            (control-plane for the zero-typing single-node path)\n" +
+        "  --expect-device <path>    state the target device instead of accepting the\n" +
+        "                            one enumeration found (checked, then passed on)\n" +
+        "  --expect-size <bytes>     state the exact device size in bytes\n" +
+        "  --expect-model <name>     state the exact diskutil MediaName\n" +
         "  --agent                   (081KSGS9H0008QG0R001EZKNCB) agent-driven mode — spawn flash-usb with piped stdin\n" +
         "                            so the agent auto-types the 'yes <nonce>' challenge by reading\n" +
         "                            the nonce from stdout. Touch ID PAM gate STILL fires on the\n" +
@@ -1280,14 +1350,47 @@ async function main() {
     process.stderr.write("zflash: WARN — iter-4.3 freshness check bypassed via --skip-freshness-check\n");
   }
 
-  const explicit = positional[0];
-  let isoPath = explicit ? resolve(explicit) : autoDiscoverIso(isoArch);
-
   // iter-4.3 CI-ISO auto-download: if local newest is older than the latest
-  // successful CI build on main, pull the fresh artifact. Skip when explicit
-  // ISO path passed (operator overrides), when opted out, or on failure.
-  if (!explicit && !skipIsoPull) {
-    isoPath = autoDownloadFreshIsoIfNeeded(isoPath, isoArch);
+  // successful CI build on main, pull the fresh artifact. Skip when an explicit
+  // ISO path is passed (operator overrides), when opted out, or on failure.
+  //
+  // The no-local-ISO case reaches the pull instead of bailing before it. That
+  // ordering is the whole bootstrap: the bare `zflash` form both runbooks
+  // recommend has to work on a machine that has never flashed before, and the
+  // operator who has no ISO is exactly the one the auto-pull exists for.
+  const explicit = positional[0];
+  let isoPath: string;
+  if (explicit) {
+    isoPath = resolve(explicit);
+    // An operator-supplied path is trusted as a CHOICE, never as verification.
+    warnIfNoManifestBeside(isoPath);
+  } else {
+    const found = discoverLocalIso(isoArch);
+    // A wrong-arch Downloads folder is REFUSED here and never falls through to
+    // the pull: a download that papers over a real mismatch is the kind of
+    // "fix" that turns a loud failure into a board that will not boot.
+    if (found.kind === "refused") bail(2, found.error);
+    if (found.kind === "found" && found.warning !== null) {
+      process.stderr.write(`zflash: WARNING ${found.warning}\n`);
+    }
+    const local = found.kind === "found" ? found.path : null;
+    if (skipIsoPull) {
+      if (local === null) bail(2, NO_LOCAL_ISO_HELP);
+      // --skip-iso-pull opts out of the download, not out of being told what
+      // the gate is going to say.
+      warnIfNoManifestBeside(local);
+      isoPath = local;
+    } else {
+      const pulled = autoDownloadFreshIsoIfNeeded(local, isoArch);
+      if (pulled === null) {
+        bail(
+          2,
+          NO_LOCAL_ISO_HELP +
+            "\n(the CI auto-pull ran and did not produce one either — see the diagnostics above)",
+        );
+      }
+      isoPath = pulled;
+    }
   }
 
   const flashUsb = findFlashUsbPath();
@@ -1448,6 +1551,14 @@ async function main() {
   // child's allowlist. `flashUsbLinuxArgv` cannot emit it.
   let flashUsbArgs: string[];
   if (isLinux) {
+    if (expectDevice !== null || expectSizeRaw !== null || expectModel !== null) {
+      bail(
+        2,
+        "--expect-* is not accepted on the Linux arm yet: flash-usb-linux.ts has no" +
+          " stated-target flags, and its flag allowlist would abort the flash. Refusing" +
+          " rather than dropping the pin you asked for.",
+      );
+    }
     let effectiveIso = isoPath;
     // `--no-inject` suppresses the hostname write too, exactly as it does on macOS. The
     // hostname is passed to linuxBakeIsRequired only when injection is on, so the two
@@ -1464,9 +1575,38 @@ async function main() {
     if (!argv.ok) bail(2, argv.error);
     flashUsbArgs = [...argv.argv];
   } else {
+    // ── STATE THE TARGET, do not let anything downstream discover it ────────
+    //
+    // Before 2026-08-21 this wrapper passed no --expect-* at all, so the
+    // flasher built its expectation by falling back to the device it had just
+    // observed and compared it to itself. The common path -- the only path --
+    // was unpinned, and the warning it printed was the whole guard.
+    //
+    // Now the wrapper enumerates, shows the operator what it found, and states
+    // it. That is not the same as the flasher discovering it: the pin is fixed
+    // here, before the operator sees it, and the flasher refuses if the disk it
+    // finds at write time is not that one. The window a swapped stick has to
+    // slip through closes at the display rather than after it.
+    //
+    // The fully non-vacuous form is still the operator naming the target: pass
+    // --expect-device/--expect-size/--expect-model here and this step CHECKS
+    // them rather than deriving them. Stated beats derived; derived-and-shown
+    // beats discovered-and-hidden, which is what this replaced.
+    const expectSizeParsed = expectSizeRaw === null ? null : Number(expectSizeRaw);
+    if (expectSizeParsed !== null && !Number.isSafeInteger(expectSizeParsed)) {
+      bail(2, "--expect-size must be a whole number of bytes, got " + expectSizeRaw);
+    }
+    const pinned = selectPinnedTarget(enumerateUsbCandidatesViaDiskutil(), {
+      devicePath: expectDevice,
+      sizeBytes: expectSizeParsed,
+      mediaName: expectModel,
+    });
+    if (!pinned.ok) bail(2, pinned.error);
+    process.stdout.write("\n" + describePin(pinned.pin));
+    const expectFlags = [...pinToExpectFlags(pinned.pin)];
     flashUsbArgs = willInject
-      ? [flashUsb, "--short", "--no-eject", isoPath]
-      : [flashUsb, "--short", isoPath];
+      ? [flashUsb, "--short", "--no-eject", ...expectFlags, isoPath]
+      : [flashUsb, "--short", ...expectFlags, isoPath];
   }
   if (agentMode) {
     process.stdout.write(
@@ -1480,11 +1620,33 @@ async function main() {
       });
       let stdoutBuf = "";
       let challengeAnswered = false;
+      // 2026-08-21: the flasher now asks a SECOND question first, when the
+      // device is half-provisioned -- the operator acknowledges the state by
+      // name before the destroy challenge is offered. An agent that only knew
+      // about the destroy challenge would hang on it, so it is answered here
+      // too. Honest limit, stated rather than hidden: auto-typing an
+      // acknowledgement makes it a RECORD in the transcript, not a gate. The
+      // gate in agent mode is the Touch ID PAM prompt, which still fires and
+      // still cannot be answered by an agent.
+      let stateAckAnswered = false;
       child.stdout.on("data", (chunk: Buffer) => {
         const text = chunk.toString();
         process.stdout.write(text); // mirror to operator's view
         if (!challengeAnswered) {
           stdoutBuf += text;
+          if (!stateAckAnswered) {
+            // The "  ack half-provisioned" line, two-space indented exactly as
+            // flash-usb.ts prints HALF_PROVISIONED_ACK.
+            const ackMatch = stdoutBuf.match(/^ {2}(ack half-provisioned)\s*$/m);
+            if (ackMatch) {
+              const ackLine = ackMatch[1];
+              process.stdout.write(
+                `\n[agent-mode: device state is half-provisioned; auto-typing ${ackLine} -- operator visibility per glass-halo-bidirectional rule]\n`,
+              );
+              child.stdin.write(`${ackLine}\n`);
+              stateAckAnswered = true;
+            }
+          }
           // Match the "  yes <4hex>" line emitted by flash-usb.ts at
           // the runtime-acceptance prompt. The challenge is indented
           // by 2 spaces in flash-usb.ts; the nonce is exactly 4 hex

@@ -95,7 +95,7 @@ When wearing this hat, may compose with:
 
 ## Composes with rules
 
-- `.claude/rules/zeta-ships-with-skills-immediate-value.md` — TS substrate ships first; F# crystallization later
-- `.claude/rules/rule-0-no-sh-files.md` — TS-first for cross-platform DST
-- `.claude/rules/dep-pin-search-first-authority.md` — version-pinning discipline composes with zflash ISO substrate
+- `.claude/rules.bak/zeta-ships-with-skills-immediate-value.md` — TS substrate ships first; F# crystallization later
+- `.claude/rules.bak/rule-0-no-sh-files.md` — TS-first for cross-platform DST
+- `.claude/rules.bak/dep-pin-search-first-authority.md` — version-pinning discipline composes with zflash ISO substrate
 - 081KSNY2Z0008QG0R002QA720J three-lanes-concurrent operating discipline — zflash lane substrate-anchor

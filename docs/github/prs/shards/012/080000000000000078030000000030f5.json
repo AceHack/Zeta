@@ -1,0 +1,12 @@
+{
+  "pr_number": 12533,
+  "archive_path": "docs/history/pr-reviews/PR-12533-fix-viz-the-zetaid-identicon-drew-the-nonce-and-nothing-else-fold-all-128-bits.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-19T21:16:05.287Z",
+  "schema_version": "v1",
+  "commit_sha": "1527accfe3f65523aeb487ac04f18efa4b617b4b",
+  "title": "fix(viz): the ZetaId identicon drew the nonce and nothing else — fold all 128 bits",
+  "state": "MERGED",
+  "merged_at": "2026-08-19T21:15:25Z",
+  "head_ref": "iris/zetaid-glyph-entropy"
+}

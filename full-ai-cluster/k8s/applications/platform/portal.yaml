@@ -78,8 +78,37 @@ spec:
   template:
     metadata:
       labels: { app.kubernetes.io/name: portal }
+      # OPT IN TO SCRAPING. The Alloy DaemonSet keeps only pods carrying
+      # prometheus.io/scrape=true (see the annotated_pods relabel rules in
+      # applications/alloy) and forwards them to Mimir. Before this block no
+      # Zeta workload was scraped by anything -- the path existed and had no
+      # users. The port and path below MUST answer: an annotated pod that
+      # serves nothing shows DOWN and reads as instrumented, which is worse
+      # than an unannotated one. src/metrics.ts is what makes them true.
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "8080"
+        prometheus.io/path: /metrics
     spec:
       serviceAccountName: portal
+      # The image below lives in a PRIVATE GHCR package -- one of the two this
+      # Application runs. An anonymous manifest GET against it takes HTTP 401, a
+      # credentialed one takes HTTP 200 (measured 2026-08-21).
+      # Without this reference the kubelet pulls anonymously and the pod sits in
+      # ImagePullBackOff on EVERY substrate -- which is why the metal platform
+      # control plane has never started either. `imagePullSecrets` is a
+      # LocalObjectReference, so `ghcr-pull` is resolved in THIS namespace
+      # (`zeta-platform`) and nowhere else.
+      #
+      # WHO CREATES IT. dev/CI: `applyDevRegistryPullSecret` at bring-up, from a
+      # token in the environment (`DEV_GHCR_PULL_SECRET` in dev-cluster/lib.ts).
+      # METAL: NOBODY YET -- it is operator-supplied secret material under the
+      # constitutional rail in `full-ai-cluster/INJECTION-POINTS.md`, or the
+      # packages are made public and this reference becomes inert. Until one of
+      # those happens this line does not fix metal; it makes metal's failure the
+      # same named, locatable one as CI's instead of a bare 401.
+      imagePullSecrets:
+        - name: ghcr-pull
       securityContext:
         runAsNonRoot: true
         runAsUser: 1000
@@ -134,6 +163,11 @@ spec:
   selector: { app.kubernetes.io/name: portal }
   ports:
     - { name: http, port: 80, targetPort: http }
+    # A separately NAMED service port for the same container port, so the
+    # ServiceMonitor selects by name rather than by number. The portal serves
+    # its exposition on the one HTTP listener it has; splitting the name is
+    # what lets the scrape config say what it means.
+    - { name: metrics, port: 8080, targetPort: http }
 ---
 # Publish the portal on the shared Cilium Gateway (HTTPS via cert-manager). The
 # hostname is a placeholder — set it to your domain.

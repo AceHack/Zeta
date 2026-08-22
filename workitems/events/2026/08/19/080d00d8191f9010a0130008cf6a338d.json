@@ -1,0 +1,14 @@
+{
+  "id": "080d00d8191f9010a0130008cf6a338d",
+  "at": "2026-08-19T17:13:05.778Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M0DG68ZH087G0R001RMAX88",
+    "type": "task",
+    "title": "Repo-split round 2: measured change-rate partition, candidate cut-lines with named costs",
+    "slug": "repo-split-round-2-measured-change-rate-partition-candidate",
+    "priority": "P2",
+    "filename": "081M0DG68ZH087G0R001RMAX88-repo-split-round-2-measured-change-rate-partition-candidate.md"
+  }
+}

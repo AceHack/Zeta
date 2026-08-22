@@ -1,0 +1,14 @@
+{
+  "id": "080d00ddbed9a010a0130008f7a5279c",
+  "at": "2026-08-19T20:30:29.172Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M0DVFPSK087G0R002CRCV6G",
+    "type": "task",
+    "title": "The singlet-CHSH SVG draws one corner but ferry 25 claims it draws the S=2 vs 2sqrt2 gap, which needs all four",
+    "slug": "the-singlet-chsh-svg-draws-one-corner-but-ferry-25-claims-it",
+    "priority": "P2",
+    "filename": "081M0DVFPSK087G0R002CRCV6G-the-singlet-chsh-svg-draws-one-corner-but-ferry-25-claims-it.md"
+  }
+}

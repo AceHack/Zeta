@@ -119,6 +119,7 @@ import type { FrostCaCustodyEffects } from "./frost-ca-custody.ts";
 import { frostChallenge, lagrangeCoefficient } from "./frost.ts";
 import {
   createInsecureFakeHsmShareAdapter,
+  describeSealTierGap,
   type ExtractingFrostShareAdapter,
   type FrostSealTier,
   type InsecureFakeHsmAcknowledgement,
@@ -449,7 +450,10 @@ export function createSoftwarePartialSigner(
       if (handle.sealTier !== pkg.requiredSealTier) {
         throw new Error(
           "frost-partial-signer: no-silent-downgrade violation: the session requires " +
-            `"${pkg.requiredSealTier}" but this signer is "${handle.sealTier}".`,
+            `"${pkg.requiredSealTier}" but this signer is "${handle.sealTier}". ` +
+            // Same wording as the storage port, from the same function, so the two ports
+            // cannot drift into describing one gap two ways.
+            describeSealTierGap(pkg.requiredSealTier, handle.sealTier),
         );
       }
       assertWellFormedPackage(pkg);
@@ -573,7 +577,8 @@ export function combineFrostPartials(
     if (p.sealTier !== pkg.requiredSealTier) {
       throw new Error(
         `frost-partial-signer: refusing partial from participant ${String(p.x)}: produced at ` +
-          `"${p.sealTier}" but the session declared "${pkg.requiredSealTier}".`,
+          `"${p.sealTier}" but the session declared "${pkg.requiredSealTier}". ` +
+          describeSealTierGap(pkg.requiredSealTier, p.sealTier),
       );
     }
     if (!expected.has(p.x)) {

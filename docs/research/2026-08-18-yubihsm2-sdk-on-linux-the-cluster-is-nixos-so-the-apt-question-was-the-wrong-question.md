@@ -1,6 +1,6 @@
 # YubiHSM2 SDK on Linux: the cluster is NixOS, so the apt question was the wrong question
 
-**Status:** DESIGN — awaiting maintainer sign-off. **Q8 ANSWERED 2026-08-18** (measured on Aaron's Mac against the attached device); Q1-Q7 open, plus a new Q9 raised by that measurement — see section 11. No workflow, installer, or NixOS
+**Status:** DESIGN — awaiting maintainer sign-off. **Q8 ANSWERED 2026-08-18** (measured on Aaron's Mac against the attached device). **Q7 SUPERSEDED 2026-08-20 — section 6 is WRONG; see section 12 before relying on it.** Q1-Q6 open, plus a new Q9 raised by the Q8 measurement — see section 11. No workflow or NixOS
 module changed in this PR. Round-29 discipline: numbered open questions in section 8,
 answers land before YAML/Nix does. Sign-off date: _pending_.
 
@@ -233,6 +233,11 @@ it. Section 8 Q1 asks whether it lands there before merge or as a follow-up.
 
 ## 6. macOS parity is not closable by `manifests/brew`
 
+> **CORRECTED 2026-08-20 — this section's conclusion is wrong. See section 12.**
+> The 404s below are real; the inference from them is not. The SDK ships as a
+> Homebrew **cask** (`yubihsm2-sdk`), which is now declared in
+> `tools/setup/manifests/brew-cask`. Kept unedited as the record of the error.
+
 Aaron installed the macOS SDK by hand, and the reason is structural: **Homebrew has no
 `yubihsm-shell` and no `yubihsm-connector` formula** (checked against `formulae.brew.sh` —
 both 404). The `manifests/brew` route that would normally close the laptop leg does not
@@ -448,3 +453,95 @@ fault reads as an absent device" / "ship it but as a manual diagnostic, not a bo
 My recommendation is the first: the cross product costs one small TypeScript checker and no
 CI minutes, and it converts the single most likely provisioning failure on this surface from
 a silent one into a named one.
+
+---
+
+## 12. Correction: section 6 was wrong, and the error is the one this document warns about (2026-08-20)
+
+**Provoked by:** Aaron, 2026-08-20 — *"can we save all the yubikey and yubihsm
+software/drivers i installed today as ACE packagemanager missing, we need to make sure new
+contributors to Zeta just get this for free on Mac, Windows, Linux, and our own micro/uni
+kernel."*
+
+### 12a. What section 6 claimed, and what is actually true
+
+Section 6 says macOS parity "is not closable by `manifests/brew`" because "**Homebrew has no
+`yubihsm-shell` and no `yubihsm-connector` formula** (checked against `formulae.brew.sh` —
+both 404)", and concludes the only options are a `from-installer`-shaped row or a documented
+manual step.
+
+Both 404s are still true — re-checked 2026-08-20, `api/formula/yubihsm-shell.json` and
+`api/formula/yubihsm-connector.json` both return 404. **The conclusion drawn from them was
+wrong.** Homebrew has two namespaces and I checked one:
+
+    GET https://formulae.brew.sh/api/cask/yubihsm2-sdk.json   -> 200
+    token yubihsm2-sdk | tap homebrew/cask | version 2026-04
+    arm64 url .../yubihsm2-sdk-2026-04-darwin-arm64.pkg  sha256 2f8e80e9...9e0612
+    amd64 url .../yubihsm2-sdk-2026-04-darwin-amd64.pkg  sha256 89d22782...2cca59
+    artifacts: pkg + uninstall pkgutil com.yubico.yubihsm2-sdk
+
+The cask installs **Yubico's own signed `.pkg`** — the same 15,361,954 bytes Aaron installed
+by hand — under a digest Homebrew maintains in a public repo with history. That is strictly
+better than the `from-installer` row section 6 imagined and strictly better than a `from-url`
+row, whose `sha256=` I would have had to supply myself from an unverified download.
+
+**The error class is the one recorded in `manifests/apt` in this same round**: verifying a
+weaker proposition ("no formula named yubihsm-shell") and treating it as the stronger one
+("Homebrew cannot install the YubiHSM SDK"). That block was written as a warning to others.
+I then committed it one manifest over. Recorded here rather than quietly patched, because a
+design doc that silently acquires the right answer teaches nothing.
+
+### 12b. What this changes
+
+- **Q7 is answered by the evidence, not by a judgement call.** The choice section 6 posed —
+  close the macOS debt with a `from-installer` row, or accept a manual step — was a false
+  pair. The row lands in `tools/setup/manifests/brew-cask` using the **existing** cask
+  mechanism, no new mechanism, no hand-supplied digest.
+- **The macOS parity DEBT in section 6 is closed**, and the notebook entry that carries it
+  should be retired rather than re-stated.
+- **Sections 1–5 and 7–11 are unaffected.** The NixOS finding (section 5), the CI-runner
+  exclusion (section 3), the udev requirement (section 4) and the five-way readiness state
+  (section 11d) all stand, and Q1–Q6 and Q9 remain open and still blocking.
+
+### 12c. The three-way parity story, restated honestly
+
+| surface | YubiKey CLI (`ykman`, `yubico-piv-tool`) | `pkcs11-tool` (OpenSC) | YubiHSM 2 SDK |
+|---|---|---|---|
+| macOS | declarative (brew) | **declarative (brew, new)** | **declarative (brew-cask, new)** |
+| Linux (Debian/Ubuntu) | declarative (apt) | **declarative (apt, new)** | **none — no apt route exists** |
+| Linux (NixOS node) | not declared | not declared | designed, **blocked on sign-off** |
+| Windows | declarative (scoop/winget) | **winget-only, `optional` (new)** | **none — no registry carries it** |
+| micro/uni kernel | **no such target exists in-repo** | — | — |
+
+Three cells are still open and none of them is closable by adding a row today. The Linux and
+Windows HSM cells are blocked on a mechanism that does not exist (nothing here unpacks a
+tarball-of-debs or a zip, and nothing verifies Yubico's detached `.sig`); the NixOS cell is
+blocked on Q2/Q4/Q5; the micro/uni-kernel column is blocked on the target existing at all.
+
+### 12d. On "our own micro/uni kernel"
+
+Searched: there is **no microkernel or unikernel install target in this repo**. The term
+appears only in `memory/` and in open P2 backlog rows —
+`081KSV2WD0008QG0R000WNY74Q` (declarative microkernel substrate, `status: open`, umbrella,
+no implementation), `081KTSZN10008QG0R000VZHRQ4`, `081KTSZN10008QG0R00349SM6P`. No seL4, no
+Unikraft, no MirageOS, nothing that builds an image. The nearest real OS surface is
+`full-ai-cluster/nixos/`, which is NixOS and is already the fourth column above.
+
+So no row was invented for it. **What a row would need, when the target exists:**
+
+1. **A package-selection surface at all** — the target has to have the notion of "declared
+   system packages" before a manifest can name one. NixOS has `environment.systemPackages`;
+   a unikernel typically has no package manager, only a link-time image manifest, so the
+   artifact would be a *link set*, not a manifest row.
+2. **A USB host stack.** The YubiHSM 2 is a USB **bulk** device. A unikernel with no USB
+   host controller driver cannot reach it at any price, and no packaging decision changes
+   that. This question — does the target speak USB — dominates the packaging question and
+   has to be answered first.
+3. **A permission model equivalent to the udev rule.** Section 4's rule exists to hand the
+   device to an unprivileged connector. A target with no users has to answer that question
+   differently or not at all.
+4. **A build recipe pinned like the rest** — source at a tag, hash-pinned, reproducible,
+   which is what `full-ai-cluster/flake.lock` already gives NixOS.
+
+Until (1) and (2) have answers, a manifest row would be a declaration pointing at nothing —
+the vacuity class in packaging form.

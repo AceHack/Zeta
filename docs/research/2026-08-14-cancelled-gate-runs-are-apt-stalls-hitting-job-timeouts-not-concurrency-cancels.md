@@ -181,3 +181,84 @@ directions are demonstrated rather than asserted.
   (`options.now`) rather than reading it ambiently, so decisions replay deterministically.
 - GitHub Actions docs, `concurrency` — "any previously pending job or workflow in the
   concurrency group will be cancelled", the semantics behind open question 1.
+
+## 2026-08-18 correction — the guard above could not run to completion
+
+The fix this document records was correct in mechanism and wrong in budget, and the
+wrongness made it **unreachable**. Recorded here rather than in a new document because it
+is the same defect one layer up, and splitting it would hide that.
+
+**The arithmetic, measured.** The guard bounded each `apt-get install` at
+`ZETA_APT_TIMEOUT_SECONDS=600` and retried three times with 15s + 30s of backoff:
+
+|                                     | worst case                                                                                                 |
+| ----------------------------------- | ---------------------------------------------------------------------------------------------------------- |
+| 3 × 600s attempts                   | 1800s                                                                                                      |
+| backoff                             | 45s                                                                                                        |
+| **retry budget**                    | **1845s = 30.75 min**                                                                                      |
+| tightest job that runs `install.sh` | **300s = 5 min** (`ci-cache-paths-lint`, `budget-snapshot-cadence`, `manifesto-citation-snapshot-cadence`) |
+| tightest `gate` job                 | 720s = 12 min (`cross-verify`, `lint-shell`, `lint-typescript`, `lint-markdown`, …)                        |
+
+A single attempt already exceeded the tightest job. So on a stalling mirror `apt-get`
+returned — the guard worked — into a loop the job never lived long enough to finish, and
+the job was still killed at `timeout-minutes` and still reported `cancelled`. **A guard
+that cannot run to completion is the vacuity class**: it looks like protection and
+constrains nothing. Live instances: `95796893156`, `95796898144`, `95797644804`,
+`95797644737`, `95796898139`, and `ci-cache-paths-lint` at 2026-08-18T18:26Z killed at its
+5-minute mark. And `apt-get update` was never wrapped at all, so a stall there had no
+ceiling of any kind.
+
+**The fix: one shared deadline, not a per-attempt timeout.** `tools/setup/linux.sh` now
+takes a single wall-clock deadline for the whole apt phase; `update`, every install
+attempt, the `dpkg --configure -a` recovery and every backoff draw a slice of what is
+_left_ of it. Three attempts therefore cannot exceed the budget whatever each one does,
+and the arithmetic survives a later change to the attempt count, the backoff, or
+`timeout-minutes` — which a fixed per-attempt timeout does not. Defaults:
+**420s under `GITHUB_ACTIONS`**, 1800s elsewhere, `ZETA_APT_BUDGET_SECONDS` overrides
+both. The healthy phase measures **38.2s** on `ubuntu-24.04` (run `32151321559`, 553 MB
+fetched), so the CI default is ~11x observed cost.
+
+**The slice is WEIGHTED, and the first draft was wrong about that.** It shipped at a
+150s budget split evenly across the attempts, and job `95859213848` measured the result
+live: slices of **45s / 38s / 8s**. 45s against a 38.2s healthy cost bounds a _stall_
+correctly and false-fails a mirror that is merely _slow_ — a worse trade than the bug it
+replaced, because the two failure modes want opposite things. A slow mirror needs
+continuous time (one long attempt succeeds where three short ones all fail); a wedged one
+needs a fresh connection (only a retry gives that). So the first attempt now takes 60% and
+the retries share the rest, the last takes everything still on the clock, and backoff
+never spends more than a quarter of what remains — clamping backoff only to `remaining`
+let the sleeps drain the budget before the last attempt, which is the retry loop going
+decorative again by another route.
+
+What pinned the budget at 150s was three **five-minute** cadence jobs
+(`budget-snapshot-cadence`, `ci-cache-paths-lint`, `manifesto-citation-snapshot-cadence`),
+whose `timeout-minutes` is the ceiling on the whole fleet's apt budget. They were raised
+to 12 minutes: a timeout is a cap, not a reservation, and they finish in ~2.5 minutes, so
+on the healthy path it costs zero additional CI minutes. The binding job is now the 10
+minute `git-hotspot-cadence`: `420 + 10 + 120 = 550 ≤ 600`.
+
+Two defaults is not parity drift (GOVERNANCE §24): both legs run the identical deadline
+code and honour the identical override. Only the _constant_ differs, because the
+constraint being reconciled — an outer job timeout that converts an overrun into
+`cancelled` — exists only in CI. A laptop has no outer killer, and a CI-sized 150s would
+false-fail a cold 553 MB fetch over a home link.
+
+**Falsifiers** (`.claude/rules/toy-is-free-metered-must-be-earned.md` — the 2026-08-14
+guard shipped with none, which is why nothing was red):
+
+- `src/Core.TypeScript/hygiene/apt-phase-wall-budget.test.ts` runs the real `linux.sh`
+  against a simulated stalled mirror and asserts it returns, non-zero and readable, inside
+  its budget. Verified to FAIL against the pre-fix script — it times out, which is the
+  symptom itself.
+- `src/Core.TypeScript/hygiene/audit-apt-budget-fits-job-timeout.ts` parses the budget out
+  of `linux.sh` and every `timeout-minutes` out of every workflow that runs the installer,
+  and asserts `budget + kill-grace + 120s pre-apt reserve ≤ tightest job`, **per budget
+  class**: `docker build` passes no `GITHUB_ACTIONS`, so a containerized install leg gets
+  the local default and must be judged against it, and its `run:` names a Dockerfile
+  rather than the installer — checking only the direct-`run:` jobs against only the CI
+  number would have left that class silently unaudited, which is this document's own
+  defect wearing a checker's face. Currently `ci: 280s ≤ 300s`,
+  `local: 1930s ≤ 2700s`, 45 jobs. NixOS containers are excluded because `/etc/NIXOS`
+  short-circuits the whole apt phase. It is the edge between numbers that live in
+  different files and were never diffed together; open question 3 above is now
+  machine-checked rather than "worth a pass".

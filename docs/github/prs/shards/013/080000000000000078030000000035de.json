@@ -1,0 +1,12 @@
+{
+  "pr_number": 13790,
+  "archive_path": "docs/history/pr-reviews/PR-13790-feat-browser-make-the-active-room-durable.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-22T16:57:00.539Z",
+  "schema_version": "v1",
+  "commit_sha": "b99cfb89a49c38de185221a05fa7294d45b50f06",
+  "title": "feat(browser): make the active room durable",
+  "state": "MERGED",
+  "merged_at": "2026-08-22T16:56:16Z",
+  "head_ref": "claim/task-browser-page-durable-pwa"
+}

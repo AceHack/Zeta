@@ -1,0 +1,12 @@
+{
+  "pr_number": 13476,
+  "archive_path": "docs/history/pr-reviews/PR-13476-fix-ci-tier-gate-manifests-apt-so-ubuntu-slim-installs-149-packages-not-388.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-22T01:07:45.406Z",
+  "schema_version": "v1",
+  "commit_sha": "119a5e880abae078906868046f22906d246e8724",
+  "title": "fix(ci): tier-gate manifests/apt so ubuntu-slim installs 149 packages, not 388",
+  "state": "MERGED",
+  "merged_at": "2026-08-22T01:07:03Z",
+  "head_ref": "shadow/apt-host-tier-gate-081M0K36K69"
+}

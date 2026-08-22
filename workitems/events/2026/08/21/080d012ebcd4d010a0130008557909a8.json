@@ -1,0 +1,14 @@
+{
+  "id": "080d012ebcd4d010a0130008557909a8",
+  "at": "2026-08-21T19:41:21.946Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M0JXF6MS087G0R001HC34TM",
+    "type": "task",
+    "title": "Dev alias StorageClass named longhorn makes longhorn-backed Applications testable in the kind lane",
+    "slug": "dev-alias-storageclass-named-longhorn-makes-longhorn-backed",
+    "priority": "P2",
+    "filename": "081M0JXF6MS087G0R001HC34TM-dev-alias-storageclass-named-longhorn-makes-longhorn-backed.md"
+  }
+}

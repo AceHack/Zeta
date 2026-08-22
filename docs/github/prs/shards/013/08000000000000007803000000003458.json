@@ -1,0 +1,12 @@
+{
+  "pr_number": 13400,
+  "archive_path": "docs/history/pr-reviews/PR-13400-ferry-ip-questionable-g-del-s-rotating-universe-a-causal-ordering-is-imposed-not.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-21T22:18:08.243Z",
+  "schema_version": "v1",
+  "commit_sha": "485faccc1a57f0ae1de22509590996f6f9cbf2d7",
+  "title": "ferry(ip-questionable): Gödel's rotating universe — a causal ordering is imposed, not given",
+  "state": "MERGED",
+  "merged_at": "2026-08-21T22:17:28Z",
+  "head_ref": "ferry/godel-universe-causal-ordering-moral-regard-metric"
+}

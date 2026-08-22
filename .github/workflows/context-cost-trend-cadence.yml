@@ -3,15 +3,24 @@ name: context-cost-trend-cadence
 # Daily DORA trend cadence for 081KT7YW00008QG0R002T1XNWT context-window minimization. Runs
 # `bun src/Core.TypeScript/observe/context-cost-trend.ts --record`, which appends one row per
 # harness (bytes + token estimate) to the append-only trend store
-# src/Core.TypeScript/observe/context-cost-trend.jsonl, and commits it directly to main
-# (folders-on-main / no-PR — the local build + this deterministic script ARE the
-# gate; no LLM, free runner). This turns the trend store from one datapoint into a
-# real over-time series so context-cost DRIFT is visible.
+# src/Core.TypeScript/observe/context-cost-trend.jsonl. This turns the trend store from one
+# datapoint into a real over-time series so context-cost DRIFT is visible.
+#
+# HOW IT LANDS ON MAIN. It does not push to main. Ruleset "CI Gate" (16134995) makes
+# `gate (required)` a required status check on main with `bypass_actors: []`, and a required
+# check is evaluated at PUSH time against the pushed tip — so a commit that has never been
+# through a check run is rejected before any check could start. This lane pushed
+# `HEAD:main` anyway and had been failing on `GH013: Repository rule violations` on every
+# scheduled run since 2026-08-19 (runs 32559948214 and its three predecessors). The ruleset
+# is intended and is not to be weakened; the lane is what was out of date. The row is now
+# parked on the ungated staging branch `heartbeat/context-cost-trend` and flushed via a PR
+# with squash auto-merge armed, exactly as tick-metrics/society/red-state already do.
+# See src/Core.TypeScript/forge-host/github/flush-via-staging.ts.
 #
 # Composes with:
 #  - src/Core.TypeScript/observe/context-cost-trend.ts (the --record tool)
 #  - src/Core.TypeScript/observe/context-cost.ts + byte-cost meter (the measured signal)
-#  - .github/workflows/manifesto-citation-snapshot-cadence.yml (pattern reference)
+#  - src/Core.TypeScript/forge-host/github/flush-via-staging.ts (how it lands)
 #  - 081KT7YW00008QG0R002T1XNWT (context-window minimization; over-time enforcement leg)
 #
 # Cost note: this is a deterministic bash+bun job (NO model/LLM), so the GitHub
@@ -29,7 +38,8 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write       # push the staging branch
+  pull-requests: write  # open/arm the flush PR
 
 concurrency:
   group: context-cost-trend-cadence
@@ -42,64 +52,54 @@ jobs:
 
     permissions:
       contents: write
+      pull-requests: write
 
     steps:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           fetch-depth: 0
+          # THIS CHECKOUT'S CREDENTIAL IS THE ONE THAT PUSHES `heartbeat/context-cost-trend`,
+          # and its actor is what decides whether `gate (required)` ever runs on the flush PR.
+          # A `pull_request` run whose triggering actor is `github-actions[bot]` is created and
+          # then immediately parked (`completed`/`action_required`), so it never contributes a
+          # check to the PR's rollup and the PR hangs unmergeable. Same ladder and same reason
+          # as tick-metrics.yml, which documents the measurement behind it.
+          persist-credentials: true
+          token: ${{ secrets.ZETA_TELEMETRY_FLUSH_TOKEN || secrets.GITHUB_TOKEN }}
 
       - name: Install bun
         uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
+
+      - name: Configure committer
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+      # Start from main, then union in anything still parked on the staging branch from a
+      # previous run whose flush PR has not landed yet. This runs BEFORE the recorder because
+      # `prepare` checks out a fresh branch off origin/main and would discard a row written
+      # ahead of it.
+      - name: Prepare staging working tree
+        run: bun src/Core.TypeScript/forge-host/github/flush-via-staging.ts prepare --lane context-cost-trend
 
       - name: Record context-cost trend row
         run: |
           set -euo pipefail
           bun src/Core.TypeScript/observe/context-cost-trend.ts --record
 
-      - name: Inspect diff
-        id: diff
-        run: |
-          set -euo pipefail
-          if [ -z "$(git status --porcelain -- src/Core.TypeScript/observe/context-cost-trend.jsonl)" ]; then
-            echo "changed=false" >>"$GITHUB_OUTPUT"
-            echo "no change (today's row already recorded)"
-          else
-            echo "changed=true" >>"$GITHUB_OUTPUT"
-          fi
-
-      - name: Commit trend row to main
-        if: steps.diff.outputs.changed == 'true'
+      # No `Inspect diff` gate: `flush` stages the paths and returns a clean no-op when
+      # nothing changed (idempotency, discipline #6), so the day's second run is green and
+      # commits nothing. The old hand-rolled `git status` guard duplicated that check and is
+      # one more thing to keep in sync.
+      - name: Flush to main via staging branch + PR
         env:
-          RUN_ID: ${{ github.run_id }}
+          # The enterprise forbids the Actions identity from creating pull requests, so a
+          # fine-grained PAT is required here. Without one the row still parks safely on the
+          # staging branch and the job reports the reason.
+          GH_TOKEN: ${{ secrets.ZETA_TELEMETRY_FLUSH_TOKEN || secrets.ZETA_PR_ARCHIVE_TOKEN || secrets.GITHUB_TOKEN }}
         run: |
-          set -euo pipefail
-          today="$(date -u +%Y-%m-%d)"
-          git config user.name  "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add src/Core.TypeScript/observe/context-cost-trend.jsonl
-          {
-            echo "ops(081KT7YW00008QG0R002T1XNWT): daily context-cost trend row $today"
-            echo
-            echo "Appended one row per harness (bytes + token estimate) to the"
-            echo "append-only DORA trend store via context-cost-trend.ts --record."
-            echo
-            echo "Agency-Signature-Version: 1"
-            echo "Agent: context-cost-trend-cadence-workflow"
-            echo "Agent-Runtime: GitHub Actions"
-            echo "Agent-Model: bash + bun"
-            echo "Credential-Identity: github-actions[bot]"
-            echo "Credential-Mode: dedicated-agent"
-            echo "Human-Review: not-implied-by-credential"
-            echo "Human-Review-Evidence: none"
-            echo "Action-Mode: autonomous-fail-open"
-            echo "Task: 081KT7YW00008QG0R002T1XNWT"
-            echo "Co-authored-by: Otto <noreply@anthropic.com>"
-          } | git commit --file=-
-          # Fast-forward-safe push to main (Branch Safety floor: no force / linear).
-          git pull --rebase origin main
-          git push origin HEAD:main
-
-      - name: No-change report
-        if: steps.diff.outputs.changed == 'false'
-        run: echo "No diff — today's trend row already on main (idempotent per day)."
+          bun src/Core.TypeScript/forge-host/github/flush-via-staging.ts flush \
+            --lane context-cost-trend \
+            --paths src/Core.TypeScript/observe/context-cost-trend.jsonl \
+            --message "ops(081KT7YW00008QG0R002T1XNWT): daily context-cost trend row"

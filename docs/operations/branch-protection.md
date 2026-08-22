@@ -11,6 +11,24 @@ Both must be snapshotted; missing either gives an incomplete picture and re-crea
 
 **Last snapshot:** 2026-04-26 — see `branch-protection-lfg-main.json` (rulesets) + `branch-protection-lfg-main-classic.json` (classic) + the AceHack equivalents for raw GitHub API output.
 
+> **STALE ON ONE POINT, CORRECTED 2026-08-19 — do not read the required-status-checks
+> list below as current.** The snapshot is from 2026-04-26 and predates the
+> drift-and-heal flip. Read live, today:
+> `gh api repos/Lucent-Financial-Group/Zeta/rules/branches/main` returns exactly ONE
+> required context — **`gate (required)`**. The seven-context list below (including
+> `build-and-test (macos-26)`) is history, and the sentence "macos-26 IS required" in
+> §"To merge a PR on LFG main" was true when written and is false now: as of
+> 2026-08-19 the macOS leg carries `continue-on-error` and is a non-blocking DRIFT
+> CHECK, alongside the two Windows legs (Aaron: "we are moving away from anything that
+> blocks into drift checks instead"). Only the two Linux legs of `build-and-test` can
+> still red `gate (required)`. Authoritative surfaces:
+> `.github/workflows/gate.yml` (the `continue-on-error:` note on `build-and-test`)
+> and `registry/uncompensatable-floor.yaml` (`scoped-build-test-break`).
+> The rest of this document — the ruleset half, thread resolution, review counts — was
+> not re-verified in that pass and is still a 2026-04-26 snapshot. A full re-snapshot
+> is its own piece of work; this banner corrects the one claim that a reader would
+> otherwise act on.
+
 ---
 
 ## LFG (Lucent-Financial-Group/Zeta) main branch — actual gates

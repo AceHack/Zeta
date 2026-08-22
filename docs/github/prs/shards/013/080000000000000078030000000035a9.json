@@ -1,0 +1,12 @@
+{
+  "pr_number": 13737,
+  "archive_path": "docs/history/pr-reviews/PR-13737-deps-widen-the-fscheck-hold-to-the-family-i-ignored-the-wrong-end-of-the-pair.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-22T15:12:26.484Z",
+  "schema_version": "v1",
+  "commit_sha": "0a77c1f99e8fc07b459f6e371c2c98af06e4a162",
+  "title": "deps: widen the FsCheck hold to the family — I ignored the wrong end of the pair",
+  "state": "MERGED",
+  "merged_at": "2026-08-22T15:11:49Z",
+  "head_ref": "deps/hold-whole-fscheck-family"
+}

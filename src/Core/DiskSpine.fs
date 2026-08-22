@@ -44,6 +44,37 @@ type InMemoryBackingStore<'K when 'K : comparison>() =
             let hash = handle :?> MerkleHash
             lock store (fun () -> store.Remove hash |> ignore)
 
+    /// **The declaration, beside the operations it classifies** (`ErasureClass`).
+    ///
+    /// Two findings worth the ink. `Release` is the erasing one, as expected. `Save` is *also*
+    /// erasing, and not for a lifecycle reason at all: the `level` argument is accepted and never
+    /// stored, so two calls that differ only in level are indistinguishable afterwards. That is
+    /// the same shape as `WSet.plus` forgetting an ordered pair's split point — erasure living in
+    /// ordinary argument handling rather than at a GC boundary, which is the whole correction this
+    /// vocabulary exists to carry.
+    interface IErasureDeclaring with
+        member _.ErasureProfiles =
+            [ { Representation = "InMemoryBackingStore"
+                Operation = "IBackingStore.Save"
+                Observation = "the store's content function (Load over every live handle)"
+                RecoveryChannel =
+                    "the batch itself, exactly — it is content-addressed and retrievable by its \
+                     handle. What is NOT recoverable is whether it was ALREADY there: an \
+                     idempotent upsert maps two pre-states onto one post-state, so the erasure in \
+                     Save is in the content-addressing, not in any eviction"
+                Classification = ErasureClass.ThermodynamicClass.Erasing
+                Evidence = ErasureClass.Evidence.ExhaustiveSweep("every subset of 3 reference batches; level pinned at 0 and the saved batch pinned", 2, 1_000_000L) }
+
+              { Representation = "InMemoryBackingStore"
+                Operation = "IBackingStore.Release"
+                Observation = "the store's content function (Load over every live handle)"
+                RecoveryChannel =
+                    "none — the entry is removed from the only dictionary that holds it, and a \
+                     released handle no longer Loads; nor does the post-state say whether it was \
+                     ever present"
+                Classification = ErasureClass.ThermodynamicClass.Erasing
+                Evidence = ErasureClass.Evidence.ExhaustiveSweep("every subset of 3 reference batches; the released handle pinned", 2, 1_000_000L) } ]
+
 
 /// **Disk-backed level store.** Persists Z-sets to a workspace folder using
 /// double-buffered, frame-first atomic file updates.
@@ -164,6 +195,12 @@ type DiskBackingStore<'K when 'K : comparison>
             Some (path, bytes)
         | _ -> None
 
+    /// Thermodynamic class: REVERSIBLE. This is the site the refuted list called "eviction" and
+    /// filed under erasure on the strength of the word. It does not erase: `spillLocked` writes
+    /// the batch to disk and records its path before removing it from `hot`, so `Load` returns the
+    /// identical Z-set afterwards. Eviction is not a thermodynamic category — whether the payload
+    /// is handed back is. Same finding as `FerryQueue.dequeue`, which returns its payload and is
+    /// measured at zero bits.
     let evictIfOverQuotaLocked () : ResizeArray<string * byte array> =
         let writes = ResizeArray<string * byte array>()
         if heapBytes > inMemoryQuotaBytes then
@@ -216,6 +253,7 @@ type DiskBackingStore<'K when 'K : comparison>
                             heapBytes <- heapBytes + approxSize z)
                     z
 
+        // Release: the genuinely erasing operation on this store — see `ErasureProfiles`.
         member _.Release handle =
             let hash = handle :?> MerkleHash
             let pathOpt =
@@ -239,6 +277,58 @@ type DiskBackingStore<'K when 'K : comparison>
                 with ex ->
                     Console.Error.WriteLine $"DiskBackingStore.Release: File.Delete %s{p} failed: %s{ex.Message}"
             | ValueNone -> ()
+
+    /// **The declaration, beside the operations it classifies** (`ErasureClass`).
+    ///
+    /// The quota-eviction row is the one the refuted lifecycle list got wrong, and it is worth
+    /// stating plainly: **spilling under quota pressure erases nothing.** The bytes move from heap
+    /// to disk and `Load` hands them back byte-identical. The evidence is a `BoundedModelSweep`
+    /// rather than an exhaustive one because two of the operation's inputs are not enumerable —
+    /// the quota is a byte count over a continuous range and the filesystem is a real one — so the
+    /// sweep pins the quota at a value that forces eviction and is exhaustive in the remaining
+    /// coordinates. What that does NOT cover is named in the model string, deliberately.
+    interface IErasureDeclaring with
+        member _.ErasureProfiles =
+            [ { Representation = "DiskBackingStore"
+                Operation = "IBackingStore.Save"
+                Observation = "the store's content function (Load over every live handle)"
+                RecoveryChannel =
+                    "the batch, by its content address — but not whether it was already present. \
+                     Same idempotence erasure as the in-memory store, and it is worth noticing \
+                     that this row, not the eviction row below, is where Save's bits actually go"
+                Classification = ErasureClass.ThermodynamicClass.Erasing
+                Evidence = ErasureClass.Evidence.BoundedModelSweep("every subset of 3 reference batches; level pinned at 0 and the saved batch pinned; quota pinned at 1 byte; real temp directory", 2, 1_000_000L) }
+
+              { Representation = "DiskBackingStore"
+                Operation = "IBackingStore.Save (quota eviction via evictIfOverQuotaLocked)"
+                Observation = "the store's content function (Load over every live handle)"
+                RecoveryChannel =
+                    "the whole batch — eviction SPILLS rather than drops: the bytes are written to \
+                     the workspace file and the path recorded before the heap entry is removed, so \
+                     Load returns the identical Z-set. Eviction is a relocation, not an erasure"
+                Classification = ErasureClass.ThermodynamicClass.Reversible
+                Evidence = ErasureClass.Evidence.BoundedModelSweep("every subset of 3 reference batches saved under a 1-byte quota, so every save spills; real temp directory", 1, 0L) }
+
+              { Representation = "DiskBackingStore"
+                Operation = "IBackingStore.Release"
+                Observation = "the store's content function (Load over every live handle)"
+                RecoveryChannel =
+                    "none — the hot entry, the path entry and both files are removed together, so \
+                     a released handle raises rather than loading"
+                Classification = ErasureClass.ThermodynamicClass.Erasing
+                Evidence = ErasureClass.Evidence.BoundedModelSweep("every subset of 3 reference batches; the released handle pinned; quota pinned at 1 byte; real temp directory", 2, 1_000_000L) }
+
+              { Representation = "DiskBackingStore"
+                Operation = "IBackingStore.Release"
+                Observation = "the storage medium after unlink"
+                RecoveryChannel =
+                    "unknown — same medium-level hole as DiskDeltaLog: File.Delete unlinks a name \
+                     and the delete is wrapped in a catch that logs and continues, so neither \
+                     destruction nor survival can be claimed from inside this process"
+                Classification = ErasureClass.ThermodynamicClass.Unmeasured
+                Evidence =
+                    ErasureClass.Evidence.NoAdmissibleMeasurement
+                        "no sweep run from inside this process can observe the medium; recording this row as zero bits would be exactly the closed-ledger free lunch the vocabulary exists to refuse" } ]
 
 
 /// Spine variant parameterised by its backing store. For workloads that

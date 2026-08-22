@@ -1,0 +1,12 @@
+{
+  "pr_number": 13584,
+  "archive_path": "docs/history/pr-reviews/PR-13584-deps-bump-the-github-actions-minor-patch-group-with-3-updates.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-22T10:01:30.085Z",
+  "schema_version": "v1",
+  "commit_sha": "aa330e04446bfb36963c0bd079099d02ade572f2",
+  "title": "deps: Bump the github-actions-minor-patch group with 3 updates",
+  "state": "MERGED",
+  "merged_at": "2026-08-22T10:00:49Z",
+  "head_ref": "dependabot/github_actions/github-actions-minor-patch-29ab28765e"
+}

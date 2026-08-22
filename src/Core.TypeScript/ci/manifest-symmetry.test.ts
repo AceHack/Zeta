@@ -95,6 +95,31 @@ const WINDOWS_EXCEPTIONS: Record<string, string> = {
     "Emscripten is a large full compiler-lane dependency; defer Windows installation until manifests/windows supports host tiers instead of forcing it onto every base host.",
   llvm: "LLVM is a large full compiler-lane dependency; defer Windows installation until manifests/windows supports host tiers instead of forcing it onto every base host.",
   zig: "Zig is already installed cross-platform by mise from .mise.toml; it does not belong in the Windows system-package manifest.",
+
+  // ── YubiKey / YubiHSM (2026-08-20) ──────────────────────────────────────────
+  // The three tool entries that stood here -- yubikey-manager, ykman, yubico-piv-tool --
+  // were removed once the check they deferred was actually run. Their stated reason was
+  // that no scoop/winget id "was verifiable from the host this was authored on", which is
+  // an honest exception and also an unrun check. Run against the registries, all three
+  // resolve: scoop Main carries yubikey-manager-cli (ykman.exe) and yubico-piv-tool, and
+  // winget carries Yubico.YubiKeyManagerCLI and Yubico.PIVTool, versions agreeing with
+  // brew. They are declared in manifests/windows now, so no exception is needed.
+  //
+  // Two of the three remaining entries are NAME-ALIAS exceptions, not missing-tool ones:
+  // the same binary is declared in manifests/windows under the ecosystem's own package
+  // name. Same shape as lua5.4 (apt) vs lua (brew/windows). The alias is recorded rather
+  // than resolved because this matcher compares names literally and has no alias table --
+  // adding one is a bigger change than this row needs.
+  "yubikey-manager":
+    "apt's name for the YubiKey Manager CLI; declared in manifests/windows as scoop `yubikey-manager-cli` (winget Yubico.YubiKeyManagerCLI, v5.9.2, bin ykman.exe). Verified against ScoopInstaller/Main and microsoft/winget-pkgs 2026-08-20 -- present, not absent.",
+  ykman:
+    "brew's name for the same binary; same Windows row as yubikey-manager above. (yubico-piv-tool needs no entry: scoop, winget, apt and brew all spell it identically, so it matches literally.)",
+
+  // The two below are genuine Windows BUILT-INS -- nothing to install, a different class
+  // of reason from the aliases above.
+  pcscd:
+    "Windows has a built-in smartcard service (SCardSvr); no package to install. The Linux-only entry exists because Linux has no equivalent running by default.",
+  libpcsclite1: "PC/SC client library is Linux-only; the Windows equivalent (WinSCard) is an OS component.",
 };
 
 test("manifests/windows covers every apt/brew system tool (or an allowlisted exception)", () => {

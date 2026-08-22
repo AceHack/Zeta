@@ -87,7 +87,7 @@ full-ai-cluster/
 
 - **OS layer** is reconciled by **Nix + NixOS**. Everything in
   `./nixos/` lands on a target machine via `nixos-install --flake`
-  (initial install) or `nixos-rebuild switch --flake` (updates).
+  (initial install) or `nixos-rebuild switch --impure --flake` (updates).
 - **Cluster layer** is reconciled by **ArgoCD**. K3S auto-applies
   the bootstrap manifests at `./k8s/bootstrap/` on first boot
   (Cilium → ArgoCD → root Application); ArgoCD then reads
@@ -215,8 +215,32 @@ Add new `nixosConfigurations.<host>` entries to `flake.nix` as needed.
 - ✅ **Hindsight** wired: vectorize-io OCI Helm chart at
   `ghcr.io/vectorize-io/charts/hindsight` v0.3.0. Bundled
   PostgreSQL by default (longhorn-backed); swap to external
-  CockroachDB once that Application is healthy. LLM key sourced
-  from a Vault-backed ExternalSecret (`hindsight-llm-api-key`).
+  CockroachDB once that Application is healthy. Reachable at
+  `http://hindsight-api.hindsight.svc.cluster.local` — the chart
+  names its Services `<release>-api` / `-control-plane` /
+  `-postgresql`, never plain `hindsight`.
+  - ❌ **The LLM key is NOT wired.** This line claimed a
+    "Vault-backed ExternalSecret (`hindsight-llm-api-key`)" from
+    PR #4913 until 2026-08-22, and there was never such an object:
+    `grep -rn "kind: ExternalSecret" full-ai-cluster infra` returns
+    nothing, and the Application's `api.llm.existingSecret` was a key
+    chart 0.3.0 does not read, so it rendered nothing either. The
+    chart's real key is a TOP-LEVEL `existingSecret: <name>` consumed
+    as `envFrom`, so the Secret must carry `HINDSIGHT_API_LLM_API_KEY`
+    as a KEY NAME. Wiring it before the ExternalSecret exists would
+    hold the api AND control-plane pods in `CreateContainerConfigError`
+    (chart 0.3.0 renders `envFrom` on both).
+  - **And the ExternalSecret is not the only missing piece** — measured
+    2026-08-22. There is no `ClusterSecretStore` either: no manifest in
+    `full-ai-cluster` or `infra` declares one, only a commented-out
+    sketch in `applications/external-secrets/Application.yaml`. Vault
+    has never been initialised on metal (`applications/vault/TOPOLOGY.md`
+    §2), and the CI-side ephemeral init (#13391) is scoped to
+    **unsealing only** — `init` → `unseal` ×3 → `token revoke -self`,
+    with no auth mount, no policy and no KV write — so it leaves an
+    unsealed, empty Vault and is not a secrets path. Five layers, not
+    one; the enumeration and the maintainer decision it needs live in
+    `k8s/applications/hindsight/Application.yaml`.
 
 ## Secrets
 
@@ -255,7 +279,7 @@ replacement, and network policy.
 
 - **OS layer** changes: edit the relevant file under `./nixos/`,
   commit, push. Then on each target:
-  `sudo nixos-rebuild switch --flake /etc/zeta/full-ai-cluster#<host>`
+  `sudo nixos-rebuild switch --impure --flake /etc/zeta/full-ai-cluster#<host>`
 - **Cluster layer** changes: edit the relevant `Application.yaml`
   or referenced manifest, commit, push. ArgoCD reconciles within
   ~3 minutes.

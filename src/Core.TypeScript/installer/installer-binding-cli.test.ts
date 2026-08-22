@@ -1,6 +1,14 @@
 import { describe, expect, it } from "bun:test";
-import { selectCliBindingMaterial, selectInstallPersistBinding } from "./installer-binding-cli.ts";
-import { UEFI_KEYFILE_BYTES } from "./uefi-keyfile-esp.ts";
+import { readFileSync } from "node:fs";
+import { resolve } from "node:path";
+import {
+  bindingFactorSidecarPath,
+  RESTORE_BINDING_SERIAL,
+  selectCliBindingMaterial,
+  selectInstallPersistBinding,
+  selectRestoreBinding,
+} from "./installer-binding-cli.ts";
+import { UEFI_KEYFILE_BYTES, UEFI_KEYFILE_SERIAL } from "./uefi-keyfile-esp.ts";
 import { readUsbSysfsDevice, USB_ISERIAL_SERIAL } from "./usb-iserial-probe.ts";
 import { parseUuidFromDiskutilInfo } from "../zflash/lib.ts";
 
@@ -257,5 +265,177 @@ describe("selectInstallPersistBinding", () => {
       bindUsbISerial: true,
     });
     expect("error" in selected).toBe(true);
+  });
+
+  it("binds the ESP keyfile path when ZETA_BIND_UEFI_KEYFILE write succeeded", () => {
+    const selected = selectInstallPersistBinding({
+      usbUuid: "uuid-1",
+      probedISerial: null,
+      bindUsbISerial: false,
+      bindUefiKeyfile: true,
+      uefiKeyfilePath: "/mnt/boot/EFI/ZETA/keyfile",
+      uefiKeyfileWritten: true,
+    });
+    expect("error" in selected).toBe(false);
+    if ("error" in selected) return;
+    expect(selected.factor).toBe("uefiKeyfile");
+    expect(selected.flag).toBe("--uefi-keyfile");
+    expect(selected.material).toBe("/mnt/boot/EFI/ZETA/keyfile");
+    expect(selected.marker).toBe(UEFI_KEYFILE_SERIAL.persistOptInKeyfile);
+  });
+
+  it("falls back to UUID when keyfile opt-in is on but the write failed", () => {
+    const selected = selectInstallPersistBinding({
+      usbUuid: "uuid-1",
+      probedISerial: null,
+      bindUsbISerial: false,
+      bindUefiKeyfile: true,
+      uefiKeyfilePath: "/mnt/boot/EFI/ZETA/keyfile",
+      uefiKeyfileWritten: false,
+    });
+    expect("error" in selected).toBe(false);
+    if ("error" in selected) return;
+    expect(selected.factor).toBe("usbUuid");
+    expect(selected.marker).toBe(UEFI_KEYFILE_SERIAL.persistOptInFallbackUuid);
+  });
+
+  it("stays UUID when both bind opt-ins are set rather than guessing", () => {
+    const selected = selectInstallPersistBinding({
+      usbUuid: "uuid-1",
+      probedISerial: "ZETA-QEMU-001",
+      bindUsbISerial: true,
+      bindUefiKeyfile: true,
+      uefiKeyfilePath: "/mnt/boot/EFI/ZETA/keyfile",
+      uefiKeyfileWritten: true,
+    });
+    expect("error" in selected).toBe(false);
+    if ("error" in selected) return;
+    expect(selected.factor).toBe("usbUuid");
+    expect(selected.marker).toBe(UEFI_KEYFILE_SERIAL.persistBothOptInsUuid);
+  });
+});
+
+describe("selectRestoreBinding", () => {
+  it("defaults to FAT UUID when the sidecar is missing", () => {
+    const selected = selectRestoreBinding({
+      recordedFactorRaw: null,
+      usbUuid: "uuid-1",
+      recordedISerial: "ZETA-QEMU-001",
+    });
+    expect("error" in selected).toBe(false);
+    if ("error" in selected) return;
+    expect(selected.factor).toBe("usbUuid");
+    expect(selected.flag).toBe("--usb-uuid");
+    expect(selected.material).toBe("uuid-1");
+    expect(selected.marker).toBe(RESTORE_BINDING_SERIAL.defaultUuid);
+  });
+
+  it("uses recorded iSerial and refuses UUID fallback when the sidecar says usbISerial", () => {
+    const selected = selectRestoreBinding({
+      recordedFactorRaw: "usbISerial\n",
+      usbUuid: "uuid-1",
+      recordedISerial: "ZETA-QEMU-001",
+    });
+    expect("error" in selected).toBe(false);
+    if ("error" in selected) return;
+    expect(selected.factor).toBe("usbISerial");
+    expect(selected.flag).toBe("--usb-iserial");
+    expect(selected.material).toBe("ZETA-QEMU-001");
+    expect(selected.marker).toBe(RESTORE_BINDING_SERIAL.iserial);
+  });
+
+  it("fails closed when sidecar says usbISerial but the serial file is missing", () => {
+    const selected = selectRestoreBinding({
+      recordedFactorRaw: "usbISerial",
+      usbUuid: "uuid-1",
+      recordedISerial: null,
+    });
+    expect("error" in selected).toBe(true);
+    if (!("error" in selected)) return;
+    expect(selected.marker).toBe(RESTORE_BINDING_SERIAL.iserialMissing);
+  });
+
+  it("does not decrypt an iSerial blob with the stored UUID", () => {
+    const selected = selectRestoreBinding({
+      recordedFactorRaw: "usbISerial",
+      usbUuid: "uuid-1",
+      recordedISerial: "",
+    });
+    expect("error" in selected).toBe(true);
+  });
+
+  it("restores from the ESP keyfile path when the sidecar says uefiKeyfile", () => {
+    const bytes = new Uint8Array(UEFI_KEYFILE_BYTES).fill(0xab);
+    const selected = selectRestoreBinding({
+      recordedFactorRaw: "uefiKeyfile\n",
+      usbUuid: "uuid-1",
+      recordedISerial: null,
+      uefiKeyfilePath: "/boot/EFI/ZETA/keyfile",
+      uefiKeyfileBytes: bytes,
+    });
+    expect("error" in selected).toBe(false);
+    if ("error" in selected) return;
+    expect(selected.factor).toBe("uefiKeyfile");
+    expect(selected.flag).toBe("--uefi-keyfile");
+    expect(selected.material).toBe("/boot/EFI/ZETA/keyfile");
+    expect(selected.marker).toBe(RESTORE_BINDING_SERIAL.uefi);
+  });
+
+  it("fails closed when sidecar says uefiKeyfile but the ESP file is missing", () => {
+    const selected = selectRestoreBinding({
+      recordedFactorRaw: "uefiKeyfile",
+      usbUuid: "uuid-1",
+      recordedISerial: null,
+      uefiKeyfilePath: "/boot/EFI/ZETA/keyfile",
+      uefiKeyfileBytes: null,
+    });
+    expect("error" in selected).toBe(true);
+    if (!("error" in selected)) return;
+    expect(selected.marker).toBe(RESTORE_BINDING_SERIAL.uefiMissing);
+  });
+
+  it("does not decrypt a keyfile blob with the stored UUID", () => {
+    const selected = selectRestoreBinding({
+      recordedFactorRaw: "uefiKeyfile",
+      usbUuid: "uuid-1",
+      recordedISerial: null,
+      uefiKeyfilePath: null,
+      uefiKeyfileBytes: new Uint8Array(UEFI_KEYFILE_BYTES).fill(1),
+    });
+    expect("error" in selected).toBe(true);
+    if (!("error" in selected)) return;
+    expect(selected.marker).toBe(RESTORE_BINDING_SERIAL.uefiMissing);
+  });
+});
+
+describe("bindingFactorSidecarPath", () => {
+  it("maps zeta-creds.enc to zeta-creds.factor", () => {
+    expect(bindingFactorSidecarPath("/boot/zeta-creds.enc")).toBe("/boot/zeta-creds.factor");
+    expect(bindingFactorSidecarPath("/mnt/boot/zeta-creds.enc")).toBe("/mnt/boot/zeta-creds.factor");
+  });
+});
+
+describe("restore.nix stays coupled to the restore-binding markers", () => {
+  const nix = readFileSync(
+    resolve(import.meta.dir, "../../../full-ai-cluster/nixos/modules/zeta-creds-restore.nix"),
+    "utf8",
+  );
+
+  it("refuses UUID fallback when iSerial was recorded", () => {
+    expect(nix).toContain(RESTORE_BINDING_SERIAL.iserialMissing);
+    expect(nix).toContain(RESTORE_BINDING_SERIAL.iserial);
+    expect(nix).toContain(RESTORE_BINDING_SERIAL.defaultUuid);
+    expect(nix).toContain("$BIND_FLAG");
+    expect(nix).toContain("factorPath");
+    expect(nix).toContain("/boot/zeta-creds.factor");
+    expect(nix).toContain("/etc/zeta/usb-iserial");
+  });
+
+  it("wires UEFI keyfile restore and refuses UUID fallback", () => {
+    expect(nix).toContain(RESTORE_BINDING_SERIAL.uefi);
+    expect(nix).toContain(RESTORE_BINDING_SERIAL.uefiMissing);
+    expect(nix).toContain("/boot/EFI/ZETA/keyfile");
+    expect(nix).toContain("--uefi-keyfile");
+    expect(nix).not.toContain("uefiKeyfile restore is not wired");
   });
 });

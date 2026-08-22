@@ -1,5 +1,5 @@
 # Mechanism: from-autotools-tarball — fetch upstream tarball, verify sha256, configure + make install.
-# Format: <binary-name>  <tarball-url>  sha256=<hex>  [prefix=~/.local]  [when=linux]
+# Format: <binary-name>  <tarball-url>  sha256=<hex>  [prefix=~/.local]  [when=linux]  [tier=slim|standard|full]
 #
 # Linux-only formal solvers when distro packages are broken or absent (Noble apt eprover 3.0.03
 # aborts in CI; Jammy has no eprover apt). macOS uses manifests/brew.
@@ -8,4 +8,9 @@
 # DHBW E.tgz download host because the DHBW host was unreachable from CI on
 # 2026-07-02. The SHA pin still guards the exact content we build.
 
-eprover  https://github.com/eprover/eprover/archive/refs/tags/E-3.2.0.tar.gz  sha256=1c14cf7c472afb17bff7aa76777259c4d2539edadef60edd7dc53fde5c642002  when=linux
+# tier=standard: this is a SOURCE BUILD (configure + make), measured at 76s on the
+# 1-vCPU ubuntu-slim runner whose only job is `dotnet build` — nothing on a slim host
+# invokes a first-order theorem prover. The formal-verification lanes that DO use
+# eprover all run on ubuntu-24.04, which resolves to tier=full, so their coverage is
+# unchanged. Untagged would mean tier=slim, i.e. built everywhere.
+eprover  https://github.com/eprover/eprover/archive/refs/tags/E-3.2.0.tar.gz  sha256=1c14cf7c472afb17bff7aa76777259c4d2539edadef60edd7dc53fde5c642002  when=linux  tier=standard

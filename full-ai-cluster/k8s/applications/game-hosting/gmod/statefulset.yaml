@@ -24,14 +24,14 @@ spec:
         app.kubernetes.io/name: gmod
     spec:
       securityContext:
-        fsGroup: 1000          # shared group so game + sftp can both write /data
+        fsGroup: 1000 # shared group so game + sftp can both write /data
       initContainers:
         # Install / update Garry's Mod dedicated server (Steam app 4020) into
         # the persistent Longhorn volume. First run is slow; subsequent restarts
         # validate-only (fast) since the files persist.
         - name: install
           image: cm2network/steamcmd:root
-          command: ["/bin/bash", "-c"]
+          command: [ "/bin/bash", "-c" ]
           args:
             - |
               set -eu
@@ -47,7 +47,7 @@ spec:
         - name: gmod
           image: cm2network/steamcmd:root
           workingDir: /data/gmod
-          command: ["/bin/bash", "-c"]
+          command: [ "/bin/bash", "-c" ]
           args:
             - |
               set -eu
@@ -63,18 +63,18 @@ spec:
                 +rcon_password "$RCON"
           ports:
             - { name: game-udp, containerPort: 27015, protocol: UDP }
-            - { name: game-tcp, containerPort: 27015, protocol: TCP }   # query + RCON
+            - { name: game-tcp, containerPort: 27015, protocol: TCP } # query + RCON
           volumeMounts:
             - { name: data, mountPath: /data }
           resources:
             requests: { cpu: "1", memory: "2Gi" }
-            limits:   { cpu: "2", memory: "4Gi" }
+            limits: { cpu: "2", memory: "4Gi" }
         # SFTP sidecar — FTP access to the same game files (the FTP root IS the
         # Longhorn PVC). Key-based auth: drop operator/tenant pubkeys into the
         # `gmod-sftp-keys` ConfigMap (the controller injects them per tenant).
         - name: sftp
           image: atmoz/sftp:alpine
-          args: ["gmod::1000:1000"]   # user gmod, key-only (no password)
+          args: [ "gmod::1000:1000" ] # user gmod, key-only (no password)
           ports:
             - { name: sftp, containerPort: 22, protocol: TCP }
           volumeMounts:
@@ -93,4 +93,9 @@ spec:
         storageClassName: longhorn
         resources:
           requests:
-            storage: 20Gi
+            # SIZE CUT, NOT A POD CUT: 20Gi -> 10Gi; `replicas` above is
+            # unchanged. A game-server sample workload, not on the PoC critical
+            # path, and the largest cut per unit of consequence in the round:
+            # 10Gi holds the base Garry's Mod content and a few addons/maps, and
+            # SteamCMD simply re-downloads if the volume is cleared.
+            storage: 10Gi

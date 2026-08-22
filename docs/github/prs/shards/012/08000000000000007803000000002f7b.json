@@ -1,0 +1,12 @@
+{
+  "pr_number": 12155,
+  "archive_path": "docs/history/pr-reviews/PR-12155-docs-soft-english-is-not-a-superset-and-the-residue-is-invisible-from-inside-you.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-18T22:41:13.283Z",
+  "schema_version": "v1",
+  "commit_sha": "384b4f7a38088cdf006e26c41697c85913e22a04",
+  "title": "docs(soft): English is not a superset — and the residue is invisible from inside your own base",
+  "state": "MERGED",
+  "merged_at": "2026-08-18T22:40:37Z",
+  "head_ref": "shadow/english-not-a-superset"
+}

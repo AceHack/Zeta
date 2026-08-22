@@ -9,6 +9,7 @@
  *   bun infra/k8s/tests/validate-applications.ts --offline       # structural only, no network
  *   bun infra/k8s/tests/validate-applications.ts --render        # + helm template + kubeconform
  *   bun infra/k8s/tests/validate-applications.ts --apps-dir DIR  # point at another tree
+ *   bun infra/k8s/tests/validate-applications.ts --root-app PATH # root-application.yaml elsewhere
  *
  * Exit codes: 0 = all checks passed, 1 = one or more failed, 2 = usage error.
  *
@@ -142,6 +143,14 @@ const { values: args } = parseArgs({
     offline: { type: "boolean", default: false },
     render: { type: "boolean", default: false },
     "apps-dir": { type: "string" },
+    // ADDED 2026-08-20 (Dejan). The root App-of-Apps does not live in the same
+    // place in every tree: infra/k8s keeps it inside applications/, while
+    // full-ai-cluster/k8s keeps it in bootstrap/ (k3s applies it at first boot,
+    // so it must be on the `services.k3s.manifests` roster). Hardcoding
+    // `<apps-dir>/root-application.yaml` made Test 6 report ENOENT against
+    // full-ai-cluster -- a failure of the validator's assumption, not of the
+    // manifest. A red that names the wrong culprit trains people to ignore reds.
+    "root-app": { type: "string" },
     "kube-version": { type: "string", default: "1.33.0" },
   },
   strict: true,
@@ -168,7 +177,7 @@ interface AppEntry {
   readonly parseError: string | null;
 }
 
-const rootAppPath = join(appsDir, "root-application.yaml");
+const rootAppPath = args["root-app"] ? resolve(args["root-app"]) : join(appsDir, "root-application.yaml");
 const appFiles = findApplicationYamls(appsDir);
 const apps: AppEntry[] = [];
 
@@ -333,7 +342,69 @@ try {
 // pinned version entirely and matched on a substring. This resolves the parsed
 // index and requires an exact `version` match on the named entry.
 
+/**
+ * OCI registries have no `/index.yaml`. ArgoCD's convention for an OCI Helm
+ * source is a `repoURL` with NO scheme (`ghcr.io/actions/...`) plus a `chart`;
+ * an HTTP chart repo always carries `https://` / `http://`. So the absence of
+ * a scheme is the discriminator, and it is the same one ArgoCD itself uses.
+ *
+ * ADDED 2026-08-20 (Dejan). Before this, the three OCI-sourced apps in
+ * full-ai-cluster (arc-controller, arc-runner-set, hindsight) produced SIX of
+ * the tree's 29 failures -- three "repo index unreachable
+ * (fetch() URL is invalid): ghcr.io/.../index.yaml" and three "helm template
+ * failed: could not find protocol handler for:". Both were the validator
+ * asking an OCI registry an HTTP-repo question. Those are false reds, and a
+ * lane with false reds in it is a lane people learn to skim.
+ */
+function isOciRepo(repoURL: string): boolean {
+  return !repoURL.includes("://");
+}
+
+/**
+ * `oci://host/path/chart` -- the reference helm actually accepts.
+ *
+ * Slashes are trimmed with string ops rather than a regex: the obvious
+ * `/^\\/+|\\/+$/` is a backtracking hazard (sonarjs/slow-regex) and buys
+ * nothing over two while-loops on a short string.
+ */
+function trimSlashes(value: string): string {
+  let start = 0;
+  let end = value.length;
+  while (start < end && value[start] === "/") start++;
+  while (end > start && value[end - 1] === "/") end--;
+  return value.slice(start, end);
+}
+
+function ociChartRef(ref: ChartRef): string {
+  return `oci://${trimSlashes(ref.repoURL)}/${ref.chart}`;
+}
+
+/**
+ * Existence of an OCI chart:version. Deliberately NOT a skip -- `helm show
+ * chart` performs a real registry FetchReference and exits 1 on a version that
+ * is not published, which is proved by the mutation suite. If helm is absent
+ * this reports a failure rather than passing: a check that goes green when its
+ * tool is missing is the shape this whole file exists to remove.
+ */
+function ociChartVersionExists(ref: ChartRef): string | null {
+  if (toolMissing("helm")) {
+    return `OCI chart ${ociChartRef(ref)} cannot be checked: helm is not on PATH (MISE_ENV=full provides it)`;
+  }
+  const shown = Bun.spawnSync(["helm", "show", "chart", ociChartRef(ref), "--version", ref.version], {
+    stdout: "pipe",
+    stderr: "pipe",
+  });
+  if (shown.exitCode === 0) return null;
+  return `OCI chart ${ociChartRef(ref)} has no version '${ref.version}': ${shown.stderr
+    .toString()
+    .split("\n")
+    .slice(0, 2)
+    .join(" ")
+    .trim()}`;
+}
+
 async function chartVersionExists(ref: ChartRef): Promise<string | null> {
+  if (isOciRepo(ref.repoURL)) return ociChartVersionExists(ref);
   const indexUrl = `${ref.repoURL.replace(/\/$/, "")}/index.yaml`;
   let text: string;
   try {
@@ -397,14 +468,15 @@ if (!render) {
   for (const ref of charts) {
     const valuesPath = join(tmpDir, `${ref.appName.replace(/\//g, "_")}-values.yaml`);
     await Bun.write(valuesPath, stringifyYaml(ref.valuesObject));
+    // An OCI chart is addressed as a single `oci://host/path/chart` argument;
+    // `--repo ghcr.io/...` makes helm look for a protocol handler and fail.
+    const chartArgs = isOciRepo(ref.repoURL) ? [ociChartRef(ref)] : [ref.chart, "--repo", ref.repoURL];
     const rendered = Bun.spawnSync(
       [
         "helm",
         "template",
         ref.releaseName,
-        ref.chart,
-        "--repo",
-        ref.repoURL,
+        ...chartArgs,
         "--version",
         ref.version,
         "--namespace",

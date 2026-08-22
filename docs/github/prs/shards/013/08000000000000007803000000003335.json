@@ -1,0 +1,12 @@
+{
+  "pr_number": 13109,
+  "archive_path": "docs/history/pr-reviews/PR-13109-observability-follow-the-servicemonitor-to-a-service-four-ways-to-sever-the-scra.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-21T07:01:42.353Z",
+  "schema_version": "v1",
+  "commit_sha": "201a37e3374ba335154262ec57eab9ef776cb8ec",
+  "title": "observability: follow the ServiceMonitor to a Service — four ways to sever the scrape, all of them green",
+  "state": "MERGED",
+  "merged_at": "2026-08-21T07:01:03Z",
+  "head_ref": "observability/close-remaining-chain-gaps"
+}

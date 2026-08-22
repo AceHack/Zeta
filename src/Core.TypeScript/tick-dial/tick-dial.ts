@@ -209,6 +209,13 @@ export type ApplyDial = (p: DialProposal) => Promise<DialOutcome>;
  * optional and not cosmetic: repeated runs of one agent are correlated, so N
  * runs are not N observations. See `effectiveTrialCount` in
  * `src/Core/SocietyUsefulWork.fs`.
+ *
+ * For a MEASURED value of `correlation` rather than a guessed one:
+ * `src/Core.TypeScript/society/effective-agent-count.ts` estimates inter-agent
+ * rho over `db/mutation-findings/` (ICC(1,1), rho = 0.40 at time of writing,
+ * so 3 agents are worth 1.67). That number is **backward-looking over that
+ * corpus** and is not a prior for a trajectory run — take the method, not the
+ * constant.
  */
 export type ScoreTrajectory = (runId: string, correlation: number) => Promise<number>;
 

@@ -25,6 +25,14 @@
     # /etc/hosts entry that `k3s-server.nix` calls "the robust path". No-op on
     # hosts with no /etc/zeta/cluster-segment-* files — they keep DHCP.
     ./injected-cluster-address.nix
+    # 081KSE6WT0008QG0R000CV98PV (R3 of the USB design document): the PUBLISHER
+    # half of bootstrap-or-join. A control plane advertises `_zeta-k3s._tcp`
+    # so a booting node can tell "there is already a cluster here" from "there
+    # is not" -- the distinction that today only a 10-second keystroke makes.
+    #
+    # No-op on agents: the module guards its config to `services.k3s.role ==
+    # "server"`, so a worker imports the options and contributes nothing.
+    ./cluster-discovery-advertise.nix
     ./login-banner.nix
     # 081M00KTH58087G0R00120WT6F: the option surface for Secure Boot desired
     # state. At its default phase ("off") it sets NO boot option and contributes
@@ -33,6 +41,15 @@
     # `nix flake check`, and that any future non-"off" phase fails closed on the
     # missing key-custody decision rather than quietly enabling an unbuilt path.
     ./secure-boot.nix
+    # 2026-08-21 hands-off-metal scoping: the option surface for TPM-2.0-backed
+    # seal provisioning. At its default mode ("off") it sets NO option and
+    # contributes one always-true assertion, so this import leaves every host
+    # byte-for-byte unchanged. What it buys is that every host EVALUATES the
+    # option on `nix flake check`, and that mode = "provision" fails closed on
+    # the undecided seal-key custody fork rather than quietly minting a key
+    # whose loss would be unrecoverable. Mode "prereqs" is the safe rung and is
+    # the whole of what the installer can pre-stage.
+    ./tpm2-seal-prereqs.nix
     # 081KZETP6AT: FHS loader (nix-ld) for foreign dynamically-linked ELFs — mise's
     # prebuilt toolchains and the vendor agent CLIs. Needed on INSTALLED nodes too,
     # not only on the ISO: the lazy first-login `mise install` recovery in this file
@@ -56,10 +73,23 @@
     # on PR #12175: the multi-disk VM test passed precisely because it imports
     # this module, while control-plane did not.
     #
-    # zeta.longhorn.dataDisks defaults to [ "/var/lib/longhorn" ], so a
-    # single-disk host is labelled and declares exactly the path it already
-    # used. Multi-disk hosts extend the list via the disko shape.
+    # zeta.longhorn.dataDisks derives from the host's declared Longhorn
+    # mounts and falls back to [ "/var/lib/longhorn" ] when none exist
+    # (the committed control-plane placeholder). A host that only imports
+    # this file therefore still gets labelled and the annotator oneshot
+    # still fires. Multi-disk hosts extend the list via fileSystems or
+    # the disko shape.
     ./longhorn-disks.nix
+    # Cilium WireGuard node prerequisites (the wireguard kernel module + wg for
+    # diagnosis) plus the boot-time preflight that says whether they took.
+    # k8s/bootstrap/cilium-install.yaml installs Cilium with
+    # encryption.type=wireguard at FIRST BOOT, and the ArgoCD Application
+    # re-asserts it at sync-wave -80; on a kernel that cannot create a WireGuard
+    # device cilium-agent refuses to initialise and this node has no CNI at all.
+    # Imported here so control-plane AND workers get it uniformly -- node-to-node
+    # encryption is a property of the PAIR, so one node missing the prerequisite
+    # is a cluster-wide fact.
+    ./cilium-wireguard-prereqs.nix
     # iter-5.4.0 (B-0794 homelab-mode): operator SSH pubkeys captured
     # via `gh ssh-key list` during zeta-install.sh Step 6.8. Composes
     # additively with iter-4.2 static maintainer keys.

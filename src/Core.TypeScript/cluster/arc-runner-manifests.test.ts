@@ -242,3 +242,65 @@ describe("the model cache is declared, not just referenced", () => {
     expect(spec.accessModes).toContain("ReadWriteMany");
   });
 });
+
+describe("the controller ServiceAccount is NAMED, and the name still agrees with the controller", () => {
+  // WHY THIS BLOCK EXISTS. gha-runner-scale-set 0.12.1 normally discovers the
+  // controller's ServiceAccount at template time by LISTING every Deployment in the
+  // cluster (`lookup "apps/v1" "Deployment" "" ""`, templates/_helpers.tpl:468,525) and
+  // reading a label off whichever one is the ARC controller. `lookup` returns empty
+  // outside a live cluster, so the chart hit its own `fail` and rendered NOTHING — which
+  // is why the 100 GiB model-cache row went unverified by the storage checker for as long
+  // as it existed.
+  //
+  // Setting `controllerServiceAccount.{name,namespace}` skips both lookups and makes the
+  // chart renderable offline. The cost is a static coupling: the runner set now names an
+  // identity the controller chart DERIVES from its own release name, and a rename on
+  // either side is silent — ArgoCD reports Synced, the RoleBinding points at a
+  // ServiceAccount that does not exist, and no runner is ever authorised.
+  //
+  // These tests are what makes that coupling loud. They do not re-derive the chart's
+  // template; they pin the two facts the value depends on, so changing either without
+  // changing the value fails here instead of on hardware.
+  const NAME_SUFFIX = "-gha-rs-controller";
+
+  function controllerServiceAccount(): { name?: unknown; namespace?: unknown } {
+    return (helmValues(load(RUNNER_SET)).controllerServiceAccount ?? {}) as {
+      name?: unknown;
+      namespace?: unknown;
+    };
+  }
+
+  test("both keys are set — `name` alone is not enough", () => {
+    // MEASURED 2026-08-21: with `name` set and `namespace` absent, the chart fails on the
+    // SECOND lookup instead of the first ("Consider setting controllerServiceAccount.namespace").
+    // An earlier acknowledgement of this app named only `name` as its exit, which would
+    // not have lifted anything.
+    const account = controllerServiceAccount();
+    expect(typeof account.name).toBe("string");
+    expect(typeof account.namespace).toBe("string");
+  });
+
+  test("the name is the one arc-controller's own releaseName produces", () => {
+    // gha-runner-scale-set-controller names its ServiceAccount `<release>-gha-rs-controller`
+    // and stamps that string onto its Deployment as the
+    // `actions.github.com/controller-service-account-name` label — the exact value the
+    // lookup would have returned. Rendering the controller chart at the same pin with
+    // releaseName `arc-controller` emits `arc-controller-gha-rs-controller`.
+    const releaseName = (source(load(CONTROLLER)).helm as { releaseName?: string }).releaseName;
+    expect(releaseName).toBeDefined();
+    expect(controllerServiceAccount().name).toBe(`${String(releaseName)}${NAME_SUFFIX}`);
+  });
+
+  test("the namespace is the one arc-controller actually deploys into", () => {
+    const destination = (load(CONTROLLER).spec as { destination: { namespace: string } }).destination
+      .namespace;
+    expect(controllerServiceAccount().namespace).toBe(destination);
+  });
+
+  test("both Applications still ride the same chart version", () => {
+    // The derivation above is only valid while the two charts are the same release of ARC.
+    // A split pin would leave the runner set naming a ServiceAccount derived from a
+    // controller chart that is no longer the one deployed.
+    expect(source(load(RUNNER_SET)).targetRevision).toBe(source(load(CONTROLLER)).targetRevision);
+  });
+});

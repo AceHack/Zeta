@@ -63,10 +63,202 @@ export type FrostSealTier =
   | "hardware-pkcs11"
   | "hardware-tpm2";
 
-export const HARDWARE_SEAL_TIERS: readonly FrostSealTier[] = ["hardware-pkcs11", "hardware-tpm2"];
+// ============================================================================
+// THE TPM-SEALED TIER IS ALREADY A MEMBER -- WHAT WAS MISSING IS THE DIFFERENCE
+// ============================================================================
+//
+// The question that produced this section was: "is a TPM-SEALED tier -- key sealed to
+// PCR state, unsealed into host RAM to be used -- representable here?"
+//
+// IT IS. hardware-tpm2 is exactly that tier and always has been: createTpmSealEffects
+// runs tpm2_unseal, which RETURNS THE WRAPPING KEY TO THE HOST, and the AES-GCM seal
+// then happens in this process with that key in ordinary memory. So no new tier string
+// was added. Adding one would have produced two spellings of one thing, an on-disk
+// migration for every artifact already carrying "hardware-tpm2", and a second name for a
+// distinction that is not about the STORAGE at all.
+//
+// WHAT WAS ACTUALLY MISSING is that the difference between that tier and the HSM-resident
+// one was invisible to every consumer. Both answered true to isHardwareSealTier, both sat
+// in one flat HARDWARE_SEAL_TIERS list, and the only place the gap was written down was a
+// paragraph of comment further down this file. A comment is not readable by a caller.
+//
+// So the difference is now a TOTAL FUNCTION OF THE TIER:
+//
+//   | tier                        | wrapping key at rest      | wrapping key WHILE USED |
+//   | hardware-pkcs11             | inside the token          | NEVER in host RAM       |
+//   | hardware-tpm2               | sealed to measured boot   | IN HOST RAM             |
+//   | software-sealed             | wherever the host put it  | in host RAM             |
+//   | INSECURE-SOFTWARE-FAKE-HSM  | a PUBLISHED CONSTANT      | in host RAM             |
+//   | software-plaintext          | there is no wrapping key  | --                      |
+//
+// WHICH ROW IS THE FLOOR (owner call, 2026-08-20): "for the TPM i think we can count on
+// it, for the HSM we cannot, it is optional". So the availability order is the OPPOSITE of
+// the strength order:
+//
+//   * hardware-tpm2   -- assume PRESENT on a Linux node. This is the base case, the tier
+//                        most shares will actually be sealed at, and therefore the row most
+//                        operators will silently believe is row 1 when it is row 2.
+//   * hardware-pkcs11 -- OPTIONAL. Present only where a token or an HSM is attached.
+//
+// That asymmetry does not weaken the no-silent-downgrade invariant; it is why the invariant
+// earns its keep. A caller declaring hardware-pkcs11 on an ordinary TPM-only node is the
+// COMMON configuration, not an exotic one, so the refusal below fires in production rather
+// than being a guard nobody reaches. The one outcome that must never happen is that such a
+// caller is quietly handed hardware-tpm2 and told it has what it asked for.
+//
+// PRECISION THAT MUST NOT BE LOST, because overclaiming here would be worse than saying
+// nothing: the column above is about the WRAPPING KEY, not about the FROST SHARE. The share
+// scalar is in host RAM at EVERY tier in this file -- loadShare returns it, which is why
+// every adapter here is an ExtractingFrostShareAdapter with usesWithoutExtract typed as the
+// literal false. The operator-facing row "key during signing never in host RAM" is NOT
+// achieved by hardware-pkcs11 for the share; it is achieved for the key that wraps the
+// share. Two different claims; this module makes only the second.
+//
+// The window this makes legible is real and narrow: a host compromised AT SEAL OR UNSEAL
+// TIME reads the wrapping key out of process memory under hardware-tpm2 and cannot under
+// hardware-pkcs11, where C_Encrypt/C_Decrypt execute on the token. Sealing to measured boot
+// defeats an offline attacker holding the disk; it does not defeat an attacker who is
+// already root while the seal is open.
+
+/**
+ * Where the WRAPPING key lives while it is being used. The security-bearing property that
+ * separates the two hardware tiers, stated so a caller reads it off the tier instead of
+ * off a comment.
+ *
+ * NOT a claim about the FROST share -- see the note above.
+ */
+export type FrostSealKeyResidency =
+  /** software-plaintext: nothing wraps the share, so there is no key to place. */
+  | "no-seal-key"
+  /** The fake: the key is a constant published in this repository. */
+  | "host-ram-published"
+  /** software-sealed: a host-supplied key, in this process for its whole life. */
+  | "host-ram"
+  /** hardware-tpm2: sealed to the chip at rest, RELEASED into host RAM to be used. */
+  | "host-ram-at-use"
+  /** hardware-pkcs11: the key is used ON the token and never crosses into host RAM. */
+  | "hardware-resident";
+
+/**
+ * Total by construction. Record<FrostSealTier, ...> means a new tier does not compile
+ * until someone has said where its wrapping key lives -- which is the whole mechanism. A
+ * lookup table a new member could silently skip would be a comment with braces.
+ */
+export const SEAL_TIER_KEY_RESIDENCY: Readonly<Record<FrostSealTier, FrostSealKeyResidency>> = {
+  "software-plaintext": "no-seal-key",
+  "INSECURE-SOFTWARE-FAKE-HSM": "host-ram-published",
+  "software-sealed": "host-ram",
+  "hardware-tpm2": "host-ram-at-use",
+  "hardware-pkcs11": "hardware-resident",
+};
+
+export function sealKeyResidencyOf(tier: FrostSealTier): FrostSealKeyResidency {
+  return SEAL_TIER_KEY_RESIDENCY[tier];
+}
+
+/**
+ * Does the wrapping key EVER enter host RAM at this tier? The one-bit form of the gap.
+ *
+ * true for hardware-tpm2, false for hardware-pkcs11 -- the two isHardwareSealTier cannot
+ * tell apart, which is why that predicate is not the question to ask when the
+ * host-compromise-at-use window is what matters. On a TPM-only node this bit IS the whole
+ * security difference between what the operator believes they have and what they have.
+ */
+export function sealKeyEntersHostRam(tier: FrostSealTier): boolean {
+  return sealKeyResidencyOf(tier) !== "hardware-resident";
+}
+
+/** Wrapping key never leaves the chip. A narrowing of FrostSealTier, so a new tier of this
+ *  class cannot be added without this type being reconsidered. OPTIONAL in deployment. */
+export type HsmResidentSealTier = Extract<FrostSealTier, "hardware-pkcs11">;
+/** Sealed to hardware at rest, key released into host RAM to be used. The assumed floor. */
+export type HostRamAtUseSealTier = Extract<FrostSealTier, "hardware-tpm2">;
+
+export function isHsmResidentSealTier(tier: FrostSealTier): tier is HsmResidentSealTier {
+  return sealKeyResidencyOf(tier) === "hardware-resident";
+}
+
+export function isHostRamAtUseSealTier(tier: FrostSealTier): tier is HostRamAtUseSealTier {
+  return sealKeyResidencyOf(tier) === "host-ram-at-use";
+}
+
+/**
+ * "Is this backed by a chip at all". DERIVED from the residency map rather than written
+ * out, so it cannot drift from it.
+ *
+ * READ THE NAME NARROWLY. It answers a storage-at-rest question and deliberately does NOT
+ * separate the two hardware tiers; isHsmResidentSealTier is the predicate for the
+ * host-compromise-at-use question. A caller that needs the wrapping key off the host and
+ * asks this one instead is exactly the silent crossing this section exists to prevent.
+ */
+export const HARDWARE_SEAL_TIERS: readonly FrostSealTier[] = (
+  Object.keys(SEAL_TIER_KEY_RESIDENCY) as readonly FrostSealTier[]
+).filter((t) => {
+  const r = sealKeyResidencyOf(t);
+  return r === "hardware-resident" || r === "host-ram-at-use";
+});
 
 export function isHardwareSealTier(tier: FrostSealTier): boolean {
   return HARDWARE_SEAL_TIERS.includes(tier);
+}
+
+/** Strength order over residencies. Used ONLY to phrase a refusal precisely; nothing in
+ *  this file ever accepts a tier because it outranks another. Exact match or throw. */
+const RESIDENCY_RANK: Readonly<Record<FrostSealKeyResidency, number>> = {
+  "no-seal-key": 0,
+  "host-ram-published": 1,
+  "host-ram": 2,
+  "host-ram-at-use": 3,
+  "hardware-resident": 4,
+};
+
+export function sealKeyResidencyRank(residency: FrostSealKeyResidency): number {
+  return RESIDENCY_RANK[residency];
+}
+
+/**
+ * One sentence naming what a caller loses by being served `actual` where it declared
+ * `required`. Exported so the storage port and the signing port phrase the same gap the
+ * same way instead of each inventing wording.
+ */
+export function describeSealTierGap(required: FrostSealTier, actual: FrostSealTier): string {
+  const rq = sealKeyResidencyOf(required);
+  const ac = sealKeyResidencyOf(actual);
+  const base = `declared tier "${required}" keeps its wrapping key ${rq}; served tier "${actual}" keeps it ${ac}`;
+  if (rq === "hardware-resident" && ac === "host-ram-at-use") {
+    return (
+      `${base}. THIS IS THE HOST-COMPROMISE-AT-USE WINDOW, and on a TPM-only node it is the ` +
+      "ORDINARY case rather than an exotic one: the HSM-resident tier runs the wrap on the " +
+      "token so the key is never in this process, while the TPM-sealed tier unseals it INTO " +
+      "host RAM to use it. An attacker who is root on this host while the seal is open reads " +
+      "the key in the second case and cannot in the first. Sealing to measured boot defeats " +
+      "someone holding the disk, not someone holding the host. An HSM is OPTIONAL hardware; " +
+      "if this node has none, the honest outcome is this refusal, never a quiet substitution."
+    );
+  }
+  if (sealKeyResidencyRank(ac) < sealKeyResidencyRank(rq)) {
+    return `${base}. The served tier is strictly weaker on where the wrapping key lives.`;
+  }
+  return `${base}.`;
+}
+
+/**
+ * The invariant, in one callable place: a caller that DECLARED a tier is served that tier
+ * or is served an exception. Never a neighbour, never the nearest available, never the one
+ * the host happens to have.
+ *
+ * Exact match, not rank comparison. A silent UPGRADE is refused too: the on-disk artifact
+ * records the tier it was sealed at and loadShare demands equality, so an adapter handed
+ * back at a different tier than the caller declared would produce artifacts the caller own
+ * configuration cannot reopen. "Stronger" is not a licence to substitute either.
+ */
+export function assertNoSilentSealTierDowngrade(required: FrostSealTier, actual: FrostSealTier): void {
+  if (required === actual) return;
+  throw new Error(
+    `frost-share-adapter: no-silent-downgrade violation: caller required "${required}" but ` +
+      `the built adapter is "${actual}". ${describeSealTierGap(required, actual)} ` +
+      "No fallback is offered -- declare a tier this host can honour, or attach the hardware.",
+  );
 }
 
 /**
@@ -143,6 +335,22 @@ export interface FrostShareSealEffects {
    * Absent for TPM and software backends, which have no token to name.
    */
   readonly tokenIdentity?: () => string;
+  /**
+   * WHAT THIS BACKEND ACTUALLY DOES WITH THE WRAPPING KEY.
+   *
+   * The seal tier passed to createSealedFileShareAdapter is a LABEL supplied by the
+   * caller; nothing derived it from the backend. So
+   * createSealedFileShareAdapter(fx, dir, ca, createTpmSealEffects(o), "hardware-pkcs11")
+   * used to produce an adapter that reported hardware-pkcs11, wrote hardware-pkcs11 into
+   * the artifact, and was in fact driven by tpm2_unseal with the key in host RAM. That is
+   * the row-1/row-2 crossing, performed silently, by a single wrong argument.
+   *
+   * Declaring it here lets the factory CHECK the label against the backend instead of
+   * trusting it. Optional only for the software tiers, whose residency the caller cannot
+   * misrepresent as hardware: any tier in HARDWARE_SEAL_TIERS REQUIRES this field, so an
+   * undeclared backend can never wear a hardware label.
+   */
+  readonly keyResidency?: FrostSealKeyResidency;
 }
 
 interface FrostSealedShareFileV2 {
@@ -221,6 +429,51 @@ function fromB64(s: string): Uint8Array {
   return new Uint8Array(Buffer.from(s, "base64"));
 }
 
+/**
+ * The label must match the backend. THE SEAL TIER IS A CLAIM ABOUT A BACKEND, NOT A NAME
+ * FOR A DIRECTORY, and until this function existed nothing checked that the two agreed.
+ *
+ * Two refusals, and the second is the one that closes the row-1/row-2 crossing:
+ *
+ *   1. A hardware tier with an UNDECLARED backend is refused. Silence cannot buy the
+ *      strongest labels -- the same reason there is no default PKCS#11 slot.
+ *   2. A declared residency that DISAGREES with the tier is refused. This is what stops a
+ *      TPM backend (key unsealed into host RAM) being labelled hardware-pkcs11 (key never
+ *      leaves the token). On a TPM-only node that mislabel is one wrong argument away and
+ *      it produces an artifact that lies about its own protection forever.
+ *
+ * Software tiers may leave it undeclared: their residency is bounded above by the label
+ * they carry, so an omission cannot be spent as a stronger claim.
+ */
+function assertBackendCanClaimTier(sealFx: FrostShareSealEffects, sealTier: FrostSealTier): void {
+  const required = sealKeyResidencyOf(sealTier);
+  const declared = sealFx.keyResidency;
+  if (declared === undefined) {
+    if (!isHardwareSealTier(sealTier)) return;
+    throw new Error(
+      `frost-share-adapter: seal backend declares no keyResidency but the tier "${sealTier}" ` +
+        `claims "${required}". A hardware tier must be backed by a backend that says what it ` +
+        "does with the wrapping key. Set keyResidency on the effects, or declare a software tier.",
+    );
+  }
+  if (declared !== required) {
+    throw new Error(
+      `frost-share-adapter: seal-tier/backend mismatch: the tier "${sealTier}" claims the ` +
+        `wrapping key is "${required}", but this backend reports "${declared}". ` +
+        `${describeSealTierGap(sealTier, hardwareTierClaiming(declared) ?? sealTier)} ` +
+        "Refusing: a mislabelled artifact carries the wrong protection claim for its whole life.",
+    );
+  }
+}
+
+/** The tier a residency corresponds to, when exactly one does. Used only for the message. */
+function hardwareTierClaiming(residency: FrostSealKeyResidency): FrostSealTier | undefined {
+  const hits = (Object.keys(SEAL_TIER_KEY_RESIDENCY) as readonly FrostSealTier[]).filter(
+    (t) => SEAL_TIER_KEY_RESIDENCY[t] === residency,
+  );
+  return hits.length === 1 ? hits[0] : undefined;
+}
+
 function sealedShareAad(body: Omit<FrostSealedShareFileV2, "sealed">): Uint8Array {
   return new TextEncoder().encode(JSON.stringify(body));
 }
@@ -279,6 +532,7 @@ export function createSealedFileShareAdapter(
   sealFx: FrostShareSealEffects,
   sealTier: FrostSealTier = "software-sealed",
 ): ExtractingFrostShareAdapter {
+  assertBackendCanClaimTier(sealFx, sealTier);
   sealFx.probe?.();
   return {
     kind: "sealed-file",
@@ -939,6 +1193,14 @@ export function createPkcs11SealEffects(opts: Pkcs11SealEffectsOptions): FrostSh
       );
     },
 
+    /**
+     * hardware-resident: C_Encrypt/C_Decrypt run ON the token against a key handle. This
+     * backend never has the wrapping key -- getSealKey below THROWS on purpose -- which is
+     * exactly the property that separates this tier from the TPM-sealed one and the reason
+     * the label has to be checked rather than trusted.
+     */
+    keyResidency: "hardware-resident",
+
     /** Eager liveness check: prove the token is present and holds the wrapping key. */
     probe(): void {
       withSession((lib, hSession) => findKey(lib, hSession, keyLabel, pointerOf));
@@ -1081,6 +1343,14 @@ export function createTpmSealEffects(opts: TpmSealEffectsOptions): FrostShareSea
   };
   return {
     getSealKey: unsealKey,
+    /**
+     * host-ram-at-use, and this is the whole point of the field. tpm2_unseal HANDS THE KEY
+     * BACK: the 32 bytes above are in this process before a single byte is wrapped. Sealing
+     * to PCR state protects the key from someone holding the disk; it does not protect it
+     * from someone holding the host at the moment the seal is open. Declaring it here makes
+     * that fact refuse a hardware-pkcs11 label instead of merely being documented near it.
+     */
+    keyResidency: "host-ram-at-use",
     /** Eager liveness check: prove the TPM can actually open the sealed object. */
     probe(): void {
       unsealKey();
@@ -1169,12 +1439,18 @@ export function createHsmShareAdapter(
   opts: HsmShareAdapterOptions,
 ): ExtractingFrostShareAdapter {
   const adapter = buildForTier(fx, sharesDir, ca, opts);
-  if (adapter.sealTier !== opts.requireTier) {
-    throw new Error(
-      `frost-share-adapter: no-silent-downgrade violation: caller required ` +
-        `"${opts.requireTier}" but the built adapter is "${adapter.sealTier}".`,
-    );
-  }
+  // The refusal now NAMES the property that differs, because "pkcs11 != tpm2" reads as a
+  // configuration typo while "the wrapping key would be in host RAM" reads as what it is.
+  //
+  // HONEST LIMIT, MEASURED 2026-08-20: this call is DEFENCE IN DEPTH and is currently
+  // unreachable-as-a-difference. buildForTier is a total switch whose every branch
+  // constructs at the tier it was handed, so no input makes this line fire -- a mutation
+  // that turned assertNoSilentSealTierDowngrade into a no-op left the whole suite green.
+  // It is kept because it is the invariant's statement at the boundary, and it becomes
+  // load-bearing the moment buildForTier grows a branch that can return a different tier.
+  // Its falsifier is FSA-TR8, which exercises the function directly; the guard that DOES
+  // fire on real input is assertBackendCanClaimTier (FSA-TR3/TR5).
+  assertNoSilentSealTierDowngrade(opts.requireTier, adapter.sealTier);
   return adapter;
 }
 
@@ -1186,7 +1462,21 @@ function buildForTier(
 ): ExtractingFrostShareAdapter {
   switch (opts.requireTier) {
     case "hardware-pkcs11": {
-      if (!opts.pkcs11Opts) throw new Error("frost-share-adapter: pkcs11Opts required for hardware-pkcs11");
+      if (!opts.pkcs11Opts) {
+        // The common shape of this failure, per the owner call that an HSM is OPTIONAL and
+        // a TPM is assumed: a node configured for the TPM, a caller declaring the
+        // HSM-resident tier. Naming the gap here means the operator reads why it matters
+        // rather than reaching for the nearest option object that would make it go away.
+        throw new Error(
+          "frost-share-adapter: pkcs11Opts required for hardware-tpm2's stronger sibling " +
+            'hardware-pkcs11. ' +
+            (opts.tpmOpts
+              ? "tpmOpts WERE supplied and are NOT a substitute: " +
+                describeSealTierGap("hardware-pkcs11", "hardware-tpm2") + " "
+              : "") +
+            "An HSM/token is optional hardware; a node without one cannot honour this tier.",
+        );
+      }
       // Any failure here (no token, no key, no FFI) propagates. That is the point.
       return createPkcs11ShareAdapter(fx, sharesDir, ca, opts.pkcs11Opts);
     }

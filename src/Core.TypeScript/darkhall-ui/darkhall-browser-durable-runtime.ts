@@ -18,6 +18,7 @@ import {
   type DurableRoomRunTranscript,
 } from "../browser-node/browser-room-checkpoint";
 import type { BrowserLifecycleHostFeedback, BrowserLifecycleHostReadout } from "../browser-node/browser-lifecycle-host";
+import type { BrowserTabTransportReadout } from "../browser-node/browser-tab-channel-selector";
 import type { BrowserCheckpoint } from "../browser-node/browser-node";
 import {
   browserCausalCorrectionCheckpointNodeId,
@@ -25,6 +26,16 @@ import {
   encodeBrowserCausalCorrectionCheckpoint,
   type BrowserCausalCorrectionCheckpointFeedback,
 } from "../browser-node/browser-causal-correction-checkpoint";
+import {
+  BROWSER_CAUSAL_HANDOFF_CHECKPOINT_SCHEMA,
+  browserCausalHandoffCheckpointNodeId,
+  decodeBrowserCausalHandoffCheckpoint,
+  emptyBrowserCausalHandoffCheckpoint,
+  encodeBrowserCausalHandoffCheckpoint,
+  type BrowserCausalHandoffCheckpoint,
+  type BrowserCausalHandoffCheckpointFeedback,
+  type BrowserPendingCausalHandoff,
+} from "../browser-node/browser-causal-handoff-checkpoint";
 import {
   createBrowserCausalCorrectionLedger,
   foldBrowserCausalCorrection,
@@ -59,7 +70,7 @@ import {
 } from "./darkhall-browser-bootstrap";
 import type { RoomRunTranscript } from "./darkhall-room";
 
-export const DARK_HALL_BROWSER_DURABLE_RUNTIME_SCHEMA = "zeta.darkhall.browser-durable-runtime.v5" as const;
+export const DARK_HALL_BROWSER_DURABLE_RUNTIME_SCHEMA = "zeta.darkhall.browser-durable-runtime.v8" as const;
 
 const MAX_CAUSAL_CHECKPOINT_SAVE_ATTEMPTS = 4;
 
@@ -69,12 +80,14 @@ type DurableRuntimeSource =
   | "room-checkpoint"
   | "room-render"
   | "causal-ledger"
-  | "causal-checkpoint";
+  | "causal-checkpoint"
+  | "causal-handoff-checkpoint";
 type UnderlyingFeedback =
   | BrowserCheckpointFeedback
   | NativeIndexedDbCheckpointFeedback
   | BrowserRoomCheckpointFeedback
   | BrowserCausalCorrectionCheckpointFeedback
+  | BrowserCausalHandoffCheckpointFeedback
   | BrowserLifecycleHostFeedback
   | DarkHallBrowserBootstrapFeedback
   | BrowserCausalCorrectionLedgerFeedback;
@@ -88,7 +101,11 @@ export interface DarkHallBrowserDurableFeedback {
     | "room-render-failed"
     | "causal-checkpoint-pending"
     | "causal-checkpoint-contention"
-    | "causal-checkpoint-revision-exhausted";
+    | "causal-checkpoint-revision-exhausted"
+    | "causal-handoff-checkpoint-pending"
+    | "causal-handoff-checkpoint-contention"
+    | "causal-handoff-checkpoint-revision-exhausted"
+    | "causal-handoff-generation-exhausted";
   readonly source: DurableRuntimeSource;
   readonly detail: string;
   readonly cleanup: readonly string[];
@@ -117,6 +134,7 @@ export type DarkHallBrowserStarter = (
 
 export interface DarkHallBrowserDurableReadout {
   readonly schema: typeof DARK_HALL_BROWSER_DURABLE_RUNTIME_SCHEMA;
+  readonly transport: BrowserTabTransportReadout;
   readonly host: BrowserLifecycleHostReadout;
   readonly recoveredRevision: number | null;
   readonly currentRevision: number | null;
@@ -136,6 +154,13 @@ export interface DarkHallBrowserDurableReadout {
   readonly database: DarkHallDatabaseReadout | null;
   readonly causal: DarkHallCausalReadout;
   readonly causalHandoff: DarkHallCausalHandoffReadout;
+  readonly causalHandoffCheckpoint: {
+    readonly state: "idle" | "saving" | "saved" | "failed";
+    readonly recoveredRevision: number | null;
+    readonly currentRevision: number | null;
+    readonly payloadBytes: number | null;
+    readonly feedback: DarkHallBrowserDurableFeedback | null;
+  };
   readonly causalCheckpoint: {
     readonly state: "idle" | "saving" | "saved" | "failed";
     readonly recoveredRevision: number | null;
@@ -149,6 +174,7 @@ export interface DarkHallBrowserDurableReadout {
 export interface DarkHallBrowserDurableRuntime {
   read(): DarkHallBrowserDurableReadout;
   transcript(): DurableRoomRunTranscript;
+  renderTranscript(transcript: RoomRunTranscript): DarkHallBrowserDurableResult<DarkHallBrowserDurableReadout>;
   checkpoint(
     revision: number,
     transcript: RoomRunTranscript,
@@ -167,6 +193,7 @@ export interface DarkHallBrowserDurableRuntime {
     correction: Omit<BrowserCausalCorrectionNotice, "sourceTabId">,
   ): DarkHallBrowserDurableResult<DarkHallBrowserDurableReadout>;
   drainCausalCorrectionCheckpoint(): Promise<DarkHallBrowserDurableResult<DarkHallBrowserDurableReadout>>;
+  drainCausalHandoffCheckpoint(): Promise<DarkHallBrowserDurableResult<DarkHallBrowserDurableReadout>>;
   stop(): DarkHallBrowserDurableResult<DarkHallBrowserDurableReadout>;
 }
 
@@ -315,6 +342,42 @@ function ledgerForCheckpoint(
   return admitted.ok ? succeeded(admitted.value) : failed("causal-ledger", admitted.feedback);
 }
 
+function handoffsForCheckpoint(
+  record: BrowserCheckpointRecord | null,
+  maxPendingHandoffs: number,
+): DarkHallBrowserDurableResult<BrowserCausalHandoffCheckpoint> {
+  const decoded =
+    record === null
+      ? emptyBrowserCausalHandoffCheckpoint(maxPendingHandoffs)
+      : decodeBrowserCausalHandoffCheckpoint(record.payload);
+  if (!decoded.ok) return failed("causal-handoff-checkpoint", decoded.feedback);
+  if (decoded.value.pending.length > maxPendingHandoffs) {
+    return failed("causal-handoff-checkpoint", {
+      severity: "backpressure",
+      code: "causal-handoff-checkpoint-capacity-exhausted",
+      detail: `The recovered handoff checkpoint retained ${String(decoded.value.pending.length)} pending offers for current capacity ${String(maxPendingHandoffs)}.`,
+    });
+  }
+  return succeeded({ ...decoded.value, maxPendingHandoffs });
+}
+
+type CausalHandoffCheckpointOperation =
+  | {
+      readonly kind: "offer";
+      readonly generation: number;
+      readonly handoff: BrowserPendingCausalHandoff;
+    }
+  | {
+      readonly kind: "acknowledge";
+      readonly targetTabId: string;
+      readonly handoffId: string;
+    };
+
+function causalHandoffOwner(handoffId: string): string {
+  const separator = handoffId.indexOf("@");
+  return separator < 0 ? handoffId : handoffId.slice(separator + 1);
+}
+
 function transcriptForCheckpoint(
   record: BrowserCheckpointRecord | null,
   initialTranscript: DurableRoomRunTranscript,
@@ -388,6 +451,22 @@ export async function startDurableDarkHallBrowser(
   const selectedCausalLedger = ledgerForCheckpoint(recoveredCausalCheckpoint.value, options.maxCausalCorrections);
   if (!selectedCausalLedger.ok) return closeAfterFailure(checkpointPort, selectedCausalLedger);
 
+  const maxPendingCausalHandoffs = Math.max(0, options.maxTrackedTabs - 1);
+  const causalHandoffCheckpointNodeId = browserCausalHandoffCheckpointNodeId(options.nodeId);
+  const recoveredCausalHandoffCheckpoint = await loadCheckpoint(
+    checkpointPort,
+    causalHandoffCheckpointNodeId,
+    "loading a causal handoff checkpoint",
+  );
+  if (!recoveredCausalHandoffCheckpoint.ok) {
+    return closeAfterFailure(checkpointPort, recoveredCausalHandoffCheckpoint);
+  }
+  const selectedCausalHandoffs = handoffsForCheckpoint(
+    recoveredCausalHandoffCheckpoint.value,
+    maxPendingCausalHandoffs,
+  );
+  if (!selectedCausalHandoffs.ok) return closeAfterFailure(checkpointPort, selectedCausalHandoffs);
+
   let causalLedger: BrowserCausalCorrectionLedger = selectedCausalLedger.value;
   let causalFeedback: BrowserCausalCorrectionLedgerFeedback | null = null;
   let causalHandoffState: DarkHallCausalHandoffState = {
@@ -400,12 +479,20 @@ export async function startDurableDarkHallBrowser(
     feedback: null,
   };
   let causalRenderFeedback: DarkHallBrowserDurableFeedback | null = null;
-  let causalHandoffGeneration = 0;
-  let pendingCausalHandoff: {
-    readonly handoffId: string;
-    readonly targetTabId: string;
-    readonly correctionCount: number;
-  } | null = null;
+  let causalHandoffGeneration = selectedCausalHandoffs.value.generation;
+  const pendingCausalHandoffs = new Map<string, BrowserPendingCausalHandoff>(
+    selectedCausalHandoffs.value.pending.map((handoff) => [handoff.targetTabId, { ...handoff }]),
+  );
+  let causalHandoffCheckpointRecord = recoveredCausalHandoffCheckpoint.value;
+  let causalHandoffCheckpointPendingWrites = 0;
+  let causalHandoffCheckpointSync: DarkHallBrowserDurableReadout["causalHandoffCheckpoint"] = {
+    state: causalHandoffCheckpointRecord === null ? "idle" : "saved",
+    recoveredRevision: causalHandoffCheckpointRecord?.revision ?? null,
+    currentRevision: causalHandoffCheckpointRecord?.revision ?? null,
+    payloadBytes: causalHandoffCheckpointRecord?.payload.byteLength ?? null,
+    feedback: null,
+  };
+  let causalHandoffCheckpointSyncTail: Promise<DarkHallBrowserDurableResult<null>> = Promise.resolve(succeeded(null));
   let causalCheckpointRecord = recoveredCausalCheckpoint.value;
   let causalCheckpointPendingWrites = 0;
   let causalCheckpointSync: DarkHallBrowserDurableReadout["causalCheckpoint"] = {
@@ -421,7 +508,13 @@ export async function startDurableDarkHallBrowser(
   let causalRenderPending = false;
 
   const currentCausalHandoffReadout = (): DarkHallCausalHandoffReadout =>
-    darkHallCausalHandoffReadout(options.tabId, options.maxCausalCorrections, causalHandoffState);
+    darkHallCausalHandoffReadout(
+      options.tabId,
+      options.maxCausalCorrections,
+      pendingCausalHandoffs.size,
+      maxPendingCausalHandoffs,
+      causalHandoffState,
+    );
 
   const renderCausalProjection = (): void => {
     if (browserRuntimeForCausalRender === null) {
@@ -553,6 +646,158 @@ export async function startDurableDarkHallBrowser(
       });
   };
 
+  const applyCausalHandoffCheckpointOperation = (
+    checkpoint: BrowserCausalHandoffCheckpoint,
+    operation: CausalHandoffCheckpointOperation,
+  ): DarkHallBrowserDurableResult<{
+    readonly changed: boolean;
+    readonly checkpoint: BrowserCausalHandoffCheckpoint;
+  }> => {
+    const pending = new Map(checkpoint.pending.map((handoff) => [handoff.targetTabId, { ...handoff }]));
+    let generation = checkpoint.generation;
+    let changed = checkpoint.maxPendingHandoffs !== maxPendingCausalHandoffs;
+
+    if (operation.kind === "offer") {
+      const previous = pending.get(operation.handoff.targetTabId);
+      if (previous === undefined && pending.size >= maxPendingCausalHandoffs) {
+        return failed("causal-handoff-checkpoint", {
+          severity: "backpressure",
+          code: "causal-handoff-checkpoint-capacity-exhausted",
+          detail: `The durable handoff checkpoint retained ${String(pending.size)} pending offers and cannot admit ${operation.handoff.targetTabId}.`,
+        });
+      }
+      generation = Math.max(generation, operation.generation);
+      changed = changed || generation !== checkpoint.generation;
+      const replace =
+        previous === undefined ||
+        operation.handoff.correctionCount > previous.correctionCount ||
+        (operation.handoff.correctionCount === previous.correctionCount &&
+          causalHandoffOwner(operation.handoff.handoffId) < causalHandoffOwner(previous.handoffId));
+      if (replace) {
+        pending.set(operation.handoff.targetTabId, { ...operation.handoff });
+        changed = true;
+      }
+    } else {
+      const previous = pending.get(operation.targetTabId);
+      if (previous?.handoffId === operation.handoffId) {
+        pending.delete(operation.targetTabId);
+        changed = true;
+      }
+    }
+
+    return succeeded({
+      changed,
+      checkpoint: {
+        schema: BROWSER_CAUSAL_HANDOFF_CHECKPOINT_SCHEMA,
+        maxPendingHandoffs: maxPendingCausalHandoffs,
+        generation,
+        pending: [...pending.values()],
+      },
+    });
+  };
+
+  const persistCausalHandoffCheckpoint = async (
+    operation: CausalHandoffCheckpointOperation,
+  ): Promise<DarkHallBrowserDurableResult<null>> => {
+    let baseRecord = causalHandoffCheckpointRecord;
+
+    for (let attempt = 0; attempt < MAX_CAUSAL_CHECKPOINT_SAVE_ATTEMPTS; attempt += 1) {
+      const base = handoffsForCheckpoint(baseRecord, maxPendingCausalHandoffs);
+      if (!base.ok) return base;
+      const applied = applyCausalHandoffCheckpointOperation(base.value, operation);
+      if (!applied.ok) return applied;
+      if (!applied.value.changed) {
+        causalHandoffCheckpointRecord = baseRecord;
+        causalHandoffGeneration = Math.max(causalHandoffGeneration, applied.value.checkpoint.generation);
+        return succeeded(null);
+      }
+      if (baseRecord?.revision === Number.MAX_SAFE_INTEGER) {
+        return failed("causal-handoff-checkpoint", {
+          severity: "backpressure",
+          code: "causal-handoff-checkpoint-revision-exhausted",
+          detail: "The causal handoff checkpoint exhausted its safe integer revision space.",
+        });
+      }
+      const encoded = encodeBrowserCausalHandoffCheckpoint(applied.value.checkpoint);
+      if (!encoded.ok) return failed("causal-handoff-checkpoint", encoded.feedback);
+      const revision = (baseRecord?.revision ?? 0) + 1;
+      let saved;
+      try {
+        saved = await checkpointPort.save({
+          schema: BROWSER_CHECKPOINT_RECORD_SCHEMA,
+          nodeId: causalHandoffCheckpointNodeId,
+          revision,
+          payload: encoded.value,
+        });
+      } catch {
+        return thrown("checkpoint-store", "checkpoint-operation-threw", "saving a causal handoff checkpoint");
+      }
+      if (saved.ok) {
+        const verified = verifyRecord(saved.value, causalHandoffCheckpointNodeId, revision, encoded.value);
+        if (!verified.ok) return verified;
+        causalHandoffCheckpointRecord = verified.value;
+        causalHandoffGeneration = Math.max(causalHandoffGeneration, applied.value.checkpoint.generation);
+        return succeeded(null);
+      }
+      if (saved.feedback.code !== "checkpoint-revision-conflict") return failed("checkpoint-store", saved.feedback);
+
+      const loaded = await loadCheckpoint(
+        checkpointPort,
+        causalHandoffCheckpointNodeId,
+        "reconciling a causal handoff checkpoint conflict",
+      );
+      if (!loaded.ok) return loaded;
+      baseRecord = loaded.value;
+    }
+
+    return failed("causal-handoff-checkpoint", {
+      severity: "backpressure",
+      code: "causal-handoff-checkpoint-contention",
+      detail: `The causal handoff checkpoint changed during all ${String(MAX_CAUSAL_CHECKPOINT_SAVE_ATTEMPTS)} bounded save attempts.`,
+    });
+  };
+
+  const scheduleCausalHandoffCheckpoint = (operation: CausalHandoffCheckpointOperation): void => {
+    causalHandoffCheckpointPendingWrites += 1;
+    causalHandoffCheckpointSync = { ...causalHandoffCheckpointSync, state: "saving", feedback: null };
+    causalHandoffCheckpointSyncTail = causalHandoffCheckpointSyncTail
+      .then(() => persistCausalHandoffCheckpoint(operation))
+      .catch(() => thrown("checkpoint-store", "checkpoint-operation-threw", "queuing a causal handoff checkpoint"))
+      .then((result) => {
+        causalHandoffCheckpointPendingWrites -= 1;
+        causalHandoffCheckpointSync = {
+          ...causalHandoffCheckpointSync,
+          state: result.ok ? (causalHandoffCheckpointPendingWrites === 0 ? "saved" : "saving") : "failed",
+          currentRevision: causalHandoffCheckpointRecord?.revision ?? null,
+          payloadBytes: causalHandoffCheckpointRecord?.payload.byteLength ?? null,
+          feedback: result.ok ? null : result.feedback,
+        };
+        if (!result.ok) {
+          if (operation.kind === "offer") {
+            const current = pendingCausalHandoffs.get(operation.handoff.targetTabId);
+            if (current?.handoffId === operation.handoff.handoffId) {
+              pendingCausalHandoffs.delete(operation.handoff.targetTabId);
+            }
+          }
+          causalHandoffState = {
+            status: result.feedback.severity === "backpressure" ? "backpressured" : "heat",
+            direction: "outbound",
+            handoffId: operation.kind === "offer" ? operation.handoff.handoffId : operation.handoffId,
+            peerTabId: operation.kind === "offer" ? operation.handoff.targetTabId : operation.targetTabId,
+            correctionCount: operation.kind === "offer" ? operation.handoff.correctionCount : 0,
+            admittedCorrections: 0,
+            feedback: {
+              severity: result.feedback.severity,
+              code: result.feedback.code,
+              detail: result.feedback.detail,
+            },
+          };
+          renderCausalProjection();
+        }
+        return result;
+      });
+  };
+
   const onCausalCorrection = (correction: BrowserCausalCorrectionNotice): void => {
     const previous = causalLedger;
     const admitted = foldBrowserCausalCorrection(causalLedger, correction);
@@ -613,8 +858,9 @@ export async function startDurableDarkHallBrowser(
   };
 
   const acknowledgeCausalCorrectionReplay = (acknowledgement: BrowserCausalCorrectionReplayAcknowledgement): void => {
+    const pendingCausalHandoff = pendingCausalHandoffs.get(acknowledgement.sourceTabId);
     if (
-      pendingCausalHandoff === null ||
+      pendingCausalHandoff === undefined ||
       acknowledgement.handoffId !== pendingCausalHandoff.handoffId ||
       acknowledgement.sourceTabId !== pendingCausalHandoff.targetTabId ||
       acknowledgement.targetTabId !== options.tabId ||
@@ -636,18 +882,31 @@ export async function startDurableDarkHallBrowser(
       admittedCorrections: acknowledgement.admittedCorrections,
       feedback: acknowledgement.feedback === null ? null : { ...acknowledgement.feedback },
     };
-    pendingCausalHandoff = null;
+    pendingCausalHandoffs.delete(acknowledgement.sourceTabId);
+    scheduleCausalHandoffCheckpoint({
+      kind: "acknowledge",
+      targetTabId: acknowledgement.sourceTabId,
+      handoffId: acknowledgement.handoffId,
+    });
     renderCausalProjection();
+  };
+
+  const nextCausalHandoffId = (): string | null => {
+    if (causalHandoffGeneration === Number.MAX_SAFE_INTEGER) return null;
+    causalHandoffGeneration += 1;
+    return `replay/${String(causalHandoffGeneration)}@${options.tabId}`;
+  };
+
+  const previewCausalHandoffId = (): string => {
+    const generation = Math.min(Number.MAX_SAFE_INTEGER, causalHandoffGeneration + 1);
+    return `replay/${String(generation)}@${options.tabId}`;
   };
 
   const causalCorrectionReplay: BrowserCausalCorrectionReplayPort = {
     maxCorrections: options.maxCausalCorrections,
     snapshot: (targetTabId) => {
       const corrections = causalLedger.corrections.map((correction) => ({ ...correction }));
-      causalHandoffGeneration = causalHandoffGeneration === Number.MAX_SAFE_INTEGER ? 1 : causalHandoffGeneration + 1;
-      const handoffId = `replay/${String(causalHandoffGeneration)}`;
       if (corrections.length === 0) {
-        pendingCausalHandoff = null;
         causalHandoffState = {
           status: "idle",
           direction: "none",
@@ -658,9 +917,57 @@ export async function startDurableDarkHallBrowser(
           feedback: null,
         };
         renderCausalProjection();
-        return { handoffId, corrections };
+        return { handoffId: previewCausalHandoffId(), corrections };
       }
-      pendingCausalHandoff = { handoffId, targetTabId, correctionCount: corrections.length };
+
+      const pending = pendingCausalHandoffs.get(targetTabId);
+      if (pending === undefined && pendingCausalHandoffs.size >= maxPendingCausalHandoffs) {
+        const handoffId = previewCausalHandoffId();
+        causalHandoffState = {
+          status: "backpressured",
+          direction: "outbound",
+          handoffId,
+          peerTabId: targetTabId,
+          correctionCount: corrections.length,
+          admittedCorrections: 0,
+          feedback: {
+            severity: "backpressure",
+            code: "causal-correction-replay-pending-capacity-exhausted",
+            detail: `The runtime retained ${String(pendingCausalHandoffs.size)} pending peer handoffs and will not discard one to admit ${targetTabId}.`,
+          },
+        };
+        renderCausalProjection();
+        return { handoffId, corrections: [] };
+      }
+
+      const handoffId = pending?.correctionCount === corrections.length ? pending.handoffId : nextCausalHandoffId();
+      if (handoffId === null) {
+        const exhaustedId = `replay/${String(Number.MAX_SAFE_INTEGER)}@${options.tabId}`;
+        causalHandoffState = {
+          status: "backpressured",
+          direction: "outbound",
+          handoffId: exhaustedId,
+          peerTabId: targetTabId,
+          correctionCount: corrections.length,
+          admittedCorrections: 0,
+          feedback: {
+            severity: "backpressure",
+            code: "causal-handoff-generation-exhausted",
+            detail: "The runtime exhausted its safe integer causal handoff generation space.",
+          },
+        };
+        renderCausalProjection();
+        return { handoffId: exhaustedId, corrections: [] };
+      }
+      const nextPending = { handoffId, targetTabId, correctionCount: corrections.length };
+      pendingCausalHandoffs.set(targetTabId, nextPending);
+      if (pending?.handoffId !== handoffId || pending?.correctionCount !== corrections.length) {
+        scheduleCausalHandoffCheckpoint({
+          kind: "offer",
+          generation: causalHandoffGeneration,
+          handoff: nextPending,
+        });
+      }
       causalHandoffState = {
         status: "offered",
         direction: "outbound",
@@ -727,6 +1034,7 @@ export async function startDurableDarkHallBrowser(
 
   const read = (): DarkHallBrowserDurableReadout => ({
     schema: DARK_HALL_BROWSER_DURABLE_RUNTIME_SCHEMA,
+    transport: browserRuntime.transport,
     host: browserRuntime.host.read(),
     recoveredRevision,
     currentRevision: currentRecord?.revision ?? null,
@@ -736,6 +1044,13 @@ export async function startDurableDarkHallBrowser(
     database: databaseReadout,
     causal: darkHallCausalReadout(causalLedger, causalFeedback),
     causalHandoff: currentCausalHandoffReadout(),
+    causalHandoffCheckpoint: {
+      ...causalHandoffCheckpointSync,
+      feedback:
+        causalHandoffCheckpointSync.feedback === null
+          ? null
+          : { ...causalHandoffCheckpointSync.feedback, cleanup: [...causalHandoffCheckpointSync.feedback.cleanup] },
+    },
     causalCheckpoint: {
       ...causalCheckpointSync,
       feedback:
@@ -882,6 +1197,20 @@ export async function startDurableDarkHallBrowser(
   return succeeded({
     read,
     transcript: () => currentTranscript,
+    renderTranscript: (nextTranscript) => {
+      if (finalized) {
+        return failed("browser-runtime", {
+          severity: "heat",
+          code: "host-stopped",
+          detail: "The durable browser room runtime has already stopped.",
+        });
+      }
+      const canonical = canonicalTranscript(nextTranscript);
+      if (!canonical.ok) return canonical;
+      const rendered = updateRenderedTranscript(canonical.value);
+      if (!rendered.ok) return rendered;
+      return succeeded(read());
+    },
     checkpoint: async (revision, nextTranscript) => {
       if (finalized) {
         return failed("checkpoint-store", {
@@ -1058,6 +1387,10 @@ export async function startDurableDarkHallBrowser(
       const synchronized = await causalCheckpointSyncTail;
       return synchronized.ok ? succeeded(read()) : synchronized;
     },
+    drainCausalHandoffCheckpoint: async () => {
+      const synchronized = await causalHandoffCheckpointSyncTail;
+      return synchronized.ok ? succeeded(read()) : synchronized;
+    },
     stop: () => {
       if (finalized) return succeeded(read());
       if (causalCheckpointPendingWrites > 0) {
@@ -1069,6 +1402,16 @@ export async function startDurableDarkHallBrowser(
       }
       if (causalCheckpointSync.state === "failed" && causalCheckpointSync.feedback !== null) {
         return { ok: false, feedback: causalCheckpointSync.feedback };
+      }
+      if (causalHandoffCheckpointPendingWrites > 0) {
+        return failed("causal-handoff-checkpoint", {
+          severity: "backpressure",
+          code: "causal-handoff-checkpoint-pending",
+          detail: `The durable browser room has ${String(causalHandoffCheckpointPendingWrites)} causal handoff checkpoint write(s) pending. Drain them before stopping.`,
+        });
+      }
+      if (causalHandoffCheckpointSync.state === "failed" && causalHandoffCheckpointSync.feedback !== null) {
+        return { ok: false, feedback: causalHandoffCheckpointSync.feedback };
       }
       finalized = true;
 

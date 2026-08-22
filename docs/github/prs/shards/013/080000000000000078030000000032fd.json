@@ -1,0 +1,12 @@
+{
+  "pr_number": 13053,
+  "archive_path": "docs/history/pr-reviews/PR-13053-usb-proven-on-metal-is-an-empty-set-and-the-gate-i-landed-tonight-blocks-the-fla.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-21T04:18:06.244Z",
+  "schema_version": "v1",
+  "commit_sha": "5361a416838bfe578316eac883c5c9580a5713dd",
+  "title": "usb: proven-on-metal is an empty set — and the gate I landed tonight blocks the flash path (keystone fixed)",
+  "state": "MERGED",
+  "merged_at": "2026-08-21T04:17:28Z",
+  "head_ref": "usb/iso-digest-manifest-and-inventory"
+}

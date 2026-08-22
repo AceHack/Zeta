@@ -90,10 +90,57 @@ describe("the stale fork, while it exists, carries the fix too", () => {
       // duplicate entrenches it, so the two files are expected to differ in that respect.
       const forkLines = readFileSync(FORK, "utf8").split("\n");
       const canonLines = readFileSync(CANONICAL, "utf8").split("\n");
-      const onlyInFork = forkLines.filter((l) => !canonLines.includes(l) && l.trim().length > 0);
+
+      // The size-bounds import is the ONE divergence that is not prose, and it is
+      // still a path difference rather than a real one: #13099 gave the four flash
+      // safety-rail bounds a single home (src/Core.TypeScript/zflash/size-bounds.ts)
+      // and the canonical arm imports it as "./size-bounds.ts". The fork lives two
+      // directories away, so the identical import cannot be spelled identically.
+      //
+      // The allowance is DERIVED from the canonical line rather than written out, so
+      // it cannot drift: if the canonical import changes shape, this stops matching
+      // and the divergence is reported again. It permits exactly one rewritten
+      // specifier and nothing else -- a second unexplained line still fails, which
+      // the sibling test below pins.
+      const FORK_TO_SIZE_BOUNDS = "../../src/Core.TypeScript/zflash/size-bounds.ts";
+      const permitted = new Set(
+        canonLines
+          .filter((l) => l.includes('"./size-bounds.ts"'))
+          .map((l) => l.replace('"./size-bounds.ts"', `"${FORK_TO_SIZE_BOUNDS}"`)),
+      );
+
+      const onlyInFork = forkLines.filter(
+        (l) => !canonLines.includes(l) && !permitted.has(l) && l.trim().length > 0,
+      );
       for (const line of onlyInFork) {
         expect(line.trimStart().startsWith("*")).toBe(true);
       }
+    },
+  );
+
+  test.skipIf(!present)(
+    "the size-bounds allowance is narrow -- it does not excuse a second divergent line",
+    () => {
+      // Guards the exemption above from becoming a hole. An allowance nobody can
+      // fail is the vacuity class: it would report parity as CHECKED while a fork
+      // drifted freely underneath it.
+      const canonLines = readFileSync(CANONICAL, "utf8").split("\n");
+      const FORK_TO_SIZE_BOUNDS = "../../src/Core.TypeScript/zflash/size-bounds.ts";
+      const permitted = new Set(
+        canonLines
+          .filter((l) => l.includes('"./size-bounds.ts"'))
+          .map((l) => l.replace('"./size-bounds.ts"', `"${FORK_TO_SIZE_BOUNDS}"`)),
+      );
+
+      // Exactly one line is excused, and it is the import -- not the re-export,
+      // which is byte-identical in both files and needs no exemption.
+      expect(permitted.size).toBe(1);
+      expect([...permitted][0]).toContain("import {");
+
+      // An unrelated line is NOT excused by it.
+      const intruder = 'const SOMETHING_ELSE = 1;';
+      expect(permitted.has(intruder)).toBe(false);
+      expect(canonLines.includes(intruder)).toBe(false);
     },
   );
 });

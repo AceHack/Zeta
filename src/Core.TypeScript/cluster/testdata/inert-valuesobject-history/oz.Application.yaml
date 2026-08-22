@@ -1,0 +1,56 @@
+# OZ → OpenZiti. Zero-trust overlay network with per-connection
+# authentication + L4 mTLS.
+#
+# OpenZiti splits into multiple components; this Application installs
+# the controller. Add ziti-router/Application.yaml in a sibling dir
+# when the first edge router lands.
+
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  annotations:
+    argocd.argoproj.io/sync-wave: "0"
+  name: openziti-controller
+  namespace: argocd
+  finalizers: [ resources-finalizer.argocd.argoproj.io ]
+spec:
+  project: default
+  source:
+    repoURL: https://docs.openziti.io/helm-charts/
+    chart: ziti-controller
+    targetRevision: 1.4.5
+    helm:
+      releaseName: ziti-controller
+      valuesObject:
+        ctrlPlane:
+          service:
+            type: ClusterIP
+        clientApi:
+          service:
+            type: ClusterIP
+        persistence:
+          enabled: true
+          storageClass: longhorn
+          # SIZE CUT, NOT A POD CUT: 5Gi -> 3Gi, one pod either way. Small
+          # service state. Like headscale this row exists so the profile total
+          # covers the whole tree, not because 2 GiB was worth recovering.
+          size: 3Gi
+        # Admin password sourced from a Secret rather than hardcoded.
+        # Create the secret BEFORE this app syncs:
+        #   kubectl -n openziti create secret generic ziti-admin-credentials \
+        #     --from-literal=password="$(openssl rand -hex 24)"
+        # Or use a Sealed Secret committed to Git so the credential is
+        # reproducible from the cluster definition.
+        adminSecret:
+          name: ziti-admin-credentials
+          key: password
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: openziti
+  syncPolicy:
+    automated:
+      prune: false # never prune — would break the trust fabric
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+      - ServerSideApply=true

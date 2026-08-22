@@ -1,0 +1,12 @@
+{
+  "pr_number": 12038,
+  "archive_path": "docs/history/pr-reviews/PR-12038-feat-installer-restore-recorded-iserial-or-uefi-keyfile-never-guess-uuid.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-20T23:59:19.166Z",
+  "schema_version": "v1",
+  "commit_sha": "c8c1de51e7989cd1cf95b8fe1cdc2f5eeb4de147",
+  "title": "feat(installer): restore recorded iSerial or UEFI keyfile; never guess UUID",
+  "state": "MERGED",
+  "merged_at": "2026-08-20T23:58:34Z",
+  "head_ref": "riven/iserial-restore-lockout"
+}

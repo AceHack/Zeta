@@ -108,8 +108,34 @@ jobs:
           path: ~/.dotnet
           key: dotnet-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('global.json', 'tools/setup/common/dotnet.sh') }}
 
-      - name: Cache mise runtimes
-        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+      # RESTORE-ONLY, deliberately — this lane READS the mise cache and never WRITES it.
+      #
+      # The entry is 825 MB (measured: `Cache Size: ~825 MB (865502705 B)`, run
+      # 32549356483). Writing it back costs the 1-vCPU host real wall time INSIDE the
+      # 14-minute cap: `Post Cache mise runtimes` measured 0-246s across 60 runs
+      # (p90 90s, max 246s on run 32544861733), and it is where 2 of the 9 runs killed
+      # at the cap actually died (32517981607, 122s into the save; 32540421350, 105s).
+      #
+      # The save buys this lane nothing, because `gate.yml:build-and-test` writes the
+      # IDENTICAL key (same `path:`, same `hashFiles('.mise.toml', '.mise.full.toml')`,
+      # same runner.os/arch) on the same `push: [main]` trigger, from a 4-vCPU host
+      # where the write is cheap. Two writers, one key: the slow one was paying for a
+      # cache the fast one already maintains.
+      #
+      # It is also the RIGHT writer to keep. gate runs at the full host tier, so the
+      # entry it writes is a superset of what a slim host needs; the slim lane writing
+      # it back replaces that superset with a subset, which the full-tier jobs then
+      # have to re-install. Restore-only makes the tier split hold at the cache layer.
+      #
+      # COLD PATH — verified, not inferred (the case a warm-only measurement misses).
+      # Run 32550223578 ran this exact step with a deliberately-unmatchable key so the
+      # miss was guaranteed: restore 0s and `Cache not found for input keys: mise-
+      # COLDTEST-...`, install 156s, build 155s, test 5s, job green in 343s of the 840s
+      # cap (2.45x headroom) — and NO `Post Cache mise runtimes` step in the run at all.
+      # A cold mise cache costs the same as today's cold path MINUS the write, never
+      # more, because the write is the only thing this change removes.
+      - name: Restore mise runtimes (never saved from this lane — see above)
+        uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
           path: |
             ~/.local/share/mise
@@ -134,6 +160,22 @@ jobs:
         # slim host declaration: this lane builds+tests only — standard/full-tier manifest
         # entries (stryker, analyzers, the diagnostics suite) are skipped LOUDLY by
         # dotnet-tools.sh. Workitem 081KTWQZY7F08QG0R0034KN17T (host tiers x package requires).
+        #
+        # THIS LINE IS NOW LOAD-BEARING FOR THE APT PHASE TOO
+        # (081M0K36K69087G0R003BYSCF8). manifests/apt used to be installed in full on every
+        # host — 388 packages / 713 MiB resolved — because linux.sh had no tier gate, and on
+        # a 1-vCPU runner that phase measured 148s against ubuntu-24.04's 38s. It now honours
+        # `tier=` the way macos.sh has always honoured it for brew, so this declaration
+        # selects the 149-package / 139.7 MiB slim set. Delete the line and the lane goes
+        # back over budget with nothing red to explain why —
+        # src/Core.TypeScript/ci/apt-manifest-host-tier.test.ts asserts it is still here.
+        #
+        # WHAT THAT STOPS DETECTING, stated rather than discovered later: this lane no longer
+        # proves the standard-tier packages (agda, emscripten, llvm, r-base, pandoc, podman,
+        # qemu, opam) install on a 1-vCPU / 5 GB host. They are still installed and exercised
+        # on every ubuntu-24.04 gate job, so the packages are covered; what is uncovered is
+        # that specific pairing — and nothing in Zeta claims it, since manifests/brew has
+        # declared those same tools out of scope for a slim host since 081KTWQZY7F.
         env:
           MISE_GITHUB_TOKEN: ${{ github.token }}
           ZETA_HOST_TIER: slim

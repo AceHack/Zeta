@@ -1331,3 +1331,159 @@ biconditional: `docs/research/2026-08-17-path-independence-in-four-costumes-crdt
   predating every CS use; and the vector-calculus root (conservative field ⟺ exact 1-form ⟺ zero curl,
   Poincaré lemma). Six domains sharing "order doesn't matter" is evidence that **commutativity is widely
   instantiated**, not that these are one theorem — the `numerology-vs-number-theory` warning, applied.
+
+## Identification of social influence — the forward-correlation anchors (added 2026-08-19, Soraya)
+
+Added because a repo-wide `rg` returned **zero** hits for Manski, Shalizi, homophily, or
+"reflection problem" while `docs/GLOSSARY.md` already carried Girard's mimetic *mechanism*.
+Holding the mechanism literature without the identification literature is how a fleet
+builds the obvious forward-correlation meter and believes it. See
+`docs/research/2026-08-19-the-forward-correlation-instrument-mimetic-convergence-is-not-observationally-identified.md`.
+
+- **Charles F. Manski (1993) — "Identification of Endogenous Social Effects: The Reflection
+  Problem"** (*Review of Economic Studies* 60(3):531–542). Endogenous social effects (my
+  behaviour depends on the group's) are **not identified** separately from correlated
+  effects (we are similar / face the same environment) in the linear-in-means model — the
+  group mean is a function of the very behaviours it is meant to explain. The reason a
+  work-item-claim convergence metric cannot distinguish "both picked the P0 row because it
+  is the P0 row" from "B picked it because A did."
+- **Cosma Rohilla Shalizi & Andrew C. Thomas (2011) — "Homophily and Contagion Are
+  Generically Confounded in Observational Social Network Studies"** (*Sociological Methods
+  & Research* 40(2):211–239). The sharper anchor for us: latent homophily makes contagion
+  **non-parametrically** non-identifiable — not fixable by a better estimator or more data.
+  Our fleet has latent homophily in its strongest form (the **S=4 common seed**), so this
+  is the operative result, not a caveat.
+- **Judea Pearl (2009) — *Causality: Models, Reasoning, and Inference*, 2nd ed., ch. 3.**
+  The `do(·)` operator; why the escape from the two results above is an **intervention**
+  rather than a cleverer statistic. DST replay is what makes the intervention affordable
+  here — the ideal randomised experiment social science cannot run.
+- **Leslie Kish (1965) — *Survey Sampling*, ch. 5** (already shipped as
+  `SocietyUsefulWork.effectiveTrialCount`). Listed here because it is the **consumer** the
+  forward measure would feed: `deff = 1 + (n−1)ρ`. As of 2026-08-19 it has zero production
+  callers.
+- **Joseph A. Goguen & José Meseguer (1982) — "Security Policies and Security Models"**
+  (IEEE S&P). Noninterference. Load-bearing here in an unusual direction: it is the
+  **precondition of measurability**, not only a safety property — you can only ablate a
+  channel if the channel list is complete, and an incomplete list biases the forward
+  instrument toward falsely declaring independence.
+
+## Decentralised key-based routing — small-world navigation and DHT geometry (added 2026-08-21, clean-side derivation)
+
+The literature behind `docs/research/2026-08-21-greedy-small-world-routing-is-hub-free-by-construction-and-our-kademlia-has-less-exit-than-a-ring.md`.
+Filed because `src/Core.TypeScript/discovery/dht-discovery.ts` and `gossip-mesh-transport.ts`
+already cite Kademlia and Demers **in their headers with no rows here** — mechanism shipped ahead
+of its literature, which is the gap this list exists to close. Every bound below was read from the
+paper's own theorem statement, not from a summary.
+
+- **Jon Kleinberg (2000) — "The Small-World Phenomenon: An Algorithmic Perspective"**
+  (*STOC 2000*, 163–170; Cornell CS TR 99-1776, 1999). Greedy routing on an `n × n` grid whose
+  long-range links follow the **inverse `r`-th-power** distribution delivers in `O((log n)²)`
+  expected steps **iff `r = d`** (Thm 2); at `r = 0` — the Watts–Strogatz choice — *every*
+  decentralized algorithm needs `Ω(n^(2/3))` (Thm 1), and Thm 3 gives polynomial lower bounds on
+  both sides of `r = 2`. **The exponent is the entire result**, and the lower bounds are over all
+  decentralized algorithms, so a wrong exponent cannot be recovered by a better forwarding rule.
+  **Scope, honest:** `n` is the grid *side*, so the node count is `n²`; the bound is an expectation
+  over uniformly-random source/target on a static graph, and says nothing about churn or tail latency.
+- **Gurmeet Singh Manku, Mayank Bawa, Prabhakar Raghavan (2003) — "Symphony: Distributed Hashing
+  in a Small World"** (*USITS 2003*, 127–140). Kleinberg at `d = 1`: the harmonic pdf
+  `pₙ(x) = 1/(x ln n)` on `[1/n, 1]`, `k = O(1)` long links per node, expected path length
+  `O((1/k)·log²n)` (Thm 3.1), with `n` estimated from **three local segment lengths** and no
+  coordinator anywhere. Its falsifier is the load-bearing half: draw the same `k` links
+  **uniformly** instead and latency is `Θ(√n/k)` — polynomial. A "roughly long-range" link budget
+  spent on the wrong distribution buys nothing.
+- **Krishna P. Gummadi, Ramakrishna Gummadi, Steven D. Gribble, Sylvia Ratnasamy, Scott Shenker,
+  Ion Stoica (2003) — "The Impact of DHT Routing Geometry on Resilience and Proximity"**
+  (*SIGCOMM 2003*, 381–394). Turns "can you route **around** it?" into a number: route-selection
+  flexibility per geometry. Ring `c₁(log n)!` optimal-length alternatives plus `2c₂(log n)!` longer
+  ones and native sequential neighbours; **XOR just `1`** on optimal paths and **no** sequential
+  neighbours. At 30% node failure, equal state per node: Ring under 7% of routes failed, XOR ~20%,
+  Tree/Butterfly ~90%. **This is the mechanical instrument for the EXIT discriminator in
+  `.claude/rules/itron-hub-patent-boundary-p2p-is-the-upgrade.md`** — the first thing we have that
+  measures "oracle you may leave" vs "hub you must traverse" rather than asserting it.
+- **Duncan J. Watts & Steven H. Strogatz (1998) — "Collective dynamics of 'small-world' networks"**
+  (*Nature* 393:440–442). The local+long-range decomposition the whole family stands on.
+  **Scope, honest:** it explains why short paths *exist*, and Kleinberg's Thm 1 is exactly the proof
+  that its long-link choice makes them **unfindable** — existence and navigability are different
+  properties and WS supplies only the first.
+- **Stanley Milgram (1967) — "The small world problem"** (*Psychology Today* 1:61–67) and
+  **Jeffrey Travers & Stanley Milgram (1969) — "An experimental study of the small world problem"**
+  (*Sociometry* 32:425–443). The empirical anchor: chains of five to six, **found by people holding
+  only local information.** Kleinberg's Question (∗∗) is our routing requirement, posed in 1967.
+- **Petar Maymounkov & David Mazières (2002) — "Kademlia: A Peer-to-peer Information System Based
+  on the XOR Metric"** (*IPTPS 2002*). Already implemented at
+  `src/Core.TypeScript/discovery/dht-discovery.ts` over Reticulum destination hashes. Listed at last.
+- **Ion Stoica et al. (2001/2003) — "Chord"** (*SIGCOMM 2001*; *IEEE/ACM ToN* 11(1):17–32);
+  **Antony Rowstron & Peter Druschel (2001) — "Pastry"** (*Middleware 2001*); **Ben Y. Zhao,
+  John Kubiatowicz, Anthony D. Joseph (2001) — "Tapestry"** (UCB/CSD-01-1141; *IEEE JSAC*
+  22(1):41–53, 2004); **Dahlia Malkhi, Moni Naor, David Ratajczak (2002) — "Viceroy"**
+  (*PODC 2002*). The contrast class: the same `O(log n)` bound from a **maintained,
+  structurally-determined** table rather than a sampled one — and Viceroy is the origin of the
+  local `n`-estimator Symphony adopts.
+- **Albert-László Barabási & Réka Albert (1999) — "Emergence of scaling in random networks"**
+  (*Science* 286:509–512) and **Réka Albert, Hawoong Jeong & Albert-László Barabási (2000) —
+  "Error and attack tolerance of complex networks"** (*Nature* 406:378–382; correction *Nature*
+  409:542, 2001). Growth **plus preferential attachment** `Π(kᵢ) = kᵢ/Σkⱼ` produces `P(k) ~ k^(−γ)`;
+  scale-free networks then hold diameter under 5% random failure but **double** it when the 5% most
+  connected are removed. **Scope, honest — and this is why the row matters:** AJB scope themselves
+  out of degree-bounded overlays in their own second paragraph, calling Erdős–Rényi and
+  Watts–Strogatz *"fairly homogeneous"*. The targeted-attack fragility is a consequence of the
+  degree **distribution**, so it does not apply to a construction that caps degree. What applies
+  instead is the homogeneous class's fragmentation threshold, `f_c ≈ 0.28` under random removal.
+- **John R. Douceur (2002) — "The Sybil Attack"** (*IPTPS 2002*) and **Miguel Castro, Peter
+  Druschel, Ayalvadi Ganesh, Antony Rowstron & Dan S. Wallach (2002) — "Secure routing for
+  structured peer-to-peer overlay networks"** (*OSDI 2002*). The failure class that actually
+  threatens greedy key-based routing: without a certifying authority, distinct remote entities
+  cannot in general be distinguished, so an adversary mints identifiers until it owns the arc of the
+  space that greedy routing must cross. `docs/BUGS.md`'s unsigned-Reticulum-announce entry is this
+  attack's precondition, live in-tree today. **Scope, honest:** Castro et al.'s answer is *certified*
+  identifiers, which is a centralization this repo declines — the socially-conferred-standing route
+  (`TravelerRankLedger`, `SocietyUsefulWork`) is a different answer to the same question, and the
+  two have never been compared here.
+
+## Routing-metric integrity — one-sided bounds, and why a signature is the wrong tool (added 2026-08-22, shadow)
+
+The literature behind `docs/research/2026-08-22-hop-count-is-not-a-claim-mutation-entitlement-decides-the-mechanism.md`
+and `src/Core.TypeScript/discovery/announce-metric-chain.ts`. Filed because `docs/BUGS.md`'s
+RESIDUAL 2 (hop-count replay on the Reticulum announce wire) named a fix — "per-link authentication
+**or** a signed monotonic sequence" — with no anchor attached, and the `or` turned out to be wrong
+once the attack was written out. Each mechanism below was taken from the paper's own statement of
+it, not from a summary.
+
+- **Leslie Lamport (1981) — "Password Authentication with Insecure Communication"**
+  (*CACM* 24(11):770–772). The one-way chain: publish `h^n(x)`, reveal `h^(n−i)(x)` on use `i`; a
+  party holding one element cannot produce an earlier one. **Why it is the right shape for a routing
+  metric where a signature is not:** preimage resistance is a **one-sided** integrity primitive, and
+  the routing requirement is one-sided — a hop count may be inflated freely and must never be
+  deflated. A signature is two-sided (any change breaks it), which is exactly why signing `hops`
+  breaks on the first honest relay and would have to be disabled to ship.
+- **Yih-Chun Hu, David B. Johnson & Adrian Perrig (2002/2003) — "SEAD: Secure Efficient Distance
+  Vector Routing for Mobile Wireless Ad Hoc Networks"** (*WMCSA 2002*, 3–13; *Ad Hoc Networks*
+  1(1):175–192, 2003). Lamport's chain applied to a distance-vector metric so a node **can increase
+  but cannot decrease** it, with the element indexed by (sequence number, metric) so a fresh
+  announce cannot be forged from an older one's revealed elements. **This is the construction
+  adopted**, with the epoch anchor carried inside the Ed25519 announce signature the wire already
+  has. **Scope, honest:** SEAD's guarantee is *"no better than the best value you were actually
+  given"*, so a node one hop from the origin can still claim the origin's distance — the one-hop
+  shave. It **bounds** deflation; it does not eliminate it, and the design says so in a passing test.
+- **Yih-Chun Hu, Adrian Perrig & David B. Johnson (2003) — "Packet Leashes: A Defense against
+  Wormhole Attacks in Wireless Networks"** (*INFOCOM 2003*, 1976–1986). The canonical statement of
+  the attack class hop-count deflation belongs to — and the reason we do **not** use the canonical
+  defence: a **temporal** leash needs tightly synchronised clocks, a **geographic** leash needs
+  location. Clock synchronisation is precisely what
+  `.claude/rules/local-time-never-enters-the-shared-fold.md` forbids from a shared fold, so the
+  canonical defence is declined **with a reason** rather than overlooked. The same authors'
+  **"Ariadne"** (*MobiCom 2002*; *Wireless Networks* 11:21–38, 2005) is declined identically —
+  TESLA's delayed key disclosure needs loose time sync.
+- **Stephen Kent, Charles Lynn & Karen Seo (2000) — "Secure Border Gateway Protocol (S-BGP)"**
+  (*IEEE JSAC* 18(4):582–592) and **RFC 8205 (2017) — "BGPsec Protocol Specification"**
+  (Lepinski & Sriram, eds.). The per-hop-signature alternative, and the source of the **classifier**
+  the whole design turns on: S-BGP separates *address attestations* (immutable, signed once) from
+  *route attestations* (path-mutable, signed per hop) because the two field classes admit different
+  mechanisms. **Scope, honest — and this is why the row earns its place:** BGPsec costs O(path
+  length) signatures with no aggregation, and its benefit under partial deployment is close to nil
+  (a path is only as protected as its least-deployed hop). That combination, not any doubt about its
+  correctness, is why it is the named **upgrade path** here rather than the choice.
+- **Radia Perlman (1988) — "Network Layer Protocols with Byzantine Robustness"** (MIT PhD thesis,
+  MIT/LCS/TR-429). The origin of the question *what can a routing protocol still guarantee when
+  participating routers lie?* — and the reason the requirement here is stated as a **bound** rather
+  than as correctness. A relay can always decline to forward; no mechanism makes a metric true.

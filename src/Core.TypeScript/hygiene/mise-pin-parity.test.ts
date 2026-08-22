@@ -7,7 +7,7 @@
 //   - live-repo tests prove main is actually clean right now.
 
 import { describe, expect, test } from "bun:test";
-import { readFileSync } from "node:fs";
+import { existsSync, readFileSync } from "node:fs";
 import { resolve } from "node:path";
 
 import {
@@ -17,6 +17,7 @@ import {
   PIN_SITES,
   allViolations,
   installerOverlayViolations,
+  pendingAbsentSites,
   pinValueViolations,
   readPinAt,
   trackedFlakes,
@@ -42,6 +43,10 @@ function inParityFixture(): Record<string, string> {
     "tools/setup/linux.sh": `#!/usr/bin/env bash\nMISE_PIN_VERSION="${PIN}"\nMISE_VERSION="v\${MISE_PIN_VERSION}"\n`,
     "tools/setup/macos.sh": `#!/usr/bin/env bash\nMISE_MIN_VERSION="${PIN}"\n`,
     "full-ai-cluster/nixos/overlays/mise-pin.nix": `final: prev:\nlet\n  version = "${PIN}";\nin\n{}\n`,
+    // The fifth site, written as it will exist once the Cursor cloud-agent
+    // environment lands. Its presence in this fixture is what proves the site is
+    // CHECKED and not merely listed — the absence case gets its own describe below.
+    ".cursor/install.sh": `#!/usr/bin/env bash\nset -euo pipefail\nMISE_PIN_VERSION="${PIN}"\n`,
   };
 }
 
@@ -81,6 +86,100 @@ describe("pin value parity", () => {
     expect(pinValueViolations("/repo", fakeRead({}))[0]).toContain(
       "could not read the canonical mise pin",
     );
+  });
+});
+
+describe("the fifth site: .cursor/install.sh", () => {
+  // The Cursor cloud-agent environment restates MISE_PIN_VERSION a fifth time,
+  // held to the other four today only by a comment reading "bump in lockstep".
+  // These are the falsifiers for replacing that comment with a mechanism.
+
+  const CURSOR = ".cursor/install.sh";
+  const site = PIN_SITES.find((s) => s.file === CURSOR);
+
+  test("the site is declared, and declared as PENDING with a stated reason", () => {
+    expect(site).toBeDefined();
+    expect(site?.label).toBe("MISE_PIN_VERSION");
+    // A pending site with no reason is an exception nobody can retire.
+    expect(site?.pendingReason ?? "").not.toBe("");
+  });
+
+  test("...and pending is the EXCEPTION — the other four sites are required", () => {
+    // The paired negative computed from the same roster. If `pendingReason`
+    // spread to the canonical file, absence would stop being checkable anywhere.
+    const pending = PIN_SITES.filter((s) => s.pendingReason !== undefined).map((s) => s.file);
+    expect(pending).toEqual([CURSOR]);
+  });
+
+  test("goes RED when .cursor/install.sh drifts from the other four", () => {
+    const files = inParityFixture();
+    files[CURSOR] = `#!/usr/bin/env bash\nMISE_PIN_VERSION="2026.7.1"\n`;
+    const violations = pinValueViolations("/repo", fakeRead(files));
+    expect(violations).toHaveLength(1);
+    expect(violations[0]).toContain(CURSOR);
+    expect(violations[0]).toContain("2026.7.1");
+  });
+
+  test("...and stays GREEN when it agrees — the same fixture, one value changed", () => {
+    expect(pinValueViolations("/repo", fakeRead(inParityFixture()))).toEqual([]);
+  });
+
+  test("a PRESENT file whose declaration was renamed is still a FAILURE", () => {
+    // Pending buys "not yet", never "not checked". Once the file exists it is
+    // held to the same standard as every other site.
+    const files = inParityFixture();
+    files[CURSOR] = `#!/usr/bin/env bash\nCURSOR_MISE_VERSION="${PIN}"\n`;
+    const violations = pinValueViolations("/repo", fakeRead(files));
+    expect(violations).toHaveLength(1);
+    expect(violations[0]).toContain("no `MISE_PIN_VERSION` declaration found");
+  });
+
+  test("the pattern reads the declaration however it is reasonably spelled", () => {
+    for (const spelling of [
+      `MISE_PIN_VERSION="${PIN}"`,
+      `  MISE_PIN_VERSION="${PIN}"`,
+      `readonly MISE_PIN_VERSION="${PIN}"`,
+      `export MISE_PIN_VERSION="${PIN}"`,
+    ]) {
+      const files = inParityFixture();
+      files[CURSOR] = `#!/usr/bin/env bash\n${spelling}\n`;
+      expect(pinValueViolations("/repo", fakeRead(files))).toEqual([]);
+    }
+  });
+});
+
+describe("a pin site that has not landed yet degrades without going silent", () => {
+  const CURSOR = ".cursor/install.sh";
+
+  function without(file: string): Record<string, string> {
+    return Object.fromEntries(Object.entries(inParityFixture()).filter(([key]) => key !== file));
+  }
+
+  const withoutCursor = (): Record<string, string> => without(CURSOR);
+
+  test("its absence is NOT a violation", () => {
+    expect(pinValueViolations("/repo", fakeRead(withoutCursor()))).toEqual([]);
+  });
+
+  test("...but its absence IS reported, so it is never mistaken for a checked site", () => {
+    const absent = pendingAbsentSites("/repo", fakeRead(withoutCursor())).map((s) => s.file);
+    expect(absent).toEqual([CURSOR]);
+  });
+
+  test("...and once present it drops out of the pending report entirely", () => {
+    expect(pendingAbsentSites("/repo", fakeRead(inParityFixture()))).toEqual([]);
+  });
+
+  test("an absent REQUIRED site is still a hard failure", () => {
+    // The property that makes the tolerance narrow rather than a hole: deleting
+    // a non-pending site goes red, whereas deleting the pending one does not.
+    const files = Object.fromEntries(
+      Object.entries(withoutCursor()).filter(([key]) => key !== "tools/setup/macos.sh"),
+    );
+    const violations = pinValueViolations("/repo", fakeRead(files));
+    expect(violations).toHaveLength(1);
+    expect(violations[0]).toContain("tools/setup/macos.sh");
+    expect(violations[0]).toContain("file not found");
   });
 });
 
@@ -177,6 +276,24 @@ describe("the live repo", () => {
       readFileSync(resolve(REPO_ROOT, flakePath), "utf8").includes(INSTALLER_CONFIG_MARKER),
     );
     expect(defining).toEqual(["full-ai-cluster/flake.nix"]);
+  });
+
+  test("the fifth site is either absent-and-reported or present-and-in-parity", () => {
+    // Written to stay true ACROSS the merge of the Cursor cloud-agent PR, so it
+    // is a standing invariant rather than a snapshot that goes red on landing.
+    // Both arms assert something: absence must be REPORTED (not merely tolerated),
+    // presence must AGREE with `.mise.toml`.
+    const cursorSite = PIN_SITES.find((s) => s.file === ".cursor/install.sh");
+    expect(cursorSite).toBeDefined();
+    if (cursorSite === undefined) return;
+    const canonical = readPinAt(REPO_ROOT, PIN_SITES[0]!);
+    if (existsSync(resolve(REPO_ROOT, cursorSite.file))) {
+      expect(readPinAt(REPO_ROOT, cursorSite)).toBe(canonical);
+      expect(pendingAbsentSites(REPO_ROOT)).toEqual([]);
+    } else {
+      expect(pendingAbsentSites(REPO_ROOT).map((s) => s.file)).toContain(cursorSite.file);
+    }
+    expect(pinValueViolations(REPO_ROOT)).toEqual([]);
   });
 
   test("full-ai-cluster/usb-nixos-installer carries no flake of its own", () => {

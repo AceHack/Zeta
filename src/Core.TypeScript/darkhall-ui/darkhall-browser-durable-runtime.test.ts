@@ -13,6 +13,13 @@ import {
   encodeBrowserCausalCorrectionCheckpoint,
 } from "../browser-node/browser-causal-correction-checkpoint";
 import {
+  BROWSER_CAUSAL_HANDOFF_CHECKPOINT_SCHEMA,
+  browserCausalHandoffCheckpointNodeId,
+  decodeBrowserCausalHandoffCheckpoint,
+  encodeBrowserCausalHandoffCheckpoint,
+  type BrowserCausalHandoffCheckpoint,
+} from "../browser-node/browser-causal-handoff-checkpoint";
+import {
   createBrowserCausalCorrectionLedger,
   foldBrowserCausalCorrections,
 } from "../browser-node/browser-causal-correction-ledger";
@@ -320,6 +327,23 @@ function causalCheckpointRecord(
   };
 }
 
+function causalHandoffCheckpointRecord(
+  revision: number,
+  checkpoint: Omit<BrowserCausalHandoffCheckpoint, "schema">,
+): BrowserCheckpointRecord {
+  const encoded = encodeBrowserCausalHandoffCheckpoint({
+    schema: BROWSER_CAUSAL_HANDOFF_CHECKPOINT_SCHEMA,
+    ...checkpoint,
+  });
+  if (!encoded.ok) throw new Error(encoded.feedback.detail);
+  return {
+    schema: BROWSER_CHECKPOINT_RECORD_SCHEMA,
+    nodeId: browserCausalHandoffCheckpointNodeId("node-a"),
+    revision,
+    payload: encoded.value,
+  };
+}
+
 describe("durable Dark Hall browser runtime", () => {
   test("keeps an empty late-join snapshot idle because no replay is transmitted", async () => {
     const starter = createStarter();
@@ -328,7 +352,7 @@ describe("durable Dark Hall browser runtime", () => {
     if (!started.ok) return;
 
     expect(starter.starts[0]?.causalCorrectionReplay?.snapshot("tab-peer")).toEqual({
-      handoffId: "replay/1",
+      handoffId: "replay/1@tab-a",
       corrections: [],
     });
     expect(started.value.read().causalHandoff).toMatchObject({
@@ -382,7 +406,7 @@ describe("durable Dark Hall browser runtime", () => {
     ]);
     expect(starter.starts[0]?.causalCorrectionReplay?.maxCorrections).toBe(2);
     expect(starter.starts[0]?.causalCorrectionReplay?.snapshot("tab-peer")).toEqual({
-      handoffId: "replay/1",
+      handoffId: "replay/1@tab-a",
       corrections: [{ sourceTabId: "tab-b", sequence: "2", reinterpretsThrough: "1", deltaRows: 1 }],
     });
   });
@@ -434,13 +458,13 @@ describe("durable Dark Hall browser runtime", () => {
     if (!sender.ok || !receiver.ok) return;
 
     const snapshot = senderStarter.starts[0]?.causalCorrectionReplay?.snapshot("tab-receiver");
-    expect(snapshot).toEqual({ handoffId: "replay/1", corrections: [correction] });
+    expect(snapshot).toEqual({ handoffId: "replay/1@tab-sender", corrections: [correction] });
     if (snapshot === undefined) return;
     expect(sender.value.read().causalHandoff).toMatchObject({
       status: "offered",
       direction: "outbound",
       localTabId: "tab-sender",
-      handoffId: "replay/1",
+      handoffId: "replay/1@tab-sender",
       peerTabId: "tab-receiver",
       correctionCount: 1,
       admittedCorrections: 0,
@@ -468,7 +492,7 @@ describe("durable Dark Hall browser runtime", () => {
       causalHandoff: {
         status: "received",
         direction: "inbound",
-        handoffId: "replay/1",
+        handoffId: "replay/1@tab-sender",
         peerTabId: "tab-sender",
         correctionCount: 1,
         admittedCorrections: 1,
@@ -503,7 +527,7 @@ describe("durable Dark Hall browser runtime", () => {
     expect(sender.value.read().causalHandoff).toMatchObject({
       status: "acknowledged",
       direction: "outbound",
-      handoffId: "replay/1",
+      handoffId: "replay/1@tab-sender",
       peerTabId: "tab-receiver",
       correctionCount: 1,
       admittedCorrections: 1,
@@ -521,6 +545,285 @@ describe("durable Dark Hall browser runtime", () => {
     });
     expect(receiverStarter.updates.at(-1)).toMatchObject({
       causalHandoffReadout: { status: "duplicate", admittedCorrections: 0 },
+    });
+  });
+
+  test("tracks concurrent peer acknowledgements independently and reuses retry identity", async () => {
+    const correction = { sourceTabId: "tab-origin", sequence: "8", reinterpretsThrough: "5", deltaRows: 3 };
+    const starter = createStarter();
+    const started = await startDurableDarkHallBrowser(
+      { ...options(), tabId: "tab-sender", maxTrackedTabs: 3 },
+      new MemoryCheckpointPort(causalCheckpointRecord(1, [correction])),
+      starter.start,
+    );
+    expect(started.ok).toBe(true);
+    if (!started.ok) return;
+
+    const replay = starter.starts[0]?.causalCorrectionReplay;
+    const peerB = replay?.snapshot("tab-b");
+    expect(peerB).toEqual({ handoffId: "replay/1@tab-sender", corrections: [correction] });
+    expect(replay?.snapshot("tab-b")).toEqual(peerB);
+    expect(started.value.read().causalHandoff).toMatchObject({
+      status: "offered",
+      peerTabId: "tab-b",
+      pendingHandoffs: 1,
+      maxPendingHandoffs: 2,
+    });
+
+    const peerC = replay?.snapshot("tab-c");
+    expect(peerC).toEqual({ handoffId: "replay/2@tab-sender", corrections: [correction] });
+    expect(started.value.read().causalHandoff).toMatchObject({
+      status: "offered",
+      peerTabId: "tab-c",
+      pendingHandoffs: 2,
+      maxPendingHandoffs: 2,
+    });
+
+    if (peerB === undefined || peerC === undefined) return;
+    replay?.acknowledge({
+      handoffId: peerB.handoffId,
+      sourceTabId: "tab-b",
+      targetTabId: "tab-sender",
+      correctionCount: peerB.corrections.length,
+      disposition: "admitted",
+      admittedCorrections: 1,
+      feedback: null,
+    });
+    expect(started.value.read().causalHandoff).toMatchObject({
+      status: "acknowledged",
+      peerTabId: "tab-b",
+      pendingHandoffs: 1,
+      maxPendingHandoffs: 2,
+    });
+
+    replay?.acknowledge({
+      handoffId: peerC.handoffId,
+      sourceTabId: "tab-c",
+      targetTabId: "tab-sender",
+      correctionCount: peerC.corrections.length,
+      disposition: "duplicate",
+      admittedCorrections: 0,
+      feedback: null,
+    });
+    expect(started.value.read().causalHandoff).toMatchObject({
+      status: "duplicate",
+      peerTabId: "tab-c",
+      pendingHandoffs: 0,
+      maxPendingHandoffs: 2,
+    });
+  });
+
+  test("recovers pending offers across same-tab reload and transfers acknowledgement to a new leader", async () => {
+    const correction = { sourceTabId: "tab-origin", sequence: "8", reinterpretsThrough: "5", deltaRows: 3 };
+    const port = new MemoryCheckpointPort(causalCheckpointRecord(1, [correction]));
+    const firstStarter = createStarter();
+    const first = await startDurableDarkHallBrowser(
+      { ...options(), tabId: "tab-sender", maxTrackedTabs: 3 },
+      port,
+      firstStarter.start,
+    );
+    expect(first.ok).toBe(true);
+    if (!first.ok) return;
+
+    const replay = firstStarter.starts[0]?.causalCorrectionReplay;
+    const peerB = replay?.snapshot("tab-b");
+    const peerC = replay?.snapshot("tab-c");
+    expect(peerB).toEqual({ handoffId: "replay/1@tab-sender", corrections: [correction] });
+    expect(peerC).toEqual({ handoffId: "replay/2@tab-sender", corrections: [correction] });
+    expect(first.value.read()).toMatchObject({
+      causalHandoff: { pendingHandoffs: 2 },
+      causalHandoffCheckpoint: { state: "saving", recoveredRevision: null },
+    });
+    expect(first.value.stop()).toMatchObject({
+      ok: false,
+      feedback: { code: "causal-handoff-checkpoint-pending", severity: "backpressure" },
+    });
+    expect(await first.value.drainCausalHandoffCheckpoint()).toMatchObject({
+      ok: true,
+      value: {
+        causalHandoffCheckpoint: { state: "saved", recoveredRevision: null, currentRevision: 2 },
+      },
+    });
+    expect(first.value.stop()).toMatchObject({ ok: true });
+
+    const sameTabPort = new MemoryCheckpointPort(port.records());
+    const sameTabStarter = createStarter();
+    const sameTab = await startDurableDarkHallBrowser(
+      { ...options(), tabId: "tab-sender", maxTrackedTabs: 3 },
+      sameTabPort,
+      sameTabStarter.start,
+    );
+    expect(sameTab.ok).toBe(true);
+    if (!sameTab.ok) return;
+    expect(sameTab.value.read()).toMatchObject({
+      causalHandoff: { pendingHandoffs: 2 },
+      causalHandoffCheckpoint: { state: "saved", recoveredRevision: 2, currentRevision: 2 },
+    });
+    expect(sameTabStarter.starts[0]?.causalCorrectionReplay?.snapshot("tab-b")).toEqual(peerB);
+    expect(sameTab.value.stop()).toMatchObject({ ok: true });
+
+    const nextLeaderPort = new MemoryCheckpointPort(sameTabPort.records());
+    const nextLeaderStarter = createStarter();
+    const nextLeader = await startDurableDarkHallBrowser(
+      { ...options(), tabId: "tab-leader-2", maxTrackedTabs: 3 },
+      nextLeaderPort,
+      nextLeaderStarter.start,
+    );
+    expect(nextLeader.ok).toBe(true);
+    if (!nextLeader.ok || peerB === undefined) return;
+    const nextLeaderReplay = nextLeaderStarter.starts[0]?.causalCorrectionReplay;
+    expect(nextLeaderReplay?.snapshot("tab-c")).toEqual(peerC);
+    nextLeaderReplay?.acknowledge({
+      handoffId: peerB.handoffId,
+      sourceTabId: "tab-b",
+      targetTabId: "tab-leader-2",
+      correctionCount: peerB.corrections.length,
+      disposition: "duplicate",
+      admittedCorrections: 0,
+      feedback: null,
+    });
+    expect(nextLeader.value.read()).toMatchObject({
+      causalHandoff: { status: "duplicate", peerTabId: "tab-b", pendingHandoffs: 1 },
+      causalHandoffCheckpoint: { state: "saving", recoveredRevision: 2 },
+    });
+    expect(await nextLeader.value.drainCausalHandoffCheckpoint()).toMatchObject({
+      ok: true,
+      value: { causalHandoffCheckpoint: { state: "saved", currentRevision: 3 } },
+    });
+
+    const persisted = nextLeaderPort.recordFor(browserCausalHandoffCheckpointNodeId("node-a"));
+    expect(persisted).not.toBeNull();
+    if (persisted === null) return;
+    expect(decodeBrowserCausalHandoffCheckpoint(persisted.payload)).toEqual({
+      ok: true,
+      value: {
+        schema: BROWSER_CAUSAL_HANDOFF_CHECKPOINT_SCHEMA,
+        maxPendingHandoffs: 2,
+        generation: 2,
+        pending: [{ targetTabId: "tab-c", handoffId: "replay/2@tab-sender", correctionCount: 1 }],
+      },
+    });
+  });
+
+  test("coalesces concurrent senders by source identity and rejects a cross-sender acknowledgement alias", async () => {
+    const correction = { sourceTabId: "tab-origin", sequence: "8", reinterpretsThrough: "5", deltaRows: 3 };
+    const port = new MemoryCheckpointPort(causalCheckpointRecord(1, [correction]));
+    const laterStarter = createStarter();
+    const earlierStarter = createStarter();
+    const later = await startDurableDarkHallBrowser(
+      { ...options(), tabId: "tab-e", maxTrackedTabs: 3 },
+      port,
+      laterStarter.start,
+    );
+    const earlier = await startDurableDarkHallBrowser(
+      { ...options(), tabId: "tab-c", maxTrackedTabs: 3 },
+      port,
+      earlierStarter.start,
+    );
+    expect(later.ok).toBe(true);
+    expect(earlier.ok).toBe(true);
+    if (!later.ok || !earlier.ok) return;
+
+    const laterOffer = laterStarter.starts[0]?.causalCorrectionReplay?.snapshot("tab-d");
+    const earlierOffer = earlierStarter.starts[0]?.causalCorrectionReplay?.snapshot("tab-d");
+    expect(laterOffer?.handoffId).toBe("replay/1@tab-e");
+    expect(earlierOffer?.handoffId).toBe("replay/1@tab-c");
+    expect(await later.value.drainCausalHandoffCheckpoint()).toMatchObject({ ok: true });
+    expect(await earlier.value.drainCausalHandoffCheckpoint()).toMatchObject({ ok: true });
+
+    if (laterOffer === undefined) return;
+    laterStarter.starts[0]?.causalCorrectionReplay?.acknowledge({
+      handoffId: laterOffer.handoffId,
+      sourceTabId: "tab-d",
+      targetTabId: "tab-e",
+      correctionCount: laterOffer.corrections.length,
+      disposition: "duplicate",
+      admittedCorrections: 0,
+      feedback: null,
+    });
+    expect(await later.value.drainCausalHandoffCheckpoint()).toMatchObject({ ok: true });
+
+    const persisted = port.recordFor(browserCausalHandoffCheckpointNodeId("node-a"));
+    expect(persisted).not.toBeNull();
+    if (persisted === null) return;
+    expect(decodeBrowserCausalHandoffCheckpoint(persisted.payload)).toMatchObject({
+      ok: true,
+      value: {
+        pending: [{ targetTabId: "tab-d", handoffId: "replay/1@tab-c", correctionCount: 1 }],
+      },
+    });
+  });
+
+  test("backpressures recovered offers when current tab capacity cannot retain them", async () => {
+    const port = new MemoryCheckpointPort(
+      causalHandoffCheckpointRecord(1, {
+        maxPendingHandoffs: 2,
+        generation: 2,
+        pending: [
+          { targetTabId: "tab-b", handoffId: "replay/1@tab-sender", correctionCount: 1 },
+          { targetTabId: "tab-c", handoffId: "replay/2@tab-sender", correctionCount: 1 },
+        ],
+      }),
+    );
+    const starter = createStarter();
+    const started = await startDurableDarkHallBrowser({ ...options(), maxTrackedTabs: 2 }, port, starter.start);
+    expect(started).toMatchObject({
+      ok: false,
+      feedback: {
+        severity: "backpressure",
+        source: "causal-handoff-checkpoint",
+        code: "causal-handoff-checkpoint-capacity-exhausted",
+      },
+    });
+    expect(starter.starts).toEqual([]);
+    expect(port.closeCalls).toBe(1);
+  });
+
+  test("backpressures an excess peer without discarding a pending acknowledgement", async () => {
+    const correction = { sourceTabId: "tab-origin", sequence: "8", reinterpretsThrough: "5", deltaRows: 3 };
+    const starter = createStarter();
+    const started = await startDurableDarkHallBrowser(
+      { ...options(), tabId: "tab-sender", maxTrackedTabs: 2 },
+      new MemoryCheckpointPort(causalCheckpointRecord(1, [correction])),
+      starter.start,
+    );
+    expect(started.ok).toBe(true);
+    if (!started.ok) return;
+
+    const replay = starter.starts[0]?.causalCorrectionReplay;
+    const peerB = replay?.snapshot("tab-b");
+    expect(peerB).toEqual({ handoffId: "replay/1@tab-sender", corrections: [correction] });
+    expect(replay?.snapshot("tab-c")).toEqual({ handoffId: "replay/2@tab-sender", corrections: [] });
+    expect(started.value.read().causalHandoff).toMatchObject({
+      status: "backpressured",
+      direction: "outbound",
+      peerTabId: "tab-c",
+      correctionCount: 1,
+      pendingHandoffs: 1,
+      maxPendingHandoffs: 1,
+      feedback: {
+        severity: "backpressure",
+        code: "causal-correction-replay-pending-capacity-exhausted",
+      },
+    });
+
+    if (peerB === undefined) return;
+    replay?.acknowledge({
+      handoffId: peerB.handoffId,
+      sourceTabId: "tab-b",
+      targetTabId: "tab-sender",
+      correctionCount: peerB.corrections.length,
+      disposition: "admitted",
+      admittedCorrections: 1,
+      feedback: null,
+    });
+    expect(replay?.snapshot("tab-c")).toEqual({ handoffId: "replay/2@tab-sender", corrections: [correction] });
+    expect(started.value.read().causalHandoff).toMatchObject({
+      status: "offered",
+      peerTabId: "tab-c",
+      pendingHandoffs: 1,
+      maxPendingHandoffs: 1,
+      feedback: null,
     });
   });
 

@@ -14,6 +14,11 @@ kind: Application
 metadata:
   annotations:
     argocd.argoproj.io/sync-wave: "50"
+    zeta.io/sync-policy: manual
+    zeta.io/sync-policy-reason: Local-models phase is deferred; the Application
+      ships scaled to zero so the topology and the chart pin stay reviewable. An
+      automated sync would start pulling models onto GPU nodes before a
+      maintainer has re-enabled the phase.
   name: ollama
   namespace: argocd
   finalizers: [ resources-finalizer.argocd.argoproj.io ]
@@ -44,6 +49,16 @@ spec:
               # - qwen2.5-coder:32b
         persistentVolume:
           enabled: true
+          # SHRINKING THIS DOES NOT FREE A BYTE OF RUNNER DISK, and it is the first
+          # thing anyone reaches for. On the dev/CI substrate this class resolves to
+          # `rancher.io/local-path`, whose node-side provisioner script (see
+          # full-ai-cluster/nixos/modules/local-storage.nix) is `mkdir -m 0777 -p
+          # "$VOL_DIR"` -- a directory, with no quota and no reference to the requested
+          # size at all. A PVC there consumes the bytes WRITTEN and nothing more, so
+          # this number is a scheduling reservation on Longhorn (metal) and is not
+          # bytes on a runner. What actually fills a runner is CONTAINER IMAGES: run
+          # `bun src/Core.TypeScript/cluster/image-footprint.ts --report` for the
+          # measured per-app ranking, and `runner-disk.ts --measure` for the disk.
           size: 200Gi
           storageClass: longhorn
         nodeSelector:

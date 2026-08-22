@@ -1,0 +1,12 @@
+{
+  "pr_number": 12459,
+  "archive_path": "docs/history/pr-reviews/PR-12459-research-hsm-what-the-yubihsm-2-firmware-parses-measured-not-cited.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-19T17:43:08.640Z",
+  "schema_version": "v1",
+  "commit_sha": "d25f5b7e1f01316c1265634f965c03c3a3c39724",
+  "title": "research(hsm): what the YubiHSM 2 firmware parses -- measured, not cited",
+  "state": "MERGED",
+  "merged_at": "2026-08-19T17:42:00Z",
+  "head_ref": "nazar/hsm-parser-surface-usb-channel-key-custody"
+}

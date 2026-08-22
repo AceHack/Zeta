@@ -5,6 +5,7 @@ import { spawnSync } from "node:child_process";
 import { parseMechanismManifest } from "../setup-manifest.ts";
 import { curlFetchToFile, sha256FileMatches, verifySha256File } from "./curl-fetch.ts";
 import { expandPath, whenMatches } from "./when.ts";
+import { tierAllows, tierFromAttrs, resolveHostTier } from "./host-tier.ts";
 import {
   commandOnPath,
   finishResult,
@@ -90,10 +91,26 @@ export const realizeFromAutotoolsTarball: SetupRealizer = async (ctx) => {
     process.env.ZETA_AUTOMAKE_CACHE ?? join(process.env.HOME ?? "", ".cache/zeta/from-autotools-tarball");
   const defaultPrefix = process.env.ZETA_AUTOMAKE_PREFIX ?? join(process.env.HOME ?? "", ".local");
 
+  // HOST TIERS (081KTWQZY7F). This mechanism SOURCE-BUILDS its entries — `configure`
+  // + `make install` — which is the most expensive thing in the install graph per
+  // byte downloaded, and the cost lands hardest exactly where it is least affordable:
+  // measured 76s for eprover on the 1-vCPU ubuntu-slim runner, whose entire job is a
+  // `dotnet build`. from-dotnet-global has honoured `tier=` since that workitem; this
+  // is the same gate on the mechanism that pays the most for lacking it.
+  const host = resolveHostTier();
+
   for (const entry of parseMechanismManifest(text)) {
     const binName = entry.tokens[0];
     const tarballUrl = entry.tokens[1];
     if (binName === undefined || tarballUrl === undefined) continue;
+
+    const requiredTier = tierFromAttrs(entry.attrs);
+    if (!tierAllows(requiredTier, host)) {
+      ctx.log(
+        `→ from-autotools-tarball ${binName} skipped: requires tier=${requiredTier}, host is ${host.tier} (${host.source})`,
+      );
+      continue;
+    }
 
     const whenSpec = entry.attrs.when;
     if (!whenMatches(whenSpec, ctx.warn)) {

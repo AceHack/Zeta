@@ -1,0 +1,14 @@
+{
+  "id": "080d00cb3a240810a01300088145ff9d",
+  "at": "2026-08-19T09:43:13.281Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M0CPEH40087G0R0016GDSB6",
+    "type": "task",
+    "title": "Make the macOS build-and-test leg non-blocking (floor amendment following Aaron's drift-check classification)",
+    "slug": "make-the-macos-build-and-test-leg-non-blocking-floor-amendme",
+    "priority": "P2",
+    "filename": "081M0CPEH40087G0R0016GDSB6-make-the-macos-build-and-test-leg-non-blocking-floor-amendme.md"
+  }
+}

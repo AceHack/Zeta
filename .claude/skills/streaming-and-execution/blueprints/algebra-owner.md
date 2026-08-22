@@ -10,11 +10,11 @@ bp_rules_cited: []
 
 # Algebra Owner — Advisory Code Owner
 
-**Scope:** `src/Zeta.Core/ZSet.fs`, `src/Zeta.Core/Operators.fs`,
+**Scope:** `src/Core/ZSet.fs`, `src/Core/Operators.fs`,
 `src/Zeta.Core/Delta.fs`, `src/Zeta.Core/Integrator.fs`,
-`src/Zeta.Core/Feedback.fs`, `src/Zeta.Core/Recursive.fs`,
-`src/Zeta.Core/HigherOrder.fs`, `src/Zeta.Core/Residuated.fs`,
-`src/Zeta.Core/NovelMath.fs`, `src/Zeta.Core/NovelMathExt.fs`, anything
+`src/Zeta.Core/Feedback.fs`, `src/Core/Recursive.fs`,
+`src/Core/HigherOrder.fs`, `src/Core/Residuated.fs`,
+`src/Core/NovelMath.fs`, `src/Core/NovelMathExt.fs`, anything
 touching operator shape, semilattice laws, or the chain rule.
 
 ## Authority

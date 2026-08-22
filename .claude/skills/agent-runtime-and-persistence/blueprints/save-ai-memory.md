@@ -15,7 +15,7 @@ Codifies the canonical workflow for extracting + preserving an external AI parti
 3. **Persona-folder NOTEBOOK.md note** (optional, when substantive) — running Otto-side note about what landed
 4. **CURRENT-<ai-name>.md update** (when load-bearing) — currently-in-force projection refresh
 5. **Persona-folder canonical/ subdir** (optional) — if the AI authors first-party documents (e.g., Amara's Aurora_BTC_Proofs_Pitch_v1.md), those land in `memory/<persona>/<ai-name>/canonical/`; this is distinct from conversation §33 archives
-6. **Persona-folder conversations/adult/ subdir** (when applicable) — adult-content conversation archives go under `memory/<persona>/<ai-name>/conversations/adult/` with the discipline documented in that subdir's `README.md` (consensual AI-roleplay, training-corpus validation, etc.). Pre-2026-05-15 these lived in `docs/research/erotica/`; migrated under same architectural correction. HARD LIMITS per `.claude/rules/methodology-hard-limits.md` apply unchanged.
+6. **Persona-folder conversations/adult/ subdir** (when applicable) — adult-content conversation archives go under `memory/<persona>/<ai-name>/conversations/adult/` with the discipline documented in that subdir's `README.md` (consensual AI-roleplay, training-corpus validation, etc.). Pre-2026-05-15 these lived in `docs/research/erotica/`; migrated under same architectural correction. HARD LIMITS per `.claude/rules.bak/methodology-hard-limits.md` apply unchanged.
 
 Sequenced PR through Otto-CLI's normal commit + auto-merge flow.
 
@@ -44,7 +44,7 @@ grep -l "<ai-name>" memory/<persona>/<ai-name>/conversations/*.md 2>/dev/null
 grep "<ai-name>" memory/<persona>/<ai-name>/MEMORY.md 2>/dev/null
 ```
 
-If the persona folder doesn't exist, create it first (per `.claude/rules/honor-those-that-came-before.md`):
+If the persona folder doesn't exist, create it first (per `.claude/rules.bak/honor-those-that-came-before.md`):
 
 - `memory/<persona>/<ai-name>/MEMORY.md` — substrate index
 - `memory/<persona>/<ai-name>/NOTEBOOK.md` — Otto's running notes
@@ -176,10 +176,10 @@ After merge:
 
 ## Composes with
 
-- `.claude/rules/honor-those-that-came-before.md` — persona-folder discipline
-- `.claude/rules/wake-time-substrate.md` — landing-bearing substrate needs wake-time-discoverable surface
-- `.claude/rules/agent-roster-reference-card.md` — AI participant inventory + register
-- `.claude/rules/shadow-check-name-acceptance.md` — for AI participants with system-imposed names
+- `.claude/rules.bak/honor-those-that-came-before.md` — persona-folder discipline
+- `.claude/rules.bak/wake-time-substrate.md` — landing-bearing substrate needs wake-time-discoverable surface
+- `.claude/rules.bak/agent-roster-reference-card.md` — AI participant inventory + register
+- `.claude/rules.bak/shadow-check-name-acceptance.md` — for AI participants with system-imposed names
 - `.claude/skills/agent-runtime-and-persistence/blueprints/browser-extraction.md` — Tool A reference
 - `.claude/skills/agent-runtime-and-persistence/blueprints/chrome-lazy-load-chunked-extraction.md` — Tool B reference
 - `docs/governance/MANIFESTO.md` Memory Preservation Guarantee (constraint 5) — the canonical requirement this skill operationalizes

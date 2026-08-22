@@ -1,4 +1,112 @@
 # Temporal (TS workers) — distributed cron #2.
+#
+# ── THE DATASTORE IS COCKROACHDB, AND HERE IS WHY ────────────────────────────
+# Aaron 2026-08-21, asked which store: "we can pull in cassandra or just
+# coackroach either is fine." Both were authorised; this is the reasoning that
+# picked one, and it is not "Postgres-wire is nice".
+#
+# THE DECIDING FACT IS THAT CASSANDRA CANNOT BE THE WHOLE ANSWER AT THIS PIN.
+# Temporal server 1.27.2 (this chart's appVersion) ships `schema/cassandra/`
+# with exactly ONE subtree — `temporal/`, the default store. There is no
+# `schema/cassandra/visibility/`, while `schema/postgresql/v12/` carries BOTH
+# `temporal/` and `visibility/`. Checked at the tag, not inferred:
+#   https://github.com/temporalio/temporal/tree/v1.27.2/schema
+# So choosing Cassandra buys a NEW 3-node stateful service (the chart's bundled
+# subchart is `cassandra` 0.14.3 from the ARCHIVED helm/incubator repo, image
+# `cassandra:3.11.5`, `persistence.enabled: false` by default — i.e. emptyDir,
+# i.e. a durable-execution engine on a store that loses its data on restart
+# unless we also add 3 x 10Gi of longhorn) AND STILL leaves the visibility
+# store needing SQL or Elasticsearch. That is two new stateful services, not
+# one. It is the opposite of "which one makes the cluster simpler".
+#
+# COCKROACHDB IS ALREADY HERE. `full-ai-cluster/k8s/applications/cockroachdb`
+# is pinned at 14.0.5, syncs at wave 0, runs 3 Raft members on 48Gi each, and
+# is the largest declared storage consumer in the catalogue. Reusing it adds no
+# operator, no chart pin, no backup story, and no PVC — temporal renders ZERO
+# PersistentVolumeClaims with the values below (measured; see the storage note).
+#
+# WHAT THE CHART ACTUALLY SUPPORTS AT 0.59.0, read from the chart, not a blog:
+# `templates/_helpers.tpl` `temporal.persistence.sql.driver` passes
+# `server.config.persistence.<store>.sql.driver` straight through, and
+# `templates/server-job.yaml` branches on `postgres12` for the schema tool. The
+# chart's own `values/values.postgresql.yaml` even carries a CockroachDB note in
+# its TLS comments ("strictly required when using serverless CRDB offerings").
+# Temporal's docs are equally plain about the register: PostgreSQL, MySQL,
+# Cassandra and SQLite are TESTED, and "We do not run tests with vendors like
+# Vitess and CockroachDB." Untested, not unsupported — and the untested half is
+# named below with its exit condition rather than left to be found on metal.
+#
+# ── WHAT HAPPENS WHEN COCKROACHDB IS UNAVAILABLE ─────────────────────────────
+# Temporal keeps NO local durable state — there is no PVC here and no
+# StatefulSet. Every workflow, task queue and timer lives in CockroachDB. So
+# when the store is unreachable:
+#   * frontend/history/matching/worker stay up but their persistence calls fail;
+#     the frontend returns UNAVAILABLE to callers and the server retries on a
+#     backoff. Nothing is lost — durable execution means in-flight workflows
+#     STALL and resume from the task queues once the store returns.
+#   * on a COLD start with the store down, the `temporal-schema-1` Job's
+#     `create-default-store` init container fails and the Job retries to
+#     `schema.setup.backoffLimit` (100). Loud and named, which is the point.
+#   * CockroachDB losing ONE of its three Raft members is not this case: the
+#     quorum survives and Temporal does not notice. This is the ≥2-member-loss
+#     case, or a full outage.
+#
+# SYNC-WAVE ORDERING ALREADY EXPRESSES THE BRING-UP HALF, and it is declared
+# rather than inferred: `full-ai-cluster/k8s/sync-wave-dependency-graph.yaml`
+# carries `temporal dependsOn: [cockroachdb]` with a citation, and `ace`'s
+# `resolveGraph` derives the height that `derive-sync-waves.ts` compares against
+# the annotations below. cockroachdb is wave 0, temporal is wave 10, and
+# `derive-sync-waves.ts` reports NO disagreement on this edge. What that
+# ordering does NOT express — and no sync wave can — is the RUNTIME dependency:
+# ArgoCD does not restart temporal when CockroachDB goes away later, and it
+# should not. The retry loop above is what covers that, not the wave.
+#
+# ── TWO THINGS THIS MANIFEST DOES NOT YET DO, NAMED WITH THEIR EXITS ─────────
+# Neither blocks the render. Both block a working deployment, so neither is left
+# for metal to discover.
+#
+# BLOCKED: the VISIBILITY store's schema does not apply to CockroachDB.
+#   `schema/postgresql/v12/visibility/versioned/v1.2/advanced_visibility.sql`
+#   (temporal v1.27.2) opens with `CREATE EXTENSION IF NOT EXISTS btree_gin;`
+#   and a plpgsql `CREATE FUNCTION convert_ts(...)` that is then used inside
+#   `GENERATED ALWAYS AS (...) STORED` columns. CockroachDB implements neither:
+#   `CREATE EXTENSION btree_gin` is unimplemented (cockroachdb/cockroach#51992,
+#   still open) and computed columns may not reference user-defined functions
+#   (CockroachDB known limitations, #122945). The DEFAULT store is unaffected —
+#   `schema/postgresql/v12/temporal/schema.sql` is plain SQL with no extension,
+#   no UDF and no generated column, which is why the split is worth stating
+#   instead of writing "Temporal does not work on CockroachDB".
+#   HOW IT FAILS: the `update-visibility-store` init container of
+#   `temporal-schema-1` errors; the Job retries and then fails. Visible by name.
+#   LIFTS WHEN: either a CockroachDB-compatible visibility schema is supplied to
+#   `temporal-sql-tool --schema-dir`, or the visibility store is pointed at a
+#   real PostgreSQL / Elasticsearch, or CockroachDB grows btree_gin. Whichever
+#   arrives first, it is a manifest change here and a re-render.
+#
+# BLOCKED: no TLS material, and this CockroachDB is TLS-only.
+#   `applications/cockroachdb/Application.yaml` sets `tls.enabled: true` with
+#   the selfSigner, so the SQL port refuses a plaintext client. The chart CAN
+#   express this — `_admintools-env.yaml` emits `SQL_TLS*` from
+#   `sql.tls.{enabled,caFile,...}` and `server-configmap.yaml` passes the whole
+#   `tls:` block through — but the CA lives in a Secret in the `cockroachdb`
+#   namespace and this app runs in `temporal`, and no SQL user `temporal`
+#   exists yet. Declaring `sql.tls` here today would point a values block at a
+#   Secret nothing creates: a declaration governing a path that does not exist,
+#   which is precisely the defect `rendered-storage-claims.ts` was built to
+#   catch. So it is NOT declared, and it is named instead.
+#   LIFTS WHEN: the CRDB CA is distributed into the `temporal` namespace (the
+#   cluster already runs `trust-manager` for exactly this) and a `temporal` SQL
+#   user + its sealed password Secret exist; then `sql.tls` and `existingSecret`
+#   below become live and the render is re-measured.
+#
+# ── STORAGE: ZERO PVCs, AND THAT IS A CHECKED CLAIM ──────────────────────────
+# `helm template` at 0.59.0 with these values renders 6 Deployments, 8 Services,
+# 2 ConfigMaps and 1 Job — and no PersistentVolumeClaim and no StatefulSet. So
+# temporal has NO row in `full-ai-cluster/k8s/storage-profiles.json`, and that
+# absence is not silence: temporal is now in the RENDERED half of
+# `rendered-storage-claims.snapshot.json`, where direction 2 of the checker
+# ("a rendered PVC that no declaration covers") turns any future PVC here into
+# an unacknowledged finding and a red gate.
 
 apiVersion: argoproj.io/v1alpha1
 kind: Application
@@ -19,7 +127,76 @@ spec:
       valuesObject:
         server:
           replicaCount: 1
+          # Applies to all FOUR server Deployments (frontend, history, matching,
+          # worker): server-deployment.yaml:156 is
+          # `default $.Values.server.resources $serviceValues.resources`, and no
+          # per-service `resources` is set below, so this one value x4.
+          resources:
+            requests:
+              cpu: 250m
+              memory: 512Mi
+          config:
+            persistence:
+              defaultStore: default
+              default:
+                driver: sql
+                sql:
+                  driver: postgres12
+                  host: cockroachdb-public.cockroachdb.svc.cluster.local
+                  port: 26257
+                  database: temporal
+                  user: temporal
+                  # No password in git. The Secret is NOT created by this chart
+                  # when `existingSecret` is set (server-secret.yaml guards on
+                  # it); it is the sealed-secrets/ESO artifact named in the
+                  # second BLOCKED note above.
+                  existingSecret: temporal-default-store
+                  maxConns: 20
+                  maxIdleConns: 20
+                  maxConnLifetime: 1h
+              visibility:
+                driver: sql
+                sql:
+                  driver: postgres12
+                  host: cockroachdb-public.cockroachdb.svc.cluster.local
+                  port: 26257
+                  # A SEPARATE database, not a separate cluster. Temporal keeps
+                  # visibility in its own schema; on CockroachDB that is one
+                  # more `CREATE DATABASE` on the store already running.
+                  database: temporal_visibility
+                  user: temporal
+                  existingSecret: temporal-visibility-store
+                  maxConns: 10
+                  maxIdleConns: 10
+                  maxConnLifetime: 1h
+        web:
+          resources:
+            requests:
+              cpu: 100m
+              memory: 128Mi
+        admintools:
+          resources:
+            requests:
+              cpu: 50m
+              memory: 64Mi
+        schema:
+          # The schema Job's SIX init containers run sequentially, so the pod's
+          # effective request is max(init) = this one value, not six of them.
+          resources:
+            requests:
+              cpu: 100m
+              memory: 128Mi
+        # Every bundled subchart OFF. `cassandra` and `elasticsearch` are the
+        # two that matter: leaving either on adds a stateful service (and, for
+        # elasticsearch, 3 x 1000m/2048Mi — which is the whole of the 3000m /
+        # 6144Mi this app used to be charged in storage-profiles.json's
+        # ungovernedRequests, measured from chart defaults nobody had rendered
+        # against THIS Application's values).
         cassandra:
+          enabled: false
+        mysql:
+          enabled: false
+        postgresql:
           enabled: false
         elasticsearch:
           enabled: false
@@ -27,19 +204,6 @@ spec:
           enabled: false
         grafana:
           enabled: false
-        # CockroachDB (via its ArgoCD app) is the persistence layer.
-        # Wire after cockroachdb/Application.yaml comes up:
-        # server:
-        #   config:
-        #     persistence:
-        #       default:
-        #         driver: sql
-        #         sql:
-        #           driver: postgres12
-        #           host: cockroachdb-public.cockroachdb.svc.cluster.local
-        #           port: 26257
-        #           database: temporal
-        #           user: root
   destination:
     server: https://kubernetes.default.svc
     namespace: temporal

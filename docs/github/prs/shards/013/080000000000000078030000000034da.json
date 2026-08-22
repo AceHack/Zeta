@@ -1,0 +1,12 @@
+{
+  "pr_number": 13530,
+  "archive_path": "docs/history/pr-reviews/PR-13530-research-the-philosopher-s-star-a-3-3-magic-square-generates-an-order-5-star.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-22T04:25:22.533Z",
+  "schema_version": "v1",
+  "commit_sha": "18240f2bdbd20eb726f68191aba57f0278ef4466",
+  "title": "research: the Philosopher's Star — a 3×3 magic square generates an order-5 star",
+  "state": "MERGED",
+  "merged_at": "2026-08-22T04:24:43Z",
+  "head_ref": "research/philosophers-star-v3"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 13110,
+  "archive_path": "docs/history/pr-reviews/PR-13110-feat-cluster-bootstrap-or-join-decided-from-mdns-service-discovery-refusing-on-e.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-21T07:04:01.590Z",
+  "schema_version": "v1",
+  "commit_sha": "3f9a2934c63e533886cbbdf1e62116aaed835996",
+  "title": "feat(cluster): bootstrap-or-join decided from mDNS service discovery, refusing on every ambiguity (R3)",
+  "state": "MERGED",
+  "merged_at": "2026-08-21T07:03:24Z",
+  "head_ref": "cluster/mdns-bootstrap-or-join-decide"
+}

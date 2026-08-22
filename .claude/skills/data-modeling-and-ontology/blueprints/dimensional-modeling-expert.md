@@ -207,11 +207,11 @@ overnight ETL window, no rebuild cost.
   upstream raw + business vault.
 - `.claude/skills/data-modeling-and-ontology/blueprints/corporate-information-factory-expert.md`
   — Inmon rival.
-- `.claude/skills/bitemporal-modeling-expert/SKILL.md` —
+- `.claude/skills/data-modeling-and-ontology/SKILL.md` —
   the SCD2 rigourist alternative.
 - `.claude/skills/data-modeling-and-ontology/blueprints/anchor-modeling-expert.md` — 6NF
   temporal alternative.
-- `.claude/skills/normal-forms-expert/SKILL.md` — the
+- `.claude/skills/data-modeling-and-ontology/SKILL.md` — the
   normalisation lineage.
 - `.claude/skills/storage-and-query-engines/blueprints/sql-expert.md` — DDL / DML.
 - `.claude/skills/storage-and-query-engines/blueprints/catalog-expert.md` — catalog

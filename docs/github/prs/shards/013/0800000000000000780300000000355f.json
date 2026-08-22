@@ -1,0 +1,12 @@
+{
+  "pr_number": 13663,
+  "archive_path": "docs/history/pr-reviews/PR-13663-cluster-hindsight-the-lane-is-over-committed-not-hindsight-and-the-api-key-needs.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-22T11:28:31.213Z",
+  "schema_version": "v1",
+  "commit_sha": "95c1ebdd00f0cf3dbc269054ff143d68cd1d9d95",
+  "title": "cluster(hindsight): the lane is over-committed, not hindsight — and the API key needs five layers, not one",
+  "state": "MERGED",
+  "merged_at": "2026-08-22T11:27:50Z",
+  "head_ref": "shadow/hindsight-capacity-and-secret-source-2026-08-22"
+}

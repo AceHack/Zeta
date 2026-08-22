@@ -23,10 +23,32 @@
 #      times over 62 days and every `longhorn` PVC sat Pending; `command -v`
 #      resolved via /run/current-system/sw/bin, which Longhorn never sees.
 #      (2026-08-16 — see modules/longhorn-prereqs.nix FHS shim.)
+#   6. The NODE ITSELF says whether all of the above actually worked:
+#      zeta-longhorn-preflight.service (modules/longhorn-node-preflight.nix)
+#      runs at boot on every node and refuses on the console when a declared
+#      Longhorn filesystem is not mounted, iscsid is not ACTIVE, iscsi_tcp is
+#      not loaded, or a shim is missing. Asserting the unit SUCCEEDED here is
+#      what makes that guard a thing CI executes, not merely a thing CI reads:
+#      nixos/tests/longhorn-node-preflight-eval-test.nix proves it is wired in
+#      and non-vacuous, and this lane proves it can go green on a real boot.
+#   7. The kernel can create a WIREGUARD device. Cilium is the CNI, and both of
+#      its value surfaces (k8s/bootstrap/cilium-install.yaml at first boot,
+#      k8s/applications/cilium/Application.yaml at sync-wave -80) set
+#      encryption.type=wireguard + nodeEncryption=true. cilium-agent turns that
+#      into a netlink LinkAdd and, on EOPNOTSUPP, returns an error from
+#      newDaemon rather than degrading to plaintext -- so a kernel that cannot
+#      do WireGuard is a node with NO CNI at all. Nothing under nixos/ named
+#      WireGuard before 2026-08-21; it worked implicitly, via nixpkgs
+#      autoModules (CONFIG_WIREGUARD=m) plus the kernel's rtnl-link auto-load.
+#      This lane is where that stops being an assumption.
+#      (modules/cilium-wireguard-prereqs.nix)
+#   8. That node's OWN WireGuard preflight ran and passed
+#      (zeta-cilium-wg-preflight.service) -- the same
+#      eval-proves-wiring / boot-proves-green split as 6.
 #
 # Hermetic: runs in the Nix build sandbox with no internet, so (like
-# k3s-cluster-init.nix) we drop the image-pull bootstrap manifests. All four
-# assertions are local-only and need no network.
+# k3s-cluster-init.nix) we drop the image-pull bootstrap manifests. All eight
+# assertion groups are local-only and need no network.
 #
 # Run:
 #   cd full-ai-cluster
@@ -38,10 +60,15 @@ pkgs.testers.nixosTest {
   name = "k3s-control-plane-platform-fixes";
 
   nodes.server = { config, pkgs, lib, ... }: {
-    # The REAL modules that carry the fixes (control-plane uses both).
+    # The REAL modules that carry the fixes (control-plane uses all three).
     imports = [
       ../modules/k3s-server.nix       # rpfilter off + --disable=local-storage
       ../modules/longhorn-prereqs.nix # open-iscsi + iscsi_tcp + /var/lib/longhorn
+      # wireguard kernel module + wg + the boot-time preflight. Imported here
+      # rather than inherited, because this test imports the modules DIRECTLY
+      # and never goes through common.nix -- so a module wired only into
+      # common.nix would be invisible to the one lane that boots a kernel.
+      ../modules/cilium-wireguard-prereqs.nix
     ];
 
     # Hermetic sandbox: no internet -> no image pulls. k3s reaching active
@@ -82,7 +109,12 @@ pkgs.testers.nixosTest {
 
     # ── FIX 2: open-iscsi prerequisites for Longhorn ────────────────────
     server.succeed("command -v iscsiadm")                 # iscsi userspace
-    server.succeed("systemctl cat iscsid.service")        # unit configured
+    # `systemctl cat iscsid.service` used to stand here. It proves a unit FILE
+    # exists and passes on a dead daemon -- the same shape as assertion 5's
+    # `command -v`, and unable to distinguish a working iSCSI stack from the
+    # node-5b2dfa one. Longhorn needs the DAEMON, so ask about the daemon.
+    server.wait_for_unit("iscsid.service", timeout=120)
+    server.succeed("systemctl is-active --quiet iscsid.service")
     server.succeed("test -d /var/lib/longhorn")           # data path exists
     # iscsi_tcp is requested via boot.kernelModules; it must be loadable.
     server.succeed("modinfo iscsi_tcp >/dev/null 2>&1 || lsmod | grep -q iscsi_tcp")
@@ -111,6 +143,70 @@ pkgs.testers.nixosTest {
     assert "--disable=local-storage" in flags, "k3s missing --disable=local-storage"
     assert "--flannel-backend=none" in flags, "k3s missing --flannel-backend=none"
     assert "--disable-kube-proxy" in flags, "k3s missing --disable-kube-proxy"
+
+    # ── FIX 6: the node's OWN preflight ran and passed ───────────────────
+    # Diagnostics BEFORE the assertion. A wait_for_unit that times out prints
+    # nothing about why, and anything after it is unreachable once it fails --
+    # so surface the unit's own journal here, where it stays readable in the
+    # build log whichever way this goes.
+    print(server.succeed("systemctl status zeta-longhorn-preflight.service --no-pager || true"))
+    print(server.succeed(
+        "journalctl -u zeta-longhorn-preflight.service --no-pager | tail -n 40 || true"))
+
+    server.wait_for_unit("zeta-longhorn-preflight.service", timeout=180)
+    # The unit reaching `active` is the machine-readable verdict; the marker is
+    # the operator-readable one, and asserting BOTH is what stops a future
+    # edit that keeps the unit green while gutting what it checks.
+    server.succeed(
+        "journalctl -u zeta-longhorn-preflight.service --no-pager "
+        "| grep -q ZETA_LONGHORN_PREFLIGHT_OK")
+    server.fail(
+        "journalctl -u zeta-longhorn-preflight.service --no-pager "
+        "| grep -q ZETA_LONGHORN_PREFLIGHT_FAILED")
+
+    # ── FIX 7: the kernel can make the WireGuard device Cilium demands ──
+    # Cilium is the CNI here, and BOTH of its value surfaces
+    # (k8s/bootstrap/cilium-install.yaml at first boot, and
+    # k8s/applications/cilium/Application.yaml at sync-wave -80) set
+    # encryption.type=wireguard + nodeEncryption=true. cilium-agent turns that
+    # into a netlink LinkAdd for a WireGuard device and, on EOPNOTSUPP, returns
+    # an error from newDaemon rather than degrading to plaintext -- so a kernel
+    # that cannot do WireGuard is a node with NO CNI.
+    #
+    # Before this, nothing under nixos/ named WireGuard: boot.kernelModules had
+    # kvm-intel/kvm-amd/iscsi_tcp, boot.extraModulePackages was empty, and
+    # wireguard-tools existed only on the installer ISO. It worked anyway,
+    # implicitly, via nixpkgs autoModules (CONFIG_WIREGUARD=m) plus the kernel's
+    # rtnl-link auto-load. This lane is where that stops being an assumption:
+    # it boots the pinned nixos-25.11 kernel and asks.
+    server.succeed("test -d /sys/module/wireguard")        # declared, and loaded
+    server.succeed("test -x /run/current-system/sw/bin/wg")  # diagnosable on console
+
+    # The exact call cilium-agent makes. `test -d /sys/module` alone would pass
+    # on a kernel whose netlink refused the kind; this is the operation itself.
+    server.succeed("ip link add dev zeta-wgprobe-ci type wireguard")
+    server.succeed("ip link del dev zeta-wgprobe-ci")
+
+    # ── FIX 8: the node's OWN WireGuard preflight ran and passed ─────────
+    print(server.succeed("systemctl status zeta-cilium-wg-preflight.service --no-pager || true"))
+    print(server.succeed(
+        "journalctl -u zeta-cilium-wg-preflight.service --no-pager | tail -n 40 || true"))
+
+    server.wait_for_unit("zeta-cilium-wg-preflight.service", timeout=180)
+    # Unit active is the machine-readable verdict; the marker is the
+    # operator-readable one. Assert BOTH, so an edit that keeps the unit green
+    # while gutting what it checks goes red here.
+    server.succeed(
+        "journalctl -u zeta-cilium-wg-preflight.service --no-pager "
+        "| grep -q ZETA_CILIUM_WG_PREFLIGHT_OK")
+    server.fail(
+        "journalctl -u zeta-cilium-wg-preflight.service --no-pager "
+        "| grep -q ZETA_CILIUM_WG_PREFLIGHT_FAILED")
+    # NOT_REQUIRED passing would mean the derivation stopped seeing the demand
+    # the manifests still make -- green for the wrong reason.
+    server.fail(
+        "journalctl -u zeta-cilium-wg-preflight.service --no-pager "
+        "| grep -q ZETA_CILIUM_WG_PREFLIGHT_NOT_REQUIRED")
 
     # Post-mortem surface into the build log.
     print(server.succeed("iptables -t mangle -S | head -n 20 || true"))

@@ -1,0 +1,12 @@
+{
+  "pr_number": 12748,
+  "archive_path": "docs/history/pr-reviews/PR-12748-fix-memory-the-index-drift-check-measured-the-calendar-not-the-index.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-20T12:38:23.517Z",
+  "schema_version": "v1",
+  "commit_sha": "5f871da7dd66580e2b214b84988cbf317c6c341e",
+  "title": "fix(memory): the index-drift check measured the calendar, not the index",
+  "state": "MERGED",
+  "merged_at": "2026-08-20T12:37:38Z",
+  "head_ref": "fix/memory-drift-check-local-time"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 12256,
+  "archive_path": "docs/history/pr-reviews/PR-12256-fix-observe-an-attestation-now-names-what-it-attests-and-can-be-bound-to-a-key.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-19T03:34:10.654Z",
+  "schema_version": "v1",
+  "commit_sha": "db816c9d32ef1e93e894b6c5417cf923b7cee127",
+  "title": "fix(observe): an attestation now names what it attests, and can be bound to a key",
+  "state": "MERGED",
+  "merged_at": "2026-08-19T03:33:37Z",
+  "head_ref": "fix/observe-attestation-record-binding-digest-id"
+}

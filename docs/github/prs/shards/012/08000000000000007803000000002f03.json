@@ -1,0 +1,12 @@
+{
+  "pr_number": 12035,
+  "archive_path": "docs/history/pr-reviews/PR-12035-docs-security-record-heartbeat-token-boundaries-and-gate-start-failure.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-19T17:57:52.793Z",
+  "schema_version": "v1",
+  "commit_sha": "88e56e4cbde60bf80a94296328a11c4252d20834",
+  "title": "docs(security): record heartbeat token boundaries and gate-start failure",
+  "state": "MERGED",
+  "merged_at": "2026-08-19T17:56:08Z",
+  "head_ref": "docs/heartbeat-token-boundary-gate-start"
+}

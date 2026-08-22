@@ -1,0 +1,182 @@
+{
+  "$comment": [
+    "DERIVED FILE -- regenerate with:",
+    "  bun src/Core.TypeScript/hygiene/audit-observability-chain.ts --refresh",
+    "",
+    "The rendered Service surface of every chart an Alloy sink points at. It",
+    "exists because the bug that motivated it -- an Alloy sink naming Service",
+    "loki at :3100, which the loki chart does not render in SimpleScalable mode",
+    "-- is invisible to helm template, kubeconform and yamllint. All three were",
+    "green on it.",
+    "",
+    "valuesHash is the freshness key: chart + repo + version + releaseName +",
+    "the whole valuesObject of the target Application. Change any of them",
+    "without re-running --refresh and the audit fails as STALE rather than",
+    "asserting a render that no longer happens. That is what keeps this a",
+    "DERIVED fact rather than a hand-written allowlist that drifts.",
+    "",
+    "Service names and ports only. No credential material."
+  ],
+  "kubeVersion": "1.31.0",
+  "apps": {
+    "loki": {
+      "namespace": "loki",
+      "chart": "loki",
+      "repoURL": "https://grafana.github.io/helm-charts",
+      "version": "6.18.0",
+      "valuesHash": "sha256:6ad3fb76215c4d87f96421735ce969d71fdd90f8a02eb5fc99a48641f2bbfb12",
+      "services": {
+        "loki-query-scheduler-discovery": [
+          3100,
+          9095
+        ],
+        "loki-backend-headless": [
+          3100,
+          9095
+        ],
+        "loki-backend": [
+          3100,
+          9095
+        ],
+        "loki-gateway": [
+          80
+        ],
+        "loki-canary": [
+          3500
+        ],
+        "loki-read-headless": [
+          3100,
+          9095
+        ],
+        "loki-read": [
+          3100,
+          9095
+        ],
+        "loki-memberlist": [
+          7946
+        ],
+        "loki-write-headless": [
+          3100,
+          9095
+        ],
+        "loki-write": [
+          3100,
+          9095
+        ]
+      }
+    },
+    "mimir": {
+      "namespace": "mimir",
+      "chart": "mimir-distributed",
+      "repoURL": "https://grafana.github.io/helm-charts",
+      "version": "5.5.1",
+      "valuesHash": "sha256:b7544fad383923e9ff75bb7ca2ba9d3ee51106a21fb5ceb686a4dc3113becfc6",
+      "services": {
+        "mimir-alertmanager-headless": [
+          8080,
+          9095,
+          9094
+        ],
+        "mimir-alertmanager": [
+          8080,
+          9095
+        ],
+        "mimir-compactor": [
+          8080,
+          9095
+        ],
+        "mimir-distributor-headless": [
+          8080,
+          9095
+        ],
+        "mimir-distributor": [
+          8080,
+          9095
+        ],
+        "mimir-gossip-ring": [
+          7946
+        ],
+        "mimir-ingester-headless": [
+          8080,
+          9095
+        ],
+        "mimir-ingester-zone-a": [
+          8080,
+          9095
+        ],
+        "mimir-ingester-zone-b": [
+          8080,
+          9095
+        ],
+        "mimir-ingester-zone-c": [
+          8080,
+          9095
+        ],
+        "mimir-nginx": [
+          80
+        ],
+        "mimir-overrides-exporter": [
+          8080,
+          9095
+        ],
+        "mimir-querier": [
+          8080,
+          9095
+        ],
+        "mimir-query-frontend": [
+          8080,
+          9095
+        ],
+        "mimir-query-scheduler-headless": [
+          8080,
+          9095
+        ],
+        "mimir-query-scheduler": [
+          8080,
+          9095
+        ],
+        "mimir-ruler": [
+          8080
+        ],
+        "mimir-store-gateway-headless": [
+          8080,
+          9095
+        ],
+        "mimir-store-gateway-zone-a": [
+          8080,
+          9095
+        ],
+        "mimir-store-gateway-zone-b": [
+          8080,
+          9095
+        ],
+        "mimir-store-gateway-zone-c": [
+          8080,
+          9095
+        ]
+      }
+    },
+    "tempo": {
+      "namespace": "tempo",
+      "chart": "tempo",
+      "repoURL": "https://grafana.github.io/helm-charts",
+      "version": "1.18.0",
+      "valuesHash": "sha256:ec437b28e0078a7ad035f9e080a90cbf8dc7a785aa475491e337d52ca37206b7",
+      "services": {
+        "tempo": [
+          6831,
+          6832,
+          3100,
+          14268,
+          14250,
+          9411,
+          55680,
+          55681,
+          4317,
+          4318,
+          55678
+        ]
+      }
+    }
+  }
+}

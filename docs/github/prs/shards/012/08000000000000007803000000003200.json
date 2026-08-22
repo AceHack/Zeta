@@ -1,0 +1,12 @@
+{
+  "pr_number": 12800,
+  "archive_path": "docs/history/pr-reviews/PR-12800-research-the-belief-manifold-is-hyperbolic-not-spherical-cl-2-1-not-cl-4-1-and-t.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-20T15:14:25.236Z",
+  "schema_version": "v1",
+  "commit_sha": "6068ac71e72bff2c8ad9346df1f348baebb6d3a0",
+  "title": "research: the belief manifold is hyperbolic, not spherical — Cl(2,1), not Cl(4,1), and the flat rotor verdict moves with the units",
+  "state": "MERGED",
+  "merged_at": "2026-08-20T15:13:45Z",
+  "head_ref": "research/spherical-vs-flat-belief-embedding-clifford-antisybil"
+}

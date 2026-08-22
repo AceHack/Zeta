@@ -1,0 +1,12 @@
+{
+  "pr_number": 12176,
+  "archive_path": "docs/history/pr-reviews/PR-12176-measure-the-k8s-bootstrap-bug-s-u-closing-the-loop-every-bug-has-economic-value-.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-18T23:07:22.536Z",
+  "schema_version": "v1",
+  "commit_sha": "0d6264006c6ab78e6b181a376912ee91352d2a3a",
+  "title": "measure: the k8s bootstrap bug's ΔU — closing the loop every-bug-has-economic-value opens",
+  "state": "MERGED",
+  "merged_at": "2026-08-18T23:06:36Z",
+  "head_ref": "measure-k8s"
+}

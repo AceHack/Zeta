@@ -126,7 +126,12 @@ tools/tla/specs/.tlacache/
 # bun + TypeScript tooling — post-setup scripting surface per
 # docs/DECISIONS/2026-04-20-tools-scripting-language.md. The
 # bun.lock file IS committed; node_modules is not.
+# Trailing slash matches a DIRECTORY only. A symlink named `node_modules`
+# slips past it -- which is exactly how one pointing at an agent scratch
+# dir (/tmp/zeta-work/node_modules) reached a PR and broke every npm
+# install on the runner. Both forms are listed so neither shape lands.
 node_modules/
+node_modules
 
 # Playwright MCP session artifacts — browser automation
 # snapshots captured during MCP-tool use. Ephemeral; one set
@@ -286,3 +291,23 @@ src/Core.Agda/_build/
 # and took `gate (required)` down with it. `arc-harness.ts` states the intent plainly:
 # "Ensure 'data/ARC-AGI' is cloned." Ignored so it cannot be re-added by accident.
 data/ARC-AGI/
+
+# `rendered-storage-claims.ts` chart cache. It `helm pull`s each Application's
+# chart at its pinned targetRevision into `<repo>/.helm-render-cache/` (a
+# `mkdirSync` at the repo root, and the path is not configurable away by
+# default), so any run of `--write-snapshot` or the live audit leaves 4-5 MB of
+# `.tgz` archives plus rendered values files untracked in the tree. They are
+# BINARY, regenerable from the pins, and they are the *input* to the render —
+# never the evidence, which is the text snapshot beside the checker. Ignored so
+# a `git add -A` after running the audit cannot commit a chart tarball into the
+# proof lineage (.claude/rules/no-binary-in-proof-lineage.md).
+.helm-render-cache/
+
+# Per-agent scratch, kept INSIDE the clone on purpose.
+#
+# Two agents lost work on 2026-08-21 to collisions in bare `/tmp`: shared paths
+# there are not namespaced by clone, so two loops writing the same filename race
+# and the loser never finds out. Scratch belongs beside the work it is scratch
+# FOR -- one directory per clone, ignored so it can never be staged, and deleted
+# with the clone rather than outliving it in a shared tmpdir.
+.shadow-scratch/

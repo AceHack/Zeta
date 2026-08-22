@@ -132,7 +132,7 @@ treats them as regressions.
 
 - `dotnet build Zeta.sln -c Release` if analyzer is wired.
 - OR read the SonarLint VS Code problem pane export.
-- OR read `tools/audit-packages.ts`-adjacent lint output.
+- OR read `src/Core.TypeScript/audit-packages/audit-packages.ts`-adjacent lint output.
 
 Produce a list: `(file, line, rule code, brief message)`.
 
@@ -223,7 +223,7 @@ For each row in the queue:
   path-(a) fixes
 - `.claude/skills/languages-and-build/blueprints/fsharp-expert.md` — F# idioms
   when the rule fires on F# via analyzer cross-language
-- `.claude/skills/harsh-critic/SKILL.md` — review floor on
+- `.claude/skills/languages-and-build/SKILL.md` — review floor on
   path-(a) refactors
 - `Directory.Build.props` — the CLI wire-in flip point
 - `docs/CONFLICT-RESOLUTION.md` — conflict protocol if a

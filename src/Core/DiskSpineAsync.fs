@@ -42,6 +42,27 @@ type InMemoryAsyncBackingStore<'K when 'K : comparison>() =
             lock store (fun () -> store.Remove hash |> ignore)
             ValueTask.CompletedTask
 
+    /// **The declaration, beside the operations it classifies** (`ErasureClass`).
+    /// Same representation choice as `InMemoryBackingStore`, so the same two classes: `SaveAsync`
+    /// drops the `level` argument, `ReleaseAsync` drops the entry.
+    interface IErasureDeclaring with
+        member _.ErasureProfiles =
+            [ { Representation = "InMemoryAsyncBackingStore"
+                Operation = "IAsyncBackingStore.SaveAsync"
+                Observation = "the store's content function (LoadAsync over every live handle)"
+                RecoveryChannel =
+                    "the batch, by its content address; not whether it was already present — an \
+                     idempotent upsert maps two pre-states onto one post-state"
+                Classification = ErasureClass.ThermodynamicClass.Erasing
+                Evidence = ErasureClass.Evidence.ExhaustiveSweep("every subset of 3 reference batches; level pinned at 0 and the saved batch pinned", 2, 1_000_000L) }
+
+              { Representation = "InMemoryAsyncBackingStore"
+                Operation = "IAsyncBackingStore.ReleaseAsync"
+                Observation = "the store's content function (LoadAsync over every live handle)"
+                RecoveryChannel = "none — the entry is removed from the only dictionary that holds it"
+                Classification = ErasureClass.ThermodynamicClass.Erasing
+                Evidence = ErasureClass.Evidence.ExhaustiveSweep("every subset of 3 reference batches; the released handle pinned", 2, 1_000_000L) } ]
+
 
 /// Disk-backed async store. Mirrors `DiskBackingStore` exactly — same spill
 /// quota, path canonicalisation + traversal/ADS guards, and the same lock
@@ -153,6 +174,9 @@ type DiskAsyncBackingStore<'K when 'K : comparison>
             Some (path, bytes)
         | _ -> None
 
+    /// Thermodynamic class: REVERSIBLE — identical reasoning to `DiskBackingStore`. The spill
+    /// writes the batch out and records its path before dropping the heap entry, so `LoadAsync`
+    /// returns it byte-identical. "Eviction" names when it happens, not what it costs.
     let evictIfOverQuotaLocked () : ResizeArray<string * byte array> =
         let writes = ResizeArray<string * byte array>()
         if heapBytes > inMemoryQuotaBytes then
@@ -235,6 +259,46 @@ type DiskAsyncBackingStore<'K when 'K : comparison>
                     Console.Error.WriteLine $"DiskAsyncBackingStore.ReleaseAsync: File.Delete %s{p} failed: %s{ex.Message}"
             | ValueNone -> ()
             ValueTask.CompletedTask
+
+    /// **The declaration, beside the operations it classifies** (`ErasureClass`).
+    /// The async twin of `DiskBackingStore`, and the classes must match it row for row — if they
+    /// ever diverge, one of the two implementations has drifted from the other and the law pack
+    /// says which.
+    interface IErasureDeclaring with
+        member _.ErasureProfiles =
+            [ { Representation = "DiskAsyncBackingStore"
+                Operation = "IAsyncBackingStore.SaveAsync"
+                Observation = "the store's content function (LoadAsync over every live handle)"
+                RecoveryChannel =
+                    "the batch, by its content address; not whether it was already present. This \
+                     row, not the eviction row below, is where SaveAsync's bits actually go"
+                Classification = ErasureClass.ThermodynamicClass.Erasing
+                Evidence = ErasureClass.Evidence.BoundedModelSweep("every subset of 3 reference batches; level pinned at 0 and the saved batch pinned; quota pinned at 1 byte; real temp directory", 2, 1_000_000L) }
+
+              { Representation = "DiskAsyncBackingStore"
+                Operation = "IAsyncBackingStore.SaveAsync (quota eviction via evictIfOverQuotaLocked)"
+                Observation = "the store's content function (LoadAsync over every live handle)"
+                RecoveryChannel =
+                    "the whole batch — the spill writes the bytes to the workspace file and records \
+                     the path before removing the heap entry, so LoadAsync returns it unchanged"
+                Classification = ErasureClass.ThermodynamicClass.Reversible
+                Evidence = ErasureClass.Evidence.BoundedModelSweep("every subset of 3 reference batches saved under a 1-byte quota, so every save spills; real temp directory", 1, 0L) }
+
+              { Representation = "DiskAsyncBackingStore"
+                Operation = "IAsyncBackingStore.ReleaseAsync"
+                Observation = "the store's content function (LoadAsync over every live handle)"
+                RecoveryChannel = "none — hot entry, path entry and both files are removed together"
+                Classification = ErasureClass.ThermodynamicClass.Erasing
+                Evidence = ErasureClass.Evidence.BoundedModelSweep("every subset of 3 reference batches; the released handle pinned; quota pinned at 1 byte; real temp directory", 2, 1_000_000L) }
+
+              { Representation = "DiskAsyncBackingStore"
+                Operation = "IAsyncBackingStore.ReleaseAsync"
+                Observation = "the storage medium after unlink"
+                RecoveryChannel = "unknown — the same medium-level hole as DiskBackingStore and DiskDeltaLog"
+                Classification = ErasureClass.ThermodynamicClass.Unmeasured
+                Evidence =
+                    ErasureClass.Evidence.NoAdmissibleMeasurement
+                        "no sweep run from inside this process can observe the medium after an unlink" } ]
 
 
 /// Async cascade-merge spine over an `IAsyncBackingStore`. The merge algorithm is

@@ -50,18 +50,45 @@ spec:
                 access_key_id: zeta-blob-store
                 secret_access_key: zeta-blob-store-dev-secret
                 insecure: true
+        # ALL THREE VOLUMES BELOW ARE SIZE CUTS, 50Gi -> 16Gi, WITH NO POD CUT.
+        # None of these pod counts is ours to cut anyway: mimir-distributed
+        # 5.5.1 renders 3 ingesters and 3 store-gateways from zone-aware
+        # replication defaults this file never mentions (values.yaml
+        # ingester.replicas=3 / store_gateway.replicas=1, both zone-aware over
+        # 3 zones; templates/_helpers.tpl:568 gives ceil(replicas/zones) per
+        # zone), so the real cost of these three lines is 16x3 + 16x3 + 16x1 =
+        # 112 GiB, not 48. That under-count is recorded in
+        # full-ai-cluster/k8s/storage-profiles.json, which carries the pod
+        # counts with their chart evidence.
+        #
+        # NO RETENTION GOVERNOR IS NEEDED HERE, and that is a real answer rather
+        # than an omission: none of these volumes holds history. Long-term
+        # blocks live in object storage (blocks_storage.backend: s3 above ->
+        # in-cluster MinIO), so all three are WORKING SPACE and shrinking them
+        # costs headroom, never data:
+        #   ingester        the in-flight head block before it ships to S3. At
+        #                   16Gi an upload or compaction backlog fills the
+        #                   volume sooner and writes are rejected until it
+        #                   drains. Nothing already shipped is affected.
+        #   store_gateway   a CACHE of block index-headers fetched from object
+        #                   storage. Pure latency: long-range queries re-fetch.
+        #   compactor       compaction scratch. If a tenant's block set outgrows
+        #                   it, compaction stalls and query performance decays;
+        #                   the blocks stay in object storage, uncompacted.
+        # The bound that DOES govern history is MinIO's, and it is not on this
+        # StorageClass.
         ingester:
           persistentVolume:
             storageClass: longhorn
-            size: 50Gi
+            size: 16Gi
         store_gateway:
           persistentVolume:
             storageClass: longhorn
-            size: 50Gi
+            size: 16Gi
         compactor:
           persistentVolume:
             storageClass: longhorn
-            size: 50Gi
+            size: 16Gi
   destination:
     server: https://kubernetes.default.svc
     namespace: mimir

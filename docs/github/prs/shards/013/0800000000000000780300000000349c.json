@@ -1,0 +1,12 @@
+{
+  "pr_number": 13468,
+  "archive_path": "docs/history/pr-reviews/PR-13468-research-smartcard-hsm-secp256k1-is-unconfirmed-while-yubihsm-2-is-measured.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-22T00:55:14.604Z",
+  "schema_version": "v1",
+  "commit_sha": "45fa88a5b1a07800e29f30a6fba6fd464334e6b2",
+  "title": "research: SmartCard-HSM secp256k1 is UNCONFIRMED while YubiHSM 2 is measured",
+  "state": "MERGED",
+  "merged_at": "2026-08-22T00:54:36Z",
+  "head_ref": "research/smartcard-hsm-secp256k1-unconfirmed"
+}

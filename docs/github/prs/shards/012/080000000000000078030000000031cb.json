@@ -1,0 +1,12 @@
+{
+  "pr_number": 12747,
+  "archive_path": "docs/history/pr-reviews/PR-12747-fix-workitems-resolve-17-auto-vivify-dangling-refs-across-five-items.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-20T12:36:30.773Z",
+  "schema_version": "v1",
+  "commit_sha": "f8729cb06c48bdf4fa9ceda274ab3e2001154794",
+  "title": "fix(workitems): resolve 17 auto-vivify dangling refs across five items",
+  "state": "MERGED",
+  "merged_at": "2026-08-20T12:35:50Z",
+  "head_ref": "otto/fix-auto-vivify-dangling-refs-2026-08-20"
+}

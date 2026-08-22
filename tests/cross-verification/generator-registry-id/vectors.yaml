@@ -35,3 +35,7 @@ vectors:
     name: zetaid.glyph
     gen_version: 1
     result: "f42317cf4d9df65d1cf4ff31c509f484"
+  - id: zetaid.glyph@2
+    name: zetaid.glyph
+    gen_version: 2
+    result: "f42314cf4d9df1441cf5025a4509f484"

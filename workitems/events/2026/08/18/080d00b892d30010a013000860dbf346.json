@@ -1,0 +1,14 @@
+{
+  "id": "080d00b892d30010a013000860dbf346",
+  "at": "2026-08-18T22:51:13.888Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M0BH4PK0087G0R00192FRHW",
+    "type": "task",
+    "title": "Taxonomy: five mechanisms by which a check's domain diverges from its apparent scope",
+    "slug": "taxonomy-five-mechanisms-by-which-a-check-s-domain-diverges",
+    "priority": "P2",
+    "filename": "081M0BH4PK0087G0R00192FRHW-taxonomy-five-mechanisms-by-which-a-check-s-domain-diverges.md"
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 13009,
+  "archive_path": "docs/history/pr-reviews/PR-13009-research-vault-ce-cannot-take-hsm-or-tpm-at-all-openbao-can-free-and-the-cardcon.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-21T00:51:58.214Z",
+  "schema_version": "v1",
+  "commit_sha": "f7447cc9ac18deebc02e78f328f7e9ad61b3b8bf",
+  "title": "research: Vault CE cannot take HSM or TPM at all — OpenBao can, free; and the CardContact lead paid off",
+  "state": "MERGED",
+  "merged_at": "2026-08-21T00:51:12Z",
+  "head_ref": "research/vault-openbao-and-hsm-procurement"
+}

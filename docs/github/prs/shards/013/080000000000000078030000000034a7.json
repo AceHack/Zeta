@@ -1,0 +1,12 @@
+{
+  "pr_number": 13479,
+  "archive_path": "docs/history/pr-reviews/PR-13479-design-hsm-n-of-m-does-not-dilute-the-seal-risk-by-itself-dual-vendor-cannot-liv.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-22T01:12:06.254Z",
+  "schema_version": "v1",
+  "commit_sha": "6c59358ec4e2b311e96f4a2699d2cec05dc94434",
+  "title": "design(hsm): n-of-m does not dilute the seal risk by itself, dual-vendor cannot live at the seal, and DKEK is the third state between exportable and not",
+  "state": "MERGED",
+  "merged_at": "2026-08-22T01:11:26Z",
+  "head_ref": "shadow/dual-vendor-hsm-and-n-of-m"
+}

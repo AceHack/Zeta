@@ -14,6 +14,7 @@
 import { describe, expect, test } from "bun:test";
 import { readFileSync, existsSync, readdirSync } from "node:fs";
 import { join } from "node:path";
+import { stateMember } from "./state-du.ts";
 
 const REPO_ROOT = join(import.meta.dir, "..", "..", "..");
 const SITE = join(REPO_ROOT, "docs", "design", "root-site-iris");
@@ -21,8 +22,9 @@ const DS_DIR = join(SITE, "_ds");
 
 /** The design-system directory is uuid-suffixed; find it rather than hardcoding the uuid. */
 function designSystemDir(): string {
-  const entries = readdirSync(DS_DIR, { withFileTypes: true })
-    .filter((e) => e.isDirectory() && e.name.startsWith("design-system-"));
+  const entries = readdirSync(DS_DIR, { withFileTypes: true }).filter(
+    (e) => e.isDirectory() && e.name.startsWith("design-system-"),
+  );
   expect(entries.length).toBeGreaterThan(0);
   return join(DS_DIR, entries[0]!.name);
 }
@@ -72,7 +74,11 @@ describe("the fail-safe default — unknown reads cold, never live", () => {
     // Cascade order is the mechanism, not a nicety: an unobserved thing must read violet whatever
     // its nominal state, because "we did not measure" is a different claim from "we measured idle".
     const css = readFileSync(STATE_CSS, "utf8");
-    const lastStatus = Math.max(...["live", "stale", "cold", "heat"].map((s) => css.indexOf(`[data-state="${s}"]  { --state`)).map((i) => (i < 0 ? css.indexOf(`[data-state=`) : i)));
+    const lastStatus = Math.max(
+      ...["live", "stale", "cold", "heat"]
+        .map((s) => css.indexOf(`[data-state="${s}"]  { --state`))
+        .map((i) => (i < 0 ? css.indexOf(`[data-state=`) : i)),
+    );
     expect(css.indexOf('[data-observed="false"]')).toBeGreaterThan(lastStatus);
   });
 });
@@ -116,10 +122,7 @@ describe("blur is frost ONLY — an absence is hatched, never blurred", () => {
     const frostBlock = css.slice(css.indexOf('[data-withheld="frost"]'));
     expect(frostBlock).toMatch(/filter:\s*blur/);
 
-    const hatchBlock = css.slice(
-      css.indexOf('[data-withheld="unobserved"]'),
-      css.indexOf('[data-withheld="frost"]'),
-    );
+    const hatchBlock = css.slice(css.indexOf('[data-withheld="unobserved"]'), css.indexOf('[data-withheld="frost"]'));
     expect(hatchBlock).toContain("repeating-linear-gradient");
     expect(hatchBlock).not.toMatch(/filter:\s*blur/);
   });
@@ -162,7 +165,7 @@ describe("Settlement consumes the DU rather than computing colour", () => {
     // the shipped DU at the boundary instead of leaking into markup. `?? "cold"` is the
     // fail-safe: an unmapped legacy name reads cold, never live.
     const html = readFileSync(SETTLEMENT, "utf8");
-    expect(html).toContain('const STATE = {');
+    expect(html).toContain("const STATE = {");
     expect(html).toMatch(/active:\s*"live"/);
     expect(html).toMatch(/attention:\s*"heat"/);
     expect(html).toMatch(/\?\?\s*"cold"/);
@@ -180,9 +183,11 @@ describe("Settlement consumes the DU rather than computing colour", () => {
   test("the sealed mark is the glyph vocabulary, not an emoji", () => {
     // Emoji render at platform-dependent size, weight and COLOUR — which defeats a DU whose whole
     // point is that colour is controlled in one place.
+    // Reads the mark from the DU rather than restating it: a hardcoded glyph here is a second
+    // vocabulary, and it is exactly what let the 2026-08-19 reassignment be a four-file change.
     const html = readFileSync(SETTLEMENT, "utf8");
     expect(html).not.toContain("🔒");
-    expect(html).toContain("◍");
+    expect(html).toContain(stateMember("sealed")!.glyph);
   });
 
   test("the pulse hook exists for the CSS motion rule to bite on", () => {

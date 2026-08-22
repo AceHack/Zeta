@@ -33,6 +33,22 @@
 # UNVERIFIED: this module has not been evaluated by a `nixos-install` or a
 # `nixos-rebuild` in this change. What is checked is the file path contract
 # against `zeta-install.sh` and the option name against `k3s-agent.nix`.
+#
+# MEASURED 2026-08-21 (Determinate Nix 3.21.0 / Nix 2.34.6) — THIS MODULE IS A
+# NO-OP UNDER PURE EVAL, SILENTLY:
+#
+#     builtins.pathExists "<absolute path>"  in pure eval -> false, no error
+#     builtins.readFile   "<absolute path>"  in pure eval -> error, loud
+#
+# A flake ref evaluates pure by DEFAULT. Because the read below is guarded by
+# `pathExists`, a pure `nixos-rebuild switch` against the flake ref does not
+# fail — it takes the "no file, keep the default" branch, and `services.k3s.serverAddr`
+# reverts to `k3s-agent.nix`'s mkDefault `https://control-plane:6443`. The node
+# stops joining whatever it was flashed to join, with nothing in the output to
+# say so. `zeta-install.sh` passes `--impure` to `nixos-install`; every
+# `nixos-rebuild` string in this repo now passes it too, and
+# `src/Core.TypeScript/hygiene/lint-nixos-rebuild-needs-impure.ts` is the check
+# that keeps it true.
 
 { config, lib, ... }:
 

@@ -1,0 +1,14 @@
+{
+  "id": "080d012ef5fb0810a0130008c02a5495",
+  "at": "2026-08-21T19:49:10.113Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M0JXXFV0087G0R001PGEEM4",
+    "type": "task",
+    "title": "Boot the deferred ArgoCD Applications: establish each one's real blocker and land the cheap ones",
+    "slug": "boot-the-deferred-argocd-applications-establish-each-one-s-r",
+    "priority": "P2",
+    "filename": "081M0JXXFV0087G0R001PGEEM4-boot-the-deferred-argocd-applications-establish-each-one-s-r.md"
+  }
+}

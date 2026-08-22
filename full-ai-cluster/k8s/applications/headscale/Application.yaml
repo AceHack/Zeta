@@ -21,7 +21,7 @@ apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
   annotations:
-    argocd.argoproj.io/sync-wave: "1"   # after core infra (longhorn/cilium) at wave 0
+    argocd.argoproj.io/sync-wave: "1" # after core infra (longhorn/cilium) at wave 0
   name: headscale
   namespace: argocd
   finalizers: [ resources-finalizer.argocd.argoproj.io ]
@@ -34,21 +34,88 @@ spec:
     helm:
       releaseName: headscale
       valuesObject:
+        # `config`, NOT `data`, AND `accessMode` IS REQUIRED -- both halves
+        # MEASURED 2026-08-21 by `helm template` against headscale 0.4.0.
+        #
+        # WHY THIS APP WOULD NOT RENDER. `persistence.data` was passed straight
+        # to the bjw-s `common` library, whose PVC blueprint does
+        # `required "accessMode is required for PVC headscale-data"`
+        # (charts/common/templates/classes/_pvc.tpl:35). No default supplies it,
+        # so the chart FAILED to template. That failure is not a checker
+        # artefact -- ArgoCD runs the same templater and would fail identically,
+        # so this Application has never been able to sync.
+        #
+        # WHY THE KEY IS RENAMED RATHER THAN JUST GIVEN AN accessMode. Adding
+        # `accessMode` alone renders, and renders a 3Gi longhorn volume mounted
+        # at `/data` THAT NOTHING WRITES TO. The chart hard-codes every durable
+        # path into `/etc/headscale` (templates/common.yaml sets
+        # HEADSCALE_DB_PATH=/etc/headscale/db.sqlite,
+        # HEADSCALE_PRIVATE_KEY_PATH=/etc/headscale/private.key,
+        # HEADSCALE_NOISE_PRIVATE_KEY_PATH=/etc/headscale/noise_private.key),
+        # and `/etc/headscale` is the `config` persistence item -- disabled by
+        # default (values.yaml:47-52), i.e. the container's own writable layer.
+        # So the pre-fix manifest declared 3 GiB of replicated storage for an
+        # empty directory while the node database and BOTH private keys sat on
+        # ephemeral disk: every pod restart mints new keys and every enrolled
+        # node falls off the tailnet. `config` is the chart's own key for that
+        # path (mountPath: /etc/headscale), so enabling it is the fix, and the
+        # rendered PVC is `headscale-config`.
+        #
+        # It also repairs the init container: its config.yaml volumeMount is
+        # guarded by `if .Values.persistence.config.enabled`, so with `data` it
+        # rendered `volumeMounts: null` and wrote /etc/headscale/config.yaml
+        # into its OWN layer, where the main container never saw it.
         persistence:
-          data:
+          config:
             enabled: true
+            type: pvc
+            # No default exists; the chart refuses to template without it. One
+            # pod, one writer -- RWO, not RWX.
+            accessMode: ReadWriteOnce
             storageClass: longhorn
-            size: 5Gi
-        config:
-          # PLACEHOLDER — set to the real ACME subdomain before exposing (see header TODO).
-          server_url: https://headscale.zeta.local
-          listen_addr: 0.0.0.0:8080
-          metrics_listen_addr: 0.0.0.0:9090
-          # Tailnet address ranges handed to nodes (headscale defaults; adjust if they collide
-          # with the 10gbe/Reticulum fabric).
-          prefixes:
-            v4: 100.64.0.0/10
-            v6: fd7a:115c:a1e0::/48
+            # SIZE CUT, NOT A POD CUT: 5Gi -> 3Gi, one pod either way. A sqlite
+            # node database; 3Gi holds control-plane state for far more nodes
+            # than this cluster will ever have, so this row is bookkeeping in
+            # the profile total rather than a meaningful reduction.
+            size: 3Gi
+        # `env:`, NOT `config:` — MEASURED 2026-08-22, and this block was 100%
+        # INERT before. headscale 0.4.0's values.yaml has exactly six top-level
+        # keys (image, env, service, ingress, persistence, postgresql); there is
+        # no `config` key, and nothing in the chart reads one. Rendering the
+        # Application against its own valuesObject produced ZERO occurrences of
+        # the string `server_url` anywhere in the output.
+        #
+        # WHAT THAT COST. `HEADSCALE_SERVER_URL` is emitted by the chart only
+        # inside `{{- if .Values.ingress.main.enabled }}` (templates/common.yaml:30-32),
+        # and this Application does not enable an Ingress — so the container was
+        # started with no server_url at all, from any source, while the manifest
+        # read as if it had one. The pod was CrashLoopBackOff (12 restarts) in the
+        # included-proof lane. Same defect class as hindsight's
+        # `postgresql.primary.*` and nats' top-level `cluster:`: a declaration
+        # that governs nothing, and reads exactly like one that governs something.
+        #
+        # `env` IS THE CHART'S OWN DOCUMENTED PATH. Its values.yaml ships
+        # `env: {HEADSCALE_DNS_CONFIG_BASE_DOMAIN: example.com}`, and the init
+        # container it renders says so in the config file it writes: "Please use
+        # environment variables to configure Headscale. Flatten object keys using
+        # `_`, prefix with `HEADSCALE_`."
+        #
+        # THE THREE OTHER KEYS ARE NOT PORTED, because the chart already supplies
+        # them and they were inert AND redundant:
+        #   listen_addr / metrics_listen_addr — hardcoded from
+        #     `service.main.ports.{http,metrics}.port`, i.e. 0.0.0.0:8080 and
+        #     0.0.0.0:9090, exactly what this block asked for.
+        #   prefixes                          — hardcoded to
+        #     `HEADSCALE_IP_PREFIXES: "fd7a:115c:a1e0::/48 100.64.0.0/10"`, the
+        #     same two ranges. Re-declaring them here would put a second copy of
+        #     a value we do not own next to the chart's, free to drift.
+        env:
+          # PLACEHOLDER — set to the real ACME subdomain before exposing (see
+          # header TODO). The VALUE is unchanged from what this manifest always
+          # declared; what changed is that it now reaches the container. It is
+          # advertised to clients rather than dialled at boot, so headscale
+          # starts with it whether or not anything serves that name yet.
+          HEADSCALE_SERVER_URL: https://headscale.zeta.local
   destination:
     server: https://kubernetes.default.svc
     namespace: headscale

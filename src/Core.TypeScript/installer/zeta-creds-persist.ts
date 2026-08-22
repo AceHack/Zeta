@@ -33,11 +33,16 @@ import { encrypt } from "./zeta-creds-crypto";
 import { DEFAULT_HANDLERS, resolveBakeCred } from "./zeta-cred-handlers";
 import { encodeBundle, serializeEnvelope, type CredBundle } from "./zeta-creds-envelope";
 import { DEFAULT_MANIFEST } from "./zeta-creds-manifest";
-import { selectCliBindingMaterial } from "./installer-binding-cli.ts";
+import {
+  selectCliBindingMaterial,
+  bindingFactorSidecarPath,
+  type PersistBindingFactorKind,
+} from "./installer-binding-cli.ts";
 
 interface Args {
   readonly usbUuid: string | null;
   readonly usbISerial: string | null;
+  readonly bindingFactor: PersistBindingFactorKind;
   readonly bindingMaterial: string;
   readonly output: string;
   readonly passphrase: string;
@@ -130,6 +135,7 @@ export function parseArgs(argv: readonly string[], env: NodeJS.ProcessEnv): Args
   return {
     usbUuid,
     usbISerial,
+    bindingFactor: binding.factor,
     bindingMaterial: binding.material,
     output,
     passphrase,
@@ -173,6 +179,12 @@ export function buildBlob(bundle: CredBundle, bindingMaterial: string, passphras
   return serializeEnvelope(env);
 }
 
+/** Blob + factor sidecar. Sidecar is kind only; restore must not guess UUID. */
+export function writePersistOutputs(output: string, blob: Buffer, bindingFactor: string): void {
+  writeFileSync(output, blob);
+  writeFileSync(bindingFactorSidecarPath(output), `${bindingFactor}\n`);
+}
+
 async function main(): Promise<number> {
   const argv = process.argv.slice(2);
   const parsed = parseArgs(argv, process.env);
@@ -186,14 +198,16 @@ async function main(): Promise<number> {
     return 3;
   }
   const blob = buildBlob(bundle, parsed.bindingMaterial, parsed.passphrase);
+  const factorPath = bindingFactorSidecarPath(parsed.output);
   try {
-    writeFileSync(parsed.output, blob);
+    writePersistOutputs(parsed.output, blob, parsed.bindingFactor);
   } catch (err) {
     const msg = err instanceof Error ? err.message : String(err);
     console.error(`zeta-creds-persist: write to ${parsed.output} failed: ${msg}`);
     return 4;
   }
   console.log(`zeta-creds-persist: wrote ${blob.length} bytes to ${parsed.output}`);
+  console.log(`zeta-creds-persist: binding-factor ${parsed.bindingFactor} -> ${factorPath}`);
   console.log(`  globalCreds: ${Object.keys(bundle.globalCreds).join(", ") || "(none)"}`);
   for (const [persona, creds] of Object.entries(bundle.personaCreds)) {
     console.log(`  personaCreds[${persona}]: ${Object.keys(creds).join(", ")}`);

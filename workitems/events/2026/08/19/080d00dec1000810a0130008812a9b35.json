@@ -1,0 +1,14 @@
+{
+  "id": "080d00dec1000810a0130008812a9b35",
+  "at": "2026-08-19T21:05:43.937Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M0DXG800087G0R0028KCZP1",
+    "type": "task",
+    "title": "Test the CHIP-8 to CHIP-9 bridge: name the morphism, build the non-morphism control, measure lesson transfer",
+    "slug": "test-the-chip-8-to-chip-9-bridge-name-the-morphism-build-the",
+    "priority": "P2",
+    "filename": "081M0DXG800087G0R0028KCZP1-test-the-chip-8-to-chip-9-bridge-name-the-morphism-build-the.md"
+  }
+}

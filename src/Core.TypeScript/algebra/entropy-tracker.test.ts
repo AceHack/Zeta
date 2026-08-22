@@ -1,6 +1,6 @@
 import { describe, test, expect } from "bun:test";
 import {
-  createEntropyTracker, auditEntropyLedger, accountFerryCommit,
+  createEntropyTracker, auditEntropyLedger, accountFerryCommit, readHeat,
   LANDAUER_FLOOR_PER_BIT,
 } from "./entropy-tracker";
 
@@ -244,5 +244,79 @@ describe("entropy-tracker — ferry commit accounting", () => {
     const instant = accountFerryCommit(10, 0);
     expect(instant.finiteTimeExcess).toBe(Infinity);
     expect(instant.totalHeat).toBe(Infinity);
+  });
+});
+
+// ═══ The third door: `unmeasured` — an unknown cost is not a zero cost ══════
+//
+// Before this, the tracker could say "pay k" and "pay nothing, it is a bijection", and had no way
+// at all to say "nobody has measured this one". A caller facing an unswept operation therefore had
+// to charge an invented number or charge nothing — and charging nothing is the closed-ledger free
+// lunch the module header calls a demon.
+//
+// The property under test is that `unmeasured()` and `permutation()` are DISTINGUISHABLE. Both
+// move zero bits; only one of them is a claim that zero is correct.
+
+describe("unmeasured — the hole, not the zero", () => {
+  test("a permutation and an unmeasured operation both move zero bits and are NOT the same reading", () => {
+    const bijection = createEntropyTracker();
+    bijection.permutation();
+
+    const unknown = createEntropyTracker();
+    unknown.unmeasured("nobody has swept QuorumAlgebra.join's conditional H(A|B)");
+
+    // Same heat…
+    expect(readHeat(bijection).bitsErased).toBe(0);
+    expect(readHeat(unknown).bitsErased).toBe(0);
+    // …opposite meaning, and the difference is in the value a caller receives, not in a side
+    // channel it may skip reading. If `unmeasured` were a no-op these two would be equal.
+    expect(readHeat(bijection).complete).toBe(true);
+    expect(readHeat(unknown).complete).toBe(false);
+    expect(readHeat(bijection)).not.toEqual(readHeat(unknown));
+  });
+
+  test("the measured charge survives beside the hole — refusing the unknown is not discarding the known", () => {
+    const t = createEntropyTracker();
+    t.branch();
+    t.branch();
+    t.measure(2);
+    t.unmeasured("compaction on a backend that declares no erasure profile");
+
+    const reading = readHeat(t);
+    expect(reading.bitsErased).toBe(2); // the real charge is still there
+    expect(reading.complete).toBe(false); // and it is explicitly a LOWER BOUND
+    expect(reading.holes).toEqual(["compaction on a backend that declares no erasure profile"]);
+  });
+
+  test("the hole set is keyed and the invocation count is not — idempotent identity, cumulative use", () => {
+    const t = createEntropyTracker();
+    t.unmeasured("same hole");
+    t.unmeasured("same hole");
+    t.unmeasured("a different hole");
+
+    const audit = auditEntropyLedger(t);
+    expect(audit.unmeasuredOperations).toBe(3);
+    expect(audit.unmeasuredReasons).toEqual(["same hole", "a different hole"]);
+    expect(audit.chargeComplete).toBe(false);
+  });
+
+  test("a hole with no written reason is recorded as a hole AND as a defect, never dropped", () => {
+    const t = createEntropyTracker();
+    t.unmeasured("   ");
+    const audit = auditEntropyLedger(t);
+    expect(audit.unmeasuredOperations).toBe(1);
+    expect(audit.chargeComplete).toBe(false);
+    expect(audit.unmeasuredReasons[0]).toContain("no reason written");
+  });
+
+  test("chargeComplete is sticky across a fresh charge, and cleared only by reset", () => {
+    const t = createEntropyTracker();
+    t.unmeasured("unknown");
+    t.branch();
+    t.measure(1);
+    expect(auditEntropyLedger(t).chargeComplete).toBe(false);
+    t.reset();
+    expect(auditEntropyLedger(t).chargeComplete).toBe(true);
+    expect(readHeat(t).holes).toEqual([]);
   });
 });

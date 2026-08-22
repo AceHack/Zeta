@@ -54,7 +54,7 @@ statement honest.
   preserving operators; the tensor is point-wise pairing. `z⁻¹`
   is a strong monoidal endo-functor; `D` and `I` are natural
   transformations (see `openspec/specs/operator-algebra/
-  spec.md` and `tools/lean4/Lean4/DbspChainRule.lean` for the
+  spec.md` and `src/Core.Lean4/Lean4/DbspChainRule.lean` for the
   working laws).
 - **ZSet as a free abelian-group functor.** The assignment
   `X ↦ ZSet[X]` is the free-abelian-group functor on `Set`,
@@ -144,7 +144,7 @@ re-deriving the category from scratch.
   tool-routing authority.
 - `.claude/skills/streaming-and-execution/blueprints/algebra-owner.md` — Zeta operator
   algebra authority.
-- `tools/lean4/Lean4/DbspChainRule.lean` — live categorical
+- `src/Core.Lean4/Lean4/DbspChainRule.lean` — live categorical
   proof surface (chain rule, telescoping induction).
 - `openspec/specs/operator-algebra/spec.md` — operator laws
   in behavioural form.

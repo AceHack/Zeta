@@ -44,17 +44,12 @@ import {
 } from "../zflash/test-harness/prepare-boot-image";
 import { validateSelfRegCiCoherent } from "./self-reg-serial.ts";
 import { QEMU_USB_TEST_SERIAL, qemuUsbStorageDeviceArg } from "../installer/qemu-usb-storage.ts";
+import { UEFI_KEYFILE_SERIAL } from "../installer/uefi-keyfile-esp.ts";
 import { USB_ISERIAL_SERIAL } from "../installer/usb-iserial-probe.ts";
-import {
-  firstSessionPhase3Enabled,
-  phase3BootMarkersSatisfied,
-} from "./qemu-first-session-phase3.ts";
+import { firstSessionPhase3Enabled, phase3BootMarkersSatisfied } from "./qemu-first-session-phase3.ts";
 
 const REPO_ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "../../..");
-const TEST_INFRA_PUBKEY = resolve(
-  REPO_ROOT,
-  "src/Core.TypeScript/zflash/test-harness/keys/zeta-test-infra.pub",
-);
+const TEST_INFRA_PUBKEY = resolve(REPO_ROOT, "src/Core.TypeScript/zflash/test-harness/keys/zeta-test-infra.pub");
 
 /** zeta-install.sh success banner (end of install script). */
 const INSTALL_COMPLETE_MARKER = "ZETA CLUSTER NODE INSTALL COMPLETE";
@@ -91,8 +86,7 @@ const DISK_SIZE_GB = 20;
 const KVM_PATH = "/dev/kvm";
 
 /** Separator between phase-1 installer serial and phase-2 disk-boot serial in artifacts. */
-export const PHASE2_SERIAL_SEPARATOR =
-  "\n\n=== PHASE 2: boot installed disk (no ISO) ===\n\n";
+export const PHASE2_SERIAL_SEPARATOR = "\n\n=== PHASE 2: boot installed disk (no ISO) ===\n\n";
 
 /** Exported for unit tests. QEMU `-serial file:` truncates on each launch. */
 export function mergeFullInstallSerialLogs(phase1: string, phase2: string): string {
@@ -176,12 +170,15 @@ export function usbISerialGuestEnabled(): boolean {
 /**
  * When USB boot is on, phase-1 serial must show found + serial=ZETA-QEMU-001
  * + no-metal-claim from zeta-install.sh 6.95d, and persist-default remains
- * FAT UUID (ZETA_BIND_USB_ISERIAL is off on this gate). Live QEMU only sees
- * this after the ISO/clone carries 6.95d; helper-unavailable is a fail, not a skip.
+ * FAT UUID (ZETA_BIND_USB_ISERIAL and ZETA_BIND_UEFI_KEYFILE are off on this
+ * gate). Live QEMU only sees this after the ISO/clone carries 6.95d;
+ * helper-unavailable is a fail, not a skip.
  */
-export function assertUsbISerialPhase1Contract(phase1Serial: string): {
-  readonly ok: true;
-} | { readonly ok: false; readonly reason: string } {
+export function assertUsbISerialPhase1Contract(phase1Serial: string):
+  | {
+      readonly ok: true;
+    }
+  | { readonly ok: false; readonly reason: string } {
   const result = assertUsbISerialGuestSerial(phase1Serial, QEMU_USB_TEST_SERIAL);
   if (!result.ok) {
     return { ok: false, reason: result.reason };
@@ -192,6 +189,14 @@ export function assertUsbISerialPhase1Contract(phase1Serial: string): {
       reason:
         "usb iSerial persist-opt-in appeared on the default QEMU phase-1 path; " +
         "FAT UUID must remain the persist factor unless ZETA_BIND_USB_ISERIAL=1",
+    };
+  }
+  if (phase1Serial.includes(UEFI_KEYFILE_SERIAL.persistOptInKeyfile)) {
+    return {
+      ok: false,
+      reason:
+        "UEFI keyfile persist-opt-in appeared on the default QEMU phase-1 path; " +
+        "FAT UUID must remain the persist factor unless ZETA_BIND_UEFI_KEYFILE=1",
     };
   }
   if (!phase1Serial.includes(USB_ISERIAL_SERIAL.persistDefaultUuid)) {
@@ -231,9 +236,11 @@ export const INSTALL_SH_FINAL_FAILURE_MARKER = "WARN: install.sh FAILED rc=";
  * transient blip that the retry-with-backoff recovers from stays green — the
  * retry exists precisely so transient faults self-heal.
  */
-export function assertFirstBootProvisioningContract(phase1Serial: string): {
-  readonly ok: true;
-} | { readonly ok: false; readonly reason: string } {
+export function assertFirstBootProvisioningContract(phase1Serial: string):
+  | {
+      readonly ok: true;
+    }
+  | { readonly ok: false; readonly reason: string } {
   // Require POSITIVE evidence, do not merely look for a failure string. An
   // assertion that only convicts and never acquits passes green on a truncated
   // serial, a VM that died before Step 6.95a, or an install.sh that was never
@@ -268,9 +275,11 @@ export function assertFirstBootProvisioningContract(phase1Serial: string): {
  * NM profile write + association deferred. Failure text never echoes the
  * QEMU test PSK.
  */
-export function assertWifiEspPhase1Contract(phase1Serial: string): {
-  readonly ok: true;
-} | { readonly ok: false; readonly reason: string } {
+export function assertWifiEspPhase1Contract(phase1Serial: string):
+  | {
+      readonly ok: true;
+    }
+  | { readonly ok: false; readonly reason: string } {
   const result = assertWifiEspInstallSerial(phase1Serial, {
     forbiddenSecrets: [DEFAULT_QEMU_WIFI_PASSWORD],
   });
@@ -291,11 +300,7 @@ export function detectUnexpectedControlPlaneLogin(
   serialOutput: string,
   expectedHostname: string | null,
 ): string | null {
-  if (
-    expectedHostname &&
-    expectedHostname !== "control-plane" &&
-    serialOutput.includes(CONTROL_PLANE_LOGIN_PROMPT)
-  ) {
+  if (expectedHostname && expectedHostname !== "control-plane" && serialOutput.includes(CONTROL_PLANE_LOGIN_PROMPT)) {
     return `phase 2 FAILURE — 081KSGS9H0008QG0R00120EEHM Bug 1 regression: saw "${CONTROL_PLANE_LOGIN_PROMPT}" but expected "${expectedHostname}"`;
   }
   return null;
@@ -307,9 +312,7 @@ export function detectInstalledLoginPrompt(
   expectedHostname: string | null,
 ): { readonly ok: true; readonly reason: string; readonly hostname?: string } | { readonly ok: false } {
   const loginNeedle = expectedHostname ? `${expectedHostname} login:` : null;
-  const welcomeNeedle = expectedHostname
-    ? `Welcome to ${expectedHostname} (Zeta cluster node)`
-    : null;
+  const welcomeNeedle = expectedHostname ? `Welcome to ${expectedHostname} (Zeta cluster node)` : null;
 
   if (loginNeedle && serialOutput.includes(loginNeedle)) {
     return {
@@ -358,9 +361,7 @@ export function detectPhase2Success(
   if (requireFirstSession && !phase3BootMarkersSatisfied(serialOutput)) {
     return { ok: false };
   }
-  const phase3Suffix = requireFirstSession
-    ? " + first-session + post-boot self-register markers"
-    : "";
+  const phase3Suffix = requireFirstSession ? " + first-session + post-boot self-register markers" : "";
   return {
     ok: true,
     reason: `phase 2 SUCCESS — ${login.reason}${phase3Suffix}`,
@@ -426,11 +427,7 @@ type InstallBootMedia =
   | { readonly kind: "iso"; readonly path: string }
   | { readonly kind: "usb-image"; readonly path: string };
 
-function buildQemuInstallArgs(
-  bootMedia: InstallBootMedia,
-  diskPath: string,
-  serialLogPath: string,
-): string[] {
+function buildQemuInstallArgs(bootMedia: InstallBootMedia, diskPath: string, serialLogPath: string): string[] {
   return buildQemuInstallArgsPure(bootMedia, diskPath, serialLogPath, kvmEnabled());
 }
 
@@ -442,14 +439,22 @@ export function buildQemuInstallArgsPure(
   kvm: boolean,
 ): string[] {
   const args: string[] = [
-    "-machine", "q35",
-    "-m", String(MEMORY_MB),
-    "-smp", String(CPU_COUNT),
-    "-drive", `file=${diskPath},if=virtio,format=qcow2`,
-    "-serial", `file:${serialLogPath}`,
-    "-display", "none",
-    "-netdev", "user,id=net0",
-    "-device", "virtio-net-pci,netdev=net0",
+    "-machine",
+    "q35",
+    "-m",
+    String(MEMORY_MB),
+    "-smp",
+    String(CPU_COUNT),
+    "-drive",
+    `file=${diskPath},if=virtio,format=qcow2`,
+    "-serial",
+    `file:${serialLogPath}`,
+    "-display",
+    "none",
+    "-netdev",
+    "user,id=net0",
+    "-device",
+    "virtio-net-pci,netdev=net0",
   ];
   if (bootMedia.kind === "usb-image") {
     const usb = qemuUsbStorageDeviceArg("zflashboot");
@@ -496,16 +501,26 @@ export function buildQemuDiskBootArgsPure(
   // NIC exposes a UEFI "Misc Device" boot entry (Pci 0x3,0x0) that can win
   // fresh OVMF_VARS boot order and stall after initrd (081KSNY2Z0008QG0R0008PN7RQ run #27589613408).
   const args: string[] = [
-    "-machine", "q35",
-    "-m", String(MEMORY_MB),
-    "-smp", String(CPU_COUNT),
-    "-drive", `if=pflash,format=raw,unit=0,readonly=on,file=${ovmfCodePath}`,
-    "-drive", `if=pflash,format=raw,unit=1,file=${ovmfVarsPath}`,
-    "-drive", `file=${diskPath},if=none,format=qcow2,id=installdisk`,
-    "-device", "virtio-blk-pci,drive=installdisk,bootindex=1",
-    "-serial", `file:${serialLogPath}`,
-    "-display", "none",
-    "-vga", "none",
+    "-machine",
+    "q35",
+    "-m",
+    String(MEMORY_MB),
+    "-smp",
+    String(CPU_COUNT),
+    "-drive",
+    `if=pflash,format=raw,unit=0,readonly=on,file=${ovmfCodePath}`,
+    "-drive",
+    `if=pflash,format=raw,unit=1,file=${ovmfVarsPath}`,
+    "-drive",
+    `file=${diskPath},if=none,format=qcow2,id=installdisk`,
+    "-device",
+    "virtio-blk-pci,drive=installdisk,bootindex=1",
+    "-serial",
+    `file:${serialLogPath}`,
+    "-display",
+    "none",
+    "-vga",
+    "none",
     "-no-reboot",
   ];
   if (kvm) {
@@ -628,9 +643,7 @@ async function waitForInstalledLogin(
       const target = requireFirstSession
         ? `${loginNeedle ?? "login"} + first-session markers`
         : (loginNeedle ?? "installed-system login prompt");
-      console.log(
-        `[qemu-full-install-test] phase 2: ${elapsedMin} min elapsed; waiting for "${target}"`,
-      );
+      console.log(`[qemu-full-install-test] phase 2: ${elapsedMin} min elapsed; waiting for "${target}"`);
       lastReportedMinute = elapsedMin;
     }
     const content = readSerial(serialLogPath);
@@ -676,9 +689,10 @@ async function waitForInstalledLogin(
       : content.includes("EFI stub: Loaded initrd") && !content.includes("login:")
         ? " (serial stopped after EFI initrd — likely initrd cannot mount virtio root; verify hardware-configuration.nix copy at install + virtio_blk in initrd)"
         : "";
-  const phase3Hint = requireFirstSession && !phase3BootMarkersSatisfied(content)
-    ? " (login may be present but phase-3 markers missing — check zeta-first-session-ci + zeta-self-register-ci; rebuild ISO if markers absent)"
-    : "";
+  const phase3Hint =
+    requireFirstSession && !phase3BootMarkersSatisfied(content)
+      ? " (login may be present but phase-3 markers missing — check zeta-first-session-ci + zeta-self-register-ci; rebuild ISO if markers absent)"
+      : "";
   return {
     exitCode: 1,
     reason: loginNeedle
@@ -787,10 +801,7 @@ async function main(): Promise<never> {
   const requireUsbISerial = usbISerialGuestEnabled();
   let bootMedia: InstallBootMedia = { kind: "iso", path: isoPath };
   if (requireWifiEsp || requireUsbISerial) {
-    const usbImagePath = join(
-      tmpDir,
-      requireWifiEsp ? "zflash-wifi-esp-boot.img" : "zflash-usb-iserial-boot.img",
-    );
+    const usbImagePath = join(tmpDir, requireWifiEsp ? "zflash-wifi-esp-boot.img" : "zflash-usb-iserial-boot.img");
     console.log(
       requireWifiEsp
         ? `[qemu-full-install-test] QEMU_WIFI_ESP_PHASE1=1 — baking file-backed zflash image with wifi ESP JSON (ssid=${DEFAULT_QEMU_WIFI_SSID})`
@@ -868,9 +879,7 @@ async function main(): Promise<never> {
         exitCode: 1,
         reason: `first-boot provisioning contract failed — ${provisioning.reason}`,
         serialLogTail: phase1Serial.slice(-2000),
-        ...(phase1.elapsedSeconds !== undefined
-          ? { elapsedSeconds: phase1.elapsedSeconds }
-          : {}),
+        ...(phase1.elapsedSeconds !== undefined ? { elapsedSeconds: phase1.elapsedSeconds } : {}),
       },
       artifactSerialLogPath,
     );
@@ -890,9 +899,7 @@ async function main(): Promise<never> {
           exitCode: 1,
           reason: `wifi ESP phase-1 contract failed — ${wifiContract.reason}`,
           serialLogTail: phase1Serial.slice(-2000),
-          ...(phase1.elapsedSeconds !== undefined
-            ? { elapsedSeconds: phase1.elapsedSeconds }
-            : {}),
+          ...(phase1.elapsedSeconds !== undefined ? { elapsedSeconds: phase1.elapsedSeconds } : {}),
         },
         artifactSerialLogPath,
       );
@@ -911,9 +918,7 @@ async function main(): Promise<never> {
           exitCode: 1,
           reason: `usb iSerial phase-1 contract failed — ${iserialContract.reason}`,
           serialLogTail: phase1Serial.slice(-2000),
-          ...(phase1.elapsedSeconds !== undefined
-            ? { elapsedSeconds: phase1.elapsedSeconds }
-            : {}),
+          ...(phase1.elapsedSeconds !== undefined ? { elapsedSeconds: phase1.elapsedSeconds } : {}),
         },
         artifactSerialLogPath,
       );
@@ -951,9 +956,7 @@ async function main(): Promise<never> {
           exitCode: 1,
           reason: `hostname uniqueness contract failed — ${contract.reason}`,
           serialLogTail: phase2Serial.slice(-2000),
-          ...(phase2.elapsedSeconds !== undefined
-            ? { elapsedSeconds: phase2.elapsedSeconds }
-            : {}),
+          ...(phase2.elapsedSeconds !== undefined ? { elapsedSeconds: phase2.elapsedSeconds } : {}),
         },
         artifactSerialLogPath,
       );

@@ -1,0 +1,12 @@
+{
+  "pr_number": 12832,
+  "archive_path": "docs/history/pr-reviews/PR-12832-vision-the-human-approval-gate-is-the-second-admitted-hierarchy-correcting-my-ow.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-20T15:56:36.313Z",
+  "schema_version": "v1",
+  "commit_sha": "6c4b118be658bed740d5f4471305ec31dbf0f93f",
+  "title": "vision: the human approval gate is the SECOND admitted hierarchy — correcting my own justification",
+  "state": "MERGED",
+  "merged_at": "2026-08-20T15:55:55Z",
+  "head_ref": "vision/human-gate-is-the-second-admitted-hierarchy"
+}

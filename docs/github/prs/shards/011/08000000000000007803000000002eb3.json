@@ -1,0 +1,12 @@
+{
+  "pr_number": 11955,
+  "archive_path": "docs/history/pr-reviews/PR-11955-fix-ci-the-agencysignature-validator-names-the-artifact-it-was-actually-handed.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-22T11:54:04.214Z",
+  "schema_version": "v1",
+  "commit_sha": "8092b43a7587c95680b8d4252acf11b1266394ac",
+  "title": "fix(ci): the agencysignature validator names the artifact it was actually handed",
+  "state": "MERGED",
+  "merged_at": "2026-08-18T13:52:57Z",
+  "head_ref": "fix/agencysignature-validator-names-its-artifact"
+}

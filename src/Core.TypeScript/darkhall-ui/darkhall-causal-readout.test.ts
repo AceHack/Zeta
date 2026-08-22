@@ -82,7 +82,7 @@ describe("Dark Hall causal readout", () => {
       code: "causal-correction-capacity-exhausted" as const,
       detail: "capacity retained",
     };
-    const readout = darkHallCausalHandoffReadout("tab-a", 2, {
+    const readout = darkHallCausalHandoffReadout("tab-a", 2, 2, 3, {
       status: "backpressured",
       direction: "inbound",
       handoffId: "handoff/pressure",
@@ -96,6 +96,8 @@ describe("Dark Hall causal readout", () => {
       schema: DARK_HALL_CAUSAL_HANDOFF_READOUT_SCHEMA,
       localTabId: "tab-a",
       maxCorrections: 2,
+      pendingHandoffs: 2,
+      maxPendingHandoffs: 3,
       status: "backpressured",
       direction: "inbound",
       handoffId: "handoff/pressure",

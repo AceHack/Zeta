@@ -141,6 +141,29 @@ jobs:
       - name: Audit installer substrate (source-level)
         run: bun src/Core.TypeScript/ci/audit-installer-substrate.ts
 
+      # NOTE ON THE PARITY AUDIT THAT USED TO RUN HERE, and where it went.
+      #
+      # A step here once invoked src/Core.TypeScript/hygiene/audit-flash-entrypoint-parity.ts,
+      # which did not exist -- the source half was held back while another PR was
+      # in flight and the CI half landed alone in #13093. The step failed on a
+      # missing file on every run, and because the ISO upload, the digest sidecar
+      # and cosign signing are all gated behind it, ISO production stopped
+      # entirely. #13102 removed it rather than stubbing it: a stub that always
+      # passes is worse than no step, because it reports parity as CHECKED while
+      # checking nothing.
+      #
+      # The gap it guarded was real -- the ISO integrity gate existed only in the
+      # macOS arm, so flash-usb-linux.ts and flash-usb-windows.ts wrote an image
+      # to a block device with no manifest verification at all. That is fixed
+      # (081M0HG7X7B087G0R002A05DAP): the gate is one definition in
+      # zflash/iso-integrity.ts and all three arms call it.
+      #
+      # The audit now exists and RUNS -- in gate.yml's cross-verify floor, beside
+      # audit-proof-lineage-binaries.ts, which is where the note this replaces
+      # said it belonged. It is not restored here: on the gate floor it blocks
+      # every PR rather than only the pushes that touch the ISO lane, and it
+      # cannot take ISO production down with it a second time.
+
       # Layer 2a (structural-behavioral) — asserts logical relationships
       # between iter-5.4 substrate elements (gh auth setup-git is INSIDE
       # the auth-success branch; SSH_KEY_ERR_FILE is wired AS stderr to
@@ -530,11 +553,38 @@ jobs:
           iso_name=$(basename "$iso_path_abs")
           iso_size=$(stat -c%s "$iso_path_abs" | numfmt --to=iec --suffix=B)
           iso_sha256=$(sha256sum "$iso_path_abs" | awk '{print $1}')
+          # ADDED 2026-08-21. The digest above was written ONLY to $GITHUB_OUTPUT
+          # and the step summary, so it existed for humans reading a run page and
+          # for nothing else. `zflash` refuses to write an ISO whose integrity it
+          # cannot establish (PR #13030), looking for `<iso>.sha256` beside the
+          # image -- and CI produced no such file, so the gate refused EVERY
+          # CI-built ISO and the flash path was hard-stopped.
+          #
+          # The manifest is written PER-ISO (`<iso>.sha256`) rather than as a bare
+          # `SHA256SUMS`, deliberately: a well-known filename in a shared download
+          # directory is a NAMESPACE COLLISION, not a manifest. Measured on the
+          # maintainer's machine 2026-08-21 -- an unrelated `~/Downloads/SHA256SUMS`
+          # belonging to Bitcoin Knots was found and parsed by the gate, which then
+          # refused with `iso-not-in-manifest` while printing 28 bitcoin filenames.
+          # A per-ISO sidecar cannot be hijacked that way.
+          #
+          # WRITTEN TO $RUNNER_TEMP, NOT BESIDE THE ISO. `result/iso/` is a
+          # symlink into the read-only Nix store, so the first form of this
+          # step -- `iso_sha256_path="${iso_path_abs}.sha256"` -- died with
+          # `Permission denied` and took the whole build-iso job red.
+          # MEASURED: run 32445604341 (2026-08-21), step `Locate ISO + capture
+          # metadata`, on the very branch that added it. The sidecar's LOCATION
+          # in CI is irrelevant to the gate; only its CONTENT is -- the digest
+          # and the ISO's basename, which is what the operator ends up with
+          # beside the image after downloading both artifacts.
+          iso_sha256_path="${RUNNER_TEMP}/${iso_name}.sha256"
+          printf '%s  %s\n' "$iso_sha256" "$iso_name" > "$iso_sha256_path"
           {
             echo "path=$iso_path_abs"
             echo "name=$iso_name"
             echo "size=$iso_size"
             echo "sha256=$iso_sha256"
+            echo "sha256_path=$iso_sha256_path"
           } >> "$GITHUB_OUTPUT"
           {
             echo "## AI-cluster installer ISO built"
@@ -636,6 +686,21 @@ jobs:
           if-no-files-found: error
           retention-days: 90
           compression-level: 0 # ISO is already compressed; re-zipping wastes time
+
+      - name: Upload the ISO digest manifest as a workflow artifact
+        if: ${{ !cancelled() && steps.iso.outcome == 'success' }}
+        # The keystone for the local flash path: `zflash` verifies the ISO against
+        # this file BEFORE it touches a device, and refuses (exit 2) without it.
+        # Uploaded separately from the ISO so an operator can fetch the manifest
+        # cheaply, and so a missing manifest is visibly absent rather than silently
+        # bundled. NOTE this proves INTEGRITY, never PROVENANCE -- the cosign bundle
+        # below is the provenance half, and nothing local verifies it yet.
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: ${{ steps.iso.outputs.name }}.sha256
+          path: ${{ steps.iso.outputs.sha256_path }}
+          if-no-files-found: error
+          retention-days: 90
 
       - name: Upload cosign bundle as workflow artifact
         if: ${{ !cancelled() && steps.sign.outcome == 'success' }}   # run only after signing produced a bundle
@@ -771,10 +836,76 @@ jobs:
               ;;
           esac
 
+      # ADDED 2026-08-21 -- PARITY with the x86_64 job, which has emitted a
+      # digest since PR #13053. This job emitted NEITHER a digest NOR a
+      # signature: its only artifact was the raw ISO, so `zflash`'s integrity
+      # gate could never be satisfied for an arm64 image and an aarch64
+      # operator was hard-stopped. Same shape as the x86_64 step, deliberately:
+      # per-ISO `<iso>.sha256`, never a bare `SHA256SUMS`. The reason is
+      # measured, not stylistic -- an unrelated `~/Downloads/SHA256SUMS`
+      # belonging to Bitcoin Knots was found and parsed by the gate on the
+      # maintainer's machine, which refused while printing 28 bitcoin
+      # filenames. A well-known filename in a shared download directory is a
+      # namespace collision, not a manifest.
+      #
+      # $RUNNER_TEMP, not beside the ISO: `result/iso/` is a symlink into the
+      # read-only Nix store. Writing there is what reddened run 32445604341.
+      - name: Locate aarch64 ISO + write the per-ISO digest manifest
+        id: iso
+        working-directory: full-ai-cluster
+        run: |
+          set -euo pipefail
+          mapfile -t iso_candidates < <(find result/iso -maxdepth 1 -type f \( -name 'zeta-installer-*.iso' -o -name 'nixos-minimal-*.iso' \) | sort)
+          if [ "${#iso_candidates[@]}" -eq 0 ]; then
+            echo "::error::aarch64: No installer ISO under result/iso/" >&2
+            ls -la result/iso/ >&2 || true
+            exit 1
+          fi
+          if [ "${#iso_candidates[@]}" -gt 1 ]; then
+            echo "::error::aarch64: Multiple installer ISOs under result/iso/; expected exactly one:" >&2
+            printf '  %s\n' "${iso_candidates[@]}" >&2
+            exit 1
+          fi
+          iso_path_abs="$(pwd)/${iso_candidates[0]}"
+          iso_name=$(basename "$iso_path_abs")
+          iso_sha256=$(sha256sum "$iso_path_abs" | awk '{print $1}')
+          iso_sha256_path="${RUNNER_TEMP}/${iso_name}.sha256"
+          printf '%s  %s\n' "$iso_sha256" "$iso_name" > "$iso_sha256_path"
+          {
+            echo "path=$iso_path_abs"
+            echo "name=$iso_name"
+            echo "sha256=$iso_sha256"
+            echo "sha256_path=$iso_sha256_path"
+          } >> "$GITHUB_OUTPUT"
+          {
+            echo "## AI-cluster installer ISO built (aarch64)"
+            echo ""
+            echo "| Field | Value |"
+            echo "|---|---|"
+            echo "| File   | \`$iso_name\` |"
+            echo "| SHA256 | \`$iso_sha256\` |"
+            echo ""
+            echo "Download BOTH the ISO artifact and the \`.sha256\` artifact into the same"
+            echo "directory. \`zflash\` refuses to write an ISO whose integrity it cannot"
+            echo "establish, and the sidecar is what establishes it."
+          } >> "$GITHUB_STEP_SUMMARY"
+
       - name: Upload aarch64 ISO artifact
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: zeta-installer-aarch64-iso
           path: full-ai-cluster/result/iso/*.iso
+          retention-days: 14
+          if-no-files-found: error
+
+      - name: Upload the aarch64 ISO digest manifest as a workflow artifact
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          # Fixed name rather than the x86_64 job's `${{ steps.iso.outputs.name }}`:
+          # both jobs currently build a `nixos-minimal-<ver>-<arch>-linux.iso`,
+          # and two artifacts in one run may not share a name. The aarch64 ISO
+          # artifact already uses a fixed name for the same reason.
+          name: zeta-installer-aarch64-iso.sha256
+          path: ${{ steps.iso.outputs.sha256_path }}
           retention-days: 14
           if-no-files-found: error

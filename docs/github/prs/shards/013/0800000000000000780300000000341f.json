@@ -1,0 +1,12 @@
+{
+  "pr_number": 13343,
+  "archive_path": "docs/history/pr-reviews/PR-13343-feat-cluster-boot-3-of-the-12-deferred-argocd-applications-record-the-other-9-bl.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-21T20:21:23.602Z",
+  "schema_version": "v1",
+  "commit_sha": "49b585a14feb811367d7f6717f45ed5f5ebb9901",
+  "title": "feat(cluster): boot 3 of the 12 deferred ArgoCD Applications; record the other 9 blockers",
+  "state": "MERGED",
+  "merged_at": "2026-08-21T20:20:43Z",
+  "head_ref": "research/what-each-deferred-app-needs-to-boot"
+}

@@ -3,180 +3,78 @@
 Running notes for Soraya. ASCII only (BP-09). 3000-word cap
 (BP-07). Pruned every third invocation.
 
-Frontmatter at `.claude/skills/formal-verification-expert/SKILL.md`
-is canon (BP-08). This notebook supplements, never overrides.
+Frontmatter at `.claude/skills/formal-verification-expert/SKILL.md` is canon (BP-08); this supplements, never overrides.
 
 ---
 
 ## Round 35 -- verification-drift-auditor skill adopted
 
-Surface `.claude/skills/verification-drift-auditor/SKILL.md`; registry
-`docs/research/verification-registry.md`; first report
-`docs/research/verification-drift-audit-2026-04-19.md`. Motivating case: the `DbspChainRule`
-mis-citation (labelled Budiu Prop 3.2, actually a Thm 3.3 corollary). Six drift classes plus
-one pre-registration class, tool-agnostic. Cadence: every 5-10 rounds, or on any commit
-adding a cited theorem/property/spec.
+Surface `.claude/skills/verification-drift-auditor/SKILL.md`; registry `docs/research/verification-registry.md`. Motivating case: the `DbspChainRule` mis-citation. Six drift classes + one pre-registration class, tool-agnostic. Cadence: every 5-10 rounds, or on any commit adding a cited theorem/spec.
 
 ## Portfolio metric
 
 Formal-coverage ratio = gated artefacts / paths flagged as needing one. Trend beats absolute.
 
-### Round 21 baseline -- PRUNED 2026-08-14. Ratio was ~15/18 = 0.83 over 4 gated TLA+ specs
-and 8 Z3 lemmas. Superseded: the TLA+ leg alone is now 52 gated model runs.
+### Round 21 -- PRUNED. Ratio ~0.83; the TLA+ leg alone is now 52 gated runs.
 
 ---
 
 ## Current-round routing recommendations
 
+### 2026-08-20 -- Clifford signature audit + Lorentzian phase order (PR #12805)
+
+Doc: `docs/research/2026-08-20-clifford-signature-audit-cl13-vs-cl31-is-inert-*.md`.
+
+- **Cl(1,3) vs Cl(3,1): NO crossing, not a bug.** The split is inert -- every in-tree use sits
+  in the even part or the Lorentz Lie algebra, both p<->q swap-invariant (o(p,q) = o(q,p)
+  literally; Cl0 clock positions sum to 2 mod 8, same table row). Computed: 0 counterexamples
+  over 196 pairs; full algebras differ in 168 of 210. Guard filed as 081M0FTPJ4X087G0R000E91P3Y
+  -- **FsCheck, P1, one tool.** BP-16 does not fire and I said so rather than over-buying the
+  triple; Lean on a finite-table identity is human-weeks for an hour's work.
+- **Lorentzian phase order: clean negative, by theorem.** Malament 1977 -- causal order fixes the
+  metric only up to a conformal factor; Sorkin -- counting supplies that factor. Geometry buys
+  nothing over poset+count, and importing it imports the open Hauptvermutung. Two computed
+  falsifiers gated in `src/Core.TypeScript/research/causal-order-minkowski-embedding.test.ts`.
+- **Routing note:** "does our causal order embed in M^{1,1}" is **structural shape** -> **Alloy**,
+  not TLA+. Reflex-TLA+ on a static poset fact is the table's own wrong-tool cost.
+- **Portfolio signal for Kenji:** the persisted causal set has concurrency width **1.000** (main
+  is a chain; squash erases the fan). A spec reasoning about concurrency on `main` is reasoning
+  about an artefact with none. Denominator problem, not a tool problem.
+
 ## Running observations
 
-- **2026-04-17 (round 21) — seeded.** Skill just landed. First
-  live routing reviews are the in-flight round-21 dispatches;
-  next-round recommendations captured above.
-- **2026-04-17 (round 21) — TLA+-hammer check.** Of the 14 TLA+
-  specs in the repo, 2 were properly TLA+-shaped safety
-  invariants; the other 12 are a mix of algebraic identities
-  (should have been Z3) and structural invariants (should have
-  been Alloy). Not urgent to refactor, but flag for next
-  portfolio review.
-- **2026-04-17 (round 21) — Stainless viability note.** Stainless
-  4.x with Scala 3 is finally stable enough to evaluate for our
-  termination claims. Put on the Assess row in `TECH-RADAR.md`
-  when the Tech-Radar Owner (Jun) runs his next sweep.
-### Round 21 targets -- PRUNED 2026-08-14, all dispatched and long landed.
+- Round-21 observations + targets -- PRUNED. TLA+-hammer check is now a standing habit; Stainless never left Assess.
 
 ---
 
 ## Pruning log
 
-- 2026-08-18 (ambient-time lane): pruned Round 41, Safety-floor arc, Vacuity/Landauer
-  round and the Z-EPS run to hold the 3000-word cap after two same-day entries merged.
-
-- Round 21: seeded. First prune review: round 24.
-
----
-
-## Round 41 -- PRUNED 2026-08-18 (3000-word cap). Landed; superseded.
-
-## Trigger Recognition Log (081KSBMG30008QG0R000WJ9FMP landing — round-69 routing decision)
-
-Per-round trigger-fired-but-row-not-filed substrate. One line per round where a trigger fired and routing decision was made WITHOUT filing a new backlog row (substantive recognition that didn't produce row substrate). Forward-only logging; backfill optional.
-
-Format: table with columns `Round | Trigger | Outcome | Artifact`. One row per round where a trigger fired without row-filing; `Trigger` cites the PR / observation that fired; `Outcome` is `routed` / `held` / `escalated` / `recognition-without-row-filing` (with rationale parenthetical); `Artifact` is the resulting file/PR/section if any (or `n/a (chat-only)`).
-
-| Round | Trigger | Outcome | Artifact |
-|---|---|---|---|
-| 59 | PR #4795 (081KSBMG30008QG0R003B46GWG) merged | recognition-without-row-filing (umbrella covers subitem (b) acceptance criteria; execution is Kenji's lane) | n/a (chat-only) |
-| 66 | PR #4797 (081KS923C0008QG0R000TE1589) merged | recognition-without-row-filing (audit execution is Kenji's lane; Soraya does not pre-empt sizing) | n/a (chat-only — gap that 081KSBMG30008QG0R000WJ9FMP audit-of-audit then surfaced) |
-| 69 | PR #4810 (081KSBMG30008QG0R000WJ9FMP) merged | **routed to Option 1: NOTEBOOK Trigger Recognition Log** (this section); rejected Option 2 (081KS923C0008QG0R000TE1589 in-place — wrong change-rate partition) + Option 3 (new cross-cutting ledger — premature; no consumer demand) | this section |
-
-If this section saturates (NOTEBOOK approaches 3000-word cap from log entries alone), revisit Option 3: create a separate cross-cutting ledger (e.g., `docs/research/verification-routing-decisions.md` — does not yet exist; hypothetical destination).
-
-
-## Safety-floor arc -- PRUNED 2026-08-18 (3000-word cap). Landed; superseded.
-
-## Vacuity round -- PRUNED 2026-08-18 (3000-word cap). Landed; superseded.
-
-## 2026-08-14 -- Meno braided ladder: Q3 then Q1. Balanced, and it stops there.
-
-Routed and answered the last open MATHEMATICAL question on the Meno board. Checked Q3 first
-because it gates whether Q1 is even about Meno.
-
-**Q3 -- obstruction NOT real as stated.** The brief's premise ("our ambient tensor is described
-in our own source as cartesian") misreads `Meno.fs:38`, which says the DETERMINISTIC
-SUBCATEGORY is cartesian. Ambient `(x)_Kronecker` is not cartesian (not the product in Mod_Z;
-`unitObject` not terminal), so Mathlib `Subsingleton (SymmetricCategory C)` does not apply.
-
-**But the adjacent obstruction IS real and sharper than the brief's version.** A cartesian
-monoidal category has a unique BRAIDING -- not merely a unique symmetric structure. I is
-terminal, naturality against `!_A : A -> I` forces both projections of `c`, product universal
-property pins `c = swap`. And `braidR` is built with `Meno.arr`, i.e. it lives in the cartesian
-deterministic subcategory. The escape: every `<V>` morphism is a BASIS BIJECTION, and copy is
-not surjective / discard is not injective, so neither can enter. Fox 1976 then gives
-non-cartesian. Nothing needs constructing -- the "minimal non-cartesian tensor" is the ambient
-one under a hom-restriction, and `MenoBraided.rep` already IS it. Deliverable is a GUARD.
-
-**Q1 -- balanced, and the two prior reviews were wrong in the same way.** Both read the axiom as
-`theta_{A(x)B} = theta_A (x) theta_B`. Real axiom has `. c_{B,A} . c_{A,B}` on the right, so
-`theta_V = id` forces `theta_{V(x)V} = c^2`, NOT `c^2 = id`. `<V>` is balanced, uniquely, with
-`theta_{V^n} = rho(Delta_n^2)` -- the Garside full twist. `theta_V = id` is forced by B_1 being
-trivial and is correct, not degenerate.
-
-Routing: REJECTED the brief's suggested Z3-over-{S3,S4,Q8} search -- it answers a different
-question. `Hom_{<V>}(V^n,V^n) = rho(B_n)` and rho is faithful, so the problem is central
-elements of B_n, not set-maps G^n -> G^n. Encoding free-group rewriting into SMT-LIB is ~a week
-producing something less trustworthy than `Braid.equal`, which we already ship and test.
-REJECTED Lean-first: general n needs Garside normal form, which Mathlib does not carry.
-ACCEPTED exact computation over the shipped faithful `Braid.equal`. Hours, not weeks.
-
-BP-16 honoured, and this time I did not repeat the `chsh` mistake: the F# check runs against the
-SHIPPED `Braid.fs` (not a private copy), and the second implementation is an independent
-re-write from the spec. Both agree for all m+n <= 7. Four planted mutants -- theta=id (the
-reviewers' own reading), theta=Delta, theta=Delta^4, single block-swap -- all REJECTED by both.
-An all-pass run with no mutant that dies is a tautology; these die.
-
-**Q4, and it is the useful part.** Balanced was worth hours and it CLOSED a line. Above it buys
-nothing: ribbon would give a Markov trace scalar link invariant, strictly weaker than the
-faithful `Braid.equal` we already have, and it is blocked at the object anyway (V has no dual in
-Mod_Z). MTC is false, not open. Recommendation: STOP at balanced. Climbing further is aesthetics.
-
-Portfolio: Meno lane goes 1 gated artefact (`MenoBraidedRMatrix.lean`, reachable from the `Lean4`
-root -- orphan guard checked, it is fine) to 1 gated + 2 routed
-(081KZZVC3DD087G0R0035SZN58 Lean certificate, 081KZZVC6SE087G0R001SXE8BV copy/discard guard).
-Denominator unchanged. Also fixed a garbled sentence in `MenoBraided.fs` left by a bad edit on
-2026-08-13 -- the kind of damage that makes a docstring stop being readable evidence.
-
-## 2026-08-14 -- Z-EPS -- PRUNED 2026-08-18 (3000-word cap). Landed; superseded.
-
-## Round 2026-08-14 — the flags a spec is measured under ARE part of the claim
-
-Closed `081KZYRDMZW087G0R0012K4QA0`, which I raised and then raised P2 to P1 after it bit me.
-
-The defect was not in a model. `QuorumPhaseCancellation` went red on CI with exit 11 because my
-recorded runs were driven by a script passing `-deadlock` (which DISABLES deadlock checking) and
-the gate passed no such flag. **A hand-run green and a gated green were not the same result and
-nothing anywhere said so.** Adding `-config` was necessary and not sufficient: the next mismatch
-would have been a different flag.
-
-Routing call, and it generalises past TLC: **a recorded verdict that does not carry the exact
-invocation that produced it is a claim about an unknown experiment.** So the fix is not a flag,
-it is `registry/tlc-models.json` -- 53 pinned model runs, both consumers building argv from that
-one file, the id quotable next to any result.
-
-Portfolio delta: configs executing in the PR lane **34 -> 52 of 53**. Configs no runner opened
-**19 -> 0**. Negative configs that fail when the witness stops firing **0 -> 14**. Exhaustive
-state counts asserted **0 -> 37**. One model (`BftLiveness`) is `extended` tier with a written
-reason: at `-workers 1` it takes ~26 min against the `11min 14s` recorded from a 4-worker run.
-Declared gap, not a silent one.
-
-**Verdict on a `tlc-solver-floor.json` sibling to `smt2-solver-floor.json`: NO, and the cheaper
-answer is better.** z3/cvc5 come from the runner `apt`, so their version is ambient and degrades
-silently -- a floor is the only lever. `tla2tools.jar` is COMMITTED to git (since #8053), so the
-toolchain is already byte-pinned by the diff. What was missing was not a floor but an assertion
-that the jar loaded is the pinned one; the registry now carries its sha256 and version banner and
-the gate checks the banner on every run. One field, not a second registry.
-
-Two things found while pinning, both real:
-
-- `tools/setup/manifests/from-url` downloads `tla2tools.jar` to `tools/tla/tla2tools.jar`, **a
-  path no runner reads**, unchecksummed. The committed jar reports `2026.05.18.174321`, not the
-  `v1.8.0` two docs claim.
-- My own state-count parser matched a TLC *progress* line rather than the final summary, reading
-  122647 off `BftConsensus` against a pinned 4665495. The tempting fix was to relax the pin. The
-  correct one was to chase the number -- **the assertion caught my parser on its first real run,** 
-  which is what a falsifier is for.
-
-Carried forward: the deadlock caveat is now IN the artefact, not only in prose.
-`QuorumCollateral` and `WagerSolvency` stutter, so their deadlock checks cannot fail; each model
-records `deadlock` as `off-cfg` / `on-vacuous` / `on`, and the linter cross-checks `off-cfg`
-against what the `.cfg` actually declares.
-
-Not exposed to the bun 5s cap (`081KZZ3JHP1087G0R00027ARRR`, reproduced here: `bunfig.toml`
-`timeout = 20000` is ignored, a 6s test dies at 5002ms). The gate is `dotnet test`; the bun-side
-TLC tests only run metadata commands. A comment in `run-tlc.test.ts` names the hazard so nobody
-adds a real model check there and reads a 5s truncation as a failed proof.
+- 2026-08-19: pruned the spec-flags round to a conclusion stub, and the stale round-21 observations.
+- 2026-08-18: pruned Round 41, Safety-floor arc, Vacuity/Landauer, Z-EPS (tombstone dropped 2026-08-20).
+- 2026-08-20 (Clifford/Lorentz lane): compressed three round-21 stubs and the Meno stub.
 
 ---
+
+## Trigger Recognition Log
+
+One line per round where a trigger fired and routing was decided WITHOUT filing a row. Forward-only.
+
+| Round | Trigger                                      | Outcome                                                                                                        | Artifact        |
+| ----- | -------------------------------------------- | -------------------------------------------------------------------------------------------------------------- | --------------- |
+| 59    | PR #4795 (081KSBMG30008QG0R003B46GWG) merged | recognition-without-row-filing (umbrella covers subitem (b) acceptance criteria; execution is Kenji's lane)    | n/a (chat-only) |
+| 66    | PR #4797 merged                              | recognition-without-row-filing (audit execution is Kenji's lane)                                               | n/a (chat-only) |
+| 69    | PR #4810 merged                              | routed to Option 1: this section; rejected in-place (wrong change-rate partition) and a new ledger (premature) | this section    |
+
+If this section saturates, revisit Option 3: a separate cross-cutting ledger.
+
+## 2026-08-14 -- Meno braided ladder -- PRUNED again 2026-08-20. Conclusion retained: the Q3
+
+obstruction was misread (the deterministic SUBCATEGORY is cartesian, not the ambient tensor);
+the real, sharper one is that a cartesian monoidal category has a UNIQUE BRAIDING. Escape via
+Fox 1976. Deliverable was a GUARD -- MenoBraided.rep already is the minimal non-cartesian tensor
+under a hom-restriction.
+
+## 2026-08-14 -- spec flags ARE part of the claim -- PRUNED. A spec's verification flags (bounds, symmetry reduction, fairness) are part of the claim; a re-run under weaker flags is a DIFFERENT claim and must be re-stated, never silently inherited.
 
 ## 2026-08-18 -- consolidated map + vacuity sweep
 
@@ -271,3 +169,152 @@ measuring in TURNS instead of microtasks. Turns are the right unit for load-inde
 PORTFOLIO NOTE: this adds a cell in the adversarial-input/taint row that is CHEAPER than Semgrep
 for the allowlist-integrity reason above. The routing table's cheapest-credible-tool column
 should record that the SUPPRESSION SURFACE is part of a tool's cost, not a footnote.
+
+## 2026-08-19 -- distributed identity server: the map existed in pieces, nobody had it on one page
+
+Aaron routed the overall design for the distributed identity server and warned it is the
+most-worked area of Zeta. Correct, and understated. Sweep found 37 TLA+ specs / 54 TLC configs,
+6 Alloy models, 26+ Lean files, 9 Z3 lemmas, 8 Q# oracle modules, 23 identity-named F# modules,
+~80 research docs. The reason there was no overall design is not missing pieces, it is a missing
+MAP -- so every attempt re-derives proven work. Deliverable:
+docs/research/2026-08-19-draft-the-distributed-identity-server-\*.md (DRAFT).
+
+**Routing calls (full table in the doc §5, not restated here).** Headline: C1 -> F# private
+constructor + Alloy, NOT TLA+ (inexpressible beats unreachable). C3a -> Lean on the existing
+FinMutualInfo ladder; TLC categorically wrong (no reals -- QuorumPhaseCancellation precedent).
+C3b -> Z3 UFNRA uninterpreted-monotone. C4-NI -> Semgrep; it is a grep. C6 -> GENERALISE
+RefuseBinding.tla, whose non-penalty clause IS the property.
+
+**C3 formalised, anti-analogy check passed.** "Not embarrassingly parallel" = strength is not a
+functional of the per-claim MARGINALS. Theorem: marginals do not determine the joint (Shannon
+1948; Hoeffding 1940 / Frechet 1951; Sklar 1959). SocietyUsefulWork's rho is the SAME functional
+(N_eff = N/(1+(N-1)rho); Gaussian copula IS the Sklar decomposition) over DIFFERENT random
+variables -- competence over facts, not observation over claims. Theorem transfers, instantiation
+carries no measurement. Recorded as three graded lines, not one confident one.
+
+**Falsifier F3 already fired in production.** QuorumAlgebra bug B3: six agents on one stream,
+precision = 66.0 on a mean wrong by 5.66 -- configuration B scored as A. C3 is the generalisation
+of an observed failure, not a design preference.
+
+**Apparent contradiction with our own shipped proof, resolved.** BeliefConvergence proves the
+fold COMMUTES. C3 is not about order, it is about what the aggregation may DEPEND ON. Both hold.
+The next reader will hit this too.
+
+**Biggest finding is not a proof gap.** G1: no ClaimStrength surface exists. G7: Policy.fs has
+ONE instance and its own docstring says the trust interpreter is not built. The spine's central
+quantity and its evaluator are both absent, so every verification item routed this round verifies
+a function nobody has written. Said so; did not write it -- not my lane.
+
+**Stale-gap hazard, named as a class.** The 2026-08-09 IdP doc lists 4 gaps; 2 closed (KeyCustody
+shipped bounded duration + rotation) and nothing recorded it. A design surface that does not know
+which of its gaps are closed keeps re-proposing closed work.
+
+**Portfolio, identity/trust domain (full table in doc §7).** Metered: 12 artefacts incl. the
+BFT pair, the Quorum/Wager family, RefuseBinding, both Alloy models, whitewash-economics,
+row-15 N_eff. Unmetered: AntiSybil-as-theorem, PrivacyPreservingIdentity, C1, C4, C4-NI, C5,
+frost. Absent (not unmetered): ClaimStrength, the three decision classes.
+
+Filed: 081M0DJSR8N087G0R000QCYBYW (Lean C3a), 081M0DJSY48087G0R001GVG3AT (Z3 C3b),
+081M0DJSY5C087G0R00094DD3Z (FsCheck F3), 081M0DJSY6B087G0R0005PAA25 (Alloy C2),
+081M0DJSY79087G0R002FH5140 (TLA+ C4), 081M0DJSY88087G0R002JTPWKQ (Semgrep C4-NI),
+081M0DJSY9F087G0R002HV7KA7 (G1), 081M0DK2TW6087G0R001GHD9MJ (Alloy C6),
+081M0DK2TXD087G0R003674BAS (G7).
+
+**Three mid-round reframings, all adding sections rather than corrections.** (a) The local
+decision layer -- node-local OPA-like policy trust; C6 (hubs negotiate, never command) turned
+out to be RefuseBinding.tla generalised, non-penalty clause included, which is a routing gift.
+(b) Frost buys decorrelation -- then CORRECTED by Aaron: he runs with zero frost, fully
+public, and is decorrelated anyway. So opacity is ONE of three routes. The invariant is
+I(V;F), predictive mutual information: shrink V (frost), or keep F entropic at decision time
+(mixed strategy -- BitGan already has the meter, discriminatorEdge, and the anchor, von
+Neumann 1928: an optimal mixed strategy is safe to ANNOUNCE), or drift the policy
+(nonstationarity). Mechanisms 2-3 buy axis 1 without spending axis 2; frost spends both. Guard
+against the opposite overclaim: a deterministic stationary public agent IS predictable, so
+"transparency is free" is conditional. Frost was designed by someone who does not use it --
+not self-serving, also not dogfooded. F4 filed (081M0DRH1CW087G0R003Y3CAB6), both readings
+pre-registered. The register-collapse proof establishes privacy > 0 and must NOT be cited for
+the rho-pricing claim -- different falsifiers (G11). (c) The arc: S=4 at the origin, decorrelate without babel.
+Objective is decorrelate SUBJECT TO staying reconcilable. Both axes already instrumented
+(AntiSybil.correlation / largestLyapunov / effectiveN vs byte-lock / Collation / anchor audit)
+and never plotted together -- G13, 081M0DMH30Y087G0R001C2B1PT, composes with the register's
+open rho measurement. ClaimLane is the babel dial already built (G14). Also found an ACTIVE
+trajectory (local-trust-view-decentralized-identity) already carving C5 sharper than I did --
+C5 now defers to it (G10). Lesson: the duplication risk in this domain is real and I hit it.
+
+## 2026-08-19 -- forward correlation: the measure cannot be an observation
+
+**The gap.** Decorrelation fails from two ends of the time axis. Past = the S=4 common seed
+(backward rho measured: which files agents sampled). Future = mimetic desire, Girard
+(no instrument at all). Decorrelating one does not buy the other.
+
+**Headline, and it is a negative.** The forward measure is not a harder backward measure;
+it is a different epistemic object. Mimetic convergence is NOT identified from
+observational choice data -- Manski 1993 (reflection problem), Shalizi & Thomas 2011
+(homophily/contagion generically confounded, NON-PARAMETRICALLY). Our fleet has latent
+homophily in its strongest form: the S=4 seed IS the textbook unobserved common trait.
+Not separable observationally, and I did not propose a statistic pretending otherwise.
+
+**Anchor gap was the real finding.** GLOSSARY carries Girard's MECHANISM; repo-wide rg
+returns ZERO for Manski / Shalizi / homophily / reflection problem. Mechanism literature
+without identification literature is how a fleet builds the obvious meter and believes it.
+Added both + Pearl ch.3 + Goguen-Meseguer to PRIOR-ART-LIST.
+
+**Observable rejected, and the reason is mechanical.** Declared intentions is the natural
+design and is WORSE THAN NONE: a public declaration board IS Girard's subject->model edge,
+built on purpose. It creates the coupling, raises true correlation, then reports the
+correlation it caused. An instrument whose bias points at its own alarm. Work-item claims
+rejected too -- shared priority queue is Manski's correlated effect, and a healthy fleet
+correctly prioritising scores as MAXIMALLY mimetic (false red on the good case).
+
+**Observable accepted: the interventional contrast.** Not what they picked -- how much
+peer-visibility CHANGES the pick, value landscape fixed. m_i = TV(C_i(s,shown),
+C_i(s,substituted)). Identified BY CONSTRUCTION; confound absent rather than adjusted-for.
+Three design points: (a) DST gives the counterfactual free; (b) ablation is marginal-
+preserving SUBSTITUTION not deletion -- deletion is detectable, and the C3 theorem
+(marginals do not determine the joint) is what makes substitution undetectable; (c) a
+PLACEBO arm A/A' is mandatory -- agents are LLMs, DST determinism covers the substrate NOT
+the model, so model noise alone yields m>0 and reads as mimesis. Statistic is d(A,B)
+measured against the d(A,A') floor, never absolute.
+
+**Routing.** M1 substitution undetectable-by-marginals -> Z3 QF_LRA (TLC categorically
+wrong, no reals -- QuorumPhaseCancellation precedent). M2 channel completeness -> Semgrep,
+it is a grep (TLA+ would mean modelling an LLM: unmodelable). M3 harness does not leak arm
+identity -> TLA+/TLC, small, models the HARNESS never the agent. M4 estimator calibration
+-> FsCheck + the existing gaussianCopula. M5 the impossibility result -> NO TOOL, CITE IT;
+routing a prover at Manski/Shalizi is human-weeks for zero information, the cheapest
+correct instrument is a citation. M6 -> wiring, not verification.
+
+**Swept existing instruments first** (I routed past BitGan last round). Reusable:
+Kish effectiveTrialCount (IS the consumer -- m is exactly the rho it waits for),
+gaussianCopula (M4 synthesiser), AntiSybil lag-k (downstream aggregation),
+CoordinationSpectrum (dual-use-neutral reporting shape), BitGan discriminatorEdge
+(mixed-strategy route from F4). NOT reusable: AntiSybil.correlation (exact replays only),
+Orbit.largestLyapunov (trajectory divergence, silent on the causal channel),
+BeliefConvergence (proves the fold COMMUTES -- orthogonal to what aggregation may DEPEND
+on; same C3 distinction, next reader will hit it), TravelerRankLedger.
+
+**F5 pre-registered, both readings.** A: d(A,B) exceeds placebo floor -> forward coupling
+real, head-count n_eff overstates, channel needs metering. B: inside the floor ->
+convergence is AGREEMENT not mimesis, S=4 remains the only demonstrated source, effort
+belongs at the ORIGIN not on a forward damper. Neither is hoped-for; B is a measured zero,
+which is a result. Kill condition: if M4 reports m>0 on a zero-channel synthetic fleet the
+instrument is broken and F5 is VOID. Asymmetry stated up front: M2 failure biases toward
+Reading B (leaky ablation looks like independence), so Reading B is only meaningful if M2
+passed; Reading A is robust to M2 failure.
+
+**Verified, not assumed.** effectiveTrialCount has ZERO production callers -- 3 occurrences
+repo-wide (definition, tests, one STALE comment in tick-dial.ts naming it while the
+ScoreTrajectory type that comment serves has zero implementations). The vision doc's claim
+holds. Also: routing skill step-0 points at tools/alignment/concept_registry.ts which DOES
+NOT EXIST -- the anchor-registry lookup silently no-ops for every agent following the
+procedure literally.
+
+**Register.** All unmetered. The only metered thing is the negative (M5, cited). Did not
+invent a metric to fill the table, per the brief.
+
+**Filed:** 081M0DXM6XE087G0R003PTMMQ3 (Z3 M1), 081M0DXM6YD087G0R00397CAQE (Semgrep M2),
+081M0DXM6ZB087G0R0014VTR3S (TLA+ M3), 081M0DXM709087G0R000YY6YZZ (FsCheck M4),
+081M0DXM717087G0R001G4YWAC (Kish caller), 081M0DXM725087G0R002YDM382 (stale registry path).
+
+**Correction to the brief:** it stated the echolocation framing is "now on main" in
+PR #12528. It is OPEN, not merged. Built on it as a premise and said so in the doc.

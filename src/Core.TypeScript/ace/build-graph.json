@@ -41,7 +41,7 @@
       "kind": "dotnet",
       "sources": ["bench/Benchmarks/**"],
       "dependsOn": ["dotnet:src/Core", "dotnet:src/Core.CSharp.Bonsai", "dotnet:src/Core.FSharp.Git"],
-      "legs": ["gate/build-and-test"],
+      "legs": ["gate/build-and-test", "gate/lint-csharp", "gate/lint-fsharp"],
       "origin": "derived",
       "requiredQuorum": {
         "tier": "T1",
@@ -58,7 +58,7 @@
       "kind": "dotnet",
       "sources": ["bench/Feldera.Bench/**"],
       "dependsOn": ["dotnet:src/Core"],
-      "legs": ["gate/build-and-test"],
+      "legs": ["gate/build-and-test", "gate/lint-csharp", "gate/lint-fsharp"],
       "origin": "derived",
       "requiredQuorum": {
         "tier": "T1",
@@ -75,7 +75,7 @@
       "kind": "dotnet",
       "sources": ["clis/**"],
       "dependsOn": [],
-      "legs": ["gate/build-and-test"],
+      "legs": ["gate/build-and-test", "gate/lint-csharp", "gate/lint-fsharp"],
       "origin": "derived",
       "requiredQuorum": {
         "tier": "T3",
@@ -89,7 +89,7 @@
             "rule": "cross-oracle-bytelock",
             "kind": "cross-oracle",
             "witness": "tests/Tests.FSharp/Blake3/CrossVerifyTests.fs",
-            "count": 30,
+            "count": 31,
             "holder": "dotnet:tests/Tests.FSharp"
           },
           {
@@ -107,7 +107,7 @@
       "kind": "dotnet",
       "sources": ["samples/CrmSample/**"],
       "dependsOn": ["dotnet:src/Core"],
-      "legs": ["gate/build-and-test"],
+      "legs": ["gate/build-and-test", "gate/lint-csharp", "gate/lint-fsharp"],
       "origin": "derived",
       "requiredQuorum": {
         "tier": "T1",
@@ -124,7 +124,7 @@
       "kind": "dotnet",
       "sources": ["samples/Demo/**"],
       "dependsOn": ["dotnet:src/Core"],
-      "legs": ["gate/build-and-test"],
+      "legs": ["gate/build-and-test", "gate/lint-csharp", "gate/lint-fsharp"],
       "origin": "derived",
       "requiredQuorum": {
         "tier": "T1",
@@ -141,7 +141,7 @@
       "kind": "dotnet",
       "sources": ["samples/FactoryDemo.Api.CSharp/**"],
       "dependsOn": [],
-      "legs": ["gate/build-and-test"],
+      "legs": ["gate/build-and-test", "gate/lint-csharp", "gate/lint-fsharp"],
       "origin": "derived",
       "requiredQuorum": {
         "tier": "T1",
@@ -158,7 +158,7 @@
       "kind": "dotnet",
       "sources": ["samples/FactoryDemo.Api.FSharp/**"],
       "dependsOn": [],
-      "legs": ["gate/build-and-test"],
+      "legs": ["gate/build-and-test", "gate/lint-csharp", "gate/lint-fsharp"],
       "origin": "derived",
       "requiredQuorum": {
         "tier": "T1",
@@ -175,7 +175,7 @@
       "kind": "dotnet",
       "sources": ["samples/QuickStart/**"],
       "dependsOn": ["dotnet:src/Core.CSharp"],
-      "legs": ["gate/build-and-test"],
+      "legs": ["gate/build-and-test", "gate/lint-csharp", "gate/lint-fsharp"],
       "origin": "derived",
       "requiredQuorum": {
         "tier": "T1",
@@ -192,7 +192,7 @@
       "kind": "dotnet",
       "sources": ["src/Bayesian/**"],
       "dependsOn": ["dotnet:src/Core"],
-      "legs": ["gate/build-and-test"],
+      "legs": ["gate/build-and-test", "gate/lint-csharp", "gate/lint-fsharp"],
       "origin": "derived",
       "requiredQuorum": {
         "tier": "T3",
@@ -224,7 +224,7 @@
       "kind": "dotnet",
       "sources": ["src/Core/**"],
       "dependsOn": ["dotnet:src/Core.Abstractions", "dotnet:src/Core.FSharp.Yaml", "dotnet:src/Core.FSharp.ZetaId"],
-      "legs": ["gate/build-and-test"],
+      "legs": ["gate/build-and-test", "gate/lint-csharp", "gate/lint-fsharp"],
       "origin": "derived",
       "requiredQuorum": {
         "tier": "T3",
@@ -263,7 +263,7 @@
       "kind": "dotnet",
       "sources": ["src/Core.Abstractions/**"],
       "dependsOn": [],
-      "legs": ["gate/build-and-test"],
+      "legs": ["gate/build-and-test", "gate/lint-csharp", "gate/lint-fsharp"],
       "origin": "derived",
       "requiredQuorum": {
         "tier": "T3",
@@ -302,7 +302,7 @@
       "kind": "dotnet",
       "sources": ["src/Core.CSharp/**"],
       "dependsOn": ["dotnet:src/Core", "dotnet:src/Core.CSharp.DynamicValue"],
-      "legs": ["gate/build-and-test"],
+      "legs": ["gate/build-and-test", "gate/lint-csharp", "gate/lint-fsharp"],
       "origin": "derived",
       "requiredQuorum": {
         "tier": "T3",
@@ -334,7 +334,7 @@
       "kind": "dotnet",
       "sources": ["src/Core.CSharp.AceCanonical/**"],
       "dependsOn": [],
-      "legs": ["gate/build-and-test"],
+      "legs": ["gate/build-and-test", "gate/lint-csharp", "gate/lint-fsharp"],
       "origin": "derived",
       "requiredQuorum": {
         "tier": "T3",
@@ -359,7 +359,7 @@
       "kind": "dotnet",
       "sources": ["src/Core.CSharp.Blake3/**"],
       "dependsOn": ["dotnet:src/Core"],
-      "legs": ["gate/build-and-test"],
+      "legs": ["gate/build-and-test", "gate/lint-csharp", "gate/lint-fsharp"],
       "origin": "derived",
       "requiredQuorum": {
         "tier": "T3",
@@ -384,7 +384,7 @@
       "kind": "dotnet",
       "sources": ["src/Core.CSharp.Bonsai/**"],
       "dependsOn": [],
-      "legs": ["gate/build-and-test"],
+      "legs": ["gate/build-and-test", "gate/lint-csharp", "gate/lint-fsharp"],
       "origin": "derived",
       "requiredQuorum": {
         "tier": "T3",
@@ -409,7 +409,7 @@
       "kind": "dotnet",
       "sources": ["src/Core.CSharp.ByteCost/**"],
       "dependsOn": [],
-      "legs": ["gate/build-and-test"],
+      "legs": ["gate/build-and-test", "gate/lint-csharp", "gate/lint-fsharp"],
       "origin": "derived",
       "requiredQuorum": {
         "tier": "T3",
@@ -434,7 +434,7 @@
       "kind": "dotnet",
       "sources": ["src/Core.CSharp.Clock/**"],
       "dependsOn": [],
-      "legs": ["gate/build-and-test"],
+      "legs": ["gate/build-and-test", "gate/lint-csharp", "gate/lint-fsharp"],
       "origin": "derived",
       "requiredQuorum": {
         "tier": "T3",
@@ -459,7 +459,7 @@
       "kind": "dotnet",
       "sources": ["src/Core.CSharp.DynamicValue/**"],
       "dependsOn": ["dotnet:src/Core.CSharp.Yaml"],
-      "legs": ["gate/build-and-test"],
+      "legs": ["gate/build-and-test", "gate/lint-csharp", "gate/lint-fsharp"],
       "origin": "derived",
       "requiredQuorum": {
         "tier": "T3",
@@ -491,7 +491,7 @@
       "kind": "dotnet",
       "sources": ["src/Core.CSharp.Mediator/**"],
       "dependsOn": [],
-      "legs": ["gate/build-and-test"],
+      "legs": ["gate/build-and-test", "gate/lint-csharp", "gate/lint-fsharp"],
       "origin": "derived",
       "requiredQuorum": {
         "tier": "T3",
@@ -505,7 +505,7 @@
             "rule": "cross-oracle-bytelock",
             "kind": "cross-oracle",
             "witness": "tests/Tests.FSharp/Blake3/CrossVerifyTests.fs",
-            "count": 30,
+            "count": 31,
             "holder": "dotnet:tests/Tests.FSharp"
           },
           {
@@ -529,7 +529,7 @@
         "dotnet:src/Core.CSharp.Mediator",
         "dotnet:src/Core.CSharp.Merkle"
       ],
-      "legs": ["gate/build-and-test"],
+      "legs": ["gate/build-and-test", "gate/lint-csharp", "gate/lint-fsharp"],
       "origin": "derived",
       "requiredQuorum": {
         "tier": "T1",
@@ -546,7 +546,7 @@
       "kind": "dotnet",
       "sources": ["src/Core.CSharp.Merkle/**"],
       "dependsOn": [],
-      "legs": ["gate/build-and-test"],
+      "legs": ["gate/build-and-test", "gate/lint-csharp", "gate/lint-fsharp"],
       "origin": "derived",
       "requiredQuorum": {
         "tier": "T3",
@@ -578,7 +578,7 @@
       "kind": "dotnet",
       "sources": ["src/Core.CSharp.Metric/**"],
       "dependsOn": [],
-      "legs": ["gate/build-and-test"],
+      "legs": ["gate/build-and-test", "gate/lint-csharp", "gate/lint-fsharp"],
       "origin": "derived",
       "requiredQuorum": {
         "tier": "T3",
@@ -592,7 +592,7 @@
             "rule": "cross-oracle-bytelock",
             "kind": "cross-oracle",
             "witness": "tests/Tests.FSharp/Blake3/CrossVerifyTests.fs",
-            "count": 30,
+            "count": 31,
             "holder": "dotnet:tests/Tests.FSharp"
           },
           {
@@ -610,7 +610,7 @@
       "kind": "dotnet",
       "sources": ["src/Core.CSharp.Observe/**"],
       "dependsOn": [],
-      "legs": ["gate/build-and-test"],
+      "legs": ["gate/build-and-test", "gate/lint-csharp", "gate/lint-fsharp"],
       "origin": "derived",
       "requiredQuorum": {
         "tier": "T3",
@@ -635,7 +635,7 @@
       "kind": "dotnet",
       "sources": ["src/Core.CSharp.RangeSet/**"],
       "dependsOn": [],
-      "legs": ["gate/build-and-test"],
+      "legs": ["gate/build-and-test", "gate/lint-csharp", "gate/lint-fsharp"],
       "origin": "derived",
       "requiredQuorum": {
         "tier": "T3",
@@ -660,7 +660,7 @@
       "kind": "dotnet",
       "sources": ["src/Core.CSharp.Resume/**"],
       "dependsOn": ["dotnet:src/Core.CSharp.Bonsai"],
-      "legs": ["gate/build-and-test"],
+      "legs": ["gate/build-and-test", "gate/lint-csharp", "gate/lint-fsharp"],
       "origin": "derived",
       "requiredQuorum": {
         "tier": "T3",
@@ -685,7 +685,7 @@
       "kind": "dotnet",
       "sources": ["src/Core.CSharp.SchemaEvolution/**"],
       "dependsOn": [],
-      "legs": ["gate/build-and-test"],
+      "legs": ["gate/build-and-test", "gate/lint-csharp", "gate/lint-fsharp"],
       "origin": "derived",
       "requiredQuorum": {
         "tier": "T1",
@@ -702,7 +702,7 @@
       "kind": "dotnet",
       "sources": ["src/Core.CSharp.Sha256/**"],
       "dependsOn": [],
-      "legs": ["gate/build-and-test"],
+      "legs": ["gate/build-and-test", "gate/lint-csharp", "gate/lint-fsharp"],
       "origin": "derived",
       "requiredQuorum": {
         "tier": "T3",
@@ -727,7 +727,7 @@
       "kind": "dotnet",
       "sources": ["src/Core.CSharp.TriBoolean/**"],
       "dependsOn": [],
-      "legs": ["gate/build-and-test"],
+      "legs": ["gate/build-and-test", "gate/lint-csharp", "gate/lint-fsharp"],
       "origin": "derived",
       "requiredQuorum": {
         "tier": "T3",
@@ -752,7 +752,7 @@
       "kind": "dotnet",
       "sources": ["src/Core.CSharp.TypeProvider/**"],
       "dependsOn": [],
-      "legs": ["gate/build-and-test"],
+      "legs": ["gate/build-and-test", "gate/lint-csharp", "gate/lint-fsharp"],
       "origin": "derived",
       "requiredQuorum": {
         "tier": "T1",
@@ -769,7 +769,7 @@
       "kind": "dotnet",
       "sources": ["src/Core.CSharp.Yaml/**"],
       "dependsOn": [],
-      "legs": ["gate/build-and-test"],
+      "legs": ["gate/build-and-test", "gate/lint-csharp", "gate/lint-fsharp"],
       "origin": "derived",
       "requiredQuorum": {
         "tier": "T3",
@@ -801,7 +801,7 @@
       "kind": "dotnet",
       "sources": ["src/Core.CSharp.ZetaId/**"],
       "dependsOn": [],
-      "legs": ["gate/build-and-test"],
+      "legs": ["gate/build-and-test", "gate/lint-csharp", "gate/lint-fsharp"],
       "origin": "derived",
       "requiredQuorum": {
         "tier": "T3",
@@ -826,7 +826,7 @@
       "kind": "dotnet",
       "sources": ["src/Core.FSharp.AceCanonical/**"],
       "dependsOn": [],
-      "legs": ["gate/build-and-test"],
+      "legs": ["gate/build-and-test", "gate/lint-csharp", "gate/lint-fsharp"],
       "origin": "derived",
       "requiredQuorum": {
         "tier": "T3",
@@ -840,7 +840,7 @@
             "rule": "cross-oracle-bytelock",
             "kind": "cross-oracle",
             "witness": "tests/Tests.FSharp/Blake3/CrossVerifyTests.fs",
-            "count": 30,
+            "count": 31,
             "holder": "dotnet:tests/Tests.FSharp"
           },
           {
@@ -858,7 +858,7 @@
       "kind": "dotnet",
       "sources": ["src/Core.FSharp.Blake3/**"],
       "dependsOn": ["dotnet:src/Core"],
-      "legs": ["gate/build-and-test"],
+      "legs": ["gate/build-and-test", "gate/lint-csharp", "gate/lint-fsharp"],
       "origin": "derived",
       "requiredQuorum": {
         "tier": "T3",
@@ -872,7 +872,7 @@
             "rule": "cross-oracle-bytelock",
             "kind": "cross-oracle",
             "witness": "tests/Tests.FSharp/Blake3/CrossVerifyTests.fs",
-            "count": 30,
+            "count": 31,
             "holder": "dotnet:tests/Tests.FSharp"
           },
           {
@@ -890,7 +890,7 @@
       "kind": "dotnet",
       "sources": ["src/Core.FSharp.Cli/**"],
       "dependsOn": ["dotnet:src/Core", "dotnet:src/Core.FSharp.Git"],
-      "legs": ["gate/build-and-test"],
+      "legs": ["gate/build-and-test", "gate/lint-csharp", "gate/lint-fsharp"],
       "origin": "derived",
       "requiredQuorum": {
         "tier": "T3",
@@ -904,7 +904,7 @@
             "rule": "cross-oracle-bytelock",
             "kind": "cross-oracle",
             "witness": "tests/Tests.FSharp/Blake3/CrossVerifyTests.fs",
-            "count": 30,
+            "count": 31,
             "holder": "dotnet:tests/Tests.FSharp"
           },
           {
@@ -922,7 +922,7 @@
       "kind": "dotnet",
       "sources": ["src/Core.FSharp.Git/**"],
       "dependsOn": ["dotnet:src/Core"],
-      "legs": ["gate/build-and-test"],
+      "legs": ["gate/build-and-test", "gate/lint-csharp", "gate/lint-fsharp"],
       "origin": "derived",
       "requiredQuorum": {
         "tier": "T3",
@@ -936,7 +936,7 @@
             "rule": "cross-oracle-bytelock",
             "kind": "cross-oracle",
             "witness": "tests/Tests.FSharp/Blake3/CrossVerifyTests.fs",
-            "count": 30,
+            "count": 31,
             "holder": "dotnet:tests/Tests.FSharp"
           },
           {
@@ -954,7 +954,7 @@
       "kind": "dotnet",
       "sources": ["src/Core.FSharp.Mcp/**"],
       "dependsOn": ["dotnet:src/Core.FSharp.Git"],
-      "legs": ["gate/build-and-test"],
+      "legs": ["gate/build-and-test", "gate/lint-csharp", "gate/lint-fsharp"],
       "origin": "derived",
       "requiredQuorum": {
         "tier": "T1",
@@ -971,7 +971,7 @@
       "kind": "dotnet",
       "sources": ["src/Core.FSharp.Mediator/**"],
       "dependsOn": ["dotnet:src/Core.CSharp.Mediator"],
-      "legs": ["gate/build-and-test"],
+      "legs": ["gate/build-and-test", "gate/lint-csharp", "gate/lint-fsharp"],
       "origin": "derived",
       "requiredQuorum": {
         "tier": "T3",
@@ -985,7 +985,7 @@
             "rule": "cross-oracle-bytelock",
             "kind": "cross-oracle",
             "witness": "tests/Tests.FSharp/Blake3/CrossVerifyTests.fs",
-            "count": 30,
+            "count": 31,
             "holder": "dotnet:tests/Tests.FSharp"
           },
           {
@@ -1003,7 +1003,7 @@
       "kind": "dotnet",
       "sources": ["src/Core.FSharp.Observe/**"],
       "dependsOn": [],
-      "legs": ["gate/build-and-test"],
+      "legs": ["gate/build-and-test", "gate/lint-csharp", "gate/lint-fsharp"],
       "origin": "derived",
       "requiredQuorum": {
         "tier": "T3",
@@ -1017,7 +1017,7 @@
             "rule": "cross-oracle-bytelock",
             "kind": "cross-oracle",
             "witness": "tests/Tests.FSharp/Blake3/CrossVerifyTests.fs",
-            "count": 30,
+            "count": 31,
             "holder": "dotnet:tests/Tests.FSharp"
           },
           {
@@ -1035,7 +1035,7 @@
       "kind": "dotnet",
       "sources": ["src/Core.FSharp.ObserveBridge/**"],
       "dependsOn": ["dotnet:src/Core", "dotnet:src/Core.FSharp.Observe"],
-      "legs": ["gate/build-and-test"],
+      "legs": ["gate/build-and-test", "gate/lint-csharp", "gate/lint-fsharp"],
       "origin": "derived",
       "requiredQuorum": {
         "tier": "T3",
@@ -1049,7 +1049,7 @@
             "rule": "cross-oracle-bytelock",
             "kind": "cross-oracle",
             "witness": "tests/Tests.FSharp/Blake3/CrossVerifyTests.fs",
-            "count": 30,
+            "count": 31,
             "holder": "dotnet:tests/Tests.FSharp"
           },
           {
@@ -1067,7 +1067,7 @@
       "kind": "dotnet",
       "sources": ["src/Core.FSharp.Sha256/**"],
       "dependsOn": [],
-      "legs": ["gate/build-and-test"],
+      "legs": ["gate/build-and-test", "gate/lint-csharp", "gate/lint-fsharp"],
       "origin": "derived",
       "requiredQuorum": {
         "tier": "T3",
@@ -1081,7 +1081,7 @@
             "rule": "cross-oracle-bytelock",
             "kind": "cross-oracle",
             "witness": "tests/Tests.FSharp/Blake3/CrossVerifyTests.fs",
-            "count": 30,
+            "count": 31,
             "holder": "dotnet:tests/Tests.FSharp"
           },
           {
@@ -1099,7 +1099,7 @@
       "kind": "dotnet",
       "sources": ["src/Core.FSharp.SubstrateDiscovery/**"],
       "dependsOn": ["dotnet:src/Core"],
-      "legs": ["gate/build-and-test"],
+      "legs": ["gate/build-and-test", "gate/lint-csharp", "gate/lint-fsharp"],
       "origin": "derived",
       "requiredQuorum": {
         "tier": "T1",
@@ -1116,7 +1116,7 @@
       "kind": "dotnet",
       "sources": ["src/Core.FSharp.TriBoolean/**"],
       "dependsOn": ["dotnet:src/Core"],
-      "legs": ["gate/build-and-test"],
+      "legs": ["gate/build-and-test", "gate/lint-csharp", "gate/lint-fsharp"],
       "origin": "derived",
       "requiredQuorum": {
         "tier": "T3",
@@ -1130,7 +1130,7 @@
             "rule": "cross-oracle-bytelock",
             "kind": "cross-oracle",
             "witness": "tests/Tests.FSharp/Blake3/CrossVerifyTests.fs",
-            "count": 30,
+            "count": 31,
             "holder": "dotnet:tests/Tests.FSharp"
           },
           {
@@ -1148,7 +1148,7 @@
       "kind": "dotnet",
       "sources": ["src/Core.FSharp.Yaml/**"],
       "dependsOn": [],
-      "legs": ["gate/build-and-test"],
+      "legs": ["gate/build-and-test", "gate/lint-csharp", "gate/lint-fsharp"],
       "origin": "derived",
       "requiredQuorum": {
         "tier": "T3",
@@ -1187,7 +1187,7 @@
       "kind": "dotnet",
       "sources": ["src/Core.FSharp.Z3Verify/**"],
       "dependsOn": [],
-      "legs": ["gate/build-and-test"],
+      "legs": ["gate/build-and-test", "gate/lint-csharp", "gate/lint-fsharp"],
       "origin": "derived",
       "requiredQuorum": {
         "tier": "T1",
@@ -1204,7 +1204,7 @@
       "kind": "dotnet",
       "sources": ["src/Core.FSharp.ZetaId/**"],
       "dependsOn": [],
-      "legs": ["gate/build-and-test"],
+      "legs": ["gate/build-and-test", "gate/lint-csharp", "gate/lint-fsharp"],
       "origin": "derived",
       "requiredQuorum": {
         "tier": "T3",
@@ -1239,11 +1239,43 @@
       }
     },
     {
+      "id": "dotnet:src/Core.Telemetry",
+      "kind": "dotnet",
+      "sources": ["src/Core.Telemetry/**"],
+      "dependsOn": ["dotnet:src/Core"],
+      "legs": ["gate/build-and-test", "gate/lint-csharp", "gate/lint-fsharp"],
+      "origin": "derived",
+      "requiredQuorum": {
+        "tier": "T3",
+        "faultModel": {
+          "faultClass": "byzantine",
+          "f": 1
+        },
+        "reviewerClasses": ["reviewer:fsharp"],
+        "evidence": [
+          {
+            "rule": "cross-oracle-bytelock",
+            "kind": "cross-oracle",
+            "witness": "tests/Tests.FSharp/Blake3/CrossVerifyTests.fs",
+            "count": 31,
+            "holder": "dotnet:tests/Tests.FSharp"
+          },
+          {
+            "rule": "treaty-transcript",
+            "kind": "treaty-transcript",
+            "witness": "tests/Tests.FSharp/Chip9Treaty.Tests.fs",
+            "count": 6,
+            "holder": "dotnet:tests/Tests.FSharp"
+          }
+        ]
+      }
+    },
+    {
       "id": "dotnet:src/SwarmRunner",
       "kind": "dotnet",
       "sources": ["src/SwarmRunner/**"],
       "dependsOn": [],
-      "legs": ["gate/build-and-test"],
+      "legs": ["gate/build-and-test", "gate/lint-csharp", "gate/lint-fsharp"],
       "origin": "derived",
       "requiredQuorum": {
         "tier": "T1",
@@ -1260,7 +1292,7 @@
       "kind": "dotnet",
       "sources": ["src/Zeta.Generators/**"],
       "dependsOn": [],
-      "legs": ["gate/build-and-test"],
+      "legs": ["gate/build-and-test", "gate/lint-csharp", "gate/lint-fsharp"],
       "origin": "derived",
       "requiredQuorum": {
         "tier": "T3",
@@ -1285,7 +1317,7 @@
       "kind": "dotnet",
       "sources": ["tests/Bayesian.Tests/**"],
       "dependsOn": ["dotnet:src/Bayesian", "dotnet:src/Core"],
-      "legs": ["gate/build-and-test"],
+      "legs": ["gate/build-and-test", "gate/lint-csharp", "gate/lint-fsharp"],
       "origin": "derived",
       "requiredQuorum": {
         "tier": "T1",
@@ -1306,7 +1338,7 @@
         "dotnet:src/Core.CSharp.Mediator.Handlers",
         "dotnet:tests/Core.FSharp.Mediator.Fixtures"
       ],
-      "legs": ["gate/build-and-test"],
+      "legs": ["gate/build-and-test", "gate/lint-csharp", "gate/lint-fsharp"],
       "origin": "derived",
       "requiredQuorum": {
         "tier": "T1",
@@ -1323,7 +1355,7 @@
       "kind": "dotnet",
       "sources": ["tests/Core.CSharp.Tests/**"],
       "dependsOn": ["dotnet:src/Core", "dotnet:src/Core.CSharp", "dotnet:src/Core.CSharp.DynamicValue"],
-      "legs": ["gate/build-and-test"],
+      "legs": ["gate/build-and-test", "gate/lint-csharp", "gate/lint-fsharp"],
       "origin": "derived",
       "requiredQuorum": {
         "tier": "T1",
@@ -1340,7 +1372,7 @@
       "kind": "dotnet",
       "sources": ["tests/Core.FSharp.Mediator.Fixtures/**"],
       "dependsOn": ["dotnet:src/Core.CSharp.Mediator"],
-      "legs": ["gate/build-and-test"],
+      "legs": ["gate/build-and-test", "gate/lint-csharp", "gate/lint-fsharp"],
       "origin": "derived",
       "requiredQuorum": {
         "tier": "T1",
@@ -1376,7 +1408,7 @@
         "dotnet:src/Core.CSharp.ZetaId",
         "dotnet:src/Zeta.Generators"
       ],
-      "legs": ["gate/build-and-test"],
+      "legs": ["gate/build-and-test", "gate/lint-csharp", "gate/lint-fsharp"],
       "origin": "derived",
       "requiredQuorum": {
         "tier": "T3",
@@ -1401,7 +1433,7 @@
       "kind": "dotnet",
       "sources": ["tests/Tests.CSharp.TypeProvider/**"],
       "dependsOn": ["dotnet:src/Core.CSharp.TypeProvider"],
-      "legs": ["gate/build-and-test"],
+      "legs": ["gate/build-and-test", "gate/lint-csharp", "gate/lint-fsharp"],
       "origin": "derived",
       "requiredQuorum": {
         "tier": "T1",
@@ -1433,9 +1465,10 @@
         "dotnet:src/Core.FSharp.Sha256",
         "dotnet:src/Core.FSharp.TriBoolean",
         "dotnet:src/Core.FSharp.Yaml",
-        "dotnet:src/Core.FSharp.ZetaId"
+        "dotnet:src/Core.FSharp.ZetaId",
+        "dotnet:src/Core.Telemetry"
       ],
-      "legs": ["gate/build-and-test"],
+      "legs": ["gate/build-and-test", "gate/lint-csharp", "gate/lint-fsharp"],
       "origin": "derived",
       "requiredQuorum": {
         "tier": "T3",
@@ -1449,7 +1482,7 @@
             "rule": "cross-oracle-bytelock",
             "kind": "cross-oracle",
             "witness": "tests/Tests.FSharp/Blake3/CrossVerifyTests.fs",
-            "count": 30,
+            "count": 31,
             "holder": "dotnet:tests/Tests.FSharp"
           },
           {
@@ -1472,7 +1505,7 @@
         "dotnet:src/Core.FSharp.Observe",
         "dotnet:src/Core.FSharp.ObserveBridge"
       ],
-      "legs": ["gate/build-and-test"],
+      "legs": ["gate/build-and-test", "gate/lint-csharp", "gate/lint-fsharp"],
       "origin": "derived",
       "requiredQuorum": {
         "tier": "T1",
@@ -1489,7 +1522,7 @@
       "kind": "dotnet",
       "sources": ["vocab/**"],
       "dependsOn": [],
-      "legs": ["gate/build-and-test"],
+      "legs": ["gate/build-and-test", "gate/lint-csharp", "gate/lint-fsharp"],
       "origin": "derived",
       "requiredQuorum": {
         "tier": "T1",
@@ -1506,7 +1539,7 @@
       "kind": "lean",
       "sources": ["src/Core.Lean4/**"],
       "dependsOn": [],
-      "legs": ["lean-proof/build"],
+      "legs": ["lean-proof/type-check"],
       "origin": "derived",
       "requiredQuorum": {
         "tier": "T1",
@@ -1536,6 +1569,47 @@
       }
     },
     {
+      "id": "leg:archive-headers",
+      "kind": "leg",
+      "sources": ["docs/history/**", "docs/github/**", "docs/pr-discussions/**"],
+      "dependsOn": [],
+      "legs": ["gate/lint-archive-header-section33", "gate/lint-section-33-migration-xrefs"],
+      "origin": "declared",
+      "requiredQuorum": {
+        "tier": "T1",
+        "faultModel": {
+          "faultClass": "omission",
+          "f": 1
+        },
+        "reviewerClasses": ["reviewer:unknown:leg"],
+        "evidence": []
+      },
+      "note": "both legs read the merge archive: header shape and the section-33 migration cross-references."
+    },
+    {
+      "id": "leg:build-graph",
+      "kind": "leg",
+      "sources": [
+        "src/Core.TypeScript/ace/build-graph.json",
+        "src/Core.TypeScript/ace/build-graph.ts",
+        "src/Core.TypeScript/ci/affected-legs.ts",
+        "src/Core.TypeScript/hygiene/audit-build-graph-completeness.ts"
+      ],
+      "dependsOn": [],
+      "legs": ["gate/build-graph-completeness"],
+      "origin": "declared",
+      "requiredQuorum": {
+        "tier": "T1",
+        "faultModel": {
+          "faultClass": "omission",
+          "f": 1
+        },
+        "reviewerClasses": ["reviewer:unknown:leg"],
+        "evidence": []
+      },
+      "note": ""
+    },
+    {
       "id": "leg:markdown",
       "kind": "markdown",
       "sources": ["**/*.md"],
@@ -1551,6 +1625,61 @@
         "reviewerClasses": ["reviewer:markdown"],
         "evidence": []
       }
+    },
+    {
+      "id": "leg:repo-text",
+      "kind": "leg",
+      "sources": ["**/*.md", "**/*.ts", "**/*.tsx", "**/*.yml", "**/*.yaml", "**/*.json", "**/*.fs", "**/*.cs"],
+      "dependsOn": [],
+      "legs": ["gate/lint-no-conflict-markers"],
+      "origin": "declared",
+      "requiredQuorum": {
+        "tier": "T1",
+        "faultModel": {
+          "faultClass": "omission",
+          "f": 1
+        },
+        "reviewerClasses": [
+          "reviewer:csharp",
+          "reviewer:fsharp",
+          "reviewer:go",
+          "reviewer:mumps",
+          "reviewer:python",
+          "reviewer:rust",
+          "reviewer:typescript",
+          "reviewer:unknown:leg"
+        ],
+        "evidence": []
+      },
+      "note": "conflict-marker scan runs over every tracked text file, so its surface is the text tree."
+    },
+    {
+      "id": "leg:semgrep",
+      "kind": "leg",
+      "sources": [
+        "**/*.ts",
+        "**/*.tsx",
+        "**/*.yml",
+        "**/*.yaml",
+        "**/*.fs",
+        "**/*.cs",
+        "**/*.py",
+        "**/*.rs",
+        "**/*.go"
+      ],
+      "dependsOn": [],
+      "legs": ["gate/lint", "gate/lint-semgrep-drift"],
+      "origin": "declared",
+      "requiredQuorum": {
+        "tier": "T1",
+        "faultModel": {
+          "faultClass": "omission",
+          "f": 1
+        },
+        "reviewerClasses": ["reviewer:unknown:leg"],
+        "evidence": []
+      },
+      "note": "semgrep scans every source surface plus the workflow YAML; the drift leg re-checks the ruleset against it."
     },
     {
       "id": "leg:shell",
@@ -1570,11 +1699,92 @@
       }
     },
     {
+      "id": "leg:tick-history",
+      "kind": "leg",
+      "sources": ["data/**"],
+      "dependsOn": [],
+      "legs": ["gate/lint-tick-history-order", "gate/lint-tick-shard-relative-paths"],
+      "origin": "declared",
+      "requiredQuorum": {
+        "tier": "T1",
+        "faultModel": {
+          "faultClass": "omission",
+          "f": 1
+        },
+        "reviewerClasses": ["reviewer:unknown:leg"],
+        "evidence": []
+      },
+      "note": "both legs read the telemetry ledger under data/ -- ordering and shard-path shape."
+    },
+    {
+      "id": "leg:tree-structure",
+      "kind": "leg",
+      "sources": ["**"],
+      "dependsOn": [],
+      "legs": ["gate/lint-no-empty-dirs", "gate/lint-structural-hygiene"],
+      "origin": "declared",
+      "requiredQuorum": {
+        "tier": "T1",
+        "faultModel": {
+          "faultClass": "omission",
+          "f": 1
+        },
+        "reviewerClasses": [
+          "reviewer:csharp",
+          "reviewer:fsharp",
+          "reviewer:go",
+          "reviewer:mumps",
+          "reviewer:python",
+          "reviewer:rust",
+          "reviewer:typescript",
+          "reviewer:unknown:leg"
+        ],
+        "evidence": []
+      },
+      "note": "structural hygiene and the empty-directory guard are properties of the TREE, not of any file, so the surface is the whole tree. This is the widest declared target and it is deliberate: these legs must run on any change that adds or removes a path."
+    },
+    {
+      "id": "leg:workflows",
+      "kind": "leg",
+      "sources": [".github/workflows/**"],
+      "dependsOn": [],
+      "legs": ["gate/lint-workflows"],
+      "origin": "declared",
+      "requiredQuorum": {
+        "tier": "T1",
+        "faultModel": {
+          "faultClass": "omission",
+          "f": 1
+        },
+        "reviewerClasses": ["reviewer:unknown:leg"],
+        "evidence": []
+      },
+      "note": "actionlint over the workflow files themselves."
+    },
+    {
+      "id": "leg:yaml-k8s",
+      "kind": "leg",
+      "sources": ["**/*.yml", "**/*.yaml"],
+      "dependsOn": [],
+      "legs": ["gate/lint-yaml-k8s"],
+      "origin": "declared",
+      "requiredQuorum": {
+        "tier": "T1",
+        "faultModel": {
+          "faultClass": "omission",
+          "f": 1
+        },
+        "reviewerClasses": ["reviewer:unknown:leg"],
+        "evidence": []
+      },
+      "note": "yamllint + kubeconform + the cluster-tree consumer roster; the surface is every YAML in the tree."
+    },
+    {
       "id": "rust:src/Core.Rust.AceCanonical",
       "kind": "rust",
       "sources": ["src/Core.Rust.AceCanonical/**"],
       "dependsOn": ["rust:src/Core.Rust.DynamicValue"],
-      "legs": [],
+      "legs": ["gate/lint-rust"],
       "origin": "derived",
       "requiredQuorum": {
         "tier": "T3",
@@ -1599,7 +1809,7 @@
       "kind": "rust",
       "sources": ["src/Core.Rust.Algebra/**"],
       "dependsOn": ["rust:src/Core.Rust.Merkle", "rust:src/Core.Rust.Sha256", "rust:src/Core.Rust.Yaml"],
-      "legs": [],
+      "legs": ["gate/lint-rust"],
       "origin": "derived",
       "requiredQuorum": {
         "tier": "T3",
@@ -1624,7 +1834,7 @@
       "kind": "rust",
       "sources": ["src/Core.Rust.Blake3/**"],
       "dependsOn": ["rust:src/Core.Rust.Merkle", "rust:src/Core.Rust.Yaml"],
-      "legs": [],
+      "legs": ["gate/lint-rust"],
       "origin": "derived",
       "requiredQuorum": {
         "tier": "T3",
@@ -1649,7 +1859,7 @@
       "kind": "rust",
       "sources": ["src/Core.Rust.Bonsai/**"],
       "dependsOn": [],
-      "legs": [],
+      "legs": ["gate/lint-rust"],
       "origin": "derived",
       "requiredQuorum": {
         "tier": "T3",
@@ -1674,7 +1884,7 @@
       "kind": "rust",
       "sources": ["src/Core.Rust.Braid/**"],
       "dependsOn": [],
-      "legs": [],
+      "legs": ["gate/lint-rust"],
       "origin": "derived",
       "requiredQuorum": {
         "tier": "T2",
@@ -1699,7 +1909,7 @@
       "kind": "rust",
       "sources": ["src/Core.Rust.ByteCost/**"],
       "dependsOn": [],
-      "legs": [],
+      "legs": ["gate/lint-rust"],
       "origin": "derived",
       "requiredQuorum": {
         "tier": "T2",
@@ -1724,7 +1934,7 @@
       "kind": "rust",
       "sources": ["src/Core.Rust.Chip9/**"],
       "dependsOn": [],
-      "legs": [],
+      "legs": ["gate/lint-rust"],
       "origin": "derived",
       "requiredQuorum": {
         "tier": "T2",
@@ -1749,7 +1959,7 @@
       "kind": "rust",
       "sources": ["src/Core.Rust.Clock/**"],
       "dependsOn": [],
-      "legs": [],
+      "legs": ["gate/lint-rust"],
       "origin": "derived",
       "requiredQuorum": {
         "tier": "T2",
@@ -1774,7 +1984,7 @@
       "kind": "rust",
       "sources": ["src/Core.Rust.Consensus/**"],
       "dependsOn": [],
-      "legs": [],
+      "legs": ["gate/lint-rust"],
       "origin": "derived",
       "requiredQuorum": {
         "tier": "T2",
@@ -1799,7 +2009,7 @@
       "kind": "rust",
       "sources": ["src/Core.Rust.ConsistentHash/**"],
       "dependsOn": [],
-      "legs": [],
+      "legs": ["gate/lint-rust"],
       "origin": "derived",
       "requiredQuorum": {
         "tier": "T2",
@@ -1824,7 +2034,7 @@
       "kind": "rust",
       "sources": ["src/Core.Rust.Crc32c/**"],
       "dependsOn": [],
-      "legs": [],
+      "legs": ["gate/lint-rust"],
       "origin": "derived",
       "requiredQuorum": {
         "tier": "T2",
@@ -1849,7 +2059,7 @@
       "kind": "rust",
       "sources": ["src/Core.Rust.Curve/**"],
       "dependsOn": [],
-      "legs": [],
+      "legs": ["gate/lint-rust"],
       "origin": "derived",
       "requiredQuorum": {
         "tier": "T2",
@@ -1874,7 +2084,7 @@
       "kind": "rust",
       "sources": ["src/Core.Rust.Durability/**"],
       "dependsOn": ["rust:src/Core.Rust.Algebra", "rust:src/Core.Rust.DynamicValue"],
-      "legs": [],
+      "legs": ["gate/lint-rust"],
       "origin": "derived",
       "requiredQuorum": {
         "tier": "T3",
@@ -1899,7 +2109,7 @@
       "kind": "rust",
       "sources": ["src/Core.Rust.DynamicValue/**"],
       "dependsOn": ["rust:src/Core.Rust.Yaml"],
-      "legs": [],
+      "legs": ["gate/lint-rust"],
       "origin": "derived",
       "requiredQuorum": {
         "tier": "T3",
@@ -1924,7 +2134,7 @@
       "kind": "rust",
       "sources": ["src/Core.Rust.FastCdc/**"],
       "dependsOn": [],
-      "legs": [],
+      "legs": ["gate/lint-rust"],
       "origin": "derived",
       "requiredQuorum": {
         "tier": "T2",
@@ -1949,7 +2159,7 @@
       "kind": "rust",
       "sources": ["src/Core.Rust.FourCorner/**"],
       "dependsOn": [],
-      "legs": [],
+      "legs": ["gate/lint-rust"],
       "origin": "derived",
       "requiredQuorum": {
         "tier": "T2",
@@ -1974,7 +2184,7 @@
       "kind": "rust",
       "sources": ["src/Core.Rust.FrameDelta/**"],
       "dependsOn": [],
-      "legs": [],
+      "legs": ["gate/lint-rust"],
       "origin": "derived",
       "requiredQuorum": {
         "tier": "T2",
@@ -1999,7 +2209,7 @@
       "kind": "rust",
       "sources": ["src/Core.Rust.MembraneLog/**"],
       "dependsOn": [],
-      "legs": [],
+      "legs": ["gate/lint-rust"],
       "origin": "derived",
       "requiredQuorum": {
         "tier": "T2",
@@ -2024,7 +2234,7 @@
       "kind": "rust",
       "sources": ["src/Core.Rust.Merkle/**"],
       "dependsOn": [],
-      "legs": [],
+      "legs": ["gate/lint-rust"],
       "origin": "derived",
       "requiredQuorum": {
         "tier": "T3",
@@ -2056,7 +2266,7 @@
       "kind": "rust",
       "sources": ["src/Core.Rust.MeshPong/**"],
       "dependsOn": [],
-      "legs": [],
+      "legs": ["gate/lint-rust"],
       "origin": "derived",
       "requiredQuorum": {
         "tier": "T2",
@@ -2081,7 +2291,7 @@
       "kind": "rust",
       "sources": ["src/Core.Rust.Metric/**"],
       "dependsOn": [],
-      "legs": [],
+      "legs": ["gate/lint-rust"],
       "origin": "derived",
       "requiredQuorum": {
         "tier": "T2",
@@ -2106,7 +2316,7 @@
       "kind": "rust",
       "sources": ["src/Core.Rust.Mixin/**"],
       "dependsOn": [],
-      "legs": [],
+      "legs": ["gate/lint-rust"],
       "origin": "derived",
       "requiredQuorum": {
         "tier": "T1",
@@ -2123,7 +2333,7 @@
       "kind": "rust",
       "sources": ["src/Core.Rust.Observe/**"],
       "dependsOn": [],
-      "legs": ["gate/full-verify"],
+      "legs": ["gate/full-verify", "gate/lint-rust"],
       "origin": "derived",
       "requiredQuorum": {
         "tier": "T2",
@@ -2148,7 +2358,7 @@
       "kind": "rust",
       "sources": ["src/Core.Rust.ProbabilitySemiring/**"],
       "dependsOn": [],
-      "legs": [],
+      "legs": ["gate/lint-rust"],
       "origin": "derived",
       "requiredQuorum": {
         "tier": "T2",
@@ -2173,7 +2383,7 @@
       "kind": "rust",
       "sources": ["src/Core.Rust.RangeSet/**"],
       "dependsOn": [],
-      "legs": [],
+      "legs": ["gate/lint-rust"],
       "origin": "derived",
       "requiredQuorum": {
         "tier": "T3",
@@ -2198,7 +2408,7 @@
       "kind": "rust",
       "sources": ["src/Core.Rust.Resume/**"],
       "dependsOn": ["rust:src/Core.Rust.Bonsai"],
-      "legs": [],
+      "legs": ["gate/lint-rust"],
       "origin": "derived",
       "requiredQuorum": {
         "tier": "T3",
@@ -2223,7 +2433,7 @@
       "kind": "rust",
       "sources": ["src/Core.Rust.SchemaEvolution/**"],
       "dependsOn": [],
-      "legs": [],
+      "legs": ["gate/lint-rust"],
       "origin": "derived",
       "requiredQuorum": {
         "tier": "T1",
@@ -2240,7 +2450,7 @@
       "kind": "rust",
       "sources": ["src/Core.Rust.Sha256/**"],
       "dependsOn": ["rust:src/Core.Rust.Yaml"],
-      "legs": [],
+      "legs": ["gate/lint-rust"],
       "origin": "derived",
       "requiredQuorum": {
         "tier": "T3",
@@ -2265,7 +2475,7 @@
       "kind": "rust",
       "sources": ["src/Core.Rust.SoftValue/**"],
       "dependsOn": [],
-      "legs": [],
+      "legs": ["gate/lint-rust"],
       "origin": "derived",
       "requiredQuorum": {
         "tier": "T2",
@@ -2290,7 +2500,7 @@
       "kind": "rust",
       "sources": ["src/Core.Rust.SplitMix64/**"],
       "dependsOn": [],
-      "legs": [],
+      "legs": ["gate/lint-rust"],
       "origin": "derived",
       "requiredQuorum": {
         "tier": "T2",
@@ -2315,7 +2525,7 @@
       "kind": "rust",
       "sources": ["src/Core.Rust.TravelerFrame/**"],
       "dependsOn": [],
-      "legs": [],
+      "legs": ["gate/lint-rust"],
       "origin": "derived",
       "requiredQuorum": {
         "tier": "T2",
@@ -2340,7 +2550,7 @@
       "kind": "rust",
       "sources": ["src/Core.Rust.TriBoolean/**"],
       "dependsOn": ["rust:src/Core.Rust.Yaml"],
-      "legs": [],
+      "legs": ["gate/lint-rust"],
       "origin": "derived",
       "requiredQuorum": {
         "tier": "T3",
@@ -2365,7 +2575,7 @@
       "kind": "rust",
       "sources": ["src/Core.Rust.UncertainClock/**"],
       "dependsOn": [],
-      "legs": [],
+      "legs": ["gate/lint-rust"],
       "origin": "derived",
       "requiredQuorum": {
         "tier": "T2",
@@ -2390,7 +2600,7 @@
       "kind": "rust",
       "sources": ["src/Core.Rust.Watermark/**"],
       "dependsOn": [],
-      "legs": [],
+      "legs": ["gate/lint-rust"],
       "origin": "derived",
       "requiredQuorum": {
         "tier": "T2",
@@ -2415,7 +2625,7 @@
       "kind": "rust",
       "sources": ["src/Core.Rust.Yaml/**"],
       "dependsOn": [],
-      "legs": [],
+      "legs": ["gate/lint-rust"],
       "origin": "derived",
       "requiredQuorum": {
         "tier": "T3",
@@ -2440,7 +2650,7 @@
       "kind": "rust",
       "sources": ["src/Core.Rust.ZetaId/**"],
       "dependsOn": [],
-      "legs": [],
+      "legs": ["gate/lint-rust"],
       "origin": "derived",
       "requiredQuorum": {
         "tier": "T3",
@@ -2482,7 +2692,7 @@
       "kind": "tla",
       "sources": ["src/Core.TLA/**"],
       "dependsOn": [],
-      "legs": ["tlaps-proof/tlaps"],
+      "legs": ["tlaps-proof/prove"],
       "origin": "declared",
       "requiredQuorum": {
         "tier": "T1",
@@ -2590,7 +2800,7 @@
       "kind": "typescript",
       "sources": ["**/*.ts", "**/*.tsx"],
       "dependsOn": [],
-      "legs": ["gate/lint-typescript"],
+      "legs": ["gate/lint-typescript", "gate/test-typescript-environment", "gate/test-typescript-hermetic"],
       "origin": "declared",
       "requiredQuorum": {
         "tier": "T3",

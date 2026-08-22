@@ -156,7 +156,7 @@ Not in this skill. 081KSE6WT0008QG0R003BG8M6J (Linux: `pam_fprintd` / fingerprin
 ## Composes with
 
 - 081KSE6WT0008QG0R003WW3YJQ — "I execute, you fingerprint" design pattern (rule + backlog row landing via PR #5006; cross-reference will resolve once it merges)
-- `.claude/rules/classifier-bypass-research-do-not-deploy-without-zeta-safer-floor.md` — the operator pushes `.claude/settings.json` edits themselves; the `Bash(bun full-ai-cluster/tools/flash-usb.ts *)` permission must be in settings already (operator-authorized for this skill's scope)
+- `.claude/rules.bak/classifier-bypass-research-do-not-deploy-without-zeta-safer-floor.md` — the operator pushes `.claude/settings.json` edits themselves; the `Bash(bun full-ai-cluster/tools/flash-usb.ts *)` permission must be in settings already (operator-authorized for this skill's scope)
 - 081KSE6WT0008QG0R003WZAQKV — zflash + Touch ID PAM + short challenge empirical anchor
 - 081KSE6WT0008QG0R0005XASX2 — destructive-tool authoring contract
 - 081KSE6WT0008QG0R003BG8M6J — Linux extension (planned)
@@ -168,5 +168,5 @@ Not in this skill. 081KSE6WT0008QG0R003BG8M6J (Linux: `pam_fprintd` / fingerprin
 |---|---|
 | `full-ai-cluster/tools/zflash.ts` | Operator-facing wrapper; auto-discovers ISO + invokes flash-usb with `--short` |
 | `full-ai-cluster/tools/zflash-setup.ts` | One-time idempotent installer for PAM Touch ID + zsh alias |
-| `full-ai-cluster/tools/flash-usb.ts` | Core flasher with all safety rails, per-run nonce, sudo dd + diskutil orchestration |
+| `src/Core.TypeScript/zflash/flash-usb.ts` | Core flasher with all safety rails, per-run nonce, sudo dd + diskutil orchestration |
 | `full-ai-cluster/tools/README-flash-usb.md` | Long-form documentation |

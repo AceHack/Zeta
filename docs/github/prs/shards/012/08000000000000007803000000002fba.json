@@ -1,0 +1,12 @@
+{
+  "pr_number": 12218,
+  "archive_path": "docs/history/pr-reviews/PR-12218-design-base-the-grey-is-the-model-separate-unavailable-from-frost-and-give-the-s.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-19T00:34:41.340Z",
+  "schema_version": "v1",
+  "commit_sha": "b5e2cd60055dc77c6fe1b2856b795b5e5c947b5c",
+  "title": "design(base): the grey is the model — separate `unavailable` from frost, and give the state DU a non-visual channel",
+  "state": "MERGED",
+  "merged_at": "2026-08-19T00:34:05Z",
+  "head_ref": "iris/grey-is-the-model-unavailable-vs-frosted"
+}

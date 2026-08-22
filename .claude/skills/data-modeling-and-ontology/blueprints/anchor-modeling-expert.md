@@ -129,6 +129,6 @@ keyed stream to the plan, no schema event. Valid-time is the
 - anchormodeling.com — the reference site and online modeller.
 - `.claude/skills/data-modeling-and-ontology/blueprints/data-vault-expert.md` — the
   mainstream alternative.
-- `.claude/skills/bitemporal-modeling-expert/SKILL.md` —
+- `.claude/skills/data-modeling-and-ontology/SKILL.md` —
   temporal theory.
-- `.claude/skills/normal-forms-expert/SKILL.md` — 6NF.
+- `.claude/skills/data-modeling-and-ontology/SKILL.md` — 6NF.

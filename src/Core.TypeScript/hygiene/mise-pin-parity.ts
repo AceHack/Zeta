@@ -20,7 +20,7 @@
 //      list, so a *newly added* flake is covered the moment it exists. This is
 //      what catches a re-added duplicate.
 //
-//   2. VALUE — the four sites that restate the pin version must agree. The
+//   2. VALUE — every site that restates the pin version must agree. The
 //      canonical value is read from `.mise.toml` (`min_version`); every other
 //      site is compared against it rather than against a list maintained here.
 //      A second hand-maintained list would be the defect wearing a fix's
@@ -66,6 +66,24 @@ export interface PinSite {
   readonly label: string;
   /** Pattern whose first capture group is the version. */
   readonly pattern: RegExp;
+  /**
+   * Set ONLY for a site whose file is not on `main` yet. It is the documented
+   * reason absence is tolerated — same habit as `WINDOWS_EXCEPTIONS` in
+   * `src/Core.TypeScript/ci/manifest-symmetry.test.ts`: an exception with no
+   * stated reason is an exception nobody can retire.
+   *
+   * The tolerance is narrow and worth stating precisely, because the whole
+   * value of this checker is that it does not skip:
+   *
+   *   - file ABSENT      → not a violation (the surface has not landed)
+   *   - file PRESENT, pattern does not match → VIOLATION, exactly as for any
+   *     other site (a rename must go red, never quietly drop the site)
+   *   - file PRESENT, pin disagrees          → VIOLATION
+   *
+   * So this field buys "not yet", never "not checked" — and an absent pending
+   * site is REPORTED by the CLI rather than passing invisibly.
+   */
+  readonly pendingReason?: string;
 }
 
 /**
@@ -84,9 +102,31 @@ export const PIN_SITES: readonly PinSite[] = [
     label: "version",
     pattern: /^\s*version\s*=\s*"([^"]+)"\s*;/m,
   },
+  {
+    // The Cursor cloud-agent environment restates the pin a fifth time. Today the
+    // ONLY thing holding it to the other four is a comment reading "bump in
+    // lockstep" — which is not a mechanism, it is a hope with a code font. Adding
+    // the site here BEFORE the file lands is the cheap half: the moment
+    // `.cursor/install.sh` exists, its pin is compared like every other site, and
+    // there is no window in which the fifth copy is unguarded.
+    file: ".cursor/install.sh",
+    label: "MISE_PIN_VERSION",
+    // Tolerant about `readonly`/`export` and leading whitespace so a reasonable
+    // spelling of the same declaration is still READ. An unreasonable one is not
+    // silently skipped — it fails with the "update PIN_SITES" message below.
+    pattern: /^[ \t]*(?:readonly |export )?MISE_PIN_VERSION="([^"]+)"/m,
+    pendingReason:
+      "Cursor cloud-agent environment (PR #12876) is not merged to main yet; the file's absence " +
+      "is expected, its presence is checked. Delete this field once the PR lands.",
+  },
 ];
 
-/** Reads the version a single site declares. `null` = the pattern did not match. */
+/**
+ * Reads the version a single site declares. `null` = the file is unreadable OR
+ * the pattern did not match. `pinValueViolations` deliberately does NOT use this
+ * for non-canonical sites: it needs those two cases apart, because a
+ * not-yet-landed file and a renamed declaration deserve opposite verdicts.
+ */
 export function readPinAt(repoRoot: string, site: PinSite, read = defaultRead): string | null {
   const text = read(join(repoRoot, site.file));
   if (text === null) return null;
@@ -113,7 +153,19 @@ export function pinValueViolations(repoRoot: string, read = defaultRead): string
     ];
   }
   for (const site of PIN_SITES.slice(1)) {
-    const found = readPinAt(repoRoot, site, read);
+    const text = read(join(repoRoot, site.file));
+    if (text === null) {
+      // ABSENT file. Separated from "present but unparseable" on purpose: those
+      // used to collapse into one message, which meant a not-yet-landed surface
+      // could not be declared here at all without going red on main.
+      if (site.pendingReason !== undefined) continue;
+      violations.push(
+        `${site.file}: file not found. A required pin site vanished — restore it, or, if it moved, ` +
+          `update PIN_SITES in src/Core.TypeScript/hygiene/mise-pin-parity.ts — do not drop the site.`,
+      );
+      continue;
+    }
+    const found = site.pattern.exec(text)?.[1] ?? null;
     if (found === null) {
       violations.push(
         `${site.file}: no \`${site.label}\` declaration found. If it moved or was renamed, ` +
@@ -169,6 +221,18 @@ export function trackedFlakes(repoRoot: string): string[] {
   return result.stdout.split("\n").filter((line) => line.length > 0);
 }
 
+/**
+ * Pending sites whose file is not present. Not violations — but printed, so a
+ * declared-and-absent site is visible rather than indistinguishable from a
+ * checked one. Silence is what makes a skip dangerous; this removes the silence
+ * without inventing a failure.
+ */
+export function pendingAbsentSites(repoRoot: string, read = defaultRead): readonly PinSite[] {
+  return PIN_SITES.filter(
+    (site) => site.pendingReason !== undefined && read(join(repoRoot, site.file)) === null,
+  );
+}
+
 /** Both checks against a real repo. Empty result = clean. */
 export function allViolations(repoRoot: string): string[] {
   return [
@@ -184,6 +248,9 @@ if (import.meta.main) {
     process.stderr.write("mise pin parity FAILED:\n");
     for (const violation of violations) process.stderr.write(`  - ${violation}\n`);
     process.exit(1);
+  }
+  for (const site of pendingAbsentSites(repoRoot)) {
+    process.stdout.write(`mise pin parity: PENDING site absent — ${site.file} (${site.pendingReason ?? ""})\n`);
   }
   process.stdout.write("mise pin parity OK: one installer definition, one pin value.\n");
 }

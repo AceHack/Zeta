@@ -1,0 +1,12 @@
+{
+  "pr_number": 13453,
+  "archive_path": "docs/history/pr-reviews/PR-13453-style-book-fix-markdownlint-md001-md032-on-main-the-fix-missed-its-merge.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-22T00:09:25.757Z",
+  "schema_version": "v1",
+  "commit_sha": "e26b3f0777456248e485662124dd9eccf6f9d130",
+  "title": "style(book): fix markdownlint MD001/MD032 on main — the fix missed its merge",
+  "state": "MERGED",
+  "merged_at": "2026-08-22T00:08:43Z",
+  "head_ref": "fix/consent-ledger-markdownlint"
+}

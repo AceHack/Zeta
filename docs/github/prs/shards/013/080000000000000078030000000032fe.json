@@ -1,0 +1,12 @@
+{
+  "pr_number": 13054,
+  "archive_path": "docs/history/pr-reviews/PR-13054-research-one-pipeline-end-to-end-the-usb-to-cluster-chain-and-where-it-actually-.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-21T04:23:47.370Z",
+  "schema_version": "v1",
+  "commit_sha": "810e4f41adacedfee01172440b03a530f10ff5a0",
+  "title": "research: one pipeline end to end — the USB-to-cluster chain, and where it actually stops",
+  "state": "MERGED",
+  "merged_at": "2026-08-21T04:23:10Z",
+  "head_ref": "research/usb-to-cluster-chain-trace"
+}

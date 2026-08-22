@@ -1,0 +1,14 @@
+{
+  "id": "080d00d967c44810a01300080ba6ff60",
+  "at": "2026-08-19T17:58:47.177Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M0DJSY48087G0R001GVG3AT",
+    "type": "task",
+    "title": "Z3 UFNRA: witness-quorum effective-independence bound N_eff = N/(1+(N-1)rho) applied to witness observations",
+    "slug": "z3-ufnra-witness-quorum-effective-independence-bound-n-eff-n",
+    "priority": "P2",
+    "filename": "081M0DJSY48087G0R001GVG3AT-z3-ufnra-witness-quorum-effective-independence-bound-n-eff-n.md"
+  }
+}

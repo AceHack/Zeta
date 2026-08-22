@@ -28,6 +28,23 @@
 # empty list — no harm; the existing iter-4.2 keys (if any) still
 # apply.
 #
+# "no harm" HAS A THIRD CASE, and it is not harmless. MEASURED 2026-08-21
+# (Determinate Nix 3.21.0 / Nix 2.34.6):
+#
+#     builtins.pathExists "<absolute path>"  in pure eval -> false, no error
+#     builtins.readFile   "<absolute path>"  in pure eval -> error, loud
+#
+# A flake ref evaluates PURE by default. So the fallback fires not only when
+# the file is missing, but whenever the rebuild is pure — the file can be
+# sitting right there and `pathExists` still answers false, silently. Under
+# `nixos-rebuild switch --flake ...` without `--impure`, this module therefore
+# contributes `[ ]` on a machine whose operator keys ARE present, and the
+# operator's captured pubkeys are REMOVED from the installed system's
+# authorized_keys. On a node reachable only over SSH that is a lockout,
+# produced by a routine update. Every `nixos-rebuild` string in this repo now
+# carries `--impure`; `src/Core.TypeScript/hygiene/lint-nixos-rebuild-needs-impure.ts`
+# is the check that keeps it that way.
+#
 # Format: standard authorized_keys file. One pubkey per line. Comments
 # starting with `#` allowed; blank lines allowed. Filtered to lines
 # starting with any supported pubkey-algorithm prefix:

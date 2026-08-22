@@ -1,0 +1,14 @@
+{
+  "id": "080d00df413d5810a01300085ddf1e54",
+  "at": "2026-08-19T21:23:14.475Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M0DYG9X9087G0R002JK171Z",
+    "type": "bug",
+    "title": "ZetaIdViz.glyphOf reads only the 32-bit Randomness field — 96 structured bits never reach the identicon",
+    "slug": "zetaidviz-glyphof-reads-only-the-32-bit-randomness-field-96",
+    "priority": "P2",
+    "filename": "081M0DYG9X9087G0R002JK171Z-zetaidviz-glyphof-reads-only-the-32-bit-randomness-field-96.md"
+  }
+}

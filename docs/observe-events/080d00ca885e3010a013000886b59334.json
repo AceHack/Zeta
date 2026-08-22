@@ -1,0 +1,19 @@
+{
+  "id": "080d00ca885e3010a013000886b59334",
+  "at": "2026-08-19T09:18:56.966Z",
+  "by": "alexa",
+  "action": {
+    "kind": "ActionExecutionFailed",
+    "item": {
+      "id": "081KTQX7W6Q08QG0R000XA3220",
+      "title": "Dangling MD pointers auto-vivify into MUMPS + gitfs — forward-reference a not-yet-existing node in markdown and the system instantiates it (almost instantly) in the MUMPS global tree + gitfs (MUMPS native subscript auto-vivification applied to MD links); governed values still minted via ZetaIdCodec; bounded by shape-A; idempotent (Aaron 2026-06-10)",
+      "ready": true,
+      "ambiguous": false
+    },
+    "reason": "branch setup failed: git checkout -B claim/081ktqx7w6q08qg0r000-alexa-2026-08-19 origin/main failed: error: Your local changes to the following files would be overwritten by checkout:\n\tdata/rs-blocks.jsonl\nPlease commit your changes or stash them before you switch branches.\nAborting\n"
+  },
+  "phase": {
+    "phase": 2,
+    "derived": 268507140
+  }
+}

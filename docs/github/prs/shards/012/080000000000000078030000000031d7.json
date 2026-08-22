@@ -1,0 +1,12 @@
+{
+  "pr_number": 12759,
+  "archive_path": "docs/history/pr-reviews/PR-12759-research-echolocation-pseudo-retrocausality-and-the-twelve-pentagons-plus-rescue.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-20T13:10:06.281Z",
+  "schema_version": "v1",
+  "commit_sha": "d2dda43492c15cbfb41132c3bd0283f50c34fc1c",
+  "title": "research: echolocation, pseudo-retrocausality, and the twelve pentagons — plus rescue a ferry orphaned since June",
+  "state": "MERGED",
+  "merged_at": "2026-08-20T13:09:13Z",
+  "head_ref": "research/transactional-echolocation-and-pseudo-retrocausality"
+}

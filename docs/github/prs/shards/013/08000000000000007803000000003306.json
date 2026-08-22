@@ -1,0 +1,12 @@
+{
+  "pr_number": 13062,
+  "archive_path": "docs/history/pr-reviews/PR-13062-vault-replicas-1-keeps-raft-the-earlier-reasoning-was-wrong-and-four-more-defect.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-21T05:00:43.580Z",
+  "schema_version": "v1",
+  "commit_sha": "5c4f5e51afdceef390799fbe3f79aeb2db6b1356",
+  "title": "vault: replicas:1 KEEPS raft — the earlier reasoning was wrong, and four more defects were hiding behind it",
+  "state": "MERGED",
+  "merged_at": "2026-08-21T05:00:03Z",
+  "head_ref": "cluster/vault-topology-coherence"
+}

@@ -1,0 +1,13 @@
+# L4 — the sprite ORIGIN wraps even though the overhang clips.
+# The companion half of L3, and the reason the pair is worth carrying separately: the same VIP
+# treaty is permissive about the origin and strict about the overhang, so a machine can preserve
+# one and destroy the other. V0 = 0x46 = 70 wraps to column 6.
+meta	name	origin-wraps
+meta	claim	an off-screen sprite origin wraps mod 64 rather than suppressing the draw
+meta	discovered-on	chip8
+meta	falsifier	no-origin-wrap
+mem	0300	ff
+rom	a30060466100d011
+assert	4	lit 6 0
+assert	4	lit 13 0
+assert	4	dark 5 0

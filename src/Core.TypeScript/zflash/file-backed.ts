@@ -12,7 +12,11 @@ import {
   planFileBackedZflashImageExecution,
   resolveZetaTestInfraPubkeyFromZflashModule,
 } from "./lib.ts";
-import { firstbootRoleFromFlags, type ZetaFirstbootRole } from "./firstboot-role.ts";
+import {
+  firstbootRoleFromFlags,
+  validateJoinTokenMaterial,
+  type ZetaFirstbootRole,
+} from "./firstboot-role.ts";
 import type {
   FileBackedZflashImageExecution,
   FileBackedZflashImageExecutionFeedback,
@@ -290,6 +294,32 @@ export function runFileBackedZflashCli(
   );
   if (wifiCredentials !== undefined && "error" in wifiCredentials) {
     return { ok: false, error: wifiCredentials.error };
+  }
+
+  // Join-token material is checked BEFORE the plan is built, because the plan
+  // only carries a `sourcePath` — by the time mcopy runs, the bytes are on the
+  // ESP and nothing downstream ever looks at them again. `zeta-install.sh`
+  // checks only that the file is non-empty, and k3s accepts a token with no CA
+  // hash by design (see `validateJoinTokenMaterial` for the upstream trace), so
+  // this is the last place a hash-less token can be refused instead of shipped.
+  const joinTokenPath = options.joinTokenSourcePath?.trim();
+  if (joinTokenPath !== undefined && joinTokenPath.length > 0) {
+    if (!existsSync(joinTokenPath)) {
+      return { ok: false, error: `join token file not found: ${joinTokenPath}` };
+    }
+    let tokenContent: string;
+    try {
+      tokenContent = readFileSync(joinTokenPath, "utf-8");
+    } catch (error) {
+      return {
+        ok: false,
+        error: `join token file could not be read (${joinTokenPath}): ${String(error)}`,
+      };
+    }
+    const tokenError = validateJoinTokenMaterial(tokenContent);
+    if (tokenError !== null) {
+      return { ok: false, error: `${tokenError} (from ${joinTokenPath})` };
+    }
   }
 
   const planInput: FileBackedZflashImagePlanInput = {

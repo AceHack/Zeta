@@ -1,5 +1,6 @@
 import { probeBrowserRuntime, type BrowserRuntimeProbeReadout } from "../browser-node/browser-runtime-probe";
 import { ContentHash256 } from "../blake3/blake3";
+import type { BrowserCheckpointPort } from "../browser-node/browser-checkpoint-port";
 import type { BrowserLifecycleHostReadout, BrowserReadoutSinkResult } from "../browser-node/browser-lifecycle-host";
 import type { BrowserServiceWorkerRegistrationReadout } from "../browser-node/browser-service-worker-registration";
 import type { BrowserTabTransportReadout } from "../browser-node/browser-tab-channel-selector";
@@ -56,10 +57,14 @@ import {
 import type { ZetaDbTickLimits } from "../zetadb/zeta-db-node";
 import { PROPOSAL_ORIGIN, PROPOSAL_RP_ID } from "../planning/proposal-contract";
 import {
+  startDurableDarkHallPwa,
+  startNativeDurableDarkHallPwa,
   startNativeDarkHallPwa,
+  type DarkHallBrowserDurablePwaRuntime,
   type DarkHallBrowserPwaOptions,
   type DarkHallBrowserPwaRuntime,
 } from "./darkhall-browser-pwa";
+import type { DarkHallBrowserDurableFeedback, DarkHallBrowserDurableReadout } from "./darkhall-browser-durable-runtime";
 import {
   selectDarkHallDatabaseRow,
   zetaDbTickToDarkHallDatabaseReadout,
@@ -103,7 +108,7 @@ import {
 } from "./darkhall-browser-receipt-sync-control";
 import { renderDarkHallRoomHtml, type RoomRunTranscript } from "./darkhall-room";
 
-export const DARK_HALL_BROWSER_PAGE_SCHEMA = "zeta.darkhall.browser-page.v10" as const;
+export const DARK_HALL_BROWSER_PAGE_SCHEMA = "zeta.darkhall.browser-page.v11" as const;
 export const DARK_HALL_BROWSER_PAGE_GLOBAL = "__zetaDarkHallPage" as const;
 export const DARK_HALL_BROWSER_PAGE_MOUNT_ID = "darkhall-room" as const;
 
@@ -120,6 +125,8 @@ export interface DarkHallBrowserPageFeedback {
     | "page-configuration-invalid"
     | "page-status-update-failed"
     | "page-start-failed"
+    | "page-checkpoint-unavailable"
+    | "page-checkpoint-failed"
     | "page-database-start-failed"
     | "page-database-hydration-failed"
     | "page-database-stop-failed"
@@ -152,6 +159,7 @@ export interface DarkHallBrowserPageReadout {
   readonly registration: BrowserServiceWorkerRegistrationReadout;
   readonly transport: BrowserTabTransportReadout;
   readonly host: BrowserLifecycleHostReadout;
+  readonly durability: DarkHallBrowserDurableReadout | null;
   readonly database: DarkHallDatabaseReadout;
   readonly receiptHandoff: BrowserDatabaseReceiptHandoffReadout | null;
   readonly receiptPeer: BrowserDatabaseReceiptBroadcastPeerLinkReadout | null;
@@ -177,6 +185,10 @@ export interface DarkHallBrowserPageRuntime {
   ): DarkHallBrowserDatabaseRowSelectionResult<DarkHallBrowserDatabaseRowSelectionReadout>;
   submitDatabaseReceipts(): Promise<DarkHallBrowserPageResult<DarkHallBrowserPageReadout>>;
   pollDatabaseReceiptAcceptance(): Promise<DarkHallBrowserPageResult<DarkHallBrowserPageReadout>>;
+  checkpointRoom(
+    revision: number,
+    transcript: RoomRunTranscript,
+  ): Promise<DarkHallBrowserPageResult<DarkHallBrowserPageReadout>>;
   stop(): DarkHallBrowserPageResult<DarkHallBrowserPageReadout>;
 }
 
@@ -190,6 +202,10 @@ export interface NativeDarkHallBrowserPageOptions {
   readonly serviceWorkerScope?: string;
   readonly maxTrackedTabs?: number;
   readonly maxFeedback?: number;
+  readonly roomCheckpoint?: "native" | "none" | BrowserCheckpointPort;
+  readonly roomCheckpointDatabaseName?: string;
+  readonly roomCheckpointStoreName?: string;
+  readonly maxCausalCorrections?: number;
   readonly databaseNodeId?: string;
   readonly databaseName?: string;
   readonly databaseStoreName?: string;
@@ -242,10 +258,37 @@ interface PagePeerDarkRecovery {
   readonly install: (database: BrowserZetaDbTabRuntime) => void;
 }
 
+type PagePwaOperationResult =
+  | { readonly ok: true }
+  | {
+      readonly ok: false;
+      readonly feedback: {
+        readonly severity: "backpressure" | "heat";
+        readonly code: string;
+        readonly detail: string;
+      };
+    };
+
+interface PagePwaRuntime {
+  readonly registration: BrowserServiceWorkerRegistrationReadout;
+  transport(): BrowserTabTransportReadout;
+  host(): BrowserLifecycleHostReadout;
+  transcript(): RoomRunTranscript;
+  durability(): DarkHallBrowserDurableReadout | null;
+  renderTranscript(transcript: RoomRunTranscript): PagePwaOperationResult;
+  updateDatabaseReadout(readout: DarkHallDatabaseReadout): PagePwaOperationResult;
+  publishDatabaseInvalidation(databaseNodeId: string, revision: number): PagePwaOperationResult;
+  publishDatabaseExecutionReceipt(
+    receipt: Omit<BrowserDatabaseExecutionReceiptNotice, "sourceTabId">,
+  ): PagePwaOperationResult;
+  checkpoint(revision: number, transcript: RoomRunTranscript): Promise<PagePwaOperationResult>;
+  stop(): PagePwaOperationResult;
+}
+
 export const DARK_HALL_BROWSER_PAGE_TRANSCRIPT: RoomRunTranscript = {
   schema: "zeta.darkhall.room-ui.v1",
   roomName: "dark hall browser node",
-  seed: "browser-page-v10",
+  seed: "browser-page-v11",
   generatedBy: "darkhall-browser-page",
   controller: DARK_HALL_BROWSER_DATABASE_ACTIONS.map((action) => ({
     cell: action.cell,
@@ -425,6 +468,121 @@ function pageStatusFromSeverity(severity: DarkHallBrowserPageFeedback["severity"
 
 function inputPageStatus(severity: "cold" | "backpressure" | "heat"): "backpressured" | "heat" {
   return severity === "heat" ? "heat" : "backpressured";
+}
+
+function durableOperation(
+  result:
+    | { readonly ok: true; readonly value: unknown }
+    | { readonly ok: false; readonly feedback: DarkHallBrowserDurableFeedback },
+): PagePwaOperationResult {
+  return result.ok
+    ? { ok: true }
+    : {
+        ok: false,
+        feedback: {
+          severity: result.feedback.severity,
+          code: result.feedback.code,
+          detail: result.feedback.detail,
+        },
+      };
+}
+
+function legacyPagePwa(runtime: DarkHallBrowserPwaRuntime, initialTranscript: RoomRunTranscript): PagePwaRuntime {
+  let transcript = initialTranscript;
+  return {
+    registration: runtime.registration,
+    transport: () => runtime.browser.transport,
+    host: () => runtime.browser.host.read(),
+    transcript: () => transcript,
+    durability: () => null,
+    renderTranscript: (nextTranscript) => {
+      const rendered = runtime.browser.updateTranscript(nextTranscript);
+      if (!rendered.ok) {
+        return {
+          ok: false,
+          feedback: { severity: "heat", code: "room-render-failed", detail: rendered.detail },
+        };
+      }
+      transcript = nextTranscript;
+      return { ok: true };
+    },
+    updateDatabaseReadout: (readout) => {
+      const rendered = runtime.browser.updateDatabaseReadout(readout);
+      return rendered.ok
+        ? { ok: true }
+        : {
+            ok: false,
+            feedback: { severity: "heat", code: "room-render-failed", detail: rendered.detail },
+          };
+    },
+    publishDatabaseInvalidation: (databaseNodeId, revision) => {
+      const published = runtime.browser.host.publishDatabaseInvalidation(databaseNodeId, revision);
+      return published.ok
+        ? { ok: true }
+        : {
+            ok: false,
+            feedback: {
+              severity: published.feedback.severity,
+              code: published.feedback.code,
+              detail: published.feedback.detail,
+            },
+          };
+    },
+    publishDatabaseExecutionReceipt: (receipt) => {
+      const published = runtime.browser.host.publishDatabaseExecutionReceipt(receipt);
+      return published.ok
+        ? { ok: true }
+        : {
+            ok: false,
+            feedback: {
+              severity: published.feedback.severity,
+              code: published.feedback.code,
+              detail: published.feedback.detail,
+            },
+          };
+    },
+    checkpoint: () =>
+      Promise.resolve({
+        ok: false,
+        feedback: {
+          severity: "backpressure",
+          code: "page-checkpoint-unavailable",
+          detail: "The active page was explicitly started without a durable room checkpoint port.",
+        },
+      }),
+    stop: () => {
+      const stopped = runtime.browser.host.stop();
+      return stopped.ok
+        ? { ok: true }
+        : {
+            ok: false,
+            feedback: {
+              severity: stopped.feedback.severity,
+              code: stopped.feedback.code,
+              detail: stopped.feedback.detail,
+            },
+          };
+    },
+  };
+}
+
+function durablePagePwa(runtime: DarkHallBrowserDurablePwaRuntime): PagePwaRuntime {
+  return {
+    registration: runtime.registration,
+    transport: () => runtime.browser.read().transport,
+    host: () => runtime.browser.read().host,
+    transcript: () => runtime.browser.transcript(),
+    durability: () => runtime.browser.read(),
+    renderTranscript: (transcript) => durableOperation(runtime.browser.renderTranscript(transcript)),
+    updateDatabaseReadout: (readout) => durableOperation(runtime.browser.updateDatabaseReadout(readout)),
+    publishDatabaseInvalidation: (databaseNodeId, revision) =>
+      durableOperation(runtime.browser.publishDatabaseInvalidation(databaseNodeId, revision)),
+    publishDatabaseExecutionReceipt: (receipt) =>
+      durableOperation(runtime.browser.publishDatabaseExecutionReceipt(receipt)),
+    checkpoint: async (revision, transcript) =>
+      durableOperation(await runtime.browser.checkpoint(revision, transcript)),
+    stop: () => durableOperation(runtime.browser.stop()),
+  };
 }
 
 function pwaOptions(
@@ -1096,14 +1254,14 @@ function controllerTranscriptWithState(
 
 function databaseFailure(
   context: NativePageContext,
-  pwa: DarkHallBrowserPwaRuntime,
+  pwa: PagePwaRuntime,
   database: BrowserZetaDbTabRuntime | null,
   code: "page-database-start-failed" | "page-database-hydration-failed",
   detail: string,
   severity: DarkHallBrowserPageFeedback["severity"],
 ): DarkHallBrowserPageResult<never> {
   if (database !== null) database.stop();
-  pwa.browser.host.stop();
+  pwa.stop();
   context.mount.setStatus(pageStatusFromSeverity(severity), code);
   return failed(code, detail, severity);
 }
@@ -1116,7 +1274,7 @@ async function startPagePwa(
   onDatabaseInvalidated: (invalidation: BrowserDatabaseInvalidation) => void,
   onDatabaseExecutionReceipt: (receipt: BrowserDatabaseExecutionReceiptNotice) => void,
   onTabReadout: (readout: BrowserTabCoordinatorReadout) => BrowserReadoutSinkResult<null>,
-): Promise<DarkHallBrowserPageResult<DarkHallBrowserPwaRuntime>> {
+): Promise<DarkHallBrowserPageResult<PagePwaRuntime>> {
   const { context, root, nodeId, tabId, sequence } = configuration;
   if (!context.mount.setStatus("starting")) {
     return failed("page-status-update-failed", "The browser refused the active page startup readout.");
@@ -1124,26 +1282,42 @@ async function startPagePwa(
 
   let started;
   try {
-    started = await startNativeDarkHallPwa(
-      pwaOptions(
-        { ...options, transcript },
-        root,
-        context,
-        runtime,
-        nodeId,
-        tabId,
-        sequence,
-        onDatabaseInvalidated,
-        onDatabaseExecutionReceipt,
-        onTabReadout,
-      ),
+    const bootstrapOptions = pwaOptions(
+      { ...options, transcript },
+      root,
+      context,
+      runtime,
+      nodeId,
+      tabId,
+      sequence,
+      onDatabaseInvalidated,
+      onDatabaseExecutionReceipt,
+      onTabReadout,
     );
+    if (options.roomCheckpoint === "none") {
+      started = await startNativeDarkHallPwa(bootstrapOptions);
+      if (started.ok) return succeeded(legacyPagePwa(started.value, transcript));
+    } else {
+      const { checkpoint: _checkpoint, transcript: initialTranscript, ...durableOptions } = bootstrapOptions;
+      const durable = {
+        ...durableOptions,
+        initialTranscript,
+        maxCausalCorrections: options.maxCausalCorrections ?? 256,
+      };
+      started =
+        options.roomCheckpoint !== undefined && options.roomCheckpoint !== "native"
+          ? await startDurableDarkHallPwa(durable, options.roomCheckpoint)
+          : await startNativeDurableDarkHallPwa({
+              ...durable,
+              databaseName: options.roomCheckpointDatabaseName ?? `${options.databaseName ?? "zeta-browser-node"}-room`,
+              storeName: options.roomCheckpointStoreName ?? "room-checkpoints",
+            });
+      if (started.ok) return succeeded(durablePagePwa(started.value));
+    }
   } catch {
     context.mount.setStatus("heat", "page-start-threw");
     return failed("page-start-failed", "The active browser page threw while starting its PWA runtime.");
   }
-  if (started.ok) return succeeded(started.value);
-
   context.mount.setStatus(pageStatusFromSeverity(started.feedback.severity), started.feedback.code);
   return failed("page-start-failed", `${started.feedback.code}: ${started.feedback.detail}`, started.feedback.severity);
 }
@@ -1158,7 +1332,7 @@ async function startPageEdges(
   onTabReadout: (readout: BrowserTabCoordinatorReadout) => BrowserReadoutSinkResult<null>,
 ): Promise<
   DarkHallBrowserPageResult<{
-    readonly pwa: DarkHallBrowserPwaRuntime;
+    readonly pwa: PagePwaRuntime;
     readonly outbox: BrowserDatabaseIntentOutboxPort;
     readonly receiptArchive: BrowserDatabaseReceiptArchivePort;
     readonly receiptHandoff: BrowserDatabaseReceiptHandoffRuntime | null;
@@ -1178,25 +1352,25 @@ async function startPageEdges(
   if (!pwa.ok) return pwa;
   const outbox = await selectPageDatabaseIntentOutbox(options, configuration.root, configuration.context);
   if (!outbox.ok) {
-    pwa.value.browser.host.stop();
+    pwa.value.stop();
     return outbox;
   }
   const receiptArchive = selectPageDatabaseReceiptArchive(options, configuration);
   if (!receiptArchive.ok) {
     outbox.value.close();
-    pwa.value.browser.host.stop();
+    pwa.value.stop();
     return receiptArchive;
   }
   const receiptSync = selectPageDatabaseReceiptSync(options, configuration);
   if (!receiptSync.ok) {
     outbox.value.close();
-    pwa.value.browser.host.stop();
+    pwa.value.stop();
     return receiptSync;
   }
   const receiptHandoff = selectPageDatabaseReceiptHandoff(options, configuration, receiptSync.value);
   if (!receiptHandoff.ok) {
     outbox.value.close();
-    pwa.value.browser.host.stop();
+    pwa.value.stop();
     return receiptHandoff;
   }
   return succeeded({
@@ -1211,7 +1385,7 @@ async function startPageEdges(
 
 async function hydratePageDatabase(
   context: NativePageContext,
-  pwa: DarkHallBrowserPwaRuntime,
+  pwa: PagePwaRuntime,
   database: BrowserZetaDbTabRuntime,
   pendingStartupInvalidation: () => BrowserDatabaseInvalidation | null,
   receiveDatabaseInvalidation: (invalidation: BrowserDatabaseInvalidation) => void,
@@ -1284,11 +1458,12 @@ export async function startNativeDarkHallBrowserPage(
     databaseLimits,
     databaseExecutionAdmission,
   } = configuration.value;
+  let roomTranscript = suppliedTranscript;
   let editorReady = options.controllerCommandResolver !== undefined;
   let replaceReady = options.controllerCommandResolver !== undefined;
   let selectedControllerCell: number | null = null;
   const controllerTranscript = (): RoomRunTranscript =>
-    controllerTranscriptWithState(suppliedTranscript, editorReady, replaceReady, selectedControllerCell);
+    controllerTranscriptWithState(roomTranscript, editorReady, replaceReady, selectedControllerCell);
   const peerDarkRecovery = createPagePeerDarkRecovery(context, tabId);
 
   let receiveDatabaseInvalidation: ((invalidation: BrowserDatabaseInvalidation) => void) | null = null;
@@ -1331,6 +1506,7 @@ export async function startNativeDarkHallBrowserPage(
   if (!edges.ok) return edges;
 
   const { pwa, outbox, receiptArchive, receiptHandoff, receiptPeer, receiptSync: receiptSynchronization } = edges.value;
+  roomTranscript = { ...pwa.transcript(), controller: suppliedTranscript.controller };
   let latestDatabase: DarkHallDatabaseReadout | null = null;
   const observedDatabase = (): DarkHallDatabaseReadout | null => latestDatabase;
   let latestController: DarkHallBrowserDatabaseControllerReadout | null = null;
@@ -1355,7 +1531,7 @@ export async function startNativeDarkHallBrowserPage(
         )),
     observe: (tick) => {
       latestDatabase = zetaDbTickToDarkHallDatabaseReadout(tick);
-      const rendered = pwa.browser.updateDatabaseReadout(latestDatabase);
+      const rendered = pwa.updateDatabaseReadout(latestDatabase);
       return rendered.ok
         ? { ok: true }
         : {
@@ -1363,16 +1539,16 @@ export async function startNativeDarkHallBrowserPage(
             feedback: {
               severity: "heat",
               code: "database-readout-render-failed",
-              detail: rendered.detail,
+              detail: rendered.feedback.detail,
             },
           };
     },
     observeOutbox: (readout) => observePageDatabaseOutbox(context, readout),
     observeReceiptHandoff: (readout) => observePageDatabaseReceiptHandoff(context, readout),
     publishInvalidation: (nextDatabaseNodeId, revision) =>
-      pwa.browser.host.publishDatabaseInvalidation(nextDatabaseNodeId, revision),
+      pwa.publishDatabaseInvalidation(nextDatabaseNodeId, revision),
     publishExecutionReceipt: (receipt) =>
-      pwa.browser.host.publishDatabaseExecutionReceipt({
+      pwa.publishDatabaseExecutionReceipt({
         databaseNodeId: receipt.databaseNodeId,
         intentId: receipt.intentId,
         sequence: receipt.sequence,
@@ -1421,11 +1597,15 @@ export async function startNativeDarkHallBrowserPage(
     observe: (readout) => {
       latestController = readout;
       selectedControllerCell = readout.cell;
-      const rendered = pwa.browser.updateTranscript(controllerTranscript());
+      const rendered = pwa.renderTranscript(controllerTranscript());
       if (!rendered.ok) {
         return {
           ok: false,
-          feedback: { severity: "heat", code: "controller-readout-render-failed", detail: rendered.detail },
+          feedback: {
+            severity: "heat",
+            code: "controller-readout-render-failed",
+            detail: rendered.feedback.detail,
+          },
         };
       }
       return context.mount.setAttribute("data-controller-cell", readout.cell.toString())
@@ -1466,12 +1646,16 @@ export async function startNativeDarkHallBrowserPage(
       if (nextReady === editorReady && nextReplaceReady === replaceReady) return { ok: true };
       editorReady = nextReady;
       replaceReady = nextReplaceReady;
-      const rendered = pwa.browser.updateTranscript(controllerTranscript());
+      const rendered = pwa.renderTranscript(controllerTranscript());
       return rendered.ok
         ? { ok: true }
         : {
             ok: false,
-            feedback: { severity: "heat", code: "row-command-editor-render-failed", detail: rendered.detail },
+            feedback: {
+              severity: "heat",
+              code: "row-command-editor-render-failed",
+              detail: rendered.feedback.detail,
+            },
           };
     },
   });
@@ -1479,7 +1663,7 @@ export async function startNativeDarkHallBrowserPage(
     receiptPeer?.close();
     controller.stop();
     database.stop();
-    pwa.browser.host.stop();
+    pwa.stop();
     context.mount.setStatus(inputPageStatus(editorStarted.feedback.severity), editorStarted.feedback.code);
     return failed(
       "page-editor-start-failed",
@@ -1534,7 +1718,7 @@ export async function startNativeDarkHallBrowserPage(
     editor.stop();
     controller.stop();
     database.stop();
-    pwa.browser.host.stop();
+    pwa.stop();
     context.mount.setStatus(inputPageStatus(selectionStarted.feedback.severity), selectionStarted.feedback.code);
     return failed(
       "page-selection-start-failed",
@@ -1577,7 +1761,7 @@ export async function startNativeDarkHallBrowserPage(
     editor.stop();
     controller.stop();
     database.stop();
-    pwa.browser.host.stop();
+    pwa.stop();
     context.mount.setStatus(inputPageStatus(inputStarted.feedback.severity), inputStarted.feedback.code);
     return failed(
       "page-input-start-failed",
@@ -1594,7 +1778,7 @@ export async function startNativeDarkHallBrowserPage(
     editor.stop();
     controller.stop();
     database.stop();
-    pwa.browser.host.stop();
+    pwa.stop();
     context.mount.setStatus(
       pageStatusFromSeverity(receiptSyncStarted.feedback.severity),
       receiptSyncStarted.feedback.code,
@@ -1607,7 +1791,7 @@ export async function startNativeDarkHallBrowserPage(
   if (
     !context.mount.setStatus("live") ||
     !context.mount.setAttribute("data-pwa-registration", pwa.registration.status) ||
-    !context.mount.setAttribute("data-browser-transport", pwa.browser.transport.selected) ||
+    !context.mount.setAttribute("data-browser-transport", pwa.transport().selected) ||
     !context.mount.setAttribute("data-browser-tab", tabId)
   ) {
     receiptSync?.stop();
@@ -1617,7 +1801,7 @@ export async function startNativeDarkHallBrowserPage(
     editor.stop();
     controller.stop();
     database.stop();
-    pwa.browser.host.stop();
+    pwa.stop();
     return failed("page-status-update-failed", "The browser refused the active page live readout.");
   }
 
@@ -1628,8 +1812,9 @@ export async function startNativeDarkHallBrowserPage(
     tabId,
     runtime: runtimeProbe,
     registration: pwa.registration,
-    transport: pwa.browser.transport,
-    host: pwa.browser.host.read(),
+    transport: pwa.transport(),
+    host: pwa.host(),
+    durability: pwa.durability(),
     database: latestDatabase ?? hydratedDatabase,
     receiptHandoff: database.readReceiptHandoff(),
     receiptPeer: receiptPeer?.read() ?? null,
@@ -1646,6 +1831,21 @@ export async function startNativeDarkHallBrowserPage(
     dispatchController: (command) => controller.dispatch(command),
     dispatchControllerInput: (cell, source) => input.dispatchCell(cell, source),
     selectDatabaseRow: (rowKey, source) => selection.select(rowKey, source),
+    checkpointRoom: async (revision, transcript) => {
+      const checkpointed = await pwa.checkpoint(revision, transcript);
+      if (checkpointed.ok) {
+        roomTranscript = { ...pwa.transcript(), controller: suppliedTranscript.controller };
+        return succeeded(read());
+      }
+      context.mount.setStatus(pageStatusFromSeverity(checkpointed.feedback.severity), checkpointed.feedback.code);
+      return failed(
+        checkpointed.feedback.code === "page-checkpoint-unavailable"
+          ? "page-checkpoint-unavailable"
+          : "page-checkpoint-failed",
+        `${checkpointed.feedback.code}: ${checkpointed.feedback.detail}`,
+        checkpointed.feedback.severity,
+      );
+    },
     submitDatabaseReceipts: async () => {
       if (receiptSync === null) {
         return failed(
@@ -1761,7 +1961,7 @@ export async function startNativeDarkHallBrowserPage(
           receiptPeerStopped.feedback.severity,
         );
       }
-      const stopped = pwa.browser.host.stop();
+      const stopped = pwa.stop();
       if (!stopped.ok) {
         context.mount.setStatus(pageStatusFromSeverity(stopped.feedback.severity), stopped.feedback.code);
         return failed(

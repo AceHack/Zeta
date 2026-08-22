@@ -7,9 +7,9 @@
     <PackageVersion Include="FSharp.Core" Version="10.1.400" />
     <PackageVersion Include="Blake3" Version="3.0.2" />
     <PackageVersion Include="G-Research.FSharp.Analyzers" Version="0.23.0" />
-    <PackageVersion Include="Ionide.Analyzers" Version="0.16.0" />
+    <PackageVersion Include="Ionide.Analyzers" Version="0.17.0" />
     <PackageVersion Include="FSharp.Analyzers.Build" Version="0.5.0" />
-    <PackageVersion Include="Meziantou.Analyzer" Version="3.0.156" />
+    <PackageVersion Include="Meziantou.Analyzer" Version="3.0.177" />
     <!-- SonarAnalyzer.CSharp pinned but NOT referenced from
          Directory.Build.props yet — surfaces 15+ real findings
          (S1905 unnecessary casts, S6966 SendAsync, S2699
@@ -41,7 +41,7 @@
     <!-- Google.Protobuf: TEST-ONLY (Tests.FSharp) — the vendored protobuf lib used to prove our
          hand-rolled wire codec is byte-identical (the hexagonal swap conformance). NOT a production
          dependency of Core. Exact-pinned per the supply-chain doctrine. -->
-    <PackageVersion Include="Google.Protobuf" Version="3.35.1" />
+    <PackageVersion Include="Google.Protobuf" Version="3.36.0" />
     <PackageVersion Include="System.Reactive" Version="7.0.0" />
     <PackageVersion Include="System.Numerics.Tensors" Version="10.0.11" />
     <PackageVersion Include="FsPickler" Version="5.3.2" />
@@ -59,6 +59,18 @@
     <!-- Microsoft first-party DI: the IServiceCollection seam the mediator registers into.
          Abstractions for the port library; the full container for the proving test. -->
     <PackageVersion Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="10.0.11" />
-    <PackageVersion Include="Microsoft.Extensions.DependencyInjection" Version="10.0.10" />
+    <PackageVersion Include="Microsoft.Extensions.DependencyInjection" Version="10.0.11" />
+    <!-- OpenTelemetry: the exporter side of the instrumentation src/Core/Metrics.fs and
+         src/Core/Tracing.fs have published since long before anything listened. Referenced
+         ONLY by src/Core.Telemetry (the composition root) and the test project that proves
+         data arrives - never by Core itself, so a consumer of the DBSP library does not
+         inherit an exporter stack it did not ask for.
+         OpenTelemetry.Exporter.InMemory is TEST-ONLY: it is the seam that turns "the code
+         compiles" into "the counters actually reach an exporter". All three held at the
+         same version - the SDK and its exporters are a matched set. Exact-pinned per the
+         supply-chain doctrine. -->
+    <PackageVersion Include="OpenTelemetry" Version="1.18.0" />
+    <PackageVersion Include="OpenTelemetry.Exporter.OpenTelemetryProtocol" Version="1.18.0" />
+    <PackageVersion Include="OpenTelemetry.Exporter.InMemory" Version="1.18.0" />
   </ItemGroup>
 </Project>

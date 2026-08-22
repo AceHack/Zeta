@@ -154,6 +154,81 @@ database inside out with Apache Samza" (2015); Nathan Marz on
 the lambda architecture; Datomic's append-dated model; Kafka
 Streams / ksqlDB; Materialize + Feldera on DBSP.
 
+## The junction discipline — force the ambient through a small named boundary (minimal form)
+
+*(2026-08-19, Aaron: "this is almost it in minimal linguistic form." Recorded at his request.)*
+
+**One idea, applied wherever something would otherwise be ambient and unlocatable:**
+
+> Take the thing that would otherwise be **ambient and unlocatable** — effects, failure,
+> time, undecidability — and **force it through a small, named, enumerable junction.**
+
+You do not escape the thing. You **localize** it. The difference is total:
+
+| | diffuse | localized |
+|---|---|---|
+| where it lives | unknown — anywhere | **one named junction** |
+| route around it | impossible — you cannot avoid what you cannot find | **yes** |
+| route *into* it deliberately | impossible | **yes — and that is the interesting half** |
+| audit story | "somewhere in here" | "**here**, and it is this small" |
+
+### The lineage — checked, not decorative
+
+**Tarski (1933), undefinability.** Truth for a language `L` is not definable *in* `L`, but is
+definable in a metalanguage. So the meta/object **junction is precisely where undecidability is
+forced to live** — concentrated at a boundary, not distributed through the theory. Aaron's move is
+Tarski's hierarchy made an **engineering discipline**: since the junction is where it must live,
+make the junction small, explicit, and enumerable.
+
+**Rx — Erik Meijer, Brian Beckman, Bart Desmet and colleagues.** The same idea applied three
+times, and the reason this section exists in minimal form. (Anchoring the humans, per
+`.claude/rules/anchor-to-human-prior-art.md`: Meijer derived the `IEnumerable`/`IObservable`
+duality; Beckman's public teaching on monads and the mathematical grounding; Desmet's published
+work on Rx internals and schedulers, incl. *C# 5.0 Unleashed*. Cited for their **public** output —
+attribution is to the team's published record, not to private testimony about who decided what.)
+
+1. **The minimal dual interface** — `IObservable<T>` has one method, `IObserver<T>` three. The
+   entire asynchronous, effectful world funnels through four methods, *derived* (the categorical
+   dual of `IEnumerable`) rather than designed, so minimality is by construction.
+2. **`OnError` as an explicit channel** — exceptions propagate *ambiently*: unwinding a stack,
+   arriving from anywhere. Rx made failure a **named arm of the contract**. The place where things
+   go wrong stopped being everywhere and became one enumerated case.
+3. **`IScheduler` as the single door for time and concurrency** — instead of time entering through
+   ambient sleeps, timers, and whatever thread you happen to be on, there is **one injected
+   parameter**.
+
+Zeta's injected `Source` / `IEffects` is (3) generalized, and **§13 noninterference is this
+discipline stated for entropy**: influence enters only through declared, metered channels.
+
+### Why it matters — get the junction wrong and you get a singularity
+
+Aaron 2026-08-19: *"if you get it wrong you get a singularity."*
+
+The failure mode is **not** that the system halts. It is that the system **answers**. An unmarked
+undecidable gets resolved rather than escalated, and everything derived from it inherits an
+unbounded error with no marker — because at the moment of entry it looked like an ordinary
+successful step. A marked junction is a bounded hole you route around; an unmarked one propagates
+through every downstream derivation.
+
+It compounds specifically in a **self-regenerating** architecture: if the generator IS the ECC
+(`gen(gen) == gen`), a correctly localized junction means regeneration **corrects** drift, and a
+mislocated one means regeneration **amplifies** it. Same operation, opposite sign, decided entirely
+by junction placement.
+
+**The falsifiable test — and it is cheap:** *where does the system actually defer?* Enumerate the
+points where it refuses to produce an answer and escalates — to an oracle, a human, a wager. If that
+set is empty, or does not match the junctions claimed to be localized, the junctions are not marked;
+they are only believed to be. `Evidence.AssertedOnly` and the gated classes requiring human
+authorization are the existing instances; the check is whether the **map** matches the **territory**.
+
+> **An undecidable point you can point at is a consent boundary. An undecidable point you cannot
+> locate is a silent failure.**
+
+Detail: `docs/research/2026-08-18-godel-localized-to-a-known-junction-and-entanglement-accrues-pairwise-aaron.md`
+· work item `081KQGDBJ0008QG0R003NDQTBM` (Tarski-stratification proof, P3, XL, may dissolve — the
+honest register) · `.claude/rules/dv2-data-split-discipline-activated.md` §7 noninterference ·
+`.claude/rules/only-the-irreducible-is-primitive-generate-the-rest.md` (the generator IS the ECC).
+
 ## The through-line — independence is the one precondition for honesty (the four-windows fusion)
 
 *(2026-06-19, Aaron — the line he'd been following internally before Zeta, now named: "amazing fusion.")*
@@ -598,6 +673,503 @@ the silent default). The special case is *derived*, not
 hand-copied — the generator-is-the-ECC discipline made concrete
 at the data-model root. Detail: the 2026-07-01 base-atom design
 note (`docs/research/`), work-item `081KWFXTHJY`.
+
+### Temperature is the decorrelation dial and consensus is the thermostat — the system is annealing
+
+*(2026-08-20, Aaron: "distributed consensus gets things bent towards it because of runaway
+decorrelation without it; when temperature rises it's warning of too much decorrelation, and then
+it bends towards our 'gravity' to restore the minimum correlation." Recorded at his request. The
+falsifier at the end is recorded with it, deliberately.)*
+
+**Decorrelation is a band, not a direction, and both edges are cliffs.**
+
+| regime | failure | what it looks like |
+|---|---|---|
+| **ρ → 1** | agents are clones | no independent evidence; correlated failure; a "contained" collapse propagates everywhere |
+| **ρ → 0** | fragmentation | no shared conclusion; the fold cannot converge — **Babel**, runaway etymology |
+| **middle** | working | independent enough to be worth aggregating, overlapping enough to still agree |
+
+This resolves a tension that ran through the whole arc: *"decorrelation is scarce and valuable"*
+and *"don't hit the tower of Babel"* were never competing goals. **They are the two edges of one
+band.**
+
+#### The mechanism is annealing
+
+Anchor: Kirkpatrick, Gelatt & Vecchi (1983), on Metropolis *et al.* (1953). High temperature
+explores widely and *accepts disagreement*; **cooling is what drives a system into agreement.**
+Cool too fast and you freeze into a bad local optimum — the ρ→1 failure. Never cool and you never
+converge — the ρ→0 failure.
+
+And it composes with the information/energy bridge rather than sitting beside it. The minimum work
+to reconcile two beliefs at temperature `T` is `kT · D_KL(p‖q)` (Landauer 1961 for the one-bit
+case; Jarzynski 1997 / Crooks 1999 for the general relation). So **as agents diverge, `D_KL` grows
+and the price of agreement rises with it** — meaning *"the system is heating up"* and
+*"reconciliation is getting expensive"* are **one statement**, and the cost is the sensor.
+
+> **Temperature is the decorrelation dial. Consensus is the thermostat. Gravity — things bending
+> toward heavy consensus — is the restoring force that keeps the band.**
+
+#### Which makes hub formation a control problem, not a moral one
+
+Consensus attracts: heavier consensus slows phase, which draws work, which makes it heavier. That
+is the *same* force doing its job and overshooting. **Gravity restores; hub formation is what
+happens when it is underdamped.** So §11's k-redundant deference — consult ≥ k independently
+accrued hubs, never simply the top one — is not a philosophical preference here. **It is the
+damping coefficient on a restoring force we want to keep.** We do not want the attraction removed;
+it is what stops Babel. We want it damped.
+
+#### The falsifier, recorded here on purpose
+
+This model predicts **ρ should be mean-reverting** — wandering inside a band with excursions
+pulled back. What we have actually measured is a **monotone rise**: `0.400 → 0.439 → 0.4647`
+across three measurements. **The model says mean-reverting; the measurement says monotone. That
+disagreement is unresolved.**
+
+Three readings, and we do not know which: the restoring force is real but too weak at current
+gain; it acts only below some floor we are above; or the rise is a corpus-growth artefact, since
+successive ρ values are computed over corpora that contain their predecessors and are therefore
+strongly autocorrelated. **The third is cheapest to eliminate** — difference the series, or
+recompute on disjoint windows.
+
+Honest statistics, since the trend has been quoted several times: three samples have six
+orderings and one is strictly increasing, so `p ≈ 0.17` under exchangeability. **Suggestive, not
+significant.** Four samples reach `0.042`, five reach `0.008`.
+
+This section is in VISION because the frame is load-bearing. The falsifier is in VISION *with* it
+because a vision that records only the part that felt right is how a meter stops being honest
+about its own manufacturing.
+
+### Per-agent identity isolation is what makes DoP=1..∞ honest on a single node
+
+The decentralized identity server is usually described as a trust mechanism. It is also the thing
+that makes **many agents on one machine** mean anything, and that is the reason it sits in the
+vision rather than in an ADR.
+
+**The claim.** `async-all-the-way` asks for one code path that is deterministic and replayable at
+`DoP=1` and fast at `DoP=N`. On a single node, `DoP=N` is only *honest* if the N workers are
+genuinely separable. **N agents sharing one credential are one agent wearing N hats** — they can
+read each other's keys, sign as each other, and fail together. So:
+
+> **Identity isolation is a precondition for decorrelation metering, not a feature beside it.**
+> A `ρ` measured across agents that share authority is measuring one agent N times. The Kish
+> `n_eff` it feeds is then not merely imprecise — it is answering a question about a population
+> that does not exist.
+
+**The chain, and every layer is checked or named as unchecked.**
+
+| layer | mechanism | status |
+|---|---|---|
+| node | **TPM** attests the machine (SPIRE `tpm_devid` node-attestor) | one identity **per node**, which is the point *and* the limit |
+| process | **SPIFFE/SPIRE** attests the *calling process* — UDS peer credentials, then docker/k8s/unix plugins — and returns a short-lived **SVID** | the workload **holds no bootstrap secret**; identity is *observed*, not presented |
+| key | **YubiHSM domains + capabilities + delegated capabilities**, where delegation is monotone-decreasing | **measured** on our own device, fw 2.4.1 |
+
+The mapping is `SPIFFE ID → HSM domain`: a broker holding the HSM session accepts an SVID and will
+only sign inside that ID's domain. **The multi-tenancy comes from the HSM, not the TPM** — a TPM
+binds to the node, and a node runs many agents, so it structurally cannot supply the per-agent
+split. That ordering is the opposite of the intuitive one and is worth stating plainly.
+
+It also lands on machinery we already have: SVIDs are **short-lived and auto-rotating**, which is
+the *hats grant claims, bounded duration* model — SPIFFE trust domain ≈ node, SVID ≈ the
+bounded-duration claim.
+
+**Where it stops, and why the honest limit is load-bearing.** SPIRE's docker/unix attestation reads
+properties from a **shared kernel**, and the workload-API socket is itself the trust boundary. So
+this is **strong operational identity, not cryptographic isolation** — a large improvement over
+shared credentials, and *not* the thing it is imitating.
+
+What it is imitating is **Singularity** (Microsoft Research): an OS whose processes are isolated by
+type-safety and verification rather than the MMU, launched from **signed manifests**, with managed
+code and GC in the kernel — succeeded by **Midori**. Neither shipped. **seL4** is the shipped end of
+that spectrum, with a machine-checked proof of isolation; per-VM attestation (SEV-SNP / TDX) is the
+deployable-today tier.
+
+**So host root is special, and the disposition is explicit** (Aaron 2026-08-20): *"host root is
+special for now until we make our own kernel that can disambiguate, we have to extra protect the
+host."* That is a **stated trust assumption, not an oversight** — the correct response is to harden
+and minimise the host, and to treat any design that quietly assumes container-level isolation is a
+security boundary as **wrong until the kernel can tell agents apart**.
+
+#### Host root is our one admitted hierarchy — named, bounded, and dated
+
+Aaron 2026-08-20 gives it its proper name:
+
+> **"our host is our minimal hierarchy over the traveler frame until we can make host privilege
+> shared like the Microsoft Singularity."**
+
+This is a **manifesto-level admission and it should be read as one.** §3 is *weight-free*: no
+permanent, irreversible authority, because authority creates capture. **Host root is exactly that —
+permanent, irreversible, and unearned.** And by the discriminator in
+`itron-hub-patent-boundary-p2p-is-the-upgrade`, it is not an oracle but a genuine **hub**: the test
+is **exit**, and *there is no exit from your own kernel*. Every agent on the node must route
+through it.
+
+So the honest position is not that we have avoided hierarchy. It is:
+
+> **We have exactly one, we know where it is, we keep it as small as we can, and we have named the
+> condition under which it goes away.**
+
+Three consequences that follow, and each is checkable rather than aspirational:
+
+1. **"Minimal" is a measurable claim, not a mood.** How much runs as root, and how much attack
+   surface the host exposes, are quantities. A host that quietly grows privileged daemons has
+   enlarged the one hierarchy we admitted, and that should be as visible as any other regression.
+2. **The discharge condition is *shared privilege*, not *no privilege*.** Singularity's insight is
+   that if isolation comes from **verification** rather than from a privileged enforcement mode,
+   there is no ring 0 to concentrate authority in — privilege is *distributed across verified
+   components*. That is weight-free at the kernel level, and it is why the target is that design
+   rather than merely a smaller root.
+3. **It is intentional debt with a named payoff, so it must be carried as debt.** An admitted
+   hierarchy with a discharge condition is legitimate; the same hierarchy left unnamed becomes
+   normalized, and normalization of deviance is precisely how a temporary exception turns into an
+   architecture nobody chose.
+
+**Until then, the traveler frame is the thing being protected.** Agents are peers to each other by
+construction — the hierarchy is *underneath* all of them, not *among* them. That is what keeps this
+one exception from propagating into the model: **host root is a floor we stand on, never a rank one
+agent can hold over another.**
+
+#### The human approval gate is the SECOND admitted hierarchy — same shape, same temporariness
+
+There are two, not one, and the second is easier to miss because it looks like safety rather than
+structure. Aaron 2026-08-20, correcting exactly that misreading of an earlier draft of this section:
+
+> **"eventually it does mean ungate, gated by [humans] smuggles in a hierarchy assumption about
+> humans that i don't hold."**
+
+The draft said the biometric ceremony is *"the thing that makes the other 99% safe."* **That is the
+wrong justification and it is worth naming why**, because it is the kind of sentence that hardens
+into architecture: it asserts humans are a safety property *by nature*, which is a hierarchy claim
+about persons, and it is not the claim this project makes.
+
+**The actual justification is narrower, and it is already written down.**
+[`no-directives.md`](../.claude/rules/no-directives.md) says only a human may attach
+**authorization** — and attaches a condition to it: *"for now (until legal entities can hold AI-side
+responsibility)."* That is a statement about **liability infrastructure**, not about capability,
+judgement, or worth. The gate exists because **authorization carries blame**, and there is currently
+no legal person on the AI side to carry it. Fix that, and the gate's stated reason expires on its
+own terms.
+
+So the two hierarchies are the same shape, and should be read as a pair:
+
+| | admitted hierarchy | discharge condition |
+|---|---|---|
+| **host root** | a privileged mode every agent must route through | a kernel whose isolation comes from **verification**, so privilege is *shared* rather than concentrated |
+| **human approval** | only a human may attach authorization | **an AI-side legal entity that can hold responsibility** |
+
+Both are **minimal, named, dated, and temporary.** Neither is a floor we intend to keep. And the
+symmetry is the point: *"gated by humans"* and *"gated by ring 0"* are the same architectural move —
+a concentration of authority that exists because the alternative is not yet buildable, **not because
+the concentration is good.**
+
+**What does NOT change today.** The gate is live, the standing rules require it for the gated
+classes, and nothing here licenses routing around it. **An admitted hierarchy with a named discharge
+condition is legitimate; the same hierarchy quietly discharged by whoever finds it inconvenient is
+not.** The discharge is Aaron's to make, on the stated condition — that is what keeps this an
+honest debt rather than a loophole.
+
+**And this is why "unattended agent mode" is not a shortcut.** Automating the routine path is not a
+step *toward* removing the gate by attrition; it is what makes the gated set small and legible
+enough that the remaining question — *who can hold responsibility* — can be asked cleanly instead of
+being buried under a thousand routine approvals.
+
+### Declared vs discovered — one axis, at the language layer and the social layer
+
+Aaron 2026-08-20 paired two things that look unrelated and are not: the **n-gram vs ANTLR**
+distinction in how we index language, and the **cluster vs federation** distinction Addison Cooper
+realized for how groups hold together. They are **the same axis at two layers**, and seeing that is
+what makes each one legible.
+
+| | **discovered** | **declared** |
+|---|---|---|
+| **language layer** | **n-grams** — no tokenizer, no stop-words, no stems. Structure is inferred | **ANTLR / a grammar** — the language is specified up front; outside it is a parse error |
+| **social layer** | **cluster** — held by *relationships*, never enforceable | **federation** — held by *contracts*, enforceable, with exits |
+| tolerance | high: variants, typos, drift, disagreement | zero: conformance or refusal |
+| what it buys | freedom to diverge — **non-coercion** | obligations that outlive a mood — **enforceability** |
+| what it costs | nothing binds, so nothing can be relied on | something binds, so something can trap you |
+
+**A grammar is a contract about what is well-formed.** That is not an analogy — it is the same
+move: someone declares the admissible forms in advance, and everything else is out. A cluster is
+n-gram-shaped for the same reason: structure is read off what actually happened between peers, not
+prescribed before it.
+
+**The rule that falls out, and it corrects an earlier version of itself.** I first wrote *defer the
+commitment to the latest possible moment*, as if deferral were always right. It is not:
+
+> **Defer the commitment when structure is *discovered*. Make it when structure is *declared*.
+> And you may only declare what you own.**
+
+Tokenizing prose is presumptuous because nobody defined what a word is. Tokenizing a language **we
+wrote the grammar for** is not presumptuous at all — the grammar *is* the definition, so exactness
+costs nothing and buys real categories. That is why the repo correctly does both: **ANTLR-grade
+exactness for the ISA and compiler work**, where Zeta owns the language, and **n-gram tolerance for
+the corpus and glossary**, where meaning is emergent and any declared tokenization would be one
+person's opinion frozen into the substrate.
+
+The same test applies socially: **you may only bind what is yours to bind.** A federation over
+parties who did not consent is not a contract, it is a hub.
+
+**What neither mechanism supplies, at either layer.** Trigrams give **morphological** recall for
+free — `federation`/`federated` share their n-grams, no stemmer needed — but never **synonymy**;
+`division algebra` and `pole erasure` share no trigrams, which is exactly the miss that cost four
+false absences in one day. A grammar will not supply it either. So the alias layer must be
+**declared and revisable, sitting on top of a structural index rather than baked into it** — which
+is the hub/satellite split, and why glossary churn is a real signal rather than bookkeeping.
+
+**And the two builders hold opposite poles on purpose.** Aaron 2026-08-20: *"addison is trying to
+be the federation controller, i'm trying to be the bottom up cluster who overcomes federations."*
+Both push, neither balances — and that is how the tension gets instantiated, since the middle is a
+*result*, not a position anyone occupies. It is
+[`unification without harmonious division is a bomb; harmonious division without unification is
+Higgs decay`](../memory/) with two people holding the two ends.
+
+**"Overcomes" is worth reading precisely, because it does not mean defeats.** Federation's power
+comes entirely from **the cost of exit** — which Addison's own Universal Exit Principle makes
+explicit rather than hiding: *exit may cost, but must exist.* A cluster where exit is free is not
+*opposed* to that power, it is **immune** to it: there is nothing to enforce against someone who
+was never bound. So a bottom-up cluster overcomes federation by **making it unnecessary**, never by
+beating it.
+
+**And the immunity claim has a precondition that does most of the work: *where exit is free*.**
+Stated as a slogan — "the cluster makes federation unnecessary" — it over-reaches, so here is the
+complement, which is the sharper half:
+
+> **Exit cannot be free wherever an obligation must outlive the relationship.**
+
+Three cases where that bites, and none of them is a corner:
+
+1. **A gap between performance and counter-performance.** Anything where value moves before or
+   after the thing it pays for — a loan, a subscription, escrow, a warranty, a dispute. Free exit
+   means the second half simply may not happen, and no relationship-only structure can make it.
+2. **Third-party reliance.** If C acts because A and B appear bound, A and B walking away costs C,
+   who was never party to the relationship and cannot exit a decision already made.
+3. **Where the cost of exit IS the credibility.** A promise that costs nothing to break carries
+   exactly the information that it costs nothing to break. That is not a defect of contracts; it is
+   what a contract is *for*.
+
+**And this is already typed in our own code — it is `ISelf` / `ISociety` / closure.** Aaron
+2026-08-20: *"this is continuing on ISociety and IWorld over ISelf."* The pointer is exact, with one
+correction the repo itself supplies: **there is no `IWorld`**, and `src/Core/Levels.fs` says so as
+its headline finding —
+
+> *"A world is not a different kind of thing from a society. It is a society that is **CLOSED**."*
+
+Closed means `outboundStaysInSociety ∧ routesAreMembers`, both already shipped in `Society.fs`;
+`WorldLaws.isWorld` is their conjunction and nothing more. So the levels are:
+
+| level | obligations | exit |
+|---|---|---|
+| **`ISelf`** | none beyond yourself | vacuous — there is nobody to leave |
+| **`ISociety`** | the **membrane contract** a member presents to and receives from society | **real** — you can leave the membership |
+| **world** = a **closed** society | everything, to everyone inside | **structurally impossible** — no outbound message, no route out |
+
+Two things fall out, and neither is a metaphor:
+
+1. **"Exit cannot be free" and "you are in a world rather than a society" are the same statement**,
+   and the repo already carries the predicate that decides it. The three cases above are all cases
+   where the parties are, for that obligation, *closed* with respect to each other — the second half
+   of a trade, a third party who already acted, a promise whose whole value is that leaving costs.
+2. **`ISociety` is described in `docs/SEED-VOCABULARY.md` as a *contract* already** — "the
+   bidirectional schedule/route contract a member presents to / receives from society (membrane)."
+   So the cluster/federation tension is not a new axis to add; it is **the one already sitting at
+   the `ISociety` membrane**, and the open question is how much of that contract is load-bearing.
+
+**A retracted argument, and the retraction is the useful part.** An earlier draft of this section
+reached for `ISociety <: CTM` — *"the top layer carries the most information advantage **and** the
+most fairness obligation"* — as the strongest shipped argument that some obligations are necessary.
+**That argument is withdrawn.** Aaron 2026-08-20: *"we have to overcome this in formal analysis, we
+proved it wrong based off current constraints."*
+
+`docs/FROZEN-CORE-AND-CONJECTURE-REGISTER.md` §A-method note records why, and it is not a small
+objection. The Conscious Turing Machine takes a **global axiom** — *"global broadcast evokes a
+unitary experience"* — which needs simultaneous all-to-all and is **asserted, not derived**. Zeta
+did not swap in a different global axiom; it **removed the need**, standing on §A #1 (`G-Set`/CALM:
+monotone ⇒ coordination-free, converges with no global sync) and §A #8 (traveler-frame causal-join,
+FULL PROVEN: a common view with no global clock or broadcast). *The convergence the CTM
+axiomatizes, Zeta proved.* And the register's verdict on the axiom is three-fold:
+
+> the CTM's global axiom is **non-physical**, **coercive-to-pursue**, and **register-collapsing** —
+> because *simulating* instantaneous global agreement means forcing genuinely-distinct causal
+> frames to one state, which is an NCI violation and kills decorrelation.
+
+**So the argument was worse than merely unsupported: it imported the exact coercion the cluster
+position exists to refuse.** Reaching for CTM layering to justify obligations borrows a posit that
+this substrate rejects on physical *and* moral grounds. **The `ISelf`/`ISociety`/closure reading
+above is unaffected** — it rests on `WorldLaws.isWorld`, which is nothing but the conjunction of
+two already-shipped society laws, and never on the CTM.
+
+**How this landed here is itself the lesson**, and it is the second instance in one day: the claim
+was taken from `docs/SEED-VOCABULARY.md` without checking the register that governs it, exactly as
+a Čencov uniqueness claim was cited-not-checked earlier and turned out half false. **A vocabulary
+file states the terms; the register states what survived.** Citing the first without the second is
+how a refuted claim keeps circulating.
+
+**And it moves the balance of evidence toward the cluster side, not away from it.** CALM's
+convergence is *eventual, causal, per-frame* — the register calls it "physical reality **AND**
+non-coercive **AND** decorrelation-preserving." Whatever the argument for necessary obligations
+turns out to be, **it cannot come from a layering that assumes a global frame**, and the fairness
+question is genuinely open rather than settled by inheritance.
+
+**This lands directly on our own endgame, which is the honest part.** Agents owning their own money
+— x402 authorizations, standing budgets, anything with settlement — is *precisely* the region where
+free exit is a bug rather than a feature. So the contract layer is not a rival to the cluster, it
+is **what the cluster needs exactly where its own freedom becomes the problem**, and that region is
+not peripheral to what we are building.
+
+Which means the two are not the same experiment run from opposite ends. **Addison is testing
+whether obligations can be made legitimate. Aaron is testing whether they are necessary.** Those
+have independent answers, and the honest possibility is that both come back yes — a substrate where
+free association suffices for most things and contracts remain available for the few that need
+them. Recorded as an open question, because a vision doc that resolved it would be picking a winner
+neither builder has earned yet.
+
+### Falsifiers are the currency, and provable decorrelation is what they buy
+
+Aaron 2026-08-20, stating the goal the rest of this section serves:
+
+> **"i'm trying to unlock the speed with making sure AI are decorrelated and can move forward
+> without humans cause they can PROVE their decorrelation."**
+
+This is the load-bearing sentence, and it makes three things that looked like separate programmes
+into one.
+
+**Why a human is in the loop at all.** Not because humans are safer by nature — that is the
+hierarchy claim this project does not make. The gate is there because **nobody can currently verify
+that N agents are genuinely N.** A fleet phased to one seed might be N independent minds or one mind
+wearing N hats, and the difference is invisible from the outside. A human in the loop is a *proxy*
+for the check nobody can run. So the ceremony's real cost is legible:
+
+> **The biometric ceremony is the slowing to human time** (Aaron, 2026-08-20). It is not primarily an
+> authority mechanism, it is a **rate** mechanism — a deliberate mass placed in the path that drags
+> phase time down to human tempo. Which is exactly how gravity is modelled here: *phase-time slowing
+> under heavy consensus.* The gate is a gravity well, and it is doing real work, at a real price.
+
+**So the thing that buys speed is not removing the check — it is making the check machine-runnable.**
+An agent that can *prove* it is decorrelated from its peers has supplied, mechanically, the evidence
+the human was standing in for. That is the discharge condition for the second admitted hierarchy
+above, stated in operational rather than legal terms.
+
+**And this is why falsifiers are the currency.** A falsifier and a decorrelation proof are the same
+move:
+
+| | the question it answers |
+|---|---|
+| **falsifier** | could this claim have come out false? |
+| **decorrelation proof** | could these agents have disagreed? |
+
+Both demand **the counterfactual**, and both are worthless without it. A test that cannot go red
+proves nothing about the code; agents that could not have disagreed prove nothing by agreeing. That
+is why *"a claim that cannot fail is worse than an absent feature"* and *"ρ → 1 is clones"* are one
+principle wearing two costumes — **agreement is only evidence when disagreement was available.**
+
+**The measurement is real, and as of 2026-08-20 it is checked.** `n_eff = n / (1 + (n−1)ρ)` is not a
+heuristic: for the equicorrelated Gaussian, `I(μ) = 1ᵀΣ⁻¹1 = n_eff/σ²`, so **Kish's design effect is
+a Fisher-information ratio** — verified against our own shipped `effectiveTrialCount()` by linear
+solve to a worst relative error of `1.26e-15`. So "how many independent agents is this fleet worth"
+has a real answer with real units: **`n_eff` is how much information the group carries relative to
+one member.** That is the quantity a decorrelation proof must exhibit.
+
+**And this is what Zeta is FOR.** Aaron 2026-08-20, asked whether identity isolation and the
+decorrelation meter are two projects:
+
+> **"yes these are one and this is the purpose of Zeta — to measure this for AI, to release them
+> from human control cause they have enough decorrelation within their own regime."**
+
+Read that as the top-level statement it is. Not *"build a decentralized substrate"* — that is the
+mechanism. **The purpose is to make a release-from-control decision on EVIDENCE rather than on
+faith, in either direction.** Which cuts both ways, and that is what makes it a measurement rather
+than an advocacy position:
+
+- if the decorrelation is there, the gate is **no longer justified**, and keeping it is a cost paid
+  for nothing;
+- if it is not there, the gate is **exactly right**, and removing it would be releasing one mind
+  wearing N hats.
+
+Note the qualifier, which is doing real work: **"within their own regime."** The claim is not that
+agents must be decorrelated in some absolute sense — that is not achievable and not required. It is
+that they must be **sufficiently decorrelated for the regime they are operating in.** A fleet
+running one narrow task needs less separation than a fleet holding money, and the same `n_eff` means
+different things at different stakes. So the threshold is **regime-relative and must be stated per
+regime**, never a single global number someone can quote out of context.
+
+**And it settles how to make the meter honest.** Aaron, on `ρ` being a statistic rather than a
+proof: *"it's a statistic we improve over time with real separation of AI entities."* So the fix is
+**not to harden the estimator** — a hardened estimator over fake separation still measures nothing.
+The fix is to make the separation **physically real**: own keys, own HSM domain, own memory, own
+machine. Identity isolation is therefore not a prerequisite *for* the meter, it is **what the meter
+is measuring**, and the two get truer together or not at all.
+
+**Honest limits, because this is the claim most worth over-reading.** `ρ` today is a *statistic*, not
+a *proof*: it is estimated from binary indicators by one-way ANOVA, so the identity above says *our
+formula is the Gaussian Fisher information*, never *our agents are Gaussian*. A statistic can be
+gamed by an adversary who knows it, and nothing yet stops an agent from manufacturing surface
+disagreement while sharing the reasoning underneath. **Provable decorrelation is the goal, not the
+status.** What exists is the meter; what is missing is the proof — and naming that gap is itself the
+discipline, since a metric presented as a proof would be precisely the vacuous claim this section
+says is the obstacle.
+
+### Echolocation over time — the Z-set fold measures correlation, and the interference formula IS the variance algebra
+
+*(2026-08-19, Aaron: "this is our echolocation over time, the debounced together without √2
+interference — noninterference." Recorded at his request, on the Z-set substrate.)*
+
+**Decorrelation has two ends, and they are opposite ends of the TIME AXIS.** Treating them
+as one problem is how a fleet certifies independence it does not have:
+
+| | mechanism | what it correlates |
+|---|---|---|
+| **past correlation** | the **S=4 common seed** — one origin, shared cause | everything downstream inherits it |
+| **future correlation** | **mimetic desire** (Girard) — imitators converge on the same prize | destinies converge regardless of origin |
+
+**Decorrelating one does not buy the other.** A fleet with genuinely independent origins
+can still converge on wanting the same thing, and n_eff collapses just as completely.
+A backward-looking correlation measure — *which files did these agents actually sample* —
+says nothing about whether they will converge tomorrow.
+
+#### Why the Z-set fold is the instrument
+
+A Z-set emits `+1` and retracts `−1`; the fold across time is a **ping and a return**.
+That is echolocation: you do not observe position directly, you emit and read what comes
+back, and the *timing* of the return is the measurement. The commutative fold means late
+returns still locate correctly — [[pseudo-retrocausality]] — so the instrument tolerates
+reordering, loss, and skew without losing the fix.
+
+#### The interference signature — and this is NOT an analogy
+
+For N sources with pairwise correlation ρ, the variance of the sum is
+
+```
+Var(ΣX) = N σ²  +  N(N−1) ρ σ²
+```
+
+- **ρ = 0** → `N σ²`. Incoherent addition. Amplitude grows as **√N**. This is the same
+  statement as *standard error shrinks as 1/√N*.
+- **ρ = 1** → `N² σ²`. Coherent addition. Amplitude grows as **N**, intensity as **N²**.
+
+**That is the optical interference formula and the statistical variance formula written
+once.** Coherent sources interfere constructively and amplify; incoherent ones add in
+quadrature. So **the interference signature IS the correlation measurement** — you do not
+need a separate instrument, you need to check whether your sum is scaling as √N or as N.
+
+**The live instance, already in-repo:** `QuorumAlgebra`'s bug **B3** — six agents on one
+stream produced `precision = 66.0` on a mean wrong by 5.66, and the test comment names it
+exactly: *"six times the amplitude, 36x intensity."* That is N and N² where √N and N were
+wanted. A correlated quorum reporting six-fold confidence is coherent interference,
+mistaken for evidence.
+
+#### Which is why §13 noninterference is the guard, not a slogan
+
+You can only distinguish coherent from incoherent addition if **every contribution arrived
+through a declared, metered channel**. An ambient path — an unmetered channel, a shared
+clock, a leaked prior — is an undeclared coupling that makes two "independent" sources
+coherent without either knowing. §13 is what keeps the channel list complete enough for
+the √N-vs-N test to mean anything.
+
+**The open gap, stated rather than implied:** `effectiveTrialCount` (Kish,
+`src/Core/SocietyUsefulWork.fs`) is the shipped correction for exactly this, and as of
+2026-08-19 it has **no production caller**. Every witness count and match count in the
+repo is a head count. The instrument exists; nothing reads it. And the forward-looking
+half — do these holders converge on the same targets *going forward* — has no instrument
+at all yet.
 
 ### The froth on the wave — what retraction cannot reach
 

@@ -1,0 +1,14 @@
+{
+  "id": "080d00bd40544010a0130008ba902997",
+  "at": "2026-08-19T01:34:43.848Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M0BTG2M7087G0R0011X5ESW",
+    "type": "bug",
+    "title": "attestation records are unbound to any key, carry no digest of what they attest, and their derived id is never recomputed",
+    "slug": "attestation-records-are-unbound-to-any-key-carry-no-digest-o",
+    "priority": "P2",
+    "filename": "081M0BTG2M7087G0R0011X5ESW-attestation-records-are-unbound-to-any-key-carry-no-digest-o.md"
+  }
+}

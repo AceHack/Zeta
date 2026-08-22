@@ -1,0 +1,14 @@
+{
+  "id": "080d00ded0df6010a01300084405618c",
+  "at": "2026-08-19T21:07:53.964Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M0DXM6ZB087G0R0014VTR3S",
+    "type": "task",
+    "title": "TLA+: forward-correlation harness does not leak arm identity into agent-visible state",
+    "slug": "tla-forward-correlation-harness-does-not-leak-arm-identity-i",
+    "priority": "P2",
+    "filename": "081M0DXM6ZB087G0R0014VTR3S-tla-forward-correlation-harness-does-not-leak-arm-identity-i.md"
+  }
+}

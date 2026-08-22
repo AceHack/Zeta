@@ -1,0 +1,438 @@
+{
+  "measuredOn": "2026-08-22",
+  "clusterDefaultStorageClass": "zeta-local-path",
+  "rendered": [
+    {
+      "appId": "full-ai-cluster/agent-memory",
+      "origin": "volumeClaimTemplate",
+      "name": "memory/agent-memory",
+      "workload": "StatefulSet/agent-memory",
+      "storageClassName": "longhorn",
+      "size": "8Gi",
+      "gibibytes": 8,
+      "count": 1
+    },
+    {
+      "appId": "full-ai-cluster/cockroachdb",
+      "origin": "volumeClaimTemplate",
+      "name": "datadir/cockroachdb",
+      "workload": "StatefulSet/cockroachdb",
+      "storageClassName": "longhorn",
+      "size": "48Gi",
+      "gibibytes": 48,
+      "count": 3
+    },
+    {
+      "appId": "full-ai-cluster/dapr",
+      "origin": "volumeClaimTemplate",
+      "name": "dapr-scheduler-data-dir/dapr-scheduler-server",
+      "workload": "StatefulSet/dapr-scheduler-server",
+      "storageClassName": "",
+      "size": "1Gi",
+      "gibibytes": 1,
+      "count": 1
+    },
+    {
+      "appId": "full-ai-cluster/forgejo",
+      "origin": "PersistentVolumeClaim",
+      "name": "gitea-shared-storage",
+      "workload": "",
+      "storageClassName": "zeta-local-path",
+      "size": "20Gi",
+      "gibibytes": 20,
+      "count": 1
+    },
+    {
+      "appId": "full-ai-cluster/game-hosting/gmod",
+      "origin": "volumeClaimTemplate",
+      "name": "data/gmod",
+      "workload": "StatefulSet/gmod",
+      "storageClassName": "longhorn",
+      "size": "10Gi",
+      "gibibytes": 10,
+      "count": 1
+    },
+    {
+      "appId": "full-ai-cluster/gitlab",
+      "origin": "volumeClaimTemplate",
+      "name": "data/gitlab-postgresql",
+      "workload": "StatefulSet/gitlab-postgresql",
+      "storageClassName": "",
+      "size": "8Gi",
+      "gibibytes": 8,
+      "count": 1
+    },
+    {
+      "appId": "full-ai-cluster/gitlab",
+      "origin": "PersistentVolumeClaim",
+      "name": "gitlab-minio",
+      "workload": "",
+      "storageClassName": "",
+      "size": "10Gi",
+      "gibibytes": 10,
+      "count": 1
+    },
+    {
+      "appId": "full-ai-cluster/gitlab",
+      "origin": "volumeClaimTemplate",
+      "name": "redis-data/gitlab-redis-master",
+      "workload": "StatefulSet/gitlab-redis-master",
+      "storageClassName": "",
+      "size": "8Gi",
+      "gibibytes": 8,
+      "count": 1
+    },
+    {
+      "appId": "full-ai-cluster/gitlab",
+      "origin": "volumeClaimTemplate",
+      "name": "repo-data/gitlab-gitaly",
+      "workload": "StatefulSet/gitlab-gitaly",
+      "storageClassName": "",
+      "size": "50Gi",
+      "gibibytes": 50,
+      "count": 1
+    },
+    {
+      "appId": "full-ai-cluster/headscale",
+      "origin": "PersistentVolumeClaim",
+      "name": "headscale-config",
+      "workload": "",
+      "storageClassName": "longhorn",
+      "size": "3Gi",
+      "gibibytes": 3,
+      "count": 1
+    },
+    {
+      "appId": "full-ai-cluster/hindsight",
+      "origin": "volumeClaimTemplate",
+      "name": "data/hindsight-postgresql",
+      "workload": "StatefulSet/hindsight-postgresql",
+      "storageClassName": "longhorn",
+      "size": "10Gi",
+      "gibibytes": 10,
+      "count": 1
+    },
+    {
+      "appId": "full-ai-cluster/kube-prometheus-stack",
+      "origin": "PersistentVolumeClaim",
+      "name": "kube-prometheus-stack-grafana",
+      "workload": "",
+      "storageClassName": "longhorn",
+      "size": "5Gi",
+      "gibibytes": 5,
+      "count": 1
+    },
+    {
+      "appId": "full-ai-cluster/kube-prometheus-stack",
+      "origin": "operatorStorageSpec",
+      "name": "storage/kube-prometheus-stack-alertmanager",
+      "workload": "Alertmanager/kube-prometheus-stack-alertmanager",
+      "storageClassName": "longhorn",
+      "size": "5Gi",
+      "gibibytes": 5,
+      "count": 1
+    },
+    {
+      "appId": "full-ai-cluster/kube-prometheus-stack",
+      "origin": "operatorStorageSpec",
+      "name": "storage/kube-prometheus-stack-prometheus",
+      "workload": "Prometheus/kube-prometheus-stack-prometheus",
+      "storageClassName": "longhorn",
+      "size": "32Gi",
+      "gibibytes": 32,
+      "count": 1
+    },
+    {
+      "appId": "full-ai-cluster/loki",
+      "origin": "volumeClaimTemplate",
+      "name": "data/loki-backend",
+      "workload": "StatefulSet/loki-backend",
+      "storageClassName": "",
+      "size": "10Gi",
+      "gibibytes": 10,
+      "count": 1
+    },
+    {
+      "appId": "full-ai-cluster/loki",
+      "origin": "volumeClaimTemplate",
+      "name": "data/loki-write",
+      "workload": "StatefulSet/loki-write",
+      "storageClassName": "",
+      "size": "10Gi",
+      "gibibytes": 10,
+      "count": 1
+    },
+    {
+      "appId": "full-ai-cluster/mimir",
+      "origin": "volumeClaimTemplate",
+      "name": "storage/mimir-alertmanager",
+      "workload": "StatefulSet/mimir-alertmanager",
+      "storageClassName": "",
+      "size": "1Gi",
+      "gibibytes": 1,
+      "count": 1
+    },
+    {
+      "appId": "full-ai-cluster/mimir",
+      "origin": "volumeClaimTemplate",
+      "name": "storage/mimir-compactor",
+      "workload": "StatefulSet/mimir-compactor",
+      "storageClassName": "longhorn",
+      "size": "16Gi",
+      "gibibytes": 16,
+      "count": 1
+    },
+    {
+      "appId": "full-ai-cluster/mimir",
+      "origin": "volumeClaimTemplate",
+      "name": "storage/mimir-ingester-zone-a",
+      "workload": "StatefulSet/mimir-ingester-zone-a",
+      "storageClassName": "longhorn",
+      "size": "16Gi",
+      "gibibytes": 16,
+      "count": 1
+    },
+    {
+      "appId": "full-ai-cluster/mimir",
+      "origin": "volumeClaimTemplate",
+      "name": "storage/mimir-ingester-zone-b",
+      "workload": "StatefulSet/mimir-ingester-zone-b",
+      "storageClassName": "longhorn",
+      "size": "16Gi",
+      "gibibytes": 16,
+      "count": 1
+    },
+    {
+      "appId": "full-ai-cluster/mimir",
+      "origin": "volumeClaimTemplate",
+      "name": "storage/mimir-ingester-zone-c",
+      "workload": "StatefulSet/mimir-ingester-zone-c",
+      "storageClassName": "longhorn",
+      "size": "16Gi",
+      "gibibytes": 16,
+      "count": 1
+    },
+    {
+      "appId": "full-ai-cluster/mimir",
+      "origin": "volumeClaimTemplate",
+      "name": "storage/mimir-store-gateway-zone-a",
+      "workload": "StatefulSet/mimir-store-gateway-zone-a",
+      "storageClassName": "longhorn",
+      "size": "16Gi",
+      "gibibytes": 16,
+      "count": 1
+    },
+    {
+      "appId": "full-ai-cluster/mimir",
+      "origin": "volumeClaimTemplate",
+      "name": "storage/mimir-store-gateway-zone-b",
+      "workload": "StatefulSet/mimir-store-gateway-zone-b",
+      "storageClassName": "longhorn",
+      "size": "16Gi",
+      "gibibytes": 16,
+      "count": 1
+    },
+    {
+      "appId": "full-ai-cluster/mimir",
+      "origin": "volumeClaimTemplate",
+      "name": "storage/mimir-store-gateway-zone-c",
+      "workload": "StatefulSet/mimir-store-gateway-zone-c",
+      "storageClassName": "longhorn",
+      "size": "16Gi",
+      "gibibytes": 16,
+      "count": 1
+    },
+    {
+      "appId": "full-ai-cluster/minio",
+      "origin": "PersistentVolumeClaim",
+      "name": "blob-store",
+      "workload": "",
+      "storageClassName": "zeta-local-path",
+      "size": "20Gi",
+      "gibibytes": 20,
+      "count": 1
+    },
+    {
+      "appId": "full-ai-cluster/nats",
+      "origin": "volumeClaimTemplate",
+      "name": "nats-js/nats",
+      "workload": "StatefulSet/nats",
+      "storageClassName": "longhorn",
+      "size": "10Gi",
+      "gibibytes": 10,
+      "count": 3
+    },
+    {
+      "appId": "full-ai-cluster/ollama",
+      "origin": "PersistentVolumeClaim",
+      "name": "ollama",
+      "workload": "",
+      "storageClassName": "longhorn",
+      "size": "200Gi",
+      "gibibytes": 200,
+      "count": 1
+    },
+    {
+      "appId": "full-ai-cluster/oz",
+      "origin": "PersistentVolumeClaim",
+      "name": "ziti-controller",
+      "workload": "",
+      "storageClassName": "longhorn",
+      "size": "3Gi",
+      "gibibytes": 3,
+      "count": 1
+    },
+    {
+      "appId": "full-ai-cluster/platform",
+      "origin": "volumeClaimTemplate",
+      "name": "rooms/portal",
+      "workload": "StatefulSet/portal",
+      "storageClassName": "longhorn",
+      "size": "5Gi",
+      "gibibytes": 5,
+      "count": 1
+    },
+    {
+      "appId": "full-ai-cluster/redis",
+      "origin": "volumeClaimTemplate",
+      "name": "redis-data/redis-master",
+      "workload": "StatefulSet/redis-master",
+      "storageClassName": "longhorn",
+      "size": "8Gi",
+      "gibibytes": 8,
+      "count": 1
+    },
+    {
+      "appId": "full-ai-cluster/redis",
+      "origin": "volumeClaimTemplate",
+      "name": "redis-data/redis-replicas",
+      "workload": "StatefulSet/redis-replicas",
+      "storageClassName": "longhorn",
+      "size": "8Gi",
+      "gibibytes": 8,
+      "count": 2
+    },
+    {
+      "appId": "full-ai-cluster/seaweedfs",
+      "origin": "PersistentVolumeClaim",
+      "name": "blob-store-seaweedfs-all-in-one-data",
+      "workload": "",
+      "storageClassName": "zeta-local-path",
+      "size": "20Gi",
+      "gibibytes": 20,
+      "count": 1
+    },
+    {
+      "appId": "full-ai-cluster/spire",
+      "origin": "volumeClaimTemplate",
+      "name": "spire-data/spire-server",
+      "workload": "StatefulSet/spire-server",
+      "storageClassName": "zeta-local-path",
+      "size": "5Gi",
+      "gibibytes": 5,
+      "count": 1
+    },
+    {
+      "appId": "full-ai-cluster/tempo",
+      "origin": "volumeClaimTemplate",
+      "name": "storage/tempo",
+      "workload": "StatefulSet/tempo",
+      "storageClassName": "longhorn",
+      "size": "20Gi",
+      "gibibytes": 20,
+      "count": 1
+    },
+    {
+      "appId": "full-ai-cluster/vault",
+      "origin": "volumeClaimTemplate",
+      "name": "audit/vault",
+      "workload": "StatefulSet/vault",
+      "storageClassName": "zeta-local-path",
+      "size": "10Gi",
+      "gibibytes": 10,
+      "count": 1
+    },
+    {
+      "appId": "full-ai-cluster/vault",
+      "origin": "volumeClaimTemplate",
+      "name": "data/vault",
+      "workload": "StatefulSet/vault",
+      "storageClassName": "zeta-local-path",
+      "size": "20Gi",
+      "gibibytes": 20,
+      "count": 1
+    },
+    {
+      "appId": "full-ai-cluster/vllm",
+      "origin": "PersistentVolumeClaim",
+      "name": "vllm-cache",
+      "workload": "",
+      "storageClassName": "longhorn",
+      "size": "200Gi",
+      "gibibytes": 200,
+      "count": 1
+    },
+    {
+      "appId": "full-ai-cluster/weaviate",
+      "origin": "volumeClaimTemplate",
+      "name": "weaviate-data/weaviate",
+      "workload": "StatefulSet/weaviate",
+      "storageClassName": "longhorn",
+      "size": "32Gi",
+      "gibibytes": 32,
+      "count": 1
+    },
+    {
+      "appId": "infra/cockroachdb",
+      "origin": "volumeClaimTemplate",
+      "name": "datadir/cockroachdb",
+      "workload": "StatefulSet/cockroachdb",
+      "storageClassName": "longhorn",
+      "size": "8Gi",
+      "gibibytes": 8,
+      "count": 3
+    },
+    {
+      "appId": "infra/gitlab",
+      "origin": "volumeClaimTemplate",
+      "name": "data/gitlab-postgresql",
+      "workload": "StatefulSet/gitlab-postgresql",
+      "storageClassName": "",
+      "size": "8Gi",
+      "gibibytes": 8,
+      "count": 1
+    },
+    {
+      "appId": "infra/gitlab",
+      "origin": "PersistentVolumeClaim",
+      "name": "gitlab-minio",
+      "workload": "",
+      "storageClassName": "",
+      "size": "10Gi",
+      "gibibytes": 10,
+      "count": 1
+    },
+    {
+      "appId": "infra/gitlab",
+      "origin": "volumeClaimTemplate",
+      "name": "redis-data/gitlab-redis-master",
+      "workload": "StatefulSet/gitlab-redis-master",
+      "storageClassName": "",
+      "size": "8Gi",
+      "gibibytes": 8,
+      "count": 1
+    },
+    {
+      "appId": "infra/gitlab",
+      "origin": "volumeClaimTemplate",
+      "name": "repo-data/gitlab-gitaly",
+      "workload": "StatefulSet/gitlab-gitaly",
+      "storageClassName": "",
+      "size": "50Gi",
+      "gibibytes": 50,
+      "count": 1
+    }
+  ],
+  "unrenderable": [],
+  "appsDiscovered": 54
+}

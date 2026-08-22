@@ -1,0 +1,14 @@
+{
+  "id": "080d00d83ab57810a013000892a8d8f8",
+  "at": "2026-08-19T17:17:40.911Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M0DGENNE087G0R001EYXMJG",
+    "type": "task",
+    "title": "Metered probe: YubiHSM 2 attestation-template DER malformed-input handling (S3 negative path)",
+    "slug": "metered-probe-yubihsm-2-attestation-template-der-malformed-i",
+    "priority": "P2",
+    "filename": "081M0DGENNE087G0R001EYXMJG-metered-probe-yubihsm-2-attestation-template-der-malformed-i.md"
+  }
+}

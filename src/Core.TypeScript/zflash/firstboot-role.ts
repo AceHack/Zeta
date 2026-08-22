@@ -189,10 +189,25 @@ function checkShellSafe(label: string, value: string): string | null {
 /**
  * Validate a k3s server URL.
  *
- * `https` is required, not preferred: the node-token crosses this connection,
- * and k3s itself refuses a plain-http server address. Host-and-port only — a
- * path, query or fragment means the caller is passing something that is not a
+ * `https` is required because k3s itself refuses a plain-http server address:
+ * `pkg/clientaccess/token.go` `setServer` returns
+ * `"only https:// URLs are supported, invalid scheme: …"`. Host-and-port only —
+ * a path, query or fragment means the caller is passing something that is not a
  * k3s server address, and silently trimming it would hide that.
+ *
+ * CORRECTED 2026-08-21. This docstring used to say `https` was required because
+ * "the node-token crosses this connection", implying TLS is what protects it.
+ * Read upstream: it is not. On a self-signed cluster the agent's very first
+ * request is made with a client that verifies NOTHING —
+ * `pkg/clientaccess/token.go` declares
+ *
+ *     insecureClient = &http.Client{ Transport: &http.Transport{
+ *         TLSClientConfig: &tls.Config{ InsecureSkipVerify: true } } }
+ *
+ * and `getCACerts` uses exactly that client to download `/cacerts`. What makes
+ * the bootstrap safe is not the scheme; it is the CA hash carried in the token.
+ * See {@link validateJoinTokenMaterial}, which is the guard that keeps that
+ * true.
  */
 export function validateJoinServerUrl(serverUrl: string): string | null {
   const trimmed = serverUrl.trim();
@@ -251,6 +266,84 @@ export function validateTokenEspPath(tokenEspPath: string): string | null {
     return `token ESP path must not contain a .. segment: ${trimmed}`;
   }
   return checkShellSafe("token ESP path", trimmed);
+}
+
+/**
+ * The only k3s token shape that authenticates the server it is sent to.
+ *
+ * `K10` + 64 lowercase hex (a SHA-256 digest) + `::` + credentials. Upstream:
+ * `pkg/clientaccess/token.go` — `tokenPrefix = "K10"`,
+ * `caHashLength = sha256.Size * 2`, and `FormatTokenBytes` returns
+ * `tokenPrefix + digest + "::" + creds`.
+ *
+ * Lowercase is not a stylistic tightening: the digest is produced by
+ * `hex.EncodeToString`, which emits lowercase, and `validateCACerts` compares
+ * the two hashes with `==` on the raw strings. An uppercase hash would parse,
+ * pass the length check, and then never match — a join that fails for a reason
+ * that reads nothing like "your token is mis-cased".
+ */
+export const K3S_NODE_TOKEN_WITH_CA_HASH = /^K10[0-9a-f]{64}::.+$/u;
+
+/**
+ * Refuse join-token material that carries no CA hash.
+ *
+ * WHY THIS IS FAIL-CLOSED AND NOT PEDANTRY. Read the k3s agent bootstrap
+ * (`pkg/clientaccess/token.go`) in order:
+ *
+ *  1. `parseToken` — a token with no `K10` prefix is NOT rejected. It is
+ *     rewritten to `K10:::<password>`, so `info.caHash` becomes the empty
+ *     string and everything downstream proceeds.
+ *  2. `getCACerts` — the cluster CA bundle is downloaded from `/cacerts` using
+ *     `insecureClient`, whose `tls.Config` sets `InsecureSkipVerify: true`.
+ *     No certificate chain and no hostname is checked on that request.
+ *  3. `validateCAHash` — with `len(caHash) == 0 && len(CACerts) > 0` it does
+ *     not fail. It emits `logrus.Warn("Cluster CA certificate is not trusted
+ *     by the host CA bundle, but the token does not include a CA hash. Use the
+ *     full token from the server's node-token file …")` and returns nil.
+ *
+ * So a prefix-less token means the joiner accepts whatever CA answers first on
+ * the segment and then presents its cluster credential to it. `https://` in the
+ * server URL does not help — step 2 is the step that ignores TLS. The single
+ * thing standing between a flashed joiner and handing the cluster token to a
+ * MITM is the `K10<hash>::` prefix, which is why its absence is refused here
+ * rather than warned about.
+ *
+ * REFUSING COSTS A CORRECT OPERATOR NOTHING. The documented source for this
+ * material is the founder's `/var/lib/rancher/k3s/server/node-token`
+ * (`full-ai-cluster/INJECTION-POINTS.md` §6). Upstream, `node-token` is a
+ * symlink to `<data-dir>/token` (`pkg/server/server.go`, "backwards
+ * compatibility"), and both are written by `handlers.WriteToken` →
+ * `clientaccess.FormatToken`, which always prepends the hash. Every token k3s
+ * itself produces passes this check; the ones that fail are hand-picked shared
+ * secrets (`K3S_TOKEN=hunter2`), which is precisely the case that silently
+ * degrades.
+ *
+ * Pure: takes the file's CONTENT, returns a refusal string or null. The read
+ * lives in `file-backed.ts` so this stays unit-testable with no filesystem.
+ */
+export function validateJoinTokenMaterial(tokenContent: string): string | null {
+  const trimmed = tokenContent.trim();
+  if (trimmed.length === 0) {
+    return "join token file is empty; a joiner with no credential joins nothing";
+  }
+  if (trimmed.includes("\n")) {
+    return (
+      "join token file must hold exactly one token line, got " +
+      `${String(trimmed.split("\n").length)} lines ` +
+      "(k3s writes node-token as a single line; several lines means the wrong file was passed)"
+    );
+  }
+  if (!K3S_NODE_TOKEN_WITH_CA_HASH.test(trimmed)) {
+    return (
+      "join token does not carry a cluster CA hash (expected K10<64 lowercase hex>::<creds>). " +
+      "k3s does NOT reject such a token — pkg/clientaccess/token.go parseToken rewrites it to " +
+      "K10:::<password>, getCACerts then downloads the CA over a client with " +
+      "InsecureSkipVerify:true, and validateCAHash only logs a warning. The joiner would trust " +
+      "whatever CA answered and hand it the cluster credential. Use the founder's " +
+      "/var/lib/rancher/k3s/server/node-token verbatim."
+    );
+  }
+  return null;
 }
 
 /** The three addressing fields, or none of them. Never a partial set. */

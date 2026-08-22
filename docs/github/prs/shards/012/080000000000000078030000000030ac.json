@@ -1,0 +1,12 @@
+{
+  "pr_number": 12460,
+  "archive_path": "docs/history/pr-reviews/PR-12460-docs-research-repo-split-round-2-the-change-rate-partition-is-measured-and-the-f.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-19T17:39:37.804Z",
+  "schema_version": "v1",
+  "commit_sha": "6fe1c74d9aeb7bbdfc7bc34fd5f94539733db328",
+  "title": "docs(research): repo-split round 2 -- the change-rate partition is measured, and the first cut is not the one the ADR drew",
+  "state": "MERGED",
+  "merged_at": "2026-08-19T17:38:59Z",
+  "head_ref": "kenji/repo-split-measured-cut-lines"
+}

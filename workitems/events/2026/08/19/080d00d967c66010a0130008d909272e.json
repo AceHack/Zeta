@@ -1,0 +1,14 @@
+{
+  "id": "080d00d967c66010a0130008d909272e",
+  "at": "2026-08-19T17:58:47.244Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M0DJSY6B087G0R0005PAA25",
+    "type": "task",
+    "title": "Alloy: no appointed attestor -- every witness is itself attestable (claim 2 structural check)",
+    "slug": "alloy-no-appointed-attestor-every-witness-is-itself-attestab",
+    "priority": "P2",
+    "filename": "081M0DJSY6B087G0R0005PAA25-alloy-no-appointed-attestor-every-witness-is-itself-attestab.md"
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 13504,
+  "archive_path": "docs/history/pr-reviews/PR-13504-fix-hygiene-two-agents-fixed-the-same-red-main-and-the-merge-produced-a-duplicat.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-22T02:19:01.742Z",
+  "schema_version": "v1",
+  "commit_sha": "33fec43d524a86910c631d8fa16dd5d936c3ab63",
+  "title": "fix(hygiene): two agents fixed the same red main and the merge produced a duplicate key",
+  "state": "MERGED",
+  "merged_at": "2026-08-22T02:18:29Z",
+  "head_ref": "shadow/dedupe-inventory-map"
+}

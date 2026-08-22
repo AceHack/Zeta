@@ -60,13 +60,12 @@ import { platform } from "node:os";
 import * as readline from "node:readline/promises";
 import { stdin, stdout } from "node:process";
 import { analyzePamAuthChain, type PamAuthChainAnalysis } from "../pam/auth-chain.ts";
+import { establishIsoIntegrity, realIsoIntegrityIo } from "./iso-integrity.ts";
 
-// ── Bounds (identical to the macOS and Windows arms — one contract, three hosts) ─────────
+// ── Bounds — one contract, three hosts, and now literally one definition ─────────
 
-export const MIN_ISO_BYTES = 200 * 1024 * 1024;
-export const MAX_ISO_BYTES = 8 * 1024 * 1024 * 1024;
-export const MIN_USB_BYTES = 4 * 1024 * 1024 * 1024;
-export const MAX_USB_BYTES = 256 * 1024 * 1024 * 1024;
+import { MAX_ISO_BYTES, MAX_USB_BYTES, MIN_ISO_BYTES, MIN_USB_BYTES } from "./size-bounds.ts";
+export { MAX_ISO_BYTES, MAX_USB_BYTES, MIN_ISO_BYTES, MIN_USB_BYTES };
 
 /** Mount points that mark a disk as the running system's. Hosting any of these is fatal. */
 export const SYSTEM_MOUNTPOINTS: readonly string[] = ["/", "/boot", "/boot/efi", "/efi", "/nix/store"];
@@ -747,6 +746,22 @@ async function main(): Promise<void> {
   const isoCheck = validateIso(isoPath, isoStat.size, isoStat.isFile());
   if (!isoCheck.ok) bail(2, isoCheck.message);
   process.stdout.write(`ISO: ${isoPath} (${human(isoStat.size)})\n`);
+
+  // ── VERIFY BEFORE WRITE ──────────────────────────────────────────────
+  //
+  // validateIso above establishes the ISO's SIZE and nothing else. Until
+  // 081M0HG7X7B087G0R002A05DAP this arm stopped there, so on Linux zflash
+  // wrote whatever bytes were at that path to a block device. The gate is
+  // the same one the macOS arm runs, imported rather than copied, and it
+  // fails CLOSED: no manifest beside the ISO is a refusal, never a pass.
+  //
+  // Placed before lsblk so a refusal costs the operator nothing and no
+  // device is so much as enumerated.
+  {
+    const integrity = await establishIsoIntegrity(isoPath, realIsoIntegrityIo());
+    if (!integrity.ok) bail(2, integrity.message);
+    process.stdout.write(integrity.report);
+  }
 
   const lsblkPath = fx.which("lsblk");
   if (lsblkPath === null) bail(2, "lsblk is not on PATH (install util-linux)");

@@ -178,6 +178,92 @@
           "stdout": "TPM2_PT_LEVEL:\n  raw: 0\nTPM2_PT_REVISION:\n  raw: 1.59\n"
         }
       }
+    },
+    {
+      "name": "linux-x86-tpm2-present-nist-curves-only",
+      "provenanceKind": "hand-constructed",
+      "provenance": "Hand-constructed by Nazar from the output shape of tpm2-tools tools/tpm2_getcap.c dump_ecc_curves, which prints NAME: 0xHEX for the eight identifiers it recognises. NO TPM WAS CONTACTED.",
+      "expectedState": "present",
+      "expectedSecp256k1": "absent",
+      "why": "A TPM 2.0 that enumerated its ECC curves and reported only TCG-registered NIST curves. This is the ONLY shape that settles secp256k1 negatively, because every identifier was one the tool could name.",
+      "capture": {
+        "platform": "linux",
+        "deviceNodes": [
+          { "path": "/dev/tpmrm0", "outcome": { "kind": "found" } },
+          { "path": "/dev/tpm0", "outcome": { "kind": "found" } }
+        ],
+        "sysClassTpm": { "kind": "listed", "entries": ["tpm0", "tpmrm0"] },
+        "versionMajor": [{ "path": "/sys/class/tpm/tpm0/tpm_version_major", "outcome": { "kind": "read", "text": "2\n" } }],
+        "getcapPropertiesFixed": {
+          "kind": "ran",
+          "stdout": "TPM2_PT_FAMILY_INDICATOR:\n  raw: 0x322E3000\n  value: \"2.0\"\n"
+        },
+        "getcapEccCurves": {
+          "kind": "ran",
+          "stdout": "TPM2_ECC_NIST_P256: 0x3\nTPM2_ECC_NIST_P384: 0x4\n"
+        }
+      }
+    },
+    {
+      "name": "linux-x86-tpm2-present-vendor-curve-unnameable",
+      "provenanceKind": "hand-constructed",
+      "provenance": "Hand-constructed by Nazar from the default branch of tpm2-tools dump_ecc_curves, which prints unknownHEX: 0xHEX for an identifier it cannot name. NO TPM WAS CONTACTED.",
+      "expectedState": "present",
+      "expectedSecp256k1": "indeterminate",
+      "why": "The same TPM plus one identifier tpm2-tools cannot name. secp256k1 has no TCG code point, so a vendor implementation would look EXACTLY like this. The curve is not excluded, and calling this absent would be the whole defect.",
+      "capture": {
+        "platform": "linux",
+        "deviceNodes": [
+          { "path": "/dev/tpmrm0", "outcome": { "kind": "found" } },
+          { "path": "/dev/tpm0", "outcome": { "kind": "found" } }
+        ],
+        "sysClassTpm": { "kind": "listed", "entries": ["tpm0", "tpmrm0"] },
+        "versionMajor": [{ "path": "/sys/class/tpm/tpm0/tpm_version_major", "outcome": { "kind": "read", "text": "2\n" } }],
+        "getcapPropertiesFixed": {
+          "kind": "ran",
+          "stdout": "TPM2_PT_FAMILY_INDICATOR:\n  raw: 0x322E3000\n  value: \"2.0\"\n"
+        },
+        "getcapEccCurves": {
+          "kind": "ran",
+          "stdout": "TPM2_ECC_NIST_P256: 0x3\nunknown20: 0x20\n"
+        }
+      }
+    },
+    {
+      "name": "linux-x86-tpm2-present-no-tpm2-tools",
+      "provenanceKind": "hand-constructed",
+      "provenance": "Hand-constructed by Nazar. A real TPM 2.0 with tpm2-tools absent, so the curve question was never asked. NO TPM WAS CONTACTED.",
+      "expectedState": "indeterminate",
+      "expectedSecp256k1": "did-not-run",
+      "why": "The vacuity guard given a body: a machine that HAS a TPM and cannot be asked about curves. Reading this as no-secp256k1 is the failure this probe exists to prevent, so this entry fails a classifier that does.",
+      "capture": {
+        "platform": "linux",
+        "deviceNodes": [
+          { "path": "/dev/tpmrm0", "outcome": { "kind": "found" } },
+          { "path": "/dev/tpm0", "outcome": { "kind": "found" } }
+        ],
+        "sysClassTpm": { "kind": "listed", "entries": ["tpm0", "tpmrm0"] },
+        "versionMajor": [{ "path": "/sys/class/tpm/tpm0/tpm_version_major", "outcome": { "kind": "not-found" } }],
+        "getcapPropertiesFixed": { "kind": "not-installed" },
+        "getcapEccCurves": { "kind": "not-installed" }
+      }
+    },
+    {
+      "name": "linux-x86-tpm2-version-file-unrecognised",
+      "provenanceKind": "hand-constructed",
+      "provenance": "Hand-constructed by the shadow 2026-08-21 to kill a mutant that SURVIVED tpm-shell-parity.test.ts: no committed capture held a tpm_version_major that was neither \"1\" nor \"2\", so a classifier that DEFAULTED an unrecognised value to 2.0 passed every fixture on both implementations. NO TPM WAS CONTACTED.",
+      "expectedState": "indeterminate",
+      "why": "A device node exists and the family indicator says something the kernel contract does not define. `unrecognised` must never round up to 2.0 -- that is the whole difference between `indeterminate` and a false `present`, and it is why parseVersionMajor has three outcomes instead of a boolean. Verified to fail both the TypeScript classifier and the bash port when either one defaults.",
+      "capture": {
+        "platform": "linux",
+        "deviceNodes": [
+          { "path": "/dev/tpmrm0", "outcome": { "kind": "not-found" } },
+          { "path": "/dev/tpm0", "outcome": { "kind": "found" } }
+        ],
+        "sysClassTpm": { "kind": "listed", "entries": ["tpm0"] },
+        "versionMajor": [{ "path": "/sys/class/tpm/tpm0/tpm_version_major", "outcome": { "kind": "read", "text": "3\n" } }],
+        "getcapPropertiesFixed": { "kind": "not-installed" }
+      }
     }
   ]
 }
