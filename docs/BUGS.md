@@ -100,7 +100,7 @@ envelope is replayable within TTL (freshness not yet signed — needs per-peer s
 - **Fix:** REUSE the already-shipped human auth — do NOT invent. Personas share the `tools/setup/persona-keys/` keyring (README: "each traveler — persona **or** human maintainer"). Bind `zid` to the persona keyring pubkey; sign `hello`/`probeMatch`/`bye` with `ace/signing.ts` (Ed25519 over canonical key-sorted JSON, `key_id=ed25519:sha256(SPKI)[..16]`) and verify against a trust-store before upsert/delete; `bye` must be self-signed by the leaving peer. Rotation = the existing dual-key overlap-window ADR (2026-06-15), unchanged.
 - **Who:** architect (Kenji) → discovery/bus owner; Nadia (agent-layer defence) advisory
 
-### Reticulum announce authenticity — FIXED at the wire; RESIDUAL is consumer adoption + hop-count replay (bus, shadow*)
+### Reticulum announce authenticity — FIXED at the wire and ON by declaration; RESIDUAL is hop-count replay + the DHT layer's unbound pair (bus, shadow*)
 
 **The unsigned-announce hole is closed** (2026-08-21). This entry stays open only for the two
 things that genuinely remain; the parts that were fixed are stated so the entry does not
@@ -137,15 +137,69 @@ Eclipse), so **routing security reduces to announce authenticity**.
   Step 1 of the old fix plan ("tone the pair") is necessary address integrity; only the
   signature is identity authenticity.
 
-- **RESIDUAL 1 (P1) — consumers still default to `announceAuth: {mode: "off"}`.** The gate runs
-  on the live receive path and is proven there, but `createReticulumTransport` defaults to the
-  legacy unsigned mode so existing consumers (`dht-discovery.ts`,
-  `reticulum-metered-transport.ts`, `mux-transport-bridge.ts`, `network-transport.ts`) are
-  unchanged by this PR. **An `off`-mode transport is exactly as forgeable as before** — this is
-  stated, not hidden, and the `"off"` negative-control test pins that fact so it cannot rot into
-  a false sense of coverage. The migration is the `off → dual → required` window that
-  `llmtv-node.ts` already walked for the beacon wire. **Fix:** route each consumer to `dual`,
-  then `required`.
+- **RESIDUAL 1 (P1) — the silent `off` default. CLOSED 2026-08-22, and the residual as filed was
+  MIS-SCOPED.** It said four consumers "still default to `announceAuth: {mode:"off"}`" and needed
+  routing through `off → dual → required`. Checked rather than inherited: **none of the four
+  constructs a Reticulum transport.** `mux-transport-bridge.ts` and `network-transport.ts` mention
+  `reticulum-transport.ts` only in a docstring ("composes with"); `dht-discovery.ts` mentions it in
+  its header and shares the *concept* of a destination hash without importing it;
+  `reticulum-metered-transport.ts` imports `destinationHash` and nothing else — no announce, no
+  path table, no frame. Repo-wide, the only `createReticulumTransport` call sites are this module's
+  own tests. **The migration as filed had an empty domain**, which is why "route each consumer to
+  dual" could not be done as written. What was actually wrong was the *default*, and that is fixed:
+
+  - **`announceAuth` is now a REQUIRED field of `ReticulumConfig`** — no default, silent or
+    otherwise. `{mode:"off"}` still typechecks and is still exactly as forgeable as the pre-fix
+    wire; what is gone is being able to *inherit* it without writing it down. Every construction
+    site now declares its mode, so an unmigrated consumer is visibly unmigrated instead of merely
+    looking fine. Done now because it is free now (three test files) and unretrofittable once a
+    fleet depends on the default — the argument `.claude/rules/clone-at-tag-stays-sufficient.md`
+    makes about `ace`.
+  - **The gate now governs the WHOLE FRAME, not just the path fold.** This was a live hole, not a
+    tidy-up: the gate guarded `observeAnnounce` and the two other exits ran regardless, so a node
+    in `"required"` that REFUSED a forged announce still (a) delivered the frame's payload upward
+    attributed to `frame.announce.zid` — an unverified identity handed to the upper layer as the
+    sender — and (b) relayed the frame onward, so a node that had itself detected the forgery
+    amplified it to every peer it bridges. The relay step's own comment claimed the opposite
+    ("under `required` only admitted frames reach here"), and that claim was false when written.
+    It is now true by an early return, and pinned in both directions.
+  - **Fail-closed at the JS boundary**, mirroring `llmtv-node`'s signer backstop: a caller that
+    omits `announceAuth`, or asks for a non-`off` mode with no `verify`, is refused at
+    construction. Previously the missing `verify` surfaced as a TypeError thrown from inside the
+    packet handler on the first inbound frame — a security surface failing by exception on a
+    hostile wire.
+  - **The `"off"` negative control is extended, not weakened.** `off` must still capture the
+    route, still deliver the payload, and still relay the forgery — all three exits — or the
+    control has quietly become a partial gate and stops measuring what "on" buys.
+  - **Convergence is now proven under authentication.** The two-node, three-node-relay and
+    llmtv-node integration suites run over BOTH modes and assert identical outcomes, so the
+    migration's central claim — *authentication changes nothing for honest traffic* — is
+    falsifiable. A gate that broke multi-hop relay would pass every forgery test and still be
+    undeployable, and "we had to turn it off to ship" is how a control becomes decoration.
+  - **Standing guard against re-rot:** `reticulum-announce-auth.adoption.test.ts` refuses any
+    *production* call site that declares `{mode:"off"}`. Its quantified claim ranges over ∅ today,
+    so two companion tests keep it from being vacuous: one falsifies the predicate against a
+    fixture it must catch, one proves the scanner sees the call sites that do exist. A
+    `@ts-expect-error` falsifier covers the type-level half — if `announceAuth` ever goes back to
+    optional, `tsc --noEmit` fails, and nothing else in the suite could catch that.
+- **RESIDUAL 3 (P2, NEW 2026-08-22) — `dht-discovery` has the same unbound `(dest, zid)` pair, on
+  the layer above.** Found while checking whether it was a consumer (it is not — which is how the
+  weaker claim got looked at). `DhtNode` carries `dest` and `zid` as independent fields and
+  `observeNode` never checks `dest === destinationHash(zid)`; `lookup` folds nodes returned by
+  queried peers straight into its shortlist, so a malicious peer answering `foundNodes` can seed a
+  querier's routing table with arbitrary `(dest, zid)` pairs. That is the Site-(A) defect of this
+  entry, on the Kademlia wire — announce authenticity is the *local* presence layer, and the DHT is
+  the layer that finds destinations beyond announce range, so closing one does not close the other.
+  Not exploitable today for the same reason as the original (no live mesh).
+  **LIFTS WHEN:** the address-integrity guard cannot simply be added, because it is not free here.
+  `dht-discovery`'s fixtures and its four `dhtErasureProfiles` are built on deliberately *unbound*
+  short ids (`{dest: "8000", zid: "a"}`; the sweeps pin "id space pinned to 2 hex characters"), and
+  `dht-discovery.erasure.test.ts` re-measures `largestFibre` / `bitsErasedPpm` against those
+  declarations. Binding `dest` to `zid` changes the reachable state space, so every profile's
+  measured numbers must be re-derived in the same change. This lifts when someone re-derives the
+  four erasure profiles under a bound id space — a contained piece of work, and explicitly NOT a
+  reason to add the guard without it, because a profile whose numbers no longer match its
+  operation is a discharge certificate that has stopped being true.
 - **RESIDUAL 2 (P2) — hop-count replay.** The signature deliberately does **not** cover `hops`
   or `id`: every relay bumps `hops` (that is how the mesh measures distance), so a signature
   covering it would be broken by the first honest relay and would have to be disabled to ship.
@@ -164,14 +218,27 @@ Eclipse), so **routing security reduces to announce authenticity**.
   of them is correct. When addressable objects exist, dispatch on the `Category` nibble — which
   is now safe to trust, because `dest` commits to the whole ZetaId and the receive path checks it.
 - **Found:** 2026-08-01 by Otto; **fixed** 2026-08-21 by the shadow (autonomous tick).
-- **Falsifiers:** `src/Core.TypeScript/discovery/reticulum-announce-auth.test.ts` — 22 tests,
+- **Falsifiers (2026-08-22 additions):** `reticulum-announce-auth.test.ts` grew to 34 —
+  whole-frame refusal at all three exits (payload + relay + fold), the `"dual"` overlap window
+  (unsigned admitted and flagged; signed-but-invalid refused and NOT downgraded to the unsigned
+  path), the fail-closed construction backstops, and the extended `"off"` control.
+  `reticulum-transport.test.ts` runs its convergence suites over both modes.
+  `reticulum-announce-auth.adoption.test.ts` is the standing tripwire. Seven further mutations were
+  run and all seven refused, each byte-`cmp`-verified as applied before its result was read and
+  byte-`cmp`-verified as restored after: gate-always-admits (6 tests fail),
+  whole-frame-return-removed (3), outbound-signing-disabled (5), dual-admits-invalid-signature (1),
+  construction-backstops-removed (1), adoption-predicate-always-false (1),
+  adoption-scanner-returns-empty (2).
+- **Falsifiers (original):** `src/Core.TypeScript/discovery/reticulum-announce-auth.test.ts` — 22 tests,
   both directions (a forged announce is rejected AND a genuine one is accepted, so a
   reject-everything validator fails). Seven mutations were run against the fix and all seven were
   refused, each byte-`cmp`-verified as applied before its result was read:
   signature-check-always-true, identity-comparison-always-true, reject-everything,
   dest-binding-always-true, transport-gate-always-admits, restore-the-`length===32`-escape-hatch,
   relay-drops-signature.
-- **Who:** discovery/bus owner for the consumer migration; Nadia (agent-layer defence) advisory
+- **Who:** discovery/bus owner; Nadia (agent-layer defence) advisory. RESIDUAL 1 closed by the
+  shadow (autonomous tick, 2026-08-22); RESIDUAL 2 and the new RESIDUAL 3 remain open and are
+  separate designs — do not fold them into a hardening pass.
 
 ### Reticulum relay `seenFids` is a grow-only set — memory-exhaustion DoS (bus, shadow*)
 

@@ -191,11 +191,21 @@ export interface ReticulumConfig {
   readonly relay?: boolean;
   /// Max hops a relayed announce may travel (loop/blast guard). Default 8 (RNS default).
   readonly maxHops?: number;
-  /// Announce authenticity. Defaults to `{ mode: "off" }` — which is the PRE-FIX behaviour and
-  /// is NOT safe on a hostile wire: an unauthenticated announce lets any peer claim any
-  /// identity (the Eclipse primitive). Stated plainly rather than defaulted quietly: a
-  /// deployment on an untrusted link belongs in `"required"`.
-  readonly announceAuth?: AnnounceAuthConfig;
+  /// Announce authenticity. **REQUIRED — there is no default.** It was optional-defaulting-to-
+  /// `{mode:"off"}` until 2026-08-22, and that default was the whole of RESIDUAL 1: an `off`
+  /// transport is exactly as forgeable as the pre-fix wire, and a caller that never wrote the
+  /// field could not tell (nor could a reviewer reading the call site) whether it had chosen the
+  /// legacy mode or merely inherited it. Making the field mandatory does not make anyone safer by
+  /// itself — `{mode:"off"}` still typechecks — it makes the choice **visible and greppable** at
+  /// every construction site, which is the difference between a consumer that is obviously not
+  /// migrated and one that only looks migrated.
+  ///
+  /// It is done NOW because it is free now: at the time of writing NO production code constructs
+  /// a Reticulum transport (measured — the only `createReticulumTransport` call sites in the repo
+  /// are this module's own tests), so the change costs three test files and nothing else. After a
+  /// fleet depends on the default it is unretrofittable, which is the same argument
+  /// `.claude/rules/clone-at-tag-stays-sufficient.md` makes about `ace`.
+  readonly announceAuth: AnnounceAuthConfig;
 }
 
 export interface ReticulumTransport extends DiscoveryTransport, BroadcastTransport {
@@ -220,7 +230,23 @@ export function createReticulumTransport(
   const dest = destinationHash(config.zid);
   const relay = config.relay ?? true;
   const maxHops = config.maxHops ?? 8;
-  const auth: AnnounceAuthConfig = config.announceAuth ?? { mode: "off" };
+  const auth: AnnounceAuthConfig = config.announceAuth;
+  // The field is REQUIRED, so an absent one can only arrive from plain JS (or a JSON config that
+  // predates this change). Refuse it rather than inheriting the legacy mode: silently defaulting
+  // to `off` is the exact failure RESIDUAL 1 named — a caller believing it is on a migrated wire
+  // while carrying the pre-fix one.
+  if (!auth || typeof auth.mode !== "string") {
+    throw new Error("createReticulumTransport: announceAuth is required (fail-closed; there is no legacy default)");
+  }
+  // JS-boundary backstop (TS makes this unreachable — the union requires `verify` for both
+  // non-off modes). Mirrors `llmtv-node`'s signer backstop for the discovery wire. Without it a
+  // plain-JS caller passing `{mode:"required"}` with no `verify` gets a TypeError thrown from
+  // inside `lower.onPacket` on the FIRST inbound packet — a security surface failing by exception
+  // on a hostile wire, which is the one place `decode` was carefully written never to do. Fail
+  // closed at construction instead, where the mistake is legible.
+  if (auth.mode !== "off" && typeof auth.verify !== "function") {
+    throw new Error(`createReticulumTransport: announceAuth mode '${auth.mode}' needs a verify function (fail-closed)`);
+  }
   let paths: PathTable = new Map();
   const seenFids = new Set<string>(); // grow-only relay-dedup set (G-set)
   const messageHandlers: Array<(text: string, from: string) => void> = [];
@@ -260,32 +286,47 @@ export function createReticulumTransport(
     if (!frame) return; // not a Reticulum frame (or garbage)
     if (frame.src === dest) return; // our own loopback
 
-    // 1. learn the path from the piggybacked announce — but ONLY if it is authentic.
+    // 1. THE GATE — evaluated ONCE, and it governs the WHOLE frame.
     //
     // This is the gate the whole routing story rests on: an announce that is not authenticated
     // to the identity it claims is an Eclipse primitive, because a peer that can announce an
     // identity it does not hold fills this table with identities the attacker controls, and the
     // node's whole view of the mesh becomes whatever the attacker chose. No routing geometry
-    // fixes that downstream, so it is refused here, before the fold.
-    if (frame.announce.hops <= maxHops && admitAnnounce(frame.announce, frame.asig)) {
+    // fixes that downstream, so it is refused here, before anything downstream of it runs.
+    //
+    // It used to guard the path fold ONLY, and the two other exits below were reached anyway.
+    // That left a `"required"` node doing two things it had no business doing with a refused
+    // announce: handing the payload upward attributed to `frame.announce.zid` (an UNVERIFIED
+    // identity presented to the upper layer as the sender), and RELAYING the frame onward, so a
+    // node that itself refused a forgery still amplified it to every peer it bridges. The
+    // comment at the relay step even asserted the opposite — that under `"required"` only
+    // admitted frames reached it — which was false when written. It is true now, by this return.
+    if (!admitAnnounce(frame.announce, frame.asig)) return;
+
+    // 2. learn the path from the piggybacked announce. `maxHops` here is the LOOP/BLAST guard
+    // (an over-distance announce is not folded), never the auth guard — those are separate
+    // questions and are kept separate so neither can be mistaken for the other.
+    if (frame.announce.hops <= maxHops) {
       paths = observeAnnounce(paths, frame.announce, sched.now());
     }
 
-    // 2. dedup: fold each frame id once (relay + delivery guard)
+    // 3. dedup: fold each frame id once (relay + delivery guard)
     if (seenFids.has(frame.fid)) return;
     seenFids.add(frame.fid);
 
-    // 3. deliver the inner payload upward to BOTH families (schema tag disambiguates on decode)
+    // 4. deliver the inner payload upward to BOTH families (schema tag disambiguates on decode).
+    // Reached only for an ADMITTED announce, so `frame.announce.zid` — which is what the upper
+    // layer receives as the sender — carries whatever authenticity the configured mode requires.
     if (frame.payload !== undefined) {
       for (const h of messageHandlers) h(frame.payload, frame.announce.zid);
       for (const h of frameHandlers) h(frame.payload, frame.announce.zid);
     }
 
-    // 4. be a transport node: relay onward with an incremented hop count (bridges meshes).
+    // 5. be a transport node: relay onward with an incremented hop count (bridges meshes).
     // The spread PRESERVES `asig` unchanged, which is the whole reason the signature covers
     // `(dest, zid)` and not `hops`: the next hop verifies the ORIGIN's key, not the relay's,
-    // so a relay can carry an announce it cannot forge. A relay under `"required"` also only
-    // ever reaches here for frames whose announce was admitted above.
+    // so a relay can carry an announce it cannot forge. Under a non-`"off"` mode this is reached
+    // only for admitted announces — enforced by the early return at step 1, not merely asserted.
     if (relay && frame.announce.hops < maxHops) {
       const bumped: RnsFrame = { ...frame, announce: { ...frame.announce, hops: frame.announce.hops + 1 } };
       lower.sendPacket(encode(bumped));
