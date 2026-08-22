@@ -345,6 +345,30 @@
               echo "$status" | tee "$out"
             '';
 
+          # EVAL-ONLY: the SHIPPING control-plane shape. longhorn-volume-binds
+          # imports longhorn-disks.nix itself and sets two extra disks, so it
+          # cannot see a regression that drops the common.nix import. This
+          # reads nixosConfigurations.control-plane -- the host the USB
+          # installs -- and asserts the default single-disk list, the
+          # create-default-disk label, and that mkIf fired. No VM.
+          longhorn-common-default-disk-eval =
+            let
+              report = import ./nixos/tests/longhorn-common-default-disk-eval-test.nix {
+                inherit pkgs;
+                nixosConfig = self.nixosConfigurations.control-plane;
+              };
+            in
+            pkgs.runCommand "longhorn-common-default-disk-eval" { inherit (report) status; } ''
+              echo "$status" | tee "$out"
+            '';
+
+          # Hermetic VM of the same default path: a node that only imports
+          # common.nix (+ k3s-server) and never sets dataDisks. Proves the
+          # annotator unit and the node label exist on disk, not only in
+          # eval. Complements the labelled multi-disk QEMU test. No chart.
+          longhorn-common-default-disk =
+            import ./nixos/tests/longhorn-common-default-disk.nix { inherit pkgs; };
+
           # Properties of the CILIUM WIREGUARD NODE PREFLIGHT -- the boot-time
           # refusal that says whether this kernel can make the WireGuard device
           # Cilium's own values demand.
