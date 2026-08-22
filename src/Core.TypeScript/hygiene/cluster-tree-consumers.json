@@ -28,10 +28,7 @@
     "THE DELETION ITSELF IS GATED on maintainer sign-off — see the work item's",
     "`Done when` list. This roster does not authorize it; it makes it checkable."
   ],
-  "stalePatterns": [
-    "infra/k8s",
-    "infra/nixos"
-  ],
+  "stalePatterns": ["infra/k8s", "infra/nixos"],
   "survivingTree": "full-ai-cluster",
   "$comment_excludedPrefixes": [
     "Prose archives and the stale tree itself. These are frozen records (merged",
@@ -146,6 +143,12 @@
       "disposition": "prose",
       "note": "Comment crediting a regex to infra/k8s/tests/validate-applications.ts.",
       "migrateTo": "re-point the comment when the validator moves."
+    },
+    {
+      "path": "src/Core.TypeScript/cluster/inert-valuesobject-keys.schema.json",
+      "disposition": "derived",
+      "note": "MACHINE-WRITTEN measurement (`inert-valuesobject-keys.ts --write-snapshot`). It names infra/k8s because it measures BOTH declarations of the cluster -- it reuses `discoverApplications` from rendered-storage-claims.ts, whose APPLICATION_ROOTS is already rostered above for the same reason. The literal path appears only inside `unavailable.detail` for the two git-path Applications there (`infra/orleans`), where the checker reports WHICH directory carries no Chart.yaml; naming it is the checkable half of that verdict. Nothing BREAKS when the stale tree is deleted -- the entries simply stop being produced -- but the checked-in snapshot would keep naming apps that no longer exist, and `--check-snapshot` would report them as GONE, which is drift rather than a crash.",
+      "migrateTo": "re-run `bun src/Core.TypeScript/cluster/inert-valuesobject-keys.ts --write-snapshot` in the deletion commit; the infra entries leave the snapshot in the same pass that drops `infra/k8s/applications` from APPLICATION_ROOTS. No hand-editing: this file is owned by the generator."
     },
     {
       "path": "src/Core.TypeScript/cluster/manual-sync-policy.ts",

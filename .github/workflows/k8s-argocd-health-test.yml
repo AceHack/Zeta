@@ -125,6 +125,10 @@ on:
       - "src/Core.TypeScript/cluster/rendered-storage-claims.test.ts"
       - "src/Core.TypeScript/cluster/rendered-storage-claims.baseline.json"
       - "src/Core.TypeScript/cluster/rendered-storage-claims.snapshot.json"
+      - "src/Core.TypeScript/cluster/inert-valuesobject-keys.ts"
+      - "src/Core.TypeScript/cluster/inert-valuesobject-keys.test.ts"
+      - "src/Core.TypeScript/cluster/inert-valuesobject-keys.baseline.json"
+      - "src/Core.TypeScript/cluster/inert-valuesobject-keys.schema.json"
       - "src/Core.TypeScript/cluster/reason-truth.ts"
       - "src/Core.TypeScript/cluster/reason-truth.test.ts"
       - "docs/backlog/P1/081KSXN940008QG0R000SCP2H1-kubernetes-argocd-kind-k3d-integration-health-tests-separate.md"
@@ -210,6 +214,10 @@ on:
       - "src/Core.TypeScript/cluster/rendered-storage-claims.test.ts"
       - "src/Core.TypeScript/cluster/rendered-storage-claims.baseline.json"
       - "src/Core.TypeScript/cluster/rendered-storage-claims.snapshot.json"
+      - "src/Core.TypeScript/cluster/inert-valuesobject-keys.ts"
+      - "src/Core.TypeScript/cluster/inert-valuesobject-keys.test.ts"
+      - "src/Core.TypeScript/cluster/inert-valuesobject-keys.baseline.json"
+      - "src/Core.TypeScript/cluster/inert-valuesobject-keys.schema.json"
       - "src/Core.TypeScript/cluster/reason-truth.ts"
       - "src/Core.TypeScript/cluster/reason-truth.test.ts"
       - "docs/backlog/P1/081KSXN940008QG0R000SCP2H1-kubernetes-argocd-kind-k3d-integration-health-tests-separate.md"
@@ -457,6 +465,40 @@ jobs:
       - name: Audit declared storage claims against the measured render
         run: bun src/Core.TypeScript/cluster/rendered-storage-claims.ts --offline
 
+      # DOES EVERY `valuesObject` KEY EXIST IN THE CHART? -- the general form of
+      # the defect the step above catches only by accident.
+      #
+      # `rendered-storage-claims` compares a declared PVC against a rendered
+      # one, so it catches an inert key only when that key happens to govern
+      # STORAGE. Three of the four measured instances did (hindsight, nats, oz);
+      # the fourth governed whether the process could start -- headscale's
+      # entire top-level `config:` block against a chart with no `config` key,
+      # zero occurrences of `server_url` in the render, CrashLoopBackOff with 12
+      # restarts -- and nothing in this repo would have caught it.
+      #
+      # This checker compares every Application's `valuesObject` key set against
+      # its pinned chart's schema: the chart's values.yaml, its SUBCHARTS'
+      # values (resolved from Chart.yaml, aliases included), every literal
+      # `.Values.a.b.c` its templates name, and the nodes it consumes wholesale.
+      # It goes red on all four instances as they stood before their fixes,
+      # reconstructed from git history in
+      # `testdata/inert-valuesobject-history/`, plus two more found
+      # independently in #13524.
+      #
+      # OFFLINE, against a checked-in schema snapshot, for the same reason as
+      # the step above: a gate that needs the network is a gate that can be
+      # unavailable, and an unavailable gate reads like a passing one.
+      #
+      # UNDECIDABLE COUNTS AS A FINDING. A chart that reaches `.Values` by a
+      # computed subscript, a chart that cannot be fetched, and an Application
+      # the snapshot does not cover all exit 1 -- an app nobody checked must
+      # never read as an app that passed.
+      - name: Run inert-valuesobject-keys falsifiers (the four measured instances)
+        run: bun test src/Core.TypeScript/cluster/inert-valuesobject-keys.test.ts
+
+      - name: Audit every valuesObject key against its pinned chart's schema
+        run: bun src/Core.TypeScript/cluster/inert-valuesobject-keys.ts --offline
+
       # IS THE REASON TRUE? -- the falsifiers for `reason-truth.ts`.
       #
       # The registries above record WHY each Application is deferred, and until
@@ -570,6 +612,37 @@ jobs:
             --timeout-sec 1200 \
             --poll-sec 10
 
+      # LOGS FROM THE CRASHED CONTAINER, NOT THE LIVE ONE.
+      #
+      # A CrashLoopBackOff pod's CURRENT container has usually not started, so
+      # `kubectl logs` returns nothing and the reason the PREVIOUS one died is
+      # thrown away on each restart. That gap is why headscale's diagnosis on
+      # 2026-08-22 had to be REASONED from a local `helm template` -- "the render
+      # contains zero occurrences of server_url" -- instead of read from the
+      # error the process printed 12 times. The controller-specific
+      # `--previous=true` a few lines below already existed; nothing did it for
+      # an arbitrary pod.
+      #
+      # Scoped to pods that are not Running/Succeeded OR have a restart, so a
+      # green run prints nothing. `|| true` throughout: a diagnostics step must
+      # never be the thing that fails a job.
+      - name: Logs from crash-looping pods, including the PREVIOUS container
+        if: always()
+        run: |
+          kubectl get pods -A -o json 2>/dev/null \
+            | jq -r '.items[]
+                | select((.status.phase != "Running" and .status.phase != "Succeeded")
+                         or ((.status.containerStatuses // []) | map(.restartCount // 0) | add // 0) > 0)
+                | "\(.metadata.namespace) \(.metadata.name)"' \
+            | while read -r ns pod; do
+                echo "=== $ns/$pod (waiting reasons + restart counts)"
+                kubectl -n "$ns" get pod "$pod" -o jsonpath='{range .status.containerStatuses[*]}  {.name}: restarts={.restartCount} state={.state}{"\n"}{end}' || true
+                echo "--- current container logs"
+                kubectl -n "$ns" logs "$pod" --all-containers=true --prefix=true --tail=100 || true
+                echo "--- PREVIOUS container logs (the ones that explain the crash)"
+                kubectl -n "$ns" logs "$pod" --all-containers=true --prefix=true --previous=true --tail=100 || true
+              done || true
+
       - name: Print cluster diagnostics
         if: always()
         run: |
@@ -678,6 +751,37 @@ jobs:
             --cluster-name zeta-ci-cilium \
             --timeout-sec 600 \
             | tee "$RUNNER_TEMP/cilium-kind.log"
+
+      # LOGS FROM THE CRASHED CONTAINER, NOT THE LIVE ONE.
+      #
+      # A CrashLoopBackOff pod's CURRENT container has usually not started, so
+      # `kubectl logs` returns nothing and the reason the PREVIOUS one died is
+      # thrown away on each restart. That gap is why headscale's diagnosis on
+      # 2026-08-22 had to be REASONED from a local `helm template` -- "the render
+      # contains zero occurrences of server_url" -- instead of read from the
+      # error the process printed 12 times. The controller-specific
+      # `--previous=true` a few lines below already existed; nothing did it for
+      # an arbitrary pod.
+      #
+      # Scoped to pods that are not Running/Succeeded OR have a restart, so a
+      # green run prints nothing. `|| true` throughout: a diagnostics step must
+      # never be the thing that fails a job.
+      - name: Logs from crash-looping pods, including the PREVIOUS container
+        if: always()
+        run: |
+          kubectl get pods -A -o json 2>/dev/null \
+            | jq -r '.items[]
+                | select((.status.phase != "Running" and .status.phase != "Succeeded")
+                         or ((.status.containerStatuses // []) | map(.restartCount // 0) | add // 0) > 0)
+                | "\(.metadata.namespace) \(.metadata.name)"' \
+            | while read -r ns pod; do
+                echo "=== $ns/$pod (waiting reasons + restart counts)"
+                kubectl -n "$ns" get pod "$pod" -o jsonpath='{range .status.containerStatuses[*]}  {.name}: restarts={.restartCount} state={.state}{"\n"}{end}' || true
+                echo "--- current container logs"
+                kubectl -n "$ns" logs "$pod" --all-containers=true --prefix=true --tail=100 || true
+                echo "--- PREVIOUS container logs (the ones that explain the crash)"
+                kubectl -n "$ns" logs "$pod" --all-containers=true --prefix=true --previous=true --tail=100 || true
+              done || true
 
       - name: Print cluster diagnostics
         if: always()
@@ -857,6 +961,37 @@ jobs:
                      | select((.status != "Synced") or ((.health.status // "Healthy") != "Healthy"))
                      | "    \(.kind)/\(.name): sync=\(.status // "-") health=\(.health.status // "-") \(.health.message // "")")' \
             || true
+
+      # LOGS FROM THE CRASHED CONTAINER, NOT THE LIVE ONE.
+      #
+      # A CrashLoopBackOff pod's CURRENT container has usually not started, so
+      # `kubectl logs` returns nothing and the reason the PREVIOUS one died is
+      # thrown away on each restart. That gap is why headscale's diagnosis on
+      # 2026-08-22 had to be REASONED from a local `helm template` -- "the render
+      # contains zero occurrences of server_url" -- instead of read from the
+      # error the process printed 12 times. The controller-specific
+      # `--previous=true` a few lines below already existed; nothing did it for
+      # an arbitrary pod.
+      #
+      # Scoped to pods that are not Running/Succeeded OR have a restart, so a
+      # green run prints nothing. `|| true` throughout: a diagnostics step must
+      # never be the thing that fails a job.
+      - name: Logs from crash-looping pods, including the PREVIOUS container
+        if: always()
+        run: |
+          kubectl get pods -A -o json 2>/dev/null \
+            | jq -r '.items[]
+                | select((.status.phase != "Running" and .status.phase != "Succeeded")
+                         or ((.status.containerStatuses // []) | map(.restartCount // 0) | add // 0) > 0)
+                | "\(.metadata.namespace) \(.metadata.name)"' \
+            | while read -r ns pod; do
+                echo "=== $ns/$pod (waiting reasons + restart counts)"
+                kubectl -n "$ns" get pod "$pod" -o jsonpath='{range .status.containerStatuses[*]}  {.name}: restarts={.restartCount} state={.state}{"\n"}{end}' || true
+                echo "--- current container logs"
+                kubectl -n "$ns" logs "$pod" --all-containers=true --prefix=true --tail=100 || true
+                echo "--- PREVIOUS container logs (the ones that explain the crash)"
+                kubectl -n "$ns" logs "$pod" --all-containers=true --prefix=true --previous=true --tail=100 || true
+              done || true
 
       - name: Print cluster diagnostics
         if: always()
