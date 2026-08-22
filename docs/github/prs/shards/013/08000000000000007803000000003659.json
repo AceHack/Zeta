@@ -1,0 +1,12 @@
+{
+  "pr_number": 13913,
+  "archive_path": "docs/history/pr-reviews/PR-13913-feat-lean-adapted-port-of-zeta23-linalg-von-neumann-s-trace-inequality-at-our-pi.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-22T20:33:42.065Z",
+  "schema_version": "v1",
+  "commit_sha": "ac403015314b30a14f40720ee2f272246968d9a0",
+  "title": "feat(lean): adapted port of Zeta23/LinAlg — von Neumann's trace inequality at our pin",
+  "state": "MERGED",
+  "merged_at": "2026-08-22T20:33:01Z",
+  "head_ref": "feat/lean-von-neumann-trace"
+}
