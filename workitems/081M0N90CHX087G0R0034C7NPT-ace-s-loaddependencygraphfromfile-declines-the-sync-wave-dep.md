@@ -45,7 +45,8 @@ tokenises those into empty container event-pairs.
 
 The hand-rolled reader is not an accident to be replaced. It is one of SIX
 byte-locked oracles (TS / F# / C# / Rust / Go / Python) and its bound is an
-operator-locked decision, `2026-06-01-yaml-port-...-primitive-design.md`
+operator-locked decision,
+`docs/agendas/ace-package-manager/2026-06-01-yaml-port-forward-only-one-pass-cross-language-primitive-design.md`
 Decision 2:
 
 > "Anchors/aliases, tags, multi-document streams, flow style (`{}` / `[]`), and
@@ -103,4 +104,3 @@ ace still cannot answer "which Helm app groups are independently testable" —
 `lane-partition.ts` answers it via dependency closures. With the graph now
 readable, ace is roughly a 60-100 line step from reporting those closures itself
 (`resolveGraph` already builds the adjacency); that is a separate row.
-
