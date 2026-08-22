@@ -1,0 +1,12 @@
+{
+  "pr_number": 13494,
+  "archive_path": "docs/history/pr-reviews/PR-13494-fix-ci-main-is-red-from-13479-declare-the-new-hsm-script-drop-the-sc2012-ls.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-22T01:51:23.856Z",
+  "schema_version": "v1",
+  "commit_sha": "eb41be76abc68193d9b5cb627e9927fe2cece062",
+  "title": "fix(ci): main is red from #13479 — declare the new HSM script, drop the SC2012 ls",
+  "state": "MERGED",
+  "merged_at": "2026-08-22T01:50:42Z",
+  "head_ref": "shadow/green-main-after-13479"
+}
