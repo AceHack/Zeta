@@ -49,18 +49,23 @@ describe("destinationHash — self-certifying address from the ZetaId", () => {
 });
 
 describe("observeAnnounce — best-hop path fold (idempotent, order-independent)", () => {
-  const a0: Announce = { dest: "d1", zid: "z1", hops: 0, id: "a" };
-  const a2: Announce = { dest: "d1", zid: "z1", hops: 2, id: "b" };
+  // These used the unbound literals `dest: "d1", zid: "z1"`, which only folded because the
+  // address-integrity guard carried a `dest.length === 32` exemption. That exemption was an
+  // attacker-reachable bypass (any dest of another length skipped the check), so it is gone
+  // and the fixtures now use a real bound pair. The fold properties under test are unchanged.
+  const d1 = destinationHash("z1");
+  const a0: Announce = { dest: d1, zid: "z1", hops: 0, id: "a" };
+  const a2: Announce = { dest: d1, zid: "z1", hops: 2, id: "b" };
 
   it("keeps the lowest hop count; a worse path only refreshes liveness", () => {
     let t: PathTable = new Map();
     t = observeAnnounce(t, a2, 100); // learn at 2 hops
-    expect(t.get("d1")!.hops).toBe(2);
+    expect(t.get(d1)!.hops).toBe(2);
     t = observeAnnounce(t, a0, 200); // better: 0 hops
-    expect(t.get("d1")!.hops).toBe(0);
+    expect(t.get(d1)!.hops).toBe(0);
     t = observeAnnounce(t, a2, 300); // worse — hop stays 0 but liveness refreshes
-    expect(t.get("d1")!.hops).toBe(0);
-    expect(t.get("d1")!.lastSeenMs).toBe(300);
+    expect(t.get(d1)!.hops).toBe(0);
+    expect(t.get(d1)!.lastSeenMs).toBe(300);
   });
 
   it("expirePaths drops routes unheard past the TTL", () => {
