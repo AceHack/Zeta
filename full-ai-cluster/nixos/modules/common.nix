@@ -41,6 +41,15 @@
     # `nix flake check`, and that any future non-"off" phase fails closed on the
     # missing key-custody decision rather than quietly enabling an unbuilt path.
     ./secure-boot.nix
+    # 2026-08-21 hands-off-metal scoping: the option surface for TPM-2.0-backed
+    # seal provisioning. At its default mode ("off") it sets NO option and
+    # contributes one always-true assertion, so this import leaves every host
+    # byte-for-byte unchanged. What it buys is that every host EVALUATES the
+    # option on `nix flake check`, and that mode = "provision" fails closed on
+    # the undecided seal-key custody fork rather than quietly minting a key
+    # whose loss would be unrecoverable. Mode "prereqs" is the safe rung and is
+    # the whole of what the installer can pre-stage.
+    ./tpm2-seal-prereqs.nix
     # 081KZETP6AT: FHS loader (nix-ld) for foreign dynamically-linked ELFs — mise's
     # prebuilt toolchains and the vendor agent CLIs. Needed on INSTALLED nodes too,
     # not only on the ISO: the lazy first-login `mise install` recovery in this file

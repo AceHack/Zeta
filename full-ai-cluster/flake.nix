@@ -237,6 +237,29 @@
               echo "$status" | tee "$out"
             '';
 
+          # Properties of the TPM-SEAL desired-state model — the module that
+          # answers "what can the nix installer pre-stage for a hardware-backed
+          # auto-unseal", and the gate that stops it from deciding seal-key
+          # custody on the maintainer's behalf.
+          #
+          # NOT a VM test and NOT a hardware test. No TPM has ever been
+          # contacted by anything in this repo, so nothing here can say whether
+          # a node HAS a TPM 2.0 — it can only say that no plan claims one it
+          # has not measured, and that `absent` stays distinguishable from
+          # "the check did not run".
+          #
+          # Costs no VM, runs on every system, and its assertions fire during
+          # EVALUATION — so `nix flake check --no-build` already runs it.
+          tpm2-seal-prereqs-model =
+            let
+              report = import ./nixos/tests/tpm2-seal-prereqs-eval-test.nix {
+                inherit (nixpkgs) lib;
+              };
+            in
+            pkgs.runCommand "tpm2-seal-prereqs-model" { inherit (report) status; } ''
+              echo "$status" | tee "$out"
+            '';
+
           # Properties of the FIRST-BOOT MANIFEST ROSTER -- the manifests
           # every other test in nixos/tests/ overrides away with mkForce, so
           # the declared boot sequence had no check of any kind.
