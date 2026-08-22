@@ -1,0 +1,12 @@
+{
+  "pr_number": 13562,
+  "archive_path": "docs/history/pr-reviews/PR-13562-chore-cluster-un-defer-headscale-the-lane-says-healthy-so-the-deferral-is-spent.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-22T06:09:12.471Z",
+  "schema_version": "v1",
+  "commit_sha": "5d64d2908c2a531f412b4aad726b873f1b4315c4",
+  "title": "chore(cluster): un-defer headscale — the lane says Healthy, so the deferral is spent",
+  "state": "MERGED",
+  "merged_at": "2026-08-22T06:08:29Z",
+  "head_ref": "shadow/undefer-headscale"
+}
