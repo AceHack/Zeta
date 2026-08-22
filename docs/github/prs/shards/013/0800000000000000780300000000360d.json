@@ -1,0 +1,12 @@
+{
+  "pr_number": 13837,
+  "archive_path": "docs/history/pr-reviews/PR-13837-fix-ace-the-yaml-port-s-vendor-fallback-was-specified-and-never-built-so-ace-cou.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-22T18:08:41.730Z",
+  "schema_version": "v1",
+  "commit_sha": "2d18dba1fd92679bacd6b3c6409ea9e19d06b92b",
+  "title": "fix(ace): the YAML port's vendor fallback was specified and never built, so ace could not read its own dependency graph",
+  "state": "MERGED",
+  "merged_at": "2026-08-22T18:08:04Z",
+  "head_ref": "fix/ace-dependency-graph-parse"
+}
