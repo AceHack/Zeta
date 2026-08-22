@@ -1260,9 +1260,15 @@ describe("the checked-in resource ladder", () => {
   // SKIPS every live job behind it -- so a stale number in this file stops the
   // kind lane from running at all, which is exactly the shape where a check
   // that did not run looks like a check that passed.
-  test("the dev lane applies 36 of the 45 Applications", () => {
-    expect(applicationDirs()).toHaveLength(45);
-    expect(devLaneAppliedDirs()).toHaveLength(36);
+  //
+  // 45 -> 46 and 36 -> 37 on 2026-08-22: the `spire-crds` Application joined the
+  // tree, and it is applied by the dev lane (it is in no excludeGlob). Both
+  // numbers move together because a new Application that is not glob-excluded is
+  // BOTH shipped and applied; if only one of them had needed to move, that would
+  // itself have been the finding.
+  test("the dev lane applies 37 of the 46 Applications", () => {
+    expect(applicationDirs()).toHaveLength(46);
+    expect(devLaneAppliedDirs()).toHaveLength(37);
   });
 
   // MEASURED 2026-08-21 by `helm pull` at each pinned targetRevision followed
@@ -1304,7 +1310,7 @@ describe("the checked-in resource ladder", () => {
 
   // Stated because it is the honest answer to the question that was asked, and
   // a test is the only place it cannot quietly stop being true.
-  test("ALL 45 do not fit, at either rung — CPU runs out before memory does", () => {
+  test("ALL 46 do not fit, at either rung — CPU runs out before memory does", () => {
     const budget = envelopeBudget(catalogue.envelope);
     for (const rung of catalogue.profiles) {
       const all = resourceTotal(catalogue, rung, applicationDirs());

@@ -1049,6 +1049,12 @@
       "evidence": "spire 0.24.2 rendered with this Application's valuesObject, 2026-08-21: chart default resources are unset."
     },
     {
+      "dir": "spire-crds",
+      "cpuMillis": 0,
+      "memoryMib": 0,
+      "evidence": "spire-crds 0.5.0 rendered 2026-08-22: the chart's templates/ holds exactly three files and all three are CustomResourceDefinitions (clusterspiffeids, clusterfederatedtrustdomains, clusterstaticentries). It renders no Pod, Deployment, DaemonSet, StatefulSet or Job, so zero here is a MEASURED zero rather than an unfilled field - there is no container to request anything. Rendered manifest is 19460 bytes and `grep '^kind:'` on it returns 3 CustomResourceDefinition and nothing else."
+    },
+    {
       "dir": "tempo",
       "cpuMillis": 0,
       "memoryMib": 0,

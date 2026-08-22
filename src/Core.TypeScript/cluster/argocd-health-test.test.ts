@@ -295,7 +295,7 @@ describe("081KSXN940008QG0R000SCP2H1 argocd-health-test manifest parsing", () =>
    * the manual-sync one, which is the difference between this and the
    * cdi/kubevirt defect: `manualSync` must be false for all three.
    */
-  test("deepseek-coder, qwen-coder, orleans and vault are asserted under the full Synced+Healthy contract", () => {
+  test("deepseek-coder, qwen-coder, orleans, vault, spire and spire-crds are asserted under the full Synced+Healthy contract", () => {
     const applications = discoverExpectedApplications();
     // `vault` joined this guard on 2026-08-21. It is the one that matters most
     // here: the whole point of running the ephemeral init ceremony is that Vault
@@ -303,7 +303,12 @@ describe("081KSXN940008QG0R000SCP2H1 argocd-health-test manifest parsing", () =>
     // contract instead -- exists + compared, never synced -- would reproduce the
     // exact cdi/kubevirt vacuity #13084 had to fix, and would let the lane go
     // green while Vault sat sealed.
-    for (const dir of ["deepseek-coder", "qwen-coder", "orleans", "vault"]) {
+    // `spire` and `spire-crds` joined 2026-08-22. spire is the SPIFFE identity
+    // substrate the federated-identity and per-node-CA work stands on, so a lane
+    // that reports green without asserting it is reporting on the wrong thing.
+    // spire-crds is here too because the pair is the assertion: the CRD provider
+    // reaching Synced is what makes spire's own Synced mean anything.
+    for (const dir of ["deepseek-coder", "qwen-coder", "orleans", "vault", "spire", "spire-crds"]) {
       const app = applications.find((candidate) => candidate.dir === dir);
       expect(app, `${dir} must be discovered`).toBeDefined();
       expect(app?.excludedFromDev, `${dir} must not be excluded from the included proof`).toBe(false);
@@ -816,7 +821,13 @@ describe("081KSXN940008QG0R000SCP2H1 argocd-health-test planning", () => {
     expect(included).not.toContain("gitlab");
     expect(included).not.toContain("forgejo");
     expect(included).not.toContain("agent-memory");
-    expect(included).not.toContain("spire");
+    // `spire` FLIPPED SIDES 2026-08-22 -- it was pinned as NOT included here
+    // while it was deferred, and it is pinned as INCLUDED now that the CRD
+    // source exists. Both directions matter: this is the assertion that goes
+    // red if someone re-defers the SPIFFE identity substrate, which is the one
+    // Application the federated-identity work stands on.
+    expect(included).toContain("spire");
+    expect(included).toContain("spire-crds");
   });
 
   test("detects repo-backed child Applications that should track the harness git ref", () => {

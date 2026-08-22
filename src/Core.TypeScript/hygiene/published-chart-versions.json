@@ -6,7 +6,7 @@
       "repoURL": "code.forgejo.org/forgejo-helm",
       "chart": "forgejo",
       "kind": "oci",
-      "fetchedAt": "2026-08-21T21:13:00Z",
+      "fetchedAt": "2026-08-22T01:41:57Z",
       "versions": [
         "0.0.1",
         "0.0.2",
@@ -183,7 +183,7 @@
       "repoURL": "ghcr.io/actions/actions-runner-controller-charts",
       "chart": "gha-runner-scale-set",
       "kind": "oci",
-      "fetchedAt": "2026-08-21T21:13:00Z",
+      "fetchedAt": "2026-08-22T01:41:57Z",
       "versions": [
         "0.2.0",
         "0.3.0",
@@ -216,7 +216,7 @@
       "repoURL": "ghcr.io/actions/actions-runner-controller-charts",
       "chart": "gha-runner-scale-set-controller",
       "kind": "oci",
-      "fetchedAt": "2026-08-21T21:13:00Z",
+      "fetchedAt": "2026-08-22T01:41:57Z",
       "versions": [
         "0.2.0",
         "0.3.0",
@@ -249,7 +249,7 @@
       "repoURL": "ghcr.io/vectorize-io/charts",
       "chart": "hindsight",
       "kind": "oci",
-      "fetchedAt": "2026-08-21T21:13:00Z",
+      "fetchedAt": "2026-08-22T01:41:57Z",
       "versions": [
         "0.1.4",
         "0.1.5",
@@ -318,7 +318,7 @@
       "repoURL": "https://argoproj.github.io/argo-helm",
       "chart": "argo-cd",
       "kind": "helm-index",
-      "fetchedAt": "2026-08-21T21:13:00Z",
+      "fetchedAt": "2026-08-22T01:41:57Z",
       "versions": [
         "10.4.0",
         "10.3.3",
@@ -1240,7 +1240,7 @@
       "repoURL": "https://argoproj.github.io/argo-helm",
       "chart": "argo-rollouts",
       "kind": "helm-index",
-      "fetchedAt": "2026-08-21T21:13:00Z",
+      "fetchedAt": "2026-08-22T01:41:57Z",
       "versions": [
         "2.41.1",
         "2.41.0",
@@ -1387,7 +1387,7 @@
       "repoURL": "https://argoproj.github.io/argo-helm",
       "chart": "argo-workflows",
       "kind": "helm-index",
-      "fetchedAt": "2026-08-21T21:13:00Z",
+      "fetchedAt": "2026-08-22T01:41:57Z",
       "versions": [
         "2.0.2",
         "2.0.1",
@@ -1669,7 +1669,7 @@
       "repoURL": "https://bitnami.github.io/sealed-secrets",
       "chart": "sealed-secrets",
       "kind": "helm-index",
-      "fetchedAt": "2026-08-21T21:13:00Z",
+      "fetchedAt": "2026-08-22T01:41:57Z",
       "versions": [
         "2.19.3",
         "2.19.2",
@@ -1764,7 +1764,7 @@
       "repoURL": "https://charts.bitnami.com/bitnami",
       "chart": "redis",
       "kind": "helm-index",
-      "fetchedAt": "2026-08-21T21:13:00Z",
+      "fetchedAt": "2026-08-22T01:41:57Z",
       "versions": [
         "28.0.7",
         "28.0.6",
@@ -2095,7 +2095,7 @@
       "repoURL": "https://charts.cockroachdb.com",
       "chart": "cockroachdb",
       "kind": "helm-index",
-      "fetchedAt": "2026-08-21T21:13:00Z",
+      "fetchedAt": "2026-08-22T01:41:57Z",
       "versions": [
         "21.0.4",
         "21.0.3",
@@ -2213,7 +2213,7 @@
       "repoURL": "https://charts.external-secrets.io",
       "chart": "external-secrets",
       "kind": "helm-index",
-      "fetchedAt": "2026-08-21T21:13:00Z",
+      "fetchedAt": "2026-08-22T01:41:57Z",
       "versions": [
         "2.9.0",
         "2.8.0",
@@ -2352,7 +2352,7 @@
       "repoURL": "https://charts.gabe565.com",
       "chart": "headscale",
       "kind": "helm-index",
-      "fetchedAt": "2026-08-21T21:13:00Z",
+      "fetchedAt": "2026-08-22T01:41:57Z",
       "versions": [
         "0.16.0",
         "0.15.0",
@@ -2412,7 +2412,7 @@
       "repoURL": "https://charts.gitlab.io",
       "chart": "gitlab",
       "kind": "helm-index",
-      "fetchedAt": "2026-08-21T21:13:00Z",
+      "fetchedAt": "2026-08-22T01:41:57Z",
       "versions": [
         "10.3.0",
         "10.2.4",
@@ -3254,7 +3254,7 @@
       "repoURL": "https://charts.jetstack.io",
       "chart": "cert-manager",
       "kind": "helm-index",
-      "fetchedAt": "2026-08-21T21:13:00Z",
+      "fetchedAt": "2026-08-22T01:41:57Z",
       "versions": [
         "v1.21.1",
         "v1.21.0",
@@ -3495,7 +3495,7 @@
       "repoURL": "https://charts.jetstack.io",
       "chart": "trust-manager",
       "kind": "helm-index",
-      "fetchedAt": "2026-08-21T21:13:00Z",
+      "fetchedAt": "2026-08-22T01:41:57Z",
       "versions": [
         "v0.24.0",
         "v0.23.0",
@@ -3547,7 +3547,7 @@
       "repoURL": "https://charts.longhorn.io",
       "chart": "longhorn",
       "kind": "helm-index",
-      "fetchedAt": "2026-08-21T21:13:00Z",
+      "fetchedAt": "2026-08-22T01:41:57Z",
       "versions": [
         "1.12.1",
         "1.12.0",
@@ -3608,7 +3608,7 @@
       "repoURL": "https://charts.min.io",
       "chart": "minio",
       "kind": "helm-index",
-      "fetchedAt": "2026-08-21T21:13:00Z",
+      "fetchedAt": "2026-08-22T01:41:57Z",
       "versions": [
         "5.4.0",
         "5.3.0",
@@ -3706,7 +3706,7 @@
       "repoURL": "https://dapr.github.io/helm-charts",
       "chart": "dapr",
       "kind": "helm-index",
-      "fetchedAt": "2026-08-21T21:13:00Z",
+      "fetchedAt": "2026-08-22T01:41:57Z",
       "versions": [
         "1.18.3",
         "1.18.3-rc.2",
@@ -4094,7 +4094,7 @@
       "repoURL": "https://docs.openziti.io/helm-charts",
       "chart": "ziti-controller",
       "kind": "helm-index",
-      "fetchedAt": "2026-08-21T21:13:00Z",
+      "fetchedAt": "2026-08-22T01:41:57Z",
       "versions": [
         "3.2.1",
         "3.2.0",
@@ -4198,7 +4198,7 @@
       "repoURL": "https://go.temporal.io/helm-charts",
       "chart": "temporal",
       "kind": "helm-index",
-      "fetchedAt": "2026-08-21T21:13:00Z",
+      "fetchedAt": "2026-08-22T01:41:57Z",
       "versions": [
         "1.6.0",
         "1.5.0",
@@ -4269,7 +4269,7 @@
       "repoURL": "https://grafana.github.io/helm-charts",
       "chart": "alloy",
       "kind": "helm-index",
-      "fetchedAt": "2026-08-21T21:13:00Z",
+      "fetchedAt": "2026-08-22T01:41:57Z",
       "versions": [
         "1.11.1",
         "1.11.0",
@@ -4332,7 +4332,7 @@
       "repoURL": "https://grafana.github.io/helm-charts",
       "chart": "loki",
       "kind": "helm-index",
-      "fetchedAt": "2026-08-21T21:13:00Z",
+      "fetchedAt": "2026-08-22T01:41:57Z",
       "versions": [
         "7.3.0",
         "7.2.0",
@@ -4684,7 +4684,7 @@
       "repoURL": "https://grafana.github.io/helm-charts",
       "chart": "mimir-distributed",
       "kind": "helm-index",
-      "fetchedAt": "2026-08-21T21:13:00Z",
+      "fetchedAt": "2026-08-22T01:41:57Z",
       "versions": [
         "6.3.0-weekly.408",
         "6.2.0",
@@ -4974,7 +4974,7 @@
       "repoURL": "https://grafana.github.io/helm-charts",
       "chart": "tempo",
       "kind": "helm-index",
-      "fetchedAt": "2026-08-21T21:13:00Z",
+      "fetchedAt": "2026-08-22T01:41:57Z",
       "versions": [
         "1.24.4",
         "1.24.3",
@@ -5086,7 +5086,7 @@
       "repoURL": "https://helm.cilium.io",
       "chart": "cilium",
       "kind": "helm-index",
-      "fetchedAt": "2026-08-21T21:13:00Z",
+      "fetchedAt": "2026-08-22T01:41:57Z",
       "versions": [
         "1.21.0-pre.0",
         "1.20.1",
@@ -5411,7 +5411,7 @@
       "repoURL": "https://helm.releases.hashicorp.com",
       "chart": "vault",
       "kind": "helm-index",
-      "fetchedAt": "2026-08-21T21:13:00Z",
+      "fetchedAt": "2026-08-22T01:41:57Z",
       "versions": [
         "0.34.1",
         "0.34.0",
@@ -5461,7 +5461,7 @@
       "repoURL": "https://kubernetes-sigs.github.io/headlamp",
       "chart": "headlamp",
       "kind": "helm-index",
-      "fetchedAt": "2026-08-21T21:13:00Z",
+      "fetchedAt": "2026-08-22T01:41:57Z",
       "versions": [
         "0.45.0",
         "0.44.0",
@@ -5523,7 +5523,7 @@
       "repoURL": "https://kubernetes-sigs.github.io/node-feature-discovery/charts",
       "chart": "node-feature-discovery",
       "kind": "helm-index",
-      "fetchedAt": "2026-08-21T21:13:00Z",
+      "fetchedAt": "2026-08-22T01:41:57Z",
       "versions": [
         "0.19.0",
         "0.18.3",
@@ -5589,7 +5589,7 @@
       "repoURL": "https://nats-io.github.io/k8s/helm/charts",
       "chart": "nats",
       "kind": "helm-index",
-      "fetchedAt": "2026-08-21T21:13:00Z",
+      "fetchedAt": "2026-08-22T01:41:57Z",
       "versions": [
         "2.14.5",
         "2.14.4",
@@ -5743,7 +5743,7 @@
       "repoURL": "https://open-policy-agent.github.io/gatekeeper/charts",
       "chart": "gatekeeper",
       "kind": "helm-index",
-      "fetchedAt": "2026-08-21T21:13:00Z",
+      "fetchedAt": "2026-08-22T01:41:57Z",
       "versions": [
         "3.24.0-beta.0",
         "3.23.0",
@@ -5871,8 +5871,9 @@
       "repoURL": "https://otwld.github.io/ollama-helm",
       "chart": "ollama",
       "kind": "helm-index",
-      "fetchedAt": "2026-08-21T21:13:00Z",
+      "fetchedAt": "2026-08-22T01:41:57Z",
       "versions": [
+        "1.77.0",
         "1.76.0",
         "1.75.0",
         "1.74.0",
@@ -6042,7 +6043,7 @@
       "repoURL": "https://prometheus-community.github.io/helm-charts",
       "chart": "kube-prometheus-stack",
       "kind": "helm-index",
-      "fetchedAt": "2026-08-21T21:13:00Z",
+      "fetchedAt": "2026-08-22T01:41:57Z",
       "versions": [
         "88.5.3",
         "88.5.2",
@@ -7160,7 +7161,7 @@
       "repoURL": "https://seaweedfs.github.io/seaweedfs/helm",
       "chart": "seaweedfs",
       "kind": "helm-index",
-      "fetchedAt": "2026-08-21T21:13:00Z",
+      "fetchedAt": "2026-08-22T01:41:57Z",
       "versions": [
         "4.43.0",
         "4.42.0",
@@ -7266,7 +7267,7 @@
       "repoURL": "https://spiffe.github.io/helm-charts-hardened",
       "chart": "spire",
       "kind": "helm-index",
-      "fetchedAt": "2026-08-21T21:13:00Z",
+      "fetchedAt": "2026-08-22T01:41:57Z",
       "versions": [
         "0.30.0",
         "0.29.0",
@@ -7328,11 +7329,25 @@
         "0.1.0"
       ]
     },
+    "https://spiffe.github.io/helm-charts-hardened|spire-crds": {
+      "repoURL": "https://spiffe.github.io/helm-charts-hardened",
+      "chart": "spire-crds",
+      "kind": "helm-index",
+      "fetchedAt": "2026-08-22T01:41:57Z",
+      "versions": [
+        "0.6.0",
+        "0.5.0",
+        "0.4.0",
+        "0.3.0",
+        "0.2.0",
+        "0.0.1"
+      ]
+    },
     "https://weaviate.github.io/weaviate-helm|weaviate": {
       "repoURL": "https://weaviate.github.io/weaviate-helm",
       "chart": "weaviate",
       "kind": "helm-index",
-      "fetchedAt": "2026-08-21T21:13:00Z",
+      "fetchedAt": "2026-08-22T01:41:57Z",
       "versions": [
         "17.8.3",
         "17.8.2",

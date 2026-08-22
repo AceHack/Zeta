@@ -93,14 +93,43 @@ spec:
           full-ai-cluster/dev-cluster/SYNC-WAVES.md bootstrap chain:
           "cert-manager -> Vault".
 
+    - chart: spire-crds
+      dependsOn: []
+      citations: {}
+      # The three `spire.spiffe.io` CustomResourceDefinitions. Depends on
+      # nothing in-graph: a CRD needs only the API server. It is the PROVIDER
+      # side of the edge below, which is where the ordering is stated.
+
     - chart: spire
-      dependsOn: [vault]
+      dependsOn: [spire-crds, vault]
       citations:
+        spire-crds: >-
+          `helm template spire --version 0.24.2` with
+          full-ai-cluster/k8s/applications/spire/Application.yaml's own
+          valuesObject renders THREE `spire.spiffe.io/v1alpha1 ClusterSPIFFEID`
+          resources, and chart 0.24.2 ships no `crds/` directory and no
+          `spire-crds` dependency (its dependency list is spire-lib,
+          spire-server, spire-agent, spiffe-csi-driver,
+          spiffe-oidc-discovery-provider, tornjak-frontend). The chart's own
+          README states the pairing under "Upgrade notes / 0.24.X": "You must
+          upgrade spire-crds to 0.5.0+ before performing this upgrade." CRD
+          provider before CRD consumer -- the same shape as
+          cilium -> cilium-lb-ipam above. MEASURED consequence of the missing
+          edge, run 32528419577 on `main`: `spire` sat OutOfSync/Missing with
+          "one or more synchronization tasks are not valid (retried 5 times)"
+          and zero pods.
         vault: >-
           full-ai-cluster/dev-cluster/SYNC-WAVES.md bootstrap chain: "Vault ->
-          SPIRE"; full-ai-cluster/k8s/applications/spire/Application.yaml:47
+          SPIRE"; full-ai-cluster/k8s/applications/spire/Application.yaml
           carries the (commented) `vaultAddr:
-          https://vault.vault.svc.cluster.local:8200` upstream-CA wiring.
+          https://vault.vault.svc.cluster.local:8200` upstream-CA wiring. This
+          is a DECLARED INTENT edge like temporal -> cockroachdb below, and it
+          is worth being explicit that it is only that: `helm template` of the
+          live values renders ZERO occurrences of `upstream` in 1386 lines and
+          the server self-signs (`ca_subject: zeta-spire-ca`), so SPIRE does not
+          contact Vault at runtime today. The edge is kept because SYNC-WAVES.md
+          asserts it and the manifest names the host; it is NOT what was
+          blocking the dev lane.
 
     - chart: trust-manager
       dependsOn: [cert-manager]

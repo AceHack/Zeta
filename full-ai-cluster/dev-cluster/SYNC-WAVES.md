@@ -62,8 +62,17 @@ graph:
 
 ```
 Bootstrap (K3S manifests, BEFORE ArgoCD takes over):
-  Cilium → cert-manager → Vault → SPIRE → Trust Manager → ESO → ArgoCD
+  Cilium → cert-manager → Vault → SPIRE CRDs → SPIRE → Trust Manager → ESO → ArgoCD
 ```
+
+The `SPIRE CRDs` step was always in `k8s/bootstrap/spire-install.yaml` (a
+`spire-crds` HelmChart ahead of the `spire` one) and was missing from this line.
+It is stated now because it is a REAL edge, not a formality: the spire chart
+renders three `ClusterSPIFFEID` resources and ships no CRDs for them, so a lane
+without that step gets `one or more synchronization tasks are not valid` and
+zero pods — which is exactly what the ArgoCD/kind lane got until 2026-08-22,
+when `k8s/applications/spire-crds/Application.yaml` gave that lane the same
+source the metal one always had.
 
 Note what the derived heights are **not**: they are not the wave numbers. ace's
 heights run `0..N`; the live annotations run `-90..50`. Requiring the two to be

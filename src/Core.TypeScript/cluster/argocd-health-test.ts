@@ -581,47 +581,51 @@ const DEV_INCLUDED_PROOF_DEFERRED_DIRS = new Set([
   // own) and a `gateway.networking.k8s.io/v1` Gateway, and portal.yaml pins
   // `storageClassName: longhorn`.
   "platform",
-  // MEASURED 2026-08-21, run 32528419577 on `main`: `OutOfSync`/`Missing`, event
-  // `Sync operation to 0.24.2 failed: one or more synchronization tasks are not
-  // valid (retried 5 times)`, and ZERO spire pods in the namespace -- the sync
-  // aborts before any workload is created.
+  // `spire` is NOT here. It LEFT this set on 2026-08-22, and both blockers that
+  // held it are recorded as CLOSED rather than the lines silently deleted.
   //
-  // THE OLD REASON WAS STALE ON BOTH HALVES and is corrected rather than
-  // re-copied. It read: "Vault upstream CA + kind PVC wiring not ready in
-  // included CI. The chart's `upstreamAuthority.vault` block is commented out
-  // pending a Vault that is INITIALISED -- which is why this one cannot be
-  // unblocked ahead of `vault`."
+  //   WAS (corrected 2026-08-21 from an older reason that was stale on both
+  //   halves -- it blamed a Vault upstream-CA dependency that does not exist and
+  //   a kind PVC gap this lane already serves):
+  //     "1. No `spire-crds` source in the ArgoCD/kind lane. Chart 0.24.2 ships
+  //      no `crds/` and no `spire-crds` dependency, yet renders 3
+  //      ClusterSPIFFEID resources. 2. The chart's `pre-upgrade` hook Job --
+  //      DERIVED, not observed."
   //
-  //   * The PVC half was already known stale: spire asks RWO/5Gi on
-  //     `zeta-local-path`, which this lane serves.
-  //   * The Vault half is ALSO wrong, and it is the more interesting error. A
-  //     commented-out block is not a pending dependency. `helm template` of
-  //     chart 0.24.2 with this Application's values renders ZERO occurrences of
-  //     `upstream` in 1386 lines; the server self-signs (`ca_subject:
-  //     zeta-spire-ca`). SPIRE does not contact Vault at runtime and would not
-  //     start doing so when Vault is initialised -- only uncommenting those lines
-  //     would. So `spire` was never gated behind `vault` at all, and initialising
-  //     Vault (which this lane now does) changes nothing here.
+  //   BLOCKER 1 CLOSED BY: full-ai-cluster/k8s/applications/spire-crds/
+  //   Application.yaml -- the same spire-crds 0.5.0 chart the k3s bootstrap
+  //   installs, at sync-wave -55, with the edge `spire -> spire-crds` DECLARED
+  //   in sync-wave-dependency-graph.yaml so derive-sync-waves.ts refuses if the
+  //   ordering ever stops being a linear extension. The ordering is declared,
+  //   not timed.
   //
-  // The REAL blockers, neither of which involves Vault:
-  //   1. No `spire-crds` source in the ArgoCD/kind lane. Chart 0.24.2 ships no
-  //      `crds/` and no `spire-crds` dependency, yet renders 3 `ClusterSPIFFEID`
-  //      resources -- which is what "synchronization tasks are not valid" is
-  //      reporting. The repo knows this only on the k3s path:
-  //      `k8s/bootstrap/spire-install.yaml` installs `spire-crds` as a k3s-only
-  //      `helm.cattle.io/v1 HelmChart`, and the kind bring-up never applies that
-  //      directory.
-  //   2. The chart's `pre-upgrade` hook Job. gitops-engine maps `pre-upgrade` to
-  //      PreSync unconditionally, so on the FIRST sync a Job runs `kubectl patch`
-  //      against a ValidatingWebhookConfiguration that does not exist yet. The
-  //      chart documents its own escape hatch for template-rendering consumers:
-  //      `global.installAndUpgradeHooks.enabled: false`.
-  //      DERIVED, not observed -- blocker 1 aborts the sync first, so this one has
-  //      never had the chance to fire. It is recorded as a derivation and says so.
+  //   BLOCKER 2 CONFIRMED, THEN CLOSED. It was recorded as a derivation because
+  //   blocker 1 aborted the sync before it could fire. With blocker 1 fixed it
+  //   fired exactly as derived, and is now OBSERVED (kind + argo-cd 2.13.2,
+  //   2026-08-22): five `spire-server-pre-upgrade` pods in Error with
+  //     Error from server (NotFound): validatingwebhookconfigurations
+  //     .admissionregistration.k8s.io
+  //     "spire-spire-controller-manager-webhook" not found
+  //   and the Application pinned at `waiting for completion of hook
+  //   batch/Job/spire-server-pre-upgrade` with zero workload pods. Closed with
+  //   the chart's own documented setting for template-rendering consumers,
+  //   `global.installAndUpgradeHooks.enabled: false`.
   //
-  // LIFTS WHEN: the lane has a source for the SPIRE CRDs, and blocker 2 is
-  // either measured to be absent or disabled per the chart's own advice.
-  "spire",
+  //   A THIRD blocker was found only because the first two were fixed, and it
+  //   was invisible behind them: `ServerSideApply=true` makes the spire-server
+  //   StatefulSet permanently OutOfSync on a `volumeClaimTemplates` artifact
+  //   ArgoCD's own `ignoreDifferences` cannot reach. The 2x2 is measured in the
+  //   Application. This is the weaviate lesson applied in advance -- one
+  //   confirmed cause is not THE cause -- and it is why the verification below
+  //   is a clean-slate run rather than a patch on the cluster that found it.
+  //
+  //   PROVEN, clean cluster, both Applications applied together so nothing
+  //   depended on hand-timing: spire-crds Synced/Healthy, spire Synced/Healthy,
+  //   spire-server 2/2, spire-agent 1/1, spire-spiffe-csi-driver 2/2, all three
+  //   ClusterSPIFFEIDs bound, and -- past what ArgoCD can tell you -- one agent
+  //   attested `k8s_psat` holding
+  //   `spiffe://zeta.local/spire/agent/k8s_psat/zeta/...` with 7 registration
+  //   entries issued.
   // go.temporal.io/temporal 0.59.0 with `cassandra.enabled: false` and no
   // `server.config.persistence` override: the chart is left with NO datastore,
   // so the schema-setup job has nothing to migrate against. The commented-out
@@ -728,10 +732,6 @@ export const APPLIED_BUT_UNASSERTED_REASONS: ReadonlyMap<string, string> = new M
       "(1) CAPACITY, MEASURED run 32519516070: hindsight-postgresql-0 never scheduled -- FailedScheduling `0/1 nodes are available: 1 Insufficient cpu` -- so hindsight-api and hindsight-control-plane CrashLoopBackOff waiting on a database with nowhere to run. The chart's own defaults are 500m (api) + 250m (control-plane) + 250m (postgresql), against an applied-set total of 4131m on a 4-vCPU runner whose kind system pods already reserve ~950m. " +
       "(2) THE `dev` RESOURCE RUNG CANNOT REACH THIS LANE, which is the part that looked like the fix and is not. `storage-profiles.ts --resource-profile dev --apply` rewrites the WORKING TREE; ArgoCD syncs the COMMITTED tree at `--git-ref`, and the only rung CI runs is `--budget`, a report. So there is no dev-only resource override today -- lowering these numbers would lower them for the metal cluster too, where the cost of an under-request is a pod that is evictable under node pressure rather than one that is refused a node. That trade is a maintainer call, not a CI convenience. " +
       "(3) THE valuesObject IS STILL PARTLY INERT against this chart, which is a defect in its own right -- and the STORAGE half of it is now FIXED, so this reason is narrowed rather than left standing. Fixed 2026-08-22: the Application wrote `postgresql.primary.persistence.{storageClass,size}` (the bitnami subchart layout) where hindsight 0.3.0 reads `postgresql.persistence.*`; the `.primary` level is gone and the re-render is 10Gi on `longhorn` instead of the chart default 8Gi with NO storageClassName. What REMAINS inert, re-checked against the same render on the same day: `api.llm.{provider,existingSecret}` and a top-level `service`, against a chart that reads `api.env`/`api.secrets`/top-level `existingSecret` and `api.service`/`controlPlane.service` -- rendered proof, still true, is that no HINDSIGHT_API_LLM_API_KEY env reaches the api container (the api Deployment carries only HINDSIGHT_API_DATABASE_URL and HINDSIGHT_API_LLM_MODEL). LIFTS WHEN: the REST of the valuesObject is rewritten against the schema the pinned chart actually has, AND a per-substrate resource override exists (or the maintainer accepts the metal-side cost of the dev numbers).",
-  ],
-  [
-    "spire",
-    "NOT Vault, and NOT storage -- both halves of the previous reason were stale. MEASURED 2026-08-21 run 32528419577: OutOfSync/Missing with `Sync operation to 0.24.2 failed: one or more synchronization tasks are not valid (retried 5 times)` and no spire pods at all. Chart 0.24.2 renders 3 ClusterSPIFFEID resources and ships no CRDs for them; the only `spire-crds` install in the repo is a k3s-only helm.cattle.io HelmChart the kind lane never applies. The `upstreamAuthority.vault` block is entirely commented out (helm template: zero occurrences of `upstream`, server self-signs), so initialising Vault does not unblock this (DEV_INCLUDED_PROOF_DEFERRED_DIRS).",
   ],
   [
     "weaviate",

@@ -2,10 +2,22 @@
 # every workload so pod-to-pod auth doesn't depend on long-lived
 # Kubernetes ServiceAccount tokens.
 #
-# Installed AFTER Vault (Vault is the upstream key material source
-# for SPIRE's UpstreamAuthority — SPIRE can chain to Vault as its
-# CA backend rather than self-signing). Trust Manager (next app)
+# Installed AFTER `spire-crds`, which is a REAL dependency: this chart renders
+# three `ClusterSPIFFEID` resources and ships no CRDs for them. The edge is
+# declared in full-ai-cluster/k8s/sync-wave-dependency-graph.yaml and enforced
+# by src/Core.TypeScript/cluster/derive-sync-waves.ts. Trust Manager (next app)
 # then distributes SPIRE's CA bundle to other workloads.
+#
+# CORRECTED 2026-08-22. This header used to read "Installed AFTER Vault (Vault
+# is the upstream key material source for SPIRE's UpstreamAuthority — SPIRE can
+# chain to Vault as its CA backend rather than self-signing)." That describes a
+# wiring this file does not have: the `upstreamAuthority.vault` block below is
+# COMMENTED OUT, `helm template` of chart 0.24.2 with these values renders ZERO
+# occurrences of `upstream` in 1386 lines, and the server self-signs from
+# `caSubject` below. A commented-out block is not a pending dependency, and this
+# sentence is what made Vault look load-bearing here for months. The identical
+# correction was made to the k3s twin at k8s/bootstrap/spire-install.yaml on
+# 2026-08-20; this is the other half of the same stale claim.
 
 apiVersion: argoproj.io/v1alpha1
 kind: Application
@@ -30,6 +42,35 @@ spec:
             trustDomain: zeta.local
             recommendations:
               enabled: false
+          # OBSERVED 2026-08-22 on a kind cluster with argo-cd 7.7.10, once the
+          # missing spire-crds Application unblocked the sync: the chart's
+          # `pre-upgrade` hook Job maps to ArgoCD PreSync, ran on the FIRST
+          # sync, and failed five times with
+          #   Error from server (NotFound): validatingwebhookconfigurations
+          #   .admissionregistration.k8s.io
+          #   "spire-spire-controller-manager-webhook" not found
+          # leaving the Application pinned at
+          # `waiting for completion of hook batch/Job/spire-server-pre-upgrade`
+          # with zero workload pods. There is nothing to patch on a first
+          # install, and ArgoCD has no install-vs-upgrade distinction to make
+          # the hook's name true.
+          #
+          # This is the chart's OWN advice for our consumer class, not a
+          # workaround: spire 0.24.2 values.yaml documents
+          # `global.installAndUpgradeHooks.enabled` as "Enable Helm hooks to
+          # autofix common install/upgrade issues (should be disabled when using
+          # `helm template`)" -- and `helm template` is exactly how ArgoCD
+          # renders, on BOTH the kind and metal lanes.
+          #
+          # WHAT IT COSTS, stated rather than glossed: the post-install hook's
+          # only job is to patch the ValidatingWebhookConfiguration's
+          # failurePolicy from the rendered `Ignore` to `Fail`. Disabled, the
+          # webhook stays at `failurePolicy: Ignore`, so a ClusterSPIFFEID
+          # submitted while spire-controller-manager is unreachable is admitted
+          # unvalidated. Every ClusterSPIFFEID in this tree is rendered by the
+          # chart itself, so nothing today submits one the webhook would reject.
+          installAndUpgradeHooks:
+            enabled: false
         spire-server:
           caSubject:
             country: US
@@ -64,6 +105,59 @@ spec:
   destination:
     server: https://kubernetes.default.svc
     namespace: spire
+  # MEASURED 2026-08-22 on kind, argo-cd 2.13.2, with the CRDs present and the
+  # hooks disabled: every workload came up 1/1 Running and the Application went
+  # Healthy -- and stayed OutOfSync on ONE resource, the spire-server
+  # StatefulSet, because of `ServerSideApply=true`. That is why this
+  # Application's syncOptions below are the one place in this tree that omits it.
+  #
+  # ArgoCD's whole computed difference between normalized-live and
+  # predicted-live was three paths, none of which anyone wrote:
+  #
+  #   .spec.volumeClaimTemplates[0].apiVersion            "v1" -> (absent)
+  #   .spec.volumeClaimTemplates[0].kind   "PersistentVolumeClaim" -> (absent)
+  #   .spec.volumeClaimTemplates[0].metadata.creationTimestamp (absent) -> null
+  #
+  # The chart renders none of them -- `helm template` emits a volumeClaimTemplate
+  # of exactly name/accessModes/resources/storageClassName.
+  #
+  # THE ATTEMPT THAT FAILED, recorded because it is the more useful half: an
+  # `ignoreDifferences` rule naming those three jq paths was tried FIRST and did
+  # not work. It cleared the first two and could not touch the third, because
+  # `creationTimestamp: null` is not in the target manifest the normalizer runs
+  # against -- ArgoCD introduces it downstream, marshalling the desired state
+  # through the Kubernetes Go structs where `ObjectMeta.CreationTimestamp` is a
+  # non-pointer that serialises as `null`. An ignore rule cannot remove a field
+  # that does not exist yet when the rule runs. The rule is NOT shipped: with
+  # ServerSideApply off it is unnecessary, and with it on it is insufficient, so
+  # in neither cell does it constrain anything.
+  #
+  # The 2x2 was measured on one live cluster, both directions, reversible:
+  #
+  #             | ignoreDifferences off | ignoreDifferences on
+  #   SSA on    | OutOfSync             | OutOfSync
+  #   SSA off   | Synced                | Synced
+  #
+  # WHAT DROPPING ServerSideApply COSTS: client-side apply stashes the manifest
+  # in the `kubectl.kubernetes.io/last-applied-configuration` annotation, capped
+  # at 262144 bytes. Largest resource this chart renders is the spire-server
+  # StatefulSet at 5234 bytes -- 50x of headroom -- so the cap is not close, and
+  # if a future chart version approaches it this comment is where to look.
+  # The sibling `spire-crds` Application KEEPS ServerSideApply: CRD schemas are
+  # the resources that genuinely approach that cap, and it reaches Synced with
+  # it on.
+  #
+  # HONEST LIMIT ON WHERE THIS IS CHECKED. Two mutations of this file --
+  # flipping `installAndUpgradeHooks.enabled` back to true, and re-adding
+  # `ServerSideApply=true` below -- SURVIVE the whole offline suite
+  # (`bun test src/Core.TypeScript/cluster/`), verified by byte cmp that each
+  # mutation actually applied. Nothing offline can render a chart, run a PreSync
+  # hook, or compute an ArgoCD diff, so neither setting has an offline falsifier
+  # and neither pretends to. What refuses them is the LIVE lane, now that spire
+  # is asserted Synced+Healthy there rather than deferred -- which is exactly why
+  # taking it off the deferral list is the load-bearing half of this change and
+  # not the bookkeeping half.
   syncPolicy:
     automated: { prune: false, selfHeal: true }
-    syncOptions: [ CreateNamespace=true, ServerSideApply=true ]
+    # ServerSideApply deliberately ABSENT -- see the measured 2x2 above.
+    syncOptions: [ CreateNamespace=true ]

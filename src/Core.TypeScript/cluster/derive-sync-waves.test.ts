@@ -3,7 +3,7 @@
  *
  * Two halves, and both are load-bearing:
  *
- *   A. THE LIVE TREE. The real 46-Application roster is fully declared, every
+ *   A. THE LIVE TREE. The real 47-Application roster is fully declared, every
  *      edge is cited, no NEW order disagreement exists, and no registration has
  *      gone stale. These are the regression guards -- notably §"every shipped
  *      Application is declared", which is the twelve-missing-apps defect turned
@@ -75,10 +75,15 @@ describe("the live full-ai-cluster tree", () => {
     // Pinned so that a roster that silently shrinks (a glob narrowed, a walk
     // that stops recursing) cannot make "everything is declared" true by
     // declaring less.
+    // 46 -> 47 on 2026-08-22: the `spire-crds` Application joined the roster
+    // (081M0JXXFV0087G0R001PGEEM4 follow-on). Bumping this number is the point
+    // of pinning it -- a new Application must be a VISIBLE edit here, because
+    // an integer that silently keeps passing is how a lane stops asserting
+    // what it claims to.
     const manifests = listApplicationManifests();
-    expect(manifests.length).toBe(46);
-    expect(readShippedApplications().length).toBe(46);
-    expect(audit.derivedWaves.size).toBe(46);
+    expect(manifests.length).toBe(47);
+    expect(readShippedApplications().length).toBe(47);
+    expect(audit.derivedWaves.size).toBe(47);
   });
 
   test("the eight known disagreements are all registered WITH a reason", () => {
@@ -109,10 +114,41 @@ describe("the live full-ai-cluster tree", () => {
     expect(Math.max(...audit.derivedWaves.values())).toBeGreaterThanOrEqual(3);
   });
 
+  /**
+   * THE CRD-PROVIDER EDGE, PINNED BY NAME.
+   *
+   * Found by mutation on 2026-08-22 and this test is the repair. Deleting
+   * `spire-crds` from `spire`'s `dependsOn` SURVIVED the whole suite: the node
+   * still existed, the roster was still complete, and the wave annotations still
+   * happened to be in the right order -- so nothing failed. The general defect is
+   * real and is NOT solved here: this file can refuse an Application that is
+   * absent from the declaration (finding 1) and an edge whose waves disagree
+   * (finding 5), but it cannot know that an edge which is simply GONE ought to
+   * have existed. Nothing can derive that from the tree today.
+   *
+   * What is fixed is the specific claim the spire-crds Application makes about
+   * itself: that its ordering is DECLARED rather than incidental. Without this
+   * test that sentence was prose, and the mutation proved it. With it, deleting
+   * the edge is a red test rather than a silent downgrade to "it works because
+   * -55 sorts before -50", which is the timing-dependent arrangement the
+   * Application's own header says it is not.
+   */
+  test("the spire -> spire-crds CRD-provider edge is declared and cited, not incidental", () => {
+    const { nodes } = readDeclaration();
+    const spire = nodes.find((n) => n.chart === "spire");
+    expect(spire, "spire must be declared").toBeDefined();
+    expect(spire?.dependsOn ?? []).toContain("spire-crds");
+    // An uncited edge is refused by finding 4 in general; asserted here too so
+    // the pin covers the whole edge rather than half of it.
+    const citation = (spire as unknown as { citations?: Record<string, string> }).citations?.["spire-crds"] ?? "";
+    expect(citation.trim().length).toBeGreaterThan(80);
+    expect(nodes.some((n) => n.chart === "spire-crds")).toBe(true);
+  });
+
   test("the declaration parses as ace's own AppDependencyGraph kind", () => {
     const { spec, nodes } = readDeclaration();
     expect(spec.kind).toBe("AppDependencyGraph");
-    expect(nodes.length).toBe(46);
+    expect(nodes.length).toBe(47);
     // The synthetic root `resolveGraph` injects must not collide with a chart.
     expect(nodes.some((n) => n.chart === spec.metadata.name)).toBe(false);
   });
