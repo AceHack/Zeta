@@ -97,3 +97,52 @@ export function runGhGraphQL<T>(
     return err(forgeError("parse-failure", `GraphQL JSON parse error: ${msg}`));
   }
 }
+
+/**
+ * Async `gh` invocation — the truthful-signature counterpart to `runGh`.
+ *
+ * `runGh` is `spawnSync`: it blocks, so N calls cost N round-trips serially and a
+ * degree-of-parallelism knob over it would be a lie. `.claude/rules/async-all-the-way-truthful-signatures.md`
+ * wants the knob to be real and to degrade to DoP=1, which requires a genuinely async
+ * process launch that a ferry can await while the request is in flight.
+ *
+ * Same argv handling as `runGh` (array, never shell-interpolated) and the same error
+ * classification, so the two agree on what a failure is.
+ */
+export async function runGhAsync(
+  args: readonly string[],
+  timeout = DEFAULT_TIMEOUT,
+): Promise<Result<string, ForgeError>> {
+  const proc = Bun.spawn(["gh", ...args], { stdout: "pipe", stderr: "pipe" });
+  const timer = setTimeout(() => proc.kill(), timeout);
+  try {
+    const [stdout, stderr, status] = await Promise.all([
+      new Response(proc.stdout).text(),
+      new Response(proc.stderr).text(),
+      proc.exited,
+    ]);
+    if (status !== 0) return err(classifyGhError(status, stderr || stdout));
+    return ok(stdout);
+  } catch (e) {
+    const msg = e instanceof Error ? e.message : String(e);
+    if (msg.includes("ENOENT")) return err(forgeError("internal", "gh CLI not found on PATH"));
+    return err(forgeError("network", `gh spawn error: ${msg}`));
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
+/** Async `runGhJson`. */
+export async function runGhJsonAsync<T>(
+  args: readonly string[],
+  timeout = DEFAULT_TIMEOUT,
+): Promise<Result<T, ForgeError>> {
+  const result = await runGhAsync(args, timeout);
+  if (!result.ok) return result;
+  try {
+    return ok(JSON.parse(result.value) as T);
+  } catch (e) {
+    const msg = e instanceof Error ? e.message : String(e);
+    return err(forgeError("parse-failure", `JSON parse error: ${msg}. First 200 bytes: ${result.value.slice(0, 200)}`));
+  }
+}

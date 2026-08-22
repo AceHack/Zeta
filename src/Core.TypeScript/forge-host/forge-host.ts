@@ -27,6 +27,10 @@ import type {
   GitCommitInfo,
   SearchPrOpts,
   SearchPrResult,
+  CheckDefinition,
+
+  CheckObservationOpts,
+  CheckObservationPass,
   ListPrOpts,
   ListMergedPrOpts,
   CreatePrOpts,
@@ -35,7 +39,59 @@ import type {
   MergeMethod,
 } from "./types";
 
-export interface ForgeHost {
+
+/**
+ * **CheckObservationSource** — the producer contract the Zeta drift dashboard folds over.
+ *
+ * Deliberately SEPARATE from (and smaller than) `ForgeHost`. A forge host is one kind
+ * of producer, not the definition of one: the stated destination is **sovereign mode**
+ * — no centralized forge host at all, with author/verifier agent attestations standing
+ * where forge gates stand today (Aaron 2026-08-22: *"these are slowly going to move
+ * away from github and into mutual agent workflows that have authors and verifiers
+ * instead of github gates but the Zeta drift dashboard will show the same red even once
+ * we end the github workflows."*).
+ *
+ * That producer is NOT written here, on purpose. Interfaces are free; a concrete class
+ * must be earned (`.claude/rules/interfaces-free-classes-earned-under-rules.md`), and a
+ * stub emitting invented attestations would be exactly the vacuity this dashboard exists
+ * to refuse. This interface is the whole of what the future producer owes.
+ *
+ * **Two methods, and the first one is the load-bearing one.** `listCheckDefinitions` is
+ * the DENOMINATOR — the set of checks that are supposed to exist. Without it a dashboard
+ * can only report on checks it happened to see, which is a check that did not run
+ * rendering identically to a check that passed.
+ */
+export interface CheckObservationSource {
+  /** Producer name, for provenance on every definition and observation it emits. */
+  readonly sourceName: string;
+
+  /**
+   * Every check this producer declares EXISTS, whether or not it has run.
+   *
+   * MUST be a roster, never a window sample. An implementation that returns "the
+   * checks seen in the last N events" is the defect this interface exists to prevent.
+   */
+  listCheckDefinitions(
+    opts?: CheckObservationOpts,
+  ): Promise<Result<readonly CheckDefinition[], ForgeError>>;
+
+  /**
+   * The LATEST verdict per definition on `ref` — one observation per check at most,
+   * never a window of recent activity.
+   *
+   * A definition with no verdict MUST be omitted rather than reported green, and a
+   * definition the producer could not ask about MUST appear in `failures` rather than
+   * being silently dropped. The dashboard's fold turns both into typed `unknown`s
+   * against the persisted roster — the only place that decision may be made.
+   */
+  listLatestCheckObservations(
+    ref: string,
+    definitions: readonly CheckDefinition[],
+    opts?: CheckObservationOpts,
+  ): Promise<Result<CheckObservationPass, ForgeError>>;
+}
+
+export interface ForgeHost extends CheckObservationSource {
   /** Human-readable forge name (e.g. "github", "gitlab", "gitea"). */
   readonly forgeName: string;
 

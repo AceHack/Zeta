@@ -30,10 +30,14 @@ import type {
   CreateIssueOpts,
   MergeMethod,
   NextAction,
+  CheckDefinition,
+  CheckObservationOpts,
+  CheckObservationPass,
 } from "../types";
 import { ok, err, forgeError } from "../result";
 import { runGh, runGhJson } from "./gh-cli";
 import { classifyGhError } from "./classify-error";
+import { listGitHubCheckDefinitions, listGitHubCheckObservations } from "./check-observations.ts";
 
 // ─── GitHub-specific raw response types ─────────────────────────────────────
 
@@ -55,16 +59,50 @@ interface GhPrListItem {
 
 export class GitHubAdapter implements ForgeHost {
   readonly forgeName = "github";
+  /** Provenance stamped on every check definition and observation this adapter emits. */
+  readonly sourceName = "github-actions";
   private readonly owner: string;
   private readonly repo: string;
 
-  constructor(owner: string, repo: string) {
+  /**
+   * `repoRoot` is where workflow SOURCES are read from, to derive each check's
+   * expectation from the substrate's own `on:` declaration. `checkRef` is the ref
+   * expectations are relative to (a PR-only workflow is on-demand *for main*).
+   */
+  private readonly repoRoot: string;
+  private readonly checkRef: string;
+
+  constructor(owner: string, repo: string, opts?: { readonly repoRoot?: string; readonly checkRef?: string }) {
     this.owner = owner;
     this.repo = repo;
+    this.repoRoot = opts?.repoRoot ?? process.cwd();
+    this.checkRef = opts?.checkRef ?? "main";
   }
 
   private get nwo(): string {
     return `${this.owner}/${this.repo}`;
+  }
+
+  // ─── Check observations (the drift dashboard's producer half) ───────────
+  //
+  // Delegated to ./check-observations.ts so the GitHub-specific mapping is testable
+  // without an adapter instance and without `gh`. The roster is enumerated from
+  // ACTIVE WORKFLOWS and the verdicts are LATEST-PER-WORKFLOW — never a run-list
+  // window, which on this repo contained only 22 of 81 workflows when measured.
+
+  async listCheckDefinitions(
+    opts?: CheckObservationOpts,
+  ): Promise<Result<readonly CheckDefinition[], ForgeError>> {
+    void opts;
+    return listGitHubCheckDefinitions(this.nwo, this.checkRef, { repoRoot: this.repoRoot }, this.sourceName);
+  }
+
+  async listLatestCheckObservations(
+    ref: string,
+    definitions: readonly CheckDefinition[],
+    opts?: CheckObservationOpts,
+  ): Promise<Result<CheckObservationPass, ForgeError>> {
+    return listGitHubCheckObservations(this.nwo, ref, definitions, { repoRoot: this.repoRoot }, this.sourceName, opts);
   }
 
   // ─── PR state ───────────────────────────────────────────────────────────
