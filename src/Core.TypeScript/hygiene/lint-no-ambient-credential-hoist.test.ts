@@ -142,6 +142,27 @@ describe("LIVE tripwire — the tracked tree must stay clean", () => {
       expect(filesScanned).toBeGreaterThanOrEqual(MIN_FILES_EXPECTED);
       expect(findings.map((f) => `${f.file}:${String(f.line)}`)).toEqual([]);
     },
-    30_000,
+    // RAISED 30,000 -> 120,000, and the reason is a measurement, not a preference.
+    // 30,000 was already an explicit budget -- the right instinct, and rarer than it should
+    // be -- and it still breached: MEASURED 2026-08-22, this line failed at 37,403 ms in a
+    // full-suite run on the fleet's machine while the tree was clean.
+    //
+    // The cause is the host, not the tree. Microsoft Defender (`mdatp health` ->
+    // `real_time_protection_enabled: true`) authorises every file open per (process, file),
+    // so the first pass over the tracked tree in a fresh process costs ~17.5 s there and
+    // ~350 ms after; under load the same read has measured 132 s. CI has no such scanner and
+    // passes this test comfortably -- this is not a CI risk, it is a local false red.
+    //
+    // WHY A FALSE RED HERE IS WORSE THAN SLOW. bun reports a timed-out test by its NAME, so
+    // the fail line claims an ambient credential hoist AND a scan that read nothing. Both are
+    // false when it is the clock that ran out, and both are alarming enough to be chased. That
+    // exact confusion cost the fleet a morning on 2026-08-22, when four hygiene tripwires
+    // timed out locally and were reported as baseline drift and two dead recognizers; all four
+    // were passing on CI in 89-222 ms at the same commit (#13821).
+    //
+    // 120,000 is the value `lint-no-culture-sensitive-collation.test.ts` already carries for
+    // the same whole-tree class, so this is the class becoming consistent, not a number tuned
+    // until it stopped complaining.
+    120_000,
   );
 });
