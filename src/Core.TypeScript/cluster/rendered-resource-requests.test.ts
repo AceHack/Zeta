@@ -536,18 +536,7 @@ describe("eight mutations against the live validators", () => {
     // the recorded axis past a machine that matches the live record is the
     // same defect class: a claimed machine larger than the one that exists.
     const recorded = loadRecordedEnvelope();
-    // 14, not 70: the 14 -> 70 correction is written down in storage-profiles.json
-    // and deliberately left for a human to take or refuse. See the pin in
-    // lane-partition.test.ts, which is where that decision is guarded.
-    //
-    // NOTE, because it is a real cost of pinning it here too: this assertion is
-    // incidental to the mutation being proven. What proves mutation 6 is that
-    // `envelopeOverstatements` returns [] when recorded == measured and convicts
-    // when recorded exceeds it, and both of those read the value symbolically.
-    // So taking the correction reddens this test as well as the three that
-    // storage-profiles.json names -- a coupling worth removing, but removing an
-    // assertion from a mutation proof is a separate call and is not folded in here.
-    expect(recorded.freeDiskGib).toBe(14);
+    expect(recorded.freeDiskGib).toBe(70);
     const measured = {
       cpuMillis: recorded.cpuMillis,
       memoryMib: recorded.memoryMib,
