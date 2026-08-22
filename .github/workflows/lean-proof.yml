@@ -220,6 +220,18 @@ jobs:
           # regression to `sorry` waiting to type-check green.
           printf '#print axioms Zeta.MenoTwistCentrality.actAt_prod\n#print axioms Zeta.MenoTwistCentrality.actAtInv_prod\n#print axioms Zeta.MenoTwistCentrality.actWord_prod\n#print axioms Zeta.MenoTwistCentrality.linearize_fiber_invariant\n#print axioms Zeta.MenoTwistCentrality.linearize_not_scalar\n#print axioms Zeta.MenoTwistCentrality.fullTwist_moves\n#print axioms Zeta.MenoTwistCentrality.fullTwist_not_scalar\n#print axioms Zeta.MenoTwistCentrality.scalar_twist_forces_symmetry\n#print axioms Zeta.MenoTwistCentrality.generators_not_commute\n#print axioms Zeta.MenoTwistCentrality.PreTwist.natural_braiding\n#print axioms Zeta.MenoTwistCentrality.PreTwist.natural_braiding_inv\n#print axioms Zeta.MenoTwistCentrality.PreTwist.natural_tensor\n#print axioms Zeta.MenoTwistCentrality.PreTwist.natural_associator\n#print axioms Zeta.MenoTwistCentrality.PreTwist.natural_leftUnitor\n#print axioms Zeta.MenoTwistCentrality.PreTwist.natural_rightUnitor\n#print axioms Zeta.MenoTwistCentrality.PreTwist.natural_of_mem\n#print axioms Zeta.MenoTwistCentrality.PreTwist.toTwist\n#print axioms Zeta.MenoTwistCentrality.preTwist_id_forces_symmetry\n#print axioms Zeta.MenoTwistCentrality.Framed.dbl_one_one_ne_id\n#print axioms Zeta.MenoTwistCentrality.Framed.framedTwist\n#print axioms Zeta.MenoTwistCentrality.Framed.framedTwist_gen\n#print axioms Zeta.MenoTwistCentrality.Framed.framedTwist_two_ne_id\n#print axioms Zeta.MenoTwistCentrality.mutant_half_twist_not_central\n#print axioms Zeta.MenoTwistCentrality.mutant_block_swap_not_central\n#print axioms Zeta.MenoTwistCentrality.mutant_delta_fourth_ne_full_twist\n#print axioms Zeta.MenoTwistCentrality.fullTwist_central_dihedral3\n' \
             | cat Lean4/MenoTwistCentrality.lean - > /tmp/meno_centrality_axiom_audit.lean
+          # ── Added 2026-08-22 (081M0N9SSJ1087G0R001WVSN9V): the ADAPTED PORT of
+          # `Zeta23/LinAlg/` from anthropics/zeta-23-lean (Apache-2.0, (c) 2026 Anthropic
+          # PBC) and OUR anti-vacuity witness for it. Ported code lands WITH its gate:
+          # a port nothing audits is a `sorry` waiting to type-check green, and the fact
+          # that upstream audited it does not audit it HERE, at OUR pin.
+          printf '#print axioms RHLinalg.posIndex_eq_rank_of_posSemidef\n#print axioms RHLinalg.rtrace_eq_sum_eigenvalues\n#print axioms RHLinalg.sum_eigenvalues_reindex\n#print axioms RHLinalg.card_eigenvalues_reindex\n#print axioms RHLinalg.frobSq_hermitian_eq_sum_sq_eigenvalues\n#print axioms RHLinalg.normSqMatrix_mem_doublyStochastic_of_unitary\n#print axioms RHLinalg.re_trace_mul_eq_eigenvalue_bilinear\n#print axioms RHLinalg.bilinear_doublyStochastic_le_of_monovary\n#print axioms RHLinalg.vonNeumann_trace_ineq\n#print axioms RHLinalg.hermPosPart_sub_hermNegPart\n#print axioms RHLinalg.hermPosPart_posSemidef\n#print axioms RHLinalg.hermNegPart_posSemidef\n#print axioms RHLinalg.hermPosPart_mul_hermNegPart\n#print axioms RHLinalg.rtrace_sub_decomp\n#print axioms RHLinalg.posIndex_eq_max_finrank_posDefOn\n#print axioms RHLinalg.finrank_le_posIndex_of_posDefOn\n#print axioms RHLinalg.posIndex_conj_le\n#print axioms RHLinalg.posIndex_add_le\n#print axioms RHLinalg.rank_trace_ineq\n#print axioms RHLinalg.rank_trace_ineq_two\n#print axioms RHLinalg.weyl_posIndexAbove_le\n#print axioms RHLinalg.cauchySchwarz_count\n' \
+            | cat Zeta23/LinAlg.lean - > /tmp/vonneumann_port_axiom_audit.lean
+          # The witness is the check upstream's bar CANNOT perform: sorry-freeness says
+          # nothing about whether the statement still means what it meant. W4 in
+          # particular is a machine-checked REFUTATION of the swapped-pairing mutant.
+          printf '#print axioms Zeta.VonNeumannTraceWitness.pair_of_sum_and_sumSq\n#print axioms Zeta.VonNeumannTraceWitness.eigenvalues₀_fin_two\n#print axioms Zeta.VonNeumannTraceWitness.evP\n#print axioms Zeta.VonNeumannTraceWitness.evQ\n#print axioms Zeta.VonNeumannTraceWitness.evS\n#print axioms Zeta.VonNeumannTraceWitness.evR\n#print axioms Zeta.VonNeumannTraceWitness.Pproj_Qmix_not_commute\n#print axioms Zeta.VonNeumannTraceWitness.trace_lt_bound_noncommuting\n#print axioms Zeta.VonNeumannTraceWitness.trace_eq_bound_aligned\n#print axioms Zeta.VonNeumannTraceWitness.trace_lt_bound_antialigned\n#print axioms Zeta.VonNeumannTraceWitness.mutant_swapped_pairing_false\n#print axioms Zeta.VonNeumannTraceWitness.vonNeumann_at_witness\n' \
+            | cat Lean4/VonNeumannTraceWitness.lean - > /tmp/vonneumann_witness_axiom_audit.lean
 
           # ── Added 2026-08-10: three files that were in NEITHER list ──────────────
           # Each audits ONLY declarations measured sorry-free on 2026-08-10, so these
@@ -306,6 +318,14 @@ jobs:
             --label "meno_centrality axiom audit" --deny 'sorryAx' \
             --message "MenoTwistCentrality depends on sorryAx — the derived-naturality / Schur-refutation certificate regressed to sorry/admit" \
             -- lake env lean /tmp/meno_centrality_axiom_audit.lean
+          bun ../Core.TypeScript/hygiene/run-checked.ts \
+            --label "vonneumann port axiom audit" --deny 'sorryAx' --deny 'Unknown constant' \
+            --message "The Zeta23/LinAlg port depends on sorryAx, or a name did not resolve at our pin — the ported §3 engine regressed or drifted" \
+            -- lake env lean /tmp/vonneumann_port_axiom_audit.lean
+          bun ../Core.TypeScript/hygiene/run-checked.ts \
+            --label "vonneumann witness axiom audit" --deny 'sorryAx' --deny 'Unknown constant' \
+            --message "VonNeumannTraceWitness depends on sorryAx, or a name did not resolve — the anti-vacuity witness for the von Neumann port regressed" \
+            -- lake env lean /tmp/vonneumann_witness_axiom_audit.lean
           # ── Anti-vacuity guard (added 2026-08-10) ────────────────────────────────
           # Every audit below decides PASS by the ABSENCE of `sorryAx` in the output.
           # If a `#print axioms` names a declaration that does not resolve — renamed,

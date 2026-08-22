@@ -26,6 +26,109 @@ because <one-line>.`
 
 ---
 
+## `Zeta23/LinAlg` + `VonNeumannTraceWitness` *(von Neumann's trace inequality and the paper's §3 linear-algebra engine — ADAPTED PORT, Lean 4 + Mathlib)*
+
+- **Register, first, because it is the field most easily fudged.** **`port`** — adapted port of
+  `Zeta23/LinAlg/` from [`anthropics/zeta-23-lean`](https://github.com/anthropics/zeta-23-lean)
+  @ v1.0 (Apache-2.0, Copyright 2026 Anthropic, PBC), retargeted from Mathlib rev
+  `51e6992efd06126df61a496bebf8f49482a4e129` / Lean `v4.33.0-rc2` to Mathlib `v4.30.0-rc1` /
+  Lean `v4.30.0-rc1`. **Not an independent replication: the upstream Lean source was read.**
+  The bare phrase "we replicated it" is refused. `Lean4/VonNeumannTraceWitness.lean` is
+  **ours** — written against the ported theorem's public statement, not derived from upstream.
+- **Artifact.** `src/Core.Lean4/Zeta23/LinAlg/{PosIndex,VonNeumann,HermitianPosPart,Sylvester,Inertia,RankTrace,Weyl}.lean`
+  + `Zeta23/LinAlg.lean` + `Zeta23.lean` (the port, 8 files), and
+  `src/Core.Lean4/Lean4/VonNeumannTraceWitness.lean` (ours). Ported 2026-08-22, work-item
+  081M0N9SSJ1087G0R001WVSN9V. `Zeta23` is a `lean_lib` **in `defaultTargets`**, and the witness
+  is imported from the `Lean4` root — so `lake build` walks both and `lean-orphan-modules.ts`
+  sees them. Gated in `.github/workflows/lean-proof.yml` by two audits, each with **both**
+  `--deny sorryAx` **and** `--deny 'Unknown constant'`, run through `run-checked.ts` (never a
+  pipeline: a pipeline's exit status is the last command's, so a `lean` segfault prints
+  nothing, greps clean and passes).
+- **Internal correctness target.** None yet — nothing in the shipped F#/TypeScript substrate
+  depends on this. It is acquired capability: `vonNeumann_trace_ineq` is **not in Mathlib
+  master** (code search: 0 hits), and it is directly reusable by the Hermitian-matrix work
+  already here (`CliffordReflectionE8.lean`, `MenoTwistCentrality.lean`,
+  `CayleyDicksonDoublyEven.lean`). Stating a target we do not have would be the fudge.
+- **Internal correctness claim.** `RHLinalg.vonNeumann_trace_ineq`: for Hermitian `A B :
+  Matrix n n 𝕜` over `RCLike 𝕜`, `RCLike.re (A * B).trace ≤ ∑ i, hA.eigenvalues₀ i *
+  hB.eigenvalues₀ i` — eigenvalues sorted decreasing. Route: `A = UₐDₐUₐᴴ`, `B = UᵦDᵦUᵦᴴ`,
+  `W = UₐᴴUᵦ`; `Sₖₗ = ‖Wₖₗ‖²` is doubly stochastic by unitarity; Birkhoff–von Neumann writes
+  `S` as a convex combination of permutation matrices; rearrangement bounds each permutation
+  by the sorted pairing. The subtree also carries Sylvester's law of inertia (Hermitian, both
+  directions), the `Q = Q₊ − Q₋` splitting, and the paper's Lemmas 3.1 / 3.2 / 3.4.
+- **Retarget cost — measured, not assumed.** Zero proof edits. The 8 files were dropped into a
+  scratch `lean_lib` at our existing pin and `lake build` run once: **2690 jobs, completed
+  successfully**, no errors, no `sorry`. Only diagnostics were `linter.style.longLine` warnings
+  on upstream's own provenance comment, left unreflowed so the diff against upstream is empty
+  outside the Apache §4(b) notice blocks. Every Mathlib name resolves at our pin —
+  `exists_eq_sum_perm_of_mem_doublyStochastic` (`Analysis/Convex/Birkhoff.lean:152`),
+  `Monovary.sum_mul_comp_perm_le_sum_mul` (`Algebra/Order/Rearrangement.lean:437`),
+  `reindex_mem_doublyStochastic`, `eigenvalues₀`, `eigenvectorUnitary`, `spectral_theorem`,
+  `rank_eq_card_non_zero_eigs`. Because nothing was re-proved, the register stays `port`;
+  re-proving a lemma because a name moved would still have been a port, not independence.
+- **Anti-vacuity.** Upstream's bar (`#print axioms` ⊆ `{propext, Classical.choice, Quot.sound}`,
+  no `sorry`) is **necessary and not sufficient** — it cannot tell whether the statement still
+  means what it meant, and this repo has the receipt for that failure class (13 unqualified
+  `FinDataProcessing` names that all resolved to nothing, printed no axiom line, grepped clean
+  and passed). So `VonNeumannTraceWitness.lean` supplies five machine-checked witnesses on
+  explicit `2×2` real symmetric matrices: **W1** the pair is **NON-COMMUTING**
+  (`Pproj_Qmix_not_commute`) and the bound is strictly slack there (`1 < 2`) — commuting
+  matrices would make the witness vacuous, since all the theorem's content is the
+  non-commuting case; **W2** the bound is **ATTAINED** (`2 = 2`) with eigenvectors aligned in
+  sorted order, so the conclusion cannot drift to a strict `<` without becoming false;
+  **W3** the anti-aligned arrangement of the *same* spectrum falls to `0 < 2`, so the sorted
+  pairing is a genuine maximum over the orbit; **W4** a machine-checked **REFUTATION** of the
+  swapped-pairing mutant (`¬ 2 ≤ 0`), which is the rearrangement content and the one drift a
+  weaker conclusion would hide; **W5** the ported theorem is **applied**
+  (`vonNeumann_at_witness`), so the audit measures upstream's theorem and not only our helper
+  lemmas. `eigenvalues₀` is noncomputable, so the concrete spectra are pinned by
+  `eigenvalues₀_fin_two` — trace and squared Frobenius norm determine a sorted real pair —
+  read through the ported `rtrace` / `frobSq`, which makes the witness exercise the port
+  rather than route around it.
+- **NOT claimed.** **§3 linear algebra only. Theorems A and B are NOT formalized here; §§4–5
+  are absent. This is the engine, not the result.** Specifically: nothing from
+  `Zeta23/FromPNTPlus/`, no analytic number theory, no zero-density or critical-line statement,
+  and no claim about the paper's headline theorems. Not claimed to be an independent
+  replication (the source was read). Not claimed to be upstreamed — Mathlib-compatible
+  conventions were preserved so upstreaming stays possible, but no PR has been opened. Not
+  claimed to be a differential check against upstream: this port IS upstream's code, so
+  agreement between them is not evidence — the genuine two-implementation comparison would
+  need an independent formalization, which this deliberately is not. The witness is over
+  `2×2` **real** matrices; the theorem is proved for general `RCLike 𝕜` and general finite
+  index type, and the witness does not exercise the complex case.
+- **A finding for the downstream milestones, noted in passing.** Mathlib has Sylvester's law of
+  inertia only for **real quadratic forms** (`LinearAlgebra/QuadraticForm/Real.lean`,
+  `Signature.lean`); the Hermitian version is the paper's contribution and now sits in
+  `Zeta23/LinAlg/Sylvester.lean`. The paper's Proposition 4.1 shows the matrices in play are
+  real symmetric, so the real version may suffice downstream — unverified, flagged not
+  resolved.
+- **External anchors.** J. von Neumann, *Some matrix-inequalities and metrization of
+  matric-space* (Tomsk Univ. Rev. 1, 1937) — the inequality. G. Birkhoff, *Tres observaciones
+  sobre el algebra lineal* (Univ. Nac. Tucumán Rev. A 5, 1946) and von Neumann (1953) — the
+  doubly-stochastic decomposition. Hardy, Littlewood & Pólya, *Inequalities* (1934) §10.2 —
+  rearrangement. J. J. Sylvester (1852) — the law of inertia. H. Weyl (1912) — the
+  perturbation bound. Upstream artifact: `anthropics/zeta-23-lean`, `Zeta23/LinAlg/`,
+  Apache-2.0, Copyright 2026 Anthropic, PBC; paper `anthropic.com/research/riemann-zeta`.
+- **Licence compliance (Apache-2.0 §4).** Both repos are Apache-2.0, so there is no
+  compatibility question — but §4 binds and is honoured file-by-file: `Zeta23/LICENSE` (§4(a)),
+  a `MODIFIED FROM UPSTREAM` block on **every** ported file naming upstream path, date,
+  work-item, the revisions retargeted between and what changed (§4(b) — the clause most often
+  missed), the per-file `Copyright (c) 2026 Anthropic, PBC` / `SPDX-License-Identifier` headers
+  kept verbatim (§4(c)), and `Zeta23/NOTICE` + `Zeta23/NOTICE.upstream` (§4(d)). Upstream's
+  NOTICE scopes its PrimeNumberTheoremAnd credit to `Zeta23/FromPNTPlus/`, which is **not**
+  present here, so that attribution does not pertain — and upstream's NOTICE is retained
+  verbatim beside ours so a reader can check that judgement instead of trusting it.
+- **Route agreement, recorded because it is the only independence-flavoured fact available.**
+  Soraya derived the Birkhoff + rearrangement route from our own Mathlib pin **before** the
+  upstream source was read, and it is the route upstream took. That makes this a port that is
+  *understood*. It does not make it a replication and is not offered as one.
+- **Last audit.** 2026-08-22, authored by the shadow. Grade: machine-checked (Lean 4 kernel;
+  `lake build` green on the full default target at `leanprover/lean4:v4.30.0-rc1`; `#print
+  axioms` ⊆ `{propext, Classical.choice, Quot.sound}` for the audited declarations, with the
+  `Unknown constant` guard on the same runs so the audit cannot pass vacuously).
+
+---
+
 ## `MenoTwistCentrality` *(twist naturality derived; the Schur/scalar route refuted — Lean 4 + Mathlib)*
 
 - **Artifact.** `src/Core.Lean4/Lean4/MenoTwistCentrality.lean` (Lean 4 + Mathlib

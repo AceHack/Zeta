@@ -32,3 +32,4 @@ import Lean4.MenoBraidedRMatrix
 import Lean4.MenoMonoidalHexagons
 import Lean4.MenoBalancedTwist
 import Lean4.MenoTwistCentrality
+import Lean4.VonNeumannTraceWitness
