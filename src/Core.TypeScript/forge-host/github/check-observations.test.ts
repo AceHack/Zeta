@@ -285,28 +285,49 @@ describe("the transport is spawn-free for plain reads, and narrowly so", () => {
     expect(isPlainApiGet(["api", "-q", ".x"])).toBe(false);
   });
 
+  // THE ENVIRONMENT IS PASSED IN, NEVER ASSIGNED. Both tests below used to do
+  // `process.env["GH_TOKEN"] = "t1"` with a restoring `finally`. `process.env` is
+  // inherited by every child this process spawns — including the real
+  // `Bun.spawnSync(["gh", "auth", "token"])` inside the function under test, and any
+  // other test in the same run that shells out to `gh` — so that assignment handed a
+  // fake credential to real subprocesses for as long as it stood, and a throw before
+  // the `finally` left it standing for the rest of the run. Refused by
+  // `hygiene/lint-no-ambient-credential-hoist.ts`, and it was right to: reading the
+  // ambient environment is fine, writing a credential into it is not.
+
   it("prefers an already-present token over spawning anything", () => {
     resetGitHubTokenForTest();
-    const prior = process.env["GH_TOKEN"];
-    process.env["GH_TOKEN"] = "token-from-env";
     try {
-      expect(resolveGitHubToken()).toBe("token-from-env");
+      expect(resolveGitHubToken({ GH_TOKEN: "token-from-env" })).toBe("token-from-env");
     } finally {
-      if (prior === undefined) delete process.env["GH_TOKEN"]; else process.env["GH_TOKEN"] = prior;
       resetGitHubTokenForTest();
     }
   });
 
+  it("falls back to GITHUB_TOKEN, and treats an empty value as absent", () => {
+    resetGitHubTokenForTest();
+    try {
+      expect(resolveGitHubToken({ GITHUB_TOKEN: "from-github-token" })).toBe("from-github-token");
+    } finally {
+      resetGitHubTokenForTest();
+    }
+    // OBSERVED WHILE WRITING THIS, and recorded rather than changed: an EMPTY
+    // `GH_TOKEN` does not fall back to `GITHUB_TOKEN`. `??` only falls through on
+    // null/undefined, so `""` is selected, then the `!== ""` guard rejects it and the
+    // function goes to `gh auth token` — skipping a `GITHUB_TOKEN` that is sitting
+    // right there. Whether that is wrong depends on whether an empty `GH_TOKEN` should
+    // mean "no token" or "unset", which is a call for whoever owns this resolver; it is
+    // not part of removing an ambient credential write, so it is named here and left
+    // alone. It is not asserted either way because the branch it takes ends in a real
+    // `gh` subprocess, which does not belong in the hermetic tier.
+  });
+
   it("memoises, so N requests cost at most ONE token resolution", () => {
     resetGitHubTokenForTest();
-    const prior = process.env["GH_TOKEN"];
-    process.env["GH_TOKEN"] = "t1";
     try {
-      expect(resolveGitHubToken()).toBe("t1");
-      process.env["GH_TOKEN"] = "t2";
-      expect(resolveGitHubToken()).toBe("t1"); // memoised, not re-read
+      expect(resolveGitHubToken({ GH_TOKEN: "t1" })).toBe("t1");
+      expect(resolveGitHubToken({ GH_TOKEN: "t2" })).toBe("t1"); // memoised, not re-read
     } finally {
-      if (prior === undefined) delete process.env["GH_TOKEN"]; else process.env["GH_TOKEN"] = prior;
       resetGitHubTokenForTest();
     }
   });

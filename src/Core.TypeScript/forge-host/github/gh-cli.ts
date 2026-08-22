@@ -204,11 +204,26 @@ const GITHUB_API = "https://api.github.com";
 let tokenResolved = false;
 let cachedToken: string | null = null;
 
-/** The token `gh api` would use: env first (CI supplies it), then ONE `gh auth token`. */
-export function resolveGitHubToken(): string | null {
+/**
+ * The token `gh api` would use: env first (CI supplies it), then ONE `gh auth token`.
+ *
+ * `env` IS A SEAM, AND IT EXISTS FOR A REAL REASON, not for tidiness. Before it, the
+ * only way to exercise this function was to ASSIGN into `process.env` and restore it
+ * in a `finally`. That is a genuine hazard rather than a lint technicality: `process.env`
+ * is inherited by every child this process spawns, including the `Bun.spawnSync(["gh",
+ * "auth", "token"])` twelve lines below and any other test in the same run that shells
+ * out to `gh` — so a test setting `GH_TOKEN = "t1"` hands a fake credential to real
+ * subprocesses for as long as the assignment stands, and a crash between the assignment
+ * and the `finally` leaves it standing for the rest of the run.
+ *
+ * Reading the ambient environment is fine and is what CI relies on; WRITING a credential
+ * into it is what `hygiene/lint-no-ambient-credential-hoist.ts` refuses. Passing the
+ * environment in lets a caller test the resolution order without ever writing one.
+ */
+export function resolveGitHubToken(env: Readonly<Record<string, string | undefined>> = process.env): string | null {
   if (tokenResolved) return cachedToken;
   tokenResolved = true;
-  const fromEnv = process.env["GH_TOKEN"] ?? process.env["GITHUB_TOKEN"];
+  const fromEnv = env["GH_TOKEN"] ?? env["GITHUB_TOKEN"];
   if (fromEnv !== undefined && fromEnv !== "") {
     cachedToken = fromEnv;
     return cachedToken;
