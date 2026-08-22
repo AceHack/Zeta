@@ -1,0 +1,12 @@
+{
+  "pr_number": 9298,
+  "archive_path": "docs/history/pr-reviews/PR-9298-fix-pages-raw-escape-unterminated-a-literal-in-pr-8178-review-archive.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-03T12:23:57.542Z",
+  "schema_version": "v1",
+  "commit_sha": "81642d7056578bbdacdf261a0d4e4d0b773d95f2",
+  "title": "fix(pages): raw-escape unterminated {{a} literal in PR-8178 review archive",
+  "state": "MERGED",
+  "merged_at": "2026-07-03T12:23:34Z",
+  "head_ref": "otto/fix-pages-liquid-unterminated-brace-pr8178-archive"
+}

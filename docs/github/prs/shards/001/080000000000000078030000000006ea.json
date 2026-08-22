@@ -1,0 +1,25 @@
+{
+  "pr_number": 1770,
+  "archive_path": "docs/history/pr-reviews/PR-1770-archive-preserve-pr-1769-review-output.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6-qA_O",
+    "comment:PRRC_kwDOSF9kNM6-qA_n",
+    "comment:PRRC_kwDOSF9kNM6-qA_x",
+    "comment:PRRC_kwDOSF9kNM6-qBAA",
+    "comment:PRRC_kwDOSF9kNM6-qCOQ",
+    "comment:PRRC_kwDOSF9kNM6-qCPj",
+    "comment:PRRC_kwDOSF9kNM6-qCQw",
+    "comment:PRRC_kwDOSF9kNM6-qCR5",
+    "thread:PRRT_kwDOSF9kNM6ALqi_",
+    "thread:PRRT_kwDOSF9kNM6ALqjS",
+    "thread:PRRT_kwDOSF9kNM6ALqjZ",
+    "thread:PRRT_kwDOSF9kNM6ALqji"
+  ],
+  "fetched_at": "2026-05-07T02:58:36.375Z",
+  "schema_version": "v1",
+  "commit_sha": "2ddd1b180699009580cba60fa5d619c61e7358e9",
+  "title": "archive: preserve PR 1769 review output",
+  "state": "MERGED",
+  "merged_at": "2026-05-07T02:52:39Z",
+  "head_ref": "claim/archive-pr-1769-review-substrate"
+}

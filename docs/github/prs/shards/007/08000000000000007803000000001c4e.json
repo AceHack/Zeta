@@ -1,0 +1,12 @@
+{
+  "pr_number": 7246,
+  "archive_path": "docs/history/pr-reviews/PR-7246-docs-achievements-society-achievement-ledger-the-historic-first-first-nodes-to-f.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-09T10:59:39.287Z",
+  "schema_version": "v1",
+  "commit_sha": "5179bfeefe0724d7a1170d0daa679f3b57997922",
+  "title": "docs(achievements): society achievement ledger + the historic first — first nodes to fully self-register in the Zeta network",
+  "state": "MERGED",
+  "merged_at": "2026-06-09T10:59:12Z",
+  "head_ref": "otto/docs-achievements-ledger-first-self-registration-historic"
+}

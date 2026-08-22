@@ -1,0 +1,12 @@
+{
+  "pr_number": 9969,
+  "archive_path": "docs/history/pr-reviews/PR-9969-docs-research-order-free-loss-tolerant-convergence-expanding-exact-arithmetic-ec.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-02T16:27:21.221Z",
+  "schema_version": "v1",
+  "commit_sha": "b1702fa0c3246f44fb1bf713003d746b04aca3c0",
+  "title": "docs(research): order-free + loss-tolerant convergence — expanding-exact arithmetic + ECC-over-the-channel (third drift axis)",
+  "state": "MERGED",
+  "merged_at": "2026-08-02T16:26:31Z",
+  "head_ref": "otto/order-free-loss-tolerant-third-drift-axis-handoff"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 9942,
+  "archive_path": "docs/history/pr-reviews/PR-9942-fix-bridge-a-silent-dweller-carried-zero-uncertainty-the-inversion.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-02T00:08:01.052Z",
+  "schema_version": "v1",
+  "commit_sha": "60887d6d6398cfaa187374d864cded763e969c04",
+  "title": "fix(bridge): a silent dweller carried ZERO uncertainty — the inversion",
+  "state": "MERGED",
+  "merged_at": "2026-08-02T00:07:30Z",
+  "head_ref": "shadow/silent-epsilon-inversion"
+}

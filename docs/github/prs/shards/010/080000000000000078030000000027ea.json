@@ -1,0 +1,12 @@
+{
+  "pr_number": 10218,
+  "archive_path": "docs/history/pr-reviews/PR-10218-docs-handoff-universality-is-signature-loading-not-a-bigger-alphabet-name-the-si.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-09T19:48:00.618Z",
+  "schema_version": "v1",
+  "commit_sha": "439c85ea2bfe785053a5b7f0bd8e0d2861a4184a",
+  "title": "docs(handoff): universality is signature loading (not a bigger alphabet) + name the signature detector's human anchor",
+  "state": "MERGED",
+  "merged_at": "2026-08-09T19:47:29Z",
+  "head_ref": "shadow/correct-16-grammar-universality-caveat"
+}

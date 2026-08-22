@@ -1,0 +1,12 @@
+{
+  "pr_number": 4157,
+  "archive_path": "docs/history/pr-reviews/PR-4157-backlog-b-0633-aggregate-tier-counter-escalation-for-holding-failure-rule.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-18T15:32:29.933Z",
+  "schema_version": "v1",
+  "commit_sha": "21395089d46dcd721bbe64ee9723b7fe0090fbd3",
+  "title": "backlog(B-0633): aggregate-tier counter escalation for holding-failure rule",
+  "state": "MERGED",
+  "merged_at": "2026-05-18T15:32:04Z",
+  "head_ref": "backlog/b0633-aggregate-tier-counter-escalation-otto-cli-2026-05-18-1442z"
+}

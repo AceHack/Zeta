@@ -1,0 +1,12 @@
+{
+  "pr_number": 9257,
+  "archive_path": "docs/history/pr-reviews/PR-9257-docs-glossary-ascent-descent-parsing-up-lowering-down-the-god-lucifer-poles.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-03T02:00:34.058Z",
+  "schema_version": "v1",
+  "commit_sha": "252e17cd6499fe3f756ed1b5dcef5ed8088baf7d",
+  "title": "docs(glossary): ascent/descent (parsing up, lowering down) — the God/Lucifer poles",
+  "state": "MERGED",
+  "merged_at": "2026-07-03T02:00:11Z",
+  "head_ref": "otto/glossary-ascent-descent-god-lucifer"
+}

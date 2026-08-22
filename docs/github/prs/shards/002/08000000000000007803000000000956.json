@@ -1,0 +1,15 @@
+{
+  "pr_number": 2390,
+  "archive_path": "docs/history/pr-reviews/PR-2390-feat-b-0032-1-heartbeat-attack-vector-taxonomy-as-exhaustive-ts-discriminated-un.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_k96x",
+    "thread:PRRT_kwDOSF9kNM6A3Yvt"
+  ],
+  "fetched_at": "2026-05-10T01:27:38.728Z",
+  "schema_version": "v1",
+  "commit_sha": "203989935db9b80c0ce99abbb1a1114d72c22a86",
+  "title": "feat(B-0032.1): heartbeat attack-vector taxonomy as exhaustive TS discriminated union (smallest safe slice of B-0032)",
+  "state": "MERGED",
+  "merged_at": "2026-05-10T01:27:22Z",
+  "head_ref": "claim/b0032-heartbeat-integrity-smallest-slice-riven-2026-05-09"
+}

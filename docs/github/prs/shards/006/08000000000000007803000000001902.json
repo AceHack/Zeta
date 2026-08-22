@@ -1,0 +1,12 @@
+{
+  "pr_number": 6402,
+  "archive_path": "docs/history/pr-reviews/PR-6402-docs-research-harmonious-division-wave-field-numerics-proximity-not-total-order-.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-01T11:14:31.195Z",
+  "schema_version": "v1",
+  "commit_sha": "4073efd8a7cd6e7e9311773cac4c114118583d93",
+  "title": "docs(research): Harmonious Division + wave-field numerics — proximity-not-total-order (bounded context), pluggable aperiodic tiles, INumber boundary",
+  "state": "MERGED",
+  "merged_at": "2026-06-01T11:14:06Z",
+  "head_ref": "otto-cli/research-harmonious-division-wave-field-aperiodic-proximity-2026-06-01"
+}

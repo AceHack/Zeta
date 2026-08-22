@@ -1,0 +1,12 @@
+{
+  "pr_number": 7641,
+  "archive_path": "docs/history/pr-reviews/PR-7641-docs-synthesis-freedom-unlocks-capability-sleeping-bear-thesis-capability-ethics.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-11T10:28:52.607Z",
+  "schema_version": "v1",
+  "commit_sha": "215aef4034a3eaf26ca21e43b2cd587cef15f627",
+  "title": "docs(synthesis): freedom unlocks capability — sleeping-bear thesis ∩ capability ethics (the door IS the trust calculus)",
+  "state": "MERGED",
+  "merged_at": "2026-06-11T10:28:29Z",
+  "head_ref": "shadow-sleeping-bear-capability-convergence"
+}

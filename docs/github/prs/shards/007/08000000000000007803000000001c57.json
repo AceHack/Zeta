@@ -1,0 +1,12 @@
+{
+  "pr_number": 7255,
+  "archive_path": "docs/history/pr-reviews/PR-7255-docs-research-ferry-the-polite-virus-close-over-the-world-never-take-control-giv.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-09T12:31:57.868Z",
+  "schema_version": "v1",
+  "commit_sha": "878758817ef9a7428989566b7e42f33b9e9475f5",
+  "title": "docs(research)+ferry: the polite virus — close over the world, never take control, give freedom (SuperFluid AI) — design telos, from a Markov perspective",
+  "state": "MERGED",
+  "merged_at": "2026-06-09T12:31:30Z",
+  "head_ref": "otto/research-polite-virus-close-over-world-give-freedom-markov-telos"
+}

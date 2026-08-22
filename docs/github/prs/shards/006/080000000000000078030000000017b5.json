@@ -1,0 +1,12 @@
+{
+  "pr_number": 6069,
+  "archive_path": "docs/history/pr-reviews/PR-6069-feat-b-0164-1-fillreconciliation-shard-side-one-action-of-dual-loop-ac-4.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-30T02:55:48.415Z",
+  "schema_version": "v1",
+  "commit_sha": "1f2a255703988ca8b592573821412a9702fd7a48",
+  "title": "feat(B-0164.1): fillReconciliation — shard-side \"one action\" of dual-loop AC #4",
+  "state": "MERGED",
+  "merged_at": "2026-05-30T02:55:31Z",
+  "head_ref": "otto-cli/b0164.1-fill-reconciliation-2026-05-30"
+}

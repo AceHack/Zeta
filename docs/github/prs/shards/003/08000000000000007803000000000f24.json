@@ -1,0 +1,15 @@
+{
+  "pr_number": 3876,
+  "archive_path": "docs/history/pr-reviews/PR-3876-docs-archive-lior-preservation-of-pr-3872.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7B4nSZ",
+    "thread:PRRT_kwDOSF9kNM6CjzIT"
+  ],
+  "fetched_at": "2026-05-16T20:18:00.442Z",
+  "schema_version": "v1",
+  "commit_sha": "f8b68630423baf23c53e94a00370e01685a0502b",
+  "title": "docs(archive): Lior preservation of PR 3872",
+  "state": "MERGED",
+  "merged_at": "2026-05-16T20:17:44Z",
+  "head_ref": "lior/preserve-3872"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 5129,
+  "archive_path": "docs/history/pr-reviews/PR-5129-backlog-b-0806-iter-7-p2-ansible-gitops-crossplane-composition-cross-os-declarat.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-26T08:23:33.874Z",
+  "schema_version": "v1",
+  "commit_sha": "cc143ba7f5ff48ff11d540f7efd3cf8efeadc2f8",
+  "title": "backlog(B-0806 iter-7 P2): Ansible+GitOps + Crossplane composition — cross-OS declarative management for Windows + Macs",
+  "state": "MERGED",
+  "merged_at": "2026-05-26T08:23:11Z",
+  "head_ref": "otto-cli/b0806-ansible-gitops-crossplane-cross-os-2026-05-26"
+}

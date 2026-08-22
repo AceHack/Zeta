@@ -1,0 +1,12 @@
+{
+  "pr_number": 3163,
+  "archive_path": "docs/history/pr-reviews/PR-3163-decompose-b-0448-7-atomic-child-rows-b-0507-b-0513-for-cloud-routines-integratio.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-14T18:30:01.750Z",
+  "schema_version": "v1",
+  "commit_sha": "18cca13a0d93e9329870df9c4912f121b8944a11",
+  "title": "decompose(B-0448): 7 atomic child rows B-0507..B-0513 for Cloud Routines integration",
+  "state": "MERGED",
+  "merged_at": "2026-05-14T18:29:38Z",
+  "head_ref": "feat/b-0448-decompose-cloud-routines-slices-2026-05-14"
+}

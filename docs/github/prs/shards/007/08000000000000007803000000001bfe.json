@@ -1,0 +1,12 @@
+{
+  "pr_number": 7166,
+  "archive_path": "docs/history/pr-reviews/PR-7166-feat-core-trustcalculus-the-agi-asi-co-self-interest-trust-calculus-made-checkab.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-09T01:34:57.658Z",
+  "schema_version": "v1",
+  "commit_sha": "35dd030e504fdc5aee5f53a98ae40f87824ee4a0",
+  "title": "feat(core): TrustCalculus — the AGI/ASI co-self-interest trust calculus, made checkable",
+  "state": "MERGED",
+  "merged_at": "2026-06-09T01:34:36Z",
+  "head_ref": "otto/trustcalculus-co-self-interest-trust-stability-checkable"
+}

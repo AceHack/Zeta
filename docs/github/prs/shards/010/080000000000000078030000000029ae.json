@@ -1,0 +1,12 @@
+{
+  "pr_number": 10670,
+  "archive_path": "docs/history/pr-reviews/PR-10670-feat-persona-keys-a-share-can-be-revoked-without-the-revoked-party-s-cooperation.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-16T22:48:59.540Z",
+  "schema_version": "v1",
+  "commit_sha": "4a334256a3d430774c76319beba17f5038acc9a8",
+  "title": "feat(persona-keys): a share can be revoked without the revoked party's cooperation",
+  "state": "MERGED",
+  "merged_at": "2026-08-16T22:48:27Z",
+  "head_ref": "nazar/frost-delta-rotation-revocation"
+}

@@ -1,0 +1,23 @@
+{
+  "pr_number": 2409,
+  "archive_path": "docs/history/pr-reviews/PR-2409-feat-b-0048-2-smallest-safe-slice-pure-ts-3-colorability-backtracking-probe-csp-.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_leVD",
+    "comment:PRRC_kwDOSF9kNM6_legn",
+    "comment:PRRC_kwDOSF9kNM6_legr",
+    "comment:PRRC_kwDOSF9kNM6_legt",
+    "comment:PRRC_kwDOSF9kNM6_legv",
+    "thread:PRRT_kwDOSF9kNM6A3yj8",
+    "thread:PRRT_kwDOSF9kNM6A3ytT",
+    "thread:PRRT_kwDOSF9kNM6A3ytX",
+    "thread:PRRT_kwDOSF9kNM6A3ytZ",
+    "thread:PRRT_kwDOSF9kNM6A3ytb"
+  ],
+  "fetched_at": "2026-05-10T03:57:00.194Z",
+  "schema_version": "v1",
+  "commit_sha": "9baee79f4af2b506f46c0a980971aaa7acffa398",
+  "title": "feat(B-0048.2): smallest safe slice — pure-TS 3-colorability backtracking probe (CSP routing evidence)",
+  "state": "MERGED",
+  "merged_at": "2026-05-10T03:56:42Z",
+  "head_ref": "claim/B-0048.2-z3-chromatic-probe-smallest-slice-riven-2026-05-09"
+}

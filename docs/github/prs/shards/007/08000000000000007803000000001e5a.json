@@ -1,0 +1,12 @@
+{
+  "pr_number": 7770,
+  "archive_path": "docs/history/pr-reviews/PR-7770-fix-docs-repair-bugs-markdownlint-blanks.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-11T19:37:08.619Z",
+  "schema_version": "v1",
+  "commit_sha": "470239b0980f22b7fdfa435b146e4da16592cf7e",
+  "title": "fix(docs): repair BUGS markdownlint blanks",
+  "state": "MERGED",
+  "merged_at": "2026-06-11T19:36:40Z",
+  "head_ref": "codex/fix-bugs-markdownlint"
+}

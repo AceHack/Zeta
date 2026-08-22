@@ -1,0 +1,12 @@
+{
+  "pr_number": 5417,
+  "archive_path": "docs/history/pr-reviews/PR-5417-feat-b-0853-1-cosign-keyless-oidc-signing-for-iso-blob-in-build-ai-cluster-iso-w.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-27T07:29:51.167Z",
+  "schema_version": "v1",
+  "commit_sha": "70596a8db3bcf1c39fd61f7554d8e36b8f667c7a",
+  "title": "feat(B-0853.1): cosign keyless OIDC signing for ISO blob in build-ai-cluster-iso workflow (sigstore + Fulcio + Rekor; zero key management)",
+  "state": "MERGED",
+  "merged_at": "2026-05-27T07:29:33Z",
+  "head_ref": "feat/b-0853-1-cosign-keyless-oidc-iso-signing"
+}

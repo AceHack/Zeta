@@ -17,10 +17,10 @@
 //   H3 — authority-boundary heading (## does-not-audit)
 //
 // Usage:
-//   bun tools/lint/safety-clause-audit.ts                  # summary
-//   bun tools/lint/safety-clause-audit.ts --list-missing   # names only
-//   bun tools/lint/safety-clause-audit.ts --verbose        # per-skill
-//   bun tools/lint/safety-clause-audit.ts --fail-over N    # exit 1 if
+//   bun src/Core.TypeScript/lint/safety-clause-audit.ts                  # summary
+//   bun src/Core.TypeScript/lint/safety-clause-audit.ts --list-missing   # names only
+//   bun src/Core.TypeScript/lint/safety-clause-audit.ts --verbose        # per-skill
+//   bun src/Core.TypeScript/lint/safety-clause-audit.ts --fail-over N    # exit 1 if
 //                                                          # MISSING > N
 //
 // Exit codes:
@@ -182,7 +182,7 @@ function parseArgs(argv: readonly string[]): ParsedArgs {
 
 function emitHelp(): void {
   process.stdout.write(
-    "Usage: bun tools/lint/safety-clause-audit.ts [options]\n",
+    "Usage: bun src/Core.TypeScript/lint/safety-clause-audit.ts [options]\n",
   );
   process.stdout.write("\n");
   process.stdout.write("Options:\n");

@@ -1,0 +1,12 @@
+{
+  "pr_number": 8804,
+  "archive_path": "docs/history/pr-reviews/PR-8804-docs-research-design-note-for-add-sub-grammar-evolution-v4.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-20T23:32:13.753Z",
+  "schema_version": "v1",
+  "commit_sha": "21d95b155cdc56a00c26378be2d5c320daec4e66",
+  "title": "docs(research): design note for add/sub grammar evolution (v4)",
+  "state": "MERGED",
+  "merged_at": "2026-06-20T23:31:47Z",
+  "head_ref": "feature/lumen/add-sub-design-note"
+}

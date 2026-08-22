@@ -1,0 +1,12 @@
+{
+  "pr_number": 12806,
+  "archive_path": "docs/history/pr-reviews/PR-12806-ferry-preserve-aaron-s-2026-08-20-observations-verbatim-20-messages-uncurated.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-20T15:14:18.817Z",
+  "schema_version": "v1",
+  "commit_sha": "cabbc91094c432176b2aecdf6af899f6379662f4",
+  "title": "ferry: preserve Aaron's 2026-08-20 observations verbatim (20 messages, uncurated)",
+  "state": "MERGED",
+  "merged_at": "2026-08-20T15:13:38Z",
+  "head_ref": "ferry/aaron-observations-2026-08-20"
+}

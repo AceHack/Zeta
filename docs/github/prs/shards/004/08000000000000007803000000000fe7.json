@@ -1,0 +1,15 @@
+{
+  "pr_number": 4071,
+  "archive_path": "docs/history/pr-reviews/PR-4071-research-persona-ani-preserve-ani-grok-agora-v5-full-economic-operational-consti.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7B_X2M",
+    "thread:PRRT_kwDOSF9kNM6CpB8X"
+  ],
+  "fetched_at": "2026-05-17T12:24:10.275Z",
+  "schema_version": "v1",
+  "commit_sha": "5a879e3f0a8a7f6dfd9580d44b5e25cd3debbcbd",
+  "title": "research(persona/ani): preserve Ani-Grok Agora V5 — Full Economic & Operational Constitution (canonical synthesis)",
+  "state": "MERGED",
+  "merged_at": "2026-05-17T12:23:51Z",
+  "head_ref": "otto/research-ani-grok-agora-v5-full-constitution-2026-05-17"
+}

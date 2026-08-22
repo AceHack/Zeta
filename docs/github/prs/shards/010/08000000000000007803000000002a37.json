@@ -1,0 +1,12 @@
+{
+  "pr_number": 10807,
+  "archive_path": "docs/history/pr-reviews/PR-10807-feat-ir-the-generator-ir-gets-a-canonical-evaluator-semantics-stop-being-prose.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-15T22:45:08.585Z",
+  "schema_version": "v1",
+  "commit_sha": "8e954066bcb42d476a5c2e243e7dece07e08bddc",
+  "title": "feat(ir): the generator IR gets a canonical evaluator — semantics stop being prose",
+  "state": "MERGED",
+  "merged_at": "2026-08-15T22:44:34Z",
+  "head_ref": "shadow/zeta-ir-canonical-evaluator"
+}

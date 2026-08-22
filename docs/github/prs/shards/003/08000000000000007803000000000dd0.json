@@ -1,0 +1,12 @@
+{
+  "pr_number": 3536,
+  "archive_path": "docs/history/pr-reviews/PR-3536-shard-tick-1757z-4-tick-parallel-audit-vera-memory-md-attribution-otto-lior.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-15T18:03:27.530Z",
+  "schema_version": "v1",
+  "commit_sha": "a8424a5be3eeb34a94da986dad4c54e38a720f41",
+  "title": "shard(tick): 1757Z — 4-tick parallel-audit; Vera MEMORY.md attribution Otto → Lior",
+  "state": "MERGED",
+  "merged_at": "2026-05-15T18:03:10Z",
+  "head_ref": "shard/tick-1757z-otto-cli-2026-05-15"
+}

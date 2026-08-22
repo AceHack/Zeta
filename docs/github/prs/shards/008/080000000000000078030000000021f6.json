@@ -1,0 +1,12 @@
+{
+  "pr_number": 8694,
+  "archive_path": "docs/history/pr-reviews/PR-8694-test-core-route-horizon-heat-through-bounded-adapter.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-20T03:08:41.611Z",
+  "schema_version": "v1",
+  "commit_sha": "0c2d63bf209ed7032ef07c8018846b40ec1d71a1",
+  "title": "test(core): route horizon heat through bounded adapter",
+  "state": "MERGED",
+  "merged_at": "2026-06-20T03:08:19Z",
+  "head_ref": "codex/room-horizon-bounded-heat"
+}

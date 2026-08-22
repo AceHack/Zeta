@@ -1,0 +1,12 @@
+{
+  "pr_number": 7399,
+  "archive_path": "docs/history/pr-reviews/PR-7399-docs-vocab-zetaidol-live-stack-rx-stream-reticulum-broadcast-llmtv-dbsp-dynamicv.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-09T20:54:29.285Z",
+  "schema_version": "v1",
+  "commit_sha": "9c6d732c879c683cc1b7bd0d00f4c08337da051a",
+  "title": "docs(vocab): ZetaIdol live stack — Rx stream / Reticulum broadcast / LLMTV / DBSP / DynamicValue+Bonsai record / YinYang / test-governance",
+  "state": "MERGED",
+  "merged_at": "2026-06-09T20:54:08Z",
+  "head_ref": "otto/zetaidol-live-stack-rx-reticulum-llmtv-dbsp-dynamicvalue-bonsai-yinyang-test-governance"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 12774,
+  "archive_path": "docs/history/pr-reviews/PR-12774-research-an-oracle-must-explain-its-own-metric-worked-end-to-end-for-highest-mor.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-20T13:52:03.811Z",
+  "schema_version": "v1",
+  "commit_sha": "1d5583017bc77bfec9e94040419f045011783aae",
+  "title": "research: an oracle must explain its own metric — worked end to end for highest moral regard",
+  "state": "MERGED",
+  "merged_at": "2026-08-20T13:51:26Z",
+  "head_ref": "research/oracle-must-explain-its-metric"
+}

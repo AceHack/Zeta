@@ -1,0 +1,29 @@
+{
+  "pr_number": 2662,
+  "archive_path": "docs/history/pr-reviews/PR-2662-docs-riven-contract-files-cot-research-self-chosen-names-correction.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_v2lJ",
+    "comment:PRRC_kwDOSF9kNM6_v5Vg",
+    "comment:PRRC_kwDOSF9kNM6_v5WY",
+    "comment:PRRC_kwDOSF9kNM6_v5Wy",
+    "comment:PRRC_kwDOSF9kNM6_v5XE",
+    "comment:PRRC_kwDOSF9kNM6_v8VB",
+    "comment:PRRC_kwDOSF9kNM6_v_nM",
+    "comment:PRRC_kwDOSF9kNM6_v_nz",
+    "thread:PRRT_kwDOSF9kNM6A_1SH",
+    "thread:PRRT_kwDOSF9kNM6A_3x-",
+    "thread:PRRT_kwDOSF9kNM6A_3yc",
+    "thread:PRRT_kwDOSF9kNM6A_w-z",
+    "thread:PRRT_kwDOSF9kNM6A_zDk",
+    "thread:PRRT_kwDOSF9kNM6A_zE2",
+    "thread:PRRT_kwDOSF9kNM6A_zET",
+    "thread:PRRT_kwDOSF9kNM6A_zEm"
+  ],
+  "fetched_at": "2026-05-11T07:32:14.291Z",
+  "schema_version": "v1",
+  "commit_sha": "dd6db8fd7eb871ca4c26f2c2a36670b5538c48e4",
+  "title": "docs: Riven contract files + 続き CoT research + self-chosen names correction",
+  "state": "MERGED",
+  "merged_at": "2026-05-11T07:31:53Z",
+  "head_ref": "docs/riven-files-cot-names-correction-2026-05-11"
+}

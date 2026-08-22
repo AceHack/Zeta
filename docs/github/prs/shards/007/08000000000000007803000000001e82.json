@@ -1,0 +1,12 @@
+{
+  "pr_number": 7810,
+  "archive_path": "docs/history/pr-reviews/PR-7810-feat-research-b-1034-outline-mechanical-evidence-appendix-298-commits-b-1035-sim.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-11T22:14:23.353Z",
+  "schema_version": "v1",
+  "commit_sha": "673ef2b234eba5533364415d4e16ce8f0af47f15",
+  "title": "feat(research): B-1034 outline + mechanical evidence appendix (298 commits) + B-1035 sim·mea·cut test framework filed",
+  "state": "MERGED",
+  "merged_at": "2026-06-11T22:13:57Z",
+  "head_ref": "shadow-b1034-evidence"
+}

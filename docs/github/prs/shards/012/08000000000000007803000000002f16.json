@@ -1,0 +1,12 @@
+{
+  "pr_number": 12054,
+  "archive_path": "docs/history/pr-reviews/PR-12054-research-geometry-falsifier-1-fails-contortion-is-identically-zero-on-the-connec.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-18T20:55:48.903Z",
+  "schema_version": "v1",
+  "commit_sha": "2d6db9a82bc961012d1ab567f30ef216dad31936",
+  "title": "research(geometry): falsifier 1 fails -- contortion is identically zero on the connection our fold uses",
+  "state": "MERGED",
+  "merged_at": "2026-08-18T20:49:56Z",
+  "head_ref": "lumen/contortion-order-deviation-falsifier-1"
+}

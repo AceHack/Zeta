@@ -1,0 +1,12 @@
+{
+  "pr_number": 3065,
+  "archive_path": "docs/history/pr-reviews/PR-3065-fix-backlog-resolve-b-0370-0373-collisions-renumber-p2-contributor-compliance-se.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-14T00:04:33.627Z",
+  "schema_version": "v1",
+  "commit_sha": "02d75a32db8021a8c0aab0e3f1968fa8940536b0",
+  "title": "fix(backlog): resolve B-0370-0373 collisions — renumber P2 contributor-compliance set → B-0452-0455",
+  "state": "MERGED",
+  "merged_at": "2026-05-14T00:04:09Z",
+  "head_ref": "fix/b0370-0373-id-collision-renumber-p2-set-to-b0452-b0455-2026-05-14"
+}

@@ -1,0 +1,14 @@
+{
+  "id": "080d0093686ab010a013000863a748d0",
+  "at": "2026-08-18T01:12:11.862Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M096T3AN087G0R0008JZQ7B",
+    "type": "bug",
+    "title": "the apt-stall root cause returned: gate jobs hang in the GOVERNANCE §24 toolchain install and rerun-cancelled-gate cannot converge on a deterministic hang",
+    "slug": "the-apt-stall-root-cause-returned-gate-jobs-hang-in-the-gove",
+    "priority": "P2",
+    "filename": "081M096T3AN087G0R0008JZQ7B-the-apt-stall-root-cause-returned-gate-jobs-hang-in-the-gove.md"
+  }
+}

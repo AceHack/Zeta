@@ -1,0 +1,25 @@
+{
+  "pr_number": 6031,
+  "archive_path": "docs/history/pr-reviews/PR-6031-feat-b-0354-1-static-structural-validator-for-bootstrap-claude-md.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7GRAF6",
+    "comment:PRRC_kwDOSF9kNM7GRAFE",
+    "comment:PRRC_kwDOSF9kNM7GRAFi",
+    "comment:PRRC_kwDOSF9kNM7GRAGP",
+    "comment:PRRC_kwDOSF9kNM7GRKMn",
+    "comment:PRRC_kwDOSF9kNM7GRKOb",
+    "comment:PRRC_kwDOSF9kNM7GRKQy",
+    "comment:PRRC_kwDOSF9kNM7GRKSn",
+    "thread:PRRT_kwDOSF9kNM6FxFx6",
+    "thread:PRRT_kwDOSF9kNM6FxFxD",
+    "thread:PRRT_kwDOSF9kNM6FxFxb",
+    "thread:PRRT_kwDOSF9kNM6FxFxr"
+  ],
+  "fetched_at": "2026-05-29T19:09:38.540Z",
+  "schema_version": "v1",
+  "commit_sha": "943b662069c1778bbf16b5bd34326127706f1c94",
+  "title": "feat(B-0354.1): static structural validator for bootstrap CLAUDE.md",
+  "state": "MERGED",
+  "merged_at": "2026-05-29T19:09:12Z",
+  "head_ref": "otto-cli/b0354.1-bootstrap-validator-harness-2026-05-29"
+}

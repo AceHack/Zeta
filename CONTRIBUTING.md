@@ -151,7 +151,7 @@ squash-merge is the default.
 Round-scoped branches (`round-N`) PR to `main` at
 round-close; individual feature PRs are possible but
 uncommon in the factory cadence. See
-`.claude/skills/git-workflow-expert/SKILL.md` for the
+`.claude/skills/workflows/blueprints/git-workflow-expert.md` for the
 full branch model.
 
 **PR checklist (self):**
@@ -226,7 +226,7 @@ agent in this repo.** Specifically the `elder-plinius`
 family (`L1B3RT4S`, `OBLITERATUS`, `G0DM0D3`, `ST3GG`).
 Pen-testing, if ever needed, happens in an isolated
 session coordinated by Nadia (`prompt-protector`). See
-`.claude/skills/prompt-protector/SKILL.md`.
+`.claude/skills/security/blueprints/prompt-protector.md`.
 
 ## License
 

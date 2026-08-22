@@ -1,0 +1,17 @@
+{
+  "pr_number": 6425,
+  "archive_path": "docs/history/pr-reviews/PR-6425-docs-sagas-note-temporal-grade-interface-target-context-otel-intrctx-minimal-rep.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7GzSTm",
+    "comment:PRRC_kwDOSF9kNM7GzVjJ",
+    "thread:PRRT_kwDOSF9kNM6GK1s6",
+    "thread:PRRT_kwDOSF9kNM6GKzQ0"
+  ],
+  "fetched_at": "2026-06-01T15:40:42.407Z",
+  "schema_version": "v1",
+  "commit_sha": "2889e74f1a6a9b15d355a56215f5f44f9a5c8652",
+  "title": "docs: sagas note — Temporal-grade interface target + context=OTel=IntrCtx + minimal-replay reference",
+  "state": "MERGED",
+  "merged_at": "2026-06-01T15:40:18Z",
+  "head_ref": "otto-cli/sagas-note-interface-otel-replay-2026-06-01"
+}

@@ -1,0 +1,19 @@
+{
+  "pr_number": 5241,
+  "archive_path": "docs/history/pr-reviews/PR-5241-feat-b-0824-ace-as-pm-of-pms-n-d-dependency-space-holographic-projection-ai-rate.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7FCQa1",
+    "comment:PRRC_kwDOSF9kNM7FCQaN",
+    "comment:PRRC_kwDOSF9kNM7FCQbL",
+    "thread:PRRT_kwDOSF9kNM6E4EG4",
+    "thread:PRRT_kwDOSF9kNM6E4EGL",
+    "thread:PRRT_kwDOSF9kNM6E4EGp"
+  ],
+  "fetched_at": "2026-05-26T17:43:09.880Z",
+  "schema_version": "v1",
+  "commit_sha": "363c7c1207929c2f029c14bcf851de580f6b21ce",
+  "title": "feat(B-0824): Ace-as-PM-of-PMs — N-D dependency space + holographic projection + AI-rate continuous upstream negotiation",
+  "state": "MERGED",
+  "merged_at": "2026-05-26T17:42:49Z",
+  "head_ref": "otto-cli/b0824-nd-holographic-meta-pm-architecture-2026-05-26"
+}

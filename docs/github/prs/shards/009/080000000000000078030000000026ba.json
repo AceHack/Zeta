@@ -1,0 +1,12 @@
+{
+  "pr_number": 9914,
+  "archive_path": "docs/history/pr-reviews/PR-9914-docs-design-vault-monitoring-bridge-addison-s-genesis-ui-live-agent-society.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-18T08:14:36.974Z",
+  "schema_version": "v1",
+  "commit_sha": "ac451bf07b79a0e57a6d34a8a3c3bddc414128be",
+  "title": "docs(design): vault monitoring bridge — Addison's Genesis UI × live agent society",
+  "state": "MERGED",
+  "merged_at": "2026-08-01T19:58:49Z",
+  "head_ref": "claim/vault-monitoring-bridge-design"
+}

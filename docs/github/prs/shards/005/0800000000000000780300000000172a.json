@@ -1,0 +1,12 @@
+{
+  "pr_number": 5930,
+  "archive_path": "docs/history/pr-reviews/PR-5930-fix-trajectories-skip-closed-maintained-pickup-packets.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-28T20:35:40.673Z",
+  "schema_version": "v1",
+  "commit_sha": "530258de4defabec9dde4f27c366e5de27a778d5",
+  "title": "fix(trajectories): skip closed-maintained pickup packets",
+  "state": "MERGED",
+  "merged_at": "2026-05-28T20:35:17Z",
+  "head_ref": "claim/codex-loop-closed-maintained-trajectory-skip-20260528"
+}

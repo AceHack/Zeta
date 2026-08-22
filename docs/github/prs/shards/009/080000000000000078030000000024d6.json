@@ -1,0 +1,12 @@
+{
+  "pr_number": 9430,
+  "archive_path": "docs/history/pr-reviews/PR-9430-docs-handoffs-otto-shadow-session-handoff-2026-07-03-04.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-04T06:27:31.985Z",
+  "schema_version": "v1",
+  "commit_sha": "fda31d972a6e4bff70f597e49f2713ffe26109bb",
+  "title": "docs(handoffs): Otto shadow session handoff 2026-07-03/04",
+  "state": "MERGED",
+  "merged_at": "2026-07-04T06:27:09Z",
+  "head_ref": "shadow/handoff-2026-07-04"
+}

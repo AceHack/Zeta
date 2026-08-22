@@ -1,0 +1,12 @@
+{
+  "pr_number": 8171,
+  "archive_path": "docs/history/pr-reviews/PR-8171-fix-observe-surface-forge-read-failures-non-zero-exit-on-failed-tick.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-14T04:06:17.906Z",
+  "schema_version": "v1",
+  "commit_sha": "ecee7ea770ceee29d6216eacbdc8ecdd547bd30a",
+  "title": "fix(observe): surface forge-read failures + non-zero exit on failed tick",
+  "state": "MERGED",
+  "merged_at": "2026-06-14T04:05:51Z",
+  "head_ref": "otto/fix-loop-silent-forge-failure"
+}

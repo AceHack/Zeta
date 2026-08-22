@@ -1,0 +1,12 @@
+{
+  "pr_number": 3399,
+  "archive_path": "docs/history/pr-reviews/PR-3399-shard-tick-0934z-corrective-prs-merged-3398-bsd-vs-gnu-regression-fix.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-15T09:41:26.274Z",
+  "schema_version": "v1",
+  "commit_sha": "768c62588e05c175e5eef2f8ef8e131c61a16789",
+  "title": "shard(tick): 0934Z — corrective PRs merged; #3398 BSD-vs-GNU regression fix",
+  "state": "MERGED",
+  "merged_at": "2026-05-15T09:41:09Z",
+  "head_ref": "shard/tick-0934z-otto-cli-2026-05-15"
+}

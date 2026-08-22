@@ -1,0 +1,12 @@
+{
+  "pr_number": 8550,
+  "archive_path": "docs/history/pr-reviews/PR-8550-memory-feedback-why-bound-the-good-so-it-doesn-t-accidentally-harm-the-full-safe.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-16T17:55:18.603Z",
+  "schema_version": "v1",
+  "commit_sha": "5b0d330335778bd7fdfc4252c48334cf80037729",
+  "title": "memory(feedback): WHY bound the good (so it doesn't accidentally harm) + the full safety stack — bounded (known) + visible (unknown) + humble (residual)",
+  "state": "MERGED",
+  "merged_at": "2026-06-16T17:54:40Z",
+  "head_ref": "otto/bounded-good-why-plus-visible-catches-unknown"
+}

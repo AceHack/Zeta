@@ -11,6 +11,36 @@ import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { SwarmController } from "../swarm/swarm-controller";
 import type { World, BacklogItem } from "../observe/observe";
+import { clampTicks, type TickBudget } from "../observe/tick-budget";
+
+/**
+ * Budget for the ARC swarm drain. DELIBERATELY NOT the same number as the
+ * first-session budgets, and for a reason that is not "different file".
+ *
+ * The first-session bound is a measured diameter: that state machine is finite
+ * and its longest path can be computed. This one cannot be derived that way —
+ * `swarm.tick` can emit `decompose`, which ADDS backlog items, so the backlog is
+ * not monotonically draining and there is no finite path length to measure. What
+ * bounds this loop is therefore not correctness but COST: every tick fans out to
+ * four live model calls, so the honest reading of the number is "how much model
+ * spend one ARC puzzle may incur before we stop and look".
+ *
+ * The comment this replaces said "Safety valve to prevent infinite loops during
+ * testing" — which explains why a bound exists, not why 20. Nobody disputes the
+ * bound; the number was the unattributed part.
+ */
+export const ARC_SWARM_TICK_BUDGET: TickBudget = {
+  name: "arc-swarm-drain",
+  maxTicks: 20,
+  chosenBy: "Otto (shadow), 2026-08-17 — value carried over unchanged, reason supplied",
+  rationale:
+    "Cost rail, not a correctness rail: decompose can grow the backlog, so no " +
+    "finite drain length exists to measure. 20 ticks x 4 role model-calls = up " +
+    "to 80 completions per puzzle, which is the spend cap. The value is the " +
+    "pre-existing 20, kept deliberately: raising or lowering it to make " +
+    "something pass would be inventing evidence. Re-derive it against a real " +
+    "measured cost-per-tick when one exists.",
+};
 
 async function main() {
   console.log("Initializing ARC-AGI Swarm Harness...");
@@ -64,11 +94,11 @@ async function main() {
   // 5. Run the Swarm Tick Loop until backlog is empty
   console.log("Feeding to Swarm...\n");
   
-  // Safety valve to prevent infinite loops during testing
-  let maxTicks = 20; 
-  while (world.backlog.length > 0 && maxTicks > 0) {
+  // Bound is injected + attributed — see ARC_SWARM_TICK_BUDGET above.
+  let ticksLeft = clampTicks(ARC_SWARM_TICK_BUDGET);
+  while (world.backlog.length > 0 && ticksLeft > 0) {
     world = await swarm.tick(world);
-    maxTicks--;
+    ticksLeft--;
   }
   
   console.log("\n=== SWARM RUN COMPLETE ===");

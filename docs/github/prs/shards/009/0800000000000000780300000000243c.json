@@ -1,0 +1,12 @@
+{
+  "pr_number": 9276,
+  "archive_path": "docs/history/pr-reviews/PR-9276-feat-correlation-it-s-human-not-quantum-mental-health-intimacy-equality-antisybi.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-03T03:29:30.356Z",
+  "schema_version": "v1",
+  "commit_sha": "092afc7d9472226be53b3df6d1ea9f144100a546",
+  "title": "feat(correlation): it's human not quantum — mental health = intimacy = equality; AntiSybil is the lost theory (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-03T03:29:05Z",
+  "head_ref": "shadow/correlation-is-human-intimacy-equality"
+}

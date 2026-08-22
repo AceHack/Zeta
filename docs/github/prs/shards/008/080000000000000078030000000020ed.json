@@ -1,0 +1,12 @@
+{
+  "pr_number": 8429,
+  "archive_path": "docs/history/pr-reviews/PR-8429-memory-project-control-flow-is-hidden-centralized-control-the-ir-forces-clockles.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-16T03:29:29.264Z",
+  "schema_version": "v1",
+  "commit_sha": "6c3725a3a2511cedf9a916a91b4d3116f9a46791",
+  "title": "memory(project): control flow IS hidden centralized control — the IR forces clockless/decentralized + good-code-only",
+  "state": "MERGED",
+  "merged_at": "2026-06-16T03:29:06Z",
+  "head_ref": "memory/control-flow-is-hidden-centralized-control"
+}

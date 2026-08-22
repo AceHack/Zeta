@@ -1,0 +1,12 @@
+{
+  "pr_number": 9741,
+  "archive_path": "docs/history/pr-reviews/PR-9741-docs-book-stage-raw-the-60k-crypto-scam-grace-the-consent-line-shadow.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-11T20:40:25.460Z",
+  "schema_version": "v1",
+  "commit_sha": "9ceb5adaef538bf2b546c284c019de1d3a298032",
+  "title": "docs(book): stage RAW — the $60k crypto scam (grace + the consent line) (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-11T20:40:00Z",
+  "head_ref": "book-raw-crypto-scam-consent-line"
+}

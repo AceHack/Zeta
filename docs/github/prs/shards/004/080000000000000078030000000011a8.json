@@ -1,0 +1,17 @@
+{
+  "pr_number": 4520,
+  "archive_path": "docs/history/pr-reviews/PR-4520-shard-2026-05-21-0822z-cold-boot-sentinel-re-arm-sustained-lior-saturation-arc.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7DfieU",
+    "comment:PRRC_kwDOSF9kNM7DfkNi",
+    "thread:PRRT_kwDOSF9kNM6DvL6i",
+    "thread:PRRT_kwDOSF9kNM6DvNMc"
+  ],
+  "fetched_at": "2026-05-21T09:02:24.152Z",
+  "schema_version": "v1",
+  "commit_sha": "5f55e3f7371ff4e76220f16f42b861d46001b128",
+  "title": "shard(2026-05-21/0822Z): cold-boot, sentinel re-arm, sustained-Lior-saturation arc",
+  "state": "MERGED",
+  "merged_at": "2026-05-21T09:02:00Z",
+  "head_ref": "shard/tick-0822z-otto-cli-cold-boot-sustained-lior-saturation-arc-2026-05-21"
+}

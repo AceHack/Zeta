@@ -1,0 +1,17 @@
+{
+  "pr_number": 6186,
+  "archive_path": "docs/history/pr-reviews/PR-6186-fix-b-0944-slice-5-pt2-widen-c-float-to-long-4-oracle-width-parity-ts-f64-f-int6.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7Gdgj3",
+    "comment:PRRC_kwDOSF9kNM7Gdgo_",
+    "thread:PRRT_kwDOSF9kNM6F6VYt",
+    "thread:PRRT_kwDOSF9kNM6F6Vc6"
+  ],
+  "fetched_at": "2026-05-31T02:56:17.419Z",
+  "schema_version": "v1",
+  "commit_sha": "cf7f4dd4e3791e97bbacda1cabbb0664ad473e0c",
+  "title": "fix(B-0944 slice 5 pt2): widen C# float to long — 4-oracle width parity (TS f64 / F# int64 / C# long / Rust u64)",
+  "state": "MERGED",
+  "merged_at": "2026-05-31T02:55:59Z",
+  "head_ref": "otto-cli/b0944-slice5pt2-csharp-float-int64-parity-2026-05-30"
+}

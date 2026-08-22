@@ -1,0 +1,12 @@
+{
+  "pr_number": 8325,
+  "archive_path": "docs/history/pr-reviews/PR-8325-docs-prior-art-register-torchlean-cslib-json-reading-list-learn-pass-fix-stale-u.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-15T19:47:02.596Z",
+  "schema_version": "v1",
+  "commit_sha": "36257b17406d6a52739145aeee997aa5c4b38abb",
+  "title": "docs(prior-art): register TorchLean + CSLib (json + reading list + learn-pass); fix stale 'upstreams' misnomer",
+  "state": "MERGED",
+  "merged_at": "2026-06-15T19:46:31Z",
+  "head_ref": "docs/prior-art-torchlean-cslib-pull-and-learn"
+}

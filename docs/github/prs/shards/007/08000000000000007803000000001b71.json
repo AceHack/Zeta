@@ -1,0 +1,12 @@
+{
+  "pr_number": 7025,
+  "archive_path": "docs/history/pr-reviews/PR-7025-feat-core-optic-lens-store-comonad-universal-pointers-7061-sequence-step-3.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-08T05:33:07.218Z",
+  "schema_version": "v1",
+  "commit_sha": "204f6f092e5b2b3bc02f1adee671fb8b5c9869b5",
+  "title": "feat(core): Optic — Lens + Store comonad (universal pointers #7061) — sequence step 3",
+  "state": "MERGED",
+  "merged_at": "2026-06-08T05:32:50Z",
+  "head_ref": "otto/optic-lens-store-comonad-universal-pointers-seq-step3"
+}

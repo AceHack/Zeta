@@ -108,11 +108,14 @@ async function main() {
     if (jsonFlag) {
       console.log(
         JSON.stringify({
-          error: "Usage: bun tools/ace/helm-change-detector.ts <repoUrl> <chartName> [currentVersion] [--json]",
+          error:
+            "Usage: bun src/Core.TypeScript/ace/helm-change-detector.ts <repoUrl> <chartName> [currentVersion] [--json]",
         }),
       );
     } else {
-      console.error("Usage: bun tools/ace/helm-change-detector.ts <repoUrl> <chartName> [currentVersion] [--json]");
+      console.error(
+        "Usage: bun src/Core.TypeScript/ace/helm-change-detector.ts <repoUrl> <chartName> [currentVersion] [--json]",
+      );
     }
     process.exit(1);
   }

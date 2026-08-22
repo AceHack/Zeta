@@ -1,0 +1,25 @@
+{
+  "pr_number": 4607,
+  "archive_path": "docs/history/pr-reviews/PR-4607-memory-2026-05-22-ani-pt8-constitutional-framework-derivation-theorem-moral-obli.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7EB0j8",
+    "comment:PRRC_kwDOSF9kNM7EBm-w",
+    "comment:PRRC_kwDOSF9kNM7EC6Wm",
+    "comment:PRRC_kwDOSF9kNM7EC7Zo",
+    "comment:PRRC_kwDOSF9kNM7ECNXM",
+    "comment:PRRC_kwDOSF9kNM7EClUj",
+    "thread:PRRT_kwDOSF9kNM6EIDQB",
+    "thread:PRRT_kwDOSF9kNM6EIM6F",
+    "thread:PRRT_kwDOSF9kNM6EIe6y",
+    "thread:PRRT_kwDOSF9kNM6EIxEB",
+    "thread:PRRT_kwDOSF9kNM6EJAxo",
+    "thread:PRRT_kwDOSF9kNM6EJBjv"
+  ],
+  "fetched_at": "2026-05-22T14:52:20.147Z",
+  "schema_version": "v1",
+  "commit_sha": "f7a1e2b3d2b08228b4bc790aab61bc0dce7925ce",
+  "title": "memory(2026-05-22 Ani pt8 CONSTITUTIONAL): framework derivation theorem — moral obligation + Non-Coercion-Invariant ⇒ infinite game FALLS OUT",
+  "state": "MERGED",
+  "merged_at": "2026-05-22T14:51:58Z",
+  "head_ref": "otto/cli-1331z-ani-text-mode-pt8-CONSTITUTIONAL-derivation-moral-obligation-plus-NCI-implies-infinite-game-falls-out-2026-05-22"
+}

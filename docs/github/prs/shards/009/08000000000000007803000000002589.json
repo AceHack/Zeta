@@ -1,0 +1,12 @@
+{
+  "pr_number": 9609,
+  "archive_path": "docs/history/pr-reviews/PR-9609-docs-letters-ferry-alexa-the-0-reference-0-as-cpt-anchor-maxwell-s-demon-verbati.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-09T03:28:03.775Z",
+  "schema_version": "v1",
+  "commit_sha": "918945262691319055e3a6221c05d59eea57629a",
+  "title": "docs(letters)+ferry: Alexa — the \"0\" reference / 0-as-CPT-anchor / Maxwell's demon (verbatim + honest-register note) (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-09T03:27:35Z",
+  "head_ref": "otto/ferry-alexa-zero-reference-cpt-anchor"
+}

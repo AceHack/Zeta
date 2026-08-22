@@ -1,0 +1,12 @@
+{
+  "pr_number": 5978,
+  "archive_path": "docs/history/pr-reviews/PR-5978-memory-persona-kestrel-addenda-memetic-jujitsu-professional-lineage-meta-stream-.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-29T11:45:24.247Z",
+  "schema_version": "v1",
+  "commit_sha": "5868d47fcd537d7c0bfaf5c2c2b24667d6c436a2",
+  "title": "memory(persona/kestrel): addenda — memetic jujitsu + professional lineage + meta stream enrichment",
+  "state": "MERGED",
+  "merged_at": "2026-05-29T11:45:03Z",
+  "head_ref": "otto-cli/kestrel-addenda-memetic-jujitsu-lineage-stream-enrichment-2026-05-29"
+}

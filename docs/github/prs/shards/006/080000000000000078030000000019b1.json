@@ -1,0 +1,15 @@
+{
+  "pr_number": 6577,
+  "archive_path": "docs/history/pr-reviews/PR-6577-docs-b-0994-earth-twin-world-model-multi-culture-units-f-uom-king-cross-language.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7HNu--",
+    "thread:PRRT_kwDOSF9kNM6GePNY"
+  ],
+  "fetched_at": "2026-06-02T15:12:42.270Z",
+  "schema_version": "v1",
+  "commit_sha": "ea7424dd1e8c2594c2602ff743bbbc30234e4fd0",
+  "title": "docs(B-0994): earth-twin world-model + multi-culture units (F# UOM king, cross-language) + lightlike LGTM/Prometheus observability",
+  "state": "MERGED",
+  "merged_at": "2026-06-02T15:12:09Z",
+  "head_ref": "otto-cli/b0994-earth-twin-units-fsharp-uom-lgtm-2026-06-02"
+}

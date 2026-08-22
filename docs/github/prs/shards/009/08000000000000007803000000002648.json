@@ -1,0 +1,12 @@
+{
+  "pr_number": 9800,
+  "archive_path": "docs/history/pr-reviews/PR-9800-test-meno-annotate-meno-2-as-the-symmetric-swap-test-soraya-s-false-green-flag.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-31T23:15:00.639Z",
+  "schema_version": "v1",
+  "commit_sha": "b282711ef5047a7ef04d4de87d75d08aa00ed459",
+  "title": "test(Meno): annotate MENO-2 as the SYMMETRIC-swap test (Soraya's false-green flag)",
+  "state": "MERGED",
+  "merged_at": "2026-07-31T23:14:37Z",
+  "head_ref": "shadow/annotate-meno2-symmetric-swap"
+}

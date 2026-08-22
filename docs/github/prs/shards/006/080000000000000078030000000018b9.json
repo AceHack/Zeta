@@ -1,0 +1,12 @@
+{
+  "pr_number": 6329,
+  "archive_path": "docs/history/pr-reviews/PR-6329-test-agentic-org-prove-tenant-isolated-control-freeze.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-01T03:31:48.495Z",
+  "schema_version": "v1",
+  "commit_sha": "2c8f8e346fd8ccfab29224d386662ced0b0e195d",
+  "title": "test(agentic-org): prove tenant-isolated control freeze",
+  "state": "MERGED",
+  "merged_at": "2026-06-01T03:31:30Z",
+  "head_ref": "codex/agentic-org-hard-controls-checkpoint"
+}

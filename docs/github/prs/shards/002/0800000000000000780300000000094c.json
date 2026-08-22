@@ -1,0 +1,12 @@
+{
+  "pr_number": 2380,
+  "archive_path": "docs/history/pr-reviews/PR-2380-feat-b-0170-cross-surface-count-drift-checker-v0-8-frontmatter-description-vs-bo.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-10T00:08:59.884Z",
+  "schema_version": "v1",
+  "commit_sha": "110f3aa886b602a7045400179e1480718752e567",
+  "title": "feat(B-0170): cross-surface count drift checker v0.8 — frontmatter description vs body table",
+  "state": "MERGED",
+  "merged_at": "2026-05-10T00:08:45Z",
+  "head_ref": "claim/b0170-cross-surface-count-drift-2026-05-09"
+}

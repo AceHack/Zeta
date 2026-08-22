@@ -1,0 +1,21 @@
+{
+  "pr_number": 4405,
+  "archive_path": "docs/history/pr-reviews/PR-4405-docs-trajectory-add-anti-infection-trajectory-at-lowest-priority-with-substrate.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7DK01Q",
+    "comment:PRRC_kwDOSF9kNM7DK8XZ",
+    "comment:PRRC_kwDOSF9kNM7DK8Zb",
+    "comment:PRRC_kwDOSF9kNM7DK8ai",
+    "thread:PRRT_kwDOSF9kNM6Df_P8",
+    "thread:PRRT_kwDOSF9kNM6DgEvz",
+    "thread:PRRT_kwDOSF9kNM6DgExd",
+    "thread:PRRT_kwDOSF9kNM6DgEyV"
+  ],
+  "fetched_at": "2026-05-20T14:03:19.665Z",
+  "schema_version": "v1",
+  "commit_sha": "970aa6340025d4a18343d59fab8e6972b3e05784",
+  "title": "docs(trajectory): add anti-infection trajectory at LOWEST priority with substrate",
+  "state": "MERGED",
+  "merged_at": "2026-05-20T14:02:50Z",
+  "head_ref": "otto/anti-infection-trajectory-lowest-priority-2026-05-20"
+}

@@ -1,0 +1,14 @@
+{
+  "id": "080d000d64422810a013000837fe0fec",
+  "at": "2026-08-14T19:07:59.429Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M00TS225087G0R0025801ZR",
+    "type": "bug",
+    "title": "Consensus.Vote carries a write-only DateTimeOffset one sortBy from entering the shared fold",
+    "slug": "consensus-vote-carries-a-write-only-datetimeoffset-one-sortb",
+    "priority": "P2",
+    "filename": "081M00TS225087G0R0025801ZR-consensus-vote-carries-a-write-only-datetimeoffset-one-sortb.md"
+  }
+}

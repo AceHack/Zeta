@@ -1,0 +1,12 @@
+{
+  "pr_number": 8787,
+  "archive_path": "docs/history/pr-reviews/PR-8787-feat-core-glasshalo-visibility-open-by-default-privacy-is-the-earned-exception.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-20T22:41:19.238Z",
+  "schema_version": "v1",
+  "commit_sha": "78a179a50b37f50a2ac441c611458da7460f65c8",
+  "title": "feat(core): GlassHalo — visibility open-by-default, privacy is the EARNED exception",
+  "state": "MERGED",
+  "merged_at": "2026-06-20T22:40:54Z",
+  "head_ref": "otto/glass-halo-visibility"
+}

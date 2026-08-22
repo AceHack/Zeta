@@ -94,6 +94,14 @@ type Transcript =
 [<RequireQualifiedAccess>]
 module QuantumObservableDbsp =
 
+    type Metered<'T> =
+        { Value: 'T
+          Heat: HeatSignature list }
+
+    type MachZehnderFeedback =
+        { CompletedRows: Metered<QuantumObservableRow> list
+          Measurement: MachZehnderWSetHeat.Feedback }
+
     let private probabilityFor (key: int) (probabilities: (int * float) list) : float =
         probabilities
         |> List.filter (fun (candidate, _) -> candidate = key)
@@ -117,41 +125,144 @@ module QuantumObservableDbsp =
               Probabilities = probabilitiesFromWSet probabilities
               Visibility = visibility }
 
-    let machZehnderOpenRow () : QuantumObservableRow =
+    /// Pure reference row. Runtime/DBSP generation uses `machZehnderOpenRow` with an injected sink.
+    let machZehnderOpenReferenceRow () : QuantumObservableRow =
         MachZehnderWSet.openArm ()
         |> interferenceVisibilityFromWSet "mach-zehnder-open" "Zeta.ReferenceOracle.ApplyMachZehnderOpen" None None
 
-    let machZehnderClosedRow (id: string) (operation: string) (phaseRadians: float) : QuantumObservableRow =
+    /// Pure reference row. Runtime/DBSP generation uses `machZehnderClosedRow` with an injected sink.
+    let machZehnderClosedReferenceRow (id: string) (operation: string) (phaseRadians: float) : QuantumObservableRow =
         MachZehnderWSet.closed phaseRadians
         |> interferenceVisibilityFromWSet id operation (Some phaseRadians) (Some 1.0)
 
-    let machZehnderRows () : QuantumObservableRow list =
-        [ machZehnderOpenRow ()
-          machZehnderClosedRow "mach-zehnder-closed-zero-phase" "Zeta.ReferenceOracle.ApplyMachZehnderClosedZeroPhase" 0.0
-          machZehnderClosedRow
+    let machZehnderReferenceRows () : QuantumObservableRow list =
+        [ machZehnderOpenReferenceRow ()
+          machZehnderClosedReferenceRow "mach-zehnder-closed-zero-phase" "Zeta.ReferenceOracle.ApplyMachZehnderClosedZeroPhase" 0.0
+          machZehnderClosedReferenceRow
               "mach-zehnder-closed-pi-over-3-phase"
               "Zeta.ReferenceOracle.ApplyMachZehnderClosedPiOver3Phase"
               (Math.PI / 3.0)
-          machZehnderClosedRow
+          machZehnderClosedReferenceRow
               "mach-zehnder-closed-pi-over-2-phase"
               "Zeta.ReferenceOracle.ApplyMachZehnderClosedPiOver2Phase"
               (Math.PI / 2.0)
-          machZehnderClosedRow
+          machZehnderClosedReferenceRow
               "mach-zehnder-closed-two-pi-over-3-phase"
               "Zeta.ReferenceOracle.ApplyMachZehnderClosedTwoPiOver3Phase"
               (2.0 * Math.PI / 3.0)
-          machZehnderClosedRow "mach-zehnder-closed-pi-phase" "Zeta.ReferenceOracle.ApplyMachZehnderClosedPiPhase" Math.PI ]
+          machZehnderClosedReferenceRow "mach-zehnder-closed-pi-phase" "Zeta.ReferenceOracle.ApplyMachZehnderClosedPiPhase" Math.PI ]
+
+    let machZehnderOpenRow
+        (sink: IHeatSink)
+        (source: string)
+        : Result<Metered<QuantumObservableRow>, MachZehnderWSetHeat.Feedback> =
+        MachZehnderWSetHeat.openArm sink (source + ".mach-zehnder-open")
+        |> Result.map (fun measured ->
+            { Value =
+                measured.Probabilities
+                |> interferenceVisibilityFromWSet
+                    "mach-zehnder-open"
+                    "Zeta.ReferenceOracle.ApplyMachZehnderOpen"
+                    None
+                    None
+              Heat = measured.Heat })
+
+    let machZehnderClosedRow
+        (sink: IHeatSink)
+        (source: string)
+        (id: string)
+        (operation: string)
+        (phaseRadians: float)
+        : Result<Metered<QuantumObservableRow>, MachZehnderWSetHeat.Feedback> =
+        MachZehnderWSetHeat.closed sink (source + "." + id) phaseRadians
+        |> Result.map (fun measured ->
+            { Value =
+                measured.Probabilities
+                |> interferenceVisibilityFromWSet id operation (Some phaseRadians) (Some 1.0)
+              Heat = measured.Heat })
+
+    let machZehnderRows
+        (sink: IHeatSink)
+        (source: string)
+        : Result<Metered<QuantumObservableRow list>, MachZehnderFeedback> =
+        let runs =
+            [ fun () -> machZehnderOpenRow sink source
+              fun () ->
+                  machZehnderClosedRow
+                      sink
+                      source
+                      "mach-zehnder-closed-zero-phase"
+                      "Zeta.ReferenceOracle.ApplyMachZehnderClosedZeroPhase"
+                      0.0
+              fun () ->
+                  machZehnderClosedRow
+                      sink
+                      source
+                      "mach-zehnder-closed-pi-over-3-phase"
+                      "Zeta.ReferenceOracle.ApplyMachZehnderClosedPiOver3Phase"
+                      (Math.PI / 3.0)
+              fun () ->
+                  machZehnderClosedRow
+                      sink
+                      source
+                      "mach-zehnder-closed-pi-over-2-phase"
+                      "Zeta.ReferenceOracle.ApplyMachZehnderClosedPiOver2Phase"
+                      (Math.PI / 2.0)
+              fun () ->
+                  machZehnderClosedRow
+                      sink
+                      source
+                      "mach-zehnder-closed-two-pi-over-3-phase"
+                      "Zeta.ReferenceOracle.ApplyMachZehnderClosedTwoPiOver3Phase"
+                      (2.0 * Math.PI / 3.0)
+              fun () ->
+                  machZehnderClosedRow
+                      sink
+                      source
+                      "mach-zehnder-closed-pi-phase"
+                      "Zeta.ReferenceOracle.ApplyMachZehnderClosedPiPhase"
+                      Math.PI ]
+
+        let rec collect completed pending =
+            match pending with
+            | [] ->
+                let rows = List.rev completed
+
+                Ok
+                    { Value = rows |> List.map _.Value
+                      Heat = rows |> List.collect _.Heat }
+            | run :: tail ->
+                match run () with
+                | Ok row -> collect (row :: completed) tail
+                | Error feedback ->
+                    Error
+                        { CompletedRows = List.rev completed
+                          Measurement = feedback }
+
+        collect [] runs
 
     let delta (row: QuantumObservableRow) (weight: int64) : QuantumObservableDelta = { Row = row; Weight = weight }
 
     let zsetOfDeltas (deltas: QuantumObservableDelta seq) : ZSet<QuantumObservableRow> =
         deltas |> Seq.map (fun d -> d.Row, d.Weight) |> ZSet.ofSeq
 
-    let machZehnderDeltas () : QuantumObservableDelta list =
-        machZehnderRows () |> List.map (fun row -> delta row 1L)
+    let machZehnderDeltas
+        (sink: IHeatSink)
+        (source: string)
+        : Result<Metered<QuantumObservableDelta list>, MachZehnderFeedback> =
+        machZehnderRows sink source
+        |> Result.map (fun rows ->
+            { Value = rows.Value |> List.map (fun row -> delta row 1L)
+              Heat = rows.Heat })
 
-    let machZehnderZSet () : ZSet<QuantumObservableRow> =
-        machZehnderDeltas () |> zsetOfDeltas
+    let machZehnderZSet
+        (sink: IHeatSink)
+        (source: string)
+        : Result<Metered<ZSet<QuantumObservableRow>>, MachZehnderFeedback> =
+        machZehnderDeltas sink source
+        |> Result.map (fun deltas ->
+            { Value = deltas.Value |> zsetOfDeltas
+              Heat = deltas.Heat })
 
     let flowBitRows () : QuantumObservableRow list =
         QuantumObservableTreaty.flowBitDistinctions ()

@@ -1,0 +1,31 @@
+{
+  "pr_number": 3066,
+  "archive_path": "docs/history/pr-reviews/PR-3066-docs-memory-b-0451-per-collision-renumber-procedure-durable-substrate-from-sessi.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7BATC9",
+    "comment:PRRC_kwDOSF9kNM7BATCe",
+    "comment:PRRC_kwDOSF9kNM7BAdKv",
+    "comment:PRRC_kwDOSF9kNM7BAdLM",
+    "comment:PRRC_kwDOSF9kNM7BAibq",
+    "comment:PRRC_kwDOSF9kNM7BAicS",
+    "comment:PRRC_kwDOSF9kNM7BAicw",
+    "comment:PRRC_kwDOSF9kNM7BApvf",
+    "comment:PRRC_kwDOSF9kNM7BApvz",
+    "thread:PRRT_kwDOSF9kNM6B66JP",
+    "thread:PRRT_kwDOSF9kNM6B66Jj",
+    "thread:PRRT_kwDOSF9kNM6B69nJ",
+    "thread:PRRT_kwDOSF9kNM6B69nj",
+    "thread:PRRT_kwDOSF9kNM6B69ny",
+    "thread:PRRT_kwDOSF9kNM6B6zoe",
+    "thread:PRRT_kwDOSF9kNM6B6zow",
+    "thread:PRRT_kwDOSF9kNM6B7Cl3",
+    "thread:PRRT_kwDOSF9kNM6B7CmE"
+  ],
+  "fetched_at": "2026-05-14T00:13:57.078Z",
+  "schema_version": "v1",
+  "commit_sha": "52bc94a669fd40e12dbd1ff361014959402cb1ab",
+  "title": "docs(memory): B-0451 per-collision renumber procedure (durable substrate from session arc)",
+  "state": "MERGED",
+  "merged_at": "2026-05-14T00:13:37Z",
+  "head_ref": "docs/memory-b0451-cleanup-procedure-2026-05-14"
+}

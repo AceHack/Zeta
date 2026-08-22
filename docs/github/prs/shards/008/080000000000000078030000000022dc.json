@@ -1,0 +1,12 @@
+{
+  "pr_number": 8924,
+  "archive_path": "docs/history/pr-reviews/PR-8924-docs-resume-update-laws-in-ir-p1-residuals-documented.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-21T09:03:15.779Z",
+  "schema_version": "v1",
+  "commit_sha": "777e4b428fc42298f0f00a2b4339df97b6d1df21",
+  "title": "docs: RESUME update — laws-in-IR P1, residuals documented",
+  "state": "MERGED",
+  "merged_at": "2026-06-21T09:02:47Z",
+  "head_ref": "alexa/resume-and-residuals"
+}

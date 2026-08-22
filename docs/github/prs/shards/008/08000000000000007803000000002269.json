@@ -1,0 +1,12 @@
+{
+  "pr_number": 8809,
+  "archive_path": "docs/history/pr-reviews/PR-8809-feat-gen-phase-e-python-go-codegen-targets-6-languages.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-20T23:46:06.383Z",
+  "schema_version": "v1",
+  "commit_sha": "6b605564692b7946cc0aea3bd124819ceace3130",
+  "title": "feat(gen): Phase E — Python + Go codegen targets (6 languages)",
+  "state": "MERGED",
+  "merged_at": "2026-06-20T23:45:41Z",
+  "head_ref": "alexa/phase-e-python-go"
+}

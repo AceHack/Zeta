@@ -1,0 +1,17 @@
+{
+  "pr_number": 4975,
+  "archive_path": "docs/history/pr-reviews/PR-4975-backlog-b-0728-destructive-tool-authoring-contract-rails-permission-grants-invoc.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7ErQnV",
+    "comment:PRRC_kwDOSF9kNM7ErQnp",
+    "thread:PRRT_kwDOSF9kNM6EnQw9",
+    "thread:PRRT_kwDOSF9kNM6EnQws"
+  ],
+  "fetched_at": "2026-05-25T19:27:03.310Z",
+  "schema_version": "v1",
+  "commit_sha": "d3ce1f99d5c5ada0eaf5c00cf6ac2fb6391894f8",
+  "title": "backlog(B-0728): destructive-tool authoring contract (rails + permission-grants-invocation + runtime-acceptance gate)",
+  "state": "MERGED",
+  "merged_at": "2026-05-25T19:26:45Z",
+  "head_ref": "backlog/b0728-destructive-tool-authoring-contract-2026-05-25-c2"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 6894,
+  "archive_path": "docs/history/pr-reviews/PR-6894-docs-research-spatial-legal-boundaries-are-frame-relative-no-privileged-global-m.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-07T19:14:36.117Z",
+  "schema_version": "v1",
+  "commit_sha": "fdd49cdadd55a978ed01b07813e933bb9834c06b",
+  "title": "docs(research): spatial/legal boundaries are frame-relative — no privileged global map (peel the dominion misreading)",
+  "state": "MERGED",
+  "merged_at": "2026-06-07T19:14:19Z",
+  "head_ref": "otto/spatial-legal-boundaries-frame-relative-no-global-map"
+}

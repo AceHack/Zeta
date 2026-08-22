@@ -27,14 +27,22 @@ name: manifesto-citation-snapshot-cadence
 # permissions but input content is still sanitized via env:+quoted-
 # substitution).
 #
-# Commit-to-main, no PR: GitHub Actions is not permitted to create pull
-# requests in this repository (enterprise security control). Rather than
-# orphan a snapshot branch for a later pass to land (the prior design,
-# which accumulated unlanded ops/ branches), this workflow commits the
-# append-only snapshot file straight to main via `git pull --rebase` +
-# `git push origin HEAD:main` — the deterministic-append, no-review-gate
-# pattern proven by context-cost-trend-cadence.yml. The data is a per-day
-# idempotent signal, not a change that needs review.
+# HOW IT LANDS ON MAIN. It does not push to main. Ruleset "CI Gate" (16134995)
+# makes `gate (required)` a required status check on main with `bypass_actors: []`,
+# and a required check is evaluated at PUSH time against the pushed tip — so a
+# commit that has never been through a check run is rejected before any check could
+# start. This lane pushed `HEAD:main` anyway and had been failing on `GH013:
+# Repository rule violations` on every scheduled run since 2026-08-19 (run
+# 32558211949 and its predecessors). The ruleset is intended and is not to be
+# weakened; the lane is what was out of date.
+#
+# The snapshot is now parked on the ungated staging branch
+# `heartbeat/manifesto-citation-snapshot` and flushed via a PR with squash
+# auto-merge armed, exactly as tick-metrics/society/red-state already do. That also
+# retires the "Actions cannot create pull requests" constraint quoted above: the
+# flush tool authenticates PR creation with a fine-grained PAT and degrades to
+# parking-only (never data loss) when none is present.
+# See src/Core.TypeScript/forge-host/github/flush-via-staging.ts.
 
 on:
   schedule:
@@ -49,7 +57,8 @@ on:
         default: ""
 
 permissions:
-  contents: read
+  contents: write       # push the staging branch
+  pull-requests: write  # open/arm the flush PR
 
 concurrency:
   group: manifesto-citation-snapshot-cadence
@@ -58,16 +67,30 @@ concurrency:
 jobs:
   snapshot:
     runs-on: ubuntu-24.04
-    timeout-minutes: 5
+    # 12 minutes, not 5: this job runs tools/setup/install.sh, so its timeout is
+    # the CEILING on the installer's apt wall budget (audit-apt-budget-fits-job-
+    # timeout.ts). At 5 minutes these three cadence jobs pinned that budget to
+    # 150s fleet-wide, which left the first apt attempt 45s against a 38.2s
+    # healthy cost — tight enough to false-fail a merely-slow mirror. A timeout
+    # is a cap, not a reservation: this job finishes in ~2.5 min, so raising it
+    # costs zero additional CI minutes on the healthy path.
+    timeout-minutes: 12
 
     permissions:
       contents: write
+      pull-requests: write
 
     steps:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
         with:
           fetch-depth: 0
+          # This checkout's credential is the one that pushes
+          # `heartbeat/manifesto-citation-snapshot`, and its actor is what decides whether
+          # `gate (required)` ever runs on the flush PR. See tick-metrics.yml for the
+          # measurement behind this ladder.
+          persist-credentials: true
+          token: ${{ secrets.ZETA_TELEMETRY_FLUSH_TOKEN || secrets.GITHUB_TOKEN }}
 
       - name: Install toolchain via three-way-parity script (GOVERNANCE §24)
         env:
@@ -80,6 +103,17 @@ jobs:
           set -euo pipefail
           command -v bun >/dev/null
 
+      - name: Configure committer
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+      # Runs BEFORE the snapshot: `prepare` checks out a fresh branch off origin/main and
+      # would discard a snapshot written ahead of it. It also unions in anything still
+      # parked on the staging branch from a previous run whose flush PR has not landed.
+      - name: Prepare staging working tree
+        run: bun src/Core.TypeScript/forge-host/github/flush-via-staging.ts prepare --lane manifesto-citation-snapshot
+
       - name: Run citation snapshot
         env:
           NOTE_INPUT: ${{ github.event.inputs.note || '' }}
@@ -91,93 +125,16 @@ jobs:
             echo "Note: $NOTE_INPUT"
           fi
 
-      - name: Inspect diff
-        id: diff
-        run: |
-          set -euo pipefail
-          # Detect BOTH tracked changes AND new untracked files. The
-          # daily snapshot is a NEW file (docs/hygiene-history/
-          # manifesto-citations/YYYY-MM-DD.json) so `git diff --quiet`
-          # alone would miss it on the first run for a date (per
-          # Copilot P0 + Codex P1 catch on PR #4758). git status
-          # --porcelain reports both modified-tracked and new-untracked.
-          status_lines="$(git status --porcelain -- docs/hygiene-history/manifesto-citations/)"
-          if [ -z "$status_lines" ]; then
-            echo "changed=false" >>"$GITHUB_OUTPUT"
-            echo "no diff (today's snapshot already committed)"
-            exit 0
-          fi
-          echo "changed=true" >>"$GITHUB_OUTPUT"
-
-      - name: Commit snapshot to main
-        if: steps.diff.outputs.changed == 'true'
+      # No `Inspect diff` gate: `flush` stages the paths and returns a clean no-op when
+      # nothing changed (idempotency, discipline #6). The old guard existed because the
+      # daily snapshot is a NEW untracked file that `git diff --quiet` would miss; `git add`
+      # inside the flush tool picks up untracked files under the given paths, so the
+      # first-run-for-a-date case the guard was written for (PR #4758) stays covered.
+      - name: Flush to main via staging branch + PR
         env:
-          RUN_ID: ${{ github.run_id }}
-          NOTE_INPUT: ${{ github.event.inputs.note || '' }}
+          GH_TOKEN: ${{ secrets.ZETA_TELEMETRY_FLUSH_TOKEN || secrets.ZETA_PR_ARCHIVE_TOKEN || secrets.GITHUB_TOKEN }}
         run: |
-          set -euo pipefail
-          today="$(date -u +%Y-%m-%d)"
-          git config user.name  "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add docs/hygiene-history/manifesto-citations/
-
-          {
-            echo "ops(081KS923C0008QG0R002BKAC95): daily manifesto-citation snapshot $today"
-            echo
-            echo "Why:"
-            echo "- Daily cadence per 081KS923C0008QG0R002BKAC95 acceptance criteria"
-            echo "  (5th criterion: cron-cadence wiring; this commit"
-            echo "  is the mechanization)."
-            echo "- Composes with 081KRHWGX0008QG0R0016T9408 constitutional-promotion gate"
-            echo "  measurement infrastructure."
-            echo
-            echo "What:"
-            echo "- One JSON snapshot at"
-            echo "  docs/hygiene-history/manifesto-citations/${today}.json"
-            echo "  written by src/Core.TypeScript/hygiene/audit-manifesto-citations.ts"
-            echo "  --snapshot."
-            echo
-            echo "Proof:"
-            echo "- audit-manifesto-citations.ts ran in run $RUN_ID."
-            echo "- Snapshot is per-day idempotent."
-            echo
-            echo "Limits:"
-            echo "- Snapshots are signals; the gate decision is the"
-            echo "  human maintainer's call per 081KRHWGX0008QG0R0016T9408 substrate-honest"
-            echo "  framing."
-            echo "- Snapshot strips citations[] array; ~2-3KB/day;"
-            echo "  ~1MB/year tractable."
-            if [ -n "${NOTE_INPUT:-}" ]; then
-              echo
-              echo "Note (from workflow_dispatch input):"
-              # NOTE_INPUT is untrusted; embed as data-only via stdin/
-              # printf. Double-quoted "$NOTE_INPUT" preserves content
-              # without shell interpretation.
-              printf '%s\n' "$NOTE_INPUT"
-            fi
-            echo
-            echo "Agency-Signature-Version: 1"
-            echo "Agent: manifesto-citation-snapshot-cadence-workflow"
-            echo "Agent-Runtime: GitHub Actions"
-            echo "Agent-Model: bash + bun"
-            echo "Credential-Identity: github-actions[bot]"
-            echo "Credential-Mode: dedicated-agent"
-            echo "Human-Review: not-implied-by-credential"
-            echo "Human-Review-Evidence: none"
-            echo "Action-Mode: autonomous-fail-open"
-            echo "Task: 081KS923C0008QG0R002BKAC95"
-            echo "Co-authored-by: Otto <noreply@anthropic.com>"
-          } | git commit --file=-
-
-          # Fast-forward-safe push to main (Branch Safety floor: no force / linear).
-          # Rebase onto any rows landed since checkout, then push. The snapshot
-          # file is per-day idempotent and append-only, so a rebase is clean.
-          git pull --rebase origin main
-          git push origin HEAD:main
-
-      - name: No-change report
-        if: steps.diff.outputs.changed == 'false'
-        run: |
-          set -euo pipefail
-          echo "No diff — today's snapshot already exists on main."
-          echo "Cadence run still healthy (idempotent per-day)."
+          bun src/Core.TypeScript/forge-host/github/flush-via-staging.ts flush \
+            --lane manifesto-citation-snapshot \
+            --paths docs/hygiene-history/manifesto-citations \
+            --message "ops(081KS923C0008QG0R002BKAC95): daily manifesto-citation snapshot"

@@ -1,0 +1,25 @@
+{
+  "pr_number": 5961,
+  "archive_path": "docs/history/pr-reviews/PR-5961-docs-decisions-standardize-streamlined-madr-template-for-architectural-decisions.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7GFM3t",
+    "comment:PRRC_kwDOSF9kNM7GFM4b",
+    "comment:PRRC_kwDOSF9kNM7GFM4w",
+    "comment:PRRC_kwDOSF9kNM7GFM5B",
+    "comment:PRRC_kwDOSF9kNM7GFM5W",
+    "comment:PRRC_kwDOSF9kNM7GFM5n",
+    "thread:PRRT_kwDOSF9kNM6FocW4",
+    "thread:PRRT_kwDOSF9kNM6FocWH",
+    "thread:PRRT_kwDOSF9kNM6FocWn",
+    "thread:PRRT_kwDOSF9kNM6FocXE",
+    "thread:PRRT_kwDOSF9kNM6FocXS",
+    "thread:PRRT_kwDOSF9kNM6FocXf"
+  ],
+  "fetched_at": "2026-05-29T09:10:53.869Z",
+  "schema_version": "v1",
+  "commit_sha": "3fa2f0e44b0260e5d478577258fff309b92a067a",
+  "title": "docs(decisions): Standardize streamlined MADR template for architectural decisions",
+  "state": "MERGED",
+  "merged_at": "2026-05-29T09:10:29Z",
+  "head_ref": "lior/meta-adr-standardize-template"
+}

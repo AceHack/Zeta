@@ -1,0 +1,12 @@
+{
+  "pr_number": 9465,
+  "archive_path": "docs/history/pr-reviews/PR-9465-bump-the-nuget-group-with-1-update.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-11T12:35:53.240Z",
+  "schema_version": "v1",
+  "commit_sha": "c9b131dee90d5b96c9daa060af513727066fb10e",
+  "title": "Bump the nuget group with 1 update",
+  "state": "MERGED",
+  "merged_at": "2026-07-11T12:35:27Z",
+  "head_ref": "dependabot/nuget/nuget-cbaa0ed2ee"
+}

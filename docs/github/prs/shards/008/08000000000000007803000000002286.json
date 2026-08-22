@@ -1,0 +1,12 @@
+{
+  "pr_number": 8838,
+  "archive_path": "docs/history/pr-reviews/PR-8838-test-formal-four-lane-equivalence-all-execution-regimes-proven-equivalent.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-21T03:18:54.947Z",
+  "schema_version": "v1",
+  "commit_sha": "6f502767a1d05238a96066d56047b1441cd072b4",
+  "title": "test(formal): four-lane equivalence — all execution regimes proven equivalent",
+  "state": "MERGED",
+  "merged_at": "2026-06-21T03:18:29Z",
+  "head_ref": "alexa/four-lane-equiv"
+}

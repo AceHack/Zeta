@@ -1,0 +1,12 @@
+{
+  "pr_number": 10192,
+  "archive_path": "docs/history/pr-reviews/PR-10192-docs-workitem-bug-a-root-cause-captured-deterministic-nixos-mise-linker-failure.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-09T17:15:06.611Z",
+  "schema_version": "v1",
+  "commit_sha": "7b3beb1e4eb47933b9f0e183b7b87baca96c1e69",
+  "title": "docs(workitem): bug-A root cause captured — deterministic NixOS/mise linker failure",
+  "state": "MERGED",
+  "merged_at": "2026-08-09T17:14:36Z",
+  "head_ref": "shadow/bug-a-root-cause-nixos-linker"
+}

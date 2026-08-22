@@ -1,0 +1,14 @@
+{
+  "id": "080d00d83ab8b010a0130008079c9b73",
+  "at": "2026-08-19T17:17:41.014Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M0DGENRP087G0R0018ATD5N",
+    "type": "task",
+    "title": "Dogfood enrol-issue-expire-rotate loop with YubiHSM in the loop, no wall-clock from device (agreed-phase expiry)",
+    "slug": "dogfood-enrol-issue-expire-rotate-loop-with-yubihsm-in-the-l",
+    "priority": "P2",
+    "filename": "081M0DGENRP087G0R0018ATD5N-dogfood-enrol-issue-expire-rotate-loop-with-yubihsm-in-the-l.md"
+  }
+}

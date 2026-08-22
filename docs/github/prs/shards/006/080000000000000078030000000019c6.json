@@ -1,0 +1,15 @@
+{
+  "pr_number": 6598,
+  "archive_path": "docs/history/pr-reviews/PR-6598-test-b-0366-2-3-prove-toffoli-reversibility-laws.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7HQnsY",
+    "thread:PRRT_kwDOSF9kNM6GgXwx"
+  ],
+  "fetched_at": "2026-06-02T17:23:52.693Z",
+  "schema_version": "v1",
+  "commit_sha": "1c8ea5319313a844824035de7df350479981eb00",
+  "title": "test(B-0366.2.3): prove Toffoli reversibility laws",
+  "state": "MERGED",
+  "merged_at": "2026-06-02T17:23:23Z",
+  "head_ref": "claim/codex-loop-b0366-2-3-reversibility-laws-20260601T222009Z"
+}

@@ -1,6 +1,7 @@
 import {
   startBrowserTabCoordinator,
   type BrowserTabChannel,
+  type BrowserCausalCorrectionNotice,
   type BrowserCheckpointInvalidationOperation,
   type BrowserDatabaseExecutionReceiptNotice,
   type BrowserDatabaseInvalidation,
@@ -92,6 +93,9 @@ export interface BrowserLifecycleHost {
   ): BrowserLifecycleResult<BrowserLifecycleHostReadout>;
   publishDatabaseExecutionReceipt(
     receipt: Omit<BrowserDatabaseExecutionReceiptNotice, "sourceTabId">,
+  ): BrowserLifecycleResult<BrowserLifecycleHostReadout>;
+  publishCausalCorrection(
+    correction: Omit<BrowserCausalCorrectionNotice, "sourceTabId">,
   ): BrowserLifecycleResult<BrowserLifecycleHostReadout>;
   stop(): BrowserLifecycleResult<BrowserLifecycleHostReadout>;
 }
@@ -371,6 +375,16 @@ export function startBrowserLifecycleHost(
     publishDatabaseExecutionReceipt: (receipt) => {
       if (stopped) return failed("host-stopped", "The browser lifecycle host has already stopped.");
       const published = coordinator.publishDatabaseExecutionReceipt(receipt);
+      if (!published.ok) {
+        const operationFailure = coordinatorFailure(published.feedback);
+        record(operationFailure);
+        return { ok: false, feedback: operationFailure };
+      }
+      return succeeded(read());
+    },
+    publishCausalCorrection: (correction) => {
+      if (stopped) return failed("host-stopped", "The browser lifecycle host has already stopped.");
+      const published = coordinator.publishCausalCorrection(correction);
       if (!published.ok) {
         const operationFailure = coordinatorFailure(published.feedback);
         record(operationFailure);

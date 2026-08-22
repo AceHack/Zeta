@@ -1,0 +1,12 @@
+{
+  "pr_number": 9851,
+  "archive_path": "docs/history/pr-reviews/PR-9851-build-sdk-rollforward-latestpatch-aaron-s-call-registry-the-uncompensatable-floo.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-01T12:01:39.918Z",
+  "schema_version": "v1",
+  "commit_sha": "99ec28ba6380ffad6df114275f7b45ec25e59554",
+  "title": "build(sdk): rollForward latestPatch (Aaron's call) + registry: the uncompensatable floor as data",
+  "state": "MERGED",
+  "merged_at": "2026-08-01T12:01:07Z",
+  "head_ref": "otto/rollforward-latestpatch-floor-registry"
+}

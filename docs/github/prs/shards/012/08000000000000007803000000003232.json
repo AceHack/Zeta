@@ -1,0 +1,12 @@
+{
+  "pr_number": 12850,
+  "archive_path": "docs/history/pr-reviews/PR-12850-feat-federated-identity-cross-ca-agreement-for-per-node-spire-pairwise-never-glo.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-20T16:58:53.868Z",
+  "schema_version": "v1",
+  "commit_sha": "1b0d3ffa67b1ca7af20a7f6c7fa40e2ccbe2058a",
+  "title": "feat(federated-identity): cross-CA agreement for per-node SPIRE — pairwise, never global",
+  "state": "MERGED",
+  "merged_at": "2026-08-20T16:58:10Z",
+  "head_ref": "feat/federated-identity-pairwise"
+}

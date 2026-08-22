@@ -7,7 +7,7 @@
 // TS+Bun migration. See docs/best-practices/repo-scripting.md.
 //
 // Usage:
-//   bun tools/hygiene/append-tick-history-row.ts "FULL_ROW_TEXT"
+//   bun src/Core.TypeScript/hygiene/append-tick-history-row.ts "FULL_ROW_TEXT"
 //
 // The argument is the entire row including leading `| ` and trailing
 // `|`. Caller is responsible for row content (signal-in-signal-out);
@@ -26,6 +26,7 @@ import { appendFileSync, readFileSync } from "node:fs";
 import { spawnSync } from "node:child_process";
 
 import { detectRepeatedTokenRut } from "./detect-repeated-token-rut";
+import { stringCompare } from "../collation/collation";
 
 type ExitCode = 0 | 1 | 2 | 3;
 
@@ -63,7 +64,7 @@ function findLatestTimestamp(content: string): string {
     if (m !== null) timestamps.push(m[1] ?? "");
   }
   // ISO-8601 is lex-sortable; sort + take last for "latest".
-  timestamps.sort((a, b) => a.localeCompare(b));
+  timestamps.sort((a, b) => stringCompare(a, b));
   return timestamps.length === 0 ? "" : (timestamps.at(-1) ?? "");
 }
 

@@ -5,8 +5,22 @@ namespace Zeta.Core
 ///
 /// Adinkras (Gates, Iga, et al.) correspond to **doubly-even binary linear codes**: the off-shell SUSY
 /// adinkra graph is encoded by a binary code every codeword of which has Hamming weight ≡ 0 (mod 4).
-/// The canonical N=4 example is the **[8,4] extended Hamming code** — doubly-even and self-dual. This
-/// module pins that concrete generator matrix and proves the characterizing property.
+/// The canonical **N=8** example is the **[8,4,4] extended Hamming code** — doubly-even and self-dual.
+/// This module pins that concrete generator matrix and proves the characterizing property.
+///
+/// ── **N is the code LENGTH, not the dimension** (label corrected 2026-08-15; see `supercharges`) ──
+/// This docstring said "the canonical **N=4** example" until 2026-08-15. That was `k` (the dimension,
+/// 4 generator rows) read as `N`. In the Doran–Faux–Gates–Hübsch–Iga–Landweber correspondence, an
+/// adinkra with **N colours** (one edge colour per supercharge `Q_I`) is the **N-cube quotiented by a
+/// doubly-even code of length N**, so `n = N` and `k` is the quotient's rank. Two different quantities
+/// were living under one letter; both are named below (`supercharges`/`length` = N = 8, `dimension` =
+/// k = 4), and the derived adinkra numbers are computed from N rather than asserted in prose.
+///
+/// The mislabel survived because of a genuine coincidence, worth naming so it does not recur: this
+/// code's adinkra and the plain 4-cube adinkra of `AdinkraViz.fs` **both have 16 nodes**
+/// (`2^(8−4) = 2^4`). Node count therefore does *not* discriminate them — **valence does**: this one
+/// is 8-regular (8 colours/node, 64 edges), `AdinkraViz`'s is 4-regular (4 colours/node, 32 edges).
+/// `AdinkraViz`'s N=4 is correct for what it draws; only the label on *this* code was wrong.
 ///
 /// This is the *published* Adinkra↔doubly-even-code correspondence — the honest, provable form of
 /// "which generator the Adinkra is". The earlier `ErasureDistance.rsCode` was a Reed-Solomon **MDS**
@@ -35,8 +49,51 @@ module AdinkraCode =
     /// The code length n (= 8 columns).
     let length = 8
 
-    /// The code dimension k (= 4 message bits / generator rows).
+    /// The code dimension k (= 4 message bits / generator rows). **This is `k`, NOT `N`** — the
+    /// adinkra's N is `supercharges` below. Keeping the two apart is the point of this block.
     let dimension = 4
+
+    // ── The adinkra side of the correspondence: N, and what N forces ─────────────────────────────
+    //
+    // Doran, Faux, Gates, Hübsch, Iga, Landweber — *Relating doubly-even error-correcting codes,
+    // graphs, and irreducible representations of N-extended supersymmetry* (J. Phys. A 2008;
+    // arXiv:0806.0051). An adinkra for N supercharges has one EDGE COLOUR per supercharge, and its
+    // topology is the N-cube `GF(2)^N` quotiented by a doubly-even code C ⊆ GF(2)^N. So the code's
+    // LENGTH is N; its DIMENSION k is the rank of the quotient.
+    //
+    // Two invariants force N = 8 here, and neither is a count coincidence:
+    //
+    //  1. EXISTENCE. A doubly-even self-dual binary code exists ONLY at length ≡ 0 (mod 8)
+    //     (Gleason; Mallows–Sloane). Reading N as the dimension would demand a doubly-even
+    //     self-dual code of length 4, and there is none — `AdinkraIdentity.Tests` already searches
+    //     lengths 2/4/6 exhaustively and finds nothing, then finds this code at 8. The N=4 reading
+    //     contradicts the very existence theorem this module stands on.
+    //  2. VALENCE. The quotient `GF(2)^8 / C` is `N`-regular exactly when the weight-1 vectors lie
+    //     in distinct cosets, i.e. when `d ≥ 3`; here `d = 4`. So every node has 8 distinct
+    //     neighbours — one per colour — which IS N, structurally. Node count cannot discriminate
+    //     (the 4-cube also has 16 nodes); valence can.
+    //
+    // Supporting anchor, same degree: |Aut(C)| under coordinate permutations is AGL(3,2), order
+    // 1344 — a permutation group of **degree 8**, acting on the 8 coordinates. The symmetry group
+    // of this code permutes eight things, and those eight things are the supercharges.
+
+    /// **N — the number of supercharges / edge colours of the adinkra this code encodes.**
+    /// `N = length = 8`. Deliberately a separate name from `dimension` (k = 4): the two were
+    /// conflated under the single letter "N" until 2026-08-15, and naming both is the fix.
+    let supercharges = length
+
+    /// Nodes of the adinkra: `2^(N − k) = 2^4 = 16` — the cosets of C in `GF(2)^N`.
+    /// (Note this equals the 4-cube's node count; see the valence discriminator above.)
+    let adinkraNodes = 1 <<< (length - dimension)
+
+    /// Valence — edges per node, one per colour. Equals `N` (8), *not* k. Well-defined because
+    /// `d = 4 ≥ 3` puts the eight weight-1 vectors in eight distinct cosets.
+    let adinkraValence = supercharges
+
+    /// Distinct anticommuting generator pairs `{Q_I, Q_J}`, `I < J`: `C(N,2) = C(8,2) = 28`.
+    /// Under the retired "N=4" label this read as `C(4,2) = 6`. Nothing in-repo consumed either
+    /// number, which is precisely why the mislabel survived — so it is computed and pinned here.
+    let anticommutingPairs = supercharges * (supercharges - 1) / 2
 
     /// Encode a 4-bit message into an 8-bit codeword: the GF(2) combination of generator rows selected
     /// by the message bits (XOR of the rows where the message is 1).

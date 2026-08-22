@@ -1,0 +1,12 @@
+{
+  "pr_number": 9962,
+  "archive_path": "docs/history/pr-reviews/PR-9962-docs-prior-art-cohn-elkies-construction-a-tsirelson-chsh-anchors-honest-scoping-.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-02T14:42:33.213Z",
+  "schema_version": "v1",
+  "commit_sha": "94b1cb40b7965e17b4e77e69f2ce5eb81ecabf31",
+  "title": "docs(prior-art): Cohn–Elkies + Construction-A + Tsirelson/CHSH anchors; honest scoping of OpenAI 'ten advances'",
+  "state": "MERGED",
+  "merged_at": "2026-08-02T14:42:01Z",
+  "head_ref": "otto/prior-art-cohn-elkies-tsirelson-astra-scoping"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 13308,
+  "archive_path": "docs/history/pr-reviews/PR-13308-fix-longhorn-a-node-registers-every-disk-it-mounts-not-one-path-on-root.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-21T19:19:57.941Z",
+  "schema_version": "v1",
+  "commit_sha": "7bc493a65b6232a892a3ba8b222f475aed2c7e60",
+  "title": "fix(longhorn): a node registers every disk it mounts, not one path on root",
+  "state": "MERGED",
+  "merged_at": "2026-08-21T19:16:19Z",
+  "head_ref": "feat/use-every-disk-at-first-setup"
+}

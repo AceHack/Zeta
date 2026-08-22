@@ -1,0 +1,12 @@
+{
+  "pr_number": 9374,
+  "archive_path": "docs/history/pr-reviews/PR-9374-codex-fix-glossary-markdownlint-year-parsing.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-03T23:18:31.238Z",
+  "schema_version": "v1",
+  "commit_sha": "35e50f7e269eeedcd9fb724c463a7f3476c2b92e",
+  "title": "[codex] fix glossary markdownlint year parsing",
+  "state": "MERGED",
+  "merged_at": "2026-07-03T23:18:08Z",
+  "head_ref": "codex/fix-glossary-markdownlint"
+}

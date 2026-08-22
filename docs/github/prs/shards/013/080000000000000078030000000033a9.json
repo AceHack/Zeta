@@ -1,0 +1,12 @@
+{
+  "pr_number": 13225,
+  "archive_path": "docs/history/pr-reviews/PR-13225-fix-ci-the-kind-lane-deploys-manifests-it-does-not-watch-broaden-the-filter-to-w.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-21T15:25:52.744Z",
+  "schema_version": "v1",
+  "commit_sha": "1dd875f7dec1c82b35ab3658fd43586b4a55b588",
+  "title": "fix(ci): the kind lane deploys manifests it does not watch — broaden the filter to what it applies",
+  "state": "MERGED",
+  "merged_at": "2026-08-21T15:25:11Z",
+  "head_ref": "ci/kind-lane-watches-what-it-deploys"
+}

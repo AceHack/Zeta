@@ -1,0 +1,12 @@
+{
+  "pr_number": 7794,
+  "archive_path": "docs/history/pr-reviews/PR-7794-feat-inference-inferenceladder-universal-port-s-first-customer-complete.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-11T21:12:59.978Z",
+  "schema_version": "v1",
+  "commit_sha": "63a2039b94c720d061ae718b83ba93a957aebd00",
+  "title": "feat(inference): InferenceLadder — universal/port's first customer complete",
+  "state": "MERGED",
+  "merged_at": "2026-06-11T21:12:29Z",
+  "head_ref": "shadow-engine-ladder"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 8975,
+  "archive_path": "docs/history/pr-reviews/PR-8975-fix-docs-markdownlint-blank-line-nits-in-multi-owner-ssh-ca-adr-red-on-main.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-22T17:47:02.442Z",
+  "schema_version": "v1",
+  "commit_sha": "36e3f36b2a22f67477d3879e067e50714519ece9",
+  "title": "fix(docs): markdownlint blank-line nits in multi-owner ssh-ca ADR (red on main)",
+  "state": "MERGED",
+  "merged_at": "2026-06-22T17:46:28Z",
+  "head_ref": "fix/markdownlint-multi-owner-ssh-ca-doc-1782064552"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 7784,
+  "archive_path": "docs/history/pr-reviews/PR-7784-refactor-workflow-source-own-workflow-engine-core.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-11T20:47:33.529Z",
+  "schema_version": "v1",
+  "commit_sha": "8544cb6bdb52212768870ff18e5dc4fbaf8dead4",
+  "title": "refactor(workflow): source-own workflow engine core",
+  "state": "MERGED",
+  "merged_at": "2026-06-11T20:47:05Z",
+  "head_ref": "codex/source-own-workflow-engine-core"
+}

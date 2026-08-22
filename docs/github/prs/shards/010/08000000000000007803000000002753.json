@@ -1,0 +1,12 @@
+{
+  "pr_number": 10067,
+  "archive_path": "docs/history/pr-reviews/PR-10067-book-ch-5-fill-the-lilith-personal-anchor-lilly-consented-both-adult-daughters-n.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-06T23:22:31.832Z",
+  "schema_version": "v1",
+  "commit_sha": "fcdbba51e827dc2ee9be646010029e5a0201cd11",
+  "title": "book(ch-5): fill the Lilith personal anchor — Lilly consented (both adult daughters now cleared)",
+  "state": "MERGED",
+  "merged_at": "2026-08-06T23:06:32Z",
+  "head_ref": "docs/book-ch05-lilly-consent-granted-fill-anchor"
+}

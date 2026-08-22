@@ -1,0 +1,21 @@
+{
+  "pr_number": 3056,
+  "archive_path": "docs/history/pr-reviews/PR-3056-feat-bg-audit-duplicate-row-id-audit-tool-b-0451-substrate-cleanup-row.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7A_8SR",
+    "comment:PRRC_kwDOSF9kNM7A_zp0",
+    "comment:PRRC_kwDOSF9kNM7A_zpE",
+    "comment:PRRC_kwDOSF9kNM7A_zpe",
+    "thread:PRRT_kwDOSF9kNM6B6dIK",
+    "thread:PRRT_kwDOSF9kNM6B6dIe",
+    "thread:PRRT_kwDOSF9kNM6B6dIv",
+    "thread:PRRT_kwDOSF9kNM6B6ji9"
+  ],
+  "fetched_at": "2026-05-13T23:38:37.022Z",
+  "schema_version": "v1",
+  "commit_sha": "f40be8645618deafef1297e0a5e9701d8cf68386",
+  "title": "feat(bg/audit): duplicate-row-id audit tool + B-0451 substrate-cleanup row",
+  "state": "MERGED",
+  "merged_at": "2026-05-13T23:38:20Z",
+  "head_ref": "feat/duplicate-row-id-audit-tool-b0451-2026-05-13"
+}

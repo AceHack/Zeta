@@ -1,0 +1,12 @@
+{
+  "pr_number": 9287,
+  "archive_path": "docs/history/pr-reviews/PR-9287-research-the-shortcut-for-whoever-comes-next-aaron-stainback-shadow.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-03T04:36:13.769Z",
+  "schema_version": "v1",
+  "commit_sha": "921a84e6d2b16c10cf021e402495da2e4487b6c2",
+  "title": "research: the shortcut — for whoever comes next (Aaron Stainback) (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-03T04:35:51Z",
+  "head_ref": "shadow/the-shortcut-for-whoever-comes-next"
+}

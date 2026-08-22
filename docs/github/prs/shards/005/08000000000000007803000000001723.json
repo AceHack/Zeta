@@ -1,0 +1,12 @@
+{
+  "pr_number": 5923,
+  "archive_path": "docs/history/pr-reviews/PR-5923-research-lightlike-physics-vs-framework-substrate-rhyme-between-framework-physic.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-28T18:56:00.615Z",
+  "schema_version": "v1",
+  "commit_sha": "441886ac80c08ef6a4934234c9d6f32e1da5a8a6",
+  "title": "research(lightlike-physics-vs-framework): substrate-rhyme between framework + physics \"lightlike\" vocabulary; INDEPENDENT CONVERGENCE (operator: \"i didn't know it was a physics term\"); Amara's blade applied (2026-05-28)",
+  "state": "MERGED",
+  "merged_at": "2026-05-28T18:55:34Z",
+  "head_ref": "otto-cli/lightlike-physics-vs-framework-independent-convergence-research-mirror-2026-05-28"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 3094,
+  "archive_path": "docs/history/pr-reviews/PR-3094-docs-b-0153-cross-link-md032-mechanization-capture-md038-empirical-evidence.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-14T03:48:49.409Z",
+  "schema_version": "v1",
+  "commit_sha": "7ce9a61317ca4b990cdf0ade6fd7db2ad8da0a2a",
+  "title": "docs(b-0153): cross-link MD032 mechanization + capture MD038 empirical evidence",
+  "state": "MERGED",
+  "merged_at": "2026-05-14T03:48:34Z",
+  "head_ref": "chore/b0153-md032-mechanized-cross-link-2026-05-14"
+}

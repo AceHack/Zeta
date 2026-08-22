@@ -1,0 +1,12 @@
+{
+  "pr_number": 10312,
+  "archive_path": "docs/history/pr-reviews/PR-10312-feat-session-resume-connectivity-wiring-mutation-convergence.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-12T01:06:12.625Z",
+  "schema_version": "v1",
+  "commit_sha": "b75ee2ded19f42f539c8f09db2e1afd75444652d",
+  "title": "feat: session resume + connectivity wiring + mutation convergence",
+  "state": "MERGED",
+  "merged_at": "2026-08-12T01:05:40Z",
+  "head_ref": "alexa/session-updates"
+}

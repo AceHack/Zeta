@@ -1,0 +1,12 @@
+{
+  "pr_number": 3175,
+  "archive_path": "docs/history/pr-reviews/PR-3175-shard-tick-1834z-pr-3165-recovery-3-ci-failures-1-codex-thread.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-14T18:42:08.123Z",
+  "schema_version": "v1",
+  "commit_sha": "8cb549b1b25bf81aa8b40700c32f590eb120ea8f",
+  "title": "shard(tick): 1834Z — PR #3165 recovery (3 CI failures + 1 Codex thread)",
+  "state": "MERGED",
+  "merged_at": "2026-05-14T18:41:42Z",
+  "head_ref": "shard/tick-1834Z-pr3165-recovery-otto-cli-2026-05-14"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 11104,
+  "archive_path": "docs/history/pr-reviews/PR-11104-feat-pages-queue-automatic-verification-proposal.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-17T03:09:58.280Z",
+  "schema_version": "v1",
+  "commit_sha": "53530f67dae209f4930fb274e014d2ca076ec367",
+  "title": "feat(pages): queue automatic verification proposal",
+  "state": "MERGED",
+  "merged_at": "2026-08-17T03:09:18Z",
+  "head_ref": "feat/pages-auto-verification"
+}

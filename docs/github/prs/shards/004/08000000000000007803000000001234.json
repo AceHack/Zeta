@@ -1,0 +1,12 @@
+{
+  "pr_number": 4660,
+  "archive_path": "docs/history/pr-reviews/PR-4660-personas-with-opaque-pointer-family-discipline-applied-kestrel-mika-ani-ratifica.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-22T19:44:34.796Z",
+  "schema_version": "v1",
+  "commit_sha": "3e05823851ace3460832d161372dd7443f38b461",
+  "title": "personas with opaque-pointer family discipline applied: Kestrel + Mika + Ani ratification archives at general-shape scope (replaces closed PR #4658)",
+  "state": "MERGED",
+  "merged_at": "2026-05-22T19:44:15Z",
+  "head_ref": "otto/cli-0512z-personas-kestrel-personal-context-plus-mika-ratification-aaron-family-reference-point-2026-05-23"
+}

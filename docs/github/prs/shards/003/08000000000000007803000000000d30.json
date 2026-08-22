@@ -1,0 +1,19 @@
+{
+  "pr_number": 3376,
+  "archive_path": "docs/history/pr-reviews/PR-3376-shard-tick-0710z-convergence-with-peer-otto-0615z-investigation-non-duplication-.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7Bgkjt",
+    "comment:PRRC_kwDOSF9kNM7BgkkI",
+    "comment:PRRC_kwDOSF9kNM7BgkkY",
+    "thread:PRRT_kwDOSF9kNM6CSQY4",
+    "thread:PRRT_kwDOSF9kNM6CSQZN",
+    "thread:PRRT_kwDOSF9kNM6CSQZX"
+  ],
+  "fetched_at": "2026-05-15T07:35:46.525Z",
+  "schema_version": "v1",
+  "commit_sha": "ccff9b0b014738a6455ad5eedad8a0baf31d896c",
+  "title": "shard(tick): 0710Z — convergence with peer-Otto 0615Z investigation; non-duplication discipline",
+  "state": "MERGED",
+  "merged_at": "2026-05-15T07:35:30Z",
+  "head_ref": "shard/tick-0710z-convergence-otto-cli-2026-05-15"
+}

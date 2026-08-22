@@ -1,0 +1,19 @@
+{
+  "pr_number": 2488,
+  "archive_path": "docs/history/pr-reviews/PR-2488-research-b-0314-external-anchors-for-bp-10-bp-11-slice-1.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_n1E_",
+    "comment:PRRC_kwDOSF9kNM6_n1FE",
+    "comment:PRRC_kwDOSF9kNM6_n2Wa",
+    "comment:PRRC_kwDOSF9kNM6_n2YC",
+    "thread:PRRT_kwDOSF9kNM6A5pP_",
+    "thread:PRRT_kwDOSF9kNM6A5pQD"
+  ],
+  "fetched_at": "2026-05-10T13:10:50.101Z",
+  "schema_version": "v1",
+  "commit_sha": "8775b0f48f356efd96e7b0d93167f80236ad4aa8",
+  "title": "research(B-0314): external anchors for BP-10, BP-11 (slice 1)",
+  "state": "MERGED",
+  "merged_at": "2026-05-10T13:10:34Z",
+  "head_ref": "fix/B-0314-bp-nn-anchor-backfill-slice1"
+}

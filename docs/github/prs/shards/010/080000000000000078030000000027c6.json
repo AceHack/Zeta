@@ -1,0 +1,12 @@
+{
+  "pr_number": 10182,
+  "archive_path": "docs/history/pr-reviews/PR-10182-book-ru-russian-7th-edition-of-you-born-at-the-hinge-ru-preview.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-09T01:30:20.815Z",
+  "schema_version": "v1",
+  "commit_sha": "fb642dc82f14e7c8733899de909350d412d50bbe",
+  "title": "book(ru): Russian 7th edition of \"You, Born at the Hinge\" + /ru/ preview",
+  "state": "MERGED",
+  "merged_at": "2026-08-09T01:29:50Z",
+  "head_ref": "shadow/book-russian-7th-edition"
+}

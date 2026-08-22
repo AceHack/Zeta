@@ -82,6 +82,8 @@ concurrency:
 jobs:
   lint:
     name: lint current-state surfaces for direct name attribution
+    # Timeout basis: observed med 0.3m / max 0.9m (n=40).
+    timeout-minutes: 5
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1

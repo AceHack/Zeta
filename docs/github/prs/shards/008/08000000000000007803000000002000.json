@@ -1,0 +1,12 @@
+{
+  "pr_number": 8192,
+  "archive_path": "docs/history/pr-reviews/PR-8192-rule-only-the-irreducible-is-primitive-generate-the-rest-the-generator-is-the-ec.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-14T15:25:56.617Z",
+  "schema_version": "v1",
+  "commit_sha": "a3fddf95a3428143a1c85ab2203f4a26b45f9e6f",
+  "title": "rule: only the irreducible is primitive — generate the rest; the generator IS the ECC",
+  "state": "MERGED",
+  "merged_at": "2026-06-14T15:25:37Z",
+  "head_ref": "otto/rule-only-irreducible-is-primitive"
+}

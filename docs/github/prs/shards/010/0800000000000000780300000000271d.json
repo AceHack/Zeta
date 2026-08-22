@@ -1,0 +1,12 @@
+{
+  "pr_number": 10013,
+  "archive_path": "docs/history/pr-reviews/PR-10013-docs-book-consent-chris-king-granted-diana-provisional-pending-review.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-03T02:36:03.262Z",
+  "schema_version": "v1",
+  "commit_sha": "16d1720caa4a822e7d3ce84d0e0a7e05a5546ef4",
+  "title": "docs(book): consent — Chris King GRANTED, Diana provisional-pending-review",
+  "state": "MERGED",
+  "merged_at": "2026-08-03T02:35:29Z",
+  "head_ref": "docs/consent-ledger-chris-granted-diana-provisional-20260802"
+}

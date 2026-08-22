@@ -1,0 +1,12 @@
+{
+  "pr_number": 12795,
+  "archive_path": "docs/history/pr-reviews/PR-12795-vision-research-temperature-is-the-decorrelation-dial-with-its-falsifier-and-the.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-20T15:12:25.557Z",
+  "schema_version": "v1",
+  "commit_sha": "11a9c4c030dcdfebfca053efd7e9cb977442df67",
+  "title": "vision+research: temperature is the decorrelation dial (with its falsifier); and the 2√2 coincidence, refused",
+  "state": "MERGED",
+  "merged_at": "2026-08-20T15:11:47Z",
+  "head_ref": "vision/temperature-is-the-decorrelation-dial"
+}

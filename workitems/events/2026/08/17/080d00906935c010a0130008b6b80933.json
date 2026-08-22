@@ -1,0 +1,14 @@
+{
+  "id": "080d00906935c010a0130008b6b80933",
+  "at": "2026-08-17T23:27:26.904Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M090T9NP087G0R003N8J0D3",
+    "type": "task",
+    "title": "Refute or bound the path-independence identification: monoid, Bell locality, holonomy, CALM",
+    "slug": "refute-or-bound-the-path-independence-identification-monoid",
+    "priority": "P2",
+    "filename": "081M090T9NP087G0R003N8J0D3-refute-or-bound-the-path-independence-identification-monoid.md"
+  }
+}

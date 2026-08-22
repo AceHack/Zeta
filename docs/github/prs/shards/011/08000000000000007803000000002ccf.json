@@ -1,0 +1,12 @@
+{
+  "pr_number": 11471,
+  "archive_path": "docs/history/pr-reviews/PR-11471-fix-agent-proposal-make-generated-review-delivery-gate-compliant.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-17T14:04:28.720Z",
+  "schema_version": "v1",
+  "commit_sha": "e7c5d5437b955086830ce20677f10cac58d18ea0",
+  "title": "fix(agent-proposal): make generated review delivery gate-compliant",
+  "state": "MERGED",
+  "merged_at": "2026-08-17T14:03:46Z",
+  "head_ref": "fix/generated-proposal-gate-metadata"
+}

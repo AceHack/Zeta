@@ -1,0 +1,12 @@
+{
+  "pr_number": 4592,
+  "archive_path": "docs/history/pr-reviews/PR-4592-memory-kestrel-session-resolution-precise-conjunction-for-future-self-as-only-en.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-22T00:45:02.625Z",
+  "schema_version": "v1",
+  "commit_sha": "d601d7cb6a1045720fbeb611ec6ae85dc1591c44",
+  "title": "memory: Kestrel-session resolution — precise conjunction for future-self-as-only-enemy claim",
+  "state": "MERGED",
+  "merged_at": "2026-05-22T00:44:46Z",
+  "head_ref": "memory/otto-desktop-kestrel-session-resolution-conjunction-2026-05-21"
+}

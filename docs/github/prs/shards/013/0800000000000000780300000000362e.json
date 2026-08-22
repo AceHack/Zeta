@@ -1,0 +1,12 @@
+{
+  "pr_number": 13870,
+  "archive_path": "docs/history/pr-reviews/PR-13870-fix-swarm-an-existssync-gate-in-front-of-the-signature-read-is-a-check-then-use-.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-22T19:13:56.083Z",
+  "schema_version": "v1",
+  "commit_sha": "276bbfe62514e2ecb17222fb90279e42c7bbe8f1",
+  "title": "fix(swarm): an existsSync gate in front of the signature read is a check-then-use race",
+  "state": "MERGED",
+  "merged_at": "2026-08-22T19:13:09Z",
+  "head_ref": "shadow-swarm-toctou"
+}

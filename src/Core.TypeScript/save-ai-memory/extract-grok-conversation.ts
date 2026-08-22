@@ -1,6 +1,6 @@
 #!/usr/bin/env bun
 /**
- * tools/save-ai-memory/extract-grok-conversation.ts
+ * src/Core.TypeScript/save-ai-memory/extract-grok-conversation.ts
  *
  * Extract a Grok conversation from the user's authenticated Chrome session
  * via osascript-driven AppleScript invocation.
@@ -29,9 +29,9 @@
  *
  * Pipes the extracted plaintext to stdout for piping into process-extract.ts:
  *
- *   bun tools/save-ai-memory/extract-grok-conversation.ts \
+ *   bun src/Core.TypeScript/save-ai-memory/extract-grok-conversation.ts \
  *       --url-fragment "grok.com/c/<conversation-id>" \
- *       | bun tools/save-ai-memory/process-extract.ts \
+ *       | bun src/Core.TypeScript/save-ai-memory/process-extract.ts \
  *         --ai-name ani --platform grok \
  *         --topic plateau-bounded-extract --conversation-id <id>
  *

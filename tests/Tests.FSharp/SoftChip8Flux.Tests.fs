@@ -120,6 +120,69 @@ let ``CONFERENCE: a banana-split (input fork) convenes the projected future selv
         Assert.Equal(Chip8Cow.step (SoftChip8Flux.applyKey 0xC true atFork), survivor)
     | None -> Assert.Fail "an input fork must convene a conference"
 
+// ── The tick-boundary freeze property (shadow*, 2026-08-17) ────────────────────────────────
+//
+// `Chip8Cow.Frame` is an immutable record with TWO mutable escape hatches — `V: byte[]` and
+// `Keys: bool[]`. Both are held copy-on-write by convention, and until now only ONE of the two
+// had a falsifier: mutating `Chip8Cow.setV` to alias instead of `Array.copy` reddens 12 tests
+// (Chip8CowTests "COW purity", "rewind", StateSpaceGuarded, MemoryLens, HierarchicalPlanning,
+// …), while mutating `SoftChip8Flux.applyKey` the same way was survived by the ENTIRE F# suite
+// (5272 passed, 0 failed). Same record, same discipline, opposite metering status — so the
+// `Keys` half was `unmetered`, not `metered` (toy-is-free-metered-must-be-earned).
+//
+// This matters at the tick boundary specifically: `applyKey` is the ONE place an input crossing
+// enters the `driveK` loop (`SoftChip8Flux.inputHandler`), and `Chip8Cow.step`/`tick` carry the
+// `Keys` reference forward unchanged from frame to frame. So an aliasing `applyKey` writes
+// through into every frame retained from an EARLIER tick — the antecedent a continuation carries
+// forward would silently acquire a key-state the original tick never saw, and a DST replay would
+// diverge from the run it claims to reproduce.
+
+[<Fact>]
+let ``applyKey is COW: the input crossing never writes through into the parent frame`` () =
+    let parent = frameWith loopRom
+    let parentKeysBefore = Array.copy parent.Keys
+    let child = SoftChip8Flux.applyKey 0x5 true parent
+
+    Assert.True(child.Keys.[0x5]) // the crossing landed in the CHILD
+    Assert.False(parent.Keys.[0x5]) // and NOT in the parent
+    Assert.Equal<bool[]>(parentKeysBefore, parent.Keys)
+    Assert.False(System.Object.ReferenceEquals(parent.Keys, child.Keys)) // no shared buffer
+
+[<Fact>]
+let ``a key crossing at a LATER tick cannot reach back into a frame retained from an EARLIER tick`` () =
+    task {
+        // the antecedent a continuation would carry forward: the tick-0 frame, retained.
+        let retained = frameWith loopRom
+        let asOfTick0 =
+            { retained with
+                V = Array.copy retained.V
+                Keys = Array.copy retained.Keys }
+
+        // key C goes down on every tick from 1 onward — crossings strictly AFTER the retained frame
+        let source: SoftScheduler.Source =
+            fun tick ->
+                [ yield TimerElapsed 17
+                  if tick >= 1 then
+                      yield OperatorMessageArrived(SoftChip8Flux.encodeKey 0xC true) ]
+
+        let ctx: IntrCtx =
+            { Memetic = "freeze"
+              Prompt = ""
+              Trust = ""
+              Log = ""
+              Otel = System.Diagnostics.ActivityContext() }
+
+        let handlers = [ SoftChip8Flux.inputHandler; SoftChip8Flux.timerHandler 2 ]
+        let! r = (SoftScheduler.driveK handlers source).Run ctx 1L retained 5
+
+        match r with
+        | Error e -> Assert.Fail(sprintf "room errored: %A" e)
+        | Ok final ->
+            Assert.True(final.Keys.[0xC]) // the crossings DID land downstream (the check is not vacuous)
+            Assert.False(retained.Keys.[0xC]) // …and did not reach back across the tick boundary
+            Assert.Equal<Chip8Cow.Frame>(asOfTick0, retained) // byte-identical to its tick-0 self
+    }
+
 [<Fact>]
 let ``no conference on a deterministic line (the room is alone on its worldline — no banana split)`` () =
     let f = frameWith loopRom

@@ -1,0 +1,12 @@
+{
+  "pr_number": 12824,
+  "archive_path": "docs/history/pr-reviews/PR-12824-research-the-cone-question-answered-monotonicity-survives-uniqueness-does-not-so.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-20T15:49:25.591Z",
+  "schema_version": "v1",
+  "commit_sha": "0b4c833ecd2abee093f5bece5f7fa0558b41bbfc",
+  "title": "research: the cone question answered — monotonicity survives, uniqueness does not (Soraya)",
+  "state": "MERGED",
+  "merged_at": "2026-08-20T15:48:44Z",
+  "head_ref": "research/campbell-cone-vs-simplex"
+}

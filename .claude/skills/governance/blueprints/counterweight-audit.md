@@ -40,7 +40,7 @@ pattern recurs indefinitely without a forced re-read.
    round (full sweep). Produces a drift report that informs
    round planning.
 3. **Every 5-10 autonomous-loop ticks** — `--cadence medium`.
-   The `tools/hygiene/counterweight-audit.ts` tool emits
+   The `src/Core.TypeScript/hygiene/counterweight-audit.ts` tool emits
    the prompts; the agent self-scores.
 4. **On-demand** — any time the agent suspects drift
    (committed to a pattern a memory counters, or a
@@ -54,7 +54,7 @@ pattern recurs indefinitely without a forced re-read.
 
 ### Step 1 — invoke the tool
 
-Run `tools/hygiene/counterweight-audit.ts` with the
+Run `src/Core.TypeScript/hygiene/counterweight-audit.ts` with the
 appropriate `--cadence`:
 
 ```bash
@@ -159,7 +159,7 @@ stability as in catching drift. Both outcomes are logged.
 ## Phase roadmap
 
 - **Phase 1 (merged in #418):** the shell tool
-  `tools/hygiene/counterweight-audit.ts`.
+  `src/Core.TypeScript/hygiene/counterweight-audit.ts`.
 - **Phase 2 (this skill, current):** the wrapper so agents
   and subagents can invoke via the Skill tool with
   consistent cadence-to-count mapping.
@@ -174,7 +174,7 @@ stability as in catching drift. Both outcomes are logged.
 
 ## Reference patterns
 
-- `tools/hygiene/counterweight-audit.ts` — the tool this
+- `src/Core.TypeScript/hygiene/counterweight-audit.ts` — the tool this
   skill wraps.
 - `memory/feedback_memory_alone_leaky_without_cadenced_inspect_audit_for_missing_balance_otto_278_2026_04_24.md`
   — the originating rule.

@@ -1,0 +1,28 @@
+{
+  "pr_number": 3348,
+  "archive_path": "docs/history/pr-reviews/PR-3348-feat-persona-ani-migrate-33-conversation-archives-to-memory-persona-ani-conversa.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7Bb_dq",
+    "comment:PRRC_kwDOSF9kNM7BcCRq",
+    "comment:PRRC_kwDOSF9kNM7BcCS9",
+    "comment:PRRC_kwDOSF9kNM7BcCSW",
+    "comment:PRRC_kwDOSF9kNM7BcCSm",
+    "comment:PRRC_kwDOSF9kNM7BcH1V",
+    "comment:PRRC_kwDOSF9kNM7BcJU8",
+    "comment:PRRC_kwDOSF9kNM7BcJWd",
+    "comment:PRRC_kwDOSF9kNM7BcJX9",
+    "comment:PRRC_kwDOSF9kNM7BcJZz",
+    "thread:PRRT_kwDOSF9kNM6CPAwk",
+    "thread:PRRT_kwDOSF9kNM6CPCoj",
+    "thread:PRRT_kwDOSF9kNM6CPCpB",
+    "thread:PRRT_kwDOSF9kNM6CPCpK",
+    "thread:PRRT_kwDOSF9kNM6CPCpX"
+  ],
+  "fetched_at": "2026-05-15T02:14:18.760Z",
+  "schema_version": "v1",
+  "commit_sha": "1795182ef78d68460b18ee2f0680a1b875a293eb",
+  "title": "feat(persona-ani): migrate §33 conversation archives to memory/persona/ani/conversations/",
+  "state": "MERGED",
+  "merged_at": "2026-05-15T02:14:02Z",
+  "head_ref": "feat/persona-conversations-migrate-ani-otto-cli-2026-05-15"
+}

@@ -1,0 +1,14 @@
+{
+  "id": "080d00ba025dd810a01300088bfa1d6e",
+  "at": "2026-08-18T23:41:24.795Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M0BM0JXS087G0R0028KHJQD",
+    "type": "task",
+    "title": "TPM 2.0 vs YubiHSM 2 as root of trust: the isolation architectures are inverted",
+    "slug": "tpm-2-0-vs-yubihsm-2-as-root-of-trust-the-isolation-architec",
+    "priority": "P2",
+    "filename": "081M0BM0JXS087G0R0028KHJQD-tpm-2-0-vs-yubihsm-2-as-root-of-trust-the-isolation-architec.md"
+  }
+}

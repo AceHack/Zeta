@@ -1,0 +1,12 @@
+{
+  "pr_number": 7969,
+  "archive_path": "docs/history/pr-reviews/PR-7969-codex-feat-core-reconstruct-fused-gsets-from-zsets.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-12T18:46:44.663Z",
+  "schema_version": "v1",
+  "commit_sha": "abf7d5e25bf7a248363da961e5c88b1976ae1e1b",
+  "title": "[codex] feat(core): reconstruct fused gsets from zsets",
+  "state": "MERGED",
+  "merged_at": "2026-06-12T18:46:15Z",
+  "head_ref": "codex/fusion-reconstruction"
+}

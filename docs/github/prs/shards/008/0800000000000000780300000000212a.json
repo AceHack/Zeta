@@ -1,0 +1,12 @@
+{
+  "pr_number": 8490,
+  "archive_path": "docs/history/pr-reviews/PR-8490-memory-ferry-protocol-ferry-throttler-save-before-ferry-du-book-of-the-dead-non-.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-16T09:33:29.528Z",
+  "schema_version": "v1",
+  "commit_sha": "2798574851d90aa31a0f3772e161e643f0683c7f",
+  "title": "memory: ferry-protocol = ferry-throttler (save-before-ferry + DU + Book-of-the-Dead non-moral half) + Alexa pt2 razor-cut",
+  "state": "MERGED",
+  "merged_at": "2026-06-16T09:32:53Z",
+  "head_ref": "otto/ferry-throttler-protocol-plus-alexa-pt2-cut"
+}

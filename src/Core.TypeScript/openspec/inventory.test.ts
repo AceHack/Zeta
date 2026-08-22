@@ -443,7 +443,7 @@ describe("integration: real repo scan", () => {
     const repoRoot = join(import.meta.dir, "../../..");
     const modules = scanModules(join(repoRoot, "src", "Core"));
     expect(modules.length).toBeGreaterThanOrEqual(50);
-  }, 120000);
+  });
 
   test("real z-set-algebra spec is artifact-mapped", () => {
     const repoRoot = join(import.meta.dir, "../../..");

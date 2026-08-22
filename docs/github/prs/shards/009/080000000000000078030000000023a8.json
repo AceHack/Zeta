@@ -1,0 +1,12 @@
+{
+  "pr_number": 9128,
+  "archive_path": "docs/history/pr-reviews/PR-9128-docs-handoffs-soraya-formalization-routing-zetaidol-probe-wiring-steer-request-s.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-17T06:54:11.379Z",
+  "schema_version": "v1",
+  "commit_sha": "4a4fe1d497f250e4970693170799b5e57464d50f",
+  "title": "docs(handoffs): Soraya formalization routing + ZetaIdol probe-wiring steer request (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-02T12:39:50Z",
+  "head_ref": "handoffs/soraya-routing-and-zetaidol-steer"
+}

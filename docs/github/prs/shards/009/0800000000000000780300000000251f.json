@@ -1,0 +1,12 @@
+{
+  "pr_number": 9503,
+  "archive_path": "docs/history/pr-reviews/PR-9503-codex-project-room-transcripts-to-llmtv.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-05T23:10:51.598Z",
+  "schema_version": "v1",
+  "commit_sha": "6cabc29f1db04c6210be7c504526fd86ef87914c",
+  "title": "[codex] Project room transcripts to LLMTV",
+  "state": "MERGED",
+  "merged_at": "2026-07-05T23:10:27Z",
+  "head_ref": "codex/room-transcript-llmtv-projection"
+}

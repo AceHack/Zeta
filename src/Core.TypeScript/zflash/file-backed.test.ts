@@ -1,8 +1,8 @@
 import { describe, expect, test } from "bun:test";
-import {
-  parseFileBackedZflashArgs,
-  runFileBackedZflashCli,
-} from "./file-backed.ts";
+import { mkdtempSync, writeFileSync } from "node:fs";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
+import { parseFileBackedZflashArgs, runFileBackedZflashCli } from "./file-backed.ts";
 
 describe("parseFileBackedZflashArgs", () => {
   test("parses the file-backed QEMU image CLI shape", () => {
@@ -45,10 +45,86 @@ describe("parseFileBackedZflashArgs", () => {
       error: "--output is required",
       kind: "error",
     });
-    expect(parseFileBackedZflashArgs(["--iso", "installer.iso", "--output", "out.img", "--esp-offset-bytes", "0"])).toEqual({
+    expect(
+      parseFileBackedZflashArgs(["--iso", "installer.iso", "--output", "out.img", "--esp-offset-bytes", "0"]),
+    ).toEqual({
       error: "--esp-offset-bytes must be a positive safe integer",
       kind: "error",
     });
+  });
+
+  test("parses --bind-uefi-keyfile-marker as a boolean opt-in", () => {
+    const parsed = parseFileBackedZflashArgs([
+      "--iso",
+      "artifacts/zeta-installer.iso",
+      "--output",
+      "artifacts/zflash-baked.img",
+      "--esp-offset-bytes",
+      "1048576",
+      "--ssh-key",
+      "fixtures/id_ed25519.pub",
+      "--bind-uefi-keyfile-marker",
+    ]);
+
+    expect(parsed).toEqual({
+      kind: "run",
+      options: {
+        bindUefiKeyfileMarker: true,
+        espOffsetBytes: 1_048_576,
+        isoPath: "artifacts/zeta-installer.iso",
+        outputImagePath: "artifacts/zflash-baked.img",
+        pubkeyPath: "fixtures/id_ed25519.pub",
+      },
+    });
+  });
+
+  test("parses --qemu-creds-passphrase-file without putting the secret in argv options as a flag name", () => {
+    const dir = mkdtempSync(join(tmpdir(), "zeta-qemu-pp-"));
+    const ppPath = join(dir, "pp.txt");
+    writeFileSync(ppPath, "qemu-test-secret\n");
+    const parsed = parseFileBackedZflashArgs([
+      "--iso",
+      "artifacts/zeta-installer.iso",
+      "--output",
+      "artifacts/zflash-baked.img",
+      "--esp-offset-bytes",
+      "1048576",
+      "--ssh-key",
+      "fixtures/id_ed25519.pub",
+      "--qemu-creds-passphrase-file",
+      ppPath,
+    ]);
+
+    expect(parsed).toEqual({
+      kind: "run",
+      options: {
+        espOffsetBytes: 1_048_576,
+        isoPath: "artifacts/zeta-installer.iso",
+        outputImagePath: "artifacts/zflash-baked.img",
+        pubkeyPath: "fixtures/id_ed25519.pub",
+        qemuCredsPassphrase: "qemu-test-secret",
+      },
+    });
+  });
+
+  test("maps a missing --qemu-creds-passphrase-file to not found without echoing the path", () => {
+    const missingPath = join(tmpdir(), "zeta-qemu-pp-missing", "no-such-passphrase.txt");
+    const parsed = parseFileBackedZflashArgs([
+      "--iso",
+      "artifacts/zeta-installer.iso",
+      "--output",
+      "artifacts/zflash-baked.img",
+      "--esp-offset-bytes",
+      "1048576",
+      "--qemu-creds-passphrase-file",
+      missingPath,
+    ]);
+
+    expect(parsed).toEqual({
+      kind: "error",
+      error: "--qemu-creds-passphrase-file not found",
+    });
+    expect(JSON.stringify(parsed)).not.toContain(missingPath);
   });
 });
 
@@ -88,7 +164,7 @@ describe("runFileBackedZflashCli", () => {
       "write /private/tmp/zflash-inline-abc123/zeta-hostname.txt /zeta-hostname.txt pikachu\n",
       "mcopy -o -i artifacts/zflash-baked.img@@1048576 /private/tmp/zflash-inline-abc123/zeta-hostname.txt ::/zeta-hostname.txt",
       "mcopy -o -i artifacts/zflash-baked.img@@1048576 artifacts/zeta-creds.enc ::/zeta-creds.enc",
-      "write /private/tmp/zflash-inline-abc123/zeta-wifi-credentials.json /zeta-wifi-credentials.json {\"ssid\":\"Homelab\",\"password\":\"super-secret\"}\n",
+      'write /private/tmp/zflash-inline-abc123/zeta-wifi-credentials.json /zeta-wifi-credentials.json {"ssid":"Homelab","password":"super-secret"}\n',
       "mcopy -o -i artifacts/zflash-baked.img@@1048576 /private/tmp/zflash-inline-abc123/zeta-wifi-credentials.json ::/zeta-wifi-credentials.json",
     ]);
     expect(result.value.retentionBootImageEnvironment).toEqual({
@@ -116,7 +192,8 @@ describe("runFileBackedZflashCli", () => {
     );
 
     expect(result).toEqual({
-      error: "command failed (qemu-img convert -f raw -O raw artifacts/zeta-installer.iso artifacts/zflash-baked.img) with exit 17: convert failed",
+      error:
+        "command failed (qemu-img convert -f raw -O raw artifacts/zeta-installer.iso artifacts/zflash-baked.img) with exit 17: convert failed",
       ok: false,
     });
   });
@@ -141,8 +218,7 @@ describe("runFileBackedZflashCli", () => {
               ? {
                   exitCode: 0,
                   stderr: "",
-                  stdout:
-                    "zeta-authorized-keys.pub\nzeta-hostname.txt\nzeta-wifi-credentials.json\n",
+                  stdout: "zeta-authorized-keys.pub\nzeta-hostname.txt\nzeta-wifi-credentials.json\n",
                 }
               : { exitCode: 0, stderr: "", stdout: "" },
           writeFile: () => {},
@@ -214,5 +290,90 @@ describe("runFileBackedZflashCli", () => {
     if (!result.ok) {
       expect(result.error).not.toContain("super-secret");
     }
+  });
+});
+
+// ---------------------------------------------------------------------------
+// JOIN-TOKEN MATERIAL IS CHECKED AT THE CALL SITE, not merely validatable
+// ---------------------------------------------------------------------------
+//
+// `validateJoinTokenMaterial` is pure and has its own suite in
+// firstboot-role.test.ts. These tests exist for a different question: is it
+// REACHED? The plan only carries a `sourcePath`, so nothing downstream ever
+// opens the token file — a validator nobody calls would look exactly like a
+// guard and hold nothing. Real files on disk, real `runFileBackedZflashCli`.
+
+describe("runFileBackedZflashCli refuses a join token with no CA hash", () => {
+  const tokenDir = mkdtempSync(join(tmpdir(), "zflash-join-token-"));
+  const goodToken = join(tokenDir, "node-token");
+  const badToken = join(tokenDir, "bare-secret");
+  writeFileSync(goodToken, `K10${"a".repeat(64)}::server:0123456789abcdef\n`);
+  writeFileSync(badToken, "hunter2\n");
+
+  const joinerRole = {
+    kind: "joiner",
+    serverUrl: "https://control-plane:6443",
+    tokenEspPath: "/zeta-join-token",
+  } as const;
+
+  const baseOptions = {
+    espOffsetBytes: 1_048_576,
+    isoPath: "artifacts/zeta-installer.iso",
+    outputImagePath: "artifacts/zflash-baked.img",
+    pubkeyPath: "fixtures/id_ed25519.pub",
+  };
+
+  const noopExecutor = {
+    runCommand: () => ({ exitCode: 0, stderr: "", stdout: "" }),
+    writeFile: () => undefined,
+  };
+
+  test("a bare shared secret is refused BEFORE any command runs", () => {
+    const ran: string[] = [];
+    const result = runFileBackedZflashCli(
+      { ...baseOptions, firstbootRole: joinerRole, joinTokenSourcePath: badToken },
+      {
+        createInlineStagingDirectory: () => "/private/tmp/zflash-inline-abc123",
+        executor: {
+          runCommand: (command) => {
+            ran.push(command.command);
+            return { exitCode: 0, stderr: "", stdout: "" };
+          },
+          writeFile: () => undefined,
+        },
+      },
+    );
+
+    expect(result.ok).toBe(false);
+    if (result.ok) throw new Error("expected a refusal");
+    expect(result.error).toContain("CA hash");
+    expect(result.error).toContain(badToken);
+    // Fail-closed means fail EARLY: nothing was written to the image.
+    expect(ran).toEqual([]);
+  });
+
+  test("the token k3s itself writes passes and the bake proceeds", () => {
+    const result = runFileBackedZflashCli(
+      { ...baseOptions, firstbootRole: joinerRole, joinTokenSourcePath: goodToken },
+      {
+        createInlineStagingDirectory: () => "/private/tmp/zflash-inline-abc123",
+        executor: noopExecutor,
+      },
+    );
+    expect(result.ok).toBe(true);
+  });
+
+  test("a missing token file is refused rather than silently skipped", () => {
+    const result = runFileBackedZflashCli(
+      {
+        ...baseOptions,
+        firstbootRole: joinerRole,
+        joinTokenSourcePath: join(tokenDir, "does-not-exist"),
+      },
+      { createInlineStagingDirectory: () => "/private/tmp/x", executor: noopExecutor },
+    );
+    expect(result.ok).toBe(false);
+    if (result.ok) throw new Error("expected a refusal");
+    expect(result.error).toContain("not found");
   });
 });

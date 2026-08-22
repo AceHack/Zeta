@@ -1,0 +1,12 @@
+{
+  "pr_number": 7049,
+  "archive_path": "docs/history/pr-reviews/PR-7049-feat-core-sybilbftliveness-heartbeat-timeout-view-change-over-the-distinct-sourc.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-08T07:30:08.033Z",
+  "schema_version": "v1",
+  "commit_sha": "df462843de4bfb0baed66ff2cba5aa597a3304f2",
+  "title": "feat(core): SybilBftLiveness — heartbeat + timeout + view-change over the distinct-source quorum",
+  "state": "MERGED",
+  "merged_at": "2026-06-08T07:29:45Z",
+  "head_ref": "otto/sybil-bft-liveness-heartbeat-viewchange"
+}

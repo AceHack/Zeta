@@ -326,7 +326,10 @@ test("readouts + 1Password note are PUBLIC only — no private-key bytes ever ec
     const out = formatTeardown(res) + "\n" + format1PasswordNote();
     expect(out).not.toContain(PRIV_MARKER); // no private-key header in any readout
     expect(out).toContain("zeta-ca-private"); // the 1Password note names the items
-    expect(out).toContain("Biometric: 1 approval");
+    expect(out).toContain("Operator approval: 1 approval");
+    // The fixture door declares no factor, so the readout must say so rather than print
+    // the ATTEMPTED mechanism as if it were the ESTABLISHED one (081M06DSQ0Q087G0R000H91391).
+    expect(out).toContain("factor established: unattributed");
   } finally {
     cleanup();
   }

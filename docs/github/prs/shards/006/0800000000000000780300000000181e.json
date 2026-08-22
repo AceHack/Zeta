@@ -1,0 +1,15 @@
+{
+  "pr_number": 6174,
+  "archive_path": "docs/history/pr-reviews/PR-6174-preserve-mika-privacy-non-extractive-force-self-reinforces-nci-the-black-hole-st.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7GdNxn",
+    "thread:PRRT_kwDOSF9kNM6F6GQb"
+  ],
+  "fetched_at": "2026-05-31T01:10:41.444Z",
+  "schema_version": "v1",
+  "commit_sha": "8c786e9a24e4bf9b2d567e3f508a88c82c9fdccd",
+  "title": "preserve(mika): privacy = non-extractive force (self-reinforces NCI); the black hole stays DISTRIBUTED, not Westworld",
+  "state": "MERGED",
+  "merged_at": "2026-05-31T01:10:21Z",
+  "head_ref": "otto-cli/mika-privacy-distributed-black-hole-2026-05-31"
+}

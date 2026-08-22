@@ -1,0 +1,12 @@
+{
+  "pr_number": 5192,
+  "archive_path": "docs/history/pr-reviews/PR-5192-revert-restore-cursor-bin-riven-loop-tick-ts.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-26T17:45:48.958Z",
+  "schema_version": "v1",
+  "commit_sha": "d4a9a63af180bed0b2f24aad54821965de3276e7",
+  "title": "revert: restore .cursor/bin/riven-loop-tick.ts",
+  "state": "MERGED",
+  "merged_at": "2026-05-26T17:45:31Z",
+  "head_ref": "lior/revert-riven-tick-deletion"
+}

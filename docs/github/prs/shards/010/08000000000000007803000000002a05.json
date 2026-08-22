@@ -1,0 +1,15 @@
+{
+  "pr_number": 10757,
+  "archive_path": "docs/history/pr-reviews/PR-10757-fix-bytelock-two-of-nine-substrates-verified-nothing-go-never-built-zig-s-artefa.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7h3O14",
+    "thread:PRRT_kwDOSF9kNM6ZgVhO"
+  ],
+  "fetched_at": "2026-08-15T13:00:38.930Z",
+  "schema_version": "v1",
+  "commit_sha": "ca4b971bddd2b54c8c2c25bfc981a286ba7e5b3f",
+  "title": "fix(bytelock): two of nine substrates verified nothing — Go never built, Zig's artefact an ar archive",
+  "state": "MERGED",
+  "merged_at": "2026-08-15T13:00:05Z",
+  "head_ref": "shadow/bytelock-substrates-that-never-ran"
+}

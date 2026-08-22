@@ -1,0 +1,24 @@
+{
+  "pr_number": 3333,
+  "archive_path": "docs/history/pr-reviews/PR-3333-docs-shadow-lior-antigravity-check-log-codex-drift.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7BbL9c",
+    "comment:PRRC_kwDOSF9kNM7BbMEF",
+    "comment:PRRC_kwDOSF9kNM7BbMET",
+    "comment:PRRC_kwDOSF9kNM7BbcUL",
+    "comment:PRRC_kwDOSF9kNM7BcQBR",
+    "comment:PRRC_kwDOSF9kNM7BdBWy",
+    "thread:PRRT_kwDOSF9kNM6COdPW",
+    "thread:PRRT_kwDOSF9kNM6COdT_",
+    "thread:PRRT_kwDOSF9kNM6COdUI",
+    "thread:PRRT_kwDOSF9kNM6COoFc",
+    "thread:PRRT_kwDOSF9kNM6CPMlT"
+  ],
+  "fetched_at": "2026-05-15T03:10:38.119Z",
+  "schema_version": "v1",
+  "commit_sha": "e8c40ff6b275be156e447f352d2c5c198d035953",
+  "title": "docs(shadow): Lior antigravity check - log codex drift",
+  "state": "MERGED",
+  "merged_at": "2026-05-15T03:10:21Z",
+  "head_ref": "lior/shadow-log-0100Z"
+}

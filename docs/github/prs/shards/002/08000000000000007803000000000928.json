@@ -1,0 +1,24 @@
+{
+  "pr_number": 2344,
+  "archive_path": "docs/history/pr-reviews/PR-2344-docs-b-0011-re-decompose-into-smallest-safe-slices-before-implementation-riven.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_j-4C",
+    "comment:PRRC_kwDOSF9kNM6_j_D-",
+    "comment:PRRC_kwDOSF9kNM6_j_D4",
+    "comment:PRRC_kwDOSF9kNM6_j_Dk",
+    "comment:PRRC_kwDOSF9kNM6_j_Du",
+    "comment:PRRC_kwDOSF9kNM6_j_Tz",
+    "thread:PRRT_kwDOSF9kNM6A2lmn",
+    "thread:PRRT_kwDOSF9kNM6A2lwb",
+    "thread:PRRT_kwDOSF9kNM6A2lwk",
+    "thread:PRRT_kwDOSF9kNM6A2lws",
+    "thread:PRRT_kwDOSF9kNM6A2lwy"
+  ],
+  "fetched_at": "2026-05-09T21:00:02.415Z",
+  "schema_version": "v1",
+  "commit_sha": "d1c8a08ccbae89a0e85f55b2dfa7439d9f245a18",
+  "title": "docs(B-0011): re-decompose into smallest safe slices before implementation (Riven)",
+  "state": "MERGED",
+  "merged_at": "2026-05-09T20:59:45Z",
+  "head_ref": "claim/b0011-pliny-carve-out-smallest-slice-riven-2026-05-09"
+}

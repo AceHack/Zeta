@@ -1,0 +1,21 @@
+{
+  "pr_number": 5918,
+  "archive_path": "docs/history/pr-reviews/PR-5918-research-b-0885-agent-private-encrypted-state-substrate-target-review-a-b-hybrid.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7F4Mff",
+    "comment:PRRC_kwDOSF9kNM7F4MgM",
+    "comment:PRRC_kwDOSF9kNM7F4Mgf",
+    "comment:PRRC_kwDOSF9kNM7F4Mgy",
+    "thread:PRRT_kwDOSF9kNM6FfEz8",
+    "thread:PRRT_kwDOSF9kNM6FfEzH",
+    "thread:PRRT_kwDOSF9kNM6FfEzm",
+    "thread:PRRT_kwDOSF9kNM6FfEzw"
+  ],
+  "fetched_at": "2026-05-28T18:24:14.748Z",
+  "schema_version": "v1",
+  "commit_sha": "9948e107552c410db4f3a43a2e1e5ba4a03de62f",
+  "title": "research(b-0885): agent-private-encrypted-state substrate-target review — A/B/Hybrid design-space + composition with framework substrate + 8 operator-decision questions surfaced; NO crypto-library picks (encryption lane research-tier push 2026-05-28)",
+  "state": "MERGED",
+  "merged_at": "2026-05-28T18:23:49Z",
+  "head_ref": "otto-cli/encryption-b0885-substrate-target-review-2026-05-28"
+}

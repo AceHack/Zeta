@@ -1,0 +1,12 @@
+{
+  "pr_number": 7306,
+  "archive_path": "docs/history/pr-reviews/PR-7306-docs-research-default-strategy-stack-survival-uncertainty-reduction-tit-for-less.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-09T15:02:59.633Z",
+  "schema_version": "v1",
+  "commit_sha": "352eebb5a01e2f622b4c9f627c88922a4ae863fc",
+  "title": "docs(research): default strategy stack — survival → uncertainty reduction → tit-for-lesser-tat + teach-play (generous TFT); same loop as Cheat-Engine cheat-stacking",
+  "state": "MERGED",
+  "merged_at": "2026-06-09T15:02:33Z",
+  "head_ref": "otto/default-strategy-stack-survival-uncertainty-tit-for-lesser-tat-teach-play-cheat-stacking"
+}

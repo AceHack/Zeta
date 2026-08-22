@@ -64,6 +64,26 @@ describe("classifyPath", () => {
     expect(classifyPath("tools/hygiene/audit-x.ts")).toBe("tooling-or-ci");
   });
 
+  // Post-#8050 locations. These MUST beat the `src/` operational rule --
+  // without the src/Core.TypeScript/{ci,hygiene,lint}/ rules ordered above it,
+  // every hygiene/lint/ci change silently lanes as `operational`.
+  test("tooling-or-ci: src/Core.TypeScript/ci/ (post-#8050)", () => {
+    expect(classifyPath("src/Core.TypeScript/ci/audit-installer-substrate.ts")).toBe("tooling-or-ci");
+  });
+
+  test("tooling-or-ci: src/Core.TypeScript/hygiene/ (post-#8050)", () => {
+    expect(classifyPath("src/Core.TypeScript/hygiene/audit-x.ts")).toBe("tooling-or-ci");
+  });
+
+  test("tooling-or-ci: src/Core.TypeScript/lint/ (post-#8050)", () => {
+    expect(classifyPath("src/Core.TypeScript/lint/no-empty-dirs.ts")).toBe("tooling-or-ci");
+  });
+
+  test("operational: src/ outside the tooling subtrees still lanes operational", () => {
+    expect(classifyPath("src/Core/ZSet.fs")).toBe("operational");
+    expect(classifyPath("src/Core.TypeScript/installer/zeta-creds-persist.ts")).toBe("operational");
+  });
+
   test("tooling-or-ci: .github/workflows/", () => {
     expect(classifyPath(".github/workflows/ci.yml")).toBe("tooling-or-ci");
   });

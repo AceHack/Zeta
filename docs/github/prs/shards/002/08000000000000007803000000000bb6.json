@@ -1,0 +1,17 @@
+{
+  "pr_number": 2998,
+  "archive_path": "docs/history/pr-reviews/PR-2998-docs-memory-aaron-architectural-challenge-background-services-must-be-strong-eno.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7A3VQZ",
+    "comment:PRRC_kwDOSF9kNM7A3VSC",
+    "thread:PRRT_kwDOSF9kNM6B0Psw",
+    "thread:PRRT_kwDOSF9kNM6B0PuG"
+  ],
+  "fetched_at": "2026-05-13T16:21:15.315Z",
+  "schema_version": "v1",
+  "commit_sha": "b237daa3cee7f740141b0f7be2deb15c69402a55",
+  "title": "docs(memory): Aaron architectural challenge — background services must be strong enough that foreground loop is OPTIONAL — mechanize Standing-by failure mode",
+  "state": "MERGED",
+  "merged_at": "2026-05-13T16:20:51Z",
+  "head_ref": "aaron-background-services-must-be-strong-enough-foreground-loop-optional-mechanize-standing-by-failure-mode-2026-05-13"
+}

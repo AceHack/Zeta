@@ -14,6 +14,7 @@ export interface LoopEnv {
   readonly stateDir: string;
   readonly logDir: string;
   readonly ref: string;
+  readonly toolPathPrefix: string | undefined;
 }
 
 /** Derive default paths from persona name, cross-platform. */
@@ -49,6 +50,7 @@ export function defaultPaths(persona: string): { worktree: string; stateDir: str
 export function resolveEnv(persona: string): LoopEnv {
   const config = getPersona(persona);
   const paths = defaultPaths(persona);
+  const toolPathPrefix = process.env.ZETA_LOOP_TOOL_PATH_PREFIX?.trim();
 
   return {
     persona,
@@ -56,6 +58,7 @@ export function resolveEnv(persona: string): LoopEnv {
     stateDir: process.env.ZETA_LOOP_STATE_DIR ?? paths.stateDir,
     logDir: process.env.ZETA_LOOP_LOG_DIR ?? paths.logDir,
     ref: process.env.ZETA_LOOP_REF ?? config?.defaultRef ?? "main",
+    toolPathPrefix: toolPathPrefix === "" ? undefined : toolPathPrefix,
   };
 }
 

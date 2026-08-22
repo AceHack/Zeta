@@ -30,7 +30,11 @@ clearly marked, not yet verified.** Marking the line precisely is *itself* the p
   *modeled* telemetry) plus a **real-data adapter** stating exactly what a live system must emit. The
   verification-precision the moat sells, made concrete on a load-bearing security primitive. (Register-2
   for the *verification primitive*; the full guardian — hardware attestation, real EMS integration — stays
-  Conjecture. Diligence surface: [`../explainers/decorrelation-meter-grid-trust-for-max.md`](../explainers/decorrelation-meter-grid-trust-for-max.md).)
+  Conjecture. When it is built, its strongest possible claim is *"the silicon vendor vouches this is
+  genuine silicon running this measurement"* — hardware attestation terminates in a vendor's self-signed
+  root, AMD ARK or Intel SGX Root CA, with no vendor-independent alternative in existence. That is the
+  industry-standard foundation, not a weakness; stating it is how a diligence reader knows the number is
+  honest. Diligence surface: [`../explainers/decorrelation-meter-grid-trust-for-max.md`](../explainers/decorrelation-meter-grid-trust-for-max.md).)
 - **The factory method** — the founder produces *observations*; a decorrelated society + independent
   oracles verify; passing seeds become substrate, failing seeds retract (key-man risk answered
   structurally — see below).
@@ -50,19 +54,38 @@ clearly marked, not yet verified.** Marking the line precisely is *itself* the p
 - **The vibe-coded hypothesis at scale** — that an AI-directed factory produces research-grade systems
   code without a human in the edit loop. *A load-bearing research claim under test — not "accomplished."*
 
-## The TSMC analogy (structural, not metaphorical)
+## The TSMC analogy (structural on the *process* claim; **not yet quantified** on the *precision* claim)
 
 | TSMC | Zeta |
 |------|------|
 | Etches patterns into silicon | Etches patterns into time |
-| Moat = process precision (nm accuracy) | Moat = process precision (verification calibration: cross-language byte-lock + formal methods) |
+| Moat = process precision (nm accuracy — a measured tolerance) | Moat = process calibration (cross-language byte-lock + formal methods — exact pass/fail, **not** a tolerance; see the disclosure below) |
 | Calibrated optics (EUV lithography) | Calibrated generators (gen(gen)===gen) |
 | Verified masks (design rule checks) | Verified schemas (TLA+ proven, golden vectors) |
 | Process Design Kit (PDK) for customers | Schema + ISA + polarity filters for customers |
 | Customers design chips, not transistors | Customers design apps, not Z-set operators |
-| Multi-patterning (compose for resolution) | Multi-lens (compose polarity filters for precision) |
+| Multi-patterning (compose exposures because a single one is floored at k₁ = 0.25; paid for in overlay budget) | Multi-lens (compose polarity filters) — **no resolution limit is modelled on our side**, so this row is shape, not equivalence |
 | Packaged chips (tested, ready to slot in) | ACE packages (deployed time-crystals, self-sustaining) |
 | $800B market cap | Starts here |
+
+**Precision disclosure (2026-08-15) — read the moat row exactly as written.** A diligence reader should
+know which half of this analogy is measured:
+
+- **TSMC's precision row is a number, and ours is not.** Their side is quantified end to end: EUV at
+  λ = 13.5 nm, NA 0.33, half-pitch bounded by the Rayleigh form k₁·λ/NA with a hard k₁ = 0.25 floor for a
+  single exposure, and nm-scale overlay budgets that multi-patterning forces into the critical-dimension
+  budget directly. **Zeta's side of that row says "verification calibration" — which is a real and
+  checkable claim about *process*, and is not a precision figure.** We publish **no nm, no error budget,
+  and no overlay analogue**, because we do not have one; the honest reading of the one-line pitch is
+  therefore *same moat **shape*** (calibration time that cannot be bought), not *same moat metric*.
+- **What is actually measured** is listed in § Thesis above — byte-identical cross-language golden
+  vectors, TLC/Z3/Lean-checked properties. Those are **exact** (bit-for-bit, pass/fail), which is a
+  different kind of guarantee from a *tolerance*: they say "identical or not," never "within ε."
+- **The open requirement.** The missing quantity is a tolerance with a violation: a metric on
+  projections, a stated bound, and an error charged per composed filter, such that a composition can fail
+  the bound and a test catches it. Until that exists, the optical/precision half of "TSMC in time" is
+  **positioning (§B Conjecture)**, and it is listed there. No figure is invented here to fill the gap —
+  a fabricated precision number in a funding document would cost more than the acknowledged absence.
 
 ## Why $200K is enough to jump-start
 

@@ -1,0 +1,12 @@
+{
+  "pr_number": 9658,
+  "archive_path": "docs/history/pr-reviews/PR-9658-docs-zeta-finding-form-euler-the-hinge-geometric-topological-zeta-keystone-gnosi.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-10T04:27:39.995Z",
+  "schema_version": "v1",
+  "commit_sha": "9d53dcd1c6fbf64a7c44dd0b06b603fe250ff0f2",
+  "title": "docs: zeta finding form (Euler the hinge, geometric/topological zeta, keystone, Gnosis) + the book's thesis",
+  "state": "MERGED",
+  "merged_at": "2026-07-10T04:27:11Z",
+  "head_ref": "shadow/zeta-finding-form-the-hinge"
+}

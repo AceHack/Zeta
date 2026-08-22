@@ -1,0 +1,12 @@
+{
+  "pr_number": 10051,
+  "archive_path": "docs/history/pr-reviews/PR-10051-book-cross-wire-companions-into-the-chapters-they-ground-coherence-pass.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-04T23:09:38.857Z",
+  "schema_version": "v1",
+  "commit_sha": "8859867a9a4950f1c717d811f6a37e374f4594aa",
+  "title": "book: cross-wire companions into the chapters they ground (coherence pass)",
+  "state": "MERGED",
+  "merged_at": "2026-08-04T23:09:08Z",
+  "head_ref": "docs/book-crosswire-companions-to-chapters"
+}

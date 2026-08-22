@@ -1,0 +1,12 @@
+{
+  "pr_number": 7315,
+  "archive_path": "docs/history/pr-reviews/PR-7315-docs-research-the-hat-system-architecture-keyed-owned-for-a-period-scarce-typed-.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-09T15:20:25.309Z",
+  "schema_version": "v1",
+  "commit_sha": "a9540b746b0f5e9f4cd1802cdc0f6281fadb8ad7",
+  "title": "docs(research): the hat-system architecture — keyed, owned-for-a-period, scarce typed slots per repo, scoped (meta/repo/game), boundary-tied",
+  "state": "MERGED",
+  "merged_at": "2026-06-09T15:19:56Z",
+  "head_ref": "otto/hat-system-architecture-keyed-owned-for-period-scarce-typed-slots-scoped-boundary-tied"
+}

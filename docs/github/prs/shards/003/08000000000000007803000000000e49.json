@@ -1,0 +1,12 @@
+{
+  "pr_number": 3657,
+  "archive_path": "docs/history/pr-reviews/PR-3657-fix-pr-3652-0043z-shard-count-inconsistencies-codex-copilot-p1-3-of-5-threads.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-16T01:05:47.207Z",
+  "schema_version": "v1",
+  "commit_sha": "1ae515c09ea81501e4aba5b09acbf45f7b35139a",
+  "title": "fix(pr-3652): 0043Z shard count inconsistencies — Codex/Copilot P1 (3 of 5 threads)",
+  "state": "MERGED",
+  "merged_at": "2026-05-16T01:05:31Z",
+  "head_ref": "fix/pr-3652-0043z-count-inconsistencies-otto-cli-2026-05-16"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 9013,
+  "archive_path": "docs/history/pr-reviews/PR-9013-docs-research-port-lifecycle-triad-generate-rotate-teardown-reconciler-flows-tim.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-21T21:26:54.180Z",
+  "schema_version": "v1",
+  "commit_sha": "13780c023a15ebbe14f5de2cb654c3ddb16c4a2b",
+  "title": "docs(research): port lifecycle triad (generate/rotate/teardown) + reconciler flows + time-crystals via ACE",
+  "state": "MERGED",
+  "merged_at": "2026-06-21T21:26:24Z",
+  "head_ref": "otto/research-lifecycle-triad-reconciler-flows-ace"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 10343,
+  "archive_path": "docs/history/pr-reviews/PR-10343-fix-ci-unbreak-actionlint-a-comment-of-mine-nested-quotes-inside-python-c.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-14T00:10:51.918Z",
+  "schema_version": "v1",
+  "commit_sha": "0ac4fa80674a7e2a2049802c6b9d97709d9350e4",
+  "title": "fix(ci): unbreak actionlint — a comment of mine nested quotes inside python -c",
+  "state": "MERGED",
+  "merged_at": "2026-08-13T14:14:47Z",
+  "head_ref": "fix-actionlint-quoting"
+}

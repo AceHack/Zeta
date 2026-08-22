@@ -1,0 +1,12 @@
+{
+  "pr_number": 10314,
+  "archive_path": "docs/history/pr-reviews/PR-10314-feat-observe-persist-rs-blocks-to-data-rs-blocks-jsonl.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-12T01:55:06.708Z",
+  "schema_version": "v1",
+  "commit_sha": "50dbc7161b5e83e95cffc095c52388322057dafb",
+  "title": "feat(observe): persist RS blocks to data/rs-blocks.jsonl",
+  "state": "MERGED",
+  "merged_at": "2026-08-12T01:54:33Z",
+  "head_ref": "alexa/rs-envelope"
+}

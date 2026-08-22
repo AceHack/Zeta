@@ -1,0 +1,12 @@
+{
+  "pr_number": 7029,
+  "archive_path": "docs/history/pr-reviews/PR-7029-docs-capstone-clock-noise-is-thermal-noise-the-irreducible-error-is-thermodynami.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-08T05:43:54.533Z",
+  "schema_version": "v1",
+  "commit_sha": "cf1c007fabf8d963760dca2a92c1dd73866fea47",
+  "title": "docs: capstone — clock noise IS thermal noise; the irreducible error is thermodynamic (Landauer); DST=Theory (#7078)",
+  "state": "MERGED",
+  "merged_at": "2026-06-08T05:43:34Z",
+  "head_ref": "otto/irreducible-error-is-thermodynamic-clock-thermal-noise-dst-theory"
+}

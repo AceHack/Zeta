@@ -4,8 +4,8 @@
 - **Harness:** cursor
 - **Claimed at:** 2026-05-11T16:11:00Z
 - **ETA:** 2026-05-11T16:30:00Z
-- **Scope:** Claim 081KR2E4K0008QG0R001ZZ5XXF; implement smallest safe slice = TS typed structure recognition surface + CPU stub in tools/concordance/concordance.ts (re-decomp already done in backlog row). Use dedicated worktree + pushed claim branch. Run focused checks (build gate, TS run). Open PR for the claim + verification step only.
-- **Durable target:** tools/concordance/concordance.ts (slice already present per prior re-decomp); docs/backlog/P1/081KR2E4K0008QG0R001ZZ5XXF-*.md (pre-start gate satisfied); no edits to CLAUDE.md/AGENTS.md/GOVERNANCE.md/memory.
+- **Scope:** Claim 081KR2E4K0008QG0R001ZZ5XXF; implement smallest safe slice = TS typed structure recognition surface + CPU stub in src/Core.TypeScript/concordance/concordance.ts (re-decomp already done in backlog row). Use dedicated worktree + pushed claim branch. Run focused checks (build gate, TS run). Open PR for the claim + verification step only.
+- **Durable target:** src/Core.TypeScript/concordance/concordance.ts (slice already present per prior re-decomp); docs/backlog/P1/081KR2E4K0008QG0R001ZZ5XXF-*.md (pre-start gate satisfied); no edits to CLAUDE.md/AGENTS.md/GOVERNANCE.md/memory.
 - **Platform mirror:** none (LFG primary)
 
 ## Notes

@@ -1,0 +1,12 @@
+{
+  "pr_number": 8031,
+  "archive_path": "docs/history/pr-reviews/PR-8031-docs-linguistic-seed-land-v1-formal-terms-implication-equality-set-function-retr.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-13T17:45:32.582Z",
+  "schema_version": "v1",
+  "commit_sha": "653112de49ffe22e8ba463357d966cf26d5bac99",
+  "title": "docs(linguistic-seed): land v1 formal terms — implication/equality/set/function/retraction + DAG",
+  "state": "MERGED",
+  "merged_at": "2026-06-13T17:45:09Z",
+  "head_ref": "shadow/linguistic-seed-terms-v1"
+}

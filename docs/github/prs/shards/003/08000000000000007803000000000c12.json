@@ -1,0 +1,12 @@
+{
+  "pr_number": 3090,
+  "archive_path": "docs/history/pr-reviews/PR-3090-chore-tick-0254z-shard-pr-3075-md032-helper-merged.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-14T02:58:36.922Z",
+  "schema_version": "v1",
+  "commit_sha": "2030e2413ba0c469698e313fb95e171fedebf8d4",
+  "title": "chore(tick): 0254Z shard — PR #3075 MD032 helper MERGED",
+  "state": "MERGED",
+  "merged_at": "2026-05-14T02:58:14Z",
+  "head_ref": "chore/tick-shard-0254z-pr3075-merged-2026-05-14"
+}

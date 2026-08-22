@@ -1,0 +1,12 @@
+{
+  "pr_number": 9168,
+  "archive_path": "docs/history/pr-reviews/PR-9168-feat-pages-the-shape-catalog-all-23-goldens-source-driven-gallery-shadow.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-17T12:12:36.721Z",
+  "schema_version": "v1",
+  "commit_sha": "8c60a0dd73775e230cf0f42208d7a1ebb5767e96",
+  "title": "feat(pages): the Shape Catalog — all 23 goldens, source-driven gallery (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-02T17:24:36Z",
+  "head_ref": "feat/hall-shape-gallery"
+}

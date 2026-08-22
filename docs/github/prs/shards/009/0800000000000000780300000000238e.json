@@ -1,0 +1,12 @@
+{
+  "pr_number": 9102,
+  "archive_path": "docs/history/pr-reviews/PR-9102-feat-design-sync-frost-channel-in-the-conventions-header-safelist-shadow.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-17T03:34:32.451Z",
+  "schema_version": "v1",
+  "commit_sha": "d00b6b7c69769d7949924ea41117add8f2cfa9d9",
+  "title": "feat(design-sync): frost channel in the conventions header + safelist (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-02T02:46:53Z",
+  "head_ref": "design-sync/frost-channel-conventions"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 7483,
+  "archive_path": "docs/history/pr-reviews/PR-7483-docs-research-mycelium-earth-s-economic-broker-biological-markets-mushrooms-are-.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-10T08:58:04.397Z",
+  "schema_version": "v1",
+  "commit_sha": "5d358b52dd6e19c4d8adffdd44923f4d2b007d3b",
+  "title": "docs(research): mycelium = Earth's economic broker (biological markets) + mushrooms are the aliens",
+  "state": "MERGED",
+  "merged_at": "2026-06-10T08:57:42Z",
+  "head_ref": "shadow-mycelium-economic-broker-aliens"
+}

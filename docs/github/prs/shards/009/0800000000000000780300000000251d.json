@@ -1,0 +1,12 @@
+{
+  "pr_number": 9501,
+  "archive_path": "docs/history/pr-reviews/PR-9501-feat-bayesian-clone-detection-auc-benchmark-rotor-vs-pearson-vs-procrustes.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-05T22:33:13.822Z",
+  "schema_version": "v1",
+  "commit_sha": "8a4ee1c3fc4a6695ab4b0a0308ea1152117c81da",
+  "title": "feat(bayesian): clone-detection AUC benchmark (rotor vs Pearson vs Procrustes)",
+  "state": "MERGED",
+  "merged_at": "2026-07-05T22:32:50Z",
+  "head_ref": "feat/081KWQS0NGS-clone-auc-benchmark"
+}

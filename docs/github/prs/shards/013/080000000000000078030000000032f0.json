@@ -1,0 +1,15 @@
+{
+  "pr_number": 13040,
+  "archive_path": "docs/history/pr-reviews/PR-13040-observability-alloy-had-three-sinks-and-no-sources-the-chain-is-wired-and-the-ch.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7kGg-Q",
+    "thread:PRRT_kwDOSF9kNM6bBWU6"
+  ],
+  "fetched_at": "2026-08-21T05:26:45.117Z",
+  "schema_version": "v1",
+  "commit_sha": "de70ca4fcd86ef7af8f74da4c0eff4adfa31098d",
+  "title": "observability: Alloy had three sinks and no sources — the chain is wired, and the check is worth more than the fixes",
+  "state": "MERGED",
+  "merged_at": "2026-08-21T05:26:07Z",
+  "head_ref": "observability/alloy-sources-and-chain-audit"
+}

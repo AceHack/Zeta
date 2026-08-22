@@ -1,0 +1,12 @@
+{
+  "pr_number": 3628,
+  "archive_path": "docs/history/pr-reviews/PR-3628-shard-tick-0008z-fix-pr-3626-for-monad-terminology-drift-from-merged-pr-3614.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-16T00:23:04.914Z",
+  "schema_version": "v1",
+  "commit_sha": "ef3668021f66031cd382017199f79378ad0c582b",
+  "title": "shard(tick): 0008Z — fix-PR #3626 for monad-terminology drift from merged PR #3614",
+  "state": "MERGED",
+  "merged_at": "2026-05-16T00:22:49Z",
+  "head_ref": "shard/tick-0008z-otto-cli-2026-05-16"
+}

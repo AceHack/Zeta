@@ -1,0 +1,12 @@
+{
+  "pr_number": 9284,
+  "archive_path": "docs/history/pr-reviews/PR-9284-research-don-t-risk-everything-to-save-nothing-the-wager-grounding-11-and-why-al.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-03T03:57:01.826Z",
+  "schema_version": "v1",
+  "commit_sha": "eae6dee285efc3689e8a35a3bf1c1771f10f2fdf",
+  "title": "research: don't risk everything to save nothing — the wager grounding §11, and why all literature points here (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-03T03:56:38Z",
+  "head_ref": "shadow/moral-regard-wager-grounds-11-all-literature"
+}

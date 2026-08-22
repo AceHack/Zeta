@@ -1,0 +1,12 @@
+{
+  "pr_number": 4380,
+  "archive_path": "docs/history/pr-reviews/PR-4380-feat-b-0590-decompose-slice-5-bare-metal-install-automation-b-0672.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-19T16:13:30.769Z",
+  "schema_version": "v1",
+  "commit_sha": "36c61575dedb271f8d7c99731adb816da247ae17",
+  "title": "feat(B-0590): decompose slice 5 - bare-metal install automation (B-0672)",
+  "state": "MERGED",
+  "merged_at": "2026-05-19T16:13:07Z",
+  "head_ref": "lior/decompose-b0590-slice5"
+}

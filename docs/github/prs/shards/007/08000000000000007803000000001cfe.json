@@ -1,0 +1,12 @@
+{
+  "pr_number": 7422,
+  "archive_path": "docs/history/pr-reviews/PR-7422-feat-add-rooms-at-root-the-treaty-test-dst-rooms-shadow.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-09T21:47:30.437Z",
+  "schema_version": "v1",
+  "commit_sha": "57b9a8a6dc6c4c18ab86885f90b7adac65290bce",
+  "title": "feat: add rooms/ at root — the treaty/test/DST rooms (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-06-09T21:47:09Z",
+  "head_ref": "otto/rooms-folder-at-root-treaty-test-dst-rooms"
+}

@@ -1,0 +1,17 @@
+{
+  "pr_number": 5358,
+  "archive_path": "docs/history/pr-reviews/PR-5358-hygiene-validate-bash-retirement-allowlist-integrity.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7FJTNI",
+    "comment:PRRC_kwDOSF9kNM7FJTNg",
+    "thread:PRRT_kwDOSF9kNM6E9M-5",
+    "thread:PRRT_kwDOSF9kNM6E9M_O"
+  ],
+  "fetched_at": "2026-05-26T23:52:59.462Z",
+  "schema_version": "v1",
+  "commit_sha": "a2f368923cd24e3c5ef48dcf8ae0baf5095a0e5b",
+  "title": "hygiene: validate bash retirement allowlist integrity",
+  "state": "MERGED",
+  "merged_at": "2026-05-26T23:52:41Z",
+  "head_ref": "claim/codex-loop-bash-retirement-allowlist-integrity-20260526"
+}

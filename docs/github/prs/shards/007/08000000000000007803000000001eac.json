@@ -1,0 +1,12 @@
+{
+  "pr_number": 7852,
+  "archive_path": "docs/history/pr-reviews/PR-7852-fix-backlog-no-new-b-nnnn-guard-becomes-a-wall-filename-check-workitems-covered-.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-12T00:21:36.275Z",
+  "schema_version": "v1",
+  "commit_sha": "280b1957df07e3d0038e35bd13705e99830b4c2e",
+  "title": "fix(backlog): no-new-B-NNNN guard becomes a wall — filename check, workitems covered, no grandfather path",
+  "state": "MERGED",
+  "merged_at": "2026-06-12T00:21:13Z",
+  "head_ref": "shadow-no-new-b-numbers"
+}

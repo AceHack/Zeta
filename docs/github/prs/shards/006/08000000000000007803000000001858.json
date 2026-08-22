@@ -1,0 +1,15 @@
+{
+  "pr_number": 6232,
+  "archive_path": "docs/history/pr-reviews/PR-6232-ci-wsl-wsl-install-sh-test-workflow-b-0857-windows-parity-wsl-lane.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7Gh3wu",
+    "thread:PRRT_kwDOSF9kNM6F9tR3"
+  ],
+  "fetched_at": "2026-05-31T19:10:53.456Z",
+  "schema_version": "v1",
+  "commit_sha": "a44bcdf4e53fe60037c1c0ce01edd0a7efe99adb",
+  "title": "ci(wsl): WSL install.sh test workflow (B-0857 Windows parity — WSL lane)",
+  "state": "MERGED",
+  "merged_at": "2026-05-31T19:10:35Z",
+  "head_ref": "otto-windows/wsl-install-sh-ci-2026-05-31"
+}

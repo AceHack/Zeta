@@ -1,0 +1,12 @@
+{
+  "pr_number": 9316,
+  "archive_path": "docs/history/pr-reviews/PR-9316-codex-feat-darkhall-share-heat-signal-vocabulary.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-03T15:40:00.689Z",
+  "schema_version": "v1",
+  "commit_sha": "3b1362e6b49ae16d70be8349683904d12f495de0",
+  "title": "[codex] feat(darkhall): share heat signal vocabulary",
+  "state": "MERGED",
+  "merged_at": "2026-07-03T15:39:36Z",
+  "head_ref": "codex/heat-signals-host-io"
+}

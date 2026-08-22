@@ -1,0 +1,12 @@
+{
+  "pr_number": 8036,
+  "archive_path": "docs/history/pr-reviews/PR-8036-docs-linguistic-seed-v2-close-membership-edge-self-describing-pair-axiom-definit.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-13T18:01:56.726Z",
+  "schema_version": "v1",
+  "commit_sha": "0f43d9d594079b49f062d63d4909ee7f57c362dd",
+  "title": "docs(linguistic-seed): v2 — close membership edge + self-describing pair (axiom, definition)",
+  "state": "MERGED",
+  "merged_at": "2026-06-13T18:01:33Z",
+  "head_ref": "shadow/linguistic-seed-terms-v2"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 12982,
+  "archive_path": "docs/history/pr-reviews/PR-12982-setup-the-yubihsm-sdk-is-a-brew-cask-not-a-formula-and-pkcs11-tool-was-missing-e.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-20T23:55:57.641Z",
+  "schema_version": "v1",
+  "commit_sha": "ce7e8a97cc5509c81ce555cf1dccd0321c350b31",
+  "title": "setup: the YubiHSM SDK is a brew CASK, not a formula — and pkcs11-tool was missing everywhere",
+  "state": "MERGED",
+  "merged_at": "2026-08-20T23:55:22Z",
+  "head_ref": "setup/yubihsm-sdk-cask-and-pkcs11-tool"
+}

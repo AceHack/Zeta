@@ -1,0 +1,12 @@
+{
+  "pr_number": 10328,
+  "archive_path": "docs/history/pr-reviews/PR-10328-fix-ci-repair-orphan-gitlink-and-pin-mux-actions.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-12T04:26:50.689Z",
+  "schema_version": "v1",
+  "commit_sha": "07451938f454ecc112e912b1cbfb599dd96c4aeb",
+  "title": "fix(ci): repair orphan gitlink and pin mux actions",
+  "state": "MERGED",
+  "merged_at": "2026-08-12T04:26:19Z",
+  "head_ref": "codex/repair-orphan-gitlink-actions"
+}

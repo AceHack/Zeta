@@ -1,0 +1,12 @@
+{
+  "pr_number": 7723,
+  "archive_path": "docs/history/pr-reviews/PR-7723-feat-shapes-braid-over-under-in-the-ink-occlusion-gaps-alexa-s-review-ferried-pe.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-11T16:38:45.738Z",
+  "schema_version": "v1",
+  "commit_sha": "1ac74f760b5c538922bead6baf6cc894e99ccdd9",
+  "title": "feat(shapes): braid over-under in the ink (occlusion gaps) + Alexa's review ferried & peeled to topological QC",
+  "state": "MERGED",
+  "merged_at": "2026-06-11T16:38:16Z",
+  "head_ref": "shadow-braid-over-under"
+}

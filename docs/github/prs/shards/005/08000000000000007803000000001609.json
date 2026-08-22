@@ -1,0 +1,12 @@
+{
+  "pr_number": 5641,
+  "archive_path": "docs/history/pr-reviews/PR-5641-docs-provisioning-document-new-interactive-zeta-install-sh-flow-b-0852-cred-blob.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-27T21:05:50.715Z",
+  "schema_version": "v1",
+  "commit_sha": "53e17d3bb5e0be33cf918352fc70da1f89776f54",
+  "title": "docs(provisioning): document new interactive zeta-install.sh flow + B-0852 cred-blob substrate + subsequent-boot restore (composes with PRs #5635 + #5637 + #5638 + #5639 + #5640)",
+  "state": "MERGED",
+  "merged_at": "2026-05-27T21:05:28Z",
+  "head_ref": "docs/provisioning-md-update-cluster-type-menu-cred-blob-flow-2026-05-27"
+}

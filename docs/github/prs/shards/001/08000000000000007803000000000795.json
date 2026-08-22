@@ -1,0 +1,27 @@
+{
+  "pr_number": 1941,
+  "archive_path": "docs/history/pr-reviews/PR-1941-research-mcp-surface-map-11-authenticated-services-as-aurora-membrane-grains.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_Ahi1",
+    "comment:PRRC_kwDOSF9kNM6_Ahiy",
+    "comment:PRRC_kwDOSF9kNM6_Ajw4",
+    "comment:PRRC_kwDOSF9kNM6_Ajx3",
+    "comment:PRRC_kwDOSF9kNM6_Ajxk",
+    "comment:PRRC_kwDOSF9kNM6_AjyI",
+    "comment:PRRC_kwDOSF9kNM6_Ajyf",
+    "thread:PRRT_kwDOSF9kNM6AcX8q",
+    "thread:PRRT_kwDOSF9kNM6AcX8s",
+    "thread:PRRT_kwDOSF9kNM6AcZm2",
+    "thread:PRRT_kwDOSF9kNM6AcZnV",
+    "thread:PRRT_kwDOSF9kNM6AcZng",
+    "thread:PRRT_kwDOSF9kNM6AcZnw",
+    "thread:PRRT_kwDOSF9kNM6AcZoE"
+  ],
+  "fetched_at": "2026-05-07T20:48:40.163Z",
+  "schema_version": "v1",
+  "commit_sha": "455f69ec14276d1fcf664099603c4bcd80cc9d4b",
+  "title": "research: MCP surface map — 11 authenticated services as Aurora membrane grains",
+  "state": "MERGED",
+  "merged_at": "2026-05-07T20:48:19Z",
+  "head_ref": "otto/mcp-surface-map"
+}

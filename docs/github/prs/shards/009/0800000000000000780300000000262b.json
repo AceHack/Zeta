@@ -1,0 +1,12 @@
+{
+  "pr_number": 9771,
+  "archive_path": "docs/history/pr-reviews/PR-9771-docs-research-missing-citations-fix-viazovska-anchor-register-label-on-bams-e8-s.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-16T01:55:10.260Z",
+  "schema_version": "v1",
+  "commit_sha": "6cea6dda538f5bd303332078e42a9ee658038b36",
+  "title": "docs(research): missing-citations fix — Viazovska anchor + register label on BAMS→E8 (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-16T01:54:43Z",
+  "head_ref": "shadow/missing-citations-bams-e8-viazovska-anchor"
+}

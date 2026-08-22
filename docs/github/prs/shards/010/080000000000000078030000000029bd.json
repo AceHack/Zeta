@@ -1,0 +1,12 @@
+{
+  "pr_number": 10685,
+  "archive_path": "docs/history/pr-reviews/PR-10685-docs-attestation-name-the-vendor-root-at-every-attestation-claim-amd-ark-intel-s.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-14T19:27:49.111Z",
+  "schema_version": "v1",
+  "commit_sha": "a619ee9bd11772452f9ed907bab9ac66b101b988",
+  "title": "docs(attestation): name the vendor root at every attestation claim — AMD ARK, Intel SGX Root CA, NVIDIA device CA, TPM EK",
+  "state": "MERGED",
+  "merged_at": "2026-08-14T19:27:16Z",
+  "head_ref": "shadow/name-the-vendor-root-in-attestation-claims"
+}

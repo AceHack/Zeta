@@ -1,0 +1,12 @@
+{
+  "pr_number": 8843,
+  "archive_path": "docs/history/pr-reviews/PR-8843-fix-setup-clean-install-warnings-mise-bump-kubeconform-github-host-loop-linux-sk.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-21T05:54:27.498Z",
+  "schema_version": "v1",
+  "commit_sha": "22f639b95afef19fe19773a42a3a4d9082da501d",
+  "title": "fix(setup): clean install warnings — mise bump, kubeconform github, host-loop Linux skip",
+  "state": "MERGED",
+  "merged_at": "2026-06-21T05:53:59Z",
+  "head_ref": "fix/install-mise-warnings-host-loop"
+}

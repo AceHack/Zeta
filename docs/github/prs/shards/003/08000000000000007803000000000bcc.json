@@ -1,0 +1,19 @@
+{
+  "pr_number": 3020,
+  "archive_path": "docs/history/pr-reviews/PR-3020-feat-bg-b-0441-4-bus-publish-on-ready-rows-work-assignment-topic-full-proactive-.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7A7jcN",
+    "comment:PRRC_kwDOSF9kNM7A7kxZ",
+    "comment:PRRC_kwDOSF9kNM7A7kyR",
+    "thread:PRRT_kwDOSF9kNM6B3V-l",
+    "thread:PRRT_kwDOSF9kNM6B3W_2",
+    "thread:PRRT_kwDOSF9kNM6B3W_K"
+  ],
+  "fetched_at": "2026-05-13T19:26:12.745Z",
+  "schema_version": "v1",
+  "commit_sha": "b0f903280cd13f2e5085a4ddb01815dea011d369",
+  "title": "feat(bg): B-0441.4 — bus publish on ready rows (work-assignment topic; full proactive loop closed)",
+  "state": "MERGED",
+  "merged_at": "2026-05-13T19:25:45Z",
+  "head_ref": "otto-b0441-4-bus-publish-slice-4-impl-2026-05-13"
+}

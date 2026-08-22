@@ -1,0 +1,14 @@
+{
+  "id": "080d0056da13c810a0130008e91981d1",
+  "at": "2026-08-16T13:55:36.697Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M05DPGKR087G0R0017GX310",
+    "type": "bug",
+    "title": "CategoricalFactorTensor has three absent-key semantics and one keyspace for two distributions",
+    "slug": "categoricalfactortensor-has-three-absent-key-semantics-and-o",
+    "priority": "P2",
+    "filename": "081M05DPGKR087G0R0017GX310-categoricalfactortensor-has-three-absent-key-semantics-and-o.md"
+  }
+}

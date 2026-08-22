@@ -1,0 +1,16 @@
+{
+  "pr_number": 4721,
+  "archive_path": "docs/history/pr-reviews/PR-4721-docs-archive-preserve-merged-pr-4716.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7EQWgu",
+    "comment:PRRC_kwDOSF9kNM7EQYK4",
+    "thread:PRRT_kwDOSF9kNM6ES9Q3"
+  ],
+  "fetched_at": "2026-05-23T11:13:18.775Z",
+  "schema_version": "v1",
+  "commit_sha": "7adb08b66728fb16504bb3e69269f06b93e66ea6",
+  "title": "docs(archive): preserve merged PR #4716",
+  "state": "MERGED",
+  "merged_at": "2026-05-23T11:12:59Z",
+  "head_ref": "lior-archive-4716"
+}

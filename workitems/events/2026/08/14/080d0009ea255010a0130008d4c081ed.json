@@ -1,0 +1,14 @@
+{
+  "id": "080d0009ea255010a0130008d4c081ed",
+  "at": "2026-08-14T17:06:27.626Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M00KTH58087G0R00120WT6F",
+    "type": "task",
+    "title": "NixOS UEFI Secure Boot via lanzaboote: keep desired-state, one BIOS setup-mode ceremony per node",
+    "slug": "nixos-uefi-secure-boot-via-lanzaboote-keep-desired-state-one",
+    "priority": "P2",
+    "filename": "081M00KTH58087G0R00120WT6F-nixos-uefi-secure-boot-via-lanzaboote-keep-desired-state-one.md"
+  }
+}

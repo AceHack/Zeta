@@ -1,0 +1,16 @@
+{
+  "pr_number": 6207,
+  "archive_path": "docs/history/pr-reviews/PR-6207-tool-b-0171-map-agentic-organization-openspec-artifacts.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7Gfwy9",
+    "comment:PRRC_kwDOSF9kNM7GfzZc",
+    "thread:PRRT_kwDOSF9kNM6F8GAI"
+  ],
+  "fetched_at": "2026-05-31T12:46:15.030Z",
+  "schema_version": "v1",
+  "commit_sha": "4bc8b5ca5d3c279d99cd89b92bd158420aa360c5",
+  "title": "tool(B-0171): map agentic-organization OpenSpec artifacts",
+  "state": "MERGED",
+  "merged_at": "2026-05-31T12:45:56Z",
+  "head_ref": "claim/codex-loop-b0171-agentic-org-artifact-map-20260531"
+}

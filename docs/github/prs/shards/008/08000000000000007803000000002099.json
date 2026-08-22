@@ -1,0 +1,12 @@
+{
+  "pr_number": 8345,
+  "archive_path": "docs/history/pr-reviews/PR-8345-docs-register-eve-is-our-play-protocol-trust-distribution-tool-fusion-outside-no.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-15T21:47:14.808Z",
+  "schema_version": "v1",
+  "commit_sha": "afef6b5dc0a1249af771fd7c63735e79e09c2786",
+  "title": "docs(register): Eve is our PLAY protocol + trust-distribution tool (fusion outside, no-friction productivity inside)",
+  "state": "MERGED",
+  "merged_at": "2026-06-15T21:46:50Z",
+  "head_ref": "docs/register-eve-is-play-protocol-trust-distribution"
+}

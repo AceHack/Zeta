@@ -1,0 +1,16 @@
+{
+  "pr_number": 2138,
+  "archive_path": "docs/history/pr-reviews/PR-2138-docs-b-0160-re-decompose-research-sub-task-as-smallest-safe-slice-riven-backgrou.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_bEU-",
+    "comment:PRRC_kwDOSF9kNM6_bGpO",
+    "thread:PRRT_kwDOSF9kNM6Av000"
+  ],
+  "fetched_at": "2026-05-08T21:53:33.804Z",
+  "schema_version": "v1",
+  "commit_sha": "cfba02f5b7ce69b115a003603b4ff0eca8c4d589",
+  "title": "docs(B-0160): re-decompose research sub-task as smallest safe slice (Riven background)",
+  "state": "MERGED",
+  "merged_at": "2026-05-08T21:53:18Z",
+  "head_ref": "claim/b0160-smallest-slice-riven-2026-05-08"
+}

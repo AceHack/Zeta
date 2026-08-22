@@ -1,0 +1,17 @@
+{
+  "pr_number": 2449,
+  "archive_path": "docs/history/pr-reviews/PR-2449-fix-also-skip-actions-variables-403-with-insufficient-token-scope-sentinel.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_m7ev",
+    "comment:PRRC_kwDOSF9kNM6_m7lN",
+    "thread:PRRT_kwDOSF9kNM6A47F3",
+    "thread:PRRT_kwDOSF9kNM6A47K-"
+  ],
+  "fetched_at": "2026-05-10T09:44:46.679Z",
+  "schema_version": "v1",
+  "commit_sha": "cd9e4aa2ceb9a8820dc93dd6e9f39f37db5f75c1",
+  "title": "fix: also skip actions/variables 403 with insufficient-token-scope sentinel",
+  "state": "MERGED",
+  "merged_at": "2026-05-10T09:44:33Z",
+  "head_ref": "fix/snapshot-drift-vars-403"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 3892,
+  "archive_path": "docs/history/pr-reviews/PR-3892-shard-tick-2026-05-16t14-08z-engagement-with-lior-critique-on-3881.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-16T14:17:33.972Z",
+  "schema_version": "v1",
+  "commit_sha": "2dffb6c6c1c98591b670f10b974d41cda8157b44",
+  "title": "shard(tick): 2026-05-16T14:08Z — engagement with Lior critique on #3881",
+  "state": "MERGED",
+  "merged_at": "2026-05-16T14:17:18Z",
+  "head_ref": "otto-cli-tick-2026-05-16-1408z"
+}

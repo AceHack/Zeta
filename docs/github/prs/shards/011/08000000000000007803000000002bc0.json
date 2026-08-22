@@ -1,0 +1,12 @@
+{
+  "pr_number": 11200,
+  "archive_path": "docs/history/pr-reviews/PR-11200-fix-ci-the-x86-64-boot-ladder-was-reading-a-constant-three-of-five-rungs-cannot-.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-16T23:56:07.352Z",
+  "schema_version": "v1",
+  "commit_sha": "4b063f0d235f298a1b42d7bdaeec33765426fb62",
+  "title": "fix(ci): the x86_64 boot ladder was reading a constant — three of five rungs cannot occur on that road",
+  "state": "MERGED",
+  "merged_at": "2026-08-16T23:55:33Z",
+  "head_ref": "shadow/qemu-x86-64-boot-discriminator"
+}

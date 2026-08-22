@@ -1,0 +1,12 @@
+{
+  "pr_number": 8824,
+  "archive_path": "docs/history/pr-reviews/PR-8824-feat-file-type-plugin-implement-file-type-plugin-model-and-markdown-treaty.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-21T01:15:38.118Z",
+  "schema_version": "v1",
+  "commit_sha": "e1956cb405e6823a6b03cfc4b477e93e1e084183",
+  "title": "feat(file-type-plugin): implement file-type plugin model and markdown treaty",
+  "state": "MERGED",
+  "merged_at": "2026-06-21T01:15:09Z",
+  "head_ref": "feat/file-type-plugin-081KTGES048"
+}

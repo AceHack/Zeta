@@ -1,0 +1,25 @@
+{
+  "pr_number": 4774,
+  "archive_path": "docs/history/pr-reviews/PR-4774-backlog-b-0710-b-0712-file-soraya-rounds-43-44-45-hand-offs.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7ET6R7",
+    "comment:PRRC_kwDOSF9kNM7ET6R_",
+    "comment:PRRC_kwDOSF9kNM7ET6SD",
+    "comment:PRRC_kwDOSF9kNM7ET6SH",
+    "comment:PRRC_kwDOSF9kNM7ET6SJ",
+    "comment:PRRC_kwDOSF9kNM7ET6SL",
+    "thread:PRRT_kwDOSF9kNM6EVqcO",
+    "thread:PRRT_kwDOSF9kNM6EVqcQ",
+    "thread:PRRT_kwDOSF9kNM6EVqcR",
+    "thread:PRRT_kwDOSF9kNM6EVqcV",
+    "thread:PRRT_kwDOSF9kNM6EVqcW",
+    "thread:PRRT_kwDOSF9kNM6EVqcY"
+  ],
+  "fetched_at": "2026-05-23T22:26:15.663Z",
+  "schema_version": "v1",
+  "commit_sha": "43d9ff6068efe7663563ec9b42a81b137af9d979",
+  "title": "backlog(B-0710..B-0712): file Soraya rounds 43+44+45 hand-offs",
+  "state": "MERGED",
+  "merged_at": "2026-05-23T22:25:59Z",
+  "head_ref": "otto/soraya-handoffs-b0710-b0711-b0712-2026-05-23"
+}

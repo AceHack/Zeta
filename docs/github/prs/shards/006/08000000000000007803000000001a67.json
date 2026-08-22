@@ -1,0 +1,12 @@
+{
+  "pr_number": 6759,
+  "archive_path": "docs/history/pr-reviews/PR-6759-feat-log-081ktgd5jmd-backend-migration-step-2-gitdeltalog-onto-canonical-ientryc.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-07T08:46:57.207Z",
+  "schema_version": "v1",
+  "commit_sha": "8e9bb8b79c31b6117be4bcd6f1ea15709d05240b",
+  "title": "feat(Log/081KTGD5JMD): backend migration step 2 — GitDeltaLog onto canonical IEntryCodec",
+  "state": "MERGED",
+  "merged_at": "2026-06-07T08:46:37Z",
+  "head_ref": "otto/backend-migration-2-gitdeltalog"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 10294,
+  "archive_path": "docs/history/pr-reviews/PR-10294-docs-handoff-audit-vera-recent-browser-and-heat-work.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-10T22:20:37.415Z",
+  "schema_version": "v1",
+  "commit_sha": "9a77147a70750203e59e3fac4d9d367c00249c2f",
+  "title": "docs(handoff): audit Vera recent browser and heat work",
+  "state": "MERGED",
+  "merged_at": "2026-08-10T22:19:13Z",
+  "head_ref": "codex/vera-recent-work-review"
+}

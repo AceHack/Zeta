@@ -22,7 +22,9 @@
  * Schema-on-read (decoupled reader): `loadWorld` tolerantly parses the event JSON
  * for just `{ id, at, action }` — the reader doesn't depend on the writer's type,
  * skips anything malformed, and validates the action kind before trusting it. The
- * folder + the canonical-id shape are the only contract.
+ * folder + the canonical id are the only contract. "Canonical" means the id DECODES as
+ * a ZetaId (version + category), not merely that it is 32 hex characters — a shape
+ * check accepted hex-encoded JSON as an id (see `zeta-id/canonical-hex.ts`).
  *
  * operator is OPTIONAL: absent = a background agent (no operator wired); a
  * foreground caller injects the live channel. Same World DU, fewer channels.
@@ -42,6 +44,7 @@ import { join } from "node:path";
 import { nextActionFromBacklog, type Priority } from "./backlog-reader";
 import { fold, type BacklogItem, type Mode, type NextAction, type OperatorChannel, type World } from "./observe";
 import { loadNodeSession, type LoadNodeSessionOptions } from "./load-node-session";
+import { isCanonicalZetaIdHex } from "../zeta-id/canonical-hex";
 
 /** The NextAction kinds a folded event log may legitimately contain. */
 const KNOWN_KINDS: ReadonlySet<string> = new Set([
@@ -57,7 +60,16 @@ const KNOWN_KINDS: ReadonlySet<string> = new Set([
   "edit_grammar",
 ]);
 
-const isCanonicalEventId = (id: unknown): id is string => typeof id === "string" && /^[0-9a-f]{32}$/.test(id);
+/**
+ * Accept an id only if it DECODES as a ZetaId — not merely if it looks like one.
+ *
+ * This was `/^[0-9a-f]{32}$/`, which checks the encoding and never the value. That is
+ * what let `7b226174746573746f72223a22616c65` (hex-encoded JSON: `{"attestor":"ale`) be
+ * read as an event id. `isCanonicalZetaIdHex` decodes and checks version + category,
+ * reusing the codec rather than adding a second parser. See
+ * `src/Core.TypeScript/zeta-id/canonical-hex.ts`.
+ */
+const isCanonicalEventId = isCanonicalZetaIdHex;
 
 /** What the reader extracts from one event file (schema-on-read; ignores extra fields). */
 interface ParsedEvent {

@@ -1,0 +1,12 @@
+{
+  "pr_number": 6604,
+  "archive_path": "docs/history/pr-reviews/PR-6604-docs-b-1006-codecs-are-an-orthogonal-primitive-axis-bonsai-promotes-tick-source-.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-02T17:35:38.509Z",
+  "schema_version": "v1",
+  "commit_sha": "18c6c8560a3f5a2e30ebe20fa7e1a2dd8a104288",
+  "title": "docs(B-1006): codecs are an orthogonal primitive axis (Bonsai promotes); tick-source stays candidate pending correctness-gate; Op/KeyGroup fixes (Aaron + Codex + Copilot)",
+  "state": "MERGED",
+  "merged_at": "2026-06-02T17:35:11Z",
+  "head_ref": "otto-cli/b1006-codec-axis-corrections-2026-06-02"
+}

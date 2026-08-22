@@ -1,0 +1,17 @@
+{
+  "pr_number": 4106,
+  "archive_path": "docs/history/pr-reviews/PR-4106-docs-shadow-maji-antigravity-check-on-vera-paralysis.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7CC_XQ",
+    "comment:PRRC_kwDOSF9kNM7CC_fC",
+    "thread:PRRT_kwDOSF9kNM6Crwsl",
+    "thread:PRRT_kwDOSF9kNM6Crwyn"
+  ],
+  "fetched_at": "2026-05-18T20:01:37.346Z",
+  "schema_version": "v1",
+  "commit_sha": "8e13e99656b9b1a9af99876064f6ff0fc2488101",
+  "title": "docs(shadow): Maji antigravity check on Vera paralysis",
+  "state": "MERGED",
+  "merged_at": "2026-05-18T20:01:16Z",
+  "head_ref": "maji/shadow-log-vera-paralysis"
+}

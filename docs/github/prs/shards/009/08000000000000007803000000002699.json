@@ -1,0 +1,15 @@
+{
+  "pr_number": 9881,
+  "archive_path": "docs/history/pr-reviews/PR-9881-feat-hygiene-drift-slo-breach-auto-files-a-p1-workitem-081kx3ka3ew.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7cSRk8",
+    "thread:PRRT_kwDOSF9kNM6VorIK"
+  ],
+  "fetched_at": "2026-08-01T14:30:28.756Z",
+  "schema_version": "v1",
+  "commit_sha": "2761831a6965974201ff71d7bffb3a362007d03f",
+  "title": "feat(hygiene): drift SLO — breach auto-files a P1 workitem (081KX3KA3EW)",
+  "state": "MERGED",
+  "merged_at": "2026-08-01T14:29:56Z",
+  "head_ref": "otto/drift-slo-autofile"
+}

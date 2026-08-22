@@ -1,0 +1,15 @@
+{
+  "pr_number": 9100,
+  "archive_path": "docs/history/pr-reviews/PR-9100-docs-bank-soraya-kira-verdicts-file-intervalring-double-lie-froth-on-the-wave-to.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7RN678",
+    "thread:PRRT_kwDOSF9kNM6Nw6_J"
+  ],
+  "fetched_at": "2026-08-17T01:35:04.497Z",
+  "schema_version": "v1",
+  "commit_sha": "2839dd336ddabbf3a1e6bf4f4ecdb5f17134f91b",
+  "title": "docs: bank Soraya+Kira verdicts; file IntervalRing double-lie; froth-on-the-wave to VISION (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-02T02:29:59Z",
+  "head_ref": "otto/bank-review-verdicts-iring-split-081KWG9JQ9H"
+}

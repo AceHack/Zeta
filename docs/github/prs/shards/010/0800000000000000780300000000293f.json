@@ -1,0 +1,12 @@
+{
+  "pr_number": 10559,
+  "archive_path": "docs/history/pr-reviews/PR-10559-fix-hygiene-the-two-claude-hooks-tests-executed-nowhere-move-them-where-bun-can-.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-14T12:53:01.840Z",
+  "schema_version": "v1",
+  "commit_sha": "30408d4554bba600b8ab3b60e65ade4680e79320",
+  "title": "fix(hygiene): the two .claude/hooks tests executed nowhere -- move them where bun can see them, and make the count that found them fatal",
+  "state": "MERGED",
+  "merged_at": "2026-08-14T12:52:30Z",
+  "head_ref": "fix/081KZZ1RK6A087G0R003C773WC-claude-hooks-tests-execute-nowhere"
+}

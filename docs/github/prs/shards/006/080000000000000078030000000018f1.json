@@ -1,0 +1,12 @@
+{
+  "pr_number": 6385,
+  "archive_path": "docs/history/pr-reviews/PR-6385-feat-algebra-f-bag-multiset-middle-rung-of-the-ladder-3-4-ts-rust-f.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-01T09:46:47.117Z",
+  "schema_version": "v1",
+  "commit_sha": "7debbb39ca95d11988beae3bf8b6abdc7c7b618f",
+  "title": "feat(algebra): F# Bag (multiset) — middle rung of the ladder, 3/4 (TS+Rust+F#)",
+  "state": "MERGED",
+  "merged_at": "2026-06-01T09:46:24Z",
+  "head_ref": "otto-cli/fsharp-bag-algebra-ladder-2026-06-01"
+}

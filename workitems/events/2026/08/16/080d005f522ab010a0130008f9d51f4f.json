@@ -1,0 +1,14 @@
+{
+  "id": "080d005f522ab010a0130008f9d51f4f",
+  "at": "2026-08-16T18:51:37.686Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M05YMHAN087G0R003TT3AS4",
+    "type": "task",
+    "title": "Does our dynamical zeta function continue? Axiom A vs natural boundary for FigureEightEnsemble",
+    "slug": "does-our-dynamical-zeta-function-continue-axiom-a-vs-natural",
+    "priority": "P2",
+    "filename": "081M05YMHAN087G0R003TT3AS4-does-our-dynamical-zeta-function-continue-axiom-a-vs-natural.md"
+  }
+}

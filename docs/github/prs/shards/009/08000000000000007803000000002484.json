@@ -1,0 +1,12 @@
+{
+  "pr_number": 9348,
+  "archive_path": "docs/history/pr-reviews/PR-9348-docs-research-ferry-the-shiva-gc-reification-makes-the-mix-collectible-shadow.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-03T19:19:33.187Z",
+  "schema_version": "v1",
+  "commit_sha": "52ee1026ebe7bc3b31bb2e989e554ee708d503c0",
+  "title": "docs(research): ferry the Shiva GC — reification makes the mix collectible (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-03T19:19:10Z",
+  "head_ref": "otto/ferry-shiva-gc-reify-collectible"
+}

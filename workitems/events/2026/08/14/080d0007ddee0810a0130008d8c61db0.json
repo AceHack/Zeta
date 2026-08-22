@@ -1,0 +1,14 @@
+{
+  "id": "080d0007ddee0810a0130008d8c61db0",
+  "at": "2026-08-14T15:54:53.249Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M00FQFE0087G0R003VWH76V",
+    "type": "task",
+    "title": "Reconcile the universal color contract with the shipped CHIP-9 bindings — universal/color.md still says CHIP-8 is Mono1 'not yet', and three display edges carry three independent palette tables with no single source",
+    "slug": "reconcile-the-universal-color-contract-with-the-shipped-chip",
+    "priority": "P2",
+    "filename": "081M00FQFE0087G0R003VWH76V-reconcile-the-universal-color-contract-with-the-shipped-chip.md"
+  }
+}

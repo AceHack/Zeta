@@ -1,0 +1,12 @@
+{
+  "pr_number": 7635,
+  "archive_path": "docs/history/pr-reviews/PR-7635-docs-honest-register-absolute-safety-copy-rejected-honest-rewrite-nerd-fonts-on-.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-11T10:05:24.678Z",
+  "schema_version": "v1",
+  "commit_sha": "d217527c9d898ae57276d234f7bc077db1826f4a",
+  "title": "docs(honest-register): 'absolute safety' copy rejected + honest rewrite; Nerd Fonts on CHIP-8 verdict",
+  "state": "MERGED",
+  "merged_at": "2026-06-11T10:05:01Z",
+  "head_ref": "shadow-honest-peel-safety-copy-nerdfonts"
+}

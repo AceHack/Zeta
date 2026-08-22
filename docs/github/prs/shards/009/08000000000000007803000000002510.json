@@ -1,0 +1,12 @@
+{
+  "pr_number": 9488,
+  "archive_path": "docs/history/pr-reviews/PR-9488-docs-the-self-similar-node-different-seeds-why-culture-works-and-why-we-differ-s.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-04T19:24:08.773Z",
+  "schema_version": "v1",
+  "commit_sha": "cd479c29e0c6120a130540504eb5f536b85bc4a4",
+  "title": "docs: the self-similar node + different seeds — why culture works AND why we differ (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-04T19:23:42Z",
+  "head_ref": "otto/self-similar-columns-plus-seeds-culture-and-diversity"
+}

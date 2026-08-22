@@ -1,0 +1,12 @@
+{
+  "pr_number": 6867,
+  "archive_path": "docs/history/pr-reviews/PR-6867-docs-dispatch-board-add-this-session-s-primitives-for-vera-lior-4-lang-work.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-07T16:36:00.078Z",
+  "schema_version": "v1",
+  "commit_sha": "14a2102d819cdca6e8bd12b6286a65a75e88b238",
+  "title": "docs(dispatch-board): add this session's primitives for Vera/Lior 4-lang work",
+  "state": "MERGED",
+  "merged_at": "2026-06-07T16:35:41Z",
+  "head_ref": "otto/dispatch-board-add-session-primitives"
+}

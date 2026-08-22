@@ -1,0 +1,12 @@
+{
+  "pr_number": 6013,
+  "archive_path": "docs/history/pr-reviews/PR-6013-feat-b-0343-pure-parseseedcommitresponse-post-git-commits-response-commit-sha-re.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-29T17:06:13.554Z",
+  "schema_version": "v1",
+  "commit_sha": "11967f5b6510dcf05fadfa01ee546a95a017bd7f",
+  "title": "feat(B-0343): pure parseSeedCommitResponse — POST /git/commits response → commit SHA (read-side pair of buildSeedCommitRequest)",
+  "state": "MERGED",
+  "merged_at": "2026-05-29T17:05:48Z",
+  "head_ref": "otto-cli/b0343-parse-seed-commit-response-2026-05-29"
+}

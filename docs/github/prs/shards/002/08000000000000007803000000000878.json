@@ -1,0 +1,12 @@
+{
+  "pr_number": 2168,
+  "archive_path": "docs/history/pr-reviews/PR-2168-fix-b-0272-accept-hyphen-prefixed-rom-option-values.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-09T02:49:24.864Z",
+  "schema_version": "v1",
+  "commit_sha": "2cb890a8967cfaab9bbc583ae610475d46396f0e",
+  "title": "fix(B-0272): accept hyphen-prefixed ROM option values",
+  "state": "MERGED",
+  "merged_at": "2026-05-09T02:49:01Z",
+  "head_ref": "codex/b0272-rom-review-nits-followup"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 11488,
+  "archive_path": "docs/history/pr-reviews/PR-11488-feat-receipt-a-signed-build-receipt-that-rides-in-the-commit-and-verifies-with-o.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-17T14:27:23.913Z",
+  "schema_version": "v1",
+  "commit_sha": "9f2503f247cd0af62786f1fdfb022ae9220ac00e",
+  "title": "feat(receipt): a signed build receipt that rides in the commit and verifies with only a clone",
+  "state": "MERGED",
+  "merged_at": "2026-08-17T14:26:42Z",
+  "head_ref": "shadow/native-build-receipt"
+}

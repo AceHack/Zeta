@@ -1,0 +1,15 @@
+{
+  "pr_number": 5199,
+  "archive_path": "docs/history/pr-reviews/PR-5199-docs-shadow-add-lesson-log-for-lior-metadata-churn.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7E_c_S",
+    "thread:PRRT_kwDOSF9kNM6E2B0_"
+  ],
+  "fetched_at": "2026-05-26T15:59:01.177Z",
+  "schema_version": "v1",
+  "commit_sha": "dc58634b9314ab7c048378f6e2c3bd08e8bc804e",
+  "title": "docs(shadow): add lesson log for lior metadata churn",
+  "state": "MERGED",
+  "merged_at": "2026-05-26T15:58:38Z",
+  "head_ref": "lior/shadow-log-2026-05-26-metadata-churn"
+}

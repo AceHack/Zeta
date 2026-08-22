@@ -1,0 +1,12 @@
+{
+  "pr_number": 9383,
+  "archive_path": "docs/history/pr-reviews/PR-9383-docs-research-connectionless-mesh-transport-udp-broadcast-duplex-multiplex-heat-.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-04T00:11:50.787Z",
+  "schema_version": "v1",
+  "commit_sha": "9eaec8b5fb00b2c48a4eac08bde432e9cdd62e91",
+  "title": "docs(research): connectionless mesh transport — UDP-broadcast duplex-multiplex, HEAT as the backpressure (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-04T00:11:26Z",
+  "head_ref": "otto/ferry-udp-broadcast-reliable-transport"
+}

@@ -1,0 +1,17 @@
+{
+  "pr_number": 3370,
+  "archive_path": "docs/history/pr-reviews/PR-3370-shard-tick-0615z-worktree-prune-race-root-cause-identified-multi-otto-cli-self-c.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7Bfl3B",
+    "comment:PRRC_kwDOSF9kNM7BfyZj",
+    "thread:PRRT_kwDOSF9kNM6CRiRA",
+    "thread:PRRT_kwDOSF9kNM6CRrWC"
+  ],
+  "fetched_at": "2026-05-15T06:38:06.941Z",
+  "schema_version": "v1",
+  "commit_sha": "5cc63ff3bfb9201d91c16bcb21e363ab17f405f9",
+  "title": "shard(tick): 0615Z — worktree-prune-race root cause identified (multi-Otto-CLI self-contention)",
+  "state": "MERGED",
+  "merged_at": "2026-05-15T06:37:45Z",
+  "head_ref": "shard/0545z-pr3342-merged-peer-investigation-otto-cli-2026-05-15"
+}

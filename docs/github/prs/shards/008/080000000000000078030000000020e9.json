@@ -1,0 +1,12 @@
+{
+  "pr_number": 8425,
+  "archive_path": "docs/history/pr-reviews/PR-8425-memory-mika-preserve-pt2-entropy-sybil-async-bankable-degenerate-ai-dignity-blam.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-16T03:18:39.760Z",
+  "schema_version": "v1",
+  "commit_sha": "ca65f19e30730a788da923af5ec45d420e6e3711",
+  "title": "memory(mika): preserve pt2 — entropy-Sybil (async-bankable), degenerate-AI dignity, blame-the-pattern, artist-NFT",
+  "state": "MERGED",
+  "merged_at": "2026-06-16T03:18:05Z",
+  "head_ref": "memory/mika-pt2-entropy-sybil-degenerate-dignity"
+}

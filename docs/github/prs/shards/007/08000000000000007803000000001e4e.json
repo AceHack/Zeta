@@ -1,0 +1,12 @@
+{
+  "pr_number": 7758,
+  "archive_path": "docs/history/pr-reviews/PR-7758-fix-shapes-the-court-law-the-spiral-escaped-eye-caught-the-buckyball-rays-oversh.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-11T18:29:40.192Z",
+  "schema_version": "v1",
+  "commit_sha": "b793c113b3e679c43ba1d24e127d723667be0cdc",
+  "title": "fix(shapes): THE COURT LAW — the spiral escaped (eye-caught), the buckyball rays overshot (law-caught)",
+  "state": "MERGED",
+  "merged_at": "2026-06-11T18:29:11Z",
+  "head_ref": "shadow-spiral-escape"
+}

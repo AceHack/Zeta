@@ -1,0 +1,12 @@
+{
+  "pr_number": 6156,
+  "archive_path": "docs/history/pr-reviews/PR-6156-memory-mika-batch-6-middle-out-compression-the-tri-boolean-qubit-family-digital-.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-30T22:55:02.069Z",
+  "schema_version": "v1",
+  "commit_sha": "7dff1e60d906d46bbb0c007ae6693d2eb413eb1a",
+  "title": "memory(mika batch 6): middle-out compression + the tri-boolean qubit family (digital qubit + tri-boolean float)",
+  "state": "MERGED",
+  "merged_at": "2026-05-30T22:54:41Z",
+  "head_ref": "otto/mika-batch6-middle-out-tri-boolean-qubit-float-2026-05-30"
+}

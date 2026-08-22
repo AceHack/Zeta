@@ -1,0 +1,12 @@
+{
+  "pr_number": 5004,
+  "archive_path": "docs/history/pr-reviews/PR-5004-backlog-b-0742-reference-k8s-local-stack-as-ace-s-distributable-poc-hats-become-.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-25T21:58:24.373Z",
+  "schema_version": "v1",
+  "commit_sha": "5b6ea6a0c47ab9f943bfaf2a59e40c3dbccb4cf2",
+  "title": "backlog(B-0742): reference k8s local stack as Ace's distributable PoC — hats become negotiated fork structure ON TOP of reference stack — deterministic + declarative + GitOps + AI-native + human-native",
+  "state": "MERGED",
+  "merged_at": "2026-05-25T21:58:03Z",
+  "head_ref": "backlog/b0742-reference-k8s-stack-as-ace-poc-hats-fork-structure-aaron-2026-05-25"
+}

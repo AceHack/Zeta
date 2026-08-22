@@ -1,0 +1,12 @@
+{
+  "pr_number": 6993,
+  "archive_path": "docs/history/pr-reviews/PR-6993-docs-container-vs-cell-interface-the-cut-the-external-standard-zeta-native-speci.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-08T02:45:18.707Z",
+  "schema_version": "v1",
+  "commit_sha": "55327497c8f92a5d08b5965407da6274a1604a93",
+  "title": "docs: container vs cell interface — the cut + the external-standard<->zeta-native specificity gradient",
+  "state": "MERGED",
+  "merged_at": "2026-06-08T02:44:59Z",
+  "head_ref": "otto/container-vs-cell-interface-specificity-gradient"
+}

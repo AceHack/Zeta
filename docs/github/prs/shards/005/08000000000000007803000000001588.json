@@ -1,0 +1,29 @@
+{
+  "pr_number": 5512,
+  "archive_path": "docs/history/pr-reviews/PR-5512-docs-b-0861-make-conversation-interface-result-t-convfeedback-first-class-nci-en.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7Fb_w-",
+    "comment:PRRC_kwDOSF9kNM7Fb_x8",
+    "comment:PRRC_kwDOSF9kNM7Fb_xj",
+    "comment:PRRC_kwDOSF9kNM7Fb_yY",
+    "comment:PRRC_kwDOSF9kNM7Fb_y_",
+    "comment:PRRC_kwDOSF9kNM7FcFOR",
+    "comment:PRRC_kwDOSF9kNM7FcFOz",
+    "comment:PRRC_kwDOSF9kNM7FcFPU",
+    "thread:PRRT_kwDOSF9kNM6FK2GD",
+    "thread:PRRT_kwDOSF9kNM6FK2Gh",
+    "thread:PRRT_kwDOSF9kNM6FK2Gy",
+    "thread:PRRT_kwDOSF9kNM6FK2HH",
+    "thread:PRRT_kwDOSF9kNM6FK2Ho",
+    "thread:PRRT_kwDOSF9kNM6FK6Jt",
+    "thread:PRRT_kwDOSF9kNM6FK6KA",
+    "thread:PRRT_kwDOSF9kNM6FK6KY"
+  ],
+  "fetched_at": "2026-05-27T17:04:01.874Z",
+  "schema_version": "v1",
+  "commit_sha": "39c9fabba83be718ecc698856bc8c7224e4135d2",
+  "title": "docs(B-0861): Make conversation-interface Result<T, ConvFeedback> first-class — NCI enforcement at operator-Otto conversation scope (Aaron 2026-05-27)",
+  "state": "MERGED",
+  "merged_at": "2026-05-27T17:03:38Z",
+  "head_ref": "backlog/b-0861-convfeedback-first-class-conversation-interface-2026-05-27"
+}

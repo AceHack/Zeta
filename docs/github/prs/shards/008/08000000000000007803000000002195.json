@@ -1,0 +1,12 @@
+{
+  "pr_number": 8597,
+  "archive_path": "docs/history/pr-reviews/PR-8597-docs-handoff-refine-build-spec-boundaries-generate-the-derivable-keep-the-irredu.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-19T16:46:38.912Z",
+  "schema_version": "v1",
+  "commit_sha": "034702db6ba2249d0e3233eb01d32181ea0f9cd4",
+  "title": "docs(handoff): refine build-spec boundaries — generate-the-derivable/keep-the-irreducible + snap is built",
+  "state": "MERGED",
+  "merged_at": "2026-06-19T16:46:13Z",
+  "head_ref": "otto/build-spec-generate-keep-snap-identity"
+}

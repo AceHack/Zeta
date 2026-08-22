@@ -1,0 +1,12 @@
+{
+  "pr_number": 7596,
+  "archive_path": "docs/history/pr-reviews/PR-7596-feat-core-add-result-computation-expression.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-11T04:42:24.617Z",
+  "schema_version": "v1",
+  "commit_sha": "649e7d14ffd113b28a9c1d66ea77ec98efe56d0f",
+  "title": "feat(core): add result computation expression",
+  "state": "MERGED",
+  "merged_at": "2026-06-11T04:42:02Z",
+  "head_ref": "codex/vera-result-builder"
+}

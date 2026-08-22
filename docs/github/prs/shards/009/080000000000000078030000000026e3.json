@@ -1,0 +1,12 @@
+{
+  "pr_number": 9955,
+  "archive_path": "docs/history/pr-reviews/PR-9955-feat-observe-the-page-side-freshness-oracle-iris-1-4-1-6-step-3.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-02T02:18:09.519Z",
+  "schema_version": "v1",
+  "commit_sha": "9d9d924cb7fb5ce1f07724d60846d3805b21b40f",
+  "title": "feat(observe): the page-side freshness oracle — Iris §1.4/§1.6, step 3",
+  "state": "MERGED",
+  "merged_at": "2026-08-02T02:17:36Z",
+  "head_ref": "shadow/iris-freshness-and-retick"
+}

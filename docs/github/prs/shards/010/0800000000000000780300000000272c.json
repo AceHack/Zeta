@@ -1,0 +1,12 @@
+{
+  "pr_number": 10028,
+  "archive_path": "docs/history/pr-reviews/PR-10028-fix-core-align-decorrelationmeter-to-the-autocorrelation-corrected-margin-caveat.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-04T15:35:28.405Z",
+  "schema_version": "v1",
+  "commit_sha": "388ba359ccb728ad619b81ff24e6a0cc4cc69844",
+  "title": "fix(core): align DecorrelationMeter to the autocorrelation-corrected margin (Caveat-A)",
+  "state": "MERGED",
+  "merged_at": "2026-08-04T15:31:58Z",
+  "head_ref": "fix/decorrelationmeter-align-to-corrected-margin-20260804"
+}

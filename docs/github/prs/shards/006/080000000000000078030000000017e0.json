@@ -1,0 +1,12 @@
+{
+  "pr_number": 6112,
+  "archive_path": "docs/history/pr-reviews/PR-6112-rule-research-consensus-non-reversible-action-get-a-2nd-opinion-local-consensus-.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-30T13:56:23.585Z",
+  "schema_version": "v1",
+  "commit_sha": "a2c576b75e125ab464c4a3e1625d27c9127cb093",
+  "title": "rule+research(consensus): non-reversible action → get a 2nd opinion; local consensus via non-interrupting summon",
+  "state": "MERGED",
+  "merged_at": "2026-05-30T13:56:01Z",
+  "head_ref": "otto/local-consensus-non-interrupting-summon-2026-05-30"
+}

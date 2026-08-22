@@ -24,6 +24,13 @@
   product type is the faithful model of the F# `braidR`, itself a set map on pairs); we
   do NOT port the ZSet monoidal category into Lean.
 
+  SCOPE UPDATE 2026-08-15 — the monoidal half of that scope note is now covered by
+  `Lean4/MenoMonoidalHexagons.lean`: the associator + unitors with pentagon/triangle, BOTH
+  hexagons (non-strict tuple model at the generating triple; strict list model at all block
+  sizes), and the degree argument making copy/discard unrepresentable. It is still not a
+  Mathlib `MonoidalCategory` instance — the set-theoretic model is deliberate, matching this
+  file — and that limit is named there.
+
   Anchors: Joyal–Street 1993 (braided monoidal categories); Yang 1967 / Baxter 1972
   (YBE); Joyce 1982 / Fenn–Rourke 1992 (racks/quandles as set-theoretic YB solutions);
   Kassel, *Quantum Groups*.  Work-item 081KYWEM90908QG0R002NHEMZE.

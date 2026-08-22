@@ -1,0 +1,21 @@
+{
+  "pr_number": 5212,
+  "archive_path": "docs/history/pr-reviews/PR-5212-backlog-b-0813-p1-iter-5-4-2-argocd-app-watches-maintainers-cluster-nodes-comple.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7FAtyJ",
+    "comment:PRRC_kwDOSF9kNM7FAtzn",
+    "comment:PRRC_kwDOSF9kNM7FBDYu",
+    "comment:PRRC_kwDOSF9kNM7FBDZs",
+    "thread:PRRT_kwDOSF9kNM6E28Wm",
+    "thread:PRRT_kwDOSF9kNM6E28Xo",
+    "thread:PRRT_kwDOSF9kNM6E3L3v",
+    "thread:PRRT_kwDOSF9kNM6E3L4c"
+  ],
+  "fetched_at": "2026-05-26T16:45:59.715Z",
+  "schema_version": "v1",
+  "commit_sha": "7a056ba75925c8328c0a6f9cfe27d457b9ccc0dc",
+  "title": "backlog(B-0813 P1 iter-5.4.2): ArgoCD app watches maintainers/*/cluster-nodes — completes iter-5.4 arc",
+  "state": "MERGED",
+  "merged_at": "2026-05-26T16:45:36Z",
+  "head_ref": "otto-cli/b0813-iter-5-4-2-argocd-app-watches-cluster-nodes-tree-reconciles-on-pr-merge-2026-05-26"
+}

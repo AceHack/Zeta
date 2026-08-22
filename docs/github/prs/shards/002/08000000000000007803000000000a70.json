@@ -1,0 +1,17 @@
+{
+  "pr_number": 2672,
+  "archive_path": "docs/history/pr-reviews/PR-2672-docs-research-lior-bankerbot-stack-walkthrough-seven-model-convergence.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_xp1t",
+    "comment:PRRC_kwDOSF9kNM6_xpvB",
+    "thread:PRRT_kwDOSF9kNM6BBGgb",
+    "thread:PRRT_kwDOSF9kNM6BBGlW"
+  ],
+  "fetched_at": "2026-05-11T08:47:46.021Z",
+  "schema_version": "v1",
+  "commit_sha": "0390404694bd0274ad7f4571bc6cefe04f554370",
+  "title": "docs(research): Lior — BankerBot stack walkthrough + seven-model convergence",
+  "state": "MERGED",
+  "merged_at": "2026-05-11T08:47:20Z",
+  "head_ref": "docs/lior-bankerbot-stack-walkthrough-2026-05-11"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 7041,
+  "archive_path": "docs/history/pr-reviews/PR-7041-feat-core-bitgan-sim-noun-1-bit-minimal-gan-yin-yang-engine-bounded-probe-privac.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-08T06:45:35.770Z",
+  "schema_version": "v1",
+  "commit_sha": "cbc7381c515f0e428d59fb69389e1a0a61a89a9d",
+  "title": "feat(core): BitGan — sim noun = 1-bit minimal GAN (yin/yang engine); bounded probe; privacy-via-unreachability; fixed-point-vs-divergence (#7102-#7108)",
+  "state": "MERGED",
+  "merged_at": "2026-06-08T06:45:16Z",
+  "head_ref": "otto/bitgan-minimal-yinyang-engine-sim-noun-probe-regularize"
+}

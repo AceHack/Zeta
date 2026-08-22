@@ -1,0 +1,12 @@
+{
+  "pr_number": 11306,
+  "archive_path": "docs/history/pr-reviews/PR-11306-fix-heartbeat-put-the-agencysignature-block-where-the-check-actually-reads-it.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-17T03:43:25.695Z",
+  "schema_version": "v1",
+  "commit_sha": "8e33e8440274fa628fc135b83ae2eb7065938b8b",
+  "title": "fix(heartbeat): put the AgencySignature block where the check actually reads it",
+  "state": "MERGED",
+  "merged_at": "2026-08-17T03:42:55Z",
+  "head_ref": "fix/heartbeat-commit-agencysignature"
+}

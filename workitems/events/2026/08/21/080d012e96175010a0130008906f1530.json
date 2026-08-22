@@ -1,0 +1,14 @@
+{
+  "id": "080d012e96175010a0130008906f1530",
+  "at": "2026-08-21T19:36:04.586Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M0JX5GQ8087G0R002TD5Z0Q",
+    "type": "bug",
+    "title": "forgejo pins chart 9.0.6 -- never published -- and its repoURL is a dead http repo (chart is OCI-only now)",
+    "slug": "forgejo-pins-chart-9-0-6-never-published-and-its-repourl-is",
+    "priority": "P2",
+    "filename": "081M0JX5GQ8087G0R002TD5Z0Q-forgejo-pins-chart-9-0-6-never-published-and-its-repourl-is.md"
+  }
+}

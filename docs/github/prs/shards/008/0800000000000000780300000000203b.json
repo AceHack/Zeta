@@ -1,0 +1,12 @@
+{
+  "pr_number": 8251,
+  "archive_path": "docs/history/pr-reviews/PR-8251-docs-research-bounded-resource-architecture-prediction-external-network-time-cry.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-15T03:48:47.652Z",
+  "schema_version": "v1",
+  "commit_sha": "e9a64efe6705f7df3e65046fd4acf55bd3ab2af2",
+  "title": "docs(research): bounded-resource architecture — prediction, external network, time-crystal least-effort",
+  "state": "MERGED",
+  "merged_at": "2026-06-15T03:48:26Z",
+  "head_ref": "otto/prediction-the-other-half"
+}

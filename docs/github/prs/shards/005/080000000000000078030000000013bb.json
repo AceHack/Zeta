@@ -1,0 +1,12 @@
+{
+  "pr_number": 5051,
+  "archive_path": "docs/history/pr-reviews/PR-5051-backlog-b-0765-p1-servicetitan-route-plug-into-existing-control-interfaces-ontol.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-26T00:22:05.865Z",
+  "schema_version": "v1",
+  "commit_sha": "663cc3258a001200ae1cf0c38b2048964773e7b5",
+  "title": "backlog(B-0765 P1): ServiceTitan route — plug into existing control interfaces; ontology negotiation at standards layer",
+  "state": "MERGED",
+  "merged_at": "2026-05-26T00:21:49Z",
+  "head_ref": "otto-cli/b0765-service-titan-route-standards-layer-2026-05-25"
+}

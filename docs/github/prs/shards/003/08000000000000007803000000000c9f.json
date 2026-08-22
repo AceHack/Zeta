@@ -1,0 +1,18 @@
+{
+  "pr_number": 3231,
+  "archive_path": "docs/history/pr-reviews/PR-3231-shard-tick-2030z-b-0519-rca-additive-update-pattern-5-pattern-6-defenses.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7BXY9u",
+    "comment:PRRC_kwDOSF9kNM7BXm9k",
+    "comment:PRRC_kwDOSF9kNM7BXq-J",
+    "thread:PRRT_kwDOSF9kNM6CL4s2",
+    "thread:PRRT_kwDOSF9kNM6CLuWZ"
+  ],
+  "fetched_at": "2026-05-14T20:54:40.595Z",
+  "schema_version": "v1",
+  "commit_sha": "00f4e9d56a2bbdce0beefddebe6df26088cc6cc1",
+  "title": "shard(tick): 2030Z — B-0519 RCA additive update (Pattern 5 + Pattern 6 defenses)",
+  "state": "MERGED",
+  "merged_at": "2026-05-14T20:54:15Z",
+  "head_ref": "shard/tick-2030Z-b0519-additive-update-otto-cli-2026-05-14"
+}

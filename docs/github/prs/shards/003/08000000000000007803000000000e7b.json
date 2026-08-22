@@ -1,0 +1,22 @@
+{
+  "pr_number": 3707,
+  "archive_path": "docs/history/pr-reviews/PR-3707-shard-tick-2026-05-16t03-22z-pr-3690-markdownlint-md038-unblock-sweep.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7B1I59",
+    "comment:PRRC_kwDOSF9kNM7B1I6I",
+    "comment:PRRC_kwDOSF9kNM7B1I6T",
+    "comment:PRRC_kwDOSF9kNM7B1J_F",
+    "comment:PRRC_kwDOSF9kNM7B1KBa",
+    "comment:PRRC_kwDOSF9kNM7B1KEH",
+    "thread:PRRT_kwDOSF9kNM6ChPk8",
+    "thread:PRRT_kwDOSF9kNM6ChPlH",
+    "thread:PRRT_kwDOSF9kNM6ChPlS"
+  ],
+  "fetched_at": "2026-05-16T03:31:36.792Z",
+  "schema_version": "v1",
+  "commit_sha": "38f6117a9783408603fe1cec46ee4c5eeb89202c",
+  "title": "shard(tick): 2026-05-16T03:22Z — PR #3690 markdownlint MD038 unblock + sweep",
+  "state": "MERGED",
+  "merged_at": "2026-05-16T03:31:21Z",
+  "head_ref": "shard/tick-0322z-otto-cli-2026-05-16"
+}

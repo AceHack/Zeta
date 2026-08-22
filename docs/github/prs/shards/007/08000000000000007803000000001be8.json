@@ -1,0 +1,12 @@
+{
+  "pr_number": 7144,
+  "archive_path": "docs/history/pr-reviews/PR-7144-feat-core-persona-the-wearer-composition-of-hats-worn-temporally-hat-atomic-base.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-09T00:15:38.088Z",
+  "schema_version": "v1",
+  "commit_sha": "49a013db4a8a1c240c9b6311158bd7cec49aa59f",
+  "title": "feat(core): Persona — the wearer (composition of hats, worn temporally; hat=atomic base)",
+  "state": "MERGED",
+  "merged_at": "2026-06-09T00:15:17Z",
+  "head_ref": "otto/persona-the-composition-of-hats-temporal-wear"
+}

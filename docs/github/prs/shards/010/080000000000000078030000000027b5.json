@@ -1,0 +1,12 @@
+{
+  "pr_number": 10165,
+  "archive_path": "docs/history/pr-reviews/PR-10165-feat-gate-semgrep-floor-drift-split-the-registry-becomes-the-literal-source-of-t.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-08T20:49:41.414Z",
+  "schema_version": "v1",
+  "commit_sha": "bb1d1ed333b36273003fa0b72041bfcfeee28276",
+  "title": "feat(gate): semgrep floor/drift split — the registry becomes the literal source of truth (081KZHGP456)",
+  "state": "MERGED",
+  "merged_at": "2026-08-08T20:49:11Z",
+  "head_ref": "otto/semgrep-floor-split"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 7461,
+  "archive_path": "docs/history/pr-reviews/PR-7461-docs-research-llm-learns-masonry-in-3d-llmholovisor-symmetric-to-editables-vr-ar.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-10T05:47:21.980Z",
+  "schema_version": "v1",
+  "commit_sha": "c2949912502df44818287e63918f9c174c86082e",
+  "title": "docs(research): LLM learns masonry in 3D (LLMHolovisor) — symmetric to editables + VR/AR; Flatland=language failure (English solves it)",
+  "state": "MERGED",
+  "merged_at": "2026-06-10T05:46:58Z",
+  "head_ref": "shadow-masonry-symmetric-editables-vrar-flatland-english"
+}

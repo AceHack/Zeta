@@ -1,0 +1,12 @@
+{
+  "pr_number": 9263,
+  "archive_path": "docs/history/pr-reviews/PR-9263-feat-work-items-g-set-slice-2-lifecycle-events-open-backlog-fold-081ksxn.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-03T03:09:31.926Z",
+  "schema_version": "v1",
+  "commit_sha": "15f8a0e970e1ebe6e8e352b496408dac4fe76976",
+  "title": "feat(work-items): G-Set slice 2 — lifecycle events + open backlog fold (081KSXN)",
+  "state": "MERGED",
+  "merged_at": "2026-07-03T03:09:09Z",
+  "head_ref": "feat/081KSXN-workitem-event-gset-slice-2"
+}

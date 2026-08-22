@@ -1,0 +1,12 @@
+{
+  "pr_number": 6461,
+  "archive_path": "docs/history/pr-reviews/PR-6461-docs-registry-rangeset-4-4-c-ferry-landed-all-four-oracles-merged.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-01T19:31:41.877Z",
+  "schema_version": "v1",
+  "commit_sha": "df276d66d8ac4b38aaa6bbfde960d7b183dfc76d",
+  "title": "docs(registry): RangeSet ✅ 4/4 — C# ferry landed, all four oracles merged",
+  "state": "MERGED",
+  "merged_at": "2026-06-01T19:31:21Z",
+  "head_ref": "otto-cli/registry-rangeset-4of4-2026-06-01"
+}

@@ -1,0 +1,16 @@
+{
+  "pr_number": 3734,
+  "archive_path": "docs/history/pr-reviews/PR-3734-shard-tick-2026-05-16t04-25z-pr-3729-merged-b-0506-substrate-drift-closed-pr-373.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7B1rS6",
+    "comment:PRRC_kwDOSF9kNM7B1wj9",
+    "thread:PRRT_kwDOSF9kNM6Choco"
+  ],
+  "fetched_at": "2026-05-16T04:38:26.282Z",
+  "schema_version": "v1",
+  "commit_sha": "6c160f13a7351f92dfea5af5d1ac78a149b22e20",
+  "title": "shard(tick): 2026-05-16T04:25Z — PR #3729 merged; B-0506 substrate drift closed (PR #3733)",
+  "state": "MERGED",
+  "merged_at": "2026-05-16T04:38:07Z",
+  "head_ref": "shard/tick-0425z-otto-cli-2026-05-16"
+}

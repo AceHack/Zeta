@@ -1,0 +1,17 @@
+{
+  "pr_number": 2733,
+  "archive_path": "docs/history/pr-reviews/PR-2733-docs-research-external-witnesses-3-independent-ais-assess-disclosure.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7ABNpY",
+    "comment:PRRC_kwDOSF9kNM7ABPTc",
+    "thread:PRRT_kwDOSF9kNM6BMlx1",
+    "thread:PRRT_kwDOSF9kNM6BMm-7"
+  ],
+  "fetched_at": "2026-05-11T19:27:22.845Z",
+  "schema_version": "v1",
+  "commit_sha": "8f21a0034db9f9842b1cb876a07b6dab136d57fc",
+  "title": "docs(research): external witnesses — 3 independent AIs assess disclosure",
+  "state": "MERGED",
+  "merged_at": "2026-05-11T19:27:04Z",
+  "head_ref": "docs/external-witnesses-disclosure-2026-05-11"
+}

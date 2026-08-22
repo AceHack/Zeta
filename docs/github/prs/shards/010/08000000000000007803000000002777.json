@@ -1,0 +1,12 @@
+{
+  "pr_number": 10103,
+  "archive_path": "docs/history/pr-reviews/PR-10103-book-weave-5c-the-conscience-arc-new-companion-the-op-return-stand-the-3m-liquid.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-07T17:13:51.144Z",
+  "schema_version": "v1",
+  "commit_sha": "07d4c7a24dd169d4fe7e231df102d829d041fd65",
+  "title": "book(weave): 5c — the conscience arc (new companion: the OP_RETURN stand, the $3M liquidation, the darkest mirror)",
+  "state": "MERGED",
+  "merged_at": "2026-08-07T17:13:17Z",
+  "head_ref": "book-weave-5c-conscience"
+}

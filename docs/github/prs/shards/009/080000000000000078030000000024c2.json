@@ -1,0 +1,12 @@
+{
+  "pr_number": 9410,
+  "archive_path": "docs/history/pr-reviews/PR-9410-feat-model-backend-golden-vector-ir-treaty-v1-ts-oracle-conforms-convergence-led.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-04T04:36:43.087Z",
+  "schema_version": "v1",
+  "commit_sha": "d2b436d43226e4b34ac43f4e5cde52c046579770",
+  "title": "feat(model-backend): golden-vector IR treaty v1 — TS oracle conforms + convergence ledger (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-04T04:36:20Z",
+  "head_ref": "otto/golden-vector-ir-treaty-v1-ts-oracle"
+}

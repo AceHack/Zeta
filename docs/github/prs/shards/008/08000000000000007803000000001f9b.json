@@ -1,0 +1,12 @@
+{
+  "pr_number": 8091,
+  "archive_path": "docs/history/pr-reviews/PR-8091-docs-handoffs-unified-loop-service-machinery-one-tick-iservicemanager-port.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-13T23:13:55.683Z",
+  "schema_version": "v1",
+  "commit_sha": "162fb5b9b29ab75e9f61573133181881eb88bee5",
+  "title": "docs(handoffs): unified loop+service machinery (one tick + IServiceManager port)",
+  "state": "MERGED",
+  "merged_at": "2026-06-13T23:13:32Z",
+  "head_ref": "shadow/handoff-unified-loop-service"
+}

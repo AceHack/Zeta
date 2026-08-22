@@ -1,0 +1,12 @@
+{
+  "pr_number": 3412,
+  "archive_path": "docs/history/pr-reviews/PR-3412-shard-tick-1033z-pr-3410-merged-pure-routine-templated-replies.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-15T10:37:20.018Z",
+  "schema_version": "v1",
+  "commit_sha": "6a05433073aefcfac6328047aed50b5f34e46111",
+  "title": "shard(tick): 1033Z — PR #3410 merged; pure-routine templated replies",
+  "state": "MERGED",
+  "merged_at": "2026-05-15T10:37:01Z",
+  "head_ref": "shard/tick-1033z-otto-cli-2026-05-15"
+}

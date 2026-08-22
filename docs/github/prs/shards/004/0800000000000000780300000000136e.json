@@ -1,0 +1,19 @@
+{
+  "pr_number": 4974,
+  "archive_path": "docs/history/pr-reviews/PR-4974-feat-tools-flash-usb-ts-hardening-runtime-nonce-responsibility-acceptance-agent-.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7ErP3Y",
+    "comment:PRRC_kwDOSF9kNM7ErP4e",
+    "comment:PRRC_kwDOSF9kNM7ErPGx",
+    "comment:PRRC_kwDOSF9kNM7ErPHB",
+    "thread:PRRT_kwDOSF9kNM6EnPnO",
+    "thread:PRRT_kwDOSF9kNM6EnPnX"
+  ],
+  "fetched_at": "2026-05-25T19:29:45.211Z",
+  "schema_version": "v1",
+  "commit_sha": "157458f4223fdeb587d8531fd3b33ab52d5902e0",
+  "title": "feat(tools): flash-usb.ts hardening — runtime nonce + responsibility acceptance + agent permission rule",
+  "state": "MERGED",
+  "merged_at": "2026-05-25T19:29:28Z",
+  "head_ref": "feat/flash-usb-responsibility-acceptance-nonce-2026-05-25-c2"
+}

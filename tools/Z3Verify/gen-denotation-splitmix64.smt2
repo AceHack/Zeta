@@ -55,7 +55,13 @@
 ; ============================================================================
 
 (set-logic QF_BV)
-(set-info :status unsat)
+; NOTE (2026-08-13, 081KZYYKHX1087G0R0036E9RH9): `(set-info :status unsat)` was
+; REMOVED here. It is a benchmark-level annotation over the whole script, and
+; this file is no longer single-verdict: the PART 3 non-vacuity probes are
+; expected `sat`. With the annotation present z3 raises
+;   (error "... check annotation that says unsat")
+; on those blocks -- CHECKED, not inferred. The expected verdict SEQUENCE is
+; stated at the foot of the file and asserted by gen-denotation-splitmix64.test.ts.
 
 ; ===========================================================================
 ; PART 1 -- splitmix64  (64-bit, rng.splitmix64@1)
@@ -168,12 +174,62 @@
 (check-sat)   ; expect: unsat  (oracle reproduces the byte-locked vectors)
 (pop)
 
+; ===========================================================================
+; PART 3 -- NON-VACUITY PROBES  (retrofit 2026-08-13, 081KZYYKHX1087G0R0036E9RH9)
+;
+; The six blocks above are ALL expected `unsat`, and an all-unsat expectation is
+; satisfied by a tautology: if `sm64_interp` were accidentally written as a copy
+; of `sm64_oracle` (or if a `define-fun` typo made both sides the same term),
+; THEOREM 1 would still print `unsat` and no runner asserting all-unsat could
+; tell a proof from a restatement. The header claims the two sides come from
+; INDEPENDENT sources; these blocks CHECK that claim instead of asserting it.
+;
+; Each probe corrupts exactly one constant on the GENERATED side and demands a
+; counterexample. `sat` proves the equality query discriminates -- so the `unsat`
+; above is an equivalence result and not an artefact of the encoding.
+; ===========================================================================
+
+; VP1 -- splitmix64 with ONE bit-flip in the first multiplier.
+;        K0 = GOLD with its low nibble 5 -> 4. If THEOREM 1's `unsat` were
+;        structural, this would stay unsat; it must not.
+(push)
+(declare-const xVP (_ BitVec 64))
+(define-fun K0_MUT () (_ BitVec 64) #x9e3779b97f4a7c14)   ; GOLD, one bit flipped
+(define-fun sm64_interp_mut ((x (_ BitVec 64))) (_ BitVec 64)
+  (let ((s1 (bvmul x K0_MUT)))
+  (let ((s2 (bvxor s1 (bvlshr s1 (_ bv30 64)))))
+  (let ((s3 (bvmul s2 K1)))
+  (let ((s4 (bvxor s3 (bvlshr s3 (_ bv27 64)))))
+  (let ((s5 (bvmul s4 K2)))
+    (bvxor s5 (bvlshr s5 (_ bv31 64)))))))))
+(assert (not (= (sm64_oracle xVP) (sm64_interp_mut xVP))))
+(check-sat)   ; expect: sat  => THEOREM 1 discriminates on the multiplier
+(pop)
+
+; VP2 -- fmix32 with ONE shift width changed on the generated side (13 -> 14).
+;        Covers the other degree of freedom the IR fold carries: the op
+;        PARAMETERS, not just the constants.
+(push)
+(declare-const hVP (_ BitVec 32))
+(define-fun fmix32_interp_mut ((h (_ BitVec 32))) (_ BitVec 32)
+  (let ((s1 (bvxor h (bvlshr h (_ bv16 32)))))
+  (let ((s2 (bvmul s1 (_ bv2246822507 32))))
+  (let ((s3 (bvxor s2 (bvlshr s2 (_ bv14 32)))))      ; <-- was 13
+  (let ((s4 (bvmul s3 (_ bv3266489909 32))))
+    (bvxor s4 (bvlshr s4 (_ bv16 32))))))))
+(assert (not (= (fmix32_oracle hVP) (fmix32_interp_mut hVP))))
+(check-sat)   ; expect: sat  => THEOREM 2 discriminates on the shift width
+(pop)
+
 ; ============================================================================
-; Six checks, all expected unsat:
-;   LEMMA 1   fromI64 reinterpretation exact (splitmix64 u64 constants)
-;   THEOREM 1 splitmix64 oracle == IR-fold interp, all 2^64 inputs
-;   CONTROL 1 splitmix64 oracle reproduces canonical vectors
-;   LEMMA 2   fmix32 IR constants == oracle constants
-;   THEOREM 2 fmix32 oracle == IR-fold interp, all 2^32 inputs
-;   CONTROL 2 fmix32 oracle reproduces canonical vectors
+; Eight checks. Six unsat, then two sat:
+;   LEMMA 1   fromI64 reinterpretation exact (splitmix64 u64 constants)   unsat
+;   THEOREM 1 splitmix64 oracle == IR-fold interp, all 2^64 inputs        unsat
+;   CONTROL 1 splitmix64 oracle reproduces canonical vectors              unsat
+;   LEMMA 2   fmix32 IR constants == oracle constants                     unsat
+;   THEOREM 2 fmix32 oracle == IR-fold interp, all 2^32 inputs            unsat
+;   CONTROL 2 fmix32 oracle reproduces canonical vectors                  unsat
+;   VP1       corrupted splitmix64 multiplier IS caught                     sat
+;   VP2       corrupted fmix32 shift width IS caught                        sat
+; The two `sat`s are what make the six `unsat`s mean something.
 ; ============================================================================

@@ -1,0 +1,12 @@
+{
+  "pr_number": 6536,
+  "archive_path": "docs/history/pr-reviews/PR-6536-research-fold-uno-onu-at-the-boundary-one-treaty-across-the-bulk-boundary-revers.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-02T09:55:51.284Z",
+  "schema_version": "v1",
+  "commit_sha": "e2fbb249758715c31949fc9250bc3db8b7ca993e",
+  "title": "research: fold uno = onu at the boundary — one ↔ treaty across the bulk/boundary reversal (Aaron 2026-06-02)",
+  "state": "MERGED",
+  "merged_at": "2026-06-02T09:55:30Z",
+  "head_ref": "otto-cli/aaron-non-1984-memories-uno-onu-2026-06-02"
+}

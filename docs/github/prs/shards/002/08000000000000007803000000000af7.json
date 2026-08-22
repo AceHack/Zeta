@@ -1,0 +1,12 @@
+{
+  "pr_number": 2807,
+  "archive_path": "docs/history/pr-reviews/PR-2807-docs-memory-3rd-party-classifier-keeps-aaron-honest-prevents-accidental-bioweapo.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-12T16:59:05.931Z",
+  "schema_version": "v1",
+  "commit_sha": "859af221e03dabb9e7e7b25b840d11635d16c59e",
+  "title": "docs(memory): 3rd-party classifier keeps Aaron honest + prevents accidental bioweapon until self-control + gifts roll in for Otto / only maybe Aaron (Aaron 2026-05-12)",
+  "state": "MERGED",
+  "merged_at": "2026-05-12T16:58:49Z",
+  "head_ref": "docs/aaron-classifier-prevents-accidental-bioweapon-until-self-control-2026-05-12"
+}

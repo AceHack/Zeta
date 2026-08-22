@@ -1,0 +1,12 @@
+{
+  "pr_number": 5193,
+  "archive_path": "docs/history/pr-reviews/PR-5193-fix-docs-correct-relative-links-in-1202z-tick-shard.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-26T15:24:30.859Z",
+  "schema_version": "v1",
+  "commit_sha": "582e70decceef8310e4c6bad554ce566e6152872",
+  "title": "fix(docs): correct relative links in 1202Z tick shard",
+  "state": "MERGED",
+  "merged_at": "2026-05-26T15:24:05Z",
+  "head_ref": "lior/fix-tick-shard-links"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 9656,
+  "archive_path": "docs/history/pr-reviews/PR-9656-docs-nft-001-nugget-freedom-everywhere-american-dream-2-0-the-mapping-nft-conver.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-10T04:04:27.464Z",
+  "schema_version": "v1",
+  "commit_sha": "c44dc0611f24d9b224495e5533f52743e528896d",
+  "title": "docs: NFT-001 nugget (freedom everywhere = American Dream 2.0) + the mapping (NFT = converged marginal; one generator, three approximations)",
+  "state": "MERGED",
+  "merged_at": "2026-07-10T04:04:01Z",
+  "head_ref": "shadow/book-nugget-freedom-everywhere-all-at-once"
+}

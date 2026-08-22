@@ -1,0 +1,12 @@
+{
+  "pr_number": 7353,
+  "archive_path": "docs/history/pr-reviews/PR-7353-feat-keyring-4x4-serializer-axis-add-xml-cell-3-of-4-3-way-commute-json-cbor-xml.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-09T17:45:49.579Z",
+  "schema_version": "v1",
+  "commit_sha": "7f454f5c047ae043d055866fb76ce20e2ccd2f0a",
+  "title": "feat(keyring): 4x4 serializer axis — add XML cell (3 of 4), 3-way commute JSON==CBOR==XML proven",
+  "state": "MERGED",
+  "merged_at": "2026-06-09T17:45:25Z",
+  "head_ref": "otto/keyring-4x4-add-xml-serializer-cell-3-of-4"
+}

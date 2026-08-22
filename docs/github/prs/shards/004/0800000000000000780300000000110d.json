@@ -1,0 +1,12 @@
+{
+  "pr_number": 4365,
+  "archive_path": "docs/history/pr-reviews/PR-4365-rule-auto-merge-race-with-follow-up-commit-anti-pattern.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-19T08:47:03.971Z",
+  "schema_version": "v1",
+  "commit_sha": "8f9d04adb4c32acf6ba3f43e8e9100b9a7c1eda5",
+  "title": "rule: auto-merge-race-with-follow-up-commit anti-pattern",
+  "state": "MERGED",
+  "merged_at": "2026-05-19T08:46:44Z",
+  "head_ref": "rule/auto-merge-race-anti-pattern-2026-05-19"
+}

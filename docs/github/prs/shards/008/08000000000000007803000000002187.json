@@ -1,0 +1,12 @@
+{
+  "pr_number": 8583,
+  "archive_path": "docs/history/pr-reviews/PR-8583-docs-aurora-scope-g3-the-anti-sybil-entropy-cost-rung-distinctness-enforcement.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-19T14:46:30.071Z",
+  "schema_version": "v1",
+  "commit_sha": "88c1d5ffdc9ca70fd50bf75ddf4de86b1c5ab8a7",
+  "title": "docs(aurora): scope G3 — the anti-Sybil entropy-cost rung (distinctness enforcement)",
+  "state": "MERGED",
+  "merged_at": "2026-06-19T14:46:04Z",
+  "head_ref": "otto/g3-anti-sybil-entropy-scoping"
+}

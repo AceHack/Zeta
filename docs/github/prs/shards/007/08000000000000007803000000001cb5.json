@@ -1,0 +1,12 @@
+{
+  "pr_number": 7349,
+  "archive_path": "docs/history/pr-reviews/PR-7349-feat-keyring-dual-key-set-treaty-no-single-key-2-to-rotate-gapless-rotation-1000.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-09T17:32:30.786Z",
+  "schema_version": "v1",
+  "commit_sha": "c55aeed2dd44a411275aadc82e0f552dd2cb6931",
+  "title": "feat(keyring): dual-key set treaty — no single key, >=2 to rotate, gapless rotation, 1000x DST green",
+  "state": "MERGED",
+  "merged_at": "2026-06-09T17:32:06Z",
+  "head_ref": "otto/dual-key-set-treaty-no-single-key-gapless-rotation-1000x-dst"
+}

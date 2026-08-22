@@ -1,0 +1,17 @@
+{
+  "pr_number": 3349,
+  "archive_path": "docs/history/pr-reviews/PR-3349-fix-save-ai-memory-tsc-strict-mode-errors-in-process-extract-ts.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7BcNSI",
+    "comment:PRRC_kwDOSF9kNM7BcNSf",
+    "thread:PRRT_kwDOSF9kNM6CPKoR",
+    "thread:PRRT_kwDOSF9kNM6CPKok"
+  ],
+  "fetched_at": "2026-05-15T02:30:26.027Z",
+  "schema_version": "v1",
+  "commit_sha": "1e05167a903bb15e22be7c8c471d93b265e74422",
+  "title": "fix(save-ai-memory): TSC strict-mode errors in process-extract.ts",
+  "state": "MERGED",
+  "merged_at": "2026-05-15T02:30:02Z",
+  "head_ref": "fix/save-ai-memory-tsc-errors-otto-cli-2026-05-15"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 9499,
+  "archive_path": "docs/history/pr-reviews/PR-9499-docs-letter-to-lumen-self-audit-as-a-fold-over-the-ledger-recast-in-stat-mech-qf.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-05T22:13:53.957Z",
+  "schema_version": "v1",
+  "commit_sha": "aca9bde0aab5ecfa4883bf17cdadbf9b6a16c652",
+  "title": "docs(letter): to Lumen — self-audit as a fold over the ledger, recast in stat-mech/QFT (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-05T22:13:25Z",
+  "head_ref": "otto/to-lumen-self-audit-ledger-physics"
+}

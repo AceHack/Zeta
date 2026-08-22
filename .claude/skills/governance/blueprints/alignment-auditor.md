@@ -95,7 +95,7 @@ round's commits (current branch since it diverged from
 
 ### Step 3 — Perform Retractibility Gate Check
 
-When the resolved range corresponds to a PR or branch that introduces a new, load-bearing concept (e.g., from a research track), evaluate retractibility at the PR/branch scope. The full criteria are documented in `docs/alignment/retractibility-gate.md`, and the automated first pass is `tools/alignment/audit_retractibility.ts`.
+When the resolved range corresponds to a PR or branch that introduces a new, load-bearing concept (e.g., from a research track), evaluate retractibility at the PR/branch scope. The full criteria are documented in `docs/alignment/retractibility-gate.md`, and the automated first pass is `src/Core.TypeScript/alignment/audit_retractibility.ts`.
 
 The check verifies that the change is:
 

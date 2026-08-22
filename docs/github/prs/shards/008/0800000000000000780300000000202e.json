@@ -1,0 +1,12 @@
+{
+  "pr_number": 8238,
+  "archive_path": "docs/history/pr-reviews/PR-8238-feat-soft-multi-objective-snap-sensor-fusion-commit-society-self-aware-di-extern.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-15T02:39:49.750Z",
+  "schema_version": "v1",
+  "commit_sha": "c2ddcb78ad6c25ab5d1d157846bf2ab2a8b7b5f2",
+  "title": "feat(soft): multi-objective snap — sensor-fusion commit (society/self-aware, DI-externalized)",
+  "state": "MERGED",
+  "merged_at": "2026-06-15T02:39:25Z",
+  "head_ref": "otto/soft-multi-objective-snap"
+}

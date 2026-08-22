@@ -68,8 +68,25 @@ public static class ZetaIdCodec
         );
     }
 
+    // The Generic layout gives the payload 119 bits (65 low + 54 high). A wider
+    // payload used to be MASKED here rather than rejected, which aliases ids
+    // instead of failing: at 2039-09-07T15:47:35.552Z a caller building
+    // (ms << 78) | random78 -- the shape inventory/new-item.ts uses -- reaches
+    // ms = 2^41, the top ms bit falls off, and the result is BYTE-IDENTICAL to
+    // the same call with ms = 0. That is a silent collision with 1970, forever.
+    // The bound lives in the primitive (not only in the PackPayload wrapper)
+    // because PackGeneric is public: the exposure is a future caller reaching
+    // past the wrapper, which is exactly the mistake new-item.ts made in TS.
+    private const int GenericPayloadBits = 119;
+
     public static UInt128 PackGeneric(IdVersion version, Category category, UInt128 payload)
     {
+        UInt128 maxPayload = (UInt128.One << GenericPayloadBits) - UInt128.One;
+        if (payload > maxPayload)
+            throw new ArgumentOutOfRangeException(
+                nameof(payload), payload,
+                "Generic payload exceeds 119 bits. Masking it would silently alias this id onto a different payload rather than fail.");
+
         UInt128 id = 0;
         id = SetBits(id, Layout.Version, (ulong)version);
         id = SetBits(id, Layout.Category, (ulong)category);

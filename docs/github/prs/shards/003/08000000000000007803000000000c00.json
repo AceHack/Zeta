@@ -1,0 +1,12 @@
+{
+  "pr_number": 3072,
+  "archive_path": "docs/history/pr-reviews/PR-3072-docs-archive-prs-3058-3057-3056.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-14T00:33:26.901Z",
+  "schema_version": "v1",
+  "commit_sha": "573585e8d627805538bd2796ed29815ba199bc8b",
+  "title": "docs: archive PRs 3058, 3057, 3056",
+  "state": "MERGED",
+  "merged_at": "2026-05-14T00:33:12Z",
+  "head_ref": "chore/lior-pr-preservation"
+}

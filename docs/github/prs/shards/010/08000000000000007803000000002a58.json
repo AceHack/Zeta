@@ -1,0 +1,12 @@
+{
+  "pr_number": 10840,
+  "archive_path": "docs/history/pr-reviews/PR-10840-docs-research-bounded-infinity-is-the-grading-not-the-tower-affine-and-voa-are-o.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-16T20:38:22.993Z",
+  "schema_version": "v1",
+  "commit_sha": "f595b5a46eae7423bd88b4834e51b66bd8feee96",
+  "title": "docs(research): bounded infinity is the grading, not the tower — affine and VOA are one rung, and the E9→E11 tower is Cayley–Dickson again",
+  "state": "MERGED",
+  "merged_at": "2026-08-16T20:37:46Z",
+  "head_ref": "shadow/e8-continuation-bounded-infinity-affine-vs-voa"
+}

@@ -1,0 +1,24 @@
+{
+  "pr_number": 3979,
+  "archive_path": "docs/history/pr-reviews/PR-3979-feat-b-0581-decompose-slice-1-gh-auth-refresh-wrapper-script.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7B8DuT",
+    "comment:PRRC_kwDOSF9kNM7B8DuW",
+    "comment:PRRC_kwDOSF9kNM7B8ETK",
+    "comment:PRRC_kwDOSF9kNM7CfhC_",
+    "comment:PRRC_kwDOSF9kNM7CfkL7",
+    "comment:PRRC_kwDOSF9kNM7CgWDn",
+    "thread:PRRT_kwDOSF9kNM6Cmc_-",
+    "thread:PRRT_kwDOSF9kNM6Cmch9",
+    "thread:PRRT_kwDOSF9kNM6CmciA",
+    "thread:PRRT_kwDOSF9kNM6DAoKH",
+    "thread:PRRT_kwDOSF9kNM6DAqdg"
+  ],
+  "fetched_at": "2026-05-19T02:14:00.080Z",
+  "schema_version": "v1",
+  "commit_sha": "cfbcacd44a14731e33196bbd6a3f4515374d824f",
+  "title": "feat(B-0581): decompose slice 1 - gh auth refresh wrapper script",
+  "state": "MERGED",
+  "merged_at": "2026-05-19T02:13:37Z",
+  "head_ref": "lior/decompose-b0581-slice1"
+}

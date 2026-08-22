@@ -1,0 +1,12 @@
+{
+  "pr_number": 9667,
+  "archive_path": "docs/history/pr-reviews/PR-9667-docs-book-the-self-as-reliable-returning-thousand-brains-infer-net-priors-shadow.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-10T06:11:08.705Z",
+  "schema_version": "v1",
+  "commit_sha": "f1f1a3ee2d41dca1c2fbebcb61b1b189b391a38e",
+  "title": "docs(book): the self as reliable returning — Thousand Brains + Infer.NET priors (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-10T06:10:37Z",
+  "head_ref": "shadow/book-self-as-returning-thousand-brains-infernet-priors"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 6539,
+  "archive_path": "docs/history/pr-reviews/PR-6539-research-fold-the-privacy-identity-algebra-4-4-over-4-4-vision-aaron-2026-06-02.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-02T10:29:11.671Z",
+  "schema_version": "v1",
+  "commit_sha": "14b4e53fe7cf305b2a85958612d5b5437894b73c",
+  "title": "research: fold the privacy/identity-algebra + 4×4-over-4×4 vision (Aaron 2026-06-02)",
+  "state": "MERGED",
+  "merged_at": "2026-06-02T10:28:49Z",
+  "head_ref": "otto-cli/vision-privacy-identity-algebra-4x4-over-4x4-2026-06-02"
+}

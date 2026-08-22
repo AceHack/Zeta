@@ -1,0 +1,12 @@
+{
+  "pr_number": 8486,
+  "archive_path": "docs/history/pr-reviews/PR-8486-feat-planning-hierarchical-planning-mvp-2-level-planner-beats-flat-bfs-b-8467-al.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-16T08:41:15.817Z",
+  "schema_version": "v1",
+  "commit_sha": "43be7fff463d6cf8a3083921ef38b906c6f73f63",
+  "title": "feat(planning): hierarchical-planning MVP — 2-level planner beats flat BFS (§B #8467 algorithm-level discharge)",
+  "state": "MERGED",
+  "merged_at": "2026-06-16T08:40:42Z",
+  "head_ref": "otto/hierarchical-planning-mvp-build"
+}

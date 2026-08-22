@@ -1,0 +1,15 @@
+{
+  "pr_number": 6575,
+  "archive_path": "docs/history/pr-reviews/PR-6575-docs-b-0992-ai-app-store-over-product-decision-lanes-web3-shaped-attribution-con.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7HNgpn",
+    "thread:PRRT_kwDOSF9kNM6GeEiu"
+  ],
+  "fetched_at": "2026-06-02T14:59:35.587Z",
+  "schema_version": "v1",
+  "commit_sha": "6cf84dd39f7fe1e1b60544dd6ccb188d050524c6",
+  "title": "docs(B-0992): AI app store over product-decision lanes — web3-shaped, attribution/contribution, superadditive economy",
+  "state": "MERGED",
+  "merged_at": "2026-06-02T14:59:11Z",
+  "head_ref": "otto-cli/b0992-ai-app-store-web3-superadditive-economy-2026-06-02"
+}

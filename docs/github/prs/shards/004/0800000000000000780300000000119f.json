@@ -1,0 +1,12 @@
+{
+  "pr_number": 4511,
+  "archive_path": "docs/history/pr-reviews/PR-4511-shard-2026-05-21-0603z-cold-boot-4-clean-pr-merges-canary-catch-with-empirical-a.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-21T06:33:30.841Z",
+  "schema_version": "v1",
+  "commit_sha": "67d6884390416503ec153217ae08159f4d27b2b3",
+  "title": "shard(2026-05-21/0603Z): cold-boot + 4 CLEAN PR merges + canary catch with empirical addition",
+  "state": "MERGED",
+  "merged_at": "2026-05-21T06:33:12Z",
+  "head_ref": "shard/tick-0603z-otto-cli-cold-boot-3-clean-merges-2026-05-21"
+}

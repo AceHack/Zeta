@@ -5,6 +5,7 @@
  * filter over the event G-Set; closure/closed removes from this view).
  */
 import type { WorkItemEvent, WorkItemLifecycleState } from "./types";
+import { stringCompare } from "../collation/collation";
 
 export interface WorkItemProjection {
   readonly workItemId: string;
@@ -13,8 +14,8 @@ export interface WorkItemProjection {
 }
 
 export function eventOrder(a: WorkItemEvent, b: WorkItemEvent): number {
-  const byAt = a.at.localeCompare(b.at);
-  return byAt !== 0 ? byAt : a.id.localeCompare(b.id);
+  const byAt = stringCompare(a.at, b.at);
+  return byAt !== 0 ? byAt : stringCompare(a.id, b.id);
 }
 
 /** Deterministic fold: apply events in `(at, id)` order. */
@@ -61,5 +62,5 @@ const OPEN_STATES: ReadonlySet<WorkItemLifecycleState> = new Set(["backlog", "in
 export function openWorkItems(projections: ReadonlyMap<string, WorkItemProjection>): WorkItemProjection[] {
   return [...projections.values()]
     .filter((p) => OPEN_STATES.has(p.state))
-    .sort((a, b) => a.workItemId.localeCompare(b.workItemId));
+    .sort((a, b) => stringCompare(a.workItemId, b.workItemId));
 }

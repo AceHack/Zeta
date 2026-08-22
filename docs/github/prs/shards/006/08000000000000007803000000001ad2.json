@@ -1,0 +1,12 @@
+{
+  "pr_number": 6866,
+  "archive_path": "docs/history/pr-reviews/PR-6866-feat-itensor-c-neutral-contract-lib-zeta-core-abstractions-weightedset-implement.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-07T16:29:36.760Z",
+  "schema_version": "v1",
+  "commit_sha": "b7a29c5607a21fa6903408638a4810de7bb33cde",
+  "title": "feat(ITensor): C#-neutral contract lib (Zeta.Core.Abstractions); WeightedSet implements it",
+  "state": "MERGED",
+  "merged_at": "2026-06-07T16:29:13Z",
+  "head_ref": "otto/itensor-csharp-neutral-contract-lib"
+}

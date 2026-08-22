@@ -1,0 +1,12 @@
+{
+  "pr_number": 13227,
+  "archive_path": "docs/history/pr-reviews/PR-13227-docs-design-the-r8-binding-decision-brief-and-the-model-claims-a-property-the-sh.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-21T15:18:54.770Z",
+  "schema_version": "v1",
+  "commit_sha": "9d25885d4919b477e34b3a2d609cb74f9a67ce5d",
+  "title": "docs(design): the R8 binding decision brief — and the model claims a property the shipped path does not honour",
+  "state": "MERGED",
+  "merged_at": "2026-08-21T15:18:15Z",
+  "head_ref": "design/credential-binding-decision-brief"
+}

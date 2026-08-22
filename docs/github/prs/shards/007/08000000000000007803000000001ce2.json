@@ -1,0 +1,12 @@
+{
+  "pr_number": 7394,
+  "archive_path": "docs/history/pr-reviews/PR-7394-fix-vocab-travelers-is-first-negotiation-precondition-like-is-intake-for-words-c.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-09T20:42:21.499Z",
+  "schema_version": "v1",
+  "commit_sha": "35fe0ef6c870443e94b9437cc469aafad8b70778",
+  "title": "fix(vocab): travelers/ is FIRST (negotiation precondition); like/ is intake FOR WORDS (correct pipeline order)",
+  "state": "MERGED",
+  "merged_at": "2026-06-09T20:41:54Z",
+  "head_ref": "otto/fix-like-intake-for-words-travelers-first"
+}

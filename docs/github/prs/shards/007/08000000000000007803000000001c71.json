@@ -1,0 +1,12 @@
+{
+  "pr_number": 7281,
+  "archive_path": "docs/history/pr-reviews/PR-7281-docs-seed-research-traveler-s-internal-jurisdiction-sovereign-recognize-trust-po.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-09T13:46:48.191Z",
+  "schema_version": "v1",
+  "commit_sha": "f406b5186712c64bf41c99649bda7806b56ffe48",
+  "title": "docs(seed)+research: traveler's internal jurisdiction = sovereign recognize/trust/policy, encryptable if privacy-budget/hard-money affords it",
+  "state": "MERGED",
+  "merged_at": "2026-06-09T13:46:25Z",
+  "head_ref": "otto/traveler-sovereign-recognition-trust-policy-encrypt-if-privacy-budget-affords"
+}

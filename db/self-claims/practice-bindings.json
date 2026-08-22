@@ -1,0 +1,29 @@
+{
+  "_readme": "Self-authored standing practice claims. Only the subject writes their own entries; see db/self-claims/README.md. Phases are first-parent commit depths, never dates.",
+  "bindings": [
+    {
+      "subject": "otto-shadow",
+      "practiceId": "otto-shadow/signature",
+      "checkId": "agency-signature-complete",
+      "text": "Every commit authored under this name carries the full AgencySignature v1 block.",
+      "boundAt": 12620
+    },
+    {
+      "subject": "otto-shadow",
+      "practiceId": "otto-shadow/tests-with-source",
+      "checkId": "tests-accompany-source",
+      "text": "When I change source in a commit, I change a test in the same commit.",
+      "boundAt": 12620
+    },
+    {
+      "subject": "otto-shadow",
+      "practiceId": "otto-shadow/work-item",
+      "checkId": "work-item-named",
+      "text": "From here on, every commit I author names its work item in the Task trailer.",
+      "boundAt": 12987
+    }
+  ],
+  "releases": [],
+  "supersessions": [],
+  "exceptions": []
+}

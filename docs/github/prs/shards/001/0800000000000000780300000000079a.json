@@ -1,0 +1,12 @@
+{
+  "pr_number": 1946,
+  "archive_path": "docs/history/pr-reviews/PR-1946-fix-b-0140-kill-19-dead-sh-files-switch-callers-to-ts-rule-0.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-07T21:47:37.605Z",
+  "schema_version": "v1",
+  "commit_sha": "224021417393d8497cd4e6cfcb9999c6e9e16fd2",
+  "title": "fix(B-0140): kill 19 dead .sh files, switch callers to .ts — Rule 0",
+  "state": "MERGED",
+  "merged_at": "2026-05-07T21:47:24Z",
+  "head_ref": "chore/b0140-bash-to-ts-kill-dead-shells"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 8879,
+  "archive_path": "docs/history/pr-reviews/PR-8879-docs-cross-language-interface-trajectory-gcf-weakref-cogen.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-21T06:10:59.607Z",
+  "schema_version": "v1",
+  "commit_sha": "30f2cbf0ce176333f92bc4ae7ab6d81d868c8f3c",
+  "title": "docs: cross-language interface trajectory (GCF + WeakRef/cogen)",
+  "state": "MERGED",
+  "merged_at": "2026-06-21T06:10:30Z",
+  "head_ref": "alexa/interface-trajectory"
+}

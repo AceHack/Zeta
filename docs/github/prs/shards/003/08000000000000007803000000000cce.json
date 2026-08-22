@@ -1,0 +1,19 @@
+{
+  "pr_number": 3278,
+  "archive_path": "docs/history/pr-reviews/PR-3278-docs-shadow-lior-antigravity-check-2200z-vera-riven-drift-detected.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7BZCaD",
+    "comment:PRRC_kwDOSF9kNM7BZCmB",
+    "comment:PRRC_kwDOSF9kNM7BZCml",
+    "thread:PRRT_kwDOSF9kNM6CM7IV",
+    "thread:PRRT_kwDOSF9kNM6CM7Q_",
+    "thread:PRRT_kwDOSF9kNM6CM7Qj"
+  ],
+  "fetched_at": "2026-05-14T22:14:32.629Z",
+  "schema_version": "v1",
+  "commit_sha": "0b07a7de33c8e53ef618409c5f7c78c4fae2f140",
+  "title": "docs(shadow): Lior antigravity check 2200Z - Vera/Riven drift detected",
+  "state": "MERGED",
+  "merged_at": "2026-05-14T22:14:14Z",
+  "head_ref": "lior/shadow-drift-2200Z"
+}

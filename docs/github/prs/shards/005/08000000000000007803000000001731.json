@@ -1,0 +1,21 @@
+{
+  "pr_number": 5937,
+  "archive_path": "docs/history/pr-reviews/PR-5937-feat-broadcast-detect-local-scope-conflicts.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7F96H8",
+    "comment:PRRC_kwDOSF9kNM7F96IU",
+    "comment:PRRC_kwDOSF9kNM7F9zH3",
+    "comment:PRRC_kwDOSF9kNM7F9zIH",
+    "thread:PRRT_kwDOSF9kNM6FjHDW",
+    "thread:PRRT_kwDOSF9kNM6FjHDj",
+    "thread:PRRT_kwDOSF9kNM6FjMFN",
+    "thread:PRRT_kwDOSF9kNM6FjMFc"
+  ],
+  "fetched_at": "2026-05-29T00:24:07.965Z",
+  "schema_version": "v1",
+  "commit_sha": "4d707b90e1b197ddcfe96fae481fa410f5b22f28",
+  "title": "feat(broadcast): detect local scope conflicts",
+  "state": "MERGED",
+  "merged_at": "2026-05-29T00:23:45Z",
+  "head_ref": "claim/backlog-0213-broadcast-conflict-detection-20260528"
+}

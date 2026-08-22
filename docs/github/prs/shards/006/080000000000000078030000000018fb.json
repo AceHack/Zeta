@@ -1,0 +1,12 @@
+{
+  "pr_number": 6395,
+  "archive_path": "docs/history/pr-reviews/PR-6395-feat-algebra-native-c-z-set-signed-multiset-top-rung-oracle-3-3-4.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-01T10:19:41.475Z",
+  "schema_version": "v1",
+  "commit_sha": "187e5e12194994ae75cddf5351157d7e25325472",
+  "title": "feat(algebra): native C# Z-set (signed multiset) — top rung, oracle #3 (3/4)",
+  "state": "MERGED",
+  "merged_at": "2026-06-01T10:19:13Z",
+  "head_ref": "otto-cli/zset-csharp-native-oracle3-2026-06-01"
+}

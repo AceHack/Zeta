@@ -1,0 +1,12 @@
+{
+  "pr_number": 12103,
+  "archive_path": "docs/history/pr-reviews/PR-12103-ferry-ip-questionable-holography-as-generate-join-the-rigid-boundary-is-the-defe.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-18T21:27:13.056Z",
+  "schema_version": "v1",
+  "commit_sha": "9816a582252c8ab5fafd202c3e38d20aa1d845f5",
+  "title": "ferry(ip-questionable): holography as generate+join — the rigid boundary is the defect",
+  "state": "MERGED",
+  "merged_at": "2026-08-18T21:26:37Z",
+  "head_ref": "shadow/ferry-holography-generate-join"
+}

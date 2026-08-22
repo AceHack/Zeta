@@ -1,0 +1,12 @@
+{
+  "pr_number": 8693,
+  "archive_path": "docs/history/pr-reviews/PR-8693-feat-qsharp-gen-gen-gen-q-self-hosting-face-3-fixpoint.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-20T03:25:32.235Z",
+  "schema_version": "v1",
+  "commit_sha": "af4c427e5aee7b0ec7309b436f586fe112baabc9",
+  "title": "feat(qsharp): gen(gen)===gen Q# self-hosting — Face 3 fixpoint",
+  "state": "MERGED",
+  "merged_at": "2026-06-20T03:25:09Z",
+  "head_ref": "alexa/gen-gen-qsharp-face3"
+}

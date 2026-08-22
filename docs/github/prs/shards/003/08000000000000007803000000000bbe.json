@@ -1,0 +1,21 @@
+{
+  "pr_number": 3006,
+  "archive_path": "docs/history/pr-reviews/PR-3006-feat-bg-b-0440-1-standing-by-detector-skeleton-no-op-poll-loop-slice-1-of-6.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7A5YqM",
+    "comment:PRRC_kwDOSF9kNM7A5YqR",
+    "comment:PRRC_kwDOSF9kNM7A5cbv",
+    "comment:PRRC_kwDOSF9kNM7A5ccm",
+    "thread:PRRT_kwDOSF9kNM6B1vL8",
+    "thread:PRRT_kwDOSF9kNM6B1vL_",
+    "thread:PRRT_kwDOSF9kNM6B1yBy",
+    "thread:PRRT_kwDOSF9kNM6B1yCS"
+  ],
+  "fetched_at": "2026-05-13T17:42:04.002Z",
+  "schema_version": "v1",
+  "commit_sha": "fd2dffbacc202474b042e1c3193d94c91508bca2",
+  "title": "feat(bg): B-0440.1 — standing-by detector skeleton + no-op poll loop (slice 1 of 6)",
+  "state": "MERGED",
+  "merged_at": "2026-05-13T17:41:45Z",
+  "head_ref": "otto-b0440-1-standing-by-detector-skeleton-slice-1-impl-2026-05-13"
+}

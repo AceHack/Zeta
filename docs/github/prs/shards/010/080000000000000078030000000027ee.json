@@ -1,0 +1,12 @@
+{
+  "pr_number": 10222,
+  "archive_path": "docs/history/pr-reviews/PR-10222-fix-docs-whitewash-unprofitability-claim-was-false-replace-with-the-machine-chec.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-09T20:02:35.293Z",
+  "schema_version": "v1",
+  "commit_sha": "76e89dcfedd88bd8bf2de92388e791ad2d6536da",
+  "title": "fix(docs): whitewash-unprofitability claim was FALSE — replace with the machine-checked theorem (+ land Soraya's lemmas)",
+  "state": "MERGED",
+  "merged_at": "2026-08-09T20:02:06Z",
+  "head_ref": "shadow/soraya-lemmas-and-whitewash-correction"
+}

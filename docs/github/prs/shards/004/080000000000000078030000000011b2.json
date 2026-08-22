@@ -1,0 +1,12 @@
+{
+  "pr_number": 4530,
+  "archive_path": "docs/history/pr-reviews/PR-4530-shard-2026-05-21-1206z-zetaid-c-oracle-kestrel-sharpening-6-v2-backlog-rows-burs.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-21T12:18:39.831Z",
+  "schema_version": "v1",
+  "commit_sha": "9feab3c470543b250489fed93f1a785f12178ffe",
+  "title": "shard(2026-05-21/1206Z): ZetaId C# oracle + Kestrel sharpening + 6 v2 backlog rows burst close",
+  "state": "MERGED",
+  "merged_at": "2026-05-21T12:18:14Z",
+  "head_ref": "shard/tick-1206z-zeta-id-csharp-oracle-kestrel-burst-close-2026-05-21"
+}

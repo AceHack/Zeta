@@ -1,0 +1,21 @@
+{
+  "pr_number": 6320,
+  "archive_path": "docs/history/pr-reviews/PR-6320-feat-ace-slice-3-ed25519-authenticity-sign-trust-verify-on-install-b-0288.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7GkcfN",
+    "comment:PRRC_kwDOSF9kNM7GkgfP",
+    "comment:PRRC_kwDOSF9kNM7GkhrQ",
+    "comment:PRRC_kwDOSF9kNM7GklSc",
+    "comment:PRRC_kwDOSF9kNM7Gkm1p",
+    "thread:PRRT_kwDOSF9kNM6F_rS1",
+    "thread:PRRT_kwDOSF9kNM6F_vOY",
+    "thread:PRRT_kwDOSF9kNM6F_zMV"
+  ],
+  "fetched_at": "2026-06-01T03:16:34.718Z",
+  "schema_version": "v1",
+  "commit_sha": "3166d5990f9e87788320012a7807e829285ecb3c",
+  "title": "feat(ace): slice 3 — Ed25519 authenticity (sign/trust/verify-on-install) (B-0288)",
+  "state": "MERGED",
+  "merged_at": "2026-06-01T03:16:14Z",
+  "head_ref": "otto-windows/ace-slice3-build-2026-06-01"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 5942,
+  "archive_path": "docs/history/pr-reviews/PR-5942-codex-agentic-org-worker-entrypoint-hardening.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-29T03:29:43.958Z",
+  "schema_version": "v1",
+  "commit_sha": "3614cd7af9fa0901e6d21b58ad0ac51a761dfd48",
+  "title": "Codex/agentic org worker entrypoint hardening",
+  "state": "MERGED",
+  "merged_at": "2026-05-29T03:29:24Z",
+  "head_ref": "codex/agentic-org-worker-entrypoint-hardening"
+}

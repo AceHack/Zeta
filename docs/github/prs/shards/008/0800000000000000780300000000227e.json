@@ -1,0 +1,12 @@
+{
+  "pr_number": 8830,
+  "archive_path": "docs/history/pr-reviews/PR-8830-feat-core-compose-room-and-soft-heat-boundaries.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-21T03:03:43.152Z",
+  "schema_version": "v1",
+  "commit_sha": "be42018cec09478dfbdaae4b79a6d09310f94a3d",
+  "title": "feat(core): compose room and soft heat boundaries",
+  "state": "MERGED",
+  "merged_at": "2026-06-21T03:03:19Z",
+  "head_ref": "codex/unified-room-heat"
+}

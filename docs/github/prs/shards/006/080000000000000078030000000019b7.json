@@ -1,0 +1,17 @@
+{
+  "pr_number": 6583,
+  "archive_path": "docs/history/pr-reviews/PR-6583-docs-ace-slice-8-1-spec-trust-core-consumes-the-shared-canonical-json.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7HOgXq",
+    "comment:PRRC_kwDOSF9kNM7HOgXx",
+    "thread:PRRT_kwDOSF9kNM6Gez5W",
+    "thread:PRRT_kwDOSF9kNM6Gez5b"
+  ],
+  "fetched_at": "2026-06-02T15:36:18.639Z",
+  "schema_version": "v1",
+  "commit_sha": "8476006ef6770f635831357908290ecb34ff29c9",
+  "title": "docs(ace): slice 8.1 spec — trust core consumes the shared canonical-JSON",
+  "state": "MERGED",
+  "merged_at": "2026-06-02T15:35:48Z",
+  "head_ref": "otto-windows/ace-slice8.1-canonical-json-spec-2026-06-02"
+}

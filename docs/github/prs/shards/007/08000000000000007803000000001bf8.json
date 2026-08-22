@@ -1,0 +1,12 @@
+{
+  "pr_number": 7160,
+  "archive_path": "docs/history/pr-reviews/PR-7160-feat-core-hat-address-mumps-scoping-meta-hats-globals-normal-game-fingerprint-sc.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-09T01:12:54.185Z",
+  "schema_version": "v1",
+  "commit_sha": "2a6ab58af4cc03ba3b84939f733437868a364251",
+  "title": "feat(core): Hat.address — MUMPS scoping (meta hats = globals; normal = game-fingerprint-scoped)",
+  "state": "MERGED",
+  "merged_at": "2026-06-09T01:12:32Z",
+  "head_ref": "otto/hat-address-mumps-global-meta-vs-game-fingerprint-scoped"
+}

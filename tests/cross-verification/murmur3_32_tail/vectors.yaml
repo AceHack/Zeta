@@ -1,7 +1,41 @@
 # Test vectors for hash.murmur3_32_tail
-# This is the 32-bit block mix tail: `h = rotl(h, 13); h = h * 5 + 0xe6546b64`
+#
+#   expected(id) = (rotl32(h, 13) * 5 + 0xe6546b64) mod 2^32
+#
 # Serves as the SECOND add-anchor for zeta-ir-v4, combining `add` with `rotl` and `mul`.
-# Inputs and outputs are 32-bit unsigned integers.
+# Inputs and outputs are 32-bit unsigned integers. The arithmetic is correct and
+# matches the reference exactly; what follows is about the NAME.
+#
+# THIS IS THE BODY-BLOCK COMBINE, NOT THE TAIL. In Austin Appleby's reference
+# (`smhasher/src/MurmurHash3.cpp`, `MurmurHash3_x86_32`) these two lines are the
+# last two of the per-block loop, in the section the file itself labels `// body`:
+#
+#     for(int i = -nblocks; i; i++)
+#     {
+#       uint32_t k1 = getblock32(blocks,i);
+#       k1 *= c1;  k1 = ROTL32(k1,15);  k1 *= c2;
+#       h1 ^= k1;
+#       h1 = ROTL32(h1,13);
+#       h1 = h1*5+0xe6546b64;
+#     }
+#
+# The section Appleby labels `// tail` is a different thing entirely — the
+# leftover 1..3 bytes after the last whole block, mixed with c1 / ROTL32(_,15) /
+# c2 and XORed into h1. It contains no rotl-13, no multiply-by-5 and no
+# 0xe6546b64. So `_tail` in this generator's name asserts an anchor the code does
+# not implement; the accurate name is the body-block (or block mix) combine.
+#
+# NOT RENAMED HERE, DELIBERATELY. `idOf "hash.murmur3_32_tail" 1` is a pure
+# function of the name, so a rename moves the generator's ZetaId, the `generator`
+# field inside the content-addressed IR document, and every golden byte derived
+# from both — and it requires editing `src/Core/ZetaIrV4.fs`, owned by another
+# agent in flight. The finding is pinned as an executable assertion instead, in
+# `tests/cross-verification/_harness/anchor-entailment.test.ts` (both halves: the
+# body combine reproduces these vectors, the tail path does not), and the rename
+# is filed as work-item 081M02YCNMA087G0R003TK7AEW.
+#
+# (.claude/rules/anchor-to-human-prior-art.md — an anchor must be CHECKED for
+#  entailment, not cited.)
 
 vectors:
   - id: "x-0"

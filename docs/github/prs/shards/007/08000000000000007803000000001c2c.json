@@ -1,0 +1,12 @@
+{
+  "pr_number": 7212,
+  "archive_path": "docs/history/pr-reviews/PR-7212-docs-research-society-calibrates-the-public-private-encryption-split-by-revealed.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-09T05:30:50.403Z",
+  "schema_version": "v1",
+  "commit_sha": "92dd25d60750fcadc2d8ba90fc61341799cb44db",
+  "title": "docs(research): society calibrates the public/private encryption split by revealed-coincidence-value; you can't lose it, pressure only trends down",
+  "state": "MERGED",
+  "merged_at": "2026-06-09T05:30:31Z",
+  "head_ref": "otto/research-society-calibrates-public-private-split-pressure-trends-down"
+}

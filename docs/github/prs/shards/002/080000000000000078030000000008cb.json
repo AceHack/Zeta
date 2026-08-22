@@ -1,0 +1,17 @@
+{
+  "pr_number": 2251,
+  "archive_path": "docs/history/pr-reviews/PR-2251-feat-b-0364-policy-relocation-semantic-preservation-2-property-tests.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_gKte",
+    "comment:PRRC_kwDOSF9kNM6_gKtf",
+    "thread:PRRT_kwDOSF9kNM6AzoXZ",
+    "thread:PRRT_kwDOSF9kNM6AzoXa"
+  ],
+  "fetched_at": "2026-05-09T09:02:56.589Z",
+  "schema_version": "v1",
+  "commit_sha": "d4d5a11a8376f0219148979296477b69e5d36da6",
+  "title": "feat(B-0364): policy relocation semantic preservation — 2 property tests",
+  "state": "MERGED",
+  "merged_at": "2026-05-09T09:02:42Z",
+  "head_ref": "feat/b0364-policy-relocation-property"
+}

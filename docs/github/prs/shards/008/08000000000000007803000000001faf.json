@@ -1,0 +1,12 @@
+{
+  "pr_number": 8111,
+  "archive_path": "docs/history/pr-reviews/PR-8111-feat-ferry-background-ferry-seeded-replay-lock-free-deterministicsynccontext-opt.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-14T00:54:00.599Z",
+  "schema_version": "v1",
+  "commit_sha": "7b9c776542bfbf6819300ddf47f75a60d60b6615",
+  "title": "feat(ferry): background-ferry seeded replay + lock-free DeterministicSyncContext (Option-A 4b)",
+  "state": "MERGED",
+  "merged_at": "2026-06-14T00:53:32Z",
+  "head_ref": "otto/ferrythrottler-bg-replay-4b"
+}

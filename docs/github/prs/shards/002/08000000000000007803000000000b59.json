@@ -1,0 +1,12 @@
+{
+  "pr_number": 2905,
+  "archive_path": "docs/history/pr-reviews/PR-2905-docs-memory-forker-perspective-discipline-easy-fork-segregate-owner-only-substra.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-13T02:12:35.025Z",
+  "schema_version": "v1",
+  "commit_sha": "22ccd3070fec604ea143b8e3c42e8d3ed99ffe7b",
+  "title": "docs(memory): forker-perspective discipline — easy fork; segregate owner-only substrate (Aaron 2026-05-13)",
+  "state": "MERGED",
+  "merged_at": "2026-05-13T02:12:20Z",
+  "head_ref": "aaron-forker-perspective-easy-fork-no-files-they-cant-touch-segregate-owner-only-substrate-2026-05-13"
+}

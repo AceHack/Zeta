@@ -1,0 +1,21 @@
+{
+  "pr_number": 6150,
+  "archive_path": "docs/history/pr-reviews/PR-6150-feat-agentic-org-generic-multi-provider-work-port-live-flip-integration-ci-gasto.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7Gc69l",
+    "comment:PRRC_kwDOSF9kNM7Gc69o",
+    "comment:PRRC_kwDOSF9kNM7Gc8Nm",
+    "comment:PRRC_kwDOSF9kNM7Gc8On",
+    "comment:PRRC_kwDOSF9kNM7Gcpr2",
+    "thread:PRRT_kwDOSF9kNM6F53pE",
+    "thread:PRRT_kwDOSF9kNM6F53pG",
+    "thread:PRRT_kwDOSF9kNM6F5qHV"
+  ],
+  "fetched_at": "2026-05-30T23:53:36.819Z",
+  "schema_version": "v1",
+  "commit_sha": "0408a62d5257d4c474cadf11d535e8262d29976c",
+  "title": "feat(agentic-org): generic multi-provider work port + live flip + integration CI + gastown moat analysis",
+  "state": "MERGED",
+  "merged_at": "2026-05-30T23:53:14Z",
+  "head_ref": "feat/agentic-org-generic-providers-and-gastown-moat-2026-05-30"
+}

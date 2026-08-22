@@ -1,0 +1,12 @@
+{
+  "pr_number": 9856,
+  "archive_path": "docs/history/pr-reviews/PR-9856-docs-handoff-self-healing-plan-for-alexa-kiro-drift-classes-intelligence-tiers-w.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-01T12:12:43.510Z",
+  "schema_version": "v1",
+  "commit_sha": "aef290951e42999f98e7675c17206ab49904bc76",
+  "title": "docs(handoff): self-healing plan for Alexa/Kiro — drift classes, intelligence tiers, what never to auto-heal",
+  "state": "MERGED",
+  "merged_at": "2026-08-01T12:12:11Z",
+  "head_ref": "shadow/handoff-alexa-self-healing"
+}

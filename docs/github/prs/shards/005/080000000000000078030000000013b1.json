@@ -1,0 +1,18 @@
+{
+  "pr_number": 5041,
+  "archive_path": "docs/history/pr-reviews/PR-5041-docs-shadow-log-ci-failure-drift-from-otto-cli-in-pr-5032.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7Et_j3",
+    "comment:PRRC_kwDOSF9kNM7EvtA2",
+    "comment:PRRC_kwDOSF9kNM7Ey8qU",
+    "thread:PRRT_kwDOSF9kNM6EpT0S",
+    "thread:PRRT_kwDOSF9kNM6Eqi7q"
+  ],
+  "fetched_at": "2026-05-26T06:35:59.819Z",
+  "schema_version": "v1",
+  "commit_sha": "8b557fe90263f12b394c49f39f38b01b366e36d6",
+  "title": "docs(shadow): log CI failure drift from otto-cli in PR #5032",
+  "state": "MERGED",
+  "merged_at": "2026-05-26T06:35:41Z",
+  "head_ref": "lior/shadow-log-otto-5032-drift"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 7191,
+  "archive_path": "docs/history/pr-reviews/PR-7191-docs-research-o1-refined-s-4-iff-game-exhaustibly-searchable-entropy-ledger-time.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-09T03:30:06.326Z",
+  "schema_version": "v1",
+  "commit_sha": "4406cc394a0a87df18b50f335da9ba882a305901",
+  "title": "docs(research): O1 refined — S=4 iff game exhaustibly searchable; entropy ledger (time=0 seed-closed, games = per-fingerprint 4-S)",
+  "state": "MERGED",
+  "merged_at": "2026-06-09T03:29:47Z",
+  "head_ref": "otto/research-o1-refined-per-game-entropy-meter-time-seed-closed"
+}

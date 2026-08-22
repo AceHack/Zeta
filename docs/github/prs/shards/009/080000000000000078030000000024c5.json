@@ -1,0 +1,12 @@
+{
+  "pr_number": 9413,
+  "archive_path": "docs/history/pr-reviews/PR-9413-docs-ferry-honest-peels-on-max-mode-economics-condorcet-is-conditional-s-4-vs-in.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-04T04:56:33.730Z",
+  "schema_version": "v1",
+  "commit_sha": "bdeb98de2aaf9ec347af5149dd20aa788469c8ae",
+  "title": "docs(ferry): honest peels on max-mode economics — Condorcet is conditional (S=4 vs independence), Landauer is a benchmark, Eve's rooms (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-04T04:56:06Z",
+  "head_ref": "otto/ferry-honest-peels-max-mode-condorcet-conditional-s4-landauer-benchmark-eve-rooms"
+}

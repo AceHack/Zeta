@@ -1,0 +1,29 @@
+{
+  "pr_number": 5117,
+  "archive_path": "docs/history/pr-reviews/PR-5117-ci-test-cascade-2-bun-unit-tests-for-zflash-pure-logic-finds-regex-bug-dos-fat-t.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7EzYOE",
+    "comment:PRRC_kwDOSF9kNM7EzbrD",
+    "comment:PRRC_kwDOSF9kNM7Ezbrt",
+    "comment:PRRC_kwDOSF9kNM7Ezbs-",
+    "comment:PRRC_kwDOSF9kNM7EzbsE",
+    "comment:PRRC_kwDOSF9kNM7Ezbse",
+    "comment:PRRC_kwDOSF9kNM7Ezbsw",
+    "comment:PRRC_kwDOSF9kNM7EzbtN",
+    "thread:PRRT_kwDOSF9kNM6EtNgN",
+    "thread:PRRT_kwDOSF9kNM6EtQEL",
+    "thread:PRRT_kwDOSF9kNM6EtQE_",
+    "thread:PRRT_kwDOSF9kNM6EtQEr",
+    "thread:PRRT_kwDOSF9kNM6EtQFU",
+    "thread:PRRT_kwDOSF9kNM6EtQFd",
+    "thread:PRRT_kwDOSF9kNM6EtQFo",
+    "thread:PRRT_kwDOSF9kNM6EtQFz"
+  ],
+  "fetched_at": "2026-05-26T07:04:28.244Z",
+  "schema_version": "v1",
+  "commit_sha": "17523e4fba4fe1c5b734b0014d77363a4223255b",
+  "title": "ci(test-cascade-2): bun unit tests for zflash pure-logic + finds regex bug (DOS_FAT token never matched DOS_FAT_32) (Aaron 2026-05-26)",
+  "state": "MERGED",
+  "merged_at": "2026-05-26T07:04:07Z",
+  "head_ref": "otto-cli/ci-test-cascade-2-zflash-bun-unit-tests-2026-05-26"
+}

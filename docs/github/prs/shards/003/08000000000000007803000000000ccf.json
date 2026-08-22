@@ -1,0 +1,12 @@
+{
+  "pr_number": 3279,
+  "archive_path": "docs/history/pr-reviews/PR-3279-docs-archive-preserve-recently-merged-prs-2200z.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-14T22:12:44.388Z",
+  "schema_version": "v1",
+  "commit_sha": "d3ef45cf693adadae3d0a31080972e7371830f1e",
+  "title": "docs(archive): preserve recently merged PRs (2200Z)",
+  "state": "MERGED",
+  "merged_at": "2026-05-14T22:12:25Z",
+  "head_ref": "lior/archive-prs-2200Z"
+}

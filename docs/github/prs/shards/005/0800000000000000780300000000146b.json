@@ -1,0 +1,12 @@
+{
+  "pr_number": 5227,
+  "archive_path": "docs/history/pr-reviews/PR-5227-feat-b-0820-file-flux-as-second-engine-row-with-flag-toggle-multi-cluster-a-b-su.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-26T17:12:30.355Z",
+  "schema_version": "v1",
+  "commit_sha": "5a6697924e6a05c360f0548f37d2be769506c5ca",
+  "title": "feat(B-0820): file Flux-as-second-engine row with flag-toggle + multi-cluster A/B substrate",
+  "state": "MERGED",
+  "merged_at": "2026-05-26T17:12:10Z",
+  "head_ref": "otto-cli/b0820-flux-engine-second-engine-flag-toggle-2026-05-26"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 4475,
+  "archive_path": "docs/history/pr-reviews/PR-4475-docs-archive-lior-pr-preservation-4472.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-21T06:20:57.011Z",
+  "schema_version": "v1",
+  "commit_sha": "c9f5cd0a31821697a9c4bd27621e14cd5bd8fd29",
+  "title": "docs(archive): Lior PR preservation 4472",
+  "state": "MERGED",
+  "merged_at": "2026-05-21T06:20:39Z",
+  "head_ref": "lior/preserve-4472"
+}

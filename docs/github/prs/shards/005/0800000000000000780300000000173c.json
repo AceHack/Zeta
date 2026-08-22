@@ -1,0 +1,15 @@
+{
+  "pr_number": 5948,
+  "archive_path": "docs/history/pr-reviews/PR-5948-docs-trajectories-surface-the-3-current-cluster-workstreams-trajectory-vs-workst.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7GC3Cv",
+    "thread:PRRT_kwDOSF9kNM6FmwO5"
+  ],
+  "fetched_at": "2026-05-29T06:56:18.579Z",
+  "schema_version": "v1",
+  "commit_sha": "bdd50bd369b481a94bcafaeef2de9ff740a53430",
+  "title": "docs(trajectories): surface the 3 current cluster workstreams + trajectory-vs-workstream taxonomy",
+  "state": "MERGED",
+  "merged_at": "2026-05-29T06:55:57Z",
+  "head_ref": "otto-cli/surface-three-cluster-trajectories-2026-05-29"
+}

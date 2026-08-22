@@ -1,0 +1,12 @@
+{
+  "pr_number": 2861,
+  "archive_path": "docs/history/pr-reviews/PR-2861-fix-tick-resolve-2007z-post-merge-reference-nits.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-12T20:27:30.472Z",
+  "schema_version": "v1",
+  "commit_sha": "a10c4894e7c010514fea5339c91b0e2d1d24e82a",
+  "title": "fix(tick): resolve 2007Z post-merge reference nits",
+  "state": "MERGED",
+  "merged_at": "2026-05-12T20:27:09Z",
+  "head_ref": "codex/pr2856-reference-nits-followup"
+}

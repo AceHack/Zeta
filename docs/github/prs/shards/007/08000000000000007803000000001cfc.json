@@ -1,0 +1,12 @@
+{
+  "pr_number": 7420,
+  "archive_path": "docs/history/pr-reviews/PR-7420-feat-add-dns-at-root-zeta-name-resolution-zetaid-reticulum-destination-name-self.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-09T21:42:52.029Z",
+  "schema_version": "v1",
+  "commit_sha": "f70aea9ffe85ef401ee022f773a6d326f80814bf",
+  "title": "feat: add dns/ at root — Zeta name-resolution (ZetaId <-> Reticulum destination <-> name; self-certifying)",
+  "state": "MERGED",
+  "merged_at": "2026-06-09T21:42:32Z",
+  "head_ref": "otto/dns-folder-at-root-zeta-name-resolution"
+}

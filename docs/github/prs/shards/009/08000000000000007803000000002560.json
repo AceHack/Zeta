@@ -1,0 +1,12 @@
+{
+  "pr_number": 9568,
+  "archive_path": "docs/history/pr-reviews/PR-9568-fix-ci-restore-pages-and-actionlint-gates.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-09T01:13:55.761Z",
+  "schema_version": "v1",
+  "commit_sha": "e9ec7dceb0e9c934876ffe85f62ade8a8855953f",
+  "title": "fix(ci): restore Pages and actionlint gates",
+  "state": "MERGED",
+  "merged_at": "2026-07-09T01:13:21Z",
+  "head_ref": "codex/fix-pages-raw-tag-archive"
+}

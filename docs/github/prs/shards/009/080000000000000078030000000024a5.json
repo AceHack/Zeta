@@ -1,0 +1,12 @@
+{
+  "pr_number": 9381,
+  "archive_path": "docs/history/pr-reviews/PR-9381-test-python-t-1-12-brownian-experts-lemma-set-promoted-to-pytest-assertions.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-04T00:02:25.239Z",
+  "schema_version": "v1",
+  "commit_sha": "511bac83c75a60887584a7981443d652a05acf01",
+  "title": "test(python): T-1/12 + Brownian-experts lemma set promoted to pytest assertions",
+  "state": "MERGED",
+  "merged_at": "2026-07-04T00:02:00Z",
+  "head_ref": "shadow/t112-pytest-promotion"
+}

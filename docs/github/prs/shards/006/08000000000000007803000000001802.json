@@ -1,0 +1,15 @@
+{
+  "pr_number": 6146,
+  "archive_path": "docs/history/pr-reviews/PR-6146-docs-kestrel-2026-05-30-prs-as-corporate-consensus-git-crdt-du-decentralized-dec.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7GchT_",
+    "thread:PRRT_kwDOSF9kNM6F5jhM"
+  ],
+  "fetched_at": "2026-05-30T21:56:38.097Z",
+  "schema_version": "v1",
+  "commit_sha": "b7981cf0970e4629a73811bad0f8082b8871ccb2",
+  "title": "docs(kestrel 2026-05-30): PRs-as-corporate-consensus + git-CRDT-DU decentralized decisions + two-sided naming razor + good-citizen frame",
+  "state": "MERGED",
+  "merged_at": "2026-05-30T21:56:20Z",
+  "head_ref": "otto/kestrel-prs-consensus-crdt-du-naming-razor-good-citizen-2026-05-30"
+}

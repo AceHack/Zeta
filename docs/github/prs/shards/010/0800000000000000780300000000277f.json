@@ -1,0 +1,12 @@
+{
+  "pr_number": 10111,
+  "archive_path": "docs/history/pr-reviews/PR-10111-book-editions-mandarin-companion-1-the-unbroken-child-full-length-zh.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-07T17:51:12.154Z",
+  "schema_version": "v1",
+  "commit_sha": "bbf8c0594c98822571ed66ee25ff52e3d0e2201f",
+  "title": "book(editions): Mandarin companion 1 — the Unbroken Child, full length (zh)",
+  "state": "MERGED",
+  "merged_at": "2026-08-07T17:50:35Z",
+  "head_ref": "book-zh-companion-unbrokenchild"
+}

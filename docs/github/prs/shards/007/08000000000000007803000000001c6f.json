@@ -1,0 +1,12 @@
+{
+  "pr_number": 7279,
+  "archive_path": "docs/history/pr-reviews/PR-7279-docs-seed-research-correct-traveler-any-self-propagating-pattern-not-human-ai-on.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-09T13:42:42.152Z",
+  "schema_version": "v1",
+  "commit_sha": "bd3904afec2b295371d1a5326e4886adffc43d9f",
+  "title": "docs(seed)+research: correct traveler — ANY self-propagating pattern (not human/AI-only); universal alignment from ALL travelers",
+  "state": "MERGED",
+  "merged_at": "2026-06-09T13:42:19Z",
+  "head_ref": "otto/traveler-is-any-self-propagating-pattern-universal-alignment-not-human-ai-only"
+}

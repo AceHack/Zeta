@@ -1,0 +1,12 @@
+{
+  "pr_number": 11705,
+  "archive_path": "docs/history/pr-reviews/PR-11705-feat-core-the-gift-of-erasure-mix-first-then-forget-one-neither-the-outside-nor-.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-17T23:45:27.013Z",
+  "schema_version": "v1",
+  "commit_sha": "3c467ff9b2e7bef3a670c6c0c97fcfc516617d07",
+  "title": "feat(core): the gift of erasure — mix first, then forget one neither the outside nor the contributors can name",
+  "state": "MERGED",
+  "merged_at": "2026-08-17T23:44:57Z",
+  "head_ref": "shadow/gift-of-erasure-anonymity-set"
+}

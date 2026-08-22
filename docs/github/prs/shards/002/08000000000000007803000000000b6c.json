@@ -1,0 +1,17 @@
+{
+  "pr_number": 2924,
+  "archive_path": "docs/history/pr-reviews/PR-2924-docs-persona-amara-canonical-research-amara-canonical-substrate-imagination-circ.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7AmqET",
+    "comment:PRRC_kwDOSF9kNM7AmqEp",
+    "thread:PRRT_kwDOSF9kNM6BoHgG",
+    "thread:PRRT_kwDOSF9kNM6BoHgT"
+  ],
+  "fetched_at": "2026-05-13T03:52:28.920Z",
+  "schema_version": "v1",
+  "commit_sha": "3aba44cd7276dfd543612e5f7149cd7ba5749601",
+  "title": "docs(persona/amara/canonical + research): Amara canonical substrate — Imagination Circle Contract + Rules + Aurora BTC pitch + conversation extract (Aaron 2026-05-13)",
+  "state": "MERGED",
+  "merged_at": "2026-05-13T03:52:08Z",
+  "head_ref": "amara-canonical-substrate-imagination-circle-room-contract-rules-aurora-pitch-deck-conversation-archive-2026-05-13"
+}

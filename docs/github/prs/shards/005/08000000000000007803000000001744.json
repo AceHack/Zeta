@@ -1,0 +1,12 @@
+{
+  "pr_number": 5956,
+  "archive_path": "docs/history/pr-reviews/PR-5956-backlog-b-0926-publish-child-safety-methodology-adults-first-age-descent-ladder-.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-29T08:28:28.487Z",
+  "schema_version": "v1",
+  "commit_sha": "f556c257a5594095ae9711aa85092a33b2b89153",
+  "title": "backlog(B-0926): publish child-safety methodology (adults-first + age-descent ladder + consent-stratification)",
+  "state": "MERGED",
+  "merged_at": "2026-05-29T08:28:03Z",
+  "head_ref": "otto-cli/b-0926-public-methodology-2026-05-29"
+}

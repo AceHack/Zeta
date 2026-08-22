@@ -1,0 +1,12 @@
+{
+  "pr_number": 10851,
+  "archive_path": "docs/history/pr-reviews/PR-10851-fix-identity-one-shared-actorref-invalid-vector-file-for-both-oracles.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-16T15:54:16.799Z",
+  "schema_version": "v1",
+  "commit_sha": "234933fab13a266d0c8d5b0325c13541a08d3f96",
+  "title": "fix(identity): one shared ActorRef invalid-vector file for both oracles",
+  "state": "MERGED",
+  "merged_at": "2026-08-16T15:53:36Z",
+  "head_ref": "fix/081M00J1EWW-actor-ref-shared-vectors"
+}

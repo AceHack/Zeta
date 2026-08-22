@@ -1,0 +1,12 @@
+{
+  "pr_number": 9540,
+  "archive_path": "docs/history/pr-reviews/PR-9540-docs-workitem-univalence-lane-routing-cubical-agda-required-lean-uip-mint-declar.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-08T21:54:12.403Z",
+  "schema_version": "v1",
+  "commit_sha": "ac1a3348948b13c48645857b2449e14a234c29fc",
+  "title": "docs+workitem: univalence lane routing — cubical Agda required (Lean UIP); mint declarative-ACE wire task for Dejan (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-08T21:53:42Z",
+  "head_ref": "otto/univalence-lane-routing-and-cubical-workitem"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 7762,
+  "archive_path": "docs/history/pr-reviews/PR-7762-feat-dst-the-determinism-lint-and-its-first-three-catches-orset-unseeded-tags-co.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-11T18:55:34.916Z",
+  "schema_version": "v1",
+  "commit_sha": "ccc08aeb984e7c50f0c28a9c8b5f58c343d3470b",
+  "title": "feat(dst): THE DETERMINISM LINT — and its first three catches (OrSet unseeded tags, Consensus wall-clock votes)",
+  "state": "MERGED",
+  "merged_at": "2026-06-11T18:55:07Z",
+  "head_ref": "shadow-determinism-lint"
+}

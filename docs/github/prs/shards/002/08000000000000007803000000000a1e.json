@@ -1,0 +1,17 @@
+{
+  "pr_number": 2590,
+  "archive_path": "docs/history/pr-reviews/PR-2590-docs-memory-expansion-boundary-pauli-both-directions-shadow-5s-delay.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_rP74",
+    "comment:PRRC_kwDOSF9kNM6_rP7r",
+    "thread:PRRT_kwDOSF9kNM6A8Wvd",
+    "thread:PRRT_kwDOSF9kNM6A8Wvl"
+  ],
+  "fetched_at": "2026-05-11T00:37:56.709Z",
+  "schema_version": "v1",
+  "commit_sha": "2778cba18f7b174a51d20c9e0a2477346b4bdbf0",
+  "title": "docs(memory): expansion boundary — Pauli both directions + shadow 5s delay",
+  "state": "MERGED",
+  "merged_at": "2026-05-11T00:37:35Z",
+  "head_ref": "docs/expansion-boundary-shadow-5s-2026-05-10"
+}

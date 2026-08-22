@@ -1,0 +1,12 @@
+{
+  "pr_number": 10372,
+  "archive_path": "docs/history/pr-reviews/PR-10372-handoff-reconcile-the-two-gh013-efforts-scope-split-one-real-conflict-ruleset-di.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-14T00:11:42.967Z",
+  "schema_version": "v1",
+  "commit_sha": "0ac4fa80674a7e2a2049802c6b9d97709d9350e4",
+  "title": "handoff: reconcile the two GH013 efforts — scope split, one real conflict, ruleset direction",
+  "state": "MERGED",
+  "merged_at": "2026-08-13T21:00:40Z",
+  "head_ref": "handoff/gh013-two-efforts"
+}

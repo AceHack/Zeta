@@ -1,0 +1,12 @@
+{
+  "pr_number": 6757,
+  "archive_path": "docs/history/pr-reviews/PR-6757-feat-log-081ktgd5jmd-backend-migration-step-1-ientrycodec-seam-cborentrycodec-ad.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-07T08:38:54.628Z",
+  "schema_version": "v1",
+  "commit_sha": "72875de970db4277a5da5ae6c4f15331a7303de6",
+  "title": "feat(Log/081KTGD5JMD): backend migration step 1 — IEntryCodec seam + CborEntryCodec (additive)",
+  "state": "MERGED",
+  "merged_at": "2026-06-07T08:38:34Z",
+  "head_ref": "otto/backend-migration-1-ientrycodec-seam"
+}

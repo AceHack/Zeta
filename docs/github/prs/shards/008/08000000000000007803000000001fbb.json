@@ -1,0 +1,12 @@
+{
+  "pr_number": 8123,
+  "archive_path": "docs/history/pr-reviews/PR-8123-feat-service-agent-gate-harness-configs-learns-from-otto-codex.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-14T01:34:54.036Z",
+  "schema_version": "v1",
+  "commit_sha": "1a5d20cd974d8bbf7d8a830527e1466ec4c79dfb",
+  "title": "feat(service): agent gate + harness configs (learns from Otto/Codex)",
+  "state": "MERGED",
+  "merged_at": "2026-06-14T01:34:30Z",
+  "head_ref": "kiro/unified-loop-agent-gate"
+}

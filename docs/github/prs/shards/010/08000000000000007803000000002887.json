@@ -1,0 +1,12 @@
+{
+  "pr_number": 10375,
+  "archive_path": "docs/history/pr-reviews/PR-10375-feat-observe-shard-the-tick-ledger-add-the-staging-flush-route-part-a-no-workflo.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-14T00:11:49.616Z",
+  "schema_version": "v1",
+  "commit_sha": "0ac4fa80674a7e2a2049802c6b9d97709d9350e4",
+  "title": "feat(observe): shard the tick ledger + add the staging-flush route (Part A — no workflow files)",
+  "state": "MERGED",
+  "merged_at": "2026-08-13T21:28:57Z",
+  "head_ref": "otto/telemetry-part-a"
+}

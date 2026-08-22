@@ -1,0 +1,12 @@
+{
+  "pr_number": 10452,
+  "archive_path": "docs/history/pr-reviews/PR-10452-proof-quorum-four-collateral-regimes-measured-phase-cancellation-reachable-at-f-.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-14T00:32:32.298Z",
+  "schema_version": "v1",
+  "commit_sha": "8114b2cf7c26c55ea168357c04a9d40c7f3eebd3",
+  "title": "proof(quorum): four collateral regimes measured; phase cancellation reachable at f=1 and not distinguishable",
+  "state": "MERGED",
+  "merged_at": "2026-08-14T00:22:45Z",
+  "head_ref": "formal/quorum-collateral-slashing-tension-and-phase-cancellation"
+}

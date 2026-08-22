@@ -1,0 +1,16 @@
+{
+  "pr_number": 4133,
+  "archive_path": "docs/history/pr-reviews/PR-4133-docs-archive-maji-pr-preservation-for-4122.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7CDgDx",
+    "comment:PRRC_kwDOSF9kNM7CDocT",
+    "thread:PRRT_kwDOSF9kNM6CsKDu"
+  ],
+  "fetched_at": "2026-05-18T00:18:55.381Z",
+  "schema_version": "v1",
+  "commit_sha": "19db3cc32081725be8471c35acad03dbf07e270d",
+  "title": "docs(archive): Maji PR preservation for 4122",
+  "state": "MERGED",
+  "merged_at": "2026-05-18T00:18:37Z",
+  "head_ref": "maji/archive-4122-discipline"
+}

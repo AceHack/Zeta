@@ -1,0 +1,12 @@
+{
+  "pr_number": 9705,
+  "archive_path": "docs/history/pr-reviews/PR-9705-docs-research-superdeterminism-is-a-closed-box-property-replay-determinism-facto.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-11T16:10:27.606Z",
+  "schema_version": "v1",
+  "commit_sha": "6a353e97f174606fcd05217adacc9b8ece37ce52",
+  "title": "docs(research): superdeterminism is a closed-box property — replay-determinism + factor-graph order-independence (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-11T16:10:00Z",
+  "head_ref": "superdeterminism-closed-box-replay-factorgraph"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 7643,
+  "archive_path": "docs/history/pr-reviews/PR-7643-fix-ci-aarch64-qemu-boot-nic-none-missing-efi-virtio-rom-fast-fail-on-early-qemu.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-11T10:37:55.331Z",
+  "schema_version": "v1",
+  "commit_sha": "e88d0d3db2baf4adc2c5b38f982780db60799b28",
+  "title": "fix(ci): aarch64 QEMU boot — -nic none (missing efi-virtio.rom) + fast-fail on early QEMU death",
+  "state": "MERGED",
+  "merged_at": "2026-06-11T10:37:30Z",
+  "head_ref": "shadow-fix-aarch64-boot-nic-none"
+}

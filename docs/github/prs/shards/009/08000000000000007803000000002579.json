@@ -1,0 +1,12 @@
+{
+  "pr_number": 9593,
+  "archive_path": "docs/history/pr-reviews/PR-9593-docs-letters-trio-attestation-arc-close-out-ghz-is-metaphor-lumen-confirms-soray.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-09T00:38:20.265Z",
+  "schema_version": "v1",
+  "commit_sha": "cd9a833d4eda8a33324a7b55ec7362859c693fb0",
+  "title": "docs(letters): trio-attestation arc close-out — GHZ is metaphor (Lumen confirms Soraya); arc settled (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-09T00:37:52Z",
+  "head_ref": "otto/trio-attestation-arc-closeout"
+}

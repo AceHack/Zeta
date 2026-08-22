@@ -1,0 +1,12 @@
+{
+  "pr_number": 9481,
+  "archive_path": "docs/history/pr-reviews/PR-9481-session-kiro-entropy-codegen-autonomy-16-items-shipped.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-04T18:59:38.734Z",
+  "schema_version": "v1",
+  "commit_sha": "73af7f9c2ce7f4c108cbf60bcfe11ad2e0d69157",
+  "title": "session(kiro): entropy-codegen-autonomy — 16 items shipped",
+  "state": "MERGED",
+  "merged_at": "2026-07-04T18:59:15Z",
+  "head_ref": "claim/kiro-session-2026-07-04-entropy-codegen-autonomy"
+}

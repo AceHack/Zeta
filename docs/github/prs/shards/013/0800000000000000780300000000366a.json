@@ -1,0 +1,12 @@
+{
+  "pr_number": 13930,
+  "archive_path": "docs/history/pr-reviews/PR-13930-feat-installer-opt-in-qemu-uefi-keyfile-picker-bind-via-esp-passphrase.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-22T21:34:33.570Z",
+  "schema_version": "v1",
+  "commit_sha": "6543f2c58e51238304952024e797deee9c1164d1",
+  "title": "feat(installer): opt-in QEMU UEFI keyfile picker bind via ESP passphrase",
+  "state": "MERGED",
+  "merged_at": "2026-08-22T21:33:57Z",
+  "head_ref": "riven/qemu-uefi-keyfile-picker"
+}

@@ -1,0 +1,1175 @@
+{
+  "measuredOn": "2026-08-22",
+  "method": "every image read out of `helm template` at the Application's pinned targetRevision against its own valuesObject; size = config.size + sum(layers[].size) from the registry's linux/amd64 manifest",
+  "uncompressedRatio": 2.67,
+  "ratioEvidence": "the aggregate measured in storage-profiles.json by streaming and gunzipping four images from this tree (argocd v2.13.2 x2.69, loki 3.3.2 x3.21, kube-state-metrics v2.14.0 x3.39, cockroach v24.2.4 x2.49); containerd stores layers UNPACKED, so this is the multiplier that decides whether a pull fits",
+  "images": [
+    {
+      "reference": "alpine",
+      "compressedBytes": 3847002,
+      "layers": 1
+    },
+    {
+      "reference": "ankane/pgvector:latest",
+      "compressedBytes": 159829743,
+      "layers": 15
+    },
+    {
+      "reference": "atmoz/sftp:alpine",
+      "compressedBytes": 6913431,
+      "layers": 5
+    },
+    {
+      "reference": "bitnami/kubectl:1.32.3",
+      "compressedBytes": null,
+      "layers": null,
+      "reason": "manifest HTTP 404"
+    },
+    {
+      "reference": "busybox",
+      "compressedBytes": 2226786,
+      "layers": 1
+    },
+    {
+      "reference": "busybox:1.36",
+      "compressedBytes": 2206861,
+      "layers": 1
+    },
+    {
+      "reference": "busybox:latest",
+      "compressedBytes": 2226786,
+      "layers": 1
+    },
+    {
+      "reference": "cgr.dev/chainguard/bash:latest@sha256:bcaf350e298d474d12901adf9a1e78d8cf470d4434a82e0c718d514fc2032fa7",
+      "compressedBytes": 14418999,
+      "layers": 1
+    },
+    {
+      "reference": "chrislusf/seaweedfs:4.33",
+      "compressedBytes": 104574614,
+      "layers": 9
+    },
+    {
+      "reference": "cm2network/steamcmd:root",
+      "compressedBytes": 140801002,
+      "layers": 3
+    },
+    {
+      "reference": "cockroachdb/cockroach:v24.1.1",
+      "compressedBytes": 168024034,
+      "layers": 9
+    },
+    {
+      "reference": "cockroachdb/cockroach:v24.2.4",
+      "compressedBytes": 181072653,
+      "layers": 9
+    },
+    {
+      "reference": "code.forgejo.org/forgejo/forgejo:15.0.7-rootless",
+      "compressedBytes": 76740161,
+      "layers": 12
+    },
+    {
+      "reference": "cr.weaviate.io/semitechnologies/weaviate:1.32.7",
+      "compressedBytes": null,
+      "layers": null,
+      "reason": "manifest HTTP 429"
+    },
+    {
+      "reference": "curlimages/curl:7.83.1",
+      "compressedBytes": 6441495,
+      "layers": 12
+    },
+    {
+      "reference": "docker.io/alpine:latest",
+      "compressedBytes": 3847002,
+      "layers": 1
+    },
+    {
+      "reference": "docker.io/bats/bats:v1.4.1",
+      "compressedBytes": 17466404,
+      "layers": 10
+    },
+    {
+      "reference": "docker.io/bitnami/postgres-exporter:0.12.0-debian-11-r86",
+      "compressedBytes": null,
+      "layers": null,
+      "reason": "manifest HTTP 404"
+    },
+    {
+      "reference": "docker.io/bitnami/postgresql:14.8.0",
+      "compressedBytes": null,
+      "layers": null,
+      "reason": "manifest HTTP 404"
+    },
+    {
+      "reference": "docker.io/bitnami/redis-exporter:1.46.0-debian-11-r8",
+      "compressedBytes": null,
+      "layers": null,
+      "reason": "manifest HTTP 404"
+    },
+    {
+      "reference": "docker.io/bitnami/redis:6.2.16-debian-12-r1",
+      "compressedBytes": null,
+      "layers": null,
+      "reason": "manifest HTTP 404"
+    },
+    {
+      "reference": "docker.io/bitnami/redis:7.4.1-debian-12-r2",
+      "compressedBytes": null,
+      "layers": null,
+      "reason": "manifest HTTP 404"
+    },
+    {
+      "reference": "docker.io/bitnami/sealed-secrets-controller:0.39.1",
+      "compressedBytes": 29959253,
+      "layers": 14
+    },
+    {
+      "reference": "docker.io/grafana/alloy:v1.5.1",
+      "compressedBytes": 116986542,
+      "layers": 9
+    },
+    {
+      "reference": "docker.io/grafana/grafana:11.2.2-security-01",
+      "compressedBytes": 126095698,
+      "layers": 10
+    },
+    {
+      "reference": "docker.io/grafana/loki-canary:3.2.0",
+      "compressedBytes": 17483182,
+      "layers": 15
+    },
+    {
+      "reference": "docker.io/grafana/loki-helm-test:ewelch-distributed-helm-chart-17db5ee",
+      "compressedBytes": 8898458,
+      "layers": 3
+    },
+    {
+      "reference": "docker.io/grafana/loki:3.2.0",
+      "compressedBytes": 36282631,
+      "layers": 17
+    },
+    {
+      "reference": "docker.io/library/busybox:1.31.1",
+      "compressedBytes": 761949,
+      "layers": 1
+    },
+    {
+      "reference": "docker.io/nginxinc/nginx-unprivileged:1.27-alpine",
+      "compressedBytes": 20976656,
+      "layers": 9
+    },
+    {
+      "reference": "docker.io/openziti/ziti-controller:1.7.2",
+      "compressedBytes": 180293815,
+      "layers": 18
+    },
+    {
+      "reference": "docker:dind",
+      "compressedBytes": 144715188,
+      "layers": 16
+    },
+    {
+      "reference": "gcr.io/cockroachlabs-helm-charts/cockroach-self-signer-cert:1.5",
+      "compressedBytes": 170028269,
+      "layers": 4
+    },
+    {
+      "reference": "ghcr.io/actions/actions-runner:2.330.0",
+      "compressedBytes": 517658379,
+      "layers": 10
+    },
+    {
+      "reference": "ghcr.io/actions/gha-runner-scale-set-controller:0.12.1",
+      "compressedBytes": 58284688,
+      "layers": 16
+    },
+    {
+      "reference": "ghcr.io/dapr/injector:1.14.4",
+      "compressedBytes": 13929157,
+      "layers": 12
+    },
+    {
+      "reference": "ghcr.io/dapr/operator:1.14.4",
+      "compressedBytes": 14720322,
+      "layers": 12
+    },
+    {
+      "reference": "ghcr.io/dapr/placement:1.14.4",
+      "compressedBytes": 13069810,
+      "layers": 12
+    },
+    {
+      "reference": "ghcr.io/dapr/scheduler:1.14.4",
+      "compressedBytes": 15444924,
+      "layers": 12
+    },
+    {
+      "reference": "ghcr.io/dapr/sentry:1.14.4",
+      "compressedBytes": 14572945,
+      "layers": 12
+    },
+    {
+      "reference": "ghcr.io/dexidp/dex:v2.41.1",
+      "compressedBytes": 38258814,
+      "layers": 10
+    },
+    {
+      "reference": "ghcr.io/flowdent/cloudservice:latest",
+      "compressedBytes": null,
+      "layers": null,
+      "reason": "manifest HTTP 401"
+    },
+    {
+      "reference": "ghcr.io/flowdent/fd-webclient:latest",
+      "compressedBytes": null,
+      "layers": null,
+      "reason": "manifest HTTP 401"
+    },
+    {
+      "reference": "ghcr.io/headlamp-k8s/headlamp:v0.30.0",
+      "compressedBytes": 79802688,
+      "layers": 7
+    },
+    {
+      "reference": "ghcr.io/ich777/steamcmd:armareforger",
+      "compressedBytes": null,
+      "layers": null,
+      "reason": "manifest HTTP 404"
+    },
+    {
+      "reference": "ghcr.io/ich777/steamcmd:gmod",
+      "compressedBytes": null,
+      "layers": null,
+      "reason": "manifest HTTP 404"
+    },
+    {
+      "reference": "ghcr.io/ich777/steamcmd:unturned",
+      "compressedBytes": 44600518,
+      "layers": 6
+    },
+    {
+      "reference": "ghcr.io/jimmidyson/configmap-reload:v0.12.0",
+      "compressedBytes": 4562842,
+      "layers": 10
+    },
+    {
+      "reference": "ghcr.io/lucent-financial-group/hat-system-operator:placeholder",
+      "compressedBytes": null,
+      "layers": null,
+      "reason": "manifest HTTP 401"
+    },
+    {
+      "reference": "ghcr.io/lucent-financial-group/zeta-orleans-silo:latest",
+      "compressedBytes": null,
+      "layers": null,
+      "reason": "manifest HTTP 401"
+    },
+    {
+      "reference": "ghcr.io/lucent-financial-group/zeta-platform-controller:latest",
+      "compressedBytes": null,
+      "layers": null,
+      "reason": "manifest HTTP 401"
+    },
+    {
+      "reference": "ghcr.io/lucent-financial-group/zeta-portal:latest",
+      "compressedBytes": null,
+      "layers": null,
+      "reason": "manifest HTTP 401"
+    },
+    {
+      "reference": "ghcr.io/spiffe/spiffe-csi-driver:0.2.3",
+      "compressedBytes": 3703909,
+      "layers": 1
+    },
+    {
+      "reference": "ghcr.io/spiffe/spire-agent:1.11.2",
+      "compressedBytes": 15756838,
+      "layers": 4
+    },
+    {
+      "reference": "ghcr.io/spiffe/spire-controller-manager:0.6.0",
+      "compressedBytes": 28388632,
+      "layers": 12
+    },
+    {
+      "reference": "ghcr.io/spiffe/spire-server:1.11.2",
+      "compressedBytes": 37206252,
+      "layers": 4
+    },
+    {
+      "reference": "ghcr.io/vectorize-io/hindsight-api:0.1.1",
+      "compressedBytes": 8806509423,
+      "layers": 14
+    },
+    {
+      "reference": "ghcr.io/vectorize-io/hindsight-control-plane:0.1.1",
+      "compressedBytes": 79783966,
+      "layers": 14
+    },
+    {
+      "reference": "grafana/mimir:2.14.0",
+      "compressedBytes": 26570424,
+      "layers": 12
+    },
+    {
+      "reference": "grafana/rollout-operator:v0.19.1",
+      "compressedBytes": 29814269,
+      "layers": 12
+    },
+    {
+      "reference": "grafana/tempo:2.7.0",
+      "compressedBytes": 55716856,
+      "layers": 5
+    },
+    {
+      "reference": "hashicorp/vault-k8s:1.5.0",
+      "compressedBytes": 38282315,
+      "layers": 6
+    },
+    {
+      "reference": "hashicorp/vault:1.18.1",
+      "compressedBytes": 165381834,
+      "layers": 7
+    },
+    {
+      "reference": "headscale/headscale:0.18.0",
+      "compressedBytes": 18956619,
+      "layers": 3
+    },
+    {
+      "reference": "kiwigrid/k8s-sidecar:1.27.5",
+      "compressedBytes": 26481141,
+      "layers": 7
+    },
+    {
+      "reference": "longhornio/longhorn-manager:v1.7.2",
+      "compressedBytes": 118327944,
+      "layers": 6
+    },
+    {
+      "reference": "longhornio/longhorn-share-manager:v1.7.2",
+      "compressedBytes": 86424114,
+      "layers": 13
+    },
+    {
+      "reference": "longhornio/longhorn-ui:v1.7.2",
+      "compressedBytes": 73138063,
+      "layers": 8
+    },
+    {
+      "reference": "mcr.microsoft.com/mssql/server:2022-latest",
+      "compressedBytes": 624874207,
+      "layers": 3
+    },
+    {
+      "reference": "minio/mc:RELEASE.2018-07-13T00-53-22Z",
+      "compressedBytes": 6706444,
+      "layers": 2
+    },
+    {
+      "reference": "minio/minio:RELEASE.2017-12-28T01-21-00Z",
+      "compressedBytes": 10806911,
+      "layers": 3
+    },
+    {
+      "reference": "nats:2.10.23-alpine",
+      "compressedBytes": 10020723,
+      "layers": 4
+    },
+    {
+      "reference": "natsio/nats-box:0.15.0",
+      "compressedBytes": 43160324,
+      "layers": 7
+    },
+    {
+      "reference": "natsio/nats-server-config-reloader:0.16.0",
+      "compressedBytes": 4794154,
+      "layers": 5
+    },
+    {
+      "reference": "nginx:1.27-alpine",
+      "compressedBytes": 20971416,
+      "layers": 8
+    },
+    {
+      "reference": "oci.external-secrets.io/external-secrets/external-secrets:v0.10.7",
+      "compressedBytes": 66389236,
+      "layers": 12
+    },
+    {
+      "reference": "ollama/ollama:0.5.11",
+      "compressedBytes": 1586915258,
+      "layers": 4
+    },
+    {
+      "reference": "openpolicyagent/gatekeeper-crds:v3.18.1",
+      "compressedBytes": 17165782,
+      "layers": 2
+    },
+    {
+      "reference": "openpolicyagent/gatekeeper:v3.18.1",
+      "compressedBytes": 43467016,
+      "layers": 12
+    },
+    {
+      "reference": "postgres:16-alpine",
+      "compressedBytes": 116061734,
+      "layers": 11
+    },
+    {
+      "reference": "public.ecr.aws/docker/library/redis:7.4.1-alpine",
+      "compressedBytes": 19450558,
+      "layers": 8
+    },
+    {
+      "reference": "quay.io/argoproj/argo-rollouts:v1.8.2",
+      "compressedBytes": 51082028,
+      "layers": 14
+    },
+    {
+      "reference": "quay.io/argoproj/argocd:v2.13.2",
+      "compressedBytes": 180006546,
+      "layers": 15
+    },
+    {
+      "reference": "quay.io/argoproj/argocli:v3.5.11",
+      "compressedBytes": 57380086,
+      "layers": 15
+    },
+    {
+      "reference": "quay.io/argoproj/kubectl-argo-rollouts:v1.8.2",
+      "compressedBytes": 52495924,
+      "layers": 13
+    },
+    {
+      "reference": "quay.io/argoproj/workflow-controller:v3.5.11",
+      "compressedBytes": 36887992,
+      "layers": 14
+    },
+    {
+      "reference": "quay.io/cilium/cilium-envoy:v1.30.8-1733837904-eaae5aca0fb988583e5617170a65ac5aa51c0aa8@sha256:709c08ade3d17d52da4ca2af33f431360ec26268d288d9a6cd1d98acc9a1dced",
+      "compressedBytes": 62860538,
+      "layers": 3
+    },
+    {
+      "reference": "quay.io/cilium/cilium:v1.16.5@sha256:758ca0793f5995bb938a2fa219dcce63dc0b3fa7fc4ce5cc851125281fb7361d",
+      "compressedBytes": 224304032,
+      "layers": 8
+    },
+    {
+      "reference": "quay.io/cilium/hubble-relay:v1.16.5@sha256:6cfae1d1afa566ba941f03d4d7e141feddd05260e5cd0a1509aba1890a45ef00",
+      "compressedBytes": 28573582,
+      "layers": 15
+    },
+    {
+      "reference": "quay.io/cilium/hubble-ui-backend:v0.13.1@sha256:0e0eed917653441fded4e7cdb096b7be6a3bddded5a2dd10812a27b1fc6ed95b",
+      "compressedBytes": 20023308,
+      "layers": 10
+    },
+    {
+      "reference": "quay.io/cilium/hubble-ui:v0.13.1@sha256:e2e9313eb7caf64b0061d9da0efbdad59c6c461f6ca1752768942bfeda0796c6",
+      "compressedBytes": 11077384,
+      "layers": 10
+    },
+    {
+      "reference": "quay.io/cilium/operator-generic:v1.16.5@sha256:f7884848483bbcd7b1e0ccfd34ba4546f258b460cb4b7e2f06a1bcc96ef88039",
+      "compressedBytes": 31214411,
+      "layers": 4
+    },
+    {
+      "reference": "quay.io/jetstack/cert-manager-cainjector:v1.16.2",
+      "compressedBytes": 15423063,
+      "layers": 14
+    },
+    {
+      "reference": "quay.io/jetstack/cert-manager-controller:v1.16.2",
+      "compressedBytes": 21188304,
+      "layers": 14
+    },
+    {
+      "reference": "quay.io/jetstack/cert-manager-startupapicheck:v1.16.2",
+      "compressedBytes": 14091294,
+      "layers": 14
+    },
+    {
+      "reference": "quay.io/jetstack/cert-manager-webhook:v1.16.2",
+      "compressedBytes": 18188321,
+      "layers": 14
+    },
+    {
+      "reference": "quay.io/jetstack/trust-manager:v0.15.0",
+      "compressedBytes": 16802505,
+      "layers": 3
+    },
+    {
+      "reference": "quay.io/kiwigrid/k8s-sidecar:1.28.0",
+      "compressedBytes": 23054307,
+      "layers": 6
+    },
+    {
+      "reference": "quay.io/kubevirt/cdi-operator:v1.65.0",
+      "compressedBytes": 95534327,
+      "layers": 3
+    },
+    {
+      "reference": "quay.io/kubevirt/virt-operator:v1.8.4",
+      "compressedBytes": 133359009,
+      "layers": 17
+    },
+    {
+      "reference": "quay.io/minio/mc:RELEASE.2024-11-21T17-21-54Z",
+      "compressedBytes": 28118486,
+      "layers": 6
+    },
+    {
+      "reference": "quay.io/minio/minio:RELEASE.2024-12-18T13-15-44Z",
+      "compressedBytes": 62637996,
+      "layers": 9
+    },
+    {
+      "reference": "quay.io/prometheus-operator/prometheus-operator:v0.77.2",
+      "compressedBytes": 18755216,
+      "layers": 3
+    },
+    {
+      "reference": "quay.io/prometheus/alertmanager:v0.27.0",
+      "compressedBytes": 32408248,
+      "layers": 7
+    },
+    {
+      "reference": "quay.io/prometheus/node-exporter:v1.8.2",
+      "compressedBytes": 12038792,
+      "layers": 3
+    },
+    {
+      "reference": "quay.io/prometheus/prometheus:v2.55.0",
+      "compressedBytes": 114283515,
+      "layers": 12
+    },
+    {
+      "reference": "rancher/local-path-provisioner:v0.0.27",
+      "compressedBytes": 17841206,
+      "layers": 4
+    },
+    {
+      "reference": "registry.gitlab.com/gitlab-org/build/cng/certificates:v17.7.0",
+      "compressedBytes": 51653862,
+      "layers": 7
+    },
+    {
+      "reference": "registry.gitlab.com/gitlab-org/build/cng/cfssl-self-sign:v17.7.0",
+      "compressedBytes": 13114576,
+      "layers": 3
+    },
+    {
+      "reference": "registry.gitlab.com/gitlab-org/build/cng/gitaly:v17.7.0",
+      "compressedBytes": 358179381,
+      "layers": 17
+    },
+    {
+      "reference": "registry.gitlab.com/gitlab-org/build/cng/gitlab-base:v17.7.0",
+      "compressedBytes": 51652715,
+      "layers": 6
+    },
+    {
+      "reference": "registry.gitlab.com/gitlab-org/build/cng/gitlab-container-registry:v4.14.0-gitlab",
+      "compressedBytes": 67395421,
+      "layers": 9
+    },
+    {
+      "reference": "registry.gitlab.com/gitlab-org/build/cng/gitlab-exporter:15.0.0",
+      "compressedBytes": 200217644,
+      "layers": 15
+    },
+    {
+      "reference": "registry.gitlab.com/gitlab-org/build/cng/gitlab-kas:v17.7.0",
+      "compressedBytes": 38334518,
+      "layers": 14
+    },
+    {
+      "reference": "registry.gitlab.com/gitlab-org/build/cng/gitlab-shell:v14.39.0",
+      "compressedBytes": 113671951,
+      "layers": 11
+    },
+    {
+      "reference": "registry.gitlab.com/gitlab-org/build/cng/gitlab-sidekiq-ce:v17.7.0",
+      "compressedBytes": 935595175,
+      "layers": 29
+    },
+    {
+      "reference": "registry.gitlab.com/gitlab-org/build/cng/gitlab-toolbox-ce:v17.7.0",
+      "compressedBytes": 1001631293,
+      "layers": 30
+    },
+    {
+      "reference": "registry.gitlab.com/gitlab-org/build/cng/gitlab-webservice-ce:v17.7.0",
+      "compressedBytes": 918136720,
+      "layers": 29
+    },
+    {
+      "reference": "registry.gitlab.com/gitlab-org/build/cng/gitlab-workhorse-ce:v17.7.0",
+      "compressedBytes": 437240941,
+      "layers": 13
+    },
+    {
+      "reference": "registry.gitlab.com/gitlab-org/build/cng/kubectl:v17.7.0",
+      "compressedBytes": 72583021,
+      "layers": 2
+    },
+    {
+      "reference": "registry.gitlab.com/gitlab-org/gitlab-runner:alpine-v17.6.0",
+      "compressedBytes": 140920746,
+      "layers": 4
+    },
+    {
+      "reference": "registry.k8s.io/ingress-nginx/kube-webhook-certgen:v20221220-controller-v1.5.1-58-g787ea74b6",
+      "compressedBytes": 19684914,
+      "layers": 2
+    },
+    {
+      "reference": "registry.k8s.io/kube-state-metrics/kube-state-metrics:v2.13.0",
+      "compressedBytes": 14423067,
+      "layers": 12
+    },
+    {
+      "reference": "registry.k8s.io/nfd/node-feature-discovery:v0.17.1",
+      "compressedBytes": 80695517,
+      "layers": 2
+    },
+    {
+      "reference": "registry.k8s.io/sig-storage/csi-node-driver-registrar:v2.9.4",
+      "compressedBytes": 10873372,
+      "layers": 12
+    },
+    {
+      "reference": "temporalio/admin-tools:1.27.2-tctl-1.18.2-cli-1.3.0",
+      "compressedBytes": 195690137,
+      "layers": 15
+    },
+    {
+      "reference": "temporalio/server:1.27.2",
+      "compressedBytes": 161471087,
+      "layers": 17
+    },
+    {
+      "reference": "temporalio/ui:2.36.1",
+      "compressedBytes": 48493180,
+      "layers": 11
+    },
+    {
+      "reference": "vllm/vllm-openai:latest",
+      "compressedBytes": 9110690483,
+      "layers": 33
+    }
+  ],
+  "apps": [
+    {
+      "appId": "full-ai-cluster/agent-memory",
+      "dir": "agent-memory",
+      "images": [
+        "busybox:1.36"
+      ]
+    },
+    {
+      "appId": "full-ai-cluster/alloy",
+      "dir": "alloy",
+      "images": [
+        "docker.io/grafana/alloy:v1.5.1",
+        "ghcr.io/jimmidyson/configmap-reload:v0.12.0"
+      ]
+    },
+    {
+      "appId": "full-ai-cluster/arc-controller",
+      "dir": "arc-controller",
+      "images": [
+        "ghcr.io/actions/gha-runner-scale-set-controller:0.12.1"
+      ]
+    },
+    {
+      "appId": "full-ai-cluster/arc-runner-set",
+      "dir": "arc-runner-set",
+      "images": [
+        "docker:dind",
+        "ghcr.io/actions/actions-runner:2.330.0"
+      ]
+    },
+    {
+      "appId": "full-ai-cluster/argo-rollouts",
+      "dir": "argo-rollouts",
+      "images": [
+        "quay.io/argoproj/argo-rollouts:v1.8.2",
+        "quay.io/argoproj/kubectl-argo-rollouts:v1.8.2"
+      ]
+    },
+    {
+      "appId": "full-ai-cluster/argo-workflows",
+      "dir": "argo-workflows",
+      "images": [
+        "quay.io/argoproj/argocli:v3.5.11",
+        "quay.io/argoproj/workflow-controller:v3.5.11"
+      ]
+    },
+    {
+      "appId": "full-ai-cluster/argocd",
+      "dir": "argocd",
+      "images": [
+        "ghcr.io/dexidp/dex:v2.41.1",
+        "public.ecr.aws/docker/library/redis:7.4.1-alpine",
+        "quay.io/argoproj/argocd:v2.13.2"
+      ]
+    },
+    {
+      "appId": "full-ai-cluster/cdi",
+      "dir": "cdi",
+      "images": [
+        "quay.io/kubevirt/cdi-operator:v1.65.0"
+      ]
+    },
+    {
+      "appId": "full-ai-cluster/cert-manager",
+      "dir": "cert-manager",
+      "images": [
+        "quay.io/jetstack/cert-manager-cainjector:v1.16.2",
+        "quay.io/jetstack/cert-manager-controller:v1.16.2",
+        "quay.io/jetstack/cert-manager-startupapicheck:v1.16.2",
+        "quay.io/jetstack/cert-manager-webhook:v1.16.2"
+      ]
+    },
+    {
+      "appId": "full-ai-cluster/cilium",
+      "dir": "cilium",
+      "images": [
+        "quay.io/cilium/cilium-envoy:v1.30.8-1733837904-eaae5aca0fb988583e5617170a65ac5aa51c0aa8@sha256:709c08ade3d17d52da4ca2af33f431360ec26268d288d9a6cd1d98acc9a1dced",
+        "quay.io/cilium/cilium:v1.16.5@sha256:758ca0793f5995bb938a2fa219dcce63dc0b3fa7fc4ce5cc851125281fb7361d",
+        "quay.io/cilium/hubble-relay:v1.16.5@sha256:6cfae1d1afa566ba941f03d4d7e141feddd05260e5cd0a1509aba1890a45ef00",
+        "quay.io/cilium/hubble-ui-backend:v0.13.1@sha256:0e0eed917653441fded4e7cdb096b7be6a3bddded5a2dd10812a27b1fc6ed95b",
+        "quay.io/cilium/hubble-ui:v0.13.1@sha256:e2e9313eb7caf64b0061d9da0efbdad59c6c461f6ca1752768942bfeda0796c6",
+        "quay.io/cilium/operator-generic:v1.16.5@sha256:f7884848483bbcd7b1e0ccfd34ba4546f258b460cb4b7e2f06a1bcc96ef88039"
+      ]
+    },
+    {
+      "appId": "full-ai-cluster/cilium-lb-ipam",
+      "dir": "cilium-lb-ipam",
+      "images": []
+    },
+    {
+      "appId": "full-ai-cluster/cockroachdb",
+      "dir": "cockroachdb",
+      "images": [
+        "busybox",
+        "cockroachdb/cockroach:v24.2.4",
+        "gcr.io/cockroachlabs-helm-charts/cockroach-self-signer-cert:1.5"
+      ]
+    },
+    {
+      "appId": "full-ai-cluster/dapr",
+      "dir": "dapr",
+      "images": [
+        "ghcr.io/dapr/injector:1.14.4",
+        "ghcr.io/dapr/operator:1.14.4",
+        "ghcr.io/dapr/placement:1.14.4",
+        "ghcr.io/dapr/scheduler:1.14.4",
+        "ghcr.io/dapr/sentry:1.14.4"
+      ]
+    },
+    {
+      "appId": "full-ai-cluster/deepseek-coder",
+      "dir": "deepseek-coder",
+      "images": []
+    },
+    {
+      "appId": "full-ai-cluster/external-secrets",
+      "dir": "external-secrets",
+      "images": [
+        "oci.external-secrets.io/external-secrets/external-secrets:v0.10.7"
+      ]
+    },
+    {
+      "appId": "full-ai-cluster/forgejo",
+      "dir": "forgejo",
+      "images": [
+        "busybox:latest",
+        "code.forgejo.org/forgejo/forgejo:15.0.7-rootless"
+      ]
+    },
+    {
+      "appId": "full-ai-cluster/game-hosting/gmod",
+      "dir": "game-hosting",
+      "images": [
+        "atmoz/sftp:alpine",
+        "cm2network/steamcmd:root"
+      ]
+    },
+    {
+      "appId": "full-ai-cluster/gitlab",
+      "dir": "gitlab",
+      "images": [
+        "docker.io/bitnami/postgres-exporter:0.12.0-debian-11-r86",
+        "docker.io/bitnami/postgresql:14.8.0",
+        "docker.io/bitnami/redis-exporter:1.46.0-debian-11-r8",
+        "docker.io/bitnami/redis:6.2.16-debian-12-r1",
+        "minio/mc:RELEASE.2018-07-13T00-53-22Z",
+        "minio/minio:RELEASE.2017-12-28T01-21-00Z",
+        "registry.gitlab.com/gitlab-org/build/cng/certificates:v17.7.0",
+        "registry.gitlab.com/gitlab-org/build/cng/cfssl-self-sign:v17.7.0",
+        "registry.gitlab.com/gitlab-org/build/cng/gitaly:v17.7.0",
+        "registry.gitlab.com/gitlab-org/build/cng/gitlab-base:v17.7.0",
+        "registry.gitlab.com/gitlab-org/build/cng/gitlab-container-registry:v4.14.0-gitlab",
+        "registry.gitlab.com/gitlab-org/build/cng/gitlab-exporter:15.0.0",
+        "registry.gitlab.com/gitlab-org/build/cng/gitlab-kas:v17.7.0",
+        "registry.gitlab.com/gitlab-org/build/cng/gitlab-shell:v14.39.0",
+        "registry.gitlab.com/gitlab-org/build/cng/gitlab-sidekiq-ce:v17.7.0",
+        "registry.gitlab.com/gitlab-org/build/cng/gitlab-toolbox-ce:v17.7.0",
+        "registry.gitlab.com/gitlab-org/build/cng/gitlab-webservice-ce:v17.7.0",
+        "registry.gitlab.com/gitlab-org/build/cng/gitlab-workhorse-ce:v17.7.0",
+        "registry.gitlab.com/gitlab-org/build/cng/kubectl:v17.7.0",
+        "registry.gitlab.com/gitlab-org/gitlab-runner:alpine-v17.6.0"
+      ]
+    },
+    {
+      "appId": "full-ai-cluster/hat-system",
+      "dir": "hat-system",
+      "images": [
+        "bitnami/kubectl:1.32.3",
+        "ghcr.io/lucent-financial-group/hat-system-operator:placeholder"
+      ]
+    },
+    {
+      "appId": "full-ai-cluster/headlamp",
+      "dir": "headlamp",
+      "images": [
+        "ghcr.io/headlamp-k8s/headlamp:v0.30.0"
+      ]
+    },
+    {
+      "appId": "full-ai-cluster/headscale",
+      "dir": "headscale",
+      "images": [
+        "alpine",
+        "headscale/headscale:0.18.0"
+      ]
+    },
+    {
+      "appId": "full-ai-cluster/hindsight",
+      "dir": "hindsight",
+      "images": [
+        "ankane/pgvector:latest",
+        "ghcr.io/vectorize-io/hindsight-api:0.1.1",
+        "ghcr.io/vectorize-io/hindsight-control-plane:0.1.1"
+      ]
+    },
+    {
+      "appId": "full-ai-cluster/kube-prometheus-stack",
+      "dir": "kube-prometheus-stack",
+      "images": [
+        "docker.io/bats/bats:v1.4.1",
+        "docker.io/grafana/grafana:11.2.2-security-01",
+        "docker.io/library/busybox:1.31.1",
+        "quay.io/kiwigrid/k8s-sidecar:1.28.0",
+        "quay.io/prometheus-operator/prometheus-operator:v0.77.2",
+        "quay.io/prometheus/alertmanager:v0.27.0",
+        "quay.io/prometheus/node-exporter:v1.8.2",
+        "quay.io/prometheus/prometheus:v2.55.0",
+        "registry.k8s.io/ingress-nginx/kube-webhook-certgen:v20221220-controller-v1.5.1-58-g787ea74b6",
+        "registry.k8s.io/kube-state-metrics/kube-state-metrics:v2.13.0"
+      ]
+    },
+    {
+      "appId": "full-ai-cluster/kubevirt",
+      "dir": "kubevirt",
+      "images": [
+        "quay.io/kubevirt/virt-operator:v1.8.4"
+      ]
+    },
+    {
+      "appId": "full-ai-cluster/loki",
+      "dir": "loki",
+      "images": [
+        "docker.io/grafana/loki-canary:3.2.0",
+        "docker.io/grafana/loki-helm-test:ewelch-distributed-helm-chart-17db5ee",
+        "docker.io/grafana/loki:3.2.0",
+        "docker.io/nginxinc/nginx-unprivileged:1.27-alpine",
+        "kiwigrid/k8s-sidecar:1.27.5"
+      ]
+    },
+    {
+      "appId": "full-ai-cluster/longhorn",
+      "dir": "longhorn",
+      "images": [
+        "longhornio/longhorn-manager:v1.7.2",
+        "longhornio/longhorn-share-manager:v1.7.2",
+        "longhornio/longhorn-ui:v1.7.2"
+      ]
+    },
+    {
+      "appId": "full-ai-cluster/mimir",
+      "dir": "mimir",
+      "images": [
+        "docker.io/nginxinc/nginx-unprivileged:1.27-alpine",
+        "grafana/mimir:2.14.0",
+        "grafana/rollout-operator:v0.19.1"
+      ]
+    },
+    {
+      "appId": "full-ai-cluster/minio",
+      "dir": "minio",
+      "images": [
+        "quay.io/minio/mc:RELEASE.2024-11-21T17-21-54Z",
+        "quay.io/minio/minio:RELEASE.2024-12-18T13-15-44Z"
+      ]
+    },
+    {
+      "appId": "full-ai-cluster/nats",
+      "dir": "nats",
+      "images": [
+        "nats:2.10.23-alpine",
+        "natsio/nats-box:0.15.0",
+        "natsio/nats-server-config-reloader:0.16.0"
+      ]
+    },
+    {
+      "appId": "full-ai-cluster/node-feature-discovery",
+      "dir": "node-feature-discovery",
+      "images": [
+        "registry.k8s.io/nfd/node-feature-discovery:v0.17.1"
+      ]
+    },
+    {
+      "appId": "full-ai-cluster/ollama",
+      "dir": "ollama",
+      "images": [
+        "busybox",
+        "ollama/ollama:0.5.11"
+      ]
+    },
+    {
+      "appId": "full-ai-cluster/open-policy-agent",
+      "dir": "open-policy-agent",
+      "images": [
+        "curlimages/curl:7.83.1",
+        "openpolicyagent/gatekeeper-crds:v3.18.1",
+        "openpolicyagent/gatekeeper:v3.18.1"
+      ]
+    },
+    {
+      "appId": "full-ai-cluster/orleans",
+      "dir": "orleans",
+      "images": [
+        "ghcr.io/lucent-financial-group/zeta-orleans-silo:latest"
+      ]
+    },
+    {
+      "appId": "full-ai-cluster/oz",
+      "dir": "oz",
+      "images": [
+        "docker.io/openziti/ziti-controller:1.7.2"
+      ]
+    },
+    {
+      "appId": "full-ai-cluster/platform",
+      "dir": "platform",
+      "images": [
+        "atmoz/sftp:alpine",
+        "busybox:1.36",
+        "ghcr.io/flowdent/cloudservice:latest",
+        "ghcr.io/flowdent/fd-webclient:latest",
+        "ghcr.io/ich777/steamcmd:armareforger",
+        "ghcr.io/ich777/steamcmd:gmod",
+        "ghcr.io/ich777/steamcmd:unturned",
+        "ghcr.io/lucent-financial-group/zeta-platform-controller:latest",
+        "ghcr.io/lucent-financial-group/zeta-portal:latest",
+        "mcr.microsoft.com/mssql/server:2022-latest",
+        "nginx:1.27-alpine",
+        "postgres:16-alpine"
+      ]
+    },
+    {
+      "appId": "full-ai-cluster/qwen-coder",
+      "dir": "qwen-coder",
+      "images": []
+    },
+    {
+      "appId": "full-ai-cluster/redis",
+      "dir": "redis",
+      "images": [
+        "docker.io/bitnami/redis:7.4.1-debian-12-r2"
+      ]
+    },
+    {
+      "appId": "full-ai-cluster/sealed-secrets",
+      "dir": "sealed-secrets",
+      "images": [
+        "docker.io/bitnami/sealed-secrets-controller:0.39.1"
+      ]
+    },
+    {
+      "appId": "full-ai-cluster/seaweedfs",
+      "dir": "seaweedfs",
+      "images": [
+        "chrislusf/seaweedfs:4.33"
+      ]
+    },
+    {
+      "appId": "full-ai-cluster/spire",
+      "dir": "spire",
+      "images": [
+        "cgr.dev/chainguard/bash:latest@sha256:bcaf350e298d474d12901adf9a1e78d8cf470d4434a82e0c718d514fc2032fa7",
+        "ghcr.io/spiffe/spiffe-csi-driver:0.2.3",
+        "ghcr.io/spiffe/spire-agent:1.11.2",
+        "ghcr.io/spiffe/spire-controller-manager:0.6.0",
+        "ghcr.io/spiffe/spire-server:1.11.2",
+        "registry.k8s.io/sig-storage/csi-node-driver-registrar:v2.9.4"
+      ]
+    },
+    {
+      "appId": "full-ai-cluster/spire-crds",
+      "dir": "spire-crds",
+      "images": []
+    },
+    {
+      "appId": "full-ai-cluster/tempo",
+      "dir": "tempo",
+      "images": [
+        "grafana/tempo:2.7.0"
+      ]
+    },
+    {
+      "appId": "full-ai-cluster/temporal",
+      "dir": "temporal",
+      "images": [
+        "temporalio/admin-tools:1.27.2-tctl-1.18.2-cli-1.3.0",
+        "temporalio/server:1.27.2",
+        "temporalio/ui:2.36.1"
+      ]
+    },
+    {
+      "appId": "full-ai-cluster/trust-manager",
+      "dir": "trust-manager",
+      "images": [
+        "quay.io/jetstack/trust-manager:v0.15.0"
+      ]
+    },
+    {
+      "appId": "full-ai-cluster/vault",
+      "dir": "vault",
+      "images": [
+        "hashicorp/vault-k8s:1.5.0",
+        "hashicorp/vault:1.18.1"
+      ]
+    },
+    {
+      "appId": "full-ai-cluster/vllm",
+      "dir": "vllm",
+      "images": [
+        "vllm/vllm-openai:latest"
+      ]
+    },
+    {
+      "appId": "full-ai-cluster/weaviate",
+      "dir": "weaviate",
+      "images": [
+        "cr.weaviate.io/semitechnologies/weaviate:1.32.7",
+        "docker.io/alpine:latest"
+      ]
+    },
+    {
+      "appId": "infra/argorollouts",
+      "dir": null,
+      "images": [
+        "quay.io/argoproj/argo-rollouts:v1.8.2",
+        "quay.io/argoproj/kubectl-argo-rollouts:v1.8.2"
+      ]
+    },
+    {
+      "appId": "infra/argoworkflows",
+      "dir": null,
+      "images": [
+        "quay.io/argoproj/argocli:v3.5.11",
+        "quay.io/argoproj/workflow-controller:v3.5.11"
+      ]
+    },
+    {
+      "appId": "infra/cockroachdb",
+      "dir": null,
+      "images": [
+        "cockroachdb/cockroach:v24.1.1",
+        "gcr.io/cockroachlabs-helm-charts/cockroach-self-signer-cert:1.5"
+      ]
+    },
+    {
+      "appId": "infra/gitlab",
+      "dir": null,
+      "images": [
+        "docker.io/bitnami/postgres-exporter:0.12.0-debian-11-r86",
+        "docker.io/bitnami/postgresql:14.8.0",
+        "docker.io/bitnami/redis-exporter:1.46.0-debian-11-r8",
+        "docker.io/bitnami/redis:6.2.16-debian-12-r1",
+        "minio/mc:RELEASE.2018-07-13T00-53-22Z",
+        "minio/minio:RELEASE.2017-12-28T01-21-00Z",
+        "registry.gitlab.com/gitlab-org/build/cng/certificates:v17.7.0",
+        "registry.gitlab.com/gitlab-org/build/cng/cfssl-self-sign:v17.7.0",
+        "registry.gitlab.com/gitlab-org/build/cng/gitaly:v17.7.0",
+        "registry.gitlab.com/gitlab-org/build/cng/gitlab-base:v17.7.0",
+        "registry.gitlab.com/gitlab-org/build/cng/gitlab-container-registry:v4.14.0-gitlab",
+        "registry.gitlab.com/gitlab-org/build/cng/gitlab-exporter:15.0.0",
+        "registry.gitlab.com/gitlab-org/build/cng/gitlab-kas:v17.7.0",
+        "registry.gitlab.com/gitlab-org/build/cng/gitlab-shell:v14.39.0",
+        "registry.gitlab.com/gitlab-org/build/cng/gitlab-sidekiq-ce:v17.7.0",
+        "registry.gitlab.com/gitlab-org/build/cng/gitlab-toolbox-ce:v17.7.0",
+        "registry.gitlab.com/gitlab-org/build/cng/gitlab-webservice-ce:v17.7.0",
+        "registry.gitlab.com/gitlab-org/build/cng/gitlab-workhorse-ce:v17.7.0",
+        "registry.gitlab.com/gitlab-org/build/cng/kubectl:v17.7.0",
+        "registry.gitlab.com/gitlab-org/gitlab-runner:alpine-v17.6.0"
+      ]
+    },
+    {
+      "appId": "infra/local-path-provisioner",
+      "dir": null,
+      "images": [
+        "rancher/local-path-provisioner:v0.0.27"
+      ]
+    },
+    {
+      "appId": "infra/longhorn",
+      "dir": null,
+      "images": [
+        "longhornio/longhorn-manager:v1.7.2",
+        "longhornio/longhorn-share-manager:v1.7.2",
+        "longhornio/longhorn-ui:v1.7.2"
+      ]
+    },
+    {
+      "appId": "infra/orleans",
+      "dir": null,
+      "images": [
+        "ghcr.io/lucent-financial-group/zeta-orleans-silo:latest"
+      ]
+    }
+  ],
+  "verifiedPulls": [
+    {
+      "reference": "ghcr.io/vectorize-io/hindsight-api:0.1.1",
+      "compressedBytes": 8806509423,
+      "extractedBytes": 15584377052,
+      "diskDeltaBytes": 15799144448,
+      "measuredRatio": 1.77,
+      "pullSeconds": 176,
+      "runId": "32588276375",
+      "note": "docker image inspect .Size for extracted; df -kP delta on / for diskDelta. The df delta (15.80 GB) slightly EXCEEDS .Size (15.58 GB) rather than falling short of it: the content store also holds the compressed blob metadata and manifests, and df counts filesystem overhead .Size does not."
+    },
+    {
+      "reference": "vllm/vllm-openai:latest",
+      "compressedBytes": 9110690483,
+      "extractedBytes": 21417024721,
+      "diskDeltaBytes": 21740163072,
+      "measuredRatio": 2.351,
+      "pullSeconds": 172,
+      "runId": "32588276375",
+      "note": "pulled AFTER hindsight and its closure on the same runner, so this delta is the marginal cost of adding it to a store that already held them -- no layer is shared between the two, which is why the marginal cost matches its own size rather than coming in under it."
+    }
+  ],
+  "verifiedPullsNote": "THE 2.67 RATIO IS AN OVER-ESTIMATE FOR BOTH IMAGES THAT MATTER, measured on run 32588276375 by pulling them on a hosted ubuntu-24.04 rather than multiplying. hindsight-api extracts at 1.77x its compressed size and vllm at 2.35x, against the 2.67x this file applies to everything. So `est. on disk` is HIGH, not low, and by ~57% for hindsight (14.51 GiB actual against a ~23 GB estimate). The ratio is left at 2.67 because it is the only figure measured across a SPREAD of images; these two rows are what a real pull says about the two that dominate, and the disagreement is recorded rather than resolved by picking the number that flatters the conclusion. THE RUNNER SURVIVED BOTH: 85.73 GiB free at job start, 50.05 GiB free after hindsight, its postgres/control-plane closure, and vllm -- 35.68 GiB consumed in total, 176s and 172s to pull. Neither image is self-hosted-only on disk."
+}

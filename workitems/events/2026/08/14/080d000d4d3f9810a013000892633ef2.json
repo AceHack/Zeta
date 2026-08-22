@@ -1,0 +1,14 @@
+{
+  "id": "080d000d4d3f9810a013000892633ef2",
+  "at": "2026-08-14T19:04:50.931Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M00TK9ZK087G0R000TS9BK9",
+    "type": "task",
+    "title": "Point drift-proposer at the skill library: pull-with-veto propagation reusing the tick-indexed ledger",
+    "slug": "point-drift-proposer-at-the-skill-library-pull-with-veto-pro",
+    "priority": "P2",
+    "filename": "081M00TK9ZK087G0R000TS9BK9-point-drift-proposer-at-the-skill-library-pull-with-veto-pro.md"
+  }
+}

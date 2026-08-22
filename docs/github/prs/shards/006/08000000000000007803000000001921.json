@@ -1,0 +1,25 @@
+{
+  "pr_number": 6433,
+  "archive_path": "docs/history/pr-reviews/PR-6433-feat-b-0976-slice-1-ts-bonsai-oracle-result-bonsaifeedback-match-f.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7G02_P",
+    "comment:PRRC_kwDOSF9kNM7G05w0",
+    "comment:PRRC_kwDOSF9kNM7G05wP",
+    "comment:PRRC_kwDOSF9kNM7G05xG",
+    "comment:PRRC_kwDOSF9kNM7G05xl",
+    "comment:PRRC_kwDOSF9kNM7G05yA",
+    "thread:PRRT_kwDOSF9kNM6GL-CS",
+    "thread:PRRT_kwDOSF9kNM6GMAH_",
+    "thread:PRRT_kwDOSF9kNM6GMAHc",
+    "thread:PRRT_kwDOSF9kNM6GMAHw",
+    "thread:PRRT_kwDOSF9kNM6GMAIU",
+    "thread:PRRT_kwDOSF9kNM6GMAIp"
+  ],
+  "fetched_at": "2026-06-01T16:52:02.879Z",
+  "schema_version": "v1",
+  "commit_sha": "cd744c6982bf599c1517dd39be3fc70103abc687",
+  "title": "feat(B-0976 slice 1): TS Bonsai oracle → Result<_, BonsaiFeedback> (match F#)",
+  "state": "MERGED",
+  "merged_at": "2026-06-01T16:51:37Z",
+  "head_ref": "otto-cli/b0976-bonsai-ts-result-2026-06-01"
+}

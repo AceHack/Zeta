@@ -1,0 +1,12 @@
+{
+  "pr_number": 2285,
+  "archive_path": "docs/history/pr-reviews/PR-2285-chore-b-0347-carve-5-more-skill-descriptions-batch-15.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-09T10:49:41.432Z",
+  "schema_version": "v1",
+  "commit_sha": "0fbe835dfd638b89958012aa56149bb325d8971f",
+  "title": "chore(B-0347): carve 5 more skill descriptions (batch 15)",
+  "state": "MERGED",
+  "merged_at": "2026-05-09T10:49:28Z",
+  "head_ref": "chore/b0347-carve-batch-15"
+}

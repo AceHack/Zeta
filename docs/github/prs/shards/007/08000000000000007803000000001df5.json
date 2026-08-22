@@ -1,0 +1,12 @@
+{
+  "pr_number": 7669,
+  "archive_path": "docs/history/pr-reviews/PR-7669-feat-time-timegen-time-as-generator-as-a-treaty-primitive-amara-s-named-proof-bu.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-11T12:43:44.630Z",
+  "schema_version": "v1",
+  "commit_sha": "d544e3c46214d0b9fc63067faa56d1a909fe7602",
+  "title": "feat(time): TimeGen — time-as-generator as a treaty primitive (Amara's named proof built; CHSH regimes hit their bounds)",
+  "state": "MERGED",
+  "merged_at": "2026-06-11T12:43:17Z",
+  "head_ref": "shadow-timegen-chsh-proof"
+}

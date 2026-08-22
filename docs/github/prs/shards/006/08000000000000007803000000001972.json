@@ -1,0 +1,17 @@
+{
+  "pr_number": 6514,
+  "archive_path": "docs/history/pr-reviews/PR-6514-feat-dynamicvalue-f-cbor-decode-oracle-fromcanonicalcbor-strict-canonical.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7G9dbE",
+    "comment:PRRC_kwDOSF9kNM7G9dbl",
+    "thread:PRRT_kwDOSF9kNM6GSSLK",
+    "thread:PRRT_kwDOSF9kNM6GSSLm"
+  ],
+  "fetched_at": "2026-06-02T01:04:36.585Z",
+  "schema_version": "v1",
+  "commit_sha": "ac13a5fd2629049d4c0f8c20942b28fef1eae1dc",
+  "title": "feat(DynamicValue): F# CBOR DECODE oracle (fromCanonicalCbor) — strict canonical",
+  "state": "MERGED",
+  "merged_at": "2026-06-02T01:04:14Z",
+  "head_ref": "otto-cli/dynamicvalue-decode-cbor-fsharp-2026-06-01"
+}

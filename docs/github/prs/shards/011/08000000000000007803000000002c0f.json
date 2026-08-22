@@ -1,0 +1,12 @@
+{
+  "pr_number": 11279,
+  "archive_path": "docs/history/pr-reviews/PR-11279-docs-research-the-arrow-is-what-makes-cooperative-scheduling-enforceable-without.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-17T02:19:54.998Z",
+  "schema_version": "v1",
+  "commit_sha": "f05b0b1b546d6557ced3d9b36c1fd5460b40e791",
+  "title": "docs(research): the arrow is what makes cooperative scheduling enforceable without interrupts",
+  "state": "MERGED",
+  "merged_at": "2026-08-17T02:19:19Z",
+  "head_ref": "shadow/arrow-makes-cooperative-scheduling-enforceable"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 12971,
+  "archive_path": "docs/history/pr-reviews/PR-12971-ops-repair-derived-pr-manifest-drift-regenerated-on-current-main-superseding-128.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-20T23:19:14.748Z",
+  "schema_version": "v1",
+  "commit_sha": "5441d993784731935c34353455487e922f48451d",
+  "title": "ops: repair derived PR manifest drift — regenerated on current main, superseding #12893",
+  "state": "MERGED",
+  "merged_at": "2026-08-20T23:18:37Z",
+  "head_ref": "ops/pr-manifest-repair-current"
+}

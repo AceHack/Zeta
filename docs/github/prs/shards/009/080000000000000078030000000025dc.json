@@ -1,0 +1,12 @@
+{
+  "pr_number": 9692,
+  "archive_path": "docs/history/pr-reviews/PR-9692-docs-research-the-explicit-global-workspace-infer-net-factor-graphs-the-clear-fr.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-11T15:05:09.197Z",
+  "schema_version": "v1",
+  "commit_sha": "5be102b41d5d5d737baf8fc00e7719948b2711ba",
+  "title": "docs(research): the explicit global workspace — Infer.NET factor graphs + the clear/frost dual (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-11T15:04:42Z",
+  "head_ref": "design-explicit-workspace-and-frost"
+}

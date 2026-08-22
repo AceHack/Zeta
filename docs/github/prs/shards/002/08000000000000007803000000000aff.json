@@ -1,0 +1,12 @@
+{
+  "pr_number": 2815,
+  "archive_path": "docs/history/pr-reviews/PR-2815-docs-memory-shadow-log-civ-sim-actors-via-higher-kinded-universal-error-classes-.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-12T17:43:53.004Z",
+  "schema_version": "v1",
+  "commit_sha": "f9d5ba56a5ae34368e5182be89cf037dc4f14508",
+  "title": "docs(memory): shadow log → civ-sim actors via higher-kinded universal error classes (Aaron 2026-05-12)",
+  "state": "MERGED",
+  "merged_at": "2026-05-12T17:43:33Z",
+  "head_ref": "docs/aaron-shadow-log-error-instances-civ-sim-actor-mapping-higher-kinded-universal-error-classes-2026-05-12"
+}

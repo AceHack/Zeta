@@ -1,0 +1,12 @@
+{
+  "pr_number": 7485,
+  "archive_path": "docs/history/pr-reviews/PR-7485-fix-gate-restore-green-main-persona-keys-tsc-narrowing-keyring-sh-allowlist-ops-.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-10T09:17:34.028Z",
+  "schema_version": "v1",
+  "commit_sha": "de510a3d8e3e8319515efcb60f0e84e4661250da",
+  "title": "fix(gate): restore green main — persona-keys tsc narrowing + keyring.sh allowlist + ops-k8s exactOptional",
+  "state": "MERGED",
+  "merged_at": "2026-06-10T09:17:07Z",
+  "head_ref": "shadow-fix-gate-persona-keys-tsc-bash-retirement"
+}

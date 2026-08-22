@@ -1,0 +1,12 @@
+{
+  "pr_number": 3507,
+  "archive_path": "docs/history/pr-reviews/PR-3507-feat-persona-deepseek-33-archive-migration-22-files-memory-persona-deepseek-conv.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-15T14:55:50.305Z",
+  "schema_version": "v1",
+  "commit_sha": "d921912d60add53d1ea6e6e0f4b9b83a2c5d6b68",
+  "title": "feat(persona-deepseek): §33 archive migration — 22 files → memory/persona/deepseek/conversations/",
+  "state": "MERGED",
+  "merged_at": "2026-05-15T14:55:32Z",
+  "head_ref": "feat/persona-deepseek-migrate-conversations-otto-cli-resume-2026-05-15"
+}

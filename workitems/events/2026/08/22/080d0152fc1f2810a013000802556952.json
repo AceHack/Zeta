@@ -1,0 +1,14 @@
+{
+  "id": "080d0152fc1f2810a013000802556952",
+  "at": "2026-08-22T16:48:17.893Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M0N5Z0Z4087G0R002QJ37ST",
+    "type": "task",
+    "title": "Zeta drift dashboard — substrate-neutral check roster, Unknown as first-class verdict, coverage as a red condition",
+    "slug": "zeta-drift-dashboard-substrate-neutral-check-roster-unknown",
+    "priority": "P2",
+    "filename": "081M0N5Z0Z4087G0R002QJ37ST-zeta-drift-dashboard-substrate-neutral-check-roster-unknown.md"
+  }
+}

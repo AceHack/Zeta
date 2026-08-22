@@ -1,0 +1,12 @@
+{
+  "pr_number": 8048,
+  "archive_path": "docs/history/pr-reviews/PR-8048-refactor-batch-3-move-14-more-tools-dirs-into-src-core-typescript.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-13T19:23:35.882Z",
+  "schema_version": "v1",
+  "commit_sha": "863c4d9470c8cb62cfc66fdcafaa313b82071b77",
+  "title": "refactor: batch 3 — move 14 more tools/ dirs into src/Core.TypeScript/",
+  "state": "MERGED",
+  "merged_at": "2026-06-13T19:23:12Z",
+  "head_ref": "kiro/move-batch3-to-src"
+}

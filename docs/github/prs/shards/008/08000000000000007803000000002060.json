@@ -1,0 +1,12 @@
+{
+  "pr_number": 8288,
+  "archive_path": "docs/history/pr-reviews/PR-8288-docs-beacon-the-anchor-taxonomy-math-grounds-validity-physics-grounds-metering-a.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-15T08:51:28.377Z",
+  "schema_version": "v1",
+  "commit_sha": "0ed9f111b5a476ff3ef13b31dbeafadd6e831eda",
+  "title": "docs(beacon): the anchor taxonomy — math grounds validity, physics grounds metering; anchors must be checked not cited",
+  "state": "MERGED",
+  "merged_at": "2026-06-15T08:51:05Z",
+  "head_ref": "otto/anchor-taxonomy-beacon-discipline"
+}

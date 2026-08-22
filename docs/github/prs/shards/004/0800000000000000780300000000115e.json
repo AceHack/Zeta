@@ -1,0 +1,12 @@
+{
+  "pr_number": 4446,
+  "archive_path": "docs/history/pr-reviews/PR-4446-docs-shard-tick-1807z-fresh-session-cold-boot-under-multi-constraint-contention.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-20T18:43:47.439Z",
+  "schema_version": "v1",
+  "commit_sha": "e59ae50af7bf11a07489f3db9eceb07498b0436f",
+  "title": "docs(shard): tick 1807Z — fresh-session cold-boot under multi-constraint contention",
+  "state": "MERGED",
+  "merged_at": "2026-05-20T18:43:26Z",
+  "head_ref": "shard/tick-1807z-otto-cli-cold-boot-extreme-cost-aware-pure-git-2026-05-20"
+}

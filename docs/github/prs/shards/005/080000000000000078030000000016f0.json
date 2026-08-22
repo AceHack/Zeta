@@ -1,0 +1,31 @@
+{
+  "pr_number": 5872,
+  "archive_path": "docs/history/pr-reviews/PR-5872-feat-alignment-add-retractibility-gate-criteria-and-skill-b-0058-1.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7F2Nj3",
+    "comment:PRRC_kwDOSF9kNM7F2SDw",
+    "comment:PRRC_kwDOSF9kNM7F2SE4",
+    "comment:PRRC_kwDOSF9kNM7F2SEa",
+    "comment:PRRC_kwDOSF9kNM7F2SFB",
+    "comment:PRRC_kwDOSF9kNM7F2SFg",
+    "comment:PRRC_kwDOSF9kNM7F2SFz",
+    "comment:PRRC_kwDOSF9kNM7F7JE1",
+    "comment:PRRC_kwDOSF9kNM7F7JEK",
+    "thread:PRRT_kwDOSF9kNM6FdpEG",
+    "thread:PRRT_kwDOSF9kNM6Fdsai",
+    "thread:PRRT_kwDOSF9kNM6FdsbB",
+    "thread:PRRT_kwDOSF9kNM6FdsbT",
+    "thread:PRRT_kwDOSF9kNM6FdsbZ",
+    "thread:PRRT_kwDOSF9kNM6Fdsb_",
+    "thread:PRRT_kwDOSF9kNM6Fdsbv",
+    "thread:PRRT_kwDOSF9kNM6FhKrn",
+    "thread:PRRT_kwDOSF9kNM6FhKsE"
+  ],
+  "fetched_at": "2026-05-28T21:40:04.214Z",
+  "schema_version": "v1",
+  "commit_sha": "ba34ba5dc6000d4e2be5054af81c0c9626f83ea0",
+  "title": "feat(alignment): Add retractibility gate criteria and skill (B-0058.1)",
+  "state": "MERGED",
+  "merged_at": "2026-05-28T21:39:40Z",
+  "head_ref": "lior/B-0058.1-retractibility-gate"
+}

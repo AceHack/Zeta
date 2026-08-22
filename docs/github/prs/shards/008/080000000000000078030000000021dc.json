@@ -1,0 +1,12 @@
+{
+  "pr_number": 8668,
+  "archive_path": "docs/history/pr-reviews/PR-8668-feat-core-livelegs-live-tmdb-wikidata-legs-behind-an-injected-fetch-port-offline.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-20T01:20:41.230Z",
+  "schema_version": "v1",
+  "commit_sha": "448ebfba90d653d62d8ac79831e5cf227bb8c99f",
+  "title": "feat(core): LiveLegs — live TMDB + Wikidata legs behind an injected Fetch port (offline-tested, opt-in live edge)",
+  "state": "MERGED",
+  "merged_at": "2026-06-20T01:20:16Z",
+  "head_ref": "otto/live-legs-tmdb-wikidata-injected-port"
+}

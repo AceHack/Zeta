@@ -1,0 +1,12 @@
+{
+  "pr_number": 7657,
+  "archive_path": "docs/history/pr-reviews/PR-7657-feat-zetamax-the-zetamax-spectrum-palette-render-chip-9-ansi-mask-sgr-30-literal.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-11T11:47:42.670Z",
+  "schema_version": "v1",
+  "commit_sha": "215c95a47875ad41d798cc033897e05ac85fbfa0",
+  "title": "feat(zetamax): the ZetaMax Spectrum palette render — CHIP-9 → ANSI (mask = SGR−30, literally)",
+  "state": "MERGED",
+  "merged_at": "2026-06-11T11:47:20Z",
+  "head_ref": "shadow-zetamax-palette-render"
+}

@@ -29,9 +29,9 @@
 //     that creates ongoing audit noise.
 //
 // Usage:
-//   bun tools/hygiene/audit-machine-specific-content.ts            # summary
-//   bun tools/hygiene/audit-machine-specific-content.ts --list     # list offending file:pattern
-//   bun tools/hygiene/audit-machine-specific-content.ts --enforce  # exit 2 on any gap
+//   bun src/Core.TypeScript/hygiene/audit-machine-specific-content.ts            # summary
+//   bun src/Core.TypeScript/hygiene/audit-machine-specific-content.ts --list     # list offending file:pattern
+//   bun src/Core.TypeScript/hygiene/audit-machine-specific-content.ts --enforce  # exit 2 on any gap
 //
 // Exit codes:
 //   0 — no machine-specific content detected (or --enforce not set)

@@ -1,0 +1,12 @@
+{
+  "pr_number": 7371,
+  "archive_path": "docs/history/pr-reviews/PR-7371-docs-research-rodney-s-room-measures-accidental-complexity-a-traveler-every-zeta.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-09T19:13:46.764Z",
+  "schema_version": "v1",
+  "commit_sha": "d6446d1f1c5aa9c8f26cf1ca3239cd05bc44103a",
+  "title": "docs(research): Rodney's room measures accidental complexity (a traveler) + every Zeta agent and persona, human and otherwise, is explicitly modeled",
+  "state": "MERGED",
+  "merged_at": "2026-06-09T19:13:24Z",
+  "head_ref": "otto/rodneys-room-measures-accidental-complexity-every-agent-persona-explicitly-modeled"
+}

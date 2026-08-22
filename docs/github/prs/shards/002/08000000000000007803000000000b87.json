@@ -1,0 +1,15 @@
+{
+  "pr_number": 2951,
+  "archive_path": "docs/history/pr-reviews/PR-2951-backlog-b-0430-peer-call-wrappers-codeql-insecure-tmp-file-across-all-8-wrappers.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7Ao5Sp",
+    "thread:PRRT_kwDOSF9kNM6BpvN0"
+  ],
+  "fetched_at": "2026-05-13T06:21:45.516Z",
+  "schema_version": "v1",
+  "commit_sha": "aa634231aa03812909338d0f9e6fa4c9cabe68f5",
+  "title": "backlog(B-0430): peer-call wrappers — CodeQL insecure-tmp-file across all 8 wrappers (substrate-consistent fix needed)",
+  "state": "MERGED",
+  "merged_at": "2026-05-13T06:21:22Z",
+  "head_ref": "backlog-b0430-peer-call-tmpdir-codeql-insecure-temp-file-all-8-wrappers-2026-05-13"
+}

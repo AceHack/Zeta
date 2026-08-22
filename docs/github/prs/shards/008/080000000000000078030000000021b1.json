@@ -1,0 +1,12 @@
+{
+  "pr_number": 8625,
+  "archive_path": "docs/history/pr-reviews/PR-8625-docs-research-resolve-nft-displayclock-capture-clock-utc-uncertainty-dst-offset-.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-19T21:14:40.061Z",
+  "schema_version": "v1",
+  "commit_sha": "4ac27e5af01daa4a825cbca3e075ed7da68a7015",
+  "title": "docs(research): resolve NFT displayClock — capture clock (UTC ± uncertainty + DST offset) into committed phase-time at mint",
+  "state": "MERGED",
+  "merged_at": "2026-06-19T21:14:12Z",
+  "head_ref": "otto/nft-displayclock-captured-at-mint"
+}

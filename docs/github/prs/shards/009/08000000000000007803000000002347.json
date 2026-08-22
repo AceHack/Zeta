@@ -1,0 +1,12 @@
+{
+  "pr_number": 9031,
+  "archive_path": "docs/history/pr-reviews/PR-9031-docs-research-ferry-aaron-s-2012-developer-poem-pre-ai-problem-statement.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-30T19:50:53.472Z",
+  "schema_version": "v1",
+  "commit_sha": "6fe8b2e1c15bd07fca32467bd3065bc15d503213",
+  "title": "docs(research): ferry — Aaron's 2012 developer poem (pre-AI problem statement)",
+  "state": "MERGED",
+  "merged_at": "2026-06-30T19:50:23Z",
+  "head_ref": "docs-research-2012-developer-poem-ferry"
+}

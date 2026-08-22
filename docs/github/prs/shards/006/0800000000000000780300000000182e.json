@@ -1,0 +1,12 @@
+{
+  "pr_number": 6190,
+  "archive_path": "docs/history/pr-reviews/PR-6190-fix-daemon-enforce-worktree-isolation-hygiene-under-zeta-agents-lior.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-31T03:11:03.385Z",
+  "schema_version": "v1",
+  "commit_sha": "b23a0ad3549312340f87ad936042b342fe88fb3e",
+  "title": "fix(daemon): Enforce worktree isolation hygiene under ~/.zeta/agents/lior/",
+  "state": "MERGED",
+  "merged_at": "2026-05-31T03:10:44Z",
+  "head_ref": "lior/mechanize-worktree-hygiene"
+}

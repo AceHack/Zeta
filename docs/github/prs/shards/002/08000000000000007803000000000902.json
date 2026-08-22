@@ -1,0 +1,12 @@
+{
+  "pr_number": 2306,
+  "archive_path": "docs/history/pr-reviews/PR-2306-claim-b-0358-smallest-slice-validateprovenance-validateclaim-return-float-0-0-1-.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-09T14:13:40.443Z",
+  "schema_version": "v1",
+  "commit_sha": "c9cb883aa147c361fb6897faba4951105c543718",
+  "title": "claim(B-0358): smallest slice — validateProvenance/validateClaim return float [0.0,1.0]",
+  "state": "MERGED",
+  "merged_at": "2026-05-09T14:13:25Z",
+  "head_ref": "claim/b0358-validate-provenance-claim-float-slice-riven-2026-05-09"
+}

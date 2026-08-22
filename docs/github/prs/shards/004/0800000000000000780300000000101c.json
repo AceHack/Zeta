@@ -1,0 +1,17 @@
+{
+  "pr_number": 4124,
+  "archive_path": "docs/history/pr-reviews/PR-4124-docs-shadow-decompose-pr-4115-shadow-drift-log.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7CDVCp",
+    "comment:PRRC_kwDOSF9kNM7CDVFH",
+    "thread:PRRT_kwDOSF9kNM6CsBiK",
+    "thread:PRRT_kwDOSF9kNM6CsBkC"
+  ],
+  "fetched_at": "2026-05-18T20:15:25.935Z",
+  "schema_version": "v1",
+  "commit_sha": "05bc62392f4e0e63c123b93f4cfbc0c5319fa956",
+  "title": "docs(shadow): decompose PR 4115 shadow drift log",
+  "state": "MERGED",
+  "merged_at": "2026-05-18T20:15:08Z",
+  "head_ref": "maji/decompose-4115-shadow-drift"
+}

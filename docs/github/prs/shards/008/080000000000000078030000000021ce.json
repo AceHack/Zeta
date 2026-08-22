@@ -1,0 +1,12 @@
+{
+  "pr_number": 8654,
+  "archive_path": "docs/history/pr-reviews/PR-8654-feat-core-clifford-e8-bridge-stitch-cl-3-0-to-the-e8-root-lattice-the-middle-of-.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-20T00:23:14.286Z",
+  "schema_version": "v1",
+  "commit_sha": "8af3df5b6030e3f510be29ee180f3925ca13fdd8",
+  "title": "feat(core): Clifford→E8 bridge — stitch Cl(3,0) to the E8 root lattice (the middle of the adinkra unfold)",
+  "state": "MERGED",
+  "merged_at": "2026-06-20T00:22:48Z",
+  "head_ref": "otto/clifford-e8-bridge"
+}

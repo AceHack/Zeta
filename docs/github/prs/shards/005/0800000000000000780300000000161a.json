@@ -1,0 +1,12 @@
+{
+  "pr_number": 5658,
+  "archive_path": "docs/history/pr-reviews/PR-5658-feat-b-0868-hats-become-workflow-definitions-compression-unifying-hat-substrate-.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-28T00:04:38.186Z",
+  "schema_version": "v1",
+  "commit_sha": "7254557448ea96f033a14f1c7cbdde9224c84bd1",
+  "title": "feat(B-0868): hats become workflow definitions — compression unifying hat-substrate + workflow-engine + heartbeat-folder + dashboard; canonical B-0867 v1 first-example (operator 2026-05-28)",
+  "state": "MERGED",
+  "merged_at": "2026-05-28T00:04:18Z",
+  "head_ref": "feat/b-0868-hats-become-workflow-definitions-aaron-2026-05-28"
+}

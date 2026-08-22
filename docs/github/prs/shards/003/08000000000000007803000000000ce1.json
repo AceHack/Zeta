@@ -1,0 +1,12 @@
+{
+  "pr_number": 3297,
+  "archive_path": "docs/history/pr-reviews/PR-3297-docs-pr-preservation-discipline-3290-3294.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-14T23:16:38.410Z",
+  "schema_version": "v1",
+  "commit_sha": "d2147162ce636e2d3df1577fd189265dd0963b53",
+  "title": "docs: PR preservation discipline 3290-3294",
+  "state": "MERGED",
+  "merged_at": "2026-05-14T23:16:22Z",
+  "head_ref": "lior/preservation-ops"
+}

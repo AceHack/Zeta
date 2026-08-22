@@ -1,0 +1,12 @@
+{
+  "pr_number": 5109,
+  "archive_path": "docs/history/pr-reviews/PR-5109-shard-tick-0608z-cold-boot-catch-43-sentinel-re-arm-peer-otto-cli-active-on-5108.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-26T06:14:32.766Z",
+  "schema_version": "v1",
+  "commit_sha": "f1f13db3154ba14699470e6268060e1d6b69f688",
+  "title": "shard(tick 0608Z): cold-boot, catch-43 sentinel re-arm, peer Otto-CLI active on #5108",
+  "state": "MERGED",
+  "merged_at": "2026-05-26T06:14:12Z",
+  "head_ref": "otto-cli/tick-0608z-cold-boot-2026-05-26"
+}

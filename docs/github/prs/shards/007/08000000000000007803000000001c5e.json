@@ -1,0 +1,12 @@
+{
+  "pr_number": 7262,
+  "archive_path": "docs/history/pr-reviews/PR-7262-feat-setup-close-over-gpg-in-install-sh-gnupg-in-apt-brew-windows-manifests-symm.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-09T12:48:56.721Z",
+  "schema_version": "v1",
+  "commit_sha": "66bfe3229a9d061f84a7651bc4b1b89e77a8eba7",
+  "title": "feat(setup): close over GPG in install.sh — gnupg in apt/brew/windows manifests (symmetric)",
+  "state": "MERGED",
+  "merged_at": "2026-06-09T12:48:35Z",
+  "head_ref": "otto/installsh-close-over-gpg-manifests"
+}

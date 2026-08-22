@@ -1,0 +1,19 @@
+{
+  "pr_number": 2410,
+  "archive_path": "docs/history/pr-reviews/PR-2410-feat-b-0049-2-mystery-schools-stage-1-mithraic-mysteries-bibliographic-scaffold.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_lhf0",
+    "comment:PRRC_kwDOSF9kNM6_lhfZ",
+    "comment:PRRC_kwDOSF9kNM6_lhf_",
+    "thread:PRRT_kwDOSF9kNM6A31C1",
+    "thread:PRRT_kwDOSF9kNM6A31DH",
+    "thread:PRRT_kwDOSF9kNM6A31DR"
+  ],
+  "fetched_at": "2026-05-10T04:07:49.198Z",
+  "schema_version": "v1",
+  "commit_sha": "bd6427c5cd5798188a55b8237c35d9b8ca5f42e3",
+  "title": "feat(B-0049.2): mystery schools Stage 1 — Mithraic mysteries bibliographic scaffold",
+  "state": "MERGED",
+  "merged_at": "2026-05-10T04:07:31Z",
+  "head_ref": "feat/B-0049.2-mystery-schools-stage1-mithraic-scaffold"
+}

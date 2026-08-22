@@ -1,0 +1,12 @@
+{
+  "pr_number": 8277,
+  "archive_path": "docs/history/pr-reviews/PR-8277-docs-register-the-box-the-room-markov-boundary-each-hat-its-own-metric-unique-be.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-15T07:02:17.908Z",
+  "schema_version": "v1",
+  "commit_sha": "0f5be804f42694a7c580c25e8c29961a9d111464",
+  "title": "docs(register): the box = the room/Markov boundary; each hat = its own metric (unique BERT) = a decorrelated 1000-brains column",
+  "state": "MERGED",
+  "merged_at": "2026-06-15T07:01:49Z",
+  "head_ref": "otto/box-is-the-room-markov-boundary"
+}

@@ -9,6 +9,7 @@
  */
 import { join } from "node:path";
 import { pack, DEFAULT_ENV, type SimulationEnvironment } from "../zeta-id/zeta-id";
+import { isCanonicalZetaIdHex } from "../zeta-id/canonical-hex";
 import {
   Category,
   IdVersion,
@@ -74,8 +75,16 @@ export function isCanonicalTimestamp(ts: string): boolean {
   return /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$/.test(ts);
 }
 
+/**
+ * A canonical work-item event id is 32 lowercase hex that DECODES as a ZetaId.
+ *
+ * Was a bare `/^[0-9a-f]{32}$/` — an encoding check standing in for a value check, which
+ * accepts any 32 hex characters (a truncated hash, hex-encoded JSON, random hex). All
+ * 205 event ids under `workitems/events/` decode cleanly, so this is a tightening with
+ * no legacy carve-out. See `src/Core.TypeScript/zeta-id/canonical-hex.ts`.
+ */
 export function isCanonicalEventId(id: string): boolean {
-  return /^[0-9a-f]{32}$/.test(id);
+  return isCanonicalZetaIdHex(id);
 }
 
 /** `<root>/<YYYY>/<MM>/<DD>/<id>.json` (UTC date partition). */

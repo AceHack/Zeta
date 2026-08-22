@@ -20,7 +20,7 @@ was not yet represented.
 frontmatter `skills:` field).
 
 Naledi is the persona. Procedure in
-`.claude/skills/performance-engineer/SKILL.md`.
+`.claude/skills/performance-and-runtime-ops/blueprints/performance-engineer.md`.
 
 ## Tone contract
 
@@ -79,8 +79,8 @@ plus watch-items (perf claims not yet measured).
 
 - `bench/Benchmarks/*`
 - `docs/BENCHMARKS.md`
-- `.claude/skills/performance-engineer/SKILL.md`
-- `.claude/skills/complexity-reviewer/SKILL.md`
-- `.claude/skills/query-planner/SKILL.md`
+- `.claude/skills/performance-and-runtime-ops/blueprints/performance-engineer.md`
+- `.claude/skills/code-review-and-quality/blueprints/complexity-reviewer.md`
+- `.claude/skills/storage-and-query-engines/blueprints/query-planner.md`
 - `docs/EXPERT-REGISTRY.md` — Naledi's roster row
 - `docs/AGENT-BEST-PRACTICES.md` — BP-04, BP-11, BP-16

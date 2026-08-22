@@ -1,0 +1,12 @@
+{
+  "pr_number": 2289,
+  "archive_path": "docs/history/pr-reviews/PR-2289-fix-b-0318-drop-rawsnapshotref-undefined-exactoptionalpropertytypes-violation.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-09T10:58:01.138Z",
+  "schema_version": "v1",
+  "commit_sha": "4d08a6a8e69f8119633f8abad0123715a1a2279d",
+  "title": "fix(B-0318): drop rawSnapshotRef: undefined — exactOptionalPropertyTypes violation",
+  "state": "MERGED",
+  "merged_at": "2026-05-09T10:57:47Z",
+  "head_ref": "fix/b0318-tsc-exactoptionalpropertytypes"
+}

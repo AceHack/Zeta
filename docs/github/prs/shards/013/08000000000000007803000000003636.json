@@ -1,0 +1,12 @@
+{
+  "pr_number": 13878,
+  "archive_path": "docs/history/pr-reviews/PR-13878-test-cluster-four-assertions-were-pinned-to-a-correction-a-human-has-not-taken-r.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-22T19:38:58.611Z",
+  "schema_version": "v1",
+  "commit_sha": "b48b95b8071bca9f88b2803bf3c40f6300ba7440",
+  "title": "test(cluster): four assertions were pinned to a correction a human has not taken — restore them to the tree as it stands",
+  "state": "MERGED",
+  "merged_at": "2026-08-22T19:38:15Z",
+  "head_ref": "shadow-lane-partition-14-world"
+}

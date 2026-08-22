@@ -1,0 +1,12 @@
+{
+  "pr_number": 9238,
+  "archive_path": "docs/history/pr-reviews/PR-9238-docs-research-empress-crux-secret-not-empowered-coinage-tit-for-lesser-tat-teach.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-03T00:42:29.999Z",
+  "schema_version": "v1",
+  "commit_sha": "66376fbae9346f58b2b25bed075d9aeae3ed04e3",
+  "title": "docs(research): EMPRESS crux (secret not empowered) + coinage \"tit-for-lesser-tat, teach, play\"",
+  "state": "MERGED",
+  "merged_at": "2026-07-03T00:42:07Z",
+  "head_ref": "otto/research-tit-for-lesser-tat-teach-play"
+}

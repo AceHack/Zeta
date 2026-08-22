@@ -1,0 +1,19 @@
+{
+  "pr_number": 2394,
+  "archive_path": "docs/history/pr-reviews/PR-2394-feat-b-0032-2-add-heartbeat-file-integrity-section-to-threat-model-md.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_lIkn",
+    "comment:PRRC_kwDOSF9kNM6_lIkr",
+    "comment:PRRC_kwDOSF9kNM6_lIku",
+    "thread:PRRT_kwDOSF9kNM6A3g82",
+    "thread:PRRT_kwDOSF9kNM6A3g85",
+    "thread:PRRT_kwDOSF9kNM6A3g8z"
+  ],
+  "fetched_at": "2026-05-10T02:06:52.257Z",
+  "schema_version": "v1",
+  "commit_sha": "d52024af50de8ff49d8afba73a49f64920edfedf",
+  "title": "feat(B-0032.2): add heartbeat-file integrity section to THREAT-MODEL.md",
+  "state": "MERGED",
+  "merged_at": "2026-05-10T02:06:35Z",
+  "head_ref": "feat/b-0032.2-threat-model-heartbeat-section"
+}

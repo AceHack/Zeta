@@ -1,0 +1,12 @@
+{
+  "pr_number": 10551,
+  "archive_path": "docs/history/pr-reviews/PR-10551-math-quorum-name-join-and-interference-apart-the-quorum-fold-was-never-a-join.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-18T16:14:25.234Z",
+  "schema_version": "v1",
+  "commit_sha": "ebb1af729bc74c56bf7189c1d3a24be99d64f591",
+  "title": "math(quorum): name join and interference apart — the quorum fold was never a join",
+  "state": "MERGED",
+  "merged_at": "2026-08-14T11:17:42Z",
+  "head_ref": "lumen/quorum-join-vs-interference-named-algebras"
+}

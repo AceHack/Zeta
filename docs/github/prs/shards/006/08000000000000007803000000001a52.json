@@ -1,0 +1,12 @@
+{
+  "pr_number": 6738,
+  "archive_path": "docs/history/pr-reviews/PR-6738-bug-ci-gate-goes-whole-red-on-transient-kind-0-31-0-download-504-in-toolchain-in.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-07T07:21:05.211Z",
+  "schema_version": "v1",
+  "commit_sha": "cc24da96a00c2b0bce30412b9d584d672bfb87b4",
+  "title": "bug(ci): gate goes whole-red on transient kind@0.31.0 download 504 in toolchain install (081KTGF7GE8)",
+  "state": "MERGED",
+  "merged_at": "2026-06-07T07:20:45Z",
+  "head_ref": "otto/ci-kind-504-flake-bug"
+}

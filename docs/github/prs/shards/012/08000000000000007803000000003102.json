@@ -1,0 +1,12 @@
+{
+  "pr_number": 12546,
+  "archive_path": "docs/history/pr-reviews/PR-12546-feat-bridge-transfer-test-the-ladder-s-first-rung-the-morphism-is-real-and-rung-.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-19T21:40:06.347Z",
+  "schema_version": "v1",
+  "commit_sha": "2e5a785e9bfae07a3f124a7c7ed6a60af4985b13",
+  "title": "feat(bridge-transfer): test the ladder's first rung — the morphism is real, and rung 2 is not one",
+  "state": "MERGED",
+  "merged_at": "2026-08-19T21:39:28Z",
+  "head_ref": "bridge-chip8-chip9-transfer"
+}

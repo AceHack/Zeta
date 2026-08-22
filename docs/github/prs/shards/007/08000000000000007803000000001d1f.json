@@ -1,0 +1,12 @@
+{
+  "pr_number": 7455,
+  "archive_path": "docs/history/pr-reviews/PR-7455-feat-products-shadow-products-glomotion-universal-gamepad-symlink-canonical-syml.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-10T05:07:58.111Z",
+  "schema_version": "v1",
+  "commit_sha": "34e17b3b55fdc7862d4e2a7dc140792c5bda6ca9",
+  "title": "feat(products)+shadow: products/glomotion -> universal/gamepad (symlink; canonical/symlink DAG)",
+  "state": "MERGED",
+  "merged_at": "2026-06-10T05:07:36Z",
+  "head_ref": "shadow-products-glomotion-symlink"
+}

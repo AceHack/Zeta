@@ -1,0 +1,12 @@
+{
+  "pr_number": 8848,
+  "archive_path": "docs/history/pr-reviews/PR-8848-feat-proof-mutual-information-non-negativity-i-x-y-0-via-finite-gibbs-lean-4.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-21T03:52:11.460Z",
+  "schema_version": "v1",
+  "commit_sha": "637c9bf7be3b58b5de404f826391c57cbe5611d7",
+  "title": "feat(proof): mutual-information non-negativity I(X;Y) ≥ 0 via finite Gibbs (Lean 4)",
+  "state": "MERGED",
+  "merged_at": "2026-06-21T03:51:46Z",
+  "head_ref": "otto/lean-fin-mutualinfo-nonneg"
+}

@@ -1,0 +1,27 @@
+{
+  "pr_number": 2688,
+  "archive_path": "docs/history/pr-reviews/PR-2688-docs-backlog-decompose-b-0105-into-3-smallest-atomic-dependency-ordered-children.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_1q0-",
+    "comment:PRRC_kwDOSF9kNM6_1q0C",
+    "comment:PRRC_kwDOSF9kNM6_1q0b",
+    "comment:PRRC_kwDOSF9kNM6_1qx2",
+    "comment:PRRC_kwDOSF9kNM6_1qym",
+    "comment:PRRC_kwDOSF9kNM6_1qzA",
+    "comment:PRRC_kwDOSF9kNM6_1qzi",
+    "thread:PRRT_kwDOSF9kNM6BECcS",
+    "thread:PRRT_kwDOSF9kNM6BECcx",
+    "thread:PRRT_kwDOSF9kNM6BECdF",
+    "thread:PRRT_kwDOSF9kNM6BECdc",
+    "thread:PRRT_kwDOSF9kNM6BECdw",
+    "thread:PRRT_kwDOSF9kNM6BECeE",
+    "thread:PRRT_kwDOSF9kNM6BECei"
+  ],
+  "fetched_at": "2026-05-11T11:35:40.926Z",
+  "schema_version": "v1",
+  "commit_sha": "e6b486e14eb296246e88875ba6ce6491eff352b0",
+  "title": "docs(backlog): decompose B-0105 into 3 smallest atomic dependency-ordered children (re-decomp, one bounded step)",
+  "state": "MERGED",
+  "merged_at": "2026-05-11T11:35:24Z",
+  "head_ref": "claim/B-0105-decompose-smallest-atomic-children-riven-2026-05-11"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 8969,
+  "archive_path": "docs/history/pr-reviews/PR-8969-fix-keys-cert-key-id-machine-alone-n-m-not-user-machine-n-m.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-21T17:24:41.339Z",
+  "schema_version": "v1",
+  "commit_sha": "09242ce5170aa8506fa0d04ab58ae40e82104328",
+  "title": "fix(keys): cert Key ID = machine alone (N+M), not user@machine (N×M)",
+  "state": "MERGED",
+  "merged_at": "2026-06-21T17:24:13Z",
+  "head_ref": "otto/fix-cert-keyid-nm-not-nxm"
+}

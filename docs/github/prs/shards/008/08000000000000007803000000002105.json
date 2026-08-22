@@ -1,0 +1,12 @@
+{
+  "pr_number": 8453,
+  "archive_path": "docs/history/pr-reviews/PR-8453-fix-scenario-2-phase-2-uefi-disk-boot-serial-console.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-16T05:47:12.897Z",
+  "schema_version": "v1",
+  "commit_sha": "786adcaa64bdbd254494dc40a44cfd457b13653d",
+  "title": "Fix scenario 2 phase 2: UEFI disk boot + serial console",
+  "state": "MERGED",
+  "merged_at": "2026-06-16T05:46:44Z",
+  "head_ref": "riven/qemu-phase2-disk-boot"
+}

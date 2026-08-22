@@ -1,0 +1,12 @@
+{
+  "pr_number": 6856,
+  "archive_path": "docs/history/pr-reviews/PR-6856-docs-research-tensor-algebra-tie-in-z-set-is-the-sparse-tensor-over-a-semiring-n.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-07T15:37:37.633Z",
+  "schema_version": "v1",
+  "commit_sha": "48e089f2e5cb3618e39cf5e3c77ce50930d95344",
+  "title": "docs(research): tensor-algebra tie-in — Z-set IS the sparse tensor over a semiring; .NET Tensor is the dense leaf",
+  "state": "MERGED",
+  "merged_at": "2026-06-07T15:37:17Z",
+  "head_ref": "otto/tensor-algebra-tie-in-capture"
+}

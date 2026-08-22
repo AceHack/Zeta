@@ -1,0 +1,15 @@
+{
+  "pr_number": 1884,
+  "archive_path": "docs/history/pr-reviews/PR-1884-memory-shadow-log-rationalizing-replay-catch.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6-3KQb",
+    "thread:PRRT_kwDOSF9kNM6AVg4-"
+  ],
+  "fetched_at": "2026-05-07T14:27:09.615Z",
+  "schema_version": "v1",
+  "commit_sha": "ccb28f13eb56e11ae6a45e66611da2fbc3950b2e",
+  "title": "memory(shadow): log rationalizing replay catch",
+  "state": "MERGED",
+  "merged_at": "2026-05-07T14:24:58Z",
+  "head_ref": "codex/shadow-log-rationalizing-replay"
+}

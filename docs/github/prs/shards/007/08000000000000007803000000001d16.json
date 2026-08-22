@@ -1,0 +1,12 @@
+{
+  "pr_number": 7446,
+  "archive_path": "docs/history/pr-reviews/PR-7446-feat-core-docs-shadow-temperature-eigen-fixed-point-temperature-and-encrypted-nu.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-10T04:29:48.175Z",
+  "schema_version": "v1",
+  "commit_sha": "b9aded23ddc8e3514cc53410d96047997dc76090",
+  "title": "feat(core)+docs+shadow: temperature=eigen-fixed-point (temperature AND encrypted null); braid->seam; Henderson Textile Mill cell",
+  "state": "MERGED",
+  "merged_at": "2026-06-10T04:29:25Z",
+  "head_ref": "shadow-temperature-eigen-textile-mill"
+}

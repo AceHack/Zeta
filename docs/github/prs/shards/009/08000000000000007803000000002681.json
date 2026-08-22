@@ -1,0 +1,12 @@
+{
+  "pr_number": 9857,
+  "archive_path": "docs/history/pr-reviews/PR-9857-feat-hygiene-scoped-lint-a-pr-s-checks-report-only-the-files-it-touches-081kx3ka.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-01T12:23:31.492Z",
+  "schema_version": "v1",
+  "commit_sha": "93c9809542805b5e9576ce2da7281de7bebe829b",
+  "title": "feat(hygiene): scoped-lint — a PR's checks report only the files it touches (081KX3KA3ES)",
+  "state": "MERGED",
+  "merged_at": "2026-08-01T12:23:02Z",
+  "head_ref": "otto/scoped-lint"
+}

@@ -1,0 +1,28 @@
+{
+  "pr_number": 3122,
+  "archive_path": "docs/history/pr-reviews/PR-3122-docs-b-0464-honor-system-please-don-t-fork-license-draft-for-product-repos.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7BJOsU",
+    "comment:PRRC_kwDOSF9kNM7BJOtE",
+    "comment:PRRC_kwDOSF9kNM7BJOtf",
+    "comment:PRRC_kwDOSF9kNM7BJOuA",
+    "comment:PRRC_kwDOSF9kNM7BJOue",
+    "comment:PRRC_kwDOSF9kNM7BJWFY",
+    "comment:PRRC_kwDOSF9kNM7BJWS9",
+    "comment:PRRC_kwDOSF9kNM7BJWfu",
+    "comment:PRRC_kwDOSF9kNM7BJWg6",
+    "comment:PRRC_kwDOSF9kNM7BJWtP",
+    "thread:PRRT_kwDOSF9kNM6CBPrC",
+    "thread:PRRT_kwDOSF9kNM6CBPrn",
+    "thread:PRRT_kwDOSF9kNM6CBPs0",
+    "thread:PRRT_kwDOSF9kNM6CBPsC",
+    "thread:PRRT_kwDOSF9kNM6CBPsf"
+  ],
+  "fetched_at": "2026-05-14T09:39:46.281Z",
+  "schema_version": "v1",
+  "commit_sha": "7aff19acb4c194f8f37f940347dec445b95ab1a9",
+  "title": "docs(b-0464): honor-system 'please don't fork' license draft for product repos",
+  "state": "MERGED",
+  "merged_at": "2026-05-14T09:39:20Z",
+  "head_ref": "feat/b-0464-honor-system-license-2026-05-14"
+}

@@ -1,0 +1,20 @@
+{
+  "pr_number": 2311,
+  "archive_path": "docs/history/pr-reviews/PR-2311-feat-b-0358-bool-float-returns-validateprovenance-validateclaim-groundingwithsco.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_iGLQ",
+    "comment:PRRC_kwDOSF9kNM6_iGpE",
+    "comment:PRRC_kwDOSF9kNM6_iGpJ",
+    "comment:PRRC_kwDOSF9kNM6_iHZp",
+    "thread:PRRT_kwDOSF9kNM6A1KZU",
+    "thread:PRRT_kwDOSF9kNM6A1KyQ",
+    "thread:PRRT_kwDOSF9kNM6A1KyU"
+  ],
+  "fetched_at": "2026-05-09T16:03:53.862Z",
+  "schema_version": "v1",
+  "commit_sha": "c590adf3fed91752e6761183dfbe34b83094c79e",
+  "title": "feat(B-0358): bool→float returns — validateProvenance/validateClaim + groundingWithScore",
+  "state": "MERGED",
+  "merged_at": "2026-05-09T16:03:39Z",
+  "head_ref": "feat/b0358-float-returns-veridicality-2026-05-09"
+}

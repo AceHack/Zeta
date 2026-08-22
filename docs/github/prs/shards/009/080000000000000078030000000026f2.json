@@ -1,0 +1,12 @@
+{
+  "pr_number": 9970,
+  "archive_path": "docs/history/pr-reviews/PR-9970-docs-research-propagate-the-1-3-2-is-not-the-tsirelson-bound-caveat-to-3-leak-do.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-02T16:32:30.633Z",
+  "schema_version": "v1",
+  "commit_sha": "bbd6e838b2ed73d261174da2f826e9f8854668e3",
+  "title": "docs(research): propagate the '1/(3√2) is NOT the Tsirelson bound' caveat to 3 leak docs",
+  "state": "MERGED",
+  "merged_at": "2026-08-02T16:32:03Z",
+  "head_ref": "otto/rho-t-not-tsirelson-caveat-propagation"
+}

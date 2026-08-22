@@ -1,0 +1,12 @@
+{
+  "pr_number": 6485,
+  "archive_path": "docs/history/pr-reviews/PR-6485-feat-algebra-indexedzset-f-generic-math-zero-on-the-type-abelian-group.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-01T22:11:20.041Z",
+  "schema_version": "v1",
+  "commit_sha": "e062385fbda8aea1557c46af8c306d008ec8a365",
+  "title": "feat(algebra): IndexedZSet F# generic-math — Zero/(+)/(~-)/(-) on the type (abelian group)",
+  "state": "MERGED",
+  "merged_at": "2026-06-01T22:11:00Z",
+  "head_ref": "otto-cli/indexedzset-fsharp-generic-math-2026-06-01"
+}

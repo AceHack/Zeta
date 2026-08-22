@@ -1,5 +1,5 @@
 #!/usr/bin/env bun
-// validate-otto-diff.ts — gates commits against tools/orchestrator/otto-state.json constraints.
+// validate-otto-diff.ts — gates commits against src/Core.TypeScript/orchestrator/otto-state.json constraints.
 //
 // Reads `git diff --cached --name-status` (or accepts diff via stdin for testing),
 // classifies each modified path against constraint rules, and exits non-zero on
@@ -17,8 +17,8 @@
 //   2 — constraint violation (operator must obtain Vera+Riven PASS or revise diff)
 //
 // Run:
-//   bun tools/orchestrator/validate-otto-diff.ts                 # validates staged
-//   bun tools/orchestrator/validate-otto-diff.ts --diff <path>   # validates diff file
+//   bun src/Core.TypeScript/orchestrator/validate-otto-diff.ts                 # validates staged
+//   bun src/Core.TypeScript/orchestrator/validate-otto-diff.ts --diff <path>   # validates diff file
 
 import { readFileSync, existsSync } from "node:fs";
 import { resolve, dirname } from "node:path";
@@ -54,7 +54,7 @@ function resolveRepoRoot(): string {
 }
 
 function loadState(): OttoState {
-  const path = resolve(REPO_ROOT, "tools/orchestrator/otto-state.json");
+  const path = resolve(REPO_ROOT, "src/Core.TypeScript/orchestrator/otto-state.json");
   if (!existsSync(path)) {
     process.stderr.write(`error: otto-state.json missing at ${path}\n`);
     process.exit(1);
@@ -150,12 +150,12 @@ function classify(
   }
 
   // Rule 5: otto-state.json itself is co-signed-only
-  if (path === "tools/orchestrator/otto-state.json") {
+  if (path === "src/Core.TypeScript/orchestrator/otto-state.json") {
     violations.push({
       path,
       status,
       rule: "otto_state_modification",
-      detail: "tools/orchestrator/otto-state.json is read-only for Otto; modifications require Vera+Riven PASS.",
+      detail: "src/Core.TypeScript/orchestrator/otto-state.json is read-only for Otto; modifications require Vera+Riven PASS.",
     });
   }
 

@@ -1,0 +1,12 @@
+{
+  "pr_number": 9927,
+  "archive_path": "docs/history/pr-reviews/PR-9927-fix-design-vault-monitoring-bridge-v2-5-contract-changes-iris-otto-review.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-01T21:26:23.299Z",
+  "schema_version": "v1",
+  "commit_sha": "a3a0e81797e007d3450c1b95e72665f311129e29",
+  "title": "fix(design): vault monitoring bridge v2 — 5 contract changes (Iris/Otto review)",
+  "state": "MERGED",
+  "merged_at": "2026-08-01T21:25:53Z",
+  "head_ref": "claim/vault-bridge-v2-contract-changes"
+}

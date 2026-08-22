@@ -1,0 +1,29 @@
+{
+  "pr_number": 6491,
+  "archive_path": "docs/history/pr-reviews/PR-6491-docs-languages-inside-out-thesis-bcl-is-the-asset-boost-as-prior-art.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7G7lJl",
+    "comment:PRRC_kwDOSF9kNM7G7lJr",
+    "comment:PRRC_kwDOSF9kNM7G7mLM",
+    "comment:PRRC_kwDOSF9kNM7G7mLx",
+    "comment:PRRC_kwDOSF9kNM7G7mMC",
+    "comment:PRRC_kwDOSF9kNM7G7qkB",
+    "comment:PRRC_kwDOSF9kNM7G7qkd",
+    "comment:PRRC_kwDOSF9kNM7G7qkv",
+    "thread:PRRT_kwDOSF9kNM6GQ7OY",
+    "thread:PRRT_kwDOSF9kNM6GQ7Oe",
+    "thread:PRRT_kwDOSF9kNM6GQ7_8",
+    "thread:PRRT_kwDOSF9kNM6GQ7_g",
+    "thread:PRRT_kwDOSF9kNM6GQ8AL",
+    "thread:PRRT_kwDOSF9kNM6GQ_P6",
+    "thread:PRRT_kwDOSF9kNM6GQ_Pt",
+    "thread:PRRT_kwDOSF9kNM6GQ_QG"
+  ],
+  "fetched_at": "2026-06-01T22:35:33.375Z",
+  "schema_version": "v1",
+  "commit_sha": "28d77ecf0a03a1645f717b70c2c88d7879af5897",
+  "title": "docs: languages-inside-out thesis (BCL is the asset) + Boost as prior art",
+  "state": "MERGED",
+  "merged_at": "2026-06-01T22:35:12Z",
+  "head_ref": "otto-cli/boost-prior-art-languages-inside-out-bcl-thesis-2026-06-01"
+}

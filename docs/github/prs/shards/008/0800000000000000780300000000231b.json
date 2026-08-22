@@ -1,0 +1,12 @@
+{
+  "pr_number": 8987,
+  "archive_path": "docs/history/pr-reviews/PR-8987-fix-keys-purify-github-key-title-drop-the-host-n-m-consistency.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-21T19:27:02.084Z",
+  "schema_version": "v1",
+  "commit_sha": "2add77abcf6fda440f55a8f1fc58f80bb90868cb",
+  "title": "fix(keys): purify GitHub key title — drop the @host (N+M consistency)",
+  "state": "MERGED",
+  "merged_at": "2026-06-21T19:26:32Z",
+  "head_ref": "otto/purify-publish-title-drop-athost"
+}

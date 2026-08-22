@@ -1,0 +1,12 @@
+{
+  "pr_number": 7013,
+  "archive_path": "docs/history/pr-reviews/PR-7013-feat-core-wire-the-grammar-to-the-noun-classes-zetaexec-run-converge-named-field.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-08T04:36:35.273Z",
+  "schema_version": "v1",
+  "commit_sha": "dba6c08bbebef48049081177ee71543f882e7eb3",
+  "title": "feat(core): wire the grammar to the noun-classes — ZetaExec (run/converge) + named fields",
+  "state": "MERGED",
+  "merged_at": "2026-06-08T04:36:15Z",
+  "head_ref": "otto/wire-grammar-to-noun-classes-zetaexec"
+}

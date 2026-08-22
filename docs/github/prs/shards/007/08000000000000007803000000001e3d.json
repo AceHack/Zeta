@@ -1,0 +1,12 @@
+{
+  "pr_number": 7741,
+  "archive_path": "docs/history/pr-reviews/PR-7741-fix-math-the-tear-down-lands-13-findings-fixed-filed-2-p0-soraya-s-routing-adopt.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-11T17:41:58.806Z",
+  "schema_version": "v1",
+  "commit_sha": "126ef553f106765c8dd03d9d8ec6e6c6c7718579",
+  "title": "fix(math): the tear-down lands — 13 findings fixed/filed (2 P0), Soraya's routing adopted, brief REVISION 2",
+  "state": "MERGED",
+  "merged_at": "2026-06-11T17:41:31Z",
+  "head_ref": "shadow-math-teardown-fixes"
+}

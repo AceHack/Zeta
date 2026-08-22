@@ -1,0 +1,12 @@
+{
+  "pr_number": 10933,
+  "archive_path": "docs/history/pr-reviews/PR-10933-docs-comments-link-a-row-15-society-best-individual-b-ks-ks-entropy-lyapunov-run.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-16T15:46:58.141Z",
+  "schema_version": "v1",
+  "commit_sha": "64a3318af679fc0526ca445da43300823e2ea40a",
+  "title": "docs+comments: link §A row 15 (society > best individual) ↔ §B-ks KS-entropy/Lyapunov rung, both directions",
+  "state": "MERGED",
+  "merged_at": "2026-08-16T15:46:24Z",
+  "head_ref": "shadow/ks-entropy-lyapunov-condorcet-crossrefs"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 3591,
+  "archive_path": "docs/history/pr-reviews/PR-3591-docs-archive-lior-preserve-pr-3544.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-15T21:43:22.580Z",
+  "schema_version": "v1",
+  "commit_sha": "5e606bb201afc7ae6a4149bc3b33f08fcc2c99ec",
+  "title": "docs(archive): Lior preserve PR 3544",
+  "state": "MERGED",
+  "merged_at": "2026-05-15T21:43:04Z",
+  "head_ref": "lior/preserve-3544"
+}

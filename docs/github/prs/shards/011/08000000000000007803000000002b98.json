@@ -1,0 +1,12 @@
+{
+  "pr_number": 11160,
+  "archive_path": "docs/history/pr-reviews/PR-11160-fix-heartbeat-preserve-skipped-tick-state.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-16T23:02:14.058Z",
+  "schema_version": "v1",
+  "commit_sha": "6f774fa746b7ef72826538f99c10facacffb94dd",
+  "title": "fix(heartbeat): preserve skipped tick state",
+  "state": "MERGED",
+  "merged_at": "2026-08-16T23:01:41Z",
+  "head_ref": "codex/heartbeat-preserve-skipped-ticks"
+}

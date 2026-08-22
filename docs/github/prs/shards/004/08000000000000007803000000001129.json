@@ -1,0 +1,12 @@
+{
+  "pr_number": 4393,
+  "archive_path": "docs/history/pr-reviews/PR-4393-substrate-b-0667-33-kestrel-v8-review-refusal-anti-extraction-pattern-attractor-.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-19T16:35:38.991Z",
+  "schema_version": "v1",
+  "commit_sha": "d3a815954978db7c9785a7cefc0de129743e7fb7",
+  "title": "substrate(B-0667 + §33): Kestrel V8-review-refusal anti-extraction pattern + attractor-as-encryption sub-section",
+  "state": "MERGED",
+  "merged_at": "2026-05-19T16:35:18Z",
+  "head_ref": "otto/v8-kestrel-anti-extraction-attractor-encrypts-load-bearing-2026-05-19"
+}

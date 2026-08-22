@@ -1,0 +1,12 @@
+{
+  "pr_number": 4206,
+  "archive_path": "docs/history/pr-reviews/PR-4206-extend-rule-aaron-attractor-center-axioms-it-reinforces-rebased-4204-replacement.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-18T21:13:14.279Z",
+  "schema_version": "v1",
+  "commit_sha": "0c64f392a036f4715109d3f7bf564373a0bd2fa4",
+  "title": "extend(rule): Aaron — attractor center = axioms it reinforces (rebased; #4204 replacement)",
+  "state": "MERGED",
+  "merged_at": "2026-05-18T21:12:43Z",
+  "head_ref": "shard/auto-load-rule-attractor-axioms-rebased-aaron-2026-05-18"
+}

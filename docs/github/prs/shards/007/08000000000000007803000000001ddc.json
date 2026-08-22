@@ -1,0 +1,12 @@
+{
+  "pr_number": 7644,
+  "archive_path": "docs/history/pr-reviews/PR-7644-docs-hardware-qemu-aarch64-boots-to-login-goes-green-in-the-matrix-b-1024-slice-.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-11T10:47:55.673Z",
+  "schema_version": "v1",
+  "commit_sha": "022f1f114cb26eaad69b65a93da33f4ae3e4d124",
+  "title": "docs(hardware): qemu-aarch64 boots-to-login goes GREEN in the matrix (B-1024 slice 1 complete)",
+  "state": "MERGED",
+  "merged_at": "2026-06-11T10:47:30Z",
+  "head_ref": "shadow-matrix-aarch64-green"
+}

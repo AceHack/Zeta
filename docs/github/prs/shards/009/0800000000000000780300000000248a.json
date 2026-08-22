@@ -1,0 +1,12 @@
+{
+  "pr_number": 9354,
+  "archive_path": "docs/history/pr-reviews/PR-9354-feat-shiva-gc-the-collector-on-the-seed-mark-sweep-gc-over-reified-values-shadow.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-03T19:41:09.351Z",
+  "schema_version": "v1",
+  "commit_sha": "72ff2104d3405cabec5852aac1936b65bbe6e3ef",
+  "title": "feat(shiva-gc): the collector on the seed — mark-sweep GC over reified values (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-03T19:40:44Z",
+  "head_ref": "otto/shiva-gc-mark-sweep-collector"
+}

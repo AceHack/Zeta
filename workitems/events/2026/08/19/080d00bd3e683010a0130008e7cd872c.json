@@ -1,0 +1,14 @@
+{
+  "id": "080d00bd3e683010a0130008e7cd872c",
+  "at": "2026-08-19T01:34:28.102Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M0BTFK85087G0R000A705AK",
+    "type": "bug",
+    "title": "zeta-self-register is a marker-gated oneshot: it cannot re-converge, so the host layer is enrolment, not repair",
+    "slug": "zeta-self-register-is-a-marker-gated-oneshot-it-cannot-re-co",
+    "priority": "P2",
+    "filename": "081M0BTFK85087G0R000A705AK-zeta-self-register-is-a-marker-gated-oneshot-it-cannot-re-co.md"
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 7931,
+  "archive_path": "docs/history/pr-reviews/PR-7931-fix-docs-md037-multiplication-asterisks-in-mla-transcript-formula.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-12T15:32:29.021Z",
+  "schema_version": "v1",
+  "commit_sha": "0ebbbe4b1283c555cf2f0e26b1916e47e764b282",
+  "title": "fix(docs): MD037 — multiplication asterisks in MLA transcript formula",
+  "state": "MERGED",
+  "merged_at": "2026-06-12T15:32:02Z",
+  "head_ref": "shadow/fix-md037-mla"
+}

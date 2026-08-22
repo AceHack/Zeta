@@ -1,0 +1,12 @@
+{
+  "pr_number": 6733,
+  "archive_path": "docs/history/pr-reviews/PR-6733-docs-backlog-re-add-log-byte-lock-workitem-081ktgd5jmd-cadence-section-post-tang.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-07T07:03:11.537Z",
+  "schema_version": "v1",
+  "commit_sha": "25b2c81840cdd18e822250079ddb96a96b39cf67",
+  "title": "docs+backlog: re-add Log byte-lock workitem (081KTGD5JMD) + cadence section (post-tangle cleanup)",
+  "state": "MERGED",
+  "merged_at": "2026-06-07T07:02:46Z",
+  "head_ref": "otto/readd-log-workitem-and-cadence"
+}

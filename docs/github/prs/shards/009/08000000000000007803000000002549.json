@@ -1,0 +1,12 @@
+{
+  "pr_number": 9545,
+  "archive_path": "docs/history/pr-reviews/PR-9545-fix-installer-completion-password-disclosure.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-08T22:12:24.222Z",
+  "schema_version": "v1",
+  "commit_sha": "af03f2d1af4b35097191da2a4113bdfeeb5e949d",
+  "title": "Fix installer completion password disclosure",
+  "state": "MERGED",
+  "merged_at": "2026-07-08T22:11:57Z",
+  "head_ref": "feat/081KSGS9-installer-config-bugs-slice"
+}

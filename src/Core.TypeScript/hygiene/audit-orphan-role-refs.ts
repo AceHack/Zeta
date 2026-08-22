@@ -32,10 +32,10 @@
 //    on code-surface files.
 //
 // Usage:
-//   bun tools/hygiene/audit-orphan-role-refs.ts                # full repo scan, warn-only
-//   bun tools/hygiene/audit-orphan-role-refs.ts --enforce      # exit 2 on any finding
-//   bun tools/hygiene/audit-orphan-role-refs.ts --paths a b c  # scan specific paths only
-//   bun tools/hygiene/audit-orphan-role-refs.ts --help         # this help
+//   bun src/Core.TypeScript/hygiene/audit-orphan-role-refs.ts                # full repo scan, warn-only
+//   bun src/Core.TypeScript/hygiene/audit-orphan-role-refs.ts --enforce      # exit 2 on any finding
+//   bun src/Core.TypeScript/hygiene/audit-orphan-role-refs.ts --paths a b c  # scan specific paths only
+//   bun src/Core.TypeScript/hygiene/audit-orphan-role-refs.ts --help         # this help
 //
 // Exit codes:
 //   0 — no orphans found (or --enforce not set; warnings only)
@@ -68,9 +68,9 @@ const HELP_TEXT = `audit-orphan-role-refs.ts — detect orphan role-refs and un-
 name attributions on code-surface files.
 
 Usage:
-  bun tools/hygiene/audit-orphan-role-refs.ts                # full repo scan, warn-only
-  bun tools/hygiene/audit-orphan-role-refs.ts --enforce      # exit 2 on any finding
-  bun tools/hygiene/audit-orphan-role-refs.ts --paths a b c  # scan specific paths only
+  bun src/Core.TypeScript/hygiene/audit-orphan-role-refs.ts                # full repo scan, warn-only
+  bun src/Core.TypeScript/hygiene/audit-orphan-role-refs.ts --enforce      # exit 2 on any finding
+  bun src/Core.TypeScript/hygiene/audit-orphan-role-refs.ts --paths a b c  # scan specific paths only
 
 Exit codes:
   0 — no orphans found (or --enforce not set; warnings only)

@@ -1,0 +1,12 @@
+{
+  "pr_number": 7544,
+  "archive_path": "docs/history/pr-reviews/PR-7544-docs-research-choice-determinism-attention-distributed-axiom-of-choice-over-a-so.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-10T23:47:03.164Z",
+  "schema_version": "v1",
+  "commit_sha": "f13c0ed05075c70ed6cc5fbd57dc0c66176c2311",
+  "title": "docs(research): choice/determinism/attention — distributed axiom of choice over a soft topology",
+  "state": "MERGED",
+  "merged_at": "2026-06-10T23:46:38Z",
+  "head_ref": "shadow-choice-determinism-soft-topology-capture"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 10017,
+  "archive_path": "docs/history/pr-reviews/PR-10017-feat-core-mutual-information-the-finer-statistic-for-the-excess-over-null-instru.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-18T09:00:03.649Z",
+  "schema_version": "v1",
+  "commit_sha": "f3a674c2e8a92532028e2e5f7b80b87a67c0bd68",
+  "title": "feat(core): mutual-information — the finer statistic for the excess-over-null instrument",
+  "state": "MERGED",
+  "merged_at": "2026-08-03T16:05:46Z",
+  "head_ref": "feat/decorrelation-excess-mutualinformation-finer-statistic-20260803"
+}

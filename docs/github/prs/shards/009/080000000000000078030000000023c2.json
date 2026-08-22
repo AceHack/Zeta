@@ -1,0 +1,12 @@
+{
+  "pr_number": 9154,
+  "archive_path": "docs/history/pr-reviews/PR-9154-docs-handoffs-zetaidol-steer-otto-s-answers-gated-decisions-marked-shadow.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-17T10:57:47.472Z",
+  "schema_version": "v1",
+  "commit_sha": "e6b07cb199711b26ab303030ae04a6d2c506a711",
+  "title": "docs(handoffs): ZetaIdol steer — Otto's answers, gated decisions marked (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-02T16:37:05Z",
+  "head_ref": "handoffs/zetaidol-steer-answers"
+}

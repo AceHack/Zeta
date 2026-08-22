@@ -1,0 +1,12 @@
+{
+  "pr_number": 6435,
+  "archive_path": "docs/history/pr-reviews/PR-6435-docs-b-0976-record-ts-f-result-match-complete-accumulate-mode-tracked-slice.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-01T16:56:18.014Z",
+  "schema_version": "v1",
+  "commit_sha": "5d07a909339282b1f3f26c82f54f3b1f2ac84aff",
+  "title": "docs(B-0976): record TS+F# Result match complete; accumulate-mode → tracked slice",
+  "state": "MERGED",
+  "merged_at": "2026-06-01T16:55:54Z",
+  "head_ref": "otto-cli/b0976-status-match-complete-2026-06-01"
+}

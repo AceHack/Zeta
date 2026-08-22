@@ -1,0 +1,12 @@
+{
+  "pr_number": 9699,
+  "archive_path": "docs/history/pr-reviews/PR-9699-docs-research-the-engine-trust-at-scale-without-trusting-the-shared-math-is-the-.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-11T15:22:48.068Z",
+  "schema_version": "v1",
+  "commit_sha": "4a95ff16855130b03223cadae3edd16ee14eb241",
+  "title": "docs(research): the engine — trust at scale WITHOUT trusting; the shared math is the human-AI treaty (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-11T15:22:17Z",
+  "head_ref": "trust-at-scale-shared-math-treaty"
+}

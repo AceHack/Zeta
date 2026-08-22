@@ -1,0 +1,12 @@
+{
+  "pr_number": 10321,
+  "archive_path": "docs/history/pr-reviews/PR-10321-mutation-record-every-finding-and-stage-db-the-denominator-is-real-now.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-12T03:10:55.257Z",
+  "schema_version": "v1",
+  "commit_sha": "7458bafb55e37c92d4b653068dfc63d4fd4a55f8",
+  "title": "mutation: record every finding and stage db/ — the denominator is real now",
+  "state": "MERGED",
+  "merged_at": "2026-08-12T03:10:12Z",
+  "head_ref": "stage-db-findings-denominator"
+}

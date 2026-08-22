@@ -1,0 +1,12 @@
+{
+  "pr_number": 11268,
+  "archive_path": "docs/history/pr-reviews/PR-11268-fix-research-land-the-four-corrections-the-80-20-note-shipped-without.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-17T02:06:24.730Z",
+  "schema_version": "v1",
+  "commit_sha": "b8ce726d9429c0541efe7674d7bdbfe59bc6a00b",
+  "title": "fix(research): land the four corrections the 80/20 note shipped without",
+  "state": "MERGED",
+  "merged_at": "2026-08-17T02:05:47Z",
+  "head_ref": "shadow/four-corrections-to-the-eighty-twenty-note"
+}

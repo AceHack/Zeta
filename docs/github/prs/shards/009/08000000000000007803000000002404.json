@@ -1,0 +1,12 @@
+{
+  "pr_number": 9220,
+  "archive_path": "docs/history/pr-reviews/PR-9220-feat-core-slr-parsetree-parser-produces-a-parse-tree-that-is-a-dynamicvalue-homo.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-02T23:40:50.987Z",
+  "schema_version": "v1",
+  "commit_sha": "76ff9106e483e7212b992c38cfa3aeb18a637192",
+  "title": "feat(core): Slr.parseTree — parser produces a parse tree that IS a DynamicValue (homoiconic loop)",
+  "state": "MERGED",
+  "merged_at": "2026-07-02T23:40:25Z",
+  "head_ref": "otto/slr-parse-tree"
+}

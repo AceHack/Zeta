@@ -1,0 +1,12 @@
+{
+  "pr_number": 6333,
+  "archive_path": "docs/history/pr-reviews/PR-6333-feat-agentic-org-gate-production-pilot-readiness.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-01T03:51:24.615Z",
+  "schema_version": "v1",
+  "commit_sha": "a25ac2d7a457b09edae809448cb98a7deb477768",
+  "title": "feat(agentic-org): gate production pilot readiness",
+  "state": "MERGED",
+  "merged_at": "2026-06-01T03:51:02Z",
+  "head_ref": "codex/agentic-org-pilot-readiness-checkpoint"
+}

@@ -35,7 +35,7 @@
  * ─────────────────────────────────────────────────────────────────────────────────────────────
  * Exit codes:
  *   0 — ran; no surviving mutants (or nothing eligible to mutate)
- *   1 — usage / fatal error
+ *   1 — usage / fatal error, INCLUDING an unrecognised argument (refused before any write)
  *   3 — SURVIVING MUTANT: a test suite passed with the code deliberately broken. A finding.
  *
  * Usage:
@@ -277,7 +277,62 @@ function argValue(flag: string): string | undefined {
   return i >= 0 ? process.argv[i + 1] : undefined;
 }
 
+/** Flags that consume the following token as their value. */
+const VALUE_FLAGS: ReadonlySet<string> = new Set([
+  "--repo-root",
+  "--agent",
+  "--tick",
+  "--since",
+  "--room",
+  "--choose",
+  "--reason",
+]);
+/** Flags that stand alone. */
+const BOOLEAN_FLAGS: ReadonlySet<string> = new Set(["--dry-run"]);
+
+/**
+ * FAIL CLOSED ON AN UNRECOGNISED ARGUMENT — 081M03HRHBS087G0R001HRAFQ0.
+ *
+ * This runner writes a mutant INTO a source file and restores it in a `finally`. A crash between
+ * those two points leaves the mutant in the tree, and it appends to `db/mutation-findings/`. Under
+ * `argv.includes("--dry-run")` every string that is not exactly `--dry-run` — `--dry-runn`,
+ * `--dryrun`, `--help` — authorised all of that. PR #10832 probed a sibling tool with `--help`
+ * and started a ~1,700-file rewrite; the shape was identical.
+ *
+ * Exit 1 (the documented usage/fatal code), never 3/4/5 — those are FINDINGS the heartbeat renders
+ * into the run summary, and a mistyped flag must not be able to publish itself as a measurement.
+ *
+ * Called as the FIRST statement of `main()`, above every write path. The phrase `unknown arg` is
+ * also what `hygiene/audit-workflow-cli-flags.ts` looks for to decide a parser has a closed flag
+ * set; without it this tool was *skipped* by the lint that checks `agent-heartbeat.yml`'s
+ * invocation of it. Reword the phrase and the tool silently leaves that lint's scope.
+ */
+function rejectUnknownArgs(argv: readonly string[]): void {
+  for (let i = 0; i < argv.length; i++) {
+    const arg = argv[i];
+    if (arg === undefined) continue;
+    if (VALUE_FLAGS.has(arg)) {
+      const value = argv[i + 1];
+      if (value === undefined || value.startsWith("--")) {
+        console.error(`[mutation] FATAL: ${arg} requires a value.`);
+        process.exit(1);
+      }
+      i++; // consume the value; it is not a stray positional
+      continue;
+    }
+    if (BOOLEAN_FLAGS.has(arg)) continue;
+    console.error(
+      `unknown arg: ${arg}\n` +
+        `[mutation] REFUSED — no mutant was written. Accepted: ` +
+        `${[...VALUE_FLAGS, ...BOOLEAN_FLAGS].sort().join(" ")}`,
+    );
+    process.exit(1);
+  }
+}
+
 function main(): void {
+  rejectUnknownArgs(process.argv.slice(2));
+
   const root = argValue("--repo-root") ?? process.cwd();
   const agent = argValue("--agent") ?? "unknown";
   const tick = Number(argValue("--tick") ?? "0");

@@ -1,0 +1,21 @@
+{
+  "pr_number": 3043,
+  "archive_path": "docs/history/pr-reviews/PR-3043-feat-bus-b-0444-add-worktree-field-to-claim-envelope.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7A_OkL",
+    "comment:PRRC_kwDOSF9kNM7A_ULs",
+    "comment:PRRC_kwDOSF9kNM7A_Uaa",
+    "comment:PRRC_kwDOSF9kNM7A_bvK",
+    "comment:PRRC_kwDOSF9kNM7A_bxM",
+    "thread:PRRT_kwDOSF9kNM6B6CLj",
+    "thread:PRRT_kwDOSF9kNM6B6GVo",
+    "thread:PRRT_kwDOSF9kNM6B6GgX"
+  ],
+  "fetched_at": "2026-05-13T22:40:42.254Z",
+  "schema_version": "v1",
+  "commit_sha": "5db892db61f6f24b8de7633f545ae852c7543500",
+  "title": "feat(bus): B-0444 — add worktree field to claim envelope",
+  "state": "MERGED",
+  "merged_at": "2026-05-13T22:40:23Z",
+  "head_ref": "feat/b0444-impl-worktree-2026-05-13"
+}

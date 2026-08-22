@@ -1,0 +1,12 @@
+{
+  "pr_number": 10021,
+  "archive_path": "docs/history/pr-reviews/PR-10021-feat-core-within-era-windowed-null-complement-of-the-block-null.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-04T14:11:20.940Z",
+  "schema_version": "v1",
+  "commit_sha": "185653a25ae1ab6012b388e88b800e2ceb6693c9",
+  "title": "feat(core): within-era (windowed) null — complement of the block null",
+  "state": "MERGED",
+  "merged_at": "2026-08-04T14:10:48Z",
+  "head_ref": "feat/decorrelation-excess-within-era-windowed-null-20260804"
+}

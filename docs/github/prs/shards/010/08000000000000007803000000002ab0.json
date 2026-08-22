@@ -1,0 +1,12 @@
+{
+  "pr_number": 10928,
+  "archive_path": "docs/history/pr-reviews/PR-10928-docs-research-plan-instantiating-the-condorcet-society-measuring-c-and-rho-the-h.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-16T15:25:07.248Z",
+  "schema_version": "v1",
+  "commit_sha": "f55a0a3c89e581bccda89a8525f4c88502da1d8d",
+  "title": "docs(research): plan — instantiating the Condorcet society (measuring c and rho) + the harness as security boundary",
+  "state": "MERGED",
+  "merged_at": "2026-08-16T15:24:28Z",
+  "head_ref": "shadow/condorcet-society-instantiation-and-harness-boundary-plan"
+}

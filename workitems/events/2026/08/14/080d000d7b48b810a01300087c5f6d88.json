@@ -1,0 +1,14 @@
+{
+  "id": "080d000d7b48b810a01300087c5f6d88",
+  "at": "2026-08-14T19:11:08.055Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M00TYT8N087G0R003MPMRX9",
+    "type": "task",
+    "title": "Encoder faithfulness audit: injectivity + lie factor over data-to-geometry paths (heatReceiptPpm saturates at 16 units)",
+    "slug": "encoder-faithfulness-audit-injectivity-lie-factor-over-data",
+    "priority": "P2",
+    "filename": "081M00TYT8N087G0R003MPMRX9-encoder-faithfulness-audit-injectivity-lie-factor-over-data.md"
+  }
+}

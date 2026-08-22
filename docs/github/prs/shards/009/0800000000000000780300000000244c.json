@@ -1,0 +1,12 @@
+{
+  "pr_number": 9292,
+  "archive_path": "docs/history/pr-reviews/PR-9292-feat-netlist-column-b-rung-2-isa-circuit-synthesis-a-whole-program-becomes-one-c.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-03T05:30:10.843Z",
+  "schema_version": "v1",
+  "commit_sha": "9bda58898ee4e941f3166da0b02818de1fcaef24",
+  "title": "feat(netlist): Column B rung 2 — ISA→circuit synthesis; a whole program becomes ONE circuit (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-03T05:29:48Z",
+  "head_ref": "otto/isa-to-circuit-synthesis-column-b"
+}

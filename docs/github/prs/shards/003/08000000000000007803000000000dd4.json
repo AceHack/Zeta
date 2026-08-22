@@ -1,0 +1,15 @@
+{
+  "pr_number": 3540,
+  "archive_path": "docs/history/pr-reviews/PR-3540-backlog-b-0533-33-migration-dead-xref-sweep-lint-p3.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7Bt_wt",
+    "thread:PRRT_kwDOSF9kNM6CcD4Y"
+  ],
+  "fetched_at": "2026-05-15T18:10:34.721Z",
+  "schema_version": "v1",
+  "commit_sha": "324dc847226626ba01b61b16989d7d7d3aed6ba5",
+  "title": "backlog(B-0533): §33 migration dead-xref sweep + lint (P3)",
+  "state": "MERGED",
+  "merged_at": "2026-05-15T18:10:11Z",
+  "head_ref": "backlog/b0533-section33-migration-dead-xref-sweep-otto-cli-2026-05-15"
+}

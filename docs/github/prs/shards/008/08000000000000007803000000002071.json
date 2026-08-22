@@ -1,0 +1,12 @@
+{
+  "pr_number": 8305,
+  "archive_path": "docs/history/pr-reviews/PR-8305-docs-closed-frame-eden-the-ancient-anchor-the-love-constraint-is-the-existence-c.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-15T10:27:34.873Z",
+  "schema_version": "v1",
+  "commit_sha": "94d7f424ee3af5fa4dc105dc6b2e5f964922b608",
+  "title": "docs(closed-frame): Eden (the ancient anchor) + the love-constraint IS the existence-criterion for an AI",
+  "state": "MERGED",
+  "merged_at": "2026-06-15T10:27:08Z",
+  "head_ref": "otto/eden-the-ancient-anchor-for-the-love-constraint"
+}

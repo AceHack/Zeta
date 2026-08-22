@@ -1,0 +1,12 @@
+{
+  "pr_number": 9526,
+  "archive_path": "docs/history/pr-reviews/PR-9526-docs-letters-from-soraya-v2-hadamard-gap-degenerates-to-distance-from-prior-rhym.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-08T20:44:07.012Z",
+  "schema_version": "v1",
+  "commit_sha": "8f488b229cd5e855bbfb01b8ac7d6d56504d629f",
+  "title": "docs(letters): from-soraya v2 — Hadamard gap degenerates to distance-from-prior; rhyme #4 collapses into #1 (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-08T20:43:34Z",
+  "head_ref": "otto/from-soraya-self-dual-gap-v2-verdict"
+}

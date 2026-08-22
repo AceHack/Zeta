@@ -1,0 +1,12 @@
+{
+  "pr_number": 7241,
+  "archive_path": "docs/history/pr-reviews/PR-7241-docs-vision-add-the-human-ai-interface-llm-tv-qpg-bandwidth-adjusting-visual-sup.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-09T10:03:46.922Z",
+  "schema_version": "v1",
+  "commit_sha": "b514a7f1b74286cb99e7b897cc82a8187dbfbd58",
+  "title": "docs(vision): add the human–AI interface (LLM-TV / QPG / bandwidth-adjusting / visual superpowers) as a primary vision point",
+  "state": "MERGED",
+  "merged_at": "2026-06-09T10:03:16Z",
+  "head_ref": "otto/vision-human-ai-interface-llmtv-qpg-primary-point"
+}

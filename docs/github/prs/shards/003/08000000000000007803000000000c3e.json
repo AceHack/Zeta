@@ -1,0 +1,28 @@
+{
+  "pr_number": 3134,
+  "archive_path": "docs/history/pr-reviews/PR-3134-feat-b-0494-circuit-breaker-viz-slice-2-live-bus-snapshot.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7BN1IA",
+    "comment:PRRC_kwDOSF9kNM7BN1Jy",
+    "comment:PRRC_kwDOSF9kNM7BN1L5",
+    "comment:PRRC_kwDOSF9kNM7BN4ab",
+    "comment:PRRC_kwDOSF9kNM7BN4ai",
+    "comment:PRRC_kwDOSF9kNM7BN_21",
+    "comment:PRRC_kwDOSF9kNM7BN_l0",
+    "comment:PRRC_kwDOSF9kNM7BNvZp",
+    "comment:PRRC_kwDOSF9kNM7BNvc_",
+    "comment:PRRC_kwDOSF9kNM7BNvds",
+    "thread:PRRT_kwDOSF9kNM6CEnoM",
+    "thread:PRRT_kwDOSF9kNM6CEnql",
+    "thread:PRRT_kwDOSF9kNM6CEnrI",
+    "thread:PRRT_kwDOSF9kNM6CEuWV",
+    "thread:PRRT_kwDOSF9kNM6CEuWb"
+  ],
+  "fetched_at": "2026-05-14T13:34:48.558Z",
+  "schema_version": "v1",
+  "commit_sha": "fc996db1f4a4d1fd90334399b2bad0784ca66b1f",
+  "title": "feat(b-0494): circuit breaker viz — slice-2 live bus snapshot",
+  "state": "MERGED",
+  "merged_at": "2026-05-14T13:34:18Z",
+  "head_ref": "feat/b-0494-circuit-breaker-live-bus-snapshot"
+}

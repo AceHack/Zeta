@@ -1,0 +1,12 @@
+{
+  "pr_number": 5698,
+  "archive_path": "docs/history/pr-reviews/PR-5698-backlog-b-0867-23-agent-loop-primitive-naming-alignment-observe-emit-limit-simul.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-28T04:57:23.855Z",
+  "schema_version": "v1",
+  "commit_sha": "1f218a2c2496e2ac52c2f362c9ff6bfb2d9a03d7",
+  "title": "backlog(B-0867.23): agent-loop primitive-naming alignment — observe/emit/limit/simulate vs OPLE vs observe/choose (operator in-flight)",
+  "state": "MERGED",
+  "merged_at": "2026-05-28T04:57:03Z",
+  "head_ref": "otto-cli/b-0867-23-agent-loop-primitive-naming-question-2026-05-28"
+}

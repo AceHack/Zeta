@@ -108,9 +108,9 @@ skill's contract — the frontmatter file is always canon.
 - `docs/skill-notes/best-practices-scratch.md` — volatile findings
   from his live-search step
 - `.claude/skills/` — his review surface
-- `.claude/skills/skill-creator/SKILL.md` — the workflow his
+- `.claude/skills/skill-lifecycle/blueprints/skill-creator.md` — the workflow his
   recommendations feed into
-- `.claude/skills/skill-improver/SKILL.md` — Yara's surface
+- `.claude/skills/skill-lifecycle/blueprints/skill-improver.md` — Yara's surface
 - `docs/skill-notes/skill-tune-up-ranker.md` — his notebook
 - `docs/ROUND-HISTORY.md` — where executed top-5 rankings land
 - `docs/PROJECT-EMPATHY.md` — conflict-resolution when findings

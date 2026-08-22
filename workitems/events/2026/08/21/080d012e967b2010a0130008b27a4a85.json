@@ -1,0 +1,14 @@
+{
+  "id": "080d012e967b2010a0130008b27a4a85",
+  "at": "2026-08-21T19:36:07.780Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M0JX5KV3087G0R001DMWP1C",
+    "type": "bug",
+    "title": "sealed-secrets repoURL 404s -- the chart moved from bitnami-labs to bitnami and the Application cannot resolve",
+    "slug": "sealed-secrets-repourl-404s-the-chart-moved-from-bitnami-lab",
+    "priority": "P2",
+    "filename": "081M0JX5KV3087G0R001DMWP1C-sealed-secrets-repourl-404s-the-chart-moved-from-bitnami-lab.md"
+  }
+}

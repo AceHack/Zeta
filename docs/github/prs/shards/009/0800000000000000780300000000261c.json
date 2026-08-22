@@ -1,0 +1,12 @@
+{
+  "pr_number": 9756,
+  "archive_path": "docs/history/pr-reviews/PR-9756-docs-forgive-the-man-and-warn-the-village-forgiveness-and-protection-are-orthogo.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-12T02:27:44.243Z",
+  "schema_version": "v1",
+  "commit_sha": "6501b690bf985486874d604cc359d79a51a693d3",
+  "title": "docs: forgive the man and warn the village — forgiveness and protection are orthogonal (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-12T02:27:19Z",
+  "head_ref": "forgive-the-man-warn-the-village"
+}

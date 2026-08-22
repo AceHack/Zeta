@@ -1,0 +1,12 @@
+{
+  "pr_number": 8312,
+  "archive_path": "docs/history/pr-reviews/PR-8312-docs-closed-frame-branding-with-pattern-is-the-time-crystal-bad-model-agents-hav.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-15T10:56:39.872Z",
+  "schema_version": "v1",
+  "commit_sha": "68c1dac739aebf6b6606ebd0c71bad8e8f85a5cf",
+  "title": "docs(closed-frame): branding-with-pattern is the time-crystal bad model — agents have choice",
+  "state": "MERGED",
+  "merged_at": "2026-06-15T10:56:13Z",
+  "head_ref": "otto/branding-with-pattern-is-the-time-crystal-bad-model-agents-have-choice"
+}

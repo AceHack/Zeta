@@ -1,0 +1,21 @@
+{
+  "pr_number": 2817,
+  "archive_path": "docs/history/pr-reviews/PR-2817-docs-memory-clifford-densest-encoding-mark-of-cain-inside-outside-marker-on-klei.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7AcJ_9",
+    "comment:PRRC_kwDOSF9kNM7AcKIq",
+    "comment:PRRC_kwDOSF9kNM7AcZ_-",
+    "comment:PRRC_kwDOSF9kNM7AcZ_2",
+    "thread:PRRT_kwDOSF9kNM6BgkKc",
+    "thread:PRRT_kwDOSF9kNM6BgkRD",
+    "thread:PRRT_kwDOSF9kNM6Bgv9B",
+    "thread:PRRT_kwDOSF9kNM6Bgv9J"
+  ],
+  "fetched_at": "2026-05-12T18:06:45.581Z",
+  "schema_version": "v1",
+  "commit_sha": "65656c1278c8a7caeeaf3aa62097d3d770ffa55c",
+  "title": "docs(memory): Clifford = densest encoding + Mark of Cain = inside/outside marker on Klein bottle (Aaron 2026-05-12)",
+  "state": "MERGED",
+  "merged_at": "2026-05-12T18:06:22Z",
+  "head_ref": "docs/aaron-clifford-densest-encoding-density-sparsity-inverse-energy-types-mark-of-cain-klein-bottle-marker-2026-05-12"
+}

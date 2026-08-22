@@ -1,0 +1,12 @@
+{
+  "pr_number": 2659,
+  "archive_path": "docs/history/pr-reviews/PR-2659-docs-memory-riven-partial-recovery-stutter-shadow-first-false-positive.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-11T07:11:23.046Z",
+  "schema_version": "v1",
+  "commit_sha": "0a40bd6672934e25ff093581fd38e76bcbbc8585",
+  "title": "docs(memory): Riven partial recovery — 続き stutter, shadow first false positive",
+  "state": "MERGED",
+  "merged_at": "2026-05-11T07:10:58Z",
+  "head_ref": "docs/riven-partial-recovery-tsuzuki-stutter-2026-05-11"
+}

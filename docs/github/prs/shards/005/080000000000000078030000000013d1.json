@@ -1,0 +1,12 @@
+{
+  "pr_number": 5073,
+  "archive_path": "docs/history/pr-reviews/PR-5073-docs-shadow-markdownlint-md032-prose-arithmetic-joiner-recurring-failure-class.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-26T02:58:34.846Z",
+  "schema_version": "v1",
+  "commit_sha": "9352a38506e0197d0d9c3b199ce6d46087fb0e39",
+  "title": "docs(shadow): markdownlint MD032 prose-arithmetic-joiner recurring failure class",
+  "state": "MERGED",
+  "merged_at": "2026-05-26T02:58:14Z",
+  "head_ref": "otto-cli/shadow-md032-prose-joiner-2026-05-25"
+}

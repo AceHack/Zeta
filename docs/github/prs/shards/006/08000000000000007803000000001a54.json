@@ -1,0 +1,12 @@
+{
+  "pr_number": 6740,
+  "archive_path": "docs/history/pr-reviews/PR-6740-backlog-2nd-executable-di-inject-zeta-cell-into-ace-package-manager-plugin-per-p.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-07T07:26:26.304Z",
+  "schema_version": "v1",
+  "commit_sha": "c028ccc75e390ae64e6211db6799f9bec6edfdf0",
+  "title": "backlog: 2nd executable — DI-inject Zeta cell into Ace package manager + plugin per package manager (081KTGFG5M9)",
+  "state": "MERGED",
+  "merged_at": "2026-06-07T07:26:06Z",
+  "head_ref": "otto/ace-2nd-executable-cell-injection"
+}

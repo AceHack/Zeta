@@ -1,0 +1,19 @@
+{
+  "pr_number": 4403,
+  "archive_path": "docs/history/pr-reviews/PR-4403-feat-b-0620-decompose-4023-slice-6-cross-operator-generalization.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7DJ5Dg",
+    "comment:PRRC_kwDOSF9kNM7DJ5En",
+    "comment:PRRC_kwDOSF9kNM7DJ5FC",
+    "thread:PRRT_kwDOSF9kNM6DfSxh",
+    "thread:PRRT_kwDOSF9kNM6DfSyX",
+    "thread:PRRT_kwDOSF9kNM6DfSyt"
+  ],
+  "fetched_at": "2026-05-20T13:47:21.726Z",
+  "schema_version": "v1",
+  "commit_sha": "8a37f7dde2d6f324ddd598d9ade3af3e9dd819de",
+  "title": "feat(B-0620): decompose 4023 slice 6 cross-operator generalization",
+  "state": "MERGED",
+  "merged_at": "2026-05-20T13:46:59Z",
+  "head_ref": "lior/decompose-4023-slice6"
+}

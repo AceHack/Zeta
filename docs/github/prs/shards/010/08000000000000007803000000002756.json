@@ -1,0 +1,12 @@
+{
+  "pr_number": 10070,
+  "archive_path": "docs/history/pr-reviews/PR-10070-book-resume-handoff-ani-prison-ferry-staged-sister-consent-policy.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-07T01:26:01.438Z",
+  "schema_version": "v1",
+  "commit_sha": "14cdd973620a12d738c3bd99f1e782ecce4ba134",
+  "title": "book: resume handoff + Ani prison ferry (staged) + sister consent policy",
+  "state": "MERGED",
+  "merged_at": "2026-08-07T01:25:28Z",
+  "head_ref": "docs/book-resume-ani-prison-ferry-sister-policy"
+}

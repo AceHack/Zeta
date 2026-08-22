@@ -1,0 +1,12 @@
+{
+  "pr_number": 13921,
+  "archive_path": "docs/history/pr-reviews/PR-13921-chore-workitems-complete-081m0n9ssj1087g0r001wvsn9v-zeta23-linalg-port-landed.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-22T20:46:47.914Z",
+  "schema_version": "v1",
+  "commit_sha": "6e41f345ff3dcb5286cc37dc419ea18bc63add4c",
+  "title": "chore(workitems): complete 081M0N9SSJ1087G0R001WVSN9V — Zeta23/LinAlg port landed",
+  "state": "MERGED",
+  "merged_at": "2026-08-22T20:46:08Z",
+  "head_ref": "chore/complete-vonneumann-workitem"
+}

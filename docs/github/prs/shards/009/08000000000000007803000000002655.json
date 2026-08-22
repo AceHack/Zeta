@@ -1,0 +1,12 @@
+{
+  "pr_number": 9813,
+  "archive_path": "docs/history/pr-reviews/PR-9813-docs-workitems-flesh-the-arc-3-build-specs-wset-hexagon-port-icosahedralh3.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-01T01:25:27.529Z",
+  "schema_version": "v1",
+  "commit_sha": "b467096c43816c0e4b9d8f3c0ef1458656c1582b",
+  "title": "docs(workitems): flesh the arc-3 build specs (WSet hexagon port + IcosahedralH3)",
+  "state": "MERGED",
+  "merged_at": "2026-08-01T01:24:58Z",
+  "head_ref": "shadow/flesh-arc3-workitem-bodies"
+}

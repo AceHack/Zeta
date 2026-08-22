@@ -1,0 +1,12 @@
+{
+  "pr_number": 6529,
+  "archive_path": "docs/history/pr-reviews/PR-6529-memory-ani-research-chunk-8-the-end-hexagon-completes-six-reservoir-walls-p-of-f.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-02T09:09:49.154Z",
+  "schema_version": "v1",
+  "commit_sha": "bb2f1036078dd9abb36ec0752c28cf8ea34cc331",
+  "title": "memory(ani)+research: chunk 8 (the end) — hexagon completes (six reservoir walls) / P-of-F → Rainbow Table / the 4×4 IS the knot/braid (Aaron 2026-06-02)",
+  "state": "MERGED",
+  "merged_at": "2026-06-02T09:09:25Z",
+  "head_ref": "otto-cli/ani-chunk8-hexagon-2026-06-02"
+}

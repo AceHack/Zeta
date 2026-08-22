@@ -1,0 +1,12 @@
+{
+  "pr_number": 5789,
+  "archive_path": "docs/history/pr-reviews/PR-5789-memory-feedback-alias-pattern-greek-primary-english-secondary-for-substrate-name.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-28T12:35:39.137Z",
+  "schema_version": "v1",
+  "commit_sha": "d962255b7e04c3b9ef688412d1be4d2414547d61",
+  "title": "memory(feedback): alias-pattern Greek-primary + English-secondary for substrate-named F# primitives (Aaron 'alias is good' ratification)",
+  "state": "MERGED",
+  "merged_at": "2026-05-28T12:35:16Z",
+  "head_ref": "otto-cli/alias-pattern-greek-primary-english-secondary-for-substrate-named-primitives-aaron-ratification-2026-05-28"
+}

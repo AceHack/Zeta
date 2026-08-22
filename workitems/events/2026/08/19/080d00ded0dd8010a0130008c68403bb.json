@@ -1,0 +1,14 @@
+{
+  "id": "080d00ded0dd8010a0130008c68403bb",
+  "at": "2026-08-19T21:07:53.904Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M0DXM6XE087G0R003PTMMQ3",
+    "type": "task",
+    "title": "Z3: marginal-preserving substitution is undetectable by marginals (forward-correlation arm B)",
+    "slug": "z3-marginal-preserving-substitution-is-undetectable-by-margi",
+    "priority": "P2",
+    "filename": "081M0DXM6XE087G0R003PTMMQ3-z3-marginal-preserving-substitution-is-undetectable-by-margi.md"
+  }
+}

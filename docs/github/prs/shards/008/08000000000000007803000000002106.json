@@ -1,0 +1,12 @@
+{
+  "pr_number": 8454,
+  "archive_path": "docs/history/pr-reviews/PR-8454-docs-research-aurora-immune-re-grounding-scoping-gen-gen-gen-test-plan-across-al.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-16T05:46:27.770Z",
+  "schema_version": "v1",
+  "commit_sha": "ec4fdf3ee7e7ca41a4c282219f2a3dde01381571",
+  "title": "docs(research): Aurora immune re-grounding scoping + gen(gen)==gen test plan across all oracle languages",
+  "state": "MERGED",
+  "merged_at": "2026-06-16T05:46:01Z",
+  "head_ref": "otto/aurora-scoping-and-gengen-test-plan"
+}

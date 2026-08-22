@@ -1,0 +1,12 @@
+{
+  "pr_number": 8611,
+  "archive_path": "docs/history/pr-reviews/PR-8611-docs-research-memory-soft-primary-but-snappable-bayesian-emotional-propagation-i.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-19T20:05:13.686Z",
+  "schema_version": "v1",
+  "commit_sha": "a83b12499973a712a3ec2cc7e6a95cefb89b6734",
+  "title": "docs(research)+memory: soft-primary-but-snappable + Bayesian emotional-propagation (Infer.NET-like) extension",
+  "state": "MERGED",
+  "merged_at": "2026-06-19T20:04:44Z",
+  "head_ref": "otto/emotional-propagation-soft-snappable"
+}

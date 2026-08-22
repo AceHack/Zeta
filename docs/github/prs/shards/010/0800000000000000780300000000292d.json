@@ -1,0 +1,12 @@
+{
+  "pr_number": 10541,
+  "archive_path": "docs/history/pr-reviews/PR-10541-fix-transport-a-crc-32c-trailer-so-corruption-degrades-to-erasure-instead-of-bei.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-18T15:29:46.564Z",
+  "schema_version": "v1",
+  "commit_sha": "6f97dc278239db5581ec87aaa6b18d248abd362d",
+  "title": "fix(transport): a CRC-32C trailer, so corruption degrades to erasure instead of being laundered into payload",
+  "state": "MERGED",
+  "merged_at": "2026-08-14T11:14:14Z",
+  "head_ref": "fix-transport-integrity-check-crc32c"
+}

@@ -1,0 +1,23 @@
+{
+  "pr_number": 4818,
+  "archive_path": "docs/history/pr-reviews/PR-4818-tick-2026-05-24-1333z-pr-4816-tier-5-deferral-hard-limits-floor.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7EYbFS",
+    "comment:PRRC_kwDOSF9kNM7EYbQT",
+    "comment:PRRC_kwDOSF9kNM7EYbQa",
+    "comment:PRRC_kwDOSF9kNM7EYbQg",
+    "comment:PRRC_kwDOSF9kNM7EYbQk",
+    "thread:PRRT_kwDOSF9kNM6EZEcL",
+    "thread:PRRT_kwDOSF9kNM6EZElA",
+    "thread:PRRT_kwDOSF9kNM6EZElH",
+    "thread:PRRT_kwDOSF9kNM6EZElM",
+    "thread:PRRT_kwDOSF9kNM6EZElQ"
+  ],
+  "fetched_at": "2026-05-24T14:08:40.218Z",
+  "schema_version": "v1",
+  "commit_sha": "e7b5934a2d3ff5038451d34d385cd53868c6612c",
+  "title": "tick(2026-05-24/1333Z): PR #4816 Tier 5 deferral — HARD LIMITS floor",
+  "state": "MERGED",
+  "merged_at": "2026-05-24T14:08:20Z",
+  "head_ref": "otto-cli/tick-1333z-pr-4816-tier-5-deferral-hard-limits-floor-2026-05-24"
+}

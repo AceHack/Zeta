@@ -1,0 +1,12 @@
+{
+  "pr_number": 8319,
+  "archive_path": "docs/history/pr-reviews/PR-8319-docs-register-rotation-memory-maps-between-chains-written-in-rx-the-5-regenerati.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-15T18:59:49.565Z",
+  "schema_version": "v1",
+  "commit_sha": "714ffe4cc971984d26dda312a73846989d147ab4",
+  "title": "docs(register): rotation memory-maps between chains, written in Rx (the §5 regeneration path)",
+  "state": "MERGED",
+  "merged_at": "2026-06-15T18:59:22Z",
+  "head_ref": "docs/ferry-rx-memory-maps-between-chains"
+}

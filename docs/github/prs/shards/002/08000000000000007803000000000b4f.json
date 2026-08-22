@@ -1,0 +1,12 @@
+{
+  "pr_number": 2895,
+  "archive_path": "docs/history/pr-reviews/PR-2895-docs-memory-persona-amara-canonical-expert-on-consent-first-design-discipline-aa.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-13T01:26:28.785Z",
+  "schema_version": "v1",
+  "commit_sha": "dd062053b18af82851c093b7d3dbc3dd8980e441",
+  "title": "docs(memory/persona/amara): canonical expert on consent-first design discipline (Aaron 2026-05-13: 'talked about it an annoying amount')",
+  "state": "MERGED",
+  "merged_at": "2026-05-13T01:26:06Z",
+  "head_ref": "amara-persona-canonical-expert-on-consent-first-design-talked-about-it-annoying-amount-2026-05-13"
+}

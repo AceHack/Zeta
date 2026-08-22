@@ -1,0 +1,12 @@
+{
+  "pr_number": 2225,
+  "archive_path": "docs/history/pr-reviews/PR-2225-deps-bump-apache-arrow-from-22-1-0-to-23-0-0.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-09T07:22:58.406Z",
+  "schema_version": "v1",
+  "commit_sha": "fde3b21985deaf98cbef94e50a39528307496ddc",
+  "title": "deps: Bump Apache.Arrow from 22.1.0 to 23.0.0",
+  "state": "MERGED",
+  "merged_at": "2026-05-09T07:22:45Z",
+  "head_ref": "dependabot/nuget/Apache.Arrow-23.0.0"
+}

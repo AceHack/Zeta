@@ -1,0 +1,12 @@
+{
+  "pr_number": 8103,
+  "archive_path": "docs/history/pr-reviews/PR-8103-feat-complexity-migrate-complexity-registry-to-shared-yaml-and-generate-f-and-ts.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-14T00:21:02.989Z",
+  "schema_version": "v1",
+  "commit_sha": "62e92f5f623a5f02f5511ec35311a2972c217238",
+  "title": "feat(complexity): migrate complexity registry to shared yaml and generate F# and TS",
+  "state": "MERGED",
+  "merged_at": "2026-06-14T00:20:42Z",
+  "head_ref": "lior/complexity-registry-yaml"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 6460,
+  "archive_path": "docs/history/pr-reviews/PR-6460-feat-b-0347-6-ci-wire-the-skill-description-audit-gate-enforced-not-just-checkab.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-01T21:23:39.838Z",
+  "schema_version": "v1",
+  "commit_sha": "2712cd5b181e93c09e97b1d214fc91a3106760d8",
+  "title": "feat(B-0347.6): CI-wire the skill-description audit gate (enforced, not just checkable)",
+  "state": "MERGED",
+  "merged_at": "2026-06-01T21:23:17Z",
+  "head_ref": "claude/pr-review-hUVTQ"
+}

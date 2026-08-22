@@ -1,0 +1,17 @@
+{
+  "pr_number": 3879,
+  "archive_path": "docs/history/pr-reviews/PR-3879-shard-tick-2026-05-16t13-10z-root-caused-pr-3871-blockers-rebase-md032.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7B4sbm",
+    "comment:PRRC_kwDOSF9kNM7B4sc_",
+    "thread:PRRT_kwDOSF9kNM6Cj3P3",
+    "thread:PRRT_kwDOSF9kNM6Cj3RB"
+  ],
+  "fetched_at": "2026-05-16T14:19:40.331Z",
+  "schema_version": "v1",
+  "commit_sha": "60d17531fce96e6e3404c8f3a47bca0d61d33d18",
+  "title": "shard(tick): 2026-05-16T13:10Z — root-caused PR #3871 blockers (rebase + MD032)",
+  "state": "MERGED",
+  "merged_at": "2026-05-16T14:19:23Z",
+  "head_ref": "otto-cli-tick-2026-05-16-1310z"
+}

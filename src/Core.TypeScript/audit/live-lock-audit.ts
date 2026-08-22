@@ -13,7 +13,7 @@
 // spinning on process work without shipping — live-lock.
 //
 // Usage:
-//   bun tools/audit/live-lock-audit.ts [N]
+//   bun src/Core.TypeScript/audit/live-lock-audit.ts [N]
 //   N defaults to 25.
 //
 // Exit codes:

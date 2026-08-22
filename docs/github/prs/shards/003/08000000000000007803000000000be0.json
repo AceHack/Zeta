@@ -1,0 +1,31 @@
+{
+  "pr_number": 3040,
+  "archive_path": "docs/history/pr-reviews/PR-3040-feat-bg-missed-substrate-b-0442-slice-3-real-branch-vs-squash-comparator.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7A-8EA",
+    "comment:PRRC_kwDOSF9kNM7A-8EE",
+    "comment:PRRC_kwDOSF9kNM7A-_h_",
+    "comment:PRRC_kwDOSF9kNM7A-_hc",
+    "comment:PRRC_kwDOSF9kNM7A-_ii",
+    "comment:PRRC_kwDOSF9kNM7A-_j-",
+    "comment:PRRC_kwDOSF9kNM7A-_jI",
+    "comment:PRRC_kwDOSF9kNM7A-_ka",
+    "comment:PRRC_kwDOSF9kNM7A-_lB",
+    "thread:PRRT_kwDOSF9kNM6B50SU",
+    "thread:PRRT_kwDOSF9kNM6B50SY",
+    "thread:PRRT_kwDOSF9kNM6B5233",
+    "thread:PRRT_kwDOSF9kNM6B523a",
+    "thread:PRRT_kwDOSF9kNM6B524S",
+    "thread:PRRT_kwDOSF9kNM6B524y",
+    "thread:PRRT_kwDOSF9kNM6B5258",
+    "thread:PRRT_kwDOSF9kNM6B525l",
+    "thread:PRRT_kwDOSF9kNM6B526c"
+  ],
+  "fetched_at": "2026-05-13T22:11:41.248Z",
+  "schema_version": "v1",
+  "commit_sha": "e0515f847ddb66ea8ea56c8824142bd23eac0ae1",
+  "title": "feat(bg/missed-substrate): B-0442 slice 3 — real branch-vs-squash comparator",
+  "state": "MERGED",
+  "merged_at": "2026-05-13T22:11:25Z",
+  "head_ref": "feat/b0442-slice-3-real-branch-vs-squash-comparator-2026-05-13"
+}

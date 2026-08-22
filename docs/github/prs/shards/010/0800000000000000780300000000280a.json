@@ -1,0 +1,12 @@
+{
+  "pr_number": 10250,
+  "archive_path": "docs/history/pr-reviews/PR-10250-docs-combine-correct-the-n-version-combine-from-derivation-a-s-own-report.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-18T10:45:45.819Z",
+  "schema_version": "v1",
+  "commit_sha": "3ee6ed2d4312922e9fb2ab918a50140f650406c0",
+  "title": "docs(combine): correct the N-version combine from derivation A's own report",
+  "state": "MERGED",
+  "merged_at": "2026-08-09T23:36:22Z",
+  "head_ref": "shadow/combine-correction-from-agent-a-report"
+}

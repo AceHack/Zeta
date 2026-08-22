@@ -1,0 +1,12 @@
+{
+  "pr_number": 7661,
+  "archive_path": "docs/history/pr-reviews/PR-7661-docs-trajectory-resume-refresh-the-2026-06-11-evening-wave-7626-7660.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-11T12:05:58.208Z",
+  "schema_version": "v1",
+  "commit_sha": "2e9c70ca508af4ac7846855b0433064d529526a5",
+  "title": "docs(trajectory): RESUME refresh — the 2026-06-11 evening wave (#7626–#7660)",
+  "state": "MERGED",
+  "merged_at": "2026-06-11T12:05:30Z",
+  "head_ref": "shadow-resume-refresh-evening-wave"
+}

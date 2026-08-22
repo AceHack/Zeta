@@ -1,0 +1,12 @@
+{
+  "pr_number": 13499,
+  "archive_path": "docs/history/pr-reviews/PR-13499-docs-workitems-081m0k36k69-ten-post-fix-runs-two-hit-the-cap-report-the-whole-se.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-22T02:34:06.852Z",
+  "schema_version": "v1",
+  "commit_sha": "1edc9fe9f9a4bdca752050be3da704392c3abbf3",
+  "title": "docs(workitems): 081M0K36K69 — ten post-fix runs, TWO hit the cap; report the whole set",
+  "state": "MERGED",
+  "merged_at": "2026-08-22T02:33:28Z",
+  "head_ref": "shadow/081M0K36K69-n4-correction"
+}

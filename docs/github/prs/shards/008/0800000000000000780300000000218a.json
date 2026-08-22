@@ -1,0 +1,12 @@
+{
+  "pr_number": 8586,
+  "archive_path": "docs/history/pr-reviews/PR-8586-docs-aurora-refresh-resume-top-status-line-b-legs-g3a-landed-accuracy-fix.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-19T15:10:32.209Z",
+  "schema_version": "v1",
+  "commit_sha": "084e04437ab3b64727d175744471deb02bad05c7",
+  "title": "docs(aurora): refresh RESUME top-status line — (b) legs + G3a landed (accuracy fix)",
+  "state": "MERGED",
+  "merged_at": "2026-06-19T15:10:07Z",
+  "head_ref": "otto/aurora-resume-status-accuracy"
+}

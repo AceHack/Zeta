@@ -1,0 +1,12 @@
+{
+  "pr_number": 2366,
+  "archive_path": "docs/history/pr-reviews/PR-2366-feat-b-0170-smallest-safe-slice-check-types-noun-in-count-drift-checker-re-decom.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-09T23:02:32.654Z",
+  "schema_version": "v1",
+  "commit_sha": "98272ae03247577b3d21e45f3258bb36c0db22ef",
+  "title": "feat(B-0170): smallest safe slice — 'check-types' noun in count-drift checker (re-decomp)",
+  "state": "MERGED",
+  "merged_at": "2026-05-09T23:02:14Z",
+  "head_ref": "claim/b0170-smallest-slice-riven-2026-05-09-1857"
+}

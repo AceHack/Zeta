@@ -1,0 +1,12 @@
+{
+  "pr_number": 10642,
+  "archive_path": "docs/history/pr-reviews/PR-10642-fix-zeta-id-execute-mumps-zeta-id-m-in-the-existing-cross-verify-job.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-14T16:51:02.115Z",
+  "schema_version": "v1",
+  "commit_sha": "2559ea0c90cb05f55f32ad163039b07e8bf55aaf",
+  "title": "fix(zeta-id): execute mumps_zeta_id.m in the existing cross-verify job",
+  "state": "MERGED",
+  "merged_at": "2026-08-14T16:50:24Z",
+  "head_ref": "claim/task-zetaid-run-mumps-in-ci"
+}

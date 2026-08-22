@@ -8,10 +8,10 @@
 // existing audit_clause_coverage.ts surface scan).
 //
 // Usage:
-//   bun tools/alignment/audit_clause_drift.ts
-//   bun tools/alignment/audit_clause_drift.ts --base main --head HEAD
-//   bun tools/alignment/audit_clause_drift.ts --json
-//   bun tools/alignment/audit_clause_drift.ts --md
+//   bun src/Core.TypeScript/alignment/audit_clause_drift.ts
+//   bun src/Core.TypeScript/alignment/audit_clause_drift.ts --base main --head HEAD
+//   bun src/Core.TypeScript/alignment/audit_clause_drift.ts --json
+//   bun src/Core.TypeScript/alignment/audit_clause_drift.ts --md
 //
 // Exit codes:
 //   0  No drift detected (or informational-only drift)

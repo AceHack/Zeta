@@ -1,0 +1,12 @@
+{
+  "pr_number": 9185,
+  "archive_path": "docs/history/pr-reviews/PR-9185-feat-core-valuetreecodec-hexagonal-format-port-own-the-interface-nation-state-su.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-02T19:21:25.053Z",
+  "schema_version": "v1",
+  "commit_sha": "907ab371a97a50dc3556778d104269154deb90bf",
+  "title": "feat(core): ValueTreeCodec — hexagonal format port, own-the-interface, nation-state supply-chain resistance",
+  "state": "MERGED",
+  "merged_at": "2026-07-02T19:20:58Z",
+  "head_ref": "otto/hexagonal-value-tree-codec-port"
+}

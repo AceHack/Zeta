@@ -1,0 +1,15 @@
+{
+  "pr_number": 6037,
+  "archive_path": "docs/history/pr-reviews/PR-6037-research-2026-05-29-reading-state-without-bystander-privacy-cost-the-aaron-not-a.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7GRqvZ",
+    "thread:PRRT_kwDOSF9kNM6FxkTE"
+  ],
+  "fetched_at": "2026-05-29T19:44:11.768Z",
+  "schema_version": "v1",
+  "commit_sha": "8fe5bdea327b8d4ffe87ee76c5db50a78e0b6e7d",
+  "title": "research(2026-05-29): reading state without bystander-privacy cost — the Aaron/not-Aaron classifier (Aaron+Otto)",
+  "state": "MERGED",
+  "merged_at": "2026-05-29T19:43:52Z",
+  "head_ref": "otto-cli/research-state-read-without-bystander-privacy-cost-aaron-not-aaron-classifier-2026-05-29"
+}

@@ -1,0 +1,21 @@
+{
+  "pr_number": 2329,
+  "archive_path": "docs/history/pr-reviews/PR-2329-feat-b-0364-smallest-safe-slice-fscheck-identity-policy-relocation-property.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_jX04",
+    "comment:PRRC_kwDOSF9kNM6_jX1F",
+    "comment:PRRC_kwDOSF9kNM6_jX1I",
+    "comment:PRRC_kwDOSF9kNM6_jX1N",
+    "thread:PRRT_kwDOSF9kNM6A2HB8",
+    "thread:PRRT_kwDOSF9kNM6A2HB_",
+    "thread:PRRT_kwDOSF9kNM6A2HBy",
+    "thread:PRRT_kwDOSF9kNM6A2HCD"
+  ],
+  "fetched_at": "2026-05-09T18:50:52.688Z",
+  "schema_version": "v1",
+  "commit_sha": "a9608700fec5f366f014b0866dae948788387252",
+  "title": "feat(B-0364): smallest safe slice — FsCheck identity policy relocation property",
+  "state": "MERGED",
+  "merged_at": "2026-05-09T18:50:38Z",
+  "head_ref": "claim/b0364-policy-relocation-fscheck-smallest-slice-riven-2026-05-09"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 9351,
+  "archive_path": "docs/history/pr-reviews/PR-9351-feat-darkhall-emit-treaty-backed-heat-readouts.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-03T19:33:08.556Z",
+  "schema_version": "v1",
+  "commit_sha": "78173b0da706208ac5a87d35b27f80af2c83a8d9",
+  "title": "feat(darkhall): emit treaty-backed heat readouts",
+  "state": "MERGED",
+  "merged_at": "2026-07-03T19:32:42Z",
+  "head_ref": "codex/darkhall-heat-readout-treaty"
+}

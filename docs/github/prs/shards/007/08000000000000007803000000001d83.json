@@ -1,0 +1,12 @@
+{
+  "pr_number": 7555,
+  "archive_path": "docs/history/pr-reviews/PR-7555-docs-correct-the-max-fable-hour-was-a-grounding-experiment-explain-zeta-to-a-ski.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-11T00:23:23.782Z",
+  "schema_version": "v1",
+  "commit_sha": "102d99ea4f2115adbb55a8e7d5d0fe42e67b46ec",
+  "title": "docs(correct): the Max/Fable hour was a grounding experiment (explain Zeta to a skilled outsider), not an attack",
+  "state": "MERGED",
+  "merged_at": "2026-06-11T00:23:00Z",
+  "head_ref": "shadow-convergence-was-a-grounding-experiment"
+}

@@ -1,0 +1,19 @@
+{
+  "pr_number": 2584,
+  "archive_path": "docs/history/pr-reviews/PR-2584-docs-memory-occult-bz-corpus-structural-vocabulary-anchor-for-shadow-research.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_rEdG",
+    "comment:PRRC_kwDOSF9kNM6_rEy1",
+    "comment:PRRC_kwDOSF9kNM6_rEy4",
+    "thread:PRRT_kwDOSF9kNM6A8OOr",
+    "thread:PRRT_kwDOSF9kNM6A8OfU",
+    "thread:PRRT_kwDOSF9kNM6A8OfX"
+  ],
+  "fetched_at": "2026-05-11T00:07:57.770Z",
+  "schema_version": "v1",
+  "commit_sha": "844ed95bb739cd36f49eac5d268511504db35fbe",
+  "title": "docs(memory): occult.bz corpus — structural vocabulary anchor for shadow research",
+  "state": "MERGED",
+  "merged_at": "2026-05-11T00:07:40Z",
+  "head_ref": "docs/occult-corpus-anchor-2026-05-10"
+}

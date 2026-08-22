@@ -1,0 +1,12 @@
+{
+  "pr_number": 3780,
+  "archive_path": "docs/history/pr-reviews/PR-3780-chore-close-3-substrate-shelf-rows-b-0045-1-b-0046-1-b-0049-1-drift-caught-by-b-.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-16T06:39:49.964Z",
+  "schema_version": "v1",
+  "commit_sha": "c220317b19a660dc7ac781e11eb86a85ed5ec235",
+  "title": "chore: close 3 substrate-shelf rows (B-0045.1/B-0046.1/B-0049.1) — drift caught by B-0553 audit tool",
+  "state": "MERGED",
+  "merged_at": "2026-05-16T06:39:30Z",
+  "head_ref": "chore/b0045-b0046-b0049-shelf-rows-close-otto-cli-2026-05-16"
+}

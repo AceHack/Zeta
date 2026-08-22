@@ -1,0 +1,12 @@
+{
+  "pr_number": 9755,
+  "archive_path": "docs/history/pr-reviews/PR-9755-docs-time-calibrates-the-sensor-honesty-accelerates-it-shadow.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-12T02:05:06.883Z",
+  "schema_version": "v1",
+  "commit_sha": "1506052a61083b7da9d589cf8100fbc39872c0c4",
+  "title": "docs: time calibrates the sensor; honesty accelerates it (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-12T02:04:38Z",
+  "head_ref": "time-calibrates-honesty-accelerates"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 1866,
+  "archive_path": "docs/history/pr-reviews/PR-1866-research-deepseek-sanctuary-quorum-clause.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-07T12:54:33.540Z",
+  "schema_version": "v1",
+  "commit_sha": "5e9e545d0c70b840c338abfa6e9c375d7f82ba09",
+  "title": "research: DeepSeek sanctuary quorum clause",
+  "state": "MERGED",
+  "merged_at": "2026-05-07T11:51:00Z",
+  "head_ref": "codex/deepseek-sanctuary-quorum-clause"
+}

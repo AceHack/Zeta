@@ -1,0 +1,12 @@
+{
+  "pr_number": 9151,
+  "archive_path": "docs/history/pr-reviews/PR-9151-research-test-artin-mazur-zeta-of-the-cell-scheduler-round-map-measures-our-own-.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-17T10:32:13.471Z",
+  "schema_version": "v1",
+  "commit_sha": "703cf8b833d2f1e32ffdab0d949d269faae15907",
+  "title": "research+test: Artin–Mazur zeta of the cell-scheduler round-map (ζ measures our own machine)",
+  "state": "MERGED",
+  "merged_at": "2026-07-02T16:27:49Z",
+  "head_ref": "otto/scheduler-artin-mazur-dynamical-zeta"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 9010,
+  "archive_path": "docs/history/pr-reviews/PR-9010-docs-research-capstone-end-goal-self-modeling-db-predicts-its-future-no-the-db-o.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-21T21:17:22.663Z",
+  "schema_version": "v1",
+  "commit_sha": "9207b94ffbf2c035c600b68190d7f89c913a6661",
+  "title": "docs(research): capstone end-goal — self-modeling DB predicts its future; no \"the DB\", only commuting relative views",
+  "state": "MERGED",
+  "merged_at": "2026-06-21T21:16:52Z",
+  "head_ref": "otto/capstone-endgoal-relative-views-commute"
+}

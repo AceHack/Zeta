@@ -1,0 +1,12 @@
+{
+  "pr_number": 11475,
+  "archive_path": "docs/history/pr-reviews/PR-11475-feat-hygiene-admit-autonomous-fail-closed-and-operator-delegated.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-17T14:04:44.419Z",
+  "schema_version": "v1",
+  "commit_sha": "5dda9a1bd4309666aa4de9d8ec1780a823974cb5",
+  "title": "feat(hygiene): admit autonomous-fail-closed and operator-delegated",
+  "state": "MERGED",
+  "merged_at": "2026-08-17T14:04:06Z",
+  "head_ref": "shadow/agencysignature-enum-fail-closed-and-operator-delegated"
+}

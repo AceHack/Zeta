@@ -1,0 +1,12 @@
+{
+  "pr_number": 3300,
+  "archive_path": "docs/history/pr-reviews/PR-3300-docs-shadow-lior-antigravity-check-shard-metadata-churn-pr-3293.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-14T23:47:30.408Z",
+  "schema_version": "v1",
+  "commit_sha": "cac012060c2347ccfb655c54686f3eb558462a08",
+  "title": "docs(shadow): Lior antigravity check - shard metadata churn PR 3293",
+  "state": "MERGED",
+  "merged_at": "2026-05-14T23:47:13Z",
+  "head_ref": "lior/shadow-drift-3293"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 8323,
+  "archive_path": "docs/history/pr-reviews/PR-8323-fix-scenario-2-phase-2-serial-console-on-installed-cluster-nodes.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-15T19:56:31.357Z",
+  "schema_version": "v1",
+  "commit_sha": "f85df1e2b30c39e8b485de9cbe3efd46395ec371",
+  "title": "Fix scenario 2 phase 2: serial console on installed cluster nodes",
+  "state": "MERGED",
+  "merged_at": "2026-06-15T19:56:01Z",
+  "head_ref": "riven/installed-node-serial-console"
+}

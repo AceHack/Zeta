@@ -1,0 +1,12 @@
+{
+  "pr_number": 11504,
+  "archive_path": "docs/history/pr-reviews/PR-11504-feat-zflash-the-wrapper-reaches-the-linux-arm-bake-the-esp-never-mount-the-stick.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-17T14:53:35.893Z",
+  "schema_version": "v1",
+  "commit_sha": "edf9282fac0077fe1cc389dc97e86396d1267e9f",
+  "title": "feat(zflash): the wrapper reaches the Linux arm — bake the ESP, never mount the stick",
+  "state": "MERGED",
+  "merged_at": "2026-08-17T14:51:59Z",
+  "head_ref": "shadow/zflash-cli-linux-arm"
+}

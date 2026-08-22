@@ -1,0 +1,12 @@
+{
+  "pr_number": 7673,
+  "archive_path": "docs/history/pr-reviews/PR-7673-perf-core-add-raw-qubit-gate-kernels.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-11T12:57:06.545Z",
+  "schema_version": "v1",
+  "commit_sha": "5fbf4b115a93e06e46326f1b645dd1453e184719",
+  "title": "perf(core): add raw qubit gate kernels",
+  "state": "MERGED",
+  "merged_at": "2026-06-11T12:56:39Z",
+  "head_ref": "codex/vera-quantum-fast-kernels"
+}

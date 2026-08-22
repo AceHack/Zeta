@@ -1,0 +1,12 @@
+{
+  "pr_number": 8690,
+  "archive_path": "docs/history/pr-reviews/PR-8690-feat-core-export-bounded-gset-heat.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-20T02:54:13.199Z",
+  "schema_version": "v1",
+  "commit_sha": "51bc48d4442356f72fdd014654fffddeb3152494",
+  "title": "feat(core): export bounded gset heat",
+  "state": "MERGED",
+  "merged_at": "2026-06-20T02:53:49Z",
+  "head_ref": "codex/bounded-gset-heat-adapter"
+}

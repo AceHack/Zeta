@@ -1,0 +1,12 @@
+{
+  "pr_number": 8127,
+  "archive_path": "docs/history/pr-reviews/PR-8127-refactor-shim-claude-bin-scripts-unified-service.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-14T01:52:42.739Z",
+  "schema_version": "v1",
+  "commit_sha": "a13437b98dc48f663a0d7cbe689a274dbfae3eee",
+  "title": "refactor: shim .claude/bin/ scripts → unified service",
+  "state": "MERGED",
+  "merged_at": "2026-06-14T01:52:20Z",
+  "head_ref": "kiro/shim-legacy-ticks"
+}

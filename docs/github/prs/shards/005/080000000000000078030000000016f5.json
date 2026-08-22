@@ -1,0 +1,12 @@
+{
+  "pr_number": 5877,
+  "archive_path": "docs/history/pr-reviews/PR-5877-docs-site-create-stable-route-map-for-github-pages-b-0302.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-28T17:08:26.384Z",
+  "schema_version": "v1",
+  "commit_sha": "6e9b78672d76dc5efb1e8f033ff596cb046a21ee",
+  "title": "docs(site): Create stable route map for GitHub Pages (B-0302)",
+  "state": "MERGED",
+  "merged_at": "2026-05-28T17:08:06Z",
+  "head_ref": "lior/B-0302-pages-routes"
+}

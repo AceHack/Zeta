@@ -1,0 +1,12 @@
+{
+  "pr_number": 7434,
+  "archive_path": "docs/history/pr-reviews/PR-7434-docs-research-prove-the-plateau-harmonic-phasor-generator-under-four-corner-feed.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-11T22:29:23.846Z",
+  "schema_version": "v1",
+  "commit_sha": "da4fd92a21fff4a9b2088f6a5f02fbb10f530cf1",
+  "title": "docs(research): prove the plateau — harmonic/phasor generator under four-corner feedback reaches the irreducible-error floor; boundary measured-not-derived",
+  "state": "MERGED",
+  "merged_at": "2026-06-11T22:28:49Z",
+  "head_ref": "docs/prove-plateau-irreducible-error-floor"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 9387,
+  "archive_path": "docs/history/pr-reviews/PR-9387-feat-model-backend-our-own-auth-hexagonal-authprovider-port-openai-device-code-p.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-04T00:59:16.476Z",
+  "schema_version": "v1",
+  "commit_sha": "a03316affc8c88ea45b8e96ab8a1a019b646f757",
+  "title": "feat(model-backend): our own auth — hexagonal AuthProvider port + OpenAI device-code & PKCE flows (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-04T00:58:53Z",
+  "head_ref": "otto/own-auth-provider-port-openai-device-pkce"
+}

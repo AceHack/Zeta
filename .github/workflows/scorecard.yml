@@ -24,6 +24,26 @@
 # score; no inbound attack surface. Pre-write checklist:
 # `docs/security/GITHUB-ACTIONS-SAFE-PATTERNS.md`.
 #
+# KNOWN, ADJUDICATED FINDING: Binary-Artifacts (`BinaryArtifactsID`)
+# ------------------------------------------------------------------
+# Scorecard flags every committed binary, including the six DLA
+# substrate modules in `src/wasm-dla/bytelock/`. Those are the
+# artifact UNDER TEST — `run-bytelock-ci.mjs` loads and executes
+# each one and compares its trajectory to hex-in-JSON vectors in
+# `testdata/` — not golden vectors themselves. Adjudicated in
+# `.claude/rules/no-binary-in-proof-lineage.md` §"The one exception:
+# the artifact UNDER TEST", under five conditions enforced by
+# `src/Core.TypeScript/hygiene/audit-proof-lineage-binaries.ts` in
+# the `cross-verify` floor job.
+#
+# There is nothing to configure here: this rule id comes from
+# Scorecard, NOT from CodeQL (it only travels through the shared
+# SARIF upload below), and Scorecard's Binary-Artifacts check has no
+# in-repo allowlist or suppression file. The alerts are dismissed in
+# the code-scanning UI citing that rule section. Read this before
+# re-litigating the finding or "fixing" it by deleting the modules —
+# that deletes the experiment, not a proof.
+#
 # Action-pin content-review (per `docs/security/SUPPLY-CHAIN-
 # SAFE-PATTERNS.md`): ossf/scorecard-action v2.4.3 tagged
 # 2025-09-30 by sschrock@google.com (OpenSSF maintainer),
@@ -84,6 +104,6 @@ jobs:
       - name: Upload SARIF to GitHub code scanning
         # Same pin as `.github/workflows/codeql.yml` - one
         # codeql-action version across the repo, bumped together.
-        uses: github/codeql-action/upload-sarif@5595ccaf912efad79be6eef63a5619ff05969be3 # v4.37.6
+        uses: github/codeql-action/upload-sarif@ff2f1c621b7f889edc0d3c761ac2e6a3f8cdb0dd # v4.37.7
         with:
           sarif_file: results.sarif

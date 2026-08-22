@@ -1,0 +1,12 @@
+{
+  "pr_number": 3562,
+  "archive_path": "docs/history/pr-reviews/PR-3562-shard-tick-1924z-lior-pr-3545-b-nnnn-id-allocation-collision-flagged.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-15T19:30:27.729Z",
+  "schema_version": "v1",
+  "commit_sha": "c89c0d2f820d95feb5076ab03f4be2cf34ea0ce4",
+  "title": "shard(tick): 1924Z — Lior PR #3545 B-NNNN ID-allocation collision flagged",
+  "state": "MERGED",
+  "merged_at": "2026-05-15T19:30:12Z",
+  "head_ref": "shard/tick-1924z-otto-cli-2026-05-15"
+}

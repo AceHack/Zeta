@@ -1,0 +1,12 @@
+{
+  "pr_number": 3727,
+  "archive_path": "docs/history/pr-reviews/PR-3727-docs-archive-lior-preservation-of-3720-3725.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-19T17:47:36.599Z",
+  "schema_version": "v1",
+  "commit_sha": "6d7d65af8d1f74c4dcc4a0966dc96da78fa0bf9a",
+  "title": "docs(archive): Lior preservation of 3720-3725",
+  "state": "MERGED",
+  "merged_at": "2026-05-19T17:47:13Z",
+  "head_ref": "lior/archive-prs-0415Z"
+}

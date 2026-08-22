@@ -1,6 +1,6 @@
 #!/usr/bin/env bun
 /**
- * tools/dora-classify/cli.ts
+ * src/Core.TypeScript/dora-classify/cli.ts
  *
  * Step 1 substrate: CLI wrapper that reads commit metadata via `git`
  * + runs the pure-logic classifier + emits JSON.
@@ -8,13 +8,13 @@
  * Usage:
  *
  *   # Classify a single commit by SHA (defaults to HEAD)
- *   bun tools/dora-classify/cli.ts --sha HEAD
+ *   bun src/Core.TypeScript/dora-classify/cli.ts --sha HEAD
  *
  *   # Classify last N commits + aggregate per-author ratios
- *   bun tools/dora-classify/cli.ts --since "24 hours ago" --aggregate
+ *   bun src/Core.TypeScript/dora-classify/cli.ts --since "24 hours ago" --aggregate
  *
  *   # Classify commits in a specific range
- *   bun tools/dora-classify/cli.ts --range origin/main..HEAD --aggregate
+ *   bun src/Core.TypeScript/dora-classify/cli.ts --range origin/main..HEAD --aggregate
  *
  * Output: JSON to stdout. Per-commit classification when `--sha` mode;
  * AuthorRatioStats array when `--aggregate` mode.

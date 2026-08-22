@@ -1,0 +1,22 @@
+{
+  "pr_number": 6626,
+  "archive_path": "docs/history/pr-reviews/PR-6626-fix-ace-untrusted-input-packagehash-throws-styled-invalid-package-refusals-not-a.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7HenIM",
+    "comment:PRRC_kwDOSF9kNM7HeqPH",
+    "comment:PRRC_kwDOSF9kNM7HeqPq",
+    "comment:PRRC_kwDOSF9kNM7HexEu",
+    "comment:PRRC_kwDOSF9kNM7HexHl",
+    "comment:PRRC_kwDOSF9kNM7HexKe",
+    "thread:PRRT_kwDOSF9kNM6GqieA",
+    "thread:PRRT_kwDOSF9kNM6Gqkvr",
+    "thread:PRRT_kwDOSF9kNM6GqkwA"
+  ],
+  "fetched_at": "2026-06-03T07:41:05.641Z",
+  "schema_version": "v1",
+  "commit_sha": "0df52d4bb79cdbcbc5faa37276614cd2f6db834c",
+  "title": "fix(ace): untrusted-input packageHash throws → styled invalid-package refusals (not ace: fatal:)",
+  "state": "MERGED",
+  "merged_at": "2026-06-03T07:40:41Z",
+  "head_ref": "otto-windows/ace-untrusted-input-hardening-2026-06-03"
+}

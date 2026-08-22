@@ -1,0 +1,12 @@
+{
+  "pr_number": 13880,
+  "archive_path": "docs/history/pr-reviews/PR-13880-feat-observe-drift-rate-tracker-ci-health-over-time.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-22T19:27:53.450Z",
+  "schema_version": "v1",
+  "commit_sha": "a8ad6e0a73f239aa8a55d3c0f785d5dcc003e795",
+  "title": "feat(observe): drift-rate tracker — CI health over time",
+  "state": "MERGED",
+  "merged_at": "2026-08-22T19:27:14Z",
+  "head_ref": "alexa/drift-rate-tracker"
+}

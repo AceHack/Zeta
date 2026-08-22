@@ -1,0 +1,23 @@
+{
+  "pr_number": 1999,
+  "archive_path": "docs/history/pr-reviews/PR-1999-fix-backlog-decompose-b-0232-into-2-children.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_FFTI",
+    "comment:PRRC_kwDOSF9kNM6_FHZ7",
+    "comment:PRRC_kwDOSF9kNM6_FHa2",
+    "comment:PRRC_kwDOSF9kNM6_FHaX",
+    "comment:PRRC_kwDOSF9kNM6_FHam",
+    "thread:PRRT_kwDOSF9kNM6AfsF0",
+    "thread:PRRT_kwDOSF9kNM6Afth4",
+    "thread:PRRT_kwDOSF9kNM6Afthl",
+    "thread:PRRT_kwDOSF9kNM6AftiA",
+    "thread:PRRT_kwDOSF9kNM6AftiK"
+  ],
+  "fetched_at": "2026-05-08T02:29:12.851Z",
+  "schema_version": "v1",
+  "commit_sha": "f5dd676336cd5a2e8b36d01f2046b4df01d2032e",
+  "title": "fix(backlog): decompose B-0232 into 2 children",
+  "state": "MERGED",
+  "merged_at": "2026-05-08T02:28:58Z",
+  "head_ref": "backlog/b0232-decompose"
+}

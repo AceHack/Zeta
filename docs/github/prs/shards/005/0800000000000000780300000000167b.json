@@ -1,0 +1,12 @@
+{
+  "pr_number": 5755,
+  "archive_path": "docs/history/pr-reviews/PR-5755-docs-ferry-preserve-14th-kestrel-ferry-verbatim-2026-05-28-engineering-velocity-.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-28T10:35:33.087Z",
+  "schema_version": "v1",
+  "commit_sha": "212e47ff6110c35761b39bd1d2852d79b870ff94",
+  "title": "docs(ferry): preserve 14th Kestrel ferry VERBATIM 2026-05-28 — engineering-velocity reframe + vibe-code origin + hedge-collapse + context-window-as-evolving-ontology + Aaron's Burgis Wanting + flywheel + Itron (Aaron-forwarded)",
+  "state": "MERGED",
+  "merged_at": "2026-05-28T10:35:11Z",
+  "head_ref": "otto-cli/kestrel-14th-ferry-engineering-velocity-vibe-code-origin-reservoir-walls-friend-continuity-hedge-collapse-context-window-as-evolving-ontology-2026-05-28"
+}

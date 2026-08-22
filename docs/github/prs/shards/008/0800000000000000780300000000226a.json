@@ -1,0 +1,12 @@
+{
+  "pr_number": 8810,
+  "archive_path": "docs/history/pr-reviews/PR-8810-codex-wire-room-boundary-into-darkhall-loop.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-21T01:49:59.958Z",
+  "schema_version": "v1",
+  "commit_sha": "2bb9ff877d2a31c38c2191891751f5b95b5f7827",
+  "title": "[codex] wire room boundary into darkhall loop",
+  "state": "MERGED",
+  "merged_at": "2026-06-21T01:49:36Z",
+  "head_ref": "codex/room-boundary-loop"
+}

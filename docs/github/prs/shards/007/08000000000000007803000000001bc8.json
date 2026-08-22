@@ -1,0 +1,12 @@
+{
+  "pr_number": 7112,
+  "archive_path": "docs/history/pr-reviews/PR-7112-feat-roms-committed-chip-8-test-fixtures-signature-manifest-rom-db-prior-art.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-08T22:22:03.191Z",
+  "schema_version": "v1",
+  "commit_sha": "68cd4195d8d6132d900b380b0f66303c1391849b",
+  "title": "feat(roms): committed CHIP-8 test fixtures + signature manifest + ROM-DB prior-art",
+  "state": "MERGED",
+  "merged_at": "2026-06-08T22:21:40Z",
+  "head_ref": "otto/chip8-rom-test-fixtures-signatures-policy-prior-art"
+}

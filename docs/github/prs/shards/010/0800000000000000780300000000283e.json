@@ -1,0 +1,12 @@
+{
+  "pr_number": 10302,
+  "archive_path": "docs/history/pr-reviews/PR-10302-feat-observe-connectivity-metric-from-attestation-events.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-11T01:15:59.410Z",
+  "schema_version": "v1",
+  "commit_sha": "9a93516ef6d696ba2c7d6991a998686433f46541",
+  "title": "feat(observe): connectivity metric from attestation events",
+  "state": "MERGED",
+  "merged_at": "2026-08-11T01:15:21Z",
+  "head_ref": "alexa/vault-connectivity"
+}

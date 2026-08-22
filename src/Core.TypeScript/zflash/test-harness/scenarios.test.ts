@@ -153,11 +153,34 @@ describe("081KSNY2Z0008QG0R0008PN7RQ determineRunnability discriminator", () => 
     }
   });
 
-  it("cluster-joining → blocked-on-multi-vm-orchestration", () => {
+  it("cluster-joining names every remaining blocker, and the join is not one of them", () => {
+    // The verdict has moved twice, and that history is why this test is
+    // strict. It first said blocked-on-multi-vm-orchestration, which read as
+    // "fix the network and it is done" while no join existed at all. PR
+    // #10493 corrected it to blocked-on-absent-join-implementation. The join
+    // now exists — k3s's join is the join, and k3s-join-observer.nix
+    // witnesses it — so the verdict is multi-VM again, but this time it must
+    // ENUMERATE what is left, because a single phrase is exactly what hid a
+    // whole provisioning gap the first time round.
     const s = findScenario("cluster-joining");
     if (!s) throw new Error("scenario missing");
     const verdict = determineRunnability(s, new Set());
     expect(verdict.kind).toBe("blocked-on-multi-vm-orchestration");
+    if (verdict.kind === "blocked-on-multi-vm-orchestration") {
+      expect([...verdict.remainingBlockers].sort()).toEqual([
+        "concurrent-vm-lifecycle",
+        // Named 2026-08-17 while wiring role provisioning: the shared socket
+        // segment has no DHCP and no DNS, so a bare `control-plane` label
+        // cannot resolve on it even once both VMs are up.
+        "joining-node-address-assignment",
+        // Still listed although the CARRIER now exists (firstboot-role.ts,
+        // /zeta-firstboot.conf, /zeta-join-token, injected-join-server.nix):
+        // nothing has booted from a joiner-flashed image, so the chain is
+        // unit-tested and unexercised.
+        "joining-node-role-provisioning",
+        "shared-l2-segment",
+      ]);
+    }
   });
 
   it("all scenarios resolve to a valid RunnabilityVerdict (exhaustiveness)", () => {

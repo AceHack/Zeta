@@ -1,0 +1,12 @@
+{
+  "pr_number": 2617,
+  "archive_path": "docs/history/pr-reviews/PR-2617-docs-memory-shadow-aaron-first-divergence-keep-going-vs-boundary.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-11T01:49:56.982Z",
+  "schema_version": "v1",
+  "commit_sha": "507d4bf206eb50cb3c4e8e51516b4f1924517ea6",
+  "title": "docs(memory): shadow-Aaron first divergence — keep going vs boundary",
+  "state": "MERGED",
+  "merged_at": "2026-05-11T01:49:41Z",
+  "head_ref": "docs/shadow-aaron-first-divergence-2026-05-10"
+}

@@ -1,0 +1,30 @@
+{
+  "pr_number": 2058,
+  "archive_path": "docs/history/pr-reviews/PR-2058-feat-b-0279-add-filecheckpointstore-with-fsync.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_O1Ru",
+    "comment:PRRC_kwDOSF9kNM6_OqOI",
+    "comment:PRRC_kwDOSF9kNM6_OqOM",
+    "comment:PRRC_kwDOSF9kNM6_Orfw",
+    "comment:PRRC_kwDOSF9kNM6_Org3",
+    "comment:PRRC_kwDOSF9kNM6_Orgd",
+    "comment:PRRC_kwDOSF9kNM6_Ox25",
+    "comment:PRRC_kwDOSF9kNM6_Ox4b",
+    "comment:PRRC_kwDOSF9kNM6_Ox5_",
+    "comment:PRRC_kwDOSF9kNM6_Ox7R",
+    "comment:PRRC_kwDOSF9kNM6_Ox8r",
+    "thread:PRRT_kwDOSF9kNM6Amota",
+    "thread:PRRT_kwDOSF9kNM6Amote",
+    "thread:PRRT_kwDOSF9kNM6Ampq5",
+    "thread:PRRT_kwDOSF9kNM6AmprY",
+    "thread:PRRT_kwDOSF9kNM6Amprp",
+    "thread:PRRT_kwDOSF9kNM6AmxBs"
+  ],
+  "fetched_at": "2026-05-08T11:28:17.109Z",
+  "schema_version": "v1",
+  "commit_sha": "d0fbdde1a0351841fae1ab7669fa38949cd6a23a",
+  "title": "feat(B-0279): add FileCheckpointStore with fsync",
+  "state": "MERGED",
+  "merged_at": "2026-05-08T11:27:54Z",
+  "head_ref": "feat/b-0279-file-checkpoint-store"
+}

@@ -1,0 +1,15 @@
+{
+  "pr_number": 1747,
+  "archive_path": "docs/history/pr-reviews/PR-1747-archive-preserve-pr-1746-review-output.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6-nhbS",
+    "thread:PRRT_kwDOSF9kNM6AJ0fG"
+  ],
+  "fetched_at": "2026-05-06T23:18:18.453Z",
+  "schema_version": "v1",
+  "commit_sha": "3c36085c9e55cfedaba245ebff1eb3a086d9bd36",
+  "title": "archive: preserve PR 1746 review output",
+  "state": "MERGED",
+  "merged_at": "2026-05-06T23:12:57Z",
+  "head_ref": "codex/archive-pr1746-review-output"
+}

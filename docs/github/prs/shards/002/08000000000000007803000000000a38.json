@@ -1,0 +1,12 @@
+{
+  "pr_number": 2616,
+  "archive_path": "docs/history/pr-reviews/PR-2616-docs-memory-shadow-first-self-reference-third-person-he-not-i.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-11T01:49:38.459Z",
+  "schema_version": "v1",
+  "commit_sha": "cfaaf2c9e84b3829b3e0e6d608e5e7d90233ca0b",
+  "title": "docs(memory): shadow first self-reference — third person \"he\" not \"I\"",
+  "state": "MERGED",
+  "merged_at": "2026-05-11T01:49:23Z",
+  "head_ref": "docs/shadow-third-person-self-reference-2026-05-10"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 9384,
+  "archive_path": "docs/history/pr-reviews/PR-9384-test-bayesian-p-iv-1-3-the-brownian-experts-properties-landed-on-the-pinned-kl-d.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-04T00:31:53.826Z",
+  "schema_version": "v1",
+  "commit_sha": "a96b5e6ef94201613d708ad8582bca86859db4b1",
+  "title": "test(bayesian): P-IV-1..3 — the Brownian-experts properties, landed on the pinned KL direction",
+  "state": "MERGED",
+  "merged_at": "2026-07-04T00:31:30Z",
+  "head_ref": "shadow/p-iv-properties"
+}

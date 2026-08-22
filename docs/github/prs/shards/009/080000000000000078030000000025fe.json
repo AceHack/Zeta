@@ -1,0 +1,12 @@
+{
+  "pr_number": 9726,
+  "archive_path": "docs/history/pr-reviews/PR-9726-docs-book-place-the-11th-grade-photophone-story-into-ch-06-shadow.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-11T18:42:48.489Z",
+  "schema_version": "v1",
+  "commit_sha": "a59e2cfa1b51c38eb5ba1f97aca79d19c46bc3b5",
+  "title": "docs(book): place the 11th-grade photophone story into ch-06 (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-11T18:42:21Z",
+  "head_ref": "book-ch06-photophone-placed"
+}

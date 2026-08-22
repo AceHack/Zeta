@@ -1,0 +1,12 @@
+{
+  "pr_number": 6572,
+  "archive_path": "docs/history/pr-reviews/PR-6572-docs-b-0988-world-borders-in-zeta-o-1-lookup-any-perspective-any-projection-mult.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-02T14:47:55.426Z",
+  "schema_version": "v1",
+  "commit_sha": "59975f6020d7c59316d9f451f91a3ef7cb346ed0",
+  "title": "docs(B-0988): world borders in Zeta — O(1) lookup, any-perspective, any-projection, multi-oracle",
+  "state": "MERGED",
+  "merged_at": "2026-06-02T14:47:28Z",
+  "head_ref": "otto-cli/b0988-world-borders-o1-lookup-2026-06-02"
+}

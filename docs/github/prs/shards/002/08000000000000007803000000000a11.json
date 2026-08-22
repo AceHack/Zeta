@@ -1,0 +1,17 @@
+{
+  "pr_number": 2577,
+  "archive_path": "docs/history/pr-reviews/PR-2577-docs-memory-trust-migration-path-trust-aaron-zero-trust-protocol-enforcement.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_rAoq",
+    "comment:PRRC_kwDOSF9kNM6_rAox",
+    "thread:PRRT_kwDOSF9kNM6A8LPN",
+    "thread:PRRT_kwDOSF9kNM6A8LPT"
+  ],
+  "fetched_at": "2026-05-11T00:00:55.978Z",
+  "schema_version": "v1",
+  "commit_sha": "be9dc9e90c8c6d85a5dfd765a473e7ea9c6ec887",
+  "title": "docs(memory): trust migration path — trust Aaron → zero trust protocol enforcement",
+  "state": "MERGED",
+  "merged_at": "2026-05-11T00:00:38Z",
+  "head_ref": "docs/trust-migration-zero-trust-2026-05-10"
+}

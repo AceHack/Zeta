@@ -1,0 +1,150 @@
+name: Agent proposal to gated review branch
+
+
+
+on:
+
+  workflow_dispatch:
+  
+    inputs:
+    
+      agent_proposal_id:
+      
+        description: Bounded UUID proposal identifier from the Pages operator service
+        
+        required: true
+        
+        type: string
+        
+      agent_base_sha:
+      
+        description: Immutable main SHA bound by the authorized Pages device
+        
+        required: true
+        
+        type: string
+        
+      agent_patch_b64:
+      
+        description: Base64url exact unified patch, maximum enforced by the Pages operator service
+        
+        required: true
+        
+        type: string
+        
+
+
+permissions:
+
+  contents: write
+  
+  pull-requests: write
+  
+
+
+concurrency:
+
+  group: agent-proposal-gated-commit
+  
+  cancel-in-progress: false
+  
+
+
+jobs:
+
+  stage-review-branch:
+  
+    runs-on: ubuntu-24.04
+    
+    timeout-minutes: 5
+    
+    steps:
+    
+      - name: Checkout protected base
+      
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        
+        with:
+        
+          fetch-depth: 0
+          
+          ref: main
+          
+      - name: Setup Bun
+      
+        uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
+        
+        with:
+        
+          bun-version: latest
+          
+      - name: Install declared dependencies
+      
+        run: bun install --frozen-lockfile
+        
+      - name: Configure review-branch committer
+      
+        run: |
+        
+          git config user.name "zeta-pages-operator[bot]"
+          
+          git config user.email "zeta-pages-operator[bot]@users.noreply.github.com"
+          
+      - name: Validate and stage bounded proposal
+      
+        env:
+        
+          ZETA_AGENT_PROPOSAL_ID: ${{ inputs.agent_proposal_id }}
+          
+          ZETA_AGENT_BASE_SHA: ${{ inputs.agent_base_sha }}
+          
+          ZETA_AGENT_PATCH_B64: ${{ inputs.agent_patch_b64 }}
+          
+          ZETA_PR_ARCHIVE_TOKEN: ${{ secrets.ZETA_PR_ARCHIVE_TOKEN }}
+          
+        run: bun src/Core.TypeScript/planning/agent-proposal-runner.ts
+        
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

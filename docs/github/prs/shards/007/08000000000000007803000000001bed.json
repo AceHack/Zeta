@@ -1,0 +1,12 @@
+{
+  "pr_number": 7149,
+  "archive_path": "docs/history/pr-reviews/PR-7149-feat-core-privacyeconomy-private-state-budget-as-hard-money-mixture-of-personas-.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-09T00:38:46.906Z",
+  "schema_version": "v1",
+  "commit_sha": "1b4fcbf8ab60853238d00520480802d1af552918",
+  "title": "feat(core): PrivacyEconomy — private-state budget as hard money, mixture-of-personas reward",
+  "state": "MERGED",
+  "merged_at": "2026-06-09T00:38:25Z",
+  "head_ref": "otto/privacy-economy-hard-money-mixture-of-personas-reward"
+}

@@ -10,6 +10,16 @@
 ;   LEMMA 2  unsat      — THE RESULT: the regime always closes
 ;   LEMMA 3  timeout    — UNRESOLVED. Not proven and not refuted. See §LEMMA 3.
 ;
+; RETROFIT (2026-08-13, work-item 081KZYYKHX1087G0R0036E9RH9 — every SMT runner in this
+; repo asserted all-unsat, which a tautology satisfies). Two changes, neither of which
+; touches LEMMA 2's statement or its hypotheses:
+;   * the uninterpreted-function axioms are now (push)/(pop)-scoped rather than global;
+;   * LEMMA 1's witness, previously described in prose as "checked separately", is a
+;     COMMITTED query (V1), joined by V2 which checks the witness family satisfies the
+;     axioms it is standing in for.
+; Verdict sequence is now `unsat sat unsat` under z3 4.16.0 AND cvc5 1.3.4 (measured).
+; The `sat` is the point: it is what a vacuous version of this file could not produce.
+;
 ; ANCHOR (literature-first, step 0):
 ;   Dwork, McSherry, Nissim & Smith (2006), "Calibrating Noise to Sensitivity in Private
 ;     Data Analysis", TCC — differential privacy; epsilon COMPOSES and is never recovered.
@@ -52,6 +62,16 @@
 (declare-const B Real)
 (declare-const K Real)
 
+; ── SCOPING (retrofit 2026-08-13, work-item 081KZYYKHX1087G0R0036E9RH9) ───────────────
+; The quantified UF axioms below used to sit at GLOBAL scope. They are now inside a
+; (push)/(pop) so that the witness blocks at the foot of the file — which reason about
+; a CONCRETE (eps, b) pair — are not forced to drag the uninterpreted-function
+; quantifiers into their own search. That is not cosmetic: with the axioms global,
+; every witness query inherits an alternating-quantifier UF context and the solver
+; grinds, which is the exact failure this file's own header records for LEMMA 1 and
+; LEMMA 3. Scoping is what makes the non-vacuity probes decidable.
+(push)
+
 ; ── eps: strictly increasing from zero ────────────────────────────────────────────────
 (assert (= (eps 0.0) 0.0))
 (assert (forall ((x Real) (y Real))
@@ -84,6 +104,61 @@
 (assert (exists ((t Real)) (and (> t K) (>= (b t) (eps t)))))
 (check-sat)
 (pop)
+
+(pop)   ; <-- closes the uninterpreted-axiom scope opened above
+
+; ══ V1 — NON-VACUITY PROBE, and LEMMA 1 restored as a COMMITTED query ═════════════════
+; Added 2026-08-13 (081KZYYKHX1087G0R0036E9RH9). LEMMA 2 alone is an all-`unsat` file,
+; and an all-`unsat` file is indistinguishable from a vacuous one: if the hypotheses
+; above were jointly CONTRADICTORY — one sign error in `(assert (>= (eps K) B))` would
+; do it — then the refutation returns `unsat` for free, and a runner asserting all-unsat
+; reports a result while having proved only that the premises cannot hold.
+;
+; The direct consistency check — `(check-sat)` on the axioms with no goal — was RUN and
+; is NOT usable: z3 4.16.0 returns `timeout` (at -T:20, and the timeout then aborts the
+; rest of the script) and cvc5 1.3.4 returns `unknown`. MEASURED 2026-08-13, both
+; solvers, recorded because it is the honest reason this probe takes the shape it does.
+; Model construction over quantified uninterpreted functions is the direction this file's
+; own header already documents as intractable (LEMMA 1 and LEMMA 3, both).
+;
+; So consistency is established the way the header says an existence claim should be —
+; BY WITNESS, in a decidable fragment. The witness family is the one that header names:
+;     B = 10,  K = 10,  eps(t) = t,  b(t) = 10·t/(1+t)
+; V1 asks for a net-POSITIVE point in that family. `sat` gives two things at once:
+;   1. LEMMA 1 ("a net-positive regime exists"), which the header records as checked
+;      separately but which was never committed as a runnable query — it is now;
+;   2. the non-vacuity witness — a concrete pair satisfying the hypotheses exists, so
+;      LEMMA 2's `unsat` is a statement about the regime and not about an empty one.
+(push)
+(declare-const tw Real)
+(assert (>= tw 0.0))
+(assert (> (/ (* 10.0 tw) (+ 1.0 tw)) tw))   ; b(tw) > eps(tw): disclosure pays here
+(check-sat)   ; expect: sat  (witness tw = 1 gives b = 5 > eps = 1)
+(get-model)
+(pop)
+
+; ══ V2 — the witness family really does satisfy b's axioms ════════════════════════════
+; V1 alone would only show that SOME point of SOME function is net-positive. This block
+; closes the gap: b(t) = 10·t/(1+t) is strictly increasing on [0,∞) and stays strictly
+; below B = 10 — the two properties LEMMA 2 leans on from the credit side. Refutation
+; form: ask for a violation of either, expect unsat.
+;
+; The eps side needs no query: eps(t) = t is strictly increasing by inspection, eps(0)=0,
+; and eps(K) = 10 ≥ B = 10 holds at K = 10 — ground arithmetic, stated rather than solved.
+(push)
+(declare-const xw Real)
+(declare-const yw Real)
+(assert (>= xw 0.0))
+(assert (< xw yw))
+(assert (or (>= (/ (* 10.0 xw) (+ 1.0 xw)) (/ (* 10.0 yw) (+ 1.0 yw)))   ; not increasing
+            (>= (/ (* 10.0 xw) (+ 1.0 xw)) 10.0)))                        ; or not bounded
+(check-sat)   ; expect: unsat  => the witness family satisfies both b-axioms
+(pop)
+
+; Verdict sequence: unsat sat unsat
+;   LEMMA 2  the regime always closes            unsat
+;   V1       a net-positive point exists           sat   (= LEMMA 1, now committed)
+;   V2       the witness satisfies b's axioms    unsat
 
 (exit)
 

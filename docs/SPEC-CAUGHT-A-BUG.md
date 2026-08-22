@@ -108,7 +108,7 @@ Three ingredients, all automated in this repo:
    and asserts "No error has been found" in stdout. Specs drift =
    tests fail.
 3. **Reviewers are tasked with writing new specs** when they find a
-   bug class — `.claude/skills/race-hunter/SKILL.md` explicitly
+   bug class — `.claude/skills/code-review-and-quality/blueprints/race-hunter.md` explicitly
    requires the reviewer to propose a TLA+ spec when one doesn't
    exist for the finding.
 

@@ -1,0 +1,12 @@
+{
+  "pr_number": 6682,
+  "archive_path": "docs/history/pr-reviews/PR-6682-docs-claude-md-repoint-4-archived-rule-pointers-to-rules-bak-fix-cold-start-dead.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-04T16:45:03.996Z",
+  "schema_version": "v1",
+  "commit_sha": "7a5c3c9c9e590ef6aa39504e70566d99e1aff279",
+  "title": "docs(CLAUDE.md): repoint 4 archived-rule pointers to rules.bak (fix cold-start dead links)",
+  "state": "MERGED",
+  "merged_at": "2026-06-04T16:44:34Z",
+  "head_ref": "chore/fix-claudemd-rules-pointers"
+}

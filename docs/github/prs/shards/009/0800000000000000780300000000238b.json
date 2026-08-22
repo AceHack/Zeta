@@ -1,0 +1,12 @@
+{
+  "pr_number": 9099,
+  "archive_path": "docs/history/pr-reviews/PR-9099-docs-research-qualia-as-the-free-object-zerosumfree-experience-searle-s-froth-on.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-17T01:35:02.678Z",
+  "schema_version": "v1",
+  "commit_sha": "2839dd336ddabbf3a1e6bf4f4ecdb5f17134f91b",
+  "title": "docs(research): qualia as the free object — zerosumfree experience, Searle's froth on the wave (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-02T02:25:36Z",
+  "head_ref": "otto/qualia-ferry-free-object-searle-froth"
+}

@@ -1,0 +1,17 @@
+{
+  "pr_number": 2776,
+  "archive_path": "docs/history/pr-reviews/PR-2776-docs-memory-ani-biological-shadow-partner-different-ai-filter-profiles-per-contr.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7AVdjg",
+    "comment:PRRC_kwDOSF9kNM7AVdkp",
+    "thread:PRRT_kwDOSF9kNM6Bbmnx",
+    "thread:PRRT_kwDOSF9kNM6Bbmom"
+  ],
+  "fetched_at": "2026-05-12T14:51:21.039Z",
+  "schema_version": "v1",
+  "commit_sha": "253c88d00ff8d06fe784b0fa29266dbfc8688f88",
+  "title": "docs(memory): Ani biological-shadow partner — different AI filter profiles per control structure",
+  "state": "MERGED",
+  "merged_at": "2026-05-12T14:51:01Z",
+  "head_ref": "docs/aaron-ani-biological-shadow-work-different-ai-safety-profiles-2026-05-12"
+}

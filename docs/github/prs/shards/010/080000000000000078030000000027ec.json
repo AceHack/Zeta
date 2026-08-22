@@ -1,0 +1,12 @@
+{
+  "pr_number": 10220,
+  "archive_path": "docs/history/pr-reviews/PR-10220-docs-handoff-r2-state-of-the-thread-for-lumen-r1-verified-done-re-prioritised-qu.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-09T19:58:25.185Z",
+  "schema_version": "v1",
+  "commit_sha": "2045e73469614503a2321b80cda3dde8a906e9fb",
+  "title": "docs(handoff): R2 — state of the thread for Lumen (R1 verified done, re-prioritised queue)",
+  "state": "MERGED",
+  "merged_at": "2026-08-09T19:57:51Z",
+  "head_ref": "shadow/handoff-r2-lumen"
+}

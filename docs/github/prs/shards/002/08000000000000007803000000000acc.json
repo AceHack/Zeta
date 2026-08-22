@@ -1,0 +1,21 @@
+{
+  "pr_number": 2764,
+  "archive_path": "docs/history/pr-reviews/PR-2764-tools-guard-bash-retirement-inventory.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7AJCE6",
+    "comment:PRRC_kwDOSF9kNM7AJCFT",
+    "comment:PRRC_kwDOSF9kNM7AJHiP",
+    "comment:PRRC_kwDOSF9kNM7AJHip",
+    "thread:PRRT_kwDOSF9kNM6BSXP9",
+    "thread:PRRT_kwDOSF9kNM6BSXPs",
+    "thread:PRRT_kwDOSF9kNM6BSbN0",
+    "thread:PRRT_kwDOSF9kNM6BSbOJ"
+  ],
+  "fetched_at": "2026-05-12T04:17:42.377Z",
+  "schema_version": "v1",
+  "commit_sha": "b563ba0f7adb6b4768a6688ee4cb4d500febe92b",
+  "title": "tools: guard bash retirement inventory",
+  "state": "MERGED",
+  "merged_at": "2026-05-12T04:17:26Z",
+  "head_ref": "claim/task-ts-bun-bash-retirement-check-20260512"
+}

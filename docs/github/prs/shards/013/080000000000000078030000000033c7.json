@@ -1,0 +1,12 @@
+{
+  "pr_number": 13255,
+  "archive_path": "docs/history/pr-reviews/PR-13255-fix-metal-the-breaker-never-saw-a-success-and-zflash-s-auto-pull-could-not-pass-.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-21T16:22:00.993Z",
+  "schema_version": "v1",
+  "commit_sha": "4f26dca05036104e01595bbebe35494b4f4917bf",
+  "title": "fix(metal): the breaker never saw a success, and zflash's auto-pull could not pass its own gate",
+  "state": "MERGED",
+  "merged_at": "2026-08-21T16:21:20Z",
+  "head_ref": "fix/breaker-records-success-and-zflash-fetches-sidecar"
+}

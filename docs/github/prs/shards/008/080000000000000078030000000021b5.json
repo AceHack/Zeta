@@ -1,0 +1,12 @@
+{
+  "pr_number": 8629,
+  "archive_path": "docs/history/pr-reviews/PR-8629-docs-memory-sakana-nca-beacon-anchor-nca-territorial-sim-scoping-inventory-90-ex.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-19T21:31:07.048Z",
+  "schema_version": "v1",
+  "commit_sha": "9440f3bb26b5c5dd00a387c6fa563c642ef20e1a",
+  "title": "docs+memory: Sakana-NCA Beacon anchor + NCA-territorial-sim scoping (inventory: ~90% existing substrate)",
+  "state": "MERGED",
+  "merged_at": "2026-06-19T21:30:42Z",
+  "head_ref": "otto/sakana-nca-anchor-plus-nca-sim-inventory-scoping"
+}

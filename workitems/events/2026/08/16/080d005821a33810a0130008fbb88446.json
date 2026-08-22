@@ -1,0 +1,14 @@
+{
+  "id": "080d005821a33810a0130008fbb88446",
+  "at": "2026-08-16T14:40:20.071Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M05G8D36087G0R0034D3QPA",
+    "type": "bug",
+    "title": "ZETA_TELEMETRY_FLUSH_TOKEN cannot git push: heartbeat lanes died 403 after #10850",
+    "slug": "zeta-telemetry-flush-token-cannot-git-push-heartbeat-lanes-d",
+    "priority": "P1",
+    "filename": "081M05G8D36087G0R0034D3QPA-zeta-telemetry-flush-token-cannot-git-push-heartbeat-lanes-d.md"
+  }
+}

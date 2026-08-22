@@ -1,0 +1,12 @@
+{
+  "pr_number": 9994,
+  "archive_path": "docs/history/pr-reviews/PR-9994-rules-engagement-profiles-compile-public-work-freely-ask-don-t-infer-about-inner.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-02T20:35:28.188Z",
+  "schema_version": "v1",
+  "commit_sha": "bc2d7336ffb11bde46ddc3aae3a9db1eda3a2bdb",
+  "title": "rules: engagement profiles — compile public work freely; ask (don't infer) about inner life",
+  "state": "MERGED",
+  "merged_at": "2026-08-02T20:34:56Z",
+  "head_ref": "rules/engagement-profiles-fix-public-work-belongs-in-repo-20260802"
+}

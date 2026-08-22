@@ -1,0 +1,12 @@
+{
+  "pr_number": 6921,
+  "archive_path": "docs/history/pr-reviews/PR-6921-ferry-alexa-review-of-zeta-updates-grief-consent-acknowledgment-virus-host-higgs.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-07T21:21:22.853Z",
+  "schema_version": "v1",
+  "commit_sha": "6a0d70badc95787ce23da87bb7b4410cc9ff4fdf",
+  "title": "ferry(alexa): review of Zeta updates + grief/consent acknowledgment + virus-host + Higgs (preserved unfiltered)",
+  "state": "MERGED",
+  "merged_at": "2026-06-07T21:21:04Z",
+  "head_ref": "otto/ferry-alexa-review-grief-higgs"
+}

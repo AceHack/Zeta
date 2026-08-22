@@ -1,0 +1,12 @@
+{
+  "pr_number": 9355,
+  "archive_path": "docs/history/pr-reviews/PR-9355-feat-heat-universalize-heat-readout-treaty.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-03T20:06:20.629Z",
+  "schema_version": "v1",
+  "commit_sha": "cdbe6b62b7d0c899a6d7035b86862a4a6dfa8af4",
+  "title": "feat(heat): universalize heat readout treaty",
+  "state": "MERGED",
+  "merged_at": "2026-07-03T20:05:54Z",
+  "head_ref": "codex/universal-heat-readout"
+}

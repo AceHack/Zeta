@@ -1,0 +1,16 @@
+{
+  "pr_number": 6643,
+  "archive_path": "docs/history/pr-reviews/PR-6643-ci-ace-fix-forward-bun-install-in-cross-verify-job-z3-solver-module-not-found.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7HgN88",
+    "comment:PRRC_kwDOSF9kNM7HgVMJ",
+    "thread:PRRT_kwDOSF9kNM6Gruia"
+  ],
+  "fetched_at": "2026-06-03T08:56:59.773Z",
+  "schema_version": "v1",
+  "commit_sha": "340606f8ed340abf8f145bfff2f7e84806626e7f",
+  "title": "ci(ace): fix-forward — bun install in cross-verify job (z3-solver MODULE_NOT_FOUND)",
+  "state": "MERGED",
+  "merged_at": "2026-06-03T08:56:34Z",
+  "head_ref": "otto-windows/ace-cross-verify-ci-z3-fix-2026-06-03"
+}

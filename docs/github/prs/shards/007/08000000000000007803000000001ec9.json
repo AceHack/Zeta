@@ -1,0 +1,21 @@
+{
+  "pr_number": 7881,
+  "archive_path": "docs/history/pr-reviews/PR-7881-refactor-wire-poll-pr-gate-batch-through-priorityferrythrottler.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7K0CuA",
+    "comment:PRRC_kwDOSF9kNM7K0YCT",
+    "comment:PRRC_kwDOSF9kNM7K0YCb",
+    "comment:PRRC_kwDOSF9kNM7Kzr0Q",
+    "thread:PRRT_kwDOSF9kNM6JF6ik",
+    "thread:PRRT_kwDOSF9kNM6JGKqd",
+    "thread:PRRT_kwDOSF9kNM6JGZp-",
+    "thread:PRRT_kwDOSF9kNM6JGZp2"
+  ],
+  "fetched_at": "2026-06-12T10:58:53.914Z",
+  "schema_version": "v1",
+  "commit_sha": "4f0bb69c5f818dc92241fa15bd18706d983a27d0",
+  "title": "refactor: wire poll-pr-gate-batch through PriorityFerryThrottler",
+  "state": "MERGED",
+  "merged_at": "2026-06-12T10:58:29Z",
+  "head_ref": "kiro/ferry-throttler-ts-port"
+}

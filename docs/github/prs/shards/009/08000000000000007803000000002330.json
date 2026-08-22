@@ -1,0 +1,12 @@
+{
+  "pr_number": 9008,
+  "archive_path": "docs/history/pr-reviews/PR-9008-docs-research-banana-split-external-g-sets-bifurcate-into-z-sets-via-saga-compen.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-21T21:06:58.716Z",
+  "schema_version": "v1",
+  "commit_sha": "bd2ea5d8553e6dc3a69f07676ed1b8f7b765edde",
+  "title": "docs(research): \"banana split\" — external G-sets bifurcate into Z-sets via saga compensation",
+  "state": "MERGED",
+  "merged_at": "2026-06-21T21:06:32Z",
+  "head_ref": "otto/banana-split-gset-to-zset-saga"
+}

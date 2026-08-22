@@ -1,0 +1,12 @@
+{
+  "pr_number": 3513,
+  "archive_path": "docs/history/pr-reviews/PR-3513-feat-persona-riven-33-archive-migration-12-files-persona-folder-creation.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-15T16:01:43.503Z",
+  "schema_version": "v1",
+  "commit_sha": "35539da26b26f0888d688b14290472df063a6a29",
+  "title": "feat(persona-riven): §33 archive migration — 12 files + persona folder creation",
+  "state": "MERGED",
+  "merged_at": "2026-05-15T16:01:17Z",
+  "head_ref": "feat/persona-riven-migrate-conversations-otto-cli-2026-05-15"
+}

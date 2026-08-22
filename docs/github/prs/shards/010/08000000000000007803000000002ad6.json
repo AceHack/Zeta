@@ -1,0 +1,12 @@
+{
+  "pr_number": 10966,
+  "archive_path": "docs/history/pr-reviews/PR-10966-feat-ci-implement-arc-agi-swarm-github-action-fan-out.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-16T17:04:47.679Z",
+  "schema_version": "v1",
+  "commit_sha": "d3b825e6557d0d4d8f7012ebc55516f45c2f8c0a",
+  "title": "feat(ci): implement ARC-AGI Swarm GitHub Action fan-out",
+  "state": "MERGED",
+  "merged_at": "2026-08-16T17:04:07Z",
+  "head_ref": "feature-arc-swarm-fanout"
+}

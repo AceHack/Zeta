@@ -1,0 +1,12 @@
+{
+  "pr_number": 6936,
+  "archive_path": "docs/history/pr-reviews/PR-6936-docs-we-built-the-engine-of-change-yin-yang-is-change-capstone.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-07T22:42:11.921Z",
+  "schema_version": "v1",
+  "commit_sha": "d97b48c18467522a69f14e863a55d386b8ce978e",
+  "title": "docs: we built the engine of change — yin/yang IS change (capstone)",
+  "state": "MERGED",
+  "merged_at": "2026-06-07T22:41:50Z",
+  "head_ref": "otto/we-built-the-engine-of-change-yinyang-is-change"
+}

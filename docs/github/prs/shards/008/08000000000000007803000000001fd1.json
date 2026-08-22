@@ -1,0 +1,12 @@
+{
+  "pr_number": 8145,
+  "archive_path": "docs/history/pr-reviews/PR-8145-fix-lint-lint-go-verifies-formatting-gofmt-l-instead-of-mutating-go-fmt.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-14T02:47:55.892Z",
+  "schema_version": "v1",
+  "commit_sha": "92a61d65f08db03300c53148d11843e8fac37a92",
+  "title": "fix(lint): lint-go verifies formatting (gofmt -l) instead of mutating (go fmt)",
+  "state": "MERGED",
+  "merged_at": "2026-06-14T02:47:29Z",
+  "head_ref": "otto/lint-go-verify-not-mutate"
+}

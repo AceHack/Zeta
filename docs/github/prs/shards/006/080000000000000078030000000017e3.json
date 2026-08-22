@@ -1,0 +1,12 @@
+{
+  "pr_number": 6115,
+  "archive_path": "docs/history/pr-reviews/PR-6115-rule-no-directives-inherit-not-extend-is-no-privilege-escalation-security-articu.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-30T14:10:33.391Z",
+  "schema_version": "v1",
+  "commit_sha": "37b23c4c2024f1c6765d5bdc796c664ae76c1f5e",
+  "title": "rule(no-directives): inherit-not-extend IS no-privilege-escalation (security articulation)",
+  "state": "MERGED",
+  "merged_at": "2026-05-30T14:10:15Z",
+  "head_ref": "otto/privilege-escalation-framing-2026-05-30"
+}

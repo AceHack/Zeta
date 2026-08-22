@@ -1,0 +1,12 @@
+{
+  "pr_number": 9784,
+  "archive_path": "docs/history/pr-reviews/PR-9784-feat-orbit-phaseportrait-the-chaotic-fourth-class-measured-faithful-phase-portra.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-31T14:28:19.058Z",
+  "schema_version": "v1",
+  "commit_sha": "c72c64734de181c19d1d7df1c16b41a02b02eda5",
+  "title": "feat(Orbit+PhasePortrait): the Chaotic fourth class (measured λ) + faithful phase-portrait render",
+  "state": "MERGED",
+  "merged_at": "2026-07-31T14:27:50Z",
+  "head_ref": "shadow/orbit-chaotic-class-phase-portrait"
+}

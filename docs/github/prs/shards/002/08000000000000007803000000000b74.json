@@ -1,0 +1,23 @@
+{
+  "pr_number": 2932,
+  "archive_path": "docs/history/pr-reviews/PR-2932-shard-tick-0424z-storage-substrate-cascade-dbpedia-distributed-maintainer-archit.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7AnNti",
+    "comment:PRRC_kwDOSF9kNM7AnNtl",
+    "comment:PRRC_kwDOSF9kNM7AnO53",
+    "comment:PRRC_kwDOSF9kNM7AnO6R",
+    "comment:PRRC_kwDOSF9kNM7Anb6L",
+    "thread:PRRT_kwDOSF9kNM6Bohfj",
+    "thread:PRRT_kwDOSF9kNM6Bohfl",
+    "thread:PRRT_kwDOSF9kNM6Boiae",
+    "thread:PRRT_kwDOSF9kNM6Boiaz",
+    "thread:PRRT_kwDOSF9kNM6Bor3o"
+  ],
+  "fetched_at": "2026-05-13T04:53:30.052Z",
+  "schema_version": "v1",
+  "commit_sha": "6de9109f31f56e9da11f916263e844e1114a29fa",
+  "title": "shard(tick): 0424Z — storage substrate cascade + DBpedia + distributed maintainer architecture (six PRs in 29min window)",
+  "state": "MERGED",
+  "merged_at": "2026-05-13T04:53:12Z",
+  "head_ref": "otto-tick-shard-0424Z-storage-substrate-cascade-distributed-maintainer-architecture-2026-05-13"
+}

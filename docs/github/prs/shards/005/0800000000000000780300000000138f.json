@@ -1,0 +1,23 @@
+{
+  "pr_number": 5007,
+  "archive_path": "docs/history/pr-reviews/PR-5007-feat-agentic-org-replay-nats-outbox-follow-up.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7EtCu1",
+    "comment:PRRC_kwDOSF9kNM7EtCuj",
+    "comment:PRRC_kwDOSF9kNM7EtCuv",
+    "comment:PRRC_kwDOSF9kNM7EtCvA",
+    "comment:PRRC_kwDOSF9kNM7EtCvN",
+    "thread:PRRT_kwDOSF9kNM6EonDK",
+    "thread:PRRT_kwDOSF9kNM6EonDT",
+    "thread:PRRT_kwDOSF9kNM6EonDX",
+    "thread:PRRT_kwDOSF9kNM6EonDg",
+    "thread:PRRT_kwDOSF9kNM6EonDs"
+  ],
+  "fetched_at": "2026-05-25T22:46:20.222Z",
+  "schema_version": "v1",
+  "commit_sha": "da87719cc76fefd9c80fb9d5a14e5ed22b6751df",
+  "title": "feat(agentic-org): replay NATS outbox follow-up",
+  "state": "MERGED",
+  "merged_at": "2026-05-25T22:46:02Z",
+  "head_ref": "claim/task-pr-4990-nats-outbox-replay"
+}

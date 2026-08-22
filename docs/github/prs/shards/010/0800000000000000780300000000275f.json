@@ -1,0 +1,12 @@
+{
+  "pr_number": 10079,
+  "archive_path": "docs/history/pr-reviews/PR-10079-research-zeta-is-quantum-identity-an-identity-information-basis-for-qm-cqm-relat.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-07T02:25:58.618Z",
+  "schema_version": "v1",
+  "commit_sha": "cac1584f4e287775443832068641ad4b002f0d4b",
+  "title": "research: Zeta is quantum identity — an identity/information basis for QM (CQM · relational · it-from-bit)",
+  "state": "MERGED",
+  "merged_at": "2026-08-07T02:25:27Z",
+  "head_ref": "docs/research-zeta-is-quantum-identity"
+}

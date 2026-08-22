@@ -1,0 +1,12 @@
+{
+  "pr_number": 3577,
+  "archive_path": "docs/history/pr-reviews/PR-3577-shard-tick-2020z-otto-279-batch-4-final-per-name-attribution-tools-github-test-t.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-15T20:26:34.957Z",
+  "schema_version": "v1",
+  "commit_sha": "964f51e9039906240bc419b7973b083c1ba50f71",
+  "title": "shard(tick): 2020Z — Otto-279 batch #4 (final per-name-attribution): tools/github/test + tools/peer-call",
+  "state": "MERGED",
+  "merged_at": "2026-05-15T20:26:16Z",
+  "head_ref": "shard/tick-2020z-otto-cli-2026-05-15"
+}

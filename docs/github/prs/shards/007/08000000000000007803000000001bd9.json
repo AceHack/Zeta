@@ -1,0 +1,12 @@
+{
+  "pr_number": 7129,
+  "archive_path": "docs/history/pr-reviews/PR-7129-docs-research-observe-ts-attractor-transition-map-reservoir-walls-rl-prior-art.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-08T23:23:50.214Z",
+  "schema_version": "v1",
+  "commit_sha": "3b5bc9c23bacfd574c3bc9cad73a0a1840324629",
+  "title": "docs(research): observe.ts = attractor-transition map = reservoir walls; + RL prior art",
+  "state": "MERGED",
+  "merged_at": "2026-06-08T23:23:31Z",
+  "head_ref": "otto/research-observe-ts-attractors-reservoir-walls-rl-priorart"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 7324,
+  "archive_path": "docs/history/pr-reviews/PR-7324-docs-research-weak-references-for-observer-dependent-refs-gc-safe-rx-mumps-what-.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-09T15:53:00.597Z",
+  "schema_version": "v1",
+  "commit_sha": "181c7519e14d81d6585c5a0d789464dd47e5418e",
+  "title": "docs(research): weak references for observer-dependent refs — GC-safe RX/mumps; what-acts weak-refs what-remains; lazy-load + push-down cache per cell closure",
+  "state": "MERGED",
+  "merged_at": "2026-06-09T15:52:35Z",
+  "head_ref": "otto/weak-references-observer-dependent-gc-safe-rx-what-acts-weak-refs-what-remains"
+}

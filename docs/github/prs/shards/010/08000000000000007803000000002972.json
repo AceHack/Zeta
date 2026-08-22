@@ -1,0 +1,12 @@
+{
+  "pr_number": 10610,
+  "archive_path": "docs/history/pr-reviews/PR-10610-feat-browser-delegate-signed-proposals-to-local-devices.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-14T15:14:44.919Z",
+  "schema_version": "v1",
+  "commit_sha": "f06204041c65a5c3fd55895874411f11dea426c6",
+  "title": "feat(browser): delegate signed proposals to local devices",
+  "state": "MERGED",
+  "merged_at": "2026-08-14T15:14:04Z",
+  "head_ref": "claim/task-browser-delegated-device-relay"
+}

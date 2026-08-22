@@ -1,0 +1,12 @@
+{
+  "pr_number": 10136,
+  "archive_path": "docs/history/pr-reviews/PR-10136-fix-planning-restore-calibration-bridge-type-safety.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-07T19:35:55.238Z",
+  "schema_version": "v1",
+  "commit_sha": "cc82393fb2b6b394ea540ea39b33dff222b3804c",
+  "title": "fix(planning): restore calibration bridge type safety",
+  "state": "MERGED",
+  "merged_at": "2026-08-07T19:35:22Z",
+  "head_ref": "claim/bug-main-calibration-bridge-tsc"
+}

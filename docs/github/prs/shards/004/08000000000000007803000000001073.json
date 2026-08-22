@@ -1,0 +1,17 @@
+{
+  "pr_number": 4211,
+  "archive_path": "docs/history/pr-reviews/PR-4211-shard-2120z-brief-ack-1-named-bounded-wait-on-4207-4210-ci-completion.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7Ccg8y",
+    "comment:PRRC_kwDOSF9kNM7Ccg9k",
+    "thread:PRRT_kwDOSF9kNM6C-fcn",
+    "thread:PRRT_kwDOSF9kNM6C-fdS"
+  ],
+  "fetched_at": "2026-05-18T22:04:33.216Z",
+  "schema_version": "v1",
+  "commit_sha": "36e7b37ba9b2c54dcdcac55150feb4f16d1a6ae6",
+  "title": "shard(2120Z): brief-ack #1 — named bounded-wait on #4207 + #4210 CI completion",
+  "state": "MERGED",
+  "merged_at": "2026-05-18T22:04:16Z",
+  "head_ref": "shard/tick-2120z-brief-ack-1-named-dep-4207-4210-ci-wait-2026-05-18"
+}

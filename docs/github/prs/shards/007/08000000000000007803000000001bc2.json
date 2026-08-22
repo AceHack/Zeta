@@ -1,0 +1,12 @@
+{
+  "pr_number": 7106,
+  "archive_path": "docs/history/pr-reviews/PR-7106-feat-core-softdrive-frame-aware-live-mpc-variants.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-08T13:10:36.077Z",
+  "schema_version": "v1",
+  "commit_sha": "ec6e59329119543e67eb1769a8e9dd450fae796d",
+  "title": "feat(core): SoftDrive frame-aware (live) MPC variants",
+  "state": "MERGED",
+  "merged_at": "2026-06-08T13:10:10Z",
+  "head_ref": "otto/softdrive-frame-aware-live-mpc-driver"
+}

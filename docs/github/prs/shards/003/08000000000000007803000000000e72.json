@@ -1,0 +1,12 @@
+{
+  "pr_number": 3698,
+  "archive_path": "docs/history/pr-reviews/PR-3698-shard-tick-2026-05-16t03-04z-copilot-round-2-on-3692-2-cross-platform-fixes.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-16T03:09:21.187Z",
+  "schema_version": "v1",
+  "commit_sha": "1542816ae3be1c3e20c5c62972468466ff8a6bee",
+  "title": "shard(tick): 2026-05-16T03:04Z — Copilot round-2 on #3692 (2 cross-platform fixes)",
+  "state": "MERGED",
+  "merged_at": "2026-05-16T03:09:02Z",
+  "head_ref": "shard/tick-0304z-otto-cli-2026-05-16"
+}

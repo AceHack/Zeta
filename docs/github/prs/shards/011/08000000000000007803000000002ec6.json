@@ -1,0 +1,12 @@
+{
+  "pr_number": 11974,
+  "archive_path": "docs/history/pr-reviews/PR-11974-feat-observe-widen-the-self-claim-surface-to-standing-practice-claims-with-a-rea.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-18T14:48:18.196Z",
+  "schema_version": "v1",
+  "commit_sha": "cd28a3e11d19bc582c677e7f6f433ebeb98b7a4b",
+  "title": "feat(observe): widen the self-claim surface to standing practice claims, with a real consumer",
+  "state": "MERGED",
+  "merged_at": "2026-08-18T14:47:12Z",
+  "head_ref": "feat/practice-claims-self-claim-surface"
+}

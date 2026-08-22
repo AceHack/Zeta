@@ -1,0 +1,15 @@
+{
+  "pr_number": 4144,
+  "archive_path": "docs/history/pr-reviews/PR-4144-backlog-b-0614-fold-instance-5-otto-cli-cold-boot-2026-05-18t06-47z-cross-sessio.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7CKW_s",
+    "thread:PRRT_kwDOSF9kNM6CxL90"
+  ],
+  "fetched_at": "2026-05-18T09:34:30.310Z",
+  "schema_version": "v1",
+  "commit_sha": "f2188ae16ce74a14d7a223768df2c197f011ea08",
+  "title": "backlog(B-0614): fold instance #5 — Otto-CLI cold-boot 2026-05-18T06:47Z; cross-session evidence",
+  "state": "MERGED",
+  "merged_at": "2026-05-18T09:34:08Z",
+  "head_ref": "otto/b0614-i5-fold-0737z"
+}

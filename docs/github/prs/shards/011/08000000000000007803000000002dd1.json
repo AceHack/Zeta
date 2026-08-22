@@ -1,0 +1,12 @@
+{
+  "pr_number": 11729,
+  "archive_path": "docs/history/pr-reviews/PR-11729-bug-hygiene-file-the-agencysignature-diagnostic-that-names-the-wrong-artifact.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-18T00:29:13.078Z",
+  "schema_version": "v1",
+  "commit_sha": "67636696481a8c2ed0474d46f1ada31c528ebdd8",
+  "title": "bug(hygiene): file the agencysignature diagnostic that names the wrong artifact",
+  "state": "MERGED",
+  "merged_at": "2026-08-18T00:28:34Z",
+  "head_ref": "shadow/agencysig-diagnostic-names-wrong-artifact"
+}

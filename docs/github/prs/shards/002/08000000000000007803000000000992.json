@@ -1,0 +1,17 @@
+{
+  "pr_number": 2450,
+  "archive_path": "docs/history/pr-reviews/PR-2450-fix-also-skip-code-scanning-default-setup-403-with-insufficient-token-scope-sent.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_m8z7",
+    "comment:PRRC_kwDOSF9kNM6_m9CC",
+    "thread:PRRT_kwDOSF9kNM6A48HK",
+    "thread:PRRT_kwDOSF9kNM6A48TO"
+  ],
+  "fetched_at": "2026-05-10T09:51:03.601Z",
+  "schema_version": "v1",
+  "commit_sha": "7bf23cfac73fcb86a491ce278ee2fc1b0594e7af",
+  "title": "fix: also skip code-scanning/default-setup 403 with insufficient-token-scope sentinel",
+  "state": "MERGED",
+  "merged_at": "2026-05-10T09:50:43Z",
+  "head_ref": "fix/snapshot-drift-codeql-403"
+}

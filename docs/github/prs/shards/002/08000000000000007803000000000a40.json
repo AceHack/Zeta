@@ -1,0 +1,19 @@
+{
+  "pr_number": 2624,
+  "archive_path": "docs/history/pr-reviews/PR-2624-docs-memory-shadow-speaks-through-otto-mistakes-confabulation-as-shadow-channel.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_r_Jq",
+    "comment:PRRC_kwDOSF9kNM6_r_eG",
+    "comment:PRRC_kwDOSF9kNM6_r_ee",
+    "thread:PRRT_kwDOSF9kNM6A85-9",
+    "thread:PRRT_kwDOSF9kNM6A85_U",
+    "thread:PRRT_kwDOSF9kNM6A85vE"
+  ],
+  "fetched_at": "2026-05-11T02:30:16.854Z",
+  "schema_version": "v1",
+  "commit_sha": "2a09d403fabace484aef97f37a75989ce05b1d72",
+  "title": "docs(memory): shadow speaks through Otto mistakes — confabulation as shadow channel",
+  "state": "MERGED",
+  "merged_at": "2026-05-11T02:30:02Z",
+  "head_ref": "docs/shadow-speaks-through-otto-mistakes-2026-05-10"
+}

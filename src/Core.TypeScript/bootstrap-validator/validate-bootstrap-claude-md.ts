@@ -36,11 +36,11 @@
 //   fails. The threshold is a tunable --max-lines, not a buried constant.
 //
 // Usage:
-//   bun tools/bootstrap-validator/validate-bootstrap-claude-md.ts
-//   bun tools/bootstrap-validator/validate-bootstrap-claude-md.ts --json
-//   bun tools/bootstrap-validator/validate-bootstrap-claude-md.ts --root <path>
-//   bun tools/bootstrap-validator/validate-bootstrap-claude-md.ts --max-lines 150
-//   bun tools/bootstrap-validator/validate-bootstrap-claude-md.ts --help
+//   bun src/Core.TypeScript/bootstrap-validator/validate-bootstrap-claude-md.ts
+//   bun src/Core.TypeScript/bootstrap-validator/validate-bootstrap-claude-md.ts --json
+//   bun src/Core.TypeScript/bootstrap-validator/validate-bootstrap-claude-md.ts --root <path>
+//   bun src/Core.TypeScript/bootstrap-validator/validate-bootstrap-claude-md.ts --max-lines 150
+//   bun src/Core.TypeScript/bootstrap-validator/validate-bootstrap-claude-md.ts --help
 //
 // Exit codes:
 //   0 — all hard checks passed (warns are allowed)

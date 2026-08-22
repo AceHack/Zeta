@@ -1,0 +1,12 @@
+{
+  "pr_number": 9897,
+  "archive_path": "docs/history/pr-reviews/PR-9897-fix-heartbeat-flush-must-squash-main-forbids-merge-commits-required-linear-histo.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-01T16:57:22.990Z",
+  "schema_version": "v1",
+  "commit_sha": "f0f8bb907045b0241e03ed2d8245f61c8c71109b",
+  "title": "fix(heartbeat): flush must SQUASH — main forbids merge commits (required_linear_history)",
+  "state": "MERGED",
+  "merged_at": "2026-08-01T16:56:53Z",
+  "head_ref": "shadow/flush-squash-for-linear-history"
+}

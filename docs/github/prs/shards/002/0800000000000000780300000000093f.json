@@ -1,0 +1,12 @@
+{
+  "pr_number": 2367,
+  "archive_path": "docs/history/pr-reviews/PR-2367-fix-b-0373-strengthen-causalpower-lemma-17-add-statea1-statea2-close-b-0357-b-03.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-09T23:03:53.483Z",
+  "schema_version": "v1",
+  "commit_sha": "45c8f177e654d8934f73e55ad2bd4f0a37b0a67c",
+  "title": "fix(B-0373): strengthen CausalPower Lemma 17 — add stateA1≠stateA2 + close B-0357/B-0365/B-0365.5/B-0373",
+  "state": "MERGED",
+  "merged_at": "2026-05-09T23:03:34Z",
+  "head_ref": "chore/b0373-adversarial-review-causal-power-proof-fix-2026-05-09"
+}

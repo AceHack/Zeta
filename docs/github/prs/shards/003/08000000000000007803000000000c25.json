@@ -1,0 +1,16 @@
+{
+  "pr_number": 3109,
+  "archive_path": "docs/history/pr-reviews/PR-3109-fix-b-0260-make-reindexer-recursive-scan-memory-subdirectories.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7BGfX1",
+    "comment:PRRC_kwDOSF9kNM7BGi_P",
+    "thread:PRRT_kwDOSF9kNM6B_PP3"
+  ],
+  "fetched_at": "2026-05-14T07:16:41.361Z",
+  "schema_version": "v1",
+  "commit_sha": "a2179657ec1c34f60ce486bbd09ca25a0013126f",
+  "title": "fix(b-0260): make reindexer recursive — scan memory/ subdirectories",
+  "state": "MERGED",
+  "merged_at": "2026-05-14T07:16:22Z",
+  "head_ref": "feat/b-0260-reindexer-recursive-subdir-2026-05-14"
+}

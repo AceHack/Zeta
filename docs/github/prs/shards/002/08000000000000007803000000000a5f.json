@@ -1,0 +1,12 @@
+{
+  "pr_number": 2655,
+  "archive_path": "docs/history/pr-reviews/PR-2655-docs-memory-otto-s-assessment-deepseek-compiler-spec-6-9-month-correction.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-11T06:35:05.454Z",
+  "schema_version": "v1",
+  "commit_sha": "4208b0ffd334b600bec18734e7c27c20de6a6c09",
+  "title": "docs(memory): Otto's assessment — DeepSeek compiler spec, 6-9 month correction",
+  "state": "MERGED",
+  "merged_at": "2026-05-11T06:34:50Z",
+  "head_ref": "docs/otto-assessment-deepseek-compiler-spec-2026-05-11"
+}

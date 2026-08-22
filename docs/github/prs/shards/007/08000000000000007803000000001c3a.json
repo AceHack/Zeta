@@ -1,0 +1,12 @@
+{
+  "pr_number": 7226,
+  "archive_path": "docs/history/pr-reviews/PR-7226-docs-research-the-llm-tv-is-a-neurodivergent-tv-quality-not-quantity-not-pixels-.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-09T06:33:52.572Z",
+  "schema_version": "v1",
+  "commit_sha": "0076489574e804fefe82bee32c01d94a40a17a23",
+  "title": "docs(research): the LLM-TV is a neurodivergent TV — quality not quantity (not pixels); Haskell-Prelude-like, via the universal action grammar + font battles",
+  "state": "MERGED",
+  "merged_at": "2026-06-09T06:33:33Z",
+  "head_ref": "otto/research-llm-tv-is-neurodivergent-tv-quality-not-quantity-prelude-grammar-fonts"
+}

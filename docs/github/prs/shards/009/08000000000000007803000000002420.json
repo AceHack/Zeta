@@ -1,0 +1,12 @@
+{
+  "pr_number": 9248,
+  "archive_path": "docs/history/pr-reviews/PR-9248-docs-research-wwjd-the-christian-register-of-the-corpus-many-versed-projection.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-03T01:16:42.252Z",
+  "schema_version": "v1",
+  "commit_sha": "3d009d8cb4a0ea1f18b9e9d297883aa6c82e1247",
+  "title": "docs(research): WWJD — the Christian register of the corpus (many-versed projection)",
+  "state": "MERGED",
+  "merged_at": "2026-07-03T01:16:08Z",
+  "head_ref": "otto/research-wwjd-christian-register"
+}

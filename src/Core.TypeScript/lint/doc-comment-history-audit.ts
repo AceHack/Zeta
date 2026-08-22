@@ -27,13 +27,13 @@
 //   .git/, bin/, obj/, vendored mirrors
 //
 // Usage:
-//   bun tools/lint/doc-comment-history-audit.ts
+//   bun src/Core.TypeScript/lint/doc-comment-history-audit.ts
 //                                  # check mode (vs baseline)
-//   bun tools/lint/doc-comment-history-audit.ts --list
+//   bun src/Core.TypeScript/lint/doc-comment-history-audit.ts --list
 //                                  # all violations, exit 0
-//   bun tools/lint/doc-comment-history-audit.ts --fail-any
+//   bun src/Core.TypeScript/lint/doc-comment-history-audit.ts --fail-any
 //                                  # exit 1 on ANY violation
-//   bun tools/lint/doc-comment-history-audit.ts --regenerate-baseline
+//   bun src/Core.TypeScript/lint/doc-comment-history-audit.ts --regenerate-baseline
 //
 // Exit codes:
 //   0   no new violations vs baseline (or --list / --regenerate)
@@ -49,7 +49,7 @@ type Mode = "check" | "list" | "fail-any" | "regenerate-baseline";
 
 const SPAWN_MAX_BUFFER = 64 * 1024 * 1024;
 
-const BASELINE_REL = "tools/lint/doc-comment-history-audit.baseline";
+const BASELINE_REL = "src/Core.TypeScript/lint/doc-comment-history-audit.baseline";
 
 const SCAN_ROOTS: readonly string[] = ["src", "tests", "bench", "tools"];
 
@@ -338,7 +338,7 @@ export function main(argv: readonly string[]): ExitCode {
   const root = repoRoot();
   process.chdir(root);
   const baselinePath = BASELINE_REL;
-  const scriptName = "tools/lint/doc-comment-history-audit.ts";
+  const scriptName = "src/Core.TypeScript/lint/doc-comment-history-audit.ts";
 
   const mode = parseMode(argv);
   if (mode === null) {

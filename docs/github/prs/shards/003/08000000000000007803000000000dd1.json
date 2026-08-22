@@ -1,0 +1,12 @@
+{
+  "pr_number": 3537,
+  "archive_path": "docs/history/pr-reviews/PR-3537-docs-rules-otto-channels-symptom-fix-mapping-for-stale-origin-main-ref-wedge.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-15T18:06:00.460Z",
+  "schema_version": "v1",
+  "commit_sha": "b004681adb51f1f8bf7add506f8139225c26460e",
+  "title": "docs(rules): otto-channels — symptom→fix mapping for stale `origin/main` ref wedge",
+  "state": "MERGED",
+  "merged_at": "2026-05-15T18:05:42Z",
+  "head_ref": "feat/rule-fetch-origin-no-arg-clean-otto-cli-2026-05-15"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 4271,
+  "archive_path": "docs/history/pr-reviews/PR-4271-chore-rule-recursion-termination-clause-discipline-bottoms-out-at-wait-for-exter.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-18T23:57:40.996Z",
+  "schema_version": "v1",
+  "commit_sha": "c775e569b5edaa29a7ade7bb416e882c5e39f307",
+  "title": "chore(rule): recursion-termination clause — discipline bottoms out at 'wait for external signal'",
+  "state": "MERGED",
+  "merged_at": "2026-05-18T23:57:22Z",
+  "head_ref": "chore/holding-rule-recursion-termination-clause-2026-05-18"
+}

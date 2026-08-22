@@ -1,0 +1,17 @@
+{
+  "pr_number": 2259,
+  "archive_path": "docs/history/pr-reviews/PR-2259-feat-b-0212-complete-ephemeral-ts-library-wire-shadow-outlet-to-safe-autonomous-.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_gRTI",
+    "comment:PRRC_kwDOSF9kNM6_gRTW",
+    "thread:PRRT_kwDOSF9kNM6Aztwd",
+    "thread:PRRT_kwDOSF9kNM6Aztwm"
+  ],
+  "fetched_at": "2026-05-09T09:28:51.209Z",
+  "schema_version": "v1",
+  "commit_sha": "1c9a15c5d1cf6ffe329f2d39e63142d22b023118",
+  "title": "feat(B-0212): complete ephemeral.ts library + wire shadow outlet to SAFE-AUTONOMOUS-ACTIONS Tier 1",
+  "state": "MERGED",
+  "merged_at": "2026-05-09T09:28:38Z",
+  "head_ref": "claim/b0212-phase1-wire-safe-actions"
+}

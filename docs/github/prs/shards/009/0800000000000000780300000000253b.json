@@ -1,0 +1,12 @@
+{
+  "pr_number": 9531,
+  "archive_path": "docs/history/pr-reviews/PR-9531-chore-workitem-complete-081kwt9wbpd-self-audit-physics-resolved-unification-prov.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-08T21:25:34.058Z",
+  "schema_version": "v1",
+  "commit_sha": "310089225c8f93ddf3bfc8545fd40d606cc406b8",
+  "title": "chore(workitem): complete 081KWT9WBPD — self-audit-physics RESOLVED (unification proven) (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-08T21:24:59Z",
+  "head_ref": "otto/complete-workitem-self-audit-physics"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 7458,
+  "archive_path": "docs/history/pr-reviews/PR-7458-feat-style-docs-shadow-stylelint-tool-not-gate-wired-style-css-inversion-self-en.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-10T05:35:01.826Z",
+  "schema_version": "v1",
+  "commit_sha": "16904f8882a68588e73e553a0e5677145aba284b",
+  "title": "feat(style)+docs+shadow: stylelint tool (not gate-wired) + style/CSS inversion (self-enforced at traveler-interface boundary, frame-relative views)",
+  "state": "MERGED",
+  "merged_at": "2026-06-10T05:34:40Z",
+  "head_ref": "shadow-style-css-inversion-self-enforced"
+}

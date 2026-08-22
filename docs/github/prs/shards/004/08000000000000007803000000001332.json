@@ -1,0 +1,31 @@
+{
+  "pr_number": 4914,
+  "archive_path": "docs/history/pr-reviews/PR-4914-shard-2026-05-25-1009z-cold-boot-sentinel-fired-again-lior-substrate-stale-super.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7Ei8JK",
+    "comment:PRRC_kwDOSF9kNM7Ei8JQ",
+    "comment:PRRC_kwDOSF9kNM7Ei9IT",
+    "comment:PRRC_kwDOSF9kNM7Ei9J2",
+    "comment:PRRC_kwDOSF9kNM7Ei9JS",
+    "comment:PRRC_kwDOSF9kNM7Ei9Jn",
+    "comment:PRRC_kwDOSF9kNM7Ei9KP",
+    "comment:PRRC_kwDOSF9kNM7EjAXp",
+    "comment:PRRC_kwDOSF9kNM7EjFYc",
+    "thread:PRRT_kwDOSF9kNM6Eg-kZ",
+    "thread:PRRT_kwDOSF9kNM6Eg-lJ",
+    "thread:PRRT_kwDOSF9kNM6Eg-lX",
+    "thread:PRRT_kwDOSF9kNM6Eg-lh",
+    "thread:PRRT_kwDOSF9kNM6Eg-lx",
+    "thread:PRRT_kwDOSF9kNM6Eg90L",
+    "thread:PRRT_kwDOSF9kNM6Eg90O",
+    "thread:PRRT_kwDOSF9kNM6EhBBC",
+    "thread:PRRT_kwDOSF9kNM6EhEz4"
+  ],
+  "fetched_at": "2026-05-25T10:23:22.104Z",
+  "schema_version": "v1",
+  "commit_sha": "bf89913d614c08567e871c80b06368e600944b48",
+  "title": "shard(2026-05-25/1009Z): cold-boot — sentinel-fired-AGAIN + lior-substrate-stale-superseded empirical anchor",
+  "state": "MERGED",
+  "merged_at": "2026-05-25T10:23:04Z",
+  "head_ref": "shard/tick-2026-05-25-1009z-otto-cli-cold-boot-lior-substrate-stale-superseded"
+}

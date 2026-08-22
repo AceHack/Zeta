@@ -1,0 +1,12 @@
+{
+  "pr_number": 7577,
+  "archive_path": "docs/history/pr-reviews/PR-7577-docs-research-the-tiered-bennett-price-spillover-spines-this-is-the-database-we-.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-11T03:11:03.197Z",
+  "schema_version": "v1",
+  "commit_sha": "3eb84157aa9bd3684d83b3eec67e3cc7c365ed9f",
+  "title": "docs(research): the tiered Bennett price — spillover spines; \"this is the database we are building\"",
+  "state": "MERGED",
+  "merged_at": "2026-06-11T03:10:42Z",
+  "head_ref": "shadow-tiered-bennett-database-identity"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 8774,
+  "archive_path": "docs/history/pr-reviews/PR-8774-feat-core-viewport-2d-viewport-over-a-3d-capable-frame-metaspace-navigation-keys.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-20T21:18:26.503Z",
+  "schema_version": "v1",
+  "commit_sha": "afadb61621b65b87780cdd2292eff5a01b62b6ba",
+  "title": "feat(core): Viewport — 2D viewport over a 3D-capable frame (metaspace navigation keystone)",
+  "state": "MERGED",
+  "merged_at": "2026-06-20T21:17:58Z",
+  "head_ref": "otto/metaspace-viewport-primitive"
+}

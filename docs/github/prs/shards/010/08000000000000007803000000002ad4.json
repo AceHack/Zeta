@@ -1,0 +1,12 @@
+{
+  "pr_number": 10964,
+  "archive_path": "docs/history/pr-reviews/PR-10964-feat-docs-add-burmese-translation-and-deploy-to-pages.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-16T16:50:54.264Z",
+  "schema_version": "v1",
+  "commit_sha": "805602914b531576574e9cf6b9a31f5354ef3e6c",
+  "title": "feat(docs): add Burmese translation and deploy to Pages",
+  "state": "MERGED",
+  "merged_at": "2026-08-16T16:50:16Z",
+  "head_ref": "fix-pages-burmese"
+}

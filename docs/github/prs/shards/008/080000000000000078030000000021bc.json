@@ -1,0 +1,12 @@
+{
+  "pr_number": 8636,
+  "archive_path": "docs/history/pr-reviews/PR-8636-memory-feedback-cross-intelligence-convergence-decorrelated-fixed-point-correlat.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-19T22:08:05.107Z",
+  "schema_version": "v1",
+  "commit_sha": "98b00506bcbf3fcbeb7c5893b89898ed7246f7d2",
+  "title": "memory(feedback): cross-intelligence convergence — decorrelated = fixed point, correlated = hall of mirrors, sync ≠ truth",
+  "state": "MERGED",
+  "merged_at": "2026-06-19T22:07:41Z",
+  "head_ref": "otto/cross-intelligence-convergence-hall-of-mirrors-guard"
+}

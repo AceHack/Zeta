@@ -1,0 +1,17 @@
+{
+  "pr_number": 2412,
+  "archive_path": "docs/history/pr-reviews/PR-2412-feat-b-0050-1-lean-reflection-stage-1-read-only-competence-skill-scouting-note.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_lkaj",
+    "comment:PRRC_kwDOSF9kNM6_lkau",
+    "thread:PRRT_kwDOSF9kNM6A33cD",
+    "thread:PRRT_kwDOSF9kNM6A33cL"
+  ],
+  "fetched_at": "2026-05-10T04:23:30.088Z",
+  "schema_version": "v1",
+  "commit_sha": "f042b083bcad5ac7dbcccc5d2158aac5c554c774",
+  "title": "feat(B-0050.1): Lean reflection Stage 1 — read-only competence skill + scouting note",
+  "state": "MERGED",
+  "merged_at": "2026-05-10T04:23:13Z",
+  "head_ref": "feat/B-0050.1-lean-reflection-stage1-skill"
+}

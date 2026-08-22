@@ -1,0 +1,12 @@
+{
+  "pr_number": 8182,
+  "archive_path": "docs/history/pr-reviews/PR-8182-docs-research-zeta-ir-v2-four-itron-interfaces-collection-engine-negative-anchor.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-14T13:54:23.779Z",
+  "schema_version": "v1",
+  "commit_sha": "bbe0e0c054126179b750a1063e50293d823029d1",
+  "title": "docs(research): Zeta IR v2 — four Itron interfaces + collection-engine negative anchor + cart/shape/CHIP-8",
+  "state": "MERGED",
+  "merged_at": "2026-06-14T13:54:02Z",
+  "head_ref": "otto/zeta-lang-ir-v2-itron-anchor-chip8"
+}

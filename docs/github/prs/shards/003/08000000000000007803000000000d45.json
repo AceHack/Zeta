@@ -1,0 +1,12 @@
+{
+  "pr_number": 3397,
+  "archive_path": "docs/history/pr-reviews/PR-3397-fix-shard-0916z-pipe-row-col-5-pr-tbd-body-discipline-name-ref-restore.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-15T09:33:13.602Z",
+  "schema_version": "v1",
+  "commit_sha": "3b53469f3c9cda9ee9f4fcac43b58df607a5692f",
+  "title": "fix(shard): 0916Z pipe-row col-5 (PR TBD) + body discipline-name ref restore",
+  "state": "MERGED",
+  "merged_at": "2026-05-15T09:32:55Z",
+  "head_ref": "fix/0916z-pipe-row-col-5-otto-cli-2026-05-15"
+}

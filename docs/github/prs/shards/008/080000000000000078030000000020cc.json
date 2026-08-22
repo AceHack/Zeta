@@ -1,0 +1,12 @@
+{
+  "pr_number": 8396,
+  "archive_path": "docs/history/pr-reviews/PR-8396-memory-project-primitive-registry-tracks-proof-homeostat-chains-oracles-4-6-7-w-.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-16T01:31:15.839Z",
+  "schema_version": "v1",
+  "commit_sha": "e077a5c929a8e879bfcbeabedcce33dc7c586785",
+  "title": "memory(project): primitive registry tracks proof + homeostat chains; oracles 4→6 (7 w/ Q#); generating from IR",
+  "state": "MERGED",
+  "merged_at": "2026-06-16T01:30:44Z",
+  "head_ref": "memory/primitive-registry-proof-homeostat-ir-gen"
+}

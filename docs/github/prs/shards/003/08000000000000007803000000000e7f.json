@@ -1,0 +1,12 @@
+{
+  "pr_number": 3711,
+  "archive_path": "docs/history/pr-reviews/PR-3711-shard-tick-2026-05-16t03-34z-audit-lifecycle-md-template-doc-pr-3710.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-16T03:38:14.355Z",
+  "schema_version": "v1",
+  "commit_sha": "cf7e0ed98f1b192f56e660e1640e4828647952c1",
+  "title": "shard(tick): 2026-05-16T03:34Z — AUDIT-LIFECYCLE.md template doc (PR #3710)",
+  "state": "MERGED",
+  "merged_at": "2026-05-16T03:37:55Z",
+  "head_ref": "shard/tick-0334z-otto-cli-2026-05-16"
+}

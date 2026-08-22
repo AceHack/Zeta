@@ -1,0 +1,21 @@
+{
+  "pr_number": 6695,
+  "archive_path": "docs/history/pr-reviews/PR-6695-feat-core-add-group-commit-segment-delta-log.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7IwtbU",
+    "comment:PRRC_kwDOSF9kNM7IwtbW",
+    "comment:PRRC_kwDOSF9kNM7Iwvi8",
+    "comment:PRRC_kwDOSF9kNM7IxdZp",
+    "thread:PRRT_kwDOSF9kNM6HmkfW",
+    "thread:PRRT_kwDOSF9kNM6HmkfY",
+    "thread:PRRT_kwDOSF9kNM6HmmMf",
+    "thread:PRRT_kwDOSF9kNM6HnHwA"
+  ],
+  "fetched_at": "2026-06-06T23:02:58.229Z",
+  "schema_version": "v1",
+  "commit_sha": "e4eeaaa84331680103b3c0386e9254dca0166852",
+  "title": "feat(Core): add group-commit segment delta log",
+  "state": "MERGED",
+  "merged_at": "2026-06-06T23:02:35Z",
+  "head_ref": "codex/vera-durability-fsync-deltalog"
+}

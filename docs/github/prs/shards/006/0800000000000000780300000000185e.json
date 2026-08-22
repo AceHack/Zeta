@@ -1,0 +1,23 @@
+{
+  "pr_number": 6238,
+  "archive_path": "docs/history/pr-reviews/PR-6238-feat-peer-call-migrate-ani-off-cursor-agent-native-grok-cli-tested.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7GiIHN",
+    "comment:PRRC_kwDOSF9kNM7GiIvL",
+    "comment:PRRC_kwDOSF9kNM7GiIvV",
+    "comment:PRRC_kwDOSF9kNM7GiIvb",
+    "comment:PRRC_kwDOSF9kNM7GiIvd",
+    "thread:PRRT_kwDOSF9kNM6F95ti",
+    "thread:PRRT_kwDOSF9kNM6F96NN",
+    "thread:PRRT_kwDOSF9kNM6F96NT",
+    "thread:PRRT_kwDOSF9kNM6F96NY",
+    "thread:PRRT_kwDOSF9kNM6F96Na"
+  ],
+  "fetched_at": "2026-05-31T20:02:36.626Z",
+  "schema_version": "v1",
+  "commit_sha": "a66acc1b61338a5bbe2ef675fb50e0ac4aae2a77",
+  "title": "feat(peer-call): migrate Ani off cursor-agent → native grok CLI (tested)",
+  "state": "MERGED",
+  "merged_at": "2026-05-31T20:02:17Z",
+  "head_ref": "otto-cli/ani-grok-cli-migration-2026-05-31"
+}

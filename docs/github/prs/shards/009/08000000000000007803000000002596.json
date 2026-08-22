@@ -1,0 +1,12 @@
+{
+  "pr_number": 9622,
+  "archive_path": "docs/history/pr-reviews/PR-9622-docs-research-american-dream-2-0-ownership-eigenvector-non-greedy-optimality-the.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-09T19:16:41.099Z",
+  "schema_version": "v1",
+  "commit_sha": "c4c35e340c4b317e0e7a5c9b801ceb31700ac500",
+  "title": "docs(research): American Dream 2.0 — ownership eigenvector, non-greedy optimality, the co-governed self (synthesis) (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-09T19:16:12Z",
+  "head_ref": "otto/american-dream-2-ownership-eigenvector-co-governed"
+}

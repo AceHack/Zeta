@@ -1,0 +1,12 @@
+{
+  "pr_number": 12755,
+  "archive_path": "docs/history/pr-reviews/PR-12755-ferry-ip-questionable-kastner-on-the-transactional-interpretation-what-it-says-a.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-20T12:52:42.970Z",
+  "schema_version": "v1",
+  "commit_sha": "2214452c2052a2388c54b0301a49e7af2e872760",
+  "title": "ferry(ip-questionable): Kastner on the transactional interpretation + what it says about our meter",
+  "state": "MERGED",
+  "merged_at": "2026-08-20T12:52:07Z",
+  "head_ref": "research/measurement-problem-and-our-meter"
+}

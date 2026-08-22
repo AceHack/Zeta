@@ -1,0 +1,12 @@
+{
+  "pr_number": 10227,
+  "archive_path": "docs/history/pr-reviews/PR-10227-fix-empowerment-restore-to-externalitysafe-the-missing-parameter-was-a-consent-i.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-09T20:55:54.800Z",
+  "schema_version": "v1",
+  "commit_sha": "705cd5ebcb3df52e146521bbea58a1170863f500",
+  "title": "fix(empowerment): restore τ to externalitySafe — the missing parameter was a consent inversion",
+  "state": "MERGED",
+  "merged_at": "2026-08-09T20:55:23Z",
+  "head_ref": "shadow/externality-safe-tau-consent-inversion"
+}

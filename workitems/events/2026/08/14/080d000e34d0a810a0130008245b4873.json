@@ -1,0 +1,14 @@
+{
+  "id": "080d000e34d0a810a0130008245b4873",
+  "at": "2026-08-14T19:36:27.925Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M00WD6GM087G0R000ZC8S3K",
+    "type": "task",
+    "title": "Formalize the twisted-group-algebra separation of the Clifford and Cayley-Dickson towers: associativity is the 2-cocycle condition",
+    "slug": "formalize-the-twisted-group-algebra-separation-of-the-cliffo",
+    "priority": "P2",
+    "filename": "081M00WD6GM087G0R000ZC8S3K-formalize-the-twisted-group-algebra-separation-of-the-cliffo.md"
+  }
+}

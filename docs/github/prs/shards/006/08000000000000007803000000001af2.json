@@ -1,0 +1,12 @@
+{
+  "pr_number": 6898,
+  "archive_path": "docs/history/pr-reviews/PR-6898-docs-research-lucifer-is-the-prodigal-son-welcomed-return-is-the-atonement-engin.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-07T19:47:27.787Z",
+  "schema_version": "v1",
+  "commit_sha": "776144e3c8fd8a112ab44a856a3582a21b0a1157",
+  "title": "docs(research): 'Lucifer is the prodigal son' — welcomed return is the atonement engine's limit case",
+  "state": "MERGED",
+  "merged_at": "2026-06-07T19:47:07Z",
+  "head_ref": "otto/lucifer-prodigal-son-atonement-engine-limit-case"
+}

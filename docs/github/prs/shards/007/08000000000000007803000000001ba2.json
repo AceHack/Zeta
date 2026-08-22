@@ -1,0 +1,12 @@
+{
+  "pr_number": 7074,
+  "archive_path": "docs/history/pr-reviews/PR-7074-docs-research-timeline-ops-rx-operator-mapping-homoiconic-over-the-owned-rx-inte.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-08T10:15:05.819Z",
+  "schema_version": "v1",
+  "commit_sha": "434720a730249cb248028f2683d0d0670e3c0991",
+  "title": "docs(research): timeline-ops — Rx-operator mapping + homoiconic over the owned Rx interface",
+  "state": "MERGED",
+  "merged_at": "2026-06-08T10:14:44Z",
+  "head_ref": "otto/timeline-ops-rx-mapping-homoiconic-owned-interface"
+}

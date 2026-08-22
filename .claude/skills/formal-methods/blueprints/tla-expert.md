@@ -8,9 +8,9 @@ description: TLA+ — operators, fairness, refinement mappings, TLC model checki
 Capability skill. No persona. the `formal-verification-expert` (formal-verification-
 expert) owns the portfolio view — "should this property go
 to TLC, Z3, Lean, Alloy, or FsCheck?"; once TLA+ is
-chosen, this hat is the discipline. 18 specs live under
-`tools/tla/specs/`; `tla2tools.jar` installed by
-`tools/setup/common/verifiers.sh`.
+chosen, this hat is the discipline. 36 specs live under
+`src/Core.TLA/specs/`; `tla2tools.jar` is committed at
+`src/Core.TLA/tla2tools.jar`.
 
 ## When to wear
 
@@ -20,7 +20,7 @@ chosen, this hat is the discipline. 18 specs live under
   dump).
 - Debating invariant vs temporal property vs state
   constraint.
-- Reviewing `tools/formal-verification/run-tlc.ts` behaviour.
+- Reviewing `src/Core.TypeScript/formal-verification/run-tlc.ts` behaviour.
 
 ## Zeta's TLA+ scope
 
@@ -33,7 +33,7 @@ chosen, this hat is the discipline. 18 specs live under
   fixpoint.
 - `DbspSpec.tla` — top-level algebra spec.
 
-All live under `tools/tla/specs/`; CI Phase 2 runs TLC
+All live under `src/Core.TLA/specs/`; CI Phase 2 runs TLC
 against every spec daily per `docs/research/ci-gate-
 inventory.md`.
 
@@ -157,16 +157,21 @@ across the portfolio.
 ## Invoking TLC
 
 ```bash
-java -cp tools/tla/tla2tools.jar tlc2.TLC \
-  -config tools/tla/specs/MySpec.cfg \
+java -cp src/Core.TLA/tla2tools.jar tlc2.TLC \
+  -config src/Core.TLA/specs/MySpec.cfg \
   -workers auto \
-  -deadlock \
-  tools/tla/specs/MySpec.tla
+  src/Core.TLA/specs/MySpec.tla
 ```
 
-- `-workers auto` parallelises across cores.
-- `-deadlock` — report deadlocks (default); `-noDeadlock`
-  to suppress.
+- `-workers auto` parallelises across cores. Worker count
+  changes exploration ORDER, so halt-on-violation state
+  counts differ between runs at different widths.
+- `-deadlock` **DISABLES** deadlock checking -- it is the
+  CLI form of `CHECK_DEADLOCK FALSE`, and it overrides the
+  `.cfg`. Checking for deadlock is the DEFAULT, so passing
+  this flag by hand and calling the result green is a
+  weaker check than CI ran. (`tlc2.TLC -help`: "if
+  specified DO NOT CHECK FOR DEADLOCK".)
 - `-fp 1` — fingerprint function; change this value to
   explore a different traversal order if you suspect
   fingerprint collisions.
@@ -230,11 +235,11 @@ spec.
 
 ## Reference patterns
 
-- `tools/tla/specs/*.tla` + `.cfg` — the current spec
+- `src/Core.TLA/specs/*.tla` + `.cfg` — the current spec
   portfolio
-- `tools/tla/tla2tools.jar` — TLC itself (installed by
-  `tools/setup/common/verifiers.sh`)
-- `tools/formal-verification/run-tlc.ts` — invocation wrapper
+- `src/Core.TLA/tla2tools.jar` — TLC itself (committed to
+  git, not installed; sha256 in `docs/INSTALLED.md`)
+- `src/Core.TypeScript/formal-verification/run-tlc.ts` — invocation wrapper
 - `docs/SPEC-CAUGHT-A-BUG.md` — historical record of
   bugs TLC caught
 - `.claude/skills/formal-methods/blueprints/formal-verification-expert.md` —

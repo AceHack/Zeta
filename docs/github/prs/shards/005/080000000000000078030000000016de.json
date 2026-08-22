@@ -1,0 +1,12 @@
+{
+  "pr_number": 5854,
+  "archive_path": "docs/history/pr-reviews/PR-5854-rule-meta-level-vs-intra-algebra-self-reference-distinction-shape-said-so-verbal.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-28T15:50:19.497Z",
+  "schema_version": "v1",
+  "commit_sha": "c280f6870ff9ed4903d88b6ad11e8830fac84a6e",
+  "title": "rule(meta-level-vs-intra-algebra-self-reference-distinction + shape-said-so-verbal-translation-bottleneck): operator cognitive-architecture (operator 2026-05-28 shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-05-28T15:49:56Z",
+  "head_ref": "otto-cli/rule-meta-level-vs-intra-algebra-self-reference-distinction-shape-said-so-translation-bottleneck-2026-05-28"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 3080,
+  "archive_path": "docs/history/pr-reviews/PR-3080-chore-tick-0104z-shard-pr-3075-rename-thread-resolved-pr-3076-merged.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-14T01:15:21.634Z",
+  "schema_version": "v1",
+  "commit_sha": "f582fc3464b9cc849ba82d3f9320f0fd229af857",
+  "title": "chore(tick): 0104Z shard — PR #3075 rename thread resolved + PR #3076 merged",
+  "state": "MERGED",
+  "merged_at": "2026-05-14T01:15:06Z",
+  "head_ref": "chore/tick-shard-0104z-2026-05-14"
+}

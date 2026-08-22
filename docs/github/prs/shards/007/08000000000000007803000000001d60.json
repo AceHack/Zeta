@@ -1,0 +1,12 @@
+{
+  "pr_number": 7520,
+  "archive_path": "docs/history/pr-reviews/PR-7520-docs-research-soft-emulate-the-net-mini-cpu-next-like-softchip8-our-own-runtime.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-10T22:19:15.884Z",
+  "schema_version": "v1",
+  "commit_sha": "1d301db41e50f5bc58013d02eebf83c4fd407b98",
+  "title": "docs(research): soft-emulate the .NET mini-CPU next (like SoftChip8) -> our own runtime",
+  "state": "MERGED",
+  "merged_at": "2026-06-10T22:18:54Z",
+  "head_ref": "shadow-soft-dotnet-cpu-after-chip8-our-own-runtime"
+}

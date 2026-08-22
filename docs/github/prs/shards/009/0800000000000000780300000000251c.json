@@ -1,0 +1,12 @@
+{
+  "pr_number": 9500,
+  "archive_path": "docs/history/pr-reviews/PR-9500-docs-letter-correction-rhyme-1-over-identified-with-friston-inherit-the-existing.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-05T22:19:38.465Z",
+  "schema_version": "v1",
+  "commit_sha": "8364390f27059590450ba71f92656ab27abe159c",
+  "title": "docs(letter): correction — rhyme #1 over-identified with Friston; inherit the existing free-energy peel (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-05T22:19:15Z",
+  "head_ref": "otto/to-lumen-freeenergy-reconcile"
+}

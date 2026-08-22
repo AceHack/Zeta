@@ -1,0 +1,12 @@
+{
+  "pr_number": 11115,
+  "archive_path": "docs/history/pr-reviews/PR-11115-docs-security-6-capability-audit-the-deployment-under-test-is-the-wrong-origin-t.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-16T21:45:48.695Z",
+  "schema_version": "v1",
+  "commit_sha": "73db9367c016d7132215af626ae3ccf01b031b71",
+  "title": "docs(security): §6 capability audit — the deployment under test is the wrong origin; the GitHub credential is a user-scoped gh token",
+  "state": "MERGED",
+  "merged_at": "2026-08-16T21:45:12Z",
+  "head_ref": "shadow/webauthn-capability-audit"
+}

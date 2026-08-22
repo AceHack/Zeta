@@ -1,0 +1,12 @@
+{
+  "pr_number": 9166,
+  "archive_path": "docs/history/pr-reviews/PR-9166-research-frost-is-the-condition-for-identity-leibniz-no-cloning-shadow.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-17T11:55:25.461Z",
+  "schema_version": "v1",
+  "commit_sha": "8909fc866bd0d851bb841f9074a6ecfee90492cb",
+  "title": "research: frost is the CONDITION for identity — Leibniz + no-cloning (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-02T17:15:18Z",
+  "head_ref": "research/frost-is-the-condition-for-identity"
+}

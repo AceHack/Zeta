@@ -27,8 +27,17 @@ workitems/done/YYYY/MM/<zetaid>-<description>.md     # completed (folder = state
 file under `workitems/done/YYYY/MM/` (a git rename of a disjoint file → still conflict-free).
 Frontmatter `state` mirrors it (fine values: `backlog`/`in-progress`/`blocked`/`done`),
 and `type ∈ {task,bug}` is immutable. Completion datetime lives in frontmatter (precise;
-DORA lead-time = created→done). A done item is **immutable**, so the done index is
-incremental + checked into git (append-only, never stale — DV2.0 zero-change-rate satellite).
+DORA lead-time = created→done).
+
+**There is no aggregate done-index, deliberately** (081KZZ3Q990087G0R003QXYVN6). `done/YYYY/MM/`
+*is* the store: one file per record, path a function of the ZetaId, so two agents completing
+items concurrently write disjoint paths and never conflict. The `done/index.jsonl` that used to
+be appended on every completion re-introduced exactly the shared read-modify-write file this
+layout exists to avoid (three hand-resolved merge conflicts on 2026-08-13) while carrying no
+field that is not a projection of the file it pointed at — and at removal it was 36 lines against
+76 done items with zero readers. **Want the list? Walk `workitems/done/**/*.md`** — that walk is
+the index, and it cannot drift. If a consumer ever needs a materialised index, derive it from the
+walk at read time; do not check one in.
 
 ## Create one
 

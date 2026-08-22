@@ -1,0 +1,12 @@
+{
+  "pr_number": 9579,
+  "archive_path": "docs/history/pr-reviews/PR-9579-proof-agda-providedview-univalence-provided-view-univalence-obligation-discharge.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-08T23:54:39.672Z",
+  "schema_version": "v1",
+  "commit_sha": "fe957d2f9d54993e7d15d04a174fb221be17c5a5",
+  "title": "proof(agda): ProvidedView.Univalence — provided-view/univalence obligation discharged on cubical lane (typechecks exit 0) (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-08T23:54:13Z",
+  "head_ref": "otto/univalence-proof-leg"
+}

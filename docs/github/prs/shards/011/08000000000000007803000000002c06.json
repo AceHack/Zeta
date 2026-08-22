@@ -1,0 +1,12 @@
+{
+  "pr_number": 11270,
+  "archive_path": "docs/history/pr-reviews/PR-11270-fix-ts-main-is-red-on-lint-ts-a-semantic-merge-conflict-two-green-prs-made-toget.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-17T02:21:00.130Z",
+  "schema_version": "v1",
+  "commit_sha": "4f46bfd4028cdcc02e5c1443fdcfe26d889477d1",
+  "title": "fix(ts): main is red on `lint (TS)` — a semantic merge conflict two green PRs made together",
+  "state": "MERGED",
+  "merged_at": "2026-08-17T02:20:22Z",
+  "head_ref": "shadow/fix-ts-lint-collision-on-main"
+}

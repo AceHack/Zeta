@@ -1,0 +1,12 @@
+{
+  "pr_number": 9710,
+  "archive_path": "docs/history/pr-reviews/PR-9710-guard-local-time-never-enters-the-shared-fold-rule-fold-site-invariant-convergen.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-11T16:34:33.734Z",
+  "schema_version": "v1",
+  "commit_sha": "e657dfe8853d144cabf87e8717cf18c375359dc1",
+  "title": "guard: local time never enters the shared fold — rule + fold-site invariant + convergence note (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-11T16:34:08Z",
+  "head_ref": "guard-local-time-never-enters-shared-fold"
+}

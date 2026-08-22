@@ -1,0 +1,12 @@
+{
+  "pr_number": 3148,
+  "archive_path": "docs/history/pr-reviews/PR-3148-chore-regenerate-docs-backlog-md-index-add-b-0498-b-0499.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-14T16:33:51.441Z",
+  "schema_version": "v1",
+  "commit_sha": "dd9fa0e7a839112ef5dc2cb83a5a929dd16ae0ec",
+  "title": "chore: regenerate docs/BACKLOG.md index — add B-0498 + B-0499",
+  "state": "MERGED",
+  "merged_at": "2026-05-14T16:33:35Z",
+  "head_ref": "chore/regenerate-backlog-index-add-b0498-b0499-2026-05-14"
+}

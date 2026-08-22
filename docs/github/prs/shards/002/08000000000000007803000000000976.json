@@ -1,0 +1,21 @@
+{
+  "pr_number": 2422,
+  "archive_path": "docs/history/pr-reviews/PR-2422-feat-b-0054-2-video-game-priority-seeds-br-tal-legend-final-fantasy-vi-vii.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_l1Rm",
+    "comment:PRRC_kwDOSF9kNM6_l1Rt",
+    "comment:PRRC_kwDOSF9kNM6_l1Ru",
+    "comment:PRRC_kwDOSF9kNM6_l1Rw",
+    "thread:PRRT_kwDOSF9kNM6A4Eb-",
+    "thread:PRRT_kwDOSF9kNM6A4Eb1",
+    "thread:PRRT_kwDOSF9kNM6A4Eb7",
+    "thread:PRRT_kwDOSF9kNM6A4Eb8"
+  ],
+  "fetched_at": "2026-05-10T05:33:23.385Z",
+  "schema_version": "v1",
+  "commit_sha": "8ea1dcd4c4f6e1a36430ba8e0c588b6b8ccfcfe4",
+  "title": "feat(B-0054.2): video-game priority seeds — Brütal Legend + Final Fantasy VI/VII",
+  "state": "MERGED",
+  "merged_at": "2026-05-10T05:33:05Z",
+  "head_ref": "feat/B-0054.2-video-game-priority-seeds"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 10217,
+  "archive_path": "docs/history/pr-reviews/PR-10217-docs-handoff-answer-what-do-free-llms-consume-the-4-4-16-action-grammar-already-.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-09T19:43:18.056Z",
+  "schema_version": "v1",
+  "commit_sha": "9035607781e60a71bae1c09964c18f41ae7c2314",
+  "title": "docs(handoff): answer 'what do free LLMs consume' — the 4×4 (16) action grammar already exists",
+  "state": "MERGED",
+  "merged_at": "2026-08-09T19:42:48Z",
+  "head_ref": "shadow/handoff-addendum-16-action-grammar"
+}

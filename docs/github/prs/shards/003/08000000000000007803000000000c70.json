@@ -1,0 +1,12 @@
+{
+  "pr_number": 3184,
+  "archive_path": "docs/history/pr-reviews/PR-3184-shard-tick-1851z-pr-3179-arithmetic-fix-3181-mise-rerun.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-14T18:57:14.340Z",
+  "schema_version": "v1",
+  "commit_sha": "6988b29b8ab87a29151f7bdeea997c23723fb665",
+  "title": "shard(tick): 1851Z — PR #3179 arithmetic fix + #3181 mise rerun",
+  "state": "MERGED",
+  "merged_at": "2026-05-14T18:56:58Z",
+  "head_ref": "shard/tick-1851Z-pr3179-arith-fix-and-3181-rerun-2026-05-14"
+}

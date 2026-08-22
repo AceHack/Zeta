@@ -1,0 +1,12 @@
+{
+  "pr_number": 2146,
+  "archive_path": "docs/history/pr-reviews/PR-2146-test-b-0317-preserve-github-auth-entity-decode-regression.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-08T22:58:40.572Z",
+  "schema_version": "v1",
+  "commit_sha": "60bbd5e0d67ad54dac56ca39def17485cdaa3c4d",
+  "title": "test(B-0317): preserve GitHub auth entity decode regression",
+  "state": "MERGED",
+  "merged_at": "2026-05-08T22:58:17Z",
+  "head_ref": "claim/task-b0317-html-entity-regression-codex"
+}

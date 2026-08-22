@@ -1,0 +1,12 @@
+{
+  "pr_number": 6015,
+  "archive_path": "docs/history/pr-reviews/PR-6015-feat-b-0343-parse-seed-ref-update-response.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-29T17:26:41.836Z",
+  "schema_version": "v1",
+  "commit_sha": "22c1a03caeae8820deecbcb252a2ec80f9c4ae01",
+  "title": "feat(B-0343): parse seed ref update response",
+  "state": "MERGED",
+  "merged_at": "2026-05-29T17:26:21Z",
+  "head_ref": "claim/codex-loop-b0343-parse-seed-ref-response-20260529"
+}

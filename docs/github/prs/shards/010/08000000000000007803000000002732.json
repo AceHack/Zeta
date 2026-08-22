@@ -1,0 +1,12 @@
+{
+  "pr_number": 10034,
+  "archive_path": "docs/history/pr-reviews/PR-10034-feat-guardian-gridtelemetry-the-telemetry-to-instrument-adapter-closes-the-grid-.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-04T18:10:15.743Z",
+  "schema_version": "v1",
+  "commit_sha": "f84cc9b0d25ddab992d150e3a7f3d5bb8bd7751f",
+  "title": "feat(guardian): GridTelemetry — the telemetry-to-instrument adapter (closes the grid-trust [want])",
+  "state": "MERGED",
+  "merged_at": "2026-08-04T18:05:46Z",
+  "head_ref": "feat/grid-telemetry-to-instrument-adapter-20260804"
+}

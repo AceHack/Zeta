@@ -89,11 +89,12 @@ These three structures are the **mathematical substrate** of the system:
 
 **Adinkra [8,4,4] ECC** (`adinkra-ecc-prototype.ts`):
 
-- The [8,4,4] extended Hamming code is doubly-even and self-dual.
-- It encodes the 7-channel genome (RGB + CMYK) + 1 parity bit into an 8-bit codeword.
-- Error-correcting: recovers from 1-bit errors in gossip transmission.
+- The [8,4,4] extended Hamming code is doubly-even and self-dual — it is the *unique* doubly-even self-dual binary code of length 8, which is what makes it an adinkra code.
+- It carries **4 data bits** per 8-bit codeword (d=4), so it is error-**correcting**: recovers from 1-bit errors in gossip transmission.
 - Dual-use: the same code structure gives both ECC (protect from errors) and key material (protect from being seen).
-- The `genomeToAdinkraByte` function in `society-evolution.ts` implements this encoding.
+- `adinkra-ecc-prototype.ts` constructs it and *verifies* doubly-even + self-dual; `src/Core.Lean4/Lean4/CayleyDicksonDoublyEven.lean` is the proof layer.
+- **It has real in-tree consumers.** `src/Core/AdinkraCode.fs` pins the generator (with `encode` / `syndrome` / `correct`) and is used by `src/Core/PrivacyPreservingIdentity.fs` (key roots must be codewords), `src/Bayesian/YinYangCell.fs` (cell-state validity), `src/Core/BitAdinkra.fs`, `src/Core/BeliefConvergence.fs` (MacWilliams self-dual fixed point), `src/Bayesian/BusDelayTick.fs`, `src/Core/SoftRegimeStability.fs`. `src/Core.TypeScript/discovery/udp-lossy-transport.ts` uses it as an **erasure code** on the wire — 4 data packets + 4 parity packets per block, recovered by `recoverAdinkraBlock`.
+- **What is NOT an adinkra code:** `society-evolution.ts`'s `genomeToParityByte` (formerly `genomeToAdinkraByte`). It is the single-parity-check **[8,7,2]** — 7 channel MSBs + 1 parity bit, distance 2, **detection only**, not self-dual, not doubly-even. Renamed 2026-08-16: the old name asserted a structure those bytes do not have, and sharing the length 8 identifies nothing. Do not wire it into a path that expects the [8,4,4] guarantees the consumers above rely on — use `AdinkraCode.fs` or `udp-lossy-transport.ts`.
 
 **Hexagonal quantum arithmetic** (`quantum-arith.ts`):
 

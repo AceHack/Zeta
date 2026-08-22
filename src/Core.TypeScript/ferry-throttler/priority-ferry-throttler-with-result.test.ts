@@ -11,6 +11,7 @@ import { describe, expect, it } from "bun:test";
 import { PriorityFerryThrottlerWithResult } from "./priority-ferry-throttler-with-result.ts";
 import type { ProcessBatchWithResult, ItemSizeBytes } from "./ferry-throttler.ts";
 import type { PriorityFerryThrottlerConfig } from "./priority-config.ts";
+import { deferred } from "../testing/deterministic-async";
 
 // ─── Helpers ────────────────────────────────────────────────────────────────
 
@@ -141,7 +142,9 @@ describe("PriorityFerryThrottlerWithResult", () => {
     let gate: (() => void) | undefined;
     const gatePromise = new Promise<void>((r) => { gate = r; });
 
+    const firstBoatEntered = deferred();
     const processBatch: ProcessBatchWithResult<number, number> = async (boat) => {
+      firstBoatEntered.resolve();
       await gatePromise;
       return boat.map((x) => x * 10);
     };
@@ -162,8 +165,10 @@ describe("PriorityFerryThrottlerWithResult", () => {
     const p2 = throttler.process(2, 0, ac.signal);
     const p3 = throttler.process(3, 0);
 
-    // Give the ferry time to start processing the first boat (item 1)
-    await new Promise((r) => setTimeout(r, 10));
+    // The ferry announces that it has the first boat. WAS a 10ms sleep: on a loaded runner it
+    // returns before the boat is assembled, the abort below then lands in a different state
+    // than the test describes, and the failure names the machine rather than the code.
+    await firstBoatEntered.promise;
 
     // Cancel item 2 before the ferry picks it up for boat assembly
     ac.abort();
@@ -268,16 +273,19 @@ describe("PriorityFerryThrottlerWithResult", () => {
   });
 
   it("dispose rejects queued items: items in queue, dispose(), all rejected", async () => {
+    // A batch that runs until aborted. WAS a 5000ms timer standing in for "long-running" --
+    // which is a wall-clock bet that dispose() lands inside five seconds, and simultaneously a
+    // five-second hang if the abort path ever regresses. A never-resolving promise is what the
+    // test actually meant: the ONLY way out is the abort, so the abort is what is tested.
+    const firstBoatEntered = deferred();
     const processBatch: ProcessBatchWithResult<number, number> = async (boat, signal) => {
-      // Simulate a long-running batch that respects the abort signal
-      await new Promise<void>((resolve, reject) => {
+      await new Promise<void>((_resolve, reject) => {
         if (signal.aborted) {
           reject(signal.reason);
           return;
         }
-        const timer = setTimeout(resolve, 5000);
+        firstBoatEntered.resolve();
         signal.addEventListener("abort", () => {
-          clearTimeout(timer);
           reject(signal.reason);
         }, { once: true });
       });
@@ -300,8 +308,11 @@ describe("PriorityFerryThrottlerWithResult", () => {
     const p3 = throttler.process(3, 0);
     const p4 = throttler.process(4, 0);
 
-    // Give ferry time to pick up the first boat (items 1,2) and queue items 3,4
-    await new Promise((r) => setTimeout(r, 20));
+    // The ferry announces that it holds the first boat (items 1,2), so items 3,4 are queued.
+    // WAS a 20ms sleep -- and if it returned early, dispose() would reject four QUEUED items
+    // rather than one in-flight boat plus three queued, which is a different test wearing the
+    // same name.
+    await firstBoatEntered.promise;
 
     throttler.dispose();
 

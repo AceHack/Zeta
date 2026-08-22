@@ -1,0 +1,12 @@
+{
+  "pr_number": 10048,
+  "archive_path": "docs/history/pr-reviews/PR-10048-book-the-nextdoor-pumpkin-radical-transparency-live-into-the-organizer-at-scale.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-04T22:11:24.976Z",
+  "schema_version": "v1",
+  "commit_sha": "138b8d3e54762578af301119e781de6cc3850214",
+  "title": "book: the Nextdoor pumpkin — radical transparency LIVE (into THE-ORGANIZER-AT-SCALE)",
+  "state": "MERGED",
+  "merged_at": "2026-08-04T22:10:55Z",
+  "head_ref": "docs/book-nextdoor-pumpkin-live-radical-transparency-20260804"
+}

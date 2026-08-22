@@ -1,0 +1,16 @@
+{
+  "pr_number": 6038,
+  "archive_path": "docs/history/pr-reviews/PR-6038-feat-b-0354-3-findings-report-close-b-0354-fresh-instance-validation-file-b-0354.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7GSEj2",
+    "comment:PRRC_kwDOSF9kNM7GSIMG",
+    "thread:PRRT_kwDOSF9kNM6Fx2sA"
+  ],
+  "fetched_at": "2026-05-29T20:03:13.207Z",
+  "schema_version": "v1",
+  "commit_sha": "b90786501b6ac25ec0cf6f5873a4e54b84fa9909",
+  "title": "feat(B-0354.3): findings report + close B-0354 fresh-instance validation; file B-0354.4",
+  "state": "MERGED",
+  "merged_at": "2026-05-29T20:02:51Z",
+  "head_ref": "otto-cli/b0354-3-findings-report-2026-05-29"
+}

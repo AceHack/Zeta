@@ -1,0 +1,12 @@
+{
+  "pr_number": 8105,
+  "archive_path": "docs/history/pr-reviews/PR-8105-spec-unified-loop-service.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-14T00:39:05.548Z",
+  "schema_version": "v1",
+  "commit_sha": "140189e19052890b70f7efe163b1c49a81bdd406",
+  "title": "spec: unified-loop-service",
+  "state": "MERGED",
+  "merged_at": "2026-06-14T00:38:45Z",
+  "head_ref": "kiro/unified-loop-service-spec"
+}

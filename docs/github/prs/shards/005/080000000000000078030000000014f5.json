@@ -1,0 +1,15 @@
+{
+  "pr_number": 5365,
+  "archive_path": "docs/history/pr-reviews/PR-5365-ci-b-0831-layer-1-extend-audit-installer-substrate-with-iter-5-4-sentinels.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7FKCRQ",
+    "thread:PRRT_kwDOSF9kNM6E9t__"
+  ],
+  "fetched_at": "2026-05-27T00:59:21.369Z",
+  "schema_version": "v1",
+  "commit_sha": "7fdf4db4648b3d8720a8dbee0b1dba254ba7153e",
+  "title": "ci(B-0831 layer-1): extend audit-installer-substrate with iter-5.4 sentinels",
+  "state": "MERGED",
+  "merged_at": "2026-05-27T00:59:02Z",
+  "head_ref": "ci-layer1-iter54-sentinels-audit-installer-substrate-otto-cli-2026-05-26"
+}

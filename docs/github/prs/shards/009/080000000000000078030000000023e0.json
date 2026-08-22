@@ -1,0 +1,12 @@
+{
+  "pr_number": 9184,
+  "archive_path": "docs/history/pr-reviews/PR-9184-feat-core-romdat-read-understand-tosec-mame-catalog-metadata-value-tree-cross-ve.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-02T19:01:33.486Z",
+  "schema_version": "v1",
+  "commit_sha": "2d2eee234d70d113066014a0ffe4efc3d7395138",
+  "title": "feat(core): RomDat - read + understand TOSEC/MAME catalog metadata, value-tree cross-verified",
+  "state": "MERGED",
+  "merged_at": "2026-07-02T19:01:09Z",
+  "head_ref": "otto/rom-dat-catalog-reader"
+}

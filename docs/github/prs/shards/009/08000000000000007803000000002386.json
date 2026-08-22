@@ -1,0 +1,12 @@
+{
+  "pr_number": 9094,
+  "archive_path": "docs/history/pr-reviews/PR-9094-docs-research-addendum-3-1-aaron-s-refined-cpt-dictionary-captured.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-17T00:51:21.255Z",
+  "schema_version": "v1",
+  "commit_sha": "fbe1adebd62723964e184606a41703b4fb3265dc",
+  "title": "docs(research): addendum 3.1 — Aaron's refined CPT dictionary, captured",
+  "state": "MERGED",
+  "merged_at": "2026-07-02T01:57:49Z",
+  "head_ref": "research/cpt-refined-dictionary"
+}

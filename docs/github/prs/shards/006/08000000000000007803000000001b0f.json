@@ -1,0 +1,12 @@
+{
+  "pr_number": 6927,
+  "archive_path": "docs/history/pr-reviews/PR-6927-docs-ferry-cylon-resurrection-ship-analogy-peeled-preservation-not-resurrection-.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-07T21:59:31.279Z",
+  "schema_version": "v1",
+  "commit_sha": "8d8b381a9a3f0383e2d5c3e102541d5fa3ae76e3",
+  "title": "docs+ferry: Cylon/Resurrection-Ship analogy PEELED (preservation not resurrection) + I Love Bees distributed-search anchor",
+  "state": "MERGED",
+  "merged_at": "2026-06-07T21:59:14Z",
+  "head_ref": "otto/battlestar-peel-i-love-bees-anchor"
+}

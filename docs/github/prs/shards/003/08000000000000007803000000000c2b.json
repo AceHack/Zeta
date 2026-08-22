@@ -1,0 +1,17 @@
+{
+  "pr_number": 3115,
+  "archive_path": "docs/history/pr-reviews/PR-3115-docs-preserve-pr-discussions-for-3112-and-3113-close-b-0451.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7BHwMj",
+    "comment:PRRC_kwDOSF9kNM7BHwNC",
+    "thread:PRRT_kwDOSF9kNM6CAKB0",
+    "thread:PRRT_kwDOSF9kNM6CAKBd"
+  ],
+  "fetched_at": "2026-05-14T08:21:46.617Z",
+  "schema_version": "v1",
+  "commit_sha": "a978c155ef3dd173105ecd6c8316129c60ca60be",
+  "title": "docs: preserve PR discussions for 3112 and 3113; close B-0451",
+  "state": "MERGED",
+  "merged_at": "2026-05-14T08:21:26Z",
+  "head_ref": "lior/preserve-prs-3112-3113"
+}

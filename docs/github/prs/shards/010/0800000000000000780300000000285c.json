@@ -1,0 +1,12 @@
+{
+  "pr_number": 10332,
+  "archive_path": "docs/history/pr-reviews/PR-10332-verify-kill-record-a-proven-kill-closing-the-resolution-coverage-hole.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-12T05:12:31.318Z",
+  "schema_version": "v1",
+  "commit_sha": "a278cf6b729b42e0efa9b98480443ac8a6adbf65",
+  "title": "verify-kill: record a PROVEN kill, closing the resolution-coverage hole",
+  "state": "MERGED",
+  "merged_at": "2026-08-12T05:11:49Z",
+  "head_ref": "verify-kill-records-resolution"
+}

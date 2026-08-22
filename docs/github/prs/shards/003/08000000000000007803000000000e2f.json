@@ -1,0 +1,12 @@
+{
+  "pr_number": 3631,
+  "archive_path": "docs/history/pr-reviews/PR-3631-shard-tick-0018z-markdownlint-md037-fix-on-pr-3628-3626-merged.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-16T00:24:43.030Z",
+  "schema_version": "v1",
+  "commit_sha": "0d7adac93bd8d083ab0c695dac3d03269a97bd1f",
+  "title": "shard(tick): 0018Z — markdownlint MD037 fix on PR #3628; #3626 merged",
+  "state": "MERGED",
+  "merged_at": "2026-05-16T00:24:25Z",
+  "head_ref": "shard/tick-0018z-otto-cli-2026-05-16"
+}

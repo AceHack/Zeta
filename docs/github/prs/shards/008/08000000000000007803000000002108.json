@@ -1,0 +1,12 @@
+{
+  "pr_number": 8456,
+  "archive_path": "docs/history/pr-reviews/PR-8456-docs-route-aurora-to-soraya-routing-pass-folded-in-stand-up-both-plans-as-resume.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-16T05:58:02.186Z",
+  "schema_version": "v1",
+  "commit_sha": "c5b0132fdfc7f1565e7f81cac9a7e7cf79d42e8c",
+  "title": "docs: route Aurora to Soraya (routing pass folded in) + stand up both plans as RESUME trajectories",
+  "state": "MERGED",
+  "merged_at": "2026-06-16T05:57:36Z",
+  "head_ref": "otto/route-aurora-soraya-stand-up-trajectories"
+}

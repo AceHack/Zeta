@@ -1,0 +1,12 @@
+{
+  "pr_number": 9731,
+  "archive_path": "docs/history/pr-reviews/PR-9731-docs-research-cite-the-multiplexedwebsockets-repo-github-com-acehack-c-2018-conf.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-11T19:05:37.287Z",
+  "schema_version": "v1",
+  "commit_sha": "53c12b12927cf2ef3187b0c3742e803c2d88181e",
+  "title": "docs(research): cite the MultiplexedWebSockets repo (github.com/AceHack, C#, 2018 confirmed) (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-11T19:05:05Z",
+  "head_ref": "cite-multiplexed-websocket-repo"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 10306,
+  "archive_path": "docs/history/pr-reviews/PR-10306-feat-browser-node-recover-durable-database-intents.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-11T04:00:49.877Z",
+  "schema_version": "v1",
+  "commit_sha": "c550438cf1d38b238e07b430b7b67e1c67f53121",
+  "title": "feat(browser-node): recover durable database intents",
+  "state": "MERGED",
+  "merged_at": "2026-08-11T04:00:03Z",
+  "head_ref": "codex/browser-database-intent-outbox"
+}

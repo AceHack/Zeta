@@ -1,0 +1,12 @@
+{
+  "pr_number": 12767,
+  "archive_path": "docs/history/pr-reviews/PR-12767-research-2-2-needs-the-co-owned-fourth-corner-we-never-collapse-back-pressure-is.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-20T13:40:05.149Z",
+  "schema_version": "v1",
+  "commit_sha": "7d0c4af1053db9cbe33891f13006d8ca8a6d97e2",
+  "title": "research: 2√2 needs the co-owned fourth corner; we never collapse; back-pressure is the benefit; the metric is oracle-relative",
+  "state": "MERGED",
+  "merged_at": "2026-08-20T13:39:23Z",
+  "head_ref": "research/four-corner-noncollapse-backpressure"
+}

@@ -7,10 +7,10 @@
 // by whom, and under which alignment clauses.
 //
 // Usage:
-//   bun tools/alignment/audit_candidate_failures.ts
-//   bun tools/alignment/audit_candidate_failures.ts --json
-//   bun tools/alignment/audit_candidate_failures.ts --md
-//   bun tools/alignment/audit_candidate_failures.ts --log PATH
+//   bun src/Core.TypeScript/alignment/audit_candidate_failures.ts
+//   bun src/Core.TypeScript/alignment/audit_candidate_failures.ts --json
+//   bun src/Core.TypeScript/alignment/audit_candidate_failures.ts --md
+//   bun src/Core.TypeScript/alignment/audit_candidate_failures.ts --log PATH
 //
 // Exit codes:
 //   0  Log is parseable and reconstruction fields are present

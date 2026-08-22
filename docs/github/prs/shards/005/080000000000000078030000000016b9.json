@@ -1,0 +1,12 @@
+{
+  "pr_number": 5817,
+  "archive_path": "docs/history/pr-reviews/PR-5817-fix-mise-toml-bump-uv-0-11-8-0-11-16-cascade-unblocks-21-25-prs-ci-lint.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-28T13:33:30.743Z",
+  "schema_version": "v1",
+  "commit_sha": "23e8f980b36f6cc04653758b83679afb869c9285",
+  "title": "fix(.mise.toml): bump uv 0.11.8 → 0.11.16 — cascade-unblocks 21/25 PRs' CI lint",
+  "state": "MERGED",
+  "merged_at": "2026-05-28T13:33:04Z",
+  "head_ref": "otto-cli/fix-mise-uv-pin-0-11-8-to-0-11-16-cascade-unblock-2026-05-28"
+}

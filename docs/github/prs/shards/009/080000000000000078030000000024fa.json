@@ -1,0 +1,12 @@
+{
+  "pr_number": 9466,
+  "archive_path": "docs/history/pr-reviews/PR-9466-docs-ferry-softness-attention-the-open-monitoring-face-the-psychist-writes-down-.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-04T17:34:40.288Z",
+  "schema_version": "v1",
+  "commit_sha": "bb1a8515f0b70dac71eb5661a56e173de2b63f8f",
+  "title": "docs(ferry): softness = attention (the open-monitoring face) — the psychist writes down the math (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-04T17:34:17Z",
+  "head_ref": "otto/ferry-softness-is-attention-psychist"
+}

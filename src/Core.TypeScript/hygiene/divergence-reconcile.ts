@@ -33,7 +33,7 @@
 // never touches GitHub, never resolves the live PR thread.
 //
 // Schema source of truth: docs/hygiene-history/divergences/README.md
-// Writer companion:        tools/hygiene/divergence-shard.ts
+// Writer companion:        src/Core.TypeScript/hygiene/divergence-shard.ts
 
 import { execFileSync } from "node:child_process";
 import { Buffer } from "node:buffer";
@@ -319,10 +319,10 @@ export type ParseArgsResult =
 export function usage(): string {
   return [
     "Usage:",
-    "  bun tools/hygiene/divergence-reconcile.ts",
-    "  bun tools/hygiene/divergence-reconcile.ts --list [--json]",
-    "  bun tools/hygiene/divergence-reconcile.ts --json",
-    "  bun tools/hygiene/divergence-reconcile.ts --reconcile <relPath> --decision <decision> [--note <text>]",
+    "  bun src/Core.TypeScript/hygiene/divergence-reconcile.ts",
+    "  bun src/Core.TypeScript/hygiene/divergence-reconcile.ts --list [--json]",
+    "  bun src/Core.TypeScript/hygiene/divergence-reconcile.ts --json",
+    "  bun src/Core.TypeScript/hygiene/divergence-reconcile.ts --reconcile <relPath> --decision <decision> [--note <text>]",
     "",
     `Decisions: ${RECONCILIATION_DECISIONS.join(" | ")}`,
   ].join("\n");

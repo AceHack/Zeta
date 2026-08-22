@@ -1,0 +1,21 @@
+{
+  "pr_number": 5988,
+  "archive_path": "docs/history/pr-reviews/PR-5988-feat-roms-datfile-as-dependency-pin-fetch-sha-256-verify-b-0083-1.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7GKUkB",
+    "comment:PRRC_kwDOSF9kNM7GKV9N",
+    "comment:PRRC_kwDOSF9kNM7GKV9U",
+    "comment:PRRC_kwDOSF9kNM7GKnH2",
+    "comment:PRRC_kwDOSF9kNM7GKnOv",
+    "thread:PRRT_kwDOSF9kNM6FsNoM",
+    "thread:PRRT_kwDOSF9kNM6FsOp_",
+    "thread:PRRT_kwDOSF9kNM6FsOqG"
+  ],
+  "fetched_at": "2026-05-29T13:37:12.465Z",
+  "schema_version": "v1",
+  "commit_sha": "1380425fd0ab2bdc91c243ad91cc11bf4cc716f6",
+  "title": "feat(roms): datfile-as-dependency pin + fetch + SHA-256 verify (B-0083.1)",
+  "state": "MERGED",
+  "merged_at": "2026-05-29T13:36:48Z",
+  "head_ref": "otto-cli/b0083-1-datfile-as-dependency-2026-05-29"
+}

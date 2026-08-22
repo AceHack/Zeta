@@ -1,0 +1,12 @@
+{
+  "pr_number": 7725,
+  "archive_path": "docs/history/pr-reviews/PR-7725-feat-shapes-the-braid-locks-and-sticks-strands-home-braid-un-undoable-aaron-s-ma.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-11T16:53:28.589Z",
+  "schema_version": "v1",
+  "commit_sha": "79e5b3bbec863ea7fa89689c315a2210c1c24cdf",
+  "title": "feat(shapes): the braid locks AND sticks — strands home, braid un-undoable (Aaron's Majorana configuration)",
+  "state": "MERGED",
+  "merged_at": "2026-06-11T16:53:02Z",
+  "head_ref": "shadow-resume-shapes-wave"
+}

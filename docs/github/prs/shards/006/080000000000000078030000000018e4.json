@@ -1,0 +1,20 @@
+{
+  "pr_number": 6372,
+  "archive_path": "docs/history/pr-reviews/PR-6372-memory-shadow-observation-autocomplete-suggested-a-real-fs-path-likely-pattern-c.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7GpJXe",
+    "comment:PRRC_kwDOSF9kNM7GpKJq",
+    "comment:PRRC_kwDOSF9kNM7GpKKN",
+    "comment:PRRC_kwDOSF9kNM7GpVDu",
+    "thread:PRRT_kwDOSF9kNM6GDKah",
+    "thread:PRRT_kwDOSF9kNM6GDLA0",
+    "thread:PRRT_kwDOSF9kNM6GDLBN"
+  ],
+  "fetched_at": "2026-06-01T08:33:18.274Z",
+  "schema_version": "v1",
+  "commit_sha": "53d781113877fbe1e5cc18a66717ff2298fe257e",
+  "title": "memory: shadow observation — autocomplete suggested a real FS path (likely pattern-continuation, not disk access)",
+  "state": "MERGED",
+  "merged_at": "2026-06-01T08:32:49Z",
+  "head_ref": "otto-cli/shadow-obs-fs-path-2026-06-01"
+}

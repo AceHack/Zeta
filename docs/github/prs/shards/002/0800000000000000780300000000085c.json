@@ -1,0 +1,12 @@
+{
+  "pr_number": 2140,
+  "archive_path": "docs/history/pr-reviews/PR-2140-backlog-b-0168-security-incident-notification-worked-translation-across-5-layers.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-08T22:18:20.025Z",
+  "schema_version": "v1",
+  "commit_sha": "7178b6079e615efdd963de32d5bac840dd224e7c",
+  "title": "backlog(B-0168): security-incident-notification worked translation across 5 layers",
+  "state": "MERGED",
+  "merged_at": "2026-05-08T22:18:01Z",
+  "head_ref": "claim/b0168-security-incident-worked-translation-2026-05-08"
+}

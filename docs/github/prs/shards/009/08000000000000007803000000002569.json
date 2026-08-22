@@ -1,0 +1,12 @@
+{
+  "pr_number": 9577,
+  "archive_path": "docs/history/pr-reviews/PR-9577-chore-workitems-complete-081kx1ve-cubical-agda-proof-lane-wired-shadow.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-08T23:49:50.333Z",
+  "schema_version": "v1",
+  "commit_sha": "e56246112b33c614cb7b220522f3558640878c49",
+  "title": "chore(workitems): complete 081KX1VE — cubical Agda proof lane wired (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-08T23:49:23Z",
+  "head_ref": "otto/complete-cubical-workitem"
+}

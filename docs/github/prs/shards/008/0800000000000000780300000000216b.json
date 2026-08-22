@@ -1,0 +1,12 @@
+{
+  "pr_number": 8555,
+  "archive_path": "docs/history/pr-reviews/PR-8555-memory-feedback-the-core-optimization-is-capture-the-externalization-the-engine-.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-16T18:14:43.542Z",
+  "schema_version": "v1",
+  "commit_sha": "0097ab50e4da9c87db991582d8a4a15694bf4c98",
+  "title": "memory(feedback): the core optimization is CAPTURE-the-externalization — the engine under survival/visibility/inoculation/durability (captured != useful: pair with findability)",
+  "state": "MERGED",
+  "merged_at": "2026-06-16T18:14:14Z",
+  "head_ref": "otto/capture-the-externalization-the-engine"
+}

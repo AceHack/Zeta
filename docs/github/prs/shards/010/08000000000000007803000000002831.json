@@ -1,0 +1,12 @@
+{
+  "pr_number": 10289,
+  "archive_path": "docs/history/pr-reviews/PR-10289-feat-hygiene-episode-protocol-harness-retraction-healer-state-machine-seats-cond.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-18T11:00:01.205Z",
+  "schema_version": "v1",
+  "commit_sha": "a2e204509f278c0a0733736f64e613aaea29c5ea",
+  "title": "feat(hygiene): episode-protocol harness — retraction-healer state machine, seats' conditions as golden vectors (081KZHGP45V)",
+  "state": "MERGED",
+  "merged_at": "2026-08-10T16:11:15Z",
+  "head_ref": "otto/episode-protocol-harness"
+}

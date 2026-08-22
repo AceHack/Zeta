@@ -1,0 +1,12 @@
+{
+  "pr_number": 10180,
+  "archive_path": "docs/history/pr-reviews/PR-10180-fix-zflash-verify-esp-writes-after-bake-fail-loud-on-silent-drop-081kzhjpjcf.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-09T00:24:45.419Z",
+  "schema_version": "v1",
+  "commit_sha": "94ff9a78ccaf69e7f2d6df19f48eee18e2b30d90",
+  "title": "fix(zflash): verify ESP writes after bake, fail loud on silent drop (081KZHJPJCF)",
+  "state": "MERGED",
+  "merged_at": "2026-08-09T00:24:15Z",
+  "head_ref": "shadow/verify-esp-writes-fail-loud"
+}

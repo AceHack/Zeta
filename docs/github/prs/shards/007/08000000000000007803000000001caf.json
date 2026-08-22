@@ -1,0 +1,12 @@
+{
+  "pr_number": 7343,
+  "archive_path": "docs/history/pr-reviews/PR-7343-docs-research-time-is-a-soft-owned-self-feedback-participant-ischeduler-reuses-t.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-09T17:07:48.145Z",
+  "schema_version": "v1",
+  "commit_sha": "2c3565593ac4778d10dfbaa92895468fea5ce70a",
+  "title": "docs(research): time is a soft, owned, self-feedback participant; IScheduler reuses the chip8 arrow+interrupt trick in every room (common-seed correlation, time as participant)",
+  "state": "MERGED",
+  "merged_at": "2026-06-09T17:07:23Z",
+  "head_ref": "otto/time-is-soft-owned-self-feedback-participant-four-corner-tfeedbackin-out-uncertainclock-softvalue"
+}

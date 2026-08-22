@@ -1,0 +1,12 @@
+{
+  "pr_number": 7731,
+  "archive_path": "docs/history/pr-reviews/PR-7731-fix-backlog-freeze-latest-legacy-ids.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-11T17:03:56.196Z",
+  "schema_version": "v1",
+  "commit_sha": "7603cce5397b2b348747c36ffa98318363737d32",
+  "title": "fix(backlog): freeze latest legacy ids",
+  "state": "MERGED",
+  "merged_at": "2026-06-11T17:03:20Z",
+  "head_ref": "codex/vera-freeze-b1024-b1028"
+}

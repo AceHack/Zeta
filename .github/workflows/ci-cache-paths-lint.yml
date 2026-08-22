@@ -52,7 +52,14 @@ jobs:
   audit:
     name: audit actions/cache paths vs git ls-files
     runs-on: ubuntu-24.04
-    timeout-minutes: 5
+    # 12 minutes, not 5: this job runs tools/setup/install.sh, so its timeout is
+    # the CEILING on the installer's apt wall budget (audit-apt-budget-fits-job-
+    # timeout.ts). At 5 minutes these three cadence jobs pinned that budget to
+    # 150s fleet-wide, which left the first apt attempt 45s against a 38.2s
+    # healthy cost — tight enough to false-fail a merely-slow mirror. A timeout
+    # is a cap, not a reservation: this job finishes in ~2.5 min, so raising it
+    # costs zero additional CI minutes on the healthy path.
+    timeout-minutes: 12
 
     steps:
       - name: Checkout

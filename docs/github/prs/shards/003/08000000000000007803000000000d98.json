@@ -1,0 +1,19 @@
+{
+  "pr_number": 3480,
+  "archive_path": "docs/history/pr-reviews/PR-3480-shard-tick-1333z-pr-3477-merged-pr-3478-wait-ci.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7BoLLk",
+    "comment:PRRC_kwDOSF9kNM7BoLY-",
+    "comment:PRRC_kwDOSF9kNM7BoQNQ",
+    "comment:PRRC_kwDOSF9kNM7BoQRM",
+    "thread:PRRT_kwDOSF9kNM6CXz7p",
+    "thread:PRRT_kwDOSF9kNM6CXzxq"
+  ],
+  "fetched_at": "2026-05-15T13:40:40.101Z",
+  "schema_version": "v1",
+  "commit_sha": "d93e2898ead86e612ef2fb5242d11587dda74b86",
+  "title": "shard(tick): 1333Z — PR #3477 merged; PR #3478 wait-CI",
+  "state": "MERGED",
+  "merged_at": "2026-05-15T13:40:22Z",
+  "head_ref": "shard/tick-1333z-otto-cli-2026-05-15"
+}

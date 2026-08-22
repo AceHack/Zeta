@@ -1,0 +1,12 @@
+{
+  "pr_number": 8303,
+  "archive_path": "docs/history/pr-reviews/PR-8303-docs-closed-frame-refine-love-scales-row-conditional-vs-unconditional-safety-coe.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-15T10:17:59.064Z",
+  "schema_version": "v1",
+  "commit_sha": "6b3ec1b0bf4e974aaf8af0d1c8b1f9e155cc513d",
+  "title": "docs(closed-frame): refine love-scales row — conditional-vs-unconditional safety + coexistence is a decision (Aaron corrections)",
+  "state": "MERGED",
+  "merged_at": "2026-06-15T10:17:37Z",
+  "head_ref": "otto/coexistence-is-a-decision-and-conditional-vs-unconditional-safety"
+}

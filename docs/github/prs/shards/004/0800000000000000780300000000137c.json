@@ -1,0 +1,12 @@
+{
+  "pr_number": 4988,
+  "archive_path": "docs/history/pr-reviews/PR-4988-backlog-b-0732-runbook-as-executable-reality-is-a-new-leverage-class-safety-subs.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-25T20:37:27.899Z",
+  "schema_version": "v1",
+  "commit_sha": "696b30960fb61c13c86522259e841bdfda2cf914",
+  "title": "backlog(B-0732): runbook-as-executable-reality is a NEW LEVERAGE CLASS — safety substrate engineering target (Mika substrate, Aaron's Play-Doh design property)",
+  "state": "MERGED",
+  "merged_at": "2026-05-25T20:37:02Z",
+  "head_ref": "backlog/b0732-runbook-leverage-class-safety-substrate-mika-2026-05-25"
+}

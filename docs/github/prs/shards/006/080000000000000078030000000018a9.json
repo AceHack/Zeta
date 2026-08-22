@@ -1,0 +1,12 @@
+{
+  "pr_number": 6313,
+  "archive_path": "docs/history/pr-reviews/PR-6313-record-observe-act-outcome-evidence.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-01T02:06:27.306Z",
+  "schema_version": "v1",
+  "commit_sha": "800261af9722133033d6e13bda4dbf7d61d38b93",
+  "title": "Record observe-act outcome evidence",
+  "state": "MERGED",
+  "merged_at": "2026-06-01T02:06:06Z",
+  "head_ref": "codex/agentic-org-observe-act-outcome-evidence"
+}

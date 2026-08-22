@@ -1,0 +1,12 @@
+{
+  "pr_number": 7756,
+  "archive_path": "docs/history/pr-reviews/PR-7756-feat-render-shapes-draw-themselves-tick-by-tick-pure-css-softvalue-dynamicvalue-.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-11T18:22:02.268Z",
+  "schema_version": "v1",
+  "commit_sha": "fe8f9d41fc98bdad4afb7c4e8daa18f3c8cb7492",
+  "title": "feat(render): shapes draw themselves tick by tick (pure CSS) + SoftValue/DynamicValue ladder + primitive treaty list",
+  "state": "MERGED",
+  "merged_at": "2026-06-11T18:21:19Z",
+  "head_ref": "shadow-draw-animation"
+}

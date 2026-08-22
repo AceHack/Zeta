@@ -9,7 +9,7 @@ This is a **capability skill**. It encodes the *how* of ranking
 skills by tune-up urgency: live-search for new best practices,
 classify drift / contradiction / staleness / user-pain / bloat /
 best-practice-drift, cite stable BP-NN rule IDs. The persona
-(Aarav) lives at `.claude/agents/skill-tune-up.md`.
+(Aarav) lives at `.claude/skills/skill-lifecycle/blueprints/skill-tune-up.md`.
 
 **Purpose:** keep the skill ecosystem healthy by flagging which
 agent skills most need attention from the **`skill-creator`**

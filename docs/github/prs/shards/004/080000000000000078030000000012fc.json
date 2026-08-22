@@ -1,0 +1,25 @@
+{
+  "pr_number": 4860,
+  "archive_path": "docs/history/pr-reviews/PR-4860-docs-archive-preserve-pr-4848.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7EaY5a",
+    "comment:PRRC_kwDOSF9kNM7EaY5j",
+    "comment:PRRC_kwDOSF9kNM7EaY5o",
+    "comment:PRRC_kwDOSF9kNM7EaY5z",
+    "comment:PRRC_kwDOSF9kNM7Eg82t",
+    "comment:PRRC_kwDOSF9kNM7Eg85u",
+    "comment:PRRC_kwDOSF9kNM7Eg878",
+    "comment:PRRC_kwDOSF9kNM7EhgXb",
+    "thread:PRRT_kwDOSF9kNM6EanyH",
+    "thread:PRRT_kwDOSF9kNM6EanyN",
+    "thread:PRRT_kwDOSF9kNM6EanyQ",
+    "thread:PRRT_kwDOSF9kNM6Eanya"
+  ],
+  "fetched_at": "2026-05-25T08:56:28.029Z",
+  "schema_version": "v1",
+  "commit_sha": "5e1ebf3750ab3f0e2674533be32080a2320199bc",
+  "title": "docs(archive): preserve PR #4848",
+  "state": "MERGED",
+  "merged_at": "2026-05-25T08:56:06Z",
+  "head_ref": "lior-pr-preservation-4848"
+}

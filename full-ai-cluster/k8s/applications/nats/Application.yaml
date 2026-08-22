@@ -18,15 +18,51 @@ spec:
       releaseName: nats
       valuesObject:
         config:
+          # UNDER `config:`, NOT TOP LEVEL. nats 1.2.7 reads `config.cluster`
+          # (values.yaml:50-55) and has no top-level `cluster` key at all, so a
+          # top-level block is inert -- which is what this file used to carry.
+          #
+          # MEASURED 2026-08-21: with the block at top level the StatefulSet
+          # rendered `replicas: 1` and the generated nats.conf had NO `cluster`
+          # section, i.e. a SINGLE-NODE JetStream. Any stream created with
+          # replicas > 1 refuses to create, so anything relying on JetStream
+          # replication was silently unreplicated. Re-rendered after the move:
+          # `replicas: 3` and a `cluster` block routing nats-0/1/2 on 6222.
+          #
+          # THE COST IS REAL AND IS THE POINT: three pods x 10Gi = 30 GiB of
+          # longhorn where one pod x 10Gi = 10 GiB was provisioned before.
+          cluster:
+            enabled: true
+            replicas: 3
           jetstream:
             enabled: true
             fileStore:
               pvc:
-                size: 20Gi
+                # SIZE CUT, NOT A POD CUT: 20Gi -> 10Gi per node, and
+                # `config.cluster.replicas: 3` above is UNTOUCHED, so JetStream
+                # keeps its quorum and R3 streams still create. (The `minimal`
+                # rung drops to 1, which makes any `replicas > 1` stream refuse
+                # to create at all -- that is a real HA loss and is why this box
+                # does not run that rung.)
+                #
+                # THAT SENTENCE WAS FALSE UNTIL 2026-08-22 and is recorded here
+                # rather than quietly corrected: the `cluster` block it points
+                # at was at top level, where the chart never read it, so the
+                # quorum it claims to preserve did not exist to preserve. The
+                # block is under `config:` now and the render was re-measured.
+                #
+                # ITS GOVERNOR MOVES BY ITSELF, checked rather than assumed:
+                # nats 1.2.7 files/config/jetstream.yaml:17 emits
+                # `max_file_store: << {{ .pvc.size }} >>` whenever
+                # fileStore.maxSize is unset, and it is unset here. So the
+                # server's own file-store limit tracks this line automatically
+                # and cutting the volume cannot produce a server that believes
+                # it has 20Gi of disk. What still has to be sized by hand is
+                # per-STREAM limits, which are set by clients and not by this
+                # chart: a stream whose max_bytes exceeds the store will hit
+                # the limit and age out or reject publishes.
+                size: 10Gi
                 storageClassName: longhorn
-        cluster:
-          enabled: true
-          replicas: 3
         natsBox:
           enabled: true
   destination:

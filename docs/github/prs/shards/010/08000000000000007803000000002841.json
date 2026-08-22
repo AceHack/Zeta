@@ -1,0 +1,12 @@
+{
+  "pr_number": 10305,
+  "archive_path": "docs/history/pr-reviews/PR-10305-heal-docs-annotate-6-stale-cross-refs-batch-2.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-11T02:39:55.204Z",
+  "schema_version": "v1",
+  "commit_sha": "38f3b5790bb0a71919c2d574d47f7a6bc33c9a73",
+  "title": "heal(docs): annotate 6 stale cross-refs (batch 2)",
+  "state": "MERGED",
+  "merged_at": "2026-08-11T02:39:20Z",
+  "head_ref": "alexa/heal-batch-2"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 4985,
+  "archive_path": "docs/history/pr-reviews/PR-4985-docs-define-agentic-organization-v0-architecture.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-25T19:59:42.185Z",
+  "schema_version": "v1",
+  "commit_sha": "50e50a52f5b0f7d310edeadcd1af5717200421d8",
+  "title": "docs: define agentic organization v0 architecture",
+  "state": "MERGED",
+  "merged_at": "2026-05-25T19:59:20Z",
+  "head_ref": "codex/agentic-org-package-ca-clean"
+}

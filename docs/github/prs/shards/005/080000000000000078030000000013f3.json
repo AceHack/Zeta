@@ -1,0 +1,17 @@
+{
+  "pr_number": 5107,
+  "archive_path": "docs/history/pr-reviews/PR-5107-feat-b-0792-iter-5-2-1-auto-generate-node-6hex-hostname-default-operator-can-ren.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7EyTk5",
+    "comment:PRRC_kwDOSF9kNM7EyTkc",
+    "thread:PRRT_kwDOSF9kNM6EsbCK",
+    "thread:PRRT_kwDOSF9kNM6EsbCe"
+  ],
+  "fetched_at": "2026-05-26T06:03:27.372Z",
+  "schema_version": "v1",
+  "commit_sha": "f96ccec3902ab7fe778d258eb526fdd7fcb660ca",
+  "title": "feat(B-0792 iter-5.2.1): auto-generate node-<6hex> hostname default — operator can rename later via digital-twin (Aaron 2026-05-26)",
+  "state": "MERGED",
+  "merged_at": "2026-05-26T06:03:06Z",
+  "head_ref": "otto-cli/iter521-auto-generated-hostname-default-digital-twin-renamable-2026-05-26"
+}

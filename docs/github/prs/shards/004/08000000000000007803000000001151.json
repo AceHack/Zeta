@@ -1,0 +1,20 @@
+{
+  "pr_number": 4433,
+  "archive_path": "docs/history/pr-reviews/PR-4433-feat-b-0170-3-seed-check-self-recursive-ts-opt-in-self-recursive-drift-checker-c.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7DPokj",
+    "comment:PRRC_kwDOSF9kNM7DPrJX",
+    "comment:PRRC_kwDOSF9kNM7DSlJs",
+    "comment:PRRC_kwDOSF9kNM7DWPdU",
+    "thread:PRRT_kwDOSF9kNM6Djj1R",
+    "thread:PRRT_kwDOSF9kNM6DjluV",
+    "thread:PRRT_kwDOSF9kNM6DlrqB"
+  ],
+  "fetched_at": "2026-05-20T21:51:08.328Z",
+  "schema_version": "v1",
+  "commit_sha": "f9d942e9ece96e5399129265ff367e38b32236b3",
+  "title": "feat(B-0170.3): seed check-self-recursive.ts — opt-in self-recursive drift checker (count topic)",
+  "state": "MERGED",
+  "merged_at": "2026-05-20T21:50:49Z",
+  "head_ref": "backlog/b-0170-3-self-recursive-drift-checker-2026-05-20"
+}

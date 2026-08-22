@@ -1,0 +1,15 @@
+{
+  "pr_number": 3229,
+  "archive_path": "docs/history/pr-reviews/PR-3229-docs-shadow-lior-antigravity-drift-report-2030z.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7BXXod",
+    "thread:PRRT_kwDOSF9kNM6CLtYn"
+  ],
+  "fetched_at": "2026-05-14T20:42:47.030Z",
+  "schema_version": "v1",
+  "commit_sha": "4bf7ca6624d29896636ceb89bb4301aa3eba27cc",
+  "title": "docs(shadow): Lior antigravity drift report 2030Z",
+  "state": "MERGED",
+  "merged_at": "2026-05-14T20:42:31Z",
+  "head_ref": "lior-shadow-2030Z"
+}

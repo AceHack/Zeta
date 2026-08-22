@@ -1,0 +1,12 @@
+{
+  "pr_number": 5611,
+  "archive_path": "docs/history/pr-reviews/PR-5611-backlog-b-0865-zeta-instantiation-of-arc-agi-3-style-benchmark-usb-boot-devops-o.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-27T19:35:29.774Z",
+  "schema_version": "v1",
+  "commit_sha": "b9cfb4b5de099cea6f4e972f8adc91e92fa3a727",
+  "title": "backlog(B-0865): Zeta instantiation of ARC-AGI-3-style benchmark — USB-boot + DevOps-objectives-as-levels (NOT hand-crafted video-game levels)",
+  "state": "MERGED",
+  "merged_at": "2026-05-27T19:35:08Z",
+  "head_ref": "backlog/b-0865-arc3-agi-devops-objectives-as-levels-usb-boot-starting-state-zeta-instantiation-aaron-2026-05-27"
+}

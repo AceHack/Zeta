@@ -1,0 +1,12 @@
+{
+  "pr_number": 2405,
+  "archive_path": "docs/history/pr-reviews/PR-2405-chore-fix-backlog-md-generated-index-drift-after-2404-b-0046-1-missing.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-10T03:28:29.750Z",
+  "schema_version": "v1",
+  "commit_sha": "cc45b6bac45dd6d2b445cd78c07684b859ef06f0",
+  "title": "chore: fix BACKLOG.md generated-index drift after #2404 (B-0046.1 missing)",
+  "state": "MERGED",
+  "merged_at": "2026-05-10T03:28:11Z",
+  "head_ref": "chore/fix-backlog-index-b0046-1"
+}

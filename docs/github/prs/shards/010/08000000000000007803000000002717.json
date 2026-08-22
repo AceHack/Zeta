@@ -1,0 +1,12 @@
+{
+  "pr_number": 10007,
+  "archive_path": "docs/history/pr-reviews/PR-10007-docs-research-lensography-soft-regime-chaos-control-into-quasi-repeatable-orbits.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-02T22:50:32.753Z",
+  "schema_version": "v1",
+  "commit_sha": "ea6bec57402e0dd7c0a7294521b3be4a9df00362",
+  "title": "docs(research): lensography — soft-regime chaos control into quasi-repeatable orbits (coinage anchored)",
+  "state": "MERGED",
+  "merged_at": "2026-08-02T22:50:06Z",
+  "head_ref": "research/lensography-soft-regime-chaos-control-20260802"
+}

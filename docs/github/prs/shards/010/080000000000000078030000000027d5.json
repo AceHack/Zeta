@@ -1,0 +1,12 @@
+{
+  "pr_number": 10197,
+  "archive_path": "docs/history/pr-reviews/PR-10197-feat-identity-execute-the-a1-corollary-mechanical-tripwire-081kzhy9mv8-081kzhy9m.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-09T18:13:34.675Z",
+  "schema_version": "v1",
+  "commit_sha": "ee22812b5b3c19b61c32f8b7d48aada6fa0a7723",
+  "title": "feat(identity): execute the A1 corollary + mechanical tripwire (081KZHY9MV8, 081KZHY9MVY)",
+  "state": "MERGED",
+  "merged_at": "2026-08-09T18:13:05Z",
+  "head_ref": "otto/a1-corollary-tripwire"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 7498,
+  "archive_path": "docs/history/pr-reviews/PR-7498-feat-meta-rule-meta-meta-rules-rules-about-rules-classes-earned-under-rules-is-t.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-10T10:05:55.921Z",
+  "schema_version": "v1",
+  "commit_sha": "929372c8be580cf4bed83d550e0cec70e7eb3835",
+  "title": "feat(meta)+rule: meta/ — meta-rules (rules about rules); classes-earned-under-rules is the first meta-rule",
+  "state": "MERGED",
+  "merged_at": "2026-06-10T10:05:32Z",
+  "head_ref": "shadow-meta-folder-meta-rules"
+}

@@ -1,0 +1,317 @@
+# AgencySignature enforcement — the two instruments, finally wired to CI.
+#
+# WHY THIS EXISTS
+# Both enforcement instruments already existed and were invoked by NOTHING.
+# Checked 2026-08-14 across `.github/workflows/`: zero references to
+# `audit-agencysignature-main-tip.ts` or `validate-agencysignature-pr-body.ts`.
+# A convention with tooling nobody runs is a convention nobody keeps, and the
+# measurement says exactly that — over the last 300 commits on `main`, 113 were
+# agent-authored and unsigned, and three carried the misspelled trailer key
+# `Agent-Signature-Version` (#10564 / #10573).
+#
+# TWO JOBS, TWO MOMENTS
+#   validate-pr-body  — pre-merge. Validates the PR body AND the squash preimage
+#                       (see THE FALSE PREMISE below).
+#
+# THE FALSE PREMISE, corrected 2026-08-17 (Aaron authorised the long-term call)
+# This block used to read: "GitHub squash-merge takes the PR BODY as the commit
+# message, so the body is where the trailer block has to be for it to survive
+# the merge at all." That is FALSE for this repository, and it was the premise
+# the whole pre-merge check rested on. Measured:
+#
+#     gh api repos/Lucent-Financial-Group/Zeta
+#       → squash_merge_commit_message = COMMIT_MESSAGES
+#
+# GitHub builds the squash commit from the PR's COMMIT MESSAGES, concatenated
+# with `---------` separators. The PR body never reaches it. So a PR could carry
+# a perfect block in its body, go green on `agencysignature (PR body)`, and land
+# a squash commit with no block at all — which `audit-main-tip` then correctly
+# reddens on `main`, where it cannot be fixed without rewriting history.
+#
+# That is exactly what happened: PR #11267 had the block in its body, passed
+# this job, and landed `48d3f4ed0aaf` with zero occurrences of
+# `Agency-Signature-Version`. A green check that structurally cannot protect the
+# invariant it appears to protect.
+#
+# WHY THE FIX IS "VALIDATE THE COMMITS", NOT "FLIP THE SETTING TO PR_BODY".
+# Flipping `squash_merge_commit_message` to PR_BODY would make the old sentence
+# true with one setting change, and it is the wrong call: GitHub does NOT re-run
+# checks when a PR body is edited. Pass green → edit the body → merge would
+# produce a blockless squash behind a green check, on text this file already
+# labels ATTACKER-CONTROLLED. Commit messages cannot be changed without a push,
+# and a push re-triggers the checks. Binding the signature to the commit is both
+# what actually lands and the only tamper-evident option — and the commit is
+# where `audit-main-tip` reads it anyway, so the two jobs now judge ONE artifact.
+#   audit-main-tip    — post-merge. Judges only the commit that just landed
+#                       (`--commit HEAD`), so it says nothing about history and
+#                       cannot be reddened by pre-existing debt.
+#
+# THE CUTOVER, STATED
+# Measured 2026-08-14: 0 of 12 open PRs carried a valid trailer block. Turning a
+# blocking validator on retroactively would red-X the entire in-flight fleet for
+# something they could not have known. So `validate-pr-body` GRANDFATHERS every
+# PR created before FAIL_CLOSED_CUTOVER (2026-08-15T00:00:00Z) — the same
+# instant, and the same stated-cutover discipline, the auditor already uses.
+# This is NOT a check that cannot fail: it is blocking for every PR opened from
+# the cutover onward, which is all of them, forever, starting immediately after.
+#
+# NOT YET IN THE REQUIRED SET. Adding a job to branch protection's required
+# checks is a repository-settings change and a treaty-amendment consent path
+# (gate.yml "THE FLIP" note) — a human call, not mine. Until then this workflow
+# gives its own red X, which is signal, and does not lock unrelated lanes.
+#
+# ONE VALIDATOR, TWO ARTIFACTS -- SO EACH CALL DECLARES ITS OWN (`--source`)
+# Both steps below run the SAME binary over OPPOSITE texts: the PR description
+# and the squash preimage. Until 2026-08-18 the tool could not tell them apart
+# and its parse-failure text hardcoded "COMMIT MESSAGES", so when the PR-body
+# step emitted it every sentence was false for the artifact actually read -- and
+# it explicitly denied the fix that works (`gh pr edit`). Measured cost: PR
+# #11707 closed and its branch rebuilt chasing a commit-side defect that was not
+# there (#11710), and a second agent caught by the same sentence inside the hour
+# (#11712). `--source` is now REQUIRED at the command line: a step that forgets
+# it exits 2 before reading stdin, rather than printing a guess as a diagnosis.
+# Work item 081M092W2E7087G0R000KDKHWS.
+#
+# SECURITY (docs/security/GITHUB-ACTIONS-SAFE-PATTERNS.md): the PR body is
+# ATTACKER-CONTROLLED text. It is routed through `env:` and consumed as a quoted
+# shell variable piped to stdin; it is never interpolated into a `run:` block.
+# Same for the PR title, which is not used at all. Actions are SHA-pinned.
+
+name: agencysignature-enforcement
+
+on:
+  pull_request:
+    types: [opened, reopened, edited, synchronize, ready_for_review]
+  # ADDED 2026-08-18 for the `verify-human-review` job below. A review is the
+  # artifact that job reads, and it can arrive AFTER every `pull_request` event
+  # has fired: without this trigger a PR that truthfully claims
+  # `Human-Review: explicit` would stay red until an unrelated push happened to
+  # re-run the check. The gate has to re-evaluate when its evidence appears.
+  pull_request_review:
+    types: [submitted, edited, dismissed]
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  # Least privilege, added 2026-08-17 for the squash-preimage step only: it
+  # reads `pulls/<n>/commits` to reconstruct what GitHub will squash. Read-only;
+  # this workflow never writes a PR.
+  pull-requests: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  validate-pr-body:
+    name: agencysignature (PR body)
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 6
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Install bun
+        uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
+
+      - name: Validate the AgencySignature trailer block in the PR body
+        env:
+          # Attacker-controlled — via env, quoted, piped to stdin. Never inlined.
+          PR_BODY: ${{ github.event.pull_request.body }}
+          PR_CREATED_AT: ${{ github.event.pull_request.created_at }}
+          # THE PROPOSAL AUTHOR — deliberately `pull_request.user.login`, NOT
+          # `github.actor`. `github.actor` is whoever TRIGGERED the event, and
+          # this workflow also fires on `edited` and `synchronize`: keyed on
+          # `github.actor`, a rostered external actor would exempt SOMEBODY
+          # ELSE'S PR merely by touching it — and dependabot touches other PRs
+          # (rebases, comments) as a matter of course. `user.login` is the
+          # author of the proposal, which is what the roster is a statement
+          # about. GitHub-supplied rather than body text, so it is not
+          # attacker-controlled; it still travels via env and is passed as a
+          # quoted argument, never interpolated into the script.
+          PR_AUTHOR: ${{ github.event.pull_request.user.login }}
+          # Keep in lockstep with FAIL_CLOSED_CUTOVER_DEFAULT in
+          # src/Core.TypeScript/hygiene/audit-agencysignature-main-tip.ts.
+          CUTOVER: "2026-08-15T00:00:00Z"
+        # The grandfather comparison lives in the TOOL (`isGrandfatheredPr`,
+        # unit-tested, fails CLOSED on an unparseable date) and NOT in this
+        # yaml. Logic in a `run:` block is logic no test can reach — the exact
+        # failure class this workflow exists to enforce against, so
+        # reintroducing it here would be self-defeating. This step pipes bytes.
+        #
+        # Same reason the external-actor decision is `--author-identity` and not
+        # an `if:` condition on the job: an `if: github.actor != 'dependabot[bot]'`
+        # would be an exemption with no test, no printed profile, and no way to
+        # prove it does not swallow everyone. It lives in
+        # `repoAssertedAttribution`, which is pure and has falsifiers — including
+        # one asserting a NON-rostered actor with no trailer still fails.
+        run: |
+          set -euo pipefail
+          printf '%s' "$PR_BODY" \
+            | bun src/Core.TypeScript/hygiene/validate-agencysignature-pr-body.ts \
+                --source pr-body \
+                --pr-created-at "$PR_CREATED_AT" \
+                --grandfather-cutover "$CUTOVER" \
+                --author-identity "$PR_AUTHOR"
+
+      # THE SQUASH PREIMAGE — the artifact that actually lands (see THE FALSE
+      # PREMISE in the header). `squash_merge_commit_message = COMMIT_MESSAGES`,
+      # so GitHub concatenates the PR's commit messages; this reconstructs that
+      # text and runs it through the SAME validator, so a green body can no
+      # longer certify a blockless commit.
+      #
+      # The commit list comes from the API, NOT from `git log`. `actions/checkout`
+      # is shallow by default, so `BASE..HEAD` would not resolve here, and
+      # `fetch-depth: 0` on this repo is an expensive way to buy a list GitHub
+      # will hand over directly. It is also the same source GitHub squashes from.
+      #
+      # This is a CONSERVATIVE reconstruction, not a byte-exact one: the
+      # validator needs the ten keys contiguous somewhere in the text, and
+      # concatenating messages cannot manufacture that block if no commit
+      # carries it. Eliminating the false GREEN is the point; a red here means a
+      # commit really is missing its block, which is true and worth blocking on.
+      #
+      # Same security posture as the body step: commit messages are also
+      # author-controlled, so they travel via stdin, never interpolated.
+      - name: Validate the AgencySignature block in the squash preimage
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR_CREATED_AT: ${{ github.event.pull_request.created_at }}
+          PR_AUTHOR: ${{ github.event.pull_request.user.login }}
+          CUTOVER: "2026-08-15T00:00:00Z"
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+        run: |
+          set -euo pipefail
+          gh api --paginate \
+              "repos/${GITHUB_REPOSITORY}/pulls/${PR_NUMBER}/commits" \
+              --jq '.[].commit.message' \
+            | bun src/Core.TypeScript/hygiene/validate-agencysignature-pr-body.ts \
+                --source commit-messages \
+                --pr-created-at "$PR_CREATED_AT" \
+                --grandfather-cutover "$CUTOVER" \
+                --author-identity "$PR_AUTHOR"
+
+  # -------------------------------------------------------------------------
+  # THE CLAIM, CHECKED AGAINST THE WORLD (added 2026-08-18)
+  # -------------------------------------------------------------------------
+  # The two jobs above judge whether the block is WELL-FORMED. Neither ever
+  # asked whether anything it SAYS is true. `Human-Review: explicit` — the field
+  # agencysignature-block.ts calls "THE accountability claim" — was validated
+  # only against itself: `explicit` requires evidence != 'none', and nothing
+  # queried whether a review happened. Measured before writing this job:
+  #
+  #     git grep "pulls/.*reviews|listReviews|reviewDecision" \
+  #         -- .github/ src/Core.TypeScript/hygiene/    ->  empty
+  #
+  # With `required_pull_request_reviews: null` in github-settings.expected.json
+  # and CODEOWNERS inert at `required_approving_review_count: none`, the trailer
+  # was the SOLE record of human accountability — written by its own subject,
+  # and merged by that same actor under auto-merge.
+  #
+  # SCOPE, deliberately narrow: this job only ever fails a claim that CLAIMS
+  # something. `not-implied-by-credential` + `none` performs no lookup at all.
+  #
+  # HONEST LIMIT, stated because a green tick here must not overclaim: every
+  # well-formed `explicit` claim on main today cites `chat` (501 of them;
+  # pr-review and pr-comment are at zero), and `chat` is not resolvable from any
+  # forge query. So this job binds the two checkable values going forward and
+  # reports the unverifiable ones as UNVERIFIABLE rather than as passes. The
+  # vocabulary fix that would close the rest is an enum change, which spec
+  # Section 10 binds to an Agency-Signature-Version bump — proposed, not taken.
+  verify-human-review:
+    name: agencysignature (human-review evidence)
+    if: github.event_name == 'pull_request' || github.event_name == 'pull_request_review'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 6
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Install bun
+        uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
+
+      # Same artifact the squash-preimage step judges: the commit messages, which
+      # are what actually lands (`squash_merge_commit_message = COMMIT_MESSAGES`).
+      # Reading the claim from the PR body instead would verify a review against
+      # a claim that never reaches `main`.
+      #
+      # Exit codes are three-valued on purpose and the shell must not flatten
+      # them: 0 pass / 1 the claim is refuted / 2 the lookup did not happen.
+      # `set -e` would conflate 1 and 2 into "failed", so the code is captured
+      # and re-raised explicitly with the distinction printed.
+      - name: Verify the Human-Review claim against the forge
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          # The proposal author, for the self-review test. GitHub-supplied, not
+          # body text; still routed via env and passed as a quoted argument.
+          PR_AUTHOR: ${{ github.event.pull_request.user.login }}
+        run: |
+          set -uo pipefail
+          # NOT a pipeline. Under `pipefail` a failing `gh` would surface as the
+          # pipeline's status and be read as "the claim is refuted", when it is
+          # in fact "the lookup did not happen" — the precise conflation this
+          # whole job exists to remove. So the fetch is checked on its own first.
+          if ! gh api --paginate \
+                 "repos/${GITHUB_REPOSITORY}/pulls/${PR_NUMBER}/commits" \
+                 --jq '.[].commit.message' > preimage.txt; then
+            echo "::error::COULD NOT VERIFY — failed to read the PR's commits."
+            echo "TOOLING failure, not evidence about the review. Exit 2."
+            exit 2
+          fi
+
+          bun src/Core.TypeScript/hygiene/human-review-evidence.ts \
+              --repo "${GITHUB_REPOSITORY}" \
+              --pr-number "${PR_NUMBER}" \
+              --pr-author "${PR_AUTHOR}" < preimage.txt
+          code=$?
+
+          if [ "$code" -eq 2 ]; then
+            echo "::error::COULD NOT VERIFY the Human-Review claim (exit 2)."
+            echo "This is a TOOLING failure, not evidence that the review is absent."
+            echo "It is failed rather than passed because an unverified claim must"
+            echo "never be spent as a verified one — but do not read it as a refutation."
+          elif [ "$code" -eq 1 ]; then
+            echo "::error::The Human-Review claim is REFUTED: the block claims a human"
+            echo "review that the forge says does not exist. Either obtain the review,"
+            echo "or state what actually happened (not-implied-by-credential / none)."
+          fi
+          exit "$code"
+
+  audit-main-tip:
+    name: agencysignature (main tip)
+    # NAMED POSITIVELY, changed 2026-08-18. This was `!= 'pull_request'`, which
+    # was correct while the workflow had exactly three triggers. Adding
+    # `pull_request_review` above would have silently recruited this job into
+    # review events, where it would audit whatever HEAD the runner checked out
+    # and report on a commit the event is not about. A negated event test grows
+    # a new meaning every time a trigger is added; an explicit list does not.
+    if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 6
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          # Full history so the pinned v1 ship anchor (a4bdce83da81,
+          # 2026-05-28) is reachable. With a shallow clone the anchor is
+          # invisible, EVERY commit classifies LEGACY, and the audit reports
+          # PASS having verified nothing — which is the precise failure class
+          # this instrument exists to catch. `--require-shipped` below turns
+          # that into a hard error rather than a green tick, so this is belt
+          # and braces on purpose.
+          fetch-depth: 0
+
+      - name: Install bun
+        uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
+
+      - name: Audit the commit that just landed
+        # `--commit HEAD` scopes the judgement to THIS commit. The 113 unsigned
+        # commits already on main are a separate, stated debt; this job must not
+        # be permanently red for them or it stops being read.
+        run: |
+          bun src/Core.TypeScript/hygiene/audit-agencysignature-main-tip.ts \
+            --commit HEAD --require-shipped

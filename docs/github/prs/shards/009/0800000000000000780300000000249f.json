@@ -1,0 +1,12 @@
+{
+  "pr_number": 9375,
+  "archive_path": "docs/history/pr-reviews/PR-9375-feat-ace-lumen-persona-content-package-v0-1-of-ace-distributes-personas-consent-.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-03T23:22:47.856Z",
+  "schema_version": "v1",
+  "commit_sha": "0e171610794ce81de82cc216f4ded7a396da1f05",
+  "title": "feat(ace): Lumen persona-content package — v0.1 of ace-distributes-personas, consent gate held open (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-03T23:22:20Z",
+  "head_ref": "otto/lumen-persona-content-package"
+}

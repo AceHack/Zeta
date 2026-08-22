@@ -1,0 +1,14 @@
+{
+  "id": "080d0154e7323010a0130008256bbf7e",
+  "at": "2026-08-22T17:55:20.774Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M0N9SSJ1087G0R001WVSN9V",
+    "type": "task",
+    "title": "Port Zeta23/LinAlg (von Neumann trace inequality + §3 engine) to our Mathlib v4.30.0-rc1 pin",
+    "slug": "port-zeta23-linalg-von-neumann-trace-inequality-3-engine-to",
+    "priority": "P2",
+    "filename": "081M0N9SSJ1087G0R001WVSN9V-port-zeta23-linalg-von-neumann-trace-inequality-3-engine-to.md"
+  }
+}

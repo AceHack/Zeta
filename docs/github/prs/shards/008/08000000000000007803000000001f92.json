@@ -1,0 +1,12 @@
+{
+  "pr_number": 8082,
+  "archive_path": "docs/history/pr-reviews/PR-8082-feat-bayesian-forecast-reticulum-fusion-branches.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-13T22:34:47.962Z",
+  "schema_version": "v1",
+  "commit_sha": "6f77fda721f697401193d1e30fa7804b84669bb6",
+  "title": "feat(bayesian): forecast Reticulum fusion branches",
+  "state": "MERGED",
+  "merged_at": "2026-06-13T22:34:29Z",
+  "head_ref": "codex/vision-reticulum-scheduler-forecast"
+}

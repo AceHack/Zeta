@@ -30,7 +30,7 @@ cosmetics.
   for me" question?
 - `tools/setup/install.sh` and per-OS scripts — install loop.
 - Local build loop: `dotnet build -c Release`, `dotnet test`,
-  `lake build`, `bun tools/formal-verification/run-tlc.ts`.
+  `lake build`, `bun src/Core.TypeScript/formal-verification/run-tlc.ts`.
 - Test organisation and discoverability under `tests/**`.
 - IDE integration: `.vscode/`, Ionide config, suggested
   extensions, debugger setup.

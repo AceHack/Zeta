@@ -1,0 +1,12 @@
+{
+  "pr_number": 7806,
+  "archive_path": "docs/history/pr-reviews/PR-7806-docs-doctrine-retired-again-swept-from-my-captures-observations-only.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-11T22:03:52.048Z",
+  "schema_version": "v1",
+  "commit_sha": "15eabea9b622380d37452b9394646e6e52919254",
+  "title": "docs: 'doctrine' retired again — swept from my captures (observations only)",
+  "state": "MERGED",
+  "merged_at": "2026-06-11T22:03:27Z",
+  "head_ref": "shadow-no-doctrine"
+}

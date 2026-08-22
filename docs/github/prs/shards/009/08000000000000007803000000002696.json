@@ -1,0 +1,12 @@
+{
+  "pr_number": 9878,
+  "archive_path": "docs/history/pr-reviews/PR-9878-fix-docs-restore-current-main-markdown-gate.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-01T13:44:14.418Z",
+  "schema_version": "v1",
+  "commit_sha": "583302a9e3fc16d5265ea4b6ac129eed0447dc49",
+  "title": "fix(docs): restore current main markdown gate",
+  "state": "MERGED",
+  "merged_at": "2026-08-01T13:43:38Z",
+  "head_ref": "codex/fix-current-main-markdownlint"
+}

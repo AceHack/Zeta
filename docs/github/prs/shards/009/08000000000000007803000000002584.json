@@ -1,0 +1,12 @@
+{
+  "pr_number": 9604,
+  "archive_path": "docs/history/pr-reviews/PR-9604-codex-feat-darkhall-expose-traveler-frame-in-room-transcript.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-09T01:54:04.867Z",
+  "schema_version": "v1",
+  "commit_sha": "eaecaf0a8fca6baa7ebc8c56a79d5b1e5ca148ee",
+  "title": "[codex] feat(darkhall): expose traveler frame in room transcript",
+  "state": "MERGED",
+  "merged_at": "2026-07-09T01:53:39Z",
+  "head_ref": "codex/darkhall-traveler-readout"
+}

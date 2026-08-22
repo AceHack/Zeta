@@ -1,0 +1,12 @@
+{
+  "pr_number": 5646,
+  "archive_path": "docs/history/pr-reviews/PR-5646-feat-b-0857-2-wire-route-install-sh-suggested-host-through-zeta-hardware-detect-.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-27T21:21:46.614Z",
+  "schema_version": "v1",
+  "commit_sha": "10e9d30cd77946b419f8467e9e1320dc0fb80718",
+  "title": "feat(b-0857.2-wire): route install.sh suggested-host through zeta-hardware-detect.ts (GPU+storage+CPU detection with lspci fallback)",
+  "state": "MERGED",
+  "merged_at": "2026-05-27T21:21:27Z",
+  "head_ref": "feat/b-0857.2-wire-hwdetect-ts-into-menu-2026-05-27"
+}

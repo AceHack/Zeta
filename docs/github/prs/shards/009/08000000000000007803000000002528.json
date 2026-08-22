@@ -1,0 +1,12 @@
+{
+  "pr_number": 9512,
+  "archive_path": "docs/history/pr-reviews/PR-9512-persona-keys-add-cascade-teardown-planner.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-08T19:52:10.283Z",
+  "schema_version": "v1",
+  "commit_sha": "bb80baaba0da19dd9204c0b5bd387fec3e22f399",
+  "title": "persona-keys: add cascade teardown planner",
+  "state": "MERGED",
+  "merged_at": "2026-07-08T19:51:42Z",
+  "head_ref": "feat/081KX1KWD7N-cascade-teardown"
+}

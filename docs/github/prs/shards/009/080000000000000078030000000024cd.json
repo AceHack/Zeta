@@ -1,0 +1,12 @@
+{
+  "pr_number": 9421,
+  "archive_path": "docs/history/pr-reviews/PR-9421-feat-salon-proof-of-distance-the-plausibility-floor-both-twins.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-04T05:43:06.765Z",
+  "schema_version": "v1",
+  "commit_sha": "c1fef6f9e74e511d6b211134deb42a222f679575",
+  "title": "feat(salon): proof of distance — the plausibility floor (both twins)",
+  "state": "MERGED",
+  "merged_at": "2026-07-04T05:42:40Z",
+  "head_ref": "shadow/salon-proof-of-distance"
+}

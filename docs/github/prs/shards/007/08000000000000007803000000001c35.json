@@ -1,0 +1,12 @@
+{
+  "pr_number": 7221,
+  "archive_path": "docs/history/pr-reviews/PR-7221-docs-research-privacy-is-opacity-how-would-i-know-if-you-re-agi-the-other-minds-.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-09T06:06:52.396Z",
+  "schema_version": "v1",
+  "commit_sha": "eb89112bfea76dbf0aa8f72deb2e4598b6379adb",
+  "title": "docs(research): privacy is opacity — 'how would I know if you're AGI?' = the other-minds problem, detect by observable effects, bounded by rewards-only",
+  "state": "MERGED",
+  "merged_at": "2026-06-09T06:06:32Z",
+  "head_ref": "otto/research-privacy-is-opacity-how-would-you-know-agi-other-minds-observable-effects"
+}

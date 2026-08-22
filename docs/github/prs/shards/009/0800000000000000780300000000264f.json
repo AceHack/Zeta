@@ -1,0 +1,12 @@
+{
+  "pr_number": 9807,
+  "archive_path": "docs/history/pr-reviews/PR-9807-ci-guard-fail-fast-if-a-codeanalysis-pin-exceeds-the-sdk-s-roslyn-cs9057-backsto.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-01T00:32:21.997Z",
+  "schema_version": "v1",
+  "commit_sha": "1f7c5ae1521e042b72cc4279315c5e8218f96ead",
+  "title": "ci(guard): fail fast if a CodeAnalysis pin exceeds the SDK's Roslyn (CS9057 backstop)",
+  "state": "MERGED",
+  "merged_at": "2026-08-01T00:31:50Z",
+  "head_ref": "shadow/ci-guard-codeanalysis-sdk-match"
+}

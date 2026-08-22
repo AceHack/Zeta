@@ -1,0 +1,21 @@
+{
+  "pr_number": 5473,
+  "archive_path": "docs/history/pr-reviews/PR-5473-docs-b-0858-5-heartbeat-auto-state-gathering-row-consent-first-opt-in-debug-log-.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7FYZSX",
+    "comment:PRRC_kwDOSF9kNM7FYZUI",
+    "comment:PRRC_kwDOSF9kNM7FYZUz",
+    "comment:PRRC_kwDOSF9kNM7FYZVc",
+    "thread:PRRT_kwDOSF9kNM6FINhM",
+    "thread:PRRT_kwDOSF9kNM6FINiV",
+    "thread:PRRT_kwDOSF9kNM6FINiy",
+    "thread:PRRT_kwDOSF9kNM6FINjV"
+  ],
+  "fetched_at": "2026-05-27T14:36:30.622Z",
+  "schema_version": "v1",
+  "commit_sha": "f9dab44291bb2ddaa57d887bfdd6a1671cfccfeb",
+  "title": "docs(B-0858.5): heartbeat auto-state-gathering row — consent-first opt-in; debug-log property (Aaron 2026-05-27 deferred post-USB)",
+  "state": "MERGED",
+  "merged_at": "2026-05-27T14:36:06Z",
+  "head_ref": "backlog/b-0858-5-heartbeat-auto-state-gathering-row-2026-05-27"
+}

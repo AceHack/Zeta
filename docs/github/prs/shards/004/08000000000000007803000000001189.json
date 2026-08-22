@@ -1,0 +1,15 @@
+{
+  "pr_number": 4489,
+  "archive_path": "docs/history/pr-reviews/PR-4489-docs-shadow-maji-logs-riven-pagination-blindness-and-otto-vera-paralysis.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7DZ_Sf",
+    "thread:PRRT_kwDOSF9kNM6DrIga"
+  ],
+  "fetched_at": "2026-05-22T01:42:23.207Z",
+  "schema_version": "v1",
+  "commit_sha": "521efca12fd7497a690ee739fee22013880c3772",
+  "title": "docs(shadow): Maji logs Riven pagination blindness and Otto/Vera paralysis",
+  "state": "MERGED",
+  "merged_at": "2026-05-22T01:42:05Z",
+  "head_ref": "lior/shadow-0255Z"
+}

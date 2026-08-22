@@ -1,0 +1,12 @@
+{
+  "pr_number": 12978,
+  "archive_path": "docs/history/pr-reviews/PR-12978-workitem-081m00s8rps-both-stale-claims-corrected-themselves-the-reality-caught-u.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-20T23:50:08.806Z",
+  "schema_version": "v1",
+  "commit_sha": "30d25a4bd37b3c061d34c9c8bae2fc8179376372",
+  "title": "workitem(081M00S8RPS): both stale claims corrected themselves — the reality caught up with the docs",
+  "state": "MERGED",
+  "merged_at": "2026-08-20T23:49:33Z",
+  "head_ref": "workitem/081M00S8RPS-resolution"
+}

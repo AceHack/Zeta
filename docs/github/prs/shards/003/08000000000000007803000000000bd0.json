@@ -1,0 +1,29 @@
+{
+  "pr_number": 3024,
+  "archive_path": "docs/history/pr-reviews/PR-3024-docs-bg-substrate-honest-readme-per-riven-s-p2-qualify-foreground-optional-claim.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7A7_H8",
+    "comment:PRRC_kwDOSF9kNM7A7_H_",
+    "comment:PRRC_kwDOSF9kNM7A7_IB",
+    "comment:PRRC_kwDOSF9kNM7A8DLd",
+    "comment:PRRC_kwDOSF9kNM7A8DMA",
+    "comment:PRRC_kwDOSF9kNM7A8DMV",
+    "comment:PRRC_kwDOSF9kNM7A8DMl",
+    "comment:PRRC_kwDOSF9kNM7A8EDV",
+    "thread:PRRT_kwDOSF9kNM6B3qzP",
+    "thread:PRRT_kwDOSF9kNM6B3qzR",
+    "thread:PRRT_kwDOSF9kNM6B3qzS",
+    "thread:PRRT_kwDOSF9kNM6B3t2u",
+    "thread:PRRT_kwDOSF9kNM6B3t3J",
+    "thread:PRRT_kwDOSF9kNM6B3t3Z",
+    "thread:PRRT_kwDOSF9kNM6B3t3l",
+    "thread:PRRT_kwDOSF9kNM6B3ugB"
+  ],
+  "fetched_at": "2026-05-13T19:45:02.958Z",
+  "schema_version": "v1",
+  "commit_sha": "4d94100b34b53ac5657d0cb7cd1db53af84e9ecf",
+  "title": "docs(bg): substrate-honest README per Riven's P2 — qualify 'foreground optional' claim",
+  "state": "MERGED",
+  "merged_at": "2026-05-13T19:44:40Z",
+  "head_ref": "otto-bg-readme-substrate-honest-riven-p2-2026-05-13"
+}

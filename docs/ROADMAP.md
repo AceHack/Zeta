@@ -14,6 +14,15 @@ A relativistic git-native database: a **reliable data plane** (storage + read/wr
 **minimal-noun, all-language (F#/C#/TS/Rust/Python/Go/Q#), all-serializer PROVEN math base**. Two product shapes:
 data-plane-only, and data-plane + cell control plane.
 
+> **The compiler / substrate ladder is direction, not sequence (2026-08-15).** "Memories, types, files,
+> and code are one content-addressed object store," epoch-based addressing, and the Bonsai → specializer →
+> (someday) IL ladder are recorded in [`docs/VISION.md`](VISION.md) §"One substrate, four readings — the
+> object store, the epoch, and the compiler ladder", **with per-rung SHIPPED / IN FLIGHT / DESIGNED /
+> ASPIRATION registers**. They are deliberately **not** entered in the sequence below: only the shipped
+> rungs (`Bonsai`, `ZetaFs`/`DagFs`, `MixIr`/`Cogen`/`IsaSpec`, `SpecializationCache`) are things this
+> roadmap can schedule against, and the rest have no mechanism yet. Read the registers there before
+> pulling any of it forward. Evidence: PRs #10774, #10807, #10815, #10819, #10820, #10822.
+
 ### Operating principle — convert every input into one of four channels
 
 Aaron 2026-06-07: anything thrown at this work that isn't already moving us toward the roadmap should be

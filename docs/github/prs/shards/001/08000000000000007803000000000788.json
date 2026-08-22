@@ -1,0 +1,15 @@
+{
+  "pr_number": 1928,
+  "archive_path": "docs/history/pr-reviews/PR-1928-backlog-b-0062-progress-tally-8-21-resolved.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6--Npg",
+    "thread:PRRT_kwDOSF9kNM6AarBF"
+  ],
+  "fetched_at": "2026-05-07T18:57:00.785Z",
+  "schema_version": "v1",
+  "commit_sha": "306791e21fdc9e207936f0c9e7ed9544653e0e62",
+  "title": "backlog(B-0062): progress tally — 8/21 resolved",
+  "state": "MERGED",
+  "merged_at": "2026-05-07T18:56:41Z",
+  "head_ref": "otto/b0062-progress-tally"
+}

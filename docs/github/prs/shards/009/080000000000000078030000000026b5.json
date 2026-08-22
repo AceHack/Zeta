@@ -1,0 +1,12 @@
+{
+  "pr_number": 9909,
+  "archive_path": "docs/history/pr-reviews/PR-9909-chore-installer-remove-9-stale-js-duplicates-rename-zflash-qemu-test-to-what-it-.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-18T07:49:52.897Z",
+  "schema_version": "v1",
+  "commit_sha": "3d0798f52125df549d20f4d82fff33cefde5b7c8",
+  "title": "chore(installer): remove 9 stale .js duplicates + rename zflash-qemu-test to what it actually does",
+  "state": "MERGED",
+  "merged_at": "2026-08-01T18:33:08Z",
+  "head_ref": "shadow/cleanup-installer-stale-js"
+}

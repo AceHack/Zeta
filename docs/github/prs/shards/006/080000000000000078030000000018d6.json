@@ -1,0 +1,19 @@
+{
+  "pr_number": 6358,
+  "archive_path": "docs/history/pr-reviews/PR-6358-feat-b-0679-zetaid-v1-rust-oracle-4-oracle-consensus-ts-f-c-rust.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7GnGyn",
+    "comment:PRRC_kwDOSF9kNM7GnGzJ",
+    "comment:PRRC_kwDOSF9kNM7GnMEq",
+    "comment:PRRC_kwDOSF9kNM7GnMI-",
+    "thread:PRRT_kwDOSF9kNM6GBq51",
+    "thread:PRRT_kwDOSF9kNM6GBq6Q"
+  ],
+  "fetched_at": "2026-06-01T06:56:31.421Z",
+  "schema_version": "v1",
+  "commit_sha": "944fa70cbfdc359e151ad3584622b3cfaaf55efe",
+  "title": "feat(B-0679): ZetaId V1 Rust oracle — 4-oracle consensus (TS/F#/C#/Rust)",
+  "state": "MERGED",
+  "merged_at": "2026-06-01T06:56:11Z",
+  "head_ref": "otto-cli/b0679-zetaid-rust-2026-06-01"
+}

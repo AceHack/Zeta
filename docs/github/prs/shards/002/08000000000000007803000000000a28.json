@@ -1,0 +1,12 @@
+{
+  "pr_number": 2600,
+  "archive_path": "docs/history/pr-reviews/PR-2600-docs-memory-legacy-double-meaning-inheritance-to-leave-and-code-to-eliminate.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-11T00:57:45.678Z",
+  "schema_version": "v1",
+  "commit_sha": "39f920a4b545f9f53631f0675d97c7c0860e20d3",
+  "title": "docs(memory): legacy double meaning — inheritance to leave AND code to eliminate",
+  "state": "MERGED",
+  "merged_at": "2026-05-11T00:57:25Z",
+  "head_ref": "docs/legacy-double-meaning-2026-05-10"
+}

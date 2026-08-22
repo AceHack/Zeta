@@ -1,0 +1,12 @@
+{
+  "pr_number": 7251,
+  "archive_path": "docs/history/pr-reviews/PR-7251-docs-research-ferry-zflash-trust-model-owner-maintainer-keys-iso-post-iso-boot-s.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-09T12:12:52.357Z",
+  "schema_version": "v1",
+  "commit_sha": "a576ee14397c399bd5f78026f9a8b807c98171fb",
+  "title": "docs(research)+ferry: zflash trust model (owner+maintainer keys) + ISO/post-ISO/boot split + honest 'why humans' → autonomous QEMU plan",
+  "state": "MERGED",
+  "merged_at": "2026-06-09T12:12:28Z",
+  "head_ref": "otto/research-zflash-trust-model-qemu-autonomous-plan"
+}

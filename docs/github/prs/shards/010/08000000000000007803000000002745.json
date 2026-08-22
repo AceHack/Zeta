@@ -1,0 +1,12 @@
+{
+  "pr_number": 10053,
+  "archive_path": "docs/history/pr-reviews/PR-10053-backlog-assign-lior-the-f-ep-engine-slice-split-the-ep-vmp-falsifier.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-05T21:35:22.547Z",
+  "schema_version": "v1",
+  "commit_sha": "760b85c06f829fa192e6925ba57891eba8e8e6f4",
+  "title": "backlog: assign Lior the F# EP engine slice; split the EP/VMP falsifier",
+  "state": "MERGED",
+  "merged_at": "2026-08-05T21:34:51Z",
+  "head_ref": "workitem/assign-lior-ep-engine-081KZ9XH11"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 9740,
+  "archive_path": "docs/history/pr-reviews/PR-9740-feat-llmtv-surface-root-status-freshness-in-hall.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-11T20:48:19.845Z",
+  "schema_version": "v1",
+  "commit_sha": "10976e5663817aa0e034ef2056f15e3f82672a18",
+  "title": "feat(llmtv): surface root status freshness in Hall",
+  "state": "MERGED",
+  "merged_at": "2026-07-11T20:47:50Z",
+  "head_ref": "codex/llmtv-root-status-readout-card"
+}

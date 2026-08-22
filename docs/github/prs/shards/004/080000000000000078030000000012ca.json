@@ -1,0 +1,19 @@
+{
+  "pr_number": 4810,
+  "archive_path": "docs/history/pr-reviews/PR-4810-backlog-b-0719-file-soraya-round-67-forced-decomposition-audit-of-audit-recognit.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7EU1_P",
+    "comment:PRRC_kwDOSF9kNM7EU2HX",
+    "comment:PRRC_kwDOSF9kNM7EU2HZ",
+    "thread:PRRT_kwDOSF9kNM6EWZmu",
+    "thread:PRRT_kwDOSF9kNM6EWZth",
+    "thread:PRRT_kwDOSF9kNM6EWZti"
+  ],
+  "fetched_at": "2026-05-24T02:58:13.649Z",
+  "schema_version": "v1",
+  "commit_sha": "25d5218949ce5b8efa02f426a814801c5b7ef284",
+  "title": "backlog(B-0719): file Soraya round-67 forced-decomposition — audit-of-audit (recognition-without-row-filing precedent)",
+  "state": "MERGED",
+  "merged_at": "2026-05-24T02:57:54Z",
+  "head_ref": "otto/soraya-round67-b0719-audit-of-audit-recognition-without-row-filing-2026-05-24"
+}

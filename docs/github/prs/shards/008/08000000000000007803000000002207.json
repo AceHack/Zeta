@@ -1,0 +1,12 @@
+{
+  "pr_number": 8711,
+  "archive_path": "docs/history/pr-reviews/PR-8711-codex-render-darkhall-heat-as-chip9-board.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-20T06:30:48.063Z",
+  "schema_version": "v1",
+  "commit_sha": "cbe848917daada171df426bf8533c0782cfbbfb7",
+  "title": "[codex] render darkhall heat as chip9 board",
+  "state": "MERGED",
+  "merged_at": "2026-06-20T06:30:24Z",
+  "head_ref": "codex/darkhall-heat-chip9-readout"
+}

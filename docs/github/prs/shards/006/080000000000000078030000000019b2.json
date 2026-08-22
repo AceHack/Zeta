@@ -1,0 +1,17 @@
+{
+  "pr_number": 6578,
+  "archive_path": "docs/history/pr-reviews/PR-6578-docs-primitive-registry-sensor-suite-sensitive-seismomonitors-for-health-metrics.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7HN6sf",
+    "comment:PRRC_kwDOSF9kNM7HNz76",
+    "thread:PRRT_kwDOSF9kNM6GeS2j",
+    "thread:PRRT_kwDOSF9kNM6GeX-p"
+  ],
+  "fetched_at": "2026-06-02T15:22:04.070Z",
+  "schema_version": "v1",
+  "commit_sha": "544fae89e7df150bd572e760cf5fc664b9b059c4",
+  "title": "docs(PRIMITIVE-REGISTRY): sensor suite / sensitive seismomonitors for health metrics (wish list)",
+  "state": "MERGED",
+  "merged_at": "2026-06-02T15:21:36Z",
+  "head_ref": "otto-cli/seismomonitor-sensor-suite-health-metrics-wishlist-2026-06-02"
+}

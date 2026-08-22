@@ -1,0 +1,12 @@
+{
+  "pr_number": 9788,
+  "archive_path": "docs/history/pr-reviews/PR-9788-feat-braidentropy-thurston-nielsen-boyland-bridge-a-braid-forces-topological-ent.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-31T15:30:09.384Z",
+  "schema_version": "v1",
+  "commit_sha": "6ec779c4af40b459e9d78a6f52868199a0936516",
+  "title": "feat(BraidEntropy): Thurston–Nielsen–Boyland bridge — a braid forces topological entropy",
+  "state": "MERGED",
+  "merged_at": "2026-07-31T15:29:40Z",
+  "head_ref": "shadow/braid-entropy-thurston-bridge"
+}

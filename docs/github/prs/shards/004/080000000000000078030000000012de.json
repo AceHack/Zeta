@@ -1,0 +1,22 @@
+{
+  "pr_number": 4830,
+  "archive_path": "docs/history/pr-reviews/PR-4830-docs-add-rules-md.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7EZEPW",
+    "comment:PRRC_kwDOSF9kNM7EZEPi",
+    "comment:PRRC_kwDOSF9kNM7EZEf4",
+    "comment:PRRC_kwDOSF9kNM7EsS_y",
+    "comment:PRRC_kwDOSF9kNM7EsvNE",
+    "thread:PRRT_kwDOSF9kNM6EZlHc",
+    "thread:PRRT_kwDOSF9kNM6EZlHl",
+    "thread:PRRT_kwDOSF9kNM6EZlU3",
+    "thread:PRRT_kwDOSF9kNM6EoDxV"
+  ],
+  "fetched_at": "2026-05-25T21:47:12.828Z",
+  "schema_version": "v1",
+  "commit_sha": "98461e8b4b944a4ca17fdd849606fc3c9c87b748",
+  "title": "docs: add RULES.md",
+  "state": "MERGED",
+  "merged_at": "2026-05-25T21:46:55Z",
+  "head_ref": "lior-atomic-rules-pr"
+}

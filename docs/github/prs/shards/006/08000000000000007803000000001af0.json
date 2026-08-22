@@ -1,0 +1,12 @@
+{
+  "pr_number": 6896,
+  "archive_path": "docs/history/pr-reviews/PR-6896-docs-research-the-zeta-covenant-reversible-destruction-z-set-retraction-not-non-.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-07T19:43:08.200Z",
+  "schema_version": "v1",
+  "commit_sha": "f1251c265e35904c14840097953e25d0378a150a",
+  "title": "docs(research): the Zeta covenant — reversible destruction (Z-set retraction), not non-destruction",
+  "state": "MERGED",
+  "merged_at": "2026-06-07T19:42:47Z",
+  "head_ref": "otto/zeta-covenant-reversible-destruction-zsets"
+}

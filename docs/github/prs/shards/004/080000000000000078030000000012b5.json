@@ -1,0 +1,17 @@
+{
+  "pr_number": 4789,
+  "archive_path": "docs/history/pr-reviews/PR-4789-backlog-b-0714-file-soraya-round-51-hand-off-3-tla-specs-missing-cfg-files-runna.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7EUFxN",
+    "comment:PRRC_kwDOSF9kNM7EUFxU",
+    "thread:PRRT_kwDOSF9kNM6EVzpi",
+    "thread:PRRT_kwDOSF9kNM6EVzpm"
+  ],
+  "fetched_at": "2026-05-23T23:07:41.345Z",
+  "schema_version": "v1",
+  "commit_sha": "af13ceb70f7687916a80c045ebd973cc58e9ce19",
+  "title": "backlog(B-0714): file Soraya round-51 hand-off — 3 TLA+ specs missing .cfg files (runnability gap)",
+  "state": "MERGED",
+  "merged_at": "2026-05-23T23:07:23Z",
+  "head_ref": "otto/soraya-round51-b0714-tla-cfg-runnability-2026-05-23"
+}

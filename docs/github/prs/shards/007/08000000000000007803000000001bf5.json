@@ -1,0 +1,12 @@
+{
+  "pr_number": 7157,
+  "archive_path": "docs/history/pr-reviews/PR-7157-feat-platform-portal-ui-base-top-down-resources-catalog-needs-me-board.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-09T01:03:02.981Z",
+  "schema_version": "v1",
+  "commit_sha": "793a367d9fe24ea20a15e105d37f7df8a1660830",
+  "title": "feat(platform): portal UI base — top-down resources, catalog, needs-me board",
+  "state": "MERGED",
+  "merged_at": "2026-06-09T01:02:38Z",
+  "head_ref": "feat/portal-ui-base"
+}

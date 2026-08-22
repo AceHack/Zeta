@@ -1,0 +1,17 @@
+{
+  "pr_number": 4809,
+  "archive_path": "docs/history/pr-reviews/PR-4809-docs-research-bundle-file-dev-pc-substrate-architecture-nix-home-manager-k3d-hea.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7EUsIq",
+    "comment:PRRC_kwDOSF9kNM7EUsYN",
+    "thread:PRRT_kwDOSF9kNM6EWRz_",
+    "thread:PRRT_kwDOSF9kNM6EWSAY"
+  ],
+  "fetched_at": "2026-05-24T02:16:37.377Z",
+  "schema_version": "v1",
+  "commit_sha": "16e865168fd9c8bbcdd8d33442a5142c298bc68b",
+  "title": "docs(research): bundle-file dev-PC substrate architecture (Nix + Home Manager + k3d + Headscale + lend-resources pattern)",
+  "state": "MERGED",
+  "merged_at": "2026-05-24T02:16:19Z",
+  "head_ref": "otto/research-dev-pc-substrate-nix-home-manager-k3d-headscale-2026-05-24"
+}

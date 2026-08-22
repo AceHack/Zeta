@@ -1,0 +1,12 @@
+{
+  "pr_number": 4298,
+  "archive_path": "docs/history/pr-reviews/PR-4298-shards-batch-0112z-c-0114z-c-cost-aware-batch-4295-p2-no-op.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-19T01:17:43.881Z",
+  "schema_version": "v1",
+  "commit_sha": "6ecbf7a367c079a6121200e103a49453d52d01c4",
+  "title": "shards(batch 0112Z-c..0114Z-c): cost-aware batch + 4295 P2 no-op",
+  "state": "MERGED",
+  "merged_at": "2026-05-19T01:17:27Z",
+  "head_ref": "shards/batch-0112-0114z-c-2026-05-19"
+}

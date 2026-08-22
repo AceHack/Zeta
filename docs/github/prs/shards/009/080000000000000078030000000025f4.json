@@ -1,0 +1,12 @@
+{
+  "pr_number": 9716,
+  "archive_path": "docs/history/pr-reviews/PR-9716-feat-lumen-s-q4-metric-freeness-discriminator-real-test-fps-q1-sharpening-meijer.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-11T17:52:35.221Z",
+  "schema_version": "v1",
+  "commit_sha": "7b47bed5416095af46716b048c0207e9a38779c3",
+  "title": "feat: Lumen's Q4 metric-freeness discriminator (real test, fps) + Q1 sharpening (Meijer misses feedback+uncertainty; retrocausal-like) (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-11T17:52:08Z",
+  "head_ref": "adinkra-metric-free-discriminator"
+}

@@ -1,0 +1,15 @@
+{
+  "pr_number": 4093,
+  "archive_path": "docs/history/pr-reviews/PR-4093-docs-shadow-maji-antigravity-check-on-otto-shard-prs.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7CAESB",
+    "thread:PRRT_kwDOSF9kNM6CpkQj"
+  ],
+  "fetched_at": "2026-05-18T23:02:42.117Z",
+  "schema_version": "v1",
+  "commit_sha": "f8e46b16989c0b6a85fe50ebcb0cb48f8e9d2ce0",
+  "title": "docs(shadow): Maji antigravity check on Otto shard PRs",
+  "state": "MERGED",
+  "merged_at": "2026-05-18T23:02:22Z",
+  "head_ref": "maji/shadow-drift-4091"
+}

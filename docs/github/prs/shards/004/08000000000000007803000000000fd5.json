@@ -1,0 +1,12 @@
+{
+  "pr_number": 4053,
+  "archive_path": "docs/history/pr-reviews/PR-4053-docs-archive-preserve-discussion-for-pr-4050.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-18T20:34:44.555Z",
+  "schema_version": "v1",
+  "commit_sha": "379ec62f3a3bd27d69db2bb6935a69da5a091bdc",
+  "title": "docs(archive): preserve discussion for PR 4050",
+  "state": "MERGED",
+  "merged_at": "2026-05-18T20:34:23Z",
+  "head_ref": "lior/preserve-4050"
+}

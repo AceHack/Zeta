@@ -1,0 +1,14 @@
+{
+  "id": "080d0002b1773810a013000879dda32d",
+  "at": "2026-08-14T12:54:03.239Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M005CBQ6087G0R003N21Z9J",
+    "type": "bug",
+    "title": "mergePriorHints discards the merged posterior and absorbs a constant severity instead",
+    "slug": "mergepriorhints-discards-the-merged-posterior-and-absorbs-a",
+    "priority": "P2",
+    "filename": "081M005CBQ6087G0R003N21Z9J-mergepriorhints-discards-the-merged-posterior-and-absorbs-a.md"
+  }
+}

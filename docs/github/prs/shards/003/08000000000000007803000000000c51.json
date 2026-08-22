@@ -1,0 +1,17 @@
+{
+  "pr_number": 3153,
+  "archive_path": "docs/history/pr-reviews/PR-3153-docs-rules-add-id-allocation-discipline-section-to-otto-channels-reference-card.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7BUbIW",
+    "comment:PRRC_kwDOSF9kNM7BUfah",
+    "thread:PRRT_kwDOSF9kNM6CJju2",
+    "thread:PRRT_kwDOSF9kNM6CJm5p"
+  ],
+  "fetched_at": "2026-05-14T18:16:36.666Z",
+  "schema_version": "v1",
+  "commit_sha": "056c09f35b36c948124b1cd7728c56bd5e7199de",
+  "title": "docs(rules): add ID allocation discipline section to otto-channels reference card",
+  "state": "MERGED",
+  "merged_at": "2026-05-14T18:16:19Z",
+  "head_ref": "otto-channels-id-allocation-discipline-redo-2026-05-14"
+}

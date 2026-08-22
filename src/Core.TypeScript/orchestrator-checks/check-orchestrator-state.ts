@@ -11,8 +11,8 @@
 //   1 -- branch mismatch or drifted worktrees detected
 //
 // Usage:
-//   bun tools/orchestrator-checks/check-orchestrator-state.ts
-//   ZETA_EXPECTED_BRANCH=feat/my-branch bun tools/orchestrator-checks/check-orchestrator-state.ts
+//   bun src/Core.TypeScript/orchestrator-checks/check-orchestrator-state.ts
+//   ZETA_EXPECTED_BRANCH=feat/my-branch bun src/Core.TypeScript/orchestrator-checks/check-orchestrator-state.ts
 
 import { spawnSync } from "node:child_process";
 

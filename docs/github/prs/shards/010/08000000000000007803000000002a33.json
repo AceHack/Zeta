@@ -1,0 +1,12 @@
+{
+  "pr_number": 10803,
+  "archive_path": "docs/history/pr-reviews/PR-10803-feat-ledger-ship-the-measure-verb-the-always-loaded-rule-already-promised.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-15T22:45:11.923Z",
+  "schema_version": "v1",
+  "commit_sha": "9bdc8368c7c36dd64722f28bda15236bec9e6760",
+  "title": "feat(ledger): ship the `measure` verb the always-loaded rule already promised",
+  "state": "MERGED",
+  "merged_at": "2026-08-15T22:44:37Z",
+  "head_ref": "shadow/du-ledger-measure"
+}

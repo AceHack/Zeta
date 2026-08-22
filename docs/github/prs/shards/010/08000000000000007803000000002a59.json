@@ -1,0 +1,12 @@
+{
+  "pr_number": 10841,
+  "archive_path": "docs/history/pr-reviews/PR-10841-fix-backlog-a-rewriting-tool-must-not-read-an-unknown-flag-as-consent.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-16T14:14:22.544Z",
+  "schema_version": "v1",
+  "commit_sha": "3d98274f1d68059722b6c077c1e8601123c825a6",
+  "title": "fix(backlog): a rewriting tool must not read an unknown flag as consent",
+  "state": "MERGED",
+  "merged_at": "2026-08-16T14:13:51Z",
+  "head_ref": "shadow/fail-closed-unknown-flags"
+}

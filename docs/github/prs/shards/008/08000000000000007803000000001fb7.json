@@ -1,0 +1,12 @@
+{
+  "pr_number": 8119,
+  "archive_path": "docs/history/pr-reviews/PR-8119-fix-zflash-b-0891-harness-ci-script-paths-after-relocation.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-14T01:21:11.060Z",
+  "schema_version": "v1",
+  "commit_sha": "4e451627e4b86e31d19126dd3c1c7e1897c4a186",
+  "title": "fix(zflash): B-0891 harness CI script paths after relocation",
+  "state": "MERGED",
+  "merged_at": "2026-06-14T01:20:48Z",
+  "head_ref": "riven/fix-b0891-harness-ci-paths"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 5737,
+  "archive_path": "docs/history/pr-reviews/PR-5737-fix-codex-detect-executable-dotted-shell-shebang-drift.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-28T09:51:32.651Z",
+  "schema_version": "v1",
+  "commit_sha": "6856966e7a33bba520271212ef960e47612b9dc6",
+  "title": "fix(codex): detect executable dotted shell shebang drift",
+  "state": "MERGED",
+  "merged_at": "2026-05-28T09:51:12Z",
+  "head_ref": "claim/codex-loop-bash-retirement-executable-dot-shebang-20260528"
+}

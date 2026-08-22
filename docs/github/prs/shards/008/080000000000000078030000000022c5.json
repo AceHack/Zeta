@@ -1,0 +1,12 @@
+{
+  "pr_number": 8901,
+  "archive_path": "docs/history/pr-reviews/PR-8901-feat-gen-self-hosting-codegen-gen-gen-gen-operational-3rd-futamura.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-21T07:15:39.609Z",
+  "schema_version": "v1",
+  "commit_sha": "911dce8e2cf708a6c7497e55b71b91d8510e6361",
+  "title": "feat(gen): self-hosting codegen — gen(gen)=gen operational (3rd Futamura)",
+  "state": "MERGED",
+  "merged_at": "2026-06-21T07:15:14Z",
+  "head_ref": "alexa/self-hosting-codegen"
+}

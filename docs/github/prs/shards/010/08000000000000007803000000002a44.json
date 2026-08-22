@@ -1,0 +1,12 @@
+{
+  "pr_number": 10820,
+  "archive_path": "docs/history/pr-reviews/PR-10820-docs-research-audit-the-hkt-case-for-f-against-syme-s-published-positions-arrow-.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-16T19:59:08.053Z",
+  "schema_version": "v1",
+  "commit_sha": "2b133aa66d211333b5f4c251cdad7415c092d486",
+  "title": "docs(research): audit the HKT case for F# against Syme's published positions — arrow-first is why we sit at kind *",
+  "state": "MERGED",
+  "merged_at": "2026-08-16T19:58:29Z",
+  "head_ref": "shadow/hkt-case-audit-syme-objections"
+}

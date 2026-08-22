@@ -1,0 +1,14 @@
+{
+  "id": "080d002c7436b010a0130008633af17c",
+  "at": "2026-08-15T13:13:41.846Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M02RX1PN087G0R003WK66GV",
+    "type": "task",
+    "title": "z-set-merkle nonAsciiOrdering law has no discriminating vector: add a culture-sensitive-collation discriminator across the six oracles",
+    "slug": "z-set-merkle-nonasciiordering-law-has-no-discriminating-vect",
+    "priority": "P2",
+    "filename": "081M02RX1PN087G0R003WK66GV-z-set-merkle-nonasciiordering-law-has-no-discriminating-vect.md"
+  }
+}

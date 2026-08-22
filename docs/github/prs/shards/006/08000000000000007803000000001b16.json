@@ -1,0 +1,12 @@
+{
+  "pr_number": 6934,
+  "archive_path": "docs/history/pr-reviews/PR-6934-docs-punchline-erasure-not-persistence-is-the-escape-from-ephemerality.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-07T22:38:46.869Z",
+  "schema_version": "v1",
+  "commit_sha": "8f525ca170be6643cf764cdb802beed9f34dd669",
+  "title": "docs: punchline — erasure, not persistence, is the escape from ephemerality",
+  "state": "MERGED",
+  "merged_at": "2026-06-07T22:38:29Z",
+  "head_ref": "otto/erasure-not-persistence-escapes-ephemerality"
+}

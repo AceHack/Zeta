@@ -1,0 +1,12 @@
+{
+  "pr_number": 3228,
+  "archive_path": "docs/history/pr-reviews/PR-3228-chore-b-0519-add-pattern-5-6-contamination-defenses-to-rca.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-14T20:34:22.677Z",
+  "schema_version": "v1",
+  "commit_sha": "36fbe4c8fcc3e55307fc6505b115eaf9e782d9e6",
+  "title": "chore(b-0519): add Pattern 5/6 contamination defenses to RCA",
+  "state": "MERGED",
+  "merged_at": "2026-05-14T20:34:05Z",
+  "head_ref": "otto/b0519-add-new-contamination-defenses-2026-05-14"
+}

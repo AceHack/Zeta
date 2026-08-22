@@ -1,0 +1,12 @@
+{
+  "pr_number": 2009,
+  "archive_path": "docs/history/pr-reviews/PR-2009-fix-backlog-decompose-b-0247-ace-dlc.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-08T02:47:49.297Z",
+  "schema_version": "v1",
+  "commit_sha": "301da0655f1c9b37b849f87e187c5fdc513b153d",
+  "title": "fix(backlog): decompose B-0247 Ace DLC",
+  "state": "MERGED",
+  "merged_at": "2026-05-08T02:47:31Z",
+  "head_ref": "backlog/b0247-decompose"
+}

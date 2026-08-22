@@ -1,0 +1,12 @@
+{
+  "pr_number": 7788,
+  "archive_path": "docs/history/pr-reviews/PR-7788-docs-trajectory-resume-rings-wave-7777-7785.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-11T20:54:49.319Z",
+  "schema_version": "v1",
+  "commit_sha": "1bd0a0f21ad45425c9efaf6681e1f65732020c75",
+  "title": "docs(trajectory): RESUME rings wave (#7777..#7785)",
+  "state": "MERGED",
+  "merged_at": "2026-06-11T20:54:21Z",
+  "head_ref": "shadow-resume-fold-rings"
+}

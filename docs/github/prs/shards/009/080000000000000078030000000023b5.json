@@ -1,0 +1,15 @@
+{
+  "pr_number": 9141,
+  "archive_path": "docs/history/pr-reviews/PR-9141-fix-cross-verify-register-idbspoperators-ikleenealgebra-iring-in-the-interface-o.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7RdLao",
+    "thread:PRRT_kwDOSF9kNM6N8IOt"
+  ],
+  "fetched_at": "2026-08-17T09:20:13.626Z",
+  "schema_version": "v1",
+  "commit_sha": "cd311bfb5fb1a9b6cc66f727cc707b5e7795245a",
+  "title": "fix(cross-verify): register IDbspOperators/IKleeneAlgebra/IRing in the interface oracle",
+  "state": "MERGED",
+  "merged_at": "2026-07-02T14:59:43Z",
+  "head_ref": "otto/fix-cross-verify-interface-oracle-dbsp-kleene"
+}

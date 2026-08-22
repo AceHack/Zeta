@@ -1,0 +1,12 @@
+{
+  "pr_number": 10278,
+  "archive_path": "docs/history/pr-reviews/PR-10278-fix-test-qa-anti-1-demanded-bit-exact-zero-from-a-trig-identity-red-on-windows.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-10T05:20:23.238Z",
+  "schema_version": "v1",
+  "commit_sha": "c80da344777241bd034bade00d68b6c5fae0cb93",
+  "title": "fix(test): QA-ANTI-1 demanded bit-exact zero from a trig identity — red on Windows",
+  "state": "MERGED",
+  "merged_at": "2026-08-10T05:19:51Z",
+  "head_ref": "shadow/fix-qa-anti-1-windows"
+}

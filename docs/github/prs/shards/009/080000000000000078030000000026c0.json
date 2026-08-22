@@ -1,0 +1,12 @@
+{
+  "pr_number": 9920,
+  "archive_path": "docs/history/pr-reviews/PR-9920-fix-ci-fetch-markdownlint-merge-parent.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-01T19:33:12.429Z",
+  "schema_version": "v1",
+  "commit_sha": "a829f5ee659b5433946d421ea1f912293a29f185",
+  "title": "fix(ci): fetch markdownlint merge parent",
+  "state": "MERGED",
+  "merged_at": "2026-08-01T19:32:44Z",
+  "head_ref": "claim/bug-markdownlint-merge-parent"
+}

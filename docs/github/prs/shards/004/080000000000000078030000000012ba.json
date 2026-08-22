@@ -1,0 +1,12 @@
+{
+  "pr_number": 4794,
+  "archive_path": "docs/history/pr-reviews/PR-4794-docs-research-preserve-addison-consent-pattern-observation-not-fact-framing-disc.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-24T00:04:17.252Z",
+  "schema_version": "v1",
+  "commit_sha": "c35d22946048a1eff010c1835f537d88505e1a87",
+  "title": "docs(research): preserve Addison consent pattern — observation-not-fact framing discipline",
+  "state": "MERGED",
+  "merged_at": "2026-05-24T00:03:59Z",
+  "head_ref": "otto/research-addison-consent-pattern-2026-05-24"
+}

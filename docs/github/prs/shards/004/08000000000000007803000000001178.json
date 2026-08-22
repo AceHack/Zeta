@@ -1,0 +1,12 @@
+{
+  "pr_number": 4472,
+  "archive_path": "docs/history/pr-reviews/PR-4472-shard-2026-05-21-0149z-orphaned-branch-triage-substrate-drift-discriminator-gene.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-21T01:58:31.145Z",
+  "schema_version": "v1",
+  "commit_sha": "9e0b316a9b42fb6298d263fc82f079c7acd3558c",
+  "title": "shard(2026-05-21/0149Z): orphaned-branch triage — substrate-drift discriminator generalizes",
+  "state": "MERGED",
+  "merged_at": "2026-05-21T01:58:14Z",
+  "head_ref": "shard/tick-0149z-otto-cli-orphaned-branch-mostly-rescued-substrate-drift-discriminator-generalizes-2026-05-21"
+}

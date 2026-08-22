@@ -1,0 +1,12 @@
+{
+  "pr_number": 6286,
+  "archive_path": "docs/history/pr-reviews/PR-6286-feat-install-ps1-enable-windows-long-paths-git-core-longpaths-os-longpathsenable.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-01T00:13:44.224Z",
+  "schema_version": "v1",
+  "commit_sha": "dfac516cd3f3bc14386cbe72cb7ecf08233132d1",
+  "title": "feat(install.ps1): enable Windows long paths (git core.longpaths + OS LongPathsEnabled)",
+  "state": "MERGED",
+  "merged_at": "2026-06-01T00:13:23Z",
+  "head_ref": "otto-windows/install-ps1-longpaths-2026-05-31"
+}

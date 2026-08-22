@@ -1,0 +1,19 @@
+{
+  "pr_number": 5366,
+  "archive_path": "docs/history/pr-reviews/PR-5366-docs-backlog-b-0838-caustic-engineered-bloom-filter-discriminators-for-remote-co.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7FKEA4",
+    "comment:PRRC_kwDOSF9kNM7FKEBM",
+    "comment:PRRC_kwDOSF9kNM7FKEBQ",
+    "thread:PRRT_kwDOSF9kNM6E9vPE",
+    "thread:PRRT_kwDOSF9kNM6E9vPU",
+    "thread:PRRT_kwDOSF9kNM6E9vPY"
+  ],
+  "fetched_at": "2026-05-27T00:45:30.009Z",
+  "schema_version": "v1",
+  "commit_sha": "27b1477e7e1d3969f621f2b5f204fa851cfa1ea2",
+  "title": "docs(backlog): B-0838 — caustic-engineered bloom filter discriminators for remote-code trust layer (Kestrel-v2 ferry; phased)",
+  "state": "MERGED",
+  "merged_at": "2026-05-27T00:45:10Z",
+  "head_ref": "otto/b-0838-caustic-engineered-bloom-filter-discriminators-remote-code-trust-layer-kestrel-v2-2026-05-26"
+}

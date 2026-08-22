@@ -1,0 +1,15 @@
+{
+  "pr_number": 4526,
+  "archive_path": "docs/history/pr-reviews/PR-4526-fix-tick-shard-paths-correct-3-grandfathered-links-in-0329z-md-trim-baseline.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7DjjC3",
+    "thread:PRRT_kwDOSF9kNM6DyKDt"
+  ],
+  "fetched_at": "2026-05-21T11:47:08.335Z",
+  "schema_version": "v1",
+  "commit_sha": "6a2bb9c30066be2df12b46efdd3a3d97c145ceec",
+  "title": "fix(tick-shard-paths): correct 3 grandfathered links in 0329Z.md + trim baseline",
+  "state": "MERGED",
+  "merged_at": "2026-05-21T11:46:48Z",
+  "head_ref": "fix/grandfathered-tick-shard-paths-0329z-2026-05-21"
+}

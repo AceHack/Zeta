@@ -1,0 +1,12 @@
+{
+  "pr_number": 6537,
+  "archive_path": "docs/history/pr-reviews/PR-6537-research-fold-word-is-bond-the-word-is-god-microsoft-bond-aaron-2026-06-02.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-02T10:01:19.066Z",
+  "schema_version": "v1",
+  "commit_sha": "83c793f7c84c2b8b5c0d2b44458af743befc1844",
+  "title": "research: fold word-is-bond / the-word-is-god + Microsoft Bond (Aaron 2026-06-02)",
+  "state": "MERGED",
+  "merged_at": "2026-06-02T10:00:48Z",
+  "head_ref": "otto-cli/word-is-bond-god-microsoft-bond-2026-06-02"
+}

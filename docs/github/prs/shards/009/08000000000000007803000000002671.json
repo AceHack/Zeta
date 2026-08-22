@@ -1,0 +1,12 @@
+{
+  "pr_number": 9841,
+  "archive_path": "docs/history/pr-reviews/PR-9841-feat-zatom-open-generics-dispatch-over-z-sets-the-polymorphic-base-atom-element-.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-01T04:21:00.593Z",
+  "schema_version": "v1",
+  "commit_sha": "29efc7492b2e6fba7cb1581648dcc1f261ec1454",
+  "title": "feat(zatom): open-generics dispatch over Z-sets — the polymorphic base atom (element-type axis)",
+  "state": "MERGED",
+  "merged_at": "2026-08-01T04:20:30Z",
+  "head_ref": "shadow/open-generics-zset-dispatch"
+}

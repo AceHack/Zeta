@@ -1,0 +1,6 @@
+{
+  "schema": "zeta.hygiene.schema-key-set-parity-exceptions.v1",
+  "description": "Declared cross-oracle key-set divergences. A row here is an HONEST DECLARED EXCEPTION, not a mute: it records a divergence that is real, understood, and owned by a named work-item. Rows are checked - one that no longer matches a live divergence is STALE and fails the audit, so this file cannot rot into a blanket mute. Text, diffable, in the proof lineage (no-binary-in-proof-lineage).",
+  "policy": "Before adding a row, read docs/research/2026-08-14-how-a-published-four-oracle-schema-acquires-a-field.md. A key-set divergence under one schema id is usually not an exception to declare but a decision not yet made: a published vN acquires a new field as an OPTIONAL key with a declared absent-reading, and a REQUIRED key is a new version. An exception belongs here only when the resolution is genuinely blocked on evidence or authority that is not available - and then it names what is missing.",
+  "divergences": []
+}

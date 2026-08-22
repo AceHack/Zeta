@@ -1,0 +1,12 @@
+{
+  "pr_number": 11593,
+  "archive_path": "docs/history/pr-reviews/PR-11593-ferry-ip-questionable-narrow-the-deflation-claim-and-record-the-cpt-middle-groun.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-17T17:54:06.196Z",
+  "schema_version": "v1",
+  "commit_sha": "5612e341c91ba51316afed47d86a561a5ac45390",
+  "title": "ferry(ip-questionable): narrow the deflation claim, and record the CPT / middle-ground framing",
+  "state": "MERGED",
+  "merged_at": "2026-08-17T17:53:28Z",
+  "head_ref": "shadow/ferry-deflation-narrowed-and-cpt"
+}

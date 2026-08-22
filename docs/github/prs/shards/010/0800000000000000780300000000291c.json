@@ -1,0 +1,12 @@
+{
+  "pr_number": 10524,
+  "archive_path": "docs/history/pr-reviews/PR-10524-fix-bayesian-b3-a-nu-is-a-silent-vote-so-a-verdict-may-only-be-asked-of-an-inter.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-18T14:06:52.527Z",
+  "schema_version": "v1",
+  "commit_sha": "f153606c33359e5bb87461078ad3c550ed88676a",
+  "title": "fix(bayesian): B3(a) — nu is a silent vote, so a verdict may only be asked of an interval",
+  "state": "MERGED",
+  "merged_at": "2026-08-14T08:13:25Z",
+  "head_ref": "lumen/b3a-heavy-tail-nu-interval"
+}

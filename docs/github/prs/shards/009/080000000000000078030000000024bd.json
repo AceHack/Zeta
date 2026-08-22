@@ -1,0 +1,12 @@
+{
+  "pr_number": 9405,
+  "archive_path": "docs/history/pr-reviews/PR-9405-feat-model-backend-tool-calls-slice-4-the-execute-and-continue-loop-shadow.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-04T03:55:08.812Z",
+  "schema_version": "v1",
+  "commit_sha": "68ca5214c4f448f5acbf722187f598282f86733c",
+  "title": "feat(model-backend): tool calls slice 4 — the execute-and-continue loop (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-04T03:54:46Z",
+  "head_ref": "otto/tool-calls-slice4-execute-and-continue-loop"
+}

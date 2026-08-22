@@ -1,0 +1,15 @@
+{
+  "pr_number": 4470,
+  "archive_path": "docs/history/pr-reviews/PR-4470-docs-hygiene-strictly-decompose-1614z-c-md-atomic.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7DZJ5n",
+    "thread:PRRT_kwDOSF9kNM6DqfIf"
+  ],
+  "fetched_at": "2026-05-21T02:09:30.329Z",
+  "schema_version": "v1",
+  "commit_sha": "42128393b80fb0a75dd287434599e02b004aac6d",
+  "title": "docs(hygiene): strictly decompose 1614Z-c.md (atomic)",
+  "state": "MERGED",
+  "merged_at": "2026-05-21T02:09:13Z",
+  "head_ref": "lior/decompose-4467-1614Z-c"
+}

@@ -1,0 +1,16 @@
+{
+  "pr_number": 2157,
+  "archive_path": "docs/history/pr-reviews/PR-2157-research-b-0256-smallest-safe-slice-model-level-exploit-taxonomy-mapping.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_c0PE",
+    "comment:PRRC_kwDOSF9kNM6_cyw0",
+    "thread:PRRT_kwDOSF9kNM6AxIMS"
+  ],
+  "fetched_at": "2026-05-09T00:34:14.306Z",
+  "schema_version": "v1",
+  "commit_sha": "9bb53470cda004ebb992700b50fb4d643c49066a",
+  "title": "research(B-0256): smallest safe slice — model-level exploit taxonomy mapping",
+  "state": "MERGED",
+  "merged_at": "2026-05-09T00:33:49Z",
+  "head_ref": "b0256/exploit-taxonomy-research-doc"
+}

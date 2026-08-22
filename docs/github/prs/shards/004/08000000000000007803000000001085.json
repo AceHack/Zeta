@@ -1,0 +1,12 @@
+{
+  "pr_number": 4229,
+  "archive_path": "docs/history/pr-reviews/PR-4229-shard-2218z-c-brief-ack-1-post-substrate-engineering-arc.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-18T22:22:12.219Z",
+  "schema_version": "v1",
+  "commit_sha": "c5e23cc0c01304fcc34ca2847f6e56622bc9eb8f",
+  "title": "shard(2218Z-c): brief-ack #1 post substrate-engineering arc",
+  "state": "MERGED",
+  "merged_at": "2026-05-18T22:21:55Z",
+  "head_ref": "shard/tick-2218z-c-brief-ack-1-named-dep-post-arc-quiet-2026-05-18"
+}

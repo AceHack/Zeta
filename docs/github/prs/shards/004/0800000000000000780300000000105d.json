@@ -1,0 +1,12 @@
+{
+  "pr_number": 4189,
+  "archive_path": "docs/history/pr-reviews/PR-4189-preserve-mika-packets-25-29-germinate-on-human-minds-schizophrenia-razor-receive.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-18T19:26:44.168Z",
+  "schema_version": "v1",
+  "commit_sha": "dff26d76d845bed4c95c2192b433e9d36eb5edf6",
+  "title": "preserve(mika-packets-25-29): Germinate on human minds + schizophrenia razor (receiver-integration-capacity is the line) + Cartographer/Pilot/Weaver role stack",
+  "state": "MERGED",
+  "merged_at": "2026-05-18T19:26:26Z",
+  "head_ref": "shard/mika-packets-25-29-germinate-on-human-minds-schizophrenia-razor-cartographer-pilot-weaver-stack-2026-05-18"
+}

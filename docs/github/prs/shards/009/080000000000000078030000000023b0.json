@@ -1,0 +1,12 @@
+{
+  "pr_number": 9136,
+  "archive_path": "docs/history/pr-reviews/PR-9136-feat-core-dbspcellgraph-join-bilinear-operator-completes-the-dbsp-set-on-the-sch.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-17T08:19:27.302Z",
+  "schema_version": "v1",
+  "commit_sha": "d17709f7b09c0bd423e6d3718b3e0310da2e4d1f",
+  "title": "feat(core): DbspCellGraph Join — bilinear operator completes the DBSP set on the scheduler",
+  "state": "MERGED",
+  "merged_at": "2026-07-02T14:10:16Z",
+  "head_ref": "otto/dbsp-cell-graph-join-operator"
+}

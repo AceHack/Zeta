@@ -1,0 +1,15 @@
+{
+  "pr_number": 5272,
+  "archive_path": "docs/history/pr-reviews/PR-5272-feat-b-0824-sub-target-16-lattice-hardness-appear-as-noise-to-higher-d-sub-targe.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7FDIex",
+    "thread:PRRT_kwDOSF9kNM6E4tY3"
+  ],
+  "fetched_at": "2026-05-26T18:20:57.577Z",
+  "schema_version": "v1",
+  "commit_sha": "b52b3c75076c837a5fb2f4c9cdba548c2b5e0a70",
+  "title": "feat(B-0824): Sub-target 16 (lattice-hardness = appear-as-noise to higher-D) + Sub-target 17 (parameter-protection substrate)",
+  "state": "MERGED",
+  "merged_at": "2026-05-26T18:20:35Z",
+  "head_ref": "otto-cli/b0824-lattice-reversibility-noise-in-higher-d-2026-05-26"
+}

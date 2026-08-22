@@ -1,0 +1,12 @@
+{
+  "pr_number": 3483,
+  "archive_path": "docs/history/pr-reviews/PR-3483-shard-tick-1340z-pr-3478-merged-2-false-positive-threads-on-pr-3480.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-15T13:45:38.453Z",
+  "schema_version": "v1",
+  "commit_sha": "e5aa261de01448e55324fd39fd1fa6e2e3605e51",
+  "title": "shard(tick): 1340Z — PR #3478 merged; 2 false-positive threads on PR #3480",
+  "state": "MERGED",
+  "merged_at": "2026-05-15T13:45:14Z",
+  "head_ref": "shard/tick-1340z-otto-cli-2026-05-15"
+}

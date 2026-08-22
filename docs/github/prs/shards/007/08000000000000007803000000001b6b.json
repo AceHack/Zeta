@@ -1,0 +1,12 @@
+{
+  "pr_number": 7019,
+  "archive_path": "docs/history/pr-reviews/PR-7019-docs-ct-theory-f-scala-prior-art-rx-leak-rooting-bialgebra-hylo-answers-interfac.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-08T04:58:59.045Z",
+  "schema_version": "v1",
+  "commit_sha": "e38d939e3f8ee88ae4be1a2c5a4395c95078e890",
+  "title": "docs: CT theory + F#/Scala prior art + RX-leak/rooting + bialgebra/hylo answers (interface-from-stream-queries #7054-#7059)",
+  "state": "MERGED",
+  "merged_at": "2026-06-08T04:58:38Z",
+  "head_ref": "otto/ct-anchors-fsharp-scala-prior-art-weakref-externalized-state"
+}

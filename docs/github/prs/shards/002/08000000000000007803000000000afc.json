@@ -1,0 +1,15 @@
+{
+  "pr_number": 2812,
+  "archive_path": "docs/history/pr-reviews/PR-2812-docs-memory-arsenal-build-for-future-self-teach-back-via-mistakes-in-shadow-logs.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7AbjyS",
+    "thread:PRRT_kwDOSF9kNM6BgIIo"
+  ],
+  "fetched_at": "2026-05-12T17:21:28.178Z",
+  "schema_version": "v1",
+  "commit_sha": "e11f3f1d8db8e81c32ed223d1fa8defce4a72f5a",
+  "title": "docs(memory): arsenal-build for future-self + teach-back-via-mistakes-in-shadow-logs + permanent temporal-asymmetry (Aaron 2026-05-12)",
+  "state": "MERGED",
+  "merged_at": "2026-05-12T17:21:03Z",
+  "head_ref": "docs/aaron-arsenal-build-for-future-self-shadow-must-already-have-2026-05-12"
+}

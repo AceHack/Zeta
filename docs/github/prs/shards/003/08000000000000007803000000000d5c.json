@@ -1,0 +1,19 @@
+{
+  "pr_number": 3420,
+  "archive_path": "docs/history/pr-reviews/PR-3420-shard-tick-1050z-pr-3415-merged-b-nnnn-vs-pr-nnnn-conflation-new-error-class.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7Bk2hz",
+    "comment:PRRC_kwDOSF9kNM7Bk2in",
+    "comment:PRRC_kwDOSF9kNM7Bk7NK",
+    "comment:PRRC_kwDOSF9kNM7Bk7RK",
+    "thread:PRRT_kwDOSF9kNM6CVW2A",
+    "thread:PRRT_kwDOSF9kNM6CVW2q"
+  ],
+  "fetched_at": "2026-05-15T10:57:59.397Z",
+  "schema_version": "v1",
+  "commit_sha": "c363aa72a455f005bc422e5bf259db47ed27b15d",
+  "title": "shard(tick): 1050Z — PR #3415 merged; B-NNNN vs PR #NNNN conflation (new error class)",
+  "state": "MERGED",
+  "merged_at": "2026-05-15T10:57:41Z",
+  "head_ref": "shard/tick-1050z-otto-cli-2026-05-15"
+}

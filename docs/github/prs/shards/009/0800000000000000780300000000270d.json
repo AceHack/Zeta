@@ -1,0 +1,12 @@
+{
+  "pr_number": 9997,
+  "archive_path": "docs/history/pr-reviews/PR-9997-docs-book-consent-ledger-chris-king-consent-requested-awaiting-reply.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-02T21:07:11.286Z",
+  "schema_version": "v1",
+  "commit_sha": "9db18b4c556a028151934189c680d2d32b6f2126",
+  "title": "docs(book): CONSENT-LEDGER — Chris King consent requested (awaiting reply)",
+  "state": "MERGED",
+  "merged_at": "2026-08-02T21:06:38Z",
+  "head_ref": "book/consent-ledger-chris-king-requested-20260802"
+}

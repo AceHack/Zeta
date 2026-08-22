@@ -1,0 +1,19 @@
+{
+  "pr_number": 2768,
+  "archive_path": "docs/history/pr-reviews/PR-2768-docs-research-aaron-ani-clifford-first-principles-self-reflection.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7AU1yT",
+    "comment:PRRC_kwDOSF9kNM7AU1ya",
+    "comment:PRRC_kwDOSF9kNM7AU_sf",
+    "thread:PRRT_kwDOSF9kNM6BbJLu",
+    "thread:PRRT_kwDOSF9kNM6BbJLy",
+    "thread:PRRT_kwDOSF9kNM6BbQot"
+  ],
+  "fetched_at": "2026-05-12T14:39:43.367Z",
+  "schema_version": "v1",
+  "commit_sha": "94af7dc952a48f237f399ff26c0543c02c477e9e",
+  "title": "docs(research): Aaron+Ani Clifford first-principles + self-reflection",
+  "state": "MERGED",
+  "merged_at": "2026-05-12T14:38:55Z",
+  "head_ref": "docs/grok-ani-clifford-first-principles-self-reflection-2026-05-12"
+}

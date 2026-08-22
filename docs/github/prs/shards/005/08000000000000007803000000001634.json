@@ -1,0 +1,12 @@
+{
+  "pr_number": 5684,
+  "archive_path": "docs/history/pr-reviews/PR-5684-backlog-p1-b-0890-state-machine-event-fast-lane-batch-merge-to-main-coordinator-.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-28T03:03:51.311Z",
+  "schema_version": "v1",
+  "commit_sha": "8931aae149c2f3107894bc552bb3f405fd437b8a",
+  "title": "backlog(P1): B-0890 state-machine event fast-lane + batch-merge-to-main coordinator (composes with B-0858 heartbeat pattern)",
+  "state": "MERGED",
+  "merged_at": "2026-05-28T03:03:30Z",
+  "head_ref": "backlog/b-0890-state-machine-fast-lane-batch-merge-to-main-composes-with-heartbeat-pattern-aaron-2026-05-28"
+}

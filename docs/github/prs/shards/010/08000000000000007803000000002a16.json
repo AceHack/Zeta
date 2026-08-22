@@ -1,0 +1,12 @@
+{
+  "pr_number": 10774,
+  "archive_path": "docs/history/pr-reviews/PR-10774-docs-ir-the-idiom-axis-capability-dispatch-gates-semantics-not-spelling-the-targ.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-15T13:57:24.796Z",
+  "schema_version": "v1",
+  "commit_sha": "1214a44a2b0c806c9917a2c0f21e42405ca68636",
+  "title": "docs(ir): the idiom axis — capability dispatch gates semantics, not spelling; the target's own linter is the bar",
+  "state": "MERGED",
+  "merged_at": "2026-08-15T13:56:52Z",
+  "head_ref": "shadow/surface-language-idiom-axis"
+}

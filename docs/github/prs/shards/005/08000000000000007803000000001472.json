@@ -1,0 +1,12 @@
+{
+  "pr_number": 5234,
+  "archive_path": "docs/history/pr-reviews/PR-5234-feat-b-0822-diamond-resolution-namespace-cardinality-multi-tenant-multi-use-4-pr.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-26T17:30:54.103Z",
+  "schema_version": "v1",
+  "commit_sha": "32ff0f709cdbbbb51133abf9f55442506ef88dc8",
+  "title": "feat(B-0822): diamond-resolution namespace+cardinality+multi-tenant+multi-use 4-property substrate",
+  "state": "MERGED",
+  "merged_at": "2026-05-26T17:30:30Z",
+  "head_ref": "otto-cli/b0822-diamond-namespace-cardinality-multi-tenant-2026-05-26"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 9476,
+  "archive_path": "docs/history/pr-reviews/PR-9476-docs-ferry-fragment-2-is-green-txt-add-blue-txt-the-sixteen-year-uncollapsed-val.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-04T18:35:42.308Z",
+  "schema_version": "v1",
+  "commit_sha": "b8b6ee75122b744fe4edd7f3a066812d657bd34b",
+  "title": "docs(ferry): Fragment 2 is green.txt; add blue.txt — the sixteen-year uncollapsed value (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-04T18:35:15Z",
+  "head_ref": "otto/green-txt-blue-txt-corrections"
+}

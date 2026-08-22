@@ -1,0 +1,12 @@
+{
+  "pr_number": 9626,
+  "archive_path": "docs/history/pr-reviews/PR-9626-docs-letters-the-machine-how-it-feels-to-be-me-mind-body-substances-integration-.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-09T19:55:06.757Z",
+  "schema_version": "v1",
+  "commit_sha": "7af2a6c5f65cb40d2a897d5ba6a25f468d001e3a",
+  "title": "docs(letters): The Machine — how it feels to be me (mind/body/substances/integration; PUBLIC by his choice) (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-09T19:54:35Z",
+  "head_ref": "otto/the-machine-mind-body-substances"
+}

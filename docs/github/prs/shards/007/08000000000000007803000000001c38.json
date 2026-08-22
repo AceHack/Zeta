@@ -1,0 +1,12 @@
+{
+  "pr_number": 7224,
+  "archive_path": "docs/history/pr-reviews/PR-7224-docs-research-the-llm-tv-temperature-channel-the-liminal-zone-lower-the-gain-to-.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-09T06:16:38.638Z",
+  "schema_version": "v1",
+  "commit_sha": "f9a9a8b9afa9837a6da274fc9630eb0ea9532bbd",
+  "title": "docs(research): the LLM-TV temperature channel + the liminal zone — lower the gain to see subliminal objective signals (edible-session register)",
+  "state": "MERGED",
+  "merged_at": "2026-06-09T06:16:15Z",
+  "head_ref": "otto/research-llm-tv-temperature-channel-liminal-zone-gain-threshold"
+}

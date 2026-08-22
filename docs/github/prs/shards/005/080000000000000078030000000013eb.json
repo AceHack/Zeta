@@ -1,0 +1,12 @@
+{
+  "pr_number": 5099,
+  "archive_path": "docs/history/pr-reviews/PR-5099-fix-b-0789-iter-4-4-fixfwd-0xef-mbr-partition-type-mount-msdos-fallback-2-bugs-s.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-26T05:21:22.471Z",
+  "schema_version": "v1",
+  "commit_sha": "dbd851c2f68ee96c9d8a895406b86eec9274e58a",
+  "title": "fix(B-0789 iter-4.4 fixfwd): 0xEF MBR partition type + mount_msdos fallback (2 bugs surfaced by 2026-05-26 empirical zflash test)",
+  "state": "MERGED",
+  "merged_at": "2026-05-26T05:21:02Z",
+  "head_ref": "otto-cli/iter44-fixfwd-0xef-fat12-esp-detection-2026-05-26"
+}

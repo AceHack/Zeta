@@ -1,0 +1,12 @@
+{
+  "pr_number": 8714,
+  "archive_path": "docs/history/pr-reviews/PR-8714-docs-handoff-mark-math-team-row-4-inclusion-no-forge-leg-discharged-8713-verifie.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-20T06:33:40.770Z",
+  "schema_version": "v1",
+  "commit_sha": "5687e97673ecbb1f90e50728a946bf310a92d5f3",
+  "title": "docs(handoff): mark math-team row 4 inclusion + no-forge leg discharged (#8713, verified)",
+  "state": "MERGED",
+  "merged_at": "2026-06-20T06:33:16Z",
+  "head_ref": "otto/row4-handoff-discharge"
+}

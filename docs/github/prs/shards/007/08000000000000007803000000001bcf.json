@@ -1,0 +1,12 @@
+{
+  "pr_number": 7119,
+  "archive_path": "docs/history/pr-reviews/PR-7119-docs-research-playing-games-zero-downtime-shipping-state-space-path-finding.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-08T22:45:43.293Z",
+  "schema_version": "v1",
+  "commit_sha": "7ee965ef832d8af65f98daecd0d1d7d4e41998bd",
+  "title": "docs(research): playing games == zero-downtime shipping == state-space path-finding",
+  "state": "MERGED",
+  "merged_at": "2026-06-08T22:45:25Z",
+  "head_ref": "otto/research-games-equals-zero-downtime-shipping-state-space-search"
+}

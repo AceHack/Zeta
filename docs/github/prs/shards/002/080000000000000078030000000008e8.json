@@ -1,0 +1,12 @@
+{
+  "pr_number": 2280,
+  "archive_path": "docs/history/pr-reviews/PR-2280-fix-tsc-non-null-assert-zeta-shadow-dir-in-outlet-test-ts-ts2769.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-09T10:34:57.408Z",
+  "schema_version": "v1",
+  "commit_sha": "0bef2317279860a7ef80fa44658489fefc1e5d30",
+  "title": "fix(tsc): non-null assert ZETA_SHADOW_DIR in outlet.test.ts — TS2769",
+  "state": "MERGED",
+  "merged_at": "2026-05-09T10:34:37Z",
+  "head_ref": "fix/tsc-outlet-test-nonull"
+}

@@ -29,8 +29,8 @@
  *   table) passes if any one table matches the claimed count.
  *
  * Usage:
- *   bun tools/substrate-claim-checker/check-cross-surface.ts <file>
- *   bun tools/substrate-claim-checker/check-cross-surface.ts <file1> <file2> ...
+ *   bun src/Core.TypeScript/substrate-claim-checker/check-cross-surface.ts <file>
+ *   bun src/Core.TypeScript/substrate-claim-checker/check-cross-surface.ts <file1> <file2> ...
  *
  * Exit code:
  *   0  no drift detected
@@ -180,7 +180,7 @@ export function main(): number {
   const args = process.argv.slice(2);
   if (args.length === 0) {
     console.error(
-      "usage: bun tools/substrate-claim-checker/check-cross-surface.ts <file> [<file> ...]",
+      "usage: bun src/Core.TypeScript/substrate-claim-checker/check-cross-surface.ts <file> [<file> ...]",
     );
     return 1;
   }

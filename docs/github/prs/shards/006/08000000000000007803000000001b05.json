@@ -1,0 +1,12 @@
+{
+  "pr_number": 6917,
+  "archive_path": "docs/history/pr-reviews/PR-6917-docs-wi-ferry-data-homecoming-not-data-rapture-gradual-reversible-edge-data-repa.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-07T21:06:24.330Z",
+  "schema_version": "v1",
+  "commit_sha": "1770a0c1d554aa3c88ecc68907251edee0328708",
+  "title": "docs+wi+ferry: Data Homecoming not Data Rapture (gradual reversible edge data repatriation via -1 algebra)",
+  "state": "MERGED",
+  "merged_at": "2026-06-07T21:06:04Z",
+  "head_ref": "otto/data-homecoming-not-rapture"
+}

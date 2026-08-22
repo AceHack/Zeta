@@ -131,7 +131,7 @@ renegotiation that proceeds with an un-surveyed blast radius is
 the failure mode this workflow exists to catch.
 
 This is the workflow companion to the
-[`alignment-observability`](../../.claude/skills/alignment-observability/SKILL.md)
+[`alignment-observability`](../../.claude/skills/governance/blueprints/alignment-observability.md)
 skill's framework-revision channel; the skill owns the
 acceptance decision, this directory owns the survey tooling.
 
@@ -212,9 +212,9 @@ revision channel, not ad-hoc.
   against.
 - [`docs/research/alignment-observability.md`](../../docs/research/alignment-observability.md)
   — research proposal and companion document.
-- [`.claude/skills/alignment-auditor/SKILL.md`](../../.claude/skills/alignment-auditor/SKILL.md)
+- [`.claude/skills/governance/blueprints/alignment-auditor.md`](../../.claude/skills/governance/blueprints/alignment-auditor.md)
   — per-commit audit procedure.
-- [`.claude/skills/alignment-observability/SKILL.md`](../../.claude/skills/alignment-observability/SKILL.md)
+- [`.claude/skills/governance/blueprints/alignment-observability.md`](../../.claude/skills/governance/blueprints/alignment-observability.md)
   — framework + per-round + multi-round procedure.
 - [`.claude/agents/alignment-auditor.md`](../../.claude/agents/alignment-auditor.md)
   — Sova persona file.

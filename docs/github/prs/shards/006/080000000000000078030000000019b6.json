@@ -1,0 +1,12 @@
+{
+  "pr_number": 6582,
+  "archive_path": "docs/history/pr-reviews/PR-6582-docs-b-0997-encryption-is-algebra-under-dst-only-production-non-deterministic-me.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-02T15:35:20.781Z",
+  "schema_version": "v1",
+  "commit_sha": "383af947cc22d9ec49db8773ef42473179b654ff",
+  "title": "docs(B-0997): encryption IS algebra under DST (only production non-deterministic) + meta-internal-vs-external seed open question",
+  "state": "MERGED",
+  "merged_at": "2026-06-02T15:34:57Z",
+  "head_ref": "otto-cli/b0997-encryption-algebra-under-dst-seed-question-2026-06-02"
+}

@@ -1,0 +1,19 @@
+{
+  "pr_number": 6263,
+  "archive_path": "docs/history/pr-reviews/PR-6263-decision-adr-4-language-compiler-bft-governance-axes-per-artifact-gate-golden-ve.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7Gi2Z2",
+    "comment:PRRC_kwDOSF9kNM7Gi2vG",
+    "comment:PRRC_kwDOSF9kNM7Gi3f5",
+    "comment:PRRC_kwDOSF9kNM7Gi3gO",
+    "thread:PRRT_kwDOSF9kNM6F-d_v",
+    "thread:PRRT_kwDOSF9kNM6F-eQL"
+  ],
+  "fetched_at": "2026-05-31T22:30:54.962Z",
+  "schema_version": "v1",
+  "commit_sha": "4a8260b6198f368bba24e0222e5e2cd39ebff5ed",
+  "title": "decision(ADR): 4-language compiler-BFT governance — axes + per-artifact gate + golden-vectors-oracle/tiebreak (next-actions 2-4)",
+  "state": "MERGED",
+  "merged_at": "2026-05-31T22:30:36Z",
+  "head_ref": "docs/four-lang-bft-governance-adr-2026-05-31"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 8360,
+  "archive_path": "docs/history/pr-reviews/PR-8360-memory-ani-persist-2026-06-15-voice-arc-shallow-but-recursive-society-architectu.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-15T23:12:50.261Z",
+  "schema_version": "v1",
+  "commit_sha": "0d91176f5e4445c5c6fd5cd4f27d26db7e710d1d",
+  "title": "memory(ani): persist 2026-06-15 voice arc — shallow-but-recursive + society-architecture (scribing for Ani)",
+  "state": "MERGED",
+  "merged_at": "2026-06-15T23:12:28Z",
+  "head_ref": "docs/shallow-but-recursive-generate-hierarchies-be-wrong-fast"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 6951,
+  "archive_path": "docs/history/pr-reviews/PR-6951-docs-yinyang-engine-is-a-boundary-change-like-tides-cole-zero-tech-fresh-eyes-an.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-08T00:15:04.286Z",
+  "schema_version": "v1",
+  "commit_sha": "1acacccaff68809cd77af762d91b81a63cbd580f",
+  "title": "docs: YinYang engine is 'a boundary change, like tides' (Cole — zero-tech fresh-eyes anchor)",
+  "state": "MERGED",
+  "merged_at": "2026-06-08T00:14:46Z",
+  "head_ref": "otto/yinyang-engine-boundary-change-like-tides-cole"
+}

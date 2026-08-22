@@ -1,0 +1,12 @@
+{
+  "pr_number": 9973,
+  "archive_path": "docs/history/pr-reviews/PR-9973-feat-algebra-exactprobring-middle-out-float-as-wset-w-weight-order-independent-b.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-02T17:14:08.604Z",
+  "schema_version": "v1",
+  "commit_sha": "b967d6461a01f9090a7606c22cd99998f63ead4d",
+  "title": "feat(algebra): ExactProbRing — middle-out float as WSet 'W weight (order-independent by construction)",
+  "state": "MERGED",
+  "merged_at": "2026-08-02T17:13:40Z",
+  "head_ref": "claim/middle-out-float-wset"
+}

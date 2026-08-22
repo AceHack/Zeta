@@ -22,7 +22,7 @@
 // step). `type ∈ {task,bug}` is frontmatter, immutable. `state` mirrors the folder.
 //
 // Usage:
-//   bun tools/backlog/new-workitem.ts --type task --title "Do the thing"
+//   bun src/Core.TypeScript/backlog/new-workitem.ts --type task --title "Do the thing"
 //       [--priority P2] [--depends-on 081KSXN940008QG0R002FWR9B2,<zetaid>] [--composes-with ...]
 //       [--persona N] [--dir workitems] [--dry-run]
 //

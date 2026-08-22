@@ -1,0 +1,15 @@
+{
+  "pr_number": 4282,
+  "archive_path": "docs/history/pr-reviews/PR-4282-shard-0007z-c-b-0668-compositional-dbsp-frame-architecture-shipped-via-4281.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7CfDIC",
+    "thread:PRRT_kwDOSF9kNM6DATmQ"
+  ],
+  "fetched_at": "2026-05-19T10:53:22.159Z",
+  "schema_version": "v1",
+  "commit_sha": "74c6ca2964a0d990531aa3ffb46ce04cd0bcefba",
+  "title": "shard(0007Z-c): B-0668 compositional DBSP frame architecture shipped via #4281",
+  "state": "MERGED",
+  "merged_at": "2026-05-19T10:53:01Z",
+  "head_ref": "shard/tick-2026-05-19-0007z-c-b-0668-shipped-2026-05-19"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 7273,
+  "archive_path": "docs/history/pr-reviews/PR-7273-docs-research-fix-seed-common-seed-dst-s-4-map-not-plan-real-society-multi-marko.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-09T13:26:23.135Z",
+  "schema_version": "v1",
+  "commit_sha": "42eee203ede0731b2bba8c53d3023426251523bb",
+  "title": "docs(research)+fix: Seed=common-seed (DST/S=4/map-not-plan/real-society) + multi-Markov-boundary economy + persona/actor/cell sharpened",
+  "state": "MERGED",
+  "merged_at": "2026-06-09T13:25:55Z",
+  "head_ref": "otto/research-seed-common-seed-map-not-plan-multi-boundary-economy-plus-persona-actor-cell-fix"
+}

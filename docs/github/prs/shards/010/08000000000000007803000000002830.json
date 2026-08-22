@@ -1,0 +1,12 @@
+{
+  "pr_number": 10288,
+  "archive_path": "docs/history/pr-reviews/PR-10288-fix-deps-regenerate-bun-lock-for-google-genai-epub-gen-memory-unblocks-main.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-10T15:56:40.827Z",
+  "schema_version": "v1",
+  "commit_sha": "16b2c91b68a7befbbf0e39ce139fa4cbe1de6bb1",
+  "title": "fix(deps): regenerate bun.lock for @google/genai + epub-gen-memory — unblocks main",
+  "state": "MERGED",
+  "merged_at": "2026-08-10T15:55:38Z",
+  "head_ref": "shadow/fix-bun-lockfile-genai-epub"
+}

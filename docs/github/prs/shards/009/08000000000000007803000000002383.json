@@ -1,0 +1,12 @@
+{
+  "pr_number": 9091,
+  "archive_path": "docs/history/pr-reviews/PR-9091-docs-research-addendum-2-the-arrow-of-time-is-accidental-it-is-the-naming-flow.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-17T00:35:36.746Z",
+  "schema_version": "v1",
+  "commit_sha": "e1bb195b4ea4a7594de7e190e0c701fe39caff55",
+  "title": "docs(research): addendum 2 — the arrow of time is accidental; it is the naming flow",
+  "state": "MERGED",
+  "merged_at": "2026-07-02T01:52:09Z",
+  "head_ref": "research/accidental-time-addendum"
+}

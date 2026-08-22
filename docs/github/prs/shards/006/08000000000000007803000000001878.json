@@ -1,0 +1,12 @@
+{
+  "pr_number": 6264,
+  "archive_path": "docs/history/pr-reviews/PR-6264-require-simulation-evidence-for-policy-changes.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-31T22:53:12.465Z",
+  "schema_version": "v1",
+  "commit_sha": "518d956de8a0d7292236ef54f1f14cff0bb14f51",
+  "title": "Require simulation evidence for policy changes",
+  "state": "MERGED",
+  "merged_at": "2026-05-31T22:52:51Z",
+  "head_ref": "codex/agentic-org-policy-simulation-gate"
+}

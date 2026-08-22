@@ -1,0 +1,19 @@
+{
+  "pr_number": 4563,
+  "archive_path": "docs/history/pr-reviews/PR-4563-feat-core-pr-3-of-8-lawrunner-checkbilinear-pluginharness-runtwoinputs.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7DsMAj",
+    "comment:PRRC_kwDOSF9kNM7DsNjE",
+    "comment:PRRC_kwDOSF9kNM7DsNkS",
+    "thread:PRRT_kwDOSF9kNM6D4iHe",
+    "thread:PRRT_kwDOSF9kNM6D4jNV",
+    "thread:PRRT_kwDOSF9kNM6D4jOJ"
+  ],
+  "fetched_at": "2026-05-21T19:04:57.573Z",
+  "schema_version": "v1",
+  "commit_sha": "910362242685dee06aaf8e384cf3f900c92167f0",
+  "title": "feat(core): PR 3 of 8 — LawRunner.checkBilinear + PluginHarness.runTwoInputs",
+  "state": "MERGED",
+  "merged_at": "2026-05-21T19:04:39Z",
+  "head_ref": "feat/lawrunner-checkbilinear-2026-05-21"
+}

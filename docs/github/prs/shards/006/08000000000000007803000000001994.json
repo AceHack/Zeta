@@ -1,0 +1,19 @@
+{
+  "pr_number": 6548,
+  "archive_path": "docs/history/pr-reviews/PR-6548-docs-vision-fold-12-coincidence-anchor-entropy-index-adinkra-recursive-inumeric-.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7HIO-5",
+    "comment:PRRC_kwDOSF9kNM7HIPhY",
+    "comment:PRRC_kwDOSF9kNM7HIRWV",
+    "comment:PRRC_kwDOSF9kNM7HISqq",
+    "thread:PRRT_kwDOSF9kNM6GaKFU",
+    "thread:PRRT_kwDOSF9kNM6GaKfj"
+  ],
+  "fetched_at": "2026-06-02T11:35:24.238Z",
+  "schema_version": "v1",
+  "commit_sha": "ff1bd4246f6072b3efc86ea339f46b7dc360563e",
+  "title": "docs(vision): fold §12 — coincidence-anchor = entropy+index (Adinkra recursive-INumeric + ZetaId emergent memory routing)",
+  "state": "MERGED",
+  "merged_at": "2026-06-02T11:34:59Z",
+  "head_ref": "otto-cli/coincidence-adinkra-recursive-inumeric-2026-06-02"
+}

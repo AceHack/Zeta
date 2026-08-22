@@ -1,0 +1,12 @@
+{
+  "pr_number": 2303,
+  "archive_path": "docs/history/pr-reviews/PR-2303-chore-regenerate-backlog-md-b-0325-closed-in-9605a43b.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-09T12:47:03.656Z",
+  "schema_version": "v1",
+  "commit_sha": "b9cf28db1845bbb8318f4476febfae144a36d783",
+  "title": "chore: regenerate BACKLOG.md — B-0325 closed in 9605a43b",
+  "state": "MERGED",
+  "merged_at": "2026-05-09T12:46:44Z",
+  "head_ref": "fix/backlog-index-b0325-closed"
+}

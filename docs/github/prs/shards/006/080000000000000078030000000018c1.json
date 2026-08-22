@@ -1,0 +1,28 @@
+{
+  "pr_number": 6337,
+  "archive_path": "docs/history/pr-reviews/PR-6337-docs-b-0961-zetaid-root-category-taxonomy-gap-analysis-multi-ai-review-fold.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7GlD_B",
+    "comment:PRRC_kwDOSF9kNM7GlD_T",
+    "comment:PRRC_kwDOSF9kNM7GlD_b",
+    "comment:PRRC_kwDOSF9kNM7GlD_j",
+    "comment:PRRC_kwDOSF9kNM7GlD_p",
+    "comment:PRRC_kwDOSF9kNM7GlDet",
+    "comment:PRRC_kwDOSF9kNM7GlDew",
+    "comment:PRRC_kwDOSF9kNM7GlML0",
+    "thread:PRRT_kwDOSF9kNM6GAI10",
+    "thread:PRRT_kwDOSF9kNM6GAI15",
+    "thread:PRRT_kwDOSF9kNM6GAI1W",
+    "thread:PRRT_kwDOSF9kNM6GAI1k",
+    "thread:PRRT_kwDOSF9kNM6GAI1r",
+    "thread:PRRT_kwDOSF9kNM6GAIeV",
+    "thread:PRRT_kwDOSF9kNM6GAIeW"
+  ],
+  "fetched_at": "2026-06-01T04:22:56.025Z",
+  "schema_version": "v1",
+  "commit_sha": "eaf08d114f665b05693a5c6fb4d6f0ac2d53ae72",
+  "title": "docs(B-0961): ZetaId root-category taxonomy gap-analysis + multi-AI review fold",
+  "state": "MERGED",
+  "merged_at": "2026-06-01T04:22:37Z",
+  "head_ref": "otto-cli/b0961-zetaid-categories-2026-05-31"
+}

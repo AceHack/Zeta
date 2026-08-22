@@ -1,0 +1,12 @@
+{
+  "pr_number": 9153,
+  "archive_path": "docs/history/pr-reviews/PR-9153-research-test-ihara-zeta-over-the-braided-catalog-3-generators-3-parallel-edges.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-17T10:57:45.164Z",
+  "schema_version": "v1",
+  "commit_sha": "e6b07cb199711b26ab303030ae04a6d2c506a711",
+  "title": "research+test: Ihara zeta over the braided catalog (3 generators = 3 parallel edges)",
+  "state": "MERGED",
+  "merged_at": "2026-07-02T16:36:04Z",
+  "head_ref": "otto/braid-catalog-ihara-zeta"
+}

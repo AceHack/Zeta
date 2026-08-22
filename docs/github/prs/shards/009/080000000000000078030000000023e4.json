@@ -1,0 +1,12 @@
+{
+  "pr_number": 9188,
+  "archive_path": "docs/history/pr-reviews/PR-9188-feat-setup-ace-bun-realizers-slice-4-final-7-mechanisms-14-14.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-02T19:52:29.793Z",
+  "schema_version": "v1",
+  "commit_sha": "5af73b80c26eaaeff77a89a0aaa657b8e332cab3",
+  "title": "feat(setup): Ace Bun realizers slice 4 — final 7 mechanisms (14/14)",
+  "state": "MERGED",
+  "merged_at": "2026-07-02T19:52:07Z",
+  "head_ref": "feat/081KLL7-bun-realizers-slice-4"
+}

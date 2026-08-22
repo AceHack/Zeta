@@ -1,0 +1,12 @@
+{
+  "pr_number": 2872,
+  "archive_path": "docs/history/pr-reviews/PR-2872-docs-memory-extend-service-mesh-reticulum-clifford-addressability-craft-school-c.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-12T21:41:40.368Z",
+  "schema_version": "v1",
+  "commit_sha": "246abba0d2b4ff226d76e24be96bcbed93b3381c",
+  "title": "docs(memory): extend — service-mesh + Reticulum + Clifford-addressability + craft-school + content-addressing-done-right",
+  "state": "MERGED",
+  "merged_at": "2026-05-12T21:41:18Z",
+  "head_ref": "aaron-gpu-coordination-sequoia-nvidia-warp-grain-primitives-2026-05-12"
+}

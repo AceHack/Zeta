@@ -1,0 +1,12 @@
+{
+  "pr_number": 8799,
+  "archive_path": "docs/history/pr-reviews/PR-8799-feat-lean-decorrelationdpi-operational-data-processing-inequality-for-anti-mirro.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-20T23:15:26.676Z",
+  "schema_version": "v1",
+  "commit_sha": "4e39c541c6293a7aefbd8bf7e7e3b70b01ca7ad3",
+  "title": "feat(lean): DecorrelationDpi — operational data-processing inequality for anti-mirror ρ_owe (row 3 Lean leg)",
+  "state": "MERGED",
+  "merged_at": "2026-06-20T23:14:59Z",
+  "head_ref": "otto/lean-decorrelation-dpi"
+}

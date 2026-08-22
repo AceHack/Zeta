@@ -1,4 +1,4 @@
-// tools/dora-classify/classify.ts
+// src/Core.TypeScript/dora-classify/classify.ts
 //
 // 081KSKBP80008QG0R000B3Y19A + 081KSNY2Z0008QG0R000HENSVM + 081KSNY2Z0008QG0R000DA261F Step 1 substrate: per-commit lane classification.
 //
@@ -45,7 +45,7 @@ export type Lane =
   | "heartbeat"          // docs/agent-heartbeats/** (081KSKBP80008QG0R001KK9WV6)
   | "backlog-row"        // docs/backlog/** (sub-rows + parent rows)
   | "shadow-work"        // docs/research/2026-*-shadow-lesson-log-*.md + docs/hygiene-history/ticks/**
-  | "tooling-or-ci"      // tools/ci/** + tools/hygiene/** + .github/workflows/** + tools/lint/**
+  | "tooling-or-ci"      // src/Core.TypeScript/{ci,hygiene,lint}/** + .github/workflows/** (+ legacy tools/ prefixes)
   | "docs-general"       // docs/** not matching above
   | "substrate-cascade"  // default for unclassifiable — meta-summaries without specific lane fit
   | "mixed";             // multiple lanes touched (details lists them)
@@ -74,7 +74,15 @@ const PATH_RULES: readonly PathRule[] = [
   { prefix: "docs/backlog/", lane: "backlog-row" },
   // Shadow work — research lesson logs + tick shards
   { prefix: "docs/hygiene-history/ticks/", lane: "shadow-work" },
-  // Tooling + CI substrate (paths that affect build/test but don't ship)
+  // Tooling + CI substrate (paths that affect build/test but don't ship).
+  // These MUST stay above the `src/` operational rule: after the #8050
+  // relocation they live under src/Core.TypeScript/, and first-match-wins
+  // would otherwise lane every hygiene/lint/ci change as `operational`.
+  { prefix: "src/Core.TypeScript/ci/", lane: "tooling-or-ci" },
+  { prefix: "src/Core.TypeScript/hygiene/", lane: "tooling-or-ci" },
+  { prefix: "src/Core.TypeScript/lint/", lane: "tooling-or-ci" },
+  // Legacy pre-#8050 paths -- kept because this classifier folds over git
+  // HISTORY; dropping them would re-lane every commit made before the move.
   { prefix: "tools/ci/", lane: "tooling-or-ci" },
   { prefix: "tools/hygiene/", lane: "tooling-or-ci" },
   { prefix: "tools/lint/", lane: "tooling-or-ci" },

@@ -1,0 +1,12 @@
+{
+  "pr_number": 10496,
+  "archive_path": "docs/history/pr-reviews/PR-10496-fix-discovery-decode-all-3-erasures-the-adinkra-8-4-4-code-corrects.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-14T01:45:27.263Z",
+  "schema_version": "v1",
+  "commit_sha": "f7287da8fefe4cd1c1cc083d9778a6198bf2dc0a",
+  "title": "fix(discovery): decode all 3 erasures the Adinkra [8,4,4] code corrects",
+  "state": "MERGED",
+  "merged_at": "2026-08-14T01:44:53Z",
+  "head_ref": "shadow/adinkra-844-three-erasure-decoder"
+}

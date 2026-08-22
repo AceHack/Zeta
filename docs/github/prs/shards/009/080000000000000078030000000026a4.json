@@ -1,0 +1,12 @@
+{
+  "pr_number": 9892,
+  "archive_path": "docs/history/pr-reviews/PR-9892-docs-research-action-grammar-over-a-lossy-moving-mesh-trickle-suppression-max-mi.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-01T17:48:11.834Z",
+  "schema_version": "v1",
+  "commit_sha": "313aafb481da9ea6cd6bf75b3a3981d111fc4d5b",
+  "title": "docs(research): action grammar over a lossy moving mesh — Trickle suppression, max-min fairness, and a fixed-debounce finding",
+  "state": "MERGED",
+  "merged_at": "2026-08-01T17:47:44Z",
+  "head_ref": "shadow/action-grammar-lossy-mesh-open-questions"
+}

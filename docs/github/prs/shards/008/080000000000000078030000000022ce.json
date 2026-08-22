@@ -1,0 +1,12 @@
+{
+  "pr_number": 8910,
+  "archive_path": "docs/history/pr-reviews/PR-8910-feat-proof-finite-data-processing-inequality-key-lemma-in-lean-4-relative-entrop.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-21T08:09:54.407Z",
+  "schema_version": "v1",
+  "commit_sha": "a4802b869a6f6392f83d97d0de6f0e851914720e",
+  "title": "feat(proof): finite data-processing-inequality key lemma in Lean 4 (relative entropy ≥ 0)",
+  "state": "MERGED",
+  "merged_at": "2026-06-21T08:09:22Z",
+  "head_ref": "otto/lean-dpi-key-lemma"
+}

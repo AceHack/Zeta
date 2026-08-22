@@ -142,9 +142,9 @@ when relating *two* ZSets at different time steps:
   algebra authority.
 - `src/Core/RecursiveSigned.fs` — Jordan-decomposition-safe
   semi-naive path.
-- `tools/tla/specs/RecursiveSignedSemiNaive.tla` — retraction-
+- `src/Core.TLA/specs/RecursiveSignedSemiNaive.tla` — retraction-
   safety as a TLA+ safety property.
-- `tools/lean4/Lean4/DbspChainRule.lean` — chain rule as a
+- `src/Core.Lean4/Lean4/DbspChainRule.lean` — chain rule as a
   signed-measure statement.
 - `openspec/specs/operator-algebra/spec.md` — operator laws
   with their measure-theoretic interpretation.

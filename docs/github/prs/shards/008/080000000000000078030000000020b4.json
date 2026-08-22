@@ -1,0 +1,12 @@
+{
+  "pr_number": 8372,
+  "archive_path": "docs/history/pr-reviews/PR-8372-docs-society-9-the-world-model-loop-observe-hard-soft-inference-unified-craik-ct.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-16T00:18:18.792Z",
+  "schema_version": "v1",
+  "commit_sha": "06e185dda2571f24e4a68e625f04dcf1bd5cab85",
+  "title": "docs(society): §9 the world-model loop — observe (hard) ⊕ soft inference unified; Craik/CTM convergence",
+  "state": "MERGED",
+  "merged_at": "2026-06-16T00:17:51Z",
+  "head_ref": "docs/society-world-model-loop-section"
+}

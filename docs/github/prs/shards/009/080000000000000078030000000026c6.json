@@ -1,0 +1,12 @@
+{
+  "pr_number": 9926,
+  "archive_path": "docs/history/pr-reviews/PR-9926-fix-backlog-add-the-5-index-rows-ci-has-demanded-since-2026-07-08.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-01T21:03:27.055Z",
+  "schema_version": "v1",
+  "commit_sha": "a001d0e1c0766e2953c397a5035589faafda9e0d",
+  "title": "fix(backlog): add the 5 index rows CI has demanded since 2026-07-08",
+  "state": "MERGED",
+  "merged_at": "2026-08-01T21:02:53Z",
+  "head_ref": "fix/backlog-index-drift-5-missing-rows"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 8279,
+  "archive_path": "docs/history/pr-reviews/PR-8279-docs-capture-taxonomy-dependency-the-marketing-shape-open-commons-escapes-both-m.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-15T07:18:47.900Z",
+  "schema_version": "v1",
+  "commit_sha": "e7d419e0b7867f3fc111bd833f508755446d709b",
+  "title": "docs: capture taxonomy — dependency=the marketing shape; open-commons escapes BOTH market & regulatory capture",
+  "state": "MERGED",
+  "merged_at": "2026-06-15T07:18:23Z",
+  "head_ref": "otto/open-commons-escapes-market-and-regulatory-capture"
+}

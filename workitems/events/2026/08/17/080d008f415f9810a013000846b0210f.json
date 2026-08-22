@@ -1,0 +1,14 @@
+{
+  "id": "080d008f415f9810a013000846b0210f",
+  "at": "2026-08-17T22:47:03.411Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M08YGAZK087G0R0008Q0ZB5",
+    "type": "task",
+    "title": "Gift of erasure: cooperative anonymity-set forgetting — mix first, then forget one neither outsider nor contributor can name",
+    "slug": "gift-of-erasure-cooperative-anonymity-set-forgetting-mix-fir",
+    "priority": "P2",
+    "filename": "081M08YGAZK087G0R0008Q0ZB5-gift-of-erasure-cooperative-anonymity-set-forgetting-mix-fir.md"
+  }
+}

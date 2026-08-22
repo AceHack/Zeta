@@ -1,0 +1,12 @@
+{
+  "pr_number": 6271,
+  "archive_path": "docs/history/pr-reviews/PR-6271-inventory-phase-4-write-path-edit-add-archive-un-archive-server-authoritative-op.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-01T04:33:42.243Z",
+  "schema_version": "v1",
+  "commit_sha": "1016cc213dc3fccfa508bdefbb632fcaec2cf915",
+  "title": "Inventory: Phase 4 (Write path) — edit/add/archive/un-archive + server-authoritative optimistic locking",
+  "state": "MERGED",
+  "merged_at": "2026-06-01T04:33:20Z",
+  "head_ref": "claude/exciting-knuth-2ca6i"
+}

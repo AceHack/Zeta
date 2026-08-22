@@ -1,0 +1,12 @@
+{
+  "pr_number": 9735,
+  "archive_path": "docs/history/pr-reviews/PR-9735-docs-book-fold-figment-origin-figment-for-grown-ups-mission-into-ch-06-walt-evil.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-11T19:27:14.486Z",
+  "schema_version": "v1",
+  "commit_sha": "1f93392b164f037693b610db26fc15c3bb9e05db",
+  "title": "docs(book): fold Figment origin + \"Figment for grown-ups\" mission into ch-06; Walt-evil claim held out (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-11T19:26:46Z",
+  "head_ref": "book-ch06-figment-mission"
+}

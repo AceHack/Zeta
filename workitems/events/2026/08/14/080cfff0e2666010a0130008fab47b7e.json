@@ -1,0 +1,14 @@
+{
+  "id": "080cfff0e2666010a0130008fab47b7e",
+  "at": "2026-08-14T02:31:35.372Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081KZZ1RK6A087G0R003C773WC",
+    "type": "bug",
+    "title": "two tracked .claude/hooks test files are undiscoverable by bun test and execute nowhere",
+    "slug": "two-tracked-claude-hooks-test-files-are-undiscoverable-by-bu",
+    "priority": "P2",
+    "filename": "081KZZ1RK6A087G0R003C773WC-two-tracked-claude-hooks-test-files-are-undiscoverable-by-bu.md"
+  }
+}

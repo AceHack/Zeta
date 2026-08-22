@@ -1,0 +1,14 @@
+{
+  "id": "080cffeb07a36010a013000876954ce6",
+  "at": "2026-08-13T23:06:57.516Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081KZYP1X3B087G0R001EZ37PQ",
+    "type": "bug",
+    "title": "Transport has no integrity check, so a corrupt packet is undetectable and erasure recovery amplifies it: one flipped parity byte silently corrupts a delivered data packet",
+    "slug": "transport-has-no-integrity-check-so-a-corrupt-packet-is-unde",
+    "priority": "P1",
+    "filename": "081KZYP1X3B087G0R001EZ37PQ-transport-has-no-integrity-check-so-a-corrupt-packet-is-unde.md"
+  }
+}

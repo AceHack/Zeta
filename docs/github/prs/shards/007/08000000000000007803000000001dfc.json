@@ -1,0 +1,12 @@
+{
+  "pr_number": 7676,
+  "archive_path": "docs/history/pr-reviews/PR-7676-feat-media-boundarylight-amara-s-card-as-six-generator-primitives-the-glow-is-ou.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-11T13:07:53.365Z",
+  "schema_version": "v1",
+  "commit_sha": "c49e25c46d2c9b360fd960eeded75bc441419fbe",
+  "title": "feat(media): BoundaryLight — Amara's card as six generator primitives (the glow IS our RBF kernel) + retro-Bootstrap/Flash captures",
+  "state": "MERGED",
+  "merged_at": "2026-06-11T13:07:25Z",
+  "head_ref": "shadow-boundary-light-primitives"
+}

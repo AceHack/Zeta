@@ -1,0 +1,12 @@
+{
+  "pr_number": 3158,
+  "archive_path": "docs/history/pr-reviews/PR-3158-docs-archive-preserve-pr-3153.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-14T18:37:19.032Z",
+  "schema_version": "v1",
+  "commit_sha": "9d324cb73ea20934ee1b7e8a25a4c8ac42fc8991",
+  "title": "docs(archive): preserve PR 3153",
+  "state": "MERGED",
+  "merged_at": "2026-05-14T18:36:51Z",
+  "head_ref": "lior-preserve-3153-1778782990"
+}

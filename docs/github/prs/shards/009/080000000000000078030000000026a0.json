@@ -1,0 +1,12 @@
+{
+  "pr_number": 9888,
+  "archive_path": "docs/history/pr-reviews/PR-9888-feat-observe-operator-presence-as-a-tick-rate-modulator-burst-when-watched-never.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-01T15:09:02.244Z",
+  "schema_version": "v1",
+  "commit_sha": "63ea9e0b79e2a9d7f63721a958d931855e3a7bea",
+  "title": "feat(observe): operator presence as a tick-rate modulator — burst when watched, never silent",
+  "state": "MERGED",
+  "merged_at": "2026-08-01T15:08:32Z",
+  "head_ref": "shadow/operator-presence-burst-mode"
+}

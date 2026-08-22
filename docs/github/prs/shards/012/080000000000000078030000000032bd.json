@@ -1,0 +1,12 @@
+{
+  "pr_number": 12989,
+  "archive_path": "docs/history/pr-reviews/PR-12989-fix-observe-rs-buffer-survives-branch-reset-reconstruct-from-main.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-20T23:51:55.983Z",
+  "schema_version": "v1",
+  "commit_sha": "5e2c494de53eddf2d6b23ea68709e3f7558d19a2",
+  "title": "fix(observe): RS buffer survives branch reset — reconstruct from main",
+  "state": "MERGED",
+  "merged_at": "2026-08-20T23:51:25Z",
+  "head_ref": "alexa/fix-rs-buffer"
+}

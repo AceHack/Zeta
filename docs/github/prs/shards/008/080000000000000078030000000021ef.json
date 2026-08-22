@@ -1,0 +1,12 @@
+{
+  "pr_number": 8687,
+  "archive_path": "docs/history/pr-reviews/PR-8687-feat-observe-wire-participant-into-run-loop-real-ts.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-20T02:57:35.838Z",
+  "schema_version": "v1",
+  "commit_sha": "32256a37c9d3f7f3d7ca2b0b3e8a790d50dd381d",
+  "title": "feat(observe): wire Participant into run-loop-real.ts",
+  "state": "MERGED",
+  "merged_at": "2026-06-20T02:57:10Z",
+  "head_ref": "alexa/wire-participant-run-loop"
+}

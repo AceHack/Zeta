@@ -1,0 +1,12 @@
+{
+  "pr_number": 7948,
+  "archive_path": "docs/history/pr-reviews/PR-7948-codex-feat-core-connect-flow-bit-oracle-to-vision-attention.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-12T18:36:30.086Z",
+  "schema_version": "v1",
+  "commit_sha": "0d77d81de440bb737e26c583382187aa3deeed41",
+  "title": "[codex] feat(core): connect flow-bit oracle to vision attention",
+  "state": "MERGED",
+  "merged_at": "2026-06-12T18:36:05Z",
+  "head_ref": "codex/qsharp-bayesian-ledger-budget"
+}

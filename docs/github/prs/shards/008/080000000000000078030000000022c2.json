@@ -1,0 +1,12 @@
+{
+  "pr_number": 8898,
+  "archive_path": "docs/history/pr-reviews/PR-8898-feat-core-run-finite-horizon-through-room-heat.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-21T09:12:32.140Z",
+  "schema_version": "v1",
+  "commit_sha": "95a9fb33a3e5d7c5487b7865c2898186644fcdab",
+  "title": "feat(core): run finite horizon through room heat",
+  "state": "MERGED",
+  "merged_at": "2026-06-21T09:12:03Z",
+  "head_ref": "codex/room-run-horizon-heat"
+}

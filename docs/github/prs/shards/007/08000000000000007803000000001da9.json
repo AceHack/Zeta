@@ -1,0 +1,12 @@
+{
+  "pr_number": 7593,
+  "archive_path": "docs/history/pr-reviews/PR-7593-feat-core-route-finite-room-observables-over-reticulum.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-11T04:18:52.293Z",
+  "schema_version": "v1",
+  "commit_sha": "3c2c67ed9fbbae01e07bfe50a730d98d2dd29f5f",
+  "title": "feat(core): route finite-room observables over Reticulum",
+  "state": "MERGED",
+  "merged_at": "2026-06-11T04:18:31Z",
+  "head_ref": "codex/vera-red-test-reticulum-qubits"
+}

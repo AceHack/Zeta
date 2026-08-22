@@ -334,5 +334,5 @@ runtime surprise.
   — umbrella.
 - `.claude/skills/performance-and-runtime-ops/blueprints/serialization-and-wire-format-expert.md`
   — encoding mechanics.
-- `.claude/skills/data-contract-expert/SKILL.md` —
+- `.claude/skills/performance-and-runtime-ops/SKILL.md` —
   cross-team schema contract discipline.

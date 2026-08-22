@@ -1,0 +1,12 @@
+{
+  "pr_number": 13866,
+  "archive_path": "docs/history/pr-reviews/PR-13866-fix-installer-the-ledger-test-s-first-shell-spawn-was-charged-to-whichever-test-.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-22T19:54:09.699Z",
+  "schema_version": "v1",
+  "commit_sha": "c9efe5d62e627c11cf10f2cabea6089c1c365d2b",
+  "title": "fix(installer): the ledger test's first shell spawn was charged to whichever test ran first",
+  "state": "MERGED",
+  "merged_at": "2026-08-22T19:53:29Z",
+  "head_ref": "shadow-installer-ledger-warmup"
+}

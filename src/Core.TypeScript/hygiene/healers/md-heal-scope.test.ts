@@ -86,6 +86,9 @@ describe("the archives are withheld — the case that actually happened", () => 
     expect(isIgnored("docs/recovered-orphan-branches-2026-05/deep/x.md", ignores)).toBe(true);
     expect(isIgnored("a/b/.claude/x.md", ignores)).toBe(true);
     expect(isIgnored("workitems/081KZ-item.md", ignores)).toBe(true);
-    expect(isIgnored("workitems/B-0001-item.md", ignores)).toBe(false); // stem must still discriminate
+    // NOT a legacy B-NNNN id: `lint-b-refs-resolve.ts` requires every such reference to
+    // resolve to a real row, and an invented fixture id would not. Any non-`081*` stem
+    // exercises the same discrimination without owing a resolution.
+    expect(isIgnored("workitems/zzz-not-a-zetaid.md", ignores)).toBe(false); // stem must still discriminate
   });
 });

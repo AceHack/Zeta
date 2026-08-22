@@ -1,0 +1,12 @@
+{
+  "pr_number": 7155,
+  "archive_path": "docs/history/pr-reviews/PR-7155-feat-core-gamecatalog-per-game-uncertainty-keyed-by-fingerprint.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-09T00:58:52.774Z",
+  "schema_version": "v1",
+  "commit_sha": "1840cd63c6eb60246389494fecefeb6e8b0d7ed1",
+  "title": "feat(core): GameCatalog — per-game uncertainty keyed by fingerprint",
+  "state": "MERGED",
+  "merged_at": "2026-06-09T00:58:32Z",
+  "head_ref": "otto/gamecatalog-per-game-uncertainty-keyed-by-fingerprint"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 7384,
+  "archive_path": "docs/history/pr-reviews/PR-7384-feat-platform-multi-tenancy-tenant-crd-controller-admin-portal-cluster-capacity-.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-09T20:10:12.427Z",
+  "schema_version": "v1",
+  "commit_sha": "6150c1a817d56a7c8a7b6bae5341ca2557557c93",
+  "title": "feat(platform): multi-tenancy — Tenant CRD + controller + Admin portal (cluster capacity + quotas), real k8s reads",
+  "state": "MERGED",
+  "merged_at": "2026-06-09T20:09:46Z",
+  "head_ref": "feat/platform-tenants-admin"
+}

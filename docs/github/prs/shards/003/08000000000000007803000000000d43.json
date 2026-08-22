@@ -1,0 +1,22 @@
+{
+  "pr_number": 3395,
+  "archive_path": "docs/history/pr-reviews/PR-3395-shard-tick-0911z-pr-3392-merged-3rd-stale-copilot-reply-resolve.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7Bi5cC",
+    "comment:PRRC_kwDOSF9kNM7Bi7Mh",
+    "comment:PRRC_kwDOSF9kNM7Bi7NF",
+    "comment:PRRC_kwDOSF9kNM7BjATs",
+    "comment:PRRC_kwDOSF9kNM7BjAXp",
+    "comment:PRRC_kwDOSF9kNM7BjAcc",
+    "thread:PRRT_kwDOSF9kNM6CT6Uj",
+    "thread:PRRT_kwDOSF9kNM6CT7m7",
+    "thread:PRRT_kwDOSF9kNM6CT7mj"
+  ],
+  "fetched_at": "2026-05-15T09:22:54.653Z",
+  "schema_version": "v1",
+  "commit_sha": "ef4e1bb0af6f75d8bc173e9acba5e1aef8c6799e",
+  "title": "shard(tick): 0911Z — PR #3392 merged; 3rd stale-Copilot reply+resolve",
+  "state": "MERGED",
+  "merged_at": "2026-05-15T09:22:35Z",
+  "head_ref": "shard/tick-0911z-otto-cli-2026-05-15"
+}

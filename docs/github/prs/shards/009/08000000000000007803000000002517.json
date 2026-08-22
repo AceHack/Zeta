@@ -1,0 +1,12 @@
+{
+  "pr_number": 9495,
+  "archive_path": "docs/history/pr-reviews/PR-9495-feat-persona-transport-wire-the-is-ai-provenance-handshake-served-persona-declar.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-05T17:38:07.074Z",
+  "schema_version": "v1",
+  "commit_sha": "cd5036d2a8549eedb1dd68a574d5314f130664c9",
+  "title": "feat(persona-transport): wire the is-AI provenance handshake — served persona declares Synthetic before any content (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-05T17:37:40Z",
+  "head_ref": "otto/persona-transport-isai-handshake"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 6918,
+  "archive_path": "docs/history/pr-reviews/PR-6918-docs-wi-capture-vs-ferry-is-a-discriminated-union-separation-decide-what-you-cap.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-07T21:08:20.077Z",
+  "schema_version": "v1",
+  "commit_sha": "73a437f8d5b23e23caaa53b27998d193bd21ed40",
+  "title": "docs+wi: Capture vs Ferry is a discriminated-union separation (decide-what-you-capture / don't-fuck-with-history)",
+  "state": "MERGED",
+  "merged_at": "2026-06-07T21:08:02Z",
+  "head_ref": "otto/capture-vs-ferry-du-separation"
+}

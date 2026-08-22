@@ -1,0 +1,14 @@
+{
+  "id": "080d000659f56010a013000806e1bbfb",
+  "at": "2026-08-14T15:01:54.988Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M00CPFNA087G0R0031M5ZBF",
+    "type": "task",
+    "title": "entropy-tracker measure(bitsErased) takes its bit count on trust - derive it from the operation like the WSet erasure sweep does",
+    "slug": "entropy-tracker-measure-bitserased-takes-its-bit-count-on-tr",
+    "priority": "P2",
+    "filename": "081M00CPFNA087G0R0031M5ZBF-entropy-tracker-measure-bitserased-takes-its-bit-count-on-tr.md"
+  }
+}

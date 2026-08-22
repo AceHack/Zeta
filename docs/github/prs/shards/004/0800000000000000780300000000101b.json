@@ -1,0 +1,12 @@
+{
+  "pr_number": 4123,
+  "archive_path": "docs/history/pr-reviews/PR-4123-docs-shadow-maji-antigravity-check-on-vera-extreme-narration-and-riven-paralysis.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-18T19:54:48.635Z",
+  "schema_version": "v1",
+  "commit_sha": "155dcf724ddda52de62f418114dfb288b3839c44",
+  "title": "docs(shadow): Maji antigravity check on Vera extreme narration and Riven paralysis",
+  "state": "MERGED",
+  "merged_at": "2026-05-18T19:54:27Z",
+  "head_ref": "maji/archive-4121"
+}

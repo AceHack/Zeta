@@ -1,0 +1,12 @@
+{
+  "pr_number": 8934,
+  "archive_path": "docs/history/pr-reviews/PR-8934-feat-symbolicalgebra-cas-module-algebraic-ir-canonicalizer.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-21T09:47:05.427Z",
+  "schema_version": "v1",
+  "commit_sha": "b4a752cf35189bbd96015cb2b109f6bb7552ab75",
+  "title": "feat: SymbolicAlgebra CAS module + algebraic IR Canonicalizer",
+  "state": "MERGED",
+  "merged_at": "2026-06-21T09:46:39Z",
+  "head_ref": "feature/lumen-symbolic-algebra"
+}

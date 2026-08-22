@@ -1,0 +1,12 @@
+{
+  "pr_number": 10049,
+  "archive_path": "docs/history/pr-reviews/PR-10049-book-the-global-trust-network-the-uber-driver-the-organizer-at-scale-gone-planet.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-04T22:32:24.049Z",
+  "schema_version": "v1",
+  "commit_sha": "f726e5cc2e1d0e68570b4b64a1b5b2b0237c5f02",
+  "title": "book: the global trust network + the Uber driver — the organizer-at-scale gone planetary",
+  "state": "MERGED",
+  "merged_at": "2026-08-04T22:31:52Z",
+  "head_ref": "docs/book-global-trust-network-and-uber-driver-20260804"
+}

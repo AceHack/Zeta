@@ -1,0 +1,12 @@
+{
+  "pr_number": 9928,
+  "archive_path": "docs/history/pr-reviews/PR-9928-route-iris-page-side-render-discipline-unblocked-vault-bridge-contract-landed.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-01T21:43:01.932Z",
+  "schema_version": "v1",
+  "commit_sha": "4d7c8537d2a330e960fedc2baf1e04e8cdd15033",
+  "title": "route(iris): page-side render discipline unblocked — vault bridge contract landed",
+  "state": "MERGED",
+  "merged_at": "2026-08-01T21:42:28Z",
+  "head_ref": "shadow/route-iris-vault-render"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 7285,
+  "archive_path": "docs/history/pr-reviews/PR-7285-feat-setup-docs-close-keyring-tool-over-install-sh-install-ps1-deps-only-alexa-f.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-09T14:11:38.408Z",
+  "schema_version": "v1",
+  "commit_sha": "a36ba484e514a64f89770117e49df37bba991d15",
+  "title": "feat(setup)+docs: close keyring tool over install.sh/install.ps1 (deps only); Alexa-friendly hardware north-star",
+  "state": "MERGED",
+  "merged_at": "2026-06-09T14:11:09Z",
+  "head_ref": "otto/close-keyring-tool-over-install-sh-ps1-plus-alexa-friendly-hardware-vision"
+}

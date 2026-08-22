@@ -1,0 +1,23 @@
+{
+  "pr_number": 6629,
+  "archive_path": "docs/history/pr-reviews/PR-6629-feat-proof-b-1007-c12-the-codec-algebra-invariant-functor-closed-under-id-produc.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7He335",
+    "comment:PRRC_kwDOSF9kNM7He347",
+    "comment:PRRC_kwDOSF9kNM7He34R",
+    "comment:PRRC_kwDOSF9kNM7He34p",
+    "comment:PRRC_kwDOSF9kNM7He35P",
+    "thread:PRRT_kwDOSF9kNM6Gqu70",
+    "thread:PRRT_kwDOSF9kNM6Gqu7h",
+    "thread:PRRT_kwDOSF9kNM6Gqu8F",
+    "thread:PRRT_kwDOSF9kNM6Gqu8Q",
+    "thread:PRRT_kwDOSF9kNM6Gqu8h"
+  ],
+  "fetched_at": "2026-06-03T07:50:02.215Z",
+  "schema_version": "v1",
+  "commit_sha": "5ce01fa0da79af3b6826627130bea33058de05d0",
+  "title": "feat+proof(B-1007 C12): the codec algebra — invariant functor closed under id/product/sum (decode∘encode=id) — FsCheck",
+  "state": "MERGED",
+  "merged_at": "2026-06-03T07:49:41Z",
+  "head_ref": "otto-cli/b1007-c12-codec-algebra-invariant-functor-product-sum-2026-06-03"
+}

@@ -1,0 +1,17 @@
+{
+  "pr_number": 5128,
+  "archive_path": "docs/history/pr-reviews/PR-5128-fix-b-0058-filter-gate-log-test-no-longer-pollutes-production-ethics-decision-lo.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7E1IJA",
+    "comment:PRRC_kwDOSF9kNM7E1IKS",
+    "thread:PRRT_kwDOSF9kNM6EufOW",
+    "thread:PRRT_kwDOSF9kNM6EufPI"
+  ],
+  "fetched_at": "2026-05-26T08:22:54.003Z",
+  "schema_version": "v1",
+  "commit_sha": "1aa8746c86eb5cc36dfa62011aca832739539017",
+  "title": "fix(B-0058): filter-gate-log test no longer pollutes production ethics-decision log",
+  "state": "MERGED",
+  "merged_at": "2026-05-26T08:22:32Z",
+  "head_ref": "otto-cli/filter-gate-log-test-pollution-fix-2026-05-26"
+}

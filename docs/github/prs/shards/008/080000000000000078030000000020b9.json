@@ -1,0 +1,12 @@
+{
+  "pr_number": 8377,
+  "archive_path": "docs/history/pr-reviews/PR-8377-docs-society-fusion-one-external-address-internal-arrangement-a-free-hidden-choi.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-16T00:32:19.420Z",
+  "schema_version": "v1",
+  "commit_sha": "c8c1042170e32d42af28a940d139c717f95fbab6",
+  "title": "docs(society): fusion = one external address, internal arrangement a free hidden choice (resolves two-senses peel)",
+  "state": "MERGED",
+  "merged_at": "2026-06-16T00:31:52Z",
+  "head_ref": "docs/fusion-is-one-address-internal-choice"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 3810,
+  "archive_path": "docs/history/pr-reviews/PR-3810-deps-bump-fsharp-core-and-3-others.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-16T16:42:46.220Z",
+  "schema_version": "v1",
+  "commit_sha": "fd93e0be5d91851c15a2e15630fefcfe0b7c752e",
+  "title": "deps: Bump FSharp.Core and 3 others",
+  "state": "MERGED",
+  "merged_at": "2026-05-16T16:42:27Z",
+  "head_ref": "dependabot/nuget/nuget-minor-patch-e21d1aab23"
+}

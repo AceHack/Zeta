@@ -1,0 +1,12 @@
+{
+  "pr_number": 4753,
+  "archive_path": "docs/history/pr-reviews/PR-4753-docs-b-0525-slice-5-alignment-auditor-agent-cites-manifesto-agents-0-0-1-8.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-23T19:06:53.602Z",
+  "schema_version": "v1",
+  "commit_sha": "b0b8d905af8ff8c89cbf70c6999191b4b4f6d716",
+  "title": "docs(B-0525): slice 5 — alignment-auditor agent cites manifesto (agents 0/0 → 1/8)",
+  "state": "MERGED",
+  "merged_at": "2026-05-23T19:06:32Z",
+  "head_ref": "otto/cli-b0525-slice5-agents-alignment-auditor-citation-2026-05-23"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 11229,
+  "archive_path": "docs/history/pr-reviews/PR-11229-fix-heartbeat-a-partial-flush-wedges-the-lane-declare-merge-semantics-for-the-th.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-17T01:11:40.976Z",
+  "schema_version": "v1",
+  "commit_sha": "c4b12867e38f441824384fd2d0840e5129955dbb",
+  "title": "fix(heartbeat): a partial flush wedges the lane — declare merge semantics for the three shared files",
+  "state": "MERGED",
+  "merged_at": "2026-08-17T01:11:03Z",
+  "head_ref": "shadow/heartbeat-lane-merge-semantics"
+}

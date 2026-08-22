@@ -1,0 +1,28 @@
+{
+  "pr_number": 2457,
+  "archive_path": "docs/history/pr-reviews/PR-2457-fix-b-0082-convert-one-persona-name-provenance-entry-to-role-refs-in-glossary-md.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_nD-Z",
+    "comment:PRRC_kwDOSF9kNM6_nDPo",
+    "comment:PRRC_kwDOSF9kNM6_nDdS",
+    "comment:PRRC_kwDOSF9kNM6_nDdc",
+    "comment:PRRC_kwDOSF9kNM6_nDdl",
+    "comment:PRRC_kwDOSF9kNM6_nDdq",
+    "comment:PRRC_kwDOSF9kNM6_nEET",
+    "comment:PRRC_kwDOSF9kNM6_nEEx",
+    "comment:PRRC_kwDOSF9kNM6_nEFE",
+    "comment:PRRC_kwDOSF9kNM6_nEGQ",
+    "thread:PRRT_kwDOSF9kNM6A5BTI",
+    "thread:PRRT_kwDOSF9kNM6A5BeM",
+    "thread:PRRT_kwDOSF9kNM6A5BeV",
+    "thread:PRRT_kwDOSF9kNM6A5Bec",
+    "thread:PRRT_kwDOSF9kNM6A5Beh"
+  ],
+  "fetched_at": "2026-05-10T10:18:41.219Z",
+  "schema_version": "v1",
+  "commit_sha": "7d8a755415e99859e1a74776509d7ba6cc88302b",
+  "title": "fix(B-0082): convert one persona-name provenance entry to role-refs in GLOSSARY.md (smallest safe slice)",
+  "state": "MERGED",
+  "merged_at": "2026-05-10T10:18:26Z",
+  "head_ref": "claim/B-0082-glossary-persona-role-ref-smallest-slice-riven-2026-05-10"
+}

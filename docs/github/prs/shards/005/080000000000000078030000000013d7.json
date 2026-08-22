@@ -1,0 +1,17 @@
+{
+  "pr_number": 5079,
+  "archive_path": "docs/history/pr-reviews/PR-5079-fix-persona-max-3-post-merge-accuracy-fixes-from-5078-copilot-review.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7Ewon8",
+    "comment:PRRC_kwDOSF9kNM7EwooK",
+    "thread:PRRT_kwDOSF9kNM6ErNPQ",
+    "thread:PRRT_kwDOSF9kNM6ErNPc"
+  ],
+  "fetched_at": "2026-05-26T03:51:52.200Z",
+  "schema_version": "v1",
+  "commit_sha": "95b662b622630ac8af6be5480366a10242996509",
+  "title": "fix(persona/max): 3 post-merge accuracy fixes from #5078 Copilot review",
+  "state": "MERGED",
+  "merged_at": "2026-05-26T03:51:33Z",
+  "head_ref": "otto-cli/max-starting-point-accuracy-fixes-2026-05-25"
+}

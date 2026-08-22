@@ -1,0 +1,16 @@
+{
+  "pr_number": 3957,
+  "archive_path": "docs/history/pr-reviews/PR-3957-backlog-b-0580-enterprise-github-ruleset-management-new-layer-above-org-individu.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7B75HL",
+    "comment:PRRC_kwDOSF9kNM7B7veD",
+    "thread:PRRT_kwDOSF9kNM6CmMlc"
+  ],
+  "fetched_at": "2026-05-16T23:06:06.112Z",
+  "schema_version": "v1",
+  "commit_sha": "6f43b23520dcd602f259d105339438a30af85ca3",
+  "title": "backlog(B-0580): Enterprise GitHub ruleset management — new layer above org/individual mapping",
+  "state": "MERGED",
+  "merged_at": "2026-05-16T23:05:48Z",
+  "head_ref": "backlog/b-0580-enterprise-ruleset-management-2026-05-16"
+}

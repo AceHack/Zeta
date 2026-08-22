@@ -1,0 +1,12 @@
+{
+  "pr_number": 6382,
+  "archive_path": "docs/history/pr-reviews/PR-6382-docs-registry-one-seed-identity-tree-default-multi-chain-wallet-off-the-same-see.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-01T09:07:28.630Z",
+  "schema_version": "v1",
+  "commit_sha": "2a78bac818be46f5bff2e64e2749147b03314286",
+  "title": "docs(registry): one-seed identity tree — default multi-chain wallet off the same seed",
+  "state": "MERGED",
+  "merged_at": "2026-06-01T09:07:07Z",
+  "head_ref": "otto-cli/registry-default-wallet-same-seed-per-chain-2026-06-01"
+}

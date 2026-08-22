@@ -26,7 +26,25 @@ spec:
         persistence:
           enabled: true
           storageClassName: longhorn
-          size: 50Gi
+          # SIZE CUT, NOT A POD CUT: 50Gi -> 20Gi, one pod either way.
+          #
+          # ITS GOVERNOR DOES NOT MOVE WITH IT, and this is the one cut in this
+          # round where that is true, so it is stated rather than glossed. The
+          # tempo chart 1.18.0 ships `tempo.retention: 24h` (values.yaml:57),
+          # rendered as the compactor's `block_retention` (templates line 155),
+          # and this file leaves it at that default. Retention is therefore a
+          # TIME window that cannot see the disk: shrinking the volume does not
+          # shorten it, it means 24h of traces has less room to fit in.
+          #
+          # It is left at 24h deliberately. Cutting it to a number that fits
+          # 20Gi would need this cluster's trace span rate, which nobody here
+          # has measured -- and inventing a window and calling it a requirement
+          # is the failure this whole ladder exists to avoid. The residual risk
+          # is named instead: if 24h of traces exceeds 20Gi, the local backend
+          # fills and writes fail. Traces are the least load-bearing data in
+          # this cluster, which is why that is an acceptable thing to leave
+          # measured-later rather than guessed-now.
+          size: 20Gi
   destination:
     server: https://kubernetes.default.svc
     namespace: tempo

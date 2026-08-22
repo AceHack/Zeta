@@ -1,0 +1,12 @@
+{
+  "pr_number": 3688,
+  "archive_path": "docs/history/pr-reviews/PR-3688-shard-tick-2026-05-16t02-34z-multi-otto-duplicate-work-catch-b-0545-scope-re-ass.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-16T02:39:42.954Z",
+  "schema_version": "v1",
+  "commit_sha": "4280197058ce649cfd620ba6c2383797d9f62526",
+  "title": "shard(tick): 2026-05-16T02:34Z — multi-Otto duplicate-work catch + B-0545 scope re-assessment",
+  "state": "MERGED",
+  "merged_at": "2026-05-16T02:39:27Z",
+  "head_ref": "shard/tick-0234z-otto-cli-2026-05-16"
+}

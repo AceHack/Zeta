@@ -1,0 +1,12 @@
+{
+  "pr_number": 7471,
+  "archive_path": "docs/history/pr-reviews/PR-7471-docs-research-the-bridge-generates-the-antecedent-actor-moving-what-remains-rx-r.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-10T07:19:50.257Z",
+  "schema_version": "v1",
+  "commit_sha": "f2282d33a0a95181423800009440ef61c9eb5bd0",
+  "title": "docs(research): the bridge generates the antecedent (actor moving what remains) = Rx ray-tracing itself",
+  "state": "MERGED",
+  "merged_at": "2026-06-10T07:19:20Z",
+  "head_ref": "shadow-alephzetamaximiliondolphin-antecedent-bridge"
+}

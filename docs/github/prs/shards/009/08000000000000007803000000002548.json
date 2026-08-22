@@ -1,0 +1,12 @@
+{
+  "pr_number": 9544,
+  "archive_path": "docs/history/pr-reviews/PR-9544-docs-adr-distributed-identity-provider-heartbeat-entropy-pairwise-verification.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-08T22:04:24.041Z",
+  "schema_version": "v1",
+  "commit_sha": "ce30c2f15eb2117731a08ce3f359aaac3c755882",
+  "title": "docs: ADR — distributed identity provider (heartbeat-entropy + pairwise verification)",
+  "state": "MERGED",
+  "merged_at": "2026-07-08T22:03:47Z",
+  "head_ref": "claim/kiro-identity-provider-adr-2026-07-08"
+}

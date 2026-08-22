@@ -1,0 +1,12 @@
+{
+  "pr_number": 5802,
+  "archive_path": "docs/history/pr-reviews/PR-5802-feat-world-hierarchy-add-voteordering-to-open-questions.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-28T22:40:54.820Z",
+  "schema_version": "v1",
+  "commit_sha": "01ca2de65c17d3ff5562445c7cf02e8e98229360",
+  "title": "feat(world-hierarchy): Add voteOrdering to open questions",
+  "state": "MERGED",
+  "merged_at": "2026-05-28T22:40:35Z",
+  "head_ref": "lior/atomic-B-0915-vote-ordering"
+}

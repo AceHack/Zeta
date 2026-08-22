@@ -1,0 +1,12 @@
+{
+  "pr_number": 6829,
+  "archive_path": "docs/history/pr-reviews/PR-6829-docs-compression-as-self-bootstrapping-compiler-over-generators-dst-regen-the-su.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-07T13:52:15.684Z",
+  "schema_version": "v1",
+  "commit_sha": "e032e4db820beedc1bc2e15b84f5ccb66d030e4d",
+  "title": "docs: compression-as-self-bootstrapping-compiler-over-generators (DST regen) — the substrate Shannon lacks",
+  "state": "MERGED",
+  "merged_at": "2026-06-07T13:51:54Z",
+  "head_ref": "capture/compression-as-self-bootstrapping-compiler-over-generators"
+}

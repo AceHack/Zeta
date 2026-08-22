@@ -1,0 +1,12 @@
+{
+  "pr_number": 7184,
+  "archive_path": "docs/history/pr-reviews/PR-7184-docs-research-treaty-research-collation-screen-economy-as-constitutional-primiti.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-09T02:53:32.609Z",
+  "schema_version": "v1",
+  "commit_sha": "6c9b92555d653c099fb2b048b6cd6f53e0108c18",
+  "title": "docs(research): treaty research — collation/screen/economy as constitutional primitives, convened panel, three-fingerprint closure",
+  "state": "MERGED",
+  "merged_at": "2026-06-09T02:53:12Z",
+  "head_ref": "otto/research-treaty-collation-screen-economy-three-fingerprint-closure"
+}

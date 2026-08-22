@@ -1,0 +1,12 @@
+{
+  "pr_number": 13252,
+  "archive_path": "docs/history/pr-reviews/PR-13252-fix-k8s-hardware-the-node-never-checked-its-own-storage-substrate-refuse-at-boot.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-21T16:18:49.476Z",
+  "schema_version": "v1",
+  "commit_sha": "67961f56e8c6698cd2f132a3651fcb20120033b7",
+  "title": "fix(k8s-hardware): the node never checked its own storage substrate — refuse at boot instead of Pending at 2am",
+  "state": "MERGED",
+  "merged_at": "2026-08-21T16:18:15Z",
+  "head_ref": "fix/k8s-node-hardware-readiness"
+}

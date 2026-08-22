@@ -1,0 +1,12 @@
+{
+  "pr_number": 8371,
+  "archive_path": "docs/history/pr-reviews/PR-8371-memory-project-craik-1943-world-model-our-chip-8-isr-arrow-byte-budget-uncertain.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-16T00:11:48.422Z",
+  "schema_version": "v1",
+  "commit_sha": "db41565c71ffaaee844874d88032453d15a46ef3",
+  "title": "memory(project): Craik 1943 world-model = our CHIP-8 ISR arrow + byte-budget + uncertainty + futures; observe(hard)⊕soft→one",
+  "state": "MERGED",
+  "merged_at": "2026-06-16T00:11:19Z",
+  "head_ref": "memory/craik-world-model-our-substrate"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 8451,
+  "archive_path": "docs/history/pr-reviews/PR-8451-memory-reference-f-has-no-async-entrypoint-exe-main-sync-bridge-is-compiler-forc.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-16T05:35:03.316Z",
+  "schema_version": "v1",
+  "commit_sha": "cfd226aea1f746851a8852c12c6d8a3520606504",
+  "title": "memory(reference): F# has no async entrypoint — exe-main sync bridge is compiler-forced, not a .Wait() violation",
+  "state": "MERGED",
+  "merged_at": "2026-06-16T05:34:37Z",
+  "head_ref": "otto/ref-fsharp-no-async-entrypoint"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 10283,
+  "archive_path": "docs/history/pr-reviews/PR-10283-feat-governance-codeowners-second-party-on-the-paths-that-define-what-is-possibl.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-10T06:46:15.900Z",
+  "schema_version": "v1",
+  "commit_sha": "6da1ab74f926e28b9aba2a330b16ae8940126242",
+  "title": "feat(governance): CODEOWNERS — second party on the paths that define what is possible",
+  "state": "MERGED",
+  "merged_at": "2026-08-10T06:45:39Z",
+  "head_ref": "shadow/codeowners-second-party"
+}

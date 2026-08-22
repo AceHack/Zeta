@@ -1,0 +1,12 @@
+{
+  "pr_number": 3108,
+  "archive_path": "docs/history/pr-reviews/PR-3108-fix-tsc-guard-undefined-capture-group-in-validate-memory-parity.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-14T06:59:09.597Z",
+  "schema_version": "v1",
+  "commit_sha": "c304392dbed9ac3c84e7a8dcb7ff9b8ff094d4db",
+  "title": "fix(tsc): guard undefined capture group in validate-memory-parity",
+  "state": "MERGED",
+  "merged_at": "2026-05-14T06:58:55Z",
+  "head_ref": "fix/tsc-validate-memory-parity-undefined-group-2026-05-14"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 2151,
+  "archive_path": "docs/history/pr-reviews/PR-2151-feat-b-0191-wire-verify-branch-pretooluse-hook-into-settings-json.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-08T23:38:16.031Z",
+  "schema_version": "v1",
+  "commit_sha": "e7ca0d010419620ce942421ada3683ce26128202",
+  "title": "feat(B-0191): wire verify-branch PreToolUse hook into settings.json",
+  "state": "MERGED",
+  "merged_at": "2026-05-08T23:37:55Z",
+  "head_ref": "claim/b0191-wire-verify-branch-hook"
+}

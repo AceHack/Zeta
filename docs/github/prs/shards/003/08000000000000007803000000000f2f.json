@@ -1,0 +1,17 @@
+{
+  "pr_number": 3887,
+  "archive_path": "docs/history/pr-reviews/PR-3887-feat-b-0037-2-round-close-meta-check-template-close-tick-13-42z-shard-combined-c.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7B4zN8",
+    "comment:PRRC_kwDOSF9kNM7B4zNy",
+    "thread:PRRT_kwDOSF9kNM6Cj8lS",
+    "thread:PRRT_kwDOSF9kNM6Cj8lc"
+  ],
+  "fetched_at": "2026-05-16T13:54:09.527Z",
+  "schema_version": "v1",
+  "commit_sha": "456765753ebc9e971aeb142f5e55d7d05ccd486a",
+  "title": "feat(b-0037.2): round-close meta-check template + close + tick 13:42Z shard (combined co-commit)",
+  "state": "MERGED",
+  "merged_at": "2026-05-16T13:53:53Z",
+  "head_ref": "otto-cli-tick-2026-05-16-1342z"
+}

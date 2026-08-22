@@ -1,0 +1,12 @@
+{
+  "pr_number": 4812,
+  "archive_path": "docs/history/pr-reviews/PR-4812-shard-2026-05-24-0240z-9th-dotgit-saturation-anchor-33-stuck-procs-94-from-02-09.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-24T04:18:17.614Z",
+  "schema_version": "v1",
+  "commit_sha": "496549d387e5b51a4f22158fb0a59298865a0b35",
+  "title": "shard(2026-05-24/0240Z): 9th dotgit-saturation anchor — 33 stuck procs, -94% from 02:09Z peak",
+  "state": "MERGED",
+  "merged_at": "2026-05-24T04:18:01Z",
+  "head_ref": "otto-cli/dotgit-9th-anchor-descent-0240z"
+}

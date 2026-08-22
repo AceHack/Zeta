@@ -1,0 +1,12 @@
+{
+  "pr_number": 2343,
+  "archive_path": "docs/history/pr-reviews/PR-2343-chore-b-0366-1-close-backlog-item-toffoli-gate-already-merged-in-2333.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-09T20:45:26.185Z",
+  "schema_version": "v1",
+  "commit_sha": "5e1bb78efbd6804767d74579718772d49b19e1bb",
+  "title": "chore(B-0366.1): close backlog item — Toffoli gate already merged in #2333",
+  "state": "MERGED",
+  "merged_at": "2026-05-09T20:45:13Z",
+  "head_ref": "fix/b0366.1-toffoli-gate-close-backlog-item"
+}

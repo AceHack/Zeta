@@ -1,0 +1,12 @@
+{
+  "pr_number": 3252,
+  "archive_path": "docs/history/pr-reviews/PR-3252-shard-tick-2119z-pr-3249-markdownlint-md032-fix-real-ci-failure.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-14T21:25:06.150Z",
+  "schema_version": "v1",
+  "commit_sha": "330392f31643321dd14f32a5a93a739d169bc0c4",
+  "title": "shard(tick): 2119Z — PR #3249 markdownlint MD032 fix (real CI failure)",
+  "state": "MERGED",
+  "merged_at": "2026-05-14T21:24:47Z",
+  "head_ref": "shard/tick-2119Z-pr3249-md032-fix-otto-cli-2026-05-14"
+}

@@ -1,0 +1,15 @@
+{
+  "pr_number": 1954,
+  "archive_path": "docs/history/pr-reviews/PR-1954-research-shadow-lesson-log-22-catches-full-40-hour-session.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_CDUm",
+    "thread:PRRT_kwDOSF9kNM6AdgKK"
+  ],
+  "fetched_at": "2026-05-07T22:11:19.094Z",
+  "schema_version": "v1",
+  "commit_sha": "19ecb02777df82cb0e4a89f50e10c0fea1b10ec0",
+  "title": "research: shadow lesson log — 22 catches, full 40+ hour session",
+  "state": "MERGED",
+  "merged_at": "2026-05-07T22:10:58Z",
+  "head_ref": "research/shadow-log-and-session-close-2026-05-07"
+}

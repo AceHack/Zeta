@@ -1,0 +1,14 @@
+{
+  "id": "080d0030e347d010a01300083ee540e6",
+  "at": "2026-08-15T15:48:40.314Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M031RT7S087G0R002YVXZSY",
+    "type": "bug",
+    "title": "tsc pretty ANSI splits error TS so a grep-based typecheck reads green while tsc exits non-zero",
+    "slug": "tsc-pretty-ansi-splits-error-ts-so-a-grep-based-typecheck-re",
+    "priority": "P2",
+    "filename": "081M031RT7S087G0R002YVXZSY-tsc-pretty-ansi-splits-error-ts-so-a-grep-based-typecheck-re.md"
+  }
+}

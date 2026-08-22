@@ -1,0 +1,12 @@
+{
+  "pr_number": 7612,
+  "archive_path": "docs/history/pr-reviews/PR-7612-feat-core-flux-is-heat-the-speculation-budget-is-the-landauer-toll.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-11T08:59:02.427Z",
+  "schema_version": "v1",
+  "commit_sha": "76c4cd7589bd7c06b6354317646f3c721e93e148",
+  "title": "feat(core): flux IS heat — the speculation budget is the Landauer toll",
+  "state": "MERGED",
+  "merged_at": "2026-06-11T08:58:36Z",
+  "head_ref": "shadow-flux-is-heat"
+}

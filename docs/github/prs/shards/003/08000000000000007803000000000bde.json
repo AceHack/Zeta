@@ -1,0 +1,12 @@
+{
+  "pr_number": 3038,
+  "archive_path": "docs/history/pr-reviews/PR-3038-docs-backlog-b-0444-bus-claim-envelope-worktree-field-otto-desktop-s-identified-.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-13T21:50:20.749Z",
+  "schema_version": "v1",
+  "commit_sha": "ea2145b86fd7ec255f19d05d6bed64fcef801c0f",
+  "title": "docs(backlog): B-0444 — bus claim envelope worktree field (Otto-Desktop's identified follow-up gap)",
+  "state": "MERGED",
+  "merged_at": "2026-05-13T21:50:04Z",
+  "head_ref": "otto-cli-b0444-bus-claim-envelope-worktree-field-2026-05-13"
+}

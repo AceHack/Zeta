@@ -4,7 +4,7 @@ This reference documents the hand-off protocol between
 `skill-tune-up` (Aarav — the ranker) and `skill-creator` /
 `skill-improver` (the actuators) via the upstream Anthropic
 `plugin:skill-creator` eval harness. Extracted from
-`.claude/skills/skill-tune-up/SKILL.md` in round 43 to close
+`.claude/skills/skill-lifecycle/blueprints/skill-tune-up.md` in round 43 to close
 the BP-03 self-breach (the skill file was 436 lines after
 the round-42 retune; extraction shrinks it back under the
 300-line cap while preserving the protocol verbatim).
@@ -146,7 +146,7 @@ is designed to prevent.
 
 ## Rationale — why this content lives here and not in the SKILL.md body
 
-`.claude/skills/skill-tune-up/SKILL.md` was at 436 lines
+`.claude/skills/skill-lifecycle/blueprints/skill-tune-up.md` was at 436 lines
 after the round-42 retune (commit `baa423e`) — 1.45x the
 stable BP-03 300-line cap. The protocol content is
 reference material (stable, lookup-on-demand, not needed

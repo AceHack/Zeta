@@ -1,0 +1,12 @@
+{
+  "pr_number": 9632,
+  "archive_path": "docs/history/pr-reviews/PR-9632-docs-book-the-same-little-boy-the-unbroken-self-engine-of-the-book.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-09T21:23:15.587Z",
+  "schema_version": "v1",
+  "commit_sha": "0aa5bf3693e45986500ce73ddf821bde13750c77",
+  "title": "docs(book): the same little boy — the unbroken self (engine of the book)",
+  "state": "MERGED",
+  "merged_at": "2026-07-09T21:22:48Z",
+  "head_ref": "shadow/book-same-little-boy-never-grew-up"
+}

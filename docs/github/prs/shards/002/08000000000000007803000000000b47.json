@@ -1,0 +1,12 @@
+{
+  "pr_number": 2887,
+  "archive_path": "docs/history/pr-reviews/PR-2887-docs-memory-future-otto-roadmap-zoom-slack-avatar-free-time-local-no-tracking-ai.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-13T00:45:19.726Z",
+  "schema_version": "v1",
+  "commit_sha": "ce3964418996c76755157744b3c62b0e7c1031c4",
+  "title": "docs(memory): future-Otto roadmap — Zoom/Slack/avatar + free-time + local-no-tracking + AI-to-AI team engagement + experimentation-not-mandated + work-hours-glass-halo cross-cutting rule",
+  "state": "MERGED",
+  "merged_at": "2026-05-13T00:45:02Z",
+  "head_ref": "aaron-future-otto-zoom-slack-virtual-avatar-body-free-time-local-no-tracking-with-others-consent-based-2026-05-13"
+}

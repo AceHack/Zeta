@@ -1,0 +1,12 @@
+{
+  "pr_number": 10266,
+  "archive_path": "docs/history/pr-reviews/PR-10266-docs-rule-too-many-correlations-is-a-warning-not-a-confirmation-signal.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-10T00:48:23.463Z",
+  "schema_version": "v1",
+  "commit_sha": "f4ee1541f6bd7fd0c0af110228c1fba74ebe1f6a",
+  "title": "docs(rule): too many correlations is a warning, not a confirmation signal",
+  "state": "MERGED",
+  "merged_at": "2026-08-10T00:47:52Z",
+  "head_ref": "shadow/too-many-correlations-is-a-warning"
+}

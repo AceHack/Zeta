@@ -1,0 +1,25 @@
+{
+  "pr_number": 3041,
+  "archive_path": "docs/history/pr-reviews/PR-3041-docs-rules-otto-inter-surface-communication-channels-reference-card-memory.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7A-_4u",
+    "comment:PRRC_kwDOSF9kNM7A-_4z",
+    "comment:PRRC_kwDOSF9kNM7A_CDr",
+    "comment:PRRC_kwDOSF9kNM7A_CEd",
+    "comment:PRRC_kwDOSF9kNM7A_VES",
+    "comment:PRRC_kwDOSF9kNM7A_VEY",
+    "thread:PRRT_kwDOSF9kNM6B53Jn",
+    "thread:PRRT_kwDOSF9kNM6B53Jr",
+    "thread:PRRT_kwDOSF9kNM6B540d",
+    "thread:PRRT_kwDOSF9kNM6B541G",
+    "thread:PRRT_kwDOSF9kNM6B6HAA",
+    "thread:PRRT_kwDOSF9kNM6B6HAE"
+  ],
+  "fetched_at": "2026-05-13T22:32:37.198Z",
+  "schema_version": "v1",
+  "commit_sha": "401b7c9291a42ae6e448d2be156dad2a44824653",
+  "title": "docs(rules): Otto inter-surface communication channels — reference card + memory",
+  "state": "MERGED",
+  "merged_at": "2026-05-13T22:32:16Z",
+  "head_ref": "otto-multi-surface-comm-channels-reference-card-2026-05-13"
+}

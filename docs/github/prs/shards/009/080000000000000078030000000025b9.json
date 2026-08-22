@@ -1,0 +1,12 @@
+{
+  "pr_number": 9657,
+  "archive_path": "docs/history/pr-reviews/PR-9657-docs-research-keystone-never-collapse-the-uncertainty-isociety-provably-individu.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-10T04:13:28.983Z",
+  "schema_version": "v1",
+  "commit_sha": "508aca929da870cc6e12d5d8f6213e40b4630a0c",
+  "title": "docs(research): keystone — never collapse the uncertainty; ISociety provably > individual (grounded in real proofs)",
+  "state": "MERGED",
+  "merged_at": "2026-07-10T04:12:59Z",
+  "head_ref": "shadow/keystone-never-collapse-the-uncertainty"
+}

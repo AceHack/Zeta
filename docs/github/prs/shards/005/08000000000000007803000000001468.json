@@ -1,0 +1,17 @@
+{
+  "pr_number": 5224,
+  "archive_path": "docs/history/pr-reviews/PR-5224-fix-postmerge-5221-b-0817-4-copilot-findings-link-contradiction-mode-conflict-k8.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7FBax_",
+    "comment:PRRC_kwDOSF9kNM7FBayv",
+    "thread:PRRT_kwDOSF9kNM6E3dEG",
+    "thread:PRRT_kwDOSF9kNM6E3dEr"
+  ],
+  "fetched_at": "2026-05-26T17:06:43.380Z",
+  "schema_version": "v1",
+  "commit_sha": "9f2f0a4de966d43f09077409e91c6be9d5043f87",
+  "title": "fix(postmerge-5221 B-0817): 4 Copilot findings — link/contradiction/mode-conflict/K8s ObjectMeta",
+  "state": "MERGED",
+  "merged_at": "2026-05-26T17:06:21Z",
+  "head_ref": "otto-cli/postmerge-5221-fixfwd-4-copilot-2026-05-26"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 9322,
+  "archive_path": "docs/history/pr-reviews/PR-9322-feat-discovery-adopt-beacon-auth-at-the-live-node-windowed-migration-shadow.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-03T15:43:33.317Z",
+  "schema_version": "v1",
+  "commit_sha": "74f7f9a291b896c0f8fe7a9909b1c0adafd93f49",
+  "title": "feat(discovery): adopt beacon auth at the live node — windowed migration (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-03T15:43:11Z",
+  "head_ref": "otto/beacon-auth-adoption-windowed"
+}

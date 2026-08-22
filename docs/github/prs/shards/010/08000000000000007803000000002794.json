@@ -1,0 +1,12 @@
+{
+  "pr_number": 10132,
+  "archive_path": "docs/history/pr-reviews/PR-10132-bug-usb-file-x86-64-iso-first-boot-mise-install-regression-p1.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-07T19:21:38.980Z",
+  "schema_version": "v1",
+  "commit_sha": "efd61b11052ab64312677e321304ba15fd9a3f2c",
+  "title": "bug(usb): file x86_64 ISO first-boot mise-install regression (P1)",
+  "state": "MERGED",
+  "merged_at": "2026-08-07T19:21:07Z",
+  "head_ref": "shadow/file-x86-iso-firstboot-regression"
+}

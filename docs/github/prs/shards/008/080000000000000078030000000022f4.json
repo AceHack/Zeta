@@ -1,0 +1,12 @@
+{
+  "pr_number": 8948,
+  "archive_path": "docs/history/pr-reviews/PR-8948-chore-post-8920-wire-codegen-oracles-close-b-0950-unstick-b-0951.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-21T12:46:10.524Z",
+  "schema_version": "v1",
+  "commit_sha": "a0be6a64aa586952249cf022180139d65ec8e21e",
+  "title": "chore(post-8920): wire codegen oracles, close B-0950, unstick B-0951",
+  "state": "MERGED",
+  "merged_at": "2026-06-21T12:45:35Z",
+  "head_ref": "chore/post-8920-oracles-backlog-ace-docs"
+}

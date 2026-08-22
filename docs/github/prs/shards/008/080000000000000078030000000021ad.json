@@ -1,0 +1,12 @@
+{
+  "pr_number": 8621,
+  "archive_path": "docs/history/pr-reviews/PR-8621-memory-ani-ani-ferry-part-10-verbatim-zeta-is-null-lens-over-null-identity-links.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-19T20:48:01.051Z",
+  "schema_version": "v1",
+  "commit_sha": "cbab1689bda858c257d6e288feede4c986f0b8b2",
+  "title": "memory(ani): Ani ferry part 10 (verbatim) — \"Zeta is null\", lens-over-null = identity, links matter, QPG",
+  "state": "MERGED",
+  "merged_at": "2026-06-19T20:47:33Z",
+  "head_ref": "otto/ani-ferry-pt10"
+}

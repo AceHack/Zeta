@@ -1,0 +1,12 @@
+{
+  "pr_number": 7457,
+  "archive_path": "docs/history/pr-reviews/PR-7457-feat-sets-shadow-sets-cantor-cantor-set-family-the-alephz-aleph-zeta-dated-coinc.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-10T05:18:00.340Z",
+  "schema_version": "v1",
+  "commit_sha": "26fd3cf83b5577c7179e69e8249df735d7804674",
+  "title": "feat(sets)+shadow: sets/cantor (Cantor set family) + the alephz=aleph-zeta dated coincidence (saved) + org self-correction",
+  "state": "MERGED",
+  "merged_at": "2026-06-10T05:17:35Z",
+  "head_ref": "shadow-sets-cantor"
+}

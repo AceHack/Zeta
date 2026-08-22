@@ -1,0 +1,12 @@
+{
+  "pr_number": 6839,
+  "archive_path": "docs/history/pr-reviews/PR-6839-feat-casstore-per-row-compare-and-swap-over-the-content-store-lock-free-runtime-.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-07T14:34:02.970Z",
+  "schema_version": "v1",
+  "commit_sha": "c43b8238074b95ffc3653c4e3d0b54f0bcd5af9c",
+  "title": "feat(CasStore): per-row compare-and-swap over the content store — lock-free runtime coordination",
+  "state": "MERGED",
+  "merged_at": "2026-06-07T14:33:43Z",
+  "head_ref": "feat/cas-store-per-row-compare-and-swap"
+}

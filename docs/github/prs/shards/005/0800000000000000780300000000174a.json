@@ -1,0 +1,25 @@
+{
+  "pr_number": 5962,
+  "archive_path": "docs/history/pr-reviews/PR-5962-docs-decisions-add-adr-on-event-sourced-workflow-friction-observability.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7GF03G",
+    "comment:PRRC_kwDOSF9kNM7GF0t-",
+    "comment:PRRC_kwDOSF9kNM7GF0w5",
+    "comment:PRRC_kwDOSF9kNM7GF0z4",
+    "comment:PRRC_kwDOSF9kNM7GFW-n",
+    "comment:PRRC_kwDOSF9kNM7GFW_e",
+    "comment:PRRC_kwDOSF9kNM7GFW_z",
+    "comment:PRRC_kwDOSF9kNM7GFXAB",
+    "thread:PRRT_kwDOSF9kNM6Foj01",
+    "thread:PRRT_kwDOSF9kNM6Foj0A",
+    "thread:PRRT_kwDOSF9kNM6Foj0l",
+    "thread:PRRT_kwDOSF9kNM6Foj1C"
+  ],
+  "fetched_at": "2026-05-29T09:28:34.842Z",
+  "schema_version": "v1",
+  "commit_sha": "13ef4f07a8c32d5db14455830d97eb4ca7fa3961",
+  "title": "docs(decisions): Add ADR on event-sourced workflow friction observability",
+  "state": "MERGED",
+  "merged_at": "2026-05-29T09:28:14Z",
+  "head_ref": "lior/adr-event-sourced-observability"
+}

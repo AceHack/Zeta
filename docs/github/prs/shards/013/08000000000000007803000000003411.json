@@ -1,0 +1,12 @@
+{
+  "pr_number": 13329,
+  "archive_path": "docs/history/pr-reviews/PR-13329-feat-cluster-test-cilium-in-the-kind-lane-and-say-what-a-one-node-lane-can-and-c.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-21T21:27:12.402Z",
+  "schema_version": "v1",
+  "commit_sha": "51e44678a8731c01a85f2f72535a54bfb318f233",
+  "title": "feat(cluster): test Cilium in the kind lane — and say what a one-node lane can and cannot prove",
+  "state": "MERGED",
+  "merged_at": "2026-08-21T21:25:17Z",
+  "head_ref": "feat/test-cilium-in-kind"
+}

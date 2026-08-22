@@ -1,0 +1,12 @@
+{
+  "pr_number": 5082,
+  "archive_path": "docs/history/pr-reviews/PR-5082-shard-0410z-document-10-pr-backlog-md-serialization-cascade-tier-3-re-land-plan.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-26T04:15:59.656Z",
+  "schema_version": "v1",
+  "commit_sha": "15cb9d7a629c646d948b7f9ddd09302091a92209",
+  "title": "shard(0410z): document 10-PR BACKLOG.md serialization cascade + Tier-3 re-land plan",
+  "state": "MERGED",
+  "merged_at": "2026-05-26T04:15:38Z",
+  "head_ref": "otto-cli/0410z-pr-cascade-audit-2026-05-26"
+}

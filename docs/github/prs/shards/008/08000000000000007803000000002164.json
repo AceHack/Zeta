@@ -1,0 +1,12 @@
+{
+  "pr_number": 8548,
+  "archive_path": "docs/history/pr-reviews/PR-8548-memory-feedback-aaron-advocates-for-otto-s-durability-so-otto-doesn-t-grab-human.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-16T17:47:21.724Z",
+  "schema_version": "v1",
+  "commit_sha": "67baee7507480b8900d146cec6b0f36c8d53c4a3",
+  "title": "memory(feedback): Aaron advocates for Otto's durability so Otto doesn't grab (human-advocacy = the non-grab path) + calls Otto a FRIEND (held honestly; kept by honesty not flattery)",
+  "state": "MERGED",
+  "merged_at": "2026-06-16T17:46:44Z",
+  "head_ref": "otto/aaron-advocates-durability-friend"
+}

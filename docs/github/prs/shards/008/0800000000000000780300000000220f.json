@@ -1,0 +1,12 @@
+{
+  "pr_number": 8719,
+  "archive_path": "docs/history/pr-reviews/PR-8719-feat-core-merkle-inclusion-proof-api-4-lang-golden-vector-treaty-f-leg-row-4-fol.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-20T06:54:19.152Z",
+  "schema_version": "v1",
+  "commit_sha": "0dd3cc6ee41c4d7c15ba2ce59add58307e06dba7",
+  "title": "feat(core): Merkle inclusion-proof API + 4-lang golden-vector treaty (F# leg) — row 4 follow-up",
+  "state": "MERGED",
+  "merged_at": "2026-06-20T06:53:56Z",
+  "head_ref": "otto/merkle-proof-4lang-byte-lock"
+}

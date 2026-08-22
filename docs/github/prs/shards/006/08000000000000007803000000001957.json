@@ -1,0 +1,12 @@
+{
+  "pr_number": 6487,
+  "archive_path": "docs/history/pr-reviews/PR-6487-docs-registry-wish-list-static-code-contracts-compile-time-correctness-every-lan.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-01T22:15:04.531Z",
+  "schema_version": "v1",
+  "commit_sha": "210f151dbec160ab02bb7dbeb606e94ea15fcd32",
+  "title": "docs(registry): wish-list — static code contracts / compile-time correctness (every language)",
+  "state": "MERGED",
+  "merged_at": "2026-06-01T22:14:43Z",
+  "head_ref": "otto-cli/registry-wishlist-static-code-contracts-2026-06-01"
+}

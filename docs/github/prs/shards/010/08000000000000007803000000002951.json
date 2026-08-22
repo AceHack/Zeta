@@ -1,0 +1,12 @@
+{
+  "pr_number": 10577,
+  "archive_path": "docs/history/pr-reviews/PR-10577-fix-heartbeat-the-archive-backfill-step-never-ran-unknown-batch-flag-pipe-masked.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-14T14:48:05.958Z",
+  "schema_version": "v1",
+  "commit_sha": "d433b9bc89d5455012d7ed6e0cd1f205caf0509e",
+  "title": "fix(heartbeat): the archive backfill step never ran — unknown --batch flag, pipe-masked exit, and a --since matching nothing",
+  "state": "MERGED",
+  "merged_at": "2026-08-14T14:47:33Z",
+  "head_ref": "fix/archive-step-vacuity"
+}

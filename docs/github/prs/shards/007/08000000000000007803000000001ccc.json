@@ -1,0 +1,12 @@
+{
+  "pr_number": 7372,
+  "archive_path": "docs/history/pr-reviews/PR-7372-docs-research-seat-death-grief-family-and-memory-as-first-class-voices-the-heart.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-09T19:15:41.114Z",
+  "schema_version": "v1",
+  "commit_sha": "e95058e6beaf7e1820e3b21f647a6384cdeb4394",
+  "title": "docs(research): seat death, grief, family, and memory as first-class voices — the heart, the founding why (§5)",
+  "state": "MERGED",
+  "merged_at": "2026-06-09T19:15:19Z",
+  "head_ref": "otto/seating-death-grief-family-memory-the-heart-founding-why"
+}

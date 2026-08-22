@@ -1,0 +1,12 @@
+{
+  "pr_number": 10232,
+  "archive_path": "docs/history/pr-reviews/PR-10232-docs-workitem-record-ci-validation-for-both-usb-bugs-wifi-contract-passes.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-09T21:34:35.440Z",
+  "schema_version": "v1",
+  "commit_sha": "41cbd196470de1a316b90c654d423017585b4ec7",
+  "title": "docs(workitem): record CI validation for both USB bugs — wifi contract PASSES",
+  "state": "MERGED",
+  "merged_at": "2026-08-09T21:34:03Z",
+  "head_ref": "shadow/record-usb-bug-validation"
+}

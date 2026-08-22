@@ -1,0 +1,12 @@
+{
+  "pr_number": 2213,
+  "archive_path": "docs/history/pr-reviews/PR-2213-docs-b-0341-define-minimal-bootstrap-seed-manifest.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-09T07:00:40.179Z",
+  "schema_version": "v1",
+  "commit_sha": "8948e0ee4dd4916c7ea032c6edbf78c43bed8f61",
+  "title": "docs(B-0341): define minimal bootstrap seed manifest",
+  "state": "MERGED",
+  "merged_at": "2026-05-09T07:00:22Z",
+  "head_ref": "fix/b0341-seed-manifest"
+}

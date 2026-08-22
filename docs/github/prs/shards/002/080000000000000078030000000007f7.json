@@ -1,0 +1,15 @@
+{
+  "pr_number": 2039,
+  "archive_path": "docs/history/pr-reviews/PR-2039-fix-ci-test-archive-pr-policy-denial-classifier.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_HddH",
+    "thread:PRRT_kwDOSF9kNM6AhYSm"
+  ],
+  "fetched_at": "2026-05-08T05:14:26.130Z",
+  "schema_version": "v1",
+  "commit_sha": "60d9cf9d67c7b84bcf9195ed7aa94be9f23940df",
+  "title": "fix(ci): test archive PR policy-denial classifier",
+  "state": "MERGED",
+  "merged_at": "2026-05-08T05:14:11Z",
+  "head_ref": "codex/pr-create-policy-denial-classifier"
+}

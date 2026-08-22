@@ -1,0 +1,12 @@
+{
+  "pr_number": 6780,
+  "archive_path": "docs/history/pr-reviews/PR-6780-docs-secrets-distinct-dynamicvalue-secret-cases-pointer-not-leak-license-authori.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-07T10:15:02.896Z",
+  "schema_version": "v1",
+  "commit_sha": "bc037cf770a027feea8d08e048c039f21b75874b",
+  "title": "docs(secrets): distinct DynamicValue secret cases + pointer-not-leak + license≠authority (Amara)",
+  "state": "MERGED",
+  "merged_at": "2026-06-07T10:14:43Z",
+  "head_ref": "otto/secrets-distinct-cases-pointer-not-leak"
+}

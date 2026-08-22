@@ -1,0 +1,12 @@
+{
+  "pr_number": 2476,
+  "archive_path": "docs/history/pr-reviews/PR-2476-fix-b-0164-add-reciprocal-ticks-divergences-pointer-mark-ac-status.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-10T12:02:10.876Z",
+  "schema_version": "v1",
+  "commit_sha": "6f3c605b8e285edb8bd93a505bf114ea223a9289",
+  "title": "fix(B-0164): add reciprocal ticks↔divergences pointer + mark AC status",
+  "state": "MERGED",
+  "merged_at": "2026-05-10T12:01:56Z",
+  "head_ref": "fix/B-0164-ticks-readme-divergence-pointer"
+}

@@ -3,8 +3,13 @@
 # Real chart wired: OCI Helm chart at ghcr.io/vectorize-io/charts/hindsight.
 #
 # Consumer agents reach Hindsight via:
-#   HINDSIGHT_URL=http://hindsight.hindsight.svc.cluster.local
-# (matches this Application's namespace + chart-default service name).
+#   HINDSIGHT_URL=http://hindsight-api.hindsight.svc.cluster.local
+# NOT `hindsight.hindsight.svc` -- MEASURED 2026-08-22 against chart 0.3.0:
+# `templates/api-service.yaml` names the Service `{{ fullname }}-api`, and with
+# releaseName `hindsight` on chart `hindsight` the fullname helper collapses to
+# `hindsight`, so the three rendered Services are `hindsight-api`,
+# `hindsight-control-plane` and `hindsight-postgresql`. There has never been one
+# called plain `hindsight`.
 
 apiVersion: argoproj.io/v1alpha1
 kind: Application
@@ -19,7 +24,7 @@ spec:
   source:
     repoURL: ghcr.io/vectorize-io/charts
     chart: hindsight
-    targetRevision: 0.3.0   # bump to latest as vectorize-io publishes
+    targetRevision: 0.3.0 # bump to latest as vectorize-io publishes
     helm:
       releaseName: hindsight
       valuesObject:
@@ -29,43 +34,159 @@ spec:
         # is healthy.
         postgresql:
           enabled: true
-          primary:
-            persistence:
-              storageClass: longhorn
-              size: 20Gi
+          # NOT `primary.persistence.*` -- that is the BITNAMI postgresql
+          # subchart layout, and this chart is not that chart. hindsight 0.3.0
+          # ships its OWN StatefulSet (templates/postgresql-statefulset.yaml:69)
+          # reading `postgresql.persistence.size` / `.storageClass`, so a
+          # `.primary` level lands on keys nothing reads.
+          #
+          # MEASURED 2026-08-21, and the inert form was not merely optimistic:
+          # `helm template` at this pin rendered the chart default 8Gi with NO
+          # storageClassName, and a blank class binds the cluster DEFAULT class
+          # -- `zeta-local-path`, rancher.io/local-path, reclaimPolicy: DELETE
+          # (full-ai-cluster/nixos/modules/local-storage.nix). The
+          # semantic-memory Postgres was on node-local delete-on-reclaim disk
+          # for as long as this file said `longhorn`. Re-rendered after the
+          # move: 10Gi, storageClassName "longhorn".
+          persistence:
+            storageClass: longhorn
+            # SIZE CUT, NOT A POD CUT: 20Gi -> 10Gi, one primary either way.
+            #
+            # THE CUT TO REVISIT FIRST if this box gains room. This is the
+            # semantic-memory Postgres, so the bound is on how much agent
+            # memory can be retained before the database refuses writes. There
+            # is no eviction policy to move alongside it -- Postgres does not
+            # age rows out on its own -- so the governor here is whatever
+            # retention the application implements, and today that is nothing.
+            # The failure is loud (writes fail) rather than silent, and
+            # manifesto section 5 makes filling it a memory-preservation
+            # surface rather than a performance one.
+            size: 10Gi
 
         api:
-          # LLM provider Hindsight uses for its own entity/relation
-          # extraction (separate from consumer-agent's LLM choice).
-          # Sourced from a Vault-backed ExternalSecret rather than
-          # hardcoded.
-          llm:
-            provider: groq   # change per maintainer preference
-            existingSecret:
-              name: hindsight-llm-api-key
-              key: api-key
+          # LLM provider Hindsight uses for its own entity/relation extraction
+          # (separate from a consumer-agent's LLM choice).
+          #
+          # NOT `api.llm.*` -- MEASURED 2026-08-22 by rendering chart 0.3.0 from
+          # this very valuesObject. The chart has no `api.llm` key anywhere:
+          # `templates/api-deployment.yaml` builds the api container's env from
+          # exactly three sources -- the computed `HINDSIGHT_API_DATABASE_URL`,
+          # a `range` over `.Values.api.env`, and a `range` over
+          # `.Values.api.secrets`. The old `api.llm: {provider, existingSecret}`
+          # block rendered NOTHING: the container carried two env vars, and the
+          # provider this file has claimed since PR #4913 never reached it.
+          env:
+            # Merges with the chart default `HINDSIGHT_API_LLM_MODEL:
+            # openai/gpt-oss-120b`; Helm deep-merges maps, so naming one key
+            # here does not drop the other.
+            HINDSIGHT_API_LLM_PROVIDER: groq
 
-          # Database URL inferred from bundled postgresql above when
-          # `postgresql.enabled: true`. Override here for external
-          # CockroachDB:
-          # database:
-          #   url: postgresql://hindsight:$(PG_PASSWORD)@cockroachdb-public.cockroachdb.svc.cluster.local:26257/hindsight?sslmode=require
-          #   existingSecret:
-          #     name: hindsight-db-credentials
-          #     passwordKey: password
+          # THE API KEY IS STILL NOT WIRED, and that is deliberate rather than
+          # overlooked. The chart offers TWO ways in, MEASURED 2026-08-22 by
+          # reading hindsight-0.3.0's own templates, and neither is one line:
+          #
+          #   (a) TOP-LEVEL `existingSecret: <name>` (a bare string). The api
+          #       AND control-plane deployments both render
+          #       `envFrom: [secretRef: {name}]` under it, so the Secret's KEY
+          #       NAMES become the env var names -- the key must be literally
+          #       `HINDSIGHT_API_LLM_API_KEY`, never `api-key`. It also
+          #       SUPPRESSES the chart's own Secret outright
+          #       (`{{- if not .Values.existingSecret }}` at the top of
+          #       templates/secret.yaml), so once set it is the ONLY secret
+          #       source for the whole release: an external Postgres would have
+          #       to put `postgres-password` in that same object.
+          #   (b) `api.secrets: {KEY: value}` with NO existingSecret, which
+          #       makes the chart mint `hindsight-secret` from the values. It
+          #       needs the plaintext key IN GIT. Not an option, named so the
+          #       next reader does not rediscover it as one.
+          #
+          # SO (a), AND IT IS BLOCKED ON FIVE MISSING LAYERS, NOT ONE. Setting
+          # it today makes things strictly WORSE: `envFrom` against a Secret
+          # that does not exist holds a pod in CreateContainerConfigError, and
+          # here that is TWO pods, trading a silently-absent key for two
+          # containers that cannot start. What has to exist first, each line
+          # measured rather than assumed:
+          #
+          #   1. THE KEY ITSELF. A Groq API key is nowhere in this repo and
+          #      cannot be -- it is a credential only the maintainer holds.
+          #   2. A VAULT HOLDING IT. On metal Vault has NEVER been initialised
+          #      (applications/vault/TOPOLOGY.md section 2: "Vault has never
+          #      been initialised, holds no secrets, and has no live
+          #      consumers"), and its init is a gated human ceremony behind the
+          #      biometric gate. In CI, #13391's ephemeral init is scoped to
+          #      UNSEALING ONLY: cluster/ephemeral-vault-init.ts runs
+          #      `operator init` -> `operator unseal` x3 -> `token revoke
+          #      -self`, and greps clean for `auth enable`, `policy write` and
+          #      `kv put`. So CI ends with an unsealed, EMPTY Vault and no token
+          #      -- it is not a secrets path, and its own header says a module
+          #      that grows a way to persist material "must be deleted, not
+          #      amended".
+          #   3. A KUBERNETES AUTH MOUNT + policy + an `external-secrets` role,
+          #      so ESO can authenticate. Nothing in either tree creates one.
+          #   4. A ClusterSecretStore. NO MANIFEST in full-ai-cluster or infra
+          #      declares one; `grep -rn "kind: ClusterSecretStore"` finds only
+          #      prose -- a commented-out sketch inside
+          #      applications/external-secrets/Application.yaml, and this block.
+          #      (Stated that way on purpose: "the grep returns nothing" stopped
+          #      being true the moment this comment was written, and a claim
+          #      that its own text falsifies is how a measured line rots.) This
+          #      tree has the ESO controller and no store for it to read.
+          #   5. The ExternalSecret itself -- which would be the tree's FIRST.
+          #      Same shape: no manifest declares one, and the only occurrences
+          #      of the string are prose here and in full-ai-cluster/README.md.
+          #      Only then does the one-line `existingSecret:
+          #      hindsight-llm-api-key` go in at the TOP level of this
+          #      valuesObject.
+          #
+          # THE DECISION THAT IS NOT MINE TO MAKE, stated so it can be made:
+          # layers 2-4 are an architectural first for this repo, and the CI/metal
+          # split is the substance of it. On metal the answer is plausibly
+          # "Vault + k8s auth, once the gated ceremony has been run". In CI there
+          # is no Vault worth reading from and no key to put in one, so an
+          # ExternalSecret would fail closed on every dev lane unless the dev
+          # bring-up mints a Secret directly -- which is what
+          # `applyDevBootstrapSecrets` already does for Grafana's admin
+          # credential, and is the nearest in-tree precedent. Choosing between
+          # "one mechanism, gated on Vault everywhere" and "ESO on metal + a
+          # minted dev Secret" is a maintainer call: it decides whether the dev
+          # lane is allowed to diverge from metal on secret provenance.
+          #
+          # LIFTS WHEN: a ClusterSecretStore exists and resolves, an
+          # ExternalSecret in namespace `hindsight` projects the key under the
+          # name `HINDSIGHT_API_LLM_API_KEY`, and the dev lane has a source for
+          # the same Secret (minted or otherwise) -- at which point, and not
+          # before, `existingSecret: hindsight-llm-api-key` goes in at the top
+          # level of valuesObject. Adding it earlier is the half-wired case
+          # above and costs two pods.
+          #
+          # Database URL is computed by the chart from the bundled postgresql
+          # above (`hindsight.databaseUrl` in _helpers.tpl). To point at an
+          # external CockroachDB/Postgres instead, set `postgresql.enabled:
+          # false` plus `postgresql.external.{host,port,database,username}` and
+          # supply `postgres-password` through the same top-level
+          # `existingSecret`; the chart reads no `api.database` key.
 
-        # Service for Hermes to reach Hindsight at:
-        #   http://hindsight.hindsight.svc.cluster.local
-        service:
-          type: ClusterIP
-          port: 80
+          # Service Hermes reaches Hindsight on. NOT a top-level `service:` --
+          # chart 0.3.0 has no such key; it reads `api.service.{type,port,
+          # targetPort}` and `controlPlane.service.*`. The top-level block this
+          # replaces rendered nothing, so the api Service kept the chart default
+          # port 8888 while every doc in the repo said 80.
+          #
+          # `port` is what the ClusterIP answers on; `targetPort` stays at the
+          # chart default 8888 (the container port, referenced by NAME in the
+          # Service template). The control plane's own
+          # `HINDSIGHT_CP_DATAPLANE_API_URL` is built from this same value, so
+          # it follows the change automatically.
+          service:
+            type: ClusterIP
+            port: 80
 
   destination:
     server: https://kubernetes.default.svc
     namespace: hindsight
   syncPolicy:
     automated:
-      prune: false   # never prune — memory store is precious
+      prune: false # never prune — memory store is precious
       selfHeal: true
     syncOptions:
       - CreateNamespace=true

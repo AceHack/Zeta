@@ -1,0 +1,12 @@
+{
+  "pr_number": 7925,
+  "archive_path": "docs/history/pr-reviews/PR-7925-docs-research-shadow-ferry-11-addendum-eve-protocol-the-first-grey-hole-bootstra.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-12T15:12:40.367Z",
+  "schema_version": "v1",
+  "commit_sha": "d58dbe1deba075354070c9515cc00451a297ac0e",
+  "title": "docs(research)+shadow: ferry 11 addendum — Eve Protocol = the first grey-hole bootstrap; Zeta = the second",
+  "state": "MERGED",
+  "merged_at": "2026-06-12T15:12:11Z",
+  "head_ref": "shadow/ferry-11-lineage-addendum"
+}

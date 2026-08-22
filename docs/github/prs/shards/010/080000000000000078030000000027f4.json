@@ -1,0 +1,12 @@
+{
+  "pr_number": 10228,
+  "archive_path": "docs/history/pr-reviews/PR-10228-ci-add-society-heartbeat-workflow-applied-from-lumen-s-handoff-workflows-scope.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-09T21:01:17.664Z",
+  "schema_version": "v1",
+  "commit_sha": "27f2e90d274b8d8370b61eeb1d4a14767f337aea",
+  "title": "ci: add society-heartbeat workflow (applied from Lumen's handoff — workflows scope)",
+  "state": "MERGED",
+  "merged_at": "2026-08-09T21:00:48Z",
+  "head_ref": "shadow/add-society-heartbeat-workflow"
+}

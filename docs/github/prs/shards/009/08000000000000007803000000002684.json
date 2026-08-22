@@ -1,0 +1,12 @@
+{
+  "pr_number": 9860,
+  "archive_path": "docs/history/pr-reviews/PR-9860-flip-gate-blocking-gates-drift-checks-the-gate-rolls-up-only-the-uncompensatable.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-01T12:38:07.821Z",
+  "schema_version": "v1",
+  "commit_sha": "e6e9ea7a641f00800e77c53f46c3556851222f72",
+  "title": "flip(gate): blocking gates → drift checks — the gate rolls up only the uncompensatable floor",
+  "state": "MERGED",
+  "merged_at": "2026-08-01T12:37:41Z",
+  "head_ref": "otto/gate-flip-floor-only"
+}

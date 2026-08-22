@@ -1,0 +1,12 @@
+{
+  "pr_number": 7787,
+  "archive_path": "docs/history/pr-reviews/PR-7787-fix-backlog-grandfather-b-1033-legacy-row.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-11T20:54:18.795Z",
+  "schema_version": "v1",
+  "commit_sha": "c4114a8d8b242d50eeadf54843fdec73783a98e8",
+  "title": "fix(backlog): grandfather B-1033 legacy row",
+  "state": "MERGED",
+  "merged_at": "2026-06-11T20:53:55Z",
+  "head_ref": "codex/fix-backlog-b1033-freeze"
+}

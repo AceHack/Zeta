@@ -1,0 +1,12 @@
+{
+  "pr_number": 3269,
+  "archive_path": "docs/history/pr-reviews/PR-3269-fix-shard-2139z-replace-broken-relative-markdown-links-with-backtick-paths.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-14T21:50:53.737Z",
+  "schema_version": "v1",
+  "commit_sha": "29983a5d12ec3466478728bcefdd8195a7bb60ee",
+  "title": "fix(shard-2139Z): replace broken relative markdown links with backtick paths",
+  "state": "MERGED",
+  "merged_at": "2026-05-14T21:50:38Z",
+  "head_ref": "fix/shard-2139Z-broken-relative-links-otto-cli-2026-05-14"
+}

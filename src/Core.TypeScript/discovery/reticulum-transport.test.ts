@@ -9,7 +9,11 @@ import {
   type PacketTransport,
   type PathTable,
   type Announce,
+  type AnnounceAuthConfig,
+  type AnnounceSig,
 } from "./reticulum-transport";
+import { generateKeypair, keyId } from "../ace/signing.ts";
+import { signAnnounceDetached, verifyAnnounceDetached, type AnnounceTrust } from "./reticulum-announce-auth.ts";
 import { createLlmtvNode, type Scheduler, type LlmtvNodeConfig } from "./llmtv-node";
 import type { SourceMind } from "./llmtv-broadcast";
 import { renderLlmtvGrid } from "../darkhall-ui/darkhall-tv";
@@ -40,6 +44,37 @@ const clock = () => {
   return { now: () => t, set: (v: number) => (t = v), advance: (d: number) => (t += d) };
 };
 
+// ── The announce-authenticity wiring, as a deployment does it once at startup ──────────
+//
+// `announceAuth` is a REQUIRED field (RESIDUAL 1, 2026-08-22): there is no silent default, so
+// every construction site below states its mode. The convergence suites then run over BOTH
+// modes, which is the migration's central claim made falsifiable — **authentication changes
+// nothing for honest traffic**. A gate that quietly broke relay or multi-hop convergence would
+// pass every forgery test and still be undeployable, and "we had to turn it off to ship" is how
+// a security control becomes decoration.
+
+const MODES = ["off", "required"] as const;
+type Mode = (typeof MODES)[number];
+
+/// One Ed25519 key per zid plus the shared trust store every node verifies against. `sign` and
+/// `verify` are INJECTED into the transport (noninterference §13) — the transport holds no key
+/// material and no trust store, so this fixture is the whole authority surface.
+function keyring(zids: readonly string[]) {
+  const keys = new Map(zids.map((z) => [z, generateKeypair()] as const));
+  const trust: AnnounceTrust = new Map(
+    [...keys].map(([zid, kp]) => [keyId(kp.publicSpkiB64), { public_key: kp.publicSpkiB64, zid }] as const),
+  );
+  const authFor = (zid: string, mode: Mode): AnnounceAuthConfig =>
+    mode === "off"
+      ? { mode: "off" }
+      : {
+          mode: "required",
+          sign: (a: Announce) => signAnnounceDetached(a, keys.get(zid)!.privatePem),
+          verify: (a: Announce, asig: AnnounceSig | undefined) => verifyAnnounceDetached(a, asig, trust).ok,
+        };
+  return { authFor, trust, keys };
+}
+
 describe("destinationHash — self-certifying address from the ZetaId", () => {
   it("is deterministic (same zid → same dest) and 16 bytes of hex", () => {
     expect(destinationHash("zid-alexa")).toBe(destinationHash("zid-alexa"));
@@ -49,18 +84,23 @@ describe("destinationHash — self-certifying address from the ZetaId", () => {
 });
 
 describe("observeAnnounce — best-hop path fold (idempotent, order-independent)", () => {
-  const a0: Announce = { dest: "d1", zid: "z1", hops: 0, id: "a" };
-  const a2: Announce = { dest: "d1", zid: "z1", hops: 2, id: "b" };
+  // These used the unbound literals `dest: "d1", zid: "z1"`, which only folded because the
+  // address-integrity guard carried a `dest.length === 32` exemption. That exemption was an
+  // attacker-reachable bypass (any dest of another length skipped the check), so it is gone
+  // and the fixtures now use a real bound pair. The fold properties under test are unchanged.
+  const d1 = destinationHash("z1");
+  const a0: Announce = { dest: d1, zid: "z1", hops: 0, id: "a" };
+  const a2: Announce = { dest: d1, zid: "z1", hops: 2, id: "b" };
 
   it("keeps the lowest hop count; a worse path only refreshes liveness", () => {
     let t: PathTable = new Map();
     t = observeAnnounce(t, a2, 100); // learn at 2 hops
-    expect(t.get("d1")!.hops).toBe(2);
+    expect(t.get(d1)!.hops).toBe(2);
     t = observeAnnounce(t, a0, 200); // better: 0 hops
-    expect(t.get("d1")!.hops).toBe(0);
+    expect(t.get(d1)!.hops).toBe(0);
     t = observeAnnounce(t, a2, 300); // worse — hop stays 0 but liveness refreshes
-    expect(t.get("d1")!.hops).toBe(0);
-    expect(t.get("d1")!.lastSeenMs).toBe(300);
+    expect(t.get(d1)!.hops).toBe(0);
+    expect(t.get(d1)!.lastSeenMs).toBe(300);
   });
 
   it("expirePaths drops routes unheard past the TTL", () => {
@@ -81,12 +121,14 @@ describe("decode — guarded; foreign / malformed input returns null", () => {
   });
 });
 
-describe("two nodes — announces build each other's path tables", () => {
+for (const mode of MODES)
+  describe(`two nodes — announces build each other's path tables [${mode}]`, () => {
   it("each learns the other's destination at 0 hops (direct)", () => {
     const mesh = createFakePacketMesh();
     const c = clock();
-    const ra = createReticulumTransport({ zid: "zid-a" }, mesh.attach("a", ["b"]), c);
-    const rb = createReticulumTransport({ zid: "zid-b" }, mesh.attach("b", ["a"]), c);
+    const { authFor } = keyring(["zid-a", "zid-b"]);
+    const ra = createReticulumTransport({ zid: "zid-a", announceAuth: authFor("zid-a", mode) }, mesh.attach("a", ["b"]), c);
+    const rb = createReticulumTransport({ zid: "zid-b", announceAuth: authFor("zid-b", mode) }, mesh.attach("b", ["a"]), c);
     ra.onMessage(() => {}); // register so delivery path runs
     rb.onMessage(() => {});
     ra.broadcast("hi from a");
@@ -96,15 +138,20 @@ describe("two nodes — announces build each other's path tables", () => {
   });
 });
 
-describe("three-node line A—B—C — multi-hop routing + transport-node relay, no storm", () => {
+for (const mode of MODES)
+  describe(`three-node line A—B—C — multi-hop routing + transport-node relay, no storm [${mode}]`, () => {
   it("C learns A only via B's relay (hops=1); dedup stops the frame there", () => {
     const mesh = createFakePacketMesh();
     const c = clock();
-    const ra = createReticulumTransport({ zid: "zid-a" }, mesh.attach("a", ["b"]), c);
+    const { authFor } = keyring(["zid-a", "zid-b", "zid-c"]);
+    const ra = createReticulumTransport({ zid: "zid-a", announceAuth: authFor("zid-a", mode) }, mesh.attach("a", ["b"]), c);
     // B is the transport node between A and C — created for its relay side-effect (its internal
-    // onPacket forwards A's frame to C); the handle itself is unused.
-    createReticulumTransport({ zid: "zid-b" }, mesh.attach("b", ["a", "c"]), c);
-    const rc = createReticulumTransport({ zid: "zid-c" }, mesh.attach("c", ["b"]), c);
+    // onPacket forwards A's frame to C); the handle itself is unused. Under "required" this is
+    // the load-bearing case: B verifies A's signature, relays the frame with `asig` UNTOUCHED,
+    // and C verifies it against A's key — not B's. A relay that had to re-sign would be a relay
+    // that could launder an identity.
+    createReticulumTransport({ zid: "zid-b", announceAuth: authFor("zid-b", mode) }, mesh.attach("b", ["a", "c"]), c);
+    const rc = createReticulumTransport({ zid: "zid-c", announceAuth: authFor("zid-c", mode) }, mesh.attach("c", ["b"]), c);
     const cReceived: string[] = [];
     rc.onFrame((t) => cReceived.push(t));
 
@@ -166,13 +213,15 @@ function fakeScheduler(c: ReturnType<typeof clock>): { sched: Scheduler; fire: (
   return { sched, fire };
 }
 
-describe("integration — llmtv-nodes converge over the Reticulum transport, frost intact", () => {
+for (const mode of MODES)
+  describe(`integration — llmtv-nodes converge over the Reticulum transport, frost intact [${mode}]`, () => {
   it("two nodes tile each other; frosted content never crosses the mesh", () => {
     const mesh = createFakePacketMesh();
     const c = clock();
     const { sched, fire } = fakeScheduler(c);
-    const ra = createReticulumTransport({ zid: "zid-alexa" }, mesh.attach("a", ["b"]), c);
-    const rb = createReticulumTransport({ zid: "zid-otto" }, mesh.attach("b", ["a"]), c);
+    const { authFor } = keyring(["zid-alexa", "zid-otto"]);
+    const ra = createReticulumTransport({ zid: "zid-alexa", announceAuth: authFor("zid-alexa", mode) }, mesh.attach("a", ["b"]), c);
+    const rb = createReticulumTransport({ zid: "zid-otto", announceAuth: authFor("zid-otto", mode) }, mesh.attach("b", ["a"]), c);
     const na = createLlmtvNode(nodeCfg("alexa", mindOf("coding", "coder hat", "green", "SECRET hope")), ra, ra, sched);
     const nb = createLlmtvNode(nodeCfg("otto", mindOf("shadow", "shadow hat", "ferry")), rb, rb, sched);
 

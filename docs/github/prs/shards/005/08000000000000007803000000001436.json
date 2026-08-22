@@ -1,0 +1,17 @@
+{
+  "pr_number": 5174,
+  "archive_path": "docs/history/pr-reviews/PR-5174-docs-archive-preserve-pr-discussions-batch-1.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7E75Mf",
+    "comment:PRRC_kwDOSF9kNM7E75N0",
+    "thread:PRRT_kwDOSF9kNM6Ezayo",
+    "thread:PRRT_kwDOSF9kNM6Ezazp"
+  ],
+  "fetched_at": "2026-05-26T16:01:00.794Z",
+  "schema_version": "v1",
+  "commit_sha": "fd9dd54742bd95cda79f98c489eca1538a6efedc",
+  "title": "docs(archive): preserve PR discussions batch 1",
+  "state": "MERGED",
+  "merged_at": "2026-05-26T16:00:38Z",
+  "head_ref": "lior/preserve-batch-1"
+}

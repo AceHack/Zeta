@@ -1,0 +1,12 @@
+{
+  "pr_number": 11963,
+  "archive_path": "docs/history/pr-reviews/PR-11963-feat-cover-acyclicity-ship-the-gyo-alpha-acyclicity-criterion-with-certificates-.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-18T14:32:25.066Z",
+  "schema_version": "v1",
+  "commit_sha": "fc30eed24401e85f17ca8d40a3f038d4a03b426e",
+  "title": "feat(cover-acyclicity): ship the GYO alpha-acyclicity criterion with certificates and a semantic falsifier",
+  "state": "MERGED",
+  "merged_at": "2026-08-18T14:31:44Z",
+  "head_ref": "feat/gyo-alpha-acyclicity-cover-criterion"
+}

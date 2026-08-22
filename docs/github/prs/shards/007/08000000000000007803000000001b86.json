@@ -1,0 +1,12 @@
+{
+  "pr_number": 7046,
+  "archive_path": "docs/history/pr-reviews/PR-7046-feat-core-sybilbft-bft-quorum-over-distinct-sources-not-claimed-identities.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-08T07:10:02.901Z",
+  "schema_version": "v1",
+  "commit_sha": "19ec0dca4471b30e4978d84a592b5ee6d4afaa50",
+  "title": "feat(core): SybilBft — BFT quorum over distinct sources, not claimed identities",
+  "state": "MERGED",
+  "merged_at": "2026-06-08T07:09:43Z",
+  "head_ref": "otto/sybil-bft-quorum-over-distinct-sources"
+}

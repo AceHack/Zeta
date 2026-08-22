@@ -9,17 +9,17 @@
 
   DO NOT manually substitute. Run the installer:
 
-      bun tools/shadow/launchd/install-launchagent.ts
+      bun src/Core.TypeScript/shadow/launchd/install-launchagent.ts
 
   The installer substitutes the placeholders safely (no shell-metacharacter
   risk with paths containing &, |, \), runs plutil -lint on the result,
   writes to ~/Library/LaunchAgents/, and optionally bootstraps via
-  launchctl. See tools/shadow/launchd/README.md for the full install
+  launchctl. See src/Core.TypeScript/shadow/launchd/README.md for the full install
   procedure (incl. accessibility permission) and the uninstall recipe.
 
   Composes-with:
-    - tools/shadow/shadow-observer.ts (the process this launches)
-    - tools/shadow/restore-arrow.applescript (the --restore-arrow keypress)
+    - src/Core.TypeScript/shadow/shadow-observer.ts (the process this launches)
+    - src/Core.TypeScript/shadow/restore-arrow.applescript (the --restore-arrow keypress)
     - docs/backlog/P0/B-0402-zeta-shadow-mode-first-class-cli-autocomplete.md
     - .claude/rules/shadow-star-shorthand-autocomplete-marker.md (the marker
       this observer-loop produces when accepted suggestions get shipped)

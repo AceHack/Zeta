@@ -1,0 +1,12 @@
+{
+  "pr_number": 8518,
+  "archive_path": "docs/history/pr-reviews/PR-8518-memory-feedback-all-zeta-intents-are-pure-because-we-dst-them-in-every-future-pu.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-16T11:39:33.094Z",
+  "schema_version": "v1",
+  "commit_sha": "ca4351da893f38f86715e08bae86b28d52f5f2c8",
+  "title": "memory(feedback): all Zeta intents are PURE because we DST them in every future — purity tames the ^ layer (coercion can't hide); = noninterference + predictability + auditability",
+  "state": "MERGED",
+  "merged_at": "2026-06-16T11:39:01Z",
+  "head_ref": "otto/zeta-intents-pure-because-dst-in-every-future"
+}

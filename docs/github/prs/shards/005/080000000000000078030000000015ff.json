@@ -1,0 +1,15 @@
+{
+  "pr_number": 5631,
+  "archive_path": "docs/history/pr-reviews/PR-5631-research-kestrel-backlog-b-0866-kestrel-marketing-business-strategy-preservation.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7FgLnZ",
+    "thread:PRRT_kwDOSF9kNM6FN2fy"
+  ],
+  "fetched_at": "2026-05-27T20:10:35.216Z",
+  "schema_version": "v1",
+  "commit_sha": "5f736d986d8c864908450774b165990995c8072f",
+  "title": "research(kestrel)+backlog(B-0866): Kestrel marketing-business-strategy preservation (ServiceTitan SRE primary + 24-months-ahead + AI-pre-review) + marketing/business/naming-AI weigh-in queue",
+  "state": "MERGED",
+  "merged_at": "2026-05-27T20:10:13Z",
+  "head_ref": "research/kestrel-marketing-business-servicetitan-24-months-ahead-mandate-aaron-2026-05-27"
+}

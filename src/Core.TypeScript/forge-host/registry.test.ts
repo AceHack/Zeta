@@ -6,6 +6,9 @@ import { ok } from "./result";
 function stubAdapter(name: string): ForgeHost {
   return {
     forgeName: name,
+    sourceName: name,
+    listCheckDefinitions: async () => ({ ok: false, error: { kind: "not-supported", message: "stub", retryable: false } }),
+    listLatestCheckObservations: async () => ({ ok: false, error: { kind: "not-supported", message: "stub", retryable: false } }),
     listOpenPullRequests: async () => ok([]),
     getPullRequest: async () => ({ ok: false, error: { kind: "not-supported", message: "stub", retryable: false } }),
     getPrGateState: async () => ({ ok: false, error: { kind: "not-supported", message: "stub", retryable: false } }),

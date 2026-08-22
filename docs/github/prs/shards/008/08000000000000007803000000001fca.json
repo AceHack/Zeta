@@ -1,0 +1,12 @@
+{
+  "pr_number": 8138,
+  "archive_path": "docs/history/pr-reviews/PR-8138-chore-backlog-close-backlog-item-b-0969-invariant-culture-configureawait.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-14T02:18:54.819Z",
+  "schema_version": "v1",
+  "commit_sha": "941f2e8c95438e08bbcb369b62376ac4733e15f8",
+  "title": "chore(backlog): close backlog item B-0969 (invariant-culture + ConfigureAwait)",
+  "state": "MERGED",
+  "merged_at": "2026-06-14T02:18:27Z",
+  "head_ref": "lior/close-backlog-B0969"
+}

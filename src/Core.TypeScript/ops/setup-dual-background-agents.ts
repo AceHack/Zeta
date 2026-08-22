@@ -6,11 +6,39 @@
 // so they don't conflict. Both write to the same model-ratings.jsonl
 // via append (atomic on POSIX for lines under PIPE_BUF = 4096 bytes).
 //
-// Usage: bun tools/ops/setup-dual-background-agents.ts [--dry-run]
+// Usage: bun src/Core.TypeScript/ops/setup-dual-background-agents.ts [--dry-run]
 
 import { mkdirSync, writeFileSync, existsSync } from "node:fs";
 import { join } from "node:path";
 import { spawnSync } from "node:child_process";
+
+// Every argument this script understands. No positionals, no value-taking flags.
+const ACCEPTED_FLAGS = ["--dry-run"];
+
+// FAIL CLOSED ON AN UNRECOGNISED ARGUMENT — 081M03HRHBS087G0R001HRAFQ0.
+//
+// `process.argv.includes("--dry-run")` asks one question and treats EVERY other string as
+// consent: `--dry-runn`, `--dryrun` and `--help` all meant "go", and "go" here is
+// `git reset --hard origin/main` in two worktrees, two plists written into
+// ~/Library/LaunchAgents, and `launchctl bootout` + `bootstrap` on both. A worktree with
+// uncommitted work in it does not survive that. PR #10832 probed a sibling tool with `--help`
+// and started a ~1,700-file rewrite; this script's blast radius is larger, not smaller.
+//
+// This runs at MODULE SCOPE, above the first `spawnSync`, because this file has no `main()` —
+// its effects begin at the top level, so the refusal has to as well.
+//
+// The phrase `unknown arg` is what `hygiene/audit-workflow-cli-flags.ts` looks for to decide a
+// parser has a closed flag set; without it this tool is skipped by that lint entirely.
+for (const arg of process.argv.slice(2)) {
+    if (!ACCEPTED_FLAGS.includes(arg)) {
+        process.stderr.write(
+            `unknown arg: ${arg}\n` +
+                `setup-dual-background-agents: REFUSED — nothing was created, cloned or ` +
+                `bootstrapped. Accepted: ${ACCEPTED_FLAGS.join(" ")}\n`,
+        );
+        process.exit(2);
+    }
+}
 
 const home = process.env.HOME ?? "/Users/acehack";
 const dryRun = process.argv.includes("--dry-run");
@@ -130,5 +158,5 @@ console.log(`Two background agents registered:`);
 console.log(`  Opus:   ${agents[0]!.label} → ${agents[0]!.worktree}`);
 console.log(`  Sonnet: ${agents[1]!.label} → ${agents[1]!.worktree}`);
 console.log(`\nBoth write ratings to their respective state dirs.`);
-console.log(`Report: bun tools/ops/model-rating-report.ts --reviews`);
+console.log(`Report: bun src/Core.TypeScript/ops/model-rating-report.ts --reviews`);
 if (dryRun) console.log(`\n(DRY RUN — no changes made)`);

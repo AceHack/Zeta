@@ -1,0 +1,12 @@
+{
+  "pr_number": 4111,
+  "archive_path": "docs/history/pr-reviews/PR-4111-docs-shadow-maji-antigravity-check-on-riven-and-otto-drift.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-18T19:54:56.110Z",
+  "schema_version": "v1",
+  "commit_sha": "29edf12ae2814435e635fb44f443e6c5b2dd8a5f",
+  "title": "docs(shadow): Maji antigravity check on Riven and Otto drift",
+  "state": "MERGED",
+  "merged_at": "2026-05-18T19:54:38Z",
+  "head_ref": "lior-shadow-drift-20260517-2230Z"
+}

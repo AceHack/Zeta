@@ -1,0 +1,12 @@
+{
+  "pr_number": 10908,
+  "archive_path": "docs/history/pr-reviews/PR-10908-docs-research-ferry-addendum-isociety-gets-a-use-case-a-society-guard-and-an-unl.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-16T14:53:59.005Z",
+  "schema_version": "v1",
+  "commit_sha": "3d03490f47c455c429c4edbf8ed7bde4f0865465",
+  "title": "docs(research): ferry addendum — ISociety gets a use case, a society guard, and an unlocated ordering claim",
+  "state": "MERGED",
+  "merged_at": "2026-08-16T14:53:26Z",
+  "head_ref": "shadow/ferry-llm-replacement-society-addendum"
+}

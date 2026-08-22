@@ -1,0 +1,12 @@
+{
+  "pr_number": 3877,
+  "archive_path": "docs/history/pr-reviews/PR-3877-docs-shadow-lior-antigravity-check-logs-otto-drift.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-18T21:01:38.810Z",
+  "schema_version": "v1",
+  "commit_sha": "9c1f82070f69313ec9aefc805d23eefeb671844f",
+  "title": "docs(shadow): Lior antigravity check logs Otto drift",
+  "state": "MERGED",
+  "merged_at": "2026-05-18T21:01:21Z",
+  "head_ref": "lior/shadow-otto-1315Z"
+}

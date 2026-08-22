@@ -1,0 +1,14 @@
+{
+  "id": "080d000ae6c0c010a01300086d64a556",
+  "at": "2026-08-14T17:40:56.984Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M00NSP0Q087G0R003R89Y5K",
+    "type": "task",
+    "title": "FROST delta rotation: revoke a share without the revoked party's cooperation",
+    "slug": "frost-delta-rotation-revoke-a-share-without-the-revoked-part",
+    "priority": "P2",
+    "filename": "081M00NSP0Q087G0R003R89Y5K-frost-delta-rotation-revoke-a-share-without-the-revoked-part.md"
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 2182,
+  "archive_path": "docs/history/pr-reviews/PR-2182-fix-resolve-backlog-md-index-drift-close-b-0249.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-09T04:16:03.375Z",
+  "schema_version": "v1",
+  "commit_sha": "8509b32aef9623184f194193aed0e2049af03313",
+  "title": "fix: resolve BACKLOG.md index drift + close B-0249",
+  "state": "MERGED",
+  "merged_at": "2026-05-09T04:15:43Z",
+  "head_ref": "fix/backlog-index-drift-b0249-close"
+}

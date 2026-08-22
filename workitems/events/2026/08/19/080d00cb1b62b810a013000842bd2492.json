@@ -1,0 +1,14 @@
+{
+  "id": "080d00cb1b62b810a013000842bd2492",
+  "at": "2026-08-19T09:39:01.335Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M0CP6V2N087G0R001P6SJ7C",
+    "type": "task",
+    "title": "Erasure charge: extend ErasureCharge posting to SybilBft.decide, Consensus, TravelerRankLedger and GiftOfErasure.mix",
+    "slug": "erasure-charge-extend-erasurecharge-posting-to-sybilbft-deci",
+    "priority": "P2",
+    "filename": "081M0CP6V2N087G0R001P6SJ7C-erasure-charge-extend-erasurecharge-posting-to-sybilbft-deci.md"
+  }
+}

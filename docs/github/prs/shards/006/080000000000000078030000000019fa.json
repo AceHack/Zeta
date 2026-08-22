@@ -1,0 +1,21 @@
+{
+  "pr_number": 6650,
+  "archive_path": "docs/history/pr-reviews/PR-6650-feat-ace-slice-8-4-index-signature-trust-core-module-cross-language-golden-vecto.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7HheiS",
+    "comment:PRRC_kwDOSF9kNM7Hhfd9",
+    "comment:PRRC_kwDOSF9kNM7HhfdO",
+    "comment:PRRC_kwDOSF9kNM7Hhfeo",
+    "thread:PRRT_kwDOSF9kNM6Gsp4S",
+    "thread:PRRT_kwDOSF9kNM6Gsqjo",
+    "thread:PRRT_kwDOSF9kNM6GsqkI",
+    "thread:PRRT_kwDOSF9kNM6Gsqks"
+  ],
+  "fetched_at": "2026-06-03T09:54:42.974Z",
+  "schema_version": "v1",
+  "commit_sha": "54b1fd77f1351bb1c873e3f2829b66e51e80bdb9",
+  "title": "feat(ace): slice 8.4 — index-signature trust-core module + cross-language golden vectors",
+  "state": "MERGED",
+  "merged_at": "2026-06-03T09:54:19Z",
+  "head_ref": "otto-windows/ace-slice8.4-index-signature-spec-2026-06-03"
+}

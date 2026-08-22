@@ -1,0 +1,12 @@
+{
+  "pr_number": 2230,
+  "archive_path": "docs/history/pr-reviews/PR-2230-docs-b-0364-policy-relocation-semantic-preservation-property.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-09T07:29:41.260Z",
+  "schema_version": "v1",
+  "commit_sha": "49e35ee503f758393d50e8ccbe2a41ac1a1915c9",
+  "title": "docs(B-0364): policy relocation semantic preservation property",
+  "state": "MERGED",
+  "merged_at": "2026-05-09T07:29:25Z",
+  "head_ref": "docs/b0364-policy-relocation"
+}

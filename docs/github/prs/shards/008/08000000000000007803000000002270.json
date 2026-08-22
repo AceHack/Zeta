@@ -1,0 +1,12 @@
+{
+  "pr_number": 8816,
+  "archive_path": "docs/history/pr-reviews/PR-8816-feat-proof-finite-shannon-entropy-root-mathlib-info-theory-tower-target-1.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-21T00:23:24.036Z",
+  "schema_version": "v1",
+  "commit_sha": "c262a6fd4717d0bee40e95273e186d87c903ee6b",
+  "title": "feat(proof): finite Shannon entropy root (Mathlib) — info-theory tower target #1",
+  "state": "MERGED",
+  "merged_at": "2026-06-21T00:22:57Z",
+  "head_ref": "otto/lean-fin-shannon-entropy"
+}

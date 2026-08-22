@@ -1,0 +1,12 @@
+{
+  "pr_number": 8492,
+  "archive_path": "docs/history/pr-reviews/PR-8492-memory-feedback-beacon-zeta-s-per-identity-anti-sybil-fair-throttle-extends-the-.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-16T09:39:07.577Z",
+  "schema_version": "v1",
+  "commit_sha": "0e3387f33915f74ac4927e67aab8ff07ad2ff37f",
+  "title": "memory(feedback): Beacon — Zeta's per-identity anti-Sybil fair-throttle extends the Itron throttler prior art",
+  "state": "MERGED",
+  "merged_at": "2026-06-16T09:38:38Z",
+  "head_ref": "otto/itron-throttler-extended-per-identity-fairness"
+}

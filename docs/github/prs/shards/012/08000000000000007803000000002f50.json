@@ -1,0 +1,12 @@
+{
+  "pr_number": 12112,
+  "archive_path": "docs/history/pr-reviews/PR-12112-fix-tests-a-test-verdict-may-not-depend-on-wall-clock-24-sites-removed-and-a-rat.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-18T21:26:10.813Z",
+  "schema_version": "v1",
+  "commit_sha": "58338c1d9b3df607e050fd4d4b78eda469db1a7b",
+  "title": "fix(tests): a test verdict may not depend on wall-clock -- 24 sites removed and a ratchet that stops the 25th",
+  "state": "MERGED",
+  "merged_at": "2026-08-18T21:25:36Z",
+  "head_ref": "soraya/ambient-time-in-tests"
+}

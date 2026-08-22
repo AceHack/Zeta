@@ -1,0 +1,12 @@
+{
+  "pr_number": 6408,
+  "archive_path": "docs/history/pr-reviews/PR-6408-docs-research-hd-note-how-the-axis-swap-is-performed-rodney-s-first-compression-.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-01T11:34:15.537Z",
+  "schema_version": "v1",
+  "commit_sha": "c05dec6bb698b037996cd9180c141122299a6955",
+  "title": "docs(research): HD note — how the axis-swap is performed (Rodney's first compression Origin↔Purpose) + forgiveness underneath",
+  "state": "MERGED",
+  "merged_at": "2026-06-01T11:33:50Z",
+  "head_ref": "otto-cli/research-hd-note-rodneys-first-compression-forgiveness-axis-swap-2026-06-01"
+}

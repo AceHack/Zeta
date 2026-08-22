@@ -1,0 +1,12 @@
+{
+  "pr_number": 11035,
+  "archive_path": "docs/history/pr-reviews/PR-11035-fix-docs-retract-the-resonance-lyapunov-conflation-spell-out-isr.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-16T19:40:16.526Z",
+  "schema_version": "v1",
+  "commit_sha": "243ebb5b2fe1aa2fa3f7c338002198d6240257bc",
+  "title": "fix(docs): retract the resonance/Lyapunov conflation; spell out ISR",
+  "state": "MERGED",
+  "merged_at": "2026-08-16T19:39:42Z",
+  "head_ref": "shadow/correct-resonance-claim-and-spell-isr"
+}

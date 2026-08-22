@@ -1,0 +1,15 @@
+{
+  "pr_number": 2364,
+  "archive_path": "docs/history/pr-reviews/PR-2364-fix-b-0365-use-status-closed-so-generate-index-emits-x.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_keBU",
+    "thread:PRRT_kwDOSF9kNM6A2-9i"
+  ],
+  "fetched_at": "2026-05-09T22:55:02.886Z",
+  "schema_version": "v1",
+  "commit_sha": "1cb3cc8bf57984919a0d825355066bd1f6e5bca7",
+  "title": "fix(B-0365): use status: closed so generate-index emits [x]",
+  "state": "MERGED",
+  "merged_at": "2026-05-09T22:54:43Z",
+  "head_ref": "fix/b0365-status-closed-generate-index"
+}

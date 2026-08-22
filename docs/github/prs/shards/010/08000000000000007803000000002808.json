@@ -1,0 +1,12 @@
+{
+  "pr_number": 10248,
+  "archive_path": "docs/history/pr-reviews/PR-10248-bug-key-custody-four-execution-confirmed-gaps-in-derivation-b-combine-inputs.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-09T23:08:00.623Z",
+  "schema_version": "v1",
+  "commit_sha": "fcb387e7ec978590f918ea1aa4456e3fe8b8f01b",
+  "title": "bug(key-custody): four execution-confirmed gaps in derivation B — combine inputs",
+  "state": "MERGED",
+  "merged_at": "2026-08-09T23:07:31Z",
+  "head_ref": "shadow/derivation-b-combine-inputs"
+}

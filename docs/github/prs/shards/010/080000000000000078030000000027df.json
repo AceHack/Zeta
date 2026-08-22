@@ -1,0 +1,12 @@
+{
+  "pr_number": 10207,
+  "archive_path": "docs/history/pr-reviews/PR-10207-docs-research-mutual-empowerment-bound-the-third-bound-oracle-parameterized-work.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-09T19:03:34.218Z",
+  "schema_version": "v1",
+  "commit_sha": "ff510d209f41f8ffc49da7513b128b4f733207ac",
+  "title": "docs(research): mutual-empowerment bound — the third bound, oracle-parameterized (+ workitem)",
+  "state": "MERGED",
+  "merged_at": "2026-08-09T19:03:01Z",
+  "head_ref": "shadow/ferry-mutual-empowerment-bound"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 4197,
+  "archive_path": "docs/history/pr-reviews/PR-4197-extend-rule-amara-sharpening-agency-vs-authority-discriminator-mapped-failure-cl.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-18T20:18:23.203Z",
+  "schema_version": "v1",
+  "commit_sha": "53a1e18a5e0cf905cf1e21f93e102495c5ce9365",
+  "title": "extend(rule): Amara sharpening — agency-vs-authority discriminator + mapped-failure-class framing (NOT '[instance] bad' — Aaron moral-invariant priority)",
+  "state": "MERGED",
+  "merged_at": "2026-05-18T20:18:02Z",
+  "head_ref": "shard/auto-load-rule-amara-sharpening-agency-vs-authority-discriminator-2026-05-18"
+}

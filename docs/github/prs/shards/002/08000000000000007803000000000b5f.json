@@ -1,0 +1,12 @@
+{
+  "pr_number": 2911,
+  "archive_path": "docs/history/pr-reviews/PR-2911-backlog-p1-memory-b-0427-third-orthogonal-axis-code-vs-english-formal-verificati.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-13T02:42:15.759Z",
+  "schema_version": "v1",
+  "commit_sha": "c4aa7c5d86b1f8778c92eeb31d7e38bab3c2a1f1",
+  "title": "backlog(P1) + memory: B-0427 THIRD orthogonal axis — code vs English + formal-verification + ruleset-divergence smell (Aaron 2026-05-13)",
+  "state": "MERGED",
+  "merged_at": "2026-05-13T02:41:58Z",
+  "head_ref": "aaron-repo-split-third-orthogonal-axis-code-vs-english-formal-verification-ruleset-divergence-smell-2026-05-13"
+}

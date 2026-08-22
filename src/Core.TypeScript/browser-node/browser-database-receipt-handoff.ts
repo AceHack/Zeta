@@ -78,7 +78,17 @@ export interface BrowserDatabaseReceiptHandoffFeedback {
     | "receipt-handoff-peer-response-invalid"
     | "receipt-handoff-peer-response-capacity-exhausted"
     | "receipt-handoff-peer-transport-failed"
-    | "receipt-handoff-peer-target-rejected";
+    | "receipt-handoff-peer-target-rejected"
+    | "receipt-handoff-acceptance-configuration-invalid"
+    | "receipt-handoff-acceptance-pending"
+    | "receipt-handoff-acceptance-source-threw"
+    | "receipt-handoff-acceptance-record-invalid"
+    | "receipt-handoff-acceptance-capacity-exhausted"
+    | "receipt-handoff-acceptance-content-mismatch"
+    | "receipt-handoff-acceptance-pages-configuration-invalid"
+    | "receipt-handoff-acceptance-pages-transport-failed"
+    | "receipt-handoff-acceptance-pages-index-invalid"
+    | "receipt-handoff-acceptance-pages-capacity-exhausted";
   readonly detail: string;
 }
 
@@ -156,6 +166,27 @@ export interface BrowserDatabaseReceiptHandoffOptions {
   readonly hasher: BrowserDatabaseReceiptBatchHasher;
   readonly limits: BrowserDatabaseReceiptHandoffLimits;
 }
+
+export interface BrowserDatabaseReceiptHandoffPreparationOptions {
+  readonly databaseNodeId: string;
+  readonly archiveNodeId: string;
+  readonly hasher: BrowserDatabaseReceiptBatchHasher;
+  readonly limits: BrowserDatabaseReceiptHandoffLimits;
+}
+
+export type BrowserDatabaseReceiptHandoffPreparation =
+  | {
+      readonly status: "idle" | "retained";
+      readonly snapshot: BrowserDatabaseReceiptArchiveSnapshot;
+      readonly batch: null;
+      readonly batchBytes: 0;
+    }
+  | {
+      readonly status: "ready";
+      readonly snapshot: BrowserDatabaseReceiptArchiveSnapshot;
+      readonly batch: BrowserDatabaseReceiptHandoffBatch;
+      readonly batchBytes: number;
+    };
 
 export interface BrowserDatabaseReceiptHandoffBody {
   readonly schema: typeof BROWSER_DATABASE_RECEIPT_HANDOFF_BATCH_SCHEMA;
@@ -409,7 +440,7 @@ export function encodeBrowserDatabaseReceiptHandoffBody(body: BrowserDatabaseRec
 }
 
 function batchFromSnapshot(
-  options: BrowserDatabaseReceiptHandoffOptions,
+  options: BrowserDatabaseReceiptHandoffPreparationOptions,
   snapshot: BrowserDatabaseReceiptArchiveSnapshot,
 ): BrowserDatabaseReceiptHandoffResult<{ readonly batch: BrowserDatabaseReceiptHandoffBatch; readonly bytes: number }> {
   const body = bodyFromSnapshot(snapshot);
@@ -434,6 +465,41 @@ function batchFromSnapshot(
     return failed("receipt-handoff-hash-invalid", "The receipt batch hasher returned no full BLAKE3-256 digest.");
   }
   return succeeded({ batch: { ...body, contentHash }, bytes: payload.byteLength });
+}
+
+/** Prepare one immutable archive generation without contacting or compacting a downstream store. */
+export function prepareBrowserDatabaseReceiptHandoffBatch(
+  options: BrowserDatabaseReceiptHandoffPreparationOptions,
+  snapshot: BrowserDatabaseReceiptArchiveSnapshot,
+): BrowserDatabaseReceiptHandoffResult<BrowserDatabaseReceiptHandoffPreparation> {
+  if (
+    !isIdentifier(options.databaseNodeId) ||
+    !isIdentifier(options.archiveNodeId) ||
+    options.databaseNodeId === options.archiveNodeId ||
+    !hasMethods(options.hasher, ["hash"]) ||
+    !validHandoffLimits(options.limits)
+  ) {
+    return failed(
+      "receipt-handoff-configuration-invalid",
+      "Receipt handoff preparation requires distinct source and archive nodes, a full-digest hasher, and finite batch budgets.",
+    );
+  }
+  if (snapshot.databaseNodeId !== options.databaseNodeId || snapshot.archiveNodeId !== options.archiveNodeId) {
+    return failed(
+      "receipt-handoff-archive-read-invalid",
+      "The archive snapshot names different source or archive nodes.",
+    );
+  }
+  if (snapshot.receipts.length === 0) {
+    return succeeded({ status: "idle", snapshot, batch: null, batchBytes: 0 });
+  }
+  if (snapshot.receipts.length < options.limits.minimumReceipts) {
+    return succeeded({ status: "retained", snapshot, batch: null, batchBytes: 0 });
+  }
+  const prepared = batchFromSnapshot(options, snapshot);
+  return prepared.ok
+    ? succeeded({ status: "ready", snapshot, batch: prepared.value.batch, batchBytes: prepared.value.bytes })
+    : prepared;
 }
 
 function acknowledgementMatches(
@@ -537,30 +603,17 @@ export function createBrowserDatabaseReceiptHandoffRuntime(
       }
       if (!snapshotResult.ok) return failWith(snapshotResult.feedback, null);
       const snapshot = snapshotResult.value;
-      if (snapshot.databaseNodeId !== options.databaseNodeId || snapshot.archiveNodeId !== options.archiveNodeId) {
-        return failWith(
-          {
-            severity: "heat",
-            code: "receipt-handoff-archive-read-invalid",
-            detail: "The archive snapshot names different source or archive nodes.",
-          },
-          snapshot,
-        );
-      }
-      if (snapshot.receipts.length === 0) {
-        latest = readout(options, "idle", snapshot, 0, null, null, null);
-        return succeeded(latest);
-      }
-      if (snapshot.receipts.length < options.limits.minimumReceipts) {
-        latest = readout(options, "retained", snapshot, 0, null, null, null);
-        return succeeded(latest);
-      }
-
-      const prepared = batchFromSnapshot(options, snapshot);
+      const prepared = prepareBrowserDatabaseReceiptHandoffBatch(options, snapshot);
       if (!prepared.ok) return failWith(prepared.feedback, snapshot);
+      if (prepared.value.status !== "ready") {
+        latest = readout(options, prepared.value.status, snapshot, 0, null, null, null);
+        return succeeded(latest);
+      }
+      const batch = prepared.value.batch;
+
       let handed: BrowserDatabaseReceiptHandoffResult<BrowserDatabaseReceiptHandoffAcknowledgement>;
       try {
-        handed = await options.downstream.handoff(prepared.value.batch);
+        handed = await options.downstream.handoff(batch);
       } catch {
         return failWith(
           {
@@ -569,11 +622,11 @@ export function createBrowserDatabaseReceiptHandoffRuntime(
             detail: "The injected downstream receipt store threw before acknowledging persistence.",
           },
           snapshot,
-          prepared.value.batch,
+          batch,
         );
       }
-      if (!handed.ok) return failWith(handed.feedback, snapshot, prepared.value.batch);
-      if (!acknowledgementMatches(handed.value, prepared.value.batch, options.targetNodeId)) {
+      if (!handed.ok) return failWith(handed.feedback, snapshot, batch);
+      if (!acknowledgementMatches(handed.value, batch, options.targetNodeId)) {
         return failWith(
           {
             severity: "heat",
@@ -581,17 +634,18 @@ export function createBrowserDatabaseReceiptHandoffRuntime(
             detail: "The downstream store returned no exact complete batch acknowledgement.",
           },
           snapshot,
-          prepared.value.batch,
+          batch,
         );
       }
 
       const current = await options.archive.read();
-      if (!current.ok) return failWith(current.feedback, snapshot, prepared.value.batch);
-      const currentBatch = batchFromSnapshot(options, current.value);
+      if (!current.ok) return failWith(current.feedback, snapshot, batch);
+      const currentBatch = prepareBrowserDatabaseReceiptHandoffBatch(options, current.value);
       if (
         !currentBatch.ok ||
+        currentBatch.value.status !== "ready" ||
         current.value.archiveRevision !== snapshot.archiveRevision ||
-        currentBatch.value.batch.contentHash !== prepared.value.batch.contentHash
+        currentBatch.value.batch.contentHash !== batch.contentHash
       ) {
         return failWith(
           {
@@ -601,12 +655,12 @@ export function createBrowserDatabaseReceiptHandoffRuntime(
               "The local receipt generation changed after downstream persistence; it remains retained for a fresh handoff.",
           },
           current.value,
-          prepared.value.batch,
+          batch,
         );
       }
 
       const compacted = await options.archive.compactGeneration(current.value);
-      if (!compacted.ok) return failWith(compacted.feedback, current.value, prepared.value.batch);
+      if (!compacted.ok) return failWith(compacted.feedback, current.value, batch);
       if (!compacted.value) {
         return failWith(
           {
@@ -615,18 +669,10 @@ export function createBrowserDatabaseReceiptHandoffRuntime(
             detail: "The archive compactor returned no exact generation-replacement acknowledgement.",
           },
           current.value,
-          prepared.value.batch,
+          batch,
         );
       }
-      latest = readout(
-        options,
-        "complete",
-        snapshot,
-        prepared.value.batch.receiptCount,
-        prepared.value.batch,
-        handed.value.disposition,
-        null,
-      );
+      latest = readout(options, "complete", snapshot, batch.receiptCount, batch, handed.value.disposition, null);
       return succeeded(latest);
     },
   });

@@ -1,0 +1,12 @@
+{
+  "pr_number": 10159,
+  "archive_path": "docs/history/pr-reviews/PR-10159-test-semgrep-rule-18-loopholeflags-dual-use-neutrality-chsh-follow-up.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-08T20:02:17.612Z",
+  "schema_version": "v1",
+  "commit_sha": "4c689c196e0ae9fe70db2ae5a64a98f61683d93a",
+  "title": "test(semgrep): rule 18 — LoopholeFlags dual-use neutrality (CHSH follow-up)",
+  "state": "MERGED",
+  "merged_at": "2026-08-08T20:01:42Z",
+  "head_ref": "shadow/semgrep-loopholeflags-neutrality"
+}

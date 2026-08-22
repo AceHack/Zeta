@@ -1,0 +1,12 @@
+{
+  "pr_number": 9879,
+  "archive_path": "docs/history/pr-reviews/PR-9879-feat-darkhall-render-browser-tab-continuity.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-01T13:52:42.497Z",
+  "schema_version": "v1",
+  "commit_sha": "e996d72fa46c0041e19e1b614747f0d07d084ec0",
+  "title": "feat(darkhall): render browser tab continuity",
+  "state": "MERGED",
+  "merged_at": "2026-08-01T13:52:09Z",
+  "head_ref": "codex/browser-tab-readout"
+}

@@ -1,0 +1,17 @@
+{
+  "pr_number": 5271,
+  "archive_path": "docs/history/pr-reviews/PR-5271-shard-1808z-cold-boot-catch-43-re-arm-12h-gap-cold-boot-cascade-continues.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7FDDN-",
+    "comment:PRRC_kwDOSF9kNM7FDDOq",
+    "thread:PRRT_kwDOSF9kNM6E4pdK",
+    "thread:PRRT_kwDOSF9kNM6E4pdt"
+  ],
+  "fetched_at": "2026-05-26T18:17:51.958Z",
+  "schema_version": "v1",
+  "commit_sha": "73963d5e083d2e808ba978cf94d9d88b956f7ce8",
+  "title": "shard(1808Z): cold-boot, catch-43 re-arm, 12h-gap cold-boot-cascade continues",
+  "state": "MERGED",
+  "merged_at": "2026-05-26T18:17:29Z",
+  "head_ref": "otto-cli/tick-1808z-cold-boot-cron-rearm-2026-05-26"
+}

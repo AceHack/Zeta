@@ -20,6 +20,25 @@ import { destinationHash } from "./reticulum-transport";
 
 const node = (zid: string, t = 0): DhtNode => ({ dest: destinationHash(zid), zid, lastSeenMs: t });
 
+// `dest` must be `destinationHash(zid)` or the fold refuses the record (address integrity, added
+// 2026-08-22 — see `classifyDhtNode`). Ids are therefore no longer choosable, so the fixtures that
+// used to write short literals (`{dest: "8000", zid: "a"}`) find their ids instead: a deterministic
+// scan for the first zids whose destination hash lands in one shared k-bucket relative to self.
+// Same property the literals were chosen for; the search has no rng, so it stays DST-replayable.
+const SELF_ZID = "dht-self";
+const SELF = destinationHash(SELF_ZID);
+const SHARED_BUCKET = 3;
+
+function peersInSharedBucket(count: number): DhtNode[] {
+  const out: DhtNode[] = [];
+  for (let i = 0; out.length < count; i++) {
+    const zid = `dht-peer-${i}`;
+    const dest = destinationHash(zid);
+    if (bucketIndex(SELF, dest) === SHARED_BUCKET) out.push({ dest, zid, lastSeenMs: 0 });
+  }
+  return out;
+}
+
 describe("XOR distance metric", () => {
   it("distance to self is zero; identity of indiscernibles", () => {
     expect(xorDistance("abcd", "abcd")).toBe("0000");
@@ -45,42 +64,58 @@ describe("bucketIndex — leading zero bits of the XOR distance", () => {
 
 describe("observeNode — k-bucket insert, MRU refresh, oldest-eviction", () => {
   it("never inserts self", () => {
-    const t = emptyTable("self-dest", 4);
-    expect(observeNode(t, { dest: "self-dest", zid: "z", lastSeenMs: 1 }, 1)).toBe(t);
+    // Self is a BOUND record, so this exercises the self-check rather than the address guard —
+    // two different reasons to return the table unchanged, and a test that cannot tell them apart
+    // would keep passing if the self-check were deleted.
+    const self = node("self-node", 1);
+    const t = emptyTable(self.dest, 4);
+    expect(observeNode(t, self, 1)).toBe(t);
+    // …and the same table DOES take a bound non-self record, so "returns t" is not the only outcome.
+    expect(allNodes(observeNode(t, node("someone-else", 1), 1))).toHaveLength(1);
   });
   it("caps a bucket at k, evicting the least-recently-seen", () => {
-    // ids that all land in the same bucket relative to self "0000": pick ids differing in the top nibble
-    let t: RoutingTable = emptyTable("0000", 2);
-    t = observeNode(t, { dest: "8000", zid: "a", lastSeenMs: 1 }, 1);
-    t = observeNode(t, { dest: "9000", zid: "b", lastSeenMs: 2 }, 2);
-    t = observeNode(t, { dest: "a000", zid: "c", lastSeenMs: 3 }, 3); // bucket 0 full at k=2 → evict oldest "8000"
-    const dests = allNodes(t).map((n) => n.dest).sort();
-    expect(dests).toEqual(["9000", "a000"]);
+    const [a, b, c] = peersInSharedBucket(3) as [DhtNode, DhtNode, DhtNode];
+    let t: RoutingTable = emptyTable(SELF, 2);
+    t = observeNode(t, a, 1);
+    t = observeNode(t, b, 2);
+    t = observeNode(t, c, 3); // the shared bucket is full at k=2 → evict the oldest, `a`
+    expect(allNodes(t).map((n) => n.zid).sort()).toEqual([b.zid, c.zid].sort());
   });
   it("re-observing refreshes to most-recently-seen (moves to end, no duplicate)", () => {
-    let t: RoutingTable = emptyTable("0000", 2);
-    t = observeNode(t, { dest: "8000", zid: "a", lastSeenMs: 1 }, 1);
-    t = observeNode(t, { dest: "9000", zid: "b", lastSeenMs: 2 }, 2);
-    t = observeNode(t, { dest: "8000", zid: "a", lastSeenMs: 3 }, 3); // refresh a → a now freshest
-    t = observeNode(t, { dest: "a000", zid: "c", lastSeenMs: 4 }, 4); // evict oldest, which is now "9000"
-    const dests = allNodes(t).map((n) => n.dest).sort();
-    expect(dests).toEqual(["8000", "a000"]);
+    const [a, b, c] = peersInSharedBucket(3) as [DhtNode, DhtNode, DhtNode];
+    let t: RoutingTable = emptyTable(SELF, 2);
+    t = observeNode(t, a, 1);
+    t = observeNode(t, b, 2);
+    t = observeNode(t, a, 3); // refresh a → a now freshest
+    t = observeNode(t, c, 4); // evict the oldest, which is now `b`
+    expect(allNodes(t).map((n) => n.zid).sort()).toEqual([a.zid, c.zid].sort());
   });
 });
 
 describe("closest — k nearest by XOR, deterministic", () => {
   it("returns the count nearest to a target, tie-broken by dest", () => {
-    let t: RoutingTable = emptyTable("0000", 20);
-    for (const d of ["1000", "2000", "0100", "f000"]) t = observeNode(t, { dest: d, zid: d, lastSeenMs: 1 }, 1);
-    const near = closest(t, "0000", 2).map((n) => n.dest);
-    expect(near).toEqual(["0100", "1000"]); // 0100 (dist 0100) then 1000 (dist 1000)
+    // The ids are hashes now, so the expected answer is checked two ways rather than read off the
+    // literals: against an independently-computed brute-force minimum, and against a pinned pair.
+    const pool = ["c-0", "c-1", "c-2", "c-3"].map((z) => node(z, 1));
+    let t: RoutingTable = emptyTable(SELF, 20);
+    for (const n of pool) t = observeNode(t, n, 1);
+
+    const bruteForce = [...pool]
+      .map((n) => ({ n, d: xorDistance(n.dest, SELF) }))
+      .sort((x, y) => (x.d < y.d ? -1 : x.d > y.d ? 1 : 0))
+      .slice(0, 2)
+      .map((x) => x.n.zid);
+
+    const near = closest(t, SELF, 2);
+    expect(near.map((n) => n.zid)).toEqual(bruteForce);
+    expect(near.map((n) => n.zid)).toEqual(["c-1", "c-0"]); // pinned
   });
 });
 
 describe("expireNodes", () => {
   it("drops nodes unheard past the TTL", () => {
-    let t: RoutingTable = emptyTable("0000", 20);
-    t = observeNode(t, { dest: "1000", zid: "a", lastSeenMs: 1000 }, 1000);
+    let t: RoutingTable = emptyTable(SELF, 20);
+    t = observeNode(t, node("expiring-peer", 1000), 1000);
     expect(allNodes(expireNodes(t, 1500, 1000))).toHaveLength(1);
     expect(allNodes(expireNodes(t, 3000, 1000))).toHaveLength(0);
   });

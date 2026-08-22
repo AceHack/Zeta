@@ -1,0 +1,12 @@
+{
+  "pr_number": 9592,
+  "archive_path": "docs/history/pr-reviews/PR-9592-proof-agda-docs-general-spin-n-univalence-is-a-corollary-not-new-content-soraya-.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-09T00:35:34.658Z",
+  "schema_version": "v1",
+  "commit_sha": "98cb5abe84f6b0f28333a061cbec4039095c23fc",
+  "title": "proof(agda)+docs: general Spin(n) univalence is a COROLLARY not new content — Soraya verdict + SpinNUnivalence.agda (exit 0) (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-09T00:35:05Z",
+  "head_ref": "otto/general-spin-n-univalence-corollary"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 6973,
+  "archive_path": "docs/history/pr-reviews/PR-6973-docs-the-master-a-alpha-z-omega-install-files-are-the-dep-graph-s-unpinned-tempo.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-08T01:21:30.169Z",
+  "schema_version": "v1",
+  "commit_sha": "1fd62a342cfe0ba4c17f7bb433da8b4c22efdde0",
+  "title": "docs: the master .a (alpha) / .z (omega) install files are the dep-graph's unpinned temporal index",
+  "state": "MERGED",
+  "merged_at": "2026-06-08T01:21:13Z",
+  "head_ref": "otto/master-alpha-omega-unpinned-temporal-index"
+}

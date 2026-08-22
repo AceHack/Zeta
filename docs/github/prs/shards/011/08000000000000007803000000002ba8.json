@@ -1,0 +1,12 @@
+{
+  "pr_number": 11176,
+  "archive_path": "docs/history/pr-reviews/PR-11176-test-persona-keys-kill-the-surviving-mutant-in-the-macos-readers-block-parser.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-16T23:31:24.007Z",
+  "schema_version": "v1",
+  "commit_sha": "d6d93704a01042f752711ed90a29e1b94baa6740",
+  "title": "test(persona-keys): kill the surviving mutant in the macOS readers-block parser",
+  "state": "MERGED",
+  "merged_at": "2026-08-16T23:30:50Z",
+  "head_ref": "shadow/pkcs11-probe-readers-parser-mutant"
+}

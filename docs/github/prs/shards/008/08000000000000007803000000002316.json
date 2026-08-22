@@ -1,0 +1,12 @@
+{
+  "pr_number": 8982,
+  "archive_path": "docs/history/pr-reviews/PR-8982-feat-setup-secure-op-service-account-token-provisioning-keychain-reusable-bluepr.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-21T18:55:02.495Z",
+  "schema_version": "v1",
+  "commit_sha": "c70b3ebfd2882687a6ed698ed6b1fea537f32cae",
+  "title": "feat(setup): secure op service-account token provisioning (Keychain + reusable blueprint)",
+  "state": "MERGED",
+  "merged_at": "2026-06-21T18:54:38Z",
+  "head_ref": "otto/op-token-secure-provisioning"
+}

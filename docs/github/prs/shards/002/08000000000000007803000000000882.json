@@ -1,0 +1,24 @@
+{
+  "pr_number": 2178,
+  "archive_path": "docs/history/pr-reviews/PR-2178-feat-b-0325-add-kiro-claude-firewall-trigger-lists.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_eQz9",
+    "comment:PRRC_kwDOSF9kNM6_eQzi",
+    "comment:PRRC_kwDOSF9kNM6_eQzq",
+    "comment:PRRC_kwDOSF9kNM6_eT_-",
+    "comment:PRRC_kwDOSF9kNM6_eUZr",
+    "comment:PRRC_kwDOSF9kNM6_eV6l",
+    "thread:PRRT_kwDOSF9kNM6AyL80",
+    "thread:PRRT_kwDOSF9kNM6AyL88",
+    "thread:PRRT_kwDOSF9kNM6AyL9M",
+    "thread:PRRT_kwDOSF9kNM6AyOfy",
+    "thread:PRRT_kwDOSF9kNM6AyOyI"
+  ],
+  "fetched_at": "2026-05-09T04:06:04.168Z",
+  "schema_version": "v1",
+  "commit_sha": "f2ce2f3ab4daa2019665afa1ba6449264a72d95b",
+  "title": "feat(B-0325): add KIRO + CLAUDE firewall trigger lists",
+  "state": "MERGED",
+  "merged_at": "2026-05-09T04:05:48Z",
+  "head_ref": "claim/b0325-kiro-claude-firewall-triggers-2026-05-08"
+}

@@ -1,0 +1,25 @@
+{
+  "pr_number": 2974,
+  "archive_path": "docs/history/pr-reviews/PR-2974-docs-2026-05-13-day-update-infinite-backlog-substrate-4-register-elevator-pitch-.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7ArP0r",
+    "comment:PRRC_kwDOSF9kNM7ArP1V",
+    "comment:PRRC_kwDOSF9kNM7ArP1u",
+    "comment:PRRC_kwDOSF9kNM7ArP2c",
+    "comment:PRRC_kwDOSF9kNM7ArV0F",
+    "comment:PRRC_kwDOSF9kNM7ArVfI",
+    "comment:PRRC_kwDOSF9kNM7ArVkp",
+    "comment:PRRC_kwDOSF9kNM7ArVwB",
+    "thread:PRRT_kwDOSF9kNM6BrcYX",
+    "thread:PRRT_kwDOSF9kNM6BrcYz",
+    "thread:PRRT_kwDOSF9kNM6BrcZF",
+    "thread:PRRT_kwDOSF9kNM6BrcZk"
+  ],
+  "fetched_at": "2026-05-13T08:18:34.138Z",
+  "schema_version": "v1",
+  "commit_sha": "dd8f07ce73a46307248eb099a50eb35336504da8",
+  "title": "docs: 2026-05-13 day update + infinite-backlog substrate (4-register elevator pitch evolution incl Grok 'production-grade git-native multi-agent OS') — Aaron 2026-05-13",
+  "state": "MERGED",
+  "merged_at": "2026-05-13T08:18:10Z",
+  "head_ref": "otto-day-update-2026-05-13-infinite-backlog-substrate-canonical-day-summary-shareable-aaron-distribute-2026-05-13"
+}

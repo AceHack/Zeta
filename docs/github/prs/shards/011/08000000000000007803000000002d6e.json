@@ -1,0 +1,15 @@
+{
+  "pr_number": 11630,
+  "archive_path": "docs/history/pr-reviews/PR-11630-fix-hygiene-the-agencysignature-pre-merge-check-read-250-of-475-commits-and-said.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7iaJXZ",
+    "thread:PRRT_kwDOSF9kNM6Z4gNl"
+  ],
+  "fetched_at": "2026-08-17T20:37:38.279Z",
+  "schema_version": "v1",
+  "commit_sha": "5435f88d59976d7a3c31f5d6e501fa6e54608a08",
+  "title": "fix(hygiene): the AgencySignature pre-merge check read 250 of 475 commits and said nothing",
+  "state": "MERGED",
+  "merged_at": "2026-08-17T20:37:06Z",
+  "head_ref": "shadow/agencysignature-250-commit-underscan"
+}

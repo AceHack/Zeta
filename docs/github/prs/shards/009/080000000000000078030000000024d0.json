@@ -1,0 +1,12 @@
+{
+  "pr_number": 9424,
+  "archive_path": "docs/history/pr-reviews/PR-9424-docs-research-answer-the-four-shape-taxonomy-gaps-shadow-derived-confidence-flag.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-04T05:55:45.784Z",
+  "schema_version": "v1",
+  "commit_sha": "adcffe1b53e2fb682d83e353a13b86107f109bea",
+  "title": "docs(research): answer the four shape-taxonomy gaps — shadow-derived, confidence-flagged (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-04T05:55:24Z",
+  "head_ref": "otto/shape-taxonomy-answers-four-gaps"
+}

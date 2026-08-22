@@ -13,6 +13,7 @@ import { join } from "node:path";
 import { execFileSync } from "node:child_process";
 import { AGENT_BUS_ROOT, isCanonicalTimestamp, isCanonicalBusId, type AgentBusEnvelope } from "./types";
 import type { AgentId } from "../bus/types";
+import { stringCompare } from "../collation/collation";
 
 /**
  * Compound cursor `<timestamp>|<id>` — the read position. timestamp alone drops a
@@ -68,7 +69,7 @@ function collect(
     if (!matchesRecipient(parsed, recipient)) continue;
     if (cursor === undefined || envelopeCursor(parsed) > cursor) envs.push(parsed);
   }
-  envs.sort((a, b) => envelopeCursor(a).localeCompare(envelopeCursor(b)));
+  envs.sort((a, b) => stringCompare(envelopeCursor(a), envelopeCursor(b)));
   return envs;
 }
 
@@ -156,7 +157,7 @@ export function parseSubscribeArgs(args: readonly string[]): {
 }
 
 if (import.meta.main) {
-  // usage: bun tools/agent-bus/subscribe.ts [cursor] [--for <agentId>] [--no-fetch]
+  // usage: bun src/Core.TypeScript/agent-bus/subscribe.ts [cursor] [--for <agentId>] [--no-fetch]
   // cursor = "<timestamp>|<id>" from a prior run (or a bare ISO timestamp as a lower bound).
   // --for <agentId> returns only envelopes addressed to that agent or broadcast to `*`.
   const { cursor, recipient, fetch } = parseSubscribeArgs(process.argv.slice(2));

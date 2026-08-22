@@ -1,0 +1,12 @@
+{
+  "pr_number": 6064,
+  "archive_path": "docs/history/pr-reviews/PR-6064-docs-research-two-layer-razor-past-as-generator-compressing-the-cost-of-forgiven.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-29T23:54:09.073Z",
+  "schema_version": "v1",
+  "commit_sha": "d723fa4e9a70f5e7eef06410160f298ed4ad8343",
+  "title": "docs(research): two-layer razor + past-as-generator (compressing the cost of forgiveness)",
+  "state": "MERGED",
+  "merged_at": "2026-05-29T23:53:45Z",
+  "head_ref": "otto-cli/two-layer-razor-past-as-generator-2026-05-29"
+}

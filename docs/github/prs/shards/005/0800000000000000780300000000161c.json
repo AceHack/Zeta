@@ -1,0 +1,15 @@
+{
+  "pr_number": 5660,
+  "archive_path": "docs/history/pr-reviews/PR-5660-fix-hygiene-classify-dash-shebangs-in-shell-inventory.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7FkG5l",
+    "thread:PRRT_kwDOSF9kNM6FQq8a"
+  ],
+  "fetched_at": "2026-05-28T00:23:08.110Z",
+  "schema_version": "v1",
+  "commit_sha": "9298ef69705bea2769ead49e35c6dd82d49bb7e7",
+  "title": "fix(hygiene): classify dash shebangs in shell inventory",
+  "state": "MERGED",
+  "merged_at": "2026-05-28T00:22:47Z",
+  "head_ref": "claim/codex-loop-bash-retirement-dash-shebang-20260528"
+}

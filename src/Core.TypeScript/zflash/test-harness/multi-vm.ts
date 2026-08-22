@@ -7,12 +7,20 @@
  * that topology planning and coordination executable.
  */
 
-import { DEFAULT_MULTI_VM, type VMSpec } from "./extensions";
+import { DEFAULT_MULTI_VM, type NetworkTopology, type VMSpec } from "./extensions";
+import {
+  DEFAULT_JOINER_FLAKE_HOST,
+  ZETA_JOIN_TOKEN_ESP_DESTINATION,
+  type ZetaFirstbootRole,
+} from "../firstboot-role";
+import { clusterJoinServerUrl } from "../cluster-address";
 import { B0891_CLUSTER_JOIN_SERIAL_MARKERS } from "./serial-markers";
 import {
   RETENTION_ABSENT_TERMINAL_MARKERS,
   RETENTION_FAILURE_SERIAL_MARKERS,
   buildQemuSystemBootArgs,
+  DEFAULT_QEMU_NETWORK_DEVICES,
+  type QemuNetworkDevice,
   type Qcow2RetentionExecutor,
   type QemuCommand,
   type QemuCommandExecution,
@@ -32,9 +40,92 @@ export interface MultiVMRuntimeInput {
   readonly kvmAvailable?: boolean;
 }
 
+/**
+ * The hostname the scenario-5 existing node must install under, and therefore
+ * the name the joining node dials.
+ *
+ * Load-bearing and easy to get wrong: `zeta-install.sh` GENERATES a random
+ * `node-<6hex>` hostname when no `zeta-hostname.txt` is on the ESP (the
+ * iter-5.2.2 path, added so one USB could install many machines). A joiner
+ * pointed at a name the founder never took would dial nothing. So the
+ * existing node must be flashed with `--host control-plane`, and this
+ * constant is the single place both halves read that from.
+ *
+ * A BARE LABEL, not `.local` — corrected 2026-08-17 with the
+ * `joining-node-address-assignment` blocker. The `.local` form was chosen
+ * because mDNS was the only name service on the segment, and it was wrong on
+ * both halves:
+ *
+ *   - It may not resolve. `k3s-server.nix` records that mDNS was already tried
+ *     ("`control-plane.zeta.local` … never resolved") on this stack.
+ *   - Worse, if it DID resolve the handshake would still fail:
+ *     `k3s-server.nix` ships exactly one name SAN, `--tls-san=control-plane`,
+ *     so `control-plane.local` is a name the API certificate does not cover.
+ *     `nixos/tests/k3s-agent-join.nix` records that removing that SAN makes
+ *     the join fail on certificate verification, so the check is real.
+ *
+ * Resolution now comes from static addressing carried on the medium
+ * (`cluster-address.ts`) plus an injected `/etc/hosts` entry — the mechanism
+ * `k3s-agent-join.nix` already supplies by hand and calls "still open" on
+ * hardware. No DHCP, no DNS, no mDNS in the path.
+ *
+ * UNVERIFIED: no frame has crossed that segment. This is derived from the
+ * committed guest configuration, not observed.
+ */
+export const SCENARIO5_EXISTING_NODE_HOSTNAME = "control-plane";
+export const SCENARIO5_JOIN_SERVER_URL = clusterJoinServerUrl();
+
+/**
+ * Per-VM MACs for the shared segment. Distinct by construction: QEMU would
+ * otherwise give both nodes 52:54:00:12:34:56 and the segment would carry two
+ * NICs claiming one address. Locally administered (bit 1 of octet 0 set) and
+ * unicast (bit 0 clear), so they cannot collide with a real vendor NIC.
+ *
+ * Declared here rather than beside the netdev builder because
+ * `scenario5FirstbootRole` also reads them: the address written to the MEDIUM
+ * and the MAC pinned on the COMMAND LINE have to be the same two constants or
+ * the static address lands on the wrong NIC.
+ */
+const CLUSTER_EXISTING_SEGMENT_MAC = "52:54:00:7a:f1:01";
+const JOINING_NODE_SEGMENT_MAC = "52:54:00:7a:f1:02";
+
+/**
+ * The firstboot role each scenario-5 VM's medium must carry.
+ *
+ * Pure function of the VM's declared role, so the mapping is checkable
+ * without QEMU: the existing node founds the cluster, the joining node joins
+ * it and expects its k3s node-token at the ESP path zflash writes.
+ */
+export function scenario5FirstbootRole(role: VMSpec["role"]): ZetaFirstbootRole {
+  if (role === "cluster-existing") {
+    return {
+      kind: "first-control-plane",
+      flakeHost: SCENARIO5_EXISTING_NODE_HOSTNAME,
+      // The MAC is the SAME constant the QEMU command line pins below. That
+      // identity is the whole mechanism: the medium says "configure the NIC
+      // with this MAC", and QEMU is what gives a NIC that MAC. Reading them
+      // from two places would let the segment be addressed on the NAT NIC.
+      clusterSegment: { segmentNicMac: CLUSTER_EXISTING_SEGMENT_MAC },
+    };
+  }
+  return {
+    kind: "joiner",
+    flakeHost: DEFAULT_JOINER_FLAKE_HOST,
+    serverUrl: SCENARIO5_JOIN_SERVER_URL,
+    tokenEspPath: ZETA_JOIN_TOKEN_ESP_DESTINATION,
+    clusterSegment: { segmentNicMac: JOINING_NODE_SEGMENT_MAC },
+  };
+}
+
 export interface MultiVMRuntimeVMPlan {
   readonly name: string;
   readonly role: VMSpec["role"];
+  /**
+   * What the VM's boot medium must be flashed with for this plan to mean what
+   * it says. Carried on the plan rather than left implicit so that "the
+   * joining node is a joiner" is a value a test can assert, not a hope.
+   */
+  readonly firstbootRole: ZetaFirstbootRole;
   readonly restoreStartingState?: QemuCommand;
   readonly qemuBootCommand?: QemuCommand;
   readonly stopCondition: QemuSerialStopCondition;
@@ -45,7 +136,7 @@ export interface MultiVMRuntimeVMPlan {
 export interface MultiVMRuntimePlan {
   readonly isoPath: string;
   readonly bootImagePath?: string;
-  readonly networkTopology: typeof DEFAULT_MULTI_VM.networkTopology;
+  readonly networkTopology: NetworkTopology;
   readonly joinProtocol: typeof DEFAULT_MULTI_VM.joinProtocol;
   readonly orchestrator: typeof DEFAULT_MULTI_VM.orchestrator;
   readonly vms: readonly MultiVMRuntimeVMPlan[];
@@ -112,6 +203,46 @@ interface NormalizedMultiVMRuntimeInput {
   readonly kvmAvailable: boolean;
 }
 
+/** NIC ids: net0 keeps outbound NAT, net1 is the cluster segment. */
+const NAT_NETDEV_ID = "net0";
+const SEGMENT_NETDEV_ID = "net1";
+
+/**
+ * The two NICs a scenario-5 VM gets.
+ *
+ * net0 stays SLIRP NAT so the guest keeps outbound reachability exactly as it
+ * had before. net1 is the shared L2 segment the two VMs meet on: the existing
+ * cluster node LISTENS and the joining node CONNECTS, which fixes a real
+ * ordering obligation on the executor -- the listener must be accepting before
+ * the connector starts or QEMU exits immediately on the connect side. That
+ * obligation is why `concurrent-vm-lifecycle` has to clear before this
+ * topology can carry a single frame.
+ */
+function segmentNetworkDevices(role: VMSpec["role"], topology: NetworkTopology): readonly QemuNetworkDevice[] {
+  if (topology.kind !== "shared-socket-segment") {
+    return DEFAULT_QEMU_NETWORK_DEVICES;
+  }
+  const nat: QemuNetworkDevice = { id: NAT_NETDEV_ID, backend: { kind: "user-nat" } };
+  if (role === "cluster-existing") {
+    return [
+      nat,
+      {
+        id: SEGMENT_NETDEV_ID,
+        backend: { kind: "l2-socket-listen", port: topology.port },
+        mac: CLUSTER_EXISTING_SEGMENT_MAC,
+      },
+    ];
+  }
+  return [
+    nat,
+    {
+      id: SEGMENT_NETDEV_ID,
+      backend: { kind: "l2-socket-connect", host: topology.host, port: topology.port },
+      mac: JOINING_NODE_SEGMENT_MAC,
+    },
+  ];
+}
+
 export function planMultiVMRuntime(input: MultiVMRuntimeInput): MultiVMRuntimeResult {
   const invalid = validateInput(input);
   if (invalid) {
@@ -131,8 +262,11 @@ export function planMultiVMRuntime(input: MultiVMRuntimeInput): MultiVMRuntimeRe
     kvmAvailable: input.kvmAvailable ?? false,
   };
 
+  const networkTopology = DEFAULT_MULTI_VM.networkTopology;
+
   const vms = DEFAULT_MULTI_VM.vms.map((vmSpec): MultiVMRuntimeVMPlan => {
     const isExisting = vmSpec.role === "cluster-existing";
+    const networkDevices = segmentNetworkDevices(vmSpec.role, networkTopology);
     const diskPath = isExisting ? normalized.existingDiskPath : normalized.joiningDiskPath;
     const serialLogPath = isExisting ? normalized.existingSerialLogPath : normalized.joiningSerialLogPath;
 
@@ -148,6 +282,8 @@ export function planMultiVMRuntime(input: MultiVMRuntimeInput): MultiVMRuntimeRe
     let qemuBootCommand: QemuCommand | undefined;
     const missingRuntimeRequirements: string[] = [];
 
+    const firstbootRole = scenario5FirstbootRole(vmSpec.role);
+
     if (isExisting) {
       qemuBootCommand = {
         bin: "qemu-system-x86_64",
@@ -158,11 +294,29 @@ export function planMultiVMRuntime(input: MultiVMRuntimeInput): MultiVMRuntimeRe
           cpuCount: normalized.cpuCount,
           kvmAvailable: normalized.kvmAvailable,
           bootMedia: { kind: "iso", path: normalized.isoPath },
+          networkDevices,
         }),
       };
     } else {
       if (normalized.bootImagePath === undefined) {
-        missingRuntimeRequirements.push("zflash-prepared boot image containing joining credentials");
+        // Names the role, not just "credentials": the medium has to carry
+        // `/zeta-firstboot.conf` with `ZETA_ROLE=joiner` and
+        // `HOST=worker-template`, or the VM installs a second control plane
+        // and runs no agent — which is the failure this plan exists to stop.
+        const tokenSource =
+          DEFAULT_MULTI_VM.joinProtocol.kind === "explicit-join-token"
+            ? DEFAULT_MULTI_VM.joinProtocol.tokenSource
+            : "the existing node's k3s node-token";
+        // The MAC is in the instruction because without it the medium carries
+        // no address, and the segment has no DHCP to supply one — an image
+        // flashed from the shorter command would boot, know it is a joiner,
+        // and have no way to reach the founder.
+        missingRuntimeRequirements.push(
+          `zflash-prepared boot image flashed with --role joiner ` +
+            `--join-server-url ${SCENARIO5_JOIN_SERVER_URL} ` +
+            `--join-token <k3s node-token from ${tokenSource} on the existing node> ` +
+            `--cluster-segment-mac ${JOINING_NODE_SEGMENT_MAC}`,
+        );
       } else {
         qemuBootCommand = {
           bin: "qemu-system-x86_64",
@@ -173,6 +327,7 @@ export function planMultiVMRuntime(input: MultiVMRuntimeInput): MultiVMRuntimeRe
             cpuCount: normalized.cpuCount,
             kvmAvailable: normalized.kvmAvailable,
             bootMedia: { kind: "usb-image", path: normalized.bootImagePath },
+            networkDevices,
           }),
         };
       }
@@ -185,6 +340,7 @@ export function planMultiVMRuntime(input: MultiVMRuntimeInput): MultiVMRuntimeRe
     return {
       name: vmSpec.name,
       role: vmSpec.role,
+      firstbootRole,
       ...(restoreStartingState ? { restoreStartingState } : {}),
       ...(qemuBootCommand ? { qemuBootCommand } : {}),
       stopCondition: {

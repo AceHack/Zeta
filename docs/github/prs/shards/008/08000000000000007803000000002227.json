@@ -1,0 +1,12 @@
+{
+  "pr_number": 8743,
+  "archive_path": "docs/history/pr-reviews/PR-8743-test-formal-nft-commit-binding-collision-fscheck-leg-math-team-row-2-cross-check.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-20T16:05:16.472Z",
+  "schema_version": "v1",
+  "commit_sha": "9d55505360340ea67e1c008ca08de5296fdc4ccd",
+  "title": "test(formal): NFT commit binding/collision FsCheck leg — math-team row 2 cross-check",
+  "state": "MERGED",
+  "merged_at": "2026-06-20T16:04:49Z",
+  "head_ref": "otto/row2-nft-commit-binding-fscheck"
+}

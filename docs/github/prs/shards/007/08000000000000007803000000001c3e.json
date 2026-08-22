@@ -1,0 +1,12 @@
+{
+  "pr_number": 7230,
+  "archive_path": "docs/history/pr-reviews/PR-7230-docs-research-ferry-zeta-is-for-regular-humans-not-devs-intent-presence-in-ai-ex.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-09T08:23:26.188Z",
+  "schema_version": "v1",
+  "commit_sha": "efebb41ae4d58f980ca4943a0a0c0d98d7a99cf4",
+  "title": "docs(research)+ferry: Zeta is for regular humans, not devs — intent + presence in, AI executes; wrap capabilities as common CLI/MCP commands",
+  "state": "MERGED",
+  "merged_at": "2026-06-09T08:23:05Z",
+  "head_ref": "otto/research-zeta-for-regular-humans-intent-plus-presence"
+}

@@ -1,0 +1,15 @@
+{
+  "pr_number": 3896,
+  "archive_path": "docs/history/pr-reviews/PR-3896-fix-rules-document-since-on-squash-merge-failure-in-refresh-world-model-rule.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7B5QDS",
+    "thread:PRRT_kwDOSF9kNM6CkTJa"
+  ],
+  "fetched_at": "2026-05-16T15:26:44.653Z",
+  "schema_version": "v1",
+  "commit_sha": "ed462b34868a5eae8b44508ef677bc59b7caa9d3",
+  "title": "fix(rules): document --since-on-squash-merge failure in refresh-world-model rule",
+  "state": "MERGED",
+  "merged_at": "2026-05-16T15:26:25Z",
+  "head_ref": "otto-cli-rule-since-squash-merge-2026-05-16-1517z"
+}

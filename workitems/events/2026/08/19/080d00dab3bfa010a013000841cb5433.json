@@ -1,0 +1,14 @@
+{
+  "id": "080d00dab3bfa010a013000841cb5433",
+  "at": "2026-08-19T18:44:06.772Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M0DNCXZK087G0R003DEY5KF",
+    "type": "bug",
+    "title": "ZetaId identicon glyph carries only the low 32 bits of a 128-bit id: birthday collision at ~65536 ids on an identity surface",
+    "slug": "zetaid-identicon-glyph-carries-only-the-low-32-bits-of-a-128",
+    "priority": "P2",
+    "filename": "081M0DNCXZK087G0R003DEY5KF-zetaid-identicon-glyph-carries-only-the-low-32-bits-of-a-128.md"
+  }
+}

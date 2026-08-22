@@ -1,0 +1,12 @@
+{
+  "pr_number": 8326,
+  "archive_path": "docs/history/pr-reviews/PR-8326-docs-ip-questionable-lukens-orthwein-programming-is-an-rts-game-yc-talk-verbatim.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-15T19:50:17.813Z",
+  "schema_version": "v1",
+  "commit_sha": "ed067cd840de33eafbdbfc01693a6177786fe243",
+  "title": "docs(ip-questionable): Lukens Orthwein 'Programming is an RTS Game' YC-talk verbatim + convergence mapping",
+  "state": "MERGED",
+  "merged_at": "2026-06-15T19:49:55Z",
+  "head_ref": "docs/ipq-orthwein-rts-programming-verbatim"
+}

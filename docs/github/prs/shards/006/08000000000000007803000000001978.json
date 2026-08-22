@@ -1,0 +1,21 @@
+{
+  "pr_number": 6520,
+  "archive_path": "docs/history/pr-reviews/PR-6520-feat-dynamicvalue-f-canonical-json-decode-oracle-precision-safe-strict-canonical.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7G9-ZK",
+    "comment:PRRC_kwDOSF9kNM7G9-ZZ",
+    "comment:PRRC_kwDOSF9kNM7G9-Zh",
+    "comment:PRRC_kwDOSF9kNM7G9-Zt",
+    "thread:PRRT_kwDOSF9kNM6GSpvV",
+    "thread:PRRT_kwDOSF9kNM6GSpvh",
+    "thread:PRRT_kwDOSF9kNM6GSpvj",
+    "thread:PRRT_kwDOSF9kNM6GSpvq"
+  ],
+  "fetched_at": "2026-06-02T01:52:30.349Z",
+  "schema_version": "v1",
+  "commit_sha": "b5e78a857e9304e371b021c2eb9360f4dc313a37",
+  "title": "feat(DynamicValue): F# canonical-JSON DECODE oracle — precision-safe + strict-canonical",
+  "state": "MERGED",
+  "merged_at": "2026-06-02T01:52:10Z",
+  "head_ref": "otto-cli/dynamicvalue-decode-json-fsharp-2026-06-01"
+}

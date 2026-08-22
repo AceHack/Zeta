@@ -1,0 +1,12 @@
+{
+  "pr_number": 13241,
+  "archive_path": "docs/history/pr-reviews/PR-13241-research-openbao-the-migration-path-for-the-deployed-vault-the-data-question-ans.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-21T15:58:56.451Z",
+  "schema_version": "v1",
+  "commit_sha": "5dfda60d39313fe200a4fcae5297aeebfe5b0042",
+  "title": "research(openbao): the migration path for the DEPLOYED Vault — the data question answered, and two checks that would let a broken migration ship green",
+  "state": "MERGED",
+  "merged_at": "2026-08-21T15:56:48Z",
+  "head_ref": "research/openbao-pkcs11-seal-migration-path"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 2087,
+  "archive_path": "docs/history/pr-reviews/PR-2087-fix-backlog-regenerate-b-0306-index-row.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-08T14:47:59.423Z",
+  "schema_version": "v1",
+  "commit_sha": "9a7142dfe93cacdbf1ebe85bd5abe669708434de",
+  "title": "fix(backlog): regenerate B-0306 index row",
+  "state": "MERGED",
+  "merged_at": "2026-05-08T14:47:38Z",
+  "head_ref": "codex/pr2086-index-fix"
+}

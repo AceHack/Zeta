@@ -1,0 +1,15 @@
+{
+  "pr_number": 13223,
+  "archive_path": "docs/history/pr-reviews/PR-13223-fix-hat-system-the-gatekeeper-crd-wait-job-could-never-run-restricted-rejected-i.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7kXtOn",
+    "thread:PRRT_kwDOSF9kNM6bM3_O"
+  ],
+  "fetched_at": "2026-08-21T15:44:39.519Z",
+  "schema_version": "v1",
+  "commit_sha": "488de8277e89669a37c6a0cbbd7ad36f57005848",
+  "title": "fix(hat-system): the gatekeeper CRD-wait Job could never run — restricted rejected it at admission",
+  "state": "MERGED",
+  "merged_at": "2026-08-21T15:43:57Z",
+  "head_ref": "fix/gatekeeper-wait-job-admissible-under-restricted"
+}

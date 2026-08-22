@@ -1,0 +1,12 @@
+{
+  "pr_number": 8952,
+  "archive_path": "docs/history/pr-reviews/PR-8952-feat-cost-z3-envelope-proof-n-n-1-2-n-step-3.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-21T11:17:32.983Z",
+  "schema_version": "v1",
+  "commit_sha": "eb4fce34f9755d20eaeff8d9de3d7b355c831af4",
+  "title": "feat(cost): Z3 envelope proof n(n-1)/2 ≤ n² (step 3)",
+  "state": "MERGED",
+  "merged_at": "2026-06-21T11:17:01Z",
+  "head_ref": "alexa/clean-check"
+}

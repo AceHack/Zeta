@@ -64,6 +64,73 @@ drive-by. Two tests are landed: one asserting the semantic convergence that DOES
 and one PINNING the byte-divergence so the gap stays visible and its fix is detectable —
 deliberately not asserting that the divergence is correct.
 
+## FIX TAKEN (2026-08-18) — and the deferral's two stated risks were both empty
+
+The deferral above named two reasons to hold: *existing checkpoints* and *byte-lock
+vectors*. Both were checked rather than assumed, and neither exists:
+
+- `data/zetadb/checkpoint.json` on `main` holds **one** entry, so it is canonical under
+  any total order. Re-folding the live journal after the change is still `changed:false`
+  and rewrites nothing — verified by running `bun run run:zetadb-node`.
+- **No golden vectors reference `zeta.db.image.v1`.** The only non-test consumer,
+  `browser-database-receipt-handoff.ts`, encodes an image with `entries: []`.
+
+So what was left was work, not a decision, and it is done.
+
+**Byte-canonical entries.** `validateImage` — the single point every serialisation
+passes through, on both the encode and decode side — puts the ledger in ordinal
+`eventId` order. Two cells folding the same delta set now emit the *same file*, and a
+checkpoint that is not in canonical order is refused on read with
+`database-image-non-canonical` rather than quietly surviving on whichever node's next
+tick happens to be a no-op.
+
+**The fold is now genuinely commutative — this was the deeper half, and it is NOT what
+the original filing predicted.** Canonical ordering alone *breaks* the ordinary
+retract-then-emit update, because `score/emit` sorts before `score/retract`. The cause:
+`foldRows` summed weights per `rowKey` and rejected the instant an incoming payload
+differed from the running one, so the **conflict verdict itself** depended on arrival
+order across a zero-weight crossing — accepted in one order, `database-row-conflict` in
+the other. The same order-sensitivity sat on the admission path (`planRowTransition`).
+
+The fold now sums signed weights per **`(rowKey, payload)`** — a Z-set — and checks
+well-formedness ("a row key names one payload") **once, at the end of the batch**, as a
+post-condition on the admitted SET rather than as a step of the fold. Weight addition is
+commutative and associative with `0` as identity, so this answers the analytic question
+below in the affirmative *by construction*: the journal fold is a commutative monoid and
+the verdict is order-independent.
+
+**Falsifiers** (`bun test` over `zetadb/` + `browser-node/` + `darkhall-ui/`, 450 pass /
+0 fail with the fix):
+
+| break | fails |
+|---|---|
+| drop canonical entry order | **3** |
+| restore the per-`rowKey` order-sensitive admission check | **2** |
+| disable the end-of-batch well-formedness check | **1** |
+
+That last row matters on its own: the conflict guard *moved*, and it previously had no
+test at all, so `zeta-db-node.test.ts` now pins that it still refuses a genuine
+two-live-payload conflict — from either arrival order. A guard relocated into a place
+that cannot fire would have been worse than the ordering bug it replaced.
+
+## RUNTIME CONVERGENCE FIX TAKEN (2026-08-22)
+
+`runConvergentZetaDbNodeTick` now composes the finite one-attempt tick with a caller-
+supplied finite attempt budget. An ordinary idempotent event batch that loses a durable
+revision race reloads the newest image and folds again. An explicit `expectedRevision`
+remains a strict compare-and-swap predicate and is never weakened by retrying. Exhausted
+attempts return typed `database-revision-conflict` backpressure; there is no lock,
+timeout, last-writer-wins path, or unbounded loop.
+
+The executable acceptance test now starts two tab executors concurrently against the
+same in-memory durable image with disjoint batches. Both initially observe revision 0;
+one writes revision 1, the loser reloads and writes revision 2, and the final canonical
+journal contains both batches. A second test pins finite exhaustion, and a third pins
+strict compare-and-swap behavior.
+
+**Still open:** the substrate-general formal property assigned to Soraya. The concrete
+runtime concurrency acceptance criterion is now closed.
+
 ---
 
 ## The gap

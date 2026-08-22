@@ -1,0 +1,12 @@
+{
+  "pr_number": 5513,
+  "archive_path": "docs/history/pr-reviews/PR-5513-docs-rule-add-results-without-feedback-is-extraction-carved-sentence-to-monad-pr.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-27T17:04:24.742Z",
+  "schema_version": "v1",
+  "commit_sha": "9731bc22454f00577cf7bc9302751d637ce6fe39",
+  "title": "docs(rule): add 'Results without feedback is extraction' carved sentence to monad-propagation rule (operator 2026-05-27 constitutional distillation)",
+  "state": "MERGED",
+  "merged_at": "2026-05-27T17:03:55Z",
+  "head_ref": "backlog/results-without-feedback-is-extraction-carved-sentence-2026-05-27"
+}

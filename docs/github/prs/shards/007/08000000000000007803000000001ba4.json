@@ -1,0 +1,12 @@
+{
+  "pr_number": 7076,
+  "archive_path": "docs/history/pr-reviews/PR-7076-docs-core-anchor-qubit-lightlike-object-to-spinor-null-flag-penrose-celestial-sp.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-08T10:19:56.202Z",
+  "schema_version": "v1",
+  "commit_sha": "16b4f9397a6117bd89ce42f1ff77e924f652a808",
+  "title": "docs(core): anchor 'qubit = lightlike object' to spinor/null-flag + Penrose celestial sphere",
+  "state": "MERGED",
+  "merged_at": "2026-06-08T10:19:36Z",
+  "head_ref": "otto/qubitiso-lightlike-spinor-celestial-sphere-anchor"
+}

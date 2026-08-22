@@ -1,0 +1,12 @@
+{
+  "pr_number": 6007,
+  "archive_path": "docs/history/pr-reviews/PR-6007-feat-b-0343-pure-buildgettreerequest-get-git-trees-sha-recursive-1-read-request-.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-29T16:11:11.375Z",
+  "schema_version": "v1",
+  "commit_sha": "8fb6c5fdd549dcb21bee12b9cdf4cdedd3bbf579",
+  "title": "feat(B-0343): pure buildGetTreeRequest — GET /git/trees/{sha}?recursive=1 read request (read-side pair)",
+  "state": "MERGED",
+  "merged_at": "2026-05-29T16:10:45Z",
+  "head_ref": "feat/b0343-build-get-tree-request-2026-05-29"
+}

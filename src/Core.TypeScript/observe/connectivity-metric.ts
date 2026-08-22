@@ -108,6 +108,12 @@ export function computeConnectivity(
     const attested = config.agents.find((a) => reason.includes(a));
     if (!attested || attested === attestor) continue;
 
+    // FILTER: only count attestors that are known agents. Stray entries from
+    // testing (e.g., /tmp/attest-*) inflated connectivity beyond 100%.
+    // (Bug found 2026-08-18: alexa showed 250% because 5 distinct attestors
+    // were counted against a maxPeers of 2.)
+    if (!config.agents.includes(attestor)) continue;
+
     // attestor gives → attested receives
     attestedPeers.get(attestor)?.add(attested);
     attestedBy.get(attested)?.add(attestor);
@@ -123,7 +129,7 @@ export function computeConnectivity(
 
     // Connectivity: what fraction of possible peers have attested this agent
     const maxPeers = Math.max(1, totalPeers - 1);
-    const connectivity = byCount / maxPeers;
+    const connectivity = Math.min(1.0, byCount / maxPeers);
 
     // Reciprocity: how balanced are given vs received
     const maxGR = Math.max(given, received);

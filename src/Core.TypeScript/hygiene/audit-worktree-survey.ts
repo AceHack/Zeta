@@ -3,11 +3,11 @@
 // recovery buckets from 081KDVJT3E008QG0R000SCFYN5.
 //
 // Usage:
-//   bun tools/hygiene/audit-worktree-survey.ts
-//   bun tools/hygiene/audit-worktree-survey.ts --json
-//   bun tools/hygiene/audit-worktree-survey.ts --root PATH
-//   bun tools/hygiene/audit-worktree-survey.ts --report PATH
-//   bun tools/hygiene/audit-worktree-survey.ts --dry
+//   bun src/Core.TypeScript/hygiene/audit-worktree-survey.ts
+//   bun src/Core.TypeScript/hygiene/audit-worktree-survey.ts --json
+//   bun src/Core.TypeScript/hygiene/audit-worktree-survey.ts --root PATH
+//   bun src/Core.TypeScript/hygiene/audit-worktree-survey.ts --report PATH
+//   bun src/Core.TypeScript/hygiene/audit-worktree-survey.ts --dry
 //
 // Exit codes:
 //   0   survey completed

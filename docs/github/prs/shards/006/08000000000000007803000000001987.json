@@ -1,0 +1,21 @@
+{
+  "pr_number": 6535,
+  "archive_path": "docs/history/pr-reviews/PR-6535-research-b-0984-decentralized-identity-over-reticulum-hd-derived-keys-as-braids-.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7HF-G6",
+    "comment:PRRC_kwDOSF9kNM7HF-x3",
+    "comment:PRRC_kwDOSF9kNM7HF-yr",
+    "comment:PRRC_kwDOSF9kNM7HF_Ds",
+    "comment:PRRC_kwDOSF9kNM7HGAXD",
+    "thread:PRRT_kwDOSF9kNM6GYeG0",
+    "thread:PRRT_kwDOSF9kNM6GYenA",
+    "thread:PRRT_kwDOSF9kNM6GYeno"
+  ],
+  "fetched_at": "2026-06-02T09:50:10.336Z",
+  "schema_version": "v1",
+  "commit_sha": "658689926fd0576e19be94f6c5497d1419001214",
+  "title": "research(B-0984): decentralized identity over Reticulum — HD-derived keys as braids/knots carrying the golden-vectors treaty over the mesh (Aaron 2026-06-02)",
+  "state": "MERGED",
+  "merged_at": "2026-06-02T09:49:47Z",
+  "head_ref": "otto-cli/b0984-did-reticulum-treaty-2026-06-02"
+}

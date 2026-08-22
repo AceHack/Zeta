@@ -1,0 +1,12 @@
+{
+  "pr_number": 2651,
+  "archive_path": "docs/history/pr-reviews/PR-2651-docs-research-uom-dual-safety-categorical-substrate-narrative-engine.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-11T05:58:42.583Z",
+  "schema_version": "v1",
+  "commit_sha": "b37a48f3fac6450c385bdac569614f7e17d93483",
+  "title": "docs(research): UoM dual safety + categorical substrate + narrative engine",
+  "state": "MERGED",
+  "merged_at": "2026-05-11T05:58:27Z",
+  "head_ref": "docs/uom-categorical-substrate-narrative-engine-2026-05-11"
+}

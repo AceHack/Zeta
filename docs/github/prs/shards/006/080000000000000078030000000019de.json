@@ -1,0 +1,22 @@
+{
+  "pr_number": 6622,
+  "archive_path": "docs/history/pr-reviews/PR-6622-feat-b-0660-add-deny-default-limit-primitive.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7HX8As",
+    "comment:PRRC_kwDOSF9kNM7HX8Lf",
+    "comment:PRRC_kwDOSF9kNM7HX8NC",
+    "comment:PRRC_kwDOSF9kNM7HXrUw",
+    "comment:PRRC_kwDOSF9kNM7HXrVL",
+    "comment:PRRC_kwDOSF9kNM7HXrVc",
+    "thread:PRRT_kwDOSF9kNM6Glf0T",
+    "thread:PRRT_kwDOSF9kNM6Glf0l",
+    "thread:PRRT_kwDOSF9kNM6Glf0y"
+  ],
+  "fetched_at": "2026-06-02T22:59:51.579Z",
+  "schema_version": "v1",
+  "commit_sha": "66204052644d4b947a679c605c08fb43b26c3275",
+  "title": "feat(B-0660): add deny-default Limit primitive",
+  "state": "MERGED",
+  "merged_at": "2026-06-02T22:59:31Z",
+  "head_ref": "claim/codex-loop-b0660-fsharp-limit-default-deny-20260602T211533Z"
+}

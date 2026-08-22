@@ -1,0 +1,12 @@
+{
+  "pr_number": 7143,
+  "archive_path": "docs/history/pr-reviews/PR-7143-feat-core-hat-scope-personas-meta-surviving-all-games-vs-game-specific-hats.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-09T00:10:31.373Z",
+  "schema_version": "v1",
+  "commit_sha": "86a9120ac7f82be20f367dab090bd1c9e64562a4",
+  "title": "feat(core): Hat.Scope — personas (meta-surviving, all games) vs game-specific hats",
+  "state": "MERGED",
+  "merged_at": "2026-06-09T00:10:12Z",
+  "head_ref": "otto/hat-scope-personas-meta-surviving-vs-game-specific"
+}

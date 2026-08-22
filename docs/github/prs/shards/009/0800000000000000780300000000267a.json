@@ -1,0 +1,12 @@
+{
+  "pr_number": 9850,
+  "archive_path": "docs/history/pr-reviews/PR-9850-docs-workitems-withdraw-the-branch-protection-ask-a-ci-gate-is-the-wrong-fix-fil.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-01T11:49:41.514Z",
+  "schema_version": "v1",
+  "commit_sha": "ac98bc9ca6efc9bb41fa443bf3cb54db3488aa83",
+  "title": "docs(workitems): withdraw the branch-protection ask — a CI gate is the wrong fix; file the git-native build receipt",
+  "state": "MERGED",
+  "merged_at": "2026-08-01T11:49:10Z",
+  "head_ref": "shadow/gate-defect-sovereign-reframe"
+}

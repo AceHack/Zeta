@@ -1,0 +1,12 @@
+{
+  "pr_number": 9294,
+  "archive_path": "docs/history/pr-reviews/PR-9294-codex-feat-darkhall-share-heat-readouts-across-llmtv.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-03T05:51:38.670Z",
+  "schema_version": "v1",
+  "commit_sha": "cfce9b9b7c7d4b787b082294985e78e2dd6a1c7a",
+  "title": "[codex] feat(darkhall): share heat readouts across LLMTV",
+  "state": "MERGED",
+  "merged_at": "2026-07-03T05:51:16Z",
+  "head_ref": "codex/heat-readout-all-surfaces"
+}

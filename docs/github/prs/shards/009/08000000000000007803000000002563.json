@@ -1,0 +1,12 @@
+{
+  "pr_number": 9571,
+  "archive_path": "docs/history/pr-reviews/PR-9571-feat-ci-opt-in-qemu-wifi-esp-acceptance-gate-no-radio-claim.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-08T23:16:40.877Z",
+  "schema_version": "v1",
+  "commit_sha": "f07396ed9a46b4c4bafdbc573f10976069bc27f8",
+  "title": "feat(ci): opt-in QEMU wifi ESP acceptance gate (no radio claim)",
+  "state": "MERGED",
+  "merged_at": "2026-07-08T23:16:14Z",
+  "head_ref": "feat/qemu-wifi-esp-acceptance-gate-2026-07-08"
+}

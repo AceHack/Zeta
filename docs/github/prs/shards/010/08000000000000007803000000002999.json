@@ -1,0 +1,12 @@
+{
+  "pr_number": 10649,
+  "archive_path": "docs/history/pr-reviews/PR-10649-fix-gate-promote-lint-yaml-k8s-from-advisory-to-required-it-earned-it-on-2026-08.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-14T17:53:21.851Z",
+  "schema_version": "v1",
+  "commit_sha": "698288e5e199a243d02af7dd7b838d7c62132d9a",
+  "title": "fix(gate): promote lint (yaml/k8s) from advisory to required — it earned it on 2026-08-01",
+  "state": "MERGED",
+  "merged_at": "2026-08-14T17:52:33Z",
+  "head_ref": "fix/yaml-k8s-lint-becomes-required"
+}

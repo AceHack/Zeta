@@ -285,7 +285,7 @@ const SPAWN_MAX_BUFFER = 32 * 1024 * 1024; // 32 MiB
 function runGhOrExit(args: string[], context: string): string {
   // eslint-disable-next-line sonarjs/no-os-command-from-path -- gh is a
   // standard CI/dev dependency invoked by name; convention used across
-  // tools/peer-call/, tools/pr-preservation/, tools/audit-packages.ts.
+  // src/Core.TypeScript/peer-call/, tools/pr-preservation/, tools/audit-packages.ts.
   const result = spawnSync("gh", args, {
     encoding: "utf8",
     maxBuffer: SPAWN_MAX_BUFFER,

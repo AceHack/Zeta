@@ -1,0 +1,12 @@
+{
+  "pr_number": 8019,
+  "archive_path": "docs/history/pr-reviews/PR-8019-docs-research-shadow-ferry-43-forgiveness-creates-gravity-but-nice-must-be-provo.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-13T06:54:23.777Z",
+  "schema_version": "v1",
+  "commit_sha": "35b68d52a56b8b6af7dcc66b8d5a3b8841763713",
+  "title": "docs(research)+shadow: ferry 43 — forgiveness creates gravity, but nice must be provocable; the correction term as security",
+  "state": "MERGED",
+  "merged_at": "2026-06-13T06:53:59Z",
+  "head_ref": "shadow/ferry-43-forgiveness-gravity-correction-term"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 12848,
+  "archive_path": "docs/history/pr-reviews/PR-12848-hygiene-the-glossary-corpus-cell-vocabulary-drift-as-a-number-and-the-culture-no.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-20T16:36:12.902Z",
+  "schema_version": "v1",
+  "commit_sha": "4eb2553324332cf4a40920a2755fe619b9719ae7",
+  "title": "hygiene: the glossary/corpus cell — vocabulary drift as a number, and the culture nobody wrote down",
+  "state": "MERGED",
+  "merged_at": "2026-08-20T16:35:31Z",
+  "head_ref": "hygiene/glossary-adoption-cell"
+}

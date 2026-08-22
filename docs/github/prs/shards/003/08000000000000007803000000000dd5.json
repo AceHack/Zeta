@@ -1,0 +1,12 @@
+{
+  "pr_number": 3541,
+  "archive_path": "docs/history/pr-reviews/PR-3541-shard-tick-1807z-broader-33-dead-xref-pattern-surfaced-filed-as-b-0533.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-15T18:12:55.441Z",
+  "schema_version": "v1",
+  "commit_sha": "3259572875c2dca24c1e139c30d5c64f6806fa10",
+  "title": "shard(tick): 1807Z — broader §33 dead-xref pattern surfaced; filed as B-0533",
+  "state": "MERGED",
+  "merged_at": "2026-05-15T18:12:38Z",
+  "head_ref": "shard/tick-1807z-otto-cli-2026-05-15"
+}

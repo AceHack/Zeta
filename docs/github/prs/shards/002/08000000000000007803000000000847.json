@@ -1,0 +1,19 @@
+{
+  "pr_number": 2119,
+  "archive_path": "docs/history/pr-reviews/PR-2119-fix-backlog-mark-b-0139-as-blob.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_YSzK",
+    "comment:PRRC_kwDOSF9kNM6_YTvv",
+    "comment:PRRC_kwDOSF9kNM6_YTwA",
+    "thread:PRRT_kwDOSF9kNM6At02C",
+    "thread:PRRT_kwDOSF9kNM6At02M",
+    "thread:PRRT_kwDOSF9kNM6At0Gs"
+  ],
+  "fetched_at": "2026-05-08T19:21:36.191Z",
+  "schema_version": "v1",
+  "commit_sha": "83b58b4a2cd906fa6e110dada9688a174b199f16",
+  "title": "fix(backlog): mark B-0139 as blob",
+  "state": "MERGED",
+  "merged_at": "2026-05-08T19:21:16Z",
+  "head_ref": "fix/b0139-blob-only"
+}

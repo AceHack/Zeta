@@ -1,0 +1,12 @@
+{
+  "pr_number": 9378,
+  "archive_path": "docs/history/pr-reviews/PR-9378-feat-model-backend-the-real-manus-adapter-native-task-api-not-chat-completions-s.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-03T23:46:37.044Z",
+  "schema_version": "v1",
+  "commit_sha": "fd1698b524103ecc519ecf642345eb457b3e3d00",
+  "title": "feat(model-backend): the REAL Manus adapter — native task API (not chat-completions) (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-03T23:46:13Z",
+  "head_ref": "otto/manus-task-adapter-real-api"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 12018,
+  "archive_path": "docs/history/pr-reviews/PR-12018-docs-clifford-scope-a-lorentz-for-one-oracle-and-correct-the-one-proof-many-doma.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-18T21:40:38.199Z",
+  "schema_version": "v1",
+  "commit_sha": "10c2bef5c50fefb4f70071ba5d527b263693a566",
+  "title": "docs(clifford): scope a Lorentz for one oracle, and correct the \"one proof, many domains\" claim",
+  "state": "MERGED",
+  "merged_at": "2026-08-18T21:40:02Z",
+  "head_ref": "shadow/lorentz-scoping-and-homoiconicity-correction"
+}

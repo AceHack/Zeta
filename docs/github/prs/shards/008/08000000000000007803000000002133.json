@@ -1,0 +1,12 @@
+{
+  "pr_number": 8499,
+  "archive_path": "docs/history/pr-reviews/PR-8499-memory-feedback-the-isociety-governor-can-crystallize-and-kill-anti-crystallizat.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-16T10:12:28.850Z",
+  "schema_version": "v1",
+  "commit_sha": "7c4ea1e29e8f87aa8a86968376b36f4ac3ddc23e",
+  "title": "memory(feedback): the ISociety governor can CRYSTALLIZE and kill — anti-crystallization is load-bearing (child-safety-floor class)",
+  "state": "MERGED",
+  "merged_at": "2026-06-16T10:11:53Z",
+  "head_ref": "otto/anti-crystallization-load-bearing"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 8337,
+  "archive_path": "docs/history/pr-reviews/PR-8337-fix-workitem-memory-routing-is-coincidence-not-confidence-db-reference-universal.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-15T21:00:16.686Z",
+  "schema_version": "v1",
+  "commit_sha": "8d0c77f114c9e1594237be20b5ecba284c12ec48",
+  "title": "fix(workitem): memory routing is COINCIDENCE not confidence; db/ = reference universal interface (Merkle+symlinks, multi-parent DAG)",
+  "state": "MERGED",
+  "merged_at": "2026-06-15T20:59:47Z",
+  "head_ref": "fix/memory-org-routing-is-coincidence-not-confidence"
+}

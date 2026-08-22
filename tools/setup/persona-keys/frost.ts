@@ -15,6 +15,7 @@
 //
 // Anchors: Komlo & Goldberg FROST (2020); RFC 9591; Ed25519 (Bernstein et al.).
 
+import { randomBytes as nodeRandomBytes } from "node:crypto";
 import { ed25519 } from "@noble/curves/ed25519.js";
 import { sha512 } from "@noble/hashes/sha2.js";
 
@@ -91,11 +92,25 @@ export function lagrangeCoefficient(i: number, xs: readonly number[]): bigint {
   return Fn.mul(num, Fn.inv(den));
 }
 
+/**
+ * Uniform scalar in (0, L).
+ *
+ * P0 FIX 2026-08-14: the default source used to be Math.random. Every production call
+ * site reached that default (frost-ca-custody.ts passes no random for keygen or for
+ * signing), so the CA group signing scalar, the Shamir coefficients, and EVERY FROST
+ * NONCE were drawn from a non-cryptographic PRNG. V8 Math.random is xorshift128+ with
+ * a recoverable internal state, and a recoverable FROST nonce yields the share
+ * directly from z_i = k_i + c * lambda_i * s_i. The injected `random` door is kept
+ * unchanged for DST replay; only the DEFAULT moved to the OS CSPRNG.
+ */
 function randScalar(random?: () => number): bigint {
-  // Rejection sampling into (0, L) using 64 random bytes.
+  // Wide-reduce into (0, L) using 64 random bytes.
   const buf = new Uint8Array(64);
-  const rnd = random ?? Math.random;
-  for (let i = 0; i < buf.length; i++) buf[i] = Math.floor(rnd() * 256);
+  if (random === undefined) {
+    buf.set(nodeRandomBytes(64));
+  } else {
+    for (let i = 0; i < buf.length; i++) buf[i] = Math.floor(random() * 256);
+  }
   let s = Fn.create(bytesToNumberLE(buf));
   if (Fn.is0(s)) s = Fn.ONE;
   return s;

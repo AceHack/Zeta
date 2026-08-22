@@ -1,0 +1,12 @@
+{
+  "pr_number": 6822,
+  "archive_path": "docs/history/pr-reviews/PR-6822-chore-backlog-4-language-catch-up-umbrella-for-vera-lior-blake3-byte-lock-to-rou.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-07T13:07:25.560Z",
+  "schema_version": "v1",
+  "commit_sha": "cae2960bf5377e48fb70bbb0541f39a52244b074",
+  "title": "chore(backlog): 4-language catch-up umbrella for Vera + Lior + BLAKE3 byte-lock to route",
+  "state": "MERGED",
+  "merged_at": "2026-06-07T13:07:07Z",
+  "head_ref": "chore/4lang-catchup-umbrella-vera-lior"
+}

@@ -1,8 +1,16 @@
 # Dogfooding the whole stack — running Zeta on Zeta
 
 Status: ACTIVE — declared the next big trajectory by the human maintainer 2026-08-09
-Last refreshed: 2026-08-09
-Current blocker: none; the enabling work landed today (first-boot provisioning fixed — 081KZETP6AT, 081KZHJPJCF)
+Last refreshed: 2026-08-16
+Current blocker: **the society's own tick lanes are down, and the remaining half needs the
+operator.** Since PR #10850 merged (2026-08-15T23:01Z) every `agent-heartbeat` branch push has
+failed with `403 … Permission to Lucent-Financial-Group/Zeta.git denied to AceHack` —
+`ZETA_TELEMETRY_FLUSH_TOKEN` carries no `contents: write` — so `heartbeat/{alexa,otto,soraya}`
+have been frozen at 2026-08-15T22:55Z and flush PRs #10709/#10710/#10711 have never had
+`gate (required)` start. Workitem `081M05G8D36087G0R0034D3QPA`. The artifact half (a
+credential fallback so the lane keeps recording) has shipped; granting the PAT
+`contents: write` is operator-only.
+(Prior blocker line, retained: none for first-boot provisioning — 081KZETP6AT, 081KZHJPJCF fixed 2026-08-09.)
 Next concrete action: pick the highest-leverage NOT-YET row below (candidates: ACE meta-resolver, ZetaDB-as-types, or the cross-substrate fold guard 081KZM0FTJM which gates simultaneous runner+local dogfooding)
 Evidence links: 081KZM0FTJM (fold race — gates runner+local at once) · 081KZKV16YF (from-installer hash pin) · `docs/research/2026-08-09-zetadb-as-compiler-of-compilers-…` (the audit this ledger extends) · `docs/ZETA-ARCHITECTURE-UNIFIED.md` (Replacement Roadmap) · `docs/ZETA-CORE-TECHNOLOGY-FOR-MAX.md` (layer map)
 
@@ -43,7 +51,7 @@ the real dependency. `○ not started` = no surface in-tree.
 
 | # | Layer | Running on our own thing? | Evidence |
 |---|---|---|---|
-| 1 | **Agents on free models** | ✅ **dogfooded** | `agent-heartbeat.yml`, matrix `[alexa, otto, soraya]`, free-tier Ollama (`qwen2.5:0.5b` / `7b`), green every ~45 min |
+| 1 | **Agents on free models** | ⚠️ **dogfooded but DOWN since 2026-08-15T23:06Z** | `agent-heartbeat.yml`, matrix `[alexa, otto, soraya]`, free-tier Ollama (`qwen2.5:0.5b` / `7b`). The "green every ~45 min" claim was true on 2026-08-09 and false from 2026-08-15T23:06Z: 48 consecutive red runs on `main`, refs frozen. Re-check before citing — `gh run list --workflow agent-heartbeat.yml --branch main`, and `git log -1 origin/heartbeat/otto`. See Current blocker + `081M05G8D36087G0R0034D3QPA` |
 | 2 | **Agent cells (local)** | ✅ **dogfooded** | 4 launchd cells (otto/vera/lior/alexa) provisioned by `install.sh` on the maintainer's laptop |
 | 3 | **Society evolution loop** | ✅ **dogfooded** | `society-heartbeat.yml` (cron `*/30`); first tick 2026-08-09 committed `society-msmaqqb7` — 4 agents, mean fitness 0.1860, diversity 8.3508 |
 | 4 | **Tick sources — GitHub Actions** | ✅ **dogfooded** | the reference implementation; staleness impossible by construction (branch reset from main) |

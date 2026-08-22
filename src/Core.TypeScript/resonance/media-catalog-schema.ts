@@ -12,11 +12,11 @@
 // this file is the machine-checkable type surface.
 //
 // Usage (type-check only, no runtime needed):
-//   bun --check tools/resonance/media-catalog-schema.ts
+//   bun --check src/Core.TypeScript/resonance/media-catalog-schema.ts
 //
 // Usage (validate catalog entries at runtime):
-//   bun tools/resonance/media-catalog-schema.ts --validate
-//   bun tools/resonance/media-catalog-schema.ts --summary
+//   bun src/Core.TypeScript/resonance/media-catalog-schema.ts --validate
+//   bun src/Core.TypeScript/resonance/media-catalog-schema.ts --summary
 
 // ── Medium taxonomy ──────────────────────────────────────────────────────────
 

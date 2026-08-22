@@ -1,0 +1,12 @@
+{
+  "pr_number": 8795,
+  "archive_path": "docs/history/pr-reviews/PR-8795-feat-formal-z3-qf-bv-denotation-preservation-splitmix64-fmix32-c2.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-20T23:01:40.332Z",
+  "schema_version": "v1",
+  "commit_sha": "44f1e0a3ae6bb27937d553dbab5b72271df7507f",
+  "title": "feat(formal): Z3 QF_BV denotation preservation — splitmix64 + fmix32 (C2)",
+  "state": "MERGED",
+  "merged_at": "2026-06-20T23:01:13Z",
+  "head_ref": "soraya/z3-gen-denotation-splitmix64"
+}

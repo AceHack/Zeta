@@ -1,38 +1,87 @@
 # infra/k8s/bootstrap/argocd-install.yaml
 #
-# ArgoCD installation. K3S auto-applies this on first boot via
-# services.k3s.manifests so the cluster becomes self-managing
-# immediately — ArgoCD then reconciles everything else from this
-# same Git repo via the root-application.
+# ArgoCD installation, as a K3S HelmChart CR (`helm.cattle.io/v1`).
+# K3S auto-applies this on first boot via `services.k3s.manifests` in
+# infra/nixos/modules/k3s-server.nix; K3S's built-in Helm Controller
+# then resolves the chart and applies the rendered manifests, and the
+# cluster becomes self-managing — ArgoCD reconciles everything else
+# from this same Git repo via root-application.yaml.
 #
-# This file uses kustomize-style remote reference rather than
-# inlining the full ~30k-line upstream manifest. K3S supports
-# kustomize natively for manifests it auto-applies.
+# ── WHY THIS IS A HelmChart AND NOT A KUSTOMIZATION (2026-08-18) ────────────
+# This file used to be a `kustomize.config.k8s.io/v1beta1` Kustomization
+# whose `resources:` pointed at the upstream ArgoCD v2.13.2 install.yaml,
+# on the belief that "K3S supports kustomize natively for manifests it
+# auto-applies." It does — but ONLY for a DIRECTORY under the manifests
+# tree that contains a file literally named `kustomization.yaml`,
+# `kustomization.yml` or `Kustomization`. NixOS's `services.k3s.manifests`
+# cannot produce that shape: each attribute is written as a single flat
+# file `/var/lib/rancher/k3s/server/manifests/<name>.yaml`. So K3S read
+# this file as an ordinary Kubernetes object of kind `Kustomization` in
+# group `kustomize.config.k8s.io` — a group the API server does not serve.
 #
-# Pin to a specific ArgoCD release for reproducibility. Bump the
-# tag below to upgrade; ArgoCD itself is then managed declaratively
-# through the same flake-and-merge workflow as the rest of the
-# cluster.
+# MEASURED on real K3S v1.31.4+k3s1 with exactly the four manifests
+# `k3s-server.nix` declares, before this change:
+#
+#   Addon kube-system/argocd-install     CHECKSUM <empty>
+#   Addon kube-system/root-application   CHECKSUM <empty>
+#   Warning ApplyManifestFailed  Applying manifest at
+#     "/var/lib/rancher/k3s/server/manifests/argocd-install.yaml" failed:
+#     the server could not find the requested resource
+#   $ kubectl -n argocd get pods -> No resources found
+#   $ kubectl get crd | grep argo -> (nothing)
+#
+# retried every ~15s forever. The `argocd` namespace came up empty, no
+# ArgoCD ever installed, `root-application.yaml` could not apply either
+# (its `argoproj.io/v1alpha1` CRD ships WITH ArgoCD), and therefore NOTHING
+# under infra/k8s/applications/ ever reconciled. Steps 3-9 of the bootstrap
+# order in infra/README.md did not happen.
+#
+# The HelmChart form below is the same shape `full-ai-cluster/k8s/bootstrap/`
+# already uses — that substrate hit this on real hardware first and its
+# header records the conclusion: the "plain-resources format that
+# `services.k3s.manifests` actually understands".
+#
+# ── VERSION PIN ────────────────────────────────────────────────────────────
+# argo-cd chart 7.7.10 has appVersion v2.13.2 — the EXACT ArgoCD version the
+# retired Kustomization pinned, checked against
+# https://argoproj.github.io/argo-helm/index.yaml, not assumed. It is also
+# the pin `full-ai-cluster` uses, which the daily live-kind lane
+# (.github/workflows/k8s-argocd-health-test.yml) already exercises.
+#
+# To upgrade ArgoCD: bump `version` below and confirm the chart's appVersion
+# in that index. `targetRevision: main` in root-application.yaml controls
+# which Git ref ArgoCD TRACKS, never which ArgoCD version is INSTALLED —
+# those two are independent, keep both pinned.
 
-apiVersion: kustomize.config.k8s.io/v1beta1
-kind: Kustomization
-
-namespace: argocd
-
-resources:
-  # ArgoCD v2.13.2 stable manifest. To upgrade ArgoCD itself:
-  #   1. Bump the version in this URL.
-  #   2. Verify the manifest still applies cleanly (k8s apply --dry-run).
-  #   3. Commit + push; K3S re-applies on next boot.
-  #
-  # The `targetRevision: main` in
-  # infra/k8s/applications/root-application.yaml controls which Git ref
-  # ArgoCD tracks for cluster reconciliation, NOT which ArgoCD version
-  # is installed. Those two are independent — keep both pinned.
-  - https://raw.githubusercontent.com/argoproj/argo-cd/v2.13.2/manifests/install.yaml
-
-# Site-specific patches go here once we know more about the cluster:
-#   - cmd-params for service-type LoadBalancer
-#   - resource limits for the argocd-server pod on small control-plane
-#   - SSO config (Dex, GitHub OAuth, Okta, etc)
-patches: []
+apiVersion: helm.cattle.io/v1
+kind: HelmChart
+metadata:
+  name: argocd
+  namespace: kube-system
+spec:
+  chart: argo-cd
+  repo: https://argoproj.github.io/argo-helm
+  version: 7.7.10
+  targetNamespace: argocd
+  # argocd-namespace.yaml creates the namespace explicitly and is applied
+  # first, so the chart must not race it.
+  createNamespace: false
+  valuesContent: |-
+    server:
+      service:
+        # ClusterIP, not LoadBalancer: k3s-server.nix passes --disable=servicelb
+        # and no replacement L4 is declared under infra/k8s/applications/ yet, so
+        # a LoadBalancer Service would sit Pending forever. Reach the UI with
+        # `kubectl -n argocd port-forward svc/argocd-server 8080:80` until
+        # ingress lands.
+        type: ClusterIP
+    configs:
+      params:
+        # TLS terminates at ingress once ingress lands; until then the
+        # port-forward above is loopback-only.
+        server.insecure: true
+    notifications:
+      enabled: false
+    dex:
+      # No SSO configured yet; Dex would idle as an unused attack surface.
+      enabled: false

@@ -1,0 +1,12 @@
+{
+  "pr_number": 5739,
+  "archive_path": "docs/history/pr-reviews/PR-5739-docs-rule-labeling-confidence-on-substrate-over-connect-without-becoming-soup-am.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-28T10:22:56.329Z",
+  "schema_version": "v1",
+  "commit_sha": "d1baf88ee9add2b06a506ae0c8cffb4b6da6b272",
+  "title": "docs(rule): labeling-confidence on substrate — over-connect WITHOUT becoming soup (Amara 2026-05-28 5-tier extension to over-connect-now: observed / hypothesized / validated / retracted / canonical)",
+  "state": "MERGED",
+  "merged_at": "2026-05-28T10:22:35Z",
+  "head_ref": "otto-cli/labeling-confidence-rule-amara-extension-to-over-connect-now-2026-05-28"
+}

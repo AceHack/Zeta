@@ -1,0 +1,17 @@
+{
+  "pr_number": 2258,
+  "archive_path": "docs/history/pr-reviews/PR-2258-chore-close-b-0279-stablestorage-already-implemented.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_gQ25",
+    "comment:PRRC_kwDOSF9kNM6_gQ2v",
+    "thread:PRRT_kwDOSF9kNM6AztY6",
+    "thread:PRRT_kwDOSF9kNM6AztZC"
+  ],
+  "fetched_at": "2026-05-09T09:26:01.091Z",
+  "schema_version": "v1",
+  "commit_sha": "78c5453ddad7e885a9666c4f6a5b84bc9da306cc",
+  "title": "chore: close B-0279 (StableStorage already implemented)",
+  "state": "MERGED",
+  "merged_at": "2026-05-09T09:25:43Z",
+  "head_ref": "fix/close-stale-b0279"
+}

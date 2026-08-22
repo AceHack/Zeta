@@ -1,0 +1,14 @@
+{
+  "id": "080d002f32b45810a01300085f8e9b69",
+  "at": "2026-08-15T14:49:36.651Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M02YCNMA087G0R003TK7AEW",
+    "type": "task",
+    "title": "Rename rng.lcg32_glibc and hash.murmur3_32_tail to names their ops entail (anchor-entailment defects)",
+    "slug": "rename-rng-lcg32-glibc-and-hash-murmur3-32-tail-to-names-the",
+    "priority": "P2",
+    "filename": "081M02YCNMA087G0R003TK7AEW-rename-rng-lcg32-glibc-and-hash-murmur3-32-tail-to-names-the.md"
+  }
+}

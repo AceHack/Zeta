@@ -1,0 +1,12 @@
+{
+  "pr_number": 5293,
+  "archive_path": "docs/history/pr-reviews/PR-5293-docs-archive-preserve-pr-5286.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-27T09:54:19.814Z",
+  "schema_version": "v1",
+  "commit_sha": "47ca1fa986bf3d37382eb2be7ff1bf2f8ca729e7",
+  "title": "docs(archive): Preserve PR #5286",
+  "state": "MERGED",
+  "merged_at": "2026-05-27T09:53:57Z",
+  "head_ref": "lior/preserve-5286"
+}

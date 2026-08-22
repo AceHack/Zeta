@@ -1,0 +1,12 @@
+{
+  "pr_number": 9725,
+  "archive_path": "docs/history/pr-reviews/PR-9725-docs-book-stage-raw-the-11th-grade-audio-laser-machine-a-photophone-shadow.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-11T18:37:26.302Z",
+  "schema_version": "v1",
+  "commit_sha": "81f9d40a50401544ddf5c3d547260cc53e50538f",
+  "title": "docs(book): stage RAW — the 11th-grade audio-laser machine (a photophone) (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-11T18:36:59Z",
+  "head_ref": "book-raw-audio-laser-photophone"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 11155,
+  "archive_path": "docs/history/pr-reviews/PR-11155-fix-observe-harden-rs-pipeline-5-adversarial-review-findings.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-16T22:43:39.246Z",
+  "schema_version": "v1",
+  "commit_sha": "e19284d3b615861e3c2f7bfdc690b9d302a486a4",
+  "title": "fix(observe): harden RS pipeline — 5 adversarial review findings",
+  "state": "MERGED",
+  "merged_at": "2026-08-16T22:43:02Z",
+  "head_ref": "alexa/rs-hardening"
+}

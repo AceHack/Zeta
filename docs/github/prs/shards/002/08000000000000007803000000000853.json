@@ -1,0 +1,16 @@
+{
+  "pr_number": 2131,
+  "archive_path": "docs/history/pr-reviews/PR-2131-docs-preserve-riven-s-session-learnings-one-node-protecting-another.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_aA0t",
+    "comment:PRRC_kwDOSF9kNM6_aIsg",
+    "thread:PRRT_kwDOSF9kNM6AvFBd"
+  ],
+  "fetched_at": "2026-05-08T20:57:09.413Z",
+  "schema_version": "v1",
+  "commit_sha": "8e2b79059683acb593f777d58302409c71e26ec7",
+  "title": "docs: preserve Riven's session learnings — one node protecting another",
+  "state": "MERGED",
+  "merged_at": "2026-05-08T20:56:54Z",
+  "head_ref": "fix/riven-learnings-preservation"
+}

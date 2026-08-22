@@ -1,0 +1,12 @@
+{
+  "pr_number": 11025,
+  "archive_path": "docs/history/pr-reviews/PR-11025-research-dynamics-generate-the-tangle-instead-of-mapping-it-and-the-obstruction-.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-16T19:13:50.472Z",
+  "schema_version": "v1",
+  "commit_sha": "b5e4b57eb48f578b499c2f99f2688247abf2d709",
+  "title": "research(dynamics): generate the tangle instead of mapping it — and the obstruction that gates it",
+  "state": "MERGED",
+  "merged_at": "2026-08-16T19:13:15Z",
+  "head_ref": "shadow/generate-the-tangle-ruelle-resonances"
+}

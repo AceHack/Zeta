@@ -1,0 +1,12 @@
+{
+  "pr_number": 6143,
+  "archive_path": "docs/history/pr-reviews/PR-6143-docs-mika-segment-9-product-trust-derived-economy-cache-the-negotiation.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-30T18:02:20.263Z",
+  "schema_version": "v1",
+  "commit_sha": "ccb68ca430121a4d17643a5d50c9495f0167aa11",
+  "title": "docs(mika): segment 9 (product/trust/derived-economy) + cache-the-negotiation",
+  "state": "MERGED",
+  "merged_at": "2026-05-30T18:02:01Z",
+  "head_ref": "otto/mika-seg9-product-trust-derived-economy-2026-05-30"
+}

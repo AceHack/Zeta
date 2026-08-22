@@ -1,0 +1,12 @@
+{
+  "pr_number": 5391,
+  "archive_path": "docs/history/pr-reviews/PR-5391-feat-b-0850-ai-agents-as-systemd-services-outside-k8s-starting-with-otto-cluster.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-27T03:05:34.106Z",
+  "schema_version": "v1",
+  "commit_sha": "4ae0a9b7cbc642cd463ea47d3c8d1e75a4c55410",
+  "title": "feat(B-0850): AI agents as systemd services OUTSIDE k8s — starting with Otto; cluster repair from OUTSIDE the failure domain; 'control plane outside the control plane' pattern (Aaron 2026-05-27)",
+  "state": "MERGED",
+  "merged_at": "2026-05-27T03:05:12Z",
+  "head_ref": "feat-b0850-otto-as-systemd-service-outside-k8s-cluster-repair-from-outside-failure-domain-2026-05-27-0042z"
+}

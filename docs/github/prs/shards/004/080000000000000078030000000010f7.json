@@ -1,0 +1,12 @@
+{
+  "pr_number": 4343,
+  "archive_path": "docs/history/pr-reviews/PR-4343-shard-0608z-otto-cli-session-arc-maji-response-canary-sharpening-4-tier-graphql-.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-19T06:40:45.914Z",
+  "schema_version": "v1",
+  "commit_sha": "d28ff9a05e4398bd37dc082dde42363170b4d288",
+  "title": "shard(0608Z): Otto-CLI session arc — Maji response + canary sharpening + 4-tier GraphQL traversal",
+  "state": "MERGED",
+  "merged_at": "2026-05-19T06:40:25Z",
+  "head_ref": "otto/0608z-session-arc-maji-response-lior-cycle-canary-graphql-tier-traversal-2026-05-19"
+}

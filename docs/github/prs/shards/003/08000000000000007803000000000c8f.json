@@ -1,0 +1,12 @@
+{
+  "pr_number": 3215,
+  "archive_path": "docs/history/pr-reviews/PR-3215-docs-archive-preserve-pr-3205.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-14T20:14:05.281Z",
+  "schema_version": "v1",
+  "commit_sha": "cdaacf0d7b062207b62069a3c3f52458d5f19f25",
+  "title": "docs(archive): preserve PR 3205",
+  "state": "MERGED",
+  "merged_at": "2026-05-14T20:13:49Z",
+  "head_ref": "lior-preserve-3205"
+}

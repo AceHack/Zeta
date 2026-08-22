@@ -1,0 +1,12 @@
+{
+  "pr_number": 8836,
+  "archive_path": "docs/history/pr-reviews/PR-8836-backlog-workitem-key-onboarding-dev-machine-identity-axis-independent-user-machi.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-21T03:08:22.031Z",
+  "schema_version": "v1",
+  "commit_sha": "8757b9d98abf7553638ca31bf991743134b8e8fe",
+  "title": "backlog(workitem): key onboarding — dev-machine identity axis + independent (user × machine) check",
+  "state": "MERGED",
+  "merged_at": "2026-06-21T03:07:56Z",
+  "head_ref": "otto/workitem-key-dev-machine-axis"
+}

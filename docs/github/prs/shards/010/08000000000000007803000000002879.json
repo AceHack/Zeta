@@ -1,0 +1,12 @@
+{
+  "pr_number": 10361,
+  "archive_path": "docs/history/pr-reviews/PR-10361-feat-browser-drain-receipts-to-addressed-tabs.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-13T19:33:43.858Z",
+  "schema_version": "v1",
+  "commit_sha": "b58fa6328f18d661e4e258fff3c45d5e76c1fc99",
+  "title": "feat(browser): drain receipts to addressed tabs",
+  "state": "MERGED",
+  "merged_at": "2026-08-13T19:33:14Z",
+  "head_ref": "codex/browser-receipt-auto-handoff"
+}

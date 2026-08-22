@@ -1,0 +1,17 @@
+{
+  "pr_number": 5863,
+  "archive_path": "docs/history/pr-reviews/PR-5863-codex-parse-bash-retirement-shebang-interpreters.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7F1ktb",
+    "comment:PRRC_kwDOSF9kNM7F1kuk",
+    "thread:PRRT_kwDOSF9kNM6FdLqT",
+    "thread:PRRT_kwDOSF9kNM6FdLrT"
+  ],
+  "fetched_at": "2026-05-28T16:24:34.277Z",
+  "schema_version": "v1",
+  "commit_sha": "5af36c18f0daf3a2bf817b70c2277ebab50ff0e2",
+  "title": "[codex] Parse bash-retirement shebang interpreters",
+  "state": "MERGED",
+  "merged_at": "2026-05-28T16:24:06Z",
+  "head_ref": "claim/codex-loop-bash-retirement-shebang-parser-20260528"
+}

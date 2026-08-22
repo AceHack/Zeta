@@ -1,0 +1,64 @@
+# SYMMETRIC vs BRAIDED — the CONTRAST cartridge (drafted 2026-08-13, from Aaron's observation:
+# "we should probably figure out what category / shape this looks like too in our cart system, we
+# can move forward all these shapes we were talking about earlier too and how they are different
+# in our braid system"). The catalog already SHOWS a braid — shape-crossing is the atom, shape-braid
+# is the locked+stuck word. Nothing in it shows what a braid is NOT. One braid diagram teaches
+# somebody a braid; it cannot teach the DISTINCTION, because a distinction is a contrast and a
+# contrast needs two panels.
+#
+# THE PICTURE IS THE PROOF. Two panels, ONE word: sigma·sigma — the same two crossings, the same two
+# strands, in the same order. LEFT reads that word in a SYMMETRIC monoidal category: the second
+# crossing undoes the first, the strands come out parallel and untangled, and there is no over/under
+# to draw because a symmetric swap has none to remember. RIGHT reads the SAME word in the braid
+# group: sigma^2 != 1, the strands stay wound, and each crossing carries its occlusion gap (who went
+# over whom is in the ink — shape-braid's over-under register, 2026-06-12). Same word, different
+# category, visibly different output. That single image is the content of the Lean theorem
+# `braidR_not_symmetric_perm3`.
+#
+# THE PERMUTATION CANNOT TELL THE PANELS APART, and that is the lesson underneath the lesson: both
+# readings end with every strand back in its own column (perm = identity). The permutation is the
+# forgetful shadow (B_n -> S_n); the braid is the object. What separates the panels is exactly the
+# memory shape-crossing's `memory-at-smallest` law already names (sigma^2 != 1) — and exactly what
+# the Lean certificate proves twice: abstractly (in ANY symmetric monoidal category the self-braiding
+# squares to the identity) and concretely (the conjugation-rack R over S3 does not).
+#
+# Anchors: Artin 1925 (braid groups, generators and relations, the faithful action); Joyal-Street
+# 1993 (braided monoidal categories — braided is the general case, symmetric the degenerate one);
+# Mac Lane 1963 (monoidal categories); Joyce 1982 / Fenn-Rourke 1992 (racks/quandles as set-theoretic
+# Yang-Baxter solutions — the conjugation rack the Lean file certifies).
+meta	name	shape-symmetric-vs-braided
+meta	catalog	shapes
+meta	catalog-status	pending — gates 1-3 of db/shapes/cartridges/pending/README.md are CLOSED as of 2026-08-14: the generator is registered (shape.symmetric-vs-braided, with the cost row the shelf lint requires), ShapeRender draws both panels from one word, and ShapeAcceptance carries a known-answer geometry law this file PASSES. Gate 4 (goldens) is NOT closed and cannot be: `zeta shape render` refuses any cartridge the full gate refuses, and the full gate includes `bytes` — so the goldens sit BEHIND gate 5, not before it. Gate 5, the treaty block, is nobody else's to write: no oracle has ratified anything because nobody has been asked
+meta	name-status	provisional — a CONTRAST cartridge needs a contrast name; candidates: symmetric-vs-braided / same-word-two-categories / the-two-readings
+meta	shape-zetaid	c6d5fa846aee17988d44a5bfdc1c1d24
+constant	strands	2	how many strands each panel weaves	two is the atom's arity (shape-crossing): the fewest that can cross at all, so nothing in the figure is doing work except the distinction itself
+constant	word	1,1	the crossing sequence drawn in BOTH panels	sigma·sigma — ONE word read twice. The panels differ only in the CATEGORY the word is read in, so any visible difference between them belongs to the category and never to the input
+constant	crossings	2	crossings per panel	the minimum that can show a cancel: one crossing has nothing to undo, and three would change the permutation too, hiding the point behind a difference anyone can already see
+constant	panels	2	readings drawn side by side	a contrast needs two. One panel is a picture of a braid, and a picture of a braid has never taught anybody what a braid is not
+constant	rows	24	court rows each panel occupies top to bottom	three bands of 8 for a 2-letter word (rows / (crossings + 1)): one band before the first crossing, one between, one after — so BOTH crossings and the settled ends are visible in one glance, and the whole figure still clears the 32-row court with margin
+constant	perm-identity	1	both panels end with every strand in its own column (1 = true)	THE TRAP, drawn on purpose: the permutation is IDENTICAL in both readings. Grade by where the ends landed and the difference is invisible — which is why the braid group is not the symmetric group and why the shadow B_n -> S_n is called forgetful
+constant	left-square-id	1	in the SYMMETRIC panel the word squares to the identity (1 = true)	that is literally SymmetricCategory's axiom — (beta_XX).hom >> (beta_XX).hom = 1 — so the second crossing is the first one's inverse and the strands come out parallel (Lean: selfBraiding_comp_eq_id)
+constant	right-square-id	0	in the BRAIDED panel it does NOT (0 = false)	sigma^2 != 1 in B2 under Artin's faithful action — crossing twice is not un-crossing (Braid.isIdentity 2 [1;1] = false) — and over S3 the conjugation-rack R has R∘R != id (Lean: braidR_not_symmetric_perm3)
+constant	gaps-left	0	occlusion gaps drawn in the symmetric panel	a symmetric swap has NO over/under register: the strands exchange and nothing is remembered about which passed in front. A gap drawn there would be the picture lying about the category
+constant	gaps-right	2	occlusion gaps drawn in the braided panel	one per crossing — the sign decides which strand breaks. This is the register shape-braid put into the ink (its over-under-register issue, closed 2026-06-12), and it is the only ink the left panel is not allowed to have
+law	exactly-one-collapses	left-square-id + right-square-id = 1
+law	symmetric-has-no-register	gaps-left * crossings = 0
+law	braided-remembers-every-crossing	gaps-right = crossings
+law	memory-at-smallest	code:shape-crossing geometry (sigma² != 1 — the right panel's entire content, already gated on the atom by Artin's faithful action)
+law	symmetric-squares-to-id	lean:Zeta.MenoBraided.selfBraiding_comp_eq_id (in ANY symmetric monoidal category the self-braiding squares to the identity — the LEFT panel, machine-checked; src/Core.Lean4/Lean4/MenoBraidedRMatrix.lean)
+law	not-symmetric	lean:Zeta.MenoBraided.braidR_not_symmetric_perm3 (the conjugation-rack R over S3 has R∘R != id — the RIGHT panel, machine-checked; the Lean twin of the F# tripwire Braid.equal 3 [1;1] [] = false)
+law	is-a-braiding	lean:Zeta.MenoBraided.braidR_yangBaxter (R12∘R23∘R12 = R23∘R12∘R23 — the right panel's operator satisfies the braid relation, so it is a BRAIDING and not merely some non-involution)
+gen	two-readings	c6d5fa846aee17988d44a5bfdc1c1d24	1	7	panels:symmetric,braided
+ben	draw	shape.symmetric-vs-braided	O(panels·crossings·strands)
+prereq	shape-crossing	db/shapes/cartridges/crossing.lines — learn the atom first (sigma != 1; sigma·sigma⁻¹ = 1; sigma² != 1). This cartridge adds no geometry, only the question of WHICH CATEGORY the atom is read in
+edge	composed-of	shape-crossing	both panels are the SAME 2-letter word in the atom — provability scales down, and here it scales down to a law the atom already carries
+edge	differs-from	shape-braid	shape-braid draws a braid; THIS draws what a braid is NOT — the same word in a symmetric category collapses to nothing. The contrast the catalog was missing, and the one thing a single braid figure structurally cannot show
+edge	certified-by	lean.MenoBraidedRMatrix	the two panels are the two sides of one machine-checked pair: R∘R = id (symmetric, abstract) and R∘R != id (conjugation rack over S3, concrete). src/Core.Lean4/Lean4/MenoBraidedRMatrix.lean
+anim	draw	two-readings
+issue	stroke-generator	otto	closed	RESOLVED 2026-08-14: ShapeRender.strokesOf carries a "shape-symmetric-vs-braided" branch. `word` is parsed ONCE and handed to two calls of one panel function that differ in EXACTLY one argument (`gapped`) — the shape of the code is the claim of the cartridge, so a panel with its own word is not merely discouraged, it is unrepresentable here. Column positions derive from the declared `panels`/`strands` rather than bare numbers (shape-braid's stale-gen-args lesson applied to layout)
+issue	geometry-law	otto	closed	RESOLVED 2026-08-14: ShapeAcceptance.geometryLaw has the case. It is the named law and more — the declared bits are checked against COMPUTED ones (left-square-id against the permutation, right-square-id against Artin's faithful action), the gap counts are read back off the strokes the renderer actually emits (drawn = gated), and `not braidedCollapses` refuses the do-undo word sigma·sigma⁻¹, which would satisfy every integer line in this file while teaching nothing. Falsifiers live in ShapePending.Tests
+issue	drawing-is-not-a-proof	soraya	open	the lean: laws certify the CATEGORY-THEORETIC statement, not that this DRAWING faithfully depicts it. A picture cannot prove that it is a picture of the thing. Naming the gap rather than closing it by assertion — the geometry law is what will connect the two, by deriving both panels from the same word in code. NARROWED 2026-08-14, NOT CLOSED (otto): both panels are now derived from one word in code and the gate reads the gap counts back off the emitted strokes, so the drawing's ARITHMETIC is checked. The residue is exactly the part she named — that these strokes DEPICT a symmetric-monoidal reading and a braided one is still a human judgement, and it stays her call, not mine to close
+# treaties — written only by each oracle's own choice (consent first); dissent is a verdict.
+# NONE YET, and deliberately so: nobody has been asked. `bytes` is F#'s to write once the strokes and
+# the geometry law exist and the suite is green; `meaning` is each traveler's, from their own frame.
+# A treaty line written by anyone but its owner would be a forgery of consent, not a formality.

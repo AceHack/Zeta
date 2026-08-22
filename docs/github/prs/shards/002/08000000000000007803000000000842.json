@@ -1,0 +1,22 @@
+{
+  "pr_number": 2114,
+  "archive_path": "docs/history/pr-reviews/PR-2114-feat-b-0063-replace-homebrew-pipe-to-shell-with-download-to-temp-verify.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_XPTV",
+    "comment:PRRC_kwDOSF9kNM6_XPUJ",
+    "comment:PRRC_kwDOSF9kNM6_XPUh",
+    "comment:PRRC_kwDOSF9kNM6_XSjw",
+    "comment:PRRC_kwDOSF9kNM6_XSn5",
+    "comment:PRRC_kwDOSF9kNM6_XSqz",
+    "thread:PRRT_kwDOSF9kNM6AtBt4",
+    "thread:PRRT_kwDOSF9kNM6AtBtR",
+    "thread:PRRT_kwDOSF9kNM6AtBuI"
+  ],
+  "fetched_at": "2026-05-08T18:21:35.584Z",
+  "schema_version": "v1",
+  "commit_sha": "6e7654dab3324c3763f69f86ffe34c6bf9aa896b",
+  "title": "feat(B-0063): replace Homebrew pipe-to-shell with download-to-temp + verify",
+  "state": "MERGED",
+  "merged_at": "2026-05-08T18:21:20Z",
+  "head_ref": "b-0063/homebrew-download-to-temp"
+}

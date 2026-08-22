@@ -1,0 +1,30 @@
+{
+  "pr_number": 6601,
+  "archive_path": "docs/history/pr-reviews/PR-6601-docs-b-1006-canonical-primitives-registry-promotion-gate-the-what-s-the-differen.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7HREKb",
+    "comment:PRRC_kwDOSF9kNM7HREKg",
+    "comment:PRRC_kwDOSF9kNM7HRFrR",
+    "comment:PRRC_kwDOSF9kNM7HRFr_",
+    "comment:PRRC_kwDOSF9kNM7HRFsX",
+    "comment:PRRC_kwDOSF9kNM7HRGVE",
+    "comment:PRRC_kwDOSF9kNM7HRGZG",
+    "comment:PRRC_kwDOSF9kNM7HRI09",
+    "comment:PRRC_kwDOSF9kNM7HRI42",
+    "comment:PRRC_kwDOSF9kNM7HRIyF",
+    "comment:PRRC_kwDOSF9kNM7HRLgb",
+    "thread:PRRT_kwDOSF9kNM6Ggse0",
+    "thread:PRRT_kwDOSF9kNM6Ggsew",
+    "thread:PRRT_kwDOSF9kNM6Ggtkh",
+    "thread:PRRT_kwDOSF9kNM6GgtlD",
+    "thread:PRRT_kwDOSF9kNM6GgtlW",
+    "thread:PRRT_kwDOSF9kNM6Ggx0m"
+  ],
+  "fetched_at": "2026-06-02T17:28:20.797Z",
+  "schema_version": "v1",
+  "commit_sha": "0729729e136545439009b89e418207b7264619fa",
+  "title": "docs(B-1006): canonical primitives registry + promotion gate + the 'what's the difference?' suspicion test (Aaron)",
+  "state": "MERGED",
+  "merged_at": "2026-06-02T17:27:49Z",
+  "head_ref": "otto-cli/b1006-canonical-primitives-registry-2026-06-02"
+}

@@ -1,0 +1,15 @@
+{
+  "pr_number": 4145,
+  "archive_path": "docs/history/pr-reviews/PR-4145-rules-rate-limit-tier-wrap-git-network-ops-in-timeout-kill-after-per-b-0615.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7CRd9c",
+    "thread:PRRT_kwDOSF9kNM6C2eeL"
+  ],
+  "fetched_at": "2026-05-18T17:04:02.395Z",
+  "schema_version": "v1",
+  "commit_sha": "bd41e692490af6a33a4a4b20ef9d30666715948e",
+  "title": "rules(rate-limit-tier): wrap git network ops in timeout --kill-after per B-0615",
+  "state": "MERGED",
+  "merged_at": "2026-05-18T17:03:36Z",
+  "head_ref": "otto-cli/b0615-rule-edit-timeout-kill-after-git-network-ops-2026-05-18-1320z"
+}

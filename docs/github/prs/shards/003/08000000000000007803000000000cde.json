@@ -1,0 +1,27 @@
+{
+  "pr_number": 3294,
+  "archive_path": "docs/history/pr-reviews/PR-3294-docs-shadow-lior-antigravity-check-archive-prs-decompose-b-0202.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7BZ1eU",
+    "comment:PRRC_kwDOSF9kNM7BZ1eZ",
+    "comment:PRRC_kwDOSF9kNM7BZpte",
+    "comment:PRRC_kwDOSF9kNM7BZsXf",
+    "comment:PRRC_kwDOSF9kNM7BZsYD",
+    "comment:PRRC_kwDOSF9kNM7BZsYZ",
+    "comment:PRRC_kwDOSF9kNM7BZsYv",
+    "thread:PRRT_kwDOSF9kNM6CNXQH",
+    "thread:PRRT_kwDOSF9kNM6CNZD-",
+    "thread:PRRT_kwDOSF9kNM6CNZDS",
+    "thread:PRRT_kwDOSF9kNM6CNZDu",
+    "thread:PRRT_kwDOSF9kNM6CNZEP",
+    "thread:PRRT_kwDOSF9kNM6CNfMm",
+    "thread:PRRT_kwDOSF9kNM6CNfMo"
+  ],
+  "fetched_at": "2026-05-14T23:05:52.455Z",
+  "schema_version": "v1",
+  "commit_sha": "cc1b22ccde3144678e3d9fe481c83ac7194a5be7",
+  "title": "docs(shadow): Lior antigravity check, archive PRs, decompose B-0202",
+  "state": "MERGED",
+  "merged_at": "2026-05-14T23:05:30Z",
+  "head_ref": "lior/antigravity-check-2216Z"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 3620,
+  "archive_path": "docs/history/pr-reviews/PR-3620-shard-tick-2300z-arm-sweep-3617-merged-3618-armed-lior-thread-prs-left.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-15T23:04:26.030Z",
+  "schema_version": "v1",
+  "commit_sha": "e9bb2d91fd40e9459a9b6a2e44cbe7b7919e188f",
+  "title": "shard(tick): 2300Z — arm-sweep #3617 (merged) + #3618 (armed); Lior-thread PRs left",
+  "state": "MERGED",
+  "merged_at": "2026-05-15T23:04:11Z",
+  "head_ref": "shard/tick-2300z-otto-cli-2026-05-15"
+}

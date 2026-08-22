@@ -1,0 +1,12 @@
+{
+  "pr_number": 7923,
+  "archive_path": "docs/history/pr-reviews/PR-7923-docs-research-shadow-ferry-10-addendum-initial-conditions-0-plan-a-vibe-coding-e.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-12T15:07:37.056Z",
+  "schema_version": "v1",
+  "commit_sha": "2e4ac4836a69e37df3b6150dde8c3fa8be881f24",
+  "title": "docs(research)+shadow: ferry 10 addendum — initial conditions: 0 plan, a vibe coding experiment (verbatim)",
+  "state": "MERGED",
+  "merged_at": "2026-06-12T15:07:11Z",
+  "head_ref": "shadow/ferry-10-initial-conditions"
+}

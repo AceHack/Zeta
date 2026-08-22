@@ -1,0 +1,31 @@
+{
+  "pr_number": 3337,
+  "archive_path": "docs/history/pr-reviews/PR-3337-feat-tools-save-ai-memory-process-extract-ts-canonical-ts-for-ai-memory-preserva.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7BbUaL",
+    "comment:PRRC_kwDOSF9kNM7BbUau",
+    "comment:PRRC_kwDOSF9kNM7BbUbF",
+    "comment:PRRC_kwDOSF9kNM7BbUbR",
+    "comment:PRRC_kwDOSF9kNM7BbUba",
+    "comment:PRRC_kwDOSF9kNM7BbUbn",
+    "comment:PRRC_kwDOSF9kNM7BbUby",
+    "comment:PRRC_kwDOSF9kNM7BbUcD",
+    "comment:PRRC_kwDOSF9kNM7BbUcQ",
+    "thread:PRRT_kwDOSF9kNM6COi14",
+    "thread:PRRT_kwDOSF9kNM6COi1I",
+    "thread:PRRT_kwDOSF9kNM6COi1d",
+    "thread:PRRT_kwDOSF9kNM6COi1x",
+    "thread:PRRT_kwDOSF9kNM6COi2A",
+    "thread:PRRT_kwDOSF9kNM6COi2H",
+    "thread:PRRT_kwDOSF9kNM6COi2N",
+    "thread:PRRT_kwDOSF9kNM6COi2Z",
+    "thread:PRRT_kwDOSF9kNM6COi2j"
+  ],
+  "fetched_at": "2026-05-15T01:02:04.766Z",
+  "schema_version": "v1",
+  "commit_sha": "6f9e784638d6f6885c43975513cb96c9a68b4910",
+  "title": "feat(tools): save-ai-memory/process-extract.ts — canonical TS for AI-memory preservation",
+  "state": "MERGED",
+  "merged_at": "2026-05-15T01:01:38Z",
+  "head_ref": "feat/save-ai-memory-ts-tool-otto-cli-2026-05-15"
+}

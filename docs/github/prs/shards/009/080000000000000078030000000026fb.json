@@ -1,0 +1,12 @@
+{
+  "pr_number": 9979,
+  "archive_path": "docs/history/pr-reviews/PR-9979-docs-research-pilot-wave-done-right-stabilization-stack-four-register-discipline.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-02T18:36:48.755Z",
+  "schema_version": "v1",
+  "commit_sha": "7f60a7506c2fae57a5f2b3dbdd557290d8effe64",
+  "title": "docs(research): pilot-wave done right — stabilization stack + four-register discipline",
+  "state": "MERGED",
+  "merged_at": "2026-08-02T18:36:11Z",
+  "head_ref": "research/pilot-wave-done-right-stabilization-stack-20260802"
+}

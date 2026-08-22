@@ -1,0 +1,12 @@
+{
+  "pr_number": 9536,
+  "archive_path": "docs/history/pr-reviews/PR-9536-feat-llmtv-publish-room-transcripts-to-root-site.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-08T21:38:27.345Z",
+  "schema_version": "v1",
+  "commit_sha": "d8b0d6494f9fe2c46b4b679f64336bce1e3c692e",
+  "title": "feat(llmtv): publish room transcripts to root site",
+  "state": "MERGED",
+  "merged_at": "2026-07-08T21:38:02Z",
+  "head_ref": "codex/room-root-site-readout"
+}

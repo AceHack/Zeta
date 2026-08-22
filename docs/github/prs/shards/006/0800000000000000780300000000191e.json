@@ -1,0 +1,12 @@
+{
+  "pr_number": 6430,
+  "archive_path": "docs/history/pr-reviews/PR-6430-feat-b-0965-shield-the-git-bash-install-routing-branch-6-6-install-surfaces.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-01T16:59:24.018Z",
+  "schema_version": "v1",
+  "commit_sha": "5a68568411f7c874658fee0a9985a38c76d5b6e6",
+  "title": "feat(B-0965): shield the git-bash install-routing branch (6/6 install surfaces)",
+  "state": "MERGED",
+  "merged_at": "2026-06-01T16:58:59Z",
+  "head_ref": "claude/pr-review-hUVTQ"
+}

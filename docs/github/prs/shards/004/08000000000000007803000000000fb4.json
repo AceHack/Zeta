@@ -1,0 +1,15 @@
+{
+  "pr_number": 4020,
+  "archive_path": "docs/history/pr-reviews/PR-4020-backlog-b-0610-amazon-orders-extract-v3-design-pass.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7B8phK",
+    "thread:PRRT_kwDOSF9kNM6Cm47S"
+  ],
+  "fetched_at": "2026-05-17T02:45:21.494Z",
+  "schema_version": "v1",
+  "commit_sha": "e6e0093491df2198578964d80782563a06477fa5",
+  "title": "backlog(B-0610): amazon-orders-extract v3 design pass",
+  "state": "MERGED",
+  "merged_at": "2026-05-17T02:45:05Z",
+  "head_ref": "feat/b0610-amazon-orders-extract-v3-design-pass-2026-05-16"
+}

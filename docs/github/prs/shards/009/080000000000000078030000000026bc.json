@@ -1,0 +1,23 @@
+{
+  "pr_number": 9916,
+  "archive_path": "docs/history/pr-reviews/PR-9916-feat-design-restore-iris-s-browser-mesh-node-with-the-announce-fold-security-gap.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7cUn0g",
+    "comment:PRRC_kwDOSF9kNM7cUn0i",
+    "comment:PRRC_kwDOSF9kNM7cUn0j",
+    "comment:PRRC_kwDOSF9kNM7cUn0k",
+    "comment:PRRC_kwDOSF9kNM7cUn0l",
+    "thread:PRRT_kwDOSF9kNM6VqT9X",
+    "thread:PRRT_kwDOSF9kNM6VqT9Z",
+    "thread:PRRT_kwDOSF9kNM6VqT9a",
+    "thread:PRRT_kwDOSF9kNM6VqT9b",
+    "thread:PRRT_kwDOSF9kNM6VqT9c"
+  ],
+  "fetched_at": "2026-08-01T20:53:00.461Z",
+  "schema_version": "v1",
+  "commit_sha": "656392a879ceefe0fb65c9e62322d236fc20736c",
+  "title": "feat(design): restore Iris's browser mesh node — with the announce/fold security gap documented",
+  "state": "MERGED",
+  "merged_at": "2026-08-01T20:52:33Z",
+  "head_ref": "shadow/iris-browser-mesh-node"
+}

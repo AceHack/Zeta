@@ -1,0 +1,12 @@
+{
+  "pr_number": 10282,
+  "archive_path": "docs/history/pr-reviews/PR-10282-docs-letters-rfc-auto-revert-healer-revert-as-pr-design-081kzhgp45v-actuator-hal.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-10T06:40:50.212Z",
+  "schema_version": "v1",
+  "commit_sha": "49acf556132484330602109b31b784e14da53612",
+  "title": "docs(letters): RFC — auto-revert healer, revert-as-PR design (081KZHGP45V actuator half)",
+  "state": "MERGED",
+  "merged_at": "2026-08-10T06:40:13Z",
+  "head_ref": "otto/auto-revert-rfc"
+}

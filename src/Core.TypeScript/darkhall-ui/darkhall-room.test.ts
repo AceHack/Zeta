@@ -40,6 +40,7 @@ import {
   type RoomRunTranscript,
 } from "./darkhall-room";
 import { renderLlmtvDocument } from "./darkhall-tv";
+import { DARK_HALL_CAUSAL_HANDOFF_READOUT_SCHEMA, DARK_HALL_CAUSAL_READOUT_SCHEMA } from "./darkhall-causal-readout";
 import { DARK_HALL_DATABASE_READOUT_SCHEMA, type DarkHallDatabaseReadout } from "./darkhall-database-readout";
 
 const css = readFileSync(join(import.meta.dir, "darkhall-room.css"), "utf-8");
@@ -61,6 +62,7 @@ const heatTreaty = JSON.parse(
     readonly attentionPpm: number;
     readonly temperaturePpm: number;
     readonly band: "cold" | "warm" | "hot" | "critical";
+    readonly fidelity: "exact" | "saturated" | "below-resolution" | "out-of-domain";
   }[];
   readonly blackBodyCases: readonly {
     readonly id: string;
@@ -296,6 +298,99 @@ describe("Dark Hall CSS room UI", () => {
     expect(html).toContain(`<code>${continuationToken}</code>`);
   });
 
+  it("renders later corrections without implying backward execution or history rewrites", () => {
+    const withCausalReadout: RoomRunTranscript = {
+      ...transcript,
+      causalReadout: {
+        schema: DARK_HALL_CAUSAL_READOUT_SCHEMA,
+        sourceSchema: "zeta.browser-causal-correction-ledger.v1",
+        executionDirection: "forward-only",
+        appendOnly: true,
+        rewritesHistory: false,
+        maxCorrections: 4,
+        remainingCapacity: 3,
+        admission: "open",
+        corrections: [
+          {
+            sourceTabId: "tab-b",
+            sequence: "9007199254740994",
+            reinterpretsThrough: "9007199254740993",
+            deltaRows: 2,
+          },
+        ],
+        feedback: null,
+      },
+      causalHandoffReadout: {
+        schema: DARK_HALL_CAUSAL_HANDOFF_READOUT_SCHEMA,
+        localTabId: "tab-a",
+        maxCorrections: 4,
+        pendingHandoffs: 1,
+        maxPendingHandoffs: 3,
+        status: "offered",
+        direction: "outbound",
+        handoffId: "handoff/room",
+        peerTabId: "tab-b",
+        correctionCount: 1,
+        admittedCorrections: 0,
+        feedback: null,
+      },
+    };
+    const html = renderDarkHallRoomHtml(withCausalReadout);
+
+    expect(html).toContain(`data-causal-readout="${DARK_HALL_CAUSAL_READOUT_SCHEMA}"`);
+    expect(html).toContain('data-execution-direction="forward-only"');
+    expect(html).toContain('data-rewrites-history="false"');
+    expect(html).toContain('data-correction-count="1"');
+    expect(html).toContain('data-correction-capacity="4"');
+    expect(html).toContain('data-correction-remaining="3"');
+    expect(html).toContain('data-correction-admission="open"');
+    expect(html).toContain('data-correction-source="tab-b"');
+    expect(html).toContain('data-correction-sequence="9007199254740994"');
+    expect(html).toContain('data-reinterprets-through="9007199254740993"');
+    expect(html).toContain("<dt>direction</dt><dd>forward-only</dd>");
+    expect(html).toContain("history 9007199254740993");
+    expect(html).toContain("correction 9007199254740994");
+    expect(html).toContain("source tab-b");
+    expect(html).toContain(`data-causal-handoff-readout="${DARK_HALL_CAUSAL_HANDOFF_READOUT_SCHEMA}"`);
+    expect(html).toContain('data-causal-handoff-status="offered"');
+    expect(html).toContain('data-causal-handoff-direction="outbound"');
+    expect(html).toContain('data-causal-handoff-id="handoff/room"');
+    expect(html).toContain('data-causal-handoff-peer="tab-b"');
+    expect(html).toContain('data-causal-handoff-corrections="1"');
+    expect(html).toContain('data-causal-handoff-admitted="0"');
+    expect(html).toContain('data-causal-handoff-pending="1"');
+    expect(html).toContain('data-causal-handoff-capacity="3"');
+    expect(html).toContain("peer handoff");
+    expect(html).toContain("1 records · 0 new · 1 / 3 pending");
+    expect(css).toContain(".zeta-room-causality");
+    expect(css).toContain(".zeta-causal-correction");
+    expect(css).toContain(".zeta-causal-handoff");
+    expect(css).not.toContain("animation:");
+
+    const llmtv = renderLlmtvDocument(roomTranscriptToLlmtv(withCausalReadout));
+    expect(llmtv).toContain(`data-causal-readout="${DARK_HALL_CAUSAL_READOUT_SCHEMA}"`);
+    expect(llmtv).toContain('data-correction-admission="open"');
+    expect(llmtv).toContain('data-correction-count="1"');
+    expect(llmtv).toContain('data-source="tab-b"');
+    expect(llmtv).toContain("9007199254740993 &rarr; 9007199254740994");
+    expect(llmtv).toContain(`data-causal-handoff-readout="${DARK_HALL_CAUSAL_HANDOFF_READOUT_SCHEMA}"`);
+    expect(llmtv).toContain('data-causal-handoff-status="offered"');
+    expect(llmtv).toContain('data-causal-handoff-direction="outbound"');
+    expect(llmtv).toContain('data-causal-handoff-id="handoff/room"');
+    expect(llmtv).toContain('data-causal-handoff-peer="tab-b"');
+    expect(llmtv).toContain('data-causal-handoff-pending="1"');
+    expect(llmtv).toContain('data-causal-handoff-capacity="3"');
+    expect(llmtv).toContain("handoff · offered");
+  });
+
+  it("keeps causal rendering additive for transcripts without a readout", () => {
+    const html = renderDarkHallRoomHtml(transcript);
+
+    expect(html).not.toContain("zeta-room-causality");
+    expect(html).not.toContain("data-causal-readout");
+    expect(html).not.toContain("data-causal-handoff-readout");
+  });
+
   it("projects browser tab ownership and liveness into CSS-addressable room state", () => {
     const html = renderDarkHallRoomHtml({ ...transcript, browserTabReadout });
 
@@ -411,7 +506,12 @@ describe("Dark Hall CSS room UI", () => {
 
   it("projects heat rows into compact provenance receipts without changing the heat summary", () => {
     expect(heatReceiptPpm(1)).toBe(62_500);
-    expect(heatReceiptPpm(99)).toBe(1_000_000);
+    // Was `expect(heatReceiptPpm(99)).toBe(1_000_000)` — that assertion PINNED the defect:
+    // the old linear encoder saturated at 16 units, so 99 units and 1_000_000 units were the
+    // same picture. 99 units now reads below the ceiling and below `critical`
+    // (081M00TYT8N087G0R003MPMRX9); saturation is reported as a value, not as a maxed gauge.
+    expect(heatReceiptPpm(99)).toBe(415_240);
+    expect(heatReceiptPpm(99)).toBeLessThan(heatReceiptPpm(1_000));
 
     const receipts = heatReceiptsFromRows(heatRows, { source: "darkhall/room" });
 
@@ -429,6 +529,23 @@ describe("Dark Hall CSS room UI", () => {
       signals: ["denied"],
       heatKinds: ["room-boundary.door-denied"],
       reasons: ["darkhall -> glass refused"],
+      // Appended by the schema-evolution decision
+      // (docs/research/2026-08-14-how-a-published-four-oracle-schema-acquires-a-field.md):
+      // three OPTIONAL per-rail fidelity keys on `zeta.heat.receipt.v1`. Every
+      // value key above is unchanged — this row is a healthy receipt, so all
+      // three read `exact`, and the diff against the pre-decision expectation is
+      // purely additive. `081M01400RZ087G0R000PS3VJG`.
+      heatFidelity: "exact",
+      pressureFidelity: "exact",
+      storageFidelity: "exact",
+      // 081M01400RZ087G0R000PS3VJG — the two optional signal-provenance keys.
+      // This row carries `signals: ["denied"]` on the wire, so the channel was READ
+      // (`reported`) and it handed over one token. Pinned here rather than left to
+      // the key-set audit: `zeta.heat.receipt.v1` is bound by TypeScript alone, so
+      // no cross-oracle key-set check compares it and the value vector is the only
+      // guard that an oracle quietly dropping these keys would trip.
+      signalSource: "reported",
+      signalObservations: 1,
     });
     expect(heatReceiptFromRow(horizonHeat).outcome).toBe("storage-error");
     expect(heatReceiptFromRow(horizonHeat).policy).toBe("host-export");
@@ -666,6 +783,11 @@ describe("Dark Hall CSS room UI", () => {
         temperaturePpm: vector.temperaturePpm,
         band: vector.band,
         attentionPpm: vector.attentionPpm,
+        // The TypeScript encoder must agree with the committed treaty vector on
+        // `fidelity` too, not only on the value keys. This is the cross-oracle
+        // half: `src/Core/Heat.fs` `TemperatureReadout.fidelityOfPpm` is pinned
+        // to the same rows by `QSharpOracle.Tests.fs`.
+        fidelity: vector.fidelity,
       });
     }
 

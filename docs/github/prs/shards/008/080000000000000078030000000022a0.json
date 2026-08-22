@@ -1,0 +1,12 @@
+{
+  "pr_number": 8864,
+  "archive_path": "docs/history/pr-reviews/PR-8864-feat-algebra-bit-by-bit-growth-complete-4-7-matrix-documentation.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-21T05:12:13.841Z",
+  "schema_version": "v1",
+  "commit_sha": "a664123d6eea9aacfca8890203d53b3a14d049ea",
+  "title": "feat(algebra): bit-by-bit growth + complete 4×7 matrix documentation",
+  "state": "MERGED",
+  "merged_at": "2026-06-21T05:11:49Z",
+  "head_ref": "alexa/close-matrix"
+}

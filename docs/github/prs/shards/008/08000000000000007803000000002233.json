@@ -1,0 +1,12 @@
+{
+  "pr_number": 8755,
+  "archive_path": "docs/history/pr-reviews/PR-8755-feat-csharp-schemacodegen-c-native-codegen-from-ir-for-typed-surfaces-approach-b.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-20T17:25:31.148Z",
+  "schema_version": "v1",
+  "commit_sha": "32141724a0384298060bae3dcb42fbae7df07dd6",
+  "title": "feat(csharp): SchemaCodegen — C#-native codegen-from-IR for typed surfaces (approach B)",
+  "state": "MERGED",
+  "merged_at": "2026-06-20T17:25:04Z",
+  "head_ref": "otto/csharp-schema-codegen-B"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 12337,
+  "archive_path": "docs/history/pr-reviews/PR-12337-fix-observe-the-corpus-baseline-test-failed-precisely-when-the-feature-started-w.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-19T10:55:53.826Z",
+  "schema_version": "v1",
+  "commit_sha": "fbe0f8115a738c64458f067854396cdcb98150f0",
+  "title": "fix(observe): the corpus baseline test failed precisely when the feature started working",
+  "state": "MERGED",
+  "merged_at": "2026-08-19T10:55:16Z",
+  "head_ref": "shadow/fix-attestation-corpus-baseline-drift"
+}

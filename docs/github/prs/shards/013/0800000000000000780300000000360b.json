@@ -1,0 +1,23 @@
+{
+  "pr_number": 13835,
+  "archive_path": "docs/history/pr-reviews/PR-13835-feat-drift-dashboard-a-check-never-observed-must-never-render-as-one-that-passed.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7krrCY",
+    "comment:PRRC_kwDOSF9kNM7krrCb",
+    "comment:PRRC_kwDOSF9kNM7krrCe",
+    "comment:PRRC_kwDOSF9kNM7krzp-",
+    "comment:PRRC_kwDOSF9kNM7ksR6J",
+    "thread:PRRT_kwDOSF9kNM6baXYb",
+    "thread:PRRT_kwDOSF9kNM6baXYe",
+    "thread:PRRT_kwDOSF9kNM6baXYg",
+    "thread:PRRT_kwDOSF9kNM6badTy",
+    "thread:PRRT_kwDOSF9kNM6bayC_"
+  ],
+  "fetched_at": "2026-08-22T19:56:58.435Z",
+  "schema_version": "v1",
+  "commit_sha": "bcd768e1fe619cc4487a58be24a3434ffd3225b3",
+  "title": "feat(drift-dashboard): a check never observed must never render as one that passed",
+  "state": "MERGED",
+  "merged_at": "2026-08-22T19:56:17Z",
+  "head_ref": "feat/drift-dashboard"
+}

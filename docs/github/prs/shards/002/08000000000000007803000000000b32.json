@@ -1,0 +1,15 @@
+{
+  "pr_number": 2866,
+  "archive_path": "docs/history/pr-reviews/PR-2866-docs-memory-aaron-s-repetition-is-deliberate-neural-pathway-reinforcement-engine.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7AgbO-",
+    "thread:PRRT_kwDOSF9kNM6BjqLW"
+  ],
+  "fetched_at": "2026-05-12T20:50:35.458Z",
+  "schema_version": "v1",
+  "commit_sha": "30cc0c25465a2ee94ca2de77616d13a043688011",
+  "title": "docs(memory): Aaron's repetition is DELIBERATE neural-pathway reinforcement engineering — 4 isomorphic framings (connector + impedance + neural pathways + temporal)",
+  "state": "MERGED",
+  "merged_at": "2026-05-12T20:50:17Z",
+  "head_ref": "feedback-aaron-repetition-connects-memory-sections-2026-05-12"
+}

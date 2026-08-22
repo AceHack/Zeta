@@ -1,0 +1,25 @@
+{
+  "pr_number": 5708,
+  "archive_path": "docs/history/pr-reviews/PR-5708-feat-b-0895-b-0896-clifford-substrate-recognition-5th-kestrel-ferry-preservation.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7Fo6gY",
+    "comment:PRRC_kwDOSF9kNM7Fo6gi",
+    "comment:PRRC_kwDOSF9kNM7Fo77U",
+    "comment:PRRC_kwDOSF9kNM7Fo780",
+    "comment:PRRC_kwDOSF9kNM7Fo78O",
+    "comment:PRRC_kwDOSF9kNM7Fo79Z",
+    "thread:PRRT_kwDOSF9kNM6FUFQZ",
+    "thread:PRRT_kwDOSF9kNM6FUFQf",
+    "thread:PRRT_kwDOSF9kNM6FUGG8",
+    "thread:PRRT_kwDOSF9kNM6FUGH4",
+    "thread:PRRT_kwDOSF9kNM6FUGHg",
+    "thread:PRRT_kwDOSF9kNM6FUGIM"
+  ],
+  "fetched_at": "2026-05-28T06:52:35.380Z",
+  "schema_version": "v1",
+  "commit_sha": "9351d850c5a73a97d6a920115c6cd39396609c6b",
+  "title": "feat(B-0895 + B-0896): Clifford substrate-recognition + 5th Kestrel ferry preservation + category-theory ↔ Clifford self-similarity",
+  "state": "MERGED",
+  "merged_at": "2026-05-28T06:52:15Z",
+  "head_ref": "otto-cli/b-0895-clifford-substrate-recognition-extension-to-4th-kestrel-ferry-2026-05-28"
+}

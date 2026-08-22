@@ -1,0 +1,21 @@
+{
+  "pr_number": 5343,
+  "archive_path": "docs/history/pr-reviews/PR-5343-docs-backlog-b-0831-ci-cascade-6-full-install-cluster-auto-join-eliminate-routin.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7FIeTg",
+    "comment:PRRC_kwDOSF9kNM7FIeUC",
+    "comment:PRRC_kwDOSF9kNM7FIeUa",
+    "comment:PRRC_kwDOSF9kNM7FIeUo",
+    "thread:PRRT_kwDOSF9kNM6E8nW4",
+    "thread:PRRT_kwDOSF9kNM6E8nWD",
+    "thread:PRRT_kwDOSF9kNM6E8nWa",
+    "thread:PRRT_kwDOSF9kNM6E8nWu"
+  ],
+  "fetched_at": "2026-05-26T22:59:17.724Z",
+  "schema_version": "v1",
+  "commit_sha": "1072f569ecab636c6060c8f660badd46e87ed8ef",
+  "title": "docs(backlog): B-0831 — CI cascade #6 full-install + cluster-auto-join (eliminate routine human physical USB test)",
+  "state": "MERGED",
+  "merged_at": "2026-05-26T22:58:58Z",
+  "head_ref": "otto/b-0831-ci-cascade-6-full-install-cluster-auto-join-no-human-test-2026-05-26"
+}

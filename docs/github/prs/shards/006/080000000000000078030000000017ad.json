@@ -1,0 +1,12 @@
+{
+  "pr_number": 6061,
+  "archive_path": "docs/history/pr-reviews/PR-6061-docs-b-0936-split-oversized-tonal-momentum-rule-into-hub-satellite-40k-auto-load.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-29T23:30:53.781Z",
+  "schema_version": "v1",
+  "commit_sha": "9cbc773dc4ee8df8502e968a7817797d3fb79d05",
+  "title": "docs(B-0936): split oversized tonal-momentum rule into hub + satellite (40k auto-load budget)",
+  "state": "MERGED",
+  "merged_at": "2026-05-29T23:30:36Z",
+  "head_ref": "otto-cli/b0936-split-oversized-tonal-momentum-rule-2026-05-29"
+}

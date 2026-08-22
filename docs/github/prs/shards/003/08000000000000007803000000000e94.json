@@ -1,0 +1,17 @@
+{
+  "pr_number": 3732,
+  "archive_path": "docs/history/pr-reviews/PR-3732-chore-b-0549-decompose-b-0549-into-b-0551.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7B1n-E",
+    "comment:PRRC_kwDOSF9kNM7B1n-N",
+    "thread:PRRT_kwDOSF9kNM6Chl3d",
+    "thread:PRRT_kwDOSF9kNM6Chl3g"
+  ],
+  "fetched_at": "2026-05-16T08:18:18.544Z",
+  "schema_version": "v1",
+  "commit_sha": "d7cff8aa059724b475597ac29810757b4f84c7ed",
+  "title": "chore(b-0549): decompose B-0549 into B-0551",
+  "state": "MERGED",
+  "merged_at": "2026-05-16T08:18:01Z",
+  "head_ref": "lior/decompose-b0549"
+}

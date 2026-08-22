@@ -1,0 +1,12 @@
+{
+  "pr_number": 7223,
+  "archive_path": "docs/history/pr-reviews/PR-7223-docs-research-bold-weight-nuances-are-an-objective-depth-channel-cross-person-3d.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-09T06:12:19.048Z",
+  "schema_version": "v1",
+  "commit_sha": "8a8b220a0f4d49fb0eafc153f1359f10e62d3628",
+  "title": "docs(research): bold/weight nuances are an objective depth channel — cross-person 3D confirms inter-subjective objectivity; grounds the LLM-TV depth tiers",
+  "state": "MERGED",
+  "merged_at": "2026-06-09T06:11:57Z",
+  "head_ref": "otto/research-bold-weight-objective-depth-channel-intersubjective-objectivity"
+}

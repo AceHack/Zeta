@@ -1,0 +1,15 @@
+{
+  "pr_number": 3239,
+  "archive_path": "docs/history/pr-reviews/PR-3239-chore-hygiene-exclude-gemini-launchd-service-plist-from-machine-specific-content.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7BXwAh",
+    "thread:PRRT_kwDOSF9kNM6CL_VX"
+  ],
+  "fetched_at": "2026-05-14T21:05:29.617Z",
+  "schema_version": "v1",
+  "commit_sha": "1e0bc3babd97c797d85643c2861874ac0f744ea7",
+  "title": "chore(hygiene): exclude .gemini/{launchd,service}/*.plist from machine-specific-content audit",
+  "state": "MERGED",
+  "merged_at": "2026-05-14T21:05:05Z",
+  "head_ref": "otto/audit-machine-specific-exclude-plists-2026-05-14"
+}

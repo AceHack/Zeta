@@ -1,4 +1,5 @@
 import { describe, test, expect, beforeEach, afterEach } from "bun:test";
+import { waitUntil } from "../testing/deterministic-async";
 import { existsSync, mkdtempSync, readFileSync, rmSync } from "node:fs";
 import { join } from "node:path";
 import { tmpdir } from "node:os";
@@ -649,7 +650,13 @@ describe("shadow-observer — --loop outer restart integration (slice 4)", () =>
       .map((l) => JSON.parse(l) as ShadowEvent);
   }
 
-  test("--loop 100 --once --dry-run restarts: log shows ≥2 started events within 1200ms", async () => {
+  // WAS "log shows >=2 started events within 1200ms" -- and the 1200ms was the assertion. A
+  // subprocess spawn plus two 100ms loop iterations does not reliably fit in 1200ms on a
+  // contended runner, so the test measured the runner. The PROPERTY is "the outer loop
+  // restarts", and it is unchanged; only the wall-clock bound on how fast it must do so is
+  // gone. That bound was never the thing worth defending: a restart loop that takes 3 seconds
+  // under load is not a defect, and this test called it one.
+  test("--loop 100 --once --dry-run restarts: the log accumulates >=2 started events", async () => {
     // Use --detect-cmd false so cycles complete instantly (no osascript overhead)
     const proc = Bun.spawn(
       [
@@ -660,13 +667,16 @@ describe("shadow-observer — --loop outer restart integration (slice 4)", () =>
       ],
       { stdout: "ignore", stderr: "ignore" },
     );
-    await Bun.sleep(1200);
+    await waitUntil(() => readEvents().filter((e) => e.type === "started").length >= 2, {
+      timeoutMs: 30_000,
+      describe: "the outer loop to log two 'started' events",
+    });
     proc.kill("SIGTERM");
     await proc.exited;
     const events = readEvents();
     const startedCount = events.filter((e) => e.type === "started").length;
     expect(startedCount).toBeGreaterThanOrEqual(2);
-  });
+  }, 30_000);
 
   test("--loop 100 --detect-cmd 'echo hi' --once --dry-run --delay 0: detection runs across restarts", async () => {
     const proc = Bun.spawn(
@@ -679,29 +689,44 @@ describe("shadow-observer — --loop outer restart integration (slice 4)", () =>
       ],
       { stdout: "ignore", stderr: "ignore" },
     );
-    await Bun.sleep(600);
+    await waitUntil(() => readEvents().filter((e) => e.type === "detected").length >= 2, {
+      timeoutMs: 30_000,
+      describe: "detection to run on two separate restarts",
+    });
     proc.kill("SIGTERM");
     await proc.exited;
     const events = readEvents();
     const detectedCount = events.filter((e) => e.type === "detected").length;
     expect(detectedCount).toBeGreaterThanOrEqual(2);
-  });
+    // Per-test timeout, because the waitUntil deadline above exceeds bun's 5000ms default and
+    // the runner would otherwise kill the test before waitUntil could name what never arrived.
+  }, 30_000);
 
   test("SIGTERM stops outer loop: no new started events appear after kill", async () => {
     const proc = Bun.spawn(
       ["bun", ZETA_SHADOW, "--loop", "2000", "--once", "--dry-run", "--log-file", logPath()],
       { stdout: "ignore", stderr: "ignore" },
     );
-    // Let one cycle run, then kill
-    await Bun.sleep(300);
+    // Let one cycle run, then kill. First sleep replaced by the event it was waiting for.
+    await waitUntil(() => readEvents().some((e) => e.type === "started"), {
+      timeoutMs: 30_000,
+      describe: "the first cycle to start",
+    });
     proc.kill("SIGTERM");
     await proc.exited;
     const countAfterKill = readEvents().filter((e) => e.type === "started").length;
-    // Wait and verify no extra restarts happened (loopMs=2000 so restart won't trigger before kill)
+    // THE ONE SLEEP THAT STAYS, and the registry row says why. This asserts an ABSENCE -- that
+    // no further 'started' event ever appears -- and an absence has no arrival to poll for.
+    // `waitUntil` can only wait for something to HAPPEN; the only way to evidence that nothing
+    // happened is to let time pass and look. Declared in registry/wall-clock-test-allowlist.json
+    // rather than hidden, because the honest form of an unavoidable wall-clock wait is a named
+    // one. Note it is also the SAFE direction: extra elapsed time can only make this test
+    // stricter, never flakier -- the failure mode of a slow machine here is a MORE thorough
+    // check, which is the opposite of every other sleep this change removed.
     await Bun.sleep(300);
     const countAfterWait = readEvents().filter((e) => e.type === "started").length;
     expect(countAfterKill).toBe(countAfterWait);
-  });
+  }, 30_000);
 });
 
 describe("shadow-observer — zeta-shadow.ts smoke tests (slice 4)", () => {

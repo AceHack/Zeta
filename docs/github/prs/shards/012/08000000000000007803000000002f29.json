@@ -1,0 +1,12 @@
+{
+  "pr_number": 12073,
+  "archive_path": "docs/history/pr-reviews/PR-12073-ferry-ip-questionable-langan-s-ctmu-the-syntactor-lands-the-super-tautology-cann.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-18T20:22:00.345Z",
+  "schema_version": "v1",
+  "commit_sha": "99db4d85cf6ec02d7ecb8e3c4736c22357dd5599",
+  "title": "ferry(ip-questionable): Langan's CTMU — the syntactor lands, the super-tautology cannot",
+  "state": "MERGED",
+  "merged_at": "2026-08-18T20:21:21Z",
+  "head_ref": "shadow/ferry-ctmu-langan"
+}

@@ -1,0 +1,16 @@
+{
+  "pr_number": 4883,
+  "archive_path": "docs/history/pr-reviews/PR-4883-feat-riven-update-riven-agent-configuration-from-4832-decomposed.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7EbF_N",
+    "comment:PRRC_kwDOSF9kNM7EdWOh",
+    "thread:PRRT_kwDOSF9kNM6EbJ1_"
+  ],
+  "fetched_at": "2026-05-25T04:16:17.592Z",
+  "schema_version": "v1",
+  "commit_sha": "c021d4d2d06baffc1410c14b8df9aacdcf147e82",
+  "title": "feat(riven): Update Riven agent configuration from #4832 (decomposed)",
+  "state": "MERGED",
+  "merged_at": "2026-05-25T04:15:57Z",
+  "head_ref": "riven-config-update-4832-5"
+}

@@ -1,0 +1,21 @@
+{
+  "pr_number": 4968,
+  "archive_path": "docs/history/pr-reviews/PR-4968-docs-require-work-anchors-for-organization-discussions.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7Eqde2",
+    "comment:PRRC_kwDOSF9kNM7EqdeK",
+    "comment:PRRC_kwDOSF9kNM7Eqdeh",
+    "comment:PRRC_kwDOSF9kNM7Eqdes",
+    "thread:PRRT_kwDOSF9kNM6Empx1",
+    "thread:PRRT_kwDOSF9kNM6EmpxU",
+    "thread:PRRT_kwDOSF9kNM6Empxk",
+    "thread:PRRT_kwDOSF9kNM6Empxr"
+  ],
+  "fetched_at": "2026-05-25T18:16:01.956Z",
+  "schema_version": "v1",
+  "commit_sha": "69750276f2d2ea10abce661440b52f359e357c7a",
+  "title": "docs: require work anchors for organization discussions",
+  "state": "MERGED",
+  "merged_at": "2026-05-25T18:15:44Z",
+  "head_ref": "codex/discussion-work-anchors"
+}

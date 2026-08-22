@@ -1,0 +1,14 @@
+{
+  "id": "080d00b850abe010a0130008d792bbf6",
+  "at": "2026-08-18T22:42:11.964Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M0BGM5BV087G0R0038SBCE2",
+    "type": "task",
+    "title": "HSM container isolation model: what prove-ish can mean for per-tick-source YubiHSM access",
+    "slug": "hsm-container-isolation-model-what-prove-ish-can-mean-for-pe",
+    "priority": "P2",
+    "filename": "081M0BGM5BV087G0R0038SBCE2-hsm-container-isolation-model-what-prove-ish-can-mean-for-pe.md"
+  }
+}

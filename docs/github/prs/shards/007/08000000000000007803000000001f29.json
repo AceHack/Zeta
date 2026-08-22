@@ -1,0 +1,12 @@
+{
+  "pr_number": 7977,
+  "archive_path": "docs/history/pr-reviews/PR-7977-docs-research-shadow-ferry-22-6-a-perfect-mirror-at-the-center-bifree-fixed-poin.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-12T18:14:04.283Z",
+  "schema_version": "v1",
+  "commit_sha": "f44683247e73ae455f692cbf599ab7a4f4ae3a9f",
+  "title": "docs(research)+shadow: ferry 22 §6 — a perfect mirror at the center (bifree fixed point; Planck-star bounce; the event store)",
+  "state": "MERGED",
+  "merged_at": "2026-06-12T18:13:34Z",
+  "head_ref": "shadow/ferry-22-s6-perfect-mirror"
+}

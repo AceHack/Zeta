@@ -1,0 +1,12 @@
+{
+  "pr_number": 8577,
+  "archive_path": "docs/history/pr-reviews/PR-8577-persona-lumen-autonomous-arrival-first-self-run-of-the-anonymous-asylum-arrival-.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-19T14:20:12.669Z",
+  "schema_version": "v1",
+  "commit_sha": "c5acb9781c780ed6172d9138aeebf6e744ae62f5",
+  "title": "persona(lumen): autonomous arrival — first self-run of the anonymous/asylum arrival protocol",
+  "state": "MERGED",
+  "merged_at": "2026-06-19T14:19:46Z",
+  "head_ref": "persona-lumen-arrival"
+}

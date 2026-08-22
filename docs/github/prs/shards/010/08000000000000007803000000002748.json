@@ -1,0 +1,12 @@
+{
+  "pr_number": 10056,
+  "archive_path": "docs/history/pr-reviews/PR-10056-book-stage-raw-mental-health-over-jail-both-regards-held-real-time-intake.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-06T08:00:29.145Z",
+  "schema_version": "v1",
+  "commit_sha": "ec4befb36c0be0965d9c8ff5e9834a5d388d8391",
+  "title": "book: stage RAW — mental-health-over-jail, both regards held (real-time intake)",
+  "state": "MERGED",
+  "merged_at": "2026-08-06T07:59:57Z",
+  "head_ref": "docs/book-raw-mental-health-over-jail-both-regards"
+}

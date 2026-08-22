@@ -1,0 +1,12 @@
+{
+  "pr_number": 7357,
+  "archive_path": "docs/history/pr-reviews/PR-7357-docs-research-close-over-reticulum-in-a-4x4-rns-identity-from-seed-destination-h.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-09T18:29:30.633Z",
+  "schema_version": "v1",
+  "commit_sha": "eb76d09f81917fd517b3c66f086c7681b062789d",
+  "title": "docs(research): close over Reticulum in a 4x4 (RNS identity from seed, destination-hash IS ZetaId, own overlay, trunk-based TOS read) + first room is 6x6 + Reticulum to PRIOR-ART-LIST",
+  "state": "MERGED",
+  "merged_at": "2026-06-09T18:29:05Z",
+  "head_ref": "otto/close-over-reticulum-4x4-zetaid-tie-plus-6x6-rooms-plus-prior-art"
+}

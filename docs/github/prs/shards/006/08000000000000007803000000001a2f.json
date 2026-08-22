@@ -1,0 +1,12 @@
+{
+  "pr_number": 6703,
+  "archive_path": "docs/history/pr-reviews/PR-6703-feat-core-durablediplomacy-cached-polymorphic-diplomacy-over-an-infinite-stream-.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-07T01:52:27.371Z",
+  "schema_version": "v1",
+  "commit_sha": "8e994bc68d38ebeee490f422a7e3a455e07f28db",
+  "title": "feat(Core): DurableDiplomacy — cached polymorphic diplomacy over an infinite stream (git-backed agreement fold)",
+  "state": "MERGED",
+  "merged_at": "2026-06-07T01:52:07Z",
+  "head_ref": "otto/durable-diplomacy-agreement-stream"
+}

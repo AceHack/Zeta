@@ -23,7 +23,15 @@
 #  13.  llc          -- LLVM IR compiler (Oracle 13 LLVM IR substrate)
 #
 # Replaces smoke-10-toolchains.sh (added zig, rustup wasm32, llvm triad).
-# The old script is kept for backward compat; gate.yml references this one.
+#
+# NOT WIRED TO CI (corrected 2026-08-16). The line here used to read "gate.yml
+# references this one". It does not: gate.yml's full-verify job runs
+# `CI=true ./tools/setup/common/smoke-7-toolchains.sh` (the 7-language install it
+# actually performs), and no workflow in .github/workflows/ invokes smoke-13 or
+# smoke-10. So oracles 8-13 (qdk, eprover, the wasm triad, zig, rust wasm32, llvm)
+# have no smoke gate in CI even though this script exists to provide one. Left as a
+# correct local/dev tool; wiring it is a separate call, since it would make
+# full-verify newly capable of failing on toolchains it does not currently install.
 set -euo pipefail
 
 verify() {
@@ -132,14 +140,28 @@ if command -v zig >/dev/null 2>&1; then
   cat > "$ZIG_TMP/test.zig" << 'ZIGEOF'
 export fn add(a: i32, b: i32) i32 { return a + b; }
 ZIGEOF
-  zig build-exe "$ZIG_TMP/test.zig" \
-    -target wasm32-freestanding \
-    -O ReleaseSmall \
-    --export=add \
-    -femit-bin="$ZIG_TMP/test.wasm" 2>/dev/null \
-    && wasm-validate "$ZIG_TMP/test.wasm" 2>/dev/null \
-    && echo "  zig wasm32-freestanding: OK" \
-    || echo "  WARNING: zig wasm32-freestanding compilation failed"
+  # This is the only check in the file that verifies a toolchain WORKS rather than
+  # merely that it EXISTS — and until 2026-08-16 it was also the only one that could
+  # not fail in CI. Every sibling below/above escalates its WARNING to `exit 1` when
+  # CI=true; this one warned and returned 0, so a zig that is installed but cannot
+  # emit wasm32-freestanding passed the "all 13 toolchains functional" smoke check.
+  # The presence half already failed closed in CI (see the `else` branch), which made
+  # the asymmetry easy to miss: the substrate could be present and broken.
+  if zig build-exe "$ZIG_TMP/test.zig" \
+       -target wasm32-freestanding \
+       -O ReleaseSmall \
+       --export=add \
+       -femit-bin="$ZIG_TMP/test.wasm" 2>/dev/null \
+     && wasm-validate "$ZIG_TMP/test.wasm" 2>/dev/null; then
+    echo "  zig wasm32-freestanding: OK"
+  else
+    echo "  WARNING: zig wasm32-freestanding compilation failed"
+    if [ "${CI:-}" = "true" ]; then
+      echo "FAIL: zig cannot emit a valid wasm32-freestanding module (Oracle 11 substrate broken)" >&2
+      rm -rf "$ZIG_TMP"
+      exit 1
+    fi
+  fi
   rm -rf "$ZIG_TMP"
 else
   echo "  WARNING: zig not found (install via mise: zig = \"0.13.0\" in .mise.toml)"
@@ -157,7 +179,10 @@ if command -v rustup >/dev/null 2>&1; then
     echo "  wasm32-unknown-unknown: installed"
   else
     echo "  WARNING: wasm32-unknown-unknown target not installed"
-    echo "  Fix: rustup target add wasm32-unknown-unknown"
+    # The target is DECLARED on the mise rust entry (.mise.toml + .mise.full.toml,
+    # 081M05X126V087G0R0014GR9KQ) — so a miss here means the declaration did not
+    # take, not that a human forgot a step. Re-run the declarative install.
+    echo "  Fix: mise install rust  (target declared in .mise.toml; do NOT hand-add it)"
     if [ "${CI:-}" = "true" ]; then
       echo "FAIL: wasm32-unknown-unknown target required in CI" >&2
       exit 1

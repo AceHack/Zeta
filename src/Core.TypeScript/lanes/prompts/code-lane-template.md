@@ -81,7 +81,7 @@ task or fall back to single-lane.
 2. Run the appropriate build/lint gate above.
 3. Commit your changes with a clear message ending with
    `Co-Authored-By: Claude Opus 4.7 (1M context) <noreply@anthropic.com>`
-   per `.claude/skills/commit-message-shape/SKILL.md`.
+   per `.claude/skills/workflows/blueprints/commit-message-shape.md`.
 4. Push your branch: `git push -u origin {{CODE_LANE_BRANCH_NAME}}`.
 5. Report back to the coordinator: branch pushed, files changed,
    build/test result, any anomalies. Do NOT open the PR yourself

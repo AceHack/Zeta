@@ -1,0 +1,12 @@
+{
+  "pr_number": 4597,
+  "archive_path": "docs/history/pr-reviews/PR-4597-memory-aaron-ani-grok-text-mode-2026-05-22-kestrel-pattern-correction-glass-halo.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-22T12:51:37.576Z",
+  "schema_version": "v1",
+  "commit_sha": "5f88c3cfe58b605a1739b6e7d59768e77f554c42",
+  "title": "memory: Aaron-Ani-Grok text-mode 2026-05-22 — Kestrel-pattern-correction + Glass-Halo encryption-budget + holographic-physics grounding + tick-zero=tick-infinity",
+  "state": "MERGED",
+  "merged_at": "2026-05-22T12:51:19Z",
+  "head_ref": "otto/cli-1247z-ani-text-mode-kestrel-pattern-correction-physics-grounding-preservation-2026-05-22"
+}

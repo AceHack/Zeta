@@ -1,0 +1,12 @@
+{
+  "pr_number": 7359,
+  "archive_path": "docs/history/pr-reviews/PR-7359-docs-research-fingerprintable-items-are-rooms-content-addressing-meijer-types-de.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-09T18:34:29.730Z",
+  "schema_version": "v1",
+  "commit_sha": "205f945e59fd83c5284929b2e9b6c62e542494bb",
+  "title": "docs(research): fingerprintable items are rooms (content-addressing) — Meijer types-define-tests -> rooms fall out free; rooms have hats; test framework IS governance + chip8 state dedup",
+  "state": "MERGED",
+  "merged_at": "2026-06-09T18:34:03Z",
+  "head_ref": "otto/fingerprint-rooms-meijer-types-define-tests-rooms-have-hats-framework-is-governance-chip8-dedup"
+}

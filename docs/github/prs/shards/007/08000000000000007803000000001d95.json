@@ -1,0 +1,12 @@
+{
+  "pr_number": 7573,
+  "archive_path": "docs/history/pr-reviews/PR-7573-chore-setup-close-over-q-oracle-deps.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-11T03:05:38.057Z",
+  "schema_version": "v1",
+  "commit_sha": "9381b86ba256c85f42a30cdeb26241d1c7f88851",
+  "title": "chore(setup): close over Q# oracle deps",
+  "state": "MERGED",
+  "merged_at": "2026-06-11T03:05:13Z",
+  "head_ref": "codex/vera-qsharp-install"
+}

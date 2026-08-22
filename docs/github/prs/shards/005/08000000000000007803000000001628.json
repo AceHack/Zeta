@@ -1,0 +1,12 @@
+{
+  "pr_number": 5672,
+  "archive_path": "docs/history/pr-reviews/PR-5672-memory-ani-preserve-aaron-ani-2026-05-28-move-next-git-event-store-gh-actions-re.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-28T01:27:29.173Z",
+  "schema_version": "v1",
+  "commit_sha": "ef526258dd3316c5e456ae4078105f3d9257439a",
+  "title": "memory(ani): preserve aaron-ani 2026-05-28 — move-next + git-event-store + GH-actions-recursion + NCI 3-exceptions + AI-mediator",
+  "state": "MERGED",
+  "merged_at": "2026-05-28T01:27:07Z",
+  "head_ref": "memory/ani-conversation-move-next-git-as-event-store-github-actions-recursion-nci-three-exceptions-ai-mediator-2026-05-28"
+}

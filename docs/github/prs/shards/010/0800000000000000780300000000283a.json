@@ -1,0 +1,12 @@
+{
+  "pr_number": 10298,
+  "archive_path": "docs/history/pr-reviews/PR-10298-feat-observe-rs-phase-codec-encode-then-transmit-ecc.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-11T00:35:54.423Z",
+  "schema_version": "v1",
+  "commit_sha": "3cd5b893c35bf8615be0b6ffdf0a9eb27346a415",
+  "title": "feat(observe): RS phase codec — encode-then-transmit ECC",
+  "state": "MERGED",
+  "merged_at": "2026-08-11T00:35:18Z",
+  "head_ref": "alexa/encode-then-transmit"
+}

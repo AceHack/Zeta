@@ -1,0 +1,12 @@
+{
+  "pr_number": 10509,
+  "archive_path": "docs/history/pr-reviews/PR-10509-fix-passkey-clear-the-pre-existing-lint-on-passkeyproposal-the-support-guard-is-.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-14T02:34:58.046Z",
+  "schema_version": "v1",
+  "commit_sha": "0a3620806bb424dec6ab7c904545a13fcb8ea79a",
+  "title": "fix(passkey): clear the pre-existing lint on passkeyProposal — the support guard is live, the ReDoS is unreachable",
+  "state": "MERGED",
+  "merged_at": "2026-08-14T02:34:30Z",
+  "head_ref": "fix/passkey-proposal-lint-audit"
+}

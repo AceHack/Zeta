@@ -1,0 +1,12 @@
+{
+  "pr_number": 6842,
+  "archive_path": "docs/history/pr-reviews/PR-6842-docs-fs-merkle-zetafs-is-branch-scoped-a-branch-is-a-merkle-root.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-07T14:41:11.813Z",
+  "schema_version": "v1",
+  "commit_sha": "d57fcff5f213437f4fa01f70a7cbc6fa43fb52e8",
+  "title": "docs(fs-Merkle): ZetaFS is branch-scoped — a branch IS a Merkle root",
+  "state": "MERGED",
+  "merged_at": "2026-06-07T14:40:52Z",
+  "head_ref": "capture/zetafs-is-branch-scoped-merkle-root"
+}

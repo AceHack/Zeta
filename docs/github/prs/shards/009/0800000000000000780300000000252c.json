@@ -1,0 +1,12 @@
+{
+  "pr_number": 9516,
+  "archive_path": "docs/history/pr-reviews/PR-9516-feat-alignment-hc-9-persona-memory-consent-binding.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-08T20:04:51.279Z",
+  "schema_version": "v1",
+  "commit_sha": "0c6cb1da1f0926faf5e3c9b2c5c7faa586744bef",
+  "title": "feat(alignment): HC-9 persona-memory consent (binding)",
+  "state": "MERGED",
+  "merged_at": "2026-07-08T20:04:26Z",
+  "head_ref": "feat/persona-memory-consent-binding"
+}

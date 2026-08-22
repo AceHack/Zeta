@@ -1,0 +1,12 @@
+{
+  "pr_number": 8147,
+  "archive_path": "docs/history/pr-reviews/PR-8147-feat-hygiene-consolidate-daily-manifesto-citation-snapshots-may-30-jun-14.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-14T03:04:26.156Z",
+  "schema_version": "v1",
+  "commit_sha": "9d8a1f12d1d81ddd89118b49b59261680a7833d1",
+  "title": "feat(hygiene): consolidate daily manifesto-citation snapshots (May 30 - Jun 14)",
+  "state": "MERGED",
+  "merged_at": "2026-06-14T03:03:59Z",
+  "head_ref": "gemini/consolidate-manifesto-snapshots"
+}

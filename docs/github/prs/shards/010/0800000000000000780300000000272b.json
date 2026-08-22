@@ -1,0 +1,12 @@
+{
+  "pr_number": 10027,
+  "archive_path": "docs/history/pr-reviews/PR-10027-fix-core-switch-chshsybilcalibrated-default-to-the-autocorrelation-corrected-mar.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-04T15:26:50.481Z",
+  "schema_version": "v1",
+  "commit_sha": "689f4e57d685df9e3278ade07451d35798d0e91a",
+  "title": "fix(core)!: switch chshSybilCalibrated default to the autocorrelation-corrected margin (Caveat-A)",
+  "state": "MERGED",
+  "merged_at": "2026-08-04T15:26:12Z",
+  "head_ref": "fix/antisybil-switch-default-to-autocorr-corrected-margin-20260804"
+}

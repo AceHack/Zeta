@@ -1,0 +1,12 @@
+{
+  "pr_number": 9816,
+  "archive_path": "docs/history/pr-reviews/PR-9816-feat-core-wset-comonoid-port-core-copy-discard-the-naturality-discriminator.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-01T01:42:38.909Z",
+  "schema_version": "v1",
+  "commit_sha": "3cd28752bb10d8c798f5ac3a9f6263252819a66e",
+  "title": "feat(Core): WSet comonoid port (ℤ core) — copy Δ / discard ! + the naturality discriminator",
+  "state": "MERGED",
+  "merged_at": "2026-08-01T01:42:10Z",
+  "head_ref": "shadow/wset-hexagon-comonoid-port"
+}

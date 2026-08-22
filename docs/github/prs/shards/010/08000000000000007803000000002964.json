@@ -1,0 +1,12 @@
+{
+  "pr_number": 10596,
+  "archive_path": "docs/history/pr-reviews/PR-10596-fix-heartbeat-scope-merge-duty-to-automation-branches-my-oldest-first-fix-aimed-.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-14T14:01:36.756Z",
+  "schema_version": "v1",
+  "commit_sha": "24b76ac90e18462cbb738ed6c321f5b642689f52",
+  "title": "fix(heartbeat): scope merge duty to automation branches — my oldest-first fix aimed it at the held PRs",
+  "state": "MERGED",
+  "merged_at": "2026-08-14T14:00:55Z",
+  "head_ref": "fix/merge-duty-automation-only"
+}

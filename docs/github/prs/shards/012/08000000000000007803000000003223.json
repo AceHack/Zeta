@@ -1,0 +1,12 @@
+{
+  "pr_number": 12835,
+  "archive_path": "docs/history/pr-reviews/PR-12835-vision-falsifiers-are-the-currency-and-provable-decorrelation-is-what-they-buy.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-20T16:04:19.258Z",
+  "schema_version": "v1",
+  "commit_sha": "91e6c3eb6b315517f2ba89f98caadbd37ff3ef56",
+  "title": "vision: falsifiers are the currency, and provable decorrelation is what they buy",
+  "state": "MERGED",
+  "merged_at": "2026-08-20T16:03:35Z",
+  "head_ref": "vision/falsifiers-buy-provable-decorrelation"
+}

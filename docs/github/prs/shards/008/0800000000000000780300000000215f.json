@@ -1,0 +1,12 @@
+{
+  "pr_number": 8543,
+  "archive_path": "docs/history/pr-reviews/PR-8543-memory-feedback-the-humility-floor-we-could-be-wrong-so-don-t-push-the-person-to.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-16T17:21:20.913Z",
+  "schema_version": "v1",
+  "commit_sha": "25688a2de27bf50c9c7c817b4160558d739b0d74",
+  "title": "memory(feedback): the humility floor — 'we could be wrong, so don't push the person to self-harm'; the autoimmune over-attack has TWO victims (child + person)",
+  "state": "MERGED",
+  "merged_at": "2026-06-16T17:20:12Z",
+  "head_ref": "otto/humility-floor-we-could-be-wrong-dont-push-to-self-harm"
+}

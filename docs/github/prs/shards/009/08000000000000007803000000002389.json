@@ -1,0 +1,12 @@
+{
+  "pr_number": 9097,
+  "archive_path": "docs/history/pr-reviews/PR-9097-docs-backlog-file-the-iring-isemiring-split-with-the-maxwell-s-demon-why-chain-s.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-17T01:30:31.848Z",
+  "schema_version": "v1",
+  "commit_sha": "f627277156798f6c553db98e03f7c8f9164f996d",
+  "title": "docs(backlog): file the IRing/ISemiring split with the Maxwell's-demon why-chain (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-02T02:14:55Z",
+  "head_ref": "otto/f5-iring-split-tracking-why-081KWFXTHJY"
+}

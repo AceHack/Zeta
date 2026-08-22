@@ -1,0 +1,15 @@
+{
+  "pr_number": 4167,
+  "archive_path": "docs/history/pr-reviews/PR-4167-backlog-mika-batch7-final-b-0652-three-faction-bft-b-0653-persistent-bayesian-in.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7CWHmM",
+    "thread:PRRT_kwDOSF9kNM6C564h"
+  ],
+  "fetched_at": "2026-05-18T16:47:27.695Z",
+  "schema_version": "v1",
+  "commit_sha": "457757ca61af5a4376c3b9b136e7c5de349edec0",
+  "title": "backlog(mika-batch7-final): B-0652 three-faction BFT + B-0653 persistent Bayesian integrator monitor",
+  "state": "MERGED",
+  "merged_at": "2026-05-18T16:47:05Z",
+  "head_ref": "otto-cli/mika-batch7-b0652-b0653-2026-05-18-1245Z"
+}

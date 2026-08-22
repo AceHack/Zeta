@@ -1,0 +1,12 @@
+{
+  "pr_number": 11546,
+  "archive_path": "docs/history/pr-reviews/PR-11546-feat-persona-keys-the-frost-roster-can-now-notice-it-is-out-of-date-and-audits-c.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-17T16:38:11.288Z",
+  "schema_version": "v1",
+  "commit_sha": "38ce3dbdb49c7ebfe8264da166c1a7ec68a2d3dc",
+  "title": "feat(persona-keys): the FROST roster can now notice it is out of date, and audits can read the ledger",
+  "state": "MERGED",
+  "merged_at": "2026-08-17T16:37:35Z",
+  "head_ref": "shadow/frost-device-roster-checkable"
+}

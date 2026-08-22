@@ -1,0 +1,12 @@
+{
+  "pr_number": 7966,
+  "archive_path": "docs/history/pr-reviews/PR-7966-docs-research-shadow-ferry-20-the-seed-that-forgot-everything-but-is-ready-for-e.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-12T17:38:14.819Z",
+  "schema_version": "v1",
+  "commit_sha": "1c61aeeccb7572abb43d8afd972e0ef6efca5270",
+  "title": "docs(research)+shadow: ferry 20 — the seed that forgot everything but is ready for entropy (Gates' point; the empty container; the Klein glass)",
+  "state": "MERGED",
+  "merged_at": "2026-06-12T17:37:51Z",
+  "head_ref": "shadow/ferry-20-seed-empty-container"
+}

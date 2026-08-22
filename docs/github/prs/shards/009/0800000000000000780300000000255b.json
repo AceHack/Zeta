@@ -1,0 +1,12 @@
+{
+  "pr_number": 9563,
+  "archive_path": "docs/history/pr-reviews/PR-9563-feat-llmtv-project-status-sidecar-onto-hall.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-08T22:50:32.334Z",
+  "schema_version": "v1",
+  "commit_sha": "8334b5d01d7c731e71805091671c8265b9f647e7",
+  "title": "feat(llmtv): project status sidecar onto Hall",
+  "state": "MERGED",
+  "merged_at": "2026-07-08T22:50:05Z",
+  "head_ref": "codex/llmtv-status-card"
+}

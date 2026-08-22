@@ -1,0 +1,19 @@
+{
+  "pr_number": 3339,
+  "archive_path": "docs/history/pr-reviews/PR-3339-feat-rules-shadow-star-shorthand-autocomplete-marker-cold-boot-rule.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7Bbf2K",
+    "comment:PRRC_kwDOSF9kNM7Bbf2Z",
+    "comment:PRRC_kwDOSF9kNM7Bbf2h",
+    "thread:PRRT_kwDOSF9kNM6COqcY",
+    "thread:PRRT_kwDOSF9kNM6COqci",
+    "thread:PRRT_kwDOSF9kNM6COqco"
+  ],
+  "fetched_at": "2026-05-15T02:23:14.378Z",
+  "schema_version": "v1",
+  "commit_sha": "d1ee546c7182cb5ba81c4a374885159fd8e2509e",
+  "title": "feat(rules): shadow-star-shorthand-autocomplete-marker cold-boot rule",
+  "state": "MERGED",
+  "merged_at": "2026-05-15T02:22:56Z",
+  "head_ref": "feat/rule-shadow-star-shorthand-cold-boot-otto-cli-2026-05-15"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 9269,
+  "archive_path": "docs/history/pr-reviews/PR-9269-feat-parse-homoiconic-meta-grammar-kernel-the-lvl-3-futamura-seed-shadow.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-03T03:02:28.347Z",
+  "schema_version": "v1",
+  "commit_sha": "1801293613f21d9939ec7e990d63177a4e1ccd9d",
+  "title": "feat(parse): homoiconic meta-grammar kernel — the lvl-3 Futamura seed (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-03T03:02:03Z",
+  "head_ref": "otto/homoiconic-meta-grammar-kernel"
+}

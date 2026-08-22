@@ -1,0 +1,14 @@
+{
+  "id": "080d0084004d0810a013000874f12728",
+  "at": "2026-08-17T16:13:41.665Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M08802CZ087G0R0010ZE6FQ",
+    "type": "task",
+    "title": "sim as the room runner: Z-set/G-set uncertainty measurement over the injected-source seam",
+    "slug": "sim-as-the-room-runner-z-set-g-set-uncertainty-measurement-o",
+    "priority": "P2",
+    "filename": "081M08802CZ087G0R0010ZE6FQ-sim-as-the-room-runner-z-set-g-set-uncertainty-measurement-o.md"
+  }
+}

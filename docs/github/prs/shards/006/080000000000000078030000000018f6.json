@@ -1,0 +1,16 @@
+{
+  "pr_number": 6390,
+  "archive_path": "docs/history/pr-reviews/PR-6390-docs-registry-bag-4-4-c-merged-z-set-ts-reference-in-flight.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7GrYC3",
+    "comment:PRRC_kwDOSF9kNM7GrfEN",
+    "thread:PRRT_kwDOSF9kNM6GE14v"
+  ],
+  "fetched_at": "2026-06-01T10:11:08.148Z",
+  "schema_version": "v1",
+  "commit_sha": "fb282b50dcd5319f43689f2b452c6f16fa004005",
+  "title": "docs(registry): Bag → 4/4 (C# merged); Z-set TS reference in-flight",
+  "state": "MERGED",
+  "merged_at": "2026-06-01T10:10:44Z",
+  "head_ref": "otto-cli/registry-bag-4of4-zset-inflight-2026-06-01"
+}

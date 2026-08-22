@@ -1,0 +1,12 @@
+{
+  "pr_number": 7028,
+  "archive_path": "docs/history/pr-reviews/PR-7028-docs-order-is-the-sole-divergence-source-irreducible-error-clock-noise-heartbeat.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-08T05:40:57.530Z",
+  "schema_version": "v1",
+  "commit_sha": "4041d54aeb8ff6486b3e07877fa7bf4df2f1a794",
+  "title": "docs: order is the sole divergence source; irreducible error = clock noise + heartbeat noise (#7073-#7077)",
+  "state": "MERGED",
+  "merged_at": "2026-06-08T05:40:38Z",
+  "head_ref": "otto/order-is-sole-divergence-irreducible-error-clock-heartbeat-noise"
+}

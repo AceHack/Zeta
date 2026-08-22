@@ -1,0 +1,12 @@
+{
+  "pr_number": 9809,
+  "archive_path": "docs/history/pr-reviews/PR-9809-docs-e8-ferry-soraya-s-route-b-cl-8-0-verdict-file-the-versor-construction-work-.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-01T00:50:41.027Z",
+  "schema_version": "v1",
+  "commit_sha": "b20f086612c3a05132a397ef86c50e63d25cc9f1",
+  "title": "docs(e8): ferry Soraya's route-(B) Cl(8,0) verdict + file the versor-construction work-item",
+  "state": "MERGED",
+  "merged_at": "2026-08-01T00:50:08Z",
+  "head_ref": "shadow/e8-route-b-ferry"
+}

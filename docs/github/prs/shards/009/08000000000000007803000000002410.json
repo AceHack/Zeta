@@ -1,0 +1,12 @@
+{
+  "pr_number": 9232,
+  "archive_path": "docs/history/pr-reviews/PR-9232-feat-core-detour-f-endomorphism-observe-report-improve-loop.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-03T00:26:32.542Z",
+  "schema_version": "v1",
+  "commit_sha": "83405d3b244f98efe965a572a32dc7e78caae2c4",
+  "title": "feat(core): Detour<'F> endomorphism + observe->report->improve loop",
+  "state": "MERGED",
+  "merged_at": "2026-07-03T00:26:10Z",
+  "head_ref": "otto/detour-endomorphism-observe-report-improve"
+}

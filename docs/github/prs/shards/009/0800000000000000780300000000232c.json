@@ -1,0 +1,12 @@
+{
+  "pr_number": 9004,
+  "archive_path": "docs/history/pr-reviews/PR-9004-docs-research-zetaid-ties-identity-together-crypto-reticulum-bus-address-univers.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-21T20:53:42.994Z",
+  "schema_version": "v1",
+  "commit_sha": "1c4f4026ef3bf37ffe420427072b33d88bb6f691",
+  "title": "docs(research): ZetaId ties identity together — crypto/Reticulum/bus-address (universal-pointer projection)",
+  "state": "MERGED",
+  "merged_at": "2026-06-21T20:53:13Z",
+  "head_ref": "otto/research-zetaid-identity-keystone"
+}

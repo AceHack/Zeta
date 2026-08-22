@@ -11,7 +11,11 @@ keywords = ["math"]
 # proof modules including the child-floor safety invariant and the split-brain
 # reconciliation convergence proof sat outside every check. Same failure as
 # ImaginaryStack below. `lean-orphan-modules.ts` now fails the build on a silent orphan.
-defaultTargets = ["Lean4", "ImaginaryStack", "Gen", "Privacy", "Safety"]
+# Zeta23 joined defaultTargets 2026-08-22 (081M0N9SSJ1087G0R001WVSN9V): the adapted port
+# of `Zeta23/LinAlg/` from anthropics/zeta-23-lean (Apache-2.0, (c) 2026 Anthropic PBC).
+# A port that is not a default target is a port nothing compiles — the exact class
+# `lean-orphan-modules.ts` exists to close. See `Zeta23/README.md` for the register.
+defaultTargets = ["Lean4", "ImaginaryStack", "Gen", "Privacy", "Safety", "Zeta23"]
 
 [leanOptions]
 pp.unicode.fun = true # pretty-prints `fun a ↦ b`
@@ -38,3 +42,6 @@ name = "Privacy"
 
 [[lean_lib]]
 name = "Safety"
+
+[[lean_lib]]
+name = "Zeta23"

@@ -1,0 +1,12 @@
+{
+  "pr_number": 6141,
+  "archive_path": "docs/history/pr-reviews/PR-6141-consent-glass-halo-identity-binding-chain-on-aaron-s-signature.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-30T17:48:08.792Z",
+  "schema_version": "v1",
+  "commit_sha": "71c40b7db1285244aeef68ceec85e73118241307",
+  "title": "consent(glass-halo): identity-binding chain on Aaron's signature",
+  "state": "MERGED",
+  "merged_at": "2026-05-30T17:47:50Z",
+  "head_ref": "otto/aaron-glasshalo-identity-binding-2026-05-30"
+}

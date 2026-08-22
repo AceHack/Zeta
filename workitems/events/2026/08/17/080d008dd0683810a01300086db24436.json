@@ -1,0 +1,14 @@
+{
+  "id": "080d008dd0683810a01300086db24436",
+  "at": "2026-08-17T21:56:40.839Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M08VM385087G0R001DTM0K6",
+    "type": "task",
+    "title": "Compile clis/Verbs.fs — the dogfood verb surface no compiler has ever read",
+    "slug": "compile-clis-verbs-fs-the-dogfood-verb-surface-no-compiler-h",
+    "priority": "P2",
+    "filename": "081M08VM385087G0R001DTM0K6-compile-clis-verbs-fs-the-dogfood-verb-surface-no-compiler-h.md"
+  }
+}

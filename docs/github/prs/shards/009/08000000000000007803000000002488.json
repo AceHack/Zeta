@@ -1,0 +1,12 @@
+{
+  "pr_number": 9352,
+  "archive_path": "docs/history/pr-reviews/PR-9352-fix-ci-restore-rustfmt-and-markdownlint-gates.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-03T19:39:10.690Z",
+  "schema_version": "v1",
+  "commit_sha": "c7e6de659f01b09e2e2d1b2d81c80292b78b4f0c",
+  "title": "fix(ci): restore rustfmt and markdownlint gates",
+  "state": "MERGED",
+  "merged_at": "2026-07-03T19:38:47Z",
+  "head_ref": "codex/post-merge-gate-fixes-9351"
+}

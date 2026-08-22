@@ -1,0 +1,12 @@
+{
+  "pr_number": 8142,
+  "archive_path": "docs/history/pr-reviews/PR-8142-fix-docs-satisfy-culture-rule-markdownlint.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-14T02:31:28.837Z",
+  "schema_version": "v1",
+  "commit_sha": "fb312898c46d10dd514d653a30603b5bcd1b24f5",
+  "title": "fix(docs): satisfy culture rule markdownlint",
+  "state": "MERGED",
+  "merged_at": "2026-06-14T02:31:09Z",
+  "head_ref": "codex/fix-culture-rule-markdownlint"
+}

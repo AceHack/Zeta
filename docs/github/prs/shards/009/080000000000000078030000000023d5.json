@@ -1,0 +1,15 @@
+{
+  "pr_number": 9173,
+  "archive_path": "docs/history/pr-reviews/PR-9173-research-the-bus-nats-jetstream-over-reticulum-ws-discovery-bootstrap-linked-clo.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7RhQy9",
+    "thread:PRRT_kwDOSF9kNM6N_GLa"
+  ],
+  "fetched_at": "2026-08-17T12:29:27.789Z",
+  "schema_version": "v1",
+  "commit_sha": "87d76547b4dc8cb90431f1dfd1b70f51f851bf05",
+  "title": "research: the bus — NATS/JetStream over Reticulum, WS-Discovery bootstrap, linked-clone channel (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-02T17:54:58Z",
+  "head_ref": "research/the-bus-nats-jetstream-over-reticulum"
+}

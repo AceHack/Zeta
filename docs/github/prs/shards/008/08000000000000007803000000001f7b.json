@@ -1,0 +1,12 @@
+{
+  "pr_number": 8059,
+  "archive_path": "docs/history/pr-reviews/PR-8059-fix-build-iso-correct-audit-root-after-ci-relocation-main-red.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-13T20:37:52.362Z",
+  "schema_version": "v1",
+  "commit_sha": "fd59bae4fa7f6782548bcec7d8da64ffbf3eb737",
+  "title": "fix(build-iso): correct audit ROOT after ci/ relocation (main RED)",
+  "state": "MERGED",
+  "merged_at": "2026-06-13T20:37:30Z",
+  "head_ref": "shadow/fix-build-iso-audit-root"
+}

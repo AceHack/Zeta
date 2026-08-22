@@ -1,0 +1,12 @@
+{
+  "pr_number": 8704,
+  "archive_path": "docs/history/pr-reviews/PR-8704-fix-handoff-restore-row-6-table-cell-md056-prior-edit-merged-the-priority-column.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-20T03:50:59.544Z",
+  "schema_version": "v1",
+  "commit_sha": "f1be835d40e470ef7ccb47db5efe664e4f380cdc",
+  "title": "fix(handoff): restore row-6 table cell (MD056) — prior edit merged the priority column away",
+  "state": "MERGED",
+  "merged_at": "2026-06-20T03:50:36Z",
+  "head_ref": "otto/fix-handoff-row6-table-cell"
+}

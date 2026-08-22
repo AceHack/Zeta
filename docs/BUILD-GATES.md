@@ -22,7 +22,7 @@ locally report SKIP (they still run in CI). Source:
 |---|------|---------------|--------|
 | 1 | **Build** | `dotnet build Zeta.sln -c Release` | 0 warnings / 0 errors (TreatWarningsAsErrors) |
 | 2 | **Test** | `dotnet test Zeta.sln -c Release --no-build` | all xUnit/FsCheck/Z3 suites pass |
-| 3 | **Cross-verify** | `bun tools/ci/cross-verify-all.ts` + `bun test src/Core.TypeScript/ace/` | cross-language byte-lock + golden-vector oracles + ace suite |
+| 3 | **Cross-verify** | `bun src/Core.TypeScript/ci/cross-verify-all.ts` + `bun test src/Core.TypeScript/ace/` | cross-language byte-lock + golden-vector oracles + ace suite |
 | 4 | **tsc (TypeScript)** | `bun --bun tsc --noEmit -p tsconfig.json` | TS source and tooling typecheck |
 | 5 | **semgrep** | `semgrep --config .semgrep.yml --error --metrics=off` | static-analysis rules |
 | 6 | **shellcheck** | `shellcheck` (project scripts) | shell-script lint |

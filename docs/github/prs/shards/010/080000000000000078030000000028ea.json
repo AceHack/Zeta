@@ -1,0 +1,12 @@
+{
+  "pr_number": 10474,
+  "archive_path": "docs/history/pr-reviews/PR-10474-feat-bayesian-universal-evidence-a-belief-carries-its-provenance-so-the-fold-can.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-18T11:13:03.593Z",
+  "schema_version": "v1",
+  "commit_sha": "a5b32e45c1c4ecfe6a1d7710730f82a6f3434829",
+  "title": "feat(bayesian): universal/evidence — a belief carries its provenance, so the fold cannot double-count (B3)",
+  "state": "MERGED",
+  "merged_at": "2026-08-14T00:44:44Z",
+  "head_ref": "feat/universal-evidence-provenance-keyed-belief-fold"
+}

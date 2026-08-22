@@ -1,0 +1,12 @@
+{
+  "pr_number": 3575,
+  "archive_path": "docs/history/pr-reviews/PR-3575-shard-tick-2012z-otto-279-batch-3-tools-hygiene-audit-ts-9-fixes.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-15T20:20:24.227Z",
+  "schema_version": "v1",
+  "commit_sha": "7a310d82e208eea596ead9650107e8159ab1b755",
+  "title": "shard(tick): 2012Z — Otto-279 batch #3: tools/hygiene/audit-*.ts (9 fixes)",
+  "state": "MERGED",
+  "merged_at": "2026-05-15T20:20:07Z",
+  "head_ref": "shard/tick-2012z-otto-cli-2026-05-15"
+}

@@ -1,0 +1,19 @@
+{
+  "pr_number": 6418,
+  "archive_path": "docs/history/pr-reviews/PR-6418-docs-present-tense-docstrings-pronoun-free-conflict-resolution-two-bugs-md-p2-cl.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7GvG-9",
+    "comment:PRRC_kwDOSF9kNM7GvHAC",
+    "comment:PRRC_kwDOSF9kNM7GvKLN",
+    "comment:PRRC_kwDOSF9kNM7GvKPH",
+    "thread:PRRT_kwDOSF9kNM6GHq25",
+    "thread:PRRT_kwDOSF9kNM6GHq3q"
+  ],
+  "fetched_at": "2026-06-01T12:58:21.870Z",
+  "schema_version": "v1",
+  "commit_sha": "a9be0fde41d59c52bf97ade718a9fd24cda793b0",
+  "title": "docs: present-tense docstrings + pronoun-free CONFLICT-RESOLUTION (two BUGS.md P2 closes)",
+  "state": "MERGED",
+  "merged_at": "2026-06-01T12:57:55Z",
+  "head_ref": "claude/casual-check-in-AQ9bz"
+}

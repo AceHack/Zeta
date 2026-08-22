@@ -1,0 +1,12 @@
+{
+  "pr_number": 11809,
+  "archive_path": "docs/history/pr-reviews/PR-11809-fix-manifest-re-derive-the-pr-index-from-the-shard-ledger-repairing-drift-that-o.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-18T06:41:17.460Z",
+  "schema_version": "v1",
+  "commit_sha": "d8683d33b0b948ef4d3bd12261ba14c43880c915",
+  "title": "fix(manifest): re-derive the PR index from the shard ledger, repairing drift that outlived the repair bound",
+  "state": "MERGED",
+  "merged_at": "2026-08-18T06:40:41Z",
+  "head_ref": "shadow/manifest-derive-drift-repair"
+}

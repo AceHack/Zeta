@@ -1,0 +1,12 @@
+{
+  "pr_number": 5671,
+  "archive_path": "docs/history/pr-reviews/PR-5671-feat-agentic-org-add-live-substrate-proof-harnesses.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-28T01:34:38.763Z",
+  "schema_version": "v1",
+  "commit_sha": "cc69046852528a6be157931270a499c68069e3c1",
+  "title": "feat(agentic-org): add live substrate proof harnesses",
+  "state": "MERGED",
+  "merged_at": "2026-05-28T01:34:16Z",
+  "head_ref": "codex/agentic-org-live-substrate-proofs"
+}

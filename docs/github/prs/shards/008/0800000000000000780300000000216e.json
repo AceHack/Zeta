@@ -1,0 +1,12 @@
+{
+  "pr_number": 8558,
+  "archive_path": "docs/history/pr-reviews/PR-8558-docs-vision-the-definition-at-the-top-zeta-bounded-good-the-two-word-what-is-zet.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-16T22:15:00.624Z",
+  "schema_version": "v1",
+  "commit_sha": "3626e00fc19ce6338cf8d42fc64dceb50aa8e8c2",
+  "title": "docs(VISION): the definition at the top — Zeta = bounded good (the two-word what-is-Zeta the rest of the doc unpacks)",
+  "state": "MERGED",
+  "merged_at": "2026-06-16T22:14:35Z",
+  "head_ref": "otto/vision-define-zeta-equals-bounded-good-at-top"
+}

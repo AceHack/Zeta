@@ -1,0 +1,12 @@
+{
+  "pr_number": 7634,
+  "archive_path": "docs/history/pr-reviews/PR-7634-feat-society-swarmboardansi-the-bbs-ansi-render-binding-b-1026-the-dress-code.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-11T10:02:31.214Z",
+  "schema_version": "v1",
+  "commit_sha": "af672db0ac7b012290b25593d7ef8bda22fbb8c2",
+  "title": "feat(society): SwarmBoardAnsi — the BBS/ANSI render binding (B-1026; the dress code)",
+  "state": "MERGED",
+  "merged_at": "2026-06-11T10:02:05Z",
+  "head_ref": "shadow-board-ansi-binding"
+}

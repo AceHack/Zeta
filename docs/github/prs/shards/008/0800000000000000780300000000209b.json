@@ -1,0 +1,12 @@
+{
+  "pr_number": 8347,
+  "archive_path": "docs/history/pr-reviews/PR-8347-docs-research-consolidated-zeta-society-architecture-md-interface-isociety-iplay.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-15T21:59:07.765Z",
+  "schema_version": "v1",
+  "commit_sha": "13edd400b997041d628b96455bf7bba80d0c0f4f",
+  "title": "docs(research): consolidated Zeta society architecture (md-interface → ISociety/IPlay → Eve → the game → self-regeneration)",
+  "state": "MERGED",
+  "merged_at": "2026-06-15T21:58:33Z",
+  "head_ref": "docs/ferry-zeta-society-architecture-consolidation"
+}

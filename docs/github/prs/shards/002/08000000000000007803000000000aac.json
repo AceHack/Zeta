@@ -1,0 +1,12 @@
+{
+  "pr_number": 2732,
+  "archive_path": "docs/history/pr-reviews/PR-2732-docs-research-all-agent-disclosure-assessment-purpose-bound-visibility.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-11T19:15:26.555Z",
+  "schema_version": "v1",
+  "commit_sha": "f380809416c7d32fe552120e6911a932cdfe34ef",
+  "title": "docs(research): all-agent disclosure assessment — purpose-bound visibility",
+  "state": "MERGED",
+  "merged_at": "2026-05-11T19:15:07Z",
+  "head_ref": "docs/all-agents-disclosure-assessment-2026-05-11"
+}

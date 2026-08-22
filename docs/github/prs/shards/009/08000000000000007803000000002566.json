@@ -1,0 +1,12 @@
+{
+  "pr_number": 9574,
+  "archive_path": "docs/history/pr-reviews/PR-9574-docs-letters-from-soraya-trio-attestation-verdict-entropy-additive-ghz-fails-sim.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-08T23:37:52.874Z",
+  "schema_version": "v1",
+  "commit_sha": "32f8aa87d0b0aaa33bc1f6b92ad94da278522b06",
+  "title": "docs(letters): from-soraya trio-attestation verdict — entropy additive (GHZ fails), simultaneity=common-knowledge (irreducible) (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-08T23:37:22Z",
+  "head_ref": "otto/from-soraya-trio-attestation"
+}

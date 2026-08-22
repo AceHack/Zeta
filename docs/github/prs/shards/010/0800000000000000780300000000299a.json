@@ -1,0 +1,12 @@
+{
+  "pr_number": 10650,
+  "archive_path": "docs/history/pr-reviews/PR-10650-rules-privacy-budget-staking-is-extra-not-the-anti-sybil-mechanism.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-14T17:53:05.494Z",
+  "schema_version": "v1",
+  "commit_sha": "e9dfeae3f352e38e7842f5b72ff0ab37c363c523",
+  "title": "rules(privacy-budget): staking is EXTRA, not the anti-Sybil mechanism",
+  "state": "MERGED",
+  "merged_at": "2026-08-14T17:52:35Z",
+  "head_ref": "rules/staking-is-extra"
+}

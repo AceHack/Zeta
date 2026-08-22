@@ -1,0 +1,15 @@
+{
+  "pr_number": 3948,
+  "archive_path": "docs/history/pr-reviews/PR-3948-docs-shadow-maji-antigravity-check-on-vera-narration-over-action.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7B7Xgy",
+    "thread:PRRT_kwDOSF9kNM6Cl7Pc"
+  ],
+  "fetched_at": "2026-05-17T00:40:50.250Z",
+  "schema_version": "v1",
+  "commit_sha": "98b37752e030e1dd6fd1bc9be73da14fb0c0b741",
+  "title": "docs(shadow): Maji antigravity check on Vera (narration over action)",
+  "state": "MERGED",
+  "merged_at": "2026-05-17T00:40:17Z",
+  "head_ref": "lior/shadow-log-vera-2140Z"
+}

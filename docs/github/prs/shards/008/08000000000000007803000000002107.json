@@ -1,0 +1,12 @@
+{
+  "pr_number": 8455,
+  "archive_path": "docs/history/pr-reviews/PR-8455-test-observe-parameterized-workspaceport-conformance-same-tests-n-backends.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-16T05:50:35.580Z",
+  "schema_version": "v1",
+  "commit_sha": "97e0b37554b237f018bed9d2a7513f1a44c2dbed",
+  "title": "test(observe): parameterized WorkspacePort conformance — same tests, N backends",
+  "state": "MERGED",
+  "merged_at": "2026-06-16T05:50:07Z",
+  "head_ref": "alexa/parameterized-workspace-tests"
+}

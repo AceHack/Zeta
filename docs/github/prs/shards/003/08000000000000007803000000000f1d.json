@@ -1,0 +1,15 @@
+{
+  "pr_number": 3869,
+  "archive_path": "docs/history/pr-reviews/PR-3869-chore-b-0443-close-class-1-pure-drift-launch-substrate-carve-out-landed-in-agent.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7B4V8W",
+    "thread:PRRT_kwDOSF9kNM6CjlMe"
+  ],
+  "fetched_at": "2026-05-16T12:22:20.989Z",
+  "schema_version": "v1",
+  "commit_sha": "2dc29caefa3cf8caeab2886edcc74ed126536408",
+  "title": "chore(b-0443): close (class #1 pure drift) — launch-substrate carve-out landed in AGENT-BEST-PRACTICES.md line 709",
+  "state": "MERGED",
+  "merged_at": "2026-05-16T12:22:01Z",
+  "head_ref": "otto-cli-b0443-close-2026-05-16-1145z"
+}

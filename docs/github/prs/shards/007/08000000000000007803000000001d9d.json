@@ -1,0 +1,12 @@
+{
+  "pr_number": 7581,
+  "archive_path": "docs/history/pr-reviews/PR-7581-rules-elevate-noninterference-to-the-always-active-base-frame-7th-discipline-bes.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-11T03:25:02.844Z",
+  "schema_version": "v1",
+  "commit_sha": "77b8e56014ea58e7cc9d86107c84eaf6bba79539",
+  "title": "rules: elevate noninterference to the always-active base frame (7th discipline, beside weight-free)",
+  "state": "MERGED",
+  "merged_at": "2026-06-11T03:24:37Z",
+  "head_ref": "shadow-noninterference-seventh-discipline"
+}

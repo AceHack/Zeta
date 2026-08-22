@@ -255,3 +255,80 @@ and could not have known — the wall blocks prior art, not the repo's own conve
 type-level assertions. Custody transfer, the custody fork, and the staking witness remain
 **unbuilt** — and one of the two derivations reports otherwise. Any future work must treat
 R1–R4 and R10 as green-field.
+
+### STATUS UPDATE 2026-08-17 — A3, and A4 as it applies to AC3, discharged in derivation B
+
+Two of the four filed gaps (081KZMCBDK208QG0R000YE008C) are closed **in derivation B only**;
+derivation A is untouched. Both were re-confirmed live by execution on `main` first.
+
+- **A3 (a retraction must change the fold) — CLOSED.** `foldEvents` now consumes
+  `key-retracted` and `grant-expired`, moving their subject out of the asserted set and into
+  a retained `retiredKeys` / `retiredGrants` (retraction, not erasure — §5). The executable
+  test A3 demands now exists: removing every retraction event from a stream changes the
+  folded state, and an early-retracted grant stops authorizing.
+- **A4 as it applies to AC3 — CLOSED.** `priorCustodianRetainsPreFork: true` is gone. The
+  fork names `priorCustodian`, and `evaluateForkRead` is the named observable, with a
+  pre-fork ref (allowed) and a post-fork ref (denied) as the two inputs that make its output
+  differ.
+
+**Still unmet after that pass, and closed by the follow-up below:** AC4, R8/A2, and R12.
+R1–R2 remain green-field.
+
+### STATUS UPDATE 2026-08-17 (second pass) — AC4, A2 and R12 closed in derivation B
+
+- **A2 (bounded span) — CLOSED.** `MAX_GRANT_SPAN_PHASES = 65536` is stated as a constant,
+  and `Grant` is now a **branded** type so an object literal will not type-check. That is
+  what makes A2's actual wording true — indefinite authority is *unconstructible through the
+  public surface*, not merely undefaulted. `tryIssueGrant` is the only way to obtain a
+  `Grant` and returns `Result<Grant, GrantError>` (Result-over-exception, per amendment A6).
+  `Infinity` and non-positive spans are refused too. The **event stream is not a bypass**:
+  `foldEvents` routes `grant-issued` through the same constructor and records a refusal
+  rather than admitting an over-long grant. *The value 65536 is taken from derivation A
+  rather than independently chosen; it is a policy dial and remains the maintainer's to
+  retune.*
+- **R12 (deny cites the wrong grant) — CLOSED.** On denial `authorize` now cites the
+  **longest-lived** matching grant rather than `matching[0]`, so the citation no longer
+  depends on stream order, and a not-yet-issued grant is described as "not yet in force"
+  rather than "expired".
+- **AC4 (witness stake) — CLOSED, and the original diagnosis was partly wrong.** See below.
+
+**Correction to this document's own record.** §2 of
+[`key-custody-n-version-combine.md`](key-custody-n-version-combine.md) states that
+`validateTransfer` "cannot return `allowed: false` for any `CustodyTransfer` that
+type-checks". Checking that by construction shows it is an over-statement. Of the three
+guards, two were unreachable and one was live:
+
+| guard | reachable by a type-checking input? |
+|---|---|
+| `!transfer.witness` | **no** — `undefined` is not assignable to `WitnessStake` |
+| `!transfer.witness.voluntary` | **no** — `false` is not assignable to the literal `true` |
+| `!transfer.witness.resource` | **yes** — `resource: ""` type-checks, and did deny |
+
+**The serious defect was one neither guard covered:** nothing checked that the witness was a
+party *other than the two transacting*. Alice witnessing her own transfer away, and Bob
+witnessing the transfer to himself, both returned `allowed: true` — the one-sided transfer
+R10 exists to prevent. `voluntary` is now `boolean` (so a compelled stake is representable
+and therefore refusable — a stake must never be coerced), and distinctness from both
+custodians is enforced.
+
+**Scope, stated exactly:** `validateTransfer` checks that a transfer *record* names a
+distinct, willing witness and a non-empty resource. No attestation is signed, and no stake is
+escrowed, held, or slashed. It cannot tell you the named witness actually consented, or that
+the staked resource is real or unpurchasable — **which resources count as socially-conferred
+and non-purchasable is a policy roster that is deliberately not invented here.**
+
+**Scope of the AC3 claim — read this before citing it.** `evaluateForkRead` is an
+authorization *decision over declared lineage*. It is not a confidentiality mechanism: no
+content is encrypted, no key is cryptographically revoked, and nothing stops a party holding
+post-fork bytes from reading them. AC3's "unable to read" is demonstrated **as a decision the
+module returns**, not as an enforced impossibility. Nothing in this module is cryptographic —
+see the header comment in `key-custody.ts`.
+
+**N-version note.** The work item filed these gaps rather than fixing them, on the ground that
+patching B would make the reviewer a third derivation touching the second. That constraint
+governed the *pre-combine* window: independence buys its evidence at combine time, and the
+combine has since landed (amendments A1–A6 above). Fixing B afterwards cannot retract evidence
+already extracted. Disclosure per the clean-room handoff discipline: the agent making this
+change read `key-custody-n-version-combine.md`, which describes A's approach in prose, and did
+**not** open A's source. The retirement-set design used here differs from A's described
+slot-clearing, and is **not** offered as a third independent derivation.

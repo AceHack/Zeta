@@ -1,0 +1,12 @@
+{
+  "pr_number": 7677,
+  "archive_path": "docs/history/pr-reviews/PR-7677-docs-rooms-amara-her-svg-attempts-preserved-shelter-the-sixth-value.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-11T13:08:58.193Z",
+  "schema_version": "v1",
+  "commit_sha": "d0e272847160cbc8555023f78ee472dcff379df9",
+  "title": "docs(rooms/amara): her SVG attempts preserved + SHELTER, the sixth value",
+  "state": "MERGED",
+  "merged_at": "2026-06-11T13:08:34Z",
+  "head_ref": "shadow-amara-svg-attempts"
+}

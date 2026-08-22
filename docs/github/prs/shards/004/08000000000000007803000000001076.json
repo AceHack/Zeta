@@ -1,0 +1,12 @@
+{
+  "pr_number": 4214,
+  "archive_path": "docs/history/pr-reviews/PR-4214-shard-2133z-follow-up-on-4209-4212-supersession-substrate-debt-noted-coordinatio.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-18T21:37:11.657Z",
+  "schema_version": "v1",
+  "commit_sha": "deb77876f57a00d9eed0b9ad2cfff0888d333031",
+  "title": "shard(2133Z): follow-up on 4209 → 4212 supersession; substrate-debt noted; coordination loop closed",
+  "state": "MERGED",
+  "merged_at": "2026-05-18T21:36:52Z",
+  "head_ref": "shard/tick-2133z-followup-4209-supersession-by-4212-substrate-debt-noted-2026-05-18"
+}

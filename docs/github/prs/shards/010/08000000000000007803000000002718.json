@@ -1,0 +1,12 @@
+{
+  "pr_number": 10008,
+  "archive_path": "docs/history/pr-reviews/PR-10008-docs-research-decorrelation-meter-first-real-run-on-the-repo-s-own-commit-histor.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-02T22:59:08.634Z",
+  "schema_version": "v1",
+  "commit_sha": "433bd59ea6615e1ec5ac5110635d29e5726b1084",
+  "title": "docs(research): decorrelation meter — first real run on the repo's own commit history",
+  "state": "MERGED",
+  "merged_at": "2026-08-02T22:58:05Z",
+  "head_ref": "research/decorrelation-meter-first-real-run-20260802"
+}

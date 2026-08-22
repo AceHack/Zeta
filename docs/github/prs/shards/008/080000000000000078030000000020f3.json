@@ -1,0 +1,12 @@
+{
+  "pr_number": 8435,
+  "archive_path": "docs/history/pr-reviews/PR-8435-memory-project-the-clean-room-split-makes-it-legal-the-contribute-back-makes-it-.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-16T04:06:58.410Z",
+  "schema_version": "v1",
+  "commit_sha": "7bc80f61b677e0b4a514814eb27da264e083eb83",
+  "title": "memory(project): the clean-room SPLIT makes it legal; the CONTRIBUTE-BACK makes it moral (vs the malice model)",
+  "state": "MERGED",
+  "merged_at": "2026-06-16T04:06:24Z",
+  "head_ref": "memory/split-legal-contribute-back-moral"
+}

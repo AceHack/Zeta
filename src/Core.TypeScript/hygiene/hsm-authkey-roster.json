@@ -1,0 +1,68 @@
+{
+  "provisioningStatus": "proposed-not-provisioned",
+  "device": "YubiHSM 2, fw 2.4.1, serial 39160506 (non-FIPS)",
+  "note": "PROPOSED. Nothing here has been written to the device. This file declares the per-agent partition the 2026-08-20 connector review calls the one REAL mitigation, so the monotonicity property can be checked BEFORE provisioning rather than after. Object IDs are placeholders. Verifying that the device matches this file needs an authenticated session and is therefore a human step.",
+  "partition": [
+    {
+      "principal": "ceremony",
+      "domains": [1],
+      "note": "human-present administration; never used unattended"
+    },
+    {
+      "principal": "auditor",
+      "domains": [2],
+      "note": "log drain only; see the audit-log-drainer design doc"
+    },
+    {
+      "principal": "agent-x402-signer",
+      "domains": [3],
+      "note": "the unattended payment signer"
+    },
+    {
+      "principal": "agent-ssh-ca",
+      "domains": [4],
+      "note": "SSH certificate signing"
+    }
+  ],
+  "keys": [
+    {
+      "objectId": 2,
+      "label": "ceremony-admin",
+      "kind": "authentication-key",
+      "principal": "ceremony",
+      "domains": [1],
+      "capabilities": ["get-option", "set-option", "get-pseudo-random"],
+      "delegatedCapabilities": [],
+      "note": "Administrative capabilities live here and NOWHERE else. Delegated set deliberately EMPTY: this key may act, and may not manufacture successors. put-authentication-key is intentionally absent - provisioning a peer key is a ceremony performed with the factory/backup credential under human presence, not an ambient power of the admin key."
+    },
+    {
+      "objectId": 3,
+      "label": "auditor-log-drain",
+      "kind": "authentication-key",
+      "principal": "auditor",
+      "domains": [2],
+      "capabilities": ["get-log-entries"],
+      "delegatedCapabilities": [],
+      "note": "The drainer credential. get-log-entries only. Note SET LOG INDEX requires NO capability (User Guide 6.1.57), so this key can also advance the index - a fact the drainer design treats as load-bearing rather than incidental."
+    },
+    {
+      "objectId": 4,
+      "label": "x402-signer",
+      "kind": "authentication-key",
+      "principal": "agent-x402-signer",
+      "domains": [3],
+      "capabilities": ["sign-ecdsa"],
+      "delegatedCapabilities": [],
+      "note": "Unattended. One capability, one domain, empty delegated set. This is the whole blast-radius argument: host compromise yields signatures from domain 3 and nothing else - no export, no minting, no delete, no reset."
+    },
+    {
+      "objectId": 5,
+      "label": "ssh-ca-signer",
+      "kind": "authentication-key",
+      "principal": "agent-ssh-ca",
+      "domains": [4],
+      "capabilities": ["sign-ssh-certificate"],
+      "delegatedCapabilities": []
+    }
+  ]
+}

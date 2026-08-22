@@ -1,0 +1,12 @@
+{
+  "pr_number": 7786,
+  "archive_path": "docs/history/pr-reviews/PR-7786-fix-backlog-grandfather-b-1032-legacy-row.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-11T20:53:19.199Z",
+  "schema_version": "v1",
+  "commit_sha": "babfbbe564f413b5e6b23444449e838259107ab0",
+  "title": "fix(backlog): grandfather B-1032 legacy row",
+  "state": "MERGED",
+  "merged_at": "2026-06-11T20:52:54Z",
+  "head_ref": "codex/fix-backlog-b1032-freeze"
+}

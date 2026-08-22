@@ -1,0 +1,12 @@
+{
+  "pr_number": 9288,
+  "archive_path": "docs/history/pr-reviews/PR-9288-feat-netlist-column-b-rung-1-computation-as-gates-isa-arithmetic-lowered-to-a-ga.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-03T05:02:19.260Z",
+  "schema_version": "v1",
+  "commit_sha": "7145efb7b8b6c932837de0eb2f532a5950788221",
+  "title": "feat(netlist): Column B rung 1 — computation as gates; ISA arithmetic lowered to a gate adder (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-03T05:01:54Z",
+  "head_ref": "otto/netlist-ir-gate-adder-column-b"
+}

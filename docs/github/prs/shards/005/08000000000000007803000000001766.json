@@ -1,0 +1,12 @@
+{
+  "pr_number": 5990,
+  "archive_path": "docs/history/pr-reviews/PR-5990-feat-persona-nsfw-private-content-marking-convention-bystander-safe-containment-.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-29T13:30:49.882Z",
+  "schema_version": "v1",
+  "commit_sha": "2f7d1ec73b911024d7341f64da7ad6d091eabef5",
+  "title": "feat(persona): nsfw/private content-marking convention — bystander-safe containment for charged persona memories (kid-safety floor)",
+  "state": "MERGED",
+  "merged_at": "2026-05-29T13:30:26Z",
+  "head_ref": "otto-cli/nsfw-private-persona-marking-2026-05-29"
+}

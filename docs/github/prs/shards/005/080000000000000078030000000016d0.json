@@ -1,0 +1,12 @@
+{
+  "pr_number": 5840,
+  "archive_path": "docs/history/pr-reviews/PR-5840-fix-workflow-engine-auto-loop-lifetime-tsc-ts2375-unblocks-all-prs-from-auto-mer.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-28T15:03:59.828Z",
+  "schema_version": "v1",
+  "commit_sha": "cc4e6bec0daf2e5fde4e946b1bd5d2210b65c151",
+  "title": "fix(workflow-engine): auto-loop-lifetime tsc TS2375 — unblocks all PRs from auto-merge",
+  "state": "MERGED",
+  "merged_at": "2026-05-28T15:03:33Z",
+  "head_ref": "otto-cli/fixfwd-tsc-auto-loop-lifetime-1605z"
+}

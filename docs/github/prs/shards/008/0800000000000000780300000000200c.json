@@ -1,0 +1,12 @@
+{
+  "pr_number": 8204,
+  "archive_path": "docs/history/pr-reviews/PR-8204-feat-b-0855-2-post-boot-node-self-registration-close-the-cred-restore-gap.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-14T17:15:18.216Z",
+  "schema_version": "v1",
+  "commit_sha": "54c083a80e3df9e056b4752035a0d1fbe2c6e127",
+  "title": "feat(B-0855.2): post-boot node self-registration — close the cred-restore gap",
+  "state": "MERGED",
+  "merged_at": "2026-06-14T17:14:58Z",
+  "head_ref": "fix/node-self-register-postboot"
+}

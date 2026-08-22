@@ -1,0 +1,12 @@
+{
+  "pr_number": 12114,
+  "archive_path": "docs/history/pr-reviews/PR-12114-ferry-ip-questionable-kastner-conway-kochen-and-qualia-as-a-shared-axiom.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-18T21:37:27.609Z",
+  "schema_version": "v1",
+  "commit_sha": "abf5d14d9656f81bbc3d322d5cb2cf16909ba979",
+  "title": "ferry(ip-questionable): Kastner, Conway-Kochen, and qualia as a shared axiom",
+  "state": "MERGED",
+  "merged_at": "2026-08-18T21:33:54Z",
+  "head_ref": "shadow/ferry-kastner-free-will-theorem"
+}

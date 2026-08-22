@@ -1,0 +1,12 @@
+{
+  "pr_number": 3619,
+  "archive_path": "docs/history/pr-reviews/PR-3619-backlog-b-0545-b-0498-id-collision-renumber-sweep-riven-cursor-terminal-next-id.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-15T23:01:57.621Z",
+  "schema_version": "v1",
+  "commit_sha": "e44555195b2c26f7fabf98818a930d60581ab937",
+  "title": "backlog(B-0545): B-0498 ID collision — renumber sweep (Riven cursor-terminal → next ID)",
+  "state": "MERGED",
+  "merged_at": "2026-05-15T23:01:41Z",
+  "head_ref": "backlog/b0545-b0498-collision-renumber-sweep-otto-cli-2026-05-15"
+}

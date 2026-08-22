@@ -1,0 +1,12 @@
+{
+  "pr_number": 6493,
+  "archive_path": "docs/history/pr-reviews/PR-6493-docs-yaml-yaml-port-spec-forward-only-one-pass-reader-dom-on-top-4-oracle.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-01T22:43:48.876Z",
+  "schema_version": "v1",
+  "commit_sha": "0610f149bcafed6749339ec495d149d1764d2401",
+  "title": "docs(yaml): YAML port spec — forward-only one-pass reader + DOM-on-top, 4-oracle",
+  "state": "MERGED",
+  "merged_at": "2026-06-01T22:43:24Z",
+  "head_ref": "otto-windows/yaml-port-spec-2026-06-01"
+}

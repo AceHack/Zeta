@@ -1,0 +1,12 @@
+{
+  "pr_number": 3738,
+  "archive_path": "docs/history/pr-reviews/PR-3738-shard-tick-2026-05-16t04-37z-session-resume-peer-otto-desktop-convergence-verifi.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-16T04:42:27.604Z",
+  "schema_version": "v1",
+  "commit_sha": "251cc8caec70b50f7bdebbc0ee55862dccfd592b",
+  "title": "shard(tick): 2026-05-16T04:37Z — session-resume; peer Otto-Desktop convergence verified",
+  "state": "MERGED",
+  "merged_at": "2026-05-16T04:42:10Z",
+  "head_ref": "shard/tick-0437z-otto-cli-2026-05-16"
+}

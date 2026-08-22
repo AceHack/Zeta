@@ -1,0 +1,12 @@
+{
+  "pr_number": 4297,
+  "archive_path": "docs/history/pr-reviews/PR-4297-shard-0110z-c-4292-stale-but-self-healing.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-19T01:13:59.612Z",
+  "schema_version": "v1",
+  "commit_sha": "4ed17f60201ae840be8b26d4a52717f18755fe53",
+  "title": "shard(0110Z-c): 4292 stale-but-self-healing",
+  "state": "MERGED",
+  "merged_at": "2026-05-19T01:13:43Z",
+  "head_ref": "shard/tick-2026-05-19-0110z-c-4292-stale-self-healing-2026-05-19"
+}

@@ -1,0 +1,16 @@
+{
+  "pr_number": 3691,
+  "archive_path": "docs/history/pr-reviews/PR-3691-shard-tick-2026-05-16t02-45z-graphql-exhaust-on-all-open-poll.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7B08rm",
+    "comment:PRRC_kwDOSF9kNM7B1I49",
+    "thread:PRRT_kwDOSF9kNM6ChGoM"
+  ],
+  "fetched_at": "2026-05-16T03:27:47.057Z",
+  "schema_version": "v1",
+  "commit_sha": "1b845641dd1aedb6266d4b9c73fa46a4d0c78664",
+  "title": "shard(tick): 2026-05-16T02:45Z — GraphQL exhaust on --all-open poll",
+  "state": "MERGED",
+  "merged_at": "2026-05-16T03:27:31Z",
+  "head_ref": "shard/tick-0245z-otto-bg-worker-2026-05-16"
+}

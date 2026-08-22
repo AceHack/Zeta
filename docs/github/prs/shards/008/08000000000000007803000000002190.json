@@ -1,0 +1,12 @@
+{
+  "pr_number": 8592,
+  "archive_path": "docs/history/pr-reviews/PR-8592-memory-feedback-the-tick-is-the-quantum-how-zeta-differs-from-qm-s-4-toy-model-b.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-19T16:13:14.577Z",
+  "schema_version": "v1",
+  "commit_sha": "b75d2993f5559eb0ca6489585745ec2a396bc634",
+  "title": "memory(feedback): the tick IS the quantum — how Zeta differs from QM (+ S=4 toy-model/bus-delay caveat)",
+  "state": "MERGED",
+  "merged_at": "2026-06-19T16:12:45Z",
+  "head_ref": "otto/tick-is-the-quantum-kernel"
+}

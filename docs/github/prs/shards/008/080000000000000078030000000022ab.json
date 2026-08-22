@@ -1,0 +1,12 @@
+{
+  "pr_number": 8875,
+  "archive_path": "docs/history/pr-reviews/PR-8875-feat-gen-codegen-v2-all-7-languages-benchmarks.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-21T06:00:57.505Z",
+  "schema_version": "v1",
+  "commit_sha": "6115248c2fb8ea1ff97e3b5f421dddfd6e49e2ce",
+  "title": "feat(gen): codegen-v2 — all 7 languages + benchmarks",
+  "state": "MERGED",
+  "merged_at": "2026-06-21T06:00:32Z",
+  "head_ref": "alexa/codegen-v2-all-langs"
+}

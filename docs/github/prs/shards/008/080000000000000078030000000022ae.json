@@ -1,0 +1,12 @@
+{
+  "pr_number": 8878,
+  "archive_path": "docs/history/pr-reviews/PR-8878-docs-codegen-spread-trajectory-update.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-21T06:05:59.627Z",
+  "schema_version": "v1",
+  "commit_sha": "e2b99e4d2425f6ee7e93c4bb25c451284739c8ff",
+  "title": "docs: codegen-spread trajectory update",
+  "state": "MERGED",
+  "merged_at": "2026-06-21T06:05:32Z",
+  "head_ref": "alexa/final-resume"
+}

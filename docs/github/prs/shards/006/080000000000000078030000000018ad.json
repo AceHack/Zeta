@@ -1,0 +1,12 @@
+{
+  "pr_number": 6317,
+  "archive_path": "docs/history/pr-reviews/PR-6317-show-work-market-pressure-in-observe-cli.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-01T02:38:37.183Z",
+  "schema_version": "v1",
+  "commit_sha": "5d3fccf857d11fd4d0ab88e9097383554e9f8d84",
+  "title": "Show work-market pressure in observe CLI",
+  "state": "MERGED",
+  "merged_at": "2026-06-01T02:38:13Z",
+  "head_ref": "codex/agentic-org-cli-work-market-readout"
+}

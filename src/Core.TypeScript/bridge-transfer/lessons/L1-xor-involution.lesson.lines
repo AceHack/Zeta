@@ -1,0 +1,17 @@
+# L1 — XOR-draw is an involution.
+# Discovered on CHIP-8; it is the property `roms-safe/zeta-breathe.ch9.lines` depends on to
+# animate (the delta sprite is drawn twice to toggle idle<->blink and land back where it started).
+# Predicates are stated in the machine-neutral vocabulary (`lit`/`dark` are "the SELECTED plane
+# mask is fully set / fully clear here"), which is what lets the lift carry the artifact unchanged.
+meta	name	xor-involution
+meta	claim	drawing a sprite twice at the same site restores the display exactly
+meta	discovered-on	chip8
+meta	falsifier	or-draw
+mem	0300	ffffffffff
+rom	a30060006100d015d015
+assert	4	lit 0 0
+assert	4	lit 7 4
+assert	4	vf 0
+assert	5	dark 0 0
+assert	5	dark 7 4
+assert	5	vf 1

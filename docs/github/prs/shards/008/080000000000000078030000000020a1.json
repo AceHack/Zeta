@@ -1,0 +1,12 @@
+{
+  "pr_number": 8353,
+  "archive_path": "docs/history/pr-reviews/PR-8353-docs-research-refine-consolidated-society-architecture-with-active-memory-and-is.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-15T22:36:56.933Z",
+  "schema_version": "v1",
+  "commit_sha": "544d207c9097dea330888571bd7b9168a0f98c2c",
+  "title": "docs(research): refine consolidated society architecture with active memory and ISociety bidirectional routing",
+  "state": "MERGED",
+  "merged_at": "2026-06-15T22:36:30Z",
+  "head_ref": "lior/society-interface-refinement"
+}

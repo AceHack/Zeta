@@ -1,0 +1,12 @@
+{
+  "pr_number": 10087,
+  "archive_path": "docs/history/pr-reviews/PR-10087-book-pages-english-edition-pass-2-chapters-5-8.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-07T05:12:28.009Z",
+  "schema_version": "v1",
+  "commit_sha": "bf15fb39eac52685fd49ec6b40884027f6cd871a",
+  "title": "book(pages): English edition pass 2 — Chapters 5–8",
+  "state": "MERGED",
+  "merged_at": "2026-08-07T05:11:51Z",
+  "head_ref": "docs/book-pages-english-p2"
+}

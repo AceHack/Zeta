@@ -1,0 +1,12 @@
+{
+  "pr_number": 9991,
+  "archive_path": "docs/history/pr-reviews/PR-9991-docs-book-decode-before-dismiss-raw-consent-ledger-glass-halo-correction.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-02T20:24:31.610Z",
+  "schema_version": "v1",
+  "commit_sha": "61aed22eb891329a203f5a176c7e6646095d6c9d",
+  "title": "docs(book): decode-before-dismiss RAW + CONSENT-LEDGER (glass-halo correction)",
+  "state": "MERGED",
+  "merged_at": "2026-08-02T20:23:59Z",
+  "head_ref": "book/decode-before-dismiss-and-consent-ledger-20260802"
+}

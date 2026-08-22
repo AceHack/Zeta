@@ -3,12 +3,12 @@
 // reviewer via the native Grok-Build CLI (xAI's Claude-Code-compatible
 // agent harness, installed as `grok`).
 //
-// Supersedes `tools/peer-call/grok.ts` (which wraps cursor-agent and
+// Supersedes `src/Core.TypeScript/peer-call/grok.ts` (which wraps cursor-agent and
 // has been broken since 2026-05-11 per 081KRA5AR0008QG0R0011ZGRZT — cursor-agent exit 1 /
 // empty output). The old `grok.ts` is retained for back-compat reference;
 // new peer-calls should target this wrapper. Per Copilot review on
 // #5110 the canonical inventories (`.claude/rules/peer-call-infrastructure.md`
-// + `tools/peer-call/smoke.test.ts`) are updated alongside this wrapper
+// + `src/Core.TypeScript/peer-call/smoke.test.ts`) are updated alongside this wrapper
 // so the 9-wrapper picture stays consistent.
 //
 // Empirical anchor 2026-05-26: Aaron installed `grok` CLI during the
@@ -17,14 +17,14 @@
 // cursor-agent dependency with the native `grok -p` flow.
 //
 // Usage:
-//   bun tools/peer-call/grok-build.ts "prompt text"
-//   bun tools/peer-call/grok-build.ts --thinking "prompt text"
-//   bun tools/peer-call/grok-build.ts --file path/to/file.md "prompt text"
-//   bun tools/peer-call/grok-build.ts --context-cmd "git diff HEAD~3..HEAD" "prompt"
-//   bun tools/peer-call/grok-build.ts --output-file PATH "prompt text"
-//   bun tools/peer-call/grok-build.ts --json "prompt text"
-//   bun tools/peer-call/grok-build.ts --allow-empty "prompt"  # bypass firewall
-//   bun tools/peer-call/grok-build.ts -- multi word prompt with --flags
+//   bun src/Core.TypeScript/peer-call/grok-build.ts "prompt text"
+//   bun src/Core.TypeScript/peer-call/grok-build.ts --thinking "prompt text"
+//   bun src/Core.TypeScript/peer-call/grok-build.ts --file path/to/file.md "prompt text"
+//   bun src/Core.TypeScript/peer-call/grok-build.ts --context-cmd "git diff HEAD~3..HEAD" "prompt"
+//   bun src/Core.TypeScript/peer-call/grok-build.ts --output-file PATH "prompt text"
+//   bun src/Core.TypeScript/peer-call/grok-build.ts --json "prompt text"
+//   bun src/Core.TypeScript/peer-call/grok-build.ts --allow-empty "prompt"  # bypass firewall
+//   bun src/Core.TypeScript/peer-call/grok-build.ts -- multi word prompt with --flags
 //
 // Routing: wraps `grok -p "PROMPT" --allow Read,Glob,Grep
 // --permission-mode auto --output-format plain` (read-only blast radius
@@ -184,15 +184,15 @@ function emitHelp(): void {
       `reviewer via the native Grok-Build CLI (xAI's \`grok\`).\n` +
       `\n` +
       `Usage:\n` +
-      `  bun tools/peer-call/grok-build.ts "prompt text"\n` +
-      `  bun tools/peer-call/grok-build.ts --thinking "prompt text"\n` +
-      `  bun tools/peer-call/grok-build.ts --file PATH "prompt text"\n` +
-      `  bun tools/peer-call/grok-build.ts --context-cmd "CMD" "prompt text"\n` +
-      `  bun tools/peer-call/grok-build.ts --json "prompt text"\n` +
-      `  bun tools/peer-call/grok-build.ts --stream "prompt text"\n` +
-      `  bun tools/peer-call/grok-build.ts --allow-empty "prompt"  # bypass firewall\n` +
-      `  bun tools/peer-call/grok-build.ts --output-file PATH "prompt text"\n` +
-      `  bun tools/peer-call/grok-build.ts -- multi word prompt with --flags\n` +
+      `  bun src/Core.TypeScript/peer-call/grok-build.ts "prompt text"\n` +
+      `  bun src/Core.TypeScript/peer-call/grok-build.ts --thinking "prompt text"\n` +
+      `  bun src/Core.TypeScript/peer-call/grok-build.ts --file PATH "prompt text"\n` +
+      `  bun src/Core.TypeScript/peer-call/grok-build.ts --context-cmd "CMD" "prompt text"\n` +
+      `  bun src/Core.TypeScript/peer-call/grok-build.ts --json "prompt text"\n` +
+      `  bun src/Core.TypeScript/peer-call/grok-build.ts --stream "prompt text"\n` +
+      `  bun src/Core.TypeScript/peer-call/grok-build.ts --allow-empty "prompt"  # bypass firewall\n` +
+      `  bun src/Core.TypeScript/peer-call/grok-build.ts --output-file PATH "prompt text"\n` +
+      `  bun src/Core.TypeScript/peer-call/grok-build.ts -- multi word prompt with --flags\n` +
       `\n` +
       `Routing: wraps \`grok -p PROMPT --allow Read,Glob,Grep\n` +
       `--permission-mode auto --output-format plain\`. With --thinking,\n` +
@@ -374,7 +374,7 @@ export function main(argv: readonly string[]): number {
   }
   if (parsed.prompt.length === 0) {
     process.stderr.write("error: prompt required\n");
-    process.stderr.write(`see: bun tools/peer-call/grok-build.ts --help\n`);
+    process.stderr.write(`see: bun src/Core.TypeScript/peer-call/grok-build.ts --help\n`);
     return 1;
   }
 

@@ -1,0 +1,12 @@
+{
+  "pr_number": 2362,
+  "archive_path": "docs/history/pr-reviews/PR-2362-chore-b-0365-2-mark-b-0365-1-2-3-4-6-done-in-backlog-md-parent-table.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-09T22:46:50.483Z",
+  "schema_version": "v1",
+  "commit_sha": "256f82572dbc4b484174274c5e1d0b6806f99de2",
+  "title": "chore(B-0365.2): mark B-0365.1/2/3/4/6 done in BACKLOG.md + parent table",
+  "state": "MERGED",
+  "merged_at": "2026-05-09T22:46:31Z",
+  "head_ref": "worktree-cosmic-weaving-parrot"
+}

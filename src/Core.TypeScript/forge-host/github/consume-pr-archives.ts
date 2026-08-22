@@ -10,10 +10,18 @@
 // branches into the working tree, then commits + opens a normal PR. No enterprise-policy
 // relaxation required.
 //
-// SAFETY: extracts ONLY each branch's archive `.md` + its manifest line — never the branch's
-// full diff (those branches are based on OLD main and would revert later code). Verifies
-// file↔manifest integrity. `--delete` removes a source branch ONLY after its archive `.md`
-// is present in the working tree (i.e. preserved). Idempotent.
+// SAFETY: extracts ONLY each branch's archive `.md`, its per-PR shard JSON, and its manifest
+// line — never the branch's full diff (those branches are based on OLD main and would revert
+// later code). Verifies file↔manifest integrity. `--delete` removes a source branch ONLY after
+// its archive `.md` is present in the working tree (i.e. preserved). Idempotent.
+//
+// 2026-08-13 (081KZYMY46P087G0R003S64V2B): archive runs now also write
+// `docs/github/prs/shards/<NNN>/<zetaid>.json` — one file per PR, which is the record of
+// truth; `manifest.jsonl` is derived from it. This drain extracts BOTH, because an archive
+// branch cut after the writer change carries a shard and may (once the workflow edit lands)
+// carry no manifest line at all. Taking only the manifest line would silently lose the shard,
+// and taking only the shard would leave the derived index stale — so both are copied, and
+// `derive-pr-manifest.ts` can always rebuild the index from what landed.
 //
 // Usage:
 //   bun tools/archive/consume-pr-archives.ts [--delete] [--limit N] [--remote origin]
@@ -25,10 +33,13 @@
 
 import { spawnSync } from "node:child_process";
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
-import { basename } from "node:path";
+import { basename, dirname } from "node:path";
+
+import { MANIFEST_RELATIVE, SHARD_ROOT_RELATIVE, shardPathFor } from "./pr-manifest-shards.ts";
 
 const REVIEW_DIR = "docs/history/pr-reviews";
-const MANIFEST = "docs/github/prs/manifest.jsonl";
+const MANIFEST = MANIFEST_RELATIVE;
+const SHARD_ROOT = SHARD_ROOT_RELATIVE;
 
 function git(args: string[], allowFail = false): string {
   const r = spawnSync("git", args, { encoding: "utf8", maxBuffer: 256 * 1024 * 1024 });
@@ -77,6 +88,7 @@ if (!existsSync(REVIEW_DIR)) mkdirSync(REVIEW_DIR, { recursive: true });
 
 let consumed = 0;
 let skippedNoMd = 0;
+let shardsConsumed = 0;
 const toDelete: string[] = [];
 
 for (const branch of branches) {
@@ -102,6 +114,16 @@ for (const branch of branches) {
   }
   writeFileSync(`${REVIEW_DIR}/${basename(added)}`, content.endsWith("\n") ? content : content + "\n");
 
+  // The per-PR shard, if this branch was cut after the shard writer landed. Its path is a
+  // pure function of `pr` (no scan, no guessing) — see pr-manifest-shards.ts.
+  const shardRel = shardPathFor(pr, SHARD_ROOT);
+  const shardBlob = git(["show", `${ref}:${shardRel}`], true);
+  if (shardBlob) {
+    mkdirSync(dirname(shardRel), { recursive: true });
+    writeFileSync(shardRel, shardBlob.endsWith("\n") ? shardBlob : shardBlob + "\n");
+    shardsConsumed++;
+  }
+
   // The manifest line for THIS pr (match pr_number, not tail — branch base may be old).
   const branchManifest = git(["show", `${ref}:${MANIFEST}`], true);
   const line = manifestByPr(branchManifest).get(pr);
@@ -117,7 +139,9 @@ for (const branch of branches) {
 const lines = [...merged.entries()].sort((a, b) => a[0] - b[0]).map(([, l]) => l);
 writeFileSync(MANIFEST, lines.join("\n") + (lines.length ? "\n" : ""));
 
-console.log(`consumed: ${consumed} | skipped (no archive .md): ${skippedNoMd} | manifest entries: ${merged.size}`);
+console.log(
+  `consumed: ${consumed} | shards: ${shardsConsumed} | skipped (no archive .md): ${skippedNoMd} | manifest entries: ${merged.size}`,
+);
 
 if (doDelete && toDelete.length) {
   console.log(`deleting ${toDelete.length} consumed source branches from ${remote}…`);
@@ -129,4 +153,7 @@ if (doDelete && toDelete.length) {
   console.log("delete pass complete.");
 }
 
-console.log(`\nNext: git add ${REVIEW_DIR} ${MANIFEST} && commit && open a PR (agents/humans can open PRs; Actions cannot).`);
+console.log(
+  `\nNext: git add ${REVIEW_DIR} ${SHARD_ROOT} ${MANIFEST} && commit && open a PR (agents/humans can open PRs; Actions cannot).` +
+    `\n      If the manifest and the shards disagree, the shards win: bun src/Core.TypeScript/forge-host/github/derive-pr-manifest.ts --write`,
+);

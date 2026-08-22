@@ -1,0 +1,17 @@
+{
+  "pr_number": 2420,
+  "archive_path": "docs/history/pr-reviews/PR-2420-fix-b-0055-1-address-codex-review-challenge-validation-duplicate-ids-metric-bias.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_lxoM",
+    "comment:PRRC_kwDOSF9kNM6_lxob",
+    "thread:PRRT_kwDOSF9kNM6A4B8L",
+    "thread:PRRT_kwDOSF9kNM6A4B8Z"
+  ],
+  "fetched_at": "2026-05-10T05:21:54.671Z",
+  "schema_version": "v1",
+  "commit_sha": "ca62da044c56fca713df10f22ca8ae0ab508e949",
+  "title": "fix(B-0055.1): address Codex review — challenge validation, duplicate IDs, metric bias",
+  "state": "MERGED",
+  "merged_at": "2026-05-10T05:21:36Z",
+  "head_ref": "fix/B-0055.1-codex-review-followup"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 7540,
+  "archive_path": "docs/history/pr-reviews/PR-7540-docs-craft-sustainability-corollary-why-before-how-survives-in-the-attention-eco.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-10T23:33:05.317Z",
+  "schema_version": "v1",
+  "commit_sha": "e942b6fd1073b864ef2906839c103bba332c394c",
+  "title": "docs(craft): sustainability corollary — WHY-before-HOW survives in the attention economy without money",
+  "state": "MERGED",
+  "merged_at": "2026-06-10T23:32:44Z",
+  "head_ref": "shadow-craft-attention-economy-native-no-money"
+}

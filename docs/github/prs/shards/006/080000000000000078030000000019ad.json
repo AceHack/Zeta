@@ -1,0 +1,17 @@
+{
+  "pr_number": 6573,
+  "archive_path": "docs/history/pr-reviews/PR-6573-docs-b-0989-geospatial-core-algebra-harden-first-4-4-bonded-blocks-b-0988-world-.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7HNVXI",
+    "comment:PRRC_kwDOSF9kNM7HNVXM",
+    "thread:PRRT_kwDOSF9kNM6Gd8O2",
+    "thread:PRRT_kwDOSF9kNM6Gd8O7"
+  ],
+  "fetched_at": "2026-06-02T14:53:08.971Z",
+  "schema_version": "v1",
+  "commit_sha": "303593cad158bcce35ee4ffa940b13dd85140b4a",
+  "title": "docs(B-0989): geospatial core algebra — HARDEN FIRST, 4×4-bonded (blocks B-0988 world-borders)",
+  "state": "MERGED",
+  "merged_at": "2026-06-02T14:52:42Z",
+  "head_ref": "otto-cli/b0989-geospatial-core-algebra-harden-first-2026-06-02"
+}

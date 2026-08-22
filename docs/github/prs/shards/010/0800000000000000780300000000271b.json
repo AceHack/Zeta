@@ -1,0 +1,12 @@
+{
+  "pr_number": 10011,
+  "archive_path": "docs/history/pr-reviews/PR-10011-perf-core-decorrelationmetrology-spacelikecommitpairs-memoize-ancestor-sets-o-n-.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-03T00:07:10.421Z",
+  "schema_version": "v1",
+  "commit_sha": "b07212eb1460bf4502fb90212dcb4d57cd0ff28d",
+  "title": "perf(core): DecorrelationMetrology.spacelikeCommitPairs — memoize ancestor sets (O(N^3) to O(N^2))",
+  "state": "MERGED",
+  "merged_at": "2026-08-03T00:06:40Z",
+  "head_ref": "perf/decorrelation-metrology-memoize-ancestors-20260802"
+}

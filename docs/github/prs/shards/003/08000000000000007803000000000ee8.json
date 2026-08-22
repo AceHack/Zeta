@@ -1,0 +1,12 @@
+{
+  "pr_number": 3816,
+  "archive_path": "docs/history/pr-reviews/PR-3816-shard-tick-2026-05-16t07-45z-pure-git-tick-pr-3814-merged-via-peer-assisted-cros.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-16T07:58:06.351Z",
+  "schema_version": "v1",
+  "commit_sha": "157a2d0115b4bc1ec624592fe114b40fcc558bcf",
+  "title": "shard(tick): 2026-05-16T07:45Z — pure-git tick; PR #3814 merged via peer-assisted cross-lane open",
+  "state": "MERGED",
+  "merged_at": "2026-05-16T07:57:47Z",
+  "head_ref": "shard/tick-0745z-otto-cli-2026-05-16"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 9314,
+  "archive_path": "docs/history/pr-reviews/PR-9314-feat-cpu-column-b-rung-5-the-fully-synthesizable-core-no-structural-seam-left-sh.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-03T14:51:48.546Z",
+  "schema_version": "v1",
+  "commit_sha": "5e811726d1daec81dbd1458c17931fdb49ff5b82",
+  "title": "feat(cpu): Column B rung 5 — the fully-synthesizable core, no structural seam left (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-03T14:51:26Z",
+  "head_ref": "otto/column-b-rung5-synthesizable-cpu"
+}

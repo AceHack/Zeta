@@ -1,0 +1,12 @@
+{
+  "pr_number": 9228,
+  "archive_path": "docs/history/pr-reviews/PR-9228-docs-hooks-microsoft-detours-root-anchor-detour-as-max-generic-f-endomorphism.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-03T00:00:06.825Z",
+  "schema_version": "v1",
+  "commit_sha": "fb02c4f2bb546fa4231f36dae266b674cfc5b895",
+  "title": "docs(hooks): Microsoft Detours root anchor + detour as max-generic F# endomorphism",
+  "state": "MERGED",
+  "merged_at": "2026-07-02T23:59:45Z",
+  "head_ref": "otto/hooks-detours-anchor-fsharp-generic"
+}

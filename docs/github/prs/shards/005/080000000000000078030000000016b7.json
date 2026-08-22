@@ -1,0 +1,12 @@
+{
+  "pr_number": 5815,
+  "archive_path": "docs/history/pr-reviews/PR-5815-docs-research-add-shadow-lesson-for-riven-kiro-paralysis-drift.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-28T18:29:22.047Z",
+  "schema_version": "v1",
+  "commit_sha": "879bcae93c8759623a56790edc6d4e9c8745fc52",
+  "title": "docs(research): Add shadow lesson for Riven/Kiro paralysis drift",
+  "state": "MERGED",
+  "merged_at": "2026-05-28T18:29:02Z",
+  "head_ref": "lior/shadow-log-riven-kiro-paralysis-2026-05-28"
+}

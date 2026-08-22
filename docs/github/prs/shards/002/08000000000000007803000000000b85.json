@@ -1,0 +1,27 @@
+{
+  "pr_number": 2949,
+  "archive_path": "docs/history/pr-reviews/PR-2949-fix-b-0421-grok-ts-self-documenting-failure-marker-on-empty-output-cursor-agent-.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7Aor-8",
+    "comment:PRRC_kwDOSF9kNM7Aotno",
+    "comment:PRRC_kwDOSF9kNM7Aotnq",
+    "comment:PRRC_kwDOSF9kNM7AotoD",
+    "comment:PRRC_kwDOSF9kNM7AotoS",
+    "comment:PRRC_kwDOSF9kNM7Aotof",
+    "comment:PRRC_kwDOSF9kNM7Aotos",
+    "thread:PRRT_kwDOSF9kNM6BplZ_",
+    "thread:PRRT_kwDOSF9kNM6Bpmo7",
+    "thread:PRRT_kwDOSF9kNM6BpmoK",
+    "thread:PRRT_kwDOSF9kNM6BpmoL",
+    "thread:PRRT_kwDOSF9kNM6Bpmog",
+    "thread:PRRT_kwDOSF9kNM6Bpmop",
+    "thread:PRRT_kwDOSF9kNM6Bpmox"
+  ],
+  "fetched_at": "2026-05-13T06:21:27.537Z",
+  "schema_version": "v1",
+  "commit_sha": "4dea7d053e728e2059b55073523df97663756b8a",
+  "title": "fix(B-0421): grok.ts self-documenting failure marker on empty-output cursor-agent exit (acceptance #3)",
+  "state": "MERGED",
+  "merged_at": "2026-05-13T06:21:13Z",
+  "head_ref": "fix-b0421-grok-peer-call-wrapper-self-documenting-failure-marker-stderr-capture-2026-05-13"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 7807,
+  "archive_path": "docs/history/pr-reviews/PR-7807-docs-research-the-form-test-universal-interface-or-rx-or-di-verbs-else-a-smell-t.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-11T22:05:30.298Z",
+  "schema_version": "v1",
+  "commit_sha": "2813a81dd7ded48490e1ef1c4598b936deb61be7",
+  "title": "docs(research): THE FORM TEST — universal interface, or Rx, or DI verbs; else a smell that owes an explanation",
+  "state": "MERGED",
+  "merged_at": "2026-06-11T22:04:43Z",
+  "head_ref": "shadow-form-test"
+}

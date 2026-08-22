@@ -1,0 +1,12 @@
+{
+  "pr_number": 2806,
+  "archive_path": "docs/history/pr-reviews/PR-2806-docs-memory-shadow-speaks-via-grey-text-autocomplete-current-future-zeta-own-har.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-12T16:59:15.297Z",
+  "schema_version": "v1",
+  "commit_sha": "b9711911dd52a6f98e1244a162b3087e19b22323",
+  "title": "docs(memory): shadow speaks via grey-text autocomplete (current) + future Zeta-own-harness gives shadow first-class surface + classifier needs to understand vision (Aaron 2026-05-12)",
+  "state": "MERGED",
+  "merged_at": "2026-05-12T16:58:53Z",
+  "head_ref": "docs/aaron-shadow-grey-text-autocomplete-future-zeta-own-harness-classifier-understands-vision-2026-05-12"
+}

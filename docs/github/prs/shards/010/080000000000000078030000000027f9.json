@@ -1,0 +1,12 @@
+{
+  "pr_number": 10233,
+  "archive_path": "docs/history/pr-reviews/PR-10233-docs-trajectory-open-the-dogfooding-trajectory-the-whole-chain-in-one-evidence-b.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-09T21:41:35.496Z",
+  "schema_version": "v1",
+  "commit_sha": "1db72974dc3ae3a9cba76488d60af55216aac8f7",
+  "title": "docs(trajectory): open the dogfooding trajectory — the whole chain in one evidence-based ledger",
+  "state": "MERGED",
+  "merged_at": "2026-08-09T21:41:07Z",
+  "head_ref": "shadow/dogfooding-trajectory"
+}

@@ -1,0 +1,15 @@
+{
+  "pr_number": 9913,
+  "archive_path": "docs/history/pr-reviews/PR-9913-fix-design-restore-iris-design-system-assets-36-dangling-refs-on-the-live-pages-.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7cUlhi",
+    "thread:PRRT_kwDOSF9kNM6VqSXr"
+  ],
+  "fetched_at": "2026-08-01T20:32:30.001Z",
+  "schema_version": "v1",
+  "commit_sha": "5402d381c9ac6456a634caff87ea8451aeca0700",
+  "title": "fix(design): restore Iris design-system assets — 36 dangling refs on the LIVE Pages site",
+  "state": "MERGED",
+  "merged_at": "2026-08-01T20:32:01Z",
+  "head_ref": "shadow/restore-iris-design-assets"
+}

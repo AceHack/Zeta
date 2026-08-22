@@ -1,0 +1,12 @@
+{
+  "pr_number": 2699,
+  "archive_path": "docs/history/pr-reviews/PR-2699-docs-memory-recurrence-is-the-signal-circle-completes-from-pr-review-origin.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-11T13:24:31.388Z",
+  "schema_version": "v1",
+  "commit_sha": "0f6cbb4cf1633211f3065b2dc68307d1f415b264",
+  "title": "docs(memory): recurrence IS the signal — circle completes from PR review origin",
+  "state": "MERGED",
+  "merged_at": "2026-05-11T13:24:07Z",
+  "head_ref": "docs/recurrence-signal-circle-completes-2026-05-11"
+}

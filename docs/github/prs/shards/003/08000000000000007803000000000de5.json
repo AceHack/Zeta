@@ -1,0 +1,12 @@
+{
+  "pr_number": 3557,
+  "archive_path": "docs/history/pr-reviews/PR-3557-shard-tick-1855z-b-0533-mechanization-complete-slice-b-3-b-4-wired.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-15T19:01:24.433Z",
+  "schema_version": "v1",
+  "commit_sha": "917db12a503257a280b068ddc83067f60f1e4954",
+  "title": "shard(tick): 1855Z — B-0533 mechanization complete (Slice B.3 + B.4 wired)",
+  "state": "MERGED",
+  "merged_at": "2026-05-15T19:01:07Z",
+  "head_ref": "shard/tick-1855z-otto-cli-2026-05-15"
+}

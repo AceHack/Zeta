@@ -95,6 +95,8 @@ module ComplexityRegistry =
               ("shape.crossing", "draw"), c "O(1)" "O(1)" Derived
               ("shape.sybil-verdict", "draw"), c "O(claims²·rounds + crossings)" "O(rounds)" Derived
               ("shape.refraction", "draw"), c "O(1)" "O(1)" Derived
+              ("shape.symmetric-vs-braided", "draw"), c "O(panels·crossings·strands)" "O(panels·crossings·strands)" Derived
+              ("shape.traced", "draw"), c "O(wires+corners)" "O(wires+corners)" Derived
               ("rng.splitmix64", "mix"), c "O(1)" "O(1)" Derived
               ("rng.lcg64_mmix", "mix"), c "O(1)" "O(1)" Derived
               ("hash.murmur3_32_tail", "mix"), c "O(1)" "O(1)" Derived

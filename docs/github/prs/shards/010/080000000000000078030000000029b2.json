@@ -1,0 +1,12 @@
+{
+  "pr_number": 10674,
+  "archive_path": "docs/history/pr-reviews/PR-10674-research-bindings-what-a-full-rewrite-cannot-remove-and-the-claims-those-binding.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-14T19:30:51.983Z",
+  "schema_version": "v1",
+  "commit_sha": "125204a27938cb164ce94fe8a54a08d61055e3f2",
+  "title": "research(bindings): what a full rewrite cannot remove — and the claims those bindings cap",
+  "state": "MERGED",
+  "merged_at": "2026-08-14T19:30:18Z",
+  "head_ref": "otto/binding-dependencies-what-a-full-rewrite-cannot-remove"
+}

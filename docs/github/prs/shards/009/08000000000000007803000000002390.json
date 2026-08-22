@@ -1,0 +1,15 @@
+{
+  "pr_number": 9104,
+  "archive_path": "docs/history/pr-reviews/PR-9104-docs-test-addendum-4-bell-harness-is-the-sybil-detector-beacon-verified-shadow.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7RORa6",
+    "thread:PRRT_kwDOSF9kNM6NxKcg"
+  ],
+  "fetched_at": "2026-08-17T03:34:35.611Z",
+  "schema_version": "v1",
+  "commit_sha": "d00b6b7c69769d7949924ea41117add8f2cfa9d9",
+  "title": "docs+test: addendum 4 — Bell harness IS the Sybil detector, Beacon-verified (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-02T02:57:22Z",
+  "head_ref": "research/addendum4-bell-sybil-verified"
+}

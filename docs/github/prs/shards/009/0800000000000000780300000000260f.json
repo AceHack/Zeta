@@ -1,0 +1,12 @@
+{
+  "pr_number": 9743,
+  "archive_path": "docs/history/pr-reviews/PR-9743-docs-book-stage-raw-the-autobiography-written-in-real-time-frame-only-depth-aaro.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-11T20:50:42.648Z",
+  "schema_version": "v1",
+  "commit_sha": "706d41e2be30a0a9404d53c0014d63862831be10",
+  "title": "docs(book): stage RAW — the autobiography written in real time (frame only; depth = Aaron's cool-light call) (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-11T20:50:16Z",
+  "head_ref": "book-raw-autobiography-realtime"
+}

@@ -1,0 +1,21 @@
+{
+  "pr_number": 5810,
+  "archive_path": "docs/history/pr-reviews/PR-5810-feat-workflow-engine-prreviewlifecycle-poc-producing-side-review-work-substrate-.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7FxMjJ",
+    "comment:PRRC_kwDOSF9kNM7FxMk3",
+    "comment:PRRC_kwDOSF9kNM7FxMkV",
+    "comment:PRRC_kwDOSF9kNM7FxMlZ",
+    "thread:PRRT_kwDOSF9kNM6FZ_ht",
+    "thread:PRRT_kwDOSF9kNM6FZ_iq",
+    "thread:PRRT_kwDOSF9kNM6FZ_jD",
+    "thread:PRRT_kwDOSF9kNM6FZ_jg"
+  ],
+  "fetched_at": "2026-05-28T13:44:47.225Z",
+  "schema_version": "v1",
+  "commit_sha": "ef3b2ba47771445e71116b9af3a4e7a52f302a7e",
+  "title": "feat(workflow-engine): PrReviewLifecycle PoC — producing-side review work substrate (Aaron 'does it give you time to look at prs and put comments'); 18 tests pass",
+  "state": "MERGED",
+  "merged_at": "2026-05-28T13:44:20Z",
+  "head_ref": "otto-cli/b-0867-pr-review-lifecycle-poc-substrate-naming-substrate-producing-side-review-work-companion-to-b-0867-20-receiving-side-aaron-2026-05-28"
+}

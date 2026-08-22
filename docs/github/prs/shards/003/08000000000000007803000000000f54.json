@@ -1,0 +1,12 @@
+{
+  "pr_number": 3924,
+  "archive_path": "docs/history/pr-reviews/PR-3924-memory-feedback-post-session-saturation-brief-ack-ceremony-pattern.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-16T18:01:52.010Z",
+  "schema_version": "v1",
+  "commit_sha": "b7dbb61d7da2dcdf8a902fbbe178b6d973fa49e7",
+  "title": "memory(feedback): post-session-saturation brief-ack ceremony pattern",
+  "state": "MERGED",
+  "merged_at": "2026-05-16T18:01:32Z",
+  "head_ref": "otto-cli-shard-1746z-saturation-ceremony-unique-2026-05-16"
+}

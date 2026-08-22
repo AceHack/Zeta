@@ -1,0 +1,12 @@
+{
+  "pr_number": 10544,
+  "archive_path": "docs/history/pr-reviews/PR-10544-docs-add-burmese-translation-for-you-born-at-the-hinge.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-14T11:00:30.711Z",
+  "schema_version": "v1",
+  "commit_sha": "0963b6191cedeb464aed54591ef33fa07e6adac4",
+  "title": "docs: add Burmese translation for You, Born at the Hinge",
+  "state": "MERGED",
+  "merged_at": "2026-08-14T10:59:58Z",
+  "head_ref": "translation-burmese"
+}

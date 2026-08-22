@@ -1,0 +1,14 @@
+{
+  "id": "080d005ea0eba010a0130008932d5b45",
+  "at": "2026-08-16T18:27:25.684Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M05X87BK087G0R000RJ4GEC",
+    "type": "task",
+    "title": "Path-ordered and persisted-artifact localeCompare sites are ordering migrations, not sweep lines",
+    "slug": "path-ordered-and-persisted-artifact-localecompare-sites-are",
+    "priority": "P3",
+    "filename": "081M05X87BK087G0R000RJ4GEC-path-ordered-and-persisted-artifact-localecompare-sites-are.md"
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 9801,
+  "archive_path": "docs/history/pr-reviews/PR-9801-feat-core-lean4-abstract-r-matrix-certificate-braided-not-symmetric-machine-chec.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-31T23:22:37.560Z",
+  "schema_version": "v1",
+  "commit_sha": "20a9961d42777534023e410230dfbedc607e0cfb",
+  "title": "feat(Core.Lean4): abstract R-matrix certificate — braided-not-symmetric, machine-checked (braided arc, Lean leg)",
+  "state": "MERGED",
+  "merged_at": "2026-07-31T23:22:05Z",
+  "head_ref": "shadow/lean4-menobraided-rmatrix-certificate"
+}

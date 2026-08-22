@@ -1,0 +1,29 @@
+{
+  "pr_number": 2522,
+  "archive_path": "docs/history/pr-reviews/PR-2522-docs-memory-riven-context-overflow-incident-prompt-injection-research-flag.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_pkzG",
+    "comment:PRRC_kwDOSF9kNM6_plA-",
+    "comment:PRRC_kwDOSF9kNM6_plA1",
+    "comment:PRRC_kwDOSF9kNM6_plA8",
+    "comment:PRRC_kwDOSF9kNM6_pm30",
+    "comment:PRRC_kwDOSF9kNM6_pm33",
+    "comment:PRRC_kwDOSF9kNM6_pm39",
+    "comment:PRRC_kwDOSF9kNM6_pm3w",
+    "thread:PRRT_kwDOSF9kNM6A7C5c",
+    "thread:PRRT_kwDOSF9kNM6A7C5i",
+    "thread:PRRT_kwDOSF9kNM6A7C5k",
+    "thread:PRRT_kwDOSF9kNM6A7Cuc",
+    "thread:PRRT_kwDOSF9kNM6A7Ebc",
+    "thread:PRRT_kwDOSF9kNM6A7Ebe",
+    "thread:PRRT_kwDOSF9kNM6A7Ebh",
+    "thread:PRRT_kwDOSF9kNM6A7Ebn"
+  ],
+  "fetched_at": "2026-05-10T19:07:51.682Z",
+  "schema_version": "v1",
+  "commit_sha": "db21b5bc7e0432f9a68245cf56961401ea46b664",
+  "title": "docs(memory): Riven context overflow incident + prompt injection research flag",
+  "state": "MERGED",
+  "merged_at": "2026-05-10T19:07:29Z",
+  "head_ref": "docs/riven-overflow-incident-2026-05-10"
+}

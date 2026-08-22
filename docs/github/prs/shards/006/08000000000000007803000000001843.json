@@ -1,0 +1,12 @@
+{
+  "pr_number": 6211,
+  "archive_path": "docs/history/pr-reviews/PR-6211-release-remove-b-0171-merged-claim-residue.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-31T13:38:09.276Z",
+  "schema_version": "v1",
+  "commit_sha": "841b7fd2e34dfe49bdf32aeaf14532ac388b53a4",
+  "title": "release: remove B-0171 merged claim residue",
+  "state": "MERGED",
+  "merged_at": "2026-05-31T13:37:51Z",
+  "head_ref": "claim/task-b0171-release-claim-residue-20260531"
+}

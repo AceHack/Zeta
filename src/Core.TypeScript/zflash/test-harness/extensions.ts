@@ -172,6 +172,7 @@ export type VMSpec = {
 
 export type NetworkTopology =
   | { kind: "shared-bridge"; bridgeName: string }
+  | { kind: "shared-socket-segment"; host: string; port: number }
   | { kind: "vlan-isolated"; vlanId: number; gatewayVm: string }
   | { kind: "host-only"; subnet: string };
 
@@ -208,10 +209,30 @@ export const DEFAULT_MULTI_VM: MultiVMOrchestrationSubstrate = {
       vcpus: 2,
     },
   ],
-  networkTopology: { kind: "shared-bridge", bridgeName: "zflash-test-br0" },
+  // Was `{ kind: "shared-bridge", bridgeName: "zflash-test-br0" }` -- a
+  // topology no emitted argument implemented and no hosted runner could
+  // deliver, because creating a bridge needs root on the host. A QEMU-to-QEMU
+  // socket segment carries the same L2 frames with no root, no tap device and
+  // no host configuration, so this is the topology the harness can actually
+  // build. The port is the rendezvous both VMs name; see buildQemuNetworkDeviceArgs.
+  networkTopology: { kind: "shared-socket-segment", host: "127.0.0.1", port: 21084 },
+  // k3s's join is the join (Aaron 2026-08-13, closing the open question on
+  // PR #10493: "k3s's join is the join, don't invent our own").
+  //
+  // This was `credential-provisioning` pointing at an
+  // http://cluster-existing:8080/cred-pick endpoint — a Zeta-owned join
+  // protocol that does not exist and, per that decision, is not going to be
+  // built. Leaving it would keep the design substrate describing a handshake
+  // nobody is implementing, which is how a spec starts lying about the system
+  // it claims to describe. `explicit-join-token` was already in the
+  // JoinProtocol union and is literally what happens: the founding server's
+  // `--cluster-init` generates the token at this path and a worker copies it
+  // to /var/lib/rancher/k3s/agent/token. See nixos/modules/k3s-server.nix for
+  // the generation and nixos/tests/k3s-agent-join.nix, which performs exactly
+  // this hand-off between two real nodes.
   joinProtocol: {
-    kind: "credential-provisioning",
-    credPickerEndpoint: "http://cluster-existing:8080/cred-pick",
+    kind: "explicit-join-token",
+    tokenSource: "/var/lib/rancher/k3s/server/node-token",
   },
   orchestrator: { kind: "qemu-shell-scripts" },
 };
@@ -253,7 +274,7 @@ export const SCENARIO_IMPL_DESIGN: Record<
   },
   "cluster-joining": {
     kind: "design-spec-complete",
-    specRef: "extensions.ts MultiVMOrchestrationSubstrate + DEFAULT_MULTI_VM (shared-bridge + credential-provisioning)",
+    specRef: "extensions.ts MultiVMOrchestrationSubstrate + DEFAULT_MULTI_VM (shared-bridge + explicit-join-token)",
   },
 };
 

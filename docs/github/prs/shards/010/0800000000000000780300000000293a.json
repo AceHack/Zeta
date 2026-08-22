@@ -1,0 +1,12 @@
+{
+  "pr_number": 10554,
+  "archive_path": "docs/history/pr-reviews/PR-10554-formal-amplitude-z-eps-holds-the-eps-threshold-drop-signals.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-18T16:27:42.886Z",
+  "schema_version": "v1",
+  "commit_sha": "ebb1af729bc74c56bf7189c1d3a24be99d64f591",
+  "title": "formal(amplitude): Z-EPS holds — the EPS threshold drop signals",
+  "state": "MERGED",
+  "merged_at": "2026-08-14T12:02:37Z",
+  "head_ref": "soraya/z-eps-threshold-drop-signalling-falsifier"
+}

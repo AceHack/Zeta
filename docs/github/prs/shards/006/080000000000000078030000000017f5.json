@@ -1,0 +1,12 @@
+{
+  "pr_number": 6133,
+  "archive_path": "docs/history/pr-reviews/PR-6133-docs-pitch-saifedean-ammous-bitcoin-standard-negotiation-profile.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-30T17:21:05.306Z",
+  "schema_version": "v1",
+  "commit_sha": "bda705b697b4f7142b78668173908213aa22aa7b",
+  "title": "docs(pitch): Saifedean Ammous (Bitcoin Standard) negotiation profile",
+  "state": "MERGED",
+  "merged_at": "2026-05-30T17:20:47Z",
+  "head_ref": "otto/saifedean-bitcoin-standard-profile-2026-05-30"
+}

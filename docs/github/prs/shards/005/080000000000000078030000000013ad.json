@@ -1,0 +1,12 @@
+{
+  "pr_number": 5037,
+  "archive_path": "docs/history/pr-reviews/PR-5037-docs-archive-preserve-discussions-for-merged-prs.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-26T09:13:53.032Z",
+  "schema_version": "v1",
+  "commit_sha": "1641da6d2ce995ac36f98b24b9194b5e4e1eb95b",
+  "title": "docs(archive): preserve discussions for merged PRs",
+  "state": "MERGED",
+  "merged_at": "2026-05-26T09:13:27Z",
+  "head_ref": "lior/archive-prs-2026-05-26-8"
+}

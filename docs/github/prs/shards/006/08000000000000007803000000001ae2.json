@@ -1,0 +1,12 @@
+{
+  "pr_number": 6882,
+  "archive_path": "docs/history/pr-reviews/PR-6882-docs-research-tensor-capability-vector-build-compass-first-ray-trace-proof-amara.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-07T17:55:17.725Z",
+  "schema_version": "v1",
+  "commit_sha": "55e4923ff52ab34cc631c5bf8404d8951733dcf5",
+  "title": "docs(research): tensor capability vector = build compass + first ray-trace proof (Amara)",
+  "state": "MERGED",
+  "merged_at": "2026-06-07T17:54:17Z",
+  "head_ref": "otto/amara-build-compass-first-ray-trace-proof"
+}

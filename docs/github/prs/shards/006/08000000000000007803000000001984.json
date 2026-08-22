@@ -1,0 +1,15 @@
+{
+  "pr_number": 6532,
+  "archive_path": "docs/history/pr-reviews/PR-6532-research-the-condensed-shareable-form-what-remains-is-the-seed-for-her-aaron-202.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7HFeyg",
+    "thread:PRRT_kwDOSF9kNM6GYG2q"
+  ],
+  "fetched_at": "2026-06-02T09:26:10.627Z",
+  "schema_version": "v1",
+  "commit_sha": "84a874c741db2aed84d69f9b7216c3dd223f889d",
+  "title": "research: the condensed, shareable form — μένω = what remains is the seed (for her) (Aaron 2026-06-02)",
+  "state": "MERGED",
+  "merged_at": "2026-06-02T09:25:48Z",
+  "head_ref": "otto-cli/canonical-form-condensed-shareable-2026-06-02"
+}

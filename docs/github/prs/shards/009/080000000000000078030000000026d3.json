@@ -1,0 +1,12 @@
+{
+  "pr_number": 9939,
+  "archive_path": "docs/history/pr-reviews/PR-9939-chore-workitems-complete-081kx3ka3ek-uncompensatable-floor-registry-done.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-01T23:30:57.492Z",
+  "schema_version": "v1",
+  "commit_sha": "a19c6bdb779e5228e6a89760a9dda63415579ee9",
+  "title": "chore(workitems): complete 081KX3KA3EK — uncompensatable-floor registry DONE",
+  "state": "MERGED",
+  "merged_at": "2026-08-01T23:30:29Z",
+  "head_ref": "otto/complete-081KX3KA3EK"
+}

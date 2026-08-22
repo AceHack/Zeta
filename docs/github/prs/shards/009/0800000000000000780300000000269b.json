@@ -1,0 +1,12 @@
+{
+  "pr_number": 9883,
+  "archive_path": "docs/history/pr-reviews/PR-9883-feat-hygiene-f-mutation-probe-and-the-finding-it-produced-before-its-first-run.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-01T21:21:06.062Z",
+  "schema_version": "v1",
+  "commit_sha": "ed8e979c316992aee24684c9722fba487b71ace3",
+  "title": "feat(hygiene): F# mutation probe — and the finding it produced before its first run",
+  "state": "MERGED",
+  "merged_at": "2026-08-01T21:20:38Z",
+  "head_ref": "shadow/fsharp-could-not-fail-detector"
+}

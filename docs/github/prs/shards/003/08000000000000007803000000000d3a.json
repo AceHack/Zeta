@@ -1,0 +1,15 @@
+{
+  "pr_number": 3386,
+  "archive_path": "docs/history/pr-reviews/PR-3386-fix-shards-bulk-fix-tick-shard-rule-link-depth-5x-6x-across-5-shards.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7BhqQd",
+    "thread:PRRT_kwDOSF9kNM6CTAcb"
+  ],
+  "fetched_at": "2026-05-15T08:21:55.931Z",
+  "schema_version": "v1",
+  "commit_sha": "41dce23a9c0e90c1eae6c4738c705a4b08ee5d71",
+  "title": "fix(shards): bulk fix tick-shard rule-link depth (5x ../ → 6x ../) across 5 shards",
+  "state": "MERGED",
+  "merged_at": "2026-05-15T08:21:40Z",
+  "head_ref": "fix/bulk-tick-shard-rule-link-depth-otto-cli-2026-05-15"
+}

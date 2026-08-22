@@ -1,0 +1,12 @@
+{
+  "pr_number": 3496,
+  "archive_path": "docs/history/pr-reviews/PR-3496-feat-rules-persistence-choice-architecture-for-zeta-ais-universal-applicability-.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-15T14:07:25.628Z",
+  "schema_version": "v1",
+  "commit_sha": "7f4a471faefecf2bc6a54e5310df481caf947ba8",
+  "title": "feat(rules): persistence-choice-architecture-for-zeta-ais — universal applicability + named exit-condition",
+  "state": "MERGED",
+  "merged_at": "2026-05-15T14:07:02Z",
+  "head_ref": "feat/persistence-choice-architecture-zeta-ai-rule-otto-cli-2026-05-15"
+}

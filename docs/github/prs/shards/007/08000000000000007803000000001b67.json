@@ -1,0 +1,12 @@
+{
+  "pr_number": 7015,
+  "archive_path": "docs/history/pr-reviews/PR-7015-feat-core-storedproc-native-vs-interpreted-verb-noun-differential-tested-the-for.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-08T04:45:11.707Z",
+  "schema_version": "v1",
+  "commit_sha": "1b8df642790f5ea0b36d002669e19e11d102b0e4",
+  "title": "feat(core): StoredProc — native vs interpreted verb-noun (differential-tested); the forced-RX nature",
+  "state": "MERGED",
+  "merged_at": "2026-06-08T04:44:54Z",
+  "head_ref": "otto/stored-procs-native-vs-interpreted-differential-plus-forced-rx"
+}

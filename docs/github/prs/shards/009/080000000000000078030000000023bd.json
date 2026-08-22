@@ -1,0 +1,12 @@
+{
+  "pr_number": 9149,
+  "archive_path": "docs/history/pr-reviews/PR-9149-fix-lint-markdownlint-green-escape-f-drop-trailing-period-heading-soraya-otto-ha.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-17T10:14:44.028Z",
+  "schema_version": "v1",
+  "commit_sha": "18a29baee15e1579593d7399c09216df69f1c35e",
+  "title": "fix(lint): markdownlint green — escape F* + drop trailing-period heading (Soraya→Otto handoff)",
+  "state": "MERGED",
+  "merged_at": "2026-07-02T16:15:16Z",
+  "head_ref": "otto/fix-markdownlint-soraya-handoff-fstar"
+}

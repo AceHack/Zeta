@@ -45,6 +45,8 @@ concurrency:
 jobs:
   lint:
     name: lint memory/MEMORY.md for duplicate link targets
+    # Timeout basis: observed med 1.9m / max 3.6m (n=40); uncached install.sh headroom.
+    timeout-minutes: 20
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1

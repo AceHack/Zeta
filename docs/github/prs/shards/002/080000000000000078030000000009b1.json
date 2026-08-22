@@ -1,0 +1,12 @@
+{
+  "pr_number": 2481,
+  "archive_path": "docs/history/pr-reviews/PR-2481-fix-b-0164-dotted-id-regex-in-claim-tool-remove-redundant-parent-from-depends-on.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-10T12:21:46.452Z",
+  "schema_version": "v1",
+  "commit_sha": "bed1a7384bf232840f6d1131de7b8b6c0ad7b883",
+  "title": "fix(B-0164): dotted-ID regex in claim tool + remove redundant parent from depends_on",
+  "state": "MERGED",
+  "merged_at": "2026-05-10T12:21:31Z",
+  "head_ref": "fix/B-0164-claim-tool-dotted-id-depends-on-cleanup"
+}

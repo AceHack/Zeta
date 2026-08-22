@@ -1,0 +1,23 @@
+{
+  "pr_number": 4490,
+  "archive_path": "docs/history/pr-reviews/PR-4490-docs-shard-0249z-318-working-tree-mods-triage-discriminator-s-4th-surface.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7DaAei",
+    "comment:PRRC_kwDOSF9kNM7DaB8_",
+    "comment:PRRC_kwDOSF9kNM7DaB9a",
+    "comment:PRRC_kwDOSF9kNM7DaB9t",
+    "comment:PRRC_kwDOSF9kNM7DaGJr",
+    "thread:PRRT_kwDOSF9kNM6DrJZH",
+    "thread:PRRT_kwDOSF9kNM6DrKe7",
+    "thread:PRRT_kwDOSF9kNM6DrKea",
+    "thread:PRRT_kwDOSF9kNM6DrKer",
+    "thread:PRRT_kwDOSF9kNM6DrNll"
+  ],
+  "fetched_at": "2026-05-21T03:08:48.490Z",
+  "schema_version": "v1",
+  "commit_sha": "53e7e131cee8ed372b87134eccab985253b618f9",
+  "title": "docs(shard/0249Z): 318 working-tree mods triage — discriminator's 4th surface",
+  "state": "MERGED",
+  "merged_at": "2026-05-21T03:08:26Z",
+  "head_ref": "shard/tick-0249z-318-mods-working-tree-triage-otto-cli-2026-05-21"
+}

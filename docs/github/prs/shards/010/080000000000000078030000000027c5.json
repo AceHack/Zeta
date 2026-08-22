@@ -1,0 +1,12 @@
+{
+  "pr_number": 10181,
+  "archive_path": "docs/history/pr-reviews/PR-10181-feat-browser-add-explicit-dark-hall-node-page.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-09T01:09:23.745Z",
+  "schema_version": "v1",
+  "commit_sha": "5af5db2ad05e4c89e7e7f1f4a89703ab61de0130",
+  "title": "feat(browser): add explicit Dark Hall node page",
+  "state": "MERGED",
+  "merged_at": "2026-08-09T01:08:53Z",
+  "head_ref": "claim/task-browser-page-opt-in-pwa"
+}

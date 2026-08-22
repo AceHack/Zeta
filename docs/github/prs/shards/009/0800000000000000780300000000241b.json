@@ -1,0 +1,12 @@
+{
+  "pr_number": 9243,
+  "archive_path": "docs/history/pr-reviews/PR-9243-feat-core-weighted-bridge-sppf-weights-predictprobability-softvalue-over-parses-.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-03T00:55:46.789Z",
+  "schema_version": "v1",
+  "commit_sha": "a6a42cbe3f7f9a0b45d82f57c5028b10308512eb",
+  "title": "feat(core): weighted bridge — SPPF + weights → PredictProbability SoftValue over parses; exact pipeline complete",
+  "state": "MERGED",
+  "merged_at": "2026-07-03T00:55:24Z",
+  "head_ref": "otto/sppf-weighted-trees-predictprobability"
+}

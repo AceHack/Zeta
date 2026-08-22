@@ -1,0 +1,12 @@
+{
+  "pr_number": 2401,
+  "archive_path": "docs/history/pr-reviews/PR-2401-decompose-b-0042-re-decompose-bungie-corpus-priority-seed-into-7-atomic-children.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-10T03:00:52.848Z",
+  "schema_version": "v1",
+  "commit_sha": "48c1a2395aabfa7a7d1fe3c16c2d069653792bf9",
+  "title": "decompose(B-0042): re-decompose Bungie corpus priority seed into 7 atomic children",
+  "state": "MERGED",
+  "merged_at": "2026-05-10T03:00:39Z",
+  "head_ref": "claim/B-0042-bungie-corpus-priority-seed-decompose-smallest-slice-riven-2026-05-09"
+}

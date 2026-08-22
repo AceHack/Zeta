@@ -1,0 +1,12 @@
+{
+  "pr_number": 8445,
+  "archive_path": "docs/history/pr-reviews/PR-8445-memory-mika-phoenix-multi-selection-generator-model-dragons-as-prs-ace-cathedral.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-16T04:48:18.796Z",
+  "schema_version": "v1",
+  "commit_sha": "95f901ac51b0de0cd900340be60e83b4b4ad3114",
+  "title": "memory(mika): Phoenix multi-selection-generator model + dragons-as-PRs + Ace cathedral + societal AGI (verbatim ferry)",
+  "state": "MERGED",
+  "merged_at": "2026-06-16T04:47:50Z",
+  "head_ref": "otto/mika-phoenix-multi-selection-ferry"
+}

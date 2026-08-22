@@ -1,0 +1,12 @@
+{
+  "pr_number": 9644,
+  "archive_path": "docs/history/pr-reviews/PR-9644-docs-book-the-epic-childhood-recognized-late-privilege-named-the-organizer-ameri.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-09T22:34:49.683Z",
+  "schema_version": "v1",
+  "commit_sha": "aa3dc53835ac7216bef9f96f3a4e15b1d22bb55c",
+  "title": "docs(book): the epic childhood recognized late — privilege named + the organizer (American Dream 2.0 seed)",
+  "state": "MERGED",
+  "merged_at": "2026-07-09T22:34:19Z",
+  "head_ref": "shadow/book-epic-childhood-organizer-privilege"
+}

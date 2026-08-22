@@ -1,0 +1,12 @@
+{
+  "pr_number": 6700,
+  "archive_path": "docs/history/pr-reviews/PR-6700-feat-core-diplomacy-freedom-first-gating-of-negotiate-freedom-precedes-choice.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-07T00:24:59.068Z",
+  "schema_version": "v1",
+  "commit_sha": "fe95681b5851930da49a1835e54f26bd905f58ff",
+  "title": "feat(Core/Diplomacy): freedom-first gating of negotiate (freedom precedes choice)",
+  "state": "MERGED",
+  "merged_at": "2026-06-07T00:24:36Z",
+  "head_ref": "otto/diplomacy-freedom-first-gating"
+}

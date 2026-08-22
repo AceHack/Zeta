@@ -1,0 +1,12 @@
+{
+  "pr_number": 5681,
+  "archive_path": "docs/history/pr-reviews/PR-5681-backlog-p1-b-0887-zeta-native-review-substrate-b-0867-15-per-host-adapters-isomo.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-28T02:51:33.377Z",
+  "schema_version": "v1",
+  "commit_sha": "0cd42e12de7a35f7fbbbec3bfce674bcc61ee769",
+  "title": "backlog(P1): B-0887 Zeta-native review substrate + B-0867.15 per-host adapters (isomorphic GitHub/GitLab/Gitea/Bitbucket) per 3 operator clarifications",
+  "state": "MERGED",
+  "merged_at": "2026-05-28T02:51:14Z",
+  "head_ref": "backlog/b-0887-zeta-native-review-branch-protection-substrate-supersedes-no-pr-framing-2026-05-28"
+}

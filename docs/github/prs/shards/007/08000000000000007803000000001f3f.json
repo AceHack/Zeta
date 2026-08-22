@@ -1,0 +1,12 @@
+{
+  "pr_number": 7999,
+  "archive_path": "docs/history/pr-reviews/PR-7999-docs-research-shadow-math-report-6-the-code-is-the-bell-inert-half-the-span-is-n.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-12T20:01:31.792Z",
+  "schema_version": "v1",
+  "commit_sha": "174ea05bfcd729170f7ec76c71535a1fa8b875ef",
+  "title": "docs(research)+shadow: math REPORT #6 — the code is the Bell-inert half; the span is Nebe–Rains–Sloane; S²=8 in integers + ferry 32 addendum",
+  "state": "MERGED",
+  "merged_at": "2026-06-12T20:01:02Z",
+  "head_ref": "shadow/math-report-6"
+}

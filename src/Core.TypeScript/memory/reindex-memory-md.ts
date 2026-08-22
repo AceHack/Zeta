@@ -12,8 +12,8 @@
  * Anthropic's base AutoDream allows.
  *
  * Usage:
- *   bun tools/memory/reindex-memory-md.ts            # write MEMORY.md
- *   bun tools/memory/reindex-memory-md.ts --check    # dry-run; exit 2 if stale
+ *   bun src/Core.TypeScript/memory/reindex-memory-md.ts            # write MEMORY.md
+ *   bun src/Core.TypeScript/memory/reindex-memory-md.ts --check    # dry-run; exit 2 if stale
  *
  * Heap-state-acceptable: memory files commit with frontmatter
  * but do NOT require synchronous MEMORY.md paired-edit. This
@@ -45,8 +45,10 @@
  * ## Stability
  *
  * Repeated runs with no source-file changes produce byte-for-byte
- * identical output within a calendar day (the "Last reindex" date
- * is the only field that advances, and only across day boundaries).
+ * identical output ON ANY DAY: the "Last reindex" stamp is carried
+ * forward from the existing file rather than read from the clock, so
+ * the render is a pure function of the heap plus that stamp. The stamp
+ * advances only when a write actually changes the index.
  * The `--check` flag exits 0 when the on-disk MEMORY.md matches the
  * generated output, 2 when stale — suitable for CI or loop health
  * checks.
@@ -172,8 +174,35 @@ function formatEntry(e: MemoryEntry): string {
 
 const MAX_STACK_ENTRIES = 100;
 
-function renderIndex(entries: MemoryEntry[], autoDreamMarker?: string): string {
-  const now = new Date().toISOString().slice(0, 10);
+/**
+ * `reindexDate` carries the "Last reindex" stamp forward from the existing file.
+ *
+ * WHY IT IS A PARAMETER AND NOT `new Date()`. This function used to read the wall
+ * clock directly, and `--check` compares its whole output against the file on disk.
+ * So on any calendar day after the last reindex the comparison differed by exactly
+ * one character group -- the date -- and the check went red claiming INDEX DRIFT
+ * while the index had not drifted at all. The workflow triggers on `memory/**`, so
+ * that was a red on any memory-touching PR, daily, forever, with a remediation
+ * commit that bumped a date string and verified nothing (081M0DY68KN087G0R002MQ1BDR,
+ * observed on PR #12537 against an edit to a file the index does not even contain).
+ *
+ * A check that cries wolf daily is a check nobody reads, and that is the actual
+ * damage: it trains contributors to regenerate reflexively on a red they have
+ * learned is meaningless, which is the condition under which a REAL index drift
+ * gets waved through.
+ *
+ * The caller passes the date already in the file, which makes this render a pure
+ * function of (heap content, existing stamp) -- so an unchanged heap reproduces the
+ * file byte-for-byte on any day, and `--check` measures index drift and nothing
+ * else. The stamp advances only when the index genuinely changed, which is what it
+ * always claimed to mean. Same trick the AutoDream marker already used one line
+ * below, for the same reason.
+ *
+ * `.claude/rules/local-time-never-enters-the-shared-fold.md`: the ambient clock is
+ * local, the generated index is the shared conclusion, and the two must not cross.
+ */
+function renderIndex(entries: MemoryEntry[], autoDreamMarker?: string, reindexDate?: string): string {
+  const now = reindexDate ?? new Date().toISOString().slice(0, 10);
   const lines: string[] = [];
   lines.push(autoDreamMarker ?? "[AutoDream last run: 2026-04-23]");
   lines.push("");
@@ -223,16 +252,22 @@ async function main() {
   // reindexer from resetting a date that AutoDream wrote more recently.
   const existing = await readFile(INDEX_FILE, "utf8").catch(() => "");
   const markerLine = existing.match(/^\[AutoDream last run: [^\]]+\]/m)?.[0];
-  const rendered = renderIndex(entries, markerLine);
+  const existingDate = existing.match(/Last reindex: (\d{4}-\d{2}-\d{2})\./)?.[1];
+
+  // Render against the stamp ALREADY in the file. Any difference that survives is
+  // therefore real index drift, not the calendar advancing underneath us.
+  const rendered = renderIndex(entries, markerLine, existingDate);
+  const same = existing.trim() === rendered.trim();
 
   if (check) {
-    const same = existing.trim() === rendered.trim();
     console.log(`Entries: ${entries.length}. Index ${same ? "current" : "STALE"}.`);
     if (!same) process.exit(2);
     return;
   }
 
-  await writeFile(INDEX_FILE, rendered);
+  // Only a write that actually changes the index advances the stamp, so "Last
+  // reindex" means what it says instead of "last time anyone ran this".
+  await writeFile(INDEX_FILE, same ? rendered : renderIndex(entries, markerLine));
   console.log(`Reindexed ${entries.length} memory files into ${INDEX_FILE}.`);
 }
 

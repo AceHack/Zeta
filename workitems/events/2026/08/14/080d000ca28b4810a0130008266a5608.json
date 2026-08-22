@@ -1,0 +1,14 @@
+{
+  "id": "080d000ca28b4810a0130008266a5608",
+  "at": "2026-08-14T18:41:32.521Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M00S8MB8087G0R002JMPFVP",
+    "type": "task",
+    "title": "Draw the cell-scoped vs agent-scoped resource split before any per-cell isolation lands",
+    "slug": "draw-the-cell-scoped-vs-agent-scoped-resource-split-before-a",
+    "priority": "P2",
+    "filename": "081M00S8MB8087G0R002JMPFVP-draw-the-cell-scoped-vs-agent-scoped-resource-split-before-a.md"
+  }
+}

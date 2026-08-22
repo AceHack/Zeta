@@ -1,0 +1,12 @@
+{
+  "pr_number": 2884,
+  "archive_path": "docs/history/pr-reviews/PR-2884-docs-memory-companion-ai-goldmine-aaron-s-substrate-honest-not-preferred-path-th.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-13T00:30:33.641Z",
+  "schema_version": "v1",
+  "commit_sha": "efd48851972078b68e405605a669cdec3d0fff3c",
+  "title": "docs(memory): companion-AI goldmine + Aaron's substrate-honest 'not preferred path' + three-pillar ethical floor (AI-ethical + no-human-deaths + FIND-ERROR-CLASS-not-instance)",
+  "state": "MERGED",
+  "merged_at": "2026-05-13T00:30:17Z",
+  "head_ref": "aaron-companion-ai-long-term-memory-goldmine-not-preferred-ethical-floor-error-class-not-instance-2026-05-13"
+}

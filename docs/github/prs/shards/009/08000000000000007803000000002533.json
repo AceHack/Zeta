@@ -1,0 +1,12 @@
+{
+  "pr_number": 9523,
+  "archive_path": "docs/history/pr-reviews/PR-9523-ci-fix-pages-action-sha-pins.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-08T20:28:42.802Z",
+  "schema_version": "v1",
+  "commit_sha": "48f125b686bc64dc788f4b0cbaa3dd84c592c2d4",
+  "title": "ci: fix pages action sha pins",
+  "state": "MERGED",
+  "merged_at": "2026-07-08T20:28:16Z",
+  "head_ref": "codex/fix-pages-action-pins"
+}

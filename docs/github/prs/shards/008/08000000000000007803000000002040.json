@@ -1,0 +1,12 @@
+{
+  "pr_number": 8256,
+  "archive_path": "docs/history/pr-reviews/PR-8256-docs-research-privacy-budget-as-criticality-regulator-standing-wave-between-froz.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-15T04:17:22.852Z",
+  "schema_version": "v1",
+  "commit_sha": "b5515a50fbd7ca61e0e5e23b95e3324607d85f29",
+  "title": "docs(research): privacy budget as criticality regulator — standing wave between frozen and dissolved",
+  "state": "MERGED",
+  "merged_at": "2026-06-15T04:17:02Z",
+  "head_ref": "otto/privacy-budget-criticality-regulator"
+}

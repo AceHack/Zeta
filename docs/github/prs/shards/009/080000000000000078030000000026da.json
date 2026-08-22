@@ -1,0 +1,12 @@
+{
+  "pr_number": 9946,
+  "archive_path": "docs/history/pr-reviews/PR-9946-feat-skill-speech-to-text-local-free-model-chosen-by-measurement-the-vokes-spoke.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-02T00:08:40.397Z",
+  "schema_version": "v1",
+  "commit_sha": "02d8e3ca2312550a47262bc6f2f4bd5cb4a64ba3",
+  "title": "feat(skill): speech-to-text — local, free, model chosen by measurement + the Vokes spoken transcript",
+  "state": "MERGED",
+  "merged_at": "2026-08-02T00:08:09Z",
+  "head_ref": "shadow/speech-to-text-skill-and-vokes-transcript"
+}

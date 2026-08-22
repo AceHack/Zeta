@@ -1,0 +1,12 @@
+{
+  "pr_number": 9993,
+  "archive_path": "docs/history/pr-reviews/PR-9993-feat-browser-compose-durable-dark-hall-room-runtime.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-02T20:31:02.607Z",
+  "schema_version": "v1",
+  "commit_sha": "3d5e4cd134fb3084be8e5747efe5cbfaa76ba5a6",
+  "title": "feat(browser): compose durable Dark Hall room runtime",
+  "state": "MERGED",
+  "merged_at": "2026-08-02T20:30:26Z",
+  "head_ref": "claim/task-browser-durable-room-runtime"
+}

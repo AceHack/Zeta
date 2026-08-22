@@ -1,0 +1,12 @@
+{
+  "pr_number": 9033,
+  "archive_path": "docs/history/pr-reviews/PR-9033-fix-claude-md-repoint-two-stale-boot-tool-paths-broken-by-the-ts-migration.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-30T19:57:15.459Z",
+  "schema_version": "v1",
+  "commit_sha": "beae7ef812613d5c42ef03be4adaec9ec71ec88c",
+  "title": "fix(claude-md): repoint two stale boot-tool paths broken by the TS migration",
+  "state": "MERGED",
+  "merged_at": "2026-06-30T19:56:47Z",
+  "head_ref": "fix-claude-md-stale-boot-tool-paths"
+}

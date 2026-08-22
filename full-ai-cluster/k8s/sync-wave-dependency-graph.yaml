@@ -1,0 +1,570 @@
+# APP-DEPENDENCY-GRAPH.yaml — the DECLARED dependency graph of the App-of-Apps.
+#
+# WHY THIS FILE EXISTS
+# --------------------
+# `full-ai-cluster/dev-cluster/SYNC-WAVES.md` used to be the only statement of
+# bring-up order, and it was written by hand. On 2026-08-21 it named 34
+# components while 46 `kind: Application` manifests shipped: twelve
+# Applications — agent-memory, arc-controller, arc-runner-set, cdi,
+# cilium-lb-ipam, gmod, headlamp, headscale, kubevirt, minio, platform,
+# seaweedfs — appeared nowhere in its graph. Nobody had failed to update a
+# document; a hand-maintained artifact was standing where a DERIVED one was
+# intended (Aaron, 2026-08-21: "we are supposed to use our ace package manager
+# to calculate the sync waves so the order of the helm charts can be derived
+# where there are dependencies").
+#
+# This file is that declaration. `ace`'s own dependency engine
+# (`src/Core.TypeScript/ace/deps.ts` `resolveGraph`) topologically sorts it,
+# detects cycles, and computes DAG heights — the derived waves.
+# `src/Core.TypeScript/cluster/derive-sync-waves.ts` compares that derivation
+# against the hand-written `argocd.argoproj.io/sync-wave` annotations and
+# REFUSES on disagreement.
+#
+# WHAT MAKES AN OMISSION IMPOSSIBLE RATHER THAN MERELY CORRECTED
+# --------------------------------------------------------------
+# Every `kind: Application` manifest the app-of-apps roster reaches
+# (`listApplicationManifests()` in `cluster/app-of-apps-discovery.ts`) MUST
+# appear here as a node. An Application absent from this file is a FINDING, not
+# a skip — that is precisely how the twelve above went missing. `dependsOn: []`
+# is a real, allowed answer meaning "no dependency edge is grounded in the
+# tree"; silence is not.
+#
+# EVERY EDGE CARRIES A CITATION
+# -----------------------------
+# `citations` maps each entry of `dependsOn` to the artifact that grounds it.
+# The checker refuses an uncited edge. A wave number with no cited dependency
+# is the same defect as the hand-written document, wearing a new filename.
+#
+# The `path:line` in a citation is where the evidence was read; it is prose, not
+# a machine-checked pointer, and it will drift as files move. What IS
+# machine-checked is that the citation exists and is non-empty. Beacon anchor
+# for the derivation itself: Kahn, "Topological sorting of large networks",
+# CACM 5(11), 1962 — heights in a DAG are the classical construction ace
+# implements.
+#
+# THIS FILE DOES NOT SET WAVES. It declares ORDER. The hand-written annotations
+# on the Application manifests remain the live bring-up numbers; nothing here
+# renumbers a running cluster.
+apiVersion: ace.zeta.io/v1
+kind: AppDependencyGraph
+metadata:
+  # NOTE: `resolveGraph` injects a synthetic root node named after this value.
+  # It must never collide with an Application name.
+  name: zeta-full-ai-cluster
+  namespace: argocd
+spec:
+  # ── INTENT vs OBSERVED, adjudicated ─────────────────────────────────────────
+  # An edge in this file can be either of two things, and the difference is
+  # load-bearing for anything that PARTITIONS the graph rather than ordering it:
+  #
+  #   OBSERVED  a rendered manifest wires A to B; removing B breaks A at runtime.
+  #   INTENT    we mean to wire A to B and have not; A runs today without B.
+  #
+  # For SYNC ORDER the distinction does not matter — ordering by an intent edge
+  # costs nothing but a wave number. For LANE PARTITIONING it matters a lot: an
+  # intent edge glues two application sets that are, today, independent, and so
+  # produces a partition coarser than the tree warrants.
+  #
+  # WHY A MAP AND NOT A GREP. The citations already say which edges are intent,
+  # in prose. Matching that prose is wrong in a way this very file demonstrates:
+  # `temporal -> cockroachdb`'s citation reads "was a DECLARED INTENT until
+  # 2026-08-22 ... and is now a live connection", so a substring match convicts
+  # an edge that has since become real. So the phrase ENUMERATES candidates and
+  # this map ANSWERS them. `lane-partition.ts` derives the candidate set from
+  # the citations on every run and REFUSES on any candidate this map does not
+  # answer — so an edge cannot be added with intent-language and quietly left
+  # unclassified, and the map cannot drift into naming edges that no longer
+  # exist without the join failing first.
+  #
+  # MEASURED CONSEQUENCE, 2026-08-22, and it is worth stating because it is
+  # smaller than expected: dropping both `intent` edges below changes the
+  # PARTITION not at all. `lane-partition.ts --drop-intent-edges` returns the
+  # same two lanes with byte-identical footprints, the same 38/47 coverage, and
+  # the same two oversize applications. The only number that moves is
+  # `hindsight`'s closure, 24.06 GiB -> 23.19 GiB, and 23.19 is still ~2.7x a
+  # lane budget, so it stays quarantined either way. (23.19 is measured, not
+  # predicted — the first draft of this paragraph guessed 22.5.)
+  #
+  # The mechanism is built because intent edges accumulate, not because these
+  # two are costing a lane today. Saying so plainly beats letting a mechanism
+  # imply a benefit it has not delivered.
+  intentAdjudication:
+    spire -> vault:
+      class: intent
+      reason: >-
+        This node's own citation: `helm template` of the live values renders
+        ZERO occurrences of `upstream` in 1386 lines and the server self-signs
+        (`ca_subject: zeta-spire-ca`), so SPIRE does not contact Vault at
+        runtime today. The edge is kept for bring-up order because SYNC-WAVES.md
+        asserts it; it is not a runtime dependency a lane must satisfy.
+    hindsight -> cockroachdb:
+      class: intent
+      reason: >-
+        This node's own citation: the `postgresql://...cockroachdb-public...`
+        environment wiring is COMMENTED in
+        applications/hindsight/Application.yaml and the bundled PostgreSQL is
+        the default. hindsight brings up without CockroachDB today.
+    temporal -> cockroachdb:
+      class: observed
+      reason: >-
+        Adjudicated OBSERVED even though its citation contains the phrase, and
+        this is the case the map exists for. The citation says the edge "was a
+        DECLARED INTENT until 2026-08-22" and "is now a live connection in a
+        manifest that renders": both persistence stores set
+        `host: cockroachdb-public.cockroachdb.svc.cluster.local` with
+        `driver: postgres12`, and temporal holds no local durable state. A
+        pattern match on the prose would have got this one backwards.
+
+  dependsOn:
+    # ── Layer 0: the reconciler itself ───────────────────────────────────────
+    - chart: argocd
+      dependsOn: []
+      citations: {}
+      # Self-management first. SYNC-WAVES.md: "a broken ArgoCD upgrade fails
+      # fast, before downstream apps get half-reconciled by a degraded ArgoCD."
+      # ArgoCD is installed by the K3S bootstrap, so it has no in-graph
+      # predecessor even though every other Application is applied BY it —
+      # modelling that as 45 edges would create a cycle with the bootstrap
+      # chain below and assert nothing the wave floor does not already.
+
+    # ── Layer 1: the bootstrap adoption chain ────────────────────────────────
+    # SYNC-WAVES.md: "Bootstrap (K3S manifests, BEFORE ArgoCD takes over):
+    # Cilium -> cert-manager -> Vault -> SPIRE -> Trust Manager -> ESO ->
+    # ArgoCD". These Applications ADOPT already-running components; the edges
+    # are the documented bootstrap order, which the adoption order must respect.
+    - chart: cilium
+      dependsOn: []
+      citations: {}
+      # The CNI. Head of the bootstrap chain, and the global floor for every
+      # networked workload — an invariant `derive-sync-waves.ts` checks
+      # directly (cilium's wave <= every non-argocd Application's wave) rather
+      # than restating it as 44 vacuous edges.
+
+    - chart: cert-manager
+      dependsOn: [cilium]
+      citations:
+        cilium: >-
+          full-ai-cluster/dev-cluster/SYNC-WAVES.md bootstrap chain: "Cilium ->
+          cert-manager". cert-manager's webhook is a Service; it cannot serve
+          admission requests before pod networking exists.
+
+    - chart: vault
+      dependsOn: [cert-manager]
+      citations:
+        cert-manager: >-
+          full-ai-cluster/dev-cluster/SYNC-WAVES.md bootstrap chain:
+          "cert-manager -> Vault".
+
+    - chart: spire-crds
+      dependsOn: []
+      citations: {}
+      # The three `spire.spiffe.io` CustomResourceDefinitions. Depends on
+      # nothing in-graph: a CRD needs only the API server. It is the PROVIDER
+      # side of the edge below, which is where the ordering is stated.
+
+    - chart: spire
+      dependsOn: [spire-crds, vault]
+      citations:
+        spire-crds: >-
+          `helm template spire --version 0.24.2` with
+          full-ai-cluster/k8s/applications/spire/Application.yaml's own
+          valuesObject renders THREE `spire.spiffe.io/v1alpha1 ClusterSPIFFEID`
+          resources, and chart 0.24.2 ships no `crds/` directory and no
+          `spire-crds` dependency (its dependency list is spire-lib,
+          spire-server, spire-agent, spiffe-csi-driver,
+          spiffe-oidc-discovery-provider, tornjak-frontend). The chart's own
+          README states the pairing under "Upgrade notes / 0.24.X": "You must
+          upgrade spire-crds to 0.5.0+ before performing this upgrade." CRD
+          provider before CRD consumer -- the same shape as
+          cilium -> cilium-lb-ipam above. MEASURED consequence of the missing
+          edge, run 32528419577 on `main`: `spire` sat OutOfSync/Missing with
+          "one or more synchronization tasks are not valid (retried 5 times)"
+          and zero pods.
+        vault: >-
+          full-ai-cluster/dev-cluster/SYNC-WAVES.md bootstrap chain: "Vault ->
+          SPIRE"; full-ai-cluster/k8s/applications/spire/Application.yaml
+          carries the (commented) `vaultAddr:
+          https://vault.vault.svc.cluster.local:8200` upstream-CA wiring. This
+          is a DECLARED INTENT edge like temporal -> cockroachdb below, and it
+          is worth being explicit that it is only that: `helm template` of the
+          live values renders ZERO occurrences of `upstream` in 1386 lines and
+          the server self-signs (`ca_subject: zeta-spire-ca`), so SPIRE does not
+          contact Vault at runtime today. The edge is kept because SYNC-WAVES.md
+          asserts it and the manifest names the host; it is NOT what was
+          blocking the dev lane.
+
+    - chart: trust-manager
+      dependsOn: [cert-manager]
+      citations:
+        cert-manager: >-
+          full-ai-cluster/dev-cluster/SYNC-WAVES.md bootstrap chain: "SPIRE ->
+          Trust Manager"; trust-manager is the cert-manager project's bundle
+          distributor and consumes cert-manager's Issuer/Certificate types.
+
+    - chart: external-secrets
+      dependsOn: [vault, cert-manager]
+      citations:
+        vault: >-
+          full-ai-cluster/k8s/applications/external-secrets/Application.yaml:43
+          configures the ClusterSecretStore backend as
+          `https://vault.vault.svc.cluster.local:8200`. SYNC-WAVES.md: "ESO
+          consumes Vault + cert-manager."
+        cert-manager: >-
+          full-ai-cluster/dev-cluster/SYNC-WAVES.md, Wave -40 row: "ESO consumes
+          Vault + cert-manager." ESO's webhook certificate is cert-manager-issued.
+
+    # ── Layer 2: cluster-wide substrate with no in-graph predecessor ─────────
+    - chart: sealed-secrets
+      dependsOn: []
+      citations: {}
+      # SYNC-WAVES.md Wave -30: "secrets layer co-equal with ESO". Bitnami
+      # sealed-secrets is self-contained: its controller mints its own keypair
+      # and depends on no other Application in this tree.
+
+    - chart: open-policy-agent
+      dependsOn: []
+      citations: {}
+      # Gatekeeper. Provides templates.gatekeeper.sh + constraints.gatekeeper.sh;
+      # consumes nothing in-graph.
+
+    - chart: node-feature-discovery
+      dependsOn: []
+      citations: {}
+      # Labels nodes. No in-graph consumer edge is grounded in the tree today;
+      # SYNC-WAVES.md notes other apps "can targetAffinity off NFD labels" —
+      # "can" is not a dependency, and no manifest here does.
+
+    - chart: longhorn
+      dependsOn: []
+      citations: {}
+      # The `longhorn` StorageClass provider. Every `storageClassName: longhorn`
+      # PVC below is an edge INTO its consumers, not out of it. (The other
+      # StorageClass in use, `zeta-local-path`, is a bootstrap manifest —
+      # full-ai-cluster/dev-cluster/manifests/zeta-local-path.yaml — not an
+      # Application, so it produces no edge.)
+
+    - chart: arc-controller
+      dependsOn: []
+      citations: {}
+      # gha-runner-scale-set-controller. Provides the AutoscalingRunnerSet CRD.
+
+    - chart: kubevirt
+      dependsOn: []
+      citations: {}
+
+    - chart: cdi
+      dependsOn: []
+      citations: {}
+      # Deliberately NOT dependent on kubevirt, despite sharing wave -5:
+      # full-ai-cluster/k8s/applications/cdi/Application.yaml's own
+      # zeta.io/sync-policy-reason states "CDI needs no virtualization at all,
+      # so it is testable independently of kubevirt."
+
+    - chart: minio
+      dependsOn: []
+      citations: {}
+      # The S3 blob store (`blob-store.object-store.svc:9000`). Backed by
+      # zeta-local-path (a bootstrap StorageClass), so no in-graph edge.
+
+    - chart: seaweedfs
+      dependsOn: []
+      citations: {}
+      # full-ai-cluster/k8s/applications/seaweedfs/Application.yaml:42 uses
+      # `storageClass: zeta-local-path` — bootstrap, not an Application.
+
+    - chart: headlamp
+      dependsOn: []
+      citations: {}
+      # Reads the Kubernetes API only. Its wave-10 comment says "after
+      # CRDs/storage exist", but it declares no PVC and no CRD of its own.
+
+    - chart: argo-rollouts
+      dependsOn: []
+      citations: {}
+
+    - chart: argo-workflows
+      dependsOn: []
+      citations: {}
+
+    - chart: dapr
+      dependsOn: []
+      citations: {}
+
+    - chart: forgejo
+      dependsOn: []
+      citations: {}
+      # full-ai-cluster/k8s/applications/forgejo/Application.yaml:38 pins
+      # `storageClass: zeta-local-path` (bootstrap). The trailing comment "or
+      # longhorn for HA" is an option, not a declaration.
+
+    - chart: gitlab
+      dependsOn: []
+      citations: {}
+      # full-ai-cluster/k8s/applications/gitlab/Application.yaml:29 sets
+      # `certmanager: { install: false }` and :24 disables ingress TLS ("turn on
+      # after cert-manager"). No cert-manager resource is requested today, so
+      # the edge is NOT declared — declaring it would be asserting a wiring the
+      # tree does not carry.
+
+    - chart: orleans
+      dependsOn: []
+      citations: {}
+      # SYNC-WAVES.md claims "orleans needs CockroachDB + NATS up". The tree
+      # does not carry that: full-ai-cluster/k8s/applications/orleans/configmap.yaml:12
+      # configures `"clustering": { "provider": "kubernetes" }` — the Kubernetes
+      # membership provider, not CockroachDB — and no NATS endpoint appears in
+      # the Application, ConfigMap, or StatefulSet. The documented edge is
+      # UNGROUNDED and is therefore not declared here. If the wiring lands,
+      # declare the edge with its citation at the same time.
+
+    # ── Layer 3: Cilium-provided networking beyond the CNI ───────────────────
+    - chart: cilium-lb-ipam
+      dependsOn: [cilium]
+      citations:
+        cilium: >-
+          full-ai-cluster/k8s/applications/cilium-lb-ipam/ip-pool.yaml declares
+          `kind: CiliumLoadBalancerIPPool` and l2-policy.yaml declares
+          `kind: CiliumL2AnnouncementPolicy` — both CRDs are registered by the
+          cilium Application. CRD provider before CRD consumer.
+
+    # ── Layer 4: Gatekeeper policy consumers ─────────────────────────────────
+    - chart: hat-system
+      dependsOn: [open-policy-agent]
+      citations:
+        open-policy-agent: >-
+          full-ai-cluster/k8s/applications/hat-system/policies/01-cooldown.yaml:12
+          (and 02..07) declare `apiVersion: templates.gatekeeper.sh/v1`,
+          `kind: ConstraintTemplate`, plus `constraints.gatekeeper.sh/v1beta1`
+          Constraints at :67 — CRDs registered by the open-policy-agent
+          (Gatekeeper) Application. SYNC-WAVES.md: "OPA constraints applied to a
+          resource that landed BEFORE the constraint do nothing."
+
+    # ── Layer 5: the platform control plane ──────────────────────────────────
+    - chart: platform
+      dependsOn: [cert-manager, cilium, cilium-lb-ipam, longhorn]
+      citations:
+        cert-manager: >-
+          full-ai-cluster/k8s/applications/platform/clusterissuer.yaml:17,38
+          declare `apiVersion: cert-manager.io/v1`, `kind: ClusterIssuer` — a
+          cert-manager CRD. :14 states the prereq explicitly: "cert-manager runs
+          with enableGatewayAPI=true so the http01.gatewayHTTPRoute solver is
+          available."
+        cilium: >-
+          full-ai-cluster/k8s/applications/platform/gateway.yaml:1 — "the shared
+          Cilium Gateway the portal (and any WebApp HTTPRoute) publishes on."
+          Gateway API is served by Cilium here.
+        cilium-lb-ipam: >-
+          full-ai-cluster/k8s/applications/platform/gateway.yaml:3 — "Cilium
+          gives this Gateway a LoadBalancer Service that pulls an IP from the
+          cilium-lb-ipam pool." The pool must exist before the Gateway's Service
+          can be assigned an address.
+        longhorn: >-
+          full-ai-cluster/k8s/applications/platform/portal.yaml:123-129 — the
+          portal StatefulSet's volumeClaimTemplate renders
+          `storageClassName: longhorn`, annotated "THIS is the StatefulSet PVC
+          -> storageClass the design needs." Identical in shape to fact #6 in
+          full-ai-cluster/k8s/applications/vault/TOPOLOGY.md, which MEASURED the
+          same inversion for vault ("Vault syncs at wave -60; longhorn installs
+          at wave -15. PVCs pend in the interim") and repaired it by moving vault
+          to zeta-local-path.
+
+    - chart: gmod
+      dependsOn: [longhorn]
+      citations:
+        longhorn: >-
+          full-ai-cluster/k8s/applications/game-hosting/gmod/statefulset.yaml:93
+          renders `storageClassName: longhorn`.
+
+    # ── Layer 6: storage consumers (`storageClassName: longhorn`) ────────────
+    - chart: agent-memory
+      dependsOn: [longhorn]
+      citations:
+        longhorn: >-
+          full-ai-cluster/k8s/applications/agent-memory/statefulset.yaml:72
+          renders `storageClassName: longhorn`.
+
+    - chart: cockroachdb
+      dependsOn: [longhorn]
+      citations:
+        longhorn: >-
+          full-ai-cluster/k8s/applications/cockroachdb/Application.yaml:44 sets
+          `storageClass: longhorn`.
+
+    - chart: nats
+      dependsOn: [longhorn]
+      citations:
+        longhorn: >-
+          full-ai-cluster/k8s/applications/nats/Application.yaml:43 sets
+          `storageClassName: longhorn`.
+
+    - chart: redis
+      dependsOn: [longhorn]
+      citations:
+        longhorn: >-
+          full-ai-cluster/k8s/applications/redis/Application.yaml:28,40 set
+          `storageClass: longhorn`.
+
+    - chart: tempo
+      dependsOn: [longhorn]
+      citations:
+        longhorn: >-
+          full-ai-cluster/k8s/applications/tempo/Application.yaml:28 sets
+          `storageClassName: longhorn`.
+
+    - chart: kube-prometheus-stack
+      dependsOn: [longhorn]
+      citations:
+        longhorn: >-
+          full-ai-cluster/k8s/applications/kube-prometheus-stack/Application.yaml:46,70,131
+          set `storageClassName: longhorn`.
+
+    - chart: headscale
+      dependsOn: [longhorn]
+      citations:
+        longhorn: >-
+          full-ai-cluster/k8s/applications/headscale/Application.yaml:40 sets
+          `storageClass: longhorn`.
+
+    - chart: openziti-controller
+      dependsOn: [longhorn, cert-manager, trust-manager]
+      citations:
+        longhorn: >-
+          full-ai-cluster/k8s/applications/oz/Application.yaml:33 sets
+          `storageClass: longhorn`.
+        cert-manager: >-
+          ziti-controller 3.1.1 renders 8 `cert-manager.io/v1` Certificates and
+          5 Issuers (measured by `helm template` against this Application's own
+          valuesObject), so the CRD provider must precede the CRD consumer. Its
+          own README:33 names cert-manager as a required prerequisite.
+        trust-manager: >-
+          the same render emits a `trust.cert-manager.io/v1alpha1` Bundle
+          (`ziti-controller-ctrl-plane-cas`) whose target ConfigMap the
+          controller Deployment MOUNTS — an unresolved Bundle is a `FailedMount`
+          on `ziti-controller-ctrl-plane-cas`, observed in run 32548563352. The
+          edge is stronger than CRD-ownership: trust-manager's trust namespace
+          is pinned to `openziti` FOR this Bundle
+          (k8s/applications/trust-manager/Application.yaml), so the two charts
+          are wired to each other by name.
+
+    - chart: arc-runner-set
+      dependsOn: [arc-controller, longhorn]
+      citations:
+        arc-controller: >-
+          full-ai-cluster/k8s/applications/arc-runner-set/Application.yaml
+          deploys the `gha-runner-scale-set` chart, which renders an
+          `AutoscalingRunnerSet` — the CRD registered by the
+          `gha-runner-scale-set-controller` chart in arc-controller. CRD
+          provider before CRD consumer.
+        longhorn: >-
+          full-ai-cluster/k8s/applications/arc-runner-set/model-cache-pvc.yaml:12
+          renders `storageClassName: longhorn`, and the runner pod template
+          mounts it as `claimName: arc-model-cache`.
+
+    # ── Layer 7: object-store consumers ──────────────────────────────────────
+    - chart: loki
+      dependsOn: [minio]
+      citations:
+        minio: >-
+          full-ai-cluster/k8s/applications/loki/Application.yaml:37 points its
+          S3 backend at `endpoint: blob-store.object-store.svc:9000` — the
+          `blob-store` release in namespace `object-store` created by the minio
+          Application, whose `buckets:` list declares `loki-chunks` and
+          `loki-ruler`.
+
+    - chart: mimir
+      dependsOn: [minio, longhorn]
+      citations:
+        minio: >-
+          full-ai-cluster/k8s/applications/mimir/Application.yaml:32,40,48 point
+          three S3 backends at `endpoint: blob-store.object-store.svc:9000`;
+          minio's `buckets:` list declares `mimir-tsdb`.
+        longhorn: >-
+          full-ai-cluster/k8s/applications/mimir/Application.yaml:82,86,90 set
+          `storageClass: longhorn`.
+
+    # ── Layer 8: telemetry shippers (write INTO the data planes) ─────────────
+    - chart: alloy
+      dependsOn: [loki, tempo, mimir]
+      citations:
+        loki: >-
+          full-ai-cluster/k8s/applications/alloy/Application.yaml:190 —
+          `url = "http://loki-gateway.loki.svc.cluster.local:80/loki/api/v1/push"`.
+        tempo: >-
+          full-ai-cluster/k8s/applications/alloy/Application.yaml:197 —
+          `endpoint = "http://tempo.tempo.svc.cluster.local:4317"`.
+        mimir: >-
+          full-ai-cluster/k8s/applications/alloy/Application.yaml:204 —
+          `url = "http://mimir-distributor.mimir.svc.cluster.local:8080/api/v1/push"`.
+
+    # ── Layer 9: database consumers ──────────────────────────────────────────
+    - chart: temporal
+      dependsOn: [cockroachdb]
+      citations:
+        cockroachdb: >-
+          full-ai-cluster/k8s/applications/temporal/Application.yaml:145,161 —
+          BOTH persistence stores set
+          `host: cockroachdb-public.cockroachdb.svc.cluster.local` with
+          `driver: postgres12` on port 26257 (`default` -> database `temporal`,
+          `visibility` -> database `temporal_visibility`). This edge was a
+          DECLARED INTENT until 2026-08-22 — the wiring was a YAML comment and
+          the chart would not even template — and is now a live connection in a
+          manifest that renders. Temporal holds no local durable state (0 PVCs,
+          0 StatefulSets in the render), so this is a total dependency, not a
+          cache.
+
+    - chart: hindsight
+      dependsOn: [longhorn, cockroachdb]
+      citations:
+        longhorn: >-
+          full-ai-cluster/k8s/applications/hindsight/Application.yaml:34 sets
+          `storageClass: longhorn`.
+        cockroachdb: >-
+          full-ai-cluster/k8s/applications/hindsight/Application.yaml:62 —
+          `postgresql://hindsight:$(PG_PASSWORD)@cockroachdb-public.cockroachdb.svc.cluster.local:26257/hindsight`.
+          Commented today (the bundled PostgreSQL is the default), so this is a
+          declared intent like temporal's above.
+
+    # ── Layer 10: GPU model servers ──────────────────────────────────────────
+    - chart: ollama
+      dependsOn: [longhorn]
+      citations:
+        longhorn: >-
+          full-ai-cluster/k8s/applications/ollama/Application.yaml:53 sets
+          `storageClass: longhorn`.
+
+    - chart: vllm
+      dependsOn: [longhorn]
+      citations:
+        longhorn: >-
+          full-ai-cluster/k8s/applications/vllm/deployment.yaml:56 sets
+          `storageClassName: longhorn`.
+
+    - chart: deepseek-coder
+      dependsOn: [ollama]
+      citations:
+        ollama: >-
+          full-ai-cluster/k8s/applications/deepseek-coder/configmap.yaml:14-15 —
+          `served-by: "ollama|vllm"` with
+          `endpoint-ollama: "http://ollama.ollama.svc.cluster.local:11434"`.
+
+    - chart: qwen-coder
+      dependsOn: [ollama]
+      citations:
+        ollama: >-
+          full-ai-cluster/k8s/applications/qwen-coder/configmap.yaml:8-9 —
+          `served-by: "ollama|vllm"` with
+          `endpoint-ollama: "http://ollama.ollama.svc.cluster.local:11434"`.
+
+    # ── Layer 11: vector store ───────────────────────────────────────────────
+    - chart: weaviate
+      dependsOn: [longhorn, ollama]
+      citations:
+        longhorn: >-
+          full-ai-cluster/k8s/applications/weaviate/Application.yaml:33 sets
+          `storageClassName: longhorn`.
+        ollama: >-
+          full-ai-cluster/k8s/applications/weaviate/Application.yaml:40,44 —
+          both `text2vec-ollama` and `generative-ollama` modules are `enabled:
+          true` with `apiEndpoint:
+          http://ollama.ollama.svc.cluster.local:11434`. Weaviate's vectorizer
+          calls Ollama on ingest.

@@ -1,0 +1,14 @@
+{
+  "id": "080d005e8446e010a013000874f35720",
+  "at": "2026-08-16T18:23:31.036Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M05X126V087G0R0014GR9KQ",
+    "type": "task",
+    "title": "Declare rust components + wasm32 target in .mise.toml — retire ensure-rust-components.sh and the manual comment",
+    "slug": "declare-rust-components-wasm32-target-in-mise-toml-retire-en",
+    "priority": "P2",
+    "filename": "081M05X126V087G0R0014GR9KQ-declare-rust-components-wasm32-target-in-mise-toml-retire-en.md"
+  }
+}

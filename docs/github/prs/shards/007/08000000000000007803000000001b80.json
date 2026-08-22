@@ -1,0 +1,12 @@
+{
+  "pr_number": 7040,
+  "archive_path": "docs/history/pr-reviews/PR-7040-docs-tiny-1-bit-gan-engine-yin-yang-engine-made-concrete-prior-art-7098-7101.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-08T06:34:29.901Z",
+  "schema_version": "v1",
+  "commit_sha": "9983e79c80e2d1e9bbc19338c60d0bb6350a4db1",
+  "title": "docs: tiny/1-bit GAN engine = yin/yang engine made concrete; prior art (#7098-#7101)",
+  "state": "MERGED",
+  "merged_at": "2026-06-08T06:33:51Z",
+  "head_ref": "otto/tiny-1bit-gan-yin-yang-engine-prior-art"
+}

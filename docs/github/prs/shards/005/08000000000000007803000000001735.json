@@ -1,0 +1,12 @@
+{
+  "pr_number": 5941,
+  "archive_path": "docs/history/pr-reviews/PR-5941-docs-coordination-record-remote-only-participant-a-receipt.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-29T02:49:25.442Z",
+  "schema_version": "v1",
+  "commit_sha": "d5c3d486d5a82452d23c3e296f6c75d0ec3c5a69",
+  "title": "docs(coordination): record remote-only participant A receipt",
+  "state": "MERGED",
+  "merged_at": "2026-05-29T02:49:07Z",
+  "head_ref": "claim/task-remote-only-participant-a-ack-b-20260529"
+}

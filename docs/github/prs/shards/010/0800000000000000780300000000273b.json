@@ -1,0 +1,12 @@
+{
+  "pr_number": 10043,
+  "archive_path": "docs/history/pr-reviews/PR-10043-book-companion-land-the-reader-magnetism-threads-the-pull-the-honest-mirror-and-.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-04T21:33:22.023Z",
+  "schema_version": "v1",
+  "commit_sha": "87a8d90833c89ec14ec08424a31235917cb2b5fa",
+  "title": "book(companion): land the reader + magnetism threads — THE-PULL (the honest mirror and the bounded no)",
+  "state": "MERGED",
+  "merged_at": "2026-08-04T21:32:48Z",
+  "head_ref": "docs/book-the-pull-companion-reader-and-magnetism-20260804"
+}

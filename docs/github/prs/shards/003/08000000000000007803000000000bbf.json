@@ -1,0 +1,17 @@
+{
+  "pr_number": 3007,
+  "archive_path": "docs/history/pr-reviews/PR-3007-feat-bg-b-0441-1-backlog-ready-notifier-skeleton-parallel-to-b-0440-1-proactive-.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7A5dDw",
+    "comment:PRRC_kwDOSF9kNM7A5dDy",
+    "thread:PRRT_kwDOSF9kNM6B1yee",
+    "thread:PRRT_kwDOSF9kNM6B1yeh"
+  ],
+  "fetched_at": "2026-05-13T17:42:24.288Z",
+  "schema_version": "v1",
+  "commit_sha": "41e54b5362c8b4459d0319cc1d7b20fd035e9176",
+  "title": "feat(bg): B-0441.1 — backlog-ready notifier skeleton (parallel to B-0440.1; proactive layer)",
+  "state": "MERGED",
+  "merged_at": "2026-05-13T17:42:00Z",
+  "head_ref": "otto-b0441-1-backlog-ready-notifier-skeleton-slice-1-impl-2026-05-13"
+}

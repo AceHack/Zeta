@@ -1,0 +1,12 @@
+{
+  "pr_number": 3522,
+  "archive_path": "docs/history/pr-reviews/PR-3522-docs-claude-rules-codeql-no-source-on-docs-only-pr-is-broken-commit-canary.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-15T16:40:48.986Z",
+  "schema_version": "v1",
+  "commit_sha": "3f0ef90980931259d9fe4a273fba0351976cf619",
+  "title": "docs(.claude/rules): codeql-no-source-on-docs-only-PR is broken-commit canary",
+  "state": "MERGED",
+  "merged_at": "2026-05-15T16:40:31Z",
+  "head_ref": "shard/codeql-canary-rule-otto-cli-2026-05-15"
+}

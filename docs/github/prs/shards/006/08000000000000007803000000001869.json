@@ -1,0 +1,12 @@
+{
+  "pr_number": 6249,
+  "archive_path": "docs/history/pr-reviews/PR-6249-feat-setup-declarative-agent-peer-clis-claude-codex-gemini-bun-global-cross-os-b.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-31T20:29:31.164Z",
+  "schema_version": "v1",
+  "commit_sha": "ee1df2dc20f96f5639c4ed69b950ef86335a9c6c",
+  "title": "feat(setup): declarative agent/peer CLIs (claude/codex/gemini) bun-global cross-OS (B-0857 Phase 1)",
+  "state": "MERGED",
+  "merged_at": "2026-05-31T20:29:13Z",
+  "head_ref": "otto-windows/agent-clis-bun-global-phase1-2026-05-31"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 8818,
+  "archive_path": "docs/history/pr-reviews/PR-8818-docs-handoff-otto-session-resume-2026-06-20-saved-before-usb-flash-op.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-21T00:42:43.450Z",
+  "schema_version": "v1",
+  "commit_sha": "4774c4d1cbbf058a01ee24b3a562bcb6d3df161c",
+  "title": "docs(handoff): Otto session resume 2026-06-20 (saved before USB-flash op)",
+  "state": "MERGED",
+  "merged_at": "2026-06-21T00:42:16Z",
+  "head_ref": "otto/session-resume-2026-06-20"
+}

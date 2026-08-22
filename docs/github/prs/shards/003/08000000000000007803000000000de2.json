@@ -1,0 +1,12 @@
+{
+  "pr_number": 3554,
+  "archive_path": "docs/history/pr-reviews/PR-3554-fix-b-0534-correct-b-0441-relative-link-in-composes-with-section.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-15T18:50:20.294Z",
+  "schema_version": "v1",
+  "commit_sha": "5df89b9e94c78929d5e69d26ac572d348315fd0c",
+  "title": "fix(b-0534): correct B-0441 relative link in Composes-with section",
+  "state": "MERGED",
+  "merged_at": "2026-05-15T18:50:03Z",
+  "head_ref": "fix/b0534-rel-link-b0441-otto-cli-2026-05-15"
+}

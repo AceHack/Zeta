@@ -1,74 +1,65 @@
 #!/usr/bin/env bun
-// run-tlc.ts — TS wrapper for TLA+/TLC model-checker invocation.
+// run-tlc.ts -- TS wrapper for TLA+/TLC model-checker invocation.
 //
-// Phase 1 of 081KQNJ500008QG0R003EKJ8B5: replace `tests/Tests.FSharp/Formal/
-// Tlc.Runner.Tests.fs` with a direct shell wrapper. The F# version
-// was an xunit-test wrapper around shelling out to TLC; no F#
-// operator-algebra logic was involved. This TS file is the natural
-// shape: detect toolchain, shell to TLC, parse output, exit
-// accordingly.
+// Source-owned command-line sibling of the xUnit TLC gate
+// (tests/Tests.FSharp/Formal/Tlc.Runner.Tests.fs). BOTH build their argv from
+// registry/tlc-models.json via tlc-invocation.ts, so THE COMMAND YOU RUN BY HAND
+// IS THE COMMAND CI RUNS. That is the whole point: on 2026-08-13 a spec was
+// measured here with -deadlock (which DISABLES deadlock checking) and checked
+// there without it, and a hand-run green and a gated green were not the same
+// result. This file may not add a flag of its own.
 //
 // Usage:
-//   bun tools/formal-verification/run-tlc.ts <SpecName>
-//     Runs TLC on tools/tla/specs/<SpecName>.tla with the matching
-//     .cfg.
+//   bun src/Core.TypeScript/formal-verification/run-tlc.ts <ModelId>
+//     Runs one pinned model. The id is the registry key, which for a spec with
+//     a single config is the spec name and otherwise names the config.
 //
-//   bun tools/formal-verification/run-tlc.ts --all
-//     Run TLC on every spec with a committed .cfg file under
-//     tools/tla/specs/. Treats a missing paired .tla file as drift.
-//     Per-failure stdout-tail printed for CI triage.
+//   bun src/Core.TypeScript/formal-verification/run-tlc.ts --all
+//     Every gate-tier model, i.e. exactly what the PR lane runs.
 //
-//   bun tools/formal-verification/run-tlc.ts --list
-//     List every .cfg-backed spec that --all will run.
+//   bun src/Core.TypeScript/formal-verification/run-tlc.ts --extended
+//     Adds the extended-tier models, which are declared with a written reason
+//     and deliberately not in the PR lane.
 //
-//   bun tools/formal-verification/run-tlc.ts --check-toolchain
-//     Useful for CI gating + dev-local diagnostics.
+//   bun src/Core.TypeScript/formal-verification/run-tlc.ts --list
+//   bun src/Core.TypeScript/formal-verification/run-tlc.ts --invocation <ModelId>
+//     Prints the pinned command line, for quoting NEXT TO a recorded result.
+//   bun src/Core.TypeScript/formal-verification/run-tlc.ts --check-toolchain
 //
-// Exit codes (orthogonal — each code has one semantic):
+// Exit codes (orthogonal -- each code has one semantic):
 //   0  success
-//   1  TLC error / invariant violation / missing spec
+//   1  a model disagreed with its pin / unknown model
 //   2  toolchain not ready (java / jar absent)
-//   3  argument / usage error (unknown flag, missing argument)
-//
-// Design notes:
-//   - No xunit dependency
-//   - No CI=true / OS / arch / workflow filtering needed: this script
-//     runs only when the workflow that invokes it does.
-//   - No hand-maintained TLC catalogue: .cfg is the declaration that a
-//     spec is runnable by TLC, so --all discovers cfg-backed specs.
-//   - Trace-file cleanup matches the F# version's behavior:
-//     <SpecName>_TTrace_*.tla, <SpecName>_TTrace_*.bin, MC*.tla
-//   - working directory set to tools/tla/specs so TLC resolves
-//     module names by file lookup
+//   3  argument / usage error
 
 import { readdirSync, statSync, unlinkSync } from "node:fs";
 import { delimiter, join } from "node:path";
 import { spawnSync } from "node:child_process";
-
-/** Exit codes (header doc contract):
- *    0  success
- *    1  TLC error / invariant violation / missing spec
- *    2  toolchain not ready (java / jar absent)
- *    3  argument / usage error (unknown flag, etc.)
- */
+import {
+  buildTlcArgv,
+  invocationLine,
+  judgeToolchainBanner,
+  judgeTlcRun,
+  loadTlcRegistry,
+  tlcJvmArguments,
+  type TlcModel,
+  type TlcRegistry,
+} from "./tlc-invocation";
 
 type ExitCode = 0 | 1 | 2 | 3;
 
-/** Max attempts per spec when the JVM CRASHES (native OOM / fatal error), NOT
- *  when TLC finds a real violation. Under `--all` the accumulated memory
- *  pressure of the sequential suite can make a fresh JVM fail to reserve its
- *  heap at startup (a flake: the spec passes when run alone). A real
- *  invariant/parse failure is deterministic and is NEVER retried. */
+/** Max attempts per model when the JVM CRASHES (native OOM / fatal error), NOT
+ *  when TLC produces a verdict. Under --all the accumulated memory pressure of
+ *  the sequential suite can make a fresh JVM fail to reserve its heap at startup.
+ *  A real disagreement with the pin is deterministic and is NEVER retried. */
 const MAX_JVM_ATTEMPTS = 3;
-/** Settle delay between JVM-crash retries, so the prior process fully releases
- *  memory before the next attempt. Synchronous (the runner is sync). */
 const JVM_RETRY_SETTLE_MS = 1500;
+const SPAWN_MAX_BUFFER = 64 * 1024 * 1024;
 
-/** A JVM-level fatal crash (hs_err / native OOM / could-not-reserve-heap /
- *  SIGSEGV) — distinct from a TLC invariant violation (which TLC reports
- *  cleanly via stdout with a non-zero status). Only these are retried. */
+export { tlcJvmArguments };
+
 function isJvmFatalCrash(stdout: string, stderr: string): boolean {
-  const blob = `${stdout}\n${stderr}`;
+  const blob = stdout + "\n" + stderr;
   return (
     /A fatal error has been detected by the Java Runtime Environment/i.test(blob) ||
     /There is insufficient memory for the Java Runtime Environment/i.test(blob) ||
@@ -78,22 +69,16 @@ function isJvmFatalCrash(stdout: string, stderr: string): boolean {
   );
 }
 
-/** Synchronous sleep (the runner is sync; avoids racing the next JVM start
- *  against the prior process's memory release). */
 function sleepSync(ms: number): void {
   const shared = new Int32Array(new SharedArrayBuffer(4));
   Atomics.wait(shared, 0, 0, ms);
 }
 
-/** Escape regex metacharacters so user-supplied spec names cannot
- *  cause unintended file matches in trace cleanup. Per #1412 P0
- *  CodeQL finding: a specName containing `.` or `*` would otherwise
- *  match unrelated files. */
+/** Escape regex metacharacters so a model name cannot cause unintended file
+ *  matches in trace cleanup (CodeQL #1412 P0). */
 function escapeRegex(s: string): string {
   return s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 }
-
-const SPAWN_MAX_BUFFER = 64 * 1024 * 1024;
 
 function repoRoot(): string {
   // eslint-disable-next-line sonarjs/no-os-command-from-path
@@ -105,9 +90,7 @@ function repoRoot(): string {
   return result.stdout.trim();
 }
 
-/** In-process PATH-scan equivalent of `which`. No shell-out (matches
- *  the F# Tlc.Runner.Tests.fs pattern; portable to Windows + minimal
- *  images that lack `/usr/bin/env which`). */
+/** In-process PATH scan. No shell-out; matches the F# runner. */
 function which(exe: string): string | null {
   const pathEnv = process.env["PATH"] ?? "";
   if (pathEnv === "") return null;
@@ -116,12 +99,11 @@ function which(exe: string): string | null {
   for (const dir of pathEnv.split(delimiter)) {
     if (dir === "") continue;
     for (const ext of extensions) {
-      const candidate = join(dir, `${exe}${ext}`);
+      const candidate = join(dir, exe + ext);
       try {
-        const s = statSync(candidate);
-        if (s.isFile()) return candidate;
+        if (statSync(candidate).isFile()) return candidate;
       } catch {
-        // not present — try next
+        // not present -- try next
       }
     }
   }
@@ -141,31 +123,30 @@ interface Toolchain {
   readonly tlaJarPath: string;
   readonly specsPath: string;
   readonly javaPath: string;
+  readonly registry: TlcRegistry;
 }
 
 function checkToolchain(root: string): Toolchain | null {
-  const tlaJarPath = join(root, "src", "Core.TLA", "tla2tools.jar");
+  const registry = loadTlcRegistry(root);
+  const tlaJarPath = join(root, registry.toolchain.jar);
   const specsPath = join(root, "src", "Core.TLA", "specs");
   const javaPath = which("java");
   if (javaPath === null) return null;
   if (!fileExists(tlaJarPath)) return null;
   if (!fileExists(specsPath)) return null;
-  return { tlaJarPath, specsPath, javaPath };
+  return { tlaJarPath, specsPath, javaPath, registry };
 }
 
-function cleanupTraceFiles(specsPath: string, specName: string): void {
+function cleanupTraceFiles(specsPath: string, moduleName: string): void {
   let entries: readonly import("node:fs").Dirent[];
   try {
     entries = readdirSync(specsPath, { withFileTypes: true });
   } catch {
     return;
   }
-  // Escape regex meta-characters in specName before embedding.
-  // Without this, a specName like "X.Y" or "X*Y" would match
-  // unrelated files and delete them. Per CodeQL #1412 P0 finding.
-  const safeName = escapeRegex(specName);
-  const traceTla = new RegExp(`^${safeName}_TTrace_.*\\.tla$`);
-  const traceBin = new RegExp(`^${safeName}_TTrace_.*\\.bin$`);
+  const safeName = escapeRegex(moduleName);
+  const traceTla = new RegExp("^" + safeName + "_TTrace_.*\\.tla$");
+  const traceBin = new RegExp("^" + safeName + "_TTrace_.*\\.bin$");
   const mcTla = /^MC.*\.tla$/;
   for (const e of entries) {
     if (!e.isFile()) continue;
@@ -173,7 +154,7 @@ function cleanupTraceFiles(specsPath: string, specName: string): void {
       try {
         unlinkSync(join(specsPath, e.name));
       } catch {
-        // best-effort cleanup; ignore failures
+        // best-effort cleanup
       }
     }
   }
@@ -183,98 +164,64 @@ interface TlcResult {
   readonly exitCode: number;
   readonly stdout: string;
   readonly stderr: string;
-  readonly success: boolean;
+  readonly ok: boolean;
+  readonly reason: string;
 }
 
-function runTlc(toolchain: Toolchain, specName: string): TlcResult {
-  // Run from specsPath so TLC's file-resolution finds <SpecName>.tla
-  // and <SpecName>.cfg without absolute-path arguments.
-  //
-  // Retry ONLY on a JVM fatal crash (native OOM at startup under the suite's
-  // accumulated memory pressure) — never on a real TLC failure, which is
-  // deterministic and must surface on the first attempt.
+function runTlc(toolchain: Toolchain, model: TlcModel): TlcResult {
   let stdout = "";
   let stderr = "";
   let status: number | null = -1;
+  const metadir = join("/tmp", "tlc_run_" + model.id + "_" + String(process.pid));
+  const argv = buildTlcArgv(toolchain.registry, model, toolchain.tlaJarPath, metadir);
   for (let attempt = 1; attempt <= MAX_JVM_ATTEMPTS; attempt++) {
-    const result = spawnSync(
-      toolchain.javaPath,
-      ["-cp", toolchain.tlaJarPath, "tlc2.TLC", specName],
-      {
-        cwd: toolchain.specsPath,
-        encoding: "utf8",
-        maxBuffer: SPAWN_MAX_BUFFER,
-        timeout: 300_000, // 5 min hard cap per spec
-      },
-    );
-    cleanupTraceFiles(toolchain.specsPath, specName);
+    const result = spawnSync(toolchain.javaPath, [...argv], {
+      cwd: toolchain.specsPath,
+      encoding: "utf8",
+      maxBuffer: SPAWN_MAX_BUFFER,
+      timeout: 3_600_000,
+    });
+    cleanupTraceFiles(toolchain.specsPath, model.module);
     stdout = result.stdout ?? "";
     stderr = result.stderr ?? "";
     status = result.status;
-    // TLC exits 0 on success; non-zero on parse error / invariant
-    // violation / deadlock-detection / etc. Cross-check against the
-    // success marker in stdout for belt-and-suspenders.
-    const ok =
-      result.status === 0 &&
-      stdout.includes("Model checking completed. No error has been found");
-    if (ok) break;
-    // Only a JVM CRASH (not a TLC violation) is a flake worth retrying.
+    if (judgeTlcRun(model, status ?? -1, stdout).ok) break;
+    // Only a JVM CRASH is a flake worth retrying. A model that disagrees with
+    // its pin is deterministic and must surface on the first attempt.
     if (attempt < MAX_JVM_ATTEMPTS && isJvmFatalCrash(stdout, stderr)) {
       process.stderr.write(
-        `WARN: ${specName} — JVM fatal crash (not a TLC violation) on attempt ${String(attempt)}/${String(MAX_JVM_ATTEMPTS)}; settling ${String(JVM_RETRY_SETTLE_MS)}ms and retrying\n`,
+        "WARN: " + model.id + " -- JVM fatal crash (not a TLC verdict) on attempt " +
+        String(attempt) + "/" + String(MAX_JVM_ATTEMPTS) + "; settling and retrying\n",
       );
       sleepSync(JVM_RETRY_SETTLE_MS);
       continue;
     }
-    break; // deterministic TLC failure, or out of retries — surface it
+    break;
   }
-  const success =
-    status === 0 &&
-    stdout.includes("Model checking completed. No error has been found");
-  return {
-    exitCode: status ?? -1,
-    stdout,
-    stderr,
-    success,
-  };
+  const banner = judgeToolchainBanner(toolchain.registry, stdout);
+  if (!banner.ok) {
+    return { exitCode: status ?? -1, stdout, stderr, ok: false, reason: banner.reason };
+  }
+  const judgement = judgeTlcRun(model, status ?? -1, stdout);
+  return { exitCode: status ?? -1, stdout, stderr, ok: judgement.ok, reason: judgement.reason };
 }
 
-function specExists(toolchain: Toolchain, specName: string): boolean {
-  return (
-    fileExists(join(toolchain.specsPath, `${specName}.tla`)) &&
-    fileExists(join(toolchain.specsPath, `${specName}.cfg`))
-  );
+function describeModel(model: TlcModel): string {
+  const verdict = model.expect === "valid" ? "expect clean" : "expect violation: " + String(model.expectDetail);
+  return model.id.padEnd(34) + model.tier.padEnd(10) + verdict;
 }
 
-function configuredSpecNames(specsPath: string): readonly string[] {
-  let entries: readonly import("node:fs").Dirent[];
-  try {
-    entries = readdirSync(specsPath, { withFileTypes: true });
-  } catch {
-    return [];
-  }
-  return entries
-    .filter((entry) => entry.isFile() && entry.name.endsWith(".cfg"))
-    .map((entry) => entry.name.slice(0, -".cfg".length))
-    .sort((a, b) => a.localeCompare(b));
-}
-
-function runOne(toolchain: Toolchain, specName: string): ExitCode {
-  if (!specExists(toolchain, specName)) {
-    process.stderr.write(
-      `ERROR: ${specName}.tla or ${specName}.cfg not found in ${toolchain.specsPath}\n`,
-    );
-    return 1;
-  }
-  process.stdout.write(`running TLC on ${specName}...\n`);
-  const result = runTlc(toolchain, specName);
-  if (result.success) {
-    process.stdout.write(`OK: ${specName} — model checking completed cleanly\n`);
+function runOne(toolchain: Toolchain, model: TlcModel): ExitCode {
+  process.stdout.write("running TLC on " + model.id + " (" + model.module + " under " + model.config + ")...\n");
+  const result = runTlc(toolchain, model);
+  if (result.ok) {
+    process.stdout.write("OK: " + model.id + " -- agrees with its pin\n");
     return 0;
   }
-  process.stderr.write(`FAIL: ${specName} (exit ${String(result.exitCode)})\n`);
-  process.stderr.write("--- stdout ---\n");
-  process.stderr.write(result.stdout);
+  process.stderr.write("FAIL: " + model.id + " -- " + result.reason + "\n");
+  process.stderr.write("invocation: " + invocationLine(toolchain.registry, model) + "\n");
+  process.stderr.write("--- stdout tail ---\n");
+  process.stderr.write(result.stdout.split("\n").slice(-30).join("\n") + "\n");
   if (result.stderr !== "") {
     process.stderr.write("--- stderr ---\n");
     process.stderr.write(result.stderr);
@@ -282,122 +229,103 @@ function runOne(toolchain: Toolchain, specName: string): ExitCode {
   return 1;
 }
 
-function runAll(toolchain: Toolchain): ExitCode {
-  const specs = configuredSpecNames(toolchain.specsPath);
-  const passed: string[] = [];
-  const failed: string[] = [];
-  const missing: string[] = [];
-  const failureDetails: { spec: string; result: TlcResult }[] = [];
-  if (specs.length === 0) {
-    process.stderr.write(`ERROR: no .cfg-backed TLC specs found in ${toolchain.specsPath}\n`);
+function runMany(toolchain: Toolchain, models: readonly TlcModel[]): ExitCode {
+  if (models.length === 0) {
+    process.stderr.write("ERROR: no models selected\n");
     return 1;
   }
-  for (const specName of specs) {
-    if (!specExists(toolchain, specName)) {
-      // A committed .cfg declares that TLC should be able to run this
-      // spec. A missing paired .tla is drift, not an acceptable skip.
-      process.stderr.write(
-        `MISSING: ${specName} (has .cfg but no paired .tla in ${toolchain.specsPath})\n`,
-      );
-      missing.push(specName);
-      continue;
-    }
-    process.stdout.write(`running TLC on ${specName}...\n`);
-    const result = runTlc(toolchain, specName);
-    if (result.success) {
-      process.stdout.write(`  OK: ${specName}\n`);
-      passed.push(specName);
+  const passed: string[] = [];
+  const failed: { id: string; reason: string }[] = [];
+  for (const model of models) {
+    process.stdout.write("running TLC on " + model.id + "...\n");
+    const result = runTlc(toolchain, model);
+    if (result.ok) {
+      process.stdout.write("  OK: " + model.id + "\n");
+      passed.push(model.id);
     } else {
-      process.stderr.write(
-        `  FAIL: ${specName} (exit ${String(result.exitCode)})\n`,
-      );
-      failed.push(specName);
-      failureDetails.push({ spec: specName, result });
+      process.stderr.write("  FAIL: " + model.id + " -- " + result.reason + "\n");
+      failed.push({ id: model.id, reason: result.reason });
     }
   }
-  process.stdout.write("\n");
-  process.stdout.write(
-    `summary: ${String(passed.length)} passed, ${String(failed.length)} failed, ${String(missing.length)} missing-paired-tla (out of ${String(specs.length)} cfg-backed)\n`,
-  );
-  // Per #1412 P2 finding: print a failure-tail per failed spec so
-  // CI triage doesn't require re-running with --one. Cap at last
-  // ~30 lines of stdout each to keep summary readable.
-  if (failureDetails.length > 0) {
-    process.stderr.write("\n--- failure details ---\n");
-    for (const fd of failureDetails) {
-      process.stderr.write(`\n[${fd.spec}] (rerun with: bun tools/formal-verification/run-tlc.ts ${fd.spec})\n`);
-      const tail = fd.result.stdout.split("\n").slice(-30).join("\n");
-      process.stderr.write(tail);
-      if (!tail.endsWith("\n")) process.stderr.write("\n");
-    }
-  }
-  if (failed.length > 0 || missing.length > 0) {
-    if (failed.length > 0) {
-      process.stderr.write(`\nfailed: ${failed.join(", ")}\n`);
-    }
-    if (missing.length > 0) {
-      process.stderr.write(`missing: ${missing.join(", ")}\n`);
-    }
+  process.stdout.write("\nsummary: " + String(passed.length) + " agree with their pin, " + String(failed.length) + " do not (out of " + String(models.length) + ")\n");
+  if (failed.length > 0) {
+    process.stderr.write("\n--- disagreements ---\n");
+    for (const f of failed) process.stderr.write(f.id + ": " + f.reason + "\n");
     return 1;
   }
   return 0;
 }
 
+function usage(): void {
+  process.stdout.write("Usage:\n");
+  process.stdout.write("  bun src/Core.TypeScript/formal-verification/run-tlc.ts <ModelId>\n");
+  process.stdout.write("  bun src/Core.TypeScript/formal-verification/run-tlc.ts --all\n");
+  process.stdout.write("  bun src/Core.TypeScript/formal-verification/run-tlc.ts --extended\n");
+  process.stdout.write("  bun src/Core.TypeScript/formal-verification/run-tlc.ts --list\n");
+  process.stdout.write("  bun src/Core.TypeScript/formal-verification/run-tlc.ts --invocation <ModelId>\n");
+  process.stdout.write("  bun src/Core.TypeScript/formal-verification/run-tlc.ts --check-toolchain\n");
+}
+
 function main(argv: readonly string[]): ExitCode {
   const root = repoRoot();
   process.chdir(root);
+  const first = argv[0] ?? "";
 
-  if (argv.length === 0 || argv[0] === "--help" || argv[0] === "-h") {
-    process.stdout.write("Usage:\n");
-    process.stdout.write("  bun tools/formal-verification/run-tlc.ts <SpecName>\n");
-    process.stdout.write("  bun tools/formal-verification/run-tlc.ts --all\n");
-    process.stdout.write("  bun tools/formal-verification/run-tlc.ts --list\n");
-    process.stdout.write("  bun tools/formal-verification/run-tlc.ts --check-toolchain\n");
+  if (argv.length === 0 || first === "--help" || first === "-h") {
+    usage();
     return 0;
   }
 
-  if (argv[0] === "--list") {
-    const specsPath = join(root, "src", "Core.TLA", "specs");
-    for (const specName of configuredSpecNames(specsPath)) {
-      process.stdout.write(`${specName}\n`);
+  if (first === "--list") {
+    const registry = loadTlcRegistry(root);
+    for (const model of registry.models) process.stdout.write(describeModel(model) + "\n");
+    return 0;
+  }
+
+  if (first === "--invocation") {
+    const registry = loadTlcRegistry(root);
+    const id = argv[1] ?? "";
+    const model = registry.models.find((m) => m.id === id);
+    if (model === undefined) {
+      process.stderr.write("unknown model id: " + id + " (try --list)\n");
+      return 3;
     }
+    process.stdout.write(invocationLine(registry, model) + "\n");
     return 0;
   }
 
-  if (argv[0] === "--check-toolchain") {
-    const tc = checkToolchain(root);
-    if (tc === null) {
-      process.stderr.write(
-        "ERROR: TLC toolchain not ready (need java on PATH + src/Core.TLA/tla2tools.jar). Run tools/setup/install.sh\n",
-      );
+  const toolchain = checkToolchain(root);
+  if (first === "--check-toolchain") {
+    if (toolchain === null) {
+      process.stderr.write("ERROR: TLC toolchain not ready (need java on PATH + the committed jar). Run tools/setup/install.sh\n");
       return 2;
     }
     process.stdout.write("OK: TLC toolchain ready\n");
     return 0;
   }
-
-  const toolchain = checkToolchain(root);
   if (toolchain === null) {
-    process.stderr.write(
-      "ERROR: TLC toolchain not ready (need java on PATH + src/Core.TLA/tla2tools.jar). Run tools/setup/install.sh\n",
-    );
+    process.stderr.write("ERROR: TLC toolchain not ready (need java on PATH + the committed jar). Run tools/setup/install.sh\n");
     return 2;
   }
 
-  if (argv[0] === "--all") {
-    return runAll(toolchain);
+  const models = toolchain.registry.models;
+  if (first === "--all") {
+    return runMany(toolchain, models.filter((m) => m.tier === "gate"));
   }
-
-  const specName = argv[0] ?? "";
-  if (specName.startsWith("--")) {
-    // Per #1412 P0 finding: distinguish argument errors from
-    // toolchain-not-ready errors. Exit 3 = usage error so callers
-    // (CI, dev) can tell them apart.
-    process.stderr.write(`unknown flag: ${specName}\n`);
-    process.stderr.write("use --help\n");
+  if (first === "--extended") {
+    return runMany(toolchain, models);
+  }
+  if (first.startsWith("--")) {
+    process.stderr.write("unknown flag: " + first + "\n");
+    usage();
     return 3;
   }
-  return runOne(toolchain, specName);
+  const model = models.find((m) => m.id === first);
+  if (model === undefined) {
+    process.stderr.write("unknown model id: " + first + " (try --list)\n");
+    return 1;
+  }
+  return runOne(toolchain, model);
 }
 
 if (import.meta.main) {

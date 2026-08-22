@@ -1,0 +1,12 @@
+{
+  "pr_number": 11041,
+  "archive_path": "docs/history/pr-reviews/PR-11041-fix-zflash-two-typescript-errors-that-had-main-red-on-lint-ts.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-16T19:44:05.936Z",
+  "schema_version": "v1",
+  "commit_sha": "7b322f913c27ee9350c49e5e33e433144cf30327",
+  "title": "fix(zflash): two TypeScript errors that had main red on lint (TS)",
+  "state": "MERGED",
+  "merged_at": "2026-08-16T19:43:28Z",
+  "head_ref": "shadow/fix-zflash-ts-errors"
+}

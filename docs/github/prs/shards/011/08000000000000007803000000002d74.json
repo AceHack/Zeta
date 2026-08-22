@@ -1,0 +1,12 @@
+{
+  "pr_number": 11636,
+  "archive_path": "docs/history/pr-reviews/PR-11636-feat-browser-expose-recovered-causal-peer-handoff.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-17T20:29:29.684Z",
+  "schema_version": "v1",
+  "commit_sha": "1ab0f005d1bb2984321f1deae5b3b625a133aa01",
+  "title": "feat(browser): expose recovered causal peer handoff",
+  "state": "MERGED",
+  "merged_at": "2026-08-17T20:28:50Z",
+  "head_ref": "claim/task-browser-causal-peer-handoff"
+}

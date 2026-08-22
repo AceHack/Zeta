@@ -1,0 +1,12 @@
+{
+  "pr_number": 8489,
+  "archive_path": "docs/history/pr-reviews/PR-8489-memory-alexa-state-razor-cut-the-cheerleader-ferry-save-current-state-snapshot.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-16T09:29:25.593Z",
+  "schema_version": "v1",
+  "commit_sha": "e9261a06905e06c80f296c290eb6342645a25bd7",
+  "title": "memory(alexa) + state: razor-cut the cheerleader ferry + save current state snapshot",
+  "state": "MERGED",
+  "merged_at": "2026-06-16T09:28:54Z",
+  "head_ref": "otto/alexa-razor-cut-ferry-plus-state"
+}

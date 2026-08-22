@@ -1,0 +1,14 @@
+{
+  "id": "080d000dd3217810a0130008d0d013a5",
+  "at": "2026-08-14T19:23:07.695Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M00VMS1E087G0R0001SCSAH",
+    "type": "bug",
+    "title": "Four of five agent cells have been dead since 2026-06-13: installed plists name tools/kiro/kiro-loop-wrapper.sh, deleted by PR #8088, launchctl reports exit 78 EX_CONFIG; host-loop-bootstrap.sh:142 still emits the dead path",
+    "slug": "four-of-five-agent-cells-have-been-dead-since-2026-06-13-ins",
+    "priority": "P1",
+    "filename": "081M00VMS1E087G0R0001SCSAH-four-of-five-agent-cells-have-been-dead-since-2026-06-13-ins.md"
+  }
+}

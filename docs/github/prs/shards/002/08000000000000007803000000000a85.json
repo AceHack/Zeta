@@ -1,0 +1,31 @@
+{
+  "pr_number": 2693,
+  "archive_path": "docs/history/pr-reviews/PR-2693-docs-research-deepseek-hkt-clifford-e8-klein-bottle-beacon-smoothing.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_3MUl",
+    "comment:PRRC_kwDOSF9kNM6_3O04",
+    "comment:PRRC_kwDOSF9kNM6_3O0E",
+    "comment:PRRC_kwDOSF9kNM6_3O1P",
+    "comment:PRRC_kwDOSF9kNM6_3O1q",
+    "comment:PRRC_kwDOSF9kNM6_3Sdu",
+    "comment:PRRC_kwDOSF9kNM6_3Vn9",
+    "comment:PRRC_kwDOSF9kNM6_3VpF",
+    "comment:PRRC_kwDOSF9kNM6_3Vpv",
+    "thread:PRRT_kwDOSF9kNM6BFLPc",
+    "thread:PRRT_kwDOSF9kNM6BFNHu",
+    "thread:PRRT_kwDOSF9kNM6BFNI2",
+    "thread:PRRT_kwDOSF9kNM6BFNIT",
+    "thread:PRRT_kwDOSF9kNM6BFNIl",
+    "thread:PRRT_kwDOSF9kNM6BFP6z",
+    "thread:PRRT_kwDOSF9kNM6BFSRs",
+    "thread:PRRT_kwDOSF9kNM6BFSS_",
+    "thread:PRRT_kwDOSF9kNM6BFSSe"
+  ],
+  "fetched_at": "2026-05-11T12:46:48.804Z",
+  "schema_version": "v1",
+  "commit_sha": "93c615c2e77ee4b32a59cb78d0c4ed29bd182469",
+  "title": "docs(research): DeepSeek — HKT + Clifford E8 + Klein bottle + beacon smoothing",
+  "state": "MERGED",
+  "merged_at": "2026-05-11T12:46:22Z",
+  "head_ref": "docs/deepseek-hkt-clifford-e8-beacon-smooth-2026-05-11"
+}

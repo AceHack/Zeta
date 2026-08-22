@@ -1,0 +1,16 @@
+{
+  "pr_number": 6103,
+  "archive_path": "docs/history/pr-reviews/PR-6103-feat-b-0250-gate-loop-run-events-on-claim-increases.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7GZoXt",
+    "comment:PRRC_kwDOSF9kNM7GZpXE",
+    "thread:PRRT_kwDOSF9kNM6F3TP-"
+  ],
+  "fetched_at": "2026-05-30T11:16:45.358Z",
+  "schema_version": "v1",
+  "commit_sha": "dd6fa878238bb41f3ab7de01f0ec727a5d9e2842",
+  "title": "feat(B-0250): gate loop-run events on claim increases",
+  "state": "MERGED",
+  "merged_at": "2026-05-30T11:16:25Z",
+  "head_ref": "claim/codex-loop-b0250-loop-run-increase-gate-20260530"
+}

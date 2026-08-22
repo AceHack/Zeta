@@ -1,0 +1,12 @@
+{
+  "pr_number": 5350,
+  "archive_path": "docs/history/pr-reviews/PR-5350-feat-b-0834-implement-approach-a-install-log-preservation-tee-zeta-install-sh-to.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-26T23:18:04.620Z",
+  "schema_version": "v1",
+  "commit_sha": "5e7fd98a363a4726043ed31c9bbec482708103a1",
+  "title": "feat(B-0834): implement Approach A install-log preservation — tee zeta-install.sh to /tmp + /mnt/var/log",
+  "state": "MERGED",
+  "merged_at": "2026-05-26T23:17:44Z",
+  "head_ref": "otto/b-0834-approach-a-install-log-preservation-tee-output-2026-05-26"
+}

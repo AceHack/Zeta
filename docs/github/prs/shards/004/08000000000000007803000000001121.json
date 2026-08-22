@@ -1,0 +1,17 @@
+{
+  "pr_number": 4385,
+  "archive_path": "docs/history/pr-reviews/PR-4385-feat-b-0620-5-decompose-slice-5-category-classifier-from-4023.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7Cx--G",
+    "comment:PRRC_kwDOSF9kNM7Cx-9N",
+    "thread:PRRT_kwDOSF9kNM6DOEpG",
+    "thread:PRRT_kwDOSF9kNM6DOEps"
+  ],
+  "fetched_at": "2026-05-20T13:56:24.890Z",
+  "schema_version": "v1",
+  "commit_sha": "3d8d6f412db0dc5071ed002c2a9b8c60d63172bb",
+  "title": "feat(B-0620.5): decompose slice 5 category-classifier from 4023",
+  "state": "MERGED",
+  "merged_at": "2026-05-20T13:55:52Z",
+  "head_ref": "feat/b0620-slice-5-category-classifier"
+}

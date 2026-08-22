@@ -1,0 +1,12 @@
+{
+  "pr_number": 9703,
+  "archive_path": "docs/history/pr-reviews/PR-9703-docs-book-pulls-ch-05-fill-the-two-sockets-with-aaron-s-verbatim-demonstration-s.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-11T15:49:20.287Z",
+  "schema_version": "v1",
+  "commit_sha": "895afb01b183da61c0261c7c15055c697c7d6b73",
+  "title": "docs(book): PULLS ch-05 — fill the two sockets with Aaron's verbatim (demonstration) (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-11T15:48:52Z",
+  "head_ref": "pull-ch05-vampire-loses"
+}

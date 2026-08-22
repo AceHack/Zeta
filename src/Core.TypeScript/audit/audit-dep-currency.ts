@@ -1,5 +1,5 @@
 #!/usr/bin/env bun
-// tools/audit/audit-dep-currency.ts
+// src/Core.TypeScript/audit/audit-dep-currency.ts
 //
 // 081KSGS9H0008QG0R002BC2ZR7 sub-target 1 — initial implementation. Scans dep pins across
 // the repo + reports staleness against upstream-current versions.
@@ -25,8 +25,8 @@
 // That output IS the load-bearing input every other sub-target consumes.
 //
 // Usage:
-//   bun tools/audit/audit-dep-currency.ts          # human-readable table
-//   bun tools/audit/audit-dep-currency.ts --json   # machine-readable JSON
+//   bun src/Core.TypeScript/audit/audit-dep-currency.ts          # human-readable table
+//   bun src/Core.TypeScript/audit/audit-dep-currency.ts --json   # machine-readable JSON
 //
 // Exit codes:
 //   0 — inventory completed (always; no version comparison done yet)
@@ -70,7 +70,7 @@ function parseArgs(argv: readonly string[]): Args | ArgError {
     const a = argv[i]!;
     if (a === "--json") jsonOutput = true;
     else if (a === "-h" || a === "--help") {
-      return { error: "Usage: bun tools/audit/audit-dep-currency.ts [--json]" };
+      return { error: "Usage: bun src/Core.TypeScript/audit/audit-dep-currency.ts [--json]" };
     } else {
       return { error: `unknown argument: ${a}` };
     }

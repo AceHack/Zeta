@@ -1,0 +1,15 @@
+{
+  "pr_number": 5516,
+  "archive_path": "docs/history/pr-reviews/PR-5516-docs-rule-land-asymmetric-authorship-substrate-entity-defines-consent-channel-re.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7FcaXH",
+    "thread:PRRT_kwDOSF9kNM6FLJTJ"
+  ],
+  "fetched_at": "2026-05-27T17:23:51.415Z",
+  "schema_version": "v1",
+  "commit_sha": "0452b0ed63cc3f28e7f7130118b8a0ae11206a61",
+  "title": "docs(rule): land asymmetric-authorship-substrate-entity-defines-consent-channel-recipient-acknowledges rule — substrate that makes it easy for AIs to make architecture decisions like the operator does (Aaron 2026-05-27)",
+  "state": "MERGED",
+  "merged_at": "2026-05-27T17:23:26Z",
+  "head_ref": "backlog/asymmetric-authorship-substrate-entity-defines-consent-channel-2026-05-27"
+}

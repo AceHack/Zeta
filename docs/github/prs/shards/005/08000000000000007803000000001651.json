@@ -1,0 +1,12 @@
+{
+  "pr_number": 5713,
+  "archive_path": "docs/history/pr-reviews/PR-5713-feat-b-0906-encryption-thermal-cost-layer-above-landauer-floor-refined-via-don-t.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-28T07:41:18.574Z",
+  "schema_version": "v1",
+  "commit_sha": "f7220c47d36649cd755fe2c0815743df0222791a",
+  "title": "feat(B-0906): encryption thermal-cost layer above Landauer floor — refined via don't-fold engagement with operator intuition",
+  "state": "MERGED",
+  "merged_at": "2026-05-28T07:40:57Z",
+  "head_ref": "otto-cli/b-0906-encryption-thermal-cost-layer-irreversibility-discipline-refined-aaron-otto-2026-05-28"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 8913,
+  "archive_path": "docs/history/pr-reviews/PR-8913-certified-idempotence-and-core-four-closure-for-normalizer.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-21T08:20:24.314Z",
+  "schema_version": "v1",
+  "commit_sha": "8d0c172ba0b034d8a36965f3164c902ebb3f3539",
+  "title": "Certified idempotence and core-four-closure for normalizer",
+  "state": "MERGED",
+  "merged_at": "2026-06-21T08:20:00Z",
+  "head_ref": "feature/lumen-normalizer-lean-idempotence"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 6023,
+  "archive_path": "docs/history/pr-reviews/PR-6023-docs-b-0347-carve-5-skill-descriptions-under-the-120-char-routing-budget.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-29T18:04:33.738Z",
+  "schema_version": "v1",
+  "commit_sha": "eba3f50551a26c11210726922f819f65e544d164",
+  "title": "docs(B-0347): carve 5 skill descriptions under the 120-char routing budget",
+  "state": "MERGED",
+  "merged_at": "2026-05-29T18:04:13Z",
+  "head_ref": "backlog/b0347-carve-routing-budget-batch-2026-05-29"
+}

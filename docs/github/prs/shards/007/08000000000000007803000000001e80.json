@@ -1,0 +1,12 @@
+{
+  "pr_number": 7808,
+  "archive_path": "docs/history/pr-reviews/PR-7808-feat-zflash-test-flag-b-0891-scenario-4-path-fork-qemu-executor.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-11T22:09:23.455Z",
+  "schema_version": "v1",
+  "commit_sha": "61638a07e814a1a43c289b762ef3fd50a3b885c5",
+  "title": "feat(zflash): --test flag + B-0891 scenario-4 path-fork QEMU executor",
+  "state": "MERGED",
+  "merged_at": "2026-06-11T22:08:59Z",
+  "head_ref": "feat/b-0891-zflash-test-flag-path-fork-executor"
+}

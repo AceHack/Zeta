@@ -1,0 +1,12 @@
+{
+  "pr_number": 9015,
+  "archive_path": "docs/history/pr-reviews/PR-9015-docs-research-smart-cascading-teardown-user-sovereign-deletion-blast-radius-no-o.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-21T21:46:30.848Z",
+  "schema_version": "v1",
+  "commit_sha": "911808664053920c0e52170eda016ed191dff996",
+  "title": "docs(research): smart cascading teardown + user-sovereign deletion + blast-radius no-orphan proof",
+  "state": "MERGED",
+  "merged_at": "2026-06-21T21:46:02Z",
+  "head_ref": "otto/smart-cascade-teardown-user-sovereign-blast-radius"
+}

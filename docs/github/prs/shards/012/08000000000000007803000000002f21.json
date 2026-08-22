@@ -1,0 +1,12 @@
+{
+  "pr_number": 12065,
+  "archive_path": "docs/history/pr-reviews/PR-12065-ferry-ip-questionable-legendre-s-three-square-theorem-and-the-7-that-is-not-our-.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-18T19:46:18.448Z",
+  "schema_version": "v1",
+  "commit_sha": "2827b0f4ebeea5a317f3a38345f21c66fee893a2",
+  "title": "ferry(ip-questionable): Legendre's three-square theorem — and the √7 that is NOT our √7",
+  "state": "MERGED",
+  "merged_at": "2026-08-18T19:45:40Z",
+  "head_ref": "shadow/ferry-three-squares-legendre"
+}

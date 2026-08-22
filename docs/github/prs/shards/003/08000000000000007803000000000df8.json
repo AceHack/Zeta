@@ -1,0 +1,12 @@
+{
+  "pr_number": 3576,
+  "archive_path": "docs/history/pr-reviews/PR-3576-fix-otto-279-role-refs-in-tools-github-test-tools-peer-call-2-hits.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-15T20:25:13.247Z",
+  "schema_version": "v1",
+  "commit_sha": "f48ae8c7b5ae375e4f61f987b47282635504773e",
+  "title": "fix(otto-279): role-refs in tools/github/test + tools/peer-call (2 hits)",
+  "state": "MERGED",
+  "merged_at": "2026-05-15T20:24:56Z",
+  "head_ref": "fix/otto-279-role-refs-tools-test-peer-call-otto-cli-2026-05-15"
+}

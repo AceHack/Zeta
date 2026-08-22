@@ -1,0 +1,12 @@
+{
+  "pr_number": 10076,
+  "archive_path": "docs/history/pr-reviews/PR-10076-book-stage-ace-hack-hacker-origin-the-bitcoin-op-return-stand-ep-workitem-design.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-07T02:03:16.614Z",
+  "schema_version": "v1",
+  "commit_sha": "c1dec2568263f42b73fbb637610d104ce2ba5e68",
+  "title": "book: stage Ace Hack hacker origin + the Bitcoin OP_RETURN stand; + EP-workitem design-context note",
+  "state": "MERGED",
+  "merged_at": "2026-08-07T02:02:49Z",
+  "head_ref": "docs/book-ferry-ace-hack-origin-and-bitcoin-opreturn"
+}

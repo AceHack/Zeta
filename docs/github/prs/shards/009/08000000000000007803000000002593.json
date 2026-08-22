@@ -1,0 +1,12 @@
+{
+  "pr_number": 9619,
+  "archive_path": "docs/history/pr-reviews/PR-9619-docs-letters-scene-the-lightning-author-memoir-at-his-direction-shadow.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-09T18:42:17.945Z",
+  "schema_version": "v1",
+  "commit_sha": "6493e8bf22b9fb267c2eef53ab3068812d104977",
+  "title": "docs(letters): scene — \"The Lightning\" (author memoir, at his direction) (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-09T18:41:48Z",
+  "head_ref": "otto/scene-the-lightning"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 9161,
+  "archive_path": "docs/history/pr-reviews/PR-9161-research-test-weighted-edge-length-catalog-zeta-crossing-1-plait-3-braid-6.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-17T11:27:11.009Z",
+  "schema_version": "v1",
+  "commit_sha": "743eeb04889e3aad636467d349be2ee2a02c444c",
+  "title": "research+test: weighted (edge-length) catalog zeta - crossing=1/plait=3/braid=6",
+  "state": "MERGED",
+  "merged_at": "2026-07-02T17:05:13Z",
+  "head_ref": "otto/weighted-catalog-bartholdi-zeta"
+}

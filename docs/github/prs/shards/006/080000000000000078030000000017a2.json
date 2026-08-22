@@ -1,0 +1,17 @@
+{
+  "pr_number": 6050,
+  "archive_path": "docs/history/pr-reviews/PR-6050-feat-b-0343-add-gh-api-execution-bridge.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7GUEPV",
+    "comment:PRRC_kwDOSF9kNM7GUEPo",
+    "thread:PRRT_kwDOSF9kNM6FzTYS",
+    "thread:PRRT_kwDOSF9kNM6FzTYh"
+  ],
+  "fetched_at": "2026-05-29T22:24:47.549Z",
+  "schema_version": "v1",
+  "commit_sha": "96e82b191cfecc966dbfd6c36f8c0b6298563aa0",
+  "title": "feat(B-0343): add gh api execution bridge",
+  "state": "MERGED",
+  "merged_at": "2026-05-29T22:24:29Z",
+  "head_ref": "claim/codex-loop-b0343-gh-seed-20260529"
+}

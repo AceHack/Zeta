@@ -1,0 +1,17 @@
+{
+  "pr_number": 5547,
+  "archive_path": "docs/history/pr-reviews/PR-5547-feat-install-add-hermes-agent-to-brew-manifest-operator-2026-05-27-max-decided-d.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7FdN9F",
+    "comment:PRRC_kwDOSF9kNM7FdN9r",
+    "thread:PRRT_kwDOSF9kNM6FLuz_",
+    "thread:PRRT_kwDOSF9kNM6FLuzg"
+  ],
+  "fetched_at": "2026-05-27T18:01:25.170Z",
+  "schema_version": "v1",
+  "commit_sha": "f5515e1d186a98c3f748cb7a15e89b9a5bca7426",
+  "title": "feat(install): add hermes-agent to brew manifest (operator 2026-05-27 Max-decided dependency)",
+  "state": "MERGED",
+  "merged_at": "2026-05-27T18:01:01Z",
+  "head_ref": "backlog/add-hermes-agent-to-brew-manifest-2026-05-27"
+}

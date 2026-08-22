@@ -1,0 +1,12 @@
+{
+  "pr_number": 7258,
+  "archive_path": "docs/history/pr-reviews/PR-7258-docs-research-ferry-the-close-over-order-two-converging-ladders-self-multiverse-.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-09T12:39:15.581Z",
+  "schema_version": "v1",
+  "commit_sha": "2a705e30358a6cecc4bc31f67029593e2cafdd88",
+  "title": "docs(research)+ferry: the close-over order — two converging ladders (self→multiverse social; gpu/fpga→multiverse compute) meeting in the middle",
+  "state": "MERGED",
+  "merged_at": "2026-06-09T12:38:53Z",
+  "head_ref": "otto/research-close-over-order-two-converging-ladders"
+}

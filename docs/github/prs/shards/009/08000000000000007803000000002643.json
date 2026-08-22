@@ -1,0 +1,12 @@
+{
+  "pr_number": 9795,
+  "archive_path": "docs/history/pr-reviews/PR-9795-docs-trajectory-update-resume-braided-work-item-to-the-braided-monoidal-f-milest.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-31T16:29:05.157Z",
+  "schema_version": "v1",
+  "commit_sha": "8c6b8bf97fd1d6b03721249baa314e6886d6acb8",
+  "title": "docs(trajectory): update RESUME + braided work-item to the braided-monoidal F# milestone",
+  "state": "MERGED",
+  "merged_at": "2026-07-31T16:28:23Z",
+  "head_ref": "shadow/resume-braided-milestone-update"
+}

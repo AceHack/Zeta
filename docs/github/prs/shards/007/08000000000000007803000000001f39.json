@@ -1,0 +1,12 @@
+{
+  "pr_number": 7993,
+  "archive_path": "docs/history/pr-reviews/PR-7993-feat-core-test-e8lattice-the-adinkra-code-s-construction-a-unfold-to-e8-executab.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-12T19:12:36.275Z",
+  "schema_version": "v1",
+  "commit_sha": "7a6818439a128b167028d789b2786905a1e6ad7e",
+  "title": "feat(core)+test: E8Lattice — the adinkra code's Construction-A unfold to E8, executable (THE 240, counted)",
+  "state": "MERGED",
+  "merged_at": "2026-06-12T19:12:11Z",
+  "head_ref": "shadow/e8-construction-a"
+}

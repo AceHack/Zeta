@@ -1,0 +1,12 @@
+{
+  "pr_number": 2093,
+  "archive_path": "docs/history/pr-reviews/PR-2093-fix-backlog-close-b-0307-landed-via-pr-2091.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-08T15:42:10.176Z",
+  "schema_version": "v1",
+  "commit_sha": "4c8590fe30c4e19e749a66d47ebceff4503db412",
+  "title": "fix(backlog): close B-0307 — landed via PR #2091",
+  "state": "MERGED",
+  "merged_at": "2026-05-08T15:41:43Z",
+  "head_ref": "fix/close-b0307-backlog"
+}

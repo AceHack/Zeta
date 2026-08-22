@@ -1,0 +1,12 @@
+{
+  "pr_number": 11453,
+  "archive_path": "docs/history/pr-reviews/PR-11453-fix-agent-proposal-terminate-the-delivered-patch-and-make-git-apply-refuse-out-l.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-17T16:02:13.235Z",
+  "schema_version": "v1",
+  "commit_sha": "f83f34eadd4edc629fde99cb576756711e187673",
+  "title": "fix(agent-proposal): terminate the delivered patch, and make git apply refuse out loud",
+  "state": "MERGED",
+  "merged_at": "2026-08-17T16:01:33Z",
+  "head_ref": "shadow/agent-proposal-patch-terminator"
+}

@@ -1,0 +1,23 @@
+{
+  "pr_number": 3032,
+  "archive_path": "docs/history/pr-reviews/PR-3032-docs-rules-claim-acquire-before-worktree-work-split-brain-prevention-for-multi-o.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7A-NTV",
+    "comment:PRRC_kwDOSF9kNM7A-Skr",
+    "comment:PRRC_kwDOSF9kNM7A-Skv",
+    "comment:PRRC_kwDOSF9kNM7A-XA0",
+    "comment:PRRC_kwDOSF9kNM7A-Z1F",
+    "thread:PRRT_kwDOSF9kNM6B5R6r",
+    "thread:PRRT_kwDOSF9kNM6B5VwU",
+    "thread:PRRT_kwDOSF9kNM6B5VwX",
+    "thread:PRRT_kwDOSF9kNM6B5ZBm",
+    "thread:PRRT_kwDOSF9kNM6B5bGq"
+  ],
+  "fetched_at": "2026-05-13T21:40:57.754Z",
+  "schema_version": "v1",
+  "commit_sha": "5935e76e482441afe2c5782f3213547cc4f5ff56",
+  "title": "docs(rules): claim acquire before worktree work (split-brain prevention for multi-Otto)",
+  "state": "MERGED",
+  "merged_at": "2026-05-13T21:40:35Z",
+  "head_ref": "otto-claim-acquire-before-worktree-work-rule-2026-05-13"
+}

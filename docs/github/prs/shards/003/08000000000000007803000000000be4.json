@@ -1,0 +1,16 @@
+{
+  "pr_number": 3044,
+  "archive_path": "docs/history/pr-reviews/PR-3044-recover-backlog-restore-6-lost-b-0066-b-0246-decomposition-rows-from-c0dcb26.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7A_UdN",
+    "comment:PRRC_kwDOSF9kNM7A_bsN",
+    "thread:PRRT_kwDOSF9kNM6B6GiO"
+  ],
+  "fetched_at": "2026-05-13T22:41:20.427Z",
+  "schema_version": "v1",
+  "commit_sha": "83bb49a7eccb9457ba44f7e0711041f722ec0f33",
+  "title": "recover(backlog): restore 6 lost B-0066/B-0246 decomposition rows from c0dcb26",
+  "state": "MERGED",
+  "merged_at": "2026-05-13T22:40:58Z",
+  "head_ref": "feat/recover-lost-rows-b0257-b0289-2026-05-13"
+}

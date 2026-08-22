@@ -1,0 +1,12 @@
+{
+  "pr_number": 8911,
+  "archive_path": "docs/history/pr-reviews/PR-8911-fix-declarative-qdk-pyproject-toml-6-language-cross-verify-oracle.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-21T08:18:08.040Z",
+  "schema_version": "v1",
+  "commit_sha": "5ef17bd69cef593f5c9a91a564444b411237467d",
+  "title": "fix: declarative QDK (pyproject.toml) + 6-language cross-verify oracle",
+  "state": "MERGED",
+  "merged_at": "2026-06-21T08:17:42Z",
+  "head_ref": "alexa/fix-qdk-and-all-oracle-langs"
+}

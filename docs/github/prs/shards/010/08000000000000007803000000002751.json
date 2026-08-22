@@ -1,0 +1,12 @@
+{
+  "pr_number": 10065,
+  "archive_path": "docs/history/pr-reviews/PR-10065-fix-decorrelationexcess-per-slot-null-in-fuse-closes-the-heterogeneous-pooling-p.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-18T09:16:54.214Z",
+  "schema_version": "v1",
+  "commit_sha": "5f866d973670ce2dfa785f4dbc764aebc25edf8a",
+  "title": "fix(DecorrelationExcess): per-slot null in fuse — closes the heterogeneous-pooling P2 [GATED: Soraya-verified, needs Aaron]",
+  "state": "MERGED",
+  "merged_at": "2026-08-06T09:24:39Z",
+  "head_ref": "fix/decorrelation-fuse-per-slot-null-081KZ7H82J-p2"
+}

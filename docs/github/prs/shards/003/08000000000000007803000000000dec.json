@@ -1,0 +1,12 @@
+{
+  "pr_number": 3564,
+  "archive_path": "docs/history/pr-reviews/PR-3564-shard-tick-1931z-b-0535-filed-id-uniqueness-lint-extension-of-b-0532.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-15T19:36:07.691Z",
+  "schema_version": "v1",
+  "commit_sha": "59ce9f92344240757e0b02d8ee4dbe03151a2334",
+  "title": "shard(tick): 1931Z — B-0535 filed (ID-uniqueness lint extension of B-0532)",
+  "state": "MERGED",
+  "merged_at": "2026-05-15T19:35:44Z",
+  "head_ref": "shard/tick-1931z-otto-cli-2026-05-15"
+}

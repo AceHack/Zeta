@@ -1,0 +1,21 @@
+{
+  "pr_number": 1993,
+  "archive_path": "docs/history/pr-reviews/PR-1993-fix-backlog-decompose-b-0145-pm-2-role-into-2-children.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_FAHy",
+    "comment:PRRC_kwDOSF9kNM6_FCcZ",
+    "comment:PRRC_kwDOSF9kNM6_FCcy",
+    "comment:PRRC_kwDOSF9kNM6_FCdI",
+    "thread:PRRT_kwDOSF9kNM6Afos-",
+    "thread:PRRT_kwDOSF9kNM6AfqP1",
+    "thread:PRRT_kwDOSF9kNM6AfqPW",
+    "thread:PRRT_kwDOSF9kNM6AfqPn"
+  ],
+  "fetched_at": "2026-05-08T02:11:53.085Z",
+  "schema_version": "v1",
+  "commit_sha": "75fbb15a1696a2da82a92fbb6915facc8091f1d2",
+  "title": "fix(backlog): decompose B-0145 PM-2 role into 2 children",
+  "state": "MERGED",
+  "merged_at": "2026-05-08T02:11:34Z",
+  "head_ref": "backlog/b0145-decompose"
+}

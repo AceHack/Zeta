@@ -1,0 +1,12 @@
+{
+  "pr_number": 7765,
+  "archive_path": "docs/history/pr-reviews/PR-7765-docs-trajectory-resume-laws-wave-7756-7764.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-11T19:14:39.953Z",
+  "schema_version": "v1",
+  "commit_sha": "807bd80c29e47a0e20db1f368e0c0f1eeed5f3ae",
+  "title": "docs(trajectory): RESUME laws wave (#7756..#7764)",
+  "state": "MERGED",
+  "merged_at": "2026-06-11T19:14:16Z",
+  "head_ref": "shadow-resume-fold-7756-7764"
+}

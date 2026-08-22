@@ -1,0 +1,17 @@
+{
+  "pr_number": 8095,
+  "archive_path": "docs/history/pr-reviews/PR-8095-feat-zflash-migrate-tools-to-src-add-zeta-flash-router.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7LLXs8",
+    "comment:PRRC_kwDOSF9kNM7LLXs_",
+    "thread:PRRT_kwDOSF9kNM6JXLOr",
+    "thread:PRRT_kwDOSF9kNM6JXLOu"
+  ],
+  "fetched_at": "2026-06-14T00:26:17.514Z",
+  "schema_version": "v1",
+  "commit_sha": "1d8ed47d9bb60b77493445ea61443b3fdb2c9093",
+  "title": "feat(zflash): migrate tools to src, add zeta flash router",
+  "state": "MERGED",
+  "merged_at": "2026-06-14T00:25:56Z",
+  "head_ref": "riven/zflash-unify-zeta-flash-cli"
+}

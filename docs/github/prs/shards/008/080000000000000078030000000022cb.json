@@ -1,0 +1,12 @@
+{
+  "pr_number": 8907,
+  "archive_path": "docs/history/pr-reviews/PR-8907-fix-setup-jammy-formal-solvers-mechanism-by-source-install.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-21T08:18:21.855Z",
+  "schema_version": "v1",
+  "commit_sha": "3f49c8859939a5de92f87b542a41e2698ae195c3",
+  "title": "fix(setup): Jammy formal solvers + mechanism-by-source install",
+  "state": "MERGED",
+  "merged_at": "2026-06-21T08:17:57Z",
+  "head_ref": "fix/jammy-formal-solvers-symmetry"
+}

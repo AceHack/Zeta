@@ -1,0 +1,12 @@
+{
+  "pr_number": 8189,
+  "archive_path": "docs/history/pr-reviews/PR-8189-docs-research-zeta-ir-v2-parent-oversight-without-surveillance-who-safety.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-14T14:45:51.804Z",
+  "schema_version": "v1",
+  "commit_sha": "d2e5edbcca93592467c6a9da4f6aa46b7530c939",
+  "title": "docs(research): Zeta IR v2 — parent oversight without surveillance (WHO/safety)",
+  "state": "MERGED",
+  "merged_at": "2026-06-14T14:45:32Z",
+  "head_ref": "otto/zeta-lang-ir-v2-parent-oversight"
+}

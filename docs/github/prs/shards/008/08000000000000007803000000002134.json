@@ -1,0 +1,12 @@
+{
+  "pr_number": 8500,
+  "archive_path": "docs/history/pr-reviews/PR-8500-memory-feedback-github-safe-actuator-money-safe-line-reversibility-justice-as-al.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-16T10:18:51.398Z",
+  "schema_version": "v1",
+  "commit_sha": "b060aada3e22ca4d8dcfb050f5a724252958ec00",
+  "title": "memory(feedback): github-safe ≠ actuator/money-safe (line=reversibility) + justice-as-alignment lived root",
+  "state": "MERGED",
+  "merged_at": "2026-06-16T10:18:20Z",
+  "head_ref": "otto/justice-alignment-irreversible-domain"
+}

@@ -6,6 +6,7 @@ priority: P2
 slug: adopt-cvc5-e-prover-as-decorrelated-atp-smt-cross-checks-in
 title: "Adopt CVC5 + E prover as decorrelated ATP/SMT cross-checks in Soraya's portfolio (Z3 vs CVC5 agreement = BP-16 cross-check); Coq/Isabelle operator-available, NOT contributor-shared"
 created: 2026-06-15T19:24:28.627Z
+completed: 2026-06-21T06:18:00.000Z
 depends_on: []
 composes_with: []
 ---

@@ -1,0 +1,12 @@
+{
+  "pr_number": 9366,
+  "archive_path": "docs/history/pr-reviews/PR-9366-feat-shiva-gc-incremental-concurrent-collection-tri-color-marking-write-barrier-.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-03T22:22:35.535Z",
+  "schema_version": "v1",
+  "commit_sha": "f78ffc48ba2cb39fcbf79ba71d46d7b8a25a5340",
+  "title": "feat(shiva-gc): incremental/concurrent collection — tri-color marking + write barrier (Dijkstra) (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-03T22:22:12Z",
+  "head_ref": "otto/shiva-incremental-tricolor"
+}

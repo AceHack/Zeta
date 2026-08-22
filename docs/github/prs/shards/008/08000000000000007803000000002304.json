@@ -1,0 +1,12 @@
+{
+  "pr_number": 8964,
+  "archive_path": "docs/history/pr-reviews/PR-8964-docs-ip-questionable-mit-ultracold-atom-double-slit-supercold-superfluid-chip-8-.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-21T16:59:02.168Z",
+  "schema_version": "v1",
+  "commit_sha": "4e966854cbcd13de827069909814b8dfa8823089",
+  "title": "docs(ip-questionable): MIT ultracold-atom double-slit → supercold/superfluid CHIP-8 + lensography (ISR-Arrow)",
+  "state": "MERGED",
+  "merged_at": "2026-06-21T16:58:32Z",
+  "head_ref": "otto/ip-questionable-mit-superfluid-chip8"
+}

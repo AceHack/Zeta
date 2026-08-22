@@ -1,0 +1,12 @@
+{
+  "pr_number": 10156,
+  "archive_path": "docs/history/pr-reviews/PR-10156-feat-analytics-analytics-measureds-wrapper-types-task-a-complete.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-08T20:23:43.343Z",
+  "schema_version": "v1",
+  "commit_sha": "1fc9c0af266d9ec8b9469d3807b35dba5b16c912",
+  "title": "feat(analytics): AnalyticS / MeasuredS wrapper types — Task A complete",
+  "state": "MERGED",
+  "merged_at": "2026-08-08T20:23:10Z",
+  "head_ref": "claim/analytics-measureds-wrappers"
+}

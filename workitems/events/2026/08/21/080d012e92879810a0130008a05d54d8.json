@@ -1,0 +1,14 @@
+{
+  "id": "080d012e92879810a0130008a05d54d8",
+  "at": "2026-08-21T19:35:35.411Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M0JX4M7H087G0R0029R5QG6",
+    "type": "bug",
+    "title": "Two ArgoCD chart repoURLs do not resolve: sealed-secrets Pages site is gone, forgejo moved to OCI (and 9.0.6 never existed)",
+    "slug": "two-argocd-chart-repourls-do-not-resolve-sealed-secrets-page",
+    "priority": "P2",
+    "filename": "081M0JX4M7H087G0R0029R5QG6-two-argocd-chart-repourls-do-not-resolve-sealed-secrets-page.md"
+  }
+}

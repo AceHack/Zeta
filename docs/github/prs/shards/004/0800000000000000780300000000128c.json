@@ -1,0 +1,17 @@
+{
+  "pr_number": 4748,
+  "archive_path": "docs/history/pr-reviews/PR-4748-docs-b-0525-slice-2-close-trajectory-citation-gap-ai-sovereignty-ace-package-man.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7ES8U7",
+    "comment:PRRC_kwDOSF9kNM7ES8Ur",
+    "thread:PRRT_kwDOSF9kNM6EU5cb",
+    "thread:PRRT_kwDOSF9kNM6EU5cl"
+  ],
+  "fetched_at": "2026-05-23T18:23:28.835Z",
+  "schema_version": "v1",
+  "commit_sha": "9ccd46d8537feda3cfa9f3600712c9403a9d1be5",
+  "title": "docs(B-0525): slice 2 — close trajectory-citation gap (ai-sovereignty + ace-package-manager)",
+  "state": "MERGED",
+  "merged_at": "2026-05-23T18:23:12Z",
+  "head_ref": "otto/cli-b0525-slice2-trajectory-citation-gap-fix-2026-05-23"
+}

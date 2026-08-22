@@ -1,0 +1,12 @@
+{
+  "pr_number": 9629,
+  "archive_path": "docs/history/pr-reviews/PR-9629-docs-book-raw-childhood-origin-lightning-snakes-the-body.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-09T21:12:08.312Z",
+  "schema_version": "v1",
+  "commit_sha": "36ab878c6434931a9fce1f88c6a519f6024c3e1d",
+  "title": "docs(book): RAW — childhood origin (lightning, snakes, the body)",
+  "state": "MERGED",
+  "merged_at": "2026-07-09T21:11:37Z",
+  "head_ref": "shadow/book-raw-childhood-origin-lightning-snakes"
+}

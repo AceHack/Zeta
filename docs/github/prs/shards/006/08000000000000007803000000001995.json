@@ -1,0 +1,12 @@
+{
+  "pr_number": 6549,
+  "archive_path": "docs/history/pr-reviews/PR-6549-docs-vision-fold-13-emulators-load-bearing-democratize-bit-perfect-bond-dst-edge.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-02T11:38:35.292Z",
+  "schema_version": "v1",
+  "commit_sha": "f16b206efc008c64ca5bedbed5c56fedd193cf04",
+  "title": "docs(vision): fold §13 emulators-load-bearing (democratize/bit-perfect-bond/DST-edge) + §2 F#-fork-defer",
+  "state": "MERGED",
+  "merged_at": "2026-06-02T11:38:13Z",
+  "head_ref": "otto-cli/vision-s13-emulators-fork-defer-2026-06-02"
+}

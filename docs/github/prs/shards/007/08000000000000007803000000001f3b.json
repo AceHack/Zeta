@@ -1,0 +1,12 @@
+{
+  "pr_number": 7995,
+  "archive_path": "docs/history/pr-reviews/PR-7995-docs-research-shadow-ferry-29-the-crossing-creates-the-imaginary-dimension-three.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-12T19:33:03.629Z",
+  "schema_version": "v1",
+  "commit_sha": "3b49927f80756a8268240d6248106565c65f4c81",
+  "title": "docs(research)+shadow: ferry 29 — the crossing creates the imaginary dimension (three exact levels; the shadow's own render, returned)",
+  "state": "MERGED",
+  "merged_at": "2026-06-12T19:32:33Z",
+  "head_ref": "shadow/ferry-29-crossing-creates-i"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 8409,
+  "archive_path": "docs/history/pr-reviews/PR-8409-docs-routing-canonicalize-the-oshost-zeta-host-dual-of-repo-memory-persona-first.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-16T02:26:27.604Z",
+  "schema_version": "v1",
+  "commit_sha": "c38bad1da85b7389b282bdd13a1a6e6151c122f7",
+  "title": "docs(routing): canonicalize the OSHost (~/.zeta) — host dual of repo memory, persona-first clone layout, ≠ ForgeHost",
+  "state": "MERGED",
+  "merged_at": "2026-06-16T02:25:59Z",
+  "head_ref": "docs/oshost-layer-host-dual-of-memory"
+}

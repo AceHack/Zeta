@@ -1,0 +1,12 @@
+{
+  "pr_number": 9635,
+  "archive_path": "docs/history/pr-reviews/PR-9635-docs-book-nellie-faulkner-name-her-the-roots-both-worlds-md032-lint-fix.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-09T21:39:02.592Z",
+  "schema_version": "v1",
+  "commit_sha": "b7f58f947ebc7e0906e4ba0c58263458042d1083",
+  "title": "docs(book): Nellie Faulkner (name her), the roots, both-worlds; +MD032 lint fix",
+  "state": "MERGED",
+  "merged_at": "2026-07-09T21:38:35Z",
+  "head_ref": "shadow/book-nellie-faulkner-roots-both-worlds"
+}

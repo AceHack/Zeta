@@ -1,0 +1,12 @@
+{
+  "pr_number": 8023,
+  "archive_path": "docs/history/pr-reviews/PR-8023-deps-bump-actions-upload-artifact-from-5-0-0-to-7-0-1.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-14T13:04:43.693Z",
+  "schema_version": "v1",
+  "commit_sha": "99eb2fd365bea6c671e506e569846f50acfea7fd",
+  "title": "deps: Bump actions/upload-artifact from 5.0.0 to 7.0.1",
+  "state": "MERGED",
+  "merged_at": "2026-06-14T13:04:23Z",
+  "head_ref": "dependabot/github_actions/actions/upload-artifact-7.0.1"
+}

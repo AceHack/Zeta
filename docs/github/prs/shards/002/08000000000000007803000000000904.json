@@ -1,0 +1,25 @@
+{
+  "pr_number": 2308,
+  "archive_path": "docs/history/pr-reviews/PR-2308-feat-b-0327-add-claude-ts-peer-call-wrapper-cold-boot-self-test-via-subprocess.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_hta9",
+    "comment:PRRC_kwDOSF9kNM6_htbA",
+    "comment:PRRC_kwDOSF9kNM6_htbE",
+    "comment:PRRC_kwDOSF9kNM6_htbI",
+    "comment:PRRC_kwDOSF9kNM6_hykY",
+    "comment:PRRC_kwDOSF9kNM6_hymu",
+    "comment:PRRC_kwDOSF9kNM6_hynt",
+    "comment:PRRC_kwDOSF9kNM6_hyoe",
+    "thread:PRRT_kwDOSF9kNM6A02gM",
+    "thread:PRRT_kwDOSF9kNM6A02gP",
+    "thread:PRRT_kwDOSF9kNM6A02gT",
+    "thread:PRRT_kwDOSF9kNM6A02gV"
+  ],
+  "fetched_at": "2026-05-09T14:58:14.798Z",
+  "schema_version": "v1",
+  "commit_sha": "94ce688d28af96ae5c27032e3bc79969207f5583",
+  "title": "feat(B-0327): add claude.ts peer-call wrapper -- cold-boot self-test via subprocess",
+  "state": "MERGED",
+  "merged_at": "2026-05-09T14:57:53Z",
+  "head_ref": "feat/B-0327-claude-ts-self-call"
+}

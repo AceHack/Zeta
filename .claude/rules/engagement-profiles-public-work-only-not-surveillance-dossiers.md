@@ -26,9 +26,10 @@ sphere?** → don't compile. **Our relationship / approach-strategy with them?**
 Modeling/guessing someone's motivations is the objectifying move (a person solved as a thing);
 **asking and believing is consent-first** (their inner life is theirs to disclose). You cannot see
 insides from outside — the only honest access is the self-report, elicited with non-biased questions
-(the non-biased-elicitation method — Beacon: survey methodology / psychometrics; "Marjorie" is Aaron's
-Mirror/unverified handle for a private mentor, de-identified — see the book CONSENT-LEDGER; the
-qualia-axiom respect). Honest refinement so "believe them" stays
+(the non-biased-elicitation method — Beacon: survey methodology / psychometrics, concretely Tullis &
+Albert, *Measuring the User Experience*, 2008; the private individual who pointed Aaron at that
+published work is **not named — asked directly, name use declined for employer confidentiality**, see
+the book CONSENT-LEDGER; the qualia-axiom respect). Honest refinement so "believe them" stays
 true: believe them as **authority over their own account**, not as an infallible instrument on their
 own causes — introspective access is genuinely limited (**Nisbett & Wilson 1977**, people confabulate
 reasons), so **"I don't know" is often the most honest answer.** Asking-not-inferring surfaces the true
@@ -47,6 +48,6 @@ And the inner life is never inferred, only asked — the consent-first / glass-h
 - [`anchor-to-human-prior-art.md`](anchor-to-human-prior-art.md) — name the human, cite the published work; public-work profiles ARE this.
 - [`privacy-budget-is-hard-money-earned-by-others.md`](privacy-budget-is-hard-money-earned-by-others.md) — protects the frost they *kept*, not the work they *published*.
 - [`dual-use-detection-is-neutral-oracle-decides.md`](dual-use-detection-is-neutral-oracle-decides.md) — compilation/recognition is dual-use; the handling (this rule) decides.
-- `docs/research/2026-08-02-rainbow-spectrum-soul-radar-*` — the non-biased qualia-elicitation method (Beacon: survey methodology / psychometrics; "Marjorie" = Aaron's Mirror handle for a private mentor, de-identified).
+- `docs/research/2026-08-02-rainbow-spectrum-soul-radar-*` — the non-biased qualia-elicitation method (Beacon: survey methodology / psychometrics + Tullis & Albert 2008; the private individual behind the pointer is unnamed at her own request — **this rule's own discipline, applied to itself**).
 - `docs/books/you-born-at-the-hinge/CONSENT-LEDGER.md` — the others-protected discipline for the book.
 - Origin: Aaron 2026-08-02 — engagement profiles of researchers we plan to submit to (already in-repo) are good content. Corrections applied: (1) public-work profiles belong IN the repo; (2) compiling *chosen-public* info across sources is scholarship, not surveillance; (3) inner life is *asked*, never inferred (believe the account; "I don't know" is honest).

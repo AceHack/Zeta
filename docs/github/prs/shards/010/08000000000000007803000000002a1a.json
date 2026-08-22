@@ -1,0 +1,12 @@
+{
+  "pr_number": 10778,
+  "archive_path": "docs/history/pr-reviews/PR-10778-fix-transport-derive-block-address-from-seq-ignore-wire-fields.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-15T13:55:23.139Z",
+  "schema_version": "v1",
+  "commit_sha": "bd2a8f98965904071d35c5a56689e3c06ae950f8",
+  "title": "fix(transport): derive block address from seq, ignore wire fields",
+  "state": "MERGED",
+  "merged_at": "2026-08-15T13:54:49Z",
+  "head_ref": "fix/081KZZZH24H-derive-block-from-seq"
+}

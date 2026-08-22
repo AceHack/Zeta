@@ -1,0 +1,12 @@
+{
+  "pr_number": 8157,
+  "archive_path": "docs/history/pr-reviews/PR-8157-docs-bugs-anti-entropy-sweep-findings-on-the-rollout-code-8-entries.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-14T03:19:56.635Z",
+  "schema_version": "v1",
+  "commit_sha": "1812015530a0b1e8c68bfe458dcb98460a1856c8",
+  "title": "docs(bugs): anti-entropy sweep findings on the rollout code (8 entries)",
+  "state": "MERGED",
+  "merged_at": "2026-06-14T03:19:37Z",
+  "head_ref": "otto/anti-entropy-sweep-bugs"
+}

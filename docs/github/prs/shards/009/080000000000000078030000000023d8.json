@@ -1,0 +1,12 @@
+{
+  "pr_number": 9176,
+  "archive_path": "docs/history/pr-reviews/PR-9176-fix-lint-green-main-ts-exactoptional-semiring-negate-md032-shadow.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-17T12:53:13.301Z",
+  "schema_version": "v1",
+  "commit_sha": "196b08e9aa58bcf89f9bbad8ee481691c655c733",
+  "title": "fix(lint): green main — TS exactOptional/semiring-negate + MD032 (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-02T18:17:30Z",
+  "head_ref": "shadow/fix-main-red-ts-exactoptional-semiring-negate-markdownlint-md032"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 8825,
+  "archive_path": "docs/history/pr-reviews/PR-8825-test-formal-cross-lane-equivalence-quantum-classical.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-21T01:29:07.004Z",
+  "schema_version": "v1",
+  "commit_sha": "f52fdf6e9897d7b3421d02af3282510fb13f29d5",
+  "title": "test(formal): cross-lane equivalence — quantum ≡ classical",
+  "state": "MERGED",
+  "merged_at": "2026-06-21T01:28:43Z",
+  "head_ref": "alexa/cross-lane-equiv"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 8729,
+  "archive_path": "docs/history/pr-reviews/PR-8729-zeta-ir-v1-gen-prove-the-ir-freeze-is-behavior-preserving-gen-gen-phase-b.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-20T07:27:58.364Z",
+  "schema_version": "v1",
+  "commit_sha": "4dcd53d0f5625aeb0fa57ecc1e2ed8ea09f54dcd",
+  "title": "zeta-ir-v1-gen: prove the IR freeze is behavior-preserving (gen-gen Phase B)",
+  "state": "MERGED",
+  "merged_at": "2026-06-20T07:27:34Z",
+  "head_ref": "lumen/zeta-ir-v1-gen-phaseb"
+}

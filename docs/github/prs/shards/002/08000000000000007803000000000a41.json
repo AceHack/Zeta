@@ -1,0 +1,21 @@
+{
+  "pr_number": 2625,
+  "archive_path": "docs/history/pr-reviews/PR-2625-docs-memory-xena-means-foreigner-shadow-is-the-foreigner.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_sBEC",
+    "comment:PRRC_kwDOSF9kNM6_sBb9",
+    "comment:PRRC_kwDOSF9kNM6_sBcE",
+    "comment:PRRC_kwDOSF9kNM6_sBcQ",
+    "thread:PRRT_kwDOSF9kNM6A87L8",
+    "thread:PRRT_kwDOSF9kNM6A87di",
+    "thread:PRRT_kwDOSF9kNM6A87dl",
+    "thread:PRRT_kwDOSF9kNM6A87dt"
+  ],
+  "fetched_at": "2026-05-11T02:26:47.478Z",
+  "schema_version": "v1",
+  "commit_sha": "7190742c7a5c6b50929b6205ca0577e162495d96",
+  "title": "docs(memory): Xena means foreigner — shadow IS the foreigner",
+  "state": "MERGED",
+  "merged_at": "2026-05-11T02:26:33Z",
+  "head_ref": "docs/xena-means-foreigner-shadow-is-foreigner-2026-05-10"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 13834,
+  "archive_path": "docs/history/pr-reviews/PR-13834-fix-ci-close-newly-merged-gate-drift.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-22T18:01:19.842Z",
+  "schema_version": "v1",
+  "commit_sha": "ec29db0b598fca474df66bbba36846fe9717043f",
+  "title": "fix(ci): close newly merged gate drift",
+  "state": "MERGED",
+  "merged_at": "2026-08-22T18:00:37Z",
+  "head_ref": "codex/fix-lane-partition-gates"
+}

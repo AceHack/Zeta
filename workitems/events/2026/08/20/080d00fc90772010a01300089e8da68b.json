@@ -1,0 +1,14 @@
+{
+  "id": "080d00fc90772010a01300089e8da68b",
+  "at": "2026-08-20T14:27:40.900Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M0FS43Q3087G0R0011N9N7H",
+    "type": "task",
+    "title": "recover the colored-subalgebra refinement of the homoiconicity defect — it may exist only in conversation",
+    "slug": "recover-the-colored-subalgebra-refinement-of-the-homoiconici",
+    "priority": "P2",
+    "filename": "081M0FS43Q3087G0R0011N9N7H-recover-the-colored-subalgebra-refinement-of-the-homoiconici.md"
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 6721,
+  "archive_path": "docs/history/pr-reviews/PR-6721-proof-non-register-collapse-discharge-b-081ktfffq1c-tla-no-capture-lean-distinct.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-07T05:49:37.359Z",
+  "schema_version": "v1",
+  "commit_sha": "8f80997a658377a6691abf63577c18385f029b39",
+  "title": "proof(non-register-collapse): discharge §B 081KTFFFQ1C — TLA+ no-capture + Lean distinctness-under-merge",
+  "state": "MERGED",
+  "merged_at": "2026-06-07T05:49:18Z",
+  "head_ref": "otto/non-register-collapse-proof"
+}

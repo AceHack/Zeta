@@ -1,0 +1,12 @@
+{
+  "pr_number": 5581,
+  "archive_path": "docs/history/pr-reviews/PR-5581-research-kestrel-backlog-b-0864-streams-are-relationships-multi-ai-conversation-.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-27T18:41:33.689Z",
+  "schema_version": "v1",
+  "commit_sha": "a608101f20118908c1be48a373364d570ef27e55",
+  "title": "research(kestrel)+backlog(B-0864): streams-are-relationships — multi-AI conversation end + 4-stream-kind taxonomy + F# CE machinery + protocol-typing + multi-backend execution",
+  "state": "MERGED",
+  "merged_at": "2026-05-27T18:41:12Z",
+  "head_ref": "research/kestrel-multi-ai-conversation-four-corner-ownership-push-pull-hot-cold-fsharp-ce-2026-05-27"
+}

@@ -26,6 +26,213 @@ because <one-line>.`
 
 ---
 
+## `Zeta23/LinAlg` + `VonNeumannTraceWitness` *(von Neumann's trace inequality and the paper's §3 linear-algebra engine — ADAPTED PORT, Lean 4 + Mathlib)*
+
+- **Register, first, because it is the field most easily fudged.** **`port`** — adapted port of
+  `Zeta23/LinAlg/` from [`anthropics/zeta-23-lean`](https://github.com/anthropics/zeta-23-lean)
+  @ v1.0 (Apache-2.0, Copyright 2026 Anthropic, PBC), retargeted from Mathlib rev
+  `51e6992efd06126df61a496bebf8f49482a4e129` / Lean `v4.33.0-rc2` to Mathlib `v4.30.0-rc1` /
+  Lean `v4.30.0-rc1`. **Not an independent replication: the upstream Lean source was read.**
+  The bare phrase "we replicated it" is refused. `Lean4/VonNeumannTraceWitness.lean` is
+  **ours** — written against the ported theorem's public statement, not derived from upstream.
+- **Artifact.** `src/Core.Lean4/Zeta23/LinAlg/{PosIndex,VonNeumann,HermitianPosPart,Sylvester,Inertia,RankTrace,Weyl}.lean`
+  + `Zeta23/LinAlg.lean` + `Zeta23.lean` (the port, 8 files), and
+  `src/Core.Lean4/Lean4/VonNeumannTraceWitness.lean` (ours). Ported 2026-08-22, work-item
+  081M0N9SSJ1087G0R001WVSN9V. `Zeta23` is a `lean_lib` **in `defaultTargets`**, and the witness
+  is imported from the `Lean4` root — so `lake build` walks both and `lean-orphan-modules.ts`
+  sees them. Gated in `.github/workflows/lean-proof.yml` by two audits, each with **both**
+  `--deny sorryAx` **and** `--deny 'Unknown constant'`, run through `run-checked.ts` (never a
+  pipeline: a pipeline's exit status is the last command's, so a `lean` segfault prints
+  nothing, greps clean and passes).
+- **Internal correctness target.** None yet — nothing in the shipped F#/TypeScript substrate
+  depends on this. It is acquired capability: `vonNeumann_trace_ineq` is **not in Mathlib
+  master** (code search: 0 hits), and it is directly reusable by the Hermitian-matrix work
+  already here (`CliffordReflectionE8.lean`, `MenoTwistCentrality.lean`,
+  `CayleyDicksonDoublyEven.lean`). Stating a target we do not have would be the fudge.
+- **Internal correctness claim.** `RHLinalg.vonNeumann_trace_ineq`: for Hermitian `A B :
+  Matrix n n 𝕜` over `RCLike 𝕜`, `RCLike.re (A * B).trace ≤ ∑ i, hA.eigenvalues₀ i *
+  hB.eigenvalues₀ i` — eigenvalues sorted decreasing. Route: `A = UₐDₐUₐᴴ`, `B = UᵦDᵦUᵦᴴ`,
+  `W = UₐᴴUᵦ`; `Sₖₗ = ‖Wₖₗ‖²` is doubly stochastic by unitarity; Birkhoff–von Neumann writes
+  `S` as a convex combination of permutation matrices; rearrangement bounds each permutation
+  by the sorted pairing. The subtree also carries Sylvester's law of inertia (Hermitian, both
+  directions), the `Q = Q₊ − Q₋` splitting, and the paper's Lemmas 3.1 / 3.2 / 3.4.
+- **Retarget cost — measured, not assumed.** Zero proof edits. The 8 files were dropped into a
+  scratch `lean_lib` at our existing pin and `lake build` run once: **2690 jobs, completed
+  successfully**, no errors, no `sorry`. Only diagnostics were `linter.style.longLine` warnings
+  on upstream's own provenance comment, left unreflowed so the diff against upstream is empty
+  outside the Apache §4(b) notice blocks. Every Mathlib name resolves at our pin —
+  `exists_eq_sum_perm_of_mem_doublyStochastic` (`Analysis/Convex/Birkhoff.lean:152`),
+  `Monovary.sum_mul_comp_perm_le_sum_mul` (`Algebra/Order/Rearrangement.lean:437`),
+  `reindex_mem_doublyStochastic`, `eigenvalues₀`, `eigenvectorUnitary`, `spectral_theorem`,
+  `rank_eq_card_non_zero_eigs`. Because nothing was re-proved, the register stays `port`;
+  re-proving a lemma because a name moved would still have been a port, not independence.
+- **Anti-vacuity.** Upstream's bar (`#print axioms` ⊆ `{propext, Classical.choice, Quot.sound}`,
+  no `sorry`) is **necessary and not sufficient** — it cannot tell whether the statement still
+  means what it meant, and this repo has the receipt for that failure class (13 unqualified
+  `FinDataProcessing` names that all resolved to nothing, printed no axiom line, grepped clean
+  and passed). So `VonNeumannTraceWitness.lean` supplies five machine-checked witnesses on
+  explicit `2×2` real symmetric matrices: **W1** the pair is **NON-COMMUTING**
+  (`Pproj_Qmix_not_commute`) and the bound is strictly slack there (`1 < 2`) — commuting
+  matrices would make the witness vacuous, since all the theorem's content is the
+  non-commuting case; **W2** the bound is **ATTAINED** (`2 = 2`) with eigenvectors aligned in
+  sorted order, so the conclusion cannot drift to a strict `<` without becoming false;
+  **W3** the anti-aligned arrangement of the *same* spectrum falls to `0 < 2`, so the sorted
+  pairing is a genuine maximum over the orbit; **W4** a machine-checked **REFUTATION** of the
+  swapped-pairing mutant (`¬ 2 ≤ 0`), which is the rearrangement content and the one drift a
+  weaker conclusion would hide; **W5** the ported theorem is **applied**
+  (`vonNeumann_at_witness`), so the audit measures upstream's theorem and not only our helper
+  lemmas. `eigenvalues₀` is noncomputable, so the concrete spectra are pinned by
+  `eigenvalues₀_fin_two` — trace and squared Frobenius norm determine a sorted real pair —
+  read through the ported `rtrace` / `frobSq`, which makes the witness exercise the port
+  rather than route around it.
+- **NOT claimed.** **§3 linear algebra only. Theorems A and B are NOT formalized here; §§4–5
+  are absent. This is the engine, not the result.** Specifically: nothing from
+  `Zeta23/FromPNTPlus/`, no analytic number theory, no zero-density or critical-line statement,
+  and no claim about the paper's headline theorems. Not claimed to be an independent
+  replication (the source was read). Not claimed to be upstreamed — Mathlib-compatible
+  conventions were preserved so upstreaming stays possible, but no PR has been opened. Not
+  claimed to be a differential check against upstream: this port IS upstream's code, so
+  agreement between them is not evidence — the genuine two-implementation comparison would
+  need an independent formalization, which this deliberately is not. The witness is over
+  `2×2` **real** matrices; the theorem is proved for general `RCLike 𝕜` and general finite
+  index type, and the witness does not exercise the complex case.
+- **A finding for the downstream milestones, noted in passing.** Mathlib has Sylvester's law of
+  inertia only for **real quadratic forms** (`LinearAlgebra/QuadraticForm/Real.lean`,
+  `Signature.lean`); the Hermitian version is the paper's contribution and now sits in
+  `Zeta23/LinAlg/Sylvester.lean`. The paper's Proposition 4.1 shows the matrices in play are
+  real symmetric, so the real version may suffice downstream — unverified, flagged not
+  resolved.
+- **External anchors.** J. von Neumann, *Some matrix-inequalities and metrization of
+  matric-space* (Tomsk Univ. Rev. 1, 1937) — the inequality. G. Birkhoff, *Tres observaciones
+  sobre el algebra lineal* (Univ. Nac. Tucumán Rev. A 5, 1946) and von Neumann (1953) — the
+  doubly-stochastic decomposition. Hardy, Littlewood & Pólya, *Inequalities* (1934) §10.2 —
+  rearrangement. J. J. Sylvester (1852) — the law of inertia. H. Weyl (1912) — the
+  perturbation bound. Upstream artifact: `anthropics/zeta-23-lean`, `Zeta23/LinAlg/`,
+  Apache-2.0, Copyright 2026 Anthropic, PBC; paper `anthropic.com/research/riemann-zeta`.
+- **Licence compliance (Apache-2.0 §4).** Both repos are Apache-2.0, so there is no
+  compatibility question — but §4 binds and is honoured file-by-file: `Zeta23/LICENSE` (§4(a)),
+  a `MODIFIED FROM UPSTREAM` block on **every** ported file naming upstream path, date,
+  work-item, the revisions retargeted between and what changed (§4(b) — the clause most often
+  missed), the per-file `Copyright (c) 2026 Anthropic, PBC` / `SPDX-License-Identifier` headers
+  kept verbatim (§4(c)), and `Zeta23/NOTICE` + `Zeta23/NOTICE.upstream` (§4(d)). Upstream's
+  NOTICE scopes its PrimeNumberTheoremAnd credit to `Zeta23/FromPNTPlus/`, which is **not**
+  present here, so that attribution does not pertain — and upstream's NOTICE is retained
+  verbatim beside ours so a reader can check that judgement instead of trusting it.
+- **Route agreement, recorded because it is the only independence-flavoured fact available.**
+  Soraya derived the Birkhoff + rearrangement route from our own Mathlib pin **before** the
+  upstream source was read, and it is the route upstream took. That makes this a port that is
+  *understood*. It does not make it a replication and is not offered as one.
+- **Last audit.** 2026-08-22, authored by the shadow. Grade: machine-checked (Lean 4 kernel;
+  `lake build` green on the full default target at `leanprover/lean4:v4.30.0-rc1`; `#print
+  axioms` ⊆ `{propext, Classical.choice, Quot.sound}` for the audited declarations, with the
+  `Unknown constant` guard on the same runs so the audit cannot pass vacuously).
+
+---
+
+## `MenoTwistCentrality` *(twist naturality derived; the Schur/scalar route refuted — Lean 4 + Mathlib)*
+
+- **Artifact.** `src/Core.Lean4/Lean4/MenoTwistCentrality.lean` (Lean 4 + Mathlib
+  v4.30.0-rc1). Authored 2026-08-15, work-item 081M00EZXN2087G0R003AY3WSJ. Reachable from the
+  `Lean4` root; gated in `.github/workflows/lean-proof.yml` by a `sorryAx` axiom audit over 26
+  named declarations plus the workflow's anti-vacuity "Unknown constant" guard.
+- **Internal correctness target.** The `naturality` FIELD of `Zeta.MenoBalanced.Twist` in
+  `MenoBalancedTwist.lean` — i.e. centrality of `ρ(Δₙ²)` in `ρ(Bₙ)` — and the shipped
+  `Zeta.MenoBraided` Artin action in `src/Core/MenoBraided.fs`.
+- **Internal correctness claim.** Two, both general. (i) NATURALITY IS DERIVED, not assumed:
+  `PreTwist` carries the balanced axiom plus one equation at the unit and NO naturality field,
+  and `PreTwist.natural_of_mem` proves `θ` commutes past every morphism in the `⊗`/`≫`-closure
+  of identities, braidings and coherence isomorphisms (`natural_braiding`,
+  `natural_braiding_inv`, `natural_associator`, `natural_tensor`, the unitors);
+  `PreTwist.toTwist` then upgrades a `PreTwist` on a braid-generated category to a full
+  `Zeta.MenoBalanced.Twist`. (ii) The proposed SCHUR SHORTCUT (central ⇒ scalar on an irrep)
+  does not apply, with three of its four failures machine-checked: the representation is
+  reducible because the Artin action preserves the boundary word `x₁⋯xₙ` (`actWord_prod`,
+  `linearize_fiber_invariant`); `ρ(Δ₃²)` is not a scalar (`fullTwist_not_scalar`); and
+  scalarity would force symmetry, contradicting `braidR_not_symmetric_perm3`
+  (`scalar_twist_forces_symmetry`). The fourth failure — Schur consumes centrality rather than
+  producing it — is structural and stated in the file, not proved.
+- **Spec-vs-implementation alignment.** `actAt` / `actAtInv` / `crossing` / `actWord` mirror
+  the shipped F# `MenoBraided.crossingOnList` encoding (word is a `List ℤ`, `c > 0` is `σ_{|c|−1}`,
+  `c < 0` its inverse, out-of-range is a no-op) so the boundary-word invariant is proved about
+  the same action the F# runs, for every `n` — not only for `B₃`. Concrete `decide` checks are
+  over `DihedralGroup 3 ≅ S₃`, and the epistemic direction of `MenoBalancedTwist` carries over:
+  `≠` results are proofs, `=` results are evidence.
+- **Anti-vacuity.** `Framed` supplies a NON-SYMMETRIC witness (option (b) of the work item):
+  a braided monoidal category with `D_{1,1} ≠ id` carrying a twist with `θ_V = id` and
+  `θ_{V⊗V} ≠ id`. `generators_not_commute` shows centrality is not automatic (`σ₁`, `σ₂` do not
+  commute in the action), so `natural_of_mem` derives something that can fail. Mutation-tested
+  at authoring time: a wrong braiding exponent breaks the hexagons, a wrong twist exponent
+  breaks the balanced axiom, and asserting centrality of the HALF twist makes `decide` prove
+  the proposition false.
+- **NOT claimed.** `BraidGenerated <V>` — that every morphism of `<V>` is in the braid closure
+  (Joyal–Street 1993 §2). It is a NAMED HYPOTHESIS of `PreTwist.toTwist`, not a `sorry`. The
+  file also does NOT discriminate the correct balanced axiom from the misread one: the
+  naturality derivation is insensitive to the double-braiding factor, and that discrimination
+  remains `MenoBalancedTwist.twist_tensor_of_id` / `misread_axiom_forces_symmetry`.
+- **External anchors.** Artin 1925/1947 (the action on `Fₙ`; the boundary-word clause that is
+  the reducibility mechanism); Joyal & Street 1993, *Braided Tensor Categories* (Adv. Math.
+  102); Schur 1905 (the lemma shown inapplicable); Garside 1969 (`Δ²`); Chow 1948 — cited here
+  only to record that it is NOT needed, the certificate using only `Δₙ² ∈ Z(Bₙ)`.
+- **Last audit.** 2026-08-15, authored by the shadow. Grade: machine-checked (Lean 4 kernel;
+  `#print axioms` ⊆ `{propext, Classical.choice, Quot.sound}` for all 26 audited declarations;
+  `lake build` green on the full default target).
+
+---
+
+## `MenoBalancedTwist` *(Meno balanced structure / Garside full twist — Lean 4 + Mathlib)*
+
+- **Artifact.** `src/Core.Lean4/Lean4/MenoBalancedTwist.lean` (Lean 4 + Mathlib
+  v4.30.0-rc1). Authored 2026-08-14, work-item 081KZZVC3DD087G0R0035SZN58. Reachable from
+  the `Lean4` root, so `lake build` compiles it and `lean-orphan-modules.ts` sees it; gated
+  in `.github/workflows/lean-proof.yml` by a `sorryAx` axiom audit over 16 named
+  declarations, plus the workflow's existing anti-vacuity "Unknown constant" guard.
+- **Internal correctness target.** `Zeta.MenoBraided.braidR` in `src/Core/MenoBraided.fs`
+  and the braided monoidal subcategory `<V>` it generates. Companion artifact:
+  `src/Core.Lean4/Lean4/MenoBraidedRMatrix.lean` (braided-not-symmetric; now audited by the
+  same CI step, which it previously escaped).
+- **Internal correctness claim.** Three, each for ALL `n`, in an arbitrary braided monoidal
+  category: (i) the coherence obstruction to a balanced structure vanishes — `dbl_cocycle`,
+  the 2-cocycle identity for the double braiding `D_{X,Y} = c_{Y,X} ∘ c_{X,Y}`, which is
+  what makes `Δ²` a coboundary of `D` (the general-`n` content of Garside's full-twist
+  relation), together with `twist_assoc_consistent`; (ii) UNIQUENESS — two balanced
+  structures agreeing on `V` agree on every tensor power (`twist_eq_on_Vpow`,
+  `twist_eq_of_eq_on_gen`), with the forcing recursion `θ_{n+1} = (θ_n ⊗ θ_1) ∘ c ∘ c`
+  (`twist_Vpow_succ`); (iii) `θ_V = id` is NOT a degeneracy — the correct axiom
+  `θ_{A⊗B} = (θ_A ⊗ θ_B) ∘ c_{B,A} ∘ c_{A,B}` gives `θ_{V⊗V} = c²` and not `c² = id`
+  (`twist_tensor_of_id`), while the misread axiom `θ_{A⊗B} = θ_A ⊗ θ_B` really does force
+  `c² = id` (`misread_axiom_forces_symmetry`) — the two prior reviews' inference was valid
+  from a false premise, and both halves are now machine-checked.
+- **Spec-vs-implementation alignment.** The Lean side models `<V>`'s homs ABSTRACTLY, in
+  `Mathlib`'s `CategoryTheory.BraidedCategory`; it does NOT port the ZSet monoidal category
+  (standing boundary inherited from `MenoBraidedRMatrix`). Concrete cross-check: the Artin
+  action of `B₃` through the shipped `braidR` is evaluated exhaustively over all `6³ = 216`
+  triples of `DihedralGroup 3 ≅ S₃` (`garside_relation_dihedral3`), and all four mutants
+  the F#-side check rejected are re-rejected here (`mutant_theta_id_rejected`,
+  `mutant_half_twist_rejected`, `mutant_single_braiding_rejected`,
+  `mutant_delta_fourth_rejected`) — BP-16 two-tool cross-check, F# `Braid.equal` + Lean.
+  Epistemic direction is stated in the file: the representation is NOT faithful, so `≠` is
+  sound (proves words differ in `B₃`) but `=` is only evidence; the positive result rests on
+  `dbl_cocycle`, not on the exhaustive run.
+- **NOT claimed.** That a `Twist` INSTANCE exists on `<V>` — that needs the braid groupoid
+  as the free braided monoidal category on one object (Joyal–Street 1993 §2) plus
+  faithfulness of the Artin action (Artin 1925), neither in Mathlib. So `θ`'s naturality
+  (equivalently centrality of `Δₙ²` in `Bₙ`) is a FIELD of `Zeta.MenoBalanced.Twist`,
+  assumed rather than derived. Tracked as 081M00EZXN2087G0R003AY3WSJ. Also: the inhabitation
+  witness `symmetricTwist` is SYMMETRIC, so it does not exercise `dbl ≠ id`; a non-symmetric
+  witness is option (b) of that item. **Both updated 2026-08-15** by `MenoTwistCentrality`
+  (row above): naturality is now DERIVED from the balanced axiom modulo a named
+  `BraidGenerated` hypothesis, and a non-symmetric witness exists. The Chow 1948 attribution
+  was also corrected there — only `Δₙ² ∈ Z(Bₙ)` is used, never `Z(Bₙ) = ⟨Δ²⟩`.
+- **External anchors.** Joyal & Street 1993, *Braided Tensor Categories* (Adv. Math. 102);
+  Garside 1969, *The braid group and other groups*; Chow 1948 (`Z(Bₙ) = ⟨Δ²⟩`, `n ≥ 3`);
+  Artin 1925; Kassel, *Quantum Groups* XIII.
+- **Last audit.** 2026-08-14, authored by Soraya. Grade: machine-checked (Lean 4 kernel;
+  `#print axioms` ⊆ `{propext, Classical.choice, Quot.sound}` for every listed declaration).
+  Gate mutation-tested at authoring time: a planted `sorry` in `dbl_cocycle` makes the CI
+  audit step fire, and a mis-qualified name makes the anti-vacuity guard fire.
+
+---
+
 ## `Spine.als` *(LSM Spine structural model — Alloy)*
 
 - **Artifact.** `src/Core.Alloy/specs/Spine.als` (Alloy structural model of the LSM Spine; checked via Alloy Analyzer). Authored 2026-06-12. *(Path corrected 2026-08-10 — the row pointed at `tools/alloy/specs/Spine.als`, which does not exist; the specs live under `src/Core.Alloy/`. This registry is the ground-truth map for `verification-drift-auditor`, and that skill has no missing-artifact branch, so a dead row is a silently-skipped audit rather than a loud failure.)*

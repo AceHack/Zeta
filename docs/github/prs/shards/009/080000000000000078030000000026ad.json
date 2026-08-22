@@ -1,0 +1,12 @@
+{
+  "pr_number": 9901,
+  "archive_path": "docs/history/pr-reviews/PR-9901-docs-research-per-hat-calibration-ledger-build-spec-lumen-math-review-soraya.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-01T17:48:27.502Z",
+  "schema_version": "v1",
+  "commit_sha": "10f93c3fbb491390be230e1596a0eb648e1231e4",
+  "title": "docs(research): per-hat calibration ledger — build spec (Lumen) + math review (Soraya)",
+  "state": "MERGED",
+  "merged_at": "2026-08-01T17:47:54Z",
+  "head_ref": "shadow/calibration-ledger-spec"
+}

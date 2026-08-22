@@ -1,0 +1,12 @@
+{
+  "pr_number": 9197,
+  "archive_path": "docs/history/pr-reviews/PR-9197-feat-llmtv-add-replay-artifact-renderer.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-02T20:54:30.833Z",
+  "schema_version": "v1",
+  "commit_sha": "3dfee93dc4af42ab02a6908fbbc02f7924b2d1be",
+  "title": "feat(llmtv): add replay artifact renderer",
+  "state": "MERGED",
+  "merged_at": "2026-07-02T20:54:09Z",
+  "head_ref": "codex/llmtv-replay-render"
+}

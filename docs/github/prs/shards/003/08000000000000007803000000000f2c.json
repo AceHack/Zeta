@@ -1,0 +1,15 @@
+{
+  "pr_number": 3884,
+  "archive_path": "docs/history/pr-reviews/PR-3884-docs-shadow-lior-antigravity-check-otto-metadata-churn.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7B4xds",
+    "thread:PRRT_kwDOSF9kNM6Cj7LK"
+  ],
+  "fetched_at": "2026-05-16T21:07:35.647Z",
+  "schema_version": "v1",
+  "commit_sha": "e16a9d79f3a632fa923a15e73a8df40cec10376e",
+  "title": "docs(shadow): Lior antigravity check - Otto metadata churn",
+  "state": "MERGED",
+  "merged_at": "2026-05-16T21:07:19Z",
+  "head_ref": "lior/shadow-otto-metadata-1344Z"
+}

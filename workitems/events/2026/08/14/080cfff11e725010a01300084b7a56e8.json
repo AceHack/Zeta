@@ -1,0 +1,14 @@
+{
+  "id": "080cfff11e725010a01300084b7a56e8",
+  "at": "2026-08-14T02:39:47.274Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081KZZ27KJ8087G0R0038ZGBAT",
+    "type": "bug",
+    "title": "CI runner z3 4.8.12 and cvc5 1.1.2 cannot discharge two SMT certificates that modern solvers do in under a second",
+    "slug": "ci-runner-z3-4-8-12-and-cvc5-1-1-2-cannot-discharge-two-smt",
+    "priority": "P2",
+    "filename": "081KZZ27KJ8087G0R0038ZGBAT-ci-runner-z3-4-8-12-and-cvc5-1-1-2-cannot-discharge-two-smt.md"
+  }
+}

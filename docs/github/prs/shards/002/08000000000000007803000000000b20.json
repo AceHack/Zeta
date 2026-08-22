@@ -1,0 +1,12 @@
+{
+  "pr_number": 2848,
+  "archive_path": "docs/history/pr-reviews/PR-2848-research-absorb-canonical-first-complete-kestrel-bootstream-13-part-verbatim-pre.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-12T19:48:56.854Z",
+  "schema_version": "v1",
+  "commit_sha": "b04c999841d29ad288509ad8d813f0b86410271d",
+  "title": "research(absorb): canonical first-complete Kestrel bootstream — 13-part verbatim preservation (claude.ai 2026-05-12 via Aaron-forward)",
+  "state": "MERGED",
+  "merged_at": "2026-05-12T19:48:33Z",
+  "head_ref": "docs/kestrel-canonical-first-complete-bootstream-13-parts-verbatim-preservation-2026-05-12"
+}

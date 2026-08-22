@@ -1,0 +1,12 @@
+{
+  "pr_number": 10427,
+  "archive_path": "docs/history/pr-reviews/PR-10427-fix-pr-archive-shard-the-pr-manifest-by-zetaid-the-archive-pr-conflict-class-ret.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-14T00:12:56.361Z",
+  "schema_version": "v1",
+  "commit_sha": "0ac4fa80674a7e2a2049802c6b9d97709d9350e4",
+  "title": "fix(pr-archive): shard the PR manifest by ZetaId — the archive-PR conflict class, retired",
+  "state": "MERGED",
+  "merged_at": "2026-08-13T23:26:18Z",
+  "head_ref": "fix/pr-archive-manifest-shard-by-zetaid"
+}

@@ -1,0 +1,27 @@
+{
+  "pr_number": 2702,
+  "archive_path": "docs/history/pr-reviews/PR-2702-decompose-b-0114-smallest-atomic-children-re-decomp-ts-first.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_48GJ",
+    "comment:PRRC_kwDOSF9kNM6_4_vR",
+    "comment:PRRC_kwDOSF9kNM6_4_wC",
+    "comment:PRRC_kwDOSF9kNM6_5SmW",
+    "comment:PRRC_kwDOSF9kNM6_5SnP",
+    "comment:PRRC_kwDOSF9kNM6_5Snw",
+    "comment:PRRC_kwDOSF9kNM6_5Tbe",
+    "thread:PRRT_kwDOSF9kNM6BGexo",
+    "thread:PRRT_kwDOSF9kNM6BGhfA",
+    "thread:PRRT_kwDOSF9kNM6BGhfo",
+    "thread:PRRT_kwDOSF9kNM6BGvoZ",
+    "thread:PRRT_kwDOSF9kNM6BGvpE",
+    "thread:PRRT_kwDOSF9kNM6BGvpa",
+    "thread:PRRT_kwDOSF9kNM6BGwPj"
+  ],
+  "fetched_at": "2026-05-11T13:59:56.349Z",
+  "schema_version": "v1",
+  "commit_sha": "6f93a91ce62f6446298a61a88adbfd51619a0bab",
+  "title": "decompose(B-0114): smallest atomic children (re-decomp, TS-first)",
+  "state": "MERGED",
+  "merged_at": "2026-05-11T13:59:31Z",
+  "head_ref": "claim/b0114-decompose-smallest-atomic-children-riven-2026-05-11"
+}

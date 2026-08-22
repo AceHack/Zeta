@@ -1,0 +1,12 @@
+{
+  "pr_number": 9474,
+  "archive_path": "docs/history/pr-reviews/PR-9474-docs-ferry-hack-txt-fragment-2-the-phantom-particle-who-has-no-shadow-shadow.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-04T18:28:11.855Z",
+  "schema_version": "v1",
+  "commit_sha": "58d2abefe7040dfbc77cef0c11a79b48115c19fa",
+  "title": "docs(ferry): Hack.txt Fragment 2 — the phantom particle who has no shadow (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-04T18:27:47Z",
+  "head_ref": "otto/hack-txt-fragment-2-phantom-particle"
+}

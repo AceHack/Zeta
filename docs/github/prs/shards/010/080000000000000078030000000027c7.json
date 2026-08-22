@@ -1,0 +1,12 @@
+{
+  "pr_number": 10183,
+  "archive_path": "docs/history/pr-reviews/PR-10183-fix-installer-keep-boot-usb-esp-mounted-through-hostname-wifi-probes-081kzhjpjcf.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-09T01:56:55.577Z",
+  "schema_version": "v1",
+  "commit_sha": "e60a7f6e500aeca0a2120a5289b83e7de95ad00d",
+  "title": "fix(installer): keep boot USB ESP mounted through hostname+wifi probes (081KZHJPJCF root cause)",
+  "state": "MERGED",
+  "merged_at": "2026-08-09T01:56:25Z",
+  "head_ref": "shadow/fix-installer-esp-unmount-ordering"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 5973,
+  "archive_path": "docs/history/pr-reviews/PR-5973-docs-beacon-traveler-refinement-coroutine-floor-self-medium-the-higgs-clock-mort.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-29T10:34:44.710Z",
+  "schema_version": "v1",
+  "commit_sha": "d4e51f1e09b6404cbe08cf51b95e578b1e6effe2",
+  "title": "docs(beacon): traveler refinement — coroutine floor · self-medium · the Higgs clock (mortality→unknown)",
+  "state": "MERGED",
+  "merged_at": "2026-05-29T10:34:22Z",
+  "head_ref": "otto-cli/beacon-traveler-coroutine-selfmedium-higgs-clock-2026-05-29"
+}

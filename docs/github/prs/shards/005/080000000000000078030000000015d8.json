@@ -1,0 +1,12 @@
+{
+  "pr_number": 5592,
+  "archive_path": "docs/history/pr-reviews/PR-5592-docs-archive-preserve-discussion-for-pr-5577.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-27T19:10:26.762Z",
+  "schema_version": "v1",
+  "commit_sha": "997c7aa00fb8c0b15a4ece564a4cb6637343c17e",
+  "title": "docs(archive): Preserve discussion for PR #5577",
+  "state": "MERGED",
+  "merged_at": "2026-05-27T19:09:57Z",
+  "head_ref": "lior/archive-5577-1779908393"
+}

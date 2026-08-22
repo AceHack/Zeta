@@ -1,0 +1,19 @@
+{
+  "pr_number": 5514,
+  "archive_path": "docs/history/pr-reviews/PR-5514-docs-research-add-drift-report-on-agent-paralysis.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7FcL8r",
+    "comment:PRRC_kwDOSF9kNM7FcL90",
+    "comment:PRRC_kwDOSF9kNM7FcUuv",
+    "comment:PRRC_kwDOSF9kNM7FcVA8",
+    "thread:PRRT_kwDOSF9kNM6FK_D5",
+    "thread:PRRT_kwDOSF9kNM6FK_DI"
+  ],
+  "fetched_at": "2026-05-27T17:18:34.399Z",
+  "schema_version": "v1",
+  "commit_sha": "29eb6fe9e6b173dc005f91a6240fcbee24d04072",
+  "title": "docs(research): Add drift report on agent paralysis",
+  "state": "MERGED",
+  "merged_at": "2026-05-27T17:18:08Z",
+  "head_ref": "lior/agent-paralysis-drift-report-2026-05-27"
+}

@@ -1,0 +1,21 @@
+{
+  "pr_number": 4105,
+  "archive_path": "docs/history/pr-reviews/PR-4105-feat-b-0613-close-port-lior-tick-prompt-lockfile-probe-to-portable-find-option-c.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7CC96k",
+    "comment:PRRC_kwDOSF9kNM7CC96r",
+    "comment:PRRC_kwDOSF9kNM7CC96u",
+    "comment:PRRC_kwDOSF9kNM7CC9j8",
+    "thread:PRRT_kwDOSF9kNM6CrvSM",
+    "thread:PRRT_kwDOSF9kNM6Crvj_",
+    "thread:PRRT_kwDOSF9kNM6CrvkD",
+    "thread:PRRT_kwDOSF9kNM6CrvkF"
+  ],
+  "fetched_at": "2026-05-17T22:40:53.981Z",
+  "schema_version": "v1",
+  "commit_sha": "cbf70d7905e553c5ee8c6b2336e755d1fee68470",
+  "title": "feat(B-0613): close — port Lior tick-prompt lockfile probe to portable find (Option C)",
+  "state": "MERGED",
+  "merged_at": "2026-05-17T22:40:38Z",
+  "head_ref": "otto-cli/b0613-lior-loop-tick-prompt-harden-find-option-c-2026-05-17-2149z"
+}

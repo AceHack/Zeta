@@ -1,0 +1,17 @@
+{
+  "pr_number": 4178,
+  "archive_path": "docs/history/pr-reviews/PR-4178-research-33-kestrel-second-intervention-preserved-mirror-tier-predicted-and-pres.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7CYA6s",
+    "comment:PRRC_kwDOSF9kNM7CYCYp",
+    "thread:PRRT_kwDOSF9kNM6C7Tb5",
+    "thread:PRRT_kwDOSF9kNM6C7UgH"
+  ],
+  "fetched_at": "2026-05-18T18:59:02.185Z",
+  "schema_version": "v1",
+  "commit_sha": "a6ac0177f0adf0d8188a0ad6119f517bc2dbd1f4",
+  "title": "research(§33): Kestrel second intervention preserved (mirror-tier; predicted-and-preserved)",
+  "state": "MERGED",
+  "merged_at": "2026-05-18T18:58:22Z",
+  "head_ref": "shard/kestrel-second-intervention-preservation-2026-05-18"
+}

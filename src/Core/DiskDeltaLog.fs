@@ -111,9 +111,49 @@ type DiskDeltaLog<'K when 'K : comparison>
                     match seqOf p with
                     | ValueSome v when v <= throughSeqInclusive -> Some p
                     | _ -> None)
+            // Thermodynamic class: ERASING through the read surface (the files are unlinked and
+            // this backend keeps no second copy) and UNMEASURED at the medium — see the two rows
+            // in `ErasureProfiles`. Note the swallowed failure: a delete that throws leaves the
+            // file in place, so a *failed* call is quietly the identity. That is sound in the
+            // Landauer direction (never over-charges) and unsound in the privacy direction, which
+            // is why the medium-level row is not allowed to claim erasure.
             for p in toDelete do
                 try FileSystem.Current.Delete p with _ -> ()
             ValueTask.CompletedTask
+
+    /// **The declaration, beside the operation it classifies** (`ErasureClass`).
+    ///
+    /// Two rows for one method, because "is the preimage recoverable" is not a question until you
+    /// say *through what*. Through this log's own read surface the deltas are gone. Through the
+    /// storage medium nobody in this process can say: `Delete` unlinks a name, and whether the
+    /// bytes survive in a journal, an SSD's remapped block, a snapshot or a backup is outside
+    /// anything a sweep here can observe. Averaging those two into one class would be a guess
+    /// wearing a measurement's clothes.
+    interface IErasureDeclaring with
+        member _.ErasureProfiles =
+            [ { Representation = "DiskDeltaLog"
+                Operation = "IDeltaLog.TruncateAsync"
+                Observation = "the log's own read surface (ReplayAsync(0) plus HighWater), at a pinned truncation point"
+                RecoveryChannel =
+                    "none — the .delta files are unlinked; unlike GitDeltaLog no parent commit \
+                     retains them, and unlike ZetaFsDeltaLog no orphaned object is left behind. \
+                     HighWater survives, because it is a field rather than a fold over the files, \
+                     so how MANY entries were destroyed is still legible after they are gone"
+                Classification = ErasureClass.ThermodynamicClass.Erasing
+                Evidence = ErasureClass.Evidence.BoundedModelSweep("truncate-through pinned at 2 (truncate everything); logs of 0-2 deltas over {empty, +a, -a}, on a real temp directory", 9, 3_169_925L) }
+
+              { Representation = "DiskDeltaLog"
+                Operation = "IDeltaLog.TruncateAsync"
+                Observation = "the storage medium after unlink"
+                RecoveryChannel =
+                    "unknown — File.Delete removes a directory entry; journal replay, SSD block \
+                     remapping, filesystem snapshots and backups are all outside this process's \
+                     observation, and the catch-all on the delete means even the unlink is not \
+                     guaranteed to have happened"
+                Classification = ErasureClass.ThermodynamicClass.Unmeasured
+                Evidence =
+                    ErasureClass.Evidence.NoAdmissibleMeasurement
+                        "no sweep run from inside this process can observe the medium; classifying this as Reversible would claim recoverability we cannot deliver and classifying it as Erasing would claim destruction we cannot deliver either" } ]
 
 
 /// Segment-backed `IDeltaLog` with group-commit fsync. Unlike
@@ -263,7 +303,25 @@ type GroupCommitDiskDeltaLog<'K when 'K : comparison>
             // Segment compaction/rollover is the next perf-tier increment. Recovery
             // and callers already pass `fromSeqExclusive`, so the correctness
             // invariant does not depend on physical deletion in this v1 backend.
+            //
+            // Thermodynamic class: REVERSIBLE, and for a third distinct reason. This one is the
+            // identity function — it does not preserve the preimage through a clever channel, it
+            // simply never touches it. Three backends, three reasons, one method name.
             ValueTask.CompletedTask
+
+    /// **The declaration, beside the operation it classifies** (`ErasureClass`).
+    interface IErasureDeclaring with
+        member _.ErasureProfiles =
+            [ { Representation = "GroupCommitDiskDeltaLog"
+                Operation = "IDeltaLog.TruncateAsync"
+                Observation = "the log's own read surface (ReplayAsync(0) plus HighWater), at a pinned truncation point"
+                RecoveryChannel =
+                    "everything — the call is a no-op, so the post-state is the pre-state and the \
+                     segment still holds every record. Reversible because unimplemented, which is \
+                     worth writing down: the class is honest today and will change the day \
+                     compaction lands, and this declaration is what will fail when it does"
+                Classification = ErasureClass.ThermodynamicClass.Reversible
+                Evidence = ErasureClass.Evidence.BoundedModelSweep("truncate-through pinned at 2 (truncate everything); logs of 0-2 deltas over {empty, +a, -a}, on a real temp directory", 1, 0L) } ]
 
     interface IDisposable with
         member _.Dispose() = (throttler :> IDisposable).Dispose()

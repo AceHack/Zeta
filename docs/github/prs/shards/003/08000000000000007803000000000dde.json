@@ -1,0 +1,16 @@
+{
+  "pr_number": 3550,
+  "archive_path": "docs/history/pr-reviews/PR-3550-shard-tick-1833z-b-0533-slice-b-1-scanner-shipped-substrate-honest-correction-10.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7BuryY",
+    "comment:PRRC_kwDOSF9kNM7BuxgU",
+    "thread:PRRT_kwDOSF9kNM6CciZ9"
+  ],
+  "fetched_at": "2026-05-15T18:43:06.536Z",
+  "schema_version": "v1",
+  "commit_sha": "b6e58c60d14d898b3f4f6da2c45af89349552f1d",
+  "title": "shard(tick): 1833Z — B-0533 Slice B.1 scanner shipped; substrate-honest correction (10 dead xrefs, not 20+)",
+  "state": "MERGED",
+  "merged_at": "2026-05-15T18:42:51Z",
+  "head_ref": "shard/tick-1833z-otto-cli-2026-05-15"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 6250,
+  "archive_path": "docs/history/pr-reviews/PR-6250-backlog-b-0867-28-observe-algebra-trifloat-system-numerics-f-uom-interface-gate-.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-31T20:30:08.816Z",
+  "schema_version": "v1",
+  "commit_sha": "6dcebf2b5824b4b926f5faf5b543657ac1502665",
+  "title": "backlog(B-0867.28): observe-algebra + TriFloat → System.Numerics + F# UoM (interface-gate before building-on-top)",
+  "state": "MERGED",
+  "merged_at": "2026-05-31T20:29:50Z",
+  "head_ref": "otto-cli/b0867-28-numerics-uom-2026-05-31"
+}

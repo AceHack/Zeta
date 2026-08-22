@@ -1,0 +1,12 @@
+{
+  "pr_number": 6791,
+  "archive_path": "docs/history/pr-reviews/PR-6791-docs-b-0969-comparer-strategy-decided-a-explicit-comparer-is-part-of-identity-sl.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-07T11:14:43.367Z",
+  "schema_version": "v1",
+  "commit_sha": "22287ef0a617eba4ac9d675c4de1c1995e71b4dc",
+  "title": "docs(B-0969): comparer strategy DECIDED = (a) explicit comparer-is-part-of-identity + slice plan",
+  "state": "MERGED",
+  "merged_at": "2026-06-07T11:14:20Z",
+  "head_ref": "docs/b0969-comparer-strategy-A-decided-slice-plan"
+}

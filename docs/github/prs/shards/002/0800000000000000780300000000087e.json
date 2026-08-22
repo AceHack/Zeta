@@ -1,0 +1,25 @@
+{
+  "pr_number": 2174,
+  "archive_path": "docs/history/pr-reviews/PR-2174-feat-b-0320-authorized-mutation-surface-list-for-playwright-github-ui-agent.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_eJ71",
+    "comment:PRRC_kwDOSF9kNM6_eJ73",
+    "comment:PRRC_kwDOSF9kNM6_eJ77",
+    "comment:PRRC_kwDOSF9kNM6_eJ7v",
+    "comment:PRRC_kwDOSF9kNM6_eJ8A",
+    "comment:PRRC_kwDOSF9kNM6_eJ8c",
+    "thread:PRRT_kwDOSF9kNM6AyGoR",
+    "thread:PRRT_kwDOSF9kNM6AyGoT",
+    "thread:PRRT_kwDOSF9kNM6AyGoV",
+    "thread:PRRT_kwDOSF9kNM6AyGoZ",
+    "thread:PRRT_kwDOSF9kNM6AyGoc",
+    "thread:PRRT_kwDOSF9kNM6AyGot"
+  ],
+  "fetched_at": "2026-05-09T03:28:11.445Z",
+  "schema_version": "v1",
+  "commit_sha": "c0a10a4fcc1e2c0448b03e3a85a94702e896f7ec",
+  "title": "feat(B-0320): authorized-mutation surface list for Playwright GitHub UI agent",
+  "state": "MERGED",
+  "merged_at": "2026-05-09T03:27:55Z",
+  "head_ref": "claim/b0320-authorized-mutation-surface-list-otto-2026-05-08"
+}

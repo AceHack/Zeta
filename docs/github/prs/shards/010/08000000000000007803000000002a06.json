@@ -1,0 +1,12 @@
+{
+  "pr_number": 10758,
+  "archive_path": "docs/history/pr-reviews/PR-10758-feat-heat-type-the-deferral-vs-destruction-bit-the-composition-law-turns-on.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-15T12:41:31.129Z",
+  "schema_version": "v1",
+  "commit_sha": "9d657ab0de5484fdc98a61f7a3ba89d147007c67",
+  "title": "feat(heat): type the deferral-vs-destruction bit the composition law turns on",
+  "state": "MERGED",
+  "merged_at": "2026-08-15T12:40:58Z",
+  "head_ref": "shadow/typed-deferral-vs-destruction"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 8355,
+  "archive_path": "docs/history/pr-reviews/PR-8355-feat-observe-zetaid-canonical-reader-executor-wired-phase-1-id-rotation.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-15T22:47:06.591Z",
+  "schema_version": "v1",
+  "commit_sha": "d2c22522d7af8b5128ab8388d4497deecde02d87",
+  "title": "feat(observe): ZetaId-canonical reader + executor wired (Phase 1 id-rotation)",
+  "state": "MERGED",
+  "merged_at": "2026-06-15T22:46:40Z",
+  "head_ref": "alexa/zetaid-canonical-reader"
+}

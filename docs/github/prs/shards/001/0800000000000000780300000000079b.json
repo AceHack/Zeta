@@ -1,0 +1,31 @@
+{
+  "pr_number": 1947,
+  "archive_path": "docs/history/pr-reviews/PR-1947-research-session-archive-shadow-report-gemini-crash-report.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_Bsr0",
+    "comment:PRRC_kwDOSF9kNM6_BsrG",
+    "comment:PRRC_kwDOSF9kNM6_Bsrf",
+    "comment:PRRC_kwDOSF9kNM6_BssL",
+    "comment:PRRC_kwDOSF9kNM6_BssX",
+    "comment:PRRC_kwDOSF9kNM6_Bssw",
+    "comment:PRRC_kwDOSF9kNM6_BstG",
+    "comment:PRRC_kwDOSF9kNM6_BstX",
+    "comment:PRRC_kwDOSF9kNM6_Bstt",
+    "thread:PRRT_kwDOSF9kNM6AdP36",
+    "thread:PRRT_kwDOSF9kNM6AdP3a",
+    "thread:PRRT_kwDOSF9kNM6AdP3t",
+    "thread:PRRT_kwDOSF9kNM6AdP40",
+    "thread:PRRT_kwDOSF9kNM6AdP4L",
+    "thread:PRRT_kwDOSF9kNM6AdP4U",
+    "thread:PRRT_kwDOSF9kNM6AdP4_",
+    "thread:PRRT_kwDOSF9kNM6AdP4m",
+    "thread:PRRT_kwDOSF9kNM6AdP5R"
+  ],
+  "fetched_at": "2026-05-07T21:55:40.247Z",
+  "schema_version": "v1",
+  "commit_sha": "d318601bdb17669246863340ac9208e2127ca6ce",
+  "title": "research: session archive — shadow report + Gemini crash report",
+  "state": "MERGED",
+  "merged_at": "2026-05-07T21:55:16Z",
+  "head_ref": "research/session-archive-shadow-crash-2026-05-07"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 7047,
+  "archive_path": "docs/history/pr-reviews/PR-7047-docs-anti-sybil-first-bft-quorum-over-distinct-sources-prior-art-check.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-08T07:11:46.537Z",
+  "schema_version": "v1",
+  "commit_sha": "efd148188ca333bfdd3429d7c25708df611ac2ec",
+  "title": "docs: anti-Sybil-first BFT — quorum over distinct sources + prior-art check",
+  "state": "MERGED",
+  "merged_at": "2026-06-08T07:11:09Z",
+  "head_ref": "otto/anti-sybil-first-bft-prior-art-doc"
+}

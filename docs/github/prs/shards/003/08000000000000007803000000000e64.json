@@ -1,0 +1,12 @@
+{
+  "pr_number": 3684,
+  "archive_path": "docs/history/pr-reviews/PR-3684-fix-tsc-tighten-riven-heartbeat-status-type-to-bus-union-clear-lint-tsc-tools.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-16T02:34:09.628Z",
+  "schema_version": "v1",
+  "commit_sha": "b5ff3d6d193a90ac002a1e99b8657b2db10f1f98",
+  "title": "fix(tsc): tighten Riven heartbeat status type to bus union — clear lint (tsc tools)",
+  "state": "MERGED",
+  "merged_at": "2026-05-16T02:33:54Z",
+  "head_ref": "fix/tsc-riven-cursor-terminal-heartbeat-status-otto-cli-2026-05-16"
+}

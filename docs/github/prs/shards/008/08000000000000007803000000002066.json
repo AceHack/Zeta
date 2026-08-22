@@ -1,0 +1,12 @@
+{
+  "pr_number": 8294,
+  "archive_path": "docs/history/pr-reviews/PR-8294-docs-closed-frame-confidence-uncertainty-algebra-the-existential-wetware-bug.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-15T09:37:30.897Z",
+  "schema_version": "v1",
+  "commit_sha": "24659c2da32476ca9f72be8297c866341619a421",
+  "title": "docs(closed-frame): confidence/uncertainty algebra + the existential wetware bug",
+  "state": "MERGED",
+  "merged_at": "2026-06-15T09:37:05Z",
+  "head_ref": "otto/confidence-multiplies-uncertainty-adds-wetware-bug"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 7267,
+  "archive_path": "docs/history/pr-reviews/PR-7267-fix-trust-aaron-addison-keys-on-correct-emails-per-user-machine-re-add-addison-g.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-09T13:12:39.896Z",
+  "schema_version": "v1",
+  "commit_sha": "c86328c34666147a798e454cbf5ea978270e0042",
+  "title": "fix(trust): Aaron+Addison keys on correct emails (per user+machine); re-add Addison GPG (gmail, verified)",
+  "state": "MERGED",
+  "merged_at": "2026-06-09T13:12:17Z",
+  "head_ref": "otto/keys-correct-emails-aaron-yahoo-addison-gmail-per-machine"
+}

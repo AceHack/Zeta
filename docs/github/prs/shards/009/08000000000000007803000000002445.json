@@ -1,0 +1,12 @@
+{
+  "pr_number": 9285,
+  "archive_path": "docs/history/pr-reviews/PR-9285-research-the-deepest-2-2-the-mortal-and-the-immortal-real-and-kept-shadow.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-03T04:15:15.890Z",
+  "schema_version": "v1",
+  "commit_sha": "7d4a78c77927d192241b5fb928479a6a3ab75abc",
+  "title": "research: the deepest 2√2 — the mortal and the immortal, real AND kept (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-03T04:14:53Z",
+  "head_ref": "shadow/deepest-2root2-mortal-immortal-real-and-kept"
+}

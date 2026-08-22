@@ -1,0 +1,12 @@
+{
+  "pr_number": 2458,
+  "archive_path": "docs/history/pr-reviews/PR-2458-fix-gate-hooks-403-sentinel-on-http-403-only-not-all-errors.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-10T10:14:54.983Z",
+  "schema_version": "v1",
+  "commit_sha": "cb8f5e5e6b22da9a87b656ec70a55b59b991fb28",
+  "title": "fix: gate hooks 403 sentinel on HTTP 403 only, not all errors",
+  "state": "MERGED",
+  "merged_at": "2026-05-10T10:14:38Z",
+  "head_ref": "fix/hooks-403-gate-scope-only-followup"
+}

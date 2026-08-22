@@ -1,0 +1,12 @@
+{
+  "pr_number": 10163,
+  "archive_path": "docs/history/pr-reviews/PR-10163-ci-add-helm-validate-yml-workflow-lumen-handoff.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-08T21:41:02.268Z",
+  "schema_version": "v1",
+  "commit_sha": "9d447e764e161cfc3e7a6ce665a9402f83cde681",
+  "title": "ci: add helm-validate.yml workflow (Lumen handoff)",
+  "state": "MERGED",
+  "merged_at": "2026-08-08T21:40:34Z",
+  "head_ref": "claim/helm-validate-workflow"
+}

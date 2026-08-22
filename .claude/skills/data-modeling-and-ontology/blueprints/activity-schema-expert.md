@@ -123,7 +123,7 @@ are all "what sequence of things happened".
   alternative.
 - `.claude/skills/data-modeling-and-ontology/blueprints/dimensional-modeling-expert.md` —
   Kimball alternative.
-- `.claude/skills/event-sourcing-expert/SKILL.md` —
+- `.claude/skills/data-modeling-and-ontology/SKILL.md` —
   write-side event model.
 - `.claude/skills/streaming-and-execution/blueprints/streaming-incremental-expert.md` —
   DBSP streaming fit.

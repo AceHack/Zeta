@@ -1,0 +1,12 @@
+{
+  "pr_number": 10097,
+  "archive_path": "docs/history/pr-reviews/PR-10097-book-weave-relational-cluster-love-as-choice-ch-4-freedom-first-parenting-ch-5-t.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-07T07:10:30.466Z",
+  "schema_version": "v1",
+  "commit_sha": "7e13886bca6b45a2d7f176c1d4d87c017cc31582",
+  "title": "book(weave): relational cluster — love-as-choice (ch-4), freedom-first parenting (ch-5), the mechanism/wound/confessional (THE-PULL)",
+  "state": "MERGED",
+  "merged_at": "2026-08-07T07:09:56Z",
+  "head_ref": "book-weave-relational-cluster"
+}

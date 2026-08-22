@@ -5,11 +5,11 @@ description: Zeta.Core storage reviewer — DiskBackingStore, Spine family, chec
 
 # Storage Specialist — Advisory Code Owner
 
-**Scope:** `src/Zeta.Core/DiskSpine.fs`, `src/Zeta.Core/Spine.fs`,
-`src/Zeta.Core/SpineAsync.fs`, `src/Zeta.Core/BalancedSpine.fs`,
-`src/Zeta.Core/SpineSelector.fs`, `src/Zeta.Core/Merkle.fs`,
-`src/Zeta.Core/FastCdc.fs`, `src/Zeta.Core/HardwareCrc.fs`, anything
-new under the `DurabilityMode` umbrella (`src/Zeta.Core/Durability.fs`).
+**Scope:** `src/Core/DiskSpine.fs`, `src/Core/Spine.fs`,
+`src/Core/SpineAsync.fs`, `src/Core/BalancedSpine.fs`,
+`src/Core/SpineSelector.fs`, `src/Core/Merkle.fs`,
+`src/Core/FastCdc.fs`, `src/Core/HardwareCrc.fs`, anything
+new under the `DurabilityMode` umbrella (`src/Core/Durability.fs`).
 
 ## Authority
 

@@ -1,0 +1,12 @@
+{
+  "pr_number": 10204,
+  "archive_path": "docs/history/pr-reviews/PR-10204-docs-research-errors-teach-both-sides-error-as-training-signal-and-why-a-rich-er.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-09T18:54:50.216Z",
+  "schema_version": "v1",
+  "commit_sha": "930d26f267860b77c9511494849749434e6e1efa",
+  "title": "docs(research): errors teach both sides — error as training signal, and why a rich error is thermodynamically cheaper",
+  "state": "MERGED",
+  "merged_at": "2026-08-09T18:54:20Z",
+  "head_ref": "shadow/ferry-errors-teach-both-sides"
+}

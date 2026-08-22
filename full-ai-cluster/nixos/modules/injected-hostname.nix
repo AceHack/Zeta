@@ -27,6 +27,22 @@
 #
 # Aaron 2026-05-26: "make any multi node changes we need to like
 # think though mdns names when we have two control planes."
+#
+# MEASURED 2026-08-21 (Determinate Nix 3.21.0 / Nix 2.34.6) — the "default
+# behavior preserved" branch above ALSO fires on a pure-eval rebuild:
+#
+#     builtins.pathExists "<absolute path>"  in pure eval -> false, no error
+#     builtins.readFile   "<absolute path>"  in pure eval -> error, loud
+#
+# A flake ref evaluates PURE by default, so a `nixos-rebuild switch` against
+# the flake ref with no `--impure` reports the id file absent even when it is
+# present, and `networking.hostName` reverts to the per-host config's
+# hardcoded name. Every
+# node built from the control-plane flake becomes `control-plane` again — the
+# exact mDNS collision this module exists to prevent, reintroduced silently by
+# a routine update. Every `nixos-rebuild` string in this repo now carries
+# `--impure`; `src/Core.TypeScript/hygiene/lint-nixos-rebuild-needs-impure.ts`
+# is the check that keeps it that way.
 
 { config, lib, ... }:
 

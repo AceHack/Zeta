@@ -1,0 +1,12 @@
+{
+  "pr_number": 6301,
+  "archive_path": "docs/history/pr-reviews/PR-6301-feat-ace-mvp-slice-1-distribute-the-list-only-cli-bin-bun-link-ace-skill.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-01T01:06:54.950Z",
+  "schema_version": "v1",
+  "commit_sha": "92cf5fbea269a8f6ea0ad4e573f4e94bbbdb861d",
+  "title": "feat(ace): MVP slice 1 — distribute the list-only CLI (bin + bun link + ace skill)",
+  "state": "MERGED",
+  "merged_at": "2026-06-01T01:06:35Z",
+  "head_ref": "otto-windows/ace-mvp-slice1-2026-06-01"
+}

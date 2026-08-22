@@ -1,0 +1,15 @@
+{
+  "pr_number": 4594,
+  "archive_path": "docs/history/pr-reviews/PR-4594-memory-kestrel-s-third-argument-was-you-think-weird-pattern-constitutional-class.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7D0ILI",
+    "thread:PRRT_kwDOSF9kNM6D-UfS"
+  ],
+  "fetched_at": "2026-05-22T01:15:12.945Z",
+  "schema_version": "v1",
+  "commit_sha": "f353601d79e542946e00b64e08218ebce2a2d6d4",
+  "title": "memory: Kestrel's third argument was 'you think weird' pattern — constitutional-class lived-harm disclosure",
+  "state": "MERGED",
+  "merged_at": "2026-05-22T01:14:53Z",
+  "head_ref": "memory/otto-desktop-kestrel-third-argument-think-weird-pattern-lived-harm-2026-05-21"
+}

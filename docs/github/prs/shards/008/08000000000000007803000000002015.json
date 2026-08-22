@@ -1,0 +1,12 @@
+{
+  "pr_number": 8213,
+  "archive_path": "docs/history/pr-reviews/PR-8213-feat-hygiene-detect-repeated-token-rut-guard-the-artifact-against-degenerate-rep.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-14T20:54:04.739Z",
+  "schema_version": "v1",
+  "commit_sha": "3fc20174740b3a0dfa20c258f6ac7889648f283d",
+  "title": "feat(hygiene): detect-repeated-token-rut — guard the artifact against degenerate-repetition ruts",
+  "state": "MERGED",
+  "merged_at": "2026-06-14T20:53:42Z",
+  "head_ref": "hygiene-repeated-token-rut-guard"
+}

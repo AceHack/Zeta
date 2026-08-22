@@ -1,0 +1,12 @@
+{
+  "pr_number": 8436,
+  "archive_path": "docs/history/pr-reviews/PR-8436-docs-register-b-row-clean-room-split-is-legal-contribute-back-is-moral-dora-meas.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-16T04:11:48.241Z",
+  "schema_version": "v1",
+  "commit_sha": "6a53bcbb9a89cb915dbd2394a582f392b4939294",
+  "title": "docs(register): §B row — clean-room split is legal, contribute-back is moral (DORA-measured, partly realized)",
+  "state": "MERGED",
+  "merged_at": "2026-06-16T04:11:19Z",
+  "head_ref": "docs/register-split-legal-contribute-back-moral"
+}

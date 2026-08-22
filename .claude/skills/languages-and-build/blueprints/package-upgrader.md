@@ -15,7 +15,7 @@ build-and-test gating.
 **Lane distinction.**
 
 - **`package-auditor`** (Malik's primary hat) — runs
-  `tools/audit-packages.ts`; outputs the stale-pins list
+  `src/Core.TypeScript/audit-packages/audit-packages.ts`; outputs the stale-pins list
   with major/minor/patch classification.
 - **`package-upgrader`** (this skill; Malik's second hat
   or anyone's when worn) — consumes that list, makes the
@@ -64,7 +64,7 @@ Every pin gets a tier that drives the upgrade policy:
 
 ### Step 1 — consume the audit
 
-Malik produces `tools/audit-packages.ts` output with rows
+Malik produces `src/Core.TypeScript/audit-packages/audit-packages.ts` output with rows
 shaped `<PackageId> <currentVersion> <latestVersion>
 <changeClass>`. Parse into a work queue; sort by tier
 ascending (patch first, major last).
@@ -178,7 +178,7 @@ For each row in work-queue order:
 ## Reference patterns
 
 - `Directory.Packages.props` — central pin file
-- `tools/audit-packages.ts` — Malik's audit output
+- `src/Core.TypeScript/audit-packages/audit-packages.ts` — Malik's audit output
 - `tools/setup/manifests/from-dotnet-global` — dotnet global
   tool pins
 - `tools/setup/manifests/from-uv-tool` — uv CLI pins

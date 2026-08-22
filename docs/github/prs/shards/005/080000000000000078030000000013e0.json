@@ -1,0 +1,21 @@
+{
+  "pr_number": 5088,
+  "archive_path": "docs/history/pr-reviews/PR-5088-fix-b-0789-iter-4-2-readfile-redesign-eliminate-nix-injection-class-entirely-clo.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7ExOb4",
+    "comment:PRRC_kwDOSF9kNM7ExObe",
+    "comment:PRRC_kwDOSF9kNM7ExObs",
+    "comment:PRRC_kwDOSF9kNM7ExOcC",
+    "thread:PRRT_kwDOSF9kNM6Ero-U",
+    "thread:PRRT_kwDOSF9kNM6Ero-d",
+    "thread:PRRT_kwDOSF9kNM6Ero-l",
+    "thread:PRRT_kwDOSF9kNM6Ero-t"
+  ],
+  "fetched_at": "2026-05-26T04:36:34.935Z",
+  "schema_version": "v1",
+  "commit_sha": "9bad8b20d00a7483945532f1edb460f117f949da",
+  "title": "fix(B-0789 iter-4.2): readFile redesign — eliminate Nix-injection class entirely (closes residual ${...} antiquotation vector from #5086)",
+  "state": "MERGED",
+  "merged_at": "2026-05-26T04:36:18Z",
+  "head_ref": "otto-cli/iter42-fixfwd-5-copilot-findings-2026-05-26"
+}

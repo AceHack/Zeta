@@ -1,0 +1,100 @@
+# The first monitoring objects Zeta has ever authored for itself.
+#
+# BEFORE THIS FILE: zero ServiceMonitors, zero PodMonitors, zero
+# PrometheusRules anywhere in this repository. All 35 alert-rule groups in the
+# cluster came from the kube-prometheus-stack chart and watched kubelet, etcd,
+# CoreDNS and the API server. Nothing watched Zeta, because nothing in Zeta was
+# scraped -- so an outage of the portal would have been invisible to a stack
+# that looked, from the dashboards, entirely healthy.
+#
+# WHY THE release LABEL IS LOAD-BEARING. The chart defaults
+# serviceMonitorSelectorNilUsesHelmValues and ruleSelectorNilUsesHelmValues to
+# true, which makes the Prometheus CR select ONLY objects labelled
+# release=<helm release name>. A ServiceMonitor without it is applied happily by
+# Argo, shows up in kubectl get, and is silently never evaluated -- the exact
+# vacuity class audit-observability-chain.ts exists to refuse. The audit derives
+# the expected value from the kube-prometheus-stack Application releaseName, so
+# renaming the release breaks this file loudly instead of quietly.
+#
+# WHY BOTH A ServiceMonitor AND THE POD ANNOTATION. They feed different stores
+# for different jobs: Alloy scrapes the annotation and remote_writes to Mimir
+# (long-term, cluster-wide); the kube-prometheus-stack Prometheus scrapes the
+# ServiceMonitor and is the only thing that EVALUATES PrometheusRules. An alert
+# has to live where a ruler runs. Cost of the duplication: one extra scrape per
+# 30s of a ~12-series endpoint on a single-replica workload. DEBT: once Mimir
+# has a ruler configured, the ServiceMonitor half becomes redundant and this
+# file should shrink to the rule alone.
+---
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: portal
+  namespace: zeta-platform
+  annotations:
+    argocd.argoproj.io/sync-wave: "0"
+  labels:
+    app.kubernetes.io/name: portal
+    release: kube-prometheus-stack
+spec:
+  selector:
+    matchLabels: { app.kubernetes.io/name: portal }
+  namespaceSelector:
+    matchNames: [ zeta-platform ]
+  endpoints:
+    - port: metrics
+      path: /metrics
+      interval: 30s
+      scrapeTimeout: 10s
+---
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: zeta-platform
+  namespace: zeta-platform
+  annotations:
+    argocd.argoproj.io/sync-wave: "0"
+  labels:
+    app.kubernetes.io/name: portal
+    release: kube-prometheus-stack
+spec:
+  groups:
+    - name: zeta-platform.rules
+      rules:
+        # THE CHAIN WATCHING ITSELF. absent() fires when the series is missing
+        # entirely, which is what a broken scrape looks like from the ruler:
+        # bad annotation, wrong port, ServiceMonitor not selected, portal down.
+        # Every other rule here is worthless if this one is firing, so it is
+        # first and it is the one that must never be deleted.
+        - alert: ZetaPortalNotScraped
+          expr: absent(zeta_portal_build_info) == 1
+          for: 10m
+          labels: { severity: warning }
+          annotations:
+            summary: The Zeta portal is not being scraped
+            description: >-
+              zeta_portal_build_info has been absent for 10m. Either the portal is
+              down or the scrape path is broken (pod annotation, service port name,
+              or the release label on the ServiceMonitor). Check the Prometheus
+              targets page before assuming the portal is healthy.
+        # A restart loop shows up as start_time moving. changes() over an hour is
+        # cheap and catches CrashLoopBackOff that a readiness probe alone hides.
+        - alert: ZetaPortalRestartLoop
+          expr: changes(zeta_portal_start_time_seconds[1h]) > 3
+          for: 5m
+          labels: { severity: warning }
+          annotations:
+            summary: The Zeta portal restarted more than 3 times in an hour
+            description: >-
+              The portal owns the durable Room log on a Longhorn volume; repeated
+              restarts risk write interruption on the single-writer path.
+        - alert: ZetaPortalApiErrors
+          expr: >-
+            sum(rate(zeta_portal_http_request_errors_total{route="api"}[5m]))
+            > 0.2
+          for: 15m
+          labels: { severity: warning }
+          annotations:
+            summary: The Zeta portal API is returning errors
+            description: >-
+              Sustained non-2xx responses on /api/*. Likely the k8s reads behind the
+              BFF (RBAC, API server) rather than the portal itself.

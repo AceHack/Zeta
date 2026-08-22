@@ -1,0 +1,12 @@
+{
+  "pr_number": 6144,
+  "archive_path": "docs/history/pr-reviews/PR-6144-docs-mika-the-whole-optimization-loop-is-eve-protocol-b-0638.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-30T18:05:02.620Z",
+  "schema_version": "v1",
+  "commit_sha": "8a04f8725f2de34dbff205c9eb9fcf178b5207ac",
+  "title": "docs(mika): the whole optimization loop IS Eve Protocol (B-0638)",
+  "state": "MERGED",
+  "merged_at": "2026-05-30T18:04:40Z",
+  "head_ref": "otto/mika-eve-protocol-elevation-2026-05-30"
+}

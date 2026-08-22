@@ -1,0 +1,12 @@
+{
+  "pr_number": 6826,
+  "archive_path": "docs/history/pr-reviews/PR-6826-docs-ip-questionable-shannon-compression-is-intelligence-patricia-backed-indexed.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-07T13:43:07.342Z",
+  "schema_version": "v1",
+  "commit_sha": "45850d3df3f580681df1f416b2b95c220ec60204",
+  "title": "docs(ip-questionable): Shannon compression-is-intelligence + Patricia-backed-IndexedZSet (do it in zset)",
+  "state": "MERGED",
+  "merged_at": "2026-06-07T13:42:49Z",
+  "head_ref": "capture/shannon-compression-intelligence-prior-art-patricia-zset"
+}

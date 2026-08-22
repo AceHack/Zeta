@@ -1,0 +1,12 @@
+{
+  "pr_number": 10844,
+  "archive_path": "docs/history/pr-reviews/PR-10844-docs-register-research-the-optical-half-of-the-tsmc-analogy-is-unmetered-qualify.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-16T20:38:27.132Z",
+  "schema_version": "v1",
+  "commit_sha": "4b8b6e23d541caa977cd5252d6d6251087ea6753",
+  "title": "docs(register+research): the optical half of the TSMC analogy is unmetered — qualify it, and land the F1 resolution pricing",
+  "state": "MERGED",
+  "merged_at": "2026-08-16T20:37:51Z",
+  "head_ref": "shadow/lensography-precision-register"
+}

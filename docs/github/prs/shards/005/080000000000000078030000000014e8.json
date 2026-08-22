@@ -1,0 +1,23 @@
+{
+  "pr_number": 5352,
+  "archive_path": "docs/history/pr-reviews/PR-5352-feat-b-0812-b-0835-bug-4-iter-5-4-1-self-registration-commit-push-step-6-9-opens.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7FI_N5",
+    "comment:PRRC_kwDOSF9kNM7FI_ND",
+    "comment:PRRC_kwDOSF9kNM7FI_NY",
+    "comment:PRRC_kwDOSF9kNM7FI_Nk",
+    "comment:PRRC_kwDOSF9kNM7FI_Nv",
+    "thread:PRRT_kwDOSF9kNM6E8-w3",
+    "thread:PRRT_kwDOSF9kNM6E8-xF",
+    "thread:PRRT_kwDOSF9kNM6E8-xR",
+    "thread:PRRT_kwDOSF9kNM6E8-xa",
+    "thread:PRRT_kwDOSF9kNM6E8-xh"
+  ],
+  "fetched_at": "2026-05-26T23:29:25.328Z",
+  "schema_version": "v1",
+  "commit_sha": "2a0e5c0cae7a2bcf23d644d16e98226971df7478",
+  "title": "feat(B-0812 / B-0835 Bug 4): iter-5.4.1 self-registration commit+push (Step 6.9) — opens registration PR per node-install; fixes CORE REQUIREMENT failure",
+  "state": "MERGED",
+  "merged_at": "2026-05-26T23:29:06Z",
+  "head_ref": "otto/b-0812-iter-5-4-1-self-registration-commit-push-step-6-9-2026-05-26"
+}

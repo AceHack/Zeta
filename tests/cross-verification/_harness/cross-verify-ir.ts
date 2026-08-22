@@ -11,8 +11,14 @@
  * This is the diverse-double-compiling (DDC) check — N independent implementations
  * agreeing is the termination test for correctness.
  *
- * Currently runnable targets: TS (bun), Python (python3), Go (go run).
- * Future: C# (dotnet-script), Rust (cargo), F# (dotnet fsi), Q# (qsharp).
+ * Runnable targets (all seven, see ORACLE_LANES): TS (bun), Python (python3),
+ * Go (go run), C# (dotnet run), Rust (rustc), F# (dotnet fsi), Q# (qdk via the
+ * src/Core.Python venv).
+ *
+ * A lane that does not run reduces N WITHOUT reducing the claim, so `crossVerify`
+ * reports per-lane executed-case counts (`laneCases`) and `darkLanes`. Callers
+ * must enforce a PER-ROUTE floor on those; an aggregate floor cannot see a single
+ * dark route, because the surviving lanes supply the count on its behalf.
  */
 
 import { readFileSync, writeFileSync, mkdirSync, rmSync } from "node:fs";
@@ -274,6 +280,21 @@ sys.stdout.write(json.dumps(out))
   }
 }
 
+/**
+ * The canonical oracle lanes. The N in "N independent implementations agree"
+ * IS this list's length — it is the single place the claim's arity is stated.
+ *
+ * Every lane here MUST contribute at least one executed case; a lane that goes
+ * dark has to fail loudly and by name. An AGGREGATE floor ("≥6 of 7 ran")
+ * cannot do that — redundancy in the numerator hides a zero, so one dark lane
+ * is absorbed by the six live ones and the claim silently drops to N−1 while
+ * still reporting success. Enforce per-route, never in aggregate.
+ */
+export const ORACLE_LANES = [
+  "typescript", "python", "go", "csharp", "rust", "fsharp", "qsharp",
+] as const;
+export type OracleLane = (typeof ORACLE_LANES)[number];
+
 export interface CrossVerifyResult {
   generator: string;
   languages: string[];
@@ -281,6 +302,10 @@ export interface CrossVerifyResult {
   allAgree: boolean;
   disagreements: { input: string; values: Record<string, string> }[];
   errors: { language: string; error: string }[];
+  /** lane → number of inputs for which that lane actually produced a value. */
+  laneCases: Record<string, number>;
+  /** Lanes in ORACLE_LANES that executed ZERO cases (errored, or silently empty). */
+  darkLanes: string[];
 }
 
 export function crossVerify(ir: ZetaIrV2, inputs: [string, string][]): CrossVerifyResult {
@@ -318,6 +343,15 @@ export function crossVerify(ir: ZetaIrV2, inputs: [string, string][]): CrossVeri
     }
   }
 
+  // Per-lane executed-case count. A lane is only credited for an input when it
+  // actually produced a value for it — "no error thrown" is not evidence of work.
+  const laneCases: Record<string, number> = {};
+  for (const lane of ORACLE_LANES) laneCases[lane] = 0;
+  for (const r of successful) {
+    laneCases[r.language] = inputIds.filter(id => r.outputs[id] !== undefined).length;
+  }
+  const darkLanes = ORACLE_LANES.filter(lane => (laneCases[lane] ?? 0) === 0);
+
   return {
     generator: ir.generator,
     languages: successful.map(r => r.language),
@@ -325,6 +359,8 @@ export function crossVerify(ir: ZetaIrV2, inputs: [string, string][]): CrossVeri
     allAgree: disagreements.length === 0 && successful.length >= 2,
     disagreements,
     errors,
+    laneCases,
+    darkLanes,
   };
 }
 
@@ -353,12 +389,17 @@ if (import.meta.main) {
       console.log(`  ⚠ ${e.language} unavailable: ${e.error.slice(0, 80)}`);
     }
   }
-  if (result.allAgree) {
+  for (const d of result.disagreements) {
+    console.log(`  ✗ DISAGREE on ${d.input}: ${JSON.stringify(d.values)}`);
+  }
+  // Per-route floor: name every dark lane. Agreement among the survivors is not
+  // a substitute for a lane having run.
+  for (const lane of result.darkLanes) {
+    console.log(`  ✗ DARK LANE: ${lane} executed 0 of ${result.inputs.length} cases — N is ${result.languages.length}, not ${ORACLE_LANES.length}`);
+  }
+  if (result.allAgree && result.darkLanes.length === 0) {
     console.log(`  ✓ ALL ${result.languages.length} AGREE on ${result.inputs.length} inputs`);
   } else {
-    for (const d of result.disagreements) {
-      console.log(`  ✗ DISAGREE on ${d.input}: ${JSON.stringify(d.values)}`);
-    }
     process.exit(1);
   }
 }

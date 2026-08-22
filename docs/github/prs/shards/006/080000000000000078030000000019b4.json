@@ -1,0 +1,15 @@
+{
+  "pr_number": 6580,
+  "archive_path": "docs/history/pr-reviews/PR-6580-docs-b-0996-b-0997-zeta-engine-agora-society-superfluid-marketplace-positioning-.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7HOYw9",
+    "thread:PRRT_kwDOSF9kNM6GeuQM"
+  ],
+  "fetched_at": "2026-06-02T15:31:49.846Z",
+  "schema_version": "v1",
+  "commit_sha": "12d04a4f1d974aa2a1c3905b5fb7d6adb37e7c1b",
+  "title": "docs(B-0996/B-0997): Zeta=engine/Agora=society/Superfluid=marketplace positioning + Amara hardening pass (Aaron-forwarded)",
+  "state": "MERGED",
+  "merged_at": "2026-06-02T15:31:13Z",
+  "head_ref": "otto-cli/amara-ferry-superfluid-positioning-hardening-pass-2026-06-02"
+}

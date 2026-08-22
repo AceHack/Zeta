@@ -1,0 +1,12 @@
+{
+  "pr_number": 7837,
+  "archive_path": "docs/history/pr-reviews/PR-7837-fix-ben-math-team-grader-fixes-ols-r-refusal-bands-search-by-o-deterministic-all.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-12T00:01:31.544Z",
+  "schema_version": "v1",
+  "commit_sha": "b1cda1b100712503a2da6e25bae9a72de1da0ea8",
+  "title": "fix(ben): math-team grader fixes (OLS+R²+refusal bands) + search-by-O + deterministic alloc meter + capability ledgers",
+  "state": "MERGED",
+  "merged_at": "2026-06-12T00:01:06Z",
+  "head_ref": "shadow-bigo-search"
+}

@@ -1,0 +1,14 @@
+{
+  "id": "080cffeb08101810a013000870e8a854",
+  "at": "2026-08-13T23:07:00.995Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081KZYP20G2087G0R000W48ZN9",
+    "type": "bug",
+    "title": "AIMD treats every loss as congestion, but on the mesh and LoRa links this transport targets most loss is channel corruption: separate the loss signals rather than tune the thresholds",
+    "slug": "aimd-treats-every-loss-as-congestion-but-on-the-mesh-and-lor",
+    "priority": "P1",
+    "filename": "081KZYP20G2087G0R000W48ZN9-aimd-treats-every-loss-as-congestion-but-on-the-mesh-and-lor.md"
+  }
+}

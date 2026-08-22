@@ -1,0 +1,12 @@
+{
+  "pr_number": 9377,
+  "archive_path": "docs/history/pr-reviews/PR-9377-feat-model-backend-standards-based-modelbackend-port-over-chat-completions-manus.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-03T23:37:32.127Z",
+  "schema_version": "v1",
+  "commit_sha": "45b5b496d87cd99e22595b1b9de76effde720a31",
+  "title": "feat(model-backend): standards-based ModelBackend port over chat-completions — Manus first adapter (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-03T23:37:06Z",
+  "head_ref": "otto/model-backend-standards-based-port"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 6513,
+  "archive_path": "docs/history/pr-reviews/PR-6513-backlog-b-0982-4-oracle-multi-format-golden-vector-seeds-cbor-json-yaml-xml-noth.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-02T00:58:22.887Z",
+  "schema_version": "v1",
+  "commit_sha": "a088878bb7bc56875e073ce5778f695d9c325785",
+  "title": "backlog(B-0982): 4-oracle multi-format golden-vector seeds (CBOR/JSON/YAML/XML) — nothing is single source of truth",
+  "state": "MERGED",
+  "merged_at": "2026-06-02T00:58:04Z",
+  "head_ref": "otto-cli/b0982-multiformat-seeds-2026-06-01"
+}

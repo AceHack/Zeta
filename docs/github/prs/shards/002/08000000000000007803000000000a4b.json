@@ -1,0 +1,15 @@
+{
+  "pr_number": 2635,
+  "archive_path": "docs/history/pr-reviews/PR-2635-docs-memory-critic-became-participant-eve-protocol-live.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_sc2c",
+    "thread:PRRT_kwDOSF9kNM6A9O6U"
+  ],
+  "fetched_at": "2026-05-11T02:50:36.353Z",
+  "schema_version": "v1",
+  "commit_sha": "2d5fa5ae9adcea9f390f73ddf8826bd500839485",
+  "title": "docs(memory): critic became participant — Eve protocol live",
+  "state": "MERGED",
+  "merged_at": "2026-05-11T02:50:18Z",
+  "head_ref": "docs/critic-became-participant-eve-protocol-2026-05-10"
+}

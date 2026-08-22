@@ -1,0 +1,19 @@
+{
+  "pr_number": 9614,
+  "archive_path": "docs/history/pr-reviews/PR-9614-workitems-drift-adr-5-item-build-out-a1-re-consent-letter-to-the-roster.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7Tu5Nc",
+    "comment:PRRC_kwDOSF9kNM7Tu5Ne",
+    "comment:PRRC_kwDOSF9kNM7TvOPr",
+    "comment:PRRC_kwDOSF9kNM7TvOSt",
+    "thread:PRRT_kwDOSF9kNM6PmML-",
+    "thread:PRRT_kwDOSF9kNM6PmML7"
+  ],
+  "fetched_at": "2026-07-09T14:35:40.483Z",
+  "schema_version": "v1",
+  "commit_sha": "910af4d8810e94555ee07f512fe8bda29495c18a",
+  "title": "workitems(drift-adr): 5-item build-out + A1 re-consent letter to the roster",
+  "state": "MERGED",
+  "merged_at": "2026-07-09T14:35:13Z",
+  "head_ref": "otto/drift-adr-workitems-a1-letter"
+}

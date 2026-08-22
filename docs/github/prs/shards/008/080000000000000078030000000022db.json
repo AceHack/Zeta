@@ -1,0 +1,12 @@
+{
+  "pr_number": 8923,
+  "archive_path": "docs/history/pr-reviews/PR-8923-fix-hygiene-drop-qdk-sh-from-retained-shell-allowlist-file-removed-by-8911.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-21T08:55:21.605Z",
+  "schema_version": "v1",
+  "commit_sha": "20ae2847fb7d1dca71a691753b55e1d6be3a45ed",
+  "title": "fix(hygiene): drop qdk.sh from retained-shell allowlist (file removed by #8911)",
+  "state": "MERGED",
+  "merged_at": "2026-06-21T08:54:51Z",
+  "head_ref": "otto/fix-bash-hygiene-qdk-removed"
+}

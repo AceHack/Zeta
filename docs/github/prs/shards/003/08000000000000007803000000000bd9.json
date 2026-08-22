@@ -1,0 +1,19 @@
+{
+  "pr_number": 3033,
+  "archive_path": "docs/history/pr-reviews/PR-3033-docs-pm2-b-0271-pm-2-first-research-pass-6-zeta-feature-gaps-predicted.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7A-RXu",
+    "comment:PRRC_kwDOSF9kNM7A-RXz",
+    "comment:PRRC_kwDOSF9kNM7A-XvW",
+    "comment:PRRC_kwDOSF9kNM7A-XxH",
+    "thread:PRRT_kwDOSF9kNM6B5U31",
+    "thread:PRRT_kwDOSF9kNM6B5U3w"
+  ],
+  "fetched_at": "2026-05-13T21:34:27.349Z",
+  "schema_version": "v1",
+  "commit_sha": "c35b227707e3de4362156125ea8d0febec9d7ec9",
+  "title": "docs(pm2): B-0271 — PM-2 first research pass, 6 Zeta feature gaps predicted",
+  "state": "MERGED",
+  "merged_at": "2026-05-13T21:34:05Z",
+  "head_ref": "feat/b-0271-pm2-first-research-pass-2026-05-13"
+}

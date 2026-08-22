@@ -1,0 +1,12 @@
+{
+  "pr_number": 4222,
+  "archive_path": "docs/history/pr-reviews/PR-4222-shard-2158z-brief-ack-1-named-dep.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-18T22:02:26.431Z",
+  "schema_version": "v1",
+  "commit_sha": "0d3cd2ef6903dec4bf76692eab8b9d1fb8478e68",
+  "title": "shard(2158Z): brief-ack #1 named-dep",
+  "state": "MERGED",
+  "merged_at": "2026-05-18T22:02:09Z",
+  "head_ref": "shard/tick-2158z-brief-ack-1-named-dep-3-prs-ci-wait-2026-05-18"
+}

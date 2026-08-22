@@ -1,0 +1,12 @@
+{
+  "pr_number": 8314,
+  "archive_path": "docs/history/pr-reviews/PR-8314-docs-research-alpha-zero-decorrelation-self-guided-self-play-as-prior-art-for-th.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-15T18:26:19.084Z",
+  "schema_version": "v1",
+  "commit_sha": "efc840b783e735ae51a6d01450a8441d93088e1f",
+  "title": "docs(research): alpha-zero decorrelation + self-guided self-play as prior-art for the §C flood-the-frontier brake",
+  "state": "MERGED",
+  "merged_at": "2026-06-15T18:25:52Z",
+  "head_ref": "docs/ferry-alphazero-selfguided-selfplay-brake"
+}

@@ -1,0 +1,26 @@
+{
+  "pr_number": 1818,
+  "archive_path": "docs/history/pr-reviews/PR-1818-research-cartographer-math-lineage-budget-through-harmonious-division-to-unified.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6-sqiK",
+    "comment:PRRC_kwDOSF9kNM6-sr1B",
+    "comment:PRRC_kwDOSF9kNM6-suJG",
+    "comment:PRRC_kwDOSF9kNM6-suJw",
+    "comment:PRRC_kwDOSF9kNM6-suKF",
+    "comment:PRRC_kwDOSF9kNM6-suKR",
+    "comment:PRRC_kwDOSF9kNM6-suKi",
+    "thread:PRRT_kwDOSF9kNM6ANpSP",
+    "thread:PRRT_kwDOSF9kNM6ANr88",
+    "thread:PRRT_kwDOSF9kNM6ANr8G",
+    "thread:PRRT_kwDOSF9kNM6ANr8k",
+    "thread:PRRT_kwDOSF9kNM6ANr8y",
+    "thread:PRRT_kwDOSF9kNM6ANr9J"
+  ],
+  "fetched_at": "2026-05-07T06:53:03.928Z",
+  "schema_version": "v1",
+  "commit_sha": "efda8c4e1dd2b95dfab6bcfbeefabe495725b224",
+  "title": "research: cartographer math lineage — χ-budget through Harmonious Division to unified equation",
+  "state": "MERGED",
+  "merged_at": "2026-05-07T06:46:02Z",
+  "head_ref": "research/cartographer-math-lineage-riff"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 8239,
+  "archive_path": "docs/history/pr-reviews/PR-8239-docs-register-b-how-many-cayley-dickson-levels-8-with-clifford-geospatial.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-15T02:42:59.527Z",
+  "schema_version": "v1",
+  "commit_sha": "2958fc86efcbd762cc37830f8104148e0be12d9f",
+  "title": "docs(register): §B — how many Cayley-Dickson levels (8, with Clifford + geospatial)",
+  "state": "MERGED",
+  "merged_at": "2026-06-15T02:42:33Z",
+  "head_ref": "otto/sb-cayley-dickson-levels"
+}

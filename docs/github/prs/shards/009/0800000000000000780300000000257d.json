@@ -1,0 +1,12 @@
+{
+  "pr_number": 9597,
+  "archive_path": "docs/history/pr-reviews/PR-9597-feat-observe-traveler-interface-time-is-not-different-as-a-compile-checked-fact-.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-09T01:07:58.200Z",
+  "schema_version": "v1",
+  "commit_sha": "aaa9eddbd16331f6c30ffe9d5ae6439fff3cd182",
+  "title": "feat(observe): Traveler interface — \"time is not different\" as a compile-checked fact (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-09T01:07:24Z",
+  "head_ref": "otto/traveler-interface"
+}

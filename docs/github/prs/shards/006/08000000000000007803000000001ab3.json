@@ -1,0 +1,12 @@
+{
+  "pr_number": 6835,
+  "archive_path": "docs/history/pr-reviews/PR-6835-feat-crdt-lwwmap-lww-keyed-map-crdt-composes-lwwregister-backlog-correction.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-07T14:10:38.724Z",
+  "schema_version": "v1",
+  "commit_sha": "275732d6cc9d168a2d0ba356bad2282ac13ee7eb",
+  "title": "feat(Crdt): LwwMap — LWW-keyed map CRDT (composes LwwRegister) + backlog correction",
+  "state": "MERGED",
+  "merged_at": "2026-06-07T14:10:16Z",
+  "head_ref": "feat/lww-map-crdt"
+}

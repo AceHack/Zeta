@@ -1,0 +1,12 @@
+{
+  "pr_number": 9930,
+  "archive_path": "docs/history/pr-reviews/PR-9930-test-cluster-pin-the-could-not-fail-guards-in-the-cluster-health-path.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-01T22:06:18.514Z",
+  "schema_version": "v1",
+  "commit_sha": "16ac78cb5e85cf64b78a20cb4464677c2514eebd",
+  "title": "test(cluster): pin the could-not-fail guards in the cluster health path",
+  "state": "MERGED",
+  "merged_at": "2026-08-01T22:05:47Z",
+  "head_ref": "shadow/cluster-could-not-fail-guards"
+}

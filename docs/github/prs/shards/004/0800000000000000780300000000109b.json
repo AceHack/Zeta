@@ -1,0 +1,12 @@
+{
+  "pr_number": 4251,
+  "archive_path": "docs/history/pr-reviews/PR-4251-shard-2323z-c-brief-ack-1.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-18T23:26:45.373Z",
+  "schema_version": "v1",
+  "commit_sha": "736b5d6cf61579f13be9e46db58b14236c8eb25b",
+  "title": "shard(2323Z-c): brief-ack #1",
+  "state": "MERGED",
+  "merged_at": "2026-05-18T23:26:29Z",
+  "head_ref": "shard/tick-2323z-c-brief-ack-1-2026-05-18"
+}

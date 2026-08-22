@@ -1,0 +1,12 @@
+{
+  "pr_number": 12997,
+  "archive_path": "docs/history/pr-reviews/PR-12997-research-fips-mode-disables-secp256k1-on-the-yubihsm-2-the-re-score-that-inverts.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-21T00:06:11.009Z",
+  "schema_version": "v1",
+  "commit_sha": "4976b2db7c4c01efc517851c13bb6ff6da73aaf2",
+  "title": "research: FIPS mode DISABLES secp256k1 on the YubiHSM 2 — the re-score that inverts the custody SKU",
+  "state": "MERGED",
+  "merged_at": "2026-08-21T00:04:21Z",
+  "head_ref": "research/secp256k1-hsm-rescore"
+}

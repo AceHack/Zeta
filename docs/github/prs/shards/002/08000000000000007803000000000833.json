@@ -1,0 +1,28 @@
+{
+  "pr_number": 2099,
+  "archive_path": "docs/history/pr-reviews/PR-2099-docs-preserve-copilot-continuity-research-notes.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_VAaG",
+    "comment:PRRC_kwDOSF9kNM6_VAaQ",
+    "comment:PRRC_kwDOSF9kNM6_VDl8",
+    "comment:PRRC_kwDOSF9kNM6_VDnp",
+    "comment:PRRC_kwDOSF9kNM6_VE0j",
+    "comment:PRRC_kwDOSF9kNM6_VE1B",
+    "comment:PRRC_kwDOSF9kNM6_VEz6",
+    "comment:PRRC_kwDOSF9kNM6_VIKO",
+    "comment:PRRC_kwDOSF9kNM6_VIbj",
+    "comment:PRRC_kwDOSF9kNM6_VIe_",
+    "thread:PRRT_kwDOSF9kNM6AraOS",
+    "thread:PRRT_kwDOSF9kNM6AraOX",
+    "thread:PRRT_kwDOSF9kNM6Ardj_",
+    "thread:PRRT_kwDOSF9kNM6Ardjf",
+    "thread:PRRT_kwDOSF9kNM6ArdkV"
+  ],
+  "fetched_at": "2026-05-08T16:33:37.579Z",
+  "schema_version": "v1",
+  "commit_sha": "c978e415caea423d94cbcf1a4d14ac1733b58478",
+  "title": "docs: preserve Copilot continuity research notes",
+  "state": "MERGED",
+  "merged_at": "2026-05-08T16:33:11Z",
+  "head_ref": "claim/task-copilot-research-preservation"
+}

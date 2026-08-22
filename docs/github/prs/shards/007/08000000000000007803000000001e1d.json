@@ -1,0 +1,12 @@
+{
+  "pr_number": 7709,
+  "archive_path": "docs/history/pr-reviews/PR-7709-feat-viz-spectral-adinkras-seen-with-the-generator-shine-the-soft-hard-fft-pivot.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-11T15:14:29.707Z",
+  "schema_version": "v1",
+  "commit_sha": "edd04c288e2c837efd89535d06927efb9fd20af7",
+  "title": "feat(viz+spectral): adinkras SEEN (with the generator shine) + the soft/hard FFT pivot",
+  "state": "MERGED",
+  "merged_at": "2026-06-11T15:13:55Z",
+  "head_ref": "shadow-adinkra-viz"
+}

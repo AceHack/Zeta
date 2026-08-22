@@ -1,0 +1,17 @@
+{
+  "pr_number": 5071,
+  "archive_path": "docs/history/pr-reviews/PR-5071-build-agentic-organization-package-architecture-slice.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7Ev3m2",
+    "comment:PRRC_kwDOSF9kNM7Ev3nI",
+    "thread:PRRT_kwDOSF9kNM6Eqqkc",
+    "thread:PRRT_kwDOSF9kNM6Eqqkr"
+  ],
+  "fetched_at": "2026-05-26T02:58:27.210Z",
+  "schema_version": "v1",
+  "commit_sha": "c6605a4ef9083f712d93e5a3c8e2688e7b2ca401",
+  "title": "Build Agentic Organization package architecture slice",
+  "state": "MERGED",
+  "merged_at": "2026-05-26T02:58:03Z",
+  "head_ref": "codex/agentic-org-package-ca-clean"
+}

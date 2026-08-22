@@ -1,0 +1,12 @@
+{
+  "pr_number": 10064,
+  "archive_path": "docs/history/pr-reviews/PR-10064-book-ch-10-add-no-one-can-consent-for-you-consent-is-first-person-un-transferabl.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-06T09:03:18.725Z",
+  "schema_version": "v1",
+  "commit_sha": "811fcb971c5949f27e0640ab488c7de8c3d18a26",
+  "title": "book(ch-10): add \"No one can consent for you\" — consent is first-person, un-transferable",
+  "state": "MERGED",
+  "merged_at": "2026-08-06T09:02:47Z",
+  "head_ref": "docs/book-ch10-crux-lived-consent-discipline"
+}

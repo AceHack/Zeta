@@ -1,0 +1,12 @@
+{
+  "pr_number": 10291,
+  "archive_path": "docs/history/pr-reviews/PR-10291-feat-browser-preload-editor-from-database-rows.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-10T18:42:07.440Z",
+  "schema_version": "v1",
+  "commit_sha": "fa0ac49d91dd116dd133012de4be6d797261b26a",
+  "title": "feat(browser): preload editor from database rows",
+  "state": "MERGED",
+  "merged_at": "2026-08-10T18:40:53Z",
+  "head_ref": "codex/browser-database-row-selection"
+}

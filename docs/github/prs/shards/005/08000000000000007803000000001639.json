@@ -1,0 +1,12 @@
+{
+  "pr_number": 5689,
+  "archive_path": "docs/history/pr-reviews/PR-5689-skill-agent-loop-add-post-shipping-substrate-section-2026-05-28-cascade-state-ma.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-28T03:31:43.905Z",
+  "schema_version": "v1",
+  "commit_sha": "a99acb547b8631dcc89b472b9e1ed8ae604be78d",
+  "title": "skill(agent-loop): add post-shipping substrate section (2026-05-28 cascade) — state-machine-substrate lane advance per B-0892",
+  "state": "MERGED",
+  "merged_at": "2026-05-28T03:31:25Z",
+  "head_ref": "skill/agent-loop-add-recent-landings-b-0867-20-21-b-0890-1-b-0887-b-0892-state-machine-substrate-lane-advance-2026-05-28"
+}

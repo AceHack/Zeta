@@ -1,0 +1,18 @@
+{
+  "pr_number": 6209,
+  "archive_path": "docs/history/pr-reviews/PR-6209-docs-b-0171-decompose-backlog-row-schema-spec-child.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7Gf-C6",
+    "comment:PRRC_kwDOSF9kNM7Gf8RU",
+    "comment:PRRC_kwDOSF9kNM7Gf93m",
+    "thread:PRRT_kwDOSF9kNM6F8O70",
+    "thread:PRRT_kwDOSF9kNM6F8QVO"
+  ],
+  "fetched_at": "2026-05-31T13:19:57.773Z",
+  "schema_version": "v1",
+  "commit_sha": "1d5d8f51ac117f121c74d0f196fc92cb063e4f49",
+  "title": "docs(B-0171): decompose backlog-row schema spec child",
+  "state": "MERGED",
+  "merged_at": "2026-05-31T13:19:39Z",
+  "head_ref": "claim/backlog-0171-4"
+}

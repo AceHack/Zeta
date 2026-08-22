@@ -1,0 +1,15 @@
+{
+  "pr_number": 13114,
+  "archive_path": "docs/history/pr-reviews/PR-13114-feat-hygiene-refuse-a-seal-pkcs11-stanza-on-hashicorp-s-vault-chart-the-one-wron.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7kK3xm",
+    "thread:PRRT_kwDOSF9kNM6bENE_"
+  ],
+  "fetched_at": "2026-08-21T07:48:52.032Z",
+  "schema_version": "v1",
+  "commit_sha": "e546e67fe628058491198830dd54cb7d4dff9fd2",
+  "title": "feat(hygiene): refuse a `seal \"pkcs11\"` stanza on HashiCorp's Vault chart — the one wrong turn the OpenBao recommendation makes tempting",
+  "state": "MERGED",
+  "merged_at": "2026-08-21T07:48:14Z",
+  "head_ref": "hsm/vault-seal-enterprise-refusal"
+}

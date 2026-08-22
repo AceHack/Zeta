@@ -1,0 +1,23 @@
+{
+  "pr_number": 4536,
+  "archive_path": "docs/history/pr-reviews/PR-4536-rules-saturation-ceiling-land-sub-case-3b-b-0530-at-push-time-read-tree-head-ind.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7DmG7U",
+    "comment:PRRC_kwDOSF9kNM7DmJeT",
+    "comment:PRRC_kwDOSF9kNM7DmJfH",
+    "comment:PRRC_kwDOSF9kNM7DmJft",
+    "comment:PRRC_kwDOSF9kNM7DmJgL",
+    "thread:PRRT_kwDOSF9kNM6D0E99",
+    "thread:PRRT_kwDOSF9kNM6D0G4v",
+    "thread:PRRT_kwDOSF9kNM6D0G52",
+    "thread:PRRT_kwDOSF9kNM6D0G5Z",
+    "thread:PRRT_kwDOSF9kNM6D0G6M"
+  ],
+  "fetched_at": "2026-05-21T13:41:46.932Z",
+  "schema_version": "v1",
+  "commit_sha": "4a52e377618933b8603e52bee1ea3babc1e0935d",
+  "title": "rules(saturation-ceiling): land Sub-case 3b (B-0530 at push-time) + read-tree HEAD index recovery",
+  "state": "MERGED",
+  "merged_at": "2026-05-21T13:41:22Z",
+  "head_ref": "otto/rule-edit-saturation-ceiling-subcase-3b-1327z"
+}

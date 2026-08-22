@@ -1,0 +1,12 @@
+{
+  "pr_number": 9645,
+  "archive_path": "docs/history/pr-reviews/PR-9645-docs-shapes-close-the-need-aaron-slots-on-the-a-f-fixed-point-registry.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-10T01:03:58.239Z",
+  "schema_version": "v1",
+  "commit_sha": "9e0de9b93364cfa8aaf8d3d7c0c619d2abf42657",
+  "title": "docs(shapes): close the [need Aaron] slots on the A-F fixed-point registry",
+  "state": "MERGED",
+  "merged_at": "2026-07-10T01:03:29Z",
+  "head_ref": "shadow/close-need-aaron-shape-registry"
+}

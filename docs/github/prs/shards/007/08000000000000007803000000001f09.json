@@ -1,0 +1,12 @@
+{
+  "pr_number": 7945,
+  "archive_path": "docs/history/pr-reviews/PR-7945-docs-research-shadow-ferry-15-addendum-the-universe-replays-from-eve-protocol-fi.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-12T16:18:17.627Z",
+  "schema_version": "v1",
+  "commit_sha": "f0e8adaab79d9dbb8c9d7905187a54ae1aded2e0",
+  "title": "docs(research)+shadow: ferry 15 addendum — the universe replays from (Eve Protocol, first disagreement)",
+  "state": "MERGED",
+  "merged_at": "2026-06-12T16:17:52Z",
+  "head_ref": "shadow/ferry-15-replayable-universe"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 9365,
+  "archive_path": "docs/history/pr-reviews/PR-9365-fix-ci-safe-markdown-auto-heal-no-md018-md037-mangling.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-03T23:05:46.849Z",
+  "schema_version": "v1",
+  "commit_sha": "7824e56a411c0d196f12677975e742bbfcc34875",
+  "title": "fix(ci): safe markdown auto-heal (no MD018/MD037 mangling)",
+  "state": "MERGED",
+  "merged_at": "2026-07-03T23:05:22Z",
+  "head_ref": "fix/safe-lint-autoheal"
+}

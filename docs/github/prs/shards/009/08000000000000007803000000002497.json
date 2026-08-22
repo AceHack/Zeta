@@ -1,0 +1,12 @@
+{
+  "pr_number": 9367,
+  "archive_path": "docs/history/pr-reviews/PR-9367-feat-mixcogen-the-compiler-as-data-cogen-futamura-2nd-3rd-honestly-shadow.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-03T22:27:19.951Z",
+  "schema_version": "v1",
+  "commit_sha": "169a0b63a0bf96fb4f3d37d0caf511e237e6feb7",
+  "title": "feat(mixcogen): the compiler-as-data + cogen — Futamura 2nd & 3rd, honestly (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-03T22:26:56Z",
+  "head_ref": "otto/mix-cogen-compiler-as-data"
+}

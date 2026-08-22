@@ -1,0 +1,23 @@
+{
+  "pr_number": 3614,
+  "archive_path": "docs/history/pr-reviews/PR-3614-research-b-0543-b-0544-qg-isomorphism-proof-path-step-1-formalization-adinkra-ca.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7BzIXl",
+    "comment:PRRC_kwDOSF9kNM7BzIXp",
+    "comment:PRRC_kwDOSF9kNM7BzJX5",
+    "comment:PRRC_kwDOSF9kNM7BzJXT",
+    "comment:PRRC_kwDOSF9kNM7BzJXr",
+    "thread:PRRT_kwDOSF9kNM6CfvSn",
+    "thread:PRRT_kwDOSF9kNM6CfvSr",
+    "thread:PRRT_kwDOSF9kNM6CfwBS",
+    "thread:PRRT_kwDOSF9kNM6CfwBl",
+    "thread:PRRT_kwDOSF9kNM6CfwBy"
+  ],
+  "fetched_at": "2026-05-15T23:09:31.306Z",
+  "schema_version": "v1",
+  "commit_sha": "f1b6061345146fc6287f28a0f1d4f83d2622f8ed",
+  "title": "research(B-0543/B-0544): QG isomorphism proof-path + Step 1 formalization + Adinkra/Cayley-Dickson extensions (Riven + Otto)",
+  "state": "MERGED",
+  "merged_at": "2026-05-15T23:09:10Z",
+  "head_ref": "research/b-0543-qg-isomorphism-proof-path-otto-cli-2026-05-15"
+}

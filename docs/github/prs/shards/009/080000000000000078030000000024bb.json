@@ -1,0 +1,12 @@
+{
+  "pr_number": 9403,
+  "archive_path": "docs/history/pr-reviews/PR-9403-docs-ferry-anchor-completion-for-t0-futamura-ephemeron-softvalue-honest-novelty-.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-04T03:39:18.700Z",
+  "schema_version": "v1",
+  "commit_sha": "0d479aeb2edb06fdaed1ac5bb4563e6331453b75",
+  "title": "docs(ferry): anchor completion for T0/Futamura/ephemeron/SoftValue + honest novelty peel (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-04T03:38:56Z",
+  "head_ref": "otto/ferry-anchor-completion-holographic-qec-kleene-calm-novelty-peel"
+}

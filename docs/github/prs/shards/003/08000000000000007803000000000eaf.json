@@ -1,0 +1,12 @@
+{
+  "pr_number": 3759,
+  "archive_path": "docs/history/pr-reviews/PR-3759-memory-feedback-audit-tool-2nd-fp-class-inline-composes-with-refs-peer-otto-b-05.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-16T05:59:26.661Z",
+  "schema_version": "v1",
+  "commit_sha": "781ad15f4407efa0ee70720753932dcfda684593",
+  "title": "memory(feedback): audit-tool 2nd FP class — inline composes-with refs (+ peer Otto B-0532 audit shard)",
+  "state": "MERGED",
+  "merged_at": "2026-05-16T05:59:11Z",
+  "head_ref": "memory/audit-tool-2nd-fp-class-otto-cli-2026-05-16"
+}

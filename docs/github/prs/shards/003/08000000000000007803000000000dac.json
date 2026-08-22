@@ -1,0 +1,19 @@
+{
+  "pr_number": 3500,
+  "archive_path": "docs/history/pr-reviews/PR-3500-shard-tick-1417z-pr-3497-3498-merged-pr-3499-wait-ci.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7BpO56",
+    "comment:PRRC_kwDOSF9kNM7BpOl-",
+    "comment:PRRC_kwDOSF9kNM7BpW0i",
+    "comment:PRRC_kwDOSF9kNM7BpWu2",
+    "thread:PRRT_kwDOSF9kNM6CYlM4",
+    "thread:PRRT_kwDOSF9kNM6CYlbS"
+  ],
+  "fetched_at": "2026-05-15T14:27:42.782Z",
+  "schema_version": "v1",
+  "commit_sha": "273b0338831f0629ac8a07eab96a96a472fcae41",
+  "title": "shard(tick): 1417Z — PR #3497 + #3498 merged; PR #3499 wait-CI",
+  "state": "MERGED",
+  "merged_at": "2026-05-15T14:27:23Z",
+  "head_ref": "shard/tick-1417z-otto-cli-2026-05-15"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 7872,
+  "archive_path": "docs/history/pr-reviews/PR-7872-fix-setup-gate-full-tier-env-at-job-level-persisted-in-shellenv-kubeconform-shim.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-12T02:31:37.418Z",
+  "schema_version": "v1",
+  "commit_sha": "cdf3c7a0d787848566447e25c1b99ff6488904be",
+  "title": "fix(setup,gate): full-tier env at JOB level + persisted in shellenv (kubeconform shim break); host-tier.sh in bash inventory",
+  "state": "MERGED",
+  "merged_at": "2026-06-12T02:31:15Z",
+  "head_ref": "shadow-fix-k8s-lint-env-and-inventory"
+}

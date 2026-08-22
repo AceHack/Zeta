@@ -1,0 +1,12 @@
+{
+  "pr_number": 4120,
+  "archive_path": "docs/history/pr-reviews/PR-4120-backlog-b-0614-forced-6-meta-fallback-edge-case-post-cycle-close-substrate-pool-.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-17T22:55:49.141Z",
+  "schema_version": "v1",
+  "commit_sha": "2c0c986d94d1dce8f355a278c3210a3411e04bad",
+  "title": "backlog(B-0614): forced-#6 meta-fallback edge case — post-cycle-close substrate-pool saturation",
+  "state": "MERGED",
+  "merged_at": "2026-05-17T22:55:29Z",
+  "head_ref": "backlog/p4-meta-fallback-edge-case-post-cycle-close-2026-05-17-2247z"
+}

@@ -5,6 +5,13 @@
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
+import {
+  planFirstbootConfFileContent,
+  ZETA_FIRSTBOOT_CONF_ESP_DESTINATION,
+  ZETA_JOIN_TOKEN_ESP_DESTINATION,
+  type ZetaFirstbootRole,
+} from "./firstboot-role.ts";
+
 /**
  * RFC1123 hostname regex.
  *
@@ -100,7 +107,14 @@ export function isValidHostname(s: string): boolean {
   return VALID_HOSTNAME_REGEX.test(s);
 }
 
-function isPhysicalDevicePath(path: string): boolean {
+/**
+ * Whether a path names a raw block device rather than a file.
+ *
+ * Exported (2026-08-17) so `linux-arm.ts` refuses the same shapes the file-backed path
+ * refuses. Duplicating the predicate would let the two paths drift into disagreeing
+ * about what counts as a device — the worst possible thing for them to disagree about.
+ */
+export function isPhysicalDevicePath(path: string): boolean {
   const trimmed = path.trim();
   const windowsDevicePath = trimmed.replace(/\//g, "\\");
   return /^\/dev\//.test(trimmed) || /^\\\\\.\\PhysicalDrive\d+(?:\\|$)/i.test(windowsDevicePath);
@@ -168,7 +182,17 @@ export interface FileBackedEspWrite {
     | "/zeta-authorized-keys.pub"
     | "/zeta-hostname.txt"
     | "/zeta-creds.enc"
-    | "/zeta-wifi-credentials.json";
+    | "/zeta-wifi-credentials.json"
+    // 081KSNY2Z0008QG0R0008PN7RQ scenario 5 role provisioning: the role the
+    // flashed medium provisions, and the k3s node-token when it travels with
+    // the medium. Before these two, a flash could carry keys, a hostname,
+    // credentials and wifi — but never an answer to "am I founding a cluster
+    // or joining one", which is why a second node installed as a second
+    // control plane. See firstboot-role.ts.
+    | "/zeta-firstboot.conf"
+    | "/zeta-join-token"
+    | "/zeta-bind-uefi-keyfile"
+    | "/zeta-qemu-creds-passphrase";
   readonly sourcePath?: string;
   readonly content?: string;
 }
@@ -195,6 +219,32 @@ export interface FileBackedZflashImagePlanInput {
   readonly hostname?: string;
   readonly credentialBlobPath?: string;
   readonly wifiCredentials?: WifiCredentials;
+  /**
+   * When true, writes `/zeta-bind-uefi-keyfile` so the guest installer
+   * opt-in-binds the target ESP keyfile. QEMU-only marker; not default persist.
+   */
+  readonly bindUefiKeyfileMarker?: boolean;
+  /**
+   * When set (non-empty after trailing-newline strip), writes
+   * `/zeta-qemu-creds-passphrase` so non-interactive QEMU can run 6.95-picker.
+   * QEMU-only test secret; not a production operator path. Errors must not
+   * echo the value.
+   */
+  readonly qemuCredsPassphrase?: string;
+  /**
+   * When set, writes `/zeta-firstboot.conf` so the booting node learns
+   * whether it founds a cluster or joins one. Omitted → unchanged behaviour:
+   * the node falls back to the ISO's own `/etc/zeta-firstboot.conf`, which
+   * ships `HOST=control-plane`.
+   */
+  readonly firstbootRole?: ZetaFirstbootRole;
+  /**
+   * Host path to k3s node-token material to copy onto the ESP as
+   * `/zeta-join-token`. Only meaningful for a joiner whose role names that
+   * same ESP path — a token with no config pointing at it is a file nothing
+   * reads, so the combination is refused rather than written.
+   */
+  readonly joinTokenSourcePath?: string;
 }
 
 export interface FileBackedInlineFile {
@@ -386,6 +436,61 @@ export function planFileBackedZflashImage(input: FileBackedZflashImagePlanInput)
       destination: "/zeta-wifi-credentials.json",
     });
   }
+  if (input.bindUefiKeyfileMarker === true) {
+    espWrites.push({
+      content: "1\n",
+      destination: "/zeta-bind-uefi-keyfile",
+    });
+  }
+  if (input.qemuCredsPassphrase !== undefined) {
+    const passphrase = input.qemuCredsPassphrase.replace(/\r?\n$/, "");
+    if (passphrase.length === 0) {
+      return { ok: false, error: "qemuCredsPassphrase is empty" };
+    }
+    espWrites.push({
+      content: `${passphrase}\n`,
+      destination: "/zeta-qemu-creds-passphrase",
+    });
+  }
+  // 081KSNY2Z0008QG0R0008PN7RQ role provisioning. Ordered AFTER the existing
+  // writes so adding a role cannot disturb the byte-for-byte shape of a plan
+  // that does not ask for one.
+  const joinTokenSourcePath = input.joinTokenSourcePath?.trim();
+  if (input.firstbootRole !== undefined) {
+    const firstboot = planFirstbootConfFileContent(input.firstbootRole);
+    if (!firstboot.ok) {
+      return { ok: false, error: firstboot.error };
+    }
+    if (joinTokenSourcePath !== undefined && joinTokenSourcePath.length > 0) {
+      // The config must NAME the token path, or the token lands on the ESP
+      // and nothing goes looking for it. Refusing here is the whole point:
+      // a write nobody reads looks like provisioning and provisions nothing.
+      if (firstboot.config.joinTokenEspPath !== ZETA_JOIN_TOKEN_ESP_DESTINATION) {
+        return {
+          ok: false,
+          error:
+            `joinTokenSourcePath was given but the firstboot role does not name ` +
+            `${ZETA_JOIN_TOKEN_ESP_DESTINATION} as its token path ` +
+            `(role token path: ${firstboot.config.joinTokenEspPath ?? "none"}); ` +
+            `the token would land on the ESP with nothing configured to read it`,
+        };
+      }
+      espWrites.push({
+        destination: ZETA_JOIN_TOKEN_ESP_DESTINATION,
+        sourcePath: joinTokenSourcePath,
+      });
+    }
+    espWrites.push({
+      content: firstboot.value,
+      destination: ZETA_FIRSTBOOT_CONF_ESP_DESTINATION,
+    });
+  } else if (joinTokenSourcePath !== undefined && joinTokenSourcePath.length > 0) {
+    return {
+      ok: false,
+      error: "joinTokenSourcePath requires a joiner firstbootRole; a token with no role config is never read",
+    };
+  }
+
   if (espWrites.length === 0) {
     return { ok: false, error: "at least one ESP write is required" };
   }
@@ -618,4 +723,222 @@ function defaultGetRandomBytes(n: number): Uint8Array {
 export function parseOutputFileMarker(line: string): string | null {
   const m = line.match(/^OUTPUT-FILE:\s+(.+?)\s*$/);
   return m ? m[1]! : null;
+}
+
+// ────────────────────────────────────────────────────────────────────────────
+// ISO architecture selection (2026-08-18)
+//
+// WHY THIS EXISTS. `zflash` acquires an installer ISO two ways, and until now
+// BOTH were architecture-blind:
+//
+//   1. `autoDownloadFreshIsoIfNeeded()` runs `gh run download <id>` with no
+//      artifact filter, then walked the download tree returning the FIRST file
+//      ending in `.iso` in `readdirSync` order. Since the `build-aarch64` job
+//      landed (081KTSZN10008QG0R00349SM6P slice 1), a single run carries TWO
+//      ISOs — `nixos-minimal-<ver>-x86_64-linux.iso` and the aarch64 sibling
+//      under the `zeta-installer-aarch64-iso` artifact. `readdirSync` order is
+//      directory-hash order on APFS, not alphabetical, so which one you got was
+//      a coin flip nothing in the tool could see.
+//
+//   2. The name it cached the winner under — `zeta-installer-<rel>-ci<run>-<date>.iso`
+//      — recorded NO architecture, and `autoDiscoverIso()` then picks
+//      newest-by-mtime out of `~/Downloads`. So a wrong-arch pull did not just
+//      fail once: it became the newest candidate and was picked again on every
+//      later run. Sticky, and invisible in the filename.
+//
+// The failure signature is maximally unhelpful: the target board says "no
+// bootable device", which is the same message a Secure Boot or boot-order
+// problem gives, after a full flash + walk-to-the-box cycle has been spent.
+// Named as known-unknown #2 in `docs/runbooks/2026-08-16-first-metal-bringup-preflight.md`,
+// whose mitigation was "pass the ISO path by hand" — i.e. the operator carrying
+// a defect the tool should carry.
+//
+// DISCIPLINE. Selection REFUSES rather than guesses. A wrong-arch flash costs a
+// physical bringup cycle, so an ambiguous tree is an error with an actionable
+// message, never a pick. The one concession to compatibility: a single candidate
+// whose architecture cannot be read at all is accepted with a warning, because
+// pre-aarch64 runs and hand-renamed ISOs legitimately carry no arch token.
+
+/** Installer ISO architectures this repo builds. */
+export type IsoArch = "x86_64" | "aarch64";
+
+/**
+ * Map a Node/Bun `process.arch` value to the ISO architecture whose installer
+ * that host would natively boot. Returns null for architectures we do not build
+ * an installer for — the caller must then require an explicit `--iso-arch`
+ * rather than assume.
+ *
+ * NOTE this is the arch of the machine RUNNING zflash, which is only a default:
+ * flashing an x86_64 stick from an arm64 Mac is the normal case for this repo's
+ * cluster (§2 of the first-metal preflight — "Aaron's cluster target is x86_64").
+ * So callers treat this as a fallback, never as the answer.
+ */
+export function hostIsoArch(nodeArch: string): IsoArch | null {
+  if (nodeArch === "x64") return "x86_64";
+  if (nodeArch === "arm64") return "aarch64";
+  return null;
+}
+
+/**
+ * Read the architecture out of an ISO path.
+ *
+ * Scans the WHOLE path, not just the basename, and that is load-bearing: the
+ * aarch64 ISO's arch token lives in its ARTIFACT DIRECTORY name
+ * (`zeta-installer-aarch64-iso/`), and `configuration.nix` `mkForce`s
+ * `isoName = "zeta-installer-${release}.iso"` with no arch in it. If a future
+ * nixpkgs honours that force on both arches, the two inner filenames become
+ * byte-identical and the directory is the ONLY remaining signal.
+ *
+ * Returns null when no token is present — an honest "unknown", never a guess.
+ */
+export function detectIsoArchFromPath(path: string): IsoArch | null {
+  const haystack = path.toLowerCase().replace(/\\/g, "/");
+  const isAarch64 = /(^|[^a-z0-9])(aarch64|arm64)([^a-z0-9]|$)/.test(haystack);
+  const isX86 = /(^|[^a-z0-9])(x86_64|x86-64|amd64)([^a-z0-9]|$)/.test(haystack);
+  // A path claiming both is not a tiebreak we are entitled to make.
+  if (isAarch64 && isX86) return null;
+  if (isAarch64) return "aarch64";
+  if (isX86) return "x86_64";
+  return null;
+}
+
+export type IsoArchSelection =
+  | { readonly ok: true; readonly path: string; readonly arch: IsoArch | null; readonly warning: string | null }
+  | { readonly ok: false; readonly error: string };
+
+/**
+ * Choose the ISO matching `want` from a set of candidate paths.
+ *
+ * Refusal is the point — see the module note above. Cases, in order:
+ *   - exactly one path whose detected arch === want      -> selected
+ *   - several such paths                                 -> REFUSE (ambiguous)
+ *   - none match, exactly one candidate, arch unknown    -> selected + warning
+ *   - none match, and some candidate names the WRONG arch-> REFUSE (this is the bug)
+ *   - no candidates                                      -> REFUSE
+ *
+ * Candidates are sorted before inspection so the outcome does not depend on
+ * `readdirSync` order — the same tree yields the same verdict on every host
+ * (DST discipline; the original defect was precisely an order-dependent pick).
+ */
+export function selectIsoForArch(paths: readonly string[], want: IsoArch): IsoArchSelection {
+  const sorted = [...paths].sort();
+  if (sorted.length === 0) {
+    return { ok: false, error: "no .iso files found to choose from" };
+  }
+
+  const matching = sorted.filter((p) => detectIsoArchFromPath(p) === want);
+  const soleMatch = matching.length === 1 ? matching[0] : undefined;
+  if (soleMatch !== undefined) {
+    return { ok: true, path: soleMatch, arch: want, warning: null };
+  }
+  if (matching.length > 1) {
+    return {
+      ok: false,
+      error:
+        `found ${String(matching.length)} ISOs claiming arch ${want}; refusing to guess between them:\n` +
+        matching.map((p) => `    ${p}`).join("\n") +
+        `\n  Pass the intended ISO explicitly: zflash <path/to/iso>`,
+    };
+  }
+
+  const unknown = sorted.filter((p) => detectIsoArchFromPath(p) === null);
+  const wrongArch = sorted.filter((p) => {
+    const a = detectIsoArchFromPath(p);
+    return a !== null && a !== want;
+  });
+
+  const soleUnknown = unknown.length === 1 ? unknown[0] : undefined;
+  if (soleUnknown !== undefined && wrongArch.length === 0) {
+    return {
+      ok: true,
+      path: soleUnknown,
+      arch: null,
+      warning:
+        `could not read an architecture from ${soleUnknown} — assuming it is ${want}. ` +
+        `If the target board reports "no bootable device", this is the first thing to suspect.`,
+    };
+  }
+
+  if (wrongArch.length > 0 && unknown.length === 0) {
+    return {
+      ok: false,
+      error:
+        `no ${want} ISO here; the only candidate(s) are a different architecture:\n` +
+        wrongArch.map((p) => `    ${p} (${detectIsoArchFromPath(p) ?? "unknown"})`).join("\n") +
+        `\n  Flashing this to a ${want} board yields "no bootable device".\n` +
+        `  Check that the build-ai-cluster-iso run actually produced a ${want} artifact.`,
+    };
+  }
+
+  return {
+    ok: false,
+    error:
+      `cannot identify a ${want} ISO among ${String(sorted.length)} candidate(s); refusing to guess:\n` +
+      sorted.map((p) => `    ${p} (${detectIsoArchFromPath(p) ?? "arch unknown"})`).join("\n") +
+      `\n  Pass the intended ISO explicitly: zflash <path/to/iso>`,
+  };
+}
+
+/**
+ * Name for the copy cached into `~/Downloads`.
+ *
+ * The arch tag is not cosmetic. `autoDiscoverIso()` picks newest-by-mtime among
+ * `zeta-installer-*.iso`, so without the tag a wrong-arch pull outranks every
+ * correct older ISO on the next run and keeps doing so. With it, the operator
+ * can see the mismatch in `ls` and {@link selectIsoForArch} can filter the
+ * `~/Downloads` set the same way it filters a download tree.
+ */
+export function stampedCiIsoFileName(
+  release: string,
+  runId: string | number,
+  updatedAtIso: string,
+  arch: IsoArch | null,
+): string {
+  const date = updatedAtIso.slice(0, 10);
+  const archTag = arch === null ? "" : `-${arch}`;
+  return `zeta-installer-${release}-ci${String(runId)}-${date}${archTag}.iso`;
+}
+
+/**
+ * Choose from the ISOs already sitting in the Downloads folder, newest first.
+ *
+ * Deliberately MORE LENIENT than {@link selectIsoForArch}, and the asymmetry is
+ * the point. A download tree from one CI run is a closed set we fully understand,
+ * so ambiguity there is a bug and refusal is correct. The Downloads folder is an
+ * open-ended human history — the first-metal preflight records two eight-week-old
+ * arch-less ISOs sitting in it right now — so refusing on ambiguity there would
+ * break a path that works today.
+ *
+ * Policy: prefer the newest ISO that names the wanted arch; otherwise fall back to
+ * the newest whose arch cannot be read, with a warning; and only refuse when every
+ * candidate positively names a DIFFERENT arch. That last case is the sticky-bad
+ * state the missing arch tag used to create, and it is the one worth stopping for.
+ */
+export function selectDownloadedIsoForArch(candidatesNewestFirst: readonly string[], want: IsoArch): IsoArchSelection {
+  if (candidatesNewestFirst.length === 0) {
+    return { ok: false, error: "no installer ISOs found to choose from" };
+  }
+  const newestMatching = candidatesNewestFirst.find((p) => detectIsoArchFromPath(p) === want);
+  if (newestMatching !== undefined) {
+    return { ok: true, path: newestMatching, arch: want, warning: null };
+  }
+  const newestUnknown = candidatesNewestFirst.find((p) => detectIsoArchFromPath(p) === null);
+  if (newestUnknown !== undefined) {
+    return {
+      ok: true,
+      path: newestUnknown,
+      arch: null,
+      warning:
+        `no ISO here names arch ${want}; falling back to ${newestUnknown}, whose arch cannot be read. ` +
+        `If the target board reports "no bootable device", this is the first thing to suspect.`,
+    };
+  }
+  return {
+    ok: false,
+    error:
+      `every candidate ISO names an architecture other than ${want}:\n` +
+      candidatesNewestFirst.map((p) => `    ${p} (${detectIsoArchFromPath(p) ?? "unknown"})`).join("\n") +
+      `\n  Flashing any of these to a ${want} board yields "no bootable device".\n` +
+      `  Download a ${want} ISO from a build-ai-cluster-iso run, or pass one explicitly.`,
+  };
 }

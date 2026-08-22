@@ -1,0 +1,12 @@
+{
+  "pr_number": 7648,
+  "archive_path": "docs/history/pr-reviews/PR-7648-docs-thesis-bounded-uncertainty-room-by-room-the-arc-s-compression-carved.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-11T11:08:23.472Z",
+  "schema_version": "v1",
+  "commit_sha": "067846a121e05549fad3b19df972b675f7c3fdc4",
+  "title": "docs(thesis): 'bounded uncertainty, room by room' — the arc's compression, carved",
+  "state": "MERGED",
+  "merged_at": "2026-06-11T11:08:00Z",
+  "head_ref": "shadow-bounded-uncertainty-thesis"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 6827,
+  "archive_path": "docs/history/pr-reviews/PR-6827-docs-treaty-reconcile-blake3-content-address-treaty-with-lior-s-as-built-zetaid-.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-07T13:46:41.169Z",
+  "schema_version": "v1",
+  "commit_sha": "7db2286459bf8aa9fc4184adc0e873517e759ff4",
+  "title": "docs(treaty): reconcile BLAKE3 content-address treaty with Lior's as-built ZetaId + file ContentHash256 gap",
+  "state": "MERGED",
+  "merged_at": "2026-06-07T13:46:16Z",
+  "head_ref": "docs/blake3-treaty-reconciled-as-built"
+}

@@ -1,0 +1,15 @@
+{
+  "pr_number": 2229,
+  "archive_path": "docs/history/pr-reviews/PR-2229-feat-b-0349-extract-7-operational-discipline-bullets-to-claude-rules.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_fnDO",
+    "thread:PRRT_kwDOSF9kNM6AzLlk"
+  ],
+  "fetched_at": "2026-05-09T07:30:24.038Z",
+  "schema_version": "v1",
+  "commit_sha": "05eed7f29eb6bc4a9e9c5a78a7d93b60fc2bb671",
+  "title": "feat(B-0349): extract 7 operational-discipline bullets to .claude/rules/",
+  "state": "MERGED",
+  "merged_at": "2026-05-09T07:30:10Z",
+  "head_ref": "feat/b0349-extract-operational-discipline-to-rules"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 6699,
+  "archive_path": "docs/history/pr-reviews/PR-6699-feat-core-durableyinyang-the-yin-yang-cell-evolves-durably-on-the-git-db.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-07T00:07:54.504Z",
+  "schema_version": "v1",
+  "commit_sha": "a03fb4b04f7866a1e9ad802668f789aca106fc2d",
+  "title": "feat(Core): DurableYinYang — the yin/yang cell evolves durably on the git DB",
+  "state": "MERGED",
+  "merged_at": "2026-06-07T00:07:32Z",
+  "head_ref": "otto/durable-yinyang-cell-on-git"
+}

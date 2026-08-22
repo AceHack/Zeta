@@ -1,0 +1,12 @@
+{
+  "pr_number": 6035,
+  "archive_path": "docs/history/pr-reviews/PR-6035-decompose-b-0347-re-decomp-pass-2-into-b-0347-5-6-7-substrate-drift-aware.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-29T19:21:19.431Z",
+  "schema_version": "v1",
+  "commit_sha": "7d42bc28a3ed811c78d1010ea8c1c195fb1c2321",
+  "title": "decompose(B-0347): re-decomp pass 2 into B-0347.5/.6/.7 (substrate-drift-aware)",
+  "state": "MERGED",
+  "merged_at": "2026-05-29T19:20:57Z",
+  "head_ref": "decompose/b0347-remaining-work-router-ci-tighten-2026-05-29"
+}

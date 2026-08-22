@@ -1,0 +1,12 @@
+{
+  "pr_number": 5723,
+  "archive_path": "docs/history/pr-reviews/PR-5723-docs-ferry-preserve-6th-kestrel-ferry-verbatim-categorical-clifford-corresponden.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-28T08:50:16.830Z",
+  "schema_version": "v1",
+  "commit_sha": "138bc62dc2885ca448e8bb8c5f9dbbe79add6316",
+  "title": "docs(ferry): preserve 6th Kestrel ferry verbatim — categorical-Clifford correspondence + multi-representation isomorphism + operator F#/CT-for-programmers implementation-substrate naming",
+  "state": "MERGED",
+  "merged_at": "2026-05-28T08:49:56Z",
+  "head_ref": "otto-cli/kestrel-6th-ferry-clifford-ct-multi-rep-isomorphism-2026-05-28"
+}

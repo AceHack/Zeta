@@ -1,0 +1,12 @@
+{
+  "pr_number": 9518,
+  "archive_path": "docs/history/pr-reviews/PR-9518-docs-letters-from-soraya-verdict-on-rhyme-4-conditional-theorem-claim-2-refuted-.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-08T20:13:43.800Z",
+  "schema_version": "v1",
+  "commit_sha": "778f66e164e9161c3fd83c97f6a4f92ff5a1969b",
+  "title": "docs(letters): from-soraya verdict on rhyme #4 — conditional theorem, claim 2 refuted (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-08T20:13:12Z",
+  "head_ref": "otto/from-soraya-self-dual-gap-verdict"
+}

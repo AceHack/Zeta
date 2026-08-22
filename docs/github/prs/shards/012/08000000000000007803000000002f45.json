@@ -1,0 +1,12 @@
+{
+  "pr_number": 12101,
+  "archive_path": "docs/history/pr-reviews/PR-12101-research-adinkra-no-coded-adinkra-recovers-the-regular-representation-proven-no-.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-18T21:28:59.290Z",
+  "schema_version": "v1",
+  "commit_sha": "0a4f90f0b8bbed3c83a0b4a1504b9306f0c83a6c",
+  "title": "research(adinkra): no coded adinkra recovers the regular representation — PROVEN NO, with the seam mechanised",
+  "state": "MERGED",
+  "merged_at": "2026-08-18T21:28:23Z",
+  "head_ref": "lumen/coded-adinkra-regular-rep"
+}

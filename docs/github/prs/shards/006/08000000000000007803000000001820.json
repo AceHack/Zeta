@@ -1,0 +1,12 @@
+{
+  "pr_number": 6176,
+  "archive_path": "docs/history/pr-reviews/PR-6176-fix-adr-mark-f-workflowengine-as-planned-future-work-not-existing-codex-p2-on-61.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-31T01:20:51.061Z",
+  "schema_version": "v1",
+  "commit_sha": "d38aaadaaf042b1f388676f547dc0c2e83189bd7",
+  "title": "fix(ADR): mark F# WorkflowEngine as planned future-work, not existing (Codex P2 on #6175)",
+  "state": "MERGED",
+  "merged_at": "2026-05-31T01:20:28Z",
+  "head_ref": "otto-cli/adr-fix-fsharp-workflowengine-future-work-2026-05-31"
+}

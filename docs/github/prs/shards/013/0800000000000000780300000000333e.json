@@ -1,0 +1,12 @@
+{
+  "pr_number": 13118,
+  "archive_path": "docs/history/pr-reviews/PR-13118-fix-zflash-the-stale-windows-fork-carries-the-size-bounds-fix-too-i-broke-this-i.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-21T07:29:59.168Z",
+  "schema_version": "v1",
+  "commit_sha": "5cd9bbd17fa8e144235743c19760c47d5393a84c",
+  "title": "fix(zflash): the stale Windows fork carries the size-bounds fix too — I broke this in #13099",
+  "state": "MERGED",
+  "merged_at": "2026-08-21T07:29:18Z",
+  "head_ref": "zflash/fork-carries-the-size-bounds-fix"
+}

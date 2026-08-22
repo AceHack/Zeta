@@ -1,0 +1,17 @@
+{
+  "pr_number": 5251,
+  "archive_path": "docs/history/pr-reviews/PR-5251-fix-postmerge-5235-3-copilot-findings-iso-workflow-path-trigger.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7FCUxP",
+    "comment:PRRC_kwDOSF9kNM7FCUxx",
+    "thread:PRRT_kwDOSF9kNM6E4HQ5",
+    "thread:PRRT_kwDOSF9kNM6E4HRQ"
+  ],
+  "fetched_at": "2026-05-26T17:45:19.498Z",
+  "schema_version": "v1",
+  "commit_sha": "c9c3ef220c7e0a578f3559e30458836ff59a9d8c",
+  "title": "fix(postmerge-5235): 3 Copilot findings + ISO workflow path-trigger",
+  "state": "MERGED",
+  "merged_at": "2026-05-26T17:45:00Z",
+  "head_ref": "otto-cli/postmerge-5235-fixfwd-3-copilot-2026-05-26"
+}

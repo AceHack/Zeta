@@ -1,0 +1,12 @@
+{
+  "pr_number": 10145,
+  "archive_path": "docs/history/pr-reviews/PR-10145-deps-bump-blake3-from-2-2-1-to-3-0-2.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-18T09:46:02.658Z",
+  "schema_version": "v1",
+  "commit_sha": "ff8e408b1ee6bb7ff854840731bcc6fe46481414",
+  "title": "deps: Bump Blake3 from 2.2.1 to 3.0.2",
+  "state": "MERGED",
+  "merged_at": "2026-08-08T08:01:41Z",
+  "head_ref": "dependabot/nuget/Blake3-3.0.2"
+}

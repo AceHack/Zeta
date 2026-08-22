@@ -1,0 +1,12 @@
+{
+  "pr_number": 3416,
+  "archive_path": "docs/history/pr-reviews/PR-3416-shard-tick-1040z-pr-3413-merged-peer-otto-session-alive.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-15T10:45:20.050Z",
+  "schema_version": "v1",
+  "commit_sha": "53c55ed5f28067832edc24cc2e75285fb4c67550",
+  "title": "shard(tick): 1040Z — PR #3413 merged; peer-Otto session alive",
+  "state": "MERGED",
+  "merged_at": "2026-05-15T10:45:03Z",
+  "head_ref": "shard/tick-1040z-otto-cli-2026-05-15"
+}

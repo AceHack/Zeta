@@ -1,0 +1,12 @@
+{
+  "pr_number": 9689,
+  "archive_path": "docs/history/pr-reviews/PR-9689-fix-ci-repair-zetaid-rust-lint.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-11T13:24:50.736Z",
+  "schema_version": "v1",
+  "commit_sha": "b11260d9b3524a7f668b8b49c5a51fb529ee6d31",
+  "title": "fix(ci): repair zetaid rust lint",
+  "state": "MERGED",
+  "merged_at": "2026-07-11T13:24:20Z",
+  "head_ref": "codex/fix-rust-zetaid-crockford-lint"
+}

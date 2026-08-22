@@ -1,0 +1,12 @@
+{
+  "pr_number": 3826,
+  "archive_path": "docs/history/pr-reviews/PR-3826-shard-tick-2026-05-16t08-15z-b-0173-fp-3-2nd-example-fp-rate-at-25.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-16T08:24:10.443Z",
+  "schema_version": "v1",
+  "commit_sha": "c8de96e776ce6f56c693e112cad03523224984e4",
+  "title": "shard(tick): 2026-05-16T08:15Z — B-0173 = FP-3 (2nd example); FP rate at 25%",
+  "state": "MERGED",
+  "merged_at": "2026-05-16T08:23:55Z",
+  "head_ref": "shard/tick-0815z-otto-cli-2026-05-16"
+}

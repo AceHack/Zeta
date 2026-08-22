@@ -66,7 +66,7 @@ the encoding IS the established definition, the tautology risk collapses.
 
 **Anchor check procedure:**
 
-1. Query `tools/alignment/concept_registry.ts` KNOWN_ANCHORS map for the
+1. Query `src/Core.TypeScript/alignment/concept_registry.ts` KNOWN_ANCHORS map for the
    concept-id. If it is listed with `state: "anchored"`, use the cited
    paper's definition verbatim as the formal grounding. Do not re-derive.
 2. If not in the registry, search the literature for established
@@ -82,7 +82,7 @@ the encoding IS the established definition, the tautology risk collapses.
    - The spec should prove **conformance to the cited definition**, not
      a free-standing encoding.
    - Register the concept in the KNOWN_ANCHORS map if it is missing
-     (one-line addition to `tools/alignment/concept_registry.ts`).
+     (one-line addition to `src/Core.TypeScript/alignment/concept_registry.ts`).
 4. If no established definition exists, proceed to the routing table —
    but note in the output that the property is **factory-native** and
    document the justification.
@@ -259,7 +259,7 @@ the `architect` reads it before sizing the round.
 
 ## Reference patterns
 
-- `tools/alignment/concept_registry.ts` — KNOWN_ANCHORS map (literature-first step 0)
+- `src/Core.TypeScript/alignment/concept_registry.ts` — KNOWN_ANCHORS map (literature-first step 0)
 - `docs/research/proof-tool-coverage.md` — the portfolio
 - `docs/TECH-RADAR.md` — tool ring assignments
 - `docs/BUGS.md` — known gaps she routes against

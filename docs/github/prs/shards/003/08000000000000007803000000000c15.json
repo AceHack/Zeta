@@ -1,0 +1,12 @@
+{
+  "pr_number": 3093,
+  "archive_path": "docs/history/pr-reviews/PR-3093-feat-hooks-md032-pre-commit-harness-hook-closes-b-0456-4.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-14T03:32:52.439Z",
+  "schema_version": "v1",
+  "commit_sha": "2a227899c0886be6aa255fcbb600dc5fa559b6a4",
+  "title": "feat(hooks/md032): pre-commit harness hook closes B-0456 #4",
+  "state": "MERGED",
+  "merged_at": "2026-05-14T03:32:31Z",
+  "head_ref": "feat/b0456-md032-precommit-hook-acceptance-4-2026-05-14"
+}

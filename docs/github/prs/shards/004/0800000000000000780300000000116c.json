@@ -1,0 +1,12 @@
+{
+  "pr_number": 4460,
+  "archive_path": "docs/history/pr-reviews/PR-4460-docs-shard-decompose-1611z-c-out-of-4383-blob.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-21T01:26:19.160Z",
+  "schema_version": "v1",
+  "commit_sha": "d11bc998178583596fad74a57f3897e6e6efdb2e",
+  "title": "docs(shard): decompose 1611Z-c out of #4383 blob",
+  "state": "MERGED",
+  "merged_at": "2026-05-21T01:26:01Z",
+  "head_ref": "lior/decompose-4383-slice1-new"
+}

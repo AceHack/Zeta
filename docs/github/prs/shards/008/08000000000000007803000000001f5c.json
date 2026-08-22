@@ -1,0 +1,12 @@
+{
+  "pr_number": 8028,
+  "archive_path": "docs/history/pr-reviews/PR-8028-deps-bump-the-nuget-minor-patch-group-with-6-updates.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-13T20:34:26.723Z",
+  "schema_version": "v1",
+  "commit_sha": "32c9807ea62f4599e18735e45b8a65e77a4f6d01",
+  "title": "deps: Bump the nuget-minor-patch group with 6 updates",
+  "state": "MERGED",
+  "merged_at": "2026-06-13T20:34:07Z",
+  "head_ref": "dependabot/nuget/nuget-minor-patch-5b8273a655"
+}

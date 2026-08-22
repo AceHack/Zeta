@@ -10,7 +10,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Include="AssemblyInfo.fs" />
+    <Compile Include="BoundJustification.fs" />
     <Compile Include="Message.fs" />
+    <Compile Include="Attested.fs" />
+    <Compile Include="HeavyTailFold.fs" />
     <Compile Include="QuantumFusion.fs" />
     <Compile Include="MessageBatch.fs" />
     <Compile Include="FactorGraph.fs" />
@@ -21,6 +25,7 @@
     <Compile Include="SocietyBootstrap.fs" />
     <Compile Include="AttentionRouter.fs" />
     <Compile Include="InformationValue.fs" />
+    <Compile Include="ReportTriage.fs" />
     <Compile Include="MinimalBnn.fs" />
     <Compile Include="MultilayerBnn.fs" />
     <Compile Include="BusRegime.fs" />
@@ -43,7 +48,7 @@
     <Compile Include="FigureEightEnsemble.fs" />
     <Compile Include="LagrangeCondorcet.fs" />
     <Compile Include="AskBidClearing.fs" />
-    <Compile Include="ReticulumTransport.fs" />
+    <Compile Include="MeshLatencyModel.fs" />
     <Compile Include="ReticulumBusMeter.fs" />
     <Compile Include="GossipTelemetry.fs" />
     <Compile Include="KeptClaimOracle.fs" />

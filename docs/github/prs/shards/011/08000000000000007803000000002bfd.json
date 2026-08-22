@@ -1,0 +1,12 @@
+{
+  "pr_number": 11261,
+  "archive_path": "docs/history/pr-reviews/PR-11261-docs-research-the-80-20-line-where-prediction-stops-being-reducible.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-17T01:54:54.016Z",
+  "schema_version": "v1",
+  "commit_sha": "f349bdee3d6fd6ef6b99caef7919c8847c64fef5",
+  "title": "docs(research): the 80/20 line — where prediction stops being reducible",
+  "state": "MERGED",
+  "merged_at": "2026-08-17T01:54:20Z",
+  "head_ref": "shadow/ferry-ismael-incompleteness-from-within"
+}

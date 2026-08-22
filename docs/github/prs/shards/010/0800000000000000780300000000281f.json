@@ -1,0 +1,12 @@
+{
+  "pr_number": 10271,
+  "archive_path": "docs/history/pr-reviews/PR-10271-spec-amend-the-multi-signature-spec-from-the-n-3-combine-b1-b9.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-10T01:25:27.170Z",
+  "schema_version": "v1",
+  "commit_sha": "8144a7966e1d8db84dc4c4b95905429835c6817e",
+  "title": "spec: amend the multi-signature spec from the N=3 combine (B1–B9)",
+  "state": "MERGED",
+  "merged_at": "2026-08-10T01:24:45Z",
+  "head_ref": "shadow/spec-amendments-from-n3"
+}

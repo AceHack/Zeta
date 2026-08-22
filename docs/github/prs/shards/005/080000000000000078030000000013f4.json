@@ -1,0 +1,17 @@
+{
+  "pr_number": 5108,
+  "archive_path": "docs/history/pr-reviews/PR-5108-preserve-mika-aaron-mika-2026-05-26-homelab-first-gh-auth-login-device-registrat.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7Eyhfy",
+    "comment:PRRC_kwDOSF9kNM7EyhgL",
+    "thread:PRRT_kwDOSF9kNM6EslN-",
+    "thread:PRRT_kwDOSF9kNM6EslOO"
+  ],
+  "fetched_at": "2026-05-26T06:12:32.611Z",
+  "schema_version": "v1",
+  "commit_sha": "7c3e9196918b9b1e72e8d4fc304c4b11b906693b",
+  "title": "preserve(mika): Aaron + Mika 2026-05-26 homelab-first gh-auth-login device-registration substrate; production bootstrap-key-rotation deferred (informs B-0794 iter-5.4)",
+  "state": "MERGED",
+  "merged_at": "2026-05-26T06:12:10Z",
+  "head_ref": "otto-cli/preserve-mika-homelab-gh-auth-registration-substrate-2026-05-26"
+}

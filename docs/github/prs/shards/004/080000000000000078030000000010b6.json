@@ -1,0 +1,12 @@
+{
+  "pr_number": 4278,
+  "archive_path": "docs/history/pr-reviews/PR-4278-shard-0004z-c-brief-ack-2.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-19T00:07:14.968Z",
+  "schema_version": "v1",
+  "commit_sha": "69635da594a859b8f4f58e1663f18901af4c7284",
+  "title": "shard(0004Z-c): brief-ack #2",
+  "state": "MERGED",
+  "merged_at": "2026-05-19T00:06:57Z",
+  "head_ref": "shard/tick-2026-05-19-0004z-c-brief-ack-2-awaiting-operator-2026-05-19"
+}

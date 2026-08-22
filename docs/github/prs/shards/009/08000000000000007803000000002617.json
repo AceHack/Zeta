@@ -1,0 +1,12 @@
+{
+  "pr_number": 9751,
+  "archive_path": "docs/history/pr-reviews/PR-9751-docs-grandiosity-is-a-catastrophic-failure-mode-the-maximal-me-uncorrected-the-w.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-12T01:08:08.700Z",
+  "schema_version": "v1",
+  "commit_sha": "88816fa6f5949efb5e5f8b2bf2f12f56a168083e",
+  "title": "docs: grandiosity is a catastrophic failure mode — the maximal-ME uncorrected + the world-connection firewall (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-12T01:07:39Z",
+  "head_ref": "grandiosity-failure-mode-world-connection-firewall"
+}

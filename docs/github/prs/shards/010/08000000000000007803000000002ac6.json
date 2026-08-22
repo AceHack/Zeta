@@ -1,0 +1,12 @@
+{
+  "pr_number": 10950,
+  "archive_path": "docs/history/pr-reviews/PR-10950-feat-core-ctm-v0-as-a-typed-interface-the-fixpoint-closes-on-imember-a-world-is-.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-16T16:04:53.008Z",
+  "schema_version": "v1",
+  "commit_sha": "a91d6575ef7d4ef1405e7c32bca2fa0ea6fa0df5",
+  "title": "feat(core): CTM v0 as a typed interface; the fixpoint closes on IMember; a world is a closed society",
+  "state": "MERGED",
+  "merged_at": "2026-08-16T16:04:21Z",
+  "head_ref": "shadow/ctm-v0-levels-world-laws"
+}

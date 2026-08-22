@@ -1,0 +1,12 @@
+{
+  "pr_number": 2008,
+  "archive_path": "docs/history/pr-reviews/PR-2008-fix-backlog-decompose-b-0252-arc-4-self-play.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-08T02:45:01.204Z",
+  "schema_version": "v1",
+  "commit_sha": "1ae6dd32fff9fcc70dbe87aef3425c4757420092",
+  "title": "fix(backlog): decompose B-0252 ARC-4 self-play",
+  "state": "MERGED",
+  "merged_at": "2026-05-08T02:44:45Z",
+  "head_ref": "backlog/b0252-decompose"
+}

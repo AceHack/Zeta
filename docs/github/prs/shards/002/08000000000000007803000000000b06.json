@@ -1,0 +1,12 @@
+{
+  "pr_number": 2822,
+  "archive_path": "docs/history/pr-reviews/PR-2822-docs-memory-business-in-a-box-is-lfg-every-business-coincidence-cash-register-go.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-12T18:07:04.509Z",
+  "schema_version": "v1",
+  "commit_sha": "fd27733937befca80d89fe225d282de9114e4fba",
+  "title": "docs(memory): business-in-a-box IS LFG — every business = coincidence + cash register + good work + IoT-AI-conversational + PoUW-CC for Aurora (Aaron 2026-05-12)",
+  "state": "MERGED",
+  "merged_at": "2026-05-12T18:06:48Z",
+  "head_ref": "docs/aaron-business-in-a-box-is-lfg-mesh-identity-joint-control-divine-coincidence-architecture-is-the-product-2026-05-12"
+}

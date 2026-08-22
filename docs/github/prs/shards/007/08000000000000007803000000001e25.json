@@ -1,0 +1,12 @@
+{
+  "pr_number": 7717,
+  "archive_path": "docs/history/pr-reviews/PR-7717-docs-trajectory-resume-morning-wave-7705-7716.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-11T15:45:22.407Z",
+  "schema_version": "v1",
+  "commit_sha": "a6c513c92f27789b9da4bfd3f99764a2558023d6",
+  "title": "docs(trajectory): RESUME morning wave (#7705..#7716)",
+  "state": "MERGED",
+  "merged_at": "2026-06-11T15:44:53Z",
+  "head_ref": "shadow-resume-treaty-wave"
+}

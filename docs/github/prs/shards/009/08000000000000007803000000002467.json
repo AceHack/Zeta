@@ -1,0 +1,12 @@
+{
+  "pr_number": 9319,
+  "archive_path": "docs/history/pr-reviews/PR-9319-feat-bus-meter-rename-arm-the-s-readout-probe-the-wire-know-your-regime-signalin.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-03T15:39:54.873Z",
+  "schema_version": "v1",
+  "commit_sha": "409e087f578e5a6a3679cf5ec3821162a8ec6c99",
+  "title": "feat(bus-meter)+rename: arm the S-readout — probe the wire, know your regime; signaling → superquantum",
+  "state": "MERGED",
+  "merged_at": "2026-07-03T15:39:33Z",
+  "head_ref": "shadow/bus-delay-meter-and-superquantum-rename"
+}

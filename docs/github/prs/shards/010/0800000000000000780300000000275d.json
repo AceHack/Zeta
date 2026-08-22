@@ -1,0 +1,12 @@
+{
+  "pr_number": 10077,
+  "archive_path": "docs/history/pr-reviews/PR-10077-book-stage-bitcoin-batch-game-theory-csam-vector-gated-sold-all-btc-the-god-npc-.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-07T02:11:17.458Z",
+  "schema_version": "v1",
+  "commit_sha": "6b7f4e881c81cd1a3b9f879536f091bc0a3711ea",
+  "title": "book: stage Bitcoin batch — game theory, CSAM-vector (gated), sold-all-BTC, the God/NPC self-disclosure; + step-dad auth",
+  "state": "MERGED",
+  "merged_at": "2026-08-07T02:10:35Z",
+  "head_ref": "docs/book-ferry-infinite-game-theory-csam-vector-stepdad"
+}

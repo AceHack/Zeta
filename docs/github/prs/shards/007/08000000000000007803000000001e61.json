@@ -1,0 +1,12 @@
+{
+  "pr_number": 7777,
+  "archive_path": "docs/history/pr-reviews/PR-7777-feat-chip9-drw-clips-at-edges-cosmac-vip-the-reviewed-four-oracle-treaty-change-.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-11T20:21:54.998Z",
+  "schema_version": "v1",
+  "commit_sha": "4ba3608328f96e81f26508fd50e2baf3cd455fb4",
+  "title": "feat(chip9): DRW clips at edges (COSMAC VIP) — the reviewed four-oracle treaty change (B-1031) + fixes main's QSharpOracle break",
+  "state": "MERGED",
+  "merged_at": "2026-06-11T20:21:24Z",
+  "head_ref": "shadow-b1031-drw-clip"
+}

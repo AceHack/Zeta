@@ -1,0 +1,14 @@
+{
+  "id": "080cffeb45d99810a013000811c1d020",
+  "at": "2026-08-13T23:15:27.155Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081KZYPHESJ087G0R002EZ7A2H",
+    "type": "bug",
+    "title": "612 TypeScript test files exist, ~95 run in CI - gate.yml bun test covers two directories and nine named files",
+    "slug": "612-typescript-test-files-exist-95-run-in-ci-gate-yml-bun-te",
+    "priority": "P2",
+    "filename": "081KZYPHESJ087G0R002EZ7A2H-612-typescript-test-files-exist-95-run-in-ci-gate-yml-bun-te.md"
+  }
+}

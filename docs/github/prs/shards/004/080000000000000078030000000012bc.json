@@ -1,0 +1,21 @@
+{
+  "pr_number": 4796,
+  "archive_path": "docs/history/pr-reviews/PR-4796-docs-research-restore-patterns-h-o-lost-in-pr-4784-merge-race-add-pattern-q-vend.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7EUb-0",
+    "comment:PRRC_kwDOSF9kNM7EUb-3",
+    "comment:PRRC_kwDOSF9kNM7EUb-v",
+    "comment:PRRC_kwDOSF9kNM7EUbu3",
+    "thread:PRRT_kwDOSF9kNM6EWE8e",
+    "thread:PRRT_kwDOSF9kNM6EWE8h",
+    "thread:PRRT_kwDOSF9kNM6EWE8j",
+    "thread:PRRT_kwDOSF9kNM6EWEwQ"
+  ],
+  "fetched_at": "2026-05-24T00:57:14.406Z",
+  "schema_version": "v1",
+  "commit_sha": "3afd444d84d7c9a9861bb6348e1e5fcf411259da",
+  "title": "docs(research): restore Patterns H-O (lost in PR #4784 merge race) + add Pattern Q (vendor remote-deactivation as substrate-engineering MOST SEVERE)",
+  "state": "MERGED",
+  "merged_at": "2026-05-24T00:56:57Z",
+  "head_ref": "otto/research-restore-h-o-plus-pattern-q-vendor-remote-deactivation-2026-05-24"
+}

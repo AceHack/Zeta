@@ -1,0 +1,12 @@
+{
+  "pr_number": 9315,
+  "archive_path": "docs/history/pr-reviews/PR-9315-feat-chip9-cart-image-front-end-png-quantized-3-plane-grid-self-verifying-cart-0.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-03T15:02:50.170Z",
+  "schema_version": "v1",
+  "commit_sha": "92a2de166dc5086262e39d23fb3cc36a56ae11bd",
+  "title": "feat(chip9-cart): image front end — PNG -> quantized 3-plane grid -> self-verifying cart (081KWJE90EZ layer 2, synthetic)",
+  "state": "MERGED",
+  "merged_at": "2026-07-03T15:02:18Z",
+  "head_ref": "otto/chip9-cart-image-frontend"
+}

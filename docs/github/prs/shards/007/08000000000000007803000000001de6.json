@@ -1,0 +1,12 @@
+{
+  "pr_number": 7654,
+  "archive_path": "docs/history/pr-reviews/PR-7654-feat-chip9-color-plane-opcodes-black-and-white-to-color-zero-case-structural-ful.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-11T11:23:48.822Z",
+  "schema_version": "v1",
+  "commit_sha": "e680eafe5e18107097d1cf9523ffc6b8ce19e76e",
+  "title": "feat(chip9): color plane opcodes — black-and-white to color (zero-case structural; full suite green)",
+  "state": "MERGED",
+  "merged_at": "2026-06-11T11:23:25Z",
+  "head_ref": "shadow-chip9-color-planes"
+}

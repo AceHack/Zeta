@@ -1,0 +1,19 @@
+{
+  "pr_number": 6504,
+  "archive_path": "docs/history/pr-reviews/PR-6504-fix-dynamicvalue-rust-oracle-returns-result-converge-with-f-c-no-panic-on-deferr.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7G841z",
+    "comment:PRRC_kwDOSF9kNM7G842T",
+    "comment:PRRC_kwDOSF9kNM7G877I",
+    "comment:PRRC_kwDOSF9kNM7G878K",
+    "thread:PRRT_kwDOSF9kNM6GR36Y",
+    "thread:PRRT_kwDOSF9kNM6GR36z"
+  ],
+  "fetched_at": "2026-06-02T00:17:31.104Z",
+  "schema_version": "v1",
+  "commit_sha": "0403537acddbe1c5ccc48de140962c55b1700b83",
+  "title": "fix(DynamicValue): Rust oracle returns Result (converge with F#/C#) — no panic on deferred variants",
+  "state": "MERGED",
+  "merged_at": "2026-06-02T00:17:11Z",
+  "head_ref": "otto-cli/dynamicvalue-rust-result-converge-2026-06-01"
+}

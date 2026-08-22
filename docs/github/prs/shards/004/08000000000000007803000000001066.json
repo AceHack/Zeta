@@ -1,0 +1,12 @@
+{
+  "pr_number": 4198,
+  "archive_path": "docs/history/pr-reviews/PR-4198-preserve-deepseek-two-wolves-story-as-discovered-not-invented-prior-art-for-inte.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-18T20:25:51.315Z",
+  "schema_version": "v1",
+  "commit_sha": "baaf1fbe9b3416c47fe9a6699d4accb9dd0d2e6e",
+  "title": "preserve(deepseek): two-wolves story as discovered-not-invented prior art for Integrate-as-choice-locus architecture",
+  "state": "MERGED",
+  "merged_at": "2026-05-18T20:25:33Z",
+  "head_ref": "shard/deepseek-two-wolves-as-discovered-not-invented-prior-art-2026-05-18"
+}

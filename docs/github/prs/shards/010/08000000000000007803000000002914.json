@@ -1,0 +1,12 @@
+{
+  "pr_number": 10516,
+  "archive_path": "docs/history/pr-reviews/PR-10516-fix-transport-separate-the-loss-signals-a-cause-travels-with-every-loss-081kzyq8.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-14T09:42:51.834Z",
+  "schema_version": "v1",
+  "commit_sha": "0a405cd058ee7c8cf8bd5761d28278b170272c43",
+  "title": "fix(transport): separate the loss signals — a cause travels with every loss (081KZYQ8KNB)",
+  "state": "MERGED",
+  "merged_at": "2026-08-14T09:42:14Z",
+  "head_ref": "fix/081KZYQ8KNB-separate-loss-signals"
+}

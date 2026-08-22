@@ -1,0 +1,12 @@
+{
+  "pr_number": 3889,
+  "archive_path": "docs/history/pr-reviews/PR-3889-shard-tick-2026-05-16t13-42z-13-52z-co-commit-cleanup-clean-re-land.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-16T14:01:56.379Z",
+  "schema_version": "v1",
+  "commit_sha": "794434a851c1587676adfe4081abd9908d914cc9",
+  "title": "shard(tick): 2026-05-16T13:42Z + 13:52Z — co-commit cleanup; clean re-land",
+  "state": "MERGED",
+  "merged_at": "2026-05-16T14:01:37Z",
+  "head_ref": "otto-cli-tick-2026-05-16-1352z"
+}

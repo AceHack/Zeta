@@ -1,0 +1,12 @@
+{
+  "pr_number": 5668,
+  "archive_path": "docs/history/pr-reviews/PR-5668-feat-skill-agent-loop-as-distributable-skill-workflow-engine-ships-as-a-skill-vi.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-28T00:46:38.479Z",
+  "schema_version": "v1",
+  "commit_sha": "7679ca251292c632885b89d0f438486fa9bfef5e",
+  "title": "feat(skill): agent-loop as distributable skill — workflow-engine ships AS A SKILL via behavior/data/docs separation = Data Vault 2.0 applied to AI skills + cross-harness via bun (operator 2026-05-28)",
+  "state": "MERGED",
+  "merged_at": "2026-05-28T00:46:20Z",
+  "head_ref": "feat/agent-loop-as-distributable-skill-cross-harness-via-bun-aaron-2026-05-28"
+}

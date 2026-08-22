@@ -1,0 +1,17 @@
+{
+  "pr_number": 8771,
+  "archive_path": "docs/history/pr-reviews/PR-8771-inventory-phase-6-qr-labels-csv-json-export.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7NfBGS",
+    "comment:PRRC_kwDOSF9kNM7NfBGV",
+    "thread:PRRT_kwDOSF9kNM6LC05w",
+    "thread:PRRT_kwDOSF9kNM6LC05z"
+  ],
+  "fetched_at": "2026-06-20T22:06:03.502Z",
+  "schema_version": "v1",
+  "commit_sha": "c25162060bfdf63af7540d22ed4dacbc0278f480",
+  "title": "Inventory Phase 6 — QR labels + CSV/JSON export",
+  "state": "MERGED",
+  "merged_at": "2026-06-20T22:05:33Z",
+  "head_ref": "claude/phase-6-qr-export-fq8z1g"
+}

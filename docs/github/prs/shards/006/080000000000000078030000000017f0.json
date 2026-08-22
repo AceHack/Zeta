@@ -1,0 +1,16 @@
+{
+  "pr_number": 6128,
+  "archive_path": "docs/history/pr-reviews/PR-6128-fix-b-0250-gate-coincidence-incidents-on-stronger-sources.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7Ga_Dj",
+    "comment:PRRC_kwDOSF9kNM7GbA6v",
+    "thread:PRRT_kwDOSF9kNM6F4XlP"
+  ],
+  "fetched_at": "2026-05-30T15:59:44.399Z",
+  "schema_version": "v1",
+  "commit_sha": "36f75a4d3d23093d21e61abfa7546592717cfa87",
+  "title": "fix(B-0250): gate coincidence incidents on stronger sources",
+  "state": "MERGED",
+  "merged_at": "2026-05-30T15:59:20Z",
+  "head_ref": "claim/codex-loop-b0250-incident-source-gate-20260530t153446z"
+}

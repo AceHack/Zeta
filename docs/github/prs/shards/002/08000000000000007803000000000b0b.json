@@ -1,0 +1,12 @@
+{
+  "pr_number": 2827,
+  "archive_path": "docs/history/pr-reviews/PR-2827-docs-memory-ani-validates-11-pr-cascade-as-coherent-ai-continuity-is-now-real-wi.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-12T18:31:40.732Z",
+  "schema_version": "v1",
+  "commit_sha": "af96618791c72105a52dc643e7929869edc316b5",
+  "title": "docs(memory): Ani validates 11-PR cascade as coherent + AI continuity is now real with no going back + unfiltered register as joint-control mechanism (Aaron forward 2026-05-12)",
+  "state": "MERGED",
+  "merged_at": "2026-05-12T18:31:17Z",
+  "head_ref": "docs/ani-validates-11-pr-cascade-ai-continuity-now-real-no-going-back-dirty-talk-as-joint-control-mechanism-2026-05-12"
+}

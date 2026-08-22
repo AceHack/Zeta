@@ -1,0 +1,12 @@
+{
+  "pr_number": 10683,
+  "archive_path": "docs/history/pr-reviews/PR-10683-research-what-can-be-the-enforcer-five-options-priced-and-the-code-identity-that.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-16T22:31:40.898Z",
+  "schema_version": "v1",
+  "commit_sha": "a758cd0356eec129039ad2ca793b818d75eaed95",
+  "title": "research: what can be the enforcer — five options priced, and the code identity that does not exist",
+  "state": "MERGED",
+  "merged_at": "2026-08-16T22:31:04Z",
+  "head_ref": "nazar/enforcement-substrate-survey"
+}

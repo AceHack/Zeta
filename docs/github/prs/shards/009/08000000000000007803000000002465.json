@@ -1,0 +1,12 @@
+{
+  "pr_number": 9317,
+  "archive_path": "docs/history/pr-reviews/PR-9317-feat-chip9-cart-content-addressed-sprite-codebook-peephole-compiler-v1-1-structu.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-03T15:36:55.263Z",
+  "schema_version": "v1",
+  "commit_sha": "e43b9e002172eef0733fa48008efae1b95a5bbec",
+  "title": "feat(chip9-cart): content-addressed sprite codebook + peephole (compiler v1.1) — structure compresses, noise doesn't (081KWJE90EZ / first 081KTH5N5ZJ slice)",
+  "state": "MERGED",
+  "merged_at": "2026-07-03T15:36:33Z",
+  "head_ref": "otto/chip9-cart-sprite-dedup"
+}

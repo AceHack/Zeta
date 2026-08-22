@@ -1,0 +1,12 @@
+{
+  "pr_number": 10039,
+  "archive_path": "docs/history/pr-reviews/PR-10039-book-ch-08-optional-forward-beat-socket-fuller-non-gated-recording-pulls-the-han.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-04T18:37:47.007Z",
+  "schema_version": "v1",
+  "commit_sha": "d89aee76a3993b6b695a07617d1307a7e57553be",
+  "title": "book(ch-08): optional forward-beat socket + fuller non-gated recording pulls (the handrail)",
+  "state": "MERGED",
+  "merged_at": "2026-08-04T18:37:06Z",
+  "head_ref": "docs/book-ch08-handrail-forward-beat-and-nongated-pulls-20260804"
+}

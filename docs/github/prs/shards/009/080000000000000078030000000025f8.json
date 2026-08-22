@@ -1,0 +1,12 @@
+{
+  "pr_number": 9720,
+  "archive_path": "docs/history/pr-reviews/PR-9720-feat-installer-embed-grub-efi-path-into-zeta-multiboot-img.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-11T18:04:35.483Z",
+  "schema_version": "v1",
+  "commit_sha": "b8907b4cb9db97bd39a4d13791bb4aeb68245d58",
+  "title": "feat(installer): embed GRUB EFI path into zeta-multiboot.img",
+  "state": "MERGED",
+  "merged_at": "2026-07-11T18:04:05Z",
+  "head_ref": "feat/multiboot-grub-embed-2026-07-11"
+}

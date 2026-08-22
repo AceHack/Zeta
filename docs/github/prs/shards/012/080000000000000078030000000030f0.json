@@ -1,0 +1,12 @@
+{
+  "pr_number": 12528,
+  "archive_path": "docs/history/pr-reviews/PR-12528-docs-vision-echolocation-over-time-the-z-set-fold-measures-correlation-and-the-i.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-19T21:03:41.730Z",
+  "schema_version": "v1",
+  "commit_sha": "0e416d9215b5c0b6504d5353eae6e49bfa8a7a50",
+  "title": "docs(vision): echolocation over time — the Z-set fold measures correlation, and the interference formula IS the variance algebra",
+  "state": "MERGED",
+  "merged_at": "2026-08-19T21:03:01Z",
+  "head_ref": "docs/vision-echolocation-over-time"
+}

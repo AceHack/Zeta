@@ -1,0 +1,12 @@
+{
+  "pr_number": 11598,
+  "archive_path": "docs/history/pr-reviews/PR-11598-docs-concepts-anchor-kilesi-the-tradition-the-peer-term-and-a-gloss-its-author-c.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-21T15:19:07.005Z",
+  "schema_version": "v1",
+  "commit_sha": "395c16c9ff1c439e0c7089b6bbb816e805da1ed2",
+  "title": "docs(concepts): anchor \"kilesi\" — the tradition, the peer term, and a gloss its author can reject",
+  "state": "MERGED",
+  "merged_at": "2026-08-17T18:17:32Z",
+  "head_ref": "shadow/anchor-kilesi-coinage"
+}

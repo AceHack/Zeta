@@ -1,0 +1,12 @@
+{
+  "pr_number": 4031,
+  "archive_path": "docs/history/pr-reviews/PR-4031-memo-audit-in-repo-rules-cite-user-scope-only-memory-files-5-dangling-refs-cold-.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-17T03:02:32.730Z",
+  "schema_version": "v1",
+  "commit_sha": "b56f1292f6f7831b3681cc4ca114defd76902e9c",
+  "title": "memo(audit): in-repo rules cite user-scope-only memory files — 5 dangling refs, cold-boot invisible",
+  "state": "MERGED",
+  "merged_at": "2026-05-17T03:02:15Z",
+  "head_ref": "memo/audit-rule-to-memory-refs-dangling-user-scope-2026-05-17"
+}

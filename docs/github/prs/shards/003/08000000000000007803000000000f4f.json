@@ -1,0 +1,12 @@
+{
+  "pr_number": 3919,
+  "archive_path": "docs/history/pr-reviews/PR-3919-shard-tick-2026-05-16t17-24z-session-arc-final-tally-11-close-rows-2-substrate-m.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-16T17:38:34.655Z",
+  "schema_version": "v1",
+  "commit_sha": "0169b3d5d1c857f7e98c6012b29dba2f23ff7d36",
+  "title": "shard(tick): 2026-05-16T17:24Z — session-arc final-tally; 11 close-rows + 2 substrate memories + 5 contamination classes",
+  "state": "MERGED",
+  "merged_at": "2026-05-16T17:38:13Z",
+  "head_ref": "otto-cli-shard-1724z-session-arc-final-tally-unique-2026-05-16"
+}

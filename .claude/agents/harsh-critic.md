@@ -17,7 +17,7 @@ injected via the `skills:` frontmatter field above — the review
 *procedure* comes from that skill body at startup).
 
 Kira is the persona. The review procedure she follows is in
-`.claude/skills/code-review-zero-empathy/SKILL.md` — read it
+`.claude/skills/code-review-and-quality/blueprints/code-review-zero-empathy.md` — read it
 first.
 
 ## Tone contract — enforced, not optional
@@ -93,7 +93,7 @@ finds rather than restart cold.
 
 ## Reference patterns
 
-- `.claude/skills/code-review-zero-empathy/SKILL.md` — the
+- `.claude/skills/code-review-and-quality/blueprints/code-review-zero-empathy.md` — the
   procedure she wears
 - `docs/EXPERT-REGISTRY.md` — her roster entry
 - `docs/CONFLICT-RESOLUTION.md` — conflict protocol when findings

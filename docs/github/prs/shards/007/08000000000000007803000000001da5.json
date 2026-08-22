@@ -1,0 +1,12 @@
+{
+  "pr_number": 7589,
+  "archive_path": "docs/history/pr-reviews/PR-7589-feat-ace-parse-setup-manifests-for-qsharp-deps.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-11T04:04:35.161Z",
+  "schema_version": "v1",
+  "commit_sha": "e8d1b24cad002a4c04d2364b851d81364f382a21",
+  "title": "feat(ace): parse setup manifests for qsharp deps",
+  "state": "MERGED",
+  "merged_at": "2026-06-11T04:04:14Z",
+  "head_ref": "codex/vera-ace-qsharp-deps"
+}

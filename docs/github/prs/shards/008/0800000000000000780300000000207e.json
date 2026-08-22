@@ -1,0 +1,12 @@
+{
+  "pr_number": 8318,
+  "archive_path": "docs/history/pr-reviews/PR-8318-docs-register-boot-seed-rotation-without-destabilization-overlap-window-key-rota.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-15T18:56:02.400Z",
+  "schema_version": "v1",
+  "commit_sha": "17ca004ee723c68e7e7b77a12991643b6904ccd4",
+  "title": "docs(register): boot-seed rotation without destabilization (overlap-window key rotation)",
+  "state": "MERGED",
+  "merged_at": "2026-06-15T18:55:26Z",
+  "head_ref": "docs/ferry-boot-seed-rotation-overlap-window"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 9882,
+  "archive_path": "docs/history/pr-reviews/PR-9882-feat-ci-byte-lock-as-a-drift-check-with-a-hard-liveness-floor.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-01T14:15:24.626Z",
+  "schema_version": "v1",
+  "commit_sha": "69016594ab2ed44391730633ad6aa3338b78bf4b",
+  "title": "feat(ci): byte-lock as a DRIFT CHECK with a hard liveness floor",
+  "state": "MERGED",
+  "merged_at": "2026-08-01T14:14:54Z",
+  "head_ref": "shadow/bytelock-drift-check-with-liveness-floor"
+}

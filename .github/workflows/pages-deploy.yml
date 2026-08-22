@@ -23,15 +23,39 @@ concurrency:
 
 jobs:
   build:
+    # Timeout basis: observed med 1.1m / max 3.9m (n=26).
+    timeout-minutes: 10
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - name: Setup Bun
         uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
+      # Oracle 10 on the Identity DLA page ships seven compiler substrates. Six are
+      # committed `.wasm` modules; the seventh — Go — is ~1.9 MB and is BUILT, which is
+      # why the panel reported "pending: Pages build does not yet produce the Go module"
+      # from the day it was written. This step is the half that was missing.
+      #
+      # PINNED TO THE SAME VERSION AS `bytelock.yml` (`.mise.toml` go = "1.26.4"), and
+      # deliberately not to anything older: the two workflows compile the SAME source
+      # (`src/wasm-dla/bytelock/dla-canonical.go`), so a version split here would mean the
+      # byte-locked module and the published module are different artefacts wearing one
+      # name. The JS bridge is copied out of this toolchain's own $GOROOT for the same
+      # reason — see `identity-dla-pages-go-build.ts`.
+      - name: Setup Go (pinned to .mise.toml — same pin as bytelock.yml)
+        uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
+        with:
+          go-version: "1.26.4"
+          cache: false
       - name: Install dependencies
         run: bun install --frozen-lockfile
       - name: Build static Pages artifact
+        env:
+          # The anti-vacuity switch. Without it the Go build degrades to a skip when no
+          # toolchain is present, which is right on a laptop and WRONG here: the step
+          # above guarantees Go, so a missing toolchain means that step broke, and the
+          # deploy must fail rather than publish a quietly six-oracle artifact.
+          ZETA_PAGES_REQUIRE_GO: "1"
         run: bun run pages:build
       - name: Add book to public site
         run: |
@@ -49,13 +73,12 @@ jobs:
           cp docs/books/you-born-at-the-hinge/site/index.my.html dist/books/you-born-at-the-hinge/my/index.html
       - name: Generate eBooks
         run: bun run docs/books/you-born-at-the-hinge/scripts/build_ebooks.ts
-      - name: Build Twitch-AI PWA
-        run: |
-          cd src/apps/twitch-ai
-          bun install
-          bun run build:gh-pages
-          mkdir -p ../../../dist/twitch-ai
-          cp -r dist/* ../../../dist/twitch-ai/
+      # Runs AFTER the book copy on purpose: the language pages only sit at their served
+      # location (books/<lang>/index.html) once copied, and that is where their ../<lang>/
+      # switcher links resolve. Checking here covers ~3x the links of checking right after
+      # pages:build. Guards the 2026-08-14 hall-card class — see the script header.
+      - name: Audit internal links in the artifact
+        run: bun src/Core.TypeScript/hygiene/audit-dist-internal-links.ts --dist dist --base /Zeta/
       - name: Upload artifact
         uses: actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9 # v5.0.0
         with:
@@ -63,6 +86,8 @@ jobs:
 
   deploy:
     needs: build
+    # Timeout basis: observed med 0.5m / max 7.0m (n=26); tail is the Pages API deployment wait.
+    timeout-minutes: 15
     runs-on: ubuntu-latest
     environment:
       name: github-pages

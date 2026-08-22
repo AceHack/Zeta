@@ -1,0 +1,12 @@
+{
+  "pr_number": 10842,
+  "archive_path": "docs/history/pr-reviews/PR-10842-feat-core-latticevoa-graded-dimensions-integer-only-two-independent-routes-agree.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-16T14:11:02.324Z",
+  "schema_version": "v1",
+  "commit_sha": "cf24bff5dfec8eeaa9698599c99c10116603fee6",
+  "title": "feat(core): LatticeVoa graded dimensions, integer-only — two independent routes agree on A007245",
+  "state": "MERGED",
+  "merged_at": "2026-08-16T14:10:25Z",
+  "head_ref": "shadow/lattice-voa-graded-dimensions"
+}

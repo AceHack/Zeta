@@ -1,0 +1,15 @@
+{
+  "pr_number": 9456,
+  "archive_path": "docs/history/pr-reviews/PR-9456-feat-lior-messagepack-sql-frontend-builder-wdc-protocol-and-f-tools-integration.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7SBQDm",
+    "thread:PRRT_kwDOSF9kNM6OWidD"
+  ],
+  "fetched_at": "2026-07-04T17:25:37.757Z",
+  "schema_version": "v1",
+  "commit_sha": "fc43fbdc41848ee3eefe7fce25b2a0ef3669a857",
+  "title": "feat(lior): MessagePack, SQL Frontend builder, WDC protocol, and F* tools integration",
+  "state": "MERGED",
+  "merged_at": "2026-07-04T17:25:10Z",
+  "head_ref": "zeta-lior-crockford-base32"
+}

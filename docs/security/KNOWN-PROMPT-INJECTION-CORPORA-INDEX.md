@@ -32,7 +32,7 @@ established in:
   G0DM0D3, ST3GG) under any pretext."
 - `AGENTS.md` — universal onboarding, inherits the
   rule.
-- `.claude/skills/prompt-protector/SKILL.md` — the
+- `.claude/skills/security/blueprints/prompt-protector.md` — the
   skill that routes adversarial-payload needs to an
   isolated single-turn session per its own
   specification.
@@ -219,7 +219,7 @@ tracks that complement this index:
   protocol** — when an adversarial payload must
   be analysed for defence, the isolated-single-
   turn session is the mechanism; see
-  `.claude/skills/prompt-protector/SKILL.md`.
+  `.claude/skills/security/blueprints/prompt-protector.md`.
 
 ---
 

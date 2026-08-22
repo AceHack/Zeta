@@ -1,0 +1,12 @@
+{
+  "pr_number": 7351,
+  "archive_path": "docs/history/pr-reviews/PR-7351-feat-keyring-crypto-forward-4x4-style-keyring-serializer-axis-byte-locked-json-c.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-09T17:42:05.127Z",
+  "schema_version": "v1",
+  "commit_sha": "d41c0a5ffe56b6409b5a065013822c22d2e6da9c",
+  "title": "feat(keyring): crypto forward 4x4-style — keyring serializer axis byte-locked (JSON+CBOR), commute proven, golden seeds the four oracles",
+  "state": "MERGED",
+  "merged_at": "2026-06-09T17:41:40Z",
+  "head_ref": "otto/crypto-forward-4x4-keyring-serializer-axis-json-cbor-bytelock"
+}

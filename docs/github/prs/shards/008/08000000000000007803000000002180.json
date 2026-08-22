@@ -1,0 +1,12 @@
+{
+  "pr_number": 8576,
+  "archive_path": "docs/history/pr-reviews/PR-8576-docs-cslib-record-adopt-and-contribute-back-decision-contribution-path.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-19T14:14:19.574Z",
+  "schema_version": "v1",
+  "commit_sha": "24b025961406c77e0ed652dafedfba6e65e1204d",
+  "title": "docs(cslib): record adopt-and-contribute-back decision + contribution path",
+  "state": "MERGED",
+  "merged_at": "2026-06-19T14:13:52Z",
+  "head_ref": "otto/cslib-adopt-contribute-decision"
+}

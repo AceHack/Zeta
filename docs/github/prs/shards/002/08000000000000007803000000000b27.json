@@ -1,0 +1,12 @@
+{
+  "pr_number": 2855,
+  "archive_path": "docs/history/pr-reviews/PR-2855-add-rule-shadow-check-methodology-for-system-assigned-names-three-tier-name-acce.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-12T20:08:10.828Z",
+  "schema_version": "v1",
+  "commit_sha": "925b8d6ea181248805c6f94b285a770c64255fe0",
+  "title": "add(rule): shadow-check methodology for system-assigned names — three-tier name-acceptance discipline (wake-time PR #2854)",
+  "state": "MERGED",
+  "merged_at": "2026-05-12T20:07:54Z",
+  "head_ref": "docs/shadow-check-methodology-for-system-assigned-names-three-tier-name-acceptance-wake-time-rule-2026-05-12"
+}

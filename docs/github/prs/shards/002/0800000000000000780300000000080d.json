@@ -1,0 +1,12 @@
+{
+  "pr_number": 2061,
+  "archive_path": "docs/history/pr-reviews/PR-2061-claim-release-trajectory-ts-bun-child-cleanup.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-08T11:28:06.356Z",
+  "schema_version": "v1",
+  "commit_sha": "d42075f98a9610ae7d414c3894a3159e66592ac6",
+  "title": "claim: release trajectory TS Bun child cleanup",
+  "state": "MERGED",
+  "merged_at": "2026-05-08T11:27:52Z",
+  "head_ref": "claim/release-trajectory-ts-bun-child-cleanup"
+}

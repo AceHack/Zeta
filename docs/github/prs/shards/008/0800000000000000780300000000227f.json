@@ -1,0 +1,12 @@
+{
+  "pr_number": 8831,
+  "archive_path": "docs/history/pr-reviews/PR-8831-backlog-workitem-esp32-fleet-is-real-reflashable-concretize-the-mcu-rtos-item.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-21T02:36:37.004Z",
+  "schema_version": "v1",
+  "commit_sha": "b9f60317ac3ea95602f2685b975360b36e0077f5",
+  "title": "backlog(workitem): ESP32 fleet is real + reflashable — concretize the MCU/RTOS item",
+  "state": "MERGED",
+  "merged_at": "2026-06-21T02:36:13Z",
+  "head_ref": "otto/mcu-workitem-esp32-fleet"
+}

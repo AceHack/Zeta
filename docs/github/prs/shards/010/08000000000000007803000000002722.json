@@ -1,0 +1,12 @@
+{
+  "pr_number": 10018,
+  "archive_path": "docs/history/pr-reviews/PR-10018-feat-core-block-permutation-null-exchangeability-respecting-null-for-autocorrela.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-03T17:26:36.858Z",
+  "schema_version": "v1",
+  "commit_sha": "e4465d9b686bfeb5faec686dfba737c9bd816084",
+  "title": "feat(core): block-permutation null — exchangeability-respecting null for autocorrelated streams",
+  "state": "MERGED",
+  "merged_at": "2026-08-03T17:25:31Z",
+  "head_ref": "feat/decorrelation-excess-block-permutation-null-20260803"
+}

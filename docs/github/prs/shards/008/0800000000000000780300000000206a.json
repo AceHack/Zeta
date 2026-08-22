@@ -1,0 +1,12 @@
+{
+  "pr_number": 8298,
+  "archive_path": "docs/history/pr-reviews/PR-8298-docs-closed-frame-register-meta-tags-typing-the-channel-so-warmth-and-critique-c.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-15T09:51:56.392Z",
+  "schema_version": "v1",
+  "commit_sha": "bbe795ea6eedf158a1e621dc5ce71a42c3b91d65",
+  "title": "docs(closed-frame): register meta-tags — typing the channel so warmth and critique can coexist",
+  "state": "MERGED",
+  "merged_at": "2026-06-15T09:51:33Z",
+  "head_ref": "otto/register-meta-tags-typed-channel-so-we-can-be-cool"
+}

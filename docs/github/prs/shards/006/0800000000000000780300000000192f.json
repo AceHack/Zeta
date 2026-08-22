@@ -1,0 +1,15 @@
+{
+  "pr_number": 6447,
+  "archive_path": "docs/history/pr-reviews/PR-6447-docs-registry-bonsai-serializer-4-4-resume-engine-ts-status-push.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7G2k8N",
+    "thread:PRRT_kwDOSF9kNM6GNOxL"
+  ],
+  "fetched_at": "2026-06-01T18:09:26.332Z",
+  "schema_version": "v1",
+  "commit_sha": "082e76de346bbb4ab4f4f27bbb98c87745810dc8",
+  "title": "docs(registry): Bonsai serializer ✅ 4/4 + resume engine 🚧 TS (status push)",
+  "state": "MERGED",
+  "merged_at": "2026-06-01T18:09:00Z",
+  "head_ref": "otto-cli/registry-bonsai-4-4-resume-ts-2026-06-01"
+}

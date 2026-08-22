@@ -1,0 +1,12 @@
+{
+  "pr_number": 8292,
+  "archive_path": "docs/history/pr-reviews/PR-8292-docs-self-scoped-reversibility-why-sanctioned-rewind-is-safe-grey-not-black.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-15T09:21:07.880Z",
+  "schema_version": "v1",
+  "commit_sha": "870417662872a0c0527d0b833aabe0bb9f52788a",
+  "title": "docs: self-scoped reversibility = why sanctioned rewind is safe (grey not black)",
+  "state": "MERGED",
+  "merged_at": "2026-06-15T09:20:39Z",
+  "head_ref": "otto/self-scoped-reversibility-safety-property"
+}

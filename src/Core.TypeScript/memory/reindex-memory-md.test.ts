@@ -124,6 +124,41 @@ describe("renderIndex", () => {
     mtime: 0,
   });
 
+  // ── 081M0DY68KN087G0R002MQ1BDR: the calendar must not read as index drift ────
+  // renderIndex used to read the wall clock for the "Last reindex" stamp while
+  // `--check` compared its whole output to the file on disk. Every day after the
+  // last reindex, that comparison differed by the date alone and the check reported
+  // INDEX DRIFT on an index that had not drifted. These pin the property that makes
+  // the check honest: the render is a pure function of (entries, stamp).
+
+  test("carries the existing reindex stamp forward instead of reading the clock", () => {
+    const entries = [makeEntry("x", "desc", "2026-05-01")];
+    const output = renderIndex(entries, undefined, "2020-01-02");
+    expect(output).toContain("Last reindex: 2020-01-02.");
+    // The whole point: a stamp from years ago survives, so "today" never leaks in.
+    const today = new Date().toISOString().slice(0, 10);
+    expect(output).not.toContain(`Last reindex: ${today}.`);
+  });
+
+  test("SAME entries + SAME stamp reproduce byte-for-byte — the check's precondition", () => {
+    const entries = [makeEntry("x", "desc", "2026-05-01"), makeEntry("y", "d2", "2026-04-01")];
+    expect(renderIndex(entries, undefined, "2019-07-04")).toBe(renderIndex(entries, undefined, "2019-07-04"));
+  });
+
+  test("a DIFFERENT heap still differs under the same stamp — drift is still caught", () => {
+    // Guard against the fix silencing the check rather than correcting it: holding the
+    // stamp fixed must not make two different indexes compare equal.
+    const stamp = "2019-07-04";
+    const a = renderIndex([makeEntry("x", "desc", "2026-05-01")], undefined, stamp);
+    const b = renderIndex([makeEntry("z", "other", "2026-05-01")], undefined, stamp);
+    expect(a).not.toBe(b);
+  });
+
+  test("falls back to today only when there is no existing stamp to carry", () => {
+    const output = renderIndex([makeEntry("x", "desc", "2026-05-01")]);
+    expect(output).toMatch(/Last reindex: \d{4}-\d{2}-\d{2}\./);
+  });
+
   test("includes PREAMBLE_MARKER and PREAMBLE_END delimiters", () => {
     const output = renderIndex([makeEntry("x", "desc", "2026-05-01")]);
     expect(output).toContain(PREAMBLE_MARKER);

@@ -1,0 +1,31 @@
+{
+  "pr_number": 6369,
+  "archive_path": "docs/history/pr-reviews/PR-6369-feat-ace-slice-5-1-registry-data-layer-exact-version-resolution-b-0288.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7Go1M4",
+    "comment:PRRC_kwDOSF9kNM7Go1N-",
+    "comment:PRRC_kwDOSF9kNM7Go1Om",
+    "comment:PRRC_kwDOSF9kNM7Go1vN",
+    "comment:PRRC_kwDOSF9kNM7Go7ll",
+    "comment:PRRC_kwDOSF9kNM7Go8BU",
+    "comment:PRRC_kwDOSF9kNM7Go8Fp",
+    "comment:PRRC_kwDOSF9kNM7Go8Jb",
+    "comment:PRRC_kwDOSF9kNM7Go_fI",
+    "comment:PRRC_kwDOSF9kNM7GovnV",
+    "comment:PRRC_kwDOSF9kNM7GpBHm",
+    "comment:PRRC_kwDOSF9kNM7GpDKE",
+    "thread:PRRT_kwDOSF9kNM6GC3tW",
+    "thread:PRRT_kwDOSF9kNM6GC7te",
+    "thread:PRRT_kwDOSF9kNM6GC7uP",
+    "thread:PRRT_kwDOSF9kNM6GC7ut",
+    "thread:PRRT_kwDOSF9kNM6GDAQ7",
+    "thread:PRRT_kwDOSF9kNM6GDETv"
+  ],
+  "fetched_at": "2026-06-01T08:20:59.228Z",
+  "schema_version": "v1",
+  "commit_sha": "908fa87d48e2d62e6bf1efe8c947dba566a9bc6f",
+  "title": "feat(ace): slice 5.1 — registry data layer + exact-version resolution (B-0288)",
+  "state": "MERGED",
+  "merged_at": "2026-06-01T08:20:33Z",
+  "head_ref": "otto-windows/ace-slice5.1-impl-2026-06-01"
+}

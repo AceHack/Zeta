@@ -1,0 +1,12 @@
+{
+  "pr_number": 6634,
+  "archive_path": "docs/history/pr-reviews/PR-6634-proof-canonical-zetaid-codec-general-round-trip-injectivity-env-invariance-each-.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-03T08:09:49.264Z",
+  "schema_version": "v1",
+  "commit_sha": "1a8dcb97bbb67c28361e2108d5b198254098f3b0",
+  "title": "proof(canonical): ZetaId codec — general round-trip + injectivity + env-invariance (each maps to a real code claim)",
+  "state": "MERGED",
+  "merged_at": "2026-06-03T08:09:28Z",
+  "head_ref": "otto-cli/zetaid-canonical-roundtrip-injectivity-envinvariance-2026-06-03"
+}

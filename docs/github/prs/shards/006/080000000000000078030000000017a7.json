@@ -1,0 +1,25 @@
+{
+  "pr_number": 6055,
+  "archive_path": "docs/history/pr-reviews/PR-6055-feat-decisions-add-adr-for-automated-background-review-thread-resolution-b-0938.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7GUg_8",
+    "comment:PRRC_kwDOSF9kNM7GUg_p",
+    "comment:PRRC_kwDOSF9kNM7GVFw0",
+    "comment:PRRC_kwDOSF9kNM7GVFwV",
+    "comment:PRRC_kwDOSF9kNM7GVQTz",
+    "comment:PRRC_kwDOSF9kNM7GVQV6",
+    "comment:PRRC_kwDOSF9kNM7GVQW7",
+    "comment:PRRC_kwDOSF9kNM7GVQY2",
+    "thread:PRRT_kwDOSF9kNM6F0Cx7",
+    "thread:PRRT_kwDOSF9kNM6F0CyL",
+    "thread:PRRT_kwDOSF9kNM6FzoD3",
+    "thread:PRRT_kwDOSF9kNM6FzoEG"
+  ],
+  "fetched_at": "2026-05-29T23:52:01.052Z",
+  "schema_version": "v1",
+  "commit_sha": "8311b3d747a3122e780552751f78dff4e0356b76",
+  "title": "feat(DECISIONS): Add ADR for Automated Background Review Thread Resolution (B-0938)",
+  "state": "MERGED",
+  "merged_at": "2026-05-29T23:51:39Z",
+  "head_ref": "lior/adr-automated-thread-resolution"
+}

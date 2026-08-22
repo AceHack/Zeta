@@ -1,0 +1,33 @@
+{
+  "pr_number": 2069,
+  "archive_path": "docs/history/pr-reviews/PR-2069-feat-b-0276-structure-fingerprint-library-for-codebase-shape-recognition.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_P75Y",
+    "comment:PRRC_kwDOSF9kNM6_P7V-",
+    "comment:PRRC_kwDOSF9kNM6_P7bJ",
+    "comment:PRRC_kwDOSF9kNM6_P7n-",
+    "comment:PRRC_kwDOSF9kNM6_P7rx",
+    "comment:PRRC_kwDOSF9kNM6_P7zj",
+    "comment:PRRC_kwDOSF9kNM6_PwSW",
+    "comment:PRRC_kwDOSF9kNM6_PwSY",
+    "comment:PRRC_kwDOSF9kNM6_PzN9",
+    "comment:PRRC_kwDOSF9kNM6_PzOn",
+    "comment:PRRC_kwDOSF9kNM6_PzPI",
+    "comment:PRRC_kwDOSF9kNM6_PzPp",
+    "comment:PRRC_kwDOSF9kNM6_PzQD",
+    "thread:PRRT_kwDOSF9kNM6AndhX",
+    "thread:PRRT_kwDOSF9kNM6AndhY",
+    "thread:PRRT_kwDOSF9kNM6Anft6",
+    "thread:PRRT_kwDOSF9kNM6Anftb",
+    "thread:PRRT_kwDOSF9kNM6Anfu-",
+    "thread:PRRT_kwDOSF9kNM6AnfuT",
+    "thread:PRRT_kwDOSF9kNM6Anfut"
+  ],
+  "fetched_at": "2026-05-08T12:29:17.837Z",
+  "schema_version": "v1",
+  "commit_sha": "6890cc4a9bc16a054d7eee304037993a1ff85dd6",
+  "title": "feat(B-0276): structure fingerprint library for codebase shape recognition",
+  "state": "MERGED",
+  "merged_at": "2026-05-08T12:29:02Z",
+  "head_ref": "feat/B-0276-structure-fingerprint-library"
+}

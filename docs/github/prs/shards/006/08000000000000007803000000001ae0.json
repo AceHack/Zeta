@@ -1,0 +1,12 @@
+{
+  "pr_number": 6880,
+  "archive_path": "docs/history/pr-reviews/PR-6880-docs-pr-reviews-protect-the-archive-read-not-refactor-do-not-delete-most-valuabl.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-07T17:42:42.322Z",
+  "schema_version": "v1",
+  "commit_sha": "f3efef482dd7720be4fdbf9c7c957166538100af",
+  "title": "docs(pr-reviews): protect the archive — read-not-refactor, do-not-delete (most valuable data)",
+  "state": "MERGED",
+  "merged_at": "2026-06-07T17:42:18Z",
+  "head_ref": "otto/protect-pr-review-archive-read-not-refactor"
+}

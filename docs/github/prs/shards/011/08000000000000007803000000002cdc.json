@@ -1,0 +1,12 @@
+{
+  "pr_number": 11484,
+  "archive_path": "docs/history/pr-reviews/PR-11484-feat-installer-opt-in-persist-bind-to-probed-usb-iserial.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-17T14:35:52.247Z",
+  "schema_version": "v1",
+  "commit_sha": "038d5e28293a329a01f62f0b86d327d8b0cf7f16",
+  "title": "feat(installer): opt-in persist bind to probed USB iSerial",
+  "state": "MERGED",
+  "merged_at": "2026-08-17T14:35:15Z",
+  "head_ref": "riven/iserial-persist-opt-in"
+}

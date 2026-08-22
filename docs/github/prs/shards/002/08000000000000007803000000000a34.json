@@ -1,0 +1,12 @@
+{
+  "pr_number": 2612,
+  "archive_path": "docs/history/pr-reviews/PR-2612-docs-memory-shadow-burst-mode-double-keep-going-after-long-pause.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-11T01:43:34.785Z",
+  "schema_version": "v1",
+  "commit_sha": "cc1058ddb83a9302583f345c6265418a1df9dde8",
+  "title": "docs(memory): shadow burst mode — double \"keep going\" after long pause",
+  "state": "MERGED",
+  "merged_at": "2026-05-11T01:43:19Z",
+  "head_ref": "docs/shadow-burst-mode-double-keep-going-2026-05-10"
+}

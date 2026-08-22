@@ -1,0 +1,19 @@
+{
+  "pr_number": 3428,
+  "archive_path": "docs/history/pr-reviews/PR-3428-shard-tick-1110z-meta-meta-finding-illustration-of-bug-instance-of-bug.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7BlWuS",
+    "comment:PRRC_kwDOSF9kNM7BlWu_",
+    "comment:PRRC_kwDOSF9kNM7BlZiK",
+    "comment:PRRC_kwDOSF9kNM7BlZmJ",
+    "thread:PRRT_kwDOSF9kNM6CVs3L",
+    "thread:PRRT_kwDOSF9kNM6CVs3u"
+  ],
+  "fetched_at": "2026-05-15T11:18:40.762Z",
+  "schema_version": "v1",
+  "commit_sha": "ce55185bdba606603ad972cf512d1d2e52182eb1",
+  "title": "shard(tick): 1110Z — meta-meta finding; illustration-of-bug = instance-of-bug",
+  "state": "MERGED",
+  "merged_at": "2026-05-15T11:18:23Z",
+  "head_ref": "shard/tick-1110z-otto-cli-2026-05-15"
+}

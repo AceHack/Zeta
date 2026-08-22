@@ -1,0 +1,12 @@
+{
+  "pr_number": 9049,
+  "archive_path": "docs/history/pr-reviews/PR-9049-docs-preserve-promote-43-recovered-originals-to-canonical-gc-681-own-heartbeat-l.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-01T19:39:11.661Z",
+  "schema_version": "v1",
+  "commit_sha": "231a90fad34a0eca1ecaeff38852306fa9e6113f",
+  "title": "docs(preserve): promote 43 recovered originals to canonical + GC 681 own heartbeat logs (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-01T19:38:50Z",
+  "head_ref": "otto/quarantine-triage-2026-07-promote-b-gc-a"
+}

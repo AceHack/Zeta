@@ -1,0 +1,12 @@
+{
+  "pr_number": 13777,
+  "archive_path": "docs/history/pr-reviews/PR-13777-fix-society-ordinal-string-order-in-the-series-test-localecompare-is-culture-sen.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-22T16:27:51.892Z",
+  "schema_version": "v1",
+  "commit_sha": "2e0d78c1162bed150da31051f1f74d409051a0c0",
+  "title": "fix(society): ordinal string order in the series test — `localeCompare` is culture-sensitive",
+  "state": "MERGED",
+  "merged_at": "2026-08-22T16:27:11Z",
+  "head_ref": "fix/rho-series-ordinal-collation"
+}

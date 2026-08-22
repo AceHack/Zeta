@@ -1,0 +1,19 @@
+{
+  "pr_number": 4811,
+  "archive_path": "docs/history/pr-reviews/PR-4811-soraya-round-69-execute-b-0719-pick-add-trigger-recognition-log-section-to-noteb.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7EU80i",
+    "comment:PRRC_kwDOSF9kNM7EU80m",
+    "comment:PRRC_kwDOSF9kNM7EU80o",
+    "thread:PRRT_kwDOSF9kNM6EWed6",
+    "thread:PRRT_kwDOSF9kNM6EWed9",
+    "thread:PRRT_kwDOSF9kNM6EWed_"
+  ],
+  "fetched_at": "2026-05-24T03:22:38.146Z",
+  "schema_version": "v1",
+  "commit_sha": "209c18c5f2629e1e891d36b2098b0540f9e4958a",
+  "title": "soraya(round-69): execute B-0719 pick — add Trigger Recognition Log section to NOTEBOOK + update SKILL reference",
+  "state": "MERGED",
+  "merged_at": "2026-05-24T03:22:22Z",
+  "head_ref": "otto/soraya-round69-b0719-execute-option1-notebook-trigger-recognition-log-2026-05-24"
+}

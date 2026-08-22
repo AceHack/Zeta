@@ -1,0 +1,12 @@
+{
+  "pr_number": 9240,
+  "archive_path": "docs/history/pr-reviews/PR-9240-feat-core-sppf-inside-the-weighted-inside-pass-belief-propagation-on-the-parse-f.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-03T00:44:51.970Z",
+  "schema_version": "v1",
+  "commit_sha": "784aa8ce7d0f170ee47e31c016f6cf3d0721d15b",
+  "title": "feat(core): Sppf.inside — the weighted inside pass = belief propagation on the parse forest",
+  "state": "MERGED",
+  "merged_at": "2026-07-03T00:44:30Z",
+  "head_ref": "otto/sppf-inside-weighted"
+}

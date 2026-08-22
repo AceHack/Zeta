@@ -1,0 +1,31 @@
+{
+  "pr_number": 2149,
+  "archive_path": "docs/history/pr-reviews/PR-2149-decompose-b-0190-split-memory-trajectory-into-9-atomic-child-rows.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_cM5m",
+    "comment:PRRC_kwDOSF9kNM6_cM5p",
+    "comment:PRRC_kwDOSF9kNM6_cNqt",
+    "comment:PRRC_kwDOSF9kNM6_cNrC",
+    "comment:PRRC_kwDOSF9kNM6_cNrN",
+    "comment:PRRC_kwDOSF9kNM6_cNrb",
+    "comment:PRRC_kwDOSF9kNM6_cQM2",
+    "comment:PRRC_kwDOSF9kNM6_cQMc",
+    "comment:PRRC_kwDOSF9kNM6_cQNV",
+    "comment:PRRC_kwDOSF9kNM6_cQNu",
+    "comment:PRRC_kwDOSF9kNM6_cQO4",
+    "comment:PRRC_kwDOSF9kNM6_cQOU",
+    "thread:PRRT_kwDOSF9kNM6Awr8C",
+    "thread:PRRT_kwDOSF9kNM6Awr8S",
+    "thread:PRRT_kwDOSF9kNM6Awr8b",
+    "thread:PRRT_kwDOSF9kNM6Awr8k",
+    "thread:PRRT_kwDOSF9kNM6AwrYI",
+    "thread:PRRT_kwDOSF9kNM6AwrYL"
+  ],
+  "fetched_at": "2026-05-08T23:28:27.780Z",
+  "schema_version": "v1",
+  "commit_sha": "2e050ba1ab4a1350cc689914ff45f4a61da7d6f8",
+  "title": "decompose(B-0190): split memory trajectory into 9 atomic child rows",
+  "state": "MERGED",
+  "merged_at": "2026-05-08T23:28:11Z",
+  "head_ref": "worktree-decompose-b0190-memory-trajectory"
+}

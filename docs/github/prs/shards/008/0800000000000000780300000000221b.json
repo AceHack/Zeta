@@ -1,0 +1,12 @@
+{
+  "pr_number": 8731,
+  "archive_path": "docs/history/pr-reviews/PR-8731-fix-merkle-rustfmt-the-rust-merkle-proof-golden-vector-test-ci-lint-green.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-20T07:39:53.906Z",
+  "schema_version": "v1",
+  "commit_sha": "8ee635df3b2b82f5257b3b11c825f9bad5ff0b22",
+  "title": "fix(merkle): rustfmt the Rust Merkle proof golden-vector test (CI lint green)",
+  "state": "MERGED",
+  "merged_at": "2026-06-20T07:39:30Z",
+  "head_ref": "otto/fix-rust-merkle-proof-rustfmt"
+}

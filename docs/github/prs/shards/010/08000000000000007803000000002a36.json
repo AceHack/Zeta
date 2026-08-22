@@ -1,0 +1,12 @@
+{
+  "pr_number": 10806,
+  "archive_path": "docs/history/pr-reviews/PR-10806-fix-transport-retarget-ult-32-34-at-derived-block-addresses.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-15T15:23:19.560Z",
+  "schema_version": "v1",
+  "commit_sha": "3606fa6c602b0bfacf7a410490d2cc301ac7698b",
+  "title": "fix(transport): retarget ULT-32..34 at derived block addresses",
+  "state": "MERGED",
+  "merged_at": "2026-08-15T15:22:45Z",
+  "head_ref": "fix/ult-33-34-retention-tests-after-derived-address"
+}

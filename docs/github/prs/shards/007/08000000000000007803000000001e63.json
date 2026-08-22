@@ -1,0 +1,12 @@
+{
+  "pr_number": 7779,
+  "archive_path": "docs/history/pr-reviews/PR-7779-fix-backlog-grandfather-b-1031-legacy-row.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-11T20:28:48.462Z",
+  "schema_version": "v1",
+  "commit_sha": "0974917f1076f4f79dd8ae950faaf518411a5a2f",
+  "title": "fix(backlog): grandfather B-1031 legacy row",
+  "state": "MERGED",
+  "merged_at": "2026-06-11T20:28:15Z",
+  "head_ref": "codex/fix-b1031-frozen-id"
+}

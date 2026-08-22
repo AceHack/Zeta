@@ -1,0 +1,12 @@
+{
+  "pr_number": 5266,
+  "archive_path": "docs/history/pr-reviews/PR-5266-fix-trajectory-preserve-wrapped-pickup-next-action.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-26T18:10:20.509Z",
+  "schema_version": "v1",
+  "commit_sha": "24f9b86cfa4dde05c40cdc898037b1d2bf683973",
+  "title": "fix(trajectory): preserve wrapped pickup next action",
+  "state": "MERGED",
+  "merged_at": "2026-05-26T18:10:01Z",
+  "head_ref": "codex/codex-loop-backlog-next-action-continuation-20260526"
+}

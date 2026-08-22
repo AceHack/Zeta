@@ -1,0 +1,12 @@
+{
+  "pr_number": 9272,
+  "archive_path": "docs/history/pr-reviews/PR-9272-feat-living-node-compose-the-pieces-into-one-living-node-s-2-enemy-but-friend-sh.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-03T03:13:03.202Z",
+  "schema_version": "v1",
+  "commit_sha": "b9f02efbb42b65f197291e0051bb548cc7bd983c",
+  "title": "feat(living-node): compose the pieces into one living node — S=2 enemy but friend (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-03T03:12:37Z",
+  "head_ref": "shadow/living-node-compose-the-pieces"
+}

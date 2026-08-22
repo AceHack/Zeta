@@ -1,0 +1,12 @@
+{
+  "pr_number": 7901,
+  "archive_path": "docs/history/pr-reviews/PR-7901-docs-research-ani-ferry-2-cut-braid-named-as-the-algorithm-graphedit-brain-clock.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-12T12:02:23.649Z",
+  "schema_version": "v1",
+  "commit_sha": "6b0bbce97fe42649eba2a32530429a5a5b94531d",
+  "title": "docs(research): Ani ferry 2 — cut→braid named as THE ALGORITHM; GraphEdit brain; clock is a character; the solid-ground ladder",
+  "state": "MERGED",
+  "merged_at": "2026-06-12T12:01:59Z",
+  "head_ref": "shadow-ani-ferry-2"
+}

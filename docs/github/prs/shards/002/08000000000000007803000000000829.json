@@ -1,0 +1,12 @@
+{
+  "pr_number": 2089,
+  "archive_path": "docs/history/pr-reviews/PR-2089-codex-map-vera-runtime-surfaces.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-08T15:11:27.898Z",
+  "schema_version": "v1",
+  "commit_sha": "14651e22e5f991860be0f0744b6a2aff5547a17e",
+  "title": "codex: map Vera runtime surfaces",
+  "state": "MERGED",
+  "merged_at": "2026-05-08T15:11:05Z",
+  "head_ref": "claim/codex-tool-map"
+}

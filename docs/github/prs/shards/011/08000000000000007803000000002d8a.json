@@ -1,0 +1,12 @@
+{
+  "pr_number": 11658,
+  "archive_path": "docs/history/pr-reviews/PR-11658-feat-planning-composition-read-path-what-a-needs-to-decide-whether-to-build-on-b.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-17T21:50:22.473Z",
+  "schema_version": "v1",
+  "commit_sha": "8c5c6e74dc879c268ba217a06aafa94a8f28530f",
+  "title": "feat(planning): composition read-path — what A needs to decide whether to build on B (conferred record, no verdict)",
+  "state": "MERGED",
+  "merged_at": "2026-08-17T21:49:44Z",
+  "head_ref": "shadow/reliability-composition-surface"
+}

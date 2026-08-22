@@ -114,7 +114,7 @@ From the provided cluster context:
 - Hindsight automatically recalls relevant context before LLM calls;
 - Hindsight retains conversations;
 - Hindsight exposes explicit retain, recall, and reflect tools;
-- Hermes should point at the in-cluster Hindsight service through `HINDSIGHT_URL=http://hindsight.hindsight.svc.cluster.local`.
+- Hermes should point at the in-cluster Hindsight service through `HINDSIGHT_URL=http://hindsight-api.hindsight.svc.cluster.local`.
 
 The design implication: we should treat Hindsight as real runtime infrastructure, not a placeholder memory adapter.
 

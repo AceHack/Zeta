@@ -1,0 +1,12 @@
+{
+  "pr_number": 6476,
+  "archive_path": "docs/history/pr-reviews/PR-6476-feat-ace-slice-7-revocation-quarantine.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-01T21:33:40.941Z",
+  "schema_version": "v1",
+  "commit_sha": "8c91e174b575dbfa0343d515673f33316e8aac83",
+  "title": "feat(ace): slice 7 revocation / quarantine",
+  "state": "MERGED",
+  "merged_at": "2026-06-01T21:33:20Z",
+  "head_ref": "otto-windows/ace-slice7-impl-2026-06-01"
+}

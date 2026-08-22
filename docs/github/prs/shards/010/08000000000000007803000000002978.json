@@ -1,0 +1,12 @@
+{
+  "pr_number": 10616,
+  "archive_path": "docs/history/pr-reviews/PR-10616-fix-hygiene-let-the-no-op-cadence-detector-report-failure-via-enforce.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-14T15:40:48.132Z",
+  "schema_version": "v1",
+  "commit_sha": "9f3fe82518dfe3131707ab56145ede67876c844b",
+  "title": "fix(hygiene): let the no-op-cadence detector report failure via --enforce",
+  "state": "MERGED",
+  "merged_at": "2026-08-14T15:40:14Z",
+  "head_ref": "fix/081M0085XQT-no-op-cadence-enforce"
+}

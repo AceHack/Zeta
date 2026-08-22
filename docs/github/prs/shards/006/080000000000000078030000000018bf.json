@@ -1,0 +1,12 @@
+{
+  "pr_number": 6335,
+  "archive_path": "docs/history/pr-reviews/PR-6335-feat-agentic-org-aggregate-phase-2-readiness-gate.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-01T04:05:16.290Z",
+  "schema_version": "v1",
+  "commit_sha": "e75bee643390cd044644ed2192d0a8b57e63e17e",
+  "title": "feat(agentic-org): aggregate phase 2 readiness gate",
+  "state": "MERGED",
+  "merged_at": "2026-06-01T04:04:53Z",
+  "head_ref": "codex/agentic-org-phase2-readiness-gate"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 8630,
+  "archive_path": "docs/history/pr-reviews/PR-8630-memory-project-a-chip-8-cart-is-one-of-our-common-sources-of-meaning-corrected-f.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-19T21:33:50.811Z",
+  "schema_version": "v1",
+  "commit_sha": "97aa0cfb0787a1e2168d4b8a1908a46eda4c3a5e",
+  "title": "memory(project): a CHIP-8 cart is ONE OF our common sources of meaning (corrected from 'the')",
+  "state": "MERGED",
+  "merged_at": "2026-06-19T21:33:26Z",
+  "head_ref": "otto/chip8-cart-one-of-our-common-sources-of-meaning"
+}

@@ -1,0 +1,17 @@
+{
+  "pr_number": 9137,
+  "archive_path": "docs/history/pr-reviews/PR-9137-feat-cross-verify-mirror-the-dbsp-operator-set-to-the-six-oracle-treaty.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7RcPSA",
+    "comment:PRRC_kwDOSF9kNM7RcPSI",
+    "thread:PRRT_kwDOSF9kNM6N7b3G",
+    "thread:PRRT_kwDOSF9kNM6N7b3K"
+  ],
+  "fetched_at": "2026-08-17T08:19:28.996Z",
+  "schema_version": "v1",
+  "commit_sha": "d17709f7b09c0bd423e6d3718b3e0310da2e4d1f",
+  "title": "feat(cross-verify): mirror the DBSP operator set to the six-oracle treaty",
+  "state": "MERGED",
+  "merged_at": "2026-07-02T14:27:35Z",
+  "head_ref": "otto/dbsp-operators-oracle-mirror"
+}

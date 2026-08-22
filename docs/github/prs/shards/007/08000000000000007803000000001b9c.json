@@ -1,0 +1,12 @@
+{
+  "pr_number": 7068,
+  "archive_path": "docs/history/pr-reviews/PR-7068-feat-core-qubitiso-group-qubit-states-implement-igroup-numeric-interface-citizen.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-08T09:55:59.248Z",
+  "schema_version": "v1",
+  "commit_sha": "d1b57dde9d7ed46c5676af08e7ee448add566e23",
+  "title": "feat(core): QubitIso.group — qubit states implement IGroup (numeric-interface citizen)",
+  "state": "MERGED",
+  "merged_at": "2026-06-08T09:55:38Z",
+  "head_ref": "otto/qubit-state-igroup-numeric-interface"
+}

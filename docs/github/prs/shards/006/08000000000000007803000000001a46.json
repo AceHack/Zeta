@@ -1,0 +1,12 @@
+{
+  "pr_number": 6726,
+  "archive_path": "docs/history/pr-reviews/PR-6726-chore-tla-remove-stray-jvm-crash-dump-from-proof-lineage-dir-gitignore-guard.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-07T06:22:35.828Z",
+  "schema_version": "v1",
+  "commit_sha": "273c39117bd084d84fd429cb3ddef7ce7bfad576",
+  "title": "chore(tla): remove stray JVM crash dump from proof-lineage dir + gitignore guard",
+  "state": "MERGED",
+  "merged_at": "2026-06-07T06:22:14Z",
+  "head_ref": "otto/rm-stray-jvm-crashlog"
+}

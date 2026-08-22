@@ -24,17 +24,17 @@
 // - Prints a summary
 //
 // Composes with:
-// - tools/hygiene/check-tick-history-order.ts (the detection check;
+// - src/Core.TypeScript/hygiene/check-tick-history-order.ts (the detection check;
 //   this script is the fix; .sh removed 2026-05-03 after #1380
 //   .sh→.ts CI conversion)
 // - Otto-229 (append-only tick-history; one-case override authorized
 //   for canonical-order preservation since git history retains prior
 //   state)
-// - Otto-341 (mechanism over vigilance; tools/hygiene/ is the canonical
+// - Otto-341 (mechanism over vigilance; src/Core.TypeScript/hygiene/ is the canonical
 //   home for substrate-integrity tooling)
 //
 // Usage:
-//     bun tools/hygiene/sort-tick-history-canonical.ts [--dry-run] [--file PATH]
+//     bun src/Core.TypeScript/hygiene/sort-tick-history-canonical.ts [--dry-run] [--file PATH]
 //
 //     Default: writes changes back to the file.
 //     --dry-run: prints what would change; does not modify the file.
@@ -100,7 +100,7 @@ function printHelp(): void {
     "sort-tick-history-canonical.ts — sort + dedupe tick-history.md",
     "",
     "Usage:",
-    "  bun tools/hygiene/sort-tick-history-canonical.ts [--dry-run] [--file PATH]",
+    "  bun src/Core.TypeScript/hygiene/sort-tick-history-canonical.ts [--dry-run] [--file PATH]",
     "",
     "Default --file: docs/hygiene-history/loop-tick-history.md",
     "  (relative paths resolve to repo root via 'git rev-parse --show-toplevel';",

@@ -1,0 +1,12 @@
+{
+  "pr_number": 2116,
+  "archive_path": "docs/history/pr-reviews/PR-2116-docs-b-0065-decompose-into-4-dependency-ordered-child-rows.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-08T18:40:25.552Z",
+  "schema_version": "v1",
+  "commit_sha": "9978cc703fa1d9b3b2caf660b66e23c6694b1901",
+  "title": "docs(B-0065): decompose into 4 dependency-ordered child rows",
+  "state": "MERGED",
+  "merged_at": "2026-05-08T18:40:06Z",
+  "head_ref": "worktree-b-0065-decompose"
+}

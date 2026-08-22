@@ -1,0 +1,12 @@
+{
+  "pr_number": 10934,
+  "archive_path": "docs/history/pr-reviews/PR-10934-refactor-transport-names-that-assert-a-capability-the-code-does-not-have.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-16T15:46:45.537Z",
+  "schema_version": "v1",
+  "commit_sha": "d49dc9a7a7c55a42696d2f0bc4c644c89a27f42c",
+  "title": "refactor(transport): names that assert a capability the code does not have",
+  "state": "MERGED",
+  "merged_at": "2026-08-16T15:46:13Z",
+  "head_ref": "shadow/truthful-transport-names"
+}

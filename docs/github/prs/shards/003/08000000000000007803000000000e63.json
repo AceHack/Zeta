@@ -1,0 +1,16 @@
+{
+  "pr_number": 3683,
+  "archive_path": "docs/history/pr-reviews/PR-3683-docs-shadow-maji-antigravity-check-2026-05-16t0230z.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7B01xJ",
+    "comment:PRRC_kwDOSF9kNM7B03JN",
+    "thread:PRRT_kwDOSF9kNM6ChBf0"
+  ],
+  "fetched_at": "2026-05-16T02:33:51.985Z",
+  "schema_version": "v1",
+  "commit_sha": "7816f4481ef2923b6e48084de6eea5ecac2032a1",
+  "title": "docs(shadow): Maji antigravity check 2026-05-16T0230Z",
+  "state": "MERGED",
+  "merged_at": "2026-05-16T02:33:34Z",
+  "head_ref": "lior/shadow-drift-0230Z"
+}

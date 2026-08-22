@@ -12,6 +12,9 @@
 //
 // Per 081KR50HA0008QG0R002B3N54S (PR atomic child of 081KQ3HBZ0008QG0R0008RYCSX).
 
+import { tmpdir } from "node:os";
+import { join } from "node:path";
+
 export type HookEventName = "PreToolUse" | "PostToolUse";
 
 /** Raw Claude Code hook input payload (stdin JSON).
@@ -65,14 +68,26 @@ export const OTTO343_READLOG_TAG = "OTTO-343-session-key-2026-06-21";
  * Keyed on the stable per-session id so the two hooks — which each run in their
  * own short-lived process — agree on the same file. Falls back to `cwd`, then a
  * constant, when no session id is supplied. The key is sanitised to a single
- * safe filename component so it can never escape /tmp. See OTTO343_READLOG_TAG.
+ * safe filename component so it can never escape the temp dir. See
+ * OTTO343_READLOG_TAG.
+ *
+ * The directory comes from `os.tmpdir()`, NOT a hardcoded `/tmp`. That literal
+ * made the whole mechanism inert on Windows: native Bun resolves a leading `/`
+ * against the current drive, so the write in post-read-track.ts threw ENOENT,
+ * was swallowed by its "non-fatal" catch, and the log was never created. The
+ * reader then found no log and denied EVERY Edit — a permanent block rather
+ * than the recency gate this is meant to be. Same failure shape as the ppid bug
+ * below: writer and reader disagreeing about a filename.
+ *
+ * `os.tmpdir()` is /tmp on Linux/macOS (so POSIX behaviour is unchanged) and
+ * %TEMP% on Windows.
  */
 export function sessionReadLogPath(input: HookInput): string {
   const key = (input.session_id && input.session_id.trim()) || (input.cwd && input.cwd.trim()) || "shared";
   // Collapse anything that is not a safe filename char (drops `/` and `.`),
   // so the key is one component and `..` can never appear.
   const safe = key.replace(/[^A-Za-z0-9_-]/g, "_").slice(0, 128);
-  return `/tmp/zeta-reads-${OTTO343_READLOG_TAG}-${safe}.json`;
+  return join(tmpdir(), `zeta-reads-${OTTO343_READLOG_TAG}-${safe}.json`);
 }
 
 /** Read and parse the hook input from stdin. Returns {} on parse failure. */

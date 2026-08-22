@@ -1,0 +1,12 @@
+{
+  "pr_number": 9937,
+  "archive_path": "docs/history/pr-reviews/PR-9937-fix-installer-a-failed-node-provision-reported-success-and-said-nothing.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-18T08:32:05.533Z",
+  "schema_version": "v1",
+  "commit_sha": "f6a2082137fe72ae2a8a9ae015d26ca93c750d96",
+  "title": "fix(installer): a failed node provision reported success and said nothing",
+  "state": "MERGED",
+  "merged_at": "2026-08-01T23:14:54Z",
+  "head_ref": "shadow/node-install-partial-provision-visible"
+}

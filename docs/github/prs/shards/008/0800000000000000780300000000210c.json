@@ -1,0 +1,12 @@
+{
+  "pr_number": 8460,
+  "archive_path": "docs/history/pr-reviews/PR-8460-feat-core-name-chip9-cart-capabilities.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-16T06:42:01.066Z",
+  "schema_version": "v1",
+  "commit_sha": "b3dd7d3f3f7d44f4c55b6b21333f04f9d5e08312",
+  "title": "feat(core): name CHIP9 cart capabilities",
+  "state": "MERGED",
+  "merged_at": "2026-06-16T06:41:31Z",
+  "head_ref": "codex/chip9-capabilities"
+}

@@ -1,0 +1,17 @@
+{
+  "pr_number": 2763,
+  "archive_path": "docs/history/pr-reviews/PR-2763-test-b-0310-cover-concept-registry-extractor.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7AHvN3",
+    "comment:PRRC_kwDOSF9kNM7AHvOZ",
+    "thread:PRRT_kwDOSF9kNM6BRZh6",
+    "thread:PRRT_kwDOSF9kNM6BRZiW"
+  ],
+  "fetched_at": "2026-05-12T02:11:27.337Z",
+  "schema_version": "v1",
+  "commit_sha": "5e811e3513862101f5a5c21f1fd4eda75e50f625",
+  "title": "test(B-0310): cover concept registry extractor",
+  "state": "MERGED",
+  "merged_at": "2026-05-12T02:11:01Z",
+  "head_ref": "claim/task-b0310-concept-registry-codex"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 9845,
+  "archive_path": "docs/history/pr-reviews/PR-9845-fix-gate-isolate-no-empty-dirs-from-full-setup.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-01T04:45:21.085Z",
+  "schema_version": "v1",
+  "commit_sha": "e0c58e295532a55989988b7ab6a2074ca1c72500",
+  "title": "fix(gate): isolate no-empty-dirs from full setup",
+  "state": "MERGED",
+  "merged_at": "2026-08-01T04:44:50Z",
+  "head_ref": "codex/fix-no-empty-dirs-install-timeout"
+}

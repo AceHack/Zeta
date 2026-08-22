@@ -1,0 +1,12 @@
+{
+  "pr_number": 5931,
+  "archive_path": "docs/history/pr-reviews/PR-5931-feat-agentic-org-harden-worker-entrypoint-loop.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-28T20:38:52.029Z",
+  "schema_version": "v1",
+  "commit_sha": "6b4382bbdedf64006048842175759210fe9ffd7d",
+  "title": "feat(agentic-org): harden worker entrypoint loop",
+  "state": "MERGED",
+  "merged_at": "2026-05-28T20:38:27Z",
+  "head_ref": "codex/agentic-org-worker-entrypoint-hardening"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 7097,
+  "archive_path": "docs/history/pr-reviews/PR-7097-feat-core-amplitudeemu-complex-amplitude-soft-emulator-merge-is-interference-bor.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-08T12:07:48.863Z",
+  "schema_version": "v1",
+  "commit_sha": "d4360a1dccf3335fb65f8b9af06190686244ad2e",
+  "title": "feat(core): AmplitudeEmu — complex-amplitude soft emulator, merge IS interference (Born rule)",
+  "state": "MERGED",
+  "merged_at": "2026-06-08T12:07:25Z",
+  "head_ref": "otto/amplitude-emu-complex-amplitudes-merge-is-interference-born-rule"
+}

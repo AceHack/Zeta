@@ -1,0 +1,29 @@
+{
+  "pr_number": 6388,
+  "archive_path": "docs/history/pr-reviews/PR-6388-feat-ace-slice-5-2-semver-ranges-version-solver-b-0288.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7GrOCe",
+    "comment:PRRC_kwDOSF9kNM7GrODD",
+    "comment:PRRC_kwDOSF9kNM7GrODe",
+    "comment:PRRC_kwDOSF9kNM7GrODz",
+    "comment:PRRC_kwDOSF9kNM7GrOEH",
+    "comment:PRRC_kwDOSF9kNM7GrOEU",
+    "comment:PRRC_kwDOSF9kNM7GrOEm",
+    "comment:PRRC_kwDOSF9kNM7GrOFG",
+    "thread:PRRT_kwDOSF9kNM6GEuX4",
+    "thread:PRRT_kwDOSF9kNM6GEuXB",
+    "thread:PRRT_kwDOSF9kNM6GEuXa",
+    "thread:PRRT_kwDOSF9kNM6GEuXq",
+    "thread:PRRT_kwDOSF9kNM6GEuYG",
+    "thread:PRRT_kwDOSF9kNM6GEuYP",
+    "thread:PRRT_kwDOSF9kNM6GEuYb",
+    "thread:PRRT_kwDOSF9kNM6GEuYy"
+  ],
+  "fetched_at": "2026-06-01T09:55:50.190Z",
+  "schema_version": "v1",
+  "commit_sha": "a7263f2d26d6b742ca947d34701fa5c073aa6914",
+  "title": "feat(ace): slice 5.2 — semver ranges + version solver (B-0288)",
+  "state": "MERGED",
+  "merged_at": "2026-06-01T09:55:24Z",
+  "head_ref": "otto-windows/ace-slice5.2-impl-2026-06-01"
+}

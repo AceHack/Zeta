@@ -25,9 +25,9 @@
 //   surface. A clock can be injected into renderReport() for tests.
 //
 // Usage:
-//   bun tools/hygiene/audit-cross-platform-parity.ts            # full report
-//   bun tools/hygiene/audit-cross-platform-parity.ts --summary  # counts only
-//   bun tools/hygiene/audit-cross-platform-parity.ts --enforce  # exit 2 on gaps
+//   bun src/Core.TypeScript/hygiene/audit-cross-platform-parity.ts            # full report
+//   bun src/Core.TypeScript/hygiene/audit-cross-platform-parity.ts --summary  # counts only
+//   bun src/Core.TypeScript/hygiene/audit-cross-platform-parity.ts --enforce  # exit 2 on gaps
 //
 // Exit codes:
 //   0  no gaps (or non-enforce mode)

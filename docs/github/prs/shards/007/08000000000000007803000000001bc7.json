@@ -1,0 +1,12 @@
+{
+  "pr_number": 7111,
+  "archive_path": "docs/history/pr-reviews/PR-7111-fix-samples-watch-soft-emu-fsx-relative-dll-path-src.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-08T22:09:16.681Z",
+  "schema_version": "v1",
+  "commit_sha": "2f434ed53f4e8aafb55b2bbb5a815fb220a72e25",
+  "title": "fix(samples): watch-soft-emu.fsx relative dll path (../src)",
+  "state": "MERGED",
+  "merged_at": "2026-06-08T22:08:54Z",
+  "head_ref": "otto/fix-viewer-sample-relative-dll-path"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 3470,
+  "archive_path": "docs/history/pr-reviews/PR-3470-shard-tick-1305z-01-pr-3465-merged-1-stale-codex-thread-cleared.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-15T13:08:54.487Z",
+  "schema_version": "v1",
+  "commit_sha": "dab2871223739ef19661d41c78c91c1f6f765fb9",
+  "title": "shard(tick): 1305Z-01 — PR #3465 merged; 1 stale Codex thread cleared",
+  "state": "MERGED",
+  "merged_at": "2026-05-15T13:08:36Z",
+  "head_ref": "shard/tick-1305z-01-otto-cli-2026-05-15"
+}

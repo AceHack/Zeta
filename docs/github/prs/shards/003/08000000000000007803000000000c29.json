@@ -1,0 +1,12 @@
+{
+  "pr_number": 3113,
+  "archive_path": "docs/history/pr-reviews/PR-3113-docs-lior-antigravity-check-pr-preservation-and-blob-drift-log.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-14T08:05:10.259Z",
+  "schema_version": "v1",
+  "commit_sha": "b0054062483bacac0c7a4f3cbb5194bef12b9692",
+  "title": "docs(lior): antigravity check PR preservation and blob drift log",
+  "state": "MERGED",
+  "merged_at": "2026-05-14T08:04:53Z",
+  "head_ref": "lior/antigravity-pr-preservation-0745z"
+}

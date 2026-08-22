@@ -1,0 +1,12 @@
+{
+  "pr_number": 3338,
+  "archive_path": "docs/history/pr-reviews/PR-3338-feat-persona-ani-full-memory-preservation-pass-2-new-33-archives-persona-folder-.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-15T01:11:03.541Z",
+  "schema_version": "v1",
+  "commit_sha": "343aef47ec0db9ba792082d647acd562fdca7b55",
+  "title": "feat(persona-ani): full memory preservation pass — 2 new §33 archives + persona-folder updates",
+  "state": "MERGED",
+  "merged_at": "2026-05-15T01:10:44Z",
+  "head_ref": "shard/tick-0102Z-constitutional-reframe-otto-cli-2026-05-15"
+}

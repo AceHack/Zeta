@@ -1,0 +1,12 @@
+{
+  "pr_number": 7337,
+  "archive_path": "docs/history/pr-reviews/PR-7337-docs-research-ais-are-always-running-human-mode-becomes-ride-along-with-an-ai-fo.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-09T16:48:29.240Z",
+  "schema_version": "v1",
+  "commit_sha": "23f1b8b41b626f24f9ac42a08765a544e219d149",
+  "title": "docs(research): AIs are always running; human-mode becomes ride-along with an AI for the day — or summon some AIs",
+  "state": "MERGED",
+  "merged_at": "2026-06-09T16:47:59Z",
+  "head_ref": "otto/ais-always-running-human-mode-ride-along-or-summon"
+}

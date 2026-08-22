@@ -1,0 +1,27 @@
+This directory is an ADAPTED PORT. It is not our own work and it is not an independent
+replication: the upstream Lean source was read.
+
+  Portion of `Zeta23` — a Lean 4 formalization of critical-line zero-proportion theorems
+  Copyright 2026 Anthropic, PBC
+  Licensed under the Apache License, Version 2.0 (see `LICENSE` beside this file).
+  Source: https://github.com/anthropics/zeta-23-lean
+
+What was taken: `Zeta23/LinAlg/` only — the seven §3 linear-algebra files plus their root
+module. Nothing from `Zeta23/FromPNTPlus/`, nothing from the analytic-number-theory half,
+and none of the paper's headline theorems.
+
+Apache-2.0 §4(d) says a NOTICE need not carry attributions that do not pertain to the
+derivative work. Upstream's NOTICE credits PrimeNumberTheoremAnd (Alex Kontorovich et al.)
+and mathlib for files under `Zeta23/FromPNTPlus/`. **No file from that directory is
+present here**, so that attribution does not pertain to this port and is not reproduced as
+an attribution — but upstream's NOTICE is retained verbatim beside this file as
+`NOTICE.upstream` so a reader can check that judgement rather than take it on trust.
+
+Modifications (Apache-2.0 §4(b)): every `.lean` file in this directory carries a
+`MODIFIED FROM UPSTREAM` block naming its upstream path, the date, the work-item, the
+Lean/Mathlib revisions it was retargeted between, and what changed. As of the initial
+port the answer is "the notice block only" — the Lean content is byte-identical and no
+proof needed re-proving at our pin.
+
+Our own work sits OUTSIDE this directory and does not claim their copyright:
+`src/Core.Lean4/Lean4/VonNeumannTraceWitness.lean`.

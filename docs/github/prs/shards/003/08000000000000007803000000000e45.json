@@ -1,0 +1,12 @@
+{
+  "pr_number": 3653,
+  "archive_path": "docs/history/pr-reviews/PR-3653-backlog-b-0548-qg-isomorphism-step-1-5-construct-strength-m-a-lifting-zeta-zeta.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-16T00:59:27.810Z",
+  "schema_version": "v1",
+  "commit_sha": "97afc5ca200615d4a61d9d95de55897624246cdd",
+  "title": "backlog(B-0548): QG isomorphism Step 1.5 — construct strength θ:M(Ω)→Ω + A-lifting Ã:Zeta→Zeta",
+  "state": "MERGED",
+  "merged_at": "2026-05-16T00:59:10Z",
+  "head_ref": "backlog/b-0548-qg-step-1-5-otto-cli-2026-05-16"
+}

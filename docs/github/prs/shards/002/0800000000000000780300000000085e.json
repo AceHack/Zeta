@@ -1,0 +1,12 @@
+{
+  "pr_number": 2142,
+  "archive_path": "docs/history/pr-reviews/PR-2142-feat-b-0170-add-check-path-forms-ts-path-form-drift-sub-class-v0-7.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-08T22:28:59.543Z",
+  "schema_version": "v1",
+  "commit_sha": "260ebc1c5b3970d87ea0289406a4d033eae1eb40",
+  "title": "feat(B-0170): add check-path-forms.ts — path-form drift sub-class (v0.7)",
+  "state": "MERGED",
+  "merged_at": "2026-05-08T22:28:39Z",
+  "head_ref": "claim/b0170-path-form-drift-2026-05-08"
+}

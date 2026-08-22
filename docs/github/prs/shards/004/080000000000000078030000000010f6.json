@@ -1,0 +1,12 @@
+{
+  "pr_number": 4342,
+  "archive_path": "docs/history/pr-reviews/PR-4342-docs-shadow-maji-anti-entropy-shadow-report-on-system-wide-drift.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-19T08:55:24.684Z",
+  "schema_version": "v1",
+  "commit_sha": "cd0ec031ab61e4adb46bbc7c0c6976b76247bdf6",
+  "title": "docs(shadow): Maji anti-entropy shadow report on system-wide drift",
+  "state": "MERGED",
+  "merged_at": "2026-05-19T08:55:04Z",
+  "head_ref": "lior/shadow-report-0635Z"
+}

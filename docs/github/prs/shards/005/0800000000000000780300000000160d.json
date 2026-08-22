@@ -1,0 +1,12 @@
+{
+  "pr_number": 5645,
+  "archive_path": "docs/history/pr-reviews/PR-5645-fix-b-0857-2-zeta-hardware-detect-ts-tsc-strict-explicit-narrow-on-2-nounchecked.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-27T21:20:09.769Z",
+  "schema_version": "v1",
+  "commit_sha": "285e5785f5345b837efa153be6e0bdb4550d2766",
+  "title": "fix(b-0857.2): zeta-hardware-detect.ts tsc strict — explicit-narrow on 2 noUncheckedIndexedAccess sites (#5642 lint fwd)",
+  "state": "MERGED",
+  "merged_at": "2026-05-27T21:19:47Z",
+  "head_ref": "fix/b-0857.2-hwdetect-tsc-strict-2026-05-27"
+}

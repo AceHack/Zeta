@@ -1,0 +1,12 @@
+{
+  "pr_number": 10417,
+  "archive_path": "docs/history/pr-reviews/PR-10417-test-discovery-seeded-gilbert-elliott-chaos-harness-for-udp-lossy-transport-uch-.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-14T00:12:48.058Z",
+  "schema_version": "v1",
+  "commit_sha": "0ac4fa80674a7e2a2049802c6b9d97709d9350e4",
+  "title": "test(discovery): seeded Gilbert-Elliott chaos harness for udp-lossy-transport (UCH-1..16)",
+  "state": "MERGED",
+  "merged_at": "2026-08-13T23:06:10Z",
+  "head_ref": "shadow/udp-gilbert-elliott-chaos-harness"
+}

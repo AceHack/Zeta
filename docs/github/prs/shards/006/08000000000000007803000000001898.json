@@ -1,0 +1,17 @@
+{
+  "pr_number": 6296,
+  "archive_path": "docs/history/pr-reviews/PR-6296-backlog-b-0956-work-items-zetaid-keys-conflict-free-no-id-consensus-type-task-bu.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7Gjgfk",
+    "comment:PRRC_kwDOSF9kNM7Gjhqu",
+    "thread:PRRT_kwDOSF9kNM6F--Kf",
+    "thread:PRRT_kwDOSF9kNM6F-_D0"
+  ],
+  "fetched_at": "2026-06-01T00:48:29.853Z",
+  "schema_version": "v1",
+  "commit_sha": "bcbebfc92239c1da5df2561df4cb73c950d8f40e",
+  "title": "backlog(B-0956): work-items → ZetaId keys (conflict-free, no ID consensus); type=task|bug, backlog=state",
+  "state": "MERGED",
+  "merged_at": "2026-06-01T00:48:06Z",
+  "head_ref": "otto-cli/b0956-backlog-to-zetaid-workitems-2026-05-31"
+}

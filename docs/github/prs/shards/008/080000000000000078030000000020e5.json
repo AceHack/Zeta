@@ -1,0 +1,12 @@
+{
+  "pr_number": 8421,
+  "archive_path": "docs/history/pr-reviews/PR-8421-docs-register-a-method-note-avoid-an-axiom-by-standing-on-a-a-theorem-calm-trave.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-16T03:00:43.528Z",
+  "schema_version": "v1",
+  "commit_sha": "0fff6ca85ec9e55f0c62d4d98e196fdb3aaec2e3",
+  "title": "docs(register): A-method note — avoid an axiom by standing on a §A theorem (CALM + traveler-frame #8 dispense with the CTM global axiom)",
+  "state": "MERGED",
+  "merged_at": "2026-06-16T03:00:14Z",
+  "head_ref": "docs/register-calm-avoids-global-axiom"
+}

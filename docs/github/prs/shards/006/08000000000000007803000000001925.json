@@ -1,0 +1,12 @@
+{
+  "pr_number": 6437,
+  "archive_path": "docs/history/pr-reviews/PR-6437-chore-b-0965-close-row-git-bash-routing-shield-shipped-via-6430.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-01T17:13:51.540Z",
+  "schema_version": "v1",
+  "commit_sha": "fce1ae00ca50d61b76292eaac40d838b11d57df0",
+  "title": "chore(B-0965): close row — git-bash routing shield shipped via #6430",
+  "state": "MERGED",
+  "merged_at": "2026-06-01T17:13:27Z",
+  "head_ref": "claude/pr-review-hUVTQ"
+}

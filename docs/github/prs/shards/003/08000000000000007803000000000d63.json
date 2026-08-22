@@ -1,0 +1,22 @@
+{
+  "pr_number": 3427,
+  "archive_path": "docs/history/pr-reviews/PR-3427-shard-tick-1107z-pr-3422-pr-3424-merged.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7BlO9S",
+    "comment:PRRC_kwDOSF9kNM7BlPoj",
+    "comment:PRRC_kwDOSF9kNM7BlPpf",
+    "comment:PRRC_kwDOSF9kNM7BlQxM",
+    "comment:PRRC_kwDOSF9kNM7BlWX_",
+    "comment:PRRC_kwDOSF9kNM7BlWcP",
+    "thread:PRRT_kwDOSF9kNM6CVnhY",
+    "thread:PRRT_kwDOSF9kNM6CVoBe",
+    "thread:PRRT_kwDOSF9kNM6CVoCN"
+  ],
+  "fetched_at": "2026-05-15T11:15:48.256Z",
+  "schema_version": "v1",
+  "commit_sha": "12d135d623fb1cebce159faa7038ed2fc5eee2c5",
+  "title": "shard(tick): 1107Z — PR #3422 + PR #3424 merged",
+  "state": "MERGED",
+  "merged_at": "2026-05-15T11:15:30Z",
+  "head_ref": "shard/tick-1107z-otto-cli-2026-05-15"
+}

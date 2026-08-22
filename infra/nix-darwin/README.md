@@ -5,7 +5,7 @@ nix-darwin configuration for maintainer Macs (Apple Silicon).
 The reason this directory exists is **one feature**: `nix.linux-builder`.
 It spins up a tiny Linux VM via Apple's Virtualization.framework that
 Nix dispatches Linux builds to — so the canonical installer ISO build
-(`cd full-ai-cluster/usb-nixos-installer && nix build .#installer-iso`)
+(`cd full-ai-cluster && nix build .#installer-iso`)
 works locally on an M-series Mac without Parallels, Lima, Docker, or a
 remote builder.
 
@@ -45,7 +45,7 @@ From the Zeta repo root:
 ```bash
 # Canonical AI-cluster installer substrate (root-flake installer-iso
 # package retired 2026-05-26 in USB cleanup PR 2):
-cd full-ai-cluster/usb-nixos-installer && nix build .#installer-iso
+cd full-ai-cluster && nix build .#installer-iso
 # ↓ writes result/iso/zeta-installer-25.11.iso (~1.5-2 GB)
 ```
 

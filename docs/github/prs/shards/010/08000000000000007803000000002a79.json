@@ -1,0 +1,12 @@
+{
+  "pr_number": 10873,
+  "archive_path": "docs/history/pr-reviews/PR-10873-workitems-bayesian-factor-representation-gap-upstream-bug-recorded-negative-on-t.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-16T14:07:26.981Z",
+  "schema_version": "v1",
+  "commit_sha": "fb6286c2a2d14de8b7f917c03496c28f651410cb",
+  "title": "workitems: bayesian factor-representation gap — upstream bug + recorded negative on the adapter",
+  "state": "MERGED",
+  "merged_at": "2026-08-16T14:06:54Z",
+  "head_ref": "shadow/bayesian-factor-representation-gap"
+}

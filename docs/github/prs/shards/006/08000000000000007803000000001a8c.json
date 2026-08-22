@@ -1,0 +1,12 @@
+{
+  "pr_number": 6796,
+  "archive_path": "docs/history/pr-reviews/PR-6796-docs-081ktgtjc1q-capture-alexa-s-fs-naming-proposals-pending-zfs-collision-flag-.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-07T11:27:53.564Z",
+  "schema_version": "v1",
+  "commit_sha": "02ab4dffb958c8c9525a572c3c7cdee07457b401",
+  "title": "docs(081KTGTJC1Q): capture Alexa's fs-naming proposals (PENDING) + ZFS-collision flag + hype-peel",
+  "state": "MERGED",
+  "merged_at": "2026-06-07T11:27:35Z",
+  "head_ref": "docs/fs-naming-pending-alexa-proposals"
+}

@@ -1,0 +1,15 @@
+{
+  "pr_number": 2210,
+  "archive_path": "docs/history/pr-reviews/PR-2210-refactor-rename-suspicion-disagreement-in-signalquality.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_fV0C",
+    "thread:PRRT_kwDOSF9kNM6AzARF"
+  ],
+  "fetched_at": "2026-05-09T06:53:54.555Z",
+  "schema_version": "v1",
+  "commit_sha": "6233209562772acd3d41dd05b4dffca9e965172c",
+  "title": "refactor: rename suspicion → disagreement in SignalQuality",
+  "state": "MERGED",
+  "merged_at": "2026-05-09T06:53:33Z",
+  "head_ref": "fix/suspicion-to-disagreement"
+}

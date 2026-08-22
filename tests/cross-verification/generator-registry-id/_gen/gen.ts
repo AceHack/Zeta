@@ -45,6 +45,7 @@ const inputs: { id: string; name: string; version: number }[] = [
   { id: "boundary.glow@2", name: "boundary.glow", version: 2 },
   { id: "kernel.rbf@1", name: "kernel.rbf", version: 1 },
   { id: "zetaid.glyph@1", name: "zetaid.glyph", version: 1 },
+  { id: "zetaid.glyph@2", name: "zetaid.glyph", version: 2 },
 ];
 
 const out: Record<string, string> = { _source: "generated-from-ir" };

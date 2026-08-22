@@ -1,0 +1,12 @@
+{
+  "pr_number": 9200,
+  "archive_path": "docs/history/pr-reviews/PR-9200-feat-dht-global-path-discovery-kademlia-over-destination-hashes-shadow.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-02T21:01:03.372Z",
+  "schema_version": "v1",
+  "commit_sha": "6be4f65156a8a73c1687deff0559bc52036c96cc",
+  "title": "feat(dht): global path discovery — Kademlia over destination hashes (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-02T21:00:38Z",
+  "head_ref": "shadow/dht-path-discovery-kademlia"
+}

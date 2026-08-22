@@ -1,0 +1,12 @@
+{
+  "pr_number": 10942,
+  "archive_path": "docs/history/pr-reviews/PR-10942-design-fpga-z-set-join-uncomputes-cleanly-at-o-w-ancilla-and-an-fpga-cannot-meas.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-16T15:51:16.844Z",
+  "schema_version": "v1",
+  "commit_sha": "f42667f8176d52cfc99bf153bb865c3185ae3bdd",
+  "title": "design(fpga): Z-set join uncomputes cleanly at O(W²) ancilla — and an FPGA cannot measure Landauer",
+  "state": "MERGED",
+  "merged_at": "2026-08-16T15:50:49Z",
+  "head_ref": "shadow/fpga-toffoli-zset-synthesis-design"
+}

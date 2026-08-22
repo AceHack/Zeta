@@ -42,6 +42,7 @@ interface HeatSignalsTreaty {
     readonly temperaturePpm: number;
     readonly band: string;
     readonly code: number;
+    readonly fidelity: string;
   }[];
   readonly blackBodyCases: readonly {
     readonly id: string;
@@ -153,6 +154,15 @@ describe("Q# heat-signal reference treaty", () => {
     expect(bandForPpm).toContain("ppm <= 666666");
     expect(bandForPpm).toContain("TemperatureBandCritical");
 
+    const declaredBands = treaty.temperatureBands.map((band) => band.token).toSorted();
+    const reachedBands = [...new Set(treaty.temperatureCases.map((item) => item.band))].toSorted();
+    expect(reachedBands).toEqual(declaredBands);
+
+    for (const band of treaty.temperatureBands) {
+      expect(bandForPpm).toContain(`${band.qsharpFunction}()`);
+      expect(treaty.temperatureCases.some((item) => item.code === band.code && item.band === band.token)).toBe(true);
+    }
+
     expect(treaty.temperatureCases.map((item) => item.id)).toContain("attention-does-not-heat-cost");
     expect(treaty.temperatureCases.map((item) => item.band)).toEqual([
       "cold",
@@ -160,6 +170,47 @@ describe("Q# heat-signal reference treaty", () => {
       "hot",
       "critical",
       "warm",
+      "critical",
+      "critical",
+      "cold",
+    ]);
+  });
+
+  test("pins fidelity as a treaty key that carries what no other published key can", () => {
+    // The vectors added with the `fidelity` key are pairs chosen so that every
+    // OTHER published key is identical within the pair. If `fidelity` were
+    // dropped, each pair would collapse to one indistinguishable reading — which
+    // is the whole reason the key exists, stated as a vector rather than as
+    // prose. (A key whose vectors all say the same thing is the vacuity class.)
+    const byId = new Map(treaty.temperatureCases.map((item) => [item.id, item]));
+
+    const pairs: readonly (readonly [string, string])[] = [
+      ["at-ceiling-is-exact", "above-ceiling-is-saturated"],
+      ["cold", "blind-counter-is-out-of-domain"],
+    ];
+
+    for (const [leftId, rightId] of pairs) {
+      const left = byId.get(leftId);
+      const right = byId.get(rightId);
+      expect(left).toBeDefined();
+      expect(right).toBeDefined();
+      if (left === undefined || right === undefined) continue;
+
+      // Identical in every published key except fidelity...
+      expect(left.temperaturePpm).toBe(right.temperaturePpm);
+      expect(left.band).toBe(right.band);
+      expect(left.code).toBe(right.code);
+
+      // ...and separable only by it.
+      expect(left.fidelity).not.toBe(right.fidelity);
+      expect(left.fidelity).toBe("exact");
+    }
+
+    // The key is non-vacuous: more than one token is actually reached.
+    expect([...new Set(treaty.temperatureCases.map((item) => item.fidelity))].toSorted()).toEqual([
+      "exact",
+      "out-of-domain",
+      "saturated",
     ]);
   });
 

@@ -1,0 +1,12 @@
+{
+  "pr_number": 5355,
+  "archive_path": "docs/history/pr-reviews/PR-5355-fix-postmerge-5352-copilot-5-findings-schema-roles-registration-maintainer-hardw.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-26T23:35:14.982Z",
+  "schema_version": "v1",
+  "commit_sha": "258f4cde0085d4785b1237814f9d1a520b0c8b50",
+  "title": "fix(postmerge-5352): Copilot 5 findings — schema (roles/registration.maintainer/hardware.storage) + MAC parsing + subshell error handling + comment-name redaction",
+  "state": "MERGED",
+  "merged_at": "2026-05-26T23:34:54Z",
+  "head_ref": "otto/fix-pr-5352-copilot-5-findings-schema-mac-subshell-error-handling-2026-05-26"
+}

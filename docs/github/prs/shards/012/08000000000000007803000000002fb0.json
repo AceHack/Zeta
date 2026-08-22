@@ -1,0 +1,12 @@
+{
+  "pr_number": 12208,
+  "archive_path": "docs/history/pr-reviews/PR-12208-research-security-verify-the-tpm-virtualise-multiplex-split-in-the-kernel-source.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-19T00:13:42.941Z",
+  "schema_version": "v1",
+  "commit_sha": "e30116c6f9135a1a143486365069187d715ab0f3",
+  "title": "research(security): verify the TPM virtualise/multiplex split in the kernel source — obfuscation dies to one unauthenticated call",
+  "state": "MERGED",
+  "merged_at": "2026-08-19T00:13:08Z",
+  "head_ref": "mateo/tpm-rm-kernel-source-verification"
+}

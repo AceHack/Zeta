@@ -1,0 +1,12 @@
+{
+  "pr_number": 9400,
+  "archive_path": "docs/history/pr-reviews/PR-9400-feat-model-backend-tool-calls-the-zeta-way-the-closed-fs-db-tool-surface-design-.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-04T02:52:20.944Z",
+  "schema_version": "v1",
+  "commit_sha": "fcfa2df0cd23588a69db9d1aa7b5ad25a12bb2aa",
+  "title": "feat(model-backend): tool calls the Zeta way — the closed fs+db tool surface (design + slice 1) (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-04T02:51:58Z",
+  "head_ref": "otto/tool-calls-zeta-way-closed-fs-db-surface"
+}

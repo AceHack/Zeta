@@ -1,0 +1,12 @@
+{
+  "pr_number": 8833,
+  "archive_path": "docs/history/pr-reviews/PR-8833-docs-prior-art-oss-esp32-bitcoin-miner-firmwares-mcu-flashing-sha-reference.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-21T02:43:00.659Z",
+  "schema_version": "v1",
+  "commit_sha": "e8a737ddde8efc4785a5bea46b9e786e79cefe6a",
+  "title": "docs(prior-art): OSS ESP32 bitcoin-miner firmwares — MCU flashing/SHA reference",
+  "state": "MERGED",
+  "merged_at": "2026-06-21T02:42:36Z",
+  "head_ref": "otto/prior-art-esp32-miners"
+}

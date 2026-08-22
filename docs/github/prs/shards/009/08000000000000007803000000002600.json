@@ -1,0 +1,12 @@
+{
+  "pr_number": 9728,
+  "archive_path": "docs/history/pr-reviews/PR-9728-fix-tests-make-windows-f-gate-portable.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-11T18:59:39.900Z",
+  "schema_version": "v1",
+  "commit_sha": "e6cf68eb23666d2d64f6703126316578d66b233d",
+  "title": "fix(tests): make Windows F# gate portable",
+  "state": "MERGED",
+  "merged_at": "2026-07-11T18:59:10Z",
+  "head_ref": "codex/windows-test-portability-fix"
+}

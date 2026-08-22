@@ -1,0 +1,12 @@
+{
+  "pr_number": 5971,
+  "archive_path": "docs/history/pr-reviews/PR-5971-docs-beacon-photonic-vs-interior-grounds-the-retract-outside-inside-light-life-m.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-29T10:24:02.959Z",
+  "schema_version": "v1",
+  "commit_sha": "7c9c3c9115a21952dad605f4bc588d5e8d697e5a",
+  "title": "docs(beacon): photonic-vs-interior grounds the retract (outside/inside); LIGHT → LIFE (mirror)",
+  "state": "MERGED",
+  "merged_at": "2026-05-29T10:23:42Z",
+  "head_ref": "otto-cli/beacon-photonic-lifelike-light-to-life-2026-05-29"
+}

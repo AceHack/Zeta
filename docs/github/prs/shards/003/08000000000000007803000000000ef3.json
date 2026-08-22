@@ -1,0 +1,28 @@
+{
+  "pr_number": 3827,
+  "archive_path": "docs/history/pr-reviews/PR-3827-shard-tick-2026-05-16t08-23z-b-0512-3rd-fp-2-21-38-audit-triaged-55.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7B33ex",
+    "comment:PRRC_kwDOSF9kNM7B33fl",
+    "comment:PRRC_kwDOSF9kNM7B33g8",
+    "comment:PRRC_kwDOSF9kNM7B33gE",
+    "comment:PRRC_kwDOSF9kNM7B33ia",
+    "comment:PRRC_kwDOSF9kNM7B3aHk",
+    "comment:PRRC_kwDOSF9kNM7B3aj_",
+    "comment:PRRC_kwDOSF9kNM7B3akG",
+    "comment:PRRC_kwDOSF9kNM7B3akJ",
+    "comment:PRRC_kwDOSF9kNM7B3akP",
+    "thread:PRRT_kwDOSF9kNM6Ci3Jj",
+    "thread:PRRT_kwDOSF9kNM6Ci3hh",
+    "thread:PRRT_kwDOSF9kNM6Ci3hm",
+    "thread:PRRT_kwDOSF9kNM6Ci3ho",
+    "thread:PRRT_kwDOSF9kNM6Ci3hu"
+  ],
+  "fetched_at": "2026-05-16T10:06:08.582Z",
+  "schema_version": "v1",
+  "commit_sha": "f1ff74a0a44c961fa041a062bd90214d00a792cf",
+  "title": "shard(tick): 2026-05-16T08:23Z — B-0512 = 3rd FP-2; 21/38 audit triaged (55%)",
+  "state": "MERGED",
+  "merged_at": "2026-05-16T10:05:49Z",
+  "head_ref": "shard/tick-0823z-retry-otto-cli-2026-05-16"
+}

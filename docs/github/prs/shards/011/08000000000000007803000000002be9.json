@@ -1,0 +1,12 @@
+{
+  "pr_number": 11241,
+  "archive_path": "docs/history/pr-reviews/PR-11241-test-installer-pin-what-whitespace-only-is-absence-costs-when-a-keyfile-is-also-.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-17T01:34:05.341Z",
+  "schema_version": "v1",
+  "commit_sha": "2839dd336ddabbf3a1e6bf4f4ecdb5f17134f91b",
+  "title": "test(installer): pin what \"whitespace-only is absence\" costs when a keyfile is also present",
+  "state": "MERGED",
+  "merged_at": "2026-08-17T01:33:27Z",
+  "head_ref": "shadow/binding-presence-is-supplied-not-nonblank"
+}

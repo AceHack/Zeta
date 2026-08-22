@@ -1,0 +1,22 @@
+{
+  "pr_number": 5654,
+  "archive_path": "docs/history/pr-reviews/PR-5654-docs-hygiene-2026-05-27t22-42z-otto-cli-tick-4-pr-triage-status-0-match-task-con.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7Fi3pL",
+    "comment:PRRC_kwDOSF9kNM7Fi3pn",
+    "comment:PRRC_kwDOSF9kNM7Fi3qF",
+    "comment:PRRC_kwDOSF9kNM7FjZYN",
+    "comment:PRRC_kwDOSF9kNM7FjZaj",
+    "comment:PRRC_kwDOSF9kNM7FjZcu",
+    "thread:PRRT_kwDOSF9kNM6FP0h2",
+    "thread:PRRT_kwDOSF9kNM6FP0hO",
+    "thread:PRRT_kwDOSF9kNM6FP0hi"
+  ],
+  "fetched_at": "2026-05-27T23:15:50.909Z",
+  "schema_version": "v1",
+  "commit_sha": "18d490328034d95eedb359eabe07cba557e86c73",
+  "title": "docs(hygiene): 2026-05-27T22:42Z Otto-CLI tick — 4-PR triage status (0 match task condition)",
+  "state": "MERGED",
+  "merged_at": "2026-05-27T23:15:28Z",
+  "head_ref": "otto-cli/tick-2242z-pr-triage-status-report-2026-05-27"
+}

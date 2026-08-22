@@ -1,0 +1,22 @@
+{
+  "pr_number": 4972,
+  "archive_path": "docs/history/pr-reviews/PR-4972-docs-add-agent-work-rhythm-and-prompt-flows.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7Eq_C2",
+    "comment:PRRC_kwDOSF9kNM7Eq_Ck",
+    "comment:PRRC_kwDOSF9kNM7Eq_DD",
+    "comment:PRRC_kwDOSF9kNM7ErCPQ",
+    "comment:PRRC_kwDOSF9kNM7ErCXH",
+    "comment:PRRC_kwDOSF9kNM7ErCa_",
+    "thread:PRRT_kwDOSF9kNM6EnDK1",
+    "thread:PRRT_kwDOSF9kNM6EnDKa",
+    "thread:PRRT_kwDOSF9kNM6EnDKq"
+  ],
+  "fetched_at": "2026-05-25T19:08:46.410Z",
+  "schema_version": "v1",
+  "commit_sha": "bc893ecbce213a5db5a9d490accdc01793334a89",
+  "title": "docs: add agent work rhythm and prompt flows",
+  "state": "MERGED",
+  "merged_at": "2026-05-25T19:08:13Z",
+  "head_ref": "codex/agent-work-rhythm"
+}

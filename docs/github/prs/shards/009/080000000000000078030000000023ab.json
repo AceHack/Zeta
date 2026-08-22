@@ -1,0 +1,15 @@
+{
+  "pr_number": 9131,
+  "archive_path": "docs/history/pr-reviews/PR-9131-test-core-cellscheduler-scale-probe-measure-the-o-n-before-refactoring.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7RZdfi",
+    "thread:PRRT_kwDOSF9kNM6N5ZGb"
+  ],
+  "fetched_at": "2026-08-17T07:25:57.509Z",
+  "schema_version": "v1",
+  "commit_sha": "d6918b6b2b37ac2de67c49a6516dd7961752394e",
+  "title": "test(core): CellScheduler scale probe — measure the O(n²) before refactoring",
+  "state": "MERGED",
+  "merged_at": "2026-07-02T12:46:36Z",
+  "head_ref": "otto/cell-scheduler-scale-probe"
+}

@@ -1,0 +1,14 @@
+{
+  "id": "080d00deb2857010a01300082fd8df44",
+  "at": "2026-08-19T21:03:45.326Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M0DXCM5E087G0R000WJCQFG",
+    "type": "task",
+    "title": "Wire effectiveTrialCount to a production caller: measure inter-agent rho over the mutation-findings corpus and report head vs effective agent count",
+    "slug": "wire-effectivetrialcount-to-a-production-caller-measure-inte",
+    "priority": "P2",
+    "filename": "081M0DXCM5E087G0R000WJCQFG-wire-effectivetrialcount-to-a-production-caller-measure-inte.md"
+  }
+}

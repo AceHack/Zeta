@@ -1,0 +1,12 @@
+{
+  "pr_number": 5891,
+  "archive_path": "docs/history/pr-reviews/PR-5891-feat-b-0925-c-elegans-substrate-as-controller-variant-for-b-0924-openworm-302-ne.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-28T17:26:29.566Z",
+  "schema_version": "v1",
+  "commit_sha": "9257bfe7d593df4e67f2067a0ccbf7bcf0c09939",
+  "title": "feat(B-0925): C. elegans-substrate as controller variant for B-0924 — OpenWorm 302-neuron connectome + generate+join + DST-omniscience + mirror-tier research (operator 2026-05-28)",
+  "state": "MERGED",
+  "merged_at": "2026-05-28T17:26:07Z",
+  "head_ref": "otto-cli/b0925-celegans-controller-b0924-2026-05-28"
+}

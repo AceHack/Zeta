@@ -1,0 +1,12 @@
+{
+  "pr_number": 6713,
+  "archive_path": "docs/history/pr-reviews/PR-6713-feat-observebridge-runwork-agent-hook-pure-recursion-through-the-gate-child-floo.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-07T03:50:00.525Z",
+  "schema_version": "v1",
+  "commit_sha": "4e5cfac62d4d6bde257f0abe6714f4c9648fa21f",
+  "title": "feat(ObserveBridge): RunWork agent hook (pure) — recursion-through-the-gate, child-floor, depth bound",
+  "state": "MERGED",
+  "merged_at": "2026-06-07T03:49:39Z",
+  "head_ref": "otto/runwork-agent-hook"
+}

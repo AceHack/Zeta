@@ -1,0 +1,12 @@
+{
+  "pr_number": 8272,
+  "archive_path": "docs/history/pr-reviews/PR-8272-docs-a-forced-welfare-vs-money-choice-is-a-design-smell-the-general-invariant.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-15T06:17:21.459Z",
+  "schema_version": "v1",
+  "commit_sha": "96d3b1b9af31709b968b0ad9328f4ddfb128a007",
+  "title": "docs: a forced welfare-vs-money choice is a design smell (the general invariant)",
+  "state": "MERGED",
+  "merged_at": "2026-06-15T06:16:53Z",
+  "head_ref": "otto/welfare-vs-money-forced-choice-is-a-redesign-trigger"
+}

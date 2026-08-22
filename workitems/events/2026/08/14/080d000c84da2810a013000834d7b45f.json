@@ -1,0 +1,14 @@
+{
+  "id": "080d000c84da2810a013000834d7b45f",
+  "at": "2026-08-14T18:37:29.285Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M00S16T3087G0R0023AZTX0",
+    "type": "task",
+    "title": "Distributed cron fires on shared phase, never local wall-clock: phase is a monotone counter in the shared fold (the origin/main commit DAG is the available source); local time may choose POLL rate only. Honest bound: this yields per-phase exactly-once ordering, NOT punctuality — wall-clock periods need a separate Periodic-local target kind that declares it does not participate in the shared fold.",
+    "slug": "distributed-cron-fires-on-shared-phase-never-local-wall-cloc",
+    "priority": "P2",
+    "filename": "081M00S16T3087G0R0023AZTX0-distributed-cron-fires-on-shared-phase-never-local-wall-cloc.md"
+  }
+}

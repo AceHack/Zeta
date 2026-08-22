@@ -1,0 +1,12 @@
+{
+  "pr_number": 9320,
+  "archive_path": "docs/history/pr-reviews/PR-9320-docs-handoffs-otto-cowork-2026-07-03-session-2-five-prs-capture-pipeline-end-to-.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-03T15:41:19.769Z",
+  "schema_version": "v1",
+  "commit_sha": "aa320c91b87e01078cbb97c0bf1068a1fbbcac00",
+  "title": "docs(handoffs): Otto Cowork 2026-07-03 session 2 — five PRs, capture pipeline end-to-end, plot for next Otto",
+  "state": "MERGED",
+  "merged_at": "2026-07-03T15:40:55Z",
+  "head_ref": "otto/handoff-2026-07-03"
+}

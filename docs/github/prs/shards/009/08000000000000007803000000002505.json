@@ -1,0 +1,12 @@
+{
+  "pr_number": 9477,
+  "archive_path": "docs/history/pr-reviews/PR-9477-docs-ferry-the-minimal-vm-six-ops-and-no-more-braiding-as-macro-q-chip-8-are-pla.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-04T18:42:06.746Z",
+  "schema_version": "v1",
+  "commit_sha": "13908647a7476fd935bd67cc36e9fc7b2e45ebb6",
+  "title": "docs(ferry): the minimal VM — six ops and no more; braiding as macro; Q#/CHIP-8 are playgrounds (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-04T18:41:39Z",
+  "head_ref": "otto/minimal-vm-vision-braiding-as-macro"
+}

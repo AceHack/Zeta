@@ -1,0 +1,12 @@
+{
+  "pr_number": 10959,
+  "archive_path": "docs/history/pr-reviews/PR-10959-fix-ci-boot-uefi-menu-smoke-as-usb-with-uart0-file-serial.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-16T17:00:59.485Z",
+  "schema_version": "v1",
+  "commit_sha": "249bdf00d5def72a97ee15f3d41e89ef7f9a7e6a",
+  "title": "fix(ci): boot UEFI menu smoke as USB with UART0 file serial",
+  "state": "MERGED",
+  "merged_at": "2026-08-16T17:00:25Z",
+  "head_ref": "riven/fix-qemu-uefi-serial"
+}

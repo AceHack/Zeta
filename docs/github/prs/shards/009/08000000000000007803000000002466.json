@@ -1,0 +1,12 @@
+{
+  "pr_number": 9318,
+  "archive_path": "docs/history/pr-reviews/PR-9318-feat-demo-chip9-cart-viewer-the-css-host-081kwje90ez-runs-in-css-target.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-03T15:39:12.139Z",
+  "schema_version": "v1",
+  "commit_sha": "4643057666fa3706360da4946e41341ecd515588",
+  "title": "feat(demo): chip9-cart viewer — the CSS host (081KWJE90EZ 'runs in CSS' target)",
+  "state": "MERGED",
+  "merged_at": "2026-07-03T15:38:46Z",
+  "head_ref": "otto/chip9-cart-css-host"
+}

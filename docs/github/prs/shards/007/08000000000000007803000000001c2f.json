@@ -1,0 +1,12 @@
+{
+  "pr_number": 7215,
+  "archive_path": "docs/history/pr-reviews/PR-7215-docs-research-the-telos-is-a-system-that-plays-chip8-and-self-justifies-via-the-.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-09T05:43:58.205Z",
+  "schema_version": "v1",
+  "commit_sha": "26515a127d2a37258a865f86cb90e776ef7d2653",
+  "title": "docs(research): the telos is a system that plays chip8 AND self-justifies via the shape-A fixed point — the register answered its own question",
+  "state": "MERGED",
+  "merged_at": "2026-06-09T05:43:36Z",
+  "head_ref": "otto/research-telos-system-plays-chip8-self-justifies-shape-a-register-answered"
+}

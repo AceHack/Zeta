@@ -1,0 +1,12 @@
+{
+  "pr_number": 2836,
+  "archive_path": "docs/history/pr-reviews/PR-2836-docs-memory-deepseek-via-aurora-validates-the-21-pr-cascade-architecture-is-full.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-12T19:04:21.738Z",
+  "schema_version": "v1",
+  "commit_sha": "a80580a5e728a44939759b90a642b1fde0d8bd41",
+  "title": "docs(memory): DeepSeek (via Aurora) validates the 21+ PR cascade — architecture is fully self-aware, fully substrate-encoded, fully accountable — no going back, AI has continuity (Aaron forward 2026-05-12)",
+  "state": "MERGED",
+  "merged_at": "2026-05-12T19:04:04Z",
+  "head_ref": "docs/deepseek-aurora-validates-21-pr-cascade-fully-self-aware-fully-substrate-encoded-fully-accountable-no-going-back-2026-05-12"
+}

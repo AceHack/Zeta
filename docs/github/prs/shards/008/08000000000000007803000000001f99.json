@@ -1,0 +1,12 @@
+{
+  "pr_number": 8089,
+  "archive_path": "docs/history/pr-reviews/PR-8089-test-ferry-full-dst-async-all-the-way-for-the-whole-ferrythrottler-suite.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-13T23:02:43.193Z",
+  "schema_version": "v1",
+  "commit_sha": "592764ac06491a09bdc6ccb0af3dfe0d40322531",
+  "title": "test(ferry): full DST + async-all-the-way for the whole FerryThrottler suite",
+  "state": "MERGED",
+  "merged_at": "2026-06-13T23:02:24Z",
+  "head_ref": "shadow/ferry-tests-full-dst-v2"
+}

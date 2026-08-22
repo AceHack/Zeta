@@ -97,7 +97,8 @@
       "attentionPpm": 0,
       "temperaturePpm": 0,
       "band": "cold",
-      "code": 0
+      "code": 0,
+      "fidelity": "exact"
     },
     {
       "id": "uncertainty-warm",
@@ -107,7 +108,8 @@
       "attentionPpm": 0,
       "temperaturePpm": 250000,
       "band": "warm",
-      "code": 1
+      "code": 1,
+      "fidelity": "exact"
     },
     {
       "id": "pressure-hot-attended",
@@ -117,7 +119,8 @@
       "attentionPpm": 900000,
       "temperaturePpm": 500000,
       "band": "hot",
-      "code": 2
+      "code": 2,
+      "fidelity": "exact"
     },
     {
       "id": "heat-critical",
@@ -127,7 +130,8 @@
       "attentionPpm": 0,
       "temperaturePpm": 900000,
       "band": "critical",
-      "code": 3
+      "code": 3,
+      "fidelity": "exact"
     },
     {
       "id": "attention-does-not-heat-cost",
@@ -137,7 +141,41 @@
       "attentionPpm": 1000000,
       "temperaturePpm": 125000,
       "band": "warm",
-      "code": 1
+      "code": 1,
+      "fidelity": "exact"
+    },
+    {
+      "id": "at-ceiling-is-exact",
+      "heatPpm": 1000000,
+      "uncertaintyPpm": 0,
+      "pressurePpm": 0,
+      "attentionPpm": 0,
+      "temperaturePpm": 1000000,
+      "band": "critical",
+      "code": 3,
+      "fidelity": "exact"
+    },
+    {
+      "id": "above-ceiling-is-saturated",
+      "heatPpm": 2000000,
+      "uncertaintyPpm": 0,
+      "pressurePpm": 0,
+      "attentionPpm": 0,
+      "temperaturePpm": 1000000,
+      "band": "critical",
+      "code": 3,
+      "fidelity": "saturated"
+    },
+    {
+      "id": "blind-counter-is-out-of-domain",
+      "heatPpm": -1,
+      "uncertaintyPpm": 0,
+      "pressurePpm": 0,
+      "attentionPpm": 0,
+      "temperaturePpm": 0,
+      "band": "cold",
+      "code": 0,
+      "fidelity": "out-of-domain"
     }
   ],
   "blackBodyCases": [
@@ -188,7 +226,15 @@
       "token": "forgotten"
     },
     {
+      "kind": "wset.consolidate.forgotten",
+      "token": "forgotten"
+    },
+    {
       "kind": "meta-cart.policy-backpressure",
+      "token": "backpressure"
+    },
+    {
+      "kind": "prediction.complexity-bound.backpressure",
       "token": "backpressure"
     },
     {

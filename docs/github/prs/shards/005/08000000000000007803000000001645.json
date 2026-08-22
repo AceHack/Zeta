@@ -1,0 +1,12 @@
+{
+  "pr_number": 5701,
+  "archive_path": "docs/history/pr-reviews/PR-5701-backlog-b-0867-24-population-control-safety-net-workflow-limit-as-primitive-ques.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-28T05:20:25.011Z",
+  "schema_version": "v1",
+  "commit_sha": "08d808a874271dcaaf1087525d03e89f33f328ee",
+  "title": "backlog(B-0867.24): population-control safety-net workflow + Limit-as-primitive question deferred (aaron 2026-05-28)",
+  "state": "MERGED",
+  "merged_at": "2026-05-28T05:20:05Z",
+  "head_ref": "backlog/b-0867-24-population-control-safety-net-plus-limit-question-2026-05-28"
+}

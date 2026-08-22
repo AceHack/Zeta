@@ -1,0 +1,16 @@
+{
+  "pr_number": 6362,
+  "archive_path": "docs/history/pr-reviews/PR-6362-docs-ace-slice-5-1-registry-data-layer-exact-version-design-spec.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7GnaMW",
+    "comment:PRRC_kwDOSF9kNM7GnqMi",
+    "thread:PRRT_kwDOSF9kNM6GB5uZ"
+  ],
+  "fetched_at": "2026-06-01T07:21:43.492Z",
+  "schema_version": "v1",
+  "commit_sha": "0ba23d47f424249571571df615cffdc8c27e9c90",
+  "title": "docs(ace): slice-5.1 registry data-layer + exact-version design spec",
+  "state": "MERGED",
+  "merged_at": "2026-06-01T07:21:21Z",
+  "head_ref": "otto-windows/ace-slice5.1-registry-spec-2026-06-01"
+}

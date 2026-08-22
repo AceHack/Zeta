@@ -1,0 +1,12 @@
+{
+  "pr_number": 9057,
+  "archive_path": "docs/history/pr-reviews/PR-9057-docs-preserve-close-orphan-branch-quarantine-campaign-file-2-algebra-work-items-.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-01T21:29:07.187Z",
+  "schema_version": "v1",
+  "commit_sha": "9fced1230200ecc9be9aac7e1a61aa0fcf170682",
+  "title": "docs(preserve): close orphan-branch quarantine campaign + file 2 algebra work-items (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-01T21:28:43Z",
+  "head_ref": "otto/close-quarantine-campaign-file-algebra-modules-2026-07"
+}

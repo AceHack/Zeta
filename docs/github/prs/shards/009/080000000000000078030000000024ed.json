@@ -1,0 +1,12 @@
+{
+  "pr_number": 9453,
+  "archive_path": "docs/history/pr-reviews/PR-9453-docs-four-corner-fold-david-fowler-s-review-into-the-websocket-anchor-comment-sh.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-04T15:59:05.558Z",
+  "schema_version": "v1",
+  "commit_sha": "0cf75b182f2296cc5128d5010c2b625f85c24da5",
+  "title": "docs(four-corner): fold David Fowler's review into the WebSocket anchor comment (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-04T15:58:42Z",
+  "head_ref": "otto/fold-david-fowler-into-websocket-anchor"
+}

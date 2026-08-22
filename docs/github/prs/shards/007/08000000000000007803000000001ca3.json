@@ -1,0 +1,12 @@
+{
+  "pr_number": 7331,
+  "archive_path": "docs/history/pr-reviews/PR-7331-docs-research-inside-a-dst-test-a-small-what-remains-can-meet-a-what-acts-on-a-g.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-09T16:30:12.024Z",
+  "schema_version": "v1",
+  "commit_sha": "bbe704d2cbf167b05e4134fffb367cb2d7d27d6e",
+  "title": "docs(research): inside a DST test a small what-remains can meet a what-acts on a green thread (DoP=1 deterministic persona/actor rendezvous)",
+  "state": "MERGED",
+  "merged_at": "2026-06-09T16:29:47Z",
+  "head_ref": "otto/dst-small-what-remains-meets-what-acts-on-a-green-thread-dop1-rendezvous"
+}

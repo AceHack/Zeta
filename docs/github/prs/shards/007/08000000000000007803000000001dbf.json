@@ -1,0 +1,12 @@
+{
+  "pr_number": 7615,
+  "archive_path": "docs/history/pr-reviews/PR-7615-docs-lens-folder-repo-is-the-database-earn-promotion-out-of-db-plan-moonshot-1-d.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-11T09:14:35.029Z",
+  "schema_version": "v1",
+  "commit_sha": "13fe93a8b70d0ef574024756f181675d25d4a218",
+  "title": "docs: /lens folder + 'repo IS the database, earn promotion out of /db' plan + Moonshot #1 (DORA over LLMTV chronovisor)",
+  "state": "MERGED",
+  "merged_at": "2026-06-11T09:14:06Z",
+  "head_ref": "shadow-lens-folder-db-plan-moonshot"
+}

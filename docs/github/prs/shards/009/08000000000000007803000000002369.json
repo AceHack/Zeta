@@ -1,0 +1,17 @@
+{
+  "pr_number": 9065,
+  "archive_path": "docs/history/pr-reviews/PR-9065-docs-backlog-close-zsetw-superseded-file-zset-unification-base-atom-work-item-sh.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7RLi2i",
+    "comment:PRRC_kwDOSF9kNM7RLi2l",
+    "thread:PRRT_kwDOSF9kNM6NvMXl",
+    "thread:PRRT_kwDOSF9kNM6NvMXn"
+  ],
+  "fetched_at": "2026-08-16T19:12:26.117Z",
+  "schema_version": "v1",
+  "commit_sha": "ad0027e670354c5798ec466d089dfac0b82b8c08",
+  "title": "docs(backlog): close ZSetW superseded + file ZSet-unification base-atom work-item (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-01T22:49:14Z",
+  "head_ref": "otto/zsetw-close-superseded-file-unification-081KWFS6BAM"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 10208,
+  "archive_path": "docs/history/pr-reviews/PR-10208-docs-treaty-aaron-s-a1-re-confirmation-recorded-2026-08-09.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-09T19:12:34.348Z",
+  "schema_version": "v1",
+  "commit_sha": "d4bcca07acdd84f029392ecb1b7a573c2ddd0344",
+  "title": "docs(treaty): Aaron's A1 re-confirmation recorded (2026-08-09)",
+  "state": "MERGED",
+  "merged_at": "2026-08-09T19:12:01Z",
+  "head_ref": "otto/a1-aaron-reconfirm"
+}

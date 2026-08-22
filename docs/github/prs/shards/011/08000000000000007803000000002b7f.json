@@ -1,0 +1,12 @@
+{
+  "pr_number": 11135,
+  "archive_path": "docs/history/pr-reviews/PR-11135-fix-ci-put-the-agencysignature-block-in-the-pr-archive-commit-not-only-the-pr-bo.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-16T22:52:39.776Z",
+  "schema_version": "v1",
+  "commit_sha": "8104a9907738fb67b5588bb217304b8c27de67c6",
+  "title": "fix(ci): put the AgencySignature block in the pr-archive COMMIT, not only the PR body",
+  "state": "MERGED",
+  "merged_at": "2026-08-16T22:52:01Z",
+  "head_ref": "fix/pr-archive-agencysignature-in-commit"
+}

@@ -1,0 +1,33 @@
+{
+  "$comment": [
+    "ACKNOWLEDGED findings for audit-apt-budget-fits-job-timeout.ts.",
+    "",
+    "WHAT AN ENTRY IS. Not a suppression -- a dated, keyed, reasoned record that a governed job",
+    "CANNOT hold its apt budget inside its own timeout, and that this is not being repaired in the",
+    "change that discovered it. The job is still printed by --human, still costs exactly what it",
+    "costs, and still fails the invariant; what the entry buys is a non-red gate, never a fitting job.",
+    "",
+    "`observedNonAptSeconds` PINS WHAT WAS ACKNOWLEDGED. An entry covers the measurement it names and",
+    "nothing worse: if the job's measured non-apt work climbs above this number, the entry stops",
+    "covering it and the audit goes red again. A baseline that keeps matching after the thing it",
+    "excused has grown is the vacuity class with a filename.",
+    "",
+    "`liftsWhen` NAMES THE GATE THAT WOULD ACTUALLY CLEAR *THIS* ENTRY -- and that phrasing is the",
+    "repair of a trap found in this tree on 2026-08-22: a `LIFTS WHEN` STRICTER THAN THE GATE IT",
+    "NAMES keeps a deferral alive after its defect is gone. The condition below is exactly the",
+    "arithmetic the audit performs on this one job, so satisfying it makes the entry stale.",
+    "",
+    "STALE ENTRIES FAIL. An entry whose job now fits (or which names no governed job at all) is a",
+    "claim about CI that stopped being true, and the audit refuses it until it is deleted."
+  ],
+  "findings": [
+    {
+      "key": "low-memory.yml:build-and-test-low-memory",
+      "reason": "MEASURED 2026-08-22 over the 20 most recent successful runs (see apt-job-timings.measured.json for the run ids): this lane's non-apt work is 571s at p90 and 683s at max, against a 840s cap. With the 420s CI apt budget and the 10s SIGKILL grace that needs 1001s, so the lane is 161s short -- and unlike every other governed job there is no room to find. Its `timeout-minutes: 14` is already one minute under the ubuntu-slim 15-minute runner-class HARD CAP, so raising the timeout is not available. Lowering ZETA_APT_BUDGET_SECONDS for this lane alone would have to reach 840-10-571 = 259s, and its own apt phase has been measured at up to 133s on a slow mirror (run 32546617178), leaving under 2x headroom on the first attempt -- which is the exact trade that the 150s first draft of this budget got wrong on 2026-08-18 (it bounded a stall correctly and false-failed a merely-slow mirror). PR #13476 already took the one cut available on the apt side (tier-gating manifests/apt from 388 packages / 713 MiB to 149 / 139.7 MiB, which moved this lane's apt phase from 148s to 30-66s); what remains over budget is the lane's own dotnet restore + build + test on one vCPU. So this is recorded, with its arithmetic, as a job that cannot be bounded this way today -- not repaired in the change that added the term which found it.",
+      "liftsWhen": "LIFTS WHEN 420 + 10 + this job's measured nonAptP90Seconds <= 840 -- i.e. when apt-job-timings.measured.json records nonAptP90Seconds <= 410 for this key, reached by cutting the lane's non-apt work (its restore/build/test on 1 vCPU, or its cache-restore steps), or by any change that lowers the budget or raises the cap so the same sum fits. At that point this entry goes STALE, which is itself refused.",
+      "observedNonAptSeconds": 571,
+      "observedRequiredSeconds": 1001,
+      "observedTimeoutSeconds": 840
+    }
+  ]
+}

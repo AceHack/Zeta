@@ -1,0 +1,12 @@
+{
+  "pr_number": 8052,
+  "archive_path": "docs/history/pr-reviews/PR-8052-fix-gate-repair-4-lint-guards-broken-by-8048-relocation-main-is-red.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-13T19:48:57.759Z",
+  "schema_version": "v1",
+  "commit_sha": "61058375774752e020ad93aa95c6254428e406da",
+  "title": "fix(gate): repair 4 lint guards broken by #8048 relocation (main is RED)",
+  "state": "MERGED",
+  "merged_at": "2026-06-13T19:48:30Z",
+  "head_ref": "shadow/fix-gate-relocation-stale-paths"
+}

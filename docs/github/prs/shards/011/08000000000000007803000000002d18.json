@@ -1,0 +1,12 @@
+{
+  "pr_number": 11544,
+  "archive_path": "docs/history/pr-reviews/PR-11544-fix-persona-keys-the-linux-tpm-probe-answered-a-boolean-where-four-causes-needed.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-17T16:36:08.022Z",
+  "schema_version": "v1",
+  "commit_sha": "35005d09652c86eae5d5039d6758a337b8316308",
+  "title": "fix(persona-keys): the Linux TPM probe answered a boolean where four causes needed four states",
+  "state": "MERGED",
+  "merged_at": "2026-08-17T16:35:23Z",
+  "head_ref": "shadow/linux-tpm2-probe-path"
+}

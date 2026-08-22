@@ -1,0 +1,12 @@
+{
+  "pr_number": 7072,
+  "archive_path": "docs/history/pr-reviews/PR-7072-docs-research-superdeterminism-loophole-closure-anti-sybil-per-body-entropy-inde.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-08T10:08:03.765Z",
+  "schema_version": "v1",
+  "commit_sha": "619003b79674044d9388d367d248c9bfc61d6952",
+  "title": "docs(research): superdeterminism-loophole-closure ≡ anti-Sybil per-body entropy independence",
+  "state": "MERGED",
+  "merged_at": "2026-06-08T10:07:39Z",
+  "head_ref": "otto/superdeterminism-closure-equals-anti-sybil-independence"
+}

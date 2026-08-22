@@ -1,0 +1,12 @@
+{
+  "pr_number": 8070,
+  "archive_path": "docs/history/pr-reviews/PR-8070-data-memory-regenerate-memory-md-index-drift-since-8046.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-13T21:35:25.817Z",
+  "schema_version": "v1",
+  "commit_sha": "35ddf4b6569728a1377440ad93439cea6ff93500",
+  "title": "data(memory): regenerate MEMORY.md index (drift since #8046)",
+  "state": "MERGED",
+  "merged_at": "2026-06-13T21:35:03Z",
+  "head_ref": "shadow/regen-memory-index"
+}

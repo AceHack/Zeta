@@ -1,0 +1,12 @@
+{
+  "pr_number": 9385,
+  "archive_path": "docs/history/pr-reviews/PR-9385-workitem-close-081kwn1x47-kl-direction-pinned-p-iv-properties-landed.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-04T00:32:40.977Z",
+  "schema_version": "v1",
+  "commit_sha": "851f2c85729d813588ef6cec78e87a194b40966e",
+  "title": "workitem: close 081KWN1X47 — KL direction pinned, P-IV properties landed",
+  "state": "MERGED",
+  "merged_at": "2026-07-04T00:32:17Z",
+  "head_ref": "shadow/close-kl-direction-workitem"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 6992,
+  "archive_path": "docs/history/pr-reviews/PR-6992-docs-research-whitepapers-zetaid-pointers-docs-research-interface-sandbox-a-type.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-08T02:43:08.921Z",
+  "schema_version": "v1",
+  "commit_sha": "1069247501f6ded5c5a23789721081ddcbf0d51e",
+  "title": "docs: research/whitepapers = ZetaId pointers (docs/research interface); sandbox = a type of sim; each is 'another interface' on the one grammar",
+  "state": "MERGED",
+  "merged_at": "2026-06-08T02:42:51Z",
+  "head_ref": "otto/docs-research-and-sandbox-are-interfaces-on-the-one-grammar"
+}

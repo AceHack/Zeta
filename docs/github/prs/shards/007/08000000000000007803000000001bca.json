@@ -1,0 +1,12 @@
+{
+  "pr_number": 7114,
+  "archive_path": "docs/history/pr-reviews/PR-7114-docs-research-chip8-octo-toolchain-declarative-desired-state-only-never-imperati.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-08T22:26:08.168Z",
+  "schema_version": "v1",
+  "commit_sha": "098662ec6e021b8ac4f2f07350568e67e85e0de8",
+  "title": "docs(research): chip8/Octo toolchain — declarative desired-state only, never imperative npm",
+  "state": "MERGED",
+  "merged_at": "2026-06-08T22:25:50Z",
+  "head_ref": "otto/spec-chip8-octo-declarative-desired-state-no-npm"
+}

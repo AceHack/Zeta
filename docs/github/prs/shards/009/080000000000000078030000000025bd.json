@@ -1,0 +1,12 @@
+{
+  "pr_number": 9661,
+  "archive_path": "docs/history/pr-reviews/PR-9661-docs-book-the-data-years-street-segments-address-parity-distance-from-a-curve-in.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-10T04:39:01.071Z",
+  "schema_version": "v1",
+  "commit_sha": "1d31f3be2344edf853c856a73eba1407bd298825",
+  "title": "docs(book): the data years — street segments, address parity, distance-from-a-curve (intuitions seeded)",
+  "state": "MERGED",
+  "merged_at": "2026-07-10T04:38:31Z",
+  "head_ref": "shadow/book-street-segments-parity-curves"
+}

@@ -1,0 +1,25 @@
+{
+  "pr_number": 5868,
+  "archive_path": "docs/history/pr-reviews/PR-5868-feat-alignment-add-finite-resource-collisions-foundation-b-0216.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7F2B6h",
+    "comment:PRRC_kwDOSF9kNM7F2B7z",
+    "comment:PRRC_kwDOSF9kNM7F2B8S",
+    "comment:PRRC_kwDOSF9kNM7F2B8l",
+    "comment:PRRC_kwDOSF9kNM7F2RLV",
+    "comment:PRRC_kwDOSF9kNM7F2RPb",
+    "comment:PRRC_kwDOSF9kNM7F2RSM",
+    "comment:PRRC_kwDOSF9kNM7F31xG",
+    "thread:PRRT_kwDOSF9kNM6FdgsX",
+    "thread:PRRT_kwDOSF9kNM6Fdgt6",
+    "thread:PRRT_kwDOSF9kNM6FdgtT",
+    "thread:PRRT_kwDOSF9kNM6Fdgtp"
+  ],
+  "fetched_at": "2026-05-28T18:00:03.295Z",
+  "schema_version": "v1",
+  "commit_sha": "3acea0c086780a213cbdadf4c24112c30f08d47f",
+  "title": "feat(alignment): Add finite-resource collisions foundation (B-0216)",
+  "state": "MERGED",
+  "merged_at": "2026-05-28T17:59:42Z",
+  "head_ref": "lior/B-0216-finite-resource-alignment"
+}

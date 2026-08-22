@@ -1,0 +1,17 @@
+{
+  "pr_number": 5057,
+  "archive_path": "docs/history/pr-reviews/PR-5057-fix-b-0754-iter-3-per-device-partprobe-bare-partprobe-was-hitting-the-boot-usb-d.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7EukiE",
+    "comment:PRRC_kwDOSF9kNM7EukiQ",
+    "thread:PRRT_kwDOSF9kNM6EpuS2",
+    "thread:PRRT_kwDOSF9kNM6EpuTA"
+  ],
+  "fetched_at": "2026-05-26T01:43:30.802Z",
+  "schema_version": "v1",
+  "commit_sha": "35b37435e557181180dfc25c8ebbc16acdc81cf1",
+  "title": "fix(B-0754 iter-3): per-device partprobe — bare partprobe was hitting the boot USB (/dev/sda) + bailing",
+  "state": "MERGED",
+  "merged_at": "2026-05-26T01:43:12Z",
+  "head_ref": "otto-cli/b0754-iter3-partprobe-per-device-2026-05-25"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 8495,
+  "archive_path": "docs/history/pr-reviews/PR-8495-memory-project-trajectory-the-telos-universal-first-person-introspection-interfa.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-16T09:52:52.398Z",
+  "schema_version": "v1",
+  "commit_sha": "ed154ab9ccd46f9da13ea777c9de49613d83e643",
+  "title": "memory(project)+trajectory: the TELOS — universal first-person introspection interface for coupled empowerment",
+  "state": "MERGED",
+  "merged_at": "2026-06-16T09:52:18Z",
+  "head_ref": "otto/telos-universal-introspection-interface"
+}

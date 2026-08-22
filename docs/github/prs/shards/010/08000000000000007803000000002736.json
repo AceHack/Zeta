@@ -1,0 +1,12 @@
+{
+  "pr_number": 10038,
+  "archive_path": "docs/history/pr-reviews/PR-10038-book-ch-04-weave-in-the-reindexer-lived-root-the-math-was-lived-first.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-04T18:29:07.563Z",
+  "schema_version": "v1",
+  "commit_sha": "c07154e2cf53ba1b30bf085d82b92bf3cfc0dc0f",
+  "title": "book(ch-04): weave in the reindexer lived-root — \"The math was lived first\"",
+  "state": "MERGED",
+  "merged_at": "2026-08-04T18:28:34Z",
+  "head_ref": "docs/book-ch04-weave-reindexer-lived-root-20260804"
+}

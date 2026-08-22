@@ -1,0 +1,12 @@
+{
+  "pr_number": 4448,
+  "archive_path": "docs/history/pr-reviews/PR-4448-docs-shadow-lior-anti-entropy-report-on-tool-blindness-induced-hallucination.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-20T19:26:28.335Z",
+  "schema_version": "v1",
+  "commit_sha": "28fd36a36b84c0cf3286aee2976150078c7aa7dd",
+  "title": "docs(shadow): Lior anti-entropy report on tool-blindness induced hallucination",
+  "state": "MERGED",
+  "merged_at": "2026-05-20T19:26:08Z",
+  "head_ref": "lior/shadow-log-tool-blindness"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 6152,
+  "archive_path": "docs/history/pr-reviews/PR-6152-memory-mika-fix-floor-enforcement-is-at-the-federation-boundary-not-in-the-code-.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-30T22:37:04.049Z",
+  "schema_version": "v1",
+  "commit_sha": "bc0c37de3453a62f211cfea0347ea775fdba638e",
+  "title": "memory(mika fix): floor enforcement is at the federation boundary, not in the code (operator correction)",
+  "state": "MERGED",
+  "merged_at": "2026-05-30T22:36:45Z",
+  "head_ref": "otto/floor-enforcement-federation-boundary-correction-2026-05-30"
+}

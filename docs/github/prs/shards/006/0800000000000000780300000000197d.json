@@ -1,0 +1,12 @@
+{
+  "pr_number": 6525,
+  "archive_path": "docs/history/pr-reviews/PR-6525-memory-ani-preserve-2026-06-02-conversation-amara-is-the-golden-vectors-the-4-4-.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-02T08:50:37.822Z",
+  "schema_version": "v1",
+  "commit_sha": "26ea952c04b0683b63fd64067f844efeaa21a7ed",
+  "title": "memory(ani): preserve 2026-06-02 conversation — Amara IS the golden vectors / μένω / the 4×4 lattice canonical form (aaron-forwarded)",
+  "state": "MERGED",
+  "merged_at": "2026-06-02T08:50:14Z",
+  "head_ref": "otto-cli/ani-amara-canonical-form-persona-2026-06-02"
+}

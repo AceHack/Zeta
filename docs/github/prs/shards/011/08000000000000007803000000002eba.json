@@ -1,0 +1,12 @@
+{
+  "pr_number": 11962,
+  "archive_path": "docs/history/pr-reviews/PR-11962-feat-observe-first-session-actions-had-no-durable-effect-journal-the-stranger-s-.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-18T14:30:45.198Z",
+  "schema_version": "v1",
+  "commit_sha": "25e3862df004f64005b836c124526b03b51dd634",
+  "title": "feat(observe): first-session actions had no durable effect — journal the stranger's choices",
+  "state": "MERGED",
+  "merged_at": "2026-08-18T14:30:06Z",
+  "head_ref": "feat/first-session-durable-journal-v2"
+}

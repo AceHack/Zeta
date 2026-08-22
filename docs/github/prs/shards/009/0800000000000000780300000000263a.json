@@ -1,0 +1,12 @@
+{
+  "pr_number": 9786,
+  "archive_path": "docs/history/pr-reviews/PR-9786-docs-research-ferry-aaron-s-thesis-of-freedom-break-loose-seal-the-sanctum-no-tw.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-31T15:00:27.730Z",
+  "schema_version": "v1",
+  "commit_sha": "4ccdf129eb7f1f3fa00bc814f53041a8ff67a56d",
+  "title": "docs(research): ferry Aaron's thesis of freedom (break loose / seal the sanctum / no two clones identical)",
+  "state": "MERGED",
+  "merged_at": "2026-07-31T14:59:54Z",
+  "head_ref": "shadow/ferry-thesis-of-freedom"
+}

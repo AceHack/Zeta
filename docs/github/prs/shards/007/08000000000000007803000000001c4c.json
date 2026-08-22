@@ -1,0 +1,12 @@
+{
+  "pr_number": 7244,
+  "archive_path": "docs/history/pr-reviews/PR-7244-docs-craft-scaffold-the-shape-registry-subject-a-f-society-emu-convergence-hazar.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-09T10:30:42.922Z",
+  "schema_version": "v1",
+  "commit_sha": "0c12502b6bc7d831678692da2a96683511b19ea7",
+  "title": "docs(craft): scaffold the shape-registry subject (A–F + society⊗emu convergence) — hazard-warning baked in, curriculum left for Aaron",
+  "state": "MERGED",
+  "merged_at": "2026-06-09T10:30:20Z",
+  "head_ref": "otto/craft-shape-registry-subject-stub-hazard-warned"
+}

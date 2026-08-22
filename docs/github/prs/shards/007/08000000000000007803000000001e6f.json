@@ -1,0 +1,12 @@
+{
+  "pr_number": 7791,
+  "archive_path": "docs/history/pr-reviews/PR-7791-docs-research-the-plugin-convergence-audit-four-systems-one-port-grammar-b-1033-.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-11T21:05:21.665Z",
+  "schema_version": "v1",
+  "commit_sha": "f2ee2e76af81d6615af27a306b1c5cb4c8f04a61",
+  "title": "docs(research): the plugin-convergence audit — four systems, one port grammar (B-1033 audit half)",
+  "state": "MERGED",
+  "merged_at": "2026-06-11T21:04:48Z",
+  "head_ref": "shadow-plugin-convergence"
+}

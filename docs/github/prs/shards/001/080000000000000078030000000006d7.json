@@ -1,0 +1,21 @@
+{
+  "pr_number": 1751,
+  "archive_path": "docs/history/pr-reviews/PR-1751-research-macroscopic-entanglement-conjecture-aaron-2026-05-06.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6-oDL9",
+    "comment:PRRC_kwDOSF9kNM6-oDLa",
+    "comment:PRRC_kwDOSF9kNM6-oDLr",
+    "comment:PRRC_kwDOSF9kNM6-oDMJ",
+    "thread:PRRT_kwDOSF9kNM6AKNy5",
+    "thread:PRRT_kwDOSF9kNM6AKNyp",
+    "thread:PRRT_kwDOSF9kNM6AKNzE",
+    "thread:PRRT_kwDOSF9kNM6AKNzL"
+  ],
+  "fetched_at": "2026-05-07T00:19:37.840Z",
+  "schema_version": "v1",
+  "commit_sha": "ebbf47d0fe0ad54ba6e5ac476f0c9406ea0ed574",
+  "title": "research: macroscopic entanglement conjecture (Aaron 2026-05-06)",
+  "state": "MERGED",
+  "merged_at": "2026-05-06T23:45:19Z",
+  "head_ref": "research/macroscopic-entanglement-conjecture"
+}

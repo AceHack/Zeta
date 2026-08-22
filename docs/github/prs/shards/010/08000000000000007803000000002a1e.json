@@ -1,0 +1,12 @@
+{
+  "pr_number": 10782,
+  "archive_path": "docs/history/pr-reviews/PR-10782-fix-ci-a-markdown-rule-silently-ate-the-agencysignature-block-and-two-lanes-coul.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-19T03:33:06.674Z",
+  "schema_version": "v1",
+  "commit_sha": "7df022592521072188fd27cdf5113f5937e1d385",
+  "title": "fix(ci): a markdown rule silently ate the AgencySignature block, and two lanes could never sign",
+  "state": "MERGED",
+  "merged_at": "2026-08-15T14:23:10Z",
+  "head_ref": "shadow/agencysig-trailer-parse-and-external-actors"
+}

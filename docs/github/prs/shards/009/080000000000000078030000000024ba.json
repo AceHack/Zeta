@@ -1,0 +1,12 @@
+{
+  "pr_number": 9402,
+  "archive_path": "docs/history/pr-reviews/PR-9402-feat-model-backend-tool-calls-slice-2-confirmed-live-parse-the-dotted-name-fix-s.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-04T03:11:35.225Z",
+  "schema_version": "v1",
+  "commit_sha": "bd12970d1ed4384ad8cc74e10f7ea05c237dfe2a",
+  "title": "feat(model-backend): tool calls slice 2 — confirmed-live parse + the dotted-name fix (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-04T03:11:07Z",
+  "head_ref": "otto/tool-calls-slice2-confirmed-live-parse-plus-name-fix"
+}

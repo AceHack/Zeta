@@ -3,13 +3,15 @@
 // 081KSKBP80008QG0R003AX2A69.2b CLI sibling to zeta-creds-persist.ts.
 //
 // Composes:
-//   - tools/installer/zeta-creds-crypto.ts (081KSKBP80008QG0R003AX2A69.1; decrypt)
-//   - tools/installer/zeta-creds-manifest.ts (081KSKBP80008QG0R003AX2A69.5; cred catalog → paths)
-//   - tools/installer/zeta-creds-envelope.ts (081KSKBP80008QG0R003AX2A69.2a; wire format + bundle)
+//   - src/Core.TypeScript/installer/zeta-creds-crypto.ts (081KSKBP80008QG0R003AX2A69.1; decrypt)
+//   - src/Core.TypeScript/installer/zeta-creds-manifest.ts (081KSKBP80008QG0R003AX2A69.5; cred catalog → paths)
+//   - src/Core.TypeScript/installer/zeta-creds-envelope.ts (081KSKBP80008QG0R003AX2A69.2a; wire format + bundle)
 //
 // Usage:
-//   bun tools/installer/zeta-creds-restore.ts \
+//   bun src/Core.TypeScript/installer/zeta-creds-restore.ts \
 //     --usb-uuid <uuid> \
+//     [--usb-iserial <serial>] \
+//     [--uefi-keyfile <path>] \
 //     --input /esp/zeta-creds.enc \
 //     ( --passphrase-file <path> | --passphrase-env <VAR> ) \
 //     [--persona <name>] \
@@ -39,9 +41,12 @@ import { homedir } from "node:os";
 import { decrypt } from "./zeta-creds-crypto";
 import { decodeBundle, parseEnvelope } from "./zeta-creds-envelope";
 import { DEFAULT_MANIFEST, type CredentialEntry } from "./zeta-creds-manifest";
+import { selectCliBindingMaterial } from "./installer-binding-cli.ts";
 
 interface Args {
-  readonly usbUuid: string;
+  readonly usbUuid: string | null;
+  readonly usbISerial: string | null;
+  readonly bindingMaterial: string;
   readonly input: string;
   readonly passphrase: string;
   readonly persona: string | null;
@@ -60,6 +65,8 @@ interface Args {
  */
 export function parseArgs(argv: readonly string[], env: NodeJS.ProcessEnv): Args | { readonly error: string } {
   let usbUuid: string | null = null;
+  let usbISerial: string | null = null;
+  let uefiKeyfilePath: string | null = null;
   let input: string | null = null;
   let passphraseFile: string | null = null;
   let passphraseEnv: string | null = null;
@@ -75,6 +82,8 @@ export function parseArgs(argv: readonly string[], env: NodeJS.ProcessEnv): Args
     };
     try {
       if (arg === "--usb-uuid") usbUuid = next();
+      else if (arg === "--usb-iserial") usbISerial = next();
+      else if (arg === "--uefi-keyfile") uefiKeyfilePath = next();
       else if (arg === "--input") input = next();
       else if (arg === "--passphrase-file") passphraseFile = next();
       else if (arg === "--passphrase-env") passphraseEnv = next();
@@ -87,8 +96,20 @@ export function parseArgs(argv: readonly string[], env: NodeJS.ProcessEnv): Args
     }
   }
 
-  if (!usbUuid) return { error: "--usb-uuid required" };
   if (!input) return { error: "--input required" };
+
+  let uefiKeyfileBytes: Uint8Array | null = null;
+  if (uefiKeyfilePath !== null) {
+    if (!existsSync(uefiKeyfilePath)) return { error: "--uefi-keyfile not found" };
+    try {
+      uefiKeyfileBytes = readFileSync(uefiKeyfilePath);
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : String(err);
+      return { error: `--uefi-keyfile read failed: ${msg}` };
+    }
+  }
+  const binding = selectCliBindingMaterial({ usbUuid, usbISerial, uefiKeyfileBytes });
+  if ("error" in binding) return { error: binding.error };
 
   let passphrase: string | null = null;
   if (passphraseFile) {
@@ -113,7 +134,7 @@ export function parseArgs(argv: readonly string[], env: NodeJS.ProcessEnv): Args
       error: "passphrase source required: pass --passphrase-file <path> or --passphrase-env <VAR>",
     };
 
-  return { usbUuid, input, passphrase, persona, targetRoot, dryRun };
+  return { usbUuid, usbISerial, bindingMaterial: binding.material, input, passphrase, persona, targetRoot, dryRun };
 }
 
 /** Resolve manifest entry's paths relative to target-root + ~ expansion. */
@@ -275,7 +296,7 @@ async function main(): Promise<number> {
     console.error(`zeta-creds-restore: input file read failed: ${msg}`);
     return 3;
   }
-  const plan = planRestore(blob, parsed.usbUuid, parsed.passphrase, parsed.persona, parsed.targetRoot);
+  const plan = planRestore(blob, parsed.bindingMaterial, parsed.passphrase, parsed.persona, parsed.targetRoot);
   if ("error" in plan) {
     console.error(`zeta-creds-restore: ${plan.error}`);
     return plan.code;

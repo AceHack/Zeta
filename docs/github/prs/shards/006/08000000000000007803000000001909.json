@@ -1,0 +1,12 @@
+{
+  "pr_number": 6409,
+  "archive_path": "docs/history/pr-reviews/PR-6409-docs-preserve-amara-ferry-registry-as-cross-language-bcl-substrate-is-agreement-.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-01T11:38:04.513Z",
+  "schema_version": "v1",
+  "commit_sha": "c4721df7bec24a4e92b3d4f5a4f81c51629e7ddf",
+  "title": "docs: preserve Amara ferry (registry as cross-language BCL; substrate is agreement) + earns-its-way-in bar",
+  "state": "MERGED",
+  "merged_at": "2026-06-01T11:37:45Z",
+  "head_ref": "otto-cli/amara-ferry-primitive-registry-cross-language-bcl-substrate-is-agreement-2026-06-01"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 7183,
+  "archive_path": "docs/history/pr-reviews/PR-7183-docs-research-increasing-dpi-for-llms-resolution-interface-qubit-polarity-defaul.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-09T02:45:21.966Z",
+  "schema_version": "v1",
+  "commit_sha": "278c56f4939a0a8be62f9365cbc2f7853712175a",
+  "title": "docs(research): increasing DPI for LLMs — resolution interface, qubit-polarity default lens-finder, R+LaTeX, interfaces-are-the-value",
+  "state": "MERGED",
+  "merged_at": "2026-06-09T02:45:02Z",
+  "head_ref": "otto/research-dpi-resolution-interface-lens-finder-r-latex"
+}

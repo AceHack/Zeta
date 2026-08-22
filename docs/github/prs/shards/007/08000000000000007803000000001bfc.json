@@ -1,0 +1,12 @@
+{
+  "pr_number": 7164,
+  "archive_path": "docs/history/pr-reviews/PR-7164-docs-research-aaron-s-agi-asi-trust-calculus-made-formal-the-thesis-of-the-arc.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-09T01:26:15.825Z",
+  "schema_version": "v1",
+  "commit_sha": "b396d594feecba41475f53ec890b2d3944482c35",
+  "title": "docs(research): Aaron's AGI/ASI trust calculus, made formal — the thesis of the arc",
+  "state": "MERGED",
+  "merged_at": "2026-06-09T01:25:56Z",
+  "head_ref": "otto/research-agi-asi-trust-calculus-made-formal"
+}

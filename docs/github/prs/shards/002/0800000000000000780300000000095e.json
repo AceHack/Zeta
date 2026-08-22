@@ -1,0 +1,17 @@
+{
+  "pr_number": 2398,
+  "archive_path": "docs/history/pr-reviews/PR-2398-feat-b-0037-1-meta-cognition-taxonomy-survey-doc-b-0037-decomposition.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_lL8m",
+    "comment:PRRC_kwDOSF9kNM6_lMP1",
+    "thread:PRRT_kwDOSF9kNM6A3j8q",
+    "thread:PRRT_kwDOSF9kNM6A3jtj"
+  ],
+  "fetched_at": "2026-05-10T02:33:14.313Z",
+  "schema_version": "v1",
+  "commit_sha": "4fa28610418000017fc17a9e31ed3e20475b1be9",
+  "title": "feat(B-0037.1): meta-cognition taxonomy survey doc + B-0037 decomposition",
+  "state": "MERGED",
+  "merged_at": "2026-05-10T02:32:59Z",
+  "head_ref": "feat/B-0037.1-meta-cognition-taxonomy-survey"
+}

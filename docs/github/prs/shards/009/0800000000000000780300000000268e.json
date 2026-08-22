@@ -1,0 +1,12 @@
+{
+  "pr_number": 9870,
+  "archive_path": "docs/history/pr-reviews/PR-9870-refactor-demo-rename-tsirelson-sticking-threshold-the-identifier-was-the-vector.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-01T13:15:46.035Z",
+  "schema_version": "v1",
+  "commit_sha": "d57d3205dac1ee6b82bfdd843ec698711233ff76",
+  "title": "refactor(demo): rename TSIRELSON → STICKING_THRESHOLD — the identifier was the vector",
+  "state": "MERGED",
+  "merged_at": "2026-08-01T13:15:09Z",
+  "head_ref": "shadow/rename-tsirelson-to-sticking-threshold"
+}

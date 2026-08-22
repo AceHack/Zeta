@@ -1,0 +1,12 @@
+{
+  "pr_number": 8161,
+  "archive_path": "docs/history/pr-reviews/PR-8161-ci-gate-blame-crash-name-the-crashed-hung-test-diagnose-silent-host-crashes.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-14T03:36:30.746Z",
+  "schema_version": "v1",
+  "commit_sha": "39d6689def4f824e374be6a14ff2349dcfa54943",
+  "title": "ci(gate): --blame-crash + name the crashed/hung test (diagnose silent host crashes)",
+  "state": "MERGED",
+  "merged_at": "2026-06-14T03:36:09Z",
+  "head_ref": "otto/gate-blame-crash"
+}

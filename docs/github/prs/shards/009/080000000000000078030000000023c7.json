@@ -1,0 +1,12 @@
+{
+  "pr_number": 9159,
+  "archive_path": "docs/history/pr-reviews/PR-9159-feat-pages-llmtv-the-dweller-s-mind-as-the-centerpiece-watch-surface-shadow.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-17T11:27:07.145Z",
+  "schema_version": "v1",
+  "commit_sha": "743eeb04889e3aad636467d349be2ee2a02c444c",
+  "title": "feat(pages): LLMTV — the dweller's mind as the centerpiece watch surface (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-02T16:57:51Z",
+  "head_ref": "feat/hall-llmtv-centerpiece"
+}

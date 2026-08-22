@@ -1,0 +1,12 @@
+{
+  "pr_number": 3095,
+  "archive_path": "docs/history/pr-reviews/PR-3095-docs-autonomous-loop-accurate-count-of-bg-services-launchd-wiring-status.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-14T03:59:42.614Z",
+  "schema_version": "v1",
+  "commit_sha": "b8e0a7fa63553cc33cdb98b67c649c98fb1bc1a2",
+  "title": "docs(autonomous-loop): accurate count of bg-services launchd-wiring status",
+  "state": "MERGED",
+  "merged_at": "2026-05-14T03:59:20Z",
+  "head_ref": "docs/autonomous-loop-bg-services-wiring-status-2026-05-14"
+}

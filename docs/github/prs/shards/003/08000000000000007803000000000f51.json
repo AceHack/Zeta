@@ -1,0 +1,12 @@
+{
+  "pr_number": 3921,
+  "archive_path": "docs/history/pr-reviews/PR-3921-docs-archive-lior-preservation-of-prs-3919-3918-3917.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-18T21:01:55.404Z",
+  "schema_version": "v1",
+  "commit_sha": "4f3a034543b48915c146977bae468e038a4a7e1e",
+  "title": "docs(archive): Lior preservation of PRs 3919, 3918, 3917",
+  "state": "MERGED",
+  "merged_at": "2026-05-18T21:01:39Z",
+  "head_ref": "lior/archive-recent-0516Z"
+}

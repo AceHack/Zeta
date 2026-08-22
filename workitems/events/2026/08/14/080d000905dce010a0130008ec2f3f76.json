@@ -1,0 +1,14 @@
+{
+  "id": "080d000905dce010a0130008ec2f3f76",
+  "at": "2026-08-14T16:35:17.532Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M00J1EWW087G0R000RJ6790",
+    "type": "bug",
+    "title": "ActorRef invalid-vector class is hand-copied per oracle, not a shared cross-verification vector file",
+    "slug": "actorref-invalid-vector-class-is-hand-copied-per-oracle-not",
+    "priority": "P2",
+    "filename": "081M00J1EWW087G0R000RJ6790-actorref-invalid-vector-class-is-hand-copied-per-oracle-not.md"
+  }
+}

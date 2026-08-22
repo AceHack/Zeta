@@ -1,0 +1,12 @@
+{
+  "pr_number": 10293,
+  "archive_path": "docs/history/pr-reviews/PR-10293-fix-types-align-bayesian-and-gossip-contracts.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-10T19:10:01.426Z",
+  "schema_version": "v1",
+  "commit_sha": "c8d671ae2f454ecc279baeca70e5b626d239f7d3",
+  "title": "fix(types): align Bayesian and gossip contracts",
+  "state": "MERGED",
+  "merged_at": "2026-08-10T19:09:23Z",
+  "head_ref": "codex/fix-bayesian-gossip-ts-lint"
+}

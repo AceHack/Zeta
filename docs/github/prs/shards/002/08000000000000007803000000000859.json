@@ -1,0 +1,19 @@
+{
+  "pr_number": 2137,
+  "archive_path": "docs/history/pr-reviews/PR-2137-backlog-b-0168-add-5-layer-register-architecture-to-current-aaron-md-55.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_bC21",
+    "comment:PRRC_kwDOSF9kNM6_bC3N",
+    "comment:PRRC_kwDOSF9kNM6_bD-x",
+    "comment:PRRC_kwDOSF9kNM6_bD9L",
+    "thread:PRRT_kwDOSF9kNM6Avzyc",
+    "thread:PRRT_kwDOSF9kNM6Avzys"
+  ],
+  "fetched_at": "2026-05-08T21:50:50.770Z",
+  "schema_version": "v1",
+  "commit_sha": "25765d8857349f622bda3914ceef5926caa12110",
+  "title": "backlog(B-0168): add 5-layer register architecture to CURRENT-aaron.md §55",
+  "state": "MERGED",
+  "merged_at": "2026-05-08T21:50:26Z",
+  "head_ref": "backlog/b-0168-current-aaron-5-layer-register"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 9401,
+  "archive_path": "docs/history/pr-reviews/PR-9401-docs-ferry-aaron-verbatim-mirror-anchor-completion-companion-to-lumen-s-synthesi.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-04T03:04:41.446Z",
+  "schema_version": "v1",
+  "commit_sha": "63acea9f88352a9a30d95760bf0d5608558feea8",
+  "title": "docs(ferry): Aaron verbatim (Mirror) + anchor completion — companion to Lumen's synthesis (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-04T03:04:18Z",
+  "head_ref": "otto/ferry-aaron-verbatim-anchor-completion-time-warp-cockroachdb-v8"
+}

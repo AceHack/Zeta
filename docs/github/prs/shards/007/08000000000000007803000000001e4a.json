@@ -1,0 +1,12 @@
+{
+  "pr_number": 7754,
+  "archive_path": "docs/history/pr-reviews/PR-7754-fix-backlog-regenerate-index-for-quantum-rows.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-11T18:15:36.186Z",
+  "schema_version": "v1",
+  "commit_sha": "d8b8bb6901671fa4f22b9359c246d567eb42f383",
+  "title": "fix(backlog): regenerate index for quantum rows",
+  "state": "MERGED",
+  "merged_at": "2026-06-11T18:15:07Z",
+  "head_ref": "codex/vera-fix-backlog-generated-index"
+}

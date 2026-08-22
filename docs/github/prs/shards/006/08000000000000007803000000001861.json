@@ -1,0 +1,12 @@
+{
+  "pr_number": 6241,
+  "archive_path": "docs/history/pr-reviews/PR-6241-test-ci-add-macos-install-sh-shield-completes-the-cross-os-install-matrix-b-0857.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-31T20:06:56.520Z",
+  "schema_version": "v1",
+  "commit_sha": "5fd4f8b5a1157c48f222e25039810e6381f704e7",
+  "title": "test(ci): add macOS install.sh shield — completes the cross-OS install matrix (B-0857)",
+  "state": "MERGED",
+  "merged_at": "2026-05-31T20:06:37Z",
+  "head_ref": "otto-windows/macos-install-sh-shield-2026-05-31"
+}

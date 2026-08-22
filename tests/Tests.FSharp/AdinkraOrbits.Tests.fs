@@ -16,7 +16,9 @@ module Zeta.Tests.AdinkraOrbitsTests
 //
 // Anchors: S. James Gates Jr. (adinkras ↔ doubly-even codes); Artin–Mazur 1965;
 // the code's automorphism group (AGL(3,2), order 1344, for the extended Hamming
-// [8,4,4]). Trajectory: docs/trajectories/zeta-name-audition/RESUME.md.
+// [8,4,4]) — asserted here as a comment since 2026-06, MEASURED as of 2026-08-15 in
+// the two `AGL(3,2)` facts at the bottom of this file. Trajectory:
+// docs/trajectories/zeta-name-audition/RESUME.md.
 
 open global.Xunit
 
@@ -114,3 +116,147 @@ let ``the orbits PARTITION the 16 members into purpose classes (Σ orbit lengths
     Assert.True(List.exists (fun l -> l >= 2) orbits, "a genuinely dynamical class (orbit length ≥ 2) exists")
     // the all-zero (quiescent) identity is always a fixed point — its own class
     Assert.Contains(1, orbits)
+
+// ── |Aut([8,4,4])| = 1344, AND IT IS AGL(3,2) ─────────────────────────────────────────────────
+//
+// The header above has carried "AGL(3,2), order 1344" as an untested comment since 2026-06. It is
+// correct; these two facts are its falsifier. Over GF(2) a linear code has no non-trivial scalars,
+// so the automorphism group IS the permutation group of the 8 coordinates preserving the code —
+// exactly what `isAutomorphism` decides, and 8! = 40320 is small enough to settle exhaustively.
+//
+// **What was already metered, and what was not** (recorded so this does not read as new ground it
+// is not): the ORDER 1344 has been under test since 2026-07-04 — `SoftRegimeEquivariance.Tests.fs`
+// `EQV-1`, landed #9468, exhaustive, in this same assembly. It uses the opposite coordinate
+// convention (`cw.[perm.[j]]` there, `bit i ↦ position perm.[i]` here), so the two are a genuine
+// cross-check rather than a copy; a group and its inverse-image group have the same order, and both
+// routes say 1344. What was NEVER metered is the IDENTIFICATION — that the group is AGL(3,2) — and
+// that is precisely the numerology/number-theory gap: the count was measured, the name was asserted.
+// The second fact below is the part that is new.
+//
+// **1344 alone identifies nothing** (`numerology-vs-number-theory.md`). Groups of order 1344 that
+// are NOT AGL(3,2) include the direct product 2³ × GL(3,2) and C₄ × PGL(2,7); and even restricting
+// to 3-transitive groups of degree 8 — PGL(2,7) (336), AGL(3,2) (1344), A₈ (20160), S₈ (40320) —
+// the count only discriminates once 3-transitivity and the degree are already in hand. What
+// identifies the group is structure:
+//
+//   G is transitive on the 8 coordinates, and has a normal subgroup T with |T| = 8, elementary
+//   abelian, acting REGULARLY. Regularity gives the split G = T ⋊ G₀ for a point stabiliser G₀ with
+//   |G₀| = 1344/8 = 168; G₀ acts on T ≅ F₂³ by conjugation, faithfully (an element acting trivially
+//   on T and fixing a point fixes every point, since T is transitive), so G₀ ↪ GL(3,2). And
+//   |GL(3,2)| = 168 = |G₀|, so G₀ IS all of GL(3,2) and G ≅ F₂³ ⋊ GL(3,2) = AGL(3,2).
+//
+// The structural WHY: the in-tree [8,4,4] code is coordinate-equivalent to the first-order
+// Reed–Muller code RM(1,3) — coordinates indexed by the points of AG(3,2), codewords the evaluation
+// vectors of the 16 affine functions F₂³ → F₂ (1 of weight 0, 14 of weight 4, 1 of weight 8, which
+// is exactly the weight enumerator `AdinkraCode.weightEnumerator` reports). A coordinate permutation
+// preserves the affine functions iff it is itself affine — hence AGL(3,2).
+// Anchor (checked, not merely cited): MacWilliams & Sloane, *The Theory of Error-Correcting Codes*
+// (1977), Ch. 13 §9 Thm 24 — Aut(RM(r,m)) = GA(m,2) for 0 < r < m.
+
+/// Pack an 8-point permutation into 24 bits so it can be a hashable set/dictionary key.
+let private packPerm (p: int[]) : int =
+    let mutable k = 0
+    for i in 0..7 do
+        k <- k ||| (p.[i] <<< (3 * i))
+    k
+
+let private unpackPerm (k: int) : int[] = Array.init 8 (fun i -> (k >>> (3 * i)) &&& 7)
+
+/// (a ∘ b)[i] = a[b[i]] — matches `applyPerm a (applyPerm b c) = applyPerm (compose a b) c`.
+let private compose (a: int[]) (b: int[]) : int[] = Array.init 8 (fun i -> a.[b.[i]])
+
+let private invert (a: int[]) : int[] =
+    let r = Array.zeroCreate 8
+    for i in 0..7 do
+        r.[a.[i]] <- i
+    r
+
+let private identityPerm = [| 0..7 |]
+
+/// The FULL automorphism group, exhaustively over all 8! coordinate permutations.
+let private autGroup: int[] list = allPerms 8 |> List.filter isAutomorphism
+
+let private autKeys = autGroup |> List.map packPerm |> Set.ofList
+
+/// Conjugacy classes of the automorphism group, as key sets.
+let private conjugacyClasses: Set<int> list =
+    let mutable seen = Set.empty
+    [ for x in autGroup do
+          let k = packPerm x
+          if not (Set.contains k seen) then
+              let cl =
+                  autGroup
+                  |> List.map (fun g -> packPerm (compose (compose g x) (invert g)))
+                  |> Set.ofList
+
+              seen <- Set.union seen cl
+              yield cl ]
+
+[<Fact>]
+let ``|Aut([8,4,4])| = 1344 — measured exhaustively over all 8! coordinate permutations, not asserted`` () =
+    Assert.Equal(40320, List.length (allPerms 8)) // the search really is exhaustive over S₈
+    Assert.Equal(1344, List.length autGroup)
+    // ...and the gate is not vacuous: most permutations are REJECTED
+    Assert.Equal(40320 - 1344, List.length (allPerms 8 |> List.filter (isAutomorphism >> not)))
+    // transitive on the 8 coordinates, with a point stabiliser of order 168 = |GL(3,2)|
+    Assert.Equal<Set<int>>(Set.ofList [ 0..7 ], autGroup |> List.map (fun p -> p.[0]) |> Set.ofList)
+    let stabiliser = autGroup |> List.filter (fun p -> p.[0] = 0)
+    Assert.Equal(168, List.length stabiliser)
+    Assert.Equal(1344, 8 * List.length stabiliser) // orbit-stabiliser, closed
+
+[<Fact>]
+let ``the group IS AGL(3,2), not merely a group of order 1344: a REGULAR normal 2³ with the full GL(3,2) as point stabiliser`` () =
+    // The class equation — a structural fingerprint, far stronger than the order alone.
+    Assert.Equal<int list>(
+        [ 1; 7; 42; 42; 84; 168; 168; 192; 192; 224; 224 ],
+        conjugacyClasses |> List.map Set.count |> List.sort
+    )
+
+    // T = identity ∪ the UNIQUE class of size 7 — the translations of AG(3,2).
+    let sevens = conjugacyClasses |> List.filter (fun c -> Set.count c = 7)
+    Assert.Equal(1, List.length sevens) // canonical: there is only one such class to pick
+    let t = Set.add (packPerm identityPerm) (List.head sevens)
+    Assert.Equal(8, Set.count t)
+
+    let tElems = t |> Set.toList |> List.map unpackPerm
+    // ELEMENTARY ABELIAN: every non-identity element is an involution, and T is abelian ⇒ T ≅ F₂³
+    for x in tElems do
+        Assert.Equal<int[]>(identityPerm, compose x x)
+
+    for x in tElems do
+        for y in tElems do
+            Assert.Equal<int[]>(compose x y, compose y x)
+            Assert.True(Set.contains (packPerm (compose x y)) t, "T is closed under composition")
+
+    // NORMAL in Aut
+    for g in autGroup do
+        for x in tElems do
+            Assert.True(Set.contains (packPerm (compose (compose g x) (invert g))) t, "T ⊲ Aut")
+
+    // REGULAR: T is transitive on the 8 coordinates and |T| = 8, so stabilisers in T are trivial.
+    Assert.Equal<Set<int>>(Set.ofList [ 0..7 ], tElems |> List.map (fun p -> p.[0]) |> Set.ofList)
+    Assert.Equal(1, tElems |> List.filter (fun p -> p.[0] = 0) |> List.length)
+
+    // ⇒ G = T ⋊ G₀ with |G₀| = 1344/8 = 168 = |GL(3,2)| ⇒ G₀ = GL(3,2) ⇒ G = AGL(3,2).
+    Assert.Equal(168, autGroup |> List.filter (fun p -> p.[0] = 0) |> List.length)
+
+    // EXCLUDING the same-order competitors, mechanically:
+    // 2³ × GL(3,2) and C₄ × PGL(2,7) both have order 1344 and both have a non-trivial centre.
+    let centre =
+        autGroup
+        |> List.filter (fun g -> autGroup |> List.forall (fun h -> compose g h = compose h g))
+
+    Assert.Equal(1, List.length centre)
+
+    // 3-transitive but NOT 4-transitive (PGL(2,7), the other 3-transitive degree-8 group, has
+    // order 336; A₈/S₈ are 4-transitive — so this pair of counts separates all four).
+    let triples = autGroup |> List.map (fun g -> g.[0], g.[1], g.[2]) |> List.distinct
+    Assert.Equal(8 * 7 * 6, List.length triples) // 336 — sharply 3-transitive on ordered triples
+
+    let quads = autGroup |> List.map (fun g -> g.[0], g.[1], g.[2], g.[3]) |> List.distinct
+    Assert.Equal(1344, List.length quads)
+    Assert.True(List.length quads < 8 * 7 * 6 * 5, "not 4-transitive: 1344 < 1680")
+
+    // and the code whose automorphisms these are is the one `AdinkraCode` ships (RM(1,3)'s
+    // weight enumerator: one 0, fourteen 4s, one 8)
+    Assert.Equal<(int * int) list>([ 0, 1; 4, 14; 8, 1 ], AK.weightEnumerator)

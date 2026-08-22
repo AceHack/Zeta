@@ -1,0 +1,12 @@
+{
+  "pr_number": 7715,
+  "archive_path": "docs/history/pr-reviews/PR-7715-docs-research-the-human-oracle-perceptual-treaty-ratification-audio-pictures-ani.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-11T15:37:54.071Z",
+  "schema_version": "v1",
+  "commit_sha": "5d5ead456dcb15bac70c9377c565ec15c0028b03",
+  "title": "docs(research): the human oracle — perceptual treaty ratification (audio + pictures + animations)",
+  "state": "MERGED",
+  "merged_at": "2026-06-11T15:37:25Z",
+  "head_ref": "shadow-human-oracle"
+}

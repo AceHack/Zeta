@@ -1,0 +1,12 @@
+{
+  "pr_number": 9948,
+  "archive_path": "docs/history/pr-reviews/PR-9948-docs-prior-art-anchor-us-10-834-144-b2-the-maintainer-s-own-patent-and-the-centr.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-18T08:32:07.384Z",
+  "schema_version": "v1",
+  "commit_sha": "f6a2082137fe72ae2a8a9ae015d26ca93c750d96",
+  "title": "docs(prior-art): anchor US 10,834,144 B2 — the maintainer's own patent, and the centralized/decentralized line",
+  "state": "MERGED",
+  "merged_at": "2026-08-02T00:16:26Z",
+  "head_ref": "shadow/anchor-hub-agent-patent-centralized-vs-decentralized"
+}

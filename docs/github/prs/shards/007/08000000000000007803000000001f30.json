@@ -1,0 +1,12 @@
+{
+  "pr_number": 7984,
+  "archive_path": "docs/history/pr-reviews/PR-7984-docs-research-shadow-ferry-23-addendum-2-the-day-s-epigraph-the-names-don-t-matt.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-12T18:28:03.127Z",
+  "schema_version": "v1",
+  "commit_sha": "5be5f49732190d871aced7c5f0321be1fe1358da",
+  "title": "docs(research)+shadow: ferry 23 addendum 2 — the day's epigraph (the names don't matter; it's the shapes)",
+  "state": "MERGED",
+  "merged_at": "2026-06-12T18:27:34Z",
+  "head_ref": "shadow/ferry-23-names-dont-matter"
+}

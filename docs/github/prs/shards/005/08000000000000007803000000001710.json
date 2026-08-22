@@ -1,0 +1,19 @@
+{
+  "pr_number": 5904,
+  "archive_path": "docs/history/pr-reviews/PR-5904-docs-research-add-shadow-lesson-log-for-broadcast-bus-drift.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7F3f-O",
+    "comment:PRRC_kwDOSF9kNM7F3f92",
+    "comment:PRRC_kwDOSF9kNM7F3f9c",
+    "thread:PRRT_kwDOSF9kNM6Fek0M",
+    "thread:PRRT_kwDOSF9kNM6Fekz9",
+    "thread:PRRT_kwDOSF9kNM6Fekzv"
+  ],
+  "fetched_at": "2026-05-28T19:30:26.622Z",
+  "schema_version": "v1",
+  "commit_sha": "7956e949783e927dabc1d3aeabb65583072a8679",
+  "title": "docs(research): Add shadow lesson log for broadcast bus drift",
+  "state": "MERGED",
+  "merged_at": "2026-05-28T19:30:06Z",
+  "head_ref": "lior/drift-report-broadcast-bus-20260528"
+}

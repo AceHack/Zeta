@@ -1,0 +1,12 @@
+{
+  "pr_number": 7905,
+  "archive_path": "docs/history/pr-reviews/PR-7905-fix-ci-backlog-index-integrity-follows-generate-index-ts-to-src-relocated-by-789.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-12T12:29:17.929Z",
+  "schema_version": "v1",
+  "commit_sha": "f7dad1d919215987eaf5feb4bef56b4b6f166da2",
+  "title": "fix(ci): backlog-index-integrity follows generate-index.ts to src (relocated by #7893; lane red)",
+  "state": "MERGED",
+  "merged_at": "2026-06-12T12:28:53Z",
+  "head_ref": "shadow-fix-backlog-index-path"
+}

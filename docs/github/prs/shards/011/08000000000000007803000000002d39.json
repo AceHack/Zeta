@@ -1,0 +1,12 @@
+{
+  "pr_number": 11577,
+  "archive_path": "docs/history/pr-reviews/PR-11577-fix-backlog-the-b-ref-gate-could-not-tell-a-dangling-id-from-a-report-about-one.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-21T13:23:33.985Z",
+  "schema_version": "v1",
+  "commit_sha": "7fbd5d8cf8459fe2e02027cfff827f8247d869ee",
+  "title": "fix(backlog): the b-ref gate could not tell a dangling id from a report about one",
+  "state": "MERGED",
+  "merged_at": "2026-08-17T17:15:45Z",
+  "head_ref": "shadow/b-ref-audit-doc-self-defeating-check"
+}

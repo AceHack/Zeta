@@ -1,0 +1,12 @@
+{
+  "pr_number": 7695,
+  "archive_path": "docs/history/pr-reviews/PR-7695-feat-ui-physui-buttons-are-physics-bodies-pressing-overlap-the-ui-plays-pong.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-11T14:00:13.115Z",
+  "schema_version": "v1",
+  "commit_sha": "f58d0b7768064a8b108af76e5e52fd4bb9bd4af6",
+  "title": "feat(ui): PhysUI — buttons ARE physics bodies; pressing = overlap; the UI plays pong",
+  "state": "MERGED",
+  "merged_at": "2026-06-11T13:59:43Z",
+  "head_ref": "shadow-phys-ui-buttons"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 3214,
+  "archive_path": "docs/history/pr-reviews/PR-3214-chore-b-0519-shard-tick-1954z-multi-otto-branch-state-contamination-rca.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-14T19:58:36.347Z",
+  "schema_version": "v1",
+  "commit_sha": "a399629918ec4998984aefadb280a010e17d5b21",
+  "title": "chore(B-0519) + shard(tick): 1954Z — multi-Otto branch-state contamination RCA",
+  "state": "MERGED",
+  "merged_at": "2026-05-14T19:58:16Z",
+  "head_ref": "chore/b-0519-multi-otto-branch-state-contamination-rca-otto-cli-2026-05-14"
+}

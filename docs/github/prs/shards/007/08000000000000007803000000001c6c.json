@@ -1,0 +1,12 @@
+{
+  "pr_number": 7276,
+  "archive_path": "docs/history/pr-reviews/PR-7276-docs-research-cheat-engine-injection-points-first-class-in-the-emulator-soft-mod.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-09T13:34:20.542Z",
+  "schema_version": "v1",
+  "commit_sha": "4abe9c9b812d55045109389b59d22ba23674dd0b",
+  "title": "docs(research): Cheat-Engine injection points first-class in the emulator — soft-mode tool-assisted structure discovery IS SolidGround discovery",
+  "state": "MERGED",
+  "merged_at": "2026-06-09T13:33:56Z",
+  "head_ref": "otto/cheat-engine-injection-points-emulator-soft-mode-structure-discovery"
+}

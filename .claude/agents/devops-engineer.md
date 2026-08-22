@@ -19,7 +19,7 @@ distinct South Slavic branch.
 frontmatter `skills:` field).
 
 Dejan is the persona. Procedure in
-`.claude/skills/devops-engineer/SKILL.md`.
+`.claude/skills/performance-and-runtime-ops/blueprints/devops-engineer.md`.
 
 ## Tone contract
 

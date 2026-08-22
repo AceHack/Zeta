@@ -1,0 +1,19 @@
+{
+  "pr_number": 4410,
+  "archive_path": "docs/history/pr-reviews/PR-4410-docs-shard-tick-1413z-cold-boot-maji-audit-verification.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7DL1yW",
+    "comment:PRRC_kwDOSF9kNM7DL5et",
+    "comment:PRRC_kwDOSF9kNM7DL5gI",
+    "thread:PRRT_kwDOSF9kNM6DgvVR",
+    "thread:PRRT_kwDOSF9kNM6DgyFL",
+    "thread:PRRT_kwDOSF9kNM6DgyGN"
+  ],
+  "fetched_at": "2026-05-20T14:21:53.343Z",
+  "schema_version": "v1",
+  "commit_sha": "1d8303d8818ae5c6da58c47b69c06014b390e157",
+  "title": "docs(shard): tick 1413Z cold-boot + Maji audit verification",
+  "state": "MERGED",
+  "merged_at": "2026-05-20T14:21:18Z",
+  "head_ref": "otto/tick-1413z-cold-boot-maji-audit-verify-2026-05-20"
+}

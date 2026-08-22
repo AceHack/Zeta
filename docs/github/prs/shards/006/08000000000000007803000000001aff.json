@@ -1,0 +1,12 @@
+{
+  "pr_number": 6911,
+  "archive_path": "docs/history/pr-reviews/PR-6911-docs-research-concrete-grounding-human-heartbeat-ekg-apple-watch-consent-gated-i.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-07T20:44:21.492Z",
+  "schema_version": "v1",
+  "commit_sha": "a9122b3fa6af1b06880742e08f8ea3afdca2fb60",
+  "title": "docs(research): concrete grounding — human heartbeat = EKG (Apple Watch), consent-gated identity signal",
+  "state": "MERGED",
+  "merged_at": "2026-06-07T20:44:00Z",
+  "head_ref": "otto/human-heartbeat-ekg-apple-watch-grounding-consent-gated"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 7764,
+  "archive_path": "docs/history/pr-reviews/PR-7764-fix-round2-the-gate-is-wired-the-red-light-law-kira-s-p0s-injection-total-fromsv.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-11T19:12:23.315Z",
+  "schema_version": "v1",
+  "commit_sha": "f7109c80d5b96980b4c9518d180a1584ab6ab187",
+  "title": "fix(round2): the gate is wired + THE RED-LIGHT LAW + Kira's P0s (injection, total fromSvg, delegation allowlist)",
+  "state": "MERGED",
+  "merged_at": "2026-06-11T19:11:51Z",
+  "head_ref": "shadow-wire-the-gate"
+}

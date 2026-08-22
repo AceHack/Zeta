@@ -1,0 +1,12 @@
+{
+  "pr_number": 4808,
+  "archive_path": "docs/history/pr-reviews/PR-4808-docs-research-cluster-bare-metal-substrate-architecture-decision-nixos-bare-meta.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-24T01:59:32.380Z",
+  "schema_version": "v1",
+  "commit_sha": "f11f66aa79167a78a8ef5f9ca093d4d2c6a1f973",
+  "title": "docs(research): cluster bare-metal substrate architecture decision (NixOS + bare-metal k8s + Argo CD; no hypervisor for primary stack)",
+  "state": "MERGED",
+  "merged_at": "2026-05-24T01:59:14Z",
+  "head_ref": "otto/research-cluster-bare-metal-architecture-nixos-no-hypervisor-2026-05-24"
+}

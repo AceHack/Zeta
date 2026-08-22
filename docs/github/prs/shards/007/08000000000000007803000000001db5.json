@@ -1,0 +1,12 @@
+{
+  "pr_number": 7605,
+  "archive_path": "docs/history/pr-reviews/PR-7605-feat-the-game-state-treaty-four-oracles-replay-the-same-pong-match-to-byte-ident.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-11T05:19:25.462Z",
+  "schema_version": "v1",
+  "commit_sha": "ac90884e4ad51c064fd6c1ee1aced982a832c9e4",
+  "title": "feat: the GAME-STATE TREATY — four oracles replay the same pong match to byte-identical worlds",
+  "state": "MERGED",
+  "merged_at": "2026-06-11T05:19:02Z",
+  "head_ref": "shadow-pong-game-treaty"
+}

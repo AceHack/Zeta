@@ -1,0 +1,12 @@
+{
+  "pr_number": 3563,
+  "archive_path": "docs/history/pr-reviews/PR-3563-backlog-b-0535-id-uniqueness-lint-as-extension-of-b-0532-p3.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-15T19:33:58.665Z",
+  "schema_version": "v1",
+  "commit_sha": "b338889ea73fa02dad65b3e7202358b291194c9d",
+  "title": "backlog(B-0535): ID-uniqueness lint as extension of B-0532 (P3)",
+  "state": "MERGED",
+  "merged_at": "2026-05-15T19:33:42Z",
+  "head_ref": "backlog/b0535-id-uniqueness-lint-extension-of-b0532-otto-cli-2026-05-15"
+}

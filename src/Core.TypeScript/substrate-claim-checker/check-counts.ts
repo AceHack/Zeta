@@ -38,8 +38,8 @@
  *   - Self-recursive drift
  *
  * Usage:
- *   bun tools/substrate-claim-checker/check-counts.ts <file>
- *   bun tools/substrate-claim-checker/check-counts.ts <file1> <file2> ...
+ *   bun src/Core.TypeScript/substrate-claim-checker/check-counts.ts <file>
+ *   bun src/Core.TypeScript/substrate-claim-checker/check-counts.ts <file1> <file2> ...
  *
  * Exit code:
  *   0  no drift detected
@@ -281,7 +281,7 @@ export type { Finding, Table, Claim };
 export function main(): number {
   const args = process.argv.slice(2);
   if (args.length === 0) {
-    console.error("usage: bun tools/substrate-claim-checker/check-counts.ts <file> [<file> ...]");
+    console.error("usage: bun src/Core.TypeScript/substrate-claim-checker/check-counts.ts <file> [<file> ...]");
     return 1;
   }
   let totalFindings = 0;

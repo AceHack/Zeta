@@ -1,0 +1,12 @@
+{
+  "pr_number": 13749,
+  "archive_path": "docs/history/pr-reviews/PR-13749-ferry-two-corrections-reseed-on-collapse-and-switching-cartridges-without-leavin.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-22T15:21:54.809Z",
+  "schema_version": "v1",
+  "commit_sha": "148e4c99b9689d48f87c6a5430152fe344719181",
+  "title": "ferry: two corrections — reseed-on-collapse, and switching cartridges without leaving the soft regime",
+  "state": "MERGED",
+  "merged_at": "2026-08-22T15:21:11Z",
+  "head_ref": "ferry/neoteny-part-two-cartridge-switching-in-the-soft-regime"
+}

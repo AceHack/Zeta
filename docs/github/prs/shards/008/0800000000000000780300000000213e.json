@@ -1,0 +1,12 @@
+{
+  "pr_number": 8510,
+  "archive_path": "docs/history/pr-reviews/PR-8510-memory-feedback-not-coerced-byte-identical-and-uncoerced-fixpoint-honest-error-c.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-16T10:57:52.972Z",
+  "schema_version": "v1",
+  "commit_sha": "5cbf5a16514b871bcb1cbd51e31bb7623816c904",
+  "title": "memory(feedback): === = NOT COERCED — byte-identical AND uncoerced fixpoint (honest error-correction; no-coercion = consent-first)",
+  "state": "MERGED",
+  "merged_at": "2026-06-16T10:57:17Z",
+  "head_ref": "otto/triple-equals-not-coerced-honest-uncoerced-fixpoint"
+}

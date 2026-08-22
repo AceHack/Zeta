@@ -1,0 +1,17 @@
+{
+  "pr_number": 6641,
+  "archive_path": "docs/history/pr-reviews/PR-6641-ci-ace-gate-trust-core-cross-verification-oracles-ace-suite-in-ci.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7HgHTq",
+    "comment:PRRC_kwDOSF9kNM7HgHUm",
+    "thread:PRRT_kwDOSF9kNM6Grprf",
+    "thread:PRRT_kwDOSF9kNM6GrpsK"
+  ],
+  "fetched_at": "2026-06-03T08:44:04.342Z",
+  "schema_version": "v1",
+  "commit_sha": "e47c82037f5a01c478af9793da27c63e77f2a17a",
+  "title": "ci(ace): gate trust-core cross-verification oracles + ace suite in CI",
+  "state": "MERGED",
+  "merged_at": "2026-06-03T08:43:43Z",
+  "head_ref": "otto-windows/ace-cross-verify-ci-gate-2026-06-03"
+}

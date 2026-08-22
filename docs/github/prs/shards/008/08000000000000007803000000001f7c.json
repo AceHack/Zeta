@@ -1,0 +1,12 @@
+{
+  "pr_number": 8060,
+  "archive_path": "docs/history/pr-reviews/PR-8060-feat-forge-host-github-adapter-wave-2-task-3.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-13T20:38:09.832Z",
+  "schema_version": "v1",
+  "commit_sha": "579064da2701193f664c24ea54455b17e32ab655",
+  "title": "feat(forge-host): GitHub adapter (Wave 2, Task 3)",
+  "state": "MERGED",
+  "merged_at": "2026-06-13T20:37:38Z",
+  "head_ref": "kiro/forge-host-github-adapter"
+}

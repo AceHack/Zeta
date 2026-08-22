@@ -1,0 +1,12 @@
+{
+  "pr_number": 12206,
+  "archive_path": "docs/history/pr-reviews/PR-12206-book-raw-the-handle-was-earned-by-a-naming-algorithm-fatx-xbins-the-grey-set-and.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-19T00:28:06.992Z",
+  "schema_version": "v1",
+  "commit_sha": "f22b7c84fc9c295166a27377622b5082d2410d26",
+  "title": "book(raw): the handle was earned by a naming algorithm — FATX, xbins, the grey set, and Chaotic Perfection",
+  "state": "MERGED",
+  "merged_at": "2026-08-19T00:27:33Z",
+  "head_ref": "shadow/book-acehack-fatx-naming-origin"
+}

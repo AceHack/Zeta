@@ -1,0 +1,12 @@
+{
+  "pr_number": 5242,
+  "archive_path": "docs/history/pr-reviews/PR-5242-feat-b-0825-time-modeled-dependencies-for-helm-temporal-axis-in-chart-graph-for-.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-26T17:36:11.978Z",
+  "schema_version": "v1",
+  "commit_sha": "098f532863a91447831ea474ba4590041e8fbfa7",
+  "title": "feat(B-0825): time-modeled dependencies for Helm — temporal axis in chart-graph for long-running stateful clusters",
+  "state": "MERGED",
+  "merged_at": "2026-05-26T17:35:43Z",
+  "head_ref": "otto-cli/b0825-time-modeled-dependencies-helm-2026-05-26"
+}

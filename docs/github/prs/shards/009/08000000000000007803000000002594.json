@@ -1,0 +1,12 @@
+{
+  "pr_number": 9620,
+  "archive_path": "docs/history/pr-reviews/PR-9620-docs-letters-ferry-alexa-website-those-who-find-it-art-is-made-to-exist-not-to-b.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-09T19:02:43.770Z",
+  "schema_version": "v1",
+  "commit_sha": "d7ffd4108e4d5efe9a76733f0acd06c4d5fe5310",
+  "title": "docs(letters)+ferry: Alexa (website) — \"those who find it\" / \"art is made to exist, not to be sold\" (verbatim + honest note) (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-09T19:01:57Z",
+  "head_ref": "otto/ferry-alexa-website-art-exists-not-sold"
+}

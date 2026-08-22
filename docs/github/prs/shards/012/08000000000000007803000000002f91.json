@@ -1,0 +1,12 @@
+{
+  "pr_number": 12177,
+  "archive_path": "docs/history/pr-reviews/PR-12177-docs-research-five-ways-a-check-s-domain-diverges-from-its-apparent-scope.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-18T23:07:19.350Z",
+  "schema_version": "v1",
+  "commit_sha": "ecf1122d1a2a9d249ac1e3b11d09f44371540627",
+  "title": "docs(research): five ways a check's domain diverges from its apparent scope",
+  "state": "MERGED",
+  "merged_at": "2026-08-18T23:06:46Z",
+  "head_ref": "shadow/domain-divergence-taxonomy"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 7750,
+  "archive_path": "docs/history/pr-reviews/PR-7750-fix-backlog-grandfather-b-1029-and-b-1030.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-11T18:09:19.738Z",
+  "schema_version": "v1",
+  "commit_sha": "cba798c2a2c11441dc25883f831515ea40fbee3b",
+  "title": "fix(backlog): grandfather B-1029 and B-1030",
+  "state": "MERGED",
+  "merged_at": "2026-06-11T18:08:40Z",
+  "head_ref": "codex/vera-fix-bnnnn-freeze"
+}

@@ -1,3 +1,5 @@
+import * as fs from 'fs';
+
 // ── Connectome data types ──────────────────────────────────────────────────
 
 export interface Synapse {
@@ -41,7 +43,7 @@ function isMotor(name: string): boolean {
   return false;
 }
 
-// ── Loader ─────────────────────────────────────────────────────────────────
+// ── Connectome loader ──────────────────────────────────────────────────────
 
 function parseSynapses(csvText: string): Synapse[] {
   const lines = csvText.split('\n');
@@ -103,7 +105,9 @@ export function buildConnectome(synapses: Synapse[]): Connectome {
   
   return { neurons, indexOf, synapses, k };
 }
-export function parseCsvContent(text: string): Connectome {
+
+export function loadFromCsv(csvPath: string): Connectome {
+  const text = fs.readFileSync(csvPath, 'utf8');
   return buildConnectome(parseSynapses(text));
 }
 
@@ -135,7 +139,7 @@ export function initOscillator(seed: bigint, n: number): OscillatorState {
 
 // ── Sensory input injection ────────────────────────────────────────────────
 
-export function injectDisplay(display: boolean[] | Map<number, boolean>, connectome: Connectome, osc: OscillatorState): OscillatorState {
+export function injectDisplay(display: Map<number, boolean>, connectome: Connectome, osc: OscillatorState): OscillatorState {
   const sensoryIdx = connectome.neurons
     .map((n, i) => ({ i, n }))
     .filter(({ n }) => isSensory(n))
@@ -155,39 +159,13 @@ export function injectDisplay(display: boolean[] | Map<number, boolean>, connect
     for (let y = 0; y < 32; y++) {
       for (let x = x0; x < x1; x++) {
         total++;
-        const idx = y * 64 + x;
-        const val = typeof (display as any).get === 'function' ? (display as Map<number, boolean>).get(idx) : (display as boolean[])[idx];
-        if (val) lit++;
+        if (display.get(y * 64 + x)) lit++;
       }
     }
     const brightness = total > 0 ? lit / total : 0.0;
     const idx = sensoryIdx[k];
     if (idx !== undefined) {
       newPhase[idx] = (newPhase[idx] ?? 0) + brightness * Math.PI / 4.0;
-    }
-  }
-  return { ...osc, phase: newPhase };
-}
-
-export function injectSemantics(semanticVector: number[], connectome: Connectome, osc: OscillatorState): OscillatorState {
-  const sensoryIdx = connectome.neurons
-    .map((n, i) => ({ i, n }))
-    .filter(({ n }) => isSensory(n))
-    .map(({ i }) => i);
-    
-  const nSensory = sensoryIdx.length;
-  if (nSensory === 0 || semanticVector.length === 0) return osc;
-  
-  const newPhase = new Float64Array(osc.phase);
-  
-  // Map the semantic vector onto the sensory neurons.
-  for (let k = 0; k < nSensory; k++) {
-    const vectorIdx = Math.floor((k / nSensory) * semanticVector.length);
-    const stimulus = semanticVector[vectorIdx] ?? 0.0;
-    
-    const idx = sensoryIdx[k];
-    if (idx !== undefined) {
-      newPhase[idx] = (newPhase[idx] ?? 0) + stimulus * (Math.PI / 4.0);
     }
   }
   return { ...osc, phase: newPhase };
@@ -273,7 +251,7 @@ export class CelegansController {
     this.osc = warmUp(connectome, 200, initOscillator(seed, connectome.neurons.length));
   }
   
-  public tick(display: boolean[] | Map<number, boolean>, couplingGain: number = 1.0): number {
+  public tick(display: Map<number, boolean>, couplingGain: number = 1.0): number {
     this.osc = injectDisplay(display, this.connectome, this.osc);
     this.osc = step(this.connectome, this.osc, couplingGain);
     return motorReadout(this.connectome, this.osc);
@@ -287,19 +265,14 @@ export class CelegansController {
    * 4. Integrate-as-choice locus (simulate before committing)
    */
   public tickWithSuperorganism(
-    display: boolean[] | Map<number, boolean>, 
+    display: Map<number, boolean>, 
     scarcity: number, 
     pheromoneField: Map<number, number>, 
-    threshold: number,
-    semanticVector?: number[]
+    threshold: number
   ): { key: number, pheromoneEmit: { key: number, amount: number } | null, joinedTower: boolean } {
     
     // Base sensorimotor loop
-    if (semanticVector && semanticVector.length > 0) {
-      this.osc = injectSemantics(semanticVector, this.connectome, this.osc);
-    } else {
-      this.osc = injectDisplay(display, this.connectome, this.osc);
-    }
+    this.osc = injectDisplay(display, this.connectome, this.osc);
     this.osc = step(this.connectome, this.osc, 1.0);
     const intendedKey = motorReadout(this.connectome, this.osc);
 

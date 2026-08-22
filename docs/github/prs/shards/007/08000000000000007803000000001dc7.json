@@ -1,0 +1,12 @@
+{
+  "pr_number": 7623,
+  "archive_path": "docs/history/pr-reviews/PR-7623-docs-vision-b-1024-speak-to-the-tv-microkernel-iso-boot-qemu-tested-pi-self-cont.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-11T09:41:24.341Z",
+  "schema_version": "v1",
+  "commit_sha": "c62ae03a3ae522a10dc50dd9d0921c6864e01645",
+  "title": "docs(vision): B-1024 — speak-to-the-TV + microkernel/ISO boot, QEMU-tested, Pi self-contained, visible friction/heat matrix",
+  "state": "MERGED",
+  "merged_at": "2026-06-11T09:40:57Z",
+  "head_ref": "shadow-microkernel-pi-vision"
+}

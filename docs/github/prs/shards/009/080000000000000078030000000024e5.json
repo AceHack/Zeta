@@ -1,0 +1,12 @@
+{
+  "pr_number": 9445,
+  "archive_path": "docs/history/pr-reviews/PR-9445-docs-ferry-peels-soft-imaginary-prime-boundary-honest-register-on-the-8-4-code-s.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-04T14:52:43.716Z",
+  "schema_version": "v1",
+  "commit_sha": "378310fb1ab11785f68463617791fefd37a5b4d9",
+  "title": "docs(ferry)+peels: soft-imaginary + prime-boundary honest register on the [8,4] code (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-04T14:52:18Z",
+  "head_ref": "otto/soft-imaginary-prime-boundary-peels"
+}

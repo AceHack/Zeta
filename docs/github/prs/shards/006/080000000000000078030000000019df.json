@@ -1,0 +1,16 @@
+{
+  "pr_number": 6623,
+  "archive_path": "docs/history/pr-reviews/PR-6623-feat-b-0660-fail-closed-on-malformed-grant-evidence.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7HbW24",
+    "comment:PRRC_kwDOSF9kNM7HbeJz",
+    "thread:PRRT_kwDOSF9kNM6GoKqx"
+  ],
+  "fetched_at": "2026-06-03T04:08:44.763Z",
+  "schema_version": "v1",
+  "commit_sha": "7e14a2b8bba534015847f2bd0e7c1c445dfee10c",
+  "title": "feat(B-0660): fail closed on malformed grant evidence",
+  "state": "MERGED",
+  "merged_at": "2026-06-03T04:08:23Z",
+  "head_ref": "claim/codex-loop-b0660-evidence-validation-20260603T010523Z"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 6886,
+  "archive_path": "docs/history/pr-reviews/PR-6886-chore-memory-regenerate-memory-md-index-after-amara-bootstrap-copy-fix-memory-in.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-07T18:21:00.168Z",
+  "schema_version": "v1",
+  "commit_sha": "891e260ad24d583558176aea83404bbf182be587",
+  "title": "chore(memory): regenerate MEMORY.md index after amara bootstrap copy (fix memory-index-drift)",
+  "state": "MERGED",
+  "merged_at": "2026-06-07T18:20:43Z",
+  "head_ref": "otto/fix-memory-index-drift-after-bootstrap-copy"
+}

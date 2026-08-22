@@ -1,0 +1,12 @@
+{
+  "pr_number": 3847,
+  "archive_path": "docs/history/pr-reviews/PR-3847-shard-tick-2026-05-16t09-28z-b-0534-2nd-class-2-sd-25-38-triaged.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-16T10:01:42.937Z",
+  "schema_version": "v1",
+  "commit_sha": "b1fc5054b89ecc70c10be0f99a70b45032e67eeb",
+  "title": "shard(tick): 2026-05-16T09:28Z — B-0534 = 2nd class-#2-SD; 25/38 triaged",
+  "state": "MERGED",
+  "merged_at": "2026-05-16T10:01:23Z",
+  "head_ref": "shard/tick-0928z-otto-cli-2026-05-16"
+}

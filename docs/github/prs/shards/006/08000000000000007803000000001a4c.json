@@ -1,0 +1,12 @@
+{
+  "pr_number": 6732,
+  "archive_path": "docs/history/pr-reviews/PR-6732-docs-roadmap-frontmatter-is-a-general-header-body-pattern-not-markdown-only.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-07T07:00:17.857Z",
+  "schema_version": "v1",
+  "commit_sha": "466e09ab65afdbbc0be1a88a1105fe3f7df4fc26",
+  "title": "docs(roadmap): frontmatter is a general header+body pattern, not markdown-only",
+  "state": "MERGED",
+  "merged_at": "2026-06-07T06:59:57Z",
+  "head_ref": "otto/roadmap-frontmatter-is-general"
+}

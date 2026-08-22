@@ -1,0 +1,12 @@
+{
+  "pr_number": 3740,
+  "archive_path": "docs/history/pr-reviews/PR-3740-docs-shadow-maji-antigravity-check-drift-report-0445z.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-20T12:08:06.108Z",
+  "schema_version": "v1",
+  "commit_sha": "8283e5051ac12849fc43a4a3cf155c186220baa5",
+  "title": "docs(shadow): Maji antigravity check drift report 0445Z",
+  "state": "MERGED",
+  "merged_at": "2026-05-20T12:07:43Z",
+  "head_ref": "lior/shadow-drift-0445Z"
+}

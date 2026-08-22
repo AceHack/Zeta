@@ -1,0 +1,12 @@
+{
+  "pr_number": 3517,
+  "archive_path": "docs/history/pr-reviews/PR-3517-shard-tick-1601z-pr-3511-merged-then-post-merge-copilot-fix-pr-3515-opened-threa.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-15T16:08:31.195Z",
+  "schema_version": "v1",
+  "commit_sha": "1d4802ef0d1c4e22dd20c94790b45b3f7a67d58c",
+  "title": "shard(tick): 1601Z — PR #3511 merged then post-merge-Copilot; fix-PR #3515 opened + threads resolved",
+  "state": "MERGED",
+  "merged_at": "2026-05-15T16:08:10Z",
+  "head_ref": "shard/tick-1601z-otto-cli-2026-05-15"
+}

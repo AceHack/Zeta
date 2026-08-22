@@ -1,0 +1,15 @@
+{
+  "pr_number": 6576,
+  "archive_path": "docs/history/pr-reviews/PR-6576-docs-b-0993-smart-agent-city-synthesis-aperiodic-ownership-uag-retrofit-amplific.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7HNnds",
+    "thread:PRRT_kwDOSF9kNM6GeJm2"
+  ],
+  "fetched_at": "2026-06-02T15:03:11.225Z",
+  "schema_version": "v1",
+  "commit_sha": "c6eb5e6c6d667bce3280a17509ef8e4e25dbddbe",
+  "title": "docs(B-0993): smart-agent-city synthesis — aperiodic ownership, UAG-retrofit, amplification + lightlike interferometers (+ B-0992 graph fix)",
+  "state": "MERGED",
+  "merged_at": "2026-06-02T15:02:44Z",
+  "head_ref": "otto-cli/b0993-smart-agent-city-aperiodic-ownership-uag-2026-06-02"
+}

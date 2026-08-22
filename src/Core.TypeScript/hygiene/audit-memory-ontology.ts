@@ -10,11 +10,11 @@
 // TypeScript per Rule 0 (no .sh files except install-graph).
 //
 // Usage:
-//   bun tools/hygiene/audit-memory-ontology.ts
-//   bun tools/hygiene/audit-memory-ontology.ts --memory-dir /path/to/memory
-//   bun tools/hygiene/audit-memory-ontology.ts --json          # machine-readable output
-//   bun tools/hygiene/audit-memory-ontology.ts --fix           # rename mismatched files
-//   bun tools/hygiene/audit-memory-ontology.ts --fix --limit 20  # fix only the first N
+//   bun src/Core.TypeScript/hygiene/audit-memory-ontology.ts
+//   bun src/Core.TypeScript/hygiene/audit-memory-ontology.ts --memory-dir /path/to/memory
+//   bun src/Core.TypeScript/hygiene/audit-memory-ontology.ts --json          # machine-readable output
+//   bun src/Core.TypeScript/hygiene/audit-memory-ontology.ts --fix           # rename mismatched files
+//   bun src/Core.TypeScript/hygiene/audit-memory-ontology.ts --fix --limit 20  # fix only the first N
 //
 // Exit codes:
 //   0 — audit clean
@@ -102,7 +102,7 @@ function parseArgs(): Args {
       }
       limit = n;
     } else if (arg === "--help" || arg === "-h") {
-      console.log(`Usage: bun tools/hygiene/audit-memory-ontology.ts [OPTIONS]
+      console.log(`Usage: bun src/Core.TypeScript/hygiene/audit-memory-ontology.ts [OPTIONS]
 
 Options:
   --memory-dir DIR   Path to memory directory (default: user-scope Zeta memory)

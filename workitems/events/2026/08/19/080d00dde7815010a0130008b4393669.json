@@ -1,0 +1,14 @@
+{
+  "id": "080d00dde7815010a0130008b4393669",
+  "at": "2026-08-19T20:36:02.218Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M0DVSW19087G0R001DKRERW",
+    "type": "task",
+    "title": "Wire build-graph job selection: completeness gate shipped, if-guard flip pending observe-only evidence",
+    "slug": "wire-build-graph-job-selection-completeness-gate-shipped-if",
+    "priority": "P2",
+    "filename": "081M0DVSW19087G0R001DKRERW-wire-build-graph-job-selection-completeness-gate-shipped-if.md"
+  }
+}

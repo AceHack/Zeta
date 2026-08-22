@@ -1,0 +1,15 @@
+{
+  "pr_number": 6481,
+  "archive_path": "docs/history/pr-reviews/PR-6481-feat-algebra-z-set-c-generic-math-iwsam-abelian-group-iadditiveidentity-iadditio.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7G7NVF",
+    "thread:PRRT_kwDOSF9kNM6GQpga"
+  ],
+  "fetched_at": "2026-06-01T21:57:42.661Z",
+  "schema_version": "v1",
+  "commit_sha": "4ea2a64473bcfcc93733abf83065165451710593",
+  "title": "feat(algebra): Z-set C# generic-math — IWSAM abelian-group (IAdditiveIdentity + IAddition/ISubtraction/IUnaryNegation)",
+  "state": "MERGED",
+  "merged_at": "2026-06-01T21:57:20Z",
+  "head_ref": "otto-cli/zset-csharp-generic-math-2026-06-01"
+}

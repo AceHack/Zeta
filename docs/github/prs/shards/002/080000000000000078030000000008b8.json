@@ -1,0 +1,17 @@
+{
+  "pr_number": 2232,
+  "archive_path": "docs/history/pr-reviews/PR-2232-docs-b-0168-regulator-response-worked-translations-5th-content-shape-slice.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_ftY3",
+    "comment:PRRC_kwDOSF9kNM6_ftYu",
+    "thread:PRRT_kwDOSF9kNM6AzQKo",
+    "thread:PRRT_kwDOSF9kNM6AzQKw"
+  ],
+  "fetched_at": "2026-05-09T07:47:01.369Z",
+  "schema_version": "v1",
+  "commit_sha": "5b9a2f25d8d91a04be4654713a3f53d699c5d283",
+  "title": "docs(B-0168): regulator-response worked translations — 5th content-shape slice",
+  "state": "MERGED",
+  "merged_at": "2026-05-09T07:46:39Z",
+  "head_ref": "docs/b0168-regulator-response-translation"
+}

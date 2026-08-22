@@ -1,0 +1,12 @@
+{
+  "pr_number": 7254,
+  "archive_path": "docs/history/pr-reviews/PR-7254-feat-ax-test-wake-up-agent-cold-start-action-grammar-test-infra-pubkey-private-i.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-09T12:28:36.428Z",
+  "schema_version": "v1",
+  "commit_sha": "b73a3797264af3fef97cb982a8afb455c49ec61e",
+  "title": "feat(AX+test): WAKE-UP agent cold-start (action grammar) + test-infra pubkey (private in GH secret)",
+  "state": "MERGED",
+  "merged_at": "2026-06-09T12:28:14Z",
+  "head_ref": "otto/wakeup-agent-coldstart-plus-test-infra-pubkey-secret"
+}

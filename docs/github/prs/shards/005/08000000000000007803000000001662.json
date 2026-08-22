@@ -1,0 +1,12 @@
+{
+  "pr_number": 5730,
+  "archive_path": "docs/history/pr-reviews/PR-5730-feat-b-0883-v1-poc-scaffold-better-git-crypt-declarative-types-cli-dispatcher-co.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-28T09:17:38.059Z",
+  "schema_version": "v1",
+  "commit_sha": "d9cfba8c356459500d04887a1f96c179b3416f7d",
+  "title": "feat(B-0883 v1): PoC scaffold — better-git-crypt declarative types + CLI dispatcher composing with v1 design memo (Noble + XWing + ML-DSA-65 + CBOR envelope)",
+  "state": "MERGED",
+  "merged_at": "2026-05-28T09:17:15Z",
+  "head_ref": "otto-cli/b0883-v1-better-git-crypt-poc-scaffold-types-envelope-cli-2026-05-28"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 6245,
+  "archive_path": "docs/history/pr-reviews/PR-6245-feat-observe-event-sourcing-fold-replay-the-algebra-foundation-v5.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-31T20:18:58.484Z",
+  "schema_version": "v1",
+  "commit_sha": "93f63999d8e33df0c4e8acc7155be2583fbee48e",
+  "title": "feat(observe): event-sourcing fold/replay — the algebra foundation (v5)",
+  "state": "MERGED",
+  "merged_at": "2026-05-31T20:18:35Z",
+  "head_ref": "otto-cli/observe-fold-eventsourcing-2026-05-31"
+}

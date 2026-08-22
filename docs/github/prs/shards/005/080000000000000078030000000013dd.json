@@ -1,0 +1,12 @@
+{
+  "pr_number": 5085,
+  "archive_path": "docs/history/pr-reviews/PR-5085-backlog-b-0768-p1-re-land-itron-strategy-co-create-standards-with-incumbents-com.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-26T04:27:43.486Z",
+  "schema_version": "v1",
+  "commit_sha": "b93ada3b07370b9c4756e2668c39e471d7fe797f",
+  "title": "backlog(B-0768 P1): re-land Itron strategy — co-create standards with incumbents (companion to ServiceTitan-route)",
+  "state": "MERGED",
+  "merged_at": "2026-05-26T04:27:26Z",
+  "head_ref": "otto-cli/reland-b0768-0416z"
+}

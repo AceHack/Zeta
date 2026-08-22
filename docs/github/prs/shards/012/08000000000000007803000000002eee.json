@@ -1,0 +1,12 @@
+{
+  "pr_number": 12014,
+  "archive_path": "docs/history/pr-reviews/PR-12014-feat-clifford-the-mod-8-clock-and-the-two-geometric-unity-ferries-that-made-its-.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-18T20:34:21.583Z",
+  "schema_version": "v1",
+  "commit_sha": "84ffd55880fb99366ebb977631a7c297620cd45e",
+  "title": "feat(clifford): the mod-8 clock, and the two Geometric Unity ferries that made its absence visible",
+  "state": "MERGED",
+  "merged_at": "2026-08-18T20:33:43Z",
+  "head_ref": "shadow/ferry-geometric-unity-iceberg"
+}

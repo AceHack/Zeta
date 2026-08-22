@@ -1,0 +1,17 @@
+{
+  "pr_number": 3788,
+  "archive_path": "docs/history/pr-reviews/PR-3788-feat-b-0557-slice-2-try-catch-readfilesync-readdirsync-in-audit-tool.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7B25On",
+    "comment:PRRC_kwDOSF9kNM7B25Ow",
+    "thread:PRRT_kwDOSF9kNM6CieVE",
+    "thread:PRRT_kwDOSF9kNM6CieVL"
+  ],
+  "fetched_at": "2026-05-16T07:19:07.646Z",
+  "schema_version": "v1",
+  "commit_sha": "6809f6e3768b52b4b87aeb365e6fa85b84bb7508",
+  "title": "feat(B-0557 slice 2): try/catch readFileSync + readdirSync in audit tool",
+  "state": "MERGED",
+  "merged_at": "2026-05-16T07:18:48Z",
+  "head_ref": "feat/b0557-slice-error-handling-otto-cli-2026-05-16"
+}

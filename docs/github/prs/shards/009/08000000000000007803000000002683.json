@@ -1,0 +1,12 @@
+{
+  "pr_number": 9859,
+  "archive_path": "docs/history/pr-reviews/PR-9859-feat-hygiene-first-certified-healer-unused-import-remover-tier-0.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-01T13:00:28.272Z",
+  "schema_version": "v1",
+  "commit_sha": "206f4a1ca31afd83bd941626c86328adece47d87",
+  "title": "feat(hygiene): first certified healer — unused-import remover (Tier 0)",
+  "state": "MERGED",
+  "merged_at": "2026-08-01T12:59:54Z",
+  "head_ref": "claim/kiro-first-healer-2026-08-01"
+}

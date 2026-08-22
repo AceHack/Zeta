@@ -1,0 +1,12 @@
+{
+  "pr_number": 8958,
+  "archive_path": "docs/history/pr-reviews/PR-8958-fix-agentic-org-kind-e2e-supervisor-signal-flow-fix-the-3-bugs-it-surfaced.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-21T14:52:12.894Z",
+  "schema_version": "v1",
+  "commit_sha": "c81987febdd20acb3314c84d5f4a05e05fbc0ef4",
+  "title": "fix(agentic-org): KIND e2e supervisor-signal flow + fix the 3 bugs it surfaced",
+  "state": "MERGED",
+  "merged_at": "2026-06-21T14:51:47Z",
+  "head_ref": "devin/1782051469-kind-flow-driver"
+}

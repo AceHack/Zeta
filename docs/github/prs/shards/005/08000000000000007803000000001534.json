@@ -1,0 +1,12 @@
+{
+  "pr_number": 5428,
+  "archive_path": "docs/history/pr-reviews/PR-5428-docs-hygiene-tick-2026-05-27t10-08z-dotgit-arc-closure-holds-at-2nd-anchor-otto-.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-27T10:14:44.965Z",
+  "schema_version": "v1",
+  "commit_sha": "31c0e7cbb1e1ed9142ad1a666d4395dc325bb36a",
+  "title": "docs(hygiene): tick 2026-05-27T10:08Z — dotgit-arc-closure HOLDS at 2nd anchor (Otto-CLI)",
+  "state": "MERGED",
+  "merged_at": "2026-05-27T10:14:22Z",
+  "head_ref": "otto-cli/tick-1008z-2026-05-27"
+}

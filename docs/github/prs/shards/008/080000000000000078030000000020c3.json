@@ -1,0 +1,12 @@
+{
+  "pr_number": 8387,
+  "archive_path": "docs/history/pr-reviews/PR-8387-docs-society-9d-the-ctm-7-tuple-s-memory-architecture-is-our-db-dagfs-contentsto.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-16T00:58:21.549Z",
+  "schema_version": "v1",
+  "commit_sha": "b56eea571281c4c3b26a8d10ef348710b3ab0314",
+  "title": "docs(society): §9d — the CTM 7-tuple's memory architecture IS our db/ = DagFs + ContentStore",
+  "state": "MERGED",
+  "merged_at": "2026-06-16T00:57:52Z",
+  "head_ref": "docs/ctm-7tuple-is-db-dagfs"
+}

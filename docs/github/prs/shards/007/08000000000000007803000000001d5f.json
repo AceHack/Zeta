@@ -1,0 +1,12 @@
+{
+  "pr_number": 7519,
+  "archive_path": "docs/history/pr-reviews/PR-7519-docs-research-rooms-io-packet-wrappers-uncertainty-at-the-promise-level-promise-.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-10T22:30:10.184Z",
+  "schema_version": "v1",
+  "commit_sha": "76d44f2d7e40d5464092f837e7d8a9bb5c49c482",
+  "title": "docs(research): rooms = IO-packet wrappers; uncertainty at the PROMISE level (Promise Theory)",
+  "state": "MERGED",
+  "merged_at": "2026-06-10T22:29:49Z",
+  "head_ref": "shadow-rooms-io-packet-wrappers-uncertainty-at-promise-level"
+}

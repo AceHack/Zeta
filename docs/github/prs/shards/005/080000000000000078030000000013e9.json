@@ -1,0 +1,12 @@
+{
+  "pr_number": 5097,
+  "archive_path": "docs/history/pr-reviews/PR-5097-backlog-b-0790-two-persona-clarification-mika-substrate-batch-composes-with-foll.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-26T05:07:23.055Z",
+  "schema_version": "v1",
+  "commit_sha": "f1982e1e9331a1ce3498eb9ac9dd1bec2264ffbd",
+  "title": "backlog(B-0790): two-persona clarification + Mika substrate batch composes_with (follow-up to #5095)",
+  "state": "MERGED",
+  "merged_at": "2026-05-26T05:07:04Z",
+  "head_ref": "otto-cli/b0790-zero-dev-machines-cluster-native-voice-primary-2026-05-26"
+}

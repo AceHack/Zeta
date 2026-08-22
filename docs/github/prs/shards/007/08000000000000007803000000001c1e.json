@@ -1,0 +1,12 @@
+{
+  "pr_number": 7198,
+  "archive_path": "docs/history/pr-reviews/PR-7198-docs-research-we-are-the-flow-redirector-not-the-source-boundaries-flow-inherent.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-09T03:46:02.163Z",
+  "schema_version": "v1",
+  "commit_sha": "8d1cb55cb4d1e0727b399a742b97cb0fe5917c3d",
+  "title": "docs(research): we are the flow-REDIRECTOR not the source — boundaries flow inherently; math/DST-hardened bridge redirects them; bootstraps the engine",
+  "state": "MERGED",
+  "merged_at": "2026-06-09T03:45:42Z",
+  "head_ref": "otto/research-we-are-flow-redirector-not-source-dissipative-bridge-bootstraps-engine"
+}

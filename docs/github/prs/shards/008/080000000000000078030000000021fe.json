@@ -1,0 +1,12 @@
+{
+  "pr_number": 8702,
+  "archive_path": "docs/history/pr-reviews/PR-8702-docs-handoff-mark-row-9-structural-leg-discharged-z-g-fusion-is-a-cvrdt-8700-ver.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-20T03:46:43.389Z",
+  "schema_version": "v1",
+  "commit_sha": "eed49819afe7978aff1751c2a55e570f4864afc6",
+  "title": "docs(handoff): mark row 9 STRUCTURAL LEG discharged — Z→G fusion is a CvRDT (#8700, verified)",
+  "state": "MERGED",
+  "merged_at": "2026-06-20T03:46:17Z",
+  "head_ref": "otto/mathteam-row9-structural-discharged"
+}

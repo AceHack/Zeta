@@ -1,0 +1,12 @@
+{
+  "pr_number": 10718,
+  "archive_path": "docs/history/pr-reviews/PR-10718-fix-secrets-close-the-ambient-credential-hoist-an-env-var-crosses-exec-regardles.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-14T21:02:48.432Z",
+  "schema_version": "v1",
+  "commit_sha": "8185acb4bec02cf6db1b91e503a0cb2f4b1bf46e",
+  "title": "fix(secrets): close the ambient credential hoist — an env var crosses exec regardless of code identity",
+  "state": "MERGED",
+  "merged_at": "2026-08-14T21:02:10Z",
+  "head_ref": "nazar/close-ambient-credential-hoist"
+}

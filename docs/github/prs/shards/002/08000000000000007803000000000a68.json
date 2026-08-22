@@ -1,0 +1,12 @@
+{
+  "pr_number": 2664,
+  "archive_path": "docs/history/pr-reviews/PR-2664-docs-memory-build-a-bot-lineage-alephz-ai-prior-art-for-persona-system.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-11T07:48:00.523Z",
+  "schema_version": "v1",
+  "commit_sha": "58f08a2174eeb64a26b2b2d581eacb63125c7a1d",
+  "title": "docs(memory): Build-a-Bot lineage — AlephZ-ai prior art for persona system",
+  "state": "MERGED",
+  "merged_at": "2026-05-11T07:47:43Z",
+  "head_ref": "docs/build-a-bot-lineage-2026-05-11"
+}

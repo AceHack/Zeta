@@ -1,0 +1,12 @@
+{
+  "pr_number": 10991,
+  "archive_path": "docs/history/pr-reviews/PR-10991-fix-ci-allowlist-ensure-rust-components-sh-main-is-red-and-blocking-every-pr.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-16T18:12:37.990Z",
+  "schema_version": "v1",
+  "commit_sha": "9355843e97c9b732e24b5ad8c222c23d7fae31ee",
+  "title": "fix(ci): allowlist ensure-rust-components.sh — main is red and blocking every PR",
+  "state": "MERGED",
+  "merged_at": "2026-08-16T18:12:03Z",
+  "head_ref": "shadow/allowlist-ensure-rust-components"
+}

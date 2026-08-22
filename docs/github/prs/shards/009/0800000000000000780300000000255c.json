@@ -1,0 +1,12 @@
+{
+  "pr_number": 9564,
+  "archive_path": "docs/history/pr-reviews/PR-9564-fix-ci-sha-pin-actions-in-heartbeat-tick-metrics-workflows.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-08T22:51:43.841Z",
+  "schema_version": "v1",
+  "commit_sha": "17c6e95b52f3b722c631e3b4d6286e188a399317",
+  "title": "fix(ci): SHA-pin actions in heartbeat + tick-metrics workflows",
+  "state": "MERGED",
+  "merged_at": "2026-07-08T22:51:13Z",
+  "head_ref": "claim/kiro-pin-workflow-actions-2026-07-08"
+}

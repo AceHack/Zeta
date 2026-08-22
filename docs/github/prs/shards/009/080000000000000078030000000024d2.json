@@ -1,0 +1,12 @@
+{
+  "pr_number": 9426,
+  "archive_path": "docs/history/pr-reviews/PR-9426-feat-economy-tit-for-lesser-tat-aaron-s-strategy-the-contraction-theorem-proven.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-04T06:09:24.315Z",
+  "schema_version": "v1",
+  "commit_sha": "5227a5e403c98bfc86c53e065c8e3718a5d0575b",
+  "title": "feat(economy): Tit for Lesser Tat — Aaron's strategy, the contraction theorem proven",
+  "state": "MERGED",
+  "merged_at": "2026-07-04T06:09:01Z",
+  "head_ref": "shadow/tit-for-lesser-tat"
+}

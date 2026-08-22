@@ -1,0 +1,12 @@
+{
+  "pr_number": 7142,
+  "archive_path": "docs/history/pr-reviews/PR-7142-docs-research-the-method-unsubjective-categorization-of-real-intelligent-systems.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-09T00:07:13.988Z",
+  "schema_version": "v1",
+  "commit_sha": "5c29a7067d55ad07777e48bde789256accd37503",
+  "title": "docs(research): the method — unsubjective categorization of real intelligent systems (DevOps as ground truth)",
+  "state": "MERGED",
+  "merged_at": "2026-06-09T00:06:55Z",
+  "head_ref": "otto/research-method-unsubjective-categorization-devops-ground-truth"
+}

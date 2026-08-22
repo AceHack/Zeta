@@ -1,0 +1,12 @@
+{
+  "pr_number": 7783,
+  "archive_path": "docs/history/pr-reviews/PR-7783-docs-research-infer-net-circuits-half-the-engine-is-already-ours-three-rings-one.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-11T20:46:59.784Z",
+  "schema_version": "v1",
+  "commit_sha": "265aa2604ae0962df74154e5ead2bce7e47723a8",
+  "title": "docs(research): Infer.NET circuits — half the engine is already ours; three rings, one calculus (B-1032)",
+  "state": "MERGED",
+  "merged_at": "2026-06-11T20:46:35Z",
+  "head_ref": "shadow-infer-bridge"
+}

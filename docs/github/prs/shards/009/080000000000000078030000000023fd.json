@@ -1,0 +1,12 @@
+{
+  "pr_number": 9213,
+  "archive_path": "docs/history/pr-reviews/PR-9213-docs-session-resume-iris-s-root-site-design-sources-shadow.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-02T23:24:11.563Z",
+  "schema_version": "v1",
+  "commit_sha": "f06681f3e7fe7443bf9515a2dd913d022b41778c",
+  "title": "docs: session resume + Iris's root-site design sources (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-02T23:23:45Z",
+  "head_ref": "shadow/root-site-resume-and-iris-design-sources"
+}

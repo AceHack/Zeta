@@ -1,0 +1,12 @@
+{
+  "pr_number": 5675,
+  "archive_path": "docs/history/pr-reviews/PR-5675-docs-tick-0208z-2026-05-28-otto-cli-fresh-cold-boot-2h-after-0010z-sentinel-re-a.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-28T02:14:12.913Z",
+  "schema_version": "v1",
+  "commit_sha": "264c46992e1b545711cb63ae5a956c65e0cbaa00",
+  "title": "docs(tick): 0208Z 2026-05-28 — Otto-CLI fresh cold-boot ~2h after 0010Z; sentinel re-armed; 4 stale-DIRTY PRs routed",
+  "state": "MERGED",
+  "merged_at": "2026-05-28T02:13:53Z",
+  "head_ref": "otto-cli/tick-shard-0208z-2026-05-28-fresh-cold-boot"
+}

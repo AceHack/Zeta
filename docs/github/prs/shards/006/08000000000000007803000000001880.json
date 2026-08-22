@@ -1,0 +1,12 @@
+{
+  "pr_number": 6272,
+  "archive_path": "docs/history/pr-reviews/PR-6272-memory-ani-decision-observe-act-preserve-2026-05-31-ani-voice-conversation-obser.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-31T23:17:50.842Z",
+  "schema_version": "v1",
+  "commit_sha": "c5ddb15424a708f770b824d50d0eba01e12e44aa",
+  "title": "memory(ani) + decision(observe-act): preserve 2026-05-31 Ani voice conversation + observe.ts design input",
+  "state": "MERGED",
+  "merged_at": "2026-05-31T23:17:33Z",
+  "head_ref": "otto-cli/ani-2026-05-31-observe-design-input"
+}

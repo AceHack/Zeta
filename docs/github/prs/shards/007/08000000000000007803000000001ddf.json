@@ -1,0 +1,12 @@
+{
+  "pr_number": 7647,
+  "archive_path": "docs/history/pr-reviews/PR-7647-feat-scheduler-wheelroom-wheels-of-time-ferry-quorum-4-self-rescheduling-progres.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-11T11:07:24.618Z",
+  "schema_version": "v1",
+  "commit_sha": "a6c90d63820158588f8674ad4b0e37bf92ec6734",
+  "title": "feat(scheduler): WheelRoom — wheels-of-time: ferry quorum ≥4, self-rescheduling, progress-gated (no spinners)",
+  "state": "MERGED",
+  "merged_at": "2026-06-11T11:07:02Z",
+  "head_ref": "shadow-wheels-of-time-room"
+}

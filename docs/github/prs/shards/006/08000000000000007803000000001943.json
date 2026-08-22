@@ -1,0 +1,16 @@
+{
+  "pr_number": 6467,
+  "archive_path": "docs/history/pr-reviews/PR-6467-feat-gset-fsharp-generic-math-additive-monoid-surface-zero-on-f-gset.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7G6Bs5",
+    "comment:PRRC_kwDOSF9kNM7G6GKx",
+    "thread:PRRT_kwDOSF9kNM6GPxTs"
+  ],
+  "fetched_at": "2026-06-01T20:58:21.988Z",
+  "schema_version": "v1",
+  "commit_sha": "ef6a1aa3b47da81c5edaf57b26755e79e17c2a4f",
+  "title": "feat(gset-fsharp): generic-math additive-monoid surface (Zero + (+)) on F# GSet",
+  "state": "MERGED",
+  "merged_at": "2026-06-01T20:58:01Z",
+  "head_ref": "otto-cli/gset-generic-math-fsharp-2026-06-01"
+}

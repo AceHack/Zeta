@@ -1,0 +1,22 @@
+{
+  "pr_number": 3268,
+  "archive_path": "docs/history/pr-reviews/PR-3268-chore-b-0248-decompose-b-0248-layer-1-fork-onboarding.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7BY607",
+    "comment:PRRC_kwDOSF9kNM7BY62P",
+    "comment:PRRC_kwDOSF9kNM7BY6yX",
+    "comment:PRRC_kwDOSF9kNM7BYs7g",
+    "comment:PRRC_kwDOSF9kNM7BYsGP",
+    "comment:PRRC_kwDOSF9kNM7BYsGu",
+    "thread:PRRT_kwDOSF9kNM6CMq--",
+    "thread:PRRT_kwDOSF9kNM6CMq_R",
+    "thread:PRRT_kwDOSF9kNM6CMrlu"
+  ],
+  "fetched_at": "2026-05-14T22:02:58.107Z",
+  "schema_version": "v1",
+  "commit_sha": "d92fc64a1af339ade269059b896358d453502507",
+  "title": "chore(b-0248): decompose b-0248 layer 1 - fork onboarding",
+  "state": "MERGED",
+  "merged_at": "2026-05-14T22:02:37Z",
+  "head_ref": "lior/decompose-b0248"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 6812,
+  "archive_path": "docs/history/pr-reviews/PR-6812-docs-prior-art-adopt-cloudevents-bus-envelope-debezium-cdc-before-after-op-z-set.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-07T12:30:09.231Z",
+  "schema_version": "v1",
+  "commit_sha": "b1f99a70b647de391abccf838b41b57e0424349b",
+  "title": "docs(prior-art): adopt CloudEvents bus envelope + Debezium CDC (before/after/op = Z-set delta) anchor",
+  "state": "MERGED",
+  "merged_at": "2026-06-07T12:29:47Z",
+  "head_ref": "capture/cloudevents-bus-envelope-debezium-cdc-anchor"
+}

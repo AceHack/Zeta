@@ -1,0 +1,12 @@
+{
+  "pr_number": 10256,
+  "archive_path": "docs/history/pr-reviews/PR-10256-docs-the-hub-was-patented-and-itron-owns-it-p2p-is-the-decentralized-upgrade.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-10T00:05:33.815Z",
+  "schema_version": "v1",
+  "commit_sha": "88ed234e7a366a4bbcb780112b32007cfaef9b24",
+  "title": "docs: the hub was patented and Itron owns it — P2P is the decentralized upgrade",
+  "state": "MERGED",
+  "merged_at": "2026-08-10T00:04:57Z",
+  "head_ref": "shadow/itron-hub-patent-boundary"
+}

@@ -1,0 +1,19 @@
+{
+  "pr_number": 2643,
+  "archive_path": "docs/history/pr-reviews/PR-2643-docs-backlog-b-0057-start-gate-prior-art-dependency-re-decomp-flag-riven-smalles.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_tWpv",
+    "comment:PRRC_kwDOSF9kNM6_tWqG",
+    "comment:PRRC_kwDOSF9kNM6_tWqR",
+    "thread:PRRT_kwDOSF9kNM6A95gG",
+    "thread:PRRT_kwDOSF9kNM6A95gW",
+    "thread:PRRT_kwDOSF9kNM6A95gf"
+  ],
+  "fetched_at": "2026-05-11T04:26:39.420Z",
+  "schema_version": "v1",
+  "commit_sha": "5f1d14f0e5119efebde712aa9aaf411e31c1386d",
+  "title": "docs(backlog): B-0057 start-gate prior-art/dependency + re-decomp flag (Riven smallest slice)",
+  "state": "MERGED",
+  "merged_at": "2026-05-11T04:26:18Z",
+  "head_ref": "claim/b0057-decompose-smallest-atomic-occult-research-slice-riven-2026-05-11"
+}

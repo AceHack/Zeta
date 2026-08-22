@@ -1,0 +1,12 @@
+{
+  "pr_number": 4871,
+  "archive_path": "docs/history/pr-reviews/PR-4871-fix-lint-remove-5-stray-gitlinks-introduced-by-4851.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-24T21:10:03.108Z",
+  "schema_version": "v1",
+  "commit_sha": "51dc0b76f59b5cb71d38cc3676a790ec1b7bffae",
+  "title": "fix(lint): remove 5 stray gitlinks introduced by #4851",
+  "state": "MERGED",
+  "merged_at": "2026-05-24T21:09:45Z",
+  "head_ref": "otto-vscode/fix-stray-gitlinks-from-4851-2026-05-24"
+}

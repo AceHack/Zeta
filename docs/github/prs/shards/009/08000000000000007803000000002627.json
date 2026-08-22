@@ -1,0 +1,12 @@
+{
+  "pr_number": 9767,
+  "archive_path": "docs/history/pr-reviews/PR-9767-docs-writing-the-me-we-middle-out-in-code-composition-open-problems-and-the-fals.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-12T04:19:20.192Z",
+  "schema_version": "v1",
+  "commit_sha": "301d000f5d75e9f6a36bebb930f1927fcf5e9ca2",
+  "title": "docs: writing the ME↔WE middle-out in code — composition, open problems, and the falsification (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-12T04:18:51Z",
+  "head_ref": "coding-the-me-we-middle-out"
+}

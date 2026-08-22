@@ -1,0 +1,12 @@
+{
+  "pr_number": 8322,
+  "archive_path": "docs/history/pr-reviews/PR-8322-chore-workitem-route-adopt-cvc5-e-prover-as-decorrelated-atp-cross-checks-soraya.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-15T19:26:20.329Z",
+  "schema_version": "v1",
+  "commit_sha": "058a61d25eed7f7567044092abb208fc5e3ed2bf",
+  "title": "chore(workitem): route adopt-CVC5+E-prover as decorrelated ATP cross-checks (Soraya + Dejan)",
+  "state": "MERGED",
+  "merged_at": "2026-06-15T19:25:47Z",
+  "head_ref": "docs/route-adopt-cvc5-eprover-decorrelated-atp"
+}

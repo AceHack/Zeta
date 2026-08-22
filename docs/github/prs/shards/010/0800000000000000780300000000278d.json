@@ -1,0 +1,12 @@
+{
+  "pr_number": 10125,
+  "archive_path": "docs/history/pr-reviews/PR-10125-book-editions-indonesian-companion-3-the-organizer-full-length-id.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-07T18:28:57.551Z",
+  "schema_version": "v1",
+  "commit_sha": "7b48a33a1fbeb05a1e661810551a37d2226e2237",
+  "title": "book(editions): Indonesian companion 3 — the Organizer, full length (id)",
+  "state": "MERGED",
+  "merged_at": "2026-08-07T18:28:25Z",
+  "head_ref": "book-id-companion-organizer"
+}

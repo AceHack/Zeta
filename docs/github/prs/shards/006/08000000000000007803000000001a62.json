@@ -1,0 +1,12 @@
+{
+  "pr_number": 6754,
+  "archive_path": "docs/history/pr-reviews/PR-6754-docs-architecture-cross-cell-defaults-to-crdt-commutative-serialized-saga-is-the.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-07T08:22:03.826Z",
+  "schema_version": "v1",
+  "commit_sha": "339fe05120dbe72fadeb6d0874808e46053bee2e",
+  "title": "docs(architecture): cross-cell DEFAULTS to CRDT/commutative; serialized Saga is the reserved escalation",
+  "state": "MERGED",
+  "merged_at": "2026-06-07T08:21:40Z",
+  "head_ref": "otto/crdt-default-serialized-saga-escalation"
+}

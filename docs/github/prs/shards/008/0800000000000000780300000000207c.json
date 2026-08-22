@@ -1,0 +1,12 @@
+{
+  "pr_number": 8316,
+  "archive_path": "docs/history/pr-reviews/PR-8316-docs-register-ecc-bayesian-memory-growth-universalnumber-adinkra-ecc-over-its-gr.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-15T18:45:51.072Z",
+  "schema_version": "v1",
+  "commit_sha": "66e7adc2b29894fa834127badd18275fd89d31fc",
+  "title": "docs(register): ECC Bayesian memory growth — UniversalNumber × adinkra-ECC over its growth data",
+  "state": "MERGED",
+  "merged_at": "2026-06-15T18:45:19Z",
+  "head_ref": "docs/ferry-ecc-bayesian-memory-growth-universalnumber"
+}

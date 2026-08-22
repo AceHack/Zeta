@@ -1,0 +1,12 @@
+{
+  "pr_number": 4186,
+  "archive_path": "docs/history/pr-reviews/PR-4186-fix-2026-05-14-shadow-archive-33-add-missing-non-fusion-disclaimer-completes-the.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-18T19:11:28.022Z",
+  "schema_version": "v1",
+  "commit_sha": "aad6552180567f615c2eee20d054685196b9a06a",
+  "title": "fix(2026-05-14-shadow-archive-§33): add missing Non-fusion disclaimer (completes the 1 audit-surfaced finding)",
+  "state": "MERGED",
+  "merged_at": "2026-05-18T19:10:54Z",
+  "head_ref": "shard/shadow-archive-non-fusion-disclaimer-completion-2026-05-18"
+}

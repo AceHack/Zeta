@@ -1,0 +1,12 @@
+{
+  "pr_number": 7689,
+  "archive_path": "docs/history/pr-reviews/PR-7689-docs-database-ratified-the-yin-yang-self-host-form-is-the-database-s-default-ato.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-11T13:43:12.610Z",
+  "schema_version": "v1",
+  "commit_sha": "6375066bb4add8e91be109435255d4e474c83077",
+  "title": "docs(database): RATIFIED — the yin-yang self-host form is the database's default atom format",
+  "state": "MERGED",
+  "merged_at": "2026-06-11T13:42:41Z",
+  "head_ref": "shadow-default-atom-format"
+}

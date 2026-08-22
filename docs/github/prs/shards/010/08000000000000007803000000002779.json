@@ -1,0 +1,12 @@
+{
+  "pr_number": 10105,
+  "archive_path": "docs/history/pr-reviews/PR-10105-book-editions-full-content-pass-1-the-formation-companion-full-length-english.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-07T17:37:44.467Z",
+  "schema_version": "v1",
+  "commit_sha": "4848c5b459c31ca4d16608e10e2e652370707cb4",
+  "title": "book(editions): full-content pass 1 — the Formation companion, full length (English)",
+  "state": "MERGED",
+  "merged_at": "2026-08-07T17:37:09Z",
+  "head_ref": "book-en-fullcontent-formation"
+}

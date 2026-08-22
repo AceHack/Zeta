@@ -1,0 +1,17 @@
+{
+  "pr_number": 2819,
+  "archive_path": "docs/history/pr-reviews/PR-2819-docs-memory-maxwell-einstein-vacuum-motion-physics-control-structures-rest-is-la.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7AcQQ-",
+    "comment:PRRC_kwDOSF9kNM7AcQQW",
+    "thread:PRRT_kwDOSF9kNM6BgoxW",
+    "thread:PRRT_kwDOSF9kNM6Bgoxt"
+  ],
+  "fetched_at": "2026-05-12T18:06:43.448Z",
+  "schema_version": "v1",
+  "commit_sha": "bd9836e1c6ae2bab79c3f16f54db60c4b2c491b1",
+  "title": "docs(memory): Maxwell + Einstein-vacuum-motion = physics control structures + rest is label noise (Aaron 2026-05-12)",
+  "state": "MERGED",
+  "merged_at": "2026-05-12T18:06:25Z",
+  "head_ref": "docs/aaron-maxwell-plus-einstein-vacuum-motion-physics-control-structures-rest-is-label-noise-2026-05-12"
+}

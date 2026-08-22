@@ -1,0 +1,12 @@
+{
+  "pr_number": 6963,
+  "archive_path": "docs/history/pr-reviews/PR-6963-docs-prior-art-azd-azure-developer-cli-az-validate-the-ace-cli-file-pattern.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-08T00:59:15.815Z",
+  "schema_version": "v1",
+  "commit_sha": "0234331c4f22e676cdc4292e75fc88c7d30f5fb4",
+  "title": "docs: prior art — azd (Azure Developer CLI) + az validate the Ace CLI/file pattern",
+  "state": "MERGED",
+  "merged_at": "2026-06-08T00:58:57Z",
+  "head_ref": "otto/prior-art-azd-az-validates-ace-file-pattern"
+}

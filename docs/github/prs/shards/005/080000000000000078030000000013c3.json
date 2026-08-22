@@ -1,0 +1,12 @@
+{
+  "pr_number": 5059,
+  "archive_path": "docs/history/pr-reviews/PR-5059-backlog-b-0772-observable-controllable-cluster-fabric-device-plugins-reticulum-b.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-26T01:06:51.491Z",
+  "schema_version": "v1",
+  "commit_sha": "b35fea717f2509a3f5c6deb0e6379ac5952891e9",
+  "title": "backlog(B-0772): observable+controllable cluster fabric — device plugins + Reticulum + bidirectional polyglot Rx",
+  "state": "MERGED",
+  "merged_at": "2026-05-26T01:06:34Z",
+  "head_ref": "otto-cli/b0772-observable-cluster-fabric-device-plugins-reticulum-rx-bidirectional-2026-05-25"
+}

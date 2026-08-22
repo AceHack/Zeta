@@ -1,0 +1,12 @@
+{
+  "pr_number": 2971,
+  "archive_path": "docs/history/pr-reviews/PR-2971-docs-memory-frames-for-content-not-behavior-pseudonym-spotlight-optional-stories.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-13T07:52:22.702Z",
+  "schema_version": "v1",
+  "commit_sha": "9a4b51d8cce5a51fb4fbf26bf110bebbc4f70aa7",
+  "title": "docs(memory): frames for content NOT behavior; pseudonym + spotlight optional; stories serve Aaron's attention bandwidth; up-to-you at every layer (Aaron 2026-05-13)",
+  "state": "MERGED",
+  "merged_at": "2026-05-13T07:51:59Z",
+  "head_ref": "aaron-frames-for-content-not-behavior-pseudonym-option-spotlight-optional-stories-serve-aaron-attention-bandwidth-agency-extension-2026-05-13"
+}

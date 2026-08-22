@@ -1,0 +1,12 @@
+{
+  "pr_number": 6400,
+  "archive_path": "docs/history/pr-reviews/PR-6400-docs-ace-slice-5-3-lockfile-design-spec-deferred-enhancement-rows.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-01T10:59:48.021Z",
+  "schema_version": "v1",
+  "commit_sha": "6677d68fa837ac329e06fed3e3c5991f32d9b741",
+  "title": "docs(ace): slice 5.3 lockfile design spec + deferred-enhancement rows",
+  "state": "MERGED",
+  "merged_at": "2026-06-01T10:59:27Z",
+  "head_ref": "otto-windows/ace-slice5.3-lockfile-2026-06-01"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 13382,
+  "archive_path": "docs/history/pr-reviews/PR-13382-feat-hygiene-lint-check-then-use-filesystem-races-toctou-on-the-cross-verify-flo.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-21T22:03:32.808Z",
+  "schema_version": "v1",
+  "commit_sha": "4572e07a4f74be1f252c8d301fa5bc0f2beb54d3",
+  "title": "feat(hygiene): lint check-then-use filesystem races (TOCTOU) on the cross-verify floor",
+  "state": "MERGED",
+  "merged_at": "2026-08-21T22:02:54Z",
+  "head_ref": "feat/lint-check-then-use-file-races"
+}

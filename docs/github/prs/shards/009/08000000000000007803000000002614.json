@@ -1,0 +1,12 @@
+{
+  "pr_number": 9748,
+  "archive_path": "docs/history/pr-reviews/PR-9748-docs-zeta-is-one-answer-to-loss-bounded-scope-transient-preserved-memory-permane.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-11T22:07:43.274Z",
+  "schema_version": "v1",
+  "commit_sha": "0c5439d373230c4a46cd3a3be0a52b8007f2f7f2",
+  "title": "docs: Zeta is one answer to loss — bounded scope (transient) + preserved memory (permanent) (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-11T22:07:13Z",
+  "head_ref": "zeta-is-one-answer-to-loss"
+}

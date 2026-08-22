@@ -1,0 +1,12 @@
+{
+  "pr_number": 8074,
+  "archive_path": "docs/history/pr-reviews/PR-8074-refactor-forge-host-final-re-consolidation-accelerator-measure-refresh-worldview.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-13T21:53:25.019Z",
+  "schema_version": "v1",
+  "commit_sha": "7023916a7d312681e5f633e00eedfafa8d3ac2e6",
+  "title": "refactor(forge-host): final re-consolidation (accelerator-measure + refresh-worldview)",
+  "state": "MERGED",
+  "merged_at": "2026-06-13T21:53:02Z",
+  "head_ref": "kiro/reconsolidate-github-dirs"
+}

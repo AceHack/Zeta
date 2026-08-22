@@ -1,0 +1,12 @@
+{
+  "pr_number": 7827,
+  "archive_path": "docs/history/pr-reviews/PR-7827-codex-carry-quantum-observable-zsets-over-reticulum.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-11T23:32:55.970Z",
+  "schema_version": "v1",
+  "commit_sha": "4c401172e3f76ea561f1184268b8c4e11727204d",
+  "title": "[codex] carry quantum observable zsets over reticulum",
+  "state": "MERGED",
+  "merged_at": "2026-06-11T23:32:28Z",
+  "head_ref": "codex/reticulum-quantum-wset"
+}

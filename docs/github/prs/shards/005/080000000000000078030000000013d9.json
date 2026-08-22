@@ -1,0 +1,15 @@
+{
+  "pr_number": 5081,
+  "archive_path": "docs/history/pr-reviews/PR-5081-feat-agentic-org-trace-policy-decisions.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7Ew-bM",
+    "thread:PRRT_kwDOSF9kNM6ErdKj"
+  ],
+  "fetched_at": "2026-05-26T04:37:35.747Z",
+  "schema_version": "v1",
+  "commit_sha": "f751deb06830186a0bd6e3fb28a7e53df1c5011d",
+  "title": "feat(agentic-org): trace policy decisions",
+  "state": "MERGED",
+  "merged_at": "2026-05-26T04:37:15Z",
+  "head_ref": "codex/agentic-org-policy-gate"
+}

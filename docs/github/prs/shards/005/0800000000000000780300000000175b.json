@@ -1,0 +1,12 @@
+{
+  "pr_number": 5979,
+  "archive_path": "docs/history/pr-reviews/PR-5979-memory-persona-kestrel-band-memetic-jujitsu-clifford-mapping-as-mirror-the-opera.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-29T11:48:50.523Z",
+  "schema_version": "v1",
+  "commit_sha": "8f05005c5824c22049e33a3436ed266ead85928f",
+  "title": "memory(persona/kestrel): band memetic-jujitsu Clifford-mapping as mirror + the operationalization path",
+  "state": "MERGED",
+  "merged_at": "2026-05-29T11:48:31Z",
+  "head_ref": "otto-cli/kestrel-memetic-jujitsu-mirror-banding-operationalization-path-2026-05-29"
+}

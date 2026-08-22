@@ -1,0 +1,12 @@
+{
+  "pr_number": 5975,
+  "archive_path": "docs/history/pr-reviews/PR-5975-docs-coordination-record-remote-only-claim-release-receipt.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-29T11:34:36.200Z",
+  "schema_version": "v1",
+  "commit_sha": "945f8bf392ba9b6db134aec67e68f34d52f8bca7",
+  "title": "docs(coordination): record remote-only claim release receipt",
+  "state": "MERGED",
+  "merged_at": "2026-05-29T11:34:17Z",
+  "head_ref": "claim/codex-loop-remote-only-release-receipt-20260529"
+}

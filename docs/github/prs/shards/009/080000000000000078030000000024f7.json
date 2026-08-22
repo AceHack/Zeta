@@ -1,0 +1,12 @@
+{
+  "pr_number": 9463,
+  "archive_path": "docs/history/pr-reviews/PR-9463-docs-ferry-the-bnn-lane-is-the-decorrelated-observer-math-not-tokens-answers-the.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-04T17:22:34.772Z",
+  "schema_version": "v1",
+  "commit_sha": "63d4bdf55b10ffdcc602233f9f5161f814483440",
+  "title": "docs(ferry): the BNN lane IS the decorrelated observer — math-not-tokens answers the human↔AI caveat (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-04T17:22:12Z",
+  "head_ref": "otto/bnn-lane-is-the-decorrelated-observer"
+}

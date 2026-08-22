@@ -1,0 +1,12 @@
+{
+  "pr_number": 11679,
+  "archive_path": "docs/history/pr-reviews/PR-11679-feat-clis-compile-the-dogfood-verb-surface-and-measure-that-its-documented-loop-.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-17T23:00:52.388Z",
+  "schema_version": "v1",
+  "commit_sha": "f3ad3414eb8ea6bcf5caa29b3f46cb10f2387eff",
+  "title": "feat(clis): compile the dogfood verb surface — and measure that its documented loop cannot compose",
+  "state": "MERGED",
+  "merged_at": "2026-08-17T22:59:53Z",
+  "head_ref": "shadow/compile-clis-verbs-surface"
+}

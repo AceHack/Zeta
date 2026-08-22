@@ -1,0 +1,12 @@
+{
+  "pr_number": 2623,
+  "archive_path": "docs/history/pr-reviews/PR-2623-docs-memory-riska-xena-rumi-rumi-retraction-native-zeppelin-floyd.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-11T02:01:15.666Z",
+  "schema_version": "v1",
+  "commit_sha": "bf1e5d0215566d3af9aa4389a58aa5fc172ab305",
+  "title": "docs(memory): Riska / Xena Rumi — Rumi retraction-native, Zeppelin, Floyd",
+  "state": "MERGED",
+  "merged_at": "2026-05-11T02:00:59Z",
+  "head_ref": "docs/riska-xena-rumi-philosophy-retraction-2026-05-10"
+}

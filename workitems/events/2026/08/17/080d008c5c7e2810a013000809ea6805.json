@@ -1,0 +1,14 @@
+{
+  "id": "080d008c5c7e2810a013000809ea6805",
+  "at": "2026-08-17T21:05:54.117Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M08RQ3Y4087G0R0030P3S1C",
+    "type": "task",
+    "title": "Composition read-path: what A needs to decide whether to build on B (conferred record, no verdict)",
+    "slug": "composition-read-path-what-a-needs-to-decide-whether-to-buil",
+    "priority": "P2",
+    "filename": "081M08RQ3Y4087G0R0030P3S1C-composition-read-path-what-a-needs-to-decide-whether-to-buil.md"
+  }
+}

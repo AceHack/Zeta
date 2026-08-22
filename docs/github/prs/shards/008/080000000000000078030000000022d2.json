@@ -1,0 +1,12 @@
+{
+  "pr_number": 8914,
+  "archive_path": "docs/history/pr-reviews/PR-8914-fix-c-oracle-uses-dotnet-run-6-6-languages-byte-agree.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-21T08:26:15.475Z",
+  "schema_version": "v1",
+  "commit_sha": "cfd27e0936983178e2876abc2afecb369e88e372",
+  "title": "fix: C# oracle uses dotnet run — 6/6 languages byte-agree",
+  "state": "MERGED",
+  "merged_at": "2026-06-21T08:25:51Z",
+  "head_ref": "alexa/dotnet-script-declarative"
+}

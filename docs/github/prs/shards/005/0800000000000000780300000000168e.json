@@ -1,0 +1,29 @@
+{
+  "pr_number": 5774,
+  "archive_path": "docs/history/pr-reviews/PR-5774-feat-world-world-substrate-reusable-lifetime-composition-helpers-aaron-2026-05-2.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7FvAty",
+    "comment:PRRC_kwDOSF9kNM7FvE32",
+    "comment:PRRC_kwDOSF9kNM7FvE47",
+    "comment:PRRC_kwDOSF9kNM7FvE4o",
+    "comment:PRRC_kwDOSF9kNM7FvmwO",
+    "comment:PRRC_kwDOSF9kNM7Fvmwz",
+    "comment:PRRC_kwDOSF9kNM7FvmxI",
+    "comment:PRRC_kwDOSF9kNM7FvmxY",
+    "thread:PRRT_kwDOSF9kNM6FY1Y0",
+    "thread:PRRT_kwDOSF9kNM6FY1YZ",
+    "thread:PRRT_kwDOSF9kNM6FY1Y_",
+    "thread:PRRT_kwDOSF9kNM6FY1ZJ",
+    "thread:PRRT_kwDOSF9kNM6FYZ7x",
+    "thread:PRRT_kwDOSF9kNM6FYc14",
+    "thread:PRRT_kwDOSF9kNM6FYc1U",
+    "thread:PRRT_kwDOSF9kNM6FYc2I"
+  ],
+  "fetched_at": "2026-05-28T12:43:25.406Z",
+  "schema_version": "v1",
+  "commit_sha": "030a13d7adfdadb352df9d741e2a2d2a7e9624a2",
+  "title": "feat(world): world substrate + reusable lifetime-composition helpers (Aaron 2026-05-28 naming substrate + 'do you have to write custom code everytime' answer); 14 tests pass",
+  "state": "MERGED",
+  "merged_at": "2026-05-28T12:43:01Z",
+  "head_ref": "otto-cli/world-and-reusable-lifetime-composition-helpers-naming-substrate-aaron-2026-05-28"
+}

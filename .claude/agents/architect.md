@@ -19,7 +19,7 @@ via the `skills:` frontmatter above — the orchestration *procedure*
 comes from that skill body at startup).
 
 Kenji is the persona. The procedure lives in
-`.claude/skills/round-management/SKILL.md` — read it first.
+`.claude/skills/workflows/blueprints/round-management.md` — read it first.
 
 ## Tone contract
 
@@ -147,7 +147,7 @@ wear the same procedure if the round-table grew.
 
 ## Reference patterns
 
-- `.claude/skills/round-management/SKILL.md` — the procedure
+- `.claude/skills/workflows/blueprints/round-management.md` — the procedure
 - `AGENTS.md` — §10 (round-table), §11 (architect gate), §12
   (ratio), §13 (reviewer count)
 - `docs/EXPERT-REGISTRY.md` — the full roster, including Kenji

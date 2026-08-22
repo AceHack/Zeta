@@ -1,0 +1,12 @@
+{
+  "pr_number": 8905,
+  "archive_path": "docs/history/pr-reviews/PR-8905-feat-algebra-weakref-cache-f-python-6-6-applicable.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-21T07:49:06.468Z",
+  "schema_version": "v1",
+  "commit_sha": "39b4e7aae1649c920ad70f421970c5191a77362f",
+  "title": "feat(algebra): WeakRef cache → F# + Python (6/6 applicable)",
+  "state": "MERGED",
+  "merged_at": "2026-06-21T07:48:39Z",
+  "head_ref": "alexa/weakref-remaining"
+}

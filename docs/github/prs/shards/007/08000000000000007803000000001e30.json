@@ -1,0 +1,12 @@
+{
+  "pr_number": 7728,
+  "archive_path": "docs/history/pr-reviews/PR-7728-fix-docs-satisfy-markdownlint-on-mips-notes.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-11T16:58:03.793Z",
+  "schema_version": "v1",
+  "commit_sha": "8a78420a62921100f17306acd3d64b9a6e4df49b",
+  "title": "fix(docs): satisfy markdownlint on MIPS notes",
+  "state": "MERGED",
+  "merged_at": "2026-06-11T16:57:34Z",
+  "head_ref": "codex/vera-fix-mips-markdownlint"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 4379,
+  "archive_path": "docs/history/pr-reviews/PR-4379-shards-batch-1607z-c-1610z-c-crash-recovery-2-awaiting-v8.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-19T16:13:41.382Z",
+  "schema_version": "v1",
+  "commit_sha": "e00cae0a7ef23d9412f6adca007f28186512eab1",
+  "title": "shards(batch 1607Z-c..1610Z-c): crash-recovery #2 + awaiting V8",
+  "state": "MERGED",
+  "merged_at": "2026-05-19T16:13:20Z",
+  "head_ref": "shards/batch-1607-1610z-c-crash-recovery-2-awaiting-v8-2026-05-19"
+}

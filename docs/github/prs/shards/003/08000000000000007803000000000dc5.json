@@ -1,0 +1,19 @@
+{
+  "pr_number": 3525,
+  "archive_path": "docs/history/pr-reviews/PR-3525-shard-tick-1718z-fresh-session-cold-boot-cron-re-armed-33-cascade-status.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7BtM5U",
+    "comment:PRRC_kwDOSF9kNM7BtM6D",
+    "comment:PRRC_kwDOSF9kNM7BtXJI",
+    "comment:PRRC_kwDOSF9kNM7BtXLb",
+    "thread:PRRT_kwDOSF9kNM6CbfB5",
+    "thread:PRRT_kwDOSF9kNM6CbfCX"
+  ],
+  "fetched_at": "2026-05-15T17:37:34.760Z",
+  "schema_version": "v1",
+  "commit_sha": "33c527e2f9ca6152efbab4004659cd4c06955a46",
+  "title": "shard(tick): 1718Z — fresh-session cold-boot; cron re-armed; §33 cascade status",
+  "state": "MERGED",
+  "merged_at": "2026-05-15T17:37:18Z",
+  "head_ref": "shard/tick-1718z-otto-cli-2026-05-15"
+}

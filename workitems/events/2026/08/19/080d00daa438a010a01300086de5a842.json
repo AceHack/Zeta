@@ -1,0 +1,14 @@
+{
+  "id": "080d00daa438a010a01300086de5a842",
+  "at": "2026-08-19T18:41:59.572Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M0DN91RK087G0R002X8MBWM",
+    "type": "bug",
+    "title": "State DU glyphs collide across claim classes: cold/unobserved and stale/sealed reduce to the same mark",
+    "slug": "state-du-glyphs-collide-across-claim-classes-cold-unobserved",
+    "priority": "P2",
+    "filename": "081M0DN91RK087G0R002X8MBWM-state-du-glyphs-collide-across-claim-classes-cold-unobserved.md"
+  }
+}

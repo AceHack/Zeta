@@ -1,0 +1,19 @@
+{
+  "pr_number": 4218,
+  "archive_path": "docs/history/pr-reviews/PR-4218-shard-2142z-brief-reference-comment-on-4215-pattern-observation-3-candidate-futu.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7CdBKB",
+    "comment:PRRC_kwDOSF9kNM7CdBhA",
+    "comment:PRRC_kwDOSF9kNM7CdBh_",
+    "thread:PRRT_kwDOSF9kNM6C-2Ma",
+    "thread:PRRT_kwDOSF9kNM6C-2a3",
+    "thread:PRRT_kwDOSF9kNM6C-2bb"
+  ],
+  "fetched_at": "2026-05-18T22:40:09.699Z",
+  "schema_version": "v1",
+  "commit_sha": "f9d857d701845e642d44e415476704780c4c6558",
+  "title": "shard(2142Z): brief reference-comment on #4215 + pattern observation + 3 candidate future-work options",
+  "state": "MERGED",
+  "merged_at": "2026-05-18T22:39:53Z",
+  "head_ref": "shard/tick-2142z-reference-comment-4215-shard-template-candidate-noted-2026-05-18"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 9814,
+  "archive_path": "docs/history/pr-reviews/PR-9814-feat-core-icosahedralh3-the-30-root-h3-seed-in-cl-3-0-visual-geometry-layer-incr.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-01T01:33:14.346Z",
+  "schema_version": "v1",
+  "commit_sha": "ab6ce104199c6fe68246a68180c2524edae63d83",
+  "title": "feat(Core): IcosahedralH3 — the 30-root H3 seed in Cl(3,0) (visual-geometry layer, increment 1)",
+  "state": "MERGED",
+  "merged_at": "2026-08-01T01:32:44Z",
+  "head_ref": "shadow/icosahedral-h3-30-roots-increment1"
+}

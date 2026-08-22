@@ -1,0 +1,12 @@
+{
+  "pr_number": 5697,
+  "archive_path": "docs/history/pr-reviews/PR-5697-feat-b-0894-3-per-persona-worktrees-outside-operator-s-primary-repo-zeta-agents-.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-28T04:46:36.876Z",
+  "schema_version": "v1",
+  "commit_sha": "83666a0a9ca5f2475004ec2a5db204d26d441369",
+  "title": "feat(B-0894.3): per-persona worktrees outside operator's primary repo — ~/.zeta/agents/<persona>/<stream>/ canonical",
+  "state": "MERGED",
+  "merged_at": "2026-05-28T04:46:14Z",
+  "head_ref": "otto-cli/b-0894-3-per-persona-zeta-agents-2026-05-28"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 8240,
+  "archive_path": "docs/history/pr-reviews/PR-8240-feat-value-tree-ana-unfold-generator-ana-fusion-hylo-round-trip.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-15T02:48:21.878Z",
+  "schema_version": "v1",
+  "commit_sha": "ccbf5b5e7804636b7f226ca5da43c732a494e6c5",
+  "title": "feat(value-tree): ana (unfold/generator) + ana-fusion + hylo round-trip",
+  "state": "MERGED",
+  "merged_at": "2026-06-15T02:47:55Z",
+  "head_ref": "otto/value-tree-ana-unfold"
+}

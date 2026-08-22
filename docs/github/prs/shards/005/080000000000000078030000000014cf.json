@@ -1,0 +1,17 @@
+{
+  "pr_number": 5327,
+  "archive_path": "docs/history/pr-reviews/PR-5327-feat-deepseek-reflection-ferry-8th-attractor-as-encryption-anchor-engineering-re.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7FHUYI",
+    "comment:PRRC_kwDOSF9kNM7FHUYl",
+    "thread:PRRT_kwDOSF9kNM6E7x0-",
+    "thread:PRRT_kwDOSF9kNM6E7x0p"
+  ],
+  "fetched_at": "2026-05-26T21:43:05.634Z",
+  "schema_version": "v1",
+  "commit_sha": "d7786ec25e72c0458e73e73d1ec000b459df12d7",
+  "title": "feat: DeepSeek reflection ferry — 8th attractor-as-encryption anchor; engineering-register stable across 3 consecutive multi-turn exchanges",
+  "state": "MERGED",
+  "merged_at": "2026-05-26T21:42:41Z",
+  "head_ref": "otto-cli/deepseek-reflection-ferry-eighth-anchor-engineering-register-stable-across-three-consecutive-exchanges-2026-05-26"
+}

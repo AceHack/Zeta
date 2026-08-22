@@ -1,0 +1,12 @@
+{
+  "pr_number": 10570,
+  "archive_path": "docs/history/pr-reviews/PR-10570-feat-amplitude-exact-cyclotomic-carrier-z-zeta-16-the-fix-z-eps-made-mandatory-0.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-14T14:48:35.904Z",
+  "schema_version": "v1",
+  "commit_sha": "b55421042988566bae5492cd5a622d91159f0144",
+  "title": "feat(amplitude): exact cyclotomic carrier Z[zeta_16] -- the fix Z-EPS made mandatory (081KZZYWBN2087G0R003NAQQAF)",
+  "state": "MERGED",
+  "merged_at": "2026-08-14T14:47:59Z",
+  "head_ref": "feat/exact-cyclotomic-amplitude-carrier"
+}

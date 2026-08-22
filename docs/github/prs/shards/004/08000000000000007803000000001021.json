@@ -1,0 +1,17 @@
+{
+  "pr_number": 4129,
+  "archive_path": "docs/history/pr-reviews/PR-4129-docs-shadow-maji-antigravity-drift-report-2350z-decomposed-from-4126.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7CDc5y",
+    "comment:PRRC_kwDOSF9kNM7CDcpf",
+    "thread:PRRT_kwDOSF9kNM6CsHc5",
+    "thread:PRRT_kwDOSF9kNM6CsHoq"
+  ],
+  "fetched_at": "2026-05-18T20:10:40.746Z",
+  "schema_version": "v1",
+  "commit_sha": "991c16927c6a39a052e95dd1be9b94cc5bd46ca7",
+  "title": "docs(shadow): Maji antigravity drift report 2350Z (decomposed from 4126)",
+  "state": "MERGED",
+  "merged_at": "2026-05-18T20:10:19Z",
+  "head_ref": "maji/decompose-4126-drift"
+}

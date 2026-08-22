@@ -1,0 +1,21 @@
+{
+  "pr_number": 2705,
+  "archive_path": "docs/history/pr-reviews/PR-2705-docs-research-immune-capstone-ilife-red-team-qubic-bankerbot-sims.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_6Q4W",
+    "comment:PRRC_kwDOSF9kNM6_6Q5M",
+    "comment:PRRC_kwDOSF9kNM6_6QJp",
+    "comment:PRRC_kwDOSF9kNM6_6QJw",
+    "thread:PRRT_kwDOSF9kNM6BHc83",
+    "thread:PRRT_kwDOSF9kNM6BHc89",
+    "thread:PRRT_kwDOSF9kNM6BHdd2",
+    "thread:PRRT_kwDOSF9kNM6BHddM"
+  ],
+  "fetched_at": "2026-05-11T14:32:37.687Z",
+  "schema_version": "v1",
+  "commit_sha": "5eefbe2b00ac7863a1565c0355656fadf706531d",
+  "title": "docs(research): immune capstone — ILife + red team + Qubic/BankerBot sims",
+  "state": "MERGED",
+  "merged_at": "2026-05-11T14:32:09Z",
+  "head_ref": "docs/immune-capstone-ilife-simulations-2026-05-11"
+}

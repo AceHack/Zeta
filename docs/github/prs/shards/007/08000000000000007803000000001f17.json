@@ -1,0 +1,12 @@
+{
+  "pr_number": 7959,
+  "archive_path": "docs/history/pr-reviews/PR-7959-docs-research-shadow-ferry-18-adinkras-homoiconic-on-acts-remains-the-dashed-bra.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-12T17:19:33.511Z",
+  "schema_version": "v1",
+  "commit_sha": "d5dea23388b930857c5277854ea287919e46cae5",
+  "title": "docs(research)+shadow: ferry 18 — adinkras homoiconic on acts/remains; the dashed-braid conjecture (dashing = per-crossing over/under)",
+  "state": "MERGED",
+  "merged_at": "2026-06-12T17:19:03Z",
+  "head_ref": "shadow/ferry-18-adinkra-homoiconic-atom"
+}

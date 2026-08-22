@@ -1,0 +1,12 @@
+{
+  "pr_number": 10438,
+  "archive_path": "docs/history/pr-reviews/PR-10438-fix-pr-archive-backfill-the-shard-for-pr-10414-derive-drift-on-main.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-14T00:13:10.481Z",
+  "schema_version": "v1",
+  "commit_sha": "0ac4fa80674a7e2a2049802c6b9d97709d9350e4",
+  "title": "fix(pr-archive): backfill the shard for PR 10414 — derive drift on main",
+  "state": "MERGED",
+  "merged_at": "2026-08-13T23:42:33Z",
+  "head_ref": "fix/backfill-missing-shard"
+}

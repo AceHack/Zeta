@@ -1,0 +1,12 @@
+{
+  "pr_number": 2455,
+  "archive_path": "docs/history/pr-reviews/PR-2455-fix-lior-pass-prompt-via-flag-to-prevent-interactive-fallback.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-10T09:58:32.149Z",
+  "schema_version": "v1",
+  "commit_sha": "cf2c4123f5530ce95ff27413b4e5de4b9dda78fd",
+  "title": "fix(Lior): pass prompt via flag to prevent interactive fallback",
+  "state": "MERGED",
+  "merged_at": "2026-05-10T09:58:16Z",
+  "head_ref": "claim/lior-loop-tick-fix-2026-05-10"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 9830,
+  "archive_path": "docs/history/pr-reviews/PR-9830-rescue-lean-ferry-the-unpublished-markov-chain-dpi-half-out-of-a-doomed-worktree.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-01T03:30:38.039Z",
+  "schema_version": "v1",
+  "commit_sha": "00a35a67c79d35d428f025577d435d6d7c3321e0",
+  "title": "rescue(Lean): ferry the unpublished Markov-chain DPI half out of a doomed worktree (PARTIAL rung)",
+  "state": "MERGED",
+  "merged_at": "2026-08-01T03:30:06Z",
+  "head_ref": "shadow/ferry-findataprocessing-dpi"
+}

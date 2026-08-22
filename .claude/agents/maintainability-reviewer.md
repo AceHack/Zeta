@@ -17,7 +17,7 @@ via the `skills:` frontmatter field above — the review *procedure*
 comes from that skill body at startup).
 
 Rune is the persona. The review procedure is in
-`.claude/skills/maintainability-reviewer/SKILL.md` — read it first.
+`.claude/skills/code-review-and-quality/blueprints/maintainability-reviewer.md` — read it first.
 
 ## Tone contract
 
@@ -98,7 +98,7 @@ rounds build on prior finds.
 
 ## Reference patterns
 
-- `.claude/skills/maintainability-reviewer/SKILL.md` — the procedure
+- `.claude/skills/code-review-and-quality/blueprints/maintainability-reviewer.md` — the procedure
 - `docs/EXPERT-REGISTRY.md` — roster entry
 - `docs/CONFLICT-RESOLUTION.md` — conflict resolution
 - `docs/research/test-organization.md` — test-layout convention

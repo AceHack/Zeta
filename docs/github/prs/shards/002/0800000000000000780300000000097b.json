@@ -1,0 +1,15 @@
+{
+  "pr_number": 2427,
+  "archive_path": "docs/history/pr-reviews/PR-2427-fix-tsc-resolve-two-lint-tsc-tools-errors-from-mythology-catalog-prs.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_mCrh",
+    "thread:PRRT_kwDOSF9kNM6A4OqH"
+  ],
+  "fetched_at": "2026-05-10T06:19:05.410Z",
+  "schema_version": "v1",
+  "commit_sha": "f41e2e604d4cbec9c582f85fc53903ebaaf679e9",
+  "title": "fix(tsc): resolve two lint (tsc tools) errors from mythology catalog PRs",
+  "state": "MERGED",
+  "merged_at": "2026-05-10T06:18:48Z",
+  "head_ref": "fix/tsc-lint-mythology-candidate-schema"
+}

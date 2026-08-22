@@ -1,0 +1,12 @@
+{
+  "pr_number": 8900,
+  "archive_path": "docs/history/pr-reviews/PR-8900-feat-algebra-sparse-quantum-sim-weakref-cache-c-rust-go.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-21T07:13:34.142Z",
+  "schema_version": "v1",
+  "commit_sha": "d8a3ce6738c734fd69419a850832f75869b06f42",
+  "title": "feat(algebra): sparse quantum sim + WeakRef cache — C#/Rust/Go",
+  "state": "MERGED",
+  "merged_at": "2026-06-21T07:13:09Z",
+  "head_ref": "alexa/quantum-and-cache-ports"
+}

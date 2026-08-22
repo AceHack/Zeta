@@ -1,0 +1,12 @@
+{
+  "pr_number": 3873,
+  "archive_path": "docs/history/pr-reviews/PR-3873-shard-tick-2026-05-16t12-36z-pure-git-tier-2nd-multi-otto-contamination-in-3-tic.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-16T13:03:37.195Z",
+  "schema_version": "v1",
+  "commit_sha": "03ffd2b45b3d71a5357135b2da3700fc9e784142",
+  "title": "shard(tick): 2026-05-16T12:36Z — pure-git tier; 2nd multi-Otto contamination in 3 ticks",
+  "state": "MERGED",
+  "merged_at": "2026-05-16T13:03:20Z",
+  "head_ref": "otto-cli-tick-2026-05-16-1236z"
+}

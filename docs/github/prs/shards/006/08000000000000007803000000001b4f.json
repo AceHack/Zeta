@@ -1,0 +1,12 @@
+{
+  "pr_number": 6991,
+  "archive_path": "docs/history/pr-reviews/PR-6991-feat-platform-foundation-headlamp-console-cilium-lb-ipam-gmod-base-test.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-08T02:39:28.319Z",
+  "schema_version": "v1",
+  "commit_sha": "9973bcb53a90f16f1c1eebfe88e358455adb199c",
+  "title": "feat(platform): foundation — Headlamp console, Cilium LB-IPAM, GMod base test",
+  "state": "MERGED",
+  "merged_at": "2026-06-08T02:39:10Z",
+  "head_ref": "feat/platform-foundation-headlamp-lb-gmod"
+}

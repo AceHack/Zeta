@@ -1,0 +1,12 @@
+{
+  "pr_number": 9984,
+  "archive_path": "docs/history/pr-reviews/PR-9984-docs-research-decorrelation-band-follow-up-timing-unfreezing-secure-base-sensati.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-02T19:19:42.896Z",
+  "schema_version": "v1",
+  "commit_sha": "927791df365f92bd2b84cd2d20a428dadc9f8e72",
+  "title": "docs(research): decorrelation-band follow-up — timing, unfreezing/secure-base, sensation-seeking scope",
+  "state": "MERGED",
+  "merged_at": "2026-08-02T19:19:10Z",
+  "head_ref": "research/decorrelation-band-timing-unfreezing-20260802"
+}

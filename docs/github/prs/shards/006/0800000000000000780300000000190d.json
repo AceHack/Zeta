@@ -1,0 +1,12 @@
+{
+  "pr_number": 6413,
+  "archive_path": "docs/history/pr-reviews/PR-6413-feat-algebra-ladder-indexedzset-native-rust-cell-4-4-the-rung-is-complete.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-01T12:16:48.396Z",
+  "schema_version": "v1",
+  "commit_sha": "eef692c431db33ab765a5281c6a4a795eec5cdbe",
+  "title": "feat(algebra-ladder): IndexedZSet native Rust cell → 4/4 (the rung is complete)",
+  "state": "MERGED",
+  "merged_at": "2026-06-01T12:16:24Z",
+  "head_ref": "otto-cli/indexed-zset-rust-cell-4of4-2026-06-01"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 9207,
+  "archive_path": "docs/history/pr-reviews/PR-9207-feat-inventory-git-as-database-pivot-phase-a-items-schema-inventoryasset-mint-it.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-02T22:13:05.003Z",
+  "schema_version": "v1",
+  "commit_sha": "5aaf1cca4cc91163c4cf1ead8756e8b018c5af7c",
+  "title": "feat(inventory): git-as-database pivot phase A — items/ schema + InventoryAsset mint + items.json generator",
+  "state": "MERGED",
+  "merged_at": "2026-07-02T22:12:40Z",
+  "head_ref": "otto/inventory-git-native-phase-a"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 6380,
+  "archive_path": "docs/history/pr-reviews/PR-6380-docs-registry-agencysignature-heartbeat-via-commit-zetaid-categories-as-primitiv.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-01T08:58:21.477Z",
+  "schema_version": "v1",
+  "commit_sha": "53ae96e8c7c9d1da4d91bc4cb0eddc0a0e48e91e",
+  "title": "docs(registry): AgencySignature + heartbeat-via-commit + ZetaId-categories as primitives",
+  "state": "MERGED",
+  "merged_at": "2026-06-01T08:58:01Z",
+  "head_ref": "otto-cli/registry-agencysignature-heartbeat-zetaid-categories-2026-06-01"
+}

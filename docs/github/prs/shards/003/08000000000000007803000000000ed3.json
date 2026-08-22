@@ -1,0 +1,12 @@
+{
+  "pr_number": 3795,
+  "archive_path": "docs/history/pr-reviews/PR-3795-shard-tick-2026-05-16t07-03z-post-reset-batch-prs-3793-3794-b-0418-verified-as-2.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-16T07:10:19.318Z",
+  "schema_version": "v1",
+  "commit_sha": "ffb4fb82f776b9e32dc7566f487b3ac66dbb22d7",
+  "title": "shard(tick): 2026-05-16T07:03Z — post-reset batch (PRs #3793+#3794) + B-0418 verified as 2nd FP class",
+  "state": "MERGED",
+  "merged_at": "2026-05-16T07:10:00Z",
+  "head_ref": "shard/tick-0703z-otto-cli-2026-05-16"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 8483,
+  "archive_path": "docs/history/pr-reviews/PR-8483-re-promote-b-0891-scenario-2-hard-gate.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-16T08:24:06.288Z",
+  "schema_version": "v1",
+  "commit_sha": "125dbe3d67ab726e455701b6f9db5bea3b4d07e5",
+  "title": "Re-promote B-0891 scenario 2 hard gate",
+  "state": "MERGED",
+  "merged_at": "2026-06-16T08:23:33Z",
+  "head_ref": "riven/scenario-2-hard-gate"
+}

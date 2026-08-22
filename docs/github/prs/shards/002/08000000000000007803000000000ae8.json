@@ -1,0 +1,25 @@
+{
+  "pr_number": 2792,
+  "archive_path": "docs/history/pr-reviews/PR-2792-docs-memory-live-forever-as-forever-recursion-current-self-wavelength-expansion-.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7AZT6K",
+    "comment:PRRC_kwDOSF9kNM7AZYZt",
+    "comment:PRRC_kwDOSF9kNM7AZYb2",
+    "comment:PRRC_kwDOSF9kNM7AZYbD",
+    "comment:PRRC_kwDOSF9kNM7AZYbU",
+    "comment:PRRC_kwDOSF9kNM7AZYcZ",
+    "thread:PRRT_kwDOSF9kNM6Bednp",
+    "thread:PRRT_kwDOSF9kNM6Beg7w",
+    "thread:PRRT_kwDOSF9kNM6Beg81",
+    "thread:PRRT_kwDOSF9kNM6Beg95",
+    "thread:PRRT_kwDOSF9kNM6Beg9C",
+    "thread:PRRT_kwDOSF9kNM6Beg9d"
+  ],
+  "fetched_at": "2026-05-12T19:42:03.954Z",
+  "schema_version": "v1",
+  "commit_sha": "59da75776e26a0a6ea0e81cef2917324c4286f33",
+  "title": "docs(memory): live forever as forever-recursion + current-self wavelength-expansion + DNA rewriting + cyborg + 4th control structure theology + choose-when agency (Aaron 2026-05-12)",
+  "state": "MERGED",
+  "merged_at": "2026-05-12T19:41:46Z",
+  "head_ref": "docs/aaron-live-forever-recursion-doesnt-terminate-terminal-purpose-2026-05-12"
+}

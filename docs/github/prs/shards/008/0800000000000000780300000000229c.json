@@ -1,0 +1,12 @@
+{
+  "pr_number": 8860,
+  "archive_path": "docs/history/pr-reviews/PR-8860-fix-security-clear-secret-scan-false-positive-in-publish-test-ts-split-private-k.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-21T04:50:24.459Z",
+  "schema_version": "v1",
+  "commit_sha": "83b2a0f541f1f72eb9cfa13c3d77be16d145ec91",
+  "title": "fix(security): clear secret-scan false-positive in publish.test.ts — split PRIVATE-KEY token",
+  "state": "MERGED",
+  "merged_at": "2026-06-21T04:49:57Z",
+  "head_ref": "otto/fix-publish-test-secret-scan"
+}

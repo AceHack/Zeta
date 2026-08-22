@@ -1,0 +1,12 @@
+{
+  "pr_number": 2444,
+  "archive_path": "docs/history/pr-reviews/PR-2444-fix-b-0079-harden-max-0-false-pass-and-since-unvalidated-input-in-audit-agencysi.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-10T09:01:57.189Z",
+  "schema_version": "v1",
+  "commit_sha": "27aa9d04fc2058f79a7fa146624085a0688bbcae",
+  "title": "fix(B-0079): harden --max 0 false-PASS and --since unvalidated input in audit-agencysignature-main-tip.ts",
+  "state": "MERGED",
+  "merged_at": "2026-05-10T09:01:35Z",
+  "head_ref": "fix/B-0079-agencysignature-audit-hardening"
+}

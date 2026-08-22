@@ -1,0 +1,12 @@
+{
+  "pr_number": 9230,
+  "archive_path": "docs/history/pr-reviews/PR-9230-feat-core-slr-glrforest-all-parse-trees-for-ambiguous-input-the-superposition-s-.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-03T00:17:43.961Z",
+  "schema_version": "v1",
+  "commit_sha": "c2e95419236d2803049edc3400e6a0854ec76687",
+  "title": "feat(core): Slr.glrForest — all parse trees for ambiguous input (the superposition's support)",
+  "state": "MERGED",
+  "merged_at": "2026-07-03T00:17:21Z",
+  "head_ref": "otto/glr-parse-forest"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 9971,
+  "archive_path": "docs/history/pr-reviews/PR-9971-docs-ip-questionable-david-chester-qgr-e8-standard-model-talk-quarantined-excerp.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-02T16:44:32.615Z",
+  "schema_version": "v1",
+  "commit_sha": "c04ab41ae270d4e55cfbcaaf0da71b180a204a0b",
+  "title": "docs(ip-questionable): David Chester / QGR E8-Standard-Model talk — quarantined excerpt + rigorous/numerology split",
+  "state": "MERGED",
+  "merged_at": "2026-08-02T16:44:02Z",
+  "head_ref": "otto/ip-questionable-chester-qgr-e8-talk"
+}

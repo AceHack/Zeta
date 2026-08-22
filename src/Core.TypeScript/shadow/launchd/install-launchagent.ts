@@ -1,6 +1,6 @@
 #!/usr/bin/env bun
 /**
- * tools/shadow/launchd/install-launchagent.ts
+ * src/Core.TypeScript/shadow/launchd/install-launchagent.ts
  *
  * Install (or reinstall) the Zeta shadow observer as a macOS LaunchAgent.
  *
@@ -13,7 +13,7 @@
  *
  * USAGE
  *
- *   bun tools/shadow/launchd/install-launchagent.ts
+ *   bun src/Core.TypeScript/shadow/launchd/install-launchagent.ts
  *
  *   # Optional flags:
  *   --bun-path <path>     override `which bun`
@@ -31,8 +31,8 @@
  *
  * COMPOSES WITH
  *
- *   tools/shadow/launchd/com.zeta.shadow-observer.plist — the template
- *   tools/shadow/launchd/README.md — install procedure documentation
+ *   src/Core.TypeScript/shadow/launchd/com.zeta.shadow-observer.plist — the template
+ *   src/Core.TypeScript/shadow/launchd/README.md — install procedure documentation
  */
 
 import { readFileSync, writeFileSync, existsSync, renameSync, mkdirSync, mkdtempSync, rmdirSync, statSync, accessSync, unlinkSync, constants as fsConstants } from "node:fs";
@@ -57,7 +57,7 @@ export function tryDetect(cmd: string, args: string[]): string | undefined {
   try {
     // eslint-disable-next-line sonarjs/no-os-command-from-path -- which / git
     // are standard dev-environment dependencies invoked by name; same
-    // convention as tools/github/poll-pr-gate.ts + tools/peer-call/.
+    // convention as tools/github/poll-pr-gate.ts + src/Core.TypeScript/peer-call/.
     return execFileSync(cmd, args, { encoding: "utf-8", stdio: ["ignore", "pipe", "pipe"] }).trim();
   } catch {
     return undefined;
@@ -178,7 +178,7 @@ function printHelp(): void {
   console.error(`
 Install Zeta shadow observer as a macOS LaunchAgent.
 
-Usage: bun tools/shadow/launchd/install-launchagent.ts [options]
+Usage: bun src/Core.TypeScript/shadow/launchd/install-launchagent.ts [options]
 
 Options:
   --bun-path <path>     Absolute path to bun (default: \`which bun\`)
@@ -187,7 +187,7 @@ Options:
   --bootstrap           After writing, \`launchctl bootstrap\` the agent
 
 After install, complete Step 2 (accessibility permission) from
-tools/shadow/launchd/README.md before live mode is useful.
+src/Core.TypeScript/shadow/launchd/README.md before live mode is useful.
 `);
 }
 

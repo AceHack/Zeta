@@ -1,0 +1,12 @@
+{
+  "pr_number": 5992,
+  "archive_path": "docs/history/pr-reviews/PR-5992-feat-b-0343-glob-resolve-seed-manifest-to-concrete-file-set-bounded-slice-2.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-29T13:52:43.650Z",
+  "schema_version": "v1",
+  "commit_sha": "0dcc74c7cd8bd44fc71d6712ebe56bfc398b2bd3",
+  "title": "feat(B-0343): glob-resolve seed manifest to concrete file set (bounded slice 2)",
+  "state": "MERGED",
+  "merged_at": "2026-05-29T13:52:21Z",
+  "head_ref": "otto-cli/b0343-glob-resolve-slice"
+}

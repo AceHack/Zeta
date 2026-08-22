@@ -10,7 +10,7 @@
 // slice 3 because the bus publish path is small and unblocks the
 // full reactive loop (detect → nudge).
 //
-// Run: bun tools/bg/standing-by-detector.ts [--once] [--poll-min N] [--idle-min N] [--no-publish] [--agent NAME]
+// Run: bun src/Core.TypeScript/bg/standing-by-detector.ts [--once] [--poll-min N] [--idle-min N] [--no-publish] [--agent NAME]
 // Compose with: 081KRFA460008QG0R001KC0VBH + 081KR7JY10008QG0R000R503K2 (bus, PR #3016) + 081KRFA460008QG0R00229616S (proactive notifier).
 
 import { spawnSync } from "node:child_process";

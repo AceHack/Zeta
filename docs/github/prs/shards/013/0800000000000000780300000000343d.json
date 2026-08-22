@@ -1,0 +1,12 @@
+{
+  "pr_number": 13373,
+  "archive_path": "docs/history/pr-reviews/PR-13373-fix-forgejo-oci-source-a-published-pin-17-1-5-retire-the-acknowledgement-ratchet.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-21T21:54:50.248Z",
+  "schema_version": "v1",
+  "commit_sha": "da4998b98769bba129d5510833fa36034208aea6",
+  "title": "fix(forgejo): OCI source + a published pin (17.1.5), retire the acknowledgement, ratchet 21 -> 19",
+  "state": "MERGED",
+  "merged_at": "2026-08-21T21:54:01Z",
+  "head_ref": "fix/forgejo-oci-registry-and-published-pin"
+}

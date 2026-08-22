@@ -1,0 +1,12 @@
+{
+  "pr_number": 9211,
+  "archive_path": "docs/history/pr-reviews/PR-9211-feat-llmtv-bridge-live-nodes-to-replay-artifacts.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-02T22:38:11.372Z",
+  "schema_version": "v1",
+  "commit_sha": "6178eb27949b9868a322fd729f06248f7adcb5b6",
+  "title": "feat(llmtv): bridge live nodes to replay artifacts",
+  "state": "MERGED",
+  "merged_at": "2026-07-02T22:37:49Z",
+  "head_ref": "codex/llmtv-live-replay-bridge"
+}

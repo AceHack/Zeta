@@ -1,0 +1,12 @@
+{
+  "pr_number": 10310,
+  "archive_path": "docs/history/pr-reviews/PR-10310-ferry-throttler-pin-the-recordheat-bounds-guard-at-its-exact-boundary.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-12T00:42:56.024Z",
+  "schema_version": "v1",
+  "commit_sha": "64c53c72814217d5622401575556269ddb777a8a",
+  "title": "ferry-throttler: pin the recordHeat bounds guard at its exact boundary",
+  "state": "MERGED",
+  "merged_at": "2026-08-12T00:42:26Z",
+  "head_ref": "heat-scheduler-bounds-boundary"
+}

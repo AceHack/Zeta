@@ -1,0 +1,12 @@
+{
+  "pr_number": 3015,
+  "archive_path": "docs/history/pr-reviews/PR-3015-fix-lint-ts2345-nouncheckedindexedaccess-in-standing-by-detector-parseargs.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-13T18:31:57.212Z",
+  "schema_version": "v1",
+  "commit_sha": "743fbe83851fb1f8247ef0f764872bb02c41cdf7",
+  "title": "fix(lint): TS2345 noUncheckedIndexedAccess in standing-by-detector parseArgs",
+  "state": "MERGED",
+  "merged_at": "2026-05-13T18:31:31Z",
+  "head_ref": "fix-lint-ts2345-standing-by-detector-2026-05-13"
+}

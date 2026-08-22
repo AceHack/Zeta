@@ -1,0 +1,12 @@
+{
+  "pr_number": 8260,
+  "archive_path": "docs/history/pr-reviews/PR-8260-docs-register-concrete-tooling-merkle-fixpoint-locator-cheat-to-learn-vram-fair-.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-15T04:41:33.454Z",
+  "schema_version": "v1",
+  "commit_sha": "a1c5625084638328dc18e9b3abf60a3727c26248",
+  "title": "docs(register): concrete tooling — Merkle-fixpoint-locator, cheat-to-learn/VRAM-fair (LUPI), Cheat Engine (pointer-scan)",
+  "state": "MERGED",
+  "merged_at": "2026-06-15T04:41:07Z",
+  "head_ref": "otto/merkle-fixpoint-locator"
+}

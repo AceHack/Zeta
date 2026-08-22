@@ -1,0 +1,14 @@
+{
+  "id": "080d00b531e5e010a013000861fc5a24",
+  "at": "2026-08-18T20:53:08.412Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M0BACF5V087G0R0011MT27C",
+    "type": "task",
+    "title": "Ferry: holography as generate+join, rigid boundary defect, metric from correlations",
+    "slug": "ferry-holography-as-generate-join-rigid-boundary-defect-metr",
+    "priority": "P2",
+    "filename": "081M0BACF5V087G0R0011MT27C-ferry-holography-as-generate-join-rigid-boundary-defect-metr.md"
+  }
+}

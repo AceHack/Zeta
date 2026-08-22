@@ -1,0 +1,12 @@
+{
+  "pr_number": 7007,
+  "archive_path": "docs/history/pr-reviews/PR-7007-docs-all-metadata-is-homoiconic-to-data.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-08T03:49:17.697Z",
+  "schema_version": "v1",
+  "commit_sha": "390a5983b6a39d497a5cac9e00040f2340ae155b",
+  "title": "docs: all metadata is homoiconic to data",
+  "state": "MERGED",
+  "merged_at": "2026-06-08T03:48:59Z",
+  "head_ref": "otto/all-metadata-is-homoiconic-to-data"
+}

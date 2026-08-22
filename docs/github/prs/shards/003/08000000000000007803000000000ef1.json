@@ -1,0 +1,12 @@
+{
+  "pr_number": 3825,
+  "archive_path": "docs/history/pr-reviews/PR-3825-memory-feedback-substrate-drift-catch-full-session-arc-33-tick-infrastructure-ea.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-16T08:20:44.880Z",
+  "schema_version": "v1",
+  "commit_sha": "5f3b0b269cdbb50920b3e80a16c3b7131b92fb7a",
+  "title": "memory(feedback): substrate-drift-catch full session arc — 33-tick infrastructure-eats-itself closure",
+  "state": "MERGED",
+  "merged_at": "2026-05-16T08:20:29Z",
+  "head_ref": "memory/substrate-drift-catch-session-cap-otto-cli-2026-05-16"
+}

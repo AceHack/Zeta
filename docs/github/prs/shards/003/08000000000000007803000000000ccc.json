@@ -1,0 +1,16 @@
+{
+  "pr_number": 3276,
+  "archive_path": "docs/history/pr-reviews/PR-3276-shard-tick-2158z-considered-audit-shard-broken-links-ts-deferred-as-multi-tick-s.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7BY9Oy",
+    "comment:PRRC_kwDOSF9kNM7BY_Of",
+    "thread:PRRT_kwDOSF9kNM6CM3R8"
+  ],
+  "fetched_at": "2026-05-14T22:07:55.077Z",
+  "schema_version": "v1",
+  "commit_sha": "69a7421129937443a444250e2f8c29d8a1488b36",
+  "title": "shard(tick): 2158Z — considered audit-shard-broken-links.ts; deferred as multi-tick scope",
+  "state": "MERGED",
+  "merged_at": "2026-05-14T22:07:40Z",
+  "head_ref": "shard/tick-2158Z-audit-deferral-minimal-rest-otto-cli-2026-05-14"
+}

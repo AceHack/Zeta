@@ -1,0 +1,12 @@
+{
+  "pr_number": 5386,
+  "archive_path": "docs/history/pr-reviews/PR-5386-feat-b-0848-node-local-claude-agent-stewards-own-registration-pr-k8s-cluster-hea.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-27T02:35:29.618Z",
+  "schema_version": "v1",
+  "commit_sha": "7d88a8bedef6aaa77597f7901df45c0c83ee0664",
+  "title": "feat(B-0848): node-local Claude agent stewards own registration PR + K8s cluster health reporter — first concrete B-0847 AI-on-cluster instance (Aaron 2026-05-26)",
+  "state": "MERGED",
+  "merged_at": "2026-05-27T02:35:09Z",
+  "head_ref": "feat-b0848-node-local-claude-agent-pr-steward-cluster-health-reporter-2026-05-26-2240z"
+}

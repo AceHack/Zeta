@@ -1,0 +1,19 @@
+{
+  "pr_number": 5807,
+  "archive_path": "docs/history/pr-reviews/PR-5807-memory-feedback-workflow-engine-substrate-eventually-replaces-github-pr-process-.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7FxHCM",
+    "comment:PRRC_kwDOSF9kNM7FxHCq",
+    "comment:PRRC_kwDOSF9kNM7FxHDH",
+    "thread:PRRT_kwDOSF9kNM6FZ7m-",
+    "thread:PRRT_kwDOSF9kNM6FZ7ml",
+    "thread:PRRT_kwDOSF9kNM6FZ7nU"
+  ],
+  "fetched_at": "2026-05-28T13:46:38.003Z",
+  "schema_version": "v1",
+  "commit_sha": "f1ae63ccbcbe92803330bd49bb6f287bd0649a9d",
+  "title": "memory(feedback): workflow-engine substrate eventually REPLACES GitHub PR process — Aaron 2026-05-28 three-phase trajectory carving",
+  "state": "MERGED",
+  "merged_at": "2026-05-28T13:46:12Z",
+  "head_ref": "otto-cli/workflow-engine-eventually-replaces-github-pr-process-currently-dogfooding-target-state-github-becomes-backup-fork-protection-aaron-2026-05-28"
+}

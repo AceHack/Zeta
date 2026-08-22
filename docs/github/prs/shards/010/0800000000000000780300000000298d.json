@@ -1,0 +1,12 @@
+{
+  "pr_number": 10637,
+  "archive_path": "docs/history/pr-reviews/PR-10637-fix-hygiene-the-no-op-cadence-detector-s-0-767-rate-was-a-parse-bug-and-its-inpu.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-14T19:28:50.227Z",
+  "schema_version": "v1",
+  "commit_sha": "3c5add0d5e539c0a71924f8b2cebee4f157ff145",
+  "title": "fix(hygiene): the no-op-cadence detector's 0.767 rate was a parse bug, and its input surface is dead",
+  "state": "MERGED",
+  "merged_at": "2026-08-14T19:28:14Z",
+  "head_ref": "shadow/no-op-cadence-calibration"
+}

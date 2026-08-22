@@ -1,0 +1,17 @@
+{
+  "pr_number": 3524,
+  "archive_path": "docs/history/pr-reviews/PR-3524-shard-tick-1643z-pr-3518-3519-merged-b-0532-filed-p3-lint-mechanization.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7Bs5NT",
+    "comment:PRRC_kwDOSF9kNM7Bs5Tm",
+    "thread:PRRT_kwDOSF9kNM6CbQh_",
+    "thread:PRRT_kwDOSF9kNM6CbQmm"
+  ],
+  "fetched_at": "2026-05-15T17:10:57.832Z",
+  "schema_version": "v1",
+  "commit_sha": "75b603d5359a5c92589b6817fb5fd630cad4832b",
+  "title": "shard(tick): 1643Z — PR #3518 + #3519 merged; B-0532 filed (P3 lint mechanization)",
+  "state": "MERGED",
+  "merged_at": "2026-05-15T17:10:38Z",
+  "head_ref": "shard/tick-1643z-clean-otto-cli-2026-05-15"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 7953,
+  "archive_path": "docs/history/pr-reviews/PR-7953-docs-research-shadow-math-team-report-4-dv2-0-hub-stability-gap-condition-forced.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-12T16:58:14.054Z",
+  "schema_version": "v1",
+  "commit_sha": "dd007796ce4b652045d64ba593d8f904cb708a61",
+  "title": "docs(research)+shadow: math-team REPORT #4 — DV2.0 hub stability (gap condition; forced-shape audit; the deflation cuts both ways)",
+  "state": "MERGED",
+  "merged_at": "2026-06-12T16:57:49Z",
+  "head_ref": "shadow/math-report-4-hub-stability"
+}

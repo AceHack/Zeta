@@ -1,0 +1,12 @@
+{
+  "pr_number": 7832,
+  "archive_path": "docs/history/pr-reviews/PR-7832-feat-shapes-shape-triboolean-the-honest-third-state-drawn-universalnumber-is-our.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-11T23:18:32.939Z",
+  "schema_version": "v1",
+  "commit_sha": "d2d683b5385ef916e41ef71346248b946c48b168",
+  "title": "feat(shapes): shape-triboolean (the honest third state, drawn) + UniversalNumber-is-our-bigint + B-1037 ball adapter + B-1038 identity gate",
+  "state": "MERGED",
+  "merged_at": "2026-06-11T23:18:08Z",
+  "head_ref": "shadow-triboolean-pair"
+}

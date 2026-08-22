@@ -1,0 +1,12 @@
+{
+  "pr_number": 5522,
+  "archive_path": "docs/history/pr-reviews/PR-5522-docs-research-preserve-operator-forwarded-lior-website-synthesis-completing-2026.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-27T17:33:39.382Z",
+  "schema_version": "v1",
+  "commit_sha": "7cbb557b40860aba85c5401f57854e61d2db93d8",
+  "title": "docs(research): preserve operator-forwarded Lior-website synthesis completing 2026-05-27 cross-AI triangulation (Amara + Prism + Lior + operator + Otto-CLI 5-register convergence)",
+  "state": "MERGED",
+  "merged_at": "2026-05-27T17:33:20Z",
+  "head_ref": "research/lior-website-day-substrate-synthesis-2026-05-27"
+}

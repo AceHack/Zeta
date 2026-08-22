@@ -1,0 +1,12 @@
+{
+  "pr_number": 3530,
+  "archive_path": "docs/history/pr-reviews/PR-3530-shard-tick-1737z-resolved-2-false-positive-copilot-threads-on-peer-otto-cli-pr-3.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-15T17:52:24.156Z",
+  "schema_version": "v1",
+  "commit_sha": "ae5dc2eb4203e225d9da2c93ca61e1f491a2efe9",
+  "title": "shard(tick): 1737Z — resolved 2 false-positive Copilot threads on peer Otto-CLI PR #3525",
+  "state": "MERGED",
+  "merged_at": "2026-05-15T17:52:06Z",
+  "head_ref": "shard/tick-1737z-otto-cli-2026-05-15"
+}

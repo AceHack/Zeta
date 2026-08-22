@@ -1,0 +1,12 @@
+{
+  "pr_number": 7533,
+  "archive_path": "docs/history/pr-reviews/PR-7533-docs-research-backend-targeting-one-soft-ir-many-backends-like-dotnet-reinventio.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-10T23:09:16.205Z",
+  "schema_version": "v1",
+  "commit_sha": "bbc5c90c06fda46632a59e1c34009ead180e7ce9",
+  "title": "docs(research): backend-targeting (one soft-IR, many backends, like dotnet) + reinvention-vs-novelty method",
+  "state": "MERGED",
+  "merged_at": "2026-06-10T23:08:54Z",
+  "head_ref": "shadow-backend-targeting-and-reinvention-capture"
+}

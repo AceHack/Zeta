@@ -148,7 +148,7 @@ other Frontier readiness work.
   component that the bootstrap completes)
 - `docs/AUTONOMOUS-LOOP.md` — the tick-cadence discipline
   that the anchors protect against live-lock
-- `.claude/skills/prompt-protector/SKILL.md` — the
+- `.claude/skills/security/blueprints/prompt-protector.md` — the
   runtime mechanism the anchors enable
 
 ## Gap #4 closure status

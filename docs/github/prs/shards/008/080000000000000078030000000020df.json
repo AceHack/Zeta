@@ -1,0 +1,12 @@
+{
+  "pr_number": 8415,
+  "archive_path": "docs/history/pr-reviews/PR-8415-feat-society-formalize-delta-u-aggregation-theorem-and-simulation.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-16T02:37:53.290Z",
+  "schema_version": "v1",
+  "commit_sha": "d6c063d1c92b18aaaa6b45c1f52470e5242054e8",
+  "title": "feat(society): formalize delta-U aggregation theorem and simulation",
+  "state": "MERGED",
+  "merged_at": "2026-06-16T02:37:22Z",
+  "head_ref": "lior/delta-u-formalization"
+}

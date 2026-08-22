@@ -1,0 +1,12 @@
+{
+  "pr_number": 7774,
+  "archive_path": "docs/history/pr-reviews/PR-7774-feat-quantum-generate-q-exports-and-add-treaty-transcript-validation.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-11T19:59:41.672Z",
+  "schema_version": "v1",
+  "commit_sha": "7ced310ba649082b05c62b3912964837eea8f290",
+  "title": "feat(quantum): generate Q# exports and add treaty transcript validation",
+  "state": "MERGED",
+  "merged_at": "2026-06-11T19:59:15Z",
+  "head_ref": "lior/quantum-circuit-qsharp-export"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 10203,
+  "archive_path": "docs/history/pr-reviews/PR-10203-fix-lint-tell-devs-their-env-is-unprovisioned-instead-of-emitting-phantom-ts2307.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-09T18:45:23.380Z",
+  "schema_version": "v1",
+  "commit_sha": "81ed46bc49a0c078295c7306cef08c181fdb95b6",
+  "title": "fix(lint): tell devs their env is unprovisioned instead of emitting phantom TS2307s",
+  "state": "MERGED",
+  "merged_at": "2026-08-09T18:44:51Z",
+  "head_ref": "shadow/lint-unprovisioned-env-guard"
+}

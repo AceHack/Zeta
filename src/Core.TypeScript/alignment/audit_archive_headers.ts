@@ -25,11 +25,11 @@
 //              cannot collide on output filename.
 //
 // Usage:
-//   bun tools/alignment/audit_archive_headers.ts                # detect-only
-//   bun tools/alignment/audit_archive_headers.ts --enforce      # exit 1 on gap
-//   bun tools/alignment/audit_archive_headers.ts --path DIR     # custom path
-//   bun tools/alignment/audit_archive_headers.ts --json         # JSON rollup
-//   bun tools/alignment/audit_archive_headers.ts --out DIR      # per-file JSON
+//   bun src/Core.TypeScript/alignment/audit_archive_headers.ts                # detect-only
+//   bun src/Core.TypeScript/alignment/audit_archive_headers.ts --enforce      # exit 1 on gap
+//   bun src/Core.TypeScript/alignment/audit_archive_headers.ts --path DIR     # custom path
+//   bun src/Core.TypeScript/alignment/audit_archive_headers.ts --json         # JSON rollup
+//   bun src/Core.TypeScript/alignment/audit_archive_headers.ts --out DIR      # per-file JSON
 //
 // Exit codes:
 //   0  All archive docs have all four headers (or --enforce unset)

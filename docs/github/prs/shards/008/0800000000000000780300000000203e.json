@@ -1,0 +1,12 @@
+{
+  "pr_number": 8254,
+  "archive_path": "docs/history/pr-reviews/PR-8254-docs-research-claude-code-skills-system-as-a-working-instance-of-the-weighted-ca.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-15T04:04:56.015Z",
+  "schema_version": "v1",
+  "commit_sha": "55dd3c021c5fdbc49b0698246bf311ab38ffda10",
+  "title": "docs(research): Claude Code skills system as a working instance of the weighted capability ledger",
+  "state": "MERGED",
+  "merged_at": "2026-06-15T04:04:33Z",
+  "head_ref": "otto/skills-system-is-the-capability-ledger"
+}

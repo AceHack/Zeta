@@ -1,0 +1,12 @@
+{
+  "pr_number": 6542,
+  "archive_path": "docs/history/pr-reviews/PR-6542-fix-b-0883-reject-unknown-flags-before-dispatch-fwd-fix-on-6538.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-02T10:47:05.884Z",
+  "schema_version": "v1",
+  "commit_sha": "0e544e1a0d024d77f6f3c183fbf2b7b3eca1b340",
+  "title": "fix(B-0883): reject unknown flags before dispatch (fwd-fix on #6538)",
+  "state": "MERGED",
+  "merged_at": "2026-06-02T10:46:42Z",
+  "head_ref": "otto-cli/b0883-reject-unknown-flags-fwdfix-2026-06-02"
+}

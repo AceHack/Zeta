@@ -1,0 +1,14 @@
+{
+  "id": "080d0069d0a22010a0130008c06a8a18",
+  "at": "2026-08-17T00:58:25.220Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M06KM523087G0R002ANKAZJ",
+    "type": "task",
+    "title": "verify the biometric factor itself via LocalAuthentication (LAContext), not sudo's exit status",
+    "slug": "verify-the-biometric-factor-itself-via-localauthentication-l",
+    "priority": "P2",
+    "filename": "081M06KM523087G0R002ANKAZJ-verify-the-biometric-factor-itself-via-localauthentication-l.md"
+  }
+}

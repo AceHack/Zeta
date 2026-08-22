@@ -1,0 +1,17 @@
+{
+  "pr_number": 4582,
+  "archive_path": "docs/history/pr-reviews/PR-4582-backlog-b-0699-dual-adinkra-time-aware-default-dumb-fast-escape-hatch-with-case-.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7Dx9vf",
+    "comment:PRRC_kwDOSF9kNM7Dx_Sf",
+    "thread:PRRT_kwDOSF9kNM6D8wRa",
+    "thread:PRRT_kwDOSF9kNM6D8xUz"
+  ],
+  "fetched_at": "2026-05-22T00:39:10.454Z",
+  "schema_version": "v1",
+  "commit_sha": "5c80e02636c6eecaf7891ead11db16850b52ae44",
+  "title": "backlog(B-0699): dual-Adinkra time-aware-default + dumb-fast escape hatch with case-by-case perf justification",
+  "state": "MERGED",
+  "merged_at": "2026-05-22T00:38:52Z",
+  "head_ref": "backlog/b0699-dual-adinkra-time-aware-default-2026-05-21"
+}

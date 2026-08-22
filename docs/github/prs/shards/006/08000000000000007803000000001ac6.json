@@ -1,0 +1,12 @@
+{
+  "pr_number": 6854,
+  "archive_path": "docs/history/pr-reviews/PR-6854-refactor-core-git-rename-core-git-core-fsharp-git-naming-convention-doc.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-07T15:33:09.806Z",
+  "schema_version": "v1",
+  "commit_sha": "d1ad9e49d33513737b66a40e07ff64f00deb4b80",
+  "title": "refactor(Core.Git): rename Core.Git -> Core.FSharp.Git + naming-convention doc",
+  "state": "MERGED",
+  "merged_at": "2026-06-07T15:32:50Z",
+  "head_ref": "otto/rename-coregit-to-fsharp-plus-naming-convention"
+}

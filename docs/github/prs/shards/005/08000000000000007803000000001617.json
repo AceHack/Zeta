@@ -1,0 +1,12 @@
+{
+  "pr_number": 5655,
+  "archive_path": "docs/history/pr-reviews/PR-5655-feat-b-0852-zeta-creds-picker-verify-catch-bad-blob-at-install-time-not-at-first.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-27T22:52:55.382Z",
+  "schema_version": "v1",
+  "commit_sha": "80430d7b0ee337d346c9ca069503966e32cd50ec",
+  "title": "feat(b-0852): zeta-creds-picker --verify — catch bad blob at install time, not at first reboot (opt-in)",
+  "state": "MERGED",
+  "merged_at": "2026-05-27T22:52:36Z",
+  "head_ref": "feat/b-0852-picker-verify-post-persist-2026-05-27"
+}

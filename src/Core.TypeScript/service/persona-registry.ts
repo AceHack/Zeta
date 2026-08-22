@@ -64,9 +64,39 @@ export const PERSONAS: readonly PersonaConfig[] = [
     harness: { command: "kiro-cli", args: ["chat", "--no-interactive", "--trust-all-tools", "{{PROMPT}}"], defaultModel: "auto" },
   },
   {
+    // Alexa runs cell-3 (harness=kiro) in tools/setup/manifests/cluster-cells,
+    // and registry/personas.yaml id=3 describes her as the Kiro-surface builder.
+    // Both independent sources agree on the harness, so it is copied verbatim
+    // from the kiro entry above rather than invented. NOT ideNative: the
+    // manifest assigns her a launchd cell, and ideNative means "IDE terminal,
+    // not launchd".
+    //
+    // She was absent from this registry until 2026-08-14 while the manifest kept
+    // provisioning a cell for her — the drift meant `loop-tick --persona alexa`
+    // would have exited 1 on "Unknown persona", and loop-liveness could not even
+    // see the cell to report it dead.
+    name: "alexa", label: "com.lucent.zeta.alexa-loop",
+    scheduleInterval: 60, gateInterval: 900, gateTimeout: 300, defaultRef: "main",
+    gitAuthorName: "Alexa", gitAuthorEmail: "alexa@zeta.lucent-financial-group.com",
+    preferredModel: "auto",
+    harness: { command: "kiro-cli", args: ["chat", "--no-interactive", "--trust-all-tools", "{{PROMPT}}"], defaultModel: "auto" },
+  },
+  {
     name: "codex", label: "com.lucent.zeta.codex-loop",
     scheduleInterval: 60, gateInterval: 900, gateTimeout: 300, defaultRef: "main",
     gitAuthorName: "Codex", gitAuthorEmail: "codex@zeta.lucent-financial-group.com",
+    preferredModel: "gpt-5.5",
+    fallbackModels: ["o3"],
+    harness: { command: "codex", args: ["--approval-mode", "full-auto", "--model", "{{MODEL}}", "{{PROMPT}}"], defaultModel: "gpt-5.5" },
+  },
+  {
+    // Vera runs cell-1 (harness=codex) in the cluster-cells manifest, and
+    // registry/personas.yaml id=5 describes her as the Codex-surface builder.
+    // Harness copied verbatim from the codex entry above. Same drift story as
+    // alexa: manifest provisioned her, this registry did not know her.
+    name: "vera", label: "com.lucent.zeta.vera-loop",
+    scheduleInterval: 60, gateInterval: 900, gateTimeout: 300, defaultRef: "main",
+    gitAuthorName: "Vera", gitAuthorEmail: "vera@zeta.lucent-financial-group.com",
     preferredModel: "gpt-5.5",
     fallbackModels: ["o3"],
     harness: { command: "codex", args: ["--approval-mode", "full-auto", "--model", "{{MODEL}}", "{{PROMPT}}"], defaultModel: "gpt-5.5" },

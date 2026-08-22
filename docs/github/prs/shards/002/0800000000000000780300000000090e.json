@@ -1,0 +1,19 @@
+{
+  "pr_number": 2318,
+  "archive_path": "docs/history/pr-reviews/PR-2318-fix-b-0310-align-output-schema-example-with-actual-concept-interface.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_ic8v",
+    "comment:PRRC_kwDOSF9kNM6_idOX",
+    "comment:PRRC_kwDOSF9kNM6_ieI7",
+    "comment:PRRC_kwDOSF9kNM6_ieKo",
+    "thread:PRRT_kwDOSF9kNM6A1cgy",
+    "thread:PRRT_kwDOSF9kNM6A1cvF"
+  ],
+  "fetched_at": "2026-05-09T17:09:36.059Z",
+  "schema_version": "v1",
+  "commit_sha": "72243a1c64bba8f0887a191ceab03bf5bb8e8037",
+  "title": "fix(B-0310): align output-schema example with actual Concept interface",
+  "state": "MERGED",
+  "merged_at": "2026-05-09T17:09:21Z",
+  "head_ref": "claim/b0310-schema-doc-fix-copilot-2026-05-09"
+}

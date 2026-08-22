@@ -1,0 +1,12 @@
+{
+  "pr_number": 2170,
+  "archive_path": "docs/history/pr-reviews/PR-2170-research-linguistic-seed-carved-sentence-prelude.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-09T02:53:50.061Z",
+  "schema_version": "v1",
+  "commit_sha": "10960df355bb16917fe15be51c40e523196690da",
+  "title": "research: linguistic seed — carved sentence prelude",
+  "state": "MERGED",
+  "merged_at": "2026-05-09T02:53:33Z",
+  "head_ref": "docs/linguistic-seed-prelude"
+}

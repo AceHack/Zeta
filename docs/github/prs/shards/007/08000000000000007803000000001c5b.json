@@ -1,0 +1,12 @@
+{
+  "pr_number": 7259,
+  "archive_path": "docs/history/pr-reviews/PR-7259-docs-test-test-trust-is-asymmetric-test-trusts-prod-test-prod-trusts-prod-only.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-09T12:43:20.739Z",
+  "schema_version": "v1",
+  "commit_sha": "659b8f0f84aa59334a1390fb630dc0e2a57a56e0",
+  "title": "docs(test): --test trust is asymmetric — test trusts {prod ∪ test}, prod trusts {prod} only",
+  "state": "MERGED",
+  "merged_at": "2026-06-09T12:42:48Z",
+  "head_ref": "otto/test-key-asymmetric-trust-prod-on-test-not-test-on-prod"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 7356,
+  "archive_path": "docs/history/pr-reviews/PR-7356-docs-research-privacy-is-a-launch-gate-before-the-swarm-real-reticulum-self-thro.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-09T18:23:49.214Z",
+  "schema_version": "v1",
+  "commit_sha": "79df2ed90cee9157398cea08e7f326148b4892be",
+  "title": "docs(research): privacy is a LAUNCH GATE before the swarm (real Reticulum + self-throttling) goes live — concrete checklist",
+  "state": "MERGED",
+  "merged_at": "2026-06-09T18:23:25Z",
+  "head_ref": "otto/privacy-is-a-launch-gate-before-the-swarm"
+}

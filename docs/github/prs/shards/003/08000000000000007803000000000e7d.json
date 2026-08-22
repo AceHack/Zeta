@@ -1,0 +1,25 @@
+{
+  "pr_number": 3709,
+  "archive_path": "docs/history/pr-reviews/PR-3709-shard-tick-2026-05-16t03-28z-audit-script-lifecycle-closed-via-ci-gate-pr-3708.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7B1KPR",
+    "comment:PRRC_kwDOSF9kNM7B1Ke6",
+    "comment:PRRC_kwDOSF9kNM7B1KfF",
+    "comment:PRRC_kwDOSF9kNM7B1KfK",
+    "comment:PRRC_kwDOSF9kNM7B1ME5",
+    "comment:PRRC_kwDOSF9kNM7B1MF7",
+    "comment:PRRC_kwDOSF9kNM7B1MG8",
+    "comment:PRRC_kwDOSF9kNM7B1MII",
+    "thread:PRRT_kwDOSF9kNM6ChQnl",
+    "thread:PRRT_kwDOSF9kNM6ChQzK",
+    "thread:PRRT_kwDOSF9kNM6ChQzU",
+    "thread:PRRT_kwDOSF9kNM6ChQzY"
+  ],
+  "fetched_at": "2026-05-16T03:41:44.101Z",
+  "schema_version": "v1",
+  "commit_sha": "caacec202fafbcf0c14dedd3262e20fec6bdc9ee",
+  "title": "shard(tick): 2026-05-16T03:28Z — audit-script lifecycle CLOSED via CI gate (PR #3708)",
+  "state": "MERGED",
+  "merged_at": "2026-05-16T03:41:25Z",
+  "head_ref": "shard/tick-0328z-otto-cli-2026-05-16"
+}

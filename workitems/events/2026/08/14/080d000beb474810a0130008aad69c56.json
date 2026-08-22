@@ -1,0 +1,14 @@
+{
+  "id": "080d000beb474810a0130008aad69c56",
+  "at": "2026-08-14T18:16:31.209Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M00QTT79087G0R001TJZ70D",
+    "type": "task",
+    "title": "FerryQueue admission still asserts 1 bit per enqueue, and the tracker has no reversible-egress door",
+    "slug": "ferryqueue-admission-still-asserts-1-bit-per-enqueue-and-the",
+    "priority": "P2",
+    "filename": "081M00QTT79087G0R001TJZ70D-ferryqueue-admission-still-asserts-1-bit-per-enqueue-and-the.md"
+  }
+}

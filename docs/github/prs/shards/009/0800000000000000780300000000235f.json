@@ -1,0 +1,12 @@
+{
+  "pr_number": 9055,
+  "archive_path": "docs/history/pr-reviews/PR-9055-docs-governance-bugs-reconcile-genesis-seed-status-file-bloom-arrow-flake-shadow.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-01T20:53:56.002Z",
+  "schema_version": "v1",
+  "commit_sha": "3d98c995605de381d87935fe8908c91998d86ca3",
+  "title": "docs(governance+bugs): reconcile GENESIS-SEED status + file Bloom×Arrow flake (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-01T20:53:32Z",
+  "head_ref": "otto/genesis-seed-reconcile-plus-bloom-arrow-flake-2026-07"
+}

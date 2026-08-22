@@ -1,0 +1,12 @@
+{
+  "pr_number": 10501,
+  "archive_path": "docs/history/pr-reviews/PR-10501-fix-pages-uint8array-is-not-generic-under-the-site-s-pinned-typescript.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-18T12:14:35.967Z",
+  "schema_version": "v1",
+  "commit_sha": "6f385c161403ab32a2973b680b8e1eafe00bd061",
+  "title": "fix(pages): Uint8Array is not generic under the site's pinned TypeScript",
+  "state": "MERGED",
+  "merged_at": "2026-08-14T02:00:44Z",
+  "head_ref": "fix/pages-build-uint8array-generic"
+}

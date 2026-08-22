@@ -1,0 +1,12 @@
+{
+  "pr_number": 9931,
+  "archive_path": "docs/history/pr-reviews/PR-9931-feat-cluster-org-wide-self-hosted-runners-via-arc-with-the-manifests-actually-te.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-18T08:32:03.798Z",
+  "schema_version": "v1",
+  "commit_sha": "f6a2082137fe72ae2a8a9ae015d26ca93c750d96",
+  "title": "feat(cluster): org-wide self-hosted runners via ARC, with the manifests actually tested",
+  "state": "MERGED",
+  "merged_at": "2026-08-01T22:13:18Z",
+  "head_ref": "shadow/arc-self-hosted-runners"
+}

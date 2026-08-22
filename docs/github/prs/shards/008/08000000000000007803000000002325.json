@@ -1,0 +1,12 @@
+{
+  "pr_number": 8997,
+  "archive_path": "docs/history/pr-reviews/PR-8997-docs-research-synthesize-zeta-identity-crypto-substrate-one-seed-dual-rotation-s.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-21T20:20:16.991Z",
+  "schema_version": "v1",
+  "commit_sha": "c49d53c4ff21cda318b09624b0669a000351e39c",
+  "title": "docs(research): synthesize Zeta identity+crypto substrate — one seed, dual rotation, schema-evolvable, hexagonal",
+  "state": "MERGED",
+  "merged_at": "2026-06-21T20:19:50Z",
+  "head_ref": "otto/synth-identity-crypto-substrate"
+}

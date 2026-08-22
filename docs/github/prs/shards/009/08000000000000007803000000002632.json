@@ -1,0 +1,12 @@
+{
+  "pr_number": 9778,
+  "archive_path": "docs/history/pr-reviews/PR-9778-feat-zetafs-v0-mountable-macos-filesystem-real-dagfs-core-over-loopback-webdav-s.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-28T20:29:46.294Z",
+  "schema_version": "v1",
+  "commit_sha": "4041876f8a999566bd03d38391cba11ba6dcd0e3",
+  "title": "feat(zetafs): v0 mountable macOS filesystem — real DagFs core over loopback WebDAV (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-28T20:28:38Z",
+  "head_ref": "shadow/zetafs-webdav-v0-real-dagfs-mac-mount"
+}

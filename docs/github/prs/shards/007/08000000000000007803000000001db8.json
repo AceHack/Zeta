@@ -1,0 +1,12 @@
+{
+  "pr_number": 7608,
+  "archive_path": "docs/history/pr-reviews/PR-7608-feat-core-the-salon-as-a-linguisticseed-pack-room-seed-extensions-parameters-mad.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-11T05:40:40.324Z",
+  "schema_version": "v1",
+  "commit_sha": "617394287a2e589a87a693d3684740c08df85b56",
+  "title": "feat(core): the salon as a LinguisticSeed.Pack — room = seed+extensions+parameters made literal",
+  "state": "MERGED",
+  "merged_at": "2026-06-11T05:40:15Z",
+  "head_ref": "shadow-salon-as-pack"
+}

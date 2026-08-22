@@ -1,0 +1,12 @@
+{
+  "pr_number": 7319,
+  "archive_path": "docs/history/pr-reviews/PR-7319-docs-research-every-traveler-holds-2-3-seed-phrases-2-active-standby-rotation-pr.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-09T15:36:18.045Z",
+  "schema_version": "v1",
+  "commit_sha": "4b0cb3b5a02e4c23bd26ea5e9d49e854faff9880",
+  "title": "docs(research): every traveler holds 2-3 seed phrases (≥2) — active + standby, rotation = promote standby (hot-swap)",
+  "state": "MERGED",
+  "merged_at": "2026-06-09T15:35:51Z",
+  "head_ref": "otto/every-traveler-holds-2-3-seed-phrases-active-plus-standby-promote-on-rotate"
+}

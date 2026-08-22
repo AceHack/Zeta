@@ -1,0 +1,12 @@
+{
+  "pr_number": 1955,
+  "archive_path": "docs/history/pr-reviews/PR-1955-fix-b-0067-close-phase-3-hotspot-triage-complete.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-07T22:14:56.324Z",
+  "schema_version": "v1",
+  "commit_sha": "072c976e9901e9bf71a45e4c86c72d0fdc939eba",
+  "title": "fix(B-0067): close — Phase 3 hotspot triage complete",
+  "state": "MERGED",
+  "merged_at": "2026-05-07T22:14:33Z",
+  "head_ref": "fix/b0067-hotspot-triage-phase3"
+}

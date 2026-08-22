@@ -1,0 +1,12 @@
+{
+  "pr_number": 9439,
+  "archive_path": "docs/history/pr-reviews/PR-9439-feat-model-backend-the-summon-auto-refresh-tool-loop-over-the-subscription-the-c.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-04T12:42:15.150Z",
+  "schema_version": "v1",
+  "commit_sha": "bec8fe562dab6c7f8a001a7c2c4659366adb22b2",
+  "title": "feat(model-backend): the summon — auto-refresh + tool loop over the subscription (the capstone) (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-04T12:41:52Z",
+  "head_ref": "otto/zeta-summon-capstone-autorefresh-tool-loop"
+}

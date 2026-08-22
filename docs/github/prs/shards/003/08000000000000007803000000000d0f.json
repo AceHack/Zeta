@@ -1,0 +1,12 @@
+{
+  "pr_number": 3343,
+  "archive_path": "docs/history/pr-reviews/PR-3343-fix-shadow-remove-axvalue-fallback-from-grey-text-detector-false-positive-bug.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-15T01:26:24.628Z",
+  "schema_version": "v1",
+  "commit_sha": "9e548146d82d9b3a79a4e11b185d1afe8582d8ee",
+  "title": "fix(shadow): remove AXValue fallback from grey-text detector (false-positive bug)",
+  "state": "MERGED",
+  "merged_at": "2026-05-15T01:26:09Z",
+  "head_ref": "fix/shadow-detector-remove-axvalue-fallback-otto-cli-2026-05-15"
+}

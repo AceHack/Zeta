@@ -1,0 +1,12 @@
+{
+  "pr_number": 5677,
+  "archive_path": "docs/history/pr-reviews/PR-5677-memory-kestrel-backlog-4th-kestrel-ferry-2026-05-28-6-extension-rows-b-0875-b-08.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-28T02:20:56.093Z",
+  "schema_version": "v1",
+  "commit_sha": "4e4b3ccfbc418df46852c6a08c5294fb2999a2bb",
+  "title": "memory(kestrel) + backlog: 4th Kestrel ferry 2026-05-28 + 6 extension rows (B-0875 / B-0876 / B-0877 / B-0867.20 / B-0878 / B-0879)",
+  "state": "MERGED",
+  "merged_at": "2026-05-28T02:20:36Z",
+  "head_ref": "memory/kestrel-ferry-trajectory-push-vs-pr-review-error-class-extraction-clifford-space-uniqueness-2026-05-28"
+}

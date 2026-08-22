@@ -1,0 +1,12 @@
+{
+  "pr_number": 8339,
+  "archive_path": "docs/history/pr-reviews/PR-8339-fix-hygiene-restore-gate-greenness-by-correcting-search-and-replace-artifact-in-.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-15T21:10:36.131Z",
+  "schema_version": "v1",
+  "commit_sha": "8671ea36080541e2213c6b6f958e31224897c11f",
+  "title": "fix(hygiene): restore gate greenness by correcting search-and-replace artifact in audit-research-docs test",
+  "state": "MERGED",
+  "merged_at": "2026-06-15T21:10:07Z",
+  "head_ref": "lior/fix-hygiene-test"
+}

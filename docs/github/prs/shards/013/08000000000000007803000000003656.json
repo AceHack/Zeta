@@ -1,0 +1,12 @@
+{
+  "pr_number": 13910,
+  "archive_path": "docs/history/pr-reviews/PR-13910-revert-test-cluster-four-assertions-were-pinned-to-a-correction-a-human-has-not-.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-22T20:26:22.394Z",
+  "schema_version": "v1",
+  "commit_sha": "ea101dd22e8c763472d744f9a06d2d7eba61a901",
+  "title": "Revert \"test(cluster): four assertions were pinned to a correction a human has not taken\" — the tree moved, so the tests follow it",
+  "state": "MERGED",
+  "merged_at": "2026-08-22T20:25:38Z",
+  "head_ref": "shadow-revert-14-world"
+}

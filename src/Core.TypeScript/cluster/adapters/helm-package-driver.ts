@@ -12,6 +12,9 @@ export function helmPackageDriver(runner: ProcessRunner): PackageDriver {
         runOrExit(runner, "helm", ["repo", "update", spec.repoAlias], { stdio: "inherit" });
       }
       const args = ["install", spec.release, spec.chart, "--version", spec.version, "--namespace", spec.namespace];
+      for (const valuesFile of spec.valuesFiles ?? []) {
+        args.push("-f", valuesFile);
+      }
       for (const setValue of spec.setValues) {
         args.push("--set", setValue);
       }

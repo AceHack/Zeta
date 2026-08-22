@@ -1,0 +1,12 @@
+{
+  "pr_number": 3926,
+  "archive_path": "docs/history/pr-reviews/PR-3926-shard-tick-2026-05-16t17-58z-minimal-gh-run-rerun-failed-recovery-confirmed-work.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-16T18:13:58.078Z",
+  "schema_version": "v1",
+  "commit_sha": "6d1e2d580ceac960c41c521bc83b64eb1c7e0a57",
+  "title": "shard(tick): 2026-05-16T17:58Z — minimal; gh run rerun --failed recovery confirmed working",
+  "state": "MERGED",
+  "merged_at": "2026-05-16T18:13:38Z",
+  "head_ref": "otto-cli-tick-shard-1758z-minimal-2026-05-16"
+}

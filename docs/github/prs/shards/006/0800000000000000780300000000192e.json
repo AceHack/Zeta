@@ -1,0 +1,25 @@
+{
+  "pr_number": 6446,
+  "archive_path": "docs/history/pr-reviews/PR-6446-feat-b-0976-resume-engine-ts-reference-restore-not-replay-cek-saga-kernel.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7G20Ar",
+    "comment:PRRC_kwDOSF9kNM7G2gyO",
+    "comment:PRRC_kwDOSF9kNM7G2hHn",
+    "comment:PRRC_kwDOSF9kNM7G2oZ8",
+    "comment:PRRC_kwDOSF9kNM7G2u0D",
+    "comment:PRRC_kwDOSF9kNM7G2uz-",
+    "thread:PRRT_kwDOSF9kNM6GNL8n",
+    "thread:PRRT_kwDOSF9kNM6GNLsm",
+    "thread:PRRT_kwDOSF9kNM6GNRT9",
+    "thread:PRRT_kwDOSF9kNM6GNWBa",
+    "thread:PRRT_kwDOSF9kNM6GNWBe",
+    "thread:PRRT_kwDOSF9kNM6GNZ2m"
+  ],
+  "fetched_at": "2026-06-01T18:27:51.321Z",
+  "schema_version": "v1",
+  "commit_sha": "76ce54a89c6fa76714d9834002cc5196947d1f82",
+  "title": "feat(B-0976): resume engine — TS reference (restore-not-replay CEK saga kernel)",
+  "state": "MERGED",
+  "merged_at": "2026-06-01T18:27:29Z",
+  "head_ref": "otto-cli/b0976-resume-engine-ts-reference-2026-06-01"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 8675,
+  "archive_path": "docs/history/pr-reviews/PR-8675-feat-cross-verify-first-generated-from-ir-oracle-splitmix64-ts.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-20T01:48:24.588Z",
+  "schema_version": "v1",
+  "commit_sha": "aedef4b4c9622e04fbe6545ca7ee1cf4d0ceb4be",
+  "title": "feat(cross-verify): first generated-from-ir oracle (splitmix64 TS)",
+  "state": "MERGED",
+  "merged_at": "2026-06-20T01:47:57Z",
+  "head_ref": "feat/splitmix64-oracle-generated-from-ir"
+}

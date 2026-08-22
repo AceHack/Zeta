@@ -1,0 +1,19 @@
+{
+  "pr_number": 5387,
+  "archive_path": "docs/history/pr-reviews/PR-5387-fix-b-0835-bug-6-7-multi-protocol-name-resolution-avahi-hardening-netbios-nmbd-d.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7FLXT9",
+    "comment:PRRC_kwDOSF9kNM7FLXTu",
+    "comment:PRRC_kwDOSF9kNM7FLXUH",
+    "thread:PRRT_kwDOSF9kNM6E-rc1",
+    "thread:PRRT_kwDOSF9kNM6E-rci",
+    "thread:PRRT_kwDOSF9kNM6E-rct"
+  ],
+  "fetched_at": "2026-05-27T02:46:58.879Z",
+  "schema_version": "v1",
+  "commit_sha": "1cc61693c2ff23ed7ccff5c0fac470e869552847",
+  "title": "fix(B-0835 Bug 6+7): multi-protocol name resolution — Avahi hardening + NetBIOS (nmbd) + DHCP-hostname; reliability for 'i can't ping it by name' (Aaron 2026-05-27)",
+  "state": "MERGED",
+  "merged_at": "2026-05-27T02:46:39Z",
+  "head_ref": "fix-b0835-multi-protocol-name-resolution-netbios-avahi-hardening-2026-05-26-2305z"
+}

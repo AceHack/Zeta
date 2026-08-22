@@ -1,0 +1,61 @@
+# full-ai-cluster/dev-cluster/profiles/ci.cilium.kind-config.yaml
+#
+# The kind profile that lets CI run THE CNI THE METAL CLUSTER WILL RUN.
+#
+# The sibling profile, ci.kind-config.yaml, takes kind's own default CNI
+# (kindnetd) and kube-proxy. That is a deliberately conservative substrate for
+# the ArgoCD app-of-apps proof, but it means the network layer under CI and the
+# network layer under metal are different pieces of software, and metal is the
+# plan. This profile removes both so Cilium can take the slot it takes on
+# metal, installed from the SAME value surface the cluster ships.
+#
+# EVERY FIELD HERE, AND WHY
+# -------------------------
+#   disableDefaultCNI: true
+#     kind's documented way to leave the CNI slot empty
+#     (https://kind.sigs.k8s.io/docs/user/configuration/ -- "the default CNI
+#     will not be installed ... to install a different CNI"). Cilium documents
+#     the same flag on its kind install page
+#     (https://docs.cilium.io/en/stable/installation/kind/). Nodes stay NotReady
+#     until Cilium is installed; that is expected, and the bring-up waits for
+#     Ready AFTER the install, never before.
+#
+#   kubeProxyMode: "none"
+#     Both shipped Cilium surfaces set `kubeProxyReplacement: true`. Leaving
+#     kube-proxy running alongside a full replacement is the classic
+#     double-programming mistake. NOTE the asymmetry in the names: kind's field
+#     is `kubeProxyMode` and its off-value is the string "none"; there is no
+#     `kubeProxyReplacement` field on the kind side -- that is the helm value on
+#     the Cilium side. Only one of those two names exists per side.
+#
+#   podSubnet: "10.42.0.0/16"
+#     The same CIDR the shipped values give to cluster-pool IPAM and to
+#     `ipv4NativeRoutingCIDR`. Cilium's cluster-pool IPAM does its own
+#     allocation and does not read `.spec.podCIDR`, so this is coherence rather
+#     than a functional requirement -- but a kube-controller-manager handing out
+#     podCIDRs from a DIFFERENT range than the CNI allocates from is exactly the
+#     kind of quiet divergence that makes a CI cluster stop resembling the real
+#     one. serviceSubnet is left at kind's 10.96.0.0/12 default, which does not
+#     overlap.
+#
+#   ONE control-plane node, no workers.
+#     This is NOT a resource compromise, and it is the load-bearing choice in
+#     the file. full-ai-cluster/k8s/single-node-budget.json declares
+#     `nodeCount: 1`, so the metal cluster is one control-plane node. Matching
+#     it means the kind lane reproduces the metal network layer exactly --
+#     including the uncomfortable part, that on one control-plane node Cilium's
+#     WireGuard settings encrypt zero bytes (pod-to-pod traffic never leaves the
+#     node, and control-plane nodes opt OUT of node-to-node encryption by
+#     default). Adding workers here would make CI encrypt traffic that metal
+#     does not, which is a greener test of a cluster we do not run.
+#     src/Core.TypeScript/cluster/cilium-kind-lane.ts REFUSES if the two shapes
+#     stop agreeing, so this comment cannot rot into a false claim.
+
+apiVersion: kind.x-k8s.io/v1alpha4
+kind: Cluster
+networking:
+  disableDefaultCNI: true
+  kubeProxyMode: "none"
+  podSubnet: "10.42.0.0/16"
+nodes:
+  - role: control-plane

@@ -1,0 +1,15 @@
+{
+  "pr_number": 9130,
+  "archive_path": "docs/history/pr-reviews/PR-9130-feat-shapes-shape-refraction-the-membrane-crossing-drawn-shadow.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7RZdsg",
+    "thread:PRRT_kwDOSF9kNM6N5ZPs"
+  ],
+  "fetched_at": "2026-08-17T07:25:55.488Z",
+  "schema_version": "v1",
+  "commit_sha": "d6918b6b2b37ac2de67c49a6516dd7961752394e",
+  "title": "feat(shapes): shape-refraction — the membrane crossing drawn (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-02T12:45:25Z",
+  "head_ref": "feat/refraction-cartridge"
+}

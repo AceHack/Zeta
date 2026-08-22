@@ -1,0 +1,12 @@
+{
+  "pr_number": 6517,
+  "archive_path": "docs/history/pr-reviews/PR-6517-fix-dynamicvalue-ts-fromcanonicalcbor-honors-never-throws-for-non-byte-number-co.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-02T01:22:02.310Z",
+  "schema_version": "v1",
+  "commit_sha": "3dac11df395887f783b1dc323f368837087f80c0",
+  "title": "fix(DynamicValue): TS fromCanonicalCbor honors never-throws for non-byte number[] (Codex #6516)",
+  "state": "MERGED",
+  "merged_at": "2026-06-02T01:21:43Z",
+  "head_ref": "otto-cli/dynamicvalue-cbor-ts-byte-validate-2026-06-01"
+}

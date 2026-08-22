@@ -1,0 +1,12 @@
+{
+  "pr_number": 4762,
+  "archive_path": "docs/history/pr-reviews/PR-4762-docs-autonomous-loop-step-1a-unfinished-pr-check-before-new-work.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-23T20:27:44.407Z",
+  "schema_version": "v1",
+  "commit_sha": "95c6e80c60824f917575380b70334daf38cd6e46",
+  "title": "docs(autonomous-loop): Step 1a — unfinished-PR check before new work",
+  "state": "MERGED",
+  "merged_at": "2026-05-23T20:27:28Z",
+  "head_ref": "otto/canonical-step1a-unfinished-pr-check-2026-05-23"
+}

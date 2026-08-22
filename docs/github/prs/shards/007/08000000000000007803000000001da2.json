@@ -1,0 +1,12 @@
+{
+  "pr_number": 7586,
+  "archive_path": "docs/history/pr-reviews/PR-7586-docs-prior-art-alljoyn-prior-art-for-universal-interfaces-and-reticulum.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-11T03:35:36.757Z",
+  "schema_version": "v1",
+  "commit_sha": "5983714352938f80fcfb22c66b34ee616ebaea0d",
+  "title": "docs(prior-art): AllJoyn — prior art for universal/ interfaces AND Reticulum",
+  "state": "MERGED",
+  "merged_at": "2026-06-11T03:35:15Z",
+  "head_ref": "shadow-alljoyn-prior-art"
+}

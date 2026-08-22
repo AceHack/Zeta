@@ -1,0 +1,27 @@
+{
+  "pr_number": 4066,
+  "archive_path": "docs/history/pr-reviews/PR-4066-fix-hygiene-tolerate-admin-only-settings-counts-in-drift-snapshot.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7B_vZf",
+    "comment:PRRC_kwDOSF9kNM7B_vZn",
+    "comment:PRRC_kwDOSF9kNM7B_vZr",
+    "comment:PRRC_kwDOSF9kNM7B_vZz",
+    "comment:PRRC_kwDOSF9kNM7B_xfU",
+    "comment:PRRC_kwDOSF9kNM7B_xfV",
+    "comment:PRRC_kwDOSF9kNM7B_zmL",
+    "thread:PRRT_kwDOSF9kNM6CpT83",
+    "thread:PRRT_kwDOSF9kNM6CpT88",
+    "thread:PRRT_kwDOSF9kNM6CpT9A",
+    "thread:PRRT_kwDOSF9kNM6CpT9G",
+    "thread:PRRT_kwDOSF9kNM6CpVk4",
+    "thread:PRRT_kwDOSF9kNM6CpVk5",
+    "thread:PRRT_kwDOSF9kNM6CpXOm"
+  ],
+  "fetched_at": "2026-05-17T14:09:42.998Z",
+  "schema_version": "v1",
+  "commit_sha": "341e8c7635515b7bb10c605dadd90d0dd11b512b",
+  "title": "fix(hygiene): tolerate admin-only settings counts in drift snapshot",
+  "state": "MERGED",
+  "merged_at": "2026-05-17T14:09:22Z",
+  "head_ref": "codex/github-settings-drift-token-scope-20260517"
+}

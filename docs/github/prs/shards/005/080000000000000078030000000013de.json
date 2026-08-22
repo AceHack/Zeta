@@ -1,0 +1,12 @@
+{
+  "pr_number": 5086,
+  "archive_path": "docs/history/pr-reviews/PR-5086-fix-b-0789-iter-4-2-fixfwd-5-copilot-findings-on-5083-3-p0-incl-nix-injection-2-.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-26T04:29:47.979Z",
+  "schema_version": "v1",
+  "commit_sha": "0b9f5eafa9fc7d32c002b53daebaa725324a6ec7",
+  "title": "fix(B-0789 iter-4.2 fixfwd): 5 Copilot findings on #5083 (3 P0 incl Nix-injection + 2 P1) before maintainer test",
+  "state": "MERGED",
+  "merged_at": "2026-05-26T04:29:30Z",
+  "head_ref": "otto-cli/iter42-fixfwd-5-copilot-findings-2026-05-26"
+}

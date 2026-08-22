@@ -1,0 +1,14 @@
+{
+  "id": "080d0084d2a00810a0130008cdaf3b5a",
+  "at": "2026-08-17T16:42:24.641Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M089MN00087G0R0023E922N",
+    "type": "task",
+    "title": "Concept registry: one editable list for Addison's Genesis concepts plus the newer terms, with a drift check against the published page",
+    "slug": "concept-registry-one-editable-list-for-addison-s-genesis-con",
+    "priority": "P2",
+    "filename": "081M089MN00087G0R0023E922N-concept-registry-one-editable-list-for-addison-s-genesis-con.md"
+  }
+}

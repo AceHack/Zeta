@@ -1,0 +1,12 @@
+{
+  "pr_number": 2050,
+  "archive_path": "docs/history/pr-reviews/PR-2050-docs-trajectories-pick-ts-bun-child-candidate.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-08T08:10:29.520Z",
+  "schema_version": "v1",
+  "commit_sha": "f8b6ea9a0c7ecb4f43e189bd9b4b4ac100569d67",
+  "title": "docs(trajectories): pick TS Bun child candidate",
+  "state": "MERGED",
+  "merged_at": "2026-05-08T08:10:13Z",
+  "head_ref": "claim/trajectory-typescript-bun-child-candidate"
+}

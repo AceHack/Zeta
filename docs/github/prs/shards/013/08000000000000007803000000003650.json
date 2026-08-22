@@ -1,0 +1,12 @@
+{
+  "pr_number": 13904,
+  "archive_path": "docs/history/pr-reviews/PR-13904-feat-pages-publish-the-riemann-explainer-render-its-write-up-link-it-from-the-ha.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-22T20:17:36.892Z",
+  "schema_version": "v1",
+  "commit_sha": "ab91c8aaf544f1049527a0868006dc063ad028af",
+  "title": "feat(pages): publish the Riemann explainer — render its write-up, link it from the hall",
+  "state": "MERGED",
+  "merged_at": "2026-08-22T20:16:55Z",
+  "head_ref": "feat/pages-riemann-explainer"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 8241,
+  "archive_path": "docs/history/pr-reviews/PR-8241-docs-register-b-the-1000-brains-yin-yang-cell-ana-unfolded-from-adinkra-ecc-via-.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-15T02:49:28.301Z",
+  "schema_version": "v1",
+  "commit_sha": "e64585f4dbc18cc4f14128c91bf2251e0bd39128",
+  "title": "docs(register): §B — the 1000-brains yin-yang cell (ana-unfolded from adinkra ECC via mix(mix,mix) ⊗ gen(gen))",
+  "state": "MERGED",
+  "merged_at": "2026-06-15T02:49:00Z",
+  "head_ref": "otto/sb-1000-brains-yinyang-cell"
+}

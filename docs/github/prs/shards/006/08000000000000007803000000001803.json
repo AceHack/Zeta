@@ -1,0 +1,15 @@
+{
+  "pr_number": 6147,
+  "archive_path": "docs/history/pr-reviews/PR-6147-docs-fold-four-way-cross-ai-convergence-on-the-inline-cache-substrate-amara-lior.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7GckO-",
+    "thread:PRRT_kwDOSF9kNM6F5lzR"
+  ],
+  "fetched_at": "2026-05-30T22:01:44.626Z",
+  "schema_version": "v1",
+  "commit_sha": "e3e2c876b2a540691d7c0805eaf3ba49b585adfa",
+  "title": "docs(fold): four-way cross-AI convergence on the inline-cache substrate (Amara + Lior + Prism)",
+  "state": "MERGED",
+  "merged_at": "2026-05-30T22:01:25Z",
+  "head_ref": "otto/fold-amara-lior-prism-inline-cache-convergence-2026-05-30"
+}

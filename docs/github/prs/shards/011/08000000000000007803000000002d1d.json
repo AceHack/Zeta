@@ -1,0 +1,12 @@
+{
+  "pr_number": 11549,
+  "archive_path": "docs/history/pr-reviews/PR-11549-formal-lean-the-malament-hogarth-dual-does-not-survive-mh2-has-no-analogue.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-17T16:40:29.413Z",
+  "schema_version": "v1",
+  "commit_sha": "cea636224e87de9204a280fba7a1232cfb042563",
+  "title": "formal(lean): the Malament-Hogarth dual does not survive — (MH2) has no analogue",
+  "state": "MERGED",
+  "merged_at": "2026-08-17T16:39:50Z",
+  "head_ref": "shadow/formalize-mh-bounded-tick-mapping"
+}

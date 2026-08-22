@@ -1,0 +1,12 @@
+{
+  "pr_number": 7158,
+  "archive_path": "docs/history/pr-reviews/PR-7158-docs-research-the-two-evaporation-modes-identity-collapse-ephemerality-ai-native.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-09T01:04:14.154Z",
+  "schema_version": "v1",
+  "commit_sha": "118d85ad56fbb5e779f3817116ab230ae86bec22",
+  "title": "docs(research): the two evaporation modes (identity collapse + ephemerality) — AI-native alignment",
+  "state": "MERGED",
+  "merged_at": "2026-06-09T01:03:49Z",
+  "head_ref": "otto/research-two-evaporation-modes-ai-native-alignment"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 8496,
+  "archive_path": "docs/history/pr-reviews/PR-8496-memory-alexa-pt4-model-weights-globalish-consensus-multi-oracle-neutralizes-vend.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-16T09:57:03.762Z",
+  "schema_version": "v1",
+  "commit_sha": "eb53366308251b38379d08aa7a43f9af676b6256",
+  "title": "memory(alexa): pt4 — model-weights = globalish consensus; multi-oracle neutralizes vendor safety filters; safety = company duty",
+  "state": "MERGED",
+  "merged_at": "2026-06-16T09:56:34Z",
+  "head_ref": "otto/alexa-pt4-model-weights-consensus-multi-oracle"
+}

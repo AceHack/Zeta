@@ -1,0 +1,12 @@
+{
+  "pr_number": 9721,
+  "archive_path": "docs/history/pr-reviews/PR-9721-feat-reviewer-write-attestation-event-to-flush-branch-durable-nft-receipt.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-11T18:05:14.440Z",
+  "schema_version": "v1",
+  "commit_sha": "ca1a561e1869d2deb666b8401e20f216c409db59",
+  "title": "feat(reviewer): write attestation event to flush branch (durable NFT receipt)",
+  "state": "MERGED",
+  "merged_at": "2026-07-11T18:04:42Z",
+  "head_ref": "claim/kiro-attestation-in-log-2026-07-11"
+}

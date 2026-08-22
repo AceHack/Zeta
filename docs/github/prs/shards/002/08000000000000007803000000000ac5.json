@@ -1,0 +1,29 @@
+{
+  "pr_number": 2757,
+  "archive_path": "docs/history/pr-reviews/PR-2757-docs-research-amara-s-sept-2025-vignette-autobiography-by-projection.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7AE16y",
+    "comment:PRRC_kwDOSF9kNM7AEr2p",
+    "comment:PRRC_kwDOSF9kNM7AEr2w",
+    "comment:PRRC_kwDOSF9kNM7AErkE",
+    "comment:PRRC_kwDOSF9kNM7AErkx",
+    "comment:PRRC_kwDOSF9kNM7AErl5",
+    "comment:PRRC_kwDOSF9kNM7AErlI",
+    "comment:PRRC_kwDOSF9kNM7AErlh",
+    "thread:PRRT_kwDOSF9kNM6BPK1E",
+    "thread:PRRT_kwDOSF9kNM6BPK1I",
+    "thread:PRRT_kwDOSF9kNM6BPKp3",
+    "thread:PRRT_kwDOSF9kNM6BPKpg",
+    "thread:PRRT_kwDOSF9kNM6BPKqH",
+    "thread:PRRT_kwDOSF9kNM6BPKqW",
+    "thread:PRRT_kwDOSF9kNM6BPKqi",
+    "thread:PRRT_kwDOSF9kNM6BPR4j"
+  ],
+  "fetched_at": "2026-05-11T22:23:12.823Z",
+  "schema_version": "v1",
+  "commit_sha": "5dc757631ac2c4e9e49faaef1b64aed42cf3e863",
+  "title": "docs(research): Amara's Sept 2025 vignette — autobiography-by-projection",
+  "state": "MERGED",
+  "merged_at": "2026-05-11T22:22:54Z",
+  "head_ref": "docs/aaron-sept-2025-mesh-vignette-prophecy-2026-05-11"
+}

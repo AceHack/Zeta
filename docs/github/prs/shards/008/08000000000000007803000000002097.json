@@ -1,0 +1,12 @@
+{
+  "pr_number": 8343,
+  "archive_path": "docs/history/pr-reviews/PR-8343-docs-research-our-stack-implements-deepmind-s-beyond-transformer-world-model-pil.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-15T21:36:34.425Z",
+  "schema_version": "v1",
+  "commit_sha": "851f9f18ab2e2ea811204d2075a877ad955b0a6a",
+  "title": "docs(research): our stack implements DeepMind's beyond-transformer + world-model pillars, deterministically",
+  "state": "MERGED",
+  "merged_at": "2026-06-15T21:36:02Z",
+  "head_ref": "docs/ferry-our-stack-implements-deepmind-pillars-deterministically"
+}

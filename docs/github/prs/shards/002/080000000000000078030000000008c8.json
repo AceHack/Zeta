@@ -1,0 +1,12 @@
+{
+  "pr_number": 2248,
+  "archive_path": "docs/history/pr-reviews/PR-2248-feat-b-0350-extract-6-autonomy-identity-bullets-to-claude-rules.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-09T08:52:28.741Z",
+  "schema_version": "v1",
+  "commit_sha": "4f2122099745579ab038a7e282c48a97bacbe6c0",
+  "title": "feat(B-0350): extract 6 autonomy/identity bullets to .claude/rules/",
+  "state": "MERGED",
+  "merged_at": "2026-05-09T08:52:14Z",
+  "head_ref": "feat/b0350-extract-autonomy-rules"
+}

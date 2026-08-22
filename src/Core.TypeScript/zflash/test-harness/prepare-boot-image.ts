@@ -14,7 +14,13 @@
  *     [--with-credential-blob] \
  *     [--fresh] \
  *     [--hostname node-qemu-test] \
- *     [--with-wifi-credentials]
+ *     [--with-wifi-credentials] \
+ *     [--role first-control-plane|joiner] \
+ *     [--flake-host <attr>] \
+ *     [--join-server-url https://host[:port]] \
+ *     [--join-token <path to k3s node-token>] \
+ *     [--cluster-segment-mac <aa:bb:cc:dd:ee:ff>] \
+ *     [--cluster-host-index <2..254>]
  *
  * Exit 0 prints JSON with outputImagePath (+ credentialBlobPath when baked).
  */
@@ -24,11 +30,9 @@ import { existsSync, mkdtempSync, readFileSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
-import {
-  detectIsohybridEspOffsetBytes,
-  ISOHYBRID_ESP_OFFSET_FALLBACK_BYTES,
-} from "../lib.ts";
+import { detectIsohybridEspOffsetBytes, ISOHYBRID_ESP_OFFSET_FALLBACK_BYTES } from "../lib.ts";
 import { runFileBackedZflashCli } from "../file-backed.ts";
+import { firstbootRoleFromFlags, type ZetaFirstbootRole } from "../firstboot-role.ts";
 import { buildBlob, composeBundle } from "../../installer/zeta-creds-persist";
 
 export const DEFAULT_QEMU_USB_UUID = "b0891-qemu-test-usb-00000001";
@@ -55,6 +59,13 @@ export interface PrepareBootImageInput {
   readonly hostname: string;
   readonly pubkeyPath: string;
   readonly wifiCredentials?: PrepareBootImageWifiCredentials;
+  /** 081KSNY2Z0008QG0R0008PN7RQ scenario 5 — role written to the ESP. */
+  readonly firstbootRole?: ZetaFirstbootRole;
+  readonly joinTokenSourcePath?: string;
+  /** QEMU-only: bake `/zeta-bind-uefi-keyfile` so the guest writes the target ESP keyfile. */
+  readonly bindUefiKeyfileMarker?: boolean;
+  /** QEMU-only: bake `/zeta-qemu-creds-passphrase` so non-interactive 6.95-picker can run. */
+  readonly qemuCredsPassphrase?: string;
 }
 
 export interface PrepareBootImageResult {
@@ -62,6 +73,8 @@ export interface PrepareBootImageResult {
   readonly credentialBlobPath?: string;
   readonly bootImageEnv: "ZFLASH_QEMU_RETENTION_BOOT_IMAGE" | "ZFLASH_QEMU_PATH_FORK_BOOT_IMAGE";
   readonly wifiCredentialsBaked: boolean;
+  /** `undefined` means the image carries no role and installs a control plane. */
+  readonly firstbootRoleBaked?: ZetaFirstbootRole["kind"];
 }
 
 export function resolveEspOffsetBytesForIso(isoPath: string): number {
@@ -88,10 +101,13 @@ export function checkZflashToolchain(): string | null {
 }
 
 export function writeTestCredentialBlob(outputPath: string): void {
+  // `composeBundle` takes only { persona, bakeCredArgs }. This literal also carried
+  // usbUuid / output / passphrase, which it never read: the uuid and passphrase are
+  // passed separately to `buildBlob` below, and `outputPath` is used by the caller.
+  // They were silently ignored until TypeScript's excess-property check (which fires
+  // on object LITERALS but not on variables — which is why `composeBundle(parsed)` in
+  // cli.ts never flagged) reported them.
   const bundle = composeBundle({
-    usbUuid: DEFAULT_QEMU_USB_UUID,
-    output: outputPath,
-    passphrase: DEFAULT_QEMU_PASSPHRASE,
     persona: null,
     bakeCredArgs: ["gh-cli=test-token-for-qemu-b0891"],
   });
@@ -139,6 +155,10 @@ export function prepareBootImage(input: PrepareBootImageInput): PrepareBootImage
           wifiSsid: input.wifiCredentials.ssid,
           wifiPassword: input.wifiCredentials.password,
         }),
+    ...(input.firstbootRole === undefined ? {} : { firstbootRole: input.firstbootRole }),
+    ...(input.joinTokenSourcePath === undefined ? {} : { joinTokenSourcePath: input.joinTokenSourcePath }),
+    ...(input.bindUefiKeyfileMarker === true ? { bindUefiKeyfileMarker: true } : {}),
+    ...(input.qemuCredsPassphrase === undefined ? {} : { qemuCredsPassphrase: input.qemuCredsPassphrase }),
   });
 
   if (!result.ok) {
@@ -150,6 +170,7 @@ export function prepareBootImage(input: PrepareBootImageInput): PrepareBootImage
     ...(credentialBlobPath === undefined ? {} : { credentialBlobPath }),
     bootImageEnv: input.withCredentialBlob ? "ZFLASH_QEMU_RETENTION_BOOT_IMAGE" : "ZFLASH_QEMU_PATH_FORK_BOOT_IMAGE",
     wifiCredentialsBaked: input.wifiCredentials !== undefined,
+    ...(input.firstbootRole === undefined ? {} : { firstbootRoleBaked: input.firstbootRole.kind }),
   };
 }
 
@@ -160,6 +181,12 @@ function parseArgs(argv: readonly string[]): PrepareBootImageInput | { readonly 
   let fresh = false;
   let withWifiCredentials = false;
   let hostname = DEFAULT_QEMU_HOSTNAME;
+  let roleFlag: string | undefined;
+  let flakeHostFlag: string | undefined;
+  let joinServerUrlFlag: string | undefined;
+  let joinTokenSourcePath: string | undefined;
+  let clusterSegmentMac: string | undefined;
+  let clusterHostIndex: string | undefined;
 
   for (let i = 0; i < argv.length; i++) {
     const arg = argv[i]!;
@@ -175,6 +202,18 @@ function parseArgs(argv: readonly string[]): PrepareBootImageInput | { readonly 
       withWifiCredentials = true;
     } else if (arg === "--hostname") {
       hostname = argv[++i] ?? "";
+    } else if (arg === "--role") {
+      roleFlag = argv[++i] ?? "";
+    } else if (arg === "--flake-host") {
+      flakeHostFlag = argv[++i] ?? "";
+    } else if (arg === "--join-server-url") {
+      joinServerUrlFlag = argv[++i] ?? "";
+    } else if (arg === "--join-token") {
+      joinTokenSourcePath = argv[++i] ?? "";
+    } else if (arg === "--cluster-segment-mac") {
+      clusterSegmentMac = argv[++i] ?? "";
+    } else if (arg === "--cluster-host-index") {
+      clusterHostIndex = argv[++i] ?? "";
     } else if (arg === "-h" || arg === "--help") {
       return { error: "see file header for usage" };
     } else {
@@ -184,6 +223,16 @@ function parseArgs(argv: readonly string[]): PrepareBootImageInput | { readonly 
 
   if (isoPath === "") return { error: "--iso is required" };
   if (outputImagePath === "") return { error: "--output is required" };
+
+  const firstbootRole = firstbootRoleFromFlags({
+    ...(roleFlag === undefined ? {} : { role: roleFlag }),
+    ...(flakeHostFlag === undefined ? {} : { flakeHost: flakeHostFlag }),
+    ...(joinServerUrlFlag === undefined ? {} : { joinServerUrl: joinServerUrlFlag }),
+    ...(joinTokenSourcePath === undefined ? {} : { joinTokenSourcePath }),
+    ...(clusterSegmentMac === undefined ? {} : { clusterSegmentMac }),
+    ...(clusterHostIndex === undefined ? {} : { clusterHostIndex }),
+  });
+  if (!firstbootRole.ok) return { error: firstbootRole.error };
 
   return {
     isoPath,
@@ -200,6 +249,8 @@ function parseArgs(argv: readonly string[]): PrepareBootImageInput | { readonly 
           },
         }
       : {}),
+    ...(firstbootRole.value === undefined ? {} : { firstbootRole: firstbootRole.value }),
+    ...(joinTokenSourcePath === undefined ? {} : { joinTokenSourcePath }),
   };
 }
 

@@ -1,0 +1,12 @@
+{
+  "pr_number": 8989,
+  "archive_path": "docs/history/pr-reviews/PR-8989-codex-recognize-compact-agency-signatures.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-21T19:39:08.084Z",
+  "schema_version": "v1",
+  "commit_sha": "6cf76f745202fc408763290c1ed31edb0b5e5744",
+  "title": "[codex] recognize compact agency signatures",
+  "state": "MERGED",
+  "merged_at": "2026-06-21T19:38:39Z",
+  "head_ref": "codex/agencysignature-coauthor-detection"
+}

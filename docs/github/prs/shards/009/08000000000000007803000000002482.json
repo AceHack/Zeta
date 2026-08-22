@@ -1,0 +1,12 @@
+{
+  "pr_number": 9346,
+  "archive_path": "docs/history/pr-reviews/PR-9346-docs-research-soraya-s-1-12-verdict-c-with-a-stated-b-path-white-noise-falsifier.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-03T19:14:21.066Z",
+  "schema_version": "v1",
+  "commit_sha": "da1a1ec962fd4083351b459e51f669bc8355822a",
+  "title": "docs(research): Soraya's −1/12 verdict — C with a stated B-path; white-noise falsifier",
+  "state": "MERGED",
+  "merged_at": "2026-07-03T19:13:55Z",
+  "head_ref": "shadow/soraya-minus-one-twelfth-verdict"
+}

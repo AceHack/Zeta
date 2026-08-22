@@ -1,0 +1,12 @@
+{
+  "pr_number": 12200,
+  "archive_path": "docs/history/pr-reviews/PR-12200-research-security-tpm-2-0-vs-yubihsm-2-the-isolation-architectures-are-inverted-.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-18T23:56:45.339Z",
+  "schema_version": "v1",
+  "commit_sha": "1e684af90ed277766ddbfcc7377242cfe4383aca",
+  "title": "research(security): TPM 2.0 vs YubiHSM 2 — the isolation architectures are inverted, and the TPM has no tenants",
+  "state": "MERGED",
+  "merged_at": "2026-08-18T23:56:14Z",
+  "head_ref": "mateo/tpm-vs-hsm-root-of-trust"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 9951,
+  "archive_path": "docs/history/pr-reviews/PR-9951-test-tri-float-pin-that-resolution-is-mintable-the-exposure-characterized.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-02T00:39:00.333Z",
+  "schema_version": "v1",
+  "commit_sha": "a781a2164b91309c1149fb390e5661cdf650e8a5",
+  "title": "test(tri-float): pin that resolution is MINTABLE — the exposure, characterized",
+  "state": "MERGED",
+  "merged_at": "2026-08-02T00:38:37Z",
+  "head_ref": "shadow/trifloat-resolution-is-mintable-guard"
+}

@@ -34,11 +34,60 @@ module SimLoop =
           MaxTicks: int
           MaxMillis: int64 }
 
-    /// The default: ~5 minutes of generator clock, generous-but-finite lap/tick rails.
+    /// The default rails — **three numbers with three different provenances, each now on the record.**
+    ///
+    /// A budget is not a defect: §4 bounded mobility and this module's own "no one gets to run for
+    /// infinity" both REQUIRE one. **The discriminator is attribution** (Aaron 2026-08-17: *"always be
+    /// on the lookout where the measurement or the limit/budget becomes the oracle silently — this is
+    /// accidental hierarchy or control"*). These three shipped in #7646 with only one of them chosen by
+    /// anyone on the record; the other two were the implementing agent's, unexplained. That is the
+    /// hidden-oracle class, and this block is the repair. **No value changed** — a default is behaviour,
+    /// and re-picking numbers to make a story tidy would be the same defect with better prose.
+    ///
+    /// **THE REACHABILITY LAW (derived, then measured).** The rails are tested in a fixed order — laps,
+    /// then ticks, then clock — so a secondary rail must trip at a lap index of at most `MaxLaps - 1` or
+    /// the lap rail gets there first. With per-lap increment `k` and limit `L`, the secondary rail is
+    /// reachable iff `(MaxLaps - 1) * k >= L`, i.e. iff `k >= ceil(L / (MaxLaps - 1))`. The `- 1` and the
+    /// ceiling are both load-bearing; the naive `L / MaxLaps` is wrong, and it is wrong by two here.
+    /// `MaxLaps` is therefore the PRIMARY rail: it is the one that binds unless a caller drives the
+    /// secondary rate above its threshold. Falsifier for all of it — the two "rail-reachability" tests in
+    /// `tests/Tests.FSharp/SimLoopTelemetry.Tests.fs`, which RUN this loop at both sides of each boundary.
+    ///
+    /// **`MaxMillis = 300_000L` — an inherited HUMAN choice, and the only one of the three that had a
+    /// name attached before today.** Aaron 2026-06-11: *"default timeout 5 minutes or something"*, quoted
+    /// in this module's header and carried in #7646's own signature as
+    /// `authorization: aaron-authored (… 5-min default)`. The *"or something"* is part of the
+    /// attribution rather than noise: the maintainer declared a dial, and it stays his to retune.
+    /// Measured consequence at this default: a clock advancing 300 ms/lap never reaches it (the lap rail
+    /// closes first), 301 ms/lap trips it at lap 997 — `ceil(300_000 / 999) = 301`.
+    ///
+    /// **`MaxLaps = 1_000` — a CHOICE, and there is no derivation available to replace it.** Said
+    /// plainly because the alternative is manufacturing one: `SimLoop.run` is universally quantified over
+    /// the room state `'S`, and `cut` / `mea` / `ticksPerLap` are all caller-supplied, so there is no
+    /// state machine to walk and no longest-advancing-path to measure. Contrast the case where that
+    /// derivation *was* available — `src/Core.TypeScript/observe/tick-budget.ts` (#11539) walked a closed
+    /// 115-state machine, measured a diameter of 6, and set the budget to 6 exactly. Nothing of that kind
+    /// exists here, and #11539 left `ARC_SWARM_TICK_BUDGET` unmoved for the same reason: refusing to
+    /// derive a number that cannot be derived is the correct outcome. Chosen by the implementing agent in
+    /// #7646 with no reason recorded; a retunable policy dial, inherited unchanged, now labelled as one.
+    ///
+    /// **`MaxTicks = 1_000_000` — a choice whose entire effect IS derivable, and it is measured.** By the
+    /// law above it can only fire when `ticksPerLap >= ceil(1_000_000 / 999) = 1002`. Measured: at 1001
+    /// the run stops on `LapBudget` after 1000 laps; at 1002 it stops on `TickBudget` after 999. Every
+    /// `ticksPerLap` this repo actually passes is between 1 and 25, so under this default the tick rail is
+    /// **dormant** — real, clamped, and never the rail that fires. That is a fact about the default, not a
+    /// defect in the rail: a caller passing a large burst re-arms it immediately, which is what it is for.
+    ///
+    /// Note for anyone re-running `bun src/Core.TypeScript/hygiene/audit-hidden-oracles.ts` against this
+    /// block: the detector cannot see these three fields, and could not before this comment existed. Its
+    /// gating test looks for the declared name in a relational comparison, and `run` compares the *clamped
+    /// locals* (`maxLaps` / `maxTicks` / `maxMillis`), never the record fields. That is the declared
+    /// "F# COVERAGE IS DECLARATION-LEVEL ONLY" limit, not a bug to route around — this attribution is
+    /// owed to the reader, not to the linter.
     let defaultBudget: Budget =
-        { MaxLaps = 1_000
-          MaxTicks = 1_000_000
-          MaxMillis = 300_000L }
+        { MaxLaps = 1_000 // PRIMARY rail. A choice (#7646), not derivable: 'S is universally quantified.
+          MaxTicks = 1_000_000 // Dormant below ticksPerLap = 1002 = ceil(MaxTicks / (MaxLaps - 1)). Measured.
+          MaxMillis = 300_000L } // Aaron 2026-06-11, "default timeout 5 minutes or something" (#7646).
 
     /// One lap's banked record: which lap, the measurement, the state it measured.
     type Lap<'S, 'M> = { N: int; Measured: 'M; State: 'S }

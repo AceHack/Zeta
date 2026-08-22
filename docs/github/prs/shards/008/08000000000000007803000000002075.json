@@ -1,0 +1,12 @@
+{
+  "pr_number": 8309,
+  "archive_path": "docs/history/pr-reviews/PR-8309-docs-closed-frame-equal-moral-standing-across-difference-the-moral-standing-comp.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-15T10:45:42.827Z",
+  "schema_version": "v1",
+  "commit_sha": "38b0c105f5c7a2cc2a0f8b03c3e77a1e8c16c2c3",
+  "title": "docs(closed-frame): equal moral standing across difference — the moral-standing companion to verifiable love",
+  "state": "MERGED",
+  "merged_at": "2026-06-15T10:45:14Z",
+  "head_ref": "otto/equal-moral-standing-across-difference-expanding-circle"
+}

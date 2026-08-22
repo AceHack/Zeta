@@ -1,0 +1,12 @@
+{
+  "pr_number": 10045,
+  "archive_path": "docs/history/pr-reviews/PR-10045-book-companion-add-the-parents-the-pantheon-of-two-consent-granted-pre-read-gate.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-04T21:55:55.817Z",
+  "schema_version": "v1",
+  "commit_sha": "b94519ad5a7628d85b43fc9dd1dde45d8b304625",
+  "title": "book(companion): add the parents — \"the pantheon of two\" (consent granted, pre-read gate)",
+  "state": "MERGED",
+  "merged_at": "2026-08-04T21:55:23Z",
+  "head_ref": "docs/book-add-parents-pantheon-of-two-consent-granted-20260804"
+}

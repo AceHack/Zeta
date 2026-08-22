@@ -1,0 +1,15 @@
+{
+  "pr_number": 9105,
+  "archive_path": "docs/history/pr-reviews/PR-9105-feat-algebra-the-iring-isemiring-split-atomic-across-six-oracles-the-ir-treaty-s.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7ROo1V",
+    "thread:PRRT_kwDOSF9kNM6NxbYq"
+  ],
+  "fetched_at": "2026-08-17T04:04:30.623Z",
+  "schema_version": "v1",
+  "commit_sha": "a6bd426e3aca09ff88c78eb6f7af6788368cb41b",
+  "title": "feat(algebra)!: the IRing/ISemiring split — atomic across six oracles + the IR treaty (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-02T03:24:59Z",
+  "head_ref": "otto/iring-split-pr-b-atomic-break-081KWG9JQ9H"
+}

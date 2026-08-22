@@ -62,11 +62,30 @@ export function applyDelta(graph: DependencyGraph, delta: PackageDelta): Depende
 
 /**
  * Compute the Merkle root of the dependency graph.
- * STUB: simple deterministic hash. Real: ZSetMerkle algorithm.
+ *
+ * NOT AN INTEGRITY PRIMITIVE — read this before trusting the return value.
+ * The name says "Merkle root" and the `zeta:` prefix reads like a content
+ * address, but the body is `h = h * 31 + charCode | 0` — Java's
+ * `String.hashCode` (Bloch, *Effective Java*): non-cryptographic, **32 bits**
+ * wide, and not a Merkle construction at all. There is no tree, so it proves no
+ * inclusion and supports no partial verification, and collisions are
+ * constructible rather than merely birthday-bounded. It is adequate ONLY as a
+ * local change-detection checksum, which is what it is used for today.
+ *
+ * The real thing is `src/Core.CSharp/ZSetMerkle.cs`. Replacing this is a
+ * separate, deliberate decision — it changes every emitted root — and is filed
+ * rather than folded into the collation sweep that touched the line below.
+ *
+ * What the collation sweep DID fix: the entries feeding the hash were ordered by
+ * `localeCompare`, so the "root" depended on the running machine's locale. The
+ * package names in the registry today are lowercase-alphanumeric, a domain on
+ * which locale order and code-point order agree (measured: 0 mismatches over
+ * the observed name set), so no currently-emitted root changes — but the
+ * divergence was latent and would have activated on the first mixed-case name.
  */
 export function graphMerkleRoot(graph: DependencyGraph): string {
   const entries = Array.from(graph.entries())
-    .sort(([a], [b]) => a.localeCompare(b))
+    .sort(([a], [b]) => stringCompare(a, b))
     .map(([name, e]) => `${name}@${e.version}:${e.contentAddress}:${e.weight}`);
   let hash = 0;
   for (const entry of entries) {
@@ -207,7 +226,7 @@ export function list(graph: DependencyGraph, filterPm?: PackageEntry["packageMan
   const entries = Array.from(graph.values())
     .filter((e) => e.weight > 0)
     .filter((e) => !filterPm || e.packageManager === filterPm)
-    .sort((a, b) => a.name.localeCompare(b.name));
+    .sort((a, b) => stringCompare(a.name, b.name));
   if (entries.length === 0)
     return { success: true, message: `No packages installed${filterPm ? ` (${filterPm})` : ""}.`, entries: [] };
   const lines = entries.map((e) => `  ${e.name}@${e.version} [${e.packageManager}] ${e.contentAddress}`);
@@ -240,6 +259,7 @@ export const emptyGraph: DependencyGraph = new Map();
 
 import { createDimensionalBnn, absorbError, type DimensionalBnn } from "../planning/error-bnn-bridge";
 import { teachingError, type ErrorMirror } from "../protocol/error-envelope";
+import { stringCompare } from "../collation/collation";
 
 /** The per-CLI DimensionalBnn — one StudentTState per error dimension. */
 export const aceBnn: DimensionalBnn = createDimensionalBnn();

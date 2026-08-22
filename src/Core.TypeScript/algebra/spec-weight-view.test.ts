@@ -106,6 +106,29 @@ describe("MeteredSpecWeightTracker — composed flat + ranked", () => {
     expect(metered.view.potential).toBe(0); // window reset
   });
 
+  test("a ZERO-bit measurement discharges nothing — the window only pays when bits were paid", () => {
+    // `recordFlush` used to ignore its argument (`_bitsErased`), so `measure(0)` wiped the
+    // accumulated potential exactly as hard as `measure(1000)`. Harmless while every caller passed
+    // a positive literal; not harmless now that reversible operations charge a DERIVED zero
+    // (erasure-derivation.ts) — the point of a derived zero is that nothing was paid.
+    const tracker = createEntropyTracker();
+    const metered = createMeteredSpecWeightTracker(tracker);
+
+    metered.branch();
+    metered.branch();
+    metered.branch();
+    metered.branch(); // view: potential = T(4) = 6
+
+    metered.measure(0); // a reversible operation: erases nothing, so pays nothing
+
+    expect(tracker.state.entropy_heat).toBe(0);
+    expect(metered.view.potential).toBe(6); // window intact — nothing was discharged
+    expect(metered.view.state.branches).toBe(4);
+
+    metered.measure(4); // a real erasure DOES discharge it
+    expect(metered.view.potential).toBe(0);
+  });
+
   test("observe is free on both (Adj, no view change)", () => {
     const tracker = createEntropyTracker();
     const metered = createMeteredSpecWeightTracker(tracker);

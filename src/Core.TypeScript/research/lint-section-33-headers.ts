@@ -21,11 +21,11 @@
 //   - "Archive scope (per GOVERNANCE §33)" anywhere in first 20 lines
 //
 // Usage:
-//   bun tools/research/lint-section-33-headers.ts                # lint all docs/research/
-//   bun tools/research/lint-section-33-headers.ts --file <path>  # lint specific file
-//   bun tools/research/lint-section-33-headers.ts --strict       # exit 1 on findings
-//   bun tools/research/lint-section-33-headers.ts --max-header N # header block window (default 20 per §33 spec)
-//   bun tools/research/lint-section-33-headers.ts --base-dir D   # scan directory (default docs/research)
+//   bun src/Core.TypeScript/research/lint-section-33-headers.ts                # lint all docs/research/
+//   bun src/Core.TypeScript/research/lint-section-33-headers.ts --file <path>  # lint specific file
+//   bun src/Core.TypeScript/research/lint-section-33-headers.ts --strict       # exit 1 on findings
+//   bun src/Core.TypeScript/research/lint-section-33-headers.ts --max-header N # header block window (default 20 per §33 spec)
+//   bun src/Core.TypeScript/research/lint-section-33-headers.ts --base-dir D   # scan directory (default docs/research)
 //
 // Label format: accepts plain (`Scope: text`), bold-inline (`**Scope:**`),
 // and ATX-heading (`## Scope`) variants. List-form (`- **Scope:** ...`) is NOT
@@ -89,7 +89,7 @@ function parseArgs(argv: string[]): Args {
         }
         else if (a === "--base-dir" && next) { args.baseDir = next; i++; }
         else if (a === "--help" || a === "-h") {
-            process.stdout.write("Usage: bun tools/research/lint-section-33-headers.ts [--file PATH] [--strict] [--max-header N] [--base-dir D]\n");
+            process.stdout.write("Usage: bun src/Core.TypeScript/research/lint-section-33-headers.ts [--file PATH] [--strict] [--max-header N] [--base-dir D]\n");
             process.exit(0);
         }
         else { process.stderr.write("unknown arg: " + a + "\n"); process.exit(2); }

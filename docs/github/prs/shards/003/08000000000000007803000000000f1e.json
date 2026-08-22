@@ -1,0 +1,17 @@
+{
+  "pr_number": 3870,
+  "archive_path": "docs/history/pr-reviews/PR-3870-memory-feedback-audit-backlog-status-drift-sub-class-catalog-from-2026-05-16-ses.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7B4V63",
+    "comment:PRRC_kwDOSF9kNM7B4WXI",
+    "thread:PRRT_kwDOSF9kNM6CjlLa",
+    "thread:PRRT_kwDOSF9kNM6CjliK"
+  ],
+  "fetched_at": "2026-05-16T13:04:49.362Z",
+  "schema_version": "v1",
+  "commit_sha": "89e68520dccc1f3061b1dc25ebd36637e1693d33",
+  "title": "memory(feedback): audit-backlog-status-drift sub-class catalog from 2026-05-16 session",
+  "state": "MERGED",
+  "merged_at": "2026-05-16T13:04:34Z",
+  "head_ref": "otto-cli-audit-subclass-catalog-2026-05-16-1156z"
+}

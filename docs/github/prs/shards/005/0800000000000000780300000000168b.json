@@ -1,0 +1,12 @@
+{
+  "pr_number": 5771,
+  "archive_path": "docs/history/pr-reviews/PR-5771-feat-composed-lifetime-double-dispatch-substrate-for-2-editable-lifetime-dus-aar.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-28T11:28:12.350Z",
+  "schema_version": "v1",
+  "commit_sha": "e19f91e9c3ad47d58fa8d095e4331b52060421ce",
+  "title": "feat(composed-lifetime): double-dispatch substrate for 2 editable-lifetime DUs (Aaron 2026-05-28 + lifetime-not-lifecycle naming sharpening); 11 tests pass",
+  "state": "MERGED",
+  "merged_at": "2026-05-28T11:27:51Z",
+  "head_ref": "otto-cli/double-dispatch-composed-lifetime-substrate-pattern-3-template-literal-type-composes-two-editable-lifetime-dus-2026-05-28"
+}

@@ -1,0 +1,21 @@
+{
+  "pr_number": 4110,
+  "archive_path": "docs/history/pr-reviews/PR-4110-rules-holding-pre-empt-substrate-pool-saturation-anchor-forced-6-self-documentin.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7CDCRu",
+    "comment:PRRC_kwDOSF9kNM7CDCRw",
+    "comment:PRRC_kwDOSF9kNM7CDCSS",
+    "comment:PRRC_kwDOSF9kNM7CDFMY",
+    "thread:PRRT_kwDOSF9kNM6Cr1Mw",
+    "thread:PRRT_kwDOSF9kNM6Cry7k",
+    "thread:PRRT_kwDOSF9kNM6Cry7m",
+    "thread:PRRT_kwDOSF9kNM6Cry8E"
+  ],
+  "fetched_at": "2026-05-17T22:34:58.216Z",
+  "schema_version": "v1",
+  "commit_sha": "4d6512cd3b080c6e82bb8daef869d59caa1f6a5c",
+  "title": "rules(holding): pre-empt-substrate-pool-saturation anchor (forced-#6 self-documenting)",
+  "state": "MERGED",
+  "merged_at": "2026-05-17T22:34:41Z",
+  "head_ref": "rule-anchor/holding-pre-empt-cadence-saturation-2026-05-17-2213z"
+}

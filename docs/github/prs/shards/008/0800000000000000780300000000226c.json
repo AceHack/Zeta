@@ -1,0 +1,12 @@
+{
+  "pr_number": 8812,
+  "archive_path": "docs/history/pr-reviews/PR-8812-feat-core-evolve-zeta-ir-to-v4-with-add-op-anchored-to-lcg64-mmix.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-20T23:49:14.552Z",
+  "schema_version": "v1",
+  "commit_sha": "f4033f46f88aaee313458176c3836e62dcd4c420",
+  "title": "feat(core): evolve zeta-ir to v4 with add op, anchored to lcg64_mmix",
+  "state": "MERGED",
+  "merged_at": "2026-06-20T23:48:51Z",
+  "head_ref": "feature/lumen-zeta-ir-v4-lcg64-mmix"
+}

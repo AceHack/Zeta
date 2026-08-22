@@ -1,0 +1,12 @@
+{
+  "pr_number": 7237,
+  "archive_path": "docs/history/pr-reviews/PR-7237-feat-node-register-node-ad1efd-self-registers-via-iter-5-4-1.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-09T10:49:27.686Z",
+  "schema_version": "v1",
+  "commit_sha": "bb58164158faa3419993b524349065fe918e51f4",
+  "title": "feat(node-register): node-ad1efd self-registers via iter-5.4.1",
+  "state": "MERGED",
+  "merged_at": "2026-06-09T10:49:04Z",
+  "head_ref": "register-node-ad1efd-20260609T090917Z"
+}

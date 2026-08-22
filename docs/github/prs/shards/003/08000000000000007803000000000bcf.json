@@ -1,0 +1,12 @@
+{
+  "pr_number": 3023,
+  "archive_path": "docs/history/pr-reviews/PR-3023-feat-bg-b-0442-4-bus-publish-wiring-slice-3-detector-is-stub-substrate-honest-pe.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-13T19:30:11.876Z",
+  "schema_version": "v1",
+  "commit_sha": "a12d79534248dde8088cd8613623198f58fdcd47",
+  "title": "feat(bg): B-0442.4 — bus publish WIRING (slice-3 detector is STUB; substrate-honest per Riven's P0 caution)",
+  "state": "MERGED",
+  "merged_at": "2026-05-13T19:29:53Z",
+  "head_ref": "otto-b0442-4-bus-publish-slice-4-impl-2026-05-13"
+}

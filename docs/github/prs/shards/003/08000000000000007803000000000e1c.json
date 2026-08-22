@@ -1,0 +1,12 @@
+{
+  "pr_number": 3612,
+  "archive_path": "docs/history/pr-reviews/PR-3612-shard-tick-2221z-graphql-rate-limit-hit-named-dependency-wait.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-15T22:58:13.164Z",
+  "schema_version": "v1",
+  "commit_sha": "e559e4bcb9b911af9d1d31a0bd02f4f663b28ea6",
+  "title": "shard(tick): 2221Z — GraphQL rate-limit hit; named-dependency wait",
+  "state": "MERGED",
+  "merged_at": "2026-05-15T22:57:58Z",
+  "head_ref": "shard/tick-2221z-otto-cli-2026-05-15"
+}

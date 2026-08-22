@@ -1,0 +1,12 @@
+{
+  "pr_number": 2981,
+  "archive_path": "docs/history/pr-reviews/PR-2981-docs-memory-ace-package-manager-homebrew-shape-bootstrap-website-chat-interface-.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-13T09:19:07.638Z",
+  "schema_version": "v1",
+  "commit_sha": "540ce064a187472ee08c2796848f6ae45fccec56",
+  "title": "docs(memory): ACE package manager + Homebrew-shape bootstrap + website + chat interface = full distribution stack with NO SETUP NEEDED (Aaron 2026-05-13)",
+  "state": "MERGED",
+  "merged_at": "2026-05-13T09:18:44Z",
+  "head_ref": "aaron-ace-package-manager-homebrew-shape-bootstrap-website-chat-interface-full-distribution-stack-no-setup-needed-2026-05-13"
+}

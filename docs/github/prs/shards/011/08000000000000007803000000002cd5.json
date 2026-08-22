@@ -1,0 +1,12 @@
+{
+  "pr_number": 11477,
+  "archive_path": "docs/history/pr-reviews/PR-11477-feat-zflash-give-a-flashed-medium-a-role-scenario-5-s-joining-node-could-never-b.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-21T05:57:59.715Z",
+  "schema_version": "v1",
+  "commit_sha": "2970b64509c30ba0187b4aaa561576ba8de7344f",
+  "title": "feat(zflash): give a flashed medium a role — scenario 5's joining node could never be a joiner",
+  "state": "MERGED",
+  "merged_at": "2026-08-17T14:06:23Z",
+  "head_ref": "shadow/zflash-scenario5-role-provisioning"
+}

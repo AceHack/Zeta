@@ -34,7 +34,55 @@ spec:
           enabled: false
         app:
           trust:
-            namespace: cert-manager
+            # THE TRUST NAMESPACE IS `openziti`, NOT `cert-manager`, AND THAT IS
+            # AN UPSTREAM REQUIREMENT RATHER THAN A PREFERENCE.
+            #
+            # trust-manager resolves a Bundle's `spec.sources[].secret` /
+            # `.configMap` ONLY from this one namespace. Measured against the
+            # PINNED chart v0.15.0, not assumed:
+            #   * its Bundle CRD (`crd-trust.cert-manager.io_bundles.yaml`)
+            #     documents both source kinds as read "in the trust Namespace"
+            #     and offers NO per-source `namespace` field at v1alpha1, which
+            #     is the only served version;
+            #   * `deployment.yaml:86` passes `--trust-namespace=<one string>`;
+            #   * `role.yaml` creates the Role granting get/list/watch on
+            #     Secrets in THAT namespace and nowhere else -- so this is an
+            #     RBAC boundary, not merely a lookup default.
+            #
+            # ziti-controller 3.1.1 renders a Bundle whose only source is
+            # `secret: ziti-controller-edge-signer-secret`, minted by a
+            # cert-manager Certificate into the controller's OWN namespace. Its
+            # chart README states the consequence in its own words: "It is a
+            # limitation of Trust Manager to have one instance per cluster and
+            # one namespace from which trust Bundle inputs may be sourced ... You
+            # must set the Trust Manager's 'trust namespace' to the namespace of
+            # the Ziti controller" (ziti-controller/README.md:33, with the
+            # `--set app.trust.namespace=ziti` example at :43).
+            #
+            # WHAT THIS COSTS, said out loud: the trust namespace is a
+            # CLUSTER-WIDE SINGLETON, so pointing it at an application namespace
+            # spends it. A second Bundle wanting a source from `cert-manager`
+            # cannot be served without moving this back, and the two cannot both
+            # be satisfied at this chart version. That is affordable today for a
+            # checkable reason and not a hopeful one: `kind: Bundle` appears
+            # nowhere in `full-ai-cluster/` or `src/Core.TypeScript/cluster/`,
+            # and `defaultPackage.enabled` is false, so openziti is the ONLY
+            # consumer trust-manager has. When a second one arrives this becomes
+            # a real conflict and the answer is a trust-manager version whose
+            # sources can name their own namespace -- not a second install, which
+            # would have both controllers reconciling every Bundle cluster-wide.
+            #
+            # WHAT MOVES WHEN THIS VALUE MOVES, measured by diffing the two
+            # renders: exactly three lines -- the Secrets Role, its RoleBinding,
+            # and the `--trust-namespace` flag. trust-manager itself still RUNS
+            # in `cert-manager` (`spec.destination.namespace` below), and its own
+            # webhook Certificate/Service are unmoved.
+            #
+            # ORDERING: this Role lands at sync-wave -45, and a Role applied into
+            # a namespace that does not exist is a sync failure. `openziti` is
+            # created ahead of it by `k8s/bootstrap/openziti-namespace.yaml` on
+            # metal and by `applyDevBootstrapSecrets` in the dev/CI lane.
+            namespace: openziti
   destination:
     server: https://kubernetes.default.svc
     namespace: cert-manager   # trust-manager runs in the cert-manager namespace

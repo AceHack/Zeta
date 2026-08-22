@@ -1,0 +1,12 @@
+{
+  "pr_number": 9486,
+  "archive_path": "docs/history/pr-reviews/PR-9486-codex-add-heat-receipt-provenance-lane.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-04T19:49:28.382Z",
+  "schema_version": "v1",
+  "commit_sha": "68c76e8e7d8b6c945588a9932c770b9497111c6b",
+  "title": "[codex] add heat receipt provenance lane",
+  "state": "MERGED",
+  "merged_at": "2026-07-04T19:49:00Z",
+  "head_ref": "codex/heat-receipt-provenance"
+}

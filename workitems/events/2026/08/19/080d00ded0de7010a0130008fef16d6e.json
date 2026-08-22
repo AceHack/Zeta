@@ -1,0 +1,14 @@
+{
+  "id": "080d00ded0de7010a0130008fef16d6e",
+  "at": "2026-08-19T21:07:53.934Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M0DXM6YD087G0R00397CAQE",
+    "type": "task",
+    "title": "Semgrep: peer-choice reaches an agent only through the declared channel (M2 ablation completeness)",
+    "slug": "semgrep-peer-choice-reaches-an-agent-only-through-the-declar",
+    "priority": "P2",
+    "filename": "081M0DXM6YD087G0R00397CAQE-semgrep-peer-choice-reaches-an-agent-only-through-the-declar.md"
+  }
+}

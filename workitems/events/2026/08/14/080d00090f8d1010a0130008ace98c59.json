@@ -1,0 +1,14 @@
+{
+  "id": "080d00090f8d1010a0130008ace98c59",
+  "at": "2026-08-14T16:36:36.898Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M00J3WD2087G0R00149C8ZD",
+    "type": "task",
+    "title": "helm-validate could not go red: real YAML parse, exact chart-version resolution, helm template + kubeconform, daily cadence",
+    "slug": "helm-validate-could-not-go-red-real-yaml-parse-exact-chart-v",
+    "priority": "P2",
+    "filename": "081M00J3WD2087G0R00149C8ZD-helm-validate-could-not-go-red-real-yaml-parse-exact-chart-v.md"
+  }
+}

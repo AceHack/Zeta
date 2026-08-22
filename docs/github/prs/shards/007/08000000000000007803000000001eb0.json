@@ -1,0 +1,12 @@
+{
+  "pr_number": 7856,
+  "archive_path": "docs/history/pr-reviews/PR-7856-refactor-unify-move-next-into-observe-framework-per-rodney-razor.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-12T00:29:47.238Z",
+  "schema_version": "v1",
+  "commit_sha": "c859c80ea36aa51083fe519b96b67a43272af0df",
+  "title": "refactor: unify move-next into observe framework (per Rodney razor)",
+  "state": "MERGED",
+  "merged_at": "2026-06-12T00:29:22Z",
+  "head_ref": "alexa/unify-observe-move-next"
+}

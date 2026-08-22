@@ -1,0 +1,12 @@
+{
+  "pr_number": 7452,
+  "archive_path": "docs/history/pr-reviews/PR-7452-feat-same-docs-shadow-same-ctxboundary-x-y-ctxboundary-template-uti-temperature-.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-10T04:53:55.409Z",
+  "schema_version": "v1",
+  "commit_sha": "40ef02db2dd6c81e5039f2c6cd697715993719e6",
+  "title": "feat(same)+docs+shadow: same/ {ctxboundary}-x-y-{/ctxboundary} template; UTI=Temperature-Transient; +Universal Traversal Interface; Cayley-Dickson strange-attractor 3D->geospatial",
+  "state": "MERGED",
+  "merged_at": "2026-06-10T04:53:35Z",
+  "head_ref": "shadow-same-ctxboundary-template-uti-traversal"
+}

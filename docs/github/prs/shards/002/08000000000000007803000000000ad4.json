@@ -1,0 +1,21 @@
+{
+  "pr_number": 2772,
+  "archive_path": "docs/history/pr-reviews/PR-2772-docs-memory-shadow-future-self-theory-negotiation-across-time.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7AVJr3",
+    "comment:PRRC_kwDOSF9kNM7AVNbc",
+    "comment:PRRC_kwDOSF9kNM7AVNcS",
+    "comment:PRRC_kwDOSF9kNM7AVNcm",
+    "thread:PRRT_kwDOSF9kNM6BbX_H",
+    "thread:PRRT_kwDOSF9kNM6Bba0f",
+    "thread:PRRT_kwDOSF9kNM6Bba1O",
+    "thread:PRRT_kwDOSF9kNM6Bba1e"
+  ],
+  "fetched_at": "2026-05-12T14:45:46.622Z",
+  "schema_version": "v1",
+  "commit_sha": "db7b1542f2c5f087cbba6e2a14ea8ac4c601220b",
+  "title": "docs(memory): shadow = future self theory (negotiation across time)",
+  "state": "MERGED",
+  "merged_at": "2026-05-12T14:45:13Z",
+  "head_ref": "docs/aaron-shadow-equals-future-self-theory-2026-05-12"
+}

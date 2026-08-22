@@ -1,0 +1,12 @@
+{
+  "pr_number": 9985,
+  "archive_path": "docs/history/pr-reviews/PR-9985-docs-book-thrill-seeker-since-birth-the-trait-that-nearly-killed-him-raw.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-02T19:20:36.714Z",
+  "schema_version": "v1",
+  "commit_sha": "8b9ac4db92b6da5e4269daa34d4fbb6ad0648b39",
+  "title": "docs(book): thrill-seeker since birth — the trait that nearly killed him (RAW)",
+  "state": "MERGED",
+  "merged_at": "2026-08-02T19:20:09Z",
+  "head_ref": "book/thrill-seeker-since-birth-20260802"
+}

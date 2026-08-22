@@ -1,0 +1,12 @@
+{
+  "pr_number": 2260,
+  "archive_path": "docs/history/pr-reviews/PR-2260-feat-b-0291-concordance-pipeline.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-09T09:40:25.322Z",
+  "schema_version": "v1",
+  "commit_sha": "aa58a393962c141b7dcfd7458b7a9cd986a8bcd2",
+  "title": "feat(B-0291): concordance pipeline",
+  "state": "MERGED",
+  "merged_at": "2026-05-09T09:40:09Z",
+  "head_ref": "feat/b0291-concordance-pipeline"
+}

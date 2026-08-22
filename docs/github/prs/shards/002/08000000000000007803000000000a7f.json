@@ -1,0 +1,21 @@
+{
+  "pr_number": 2687,
+  "archive_path": "docs/history/pr-reviews/PR-2687-docs-backlog-decompose-b-0103-into-4-smallest-atomic-dependency-ordered-ts-prefe.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_1JCx",
+    "comment:PRRC_kwDOSF9kNM6_1NEN",
+    "comment:PRRC_kwDOSF9kNM6_1NFL",
+    "comment:PRRC_kwDOSF9kNM6_1TBM",
+    "thread:PRRT_kwDOSF9kNM6BDowL",
+    "thread:PRRT_kwDOSF9kNM6BDr10",
+    "thread:PRRT_kwDOSF9kNM6BDr2h",
+    "thread:PRRT_kwDOSF9kNM6BDwUJ"
+  ],
+  "fetched_at": "2026-05-11T11:17:47.542Z",
+  "schema_version": "v1",
+  "commit_sha": "1dde2b93b4d4cd3127ccc230815b93780e66ee2a",
+  "title": "docs(backlog): decompose B-0103 into 4 smallest atomic dependency-ordered TS-preferring children (re-decomp, one bounded step)",
+  "state": "MERGED",
+  "merged_at": "2026-05-11T11:17:23Z",
+  "head_ref": "claim/B-0103-decompose-smallest-atomic-children-riven-2026-05-11"
+}

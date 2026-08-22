@@ -1,0 +1,12 @@
+{
+  "pr_number": 5743,
+  "archive_path": "docs/history/pr-reviews/PR-5743-docs-rule-mutual-help-not-shame-when-rules-broken-by-anyone-operator-explicit-ca.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-28T10:08:19.416Z",
+  "schema_version": "v1",
+  "commit_sha": "980020617dd4eb4d3e8325682722cbc89541ee15",
+  "title": "docs(rule): mutual-help-not-shame when rules broken by anyone — operator-explicit canonical-tier landing (Aaron Turn 38; 1/5)",
+  "state": "MERGED",
+  "merged_at": "2026-05-28T10:07:56Z",
+  "head_ref": "otto-cli/mutual-help-not-shame-rule-aaron-2026-05-28"
+}

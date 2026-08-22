@@ -1,0 +1,12 @@
+{
+  "pr_number": 5096,
+  "archive_path": "docs/history/pr-reviews/PR-5096-backlog-b-0773-p1-re-land-cluster-as-digital-twin-git-native-event-store-native-.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-26T05:05:16.020Z",
+  "schema_version": "v1",
+  "commit_sha": "d5c389fb63666d825a3cc896fb81343e7c7642f3",
+  "title": "backlog(B-0773 P1): re-land cluster as digital twin — git-native + event-store-native + AI-native; unifying frame for B-0772 fabric",
+  "state": "MERGED",
+  "merged_at": "2026-05-26T05:04:57Z",
+  "head_ref": "otto-cli/reland-b0773-0504z"
+}

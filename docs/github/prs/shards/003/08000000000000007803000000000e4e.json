@@ -1,0 +1,12 @@
+{
+  "pr_number": 3662,
+  "archive_path": "docs/history/pr-reviews/PR-3662-fix-pr-3657-0043z-shard-copilot-p1-redundancy-ci-lint-fix-counted-twice.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-16T01:11:22.595Z",
+  "schema_version": "v1",
+  "commit_sha": "e7c3b3291386e39f65320eca611bdac50a71ebdf",
+  "title": "fix(pr-3657): 0043Z shard — Copilot P1 redundancy (CI lint fix counted twice)",
+  "state": "MERGED",
+  "merged_at": "2026-05-16T01:11:06Z",
+  "head_ref": "fix/pr-3657-redundancy-otto-cli-2026-05-16"
+}

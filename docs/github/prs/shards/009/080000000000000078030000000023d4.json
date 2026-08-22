@@ -1,0 +1,15 @@
+{
+  "pr_number": 9172,
+  "archive_path": "docs/history/pr-reviews/PR-9172-feat-core-schedulerzeta-wire-the-dynamical-zeta-into-the-soft-scheduler-self-pre.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7RhNEE",
+    "thread:PRRT_kwDOSF9kNM6N_DiM"
+  ],
+  "fetched_at": "2026-08-17T12:29:25.909Z",
+  "schema_version": "v1",
+  "commit_sha": "87d76547b4dc8cb90431f1dfd1b70f51f851bf05",
+  "title": "feat(core): SchedulerZeta - wire the dynamical zeta into the soft scheduler (self-prediction)",
+  "state": "MERGED",
+  "merged_at": "2026-07-02T17:52:55Z",
+  "head_ref": "otto/scheduler-zeta-self-prediction"
+}

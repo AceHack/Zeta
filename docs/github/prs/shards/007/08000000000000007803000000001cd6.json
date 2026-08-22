@@ -1,0 +1,12 @@
+{
+  "pr_number": 7382,
+  "archive_path": "docs/history/pr-reviews/PR-7382-docs-feat-vocab-coredora-vocab-is-the-core-health-un-room-maintains-it-dogfooded.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-09T19:48:32.056Z",
+  "schema_version": "v1",
+  "commit_sha": "c50198104634ecb7592877a06d4b94aa55d274fb",
+  "title": "docs+feat(vocab): CoreDORA = vocab is the core health, UN room maintains it (dogfooded with local LLMs); LLM-shape-is-the-interface; words global but multi-sense w/ context policy; policy is a traveler",
+  "state": "MERGED",
+  "merged_at": "2026-06-09T19:48:06Z",
+  "head_ref": "otto/coredora-vocab-health-room-maintainer-dogfood-local-llm-policy-traveler"
+}

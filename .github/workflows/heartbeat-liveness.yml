@@ -1,0 +1,140 @@
+# Watchdog: has the agent-heartbeat lane SUCCEEDED recently?
+#
+# WHY A SEPARATE WORKFLOW AND NOT ANOTHER STEP IN agent-heartbeat.yml.
+#
+# agent-heartbeat.yml already carries "Measure cadence (declared vs actual — detect silent
+# degradation)". That step sits inside the heartbeat job, downstream of "Accumulate unflushed
+# heartbeat state over current main", with no `if:` — so it inherits the default `success()`
+# gate. Between 2026-08-16T23:05Z and 2026-08-17T00:49Z the accumulate step failed on every
+# tick and the cadence step was `skipped` on every one of them. The check built to detect
+# silent degradation is switched off by the degradation. It speaks only while the thing it
+# watches is healthy.
+#
+# It also cannot see the other failure mode. It reads docs/observe-events/*.json from inside a
+# run, so it only ever measures ticks that HAPPENED. GitHub delays and DROPS scheduled runs
+# under load — measured on this repo over 2026-08-16T00:19Z..2026-08-17T00:49Z, the lane fired
+# 84 scheduled runs against the 100 slots a 15-minute cron declares (16% dropped), with
+# inter-run gaps of 12..43 minutes (p50 16, p90 27) and whole hours reduced to one or two runs.
+# When a slot is dropped there is no run, and nothing that only executes inside a run can
+# notice. An outage made of runs NOT HAPPENING is invisible from inside the lane.
+#
+# Cron punctuality is not the defect and is not fixable from here — GitHub's scheduler is
+# best-effort by documented design, and a dropped tick is recoverable because the lane carries
+# its unflushed state forward. The defect is that a missed tick is SILENT, so a recoverable
+# 15-minute gap and an unrecoverable multi-hour outage look identical from the outside. This
+# workflow makes only the second one loud.
+#
+# LEVEL-TRIGGERED, NEVER EDGE-TRIGGERED. It asks "how old is the newest success?" rather than
+# "did a tick just land?". That distinction is what keeps the watchdog correct when its OWN
+# cron slot is dropped — the same GitHub behaviour it is watching for applies to this workflow
+# too. A level check that runs late still gives the right answer; an edge check would miss the
+# edge and go quiet, reproducing the bug it exists to catch.
+#
+# The threshold is 60 minutes, sized off measured behaviour rather than the declared 15: the
+# worst observed healthy gap was 43 minutes, so anything at or below that fires on GitHub's
+# normal jitter, and an alarm that cries wolf gets muted — a slower way of having no alarm.
+# 60 is four consecutive missed slots.
+
+name: heartbeat-liveness
+
+on:
+  schedule:
+    - cron: "*/15 * * * *"
+  workflow_dispatch:
+    inputs:
+      stale_after_minutes:
+        description: "Minutes without a successful heartbeat before this fails"
+        required: false
+        default: "60"
+
+permissions:
+  actions: read # read agent-heartbeat run history — the whole input to the verdict
+  issues: write # raise/refresh the tracking issue so the alarm survives outside Actions
+  contents: read
+
+concurrency:
+  group: heartbeat-liveness
+  # SAFE TO CANCEL HERE, unlike the heartbeat lane. This job holds no state and writes no
+  # commits; every run recomputes the same level from scratch. A newer check strictly
+  # supersedes an older queued one, so coalescing loses nothing.
+  cancel-in-progress: true
+
+jobs:
+  check:
+    name: No successful heartbeat in N minutes?
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Setup bun
+        uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
+        with:
+          bun-version: latest
+
+      - name: Fetch agent-heartbeat run history
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REPO: ${{ github.repository }}
+        run: |
+          set -euo pipefail
+          # Unfiltered by event on purpose: a manual workflow_dispatch that succeeds is still
+          # proof the lane can produce a good tick, and suppressing it would raise a false alarm
+          # during exactly the manual recovery a real outage triggers.
+          #
+          # NOT piped through `|| echo '[]'`. If this call fails the step must fail here, where
+          # the cause is legible, rather than handing the assessor an empty array — which it
+          # would correctly but misleadingly report as "the lane is stopped", a real-looking
+          # finding nobody actually observed.
+          gh api "repos/${REPO}/actions/workflows/agent-heartbeat.yml/runs?per_page=50" > runs.json
+          echo "fetched $(bun -e 'console.log(JSON.parse(require("fs").readFileSync("runs.json","utf8")).workflow_runs.length)') runs"
+
+      - name: Assess liveness
+        id: assess
+        env:
+          STALE_AFTER_MINUTES: ${{ github.event.inputs.stale_after_minutes || '60' }}
+        run: |
+          set -euo pipefail
+          # Exits non-zero when the lane is not alive. That non-zero IS the alarm — this step is
+          # deliberately not `continue-on-error`, because a watchdog that cannot turn the run red
+          # reports nothing a human will ever see.
+          bun src/Core.TypeScript/agent-heartbeats/heartbeat-liveness.ts runs.json "$STALE_AFTER_MINUTES" \
+            | tee liveness.txt
+
+      - name: Raise or refresh the tracking issue
+        # `failure()` only — scoped to this job's own failure so an infrastructure error in
+        # checkout/setup does not get reported to humans as a heartbeat outage.
+        if: failure() && steps.assess.outcome == 'failure'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REPO: ${{ github.repository }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          set -euo pipefail
+          # A red run in a repo with 60+ workflows is easy to miss, and the heartbeat lane
+          # itself is often already red for its own reasons. One deduplicated issue is the
+          # surface that survives outside the Actions tab.
+          summary="$(head -n 1 liveness.txt 2>/dev/null || echo '[heartbeat-liveness] lane not alive')"
+          title="heartbeat-liveness: the agent-heartbeat lane has stopped succeeding"
+
+          if ! gh label create heartbeat-liveness \
+            --repo "$REPO" \
+            --description "Raised by heartbeat-liveness.yml when no agent-heartbeat run has succeeded within the threshold" \
+            --color "B60205" 2>label_err.txt; then
+            # Only "already exists" is benign. Permission and rate-limit failures must surface,
+            # not be swallowed into a silent no-op.
+            grep -q "already exists" label_err.txt || { cat label_err.txt >&2; exit 1; }
+          fi
+
+          existing="$(gh issue list --repo "$REPO" --label heartbeat-liveness --state open --limit 1 --json number --jq '.[0].number // empty')"
+          body="$(printf '%s\n\nWatchdog run: %s\n\nThe lane carries unflushed state forward, so a single dropped tick is recoverable and this threshold is set well above GitHub'"'"'s normal scheduling jitter (worst healthy gap measured: 43min). This firing means successes have stopped, not merely that a tick was late.\n\nThis issue does not auto-close. Close it once heartbeats are succeeding again.\n' "$summary" "$RUN_URL")"
+
+          if [ -n "$existing" ]; then
+            gh issue comment "$existing" --repo "$REPO" --body "$body"
+          else
+            gh issue create --repo "$REPO" --title "$title" --body "$body" --label heartbeat-liveness
+          fi

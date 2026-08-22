@@ -1,0 +1,15 @@
+{
+  "pr_number": 4261,
+  "archive_path": "docs/history/pr-reviews/PR-4261-chore-rule-forced-6-meta-decomposition-empirical-anchor-for-post-arc-operator-of.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7Ceov2",
+    "thread:PRRT_kwDOSF9kNM6DABTj"
+  ],
+  "fetched_at": "2026-05-18T23:43:20.768Z",
+  "schema_version": "v1",
+  "commit_sha": "b1a633ddd338add7fa8e603ddcc671bacaf62207",
+  "title": "chore(rule): forced-#6 meta-decomposition — empirical anchor for post-arc operator-offline saturation",
+  "state": "MERGED",
+  "merged_at": "2026-05-18T23:43:05Z",
+  "head_ref": "chore/holding-rule-empirical-anchor-post-arc-operator-offline-saturation-meta-decomposition-2026-05-18"
+}

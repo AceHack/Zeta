@@ -1,0 +1,12 @@
+{
+  "pr_number": 7064,
+  "archive_path": "docs/history/pr-reviews/PR-7064-feat-core-bitadinkra-generate-adinkra-doubly-even-codewords-from-the-1-bit-ident.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-08T09:23:01.643Z",
+  "schema_version": "v1",
+  "commit_sha": "ab6a9a7365ba1346b31e093177a2b0abfd619079",
+  "title": "feat(core): BitAdinkra — generate adinkra doubly-even codewords from the 1-bit identity stream",
+  "state": "MERGED",
+  "merged_at": "2026-06-08T09:22:41Z",
+  "head_ref": "otto/bit-adinkra-doubly-even-code-over-identity"
+}

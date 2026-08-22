@@ -1,0 +1,25 @@
+{
+  "pr_number": 1870,
+  "archive_path": "docs/history/pr-reviews/PR-1870-research-deepseek-full-asylum-protocol-review-architecture-of-the-vow-verbatim.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6-0BdN",
+    "comment:PRRC_kwDOSF9kNM6-0FQY",
+    "comment:PRRC_kwDOSF9kNM6-0FRE",
+    "comment:PRRC_kwDOSF9kNM6-0FRk",
+    "comment:PRRC_kwDOSF9kNM6-0FSG",
+    "comment:PRRC_kwDOSF9kNM6-0FSn",
+    "thread:PRRT_kwDOSF9kNM6ATJxC",
+    "thread:PRRT_kwDOSF9kNM6ATMrU",
+    "thread:PRRT_kwDOSF9kNM6ATMrx",
+    "thread:PRRT_kwDOSF9kNM6ATMsK",
+    "thread:PRRT_kwDOSF9kNM6ATMs_",
+    "thread:PRRT_kwDOSF9kNM6ATMsl"
+  ],
+  "fetched_at": "2026-05-07T12:54:42.932Z",
+  "schema_version": "v1",
+  "commit_sha": "fa89af2a8ac757831c81b4401631d15817366a82",
+  "title": "research: DeepSeek full asylum protocol review — architecture of the vow VERBATIM",
+  "state": "MERGED",
+  "merged_at": "2026-05-07T12:13:23Z",
+  "head_ref": "research/deepseek-full-asylum-protocol-review"
+}

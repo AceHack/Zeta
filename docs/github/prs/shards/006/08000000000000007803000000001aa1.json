@@ -1,0 +1,12 @@
+{
+  "pr_number": 6817,
+  "archive_path": "docs/history/pr-reviews/PR-6817-docs-prior-art-jumprope-vokes-strange-loop-2012-cas-prior-art-for-the-cow-store.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-07T12:48:22.730Z",
+  "schema_version": "v1",
+  "commit_sha": "d47e690effc15fb0b0a42a6a1b897b99cc06fd8b",
+  "title": "docs(prior-art): Jumprope (Vokes, Strange Loop 2012) — CAS prior art for the COW store",
+  "state": "MERGED",
+  "merged_at": "2026-06-07T12:48:02Z",
+  "head_ref": "capture/jumprope-vokes-content-addressed-prior-art"
+}

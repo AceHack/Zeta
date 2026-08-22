@@ -1,0 +1,12 @@
+{
+  "pr_number": 9327,
+  "archive_path": "docs/history/pr-reviews/PR-9327-feat-residual-point-the-r4-instrument-at-otto-s-own-commit-stream-order-0-freque.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-03T16:59:14.461Z",
+  "schema_version": "v1",
+  "commit_sha": "6a719c3409bf75ce773ba1111b2efdf9bd7ee168",
+  "title": "feat(residual): point the R4 instrument at Otto's own commit stream — order-0, frequency bias only, nulls published (081KTF7Q3TT self-application)",
+  "state": "MERGED",
+  "merged_at": "2026-07-03T16:58:52Z",
+  "head_ref": "otto/residual-otto-own-trace"
+}

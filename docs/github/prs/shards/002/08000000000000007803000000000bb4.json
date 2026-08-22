@@ -1,0 +1,24 @@
+{
+  "pr_number": 2996,
+  "archive_path": "docs/history/pr-reviews/PR-2996-feat-scaffold-b-0424-2-workflow-dispatch-gate-for-stage-1-repo-creation.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7A3G9B",
+    "comment:PRRC_kwDOSF9kNM7A3I4R",
+    "comment:PRRC_kwDOSF9kNM7A3I5g",
+    "comment:PRRC_kwDOSF9kNM7A3OAN",
+    "comment:PRRC_kwDOSF9kNM7A3OMf",
+    "comment:PRRC_kwDOSF9kNM7A3OXv",
+    "comment:PRRC_kwDOSF9kNM7A3WM5",
+    "thread:PRRT_kwDOSF9kNM6B0FMd",
+    "thread:PRRT_kwDOSF9kNM6B0Glt",
+    "thread:PRRT_kwDOSF9kNM6B0Gmt",
+    "thread:PRRT_kwDOSF9kNM6B0QbK"
+  ],
+  "fetched_at": "2026-05-13T16:26:05.887Z",
+  "schema_version": "v1",
+  "commit_sha": "28595d03d71664c1f3a23643c9fe61b0ee281056",
+  "title": "feat(scaffold): B-0424.2 — workflow_dispatch gate for Stage 1 repo creation",
+  "state": "MERGED",
+  "merged_at": "2026-05-13T16:25:43Z",
+  "head_ref": "feat/B-0424.2-scaffold-stage1-workflow"
+}

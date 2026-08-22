@@ -1,0 +1,12 @@
+{
+  "pr_number": 9828,
+  "archive_path": "docs/history/pr-reviews/PR-9828-test-installer-credential-binding-model-reformat-swap-decrypt-matrix.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-01T03:22:34.441Z",
+  "schema_version": "v1",
+  "commit_sha": "7346301c85f5ccea8cd26b4bc19d2ad8525f69f8",
+  "title": "test(installer): credential binding model — reformat/swap decrypt matrix",
+  "state": "MERGED",
+  "merged_at": "2026-08-01T03:22:04Z",
+  "head_ref": "feat/usb-credential-binding-tests-2026-07-31"
+}

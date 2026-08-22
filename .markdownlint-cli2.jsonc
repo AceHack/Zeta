@@ -20,6 +20,9 @@
     "BenchmarkDotNet.Artifacts/**",
     "TestResults/**",
     "artifacts/**",
+    // Generated Pages output can contain verbatim copies of archived Markdown.
+    // Lint the source files, not the ignored deployment artifact.
+    "dist/**",
     "**/node_modules/**",
     "bin/**",
     "obj/**",
@@ -143,6 +146,20 @@
     // the cost of either breaking CI or bulk-reformatting 82+ files
     // of verbatim third-party content.
     "docs/research/2026-*-*.md",
+    // Iris's GitHub-Pages root-site deliverable, landed verbatim from her design
+    // handoff zip (2026-07-03). Same verbatim-preservation rationale as
+    // `docs/history/pr-reviews/**` and `docs/amara-full-conversation/**`: this is a
+    // copy-ready artifact carried WHOLESALE to the
+    // `lucent-financial-group.github.io` repo root per
+    // `docs/design/root-site-iris/HANDOFF.md`. CORRECTED 2026-08-13 — Aaron: "it does not
+    // need to bytematch, the functionality is fine, we are just going for close right now,
+    // we will have several iterations once we get it all hooked up." So the exemption is
+    // NOT a byte-match contract; it is simply that a design-tool export is not
+    // hand-authored prose and normalizing it buys nothing. Functional edits to the
+    // deliverable (e.g. the postMessage origin check) are expected and welcome.
+    // Authored Zeta prose about the deliverable (HANDOFF.md itself) stays linted.
+    "docs/design/root-site-iris/site/**",
+    "docs/design/root-site-iris/site-README-*.md",
     // Inventory and backlog directories contain static reports and
     // machine/human-generated backlog templates that may trip formatting.
     "inventory/**",

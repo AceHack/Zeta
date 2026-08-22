@@ -1,0 +1,16 @@
+{
+  "pr_number": 6256,
+  "archive_path": "docs/history/pr-reviews/PR-6256-fix-hygiene-allowlist-agent-clis-sh-in-bash-retirement-inventory-6249-regression.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7Gid0H",
+    "comment:PRRC_kwDOSF9kNM7Gien6",
+    "thread:PRRT_kwDOSF9kNM6F-Krr"
+  ],
+  "fetched_at": "2026-05-31T21:05:28.705Z",
+  "schema_version": "v1",
+  "commit_sha": "ecb949f4e865939718e7d95f33418fcd143b9c8e",
+  "title": "fix(hygiene): allowlist agent-clis.sh in bash-retirement inventory (#6249 regression)",
+  "state": "MERGED",
+  "merged_at": "2026-05-31T21:05:06Z",
+  "head_ref": "otto-windows/fix-bash-retirement-allowlist-agent-clis-2026-05-31"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 8405,
+  "archive_path": "docs/history/pr-reviews/PR-8405-fix-ovmf-4m-firmware-paths-for-ubuntu-24-04-ci.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-16T02:18:12.856Z",
+  "schema_version": "v1",
+  "commit_sha": "7f568dc3bd0adbc01641a74b308476d4342f7324",
+  "title": "Fix OVMF 4M firmware paths for Ubuntu 24.04 CI",
+  "state": "MERGED",
+  "merged_at": "2026-06-16T02:17:37Z",
+  "head_ref": "riven/qemu-ovmf-4m-paths"
+}

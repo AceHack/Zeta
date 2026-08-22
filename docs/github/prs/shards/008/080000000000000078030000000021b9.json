@@ -1,0 +1,12 @@
+{
+  "pr_number": 8633,
+  "archive_path": "docs/history/pr-reviews/PR-8633-docs-math-team-formalization-handoff-pure-css-svg-q-demo-ux-ui-scoping.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-19T21:46:00.623Z",
+  "schema_version": "v1",
+  "commit_sha": "94182566db67875acdee42b1a0c2fa1f92403a65",
+  "title": "docs: math-team formalization handoff + pure-CSS/SVG+Q# demo UX/UI scoping",
+  "state": "MERGED",
+  "merged_at": "2026-06-19T21:45:36Z",
+  "head_ref": "otto/math-team-handoff-plus-demo-ux-css-svg-qsharp"
+}

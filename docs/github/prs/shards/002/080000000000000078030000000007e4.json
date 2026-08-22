@@ -1,0 +1,12 @@
+{
+  "pr_number": 2020,
+  "archive_path": "docs/history/pr-reviews/PR-2020-fix-b-0287-close-format-spec-landed.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-08T03:25:25.823Z",
+  "schema_version": "v1",
+  "commit_sha": "e64d531c5c564ee8fa1ce49415c676830f34cb66",
+  "title": "fix(B-0287): close — format spec landed",
+  "state": "MERGED",
+  "merged_at": "2026-05-08T03:25:13Z",
+  "head_ref": "fix/b0287-close"
+}

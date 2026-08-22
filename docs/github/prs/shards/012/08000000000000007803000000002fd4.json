@@ -1,0 +1,12 @@
+{
+  "pr_number": 12244,
+  "archive_path": "docs/history/pr-reviews/PR-12244-docs-agencysignature-a-blockless-maintenance-commit-is-the-honest-record-pin-it.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-19T01:57:31.639Z",
+  "schema_version": "v1",
+  "commit_sha": "78237abf7996d1d30495833501beda254f0bc8e3",
+  "title": "docs(agencysignature): a blockless maintenance commit is the honest record — pin it",
+  "state": "MERGED",
+  "merged_at": "2026-08-19T01:57:01Z",
+  "head_ref": "agencysignature-blockless-maintenance-commit"
+}

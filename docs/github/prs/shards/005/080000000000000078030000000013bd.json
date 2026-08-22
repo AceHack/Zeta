@@ -1,0 +1,12 @@
+{
+  "pr_number": 5053,
+  "archive_path": "docs/history/pr-reviews/PR-5053-backlog-b-0767-p1-zeta-native-scheduler-first-dst-ai-aware-cluster-management.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-26T00:26:00.002Z",
+  "schema_version": "v1",
+  "commit_sha": "8a44354115b4f8ca1a80281ab2cb111a88e6e75a",
+  "title": "backlog(B-0767 P1): Zeta-native scheduler first — DST + AI-aware cluster management",
+  "state": "MERGED",
+  "merged_at": "2026-05-26T00:25:44Z",
+  "head_ref": "otto-cli/b0767-zeta-native-scheduler-first-dst-ai-aware-2026-05-25"
+}

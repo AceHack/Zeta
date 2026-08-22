@@ -1,0 +1,21 @@
+{
+  "pr_number": 6193,
+  "archive_path": "docs/history/pr-reviews/PR-6193-feat-b-0250-add-broadcast-blocker-event-adapter.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7Gdmb0",
+    "comment:PRRC_kwDOSF9kNM7GdmcC",
+    "comment:PRRC_kwDOSF9kNM7GdmcL",
+    "comment:PRRC_kwDOSF9kNM7Gdpsl",
+    "thread:PRRT_kwDOSF9kNM6F6aKM",
+    "thread:PRRT_kwDOSF9kNM6F6aKZ",
+    "thread:PRRT_kwDOSF9kNM6F6aKh",
+    "thread:PRRT_kwDOSF9kNM6F6cyG"
+  ],
+  "fetched_at": "2026-05-31T03:49:22.515Z",
+  "schema_version": "v1",
+  "commit_sha": "fb9e58b675c33012cc01252f801db3848be0fa6c",
+  "title": "feat(B-0250): add broadcast blocker event adapter",
+  "state": "MERGED",
+  "merged_at": "2026-05-31T03:48:58Z",
+  "head_ref": "claim/codex-loop-b0250-broadcast-blocker-adapter-20260531"
+}

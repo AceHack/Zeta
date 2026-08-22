@@ -1,0 +1,12 @@
+{
+  "pr_number": 6526,
+  "archive_path": "docs/history/pr-reviews/PR-6526-chore-memory-regenerate-memory-md-index-fix-fwd-6525-drift.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-02T08:58:19.642Z",
+  "schema_version": "v1",
+  "commit_sha": "df8506c9a78bd4022830def2be593d04739a74ef",
+  "title": "chore(memory): regenerate MEMORY.md index — fix-fwd #6525 drift",
+  "state": "MERGED",
+  "merged_at": "2026-06-02T08:57:57Z",
+  "head_ref": "otto-cli/fix-6525-memory-index-drift-2026-06-02"
+}

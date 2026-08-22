@@ -1,0 +1,12 @@
+{
+  "pr_number": 8199,
+  "archive_path": "docs/history/pr-reviews/PR-8199-docs-pitch-open-on-the-flashlight-full-founder-arc.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-14T16:27:48.258Z",
+  "schema_version": "v1",
+  "commit_sha": "11e401de21108009283e8244f8a4cce56d483085",
+  "title": "docs(pitch): open on the flashlight; full founder arc",
+  "state": "MERGED",
+  "merged_at": "2026-06-14T16:27:28Z",
+  "head_ref": "otto/pitch-flashlight-full-arc"
+}

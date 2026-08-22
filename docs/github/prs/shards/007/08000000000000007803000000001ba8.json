@@ -1,0 +1,12 @@
+{
+  "pr_number": 7080,
+  "archive_path": "docs/history/pr-reviews/PR-7080-docs-research-empirical-test-natural-un-staged-2-2-observed-outside-dst.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-08T10:28:53.802Z",
+  "schema_version": "v1",
+  "commit_sha": "4dc08ac36712a5aa175786a1626c10c3d2d9187a",
+  "title": "docs(research): empirical test — natural (un-staged) 2√2 observed outside DST",
+  "state": "MERGED",
+  "merged_at": "2026-06-08T10:28:33Z",
+  "head_ref": "otto/empirical-test-natural-tsirelson-outside-dst"
+}

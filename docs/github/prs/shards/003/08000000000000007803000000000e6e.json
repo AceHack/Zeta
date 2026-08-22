@@ -1,0 +1,15 @@
+{
+  "pr_number": 3694,
+  "archive_path": "docs/history/pr-reviews/PR-3694-fix-b-0545-adopt-b-0498-collision-renumber.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7B0-5P",
+    "thread:PRRT_kwDOSF9kNM6ChIQN"
+  ],
+  "fetched_at": "2026-05-16T02:55:57.060Z",
+  "schema_version": "v1",
+  "commit_sha": "0ae21b4907214bfc4d3b236627620c458a5dce29",
+  "title": "fix(b-0545): adopt B-0498 collision renumber",
+  "state": "MERGED",
+  "merged_at": "2026-05-16T02:55:42Z",
+  "head_ref": "codex/b0545-b0498-renumber-adopt-20260516"
+}

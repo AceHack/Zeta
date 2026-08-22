@@ -1,0 +1,12 @@
+{
+  "pr_number": 9305,
+  "archive_path": "docs/history/pr-reviews/PR-9305-fix-correlation-proofs-math-team-provability-triage-physics-correction-the-prova.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-03T13:53:50.552Z",
+  "schema_version": "v1",
+  "commit_sha": "4c0427ae87c2418f02c4a4555010c81b27cdd2a8",
+  "title": "fix(correlation)+proofs: math-team provability triage — physics correction + the provable core proven",
+  "state": "MERGED",
+  "merged_at": "2026-07-03T13:53:24Z",
+  "head_ref": "shadow/provability-triage-physics-fix-and-proofs"
+}

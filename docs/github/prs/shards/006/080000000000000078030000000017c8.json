@@ -1,0 +1,16 @@
+{
+  "pr_number": 6088,
+  "archive_path": "docs/history/pr-reviews/PR-6088-feat-health-add-b-0250-trajectory-receipt-events.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7GYfOP",
+    "comment:PRRC_kwDOSF9kNM7GYhJW",
+    "thread:PRRT_kwDOSF9kNM6F2aa5"
+  ],
+  "fetched_at": "2026-05-30T06:34:44.438Z",
+  "schema_version": "v1",
+  "commit_sha": "7c9645e43077153a296c405850c8db42bb3424e3",
+  "title": "feat(health): add B-0250 trajectory receipt events",
+  "state": "MERGED",
+  "merged_at": "2026-05-30T06:34:24Z",
+  "head_ref": "claim/codex-loop-b0250-trajectory-receipt-source-20260530"
+}

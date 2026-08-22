@@ -1,0 +1,12 @@
+{
+  "pr_number": 3435,
+  "archive_path": "docs/history/pr-reviews/PR-3435-shard-tick-1128z-pr-3432-merged-clean-tick.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-15T11:32:40.302Z",
+  "schema_version": "v1",
+  "commit_sha": "a75552c654935f61a6eddba7ea5704422aa20d06",
+  "title": "shard(tick): 1128Z — PR #3432 merged; clean tick",
+  "state": "MERGED",
+  "merged_at": "2026-05-15T11:32:24Z",
+  "head_ref": "shard/tick-1128z-otto-cli-2026-05-15"
+}

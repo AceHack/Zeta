@@ -1,0 +1,12 @@
+{
+  "pr_number": 7173,
+  "archive_path": "docs/history/pr-reviews/PR-7173-docs-research-the-emulator-is-ray-traceable-in-clifford-space-iraytraceable-buil.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-09T02:03:45.132Z",
+  "schema_version": "v1",
+  "commit_sha": "95ca5aa8a4f00bc5aa89eba733e543ec567bf8ac",
+  "title": "docs(research): the emulator is ray-traceable in Clifford space — IRayTraceable (built), Traced.Arrow into the interrupt, a flashlight in state space",
+  "state": "MERGED",
+  "merged_at": "2026-06-09T02:03:25Z",
+  "head_ref": "otto/research-emulator-ray-traceable-clifford-flashlight-state-space"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 3566,
+  "archive_path": "docs/history/pr-reviews/PR-3566-shard-tick-1939z-b-0535-mechanization-ci-gate-wired-for-duplicate-id-detection.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-15T19:43:10.019Z",
+  "schema_version": "v1",
+  "commit_sha": "3db1a7ab3b93e2f393d6948f5ae1acbed88d3260",
+  "title": "shard(tick): 1939Z — B-0535 mechanization: CI gate wired for duplicate-ID detection",
+  "state": "MERGED",
+  "merged_at": "2026-05-15T19:42:54Z",
+  "head_ref": "shard/tick-1939z-otto-cli-2026-05-15"
+}

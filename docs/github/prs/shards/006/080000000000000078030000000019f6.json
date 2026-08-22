@@ -1,0 +1,21 @@
+{
+  "pr_number": 6646,
+  "archive_path": "docs/history/pr-reviews/PR-6646-rules-product-scope-wellness-device-yes-medical-device-no-at-this-point-describe.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7HhDge",
+    "comment:PRRC_kwDOSF9kNM7HhFG7",
+    "comment:PRRC_kwDOSF9kNM7HhFHp",
+    "comment:PRRC_kwDOSF9kNM7HhIxT",
+    "thread:PRRT_kwDOSF9kNM6GsVyf",
+    "thread:PRRT_kwDOSF9kNM6GsW_w",
+    "thread:PRRT_kwDOSF9kNM6GsXAQ",
+    "thread:PRRT_kwDOSF9kNM6GsZta"
+  ],
+  "fetched_at": "2026-06-03T09:27:47.265Z",
+  "schema_version": "v1",
+  "commit_sha": "e147f702c4abf2b5d345cc5dc0df4d8297c778c7",
+  "title": "rules(product-scope): wellness device YES, medical device NO at this point — describe-don't-diagnose",
+  "state": "MERGED",
+  "merged_at": "2026-06-03T09:27:25Z",
+  "head_ref": "otto-cli/wellness-device-not-medical-device-rule-2026-06-03"
+}

@@ -1,0 +1,102 @@
+{
+  "$comment": [
+    "ACKNOWLEDGED findings for inert-valuesobject-keys.ts.",
+    "",
+    "WHAT AN ENTRY IS. Not a suppression -- a dated, keyed, reasoned record that a `valuesObject` key",
+    "governs NOTHING and is not being repaired in the change that discovered it. Every acknowledged",
+    "finding is still printed by the report and still costs exactly what it costs; what the entry buys",
+    "is a non-red gate, never a working key.",
+    "",
+    "WHY THESE ELEVEN ARE ACKNOWLEDGED RATHER THAN FIXED. Repairing them means editing manifests that",
+    "deploy to a live cluster -- a Service type, a replica topology, an attestor's verification mode.",
+    "Each is a change that deserves to be watched landing, and bundling eleven of them into the change",
+    "that introduces their detector would make the detector unreviewable and the repairs unwatched. The",
+    "guard's job is to make them impossible to lose; the repairs are the next change, not this one.",
+    "",
+    "KEYED BY IDENTITY, NEVER BY LINE. `key` is `<appId> <valuesObject path>`. A manifest that grows a",
+    "line cannot silently re-arm or re-suppress a different defect.",
+    "",
+    "`observed` PINS WHAT WAS ACKNOWLEDGED, byte for byte. If the chart is bumped and the key becomes",
+    "half-real, the text changes and the entry stops covering it. A baseline that keeps matching after",
+    "the thing it excused has moved is the vacuity class with a filename.",
+    "",
+    "`liftsWhen` NAMES THE GATE THAT WOULD ACTUALLY CLEAR *THIS* ENTRY -- and that phrasing is the",
+    "repair of a trap found in this tree on 2026-08-22: a `LIFTS WHEN` STRICTER THAN THE GATE IT NAMES",
+    "keeps a deferral alive after its defect is gone. \"Lifts when every chart in the tree renders",
+    "offline\" does not lift when THIS key is fixed, so the entry outlives its own subject and the",
+    "ratchet stops ratcheting. Every condition below names one manifest edit and nothing larger.",
+    "",
+    "STALE ENTRIES FAIL. An entry matching nothing is a claim about the tree that stopped being true.",
+    "Because each `liftsWhen` above is exactly \"this key is fixed\", fixing the key makes the entry",
+    "stale and the gate goes red until the entry is deleted -- which is the ratchet working, not",
+    "failing."
+  ],
+  "findings": [
+    {
+      "key": "full-ai-cluster/argo-rollouts dashboard.serviceType",
+      "reason": "MEASURED 2026-08-22 against argo-rollouts 2.39.5: the chart's key is `dashboard.service.type` (values.yaml:66-68). `dashboard.serviceType` is one word away from real and reaches nothing, so the dashboard Service silently takes the chart default. Not repaired in the change that added this guard: changing a Service type is a live-cluster change and belongs in a change that can watch it land.",
+      "liftsWhen": "LIFTS WHEN this Application sets `dashboard.service.type` instead of `dashboard.serviceType` -- at which point this finding disappears and this entry goes STALE, which is itself refused.",
+      "observed": "`dashboard.serviceType` is not a key argo-rollouts@2.39.5 has: the chart's own values, its subcharts' values, and every `.Values` reference in its templates name no path at or under it, and no node containing it is consumed wholesale. Helm discards it silently, so the value declared here governs NOTHING: dashboard.serviceType"
+    },
+    {
+      "key": "full-ai-cluster/argo-rollouts notifications.enabled",
+      "reason": "MEASURED 2026-08-22 against argo-rollouts 2.39.5: `notifications` has no `enabled` key. The chart gates notifications on `notifications.configmap.create` and `notifications.secret.create` (values.yaml:461+), both of which have their own defaults, so this line has never turned anything on or off.",
+      "liftsWhen": "LIFTS WHEN this Application drops `notifications.enabled` or replaces it with the `notifications.configmap.create` / `notifications.secret.create` pair the chart reads.",
+      "observed": "`notifications.enabled` is not a key argo-rollouts@2.39.5 has: the chart's own values, its subcharts' values, and every `.Values` reference in its templates name no path at or under it, and no node containing it is consumed wholesale. Helm discards it silently, so the value declared here governs NOTHING: notifications.enabled"
+    },
+    {
+      "key": "full-ai-cluster/dapr dapr_placement.replicaCount",
+      "reason": "MEASURED 2026-08-22 against dapr 1.14.4: `charts/dapr_placement` has no `replicaCount`. Its StatefulSet hardcodes `replicas: 0 / 3 / 1` chosen by `.Values.ha` and `.Values.scaleZero` (dapr_placement_statefulset.yaml:14-18), so the placement service's replica count has never come from this line. The value it names happens to equal what `ha: false` already produces, which is exactly why nobody noticed.",
+      "liftsWhen": "LIFTS WHEN this Application stops declaring `dapr_placement.replicaCount` -- either dropped, or the intended placement topology expressed through `dapr_placement.ha` (and `scaleZero`), which is what the chart reads.",
+      "observed": "`dapr_placement.replicaCount` is not a key dapr@1.14.4 has: the chart's own values, its subcharts' values, and every `.Values` reference in its templates name no path at or under it, and no node containing it is consumed wholesale. Helm discards it silently, so the value declared here governs NOTHING: dapr_placement.replicaCount"
+    },
+    {
+      "key": "full-ai-cluster/headlamp config.watchNamespaces",
+      "reason": "MEASURED 2026-08-22 against headlamp 0.30.1: the string `watchNamespaces` does not occur anywhere in the chart -- not in values.yaml, not in any template. headlamp's `config` block carries `inCluster`, `baseURL`, `pluginsDir`, `extraArgs` and `oidc`, and namespace scoping is not among them. So the Application declares a namespace restriction that has never been applied.",
+      "liftsWhen": "LIFTS WHEN this Application stops declaring `config.watchNamespaces` -- either dropped, or expressed through a mechanism headlamp 0.30.1 actually reads.",
+      "observed": "`config.watchNamespaces` is not a key headlamp@0.30.1 has: the chart's own values, its subcharts' values, and every `.Values` reference in its templates name no path at or under it, and no node containing it is consumed wholesale. Helm discards it silently, so the value declared here governs NOTHING: config.watchNamespaces"
+    },
+    {
+      "key": "full-ai-cluster/spire spire-agent.workloadAttestors.k8s.skipKubeletVerification",
+      "reason": "MEASURED 2026-08-22 against spire 0.24.2, and CONFIRMED BY THE CHART'S OWN README (line 124): \"In previous versions, the setting spire-agent.workloadAttestors.k8s.skipKubeletVerification was set to true by default. Starting in 0.23.x, we removed that setting and replaced it with\" `workloadAttestors.k8s.verification.type`. The pin is 0.24.2, so this key was removed two minor versions before the pin and the manifest still sets it. This is the highest-consequence entry in this file: it governs whether the agent verifies the kubelet, and it governs nothing.",
+      "liftsWhen": "LIFTS WHEN this Application stops declaring `spire-agent.workloadAttestors.k8s.skipKubeletVerification` -- the key spire removed in 0.23.x -- and expresses the intent through `spire-agent.workloadAttestors.k8s.verification` (whose `type` defaults to `skip` in 0.24.2) instead.",
+      "observed": "`spire-agent.workloadAttestors.k8s.skipKubeletVerification` is not a key spire@0.24.2 has: the chart's own values, its subcharts' values, and every `.Values` reference in its templates name no path at or under it, and no node containing it is consumed wholesale. Helm discards it silently, so the value declared here governs NOTHING: spire-agent.workloadAttestors.k8s.skipKubeletVerification"
+    },
+    {
+      "key": "full-ai-cluster/weaviate modules.generative-ollama.apiEndpoint",
+      "reason": "MEASURED 2026-08-22 against weaviate 17.6.0: the ollama modules accept ONLY `enabled` in this chart version. `templates/_helpers.tpl:50,134` reads `(index .Values \"modules\" \"<module>\" \"enabled\")` and nothing else, and values.yaml:1183,1692 declare the two blocks with `enabled` as their sole key -- unlike the sibling octoai modules, which do carry an `apiKey`. So the endpoint and model this cluster believes it has configured for Ollama are not reaching the pod from here; they would have to come from the container's environment. Four entries rather than one because each is a separate declared value that governs nothing.",
+      "liftsWhen": "LIFTS WHEN this Application stops declaring `modules.generative-ollama.apiEndpoint` -- either dropped, or moved to whatever weaviate 17.6.0 does read for the Ollama endpoint/model (its environment), or the pin moves to a chart version whose ollama module block carries this key.",
+      "observed": "`modules.generative-ollama.apiEndpoint` is not a key weaviate@17.6.0 has: the chart's own values, its subcharts' values, and every `.Values` reference in its templates name no path at or under it, and no node containing it is consumed wholesale. Helm discards it silently, so the value declared here governs NOTHING: modules.generative-ollama.apiEndpoint"
+    },
+    {
+      "key": "full-ai-cluster/weaviate modules.generative-ollama.modelId",
+      "reason": "MEASURED 2026-08-22 against weaviate 17.6.0: the ollama modules accept ONLY `enabled` in this chart version. `templates/_helpers.tpl:50,134` reads `(index .Values \"modules\" \"<module>\" \"enabled\")` and nothing else, and values.yaml:1183,1692 declare the two blocks with `enabled` as their sole key -- unlike the sibling octoai modules, which do carry an `apiKey`. So the endpoint and model this cluster believes it has configured for Ollama are not reaching the pod from here; they would have to come from the container's environment. Four entries rather than one because each is a separate declared value that governs nothing.",
+      "liftsWhen": "LIFTS WHEN this Application stops declaring `modules.generative-ollama.modelId` -- either dropped, or moved to whatever weaviate 17.6.0 does read for the Ollama endpoint/model (its environment), or the pin moves to a chart version whose ollama module block carries this key.",
+      "observed": "`modules.generative-ollama.modelId` is not a key weaviate@17.6.0 has: the chart's own values, its subcharts' values, and every `.Values` reference in its templates name no path at or under it, and no node containing it is consumed wholesale. Helm discards it silently, so the value declared here governs NOTHING: modules.generative-ollama.modelId"
+    },
+    {
+      "key": "full-ai-cluster/weaviate modules.text2vec-ollama.apiEndpoint",
+      "reason": "MEASURED 2026-08-22 against weaviate 17.6.0: the ollama modules accept ONLY `enabled` in this chart version. `templates/_helpers.tpl:50,134` reads `(index .Values \"modules\" \"<module>\" \"enabled\")` and nothing else, and values.yaml:1183,1692 declare the two blocks with `enabled` as their sole key -- unlike the sibling octoai modules, which do carry an `apiKey`. So the endpoint and model this cluster believes it has configured for Ollama are not reaching the pod from here; they would have to come from the container's environment. Four entries rather than one because each is a separate declared value that governs nothing.",
+      "liftsWhen": "LIFTS WHEN this Application stops declaring `modules.text2vec-ollama.apiEndpoint` -- either dropped, or moved to whatever weaviate 17.6.0 does read for the Ollama endpoint/model (its environment), or the pin moves to a chart version whose ollama module block carries this key.",
+      "observed": "`modules.text2vec-ollama.apiEndpoint` is not a key weaviate@17.6.0 has: the chart's own values, its subcharts' values, and every `.Values` reference in its templates name no path at or under it, and no node containing it is consumed wholesale. Helm discards it silently, so the value declared here governs NOTHING: modules.text2vec-ollama.apiEndpoint"
+    },
+    {
+      "key": "full-ai-cluster/weaviate modules.text2vec-ollama.modelId",
+      "reason": "MEASURED 2026-08-22 against weaviate 17.6.0: the ollama modules accept ONLY `enabled` in this chart version. `templates/_helpers.tpl:50,134` reads `(index .Values \"modules\" \"<module>\" \"enabled\")` and nothing else, and values.yaml:1183,1692 declare the two blocks with `enabled` as their sole key -- unlike the sibling octoai modules, which do carry an `apiKey`. So the endpoint and model this cluster believes it has configured for Ollama are not reaching the pod from here; they would have to come from the container's environment. Four entries rather than one because each is a separate declared value that governs nothing.",
+      "liftsWhen": "LIFTS WHEN this Application stops declaring `modules.text2vec-ollama.modelId` -- either dropped, or moved to whatever weaviate 17.6.0 does read for the Ollama endpoint/model (its environment), or the pin moves to a chart version whose ollama module block carries this key.",
+      "observed": "`modules.text2vec-ollama.modelId` is not a key weaviate@17.6.0 has: the chart's own values, its subcharts' values, and every `.Values` reference in its templates name no path at or under it, and no node containing it is consumed wholesale. Helm discards it silently, so the value declared here governs NOTHING: modules.text2vec-ollama.modelId"
+    },
+    {
+      "key": "infra/argorollouts dashboard.serviceType",
+      "reason": "MEASURED 2026-08-22 against argo-rollouts 2.39.5: the chart's key is `dashboard.service.type` (values.yaml:66-68). `dashboard.serviceType` is one word away from real and reaches nothing, so the dashboard Service silently takes the chart default. Not repaired in the change that added this guard: changing a Service type is a live-cluster change and belongs in a change that can watch it land.",
+      "liftsWhen": "LIFTS WHEN this Application sets `dashboard.service.type` instead of `dashboard.serviceType` -- at which point this finding disappears and this entry goes STALE, which is itself refused.",
+      "observed": "`dashboard.serviceType` is not a key argo-rollouts@2.39.5 has: the chart's own values, its subcharts' values, and every `.Values` reference in its templates name no path at or under it, and no node containing it is consumed wholesale. Helm discards it silently, so the value declared here governs NOTHING: dashboard.serviceType"
+    },
+    {
+      "key": "infra/argorollouts notifications.enabled",
+      "reason": "MEASURED 2026-08-22 against argo-rollouts 2.39.5: `notifications` has no `enabled` key. The chart gates notifications on `notifications.configmap.create` and `notifications.secret.create` (values.yaml:461+), both of which have their own defaults, so this line has never turned anything on or off.",
+      "liftsWhen": "LIFTS WHEN this Application drops `notifications.enabled` or replaces it with the `notifications.configmap.create` / `notifications.secret.create` pair the chart reads.",
+      "observed": "`notifications.enabled` is not a key argo-rollouts@2.39.5 has: the chart's own values, its subcharts' values, and every `.Values` reference in its templates name no path at or under it, and no node containing it is consumed wholesale. Helm discards it silently, so the value declared here governs NOTHING: notifications.enabled"
+    }
+  ]
+}

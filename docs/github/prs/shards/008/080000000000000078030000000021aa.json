@@ -1,0 +1,12 @@
+{
+  "pr_number": 8618,
+  "archive_path": "docs/history/pr-reviews/PR-8618-feat-core-build-societal-dora-over-the-owe-estimator-mutual-empowerment-health-m.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-19T20:32:57.433Z",
+  "schema_version": "v1",
+  "commit_sha": "bb5a11302c335ddf0dc42c03b70bfd77c7bd216c",
+  "title": "feat(core): build societal DORA over the ρ_owe estimator — mutual-empowerment health metrics",
+  "state": "MERGED",
+  "merged_at": "2026-06-19T20:32:33Z",
+  "head_ref": "otto/societal-dora-over-rho-owe"
+}

@@ -1,0 +1,17 @@
+{
+  "pr_number": 4109,
+  "archive_path": "docs/history/pr-reviews/PR-4109-docs-shadow-maji-antigravity-check-on-riven-persistent-rest-fallback-failure.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7CDCLr",
+    "comment:PRRC_kwDOSF9kNM7CDCLw",
+    "thread:PRRT_kwDOSF9kNM6Cry3K",
+    "thread:PRRT_kwDOSF9kNM6Cry3O"
+  ],
+  "fetched_at": "2026-05-18T20:09:39.363Z",
+  "schema_version": "v1",
+  "commit_sha": "60d5b5676b24534014b1557f966d93bc2e3caaaa",
+  "title": "docs(shadow): Maji antigravity check on Riven persistent REST fallback failure",
+  "state": "MERGED",
+  "merged_at": "2026-05-18T20:09:19Z",
+  "head_ref": "lior/shadow-riven-persistent-drift-2215Z"
+}

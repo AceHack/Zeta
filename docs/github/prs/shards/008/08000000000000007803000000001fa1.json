@@ -1,0 +1,12 @@
+{
+  "pr_number": 8097,
+  "archive_path": "docs/history/pr-reviews/PR-8097-feat-ferry-capture-at-the-boundary-context-option-a-increment-2.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-13T23:42:37.966Z",
+  "schema_version": "v1",
+  "commit_sha": "aebcbb7de19c6a31d79ea2e527440e9b91fb5cf3",
+  "title": "feat(ferry): capture-at-the-boundary context (Option-A increment 2)",
+  "state": "MERGED",
+  "merged_at": "2026-06-13T23:42:19Z",
+  "head_ref": "shadow/ferry-capture-at-boundary"
+}

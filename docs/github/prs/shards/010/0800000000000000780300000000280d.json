@@ -1,0 +1,12 @@
+{
+  "pr_number": 10253,
+  "archive_path": "docs/history/pr-reviews/PR-10253-fix-combine-four-unconfirmed-mutants-not-three.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-09T23:57:33.389Z",
+  "schema_version": "v1",
+  "commit_sha": "078dba02bdc43f118041bbd70969cdef13933019",
+  "title": "fix(combine): four unconfirmed mutants, not three",
+  "state": "MERGED",
+  "merged_at": "2026-08-09T23:57:00Z",
+  "head_ref": "shadow/fix-unconfirmed-mutant-count"
+}

@@ -1,0 +1,21 @@
+{
+  "schema": "zeta.proposal-author-registry.v2",
+  "repository": "Lucent-Financial-Group/Zeta",
+  "sequence": 2,
+  "issuedAt": "2026-08-14T15:49:00.000Z",
+  "authors": [
+    {
+      "credentialId": "Ca3BF1v-RDBKvvtBxx70z4Kv5JB5gn_7_kwfbifBK8YYnsDA",
+      "origin": "https://lucent-financial-group.github.io",
+      "rpId": "lucent-financial-group.github.io",
+      "publicKeyJwk": {
+        "kty": "EC",
+        "crv": "P-256",
+        "x": "11Klp8zmODwWHOn9khfshSYYnN3pzs-D8HODlvgMD8I",
+        "y": "dGbWTYTBfVBlPHsmsZxjr64PpDT8xL55RNz432NVOr0",
+        "ext": true
+      }
+    }
+  ],
+  "revoked": {}
+}

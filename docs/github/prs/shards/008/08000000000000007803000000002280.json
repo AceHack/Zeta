@@ -1,0 +1,12 @@
+{
+  "pr_number": 8832,
+  "archive_path": "docs/history/pr-reviews/PR-8832-feat-proof-finite-conditional-entropy-h-x-y-mutual-information-i-x-y-info-theory.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-21T02:39:40.183Z",
+  "schema_version": "v1",
+  "commit_sha": "c16484052c9f07906004e120bcc9abc5978b39a1",
+  "title": "feat(proof): finite conditional entropy H(X|Y) + mutual information I(X;Y) (info-theory tower rung #2/#3)",
+  "state": "MERGED",
+  "merged_at": "2026-06-21T02:39:16Z",
+  "head_ref": "otto/lean-fin-conditional-entropy"
+}

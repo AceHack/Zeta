@@ -1,0 +1,27 @@
+{
+  "pr_number": 2570,
+  "archive_path": "docs/history/pr-reviews/PR-2570-feat-b-0366-2-smallest-safe-slice-toffolicircuit-modeljoincircuit-stub-re-decomp.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_q0i1",
+    "comment:PRRC_kwDOSF9kNM6_q0jC",
+    "comment:PRRC_kwDOSF9kNM6_q0jK",
+    "comment:PRRC_kwDOSF9kNM6_q0jT",
+    "comment:PRRC_kwDOSF9kNM6_q0jX",
+    "comment:PRRC_kwDOSF9kNM6_q0pg",
+    "comment:PRRC_kwDOSF9kNM6_q0ph",
+    "thread:PRRT_kwDOSF9kNM6A8B0-",
+    "thread:PRRT_kwDOSF9kNM6A8B01",
+    "thread:PRRT_kwDOSF9kNM6A8B0i",
+    "thread:PRRT_kwDOSF9kNM6A8B0u",
+    "thread:PRRT_kwDOSF9kNM6A8B1B",
+    "thread:PRRT_kwDOSF9kNM6A8B5a",
+    "thread:PRRT_kwDOSF9kNM6A8B5b"
+  ],
+  "fetched_at": "2026-05-10T23:13:22.110Z",
+  "schema_version": "v1",
+  "commit_sha": "8b464bc083e64bddc6368e1d501e4202d343029a",
+  "title": "feat(B-0366.2): smallest safe slice — ToffoliCircuit + modelJoinCircuit stub (re-decomposed)",
+  "state": "MERGED",
+  "merged_at": "2026-05-10T23:13:07Z",
+  "head_ref": "claim/b0366.2-toffoli-join-smallest-slice-riven-2026-05-10"
+}

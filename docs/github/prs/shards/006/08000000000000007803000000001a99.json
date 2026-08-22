@@ -1,0 +1,12 @@
+{
+  "pr_number": 6809,
+  "archive_path": "docs/history/pr-reviews/PR-6809-feat-schemaevolution-removefieldwithdump-windowed-lossless-removal-via-the-garba.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-07T12:16:34.006Z",
+  "schema_version": "v1",
+  "commit_sha": "ee01dfeaccc3917910433bf1076950cb8f994195",
+  "title": "feat(SchemaEvolution): removeFieldWithDump — windowed-lossless removal via the garbage dump",
+  "state": "MERGED",
+  "merged_at": "2026-06-07T12:16:15Z",
+  "head_ref": "feat/schemaevolution-removefield-dump-windowed-lossless"
+}

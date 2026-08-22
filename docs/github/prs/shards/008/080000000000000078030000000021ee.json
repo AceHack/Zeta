@@ -1,0 +1,12 @@
+{
+  "pr_number": 8686,
+  "archive_path": "docs/history/pr-reviews/PR-8686-test-cross-verify-fmix32-as-2nd-generated-from-ir-primitive-width-parametric-ir.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-20T02:39:40.618Z",
+  "schema_version": "v1",
+  "commit_sha": "a2d1f6c496204574ed0ac7030c1cd0453ba3c69d",
+  "title": "test(cross-verify): fmix32 as 2nd generated-from-ir primitive (width-parametric IR)",
+  "state": "MERGED",
+  "merged_at": "2026-06-20T02:39:16Z",
+  "head_ref": "lumen/fmix32-gen-from-ir"
+}

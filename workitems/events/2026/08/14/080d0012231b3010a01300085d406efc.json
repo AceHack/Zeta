@@ -1,0 +1,14 @@
+{
+  "id": "080d0012231b3010a01300085d406efc",
+  "at": "2026-08-14T21:53:51.462Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M0148RV6087G0R001BN31P0",
+    "type": "bug",
+    "title": "Circuit-breaker snapshot rendered zero observations as CLOSED/healthy — no traffic and no errors were the same reading",
+    "slug": "circuit-breaker-snapshot-rendered-zero-observations-as-close",
+    "priority": "P2",
+    "filename": "081M0148RV6087G0R001BN31P0-circuit-breaker-snapshot-rendered-zero-observations-as-close.md"
+  }
+}

@@ -19,13 +19,40 @@ spec:
       valuesObject:
         prometheus:
           prometheusSpec:
+            # THE TWO BOUNDS BELOW ARE ONE SETTING. `retention` is a TIME bound
+            # and cannot see the disk; kube-prometheus-stack 65.5.0 ships
+            # `retentionSize: ""` (values.yaml:3732), i.e. UNSET, so before this
+            # line existed Prometheus applied no size-based retention at all and
+            # simply grew until the volume filled and the WAL wedged. 15d of
+            # this cluster's series is not a number anyone here has measured, so
+            # the time bound alone was never a footprint.
+            #
+            # Both are applied and whichever triggers first wins, so adding the
+            # size bound can only shorten retention, never lengthen it.
+            #
+            # retentionSize is MANAGED BY THE STORAGE PROFILE (a `governors`
+            # entry in full-ai-cluster/k8s/storage-profiles.json), so it moves
+            # with `storage` below instead of being a note somebody has to
+            # remember. Its value is 75% of the volume: the volume also has to
+            # hold the head block and the WAL on top of the retained set, and
+            # 75% is a BUDGET CHOICE for that headroom, NOT a derived minimum.
+            # The `GiB` suffix is required by the Prometheus CRD's own pattern
+            # (crd-prometheuses.yaml:7657) — plain `24Gi` is rejected.
             retention: 15d
+            retentionSize: 24GiB
             storageSpec:
               volumeClaimTemplate:
                 spec:
                   storageClassName: longhorn
                   accessModes: [ ReadWriteOnce ]
-                  resources: { requests: { storage: 100Gi } }
+                  # SIZE CUT, NOT A POD CUT: 100Gi -> 32Gi; prometheusSpec's
+                  # replicas default of 1 is unchanged. THE GOVERNOR MOVED WITH
+                  # IT -- see retentionSize above, which the storage profile
+                  # rewrites in the same pass as this line so the two can never
+                  # land apart. Without that, cutting this alone would not
+                  # produce a smaller footprint, it would produce a full disk
+                  # and a wedged WAL.
+                  resources: { requests: { storage: 32Gi } }
         grafana:
           # Admin password sourced from a Secret rather than
           # hardcoded. Create the secret BEFORE this app syncs:
@@ -41,15 +68,73 @@ spec:
           persistence:
             enabled: true
             storageClassName: longhorn
-            size: 10Gi
+            # SIZE CUT, NOT A POD CUT: 10Gi -> 5Gi; the grafana subchart's
+            # replicas default of 1 is unchanged. Grafana's sqlite plus
+            # dashboards. No governor to move: dashboards are provisioned, not
+            # accumulated, so this volume does not grow with time.
+            size: 5Gi
         alertmanager:
+          # ROUTING IS DELIBERATELY UNSUPPLIED, AND SAYS SO.
+          #
+          # The chart default ships ONE receiver, literally named "null",
+          # and points the default route at it. 35 rule groups fire and
+          # every alert terminates there -- visible in the Alertmanager UI
+          # if a human opens it, pushed to nobody. A receiver named "null"
+          # and a receiver named "unrouted-REQUIRES-CONFIGURATION" deliver
+          # exactly the same zero alerts; only the second one tells the
+          # next reader the truth.
+          #
+          # WHAT THE MAINTAINER MUST SUPPLY (nobody else can -- a real
+          # destination is a decision, and its credential is a secret this
+          # repo does not hold):
+          #   1. Choose a destination: Slack webhook / PagerDuty routing key
+          #      / generic webhook / email relay.
+          #   2. Put the credential in a Secret (SealedSecret or External
+          #      Secrets, both already in this tree) -- NEVER inline here.
+          #   3. Replace the integration-less receivers below with real ones
+          #      and drop the REQUIRES- suffix from the name. The audit
+          #      refuses a REQUIRES- name that has integrations attached, so
+          #      the rename cannot be forgotten.
+          #
+          # Enforced by src/Core.TypeScript/hygiene/audit-observability-chain.ts.
+          config:
+            global:
+              resolve_timeout: 5m
+            inhibit_rules:
+              - source_matchers: [ severity = critical ]
+                target_matchers: [ severity =~ warning|info ]
+                equal: [ namespace, alertname ]
+              - source_matchers: [ severity = warning ]
+                target_matchers: [ severity = info ]
+                equal: [ namespace, alertname ]
+              - source_matchers: [ alertname = InfoInhibitor ]
+                target_matchers: [ severity = info ]
+                equal: [ namespace ]
+              - target_matchers: [ alertname = InfoInhibitor ]
+            route:
+              group_by: [ namespace ]
+              group_wait: 30s
+              group_interval: 5m
+              repeat_interval: 12h
+              receiver: unrouted-REQUIRES-CONFIGURATION
+              routes:
+                - matchers: [ alertname = "Watchdog" ]
+                  receiver: watchdog-REQUIRES-DEADMANSSWITCH
+            receivers:
+              # No integrations on purpose. The names are the finding.
+              - name: unrouted-REQUIRES-CONFIGURATION
+              - name: watchdog-REQUIRES-DEADMANSSWITCH
           alertmanagerSpec:
             storage:
               volumeClaimTemplate:
                 spec:
                   storageClassName: longhorn
                   accessModes: [ ReadWriteOnce ]
-                  resources: { requests: { storage: 10Gi } }
+                  # SIZE CUT, NOT A POD CUT: 10Gi -> 5Gi; alertmanagerSpec's
+                  # replicas default of 1 is unchanged. Silences and the
+                  # notification log, both small and both self-expiring, so
+                  # there is no governor to move and 5Gi is ample.
+                  resources: { requests: { storage: 5Gi } }
   destination:
     server: https://kubernetes.default.svc
     namespace: monitoring

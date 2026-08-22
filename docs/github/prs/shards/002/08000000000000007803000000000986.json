@@ -1,0 +1,15 @@
+{
+  "pr_number": 2438,
+  "archive_path": "docs/history/pr-reviews/PR-2438-chore-b-0074-1-fix-stale-sh-refs-in-kiro-cli-memory-mark-resolved-sub-items.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_mhug",
+    "thread:PRRT_kwDOSF9kNM6A4mlF"
+  ],
+  "fetched_at": "2026-05-10T08:11:44.081Z",
+  "schema_version": "v1",
+  "commit_sha": "9bcac3b50d73bf366459d4385f96685c0d156c93",
+  "title": "chore(B-0074.1): fix stale .sh refs in kiro-cli memory + mark resolved sub-items",
+  "state": "MERGED",
+  "merged_at": "2026-05-10T08:11:26Z",
+  "head_ref": "chore/B-0074.1-kiro-memory-stale-sh-refs"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 5921,
+  "archive_path": "docs/history/pr-reviews/PR-5921-ferry-amara-extend-rule-research-skill-tightened-carved-sentence-otel-k8s-argo-p.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-28T18:43:11.478Z",
+  "schema_version": "v1",
+  "commit_sha": "eabe2fd7ed32f1e3e5e69b09de1abdb1119a753c",
+  "title": "ferry(amara) + extend(rule) + research + skill: tightened carved sentence + OTel/K8s/Argo/Prometheus/Git lightlike-observability operational mapping + new capability skill (operator option-3 disposition 2026-05-28)",
+  "state": "MERGED",
+  "merged_at": "2026-05-28T18:42:49Z",
+  "head_ref": "otto-cli/amara-tightening-otel-k8s-argo-prom-2026-05-28"
+}

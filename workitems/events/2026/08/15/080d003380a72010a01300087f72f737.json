@@ -1,0 +1,14 @@
+{
+  "id": "080d003380a72010a01300087f72f737",
+  "at": "2026-08-15T17:20:03.812Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M0370573087G0R001EB507J",
+    "type": "task",
+    "title": "Per-markdown-file mini-DORA: dora-fold.ts folds work-item lifecycle events keyed by workItemId, so it cannot answer questions about one .md file — generalise the fold's subject key and add a per-file execution event log so lead time, throughput and failure rate are computable per markdown file",
+    "slug": "per-markdown-file-mini-dora-dora-fold-ts-folds-work-item-lif",
+    "priority": "P2",
+    "filename": "081M0370573087G0R001EB507J-per-markdown-file-mini-dora-dora-fold-ts-folds-work-item-lif.md"
+  }
+}

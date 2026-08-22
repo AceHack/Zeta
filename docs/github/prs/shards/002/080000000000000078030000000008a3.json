@@ -1,0 +1,12 @@
+{
+  "pr_number": 2211,
+  "archive_path": "docs/history/pr-reviews/PR-2211-docs-b-0360-dbsp-identity-continuity-incremental-views-over-agent-state.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-09T06:56:42.465Z",
+  "schema_version": "v1",
+  "commit_sha": "dbd92de2bd07b324430eb8cfcef1a9f0d98b001f",
+  "title": "docs(B-0360): DBSP identity continuity — incremental views over agent state",
+  "state": "MERGED",
+  "merged_at": "2026-05-09T06:56:20Z",
+  "head_ref": "docs/b0360-dbsp-identity-continuity"
+}

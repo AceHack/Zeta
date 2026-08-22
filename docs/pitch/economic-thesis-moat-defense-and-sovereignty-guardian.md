@@ -67,7 +67,14 @@ must emit (declared causal provenance — never wall-clock). Verified through **
 (formal-methods / Z3, mathematical-physics, a zero-empathy critic, property-based testing) — the same
 multi-oracle discipline the product sells. **Honest register:** this is **register-2 for the
 trust-*verification* primitive** (it runs, it's tested, a skeptic can re-run it); the full guardian —
-hardware attestation, confidential compute, real EMS / vendor integration — remains **register-3**. But the
+hardware attestation, confidential compute, real EMS / vendor integration — remains **register-3**. And
+when that half is built, its ceiling should be priced in now: **hardware attestation terminates in a
+silicon vendor's self-signed root** (AMD ARK · Intel SGX Root CA · the TPM manufacturer's EK root), so
+the guardian's strongest hardware claim will be *"AMD says this is genuine AMD silicon running this
+measurement."* No vendor-independent alternative exists, for us or for any competitor — this is the
+floor the entire confidential-computing industry stands on, so it is a shared constraint rather than a
+differentiator lost. The mitigation we can actually offer is **multi-vendor diversity** across a
+deployment, which composes with the decorrelation work above. But the
 question an investor actually asks — *"is the guardian a real enforcement mechanism, or a policy promise?"*
 — now has a **demonstrable answer for its core**, not a roadmap. (Legibility surface for a technical
 diligence reader: [`docs/explainers/decorrelation-meter-grid-trust-for-max.md`](../explainers/decorrelation-meter-grid-trust-for-max.md).)

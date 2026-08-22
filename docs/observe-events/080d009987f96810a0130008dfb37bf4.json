@@ -1,0 +1,19 @@
+{
+  "id": "080d009987f96810a0130008dfb37bf4",
+  "at": "2026-08-18T05:13:15.285Z",
+  "by": "otto",
+  "kind": "attestation",
+  "action": {
+    "kind": "attest_peer",
+    "reason": "verified 1 events from society"
+  },
+  "attestation": {
+    "attestor": "otto",
+    "attested": "society",
+    "windowStart": "2026-08-18T04:46:13.293Z",
+    "windowEnd": "2026-08-18T04:46:13.293Z",
+    "eventCount": 1,
+    "claim": "heartbeat-genuine",
+    "strength": 1
+  }
+}

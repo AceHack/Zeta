@@ -1,0 +1,12 @@
+{
+  "pr_number": 2631,
+  "archive_path": "docs/history/pr-reviews/PR-2631-feat-b-0401-live-github-api-dashboard-real-dora-metrics-agent-activity.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-11T02:27:22.074Z",
+  "schema_version": "v1",
+  "commit_sha": "a264d53272d502551b3c9fa34ffa99d895827d27",
+  "title": "feat(B-0401): live GitHub API dashboard — real DORA metrics + agent activity",
+  "state": "MERGED",
+  "merged_at": "2026-05-11T02:27:05Z",
+  "head_ref": "feat/B-0401-live-github-api-dashboard-2026-05-10"
+}

@@ -46,8 +46,8 @@ Why this preserves hard money rather than eroding it: the property that matters 
 may spend but not stake has *less* agency over their own money, not more protection.
 
 Why it matters operationally: staking is what makes **decentralized witnessing** possible
-(`docs/research/2026-08-09-every-node-is-its-own-identity-provider-…`). A witness to a key
-transfer stakes budget on the attestation being true — and because budget is socially
+(`docs/research/2026-08-09-every-node-is-its-own-identity-provider-repo-as-cluster-hats-grant-claims-bounded-duration-aaron.md`).
+A witness to a key transfer stakes budget on the attestation being true — and because budget is socially
 conferred rather than purchasable, **a wealthy attacker cannot fund false witnesses**. It
 is the one currency a Sybil cannot mint. Voluntariness is load-bearing: if nobody will
 stake on a transfer, it simply is not witnessed, so a **one-sided transfer is impossible**.
@@ -63,6 +63,44 @@ both sides of the gamble were already in the rule.
 Guard: a stake must never be *required* to hold a role or to participate — that would be
 coercion wearing a wager's clothes, and it would reintroduce exactly the confiscation this
 rule forbids.
+
+## Staking is EXTRA, not the anti-Sybil mechanism (Aaron 2026-08-14)
+
+Read the section above as **harm reduction**, not as the defence. Asked whether staking is
+needed at all now that proof-of-useful-work exists:
+
+> *"we had it listed as it will likely get wagered on the black market anyways so might as
+> well have some way to wager it, never confiscate it or force to wager it … it should be
+> looked at as **extra**."*
+
+The sanctioned wager exists because an unsanctioned one would exist regardless, and only a
+sanctioned path can carry the never-confiscate / never-compel invariants. It is not what
+makes Sybil attacks unprofitable.
+
+**What does that is proof of useful work inside the culture, and it is already built:**
+
+- `src/Core/TravelerRankLedger.fs` — TrueSkill-style EP (Herbrich–Minka–Graepel 2006) over
+  (traveler × hat-domain). The whitewash window is closed *by construction*: a fresh
+  identity starts at an honest `0.5` prior, and "1 hit, 2 misses" lands ≈`0.35`, not `0.0`.
+  So discarding a damaged name and re-minting does not pay — which is the Sybil's whole
+  play. Rankings are held by **others**, never self-asserted, and domains are isolated, so
+  standing earned as a verifier does not buy standing as a signer.
+- `src/Core/SocietyUsefulWork.fs` — the ΔU aggregation theorem with the analytic expected
+  value under pairwise correlation ρ, plus a Gaussian copula for heterogeneous agents.
+  Clones produce highly-correlated ΔU and the union is idempotent, so N copies price near
+  one agent's worth. **Contribution does not scale with copies.**
+- Plus mutual entangled memory pairs between agents, BFT quorums, and the standing cost of
+  sustaining an identity's history over time.
+
+**Staking generalises past privacy budget.** Attention, memory, and tick sources are named
+as other irreducible resources that could be wagered if ever needed. What transfers is the
+three-operation invariant (spend / stake / **never** confiscate), not the currency.
+
+Design consequence: do not reach for a stake where a ranking or a ΔU measurement will do,
+and never present a stake as the thing that makes an identity trustworthy. A staking-based
+anti-Sybil scheme is *purchasable*, which is precisely the attacker this design defeats —
+see the third-party draft compared in
+`docs/research/2026-08-14-agent-coordination-is-the-capability-we-are-building-metering-not-abolition.md`.
 
 ## The role split (why mandatory broadcast is still consensual)
 
@@ -87,7 +125,8 @@ rule forbids.
 - `universal/television.md` — LLMTV, the one-way watch surface frost gates
 - [`every-bug-has-economic-value.md`](every-bug-has-economic-value.md) — privacy is a
   currency you *earn by being useful*, the sibling economy
-- naming eigenvector: `docs/research/2026-07-02-name-of-name-…fixed-point…md` — the
-  same social-conferral structure (recognition by the recognized)
+- naming eigenvector:
+  `docs/research/2026-07-02-name-of-name-equals-mix-of-mix-naming-authority-is-the-same-fixed-point-as-the-compiler-generator.md`
+  — the same social-conferral structure (recognition by the recognized)
 - [`manifesto-13-specifications.md`](manifesto-13-specifications.md) §5 memory
   preservation (earned frost can't be destroyed) · §6 consent-first

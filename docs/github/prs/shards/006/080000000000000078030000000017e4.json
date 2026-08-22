@@ -1,0 +1,12 @@
+{
+  "pr_number": 6116,
+  "archive_path": "docs/history/pr-reviews/PR-6116-docs-b-0250-calibrate-queue-drain-coincidence-window.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-30T14:23:09.882Z",
+  "schema_version": "v1",
+  "commit_sha": "fe797eb6304173674427365e1ee65bb46a0d9224",
+  "title": "docs(B-0250): calibrate queue-drain coincidence window",
+  "state": "MERGED",
+  "merged_at": "2026-05-30T14:22:51Z",
+  "head_ref": "claim/codex-loop-b0250-live-calibration-20260530"
+}

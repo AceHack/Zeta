@@ -138,15 +138,15 @@ removed at the next sweep.
 | `safety-clause-audit.sh` | `tools/lint/` | Custom safety-clause scanner. | Active |
 | Alignment audit trio: `audit_commit.sh`, `audit_personas.sh`, `audit_skills.sh`, `citations.sh` | `tools/alignment/` | Commit alignment, persona alignment, skill alignment, citation integrity — written for THIS factory's discipline. | Active |
 | `invariant-substrates/tally.ts` | `tools/invariant-substrates/` | Aaron's inventory probe for the composite-invariants pattern. | Active |
-| Prompt-injection ASCII lint (`prompt-protector`) | `.claude/skills/prompt-protector/SKILL.md` + pre-commit hook | BP-10 invisible-Unicode char classes blocked at commit and at notebook-edit time. | Active |
+| Prompt-injection ASCII lint (`prompt-protector`) | `.claude/skills/security/blueprints/prompt-protector.md` + pre-commit hook | BP-10 invisible-Unicode char classes blocked at commit and at notebook-edit time. | Active |
 
 ## 8. Agent-layer discipline (shipped via `.claude/`)
 
 | Capability | Form in this repo | What we used it for on Zeta | State |
 |---|---|---|---|
-| Skill-tune-up ranking by BP-NN citation | `.claude/skills/skill-tune-up/SKILL.md` (Aarav) + `memory/aarav/NOTEBOOK.md` | Every finding in skill reviews cites a stable BP-NN rule ID; freeform findings are scratchpad until promoted by Architect. | Active |
+| Skill-tune-up ranking by BP-NN citation | `.claude/skills/skill-lifecycle/blueprints/skill-tune-up.md` (Aarav) + `memory/aarav/NOTEBOOK.md` | Every finding in skill reviews cites a stable BP-NN rule ID; freeform findings are scratchpad until promoted by Architect. | Active |
 | Verification-drift auditor | `.claude/skills/verification-drift-auditor/` + `project_verification_drift_auditor.md` | Lean / TLA+ / Z3 / FsCheck spec-alignment-with-code drift detection on round cadence. | Active |
-| `formal-verification-expert` routing | `.claude/skills/formal-verification-expert/SKILL.md` (Soraya) | Property-class-to-tool routing. Anti-TLA+-hammer-bias encoded as the routing discipline itself. | Active |
+| `formal-verification-expert` routing | `.claude/skills/formal-methods/blueprints/formal-verification-expert.md` (Soraya) | Property-class-to-tool routing. Anti-TLA+-hammer-bias encoded as the routing discipline itself. | Active |
 
 ## 9. Researched but not yet adopted
 
@@ -157,8 +157,8 @@ the same as having used them.
 
 | Capability | Evaluation artefact | State |
 |---|---|---|
-| Stryker (mutation testing) | `.claude/skills/stryker-expert/SKILL.md` + mentions in `docs/TECH-RADAR.md`, `docs/VISION.md`, `docs/QUALITY.md` | Researched; no package pin; no test runs. |
-| F* (F-star) | `.claude/skills/f-star-expert/SKILL.md` | Researched; no code. |
+| Stryker (mutation testing) | `.claude/skills/formal-methods/blueprints/stryker-expert.md` + mentions in `docs/TECH-RADAR.md`, `docs/VISION.md`, `docs/QUALITY.md` | Researched; no package pin; no test runs. |
+| F* (F-star) | `.claude/skills/formal-methods/blueprints/f-star-expert.md` | Researched; no code. |
 | LiquidF# (refinement types) | `docs/research/liquidfsharp-evaluation.md`, `docs/research/liquidfsharp-findings.md`, `docs/research/refinement-type-feature-catalog.md` | Evaluated in research docs; no application yet. |
 
 ## 10. Factory-reusable patterns (the *how we used it* knowledge)
@@ -174,8 +174,8 @@ from the shipped tooling.
 |---|---|---|
 | **Crank-to-11 on new tech** | `memory/feedback_crank_to_11_on_new_tech_compile_time_bug_finding.md` | `Directory.Build.props` `TreatWarningsAsErrors` + strictest analyzer tier + F# warning tuning with per-rule justification. |
 | **Latest-version-at-adoption** | `memory/feedback_latest_version_on_new_tech_adoption_no_legacy_start.md` | `net10.0`, `LangVersion=latest`, xUnit v3, FsCheck v3, Lean 4 — all current-generation picks. |
-| **Verification portfolio diversity (anti-hammer-bias)** | `.claude/skills/formal-verification-expert/SKILL.md` | TLA+ + Lean 4 + Alloy + Z3 + FsCheck + Semgrep + CodeQL routed by property class. |
-| **Rule-citation-by-ID in reviews** | `docs/AGENT-BEST-PRACTICES.md` BP-01 … BP-NN; `.claude/skills/skill-tune-up/SKILL.md` | Every finding cites a stable rule ID; scratchpad for unpromoted findings; ADR-gated promotion. |
+| **Verification portfolio diversity (anti-hammer-bias)** | `.claude/skills/formal-methods/blueprints/formal-verification-expert.md` | TLA+ + Lean 4 + Alloy + Z3 + FsCheck + Semgrep + CodeQL routed by property class. |
+| **Rule-citation-by-ID in reviews** | `docs/AGENT-BEST-PRACTICES.md` BP-01 … BP-NN; `.claude/skills/skill-lifecycle/blueprints/skill-tune-up.md` | Every finding cites a stable rule ID; scratchpad for unpromoted findings; ADR-gated promotion. |
 | **Default-on with documented exceptions** | `memory/feedback_default_on_factory_wide_rules_with_documented_exceptions.md` | ASCII-clean, TWAE, BP-11 all default-on; exceptions are named with scope/reason/exit/owner. |
 | **Pluggability-first, perf-gated** | `memory/feedback_pluggability_first_perf_gated.md` | Operator plugin discipline, disk-backing-store pluggability, tier-1 / tier-2-shim / tier-3 sizing. |
 | **Preserve original AND every transformation** | `memory/feedback_preserve_original_and_every_transformation.md` | Round-history as append-only layer; every scope-change leaves the preceding layer intact. |

@@ -1,0 +1,15 @@
+{
+  "pr_number": 4931,
+  "archive_path": "docs/history/pr-reviews/PR-4931-fix-4878-remove-bak-files-and-duplicate-archived-at-fields.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7Emo3E",
+    "thread:PRRT_kwDOSF9kNM6EjvPM"
+  ],
+  "fetched_at": "2026-05-25T14:37:29.917Z",
+  "schema_version": "v1",
+  "commit_sha": "98ca0dbad4e817223a3668f7496880b242d7f294",
+  "title": "fix(4878): remove .bak files and duplicate archived_at fields",
+  "state": "MERGED",
+  "merged_at": "2026-05-25T14:37:12Z",
+  "head_ref": "lior-fix-4878"
+}

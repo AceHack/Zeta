@@ -1,0 +1,12 @@
+{
+  "pr_number": 7805,
+  "archive_path": "docs/history/pr-reviews/PR-7805-feat-core-wset-promoted-back-operator-decision-razor-dissent-on-record-the-archi.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-11T22:02:20.048Z",
+  "schema_version": "v1",
+  "commit_sha": "bf99681fc24641970470875d3f2865baf848f4be",
+  "title": "feat(core): WSet promoted back (operator decision; razor dissent on record) + the architecture triplet",
+  "state": "MERGED",
+  "merged_at": "2026-06-11T22:01:49Z",
+  "head_ref": "shadow-wset-promoted"
+}

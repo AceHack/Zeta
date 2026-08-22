@@ -1,0 +1,12 @@
+{
+  "pr_number": 5925,
+  "archive_path": "docs/history/pr-reviews/PR-5925-docs-trajectory-define-drift-report-table-shape.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-28T19:33:04.522Z",
+  "schema_version": "v1",
+  "commit_sha": "49d267eda95b8b6542ecd35df204d761f44070e2",
+  "title": "docs(trajectory): define drift report table shape",
+  "state": "MERGED",
+  "merged_at": "2026-05-28T19:32:43Z",
+  "head_ref": "claim/task-trajectory-drift-report-table-shape-20260528"
+}

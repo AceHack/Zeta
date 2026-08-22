@@ -330,6 +330,9 @@ type PollFn = (
 /** Injectable bus-claims provider — default reads from /tmp/zeta-bus; override in tests. */
 export type BusClaimsFn = () => ClaimRecord[];
 
+/** Injectable prior-state reader so orchestration tests never need the forge CLI. */
+export type ReadPRStateFn = typeof readPRState;
+
 export async function pollAllBounded(
   prs: number[],
   owner: string,
@@ -415,6 +418,7 @@ export async function main(
   argv: string[],
   busClaimsFn: BusClaimsFn = allActiveClaims,
   pollFn: PollFn = pollOne,
+  readPRStateFn: ReadPRStateFn = readPRState,
 ): Promise<number> {
   const args = parseArgs(argv);
   const prs = args.allOpen ? listOpenPRs(args.owner, args.repo) : args.prs;
@@ -445,17 +449,21 @@ export async function main(
   // This is the observe loop's priority wiring: urgent PRs drain before
   // background PRs, so actionable signals surface with minimal latency.
   let urgentPrs: Set<number> | undefined;
-  try {
-    const prState = readPRState();
-    const cleanNumbers = new Set(prState.clean.map((p) => p.number));
-    // Any PR in our poll list that is NOT in the clean set is urgent.
-    const urgent = prs.filter((n) => !cleanNumbers.has(n));
-    if (urgent.length > 0 && urgent.length < prs.length) {
-      urgentPrs = new Set(urgent);
+  // Priority cannot change a one-item order. Avoid an ambient forge process in
+  // that common path and keep injected single-PR tests genuinely hermetic.
+  if (prs.length > 1) {
+    try {
+      const prState = readPRStateFn();
+      const cleanNumbers = new Set(prState.clean.map((p) => p.number));
+      // Any PR in our poll list that is NOT in the clean set is urgent.
+      const urgent = prs.filter((n) => !cleanNumbers.has(n));
+      if (urgent.length > 0 && urgent.length < prs.length) {
+        urgentPrs = new Set(urgent);
+      }
+    } catch {
+      // readPRState() depends on `gh` being available; if it fails, all PRs
+      // get background priority (no classification — graceful degradation).
     }
-  } catch {
-    // readPRState() depends on `gh` being available; if it fails, all PRs
-    // get background priority (no classification — graceful degradation).
   }
   const outcomes = await pollAllBounded(prs, args.owner, args.repo, args.concurrency, pollFn, urgentPrs);
   const reports: GateReport[] = [];

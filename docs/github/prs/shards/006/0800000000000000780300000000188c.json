@@ -1,0 +1,12 @@
+{
+  "pr_number": 6284,
+  "archive_path": "docs/history/pr-reviews/PR-6284-docs-research-bus-ace-are-one-git-native-zetaid-keyed-z-set-substrate-g-set-comm.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-01T00:06:41.213Z",
+  "schema_version": "v1",
+  "commit_sha": "485be69b634cbf0bdc05fd616f34ebe5831a00f0",
+  "title": "docs(research): bus + Ace are one git-native ZetaId-keyed Z-set substrate (G-Set comms vs dependency Z-set)",
+  "state": "MERGED",
+  "merged_at": "2026-06-01T00:06:19Z",
+  "head_ref": "otto-cli/bus-ace-synthesis-2026-05-31"
+}

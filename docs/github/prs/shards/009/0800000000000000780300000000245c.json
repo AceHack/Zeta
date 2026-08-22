@@ -1,0 +1,12 @@
+{
+  "pr_number": 9308,
+  "archive_path": "docs/history/pr-reviews/PR-9308-close-081kvp3gy-trust-graph-rule-shamir-k-of-n-oracles.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-03T16:01:05.326Z",
+  "schema_version": "v1",
+  "commit_sha": "1632a7357d01d97c946a4f806002029c0730e2c6",
+  "title": "Close 081KVP3GY trust-graph rule + Shamir k-of-n oracles",
+  "state": "MERGED",
+  "merged_at": "2026-07-03T16:00:34Z",
+  "head_ref": "feat/081KVP3GY-trust-graph-shamir"
+}

@@ -23,6 +23,11 @@ git    winget=Git.Git    choco=git
 # the `node` executable directly.
 nodejs    winget=OpenJS.NodeJS    choco=nodejs
 
+# Lua 5.4 bytecode/script substrate (Oracle 15), symmetric with apt `lua5.4`,
+# brew `lua`, and NixOS `lua5`. Scoop Main is the primary Windows source;
+# Chocolatey keeps the existing package-id fallback explicit.
+lua    choco=lua
+
 # USB/ISO QEMU acceptance substrate (B-0891). The Unix package split is
 # qemu-system-x86 + qemu-utils; Windows carries those binaries through qemu.
 qemu   winget=SoftwareFreedomConservancy.QEMU   choco=qemu
@@ -75,3 +80,81 @@ pandoc    winget=JohnMacFarlane.Pandoc    choco=pandoc
 # precedent). headscale-cli is the SERVER-side CLI (Linux/macOS ops) — allowlisted exception
 # in manifest-symmetry.test.ts, not installed on Windows dev boxes.
 tailscale    winget=Tailscale.Tailscale    choco=tailscale    optional
+
+# ── YubiKey hardware-token substrate (2026-08-20) ─────────────────────────────
+# These were WINDOWS_EXCEPTIONS until 2026-08-20 on the stated ground that no scoop
+# or winget id "was verifiable from the host this was authored on". That was an
+# honest exception and it was also a check that had not been run. It has now been
+# run against the registries themselves, and the exception was wrong:
+#
+#   scoop  ScoopInstaller/Main/bucket/yubikey-manager-cli.json  v5.9.2  bin ykman.exe
+#   scoop  ScoopInstaller/Main/bucket/yubico-piv-tool.json      v2.7.3  bin yubico-piv-tool.exe
+#   winget microsoft/winget-pkgs manifests/y/Yubico/YubiKeyManagerCLI/5.9.2  Yubico.YubiKeyManagerCLI
+#   winget microsoft/winget-pkgs manifests/y/Yubico/PIVTool/2.7.3           Yubico.PIVTool
+#
+# Both are in scoop MAIN (the primary, user-mode, no-admin resolver), and all three
+# sources agree on both versions -- 5.9.2 and 2.7.3 match what brew reports. Package
+# ids are copied from the manifests' own PackageIdentifier/filename, not inferred.
+#
+# choco is deliberately omitted rather than guessed: no chocolatey id was checked,
+# and the resolver falls back scoop -> winget without it.
+#
+# NOT here: the YubiHSM SDK (yubihsm-shell / yubihsm-connector). Checked the same way
+# and genuinely absent -- manifests/y/Yubico in winget-pkgs has no HSM entry, and the
+# SDK ships as a signed Yubico installer on every OS. Undeclared on all three
+# platforms, matching the note in manifests/apt.
+yubikey-manager-cli    winget=Yubico.YubiKeyManagerCLI    # ykman CLI — PIV/FIDO2/OpenPGP/YubiHSM-Auth applet management
+yubico-piv-tool        winget=Yubico.PIVTool              # PIV slot + attestation tooling
+
+# ── OpenSC / pkcs11-tool (2026-08-20) ─────────────────────────────────────────
+# The Windows leg of the `opensc` rows added to manifests/apt + manifests/brew.
+# Without it manifest-symmetry.test.ts would demand a WINDOWS_EXCEPTIONS entry,
+# and the honest disposition is not "excepted" -- winget carries it.
+#
+# Verified 2026-08-20 against the registries themselves, not recalled:
+#   scoop  ScoopInstaller/Main/bucket/opensc.json                 404 -- ABSENT
+#   scoop  ScoopInstaller/Extras/bucket/opensc.json               404 -- ABSENT
+#   winget microsoft/winget-pkgs manifests/o/OpenSC/OpenSC/0.26.1
+#          PackageIdentifier: OpenSC.OpenSC   (read from the version manifest)
+#
+# `optional` IS LOAD-BEARING HERE, and the reason is a property of the resolver
+# rather than of the package. The loop above picks the FIRST AVAILABLE SOURCE --
+# `if (Have scoop) { scoop install $scoopId }` -- and does not fall through to
+# winget when the scoop install FAILS. install.ps1 bootstraps scoop
+# unconditionally, so scoop is always "available", so a row whose scoop id does
+# not exist would throw and take the whole Windows install down. `optional`
+# converts that into a warn-and-continue. This is the same treatment `tailscale`
+# already carries for the same reason (scoop Main: 404, verified today).
+#
+# The honest cost of that: on a scoop-primary host this row installs NOTHING and
+# warns. It is real substrate only where winget is the resolver (no scoop, or an
+# admin/CI context that reached winget first). Naming it beats a row that looks
+# like coverage and silently is not -- and the fix is a resolver that falls
+# through on failure instead of on availability, which is a change to install.ps1,
+# not to this manifest. Filed as DEBT.
+#
+# choco deliberately omitted rather than guessed: no chocolatey id was checked.
+opensc    winget=OpenSC.OpenSC    optional    # pkcs11-tool — vendor-neutral PKCS#11 CLI
+
+# ── YubiHSM 2 SDK: STILL UNDECLARED ON WINDOWS (2026-08-20) ───────────────────
+# Re-checked today, and the earlier note above is confirmed rather than inherited:
+#   GET api.github.com/repos/microsoft/winget-pkgs/contents/manifests/y/Yubico
+#   -> [Authenticator, PIVTool, YubiKeyManagerCLI, YubiKeyPersonalizationTool,
+#       YubiKeySmartCardMinidriver, YubikeyManager]
+#   No HSM entry. scoop Main bucket/yubihsm-shell.json -> 404.
+#   community.chocolatey.org/api/v2/package/yubihsm-shell -> 404.
+#
+# Yubico ships it as https://developers.yubico.com/YubiHSM2/Releases/
+# yubihsm2-sdk-2026-04-windows-amd64.zip (+ a detached .sig), which no mechanism
+# in this repo can consume: this manifest's grammar is scoop/winget/choco ids
+# only, and from-url can DOWNLOAD a file but never unpack or install one.
+#
+# TODO -- and it needs a decision, not a row. Landing it requires exactly one of:
+#   (a) a Windows-side unzip-to-PATH mechanism (new mechanism -- needs sign-off),
+#   (b) an upstream winget manifest for the SDK (GOVERNANCE section 23 candidate:
+#       we would be contributing Yubico's package to microsoft/winget-pkgs), or
+#   (c) accepting Windows as documented-manual for the HSM.
+# NO sha256 is stated here on purpose: the only digest available would be one I
+# computed from a download I could not independently verify, which is
+# trust-on-first-download wearing a pin's clothes. Yubico's .sig is the real
+# answer and nothing here verifies signatures yet.

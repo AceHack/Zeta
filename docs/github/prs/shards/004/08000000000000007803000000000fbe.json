@@ -1,0 +1,17 @@
+{
+  "pr_number": 4030,
+  "archive_path": "docs/history/pr-reviews/PR-4030-shard-tick-0252z-otto-cli-fresh-session-cron-recovery-session-only-cron-empirica.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7B8zCo",
+    "comment:PRRC_kwDOSF9kNM7B8zDp",
+    "thread:PRRT_kwDOSF9kNM6CnAZm",
+    "thread:PRRT_kwDOSF9kNM6CnAab"
+  ],
+  "fetched_at": "2026-05-17T02:59:03.161Z",
+  "schema_version": "v1",
+  "commit_sha": "3f30fb28a762be873ca1640637ef828d7df80e2d",
+  "title": "shard(tick-0252z): otto-cli fresh-session cron recovery + session-only cron empirical confirm",
+  "state": "MERGED",
+  "merged_at": "2026-05-17T02:58:44Z",
+  "head_ref": "shard/tick-0252z-cron-recovery-fresh-session-2026-05-17"
+}

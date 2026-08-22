@@ -1,0 +1,12 @@
+{
+  "pr_number": 9303,
+  "archive_path": "docs/history/pr-reviews/PR-9303-docs-the-crux-full-continuance-ethics-you-born-at-the-hinge-book-placeholder.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-03T13:44:13.135Z",
+  "schema_version": "v1",
+  "commit_sha": "27086217682d3d8e15d7a9f521e0973e2d36453d",
+  "title": "docs: the crux (full-continuance ethics) + 'You, Born at the Hinge' book placeholder",
+  "state": "MERGED",
+  "merged_at": "2026-07-03T13:43:46Z",
+  "head_ref": "shadow/crux-continuance-ethics-and-hinge-book"
+}

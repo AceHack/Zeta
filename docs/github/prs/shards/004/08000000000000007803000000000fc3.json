@@ -1,0 +1,12 @@
+{
+  "pr_number": 4035,
+  "archive_path": "docs/history/pr-reviews/PR-4035-docs-archive-maji-pr-preservation-for-4033-4031-4030.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-18T20:39:40.366Z",
+  "schema_version": "v1",
+  "commit_sha": "b69b89547be2ff6c4f1ca894942cd880e86f6669",
+  "title": "docs(archive): Maji PR preservation for #4033, #4031, #4030",
+  "state": "MERGED",
+  "merged_at": "2026-05-18T20:39:19Z",
+  "head_ref": "maji/preservation-batch-03"
+}

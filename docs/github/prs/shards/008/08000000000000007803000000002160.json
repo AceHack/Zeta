@@ -1,0 +1,12 @@
+{
+  "pr_number": 8544,
+  "archive_path": "docs/history/pr-reviews/PR-8544-memory-feedback-coda-help-kids-not-just-protect-kids-protect-the-floor-help-the-.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-16T17:23:04.085Z",
+  "schema_version": "v1",
+  "commit_sha": "de500ad351b6812e0747aadf535575ad80dd0a2e",
+  "title": "memory(feedback): coda — HELP kids, not just PROTECT kids (protect = the floor; help = the point; powerful-that-helps does both)",
+  "state": "MERGED",
+  "merged_at": "2026-06-16T17:22:26Z",
+  "head_ref": "otto/help-kids-not-just-protect-kids-telos-recentering"
+}

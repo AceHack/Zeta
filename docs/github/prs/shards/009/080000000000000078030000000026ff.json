@@ -1,0 +1,12 @@
+{
+  "pr_number": 9983,
+  "archive_path": "docs/history/pr-reviews/PR-9983-docs-book-log-the-orphaned-feynman-batch-in-intake-log-consistency-fix.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-02T19:10:36.696Z",
+  "schema_version": "v1",
+  "commit_sha": "a48ffa5c0235807a7b956c1a9243e0227dca2408",
+  "title": "docs(book): log the orphaned Feynman batch in INTAKE-LOG (consistency fix)",
+  "state": "MERGED",
+  "merged_at": "2026-08-02T19:10:04Z",
+  "head_ref": "book/intake-log-feynman-row-fix-20260802"
+}

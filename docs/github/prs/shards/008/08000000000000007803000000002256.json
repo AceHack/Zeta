@@ -1,0 +1,12 @@
+{
+  "pr_number": 8790,
+  "archive_path": "docs/history/pr-reviews/PR-8790-inventory-phase-6-hotfix-print-labels-printed-the-whole-page-missing-media-print.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-20T22:51:41.298Z",
+  "schema_version": "v1",
+  "commit_sha": "fd34b639dfe6ec60f401b747d65b2fa7f6cda1c5",
+  "title": "Inventory Phase 6 hotfix — print labels printed the whole page (missing @media print CSS)",
+  "state": "MERGED",
+  "merged_at": "2026-06-20T22:51:14Z",
+  "head_ref": "claude/phase-6-print-css-fix"
+}

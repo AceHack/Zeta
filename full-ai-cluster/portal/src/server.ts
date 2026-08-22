@@ -15,6 +15,7 @@ import { CompositePlatform } from "./data-composite.ts";
 import { DemoOps } from "./ops-demo.ts";
 import { demoAdmin } from "./admin-demo.ts";
 import { demoPlatform, demoResources } from "./demo.ts";
+import { METRICS_PATH, metricsResponse, newMetricsState, recordRequest } from "./metrics.ts";
 
 // The built React SPA (web/ -> dist/). Built by `bun run build` in web/.
 const UI_DIR = join(import.meta.dir, "..", "dist");
@@ -43,18 +44,43 @@ function makeData(): PlatformData {
 
 const data = makeData();
 
+// Prometheus exposition state. The portal is annotated prometheus.io/scrape in
+// full-ai-cluster/k8s/applications/platform/portal.yaml and selected by the
+// ServiceMonitor beside it; both point at METRICS_PATH. Serving the endpoint is
+// what makes those annotations true rather than decorative.
+const metrics = newMetricsState(
+  process.env.ZETA_PORTAL_VERSION ?? "dev",
+  Math.floor(Date.now() / 1000),
+);
+
 const server = Bun.serve({
   port: PORT,
   async fetch(req) {
+    const url = new URL(req.url);
+
+    // The scrape target. Answered before anything else and NOT recorded as a
+    // request itself beyond its own route class, so the endpoint cannot inflate
+    // the numbers it reports.
+    if (url.pathname === METRICS_PATH) {
+      recordRequest(metrics, url.pathname, 200);
+      return metricsResponse(metrics);
+    }
+
     const apiResp = await handle(req, data);
-    if (apiResp) return apiResp;
+    if (apiResp) {
+      recordRequest(metrics, url.pathname, apiResp.status);
+      return apiResp;
+    }
 
     // static file serving (the SPA shell)
-    const url = new URL(req.url);
     const rel = url.pathname === "/" ? "/index.html" : url.pathname;
     const file = Bun.file(join(UI_DIR, rel));
-    if (await file.exists()) return new Response(file);
+    if (await file.exists()) {
+      recordRequest(metrics, url.pathname, 200);
+      return new Response(file);
+    }
     // SPA fallback
+    recordRequest(metrics, url.pathname, 200);
     return new Response(Bun.file(join(UI_DIR, "index.html")));
   },
 });

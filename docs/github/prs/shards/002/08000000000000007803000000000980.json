@@ -1,0 +1,12 @@
+{
+  "pr_number": 2432,
+  "archive_path": "docs/history/pr-reviews/PR-2432-chore-b-0054-decompose-pop-culture-media-track-8-atomic-child-rows-b-0054-3-b-00.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-10T07:29:01.597Z",
+  "schema_version": "v1",
+  "commit_sha": "7b215a9a034f2da2d43e1b241ebf2079e6d9f102",
+  "title": "chore(B-0054): decompose pop-culture media track — 8 atomic child rows (B-0054.3–B-0054.10)",
+  "state": "MERGED",
+  "merged_at": "2026-05-10T07:28:47Z",
+  "head_ref": "claim/B-0054-decompose-child-rows-2026-05-10"
+}

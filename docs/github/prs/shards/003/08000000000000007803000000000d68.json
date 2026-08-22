@@ -1,0 +1,12 @@
+{
+  "pr_number": 3432,
+  "archive_path": "docs/history/pr-reviews/PR-3432-shard-tick-1123z-pr-3429-pr-3430-merged-zero-threads.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-15T11:28:33.616Z",
+  "schema_version": "v1",
+  "commit_sha": "b703bcc3cf79616f9f331b551e91a56148c7b302",
+  "title": "shard(tick): 1123Z — PR #3429 + PR #3430 merged; zero threads",
+  "state": "MERGED",
+  "merged_at": "2026-05-15T11:28:17Z",
+  "head_ref": "shard/tick-1123z-otto-cli-2026-05-15"
+}

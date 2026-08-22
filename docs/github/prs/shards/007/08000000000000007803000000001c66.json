@@ -1,0 +1,12 @@
+{
+  "pr_number": 7270,
+  "archive_path": "docs/history/pr-reviews/PR-7270-docs-inventory-declared-fleet-aaron-2-mini-pc-15-series-egpus-comets-max-1-14-se.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-09T13:13:56.277Z",
+  "schema_version": "v1",
+  "commit_sha": "50887bdf6e9510a3a07c4023560c6bf57eb3af7c",
+  "title": "docs(inventory): declared fleet — Aaron (2× mini-PC 15-series + eGPUs + Comets) + Max (1× 14-series, near-symmetric)",
+  "state": "MERGED",
+  "merged_at": "2026-06-09T13:13:32Z",
+  "head_ref": "otto/inventory-fleet-aaron-max-declared-2026-06-09"
+}

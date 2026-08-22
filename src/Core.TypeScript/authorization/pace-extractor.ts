@@ -8,6 +8,7 @@
 
 import { existsSync, readdirSync, readFileSync } from "node:fs";
 import { join, relative } from "node:path";
+import { stringCompare } from "../collation/collation";
 
 export interface PaceInstruction {
   source: string;
@@ -238,7 +239,7 @@ export async function extractPaceInstructions(
     if (a.timestamp === b.timestamp) return 0;
     if (a.timestamp === null) return 1;
     if (b.timestamp === null) return -1;
-    return a.timestamp.localeCompare(b.timestamp);
+    return stringCompare(a.timestamp, b.timestamp);
   });
 
   return results;

@@ -23,11 +23,11 @@
 //   ETY-003 — εἰμί (-μι class) — bootstrap / I-AM-THAT-I-AM (compounds instance #5)
 //
 // Usage (type-check only, no runtime needed):
-//   bun --check tools/resonance/etymology-catalog-schema.ts
+//   bun --check src/Core.TypeScript/resonance/etymology-catalog-schema.ts
 //
 // Usage (validate catalog entries at runtime):
-//   bun tools/resonance/etymology-catalog-schema.ts --validate
-//   bun tools/resonance/etymology-catalog-schema.ts --summary
+//   bun src/Core.TypeScript/resonance/etymology-catalog-schema.ts --validate
+//   bun src/Core.TypeScript/resonance/etymology-catalog-schema.ts --summary
 
 // ── Language family taxonomy ──────────────────────────────────────────────────
 

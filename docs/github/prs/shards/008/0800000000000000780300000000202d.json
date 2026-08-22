@@ -1,0 +1,12 @@
+{
+  "pr_number": 8237,
+  "archive_path": "docs/history/pr-reviews/PR-8237-feat-soft-softvalue-combine-snap-soft-banana-split-fuse-in-uncertainty-space-pol.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-15T02:34:28.613Z",
+  "schema_version": "v1",
+  "commit_sha": "e983bb08a80a701fb15213ae033b8b9a1e5c7165",
+  "title": "feat(soft): SoftValue.combine + snap — soft banana-split/fuse in uncertainty space, policy-gated collapse",
+  "state": "MERGED",
+  "merged_at": "2026-06-15T02:34:07Z",
+  "head_ref": "otto/soft-combine-snap"
+}

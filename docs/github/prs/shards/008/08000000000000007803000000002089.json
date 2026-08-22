@@ -1,0 +1,12 @@
+{
+  "pr_number": 8329,
+  "archive_path": "docs/history/pr-reviews/PR-8329-docs-research-two-gating-modes-corporate-pr-max-vs-sovereign-society-self-check-.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-15T20:12:13.034Z",
+  "schema_version": "v1",
+  "commit_sha": "f26bebfae54d4b31d1d267fac22e202a89f822ac",
+  "title": "docs(research): two gating modes — corporate PR (Max) vs sovereign society+self-check (Aaron), converging",
+  "state": "MERGED",
+  "merged_at": "2026-06-15T20:11:44Z",
+  "head_ref": "docs/ferry-two-mode-gating-sovereign-no-pr-society-self-check"
+}

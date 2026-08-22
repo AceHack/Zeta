@@ -1,0 +1,12 @@
+{
+  "pr_number": 7123,
+  "archive_path": "docs/history/pr-reviews/PR-7123-feat-core-survival-stay-alive-forever-a-stable-limit-cycle-control-theory.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-08T23:04:25.346Z",
+  "schema_version": "v1",
+  "commit_sha": "706a58c1b30bc7f9404b3c01262b10538cca19be",
+  "title": "feat(core): Survival — stay alive forever = a stable limit cycle (control theory)",
+  "state": "MERGED",
+  "merged_at": "2026-06-08T23:04:02Z",
+  "head_ref": "otto/survival-stay-alive-forever-limit-cycle-control-theory"
+}

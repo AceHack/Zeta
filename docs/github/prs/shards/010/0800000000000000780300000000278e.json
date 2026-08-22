@@ -1,0 +1,12 @@
+{
+  "pr_number": 10126,
+  "archive_path": "docs/history/pr-reviews/PR-10126-book-editions-indonesian-companion-4-the-strategist-s-daughter-full-length-id.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-07T18:30:42.153Z",
+  "schema_version": "v1",
+  "commit_sha": "bdc356c962d03dd014f6b09b77bb14e5d53998f0",
+  "title": "book(editions): Indonesian companion 4 — the Strategist's Daughter, full length (id)",
+  "state": "MERGED",
+  "merged_at": "2026-08-07T18:30:04Z",
+  "head_ref": "book-id-companion-strategist"
+}

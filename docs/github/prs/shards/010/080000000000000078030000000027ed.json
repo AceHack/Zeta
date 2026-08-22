@@ -1,0 +1,12 @@
+{
+  "pr_number": 10221,
+  "archive_path": "docs/history/pr-reviews/PR-10221-fix-ci-restore-windows-setup-and-typescript-gates.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-09T20:00:41.198Z",
+  "schema_version": "v1",
+  "commit_sha": "3a71588212a7e0eac17d59226daf60036a3e343e",
+  "title": "fix(ci): restore Windows setup and TypeScript gates",
+  "state": "MERGED",
+  "merged_at": "2026-08-09T20:00:10Z",
+  "head_ref": "codex/windows-root-bun-install-context"
+}

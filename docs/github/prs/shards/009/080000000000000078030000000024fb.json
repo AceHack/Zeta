@@ -1,0 +1,12 @@
+{
+  "pr_number": 9467,
+  "archive_path": "docs/history/pr-reviews/PR-9467-feat-persona-transport-summon-over-the-mux-personas-as-four-corner-channels-shad.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-04T17:45:56.605Z",
+  "schema_version": "v1",
+  "commit_sha": "659d3b33b5acbbcd76f13936d62f3aeac6da91ad",
+  "title": "feat(persona-transport): summon over the mux — personas as four-corner channels (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-04T17:45:32Z",
+  "head_ref": "otto/persona-transport-summon-over-mux"
+}

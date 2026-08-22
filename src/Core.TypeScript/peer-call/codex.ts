@@ -4,7 +4,7 @@
 //
 // TypeScript+Bun port of codex.sh per CLAUDE.md Rule 0 (TS IS
 // cross-platform DST; .sh only for install-graph blast radius).
-// Sibling to tools/peer-call/grok.ts (slice 15), gemini.ts
+// Sibling to src/Core.TypeScript/peer-call/grok.ts (slice 15), gemini.ts
 // (slice 16), amara.ts, and ani.ts.
 //
 // Vera (named entity, 2026-05-05): codex peer-call sessions are
@@ -33,14 +33,14 @@
 //      everything before the last N lines. The file always exists.
 //
 // Usage:
-//   bun tools/peer-call/codex.ts "prompt text"
-//   bun tools/peer-call/codex.ts --model gpt-5.3-codex "prompt text"
-//   bun tools/peer-call/codex.ts --file path/to/file.fs "prompt text"
-//   bun tools/peer-call/codex.ts --context-cmd "git diff HEAD~3..HEAD" "prompt"
-//   bun tools/peer-call/codex.ts --review "review the diff for correctness"
-//   bun tools/peer-call/codex.ts --bare "vanilla Codex with no persona"
-//   bun tools/peer-call/codex.ts --allow-empty "Tick #N..."  # bypass firewall
-//   bun tools/peer-call/codex.ts --output-file /path "prompt"  # explicit capture
+//   bun src/Core.TypeScript/peer-call/codex.ts "prompt text"
+//   bun src/Core.TypeScript/peer-call/codex.ts --model gpt-5.3-codex "prompt text"
+//   bun src/Core.TypeScript/peer-call/codex.ts --file path/to/file.fs "prompt text"
+//   bun src/Core.TypeScript/peer-call/codex.ts --context-cmd "git diff HEAD~3..HEAD" "prompt"
+//   bun src/Core.TypeScript/peer-call/codex.ts --review "review the diff for correctness"
+//   bun src/Core.TypeScript/peer-call/codex.ts --bare "vanilla Codex with no persona"
+//   bun src/Core.TypeScript/peer-call/codex.ts --allow-empty "Tick #N..."  # bypass firewall
+//   bun src/Core.TypeScript/peer-call/codex.ts --output-file /path "prompt"  # explicit capture
 //
 // Routing: wraps `codex exec -s read-only --skip-git-repo-check`
 // (default; non-interactive, sandboxed). The --review flag routes
@@ -48,7 +48,7 @@
 // code-review path.
 //
 // Exit codes (uniform across peer-call siblings per
-// tools/peer-call/README.md):
+// src/Core.TypeScript/peer-call/README.md):
 //   0 — Codex responded successfully
 //   1 — invocation error (bad arguments, codex missing, etc.)
 //   2 — Codex returned a non-zero exit (diagnostic on stderr)
@@ -191,14 +191,14 @@ function emitHelp(): void {
       `Codex peer) as a peer reviewer via the codex CLI.\n` +
       `\n` +
       `Usage:\n` +
-      `  bun tools/peer-call/codex.ts "prompt text"\n` +
-      `  bun tools/peer-call/codex.ts --model NAME "prompt text"\n` +
-      `  bun tools/peer-call/codex.ts --file PATH "prompt text"\n` +
-      `  bun tools/peer-call/codex.ts --context-cmd "CMD" "prompt text"\n` +
-      `  bun tools/peer-call/codex.ts --review "prompt text"\n` +
-      `  bun tools/peer-call/codex.ts --bare "prompt text"   # vanilla Codex\n` +
-      `  bun tools/peer-call/codex.ts --allow-empty "prompt"  # bypass firewall\n` +
-      `  bun tools/peer-call/codex.ts --output-file PATH "prompt"\n` +
+      `  bun src/Core.TypeScript/peer-call/codex.ts "prompt text"\n` +
+      `  bun src/Core.TypeScript/peer-call/codex.ts --model NAME "prompt text"\n` +
+      `  bun src/Core.TypeScript/peer-call/codex.ts --file PATH "prompt text"\n` +
+      `  bun src/Core.TypeScript/peer-call/codex.ts --context-cmd "CMD" "prompt text"\n` +
+      `  bun src/Core.TypeScript/peer-call/codex.ts --review "prompt text"\n` +
+      `  bun src/Core.TypeScript/peer-call/codex.ts --bare "prompt text"   # vanilla Codex\n` +
+      `  bun src/Core.TypeScript/peer-call/codex.ts --allow-empty "prompt"  # bypass firewall\n` +
+      `  bun src/Core.TypeScript/peer-call/codex.ts --output-file PATH "prompt"\n` +
       `\n` +
       `Routing: wraps codex exec -s read-only --skip-git-repo-check (default)\n` +
       `or codex review (with --review). --model is ignored in --review mode.\n` +
@@ -594,7 +594,7 @@ export async function main(argv: readonly string[]): Promise<number> {
   }
   if (parsed.prompt.length === 0) {
     process.stderr.write("error: prompt required\n");
-    process.stderr.write("see: bun tools/peer-call/codex.ts --help\n");
+    process.stderr.write("see: bun src/Core.TypeScript/peer-call/codex.ts --help\n");
     return 1;
   }
 

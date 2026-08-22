@@ -1,0 +1,12 @@
+{
+  "pr_number": 5718,
+  "archive_path": "docs/history/pr-reviews/PR-5718-docs-hygiene-history-tick-0808z-otto-cli-cold-boot-saturation-cleared.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-28T08:13:30.012Z",
+  "schema_version": "v1",
+  "commit_sha": "66a84877f5480b5646c0aeb2ef5b0e33f791e96b",
+  "title": "docs(hygiene-history): tick 0808Z — Otto-CLI cold-boot, saturation cleared",
+  "state": "MERGED",
+  "merged_at": "2026-05-28T08:13:09Z",
+  "head_ref": "otto-cli/tick-0808z-cold-boot-2026-05-28"
+}

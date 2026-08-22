@@ -1,0 +1,18 @@
+{
+  "pr_number": 3086,
+  "archive_path": "docs/history/pr-reviews/PR-3086-chore-tick-0141z-shard-pr-3084-findings-absorbed-pr-3083-leilani-fix-landed.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7BCDTN",
+    "comment:PRRC_kwDOSF9kNM7BCDTq",
+    "comment:PRRC_kwDOSF9kNM7BCP3J",
+    "thread:PRRT_kwDOSF9kNM6B8DC8",
+    "thread:PRRT_kwDOSF9kNM6B8DCp"
+  ],
+  "fetched_at": "2026-05-14T02:00:17.935Z",
+  "schema_version": "v1",
+  "commit_sha": "9f8ea53a0b02add5d0a02fe174b5dab7f57776cc",
+  "title": "chore(tick): 0141Z shard — PR #3084 findings absorbed; PR #3083 Leilani fix landed",
+  "state": "MERGED",
+  "merged_at": "2026-05-14T01:59:53Z",
+  "head_ref": "chore/tick-shard-0141z-2026-05-14"
+}

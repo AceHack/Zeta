@@ -1,0 +1,12 @@
+{
+  "pr_number": 2361,
+  "archive_path": "docs/history/pr-reviews/PR-2361-fix-b-0006-compress-memory-md-from-225-to-200-lines.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-09T22:41:35.409Z",
+  "schema_version": "v1",
+  "commit_sha": "726a12412449732119fbee7359ad7e52c7146654",
+  "title": "fix(B-0006): compress MEMORY.md from 225 to 200 lines",
+  "state": "MERGED",
+  "merged_at": "2026-05-09T22:41:15Z",
+  "head_ref": "worktree-delightful-juggling-lollipop"
+}

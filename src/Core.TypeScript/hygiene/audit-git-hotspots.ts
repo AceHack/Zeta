@@ -22,10 +22,10 @@
 //   in `typescript.md`.
 //
 // Usage:
-//   bun tools/hygiene/audit-git-hotspots.ts                # 60d window, top 20
-//   bun tools/hygiene/audit-git-hotspots.ts --window 30d   # custom window
-//   bun tools/hygiene/audit-git-hotspots.ts --top 40       # show more rows
-//   bun tools/hygiene/audit-git-hotspots.ts --report PATH  # write markdown report
+//   bun src/Core.TypeScript/hygiene/audit-git-hotspots.ts                # 60d window, top 20
+//   bun src/Core.TypeScript/hygiene/audit-git-hotspots.ts --window 30d   # custom window
+//   bun src/Core.TypeScript/hygiene/audit-git-hotspots.ts --top 40       # show more rows
+//   bun src/Core.TypeScript/hygiene/audit-git-hotspots.ts --report PATH  # write markdown report
 //
 // Exit codes:
 //   0   always (detect-only, no enforcement)
@@ -344,7 +344,7 @@ export function main(argv: readonly string[]): AuditExitCode {
 
   if (!isInsideWorkTree()) {
     process.stderr.write(
-      "error: tools/hygiene/audit-git-hotspots.ts must run inside a git worktree\n",
+      "error: src/Core.TypeScript/hygiene/audit-git-hotspots.ts must run inside a git worktree\n",
     );
     return 128;
   }

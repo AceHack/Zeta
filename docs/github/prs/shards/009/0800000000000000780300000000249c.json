@@ -1,0 +1,12 @@
+{
+  "pr_number": 9372,
+  "archive_path": "docs/history/pr-reviews/PR-9372-feat-agents-formalize-lumen-the-mathematical-physics-persona-shadow.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-03T23:12:42.409Z",
+  "schema_version": "v1",
+  "commit_sha": "721def8763e92b0455b24ae2ef4163c49994bd3a",
+  "title": "feat(agents): formalize Lumen — the mathematical-physics persona (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-03T23:12:21Z",
+  "head_ref": "otto/formalize-lumen-physics-persona"
+}

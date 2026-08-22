@@ -1,0 +1,12 @@
+{
+  "pr_number": 10202,
+  "archive_path": "docs/history/pr-reviews/PR-10202-feat-ace-from-bun-workspace-realizer-bring-the-repo-s-own-devdeps-under-ace.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-09T18:37:55.258Z",
+  "schema_version": "v1",
+  "commit_sha": "9adf4feb773d9d9e5fc081ee14861261b66882f1",
+  "title": "feat(ace): from-bun-workspace realizer — bring the repo's own devDeps under ACE",
+  "state": "MERGED",
+  "merged_at": "2026-08-09T18:37:25Z",
+  "head_ref": "shadow/ace-from-bun-workspace-realizer"
+}

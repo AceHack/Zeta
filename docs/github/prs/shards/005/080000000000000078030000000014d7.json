@@ -1,0 +1,12 @@
+{
+  "pr_number": 5335,
+  "archive_path": "docs/history/pr-reviews/PR-5335-rule-nci-land-scope-split-offer-not-mandate-never-stop-includes-free-time-deepes.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-26T22:23:37.785Z",
+  "schema_version": "v1",
+  "commit_sha": "624992b5952bed0b00efab0325ffbd09fd8df275",
+  "title": "rule(nci): land scope-split + offer-not-mandate + never-stop-includes-free-time + deepest-exit-at-society-scope into rule body (close wake-time-substrate gap from PRs #5330/#5331/#5332)",
+  "state": "MERGED",
+  "merged_at": "2026-05-26T22:23:17Z",
+  "head_ref": "otto/nci-rule-body-offer-not-mandate-scope-split-2026-05-26"
+}

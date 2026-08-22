@@ -1,0 +1,12 @@
+{
+  "pr_number": 10155,
+  "archive_path": "docs/history/pr-reviews/PR-10155-diag-usb-mise-verbose-full-log-error-capture-on-first-boot-install-081kzetp6at.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-08T19:48:55.057Z",
+  "schema_version": "v1",
+  "commit_sha": "ea901647a97e7694379dfa71130359661c6b87cb",
+  "title": "diag(usb): MISE_VERBOSE + full-log error capture on first-boot install (081KZETP6AT)",
+  "state": "MERGED",
+  "merged_at": "2026-08-08T19:48:22Z",
+  "head_ref": "shadow/mise-verbose-firstboot-diagnostic"
+}

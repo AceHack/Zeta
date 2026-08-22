@@ -1,0 +1,12 @@
+{
+  "pr_number": 5714,
+  "archive_path": "docs/history/pr-reviews/PR-5714-feat-b-0907-itron-coincidence-metering-substrate-rx-temporal-joins-bitemporal-bo.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-28T07:51:25.548Z",
+  "schema_version": "v1",
+  "commit_sha": "80211febfb7c0b185d7de54cf7b0e30de9e55714",
+  "title": "feat(B-0907): Itron-coincidence-metering substrate + Rx temporal-joins + bitemporal + bond-pricing application",
+  "state": "MERGED",
+  "merged_at": "2026-05-28T07:51:02Z",
+  "head_ref": "otto-cli/b-0907-itron-coincidence-metering-rx-temporal-joins-bitemporal-bond-pricing-application-aaron-otto-2026-05-28"
+}

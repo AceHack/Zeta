@@ -1,0 +1,12 @@
+{
+  "pr_number": 11007,
+  "archive_path": "docs/history/pr-reviews/PR-11007-fix-ci-aarch64-qemu-boot-separate-timeout-from-boot-failed-drop-continue-on-erro.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-16T18:36:13.937Z",
+  "schema_version": "v1",
+  "commit_sha": "2b078a8602d6aa716eea02c22045bfef6829c576",
+  "title": "fix(ci): aarch64 qemu boot -- separate TIMEOUT from BOOT-FAILED, drop continue-on-error",
+  "state": "MERGED",
+  "merged_at": "2026-08-16T18:35:38Z",
+  "head_ref": "shadow/qemu-aarch64-boot-budget-and-outcome-classification"
+}

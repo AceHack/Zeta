@@ -1,0 +1,12 @@
+{
+  "pr_number": 8963,
+  "archive_path": "docs/history/pr-reviews/PR-8963-fix-keys-coherent-setup-machine-dry-run-readout-cert-would-sign-after-realizing-.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-21T16:55:11.626Z",
+  "schema_version": "v1",
+  "commit_sha": "9af716d5871d45f2c476dcab257c3e035779ecbe",
+  "title": "fix(keys): coherent setup-machine dry-run readout (cert would-sign after realizing CA)",
+  "state": "MERGED",
+  "merged_at": "2026-06-21T16:54:41Z",
+  "head_ref": "otto/setup-machine-dryrun-cert-wording"
+}

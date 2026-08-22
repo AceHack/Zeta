@@ -1,0 +1,12 @@
+{
+  "pr_number": 8772,
+  "archive_path": "docs/history/pr-reviews/PR-8772-docs-research-ferry-orientation-flow-ux-one-flow-many-surfaces-volunteer-compute.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-20T20:42:21.058Z",
+  "schema_version": "v1",
+  "commit_sha": "ac69d47435b0f2d6b16233aacad2f0bf50c8179f",
+  "title": "docs(research): ferry — orientation flow UX (one flow, many surfaces) + volunteer-compute lineage",
+  "state": "MERGED",
+  "merged_at": "2026-06-20T20:41:49Z",
+  "head_ref": "otto/ferry-orientation-flow-ux"
+}

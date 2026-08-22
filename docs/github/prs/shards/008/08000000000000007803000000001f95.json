@@ -1,0 +1,12 @@
+{
+  "pr_number": 8085,
+  "archive_path": "docs/history/pr-reviews/PR-8085-feat-forge-host-getref-getcommit-searchprs-git-data-api-v2.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-13T22:44:16.137Z",
+  "schema_version": "v1",
+  "commit_sha": "b9392a997bfafb19510e1c1fd810a17267658f0f",
+  "title": "feat(forge-host): getRef + getCommit + searchPRs + git data API (v2)",
+  "state": "MERGED",
+  "merged_at": "2026-06-13T22:43:55Z",
+  "head_ref": "kiro/forge-host-extend-v2"
+}

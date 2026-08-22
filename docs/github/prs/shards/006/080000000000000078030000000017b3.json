@@ -1,0 +1,17 @@
+{
+  "pr_number": 6067,
+  "archive_path": "docs/history/pr-reviews/PR-6067-feat-b-0164-1-detect-review-thread-disagreements.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7GWK0f",
+    "comment:PRRC_kwDOSF9kNM7GWM5E",
+    "comment:PRRC_kwDOSF9kNM7GWONQ",
+    "thread:PRRT_kwDOSF9kNM6F0wHq"
+  ],
+  "fetched_at": "2026-05-30T01:07:20.253Z",
+  "schema_version": "v1",
+  "commit_sha": "c5d39c2f78d935e78989ec2e4844810ca3e698c1",
+  "title": "feat(B-0164.1): detect review-thread disagreements",
+  "state": "MERGED",
+  "merged_at": "2026-05-30T01:07:01Z",
+  "head_ref": "claim/codex-loop-b0164-1-review-disagreement-detect-20260530"
+}

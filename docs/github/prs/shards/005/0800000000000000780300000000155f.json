@@ -1,0 +1,21 @@
+{
+  "pr_number": 5471,
+  "archive_path": "docs/history/pr-reviews/PR-5471-feat-b-0858-4-merge-heartbeats-to-main-tool-periodic-squash-merge-from-agent-hea.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7FYIvF",
+    "comment:PRRC_kwDOSF9kNM7FYIw8",
+    "comment:PRRC_kwDOSF9kNM7FYIwb",
+    "comment:PRRC_kwDOSF9kNM7FYIxk",
+    "thread:PRRT_kwDOSF9kNM6FIBY8",
+    "thread:PRRT_kwDOSF9kNM6FIBZ5",
+    "thread:PRRT_kwDOSF9kNM6FIBaT",
+    "thread:PRRT_kwDOSF9kNM6FIBaw"
+  ],
+  "fetched_at": "2026-05-27T14:29:09.071Z",
+  "schema_version": "v1",
+  "commit_sha": "40a580058f44a9b20db99bab38f2f2abfbd61f96",
+  "title": "feat(B-0858.4): merge-heartbeats-to-main tool — periodic squash-merge from agent-heartbeats → main (Aaron 2026-05-27)",
+  "state": "MERGED",
+  "merged_at": "2026-05-27T14:28:45Z",
+  "head_ref": "feat/b-0858-4-heartbeat-merge-to-main-tool-2026-05-27"
+}

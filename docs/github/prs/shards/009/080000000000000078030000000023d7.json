@@ -1,0 +1,15 @@
+{
+  "pr_number": 9175,
+  "archive_path": "docs/history/pr-reviews/PR-9175-feat-core-schedulerzeta-runtohorizon-the-recurrence-prediction-made-load-bearing.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7RhrHR",
+    "thread:PRRT_kwDOSF9kNM6N_ZRB"
+  ],
+  "fetched_at": "2026-08-17T12:53:11.537Z",
+  "schema_version": "v1",
+  "commit_sha": "196b08e9aa58bcf89f9bbad8ee481691c655c733",
+  "title": "feat(core): SchedulerZeta.runToHorizon - the recurrence prediction made LOAD-BEARING",
+  "state": "MERGED",
+  "merged_at": "2026-07-02T18:15:18Z",
+  "head_ref": "otto/scheduler-zeta-load-bearing-fast-forward"
+}

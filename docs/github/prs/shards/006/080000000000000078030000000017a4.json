@@ -1,0 +1,12 @@
+{
+  "pr_number": 6052,
+  "archive_path": "docs/history/pr-reviews/PR-6052-docs-research-land-ani-s-causal-diamond-razor-research-notes-update-persona-b-09.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-29T22:35:44.314Z",
+  "schema_version": "v1",
+  "commit_sha": "d93b477a995a6d32029365101e9b19d87fa7280b",
+  "title": "docs(research): Land Ani's Causal-Diamond Razor research notes & update persona (B-0929)",
+  "state": "MERGED",
+  "merged_at": "2026-05-29T22:35:26Z",
+  "head_ref": "lior/ani-razor-research-note"
+}

@@ -1,0 +1,23 @@
+{
+  "pr_number": 5042,
+  "archive_path": "docs/history/pr-reviews/PR-5042-backlog-b-0761-zeta-cluster-as-open-source-reference-architecture-for-ai-to-trai.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7EuBT6",
+    "comment:PRRC_kwDOSF9kNM7EuBUH",
+    "comment:PRRC_kwDOSF9kNM7EuBUQ",
+    "comment:PRRC_kwDOSF9kNM7EuBUW",
+    "comment:PRRC_kwDOSF9kNM7EuBUg",
+    "thread:PRRT_kwDOSF9kNM6EpVF3",
+    "thread:PRRT_kwDOSF9kNM6EpVF7",
+    "thread:PRRT_kwDOSF9kNM6EpVFl",
+    "thread:PRRT_kwDOSF9kNM6EpVFt",
+    "thread:PRRT_kwDOSF9kNM6EpVFz"
+  ],
+  "fetched_at": "2026-05-26T00:06:42.384Z",
+  "schema_version": "v1",
+  "commit_sha": "814c8d4680c2cca67ccb26f842eb0cc1d42c2aa7",
+  "title": "backlog(B-0761): Zeta cluster as open-source reference architecture for AI to train on and compete on (ARC-AGI-style)",
+  "state": "MERGED",
+  "merged_at": "2026-05-26T00:06:24Z",
+  "head_ref": "otto-cli/b0761-zeta-as-arc-agi-reference-architecture-2026-05-25"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 10215,
+  "archive_path": "docs/history/pr-reviews/PR-10215-docs-research-zetadb-as-compiler-of-compilers-db-as-types-cells-anywhere-verifie.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-09T19:36:53.925Z",
+  "schema_version": "v1",
+  "commit_sha": "173e909b48bd7346e5bd73bb313dae4ae5a02ce0",
+  "title": "docs(research): zetadb as compiler-of-compilers — DB as types, cells anywhere (+ verified dogfood audit)",
+  "state": "MERGED",
+  "merged_at": "2026-08-09T19:36:24Z",
+  "head_ref": "shadow/ferry-zetadb-compiler-of-compilers"
+}

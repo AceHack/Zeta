@@ -1,0 +1,12 @@
+{
+  "pr_number": 10019,
+  "archive_path": "docs/history/pr-reviews/PR-10019-feat-core-fusemiblock-exclude-causally-disjoint-zero-shared-ancestor-pairs.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-03T17:44:14.371Z",
+  "schema_version": "v1",
+  "commit_sha": "cd13de78784f2bc10d1ab1d9bc5f418bc568c854",
+  "title": "feat(core): fuseMIBlock — exclude causally-disjoint (zero-shared-ancestor) pairs",
+  "state": "MERGED",
+  "merged_at": "2026-08-03T17:43:33Z",
+  "head_ref": "feat/decorrelation-excess-exclude-disjoint-cross-history-pairs-20260803"
+}

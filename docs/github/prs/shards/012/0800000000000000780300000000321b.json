@@ -1,0 +1,12 @@
+{
+  "pr_number": 12827,
+  "archive_path": "docs/history/pr-reviews/PR-12827-fix-test-the-hermetic-tier-contained-a-network-call-that-could-not-fail.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-20T15:47:22.279Z",
+  "schema_version": "v1",
+  "commit_sha": "b6efebd7461abc0e915b343145f7f1a00a5d8fda",
+  "title": "fix(test): the hermetic tier contained a network call that could not fail",
+  "state": "MERGED",
+  "merged_at": "2026-08-20T15:46:40Z",
+  "head_ref": "fix/github-adapter-hermetic-test"
+}

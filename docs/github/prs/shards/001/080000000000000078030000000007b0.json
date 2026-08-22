@@ -1,0 +1,25 @@
+{
+  "pr_number": 1968,
+  "archive_path": "docs/history/pr-reviews/PR-1968-fix-b-0256-exploit-taxonomy-5-crash-log-across-4-vendors.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_DSLj",
+    "comment:PRRC_kwDOSF9kNM6_DSLm",
+    "comment:PRRC_kwDOSF9kNM6_DSr8",
+    "comment:PRRC_kwDOSF9kNM6_DSrY",
+    "comment:PRRC_kwDOSF9kNM6_DSrs",
+    "comment:PRRC_kwDOSF9kNM6_DSrz",
+    "thread:PRRT_kwDOSF9kNM6AebEV",
+    "thread:PRRT_kwDOSF9kNM6AebEY",
+    "thread:PRRT_kwDOSF9kNM6AebcS",
+    "thread:PRRT_kwDOSF9kNM6Aebce",
+    "thread:PRRT_kwDOSF9kNM6Aebcj",
+    "thread:PRRT_kwDOSF9kNM6Aebcr"
+  ],
+  "fetched_at": "2026-05-08T00:01:03.728Z",
+  "schema_version": "v1",
+  "commit_sha": "0c6876f1e107fd3ae30213087260b003d9c2bd35",
+  "title": "fix(B-0256): exploit taxonomy + 5-crash log across 4 vendors",
+  "state": "MERGED",
+  "merged_at": "2026-05-08T00:00:48Z",
+  "head_ref": "research/detours-b0256-v2"
+}

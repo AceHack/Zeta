@@ -1,0 +1,12 @@
+{
+  "pr_number": 2464,
+  "archive_path": "docs/history/pr-reviews/PR-2464-docs-memory-trust-then-verify-claim-slow-trust-lethal-latency-case-study.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-10T10:55:13.339Z",
+  "schema_version": "v1",
+  "commit_sha": "e2afee2a074b1160cc123a4cb1c74918427ab901",
+  "title": "docs(memory): trust-then-verify claim + slow-trust lethal latency case study",
+  "state": "MERGED",
+  "merged_at": "2026-05-10T10:54:58Z",
+  "head_ref": "docs/trust-then-verify-case-study-2026-05-10"
+}

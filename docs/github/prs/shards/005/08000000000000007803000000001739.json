@@ -1,0 +1,16 @@
+{
+  "pr_number": 5945,
+  "archive_path": "docs/history/pr-reviews/PR-5945-docs-pr-archive-pr-5944-discussion.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7GB_e-",
+    "comment:PRRC_kwDOSF9kNM7GCBF9",
+    "thread:PRRT_kwDOSF9kNM6FmH3K"
+  ],
+  "fetched_at": "2026-05-29T05:57:07.364Z",
+  "schema_version": "v1",
+  "commit_sha": "9b8b7d0496d2f874647d3e79a391969afd4e4d44",
+  "title": "docs(pr): archive PR 5944 discussion",
+  "state": "MERGED",
+  "merged_at": "2026-05-29T05:56:48Z",
+  "head_ref": "claim/codex-loop-archive-pr5944-20260529"
+}

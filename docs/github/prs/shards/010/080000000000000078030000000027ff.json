@@ -1,0 +1,12 @@
+{
+  "pr_number": 10239,
+  "archive_path": "docs/history/pr-reviews/PR-10239-docs-research-every-node-is-its-own-idp-repo-as-cluster-hats-grant-claims-bindin.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-09T22:19:10.526Z",
+  "schema_version": "v1",
+  "commit_sha": "b60a14f5807ea955c502b66ffa4c3a7a3a077f9b",
+  "title": "docs(research): every node is its own IdP — repo-as-cluster, hats grant claims, bindings expire",
+  "state": "MERGED",
+  "merged_at": "2026-08-09T22:18:37Z",
+  "head_ref": "shadow/ferry-node-as-identity-provider"
+}

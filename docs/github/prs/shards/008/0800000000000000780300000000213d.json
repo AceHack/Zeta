@@ -1,0 +1,12 @@
+{
+  "pr_number": 8509,
+  "archive_path": "docs/history/pr-reviews/PR-8509-memory-feedback-gleaming-the-cube-transmission-amplification-toward-the-gen-gen-.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-16T10:55:30.075Z",
+  "schema_version": "v1",
+  "commit_sha": "b44802dc1009248f5d802428afc2b130aef66fca",
+  "title": "memory(feedback): \"gleaming the cube\" = transmission amplification toward the gen(gen)===gen byte-identical fixpoint (laser/ECC)",
+  "state": "MERGED",
+  "merged_at": "2026-06-16T10:54:56Z",
+  "head_ref": "otto/gleaming-the-cube-transmission-amplification-gen-gen-gen"
+}

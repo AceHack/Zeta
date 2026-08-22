@@ -1,0 +1,14 @@
+{
+  "id": "080d00d943d3c010a0130008f5f22cb2",
+  "at": "2026-08-19T17:53:52.760Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M0DJGYKQ087G0R000515D88",
+    "type": "task",
+    "title": "Repo-split round 3: dependency-closure partition, the union bottleneck measured, CCP-vs-CRP synthesis",
+    "slug": "repo-split-round-3-dependency-closure-partition-the-union-bo",
+    "priority": "P2",
+    "filename": "081M0DJGYKQ087G0R000515D88-repo-split-round-3-dependency-closure-partition-the-union-bo.md"
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 9460,
+  "archive_path": "docs/history/pr-reviews/PR-9460-docs-ferry-aaron-s-three-giants-futamura-gates-meijer-the-decorrelation-observat.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-04T17:00:21.425Z",
+  "schema_version": "v1",
+  "commit_sha": "4589b418c4e33702f3860c1bd74c4f5a5a1e5f04",
+  "title": "docs(ferry): Aaron's three giants (Futamura/Gates/Meijer) + the decorrelation observation + Alexa froth peel (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-04T16:59:56Z",
+  "head_ref": "otto/ferry-three-giants-futamura-gates-meijer"
+}

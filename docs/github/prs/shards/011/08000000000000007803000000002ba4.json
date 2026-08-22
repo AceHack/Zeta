@@ -1,0 +1,12 @@
+{
+  "pr_number": 11172,
+  "archive_path": "docs/history/pr-reviews/PR-11172-test-cluster-pin-code-point-readiness-ordering.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-16T23:42:34.492Z",
+  "schema_version": "v1",
+  "commit_sha": "fab7e940c9a7997219f3e83175e0848a80af2d69",
+  "title": "test(cluster): pin code-point readiness ordering",
+  "state": "MERGED",
+  "merged_at": "2026-08-16T23:41:55Z",
+  "head_ref": "codex/treaty-collation-falsifiers"
+}

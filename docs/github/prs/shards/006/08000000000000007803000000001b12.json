@@ -1,0 +1,12 @@
+{
+  "pr_number": 6930,
+  "archive_path": "docs/history/pr-reviews/PR-6930-docs-ferry-cognitive-lightcone-specification-zetaid-genesis-survival-ethics-ego-.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-07T22:14:00.727Z",
+  "schema_version": "v1",
+  "commit_sha": "c77086ef3250531d6afee600813315179c082489",
+  "title": "docs+ferry: cognitive lightcone -> specification (ZetaId genesis) + survival-ethics + ego-regulation",
+  "state": "MERGED",
+  "merged_at": "2026-06-07T22:13:42Z",
+  "head_ref": "otto/cognitive-lightcone-specification-survival-ethics-ego"
+}

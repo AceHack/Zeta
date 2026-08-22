@@ -1,0 +1,12 @@
+{
+  "pr_number": 6633,
+  "archive_path": "docs/history/pr-reviews/PR-6633-proof-canonical-dynamicvalue-round-trip-proven-from-the-seed-first-primitive-to-.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-03T08:05:07.297Z",
+  "schema_version": "v1",
+  "commit_sha": "9425a6d31fd69c1465045316e8f2bf9e3e0d6e85",
+  "title": "proof(canonical): DynamicValue round-trip proven from the seed — first primitive to meet both axes (4-lang byte-lock + math proof + seed-lineage)",
+  "state": "MERGED",
+  "merged_at": "2026-06-03T08:04:41Z",
+  "head_ref": "otto-cli/dynamicvalue-canonical-roundtrip-proof-from-seed-2026-06-03"
+}

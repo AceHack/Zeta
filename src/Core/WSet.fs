@@ -36,6 +36,9 @@ module WSet =
 
     /// Consolidate: sum weights per key under the ring's Add; drop keys whose total isZero.
     /// THIS is where interference/retraction happens — opposite weights annihilate here.
+    /// And therefore THIS is the step that ERASES: it is non-injective (the annihilating pair and
+    /// the empty set both land on `[]`), so it — not `negate` — is where the Landauer floor binds.
+    /// See the HONESTY note on `FourCornerTrace` below, and WSet.ErasureClassification.Laws.Tests.fs.
     let consolidate (ring: IStarRing<'W>) (isZero: 'W -> bool) (s: WSet<'K, 'W>) : WSet<'K, 'W> =
         s
         |> List.groupBy fst
@@ -126,6 +129,19 @@ module WSet =
 /// It is NOT a claim that this substrate is physically quantum, nor that the trace exploits quantum
 /// mechanics; it is the same GDL circuit (Aji–McEliece 2000) run over a different semiring.
 ///
+/// **HONESTY — the retraction is Landauer-FREE, so Landauer does not meter it.** `WSet.negate` is a
+/// self-inverse *bijection* of the state space, so by Bennett 1973 it erases nothing and costs nothing;
+/// a Landauer meter placed on it must read zero for every input, forever. That is a property of the
+/// operation, not a weak instrument — which is why "the retraction is reversible" is TRUE but carries no
+/// thermodynamic content, and cannot be evidence that the fold as a whole runs reversibly. The erasure is
+/// elsewhere: `consolidate`, `discard`, `bornProb`, `plus` and `tensor` are all non-injective, and
+/// `consolidate` is the sharp case — the annihilation the comment on it describes (`+w` and `−w` cancel)
+/// maps two distinct states to one, which is Landauer 1961's own example of an erasure. So the negation is
+/// free and the *annihilation* is what pays; those two are easily read as one operation, and they are not.
+/// Measured, not asserted: `tests/Tests.FSharp/Formal/WSet.ErasureClassification.Laws.Tests.fs` sweeps every
+/// public op exhaustively, derives bits-erased = log2(largest fibre), and fails if a declared class drifts
+/// or a new op is added unclassified. Formal sibling: `src/Core.Lean4/Lean4/LandauerFloor.lean`.
+///
 /// **Which corners admit the trace.** The retraction needs an ADDITIVE INVERSE, so the trace is available
 /// exactly on the ring corners: ℤ (DBSP/CD) and ℂ (amplitudes). The *normalized* ℝ≥0 (Markov) corner and
 /// the Boolean/tropical corners are inverse-free semirings — there is no `−w` to un-emit with, so this loop
@@ -147,6 +163,86 @@ module FourCornerTrace =
           /// the consolidated running sum of the opening emission plus every delta since
           Emitted: WSet.WSet<'K, 'W> }
 
+    /// One append-only observation of the loop. `Sequence` is logical order, not wall time:
+    /// a later turn may retract an earlier interpretation, but it cannot rewrite this record.
+    type TraceTurn<'F, 'K, 'W when 'K: comparison> =
+        { Sequence: bigint
+          Feedback: 'F
+          Delta: WSet.WSet<'K, 'W> }
+
+    /// A finite recorded batch. The trace is returned to the caller rather than retained in
+    /// `Traced`, so storage and forgetting remain explicit policy decisions at the boundary.
+    type RecordedFold<'I, 'F, 'K, 'W when 'K: comparison> =
+        { State: Traced<'I, 'K, 'W>
+          NextSequence: bigint
+          Turns: TraceTurn<'F, 'K, 'W> list }
+
+    /// An opt-in witness for modeling execution in either direction. Exact rewind is possible
+    /// because the pre-consolidation information is retained in `Before`; it is not inferred
+    /// from the non-injective materialized output. The ordinary trace does not pay this cost.
+    type WitnessedTurn<'I, 'F, 'K, 'W when 'K: comparison> =
+        { Sequence: bigint
+          Feedback: 'F
+          Before: Traced<'I, 'K, 'W>
+          After: Traced<'I, 'K, 'W>
+          Delta: WSet.WSet<'K, 'W> }
+
+    /// A finite batch of witnessed turns. As with `RecordedFold`, the caller owns retention.
+    type WitnessedFold<'I, 'F, 'K, 'W when 'K: comparison> =
+        { State: Traced<'I, 'K, 'W>
+          NextSequence: bigint
+          Turns: WitnessedTurn<'I, 'F, 'K, 'W> list }
+
+    /// An immutable-history read boundary. The caller supplies the retained history value and
+    /// the last logical sequence it contains; later corrections may reinterpret this value but
+    /// cannot claim to have happened at or before its boundary.
+    type HistorySnapshot<'H> =
+        { ThroughSequence: bigint
+          History: 'H }
+
+    /// Typed refusal for a correction that would place its cause at or before the history it reads.
+    type CausalOrderError =
+        | CorrectionDoesNotFollowHistory of throughSequence: bigint * correctionSequence: bigint
+
+    /// A correction appended in the only execution direction. `ReinterpretsThrough` identifies
+    /// the immutable history boundary being reread; `Sequence` is strictly greater by construction.
+    type CausalCorrection<'I, 'F, 'K, 'W when 'K: comparison> =
+        { Sequence: bigint
+          ReinterpretsThrough: bigint
+          Feedback: 'F
+          Before: Traced<'I, 'K, 'W>
+          After: Traced<'I, 'K, 'W>
+          Delta: WSet.WSet<'K, 'W> }
+
+    /// Pair a retained history value with the logical boundary it contains.
+    let captureHistory (throughSequence: bigint) (history: 'H) : HistorySnapshot<'H> =
+        { ThroughSequence = throughSequence
+          History = history }
+
+    /// Pure assembly functions shared by the reference trace and source-owned adapters.
+    /// Consolidation remains at the caller boundary so adapters can meter that destructive phase.
+    let internal openingUnconsolidated
+        (gen: Generator<'H, 'I, 'K, 'W>)
+        (history: 'H)
+        (interpretation: 'I)
+        : WSet.WSet<'K, 'W> =
+        gen interpretation history
+
+    let internal deltaUnconsolidated
+        (ring: IStarRing<'W>)
+        (gen: Generator<'H, 'I, 'K, 'W>)
+        (history: 'H)
+        (before: 'I)
+        (after: 'I)
+        : WSet.WSet<'K, 'W> =
+        WSet.plus (WSet.negate ring (gen before history)) (gen after history)
+
+    let internal cumulativeUnconsolidated
+        (emitted: WSet.WSet<'K, 'W>)
+        (delta: WSet.WSet<'K, 'W>)
+        : WSet.WSet<'K, 'W> =
+        WSet.plus emitted delta
+
     /// Open the loop: read the history once under the starting interpretation and EMIT it.
     /// Returns the state and that opening emission — opening is an emission like any other, so the
     /// invariant `Emitted = consolidate (gen interpretation history)` holds from turn zero (an
@@ -158,7 +254,7 @@ module FourCornerTrace =
         (history: 'H)
         (interpretation: 'I)
         : Traced<'I, 'K, 'W> * WSet.WSet<'K, 'W> =
-        let emitted = gen interpretation history |> WSet.consolidate ring isZero
+        let emitted = openingUnconsolidated gen history interpretation |> WSet.consolidate ring isZero
         { Interpretation = interpretation; Emitted = emitted }, emitted
 
     /// The reinterpretation **delta**: `−gen(before, history) + gen(after, history)`, consolidated.
@@ -172,8 +268,7 @@ module FourCornerTrace =
         (before: 'I)
         (after: 'I)
         : WSet.WSet<'K, 'W> =
-        WSet.plus (WSet.negate ring (gen before history)) (gen after history)
-        |> WSet.consolidate ring isZero
+        deltaUnconsolidated ring gen history before after |> WSet.consolidate ring isZero
 
     /// ONE turn of the trace: feedback arrives on the input channel, `update` moves the interpretation,
     /// the generator re-reads the SAME history, and the delta (retractions + new emissions) is both
@@ -195,8 +290,35 @@ module FourCornerTrace =
         : Traced<'I, 'K, 'W> * WSet.WSet<'K, 'W> =
         let after = update st.Interpretation fb
         let d = delta ring isZero gen history st.Interpretation after
-        let emitted = WSet.plus st.Emitted d |> WSet.consolidate ring isZero
+        let emitted = cumulativeUnconsolidated st.Emitted d |> WSet.consolidate ring isZero
         { Interpretation = after; Emitted = emitted }, d
+
+    /// Append a correction that reinterprets a retained history snapshot. The correction is a
+    /// new forward event: its sequence must be strictly greater than the snapshot boundary.
+    /// Invalid order is returned as data before `update` or `gen` runs, so no computation is
+    /// modeled as executing backward and no partial correction can escape.
+    let appendCorrection
+        (correctionSequence: bigint)
+        (ring: IStarRing<'W>)
+        (isZero: 'W -> bool)
+        (gen: Generator<'H, 'I, 'K, 'W>)
+        (update: 'I -> 'F -> 'I)
+        (snapshot: HistorySnapshot<'H>)
+        (fb: 'F)
+        (st: Traced<'I, 'K, 'W>)
+        : Result<CausalCorrection<'I, 'F, 'K, 'W>, CausalOrderError> =
+        if correctionSequence <= snapshot.ThroughSequence then
+            Error(CorrectionDoesNotFollowHistory(snapshot.ThroughSequence, correctionSequence))
+        else
+            let after, d = step ring isZero gen update snapshot.History fb st
+
+            Ok
+                { Sequence = correctionSequence
+                  ReinterpretsThrough = snapshot.ThroughSequence
+                  Feedback = fb
+                  Before = st
+                  After = after
+                  Delta = d }
 
     /// Run a whole feedback sequence through the loop, keeping every emitted delta in order.
     /// Deterministic (a left fold over the given order): DST replays it byte-identically.
@@ -217,6 +339,85 @@ module FourCornerTrace =
                     st', d :: acc)
                 (st0, [])
         st, List.rev rev
+
+    /// Run a finite feedback batch and attach an append-only logical sequence to every turn.
+    /// Empty deltas are still recorded: receiving idempotent feedback is part of the causal
+    /// history even when it does not change the current materialized view. `bigint` keeps the
+    /// sequence total without introducing an overflow exception at a long-lived boundary.
+    let foldRecorded
+        (firstSequence: bigint)
+        (ring: IStarRing<'W>)
+        (isZero: 'W -> bool)
+        (gen: Generator<'H, 'I, 'K, 'W>)
+        (update: 'I -> 'F -> 'I)
+        (history: 'H)
+        (feedbacks: 'F list)
+        (st0: Traced<'I, 'K, 'W>)
+        : RecordedFold<'I, 'F, 'K, 'W> =
+        let state, nextSequence, revTurns =
+            feedbacks
+            |> List.fold
+                (fun (st, sequence, acc) fb ->
+                    let st', d = step ring isZero gen update history fb st
+
+                    let turn =
+                        { Sequence = sequence
+                          Feedback = fb
+                          Delta = d }
+
+                    st', sequence + 1I, turn :: acc)
+                (st0, firstSequence, [])
+
+        { State = state
+          NextSequence = nextSequence
+          Turns = List.rev revTurns }
+
+    /// Run a finite batch while retaining the information required for exact rewind/replay.
+    /// This is a model of bidirectional execution over an immutable trace: no earlier record is
+    /// edited, and no signal is sent to an earlier logical turn.
+    let foldWitnessed
+        (firstSequence: bigint)
+        (ring: IStarRing<'W>)
+        (isZero: 'W -> bool)
+        (gen: Generator<'H, 'I, 'K, 'W>)
+        (update: 'I -> 'F -> 'I)
+        (history: 'H)
+        (feedbacks: 'F list)
+        (st0: Traced<'I, 'K, 'W>)
+        : WitnessedFold<'I, 'F, 'K, 'W> =
+        let state, nextSequence, revTurns =
+            feedbacks
+            |> List.fold
+                (fun (before, sequence, acc) fb ->
+                    let after, d = step ring isZero gen update history fb before
+
+                    let turn =
+                        { Sequence = sequence
+                          Feedback = fb
+                          Before = before
+                          After = after
+                          Delta = d }
+
+                    after, sequence + 1I, turn :: acc)
+                (st0, firstSequence, [])
+
+        { State = state
+          NextSequence = nextSequence
+          Turns = List.rev revTurns }
+
+    /// Move the modeled cursor to the state retained before this turn.
+    let rewind (turn: WitnessedTurn<'I, 'F, 'K, 'W>) : Traced<'I, 'K, 'W> = turn.Before
+
+    /// Move the modeled cursor forward to the state retained after this turn.
+    let replay (turn: WitnessedTurn<'I, 'F, 'K, 'W>) : Traced<'I, 'K, 'W> = turn.After
+
+    /// The compensating delta for traversing a witnessed turn backward.
+    let inverseDelta
+        (ring: IStarRing<'W>)
+        (isZero: 'W -> bool)
+        (turn: WitnessedTurn<'I, 'F, 'K, 'W>)
+        : WSet.WSet<'K, 'W> =
+        WSet.negate ring turn.Delta |> WSet.consolidate ring isZero
 
     /// Package one traced turn as the literal four-corner object: `TIn` = the history being reread,
     /// `TOut` = the emitted delta, `TInFeedback` = the co-owned feedback that caused the reread.
@@ -252,19 +453,32 @@ module MachZehnderWSet =
     let private phasePlate (phi: float) (k: int) : WSet.WSet<int, Complex> =
         if k = 1 then [ 1, Doubled.make (cos phi) (sin phi) ] else [ 0, ring.One ]
 
-    /// CLOSED interferometer: H · R1(φ) · H on |0⟩, consolidated (the interference), then the
-    /// boundary measurement. Linear ops inside; Born at the edge — the discipline, demonstrated.
-    let closed (phi: float) : (int * float) list =
+    /// The unconsolidated amplitudes immediately before the closed interferometer's erasing
+    /// boundary. Assembly-internal so the heat adapter can meter the boundary without duplicating
+    /// the circuit; public callers receive either the pure reference result or the metered bridge.
+    let internal closedAmplitudes (phi: float) : WSet.WSet<int, Complex> =
         [ 0, ring.One ]
         |> WSet.apply ring hadamard
         |> WSet.apply ring (phasePlate phi)
         |> WSet.apply ring hadamard
+
+    /// CLOSED interferometer: H · R1(φ) · H on |0⟩, consolidated (the interference), then the
+    /// boundary measurement. Linear ops inside; Born at the edge — the discipline, demonstrated.
+    /// This is the pure reference calculation. Production observable generation uses the
+    /// injected-sink adapter in `MachZehnderWSetHeat`.
+    let closed (phi: float) : (int * float) list =
+        closedAmplitudes phi
         |> WSet.consolidate ring isZero
         |> WSet.bornProb (fun z -> z.Real * z.Real + z.Imag * z.Imag)
 
-    /// OPEN interferometer: one beamsplitter, no recombination — equal halves, no interference.
-    let openArm () : (int * float) list =
+    /// The unconsolidated amplitudes immediately before the open interferometer's boundary.
+    let internal openArmAmplitudes () : WSet.WSet<int, Complex> =
         [ 0, ring.One ]
         |> WSet.apply ring hadamard
+
+    /// OPEN interferometer: one beamsplitter, no recombination — equal halves, no interference.
+    /// This is the pure reference calculation; production generation uses the heat adapter.
+    let openArm () : (int * float) list =
+        openArmAmplitudes ()
         |> WSet.consolidate ring isZero
         |> WSet.bornProb (fun z -> z.Real * z.Real + z.Imag * z.Imag)

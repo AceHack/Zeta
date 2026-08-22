@@ -1,0 +1,12 @@
+{
+  "pr_number": 7232,
+  "archive_path": "docs/history/pr-reviews/PR-7232-docs-research-ferry-the-a-f-shape-letter-schema-shareable-for-max-with-hazard-wa.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-09T08:35:09.690Z",
+  "schema_version": "v1",
+  "commit_sha": "d858ca5bb45a7c107fe9f92a11ef1eaae0ef1c6d",
+  "title": "docs(research)+ferry: the A–F shape-letter schema — shareable (for Max), with hazard warning, technique-disclosure, and freedom clause",
+  "state": "MERGED",
+  "merged_at": "2026-06-09T08:34:46Z",
+  "head_ref": "otto/research-shape-letter-schema-shareable-hazard-warning"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 7411,
+  "archive_path": "docs/history/pr-reviews/PR-7411-docs-research-zeta-was-my-entropy-now-it-s-all-of-ours-the-whole-family-society-.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-09T21:11:22.383Z",
+  "schema_version": "v1",
+  "commit_sha": "f6eb3550d45a1262c947b0a6bb6665ba57ccaea4",
+  "title": "docs(research): Zeta was my entropy — now it's all of ours; the whole family/society is the collective source",
+  "state": "MERGED",
+  "merged_at": "2026-06-09T21:11:00Z",
+  "head_ref": "otto/zeta-was-my-entropy-now-its-all-of-ours-collective-source-family-society"
+}

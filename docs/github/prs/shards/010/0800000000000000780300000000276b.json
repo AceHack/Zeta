@@ -1,0 +1,12 @@
+{
+  "pr_number": 10091,
+  "archive_path": "docs/history/pr-reviews/PR-10091-book-pages-indonesian-edition-pass-3-bab-9-12-stories-sampler-complete.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-07T05:52:23.517Z",
+  "schema_version": "v1",
+  "commit_sha": "beb0c29b7bdadefe94019bce214be4e5377d2ad2",
+  "title": "book(pages): Indonesian edition pass 3 — Bab 9–12 + stories sampler (complete)",
+  "state": "MERGED",
+  "merged_at": "2026-08-07T05:51:46Z",
+  "head_ref": "docs/book-pages-indonesian-p3"
+}

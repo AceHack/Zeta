@@ -1,0 +1,12 @@
+{
+  "pr_number": 12363,
+  "archive_path": "docs/history/pr-reviews/PR-12363-fix-observe-the-eleven-polluted-attestations-are-superseded-not-removed-disposit.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-19T10:45:00.636Z",
+  "schema_version": "v1",
+  "commit_sha": "0eb17afb5f7bd9a22ccb676e57bc2ea970e45a3c",
+  "title": "fix(observe): the eleven polluted attestations are superseded, not removed — disposition decided",
+  "state": "MERGED",
+  "merged_at": "2026-08-19T10:44:19Z",
+  "head_ref": "soraya/attestation-retraction-disposition"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 11321,
+  "archive_path": "docs/history/pr-reviews/PR-11321-feat-zflash-give-the-scenario-5-vms-a-shared-l2-segment-they-can-actually-build.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-17T04:03:45.868Z",
+  "schema_version": "v1",
+  "commit_sha": "567a20417e427f0c8a4dbf4e59be3d068d13465d",
+  "title": "feat(zflash): give the scenario-5 VMs a shared L2 segment they can actually build",
+  "state": "MERGED",
+  "merged_at": "2026-08-17T04:03:07Z",
+  "head_ref": "feat/zflash-qemu-shared-l2-segment"
+}

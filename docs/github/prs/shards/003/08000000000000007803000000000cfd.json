@@ -1,0 +1,22 @@
+{
+  "pr_number": 3325,
+  "archive_path": "docs/history/pr-reviews/PR-3325-fix-memory-sync-2-cited-memory-files-rebased-frontmatter-fix-supersedes-3320.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7BbD75",
+    "comment:PRRC_kwDOSF9kNM7BbD77",
+    "comment:PRRC_kwDOSF9kNM7BbF0b",
+    "comment:PRRC_kwDOSF9kNM7BbFQG",
+    "comment:PRRC_kwDOSF9kNM7BbFdA",
+    "comment:PRRC_kwDOSF9kNM7BbFeH",
+    "thread:PRRT_kwDOSF9kNM6COXXb",
+    "thread:PRRT_kwDOSF9kNM6COXXd",
+    "thread:PRRT_kwDOSF9kNM6COYS4"
+  ],
+  "fetched_at": "2026-05-15T00:44:46.843Z",
+  "schema_version": "v1",
+  "commit_sha": "af7d9597831ec927e51f7c944f91cc409bc41413",
+  "title": "fix(memory): sync 2 cited memory files (rebased + frontmatter fix) — supersedes #3320",
+  "state": "MERGED",
+  "merged_at": "2026-05-15T00:44:23Z",
+  "head_ref": "fix/sync-cited-memory-files-3312-rebased-2026-05-15"
+}

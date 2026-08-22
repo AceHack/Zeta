@@ -1,0 +1,12 @@
+{
+  "pr_number": 8676,
+  "archive_path": "docs/history/pr-reviews/PR-8676-feat-core-graphsnapshot-content-addressed-merklefs-persistence-for-the-reified-g.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-20T01:51:18.487Z",
+  "schema_version": "v1",
+  "commit_sha": "fc8d8db110d29fd708d181724a0c59fca1c12e46",
+  "title": "feat(core): GraphSnapshot — content-addressed MerkleFS persistence for the reified graphs",
+  "state": "MERGED",
+  "merged_at": "2026-06-20T01:50:53Z",
+  "head_ref": "otto/graph-snapshot-merklefs-persistence"
+}

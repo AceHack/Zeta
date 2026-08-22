@@ -1,0 +1,12 @@
+{
+  "pr_number": 6772,
+  "archive_path": "docs/history/pr-reviews/PR-6772-docs-identity-two-proof-registers-economic-pow-vs-social-commit-heartbeat-should.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-07T09:42:48.726Z",
+  "schema_version": "v1",
+  "commit_sha": "137958b331f0f3f8c5b9bbea82bf2a7e00602557",
+  "title": "docs(identity): two proof registers (economic PoW vs social commit) + heartbeat should be PoUW not PoW",
+  "state": "MERGED",
+  "merged_at": "2026-06-07T09:42:26Z",
+  "head_ref": "otto/identity-two-proofs-heartbeat-pouw"
+}

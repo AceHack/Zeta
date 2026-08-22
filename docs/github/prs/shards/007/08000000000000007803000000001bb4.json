@@ -1,0 +1,12 @@
+{
+  "pr_number": 7092,
+  "archive_path": "docs/history/pr-reviews/PR-7092-docs-research-prediction-is-lens-discovery-random-is-lens-relative-soft-emulator.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-08T11:27:36.801Z",
+  "schema_version": "v1",
+  "commit_sha": "1b36185de49318334a277729ea525776ebb5e169",
+  "title": "docs(research): prediction is lens-discovery — 'random' is lens-relative (soft-emulator arc capstone)",
+  "state": "MERGED",
+  "merged_at": "2026-06-08T11:27:15Z",
+  "head_ref": "otto/prediction-is-lens-discovery-random-is-lens-relative"
+}

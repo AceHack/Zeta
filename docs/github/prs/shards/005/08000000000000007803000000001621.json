@@ -1,0 +1,12 @@
+{
+  "pr_number": 5665,
+  "archive_path": "docs/history/pr-reviews/PR-5665-feat-dora-classify-step-1-substrate-per-commit-lane-classifier-per-agent-operati.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-28T00:33:33.140Z",
+  "schema_version": "v1",
+  "commit_sha": "80fceb4da4d25f7aa649f1f73dbb234710c372b3",
+  "title": "feat(dora-classify): Step 1 substrate — per-commit lane classifier + per-agent operational-ratio aggregation (operator 2026-05-28 Step 1 GO)",
+  "state": "MERGED",
+  "merged_at": "2026-05-28T00:33:13Z",
+  "head_ref": "feat/dora-classify-commit-step1-lane-classifier-aaron-2026-05-28"
+}

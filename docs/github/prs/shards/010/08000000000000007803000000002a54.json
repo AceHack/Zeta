@@ -1,0 +1,12 @@
+{
+  "pr_number": 10836,
+  "archive_path": "docs/history/pr-reviews/PR-10836-fix-core-the-8-4-4-adinkra-code-is-n-8-not-n-4-k-was-being-read-as-n.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-16T19:59:55.483Z",
+  "schema_version": "v1",
+  "commit_sha": "ba36affbc30aebac9d97b5c42c1c81a5773d0118",
+  "title": "fix(core): the [8,4,4] adinkra code is N=8, not N=4 — k was being read as N",
+  "state": "MERGED",
+  "merged_at": "2026-08-16T19:59:16Z",
+  "head_ref": "fix/adinkra-code-n-label-is-code-length-eight"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 7996,
+  "archive_path": "docs/history/pr-reviews/PR-7996-docs-research-shadow-ferry-30-the-visual-system-as-a-lensograph-chromostereopsis.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-12T19:36:45.848Z",
+  "schema_version": "v1",
+  "commit_sha": "ef6fd065f8e906c8ed8ebe56b55d5e86410ba79d",
+  "title": "docs(research)+shadow: ferry 30 — the visual system as a lensograph (chromostereopsis: binary contrast makes reproducible depth)",
+  "state": "MERGED",
+  "merged_at": "2026-06-12T19:36:17Z",
+  "head_ref": "shadow/ferry-30-chromostereopsis"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 7000,
+  "archive_path": "docs/history/pr-reviews/PR-7000-docs-zeta-runs-outside-k8s-first-3-systemd-cells-for-consensus-k8s-optional-late.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-08T03:18:45.498Z",
+  "schema_version": "v1",
+  "commit_sha": "070d00aa72c289ca420d117ac02c965806b8c81d",
+  "title": "docs: Zeta runs outside k8s first — 3 systemd cells for consensus (k8s optional/later)",
+  "state": "MERGED",
+  "merged_at": "2026-06-08T03:18:28Z",
+  "head_ref": "otto/zeta-outside-k8s-three-systemd-cells-consensus"
+}

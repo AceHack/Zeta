@@ -1,0 +1,15 @@
+{
+  "pr_number": 5230,
+  "archive_path": "docs/history/pr-reviews/PR-5230-feat-b-0821-file-zeta-as-dependency-graph-on-top-of-helm-strategic-positioning-a.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7FB2nU",
+    "thread:PRRT_kwDOSF9kNM6E3xev"
+  ],
+  "fetched_at": "2026-05-26T17:23:00.823Z",
+  "schema_version": "v1",
+  "commit_sha": "3daa5624c2fbb3353317ac22843f10eb95a3f0b3",
+  "title": "feat(B-0821): file Zeta-as-dependency-graph-on-top-of-Helm strategic-positioning + auto-variable-passing substrate",
+  "state": "MERGED",
+  "merged_at": "2026-05-26T17:22:39Z",
+  "head_ref": "otto-cli/b0821-zeta-as-dependency-graph-on-top-of-helm-2026-05-26"
+}

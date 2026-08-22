@@ -1,0 +1,12 @@
+{
+  "pr_number": 10176,
+  "archive_path": "docs/history/pr-reviews/PR-10176-review-research-soraya-s-gating-verdict-on-lumen-s-four-docs-104fb3bf.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-08T23:52:23.588Z",
+  "schema_version": "v1",
+  "commit_sha": "0f9ec74fc2463dffdc97be6212d298d4d8af02a0",
+  "title": "review(research): Soraya's gating verdict on Lumen's four docs (104fb3bf)",
+  "state": "MERGED",
+  "merged_at": "2026-08-08T23:51:52Z",
+  "head_ref": "shadow/soraya-review-lumen-four-docs"
+}

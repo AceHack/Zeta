@@ -1,0 +1,12 @@
+{
+  "pr_number": 7785,
+  "archive_path": "docs/history/pr-reviews/PR-7785-feat-wset-three-oracles-on-one-interferometer-wset-ships-b-1033-hexagonal-infere.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-11T20:52:42.544Z",
+  "schema_version": "v1",
+  "commit_sha": "119308228e42fa3e95cf9da1ce2a7de7e8b9dec2",
+  "title": "feat(wset): three oracles on one interferometer — WSet ships + B-1033 hexagonal inference port filed",
+  "state": "MERGED",
+  "merged_at": "2026-06-11T20:52:17Z",
+  "head_ref": "shadow-wset-mach-zehnder"
+}

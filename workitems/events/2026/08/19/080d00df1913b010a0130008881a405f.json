@@ -1,0 +1,14 @@
+{
+  "id": "080d00df1913b010a0130008881a405f",
+  "at": "2026-08-19T21:17:45.462Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M0DY68KN087G0R002MQ1BDR",
+    "type": "bug",
+    "title": "memory-index-drift check conflates calendar drift with index drift -- daily false positive on any memory/** PR",
+    "slug": "memory-index-drift-check-conflates-calendar-drift-with-index",
+    "priority": "P2",
+    "filename": "081M0DY68KN087G0R002MQ1BDR-memory-index-drift-check-conflates-calendar-drift-with-index.md"
+  }
+}

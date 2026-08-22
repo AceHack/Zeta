@@ -1,0 +1,17 @@
+{
+  "pr_number": 6074,
+  "archive_path": "docs/history/pr-reviews/PR-6074-feat-health-add-codex-parallel-runway-signal.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7GXflr",
+    "comment:PRRC_kwDOSF9kNM7GXfly",
+    "thread:PRRT_kwDOSF9kNM6F1uWs",
+    "thread:PRRT_kwDOSF9kNM6F1uWv"
+  ],
+  "fetched_at": "2026-05-30T04:28:06.448Z",
+  "schema_version": "v1",
+  "commit_sha": "0de099d3137cc9bb063e2d6aaa2a412fe78da6cd",
+  "title": "feat(health): add Codex parallel runway signal",
+  "state": "MERGED",
+  "merged_at": "2026-05-30T04:27:48Z",
+  "head_ref": "claim/codex-loop-b0249-parallel-runway-health-20260530"
+}

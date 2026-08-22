@@ -1,0 +1,20 @@
+{
+  "pr_number": 1816,
+  "archive_path": "docs/history/pr-reviews/PR-1816-docs-add-shadow-irreducibility-operational-guardrail.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6-setz",
+    "comment:PRRC_kwDOSF9kNM6-sgVD",
+    "comment:PRRC_kwDOSF9kNM6-sgf0",
+    "comment:PRRC_kwDOSF9kNM6-shU9",
+    "comment:PRRC_kwDOSF9kNM6-shWZ",
+    "thread:PRRT_kwDOSF9kNM6ANgbB",
+    "thread:PRRT_kwDOSF9kNM6ANhsV"
+  ],
+  "fetched_at": "2026-05-07T06:36:17.130Z",
+  "schema_version": "v1",
+  "commit_sha": "82c222ceefe2a77f079fc30a17736ff8fd19f6a7",
+  "title": "docs: add shadow irreducibility operational guardrail",
+  "state": "MERGED",
+  "merged_at": "2026-05-07T06:34:54Z",
+  "head_ref": "claim/shadow-irreducibility-operational-guardrail"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 7989,
+  "archive_path": "docs/history/pr-reviews/PR-7989-docs-research-shadow-ferry-25-addendum-superdeterminism-true-by-construction-in-.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-12T18:51:20.392Z",
+  "schema_version": "v1",
+  "commit_sha": "89ec02ebf8df2c6b02eef50b87ab774088a6d6b0",
+  "title": "docs(research)+shadow: ferry 25 addendum — superdeterminism (true by construction in a DST universe) + the Gates-ECC → Tsirelson conjecture",
+  "state": "MERGED",
+  "merged_at": "2026-06-12T18:50:56Z",
+  "head_ref": "shadow/ferry-25-superdeterminism"
+}

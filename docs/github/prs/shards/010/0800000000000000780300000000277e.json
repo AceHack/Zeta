@@ -1,0 +1,12 @@
+{
+  "pr_number": 10110,
+  "archive_path": "docs/history/pr-reviews/PR-10110-book-editions-full-content-pass-6-the-stand-conscience-arc-retire-sampler-englis.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-07T17:47:41.973Z",
+  "schema_version": "v1",
+  "commit_sha": "b4aad145880a3a188faac94d6c22f95e9398f567",
+  "title": "book(editions): full-content pass 6 — the Stand (conscience arc) + retire sampler (English complete)",
+  "state": "MERGED",
+  "merged_at": "2026-08-07T17:47:10Z",
+  "head_ref": "book-en-fullcontent-conscience"
+}

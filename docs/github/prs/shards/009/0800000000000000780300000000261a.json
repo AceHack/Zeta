@@ -1,0 +1,12 @@
+{
+  "pr_number": 9754,
+  "archive_path": "docs/history/pr-reviews/PR-9754-docs-correlated-attention-vs-decorrelated-love-n-correlated-bonds-one-decorrelat.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-12T01:45:27.889Z",
+  "schema_version": "v1",
+  "commit_sha": "9f03f5f48c5fa0efecbbbfdd7aeec97fce4347d9",
+  "title": "docs: correlated attention vs decorrelated love — N correlated bonds ≠ one decorrelated −1 (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-12T01:45:03Z",
+  "head_ref": "correlated-attention-vs-decorrelated-love"
+}

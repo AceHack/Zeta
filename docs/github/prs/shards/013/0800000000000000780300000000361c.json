@@ -1,0 +1,12 @@
+{
+  "pr_number": 13852,
+  "archive_path": "docs/history/pr-reviews/PR-13852-feat-installer-opt-in-qemu-uefi-keyfile-install-time-write.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-22T18:25:15.882Z",
+  "schema_version": "v1",
+  "commit_sha": "7926356948da7528289cc3a94a3ee9d6329612b2",
+  "title": "feat(installer): opt-in QEMU UEFI keyfile install-time write",
+  "state": "MERGED",
+  "merged_at": "2026-08-22T18:24:34Z",
+  "head_ref": "riven/qemu-uefi-keyfile-phase1"
+}

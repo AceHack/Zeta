@@ -1,0 +1,21 @@
+{
+  "pr_number": 2641,
+  "archive_path": "docs/history/pr-reviews/PR-2641-docs-backlog-b-0055-2-atomic-re-decomposition-of-b-0055-frontier-edge-claims-riv.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_tAaI",
+    "comment:PRRC_kwDOSF9kNM6_tAaL",
+    "comment:PRRC_kwDOSF9kNM6_tAxv",
+    "comment:PRRC_kwDOSF9kNM6_tAyG",
+    "thread:PRRT_kwDOSF9kNM6A9pB3",
+    "thread:PRRT_kwDOSF9kNM6A9pB5",
+    "thread:PRRT_kwDOSF9kNM6A9pS2",
+    "thread:PRRT_kwDOSF9kNM6A9pSm"
+  ],
+  "fetched_at": "2026-05-11T03:50:33.236Z",
+  "schema_version": "v1",
+  "commit_sha": "4ba5a8835c4e3605c3a4cf56bcf034652f396f2a",
+  "title": "docs(backlog): B-0055.2 atomic re-decomposition of B-0055 frontier edge-claims (Riven)",
+  "state": "MERGED",
+  "merged_at": "2026-05-11T03:50:16Z",
+  "head_ref": "claim/b0055-decompose-smallest-atomic-children-riven-2026-05-10"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 13871,
+  "archive_path": "docs/history/pr-reviews/PR-13871-fix-ci-reconcile-yaml-and-runner-evidence.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-22T19:49:16.188Z",
+  "schema_version": "v1",
+  "commit_sha": "895e7ed78c0ddcc3b6e5eef56ba3ffcf8bf38886",
+  "title": "fix(ci): reconcile YAML and runner evidence",
+  "state": "MERGED",
+  "merged_at": "2026-08-22T19:48:35Z",
+  "head_ref": "codex/fix-yaml-design-reference"
+}

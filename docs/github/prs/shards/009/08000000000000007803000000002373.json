@@ -1,0 +1,12 @@
+{
+  "pr_number": 9075,
+  "archive_path": "docs/history/pr-reviews/PR-9075-feat-setup-ace-bun-realizers-slice-3-from-elan-from-url.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-16T20:53:58.560Z",
+  "schema_version": "v1",
+  "commit_sha": "c8ad05164dbd6a5ba15515081701f699ba9769fe",
+  "title": "feat(setup): Ace Bun realizers slice 3 — from-elan + from-url",
+  "state": "MERGED",
+  "merged_at": "2026-07-02T00:42:53Z",
+  "head_ref": "feat/081KLL7-bun-realizers-slice-3"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 7580,
+  "archive_path": "docs/history/pr-reviews/PR-7580-feat-qsharp-add-reference-observable-oracle.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-11T03:52:15.484Z",
+  "schema_version": "v1",
+  "commit_sha": "a5f8fcb85e5838a2ad11f0a13f1f5dd8aaf26a48",
+  "title": "feat(qsharp): add reference observable oracle",
+  "state": "MERGED",
+  "merged_at": "2026-06-11T03:51:47Z",
+  "head_ref": "codex/vera-qsharp-oracle"
+}

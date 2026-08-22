@@ -1,0 +1,14 @@
+{
+  "id": "080cffea7886b810a01300085ea12642",
+  "at": "2026-08-13T22:47:25.143Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081KZYMY46P087G0R003S64V2B",
+    "type": "bug",
+    "title": "PR-archive manifest.jsonl is a single read-modify-write file — N concurrent archive PRs conflict pairwise, O(N-squared) by construction",
+    "slug": "pr-archive-manifest-jsonl-is-a-single-read-modify-write-file",
+    "priority": "P2",
+    "filename": "081KZYMY46P087G0R003S64V2B-pr-archive-manifest-jsonl-is-a-single-read-modify-write-file.md"
+  }
+}

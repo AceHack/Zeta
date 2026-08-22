@@ -1,0 +1,12 @@
+{
+  "pr_number": 9086,
+  "archive_path": "docs/history/pr-reviews/PR-9086-feat-core-schemaz-schema-as-events-on-the-z-set-slice-1-shadow.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-16T22:26:19.058Z",
+  "schema_version": "v1",
+  "commit_sha": "7436d9a60b344394c072c9a6a75c84addb3b36fe",
+  "title": "feat(core): SchemaZ — schema-as-events on the Z-set, slice 1 (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-02T01:31:57Z",
+  "head_ref": "otto/schemaz-slice1-schema-as-events-081KWFXTHJY"
+}

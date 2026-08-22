@@ -1,0 +1,12 @@
+{
+  "pr_number": 4657,
+  "archive_path": "docs/history/pr-reviews/PR-4657-rule-harm-by-grammar-discriminator-and-audience-adjusted-language-three-operatio.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-22T19:26:04.032Z",
+  "schema_version": "v1",
+  "commit_sha": "68cb8de157809356f0e3732768eef6007dd5925f",
+  "title": "rule(harm-by-grammar-discriminator-and-audience-adjusted-language): three operational disciplines for substrate-honest engagement (auto-loads at cold-boot)",
+  "state": "MERGED",
+  "merged_at": "2026-05-22T19:25:43Z",
+  "head_ref": "otto/cli-0429z-rule-harm-by-grammar-discriminator-audience-adjusted-language-adversarial-counterweight-2026-05-23"
+}

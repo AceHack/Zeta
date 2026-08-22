@@ -6,14 +6,24 @@
 
       Cayley-Dickson doubling preserves the doubly-even self-dual invariant.
 
-  The base case N=4 (the [8,4] extended Hamming code — the concrete Adinkra
-  generator) is ALREADY proven exhaustively in `AdinkraCode.fs` /
-  `AdinkraCode.Tests.fs` (isDoublyEven, isSelfDual over all 16 codewords). The
-  routing doc is explicit: "the concrete N=4 doubly-even self-dual case is
-  already proven … that is the BP-16 base case, no new proof; the open Lean
-  target is the general inductive invariant (CD doubling preserves doubly-even
-  self-duality, induction over Doubled.algebra)." This file discharges that
-  inductive step, sorry-free.
+  The base case — the [8,4,4] extended Hamming code, the concrete Adinkra
+  generator, **N = 8** (see below) — is ALREADY proven exhaustively in
+  `AdinkraCode.fs` / `AdinkraCode.Tests.fs` (isDoublyEven, isSelfDual over all
+  16 codewords). The routing doc is explicit: "the concrete N=4 doubly-even
+  self-dual case is already proven … that is the BP-16 base case, no new proof;
+  the open Lean target is the general inductive invariant (CD doubling preserves
+  doubly-even self-duality, induction over Doubled.algebra)." This file
+  discharges that inductive step, sorry-free.
+
+  ── N label (corrected 2026-08-15) ────────────────────────────────────────
+  The quotation above is kept VERBATIM, but its "N=4" is wrong and is retained
+  only because it is someone else's words. That 4 is `k`, the code DIMENSION,
+  read as `N`. In the adinkra correspondence (Doran–Faux–Gates–Hübsch–Iga–
+  Landweber) N is the code LENGTH, so this base case is **N = 8, k = 4**. A
+  doubly-even self-dual code of length 4 does not exist at all (Gleason;
+  Mallows–Sloane: length ≡ 0 mod 8), so the N=4 reading names an empty set.
+  Nothing in this proof depended on the label: the Lean development below is
+  parameterised over `length` and `dim` and never mentions N.
 
   ── Honest scope (peel) ───────────────────────────────────────────────────
   The doubly-even (weight ≡ 0 mod 4) and self-dual (C = C⊥) properties are
@@ -125,7 +135,7 @@ theorem doubled_isRateHalf {A : Type} (C : BinaryCode A)
   omega
 
 /-- **T2 (combined inductive step)** — CD doubling preserves the full
-    doubly-even self-dual invariant. With the N=4 base case (AdinkraCode.Tests,
+    doubly-even self-dual invariant. With the N=8 base case (AdinkraCode.Tests,
     exhaustive), induction over the `Doubled.algebra` tower R→C→H→O→𝕊→…
     propagates doubly-even self-duality to every level: this is the inductive
     step the math-team handoff (T2) asked for, discharged sorry-free. -/

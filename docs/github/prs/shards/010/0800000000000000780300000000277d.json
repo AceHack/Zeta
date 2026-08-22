@@ -1,0 +1,12 @@
+{
+  "pr_number": 10109,
+  "archive_path": "docs/history/pr-reviews/PR-10109-book-editions-full-content-pass-5-the-pull-companion-full-length-english.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-07T17:45:06.226Z",
+  "schema_version": "v1",
+  "commit_sha": "d44744d7793cc43f4c49c8ff851062c7d4d7039f",
+  "title": "book(editions): full-content pass 5 — the Pull companion, full length (English)",
+  "state": "MERGED",
+  "merged_at": "2026-08-07T17:44:33Z",
+  "head_ref": "book-en-fullcontent-pull"
+}

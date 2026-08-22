@@ -1,0 +1,12 @@
+{
+  "pr_number": 5834,
+  "archive_path": "docs/history/pr-reviews/PR-5834-docs-archive-preserve-discussions-for-7-recently-merged-prs.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-28T18:29:50.616Z",
+  "schema_version": "v1",
+  "commit_sha": "1b727a0c6d90efba00910e6d4dd3ffda2a8c9aba",
+  "title": "docs(archive): Preserve discussions for 7 recently merged PRs",
+  "state": "MERGED",
+  "merged_at": "2026-05-28T18:29:31Z",
+  "head_ref": "lior/archive-batch-1"
+}

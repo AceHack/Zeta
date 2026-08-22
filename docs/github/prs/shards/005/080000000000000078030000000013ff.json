@@ -1,0 +1,23 @@
+{
+  "pr_number": 5119,
+  "archive_path": "docs/history/pr-reviews/PR-5119-ci-test-cascade-4-post-build-iso-content-audit-via-7z-list-would-have-caught-aar.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7Ezqu5",
+    "comment:PRRC_kwDOSF9kNM7Ezqv0",
+    "comment:PRRC_kwDOSF9kNM7Ezqvb",
+    "comment:PRRC_kwDOSF9kNM7Ezqw0",
+    "comment:PRRC_kwDOSF9kNM7EzqwP",
+    "thread:PRRT_kwDOSF9kNM6EtbZ9",
+    "thread:PRRT_kwDOSF9kNM6EtbZY",
+    "thread:PRRT_kwDOSF9kNM6EtbZo",
+    "thread:PRRT_kwDOSF9kNM6EtbaP",
+    "thread:PRRT_kwDOSF9kNM6Etbaq"
+  ],
+  "fetched_at": "2026-05-26T07:10:35.220Z",
+  "schema_version": "v1",
+  "commit_sha": "35fd3aeefd80a19d1c60d24fad8428d249cbc9d8",
+  "title": "ci(test-cascade-4): post-build ISO content audit via 7z list (would have caught Aaron's stale-ISO issue) (Aaron 2026-05-26)",
+  "state": "MERGED",
+  "merged_at": "2026-05-26T07:10:14Z",
+  "head_ref": "otto-cli/ci-test-cascade-4-iso-content-audit-2026-05-26"
+}

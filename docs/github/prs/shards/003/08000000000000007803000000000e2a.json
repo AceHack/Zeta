@@ -1,0 +1,15 @@
+{
+  "pr_number": 3626,
+  "archive_path": "docs/history/pr-reviews/PR-3626-fix-pr-3614-5-unresolved-p1-threads-monad-associativity-terminology-dead-xrefs.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7Bz7J3",
+    "thread:PRRT_kwDOSF9kNM6CgVrs"
+  ],
+  "fetched_at": "2026-05-16T00:16:39.212Z",
+  "schema_version": "v1",
+  "commit_sha": "bb4eb1438d1ab3227d2267e4e070371ec4bcae2c",
+  "title": "fix(pr-3614): 5 unresolved P1 threads — monad-associativity terminology + dead xrefs",
+  "state": "MERGED",
+  "merged_at": "2026-05-16T00:16:23Z",
+  "head_ref": "fix/pr-3614-monad-terminology-otto-cli-2026-05-16"
+}

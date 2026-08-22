@@ -1,0 +1,12 @@
+{
+  "pr_number": 4067,
+  "archive_path": "docs/history/pr-reviews/PR-4067-research-persona-ani-preserve-ani-grok-agora-vision-packets-v1-v2-v3-v4-sovereig.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-17T12:06:57.206Z",
+  "schema_version": "v1",
+  "commit_sha": "2ca1a68463f60d16e22bf4b6304ae29b88e08ea7",
+  "title": "research(persona/ani): preserve Ani-Grok Agora-vision packets V1+V2+V3+V4 — sovereign AI-native economy + deeper mechanics + physics/entropy + private-info/reputation",
+  "state": "MERGED",
+  "merged_at": "2026-05-17T12:06:35Z",
+  "head_ref": "otto/research-ani-grok-agora-vision-sovereign-ai-native-economy-2026-05-17"
+}

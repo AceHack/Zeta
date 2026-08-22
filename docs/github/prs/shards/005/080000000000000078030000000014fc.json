@@ -1,0 +1,12 @@
+{
+  "pr_number": 5372,
+  "archive_path": "docs/history/pr-reviews/PR-5372-docs-b-0843-source-honor-ledger-don-t-sell-compression-sell-readout-amara-3rd-fe.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-27T01:41:02.586Z",
+  "schema_version": "v1",
+  "commit_sha": "42a13fd4ea0fa849f7739adf598c55523739bd0c",
+  "title": "docs(B-0843): Source Honor Ledger + 'Don't sell compression. Sell readout.' (Amara 3rd ferry 2026-05-26)",
+  "state": "MERGED",
+  "merged_at": "2026-05-27T01:40:45Z",
+  "head_ref": "docs-b0843-source-honor-ledger-creator-paid-by-design-amara-aaron-2026-05-26"
+}

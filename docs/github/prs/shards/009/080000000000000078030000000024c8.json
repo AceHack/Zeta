@@ -1,0 +1,12 @@
+{
+  "pr_number": 9416,
+  "archive_path": "docs/history/pr-reviews/PR-9416-feat-shamir-bp-16-formal-cross-check-z3-fscheck-f.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-04T05:12:10.205Z",
+  "schema_version": "v1",
+  "commit_sha": "d10f9b8abbdca9049012bcaac19e7609acf868e3",
+  "title": "feat(shamir): BP-16 formal cross-check (Z3 + FsCheck + F#)",
+  "state": "MERGED",
+  "merged_at": "2026-07-04T05:11:45Z",
+  "head_ref": "feat/shamir-bp16-formal"
+}

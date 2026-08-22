@@ -1,0 +1,12 @@
+{
+  "pr_number": 9024,
+  "archive_path": "docs/history/pr-reviews/PR-9024-feat-keys-cluster-scoped-teardown-exact-inverse-of-setup-cluster-cascade-with-wa.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-21T23:18:27.733Z",
+  "schema_version": "v1",
+  "commit_sha": "8c7ffe859cf04c68a20030a1681e9a0d4623b335",
+  "title": "feat(keys): cluster-scoped teardown — exact inverse of setup-cluster (cascade-with-warnings)",
+  "state": "MERGED",
+  "merged_at": "2026-06-21T23:17:59Z",
+  "head_ref": "otto/cluster-scoped-teardown"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 11257,
+  "archive_path": "docs/history/pr-reviews/PR-11257-feat-installer-guest-iserial-probe-report-on-the-serial-log.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-17T01:52:48.721Z",
+  "schema_version": "v1",
+  "commit_sha": "95d33be3cf00ae9e9cfcf099c60785ba16b607db",
+  "title": "feat(installer): guest iSerial probe report on the serial log",
+  "state": "MERGED",
+  "merged_at": "2026-08-17T01:52:09Z",
+  "head_ref": "riven/guest-iserial-markers"
+}

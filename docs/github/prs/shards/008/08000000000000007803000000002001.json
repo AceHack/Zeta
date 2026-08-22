@@ -1,0 +1,12 @@
+{
+  "pr_number": 8193,
+  "archive_path": "docs/history/pr-reviews/PR-8193-docs-research-zeta-ir-v2-4g-representation-is-a-capability-uncertainty-drives-at.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-14T15:29:08.270Z",
+  "schema_version": "v1",
+  "commit_sha": "c3308c48b8e5c741be3abfaea11e280a73080fa3",
+  "title": "docs(research): Zeta IR v2 — §4g representation is a capability; uncertainty drives attention",
+  "state": "MERGED",
+  "merged_at": "2026-06-14T15:28:47Z",
+  "head_ref": "otto/zeta-lang-ir-v2-representation-capability"
+}

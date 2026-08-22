@@ -1,0 +1,12 @@
+{
+  "pr_number": 6025,
+  "archive_path": "docs/history/pr-reviews/PR-6025-docs-b-0810-close-ratification-gate-row.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-29T18:09:06.581Z",
+  "schema_version": "v1",
+  "commit_sha": "5307cdbe58842496c3e3468e6239e02fd401ce51",
+  "title": "docs(B-0810): close ratification gate row",
+  "state": "MERGED",
+  "merged_at": "2026-05-29T18:08:42Z",
+  "head_ref": "claim/codex-loop-b0810-ratification-gate-close-20260529"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 9422,
+  "archive_path": "docs/history/pr-reviews/PR-9422-docs-ferry-visual-ecc-drawing-universal-temperature-control-the-loop-s-type-pric.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-04T05:48:20.701Z",
+  "schema_version": "v1",
+  "commit_sha": "af9a24530f01b5231a7b82b3afd315261d53a6fe",
+  "title": "docs(ferry): visual-ECC drawing → universal temperature control → the loop's type (priced-uncertainty DU over bounded timestep) (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-04T05:47:58Z",
+  "head_ref": "otto/ferry-visual-ecc-to-universal-temperature-control-similar-loops-not-numbers"
+}

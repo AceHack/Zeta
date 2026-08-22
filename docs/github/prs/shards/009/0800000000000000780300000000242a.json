@@ -1,0 +1,12 @@
+{
+  "pr_number": 9258,
+  "archive_path": "docs/history/pr-reviews/PR-9258-docs-vision-one-object-all-registers-the-complete-frame-grace-theodicy-time-topo.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-03T02:10:42.498Z",
+  "schema_version": "v1",
+  "commit_sha": "80c26aa4ec6593234a7c065603c21fe59a71e056",
+  "title": "docs(vision): one object, all registers — the complete frame (grace → theodicy → time-topology → antiparticle → compression)",
+  "state": "MERGED",
+  "merged_at": "2026-07-03T02:10:18Z",
+  "head_ref": "otto/complete-frame-vision-consolidation"
+}

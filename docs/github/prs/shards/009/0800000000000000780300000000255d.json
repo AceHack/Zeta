@@ -1,0 +1,12 @@
+{
+  "pr_number": 9565,
+  "archive_path": "docs/history/pr-reviews/PR-9565-fix-ci-brace-agent-bot-expansions-sc1087-has-actionlint-red-on-main.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-08T23:49:38.122Z",
+  "schema_version": "v1",
+  "commit_sha": "09e0047cbe66a737bf28056a9941a263f9cb04cc",
+  "title": "fix(ci): brace ${AGENT}[bot] expansions — SC1087 has actionlint red on main",
+  "state": "MERGED",
+  "merged_at": "2026-07-08T23:49:08Z",
+  "head_ref": "otto/heartbeat-sc1087-braces"
+}

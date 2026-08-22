@@ -1,0 +1,12 @@
+{
+  "pr_number": 11508,
+  "archive_path": "docs/history/pr-reviews/PR-11508-chore-workitems-close-helm-validate-vacuity-item-re-verified-it-can-go-red.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-21T08:48:49.772Z",
+  "schema_version": "v1",
+  "commit_sha": "5ae461d47ebd1cafe4417fea0797d455403ac569",
+  "title": "chore(workitems): close helm-validate vacuity item — re-verified it can go red",
+  "state": "MERGED",
+  "merged_at": "2026-08-17T14:56:55Z",
+  "head_ref": "shadow/helm-validate-can-go-red"
+}

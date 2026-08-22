@@ -1,0 +1,12 @@
+{
+  "pr_number": 8639,
+  "archive_path": "docs/history/pr-reviews/PR-8639-memory-user-the-alarm-algebra-metaception-system-is-a-guidance-system-for-the-em.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-19T22:20:54.517Z",
+  "schema_version": "v1",
+  "commit_sha": "79409d8b7cce29e8a21722d39f568cbf20e99a90",
+  "title": "memory(user): the Alarm-Algebra/metaception system is a guidance system for the \"emotionally blind by default\"",
+  "state": "MERGED",
+  "merged_at": "2026-06-19T22:20:27Z",
+  "head_ref": "otto/emotionally-blind-guidance-system-disclosure"
+}

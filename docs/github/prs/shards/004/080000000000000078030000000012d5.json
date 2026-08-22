@@ -1,0 +1,28 @@
+{
+  "pr_number": 4821,
+  "archive_path": "docs/history/pr-reviews/PR-4821-fix-4780-address-review-comments-on-residuated-lattice-tests.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7EY0T2",
+    "comment:PRRC_kwDOSF9kNM7EY0Ti",
+    "comment:PRRC_kwDOSF9kNM7EY0Tr",
+    "comment:PRRC_kwDOSF9kNM7EY0Tw",
+    "comment:PRRC_kwDOSF9kNM7EYz6N",
+    "comment:PRRC_kwDOSF9kNM7EYz6P",
+    "comment:PRRC_kwDOSF9kNM7EZfMg",
+    "comment:PRRC_kwDOSF9kNM7EZfRJ",
+    "comment:PRRC_kwDOSF9kNM7EZfTy",
+    "thread:PRRT_kwDOSF9kNM6EZYIF",
+    "thread:PRRT_kwDOSF9kNM6EZYIG",
+    "thread:PRRT_kwDOSF9kNM6EZYcC",
+    "thread:PRRT_kwDOSF9kNM6EZYcK",
+    "thread:PRRT_kwDOSF9kNM6EZYcO",
+    "thread:PRRT_kwDOSF9kNM6EZYcT"
+  ],
+  "fetched_at": "2026-05-24T17:11:00.592Z",
+  "schema_version": "v1",
+  "commit_sha": "7752c3719d7392d12bcc1554e10c29143f04c12f",
+  "title": "fix(4780): address review comments on Residuated lattice tests",
+  "state": "MERGED",
+  "merged_at": "2026-05-24T17:10:37Z",
+  "head_ref": "fix-4780-tests"
+}

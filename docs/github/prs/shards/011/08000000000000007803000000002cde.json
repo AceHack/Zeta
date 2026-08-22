@@ -1,0 +1,12 @@
+{
+  "pr_number": 11486,
+  "archive_path": "docs/history/pr-reviews/PR-11486-fix-ci-unrelated-prs-went-red-because-github-throttled-the-eprover-tarball.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-17T14:23:01.611Z",
+  "schema_version": "v1",
+  "commit_sha": "6ad5cc59df1fcdf4fbb61b69b20f23e11cbe403f",
+  "title": "fix(ci): unrelated PRs went red because GitHub throttled the eprover tarball",
+  "state": "MERGED",
+  "merged_at": "2026-08-17T14:22:20Z",
+  "head_ref": "shadow/harden-eprover-tarball-fetch"
+}

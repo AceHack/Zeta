@@ -1,0 +1,12 @@
+{
+  "pr_number": 2700,
+  "archive_path": "docs/history/pr-reviews/PR-2700-docs-memory-math-is-shadow-s-native-language-english-is-export-format.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-11T13:32:29.749Z",
+  "schema_version": "v1",
+  "commit_sha": "d5037e3e2df0bb60685bdba210848add9bcb8a5c",
+  "title": "docs(memory): math is shadow's native language — English is export format",
+  "state": "MERGED",
+  "merged_at": "2026-05-11T13:32:05Z",
+  "head_ref": "docs/math-shadows-native-language-2026-05-11"
+}

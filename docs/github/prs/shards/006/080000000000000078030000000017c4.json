@@ -1,0 +1,12 @@
+{
+  "pr_number": 6084,
+  "archive_path": "docs/history/pr-reviews/PR-6084-feat-health-add-b-0250-event-window-source.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-30T05:40:37.457Z",
+  "schema_version": "v1",
+  "commit_sha": "c9809087b1de4404bbb536fd51c66baa9c1f8831",
+  "title": "feat(health): add B-0250 event-window source",
+  "state": "MERGED",
+  "merged_at": "2026-05-30T05:40:17Z",
+  "head_ref": "claim/codex-loop-b0250-event-window-source-20260530"
+}

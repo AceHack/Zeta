@@ -1,0 +1,12 @@
+{
+  "pr_number": 2111,
+  "archive_path": "docs/history/pr-reviews/PR-2111-fix-remove-unused-imports-in-filter-gate-log-tests.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-08T17:54:21.339Z",
+  "schema_version": "v1",
+  "commit_sha": "4373b3e02d2263e991c88800f5f06ec3a503c42b",
+  "title": "fix: remove unused imports in filter-gate log tests",
+  "state": "MERGED",
+  "merged_at": "2026-05-08T17:54:05Z",
+  "head_ref": "fix/tsc-unused-imports-filter-gate"
+}

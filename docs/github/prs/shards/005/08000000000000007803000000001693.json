@@ -1,0 +1,12 @@
+{
+  "pr_number": 5779,
+  "archive_path": "docs/history/pr-reviews/PR-5779-fix-workflow-engine-tsc-lint-errors-unused-vars-type-narrowing-autonomous-loop-u.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-28T11:52:04.376Z",
+  "schema_version": "v1",
+  "commit_sha": "8ee92561b37634587ac112f7e421463a16a0233e",
+  "title": "fix(workflow-engine): tsc lint errors — unused vars + type-narrowing (autonomous-loop unblocks #5774-#5778)",
+  "state": "MERGED",
+  "merged_at": "2026-05-28T11:51:45Z",
+  "head_ref": "otto-cli/tsc-fixes-workflow-engine-unused-vars-and-type-narrowing-2026-05-28"
+}

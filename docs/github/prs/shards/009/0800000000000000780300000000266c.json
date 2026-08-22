@@ -1,0 +1,12 @@
+{
+  "pr_number": 9836,
+  "archive_path": "docs/history/pr-reviews/PR-9836-docs-setup-identity-plane-trajectory-github-bootstrap-is-scaffold-target-is-git-.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-01T03:51:45.408Z",
+  "schema_version": "v1",
+  "commit_sha": "d097279e69f9a98a0098369eb98e0fd6587b5714",
+  "title": "docs(setup): identity-plane trajectory — GitHub bootstrap is scaffold; target is git-native then zetadb-native SPIFFE",
+  "state": "MERGED",
+  "merged_at": "2026-08-01T03:51:18Z",
+  "head_ref": "shadow/ca-identity-plane-trajectory"
+}

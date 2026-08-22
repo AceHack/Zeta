@@ -1,0 +1,12 @@
+{
+  "pr_number": 8234,
+  "archive_path": "docs/history/pr-reviews/PR-8234-docs-register-c-flood-the-frontier-engine-100-conjecture-trick.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-15T02:05:21.448Z",
+  "schema_version": "v1",
+  "commit_sha": "5c874254545bb66b47f48a5461131fd32acd8e60",
+  "title": "docs(register): §C — flood the frontier engine (100-conjecture trick)",
+  "state": "MERGED",
+  "merged_at": "2026-06-15T02:04:54Z",
+  "head_ref": "otto/sc-flood-the-frontier-engine"
+}

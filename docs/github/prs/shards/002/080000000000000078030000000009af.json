@@ -1,0 +1,31 @@
+{
+  "pr_number": 2479,
+  "archive_path": "docs/history/pr-reviews/PR-2479-refactor-b-0164-decompose-dual-loop-protocol-into-3-atomic-child-rows.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_nlqk",
+    "comment:PRRC_kwDOSF9kNM6_nlql",
+    "comment:PRRC_kwDOSF9kNM6_nmE-",
+    "comment:PRRC_kwDOSF9kNM6_nmE2",
+    "comment:PRRC_kwDOSF9kNM6_nmEj",
+    "comment:PRRC_kwDOSF9kNM6_nmEs",
+    "comment:PRRC_kwDOSF9kNM6_nmFF",
+    "comment:PRRC_kwDOSF9kNM6_nmFO",
+    "comment:PRRC_kwDOSF9kNM6_nmFW",
+    "thread:PRRT_kwDOSF9kNM6A5ctd",
+    "thread:PRRT_kwDOSF9kNM6A5cte",
+    "thread:PRRT_kwDOSF9kNM6A5dD5",
+    "thread:PRRT_kwDOSF9kNM6A5dEC",
+    "thread:PRRT_kwDOSF9kNM6A5dEL",
+    "thread:PRRT_kwDOSF9kNM6A5dEQ",
+    "thread:PRRT_kwDOSF9kNM6A5dEX",
+    "thread:PRRT_kwDOSF9kNM6A5dEg",
+    "thread:PRRT_kwDOSF9kNM6A5dEo"
+  ],
+  "fetched_at": "2026-05-10T12:17:53.401Z",
+  "schema_version": "v1",
+  "commit_sha": "21ef97e76fcea0593bde85322522e2ede4b9ebbb",
+  "title": "refactor(B-0164): decompose dual-loop protocol into 3 atomic child rows",
+  "state": "MERGED",
+  "merged_at": "2026-05-10T12:17:31Z",
+  "head_ref": "feat/B-0164-decompose-dual-loop-child-rows"
+}

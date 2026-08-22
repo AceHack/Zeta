@@ -44,8 +44,14 @@
  *
  * Exit codes:
  *   0 — healers ran (may or may not have healed anything); or --dry-run completed
- *   1 — fatal error (never in practice — totality law)
+ *   1 — fatal error: a malformed --max-files, or an UNRECOGNISED ARGUMENT (nothing written)
  *   2 — BLAST RADIUS EXCEEDED: nothing was written, the plan is printed, a human decides
+ *
+ * 1 and 2 are deliberately NOT merged even though both mean "nothing was written".
+ * `agent-heartbeat.yml` treats rc=2 as a ::warning:: and ends the step cleanly — an oversized
+ * plan is a finding about the repo, not a broken tick. A mistyped flag is a broken *invocation*,
+ * and routing it through the rc=2 branch would let a heal step that never ran report itself as a
+ * known-and-tolerated condition. rc=1 lands in the `HEALER FAILED rc=$HEAL_RC` warning instead.
  *
  * Usage:
  *   bun run-tier0.ts [--repo-root <path>] [--max-files N] [--dry-run] [--plan-out <path>]
@@ -71,6 +77,52 @@ export const DEFAULT_MAX_FILES = 25;
 function argValue(flag: string): string | undefined {
   const i = process.argv.indexOf(flag);
   return i >= 0 ? process.argv[i + 1] : undefined;
+}
+
+/** Flags that consume the following token as their value. */
+const VALUE_FLAGS: ReadonlySet<string> = new Set(["--repo-root", "--max-files", "--plan-out"]);
+/** Flags that stand alone. */
+const BOOLEAN_FLAGS: ReadonlySet<string> = new Set(["--dry-run"]);
+
+/**
+ * FAIL CLOSED ON AN UNRECOGNISED ARGUMENT — 081M03HRHBS087G0R001HRAFQ0.
+ *
+ * `process.argv.includes("--dry-run")` asks one question and treats EVERY other string as
+ * consent: `--dry-runn`, `--dryrun` and `--help` all mean "write to the repository". PR #10832
+ * probed a sibling tool with `--help` and started a ~1,700-file rewrite. Nothing about this
+ * healer makes it immune — it rewrites every healable file in `--repo-root`.
+ *
+ * Called as the FIRST statement of `main()`, which is above `--plan-out`'s write, above the
+ * blast-radius check and above the rewrite loop, so the refusal cannot land after a partial run.
+ *
+ * The diagnostic string `unknown arg` is load-bearing beyond being readable:
+ * `hygiene/audit-workflow-cli-flags.ts` only polices tools whose parser demonstrably rejects
+ * unknown flags, and it detects that by finding this phrase in the source. Before this guard
+ * existed the healer was *skipped* by that lint — the absence of a guard bought exemption from
+ * the check that would catch a bad workflow invocation. Do not reword it to "unrecognised
+ * argument" without teaching `hasClosedFlagSet` the new phrasing.
+ */
+function rejectUnknownArgs(argv: readonly string[]): void {
+  for (let i = 0; i < argv.length; i++) {
+    const arg = argv[i];
+    if (arg === undefined) continue;
+    if (VALUE_FLAGS.has(arg)) {
+      const value = argv[i + 1];
+      if (value === undefined || value.startsWith("--")) {
+        console.error(`[tier-0] FATAL: ${arg} requires a value.`);
+        process.exit(1);
+      }
+      i++; // consume the value; it is not a stray positional
+      continue;
+    }
+    if (BOOLEAN_FLAGS.has(arg)) continue;
+    console.error(
+      `unknown arg: ${arg}\n` +
+        `[tier-0] REFUSED — nothing was written. Accepted: ` +
+        `${[...VALUE_FLAGS, ...BOOLEAN_FLAGS].sort().join(" ")}`,
+    );
+    process.exit(1);
+  }
 }
 
 /** Recursively collect files (skipping node_modules, .git, binary). */
@@ -145,6 +197,8 @@ export function describePlan(plan: HealPlan): string {
 }
 
 function main(): void {
+  rejectUnknownArgs(process.argv.slice(2));
+
   const repoRoot = argValue("--repo-root") ?? process.cwd();
   const dryRun = process.argv.includes("--dry-run");
   const planOut = argValue("--plan-out");

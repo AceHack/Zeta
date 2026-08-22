@@ -1,0 +1,124 @@
+{
+  "format": "construction-a-theta-v1",
+  "description": "Byte-lock for THETA SERIES of Construction-A lattices computed by src/Core/ConstructionATheta.fs. Three lattices are locked: Z^4 and D4 (the external ANCHORS, whose coefficients are published closed forms this repo does not own) and the in-tree E8 (Construction A over AdinkraCode.generator). Integer-only: every value is an exact int64 recorded as BOTH a decimal string and a zero-padded 16-digit big-endian hex string (hex-in-JSON per no-binary-in-proof-lineage; no float ever enters this path). SCOPE: this file locks vector COUNTS BY NORM. That the E8 series equals E_4 evidences that Construction A over the in-tree code produced an even unimodular rank-8 lattice; it is not by itself a construction of a root system or a Weyl group.",
+  "generatedBy": "src/Core/ConstructionATheta.fs (F# is the generating oracle / treaty)",
+  "lanes": {
+    "routeE": {
+      "id": "theta-by-enumeration",
+      "how": "depth-first enumeration of {x in Z^n : x mod 2 in C}, indexed by the integer squared length x.x, with the exact norm budget |v| <= isqrt(rem)",
+      "reads": "the binary code and nothing else"
+    },
+    "routeC": {
+      "id": "theta-by-convolution",
+      "how": "sum over codewords of the product over coordinates of f_p(u) = sum_{m = p mod 2} u^(m^2); exact integer polynomial arithmetic",
+      "reads": "the binary code and nothing else - but NO lattice point is enumerated, so there is no enumeration bound to get wrong"
+    },
+    "anchorZ4": {
+      "id": "jacobi-four-square-theorem",
+      "how": "r_4(m) = 8 * sum of divisors d of m with 4 not dividing d (Jacobi 1834), evaluated from divisors",
+      "reads": "number theory only; an external closed form, not a transcribed sequence"
+    },
+    "anchorD4": {
+      "id": "splag-d4-theta-transcribed",
+      "how": "the published theta series of the checkerboard lattice D4, transcribed from Conway-Sloane SPLAG ch. 4",
+      "reads": "an external datum neither route consumed"
+    },
+    "targetE8": {
+      "id": "eisenstein-e4",
+      "how": "E_4 = 1 + 240 * sum sigma_3(n) q^n with sigma_3 summed from divisors (LatticeVoa.sigma3)",
+      "reads": "number theory only; no lattice point is enumerated"
+    }
+  },
+  "enumerationBound": "routeE walks coordinate i with a remaining budget rem and admits only |v| <= isqrt(rem). Every later coordinate contributes a NON-NEGATIVE square, so that predicate is NECESSARY for any vector of squared length <= maxNormSq: the walk is exhaustive inside the ball rather than inside a box that happens to contain most of it. Distinct codewords occupy distinct residue classes mod 2, so no vector is reached twice. The claim is nevertheless not taken on trust - routeC has no enumeration bound at all, and an under-enumerating routeE would disagree with it. maxNormSq = 40 for E8 (E_4 exponents 0..10) and 20 for the anchors.",
+  "scaling": "Construction A gives L_A(C) = {x in Z^n : x mod 2 in C}; the E8 presentation is L_A(C)/sqrt(2). The sqrt(2) is handled by SCALING THE INDEX, never by dividing a coordinate: the scaled norm is (x.x)/2 and the E_4 exponent is (x.x)/4. ConstructionATheta.toShellCounts performs that regrading and THROWS if any occupied index is not congruent to 0 mod 4 - that throw is the double-evenness of the code, checked rather than assumed. Every entry of e8-raw-by-normSq at an index not divisible by 4 is therefore zero, and that is a claim the vector makes, not an artefact of how it was written.",
+  "anchors": [
+    "J. H. Conway & N. J. A. Sloane, Sphere Packings, Lattices and Groups - Construction A (ch. 5); theta series and the D4 / Z^n tables (ch. 4)",
+    "J.-P. Serre, A Course in Arithmetic ch. VII - E_4 = 1 + 240 sum sigma_3(n) q^n; the space of weight-4 modular forms for SL(2,Z) is one dimensional",
+    "C. G. J. Jacobi (1834) - the four-square theorem r_4(m) = 8 sum_{d | m, 4 not| d} d",
+    "L. J. Mordell (1938) - E8 is the unique even unimodular lattice of rank 8",
+    "S. J. Gates Jr. et al. - the doubly-even self-dual [8,4] code that AdinkraCode pins",
+    "no-binary-in-proof-lineage rule; toy-is-free-metered-must-be-earned (this vector is what makes the theta series metered)"
+  ],
+  "series": [
+    {
+      "id": "z4-by-normSq",
+      "lattice": "Z^4 = L_A(GF(2)^4)",
+      "index": "x.x",
+      "terms": 21,
+      "checkedAgainst": "anchorZ4 (Jacobi r_4) and theta_3(q)^4 by convolution",
+      "values": [
+        { "n": 0, "dec": "1", "hex": "0000000000000001" },
+        { "n": 1, "dec": "8", "hex": "0000000000000008" },
+        { "n": 2, "dec": "24", "hex": "0000000000000018" },
+        { "n": 3, "dec": "32", "hex": "0000000000000020" },
+        { "n": 4, "dec": "24", "hex": "0000000000000018" },
+        { "n": 5, "dec": "48", "hex": "0000000000000030" },
+        { "n": 6, "dec": "96", "hex": "0000000000000060" },
+        { "n": 7, "dec": "64", "hex": "0000000000000040" },
+        { "n": 8, "dec": "24", "hex": "0000000000000018" },
+        { "n": 9, "dec": "104", "hex": "0000000000000068" },
+        { "n": 10, "dec": "144", "hex": "0000000000000090" },
+        { "n": 11, "dec": "96", "hex": "0000000000000060" },
+        { "n": 12, "dec": "96", "hex": "0000000000000060" },
+        { "n": 13, "dec": "112", "hex": "0000000000000070" },
+        { "n": 14, "dec": "192", "hex": "00000000000000c0" },
+        { "n": 15, "dec": "192", "hex": "00000000000000c0" },
+        { "n": 16, "dec": "24", "hex": "0000000000000018" },
+        { "n": 17, "dec": "144", "hex": "0000000000000090" },
+        { "n": 18, "dec": "312", "hex": "0000000000000138" },
+        { "n": 19, "dec": "160", "hex": "00000000000000a0" },
+        { "n": 20, "dec": "144", "hex": "0000000000000090" }
+      ]
+    },
+    {
+      "id": "d4-by-normSq",
+      "lattice": "D4 = L_A(even-weight [4,3] code) = {x in Z^4 : sum x_i even}",
+      "index": "x.x",
+      "terms": 21,
+      "checkedAgainst": "anchorD4 (SPLAG transcription) and anchorZ4 restricted to even m",
+      "values": [
+        { "n": 0, "dec": "1", "hex": "0000000000000001" },
+        { "n": 1, "dec": "0", "hex": "0000000000000000" },
+        { "n": 2, "dec": "24", "hex": "0000000000000018" },
+        { "n": 3, "dec": "0", "hex": "0000000000000000" },
+        { "n": 4, "dec": "24", "hex": "0000000000000018" },
+        { "n": 5, "dec": "0", "hex": "0000000000000000" },
+        { "n": 6, "dec": "96", "hex": "0000000000000060" },
+        { "n": 7, "dec": "0", "hex": "0000000000000000" },
+        { "n": 8, "dec": "24", "hex": "0000000000000018" },
+        { "n": 9, "dec": "0", "hex": "0000000000000000" },
+        { "n": 10, "dec": "144", "hex": "0000000000000090" },
+        { "n": 11, "dec": "0", "hex": "0000000000000000" },
+        { "n": 12, "dec": "96", "hex": "0000000000000060" },
+        { "n": 13, "dec": "0", "hex": "0000000000000000" },
+        { "n": 14, "dec": "192", "hex": "00000000000000c0" },
+        { "n": 15, "dec": "0", "hex": "0000000000000000" },
+        { "n": 16, "dec": "24", "hex": "0000000000000018" },
+        { "n": 17, "dec": "0", "hex": "0000000000000000" },
+        { "n": 18, "dec": "312", "hex": "0000000000000138" },
+        { "n": 19, "dec": "0", "hex": "0000000000000000" },
+        { "n": 20, "dec": "144", "hex": "0000000000000090" }
+      ]
+    },
+    {
+      "id": "e8-shells-by-e4-exponent",
+      "lattice": "L_A(AdinkraCode.allCodewords) / sqrt(2)",
+      "index": "(x.x)/4 - the E_4 exponent",
+      "terms": 11,
+      "checkedAgainst": "targetE8 (E_4 from divisor sums), routeC, and LatticeVoa.thetaByEnumeration",
+      "values": [
+        { "n": 0, "dec": "1", "hex": "0000000000000001" },
+        { "n": 1, "dec": "240", "hex": "00000000000000f0" },
+        { "n": 2, "dec": "2160", "hex": "0000000000000870" },
+        { "n": 3, "dec": "6720", "hex": "0000000000001a40" },
+        { "n": 4, "dec": "17520", "hex": "0000000000004470" },
+        { "n": 5, "dec": "30240", "hex": "0000000000007620" },
+        { "n": 6, "dec": "60480", "hex": "000000000000ec40" },
+        { "n": 7, "dec": "82560", "hex": "0000000000014280" },
+        { "n": 8, "dec": "140400", "hex": "0000000000022470" },
+        { "n": 9, "dec": "181680", "hex": "000000000002c5b0" },
+        { "n": 10, "dec": "272160", "hex": "0000000000042720" }
+      ]
+    }
+  ]
+}

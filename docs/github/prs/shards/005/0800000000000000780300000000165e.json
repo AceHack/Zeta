@@ -1,0 +1,12 @@
+{
+  "pr_number": 5726,
+  "archive_path": "docs/history/pr-reviews/PR-5726-fix-b-0891-fix-fwd-4-tsc-errors-in-zflash-test-harness-poc-exactoptionalproperty.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-28T08:59:30.981Z",
+  "schema_version": "v1",
+  "commit_sha": "01eeaee2bb4536420b1f5ad74782d46ec1803afa",
+  "title": "fix(B-0891): fix-fwd 4 tsc errors in zflash test-harness PoC (exactOptionalPropertyTypes + noUncheckedIndexedAccess)",
+  "state": "MERGED",
+  "merged_at": "2026-05-28T08:59:10Z",
+  "head_ref": "otto-cli/b0891-tsc-fixfwd-exactoptional-poc-2026-05-28"
+}

@@ -27,12 +27,37 @@ function walkYaml(dir: string): string[] {
   return out;
 }
 
-const allYaml = [...walkYaml(join(K8S, "applications")), ...walkYaml(join(K8S, "bootstrap"))];
+// TWO INDEPENDENT WALKS, UNIONED. Each is a separate route into the corpus, so each is
+// tracked separately as well as summed — see the per-tree test below for why the sum
+// alone is not enough.
+const MANIFEST_TREES = ["applications", "bootstrap"] as const;
+const perTree = new Map<string, readonly string[]>(
+  MANIFEST_TREES.map((tree) => [tree, walkYaml(join(K8S, tree))]),
+);
+const allYaml = [...perTree.values()].flat();
 
 describe("k8s manifests are present and well-formed", () => {
   test("found a non-trivial set of manifests", () => {
     expect(allYaml.length).toBeGreaterThan(20);
   });
+
+  // PER-TREE, BECAUSE THE TOTAL ABOVE CANNOT SEE ONE WALK GO DARK.
+  //
+  // `walkYaml` returns [] for a directory that does not exist — deliberately, so a
+  // partial checkout does not explode — which makes a renamed or moved tree
+  // indistinguishable from an empty one inside the sum. Measured 2026-08-15:
+  // applications 97, bootstrap 11. If `bootstrap/` moved, 97 still clears 20 and this
+  // suite would report green having validated no bootstrap manifest at all. An
+  // aggregate floor sums independent instruments, so it cannot detect the failure of
+  // any one.
+  //
+  // The floor is ONE PER TREE: the non-vacuity boundary, and the only value here that
+  // is not a guess about how many manifests a tree ought to hold.
+  for (const tree of MANIFEST_TREES) {
+    test(`the ${tree}/ walk still returns manifests — a dark walk is invisible in the total`, () => {
+      expect(perTree.get(tree)?.length ?? 0).toBeGreaterThanOrEqual(1);
+    });
+  }
 
   test("every manifest declares apiVersion and kind", () => {
     const bad: string[] = [];

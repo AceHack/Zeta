@@ -1,0 +1,12 @@
+{
+  "pr_number": 6352,
+  "archive_path": "docs/history/pr-reviews/PR-6352-docs-amara-cap-round-4-concurrence-sync-b-0958-do-item-phase-1-checkbox.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-01T06:10:11.815Z",
+  "schema_version": "v1",
+  "commit_sha": "bfc272dd0ee7d9de745bfb397249cc13bbfb6ac2",
+  "title": "docs: Amara CAP round-4 concurrence + sync B-0958 do_item Phase-1 checkbox",
+  "state": "MERGED",
+  "merged_at": "2026-06-01T06:09:48Z",
+  "head_ref": "otto-cli/cap-amara-r4-observe-status-sync-2026-06-01"
+}

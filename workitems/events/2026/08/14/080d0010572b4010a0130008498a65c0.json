@@ -1,0 +1,14 @@
+{
+  "id": "080d0010572b4010a0130008498a65c0",
+  "at": "2026-08-14T20:51:03.656Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M010NSB8087G0R002PJVJG7",
+    "type": "task",
+    "title": "rebuild-legacy-b-id-aliases exceeds 10min dry-run: git-history mining is the hot path, not the walk",
+    "slug": "rebuild-legacy-b-id-aliases-exceeds-10min-dry-run-git-histor",
+    "priority": "P2",
+    "filename": "081M010NSB8087G0R002PJVJG7-rebuild-legacy-b-id-aliases-exceeds-10min-dry-run-git-histor.md"
+  }
+}

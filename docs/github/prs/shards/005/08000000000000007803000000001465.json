@@ -1,0 +1,21 @@
+{
+  "pr_number": 5221,
+  "archive_path": "docs/history/pr-reviews/PR-5221-backlog-b-0817-p2-tools-cluster-register-node-ts-operator-invocation-companion-t.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7FBTIt",
+    "comment:PRRC_kwDOSF9kNM7FBTJR",
+    "comment:PRRC_kwDOSF9kNM7FBTJo",
+    "comment:PRRC_kwDOSF9kNM7FBTKB",
+    "thread:PRRT_kwDOSF9kNM6E3Xco",
+    "thread:PRRT_kwDOSF9kNM6E3XdF",
+    "thread:PRRT_kwDOSF9kNM6E3XdV",
+    "thread:PRRT_kwDOSF9kNM6E3Xdm"
+  ],
+  "fetched_at": "2026-05-26T16:53:53.416Z",
+  "schema_version": "v1",
+  "commit_sha": "001869c6020bd2d62b0b81e1b02dc48e721781d5",
+  "title": "backlog(B-0817 P2): tools/cluster/register-node.ts — operator-invocation companion to deregister (B-0814)",
+  "state": "MERGED",
+  "merged_at": "2026-05-26T16:53:32Z",
+  "head_ref": "otto-cli/b0817-register-node-ts-operator-invocation-companion-to-deregister-2026-05-26"
+}

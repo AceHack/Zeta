@@ -22,17 +22,20 @@
  *                 (ZFLASH_QEMU_RETENTION_EXECUTE=1 to execute)
  *               - reformat-from-scratch → runPathForkRuntime
  *                 (ZFLASH_QEMU_PATH_FORK_EXECUTE=1 to execute)
- *               - cluster-joining → skipped (multi-VM pending)
- *   --all       Run all 5 scenarios in orderIndex order; gate failures
- *               skip dependent scenarios.
+ *               - cluster-joining → skipped, which is NOT a pass (multi-VM pending)
+ *   --all       Run all 5 scenarios in orderIndex order; a non-passing
+ *               scenario skips the scenarios it gates.
  *
  * Output:
  *   JSON-structured per-scenario result to stdout
  *   Human-readable summary to stderr
  *
  * Exit codes:
- *   0  all requested runnable scenarios passed; --list/--dry-run succeeded
- *   1  one or more requested scenarios FAILED
+ *   0  --list / --dry-run succeeded (the plan is well-formed), OR every
+ *      executed scenario PASSED
+ *   1  one or more executed scenarios did not pass — failed, scaffolded, OR
+ *      skipped. A skipped scenario is a check that did not run; reporting it
+ *      as green would be a check that implies more than it tested.
  *   2  usage error OR scenario-definition invariant violation
  *
  * Per .claude/rules/rule-0-no-sh-files.md (TS-first for cross-platform DST).
@@ -259,6 +262,32 @@ function runHarnessScript(relPath: string, args: readonly string[]): { ok: boole
   return { ok: result.status === 0, exitCode: result.status };
 }
 
+/**
+ * Names the outcome behind a `qemu-boot-test.ts` exit code.
+ *
+ * That harness deliberately reports FOUR distinct outcomes (0 BOOTED /
+ * 1 BOOT-FAILED / 3 TIMEOUT / 4 STALLED) precisely so a broken image and
+ * a slow runner stop reading the same. Scenario 1 was collapsing all of
+ * them back into "exit N" in the one line a CI reader actually sees, so
+ * the distinction was being paid for and then thrown away at the last
+ * step. The blocking policy is UNCHANGED — every non-zero code still
+ * fails the scenario — only the reporting is repaired. Loosening the
+ * gate would need evidence the x86_64 lane is flaky, and the evidence
+ * says the opposite: 19 consecutive runs, 21-24s each, 300s budget.
+ */
+export function describeBootExit(exitCode: number | null): string {
+  if (exitCode === null) return "harness missing";
+  const named: Readonly<Record<number, string>> = {
+    0: "BOOTED",
+    1: "BOOT-FAILED — positive evidence the image did not boot",
+    2: "usage error",
+    3: "TIMEOUT — budget exhausted while the guest was still progressing",
+    4: "STALLED — serial silent past the kernel handoff",
+  };
+  const name = named[exitCode];
+  return name === undefined ? `exit ${exitCode}` : `exit ${exitCode}: ${name}`;
+}
+
 function runInitialFormatScenario(isoPath: string): ScenarioResult {
   const start = Date.now();
   const absIso = resolve(isoPath);
@@ -303,7 +332,7 @@ function runInitialFormatScenario(isoPath: string): ScenarioResult {
       id: "initial-format",
       status: "failed",
       durationMs,
-      message: `QEMU boot smoke-test failed (exit ${boot.exitCode ?? "missing harness"}) after ${steps.join(" → ")}`,
+      message: `QEMU boot smoke-test failed (${describeBootExit(boot.exitCode)}) after ${steps.join(" → ")}`,
     };
   }
 
@@ -794,11 +823,71 @@ function runScenario(scenarioId: ScenarioId, isoPath: string): ScenarioResult {
       return runComposingScenario(scenario, isoPath);
     case "scaffolded":
       if (scenario.id === "cluster-joining") {
+        // NOT a pass — `skipped` names what happened (nothing ran) and the
+        // exit code says so.
+        //
+        // The FIRST blocker has CLEARED. There is now a join to observe:
+        // k3s's join is the join (Aaron 2026-08-13, closing PR #10493's open
+        // question), and full-ai-cluster/nixos/modules/k3s-join-observer.nix
+        // witnesses it, emitting B0891_CLUSTER_JOIN_SERIAL_MARKERS to serial
+        // on every agent-role node. nixos/tests/k3s-agent-join.nix proves that
+        // end-to-end against the shipped modules, two nodes on one segment.
+        //
+        // The status stays `skipped` anyway, because four separate things
+        // still stand between this harness and an honest verdict — and none of
+        // them is the join:
+        //
+        //   1. joining-node-role-provisioning. Until 2026-08-17 zflash wrote
+        //      no firstboot config at all, so a prepared image installed
+        //      HOST=control-plane and the "joining" VM came up as a second
+        //      control plane running no agent and therefore no observer.
+        //      A carrier now exists end to end on paper: firstboot-role.ts
+        //      composes /zeta-firstboot.conf, planFileBackedZflashImage writes
+        //      it (plus an optional /zeta-join-token), zeta-first-boot.sh
+        //      sources the ESP copy in preference to the ISO's,
+        //      zeta-install.sh installs the token where k3s-agent.nix reads
+        //      it, and injected-join-server.nix overrides serverAddr on
+        //      agents. NOT ONE OF THOSE STEPS HAS BEEN OBSERVED ON A BOOTED
+        //      GUEST — they are unit-tested pure functions and untested bash
+        //      and Nix. The blocker stands until a guest logs `role=joiner`.
+        //   2. joining-node-address-assignment. The shared segment is a bare
+        //      QEMU socket: no DHCP, no DNS, no router. Avahi/nss-mdns is the
+        //      only name service on the guests and it answers for `.local`
+        //      names only, so k3s-agent.nix's default
+        //      https://control-plane:6443 cannot resolve there. The scenario-5
+        //      plan therefore uses control-plane.local and requires the
+        //      existing node to be flashed --host control-plane; whether mDNS
+        //      completes over IPv4 link-local on that segment is UNMEASURED.
+        //   3. shared-l2-segment. The args half has cleared:
+        //      buildQemuSystemBootArgs takes injected netdev specs and
+        //      planMultiVMRuntime puts both VMs on one rootless QEMU socket
+        //      segment with distinct MACs. The proof half has not: no frame
+        //      has crossed it, because nothing runs the VMs concurrently.
+        //   4. concurrent-vm-lifecycle. executeMultiVMRuntimePlan boots the
+        //      VMs serially and SIGTERMs each on marker match, so the existing
+        //      node is dead before the joining node starts.
+        //
+        // Dispatching now would produce a `failed` whose cause is none of the
+        // things this scenario claims to test — which is worse than an honest
+        // skip, because it sends the next reader hunting a join bug that is
+        // not there.
         return {
           id: "cluster-joining",
           status: "skipped",
           message:
-            "multi-VM QEMU orchestration not yet automated in CI — validates via extensions.ts design spec + operator-collaborative USB join",
+            "NOT RUN (counts as non-passing): the join itself is no longer the blocker — " +
+            "k3s-join-observer.nix emits B0891_CLUSTER_JOIN_SERIAL_MARKERS on agent nodes " +
+            "and nixos/tests/k3s-agent-join.nix proves the two-node join. Still blocked on " +
+            "four items, none of them the join: (1) joining-node-role-provisioning — zflash " +
+            "can now write /zeta-firstboot.conf and /zeta-join-token and the guest reads both, " +
+            "but nothing has BOOTED from a joiner-flashed image, so the chain is unit-tested " +
+            "and unexercised; (2) joining-node-address-assignment — the socket segment has no " +
+            "DHCP and no DNS and nss-mdns answers for .local only, so a bare control-plane " +
+            "label cannot resolve there; (3) shared-l2-segment — the netdev args and " +
+            "socket-segment plan now exist with distinct MACs, but no frame has crossed the " +
+            "segment because nothing boots the VMs concurrently; (4) concurrent-vm-lifecycle — " +
+            "executeMultiVMRuntimePlan boots serially and kills each VM on marker match. All " +
+            "four must clear before this scenario can honestly report passed or failed.",
         };
       }
       return reportScaffolded(scenario);
@@ -811,7 +900,33 @@ function runScenario(scenarioId: ScenarioId, isoPath: string): ScenarioResult {
   }
 }
 
+/**
+ * Exit-code truth rule: ONLY `"passed"` is green.
+ *
+ * `"skipped"` — a scenario the harness declined to run — is NOT a pass. The
+ * dispatcher used to count only `"failed"` and `"scaffolded"` as non-zero, so
+ * `--all` exited 0 while silently omitting `cluster-joining`: a full-matrix
+ * run reported green having never run a fifth of the matrix. That is the same
+ * defect class `.github/workflows/zflash-harness-lint.yml` confesses one level
+ * up ("a green check that implies more than it tested is worse than no
+ * check"). `"scaffolded"` and `"failed"` are likewise non-zero.
+ *
+ * This governs EXECUTION modes only (`--scenario` / `--all`). `--list` and
+ * `--dry-run` never execute a scenario, never produce a `ScenarioResult`, and
+ * legitimately exit 0 on a valid plan: they claim only "this plan is
+ * well-formed", which is exactly what they checked.
+ */
+export function isPassing(result: ScenarioResult): boolean {
+  return result.status === "passed";
+}
+
+/** 0 iff EVERY executed scenario passed; 1 otherwise. See {@link isPassing}. */
+export function exitCodeForResults(results: readonly ScenarioResult[]): number {
+  return results.every(isPassing) ? 0 : 1;
+}
+
 function emitResults(results: ReadonlyArray<ScenarioResult>): void {
+  const nonPassing = results.filter((r) => !isPassing(r));
   console.log(
     JSON.stringify(
       {
@@ -822,6 +937,10 @@ function emitResults(results: ReadonlyArray<ScenarioResult>): void {
           failed: results.filter((r) => r.status === "failed").length,
           scaffolded: results.filter((r) => r.status === "scaffolded").length,
           skipped: results.filter((r) => r.status === "skipped").length,
+          // Everything the exit code refuses to call green, counted where a
+          // reader of the JSON sees it — so the summary cannot imply more
+          // than the run tested either.
+          nonPassing: nonPassing.length,
         },
         results,
       },
@@ -829,6 +948,13 @@ function emitResults(results: ReadonlyArray<ScenarioResult>): void {
       2,
     ),
   );
+  if (nonPassing.length > 0) {
+    const detail = nonPassing.map((r) => `${r.id}=${r.status}`).join(", ");
+    console.error(
+      `081KSNY2Z0008QG0R0008PN7RQ: ${String(nonPassing.length)} of ${String(results.length)} scenario(s) did not pass — ${detail}. ` +
+        "A scenario that did not run is not a scenario that passed; exiting non-zero.",
+    );
+  }
 }
 
 function main(argv: ReadonlyArray<string>): number {
@@ -859,7 +985,7 @@ function main(argv: ReadonlyArray<string>): number {
       }
       const result = runScenario(parsed.scenarioId, parsed.isoPath);
       emitResults([result]);
-      return result.status === "failed" || result.status === "scaffolded" ? 1 : 0;
+      return exitCodeForResults([result]);
     }
     case "all": {
       if (!parsed.isoPath) {
@@ -868,25 +994,28 @@ function main(argv: ReadonlyArray<string>): number {
       }
       const sorted = [...SCENARIOS].sort((a, b) => a.orderIndex - b.orderIndex);
       const results: ScenarioResult[] = [];
-      const failedIds = new Set<ScenarioId>();
+      // Gating keys off NON-PASSING, not just "failed": a scenario that never
+      // ran cannot vouch for the scenarios it gates, so it skips them too.
+      const nonPassingIds = new Set<ScenarioId>();
       for (const scenario of sorted) {
-        const gatedBy = sorted.find((g) => g.gates.includes(scenario.id) && failedIds.has(g.id));
+        const gatedBy = sorted.find((g) => g.gates.includes(scenario.id) && nonPassingIds.has(g.id));
         if (gatedBy) {
           results.push({
             id: scenario.id,
             status: "skipped",
-            message: `gated by failed scenario: ${gatedBy.id}`,
+            message: `gated by non-passing scenario: ${gatedBy.id}`,
           });
+          nonPassingIds.add(scenario.id);
           continue;
         }
         const result = runScenario(scenario.id, parsed.isoPath);
         results.push(result);
-        if (result.status === "failed" || result.status === "scaffolded") {
-          failedIds.add(scenario.id);
+        if (!isPassing(result)) {
+          nonPassingIds.add(scenario.id);
         }
       }
       emitResults(results);
-      return failedIds.size > 0 ? 1 : 0;
+      return exitCodeForResults(results);
     }
   }
 }

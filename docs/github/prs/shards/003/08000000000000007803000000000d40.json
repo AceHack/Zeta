@@ -1,0 +1,19 @@
+{
+  "pr_number": 3392,
+  "archive_path": "docs/history/pr-reviews/PR-3392-shard-tick-0844z-pr-3389-2-copilot-fix-pr-3382-closed-as-superseded.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7BiezS",
+    "comment:PRRC_kwDOSF9kNM7Biezu",
+    "comment:PRRC_kwDOSF9kNM7BirlO",
+    "comment:PRRC_kwDOSF9kNM7BirsC",
+    "thread:PRRT_kwDOSF9kNM6CTnKH",
+    "thread:PRRT_kwDOSF9kNM6CTnKd"
+  ],
+  "fetched_at": "2026-05-15T09:07:03.754Z",
+  "schema_version": "v1",
+  "commit_sha": "70b370654dba1eb6a6e92e43ba66ed61f76fcc6c",
+  "title": "shard(tick): 0844Z — PR #3389 2-Copilot fix; PR #3382 closed as superseded",
+  "state": "MERGED",
+  "merged_at": "2026-05-15T09:06:45Z",
+  "head_ref": "shard/tick-0844z-otto-cli-2026-05-15"
+}

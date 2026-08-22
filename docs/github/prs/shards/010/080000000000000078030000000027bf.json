@@ -1,0 +1,12 @@
+{
+  "pr_number": 10175,
+  "archive_path": "docs/history/pr-reviews/PR-10175-cleanup-zflash-remove-dead-default-esp-offset-bytes-preparebootimageinput-espoff.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-08T23:44:23.908Z",
+  "schema_version": "v1",
+  "commit_sha": "8eb263a1d86c583c4a5a8d74dea395fd97a40326",
+  "title": "cleanup(zflash): remove dead DEFAULT_ESP_OFFSET_BYTES / PrepareBootImageInput.espOffsetBytes (#2)",
+  "state": "MERGED",
+  "merged_at": "2026-08-08T23:43:50Z",
+  "head_ref": "shadow/remove-dead-espoffset-field"
+}

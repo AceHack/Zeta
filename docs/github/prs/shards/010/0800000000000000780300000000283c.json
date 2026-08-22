@@ -1,0 +1,12 @@
+{
+  "pr_number": 10300,
+  "archive_path": "docs/history/pr-reviews/PR-10300-feat-browser-db-admit-finite-cross-tab-writes.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-11T00:44:26.171Z",
+  "schema_version": "v1",
+  "commit_sha": "2c58a448a928a925f205ad16d5572aff60f43283",
+  "title": "feat(browser-db): admit finite cross-tab writes",
+  "state": "MERGED",
+  "merged_at": "2026-08-11T00:43:40Z",
+  "head_ref": "codex/browser-execution-admission"
+}

@@ -1,0 +1,19 @@
+{
+  "pr_number": 6415,
+  "archive_path": "docs/history/pr-reviews/PR-6415-docs-research-closure-propagation-with-state-as-self-evolving-sagas-serializable.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7GuaWm",
+    "comment:PRRC_kwDOSF9kNM7Guc1Z",
+    "comment:PRRC_kwDOSF9kNM7Guc2X",
+    "thread:PRRT_kwDOSF9kNM6GHJIf",
+    "thread:PRRT_kwDOSF9kNM6GHLD7",
+    "thread:PRRT_kwDOSF9kNM6GHLDK"
+  ],
+  "fetched_at": "2026-06-01T12:26:22.485Z",
+  "schema_version": "v1",
+  "commit_sha": "a3522b35bb2d875dec0913974907239d49090ec1",
+  "title": "docs(research): closure-propagation-with-state as self-evolving sagas — serializable deferred execution subsumes Durable Functions, rides the Z-set ladder (+ registry want)",
+  "state": "MERGED",
+  "merged_at": "2026-06-01T12:25:56Z",
+  "head_ref": "otto-cli/closure-propagation-self-evolving-sagas-note-2026-06-01"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 11111,
+  "archive_path": "docs/history/pr-reviews/PR-11111-fix-installer-binding-material-is-the-operator-s-bytes-not-a-trimmed-copy.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-16T21:49:29.562Z",
+  "schema_version": "v1",
+  "commit_sha": "f2e186c0169d85e72956dadd892bf5424f17df32",
+  "title": "fix(installer): binding material is the operator's bytes, not a trimmed copy",
+  "state": "MERGED",
+  "merged_at": "2026-08-16T21:48:54Z",
+  "head_ref": "shadow/binding-material-verbatim-not-trimmed"
+}

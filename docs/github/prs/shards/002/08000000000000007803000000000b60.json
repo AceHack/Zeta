@@ -1,0 +1,12 @@
+{
+  "pr_number": 2912,
+  "archive_path": "docs/history/pr-reviews/PR-2912-docs-memory-data-vault-2-0-is-source-of-repo-split-smell-intuitions-needs-re-act.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-13T02:44:55.321Z",
+  "schema_version": "v1",
+  "commit_sha": "6610f5a3f14e471319146336ae2708322ccd662e",
+  "title": "docs(memory): Data Vault 2.0 IS source of repo-split smell intuitions — needs re-activation (Aaron 2026-05-13)",
+  "state": "MERGED",
+  "merged_at": "2026-05-13T02:44:35Z",
+  "head_ref": "aaron-data-vault-2-source-of-repo-split-smells-needs-reactivation-alongside-scale-free-lock-free-weight-free-dst-2026-05-13"
+}

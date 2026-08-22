@@ -1,0 +1,19 @@
+{
+  "pr_number": 3651,
+  "archive_path": "docs/history/pr-reviews/PR-3651-fix-b-0547-correct-attribution-agent-backlogged-synthesis-ask-otto-cli.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7B0SUN",
+    "comment:PRRC_kwDOSF9kNM7B0Sek",
+    "comment:PRRC_kwDOSF9kNM7B0WjO",
+    "comment:PRRC_kwDOSF9kNM7B0Wjw",
+    "thread:PRRT_kwDOSF9kNM6Cgnbs",
+    "thread:PRRT_kwDOSF9kNM6Cgnj8"
+  ],
+  "fetched_at": "2026-05-16T01:06:49.730Z",
+  "schema_version": "v1",
+  "commit_sha": "376661a637112e51f2873ac7bacb18a642fbc93b",
+  "title": "fix(B-0547): correct attribution — agent-backlogged synthesis (ask: Otto-CLI)",
+  "state": "MERGED",
+  "merged_at": "2026-05-16T01:06:30Z",
+  "head_ref": "fix/b0547-attribution-agent-backlogged-otto-cli-2026-05-16"
+}

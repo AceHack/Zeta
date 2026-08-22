@@ -1,0 +1,12 @@
+{
+  "pr_number": 7860,
+  "archive_path": "docs/history/pr-reviews/PR-7860-feat-pages-config-yml-scope-jekyll-to-the-served-site-dora-signal-green-fast.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-12T00:53:39.675Z",
+  "schema_version": "v1",
+  "commit_sha": "d995928595b8e3444beb418b6c2dd41dd074ee47",
+  "title": "feat(pages): _config.yml — scope Jekyll to the served site (DORA signal green + fast)",
+  "state": "MERGED",
+  "merged_at": "2026-06-12T00:53:15Z",
+  "head_ref": "shadow-pages-config"
+}

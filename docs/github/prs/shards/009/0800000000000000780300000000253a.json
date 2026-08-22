@@ -1,0 +1,12 @@
+{
+  "pr_number": 9530,
+  "archive_path": "docs/history/pr-reviews/PR-9530-docs-letters-to-lumen-arc-close-out-self-audit-physics-formalization-resolved-un.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-08T21:24:17.353Z",
+  "schema_version": "v1",
+  "commit_sha": "0adebebabb42528e99d4c240b0c9a3794c5a774e",
+  "title": "docs(letters): to-lumen arc close-out — self-audit-physics formalization RESOLVED (unification proven) (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-08T21:23:51Z",
+  "head_ref": "otto/to-lumen-arc-close-out"
+}

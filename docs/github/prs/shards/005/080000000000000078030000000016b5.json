@@ -1,0 +1,18 @@
+{
+  "pr_number": 5813,
+  "archive_path": "docs/history/pr-reviews/PR-5813-codex-mask-repo-token-for-mise-release-lookups.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7Fxa9W",
+    "comment:PRRC_kwDOSF9kNM7Fylw1",
+    "comment:PRRC_kwDOSF9kNM7FzWWy",
+    "thread:PRRT_kwDOSF9kNM6FaJ-K",
+    "thread:PRRT_kwDOSF9kNM6FbAWc"
+  ],
+  "fetched_at": "2026-05-28T14:40:11.062Z",
+  "schema_version": "v1",
+  "commit_sha": "d979208eadcadf945bba91e8e1d1ac24a772ade0",
+  "title": "[codex] Mask repo token for mise release lookups",
+  "state": "MERGED",
+  "merged_at": "2026-05-28T14:39:37Z",
+  "head_ref": "claim/task-setup-mise-tool-pins-20260528"
+}

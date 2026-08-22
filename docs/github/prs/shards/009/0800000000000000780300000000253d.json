@@ -1,0 +1,12 @@
+{
+  "pr_number": 9533,
+  "archive_path": "docs/history/pr-reviews/PR-9533-feat-agent-heartbeat-workflow-free-tier-ollama-on-github-actions.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-08T21:32:09.095Z",
+  "schema_version": "v1",
+  "commit_sha": "608cb6e7b53c5aea14685d5b14650dd1a25eaac1",
+  "title": "feat: agent-heartbeat workflow — free-tier Ollama on GitHub Actions",
+  "state": "MERGED",
+  "merged_at": "2026-07-08T21:31:42Z",
+  "head_ref": "claim/kiro-heartbeat-v2"
+}

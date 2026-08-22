@@ -1,0 +1,15 @@
+{
+  "pr_number": 4213,
+  "archive_path": "docs/history/pr-reviews/PR-4213-shard-2126z-forward-signal-fix-recipe-posted-on-peer-otto-cli-4209-codex-p2-fix.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7CcpXj",
+    "thread:PRRT_kwDOSF9kNM6C-lW-"
+  ],
+  "fetched_at": "2026-05-18T21:34:52.571Z",
+  "schema_version": "v1",
+  "commit_sha": "608f64ba358a62763c3ecd76cf4298ec890e9c0b",
+  "title": "shard(2126Z): forward-signal fix recipe posted on peer Otto-CLI #4209 (Codex P2 fix)",
+  "state": "MERGED",
+  "merged_at": "2026-05-18T21:34:31Z",
+  "head_ref": "shard/tick-2126z-forward-signal-4209-codex-fix-recipe-2026-05-18"
+}

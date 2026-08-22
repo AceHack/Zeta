@@ -1,0 +1,12 @@
+{
+  "pr_number": 6558,
+  "archive_path": "docs/history/pr-reviews/PR-6558-chore-memory-regenerate-memory-md-index-heal-6556-race-merge-drift.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-02T13:18:11.157Z",
+  "schema_version": "v1",
+  "commit_sha": "9cfb1eebde93378a5d377b55595b85583c9797e7",
+  "title": "chore(memory): regenerate MEMORY.md index — heal #6556 race-merge drift",
+  "state": "MERGED",
+  "merged_at": "2026-06-02T13:17:42Z",
+  "head_ref": "otto-cli/fix-memory-md-drift-6556-followup-2026-06-02"
+}

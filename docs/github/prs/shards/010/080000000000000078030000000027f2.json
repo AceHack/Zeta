@@ -1,0 +1,12 @@
+{
+  "pr_number": 10226,
+  "archive_path": "docs/history/pr-reviews/PR-10226-fix-usb-installer-export-mise-trusted-config-paths-for-the-wifi-converter-bug-a-.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-09T20:48:10.081Z",
+  "schema_version": "v1",
+  "commit_sha": "f07d5556b3fa8a34a38c25805200f124be85b103",
+  "title": "fix(usb-installer): export MISE_TRUSTED_CONFIG_PATHS for the wifi converter (bug A reproducibly fixed)",
+  "state": "MERGED",
+  "merged_at": "2026-08-09T20:47:38Z",
+  "head_ref": "shadow/wifi-converter-mise-trust"
+}

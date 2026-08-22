@@ -1,0 +1,12 @@
+{
+  "pr_number": 9600,
+  "archive_path": "docs/history/pr-reviews/PR-9600-docs-research-time-as-traveler-addendum-3-unification-out-of-reach-by-design-the.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-09T01:21:36.940Z",
+  "schema_version": "v1",
+  "commit_sha": "028d9de797281757b319d7dcbe31d9323eb36fd7",
+  "title": "docs(research): time-as-traveler addendum 3 — unification out of reach BY DESIGN; the gap is GENERATIVE (Casimir/Friston) (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-09T01:21:10Z",
+  "head_ref": "otto/time-traveler-addendum3-gap-is-generative"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 2648,
+  "archive_path": "docs/history/pr-reviews/PR-2648-docs-research-clifford-algebra-unified-mapping-alexa-voice-highlights.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-11T05:24:18.082Z",
+  "schema_version": "v1",
+  "commit_sha": "4cc5a991d6dd0c8a202dddb1a5349c41d69950f9",
+  "title": "docs(research): Clifford algebra unified mapping + Alexa voice highlights",
+  "state": "MERGED",
+  "merged_at": "2026-05-11T05:24:04Z",
+  "head_ref": "docs/clifford-mapping-highlights-standalone-2026-05-10"
+}

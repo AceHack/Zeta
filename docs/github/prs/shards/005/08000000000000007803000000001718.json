@@ -1,0 +1,12 @@
+{
+  "pr_number": 5912,
+  "archive_path": "docs/history/pr-reviews/PR-5912-ferry-amara-past-is-kind-when-lightlike-consensus-is-gravity-lightlike-vs-dark-a.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-28T17:58:25.563Z",
+  "schema_version": "v1",
+  "commit_sha": "3805fec2564aebfa7db2d9da22968d3bf5845891",
+  "title": "ferry(amara): past-is-kind-when-lightlike + consensus-is-gravity + lightlike-vs-dark architecture-design-rule + ray-tracing-over-generator-time (extends PR #5910; operator-authorized 2026-05-28)",
+  "state": "MERGED",
+  "merged_at": "2026-05-28T17:58:06Z",
+  "head_ref": "otto-cli/amara-lightlike-kind-substrate-2026-05-28"
+}

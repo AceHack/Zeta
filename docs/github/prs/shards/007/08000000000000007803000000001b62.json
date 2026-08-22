@@ -1,0 +1,12 @@
+{
+  "pr_number": 7010,
+  "archive_path": "docs/history/pr-reviews/PR-7010-feat-core-catalog-catalog-as-metadata-tables-ensure-dml-delta-du-no-ddl-built.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-08T03:56:42.591Z",
+  "schema_version": "v1",
+  "commit_sha": "26ab6c2ceca91602eefefbcc5d82751367f422e7",
+  "title": "feat(core): Catalog — catalog as metadata tables, ensure -> DML-delta DU (no DDL, built)",
+  "state": "MERGED",
+  "merged_at": "2026-06-08T03:56:21Z",
+  "head_ref": "otto/catalog-as-metadata-tables-ensure-built"
+}

@@ -11,9 +11,12 @@
  * Output: trajectory[] = (stick_x << 16) | stick_y, or 0xFFFFFFFF if escaped
  *
  * Compile (Emscripten, standalone WASM):
- *   emcc dla-canonical.c -o dla-canonical-c.wasm \
- *     -s WASM=1 -s SIDE_MODULE=1 -O2 --no-entry \
+ *   emcc dla-canonical.c -o dla-canonical-emcc.wasm \
+ *     -O2 -s WASM=1 -s STANDALONE_WASM=1 --no-entry -s ERROR_ON_UNDEFINED_SYMBOLS=0 \
  *     -s EXPORTED_FUNCTIONS='["_init","_run","_get_cluster_size","_get_max_r_bits","_get_trajectory_entry"]'
+ *
+ *   This line said SIDE_MODULE=1 until 2026-08-17, which on emcc 5.0.7 builds a relocatable
+ *   module the byte-lock harness cannot instantiate. `build-substrates.mjs` carries the detail.
  *
  * Compile (LLVM direct):
  *   clang -target wasm32 -O2 -nostdlib -Wl,--no-entry \

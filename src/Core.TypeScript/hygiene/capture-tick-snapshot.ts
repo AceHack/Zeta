@@ -15,8 +15,8 @@
 // bundle, and loaded memory surfaces are all pinned and recorded".
 //
 // Usage:
-//   bun tools/hygiene/capture-tick-snapshot.ts         # YAML
-//   bun tools/hygiene/capture-tick-snapshot.ts --json  # JSON
+//   bun src/Core.TypeScript/hygiene/capture-tick-snapshot.ts         # YAML
+//   bun src/Core.TypeScript/hygiene/capture-tick-snapshot.ts --json  # JSON
 //
 // Exit codes:
 //   0  always (best-effort capture; missing files yield empty fields)

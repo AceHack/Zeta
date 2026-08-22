@@ -1,0 +1,12 @@
+{
+  "pr_number": 8225,
+  "archive_path": "docs/history/pr-reviews/PR-8225-fix-storage-local-path-provisioner-pods-create-delete-stateful-pods-were-stuck-p.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-15T00:28:16.145Z",
+  "schema_version": "v1",
+  "commit_sha": "c7b71d9b8611806c10680e72dfe56d05930f999f",
+  "title": "fix(storage): local-path-provisioner pods create/delete — stateful pods were stuck Pending",
+  "state": "MERGED",
+  "merged_at": "2026-06-15T00:27:55Z",
+  "head_ref": "fix/local-path-helper-pod-rbac"
+}

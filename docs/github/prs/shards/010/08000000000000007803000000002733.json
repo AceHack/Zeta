@@ -1,0 +1,12 @@
+{
+  "pr_number": 10035,
+  "archive_path": "docs/history/pr-reviews/PR-10035-docs-pitch-economic-thesis-3-guardian-trust-verification-core-now-demonstrable-n.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-04T18:16:50.460Z",
+  "schema_version": "v1",
+  "commit_sha": "35dfb3aaded37f10773cb3ef32d5617474b9cc79",
+  "title": "docs(pitch): economic thesis §3 — guardian trust-verification core now demonstrable, not a bet",
+  "state": "MERGED",
+  "merged_at": "2026-08-04T18:16:10Z",
+  "head_ref": "docs/economic-thesis-guardian-trust-core-now-demonstrable-20260804"
+}

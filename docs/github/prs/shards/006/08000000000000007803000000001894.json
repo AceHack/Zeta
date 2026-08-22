@@ -1,0 +1,16 @@
+{
+  "pr_number": 6292,
+  "archive_path": "docs/history/pr-reviews/PR-6292-harden-agent-cli-zetaid-feedback.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7Gjc-b",
+    "comment:PRRC_kwDOSF9kNM7Gjl_t",
+    "thread:PRRT_kwDOSF9kNM6F-7fR"
+  ],
+  "fetched_at": "2026-06-01T01:01:30.086Z",
+  "schema_version": "v1",
+  "commit_sha": "3cb0a3e8684221edfcaa1a391563bef4cb4efc0c",
+  "title": "Harden agent CLI ZetaId feedback",
+  "state": "MERGED",
+  "merged_at": "2026-06-01T01:01:09Z",
+  "head_ref": "codex/agentic-org-cli-zetaid-feedback"
+}

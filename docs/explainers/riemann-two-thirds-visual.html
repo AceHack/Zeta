@@ -1,0 +1,996 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Three regions — what the 2026 Riemann result proved, and what it left unreached</title>
+<meta name="description" content="A scrubbable rendering of the critical-line proportion: proved on the line, proved off the line (empty, always), and not reached by any certificate." />
+<style>
+/* ------------------------------------------------------------------
+   Palette derived from the subject: a vertical strip of the complex
+   plane, one luminous line down its middle, and two flanks that have
+   never held a single mark. The line is the one bold move.
+   ------------------------------------------------------------------ */
+:root {
+  color-scheme: light dark;
+  --bg:        #f2f5fb;
+  --panel:     #ffffff;
+  --strip:     #e6ecf7;
+  --rule:      #c3cee3;
+  --rule-soft: #dde4f1;
+  --fg:        #141d2e;
+  --muted:     #5a6b8a;
+  --line:      #007e9c;
+  --line-glow: rgba(0,126,156,.18);
+  --proved:    #0d7f60;
+  --proved-soft: rgba(13,127,96,.14);
+  --unreached: #7d8cA8;
+  --unreached-soft: rgba(125,140,168,.16);
+  --offline:   #b82a62;
+  --offline-soft: rgba(184,42,98,.10);
+  --ceiling:   #96670a;
+  --shadow:    0 1px 2px rgba(20,29,46,.06), 0 8px 24px rgba(20,29,46,.06);
+  --mono: ui-monospace, "SF Mono", "Cascadia Mono", Menlo, Consolas, monospace;
+  --sans: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg:        #060a13;
+    --panel:     #0b1121;
+    --strip:     #0e1730;
+    --rule:      #1e2c4c;
+    --rule-soft: #16203a;
+    --fg:        #dbe4f4;
+    --muted:     #8195b6;
+    --line:      #63e9ff;
+    --line-glow: rgba(99,233,255,.16);
+    --proved:    #2ed6a3;
+    --proved-soft: rgba(46,214,163,.13);
+    --unreached: #55688d;
+    --unreached-soft: rgba(85,104,141,.16);
+    --offline:   #ff6b9d;
+    --offline-soft: rgba(255,107,157,.09);
+    --ceiling:   #f2c76a;
+    --shadow:    0 1px 2px rgba(0,0,0,.5), 0 10px 30px rgba(0,0,0,.35);
+  }
+}
+:root[data-theme="dark"] {
+  --bg:        #060a13;
+  --panel:     #0b1121;
+  --strip:     #0e1730;
+  --rule:      #1e2c4c;
+  --rule-soft: #16203a;
+  --fg:        #dbe4f4;
+  --muted:     #8195b6;
+  --line:      #63e9ff;
+  --line-glow: rgba(99,233,255,.16);
+  --proved:    #2ed6a3;
+  --proved-soft: rgba(46,214,163,.13);
+  --unreached: #55688d;
+  --unreached-soft: rgba(85,104,141,.16);
+  --offline:   #ff6b9d;
+  --offline-soft: rgba(255,107,157,.09);
+  --ceiling:   #f2c76a;
+  --shadow:    0 1px 2px rgba(0,0,0,.5), 0 10px 30px rgba(0,0,0,.35);
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+html, body { max-width: 100%; overflow-x: hidden; }
+body {
+  margin: 0; background: var(--bg); color: var(--fg);
+  font-family: var(--sans); line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+}
+.wrap { max-width: 1080px; margin: 0 auto; padding: 2rem 1.1rem 5rem; }
+h1 { font-size: clamp(1.5rem, 4.2vw, 2.5rem); line-height: 1.15; margin: 0 0 .5rem; letter-spacing: -.02em; }
+h2 { font-size: clamp(1.05rem, 2.4vw, 1.4rem); margin: 0 0 .4rem; letter-spacing: -.01em; }
+h3 { font-size: .95rem; margin: 0 0 .3rem; }
+p { margin: 0 0 .9rem; max-width: 68ch; }
+.lede { font-size: clamp(1rem, 2.1vw, 1.15rem); color: var(--fg); }
+.muted { color: var(--muted); }
+small, .small { font-size: .82rem; line-height: 1.5; }
+.mono { font-family: var(--mono); font-variant-numeric: tabular-nums; }
+a { color: var(--line); }
+
+header.hero { border-bottom: 1px solid var(--rule); padding-bottom: 1.4rem; margin-bottom: 1.8rem; }
+.eyebrow { font-family: var(--mono); font-size: .72rem; letter-spacing: .16em; text-transform: uppercase; color: var(--muted); margin: 0 0 .7rem; }
+.statusline { display: flex; flex-wrap: wrap; gap: .5rem; margin-top: .9rem; }
+.chip {
+  font-family: var(--mono); font-size: .7rem; letter-spacing: .04em;
+  border: 1px solid var(--rule); border-radius: 2px; padding: .22rem .5rem; color: var(--muted);
+}
+.chip.warn { border-color: var(--offline); color: var(--offline); }
+
+.panel {
+  background: var(--panel); border: 1px solid var(--rule); border-radius: 4px;
+  padding: 1.1rem 1.1rem 1.2rem; margin: 0 0 1.6rem; box-shadow: var(--shadow);
+}
+.panel > h2 { margin-top: 0; }
+
+/* ---- controls ---- */
+.controls { display: flex; flex-wrap: wrap; gap: 1rem 1.6rem; align-items: flex-end; margin: .2rem 0 1.1rem; }
+.ctl { display: flex; flex-direction: column; gap: .3rem; min-width: 0; }
+.ctl label, .ctl .lbl {
+  font-family: var(--mono); font-size: .68rem; letter-spacing: .12em;
+  text-transform: uppercase; color: var(--muted);
+}
+.scrub { flex: 1 1 320px; }
+input[type=range] { width: 100%; accent-color: var(--line); height: 1.6rem; }
+.segbtns { display: flex; border: 1px solid var(--rule); border-radius: 3px; overflow: hidden; }
+.segbtns button {
+  font: inherit; font-size: .82rem; padding: .35rem .7rem; border: 0; cursor: pointer;
+  background: transparent; color: var(--muted);
+}
+.segbtns button[aria-pressed="true"] { background: var(--proved-soft); color: var(--fg); font-weight: 600; }
+.segbtns button + button { border-left: 1px solid var(--rule); }
+.yearbig { font-family: var(--mono); font-size: 1.5rem; font-weight: 600; line-height: 1; }
+button.ghost {
+  font: inherit; font-size: .78rem; padding: .35rem .7rem; cursor: pointer;
+  background: transparent; color: var(--muted); border: 1px solid var(--rule); border-radius: 3px;
+}
+
+/* ---- the three-region readout ---- */
+.regions { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: .8rem; margin: 0 0 1.1rem; }
+.region {
+  border: 1px solid var(--rule); border-left-width: 3px; border-radius: 3px;
+  padding: .65rem .75rem; min-width: 0;
+}
+.region .k { font-family: var(--mono); font-size: .66rem; letter-spacing: .11em; text-transform: uppercase; color: var(--muted); }
+.region .v { font-family: var(--mono); font-size: 1.6rem; font-weight: 600; line-height: 1.2; }
+.region .n { font-size: .76rem; color: var(--muted); line-height: 1.4; }
+.region.r1 { border-left-color: var(--proved); }
+.region.r1 .v { color: var(--proved); }
+.region.r2 { border-left-color: var(--offline); background: var(--offline-soft); }
+.region.r2 .v { color: var(--offline); }
+.region.r3 { border-left-color: var(--unreached); }
+.region.r3 .v { color: var(--unreached); }
+.region.r2 .never {
+  font-family: var(--mono); font-size: .66rem; letter-spacing: .06em;
+  color: var(--offline); border-top: 1px dashed var(--offline); margin-top: .4rem; padding-top: .35rem;
+}
+
+figure { margin: 0; }
+figcaption { font-size: .8rem; color: var(--muted); margin-top: .6rem; max-width: 74ch; }
+canvas { display: block; width: 100%; height: auto; border-radius: 3px; }
+
+table { border-collapse: collapse; width: 100%; font-size: .86rem; margin: .3rem 0 .8rem; }
+th, td { text-align: left; padding: .35rem .6rem .35rem 0; border-bottom: 1px solid var(--rule-soft); vertical-align: top; }
+th { font-family: var(--mono); font-size: .66rem; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); font-weight: 500; }
+td.num { font-family: var(--mono); font-variant-numeric: tabular-nums; white-space: nowrap; }
+tr.now td { background: var(--proved-soft); }
+
+.legend { display: flex; flex-wrap: wrap; gap: .4rem 1.1rem; font-size: .78rem; color: var(--muted); margin: .7rem 0 0; }
+.legend span { display: inline-flex; align-items: center; gap: .38rem; }
+.sw { width: 13px; height: 13px; border-radius: 2px; flex: 0 0 auto; }
+.sw.hollow { background: transparent; border: 1px dashed var(--offline); }
+
+ul { max-width: 68ch; padding-left: 1.1rem; }
+li { margin-bottom: .35rem; }
+
+.footnotes { border-top: 1px solid var(--rule); padding-top: 1.2rem; margin-top: 2rem; color: var(--muted); font-size: .84rem; }
+.footnotes h2 { color: var(--fg); }
+
+@media (prefers-reduced-motion: reduce) {
+  * { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header class="hero">
+  <p class="eyebrow">Riemann zeta &middot; critical line &middot; august 2026</p>
+  <h1>Three regions.<br />One of them has been empty for one hundred and sixty-seven years.</h1>
+  <p class="lede">
+    Every popular account of this result draws two regions &mdash; verified and unverified. That is the
+    wrong shape. There are three, and the most interesting one is the one with nothing in it.
+  </p>
+  <div class="statusline">
+    <span class="chip">preprint &middot; not peer-reviewed</span>
+    <span class="chip">author line: CLAUDE / ANTHROPIC</span>
+    <span class="chip">paper dated 2026-08-11</span>
+    <span class="chip warn">Zeta verified none of this</span>
+    <button class="ghost" id="themeBtn" type="button" aria-label="Switch colour theme">theme</button>
+  </div>
+</header>
+
+<!-- ============================================================ -->
+<section class="panel">
+  <h2>The critical strip</h2>
+  <p class="small muted" style="max-width:74ch">
+    Riemann&rsquo;s zeros live inside a vertical strip. The claim is that all of them sit on the line
+    down its middle. Drag the year and watch the certificate grow. <strong>The two flanks are the
+    detector for zeros off the line. It has been armed since 1859 and has never once fired.</strong>
+  </p>
+
+  <div class="controls">
+    <div class="ctl scrub">
+      <label for="year">year &mdash; drag to move through the ladder</label>
+      <input type="range" id="year" min="1942" max="2026" step="1" value="2026" />
+      <div class="small muted"><span class="yearbig mono" id="yearOut">2026</span>
+        &nbsp;<span id="whoOut">CLAUDE / Anthropic</span></div>
+    </div>
+    <div class="ctl">
+      <span class="lbl">counting</span>
+      <div class="segbtns" role="group" aria-label="Which count">
+        <button type="button" id="modeSimple" aria-pressed="true">simple &amp; on the line</button>
+        <button type="button" id="modeDistinct" aria-pressed="false">distinct zeros</button>
+      </div>
+    </div>
+    <div class="ctl">
+      <span class="lbl">constant</span>
+      <div class="segbtns" role="group" aria-label="Which constant">
+        <button type="button" id="cThm" aria-pressed="true">theorem</button>
+        <button type="button" id="cMT" aria-pressed="false">M&ndash;T window</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="regions">
+    <div class="region r1">
+      <div class="k">1 &middot; proved on the line</div>
+      <div class="v mono" id="pOn">66.67 %</div>
+      <div class="n" id="pOnNote">2/3 &mdash; the certificate reaches this far</div>
+    </div>
+    <div class="region r2">
+      <div class="k">2 &middot; proved off the line</div>
+      <div class="v mono">0.0000 %</div>
+      <div class="n">not one zero, ever, in 167 years &mdash; against more than 10<sup>13</sup> computed</div>
+      <div class="never mono">last changed: never</div>
+    </div>
+    <div class="region r3">
+      <div class="k">3 &middot; not reached by any certificate</div>
+      <div class="v mono" id="pUn">33.33 %</div>
+      <div class="n">absence of a certificate &mdash; <strong>not</strong> evidence against</div>
+    </div>
+  </div>
+
+  <figure>
+    <canvas id="stripCanvas" width="1040" height="560" role="img"
+      aria-label="The critical strip. A bright line down the centre carries the certified zeros as solid marks. Zeros not reached by the certificate are drawn as horizontal bars spanning the whole strip, because the certificate constrains their height but not their horizontal position. The two flanking regions, where a zero off the line would appear, contain no marks at all."></canvas>
+    <figcaption>
+      <strong>How to read it.</strong> A solid dot on the line is a zero the certificate has
+      <em>proved</em> is simple and on the line. A horizontal bar is a zero the certificate has
+      <em>not reached</em>: we know its height, and the certificate says nothing about where it sits
+      across the strip &mdash; so it is drawn with no committed position. The bars pass through the
+      flanks; nothing ever lands in them. Vertical spacing is schematic, not the true ordinates:
+      60 marks stand in for infinitely many zeros, and the certified count is the exact quota for
+      the percentage shown, so counting the dots on screen agrees with the readout above.
+      <br /><em>The bar is what the certificate knows &mdash; not what the computers found. Every one
+      of the ten trillion zeros anyone has actually computed is on the line. That is a separate fact,
+      and it is the reason region 2 is empty.</em>
+      <div class="legend">
+        <span><i class="sw" style="background:var(--proved)"></i> proved: simple &amp; on the line</span>
+        <span><i class="sw" style="background:var(--unreached)"></i> not reached &mdash; position uncommitted</span>
+        <span><i class="sw hollow"></i> off-line detector &mdash; armed, never fired</span>
+        <span><i class="sw" style="background:var(--line)"></i> the critical line</span>
+      </div>
+    </figcaption>
+  </figure>
+</section>
+
+<!-- ============================================================ -->
+<section class="panel">
+  <h2>The same thing as one bar &mdash; and a caliper measuring nothing</h2>
+  <p class="small muted" style="max-width:74ch">
+    A region of width zero is invisible, so the instrument is drawn at full size and the reading is
+    left at zero. The apparatus is the information.
+  </p>
+  <figure>
+    <canvas id="barCanvas" width="1040" height="272" role="img"
+      aria-label="A proportion bar split into proved-on-the-line and not-reached. Between them sits a caliper whose two jaws touch, measuring the proved-off-the-line region: its width is exactly zero, and a dashed ghost shows how wide a one-in-twenty off-line region would have been."></canvas>
+    <figcaption>
+      The dashed outline is a <strong>scale reference, not a claim</strong>: it is how wide this
+      region would be if one zero in twenty had been shown off the line. Nothing is inside it. It has
+      never had anything inside it.
+    </figcaption>
+  </figure>
+</section>
+
+<!-- ============================================================ -->
+<section class="panel">
+  <h2>Eighty-four years of the fraction</h2>
+  <figure>
+    <canvas id="ladderCanvas" width="1040" height="470" role="img"
+      aria-label="A step chart of the largest proved fraction by year, from 1942 to 2026. The line is nearly flat from 1974 to 2020, rising from about one third to five twelfths, then jumps twenty-five points in 2026 to two thirds. A dashed line marks the ceiling of the method at about 0.6818, just above the 2026 value. The hypothesis itself sits at 1.0."></canvas>
+    <figcaption>
+      Everything above the step line is region 3 &mdash; unreached, never disproved. The dashed amber
+      rule is the ceiling of <em>this method</em>. The gap between the 2026 step and that rule is all
+      the room the technique has left.
+    </figcaption>
+  </figure>
+
+  <table>
+    <thead>
+      <tr><th>year</th><th>who</th><th>simple &amp; on the line</th><th>distinct zeros</th></tr>
+    </thead>
+    <tbody id="ladderBody"></tbody>
+  </table>
+  <p class="small muted">
+    Rows marked &ldquo;unquantified&rdquo; are real results whose numeric constant is not stated in
+    the source we traced; they are drawn as hollow rings on the year axis with no plotted height,
+    because plotting a number we cannot cite would be inventing one.
+  </p>
+</section>
+
+<!-- ============================================================ -->
+<section class="panel">
+  <h2>How much fuel is left in this tank</h2>
+  <p class="small muted" style="max-width:74ch">
+    The authors computed the ceiling of their own family of techniques: approximately
+    <span class="mono">0.6818</span>. The theorem sits at <span class="mono">0.6667</span>. Being able
+    to draw this at all is rare &mdash; it is a paper telling you where its own method stops.
+  </p>
+  <figure>
+    <canvas id="ceilCanvas" width="1040" height="212" role="img"
+      aria-label="A full-scale bar from zero to one showing the 2026 result at two thirds and the method ceiling at 0.6818 almost on top of it, with a magnified inset from 0.64 to 0.70 in which the one-and-a-half point gap between them becomes visible."></canvas>
+    <figcaption>
+      The inset is magnified 16.7&times; so a 1.5-point gap is visible at all. Read the
+      inset&rsquo;s own axis, not the bar above it.
+    </figcaption>
+  </figure>
+</section>
+
+<!-- ============================================================ -->
+<section class="panel">
+  <h2>Why the empty region is the point</h2>
+  <ul>
+    <li><strong>Region 2 is not small. It is zero.</strong> Not &ldquo;none found yet in this
+      window&rdquo;, not &ldquo;a negligible fraction&rdquo;. Across every zero anyone has ever
+      computed &mdash; more than ten trillion &mdash; the count of zeros shown to be off the line is
+      exactly nought.</li>
+    <li><strong>Region 3 is not doubt.</strong> The paper&rsquo;s own words, §1.4: <em>&ldquo;the
+      remaining third of the zeros are not shown to be off the line, merely not reached by the
+      certificate.&rdquo;</em> Merging 2 and 3 into one grey &ldquo;unverified&rdquo; band throws away
+      the distinction the paper opens by insisting on.</li>
+    <li><strong>The method cannot tell the difference between two thirds and all.</strong> §7.2(a),
+      verbatim: <em>&ldquo;Nothing in the method distinguishes between &lsquo;two thirds&rsquo; and
+      &lsquo;all&rsquo;.&rdquo;</em></li>
+    <li><strong>And the honest killer, volunteered in §1.4:</strong> the method&rsquo;s inputs also
+      hold for the Davenport&ndash;Heilbronn and Epstein zeta functions, <em>for which the analogue of
+      the hypothesis is false</em> &mdash; those really do have zeros off the line. A technique whose
+      conditions are satisfied by objects that violate the conclusion cannot, by itself, establish the
+      conclusion. The author put that in section 1.4, before the proof.</li>
+    <li><strong>Even 100% would not be the hypothesis.</strong> These bound a <em>density</em>. A set
+      can have density zero and still be infinite, so a hypothetical 100% would still leave room for
+      infinitely many exceptions. The hypothesis says <em>every</em> zero, and density arguments do
+      not reach the word &ldquo;every&rdquo;.</li>
+  </ul>
+</section>
+
+<!-- ============================================================ -->
+<section class="footnotes">
+  <h2>Every number on this page, and where it comes from</h2>
+  <table>
+    <thead><tr><th>number</th><th>meaning</th><th>source</th></tr></thead>
+    <tbody>
+      <tr><td class="num">1/3</td><td>simple zeros on the line, 1974</td><td>Levinson 1974; simplicity by Heath-Brown 1979</td></tr>
+      <tr><td class="num">&gt; 2/5</td><td>on the line, 1989</td><td>Conrey 1989, as the 2026 paper states it (&sect;1.3)</td></tr>
+      <tr><td class="num">&gt; 41 %</td><td>on the line, 2011</td><td>Bui&ndash;Conrey&ndash;Young 2011, from the paper&rsquo;s own title</td></tr>
+      <tr><td class="num">5/12 = 0.41667</td><td>previous record, simple &amp; on the line</td><td>Pratt&ndash;Robles&ndash;Zaharescu&ndash;Zeindler 2020; quoted in the 2026 abstract</td></tr>
+      <tr><td class="num">0.6603</td><td>previous record, distinct zeros</td><td>Wu 2015; quoted in the 2026 abstract</td></tr>
+      <tr><td class="num">2/3 = 0.66667</td><td><strong>the theorem</strong>, Theorem A(i)</td><td>2026 paper, Theorem A</td></tr>
+      <tr><td class="num">0.67250</td><td>same, with the Montgomery&ndash;Taylor window</td><td>2026 paper, Theorem A second sentence: 2 &minus; c<sup>&minus;1</sup><sub>MT</sub></td></tr>
+      <tr><td class="num">5/6 = 0.83333</td><td>distinct zeros, Theorem A(ii)</td><td>2026 paper, Theorem A</td></tr>
+      <tr><td class="num">0.83625</td><td>same, windowed</td><td>2026 paper, Theorem A: &frac12;(3 &minus; c<sup>&minus;1</sup><sub>MT</sub>)</td></tr>
+      <tr><td class="num">25.0 points</td><td>the like-for-like jump</td><td>2/3 &minus; 5/12 = 1/4, exactly. <strong>Not 25.6</strong> &mdash; that compares the windowed new figure to the unwindowed old one.</td></tr>
+      <tr><td class="num">&asymp; 0.6818</td><td>ceiling of all bandwidth-one certificates</td><td>2026 paper &sect;7.2; established by Easley, sharpened by McAleer. The paper records p<sub>0</sub> &le; 0.6818287.</td></tr>
+      <tr><td class="num">0.016</td><td>distance from the theorem to its own ceiling</td><td>2026 paper &sect;7.2: &ldquo;within 0.016 of the ceiling of its own method&rdquo;</td></tr>
+      <tr><td class="num">&gt; 10<sup>13</sup></td><td>zeros computed, all on the line</td><td>standard computational record, checked in the ferry&rsquo;s first pass</td></tr>
+      <tr><td class="num">167</td><td>years since Riemann 1859</td><td>1859 &rarr; 2026</td></tr>
+    </tbody>
+  </table>
+
+  <h2>The humans</h2>
+  <p class="small">
+    <strong>Bernhard Riemann</strong> (1859, the eight pages) &middot;
+    <strong>Atle Selberg</strong> (1942) &middot;
+    <strong>Norman Levinson</strong> (1974) &middot;
+    <strong>Roger Heath-Brown</strong> (1979, simplicity) &middot;
+    <strong>J. Brian Conrey</strong> (1989) &middot;
+    <strong>Hung Bui, Brian Conrey, Matthew Young</strong> (2011) &middot;
+    <strong>Shaoji Feng</strong> (2012) &middot;
+    <strong>Xiaosheng Wu</strong> (2015) &middot;
+    <strong>Kyle Pratt, Nicolas Robles, Alexandru Zaharescu, Dirk Zeindler</strong> (2020) &middot;
+    <strong>Andr&eacute; Weil</strong> (1952, the explicit formula) &middot;
+    <strong>James Joseph Sylvester</strong> (1852, the law of inertia) &middot;
+    <strong>Hugh Montgomery</strong> (1973, 2/3 under the hypothesis; with <strong>Taylor</strong>,
+    the window) &middot;
+    <strong>Enrico Bombieri</strong> (2000, the negative index counts off-line pairs) &middot;
+    <strong>Farzad Aryan</strong> (2022) &middot;
+    <strong>Siegfred Baluyot, Daniel Goldston, Ade Irma Suriajaya, Caroline
+    Turnage-Butterbaugh</strong> (2024) &middot;
+    <strong>Daniel Goldston &amp; Ade Irma Suriajaya</strong> (2025&ndash;26, who posed the question
+    this answers) &middot;
+    <strong>Jarred Sumner</strong> (posed the problem) &middot;
+    <strong>Ralph Furman &amp; Levent Alp&ouml;ge</strong> (independent re-derivation; they take
+    responsibility for its communication) &middot;
+    <strong>Brian Conrey &amp; Daniel A. Goldston</strong> (external readers) &middot;
+    <strong>Eric Easley</strong> (Lean formalisation, the ceiling) &middot;
+    <strong>Stephen McAleer</strong> (sharpened the ceiling).
+  </p>
+
+  <h2>Standing caveats</h2>
+  <p class="small">
+    This is a <strong>preprint</strong>, not a peer-reviewed publication &mdash; a status, not a doubt.
+    <strong>Zeta verified nothing here.</strong> We did not clone, build, or run the Lean 4
+    formalisation at <span class="mono">anthropics/zeta-23-lean</span>; an independent replication is
+    routed as separate work and this page borrows nothing from it. The authors themselves disclose
+    that in the ceiling argument of &sect;7.2 some numerical enclosures are certified by interval
+    arithmetic rather than by the Lean kernel &mdash; a gap in the statement about the method&rsquo;s
+    <em>limits</em>, not in Theorems A or B.
+    <br /><br />
+    Full write-up, with the mechanism explained from nothing:
+    <a href="riemann-two-thirds-for-max.html">the full write-up</a>, which assumes no background at all.
+    Register work and primary-source accounting:
+    <a href="https://github.com/Lucent-Financial-Group/Zeta/blob/main/docs/ip-questionable/2026-08-22-claude-riemann-critical-line-proportion-two-papers-nobody-combined.md" target="_blank" rel="noopener">the ferry, on GitHub</a>.
+  </p>
+</section>
+
+</div>
+
+<script>
+"use strict";
+(function () {
+  var REDUCED = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  /* ---------------- data: every value traced in the footnote table ------------- */
+  var LADDER = [
+    { year: 1942, who: "Selberg",                    simple: null,      distinct: null, note: "a positive proportion (unquantified)" },
+    { year: 1974, who: "Levinson (simple: Heath-Brown 1979)", simple: 1/3, distinct: null, note: "1/3" },
+    { year: 1989, who: "Conrey",                     simple: 0.4,       distinct: null, note: "> 2/5" },
+    { year: 2011, who: "Bui–Conrey–Young", simple: 0.41,      distinct: null, note: "> 41%" },
+    { year: 2012, who: "Feng",                       simple: null,      distinct: null, note: "further improvement (unquantified)" },
+    { year: 2015, who: "Wu",                         simple: null,      distinct: 0.6603, note: "0.6603 distinct" },
+    { year: 2020, who: "Pratt–Robles–Zaharescu–Zeindler", simple: 5/12, distinct: null, note: "5/12" },
+    { year: 2026, who: "CLAUDE / Anthropic",         simple: 2/3,       distinct: 5/6,
+      simpleMT: 0.67250, distinctMT: 0.83625, note: "2/3 and 5/6" }
+  ];
+  var CEILING = 0.6818287;   // paper §7.2, p0 rounded up
+  var THEOREM = 2/3;
+
+  var state = { year: 2026, mode: "simple", windowed: false };
+
+  /* best value at or before a given year, for the active mode */
+  function valueAt(year, mode, windowed) {
+    var best = 0, who = "—", isMT = false;
+    for (var i = 0; i < LADDER.length; i++) {
+      var r = LADDER[i];
+      if (r.year > year) break;
+      var v = (mode === "simple") ? r.simple : r.distinct;
+      var mt = (mode === "simple") ? r.simpleMT : r.distinctMT;
+      if (windowed && typeof mt === "number") v = mt;
+      if (typeof v === "number" && v > best) { best = v; who = r.who; isMT = (windowed && typeof mt === "number"); }
+    }
+    return { v: best, who: who, isMT: isMT };
+  }
+
+  /* ---------------- palette read from CSS so theme switches repaint ------------ */
+  function pal() {
+    var cs = getComputedStyle(document.documentElement);
+    function g(n) { return cs.getPropertyValue(n).trim(); }
+    return {
+      panel: g("--panel"), strip: g("--strip"), rule: g("--rule"), ruleSoft: g("--rule-soft"),
+      fg: g("--fg"), muted: g("--muted"), line: g("--line"), lineGlow: g("--line-glow"),
+      proved: g("--proved"), provedSoft: g("--proved-soft"),
+      unreached: g("--unreached"), unreachedSoft: g("--unreached-soft"),
+      offline: g("--offline"), offlineSoft: g("--offline-soft"), ceiling: g("--ceiling")
+    };
+  }
+
+  /* hi-dpi setup; returns logical width/height */
+  function setup(cv) {
+    var dpr = Math.max(1, Math.min(3, window.devicePixelRatio || 1));
+    if (cv.dataset.baseH === undefined) { cv.dataset.baseW = String(cv.width); cv.dataset.baseH = String(cv.height); }
+    var w = cv.clientWidth || Number(cv.dataset.baseW);
+    var h = Math.round(w * (Number(cv.dataset.baseH) / Number(cv.dataset.baseW)));
+    cv.style.height = h + "px";
+    cv.width = Math.round(w * dpr); cv.height = Math.round(h * dpr);
+    var ctx = cv.getContext("2d");
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    ctx.clearRect(0, 0, w, h);
+    return { ctx: ctx, w: w, h: h };
+  }
+
+  function fam(name) { return getComputedStyle(document.documentElement).getPropertyValue(name).trim(); }
+  function mono(px, weight) { return (weight || 400) + " " + px + "px " + fam("--mono"); }
+
+  /* ============================ 1. THE CRITICAL STRIP ========================
+     Design note. N = 60 marks, chosen because 60 divides exactly by 3, 6, 12 and 5,
+     so 1/3, 2/5, 5/12, 2/3 and 5/6 all land on a whole number of marks: counting the
+     dots on screen returns the stated percentage rather than a rounded neighbour.
+     ------------------------------------------------------------------------- */
+  function drawStrip() {
+    var cv = document.getElementById("stripCanvas");
+    var s = setup(cv), ctx = s.ctx, W = s.w, H = s.h, c = pal();
+    var p = valueAt(state.year, state.mode, state.windowed).v;
+
+    var padT = 50, padB = 40;
+    var padL = Math.max(46, W * 0.075), padR = Math.max(46, W * 0.075);
+    var x0 = padL, x1 = W - padR, mid = (x0 + x1) / 2;
+    var y0 = padT, y1 = H - padB, sh = y1 - y0;
+
+    ctx.fillStyle = c.strip;
+    ctx.fillRect(x0, y0, x1 - x0, sh);
+
+    /* --- the OFF-LINE detector: two flanks, addressed rooms, never occupied --- */
+    var gap = 10;
+    var flanks = [[x0, mid - gap], [mid + gap, x1]];
+    for (var f = 0; f < 2; f++) {
+      var a = flanks[f][0], b = flanks[f][1];
+      ctx.save();
+      ctx.beginPath(); ctx.rect(a, y0, b - a, sh); ctx.clip();
+      ctx.strokeStyle = c.offline; ctx.globalAlpha = 0.075; ctx.lineWidth = 1;
+      for (var d = -sh; d < (b - a) + sh; d += 15) {
+        ctx.beginPath(); ctx.moveTo(a + d, y1); ctx.lineTo(a + d + sh, y0); ctx.stroke();
+      }
+      ctx.restore();
+      ctx.save();
+      ctx.strokeStyle = c.offline; ctx.globalAlpha = 0.45; ctx.lineWidth = 1;
+      ctx.setLineDash([4, 4]);
+      ctx.strokeRect(a + .5, y0 + .5, b - a - 1, sh - 1);
+      ctx.restore();
+    }
+
+    /* --- the critical line, drawn UNDER the marks so the marks stay legible --- */
+    ctx.save();
+    ctx.strokeStyle = c.lineGlow; ctx.lineWidth = 9;
+    ctx.beginPath(); ctx.moveTo(mid, y0 - 10); ctx.lineTo(mid, y1 + 10); ctx.stroke();
+    ctx.strokeStyle = c.line; ctx.lineWidth = 1.3; ctx.globalAlpha = .85;
+    ctx.beginPath(); ctx.moveTo(mid, y0 - 10); ctx.lineTo(mid, y1 + 10); ctx.stroke();
+    ctx.restore();
+
+    /* --- zeros --------------------------------------------------------------- */
+    var N = 60;
+    var ys = [], gaps = [], acc = 0, i;
+    for (i = 0; i < N; i++) { var g = 1 / Math.log(5 + i * 0.55); gaps.push(g); acc += g; }
+    var run = 0;
+    for (i = 0; i < N; i++) { run += gaps[i]; ys.push(y1 - (run / acc) * (sh - 22) - 11); }
+
+    var nOn = 0, nUn = 0;
+    /* pass 1: the unreached, faint, behind */
+    for (i = 0; i < N; i++) {
+      if (Math.floor((i + 1) * p) > Math.floor(i * p)) continue;
+      nUn++;
+      var y = ys[i];
+      ctx.save();
+      ctx.strokeStyle = c.unreached; ctx.globalAlpha = .44; ctx.lineWidth = 1;
+      ctx.beginPath(); ctx.moveTo(x0 + 2, y); ctx.lineTo(x1 - 2, y); ctx.stroke();
+      ctx.globalAlpha = .85; ctx.lineWidth = 1.4;
+      ctx.beginPath();
+      ctx.moveTo(x0 + 2, y - 3.5); ctx.lineTo(x0 + 2, y + 3.5);
+      ctx.moveTo(x1 - 2, y - 3.5); ctx.lineTo(x1 - 2, y + 3.5);
+      ctx.stroke();
+      ctx.restore();
+    }
+    /* pass 2: the certified, bright, in front — these must carry the picture */
+    for (i = 0; i < N; i++) {
+      if (!(Math.floor((i + 1) * p) > Math.floor(i * p))) continue;
+      nOn++;
+      var yy = ys[i];
+      ctx.save();
+      ctx.strokeStyle = c.proved; ctx.lineWidth = 2.6; ctx.lineCap = "round";
+      ctx.beginPath(); ctx.moveTo(mid - 13, yy); ctx.lineTo(mid + 13, yy); ctx.stroke();
+      ctx.fillStyle = c.proved;
+      ctx.beginPath(); ctx.arc(mid, yy, 3.6, 0, 6.2832); ctx.fill();
+      ctx.restore();
+    }
+
+    /* strip edges */
+    ctx.strokeStyle = c.rule; ctx.lineWidth = 1; ctx.globalAlpha = 1;
+    ctx.beginPath(); ctx.moveTo(x0 + .5, y0); ctx.lineTo(x0 + .5, y1);
+    ctx.moveTo(x1 - .5, y0); ctx.lineTo(x1 - .5, y1); ctx.stroke();
+
+    /* --- the flank readouts: horizontal, centred, unmissable ----------------- */
+    for (f = 0; f < 2; f++) {
+      var cx = (flanks[f][0] + flanks[f][1]) / 2;
+      var cy = y0 + sh * 0.46;
+      var pw = Math.min(250, (flanks[f][1] - flanks[f][0]) - 26), ph = 128;
+      ctx.save();
+      /* backing plate: the room is furnished, and still nothing is in it */
+      ctx.fillStyle = c.strip; ctx.globalAlpha = .90;
+      ctx.fillRect(cx - pw / 2, cy - ph / 2, pw, ph);
+      ctx.globalAlpha = 1;
+      ctx.textAlign = "center"; ctx.textBaseline = "alphabetic";
+      ctx.fillStyle = c.offline;
+      ctx.font = mono(9.5, 700);
+      ctx.fillText("P R O V E D   O F F   T H E   L I N E", cx, cy - ph / 2 + 20);
+      ctx.font = mono(54, 700);
+      ctx.fillText("0", cx, cy + 16);
+      ctx.font = mono(10, 500);
+      ctx.fillText("zeros. ever.", cx, cy + 36);
+      ctx.globalAlpha = .55; ctx.lineWidth = 1; ctx.strokeStyle = c.offline;
+      ctx.beginPath(); ctx.moveTo(cx - pw / 2 + 26, cy + 46.5); ctx.lineTo(cx + pw / 2 - 26, cy + 46.5); ctx.stroke();
+      ctx.globalAlpha = .95; ctx.font = mono(8.5, 500);
+      ctx.fillText("detector armed 1859 · never fired", cx, cy + ph / 2 - 4);
+      ctx.restore();
+    }
+
+    /* --- labels -------------------------------------------------------------- */
+    ctx.globalAlpha = 1; ctx.textBaseline = "alphabetic";
+    ctx.font = mono(10, 500); ctx.fillStyle = c.muted; ctx.textAlign = "center";
+    ctx.fillText("Re(s) = 0", x0, y1 + 20);
+    ctx.fillText("Re(s) = 1", x1, y1 + 20);
+    ctx.fillStyle = c.line; ctx.font = mono(11.5, 700);
+    ctx.fillText("Re(s) = ½  —  the critical line", mid, y0 - 26);
+
+    ctx.textAlign = "left"; ctx.font = mono(9.5, 500); ctx.fillStyle = c.muted;
+    if (W >= 900) {
+      ctx.fillText("height  t  ↑   (60 marks stand in for infinitely", 6, y0 - 26);
+      ctx.fillText("many zeros; spacing schematic)", 6, y0 - 14);
+    } else {
+      ctx.fillText("t ↑", 6, y0 - 14);
+    }
+    ctx.textAlign = "right";
+    ctx.font = mono(11, 700); ctx.fillStyle = c.proved;
+    ctx.fillText(nOn + " reached", W - 6, y0 - 26);
+    ctx.fillStyle = c.unreached;
+    ctx.fillText(nUn + " unreached", W - 6, y0 - 14);
+  }
+
+  /* ==================== 2. PROPORTION BAR + ZERO-WIDTH CALIPER =============== */
+  function drawBar() {
+    var cv = document.getElementById("barCanvas");
+    var s = setup(cv), ctx = s.ctx, W = s.w, c = pal();
+    var p = valueAt(state.year, state.mode, state.windowed).v;
+
+    var padL = 18, padR = 18;
+    var x0 = padL, x1 = W - padR, bw = x1 - x0;
+    var by = 118, bh = 46;
+    var xSplit = x0 + bw * p;
+
+    /* region 1 */
+    ctx.fillStyle = c.proved; ctx.globalAlpha = .92;
+    ctx.fillRect(x0, by, xSplit - x0, bh);
+    /* region 3 */
+    ctx.globalAlpha = 1; ctx.fillStyle = c.unreachedSoft;
+    ctx.fillRect(xSplit, by, x1 - xSplit, bh);
+    ctx.strokeStyle = c.unreached; ctx.globalAlpha = .5; ctx.lineWidth = 1;
+    ctx.strokeRect(xSplit + .5, by + .5, x1 - xSplit - 1, bh - 1);
+    ctx.globalAlpha = 1;
+
+    /* region-1 / region-3 labels inside the bar */
+    ctx.font = mono(11, 700); ctx.textBaseline = "middle";
+    ctx.fillStyle = c.panel; ctx.textAlign = "left";
+    if (xSplit - x0 > 230) ctx.fillText("PROVED ON THE LINE  " + (p * 100).toFixed(2) + " %", x0 + 12, by + bh / 2);
+    ctx.fillStyle = c.unreached; ctx.textAlign = "right";
+    if (x1 - xSplit > 230) ctx.fillText("NOT REACHED BY ANY CERTIFICATE  " + ((1 - p) * 100).toFixed(2) + " %", x1 - 12, by + bh / 2);
+
+    /* ---- the ghost: how wide 1-in-20 off the line WOULD be. A scale reference. ---- */
+    var ghostW = bw * 0.05;
+    ctx.save();
+    ctx.setLineDash([3, 4]); ctx.strokeStyle = c.offline; ctx.globalAlpha = .38; ctx.lineWidth = 1;
+    ctx.strokeRect(xSplit + .5, by + bh + 9.5, ghostW, 15);
+    ctx.setLineDash([]);
+    ctx.globalAlpha = .75; ctx.font = mono(9, 500); ctx.fillStyle = c.offline;
+    var gTxt = "↑ how wide a 5 % off-line region would be. It is empty.";
+    var gw = ctx.measureText(gTxt).width;
+    ctx.textAlign = "left";
+    ctx.fillText(gTxt, Math.max(x0, Math.min(x1 - gw, xSplit)), by + bh + 36);
+    ctx.restore();
+
+    /* ---- the caliper: two jaws at the SAME x, measuring exactly nothing ------ */
+    var jawTop = by - 46, jawBot = by + bh + 4;
+    ctx.save();
+    ctx.strokeStyle = c.offline; ctx.lineWidth = 1.4; ctx.globalAlpha = 1;
+    /* jaw arms */
+    ctx.beginPath();
+    ctx.moveTo(xSplit - 1, jawTop + 12); ctx.lineTo(xSplit - 1, jawBot);
+    ctx.moveTo(xSplit + 1, jawTop + 12); ctx.lineTo(xSplit + 1, jawBot);
+    ctx.stroke();
+    /* jaw feet, splayed outward so the closure is visible */
+    ctx.beginPath();
+    ctx.moveTo(xSplit - 1, jawBot); ctx.lineTo(xSplit - 9, jawBot + 7);
+    ctx.moveTo(xSplit + 1, jawBot); ctx.lineTo(xSplit + 9, jawBot + 7);
+    ctx.stroke();
+    /* bracket across a zero-width span */
+    ctx.beginPath();
+    ctx.moveTo(xSplit - 9, jawTop + 12); ctx.lineTo(xSplit - 1, jawTop + 12);
+    ctx.moveTo(xSplit + 1, jawTop + 12); ctx.lineTo(xSplit + 9, jawTop + 12);
+    ctx.stroke();
+    /* leader up to the readout box */
+    ctx.beginPath(); ctx.moveTo(xSplit, jawTop + 12); ctx.lineTo(xSplit, jawTop); ctx.stroke();
+
+    /* readout box, drawn at full instrument size */
+    var boxW = 268, boxH = 54;
+    var bx = Math.max(x0, Math.min(x1 - boxW, xSplit - boxW / 2));
+    ctx.fillStyle = c.offlineSoft; ctx.fillRect(bx, jawTop - boxH, boxW, boxH);
+    ctx.strokeStyle = c.offline; ctx.lineWidth = 1;
+    ctx.strokeRect(bx + .5, jawTop - boxH + .5, boxW - 1, boxH - 1);
+    ctx.fillStyle = c.offline; ctx.textAlign = "left"; ctx.textBaseline = "alphabetic";
+    ctx.font = mono(9.5, 600);
+    ctx.fillText("PROVED OFF THE LINE — REGION WIDTH", bx + 11, jawTop - boxH + 17);
+    ctx.font = mono(21, 700);
+    ctx.fillText("0.0000 %", bx + 11, jawTop - boxH + 39);
+    ctx.font = mono(9, 500); ctx.globalAlpha = .85;
+    ctx.fillText("last changed: never", bx + 138, jawTop - boxH + 38);
+    ctx.restore();
+
+    /* baseline scale 0 .. 1 */
+    ctx.globalAlpha = 1; ctx.strokeStyle = c.rule; ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.moveTo(x0, by + bh + 48.5); ctx.lineTo(x1, by + bh + 48.5); ctx.stroke();
+    ctx.font = mono(9, 500); ctx.fillStyle = c.muted; ctx.textBaseline = "top";
+    ctx.textAlign = "left";  ctx.fillText("0 %", x0, by + bh + 54);
+    ctx.textAlign = "right"; ctx.fillText("100 % of the zeros", x1, by + bh + 54);
+  }
+
+  /* ============================ 3. THE LADDER ================================ */
+  function drawLadder() {
+    var cv = document.getElementById("ladderCanvas");
+    var s = setup(cv), ctx = s.ctx, W = s.w, H = s.h, c = pal();
+
+    var padL = 54, padR = 168, padT = 26, padB = 50;
+    var x0 = padL, x1 = W - padR, y0 = padT, y1 = H - padB;
+    var Y0 = 1930, Y1 = 2032;
+    function X(yr) { return x0 + (yr - Y0) / (Y1 - Y0) * (x1 - x0); }
+    function Y(v)  { return y1 - v * (y1 - y0); }
+
+    /* unreached field: everything above the current step, up to the hypothesis */
+    var cur = valueAt(state.year, state.mode, state.windowed).v;
+    ctx.fillStyle = c.unreachedSoft;
+    ctx.fillRect(x0, Y(1), x1 - x0, Y(cur) - Y(1));
+
+    /* gridlines at the values that matter */
+    var grid = [
+      { v: 1,      t: "1.0  — the hypothesis", col: c.line, dash: [] },
+      { v: CEILING,t: "0.6818 — method ceiling", col: c.ceiling, dash: [5, 4] },
+      { v: 5/6,    t: "5/6", col: c.ruleSoft, dash: [2, 4] },
+      { v: 2/3,    t: "",    col: c.ruleSoft, dash: [2, 4] },
+      { v: 5/12,   t: "5/12", col: c.ruleSoft, dash: [2, 4] },
+      { v: 1/3,    t: "1/3", col: c.ruleSoft, dash: [2, 4] }
+    ];
+    ctx.textBaseline = "middle"; ctx.textAlign = "left";
+    for (var i = 0; i < grid.length; i++) {
+      var g = grid[i];
+      ctx.save();
+      ctx.setLineDash(g.dash); ctx.strokeStyle = g.col;
+      ctx.lineWidth = (g.v === 1 || g.v === CEILING) ? 1.3 : 1;
+      ctx.globalAlpha = (g.v === 1 || g.v === CEILING) ? .95 : .8;
+      ctx.beginPath(); ctx.moveTo(x0, Y(g.v) + .5); ctx.lineTo(x1, Y(g.v) + .5); ctx.stroke();
+      ctx.restore();
+      ctx.font = mono(9.5, (g.v === 1 || g.v === CEILING) ? 700 : 500);
+      ctx.fillStyle = (g.v === 1) ? c.line : (g.v === CEILING ? c.ceiling : c.muted);
+      ctx.fillText(g.t, x1 + 8, Y(g.v));
+    }
+
+    /* axes */
+    ctx.strokeStyle = c.rule; ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.moveTo(x0 + .5, y0); ctx.lineTo(x0 + .5, y1); ctx.lineTo(x1, y1); ctx.stroke();
+    ctx.font = mono(9.5, 500); ctx.fillStyle = c.muted; ctx.textAlign = "center"; ctx.textBaseline = "top";
+    for (var yr = 1940; yr <= 2030; yr += 10) {
+      ctx.beginPath(); ctx.moveTo(X(yr) + .5, y1); ctx.lineTo(X(yr) + .5, y1 + 4); ctx.stroke();
+      ctx.fillText(String(yr), X(yr), y1 + 8);
+    }
+
+    /* step series */
+    function series(key, mtKey, colour, label) {
+      var pts = [], best = 0;
+      for (var k = 0; k < LADDER.length; k++) {
+        var r = LADDER[k];
+        var v = r[key];
+        if (state.windowed && typeof r[mtKey] === "number") v = r[mtKey];
+        if (typeof v === "number" && v > best) { best = v; pts.push({ x: r.year, y: best, who: r.who }); }
+      }
+      if (!pts.length) return;
+      var visible = pts.filter(function (q) { return q.x <= state.year; });
+      /* full path drawn faintly, so the future is present but clearly not yet reached */
+      ctx.save();
+      ctx.strokeStyle = colour; ctx.lineWidth = 2; ctx.globalAlpha = .18;
+      ctx.beginPath(); ctx.moveTo(X(pts[0].x), Y(pts[0].y));
+      for (k = 1; k < pts.length; k++) { ctx.lineTo(X(pts[k].x), Y(pts[k - 1].y)); ctx.lineTo(X(pts[k].x), Y(pts[k].y)); }
+      ctx.lineTo(x1, Y(pts[pts.length - 1].y)); ctx.stroke();
+      ctx.restore();
+
+      if (!visible.length) return;
+      ctx.save();
+      ctx.strokeStyle = colour; ctx.lineWidth = 2.4; ctx.lineJoin = "round";
+      ctx.beginPath(); ctx.moveTo(X(visible[0].x), Y(visible[0].y));
+      for (k = 1; k < visible.length; k++) { ctx.lineTo(X(visible[k].x), Y(visible[k - 1].y)); ctx.lineTo(X(visible[k].x), Y(visible[k].y)); }
+      ctx.lineTo(X(state.year), Y(visible[visible.length - 1].y)); ctx.stroke();
+      ctx.restore();
+
+      for (k = 0; k < visible.length; k++) {
+        ctx.fillStyle = colour;
+        ctx.beginPath(); ctx.arc(X(visible[k].x), Y(visible[k].y), 3.2, 0, 6.2832); ctx.fill();
+      }
+      var last = visible[visible.length - 1];
+      /* label inside the plot, right-aligned to the endpoint, so it never collides
+         with the value rules in the right margin */
+      ctx.font = mono(10, 700); ctx.fillStyle = colour; ctx.textAlign = "right"; ctx.textBaseline = "bottom";
+      ctx.fillText(label + "  " + (last.y * 100).toFixed(2) + " %", X(state.year) - 6, Y(last.y) - 7);
+    }
+    series("distinct", "distinctMT", c.line, "distinct");
+    series("simple", "simpleMT", c.proved, "simple & on the line");
+
+    /* hollow rings for real results whose constant we did not trace */
+    ctx.textAlign = "center"; ctx.textBaseline = "top";
+    for (i = 0; i < LADDER.length; i++) {
+      var r2 = LADDER[i];
+      if (r2.simple === null && r2.distinct === null && r2.year <= state.year) {
+        ctx.save();
+        ctx.strokeStyle = c.muted; ctx.globalAlpha = .8; ctx.lineWidth = 1.2; ctx.setLineDash([2, 2]);
+        ctx.beginPath(); ctx.arc(X(r2.year), y1 - 7, 4.5, 0, 6.2832); ctx.stroke();
+        ctx.restore();
+      }
+    }
+
+    /* the cliff: one thin marker, one number, nothing else */
+    if (state.year >= 2026) {
+      /* like-for-like ONLY: theorem constant against the previous record, never the
+         windowed figure against an unwindowed one. That mis-comparison is where the
+         widely-reported "25.6 points" comes from; the honest number is 25.0. */
+      var lo = (state.mode === "simple") ? 5/12 : 0.6603;
+      var hi = (state.mode === "simple") ? 2/3 : 5/6;
+      var cx = X(2026);
+      ctx.save();
+      ctx.strokeStyle = c.muted; ctx.globalAlpha = .55; ctx.lineWidth = 1;
+      ctx.beginPath(); ctx.moveTo(cx - 16, Y(lo)); ctx.lineTo(cx - 16, Y(hi)); ctx.stroke();
+      ctx.beginPath();
+      ctx.moveTo(cx - 20, Y(lo)); ctx.lineTo(cx - 12, Y(lo));
+      ctx.moveTo(cx - 20, Y(hi)); ctx.lineTo(cx - 12, Y(hi)); ctx.stroke();
+      ctx.restore();
+      ctx.font = mono(10.5, 700); ctx.fillStyle = c.fg; ctx.textAlign = "right"; ctx.textBaseline = "middle";
+      ctx.fillText("+" + ((hi - lo) * 100).toFixed(1) + " pts", cx - 24, (Y(lo) + Y(hi)) / 2);
+      ctx.font = mono(8.5, 500); ctx.fillStyle = c.muted;
+      ctx.fillText("like-for-like", cx - 24, (Y(lo) + Y(hi)) / 2 + 13);
+    }
+
+    /* y-axis caption */
+    ctx.save();
+    ctx.translate(14, (y0 + y1) / 2); ctx.rotate(-Math.PI / 2);
+    ctx.font = mono(9.5, 500); ctx.fillStyle = c.muted; ctx.textAlign = "center"; ctx.textBaseline = "middle";
+    ctx.fillText("fraction of zeros a certificate reaches", 0, 0);
+    ctx.restore();
+  }
+
+  /* ============================ 4. THE CEILING =============================== */
+  function drawCeiling() {
+    var cv = document.getElementById("ceilCanvas");
+    var s = setup(cv), ctx = s.ctx, W = s.w, c = pal();
+    var padL = 18, padR = 18, x0 = padL, x1 = W - padR, bw = x1 - x0;
+
+    /* full-scale bar 0..1 */
+    var by = 34, bh = 26;
+    ctx.fillStyle = c.unreachedSoft; ctx.fillRect(x0, by, bw, bh);
+    ctx.fillStyle = c.proved; ctx.globalAlpha = .9;
+    ctx.fillRect(x0, by, bw * THEOREM, bh); ctx.globalAlpha = 1;
+    ctx.save();
+    ctx.strokeStyle = c.ceiling; ctx.lineWidth = 1.6; ctx.setLineDash([4, 3]);
+    ctx.beginPath(); ctx.moveTo(x0 + bw * CEILING, by - 6); ctx.lineTo(x0 + bw * CEILING, by + bh + 6); ctx.stroke();
+    ctx.restore();
+    ctx.font = mono(9.5, 500); ctx.fillStyle = c.muted; ctx.textAlign = "left"; ctx.textBaseline = "alphabetic";
+    ctx.fillText("0", x0, by - 8);
+    ctx.textAlign = "right"; ctx.fillText("1.0  =  the hypothesis", x1, by - 8);
+    ctx.textAlign = "center"; ctx.fillStyle = c.ceiling; ctx.font = mono(9.5, 700);
+    ctx.fillText("theorem + ceiling, at true scale — indistinguishable", x0 + bw * CEILING, by + bh + 20);
+
+    /* magnified inset 0.64 .. 0.70 */
+    var iy = 108, ih = 74;
+    var A = 0.64, B = 0.70;
+    function IX(v) { return x0 + (v - A) / (B - A) * bw; }
+    ctx.fillStyle = c.strip; ctx.fillRect(x0, iy, bw, ih);
+    ctx.strokeStyle = c.rule; ctx.lineWidth = 1; ctx.strokeRect(x0 + .5, iy + .5, bw - 1, ih - 1);
+
+    /* connector wedge from the full bar to the inset */
+    ctx.save();
+    ctx.fillStyle = c.ceiling; ctx.globalAlpha = .10;
+    ctx.beginPath();
+    ctx.moveTo(x0 + bw * A, by + bh + 26); ctx.lineTo(x0 + bw * B, by + bh + 26);
+    ctx.lineTo(x1, iy); ctx.lineTo(x0, iy); ctx.closePath(); ctx.fill();
+    ctx.restore();
+
+    /* proved fill inside the inset */
+    ctx.fillStyle = c.proved; ctx.globalAlpha = .9;
+    ctx.fillRect(x0 + 1, iy + 20, IX(THEOREM) - x0 - 1, 30); ctx.globalAlpha = 1;
+    /* the sliver of remaining method-room */
+    ctx.save();
+    ctx.fillStyle = c.ceiling; ctx.globalAlpha = .30;
+    ctx.fillRect(IX(THEOREM), iy + 20, IX(CEILING) - IX(THEOREM), 30);
+    ctx.restore();
+    /* everything past the ceiling is out of this method's reach entirely */
+    ctx.save();
+    ctx.beginPath(); ctx.rect(IX(CEILING), iy + 20, x1 - 1 - IX(CEILING), 30); ctx.clip();
+    ctx.strokeStyle = c.unreached; ctx.globalAlpha = .35; ctx.lineWidth = 1;
+    for (var d = -30; d < bw + 30; d += 8) {
+      ctx.beginPath(); ctx.moveTo(IX(CEILING) + d, iy + 50); ctx.lineTo(IX(CEILING) + d + 30, iy + 20); ctx.stroke();
+    }
+    ctx.restore();
+
+    ctx.strokeStyle = c.proved; ctx.lineWidth = 1.4;
+    ctx.beginPath(); ctx.moveTo(IX(THEOREM), iy + 14); ctx.lineTo(IX(THEOREM), iy + 56); ctx.stroke();
+    ctx.save(); ctx.setLineDash([4, 3]); ctx.strokeStyle = c.ceiling; ctx.lineWidth = 1.6;
+    ctx.beginPath(); ctx.moveTo(IX(CEILING), iy + 14); ctx.lineTo(IX(CEILING), iy + 56); ctx.stroke(); ctx.restore();
+
+    ctx.font = mono(10, 700); ctx.textAlign = "right"; ctx.fillStyle = c.proved;
+    ctx.fillText("2/3 = 0.66667  the theorem", IX(THEOREM) - 7, iy + 16);
+    ctx.textAlign = "left"; ctx.fillStyle = c.ceiling;
+    ctx.fillText("0.6818  the method's ceiling", IX(CEILING) + 7, iy + 16);
+    ctx.font = mono(9.5, 600); ctx.fillStyle = c.ceiling; ctx.textAlign = "center";
+    ctx.fillText("1.5 pts", (IX(THEOREM) + IX(CEILING)) / 2, iy + 68);
+    ctx.font = mono(9, 500); ctx.fillStyle = c.muted; ctx.textAlign = "left";
+    ctx.fillText("0.64", x0 + 3, iy + ih - 5);
+    ctx.textAlign = "right";
+    ctx.fillText("0.70   ← inset axis, 16.7× magnified", x1 - 3, iy + ih - 5);
+    ctx.textAlign = "center"; ctx.fillStyle = c.unreached; ctx.font = mono(9, 600);
+    ctx.fillText("beyond this method entirely", (IX(CEILING) + x1) / 2, iy + 42);
+  }
+
+  /* ============================ table + readouts ============================= */
+  function fillTable() {
+    var tb = document.getElementById("ladderBody");
+    var rows = "";
+    for (var i = 0; i < LADDER.length; i++) {
+      var r = LADDER[i];
+      var isNow = r.year <= state.year && (i === LADDER.length - 1 || LADDER[i + 1].year > state.year);
+      var sv = (r.simple === null) ? "<span class='muted'>unquantified</span>"
+        : (r.simple * 100).toFixed(2) + " %" + (r.simpleMT ? " <span class='muted'>/ " + (r.simpleMT * 100).toFixed(3) + " % windowed</span>" : "");
+      var dv = (r.distinct === null) ? "<span class='muted'>—</span>"
+        : (r.distinct * 100).toFixed(2) + " %" + (r.distinctMT ? " <span class='muted'>/ " + (r.distinctMT * 100).toFixed(3) + " % windowed</span>" : "");
+      rows += "<tr class='" + (isNow ? "now" : "") + "'><td class='num'>" + r.year + "</td><td>" + r.who +
+        "</td><td class='num'>" + sv + "</td><td class='num'>" + dv + "</td></tr>";
+    }
+    tb.innerHTML = rows;
+  }
+
+  function readouts() {
+    var r = valueAt(state.year, state.mode, state.windowed);
+    var p = r.v;
+    document.getElementById("pOn").textContent = (p * 100).toFixed(2) + " %";
+    document.getElementById("pUn").textContent = ((1 - p) * 100).toFixed(2) + " %";
+    var frac = "";
+    if (Math.abs(p - 2/3) < 1e-9) frac = "2/3";
+    else if (Math.abs(p - 5/6) < 1e-9) frac = "5/6";
+    else if (Math.abs(p - 5/12) < 1e-9) frac = "5/12";
+    else if (Math.abs(p - 1/3) < 1e-9) frac = "1/3";
+    else if (Math.abs(p - 0.4) < 1e-9) frac = "2/5";
+    else frac = p.toFixed(5);
+    if (p === 0) {
+      document.getElementById("pOnNote").innerHTML = (state.mode === "simple")
+        ? "<strong>no quantified certificate yet</strong> &mdash; Selberg 1942 proved a positive " +
+          "fraction exists without naming it, so there is nothing honest to plot"
+        : "<strong>no quantified certificate yet</strong> &mdash; the distinct-zero record we can " +
+          "cite begins with Wu in 2015";
+    } else {
+      document.getElementById("pOnNote").innerHTML =
+        frac + (r.isMT ? " &mdash; Montgomery&ndash;Taylor window" : "") + " &mdash; the certificate reaches this far";
+    }
+    document.getElementById("yearOut").textContent = state.year;
+    document.getElementById("whoOut").textContent = r.who;
+  }
+
+  function renderAll() { drawStrip(); drawBar(); drawLadder(); drawCeiling(); readouts(); fillTable(); }
+
+  /* ============================ wiring ====================================== */
+  var yearEl = document.getElementById("year");
+  yearEl.addEventListener("input", function () { state.year = Number(yearEl.value); renderAll(); });
+
+  function seg(idA, idB, onA, onB) {
+    var a = document.getElementById(idA), b = document.getElementById(idB);
+    a.addEventListener("click", function () { a.setAttribute("aria-pressed", "true"); b.setAttribute("aria-pressed", "false"); onA(); renderAll(); });
+    b.addEventListener("click", function () { b.setAttribute("aria-pressed", "true"); a.setAttribute("aria-pressed", "false"); onB(); renderAll(); });
+  }
+  seg("modeSimple", "modeDistinct",
+    function () { state.mode = "simple"; }, function () { state.mode = "distinct"; });
+  seg("cThm", "cMT",
+    function () { state.windowed = false; }, function () { state.windowed = true; });
+
+  document.getElementById("themeBtn").addEventListener("click", function () {
+    var root = document.documentElement;
+    var sysDark = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
+    var cur = root.getAttribute("data-theme") || (sysDark ? "dark" : "light");
+    root.setAttribute("data-theme", cur === "dark" ? "light" : "dark");
+    renderAll();
+  });
+
+  var rt;
+  window.addEventListener("resize", function () { clearTimeout(rt); rt = setTimeout(renderAll, REDUCED ? 0 : 90); });
+  if (window.matchMedia) {
+    var mq = window.matchMedia("(prefers-color-scheme: dark)");
+    if (mq.addEventListener) mq.addEventListener("change", renderAll);
+  }
+
+  renderAll();
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,15 @@
+{
+  "pr_number": 5996,
+  "archive_path": "docs/history/pr-reviews/PR-5996-feat-b-0343-pure-diffseedtree-idempotency-comparison-bounded-slice-4.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7GLylT",
+    "thread:PRRT_kwDOSF9kNM6FtTC_"
+  ],
+  "fetched_at": "2026-05-29T14:29:21.349Z",
+  "schema_version": "v1",
+  "commit_sha": "03b5d53ad46e3f63267af27741baadb031cf8301",
+  "title": "feat(B-0343): pure diffSeedTree idempotency comparison (bounded slice 4)",
+  "state": "MERGED",
+  "merged_at": "2026-05-29T14:28:56Z",
+  "head_ref": "otto-cli/b0343-slice4-seedtree-diff-2026-05-29"
+}

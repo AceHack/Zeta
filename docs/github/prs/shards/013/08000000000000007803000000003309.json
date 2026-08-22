@@ -1,0 +1,12 @@
+{
+  "pr_number": 13065,
+  "archive_path": "docs/history/pr-reviews/PR-13065-fix-test-the-society-readout-test-pinned-a-transient-the-population-fix-made-it-.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-21T04:59:32.249Z",
+  "schema_version": "v1",
+  "commit_sha": "18115520496f5b2b59f70bd679e798f3f189efff",
+  "title": "fix(test): the society readout test pinned a TRANSIENT — the population fix made it red, correctly",
+  "state": "MERGED",
+  "merged_at": "2026-08-21T04:58:56Z",
+  "head_ref": "fix/society-readout-transient-assertion"
+}

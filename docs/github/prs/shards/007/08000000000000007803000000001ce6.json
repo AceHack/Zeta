@@ -1,0 +1,12 @@
+{
+  "pr_number": 7398,
+  "archive_path": "docs/history/pr-reviews/PR-7398-docs-vocab-zetaidol-is-also-our-deterministic-synchronized-performance-common-ca.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-09T20:53:07.304Z",
+  "schema_version": "v1",
+  "commit_sha": "cc975371ef8491aa57e3dd3c6991d853437c4d6e",
+  "title": "docs(vocab): ZetaIdol is also our deterministic synchronized performance — common-cause ZetaId seed + coincidence generator (BellTest/CoincidenceClock) over Rx",
+  "state": "MERGED",
+  "merged_at": "2026-06-09T20:52:37Z",
+  "head_ref": "otto/zetaidol-deterministic-synchronized-performance-coincidence-generator-over-rx"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 8890,
+  "archive_path": "docs/history/pr-reviews/PR-8890-feat-algebra-full-interface-stack-ir-descriptions.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-21T06:42:21.050Z",
+  "schema_version": "v1",
+  "commit_sha": "0298071c6263b45e6a346ee46de292eb385d4268",
+  "title": "feat(algebra): full interface stack + IR descriptions",
+  "state": "MERGED",
+  "merged_at": "2026-06-21T06:41:56Z",
+  "head_ref": "alexa/interface-stack"
+}

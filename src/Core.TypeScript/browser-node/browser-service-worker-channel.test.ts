@@ -6,6 +6,10 @@ import {
 import {
   BROWSER_TAB_COORDINATOR_SCHEMA,
   startBrowserTabCoordinator,
+  type BrowserCausalCorrectionNotice,
+  type BrowserCausalCorrectionReplayAcknowledgement,
+  type BrowserCausalCorrectionReplayAdmission,
+  type BrowserCausalCorrectionReplayNotice,
   type BrowserCheckpointInvalidation,
   type BrowserDatabaseInvalidation,
   type BrowserTabChannel,
@@ -14,6 +18,10 @@ import {
 } from "./browser-tab-coordinator";
 
 type NativeListener = (event: { readonly data?: unknown }) => void;
+
+function admitted(admittedCorrections: number): BrowserCausalCorrectionReplayAdmission {
+  return { disposition: "admitted", admittedCorrections, feedback: null };
+}
 
 function invalidation(sourceTabId = "tab-a", revision = 9): BrowserTabChannelMessage {
   return {
@@ -144,6 +152,14 @@ describe("native service-worker browser channel", () => {
     const invalidationsB: BrowserCheckpointInvalidation[] = [];
     const databaseInvalidationsA: BrowserDatabaseInvalidation[] = [];
     const databaseInvalidationsB: BrowserDatabaseInvalidation[] = [];
+    const causalCorrectionsA: BrowserCausalCorrectionNotice[] = [];
+    const causalCorrectionsB: BrowserCausalCorrectionNotice[] = [];
+    const causalReplaysA: BrowserCausalCorrectionReplayNotice[] = [];
+    const causalReplaysB: BrowserCausalCorrectionReplayNotice[] = [];
+    const causalAcknowledgementsA: BrowserCausalCorrectionReplayAcknowledgement[] = [];
+    const retainedCorrections: readonly BrowserCausalCorrectionNotice[] = [
+      { sourceTabId: "tab-origin", sequence: "8", reinterpretsThrough: "5", deltaRows: 3 },
+    ];
     const options = {
       nodeId: "llmtv-room-service-worker",
       initialState: "foreground" as const,
@@ -159,6 +175,16 @@ describe("native service-worker browser channel", () => {
           initialSequence: 1,
           onCheckpointInvalidated: (value) => invalidationsA.push(value),
           onDatabaseInvalidated: (value) => databaseInvalidationsA.push(value),
+          onCausalCorrection: (value) => causalCorrectionsA.push(value),
+          causalCorrectionReplay: {
+            maxCorrections: 2,
+            snapshot: () => ({ handoffId: "handoff/service-worker", corrections: retainedCorrections }),
+            receive: (value) => {
+              causalReplaysA.push(value);
+              return admitted(value.corrections.length);
+            },
+            acknowledge: (value) => causalAcknowledgementsA.push(value),
+          },
         },
         channelA,
       ),
@@ -171,6 +197,16 @@ describe("native service-worker browser channel", () => {
           initialSequence: 2,
           onCheckpointInvalidated: (value) => invalidationsB.push(value),
           onDatabaseInvalidated: (value) => databaseInvalidationsB.push(value),
+          onCausalCorrection: (value) => causalCorrectionsB.push(value),
+          causalCorrectionReplay: {
+            maxCorrections: 2,
+            snapshot: () => ({ handoffId: "handoff/empty", corrections: [] }),
+            receive: (value) => {
+              causalReplaysB.push(value);
+              return admitted(value.corrections.length);
+            },
+            acknowledge: () => undefined,
+          },
         },
         channelB,
       ),
@@ -179,6 +215,27 @@ describe("native service-worker browser channel", () => {
     await mesh.drain();
     expect(coordinatorA.read().liveness.liveTabIds).toEqual(["tab-a", "tab-b"]);
     expect(coordinatorB.read().liveness.liveTabIds).toEqual(["tab-a", "tab-b"]);
+    expect(causalReplaysA).toEqual([]);
+    expect(causalReplaysB).toEqual([
+      {
+        handoffId: "handoff/service-worker",
+        sourceTabId: "tab-a",
+        targetTabId: "tab-b",
+        maxCorrections: 2,
+        corrections: retainedCorrections,
+      },
+    ]);
+    expect(causalAcknowledgementsA).toEqual([
+      {
+        handoffId: "handoff/service-worker",
+        sourceTabId: "tab-b",
+        targetTabId: "tab-a",
+        correctionCount: 1,
+        disposition: "admitted",
+        admittedCorrections: 1,
+        feedback: null,
+      },
+    ]);
 
     expect(coordinatorA.publishCheckpointInvalidation("saved", 42).ok).toBe(true);
     await mesh.drain();
@@ -191,6 +248,24 @@ describe("native service-worker browser channel", () => {
       { sourceTabId: "tab-b", databaseNodeId: "llmtv-room-service-worker:database", revision: 7 },
     ]);
     expect(databaseInvalidationsB).toEqual([]);
+
+    expect(
+      coordinatorA.publishCausalCorrection({
+        sequence: "9007199254740994",
+        reinterpretsThrough: "9007199254740993",
+        deltaRows: 2,
+      }).ok,
+    ).toBe(true);
+    await mesh.drain();
+    expect(causalCorrectionsA).toEqual([]);
+    expect(causalCorrectionsB).toEqual([
+      {
+        sourceTabId: "tab-a",
+        sequence: "9007199254740994",
+        reinterpretsThrough: "9007199254740993",
+        deltaRows: 2,
+      },
+    ]);
 
     expect(coordinatorB.stop(3).ok).toBe(true);
     await mesh.drain();

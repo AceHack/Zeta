@@ -1,0 +1,12 @@
+{
+  "pr_number": 9408,
+  "archive_path": "docs/history/pr-reviews/PR-9408-docs-ferry-adinkra-minimal-reflection-rigidity-of-ace-quasi-time-crystals-over-f.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-04T04:17:18.352Z",
+  "schema_version": "v1",
+  "commit_sha": "0099f5ab2cc365d9830d49ef6a5cf963bb69d40a",
+  "title": "docs(ferry): adinkra minimal reflection = rigidity of ace quasi-time-crystals, over Futamura (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-04T04:16:52Z",
+  "head_ref": "otto/ferry-adinkra-minimal-reflection-ace-time-crystals-over-futamura"
+}

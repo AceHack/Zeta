@@ -2,7 +2,7 @@
 #
 # nix-darwin host configuration for maintainer Macs (Apple Silicon).
 # Activates the Linux builder VM so the canonical AI-cluster installer
-# ISO build (`cd full-ai-cluster/usb-nixos-installer && nix build .#installer-iso`)
+# ISO build (`cd full-ai-cluster && nix build .#installer-iso`)
 # works locally on Apple Silicon without manual cross-compile gymnastics.
 #
 # Apply on a Mac that already has Nix installed. Recommended installer:

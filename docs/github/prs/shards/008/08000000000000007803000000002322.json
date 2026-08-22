@@ -1,0 +1,12 @@
+{
+  "pr_number": 8994,
+  "archive_path": "docs/history/pr-reviews/PR-8994-docs-decision-hexagonal-pki-secret-key-vault-custody-stable-ports-swappable-adap.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-21T20:07:19.754Z",
+  "schema_version": "v1",
+  "commit_sha": "5922a7b3c34fa31ed1f790c1c07ac83b8790ea21",
+  "title": "docs(decision): hexagonal PKI + secret/key/vault custody — stable ports, swappable adapters",
+  "state": "MERGED",
+  "merged_at": "2026-06-21T20:06:53Z",
+  "head_ref": "otto/decision-hexagonal-pki-vault-ports"
+}

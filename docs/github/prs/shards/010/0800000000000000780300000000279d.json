@@ -1,0 +1,12 @@
+{
+  "pr_number": 10141,
+  "archive_path": "docs/history/pr-reviews/PR-10141-fix-browser-stabilize-service-worker-smoke-activation.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-07T21:00:31.976Z",
+  "schema_version": "v1",
+  "commit_sha": "ab377c0f849c2c48185890487c52878a6aa58be2",
+  "title": "fix(browser): stabilize service-worker smoke activation",
+  "state": "MERGED",
+  "merged_at": "2026-08-07T20:59:50Z",
+  "head_ref": "claim/bug-browser-service-worker-smoke-race"
+}

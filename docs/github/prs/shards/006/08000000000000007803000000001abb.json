@@ -1,0 +1,12 @@
+{
+  "pr_number": 6843,
+  "archive_path": "docs/history/pr-reviews/PR-6843-docs-fs-merkle-merge-is-ancestry-free-independent-repos-streams-not-just-branche.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-07T14:43:46.404Z",
+  "schema_version": "v1",
+  "commit_sha": "48d2784c36836d69288a06c9211c0c06735e7bb9",
+  "title": "docs(fs-Merkle): merge is ancestry-free — independent repos/streams, not just branches",
+  "state": "MERGED",
+  "merged_at": "2026-06-07T14:43:22Z",
+  "head_ref": "capture/merge-is-ancestry-free-cross-repo"
+}

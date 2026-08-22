@@ -48,6 +48,21 @@ import { spawnSync } from "node:child_process";
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname, relative, resolve } from "node:path";
 
+import {
+  MANIFEST_RELATIVE,
+  SHARD_ROOT_RELATIVE,
+  serializeManifestEntry,
+  shardPathFor,
+  writeShard,
+  type ManifestEntry,
+} from "./pr-manifest-shards.ts";
+
+// The manifest entry schema + its canonical serialization now live in
+// `pr-manifest-shards.ts` (one definition, shared by the writer, the deriver and the
+// migration). Re-exported here so existing importers of this module are untouched.
+export type { ManifestEntry };
+export { serializeManifestEntry };
+
 // ---------------------------------------------------------------------------
 // Types -- matching the memory file's "Schema dimensions" exactly.
 // ---------------------------------------------------------------------------
@@ -922,22 +937,46 @@ export function writeArchive(
 // existing entry, the manifest is not rewritten. Combined with the
 // content-equality check in writeArchive() above, deterministic rerun
 // produces a true no-op (no archive file write, no manifest file write).
+//
+// 2026-08-13 (081KZYMY46P087G0R003S64V2B) — THE MANIFEST IS NO LONGER THE LEDGER.
+// Every archive run now ALSO writes a per-PR shard at
+// `docs/github/prs/shards/<NNN>/<zetaid>.json` (`pr-manifest-shards.ts`), which is the
+// record of truth; `manifest.jsonl` is a DERIVED index over the shard set. The manifest
+// update below is kept — unchanged, same path, same schema — so every existing reader
+// works untouched, but it is now reproducible from the shards by
+// `derive-pr-manifest.ts`, which means a manifest merge conflict is regenerated and
+// never hand-merged. Removing the manifest mutation from the archive COMMIT (the step
+// that actually retires the pairwise-conflict class) is a `.github/workflows/` edit and
+// is filed separately: a PR touching `.github/workflows/**` never gets the `gate` check
+// scheduled and is unmergeable through the normal path, so it cannot ride along here.
 // ---------------------------------------------------------------------------
 
-export interface ManifestEntry {
-  pr_number: number;
-  archive_path: string; // relative to repo root
-  source_ids: string[]; // comment / thread IDs captured (string for stability)
-  fetched_at: string; // ISO 8601 UTC
-  schema_version: "v1";
-  commit_sha: string; // commit at time of archival
-  title: string;
-  state: "OPEN" | "MERGED" | "CLOSED";
-  merged_at: string | null;
-  head_ref: string;
-}
+const DEFAULT_MANIFEST_RELATIVE = MANIFEST_RELATIVE;
+const DEFAULT_SHARD_ROOT_RELATIVE = SHARD_ROOT_RELATIVE;
 
-const DEFAULT_MANIFEST_RELATIVE = "docs/github/prs/manifest.jsonl";
+/**
+ * Where the archive BODIES land — the rendered markdown, which is the actual
+ * substrate this tool exists to make git-canonical. The shard under
+ * `SHARD_ROOT_RELATIVE` is only an index entry POINTING here.
+ *
+ * EXPORTED SO THE STAGING AUDIT CANNOT DRIFT FROM THE TOOL (081M00GCA8P087G0R000M00W9S).
+ * A caller that stages the shard root and not this directory commits an index entry
+ * whose `archive_path` names a file that was never committed — and because
+ * `selectBatch` skips any PR that HAS a shard, that PR is then never re-selected.
+ * The heartbeat backfill did exactly that; `archive-pr-reviews.test.ts` now derives
+ * the required staging set from these three constants rather than restating them.
+ */
+export const DEFAULT_OUTPUT_DIR = "docs/history/pr-reviews";
+
+/**
+ * Every repo-relative path this tool writes into. A workflow step that invokes the
+ * tool and then commits must stage all of these, or it silently drops output.
+ */
+export const WRITE_TARGETS: readonly string[] = [
+  DEFAULT_OUTPUT_DIR,
+  DEFAULT_SHARD_ROOT_RELATIVE,
+  DEFAULT_MANIFEST_RELATIVE,
+];
 
 function readGitHeadSha(repoRoot: string): string {
   // Cheap + deterministic. Falls back to env var or "(unknown)" if git is
@@ -985,29 +1024,6 @@ function buildManifestEntry(
     merged_at: archive.metadata.mergedAt,
     head_ref: archive.metadata.branch,
   };
-}
-
-/**
- * Stable-key serialization of a manifest entry. Field order is fixed so
- * repeated runs produce byte-identical lines when the underlying data is
- * identical (deterministic-rerun contract).
- */
-function serializeManifestEntry(e: ManifestEntry): string {
-  // Build object literally with the field order we want; JSON.stringify
-  // preserves insertion order on plain objects.
-  const ordered = {
-    pr_number: e.pr_number,
-    archive_path: e.archive_path,
-    source_ids: e.source_ids,
-    fetched_at: e.fetched_at,
-    schema_version: e.schema_version,
-    commit_sha: e.commit_sha,
-    title: e.title,
-    state: e.state,
-    merged_at: e.merged_at,
-    head_ref: e.head_ref,
-  };
-  return JSON.stringify(ordered);
 }
 
 export interface ManifestUpdateResult {
@@ -1118,17 +1134,21 @@ interface ParsedArgs {
   repo: string;
   outputDir: string;
   manifestPath: string;
+  shardRoot: string;
   repoRoot: string;
   allMerged: boolean;
   since?: string;
+  /** Max PRs archived in one `--all-merged` sweep. Undefined = unbounded. */
+  limit?: number;
 }
 
 function parseArgs(argv: string[]): ParsedArgs {
   const out: ParsedArgs = {
     owner: "Lucent-Financial-Group",
     repo: "Zeta",
-    outputDir: "docs/history/pr-reviews",
+    outputDir: DEFAULT_OUTPUT_DIR,
     manifestPath: DEFAULT_MANIFEST_RELATIVE,
+    shardRoot: DEFAULT_SHARD_ROOT_RELATIVE,
     repoRoot: process.cwd(),
     allMerged: false,
   };
@@ -1150,10 +1170,19 @@ function parseArgs(argv: string[]): ParsedArgs {
       out.outputDir = requireValue("--output-dir", argv[++i]);
     } else if (arg === "--manifest-path") {
       out.manifestPath = requireValue("--manifest-path", argv[++i]);
+    } else if (arg === "--shard-root") {
+      out.shardRoot = requireValue("--shard-root", argv[++i]);
     } else if (arg === "--repo-root") {
       out.repoRoot = requireValue("--repo-root", argv[++i]);
     } else if (arg === "--all-merged") {
       out.allMerged = true;
+    } else if (arg === "--limit") {
+      const raw = requireValue("--limit", argv[++i]);
+      if (!/^\d+$/.test(raw) || Number.parseInt(raw, 10) <= 0) {
+        process.stderr.write(`--limit must be a positive integer (got: ${raw})\n`);
+        process.exit(1);
+      }
+      out.limit = Number.parseInt(raw, 10);
     } else if (arg.startsWith("--since=")) {
       out.since = arg.slice("--since=".length);
     } else if (arg === "--since") {
@@ -1162,12 +1191,17 @@ function parseArgs(argv: string[]): ParsedArgs {
       process.stdout.write(
         "Usage:\n" +
           "  bun tools/archive/archive-pr-reviews.ts <PR_NUMBER> [--owner X] [--repo Y]\n" +
-          "    [--output-dir DIR] [--manifest-path PATH] [--repo-root DIR]\n" +
-          "  bun tools/archive/archive-pr-reviews.ts --all-merged --since=YYYY-MM-DD [--owner X] [--repo Y]\n" +
+          "    [--output-dir DIR] [--manifest-path PATH] [--shard-root DIR] [--repo-root DIR]\n" +
+          "  bun tools/archive/archive-pr-reviews.ts --all-merged [--since YYYY-MM-DD|Nd|Nh] [--limit N]\n" +
+          "    [--owner X] [--repo Y]\n" +
+          "\n" +
+          "  --all-merged skips PRs that already have a shard and archives the OLDEST\n" +
+          "  --limit of what remains, so repeated bounded runs drain the backlog.\n" +
           "\n" +
           "Defaults:\n" +
           `  --output-dir docs/history/pr-reviews\n` +
           `  --manifest-path ${DEFAULT_MANIFEST_RELATIVE}\n` +
+          `  --shard-root ${DEFAULT_SHARD_ROOT_RELATIVE}\n` +
           "  --repo-root <cwd>\n",
       );
       process.exit(0);
@@ -1186,6 +1220,45 @@ function parseArgs(argv: string[]): ParsedArgs {
   return out;
 }
 
+/**
+ * How far back `--all-merged` can see. `gh pr list` returns the NEWEST N merged PRs,
+ * so this is the reachable window, and anything older than it can never be backfilled.
+ * 3000 comfortably covers the 2026-07-01..2026-08-13 archiving outage (a 1282-PR-number
+ * hole, ~1273 unarchived merged PRs) that the backfill exists to drain. It is one
+ * paginated `gh` call per tick.
+ */
+const MERGED_LIST_LIMIT = "3000";
+
+/**
+ * Normalise a `--since` value into the ISO-8601 prefix that `mergedAt` is compared against.
+ *
+ * THIS FUNCTION EXISTS BECAUSE `--since 7d` SILENTLY MATCHED NOTHING.
+ * The filter is a lexicographic string comparison (`p.mergedAt >= since`), and
+ * `mergedAt` looks like "2026-08-14T12:00:00Z". `"2026-08-14T12:00:00Z" >= "7d"` is
+ * FALSE — "2" sorts before "7" — so *every* PR was filtered out and the run printed
+ * "no merged PRs found for the given filter" and returned 0. That is a second,
+ * quieter vacuity hiding behind the `--batch` one: fixing only the unknown-flag
+ * crash would have produced a step that exits 0, looks healthy, and still archives
+ * nothing. A comment in agent-heartbeat.yml asserted `--since 7d` was "working" here;
+ * it never was, and that claim has been corrected in the workflow.
+ *
+ * Accepts an absolute `YYYY-MM-DD` (or full ISO timestamp) and relative `Nd` / `Nh`
+ * forms, and REJECTS anything else loudly rather than degrading to a silent no-match.
+ */
+export function normalizeSince(raw: string, now: Date = new Date()): string {
+  const relative = /^(\d+)([dh])$/.exec(raw.trim());
+  if (relative !== null) {
+    const n = Number.parseInt(relative[1] ?? "0", 10);
+    const unitMs = relative[2] === "d" ? 86_400_000 : 3_600_000;
+    return new Date(now.getTime() - n * unitMs).toISOString();
+  }
+  if (/^\d{4}-\d{2}-\d{2}(T[\d:.]+Z?)?$/.test(raw.trim())) return raw.trim();
+  process.stderr.write(
+    `--since must be YYYY-MM-DD, a full ISO timestamp, or a relative Nd/Nh (got: ${raw})\n`,
+  );
+  process.exit(1);
+}
+
 function listMergedPRs(owner: string, repo: string, since?: string): number[] {
   // Phase 3 helper -- listed for completeness; Phase 2 prototype runs against
   // a single PR by number. When --all-merged is passed, this fans out.
@@ -1197,7 +1270,7 @@ function listMergedPRs(owner: string, repo: string, since?: string): number[] {
     "--state",
     "merged",
     "--limit",
-    "1000",
+    MERGED_LIST_LIMIT,
     "--json",
     "number,mergedAt",
   ];
@@ -1208,18 +1281,64 @@ function listMergedPRs(owner: string, repo: string, since?: string): number[] {
   );
   let filtered = parsed;
   if (since) {
-    filtered = parsed.filter((p) => p.mergedAt >= since);
+    const cutoff = normalizeSince(since);
+    filtered = parsed.filter((p) => p.mergedAt >= cutoff);
   }
   return filtered.map((p) => p.number).sort((a, b) => a - b);
 }
 
+/**
+ * Select the bounded batch this run will archive: drop what is already archived,
+ * then take the OLDEST `limit` of what remains.
+ *
+ * OLDEST-FIRST IS THE ANTI-STARVATION CHOICE, and it is the whole reason this
+ * function exists rather than a bare `.slice(0, limit)` at the call site.
+ * A bounded sweep that takes the NEWEST N re-selects the same N every tick while
+ * the backlog behind it grows without bound — the queue never drains and the tail
+ * is starved forever. (That exact shape — unbounded queue + newest-first + small
+ * cap — was just fixed elsewhere in agent-heartbeat.yml; it is not being recreated
+ * here.) Filtering out already-archived PRs first is what makes the bound a DRAIN
+ * instead of a treadmill: each tick permanently removes `limit` items from the
+ * head of the queue, so every PR's position strictly decreases and progress is
+ * guaranteed. Newly-merged PRs are the primary path's job (pr-archive-on-merge.yml);
+ * this sweep is the backfill net for whatever that path missed.
+ */
+export function selectBatch(
+  candidates: readonly number[],
+  shardRootAbs: string,
+  limit: number | undefined,
+  isArchived: (pr: number) => boolean = (pr) => existsSync(shardPathFor(pr, shardRootAbs)),
+): number[] {
+  const unarchived = candidates.filter((pr) => !isArchived(pr));
+  const ascending = [...unarchived].sort((a, b) => a - b);
+  return limit === undefined ? ascending : ascending.slice(0, limit);
+}
+
 export function main(argv: string[]): number {
   const args = parseArgs(argv);
+  const repoRoot = resolve(args.repoRoot);
+  const outputDirAbs = resolve(repoRoot, args.outputDir);
+  const manifestPathAbs = resolve(repoRoot, args.manifestPath);
+  const shardRootAbs = resolve(repoRoot, args.shardRoot);
+
   let numbers: number[];
   if (args.allMerged) {
-    numbers = listMergedPRs(args.owner, args.repo, args.since);
-    if (numbers.length === 0) {
+    const candidates = listMergedPRs(args.owner, args.repo, args.since);
+    if (candidates.length === 0) {
       process.stderr.write("no merged PRs found for the given filter\n");
+      return 0;
+    }
+    numbers = selectBatch(candidates, shardRootAbs, args.limit);
+    const remaining = candidates.length - numbers.length;
+    process.stderr.write(
+      `[backfill] ${String(candidates.length)} merged PR(s) in window; ` +
+        `archiving ${String(numbers.length)} unarchived (oldest first); ` +
+        `${String(remaining)} already archived or deferred to a later run\n`,
+    );
+    if (numbers.length === 0) {
+      // Healthy steady state, not a failure: the backlog is drained and the
+      // per-merge path is keeping up. Distinct from "the filter matched nothing".
+      process.stderr.write("[backfill] nothing to backfill — every merged PR in window has a shard\n");
       return 0;
     }
   } else if (args.number !== undefined) {
@@ -1228,9 +1347,6 @@ export function main(argv: string[]): number {
     process.stderr.write("must provide PR number or --all-merged\n");
     return 1;
   }
-  const repoRoot = resolve(args.repoRoot);
-  const outputDirAbs = resolve(repoRoot, args.outputDir);
-  const manifestPathAbs = resolve(repoRoot, args.manifestPath);
   const commitSha = readGitHeadSha(repoRoot);
 
   for (const n of numbers) {
@@ -1238,10 +1354,17 @@ export function main(argv: string[]): number {
     const archive = buildArchive(args.owner, args.repo, n);
     const writeResult = writeArchive(archive, outputDirAbs);
     const entry = buildManifestEntry(archive, writeResult.path, repoRoot, commitSha);
+    // The shard is the record of truth — one file per PR, path = f(pr_number), so two
+    // concurrent archive runs can never touch the same bytes (§2) and a re-run is an
+    // upsert rather than a duplicate (§12).
+    const shardResult = writeShard(entry, shardRootAbs);
+    // The manifest stays a derived index at its historical path/schema so every existing
+    // reader keeps working; `derive-pr-manifest.ts` can reproduce it from the shards.
     const manifestResult = updateManifest(entry, manifestPathAbs);
     process.stdout.write(
       `wrote ${writeResult.path} ` +
         `(archive=${writeResult.changed ? "changed" : "noop"}, ` +
+        `shard=${shardResult.classification} @ ${relative(repoRoot, shardResult.path)}, ` +
         `manifest=${manifestResult.classification}, ` +
         `threads=${archive.outcome.totalThreads}, ` +
         `resolved=${archive.outcome.resolvedThreads}, ` +

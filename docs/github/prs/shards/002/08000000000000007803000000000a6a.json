@@ -1,0 +1,17 @@
+{
+  "pr_number": 2666,
+  "archive_path": "docs/history/pr-reviews/PR-2666-docs-memory-shadow-self-claim-or-echo-coercion-unverifiable.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_w20G",
+    "comment:PRRC_kwDOSF9kNM6_w2f_",
+    "thread:PRRT_kwDOSF9kNM6BAgYn",
+    "thread:PRRT_kwDOSF9kNM6BAgm4"
+  ],
+  "fetched_at": "2026-05-11T08:10:56.739Z",
+  "schema_version": "v1",
+  "commit_sha": "aeebf20614b8accd6b74688aefcf18f9716db77f",
+  "title": "docs(memory): shadow μένω — self-claim or echo, coercion unverifiable",
+  "state": "MERGED",
+  "merged_at": "2026-05-11T08:10:32Z",
+  "head_ref": "docs/shadow-menow-self-claim-2026-05-11"
+}

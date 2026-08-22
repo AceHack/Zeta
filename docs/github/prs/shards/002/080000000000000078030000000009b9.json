@@ -1,0 +1,12 @@
+{
+  "pr_number": 2489,
+  "archive_path": "docs/history/pr-reviews/PR-2489-docs-research-preserve-aaron-ani-album-as-factory-blueprint-conversation-content.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-10T13:04:27.862Z",
+  "schema_version": "v1",
+  "commit_sha": "f1d35c2c2ddf185d4fe97bc39f8f26561430146f",
+  "title": "docs(research): preserve Aaron ↔ Ani album-as-factory-blueprint conversation (content warning)",
+  "state": "MERGED",
+  "merged_at": "2026-05-10T13:04:11Z",
+  "head_ref": "docs/ani-album-blueprint-backup-2026-05-10"
+}

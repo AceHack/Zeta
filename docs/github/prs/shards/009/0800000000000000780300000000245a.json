@@ -1,0 +1,12 @@
+{
+  "pr_number": 9306,
+  "archive_path": "docs/history/pr-reviews/PR-9306-feat-residual-r4-spectrum-over-a-real-moral-gym-trace-lens-poverty-vs-injected-e.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-03T13:57:04.686Z",
+  "schema_version": "v1",
+  "commit_sha": "ec09b769c89e25438e8304a8aaa3cee96feb5647",
+  "title": "feat(residual): R4 spectrum over a REAL moral-gym trace — lens poverty vs injected entropy (081KTF7Q3TT)",
+  "state": "MERGED",
+  "merged_at": "2026-07-03T13:56:38Z",
+  "head_ref": "otto/residual-real-gym-trace"
+}

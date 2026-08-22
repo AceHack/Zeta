@@ -1,0 +1,12 @@
+{
+  "pr_number": 8829,
+  "archive_path": "docs/history/pr-reviews/PR-8829-backlog-workitem-microcontroller-rtos-support-anchor-to-net-nanoframework-cosmos.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-21T02:31:21.024Z",
+  "schema_version": "v1",
+  "commit_sha": "7b025ba733cd01c8886c749a7550a2b95e37406d",
+  "title": "backlog(workitem): microcontroller + RTOS support — anchor to .NET nanoFramework + Cosmos",
+  "state": "MERGED",
+  "merged_at": "2026-06-21T02:30:54Z",
+  "head_ref": "otto/workitem-microcontroller-rtos"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 10216,
+  "archive_path": "docs/history/pr-reviews/PR-10216-docs-workitem-zetadb-fold-has-no-cross-substrate-concurrency-guard-critical-path.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-09T19:39:18.502Z",
+  "schema_version": "v1",
+  "commit_sha": "41c0d40dfca3b0c23dadfbd8ee72d7d6231c8652",
+  "title": "docs(workitem): zetadb fold has no cross-substrate concurrency guard (critical path for runner+local dogfooding)",
+  "state": "MERGED",
+  "merged_at": "2026-08-09T19:38:46Z",
+  "head_ref": "shadow/file-zetadb-concurrent-fold-race"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 9029,
+  "archive_path": "docs/history/pr-reviews/PR-9029-deps-bump-the-fsharp-and-tooling-group-with-1-update.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-16T18:08:11.097Z",
+  "schema_version": "v1",
+  "commit_sha": "89bb4fb9ffccabce01fd5f00d837d69e30ab051f",
+  "title": "deps: Bump the fsharp-and-tooling group with 1 update",
+  "state": "MERGED",
+  "merged_at": "2026-07-01T21:52:04Z",
+  "head_ref": "dependabot/nuget/fsharp-and-tooling-74635e830d"
+}

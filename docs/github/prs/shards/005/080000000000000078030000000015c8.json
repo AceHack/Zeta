@@ -1,0 +1,12 @@
+{
+  "pr_number": 5576,
+  "archive_path": "docs/history/pr-reviews/PR-5576-docs-tick-2026-05-27t18-09z-otto-cli-autonomous-loop-cold-boot.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-27T18:18:14.773Z",
+  "schema_version": "v1",
+  "commit_sha": "b0e4065a1066670fb26b01f380c9ca590c945c69",
+  "title": "docs(tick): 2026-05-27T18:09Z Otto-CLI autonomous-loop cold-boot",
+  "state": "MERGED",
+  "merged_at": "2026-05-27T18:17:47Z",
+  "head_ref": "otto-cli/cold-boot-1809z-2026-05-27"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 6800,
+  "archive_path": "docs/history/pr-reviews/PR-6800-fix-core-ordinal-collation-for-hierarchy-residuated-aggregate-f-core-audit-compl.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-07T11:41:17.367Z",
+  "schema_version": "v1",
+  "commit_sha": "6f2566677f349194a32ad641b82d965dc15f1022",
+  "title": "fix(Core): ordinal collation for Hierarchy/Residuated/Aggregate — F# core audit COMPLETE (B-0969)",
+  "state": "MERGED",
+  "merged_at": "2026-06-07T11:40:55Z",
+  "head_ref": "fix/hierarchy-residuated-aggregate-ordinal-b0969"
+}

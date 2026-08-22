@@ -1,0 +1,12 @@
+{
+  "pr_number": 4950,
+  "archive_path": "docs/history/pr-reviews/PR-4950-feat-ai-cluster-cookie-cutter-node-provisioning-via-disko-longhorn-multi-disk.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-25T16:33:12.347Z",
+  "schema_version": "v1",
+  "commit_sha": "bbabef4e28839c48eb8ced250b29facce129073f",
+  "title": "feat(ai-cluster): cookie-cutter node provisioning via disko + Longhorn multi-disk",
+  "state": "MERGED",
+  "merged_at": "2026-05-25T16:32:55Z",
+  "head_ref": "feat/disko-cookie-cutter-2026-05-25-c2"
+}

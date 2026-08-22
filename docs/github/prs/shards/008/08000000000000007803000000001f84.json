@@ -1,0 +1,12 @@
+{
+  "pr_number": 8068,
+  "archive_path": "docs/history/pr-reviews/PR-8068-fix-gate-grandfather-tick-shard-finding-rest-push-ts-forge-host-move.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-13T21:26:16.527Z",
+  "schema_version": "v1",
+  "commit_sha": "fad9f4b7fdd73edd81f795c7f7193f90d4b4730d",
+  "title": "fix(gate): grandfather tick-shard finding (rest-push.ts->forge-host move)",
+  "state": "MERGED",
+  "merged_at": "2026-06-13T21:25:51Z",
+  "head_ref": "shadow/tick-shard-baseline-rest-push"
+}

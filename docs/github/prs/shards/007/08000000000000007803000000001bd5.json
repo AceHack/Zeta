@@ -1,0 +1,12 @@
+{
+  "pr_number": 7125,
+  "archive_path": "docs/history/pr-reviews/PR-7125-docs-research-staged-coincidence-gan-the-dst-harness-is-the-omniscient-observer-.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-08T23:10:33.285Z",
+  "schema_version": "v1",
+  "commit_sha": "64f7334199a80603b32f2ec520b41c5566552806",
+  "title": "docs(research): staged-coincidence GAN + the DST harness is the omniscient observer (time is not)",
+  "state": "MERGED",
+  "merged_at": "2026-06-08T23:10:15Z",
+  "head_ref": "otto/research-staged-coincidence-gan-dst-harness-omniscient-observer"
+}

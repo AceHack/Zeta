@@ -1,0 +1,12 @@
+{
+  "pr_number": 7828,
+  "archive_path": "docs/history/pr-reviews/PR-7828-feat-chip8-the-stack-depth-fault-16-frame-cap-recorded-never-fatal-dynamicvalue-.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-11T23:06:36.188Z",
+  "schema_version": "v1",
+  "commit_sha": "863d36519ea421e6aa9dcdb00a82e8e2b7695184",
+  "title": "feat(chip8): the stack-depth fault (16-frame cap, recorded never fatal) + DynamicValue support table + the wish list",
+  "state": "MERGED",
+  "merged_at": "2026-06-11T23:06:09Z",
+  "head_ref": "shadow-stack-fault"
+}

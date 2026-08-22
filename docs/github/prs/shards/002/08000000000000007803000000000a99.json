@@ -1,0 +1,12 @@
+{
+  "pr_number": 2713,
+  "archive_path": "docs/history/pr-reviews/PR-2713-fix-memory-index-amara-absorption-correction.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-11T15:13:35.676Z",
+  "schema_version": "v1",
+  "commit_sha": "84d354af1d829827e20421e553127c3c78070b99",
+  "title": "fix(memory): index Amara absorption correction",
+  "state": "MERGED",
+  "merged_at": "2026-05-11T15:13:10Z",
+  "head_ref": "codex/fix-amara-absorption-memory-index-2026-05-11"
+}

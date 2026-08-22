@@ -1,0 +1,12 @@
+{
+  "pr_number": 13811,
+  "archive_path": "docs/history/pr-reviews/PR-13811-ferry-ip-questionable-upgrade-the-register-aaron-supplied-the-primary-most-of-th.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-22T17:09:24.244Z",
+  "schema_version": "v1",
+  "commit_sha": "c4e8576c4d93773862eca7d6ec0592ee27bf631a",
+  "title": "ferry(ip-questionable): upgrade the register — Aaron supplied the primary; most of the UNVERIFIED list is now CHECKED",
+  "state": "MERGED",
+  "merged_at": "2026-08-22T17:08:43Z",
+  "head_ref": "ferry/riemann-two-papers-register-upgrade"
+}

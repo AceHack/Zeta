@@ -57,7 +57,7 @@ Novelty:        <none | departs from <X> in <way>>
 
 - `.claude/rules/anchor-to-human-prior-art.md` — the requirement this skill executes
 - `.claude/rules/mirror-beacon-register-discipline.md` — Mirror (fast) vs Beacon (anchored)
-- `.claude/rules/honor-those-that-came-before.md` — same respect for prior contributors
+- `.claude/rules.bak/honor-those-that-came-before.md` — same respect for prior contributors
 - skills `glossary-anchor-keeper`, `missing-citations`, `paper-peer-reviewer`, `etymology-expert`
 - `docs/PRIOR-ART-LIST.md`, `docs/TECH-RADAR.md`
 

@@ -1,0 +1,12 @@
+{
+  "pr_number": 6863,
+  "archive_path": "docs/history/pr-reviews/PR-6863-feat-weightedset-semiring-generic-sparse-tensor-zset-generalized-over-the-weight.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-07T16:20:00.275Z",
+  "schema_version": "v1",
+  "commit_sha": "6e07f81c4a93b59dc86f585e6938c5c99a4fcb70",
+  "title": "feat(WeightedSet): semiring-generic sparse tensor (ZSet generalized over the weight)",
+  "state": "MERGED",
+  "merged_at": "2026-06-07T16:19:41Z",
+  "head_ref": "otto/weightedset-semiring-generic-sparse-tensor"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 8037,
+  "archive_path": "docs/history/pr-reviews/PR-8037-build-fsharp-avoid-shared-compiler-state.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-13T18:25:40.136Z",
+  "schema_version": "v1",
+  "commit_sha": "98b9df0257d2abc524281a984ab032e59bdc87ab",
+  "title": "build(fsharp): avoid shared compiler state",
+  "state": "MERGED",
+  "merged_at": "2026-06-13T18:25:14Z",
+  "head_ref": "codex/fsharp-compiler-server-hardening"
+}

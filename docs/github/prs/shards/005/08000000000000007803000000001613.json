@@ -1,0 +1,17 @@
+{
+  "pr_number": 5651,
+  "archive_path": "docs/history/pr-reviews/PR-5651-docs-b-0799-add-synthetic-only-harness-design.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7FiJSL",
+    "comment:PRRC_kwDOSF9kNM7FiJSm",
+    "thread:PRRT_kwDOSF9kNM6FPSX2",
+    "thread:PRRT_kwDOSF9kNM6FPSXi"
+  ],
+  "fetched_at": "2026-05-27T22:09:07.116Z",
+  "schema_version": "v1",
+  "commit_sha": "b24d2296e0be51da0cafc953e2596352a95efeaa",
+  "title": "docs(b-0799): add synthetic-only harness design",
+  "state": "MERGED",
+  "merged_at": "2026-05-27T22:08:43Z",
+  "head_ref": "claim/backlog-0799-synthetic-harness-design-20260527"
+}

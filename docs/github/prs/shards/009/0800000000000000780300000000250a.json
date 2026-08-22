@@ -1,0 +1,12 @@
+{
+  "pr_number": 9482,
+  "archive_path": "docs/history/pr-reviews/PR-9482-fix-bayesian-p1-closed-busdelaysim-makes-the-egg-s-rhocount-rhopost-reproducible.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-04T18:59:26.188Z",
+  "schema_version": "v1",
+  "commit_sha": "e0707681bf1ad9c0fecca84bb08117714fdd89a6",
+  "title": "fix(bayesian): P1 closed — BusDelaySim makes the Egg's rhoCount/rhoPost reproducible, DST-style (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-04T18:58:59Z",
+  "head_ref": "otto/p1-busdelaysim-landed"
+}

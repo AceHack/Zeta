@@ -1,0 +1,12 @@
+{
+  "pr_number": 9722,
+  "archive_path": "docs/history/pr-reviews/PR-9722-feat-observe-phase-erasure-ecc-over-deterministic-phase-time-adinkra-connection.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-11T18:12:35.924Z",
+  "schema_version": "v1",
+  "commit_sha": "519659990604130732432f5d068612923815c90d",
+  "title": "feat(observe): phase-erasure — ECC over deterministic phase time (Adinkra connection)",
+  "state": "MERGED",
+  "merged_at": "2026-07-11T18:12:03Z",
+  "head_ref": "claim/kiro-phase-erasure-2026-07-11"
+}

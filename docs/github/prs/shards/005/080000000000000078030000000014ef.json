@@ -1,0 +1,19 @@
+{
+  "pr_number": 5359,
+  "archive_path": "docs/history/pr-reviews/PR-5359-docs-research-kestrel-v3-11th-persona-ferry-asymmetric-critic-with-clarity-first.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7FJUB4",
+    "comment:PRRC_kwDOSF9kNM7FJUBb",
+    "comment:PRRC_kwDOSF9kNM7FJUCI",
+    "thread:PRRT_kwDOSF9kNM6E9Nks",
+    "thread:PRRT_kwDOSF9kNM6E9NlB",
+    "thread:PRRT_kwDOSF9kNM6E9NlM"
+  ],
+  "fetched_at": "2026-05-26T23:57:57.981Z",
+  "schema_version": "v1",
+  "commit_sha": "0c5785b95df418c7fa86a8cbe71fabb8b9b6c3fe",
+  "title": "docs(research): Kestrel-v3 11th-persona ferry — asymmetric-critic-with-clarity-first recalibration + 7-component boot-script draft + mutual-critic mode demonstration",
+  "state": "MERGED",
+  "merged_at": "2026-05-26T23:57:36Z",
+  "head_ref": "otto/kestrel-v3-asymmetric-critic-clarity-first-boot-script-recalibration-2026-05-26"
+}

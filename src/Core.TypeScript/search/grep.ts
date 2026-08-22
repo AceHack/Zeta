@@ -1,5 +1,5 @@
 #!/usr/bin/env bun
-// tools/search/grep.ts — safe content-search wrapper with noise-dir excludes
+// src/Core.TypeScript/search/grep.ts — safe content-search wrapper with noise-dir excludes
 // baked in. Distinct from concept-index.ts (a curated semantic index); this is
 // the raw ad-hoc content grep an agent reaches for, made correct-by-construction.
 //
@@ -18,7 +18,7 @@
 // Cross-repo aware: `--repo ../SQLSharp` searches a sibling repo, still skipping
 // THAT repo's references/prior-art (every repo mirrors the same convention).
 //
-//   bun tools/search/grep.ts <substring> [--repo <dir>] [--ext ts,md] [-i] [--files]
+//   bun src/Core.TypeScript/search/grep.ts <substring> [--repo <dir>] [--ext ts,md] [-i] [--files]
 //
 // Options:
 //   --repo <dir>   root to search (default: cwd)
@@ -35,28 +35,22 @@
 // EVERYWHERE — including this Windows laptop, which has no `rg` on PATH (2026-05-31).
 
 import { resolve, relative, join, sep } from "node:path";
+import { EXCLUDE_BASENAMES as SHARED_BASENAMES, matchExcludedTree } from "./exclusions.ts";
 import { readdirSync, fstatSync, statSync, readFileSync, openSync, closeSync, type Dirent } from "node:fs";
 
-/** Directory basenames never worth searching (build outputs / vendored deps).
- *  Mirrors the repo's established ignore set (gitignore / tsconfig / tooling). */
-export const EXCLUDE_BASENAMES = new Set([
-  ".git",
-  "node_modules",
-  "bin",
-  "obj",
-  "target",
-  ".playwright-mcp",
-  "db/drop",
-  // .NET / Lean / benchmark build outputs (regeneratable; not source).
-  "artifacts",
-  "TestResults",
-  "BenchmarkDotNet.Artifacts",
-  ".lake",
-]);
-
-/** Repo-relative POSIX paths to skip wholesale. references/prior-art is the
- *  load-bearing one — gigabytes of mirrored upstream repos (NOT our code). */
-export const EXCLUDE_RELPATHS = ["references/prior-art"];
+// The exclusion set lives in ONE place (`exclusions.ts`) and is re-exported here
+// so this file's existing consumers keep working unchanged. It used to be a
+// second hand-maintained copy, which is how `references/prior-art` stayed at the
+// centre of the list long after it went empty (8.0K, measured 2026-08-22) while
+// the trees that actually cost hours — `src/Core.Lean4/.lake` at 6.9G, the cargo
+// `target` dirs — were only caught incidentally by basename.
+//
+// NOTE, and read this before reaching for this file: `grep.ts` prunes noise but
+// has NO scope budget, so on a large tree it is itself the runaway it was written
+// to prevent (measured 2026-08-22: no output and no completion in 300s over this
+// repo, 0% CPU, blocked in synchronous reads). For ad-hoc search prefer
+// `search.ts`, which refuses an over-budget scope in ~2s instead of hanging.
+export { EXCLUDE_BASENAMES, EXCLUDE_RELPATHS } from "./exclusions.ts";
 
 /** Files larger than this are skipped (likely data/binary, not source). */
 const MAX_FILE_BYTES = 2 * 1024 * 1024;
@@ -83,9 +77,8 @@ function relPosix(root: string, abs: string): string {
 /** True if this directory should be pruned from the walk. */
 export function isExcludedDir(root: string, absDir: string): boolean {
   const base = absDir.split(sep).pop() ?? "";
-  if (EXCLUDE_BASENAMES.has(base)) return true;
-  const rp = relPosix(root, absDir);
-  return EXCLUDE_RELPATHS.some((e) => rp === e || rp.startsWith(e + "/"));
+  if (SHARED_BASENAMES.has(base)) return true;
+  return matchExcludedTree(relPosix(root, absDir)) !== null;
 }
 
 /** A NUL byte in the first 1KB → treat as binary, skip. (Char-code check so
@@ -198,7 +191,7 @@ export function parseArgs(argv: string[]): ParsedArgs | { error: string } {
 
   const needle = positionals.join(" ").trim();
   if (!needle) {
-    return { error: "usage: bun tools/search/grep.ts <substring> [--repo <dir>] [--ext ts,md] [-i] [--files]" };
+    return { error: "usage: bun src/Core.TypeScript/search/grep.ts <substring> [--repo <dir>] [--ext ts,md] [-i] [--files]" };
   }
 
   // Fail loud on a bad search root: a missing/non-directory --repo would otherwise

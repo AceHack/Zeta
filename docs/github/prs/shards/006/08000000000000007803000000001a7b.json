@@ -1,0 +1,12 @@
+{
+  "pr_number": 6779,
+  "archive_path": "docs/history/pr-reviews/PR-6779-feat-command-roadmap-1-the-zeta-cli-exe-runnable-no-git-cli-tool-slice-4.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-07T10:05:00.949Z",
+  "schema_version": "v1",
+  "commit_sha": "bae48c4e762c902d909ab2e159ed32aa5c4e6aef",
+  "title": "feat(command/roadmap-#1): the zeta CLI exe — runnable no-git-CLI tool (slice 4)",
+  "state": "MERGED",
+  "merged_at": "2026-06-07T10:04:44Z",
+  "head_ref": "otto/command-slice-4-zeta-cli-exe"
+}

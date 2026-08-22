@@ -1,0 +1,12 @@
+{
+  "pr_number": 6280,
+  "archive_path": "docs/history/pr-reviews/PR-6280-backlog-b-0953-git-v2-handshake-f-looks-like-git-dbsp-retraction-algebra-same-ob.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-31T23:38:27.541Z",
+  "schema_version": "v1",
+  "commit_sha": "a33db59bd6b003aa93cc1b3b544cf806df74b728",
+  "title": "backlog(B-0953): Git-V2 handshake — F# looks-like-git → DBSP/retraction-algebra, same objects, agent-speed, upstream",
+  "state": "MERGED",
+  "merged_at": "2026-05-31T23:38:09Z",
+  "head_ref": "otto-cli/b0953-git-v2-handshake-2026-05-31"
+}

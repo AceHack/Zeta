@@ -1,0 +1,12 @@
+{
+  "pr_number": 2298,
+  "archive_path": "docs/history/pr-reviews/PR-2298-chore-b-0347-carve-final-5-skill-descriptions-batch-21-completes-b-0347.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-09T11:17:39.140Z",
+  "schema_version": "v1",
+  "commit_sha": "47cfa8b3ffba9906989956cdc6c1e7b872633b13",
+  "title": "chore(B-0347): carve final 5 skill descriptions (batch 21 — completes B-0347)",
+  "state": "MERGED",
+  "merged_at": "2026-05-09T11:17:24Z",
+  "head_ref": "chore/b0347-carve-batch-21-final"
+}

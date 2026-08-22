@@ -1,0 +1,12 @@
+{
+  "pr_number": 8823,
+  "archive_path": "docs/history/pr-reviews/PR-8823-docs-research-zflash-usb-flash-ux-learnings-input-for-the-ts-fs-iso-usb-cli-cons.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-21T01:14:18.727Z",
+  "schema_version": "v1",
+  "commit_sha": "2794f0c1fd8349a2d8b9998a4ff7c2eb4f4340f4",
+  "title": "docs(research): zflash USB-flash UX learnings — input for the TS/FS iso-usb CLI consolidation",
+  "state": "MERGED",
+  "merged_at": "2026-06-21T01:13:53Z",
+  "head_ref": "otto/zflash-ux-learnings"
+}

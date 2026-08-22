@@ -1,0 +1,12 @@
+{
+  "pr_number": 10869,
+  "archive_path": "docs/history/pr-reviews/PR-10869-fix-paths-stale-tools-references-a-runtime-resolves-and-two-repo-root-arithmetic.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-16T13:59:34.458Z",
+  "schema_version": "v1",
+  "commit_sha": "5a610039ad0dd9e22615b33fd9662d3317232d50",
+  "title": "fix(paths): stale `tools/` references a runtime resolves — and two repo-root arithmetic bugs beside them (#8050 fallout)",
+  "state": "MERGED",
+  "merged_at": "2026-08-16T13:58:57Z",
+  "head_ref": "shadow/stale-tools-path-sweep-tier1"
+}

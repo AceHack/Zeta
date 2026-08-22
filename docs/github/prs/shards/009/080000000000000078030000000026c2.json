@@ -1,0 +1,12 @@
+{
+  "pr_number": 9922,
+  "archive_path": "docs/history/pr-reviews/PR-9922-docs-anchors-record-the-hott-lineage-in-prior-art-list-it-was-findable-only-by-f.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-01T20:32:53.358Z",
+  "schema_version": "v1",
+  "commit_sha": "f837186e5787101ec3561a7b8ba14fd67f6f8264",
+  "title": "docs(anchors): record the HoTT lineage in PRIOR-ART-LIST — it was findable only by filename",
+  "state": "MERGED",
+  "merged_at": "2026-08-01T20:32:24Z",
+  "head_ref": "shadow/anchor-hott-in-prior-art"
+}

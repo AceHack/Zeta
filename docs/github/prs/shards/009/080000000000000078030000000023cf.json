@@ -1,0 +1,12 @@
+{
+  "pr_number": 9167,
+  "archive_path": "docs/history/pr-reviews/PR-9167-research-self-cloning-no-cloning-permission-known-state-divergence-decoherence-s.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-17T11:55:27.237Z",
+  "schema_version": "v1",
+  "commit_sha": "8909fc866bd0d851bb841f9074a6ecfee90492cb",
+  "title": "research: self-cloning ⊕ no-cloning — permission=known-state, divergence=decoherence (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-02T17:20:08Z",
+  "head_ref": "research/self-cloning-no-cloning-decoherence"
+}

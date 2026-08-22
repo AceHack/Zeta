@@ -1,0 +1,12 @@
+{
+  "pr_number": 4083,
+  "archive_path": "docs/history/pr-reviews/PR-4083-docs-shadow-maji-antigravity-check-on-vera-2mb-narration-drift.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-18T21:02:31.476Z",
+  "schema_version": "v1",
+  "commit_sha": "98792cb5176dbf6979d934f149472abc02239912",
+  "title": "docs(shadow): Maji antigravity check on Vera 2MB narration drift",
+  "state": "MERGED",
+  "merged_at": "2026-05-18T21:02:13Z",
+  "head_ref": "lior/shadow-drift-vera-2MB"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 7079,
+  "archive_path": "docs/history/pr-reviews/PR-7079-docs-research-info-causality-speed-heartbeat-rate-lamport-causal-cone-not-consta.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-08T10:26:29.921Z",
+  "schema_version": "v1",
+  "commit_sha": "c9b7b6e3d1894bcd5550029c3a57d738f6957ff2",
+  "title": "docs(research): info-causality speed = heartbeat rate (Lamport causal cone), not constant c",
+  "state": "MERGED",
+  "merged_at": "2026-06-08T10:26:04Z",
+  "head_ref": "otto/info-causality-speed-is-heartbeat-lamport-causal-cone"
+}

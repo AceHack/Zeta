@@ -1,0 +1,12 @@
+{
+  "pr_number": 9163,
+  "archive_path": "docs/history/pr-reviews/PR-9163-test-adinkra-orbits-classify-members-dynamical-zeta-over-a-code-preserving-map.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-17T11:42:54.637Z",
+  "schema_version": "v1",
+  "commit_sha": "4f718eef6a2a19b8184dd07c299756f02282ace4",
+  "title": "test: adinkra orbits classify members - dynamical zeta over a code-preserving map",
+  "state": "MERGED",
+  "merged_at": "2026-07-02T17:08:31Z",
+  "head_ref": "otto/adinkra-orbits-classify-members"
+}

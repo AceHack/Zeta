@@ -1,0 +1,12 @@
+{
+  "pr_number": 11522,
+  "archive_path": "docs/history/pr-reviews/PR-11522-cluster-make-the-stale-tree-consumer-list-a-derived-fact-nine-consumers-not-two-.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-17T15:20:57.486Z",
+  "schema_version": "v1",
+  "commit_sha": "05d66aaac448a2aa2350eb804c0f6cc663629ed3",
+  "title": "cluster: make the stale-tree consumer list a derived fact — nine consumers, not two; nothing deleted",
+  "state": "MERGED",
+  "merged_at": "2026-08-17T15:20:12Z",
+  "head_ref": "shadow/consolidate-cluster-trees"
+}

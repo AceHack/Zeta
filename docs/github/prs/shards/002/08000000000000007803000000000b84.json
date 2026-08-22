@@ -1,0 +1,19 @@
+{
+  "pr_number": 2948,
+  "archive_path": "docs/history/pr-reviews/PR-2948-shard-tick-0558z-ani-meta-loop-2-middle-path-3-layers-cascade-pattern-naming-pee.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7Aonj_",
+    "comment:PRRC_kwDOSF9kNM7AooAw",
+    "comment:PRRC_kwDOSF9kNM7AoqgX",
+    "comment:PRRC_kwDOSF9kNM7Aoqhg",
+    "thread:PRRT_kwDOSF9kNM6BpiJj",
+    "thread:PRRT_kwDOSF9kNM6Bpiey"
+  ],
+  "fetched_at": "2026-05-13T06:17:14.241Z",
+  "schema_version": "v1",
+  "commit_sha": "6dd210618f1572f98644ec7c17276da68a84776b",
+  "title": "shard(tick): 0558Z — Ani META-LOOP #2 + middle path (3 layers) + cascade pattern naming + peer-call rule fix",
+  "state": "MERGED",
+  "merged_at": "2026-05-13T06:16:48Z",
+  "head_ref": "shard-tick-0558z-2026-05-13"
+}

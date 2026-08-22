@@ -1,0 +1,12 @@
+{
+  "pr_number": 9866,
+  "archive_path": "docs/history/pr-reviews/PR-9866-feat-hygiene-three-tier-0-healers-from-our-session-s-real-failures.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-01T13:07:10.058Z",
+  "schema_version": "v1",
+  "commit_sha": "b12cea1f46a85936bfd9b650fdc8f658782dcedf",
+  "title": "feat(hygiene): three Tier-0 healers from our session's real failures",
+  "state": "MERGED",
+  "merged_at": "2026-08-01T13:06:39Z",
+  "head_ref": "claim/kiro-tier0-healers-2026-08-01"
+}

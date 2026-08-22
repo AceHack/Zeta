@@ -1,0 +1,15 @@
+{
+  "pr_number": 3809,
+  "archive_path": "docs/history/pr-reviews/PR-3809-feat-b-0557-slice-4-mixed-bullet-extraction-paths-before-cross-ref-tokens-are-de.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7B3FeI",
+    "thread:PRRT_kwDOSF9kNM6CinfU"
+  ],
+  "fetched_at": "2026-05-16T07:36:05.010Z",
+  "schema_version": "v1",
+  "commit_sha": "eb04e3df3964535bcfc1b5d64d766d97527f468f",
+  "title": "feat(B-0557 slice 4): mixed-bullet extraction — paths before cross-ref tokens are deliverables",
+  "state": "MERGED",
+  "merged_at": "2026-05-16T07:35:46Z",
+  "head_ref": "feat/b0557-slice-4-mixed-bullet-otto-cli-2026-05-16"
+}

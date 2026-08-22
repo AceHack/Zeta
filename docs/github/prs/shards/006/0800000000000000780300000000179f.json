@@ -1,0 +1,12 @@
+{
+  "pr_number": 6047,
+  "archive_path": "docs/history/pr-reviews/PR-6047-chore-b-0329-close-parent-bootstrap-process-claude-md-fully-shipped-via-children.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-29T21:02:06.428Z",
+  "schema_version": "v1",
+  "commit_sha": "361ac13b18ae18b6abbbde1550ee695e7194ae94",
+  "title": "chore(B-0329): close parent — bootstrap-process CLAUDE.md fully shipped via children",
+  "state": "MERGED",
+  "merged_at": "2026-05-29T21:01:43Z",
+  "head_ref": "chore/b0329-close-parent-bootstrap-process-2026-05-29"
+}

@@ -1,0 +1,17 @@
+{
+  "pr_number": 4171,
+  "archive_path": "docs/history/pr-reviews/PR-4171-backlog-b0665-3-primitive-collapse-integrate-as-choice-locus-ienumerator-groundi.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7CXJOP",
+    "comment:PRRC_kwDOSF9kNM7CXJOZ",
+    "thread:PRRT_kwDOSF9kNM6C6rLZ",
+    "thread:PRRT_kwDOSF9kNM6C6rLh"
+  ],
+  "fetched_at": "2026-05-18T18:00:00.558Z",
+  "schema_version": "v1",
+  "commit_sha": "8be0c74ffc6f34092485d6c9e091cf8a23433bf7",
+  "title": "backlog(b0665): 3-primitive collapse + Integrate-as-choice-locus + IEnumerator grounding (Aaron+Ani LOCKED-IN)",
+  "state": "MERGED",
+  "merged_at": "2026-05-18T17:59:34Z",
+  "head_ref": "shard/b0665-three-primitive-collapse-2026-05-18"
+}

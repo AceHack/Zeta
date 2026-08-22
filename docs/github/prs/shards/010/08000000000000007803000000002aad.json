@@ -1,0 +1,12 @@
+{
+  "pr_number": 10925,
+  "archive_path": "docs/history/pr-reviews/PR-10925-map-society-isociety-iworld-the-map-first-then-the-interfaces-it-supports.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-16T15:21:53.065Z",
+  "schema_version": "v1",
+  "commit_sha": "5f143b319f9757f1c073da7987ba063576fabc47",
+  "title": "map(society): ISociety/IWorld -- the map first, then the interfaces it supports",
+  "state": "MERGED",
+  "merged_at": "2026-08-16T15:21:16Z",
+  "head_ref": "shadow/isociety-map-and-declarations"
+}

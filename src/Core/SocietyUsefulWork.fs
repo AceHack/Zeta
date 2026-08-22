@@ -5,6 +5,30 @@ open System
 /// **SocietyUsefulWork — the delta-U aggregation theorem formalization and simulation.**
 /// (Routed as workitem 081KV6B1MBM08QG0R000RZK4WY; math-team/Soraya).
 ///
+/// **THIS IS THE INDIVIDUAL-VS-SOCIETY ORDERING RESULT.** It is indexed in the register under
+/// "Condorcet", which is why searches phrased in ordering vocabulary have missed it. The aliases
+/// below are written on one line each, on purpose, so a grep from either vocabulary lands:
+///
+/// SEARCH: individual vs society | society greater than individual | society beats the individual
+/// SEARCH: no individual exceeds the society | the collective outperforms its best member
+/// SEARCH: ordering | dominance | mutual empowerment | wisdom of crowds | jury theorem
+/// SEARCH: KS-entropy | Kolmogorov-Sinai | Lyapunov | Pesin | Condorcet bonus
+///
+/// - Register row: `docs/FROZEN-CORE-AND-CONJECTURE-REGISTER.md` **§A row 15,
+///   "Generalized Condorcet / ΔU-aggregation theorem — society > best individual"** (PROVEN,
+///   2026-07-03; falsifier mutation-verified 2026-08-16).
+/// - Falsifiers: `tests/Tests.FSharp/CondorcetBoundary.Tests.fs` (`Condorcet-1` … `Condorcet-8`,
+///   11 properties) and `tests/Tests.FSharp/SocietyUsefulWork.Tests.fs`.
+/// - Sibling model (correlated majority vote, where rho* and c* are genuine thresholds and
+///   `N_eff = N/(1+(N-1)*rho) -> 1/rho`): `src/Bayesian/CondorcetBoundary.fs`.
+/// - **Open, and NOT a dependency of this proof:** the information-theoretic foundation, register
+///   **§B-ks (Conjecture KS-1)** — `h_KS(ISociety) >= sum of positive Lyapunov exponents` (Pesin).
+///   KS-1 would *explain* why the Condorcet bonus holds; this module's theorem stands without it,
+///   and falsifying KS-1 would leave it untouched.
+/// - Physical mechanism driving rho toward the admissible regime: §A row 19, Delay-Decorrelation.
+/// - **Metered boundary:** metered as MATHEMATICS. Whether any real fleet satisfies the regime
+///   (its actual rho and c) is UNMEASURED — see the register's A-method note on row 15.
+///
 /// Under the society architecture, aggregate useful work is the union (idempotent reconciliation)
 /// of individual agents' discoveries, measured as banked uncertainty-reduction delta-U.
 ///
@@ -65,6 +89,53 @@ module SocietyUsefulWork =
         else
             let totalValue = facts |> Array.sumBy (fun f -> f.Value)
             (1.0 - rho) * (1.0 - c) * (1.0 - Math.Pow(1.0 - c, double (n - 1))) * totalValue
+
+    // ── Effective sample size: two DIFFERENT correct answers ───────────────────────────────────────
+    //
+    // "N correlated observations are not N observations" (.claude/rules/numerology-vs-number-theory.md)
+    // is true, and the trap is that it has TWO distinct correct quantifications. Which one is right
+    // depends on what you are computing, and using the wrong one is itself the error the rule warns
+    // about. Both are exposed here so a caller has to choose deliberately.
+
+    /// **Kish effective sample size** — for the VARIANCE OF A MEAN over correlated trials.
+    ///
+    /// Use this when averaging a score across n runs of the same agent/config: the runs share a
+    /// common cause, so the standard error is not sigma/sqrt(n) but sigma/sqrt(nEff).
+    ///
+    ///   design effect  deff  = 1 + (n - 1) * rho        (Kish 1965, Survey Sampling, ch. 5)
+    ///   effective size nEff  = n / deff
+    ///
+    /// Endpoints: rho = 0 gives nEff = n (independent); rho = 1 gives nEff = 1 (one observation
+    /// counted n times). rho is clamped to [0, 1]: negative intraclass correlation is real in
+    /// survey work (nEff > n) but is not a regime this substrate produces, so it is refused
+    /// rather than silently extrapolated.
+    let effectiveTrialCount (n: int) (rho: double) : double =
+        if n < 1 then 0.0
+        else
+            let r = Math.Min(Math.Max(rho, 0.0), 1.0)
+            let deff = 1.0 + (double n - 1.0) * r
+            double n / deff
+
+    /// **Union-equivalent agent count** — for the COVERAGE of a union over correlated agents.
+    ///
+    /// This is NOT the Kish count and generally disagrees with it. It answers a different question:
+    /// how many INDEPENDENT agents of competence c would discover the same expected fraction of
+    /// facts as n agents correlated at rho? It is the exact inverse of `expectedSocietyIdentical`
+    /// against the rho = 0 case, so it is pinned to the shipped formula rather than assumed:
+    ///
+    ///   p          = rho*c + (1-rho)*(1 - (1-c)^n)      (the shipped union probability)
+    ///   1-(1-c)^m  = p        =>        m = ln(1-p) / ln(1-c)
+    ///
+    /// Endpoints agree with Kish (m = n at rho = 0, m = 1 at rho = 1) and the interior does not —
+    /// which is precisely why both exist. Degenerate competence (c <= 0 or c >= 1) has no
+    /// finite inverse and returns 0.0.
+    let unionEquivalentAgentCount (n: int) (c: double) (rho: double) : double =
+        if n < 1 || c <= 0.0 || c >= 1.0 then 0.0
+        else
+            let r = Math.Min(Math.Max(rho, 0.0), 1.0)
+            let p = r * c + (1.0 - r) * (1.0 - Math.Pow(1.0 - c, double n))
+            if p >= 1.0 then double n
+            else log (1.0 - p) / log (1.0 - c)
 
     /// Simulate discovery events for heterogeneous agents under correlation rho using a Gaussian Copula.
     /// Let X_j ~ N(0, 1) be the shared latent variable for fact j.

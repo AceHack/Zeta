@@ -1,0 +1,12 @@
+{
+  "pr_number": 3897,
+  "archive_path": "docs/history/pr-reviews/PR-3897-feat-b-0462-integrate-vendor-bias-note-in-amara-ts-close-7th-cycle-close-row.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-16T15:41:39.014Z",
+  "schema_version": "v1",
+  "commit_sha": "4443c09fdf1996c7c7df7a91cc6441cb9fc89f6a",
+  "title": "feat(b-0462): integrate vendor-bias note in amara.ts + close (7th cycle close-row)",
+  "state": "MERGED",
+  "merged_at": "2026-05-16T15:41:23Z",
+  "head_ref": "otto-cli-b0462-vendor-bias-note-2026-05-16-1531z"
+}

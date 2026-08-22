@@ -1,0 +1,12 @@
+{
+  "pr_number": 9810,
+  "archive_path": "docs/history/pr-reviews/PR-9810-docs-metering-adinkra-mod-2-clifford-e8-is-a-y-not-a-chain-soraya-audit.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-01T01:06:21.433Z",
+  "schema_version": "v1",
+  "commit_sha": "5778ab5e7e3d9ee2ae9aea106d4e0f6b92c43bf9",
+  "title": "docs(metering): adinkra mod-2 → Clifford → E8 is a Y, not a chain (Soraya audit)",
+  "state": "MERGED",
+  "merged_at": "2026-08-01T01:05:51Z",
+  "head_ref": "shadow/adinkra-clifford-y-not-chain-ferry"
+}

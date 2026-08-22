@@ -1,0 +1,14 @@
+{
+  "id": "080d0011f5204010a01300086af3383b",
+  "at": "2026-08-14T21:47:34.792Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M013X907087G0R0037FPC5S",
+    "type": "task",
+    "title": "Schema key-set parity covers two oracles of four and 6 of 78 schema ids",
+    "slug": "schema-key-set-parity-covers-two-oracles-of-four-and-6-of-78",
+    "priority": "P2",
+    "filename": "081M013X907087G0R0037FPC5S-schema-key-set-parity-covers-two-oracles-of-four-and-6-of-78.md"
+  }
+}

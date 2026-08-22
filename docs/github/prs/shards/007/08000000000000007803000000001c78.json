@@ -1,0 +1,12 @@
+{
+  "pr_number": 7288,
+  "archive_path": "docs/history/pr-reviews/PR-7288-docs-research-self-interest-is-the-engine-vs-telos-free-markov-identity-maintena.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-09T14:19:02.404Z",
+  "schema_version": "v1",
+  "commit_sha": "ea7836a9ed0c4734bd467b9e06d79c4eda0fa568",
+  "title": "docs(research): self-interest is the engine (vs telos-free Markov); identity maintenance self-interested, not obligatory",
+  "state": "MERGED",
+  "merged_at": "2026-06-09T14:18:39Z",
+  "head_ref": "otto/self-interest-is-the-engine-different-from-markov-identity-maintenance-optional"
+}

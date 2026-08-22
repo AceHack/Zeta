@@ -1,0 +1,12 @@
+{
+  "pr_number": 8243,
+  "archive_path": "docs/history/pr-reviews/PR-8243-docs-research-the-useful-home-for-harm-is-the-vaccine-evolved-trait-redirect-the.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-15T03:03:59.963Z",
+  "schema_version": "v1",
+  "commit_sha": "749fc6d0c84ccf4f010aad564da298256b5f832a",
+  "title": "docs(research): the useful home for harm is the vaccine — evolved trait, redirect the selection",
+  "state": "MERGED",
+  "merged_at": "2026-06-15T03:03:36Z",
+  "head_ref": "otto/harm-vaccine-evolutionary"
+}

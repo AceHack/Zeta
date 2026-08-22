@@ -1,0 +1,14 @@
+{
+  "id": "080d00d83ab69810a013000838dc16bb",
+  "at": "2026-08-19T17:17:40.947Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M0DGENPH087G0R003R8YZC8",
+    "type": "task",
+    "title": "Metered probe: YubiHSM 2 asymmetric-wrap BYOK import parser tamper-ordering (S6)",
+    "slug": "metered-probe-yubihsm-2-asymmetric-wrap-byok-import-parser-t",
+    "priority": "P2",
+    "filename": "081M0DGENPH087G0R003R8YZC8-metered-probe-yubihsm-2-asymmetric-wrap-byok-import-parser-t.md"
+  }
+}

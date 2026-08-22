@@ -1,0 +1,12 @@
+{
+  "pr_number": 10429,
+  "archive_path": "docs/history/pr-reviews/PR-10429-workitem-612-typescript-test-files-exist-95-run-in-ci.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-14T00:13:01.092Z",
+  "schema_version": "v1",
+  "commit_sha": "0ac4fa80674a7e2a2049802c6b9d97709d9350e4",
+  "title": "workitem: 612 TypeScript test files exist, ~95 run in CI",
+  "state": "MERGED",
+  "merged_at": "2026-08-13T23:38:40Z",
+  "head_ref": "workitem/ts-tests-not-in-gate"
+}

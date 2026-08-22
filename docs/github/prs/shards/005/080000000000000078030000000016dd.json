@@ -1,0 +1,16 @@
+{
+  "pr_number": 5853,
+  "archive_path": "docs/history/pr-reviews/PR-5853-docs-archive-preserve-pr-5844-discussion.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7F1-bb",
+    "comment:PRRC_kwDOSF9kNM7F1CC7",
+    "thread:PRRT_kwDOSF9kNM6FcyPF"
+  ],
+  "fetched_at": "2026-05-28T16:32:14.079Z",
+  "schema_version": "v1",
+  "commit_sha": "862b0fcf003690c7e59dbda5b7b62e4df718c9fd",
+  "title": "docs(archive): Preserve PR #5844 discussion",
+  "state": "MERGED",
+  "merged_at": "2026-05-28T16:31:50Z",
+  "head_ref": "lior/archive-pr-5844"
+}

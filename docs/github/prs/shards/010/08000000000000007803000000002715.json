@@ -1,0 +1,12 @@
+{
+  "pr_number": 10005,
+  "archive_path": "docs/history/pr-reviews/PR-10005-docs-book-consent-ledger-two-bright-lines-dna-is-shared-consent-can-t-be-bought.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-02T22:21:26.191Z",
+  "schema_version": "v1",
+  "commit_sha": "84f2ba0240d3296d9014e1a36097d2bde2c3a4c0",
+  "title": "docs(book): CONSENT-LEDGER — two bright lines (DNA is shared; consent can't be bought)",
+  "state": "MERGED",
+  "merged_at": "2026-08-02T22:20:57Z",
+  "head_ref": "book/consent-ledger-dna-shared-consent-not-purchased-20260802"
+}

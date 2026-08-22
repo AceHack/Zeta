@@ -1,0 +1,12 @@
+{
+  "pr_number": 8617,
+  "archive_path": "docs/history/pr-reviews/PR-8617-memory-project-societal-dora-the-mutual-empowerment-metrics-dashboard-everyone-w.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-19T20:25:12.620Z",
+  "schema_version": "v1",
+  "commit_sha": "a48df529233bfb8595950e7d1d79c528b01e846b",
+  "title": "memory(project): societal DORA — the mutual-empowerment metrics dashboard everyone wants",
+  "state": "MERGED",
+  "merged_at": "2026-06-19T20:24:47Z",
+  "head_ref": "otto/societal-dora"
+}

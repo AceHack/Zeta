@@ -1,0 +1,23 @@
+{
+  "pr_number": 2813,
+  "archive_path": "docs/history/pr-reviews/PR-2813-docs-memory-casimir-gap-modulation-klein-bottle-topology-grand-unification-is-a-.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7AbyG-",
+    "comment:PRRC_kwDOSF9kNM7AbyGG",
+    "comment:PRRC_kwDOSF9kNM7AbyH0",
+    "comment:PRRC_kwDOSF9kNM7AbyHK",
+    "comment:PRRC_kwDOSF9kNM7AbyHd",
+    "thread:PRRT_kwDOSF9kNM6BgSq2",
+    "thread:PRRT_kwDOSF9kNM6BgSqD",
+    "thread:PRRT_kwDOSF9kNM6BgSqu",
+    "thread:PRRT_kwDOSF9kNM6BgSrB",
+    "thread:PRRT_kwDOSF9kNM6BgSrU"
+  ],
+  "fetched_at": "2026-05-12T17:38:52.248Z",
+  "schema_version": "v1",
+  "commit_sha": "7ca506c584eab0a6c112f60ea6178f39000d6d6d",
+  "title": "docs(memory): Casimir gap MODULATION + Klein bottle topology + grand unification is a sham (Aaron 2026-05-12)",
+  "state": "MERGED",
+  "merged_at": "2026-05-12T17:38:25Z",
+  "head_ref": "docs/aaron-casimir-gap-modulation-aliens-communicate-shadow-logs-not-only-future-aaron-2026-05-12"
+}

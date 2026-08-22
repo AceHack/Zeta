@@ -1,0 +1,12 @@
+{
+  "pr_number": 10691,
+  "archive_path": "docs/history/pr-reviews/PR-10691-docs-research-skills-are-the-second-invariance-case-a-quotient-not-a-pointer.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-16T22:30:56.538Z",
+  "schema_version": "v1",
+  "commit_sha": "cb04517435bc2eecab1daf293c5466e395492b58",
+  "title": "docs(research): skills are the second invariance case — a quotient, not a pointer",
+  "state": "MERGED",
+  "merged_at": "2026-08-16T22:30:22Z",
+  "head_ref": "aarav/skill-seed-rigidity-study"
+}

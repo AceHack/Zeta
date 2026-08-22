@@ -1,0 +1,12 @@
+{
+  "pr_number": 11499,
+  "archive_path": "docs/history/pr-reviews/PR-11499-feat-secure-boot-one-place-to-declare-secure-boot-state-and-a-gate-that-refuses-.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-17T14:48:39.347Z",
+  "schema_version": "v1",
+  "commit_sha": "f6fffc179e34fa6491c8d985e2b3da2f3eb1886a",
+  "title": "feat(secure-boot): one place to declare Secure Boot state — and a gate that refuses to invent key custody",
+  "state": "MERGED",
+  "merged_at": "2026-08-17T14:48:01Z",
+  "head_ref": "shadow/nixos-secure-boot-one-desired-state"
+}

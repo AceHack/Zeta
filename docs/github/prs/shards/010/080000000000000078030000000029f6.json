@@ -1,0 +1,12 @@
+{
+  "pr_number": 10742,
+  "archive_path": "docs/history/pr-reviews/PR-10742-fix-heat-a-published-schema-grows-an-optional-key-with-a-declared-absent-reading.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-16T21:13:56.710Z",
+  "schema_version": "v1",
+  "commit_sha": "03b47c8c7f2ab4086a81a9477601e000d5fe803b",
+  "title": "fix(heat): a published schema grows an OPTIONAL key with a declared absent-reading — decided once, applied to both",
+  "state": "MERGED",
+  "merged_at": "2026-08-16T21:13:21Z",
+  "head_ref": "shadow/heat-schema-fidelity-decision"
+}

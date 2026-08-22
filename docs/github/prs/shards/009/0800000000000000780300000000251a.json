@@ -1,0 +1,12 @@
+{
+  "pr_number": 9498,
+  "archive_path": "docs/history/pr-reviews/PR-9498-docs-noticing-your-own-flaws-in-math-self-audit-is-a-fold-over-the-historical-le.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-05T22:10:41.935Z",
+  "schema_version": "v1",
+  "commit_sha": "a1c97f5790aec078e01f86c05d1d3f33ff51ec35",
+  "title": "docs: noticing your own flaws in math — self-audit is a fold over the historical ledger (ledger first) (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-05T22:10:19Z",
+  "head_ref": "otto/self-audit-in-math-ledger-first"
+}

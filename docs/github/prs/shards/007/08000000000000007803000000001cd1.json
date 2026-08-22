@@ -1,0 +1,12 @@
+{
+  "pr_number": 7377,
+  "archive_path": "docs/history/pr-reviews/PR-7377-feat-portal-bespoke-per-type-views-db-query-tables-backups-game-players-maps.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-09T19:33:26.128Z",
+  "schema_version": "v1",
+  "commit_sha": "23e6740902262dca93d2d3b1d4b6e4d389d7eabb",
+  "title": "feat(portal): bespoke per-type views — DB Query/Tables/Backups, game Players/Maps",
+  "state": "MERGED",
+  "merged_at": "2026-06-09T19:33:04Z",
+  "head_ref": "feat/portal-bespoke-type-tabs"
+}

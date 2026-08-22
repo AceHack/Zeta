@@ -1,0 +1,16 @@
+{
+  "pr_number": 6371,
+  "archive_path": "docs/history/pr-reviews/PR-6371-docs-registry-name-the-conditionalweaktable-weakmap-mixin-primitive-mandatory-pl.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7GpDVU",
+    "comment:PRRC_kwDOSF9kNM7GpGEb",
+    "thread:PRRT_kwDOSF9kNM6GDF8L"
+  ],
+  "fetched_at": "2026-06-01T08:20:34.251Z",
+  "schema_version": "v1",
+  "commit_sha": "55a194bb0e5c1ae4c7eaadb124f1d8533104f2cf",
+  "title": "docs(registry): name the ConditionalWeakTable/WeakMap mixin primitive + mandatory plugin-unload test",
+  "state": "MERGED",
+  "merged_at": "2026-06-01T08:20:08Z",
+  "head_ref": "otto-cli/registry-weakmap-mixin-2026-06-01"
+}

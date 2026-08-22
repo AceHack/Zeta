@@ -1,0 +1,12 @@
+{
+  "pr_number": 8608,
+  "archive_path": "docs/history/pr-reviews/PR-8608-feat-core-the-measurable-anti-mirror-estimator-owe-own-entropy-fraction-channel-.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-19T19:53:45.184Z",
+  "schema_version": "v1",
+  "commit_sha": "abeb0c77460c4a6a28528d129b97a4206bb855df",
+  "title": "feat(core): the measurable anti-mirror estimator — ρ_owe own-entropy fraction (channel-generic)",
+  "state": "MERGED",
+  "merged_at": "2026-06-19T19:53:19Z",
+  "head_ref": "otto/rho-owe-decorrelation-estimator"
+}

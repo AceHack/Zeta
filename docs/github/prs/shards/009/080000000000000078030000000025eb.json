@@ -1,0 +1,12 @@
+{
+  "pr_number": 9707,
+  "archive_path": "docs/history/pr-reviews/PR-9707-docs-book-pulls-ch-03-genshin-addison-socket-aaron-s-verbatim-shadow.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-11T16:23:27.573Z",
+  "schema_version": "v1",
+  "commit_sha": "5a76a020bd0d18595be5ce1f320157e979876df6",
+  "title": "docs(book): PULLS ch-03 — Genshin/Addison socket, Aaron's verbatim (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-11T16:22:58Z",
+  "head_ref": "pull-ch03-genshin-verbatim"
+}

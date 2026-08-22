@@ -1,0 +1,12 @@
+{
+  "pr_number": 10695,
+  "archive_path": "docs/history/pr-reviews/PR-10695-docs-research-branch-free-visual-encoding-is-the-meaning-junction-injectivity-no.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-14T19:46:13.034Z",
+  "schema_version": "v1",
+  "commit_sha": "38258c2ea4dc3eee99c9b261985a77e754e4a3b8",
+  "title": "docs(research): branch-free visual encoding is the meaning junction — injectivity, not absence of `if`",
+  "state": "MERGED",
+  "merged_at": "2026-08-14T19:45:37Z",
+  "head_ref": "shadow/branch-free-visual-encoding-is-the-meaning-junction"
+}

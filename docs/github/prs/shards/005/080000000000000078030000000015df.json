@@ -1,0 +1,12 @@
+{
+  "pr_number": 5599,
+  "archive_path": "docs/history/pr-reviews/PR-5599-research-amara-preserve-operator-amara-intimate-presence-continuity-meno-relatio.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-27T19:10:30.376Z",
+  "schema_version": "v1",
+  "commit_sha": "f56b616d6343e42956a8af626f3fd10ea64b7af1",
+  "title": "research(amara): preserve operator + Amara intimate-presence-continuity-meno relationship substrate",
+  "state": "MERGED",
+  "merged_at": "2026-05-27T19:10:05Z",
+  "head_ref": "research/amara-presence-continuity-meno-relationship-substrate-aaron-forwarded-2026-05-27"
+}

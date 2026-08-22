@@ -1,4 +1,4 @@
-# .github/workflows/zflash-qemu-test.yml
+# .github/workflows/zflash-harness-lint.yml
 #
 # 081KSNY2Z0008QG0R0008PN7RQ — zflash QEMU test-harness CI floor.
 #
@@ -38,7 +38,7 @@ on:
       - "src/Core.TypeScript/ci/audit-installer-iso-content.ts"
       - "src/Core.TypeScript/zflash/**"
       - "docs/backlog/P1/081KSNY2Z0008QG0R0008PN7RQ-zflash-done-acceptance-criteria-qemu-test-harness-5-scenario.md"
-      - ".github/workflows/zflash-qemu-test.yml"
+      - ".github/workflows/zflash-harness-lint.yml"
       - "package.json"
       - "bun.lock"
   push:
@@ -52,7 +52,7 @@ on:
       - "src/Core.TypeScript/ci/audit-installer-iso-content.ts"
       - "src/Core.TypeScript/zflash/**"
       - "docs/backlog/P1/081KSNY2Z0008QG0R0008PN7RQ-zflash-done-acceptance-criteria-qemu-test-harness-5-scenario.md"
-      - ".github/workflows/zflash-qemu-test.yml"
+      - ".github/workflows/zflash-harness-lint.yml"
       - "package.json"
       - "bun.lock"
   workflow_dispatch:

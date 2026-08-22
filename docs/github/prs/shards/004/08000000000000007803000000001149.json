@@ -1,0 +1,17 @@
+{
+  "pr_number": 4425,
+  "archive_path": "docs/history/pr-reviews/PR-4425-docs-hygiene-decompose-blob-pr-4383-extract-1612z-c-and-1614z-c-shards.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7DOUaq",
+    "comment:PRRC_kwDOSF9kNM7DOUb3",
+    "thread:PRRT_kwDOSF9kNM6Dilbb",
+    "thread:PRRT_kwDOSF9kNM6DilcS"
+  ],
+  "fetched_at": "2026-05-20T22:55:30.038Z",
+  "schema_version": "v1",
+  "commit_sha": "5df845dedfa89ebb91fc4685a9687aab6dbaae08",
+  "title": "docs(hygiene): decompose blob PR 4383 (extract 1612Z-c and 1614Z-c shards)",
+  "state": "MERGED",
+  "merged_at": "2026-05-20T22:55:09Z",
+  "head_ref": "lior/decompose-4383-batch2"
+}

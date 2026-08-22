@@ -1,0 +1,12 @@
+{
+  "pr_number": 2938,
+  "archive_path": "docs/history/pr-reviews/PR-2938-docs-claude-rules-zeta-ships-with-skills-immediate-value-wake-time-rule-speculat.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-13T05:03:57.530Z",
+  "schema_version": "v1",
+  "commit_sha": "bd2055490eec213c64642abcbfe0e27415d72aac",
+  "title": "docs(.claude/rules): Zeta ships WITH skills — immediate value wake-time rule (speculative; Aaron 2026-05-13 PR #2933 promotion)",
+  "state": "MERGED",
+  "merged_at": "2026-05-13T05:03:32Z",
+  "head_ref": "otto-speculative-zeta-ships-with-skills-immediate-value-wake-time-rule-2026-05-13"
+}

@@ -93,10 +93,58 @@ type InMemoryDeltaLog<'K when 'K : comparison>() =
                 else list.[list.Count - 1].Seq)
 
         member _.TruncateAsync(throughSeqInclusive, _ct) =
+            // Thermodynamic class: ERASING. `RemoveAll` drops the entries and this backend holds
+            // no second copy — see `ErasureProfiles` below, and see `GitDeltaLog` for the same
+            // interface method with the opposite class.
             lock gate (fun () ->
                 let list = activeList ()
                 list.RemoveAll(fun e -> e.Seq <= throughSeqInclusive) |> ignore)
             ValueTask.CompletedTask
+
+    /// **The declaration, beside the operation it classifies** (`ErasureClass`).
+    ///
+    /// This is the destroying half of the pair that makes the whole point: `TruncateAsync` here
+    /// and `TruncateAsync` in `GitDeltaLog` are the same interface method reached from the same
+    /// call site (`RecoverableSpine.CommitAsync`), and they have opposite thermodynamic classes.
+    /// Which one you get is decided by the injected backend — so the class cannot live on
+    /// `IDeltaLog`, and any list keyed by operation *name* is unsound by construction.
+    interface IErasureDeclaring with
+        member _.ErasureProfiles =
+            [ { Representation = "InMemoryDeltaLog"
+                Operation = "IDeltaLog.TruncateAsync"
+                Observation = "the log's own read surface (ReplayAsync(0) plus HighWater), at a pinned truncation point"
+                RecoveryChannel =
+                    "none — RemoveAll drops the entries from the only list that holds them, and an \
+                     emptied branch reports HighWater 0, so the sequence counter goes with them"
+                Classification = ErasureClass.ThermodynamicClass.Erasing
+                Evidence = ErasureClass.Evidence.BoundedModelSweep("truncate-through pinned at 2 (truncate everything); logs of 0-2 deltas over {empty, +a, -a}", 13, 3_700_440L) }
+
+              // The second observation is the one that keeps this pack honest about its own
+              // convention. `WSetHeat` sweeps an operation's ARGUMENTS as part of its input — that
+              // is how `plus` was found to erase log2(3) bits by forgetting an ordered pair's split
+              // point. Applied here, the truncation POINT is an argument, and a backend that does
+              // not record it forgets it. That term is present in every backend that does not write
+              // the point down, so pinning it (above) is what isolates the interesting question —
+              // what happened to the DATA — from the uninteresting one every implementation shares.
+              { Representation = "InMemoryDeltaLog"
+                Operation = "IDeltaLog.TruncateAsync"
+                Observation = "the log's own read surface (ReplayAsync(0) plus HighWater), including the truncation argument"
+                RecoveryChannel =
+                    "neither the entries nor the truncation point — nothing in the post-state \
+                     records which sequence the caller asked to truncate through, so an operation \
+                     that is a no-op for the data still discards its own parameter"
+                Classification = ErasureClass.ThermodynamicClass.Erasing
+                Evidence = ErasureClass.Evidence.ExhaustiveSweep("logs of 0-2 deltas over {empty, +a, -a} x truncate-through 0..2", 18, 4_169_925L) }
+
+              { Representation = "InMemoryDeltaLog"
+                Operation = "IRefDeltaLog.Reset"
+                Observation = "the log's own read surface: ReplayAsync(0) on the active branch after Reset"
+                RecoveryChannel =
+                    "none for the active branch — Clear() discards it before copying the source \
+                     branch in; the source branch is untouched, which is why the class is measured \
+                     on the active branch and not on the pair"
+                Classification = ErasureClass.ThermodynamicClass.Erasing
+                Evidence = ErasureClass.Evidence.ExhaustiveSweep("branch pairs over logs of 0-2 deltas from {empty, +a, -a}", 13, 3_700_440L) } ]
 
     interface IRefDeltaLog<'K> with
         member _.CurrentRef = lock gate (fun () -> currentRef)

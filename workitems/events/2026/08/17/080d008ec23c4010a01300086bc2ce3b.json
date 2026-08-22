@@ -1,0 +1,14 @@
+{
+  "id": "080d008ec23c4010a01300086bc2ce3b",
+  "at": "2026-08-17T22:29:41.896Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M08XGHW7087G0R0028G3WBQ",
+    "type": "task",
+    "title": "Free-structure arena to Bayesian inference: SoftValue.observe is pointwise Bayesian inversion but not a Markov-category morphism",
+    "slug": "free-structure-arena-to-bayesian-inference-softvalue-observe",
+    "priority": "P2",
+    "filename": "081M08XGHW7087G0R0028G3WBQ-free-structure-arena-to-bayesian-inference-softvalue-observe.md"
+  }
+}

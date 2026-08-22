@@ -1,0 +1,12 @@
+{
+  "pr_number": 6687,
+  "archive_path": "docs/history/pr-reviews/PR-6687-deps-bump-the-github-actions-minor-patch-group-with-2-updates.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-07T13:43:38.452Z",
+  "schema_version": "v1",
+  "commit_sha": "c1885db604ec86f8968089953de8716efa579a4e",
+  "title": "deps: Bump the github-actions-minor-patch group with 2 updates",
+  "state": "MERGED",
+  "merged_at": "2026-06-07T13:43:17Z",
+  "head_ref": "dependabot/github_actions/github-actions-minor-patch-b58def0647"
+}

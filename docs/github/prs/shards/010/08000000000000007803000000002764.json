@@ -1,0 +1,12 @@
+{
+  "pr_number": 10084,
+  "archive_path": "docs/history/pr-reviews/PR-10084-fix-book-build-convert-build-book-sh-build-book-ts-bash-retirement-inventory.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-07T03:21:27.238Z",
+  "schema_version": "v1",
+  "commit_sha": "85df0bb6a4d491bee58782d478f770ea618ceeb1",
+  "title": "fix(book-build): convert build-book.sh → build-book.ts (bash-retirement inventory)",
+  "state": "MERGED",
+  "merged_at": "2026-08-07T03:20:52Z",
+  "head_ref": "fix/book-build-convert-to-ts-bash-retirement"
+}

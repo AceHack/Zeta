@@ -22,7 +22,7 @@ The failure this prevents is **silent promotion**. On 2026-08-01 six conjectures
 reached §A of the frozen core as DISCHARGED with nothing able to refute them —
 including `F = Df² − 3.42Df + 0.5`, whose vertex is *exactly* the answer it
 "predicts" (3.42/2 = 1.71). As `toyDimensionFit` it could never have been cited
-as a discharge; the prefix **is** the guard. Contrast `LagrangeCondorcet.fs`,
+as a discharge; the prefix **is** the guard. Contrast `src/Bayesian/LagrangeCondorcet.fs`,
 which earned `metered`: μ_crit = (1−√(23/27))/2 is Routh's classical constant,
 the tests pin 25.96 ≈ 1/μ_crit, and zero assertions are vacuous.
 

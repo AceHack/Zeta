@@ -1,0 +1,12 @@
+{
+  "pr_number": 7248,
+  "archive_path": "docs/history/pr-reviews/PR-7248-docs-achievements-1000-ai-cost-reduction-proven-in-production-200k-mo-200-mo.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-09T11:14:53.947Z",
+  "schema_version": "v1",
+  "commit_sha": "93be7ec11886ab387fd2900634e60067ce2b55a5",
+  "title": "docs(achievements): 1000× AI cost reduction proven in production ($200k/mo → $200/mo)",
+  "state": "MERGED",
+  "merged_at": "2026-06-09T11:14:33Z",
+  "head_ref": "otto/achievements-1000x-cost-proof"
+}

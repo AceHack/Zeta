@@ -1,0 +1,12 @@
+{
+  "pr_number": 7514,
+  "archive_path": "docs/history/pr-reviews/PR-7514-feat-core-save-optic-interfaces-ilens-lensable-iprism-prismable-fingerprintable-.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-10T21:27:20.539Z",
+  "schema_version": "v1",
+  "commit_sha": "9ecf49b6a5877db552520fd241750366e263f97d",
+  "title": "feat(core): save optic interfaces — ILens (lensable) + IPrism (prismable/fingerprintable, soft+hard rainbow)",
+  "state": "MERGED",
+  "merged_at": "2026-06-10T21:26:58Z",
+  "head_ref": "shadow-optics-lens-prism-interfaces"
+}

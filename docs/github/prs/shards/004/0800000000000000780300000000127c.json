@@ -1,0 +1,17 @@
+{
+  "pr_number": 4732,
+  "archive_path": "docs/history/pr-reviews/PR-4732-docs-shadow-add-lesson-on-stale-worktree-locks-decomposed-from-4691.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7ER0C-",
+    "comment:PRRC_kwDOSF9kNM7ER0C1",
+    "thread:PRRT_kwDOSF9kNM6EUCHb",
+    "thread:PRRT_kwDOSF9kNM6EUCHh"
+  ],
+  "fetched_at": "2026-05-23T16:30:00.075Z",
+  "schema_version": "v1",
+  "commit_sha": "cf2af2682faa757dd879c7598976a358eb35e1e4",
+  "title": "docs(shadow): add lesson on stale worktree locks (decomposed from #4691)",
+  "state": "MERGED",
+  "merged_at": "2026-05-23T16:29:41Z",
+  "head_ref": "lior-shadow-log-4691"
+}

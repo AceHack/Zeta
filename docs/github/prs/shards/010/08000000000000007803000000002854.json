@@ -1,0 +1,12 @@
+{
+  "pr_number": 10324,
+  "archive_path": "docs/history/pr-reviews/PR-10324-fix-gate-clear-all-33-type-errors-the-required-gate-was-red-and-blocking-the-fle.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-12T03:52:48.571Z",
+  "schema_version": "v1",
+  "commit_sha": "25e8a7231e9ec254f3684eedd6661a6304d075ae",
+  "title": "fix(gate): clear all 33 type errors — the required gate was red and blocking the fleet",
+  "state": "MERGED",
+  "merged_at": "2026-08-12T03:52:20Z",
+  "head_ref": "fix-gate-typecheck-33-errors"
+}

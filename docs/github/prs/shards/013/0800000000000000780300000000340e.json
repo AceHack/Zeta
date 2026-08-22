@@ -1,0 +1,12 @@
+{
+  "pr_number": 13326,
+  "archive_path": "docs/history/pr-reviews/PR-13326-feat-cluster-dev-alias-storageclass-named-longhorn-makes-6-more-applications-tes.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-21T21:23:18.539Z",
+  "schema_version": "v1",
+  "commit_sha": "0909d2a3f3caa029f60929cd63e3f95388f268de",
+  "title": "feat(cluster): dev alias StorageClass named longhorn makes 6 more Applications testable in the kind lane (19 -> 25 asserted), and exposes 4 non-storage defects",
+  "state": "MERGED",
+  "merged_at": "2026-08-21T21:20:36Z",
+  "head_ref": "feat/dev-storage-overlay-unlocks-longhorn-charts"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 7921,
+  "archive_path": "docs/history/pr-reviews/PR-7921-docs-research-shadow-ferry-9-budget-fusion-applied-to-interface-design-dv2-0-on-.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-12T15:02:22.859Z",
+  "schema_version": "v1",
+  "commit_sha": "bbe268a7c930572d450d2f77f0d384bc5f10fda6",
+  "title": "docs(research)+shadow: ferry 9 — budget fusion applied to interface design (DV2.0 on interfaces; types defined the code)",
+  "state": "MERGED",
+  "merged_at": "2026-06-12T15:01:57Z",
+  "head_ref": "shadow/ferry-9-budget-fusion-interface-design"
+}

@@ -1,0 +1,17 @@
+{
+  "pr_number": 6270,
+  "archive_path": "docs/history/pr-reviews/PR-6270-backlog-b-0867-30-promote-free-mode-slots-to-16-slot-grammar-a-b-test-vs-option-.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7GjGWv",
+    "comment:PRRC_kwDOSF9kNM7GjHZ_",
+    "thread:PRRT_kwDOSF9kNM6F-p-p",
+    "thread:PRRT_kwDOSF9kNM6F-qxw"
+  ],
+  "fetched_at": "2026-05-31T23:25:13.635Z",
+  "schema_version": "v1",
+  "commit_sha": "4f09c675960bdbb21d647651f0da547173195c76",
+  "title": "backlog(B-0867.30): promote free-mode slots to 16-slot grammar — A/B test vs Option A (collapse under slot 14)",
+  "state": "MERGED",
+  "merged_at": "2026-05-31T23:24:49Z",
+  "head_ref": "otto-cli/b0867-30-freemode-slots-abtest-2026-05-31"
+}

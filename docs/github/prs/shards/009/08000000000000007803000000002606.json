@@ -1,0 +1,12 @@
+{
+  "pr_number": 9734,
+  "archive_path": "docs/history/pr-reviews/PR-9734-docs-book-fold-the-card-trick-root-into-the-ch-06-photophone-beat-shadow.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-11T19:20:44.443Z",
+  "schema_version": "v1",
+  "commit_sha": "2588c02060148848b27571d44a85272932af3847",
+  "title": "docs(book): fold the card-trick ROOT into the ch-06 photophone beat (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-11T19:20:19Z",
+  "head_ref": "book-ch06-cardtrick-root"
+}

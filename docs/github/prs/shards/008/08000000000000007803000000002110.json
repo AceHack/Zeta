@@ -1,0 +1,12 @@
+{
+  "pr_number": 8464,
+  "archive_path": "docs/history/pr-reviews/PR-8464-fix-setup-retry-elan-second-stage-installer.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-16T07:09:25.706Z",
+  "schema_version": "v1",
+  "commit_sha": "13a13ecb5e93076f920d18ecbdb6f0633cc35356",
+  "title": "fix(setup): retry elan second-stage installer",
+  "state": "MERGED",
+  "merged_at": "2026-06-16T07:08:59Z",
+  "head_ref": "codex/retry-elan-installer"
+}

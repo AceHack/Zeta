@@ -1,0 +1,12 @@
+{
+  "pr_number": 3771,
+  "archive_path": "docs/history/pr-reviews/PR-3771-shard-tick-2026-05-16t05-59z-post-reset-pr-sweep-complete-pr-3746-closed-as-supe.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-16T06:06:53.245Z",
+  "schema_version": "v1",
+  "commit_sha": "68c6f67a75d9cb88e10287692925bbe4732415a7",
+  "title": "shard(tick): 2026-05-16T05:59Z — post-reset PR sweep complete; PR #3746 closed as superseded",
+  "state": "MERGED",
+  "merged_at": "2026-05-16T06:06:35Z",
+  "head_ref": "shard/tick-0559z-otto-cli-2026-05-16"
+}

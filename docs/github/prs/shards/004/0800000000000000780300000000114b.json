@@ -1,0 +1,16 @@
+{
+  "pr_number": 4427,
+  "archive_path": "docs/history/pr-reviews/PR-4427-docs-shadow-lior-anti-entropy-shadow-report-on-4383-decomposition.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7DOUfK",
+    "comment:PRRC_kwDOSF9kNM7DWQOp",
+    "thread:PRRT_kwDOSF9kNM6Diler"
+  ],
+  "fetched_at": "2026-05-20T22:51:09.799Z",
+  "schema_version": "v1",
+  "commit_sha": "96276fc0d1e945bbe55f14249e4bbea0c60db085",
+  "title": "docs(shadow): Lior anti-entropy shadow report on 4383 decomposition",
+  "state": "MERGED",
+  "merged_at": "2026-05-20T22:50:51Z",
+  "head_ref": "lior/shadow-log-4383-2"
+}

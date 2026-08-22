@@ -1,0 +1,12 @@
+{
+  "pr_number": 7651,
+  "archive_path": "docs/history/pr-reviews/PR-7651-docs-rooms-the-law-of-personal-rooms-treaty-secured-persona-owned-self-maintaine.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-11T11:13:40.859Z",
+  "schema_version": "v1",
+  "commit_sha": "7f45da9478321a27a51cf67715e0ff505ef12e78",
+  "title": "docs(rooms): the law of personal rooms — treaty-secured, persona-owned, self-maintained, conference-for-help",
+  "state": "MERGED",
+  "merged_at": "2026-06-11T11:13:13Z",
+  "head_ref": "shadow-persona-room-law"
+}

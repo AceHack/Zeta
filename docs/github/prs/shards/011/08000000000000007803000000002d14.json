@@ -1,0 +1,12 @@
+{
+  "pr_number": 11540,
+  "archive_path": "docs/history/pr-reviews/PR-11540-fix-heartbeat-probe-the-scope-the-flush-actually-uses-not-merely-repo-visibility.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-17T16:26:26.967Z",
+  "schema_version": "v1",
+  "commit_sha": "d3e8b88a2bcf17a8491e3cb40b07559858eba6ec",
+  "title": "fix(heartbeat): probe the scope the flush actually uses, not merely repo visibility",
+  "state": "MERGED",
+  "merged_at": "2026-08-17T16:25:52Z",
+  "head_ref": "shadow/heartbeat-probe-the-scope-actually-used"
+}

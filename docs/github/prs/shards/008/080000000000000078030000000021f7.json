@@ -1,0 +1,12 @@
+{
+  "pr_number": 8695,
+  "archive_path": "docs/history/pr-reviews/PR-8695-feat-formal-clifford-reflection-generates-the-e8-root-system-row-11-dechant-repr.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-20T03:05:35.251Z",
+  "schema_version": "v1",
+  "commit_sha": "4294ccbe923cfb6083318d0f1102ec5ecf37ee4b",
+  "title": "feat(formal): Clifford reflection GENERATES the E8 root system (row 11 — Dechant reproduction)",
+  "state": "MERGED",
+  "merged_at": "2026-06-20T03:05:12Z",
+  "head_ref": "otto-summoned/row11-clifford-e8-roots-reproduction"
+}

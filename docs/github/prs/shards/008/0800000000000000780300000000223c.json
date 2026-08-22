@@ -1,0 +1,12 @@
+{
+  "pr_number": 8764,
+  "archive_path": "docs/history/pr-reviews/PR-8764-feat-csharp-imdbschemas-wire-the-typeschema-ir-to-the-real-imdb-dataset-groundin.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-20T18:40:47.404Z",
+  "schema_version": "v1",
+  "commit_sha": "1cdb54a1fbbf92ff7e7cfd544880f471d2209de7",
+  "title": "feat(csharp): ImdbSchemas — wire the TypeSchema IR to the real IMDb dataset (grounding)",
+  "state": "MERGED",
+  "merged_at": "2026-06-20T18:40:21Z",
+  "head_ref": "otto/imdb-real-schemas"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 13325,
+  "archive_path": "docs/history/pr-reviews/PR-13325-survey-helm-every-remote-chart-pin-read-against-its-own-upstream-index-two-were-.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-21T19:52:43.450Z",
+  "schema_version": "v1",
+  "commit_sha": "9356ed46d1c44ded23d60125ee39207e7fa15586",
+  "title": "survey(helm): every remote chart pin read against its own upstream index -- two were never published",
+  "state": "MERGED",
+  "merged_at": "2026-08-21T19:52:03Z",
+  "head_ref": "chore/helm-chart-version-survey"
+}

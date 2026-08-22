@@ -1,0 +1,12 @@
+{
+  "pr_number": 3938,
+  "archive_path": "docs/history/pr-reviews/PR-3938-docs-shadow-maji-antigravity-check-and-pr-preservation.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-18T21:02:17.579Z",
+  "schema_version": "v1",
+  "commit_sha": "83c158087c21825719c4f6e7ffa4926e83163c4a",
+  "title": "docs(shadow): Maji antigravity check and PR preservation",
+  "state": "MERGED",
+  "merged_at": "2026-05-18T21:01:57Z",
+  "head_ref": "lior/antigravity-check-tick"
+}

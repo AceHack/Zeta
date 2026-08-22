@@ -1,0 +1,12 @@
+{
+  "pr_number": 8149,
+  "archive_path": "docs/history/pr-reviews/PR-8149-docs-cursor-fresh-machine-bootstrap-clone-root-is-workspace-mcp-is-repo-native.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-14T02:57:37.555Z",
+  "schema_version": "v1",
+  "commit_sha": "b9613609b0a1342b3e1ff8cfeb4912ea068f2860",
+  "title": "docs(cursor): fresh-machine bootstrap — clone root is workspace, MCP is repo-native",
+  "state": "MERGED",
+  "merged_at": "2026-06-14T02:57:15Z",
+  "head_ref": "riven/cursor-fresh-machine-docs"
+}

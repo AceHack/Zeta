@@ -1,6 +1,19 @@
 # Debian/Ubuntu apt packages — installed by tools/setup/linux.sh.
 # Add a package by appending a line. Comments start with `#`.
 #
+# HOST TIERS. A row may carry `tier=<slim|standard|full>`; untagged means
+# tier=slim, i.e. required on every host. linux.sh drops rows above the host's
+# tier (loudly, naming the package and both tiers) and strips the token before
+# calling apt-get — same mechanism macos.sh applies to manifests/brew, and the
+# tagged rows here mirror brew's tier=standard set. Measured on ubuntu:24.04
+# amd64 with universe enabled and --no-install-recommends (2026-08-21):
+#   every row (tier=full/standard/slim)  388 packages   713.0 MiB
+#   slim only (what ubuntu-slim gets)    149 packages   139.7 MiB
+# The gap is concentrated in a handful of rows — agda +242 MiB, emscripten
+# +150 MiB, r-base +57 MiB, llvm +53 MiB, pandoc +26 MiB, podman +21 MiB —
+# which is why those are the ones tagged. Tagging a row that measures +0.0 MiB
+# would look like cost control and be none.
+#
 # System-level packages only. Language runtimes (dotnet, python,
 # java, bun) are pinned via `.mise.toml`, NOT via apt. Round 34
 # migrated OpenJDK off apt onto mise.
@@ -39,29 +52,29 @@ tzdata            # timezone data — .NET DateTime
 # arm64; opam compiles tlapm natively on any arch). opam = the OCaml package
 # manager that builds tlapm from a pinned source commit (see common/tlaps.sh).
 # The SMT backend (z3) is declared below. Idempotent (apt skips if present).
-opam  # OCaml package manager — builds tlapm from source per common/tlaps.sh
+opam tier=standard  # OCaml package manager — builds tlapm from source per common/tlaps.sh
 
 # USB/ISO QEMU acceptance substrate (operator 2026-05-31): B-0891 uses
 # qemu-system-* for boot/full-install/retention scenarios and qemu-img
 # for qcow2 snapshot/restart state preservation. The file-backed zflash
 # image builder uses mtools' mcopy to write ESP payloads into raw images
 # without mounting physical USB devices.
-qemu-system-x86
-qemu-utils
-mtools
+qemu-system-x86 tier=standard
+qemu-utils tier=standard
+mtools tier=standard
 
 # Container runtime for the effectful do_item executor (rationale: B-0964 §2). podman
 # is the default OCI runtime: Apache-2.0, rootless, daemonless; native on Linux (no
 # VM). Version unpinned (fast-mover CLI) per dep-pin-search-first-authority.
-podman
+podman tier=standard
 # Rootless-podman helpers: linux.sh runs `apt install --no-install-recommends`, which
 # skips podman's Recommends — so a minimal Ubuntu needs these explicitly or rootless
 # podman silently breaks. Per automated-tests-are-the-shield-assert-dont-skip: declare
 # them so podman actually RUNS rootless, not just installs (a green install that can't
 # run a container is a hole in the shield).
-uidmap          # newuidmap/newgidmap — rootless user-namespace ID mapping
-slirp4netns     # rootless container networking
-fuse-overlayfs  # rootless overlay storage driver
+uidmap tier=standard  # newuidmap/newgidmap — rootless user-namespace ID mapping
+slirp4netns tier=standard  # rootless container networking
+fuse-overlayfs tier=standard  # rootless overlay storage driver
 
 # Z3 SMT solver — the formal-verification SMT prover (tools/Z3Verify + Formal/Z3.Laws.Tests
 # shell `z3 -in`). Was UNDECLARED (test self-skips when absent = silent non-enforcement);
@@ -74,7 +87,7 @@ z3
 # Renders data-viz lenses of the state/memory field (ASCII-rendered for the LLM-TV). Pin per
 # dep-pin-search-first (WebSearch 2026-06-08): Ubuntu 24.04 noble `r-base` (universe), GPL-2;
 # idempotent. Windows carries it via the `r` line (symmetry exception r-base→r in manifest test).
-r-base
+r-base tier=standard
 
 # NOTE — tectonic (lean single-binary LaTeX engine; Lamport's LaTeX, cost-aware vs texlive-full's
 # GBs) is declared in manifests/brew + manifests/windows where it is a clean package. It is NOT in
@@ -101,7 +114,7 @@ cvc5
 # manifests/from-agda-cubical (a series whose Agda has no pin row warns +
 # skips the lane; fix = add the matching cubical release row). agda-stdlib is
 # deliberately NOT required: the cubical library is independent of it.
-agda
+agda tier=standard
 
 # ── WASM toolchain (Oracle 10 / DLA multi-compiler substrate) ─────────────────
 # Three compilers proved substrate-independence of D_f ≈ 1.322 (Oracle 10):
@@ -115,6 +128,11 @@ agda
 #   Verified present: apt-cache show wabt (Noble 1.0.33-1).
 wabt
 #
+# lua5.4: Lua bytecode/script substrate (Oracle 15). It belongs in the guarded
+# manifest install, not a second late apt call after install.sh has completed
+# the shared runtime graph.
+lua5.4
+#
 # binaryen: wasm-opt, wasm-as, wasm-dis — WASM optimizer and toolchain.
 #   Noble: binaryen in universe apt. Used by AssemblyScript (asc) internally for
 #   optimization passes. Also provides wasm-opt for post-compile size reduction.
@@ -127,11 +145,17 @@ binaryen
 #   WAT + ASC + Go + C in the same panel makes the compiler-independence claim
 #   nearly exhaustive (Conjecture Z-7: binary_size ⊥ D_f across all compilers).
 #   Verified present: apt-cache show emscripten (Noble 3.1.6~dfsg-1).
-emscripten
+emscripten tier=standard
 #
-# AssemblyScript (asc) is installed via pnpm (already in mise) at the project
-# level — it is NOT an apt package. The asc binary is available after
-# `pnpm add -g assemblyscript` or via the project's node_modules/.bin/asc.
+# AssemblyScript (asc) is a project-level tool, NOT an apt package. Install it
+# with the repo's own package manager (`bun add -d assemblyscript`) and invoke
+# it via the project's node_modules/.bin/asc.
+#
+# NOTE (081KZYAGTB6087G0R002W8CWQK): this comment used to claim asc came in via
+# `pnpm add -g` and that pnpm was "already in mise". Neither was ever true —
+# pnpm is not a mise tool, and it is no longer a root devDependency either. The
+# only pnpm consumer is demo/identity-dla-site, which now provisions its own
+# pinned pnpm from src/Core.TypeScript/discovery/identity-dla-pages-build.ts.
 # nodejs is required as the asc runtime host.
 nodejs          # AssemblyScript runtime host (asc CLI requires Node.js)
 
@@ -140,7 +164,7 @@ nodejs          # AssemblyScript runtime host (asc CLI requires Node.js)
 # a distinct substrate between C source and WASM binary (Conjecture Z-7 sixth
 # substrate). Ubuntu Noble: `llvm` metapackage installs llc-18, llvm-as-18, opt-18.
 # Verified: apt-cache show llvm (Noble 1:18.0-59~exp2).
-llvm
+llvm tier=standard
 
 # ── Zig compiler (Oracle 11 / wasm32-freestanding substrate) ──────────────────
 # Zig compiles to WASM natively (`zig build-exe -target wasm32-freestanding`)
@@ -152,9 +176,11 @@ llvm
 
 # ── Rust (rustup) — wasm32-unknown-unknown target ─────────────────────────────
 # rustup is NOT in apt — installed via https://sh.rustup.rs. The wasm32 target
-# is added via `rustup target add wasm32-unknown-unknown`. Declared here for
+# needs no manual `rustup target add` step: it is DECLARED on the mise rust
+# entry (`targets = ["wasm32-unknown-unknown"]`). Declared here for
 # single-source-of-truth. Actual install: mise rust plugin (wraps rustup).
-# See .mise.toml `rust = "1.87.0"`. Produces the Rust WASM substrate (7.4KB opt).
+# See .mise.toml `rust = { version = "1.87.0", components = [...], targets = [...] }`.
+# Produces the Rust WASM substrate (7.4KB opt).
 # rust/cargo — installed via mise rust plugin (wraps rustup, not apt)
 
 # ── pandoc (document conversion — book/EPUB build) ────────────────────────────
@@ -162,6 +188,138 @@ llvm
 # Consumed by tools/book-build/build-book.ts. Declarative-managed per the
 # single-source-of-truth discipline (the maintainer 2026-08-06: "download whatever
 # tools we need and link them in our declarative installers for all our OS shields").
-# NOTE: apt entries are BARE package names (the awk parser passes the whole line to
-# apt-get; a `tier=` suffix would be read as a version-pin — brew uses tier=, apt does NOT).
-pandoc          # document conversion — book/EPUB build (tools/book-build)
+# NOTE: an apt entry is a BARE package name plus an OPTIONAL `tier=<slim|standard|full>`
+# token — the only token this manifest understands. Untagged means tier=slim, i.e. installed
+# on every host. linux.sh strips the token via common/host-tier.sh before calling apt-get, so
+# nothing but package names reaches apt. (This note used to say apt does NOT support tier=,
+# which was true until 081M0K36K69087G0R003BYSCF8; brew has supported it since 081KTWQZY7F.)
+pandoc tier=standard  # document conversion — book/EPUB build (tools/book-build)
+
+# ── YubiKey / YubiHSM hardware-token substrate ────────────────────────────────
+# Declarative per the maintainer's standing rule quoted in manifests/brew:
+# "download whatever tools we need and link them in our declarative installers
+# for all our OS shields". Hardware present on the maintainer's bench 2026-08-20:
+# YubiHSM 2 (serial 39160506, fw 2.4.1) + 2x YubiKey 5 (fw 5.7.4).
+#
+# WHY LINUX NEEDS MORE THAN macOS HERE. macOS ships a CCID smartcard stack in the
+# OS, so `brew install ykman` is sufficient there. Linux does not: without a
+# running PC/SC daemon the CCID interface is invisible and ykman reports NO device
+# even though it is plugged in and enumerated on USB. That is a silent
+# half-working install -- the tool present, the device unreachable -- so pcscd and
+# its client library are declared HERE rather than assumed from the runner image.
+#
+# udev: the yubikey-manager deb ships rules under /lib/udev/rules.d/ granting
+# non-root access to the Yubico vendor id (0x1050). (The yubihsm-shell deb ships
+# its own rules for the HSM, but that package is not declared here -- see below --
+# so an HSM on a Linux host still needs those rules from Yubico's own repo.)
+# Installing via apt is what puts them there; a pip/binary install of ykman does
+# NOT, which is the usual reason a working macOS setup fails to reproduce on Linux.
+#
+# Verified installable on the runner 2026-08-20. Two corrections are recorded here
+# because both are the same error in different disguises:
+#
+#   1. A first lookup returned 000 for four names. That is a FAILED REQUEST, not an
+#      absent package; re-running returned 200. Reading a timeout as "not packaged"
+#      is how a check that did not run gets treated as one that did.
+#
+#   2. yubihsm-shell WAS declared here on the strength of a 200 from
+#      packages.ubuntu.com/noble, and CI then failed with
+#      `E: Unable to locate package yubihsm-shell`. The 200 proved the package
+#      exists IN THE DISTRO ARCHIVE. It did not prove it is installable FROM THE
+#      SOURCES THIS RUNNER HAS CONFIGURED, which is the proposition that actually
+#      had to hold. Verifying the weaker claim and treating it as the stronger one
+#      is the whole failure mode -- so the entry is gone rather than papered over
+#      with an apt-source change nobody asked for. It is now absent on BOTH
+#      platforms (see manifests/brew), which is at least honest and symmetric:
+#      the YubiHSM CLI is undeclared everywhere until it can be pinned properly.
+#
+# The four below are confirmed installable: CI installed them.
+yubikey-manager   # ykman CLI — PIV/FIDO2/OpenPGP/YubiHSM-Auth applet management
+yubico-piv-tool   # PIV slot + attestation tooling (hardware proof a key never left)
+pcscd             # PC/SC smartcard daemon — REQUIRED for CCID; macOS has this built in
+libpcsclite1      # PC/SC client library ykman links against
+
+# ── OpenSC / pkcs11-tool (2026-08-20) ─────────────────────────────────────────
+# OpenSC (`pkcs11-tool`), added 2026-08-20 with the macOS + Windows legs. This is
+# the piece that makes the YubiHSM PKCS#11 module usable by something: the SDK
+# ships yubihsm_pkcs11.so and, before this row, nothing in the declared toolchain
+# could load a PKCS#11 module at all. It also drives a YubiKey PIV slot through
+# OpenSC's own module, so it is the vendor-neutral half of this block.
+#
+# VERIFIED, and by the check the yubihsm-shell entry above failed. The lesson
+# recorded above is that a 200 from packages.ubuntu.com proves a package exists in
+# the DISTRO ARCHIVE, not that it is installable FROM THE SOURCES THIS RUNNER HAS.
+# So this row was checked by parsing the archive's own binary-package indices and
+# reading the COMPONENT each package sits in (2026-08-20):
+#
+#   dists/noble/universe/binary-amd64  opensc 0.25.0~rc1-1build2   (64,754 pkgs parsed)
+#   dists/jammy/universe/binary-amd64  opensc 0.22.0-1ubuntu2      (58,824 pkgs parsed)
+#   dists/noble/main/binary-amd64      opensc ABSENT               ( 6,099 pkgs parsed)
+#
+# universe, not main -- and universe is exactly the component yubikey-manager,
+# yubico-piv-tool and pcscd above already come from, all three of which CI has
+# installed successfully. That is the entailment this row rests on: same suite,
+# same component, same runner sources. Both Ubuntu releases linux.sh supports
+# carry it, so no jammy alias mapping is needed (contrast libicu74 -> libicu70).
+#
+# /usr/bin/pkcs11-tool ships in the `opensc` binary package itself, not in
+# `opensc-pkcs11` (that one is the .so). Confirmed from the package's own file
+# list; `opensc-pkcs11` is a dependency and is pulled in automatically.
+#
+# COST, stated rather than assumed. This is +1 package on all 24 gate jobs,
+# uncached, forever -- the most expensive shelf in the repo (install-v2 caches
+# only $HOME; nothing apt writes to /usr survives). A CI runner has no HSM and
+# no YubiKey, so the CI benefit is zero. It is landed anyway because the four
+# rows above already made exactly that trade for exactly this hardware, and
+# refusing the fifth on cost while keeping the four would be a razor applied to
+# the cheapest row instead of the decision.
+#
+# The DEBT this paragraph filed -- "the right fix is a tier= gate for apt, which
+# does not exist yet" -- is PAID as of 081M0K36K69087G0R003BYSCF8: linux.sh now
+# honours `tier=`. This row is deliberately left UNTAGGED anyway. opensc's
+# marginal download on top of the slim set measures +0.0 MiB (it is already
+# pulled in as a dependency), so tagging it would buy nothing and would only
+# make the manifest read as if the cost had been addressed. The rows that were
+# tagged are the ones that were measured to be expensive.
+opensc            # pkcs11-tool — vendor-neutral PKCS#11 CLI; module loader for yubihsm_pkcs11.so
+
+# ── YubiHSM 2 SDK: STILL UNDECLARED ON DEBIAN/UBUNTU (2026-08-20) ─────────────
+# Re-verified today by the index parse above, so the removal recorded earlier is
+# now backed by the strong check rather than by a CI failure:
+#
+#   dists/noble/universe   yubihsm-shell ABSENT · yubihsm-connector ABSENT · libyubihsm2 ABSENT
+#   dists/noble/main       (none of the three)
+#   dists/jammy/universe   yubihsm-shell ABSENT
+#
+# There is genuinely no apt route. Yubico ships
+# https://developers.yubico.com/YubiHSM2/Releases/yubihsm2-sdk-2026-04-ubuntu2404-amd64.tar.gz
+# (+ a detached .sig) -- a TARBALL OF .debs, not a .deb. No mechanism here fits:
+#   from-deb   takes ONE .deb url, performs NO checksum and NO signature check
+#              (bare `dpkg -i`), and its binary-only idempotence check cannot
+#              install the library-only yubihsm-pkcs11 package at all. Using the
+#              repo's one unverified mechanism to install an HSM driver would
+#              invert our own standard at the point it matters most.
+#   from-url   downloads to a path and stops. It cannot untar or dpkg anything.
+#
+# AND AN APT ROW WOULD BE THE WRONG SHAPE EVEN IF ONE EXISTED. linux.sh skips apt
+# entirely on NixOS (the /etc/NIXOS marker), and the cluster nodes -- the only
+# machines that will hold an HSM -- are NixOS. So an apt entry would cost 24 gate
+# jobs every run forever and reach zero nodes. The pinned nixpkgs already carries
+# yubihsm-connector 3.0.7 and yubihsm-shell 2.7.3, source-built and hash-pinned.
+#
+# TODO, owned by workitem 081M0B5V6Z5087G0R0026RANJ3, BLOCKED on maintainer
+# sign-off (Q1-Q7 + Q9 in the design doc). What must be supplied before Linux can
+# be declarative for the HSM:
+#   1. Answers to Q2 (which SDK pieces land on a node; yubihsm-setup excluded?),
+#      Q4 (yubihsm-shell CLI on nodes at all?) and Q5 (all nodes or HSM-holders).
+#   2. Then full-ai-cluster/nixos/modules/yubihsm.nix -- NOT a tools/setup row:
+#      the connector daemon, a yubihsm-connector system user, a systemd unit
+#      (nixpkgs ships no services.yubihsm-connector module), and
+#      services.udev.extraRules for 1050:0030 with OWNER="yubihsm-connector".
+#      The udev rule is REQUIRED: a YubiHSM 2 is a USB BULK device, invisible to
+#      pcscd/OpenSC/ykman, and without the rule the node device is root-only --
+#      which presents as a healthy daemon that cannot see a plugged-in HSM.
+#      The 1050:0030 constant is Yubico's own, read from deb/70-yubihsm-connector.rules
+#      at tag 3.0.7, not inferred.
+# Design + evidence: docs/research/2026-08-18-yubihsm2-sdk-on-linux-the-cluster-
+# is-nixos-so-the-apt-question-was-the-wrong-question.md

@@ -2,6 +2,15 @@ namespace Zeta.Bayesian
 
 /// **CondorcetBoundary — the formal (ρ*, c*) Condorcet boundary.**
 ///
+/// **THIS IS (one half of) THE INDIVIDUAL-VS-SOCIETY ORDERING RESULT** — searchable as
+/// *individual vs society* / *society greater than individual* / *no individual exceeds the society*
+/// / *the collective outperforms its best member* / *ordering* / *dominance* / *mutual empowerment*
+/// / *wisdom of crowds*. Register row: `docs/FROZEN-CORE-AND-CONJECTURE-REGISTER.md` **§A row 15**.
+/// The other half — the ΔU-aggregation / union model, where the hard boundary is ρ* = 1 and c* is an
+/// *argmax* rather than a threshold — is `src/Core/SocietyUsefulWork.fs`. **Do not conflate the two
+/// boundaries.** Open and NOT a dependency of either: register **§B-ks (Conjecture KS-1)**, the
+/// KS-entropy / Lyapunov information-theoretic foundation of the Condorcet bonus.
+///
 /// ## The theorem (Condorcet 1785)
 ///
 /// For a jury of N independent voters, each with individual competence `c` (probability of

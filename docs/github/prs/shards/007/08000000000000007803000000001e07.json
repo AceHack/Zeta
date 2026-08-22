@@ -1,0 +1,12 @@
+{
+  "pr_number": 7687,
+  "archive_path": "docs/history/pr-reviews/PR-7687-feat-core-add-q-locked-bell-state-prep.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-11T13:41:13.643Z",
+  "schema_version": "v1",
+  "commit_sha": "cebd4b39a89e428a41cb8be7183f6129a6296d18",
+  "title": "feat(core): add Q#-locked Bell state prep",
+  "state": "MERGED",
+  "merged_at": "2026-06-11T13:40:46Z",
+  "head_ref": "codex/vera-qsharp-bell-state"
+}

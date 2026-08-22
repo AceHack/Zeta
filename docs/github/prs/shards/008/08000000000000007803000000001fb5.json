@@ -1,0 +1,12 @@
+{
+  "pr_number": 8117,
+  "archive_path": "docs/history/pr-reviews/PR-8117-fix-go-convert-bits-constants-to-uint-in-zeta-id-bitlayout-restore-main-green.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-14T01:13:52.855Z",
+  "schema_version": "v1",
+  "commit_sha": "edeacbee95f56c635384c1657924ea80453e9a33",
+  "title": "fix(go): convert Bits constants to uint in zeta_id BitLayout (restore main-green)",
+  "state": "MERGED",
+  "merged_at": "2026-06-14T01:13:27Z",
+  "head_ref": "otto/fix-go-zeta-id-bits-uint"
+}

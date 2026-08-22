@@ -1,0 +1,12 @@
+{
+  "pr_number": 10000,
+  "archive_path": "docs/history/pr-reviews/PR-10000-fix-setup-admit-clean-host-mise-entries-on-windows-arm.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-02T21:27:25.392Z",
+  "schema_version": "v1",
+  "commit_sha": "74a4f7309a26c1d2b65fd116912b53f8913f3427",
+  "title": "fix(setup): admit clean-host mise entries on Windows ARM",
+  "state": "MERGED",
+  "merged_at": "2026-08-02T21:26:58Z",
+  "head_ref": "codex/windows-arm-mise-clean-host"
+}

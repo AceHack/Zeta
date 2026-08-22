@@ -1,0 +1,12 @@
+{
+  "pr_number": 5725,
+  "archive_path": "docs/history/pr-reviews/PR-5725-docs-ferry-preserve-7th-kestrel-ferry-verbatim-f-ct-engagement-fpga-landauer-run.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-28T08:55:15.175Z",
+  "schema_version": "v1",
+  "commit_sha": "f235e26977c7b7636ae73627fed041fa738d20ca",
+  "title": "docs(ferry): preserve 7th Kestrel ferry verbatim — F#+CT engagement → FPGA+Landauer → runtime-rewritable open-bitstream + operator FPGA-inventory disclosure + Aaron backpressure-check",
+  "state": "MERGED",
+  "merged_at": "2026-05-28T08:54:50Z",
+  "head_ref": "otto-cli/kestrel-7th-ferry-fsharp-ct-fpga-landauer-runtime-rewritable-bitstream-aaron-fpga-inventory-2026-05-28"
+}

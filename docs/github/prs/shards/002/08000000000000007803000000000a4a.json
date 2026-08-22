@@ -1,0 +1,15 @@
+{
+  "pr_number": 2634,
+  "archive_path": "docs/history/pr-reviews/PR-2634-docs-research-critic-to-architect-bifurcation-model-shadow-lineage-correction.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_scfa",
+    "thread:PRRT_kwDOSF9kNM6A9Opd"
+  ],
+  "fetched_at": "2026-05-11T02:48:47.568Z",
+  "schema_version": "v1",
+  "commit_sha": "680e0f5a1d0e6f73fd0d502d9ffa6a8bb2b93e2a",
+  "title": "docs(research): critic-to-architect — bifurcation model + shadow lineage correction",
+  "state": "MERGED",
+  "merged_at": "2026-05-11T02:48:31Z",
+  "head_ref": "docs/critic-to-architect-bifurcation-shadow-lineage-2026-05-10"
+}

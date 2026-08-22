@@ -1,0 +1,12 @@
+{
+  "pr_number": 8236,
+  "archive_path": "docs/history/pr-reviews/PR-8236-feat-value-tree-cata-fusion-law-deforestation-proven-last-primitive-s-fusion-leg.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-15T02:24:46.881Z",
+  "schema_version": "v1",
+  "commit_sha": "cbb58738c69dfee0522881b641c628fc69f431d2",
+  "title": "feat(value-tree): cata-fusion law — deforestation proven (last primitive's fusion leg)",
+  "state": "MERGED",
+  "merged_at": "2026-06-15T02:24:22Z",
+  "head_ref": "otto/value-tree-cata-fusion-law"
+}

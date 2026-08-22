@@ -1,0 +1,16 @@
+{
+  "pr_number": 3411,
+  "archive_path": "docs/history/pr-reviews/PR-3411-shard-tick-1028z-pr-3409-merged-2nd-rule-citation-overreach-acknowledged.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7Bkc_e",
+    "comment:PRRC_kwDOSF9kNM7Bkfms",
+    "thread:PRRT_kwDOSF9kNM6CVDk7"
+  ],
+  "fetched_at": "2026-05-15T10:36:41.815Z",
+  "schema_version": "v1",
+  "commit_sha": "93f914bde9cb6c2426496d3fdeeefea953aae06f",
+  "title": "shard(tick): 1028Z — PR #3409 merged; 2nd rule-citation overreach acknowledged",
+  "state": "MERGED",
+  "merged_at": "2026-05-15T10:36:22Z",
+  "head_ref": "shard/tick-1028z-otto-cli-2026-05-15"
+}

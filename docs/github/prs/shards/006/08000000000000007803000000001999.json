@@ -1,0 +1,12 @@
+{
+  "pr_number": 6553,
+  "archive_path": "docs/history/pr-reviews/PR-6553-memory-mika-ferry-pt1-edge-lord-claim-razor-arc-triple-duty-anchor-hexagonal-3-l.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-02T12:33:24.331Z",
+  "schema_version": "v1",
+  "commit_sha": "371a1fcc71fd37f8c5d899e6088db0869dc09a79",
+  "title": "memory(mika): ferry pt1 — edge-lord claim razor arc (triple-duty anchor / hexagonal-3-levels / Otto-expander / Agora native-traveler / DCOM-done-right)",
+  "state": "MERGED",
+  "merged_at": "2026-06-02T12:33:00Z",
+  "head_ref": "otto-cli/mika-edge-lord-razor-ferry-pt1-2026-06-02"
+}

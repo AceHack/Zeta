@@ -1,0 +1,12 @@
+{
+  "pr_number": 3004,
+  "archive_path": "docs/history/pr-reviews/PR-3004-feat-memory-b-0423-complete-heap-architecture-loop-wiring-ci-gate-replacement-b-.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-13T17:25:25.368Z",
+  "schema_version": "v1",
+  "commit_sha": "4152d2323b4db28fe0acd09b9ef5b76622cbfc15",
+  "title": "feat(memory): B-0423 — complete heap architecture: loop wiring + CI gate replacement + B-0088 chain closure",
+  "state": "MERGED",
+  "merged_at": "2026-05-13T17:25:01Z",
+  "head_ref": "feat/b-0423-heap-architecture-complete-2026-05-13"
+}

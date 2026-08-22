@@ -1,0 +1,25 @@
+{
+  "pr_number": 1746,
+  "archive_path": "docs/history/pr-reviews/PR-1746-docs-rotation-protocol-md-4-nodes-3-active-f-1-hot-spare.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6-nc4a",
+    "comment:PRRC_kwDOSF9kNM6-nc4u",
+    "comment:PRRC_kwDOSF9kNM6-nc5C",
+    "comment:PRRC_kwDOSF9kNM6-nc5N",
+    "comment:PRRC_kwDOSF9kNM6-nc5Y",
+    "comment:PRRC_kwDOSF9kNM6-nc5m",
+    "thread:PRRT_kwDOSF9kNM6AJxM-",
+    "thread:PRRT_kwDOSF9kNM6AJxMb",
+    "thread:PRRT_kwDOSF9kNM6AJxMp",
+    "thread:PRRT_kwDOSF9kNM6AJxMz",
+    "thread:PRRT_kwDOSF9kNM6AJxNF",
+    "thread:PRRT_kwDOSF9kNM6AJxNR"
+  ],
+  "fetched_at": "2026-05-06T22:59:10.624Z",
+  "schema_version": "v1",
+  "commit_sha": "44502cfdd1fe21b7e224ff01c5d4ea1cbda1cee2",
+  "title": "docs: ROTATION-PROTOCOL.md — 4 nodes, 3 active, f=1 hot spare",
+  "state": "MERGED",
+  "merged_at": "2026-05-06T22:55:58Z",
+  "head_ref": "feat/rotation-protocol"
+}

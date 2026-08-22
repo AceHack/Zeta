@@ -1,0 +1,21 @@
+{
+  "pr_number": 6480,
+  "archive_path": "docs/history/pr-reviews/PR-6480-feat-algebra-z-set-f-generic-math-zero-on-the-type-abelian-group.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7G7K49",
+    "comment:PRRC_kwDOSF9kNM7G7K4R",
+    "comment:PRRC_kwDOSF9kNM7G7K4r",
+    "comment:PRRC_kwDOSF9kNM7G7K5I",
+    "thread:PRRT_kwDOSF9kNM6GQns1",
+    "thread:PRRT_kwDOSF9kNM6GQnsi",
+    "thread:PRRT_kwDOSF9kNM6GQntD",
+    "thread:PRRT_kwDOSF9kNM6GQntK"
+  ],
+  "fetched_at": "2026-06-01T22:01:42.234Z",
+  "schema_version": "v1",
+  "commit_sha": "694e8e0d98422a2555674e071e3ab8c47a6cc1ff",
+  "title": "feat(algebra): Z-set F# generic-math — Zero/(+)/(~-)/(-) on the type (abelian group)",
+  "state": "MERGED",
+  "merged_at": "2026-06-01T22:01:18Z",
+  "head_ref": "otto-cli/zset-fsharp-generic-math-2026-06-01"
+}

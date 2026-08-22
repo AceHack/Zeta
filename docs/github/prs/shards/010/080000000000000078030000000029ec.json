@@ -1,0 +1,12 @@
+{
+  "pr_number": 10732,
+  "archive_path": "docs/history/pr-reviews/PR-10732-fix-heat-the-encoder-knew-the-sensor-was-dead-and-the-readout-said-exact.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-17T04:24:46.911Z",
+  "schema_version": "v1",
+  "commit_sha": "447ac0ab49ee18b3fa5365d9c102dede3eb5007d",
+  "title": "fix(heat): the encoder knew the sensor was dead and the readout said \"exact\"",
+  "state": "MERGED",
+  "merged_at": "2026-08-17T04:24:11Z",
+  "head_ref": "shadow/fail-dangerous-nan-encoder-paths"
+}

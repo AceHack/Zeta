@@ -1,0 +1,25 @@
+{
+  "pr_number": 3949,
+  "archive_path": "docs/history/pr-reviews/PR-3949-feat-b-0156-phase-6-py-policy-ci-gate-no-python-files-lint.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7B7m21",
+    "comment:PRRC_kwDOSF9kNM7B7m3I",
+    "comment:PRRC_kwDOSF9kNM7B7m3T",
+    "comment:PRRC_kwDOSF9kNM7B7m3W",
+    "comment:PRRC_kwDOSF9kNM7B7m3c",
+    "comment:PRRC_kwDOSF9kNM7B7m3i",
+    "thread:PRRT_kwDOSF9kNM6CmGD0",
+    "thread:PRRT_kwDOSF9kNM6CmGD4",
+    "thread:PRRT_kwDOSF9kNM6CmGDe",
+    "thread:PRRT_kwDOSF9kNM6CmGDn",
+    "thread:PRRT_kwDOSF9kNM6CmGDv",
+    "thread:PRRT_kwDOSF9kNM6CmGDx"
+  ],
+  "fetched_at": "2026-05-16T22:02:22.279Z",
+  "schema_version": "v1",
+  "commit_sha": "bd99605a3530ddf4ea169544c5eb690d45584544",
+  "title": "feat(B-0156): Phase 6 .py policy CI gate — no-python-files lint",
+  "state": "MERGED",
+  "merged_at": "2026-05-16T22:02:07Z",
+  "head_ref": "otto-cli/b0156-phase6-no-python-lint-2026-05-16"
+}

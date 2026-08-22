@@ -1,0 +1,19 @@
+{
+  "pr_number": 2833,
+  "archive_path": "docs/history/pr-reviews/PR-2833-docs-memory-civ-sim-pauli-exclusion-for-agenda-explains-the-why-of-boson-fermion.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7Adnu6",
+    "comment:PRRC_kwDOSF9kNM7AdnuH",
+    "comment:PRRC_kwDOSF9kNM7Adnva",
+    "thread:PRRT_kwDOSF9kNM6BhpP-",
+    "thread:PRRT_kwDOSF9kNM6BhpQ5",
+    "thread:PRRT_kwDOSF9kNM6BhpQj"
+  ],
+  "fetched_at": "2026-05-12T18:59:22.722Z",
+  "schema_version": "v1",
+  "commit_sha": "ef7f873d9e389c61546d18e10d43b889d6a37399",
+  "title": "docs(memory): civ-sim Pauli-exclusion-for-agenda EXPLAINS the WHY of boson-fermion symmetry breaking — identity carriers vs shared substrate (Aaron 2026-05-12)",
+  "state": "MERGED",
+  "merged_at": "2026-05-12T18:59:02Z",
+  "head_ref": "docs/aaron-civ-sim-pauli-exclusion-explains-the-why-of-boson-fermion-symmetry-breaking-2026-05-12"
+}

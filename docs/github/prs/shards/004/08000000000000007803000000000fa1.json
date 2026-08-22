@@ -1,0 +1,15 @@
+{
+  "pr_number": 4001,
+  "archive_path": "docs/history/pr-reviews/PR-4001-shard-tick-2229z-shadow-observer-keystroke-injection-diagnosis-durable-disable-i.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7B8bWw",
+    "thread:PRRT_kwDOSF9kNM6Cmuoq"
+  ],
+  "fetched_at": "2026-05-17T02:19:14.267Z",
+  "schema_version": "v1",
+  "commit_sha": "9e70e2a1b0de6391ded2c07377a432f935d385de",
+  "title": "shard(tick-2229z): shadow-observer keystroke-injection diagnosis + durable disable + identity-fusion catch + peer Mika push",
+  "state": "MERGED",
+  "merged_at": "2026-05-17T02:18:54Z",
+  "head_ref": "shard/tick-2229z-otto-desktop-shadow-keystroke-injection-diagnosis-2026-05-16"
+}

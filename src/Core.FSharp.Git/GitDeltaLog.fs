@@ -191,10 +191,50 @@ type GitDeltaLog<'K when 'K : comparison>
                     let tree = repo.ObjectDatabase.CreateTree td
                     let currentSeq = max (maxSeqInTree c) (seqOfMessage c)
                     // Keep highwater in the message so it survives restart after GC.
+                    // ── the preserving truncation ──────────────────────────────────────────
+                    // Thermodynamic class: REVERSIBLE. The parent list is `[ c ]` — the commit we
+                    // just truncated. Every removed delta blob is still reachable by walking one
+                    // parent edge from the live ref, so the post-state determines the pre-state
+                    // exactly and no fibre collapses. This is the *same interface method* as
+                    // `InMemoryDeltaLog.TruncateAsync`, reached from the *same* call site in
+                    // `RecoverableSpine.CommitAsync`, with the opposite class. Change `[ c ]` to
+                    // `[]` and this becomes an erasing operation with no other edit — which is
+                    // exactly what the law pack measures.
                     let commit =
                         commitTree tree (sprintf "truncate through=%d seq=%d" throughSeqInclusive currentSeq) [ c ]
                     GitBackend.updateRef repo currentRef commit)
             ValueTask.CompletedTask
+
+    /// **The declaration, beside the operation it classifies** (`ErasureClass`).
+    ///
+    /// The preserving half of the pair, and the reason a name-keyed list of erasing operations
+    /// cannot be written. `IDeltaLog.TruncateAsync` is one method with one call site; here it is
+    /// Reversible, in `InMemoryDeltaLog` it is Erasing, and in `GroupCommitDiskDeltaLog` it is
+    /// Reversible-because-unimplemented. The class is a property of *this* representation, so the
+    /// declaration lives in *this* file.
+    interface IErasureDeclaring with
+        member _.ErasureProfiles =
+            [ { Representation = "GitDeltaLog"
+                Operation = "IDeltaLog.TruncateAsync"
+                Observation = "the object DAG reachable from the live ref, walking commit parents"
+                RecoveryChannel =
+                    "the whole preimage — the truncated tree is committed WITH THE OLD COMMIT AS \
+                     PARENT, so every removed delta blob stays reachable from the ref through one \
+                     parent edge. Git never rewrites history: Landauer-honest, and manifesto \
+                     section 5 Memory Preservation discharged rather than asserted"
+                Classification = ErasureClass.ThermodynamicClass.Reversible
+                Evidence = ErasureClass.Evidence.BoundedModelSweep("truncate-through pinned at 2 (truncate everything); logs of 0-2 deltas over {empty, +a, -a}, on a real libgit2 repository", 1, 0L) }
+
+              { Representation = "GitDeltaLog"
+                Operation = "IDeltaLog.TruncateAsync"
+                Observation = "the log's own read surface (ReplayAsync(0) plus HighWater), at a pinned truncation point"
+                RecoveryChannel =
+                    "nothing through this channel — ReplayAsync reads the tip tree only, so the \
+                     truncated deltas are as absent here as they are in any other backend. The \
+                     row exists so the pair is comparable to InMemoryDeltaLog on IDENTICAL terms: \
+                     the two backends differ in what OTHER channel survives, not in this one"
+                Classification = ErasureClass.ThermodynamicClass.Erasing
+                Evidence = ErasureClass.Evidence.BoundedModelSweep("truncate-through pinned at 2 (truncate everything); logs of 0-2 deltas over {empty, +a, -a}, on a real libgit2 repository", 9, 3_169_925L) } ]
 
     interface IRefDeltaLog<'K> with
         member _.CurrentRef = lock gate (fun () -> currentRef)

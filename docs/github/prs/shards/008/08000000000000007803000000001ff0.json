@@ -1,0 +1,12 @@
+{
+  "pr_number": 8176,
+  "archive_path": "docs/history/pr-reviews/PR-8176-feat-service-observe-inline-enabled-by-default-in-templates.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-14T12:58:41.415Z",
+  "schema_version": "v1",
+  "commit_sha": "8039437e73a827d9ec5a6a7ed332d546cb15dc39",
+  "title": "feat(service): observe-inline enabled by default in templates",
+  "state": "MERGED",
+  "merged_at": "2026-06-14T12:58:15Z",
+  "head_ref": "kiro/enable-observe-inline-default"
+}

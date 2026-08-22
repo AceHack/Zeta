@@ -1,0 +1,12 @@
+{
+  "pr_number": 6802,
+  "archive_path": "docs/history/pr-reviews/PR-6802-chore-backlog-dispatch-workitems-for-lior-vera-non-f-4-lang-catch-up.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-07T11:54:36.965Z",
+  "schema_version": "v1",
+  "commit_sha": "b6a03df6cb02e8cd5adb89a42aac6787a3633268",
+  "title": "chore(backlog): dispatch workitems for Lior + Vera — non-F# 4-lang catch-up",
+  "state": "MERGED",
+  "merged_at": "2026-06-07T11:54:18Z",
+  "head_ref": "dispatch/lior-vera-non-fsharp-4lang-catchup"
+}

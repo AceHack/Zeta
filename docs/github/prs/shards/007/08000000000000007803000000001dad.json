@@ -1,0 +1,12 @@
+{
+  "pr_number": 7597,
+  "archive_path": "docs/history/pr-reviews/PR-7597-feat-core-re-land-simframework-simulation-charter-fourcorner-treaty-lock-superse.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-11T04:35:07.081Z",
+  "schema_version": "v1",
+  "commit_sha": "f7799f4307512d153d8c36168ef10b2b7d1ffa6a",
+  "title": "feat(core): re-land SimFramework + simulation charter + FourCorner treaty lock (supersedes #7594/#7595)",
+  "state": "MERGED",
+  "merged_at": "2026-06-11T04:34:41Z",
+  "head_ref": "shadow-reland-simframework-treaty"
+}

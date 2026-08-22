@@ -1,0 +1,14 @@
+{
+  "id": "080cffea8da52010a0130008e3be006a",
+  "at": "2026-08-13T22:50:18.148Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081KZYN3D53087G0R0036XZSYM",
+    "type": "bug",
+    "title": "LossyUdpChannel NACKs every reordered packet, so reordering alone collapses the sender to the 500ms gap floor with zero packet loss",
+    "slug": "lossyudpchannel-nacks-every-reordered-packet-so-reordering-a",
+    "priority": "P2",
+    "filename": "081KZYN3D53087G0R0036XZSYM-lossyudpchannel-nacks-every-reordered-packet-so-reordering-a.md"
+  }
+}

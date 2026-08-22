@@ -1,0 +1,12 @@
+{
+  "pr_number": 12354,
+  "archive_path": "docs/history/pr-reviews/PR-12354-docs-ci-windows-macos-legs-are-drift-checks-by-intent-close-the-block-or-not-dec.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-19T10:21:10.582Z",
+  "schema_version": "v1",
+  "commit_sha": "f68d0bf8a8b83c7fd34f22360b39c15073ea9ec5",
+  "title": "docs(ci): windows/macOS legs are drift checks by intent — close the block-or-not decision",
+  "state": "MERGED",
+  "merged_at": "2026-08-19T10:20:30Z",
+  "head_ref": "drift-checks-windows-macos-non-blocking-by-intent"
+}

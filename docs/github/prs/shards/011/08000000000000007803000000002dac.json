@@ -1,0 +1,12 @@
+{
+  "pr_number": 11692,
+  "archive_path": "docs/history/pr-reviews/PR-11692-feat-tick-boundary-t-feedback-in-the-co-owned-fourth-corner-typed-and-adopted-at.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-17T23:03:35.147Z",
+  "schema_version": "v1",
+  "commit_sha": "d0d7d73cb5853613d3ad853949d4fe4d1295bc60",
+  "title": "feat(tick-boundary): T Feedback In — the co-owned fourth corner, typed and adopted at one site",
+  "state": "MERGED",
+  "merged_at": "2026-08-17T23:02:57Z",
+  "head_ref": "shadow/four-corner-tick-boundary-plan"
+}

@@ -1,0 +1,15 @@
+{
+  "pr_number": 5470,
+  "archive_path": "docs/history/pr-reviews/PR-5470-merge-agent-heartbeats-periodic-sync-to-main-2026-05-27t14-17-58-925z.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7FYHEe",
+    "thread:PRRT_kwDOSF9kNM6FIAKX"
+  ],
+  "fetched_at": "2026-05-27T14:21:57.785Z",
+  "schema_version": "v1",
+  "commit_sha": "e9e8fe6aaf1513bba0b093aa300af778d627cff8",
+  "title": "merge(agent-heartbeats): periodic sync to main (2026-05-27T14:17:58.925Z)",
+  "state": "MERGED",
+  "merged_at": "2026-05-27T14:21:33Z",
+  "head_ref": "agent-heartbeats"
+}

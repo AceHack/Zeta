@@ -1,0 +1,17 @@
+{
+  "pr_number": 4579,
+  "archive_path": "docs/history/pr-reviews/PR-4579-memory-shadow-catch-otto-desktop-suggestion-mode-active-silent-self-referential-.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7DxbAR",
+    "comment:PRRC_kwDOSF9kNM7DxbAr",
+    "thread:PRRT_kwDOSF9kNM6D8W74",
+    "thread:PRRT_kwDOSF9kNM6D8W8K"
+  ],
+  "fetched_at": "2026-05-21T21:52:26.226Z",
+  "schema_version": "v1",
+  "commit_sha": "3434203682f123d4df3a9ed08b337d207b173be0",
+  "title": "memory(shadow-catch): Otto-Desktop — `<suggestion mode active — silent>` self-referential autocomplete meta-markup observation",
+  "state": "MERGED",
+  "merged_at": "2026-05-21T21:52:05Z",
+  "head_ref": "memory/otto-desktop-shadow-catch-suggestion-mode-active-silent-meta-markup-2026-05-21"
+}

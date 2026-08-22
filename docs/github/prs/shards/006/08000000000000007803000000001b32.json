@@ -1,0 +1,12 @@
+{
+  "pr_number": 6962,
+  "archive_path": "docs/history/pr-reviews/PR-6962-docs-the-ace-cli-and-ace-files-are-homoiconic-one-representation-command-file-da.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-08T00:56:36.701Z",
+  "schema_version": "v1",
+  "commit_sha": "de588ab9029d55990f9363b9ba163e7bfc23ba73",
+  "title": "docs: the Ace CLI and .ace files are homoiconic — one representation (command = file = data)",
+  "state": "MERGED",
+  "merged_at": "2026-06-08T00:56:18Z",
+  "head_ref": "otto/ace-cli-and-ace-files-homoiconic"
+}

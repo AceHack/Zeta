@@ -1,0 +1,12 @@
+{
+  "pr_number": 10273,
+  "archive_path": "docs/history/pr-reviews/PR-10273-feat-multisig-synthesis-of-the-n-3-derivations-amendments-b1-b9-applied.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-18T10:45:51.920Z",
+  "schema_version": "v1",
+  "commit_sha": "3ee6ed2d4312922e9fb2ab918a50140f650406c0",
+  "title": "feat(multisig): synthesis of the N=3 derivations, amendments B1–B9 applied",
+  "state": "MERGED",
+  "merged_at": "2026-08-10T03:01:50Z",
+  "head_ref": "shadow/multisig-synthesis"
+}

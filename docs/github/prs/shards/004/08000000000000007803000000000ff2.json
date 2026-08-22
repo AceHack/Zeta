@@ -1,0 +1,12 @@
+{
+  "pr_number": 4082,
+  "archive_path": "docs/history/pr-reviews/PR-4082-shard-2026-05-17-1320z-autonomous-loop-tick-push-peer-1317z-open-pr-4078.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-17T13:37:17.432Z",
+  "schema_version": "v1",
+  "commit_sha": "fd2221487406bb367dd9e0914efa6a2d7813ea86",
+  "title": "shard(2026-05-17/1320Z): autonomous-loop tick — push peer 1317Z + open PR #4078",
+  "state": "MERGED",
+  "merged_at": "2026-05-17T13:37:01Z",
+  "head_ref": "otto/1320z-shard-meta"
+}

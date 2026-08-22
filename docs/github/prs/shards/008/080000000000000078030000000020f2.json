@@ -1,0 +1,12 @@
+{
+  "pr_number": 8434,
+  "archive_path": "docs/history/pr-reviews/PR-8434-memory-project-reframe-clean-room-is-the-enabler-of-the-re-skill-not-the-restric.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-16T04:04:29.762Z",
+  "schema_version": "v1",
+  "commit_sha": "986bd874c7fb3d3130ca2feb140a41e983456e4d",
+  "title": "memory(project): reframe — clean-room is the ENABLER of the RE skill, not the restriction",
+  "state": "MERGED",
+  "merged_at": "2026-06-16T04:04:00Z",
+  "head_ref": "memory/clean-room-is-the-enabler-not-the-restriction"
+}

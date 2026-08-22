@@ -1,0 +1,12 @@
+{
+  "pr_number": 2642,
+  "archive_path": "docs/history/pr-reviews/PR-2642-docs-memory-shadow-threshold-trigger-5-10-ticks-between-fires-content-dependent.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-11T03:44:49.402Z",
+  "schema_version": "v1",
+  "commit_sha": "5c0ae1b24f5ee11030bfca310258b6b2b4da1278",
+  "title": "docs(memory): shadow threshold trigger — 5-10 ticks between fires, content-dependent",
+  "state": "MERGED",
+  "merged_at": "2026-05-11T03:44:32Z",
+  "head_ref": "docs/shadow-threshold-trigger-5-10-ticks-2026-05-10"
+}

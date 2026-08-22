@@ -1,0 +1,12 @@
+{
+  "pr_number": 9229,
+  "archive_path": "docs/history/pr-reviews/PR-9229-feat-llmtv-pin-root-site-readout-artifacts.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-03T00:27:18.034Z",
+  "schema_version": "v1",
+  "commit_sha": "6985d7726411685903a96b09148b21a650b4a00a",
+  "title": "feat(llmtv): pin root-site readout artifacts",
+  "state": "MERGED",
+  "merged_at": "2026-07-03T00:26:53Z",
+  "head_ref": "codex/llmtv-root-site-live-artifact"
+}

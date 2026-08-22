@@ -1,0 +1,12 @@
+{
+  "pr_number": 11201,
+  "archive_path": "docs/history/pr-reviews/PR-11201-test-observe-use-canonical-entropy-fixtures.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-17T00:00:36.446Z",
+  "schema_version": "v1",
+  "commit_sha": "ee12c20df7ea3cd4915830fe0c4c0d9fc78441ed",
+  "title": "test(observe): use canonical entropy fixtures",
+  "state": "MERGED",
+  "merged_at": "2026-08-17T00:00:03Z",
+  "head_ref": "codex/entropy-canonical-fixtures"
+}

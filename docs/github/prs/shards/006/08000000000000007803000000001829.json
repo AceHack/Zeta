@@ -1,0 +1,12 @@
+{
+  "pr_number": 6185,
+  "archive_path": "docs/history/pr-reviews/PR-6185-feat-b-0944-slice-5-pt2-rust-tri-boolean-float-biased-exponent-oracle-4-parity.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-31T01:56:45.156Z",
+  "schema_version": "v1",
+  "commit_sha": "377e991d8c501eec44fae9c7e941d83877162c37",
+  "title": "feat(B-0944 slice 5 pt2): Rust tri-boolean float (biased-exponent) — oracle #4 parity",
+  "state": "MERGED",
+  "merged_at": "2026-05-31T01:56:24Z",
+  "head_ref": "otto-cli/b0944-slice5pt2-rust-biased-exp-float-2026-05-30"
+}

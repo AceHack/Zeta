@@ -1,0 +1,12 @@
+{
+  "pr_number": 10003,
+  "archive_path": "docs/history/pr-reviews/PR-10003-fix-setup-keep-windows-arm-mise-graph-filtered.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-02T21:50:23.667Z",
+  "schema_version": "v1",
+  "commit_sha": "3892e427facaa197a4feeea5b224138b2863c36c",
+  "title": "fix(setup): keep Windows ARM mise graph filtered",
+  "state": "MERGED",
+  "merged_at": "2026-08-02T21:49:52Z",
+  "head_ref": "codex/windows-arm-disable-mise-auto-install"
+}

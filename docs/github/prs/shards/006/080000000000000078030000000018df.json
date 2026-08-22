@@ -1,0 +1,12 @@
+{
+  "pr_number": 6367,
+  "archive_path": "docs/history/pr-reviews/PR-6367-feat-algebra-bag-multiset-rust-oracle-middle-rung-joins-g-set-in-the-algebra-cra.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-01T07:56:28.344Z",
+  "schema_version": "v1",
+  "commit_sha": "03a603865b0254be6817d006dda048831e09fc10",
+  "title": "feat(algebra): Bag (multiset) Rust oracle — middle rung joins G-Set in the algebra crate",
+  "state": "MERGED",
+  "merged_at": "2026-06-01T07:56:04Z",
+  "head_ref": "otto-cli/bag-rust-2026-06-01"
+}

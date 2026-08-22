@@ -1,0 +1,21 @@
+{
+  "pr_number": 2493,
+  "archive_path": "docs/history/pr-reviews/PR-2493-research-b-0315-glass-halo-doctrine-external-anchors-slice-1-of-n.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_n8yZ",
+    "comment:PRRC_kwDOSF9kNM6_n9OI",
+    "comment:PRRC_kwDOSF9kNM6_n9ON",
+    "comment:PRRC_kwDOSF9kNM6_n9OO",
+    "thread:PRRT_kwDOSF9kNM6A5vZD",
+    "thread:PRRT_kwDOSF9kNM6A5vvY",
+    "thread:PRRT_kwDOSF9kNM6A5vvc",
+    "thread:PRRT_kwDOSF9kNM6A5vvd"
+  ],
+  "fetched_at": "2026-05-10T13:34:59.520Z",
+  "schema_version": "v1",
+  "commit_sha": "9f701ca62ccd93b5bd1c3364bd9d455615d6e3dc",
+  "title": "research(B-0315): Glass-Halo doctrine external anchors — slice 1 of N",
+  "state": "MERGED",
+  "merged_at": "2026-05-10T13:34:42Z",
+  "head_ref": "research/B-0315-glass-halo-anchor-slice1"
+}

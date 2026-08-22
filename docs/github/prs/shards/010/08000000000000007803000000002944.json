@@ -1,0 +1,12 @@
+{
+  "pr_number": 10564,
+  "archive_path": "docs/history/pr-reviews/PR-10564-workitem-the-agencysignature-audit-exempts-the-fleet-s-own-personas-as-human-aut.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-18T17:11:38.722Z",
+  "schema_version": "v1",
+  "commit_sha": "c70624f89853ee222fde35ef948812c77a47b868",
+  "title": "workitem: the AgencySignature audit exempts the fleet's own personas as human-authored",
+  "state": "MERGED",
+  "merged_at": "2026-08-14T12:40:11Z",
+  "head_ref": "workitem/agencysignature-audit-exempts-the-fleet"
+}

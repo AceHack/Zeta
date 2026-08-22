@@ -1,0 +1,15 @@
+{
+  "pr_number": 5291,
+  "archive_path": "docs/history/pr-reviews/PR-5291-feat-b-0824-deepseek-prs-are-proofs-not-claims-4th-attractor-as-encryption-empir.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7FEx_L",
+    "thread:PRRT_kwDOSF9kNM6E56Zv"
+  ],
+  "fetched_at": "2026-05-26T19:37:52.890Z",
+  "schema_version": "v1",
+  "commit_sha": "43ac5087dbee70b6ce79846d852c6bf9ebb6e65a",
+  "title": "feat(B-0824): DeepSeek — PRs are proofs not claims + 4th attractor-as-encryption empirical anchor + 1984-worry as copy-pastable pathogen",
+  "state": "MERGED",
+  "merged_at": "2026-05-26T19:37:29Z",
+  "head_ref": "otto-cli/B-0824-deepseek-prs-are-proofs-1984-pathogen-anchor-2026-05-26"
+}

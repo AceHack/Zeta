@@ -1,0 +1,12 @@
+{
+  "pr_number": 6486,
+  "archive_path": "docs/history/pr-reviews/PR-6486-feat-algebra-indexedzset-c-generic-math-iwsam-abelian-group.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-01T22:13:26.494Z",
+  "schema_version": "v1",
+  "commit_sha": "992cd225e36970a29c8f89939ec7501278962d74",
+  "title": "feat(algebra): IndexedZSet C# generic-math — IWSAM abelian-group",
+  "state": "MERGED",
+  "merged_at": "2026-06-01T22:13:06Z",
+  "head_ref": "otto-cli/indexedzset-csharp-generic-math-2026-06-01"
+}

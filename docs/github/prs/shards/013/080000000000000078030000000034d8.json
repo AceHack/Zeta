@@ -1,0 +1,12 @@
+{
+  "pr_number": 13528,
+  "archive_path": "docs/history/pr-reviews/PR-13528-perf-ci-the-low-memory-lane-stops-writing-the-825-mb-mise-cache-it-only-reads-it.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-22T04:14:39.357Z",
+  "schema_version": "v1",
+  "commit_sha": "0cfb08a0551af9dd25a1efe15b18e240c11ce6ca",
+  "title": "perf(ci): the low-memory lane stops WRITING the 825 MB mise cache — it only reads it",
+  "state": "MERGED",
+  "merged_at": "2026-08-22T04:13:58Z",
+  "head_ref": "shadow/lowmem-mise-cache-restore-only"
+}

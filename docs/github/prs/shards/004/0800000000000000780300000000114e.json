@@ -1,0 +1,12 @@
+{
+  "pr_number": 4430,
+  "archive_path": "docs/history/pr-reviews/PR-4430-docs-shadow-maji-anti-entropy-finding-on-otto-narration-drift.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-21T07:09:25.488Z",
+  "schema_version": "v1",
+  "commit_sha": "72ef489462f5e1fbff89c338f8682b46f51b74cd",
+  "title": "docs(shadow): Maji anti-entropy finding on Otto narration drift",
+  "state": "MERGED",
+  "merged_at": "2026-05-21T07:09:07Z",
+  "head_ref": "maji/shadow-log-otto-drift"
+}

@@ -1,0 +1,131 @@
+# Pull the two biggest images on a real hosted runner and measure what they cost.
+#
+# WHY THIS EXISTS
+# ---------------
+# `image-footprint.measured.json` stores COMPRESSED bytes -- the sum of
+# `config.size + layers[].size` from the registry manifest, which is what the
+# registry serves over the wire. The on-disk figures everywhere else are that
+# number times 2.67, an aggregate ratio measured by gunzipping four unrelated
+# images. So every "~23 GB on disk" in this tree is an ESTIMATE with a shared
+# multiplier, and the two images that dominate the footprint are exactly the two
+# least likely to match an aggregate: a CUDA/torch image compresses very
+# differently from a Go binary in a scratch layer.
+#
+# An estimate standing in for the decisive number is the thing this repo keeps
+# finding. One pull settles it, so this workflow pulls.
+#
+# WHAT IT MEASURES, and why each is here and not just `df`:
+#   df -kP                       what the disk actually lost. The only number
+#                                that decides whether a pull succeeds.
+#   docker image inspect .Size   the EXTRACTED size docker reports for the image
+#                                (sum of uncompressed layer sizes).
+#   docker system df -v          what the store holds, including layers SHARED
+#                                between images -- which is why pulling two
+#                                images does not cost the sum of two `.Size`s.
+#
+# WHY A FAILURE IS ALSO A RESULT. If a pull fills the disk, the job records the
+# number it died at rather than reporting nothing: `continue-on-error` on the
+# pull steps, with `df` printed after each one either way. A run that ends
+# "no space left on device" at a stated figure answers the question as well as a
+# run that succeeds.
+
+name: image-pull-measurement
+
+on:
+  workflow_dispatch:
+  # Also on PRs that touch this file, because `workflow_dispatch` only works
+  # once the file is on the default branch -- so without this the measurement
+  # could not be run before merging the thing that runs it.
+  pull_request:
+    paths:
+      - ".github/workflows/image-pull-measurement.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  measure:
+    name: pull the two biggest images and measure
+    runs-on: ubuntu-24.04
+    timeout-minutes: 60
+    steps:
+      - name: Checkout
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+
+      - name: Baseline — what the runner has before anything is pulled
+        run: |
+          set -euo pipefail
+          echo "=== df -kP ==="
+          df -kP
+          echo "=== docker system df ==="
+          docker system df
+          echo "=== images already present ==="
+          docker image ls --format '{{.Repository}}:{{.Tag}} {{.Size}}'
+
+      - name: Pull hindsight-api 0.1.1 (8.81 GB compressed per the catalogue)
+        id: hindsight
+        continue-on-error: true
+        run: |
+          set -euo pipefail
+          START=$(date +%s)
+          docker pull ghcr.io/vectorize-io/hindsight-api:0.1.1
+          echo "pull_seconds=$(( $(date +%s) - START ))" >> "$GITHUB_OUTPUT"
+
+      - name: What hindsight cost
+        if: always()
+        run: |
+          set -euo pipefail
+          echo "=== df -kP ==="
+          df -kP
+          echo "=== docker system df ==="
+          docker system df
+          echo "=== extracted size docker reports ==="
+          docker image inspect ghcr.io/vectorize-io/hindsight-api:0.1.1 \
+            --format 'extracted_bytes={{.Size}}' || echo "image not present — the pull did not finish"
+
+      - name: Pull the rest of hindsight's closure (pgvector + control-plane)
+        continue-on-error: true
+        run: |
+          set -euo pipefail
+          docker pull ankane/pgvector:latest
+          docker pull ghcr.io/vectorize-io/hindsight-control-plane:0.1.1
+          echo "=== df -kP ==="
+          df -kP
+          echo "=== docker system df ==="
+          docker system df
+
+      - name: Pull vllm-openai latest (9.11 GB compressed per the catalogue)
+        id: vllm
+        continue-on-error: true
+        run: |
+          set -euo pipefail
+          START=$(date +%s)
+          docker pull vllm/vllm-openai:latest
+          echo "pull_seconds=$(( $(date +%s) - START ))" >> "$GITHUB_OUTPUT"
+
+      - name: What vllm cost, and what both cost together
+        if: always()
+        run: |
+          set -euo pipefail
+          echo "=== df -kP ==="
+          df -kP
+          echo "=== docker system df -v (per-image, and what is SHARED) ==="
+          docker system df -v
+          echo "=== extracted sizes ==="
+          docker image inspect vllm/vllm-openai:latest --format 'vllm_extracted_bytes={{.Size}}' \
+            || echo "vllm not present — the pull did not finish"
+          docker image inspect ghcr.io/vectorize-io/hindsight-api:0.1.1 --format 'hindsight_extracted_bytes={{.Size}}' \
+            || echo "hindsight not present"
+
+      - name: The ceiling, stated in one place
+        if: always()
+        run: |
+          set -euo pipefail
+          echo "AVAILABLE ON / (KiB blocks):"
+          df -kP / | tail -1
+          echo ""
+          echo "pull seconds: hindsight=${{ steps.hindsight.outputs.pull_seconds || 'did-not-finish' }} vllm=${{ steps.vllm.outputs.pull_seconds || 'did-not-finish' }}"
+          echo ""
+          echo "This is what remains AFTER a checkout and both images. It is the number"
+          echo "that answers 'can the lane also run its dependency closure', and it is"
+          echo "measured, not derived from a compression ratio."

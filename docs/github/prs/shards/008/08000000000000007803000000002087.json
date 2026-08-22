@@ -1,0 +1,12 @@
+{
+  "pr_number": 8327,
+  "archive_path": "docs/history/pr-reviews/PR-8327-docs-research-collaboration-readiness-for-the-veri-coding-ecosystem-coworker-not.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-15T19:54:52.918Z",
+  "schema_version": "v1",
+  "commit_sha": "eecb6570eb2dc9776a3fe3474888f12d4f064938",
+  "title": "docs(research): collaboration-readiness for the veri-coding ecosystem (coworker-not-control)",
+  "state": "MERGED",
+  "merged_at": "2026-06-15T19:54:25Z",
+  "head_ref": "docs/ferry-collaboration-readiness-veri-coding-coworker"
+}

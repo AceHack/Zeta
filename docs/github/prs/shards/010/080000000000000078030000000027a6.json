@@ -1,0 +1,12 @@
+{
+  "pr_number": 10150,
+  "archive_path": "docs/history/pr-reviews/PR-10150-task-route-alexa-task-a-soraya-s-chshband-loopholeflags.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-08T19:06:35.265Z",
+  "schema_version": "v1",
+  "commit_sha": "98713fb0dcdd5d18ea8f7bdecbbe52c75d37ea19",
+  "title": "task(route): Alexa Task A ⟵ Soraya's ChshBand + LoopholeFlags",
+  "state": "MERGED",
+  "merged_at": "2026-08-08T19:05:58Z",
+  "head_ref": "shadow/route-soraya-chshband-loopholeflags"
+}

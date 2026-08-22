@@ -6,8 +6,8 @@
 // Rule 0 bash-to-TS migration.
 //
 // Usage:
-//   bun tools/hygiene/check-tick-history-shard-schema.ts
-//   bun tools/hygiene/check-tick-history-shard-schema.ts --files <paths...>
+//   bun src/Core.TypeScript/hygiene/check-tick-history-shard-schema.ts
+//   bun src/Core.TypeScript/hygiene/check-tick-history-shard-schema.ts --files <paths...>
 //
 // Exit codes:
 //   0   all checked shards match the schema

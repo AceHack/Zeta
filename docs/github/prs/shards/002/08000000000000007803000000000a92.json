@@ -1,0 +1,23 @@
+{
+  "pr_number": 2706,
+  "archive_path": "docs/history/pr-reviews/PR-2706-decompose-b-0120-smallest-atomic-children-ts-first-re-decomp-one-bounded-step.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_6oEq",
+    "comment:PRRC_kwDOSF9kNM6_6oFz",
+    "comment:PRRC_kwDOSF9kNM6_6oGv",
+    "comment:PRRC_kwDOSF9kNM6_6ot0",
+    "comment:PRRC_kwDOSF9kNM6_6ot6",
+    "thread:PRRT_kwDOSF9kNM6BHvFs",
+    "thread:PRRT_kwDOSF9kNM6BHvGj",
+    "thread:PRRT_kwDOSF9kNM6BHvHX",
+    "thread:PRRT_kwDOSF9kNM6BHvk3",
+    "thread:PRRT_kwDOSF9kNM6BHvky"
+  ],
+  "fetched_at": "2026-05-11T14:58:41.989Z",
+  "schema_version": "v1",
+  "commit_sha": "2b7e31220091f1fa70f89eab74818434d5a653bc",
+  "title": "decompose(B-0120): smallest atomic children (TS-first, re-decomp, one bounded step)",
+  "state": "MERGED",
+  "merged_at": "2026-05-11T14:58:12Z",
+  "head_ref": "claim/b0120-decompose-smallest-atomic-children-riven-2026-05-11"
+}

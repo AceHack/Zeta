@@ -1,0 +1,12 @@
+{
+  "pr_number": 6109,
+  "archive_path": "docs/history/pr-reviews/PR-6109-rule-shield-automated-tests-are-the-shield-not-the-script-assert-don-t-skip.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-30T13:47:57.038Z",
+  "schema_version": "v1",
+  "commit_sha": "7b0c1db0109cfcd2b6dda5b97a1c6b1ad6c20c59",
+  "title": "rule(shield): automated tests are the shield, not the script — assert, don't skip",
+  "state": "MERGED",
+  "merged_at": "2026-05-30T13:47:38Z",
+  "head_ref": "otto/shield-assert-dont-skip-rule-2026-05-30"
+}

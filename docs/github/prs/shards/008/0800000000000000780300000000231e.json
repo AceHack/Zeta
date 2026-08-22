@@ -1,0 +1,12 @@
+{
+  "pr_number": 8990,
+  "archive_path": "docs/history/pr-reviews/PR-8990-docs-blueprint-onboarding-prerequisites-github-required-1password-strongly-encou.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-21T19:43:45.181Z",
+  "schema_version": "v1",
+  "commit_sha": "9c3292c8548c74b2308438fe062b1a99812e1a94",
+  "title": "docs(blueprint): onboarding prerequisites — GitHub (required) + 1Password (strongly encouraged)",
+  "state": "MERGED",
+  "merged_at": "2026-06-21T19:43:18Z",
+  "head_ref": "otto/blueprint-onboarding-github-1password"
+}

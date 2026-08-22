@@ -1,0 +1,15 @@
+{
+  "pr_number": 5808,
+  "archive_path": "docs/history/pr-reviews/PR-5808-fix-codeberg-world-tsc-ts2430-ts6133-unblocks-5805-5806-5807-ci-omit-giteaworld-.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7FxGI9",
+    "thread:PRRT_kwDOSF9kNM6FZ683"
+  ],
+  "fetched_at": "2026-05-28T13:37:22.977Z",
+  "schema_version": "v1",
+  "commit_sha": "4d50e9715f7ec1c575ff40e63dd9df7a933d4ea8",
+  "title": "fix(codeberg-world): tsc TS2430 + TS6133 — unblocks #5805/#5806/#5807 CI (Omit<GiteaWorld, 'forgeSpecialization'> for literal narrowing)",
+  "state": "MERGED",
+  "merged_at": "2026-05-28T13:36:58Z",
+  "head_ref": "otto-cli/fix-codeberg-world-tsc-unused-import-and-interface-extends-typing-2026-05-28"
+}

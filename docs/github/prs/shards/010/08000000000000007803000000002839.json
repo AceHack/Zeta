@@ -1,0 +1,12 @@
+{
+  "pr_number": 10297,
+  "archive_path": "docs/history/pr-reviews/PR-10297-feat-observe-slice-2-neighbourhood-fingerprint-no-global-graph.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-11T00:15:01.595Z",
+  "schema_version": "v1",
+  "commit_sha": "8296aab373fbcca088335c822a6dc5548ba19c48",
+  "title": "feat(observe): slice 2 — neighbourhood fingerprint (no global graph)",
+  "state": "MERGED",
+  "merged_at": "2026-08-11T00:14:22Z",
+  "head_ref": "alexa/trust-neighbourhood"
+}

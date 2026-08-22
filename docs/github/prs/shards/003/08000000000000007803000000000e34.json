@@ -1,0 +1,12 @@
+{
+  "pr_number": 3636,
+  "archive_path": "docs/history/pr-reviews/PR-3636-fix-b-0544-m-a-coherence-laws-type-correctness-codex-p1-from-pr-3614.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-16T00:30:04.549Z",
+  "schema_version": "v1",
+  "commit_sha": "83b5d8b367392a691bd40a1d20e4fe17ea797c5b",
+  "title": "fix(b-0544): M/A coherence-laws type-correctness — Codex P1 from PR #3614",
+  "state": "MERGED",
+  "merged_at": "2026-05-16T00:29:49Z",
+  "head_ref": "fix/coherence-laws-type-correctness-otto-cli-2026-05-16"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 9818,
+  "archive_path": "docs/history/pr-reviews/PR-9818-test-formal-fscheck-cross-check-of-the-clifford-reflection-identity-bp-16-2nd-to.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-01T02:24:56.105Z",
+  "schema_version": "v1",
+  "commit_sha": "a9386da2c37083be7702bce724ef31fa3b01dab1",
+  "title": "test(Formal): FsCheck cross-check of the Clifford reflection identity (BP-16 2nd tool for the Lean cert)",
+  "state": "MERGED",
+  "merged_at": "2026-08-01T02:24:30Z",
+  "head_ref": "shadow/clifford-reflection-fscheck-crosscheck"
+}

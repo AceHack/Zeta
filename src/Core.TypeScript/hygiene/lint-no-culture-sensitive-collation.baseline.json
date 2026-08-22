@@ -1,0 +1,390 @@
+{
+  "_doc": "DEBT LEDGER, NOT AN ALLOWLIST. Each row is a culture-sensitive comparison that already existed when lint-no-culture-sensitive-collation.ts landed. A file's count may FALL, never rise; a file absent from this file may hold none. Regenerate with `bun src/Core.TypeScript/hygiene/lint-no-culture-sensitive-collation.ts --write-baseline` after paying debt down. Permanently-permitted display-edge files live in ALLOWLIST in the linter itself, not here.",
+  "entries": {
+    "agentic-organization/apps/agent-cli/src/agent-cli.ts": {
+      "count": 3,
+      "category": "sibling-owned-in-flight",
+      "reason": "Five sibling agents are live in agentic-organization/** for this cycle; the task brief bars touching it. The defect is real here (event and work-item ordering keys) and this tree needs its own sweep once those land."
+    },
+    "agentic-organization/packages/application/src/context-pack-inbox-workflow-view.ts": {
+      "count": 1,
+      "category": "sibling-owned-in-flight",
+      "reason": "Five sibling agents are live in agentic-organization/** for this cycle; the task brief bars touching it. The defect is real here (event and work-item ordering keys) and this tree needs its own sweep once those land."
+    },
+    "agentic-organization/packages/application/src/context-pack-readiness-policy.ts": {
+      "count": 2,
+      "category": "sibling-owned-in-flight",
+      "reason": "Five sibling agents are live in agentic-organization/** for this cycle; the task brief bars touching it. The defect is real here (event and work-item ordering keys) and this tree needs its own sweep once those land."
+    },
+    "agentic-organization/packages/application/src/context-pack-scope-evaluator.ts": {
+      "count": 1,
+      "category": "sibling-owned-in-flight",
+      "reason": "Five sibling agents are live in agentic-organization/** for this cycle; the task brief bars touching it. The defect is real here (event and work-item ordering keys) and this tree needs its own sweep once those land."
+    },
+    "agentic-organization/packages/application/src/context-pack-tenant-completeness-policy.ts": {
+      "count": 2,
+      "category": "sibling-owned-in-flight",
+      "reason": "Five sibling agents are live in agentic-organization/** for this cycle; the task brief bars touching it. The defect is real here (event and work-item ordering keys) and this tree needs its own sweep once those land."
+    },
+    "agentic-organization/packages/application/src/context-pack-tenant-curation-policy.ts": {
+      "count": 2,
+      "category": "sibling-owned-in-flight",
+      "reason": "Five sibling agents are live in agentic-organization/** for this cycle; the task brief bars touching it. The defect is real here (event and work-item ordering keys) and this tree needs its own sweep once those land."
+    },
+    "agentic-organization/packages/application/src/context-pack-tenant-synthesis-requirement-policy.ts": {
+      "count": 2,
+      "category": "sibling-owned-in-flight",
+      "reason": "Five sibling agents are live in agentic-organization/** for this cycle; the task brief bars touching it. The defect is real here (event and work-item ordering keys) and this tree needs its own sweep once those land."
+    },
+    "agentic-organization/packages/application/src/document-retrieval.ts": {
+      "count": 1,
+      "category": "sibling-owned-in-flight",
+      "reason": "Five sibling agents are live in agentic-organization/** for this cycle; the task brief bars touching it. The defect is real here (event and work-item ordering keys) and this tree needs its own sweep once those land."
+    },
+    "agentic-organization/packages/application/src/memory-context-pack-recall.ts": {
+      "count": 1,
+      "category": "sibling-owned-in-flight",
+      "reason": "Five sibling agents are live in agentic-organization/** for this cycle; the task brief bars touching it. The defect is real here (event and work-item ordering keys) and this tree needs its own sweep once those land."
+    },
+    "agentic-organization/packages/application/src/observe.ts": {
+      "count": 8,
+      "category": "sibling-owned-in-flight",
+      "reason": "Five sibling agents are live in agentic-organization/** for this cycle; the task brief bars touching it. The defect is real here (event and work-item ordering keys) and this tree needs its own sweep once those land."
+    },
+    "agentic-organization/packages/application/src/prompt-flow.ts": {
+      "count": 1,
+      "category": "sibling-owned-in-flight",
+      "reason": "Five sibling agents are live in agentic-organization/** for this cycle; the task brief bars touching it. The defect is real here (event and work-item ordering keys) and this tree needs its own sweep once those land."
+    },
+    "agentic-organization/packages/application/src/release-queue.ts": {
+      "count": 1,
+      "category": "sibling-owned-in-flight",
+      "reason": "Five sibling agents are live in agentic-organization/** for this cycle; the task brief bars touching it. The defect is real here (event and work-item ordering keys) and this tree needs its own sweep once those land."
+    },
+    "agentic-organization/packages/application/src/restore-drill.ts": {
+      "count": 2,
+      "category": "sibling-owned-in-flight",
+      "reason": "Five sibling agents are live in agentic-organization/** for this cycle; the task brief bars touching it. The defect is real here (event and work-item ordering keys) and this tree needs its own sweep once those land."
+    },
+    "agentic-organization/packages/application/src/schedule-optimizer.ts": {
+      "count": 1,
+      "category": "sibling-owned-in-flight",
+      "reason": "Five sibling agents are live in agentic-organization/** for this cycle; the task brief bars touching it. The defect is real here (event and work-item ordering keys) and this tree needs its own sweep once those land."
+    },
+    "agentic-organization/packages/application/src/telemetry-improvement-optimizer.ts": {
+      "count": 1,
+      "category": "sibling-owned-in-flight",
+      "reason": "Five sibling agents are live in agentic-organization/** for this cycle; the task brief bars touching it. The defect is real here (event and work-item ordering keys) and this tree needs its own sweep once those land."
+    },
+    "agentic-organization/packages/application/src/work-market.ts": {
+      "count": 4,
+      "category": "sibling-owned-in-flight",
+      "reason": "Five sibling agents are live in agentic-organization/** for this cycle; the task brief bars touching it. The defect is real here (event and work-item ordering keys) and this tree needs its own sweep once those land."
+    },
+    "agentic-organization/packages/domain/src/tenant-config.ts": {
+      "count": 2,
+      "category": "sibling-owned-in-flight",
+      "reason": "Five sibling agents are live in agentic-organization/** for this cycle; the task brief bars touching it. The defect is real here (event and work-item ordering keys) and this tree needs its own sweep once those land."
+    },
+    "agentic-organization/packages/observability/src/dora-metrics.ts": {
+      "count": 2,
+      "category": "sibling-owned-in-flight",
+      "reason": "Five sibling agents are live in agentic-organization/** for this cycle; the task brief bars touching it. The defect is real here (event and work-item ordering keys) and this tree needs its own sweep once those land."
+    },
+    "agentic-organization/packages/simulator/src/index.ts": {
+      "count": 3,
+      "category": "sibling-owned-in-flight",
+      "reason": "Five sibling agents are live in agentic-organization/** for this cycle; the task brief bars touching it. The defect is real here (event and work-item ordering keys) and this tree needs its own sweep once those land."
+    },
+    "agentic-organization/packages/state-cockroach/test/cockroach-context-pack-snapshot-store.test.ts": {
+      "count": 1,
+      "category": "sibling-owned-in-flight",
+      "reason": "Five sibling agents are live in agentic-organization/** for this cycle; the task brief bars touching it. The defect is real here (event and work-item ordering keys) and this tree needs its own sweep once those land."
+    },
+    "agentic-organization/packages/state/src/in-memory-quality-gate-evaluation-state-reader.ts": {
+      "count": 2,
+      "category": "sibling-owned-in-flight",
+      "reason": "Five sibling agents are live in agentic-organization/** for this cycle; the task brief bars touching it. The defect is real here (event and work-item ordering keys) and this tree needs its own sweep once those land."
+    },
+    "agentic-organization/packages/state/src/work-anchor-store.ts": {
+      "count": 1,
+      "category": "sibling-owned-in-flight",
+      "reason": "Five sibling agents are live in agentic-organization/** for this cycle; the task brief bars touching it. The defect is real here (event and work-item ordering keys) and this tree needs its own sweep once those land."
+    },
+    "demo/identity-dla-site/src/components/LiveOracleFeed.tsx": {
+      "count": 1,
+      "category": "display-ordering",
+      "reason": "Orders a list purely for on-screen rendering in a UI component, which the culture-invariant rule explicitly permits at the display edge. Kept in the baseline rather than the allowlist because the same file also holds non-display code."
+    },
+    "demo/identity-dla-site/src/components/OracleRaceMode.tsx": {
+      "count": 13,
+      "category": "display-ordering",
+      "reason": "Orders a list purely for on-screen rendering in a UI component, which the culture-invariant rule explicitly permits at the display edge. Kept in the baseline rather than the allowlist because the same file also holds non-display code."
+    },
+    "full-ai-cluster/portal/src/data-admin-k8s.ts": {
+      "count": 1,
+      "category": "display-ordering",
+      "reason": "Orders a list purely for on-screen rendering in a UI component, which the culture-invariant rule explicitly permits at the display edge. Kept in the baseline rather than the allowlist because the same file also holds non-display code."
+    },
+    "full-ai-cluster/portal/src/ops-demo.ts": {
+      "count": 1,
+      "category": "display-ordering",
+      "reason": "Orders a list purely for on-screen rendering in a UI component, which the culture-invariant rule explicitly permits at the display edge. Kept in the baseline rather than the allowlist because the same file also holds non-display code."
+    },
+    "full-ai-cluster/portal/src/ops-k8s-parse.ts": {
+      "count": 1,
+      "category": "display-ordering",
+      "reason": "Orders a list purely for on-screen rendering in a UI component, which the culture-invariant rule explicitly permits at the display edge. Kept in the baseline rather than the allowlist because the same file also holds non-display code."
+    },
+    "full-ai-cluster/portal/src/viewmodel.ts": {
+      "count": 3,
+      "category": "display-ordering",
+      "reason": "Orders a list purely for on-screen rendering in a UI component, which the culture-invariant rule explicitly permits at the display edge. Kept in the baseline rather than the allowlist because the same file also holds non-display code."
+    },
+    "full-ai-cluster/tools/cluster-inventory/capture.ts": {
+      "count": 1,
+      "category": "load-bearing-pending-sweep",
+      "reason": "Load-bearing ordering (a key, a claim set, or a deterministic pick) that SHOULD be converted, but whose key domain was not measured in this PR. Left explicitly as named debt rather than converted blind; the ratchet stops it growing."
+    },
+    "src/Core.TypeScript/agent-bus/agent-bus.test.ts": {
+      "count": 1,
+      "category": "test-local-ordering",
+      "reason": "A test sorts values only to compare two collections within the same process, so both sides see the same locale and the assertion cannot diverge across machines. Low value to convert, and some of these assert the divergence deliberately."
+    },
+    "src/Core.TypeScript/audit/audit-dep-currency.ts": {
+      "count": 1,
+      "category": "human-report-ordering",
+      "reason": "Orders rows of an audit or report read by a human, not a key, a hash input, or anything folded. Cosmetic under the rule; converting is safe but is not urgent and would enlarge this PR's review surface without reducing risk."
+    },
+    "src/Core.TypeScript/authorization/pace-extractor.test.ts": {
+      "count": 1,
+      "category": "test-local-ordering",
+      "reason": "A test sorts values only to compare two collections within the same process, so both sides see the same locale and the assertion cannot diverge across machines. Low value to convert, and some of these assert the divergence deliberately."
+    },
+    "src/Core.TypeScript/backlog/autonomous-pickup.ts": {
+      "count": 5,
+      "category": "load-bearing-pending-sweep",
+      "reason": "Load-bearing ordering (a key, a claim set, or a deterministic pick) that SHOULD be converted, but whose key domain was not measured in this PR. Left explicitly as named debt rather than converted blind; the ratchet stops it growing."
+    },
+    "src/Core.TypeScript/backlog/rebuild-legacy-b-id-aliases.ts": {
+      "count": 1,
+      "category": "load-bearing-pending-sweep",
+      "reason": "Load-bearing ordering (a key, a claim set, or a deterministic pick) that SHOULD be converted, but whose key domain was not measured in this PR. Left explicitly as named debt rather than converted blind; the ratchet stops it growing."
+    },
+    "src/Core.TypeScript/bg/audit-duplicate-row-ids.ts": {
+      "count": 1,
+      "category": "human-report-ordering",
+      "reason": "Orders rows of an audit or report read by a human, not a key, a hash input, or anything folded. Cosmetic under the rule; converting is safe but is not urgent and would enlarge this PR's review surface without reducing risk."
+    },
+    "src/Core.TypeScript/discovery/gossip-salon.proof.test.ts": {
+      "count": 1,
+      "category": "test-local-ordering",
+      "reason": "A test sorts values only to compare two collections within the same process, so both sides see the same locale and the assertion cannot diverge across machines. Low value to convert, and some of these assert the divergence deliberately."
+    },
+    "src/Core.TypeScript/forge-host/github/archive-pr-reviews.ts": {
+      "count": 2,
+      "category": "ordering-change-migration",
+      "reason": "Sorts file paths or mixed-case identifiers. Measured on the REAL tracked tree, localeCompare and code-point order disagree on 548 of 360000 path pairs (e.g. ICheckpointReader.cs vs ICheckpointable.cs), so converting CHANGES the emitted order. That is a migration with a cost to establish, not a sweep line."
+    },
+    "src/Core.TypeScript/health/factory-health-monitor.ts": {
+      "count": 9,
+      "category": "load-bearing-pending-sweep",
+      "reason": "Load-bearing ordering (a key, a claim set, or a deterministic pick) that SHOULD be converted, but whose key domain was not measured in this PR. Left explicitly as named debt rather than converted blind; the ratchet stops it growing."
+    },
+    "src/Core.TypeScript/hygiene/audit-backlog-items.ts": {
+      "count": 2,
+      "category": "human-report-ordering",
+      "reason": "Orders rows of an audit or report read by a human, not a key, a hash input, or anything folded. Cosmetic under the rule; converting is safe but is not urgent and would enlarge this PR's review surface without reducing risk."
+    },
+    "src/Core.TypeScript/hygiene/audit-cross-platform-parity.ts": {
+      "count": 1,
+      "category": "ordering-change-migration",
+      "reason": "Sorts file paths or mixed-case identifiers. Measured on the REAL tracked tree, localeCompare and code-point order disagree on 548 of 360000 path pairs (e.g. ICheckpointReader.cs vs ICheckpointable.cs), so converting CHANGES the emitted order. That is a migration with a cost to establish, not a sweep line."
+    },
+    "src/Core.TypeScript/hygiene/audit-formal-artifacts.ts": {
+      "count": 1,
+      "category": "ordering-change-migration",
+      "reason": "Sorts file paths or mixed-case identifiers. Measured on the REAL tracked tree, localeCompare and code-point order disagree on 548 of 360000 path pairs (e.g. ICheckpointReader.cs vs ICheckpointable.cs), so converting CHANGES the emitted order. That is a migration with a cost to establish, not a sweep line."
+    },
+    "src/Core.TypeScript/hygiene/audit-fsharp-artifacts.ts": {
+      "count": 1,
+      "category": "ordering-change-migration",
+      "reason": "Sorts file paths or mixed-case identifiers. Measured on the REAL tracked tree, localeCompare and code-point order disagree on 548 of 360000 path pairs (e.g. ICheckpointReader.cs vs ICheckpointable.cs), so converting CHANGES the emitted order. That is a migration with a cost to establish, not a sweep line."
+    },
+    "src/Core.TypeScript/hygiene/audit-git-hotspots.ts": {
+      "count": 1,
+      "category": "ordering-change-migration",
+      "reason": "Sorts file paths or mixed-case identifiers. Measured on the REAL tracked tree, localeCompare and code-point order disagree on 548 of 360000 path pairs (e.g. ICheckpointReader.cs vs ICheckpointable.cs), so converting CHANGES the emitted order. That is a migration with a cost to establish, not a sweep line."
+    },
+    "src/Core.TypeScript/hygiene/audit-memory-index-duplicates.ts": {
+      "count": 1,
+      "category": "human-report-ordering",
+      "reason": "Orders rows of an audit or report read by a human, not a key, a hash input, or anything folded. Cosmetic under the rule; converting is safe but is not urgent and would enlarge this PR's review surface without reducing risk."
+    },
+    "src/Core.TypeScript/hygiene/audit-memory-references.ts": {
+      "count": 1,
+      "category": "ordering-change-migration",
+      "reason": "Sorts file paths or mixed-case identifiers. Measured on the REAL tracked tree, localeCompare and code-point order disagree on 548 of 360000 path pairs (e.g. ICheckpointReader.cs vs ICheckpointable.cs), so converting CHANGES the emitted order. That is a migration with a cost to establish, not a sweep line."
+    },
+    "src/Core.TypeScript/hygiene/audit-promotion-ledger.ts": {
+      "count": 3,
+      "category": "human-report-ordering",
+      "reason": "Orders rows of an audit or report read by a human, not a key, a hash input, or anything folded. Cosmetic under the rule; converting is safe but is not urgent and would enlarge this PR's review surface without reducing risk."
+    },
+    "src/Core.TypeScript/hygiene/audit-research-docs.ts": {
+      "count": 1,
+      "category": "ordering-change-migration",
+      "reason": "Sorts file paths or mixed-case identifiers. Measured on the REAL tracked tree, localeCompare and code-point order disagree on 548 of 360000 path pairs (e.g. ICheckpointReader.cs vs ICheckpointable.cs), so converting CHANGES the emitted order. That is a migration with a cost to establish, not a sweep line."
+    },
+    "src/Core.TypeScript/hygiene/audit-trajectories.ts": {
+      "count": 1,
+      "category": "human-report-ordering",
+      "reason": "Orders rows of an audit or report read by a human, not a key, a hash input, or anything folded. Cosmetic under the rule; converting is safe but is not urgent and would enlarge this PR's review surface without reducing risk."
+    },
+    "src/Core.TypeScript/hygiene/check-bash-retirement-inventory.test.ts": {
+      "count": 1,
+      "category": "test-local-ordering",
+      "reason": "A test sorts values only to compare two collections within the same process, so both sides see the same locale and the assertion cannot diverge across machines. Low value to convert, and some of these assert the divergence deliberately."
+    },
+    "src/Core.TypeScript/hygiene/check-bash-retirement-inventory.ts": {
+      "count": 10,
+      "category": "ordering-change-migration",
+      "reason": "Sorts file paths or mixed-case identifiers. Measured on the REAL tracked tree, localeCompare and code-point order disagree on 548 of 360000 path pairs (e.g. ICheckpointReader.cs vs ICheckpointable.cs), so converting CHANGES the emitted order. That is a migration with a cost to establish, not a sweep line."
+    },
+    "src/Core.TypeScript/hygiene/check-no-op-cadence-pattern.ts": {
+      "count": 2,
+      "category": "human-report-ordering",
+      "reason": "Orders rows of an audit or report read by a human, not a key, a hash input, or anything folded. Cosmetic under the rule; converting is safe but is not urgent and would enlarge this PR's review surface without reducing risk."
+    },
+    "src/Core.TypeScript/hygiene/healers/memory-reindex-certified.ts": {
+      "count": 2,
+      "category": "persisted-artifact-migration",
+      "reason": "The ordering reaches a committed artifact (generated index, shard file, or on-disk ledger). Converting rewrites checked-in content and would churn byte-locked output, so it is filed as a migration rather than folded into a cleanup PR."
+    },
+    "src/Core.TypeScript/installer/multiboot/assemble.ts": {
+      "count": 1,
+      "category": "persisted-artifact-migration",
+      "reason": "The ordering reaches a committed artifact (generated index, shard file, or on-disk ledger). Converting rewrites checked-in content and would churn byte-locked output, so it is filed as a migration rather than folded into a cleanup PR."
+    },
+    "src/Core.TypeScript/installer/multiboot/sha256sums.ts": {
+      "count": 1,
+      "category": "persisted-artifact-migration",
+      "reason": "The ordering reaches a committed artifact (generated index, shard file, or on-disk ledger). Converting rewrites checked-in content and would churn byte-locked output, so it is filed as a migration rather than folded into a cleanup PR."
+    },
+    "src/Core.TypeScript/installer/uefi-keyfile-esp.ts": {
+      "count": 1,
+      "category": "persisted-artifact-migration",
+      "reason": "The ordering reaches a committed artifact (generated index, shard file, or on-disk ledger). Converting rewrites checked-in content and would churn byte-locked output, so it is filed as a migration rather than folded into a cleanup PR."
+    },
+    "src/Core.TypeScript/lint/doc-comment-history-audit.ts": {
+      "count": 2,
+      "category": "ordering-change-migration",
+      "reason": "Sorts file paths or mixed-case identifiers. Measured on the REAL tracked tree, localeCompare and code-point order disagree on 548 of 360000 path pairs (e.g. ICheckpointReader.cs vs ICheckpointable.cs), so converting CHANGES the emitted order. That is a migration with a cost to establish, not a sweep line."
+    },
+    "src/Core.TypeScript/lint/no-directives-otto-prose.ts": {
+      "count": 1,
+      "category": "human-report-ordering",
+      "reason": "Orders rows of an audit or report read by a human, not a key, a hash input, or anything folded. Cosmetic under the rule; converting is safe but is not urgent and would enlarge this PR's review surface without reducing risk."
+    },
+    "src/Core.TypeScript/lint/runner-version-freshness.ts": {
+      "count": 1,
+      "category": "human-report-ordering",
+      "reason": "Orders rows of an audit or report read by a human, not a key, a hash input, or anything folded. Cosmetic under the rule; converting is safe but is not urgent and would enlarge this PR's review surface without reducing risk."
+    },
+    "src/Core.TypeScript/lint/safety-clause-audit.ts": {
+      "count": 1,
+      "category": "human-report-ordering",
+      "reason": "Orders rows of an audit or report read by a human, not a key, a hash input, or anything folded. Cosmetic under the rule; converting is safe but is not urgent and would enlarge this PR's review surface without reducing risk."
+    },
+    "src/Core.TypeScript/memory/reindex-memory-md.ts": {
+      "count": 2,
+      "category": "persisted-artifact-migration",
+      "reason": "The ordering reaches a committed artifact (generated index, shard file, or on-disk ledger). Converting rewrites checked-in content and would churn byte-locked output, so it is filed as a migration rather than folded into a cleanup PR."
+    },
+    "src/Core.TypeScript/migrations/b0266-review-policy-ruleset.ts": {
+      "count": 1,
+      "category": "persisted-artifact-migration",
+      "reason": "The ordering reaches a committed artifact (generated index, shard file, or on-disk ledger). Converting rewrites checked-in content and would churn byte-locked output, so it is filed as a migration rather than folded into a cleanup PR."
+    },
+    "src/Core.TypeScript/migrations/b0267-branch-safety-ruleset.ts": {
+      "count": 1,
+      "category": "persisted-artifact-migration",
+      "reason": "The ordering reaches a committed artifact (generated index, shard file, or on-disk ledger). Converting rewrites checked-in content and would churn byte-locked output, so it is filed as a migration rather than folded into a cleanup PR."
+    },
+    "src/Core.TypeScript/model-backend/zeta-tools.test.ts": {
+      "count": 1,
+      "category": "test-local-ordering",
+      "reason": "A test sorts values only to compare two collections within the same process, so both sides see the same locale and the assertion cannot diverge across machines. Low value to convert, and some of these assert the divergence deliberately."
+    },
+    "src/Core.TypeScript/observe/local-neighbourhood.ts": {
+      "count": 1,
+      "category": "load-bearing-pending-sweep",
+      "reason": "Load-bearing ordering (a key, a claim set, or a deterministic pick) that SHOULD be converted, but whose key domain was not measured in this PR. Left explicitly as named debt rather than converted blind; the ratchet stops it growing."
+    },
+    "src/Core.TypeScript/observe/surface-dsl.ts": {
+      "count": 1,
+      "category": "ordering-change-migration",
+      "reason": "Sorts file paths or mixed-case identifiers. Measured on the REAL tracked tree, localeCompare and code-point order disagree on 548 of 360000 path pairs (e.g. ICheckpointReader.cs vs ICheckpointable.cs), so converting CHANGES the emitted order. That is a migration with a cost to establish, not a sweep line."
+    },
+    "src/Core.TypeScript/observe/tick-shards.ts": {
+      "count": 3,
+      "category": "persisted-artifact-migration",
+      "reason": "The ordering reaches a committed artifact (generated index, shard file, or on-disk ledger). Converting rewrites checked-in content and would churn byte-locked output, so it is filed as a migration rather than folded into a cleanup PR."
+    },
+    "src/Core.TypeScript/planning/society-event-index-rebuild.ts": {
+      "count": 1,
+      "category": "ordering-change-migration",
+      "reason": "Sorts file paths or mixed-case identifiers. Measured on the REAL tracked tree, localeCompare and code-point order disagree on 548 of 360000 path pairs (e.g. ICheckpointReader.cs vs ICheckpointable.cs), so converting CHANGES the emitted order. That is a migration with a cost to establish, not a sweep line."
+    },
+    "src/Core.TypeScript/playwright/github-ui/feature-diff.ts": {
+      "count": 2,
+      "category": "ordering-change-migration",
+      "reason": "Sorts file paths or mixed-case identifiers. Measured on the REAL tracked tree, localeCompare and code-point order disagree on 548 of 360000 path pairs (e.g. ICheckpointReader.cs vs ICheckpointable.cs), so converting CHANGES the emitted order. That is a migration with a cost to establish, not a sweep line."
+    },
+    "src/Core.TypeScript/search/concept-index.ts": {
+      "count": 1,
+      "category": "load-bearing-pending-sweep",
+      "reason": "Load-bearing ordering (a key, a claim set, or a deterministic pick) that SHOULD be converted, but whose key domain was not measured in this PR. Left explicitly as named debt rather than converted blind; the ratchet stops it growing."
+    },
+    "src/Core.TypeScript/service/capacity/capacity.ts": {
+      "count": 2,
+      "category": "load-bearing-pending-sweep",
+      "reason": "Load-bearing ordering (a key, a claim set, or a deterministic pick) that SHOULD be converted, but whose key domain was not measured in this PR. Left explicitly as named debt rather than converted blind; the ratchet stops it growing."
+    },
+    "src/Core.TypeScript/skill-catalog/audit-skill-descriptions.ts": {
+      "count": 1,
+      "category": "human-report-ordering",
+      "reason": "Orders rows of an audit or report read by a human, not a key, a hash input, or anything folded. Cosmetic under the rule; converting is safe but is not urgent and would enlarge this PR's review surface without reducing risk."
+    },
+    "src/Core.TypeScript/skill-catalog/backfill_dv2_frontmatter.ts": {
+      "count": 2,
+      "category": "ordering-change-migration",
+      "reason": "Sorts file paths or mixed-case identifiers. Measured on the REAL tracked tree, localeCompare and code-point order disagree on 548 of 360000 path pairs (e.g. ICheckpointReader.cs vs ICheckpointable.cs), so converting CHANGES the emitted order. That is a migration with a cost to establish, not a sweep line."
+    },
+    "src/Core.TypeScript/trajectories/autonomous-pickup.ts": {
+      "count": 2,
+      "category": "load-bearing-pending-sweep",
+      "reason": "Load-bearing ordering (a key, a claim set, or a deterministic pick) that SHOULD be converted, but whose key domain was not measured in this PR. Left explicitly as named debt rather than converted blind; the ratchet stops it growing."
+    },
+    "tests/cross-verification/_harness/nway-diff.ts": {
+      "count": 1,
+      "category": "ordering-change-migration",
+      "reason": "Sorts file paths or mixed-case identifiers. Measured on the REAL tracked tree, localeCompare and code-point order disagree on 548 of 360000 path pairs (e.g. ICheckpointReader.cs vs ICheckpointable.cs), so converting CHANGES the emitted order. That is a migration with a cost to establish, not a sweep line."
+    },
+    "tests/cross-verification/zeta-ir-v2/cross-verify.ts": {
+      "count": 1,
+      "category": "ordering-change-migration",
+      "reason": "Sorts file paths or mixed-case identifiers. Measured on the REAL tracked tree, localeCompare and code-point order disagree on 548 of 360000 path pairs (e.g. ICheckpointReader.cs vs ICheckpointable.cs), so converting CHANGES the emitted order. That is a migration with a cost to establish, not a sweep line."
+    },
+    "vocab/gen/MasterIndex.ts": {
+      "count": 4,
+      "category": "persisted-artifact-migration",
+      "reason": "The ordering reaches a committed artifact (generated index, shard file, or on-disk ledger). Converting rewrites checked-in content and would churn byte-locked output, so it is filed as a migration rather than folded into a cleanup PR."
+    },
+    "vocab/gen/Reify.ts": {
+      "count": 1,
+      "category": "persisted-artifact-migration",
+      "reason": "The ordering reaches a committed artifact (generated index, shard file, or on-disk ledger). Converting rewrites checked-in content and would churn byte-locked output, so it is filed as a migration rather than folded into a cleanup PR."
+    }
+  }
+}

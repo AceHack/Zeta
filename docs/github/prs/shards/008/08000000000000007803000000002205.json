@@ -1,0 +1,12 @@
+{
+  "pr_number": 8709,
+  "archive_path": "docs/history/pr-reviews/PR-8709-docs-handoff-mark-math-team-row-10-istarring-clifford-leg-discharged-8707-verifi.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-20T05:59:46.210Z",
+  "schema_version": "v1",
+  "commit_sha": "c0c7ad4d79514edfb618e7094bd2f87899b395f8",
+  "title": "docs(handoff): mark math-team row 10 IStarRing Clifford leg discharged (#8707, verified)",
+  "state": "MERGED",
+  "merged_at": "2026-06-20T05:59:16Z",
+  "head_ref": "otto/row10-handoff-discharge"
+}

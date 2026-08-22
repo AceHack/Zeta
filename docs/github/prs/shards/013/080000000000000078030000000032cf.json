@@ -1,0 +1,12 @@
+{
+  "pr_number": 13007,
+  "archive_path": "docs/history/pr-reviews/PR-13007-fix-browser-persist-causal-handoffs-across-reload.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-21T00:50:36.671Z",
+  "schema_version": "v1",
+  "commit_sha": "f3461a7f97e3bb00a8185d30644fff407651eea5",
+  "title": "fix(browser): persist causal handoffs across reload",
+  "state": "MERGED",
+  "merged_at": "2026-08-21T00:49:59Z",
+  "head_ref": "claim/task-browser-causal-handoff-restart-persistence"
+}

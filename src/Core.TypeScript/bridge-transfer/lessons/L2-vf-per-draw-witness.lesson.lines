@@ -1,0 +1,13 @@
+# L2 — VF witnesses THIS draw, not the run.
+# VF is recomputed by every DXYN, so a fresh non-overlapping draw after a colliding one reads 0
+# again. This is what makes VF usable as a per-frame collision signal rather than a run-level flag.
+meta	name	vf-per-draw-witness
+meta	claim	VF reports the collision of the current DXYN only, and is cleared by the next one
+meta	discovered-on	chip8
+meta	falsifier	vf-sticky
+mem	0300	ff
+rom	a30060006100d011d0116020d011
+assert	4	vf 0
+assert	5	vf 1
+assert	7	vf 0
+assert	7	lit 32 0

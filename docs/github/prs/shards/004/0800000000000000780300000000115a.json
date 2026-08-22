@@ -1,0 +1,21 @@
+{
+  "pr_number": 4442,
+  "archive_path": "docs/history/pr-reviews/PR-4442-docs-autonomous-loop-tick-shard-pre-push-gate-in-step-4-1718z-shard.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7DQbo6",
+    "comment:PRRC_kwDOSF9kNM7DQk_w",
+    "comment:PRRC_kwDOSF9kNM7DQlAg",
+    "comment:PRRC_kwDOSF9kNM7DQlBF",
+    "thread:PRRT_kwDOSF9kNM6DkJbU",
+    "thread:PRRT_kwDOSF9kNM6DkQXQ",
+    "thread:PRRT_kwDOSF9kNM6DkQXy",
+    "thread:PRRT_kwDOSF9kNM6DkQYG"
+  ],
+  "fetched_at": "2026-05-20T17:47:14.837Z",
+  "schema_version": "v1",
+  "commit_sha": "7d6f3ff4f7f83ed6347b6b66963e32e046c5af14",
+  "title": "docs(autonomous-loop): tick-shard pre-push gate in step 4 + 1718Z shard",
+  "state": "MERGED",
+  "merged_at": "2026-05-20T17:46:53Z",
+  "head_ref": "shard/tick-1718z-autonomous-loop-tick-shard-prepush-gate-2026-05-20"
+}

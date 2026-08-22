@@ -1,0 +1,12 @@
+{
+  "pr_number": 13794,
+  "archive_path": "docs/history/pr-reviews/PR-13794-ferry-ip-questionable-claude-riemann-critical-line-proportion-the-claim-is-a-per.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-22T17:02:18.790Z",
+  "schema_version": "v1",
+  "commit_sha": "39be808071464b7a68a6f51eec2e238863bb3b56",
+  "title": "ferry(ip-questionable): Claude/Riemann critical-line proportion — the claim is a percentage, not the hypothesis",
+  "state": "MERGED",
+  "merged_at": "2026-08-22T17:01:41Z",
+  "head_ref": "ferry/riemann-two-papers"
+}

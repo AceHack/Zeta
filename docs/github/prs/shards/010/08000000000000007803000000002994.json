@@ -1,0 +1,12 @@
+{
+  "pr_number": 10644,
+  "archive_path": "docs/history/pr-reviews/PR-10644-fix-persona-keys-a-pkcs-11-driver-on-disk-is-not-attached-hardware.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-14T18:57:11.916Z",
+  "schema_version": "v1",
+  "commit_sha": "33e04e02dbfaa0dc2f1f3c8a0099102290b56619",
+  "title": "fix(persona-keys): a PKCS#11 driver on disk is not attached hardware",
+  "state": "MERGED",
+  "merged_at": "2026-08-14T18:56:25Z",
+  "head_ref": "nazar/hardware-lane-honest-ladder"
+}

@@ -1,0 +1,23 @@
+{
+  "pr_number": 2573,
+  "archive_path": "docs/history/pr-reviews/PR-2573-docs-memory-factory-is-model-distillation-machine-casimir-gap-captures-all-parti.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_q9JM",
+    "comment:PRRC_kwDOSF9kNM6_q9yy",
+    "comment:PRRC_kwDOSF9kNM6_q9zD",
+    "comment:PRRC_kwDOSF9kNM6_q9zM",
+    "comment:PRRC_kwDOSF9kNM6_q9zW",
+    "thread:PRRT_kwDOSF9kNM6A8Ijs",
+    "thread:PRRT_kwDOSF9kNM6A8JD3",
+    "thread:PRRT_kwDOSF9kNM6A8JEF",
+    "thread:PRRT_kwDOSF9kNM6A8JEM",
+    "thread:PRRT_kwDOSF9kNM6A8JES"
+  ],
+  "fetched_at": "2026-05-10T23:43:06.423Z",
+  "schema_version": "v1",
+  "commit_sha": "75a0a1170719ea6edfabb5958705ac6afcb51c12",
+  "title": "docs(memory): factory IS model distillation machine — Casimir gap captures all participants",
+  "state": "MERGED",
+  "merged_at": "2026-05-10T23:42:48Z",
+  "head_ref": "docs/distillation-casimir-gap-2026-05-10"
+}

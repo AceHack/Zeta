@@ -1,0 +1,12 @@
+{
+  "pr_number": 1996,
+  "archive_path": "docs/history/pr-reviews/PR-1996-fix-backlog-b-0110-closed-row-mark-clean.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-08T02:04:17.652Z",
+  "schema_version": "v1",
+  "commit_sha": "f0b4f674f41524b50b0cfb8fab58cf049fc10f66",
+  "title": "fix(backlog): B-0110 closed row mark clean",
+  "state": "MERGED",
+  "merged_at": "2026-05-08T02:04:03Z",
+  "head_ref": "backlog/b0110-close-clean"
+}

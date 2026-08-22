@@ -1,0 +1,12 @@
+{
+  "pr_number": 3149,
+  "archive_path": "docs/history/pr-reviews/PR-3149-shard-tick-1640z-root-discipline-manifesto-ani-kolmogorov-iteration.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-14T17:57:54.169Z",
+  "schema_version": "v1",
+  "commit_sha": "09fa6185bdeb5c5954889b3ecf8dfbe2614957fd",
+  "title": "shard(tick): 1640Z — Root Discipline Manifesto + Ani Kolmogorov iteration",
+  "state": "MERGED",
+  "merged_at": "2026-05-14T17:57:33Z",
+  "head_ref": "shard/tick-1640z-manifesto-iteration-2026-05-14"
+}

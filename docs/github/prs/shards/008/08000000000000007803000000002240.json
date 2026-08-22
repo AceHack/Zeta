@@ -1,0 +1,12 @@
+{
+  "pr_number": 8768,
+  "archive_path": "docs/history/pr-reviews/PR-8768-feat-csharp-schematsvparser-schema-driven-tsv-row-parsing-into-typed-dynamicvalu.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-20T19:17:50.518Z",
+  "schema_version": "v1",
+  "commit_sha": "ad4dd9da9bec9f34b2a5183ff77fc80e84be4604",
+  "title": "feat(csharp): SchemaTsvParser — schema-driven TSV row parsing into typed DynamicValue (live data)",
+  "state": "MERGED",
+  "merged_at": "2026-06-20T19:17:26Z",
+  "head_ref": "otto/schema-tsv-parser"
+}

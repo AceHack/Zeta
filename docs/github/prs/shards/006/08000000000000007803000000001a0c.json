@@ -1,0 +1,15 @@
+{
+  "pr_number": 6668,
+  "archive_path": "docs/history/pr-reviews/PR-6668-rules-formal-proof-first-the-gate-s-reach-boundary-proof-grounds-the-formalizabl.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7HkMbl",
+    "thread:PRRT_kwDOSF9kNM6GurYn"
+  ],
+  "fetched_at": "2026-06-03T11:49:09.341Z",
+  "schema_version": "v1",
+  "commit_sha": "6e9f4e179b36768d7ec41ddee3d177212a4da2b7",
+  "title": "rules(formal-proof-first): the gate's reach boundary — proof grounds the formalizable, not the interpretive (don't halo metaphysics)",
+  "state": "MERGED",
+  "merged_at": "2026-06-03T11:48:47Z",
+  "head_ref": "otto-cli/formal-proof-first-gate-reach-boundary-math-not-metaphysics-2026-06-03"
+}

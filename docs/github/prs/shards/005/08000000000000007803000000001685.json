@@ -1,0 +1,12 @@
+{
+  "pr_number": 5765,
+  "archive_path": "docs/history/pr-reviews/PR-5765-docs-upstream-add-webppl-ts-probabilistic-programming-videolectures-net-phd-lear.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-28T11:15:51.117Z",
+  "schema_version": "v1",
+  "commit_sha": "d3675f94bb1c0f68730c804cece093b48d793bf8",
+  "title": "docs(upstream): add WebPPL TS probabilistic programming + videolectures.net PhD learning substrate (Aaron 2026-05-28)",
+  "state": "MERGED",
+  "merged_at": "2026-05-28T11:15:27Z",
+  "head_ref": "otto-cli/upstream-references-add-webppl-ts-probabilistic-programming-plus-videolectures-net-phd-learning-substrate-aaron-2026-05-28"
+}

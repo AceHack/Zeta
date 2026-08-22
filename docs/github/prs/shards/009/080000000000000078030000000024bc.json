@@ -1,0 +1,12 @@
+{
+  "pr_number": 9404,
+  "archive_path": "docs/history/pr-reviews/PR-9404-feat-model-backend-tool-calls-slice-3-the-dagfs-zetadb-execution-binding-shadow.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-04T03:49:48.185Z",
+  "schema_version": "v1",
+  "commit_sha": "43bb92c7e0fe6ef10f3a3be2c9f0ac57f40827c7",
+  "title": "feat(model-backend): tool calls slice 3 — the DagFs/zetadb execution binding (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-04T03:49:22Z",
+  "head_ref": "otto/tool-calls-slice3-dagfs-zetadb-execution-binding"
+}

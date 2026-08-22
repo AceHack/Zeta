@@ -1,0 +1,21 @@
+{
+  "pr_number": 2503,
+  "archive_path": "docs/history/pr-reviews/PR-2503-decompose-b-0090-smallest-dependency-ordered-atomic-children-riven-re-decomp.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6_oS42",
+    "comment:PRRC_kwDOSF9kNM6_oS4n",
+    "comment:PRRC_kwDOSF9kNM6_oS4r",
+    "comment:PRRC_kwDOSF9kNM6_oS4y",
+    "thread:PRRT_kwDOSF9kNM6A6BN0",
+    "thread:PRRT_kwDOSF9kNM6A6BN4",
+    "thread:PRRT_kwDOSF9kNM6A6BN8",
+    "thread:PRRT_kwDOSF9kNM6A6BOA"
+  ],
+  "fetched_at": "2026-05-10T14:42:09.520Z",
+  "schema_version": "v1",
+  "commit_sha": "60f36fb4e071c7925ee7e311784937458455d98c",
+  "title": "decompose(B-0090): smallest dependency-ordered atomic children (riven re-decomp)",
+  "state": "MERGED",
+  "merged_at": "2026-05-10T14:41:53Z",
+  "head_ref": "claim/B-0090-decompose-smallest-atomic-children-riven-2026-05-10"
+}

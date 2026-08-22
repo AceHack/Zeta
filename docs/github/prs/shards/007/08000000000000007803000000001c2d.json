@@ -1,0 +1,12 @@
+{
+  "pr_number": 7213,
+  "archive_path": "docs/history/pr-reviews/PR-7213-docs-research-the-purpose-of-society-graceful-failure-catch-debug-compensate-vic.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-09T05:34:37.175Z",
+  "schema_version": "v1",
+  "commit_sha": "38e4ffeb4fd0952545ed3ccb7523aecfe3aeae31",
+  "title": "docs(research): the purpose of society — graceful failure, catch, debug, compensate victims; chip8 is practice for devops",
+  "state": "MERGED",
+  "merged_at": "2026-06-09T05:34:17Z",
+  "head_ref": "otto/research-purpose-of-society-graceful-failure-compensate-chip8-practice-devops"
+}

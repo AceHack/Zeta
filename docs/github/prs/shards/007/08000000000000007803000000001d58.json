@@ -1,0 +1,12 @@
+{
+  "pr_number": 7512,
+  "archive_path": "docs/history/pr-reviews/PR-7512-docs-boards-why-rgb-cmyk-ride-decades-of-cpu-gpu-color-optimization-encode-subst.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-10T21:22:05.330Z",
+  "schema_version": "v1",
+  "commit_sha": "662821eaeb545560f10a42430def8d20029fac25",
+  "title": "docs(boards): why RGB/CMYK — ride decades of CPU/GPU color optimization (encode substrate as color)",
+  "state": "MERGED",
+  "merged_at": "2026-06-10T21:21:44Z",
+  "head_ref": "shadow-rgb-cmyk-hardware-optimization-rationale"
+}

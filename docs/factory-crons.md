@@ -89,10 +89,10 @@ from the session — the workflow file owns firing.
 - `docs/AUTONOMOUS-LOOP.md` — the discipline governing the
   `autonomous-loop` row (every-tick reconcile, visibility
   signal, verify-before-stopping)
-- `.claude/skills/long-term-rescheduler/SKILL.md` — the
+- `.claude/skills/agent-runtime-and-persistence/blueprints/long-term-rescheduler.md` — the
   skill that manages `session + reregister` rows
 - `docs/research/claude-cron-durability.md` — the
   round-34 finding that motivated the durability design
-- `.claude/skills/round-open-checklist/SKILL.md` — step
+- `.claude/skills/workflows/blueprints/round-open-checklist.md` — step
   7.6 session-restart recovery entry point
 - `docs/BACKLOG.md` — overnight-autonomy research entries

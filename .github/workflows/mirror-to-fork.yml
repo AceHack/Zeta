@@ -50,6 +50,8 @@ jobs:
   mirror:
     # Only the canonical repo mirrors outward; a fork running this is a no-op.
     if: github.repository == 'Lucent-Financial-Group/Zeta' && vars.ACEHACK_MIRROR_ENABLED == 'true'
+    # Timeout basis: no completed runs (gated on ACEHACK_MIRROR_ENABLED); full-history mirror push, deliberately generous.
+    timeout-minutes: 30
     runs-on: ubuntu-24.04
     steps:
       - name: Checkout (all history)

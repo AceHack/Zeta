@@ -1,0 +1,12 @@
+{
+  "pr_number": 6975,
+  "archive_path": "docs/history/pr-reviews/PR-6975-docs-ace-optimal-source-resolution-per-os-composable-order-free-infinite-assembl.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-08T01:28:10.026Z",
+  "schema_version": "v1",
+  "commit_sha": "1422bb15ead8c01d5cf9b872467c3e6c5bc86f19",
+  "title": "docs: Ace optimal-source resolution per OS; + composable order-free infinite assembly of tiny per-dep files",
+  "state": "MERGED",
+  "merged_at": "2026-06-08T01:27:52Z",
+  "head_ref": "otto/ace-source-resolution-and-composable-infinite-assembly"
+}

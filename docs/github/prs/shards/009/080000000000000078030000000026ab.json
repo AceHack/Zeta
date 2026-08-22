@@ -1,0 +1,12 @@
+{
+  "pr_number": 9899,
+  "archive_path": "docs/history/pr-reviews/PR-9899-feat-darkhall-compose-native-browser-startup.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-01T17:03:40.631Z",
+  "schema_version": "v1",
+  "commit_sha": "3d97a046d7548687f84804719b5d57e72c0d5d3a",
+  "title": "feat(darkhall): compose native browser startup",
+  "state": "MERGED",
+  "merged_at": "2026-08-01T17:03:02Z",
+  "head_ref": "codex/darkhall-browser-bootstrap"
+}

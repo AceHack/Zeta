@@ -7,7 +7,7 @@ import { mutate } from "./mutate";
 // Log file location
 // ---------------------------------------------------------------------------
 
-const REPO_ROOT = resolve(import.meta.dir, "..", "..", "..");
+const REPO_ROOT = resolve(import.meta.dir, "..", "..", "..", "..");
 export const DEFAULT_LOG_PATH = resolve(REPO_ROOT, "docs/hygiene-history/playwright-mutations/log.jsonl");
 
 // ---------------------------------------------------------------------------

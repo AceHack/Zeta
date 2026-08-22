@@ -1,0 +1,12 @@
+{
+  "pr_number": 13233,
+  "archive_path": "docs/history/pr-reviews/PR-13233-fix-cluster-the-capacity-gate-now-compares-against-measured-disk-and-refuses-whe.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-21T15:38:50.112Z",
+  "schema_version": "v1",
+  "commit_sha": "283abb367d27d047d8209736b2e8d69f0b28a868",
+  "title": "fix(cluster): the capacity gate now compares against measured disk, and refuses when it cannot",
+  "state": "MERGED",
+  "merged_at": "2026-08-21T15:38:12Z",
+  "head_ref": "fix/storage-capacity-gate-checks-real-disk"
+}

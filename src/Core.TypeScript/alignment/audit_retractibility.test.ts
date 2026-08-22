@@ -89,19 +89,19 @@ describe("countInboundRefs", () => {
     expect(result.count).toBeGreaterThan(0);
     expect(Array.isArray(result.from)).toBe(true);
     expect(result.from.length).toBe(result.count);
-  }, 120000);
+  }, 30000);
 
   test("excludes self from inbound refs", () => {
     const result = countInboundRefs("docs/ALIGNMENT.md", process.cwd());
     expect(result.from).not.toContain("docs/ALIGNMENT.md");
-  }, 120000);
+  }, 30000);
 
   test("returns zero for a nonexistent path pattern", () => {
     const needle = ["x9z8y7w6", "no", "such", "file"].join("/") + ".md";
     const result = countInboundRefs(needle, process.cwd());
     expect(result.count).toBe(0);
     expect(result.from).toEqual([]);
-  }, 120000);
+  }, 30000);
 });
 
 describe("auditRetractibility", () => {
@@ -118,7 +118,7 @@ describe("auditRetractibility", () => {
     expect(surface.gitTracked).toBe(true);
     expect(typeof surface.inboundRefs).toBe("number");
     expect(["retractible", "entangled"]).toContain(surface.status);
-  }, 120000);
+  }, 30000);
 
   test("returns valid shape for a known agent", () => {
     const result = auditRetractibility([".claude/agents/alignment-auditor.md"]);
@@ -127,7 +127,7 @@ describe("auditRetractibility", () => {
     expect(surface.kind).toBe("agent");
     expect(surface.name).toBe("alignment-auditor");
     expect(surface.gitTracked).toBe(true);
-  }, 120000);
+  }, 30000);
 
   test("classifies untracked file correctly", () => {
     const result = auditRetractibility(["definitely-not-a-real-file-xyz.md"]);
@@ -137,7 +137,7 @@ describe("auditRetractibility", () => {
     expect(surface.status).toBe("untracked");
     expect(surface.gitTracked).toBe(false);
     expect(surface.inboundRefs).toBe(0);
-  }, 120000);
+  }, 30000);
 
   test("counts add up correctly", () => {
     const result = auditRetractibility([
@@ -147,7 +147,7 @@ describe("auditRetractibility", () => {
     ]);
     expect(result.totalSurfaces).toBe(3);
     expect(result.retractible + result.entangled + result.untracked).toBe(result.totalSurfaces);
-  }, 120000);
+  }, 30000);
 
   test("sorts surfaces by descending inbound refs", () => {
     const result = auditRetractibility([
@@ -159,7 +159,7 @@ describe("auditRetractibility", () => {
         result.surfaces[1]!.inboundRefs,
       );
     }
-  }, 120000);
+  }, 30000);
 });
 
 describe("main() CLI", () => {
@@ -177,21 +177,21 @@ describe("main() CLI", () => {
 
   test("returns 0 with specific paths", () => {
     expect(main([".claude/agents/alignment-auditor.md"])).toBe(0);
-  }, 120000);
+  }, 30000);
 
   test("returns 0 with --json and specific path", () => {
     expect(main(["--json", ".claude/agents/alignment-auditor.md"])).toBe(0);
-  }, 120000);
+  }, 30000);
 
   test("returns 0 with --md and specific path", () => {
     expect(main(["--md", ".claude/agents/alignment-auditor.md"])).toBe(0);
-  }, 120000);
+  }, 30000);
 
   test("returns 0 with --gate 0 (trivially satisfied)", () => {
     expect(main(["--gate", "0", ".claude/agents/alignment-auditor.md"])).toBe(1);
-  }, 120000);
+  }, 30000);
 
   test("returns 0 with --gate 9999 (impossible threshold)", () => {
     expect(main(["--gate", "9999", ".claude/agents/alignment-auditor.md"])).toBe(0);
-  }, 120000);
+  }, 30000);
 });

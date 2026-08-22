@@ -1,0 +1,12 @@
+{
+  "pr_number": 8956,
+  "archive_path": "docs/history/pr-reviews/PR-8956-fix-lint-cost-growth-property-null-safety-md032-handoff.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-21T12:05:47.527Z",
+  "schema_version": "v1",
+  "commit_sha": "d2d54b6479d9d1df73402073b1d92b5cf2dd491d",
+  "title": "fix(lint): cost-growth-property null-safety + MD032 handoff",
+  "state": "MERGED",
+  "merged_at": "2026-06-21T12:05:17Z",
+  "head_ref": "otto/fix-8953-cost-growth-lints"
+}

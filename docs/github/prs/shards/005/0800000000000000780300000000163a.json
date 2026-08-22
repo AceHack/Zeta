@@ -1,0 +1,12 @@
+{
+  "pr_number": 5690,
+  "archive_path": "docs/history/pr-reviews/PR-5690-skill-zflash-creds-placeholder-skill-for-bake-cred-pattern-cross-lane-encryption.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-28T03:33:28.149Z",
+  "schema_version": "v1",
+  "commit_sha": "025c6f1b0ea768c72da7998e399e9d1fbe6d5674",
+  "title": "skill(zflash-creds): placeholder skill for --bake-cred pattern; cross-lane encryption + zflash advance per B-0892",
+  "state": "MERGED",
+  "merged_at": "2026-05-28T03:33:10Z",
+  "head_ref": "skill/zflash-creds-placeholder-cred-bake-pattern-encryption-lane-advance-per-b-0892-2026-05-28"
+}

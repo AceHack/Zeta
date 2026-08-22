@@ -1,0 +1,12 @@
+{
+  "pr_number": 9764,
+  "archive_path": "docs/history/pr-reviews/PR-9764-docs-the-kid-adult-gradient-maturation-is-a-direction-its-degenerate-case-is-the.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-12T03:51:38.823Z",
+  "schema_version": "v1",
+  "commit_sha": "9deda90f39e8ff0246889834b505db7d55dced51",
+  "title": "docs: the kid↔adult gradient — maturation is a direction, its degenerate case is the predator (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-12T03:51:12Z",
+  "head_ref": "kid-adult-gradient-degenerate-predator"
+}

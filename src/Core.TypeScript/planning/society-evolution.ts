@@ -34,9 +34,14 @@
  * ## Connection to Clifford / Adinkra / hexagonal math
  *
  * The Adinkra [8,4,4] ECC code (adinkra-ecc-prototype.ts) provides:
- * - Error-correcting codes for genome transmission over noisy gossip channels.
- * - The 8-bit codeword maps to the 7-channel genome (RGB + CMYK) + 1 parity bit.
- * - The doubly-even self-dual property ensures the genome is recoverable from 1-bit errors.
+ * - An error-CORRECTING code (d=4) for transmission over noisy gossip channels.
+ * - 4 data bits per 8-bit codeword — it does NOT carry 7 channels + 1 parity.
+ * - The doubly-even self-dual property, which is what makes it an adinkra code.
+ * `genomeToParityByte` below is NOT that code: it is the single-parity-check
+ * [8,7,2] (detection only, not self-dual). The real [8,4,4] IS in use elsewhere
+ * in the tree (src/Core/AdinkraCode.fs and its consumers; the UDP erasure coding
+ * in src/Core.TypeScript/discovery/udp-lossy-transport.ts) — it is *this genome
+ * byte* that does not use it. See that function's docstring.
  * The hexagonal quantum arithmetic (quantum-arith.ts) provides:
  * - Blaschke maps for the HL conformal amplitude (Z-2 falsifier).
  * - Born probabilities for the ThousandBrains column voting weights.
@@ -276,16 +281,69 @@ export function reservoirReadout(society: Society): {
 }
 
 /**
- * Adinkra ECC encoding of a genome for gossip transport.
- * Maps the 7-channel genome (RGB + CMYK) to an 8-bit codeword
- * using the [8,4,4] extended Hamming code structure.
+ * Single-parity-check encoding of a genome into one byte, for gossip transport.
  *
- * The 8th bit is a parity bit derived from the XOR of all 7 channels' MSBs.
- * This gives 1-bit error detection over the gossip channel.
+ * Bits 0..6 are the MSB (bit 7) of each of the 7 genome channels (RGB + CMYK);
+ * bit 7 is their XOR. So every codeword has even Hamming weight.
  *
- * For full [8,4,4] ECC (1-bit error correction), use adinkra-ecc-prototype.ts.
+ * ## What this code actually is
+ *
+ * The single-parity-check code **[8,7,2]**: length 8, 7 data bits, minimum
+ * distance 2. Distance 2 buys single-bit-error **detection** and nothing more —
+ * there is **no correction** (correction needs d ≥ 3). It is **not self-dual**
+ * (dimension 7 ≠ 4; its dual is the repetition code [8,1,8]) and **not
+ * doubly-even** (weight-2 codewords exist, e.g. one channel MSB set).
+ *
+ * ## What it is NOT — and why the distinction is load-bearing
+ *
+ * This is **not** the [8,4,4] extended Hamming code and therefore **not an
+ * adinkra code**. An adinkra's chromotopology is a hypercube quotiented by a
+ * *doubly-even self-dual* binary code (Gates et al.), and at length 8 that code
+ * is uniquely [8,4,4]. Sharing the length 8 with [8,4,4] identifies nothing —
+ * doubly-even self-duality is the invariant that separates them
+ * (`.claude/rules/numerology-vs-number-theory.md`). This docstring previously
+ * claimed the [8,4,4] structure; the bytes never had it.
+ *
+ * ## Where the genuine [8,4,4] lives — it IS in use; call it, do not re-derive
+ *
+ * The real adinkra code has live consumers in this tree. If you want an adinkra
+ * code, reach for one of these, NOT for the parity byte below:
+ *   - `src/Core/AdinkraCode.fs` — the pinned generator, with `encode`,
+ *     `syndrome`, `isCodeword`, and `correct`. Used by
+ *     `src/Core/PrivacyPreservingIdentity.fs` (key roots must be codewords),
+ *     `src/Bayesian/YinYangCell.fs` (cell-state validity), `src/Core/BitAdinkra.fs`,
+ *     `src/Core/BeliefConvergence.fs` (MacWilliams self-dual fixed point),
+ *     `src/Bayesian/BusDelayTick.fs`, `src/Core/SoftRegimeStability.fs`.
+ *   - `src/Core.TypeScript/discovery/udp-lossy-transport.ts` — [8,4,4] as an
+ *     **erasure code on the wire**: 4 data + 4 parity packets per block,
+ *     recovered by `recoverAdinkraBlock`. This is the transport-side consumer.
+ *   - `src/Core.TypeScript/research/adinkra-ecc/adinkra-ecc-prototype.ts` —
+ *     constructs [8,4,4] and *verifies* doubly-even + self-dual.
+ *   - `src/Core.Lean4/Lean4/CayleyDicksonDoublyEven.lean` — the proof layer;
+ *     `src/Core.Lean4/ImaginaryStack/ErasureDistance.lean` — distance ⇒
+ *     erasure-correction (the missed-observations-over-time property).
+ *   - `src/Core/CliffordE8BladeMask.fs`, `src/Core/OrbitEquivariance.fs`,
+ *     `src/Core.TypeScript/algebra/e8-blade-mask-sandwich.ts` — the algebra layer.
+ *
+ * Because those consumers are real, the mislabelling this rename fixed was a live
+ * hazard and not a cosmetic one: a byte named "adinkra" that is distance-2 and
+ * not self-dual could be wired into a path expecting the guarantees above.
+ *
+ * ## When this decision flips
+ *
+ * As of the rename (2026-08-16) **this function** has no consumer that decodes
+ * its byte, corrects with it, or checks self-duality — only determinism and
+ * byte-lock tests. (That is a statement about this function only; adinkra ECC
+ * itself is used elsewhere, see above.) So [8,7,2] costs nothing here, while
+ * [8,4,4] would cost capacity (7 data bits → 4) for no gain *at this call site*.
+ * If the generator-as-ECC thesis
+ * (`.claude/rules/only-the-irreducible-is-primitive-generate-the-rest.md` —
+ * "the highest-value generator IS an error-correcting code") acquires a consumer
+ * that needs **correction** or **self-duality**, [8,4,4] becomes a *correctness
+ * requirement*, not an upgrade — and the move then is to call the algebra-layer
+ * machinery above, not to re-implement a second "adinkra code" in `planning/`.
  */
-export function genomeToAdinkraByte(genome: AgentGenome): number {
+export function genomeToParityByte(genome: AgentGenome): number {
   const channels = [
     genome.rgb.r, genome.rgb.g, genome.rgb.b,
     genome.cmyk.c, genome.cmyk.m, genome.cmyk.y, genome.cmyk.k,

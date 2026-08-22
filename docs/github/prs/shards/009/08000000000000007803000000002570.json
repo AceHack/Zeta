@@ -1,0 +1,12 @@
+{
+  "pr_number": 9584,
+  "archive_path": "docs/history/pr-reviews/PR-9584-test-fsharp-univalence-bp-16-leg-2-rotor-conjugation-roundtrip-isometry-on-cl3-s.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-09T00:09:35.016Z",
+  "schema_version": "v1",
+  "commit_sha": "9dd67bf98d7988cb87d9dde207a17d181542a5fc",
+  "title": "test(fsharp): univalence BP-16 leg 2 — rotor-conjugation roundtrip + isometry on Cl3 (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-09T00:09:03Z",
+  "head_ref": "otto/univalence-bp16-fsharp-leg"
+}

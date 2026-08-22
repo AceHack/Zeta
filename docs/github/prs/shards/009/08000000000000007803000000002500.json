@@ -1,0 +1,12 @@
+{
+  "pr_number": 9472,
+  "archive_path": "docs/history/pr-reviews/PR-9472-docs-ferry-alexa-on-the-egg-bus-delay-honest-register-transient-vs-lasting-decor.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-04T18:17:39.820Z",
+  "schema_version": "v1",
+  "commit_sha": "a1fd7ef610d14105e6577e84728399231b229f52",
+  "title": "docs(ferry): Alexa on the Egg/bus-delay — honest register; transient-vs-lasting decorrelation (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-04T18:17:14Z",
+  "head_ref": "otto/ferry-alexa-egg-bus-delay-register"
+}

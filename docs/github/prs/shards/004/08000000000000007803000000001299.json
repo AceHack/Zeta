@@ -1,0 +1,12 @@
+{
+  "pr_number": 4761,
+  "archive_path": "docs/history/pr-reviews/PR-4761-rules-pr-triage-tiers-codify-tier-1-5-pr-triage-framework-deferred-to-human-labe.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-23T20:14:07.053Z",
+  "schema_version": "v1",
+  "commit_sha": "463693d3832c200068b54be4b6b57bd584359692",
+  "title": "rules(pr-triage-tiers): codify Tier 1-5 PR-triage framework + deferred-to-human label workflow",
+  "state": "MERGED",
+  "merged_at": "2026-05-23T20:13:47Z",
+  "head_ref": "otto/pr-triage-tiers-rule-deferred-human-label-2026-05-23"
+}

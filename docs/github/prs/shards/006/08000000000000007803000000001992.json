@@ -1,0 +1,12 @@
+{
+  "pr_number": 6546,
+  "archive_path": "docs/history/pr-reviews/PR-6546-docs-vision-fold-11-the-state-remainder-intentionally-uninitialized-differential.md",
+  "source_ids": [],
+  "fetched_at": "2026-06-02T11:17:11.819Z",
+  "schema_version": "v1",
+  "commit_sha": "df30345d31c99b65b1b6cf11747ceafb2bbfe129",
+  "title": "docs(vision): fold §11 the state remainder — intentionally-uninitialized differential primitive",
+  "state": "MERGED",
+  "merged_at": "2026-06-02T11:16:49Z",
+  "head_ref": "otto-cli/state-remainder-fold-2026-06-02"
+}

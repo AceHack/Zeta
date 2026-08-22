@@ -1,0 +1,17 @@
+{
+  "pr_number": 3179,
+  "archive_path": "docs/history/pr-reviews/PR-3179-shard-tick-1841z-razor-cadence-batch-4-4-more-rules-29-29-live.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7BVITJ",
+    "comment:PRRC_kwDOSF9kNM7BVITN",
+    "thread:PRRT_kwDOSF9kNM6CKFBg",
+    "thread:PRRT_kwDOSF9kNM6CKFBk"
+  ],
+  "fetched_at": "2026-05-14T19:01:26.139Z",
+  "schema_version": "v1",
+  "commit_sha": "dff3edc4460fca48d02b1b364caebbc87145d2c3",
+  "title": "shard(tick): 1841Z — razor-cadence batch 4 (4 more rules, 29/29 LIVE)",
+  "state": "MERGED",
+  "merged_at": "2026-05-14T19:01:06Z",
+  "head_ref": "shard/tick-1841Z-razor-cadence-batch4-2026-05-14"
+}

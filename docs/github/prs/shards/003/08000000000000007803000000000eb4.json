@@ -1,0 +1,12 @@
+{
+  "pr_number": 3764,
+  "archive_path": "docs/history/pr-reviews/PR-3764-shard-tick-0528z-otto-cli-2026-05-16.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-16T06:05:13.503Z",
+  "schema_version": "v1",
+  "commit_sha": "41bf3a619c44d5e873c884f238ebd98490d393ee",
+  "title": "shard(tick): 0528z-otto-cli-2026-05-16",
+  "state": "MERGED",
+  "merged_at": "2026-05-16T06:04:55Z",
+  "head_ref": "shard/tick-0528z-otto-cli-2026-05-16"
+}

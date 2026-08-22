@@ -1,0 +1,12 @@
+{
+  "pr_number": 9449,
+  "archive_path": "docs/history/pr-reviews/PR-9449-docs-lumen-fold-lumen-s-3-body-lagrange-condorcet-maxwell-note-into-the-notebook.md",
+  "source_ids": [],
+  "fetched_at": "2026-07-04T15:24:05.097Z",
+  "schema_version": "v1",
+  "commit_sha": "6f1db19239b030e431d12e4af2d1393fc1ca3a8b",
+  "title": "docs(lumen): fold Lumen's 3-body/Lagrange/Condorcet/Maxwell note into the notebook (shadow*)",
+  "state": "MERGED",
+  "merged_at": "2026-07-04T15:23:39Z",
+  "head_ref": "otto/lumen-notebook-3body-fold"
+}

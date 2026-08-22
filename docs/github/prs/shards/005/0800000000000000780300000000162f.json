@@ -1,0 +1,12 @@
+{
+  "pr_number": 5679,
+  "archive_path": "docs/history/pr-reviews/PR-5679-backlog-p1-asap-post-quantum-git-crypt-zflash-integration-agent-private-encrypte.md",
+  "source_ids": [],
+  "fetched_at": "2026-05-28T02:45:27.294Z",
+  "schema_version": "v1",
+  "commit_sha": "5b3e26e6421f23a44db35c6ddd156449a2094216",
+  "title": "backlog(P1 ASAP): post-quantum git-crypt + zflash integration + agent-private-encrypted-state-Otto-first (B-0883/B-0884/B-0885/B-0883.1)",
+  "state": "MERGED",
+  "merged_at": "2026-05-28T02:45:06Z",
+  "head_ref": "backlog/post-quantum-gitcrypt-lattice-zflash-integration-bouncy-castle-patterns-2026-05-28"
+}

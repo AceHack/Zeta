@@ -15,9 +15,9 @@
 // The description max of 80 chars comes from 081KQ8P5D0008QG0R0023ABK2C § "each long entry
 // collapses to title + ≤80-char hook."
 //
-// Usage (dry-run):  bun tools/hygiene/normalize-memory-index-entries.ts
-// Usage (apply):    bun tools/hygiene/normalize-memory-index-entries.ts --write
-// Usage (custom):   bun tools/hygiene/normalize-memory-index-entries.ts PATH [--write]
+// Usage (dry-run):  bun src/Core.TypeScript/hygiene/normalize-memory-index-entries.ts
+// Usage (apply):    bun src/Core.TypeScript/hygiene/normalize-memory-index-entries.ts --write
+// Usage (custom):   bun src/Core.TypeScript/hygiene/normalize-memory-index-entries.ts PATH [--write]
 //
 // Exit codes: 0 — ok (or dry-run), 1 — error.
 

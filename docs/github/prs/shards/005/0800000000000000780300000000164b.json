@@ -1,0 +1,15 @@
+{
+  "pr_number": 5707,
+  "archive_path": "docs/history/pr-reviews/PR-5707-docs-hygiene-history-tick-0608z-10-merged-pr-worktrees-state-observe-choose-skel.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7FohJA",
+    "thread:PRRT_kwDOSF9kNM6FTy9u"
+  ],
+  "fetched_at": "2026-05-28T06:27:55.473Z",
+  "schema_version": "v1",
+  "commit_sha": "f3f5d6e6079fb8c56de259baf5156d73477c0cb5",
+  "title": "docs(hygiene-history): tick 0608Z — 10 merged-PR worktrees state + observe-choose skeleton parked + classifier-blocked cleanup",
+  "state": "MERGED",
+  "merged_at": "2026-05-28T06:27:34Z",
+  "head_ref": "otto-cli/tick-shard-0608z-worktree-state-observation"
+}
