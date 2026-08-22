@@ -168,20 +168,32 @@
     "  cohort                                       CPU        memory",
     "  asserted by --scope included (19 apps)     1221m      3.91 GiB",
     "  applied by the dev/CI root   (33 apps)     4231m     11.16 GiB",
-    "  every Application            (45 apps)     9856m     22.98 GiB",
+    "  every Application            (45 apps)     8106m     19.29 GiB",
+    "",
+    "THE `all 45` ROW MOVED 2026-08-22, DOWNWARD, AND NOT BY SHRINKING ANYTHING.",
+    "It read 9856m / 22.98 GiB until `temporal` was wired to CockroachDB. Its old",
+    "number (3000m / 6144Mi) was measured from CHART DEFAULTS -- nobody could render",
+    "temporal against its own valuesObject, because the chart refused to template at",
+    "all -- and 3000m of it was the bundled elasticsearch-master StatefulSet, which",
+    "that Application had always set `enabled: false`. So the catalogue was carrying",
+    "6 GiB for a subchart the cluster was never going to install. The four governed",
+    "temporal rows below (1250m / 2368Mi at `metal`) are the first numbers for this",
+    "app that came from rendering the values we actually ship. That is the difference",
+    "between a measurement and a placeholder, and it is worth 1750m / 3776Mi.",
     "",
     "So the honest answer to 'can all 45 fit in 4 vCPU / 16 GB': NO, and CPU runs out",
-    "first -- 9856m of requests against 4000m of runner. The 19 the lane asserts today",
+    "first -- 8106m of requests against 4000m of runner. The 19 the lane asserts today",
     "fit with room, which is why it is green; the 33 it APPLIES do not, and the only",
     "reason that has not bitten is that 14 of them hang `Missing` on a longhorn",
     "StorageClass the dev catalog excludes, so they never schedule a pod. That is a",
     "reprieve, not a fit, and it evaporates the moment the StorageClass exists.",
     "",
     "At the `dev` rung the applied set is 1906m / 6.06 GiB, inside the budget.",
-    "All 45 at `dev` is still 7531m / 17.88 GiB -- over. Shrinking gitlab (2475m /",
-    "5.6 GiB) and temporal (3000m / 6.0 GiB) is what would close that, and neither is",
-    "governed here because neither is applied to a dev cluster; the dev rung does not",
-    "price apps the dev lane never runs.",
+    "All 45 at `dev` is still 5016m / 13.04 GiB -- over. gitlab (2475m / 5.6 GiB) is",
+    "now the single largest unshrunk Application and is what would close most of the",
+    "rest; it is not governed here because it is not applied to a dev cluster, and the",
+    "dev rung does not price apps the dev lane never runs. temporal USED to be named",
+    "beside it and no longer is: it is governed now, at 485m / 1184Mi on `dev`.",
     "",
     "== A REQUEST IS A RESERVATION, NOT A MEASUREMENT ========================",
     "Cutting a request below the app's real working set does not make the app smaller.",
@@ -770,6 +782,82 @@
         "dev": 512,
         "metal": 1024
       }
+    },
+    {
+      "id": "full-ai-cluster/temporal/admintools",
+      "dir": "temporal",
+      "path": "full-ai-cluster/k8s/applications/temporal/Application.yaml",
+      "docIndex": 0,
+      "requestsField": "spec.source.helm.valuesObject.admintools.resources.requests",
+      "pods": 1,
+      "metalSource": "manifest",
+      "evidence": "temporal 0.59.0 templates/admintools-deployment.yaml:70 renders `resources` from `.Values.admintools.resources`; one Deployment, replicaCount not set (chart default 1). Rendered 2026-08-22 against this Application's own valuesObject: 6 Deployments, 8 Services, 2 ConfigMaps, 1 Job, 0 PersistentVolumeClaims.",
+      "consequence": "A `tail -f /dev/null` sidecar pod that exists so an operator can exec `temporal` / `tctl` against the frontend. It does nothing until someone shells into it, so 32Mi is sized for idle: a large `tctl` export run against a big namespace is what would OOMKill it, and the cost of that is a failed one-off command, not a service outage.",
+      "cpuMillis": {
+        "dev": 10,
+        "metal": 50
+      },
+      "memoryMib": {
+        "dev": 32,
+        "metal": 64
+      }
+    },
+    {
+      "id": "full-ai-cluster/temporal/schema",
+      "dir": "temporal",
+      "path": "full-ai-cluster/k8s/applications/temporal/Application.yaml",
+      "docIndex": 0,
+      "requestsField": "spec.source.helm.valuesObject.schema.resources.requests",
+      "pods": 1,
+      "metalSource": "manifest",
+      "evidence": "temporal 0.59.0 templates/server-job.yaml renders ONE Job (`temporal-schema-1`) with SIX init containers -- create/setup/update x {default, visibility} -- and one `done` container, each carrying `.Values.schema.resources`. Init containers run SEQUENTIALLY, so the pod's effective request is max(init) = one unit of this value, NOT six. `pods: 1` is that arithmetic, not a guess. Rendered 2026-08-22.",
+      "consequence": "Transient: the Job runs `temporal-sql-tool` once per sync and then the pod exits (ttlSecondsAfterFinished 86400). A cut starves the schema tool, and its failure mode is a Job that retries to backoffLimit 100 rather than a running service degrading -- loud and bounded. Note this Job is ALSO where the CockroachDB visibility-schema block bites: `update-visibility-store` cannot succeed until that is resolved (see the Application header).",
+      "cpuMillis": {
+        "dev": 50,
+        "metal": 100
+      },
+      "memoryMib": {
+        "dev": 64,
+        "metal": 128
+      }
+    },
+    {
+      "id": "full-ai-cluster/temporal/server",
+      "dir": "temporal",
+      "path": "full-ai-cluster/k8s/applications/temporal/Application.yaml",
+      "docIndex": 0,
+      "requestsField": "spec.source.helm.valuesObject.server.resources.requests",
+      "pods": 4,
+      "metalSource": "manifest",
+      "evidence": "FOUR pods from ONE values key, which is exactly the mimir trap this field exists for. temporal 0.59.0 templates/server-deployment.yaml:156 is `toYaml (default $.Values.server.resources $serviceValues.resources)` and the template ranges over frontend, history, matching and worker; no per-service `resources` is set in this Application, so `server.resources` applies to all four. Each is a Deployment at `server.replicaCount: 1`. MEASURED by rendering this Application's own valuesObject 2026-08-22: temporal-frontend, temporal-history, temporal-matching, temporal-worker.",
+      "consequence": "These four ARE Temporal. 256Mi per service is a working-set bet and not a measurement: history is the one that will find the floor first, because it caches mutable workflow state per shard and this deployment runs `numHistoryShards: 512`. Under-request without a limit does not make it smaller -- it moves the failure from a Pending pod to the kernel OOM killer, and an OOMKilled history pod means every workflow on its shards stalls until the shard is re-acquired. The dev rung is safe only because `temporal/**` is glob-excluded from the dev lane (ports.ts DEFAULT_ROOT_DEV_CATALOG.excludeGlob) and never schedules there.",
+      "cpuMillis": {
+        "dev": 100,
+        "metal": 250
+      },
+      "memoryMib": {
+        "dev": 256,
+        "metal": 512
+      }
+    },
+    {
+      "id": "full-ai-cluster/temporal/web",
+      "dir": "temporal",
+      "path": "full-ai-cluster/k8s/applications/temporal/Application.yaml",
+      "docIndex": 0,
+      "requestsField": "spec.source.helm.valuesObject.web.resources.requests",
+      "pods": 1,
+      "metalSource": "manifest",
+      "evidence": "temporal 0.59.0 templates/web-deployment.yaml:57 renders `resources` from `.Values.web.resources`; one Deployment at `web.replicaCount` (chart default 1). Rendered 2026-08-22 against this Application's own valuesObject.",
+      "consequence": "The read-only UI. Losing it costs visibility into workflows, never a workflow: it holds no state and the server does not depend on it. 64Mi is sized for a Node process serving a handful of operators; a wide workflow-list query is what would push it past that, and the cost is a reloaded browser tab.",
+      "cpuMillis": {
+        "dev": 25,
+        "metal": 100
+      },
+      "memoryMib": {
+        "dev": 64,
+        "metal": 128
+      }
     }
   ],
 
@@ -965,12 +1053,6 @@
       "cpuMillis": 0,
       "memoryMib": 0,
       "evidence": "tempo 1.18.0 rendered with this Application's valuesObject, 2026-08-21: chart default resources are unset."
-    },
-    {
-      "dir": "temporal",
-      "cpuMillis": 3000,
-      "memoryMib": 6144,
-      "evidence": "temporal 0.59.0 rendered from chart defaults 2026-08-21: the bundled elasticsearch-master StatefulSet is 3 x 1000m / 2048Mi and is the whole of it. Second largest Application in the tree. Glob-excluded from the dev lane."
     },
     {
       "dir": "trust-manager",

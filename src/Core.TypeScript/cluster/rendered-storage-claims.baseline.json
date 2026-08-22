@@ -140,12 +140,6 @@
       "reason": "ziti-controller 1.4.5 is not in https://docs.openziti.io/helm-charts/ -- the pin names a version the repository does not serve. The same pin is ALREADY recorded as fictional in this catalogue's acknowledgedUnmeasuredRequests (`oz@1.4.5 stays: that pin is still fictional`), so this is the storage-side view of a known bad pin. Leaves full-ai-cluster/oz/data (3 GiB) unchecked.",
       "liftsWhen": "the pin is corrected to a version the repository actually serves -- and note the key carries the version, so correcting the pin invalidates this acknowledgement rather than inheriting it",
       "observed": "helm-pull-failed"
-    },
-    {
-      "key": "full-ai-cluster/temporal@0.59.0",
-      "reason": "temporal 0.59.0 templates/server-job.yaml:73 refuses to template without a cassandra port for the default store. No catalogue row points at this app, so nothing is left unchecked.",
-      "liftsWhen": "the Application configures its datastore explicitly so the chart templates, and the render is re-measured",
-      "observed": "helm-template-failed"
     }
   ]
 }

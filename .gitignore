@@ -291,3 +291,14 @@ src/Core.Agda/_build/
 # and took `gate (required)` down with it. `arc-harness.ts` states the intent plainly:
 # "Ensure 'data/ARC-AGI' is cloned." Ignored so it cannot be re-added by accident.
 data/ARC-AGI/
+
+# `rendered-storage-claims.ts` chart cache. It `helm pull`s each Application's
+# chart at its pinned targetRevision into `<repo>/.helm-render-cache/` (a
+# `mkdirSync` at the repo root, and the path is not configurable away by
+# default), so any run of `--write-snapshot` or the live audit leaves 4-5 MB of
+# `.tgz` archives plus rendered values files untracked in the tree. They are
+# BINARY, regenerable from the pins, and they are the *input* to the render —
+# never the evidence, which is the text snapshot beside the checker. Ignored so
+# a `git add -A` after running the audit cannot commit a chart tarball into the
+# proof lineage (.claude/rules/no-binary-in-proof-lineage.md).
+.helm-render-cache/

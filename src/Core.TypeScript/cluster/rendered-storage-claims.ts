@@ -960,6 +960,35 @@ export function adjudicate(findings: readonly RenderedFinding[], baseline: Basel
   return { refused, acknowledged, staleBaselineKeys: [...stale].sort((a, b) => stringCompare(a, b)) };
 }
 
+/**
+ * Acknowledged UNRENDERABLE apps that no longer match anything.
+ *
+ * `adjudicate` above computes staleness over `baseline.findings` only. The
+ * `unrenderable` list had no equivalent, so a chart that STARTED rendering left
+ * its acknowledgement behind and the gate stayed green — while the baseline
+ * file's own `$comment` says "STALE ENTRIES FAIL. An entry matching nothing is
+ * a claim about the tree that stopped being true, and it is refused exactly
+ * like a catalogue row matching no claim." That sentence was true of one of the
+ * two lists.
+ *
+ * MEASURED 2026-08-22 while wiring temporal's datastore: the change's whole
+ * point was to RETIRE `full-ai-cluster/temporal@0.59.0` from that list, and
+ * re-adding the retired entry as a mutation was NOT refused. Nothing in the
+ * repo would have made anyone delete it — the acknowledgement would simply have
+ * kept asserting that a chart which renders does not, forever, in a file whose
+ * job is to be believed.
+ *
+ * Keyed `<appId>@<targetRevision>`, matching the acknowledgement lookup, so
+ * bumping a pin invalidates the old entry rather than letting it inherit.
+ */
+export function staleUnrenderableKeys(
+  baseline: Baseline,
+  unrenderable: readonly UnrenderableApp[],
+): readonly string[] {
+  const live = new Set(unrenderable.map((app) => `${app.appId}@${app.targetRevision}`));
+  return baseline.unrenderable.filter((entry) => !live.has(entry.key)).map((entry) => entry.key);
+}
+
 // ---------------------------------------------------------------------------
 // The audit
 // ---------------------------------------------------------------------------
@@ -1039,7 +1068,9 @@ export function auditRenderedStorageClaims(options: AuditOptions = {}): AuditRes
     expectations,
     refused: adjudicated.refused,
     acknowledged: adjudicated.acknowledged,
-    staleBaselineKeys: adjudicated.staleBaselineKeys,
+    staleBaselineKeys: [...adjudicated.staleBaselineKeys, ...staleUnrenderableKeys(baseline, unrenderable)].sort(
+      (a, b) => stringCompare(a, b),
+    ),
     clusterDefault: clusterDefaultStorageClass(repoRoot),
   };
 }
@@ -1194,7 +1225,10 @@ export function auditAgainstSnapshot(
     expectations,
     refused: adjudicated.refused,
     acknowledged: adjudicated.acknowledged,
-    staleBaselineKeys: adjudicated.staleBaselineKeys,
+    staleBaselineKeys: [
+      ...adjudicated.staleBaselineKeys,
+      ...staleUnrenderableKeys(baseline, snapshot.unrenderable),
+    ].sort((a, b) => stringCompare(a, b)),
     clusterDefault: snapshot.clusterDefaultStorageClass,
   };
 }

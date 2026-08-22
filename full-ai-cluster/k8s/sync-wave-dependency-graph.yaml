@@ -396,12 +396,16 @@ spec:
       dependsOn: [cockroachdb]
       citations:
         cockroachdb: >-
-          full-ai-cluster/k8s/applications/temporal/Application.yaml:31,39 —
-          "Wire after cockroachdb/Application.yaml comes up" with
-          `host: cockroachdb-public.cockroachdb.svc.cluster.local`. The wiring
-          is commented out today, so this edge records a DECLARED intent, not a
-          live connection; it is declared because SYNC-WAVES.md asserts it and
-          the manifest names the host.
+          full-ai-cluster/k8s/applications/temporal/Application.yaml:145,161 —
+          BOTH persistence stores set
+          `host: cockroachdb-public.cockroachdb.svc.cluster.local` with
+          `driver: postgres12` on port 26257 (`default` -> database `temporal`,
+          `visibility` -> database `temporal_visibility`). This edge was a
+          DECLARED INTENT until 2026-08-22 — the wiring was a YAML comment and
+          the chart would not even template — and is now a live connection in a
+          manifest that renders. Temporal holds no local durable state (0 PVCs,
+          0 StatefulSets in the render), so this is a total dependency, not a
+          cache.
 
     - chart: hindsight
       dependsOn: [longhorn, cockroachdb]

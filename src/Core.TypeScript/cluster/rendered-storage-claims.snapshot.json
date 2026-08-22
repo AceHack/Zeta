@@ -405,14 +405,6 @@
       "reason": "helm-pull-failed",
       "detail": "ziti-controller@1.4.5 from https://docs.openziti.io/helm-charts/: Error: chart \"ziti-controller\" version \"1.4.5\" not found in https://docs.openziti.io/helm-charts/ repository",
       "unchecked": []
-    },
-    {
-      "appId": "full-ai-cluster/temporal",
-      "chart": "temporal",
-      "targetRevision": "0.59.0",
-      "reason": "helm-template-failed",
-      "detail": "temporal@0.59.0: Error: execution error at (temporal/templates/server-job.yaml:73:18): Please specify cassandra port for default store /  / Use --debug flag to render out invalid YAML",
-      "unchecked": []
     }
   ],
   "appsDiscovered": 53

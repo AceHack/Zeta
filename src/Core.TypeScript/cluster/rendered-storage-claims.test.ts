@@ -16,6 +16,7 @@ import {
   effectiveStorageClass,
   clusterDefaultStorageClass,
   adjudicate,
+  staleUnrenderableKeys,
   loadBaseline,
   loadSnapshot,
   snapshotDrift,
@@ -337,6 +338,58 @@ describe("unrenderable", () => {
     const baseline = loadBaseline();
     expect(baseline.unrenderable.map((entry) => entry.key)).toContain("full-ai-cluster/oz@1.4.5");
     for (const entry of baseline.unrenderable) expect(entry.key).toMatch(/@\S+$/);
+  });
+
+  // MEASURED GAP, 2026-08-22. The baseline file's own `$comment` says "STALE
+  // ENTRIES FAIL", and that was true of `findings` and NOT of `unrenderable`:
+  // `adjudicate` never looked at the second list. Found by mutating the change
+  // that RETIRED `full-ai-cluster/temporal@0.59.0` — putting the retired entry
+  // back was not refused, so nothing would ever have made anyone delete it, and
+  // a file whose job is to be believed would have gone on asserting that a
+  // chart which renders does not.
+  test("an acknowledged-unrenderable entry that matches nothing is STALE", () => {
+    const baseline = {
+      findings: [],
+      unrenderable: [{ key: "t/app@1.0.0", reason: "r", liftsWhen: "w", observed: "helm-pull-failed" }],
+    };
+    // Nothing unrenderable in the tree -> the entry matches nothing -> stale.
+    expect(staleUnrenderableKeys(baseline, [])).toEqual(["t/app@1.0.0"]);
+    // The app is still unrenderable at that pin -> the entry is live.
+    expect(staleUnrenderableKeys(baseline, [broken])).toEqual([]);
+  });
+
+  test("a version BUMP makes the old acknowledgement stale rather than inheriting it", () => {
+    const baseline = {
+      findings: [],
+      unrenderable: [{ key: "t/app@1.0.0", reason: "r", liftsWhen: "w", observed: "helm-pull-failed" }],
+    };
+    expect(staleUnrenderableKeys(baseline, [{ ...broken, targetRevision: "2.0.0" }])).toEqual(["t/app@1.0.0"]);
+  });
+
+  // THE WIRING, not just the helper. `auditExitCode` already goes red on any
+  // `staleBaselineKeys`, so what this pins is that `auditAgainstSnapshot`
+  // actually FEEDS the unrenderable side into that list. Asserting only
+  // `staleBaselineKeys.length > 0` here would pass with the helper's result
+  // thrown away — that snapshot renders nothing, so 22 declared rows are
+  // refused and the exit code is 1 for an unrelated reason. Measured: the
+  // neutered build passed exactly that weaker assertion. So the key is named.
+  test("auditAgainstSnapshot feeds stale unrenderable acknowledgements into staleBaselineKeys", () => {
+    const result = auditAgainstSnapshot(
+      {
+        measuredOn: "2026-08-22",
+        clusterDefaultStorageClass: "zeta-local-path",
+        rendered: [],
+        unrenderable: [],
+        appsDiscovered: 1,
+      },
+      { profile: "measured" },
+    );
+    // Nothing is unrenderable in this snapshot, so EVERY acknowledgement in the
+    // real baseline matches nothing and must be named as stale.
+    for (const entry of loadBaseline().unrenderable) {
+      expect(result.staleBaselineKeys).toContain(entry.key);
+    }
+    expect(auditExitCode(result)).toBe(1);
   });
 });
 

@@ -1268,14 +1268,24 @@ describe("the checked-in resource ladder", () => {
   // MEASURED 2026-08-21 by `helm pull` at each pinned targetRevision followed
   // by `helm template` against that Application's own valuesObject. These are
   // pinned so the ladder cannot drift away from what was actually rendered.
+  //
+  // THE `all` PAIR MOVED 2026-08-22, 9856m/23528Mi -> 8106m/19752Mi, and the
+  // dev-lane pair did NOT. Nothing was shrunk: `temporal` was UNRENDERABLE, so
+  // its ungoverned row carried 3000m/6144Mi measured from CHART DEFAULTS, and
+  // 3000m of that was the bundled elasticsearch-master StatefulSet its own
+  // valuesObject had always set `enabled: false`. Wiring its datastore to
+  // CockroachDB made the chart template, and the four governed rows that
+  // replaced it total 1250m/2368Mi -- the first temporal numbers ever taken
+  // from the values we actually ship. The dev-lane pair is unchanged because
+  // `temporal/**` is in ports.ts's excludeGlob and was never in that cohort.
   test("metal is exactly what the manifests render today", () => {
     expect(verifyResourceProfileApplied(catalogue, "metal")).toEqual([]);
     const lane = resourceTotal(catalogue, "metal", devLaneAppliedDirs());
     expect(lane.cpuMillis).toBe(4231);
     expect(lane.memoryMib).toBe(11427);
     const all = resourceTotal(catalogue, "metal", applicationDirs());
-    expect(all.cpuMillis).toBe(9856);
-    expect(all.memoryMib).toBe(23528);
+    expect(all.cpuMillis).toBe(8106);
+    expect(all.memoryMib).toBe(19752);
   });
 
   // Aaron 2026-08-20: "make things small enough to fit for disk and ram on the
