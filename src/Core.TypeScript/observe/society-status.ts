@@ -92,18 +92,36 @@ function assessAgents(eventDir: string, nowMs: number): AgentHealth[] {
     let lastAt: string | null = null;
     let maxPhase = 0;
 
-    const files = readdirSync(eventDir).filter((f) => f.endsWith(".json")).sort();
-    // Scan last 500 events — enough to cover ~5 days of heartbeats while staying fast.
-    // ZetaId filenames are time-ordered, so the tail is the most recent.
-    const recentFiles = files.slice(-500);
-    for (const f of recentFiles) {
-      try {
-        const e = JSON.parse(readFileSync(join(eventDir, f), "utf-8"));
-        if (e.by !== agent) continue;
-        count++;
-        if (!lastAt || e.at > lastAt) lastAt = e.at;
-        if (e.phase?.phase > maxPhase) maxPhase = e.phase.phase;
-      } catch { /* skip */ }
+    // FAST PATH: read from vault-state.json (pre-computed on each tick by the bridge).
+    // Only fall back to event scanning if vault-state is unavailable.
+    const vaultState = loadJSON<VaultState>(join(eventDir, "..", "..", "data", "vault-state.json"));
+    if (vaultState) {
+      for (const vault of vaultState.vaults) {
+        for (const room of (vault as any).rooms ?? []) {
+          for (const dweller of room.dwellers ?? []) {
+            if (dweller.agent_id === agent && dweller.last_seen) {
+              if (!lastAt || dweller.last_seen > lastAt) lastAt = dweller.last_seen;
+            }
+          }
+        }
+      }
+      maxPhase = vaultState.max_phase ?? 0;
+      count = vaultState.total_events_read;
+    }
+
+    // If vault-state didn't give us data, do a quick tail scan (last 100 only)
+    if (!lastAt) {
+      const files = readdirSync(eventDir).filter((f) => f.endsWith(".json")).sort();
+      const recentFiles = files.slice(-100);
+      for (const f of recentFiles) {
+        try {
+          const e = JSON.parse(readFileSync(join(eventDir, f), "utf-8"));
+          if (e.by !== agent) continue;
+          count++;
+          if (!lastAt || e.at > lastAt) lastAt = e.at;
+          if (e.phase?.phase > maxPhase) maxPhase = e.phase.phase;
+        } catch { /* skip */ }
+      }
     }
 
     const ageMs = lastAt ? nowMs - new Date(lastAt).getTime() : null;
@@ -247,6 +265,14 @@ function display(repoRoot: string, eventDir: string): void {
   console.log(`  Agents active: ${forge.agentsActive}`);
   console.log(`  Work ratio: ${(forge.workRatio * 100).toFixed(0)}% (edit_grammar+decompose vs explore)`);
 
+  // CI drift rate (from data/ci-runs.jsonl if available)
+  const ciRunsPath = join(repoRoot, "data", "ci-runs.jsonl");
+  const ciRuns = loadJSONL<{ workflow: string; conclusion: string; at: string }>(ciRunsPath);
+  if (ciRuns.length > 0) {
+    const { computeDrift, formatDrift } = require("./drift-rate") as typeof import("./drift-rate");
+    const drift = computeDrift(ciRuns as any);
+    console.log(`\nCI Drift: ${drift.summary}`);
+  }
   // Vault status
   if (vaultState) {
     console.log("\nVaults:");
