@@ -144,9 +144,11 @@ elif [ -f "$APT_MANIFEST" ]; then
     # the arithmetic stays correct if someone later changes the attempt count,
     # the backoff, or `timeout-minutes` — which a fixed per-attempt timeout does
     # not. `src/Core.TypeScript/hygiene/audit-apt-budget-fits-job-timeout.ts`
-    # asserts the CI default below still fits inside the tightest job that runs
-    # install.sh, so a `timeout-minutes` edit that breaks the relation goes red
-    # instead of going silent.
+    # asserts the default below still fits inside EVERY job that runs install.sh,
+    # alongside that job's own measured non-apt work, so a `timeout-minutes` edit
+    # that breaks the relation goes red instead of going silent. It also reads the
+    # `ZETA_APT_BUDGET_SECONDS` override below wherever a workflow declares it, so
+    # raising the budget for one lane is checked the same way as raising it for all.
     #
     # WHY TWO DEFAULTS, AND WHY THAT IS NOT PARITY DRIFT (GOVERNANCE §24).
     # Parity is one script, one mechanism, one knob — not one constant. The
@@ -164,10 +166,16 @@ elif [ -f "$APT_MANIFEST" ]; then
     # ubuntu-24.04, run 32151321559 (2026-08-18), the whole apt phase — update
     # + install of the full manifest, 553 MB fetched — took 38.2 seconds
     # (14:55:52.96 -> 14:56:31.13). The 420s CI default is ~11x that. It is
-    # sized by the audit's requirement
-    #     ci_budget + kill_after + 120s pre-apt reserve <= tightest job timeout
-    # against the tightest job that runs install.sh — 600s, git-hotspot-cadence
-    # and helm-validate:structural: 420 + 10 + 120 = 550 <= 600.
+    # sized by the audit's requirement, which as of 2026-08-22 reads
+    #     budget + kill_after + THIS JOB's measured non-apt seconds <= its timeout
+    # per job, not once for the tightest. The earlier form of that line said
+    # "+ 120s pre-apt reserve", and the reserve was defined in the audit itself as
+    # "the work that PRECEDES it" — with NO term for the work that FOLLOWS. It
+    # therefore passed `low-memory.yml` at 420 + 10 + 120 = 550 <= 840 while that
+    # lane's non-apt work measured 571s at p90, i.e. it certified the one lane that
+    # provably could not fit. The binding job now is helm-validate:structural —
+    # 420 + 10 + 143 = 573 <= 600 — and low-memory is a recorded, reasoned exception
+    # in audit-apt-budget-fits-job-timeout.baseline.json rather than a silent pass.
     #
     # A FIRST DRAFT OF THIS SHIPPED AT 150s AND WAS WRONG, which is worth
     # recording because the failure is subtle. 150s was pinned by three
