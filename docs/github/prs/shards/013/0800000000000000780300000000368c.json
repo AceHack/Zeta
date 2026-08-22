@@ -1,0 +1,12 @@
+{
+  "pr_number": 13964,
+  "archive_path": "docs/history/pr-reviews/PR-13964-feat-drift-dashboard-flapping-is-its-own-verdict-superseding-evidence-is-shown-8.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-22T22:18:19.389Z",
+  "schema_version": "v1",
+  "commit_sha": "9f861ebef5425bcc0cac821d687b57204f6ba660",
+  "title": "feat(drift-dashboard): flapping is its own verdict, superseding evidence is shown, 88 spawns -> 2",
+  "state": "MERGED",
+  "merged_at": "2026-08-22T22:17:39Z",
+  "head_ref": "fix/drift-dashboard-evidence"
+}
