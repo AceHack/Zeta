@@ -1,0 +1,12 @@
+{
+  "pr_number": 13785,
+  "archive_path": "docs/history/pr-reviews/PR-13785-fix-society-the-series-depth-assertion-was-testing-clone-depth-not-the-series.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-22T16:50:12.056Z",
+  "schema_version": "v1",
+  "commit_sha": "63a3cec1aec46ed3da1d214dfbd16af8e3c23e15",
+  "title": "fix(society): the series depth assertion was testing CLONE DEPTH, not the series",
+  "state": "MERGED",
+  "merged_at": "2026-08-22T16:49:32Z",
+  "head_ref": "fix/rho-series-shallow-clone"
+}
