@@ -25,6 +25,8 @@
  */
 
 import { describe, expect, test } from "bun:test";
+import { readFileSync } from "node:fs";
+import { join } from "node:path";
 
 import {
   AGENTS,
@@ -101,15 +103,44 @@ describe("the series is the same statistic as measure()", () => {
   });
 
   test("the corpus has a real history to measure — not one point wearing a trend", () => {
+    // The DEPTH assertion is made against the CHECKED-IN series, not against `git log`.
+    //
+    // Asserting `corpusCommits(ROOT).length > 100` is what this test did when it was written, and
+    // it went red on `main` the first time CI ran it: the CI checkout is shallow, so `git log --
+    // db/mutation-findings/` legitimately returns a handful of commits. That is a property of the
+    // CHECKOUT, not of the code, and a test that fails on it is testing clone depth.
+    //
+    // The landed TSV is in the tree at any depth, so it carries the claim instead — and this is
+    // strictly stronger, because it now also guards the artifact against being silently truncated
+    // by a regeneration on a shallow clone, which is exactly how a series loses its early history.
+    const rows = readFileSync(join(ROOT, "db", "effective-agent-count", "rho-series-cumulative.tsv"), "utf8")
+      .split("\n")
+      .filter((l) => l.trim().length > 0)
+      .slice(1);
+    expect(rows.length).toBeGreaterThan(100);
+
+    // oldest-first, in the artifact and in the live log alike: a reversed series would invert every
+    // conclusion drawn from it. Ordinal `<`, never `localeCompare` — ISO-8601 sorts correctly
+    // bytewise and a culture-sensitive comparison orders differently per locale
+    // (`culture-invariant-by-default`).
+    const stamps = rows.map((l) => l.split("\t")[0] ?? "");
+    for (let i = 1; i < stamps.length; i++) expect((stamps[i - 1] ?? "") <= (stamps[i] ?? "")).toBe(true);
+    expect(stamps[0]).not.toBe(stamps[stamps.length - 1]);
+
+    // The LIVE log gets only the property that survives any clone depth: whatever it returns is in
+    // the same order. `actions/checkout` defaults to `fetch-depth: 1` and no override is set for
+    // this job, so on CI `corpusCommits` may return one commit or NONE — the tip need not have
+    // touched the corpus at all. Asserting a count here is asserting clone depth.
+    //
+    // Stated limit, because a check that can be trivially satisfied should say so: on a depth-1
+    // checkout this loop runs zero times. It is not the non-vacuity guard — the artifact
+    // assertions above are, and they hold at every depth. What this catches, on any developer
+    // machine or full-history job, is `--reverse` going missing from `corpusCommits`, which would
+    // silently invert every conclusion the series supports.
     const commits = corpusCommits(ROOT);
-    expect(commits.length).toBeGreaterThan(100);
-    // oldest-first: a reversed series would invert every conclusion drawn from it.
-    // Ordinal `<`, never `localeCompare` — ISO-8601 sorts correctly bytewise and a culture-sensitive
-    // comparison would be a different order per locale (`culture-invariant-by-default`).
-    const first = commits[0]?.authoredAt ?? "";
-    const last = commits[commits.length - 1]?.authoredAt ?? "";
-    expect(first).not.toBe(last);
-    expect(first < last).toBe(true);
+    for (let i = 1; i < commits.length; i++) {
+      expect((commits[i - 1]?.authoredAt ?? "") <= (commits[i]?.authoredAt ?? "")).toBe(true);
+    }
   });
 
   test("a window strictly reduces the draws considered, and the two agree at a window past the end", () => {
