@@ -134,6 +134,10 @@ on:
       - "src/Core.TypeScript/cluster/rendered-storage-claims.test.ts"
       - "src/Core.TypeScript/cluster/rendered-storage-claims.baseline.json"
       - "src/Core.TypeScript/cluster/rendered-storage-claims.snapshot.json"
+      - "src/Core.TypeScript/cluster/rendered-resource-requests.ts"
+      - "src/Core.TypeScript/cluster/rendered-resource-requests.test.ts"
+      - "src/Core.TypeScript/cluster/rendered-resource-requests.baseline.json"
+      - "src/Core.TypeScript/cluster/rendered-resource-requests.snapshot.json"
       - "src/Core.TypeScript/cluster/inert-valuesobject-keys.ts"
       - "src/Core.TypeScript/cluster/inert-valuesobject-keys.test.ts"
       - "src/Core.TypeScript/cluster/inert-valuesobject-keys.baseline.json"
@@ -232,6 +236,10 @@ on:
       - "src/Core.TypeScript/cluster/rendered-storage-claims.test.ts"
       - "src/Core.TypeScript/cluster/rendered-storage-claims.baseline.json"
       - "src/Core.TypeScript/cluster/rendered-storage-claims.snapshot.json"
+      - "src/Core.TypeScript/cluster/rendered-resource-requests.ts"
+      - "src/Core.TypeScript/cluster/rendered-resource-requests.test.ts"
+      - "src/Core.TypeScript/cluster/rendered-resource-requests.baseline.json"
+      - "src/Core.TypeScript/cluster/rendered-resource-requests.snapshot.json"
       - "src/Core.TypeScript/cluster/inert-valuesobject-keys.ts"
       - "src/Core.TypeScript/cluster/inert-valuesobject-keys.test.ts"
       - "src/Core.TypeScript/cluster/inert-valuesobject-keys.baseline.json"
@@ -580,22 +588,15 @@ jobs:
       # nobody checked. It REFUSES rather than passes where /proc is absent,
       # so it cannot go quietly green on a non-Linux host either.
       #
-      # Then the budget itself, against the `dev` rung. NOT continue-on-error:
-      # green on main today at 1906m / 6207Mi against a 2500m / 9216Mi budget,
-      # and red in four measured directions -- raise a dev number past the
-      # budget, delete an ungoverned row, add an Application the catalogue does
-      # not cover, or drop the acknowledgement for a chart nobody could measure.
-      # All four were run as mutations against the live tree; all four exit 1.
-      # The same audit against the `metal` rung exits 1 today (4231m / 11427Mi),
-      # which is the point of there being two rungs.
-      #
-      # (Those four numbers read 1806m / 6079Mi and 4131m / 11299Mi until
-      # 2026-08-22. They were true when written and went stale by exactly
-      # 100m / 128Mi when #13471 corrected forgejo's fictional pin so the chart
-      # could be measured at all. A number typed into a comment is not attached
-      # to the artifact it came from -- which is the whole reason the four
-      # capacity numbers in `hindsight`'s deferral reason are now `[cite: ...]`
-      # citations checked by `reason-truth.ts` instead of prose.)
+      # Then the budget itself, against the `dev` rung. The four numbers it was
+      # green on -- 1906m / 6207Mi lane, 4231m / 11427Mi at metal -- were all
+      # understated by exactly 1000m / 2048Mi until 2026-08-22, and nothing grew:
+      # `applicationDirs()` enumerated depth 1 while ArgoCD's include glob is not
+      # path-segment bounded, so `game-hosting/gmod` had always been applied and
+      # never counted. The lane is 2906m at `dev` and 5231m at `metal` now, and
+      # `dev` is 406m OVER rather than 594m under. The shortfall is carried in the
+      # catalogue's `acknowledgedLaneBudgetShortfall`, pinned to its arithmetic, with
+      # the reason and the lift condition beside it -- the budget is not widened.
       #
       # AND THE HONEST LIMIT ON THIS STEP, because a green gate that is silent
       # about its own scope is how the vacuity class gets in. It budgets `dev`.
@@ -617,6 +618,17 @@ jobs:
       # pinned. It is carried today. Changing the rung on the line below
       # therefore changes what the coverage check compares, which is the point:
       # this step and that check can no longer be green about different trees.
+      #
+      # AND THE NUMBER IN THAT ACKNOWLEDGEMENT MOVED ON THIS BRANCH, which is the
+      # coverage check working rather than failing: `applicationDirs()` was
+      # depth-1 and ArgoCD's include glob is not path-segment bounded, so
+      # `game-hosting/gmod` (1000m / 2Gi, a literal in its own statefulset.yaml)
+      # had always been applied and never counted. `metal` on the lane is 5231m,
+      # not 4231m, and the ledger's `acknowledgedRungBudgetGap` is re-keyed to
+      # match. `dev` is 2906m, OVER the 2500m budget by 406m -- so the step below
+      # is red on the arithmetic alone, and the shortfall is carried in the
+      # catalogue's `acknowledgedLaneBudgetShortfall` with its reason and its lift
+      # condition rather than by widening the budget.
       - name: Run runner-disk falsifiers
         run: bun test src/Core.TypeScript/cluster/runner-disk.test.ts
 
@@ -636,6 +648,39 @@ jobs:
 
       - name: Audit the dev resource rung against the runner budget
         run: bun src/Core.TypeScript/cluster/storage-profiles.ts --resource-profile dev --budget
+
+      # DOES A DECLARED CPU/MEMORY RUNG CORRESPOND TO THE REQUESTS THE CHARTS
+      # RENDER, AT BOTH RUNGS? -- the CPU/memory twin of
+      # `rendered-storage-claims` above, and it exists for the same reason: the
+      # ladder's numbers came from a ONE-TIME hand measurement
+      # (`$comment_resources`: "MEASURED 2026-08-21 by `helm pull` ... followed
+      # by `helm template`") that nothing in the repo re-ran.
+      #
+      # BOTH RUNGS, and that is not decorative. A rung is a set of values in each
+      # Application's own valuesObject, so "render at rung X" means overlaying X
+      # and templating the pinned chart. Rendering both makes inertness
+      # OBSERVABLE: a row whose two rungs differ must move the render, and one
+      # that does not is a key the chart never reads -- the CPU/memory form of
+      # the defect `inert-valuesobject-keys` found four times in a day.
+      #
+      # It found three things on first run, all confirmed by hand: cilium's row
+      # said 0m against a DaemonSet with a 100m init container (the scheduler
+      # reserves max(sum(regular), max(init)), not the sum of regular
+      # containers); gitlab's hand-summed 2475m was 50m short for the same
+      # reason, with the memory column already exact to the mebibyte; and
+      # `game-hosting/gmod` -- 1000m, applied by the dev root, asserted in
+      # writing to contribute 0m -- was invisible to a depth-1 enumerator.
+      #
+      # OFFLINE, against a checked-in snapshot, same reason as its siblings. The
+      # snapshot compares COVERAGE before rows: `rendered-storage-claims` once
+      # printed "the snapshot matches the live render" against a tree that had
+      # grown a whole Application, because the new app rendered no rows to
+      # disagree about. Absence is not agreement.
+      - name: Run rendered-resource-requests falsifiers
+        run: bun test src/Core.TypeScript/cluster/rendered-resource-requests.test.ts
+
+      - name: Audit the declared CPU/memory rungs against the measured render
+        run: bun src/Core.TypeScript/cluster/rendered-resource-requests.ts
 
       - name: Build ArgoCD health dry-run plan
         env:

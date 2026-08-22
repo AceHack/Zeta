@@ -4,7 +4,7 @@
     "",
     "WHY THIS FILE EXISTS (081M00QCHWA087G0R000GKKRXD):",
     "The repo carries two declarations of one cluster. `full-ai-cluster/` is the",
-    "live one — it is what `zeta-install.sh` runs (`nixos-install --flake",
+    "live one \u2014 it is what `zeta-install.sh` runs (`nixos-install --flake",
     "/mnt/etc/zeta/full-ai-cluster#$HOST`) and the only flake CI evaluates.",
     "`infra/k8s` + `infra/nixos` are the older declaration. They COLLIDE: both",
     "declare Application/argocd/zeta-root with different spec.source.path and both",
@@ -25,14 +25,14 @@
     "it can never over-claim). Deletion of `infra/k8s` + `infra/nixos` is provably",
     "safe when every `blocking` and `derived` entry is gone.",
     "",
-    "THE DELETION ITSELF IS GATED on maintainer sign-off — see the work item's",
+    "THE DELETION ITSELF IS GATED on maintainer sign-off \u2014 see the work item's",
     "`Done when` list. This roster does not authorize it; it makes it checkable."
   ],
   "stalePatterns": ["infra/k8s", "infra/nixos"],
   "survivingTree": "full-ai-cluster",
   "$comment_excludedPrefixes": [
     "Prose archives and the stale tree itself. These are frozen records (merged",
-    "PR reviews, research ferries, work-item bodies) — rewriting them would",
+    "PR reviews, research ferries, work-item bodies) \u2014 rewriting them would",
     "falsify history, and none of them is read by a machine. Named explicitly",
     "rather than as a wildcard so the exclusion is auditable."
   ],
@@ -46,12 +46,12 @@
     "workitems/"
   ],
   "$comment_dispositions": [
-    "blocking — deleting the stale tree BREAKS this, or makes it emit output that",
+    "blocking \u2014 deleting the stale tree BREAKS this, or makes it emit output that",
     "           points at a path that no longer exists. Must be migrated first.",
-    "derived  — mechanically follows the deletion (a roots list, an acknowledgement",
+    "derived  \u2014 mechanically follows the deletion (a roots list, an acknowledgement",
     "           entry). Edit in the same commit; nothing breaks if it lags.",
-    "prose    — a comment or document. Breaks nothing; correct for accuracy.",
-    "self     — this guard, its roster, and its mutation suite. They name the stale",
+    "prose    \u2014 a comment or document. Breaks nothing; correct for accuracy.",
+    "self     \u2014 this guard, its roster, and its mutation suite. They name the stale",
     "           tree because their subject IS the stale tree."
   ],
   "consumers": [
@@ -71,7 +71,7 @@
       "path": ".github/workflows/helm-validate.yml",
       "disposition": "blocking",
       "note": "The whole workflow is keyed on infra/k8s: PR + push path filters, and four invocations of `bun infra/k8s/tests/validate-applications.ts`, a script that lives INSIDE the stale tree. Deleting the tree deletes the validator.",
-      "migrateTo": "full-ai-cluster/k8s/applications via the validator's existing --apps-dir flag, AND move the validator out of infra/k8s/tests/. MEASURED 2026-08-17: pointed at the live tree it reports 224 passed, 14 failed — so this is not a one-line repoint. See the work item."
+      "migrateTo": "full-ai-cluster/k8s/applications via the validator's existing --apps-dir flag, AND move the validator out of infra/k8s/tests/. MEASURED 2026-08-17: pointed at the live tree it reports 224 passed, 14 failed \u2014 so this is not a one-line repoint. See the work item."
     },
     {
       "path": ".gitignore",
@@ -82,26 +82,26 @@
     {
       "path": "db/mutation-findings/alexa.jsonl",
       "disposition": "prose",
-      "note": "An append-only mutation-findings log, same class as soraya.jsonl above and rostered on the same reasoning. 202 records of {source, test, mutation, outcome, address}. It names the stale tree in exactly the same TWO paths — infra/k8s/tests/validate-bootstrap.ts and its .test.ts — recording that a mutation was run against the bootstrap validator. Nothing resolves against those paths; they are the SUBJECT of a past run, logged. Arrived on main via the agent-heartbeat batch merge #12466 and turned `lint (yaml/k8s)` red on main itself.",
-      "migrateTo": "NONE — do not repoint, for the reason already recorded on soraya.jsonl: the mutation genuinely ran against that file at that path, and rewriting the log to name full-ai-cluster would falsify what was measured. Drop the row with the tree; the log is append-only and content-addressed."
+      "note": "An append-only mutation-findings log, same class as soraya.jsonl above and rostered on the same reasoning. 202 records of {source, test, mutation, outcome, address}. It names the stale tree in exactly the same TWO paths \u2014 infra/k8s/tests/validate-bootstrap.ts and its .test.ts \u2014 recording that a mutation was run against the bootstrap validator. Nothing resolves against those paths; they are the SUBJECT of a past run, logged. Arrived on main via the agent-heartbeat batch merge #12466 and turned `lint (yaml/k8s)` red on main itself.",
+      "migrateTo": "NONE \u2014 do not repoint, for the reason already recorded on soraya.jsonl: the mutation genuinely ran against that file at that path, and rewriting the log to name full-ai-cluster would falsify what was measured. Drop the row with the tree; the log is append-only and content-addressed."
     },
     {
       "path": "db/mutation-findings/otto.jsonl",
       "disposition": "prose",
-      "note": "An append-only mutation-findings log, same class as soraya.jsonl and alexa.jsonl above and rostered on the same reasoning. 231 records of {source, test, mutation, outcome, address}. It names the stale tree in exactly the same TWO paths — infra/k8s/tests/validate-bootstrap.ts and its .test.ts — recording that a mutation was run against the bootstrap validator. Nothing resolves against those paths; they are the SUBJECT of a past run, logged. Arrived on main via the agent-heartbeat batch merge #12604 and turned `lint (yaml/k8s)`, `test (TS hermetic)`, and `lint (bash retirement inventory + hygiene unit tests)` red on main itself — all three assert this same roster.",
-      "migrateTo": "NONE — do not repoint, for the reason already recorded on soraya.jsonl and alexa.jsonl: the mutation genuinely ran against that file at that path, and rewriting the log to name full-ai-cluster would falsify what was measured. Drop the row with the tree; the log is append-only and content-addressed."
+      "note": "An append-only mutation-findings log, same class as soraya.jsonl and alexa.jsonl above and rostered on the same reasoning. 231 records of {source, test, mutation, outcome, address}. It names the stale tree in exactly the same TWO paths \u2014 infra/k8s/tests/validate-bootstrap.ts and its .test.ts \u2014 recording that a mutation was run against the bootstrap validator. Nothing resolves against those paths; they are the SUBJECT of a past run, logged. Arrived on main via the agent-heartbeat batch merge #12604 and turned `lint (yaml/k8s)`, `test (TS hermetic)`, and `lint (bash retirement inventory + hygiene unit tests)` red on main itself \u2014 all three assert this same roster.",
+      "migrateTo": "NONE \u2014 do not repoint, for the reason already recorded on soraya.jsonl and alexa.jsonl: the mutation genuinely ran against that file at that path, and rewriting the log to name full-ai-cluster would falsify what was measured. Drop the row with the tree; the log is append-only and content-addressed."
     },
     {
       "path": "db/mutation-findings/soraya.jsonl",
       "disposition": "prose",
-      "note": "An append-only mutation-findings log: 110 records of {source, test, mutation, outcome, address}. It names the stale tree in exactly TWO entries — infra/k8s/tests/validate-bootstrap.ts and its .test.ts — recording that a mutation was run against the bootstrap validator. Nothing resolves against those paths; they are the SUBJECT of a past run, logged. Landed via #12091.",
-      "migrateTo": "NONE — do not repoint. The mutation genuinely ran against that file at that path, and rewriting the log to name full-ai-cluster would falsify what was measured. Drop the row with the tree; the log is append-only and its records are content-addressed."
+      "note": "An append-only mutation-findings log: 110 records of {source, test, mutation, outcome, address}. It names the stale tree in exactly TWO entries \u2014 infra/k8s/tests/validate-bootstrap.ts and its .test.ts \u2014 recording that a mutation was run against the bootstrap validator. Nothing resolves against those paths; they are the SUBJECT of a past run, logged. Landed via #12091.",
+      "migrateTo": "NONE \u2014 do not repoint. The mutation genuinely ran against that file at that path, and rewriting the log to name full-ai-cluster would falsify what was measured. Drop the row with the tree; the log is append-only and its records are content-addressed."
     },
     {
       "path": "db/uncertainty/081M0BH05N7087G0R0037KFCJD-k8s-bootstrap-never-deployed-argocd-install-was-a-kustomize.md",
       "disposition": "prose",
-      "note": "A ΔU ledger entry recording that the infra/k8s bootstrap never deployed (argocd-install.yaml was a kustomize Kustomization, a build-time input, not an API object). It names infra/k8s because it DOCUMENTS AN EVENT IN THAT TREE — it is a historical record, not a live consumer, and nothing imports or resolves against the path.",
-      "migrateTo": "NONE — do not repoint. The bug happened in infra/k8s and the record must stay accurate about where it happened; rewriting it to name full-ai-cluster would make the ledger lie about history. Leave the row when the tree goes; the entry is keyed and idempotent."
+      "note": "A \u0394U ledger entry recording that the infra/k8s bootstrap never deployed (argocd-install.yaml was a kustomize Kustomization, a build-time input, not an API object). It names infra/k8s because it DOCUMENTS AN EVENT IN THAT TREE \u2014 it is a historical record, not a live consumer, and nothing imports or resolves against the path.",
+      "migrateTo": "NONE \u2014 do not repoint. The bug happened in infra/k8s and the record must stay accurate about where it happened; rewriting it to name full-ai-cluster would make the ledger lie about history. Leave the row when the tree goes; the entry is keyed and idempotent."
     },
     {
       "path": "docs/ZETA-CORE-TECHNOLOGY-FOR-MAX.md",
@@ -112,8 +112,8 @@
     {
       "path": "flake.nix",
       "disposition": "blocking",
-      "note": "nixosConfigurations.{control-plane,worker-gpu-01,worker-gpu-02} import ./infra/nixos/hosts/*/configuration.nix and nixosModules.{common,k3s-server,k3s-agent,gpu} ARE ./infra/nixos/modules/*.nix. VERIFIED 2026-08-17: `nix flake check --no-build` at the repo root evaluates all three hosts today, so deleting infra/nixos/ breaks it. NOT verified by CI — the only `nix flake check` in .github/workflows/build-ai-cluster-iso.yml runs with working-directory: full-ai-cluster. There is also no root flake.lock, so this flake's inputs are unpinned.",
-      "migrateTo": "UNDECIDED — full-ai-cluster/flake.nix already declares control-plane and worker-gpu, on nixpkgs 25.11 against the root flake's 24.11. Repointing crosses a nixpkgs major; dropping the outputs breaks any off-repo machine tracking .#control-plane. Maintainer decision."
+      "note": "nixosConfigurations.{control-plane,worker-gpu-01,worker-gpu-02} import ./infra/nixos/hosts/*/configuration.nix and nixosModules.{common,k3s-server,k3s-agent,gpu} ARE ./infra/nixos/modules/*.nix. VERIFIED 2026-08-17: `nix flake check --no-build` at the repo root evaluates all three hosts today, so deleting infra/nixos/ breaks it. NOT verified by CI \u2014 the only `nix flake check` in .github/workflows/build-ai-cluster-iso.yml runs with working-directory: full-ai-cluster. There is also no root flake.lock, so this flake's inputs are unpinned.",
+      "migrateTo": "UNDECIDED \u2014 full-ai-cluster/flake.nix already declares control-plane and worker-gpu, on nixpkgs 25.11 against the root flake's 24.11. Repointing crosses a nixpkgs major; dropping the outputs breaks any off-repo machine tracking .#control-plane. Maintainer decision."
     },
     {
       "path": "full-ai-cluster/k8s/applications/gitlab/Application.yaml",
@@ -125,7 +125,7 @@
       "path": "full-ai-cluster/k8s/single-node-budget.json",
       "disposition": "derived",
       "note": "acknowledgedRootAppDuplicates suppresses the root-app-collision blocker. VERIFIED 2026-08-17: emptying it makes single-node-readiness.ts exit 1 on the live collision.",
-      "migrateTo": "empty the array — the collision is gone once one tree is."
+      "migrateTo": "empty the array \u2014 the collision is gone once one tree is."
     },
     {
       "path": "full-ai-cluster/k8s/storage-profiles.json",
@@ -135,7 +135,7 @@
     {
       "path": "src/Core.TypeScript/ace/deps.ts",
       "disposition": "blocking",
-      "note": "generateArgoCD() emits Applications whose spec.source.path is `infra/k8s/applications/${chart}` — a path in the tree ArgoCD will prune. It ships in the ace CLI. deps.test.ts does not assert the path, so after the deletion this fails SILENTLY, in generated output, at deploy time.",
+      "note": "generateArgoCD() emits Applications whose spec.source.path is `infra/k8s/applications/${chart}` \u2014 a path in the tree ArgoCD will prune. It ships in the ace CLI. deps.test.ts does not assert the path, so after the deletion this fails SILENTLY, in generated output, at deploy time.",
       "migrateTo": "full-ai-cluster/k8s/applications/${chart}, plus an assertion in deps.test.ts so the path can go red."
     },
     {
@@ -155,6 +155,24 @@
       "disposition": "prose",
       "note": "Two DOC-COMMENT references only, no import and no path construction: it points at infra/k8s/tests/validate-applications.ts as the OTHER consumer of this same manual-sync convention, and at FULL-AI-CLUSTER-FAILURE-BASELINE.md for the failure count. Both files exist at those paths today. The pointer is the POINT -- it is what tells the next reader that the render validator must adopt this module rather than grow a parallel convention, which is the drift this repo keeps catching. Migration target: repoint both mentions when the render validator moves out of infra/.",
       "migrateTo": ""
+    },
+    {
+      "path": "src/Core.TypeScript/cluster/rendered-resource-requests.baseline.json",
+      "disposition": "derived",
+      "note": "Fourteen baselined `uncovered-application` findings, one per infra/ Application per rung, each with the measured total and the schema change that would cover it. They exist BECAUSE the second tree exists.",
+      "migrateTo": "delete all fourteen entries when infra/k8s is deleted -- the audit reports an entry that matches nothing as STALE and exits 1, so the deletion forces it in the same commit rather than leaving them behind."
+    },
+    {
+      "path": "src/Core.TypeScript/cluster/rendered-resource-requests.test.ts",
+      "disposition": "derived",
+      "note": "Pins `appTreeOf` against the cross-tree collision the checker had in draft: `full-ai-cluster` and `infra` each hold an Application called `gitlab` and one called `cockroachdb`, and splitting an appId on the first slash attributed one tree's render to the other tree's catalogue row.",
+      "migrateTo": "the collision case needs TWO trees to exist; when there is one, replace the fixture with a synthetic second tree rather than deleting the test -- the function is still wrong without it."
+    },
+    {
+      "path": "src/Core.TypeScript/cluster/rendered-resource-requests.ts",
+      "disposition": "derived",
+      "note": "Renders every discovered Application at both resource rungs. It does not TARGET infra/k8s -- it inherits the tree list from `discoverApplications`, which walks both roots -- and it names the path only in the finding text that says the CPU/memory ladder cannot cover a second tree. Nothing here breaks when infra/k8s goes; the finding simply stops being produced.",
+      "migrateTo": "drop the `(it is in the \"<tree>\" tree; ...)` clause from `uncovered-application` when full-ai-cluster is the only tree, or leave it -- it is derived from `appTreeOf`, not from a literal."
     },
     {
       "path": "src/Core.TypeScript/cluster/rendered-storage-claims.ts",
@@ -198,7 +216,7 @@
     {
       "path": "src/wasm-dla/README.md",
       "disposition": "blocking",
-      "note": "States the byte-lock toolchain (wabt, binaryen, emscripten, nodejs) is declared in infra/nixos/modules/common.nix. TRUE TODAY and it is the ONLY NixOS module that declares it — VERIFIED 2026-08-17: full-ai-cluster/nixos/modules/common.nix contains none of wabt/binaryen/emscripten/zig/rustup. This is content unique to the stale tree, not a stale citation.",
+      "note": "States the byte-lock toolchain (wabt, binaryen, emscripten, nodejs) is declared in infra/nixos/modules/common.nix. TRUE TODAY and it is the ONLY NixOS module that declares it \u2014 VERIFIED 2026-08-17: full-ai-cluster/nixos/modules/common.nix contains none of wabt/binaryen/emscripten/zig/rustup. This is content unique to the stale tree, not a stale citation.",
       "migrateTo": "carry the byte-lock toolchain block into full-ai-cluster/nixos/modules/common.nix (or decide on the record that cluster nodes do not need it and the root devShell is the only home), THEN re-point this line."
     }
   ]

@@ -556,9 +556,15 @@ describe("resource-rung / lane-cpu are checked against the ladder, not the prose
     expect(verdict?.rule).toBe("cited-rung-unknown");
   });
 
+  // BOTH NUMBERS MOVED ON 2026-08-22, and the second changed VERDICT with it:
+  // `dev` used to cite `1906 fits` and now cites `2906 over`. Nothing shrank or
+  // grew -- `applicationDirs()` started seeing `game-hosting/gmod`, which
+  // ArgoCD had always applied and no enumerator had ever counted. This is the
+  // citation mechanism doing its whole job: the stale pair went red here before
+  // anybody read the prose that quoted it.
   test("the lane totals and their fits/over verdicts both hold today", () => {
-    expect(checkCitation(only("[cite: lane-cpu metal 4231 over]"), EVIDENCE, subject("hindsight", ""))).toBe(null);
-    expect(checkCitation(only("[cite: lane-cpu dev 1906 fits]"), EVIDENCE, subject("hindsight", ""))).toBe(null);
+    expect(checkCitation(only("[cite: lane-cpu metal 5231 over]"), EVIDENCE, subject("hindsight", ""))).toBe(null);
+    expect(checkCitation(only("[cite: lane-cpu dev 2906 over]"), EVIDENCE, subject("hindsight", ""))).toBe(null);
   });
 
   test("the VERDICT is checked independently of the total", () => {
@@ -566,15 +572,15 @@ describe("resource-rung / lane-cpu are checked against the ladder, not the prose
     // claim. A citation that got the number right and the verdict wrong would
     // otherwise read as fully checked, so the polarity is resolved against the
     // envelope's own budget rather than trusted.
-    const wrongWay = checkCitation(only("[cite: lane-cpu metal 4231 fits]"), EVIDENCE, subject("hindsight", ""));
+    const wrongWay = checkCitation(only("[cite: lane-cpu metal 5231 fits]"), EVIDENCE, subject("hindsight", ""));
     expect(wrongWay?.rule).toBe("cited-lane-verdict-disagrees");
     expect(wrongWay?.detail).toContain("does NOT fit");
-    const alsoWrong = checkCitation(only("[cite: lane-cpu dev 1906 over]"), EVIDENCE, subject("hindsight", ""));
+    const alsoWrong = checkCitation(only("[cite: lane-cpu dev 2906 fits]"), EVIDENCE, subject("hindsight", ""));
     expect(alsoWrong?.rule).toBe("cited-lane-verdict-disagrees");
   });
 
   test("a verdict word outside the pair is refused rather than ignored", () => {
-    const verdict = checkCitation(only("[cite: lane-cpu dev 1906 tight]"), EVIDENCE, subject("hindsight", ""));
+    const verdict = checkCitation(only("[cite: lane-cpu dev 2906 tight]"), EVIDENCE, subject("hindsight", ""));
     expect(verdict?.rule).toBe("cited-lane-verdict-disagrees");
   });
 
@@ -620,9 +626,21 @@ describe("hindsight is the symptom, and the ladder still says so", () => {
     // edit that shrinks hindsight and un-defers it goes red here first.
     expect(withHindsight.cpuMillis).toBeGreaterThan(budget.cpuMillis);
     expect(withoutHindsight.cpuMillis).toBeGreaterThan(budget.cpuMillis);
-    // ...and the lane-wide cut IS the one that closes it, which is the other
-    // half of the reason and the half that names what a real fix looks like.
-    expect(resourceTotal(catalogue, "dev", EVIDENCE.devLaneDirs).cpuMillis).toBeLessThanOrEqual(budget.cpuMillis);
+    // ...AND THE LANE-WIDE CUT NO LONGER CLOSES IT, which is a change of
+    // answer and is asserted as one rather than deleted. `dev` across the whole
+    // lane is 2906m against 2500m -- still over by 406m -- because
+    // `game-hosting/gmod` is a git-path Application with no valuesObject, so no
+    // rung can express it and 1000m of the lane is outside the ladder's reach
+    // entirely. The reason's "the only cut that closes this is lane-wide" was
+    // true of the numbers it was written against and is now necessary rather
+    // than sufficient.
+    const laneAtDev = resourceTotal(catalogue, "dev", EVIDENCE.devLaneDirs);
+    expect(laneAtDev.cpuMillis).toBeGreaterThan(budget.cpuMillis);
+    expect(laneAtDev.cpuMillis - budget.cpuMillis).toBe(406);
+    // And it IS gmod, exactly: drop the one Application no rung reaches and the
+    // lane-wide cut closes as it used to.
+    const withoutGmod = EVIDENCE.devLaneDirs.filter((dir) => dir !== "game-hosting/gmod");
+    expect(resourceTotal(catalogue, "dev", withoutGmod).cpuMillis).toBeLessThanOrEqual(budget.cpuMillis);
   });
 
   test("the committed tree carries `metal`, which is the rung that does not fit", () => {

@@ -4,12 +4,12 @@
 # THE PROBLEM THIS LANE IS FOR
 # ----------------------------
 # `full-ai-cluster/k8s/storage-profiles.json` measures all 47 Applications at
-# 5016m / 13348Mi / ~74.5 GiB of images at the `dev` rung, against a hosted
-# `ubuntu-24.04` runner's 2500m / 9216Mi / 10 GiB of unreserved capacity. CPU
-# is over by 2x and DISK BY 7.5x. So "test every chart" is not reachable on one
-# hosted runner at any CPU ladder — a ladder cannot shrink an image. Sharding
-# is the only route, which makes this workflow load-bearing rather than a
-# speed-up.
+# 6166m / 15406Mi / 74.54 GiB of images at the `dev` rung, against a hosted
+# `ubuntu-24.04` runner's 2500m / 9216Mi / 66 GiB of unreserved capacity
+# (envelope freeDiskGib 70, leftover-on-main #13784 — not the vendor 14). CPU
+# is over by 2.47x and disk by 1.13x. So "test every chart" is not reachable on
+# one hosted runner at any CPU ladder — a ladder cannot shrink an image.
+# Sharding is the only route; the binding axis is CPU, not disk.
 #
 # WHY THE MATRIX IS COMPUTED AND NOT WRITTEN DOWN
 # -----------------------------------------------

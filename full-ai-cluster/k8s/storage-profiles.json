@@ -167,8 +167,8 @@
     "",
     "  cohort                                       CPU        memory",
     "  asserted by --scope included (19 apps)     1221m      3.91 GiB",
-    "  applied by the dev/CI root   (37 apps)     4231m     11.16 GiB",
-    "  every Application            (46 apps)     8106m     19.29 GiB",
+    "  applied by the dev/CI root   (38 apps)     5231m     13.16 GiB",
+    "  every Application            (47 apps)     9256m     21.30 GiB",
     "",
     "THE COUNTS IN THE TWO ROWS ABOVE WERE STALE AND THE NUMBERS BESIDE THEM WERE",
     "NOT, corrected 2026-08-22 by re-running `--resource-list` and reading the",
@@ -201,7 +201,7 @@
     "StorageClass the dev catalog excludes, so they never schedule a pod. That is a",
     "reprieve, not a fit, and it evaporates the moment the StorageClass exists.",
     "",
-    "At the `dev` rung the applied set is 1906m / 6.06 GiB, inside the budget.",
+    "At the `dev` rung the applied set is 2906m / 8.06 GiB, which is OVER the 2500m budget",
     "All 45 at `dev` is still 5016m / 13.04 GiB -- over. gitlab (2475m / 5.6 GiB) is",
     "now the single largest unshrunk Application and is what would close most of the",
     "rest; it is not governed here because it is not applied to a dev cluster, and the",
@@ -320,16 +320,32 @@
     "                 reservation, which is what most chart defaults do, and the",
     "                 verifier reads it as 'this key must be ABSENT'.",
     "",
-    "HONEST LIMIT ON THE COVERAGE CHECK: it enumerates DEPTH-1 directories, i.e. the",
-    "45 `applications/<dir>/Application.yaml` files. ArgoCD's include glob is not",
-    "path-segment bounded, so the root ALSO applies",
-    "`applications/game-hosting/gmod/Application.yaml` -- a 46th Application this",
-    "check cannot see. It contributes 0m / 0Mi today (in-repo manifests, no requests,",
-    "and it fails its sync on every reconcile against gatekeeper's webhook), so no",
-    "total above is wrong. What is not guarded HERE is a FUTURE nested Application",
-    "that does request something. That case is already caught one check over:",
-    "app-of-apps-discovery.ts enumerates depth-2 and exits 1 on a second nested",
-    "Application, so adding one forces a human to look before it can hide in here.",
+    "THE DEPTH-1 LIMIT WAS REAL AND IT COST 1000m -- CLOSED 2026-08-22.",
+    "This block used to say the coverage check enumerates DEPTH-1 directories, that",
+    "ArgoCD's include glob is not path-segment bounded so the root ALSO applies",
+    "`applications/game-hosting/gmod/Application.yaml`, and that gmod 'contributes 0m /",
+    "0Mi today (in-repo manifests, no requests)'. The last clause was FALSE when it was",
+    "written: game-hosting/gmod/statefulset.yaml line 70 carries",
+    "`requests: { cpu: \"1\", memory: \"2Gi\" }`, and nothing in this file could see it,",
+    "because the enumerator that would have checked was the same one the limit was about.",
+    "That is the shape worth remembering -- an honest limit, correctly stated, standing",
+    "immediately beside a false claim it made unfalsifiable.",
+    "",
+    "`applicationDirs()` now enumerates depth 1 AND depth 2, `devLaneAppliedDirs()`",
+    "excludes by PREFIX so `x/**` drops everything under x, and gmod carries an",
+    "ungovernedRequests row. Every cohort number above moved by exactly its 1000m /",
+    "2048Mi. A third level is refused by app-of-apps-discovery.ts, so a deeper",
+    "Application forces a human to look before it can hide in here.",
+    "",
+    "AND THE SECOND TREE IS STILL UNCOVERED, named here because it is the same class:",
+    "infra/k8s/applications is a separate App-of-Apps root (`zeta-root`, auto-applied by",
+    "K3S via services.k3s.manifests). Its seven Applications render 4035m / 8837Mi",
+    "(infra/gitlab 2525m, infra/cockroachdb 1500m, infra/local-path-provisioner 10m),",
+    "and no row here can name them: every `dir` key is relative to",
+    "full-ai-cluster/k8s/applications. rendered-resource-requests.ts reports all seven as",
+    "`uncovered-application` at both rungs and they are baselined with that reason and a",
+    "lift condition. Closing it needs a tree-qualified key, which is a schema change to a",
+    "file four checkers read.",
     "",
     "`ungovernedRequests` carries every Application no rung touches, with its measured",
     "total, so the sums are over the whole tree and not over the subset we chose to",
@@ -348,6 +364,30 @@
     "128Mi. `oz@1.4.5` stays: that pin is still fictional."
   ],
 
+  "$comment_acknowledgedLaneBudgetShortfall": [
+    "Dev-lane budget shortfalls carried as DEBT, each pinned to the arithmetic that",
+    "produced it: `<rung> <resource> <total>><budget>`. The pin is the point -- move",
+    "either number by one millicore and the acknowledgement stops matching, so it",
+    "cannot outlive the shortfall it was written about, and `auditRunnerBudget`",
+    "reports a non-matching entry as STALE rather than ignoring it.",
+    "",
+    "This is NOT the same thing as the ledger's `acknowledgedRungBudgetGap`, and the",
+    "two are deliberately separate. That one carries the disagreement between the rung",
+    "CI budgets and the rung the tree carries. This one carries a rung not fitting the",
+    "runner at all. Before 2026-08-22 only the first could happen, because `dev` fit",
+    "with 594m to spare; it does not any more.",
+    "",
+    "Every entry carries a reason and a LIFTS WHEN whose condition is the GATE ITSELF,",
+    "not a paraphrase of it. A lift condition stricter than its gate keeps an entry",
+    "alive after its defect is gone, which has cost this repo a cycle twice."
+  ],
+  "acknowledgedLaneBudgetShortfall": [
+    {
+      "key": "dev cpu 2906>2500",
+      "reason": "THE DEV LANE CANNOT HOST EITHER RUNG, AND THIS IS THE SMALLER ONE. MEASURED 2026-08-22 by two independent oracles that agree to the millicore: this catalogue's own arithmetic (`--resource-profile dev --budget`) and a full render of every chart at the `dev` rung (`rendered-resource-requests.ts --measure`) both report 2906m / 8255Mi over the 38 Applications the dev root applies, against a 2500m / 9216Mi budget. Memory fits with 961Mi spare; CPU is over by 406m. The figure was 1906m until 2026-08-22 and the missing 1000m is `game-hosting/gmod`, an in-repo StatefulSet requesting a literal cpu 1 / memory 2Gi that ArgoCD's include glob reaches at depth 2 and this catalogue's enumerator could not see. NO RUNG REACHES IT: gmod is a git-path source with no valuesObject, so no resourceClaim can express it and applying `dev` to the tree does not shrink it. What the arithmetic says, and what it does not: applying `dev` to the committed tree is NECESSARY -- it takes the lane from 5231m to 2906m -- and NOT SUFFICIENT. The remaining 406m has exactly two shapes and both are cheap: shrink gmod's literal request in full-ai-cluster/k8s/applications/game-hosting/gmod/statefulset.yaml (at 500m the lane is 2406m and fits), or add `game-hosting/**` to DEFAULT_ROOT_DEV_CATALOG.excludeGlob so the dev root stops applying a game server (the lane is then 1906m and fits with 594m spare). gmod does not schedule TODAY because its sync fails on gatekeeper's webhook, which is a reprieve and not a fit -- the same shape as the longhorn StorageClass reprieve this file predicted in writing and that hindsight-postgresql-0 eventually cashed as `Insufficient cpu`. This entry is DEBT, not a verdict: which shape to take, and whether the committed tree should carry `dev` at all or grow a per-substrate override point, is the maintainer's call and both options are priced above rather than chosen.",
+      "liftsWhen": "LIFTS WHEN: `storage-profiles.ts --resource-profile dev --budget` exits 0 — that is, the dev-lane total at the `dev` rung is no more than 2500m of CPU. The condition IS the gate and not a paraphrase of it, and the key is pinned to the exact arithmetic (2906>2500), so any change to either number retires this entry automatically and the audit exits 1 until it is deleted."
+    }
+  ],
   "resourceProfiles": ["dev", "metal"],
 
   "runnerEnvelope": {
@@ -987,10 +1027,16 @@
       "evidence": "cert-manager v1.16.2 rendered 2026-08-21: chart default resources are unset."
     },
     {
+      "dir": "game-hosting/gmod",
+      "cpuMillis": 1000,
+      "memoryMib": 2048,
+      "evidence": "MEASURED 2026-08-22 by rendered-resource-requests.ts, and confirmed by reading the manifest: full-ai-cluster/k8s/applications/game-hosting/gmod/statefulset.yaml line 70 carries a literal `requests: { cpu: \"1\", memory: \"2Gi\" }`. This Application had NO row in this catalogue and could not have had one: applicationDirs() enumerated depth 1 and this file sits at depth 2. The $comment_resources block asserted it 'contributes 0m / 0Mi today (in-repo manifests, no requests)'; that sentence was false when written. NO RUNG GOVERNS IT -- it is a git-path source with no valuesObject, so a resourceClaim (which writes into spec.source.helm.valuesObject) cannot express it; changing its number means editing statefulset.yaml. That is why it is here rather than in resourceClaims, and why applying `dev` to the tree does not shrink it."
+    },
+    {
       "dir": "cilium",
-      "cpuMillis": 0,
-      "memoryMib": 0,
-      "evidence": "cilium 1.16.5 rendered 2026-08-21: chart default resources are unset. Glob-excluded from the dev lane."
+      "cpuMillis": 100,
+      "memoryMib": 10,
+      "evidence": "cilium 1.16.5 rendered 2026-08-21 and RE-MEASURED 2026-08-22 by rendered-resource-requests.ts. This row read 0m / 0Mi with the evidence 'chart default resources are unset'. That sentence is true about the REGULAR containers and the row was still wrong: DaemonSet/cilium carries an INIT container, install-cni-binaries, requesting 100m / 10Mi, and the scheduler reserves max(sum(regular), max(init)) -- so a pod whose only reservation is an init container still reserves it. The first hand-measurement summed regular containers; the checker implements the scheduler's formula. Glob-excluded from the dev lane, so this moves no dev-lane total; on metal it is per-node, x4 across the registered nodes."
     },
     {
       "dir": "cilium-lb-ipam",
@@ -1030,9 +1076,9 @@
     },
     {
       "dir": "gitlab",
-      "cpuMillis": 2475,
+      "cpuMillis": 2525,
       "memoryMib": 5733,
-      "evidence": "gitlab 8.7.0 rendered 2026-08-21 (with a placeholder certmanager-issuer.email, which the chart requires to render at all): 15 workloads, 2475m / 5733Mi. The single largest Application in the tree. Glob-excluded from the dev lane."
+      "evidence": "gitlab 8.7.0 rendered 2026-08-21 (with a placeholder certmanager-issuer.email, which the chart requires to render at all): 15 workloads. The single largest Application in the tree. Glob-excluded from the dev lane. CPU CORRECTED 2026-08-22 from 2475m by rendered-resource-requests.ts, and the memory was already exact to the mebibyte, which is what identifies the cause: Deployment/gitlab-gitlab-shell requests 0m across its regular containers and 50m in each of its two init containers, so the scheduler reserves 50m for it and a sum over regular containers reserves nothing. Every init container in this chart requests 0 memory, which is why only the CPU column moved."
     },
     {
       "dir": "hat-system",

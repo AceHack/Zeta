@@ -256,6 +256,16 @@ describe("the real tree", () => {
     expect(must(oz, "the openziti-controller roster entry").catalogueKey).toBe("oz");
     expect(model.catalogue.rows.has("oz")).toBe(true);
     // MUTATION CAUGHT: joining storage-profiles on metadata.name loses `oz`.
+    //
+    // DEPTH-2: the key is the directory itself, not the last path segment.
+    // `game-hosting/gmod` looked up as `gmod` misses the catalogue row and
+    // becomes UNPRICED — a silent 1000m / 2Gi hole. The last-segment form is
+    // what this used to do; the directory form is what `applicationDirs()`
+    // and `ungovernedRequests[].dir` already use.
+    const gmod = model.roster.find((r) => r.dir === "game-hosting/gmod");
+    expect(must(gmod, "the game-hosting/gmod roster entry").catalogueKey).toBe("game-hosting/gmod");
+    expect(model.catalogue.rows.has("game-hosting/gmod")).toBe(true);
+    expect(model.catalogue.rows.has("gmod")).toBe(false);
   });
 
   test("connected components do NOT solve this — one component holds most of the tree", () => {
@@ -267,13 +277,27 @@ describe("the real tree", () => {
     // if someone later reads the lane count and assumes components produced it.
   });
 
-  test("all applications together do NOT fit one runner, and disk is what blows", () => {
+  test("all applications together do NOT fit one runner — CPU is what blows, not disk", () => {
+    // leftover-on-main #13784 measured the runner at 77 GiB free and declared
+    // 70. The 14 GiB vendor figure made this assertion look like
+    // `74.54 > 330` (budget disk 10 * 5). Against 70 the same 74.54 GiB is
+    // 1.13x a 66 GiB budget (70 - 4 reserved). CPU is 6166m against 2500m —
+    // 2.47x. Sharding is still the only route; the binding axis inverted.
+    // Pinning 70 and 74.54 makes a silent revert to 14 fail this test rather
+    // than look like the old 5x thesis coming back.
+    expect(model.catalogue.envelope.freeDiskGib).toBe(70);
     const budget = budgetOf(model.catalogue.envelope, 1);
+    expect(budget.diskGib).toBe(66);
     const all = priceSet(model, model.roster.map((r) => r.name));
-    expect(all.diskGib).toBeGreaterThan(budget.diskGib * 5);
+    expect(all.diskGib).toBeCloseTo(74.54, 2);
     expect(all.cpuMillis).toBeGreaterThan(budget.cpuMillis);
-    // Disk is over by more than CPU is — the reason sharding is the only route.
-    expect(all.diskGib / budget.diskGib).toBeGreaterThan(all.cpuMillis / budget.cpuMillis);
+    expect(all.diskGib).toBeGreaterThan(budget.diskGib);
+    const diskRatio = all.diskGib / budget.diskGib;
+    const cpuRatio = all.cpuMillis / budget.cpuMillis;
+    expect(cpuRatio).toBeGreaterThan(2);
+    expect(diskRatio).toBeGreaterThan(1);
+    expect(diskRatio).toBeLessThan(2);
+    expect(cpuRatio).toBeGreaterThan(diskRatio);
   });
 
   test("every real lane fits the real budget on all three axes", () => {
@@ -307,20 +331,33 @@ describe("the real tree", () => {
     // "test every chart" is only true if nothing falls between the buckets.
   });
 
-  test("hindsight and vllm are the measured self-hosted case", () => {
+  test("hindsight and vllm FIT the 70-world budget — oversize is empty", () => {
+    // Against 14 GiB they were the self-hosted case (~23 GiB each vs ~10 GiB
+    // usable). Against 70 they fit a 56.1 GiB 0.85-margin budget and pack
+    // into a lane. Claiming they are still oversize would paper 70 to look
+    // like 14.
     const p = packLanes(model, { margin: 0.85 });
-    const names = p.oversize.map((q) => q.name).sort();
-    expect(names).toEqual(["hindsight", "vllm"]);
-    for (const q of p.oversize) expect(q.footprint.diskGib).toBeGreaterThan(p.budget.diskGib * 2);
+    expect(p.budget.diskGib).toBeCloseTo(56.1, 1);
+    expect(p.oversize.map((q) => q.name)).toEqual([]);
+    const hindsight = priceSet(model, ["hindsight"]);
+    const vllm = priceSet(model, ["vllm"]);
+    expect(hindsight.diskGib).toBeCloseTo(22.49, 1);
+    expect(vllm.diskGib).toBeCloseTo(22.65, 1);
+    expect(hindsight.diskGib).toBeLessThan(p.budget.diskGib);
+    expect(vllm.diskGib).toBeLessThan(p.budget.diskGib);
+    const assigned = new Set(p.lanes.flatMap((l) => l.assigned));
+    expect(assigned.has("hindsight")).toBe(true);
+    expect(assigned.has("vllm")).toBe(true);
   });
 
-  test("dropping intent edges changes the partition NOT AT ALL, as claimed in the graph", () => {
+  test("dropping intent edges DOES change the partition — hindsight/vllm now pack", () => {
+    // In the 14-world those two were oversize, so intent edges never reached
+    // the packer. In the 70-world they land in a lane, and dropping intent
+    // edges moves membership. The closure still grows when intent is kept.
     const withIntent = packLanes(buildModel({ repoRoot: REPO_ROOT, rung: "dev" }), { margin: 0.85 });
     const without = packLanes(buildModel({ repoRoot: REPO_ROOT, rung: "dev", dropIntentEdges: true }), { margin: 0.85 });
-    expect(without.lanes.map((l) => l.members.join(","))).toEqual(withIntent.lanes.map((l) => l.members.join(",")));
+    expect(without.lanes.map((l) => l.members.join(","))).not.toEqual(withIntent.lanes.map((l) => l.members.join(",")));
     expect(without.coveredApplications).toBe(withIntent.coveredApplications);
-    // The one number that DOES move, measured, and asserted so the graph's
-    // comment cannot drift from it:
     const closureWith = priceSet(buildModel({ repoRoot: REPO_ROOT }), closureOf(buildModel({ repoRoot: REPO_ROOT }), "hindsight"));
     const mNo = buildModel({ repoRoot: REPO_ROOT, dropIntentEdges: true });
     const closureWithout = priceSet(mNo, closureOf(mNo, "hindsight"));

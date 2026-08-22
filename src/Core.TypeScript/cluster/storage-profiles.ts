@@ -785,6 +785,22 @@ export interface UngovernedApp {
   readonly evidence: string;
 }
 
+/**
+ * One dev-lane budget shortfall carried as debt, pinned to its arithmetic.
+ *
+ * NOT the same thing as the ledger's `acknowledgedRungBudgetGap`. That one
+ * carries a disagreement between the rung CI budgets and the rung the tree
+ * carries; this one carries a rung not fitting the runner AT ALL. Before
+ * 2026-08-22 only the first could happen, because `dev` fit with 594m to spare.
+ */
+export interface LaneBudgetAcknowledgement {
+  /** `<rung> <resource> <total>><budget>` — one millicore of movement retires it. */
+  readonly key: string;
+  readonly reason: string;
+  /** The condition that retires it, phrased so a gate can decide it. */
+  readonly liftsWhen: string;
+}
+
 export interface ResourceCatalogue {
   /** Smallest first; the order is checked, not decorative. */
   readonly profiles: readonly string[];
@@ -793,6 +809,7 @@ export interface ResourceCatalogue {
   readonly ungoverned: readonly UngovernedApp[];
   /** `<dir>@<pinned chart version>` entries whose UNMEASURED total is carried as debt. */
   readonly acknowledgedUnmeasured: readonly string[];
+  readonly acknowledgedLaneBudgetShortfall: readonly LaneBudgetAcknowledgement[];
 }
 
 const APPLICATIONS_DIR = "full-ai-cluster/k8s/applications";
@@ -975,12 +992,38 @@ export function loadResourceCatalogue(path = DEFAULT_CATALOGUE_PATH, repoRoot = 
     requireString(entry, `${path}: acknowledgedUnmeasuredRequests[${String(index)}]`),
   );
 
+  const rawLaneAck = parsed.acknowledgedLaneBudgetShortfall;
+  if (rawLaneAck !== undefined && !Array.isArray(rawLaneAck)) {
+    throw new Error(`${path}: "acknowledgedLaneBudgetShortfall" must be an array`);
+  }
+  const acknowledgedLaneBudgetShortfall = ((rawLaneAck ?? []) as readonly Record<string, unknown>[]).map(
+    (raw, index) => {
+      const key = requireString(raw.key, `${path}: acknowledgedLaneBudgetShortfall[${String(index)}].key`);
+      const reason = raw.reason;
+      const liftsWhen = raw.liftsWhen;
+      if (typeof reason !== "string" || reason.trim().length < 40) {
+        throw new Error(
+          `${path}: ${key} is acknowledged with no reason — a shortfall carried as debt with nothing written ` +
+            `beside it is a shortfall that was hidden`,
+        );
+      }
+      if (typeof liftsWhen !== "string" || !liftsWhen.startsWith("LIFTS WHEN:")) {
+        throw new Error(
+          `${path}: ${key}.liftsWhen must start with "LIFTS WHEN:" — an acknowledgement with no lift condition ` +
+            `never leaves, and outliving its defect is how a baseline becomes a lie`,
+        );
+      }
+      return { key, reason, liftsWhen };
+    },
+  );
+
   return {
     profiles,
     envelope,
     claims: [...claims].sort((a, b) => stringCompare(a.id, b.id)),
     ungoverned: [...ungoverned].sort((a, b) => stringCompare(a.dir, b.dir)),
     acknowledgedUnmeasured,
+    acknowledgedLaneBudgetShortfall,
   };
 }
 
@@ -989,17 +1032,49 @@ export function loadResourceCatalogue(path = DEFAULT_CATALOGUE_PATH, repoRoot = 
 // ---------------------------------------------------------------------------
 
 /**
- * Directories with a top-level `Application.yaml`. Depth-1 on purpose: that is
- * what the root App-of-Apps `include` glob matches, so this is the same set the
- * cluster gets, not a wider one.
+ * Directories with an `Application.yaml`, at DEPTH 1 **AND DEPTH 2**.
+ *
+ * This used to be depth-1 "on purpose", with the stated reason that depth-1 is
+ * what the root App-of-Apps `include` glob matches. That reason was wrong, and
+ * the file that disproves it is already in this repo:
+ * `app-of-apps-discovery.ts` establishes — against a LIVE cluster, not by
+ * reading the spec — that ArgoCD compiles `directory.include` with
+ * `gobwas/glob` and no separator argument, so `*` binds across `/` and
+ * `{*\/Application.yaml,Application.yaml}` DOES match
+ * `game-hosting/gmod/Application.yaml`. The `--scope included` lane's own
+ * diagnostics list a `gmod` Application in the cluster.
+ *
+ * The cost of the old assumption was 1000m. `game-hosting/gmod` is an in-repo
+ * StatefulSet whose manifest carries a literal `requests: { cpu: "1", memory:
+ * "2Gi" }`, it is applied by the dev root (no exclude covers it), and every
+ * rung total in this file was computed without it. The catalogue's own
+ * `$comment_resources` said in writing that it "contributes 0m / 0Mi today (in-repo
+ * manifests, no requests)" — a sentence measurably false when written, and
+ * unfalsifiable from inside this module because the enumerator could not see
+ * the file that refutes it.
+ *
+ * Depth 2 and not deeper because depth 2 is what exists; `app-of-apps-discovery.ts`
+ * is the check that refuses a third level, so a deeper Application forces a
+ * human to look before it can hide from this sum.
  */
 export function applicationDirs(repoRoot = REPO_ROOT): readonly string[] {
   const base = resolve(repoRoot, APPLICATIONS_DIR);
   if (!existsSync(base)) return [];
-  return readdirSync(base, { withFileTypes: true })
-    .filter((entry) => entry.isDirectory() && existsSync(resolve(base, entry.name, "Application.yaml")))
-    .map((entry) => entry.name)
-    .sort((a, b) => stringCompare(a, b));
+  const dirs: string[] = [];
+  for (const entry of readdirSync(base, { withFileTypes: true })) {
+    if (!entry.isDirectory()) continue;
+    if (existsSync(resolve(base, entry.name, "Application.yaml"))) {
+      dirs.push(entry.name);
+      continue;
+    }
+    for (const nested of readdirSync(resolve(base, entry.name), { withFileTypes: true })) {
+      if (!nested.isDirectory()) continue;
+      if (existsSync(resolve(base, entry.name, nested.name, "Application.yaml"))) {
+        dirs.push(`${entry.name}/${nested.name}`);
+      }
+    }
+  }
+  return dirs.sort((a, b) => stringCompare(a, b));
 }
 
 /**
@@ -1015,15 +1090,24 @@ export function devLaneAppliedDirs(
   repoRoot = REPO_ROOT,
   excludeGlob = DEFAULT_ROOT_DEV_CATALOG.excludeGlob,
 ): readonly string[] {
-  const excluded = new Set(
-    excludeGlob
-      .replace(/^\{/, "")
-      .replace(/\}$/, "")
-      .split(",")
-      .map((entry) => entry.trim().replace(/\/\*\*$/, ""))
-      .filter((entry) => entry.length > 0),
+  const excluded = [
+    ...new Set(
+      excludeGlob
+        .replace(/^\{/, "")
+        .replace(/\}$/, "")
+        .split(",")
+        .map((entry) => entry.trim().replace(/\/\*\*$/, ""))
+        .filter((entry) => entry.length > 0),
+    ),
+  ];
+  // PREFIX, not equality. `cilium/**` excludes `cilium` and everything under
+  // it; with depth-2 directories now in `applicationDirs`, an equality test
+  // would leave `<excluded>/<nested>` in the applied set while ArgoCD's own
+  // exclude glob drops it — a cohort wider than the cluster's, which makes the
+  // budget pessimistic in a way nobody could account for.
+  return applicationDirs(repoRoot).filter(
+    (dir) => !excluded.some((entry) => dir === entry || dir.startsWith(`${entry}/`)),
   );
-  return applicationDirs(repoRoot).filter((dir) => !excluded.has(dir));
 }
 
 /** One level of a parsed YAML mapping, or `undefined`. Total on any input. */
@@ -1237,27 +1321,65 @@ export function auditRunnerBudget(
         `stale acknowledgement, delete it`,
     });
   }
-  if (total.cpuMillis > budget.cpuMillis) {
+  // A SHORTFALL MAY BE CARRIED AS DEBT, pinned to its arithmetic.
+  //
+  // Added 2026-08-22 because `dev` stopped fitting: the lane went from 1906m to
+  // 2906m when `applicationDirs` started counting the depth-2 Application
+  // ArgoCD had always applied. Widening the envelope would have made the gate
+  // agree with the machine that does not exist; refusing outright would have
+  // blocked every unrelated PR on a decision only the maintainer can make. The
+  // acknowledgement is the third answer, and it is only honest because the key
+  // carries BOTH numbers -- one millicore of movement in either and it stops
+  // matching, which is reported as STALE below rather than ignored.
+  const laneAcknowledged = new Set(catalogue.acknowledgedLaneBudgetShortfall.map((entry) => entry.key));
+  const live = new Set<string>();
+  for (const [resource, label, got, cap, unit, machine] of [
+    [
+      "cpu",
+      "CPU",
+      total.cpuMillis,
+      budget.cpuMillis,
+      "m",
+      `${String(catalogue.envelope.cpuMillis)}m on ${catalogue.envelope.runner} less ${String(catalogue.envelope.reservedCpuMillis)}m reserved`,
+    ],
+    [
+      "memory",
+      "memory",
+      total.memoryMib,
+      budget.memoryMib,
+      "Mi",
+      `${String(catalogue.envelope.memoryMib)}Mi on ${catalogue.envelope.runner} less ${String(catalogue.envelope.reservedMemoryMib)}Mi reserved`,
+    ],
+  ] as const) {
+    if (got <= cap) continue;
+    const key = laneShortfallKey(profile, resource, got, cap);
+    live.add(key);
+    if (laneAcknowledged.has(key)) continue;
     findings.push({
       claimId: "runner-budget",
       problem:
-        `profile "${profile}" requests ${String(total.cpuMillis)}m of CPU across the ${String(dirs.length)} ` +
-        `Applications the dev lane applies; the budget is ${String(budget.cpuMillis)}m ` +
-        `(${String(catalogue.envelope.cpuMillis)}m on ${catalogue.envelope.runner} less ` +
-        `${String(catalogue.envelope.reservedCpuMillis)}m reserved). Pods above the line go Pending, forever`,
+        `profile "${profile}" requests ${String(got)}${unit} of ${label} across the ${String(dirs.length)} ` +
+        `Applications the dev lane applies; the budget is ${String(cap)}${unit} (${machine}). ` +
+        (resource === "cpu" ? "Pods above the line go Pending, forever. " : "") +
+        `Resolve it or carry it as stated debt: acknowledge with "${key}"`,
     });
   }
-  if (total.memoryMib > budget.memoryMib) {
+  for (const entry of catalogue.acknowledgedLaneBudgetShortfall) {
+    if (live.has(entry.key)) continue;
+    if (!entry.key.startsWith(`${profile} `)) continue;
     findings.push({
       claimId: "runner-budget",
       problem:
-        `profile "${profile}" requests ${String(total.memoryMib)}Mi of memory across the ${String(dirs.length)} ` +
-        `Applications the dev lane applies; the budget is ${String(budget.memoryMib)}Mi ` +
-        `(${String(catalogue.envelope.memoryMib)}Mi on ${catalogue.envelope.runner} less ` +
-        `${String(catalogue.envelope.reservedMemoryMib)}Mi reserved)`,
+        `"${entry.key}" is acknowledged and nothing reports it any more — the arithmetic moved and the ` +
+        `acknowledgement outlived the shortfall it was written about. Delete the entry`,
     });
   }
   return findings;
+}
+
+/** `<rung> <resource> <total>><budget>` — the acknowledgement key, pinned to both numbers. */
+export function laneShortfallKey(profile: string, resource: "cpu" | "memory", total: number, budget: number): string {
+  return `${profile} ${resource} ${String(total)}>${String(budget)}`;
 }
 
 /**

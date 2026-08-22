@@ -1266,9 +1266,17 @@ describe("the checked-in resource ladder", () => {
   // numbers move together because a new Application that is not glob-excluded is
   // BOTH shipped and applied; if only one of them had needed to move, that would
   // itself have been the finding.
-  test("the dev lane applies 37 of the 46 Applications", () => {
-    expect(applicationDirs()).toHaveLength(46);
-    expect(devLaneAppliedDirs()).toHaveLength(37);
+  //
+  // 46 -> 47 and 37 -> 38 on 2026-08-22, and NOTHING WAS ADDED TO THE TREE.
+  // `applicationDirs` was depth-1 and the App-of-Apps root's include glob is
+  // not path-segment bounded, so `game-hosting/gmod` had always been applied
+  // and had never been counted. It requests a literal `cpu: "1", memory: "2Gi"`.
+  // Both counts move together for the same reason as spire-crds: an Application
+  // no exclude covers is BOTH shipped and applied.
+  test("the dev lane applies 38 of the 47 Applications", () => {
+    expect(applicationDirs()).toHaveLength(47);
+    expect(devLaneAppliedDirs()).toHaveLength(38);
+    expect(applicationDirs()).toContain("game-hosting/gmod");
   });
 
   // MEASURED 2026-08-21 by `helm pull` at each pinned targetRevision followed
@@ -1284,28 +1292,75 @@ describe("the checked-in resource ladder", () => {
   // replaced it total 1250m/2368Mi -- the first temporal numbers ever taken
   // from the values we actually ship. The dev-lane pair is unchanged because
   // `temporal/**` is in ports.ts's excludeGlob and was never in that cohort.
+  //
+  // ALL FOUR NUMBERS MOVED 2026-08-22 by exactly gmod's 1000m / 2048Mi, and
+  // again nothing was added and nothing was measured differently: the
+  // enumerator started seeing an Application the cluster had always applied.
+  // 4231 -> 5231, 11427 -> 13475, 8106 -> 9256, 19752 -> 21810. All four are
+  // now cross-checked against a full render of every chart at this rung by
+  // `rendered-resource-requests.ts`, which agrees to the millicore.
   test("metal is exactly what the manifests render today", () => {
     expect(verifyResourceProfileApplied(catalogue, "metal")).toEqual([]);
     const lane = resourceTotal(catalogue, "metal", devLaneAppliedDirs());
-    expect(lane.cpuMillis).toBe(4231);
-    expect(lane.memoryMib).toBe(11427);
+    expect(lane.cpuMillis).toBe(5231);
+    expect(lane.memoryMib).toBe(13475);
     const all = resourceTotal(catalogue, "metal", applicationDirs());
-    expect(all.cpuMillis).toBe(8106);
-    expect(all.memoryMib).toBe(19752);
+    expect(all.cpuMillis).toBe(9256);
+    expect(all.memoryMib).toBe(21810);
   });
 
   // Aaron 2026-08-20: "make things small enough to fit for disk and ram on the
   // runners." This is that, and it is a test so it cannot drift upward without
   // somebody deciding to let it.
-  test("dev fits the runner and metal does not — the ladder is not decorative", () => {
-    expect(auditRunnerBudget(catalogue, "dev")).toEqual([]);
-    expect(auditRunnerBudget(catalogue, "metal").length).toBeGreaterThan(0);
-    const lane = resourceTotal(catalogue, "dev", devLaneAppliedDirs());
+  //
+  // THIS TEST INVERTED ON 2026-08-22 AND THE INVERSION IS THE FINDING. It used
+  // to assert that `dev` FITS the runner (1906m / 6207Mi against 2500m /
+  // 9216Mi, 594m of spare). Counting `game-hosting/gmod` -- applied by the dev
+  // root since it was written, invisible to a depth-1 enumerator -- puts the
+  // lane at 2906m, which is 406m OVER on CPU while memory still fits with
+  // 961Mi to spare. So the honest statement is no longer "dev fits and metal
+  // does not"; it is that NEITHER RUNG FITS, and dev misses by 406m rather
+  // than by 2731m. The old assertion is kept in the name so the change of
+  // answer is legible instead of quietly rewritten.
+  //
+  // No rung reaches gmod: it is a git-path source with no valuesObject, so
+  // `applyResourceProfile` cannot express it and the 1000m is a literal in
+  // `game-hosting/gmod/statefulset.yaml`. Closing the 406m is a decision, not
+  // a rung, and it is carried as debt in `acknowledgedLaneBudgetShortfall` with
+  // both options priced. The withdrawn `acknowledgedBudgetShortfall` key is
+  // gone; this is the catalogue list, not the ledger's `acknowledgedRungBudgetGap`.
+  test("NEITHER rung fits the runner — dev misses by 406m, not by nothing", () => {
     const budget = envelopeBudget(catalogue.envelope);
-    expect(lane.cpuMillis).toBe(1906);
-    expect(lane.memoryMib).toBe(6207);
-    expect(lane.cpuMillis).toBeLessThan(budget.cpuMillis);
-    expect(lane.memoryMib).toBeLessThan(budget.memoryMib);
+    const dev = resourceTotal(catalogue, "dev", devLaneAppliedDirs());
+    expect(dev.cpuMillis).toBe(2906);
+    expect(dev.memoryMib).toBe(8255);
+    expect(dev.cpuMillis).toBeGreaterThan(budget.cpuMillis);
+    expect(dev.memoryMib).toBeLessThan(budget.memoryMib);
+    // `dev` is SILENT only because the shortfall is acknowledged with its
+    // arithmetic pinned. Strip the acknowledgement and it convicts — which is
+    // the difference between a debt that is written down and a budget widened
+    // to agree with a machine nobody has.
+    expect(auditRunnerBudget(catalogue, "dev")).toEqual([]);
+    const unacknowledged = { ...catalogue, acknowledgedLaneBudgetShortfall: [] };
+    const convicted = auditRunnerBudget(unacknowledged, "dev");
+    expect(convicted.length).toBeGreaterThan(0);
+    expect(convicted[0]?.problem).toContain('acknowledge with "dev cpu 2906>2500"');
+    // And a stale acknowledgement — one whose arithmetic has moved — is a
+    // finding in its own right, so it cannot outlive the shortfall.
+    const detuned = {
+      ...catalogue,
+      acknowledgedLaneBudgetShortfall: [
+        { key: "dev cpu 2905>2500", reason: "r".repeat(60), liftsWhen: "LIFTS WHEN: never" },
+      ],
+    };
+    expect(auditRunnerBudget(detuned, "dev").some((finding) => finding.problem.includes("outlived"))).toBe(true);
+    expect(auditRunnerBudget(catalogue, "metal").length).toBeGreaterThan(0);
+
+    // And the gap is exactly gmod, which is what makes the two options in the
+    // acknowledgement priceable rather than guessed.
+    const withoutGmod = devLaneAppliedDirs().filter((dir) => dir !== "game-hosting/gmod");
+    expect(resourceTotal(catalogue, "dev", withoutGmod).cpuMillis).toBe(1906);
+    expect(resourceTotal(catalogue, "dev", withoutGmod).cpuMillis).toBeLessThan(budget.cpuMillis);
   });
 
   // Stated because it is the honest answer to the question that was asked, and
