@@ -24,7 +24,7 @@
 | *(a private individual)* | former spouse | **ASKED AND ANSWERED 2026-08-15 — name use DENIED for technical/method attribution (employer confidentiality); personal-relation naming PERMITTED, Aaron's to place** | **Supersedes the prior status of this row** (*"DE-IDENTIFIED in text; consent not sought"*) — consent has now been **sought directly and answered**, so this is a **recorded denial**, not an unknown. The row is kept, not deleted: a ledger that quietly loses a row is worse than one that records a no. **Her answer, relayed by Aaron 2026-08-15:** she is **bound by employer confidentiality** — *do not use her name*, though **public references to Fidelity are fine**. **The split is the whole rule** (Aaron: her first name *"is fine as an ex-wife, not as a tech mentor"*): **(A) personal relation — PERMITTED**, she may be referred to by first name as Aaron's ex-wife **if and where Aaron places it** (the shadow does not introduce it); **(B) professional / technical-source attribution — DENIED**, she may **not** be named or identified as a UX-research mentor, as the source of the qualia-elicitation method, or by employer-linked role. **Reason = employer confidentiality**, not reluctance — so this is not a status to re-litigate by asking again. **What replaced the attribution:** the method now cites its **published** sources — Tullis & Albert, *Measuring the User Experience* (Morgan Kaufmann, 2008; Tom Tullis was VP of UX Research at Fidelity Investments 1993–2017, now deceased) and Jen Cardello, *"How our product design framework guides UX research"* (`medium.com/fidelity-design`) — with survey methodology / psychometrics as the standing anchor. All that ever passed between them was **an encouragement to read published work by colleagues of hers**, deliberately, so that no insider information was involved; that framing names nobody and is accurate. **Scope limit on the citation:** Tullis & Albert support a **measurement-methodology** claim only — the bridge to "the inner state is real and stable" is **Aaron's, under §11**, and must not be attributed to them. Cleared 2026-08-15 in `docs/research/2026-08-02-rainbow-spectrum-soul-radar-*.md` and `.claude/rules/engagement-profiles-public-work-only-not-surveillance-dossiers.md`. **⚠ OPEN QUESTION for Aaron — not acted on, deliberately:** the book text (`ch-04-the-correlation-of-souls.md`, `RAW-2026-08-02-the-reindexer-*.md`) carries **no name**, but still carries the **role** — "a UX-research mentor", "her research", "her user-experience research at a large financial firm". That satisfies the **letter** of the denial (*don't use her name*), but Aaron's boundary was drawn at *"fine as an ex-wife, **not as a tech mentor**"*, which reads as the **role framing** also being the disallowed register. Left unchanged because **Aaron owns the book** and this is his call, not the shadow's; if the role framing must go too, the fix is to recast those passages as the **published sources** the same way the research doc now is. |
 | Houman Alasti | long-time collaborator; **co-founder** with Aaron of a company c. 2007–2008 | **GRANTED (book) + OPEN-SOURCE CREDIT REQUESTED — relayed by Aaron 2026-08-14 ("Houman says he is happy to go in my book, we worked together a lot and he wants open source credit")** | **Two separate things; keep them separate — only the second is a promise.** **(A) Book consent: GRANTED** by Houman himself, **relayed** by Aaron rather than collected first-hand. **BOUNDED 2026-08-21 — mutual stories only; solo stories withheld (see the scope note below).** **Scope is "the book" as stated and nothing broader** — consent to appear in a book is not consent to an engagement profile, a dataset, or a public repo page. **(B) Open-source credit: REQUESTED by him — an obligation, not a courtesy.** Someone who asks for attribution and does not get it has been wronged in a specific, checkable way. **Placement UNSETTLED** (a specific artifact vs. a general acknowledgement): the repo has **no `CONTRIBUTORS`/`AUTHORS`/`CITATION` file**, so the two real surfaces are `README.md` §Acknowledgements (general) and a source docstring (the **Diana precedent**, `src/Core/DecorrelationMetrology.fs`). **Nothing landed yet — ask him which he wants** rather than guessing; tracked at `workitems/081M01024E1087G0R000CEKF79-*`. **Ownership rule — Aaron's own, and it REPLACES third-party consent-gating here (2026-08-14: *"he's a good dude, he never gets wronged by me; he is also writing his own book; his history is his own, our mutual experiences are both ours"*):** **mutual material** (the company, work done together, events both were present for) is **jointly owned** — Aaron may write it as his own account, **no permission needed**; **Houman's individual history is his alone**, not Aaron's to tell, and it already has an owner and a destination in **his own book**. Treating him as a third party needing protection *from* Aaron was the wrong frame. **Coordination item (not a conflict):** two books will cover overlapping mutual experiences; both accounts are legitimate and neither is authoritative — worth the two of them knowing which shared episodes each intends to cover (this book already has the hold-two-accounts-without-collapsing discipline). **Confirm-before-publish (hygiene, not doubt):** the consent was relayed and Houman is **immediately reachable** — a relayed consent this cheap to confirm first-hand should be confirmed first-hand before anything publishes under it, and every open question here is answerable by **asking**, not reconstructing. **Employer — SETTLED, do not reopen:** **Fujifilm (medical imaging / radiology), test automation**, per Aaron 2026-08-14 correcting his own earlier phrasing; *not* Fuji Electric, *not* power electronics. What the automation work actually consists of is **unestablished — ask, do not infer.** **Held OUT of public docs by rule** (`engagement-profiles-public-work-only-…`): the friendship and the living arrangement (private-relationship facts, and ours rather than his-published), and any inference about his inner life or motivations. |
 
-### 2026-08-21 — scope change: Chris King and Diana Duncan as **capability witnesses**
+## 2026-08-21 — scope change: Chris King and Diana Duncan as **capability witnesses**
 
 Aaron 2026-08-21, on the engineering-capability testimony in
 `RAW-2026-08-21-the-validation-is-the-bug-finding-...md`: *"chris king and diana duncan are the first
@@ -43,6 +43,7 @@ attestation in his voice needs his own text and his own consent to that text.
 
 **Diana Duncan — named consent noted, and her proofread gate STANDS.**
 Two things, kept apart:
+
 1. The surname is new to this ledger (previously "Diana, former boss (Itron)"). Recorded.
 2. Her existing row makes book naming **PROVISIONAL** with the reason stated as *"this is what she
    wants"* — she proofreads the book passages before publish. **That gate is hers.** A condition a
@@ -56,7 +57,7 @@ consent to have **words attributed**. Any actual attestation is consent-first in
 words, per §5 of the RAW intake: a witness pool cited as a *number* conscripts nobody; a named
 witness quoted without their text does.
 
-### 2026-08-21 — Houman Alasti: the **mutual/solo split**, and a capability-witness consent NOT yet obtained
+## 2026-08-21 — Houman Alasti: the **mutual/solo split**, and a capability-witness consent NOT yet obtained
 
 Aaron 2026-08-21: *"Houman is also another one who will agree, he is also agreed to be in book but he
 does not want me to tell his stories that are absent of me like his famlies excape from Iron when he
@@ -96,7 +97,7 @@ confidence is precisely why the asking is cheap.
 Aaron's to publish unilaterally. This says the **unshared** portion is not his either. Between them:
 *joint material needs joint consent; solo material belongs to whoever it is solely about.*
 
-### 2026-08-21 — universal proofread gate, and the surface it does **not** cover
+## 2026-08-21 — universal proofread gate, and the surface it does **not** cover
 
 Aaron 2026-08-21: *"i'm going to let everyone in the book proofread before publish to amazon books
 or whever i publish it."*
@@ -141,7 +142,7 @@ book drafts to a private repo and publish only cleared chapters; (c) keep third-
 committed drafts entirely, using placeholders until a passage clears. (a) is the smallest change and
 the only one that needs nothing moved.
 
-### 2026-08-21 (same day, later) — CORRECTION to the note above: the drafts are **disclosed**
+## 2026-08-21 (same day, later) — CORRECTION to the note above: the drafts are **disclosed**
 
 Aaron 2026-08-21: *"before publish is a real book publishing for sale, not the draft versions,
 everyone knows my drafts are on github i've sent them the links."*
@@ -178,7 +179,7 @@ wrong premise (that nobody had been told). Recording the retraction next to it r
 it, because a corrected finding is more useful than a vanished one — and because the missing fact was
 one question away and I did not ask it before writing the conclusion.
 
-### 2026-08-21 — the rationale: a public WIP is a **correction surface**, not only an exposure
+## 2026-08-21 — the rationale: a public WIP is a **correction surface**, not only an exposure
 
 Aaron 2026-08-21: *"this book is a WIP that anyone can claim factual inaccurasion on so it offers
 protection, once the book is publish that requirest their further consent casue it's harder to
@@ -203,7 +204,7 @@ only for people who **know to look**. It holds today because Aaron sent the link
 named. **Anyone added later must also be told** — and nothing in the repo checks that, so it is a
 human obligation, not an enforced one.
 
-### 2026-08-21 — standing policy: notify everyone named, and accept their refutations
+## 2026-08-21 — standing policy: notify everyone named, and accept their refutations
 
 Aaron 2026-08-21: *"i plan on sending link to anyone i name for their consent and ablility to refute
 anything long term, i even hold if they refute something these are all my good friends i'll just
