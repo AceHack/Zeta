@@ -720,6 +720,25 @@ zeta_pf_open_ledger() {
 # USB and no block device. It is "sudo" everywhere in the installer itself; the
 # falsifier in installer/install-ledger-append.test.ts sets it empty.
 ZETA_SUDO="${ZETA_SUDO-sudo}"
+# $ZETA_LEDGER_SYNC is the SECOND injected seam, and it exists for the same
+# reason as the first: `sync` with no argument flushes EVERY filesystem on the
+# host, so its duration is set by the host's dirty page cache and by nothing
+# this installer -- or a test of it -- did. In the installer that cost is the
+# point: the whole reason the record is written is that the node may lose power
+# in the next second. In a test it is a wall-clock wait on unrelated global
+# state, which is the definition of a nondeterministic test.
+#
+# MEASURED 2026-08-22 on the fleet host: 40 `sync` calls took 3.78-4.19 s
+# (~95 ms each) against 0.146-0.245 s for 40 trivial process spawns (~4 ms) --
+# 24x, and the 95 ms is not a constant, it is whatever the machine owes the
+# disk at that instant. The R9 falsifier runs six appends per scenario and had
+# grown to 100.1% of bun's 5000 ms per-test cap on that term alone.
+#
+# The DEFAULT IS THE REAL BARRIER and must stay that way; pinned by
+# install-ledger-append.test.ts ("the durability barrier defaults to a real
+# sync"). A test may substitute a recorder, which is strictly more checking
+# than the nothing that used to observe this line.
+ZETA_LEDGER_SYNC="${ZETA_LEDGER_SYNC-sync}"
 zeta_ledger_append() {
   local outcome="$1" stage="$2" text n
   [ "${ZETA_LEDGER_WRITABLE:-0}" = "1" ] || return 0
@@ -735,7 +754,7 @@ zeta_ledger_append() {
   n=$((n + 1))
   printf '%s|%s|%s|%s\n' "$n" "$(date -u +%Y-%m-%dT%H:%M:%SZ)" "$outcome" "$stage" \
     | $ZETA_SUDO tee -a "$ZETA_LEDGER_FILE" >/dev/null
-  $ZETA_SUDO sync 2>/dev/null || true
+  $ZETA_SUDO $ZETA_LEDGER_SYNC 2>/dev/null || true
   ZETA_ATTEMPT_N="$n"
 }
 # ZETA-LEDGER-APPEND-END -----------------------------------------

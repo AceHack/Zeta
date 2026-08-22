@@ -60,10 +60,29 @@ writeFileSync(appendPath, extractBlock("# ZETA-LEDGER-APPEND-BEGIN", "# ZETA-LED
  * `ZETA_SUDO=""` is the injected seam. The installer runs these same functions
  * with ZETA_SUDO unset, which defaults it to "sudo"; a test that had to be root
  * to reach the write path is a test nobody would run.
+ *
+ * `ZETA_LEDGER_SYNC` is the second seam, and it is the reason this file stopped
+ * being a coin-flip. `sync` with no argument flushes EVERY filesystem on the
+ * host: MEASURED 2026-08-22, 40 calls cost 3.78-4.19 s (~95 ms each) against
+ * ~4 ms for a trivial process spawn, and that 95 ms is a function of the
+ * machine's dirty page cache -- i.e. of other processes -- not of anything this
+ * test did. Six appends per scenario put the R9 regression test at 5005.65 ms
+ * against bun's 5000 ms cap: 100.1%, failing on assertions that all passed.
+ *
+ * The installer keeps the real barrier (its default is `sync` and a test below
+ * pins that). Here it is replaced by a shell FUNCTION that records the call, so
+ * the barrier is now *observed* -- previously nothing in the tree asserted it
+ * happened at all. Faster AND strictly more checking; the count is asserted in
+ * "the durability barrier fires once per record written".
  */
-function runLedgerShell(script: string, ledgerWritable = true): { out: string; ledger: string; ledgerPath: string } {
+function runLedgerShell(
+  script: string,
+  ledgerWritable = true,
+): { out: string; ledger: string; ledgerPath: string; syncCalls: number } {
   const ledgerPath = join(workdir, "ledger-" + String(Math.random()).slice(2) + ".txt");
   writeFileSync(ledgerPath, "", "utf8");
+  const syncLogPath = join(workdir, "synclog-" + String(Math.random()).slice(2) + ".txt");
+  writeFileSync(syncLogPath, "", "utf8");
   const runner = join(workdir, "runner-" + String(Math.random()).slice(2) + ".sh");
   writeFileSync(
     runner,
@@ -73,6 +92,12 @@ function runLedgerShell(script: string, ledgerWritable = true): { out: string; l
       "ZETA_LEDGER_WRITABLE=" + (ledgerWritable ? "1" : "0"),
       "ZETA_LEDGER_FILE=" + JSON.stringify(ledgerPath),
       "ZETA_ATTEMPT_N=0",
+      // Set BEFORE the source: the block's `${ZETA_LEDGER_SYNC-sync}` only
+      // defaults when nothing has been supplied, which is what keeps the
+      // installer's own default a real sync.
+      "ZETA_SYNC_LOG=" + JSON.stringify(syncLogPath),
+      'zeta_test_durability_barrier() { printf "barrier\n" >> "$ZETA_SYNC_LOG"; }',
+      "ZETA_LEDGER_SYNC=zeta_test_durability_barrier",
       "source " + parityPath,
       "source " + appendPath,
       // The installer's own read path: command substitution, which strips the
@@ -87,10 +112,21 @@ function runLedgerShell(script: string, ledgerWritable = true): { out: string; l
   if (r.status !== 0) {
     throw new Error("ledger shell exited " + String(r.status) + ": " + String(r.stderr));
   }
+  // One syscall, one answer. The `existsSync(...) ? readFileSync(...)` idiom on
+  // the line below is grandfathered in lint-check-then-use-file-races.baseline
+  // and is NOT a licence to write a new one -- caught by that lint on the first
+  // push of this change, which is the lint working.
+  let syncLog = "";
+  try {
+    syncLog = readFileSync(syncLogPath, "utf8");
+  } catch (e) {
+    if ((e as NodeJS.ErrnoException).code !== "ENOENT") throw e;
+  }
   return {
     out: String(r.stdout).trim(),
     ledger: existsSync(ledgerPath) ? readFileSync(ledgerPath, "utf8") : "",
     ledgerPath,
+    syncCalls: syncLog === "" ? 0 : syncLog.trimEnd().split("\n").length,
   };
 }
 
@@ -178,6 +214,49 @@ describe("the completed install records its success (R9 write side)", () => {
     const r = runLedgerShell(ONE_SUCCESSFUL_INSTALL, false);
     expect(r.ledger).toBe("");
   });
+
+  // ── the durability barrier (the seam that made this file deterministic) ──
+  //
+  // Nothing used to observe this line. It was paid for on every append -- a
+  // host-global flush whose duration is set by other processes -- and asserted
+  // by no one, which is how the R9 regression test grew to 100.1% of its cap
+  // while every assertion in it still passed. Both halves are now pinned: the
+  // installer's default is the real barrier, and the barrier actually fires.
+
+  test("the durability barrier fires once per record written", () => {
+    // Three installs -> six records -> six barriers. If the seam name were
+    // misspelled the recorder would never run and this would read 0, so this
+    // test is also what stops the speed-up from being a silent no-op.
+    const r = runLedgerShell([ONE_SUCCESSFUL_INSTALL, ONE_SUCCESSFUL_INSTALL, ONE_SUCCESSFUL_INSTALL].join("\n"));
+    expect(r.ledger.trim().split("\n").length).toBe(6);
+    expect(r.syncCalls).toBe(6);
+  });
+
+  test("a ledger that records nothing runs no barrier either", () => {
+    // The BLIND path returns before the write, so it must also return before
+    // the flush. A barrier here would be a host-global flush on a surface we
+    // just declared unwritable.
+    const r = runLedgerShell(ONE_SUCCESSFUL_INSTALL, false);
+    expect(r.syncCalls).toBe(0);
+  });
+
+  test("the durability barrier DEFAULTS to a real sync in the installer", () => {
+    // The seam exists so a TEST can substitute a recorder. If the default ever
+    // became the recorder -- or a no-op -- the installer would stop flushing a
+    // FAT ESP whose entire job is to survive a node dying mid-install, and no
+    // runtime test could see it because the tests all inject their own value.
+    // So the default is pinned as TEXT, at its one declaration and its one
+    // call site.
+    expect(SRC).toContain('ZETA_LEDGER_SYNC="${ZETA_LEDGER_SYNC-sync}"');
+    expect(SRC.split("ZETA_LEDGER_SYNC=").length - 1).toBe(1);
+    expect(SRC).toContain("$ZETA_SUDO $ZETA_LEDGER_SYNC");
+    // Exactly one flush site, and it is the seam -- not a second bare `sync`
+    // smuggled back in beside it.
+    const bareSync = SRC.split("\n")
+      .filter((l) => !l.trim().startsWith("#"))
+      .filter((l) => /(^|[;&|]|\s)sync\b/.test(l));
+    expect(bareSync).toEqual([]);
+  });
 });
 
 describe("the installer's own read path does not drop the last record", () => {
@@ -185,10 +264,9 @@ describe("the installer's own read path does not drop the last record", () => {
     // Written without a trailing newline on purpose: this is the shape
     // `$(cat ...)` always produces, and the shape that used to validate.
     const r = runLedgerShell(
-      [
-        'printf "1|t|started|wipe\\nTHIS-LINE-IS-GARBAGE" > "$ZETA_LEDGER_FILE"',
-        'echo "verdict=$(verdict)"',
-      ].join("\n"),
+      ['printf "1|t|started|wipe\\nTHIS-LINE-IS-GARBAGE" > "$ZETA_LEDGER_FILE"', 'echo "verdict=$(verdict)"'].join(
+        "\n",
+      ),
     );
     expect(r.out).toContain("verdict=untrusted");
     expect(r.out).not.toContain("verdict=trusted");
@@ -207,10 +285,7 @@ describe("the installer's own read path does not drop the last record", () => {
   test("shell and TypeScript agree on a ledger with no trailing newline", () => {
     const raw = "1|t|started|wipe\n2|t|ok|complete\n3|t|started|wipe";
     const r = runLedgerShell(
-      [
-        "printf " + JSON.stringify(raw) + ' > "$ZETA_LEDGER_FILE"',
-        'echo "verdict=$(verdict)"',
-      ].join("\n"),
+      ["printf " + JSON.stringify(raw) + ' > "$ZETA_LEDGER_FILE"', 'echo "verdict=$(verdict)"'].join("\n"),
     );
     const ts = validateAttemptLedger(raw);
     expect(ts.trusted).toBe(true);
