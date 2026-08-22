@@ -82,6 +82,28 @@ updates:
         update-types:
           - "version-update:semver-major"
           - "version-update:semver-minor"
+      # FsCheck.Xunit.v3's own version number understates what it requires.
+      # Measured 2026-08-22 from the published nuspecs:
+      #
+      #   3.3.4 (held) -> xunit.v3.extensibility.core  3.0.1
+      #   3.4.0        -> xunit.v3.extensibility.core  [4.0.0, 5.0.0)
+      #
+      # We pin xunit.v3 at 3.2.2, so a MINOR bump of FsCheck.Xunit.v3 demands a
+      # MAJOR migration of xunit v3 -> v4. Dependabot grades it minor because its
+      # own version is minor; the transitive requirement is not, and NU1608 fires
+      # as an error under Warning-As-Error -- taking eight unrelated bumps in the
+      # same group down with it (PR #13653, red on every platform).
+      #
+      # Adopting xunit v4 is a test-framework migration across every test project,
+      # not a dependency chore.
+      #
+      # LIFTS WHEN: xunit.v3 is deliberately moved to the 4.x line. That bump and
+      # this one belong in the same change, so the constraint can never be half
+      # satisfied -- which is exactly what a bot on a weekly schedule cannot know.
+      - dependency-name: "FsCheck.Xunit.v3"
+        update-types:
+          - "version-update:semver-major"
+          - "version-update:semver-minor"
 
   - package-ecosystem: "github-actions"
     directory: "/"
