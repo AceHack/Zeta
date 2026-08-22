@@ -1,0 +1,12 @@
+{
+  "pr_number": 13968,
+  "archive_path": "docs/history/pr-reviews/PR-13968-fix-heartbeats-data-ci-runs-jsonl-needs-merge-union-it-is-wedging-every-lane-s-t.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-22T22:47:49.433Z",
+  "schema_version": "v1",
+  "commit_sha": "453ed03e7d4bab8dc6b7688a41e314b568e8dcec",
+  "title": "fix(heartbeats): data/ci-runs.jsonl needs merge=union — it is wedging every lane's tick",
+  "state": "MERGED",
+  "merged_at": "2026-08-22T22:46:59Z",
+  "head_ref": "shadow-ci-runs-union-merge"
+}
