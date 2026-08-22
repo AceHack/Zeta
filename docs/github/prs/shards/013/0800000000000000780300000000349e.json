@@ -1,0 +1,12 @@
+{
+  "pr_number": 13470,
+  "archive_path": "docs/history/pr-reviews/PR-13470-ops-repair-derived-pr-manifest-drift-2-rows-behind-the-shards.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-22T01:27:23.325Z",
+  "schema_version": "v1",
+  "commit_sha": "9af704b90c08b0d96c6598d99e2f9c92093a26a0",
+  "title": "ops: repair derived PR-manifest drift — 2 rows behind the shards",
+  "state": "MERGED",
+  "merged_at": "2026-08-22T01:26:43Z",
+  "head_ref": "ops/repair-pr-manifest-drift"
+}
