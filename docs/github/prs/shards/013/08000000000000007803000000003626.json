@@ -1,0 +1,12 @@
+{
+  "pr_number": 13862,
+  "archive_path": "docs/history/pr-reviews/PR-13862-fix-cluster-the-application-roster-s-order-was-locale-dependent-pay-the-last-col.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-22T19:53:24.747Z",
+  "schema_version": "v1",
+  "commit_sha": "f6f22b9b8efd4943724a9f627b30a71fc741e74d",
+  "title": "fix(cluster): the Application roster's order was locale-dependent — pay the last collation debt row",
+  "state": "MERGED",
+  "merged_at": "2026-08-22T19:52:46Z",
+  "head_ref": "shadow-collation-argocd-roster"
+}
