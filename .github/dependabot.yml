@@ -100,7 +100,18 @@ updates:
       # LIFTS WHEN: xunit.v3 is deliberately moved to the 4.x line. That bump and
       # this one belong in the same change, so the constraint can never be half
       # satisfied -- which is exactly what a bot on a weekly schedule cannot know.
-      - dependency-name: "FsCheck.Xunit.v3"
+      #
+      # CORRECTION 2026-08-22: this was first written as `FsCheck.Xunit.v3`
+      # alone and it did NOT work. #13676 landed at 11:52:06Z; Dependabot opened
+      # #13696 at 12:13:18Z -- 21 minutes later, with the ignore live -- still
+      # carrying FsCheck.Xunit.v3 3.4.0.
+      #
+      # The ignore was on the wrong end of the coupling. FsCheck.Xunit.v3 3.4.0
+      # requires `FsCheck [3.4.0]` EXACTLY, so the two move as a locked pair:
+      # #13696 bumps FsCheck 3.3.4 -> 3.4.0, and FsCheck.Xunit.v3 cannot stay
+      # behind. Ignoring the follower cannot stop the leader dragging it.
+      # Hence the family pattern.
+      - dependency-name: "FsCheck*"
         update-types:
           - "version-update:semver-major"
           - "version-update:semver-minor"
