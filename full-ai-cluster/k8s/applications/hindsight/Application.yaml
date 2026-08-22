@@ -3,8 +3,13 @@
 # Real chart wired: OCI Helm chart at ghcr.io/vectorize-io/charts/hindsight.
 #
 # Consumer agents reach Hindsight via:
-#   HINDSIGHT_URL=http://hindsight.hindsight.svc.cluster.local
-# (matches this Application's namespace + chart-default service name).
+#   HINDSIGHT_URL=http://hindsight-api.hindsight.svc.cluster.local
+# NOT `hindsight.hindsight.svc` -- MEASURED 2026-08-22 against chart 0.3.0:
+# `templates/api-service.yaml` names the Service `{{ fullname }}-api`, and with
+# releaseName `hindsight` on chart `hindsight` the fullname helper collapses to
+# `hindsight`, so the three rendered Services are `hindsight-api`,
+# `hindsight-control-plane` and `hindsight-postgresql`. There has never been one
+# called plain `hindsight`.
 
 apiVersion: argoproj.io/v1alpha1
 kind: Application
@@ -59,29 +64,63 @@ spec:
             size: 10Gi
 
         api:
-          # LLM provider Hindsight uses for its own entity/relation
-          # extraction (separate from consumer-agent's LLM choice).
-          # Sourced from a Vault-backed ExternalSecret rather than
-          # hardcoded.
-          llm:
-            provider: groq # change per maintainer preference
-            existingSecret:
-              name: hindsight-llm-api-key
-              key: api-key
-          # Database URL inferred from bundled postgresql above when
-          # `postgresql.enabled: true`. Override here for external
-          # CockroachDB:
-          # database:
-          #   url: postgresql://hindsight:$(PG_PASSWORD)@cockroachdb-public.cockroachdb.svc.cluster.local:26257/hindsight?sslmode=require
-          #   existingSecret:
-          #     name: hindsight-db-credentials
-          #     passwordKey: password
+          # LLM provider Hindsight uses for its own entity/relation extraction
+          # (separate from a consumer-agent's LLM choice).
+          #
+          # NOT `api.llm.*` -- MEASURED 2026-08-22 by rendering chart 0.3.0 from
+          # this very valuesObject. The chart has no `api.llm` key anywhere:
+          # `templates/api-deployment.yaml` builds the api container's env from
+          # exactly three sources -- the computed `HINDSIGHT_API_DATABASE_URL`,
+          # a `range` over `.Values.api.env`, and a `range` over
+          # `.Values.api.secrets`. The old `api.llm: {provider, existingSecret}`
+          # block rendered NOTHING: the container carried two env vars, and the
+          # provider this file has claimed since PR #4913 never reached it.
+          env:
+            # Merges with the chart default `HINDSIGHT_API_LLM_MODEL:
+            # openai/gpt-oss-120b`; Helm deep-merges maps, so naming one key
+            # here does not drop the other.
+            HINDSIGHT_API_LLM_PROVIDER: groq
 
-          # Service for Hermes to reach Hindsight at:
-          #   http://hindsight.hindsight.svc.cluster.local
-        service:
-          type: ClusterIP
-          port: 80
+          # THE API KEY IS STILL NOT WIRED, and that is deliberate rather than
+          # overlooked. The chart's key for it is the TOP-LEVEL `existingSecret:
+          # <name>` (a bare string), consumed as `envFrom: [secretRef]` -- so
+          # the Secret's KEY NAMES become the env var names, and the key would
+          # have to be literally `HINDSIGHT_API_LLM_API_KEY`, not `api-key`.
+          #
+          # Setting it today would make things WORSE, not better: nothing in
+          # either cluster tree creates a Secret named `hindsight-llm-api-key`
+          # -- `grep -rn "kind: ExternalSecret" full-ai-cluster infra` returns
+          # zero manifests, so there is no ExternalSecret anywhere yet, only the
+          # external-secrets controller and its store. `envFrom` against a
+          # Secret that does not exist holds the pod in
+          # CreateContainerConfigError, which trades a silently-absent key for a
+          # container that cannot start. When the ExternalSecret is written, the
+          # change here is one line at the TOP level of valuesObject:
+          #   existingSecret: hindsight-llm-api-key
+          # and the ExternalSecret must project its Vault value under the key
+          # `HINDSIGHT_API_LLM_API_KEY`.
+          #
+          # Database URL is computed by the chart from the bundled postgresql
+          # above (`hindsight.databaseUrl` in _helpers.tpl). To point at an
+          # external CockroachDB/Postgres instead, set `postgresql.enabled:
+          # false` plus `postgresql.external.{host,port,database,username}` and
+          # supply `postgres-password` through the same top-level
+          # `existingSecret`; the chart reads no `api.database` key.
+
+          # Service Hermes reaches Hindsight on. NOT a top-level `service:` --
+          # chart 0.3.0 has no such key; it reads `api.service.{type,port,
+          # targetPort}` and `controlPlane.service.*`. The top-level block this
+          # replaces rendered nothing, so the api Service kept the chart default
+          # port 8888 while every doc in the repo said 80.
+          #
+          # `port` is what the ClusterIP answers on; `targetPort` stays at the
+          # chart default 8888 (the container port, referenced by NAME in the
+          # Service template). The control plane's own
+          # `HINDSIGHT_CP_DATAPLANE_API_URL` is built from this same value, so
+          # it follows the change automatically.
+          service:
+            type: ClusterIP
+            port: 80
 
   destination:
     server: https://kubernetes.default.svc

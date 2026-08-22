@@ -128,6 +128,7 @@ import { parseAllDocuments, stringify as yamlStringify } from "yaml";
 import { stringCompare } from "../collation/collation.ts";
 import { quantityToGib } from "./single-node-readiness.ts";
 import { loadCatalogue, type ProfileCatalogue, type ProfileClaim, type ProfileFinding } from "./storage-profiles.ts";
+import { clusterDefaultStorageClass, effectiveStorageClass } from "./cluster-default-storage-class.ts";
 
 const REPO_ROOT = resolve(import.meta.dir, "../../..");
 
@@ -619,44 +620,19 @@ export function extractRenderedPvcs(
 // ---------------------------------------------------------------------------
 // The cluster's default StorageClass
 // ---------------------------------------------------------------------------
+//
+// MOVED to `cluster-default-storage-class.ts` on 2026-08-22 and re-exported
+// here, so this module's public surface is unchanged. It moved because
+// `single-node-readiness.ts` now resolves a blank class the same way, and a
+// second copy of the reading would let the two oracles drift apart on the one
+// term that has to mean the same thing in both.
 
-const DEFAULT_STORAGE_CLASS_SOURCE = "full-ai-cluster/nixos/modules/local-storage.nix";
+export {
+  DEFAULT_STORAGE_CLASS_SOURCE,
+  clusterDefaultStorageClass,
+  effectiveStorageClass,
+} from "./cluster-default-storage-class.ts";
 
-/**
- * The name annotated `storageclass.kubernetes.io/is-default-class: "true"`, or
- * `null` when the tree does not declare one.
- *
- * AN ABSENT `storageClassName` IS NOT "NO DISK" AND IS NOT "longhorn". It is
- * whatever class the cluster marks default, and on this cluster that is
- * `zeta-local-path` — `rancher.io/local-path`, a hostPath directory with
- * `reclaimPolicy: Delete`, declared in the nixos module above. Longhorn ships
- * `defaultClass: false` in `full-ai-cluster`, so nothing falls back to the
- * replicated class by accident.
- *
- * That distinction is the whole reason storageClass is compared and not just
- * size: a claim that declares `longhorn` and renders blank does not merely
- * land on a different disk, it lands on a class whose reclaim policy DELETES
- * the data. Returning `null` rather than guessing keeps an unknown unknown —
- * a comparison against an unknown default is refused, not resolved favourably.
- */
-export function clusterDefaultStorageClass(repoRoot = REPO_ROOT): string | null {
-  const text = readIfPresent(resolve(repoRoot, DEFAULT_STORAGE_CLASS_SOURCE));
-  if (text === null) return null;
-  const lines = text.split("\n");
-  for (let index = 0; index < lines.length; index += 1) {
-    if (!/storageclass\.kubernetes\.io\/is-default-class:\s*"true"/.test(lines[index] ?? "")) continue;
-    for (let back = index; back >= 0 && index - back < 12; back -= 1) {
-      const match = /^\s*name:\s*(\S+)\s*$/.exec(lines[back] ?? "");
-      if (match?.[1] !== undefined) return match[1];
-    }
-  }
-  return null;
-}
-
-/** `""` -> the cluster default, or `null` when there is no default to fall back to. */
-export function effectiveStorageClass(declared: string, clusterDefault: string | null): string | null {
-  return declared === "" ? clusterDefault : declared;
-}
 
 // ---------------------------------------------------------------------------
 // Comparison

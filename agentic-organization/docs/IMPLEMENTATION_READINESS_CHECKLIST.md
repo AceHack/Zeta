@@ -464,7 +464,7 @@ Cluster context to preserve:
 - Hindsight is the real Hermes memory provider, not a placeholder;
 - Hindsight is available as the `vectorize-io/hindsight` OCI Helm chart at `ghcr.io/vectorize-io/charts/hindsight`;
 - the current target chart version is `0.3.0`;
-- Hermes can point at the in-cluster service through `HINDSIGHT_URL=http://hindsight.hindsight.svc.cluster.local`;
+- Hermes can point at the in-cluster service through `HINDSIGHT_URL=http://hindsight-api.hindsight.svc.cluster.local`;
 - Hindsight automatically recalls relevant context before LLM calls, retains conversations, and exposes retain/recall/reflect tools;
 - memory storage is precious and should not be pruned by default;
 - secrets should be Vault-backed or equivalent, with no plaintext API keys in Git;

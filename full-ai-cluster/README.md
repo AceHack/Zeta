@@ -215,8 +215,20 @@ Add new `nixosConfigurations.<host>` entries to `flake.nix` as needed.
 - ✅ **Hindsight** wired: vectorize-io OCI Helm chart at
   `ghcr.io/vectorize-io/charts/hindsight` v0.3.0. Bundled
   PostgreSQL by default (longhorn-backed); swap to external
-  CockroachDB once that Application is healthy. LLM key sourced
-  from a Vault-backed ExternalSecret (`hindsight-llm-api-key`).
+  CockroachDB once that Application is healthy. Reachable at
+  `http://hindsight-api.hindsight.svc.cluster.local` — the chart
+  names its Services `<release>-api` / `-control-plane` /
+  `-postgresql`, never plain `hindsight`.
+  - ❌ **The LLM key is NOT wired.** This line claimed a
+    "Vault-backed ExternalSecret (`hindsight-llm-api-key`)" from
+    PR #4913 until 2026-08-22, and there was never such an object:
+    `grep -rn "kind: ExternalSecret" full-ai-cluster infra` returns
+    nothing, and the Application's `api.llm.existingSecret` was a key
+    chart 0.3.0 does not read, so it rendered nothing either. The
+    chart's real key is a TOP-LEVEL `existingSecret: <name>` consumed
+    as `envFrom`, so the Secret must carry `HINDSIGHT_API_LLM_API_KEY`
+    as a KEY NAME. Wiring it before the ExternalSecret exists would
+    hold the api pod in `CreateContainerConfigError`.
 
 ## Secrets
 

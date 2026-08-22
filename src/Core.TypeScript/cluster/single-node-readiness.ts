@@ -64,6 +64,7 @@ import {
   verifyProfileApplied,
   type ProfileCatalogue,
 } from "./storage-profiles.ts";
+import { clusterDefaultStorageClass } from "./cluster-default-storage-class.ts";
 
 const REPO_ROOT = resolve(import.meta.dir, "../../..");
 
@@ -111,7 +112,8 @@ export interface Finding {
     | "storage-budget"
     | "false-redundancy"
     | "capacity-provenance"
-    | "storage-profile";
+    | "storage-profile"
+    | "ledger-figures";
   readonly severity: "blocker" | "warning";
   readonly message: string;
   readonly detail: readonly string[];
@@ -334,12 +336,78 @@ function replicasGoverning(doc: Json, storageField: string): number {
   return best;
 }
 
-export function extractStorageClaims(manifest: AppManifest): readonly StorageClaim[] {
+/**
+ * Kinds that DESCRIBE a volume without ever provisioning one.
+ *
+ * `platform.zeta.io/v1alpha1 Blueprint` is a run-recipe — pure data the
+ * platform-controller renders only when a `Deployable` names it. Its
+ * `storageClassName` + `storage.size` are the SHAPE of a PVC some future
+ * instance will get, not a PVC. Counting one is the same error in the opposite
+ * direction from the one this auditor was built for: there, a declared claim
+ * governed nothing; here, a claim that provisions nothing was counted against
+ * the disk.
+ */
+const TEMPLATE_KINDS = new Set(["Blueprint"]);
+
+/**
+ * Blueprint names some `Deployable` in the scanned tree instantiates.
+ *
+ * A DENYLIST WITH A DOOR, not an exemption. The template kind above is skipped
+ * only while nothing instantiates it — write a Deployable that names `mssql`
+ * and its 8 GiB is counted again, with no edit here. That is what keeps this
+ * from being the "acknowledge it and the number goes away" move: the exclusion
+ * is a consequence of the tree, and the tree can revoke it.
+ *
+ * DELIBERATELY GENEROUS about which Deployables count. `examples/` is scanned
+ * even though `platform/Application.yaml`'s `directory.include` glob keeps Argo
+ * from applying it, so an example Deployable is enough to bring a Blueprint's
+ * capacity back into the total. That over-counts rather than under-counts, and
+ * the direction is the point: this ledger convicts, never acquits.
+ */
+export function instantiatedBlueprints(manifests: readonly AppManifest[]): ReadonlySet<string> {
+  const out = new Set<string>();
+  for (const manifest of manifests) {
+    for (const doc of manifest.docs) {
+      if (!isRecord(doc)) continue;
+      if (at(doc, "kind") !== "Deployable") continue;
+      const blueprint = at(at(doc, "spec"), "blueprint");
+      if (typeof blueprint === "string" && blueprint.length > 0) out.add(blueprint);
+    }
+  }
+  return out;
+}
+
+export interface StorageExtractionOptions {
+  /**
+   * What a BLANK `storageClassName` resolves to. `null` (or absent) keeps the
+   * old behaviour of dropping such a claim — which is honest only when the
+   * default genuinely is not known, and is an UNDERCOUNT whenever it is.
+   */
+  readonly clusterDefault?: string | null;
+  /** Blueprints some Deployable instantiates; see `instantiatedBlueprints`. */
+  readonly instantiated?: ReadonlySet<string> | undefined;
+}
+
+export function extractStorageClaims(
+  manifest: AppManifest,
+  options: StorageExtractionOptions = {},
+): readonly StorageClaim[] {
   const out: StorageClaim[] = [];
+  const clusterDefault = options.clusterDefault ?? null;
+  const instantiated = options.instantiated ?? new Set<string>();
   for (const doc of manifest.docs) {
+    if (isTemplateDocument(doc, instantiated)) continue;
     for (const [field, value] of walk(doc)) {
       if (!STORAGE_CLASS_KEYS.has(lastSegment(field))) continue;
-      if (typeof value !== "string" || value.length === 0) continue;
+      if (typeof value !== "string") continue;
+      // A BLANK class is not "no claim" — it is a claim on whatever class the
+      // cluster marks default, which here is `zeta-local-path`
+      // (rancher.io/local-path, reclaimPolicy DELETE). Dropping it, as this
+      // function did until 2026-08-22, hid a real disk consumer from the total.
+      // With no default declared anywhere in the tree the honest answer is
+      // still to drop it: an unknown class cannot be added to a named one.
+      const storageClass = value.length === 0 ? clusterDefault : value;
+      if (storageClass === null) continue;
       const scope = field.slice(0, Math.max(0, field.lastIndexOf(".")));
       const size = sizeNear(doc, scope);
       if (size === null) continue;
@@ -348,13 +416,22 @@ export function extractStorageClaims(manifest: AppManifest): readonly StorageCla
         app: manifest.app,
         path: manifest.path,
         field,
-        storageClass: value,
+        storageClass,
         gibibytes: size,
         replicas,
       });
     }
   }
   return out;
+}
+
+/** A template document whose kind provisions nothing, and which nothing instantiates. */
+function isTemplateDocument(doc: Json, instantiated: ReadonlySet<string>): boolean {
+  if (!isRecord(doc)) return false;
+  const kind = at(doc, "kind");
+  if (typeof kind !== "string" || !TEMPLATE_KINDS.has(kind)) return false;
+  const name = at(at(doc, "metadata"), "name");
+  return typeof name !== "string" || !instantiated.has(name);
 }
 
 const SIZE_KEYS = new Set(["size", "storage"]);
@@ -1016,17 +1093,232 @@ export function findStorageProfileDrift(
   return findings;
 }
 
+export const DEFAULT_LEDGER_PATH = "full-ai-cluster/k8s/single-node-budget.json";
+
+/** The file's bytes, or `null` when it is not there. One syscall, one answer. */
+function readIfPresent(abs: string): string | null {
+  try {
+    return readFileSync(abs, "utf8");
+  } catch (error) {
+    if ((error as NodeJS.ErrnoException).code === "ENOENT") return null;
+    throw error;
+  }
+}
+
+// ---------------------------------------------------------------------------
+// The RENDER's reading, and the prose figures that quote it
+// ---------------------------------------------------------------------------
+
+/**
+ * Per-StorageClass GiB the RENDER asks for, read from the checked-in snapshot.
+ *
+ * WHY THE READINESS AUDITOR READS THE RENDER AT ALL. This module extracts from
+ * OUR YAML, and that is a genuinely different question from what a chart
+ * produces — but it is also a STRUCTURALLY partial answer for any class most of
+ * whose consumers we never declare. Measured 2026-08-22: of the 193 GiB the
+ * full-ai-cluster tree renders onto `zeta-local-path`, 98 GiB comes from charts
+ * whose Application says nothing at all about storage (gitlab 76, loki 20,
+ * mimir-alertmanager 1, dapr 1). No amount of teaching this extractor to read
+ * blank classes recovers those: there is no key in our tree to read.
+ *
+ * So the two figures are NOT redundant and neither supersedes the other on
+ * every question. The derived one answers "how much did we DECLARE", which is
+ * what the storage-profile ladder governs; the rendered one answers "how much
+ * will the cluster ASK FOR", which is what the disk has to hold. The second is
+ * the one to trust for capacity, and the report says so in those words rather
+ * than printing two numbers and leaving the reader to choose.
+ *
+ * PER TREE, because the two Application roots are mutually exclusive: the
+ * ledger's own `acknowledgedRootAppDuplicates` records that both declare
+ * `argocd/zeta-root`, so one prunes the other and a single node runs ONE of
+ * them. Summing both trees answers a question no cluster asks.
+ */
+export interface RenderedClassTotals {
+  readonly measuredOn: string;
+  /** class -> GiB across every tree. */
+  readonly total: ReadonlyMap<string, number>;
+  /** class -> tree -> GiB. */
+  readonly byTree: ReadonlyMap<string, ReadonlyMap<string, number>>;
+}
+
+export const DEFAULT_RENDER_SNAPSHOT_PATH = "src/Core.TypeScript/cluster/rendered-storage-claims.snapshot.json";
+
+export function readRenderedTotals(
+  repoRoot = REPO_ROOT,
+  snapshotPath = DEFAULT_RENDER_SNAPSHOT_PATH,
+): RenderedClassTotals | null {
+  // ATTEMPT the read; do not `existsSync` first. The check-then-use pair is a
+  // TOCTOU window (`js/file-system-race`, and the repo's own
+  // `lint-check-then-use-file-races`): the snapshot can be rewritten or removed
+  // between the check and the read, so the answer the check gave is already
+  // stale. One syscall, one answer — a miss IS the ENOENT.
+  const text = readIfPresent(resolve(repoRoot, snapshotPath));
+  if (text === null) return null;
+  const parsed = JSON.parse(text) as {
+    measuredOn?: unknown;
+    clusterDefaultStorageClass?: unknown;
+    rendered?: unknown;
+  };
+  const clusterDefault =
+    typeof parsed.clusterDefaultStorageClass === "string" ? parsed.clusterDefaultStorageClass : null;
+  const total = new Map<string, number>();
+  const byTree = new Map<string, Map<string, number>>();
+  for (const row of Array.isArray(parsed.rendered) ? parsed.rendered : []) {
+    const pvc = row as { appId?: unknown; storageClassName?: unknown; gibibytes?: unknown; count?: unknown };
+    const declared = typeof pvc.storageClassName === "string" ? pvc.storageClassName : "";
+    const effective = declared === "" ? clusterDefault : declared;
+    // An unparseable rendered size is `null` in the snapshot and is NOT zero.
+    // Skipping it keeps the class total honestly incomplete instead of
+    // silently short — the render audit is where that finding belongs.
+    if (effective === null || typeof pvc.gibibytes !== "number") continue;
+    const count = typeof pvc.count === "number" ? pvc.count : 1;
+    const gib = pvc.gibibytes * count;
+    total.set(effective, (total.get(effective) ?? 0) + gib);
+    const tree = typeof pvc.appId === "string" ? (pvc.appId.split("/")[0] ?? "?") : "?";
+    const bucket = byTree.get(effective) ?? new Map<string, number>();
+    bucket.set(tree, (bucket.get(tree) ?? 0) + gib);
+    byTree.set(effective, bucket);
+  }
+  return {
+    measuredOn: typeof parsed.measuredOn === "string" ? parsed.measuredOn : "",
+    total,
+    byTree,
+  };
+}
+
+/** A `<storageClass>  <N> GiB` figure quoted in one of the ledger's `$comment_*` blocks. */
+export interface QuotedFigure {
+  readonly storageClass: string;
+  readonly gibibytes: number;
+  readonly line: string;
+}
+
+const QUOTED_FIGURE = /^\s{2,}([A-Za-z][A-Za-z0-9._-]*)\s+([0-9]+)\s*GiB\b/;
+
+/**
+ * Every aligned `<class>  <N> GiB` row inside the ledger's prose blocks.
+ *
+ * Prose in a checked-in file is not documentation, it is an UNCHECKED ASSERTION
+ * — and this ledger's prose carries the disk numbers a reader acts on. Until
+ * 2026-08-22 nothing refused a hand-edit of them: the render figure could be
+ * changed back to the superseded one and every test in the repo stayed green.
+ * That is the vacuity class in the one place this file exists to prevent it.
+ */
+export function quotedFigures(comments: readonly string[], knownClasses: ReadonlySet<string>): readonly QuotedFigure[] {
+  const out: QuotedFigure[] = [];
+  for (const line of comments) {
+    const match = QUOTED_FIGURE.exec(line);
+    if (match === null) continue;
+    const storageClass = match[1] ?? "";
+    if (!knownClasses.has(storageClass)) continue;
+    out.push({ storageClass, gibibytes: Number(match[2]), line: line.trim() });
+  }
+  return out;
+}
+
+/** Every `$comment*` string in the ledger JSON, flattened. */
+export function ledgerComments(path: string, repoRoot = REPO_ROOT): readonly string[] {
+  const text = readIfPresent(resolve(repoRoot, path));
+  if (text === null) return [];
+  const parsed = JSON.parse(text) as Record<string, unknown>;
+  const out: string[] = [];
+  for (const [key, value] of Object.entries(parsed)) {
+    if (!key.startsWith("$comment")) continue;
+    if (typeof value === "string") out.push(value);
+    else if (Array.isArray(value)) for (const entry of value) if (typeof entry === "string") out.push(entry);
+  }
+  return out;
+}
+
+/**
+ * Does every storage figure the ledger's prose quotes still equal something the
+ * auditor computes?
+ *
+ * The recognised set is deliberately a UNION of every reading the file is
+ * entitled to cite — the YAML-derived total, each rung of the ladder, the
+ * render across trees and the render per tree — because the prose's job is to
+ * explain how those readings differ. What it may not do is quote a number that
+ * is none of them, which is precisely what a stale figure is.
+ */
+export function findLedgerFigureDrift(
+  ledger: Ledger,
+  storageClaims: readonly StorageClaim[],
+  catalogue: ProfileCatalogue | null,
+  ledgerPath: string = DEFAULT_LEDGER_PATH,
+  repoRoot = REPO_ROOT,
+): readonly Finding[] {
+  const derived = new Map(storageTotals(storageClaims));
+  const render = readRenderedTotals(repoRoot);
+  const recognised = new Map<string, Map<number, string>>();
+  const remember = (storageClass: string, gib: number, why: string): void => {
+    const bucket = recognised.get(storageClass) ?? new Map<number, string>();
+    bucket.set(Math.round(gib), why);
+    recognised.set(storageClass, bucket);
+  };
+  for (const [storageClass, gib] of derived) remember(storageClass, gib, "the YAML-derived total");
+  if (catalogue !== null) {
+    for (const storageClass of ledger.budgetedStorageClasses) {
+      for (const profile of catalogue.profiles) {
+        remember(storageClass, profileTotalGib(catalogue, profile), `the "${profile}" rung`);
+        remember(storageClass, profileBringUpGib(catalogue, profile), `the "${profile}" rung at bring-up`);
+      }
+    }
+  }
+  if (render !== null) {
+    for (const [storageClass, gib] of render.total) remember(storageClass, gib, "the render, every tree");
+    for (const [storageClass, trees] of render.byTree) {
+      for (const [tree, gib] of trees) remember(storageClass, gib, `the render, ${tree} tree`);
+    }
+  }
+  const known = new Set(recognised.keys());
+  for (const storageClass of ledger.budgetedStorageClasses) known.add(storageClass);
+  const stale = quotedFigures(ledgerComments(ledgerPath, repoRoot), known).filter((figure) => {
+    const bucket = recognised.get(figure.storageClass);
+    return bucket === undefined || !bucket.has(figure.gibibytes);
+  });
+  if (stale.length === 0) return [];
+  return [
+    {
+      check: "ledger-figures",
+      severity: "blocker",
+      message:
+        `${String(stale.length)} storage figure(s) quoted in ${ledgerPath}'s prose match no reading this auditor ` +
+        `computes. A number in a comment is read and acted on exactly like a number in a field; if nothing ` +
+        `refuses a stale one, the file's most-read surface is its least-checked.`,
+      detail: [
+        ...stale.map(
+          (figure) =>
+            `"${figure.line}" — no reading of "${figure.storageClass}" equals ${String(figure.gibibytes)} GiB`,
+        ),
+        "recognised readings:",
+        ...[...recognised.entries()]
+          .sort((a, b) => stringCompare(a[0], b[0]))
+          .flatMap(([storageClass, bucket]) =>
+            [...bucket.entries()]
+              .sort((a, b) => a[0] - b[0])
+              .map(([gib, why]) => `  ${storageClass} ${String(gib)} GiB — ${why}`),
+          ),
+      ],
+    },
+  ];
+}
+
 export function auditAll(
   ledger: Ledger,
   roots: readonly string[] = DEFAULT_ROOTS,
   repoRoot = REPO_ROOT,
   registrationsRoot = DEFAULT_REGISTRATIONS_ROOT,
   catalogue: ProfileCatalogue | null = null,
+  ledgerPath: string = DEFAULT_LEDGER_PATH,
 ) {
   const manifests = loadManifests(roots, repoRoot);
   const measuredNodes = collectMeasuredNodes(repoRoot, registrationsRoot);
   const replicaClaims = manifests.flatMap((manifest) => extractReplicaClaims(manifest, ledger.nodeCount));
-  const storageClaims = manifests.flatMap((manifest) => extractStorageClaims(manifest));
+  const extraction: StorageExtractionOptions = {
+    clusterDefault: clusterDefaultStorageClass(repoRoot),
+    instantiated: instantiatedBlueprints(manifests),
+  };
+  const storageClaims = manifests.flatMap((manifest) => extractStorageClaims(manifest, extraction));
   // The profile total REPLACES the derived one for budgeted classes when a
   // catalogue is supplied. `main` always supplies one and `readLedger` refuses
   // a ledger with no activeStorageProfile, so the null branch is reachable only
@@ -1041,6 +1333,7 @@ export function auditAll(
     ...findCapacityProvenance(storageClaims, ledger, measuredNodes, override),
     ...findStorageBudgetOverruns(storageClaims, ledger, override),
     ...findFalseRedundancy(replicaClaims, ledger),
+    ...findLedgerFigureDrift(ledger, storageClaims, catalogue, ledgerPath, repoRoot),
   ];
   return {
     manifests: manifests.length,
@@ -1088,7 +1381,6 @@ export function readLedger(path: string, repoRoot = REPO_ROOT): Ledger {
   };
 }
 
-export const DEFAULT_LEDGER_PATH = "full-ai-cluster/k8s/single-node-budget.json";
 
 function main(argv: readonly string[]): void {
   if (argv.includes("-h") || argv.includes("--help")) {
@@ -1116,7 +1408,7 @@ function main(argv: readonly string[]): void {
     // Loaded (and validated) BEFORE the audit, so a malformed catalogue aborts
     // rather than quietly falling through to the derived totals.
     catalogue = loadCatalogue(DEFAULT_CATALOGUE_PATH);
-    report = auditAll(ledger, DEFAULT_ROOTS, REPO_ROOT, DEFAULT_REGISTRATIONS_ROOT, catalogue);
+    report = auditAll(ledger, DEFAULT_ROOTS, REPO_ROOT, DEFAULT_REGISTRATIONS_ROOT, catalogue, ledgerPath);
   } catch (error) {
     console.error(`single-node readiness ABORTED: ${error instanceof Error ? error.message : String(error)}`);
     process.exit(1);
@@ -1162,6 +1454,7 @@ function main(argv: readonly string[]): void {
     );
     console.log("\nDerived per-node storage requirement (sum of declared PVC capacity x replicas):");
     const floor = verifiedNodeCapacity(report.measuredNodes);
+    const rendered = readRenderedTotals();
     for (const [storageClass, gib] of storageTotals(report.storageClaims)) {
       const budgeted = ledger.budgetedStorageClasses.includes(storageClass);
       const authoritative = budgeted && profileKnown ? profileTotalGib(catalogue, profile) : null;
@@ -1182,6 +1475,20 @@ function main(argv: readonly string[]): void {
           `  ${" ".repeat(18)} ${authoritative.toFixed(0).padStart(6)} GiB CHECKED (profile "${profile}") ` +
             `— supersedes the derived ${gib.toFixed(0)} GiB; the extractor cannot see chart-default pod counts`,
         );
+      }
+      // The same superseding, for the classes no profile rung governs. The
+      // render is per TREE because the two Application roots collide on
+      // `argocd/zeta-root` and one prunes the other: a single node runs one of
+      // them, so their sum is a number no cluster is ever asked for.
+      const renderedTrees = rendered?.byTree.get(storageClass);
+      if (renderedTrees !== undefined) {
+        for (const [tree, treeGib] of [...renderedTrees.entries()].sort((a, b) => stringCompare(a[0], b[0]))) {
+          console.log(
+            `  ${" ".repeat(18)} ${treeGib.toFixed(0).padStart(6)} GiB RENDERED (${tree} tree, ` +
+              `snapshot ${rendered?.measuredOn ?? "?"}) — trust this over the derived ${gib.toFixed(0)} GiB for ` +
+              `capacity; our YAML declares only part of what the charts ask for`,
+          );
+        }
       }
     }
     console.log(

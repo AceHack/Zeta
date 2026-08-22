@@ -28,8 +28,13 @@ import {
   findCapacityProvenance,
   findFalseRedundancy,
   findRootAppCollisions,
+  findLedgerFigureDrift,
   findStorageBudgetOverruns,
+  instantiatedBlueprints,
+  ledgerComments,
   lsblkSizeToGib,
+  quotedFigures,
+  readRenderedTotals,
   parseYamlDocuments,
   quantityToGib,
   storageTotals,
@@ -914,5 +919,406 @@ describe("the checked-in ledger keeps main green", () => {
     } finally {
       rmSync(dir, { recursive: true, force: true });
     }
+  });
+});
+
+// ---------------------------------------------------------------------------
+// A BLANK storageClassName, a TEMPLATE that provisions nothing, and the prose
+// figures that quote the answer. All three landed 2026-08-22.
+// ---------------------------------------------------------------------------
+
+const BLANK_CLASS = `
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+spec:
+  source:
+    helm:
+      valuesObject:
+        persistence:
+          storageClassName: ""
+          size: 12Gi
+`;
+
+const BLUEPRINT = `
+apiVersion: platform.zeta.io/v1alpha1
+kind: Blueprint
+metadata:
+  name: mssql
+spec:
+  storage: { size: "8Gi", mountPath: /var/opt/mssql }
+  storageClassName: zeta-local-path
+`;
+
+const DEPLOYABLE = `
+apiVersion: platform.zeta.io/v1alpha1
+kind: Deployable
+metadata:
+  name: orders-db
+spec:
+  blueprint: mssql
+`;
+
+describe("extractStorageClaims — a blank storageClassName is the cluster DEFAULT, not absence", () => {
+  test("a blank class resolves to the supplied default and is counted", () => {
+    const claims = extractStorageClaims(manifest("t/k8s/applications/x/Application.yaml", BLANK_CLASS), {
+      clusterDefault: "zeta-local-path",
+    });
+    expect(claims).toHaveLength(1);
+    expect(claims[0]?.storageClass).toBe("zeta-local-path");
+    expect(claims[0]?.gibibytes).toBe(12);
+  });
+
+  test("RED: with no default declared the claim is DROPPED rather than guessed onto a named class", () => {
+    // The failure this refuses is the acquitting one: inventing a class would
+    // add 12 GiB to whichever class happened to be nearest, and comparing a
+    // disk against a total built that way is worse than not comparing it.
+    expect(extractStorageClaims(manifest("t/k8s/applications/x/Application.yaml", BLANK_CLASS), {})).toEqual([]);
+  });
+
+  test("the OLD behaviour — dropping a blank class outright — is what changed", () => {
+    // Pinned as a pair so the change is legible: same manifest, same code path,
+    // and the only difference is whether a default was known.
+    const withDefault = extractStorageClaims(manifest("t/k8s/applications/x/Application.yaml", BLANK_CLASS), {
+      clusterDefault: "zeta-local-path",
+    });
+    const without = extractStorageClaims(manifest("t/k8s/applications/x/Application.yaml", BLANK_CLASS), {
+      clusterDefault: null,
+    });
+    expect(withDefault.length - without.length).toBe(1);
+  });
+
+  test("HONEST LIMIT: no manifest in the real tree writes a blank class today", async () => {
+    // So the paragraph above closes a hole rather than fixing an observed miss,
+    // and saying so is the point of the test. If this ever goes red, a real
+    // claim started depending on the resolution and the ledger's prose about
+    // "changes no number right now" has to be re-measured.
+    const readiness = await import("./single-node-readiness.ts");
+    const manifests = readiness.loadManifests(readiness.DEFAULT_ROOTS);
+    const withDefault = manifests.flatMap((entry) =>
+      readiness.extractStorageClaims(entry, { clusterDefault: "zeta-local-path" }),
+    );
+    const without = manifests.flatMap((entry) => readiness.extractStorageClaims(entry, { clusterDefault: null }));
+    expect(withDefault).toHaveLength(without.length);
+  });
+});
+
+describe("extractStorageClaims — a Blueprint is a template until a Deployable names it", () => {
+  test("a Blueprint nothing instantiates provisions nothing, so it is not counted", () => {
+    const claims = extractStorageClaims(manifest("t/k8s/applications/platform/blueprints.yaml", BLUEPRINT), {
+      instantiated: new Set<string>(),
+    });
+    expect(claims).toEqual([]);
+  });
+
+  test("RED: a Deployable naming it brings the capacity back, with no edit to the denylist", () => {
+    const deployables = instantiatedBlueprints([
+      manifest("t/k8s/applications/platform/examples/orders.yaml", DEPLOYABLE),
+    ]);
+    expect([...deployables]).toEqual(["mssql"]);
+    const claims = extractStorageClaims(manifest("t/k8s/applications/platform/blueprints.yaml", BLUEPRINT), {
+      instantiated: deployables,
+    });
+    expect(claims).toHaveLength(1);
+    expect(claims[0]?.gibibytes).toBe(8);
+  });
+
+  test("a Deployable naming a DIFFERENT blueprint does not resurrect this one", () => {
+    const other = instantiatedBlueprints([
+      manifest("t/x.yaml", DEPLOYABLE.replace("blueprint: mssql", "blueprint: postgres")),
+    ]);
+    expect(
+      extractStorageClaims(manifest("t/k8s/applications/platform/blueprints.yaml", BLUEPRINT), {
+        instantiated: other,
+      }),
+    ).toEqual([]);
+  });
+
+  test("the real tree: flowdent's mssql Blueprint is the 8 GiB that left the total", async () => {
+    const readiness = await import("./single-node-readiness.ts");
+    const manifests = readiness.loadManifests(readiness.DEFAULT_ROOTS);
+    const instantiated = readiness.instantiatedBlueprints(manifests);
+    expect(instantiated.has("mssql")).toBe(false);
+    const asIs = manifests.flatMap((entry) => readiness.extractStorageClaims(entry, { instantiated }));
+    // The counterfactual, not the old code path: write a Deployable naming
+    // `mssql` and this is what the total becomes. That the difference is
+    // exactly 8 GiB is what identifies the flowdent Blueprint as the whole of
+    // the overcount, rather than merely showing that SOMETHING moved.
+    const ifInstantiated = manifests.flatMap((entry) =>
+      readiness.extractStorageClaims(entry, { instantiated: new Set(["mssql"]) }),
+    );
+    const delta =
+      (new Map(readiness.storageTotals(ifInstantiated)).get("zeta-local-path") ?? 0) -
+      (new Map(readiness.storageTotals(asIs)).get("zeta-local-path") ?? 0);
+    expect(delta).toBe(8);
+  });
+});
+
+describe("readRenderedTotals — the render, per tree, because the trees are mutually exclusive", () => {
+  test("blank classes fold into the snapshot's own declared default, and trees stay separate", () => {
+    const dir = mkdtempSync(join(tmpdir(), "zeta-render-"));
+    try {
+      mkdirSync(join(dir, "src/Core.TypeScript/cluster"), { recursive: true });
+      writeFileSync(
+        join(dir, "src/Core.TypeScript/cluster/rendered-storage-claims.snapshot.json"),
+        JSON.stringify({
+          measuredOn: "2026-08-22",
+          clusterDefaultStorageClass: "zeta-local-path",
+          rendered: [
+            { appId: "full-ai-cluster/loki", storageClassName: "", gibibytes: 10, count: 2 },
+            { appId: "full-ai-cluster/vault", storageClassName: "zeta-local-path", gibibytes: 20, count: 1 },
+            { appId: "infra/gitlab", storageClassName: "", gibibytes: 8, count: 1 },
+            { appId: "full-ai-cluster/crdb", storageClassName: "longhorn", gibibytes: 48, count: 3 },
+          ],
+        }),
+        "utf8",
+      );
+      const totals = readRenderedTotals(dir);
+      expect(totals?.total.get("zeta-local-path")).toBe(48);
+      expect(totals?.byTree.get("zeta-local-path")?.get("full-ai-cluster")).toBe(40);
+      expect(totals?.byTree.get("zeta-local-path")?.get("infra")).toBe(8);
+      expect(totals?.total.get("longhorn")).toBe(144);
+    } finally {
+      rmSync(dir, { recursive: true, force: true });
+    }
+  });
+
+  test("RED: an unparseable rendered size is skipped, never counted as zero", () => {
+    const dir = mkdtempSync(join(tmpdir(), "zeta-render-"));
+    try {
+      mkdirSync(join(dir, "src/Core.TypeScript/cluster"), { recursive: true });
+      writeFileSync(
+        join(dir, "src/Core.TypeScript/cluster/rendered-storage-claims.snapshot.json"),
+        JSON.stringify({
+          measuredOn: "2026-08-22",
+          clusterDefaultStorageClass: "zeta-local-path",
+          rendered: [{ appId: "full-ai-cluster/x", storageClassName: "longhorn", gibibytes: null, count: 1 }],
+        }),
+        "utf8",
+      );
+      // Absent, NOT 0: a class whose only claim is unmeasurable must not read
+      // as a class that asks for nothing.
+      expect(readRenderedTotals(dir)?.total.has("longhorn")).toBe(false);
+    } finally {
+      rmSync(dir, { recursive: true, force: true });
+    }
+  });
+
+  // Mutation M17 (2026-08-22): replacing the ENOENT guard with a bare `catch {
+  // return null }` survived every other test. It must not, because "the file is
+  // not there" and "I could not read the file" are different answers and only
+  // the first one is safely null -- an unreadable snapshot swallowed as absent
+  // is a reading that silently stopped happening.
+  test("RED: an UNREADABLE snapshot throws — only ENOENT is null", () => {
+    const dir = mkdtempSync(join(tmpdir(), "zeta-render-"));
+    try {
+      // A directory where the file should be: readFileSync raises EISDIR (or
+      // EPERM on some platforms), never ENOENT.
+      mkdirSync(join(dir, "src/Core.TypeScript/cluster/rendered-storage-claims.snapshot.json"), {
+        recursive: true,
+      });
+      expect(() => readRenderedTotals(dir)).toThrow();
+    } finally {
+      rmSync(dir, { recursive: true, force: true });
+    }
+  });
+
+  test("an absent snapshot is null, not an empty reading", () => {
+    const dir = mkdtempSync(join(tmpdir(), "zeta-render-"));
+    try {
+      expect(readRenderedTotals(dir)).toBeNull();
+    } finally {
+      rmSync(dir, { recursive: true, force: true });
+    }
+  });
+});
+
+describe("findLedgerFigureDrift — the ledger's PROSE numbers are checked too", () => {
+  const CLAIMS = [
+    { app: "t/a", path: "t/a.yaml", field: "f", storageClass: "zeta-local-path", gibibytes: 95, replicas: 1 },
+  ];
+
+  function ledgerAt(dir: string, comment: readonly string[]): string {
+    writeFileSync(
+      join(dir, "budget.json"),
+      JSON.stringify({
+        $comment_nodeDiskGib: comment,
+        activeStorageProfile: "measured",
+        nodeDiskGib: 2048,
+        nodeCount: 1,
+        budgetedStorageClasses: ["longhorn"],
+      }),
+      "utf8",
+    );
+    return "budget.json";
+  }
+
+  test("a quoted figure that equals the derived reading passes", () => {
+    const dir = mkdtempSync(join(tmpdir(), "zeta-figures-"));
+    try {
+      const path = ledgerAt(dir, ["    zeta-local-path    95 GiB   (the extractor's reading)"]);
+      expect(findLedgerFigureDrift(LEDGER, CLAIMS, null, path, dir)).toEqual([]);
+    } finally {
+      rmSync(dir, { recursive: true, force: true });
+    }
+  });
+
+  test("RED: the exact regression this exists for — 95 hand-edited back to 103", () => {
+    const dir = mkdtempSync(join(tmpdir(), "zeta-figures-"));
+    try {
+      const path = ledgerAt(dir, ["    zeta-local-path   103 GiB   (the extractor's reading)"]);
+      const findings = findLedgerFigureDrift(LEDGER, CLAIMS, null, path, dir);
+      expect(findings).toHaveLength(1);
+      expect(findings[0]?.check).toBe("ledger-figures");
+      expect(findings[0]?.severity).toBe("blocker");
+      expect(findings[0]?.detail.join("\n")).toContain("103 GiB");
+    } finally {
+      rmSync(dir, { recursive: true, force: true });
+    }
+  });
+
+  test("a token that is not a known StorageClass is prose, not a figure", () => {
+    // `measured     967 GiB declared` is a rung name, not a class, and must not
+    // be adjudicated as one — otherwise the check fires on its own comment.
+    expect(quotedFigures(["    measured     967 GiB declared"], new Set(["longhorn"]))).toEqual([]);
+    expect(quotedFigures(["    longhorn      967 GiB   (x)"], new Set(["longhorn"]))).toHaveLength(1);
+  });
+
+  test("an inline mention with no alignment is not a figure", () => {
+    // `longhorn=1599GiB>>1047GiB@node-ad1efd` is an acknowledgement KEY, and
+    // those are checked by findCapacityProvenance, not here.
+    expect(quotedFigures(["  longhorn=1599GiB>>1047GiB@node-ad1efd"], new Set(["longhorn"]))).toEqual([]);
+  });
+
+  // THE WIRING, not just the function. Mutation M14 (2026-08-22) deleted the
+  // `findLedgerFigureDrift(...)` line from `auditAll` and every test above
+  // stayed green, because each of them calls the check DIRECTLY. A gate nothing
+  // invokes is a check that did not run wearing the face of one that passed --
+  // the exact class this file exists to refuse -- so the invocation is pinned
+  // here through auditAll's own findings.
+  test("RED: auditAll SURFACES the drift — deleting the call from the pipeline goes red", () => {
+    const root = mkdtempSync(join(tmpdir(), "zeta-snr-wired-"));
+    try {
+      mkdirSync(join(root, "tree/k8s/applications/cockroachdb"), { recursive: true });
+      writeFileSync(join(root, "tree/k8s/applications/cockroachdb/Application.yaml"), CRDB);
+      const budget = {
+        $comment_nodeDiskGib: ["    longhorn          999 GiB   (a figure nothing computes)"],
+        activeStorageProfile: "test-fixture",
+        nodeDiskGib: 1024,
+        nodeCount: 1,
+        budgetedStorageClasses: ["longhorn"],
+      };
+      writeFileSync(join(root, "budget.json"), JSON.stringify(budget), "utf8");
+      const report = auditAll(
+        { ...LEDGER, nodeDiskGib: 1024, acknowledgedFalseRedundancy: ["tree/cockroachdb"] },
+        ["tree/k8s/applications"],
+        root,
+        "maintainers",
+        null,
+        "budget.json",
+      );
+      expect(report.findings.map((finding) => finding.check)).toContain("ledger-figures");
+
+      // And the same tree with the figure CORRECTED (300 GiB is what the
+      // synthetic manifest derives) is green — so the check discriminates.
+      writeFileSync(
+        join(root, "budget.json"),
+        JSON.stringify({
+          ...budget,
+          $comment_nodeDiskGib: ["    longhorn          300 GiB   (the YAML-derived total)"],
+        }),
+        "utf8",
+      );
+      const green = auditAll(
+        { ...LEDGER, nodeDiskGib: 1024, acknowledgedFalseRedundancy: ["tree/cockroachdb"] },
+        ["tree/k8s/applications"],
+        root,
+        "maintainers",
+        null,
+        "budget.json",
+      );
+      expect(green.findings.map((finding) => finding.check)).not.toContain("ledger-figures");
+    } finally {
+      rmSync(root, { recursive: true, force: true });
+    }
+  });
+
+  test("ledgerComments flattens every $comment* key and nothing else", () => {
+    const dir = mkdtempSync(join(tmpdir(), "zeta-figures-"));
+    try {
+      writeFileSync(
+        join(dir, "b.json"),
+        JSON.stringify({ $comment: ["a"], $comment_x: "b", nodeCount: 1, other: ["not a comment"] }),
+        "utf8",
+      );
+      expect(ledgerComments("b.json", dir)).toEqual(["a", "b"]);
+    } finally {
+      rmSync(dir, { recursive: true, force: true });
+    }
+  });
+
+  test("the REAL ledger's prose figures all still match a reading the auditor computes", async () => {
+    const readiness = await import("./single-node-readiness.ts");
+    const { loadCatalogue } = await import("./storage-profiles.ts");
+    const ledger = readiness.readLedger(readiness.DEFAULT_LEDGER_PATH);
+    const manifests = readiness.loadManifests(readiness.DEFAULT_ROOTS);
+    const claims = manifests.flatMap((entry) =>
+      readiness.extractStorageClaims(entry, {
+        clusterDefault: "zeta-local-path",
+        instantiated: readiness.instantiatedBlueprints(manifests),
+      }),
+    );
+    expect(
+      findLedgerFigureDrift(ledger, claims, loadCatalogue(), readiness.DEFAULT_LEDGER_PATH),
+    ).toEqual([]);
+    // And the check is NOT vacuous on the real file: it found figures to check.
+    const known = new Set([...ledger.budgetedStorageClasses, "zeta-local-path"]);
+    expect(
+      quotedFigures(ledgerComments(readiness.DEFAULT_LEDGER_PATH), known).length,
+    ).toBeGreaterThanOrEqual(6);
+  });
+});
+
+describe("the hindsight manifest renders what it declares", () => {
+  test("RED: no key the pinned chart does not read — api.llm and a top-level service are gone", async () => {
+    const { readFileSync } = await import("node:fs");
+    const { parseAllDocuments } = await import("yaml");
+    const text = readFileSync("full-ai-cluster/k8s/applications/hindsight/Application.yaml", "utf8");
+    const values = (parseAllDocuments(text)[0]?.toJS() as Record<string, unknown>).spec as Record<string, unknown>;
+    const helm = ((values["source"] as Record<string, unknown>)["helm"] ?? {}) as Record<string, unknown>;
+    const obj = (helm["valuesObject"] ?? {}) as Record<string, unknown>;
+    const api = (obj["api"] ?? {}) as Record<string, unknown>;
+
+    // hindsight 0.3.0 has NO `api.llm`, NO top-level `service`, and NO
+    // `postgresql.primary`. Each of those was in this file and rendered nothing.
+    expect(api["llm"]).toBeUndefined();
+    expect(obj["service"]).toBeUndefined();
+    expect(((obj["postgresql"] ?? {}) as Record<string, unknown>)["primary"]).toBeUndefined();
+
+    // And the keys it DOES read carry the intent the dead ones expressed.
+    expect((api["env"] as Record<string, unknown>)["HINDSIGHT_API_LLM_PROVIDER"]).toBe("groq");
+    expect((api["service"] as Record<string, unknown>)["port"]).toBe(80);
+    expect(
+      ((obj["postgresql"] as Record<string, unknown>)["persistence"] as Record<string, unknown>)["storageClass"],
+    ).toBe("longhorn");
+  });
+
+  test("the LLM API key is still unwired, and the file says so rather than implying otherwise", async () => {
+    // The honest half. `existingSecret` is the chart's real key for it, and
+    // setting it before an ExternalSecret exists would hold the pod in
+    // CreateContainerConfigError -- so its ABSENCE is the correct state today
+    // and this test pins it together with the reason.
+    const { readFileSync } = await import("node:fs");
+    const { parseAllDocuments } = await import("yaml");
+    const text = readFileSync("full-ai-cluster/k8s/applications/hindsight/Application.yaml", "utf8");
+    const obj = (
+      (
+        (
+          (parseAllDocuments(text)[0]?.toJS() as Record<string, unknown>).spec as Record<string, unknown>
+        )["source"] as Record<string, unknown>
+      )["helm"] as Record<string, unknown>
+    )["valuesObject"] as Record<string, unknown>;
+    expect(obj["existingSecret"]).toBeUndefined();
+    expect(text).toContain("HINDSIGHT_API_LLM_API_KEY");
+    expect(text).toContain("CreateContainerConfigError");
   });
 });

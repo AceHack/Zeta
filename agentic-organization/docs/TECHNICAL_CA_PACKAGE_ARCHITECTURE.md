@@ -942,7 +942,7 @@ tree.
 | `@agentic-org/messaging`          | NATS ArgoCD app with JetStream enabled           | `nats.nats.svc.cluster.local:4222`                                    |
 | `@agentic-org/workflows-temporal` | Temporal ArgoCD app                              | `temporal-frontend.temporal.svc.cluster.local:7233`                   |
 | `@agentic-org/actors-dapr`        | Dapr control plane                               | Dapr sidecar plus `dapr-system` placement service                     |
-| `@agentic-org/memory`             | Hindsight OCI Helm chart                         | `http://hindsight.hindsight.svc.cluster.local`                        |
+| `@agentic-org/memory`             | Hindsight OCI Helm chart                         | `http://hindsight-api.hindsight.svc.cluster.local`                    |
 | `@agentic-org/hermes`             | Hermes deployment/service                        | `http://hermes.hermes.svc.cluster.local` once replicas are enabled    |
 | `@agentic-org/openziti`           | OZ/OpenZiti controller app                       | `https://ziti-controller.openziti.svc.cluster.local:443`              |
 | `@agentic-org/k8s-hats`           | hat-system CRDs and operator                     | Kubernetes API watches plus `zeta.society.hats.>` bridge input        |
