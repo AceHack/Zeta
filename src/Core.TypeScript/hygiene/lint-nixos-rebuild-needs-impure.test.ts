@@ -104,8 +104,28 @@ describe("the real tree", () => {
   // EIGHT violations: README.md:90 and :258, PROVISIONING.md:316, flake.nix:369,
   // operator-ssh-keys.txt:13, and zeta-install.sh:1165/:1381/:2813 -- i.e. every
   // rebuild command the installer itself prints when it finishes.
-  test("no flake rebuild command in the shipped tree omits --impure", () => {
-    const found = scanSurfaces();
-    expect(found.map((v) => `${v.file}:${String(v.line)} ${v.text}`)).toEqual([]);
-  });
+  //
+  // THE BUDGET IS DECLARED BECAUSE A BREACH HERE LIES. `scanSurfaces()` walks the shipped
+  // tree, and bun's per-test cap is 5,000 ms that nobody chose -- `bunfig.toml` documents at
+  // length that its `[test] timeout` key is inert. A timed-out test is reported by its NAME,
+  // so a slow host prints
+  //
+  //     (fail) no flake rebuild command in the shipped tree omits --impure
+  //
+  // which states the exact opposite of what happened: it reads as a rebuild command missing
+  // `--impure`, and sends a reader hunting a violation that is not there. MEASURED
+  // 2026-08-22: this line timed out at 6473 ms on the fleet's machine in a full-suite run
+  // while the tree was clean. The cause is the host, not the tree -- Microsoft Defender
+  // real-time protection authorises every file open per (process, file), so the first pass
+  // over the tree in a fresh process costs seconds there and ~350 ms after. CI has no such
+  // scanner. 120,000 ms is inherited from `lint-no-culture-sensitive-collation.test.ts` for
+  // the same whole-tree class, not tuned to a host.
+  test(
+    "no flake rebuild command in the shipped tree omits --impure",
+    () => {
+      const found = scanSurfaces();
+      expect(found.map((v) => `${v.file}:${String(v.line)} ${v.text}`)).toEqual([]);
+    },
+    120_000,
+  );
 });

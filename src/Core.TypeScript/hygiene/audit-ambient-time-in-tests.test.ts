@@ -10,7 +10,7 @@
 // real violating test files into the tree: a file that violates the rule on disk would be
 // found by the audit itself, which is a check eating its own falsifier.
 
-import { describe, expect, it } from "bun:test";
+import { beforeAll, describe, expect, it } from "bun:test";
 import { execFileSync } from "node:child_process";
 import { mkdtempSync, mkdirSync, writeFileSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
@@ -231,18 +231,40 @@ describe("the allowlist is a ratchet and cannot silently swallow a new violation
 });
 
 describe("the live tree", () => {
+  // ONE SCAN, IN A HOOK WITH A DECLARED BUDGET -- not two scans inside two 5,000 ms tests.
+  //
+  // Both assertions below are about the same tree at the same instant, so scanning it twice
+  // bought nothing and put the cost inside the assertions. bun's per-test cap is 5,000 ms,
+  // never declared (`bunfig.toml` explains at length that its `[test] timeout` key is inert),
+  // and a breach is reported by the test's NAME:
+  //
+  //     (fail) main is clean: every wall-clock in a test file is named and counted
+  //
+  // -- which reads as "the tree is dirty" and sends a reader looking for an unnamed clock
+  // that does not exist. MEASURED 2026-08-22: this file timed out at exactly that line on the
+  // fleet's machine while CI passed the same assertion on the same commit in 89 ms. The cause
+  // is the host -- Microsoft Defender real-time protection authorises every file open per
+  // (process, file), so the first pass over the tracked tree in a fresh process costs ~17.5 s
+  // there and ~350 ms thereafter. Nothing in the tree was wrong.
+  //
+  // The budget is 120,000 ms, inherited from `lint-no-culture-sensitive-collation.test.ts`
+  // for the same whole-tree class rather than tuned to a host. A machine slow enough to
+  // breach it still fails -- reported honestly as a slow hook, not as a dirty tree.
+  let live: ReturnType<typeof audit>;
+  beforeAll(() => {
+    live = audit(repoRoot, loadAllowlist(repoRoot));
+  }, 120_000);
+
   it("main is clean: every wall-clock in a test file is named and counted", () => {
-    const r = audit(repoRoot, loadAllowlist(repoRoot));
-    expect(r.unallowed).toEqual([]);
-    expect(r.countDrift).toEqual([]);
-    expect(r.deadRows).toEqual([]);
+    expect(live.unallowed).toEqual([]);
+    expect(live.countDrift).toEqual([]);
+    expect(live.deadRows).toEqual([]);
   });
 
   it("LIVENESS: the scan actually reached the tree", () => {
     // "Checked 0 files" must never read as success. If this number collapses, the enumeration
     // broke and every other assertion in this file became vacuous at the same instant.
-    const r = audit(repoRoot, loadAllowlist(repoRoot));
-    expect(r.scannedFiles).toBeGreaterThan(500);
+    expect(live.scannedFiles).toBeGreaterThan(500);
   });
 
   it("every allowlist row carries a reason a reviewer could refuse", () => {
