@@ -1,0 +1,12 @@
+{
+  "pr_number": 12876,
+  "archive_path": "docs/history/pr-reviews/PR-12876-add-cursor-cloud-agent-environment-build-test-lint.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-22T10:36:35.641Z",
+  "schema_version": "v1",
+  "commit_sha": "59a9d1ba718fce983ccbe3938d7978ce7501761f",
+  "title": "Add Cursor Cloud Agent environment (build + test + lint)",
+  "state": "MERGED",
+  "merged_at": "2026-08-22T10:35:52Z",
+  "head_ref": "cursor/setup-cloud-dev-environment-c9c8"
+}
