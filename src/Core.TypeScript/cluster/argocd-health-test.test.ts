@@ -1299,6 +1299,75 @@ describe("081M0JXXFV0087G0R00...: the four newly-visible non-storage defects", (
   });
 
   /**
+   * THE READING THIS REASON HAS TO REFUSE, and it is the obvious one: that
+   * `hindsight` is over-sized and shrinking it fixes the lane.
+   *
+   * The ladder says otherwise -- the applied set is over the runner budget with
+   * hindsight at ZERO -- and `reason-truth.ts` now checks the four numbers that
+   * say so (`resource-rung` x2, `lane-cpu` x2). This test pins the SENTENCE, so
+   * a future edit cannot keep the citations and quietly drop the conclusion
+   * they were gathered to support.
+   */
+  test("hindsight's reason says it is the symptom, not the cause", () => {
+    const reason = APPLIED_BUT_UNASSERTED_REASONS.get("hindsight") ?? "";
+    expect(reason).toContain("HINDSIGHT IS THE SYMPTOM, NOT THE CAUSE");
+    expect(reason).toContain("Take hindsight to ZERO and the lane is still 3231m");
+    // The four capacity citations are the checked half. Their VALUES are
+    // verified by reason-truth.test.ts against the ladder; what is pinned here
+    // is that the reason still binds them at all -- a reason that keeps the
+    // prose and drops the citations is back to an unattached number.
+    for (const cited of [
+      "[cite: resource-rung hindsight metal 1000]",
+      "[cite: resource-rung hindsight dev 400]",
+      "[cite: lane-cpu metal 4231 over]",
+      "[cite: lane-cpu dev 1906 fits]",
+    ]) {
+      expect(reason).toContain(cited);
+    }
+  });
+
+  /**
+   * THE `headscale` TRAP, APPLIED TO THIS ENTRY BEFORE IT COSTS A CYCLE.
+   *
+   * `headscale`'s exit condition said "prints `sync=Synced health=Healthy`" and
+   * the lane does not require `Synced` -- seven Applications pass at
+   * `sync=Unknown health=Healthy` in the same green run. A LIFTS WHEN stricter
+   * than the gate it names keeps a deferral alive after its defect is gone,
+   * which is the acknowledgement-outliving-its-cause shape in its cheapest
+   * form. hindsight's exit condition is written against the gate the lane
+   * actually applies, and this refuses the stricter form by name.
+   */
+  test("hindsight's exit condition is not stricter than the gate it names", () => {
+    const reason = APPLIED_BUT_UNASSERTED_REASONS.get("hindsight") ?? "";
+    const liftsWhen = reason.slice(reason.indexOf("LIFTS WHEN:"));
+    // THE FIRST FORM OF THIS TEST WAS `not.toContain("sync=Synced
+    // health=Healthy")`, AND IT WENT RED ON A CORRECT REASON -- the sentence
+    // quotes the stricter gate in order to REFUSE it. That is the exact defect
+    // reason-truth.ts's own header describes ("a scanner that reddens on the
+    // token reddens the honest correction; one that tries to detect negation is
+    // guessing at English in a gate"), reproduced by the person who had just
+    // read it. Polarity has to be DECLARED, so what is pinned is the refusal
+    // clause itself, not the absence of a string.
+    expect(liftsWhen).toContain("`health=Healthy` -- NOT `sync=Synced health=Healthy`");
+    // ...and WHY, so the next reader does not "tighten" it back.
+    expect(liftsWhen).toContain("sync=Unknown health=Healthy");
+    expect(liftsWhen).toContain("kept `headscale` deferred for a cycle after its defect was gone");
+  });
+
+  /**
+   * The third blocker is a DEFECT and is deliberately not claimed to be a
+   * scheduling blocker: nobody has run hindsight-api without an LLM key, so
+   * whether it can reach Healthy that way is unknown. Recording the unknown as
+   * unknown is what stops a plausible sentence from becoming the reason a
+   * deferral outlives its cause -- the two measured false reasons this tree
+   * already carries (temporal, oz) were both plausible.
+   */
+  test("hindsight's reason records the unknown instead of guessing it", () => {
+    const reason = APPLIED_BUT_UNASSERTED_REASONS.get("hindsight") ?? "";
+    expect(reason).toContain("nobody has measured whether hindsight-api can reach Healthy WITHOUT an LLM API key");
+  });
+
+  /**
    * COCKROACHDB. The init Job must be a SYNC-phase hook. Left on the chart's
    * `helm.sh/hook: post-install` it becomes an ArgoCD PostSync hook, and
    * PostSync waits for the Sync phase to be healthy -- which cannot happen

@@ -228,7 +228,19 @@ Add new `nixosConfigurations.<host>` entries to `flake.nix` as needed.
     chart's real key is a TOP-LEVEL `existingSecret: <name>` consumed
     as `envFrom`, so the Secret must carry `HINDSIGHT_API_LLM_API_KEY`
     as a KEY NAME. Wiring it before the ExternalSecret exists would
-    hold the api pod in `CreateContainerConfigError`.
+    hold the api AND control-plane pods in `CreateContainerConfigError`
+    (chart 0.3.0 renders `envFrom` on both).
+  - **And the ExternalSecret is not the only missing piece** — measured
+    2026-08-22. There is no `ClusterSecretStore` either: no manifest in
+    `full-ai-cluster` or `infra` declares one, only a commented-out
+    sketch in `applications/external-secrets/Application.yaml`. Vault
+    has never been initialised on metal (`applications/vault/TOPOLOGY.md`
+    §2), and the CI-side ephemeral init (#13391) is scoped to
+    **unsealing only** — `init` → `unseal` ×3 → `token revoke -self`,
+    with no auth mount, no policy and no KV write — so it leaves an
+    unsealed, empty Vault and is not a secrets path. Five layers, not
+    one; the enumeration and the maintainer decision it needs live in
+    `k8s/applications/hindsight/Application.yaml`.
 
 ## Secrets
 

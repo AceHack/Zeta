@@ -101,11 +101,22 @@ import {
   type Baseline,
   type RenderSnapshot,
 } from "./rendered-storage-claims.ts";
+import {
+  devLaneAppliedDirs,
+  envelopeBudget,
+  loadResourceCatalogue,
+  resourceTotal,
+  type ResourceCatalogue,
+} from "./storage-profiles.ts";
 
 const REPO_ROOT = resolve(import.meta.dir, "../../..");
 const ROSTER_PATH = "src/Core.TypeScript/hygiene/published-chart-versions.json";
 const WORKFLOWS_DIR = ".github/workflows";
 const APPLICATIONS_TREE = "full-ai-cluster/k8s/applications";
+const FULL_AI_CLUSTER_CATALOGUE = "full-ai-cluster/k8s/storage-profiles.json";
+const RESOURCE_CATALOGUE_MISSING =
+  `this tree has no readable ${FULL_AI_CLUSTER_CATALOGUE}, so a capacity claim cannot be decided here -- ` +
+  `refused rather than passed, because an undecidable claim reported as checked is the defect this file exists for`;
 
 // ---------------------------------------------------------------------------
 // The citation grammar
@@ -134,7 +145,9 @@ export type CitationKind =
   | "unpublished"
   | "glob-defers"
   | "glob-applies"
-  | "workflow-job";
+  | "workflow-job"
+  | "resource-rung"
+  | "lane-cpu";
 
 const CITATION_ARITY: Readonly<Record<CitationKind, number>> = {
   path: 1,
@@ -151,6 +164,8 @@ const CITATION_ARITY: Readonly<Record<CitationKind, number>> = {
   "glob-defers": 1,
   "glob-applies": 1,
   "workflow-job": 2,
+  "resource-rung": 3,
+  "lane-cpu": 3,
 };
 
 const CITATION_KINDS: ReadonlySet<string> = new Set(Object.keys(CITATION_ARITY));
@@ -267,6 +282,16 @@ export interface Evidence {
   readonly globDeferred: ReadonlySet<string>;
   /** workflow file name -> job ids AND job names (expressions stripped). */
   readonly workflowJobs: ReadonlyMap<string, ReadonlySet<string>>;
+  /**
+   * The CPU/memory rung catalogue, or `null` when this tree has none.
+   *
+   * `null` is a REFUSAL, never a pass: a capacity claim resolved against a
+   * catalogue that is not there would be an unchecked number reported as a
+   * checked one, which is the whole defect this file exists for.
+   */
+  readonly resourceCatalogue: ResourceCatalogue | null;
+  /** The Application directories the dev lane's root catalogue actually applies. */
+  readonly devLaneDirs: readonly string[];
 }
 
 /** Read a file, or `null` when it is not there -- one syscall, one answer. */
@@ -367,7 +392,33 @@ export function loadEvidence(
     publishedVersions: readPublishedVersions(repoRoot),
     globDeferred: globDeferredDirs(excludeGlob),
     workflowJobs: readWorkflowJobs(repoRoot),
+    ...loadResourceEvidence(repoRoot, excludeGlob),
   };
+}
+
+/**
+ * The two resource-ladder artifacts, loaded defensively.
+ *
+ * `loadResourceCatalogue` THROWS on a tree with no catalogue (or a malformed
+ * one), and `loadEvidence` is deliberately callable against an arbitrary
+ * `--repo-root` -- that is how the exit-1 path is exercised. So a missing
+ * catalogue becomes `null` here and REFUTES at the citation, rather than
+ * taking the whole audit down with an exception or, worse, defaulting to an
+ * empty catalogue whose totals would all be zero and would silently agree with
+ * nothing.
+ */
+function loadResourceEvidence(
+  repoRoot: string,
+  excludeGlob: string,
+): Pick<Evidence, "resourceCatalogue" | "devLaneDirs"> {
+  try {
+    return {
+      resourceCatalogue: loadResourceCatalogue(undefined, repoRoot),
+      devLaneDirs: devLaneAppliedDirs(repoRoot, excludeGlob),
+    };
+  } catch {
+    return { resourceCatalogue: null, devLaneDirs: [] };
+  }
 }
 
 // ---------------------------------------------------------------------------
@@ -395,6 +446,11 @@ export type RefutationRule =
   | "cited-glob-application-refuted"
   | "cited-workflow-missing"
   | "cited-workflow-job-missing"
+  | "resource-catalogue-absent"
+  | "cited-rung-unknown"
+  | "cited-rung-disagrees"
+  | "cited-lane-total-disagrees"
+  | "cited-lane-verdict-disagrees"
   | "unbound-identifier";
 
 export interface Refutation {
@@ -651,6 +707,86 @@ export function checkCitation(citation: Citation, evidence: Evidence, subject: R
         "cited-workflow-job-missing",
         `${WORKFLOWS_DIR}/${arg(0)} declares no job named "${arg(1)}" -- a cited lane that was renamed or deleted ` +
           `leaves the reason resting on a job nobody runs`,
+      );
+    }
+    case "resource-rung": {
+      // `[cite: resource-rung <dir> <profile> <cpuMillis>]`
+      //
+      // What ONE Application reserves at ONE rung, pods included. This is the
+      // citation for "hindsight asks for 1000m", and it exists because that
+      // sentence is the one a reader is most likely to act on -- it is the
+      // number somebody reaches for when they want a pod to schedule, and a
+      // reason that states it from memory is a reason that will be wrong the
+      // first time anyone shrinks the app.
+      const catalogue = evidence.resourceCatalogue;
+      if (catalogue === null) return refute("resource-catalogue-absent", RESOURCE_CATALOGUE_MISSING);
+      const rows = catalogue.claims.filter((claim) => claim.dir === arg(0));
+      if (rows.length === 0) {
+        const ungoverned = catalogue.ungoverned.some((app) => app.dir === arg(0));
+        return refute(
+          "cited-rung-unknown",
+          ungoverned
+            ? `${arg(0)} is an UNGOVERNED row: no rung prices it, so it has no per-profile number to cite`
+            : `${FULL_AI_CLUSTER_CATALOGUE} has no resourceClaims row for directory "${arg(0)}"`,
+        );
+      }
+      if (!catalogue.profiles.includes(arg(1))) {
+        return refute(
+          "cited-rung-unknown",
+          `"${arg(1)}" is not a rung -- ${FULL_AI_CLUSTER_CATALOGUE} declares ${catalogue.profiles.join(", ")}`,
+        );
+      }
+      const measured = rows.reduce((sum, claim) => sum + (claim.cpuMillis[arg(1)] ?? 0) * claim.pods, 0);
+      const claimed = Number.parseInt(arg(2), 10);
+      if (Number.isFinite(claimed) && measured === claimed) return null;
+      return refute(
+        "cited-rung-disagrees",
+        `${arg(0)} at rung "${arg(1)}" totals ${String(measured)}m across ${String(rows.length)} row(s), ` +
+          `not ${arg(2)}m -- the reason outlived the ladder it was written against`,
+      );
+    }
+    case "lane-cpu": {
+      // `[cite: lane-cpu <profile> <cpuMillis> fits|over]`
+      //
+      // The WHOLE dev lane at one rung, and its verdict against the runner
+      // budget. The pair is the point: a reason that blames one Application for
+      // a lane that does not fit is only honest if the lane-wide number is on
+      // the record beside it, and `fits`/`over` is a polarity pair for the same
+      // reason every other kind here has one -- "metal does not fit" and "dev
+      // does" are opposite claims about the same artifact, and both are things
+      // a reason wants to assert.
+      const catalogue = evidence.resourceCatalogue;
+      if (catalogue === null) return refute("resource-catalogue-absent", RESOURCE_CATALOGUE_MISSING);
+      if (!catalogue.profiles.includes(arg(0))) {
+        return refute(
+          "cited-rung-unknown",
+          `"${arg(0)}" is not a rung -- ${FULL_AI_CLUSTER_CATALOGUE} declares ${catalogue.profiles.join(", ")}`,
+        );
+      }
+      const verdictWord = arg(2);
+      if (verdictWord !== "fits" && verdictWord !== "over") {
+        return refute(
+          "cited-lane-verdict-disagrees",
+          `the third argument must be "fits" or "over", not "${verdictWord}" -- a verdict left off would make ` +
+            `this citation a number with no claim attached to it`,
+        );
+      }
+      const total = resourceTotal(catalogue, arg(0), evidence.devLaneDirs);
+      const claimed = Number.parseInt(arg(1), 10);
+      if (!Number.isFinite(claimed) || total.cpuMillis !== claimed) {
+        return refute(
+          "cited-lane-total-disagrees",
+          `the dev lane at rung "${arg(0)}" totals ${String(total.cpuMillis)}m across ` +
+            `${String(evidence.devLaneDirs.length)} Applications, not ${arg(1)}m`,
+        );
+      }
+      const budget = envelopeBudget(catalogue.envelope);
+      const fits = total.cpuMillis <= budget.cpuMillis;
+      if (fits === (verdictWord === "fits")) return null;
+      return refute(
+        "cited-lane-verdict-disagrees",
+        `the reason says the lane is "${verdictWord}" at rung "${arg(0)}", but ${String(total.cpuMillis)}m ` +
+          `against a ${String(budget.cpuMillis)}m budget ${fits ? "FITS" : "does NOT fit"}`,
       );
     }
   }

@@ -49,6 +49,7 @@ import {
   type ReasonSubject,
 } from "./reason-truth.ts";
 import { loadSnapshot, snapshotDrift, type RenderSnapshot } from "./rendered-storage-claims.ts";
+import { envelopeBudget, resourceTotal, verifyResourceProfileApplied } from "./storage-profiles.ts";
 
 const EVIDENCE = loadEvidence();
 
@@ -484,5 +485,155 @@ describe("the CLI exit code", () => {
     } finally {
       rmSync(scratch, { recursive: true, force: true });
     }
+  });
+});
+
+// ---------------------------------------------------------------------------
+// THE CAPACITY CITATIONS (`resource-rung`, `lane-cpu`)
+//
+// WHY THESE TWO KINDS EXIST, and it is a specific failure that already
+// happened here rather than a general wish for rigour.
+//
+// `hindsight`'s deferral reason has said "an applied-set total of 4131m" since
+// 2026-08-21. That number was true when written and stopped being true the same
+// week -- #13469 measured `temporal` against its own valuesObject instead of
+// chart defaults, and #13471 corrected `forgejo`'s fictional pin so it could be
+// measured at all, moving every total in the ladder. Nothing went red, because
+// a number typed into a sentence is not attached to the artifact it came from.
+//
+// A capacity number is the WORST kind to leave unattached: it is the one a
+// reader acts on. "hindsight asks for 1000m" is the sentence that makes someone
+// edit a manifest. So both halves of that argument are written as citations --
+// what the app reserves, and what the LANE reserves -- and the tree decides.
+//
+// The tests below are the falsifiers for the checker itself. Each mutates ONE
+// argument of a citation the live registry carries and requires a refutation:
+// a check that passes the true value and also passes the false one is not a
+// check, and that is precisely the shape these citations exist to replace.
+// ---------------------------------------------------------------------------
+
+describe("resource-rung / lane-cpu are checked against the ladder, not the prose", () => {
+  test("the numbers hindsight's reason cites are the ones the catalogue holds", () => {
+    // The live registry entry, not a reconstruction. If a future edit lowers
+    // hindsight's rung, raises it, or renames a profile, this goes red HERE --
+    // one second offline -- instead of forty minutes into a live kind run.
+    expect(checkCitation(only("[cite: resource-rung hindsight metal 1000]"), EVIDENCE, subject("hindsight", ""))).toBe(
+      null,
+    );
+    expect(checkCitation(only("[cite: resource-rung hindsight dev 400]"), EVIDENCE, subject("hindsight", ""))).toBe(
+      null,
+    );
+  });
+
+  test("a rung total that is off by one milli is refuted", () => {
+    const verdict = checkCitation(
+      only("[cite: resource-rung hindsight metal 999]"),
+      EVIDENCE,
+      subject("hindsight", ""),
+    );
+    expect(verdict?.rule).toBe("cited-rung-disagrees");
+    // The refutation prints the MEASURED total, so the reader is handed the
+    // right number rather than only told the written one is wrong.
+    expect(verdict?.detail).toContain("1000m");
+  });
+
+  test("a directory no rung governs is refused, not silently summed to zero", () => {
+    // `alloy` is in the catalogue's `ungovernedRequests`, so it has a measured
+    // total and NO per-profile rung. Reading its absence from `resourceClaims`
+    // as 0m would make every citation about it pass at `0`, which is the
+    // vacuity this kind is supposed to remove.
+    const verdict = checkCitation(only("[cite: resource-rung alloy dev 0]"), EVIDENCE, subject("alloy", ""));
+    expect(verdict?.rule).toBe("cited-rung-unknown");
+    expect(verdict?.detail).toContain("UNGOVERNED");
+  });
+
+  test("a profile the ladder does not declare is refuted rather than defaulted", () => {
+    const verdict = checkCitation(
+      only("[cite: resource-rung hindsight production 1000]"),
+      EVIDENCE,
+      subject("hindsight", ""),
+    );
+    expect(verdict?.rule).toBe("cited-rung-unknown");
+  });
+
+  test("the lane totals and their fits/over verdicts both hold today", () => {
+    expect(checkCitation(only("[cite: lane-cpu metal 4231 over]"), EVIDENCE, subject("hindsight", ""))).toBe(null);
+    expect(checkCitation(only("[cite: lane-cpu dev 1906 fits]"), EVIDENCE, subject("hindsight", ""))).toBe(null);
+  });
+
+  test("the VERDICT is checked independently of the total", () => {
+    // The pair is what carries the argument: 4231m is a fact, "over" is the
+    // claim. A citation that got the number right and the verdict wrong would
+    // otherwise read as fully checked, so the polarity is resolved against the
+    // envelope's own budget rather than trusted.
+    const wrongWay = checkCitation(only("[cite: lane-cpu metal 4231 fits]"), EVIDENCE, subject("hindsight", ""));
+    expect(wrongWay?.rule).toBe("cited-lane-verdict-disagrees");
+    expect(wrongWay?.detail).toContain("does NOT fit");
+    const alsoWrong = checkCitation(only("[cite: lane-cpu dev 1906 over]"), EVIDENCE, subject("hindsight", ""));
+    expect(alsoWrong?.rule).toBe("cited-lane-verdict-disagrees");
+  });
+
+  test("a verdict word outside the pair is refused rather than ignored", () => {
+    const verdict = checkCitation(only("[cite: lane-cpu dev 1906 tight]"), EVIDENCE, subject("hindsight", ""));
+    expect(verdict?.rule).toBe("cited-lane-verdict-disagrees");
+  });
+
+  test("a tree with no ladder REFUSES the claim; it never passes it", () => {
+    // The `--repo-root <empty dir>` path. `loadResourceCatalogue` throws there,
+    // and the tempting catch is an empty catalogue -- whose lane total is 0m
+    // and would agree with a cited `0`, turning "we cannot decide this" into a
+    // pass. Refusal is pinned instead.
+    const scratch = mkdtempSync(join(tmpdir(), "zeta-reason-truth-cap-"));
+    try {
+      const blind: Evidence = loadEvidence(scratch);
+      expect(blind.resourceCatalogue).toBe(null);
+      for (const cited of ["[cite: resource-rung hindsight metal 1000]", "[cite: lane-cpu metal 0 fits]"]) {
+        expect(checkCitation(only(cited), blind, subject("hindsight", ""))?.rule).toBe("resource-catalogue-absent");
+      }
+    } finally {
+      rmSync(scratch, { recursive: true, force: true });
+    }
+  });
+});
+
+// ---------------------------------------------------------------------------
+// THE CLAIM THE CITATIONS EXIST TO PROTECT
+//
+// The four numbers together say something the individual citations do not:
+// hindsight is not the reason this lane cannot schedule. That sentence is what
+// a reader has to be able to trust, so it is asserted here as arithmetic over
+// the ladder rather than left to the prose that states it.
+// ---------------------------------------------------------------------------
+
+describe("hindsight is the symptom, and the ladder still says so", () => {
+  test("removing hindsight entirely does not bring the lane inside the budget", () => {
+    const catalogue = EVIDENCE.resourceCatalogue;
+    if (catalogue === null) throw new Error("this tree has no resource ladder; the claim cannot be checked");
+    const withHindsight = resourceTotal(catalogue, "metal", EVIDENCE.devLaneDirs);
+    const withoutHindsight = resourceTotal(
+      catalogue,
+      "metal",
+      EVIDENCE.devLaneDirs.filter((dir) => dir !== "hindsight"),
+    );
+    const budget = envelopeBudget(catalogue.envelope);
+    // Both over. THIS is the claim: the app-local fix cannot work, so a future
+    // edit that shrinks hindsight and un-defers it goes red here first.
+    expect(withHindsight.cpuMillis).toBeGreaterThan(budget.cpuMillis);
+    expect(withoutHindsight.cpuMillis).toBeGreaterThan(budget.cpuMillis);
+    // ...and the lane-wide cut IS the one that closes it, which is the other
+    // half of the reason and the half that names what a real fix looks like.
+    expect(resourceTotal(catalogue, "dev", EVIDENCE.devLaneDirs).cpuMillis).toBeLessThanOrEqual(budget.cpuMillis);
+  });
+
+  test("the committed tree carries `metal`, which is the rung that does not fit", () => {
+    // The gap this pins: CI budgets `dev` and the tree ships `metal`. Nothing
+    // compared the two, so a green budget step was arithmetic about a
+    // configuration nobody applied. If someone ever applies `dev` to the tree,
+    // this goes red and hindsight's reason has to be re-measured -- which is
+    // the correct outcome, because at that point the deferral may lift.
+    const catalogue = EVIDENCE.resourceCatalogue;
+    if (catalogue === null) throw new Error("this tree has no resource ladder; the claim cannot be checked");
+    expect(verifyResourceProfileApplied(catalogue, "metal")).toEqual([]);
+    expect(verifyResourceProfileApplied(catalogue, "dev").length).toBeGreaterThan(0);
   });
 });

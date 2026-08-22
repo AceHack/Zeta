@@ -532,13 +532,31 @@ jobs:
       # so it cannot go quietly green on a non-Linux host either.
       #
       # Then the budget itself, against the `dev` rung. NOT continue-on-error:
-      # green on main today at 1806m / 6079Mi against a 2500m / 9216Mi budget,
+      # green on main today at 1906m / 6207Mi against a 2500m / 9216Mi budget,
       # and red in four measured directions -- raise a dev number past the
       # budget, delete an ungoverned row, add an Application the catalogue does
       # not cover, or drop the acknowledgement for a chart nobody could measure.
       # All four were run as mutations against the live tree; all four exit 1.
-      # The same audit against the `metal` rung exits 1 today (4131m / 11299Mi),
+      # The same audit against the `metal` rung exits 1 today (4231m / 11427Mi),
       # which is the point of there being two rungs.
+      #
+      # (Those four numbers read 1806m / 6079Mi and 4131m / 11299Mi until
+      # 2026-08-22. They were true when written and went stale by exactly
+      # 100m / 128Mi when #13471 corrected forgejo's fictional pin so the chart
+      # could be measured at all. A number typed into a comment is not attached
+      # to the artifact it came from -- which is the whole reason the four
+      # capacity numbers in `hindsight`'s deferral reason are now `[cite: ...]`
+      # citations checked by `reason-truth.ts` instead of prose.)
+      #
+      # AND THE HONEST LIMIT ON THIS STEP, because a green gate that is silent
+      # about its own scope is how the vacuity class gets in. It budgets `dev`.
+      # The COMMITTED tree is `metal`: `--resource-profile metal --check` exits
+      # 0 and `--resource-profile dev --check` exits 1 with 54 drifts
+      # (MEASURED 2026-08-22). So this step passing is not evidence that the
+      # lane can schedule what it applies -- it is arithmetic about a rung
+      # nobody has applied to the manifests. Nothing here compares the two, and
+      # `hindsight-postgresql-0` taking `Insufficient cpu` on run 32519516070 is
+      # what that gap looks like from the cluster's side.
       - name: Verify the runner is as big as the catalogue claims
         run: bun src/Core.TypeScript/cluster/storage-profiles.ts --measure-runner
 

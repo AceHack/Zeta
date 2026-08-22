@@ -82,23 +82,82 @@ spec:
             HINDSIGHT_API_LLM_PROVIDER: groq
 
           # THE API KEY IS STILL NOT WIRED, and that is deliberate rather than
-          # overlooked. The chart's key for it is the TOP-LEVEL `existingSecret:
-          # <name>` (a bare string), consumed as `envFrom: [secretRef]` -- so
-          # the Secret's KEY NAMES become the env var names, and the key would
-          # have to be literally `HINDSIGHT_API_LLM_API_KEY`, not `api-key`.
+          # overlooked. The chart offers TWO ways in, MEASURED 2026-08-22 by
+          # reading hindsight-0.3.0's own templates, and neither is one line:
           #
-          # Setting it today would make things WORSE, not better: nothing in
-          # either cluster tree creates a Secret named `hindsight-llm-api-key`
-          # -- `grep -rn "kind: ExternalSecret" full-ai-cluster infra` returns
-          # zero manifests, so there is no ExternalSecret anywhere yet, only the
-          # external-secrets controller and its store. `envFrom` against a
-          # Secret that does not exist holds the pod in
-          # CreateContainerConfigError, which trades a silently-absent key for a
-          # container that cannot start. When the ExternalSecret is written, the
-          # change here is one line at the TOP level of valuesObject:
-          #   existingSecret: hindsight-llm-api-key
-          # and the ExternalSecret must project its Vault value under the key
-          # `HINDSIGHT_API_LLM_API_KEY`.
+          #   (a) TOP-LEVEL `existingSecret: <name>` (a bare string). The api
+          #       AND control-plane deployments both render
+          #       `envFrom: [secretRef: {name}]` under it, so the Secret's KEY
+          #       NAMES become the env var names -- the key must be literally
+          #       `HINDSIGHT_API_LLM_API_KEY`, never `api-key`. It also
+          #       SUPPRESSES the chart's own Secret outright
+          #       (`{{- if not .Values.existingSecret }}` at the top of
+          #       templates/secret.yaml), so once set it is the ONLY secret
+          #       source for the whole release: an external Postgres would have
+          #       to put `postgres-password` in that same object.
+          #   (b) `api.secrets: {KEY: value}` with NO existingSecret, which
+          #       makes the chart mint `hindsight-secret` from the values. It
+          #       needs the plaintext key IN GIT. Not an option, named so the
+          #       next reader does not rediscover it as one.
+          #
+          # SO (a), AND IT IS BLOCKED ON FIVE MISSING LAYERS, NOT ONE. Setting
+          # it today makes things strictly WORSE: `envFrom` against a Secret
+          # that does not exist holds a pod in CreateContainerConfigError, and
+          # here that is TWO pods, trading a silently-absent key for two
+          # containers that cannot start. What has to exist first, each line
+          # measured rather than assumed:
+          #
+          #   1. THE KEY ITSELF. A Groq API key is nowhere in this repo and
+          #      cannot be -- it is a credential only the maintainer holds.
+          #   2. A VAULT HOLDING IT. On metal Vault has NEVER been initialised
+          #      (applications/vault/TOPOLOGY.md section 2: "Vault has never
+          #      been initialised, holds no secrets, and has no live
+          #      consumers"), and its init is a gated human ceremony behind the
+          #      biometric gate. In CI, #13391's ephemeral init is scoped to
+          #      UNSEALING ONLY: cluster/ephemeral-vault-init.ts runs
+          #      `operator init` -> `operator unseal` x3 -> `token revoke
+          #      -self`, and greps clean for `auth enable`, `policy write` and
+          #      `kv put`. So CI ends with an unsealed, EMPTY Vault and no token
+          #      -- it is not a secrets path, and its own header says a module
+          #      that grows a way to persist material "must be deleted, not
+          #      amended".
+          #   3. A KUBERNETES AUTH MOUNT + policy + an `external-secrets` role,
+          #      so ESO can authenticate. Nothing in either tree creates one.
+          #   4. A ClusterSecretStore. NO MANIFEST in full-ai-cluster or infra
+          #      declares one; `grep -rn "kind: ClusterSecretStore"` finds only
+          #      prose -- a commented-out sketch inside
+          #      applications/external-secrets/Application.yaml, and this block.
+          #      (Stated that way on purpose: "the grep returns nothing" stopped
+          #      being true the moment this comment was written, and a claim
+          #      that its own text falsifies is how a measured line rots.) This
+          #      tree has the ESO controller and no store for it to read.
+          #   5. The ExternalSecret itself -- which would be the tree's FIRST.
+          #      Same shape: no manifest declares one, and the only occurrences
+          #      of the string are prose here and in full-ai-cluster/README.md.
+          #      Only then does the one-line `existingSecret:
+          #      hindsight-llm-api-key` go in at the TOP level of this
+          #      valuesObject.
+          #
+          # THE DECISION THAT IS NOT MINE TO MAKE, stated so it can be made:
+          # layers 2-4 are an architectural first for this repo, and the CI/metal
+          # split is the substance of it. On metal the answer is plausibly
+          # "Vault + k8s auth, once the gated ceremony has been run". In CI there
+          # is no Vault worth reading from and no key to put in one, so an
+          # ExternalSecret would fail closed on every dev lane unless the dev
+          # bring-up mints a Secret directly -- which is what
+          # `applyDevBootstrapSecrets` already does for Grafana's admin
+          # credential, and is the nearest in-tree precedent. Choosing between
+          # "one mechanism, gated on Vault everywhere" and "ESO on metal + a
+          # minted dev Secret" is a maintainer call: it decides whether the dev
+          # lane is allowed to diverge from metal on secret provenance.
+          #
+          # LIFTS WHEN: a ClusterSecretStore exists and resolves, an
+          # ExternalSecret in namespace `hindsight` projects the key under the
+          # name `HINDSIGHT_API_LLM_API_KEY`, and the dev lane has a source for
+          # the same Secret (minted or otherwise) -- at which point, and not
+          # before, `existingSecret: hindsight-llm-api-key` goes in at the top
+          # level of valuesObject. Adding it earlier is the half-wired case
+          # above and costs two pods.
           #
           # Database URL is computed by the chart from the bundled postgresql
           # above (`hindsight.databaseUrl` in _helpers.tpl). To point at an
