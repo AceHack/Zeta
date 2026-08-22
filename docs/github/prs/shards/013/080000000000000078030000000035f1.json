@@ -1,0 +1,12 @@
+{
+  "pr_number": 13809,
+  "archive_path": "docs/history/pr-reviews/PR-13809-fix-pr-manifest-integrity-the-drift-check-sampled-an-instant-and-reported-a-dura.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-22T17:14:32.015Z",
+  "schema_version": "v1",
+  "commit_sha": "821a186bee4ac065e29833b7a0869ec68964ab3b",
+  "title": "fix(pr-manifest-integrity): the drift check sampled an instant and reported a duration",
+  "state": "MERGED",
+  "merged_at": "2026-08-22T17:13:51Z",
+  "head_ref": "shadow/manifest-drift-age-measured-v2"
+}
