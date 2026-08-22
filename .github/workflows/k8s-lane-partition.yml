@@ -245,11 +245,22 @@ jobs:
           while IFS= read -r image; do
             [ -z "$image" ] && continue
             echo "::group::pull $image"
-            # A pull failure is recorded and does NOT abort the lane: the point
-            # of this step is the total, and one unreachable tag must not turn
-            # a disk measurement into no measurement at all. It is still a
-            # failure at the end.
-            if ! docker pull --quiet "$image"; then
+            # Registry throttles are transient, so retry them without weakening
+            # the measurement: a persistently unreachable image is still
+            # recorded and fails the lane after the remaining images are pulled.
+            PULLED=0
+            for attempt in 1 2 3; do
+              if docker pull --quiet "$image"; then
+                PULLED=1
+                break
+              fi
+              if [ "$attempt" -lt 3 ]; then
+                delay=$((attempt * 5))
+                echo "pull attempt $attempt failed; retrying in ${delay}s"
+                sleep "$delay"
+              fi
+            done
+            if [ "$PULLED" -eq 0 ]; then
               echo "PULL FAILED: $image"
               FAILED=$((FAILED + 1))
             fi
@@ -267,7 +278,11 @@ jobs:
           # Convict the estimate. `x2.67` is an aggregate over four images and a
           # lane whose real cost exceeds its budget is a lane that does not fit,
           # whatever the arithmetic said.
-          BUDGET_MIB=$(bun -e 'console.log(Math.round(Number(process.argv[2]) * 1024))' "$BUDGET_GIB")
+          BUDGET_MIB=$(BUDGET_GIB="$BUDGET_GIB" bun -e '
+            const gib = Number(process.env.BUDGET_GIB);
+            if (!Number.isFinite(gib)) process.exit(2);
+            console.log(Math.round(gib * 1024));
+          ')
           if [ "$DELTA_MIB" -gt "$BUDGET_MIB" ]; then
             echo "$LANE does NOT fit: ${DELTA_MIB} MiB measured > ${BUDGET_MIB} MiB budgeted. The x2.67 ratio under-estimates this lane." >&2
             exit 1

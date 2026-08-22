@@ -16,16 +16,14 @@
 //
 // WHY THIS IS NOT A PARALLELISM OPTIMISATION
 // ------------------------------------------
-// From `storage-profiles.json` `runnerEnvelope`, a hosted `ubuntu-24.04`
-// standard runner has 4000m / 15360Mi / 70Gi (leftover-on-main #13784: the
-// vendor 14 GiB free-SSD figure was wrong by more than 5x; 70 is the
-// conservative floor under the measured 77.06 / 99.02). Reserved is
-// 1500m / 6144Mi / 4Gi, leaving 2500m / 9216Mi / 66Gi. Against that, all 47
+// From `storage-profiles.json` `runnerEnvelope`, the portable hosted-runner
+// contract is 4000m / 15360Mi / 14Gi. The separate measured-free-disk field is
+// evidence about particular machines, not scheduling capacity. Reserved is
+// 1500m / 6144Mi / 4Gi, leaving 2500m / 9216Mi / 10Gi. Against that, all 47
 // Applications measure 6166m / 15406Mi / 74.54Gi on disk at the `dev` rung.
-// CPU is over by 2.47x; disk is over by 1.13x. No CPU ladder shrinks an
-// image, so sharding is still the only route by which "test every chart" is
-// reachable — the binding axis is CPU, not disk. The 14-world "disk blows
-// 7.5x" thesis is retired; do not restore 14 to make it look true.
+// CPU is over by 2.47x and disk is over by 7.45x. Both require sharding; disk
+// is the binding axis. No observed surplus on one hosted runner may silently
+// weaken that portable contract.
 //
 // THE FIRST ANSWER WAS THE DISAPPOINTING ONE, AND IT IS RECORDED
 // --------------------------------------------------------------
