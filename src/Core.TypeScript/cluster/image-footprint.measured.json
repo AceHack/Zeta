@@ -1148,5 +1148,28 @@
         "ghcr.io/lucent-financial-group/zeta-orleans-silo:latest"
       ]
     }
-  ]
+  ],
+  "verifiedPulls": [
+    {
+      "reference": "ghcr.io/vectorize-io/hindsight-api:0.1.1",
+      "compressedBytes": 8806509423,
+      "extractedBytes": 15584377052,
+      "diskDeltaBytes": 15799144448,
+      "measuredRatio": 1.77,
+      "pullSeconds": 176,
+      "runId": "32588276375",
+      "note": "docker image inspect .Size for extracted; df -kP delta on / for diskDelta. The df delta (15.80 GB) slightly EXCEEDS .Size (15.58 GB) rather than falling short of it: the content store also holds the compressed blob metadata and manifests, and df counts filesystem overhead .Size does not."
+    },
+    {
+      "reference": "vllm/vllm-openai:latest",
+      "compressedBytes": 9110690483,
+      "extractedBytes": 21417024721,
+      "diskDeltaBytes": 21740163072,
+      "measuredRatio": 2.351,
+      "pullSeconds": 172,
+      "runId": "32588276375",
+      "note": "pulled AFTER hindsight and its closure on the same runner, so this delta is the marginal cost of adding it to a store that already held them -- no layer is shared between the two, which is why the marginal cost matches its own size rather than coming in under it."
+    }
+  ],
+  "verifiedPullsNote": "THE 2.67 RATIO IS AN OVER-ESTIMATE FOR BOTH IMAGES THAT MATTER, measured on run 32588276375 by pulling them on a hosted ubuntu-24.04 rather than multiplying. hindsight-api extracts at 1.77x its compressed size and vllm at 2.35x, against the 2.67x this file applies to everything. So `est. on disk` is HIGH, not low, and by ~57% for hindsight (14.51 GiB actual against a ~23 GB estimate). The ratio is left at 2.67 because it is the only figure measured across a SPREAD of images; these two rows are what a real pull says about the two that dominate, and the disagreement is recorded rather than resolved by picking the number that flatters the conclusion. THE RUNNER SURVIVED BOTH: 85.73 GiB free at job start, 50.05 GiB free after hindsight, its postgres/control-plane closure, and vllm -- 35.68 GiB consumed in total, 176s and 172s to pull. Neither image is self-hosted-only on disk."
 }

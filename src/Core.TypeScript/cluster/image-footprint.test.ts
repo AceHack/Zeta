@@ -1,6 +1,8 @@
 import { describe, expect, test } from "bun:test";
 import {
   appFootprints,
+  loadMeasurement,
+  measuredFreeDiskGib,
   cohortTotal,
   concentration,
   fitsDeclaredDisk,
@@ -157,5 +159,35 @@ describe("fitsDeclaredDisk", () => {
   test("an exact fit is a fit, not an overrun", () => {
     const budgetBytes = 10 * 1024 ** 3;
     expect(fitsDeclaredDisk(budgetBytes / 2, 2, 10).fits).toBe(true);
+  });
+});
+
+describe("the checked-in measurement", () => {
+  // The coordinator's question, made mechanical: are the stored numbers
+  // compressed or extracted? They are COMPRESSED, and the verified pulls are
+  // what says so — an image whose stored size equals its pulled EXTRACTED size
+  // would mean the file changed meaning under everyone.
+  test("stored sizes are COMPRESSED, and every verified pull proves it", () => {
+    const measurement = loadMeasurement();
+    const pulls = measurement.verifiedPulls ?? [];
+    expect(pulls.length).toBeGreaterThan(0);
+    for (const pull of pulls) {
+      const stored = measurement.images.find((image) => image.reference === pull.reference);
+      expect(stored?.compressedBytes).toBe(pull.compressedBytes);
+      expect(pull.extractedBytes).toBeGreaterThan(pull.compressedBytes);
+    }
+  });
+
+  test("the applied 2.67 ratio OVER-estimates both images that dominate", () => {
+    const measurement = loadMeasurement();
+    for (const pull of measurement.verifiedPulls ?? []) {
+      expect(pull.measuredRatio).toBeLessThan(measurement.uncompressedRatio);
+    }
+  });
+
+  test("the measured free-disk figure is carried, and is not the declared bound", () => {
+    const measured = measuredFreeDiskGib();
+    expect(measured).not.toBeNull();
+    expect(measured).toBeGreaterThan(14);
   });
 });

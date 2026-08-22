@@ -149,6 +149,25 @@ export interface MeasuredApp {
   readonly images: readonly string[];
 }
 
+/**
+ * An image that was actually PULLED on a runner, not multiplied by a ratio.
+ *
+ * Both numbers are here because they answer different questions and disagree:
+ * `extractedBytes` is what docker reports the image weighs, `diskDeltaBytes` is
+ * what `df` lost — smaller, because layers already in the store are not written
+ * twice. The second is the one that decides whether the next pull fits.
+ */
+export interface VerifiedPull {
+  readonly reference: string;
+  readonly compressedBytes: number;
+  readonly extractedBytes: number;
+  readonly diskDeltaBytes: number;
+  readonly measuredRatio: number;
+  readonly pullSeconds: number;
+  readonly runId: string;
+  readonly note: string;
+}
+
 export interface Measurement {
   readonly measuredOn: string;
   readonly method: string;
@@ -156,6 +175,8 @@ export interface Measurement {
   readonly ratioEvidence: string;
   readonly images: readonly MeasuredImage[];
   readonly apps: readonly MeasuredApp[];
+  readonly verifiedPulls?: readonly VerifiedPull[];
+  readonly verifiedPullsNote?: string;
 }
 
 export function loadMeasurement(path = DEFAULT_MEASUREMENT_PATH, repoRoot = REPO_ROOT): Measurement {
@@ -451,6 +472,55 @@ export function fitsDeclaredDisk(
   };
 }
 
+/**
+ * `runnerEnvelope.measuredFreeDiskGib` — READ off runners, and priced against by
+ * nothing. `null` when absent, never a default: a measurement that is not there
+ * must not be invented.
+ */
+export function measuredFreeDiskGib(repoRoot = REPO_ROOT): number | null {
+  const parsed = JSON.parse(
+    readFileSync(resolve(repoRoot, "full-ai-cluster/k8s/storage-profiles.json"), "utf8"),
+  ) as { runnerEnvelope?: { measuredFreeDiskGib?: unknown } };
+  const value = parsed.runnerEnvelope?.measuredFreeDiskGib;
+  return typeof value === "number" ? value : null;
+}
+
+/** One FITS/OVER line per cohort against a given disk figure, in bytes. */
+function verdictLines(
+  totals: readonly CohortTotal[],
+  ratio: number,
+  budgetGib: number,
+): readonly string[] {
+  return totals.map((total) => {
+    const verdict = fitsDeclaredDisk(total.compressedBytes, ratio, budgetGib);
+    return (
+      `  ${total.label.padEnd(9)} est. ${gb(verdict.estimatedBytes).padStart(6)} GB  ` +
+      `${verdict.fits ? "FITS" : "OVER"} by ${gb(Math.abs(verdict.headroomBytes)).padStart(6)} GB`
+    );
+  });
+}
+
+/** The rows that were pulled rather than multiplied. Empty when none were. */
+function verifiedPullLines(measurement: Measurement): readonly string[] {
+  const pulls = measurement.verifiedPulls ?? [];
+  if (pulls.length === 0) return [];
+  const lines = [
+    "",
+    "VERIFIED BY PULLING IT — the estimate above vs what a runner actually paid",
+    "  image                                        compressed   est x2.67   ACTUAL extracted   df delta   ratio",
+  ];
+  for (const pull of pulls) {
+    lines.push(
+      `  ${pull.reference.padEnd(42)} ${gb(pull.compressedBytes).padStart(8)} GB  ` +
+        `${gb(pull.compressedBytes * measurement.uncompressedRatio).padStart(6)} GB  ` +
+        `${gb(pull.extractedBytes).padStart(13)} GB  ${gb(pull.diskDeltaBytes).padStart(6)} GB  ` +
+        `x${pull.measuredRatio.toFixed(2)}`,
+    );
+  }
+  if (measurement.verifiedPullsNote !== undefined) lines.push(`  ${measurement.verifiedPullsNote}`);
+  return lines;
+}
+
 export function formatReport(measurement: Measurement, sets: Cohorts): string {
   const rows = appFootprints(measurement, sets);
   const lines: string[] = [];
@@ -490,18 +560,25 @@ export function formatReport(measurement: Measurement, sets: Cohorts): string {
       `~${gb(allTotal * measurement.uncompressedRatio)} GB unpacked.`,
   );
   const budget = envelopeBudget(loadResourceCatalogue().envelope);
+  const measuredFree = measuredFreeDiskGib();
   lines.push("");
   lines.push(
     `AGAINST THE DECLARED DISK — ${String(budget.diskGib)} GiB usable (envelope freeDiskGib minus reservedDiskGib), ` +
       `which is ${gb(budget.diskGib * GIB)} GB decimal. Image sizes are decimal; disk is binary; the comparison is in bytes.`,
   );
-  for (const total of totals) {
-    const verdict = fitsDeclaredDisk(total.compressedBytes, measurement.uncompressedRatio, budget.diskGib);
+  lines.push(...verdictLines(totals, measurement.uncompressedRatio, budget.diskGib));
+  // Two verdicts, printed together because they disagree. The declared bound is
+  // what consumers price against; the measurement is what the machine has.
+  // Showing one and not the other is how a stale bound stays invisible.
+  if (measuredFree !== null) {
+    lines.push("");
     lines.push(
-      `  ${total.label.padEnd(9)} est. ${gb(verdict.estimatedBytes).padStart(6)} GB  ` +
-        `${verdict.fits ? "FITS" : "OVER"} by ${gb(Math.abs(verdict.headroomBytes)).padStart(6)} GB`,
+      `AGAINST THE MEASURED DISK — ${String(measuredFree)} GiB (runnerEnvelope.measuredFreeDiskGib; nothing prices ` +
+        `against it, see its evidence string for why the declared bound did not move with it):`,
     );
+    lines.push(...verdictLines(totals, measurement.uncompressedRatio, measuredFree));
   }
+  lines.push(...verifiedPullLines(measurement));
   const unsizedRefs = measurement.images.filter((image) => image.compressedBytes === null);
   lines.push("");
   lines.push(`UNSIZED (${String(unsizedRefs.length)}) — counted in no total above, and NOT zero:`);
