@@ -39,6 +39,8 @@
     <Compile Include="TangleNavigator.fs" />
     <Compile Include="PhasePortrait.fs" />
     <Compile Include="AdinkraCode.fs" />
+    <Compile Include="IharaZeta.fs" />
+    <Compile Include="AdinkraIharaZeta.fs" />
     <Compile Include="CliffordPeriodicity.fs" />
     <Compile Include="BinaryCode.fs" />
     <Compile Include="E8Lattice.fs" />
