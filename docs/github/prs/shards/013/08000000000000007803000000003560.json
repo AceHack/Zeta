@@ -1,0 +1,12 @@
+{
+  "pr_number": 13664,
+  "archive_path": "docs/history/pr-reviews/PR-13664-fix-cluster-openziti-s-trust-bundle-can-resolve-trust-namespace-is-openziti-admi.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-22T11:27:23.004Z",
+  "schema_version": "v1",
+  "commit_sha": "38fc0d55c7725526c73ce031e39310006578c330",
+  "title": "fix(cluster): openziti's trust Bundle can resolve — trust namespace is `openziti`, admin Secret is minted",
+  "state": "MERGED",
+  "merged_at": "2026-08-22T11:26:38Z",
+  "head_ref": "shadow-openziti-trust-bundle"
+}
