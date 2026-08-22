@@ -1,0 +1,12 @@
+{
+  "pr_number": 13684,
+  "archive_path": "docs/history/pr-reviews/PR-13684-research-the-decorrelation-meter-left-its-band-and-i-may-be-the-reason.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-22T12:02:57.819Z",
+  "schema_version": "v1",
+  "commit_sha": "3564d7269b5e3017766892754fd9cbefb622cf3c",
+  "title": "research: the decorrelation meter left its band — and I may be the reason",
+  "state": "MERGED",
+  "merged_at": "2026-08-22T12:02:14Z",
+  "head_ref": "research/rho-crossed-its-band-2026-08-22"
+}
