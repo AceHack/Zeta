@@ -103,8 +103,13 @@ describe("the series is the same statistic as measure()", () => {
   test("the corpus has a real history to measure — not one point wearing a trend", () => {
     const commits = corpusCommits(ROOT);
     expect(commits.length).toBeGreaterThan(100);
-    // oldest-first: a reversed series would invert every conclusion drawn from it
-    expect(commits[0]?.authoredAt.localeCompare(commits[commits.length - 1]?.authoredAt ?? "")).toBeLessThan(0);
+    // oldest-first: a reversed series would invert every conclusion drawn from it.
+    // Ordinal `<`, never `localeCompare` — ISO-8601 sorts correctly bytewise and a culture-sensitive
+    // comparison would be a different order per locale (`culture-invariant-by-default`).
+    const first = commits[0]?.authoredAt ?? "";
+    const last = commits[commits.length - 1]?.authoredAt ?? "";
+    expect(first).not.toBe(last);
+    expect(first < last).toBe(true);
   });
 
   test("a window strictly reduces the draws considered, and the two agree at a window past the end", () => {
