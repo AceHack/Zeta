@@ -53,6 +53,68 @@ metadata:
   name: zeta-full-ai-cluster
   namespace: argocd
 spec:
+  # ── INTENT vs OBSERVED, adjudicated ─────────────────────────────────────────
+  # An edge in this file can be either of two things, and the difference is
+  # load-bearing for anything that PARTITIONS the graph rather than ordering it:
+  #
+  #   OBSERVED  a rendered manifest wires A to B; removing B breaks A at runtime.
+  #   INTENT    we mean to wire A to B and have not; A runs today without B.
+  #
+  # For SYNC ORDER the distinction does not matter — ordering by an intent edge
+  # costs nothing but a wave number. For LANE PARTITIONING it matters a lot: an
+  # intent edge glues two application sets that are, today, independent, and so
+  # produces a partition coarser than the tree warrants.
+  #
+  # WHY A MAP AND NOT A GREP. The citations already say which edges are intent,
+  # in prose. Matching that prose is wrong in a way this very file demonstrates:
+  # `temporal -> cockroachdb`'s citation reads "was a DECLARED INTENT until
+  # 2026-08-22 ... and is now a live connection", so a substring match convicts
+  # an edge that has since become real. So the phrase ENUMERATES candidates and
+  # this map ANSWERS them. `lane-partition.ts` derives the candidate set from
+  # the citations on every run and REFUSES on any candidate this map does not
+  # answer — so an edge cannot be added with intent-language and quietly left
+  # unclassified, and the map cannot drift into naming edges that no longer
+  # exist without the join failing first.
+  #
+  # MEASURED CONSEQUENCE, 2026-08-22, and it is worth stating because it is
+  # smaller than expected: dropping both `intent` edges below changes the
+  # PARTITION not at all. `lane-partition.ts --drop-intent-edges` returns the
+  # same two lanes with byte-identical footprints, the same 38/47 coverage, and
+  # the same two oversize applications. The only number that moves is
+  # `hindsight`'s closure, 24.06 GiB -> 23.19 GiB, and 23.19 is still ~2.7x a
+  # lane budget, so it stays quarantined either way. (23.19 is measured, not
+  # predicted — the first draft of this paragraph guessed 22.5.)
+  #
+  # The mechanism is built because intent edges accumulate, not because these
+  # two are costing a lane today. Saying so plainly beats letting a mechanism
+  # imply a benefit it has not delivered.
+  intentAdjudication:
+    spire -> vault:
+      class: intent
+      reason: >-
+        This node's own citation: `helm template` of the live values renders
+        ZERO occurrences of `upstream` in 1386 lines and the server self-signs
+        (`ca_subject: zeta-spire-ca`), so SPIRE does not contact Vault at
+        runtime today. The edge is kept for bring-up order because SYNC-WAVES.md
+        asserts it; it is not a runtime dependency a lane must satisfy.
+    hindsight -> cockroachdb:
+      class: intent
+      reason: >-
+        This node's own citation: the `postgresql://...cockroachdb-public...`
+        environment wiring is COMMENTED in
+        applications/hindsight/Application.yaml and the bundled PostgreSQL is
+        the default. hindsight brings up without CockroachDB today.
+    temporal -> cockroachdb:
+      class: observed
+      reason: >-
+        Adjudicated OBSERVED even though its citation contains the phrase, and
+        this is the case the map exists for. The citation says the edge "was a
+        DECLARED INTENT until 2026-08-22" and "is now a live connection in a
+        manifest that renders": both persistence stores set
+        `host: cockroachdb-public.cockroachdb.svc.cluster.local` with
+        `driver: postgres12`, and temporal holds no local durable state. A
+        pattern match on the prose would have got this one backwards.
+
   dependsOn:
     # ── Layer 0: the reconciler itself ───────────────────────────────────────
     - chart: argocd
