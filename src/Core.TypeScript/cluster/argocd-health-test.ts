@@ -607,25 +607,39 @@ const DEV_INCLUDED_PROOF_DEFERRED_DIRS = new Set([
   // several PVCs plus multi-GB images. A kind runner cannot schedule that inside
   // the lane's assertion budget.
   "gitlab",
-  // MEASURED 2026-08-22, run 32548563352 (`e162ecd3e4`). headscale became
-  // ASSERTABLE for the first time in #13471 -- before that it could not even
-  // render -- and the first thing the assertion found was a pod in
-  // CrashLoopBackOff (12 restarts). ROOT CAUSE, measured by rendering the
-  // Application against its own valuesObject: its entire `config:` block was
-  // INERT. headscale 0.4.0 has no top-level `config` key, and the render
-  // contained ZERO occurrences of `server_url`, so the container started with no
-  // server_url from any source. FIXED in the same change as this entry, by
-  // moving the value onto the chart's own `env:` path.
+  // `headscale` is NOT here. It LEFT this set on 2026-08-22 after ONE cycle, and
+  // the entry is recorded as closed rather than the lines silently deleted.
   //
-  // DEFERRED ANYWAY, and only until the next run says otherwise. The fix is
-  // verified to RENDER; it is NOT verified to make the pod Healthy, because
-  // that needs a live kind cluster and the host that wrote it has no container
-  // runtime. Asserting a repair I could not run would be exactly the
-  // check-that-did-not-run-looking-like-one-that-passed this lane exists to
-  // refuse, and gambling `main` red on it is worse. The lane still PRINTS
-  // headscale's status for deferred apps, so the exit condition below is
-  // observable in the very next run without changing anything.
-  "headscale",
+  //   WAS: applied and asserted for the first time by #13471 (before that it
+  //   could not even render), and immediately found CrashLoopBackOff with 12
+  //   restarts. Root cause, measured by rendering the Application against its
+  //   own valuesObject: the entire `config:` block was INERT -- headscale 0.4.0
+  //   has no top-level `config` key and the render carried ZERO occurrences of
+  //   `server_url`, while the chart emits HEADSCALE_SERVER_URL only under
+  //   `ingress.main.enabled`. The container ran with no server_url from any
+  //   source. Fixed in #13550 by moving the value to the chart's own `env:` path.
+  //
+  //   IT WAS DEFERRED ANYWAY, on purpose: the repair was verified to RENDER and
+  //   not to make the pod HEALTHY (no container runtime on the host that wrote
+  //   it), and asserting a repair nobody ran is the failure this lane refuses.
+  //
+  //   CLOSED BY MEASUREMENT, run 32553963034 on `98c66c6cb8`:
+  //     === headscale: sync=Unknown health=Healthy
+  //         PersistentVolumeClaim/headscale-config: Healthy
+  //         Service/headscale:                      Healthy
+  //         Deployment/headscale:                   Healthy
+  //   A 12-restart CrashLoopBackOff became a Healthy Deployment across exactly
+  //   one manifest change, which is a state change rather than a timing flake.
+  //
+  //   AND THE EXIT CONDITION I WROTE WAS SLIGHTLY WRONG, which is worth more
+  //   than the entry was. It said "prints `sync=Synced health=Healthy`". The
+  //   lane does not require Synced: `argocd`, `cert-manager`, `external-secrets`,
+  //   `headlamp`, `loki`, `minio` and `node-feature-discovery` are all asserted
+  //   at `sync=Unknown health=Healthy` in the same passing run -- `Unknown` here
+  //   is an ArgoCD ComparisonError on the diff, not a sync failure. A LIFTS WHEN
+  //   stricter than the gate it names would have kept this deferral alive after
+  //   its defect was gone, which is the exact shape of the acknowledgement that
+  //   outlives its cause.
   // MEASURED 2026-08-21: hindsight-postgresql-0 FailedScheduling "Insufficient
   // cpu" on the 1-node runner; api + control-plane CrashLoop waiting on it.
   // THREE independent blockers now, only the first of which is capacity -- see
@@ -849,20 +863,6 @@ export const APPLIED_BUT_UNASSERTED_REASONS: ReadonlyMap<string, string> = new M
     "forgejo",
     "deferred until dev wiring exists (DEV_INCLUDED_PROOF_DEFERRED_DIRS). " +
       "[cite: glob-applies forgejo] [cite: renders full-ai-cluster/forgejo]",
-  ],
-  [
-    "headscale",
-    "MEASURED 2026-08-22 (run 32548563352, the first run in which headscale was ASSERTED at all -- #13471 made it renderable; before that this lane had never reached it). " +
-      "OBSERVED: pod CrashLoopBackOff, 12 restarts, `Deployment \"headscale\" exceeded its progress deadline`. Its PVC bound and its Service was Healthy, so this is not storage and not the dev longhorn alias. " +
-      "ROOT CAUSE, measured by rendering this Application against its own valuesObject: the whole `config:` block was INERT. headscale 0.4.0 declares exactly six top-level values (image, env, service, ingress, persistence, postgresql) and no `config`, and the render contained ZERO occurrences of `server_url` -- while `HEADSCALE_SERVER_URL` is emitted by the chart only under `ingress.main.enabled`, which this Application does not set. The container therefore started with no server_url from any source. Same class as hindsight's `postgresql.primary.*` and nats' top-level `cluster:`. " +
-      "FIXED in the same change that added this entry: the value moved to the chart's own `env:` path and the re-render now carries `HEADSCALE_SERVER_URL: https://headscale.zeta.local` into the container, with the chart's own hardcoded LISTEN_ADDR/IP_PREFIXES left alone. " +
-      "WHY IT IS STILL DEFERRED, and this is the honest half: the repair is verified to RENDER and is NOT verified to make the pod HEALTHY. That needs a live kind cluster, and the host this was written on has no container runtime, so the crash cause is CONSISTENT WITH the missing server_url rather than proven to be it -- the lane captures pod events but not container stderr, so nothing on file discriminates it from a second, unrelated cause. Asserting a repair nobody ran is the failure this lane exists to refuse. " +
-      "LIFTS WHEN: the next included-proof run prints `headscale: sync=Synced health=Healthy` -- the lane reports status for deferred apps too, so this is observable without changing anything, and this entry should be deleted the moment it is. If it prints Degraded again, the server_url theory is refuted and the real cause is still unfound. " +
-      "ANCHORS, CHECKED BY `reason-truth.ts`: each names an artifact this tree holds, so a claim that outlives its artifact goes red instead of reading on. " +
-      "[cite: glob-applies headscale] " +
-      "[cite: chart-pin full-ai-cluster/headscale headscale 0.4.0] " +
-      "[cite: path full-ai-cluster/k8s/applications/headscale/Application.yaml] " +
-      "[cite: pvc-class full-ai-cluster/headscale longhorn] ",
   ],
   [
     "oz",
