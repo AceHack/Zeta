@@ -16,6 +16,9 @@ import { parentDirPaths, type AssembleStep } from "./multiboot/assemble.ts";
 /** Removable-media ESP path (FAT). Identity namespace: not under `/payloads/`. */
 export const UEFI_KEYFILE_IMAGE_PATH = "/EFI/ZETA/keyfile" as const;
 
+/** Installer-USB marker: presence means persist-opt-in, same role as `ZETA_BIND_UEFI_KEYFILE=1`. */
+export const UEFI_KEYFILE_BIND_MARKER_IMAGE_PATH = "/zeta-bind-uefi-keyfile" as const;
+
 /** Install-time host path (target ESP mounted at /mnt/boot). */
 export const UEFI_KEYFILE_INSTALL_PATH = `/mnt/boot${UEFI_KEYFILE_IMAGE_PATH}` as const;
 
@@ -36,6 +39,8 @@ export const UEFI_KEYFILE_SERIAL = {
   persistOptInKeyfile: "[uefi-keyfile] persist-opt-in --uefi-keyfile (ZETA_BIND_UEFI_KEYFILE=1)",
   persistOptInFallbackUuid: "[uefi-keyfile] persist-opt-in requested but keyfile write failed; staying --usb-uuid",
   persistBothOptInsUuid: "[uefi-keyfile] ZETA_BIND_UEFI_KEYFILE and ZETA_BIND_USB_ISERIAL both set; staying --usb-uuid",
+  espFound: "[uefi-keyfile] found zeta-bind-uefi-keyfile on boot USB ESP",
+  espMissing: "[uefi-keyfile] no zeta-bind-uefi-keyfile on boot USB ESP",
 } as const;
 
 export type UefiKeyfileError = { readonly error: string };

@@ -8,6 +8,7 @@ import {
   INSTALL_SH_FINAL_FAILURE_MARKER,
   INSTALL_SH_START_MARKER,
   assertGeneratedNodeHostnameContract,
+  assertUefiKeyfilePhase1Contract,
   assertUsbISerialPhase1Contract,
   assertWifiEspPhase1Contract,
   buildQemuDiskBootArgsPure,
@@ -121,6 +122,7 @@ describe("qemu-full-install-test usb iSerial phase-1 contract", () => {
       usbISerialValueMarker(QEMU_USB_TEST_SERIAL),
       USB_ISERIAL_SERIAL.noMetalClaim,
       USB_ISERIAL_SERIAL.persistDefaultUuid,
+      UEFI_KEYFILE_SERIAL.espMissing,
       "ZETA CLUSTER NODE INSTALL COMPLETE",
     ].join("\n");
     expect(assertUsbISerialPhase1Contract(serial).ok).toBe(true);
@@ -157,6 +159,22 @@ describe("qemu-full-install-test usb iSerial phase-1 contract", () => {
     }
   });
 
+  it("fails when the UEFI keyfile ESP bind marker is baked on the default QEMU path", () => {
+    const serial = [
+      USB_ISERIAL_SERIAL.found,
+      usbISerialValueMarker(QEMU_USB_TEST_SERIAL),
+      USB_ISERIAL_SERIAL.noMetalClaim,
+      USB_ISERIAL_SERIAL.persistDefaultUuid,
+      UEFI_KEYFILE_SERIAL.espFound,
+      "ZETA CLUSTER NODE INSTALL COMPLETE",
+    ].join("\n");
+    const result = assertUsbISerialPhase1Contract(serial);
+    expect(result.ok).toBe(false);
+    if (!result.ok) {
+      expect(result.reason).toContain("ESP bind marker");
+    }
+  });
+
   it("fails when probe succeeded but persist-default marker is missing", () => {
     const serial = [
       USB_ISERIAL_SERIAL.found,
@@ -190,6 +208,64 @@ describe("qemu-full-install-test usb iSerial phase-1 contract", () => {
     expect(result.ok).toBe(false);
     if (!result.ok) {
       expect(result.reason).toContain(usbISerialValueMarker(QEMU_USB_TEST_SERIAL));
+    }
+  });
+});
+
+describe("qemu-full-install-test UEFI keyfile phase-1 contract", () => {
+  it("accepts ESP marker + persist-opt-in write + no-metal-claim", () => {
+    const serial = [
+      UEFI_KEYFILE_SERIAL.espFound,
+      UEFI_KEYFILE_SERIAL.wrote,
+      UEFI_KEYFILE_SERIAL.noMetalClaim,
+      UEFI_KEYFILE_SERIAL.persistOptInKeyfile,
+      USB_ISERIAL_SERIAL.persistDefaultUuid,
+      "ZETA CLUSTER NODE INSTALL COMPLETE",
+    ].join("\n");
+    expect(assertUefiKeyfilePhase1Contract(serial).ok).toBe(true);
+  });
+
+  it("fails when the ESP bind marker was not baked", () => {
+    const serial = [
+      UEFI_KEYFILE_SERIAL.espMissing,
+      UEFI_KEYFILE_SERIAL.wrote,
+      UEFI_KEYFILE_SERIAL.noMetalClaim,
+      UEFI_KEYFILE_SERIAL.persistOptInKeyfile,
+      "ZETA CLUSTER NODE INSTALL COMPLETE",
+    ].join("\n");
+    const result = assertUefiKeyfilePhase1Contract(serial);
+    expect(result.ok).toBe(false);
+    if (!result.ok) {
+      expect(result.reason).toContain("ESP marker missing");
+    }
+  });
+
+  it("fails when iSerial persist-opt-in appears on the keyfile path", () => {
+    const serial = [
+      UEFI_KEYFILE_SERIAL.espFound,
+      UEFI_KEYFILE_SERIAL.wrote,
+      UEFI_KEYFILE_SERIAL.noMetalClaim,
+      UEFI_KEYFILE_SERIAL.persistOptInKeyfile,
+      USB_ISERIAL_SERIAL.persistOptInIserial,
+      "ZETA CLUSTER NODE INSTALL COMPLETE",
+    ].join("\n");
+    const result = assertUefiKeyfilePhase1Contract(serial);
+    expect(result.ok).toBe(false);
+    if (!result.ok) {
+      expect(result.reason).toContain("mutually exclusive");
+    }
+  });
+
+  it("fails helper-unavailable instead of treating skip as success", () => {
+    const serial = [
+      UEFI_KEYFILE_SERIAL.espFound,
+      UEFI_KEYFILE_SERIAL.helperUnavailable,
+      "ZETA CLUSTER NODE INSTALL COMPLETE",
+    ].join("\n");
+    const result = assertUefiKeyfilePhase1Contract(serial);
+    expect(result.ok).toBe(false);
+    if (!result.ok) {
+      expect(result.reason).toContain("fail, not a skip");
     }
   });
 });

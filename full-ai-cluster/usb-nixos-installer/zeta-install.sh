@@ -1947,6 +1947,21 @@ if [ -n "$WIFI_CREDS_FILE" ]; then
 else
   echo "[iter-5-wifi] no zeta-wifi-credentials.json on boot USB ESP; skipping wifi injection"
 fi
+BIND_MARKER_FILE=""
+if [ ${#SEARCH_DIRS[@]} -gt 0 ]; then
+  BIND_MARKER_FILE=$(sudo find "${SEARCH_DIRS[@]}" \
+    -maxdepth 5 -name "zeta-bind-uefi-keyfile" -type f 2>/dev/null | head -1 || true)
+fi
+if [ -z "$BIND_MARKER_FILE" ] && [ -f "$PROBE_MOUNT/zeta-bind-uefi-keyfile" ]; then
+  BIND_MARKER_FILE="$PROBE_MOUNT/zeta-bind-uefi-keyfile"
+fi
+if [ -n "$BIND_MARKER_FILE" ]; then
+  echo "[uefi-keyfile] found zeta-bind-uefi-keyfile on boot USB ESP"
+  ZETA_BIND_UEFI_FROM_ESP=1
+else
+  echo "[uefi-keyfile] no zeta-bind-uefi-keyfile on boot USB ESP"
+  ZETA_BIND_UEFI_FROM_ESP=0
+fi
 # 081KZHJPJCF: unmount the boot USB ESP that was RE-mounted for the iter-5.2 hostname +
 # iter-5-wifi probes (see the re-mount before iter-5.2). Harmless no-op if it was never
 # re-mounted (no pubkey / empty BOOT_ESP_PART).
@@ -2781,6 +2796,10 @@ if [ -d "$ZETA_HOME" ]; then
   # Persist-factor markers always print (picker may be skipped). Default stays
   # FAT UUID. Opt-in bind is env-gated and requires a non-empty serial file.
   # ZETA_BIND_UEFI_KEYFILE=1 is mutually exclusive with iSerial opt-in.
+  # ESP marker /zeta-bind-uefi-keyfile (QEMU_UEFI_KEYFILE_PHASE1) synthesizes the env.
+  if [ "${ZETA_BIND_UEFI_FROM_ESP:-0}" = "1" ]; then
+    ZETA_BIND_UEFI_KEYFILE=1
+  fi
   BIND_BOTH_OPT_INS=0
   if [ "${ZETA_BIND_USB_ISERIAL:-0}" = "1" ] && [ "${ZETA_BIND_UEFI_KEYFILE:-0}" = "1" ]; then
     BIND_BOTH_OPT_INS=1
@@ -2797,8 +2816,9 @@ if [ -d "$ZETA_HOME" ]; then
   fi
 
   # Opt-in UEFI keyfile on the target ESP. Binding is the ESP file itself
-  # (not copied to /etc). Failed write stays UUID. QEMU phase-1 must not
-  # set ZETA_BIND_UEFI_KEYFILE=1.
+  # (not copied to /etc). Failed write stays UUID. Default QEMU phase-1
+  # (wifi / iSerial probe) must not bake /zeta-bind-uefi-keyfile.
+  # QEMU_UEFI_KEYFILE_PHASE1=1 bakes that marker and asserts the write.
   KEYFILE_HELPER="$ZETA_HOME/Zeta/src/Core.TypeScript/installer/uefi-keyfile-esp.ts"
   KEYFILE_TMP=/tmp/zeta-uefi-keyfile
   KEYFILE_INSTALL=/mnt/boot/EFI/ZETA/keyfile

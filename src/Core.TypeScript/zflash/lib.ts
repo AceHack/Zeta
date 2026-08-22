@@ -190,7 +190,8 @@ export interface FileBackedEspWrite {
     // or joining one", which is why a second node installed as a second
     // control plane. See firstboot-role.ts.
     | "/zeta-firstboot.conf"
-    | "/zeta-join-token";
+    | "/zeta-join-token"
+    | "/zeta-bind-uefi-keyfile";
   readonly sourcePath?: string;
   readonly content?: string;
 }
@@ -217,6 +218,11 @@ export interface FileBackedZflashImagePlanInput {
   readonly hostname?: string;
   readonly credentialBlobPath?: string;
   readonly wifiCredentials?: WifiCredentials;
+  /**
+   * When true, writes `/zeta-bind-uefi-keyfile` so the guest installer
+   * opt-in-binds the target ESP keyfile. QEMU-only marker; not default persist.
+   */
+  readonly bindUefiKeyfileMarker?: boolean;
   /**
    * When set, writes `/zeta-firstboot.conf` so the booting node learns
    * whether it founds a cluster or joins one. Omitted → unchanged behaviour:
@@ -420,6 +426,12 @@ export function planFileBackedZflashImage(input: FileBackedZflashImagePlanInput)
     espWrites.push({
       content: wifiCredentials.value,
       destination: "/zeta-wifi-credentials.json",
+    });
+  }
+  if (input.bindUefiKeyfileMarker === true) {
+    espWrites.push({
+      content: "1\n",
+      destination: "/zeta-bind-uefi-keyfile",
     });
   }
   // 081KSNY2Z0008QG0R0008PN7RQ role provisioning. Ordered AFTER the existing
@@ -884,10 +896,7 @@ export function stampedCiIsoFileName(
  * candidate positively names a DIFFERENT arch. That last case is the sticky-bad
  * state the missing arch tag used to create, and it is the one worth stopping for.
  */
-export function selectDownloadedIsoForArch(
-  candidatesNewestFirst: readonly string[],
-  want: IsoArch,
-): IsoArchSelection {
+export function selectDownloadedIsoForArch(candidatesNewestFirst: readonly string[], want: IsoArch): IsoArchSelection {
   if (candidatesNewestFirst.length === 0) {
     return { ok: false, error: "no installer ISOs found to choose from" };
   }

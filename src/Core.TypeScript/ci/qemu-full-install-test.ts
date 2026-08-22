@@ -5,7 +5,8 @@
  * QEMU full-install test (081KSGS9H0008QG0R0011BC7T2 Slice 1) for the canonical Zeta installer ISO.
  *
  * Phase 1 — boot installer ISO (or zflash USB image when QEMU_WIFI_ESP_PHASE1=1
- * or QEMU_USB_ISERIAL_PHASE1=1) + virtual disk; wait for install completion.
+ * or QEMU_USB_ISERIAL_PHASE1=1 or QEMU_UEFI_KEYFILE_PHASE1=1) + virtual disk;
+ * wait for install completion.
  * Phase 2 — boot installed disk only; verify login banner (+ optional phase-3
  * first-session serial markers when QEMU_FIRST_SESSION_PHASE3=1).
  * Phase 1 also asserts iter-5.4.1-ci dry-run registration (081KSGS9H0008QG0R0011BC7T2 slice 2)
@@ -13,8 +14,11 @@
  * Opt-in QEMU_WIFI_ESP_PHASE1=1 bakes zeta-wifi-credentials.json onto a
  * file-backed zflash image and asserts ESP→NM serial markers (no radio claim).
  * Opt-in QEMU_USB_ISERIAL_PHASE1=1 (also implied by wifi ESP USB boot) asserts
- * guest sysfs iSerial markers from zeta-install.sh 6.95d. ISO/cdrom cascade-5
- * has no usb-storage serial=; missing markers there are expected. Not on gate.
+ * guest sysfs iSerial markers from zeta-install.sh 6.95d. Opt-in
+ * QEMU_UEFI_KEYFILE_PHASE1=1 bakes `/zeta-bind-uefi-keyfile` and asserts the
+ * install-time keyfile write (not restore decrypt: QEMU skips the passphrase
+ * so the picker never runs). ISO/cdrom cascade-5 has no usb-storage serial=.
+ * Not on gate.
  *
  * Composes with qemu-boot-test.ts (cascade #5) and 081KSNY2Z0008QG0R0008PN7RQ scenario 2.
  *
@@ -167,6 +171,11 @@ export function usbISerialGuestEnabled(): boolean {
   return process.env.QEMU_USB_ISERIAL_PHASE1 === "1" || wifiEspPhase1Enabled();
 }
 
+/** Opt-in guest UEFI keyfile write. Dedicated flag — not implied by wifi/iSerial. */
+export function uefiKeyfilePhase1Enabled(): boolean {
+  return process.env.QEMU_UEFI_KEYFILE_PHASE1 === "1";
+}
+
 /**
  * When USB boot is on, phase-1 serial must show found + serial=ZETA-QEMU-001
  * + no-metal-claim from zeta-install.sh 6.95d, and persist-default remains
@@ -191,6 +200,14 @@ export function assertUsbISerialPhase1Contract(phase1Serial: string):
         "FAT UUID must remain the persist factor unless ZETA_BIND_USB_ISERIAL=1",
     };
   }
+  if (phase1Serial.includes(UEFI_KEYFILE_SERIAL.espFound)) {
+    return {
+      ok: false,
+      reason:
+        "UEFI keyfile ESP bind marker appeared on the default QEMU phase-1 path; " +
+        "wifi/iSerial USB bake must not write /zeta-bind-uefi-keyfile",
+    };
+  }
   if (phase1Serial.includes(UEFI_KEYFILE_SERIAL.persistOptInKeyfile)) {
     return {
       ok: false,
@@ -205,6 +222,70 @@ export function assertUsbISerialPhase1Contract(phase1Serial: string):
       reason:
         `usb iSerial persist-default marker missing ("${USB_ISERIAL_SERIAL.persistDefaultUuid}"). ` +
         "QEMU phase-1 must keep FAT UUID persist unless ZETA_BIND_USB_ISERIAL=1 is set.",
+    };
+  }
+  return { ok: true };
+}
+
+/**
+ * When QEMU_UEFI_KEYFILE_PHASE1=1, phase-1 serial must show the ESP marker,
+ * the persist-opt-in write, and no-metal-claim. Does not prove restore
+ * decrypt: non-interactive QEMU skips the cred passphrase, so the picker
+ * never binds the blob. Helper-unavailable is a fail, not a skip.
+ */
+export function assertUefiKeyfilePhase1Contract(phase1Serial: string):
+  | {
+      readonly ok: true;
+    }
+  | { readonly ok: false; readonly reason: string } {
+  if (phase1Serial.includes(USB_ISERIAL_SERIAL.persistOptInIserial)) {
+    return {
+      ok: false,
+      reason:
+        "usb iSerial persist-opt-in appeared on the UEFI keyfile QEMU path; " +
+        "the two opt-ins are mutually exclusive",
+    };
+  }
+  if (phase1Serial.includes(UEFI_KEYFILE_SERIAL.persistBothOptInsUuid)) {
+    return {
+      ok: false,
+      reason: "both bind opt-ins were set; keyfile write stayed UUID instead of binding",
+    };
+  }
+  if (!phase1Serial.includes(UEFI_KEYFILE_SERIAL.espFound)) {
+    return {
+      ok: false,
+      reason:
+        `UEFI keyfile ESP marker missing ("${UEFI_KEYFILE_SERIAL.espFound}"). ` +
+        "QEMU_UEFI_KEYFILE_PHASE1 must bake /zeta-bind-uefi-keyfile onto the USB image.",
+    };
+  }
+  if (
+    phase1Serial.includes(UEFI_KEYFILE_SERIAL.helperUnavailable) ||
+    phase1Serial.includes(UEFI_KEYFILE_SERIAL.helperAbsent)
+  ) {
+    return {
+      ok: false,
+      reason:
+        "UEFI keyfile write helper was unavailable; that is a fail, not a skip, " + "on QEMU_UEFI_KEYFILE_PHASE1.",
+    };
+  }
+  if (!phase1Serial.includes(UEFI_KEYFILE_SERIAL.persistOptInKeyfile)) {
+    return {
+      ok: false,
+      reason: `UEFI keyfile persist-opt-in marker missing ("${UEFI_KEYFILE_SERIAL.persistOptInKeyfile}").`,
+    };
+  }
+  if (!phase1Serial.includes(UEFI_KEYFILE_SERIAL.wrote)) {
+    return {
+      ok: false,
+      reason: `UEFI keyfile write marker missing ("${UEFI_KEYFILE_SERIAL.wrote}").`,
+    };
+  }
+  if (!phase1Serial.includes(UEFI_KEYFILE_SERIAL.noMetalClaim)) {
+    return {
+      ok: false,
+      reason: `UEFI keyfile no-metal-claim marker missing ("${UEFI_KEYFILE_SERIAL.noMetalClaim}").`,
     };
   }
   return { ok: true };
@@ -798,21 +879,33 @@ async function main(): Promise<never> {
   createVirtualDisk(diskPath);
 
   const requireWifiEsp = wifiEspPhase1Enabled();
-  const requireUsbISerial = usbISerialGuestEnabled();
+  const requireUefiKeyfile = uefiKeyfilePhase1Enabled();
+  // Keyfile opt-in writes persistOptInKeyfile; the iSerial contract treats that
+  // as a silent-switch fail. Dedicated QEMU_UEFI_KEYFILE_PHASE1 must not run it.
+  const requireUsbISerial = usbISerialGuestEnabled() && !requireUefiKeyfile;
   let bootMedia: InstallBootMedia = { kind: "iso", path: isoPath };
-  if (requireWifiEsp || requireUsbISerial) {
-    const usbImagePath = join(tmpDir, requireWifiEsp ? "zflash-wifi-esp-boot.img" : "zflash-usb-iserial-boot.img");
+  if (requireWifiEsp || requireUsbISerial || requireUefiKeyfile) {
+    const usbImagePath = join(
+      tmpDir,
+      requireUefiKeyfile
+        ? "zflash-uefi-keyfile-boot.img"
+        : requireWifiEsp
+          ? "zflash-wifi-esp-boot.img"
+          : "zflash-usb-iserial-boot.img",
+    );
     console.log(
-      requireWifiEsp
-        ? `[qemu-full-install-test] QEMU_WIFI_ESP_PHASE1=1 — baking file-backed zflash image with wifi ESP JSON (ssid=${DEFAULT_QEMU_WIFI_SSID})`
-        : "[qemu-full-install-test] QEMU_USB_ISERIAL_PHASE1=1 — baking file-backed zflash USB image (serial=ZETA-QEMU-001; no wifi claim)",
+      requireUefiKeyfile
+        ? "[qemu-full-install-test] QEMU_UEFI_KEYFILE_PHASE1=1 — baking /zeta-bind-uefi-keyfile (install-time write; no restore-decrypt claim)"
+        : requireWifiEsp
+          ? `[qemu-full-install-test] QEMU_WIFI_ESP_PHASE1=1 — baking file-backed zflash image with wifi ESP JSON (ssid=${DEFAULT_QEMU_WIFI_SSID})`
+          : "[qemu-full-install-test] QEMU_USB_ISERIAL_PHASE1=1 — baking file-backed zflash USB image (serial=ZETA-QEMU-001; no wifi claim)",
     );
     const prepared = prepareBootImage({
       isoPath,
       outputImagePath: usbImagePath,
       withCredentialBlob: false,
       testMode: true,
-      hostname: requireWifiEsp ? "node-qemu-wifi" : "node-qemu-iserial",
+      hostname: requireUefiKeyfile ? "node-qemu-keyfile" : requireWifiEsp ? "node-qemu-wifi" : "node-qemu-iserial",
       pubkeyPath: TEST_INFRA_PUBKEY,
       ...(requireWifiEsp
         ? {
@@ -822,6 +915,7 @@ async function main(): Promise<never> {
             },
           }
         : {}),
+      ...(requireUefiKeyfile ? { bindUefiKeyfileMarker: true } : {}),
     });
     if ("error" in prepared) {
       console.error(`[qemu-full-install-test] USB boot-image bake failed: ${prepared.error}`);
@@ -835,7 +929,9 @@ async function main(): Promise<never> {
   }
 
   let phase1Label = "phase 1 (ISO install)";
-  if (requireWifiEsp) {
+  if (requireUefiKeyfile) {
+    phase1Label = "phase 1 (zflash USB install + UEFI keyfile write)";
+  } else if (requireWifiEsp) {
     phase1Label = "phase 1 (zflash USB install + wifi ESP)";
   } else if (requireUsbISerial) {
     phase1Label = "phase 1 (zflash USB install + iSerial guest probe)";
@@ -924,6 +1020,25 @@ async function main(): Promise<never> {
       );
     }
     console.log("[qemu-full-install-test] usb iSerial phase-1 contract ok (guest sysfs; no metal claim)");
+  }
+
+  if (requireUefiKeyfile) {
+    const keyfileContract = assertUefiKeyfilePhase1Contract(phase1Serial);
+    if (!keyfileContract.ok) {
+      writeArtifactSerialLog(phase1Serial, "");
+      reportResult(
+        {
+          exitCode: 1,
+          reason: `UEFI keyfile phase-1 contract failed — ${keyfileContract.reason}`,
+          serialLogTail: phase1Serial.slice(-2000),
+          ...(phase1.elapsedSeconds !== undefined ? { elapsedSeconds: phase1.elapsedSeconds } : {}),
+        },
+        artifactSerialLogPath,
+      );
+    }
+    console.log(
+      "[qemu-full-install-test] UEFI keyfile phase-1 contract ok (install-time write; no restore-decrypt / metal claim)",
+    );
   }
 
   const hostname = phase1.hostname ?? extractGeneratedHostname(phase1Serial);
