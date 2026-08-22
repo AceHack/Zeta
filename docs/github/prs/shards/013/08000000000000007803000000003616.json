@@ -1,0 +1,19 @@
+{
+  "pr_number": 13846,
+  "archive_path": "docs/history/pr-reviews/PR-13846-docs-explainers-the-claude-riemann-two-thirds-result-for-a-reader-with-no-backgr.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7kryLa",
+    "comment:PRRC_kwDOSF9kNM7kryLj",
+    "comment:PRRC_kwDOSF9kNM7kryLm",
+    "thread:PRRT_kwDOSF9kNM6bacTn",
+    "thread:PRRT_kwDOSF9kNM6bacTu",
+    "thread:PRRT_kwDOSF9kNM6bacTx"
+  ],
+  "fetched_at": "2026-08-22T19:32:57.519Z",
+  "schema_version": "v1",
+  "commit_sha": "485f67bc6b9d5e5e2bc04f870e82232ba3e67011",
+  "title": "docs(explainers): the Claude/Riemann two-thirds result for a reader with no background — plus a three-region visual",
+  "state": "MERGED",
+  "merged_at": "2026-08-22T19:32:24Z",
+  "head_ref": "feat/riemann-lay-explainer"
+}
