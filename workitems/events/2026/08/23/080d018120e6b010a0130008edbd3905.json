@@ -1,0 +1,14 @@
+{
+  "id": "080d018120e6b010a0130008edbd3905",
+  "at": "2026-08-23T19:41:08.182Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M0R2876N087G0R001JZZ8VG",
+    "type": "task",
+    "title": "Code search index — same cascade, sig = trigrams over raw bytes (Cox / zoekt)",
+    "slug": "code-search-index-same-cascade-sig-trigrams-over-raw-bytes-c",
+    "priority": "P2",
+    "filename": "081M0R2876N087G0R001JZZ8VG-code-search-index-same-cascade-sig-trigrams-over-raw-bytes-c.md"
+  }
+}

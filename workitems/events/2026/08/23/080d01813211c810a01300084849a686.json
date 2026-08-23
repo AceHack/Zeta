@@ -1,0 +1,14 @@
+{
+  "id": "080d01813211c810a01300084849a686",
+  "at": "2026-08-23T19:43:28.825Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M0R2CGHQ087G0R001JE6KV4",
+    "type": "task",
+    "title": "Glossary obligation checker — implement anti-babel's glossary-churn watching on the unigram index",
+    "slug": "glossary-obligation-checker-implement-anti-babel-s-glossary",
+    "priority": "P2",
+    "filename": "081M0R2CGHQ087G0R001JE6KV4-glossary-obligation-checker-implement-anti-babel-s-glossary.md"
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "id": "080d018120e4f810a013000857bb5195",
+  "at": "2026-08-23T19:41:08.127Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M0R2874Y087G0R001K2M0DG",
+    "type": "task",
+    "title": "Signature index build and query — tier-1 regions, vowel-free word keys, the no-false-negative falsifier",
+    "slug": "signature-index-build-and-query-tier-1-regions-vowel-free-wo",
+    "priority": "P2",
+    "filename": "081M0R2874Y087G0R001K2M0DG-signature-index-build-and-query-tier-1-regions-vowel-free-wo.md"
+  }
+}

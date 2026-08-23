@@ -1,0 +1,14 @@
+{
+  "id": "080d018150515810a01300087fb8da3c",
+  "at": "2026-08-23T19:47:36.619Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M0R2M2H9087G0R0037F960X",
+    "type": "task",
+    "title": "Generalise DV2.0 from change-rate space to partition-by-distance — etymological space as the second instance",
+    "slug": "generalise-dv2-0-from-change-rate-space-to-partition-by-dist",
+    "priority": "P2",
+    "filename": "081M0R2M2H9087G0R0037F960X-generalise-dv2-0-from-change-rate-space-to-partition-by-dist.md"
+  }
+}

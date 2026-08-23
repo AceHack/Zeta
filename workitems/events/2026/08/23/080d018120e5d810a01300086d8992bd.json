@@ -1,0 +1,14 @@
+{
+  "id": "080d018120e5d810a01300086d8992bd",
+  "at": "2026-08-23T19:41:08.155Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M0R2875T087G0R0009CBM5C",
+    "type": "task",
+    "title": "Corpus-derived unigram spell-check pre-filter — add candidates, never replace the query term",
+    "slug": "corpus-derived-unigram-spell-check-pre-filter-add-candidates",
+    "priority": "P2",
+    "filename": "081M0R2875T087G0R0009CBM5C-corpus-derived-unigram-spell-check-pre-filter-add-candidates.md"
+  }
+}

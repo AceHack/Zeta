@@ -49,6 +49,52 @@ with a ⭐ below and add a row there.
   (Wi-Fi/BT), proximal D2D bus with no cloud/broker — the Reticulum shape a decade
   earlier. Lesson carried: AllJoyn died of consortium fragmentation (AllSeen vs
   OCF) — the format-war lesson (zetamax doc): be open AND better, or be Betamax.
+- **Signature files, and the over-including filter family** — **Christos
+  Faloutsos & Stavros Christodoulakis**, _Signature Files: An Access Method for
+  Documents and Its Analytical Performance Evaluation_ (ACM TOIS 2(4), 1984):
+  superimposed coding, **false drops permitted**, resolved by a verification pass
+  they named _false-drop resolution_. This — not the inverted file — is the
+  tradition our signature index belongs to, because the property we buy is a
+  **soundness direction** (never a false negative, therefore never a false zero)
+  rather than precision. Signature files _lost_ to inverted files in the 1990s on
+  scan cost; why that verdict does not bind a 271 MiB local git corpus with a
+  measured 0.05% candidate set is argued in
+  `docs/research/2026-08-23-signature-index-*.md` §9. Family: **Burton Bloom**,
+  _Space/Time Trade-offs in Hash Coding with Allowable Errors_ (CACM 13(7), 1970)
+  — the canonical false-positive-only filter; **Jack Orenstein**, SIGMOD 1986 —
+  **filter-and-refine** in spatial databases, the same soundness direction with a
+  bounding box.
+- **Consonant-skeleton keys** — **Russell & Odell**, Soundex (US patent 1,261,167,
+  1918); **Lawrence Philips**, Metaphone (1990) / Double Metaphone (2000). Older
+  lineage: **abjad** scripts (Hebrew, Arabic) and Semitic consonantal roots, where
+  the consonant skeleton carries the lexeme and the vowels inflect it. Vowel
+  dropping is old and principled, not a coinage. **Checked, and Soundex's
+  keep-the-first-letter rule was DECLINED**: measured on our corpus it moves
+  unique-key from 93.0% to 94.4%, which does not pay for the special case — it is
+  a claim about English surnames, and this corpus is code and technical prose.
+- **Corpus-derived spelling correction** — **Fred Damerau** (CACM 7(3), 1964) and
+  **Vladimir Levenshtein** (1966) for the edit model, Damerau specifically because
+  **transposition** is the typo class a consonant skeleton already absorbs;
+  **Peter Norvig**, _How to Write a Spelling Corrector_ (2007) for frequency from
+  the corpus rather than a dictionary — the constraint Aaron insisted on, because
+  a general dictionary "corrects" `ZSet`→`Set`, `argv`→`argue`, `DBSP`→`DBS`;
+  **Wolf Garbe**, SymSpell, for deletion-neighbourhood lookup _if_ naive candidate
+  generation proves too slow (measure first — an unnecessary optimisation is its
+  own debt).
+- **Code search is the same cascade with a different signature** — **Russ Cox**,
+  _Regular Expression Matching with a Trigram Index_ (2012), the design behind
+  Google Code Search: query trigrams filter candidate documents, then **a real
+  regex engine verifies**; **`zoekt`** (Han-Wen Nienhuys), which Sourcegraph runs.
+  The load-bearing fact is that this tradition **converged independently** on the
+  same two-tier structure with an order-preserving `sig`, which is evidence the
+  abstraction is real rather than a tidy story told afterwards.
+- **Florian Deißenböck & Markus Pizka**, _Concise and Consistent Naming_ (IWPC
+  2005; Software Quality Journal 14(3), 2006) — identifier naming formalised as
+  **one concept, one name** (no synonyms) and **one name, one concept** (no
+  homonyms). The model behind the variable-name registry: once names carry
+  definitions, a name recurring across dozens of files under one definition is a
+  detectable **un-extracted constant or shared library**, not merely untidy
+  vocabulary. Adjacent: Arnaoudova et al. on linguistic antipatterns.
 - **Apache Lucene** — **Doug Cutting**, first released 1999; Apache project since 2001. The inverted-file literature below tells you the data structure; Lucene
   tells you which parts bite at scale, because it has been forced to solve them
   for real for two decades — **Apache Solr** and **Elasticsearch** are both built
@@ -1064,9 +1110,9 @@ notes: [pause-not-death + Orleans criterion] and
   the asymptotics. Same object family, different regime; the link is "our exact case sits inside the
   family whose asymptotics others study," never a contribution to the asymptotic result.
 - **Construction A as the code↔lattice↔packing bridge (Conway–Sloane, _SPLAG_ ch. 5)** — the
-  executable content of `E8Lattice.fs`: a binary code C gives a lattice L_A(C), and the doubly-even
+  executable content of `E8Lattice.fs`: a binary code C gives a lattice L*A(C), and the doubly-even
   self-dual [8,4] adinkra code gives E8, the densest 8D packing. This is the **same mechanism** by
-  which a spherical/binary-code construction _recovers a sphere-packing exponent_ — i.e. codes
+  which a spherical/binary-code construction \_recovers a sphere-packing exponent* — i.e. codes
   produce packings. We have it running in four oracles; we **reproduce** Conway–Sloane/Viazovska,
   we improve no code bound.
 - **OpenAI "Ten advances in mathematics" (Astra, announced 2026-08-01; Noam Brown,

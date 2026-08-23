@@ -221,6 +221,22 @@ Three layers, three jobs — this is the middle one, and none replaces another:
 - `../search.ts` — a scope-budgeted literal **scan** with no index. Answers
   anything, including phrases and stop words, at scan cost.
 
+## Where this is going — the signature redesign
+
+Aaron 2026-08-23 specified a **deliberate divergence from Lucene**: the key
+becomes a **vowel-free word signature**, a **phrase** is the _set_ of its word
+signatures (word order discarded, kept only for ranking), and the index becomes
+a **two-tier cascade** whose tier 1 **over-includes and never under-includes** —
+so it cannot produce a false zero, which is the defect this whole directory
+exists to remove.
+
+`signature.ts` (+ its falsifiers) ships that key function, measured. The index
+build, the corpus-derived spell-check pre-filter, the naming registry and the
+code index are **filed, not built**.
+
+Full design, with every measurement:
+`docs/research/2026-08-23-signature-index-over-includes-never-under-includes-vowel-free-word-keys-order-free-phrases-two-tier-cascade.md`
+
 ## Prior art (Beacon)
 
 - **Gerard Salton**, SMART (1960s–70s) — the analysis → postings pipeline.
