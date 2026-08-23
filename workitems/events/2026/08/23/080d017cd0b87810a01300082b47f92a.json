@@ -1,0 +1,14 @@
+{
+  "id": "080d017cd0b87810a01300082b47f92a",
+  "at": "2026-08-23T17:10:22.735Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M0QSM5RD087G0R000THMGGQ",
+    "type": "task",
+    "title": "Retire tools/setup/op-token-setup.sh to TypeScript: the argv leak the shell carried is fixed by writing through security -i (stdin), and no-stdout/no-argv/no-env are now falsifiers rather than a header comment",
+    "slug": "retire-tools-setup-op-token-setup-sh-to-typescript-the-argv",
+    "priority": "P2",
+    "filename": "081M0QSM5RD087G0R000THMGGQ-retire-tools-setup-op-token-setup-sh-to-typescript-the-argv.md"
+  }
+}

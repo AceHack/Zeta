@@ -19,19 +19,35 @@ of the service-account token (not a plaintext dotfile, not base64-in-a-workflow)
 # operator creates the service account on 1password.com (Developer → Service Accounts),
 # scoped to ONE vault (least-privilege), then either copies the token to the clipboard OR
 # is ready to paste it into the secure dialog. Then the AGENT runs:
-bash tools/setup/op-token-setup.sh             # native secure dialog (hidden input)
+bun tools/setup/op-token-setup.ts             # native secure dialog (hidden input)
 #   or
-bash tools/setup/op-token-setup.sh --clipboard # read from the clipboard
-bash tools/setup/common/shellenv.sh            # regen so shellenv sources secrets-env.sh
+bun tools/setup/op-token-setup.ts --clipboard # read from the clipboard
+bun tools/setup/op-token-setup.ts --check     # presence + length only, no write
 ```
 
-That script (idempotent, macOS): captures the `ops_…` token via `osascript` hidden-answer
-dialog or `pbpaste`, validates the prefix **without echoing**, stores it ENCRYPTED in the
-login Keychain (`security add-generic-password -U`), and writes the runtime FETCH line to
-`~/.config/zeta/secrets-env.sh` (mode 600) — `export OP_SERVICE_ACCOUNT_TOKEN="$(security
-find-generic-password -s zeta-op-service-account -w)"`. The managed `shellenv.sh` (already
-sourced by the profile via `profile-edit.sh`) sources `secrets-env.sh`, so every shell —
-including the agent's fresh subprocesses — gets the scoped token from the Keychain.
+That command (idempotent, macOS): captures the `ops_…` token via an `osascript`
+hidden-answer dialog or `pbpaste`, validates the prefix **without echoing**, and stores it
+ENCRYPTED in the login Keychain. The write goes through `security -i`, so the token crosses
+on **stdin** and never appears in an argv — `security add-generic-password … -w "$TOKEN"`
+put it in `ps` output for the life of the call, which is why the `.sh` this replaced was
+sequenced for conversion (`docs/SHELL-DEPRECATION-SEQUENCE.md`). `security -i` exits 0 even
+on failure, so success is decided by **reading the item back**, never by an exit status.
+
+**There is no env file and no `shellenv.sh` step.** Two earlier revisions of this blueprint
+told the operator to regenerate `~/.config/zeta/secrets-env.sh` so every shell would export
+`OP_SERVICE_ACCOUNT_TOKEN`. That hoist was **removed 2026-08-14**
+(`081M00VMWTB087G0R0026XSWT6`): an environment variable crosses `exec` regardless of the
+child's code identity, so it is the one exposure a signature, a keychain ACL, an IMA
+appraisal or a TPM seal cannot gate. The token is read **at point of use** instead:
+
+```ts
+import { withCredential, spawnWithCredential } from "./src/Core.TypeScript/secrets/credential.ts";
+await withCredential("zeta-op-service-account", async (token, use) => { /* … */ });
+await spawnWithCredential("zeta-op-service-account", "OP_SERVICE_ACCOUNT_TOKEN", ["op", "whoami"]);
+```
+
+`spawnWithCredential` is the only site where the token reaches an environment at all — one
+child, one exec, gone when it exits, because `op` offers no stdin form.
 
 ## Security invariants (why an agent may run this)
 
@@ -61,5 +77,6 @@ op item list --vault <vault>   # the granted items; nothing else
 
 See `docs/research/2026-06-21-config-and-secrets-as-event-sourced-zset-dbsp-…` (custody +
 the event-sourced direction) and the `cluster-encryption-credential-substrate` trajectory.
-Reuses: `tools/setup/op-token-setup.sh`, `tools/setup/common/shellenv.sh`,
-`tools/setup/common/profile-edit.sh`.
+Reuses: `tools/setup/op-token-setup.ts` (+ `op-token-setup.test.ts`, the falsifiers for
+no-stdout / no-argv / no-env), `src/Core.TypeScript/secrets/credential.ts`,
+`src/Core.TypeScript/secrets/keychain-macos.ts`.

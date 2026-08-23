@@ -5,7 +5,7 @@
 # just for onepass ... clear clipboard afterwards ... gate it with fingerprint ... safe for
 # everyone ... we need one for each os too."
 #
-# The op-token flow (op-token-setup.sh) is ONE caller; this is the reusable primitive: capture
+# The op-token flow (op-token-setup.ts) is ONE caller; this is the reusable primitive: capture
 # ANY named secret WITHOUT it touching the agent's stdout/transcript, store it ENCRYPTED in the
 # OS keystore, and optionally clear the clipboard after.
 #
