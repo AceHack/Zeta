@@ -302,6 +302,7 @@ function foldRows(entries: readonly ZetaDbDelta[]): ZetaDbResult<readonly ZetaDb
       return failed(
         "database-row-conflict",
         `Row key ${rowKey} names more than one payload. Row keys must identify complete row values.`,
+        "backpressure",
       );
     }
     for (const [payload, weight] of surviving) rows.push({ rowKey, payload, weight });
@@ -715,11 +716,12 @@ export async function runZetaDbNodeTick(
 }
 
 /**
- * Reapply one logical tick after concurrent writers change the durable revision.
+ * Reapply one logical tick after a transient conflict at the durable boundary.
  *
  * Explicit `expectedRevision` requests are compare-and-swap operations, so their
  * predicate is never weakened by retrying. Ordinary idempotent event batches may
- * reload and fold again, but only within the caller's finite attempt budget.
+ * reload and fold again after either a revision race or a row prefix that another
+ * concurrent batch can complete, but only within the caller's finite attempt budget.
  *
  * PRECONDITION on the port (081M0Q8TQYE087G0R001WBX1ZC): the convergence this retry provides was established
  * against a `revisionDiscipline: "compare-and-swap"` port, because the retry is driven by
@@ -751,14 +753,16 @@ export async function runConvergentZetaDbNodeTick(
   let lastConflict: ZetaDbFeedback | null = null;
   for (let attempt = 1; attempt <= maxAttempts; attempt += 1) {
     const result = await runZetaDbNodeTick(port, request);
-    if (result.ok || result.feedback.code !== "database-revision-conflict") return result;
+    if (result.ok) return result;
+    if (result.feedback.code !== "database-revision-conflict" && result.feedback.code !== "database-row-conflict")
+      return result;
     if (request.expectedRevision !== undefined) return result;
     lastConflict = result.feedback;
   }
 
   return failed(
-    "database-revision-conflict",
-    `Database tick spent its ${String(maxAttempts)}-attempt convergence budget. Last conflict: ${lastConflict?.detail ?? "revision changed"}`,
+    lastConflict?.code ?? "database-revision-conflict",
+    `Database tick spent its ${String(maxAttempts)}-attempt convergence budget. Last conflict: ${lastConflict?.detail ?? "durable state changed"}`,
     "backpressure",
   );
 }

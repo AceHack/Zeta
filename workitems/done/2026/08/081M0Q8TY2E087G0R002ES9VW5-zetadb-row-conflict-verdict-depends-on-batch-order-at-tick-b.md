@@ -1,11 +1,12 @@
 ---
 id: 081M0Q8TY2E087G0R002ES9VW5
 type: bug
-state: backlog
+state: done
 priority: P2
 slug: zetadb-row-conflict-verdict-depends-on-batch-order-at-tick-b
 title: "ZetaDB row-conflict verdict depends on batch order at tick boundaries and is never retried"
 created: 2026-08-23T12:16:58.446Z
+completed: 2026-08-23T13:46:58.454Z
 depends_on: []
 composes_with: []
 ---
@@ -38,15 +39,15 @@ b2 then b1: ok(accepted=1) -> ok(accepted=2)
 
 Same batch set, opposite arrival order, two different durable rows.
 
-## Why it does not self-heal
+## Why it did not self-heal
 
 It **is** recoverable — re-submitting the refused batch after the other one lands
 converges (verified: `b1, b2, b1-again` reaches the same state as `b2, b1`). But nothing
 performs that re-submission:
 
-`database-row-conflict` carries `severity: "heat"`, and `runConvergentZetaDbNodeTick`
-retries **only** `database-revision-conflict`. A "heat" refusal reads as *your input is
-bad*, not *try again* — so the two cells simply stay diverged.
+`database-row-conflict` carried `severity: "heat"`, and `runConvergentZetaDbNodeTick`
+retried **only** `database-revision-conflict`. A "heat" refusal read as _your input is
+bad_, not _try again_ — so the two cells simply stayed diverged.
 
 Distinct from 081M0Q8TY1B087G0R0008CYZJ3 (binding budgets): this one occurs with budgets
 **slack**, and the cause is the well-formedness invariant being enforced per tick rather
@@ -65,7 +66,26 @@ than per union.
 ## Where it is pinned
 
 `src/Core.TypeScript/zetadb/zeta-db-node.property.test.ts` — **PREFIX** carries the
-deterministic witness and asserts the `heat` severity that blocks the retry. PERM-B
+deterministic witness and asserts the typed retry severity. PERM-B
 excludes this class by an explicit **input-side** precondition (`singlePayloadPerRow`)
 and asserts a hard minimum count of the exclusions, so the excluded class is named and
 proved reachable rather than quietly swallowed.
+
+## Resolution
+
+Option 1 landed. `database-row-conflict` is now typed `backpressure`, and
+`runConvergentZetaDbNodeTick` retries both revision races and row-prefix conflicts within
+the caller's finite `maxAttempts` budget. If the budget is exhausted, the result keeps
+the original conflict code instead of relabeling every exhaustion as a revision race.
+
+The deterministic concurrent witness forces `batch2` to persist between the first and
+second attempts of `batch1`; both calls then succeed and the shared image reaches the
+same revision-2 row as the opposite arrival order. The negative witness submits a
+permanently malformed two-payload batch: three attempts perform three reads, zero saves,
+and return `database-row-conflict` backpressure. There is no unbounded retry and no
+partial mutation.
+
+Honest limit: the low-level single-attempt tick still exposes the order-dependent refusal,
+because every persisted image remains well-formed. A sequential caller that cannot be
+healed during the finite retry window receives backpressure and must reschedule the same
+idempotent batch after complementary evidence arrives.

@@ -1,0 +1,11 @@
+{
+  "id": "080d0176fef0b810a0130008814b10fb",
+  "at": "2026-08-23T13:46:58.455Z",
+  "by": "codex-cli",
+  "kind": "state-changed",
+  "payload": {
+    "workItemId": "081M0Q8TY2E087G0R002ES9VW5",
+    "from": "backlog",
+    "to": "done"
+  }
+}

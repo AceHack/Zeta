@@ -531,9 +531,9 @@ describe("PERM-B · batch order does not change the durable image (falsifier for
 // it order-independent within a tick. Two cells fed the same two batches in opposite
 // order end at different revisions with different rows.
 //
-// It is recoverable — re-submitting the refused batch converges — but nothing does:
-// `database-row-conflict` carries severity "heat", and `runConvergentZetaDbNodeTick`
-// retries only `database-revision-conflict`. So there is no automatic recovery path.
+// It is recoverable when a complementary concurrent batch lands between attempts.
+// The low-level tick still exposes the order-dependent refusal, while
+// `runConvergentZetaDbNodeTick` now gives callers a finite automatic recovery path.
 
 /** Apply every batch even when one is refused — what a real caller does: a refused tick
  *  does not stop the next one. `applyBatches` stops early on purpose (an order-dependent
@@ -557,7 +557,7 @@ async function applyBatchesThroughRefusals(
 }
 
 describe("PREFIX · a tick-boundary row conflict makes batch order observable", () => {
-  test("same batch set, opposite order, different durable rows — and no automatic retry", async () => {
+  test("same batch set, opposite low-level order, different durable rows — and typed retry", async () => {
     const limits: ZetaDbTickLimits = { maxDeltas: 8, maxEntries: 3, maxCheckpointBytes: 328 };
     const emitThenRetract: readonly ZetaDbDelta[] = [
       { eventId: "event-1", rowKey: "row/b", payload: "A", weight: 1 },
@@ -573,7 +573,7 @@ describe("PREFIX · a tick-boundary row conflict makes batch order observable", 
     expect(forward).toContain('"rowKey":"row/b","payload":"B"');
     expect(reverse).toContain('"rowKey":"row/b","payload":"A"');
 
-    // The refusal that causes it is "heat", so the convergence retry never fires.
+    // The low-level refusal remains visible, but its severity now invites bounded retry.
     const port = createInMemoryZetaDbImagePort();
     const refused = await runZetaDbNodeTick(port, {
       nodeId: NODE,
@@ -585,7 +585,7 @@ describe("PREFIX · a tick-boundary row conflict makes batch order observable", 
     expect(refused.ok).toBe(false);
     if (!refused.ok) {
       expect(refused.feedback.code).toBe("database-row-conflict");
-      expect(refused.feedback.severity).toBe("heat");
+      expect(refused.feedback.severity).toBe("backpressure");
     }
   });
 });
