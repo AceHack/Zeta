@@ -1,0 +1,20 @@
+{
+  "id": "080d015ec3192810a0130008a1f3013c",
+  "at": "2026-08-22T23:54:18.464Z",
+  "by": "otto",
+  "kind": "attestation",
+  "action": {
+    "kind": "attest_peer",
+    "reason": "read 1 events from society"
+  },
+  "attestation": {
+    "attestor": "otto",
+    "attested": "society",
+    "windowStart": "2026-08-22T23:39:56.581Z",
+    "windowEnd": "2026-08-22T23:39:56.581Z",
+    "eventCount": 1,
+    "attestedDigest": "sha256:74ff6088284446881ed7658606ce660c716565fbe5ca466910db43e3516f6566",
+    "claim": "heartbeat-genuine",
+    "strength": 1
+  }
+}
