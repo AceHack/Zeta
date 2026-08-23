@@ -344,16 +344,24 @@ describe("the real tree", () => {
     // them takes `platform`'s blocker count from 5 to 3 without moving a
     // single byte of the priced figure.
     //
-    // 74.26 -> 74.47 on 2026-08-23, and it is the RISING direction again: two
-    // images stopped being unmeasurable. `zeta-portal` (43241230) and
-    // `zeta-platform-controller` (42887187) were made public and the checked-in
-    // row was never re-measured, so they had been carrying `manifest HTTP 401`
-    // and contributing nothing. x2.67 that is 0.2142 GiB, which is the whole of
-    // the move. `platform`'s blockers go 3 -> 1; the one that remains is
-    // `ghcr.io/ich777/steamcmd:armareforger`, a tag that has never existed
-    // upstream (the repository publishes 94 tags, `arma3` and `arma3exilemod`
-    // among them, and no reforger tag at all).
-    expect(all.diskGib).toBeCloseTo(74.47, 2);
+    // 74.26 -> 74.61 on 2026-08-23, RISING TWICE for two independent reasons
+    // that landed the same day, and both are the same shape: an image that
+    // could not be SIZED was contributing nothing, so making it sizable can
+    // only push the floor up. That direction is what "the number got MORE
+    // true" looks like; the tree did not grow.
+    //
+    //   +0.1385 GiB  the `arma-reforger` Blueprint stopped naming a 404 and
+    //                started naming `ghcr.io/acemod/arma-reforger` pinned by
+    //                digest — 55712029 compressed x2.67 (081M0QB1ZCV087G0R001P9YCPX)
+    //   +0.2142 GiB  `zeta-portal` (43241230) and `zeta-platform-controller`
+    //                (42887187) were made public and the checked-in rows were
+    //                never re-measured, so both had been carrying
+    //                `manifest HTTP 401` while being anonymously pullable
+    //
+    // Between them `platform` goes from THREE blockers to ZERO and leaves the
+    // partitioner's quarantine for the first time. `covered by a lane` moves
+    // 43/47 -> 44/47.
+    expect(all.diskGib).toBeCloseTo(74.61, 2);
     expect(all.cpuMillis).toBeGreaterThan(budget.cpuMillis);
     expect(all.diskGib).toBeGreaterThan(budget.diskGib);
     // WHICH AXIS BINDS IS NOW A MEASUREMENT, NOT AN ASSERTION. At 14 GiB disk was

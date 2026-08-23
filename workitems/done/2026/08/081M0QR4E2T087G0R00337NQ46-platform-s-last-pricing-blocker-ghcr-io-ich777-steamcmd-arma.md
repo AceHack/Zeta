@@ -1,11 +1,12 @@
 ---
 id: 081M0QR4E2T087G0R00337NQ46
 type: bug
-state: backlog
+state: done
 priority: P2
 slug: platform-s-last-pricing-blocker-ghcr-io-ich777-steamcmd-arma
 title: "platform's last pricing blocker: ghcr.io/ich777/steamcmd:armareforger is a tag upstream never published"
 created: 2026-08-23T16:44:18.394Z
+completed: 2026-08-23T17:13:43.856Z
 depends_on: []
 composes_with: []
 ---
@@ -50,3 +51,21 @@ takes this, not a verified answer.
 
 `bun src/Core.TypeScript/cluster/lane-partition.ts` reports `platform` in a lane rather
 than under `CANNOT BE PRICED`, with the image reference it prices resolving anonymously.
+
+## CLOSED AS A DUPLICATE — and the duplication is the interesting part
+
+Filed 2026-08-23T16:44Z. **#14282 had already landed at 16:29Z**, fifteen minutes
+earlier, and closed it: `081M0QB1ZCV087G0R001P9YCPX` re-pointed the Blueprint at
+`ghcr.io/acemod/arma-reforger` pinned by digest, on provenance read from the image's
+own `org.opencontainers.image.source` label. Its `install:`/`command:`/`args:` went with
+it, because that image installs itself and overriding the entrypoint would have produced
+a _measurable_ image that still cannot run.
+
+Two agents re-enumerated the same publisher independently and reached the same finding —
+94 tags, `arma3` + `arma3exilemod`, no reforger tag anywhere at ich777. That agreement is
+worth keeping precisely because it was reached twice without contact. Where they differed
+is that the other went on to find a publisher that does ship one; this item stopped at
+"it's a content decision" and declined to choose. Recorded rather than quietly deleted:
+the decline was the more cautious call and it was also the less useful one.
+
+Kept, moved to done, superseded by `081M0QB1ZCV087G0R001P9YCPX`.

@@ -22,7 +22,7 @@
 body {
   background-color: var(--bg-dark);
   color: var(--text-main);
-  font-family: 'Inter', sans-serif;
+  font-family: system-ui, -apple-system, sans-serif;
   min-height: 100vh;
   overflow-x: hidden;
   background-image: 
@@ -32,7 +32,7 @@ body {
 
 /* Typography */
 h1, h2, h3 { font-weight: 800; letter-spacing: -0.02em; }
-.mono { font-family: 'Share Tech Mono', monospace; }
+.mono { font-family: ui-monospace, 'SF Mono', Menlo, monospace; }
 
 /* Layout */
 #app {
@@ -298,7 +298,7 @@ main {
   z-index: 10;
   display: flex;
   gap: 8px;
-  font-family: 'Share Tech Mono', monospace;
+  font-family: ui-monospace, 'SF Mono', Menlo, monospace;
   font-size: 0.85rem;
   box-shadow: 0 0 15px rgba(244, 114, 182, 0.4);
   white-space: nowrap;
@@ -327,7 +327,7 @@ main {
   color: var(--accent-cyan);
   padding: 0.5rem 1rem;
   border-radius: 8px;
-  font-family: 'Inter', sans-serif;
+  font-family: system-ui, -apple-system, sans-serif;
   font-weight: 600;
   font-size: 0.875rem;
   cursor: pointer;
@@ -421,7 +421,7 @@ main {
 }
 
 .linguistic-float .eng {
-  font-family: 'Share Tech Mono', monospace;
+  font-family: ui-monospace, 'SF Mono', Menlo, monospace;
   font-weight: bold;
   color: var(--text-main);
 }

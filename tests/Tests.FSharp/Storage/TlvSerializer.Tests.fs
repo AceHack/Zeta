@@ -164,3 +164,32 @@ let ``Serializer.auto defaults to TLV for non-blittable 'T`` () =
     // format would break on the next `Build()` without warning.
     let ser = Serializer.auto<string> ()
     ser.Name |> should equal "tlv"
+
+
+[<Fact>]
+let ``an impossible entry count is refused BEFORE the array is allocated`` () =
+    // The count is a wire-supplied uint32 and `Array.zeroCreate count` used to
+    // run before any bound on it was known — so eight bytes of header could ask
+    // for a 2^31-entry array. The bound is the minimum entry width (4 B keyLen +
+    // 8 B weight = 12 B), which no honest encoder can undercut. Same class as
+    // the SpanSerializer guard (081M0QPAJG3087G0R002BGJG8H); the magic check
+    // above does not cover it, because a real TLV buffer carries a real magic.
+    let bogus = Array.zeroCreate<byte> 16
+    BinaryPrimitives.WriteUInt32LittleEndian(Span(bogus, 0, 4), 0xD85C02E1u)
+    BinaryPrimitives.WriteUInt32LittleEndian(Span(bogus, 4, 4), 1_000_000u)
+    let ser = TlvSerializer<string>() :> ISerializer<string>
+    (fun () -> ser.Read(ReadOnlySpan bogus) |> ignore)
+    |> should throw typeof<InvalidOperationException>
+
+
+[<Fact>]
+let ``a count that exactly fits the minimum entry width is still admitted`` () =
+    // The guard must refuse only the impossible, never the merely small: a real
+    // one-entry buffer is 8 B header + 4 B keyLen + 2 B `""` + 8 B weight = 22 B,
+    // which is above the 12 B floor and must decode.
+    let ser = TlvSerializer<string>() :> ISerializer<string>
+    let writer = freshWriter ()
+    ser.Write(writer, ZSet.ofSeq [ "", 5L ])
+    let bytes = writer.WrittenMemory.ToArray ()
+    let result = ser.Read(ReadOnlySpan bytes)
+    result.[""] |> should equal 5L

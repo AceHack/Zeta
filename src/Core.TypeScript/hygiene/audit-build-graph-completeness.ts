@@ -96,6 +96,20 @@ export const INFRASTRUCTURE_JOBS: ReadonlyMap<string, string> = new Map([
     "The required-check aggregator. Reports the verdict of the floor jobs; runs no " +
       "check of its own.",
   ],
+  [
+    "gate/drift-canary",
+    "The live specimen for step-level `continue-on-error` detection. Owns no sources " +
+      "and MUST NOT be selectable: a canary that a path filter can skip proves nothing " +
+      "on the runs it was skipped for, and its absence is what `drift-loud` reads as a " +
+      "dead detector. Unconditional by design.",
+  ],
+  [
+    "gate/drift-loud",
+    "Reports which non-blocking failures were absorbed across this run and a window of " +
+      "recent main runs. Owns no sources, and its subject is every other job — so a " +
+      "target claiming it would make the drift reporter selectable by the very diffs " +
+      "whose drift it exists to report.",
+  ],
 ]);
 
 /** `workflow/job` for a workflow file path and a job id. */

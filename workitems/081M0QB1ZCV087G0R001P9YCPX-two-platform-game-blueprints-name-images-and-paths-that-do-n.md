@@ -80,3 +80,98 @@ the pricing work is not built to catch.
 `arma-reforger` names a real image or is removed, and the `install:` commands agree with
 whatever `STEAMCMD_DIR` the chosen image declares — checked against the image config, not
 against this file.
+
+---
+
+## UPDATE 2026-08-23 — finding 1 is CLOSED, finding 2 is STILL OPEN
+
+### Finding 1 resolved: kept, not removed — the provenance was findable
+
+Aaron's framing was _keep-if-real, remove otherwise_: "the steamcmd we can keep if we can
+find the right provenance — if not, let's just remove it. It's not core, but I'd rather
+keep it if it makes sense and we can find where it comes from, the latest version."
+
+**ich777 was re-checked first and the "no fix at this publisher" conclusion held**, by
+enumeration rather than by a single 404:
+
+```
+GET ghcr.io/v2/ich777/steamcmd/tags/list?n=1000   -> 94 tags
+   arma-family: arma3, arma3exilemod              (nothing reforger-shaped)
+manifests: armareforger / arma-reforger / reforger -> HTTP 404, HTTP 404, HTTP 404
+gh api /users/ich777/packages?package_type=container -> 98 packages, none Arma Reforger
+hub.docker.com/v2/repositories/ich777/            -> same set, no Arma Reforger
+```
+
+The `gmod -> garrysmod` precedent is why the tag list was enumerated instead of trusting
+the 404. It changed nothing here: the publisher genuinely ships no Arma Reforger image.
+
+**A different publisher does, and it survived the evidence bar:**
+`ghcr.io/acemod/arma-reforger`, pinned as
+`ghcr.io/acemod/arma-reforger:sha-cd226c0@sha256:90883ce2f3d8b3b5b132ae7f4b3377afdc9e6be7e7c8cb1a290f8bd7b39d079c`.
+
+| test                                                | result                                                                                                                                  |
+| --------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------- |
+| resolves anonymously                                | yes — manifest HTTP 200, linux/amd64, no auth                                                                                           |
+| measurable                                          | 55,712,029 compressed bytes via this repo's own `measureImage`                                                                          |
+| provenance is the image's own, not a claim about it | label `org.opencontainers.image.source = https://github.com/acemod/docker-reforger`                                                     |
+| maintained                                          | ACE Mod, MIT, 117 stars; tip commit `cd226c0` 2026-07-30                                                                                |
+| **is it the latest version**                        | `latest` and `sha-cd226c0` resolve to the SAME digest, and `cd226c0` is the tip of the repo's default branch — so yes, and checkably so |
+| does it agree it is this game                       | the image's config sets `STEAM_APPID=1874900`, the same appid this Blueprint passed by hand — the `garrysmod`↔`4020` check, repeated    |
+| is the game real on Linux                           | Steam app-info 1874900 = "Arma Reforger Server", type Tool, `oslist windows,linux`, Linux depot 1874902                                 |
+
+**And the path half was fixed for this Blueprint at the same time**, which is the part that
+would otherwise have produced a measurable image that still cannot run. The `install:`,
+`command:` and `args:` keys are **gone**, deliberately: `/app/launch.py` (the image's Cmd,
+read out of the layer) runs `/steamcmd/steamcmd.sh +force_install_dir /reforger +login
+anonymous +app_update $STEAM_APPID validate +quit`, writes
+`/reforger/Configs/docker_generated.json` from the environment, then execs
+`./ArmaReforgerServer`. Overriding the Cmd would skip both. Storage moved to `/reforger`
+and the knobs became env vars from the image's documented contract.
+
+`platform`'s CANNOT-BE-PRICED blockers: **3 -> 2**. Both survivors
+(`zeta-platform-controller:latest`, `zeta-portal:latest`) are ours, private, and waiting on
+a UI-only package-visibility flip — nothing in the tree can move them.
+
+### Finding 2 still open, and now measured harder than before
+
+The original evidence was the image's _declared_ `STEAMCMD_DIR=/serverdata/steamcmd`. The
+layers themselves were then read, which says something stronger: **`/opt/steamcmd` does not
+exist in the image at all, and neither does any steamcmd binary.**
+
+`ghcr.io/ich777/steamcmd:unturned`, every path in all six layers matching `steamcmd` or
+`opt/`:
+
+```
+serverdata/steamcmd          <- an EMPTY directory
+opt/scripts/start.sh
+opt/scripts/start-server.sh
+```
+
+`start-server.sh` explains why: steamcmd is **downloaded at runtime**, not shipped —
+`if [ ! -f ${STEAMCMD_DIR}/steamcmd.sh ]; then wget ... steamcmd_linux.tar.gz`. The same
+script then runs `+force_install_dir ${SERVER_DIR} +app_update ${GAME_ID}` itself, driven
+by the `GAME_ID` env var.
+
+So `gmod` and `unturned` are wrong twice over, not once:
+
+1. `/opt/steamcmd/steamcmd.sh` is not a path in the image, so the initContainer fails —
+   and it would still fail if the path were corrected to `/serverdata/steamcmd/steamcmd.sh`,
+   because nothing has downloaded steamcmd there yet at initContainer time.
+2. Their `command:` override replaces `/opt/scripts/start.sh`, which is the only thing that
+   _would_ have installed the game. Fixing the install path alone leaves the pod running a
+   binary that was never fetched.
+
+**This is why the two blueprints were not "fixed" in the same change.** The correct fix is
+to stop hand-driving steamcmd and configure the ich777 images the way they are built to be
+configured (`GAME_ID`, `SERVER_DIR`, their own entrypoint) — the same shape the
+`arma-reforger` fix took, but it changes what `command`/`args`/`storage.mountPath` mean for
+both, and it deserves its own diff and its own review. `unturned` remains the tell: it
+measures fine, so no pricing signal will ever point at it.
+
+## Done when (revised)
+
+- [x] `arma-reforger` names a real image, pinned so it cannot float
+- [x] that Blueprint's invocation agrees with what its image actually ships, checked against
+      the image's own config and layers rather than against this file
+- [ ] `gmod` and `unturned` stop calling a steamcmd that is not in their image, and stop
+      overriding the entrypoint that would have installed the game

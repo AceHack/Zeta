@@ -18,6 +18,8 @@ export interface Frame {
   keys: boolean[];
   fault: string | null;
   causalMask: boolean[];
+  plane: number;
+  extra: Map<number, number>;
 }
 
 export function create(): Frame {
@@ -33,6 +35,8 @@ export function create(): Frame {
     keys: new Array(16).fill(false),
     fault: null,
     causalMask: new Array(4096).fill(false),
+    plane: 1,
+    extra: new Map(),
   };
 }
 
@@ -83,7 +87,8 @@ export function renderDisplay(f: Frame): string {
 
 export function colorAt(x: number, y: number, f: Frame): number {
   const idx = (y % H) * W + (x % W);
-  return f.display.get(idx) ? 1 : 0;
+  const mono = f.display.get(idx) ? 1 : 0;
+  return mono | (f.extra.get(idx) ?? 0);
 }
 
 export function step(f: Frame): Frame {
@@ -101,7 +106,17 @@ export function step(f: Frame): Frame {
 
   switch (op & 0xf000) {
     case 0x0000:
-      if (op === 0x00e0) f.display.clear(); // CLS
+      if (op === 0x00e0) {
+        if (f.plane & 1) f.display.clear(); // CLS
+        const keep = ~f.plane & 0b110;
+        if (keep !== 0b110) {
+          for (const [k, m] of [...f.extra]) {
+            const m2 = m & keep;
+            if (m2 === 0) f.extra.delete(k);
+            else f.extra.set(k, m2);
+          }
+        }
+      }
       else if (op === 0x00ee) { // RET
         const top = f.stack.pop();
         if (top !== undefined) f.pc = top;
@@ -186,6 +201,7 @@ export function step(f: Frame): Frame {
     case 0xd000: { // DRW Vx, Vy, nibble
       const ox = (f.v[x] ?? 0) % W;
       const oy = (f.v[y] ?? 0) % H;
+      const hiSel = f.plane & 0b110;
       let collision = 0;
       for (let row = 0; row < n; row++) {
         f.causalMask[f.i + row] = true; // Mark sprite data as causal
@@ -196,9 +212,18 @@ export function step(f: Frame): Frame {
             const py = oy + row;
             if (px < W && py < H) {
               const idx = py * W + px;
-              const cur = f.display.get(idx) ?? false;
-              if (cur) collision = 1;
-              f.display.set(idx, !cur);
+              if (f.plane & 1) {
+                const cur = f.display.get(idx) ?? false;
+                if (cur) collision = 1;
+                f.display.set(idx, !cur);
+              }
+              if (hiSel !== 0) {
+                const cur = f.extra.get(idx) ?? 0;
+                if ((cur & hiSel) !== 0) collision = 1;
+                const nxt = cur ^ hiSel;
+                if (nxt === 0) f.extra.delete(idx);
+                else f.extra.set(idx, nxt);
+              }
             }
           }
         }
@@ -212,6 +237,7 @@ export function step(f: Frame): Frame {
       break;
     case 0xf000:
       switch (nn) {
+        case 0x01: f.plane = x & 0b111; break; // Fn01: CHIP-9 plane select
         case 0x07: f.v[x] = f.dt; break;
         case 0x0a: { // Wait for key
           let pressed = -1;

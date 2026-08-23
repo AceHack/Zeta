@@ -25,11 +25,17 @@ export class BnnSocietyPredictor {
     this.initializeSociety();
   }
 
+  private seed = 12345;
+  private nextRandom(): number {
+    this.seed = (this.seed * 9301 + 49297) % 233280;
+    return this.seed / 233280;
+  }
+
   private initializeSociety() {
     for (let i = 0; i < this.agentCount; i++) {
       const agentBeliefs: Record<number, StudentTState> = {};
       for (let k = 0; k <= 0xF; k++) {
-        const diversityVariance = 1.0 + (Math.random() * 0.5); 
+        const diversityVariance = 1.0 + (this.nextRandom() * 0.5); 
         agentBeliefs[k] = createStudentTState(4.0, 0.0, diversityVariance, 0.1);
       }
       this.agents.set(`agent_${i}`, agentBeliefs);
@@ -95,7 +101,7 @@ export class BnnSocietyPredictor {
       const wsetEntries: { key: number, weight: number }[] = [];
       for (let k = 0; k <= 0xF; k++) {
         const obsValue = observations[k] ?? 0.0;
-        const y = obsValue + ((Math.random() - 0.5) * 0.05); // Add subjective noise
+        const y = obsValue + ((this.nextRandom() - 0.5) * 0.05); // Add subjective noise
         const result = updateStudentT(beliefs[k]!, y);
         beliefs[k] = result.state;
         

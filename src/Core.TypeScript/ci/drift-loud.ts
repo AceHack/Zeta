@@ -1,0 +1,690 @@
+#!/usr/bin/env bun
+// drift-loud.ts -- make a NON-BLOCKING failure LOUD without making it blocking.
+//
+// ---------------------------------------------------------------------------
+// THE ASK (Aaron 2026-08-23)
+// ---------------------------------------------------------------------------
+//
+//   "we want drift to be LOUD so the red is immediately noticed, not a whisper --
+//    just not blocking."
+//
+// The drift-and-heal flip is correct and is NOT what this changes: windows/macOS legs
+// and every hygiene lint stay non-blocking, `gate (required)` keeps exactly the floor
+// it has today, and nothing here can turn a merge red. What this closes is the OTHER
+// half -- the repo had been conflating "non-blocking" with "unnoticed".
+//
+// ---------------------------------------------------------------------------
+// WHAT WAS MEASURED, AND WHY THE EXISTING SURFACES DID NOT COVER IT (2026-08-23)
+// ---------------------------------------------------------------------------
+//
+// `gate.yml` names four surfaces that carry a non-blocking failure. Each is real; each
+// stops short of a class the others assume someone else has:
+//
+//   * ABSORPTION RATE. A full census of every completed `gate` push run on `main` over
+//     5.5 days (2026-08-18T00:53Z..2026-08-23T16:07Z -- 600 runs, 368 cancelled before
+//     any job ran, 232 inspected) found **124 job failures that sat beside a green
+//     `gate (required)`**: the merge was permitted and the failure blocked nothing.
+//     **Only 32 of the 124 (26%) are covered by any rate surface**, because
+//     `platform-drift-report.ts` folds only job names starting `build-and-test (`. The
+//     largest single absorber is `test (TS hermetic)` at 47, which nothing folds at all;
+//     `lint (bash retirement inventory + hygiene unit tests)` is next at 20. Raw census
+//     committed at `src/Core.TypeScript/ci/fixtures/absorbed-failure-census-2026-08-23.json`
+//     -- text, diffable, and re-derivable from the Actions API.
+//
+//   * THE CLASS NOTHING COVERS AT ALL. `continue-on-error` at the STEP level produces a
+//     job whose conclusion is `success` with a failed step inside. Every surface listed
+//     in gate.yml derives from a JOB conclusion, so a step-level swallow is invisible to
+//     all four -- there is no red X, no annotation, no ledger row. It is strictly worse
+//     than the job-level case and had no detector.
+//
+//     The census above found **zero** of these, and that number is the argument for the
+//     canary rather than against the class: with no naturally-occurring specimen, "no
+//     findings" and "detector broken" produce byte-identical output. Eight
+//     `continue-on-error` steps exist in this repo's workflows today (agent-heartbeat
+//     x2, chart-version-refresh, gate's own `Emit scope`, drift-sweep's publish step,
+//     proof-closure-drift x2, github-settings-drift), so the class is real, live, and
+//     currently unmeasured -- it simply had not fired in this window.
+//
+//   * THE SURFACES THEMSELVES WENT QUIET. This is the finding that decided the design.
+//     `drift-sweep.yml` computes the drift ledger every few minutes and pushes it to
+//     `main`. Since **2026-08-13** that push has been REJECTED by the "CI Gate" ruleset
+//     (`remote: error: GH013 ... Required status check "gate (required)" is expected`),
+//     and the workflow swallows it with
+//         git push || echo "push race -- next tick re-records (idempotent)"
+//     which misattributes a PERMANENT rule rejection as a TRANSIENT race. Measured:
+//     **1,597 `drift-sweep` runs concluded `success`** between 2026-08-13 and
+//     2026-08-23 while `docs/drift-events/` stayed frozen at tick `000247` and
+//     `data/platform-drift.json` stayed frozen at run `32232815018` (2026-08-19).
+//     The dashboard everyone was pointed at has been reporting four-day-old numbers
+//     from behind a green check.
+//
+// So the honest statement of the gap is not "nothing looks at drift". It is: the
+// detectors are fine, and the ROUTE FROM DETECTOR TO EYES had three holes -- a coverage
+// hole (only one job prefix), a class hole (step-level), and a liveness hole (the
+// publication itself could stop landing and say nothing).
+//
+// ---------------------------------------------------------------------------
+// WHERE "LOUD" LIVES, AND WHY NOT THE OBVIOUS PLACE
+// ---------------------------------------------------------------------------
+//
+// The obvious home is the dashboard, and it was rejected on the evidence above: a data
+// file that cannot land on `main` is not a surface, it is a hope. Loud therefore lives
+// in the RUN, where nothing has to be published for it to be seen:
+//
+//   1. **The job's own conclusion.** `drift (loud)` goes RED and is NOT in the
+//      `gate (required)` floor, so it is a red X in the checks list next to a green
+//      required check. That is precisely "loud, not blocking" -- and it is the same
+//      mechanism gate.yml already calls surface 0 for the Windows legs, generalised.
+//   2. **`::error::` / `::warning::` / `::notice::` annotations**, which render in the
+//      PR UI and at the top of the run without touching any conclusion.
+//   3. **The step summary**, which renders at the top of the run page.
+//   4. A JSON artifact for anything that wants to fold it later -- deliberately LAST,
+//      because it is the layer that was already demonstrated to be able to go quiet.
+//
+// ---------------------------------------------------------------------------
+// PROPORTIONALITY IS A REQUIREMENT, NOT A POLISH
+// ---------------------------------------------------------------------------
+//
+// A guard that cries wolf gets switched off, so loudness is banded by how persistent
+// the drift is, and every band is computed over a BOUNDED window of EXECUTIONS:
+//
+//   SUSTAINED  -> `::error::`   failing at least half the time, at least `minFailures`
+//                               times, and NOT healed. Red exit.
+//   FLAPPING   -> `::warning::` intermittent, more than once.
+//   ONE_OFF    -> `::notice::`  exactly one failure in the window.
+//   HEALED     -> summary row only, no annotation. Failed inside the window, then went
+//                 clean for a full `healStreak` of consecutive executions.
+//   UNOBSERVED -> no failure in the window. Deliberately NOT called "healthy".
+//
+// `HEALED` is checked BEFORE the rate bands and it exists because of a specific bug
+// found in this repo on 2026-08-23: an unbounded window reported a lane `MOSTLY
+// FAILING` for twelve days after it was fixed. An alarm that stays lit after the
+// defect is gone is how a real signal gets muted, so the fix is structural -- the
+// window is bounded by construction (`windowRuns`) and a clean streak demotes a band
+// rather than being averaged away.
+//
+// ---------------------------------------------------------------------------
+// THE FALSIFIER THAT CANNOT BE ARGUED WITH: THE CANARY
+// ---------------------------------------------------------------------------
+//
+// A second surface that can itself go quiet is the class this repo keeps
+// rediscovering -- and the measurement above is the third instance of it. So this
+// reporter carries a live falsifier rather than a claim: `gate.yml` runs a
+// `drift-canary` job whose one step FAILS on purpose under `continue-on-error: true`,
+// on every run, forever. That job concludes `success` with a failed step inside -- an
+// exact specimen of the class that had no detector.
+//
+// `assertDetectorLive` then requires the canary to appear in the census. If step-level
+// detection ever breaks, the canary goes missing, and the reporter goes RED with
+// `DETECTOR WENT QUIET`. Silence is what fails the check, which is the only way to
+// keep an observability layer honest. It is not a test that can pass vacuously: delete
+// the class-C branch of `censusOfRun` and this goes red on the next run.
+//
+// ---------------------------------------------------------------------------
+// DISCIPLINES
+// ---------------------------------------------------------------------------
+//
+// DST (§7): `foldAbsorption` is a pure function of the run records. No clock -- runs are
+// ordered by run id, and ISO timestamps ride along as metadata that never enters the
+// fold. Idempotency (§6): re-running produces byte-identical output for the same input.
+// Noninterference (§13): the only entry points for influence are `argv` and the records
+// handed in; the network edge is below the `Edge` banner and touches no fold.
+//
+// Usage (CI):
+//   GH_TOKEN=... bun src/Core.TypeScript/ci/drift-loud.ts --repo owner/name \
+//     --run-id <this run> --out data/drift-loud.json
+// Usage (local, against captured fixtures -- no network):
+//   bun src/Core.TypeScript/ci/drift-loud.ts --offline --records <file.json>
+//
+// EXIT CODE IS THE LOUDNESS, NOT A GATE. Non-zero means "a drift signal is at its
+// loudest band, or the detector cannot prove it is still working". The job that runs
+// this is not in the `gate (required)` floor, so a non-zero exit is a visible red X
+// and merges are unaffected. Adding this job to the floor would be a treaty amendment
+// and is explicitly NOT what was asked for.
+
+import { appendFileSync, readFileSync, writeFileSync } from "node:fs";
+
+// ---------------------------------------------------------------------------
+// Model
+// ---------------------------------------------------------------------------
+
+/** The rollup whose conclusion separates "this failure blocked the merge" from "it did not". */
+export const ROLLUP_JOB_NAME = "gate (required)";
+
+/** The deliberate specimen. See "THE FALSIFIER THAT CANNOT BE ARGUED WITH" above. */
+export const CANARY_JOB_NAME = "drift-canary";
+
+/** Steps the runner injects around user steps -- never drift, and never annotated. */
+const RUNNER_STEP_NAMES: ReadonlySet<string> = new Set(["Set up job", "Complete job"]);
+
+export interface StepRecord {
+  readonly name: string;
+  readonly conclusion: string | null;
+}
+
+export interface JobRecord {
+  readonly name: string;
+  readonly conclusion: string | null;
+  readonly steps?: readonly StepRecord[] | undefined;
+}
+
+/** One completed workflow run reduced to what the fold needs. */
+export interface RunRecord {
+  readonly id: number;
+  /** ISO metadata ONLY -- never enters the fold. */
+  readonly at: string;
+  readonly sha: string;
+  /** Run-level conclusion: `success` | `failure` | `cancelled` | ... */
+  readonly conclusion: string;
+  readonly jobs: readonly JobRecord[];
+}
+
+/**
+ * How a failure was absorbed.
+ *
+ * `job-red-gate-green` -- the job's own conclusion is `failure` and the required rollup
+ * is `success`. Job-level `continue-on-error`, or a job simply outside the floor. It has
+ * ONE existing surface (its own red X) and no rate anywhere unless its name happens to
+ * start `build-and-test (`.
+ *
+ * `step-red-job-green` -- the job concluded `success` with a failed step inside.
+ * Step-level `continue-on-error`. Strictly worse: there is no red X at all, so every
+ * job-conclusion-derived surface in the repo is blind to it.
+ */
+export type AbsorptionKind = "job-red-gate-green" | "step-red-job-green";
+
+/** A single absorbed failure, keyed by the subject it should be attributed to. */
+export interface Absorption {
+  readonly kind: AbsorptionKind;
+  /** `job` for a job-level absorption, `job › step` for a step-level one. */
+  readonly subject: string;
+  readonly job: string;
+  readonly step: string | null;
+  readonly runId: number;
+  readonly at: string;
+}
+
+export type Band = "SUSTAINED" | "FLAPPING" | "ONE_OFF" | "HEALED" | "UNOBSERVED";
+
+/** Annotation severity. `null` means "summary row only" -- the anti-cry-wolf setting. */
+export type Severity = "error" | "warning" | "notice" | null;
+
+export interface SubjectStat {
+  readonly subject: string;
+  readonly kind: AbsorptionKind;
+  /** The job this subject was derived from. Carried so the canary can be found by JOB
+   * name rather than by parsing the composite `job › step` subject key back apart. */
+  readonly job: string;
+  /** The step, for a step-level subject; `null` for a job-level one. */
+  readonly step: string | null;
+  readonly band: Band;
+  /** Runs in the window in which this subject executed (reached a conclusion). */
+  readonly executions: number;
+  readonly failures: number;
+  readonly failureRate: number;
+  /** Consecutive most-recent EXECUTIONS with no failure. Demotes the band when long. */
+  readonly cleanStreak: number;
+  readonly lastFailure: { readonly runId: number; readonly at: string } | null;
+}
+
+export interface Thresholds {
+  /** Hard bound on how many runs the fold may look at. The `MOSTLY FAILING` guard. */
+  readonly windowRuns: number;
+  /** Consecutive clean executions that demote any band to `HEALED`. */
+  readonly healStreak: number;
+  /** Failure rate at or above which a subject may be `SUSTAINED`. */
+  readonly sustainedRate: number;
+  /** Failures at or above which a subject may be `SUSTAINED`. Rate alone is not enough. */
+  readonly sustainedMinFailures: number;
+}
+
+export const DEFAULT_THRESHOLDS: Thresholds = {
+  windowRuns: 60,
+  healStreak: 10,
+  sustainedRate: 0.5,
+  sustainedMinFailures: 3,
+};
+
+export interface DriftLoudReport {
+  /** Runs actually folded (after the window bound). */
+  readonly runs: number;
+  /** Runs whose jobs executed -- the honest denominator. */
+  readonly executedRuns: number;
+  readonly cancelledRuns: number;
+  readonly coverage: number;
+  readonly totalAbsorbed: number;
+  readonly subjects: readonly SubjectStat[];
+  /** Highest run id folded. The fold's own watermark, never a clock. */
+  readonly latestRunId: number;
+  readonly thresholds: Thresholds;
+}
+
+// ---------------------------------------------------------------------------
+// Pure fold -- nothing below this line until `Edge` touches the network or a clock
+// ---------------------------------------------------------------------------
+
+/** Newest-first by run id. Stable, total, clock-free. */
+export function orderNewestFirst(records: readonly RunRecord[]): readonly RunRecord[] {
+  return [...records].sort((a, b) => b.id - a.id);
+}
+
+/** True when this job executed at all -- i.e. reached a conclusion we can reason about. */
+function executed(job: JobRecord): boolean {
+  return job.conclusion === "success" || job.conclusion === "failure";
+}
+
+/**
+ * Every absorbed failure in ONE run.
+ *
+ * A failure is absorbed when the merge was permitted anyway. The rollup's conclusion is
+ * the discriminator, exactly as `gate-scope-summary.ts` and `platform-drift-report.ts`
+ * derive it -- so nothing here knows the word "windows", "markdownlint", or any job name
+ * except the rollup's and the canary's. When a run carries no rollup at all (a workflow
+ * other than `gate`), the run's own conclusion stands in: a green run with a red job
+ * inside absorbed it just the same.
+ */
+export function censusOfRun(run: RunRecord): readonly Absorption[] {
+  const rollup = run.jobs.find((j) => j.name === ROLLUP_JOB_NAME);
+  const permitted = rollup === undefined ? run.conclusion === "success" : rollup.conclusion === "success";
+  const out: Absorption[] = [];
+  for (const job of run.jobs) {
+    if (job.name === ROLLUP_JOB_NAME) continue;
+    if (job.conclusion === "failure") {
+      // Class A/B. Only absorbed if the required check stayed green; a job that failed
+      // BESIDE a red rollup blocked the merge and is not this rule's business.
+      if (permitted) out.push({ kind: "job-red-gate-green", subject: job.name, job: job.name, step: null, runId: run.id, at: run.at });
+      continue;
+    }
+    if (job.conclusion !== "success") continue;
+    // Class C. Independent of `permitted`: a green job hides its failed step whether or
+    // not anything else in the run was red, and no job-conclusion surface can see it.
+    for (const step of job.steps ?? []) {
+      if (step.conclusion !== "failure") continue;
+      if (RUNNER_STEP_NAMES.has(step.name)) continue;
+      out.push({ kind: "step-red-job-green", subject: `${job.name} › ${step.name}`, job: job.name, step: step.name, runId: run.id, at: run.at });
+    }
+  }
+  return out;
+}
+
+/** Did this subject execute in this run? Needed so a clean streak counts executions, never pushes. */
+function subjectExecuted(run: RunRecord, jobName: string, stepName: string | null): boolean {
+  const job = run.jobs.find((j) => j.name === jobName);
+  if (job === undefined || !executed(job)) return false;
+  if (stepName === null) return true;
+  const step = (job.steps ?? []).find((s) => s.name === stepName);
+  return step !== undefined && (step.conclusion === "success" || step.conclusion === "failure");
+}
+
+/**
+ * Band from the counts.
+ *
+ * ORDER IS THE POINT. `HEALED` is tested first, so a long clean streak demotes a subject
+ * that would otherwise average out as `SUSTAINED` across a stale window. That is the
+ * structural fix for the alarm that stayed lit for twelve days after its defect was gone.
+ */
+export function bandOf(failures: number, executions: number, cleanStreak: number, t: Thresholds): Band {
+  if (failures === 0) return "UNOBSERVED";
+  if (cleanStreak >= t.healStreak) return "HEALED";
+  const rate = executions === 0 ? 0 : failures / executions;
+  if (rate >= t.sustainedRate && failures >= t.sustainedMinFailures) return "SUSTAINED";
+  if (failures > 1) return "FLAPPING";
+  return "ONE_OFF";
+}
+
+/** Loudness for a band. `HEALED` and `UNOBSERVED` are deliberately silent in the PR UI. */
+export function severityOf(band: Band): Severity {
+  switch (band) {
+    case "SUSTAINED":
+      return "error";
+    case "FLAPPING":
+      return "warning";
+    case "ONE_OFF":
+      return "notice";
+    default:
+      return null;
+  }
+}
+
+/** Pure fold over the run records. Bounded by `thresholds.windowRuns` before anything else. */
+export function foldAbsorption(
+  records: readonly RunRecord[],
+  thresholds: Thresholds = DEFAULT_THRESHOLDS,
+): DriftLoudReport {
+  const ordered = orderNewestFirst(records).slice(0, thresholds.windowRuns);
+
+  const absorptions: Absorption[] = [];
+  for (const run of ordered) absorptions.push(...censusOfRun(run));
+
+  const subjects = new Map<string, { kind: AbsorptionKind; job: string; step: string | null }>();
+  for (const a of absorptions) subjects.set(a.subject, { kind: a.kind, job: a.job, step: a.step });
+
+  const stats: SubjectStat[] = [];
+  for (const [subject, meta] of [...subjects.entries()].sort((a, b) => (a[0] < b[0] ? -1 : 1))) {
+    let executions = 0;
+    let failures = 0;
+    let cleanStreak = 0;
+    let streakOpen = true;
+    let lastFailure: SubjectStat["lastFailure"] = null;
+
+    for (const run of ordered) {
+      if (!subjectExecuted(run, meta.job, meta.step)) continue;
+      executions++;
+      const failed = absorptions.some((a) => a.runId === run.id && a.subject === subject);
+      if (failed) {
+        failures++;
+        if (lastFailure === null) lastFailure = { runId: run.id, at: run.at };
+        streakOpen = false;
+      } else if (streakOpen) {
+        cleanStreak++;
+      }
+    }
+
+    stats.push({
+      subject,
+      kind: meta.kind,
+      job: meta.job,
+      step: meta.step,
+      band: bandOf(failures, executions, cleanStreak, thresholds),
+      executions,
+      failures,
+      failureRate: executions === 0 ? 0 : failures / executions,
+      cleanStreak,
+      lastFailure,
+    });
+  }
+
+  const executedRuns = ordered.filter((r) => r.jobs.some(executed)).length;
+  const cancelledRuns = ordered.filter((r) => r.conclusion === "cancelled").length;
+
+  return {
+    runs: ordered.length,
+    executedRuns,
+    cancelledRuns,
+    coverage: ordered.length === 0 ? 0 : executedRuns / ordered.length,
+    totalAbsorbed: absorptions.length,
+    subjects: stats,
+    latestRunId: ordered[0]?.id ?? 0,
+    thresholds,
+  };
+}
+
+// ---------------------------------------------------------------------------
+// The detector's own liveness -- falsifier #2
+// ---------------------------------------------------------------------------
+
+export interface LivenessVerdict {
+  readonly live: boolean;
+  readonly reason: string;
+}
+
+/**
+ * The canary must be in the census, or the detector has gone quiet.
+ *
+ * This is the whole answer to "a silent absorption fails the check". `drift-canary`
+ * fails one step under `continue-on-error` on EVERY run, so a working step-level
+ * detector cannot fail to see it. If it is missing, either class-C detection broke or
+ * the canary stopped running -- and both are reasons to go red, because in both cases
+ * this reporter's green would be a claim it can no longer support.
+ */
+export function assertDetectorLive(report: DriftLoudReport): LivenessVerdict {
+  const canary = report.subjects.find((s) => s.kind === "step-red-job-green" && s.job === CANARY_JOB_NAME);
+  if (canary === undefined) {
+    return {
+      live: false,
+      reason:
+        `DETECTOR WENT QUIET: no step-level absorption was observed for job \`${CANARY_JOB_NAME}\` in the ` +
+        `${report.runs}-run window. That job fails one step on purpose, under \`continue-on-error\`, on every ` +
+        "run. Seeing nothing means step-level detection is broken or the canary stopped running -- not that " +
+        "there is no drift. A reporter that cannot prove it is looking must not report green.",
+    };
+  }
+  if (canary.failures === 0) {
+    return { live: false, reason: `DETECTOR WENT QUIET: \`${CANARY_JOB_NAME}\` was observed but recorded zero failures.` };
+  }
+  return { live: true, reason: `detector live: canary observed failing ${canary.failures}/${canary.executions} execution(s)` };
+}
+
+/**
+ * Is a published drift artifact still landing?
+ *
+ * `data/platform-drift.json` and `docs/drift-events/` are written every tick and pushed
+ * to `main`; when that push is rejected the workflow still reports green, so the only
+ * evidence is that the artifact's own watermark stops advancing. A watermark older than
+ * every run in the current window means the publication has stopped landing entirely.
+ */
+export function publicationIsStale(
+  publishedWatermark: number,
+  oldestRunIdInWindow: number,
+): boolean {
+  // Nothing published yet is a DIFFERENT claim (a new artifact, not a stopped one), and
+  // conflating them would make this fire on day one of any new publication.
+  if (publishedWatermark <= 0) return false;
+  if (oldestRunIdInWindow <= 0) return false;
+  // Strictly older than every run we can see. Not "a bit behind" -- a tick that is merely
+  // racing lands within the window, so this fires only when the route itself has stopped.
+  return publishedWatermark < oldestRunIdInWindow;
+}
+
+/** Lowest run id in the folded window, or 0 when the window is empty. */
+export function oldestRunId(records: readonly RunRecord[], windowRuns: number): number {
+  const ordered = orderNewestFirst(records).slice(0, windowRuns);
+  return ordered[ordered.length - 1]?.id ?? 0;
+}
+
+// ---------------------------------------------------------------------------
+// Render -- annotations, summary, markdown. Still pure: returns strings.
+// ---------------------------------------------------------------------------
+
+const pct = (v: number): string => `${(v * 100).toFixed(1)}%`;
+
+const BAND_LABEL: Readonly<Record<Band, string>> = {
+  SUSTAINED: "SUSTAINED -- failing most runs, unhealed",
+  FLAPPING: "flapping -- intermittent",
+  ONE_OFF: "one-off",
+  HEALED: "healed -- failed in window, clean since",
+  UNOBSERVED: "unobserved -- no failure in window",
+};
+
+const KIND_LABEL: Readonly<Record<AbsorptionKind, string>> = {
+  "job-red-gate-green": "job red, `gate (required)` green",
+  "step-red-job-green": "step red, JOB GREEN (no red X anywhere)",
+};
+
+/** One `::severity::` workflow command per loud subject. Empty when nothing is loud. */
+export function annotationLines(report: DriftLoudReport): readonly string[] {
+  const out: string[] = [];
+  for (const s of report.subjects) {
+    const sev = severityOf(s.band);
+    if (sev === null) continue;
+    const last = s.lastFailure === null ? "never" : `run ${s.lastFailure.runId}`;
+    out.push(
+      `::${sev} title=drift (${s.band})::${s.subject} -- ${s.failures}/${s.executions} executions failed ` +
+        `(${pct(s.failureRate)}), clean streak ${s.cleanStreak}, last ${last}. ` +
+        `${KIND_LABEL[s.kind]}. This is a DRIFT signal: it is loud on purpose and it blocks nothing.`,
+    );
+  }
+  return out;
+}
+
+export function renderMarkdown(report: DriftLoudReport, liveness: LivenessVerdict, stalePublication: string | null): string {
+  const loud = report.subjects.filter((s) => severityOf(s.band) !== null);
+  const sustained = report.subjects.filter((s) => s.band === "SUSTAINED");
+  const out: string[] = [
+    "## Drift -- loud, and blocking nothing",
+    "",
+    `**${report.totalAbsorbed} absorbed failure(s)** across ${report.subjects.length} subject(s) in the last ` +
+      `${report.runs} run(s) (window is bounded at ${report.thresholds.windowRuns}). ` +
+      `Coverage: ${report.executedRuns}/${report.runs} runs actually executed jobs (${pct(report.coverage)}); ` +
+      `${report.cancelledRuns} were cancelled before anything ran. Every rate below is over EXECUTIONS.`,
+    "",
+  ];
+  if (stalePublication !== null) out.push(`> **${stalePublication}**`, "");
+  if (!liveness.live) out.push(`> **${liveness.reason}**`, "");
+
+  if (report.subjects.length === 0) {
+    out.push("_No absorbed failure in the window._", "");
+  } else {
+    out.push(
+      "| subject | band | class | executions | failures | rate | clean streak | last |",
+      "| --- | --- | --- | --- | --- | --- | --- | --- |",
+    );
+    for (const s of report.subjects) {
+      out.push(
+        `| \`${s.subject}\` | ${BAND_LABEL[s.band]} | ${KIND_LABEL[s.kind]} | ${s.executions} | ${s.failures} | ` +
+          `${pct(s.failureRate)} | ${s.cleanStreak} | ${s.lastFailure === null ? "--" : `run ${s.lastFailure.runId}`} |`,
+      );
+    }
+    out.push("");
+  }
+
+  out.push(
+    `Loud: **${loud.length}** annotated (${sustained.length} at \`::error::\`). ` +
+      "`healed` and `unobserved` rows carry NO annotation on purpose -- an alarm that stays lit after its " +
+      "defect is gone is how a real signal gets muted.",
+    "",
+    "**This job is not in the `gate (required)` floor.** A red X here is a drift signal, never a merge block. " +
+      "Making any of these blocking is a floor amendment and a separate, human decision.",
+    "",
+    `Detector liveness: ${liveness.live ? "OK" : "**FAILED**"} -- ${liveness.reason}`,
+    "",
+  );
+  return out.join("\n");
+}
+
+// ---------------------------------------------------------------------------
+// Edge -- I/O only past this line
+// ---------------------------------------------------------------------------
+
+interface ApiRun {
+  readonly id: number;
+  readonly created_at: string;
+  readonly head_sha: string;
+  readonly conclusion: string | null;
+}
+
+interface ApiJob {
+  readonly name: string;
+  readonly conclusion: string | null;
+  readonly steps?: readonly { readonly name: string; readonly conclusion: string | null }[] | undefined;
+}
+
+async function ghJson<T>(url: string, token: string): Promise<T> {
+  const res = await fetch(url, {
+    headers: {
+      accept: "application/vnd.github+json",
+      authorization: `Bearer ${token}`,
+      "x-github-api-version": "2022-11-28",
+    },
+  });
+  if (!res.ok) throw new Error(`GitHub API ${res.status} for ${url}`);
+  return (await res.json()) as T;
+}
+
+async function fetchRun(repo: string, run: ApiRun, token: string): Promise<RunRecord> {
+  const base = { id: run.id, at: run.created_at, sha: run.head_sha, conclusion: run.conclusion ?? "unknown" };
+  if (base.conclusion === "cancelled") return { ...base, jobs: [] };
+  const payload = await ghJson<{ readonly jobs?: readonly ApiJob[] }>(
+    `https://api.github.com/repos/${repo}/actions/runs/${run.id}/jobs?per_page=100`,
+    token,
+  );
+  const jobs: JobRecord[] = (payload.jobs ?? []).map((j) => ({
+    name: j.name,
+    conclusion: j.conclusion,
+    steps: (j.steps ?? []).map((s) => ({ name: s.name, conclusion: s.conclusion })),
+  }));
+  return { ...base, jobs };
+}
+
+function flagValue(argv: readonly string[], flag: string, fallback: string): string {
+  const i = argv.indexOf(flag);
+  return i >= 0 ? (argv[i + 1] ?? fallback) : fallback;
+}
+
+/** Watermark of the published platform-drift ledger, or 0 when absent/unreadable. */
+function publishedWatermark(path: string): number {
+  try {
+    const parsed = JSON.parse(readFileSync(path, "utf8")) as { readonly report?: { readonly latestRunId?: number } };
+    return parsed.report?.latestRunId ?? 0;
+  } catch {
+    return 0;
+  }
+}
+
+async function main(): Promise<number> {
+  const argv = process.argv.slice(2);
+  const repo = flagValue(argv, "--repo", process.env["GITHUB_REPOSITORY"] ?? "");
+  const out = flagValue(argv, "--out", "");
+  const offline = argv.includes("--offline");
+  const recordsPath = flagValue(argv, "--records", "");
+  const ledgerPath = flagValue(argv, "--ledger", "data/platform-drift.json");
+  const windowRuns = Number.parseInt(flagValue(argv, "--window", String(DEFAULT_THRESHOLDS.windowRuns)), 10);
+  const thisRunId = Number.parseInt(flagValue(argv, "--run-id", "0"), 10);
+  const thresholds: Thresholds = { ...DEFAULT_THRESHOLDS, windowRuns };
+
+  let records: RunRecord[] = [];
+  if (recordsPath.length > 0) {
+    records = JSON.parse(readFileSync(recordsPath, "utf8")) as RunRecord[];
+  } else if (!offline) {
+    const token = process.env["GH_TOKEN"] ?? process.env["GITHUB_TOKEN"] ?? "";
+    if (token.length === 0 || repo.length === 0) {
+      console.error("[drift-loud] no token or repo and no --records: nothing to fold.");
+      return 0;
+    }
+    // The window: recent completed `gate` runs on main, plus THIS run when given, so a
+    // PR sees its own canary and its own absorbed failures rather than only main's.
+    const listed = await ghJson<{ readonly workflow_runs?: readonly ApiRun[] }>(
+      `https://api.github.com/repos/${repo}/actions/workflows/gate.yml/runs` +
+        `?branch=main&status=completed&per_page=${Math.min(windowRuns, 100)}`,
+      token,
+    );
+    for (const r of listed.workflow_runs ?? []) records.push(await fetchRun(repo, r, token));
+    if (thisRunId > 0 && !records.some((r) => r.id === thisRunId)) {
+      const self = await ghJson<ApiRun>(`https://api.github.com/repos/${repo}/actions/runs/${thisRunId}`, token);
+      records.push(await fetchRun(repo, self, token));
+    }
+  }
+
+  const report = foldAbsorption(records, thresholds);
+  const liveness = assertDetectorLive(report);
+  const watermark = publishedWatermark(ledgerPath);
+  const stale = publicationIsStale(watermark, oldestRunId(records, thresholds.windowRuns))
+    ? `PUBLICATION NOT LANDING: \`${ledgerPath}\` is pinned at run ${watermark}, older than every one of the ` +
+      `${report.runs} runs in this window (newest ${report.latestRunId}). The tick computes and then throws ` +
+      "the result away -- the dashboard is showing stale numbers from behind a green check."
+    : null;
+
+  const markdown = renderMarkdown(report, liveness, stale);
+  console.log(markdown);
+
+  // LOUD: annotations first, so they are the first thing the run page shows.
+  for (const line of annotationLines(report)) console.log(line);
+  if (stale !== null) console.log(`::error title=drift publication not landing::${stale}`);
+  if (!liveness.live) console.log(`::error title=drift detector went quiet::${liveness.reason}`);
+
+  const summaryPath = process.env["GITHUB_STEP_SUMMARY"];
+  if (summaryPath !== undefined && summaryPath.length > 0) appendFileSync(summaryPath, `${markdown}\n`);
+
+  if (out.length > 0) {
+    writeFileSync(
+      out,
+      `${JSON.stringify({ asOf: orderNewestFirst(records)[0]?.at ?? null, liveness, stalePublication: stale, report }, null, 2)}\n`,
+    );
+  }
+
+  const sustained = report.subjects.filter((s) => s.band === "SUSTAINED");
+  const red = sustained.length > 0 || !liveness.live || stale !== null;
+  if (red) {
+    console.log(
+      "\nEXIT 1 -- a drift signal is at its loudest band. This job is NOT in the `gate (required)` floor: " +
+        "the merge is unaffected. Red here means read it, not stop.",
+    );
+    return 1;
+  }
+  console.log("\nEXIT 0 -- no sustained drift, detector live, publication landing.");
+  return 0;
+}
+
+if (import.meta.main) {
+  process.exit(await main());
+}

@@ -61,16 +61,29 @@ const GAMES: GameDef[] = [
     }),
   },
   {
+    // Arma Reforger is the one game here whose SteamCMD-base image does not
+    // exist: `ghcr.io/ich777/steamcmd:armareforger` is a 404 and that publisher
+    // ships no Arma Reforger image under any name (94 tags enumerated
+    // 2026-08-23; only `arma3` and `arma3exilemod` are arma-family). It is
+    // therefore the one entry that is NOT `steam(appid)`-shaped: ACE Mod's
+    // image installs and launches the app itself from `STEAM_APPID`, so the
+    // draft configures by environment and issues no install/command. Pinned by
+    // digest with the tag kept beside it for legibility; the digest is what the
+    // registry resolves. Provenance and the full measurement live in the
+    // Blueprint itself — full-ai-cluster/k8s/applications/platform/blueprints.yaml.
     match: /arma ?reforger|reforger|arma/i,
-    note: "Arma Reforger Dedicated (SteamCMD app 1874900) — UDP 2001 game + 17777 A2S query, config.json driven, heavier (6Gi).",
+    note: "Arma Reforger Dedicated (Steam app 1874900) — UDP 2001 game + 17777 A2S query, env-configured, heavier (6Gi).",
     build: () => ({
-      name: "arma-reforger", category: "game", image: "ghcr.io/ich777/steamcmd:armareforger",
-      install: steam(1874900), command: ["/data/ArmaReforgerServer"],
-      args: ["-config", "/data/configs/${CONFIG}", "-maxFPS", "60", "-bindPort", "${GAME_PORT}"],
-      env: { SERVER_NAME: "${SERVERNAME}" },
+      name: "arma-reforger", category: "game",
+      image: "ghcr.io/acemod/arma-reforger:sha-cd226c0@sha256:90883ce2f3d8b3b5b132ae7f4b3377afdc9e6be7e7c8cb1a290f8bd7b39d079c",
+      env: {
+        STEAM_APPID: "1874900", GAME_NAME: "${SERVERNAME}", GAME_SCENARIO_ID: "${SCENARIO}",
+        GAME_MAX_PLAYERS: "${MAXPLAYERS}", SERVER_BIND_PORT: "${GAME_PORT}",
+        SERVER_PUBLIC_PORT: "${GAME_PORT}", SERVER_A2S_PORT: "17777", ARMA_CONFIG: "${CONFIG}",
+      },
       ports: [{ name: "game", port: 2001, protocol: "UDP" }, { name: "query", port: 17777, protocol: "UDP" }],
-      storage: { size: "15Gi", mountPath: "/data" }, resources: { cpu: "4", memory: "6Gi" },
-      variables: [{ name: "SERVERNAME", default: "Zeta Reforger" }, { name: "SCENARIO", default: "Conflict-Everon" }, { name: "MAXPLAYERS", default: "32" }, { name: "CONFIG", default: "server.json", description: "config file under /data/configs" }, { name: "GAME_PORT", default: "2001" }],
+      storage: { size: "15Gi", mountPath: "/reforger" }, resources: { cpu: "4", memory: "6Gi" },
+      variables: [{ name: "SERVERNAME", default: "Zeta Reforger" }, { name: "SCENARIO", default: "{ECC61978EDCC2B5A}Missions/23_Campaign.conf", description: "GAME_SCENARIO_ID — the image's documented default scenario id" }, { name: "MAXPLAYERS", default: "32" }, { name: "CONFIG", default: "docker_generated", description: "ARMA_CONFIG — `docker_generated` builds the config from these variables; anything else is a filename under /reforger/Configs" }, { name: "GAME_PORT", default: "2001" }],
       sidecars: [SFTP], defaultExpose: "lan",
     }),
   },

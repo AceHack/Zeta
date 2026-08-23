@@ -1,0 +1,14 @@
+{
+  "id": "080d017b2a502010a0130008322cd666",
+  "at": "2026-08-23T16:12:42.372Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M0QPAJG3087G0R002BGJG8H",
+    "type": "bug",
+    "title": "SpanSerializer.Read throws ArgumentOutOfRangeException on windows-2025 under the full suite — mechanism unknown",
+    "slug": "spanserializer-read-throws-argumentoutofrangeexception-on-wi",
+    "priority": "P2",
+    "filename": "081M0QPAJG3087G0R002BGJG8H-spanserializer-read-throws-argumentoutofrangeexception-on-wi.md"
+  }
+}

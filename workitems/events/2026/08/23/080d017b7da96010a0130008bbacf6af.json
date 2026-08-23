@@ -1,0 +1,14 @@
+{
+  "id": "080d017b7da96010a0130008bbacf6af",
+  "at": "2026-08-23T16:24:05.164Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M0QPZD9C087G0R002W8QC2A",
+    "type": "bug",
+    "title": "drift-sweep's ledger push to main has been rejected by the CI Gate ruleset since 2026-08-13 — 1,597 green runs, zero ticks recorded",
+    "slug": "drift-sweep-s-ledger-push-to-main-has-been-rejected-by-the-c",
+    "priority": "P2",
+    "filename": "081M0QPZD9C087G0R002W8QC2A-drift-sweep-s-ledger-push-to-main-has-been-rejected-by-the-c.md"
+  }
+}

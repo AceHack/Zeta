@@ -2669,3 +2669,126 @@ jobs:
           echo "All gate jobs passed or were skipped (docs-only). ✓"
           echo "Scope of this green: see the \"gate (required)\" step summary --"
           echo "a skipped floor job means this green covers less than a full-scope green."
+
+  # ═══════════════════════════════════════════════════════════════════
+  # Drift, made LOUD — and still blocking nothing
+  # ═══════════════════════════════════════════════════════════════════
+  #
+  # Aaron 2026-08-23: "we want drift to be LOUD so the red is immediately noticed, not a
+  # whisper — just not blocking."
+  #
+  # NOTHING BELOW CHANGES WHAT BLOCKS. `gate (required)`'s `needs:` list is untouched,
+  # the windows/macOS `continue-on-error` flag is untouched, and every hygiene lint keeps
+  # exactly the (non-)blocking status it had. Adding either job below to the floor would
+  # be a treaty amendment and is deliberately not done here.
+  #
+  # WHAT IT DOES CHANGE is that "non-blocking" stopped meaning "unnoticed". Measured
+  # 2026-08-23 over every completed `gate` push run on main across 5.5 days (600 runs,
+  # 368 cancelled before anything ran, 232 inspected): **124 job failures sat beside a
+  # green `gate (required)`**, and only **32 of the 124 (26%)** reach any rate surface —
+  # `platform-drift-report.ts` folds only names starting `build-and-test (`, so the
+  # largest absorber, `test (TS hermetic)` at 47, is folded by nothing. Census committed
+  # at src/Core.TypeScript/ci/fixtures/absorbed-failure-census-2026-08-23.json.
+  # Worse, step-level `continue-on-error`
+  # produces a GREEN job with a red step inside, which every one of those surfaces is
+  # blind to by construction because they all read a JOB conclusion. Worst, the two
+  # surfaces that carry drift over TIME had both stopped landing: `drift-sweep.yml`'s
+  # push to main has been rejected by the "CI Gate" ruleset since 2026-08-13 and is
+  # swallowed as a "push race", so 1,597 sweep runs concluded `success` while
+  # `docs/drift-events/` stayed frozen at tick 000247.
+  #
+  # So loud lives in the RUN, where nothing has to be published for it to be seen: a red
+  # X on a non-floor job, plus ::error::/::warning:: annotations, plus a step summary.
+  # Full reasoning, the bands, and the anti-cry-wolf design: src/Core.TypeScript/ci/drift-loud.ts.
+
+  # The specimen. One step fails on purpose, under `continue-on-error`, on every run,
+  # forever — so this job concludes SUCCESS with a failed step inside. That is an exact
+  # instance of the class that had no detector, and `drift-loud` below is required to
+  # find it. If step-level detection ever breaks, the canary goes missing and the
+  # reporter goes red with DETECTOR WENT QUIET.
+  #
+  # This is not decoration and it is not a test double: it is the falsifier that keeps an
+  # observability layer from becoming the next thing that quietly stopped working — the
+  # class this repo has now rediscovered three times. Do not "fix" the failing step.
+  drift-canary:
+    name: drift-canary
+    runs-on: ubuntu-24.04
+    # A runaway cap, not a budget: this job runs two `echo`s.
+    timeout-minutes: 5
+    if: always()
+    steps:
+      # The step name is load-bearing — `drift-loud` reports it verbatim, and the test
+      # fixture in drift-loud.test.ts uses the same string.
+      - name: drift canary -- deliberate non-blocking failure
+        continue-on-error: true
+        run: |
+          echo "This step fails on purpose. It is the live specimen of a step-level"
+          echo "continue-on-error swallow: this JOB will conclude success anyway, with"
+          echo "no red X anywhere, which is exactly the class that had no detector."
+          echo "The 'drift (loud)' job below must find it. If it does not, that job goes"
+          echo "red — silence is what fails the check. See src/Core.TypeScript/ci/drift-loud.ts."
+          exit 1
+      - name: Explain the green
+        run: |
+          echo "This job's conclusion is SUCCESS and a step inside it FAILED."
+          echo "That is not a bug here; it is the measurement."
+
+  # The reporter. Reads the current run plus a BOUNDED window of recent completed `gate`
+  # runs on main, classifies every absorbed failure, and is loud in proportion to how
+  # persistent the drift is.
+  drift-loud:
+    name: drift (loud)
+    runs-on: ubuntu-24.04
+    # Was priced off `gate-required`, which measures ~12 s with the same sparse-checkout
+    # + bun shape. This one adds up to ~60 Actions API calls, so 10 is a RUNAWAY CAP:
+    # nothing here retries, polls, or waits on anything that can hang open.
+    timeout-minutes: 10
+    # `always()` — the whole point is to report when something went wrong, so a failed
+    # floor job must not skip the surface that explains it.
+    if: always()
+    # `gate-required` is the last job in the workflow, so needing it is how this job
+    # waits for everything else to reach a conclusion without enumerating a `needs:`
+    # list that would drift from the real job set. It does NOT make this job part of
+    # the floor — `needs` is a dependency edge, and only `gate-required`'s OWN `needs:`
+    # list defines what blocks.
+    needs: [gate-required, drift-canary]
+    permissions:
+      contents: read
+      # One scope, for one call: GET /actions/runs/*/jobs, the only source of PER-STEP
+      # conclusions. `needs` collapses a matrix to one value and never carries steps at
+      # all, which is precisely what kept the step-level class invisible.
+      actions: read
+    steps:
+      - name: Checkout (reporter + ledger only)
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 1
+          filter: blob:none
+          sparse-checkout: |
+            src/Core.TypeScript/ci/drift-loud.ts
+            data/platform-drift.json
+          sparse-checkout-cone-mode: false
+
+      # Bun only — the reporter imports nothing but node built-ins, so this job never
+      # runs `bun install` (~2-4 min) for a ~30 s fold.
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
+
+      - name: Report drift, loudly
+        # NO `continue-on-error` here, and that is the entire point of the job. A
+        # non-zero exit is the LOUD signal Aaron asked for: it paints a red X on
+        # `drift (loud)` in the checks list, next to a green `gate (required)`.
+        #
+        # It blocks nothing. `gate (required)` is the sole required status check
+        # (Settings → Branches → main), its `needs:` list above does not contain this
+        # job, and armed auto-merge reads required checks only. Verified against the
+        # live API on the Windows legs, which have concluded `failure` beside a green
+        # required check 11 times without stopping a merge.
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+          RUN_ID: ${{ github.run_id }}
+        run: |
+          bun src/Core.TypeScript/ci/drift-loud.ts \
+            --repo "$REPO" --run-id "$RUN_ID" --window 60 \
+            --ledger data/platform-drift.json

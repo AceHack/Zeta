@@ -22,6 +22,7 @@ export function buildMutualSimRom(): Uint8Array {
     
     "CLS",
     // Draw Environment Threat (Wall 1)
+    "BYTE 0xF101", // Plane 1 (Environment/AI)
     "LD I, shape_wall",
     "LD VA, 32",
     "LD VB, 10",
@@ -32,8 +33,10 @@ export function buildMutualSimRom(): Uint8Array {
     "DRW VA, VB, 4",
 
     // Initial Draw
+    "BYTE 0xF201", // Plane 2 (Player)
     "LD I, shape_p",
     "DRW V0, V1, 2",
+    "BYTE 0xF101", // Plane 1 (AI)
     "LD I, shape_ai",
     "DRW V3, V4, 4",
 
@@ -51,6 +54,7 @@ export function buildMutualSimRom(): Uint8Array {
     
     // -- PLAYER MOVEMENT --
     // Erase Player
+    "BYTE 0xF201", // Plane 2 (Player)
     "LD I, shape_p",
     "DRW V0, V1, 2",
     
@@ -75,6 +79,7 @@ export function buildMutualSimRom(): Uint8Array {
     "ADD V0, VE", // Right
 
     // Draw Player at new pos
+    "BYTE 0xF201", // Plane 2 (Player)
     "DRW V0, V1, 2",
     "SNE VF, 1", // If VF == 1, collision!
     "JMP p_collide",
@@ -82,6 +87,7 @@ export function buildMutualSimRom(): Uint8Array {
 
     "p_collide:",
     // Undo move
+    "BYTE 0xF201",
     "DRW V0, V1, 2", // Erase from new pos
     "LD V0, VA",
     "LD V1, VB",
@@ -95,6 +101,7 @@ export function buildMutualSimRom(): Uint8Array {
     "LD V7, 3", // Reset AI speed timer
     
     // Erase AI
+    "BYTE 0xF101", // Plane 1 (AI)
     "LD I, shape_ai",
     "DRW V3, V4, 4",
     
@@ -146,6 +153,7 @@ export function buildMutualSimRom(): Uint8Array {
 
     "ai_draw:",
     // Draw AI at new pos
+    "BYTE 0xF101",
     "LD I, shape_ai",
     "DRW V3, V4, 4",
     "SNE VF, 1",

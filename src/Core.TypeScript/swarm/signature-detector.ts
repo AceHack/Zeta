@@ -1,8 +1,8 @@
-
 let createHash: any = null;
 if (typeof process !== 'undefined' && process.versions && process.versions.node) {
   try {
-    const crypto = await import("node:crypto");
+    const cryptoName = "node:crypto";
+    const crypto = await import(/* @vite-ignore */ cryptoName);
     createHash = crypto.createHash;
   } catch (e) {}
 }

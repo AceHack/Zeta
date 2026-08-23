@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-08-23T15:40:25.104Z",
+  "updatedAt": "2026-08-23T16:43:04.188Z",
   "zetaId": "society-runner",
   "dimensions": [
     {
@@ -60,11 +60,11 @@
     },
     {
       "dimension": "calibration",
-      "mu": 0.7903901090902712,
-      "sigma2": 0.002445199455927768,
+      "mu": 0.791725673269233,
+      "sigma2": 0.002430060513733204,
       "nu": 3,
-      "observationCount": 364,
-      "lastRobustnessWeight": 1.3140124744418578
+      "observationCount": 366,
+      "lastRobustnessWeight": 1.3142548295181475
     },
     {
       "dimension": "unknown",
@@ -75,8 +75,8 @@
       "lastRobustnessWeight": 1
     }
   ],
-  "totalObservations": 364,
+  "totalObservations": 366,
   "rhoHistory": [],
   "tangleWarning": false,
-  "beliefId": "1cf9ca6ff94156a2"
+  "beliefId": "36b2055febb1e9b7"
 }
