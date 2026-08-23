@@ -1,0 +1,12 @@
+{
+  "pr_number": 14283,
+  "archive_path": "docs/history/pr-reviews/PR-14283-feat-ci-drift-is-loud-and-still-blocks-nothing-124-absorbed-failures-in-5-5-days.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-23T16:43:15.138Z",
+  "schema_version": "v1",
+  "commit_sha": "08a8e1306e51218e0fa6d237211c0ec57776bb68",
+  "title": "feat(ci): drift is LOUD and still blocks nothing — 124 absorbed failures in 5.5 days, 26% covered",
+  "state": "MERGED",
+  "merged_at": "2026-08-23T16:42:38Z",
+  "head_ref": "feat/drift-is-loud-not-blocking"
+}
