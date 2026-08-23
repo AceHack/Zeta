@@ -33,7 +33,7 @@ import type {
   BrowserTabCoordinatorReadout,
 } from "./browser-tab-coordinator";
 
-export const BROWSER_MULTITAB_FIXTURE_SCHEMA = "zeta.browser-multitab-fixture.v10" as const;
+export const BROWSER_MULTITAB_FIXTURE_SCHEMA = "zeta.browser-multitab-fixture.v11" as const;
 
 type BrowserMultitabFeedback =
   | DarkHallBrowserDurableFeedback
@@ -98,6 +98,10 @@ export type BrowserMultitabDatabaseOutboxResult =
   | { readonly ok: true; readonly value: BrowserDatabaseIntentReadout }
   | { readonly ok: false; readonly feedback: ZetaDbFeedback | BrowserMultitabFeedback };
 
+type DatabaseExecutionHoldState =
+  | { readonly phase: "none" | "before-commit"; readonly readout: null }
+  | { readonly phase: "after-commit"; readonly readout: ZetaDbTickReadout };
+
 export interface BrowserMultitabFixtureApi {
   read(): BrowserMultitabFixtureReadout;
   checkpoint(revision: number): Promise<BrowserMultitabCheckpointResult<BrowserCheckpointRecord>>;
@@ -110,6 +114,9 @@ export interface BrowserMultitabFixtureApi {
   releaseCausalReplayAcknowledgements(): BrowserMultitabCheckpointResult<number>;
   databaseTick(deltas: readonly ZetaDbDelta[]): Promise<BrowserMultitabDatabaseResult>;
   databaseExecutionHeld(): boolean;
+  databaseExecutionHoldMode(): "none" | "before-commit" | "after-commit";
+  databaseExecutionHeldReadout(): ZetaDbTickReadout | null;
+  readDatabaseImage(): Promise<BrowserMultitabDatabaseResult>;
   readDatabaseOutbox(): Promise<BrowserMultitabDatabaseOutboxResult>;
   readDatabaseReceiptArchive(): Promise<BrowserMultitabDatabaseResult>;
   recoverDatabaseIntents(): Promise<BrowserMultitabDatabaseRecoveryResult>;
@@ -221,9 +228,10 @@ const nodeId = queryParameter("node") ?? "llmtv-browser-smoke";
 const tabId = queryParameter("tab") ?? "tab-unknown";
 const databaseNodeId = `${nodeId}:database`;
 const holdDatabaseExecution = queryParameter("holdDatabase") === "1";
+const holdDatabaseAfterCommit = queryParameter("holdDatabaseAfterCommit") === "1";
 const heldCausalReplayAcknowledgementTarget = queryParameter("holdCausalAcksFor");
 const heldCausalReplayAcknowledgements: BrowserTabChannelMessage[] = [];
-let databaseExecutionHeld = false;
+let databaseExecutionHoldState: DatabaseExecutionHoldState = { phase: "none", readout: null };
 let receiveDatabaseInvalidation: ((invalidation: BrowserDatabaseInvalidation) => void) | null = null;
 let startupDatabaseInvalidation: BrowserDatabaseInvalidation | null = null;
 let recoverDatabaseIntents: (() => void) | null = null;
@@ -316,6 +324,9 @@ if (!started.ok) {
     releaseCausalReplayAcknowledgements: () => failure,
     databaseTick: () => Promise.resolve(failure),
     databaseExecutionHeld: () => false,
+    databaseExecutionHoldMode: () => "none",
+    databaseExecutionHeldReadout: () => null,
+    readDatabaseImage: () => Promise.resolve(failure),
     readDatabaseOutbox: () => Promise.resolve(failure),
     readDatabaseReceiptArchive: () => Promise.resolve(failure),
     recoverDatabaseIntents: () => Promise.resolve(failure),
@@ -358,16 +369,23 @@ if (!started.ok) {
           receiptArchive: receiptArchive.value,
           execute: async (request) => {
             if (holdDatabaseExecution && request.deltas.length > 0) {
-              databaseExecutionHeld = true;
+              databaseExecutionHoldState = { phase: "before-commit", readout: null };
               await new Promise<never>(() => {
                 // Closing this page releases the browser lock while the durable intent remains.
               });
             }
-            return runBrowserZetaDbWake(
+            const result = await runBrowserZetaDbWake(
               globalThis,
               { databaseName: "zeta-browser-smoke-node", storeName: "database-images" },
               request,
             );
+            if (holdDatabaseAfterCommit && request.deltas.length > 0 && result.ok) {
+              databaseExecutionHoldState = { phase: "after-commit", readout: result.value };
+              await new Promise<never>(() => {
+                // The image is durable; closing the page interrupts intent settlement.
+              });
+            }
+            return result;
           },
           observe: (tick) => runtime.updateDatabaseReadout(zetaDbTickToDarkHallDatabaseReadout(tick)),
           observeOutbox: () => ({ ok: true }),
@@ -390,6 +408,9 @@ if (!started.ok) {
       releaseCausalReplayAcknowledgements: () => failure,
       databaseTick: () => Promise.resolve(failure),
       databaseExecutionHeld: () => false,
+      databaseExecutionHoldMode: () => "none",
+      databaseExecutionHeldReadout: () => null,
+      readDatabaseImage: () => Promise.resolve(failure),
       readDatabaseOutbox: () => Promise.resolve(failure),
       readDatabaseReceiptArchive: () => Promise.resolve(failure),
       recoverDatabaseIntents: () => Promise.resolve(failure),
@@ -439,7 +460,21 @@ if (!started.ok) {
         return { ok: true, value: released };
       },
       databaseTick: (deltas) => database.tick(deltas),
-      databaseExecutionHeld: () => databaseExecutionHeld,
+      databaseExecutionHeld: () => databaseExecutionHoldState.phase !== "none",
+      databaseExecutionHoldMode: () => databaseExecutionHoldState.phase,
+      databaseExecutionHeldReadout: () => databaseExecutionHoldState.readout,
+      readDatabaseImage: () =>
+        runBrowserZetaDbWake(
+          globalThis,
+          { databaseName: "zeta-browser-smoke-node", storeName: "database-images" },
+          {
+            nodeId: databaseNodeId,
+            executorId: tabId,
+            executorKind: "browser-tab",
+            deltas: [],
+            limits: { maxDeltas: 16, maxEntries: 64, maxCheckpointBytes: 64 * 1024 },
+          },
+        ),
       readDatabaseOutbox: () => database.readOutbox(),
       readDatabaseReceiptArchive: () =>
         runBrowserZetaDbWake(

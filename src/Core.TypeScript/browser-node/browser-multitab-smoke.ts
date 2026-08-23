@@ -11,7 +11,7 @@ import type {
 import type { ZetaDbTickReadout } from "../zetadb/zeta-db-node";
 import type { BrowserDatabaseIntentReadout } from "./browser-database-intent-outbox";
 
-export const BROWSER_MULTITAB_SMOKE_SCHEMA = "zeta.browser-multitab-smoke.v16" as const;
+export const BROWSER_MULTITAB_SMOKE_SCHEMA = "zeta.browser-multitab-smoke.v17" as const;
 
 interface IrisPeerReadout {
   readonly id: string;
@@ -91,6 +91,16 @@ export interface BrowserMultitabPageObservation {
   };
 }
 
+export interface BrowserMultitabIntentRecoveryTranscript {
+  readonly heldExecution: ZetaDbTickReadout | null;
+  readonly beforeCrashRead: ZetaDbTickReadout;
+  readonly recovered: DarkHallDatabaseReadout;
+  readonly secondRecovery: null;
+  readonly outbox: BrowserDatabaseIntentReadout;
+  readonly archive: ZetaDbTickReadout;
+  readonly finalRead: ZetaDbTickReadout;
+}
+
 export interface BrowserMultitabSmokeTranscript {
   readonly schema: typeof BROWSER_MULTITAB_SMOKE_SCHEMA;
   readonly transport: {
@@ -146,13 +156,8 @@ export interface BrowserMultitabSmokeTranscript {
     readonly pageE: BrowserMultitabPageObservation;
     readonly finalHandoffCheckpoint: BrowserMultitabCausalReadout;
   };
-  readonly intentRecovery: {
-    readonly recovered: DarkHallDatabaseReadout;
-    readonly secondRecovery: null;
-    readonly outbox: BrowserDatabaseIntentReadout;
-    readonly archive: ZetaDbTickReadout;
-    readonly finalRead: ZetaDbTickReadout;
-  };
+  readonly intentRecovery: BrowserMultitabIntentRecoveryTranscript;
+  readonly committedIntentRecovery: BrowserMultitabIntentRecoveryTranscript;
 }
 
 export interface BrowserMultitabSmokeFeedback {
@@ -487,18 +492,37 @@ async function waitForPendingCausalHandoffs(page: Page, pendingHandoffs: number)
   );
 }
 
+async function waitForDatabaseOutboxRelease(page: Page): Promise<void> {
+  let lastRead: BrowserDatabaseIntentReadout | null = null;
+  for (let attempt = 0; attempt < 200; attempt += 1) {
+    const read = await page.evaluate(async () => {
+      const root = globalThis as unknown as BrowserSmokeGlobal;
+      return root.__zetaBrowserSmoke.readDatabaseOutbox();
+    });
+    if (!read.ok) throw new Error(`Database outbox read failed: ${read.feedback.detail}`);
+    lastRead = read.value;
+    if (lastRead.intents.length === 0 && lastRead.receipts.length === 0) return;
+    await page.waitForTimeout(25);
+  }
+  throw new Error(`Database outbox did not release its archived receipt: ${JSON.stringify(lastRead)}`);
+}
+
 async function runIntentRecoveryProof(
   context: BrowserContext,
   baseUrl: string,
-): Promise<BrowserMultitabSmokeTranscript["intentRecovery"]> {
+  crashWindow: "before-commit" | "after-commit",
+): Promise<BrowserMultitabIntentRecoveryTranscript> {
   const survivor = await context.newPage();
   const writer = await context.newPage();
   await survivor.addInitScript(initIrisId("iris-intent-survivor"));
   await writer.addInitScript(initIrisId("iris-intent-writer"));
-  const shared = "node=intent-recovery&channel=zeta-intent-recovery";
+  const nodeId = `intent-recovery-${crashWindow}`;
+  const intentId = `${nodeId}/score`;
+  const shared = `node=${nodeId}&channel=zeta-${nodeId}`;
+  const holdParameter = crashWindow === "before-commit" ? "holdDatabase=1" : "holdDatabaseAfterCommit=1";
   await Promise.all([
     survivor.goto(`${baseUrl}?${shared}&tab=tab-a&sequence=600`),
-    writer.goto(`${baseUrl}?${shared}&tab=tab-b&sequence=700&holdDatabase=1`),
+    writer.goto(`${baseUrl}?${shared}&tab=tab-b&sequence=700&${holdParameter}`),
   ]);
   await Promise.all([waitForReady(survivor), waitForReady(writer)]);
   await Promise.all([
@@ -507,22 +531,45 @@ async function runIntentRecoveryProof(
   ]);
   await Promise.all([waitForTwoPages(survivor), waitForTwoPages(writer)]);
 
-  await writer.evaluate(() => {
-    const root = globalThis as unknown as BrowserSmokeGlobal;
-    void root.__zetaBrowserSmoke.databaseTick([
-      { eventId: "intent-recovery/score", rowKey: "game/score", payload: "42", weight: 1 },
-    ]);
-  });
-  await writer.waitForFunction(
-    async () => {
+  await writer.evaluate(
+    ({ eventId }) => {
       const root = globalThis as unknown as BrowserSmokeGlobal;
-      if (!root.__zetaBrowserSmoke.databaseExecutionHeld()) return false;
-      const outbox = await root.__zetaBrowserSmoke.readDatabaseOutbox();
-      return outbox.ok && outbox.value.executing === 1 && outbox.value.intents[0]?.intentId === "intent-recovery/score";
+      void root.__zetaBrowserSmoke.databaseTick([{ eventId, rowKey: "game/score", payload: "42", weight: 1 }]);
+    },
+    { eventId: intentId },
+  );
+  await writer.waitForFunction(
+    () => {
+      const root = globalThis as unknown as BrowserSmokeGlobal;
+      return root.__zetaBrowserSmoke.databaseExecutionHeld();
     },
     undefined,
     { timeout: timeoutMs },
   );
+  const heldOutbox = await writer.evaluate(async () => {
+    const root = globalThis as unknown as BrowserSmokeGlobal;
+    return root.__zetaBrowserSmoke.readDatabaseOutbox();
+  });
+  if (!heldOutbox.ok || heldOutbox.value.executing !== 1 || heldOutbox.value.intents[0]?.intentId !== intentId) {
+    throw new Error(`Held database intent was not durably executing: ${JSON.stringify(heldOutbox)}`);
+  }
+
+  const beforeCrashRead = await survivor.evaluate(async () => {
+    const root = globalThis as unknown as BrowserSmokeGlobal;
+    return root.__zetaBrowserSmoke.readDatabaseImage();
+  });
+  if (!beforeCrashRead.ok) throw new Error(`Pre-crash database read failed: ${beforeCrashRead.feedback.detail}`);
+  const heldExecution = await writer.evaluate(() => {
+    const root = globalThis as unknown as BrowserSmokeGlobal;
+    return root.__zetaBrowserSmoke.databaseExecutionHeldReadout();
+  });
+  if (crashWindow === "after-commit" && heldExecution === null) {
+    const holdMode = await writer.evaluate(() => {
+      const root = globalThis as unknown as BrowserSmokeGlobal;
+      return root.__zetaBrowserSmoke.databaseExecutionHoldMode();
+    });
+    throw new Error(`Post-commit hold stopped before execution completed: mode=${holdMode}; url=${writer.url()}`);
+  }
 
   await writer.evaluate(() => {
     const root = globalThis as unknown as BrowserSmokeGlobal;
@@ -552,6 +599,7 @@ async function runIntentRecoveryProof(
     });
     throw new Error(`${errorDetail(error)}; survivor=${JSON.stringify(diagnostic)}`, { cause: error });
   }
+  await waitForDatabaseOutboxRelease(survivor);
   const recoverySnapshot = await survivor.evaluate(async () => {
     const root = globalThis as unknown as BrowserSmokeGlobal;
     const before = root.__zetaBrowserSmoke.read();
@@ -587,6 +635,8 @@ async function runIntentRecoveryProof(
   });
   await survivor.close();
   return {
+    heldExecution,
+    beforeCrashRead: beforeCrashRead.value,
     recovered,
     secondRecovery: null,
     outbox: outbox.value,
@@ -901,45 +951,104 @@ function validateCheckpointRetraction(transcript: BrowserMultitabSmokeTranscript
   }
 }
 
-function validateIntentRecovery(transcript: BrowserMultitabSmokeTranscript, failures: string[]): void {
+function validateIntentRecoveryCase(
+  label: string,
+  nodeId: string,
+  recovery: BrowserMultitabIntentRecoveryTranscript,
+  expectedBeforeRevision: number,
+  expectedAccepted: number,
+  expectedDuplicates: number,
+  failures: string[],
+): void {
+  const beforeScore = recovery.beforeCrashRead.rows.find((row) => row.rowKey === "game/score");
   if (
-    transcript.intentRecovery.recovered.executorId !== "tab-a" ||
-    transcript.intentRecovery.recovered.revision !== 1 ||
-    transcript.intentRecovery.recovered.accepted !== 1 ||
-    transcript.intentRecovery.recovered.duplicates !== 0 ||
-    transcript.intentRecovery.recovered.rows.find((row) => row.rowKey === "game/score")?.payload !== "42"
+    (expectedBeforeRevision === 0
+      ? recovery.heldExecution !== null
+      : recovery.heldExecution?.accepted !== 1 ||
+        recovery.heldExecution.duplicates !== 0 ||
+        recovery.heldExecution.revision !== 1) ||
+    recovery.beforeCrashRead.nodeId !== `${nodeId}:database` ||
+    recovery.beforeCrashRead.revision !== expectedBeforeRevision ||
+    recovery.beforeCrashRead.accepted !== 0 ||
+    recovery.beforeCrashRead.duplicates !== 0 ||
+    (expectedBeforeRevision === 0 ? beforeScore !== undefined : beforeScore?.payload !== "42")
   ) {
-    failures.push("the surviving page did not commit the persisted writer intent exactly once");
+    failures.push(
+      `${label} did not expose the expected durable database image before the writer closed: ${JSON.stringify({
+        nodeId: recovery.beforeCrashRead.nodeId,
+        revision: recovery.beforeCrashRead.revision,
+        accepted: recovery.beforeCrashRead.accepted,
+        duplicates: recovery.beforeCrashRead.duplicates,
+        score: beforeScore ?? null,
+        heldExecution: recovery.heldExecution,
+      })}`,
+    );
   }
   if (
-    transcript.intentRecovery.outbox.queued !== 0 ||
-    transcript.intentRecovery.outbox.executing !== 0 ||
-    transcript.intentRecovery.outbox.settled !== 0 ||
-    transcript.intentRecovery.outbox.refused !== 0 ||
-    transcript.intentRecovery.outbox.intents.length !== 0 ||
-    transcript.intentRecovery.outbox.receipts.length !== 0
+    recovery.recovered.executorId !== "tab-a" ||
+    recovery.recovered.revision !== 1 ||
+    recovery.recovered.accepted !== expectedAccepted ||
+    recovery.recovered.duplicates !== expectedDuplicates ||
+    recovery.recovered.rows.find((row) => row.rowKey === "game/score")?.payload !== "42"
   ) {
-    failures.push("the surviving page did not release the locally archived execution receipt");
+    failures.push(
+      `${label} did not recover the persisted writer intent with the expected disposition: ${JSON.stringify(recovery.recovered)}`,
+    );
   }
-  const archiveRow = transcript.intentRecovery.archive.rows.find((row) => row.rowKey === "execution-receipt/0");
+  if (
+    recovery.outbox.queued !== 0 ||
+    recovery.outbox.executing !== 0 ||
+    recovery.outbox.settled !== 0 ||
+    recovery.outbox.refused !== 0 ||
+    recovery.outbox.intents.length !== 0 ||
+    recovery.outbox.receipts.length !== 0
+  ) {
+    failures.push(`${label} did not release the locally archived execution receipt`);
+  }
+  const archiveRow = recovery.archive.rows.find((row) => row.rowKey === "execution-receipt/0");
   const archivedReceipt = parseJsonRecord(archiveRow?.payload);
   if (
-    transcript.intentRecovery.archive.nodeId !== "intent-recovery:database:receipts" ||
-    transcript.intentRecovery.archive.revision !== 1 ||
+    recovery.archive.nodeId !== `${nodeId}:database:receipts` ||
+    recovery.archive.revision !== 1 ||
     archiveRow?.weight !== 1 ||
-    archivedReceipt?.databaseNodeId !== "intent-recovery:database" ||
-    archivedReceipt.intentId !== "intent-recovery/score" ||
-    archivedReceipt.revision !== 1
+    archivedReceipt?.databaseNodeId !== `${nodeId}:database` ||
+    archivedReceipt.intentId !== `${nodeId}/score` ||
+    archivedReceipt.revision !== 1 ||
+    archivedReceipt.accepted !== expectedAccepted ||
+    archivedReceipt.duplicates !== expectedDuplicates
   ) {
-    failures.push("the surviving page did not retain the exact execution receipt in its archive node");
+    failures.push(
+      `${label} did not retain the exact execution receipt in its archive node: ${JSON.stringify({ archive: recovery.archive, receipt: archivedReceipt })}`,
+    );
   }
   if (
-    transcript.intentRecovery.finalRead.revision !== 1 ||
-    transcript.intentRecovery.finalRead.accepted !== 0 ||
-    transcript.intentRecovery.finalRead.rows.find((row) => row.rowKey === "game/score")?.payload !== "42"
+    recovery.finalRead.revision !== 1 ||
+    recovery.finalRead.accepted !== 0 ||
+    recovery.finalRead.rows.find((row) => row.rowKey === "game/score")?.payload !== "42"
   ) {
-    failures.push("the post-recovery database read did not retain exactly one committed revision");
+    failures.push(`${label} did not retain exactly one committed revision after recovery`);
   }
+}
+
+function validateIntentRecovery(transcript: BrowserMultitabSmokeTranscript, failures: string[]): void {
+  validateIntentRecoveryCase(
+    "pre-commit crash recovery",
+    "intent-recovery-before-commit",
+    transcript.intentRecovery,
+    0,
+    1,
+    0,
+    failures,
+  );
+  validateIntentRecoveryCase(
+    "post-commit crash recovery",
+    "intent-recovery-after-commit",
+    transcript.committedIntentRecovery,
+    1,
+    0,
+    1,
+    failures,
+  );
 }
 
 function validateTranscript(transcript: BrowserMultitabSmokeTranscript): readonly string[] {
@@ -1273,8 +1382,10 @@ export async function runBrowserMultitabSmoke(): Promise<BrowserMultitabSmokeRes
     );
     await Promise.all([pageC.close(), pageD.close(), pageE.close()]);
 
-    stage = "recover persisted intent after writer page closes";
-    const intentRecovery = await runIntentRecoveryProof(context, baseUrl);
+    stage = "recover persisted intent interrupted before database commit";
+    const intentRecovery = await runIntentRecoveryProof(context, baseUrl, "before-commit");
+    stage = "recover persisted intent interrupted after database commit";
+    const committedIntentRecovery = await runIntentRecoveryProof(context, baseUrl, "after-commit");
     stage = "validate final transcript";
     const transcript: BrowserMultitabSmokeTranscript = {
       schema: BROWSER_MULTITAB_SMOKE_SCHEMA,
@@ -1309,6 +1420,7 @@ export async function runBrowserMultitabSmoke(): Promise<BrowserMultitabSmokeRes
         finalHandoffCheckpoint: finalHandoffCheckpoint.value,
       },
       intentRecovery,
+      committedIntentRecovery,
     };
     const failures = validateTranscript(transcript);
     if (failures.length > 0) return failed("assertion-failed", failures.join("; "));
