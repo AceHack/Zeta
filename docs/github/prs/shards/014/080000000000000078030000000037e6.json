@@ -1,0 +1,12 @@
+{
+  "pr_number": 14310,
+  "archive_path": "docs/history/pr-reviews/PR-14310-fix-twitch-ai-cross-plane-collision-and-bnn-heuristics.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-23T17:16:22.021Z",
+  "schema_version": "v1",
+  "commit_sha": "fd6f909ea390539f90f824135569d2470662fdf4",
+  "title": "fix(twitch-ai): Cross-plane collision and BNN heuristics",
+  "state": "MERGED",
+  "merged_at": "2026-08-23T17:15:41Z",
+  "head_ref": "fix/twitch-ai-collision"
+}
