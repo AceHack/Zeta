@@ -1,0 +1,14 @@
+{
+  "id": "080d0180a1074810a0130008ab3cf15f",
+  "at": "2026-08-23T19:23:40.649Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M0R18878087G0R001XY5A2J",
+    "type": "task",
+    "title": "Await formal analysis before any Clifford-GPU implementation -- five questions to the math team",
+    "slug": "await-formal-analysis-before-any-clifford-gpu-implementation",
+    "priority": "P2",
+    "filename": "081M0R18878087G0R001XY5A2J-await-formal-analysis-before-any-clifford-gpu-implementation.md"
+  }
+}
