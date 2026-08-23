@@ -92,9 +92,7 @@ self.onmessage = async (e: MessageEvent) => {
   }
 };
 
-let gameLevel = 1;
-let lastGameLevel: number | undefined;
-let gameObjective = "Replicate Pattern";
+// Game semantic variables stripped for ARC-AGI-3
 
 async function loop() {
   console.log(`[SwarmWorker] loop() cycle=${cycle}`);
@@ -166,10 +164,7 @@ async function loop() {
     frame.v[4] = Math.floor(Math.random() * 20) + 5;
   }
 
-  // Sniff Gamification Level Transitions (Mutual Sim logic)
-  const tags = frame.v[9] ?? 0;
-  gameLevel = tags + 1;
-  gameObjective = `Tags: ${tags} | Objective: ${frame.v[8] === 0 ? "Flee!" : "Hunt!"}`;
+  // Semantic Gamification Level Transitions removed for ARC-AGI-3
 
   if (world.history && world.history.length > 0) {
     const lastEvent = world.history[world.history.length - 1];
@@ -183,11 +178,7 @@ async function loop() {
     }
   }
 
-  let levelUpEvent = false;
-  if (gameLevel !== lastGameLevel && lastGameLevel !== undefined) {
-    levelUpEvent = true;
-  }
-  lastGameLevel = gameLevel;
+  // Level up events removed for ARC-AGI-3
 
   // Pass data directly to the frontend player component over postMessage
   const eventAction = {
@@ -195,12 +186,7 @@ async function loop() {
     display: displayArray,
     cycle: cycle,
     keys: Array.from(frame.keys),
-    keyPredictions: world.cheatEngine?.keyPredictions || {},
-    activeConcept: (world.cheatEngine as { activeConcept?: string })?.activeConcept ?? "Observing...",
-    linguisticToken: (world.cheatEngine as { linguisticToken?: string })?.linguisticToken,
-    gameLevel: gameLevel,
-    gameObjective: gameObjective,
-    levelUpEvent: levelUpEvent
+    keyPredictions: world.cheatEngine?.keyPredictions || {}
   };
 
   self.postMessage({ type: "FRAME", payload: eventAction });

@@ -4,8 +4,6 @@ export class Chip8TvPlayer {
   private ctx: CanvasRenderingContext2D;
   private llmtvOverlay: HTMLElement;
   private screenContainer: HTMLElement;
-  private lastLinguisticToken: string = "";
-  private lastTokenTime: number = 0;
   public agentId: string;
   
   constructor(containerId: string, agentId: string) {
@@ -130,38 +128,7 @@ export class Chip8TvPlayer {
   public updatePredictions(frame: any) {
     if (!frame) return;
 
-    // Update active semantic concept if present
-    const conceptLabel = document.getElementById(`concept-${this.agentId}`);
-    if (conceptLabel && frame.activeConcept) {
-      conceptLabel.textContent = `[${frame.activeConcept.toUpperCase()}]`;
-    }
-    
-    // Update Gamification Objectives
-    const levelLabel = document.getElementById(`level-${this.agentId}`);
-    const objLabel = document.getElementById(`objective-${this.agentId}`);
-    if (levelLabel && frame.gameLevel !== undefined) {
-      levelLabel.textContent = frame.gameLevel.toString();
-    }
-    if (objLabel && frame.gameObjective) {
-      objLabel.textContent = frame.gameObjective;
-    }
-    
-    // Check Level Up Event
-    if (frame.levelUpEvent) {
-      this.spawnLevelUpAnimation(frame.gameObjective);
-    }
-    
-    // Process Linguistic Tokens
-    if (frame.linguisticToken) {
-      const tokenStr = JSON.stringify(frame.linguisticToken);
-      const now = Date.now();
-      // Debounce spawning to max 1 per 2 seconds
-      if (tokenStr !== this.lastLinguisticToken && (!this.lastTokenTime || now - this.lastTokenTime > 2000)) {
-        this.lastLinguisticToken = tokenStr;
-        this.lastTokenTime = now;
-        this.spawnLinguisticToken(frame.linguisticToken);
-      }
-    }
+    // Semantic overlays (Level, Objective, Concept, Linguistic Tokens) removed for ARC-AGI-3 opaque tracking
     
     // Process BNN predictions (RGB probabilities) and committed keys (CMYK)
     const predictions = frame.keyPredictions || {};
@@ -233,41 +200,5 @@ export class Chip8TvPlayer {
         }
       }
     }
-  }
-
-  private spawnLinguisticToken(token: any) {
-    const el = document.createElement("div");
-    el.className = "linguistic-float";
-    el.innerHTML = `<span class="pictogram">${token.pictogram}</span><div class="ling-details"><span class="eng">${token.english}</span><span class="meaning">${token.meaning}</span></div>`;
-    
-    // Randomly position horizontally over the canvas
-    const leftPos = 10 + Math.random() * 60; // 10% to 70% width
-    el.style.left = `${leftPos}%`;
-    
-    this.screenContainer.appendChild(el);
-    
-    // Remove after animation completes
-    setTimeout(() => {
-      if (el.parentNode === this.screenContainer) {
-        this.screenContainer.removeChild(el);
-      }
-    }, 4000); // match CSS animation duration
-  }
-
-  private spawnLevelUpAnimation(completedObjective: string) {
-    // Only spawn if not already leveling up to prevent spam
-    if (this.screenContainer.querySelector('.level-up-float')) return;
-    
-    const el = document.createElement("div");
-    el.className = "level-up-float";
-    el.innerHTML = `<h1>🏆 LEVEL UP!</h1><p>Learned: ${completedObjective}</p>`;
-    
-    this.screenContainer.appendChild(el);
-    
-    setTimeout(() => {
-      if (el.parentNode === this.screenContainer) {
-        this.screenContainer.removeChild(el);
-      }
-    }, 3000);
   }
 }

@@ -34,7 +34,7 @@ export class BnnSocietyPredictor {
   private initializeSociety() {
     for (let i = 0; i < this.agentCount; i++) {
       const agentBeliefs: Record<number, StudentTState> = {};
-      for (let k = 0; k <= 0xF; k++) {
+      for (let k = -1; k <= 0xF; k++) {
         const diversityVariance = 1.0 + (this.nextRandom() * 0.5); 
         agentBeliefs[k] = createStudentTState(4.0, 0.0, diversityVariance, 0.1);
       }
@@ -54,7 +54,7 @@ export class BnnSocietyPredictor {
    * Calculates the probability distribution for all 16 hex keys using WSet Comonoid consensus.
    */
   public predict(display: number[]): Record<number, number> {
-    // 1. Calculate heuristic visual gradients based on Color Planes
+    // 1. ARC-AGI Visual Heuristics (Shape-Based Mode Switching)
     let playerX = 0, playerY = 0, playerCount = 0;
     let targetX = 0, targetY = 0, targetCount = 0;
 
@@ -71,7 +71,12 @@ export class BnnSocietyPredictor {
     }
 
     const observations: Record<number, number> = {};
-    for (let i = 0; i <= 0xF; i++) observations[i] = 0.0;
+    for (let i = -1; i <= 0xF; i++) {
+      observations[i] = (this.nextRandom() * this.priors.explorationRate) * 0.1; // Baseline noise
+    }
+    
+    // Add heavy weight to 'No-Op' (-1) by default so it sits still if nothing is happening
+    observations[-1] = (observations[-1] ?? 0) + 0.5;
 
     if (playerCount > 0 && targetCount > 0) {
       const pX = playerX / playerCount;
@@ -84,14 +89,20 @@ export class BnnSocietyPredictor {
       const dist = Math.sqrt(dx * dx + dy * dy);
       
       if (dist > 0) {
-        // Run AWAY from the target (Target is Hunters)
-        const nx = -(dx / dist);
-        const ny = -(dy / dist);
+        // If target is hollow 4x4 (12 pixels), it's hunting us, so FLEE (run away).
+        // If target is solid 2x2 (4 pixels), it's fleeing, so HUNT (run towards).
+        const modeMultiplier = targetCount > 8 ? -1 : 1; 
+        
+        const nx = (dx / dist) * modeMultiplier;
+        const ny = (dy / dist) * modeMultiplier;
         
         if (ny < 0) observations[2] = (observations[2] ?? 0) + Math.abs(ny) * this.priors.targetTrackingWeight;
         if (ny > 0) observations[8] = (observations[8] ?? 0) + Math.abs(ny) * this.priors.targetTrackingWeight;
         if (nx < 0) observations[4] = (observations[4] ?? 0) + Math.abs(nx) * this.priors.targetTrackingWeight;
         if (nx > 0) observations[6] = (observations[6] ?? 0) + Math.abs(nx) * this.priors.targetTrackingWeight;
+        
+        // If we are actively moving, lower the probability of standing still
+        observations[-1] = 0.05;
       }
     }
 
@@ -100,7 +111,7 @@ export class BnnSocietyPredictor {
     
     for (const beliefs of this.agents.values()) {
       const wsetEntries: { key: number, weight: number }[] = [];
-      for (let k = 0; k <= 0xF; k++) {
+      for (let k = -1; k <= 0xF; k++) {
         const obsValue = observations[k] ?? 0.0;
         const y = obsValue + ((this.nextRandom() - 0.5) * 0.05); // Add subjective noise
         const result = updateStudentT(beliefs[k]!, y);
@@ -126,7 +137,7 @@ export class BnnSocietyPredictor {
 
     // 4. Normalize and apply exploration rate
     const consensusProbs: Record<number, number> = {};
-    for (let i = 0; i <= 0xF; i++) consensusProbs[i] = 0.0;
+    for (let i = -1; i <= 0xF; i++) consensusProbs[i] = 0.0;
     
     let sum = 0;
     for (const entry of consensusSet.entries) {
@@ -136,7 +147,7 @@ export class BnnSocietyPredictor {
     }
 
     if (sum > 0) {
-      for (let i = 0; i <= 0xF; i++) consensusProbs[i] = consensusProbs[i]! / sum;
+      for (let i = -1; i <= 0xF; i++) consensusProbs[i] = consensusProbs[i]! / sum;
     }
 
     return consensusProbs;

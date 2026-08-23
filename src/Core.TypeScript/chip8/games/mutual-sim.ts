@@ -37,7 +37,13 @@ export function buildMutualSimRom(): Uint8Array {
     "LD I, shape_p",
     "DRW V0, V1, 2",
     "BYTE 0xF101", // Plane 1 (AI)
-    "LD I, shape_ai",
+    "SNE V8, 1",
+    "JMP draw_ai_init_flee",
+    "LD I, shape_ai_hunt",
+    "JMP draw_ai_init_do",
+    "draw_ai_init_flee:",
+    "LD I, shape_ai_flee",
+    "draw_ai_init_do:",
     "DRW V3, V4, 4",
 
     "main_loop:",
@@ -102,7 +108,13 @@ export function buildMutualSimRom(): Uint8Array {
     
     // Erase AI
     "BYTE 0xF101", // Plane 1 (AI)
-    "LD I, shape_ai",
+    "SNE V8, 1",
+    "JMP erase_ai_flee",
+    "LD I, shape_ai_hunt",
+    "JMP erase_ai_do",
+    "erase_ai_flee:",
+    "LD I, shape_ai_flee",
+    "erase_ai_do:",
     "DRW V3, V4, 4",
     
     "LD VA, V3", // Save old X
@@ -154,7 +166,13 @@ export function buildMutualSimRom(): Uint8Array {
     "ai_draw:",
     // Draw AI at new pos
     "BYTE 0xF101",
-    "LD I, shape_ai",
+    "SNE V8, 1",
+    "JMP draw_ai_flee",
+    "LD I, shape_ai_hunt",
+    "JMP draw_ai_do",
+    "draw_ai_flee:",
+    "LD I, shape_ai_flee",
+    "draw_ai_do:",
     "DRW V3, V4, 4",
     "SNE VF, 1",
     "JMP ai_collide",
@@ -178,10 +196,15 @@ export function buildMutualSimRom(): Uint8Array {
     "shape_p:",
     "BYTE 0xC0C0",
 
-    // AI is a hollow 4x4 square (4 bytes = 2 WORDs)
-    "shape_ai:",
+    // AI (Hunt) is a hollow 4x4 square (4 bytes = 2 WORDs)
+    "shape_ai_hunt:",
     "BYTE 0xF090",
     "BYTE 0x90F0",
+
+    // AI (Flee) is a solid smaller 2x2 square (4 bytes = 2 WORDs for size parity)
+    "shape_ai_flee:",
+    "BYTE 0x0060",
+    "BYTE 0x6000",
 
     // Wall is 4x4 solid (4 bytes = 2 WORDs)
     "shape_wall:",

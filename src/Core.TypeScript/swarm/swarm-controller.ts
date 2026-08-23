@@ -16,6 +16,7 @@ import { executeSkillSequence } from "../arc-solver/grid-skills";
 import { evaluateGrid } from "../arc-solver/grid-evaluator";
 import { CelegansController, loadFromCsv } from "../chip8/celegans-controller";
 import { BnnSocietyPredictor } from "../bayesian/bnn-key-predictor";
+import { ArcExplorer } from "../bayesian/arc-explorer";
 import { cooperate } from "../tri-boolean/tri-boolean";
 import { readKnownSignatures } from "./swarm-known-signatures";
 // removed path
@@ -45,6 +46,9 @@ export class SwarmController {
   private hwRegistry: HardwareRegistry;
   public wormSociety: CelegansController[] = [];
   public bnnSociety?: BnnSocietyPredictor;
+  public arcExplorer?: ArcExplorer;
+  private previousDisplay: number[] = [];
+  private visualDeltaLog: string[] = [];
   
   // CHIP-8 Superorganism State
   private pheromoneField: Map<number, number> = new Map();
@@ -56,6 +60,7 @@ export class SwarmController {
   }
   
   async init(dropRate = 0) {
+    this.arcExplorer = new ArcExplorer(30000); // 30 second exploration phase
     const meshNodes = createLossyUdpMesh(4, dropRate);
     const useLocalLlm = process.env.ZETA_SWARM_USE_LOCAL_LLM === "1";
     
@@ -94,6 +99,27 @@ export class SwarmController {
     // Broadcast state to all nodes via UDP (simulated sync)
     for (const node of this.nodes) {
       node.mesh.send(Buffer.from(JSON.stringify(world)));
+    }
+
+    // [Visual Delta Log for ARC-AGI-3 Tracking]
+    if (world.cheatEngine && world.cheatEngine.display) {
+      if (this.previousDisplay.length === world.cheatEngine.display.length) {
+        let deltaCount = 0;
+        const deltas = [];
+        for (let i = 0; i < this.previousDisplay.length; i++) {
+          if (this.previousDisplay[i] !== world.cheatEngine.display[i]) {
+            deltas.push(`(${i % 64}, ${Math.floor(i / 64)})`);
+            deltaCount++;
+          }
+        }
+        if (deltaCount > 0) {
+          const lastEvent = world.history && world.history.length > 0 ? world.history[world.history.length - 1] as any : null;
+          const actionLog = lastEvent?.actions?.map((a: any) => JSON.stringify(a)).join(", ") ?? "Unknown";
+          this.visualDeltaLog.push(`Action: ${actionLog} -> Changed ${deltaCount} pixels at: ${deltas.slice(0, 10).join(', ')}${deltaCount > 10 ? '...' : ''}`);
+          if (this.visualDeltaLog.length > 10) this.visualDeltaLog.shift(); // keep last 10
+        }
+      }
+      this.previousDisplay = [...world.cheatEngine.display];
     }
 
     // [Causal Orbit Detection]
@@ -139,8 +165,11 @@ export class SwarmController {
         if (activePilot && this.wormSociety.length > 0) {
           console.log(`[SwarmController] LLM Outer Loop: Analyzing C. elegans performance and tuning hyperparameters...`);
           try {
+            const deltaContext = this.visualDeltaLog.length > 0 ? `Recent Visual Deltas:\n${this.visualDeltaLog.join('\\n')}` : `No visual deltas yet.`;
             const prompt = `The C. elegans worm Pilot has successfully shifted the CHIP-8 causal orbit from ${prevSig} to ${sig}.
 You are optimizing the biological controller AND the environment (Cheat Engine). 
+${deltaContext}
+
 Available tools:
 - {"tool": "setWormCouplingGain", "args": {"gain": 1.5}}
 - {"tool": "freezeMemory", "args": {"address": 512, "value": 255}}
@@ -340,11 +369,16 @@ Output ONLY a valid JSON array of strings representing the sub-tasks. Example: [
           }
           
           // BNN Key Predictor computes its consensus separately
-          const bnnPredictions = this.bnnSociety.predict(world.cheatEngine!.display!);
+          let bnnPredictions = this.bnnSociety.predict(world.cheatEngine!.display!);
+          
+          if (this.arcExplorer && this.arcExplorer.tick()) {
+            // Override with pure uniform exploration if in exploration phase
+            bnnPredictions = this.arcExplorer.explore();
+          }
           
           // If BNN is highly uncertain (max prob < 0.2), scarcity is high!
-          let maxProb = 0;
-          let bestBnnKey = 0;
+          let maxProb = -1;
+          let bestBnnKey = -1;
           for (const [key, prob] of Object.entries(bnnPredictions)) {
             if (prob > maxProb) { maxProb = prob; bestBnnKey = parseInt(key, 10); }
           }
@@ -387,7 +421,7 @@ Output ONLY a valid JSON array of strings representing the sub-tasks. Example: [
           cooperate(null as any); 
 
           // Consensus: The superorganism tower formed if at least 2 worms joined the same locus
-          let wormConsensusKey = towerCount >= 2 ? towerKey : 0;
+          let wormConsensusKey = towerCount >= 2 ? towerKey : -1;
           
           
           // Simple Fusion Policy: if max BNN prob is strong enough, use BNN consensus; otherwise use biological tower
