@@ -1,0 +1,12 @@
+{
+  "pr_number": 14330,
+  "archive_path": "docs/history/pr-reviews/PR-14330-fix-test-prove-credential-independence-without-hoisting-a-credential-the-gate-wa.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-23T17:51:22.054Z",
+  "schema_version": "v1",
+  "commit_sha": "8a56255715da3329802e58d8b03445cd148e27ac",
+  "title": "fix(test): prove credential-independence without hoisting a credential — the gate was right",
+  "state": "MERGED",
+  "merged_at": "2026-08-23T17:50:38Z",
+  "head_ref": "fix/credential-hoist-in-ghcr-test"
+}
