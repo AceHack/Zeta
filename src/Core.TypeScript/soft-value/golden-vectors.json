@@ -1,16 +1,26 @@
 {
-  "description": "SoftValue DECISION-semantics golden vectors — the shared seed for cross-language agreement (F#/C#/TS/Rust). SoftValue is float-valued; floats do NOT byte-lock across languages, so this seed locks only the EXACT decision behavior: resolve (argmax candidate, returned iff confidence ≥ threshold) and observe-then-resolve (Bayesian multiply then decide). Weights are exact integers; the threshold is a rational num/den (confidence = best_weight/total ≥ num/den ⟺ best_weight·den ≥ num·total). The float confidence/entropy VALUES are F#-only and NOT cross-verified. Argmax ties (absent here) break by ascending key. resolve returns null when no candidate clears the threshold (never falsely certain); observe that zeroes every candidate yields null (no fabricated certainty).",
+  "description": "SoftValue DECISION-semantics golden vectors — the shared seed for cross-language agreement (F#/C#/TS/Rust). SoftValue is float-valued; floats do NOT byte-lock across languages, so this seed locks only the EXACT decision behavior: resolve (argmax candidate, returned iff confidence ≥ threshold) and observe-then-resolve (Bayesian multiply then decide). Weights are exact integers; the threshold is a rational num/den (confidence = best_weight/total ≥ num/den ⟺ best_weight·den ≥ num·total). The float confidence/entropy VALUES are F#-only and NOT cross-verified. ARGMAX TIES BREAK BY ASCENDING CANDIDATE KEY, and this seed now PINS that rule: the tie vectors below list their candidates in an insertion order that DISAGREES with ordinal order (\"b\" before \"a\"), so an oracle that takes the first maximum in arrival order returns \"b\" where the treaty requires \"a\". Ties were absent from this seed until 2026-08-23 and the F# oracle diverged (first-seen arrival order) for as long as that was true — a byte-lock with no tie in its vectors cannot detect a tie-breaking divergence. resolve returns null when no candidate clears the threshold (never falsely certain), including when the leaders TIE; observe that zeroes every candidate yields null (no fabricated certainty); an empty candidate set yields null.",
   "resolve": [
     { "candidates": { "a": 3, "b": 1 }, "num": 1, "den": 2, "result": "a" },
     { "candidates": { "a": 3, "b": 2, "c": 1 }, "num": 3, "den": 4, "result": null },
     { "candidates": { "a": 5, "b": 1 }, "num": 1, "den": 2, "result": "a" },
     { "candidates": { "a": 1, "b": 3 }, "num": 1, "den": 2, "result": "b" },
-    { "candidates": { "a": 3, "b": 1, "c": 1 }, "num": 1, "den": 2, "result": "a" }
+    { "candidates": { "a": 3, "b": 1, "c": 1 }, "num": 1, "den": 2, "result": "a" },
+
+    { "candidates": { "b": 2, "a": 2 }, "num": 1, "den": 4, "result": "a" },
+    { "candidates": { "c": 1, "b": 1, "a": 1 }, "num": 1, "den": 4, "result": "a" },
+    { "candidates": { "b": 3, "a": 3, "c": 1 }, "num": 1, "den": 4, "result": "a" },
+    { "candidates": { "b": 1, "a": 1 }, "num": 3, "den": 4, "result": null },
+    { "candidates": {}, "num": 1, "den": 2, "result": null },
+    { "candidates": { "a": 1 }, "num": 1, "den": 1, "result": "a" }
   ],
   "observeResolve": [
     { "prior": { "a": 1, "b": 1 }, "likelihood": { "a": 3, "b": 1 }, "num": 1, "den": 2, "result": "a" },
     { "prior": { "a": 1, "b": 1 }, "likelihood": { "a": 0, "b": 0 }, "num": 1, "den": 2, "result": null },
     { "prior": { "a": 2, "b": 1 }, "likelihood": { "a": 1, "b": 5 }, "num": 1, "den": 2, "result": "b" },
-    { "prior": { "a": 1, "b": 1 }, "likelihood": { "a": 1, "b": 1 }, "num": 3, "den": 4, "result": null }
+    { "prior": { "a": 1, "b": 1 }, "likelihood": { "a": 1, "b": 1 }, "num": 3, "den": 4, "result": null },
+
+    { "prior": { "b": 1, "a": 1 }, "likelihood": { "b": 3, "a": 3 }, "num": 1, "den": 4, "result": "a" },
+    { "prior": { "b": 2, "a": 1 }, "likelihood": { "b": 1, "a": 2 }, "num": 1, "den": 4, "result": "a" }
   ]
 }

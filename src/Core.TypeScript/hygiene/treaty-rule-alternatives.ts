@@ -604,7 +604,14 @@ const merkleTreaty: TreatyDeclaration = {
 };
 
 // ---------------------------------------------------------------------------
-// soft-value — the MODEL of honest prose: the seed itself says "(absent here)".
+// soft-value — PROMOTED 2026-08-23. This was the register's model `declared` row: the
+// seed said "Argmax ties (absent here) break by ascending key", so the reader was told
+// and no vector was required. Honest, and still not enough — the F# oracle was meanwhile
+// breaking ties in ARRIVAL order (`List.maxBy` over an association list), and no vector
+// could see it. `declared` records that a rule is unpinned; it does not make the rule
+// unnecessary, and an unpinned rule the oracles are supposed to share is a divergence
+// waiting to be found by something other than CI. The seed now carries tie vectors whose
+// insertion order disagrees with ordinal order, so both rows below are `excluded`.
 // ---------------------------------------------------------------------------
 
 interface SoftValueSeed {
@@ -627,36 +634,61 @@ function softDecide(cands: Record<string, number>, num: number, den: number, tie
   return best * den >= num * total ? tie(tied) : null;
 }
 
+/**
+ * Count vectors whose pinned decision changes when the ascending-key tie-break is swapped for
+ * `alt`. `observeResolve` is folded through the same Bayesian multiply the oracles use, so a tie
+ * that only appears in the POSTERIOR is counted too.
+ */
+function softTieChanged(seed: unknown, alt: (ks: string[]) => string): number {
+  const g = seed as SoftValueSeed;
+  const asc = (ks: string[]) => ks.slice().sort(utf8Compare)[0]!;
+  let changed = 0;
+  for (const v of g.resolve) {
+    if (softDecide(v.candidates, v.num, v.den, alt) !== softDecide(v.candidates, v.num, v.den, asc)) changed++;
+  }
+  for (const v of g.observeResolve) {
+    const post: Record<string, number> = {};
+    for (const k of Object.keys(v.prior)) {
+      const w = v.prior[k]! * (v.likelihood[k] ?? 0);
+      if (w > 0) post[k] = w;
+    }
+    if (softDecide(post, v.num, v.den, alt) !== softDecide(post, v.num, v.den, asc)) changed++;
+  }
+  return changed;
+}
+
 const softValueTreaty: TreatyDeclaration = {
   treaty: "src/Core.TypeScript/soft-value/golden-vectors.json",
   claimSource: "seed `description`",
-  claim: "Argmax ties (absent here) break by ascending key",
+  claim: "Argmax ties break by ascending candidate key (ordinal), not by arrival order",
   vectorCount: (s) => (s as SoftValueSeed).resolve.length + (s as SoftValueSeed).observeResolve.length,
   alternatives: [
     {
       name: "DESCENDING-key tie-break",
+      expect: "excluded",
+      evaluate: (s) => softTieChanged(s, (ks) => ks.slice().sort(utf8Compare).reverse()[0]!),
+    },
+    {
+      // The rule F# ACTUALLY implemented until 5c9c60e3a — this row is the regression guard
+      // for the divergence that motivated the promotion, not a hypothetical.
+      name: "FIRST-SEEN (arrival-order) tie-break — the pre-5c9c60e3a F# rule",
+      expect: "excluded",
+      evaluate: (s) => softTieChanged(s, (ks) => ks[0]!),
+    },
+    {
+      name: "UTF-16 code-unit order instead of UTF-8 byte order",
       expect: "not-excluded",
-      kind: "declared",
+      kind: "blocked",
       reason:
-        "NOT a defect and needs no work-item: the seed's own description already says the ties are " +
-        "'(absent here)'. This is the register's model entry — the treaty states which of its rules it does " +
-        "NOT pin, so the reader is never misled. Recorded so that if a discriminating vector is ever added, " +
-        "the lint promotes this row and the parenthetical gets removed.",
-      evaluate: (s) => {
-        const g = s as SoftValueSeed;
-        const asc = (ks: string[]) => ks.slice().sort(utf8Compare)[0]!;
-        const desc = (ks: string[]) => ks.slice().sort(utf8Compare).reverse()[0]!;
-        let changed = 0;
-        for (const v of g.resolve) {
-          if (softDecide(v.candidates, v.num, v.den, desc) !== softDecide(v.candidates, v.num, v.den, asc)) changed++;
-        }
-        for (const v of g.observeResolve) {
-          const post: Record<string, number> = {};
-          for (const k of Object.keys(v.prior)) post[k] = v.prior[k]! * (v.likelihood[k] ?? 0);
-          if (softDecide(post, v.num, v.den, desc) !== softDecide(post, v.num, v.den, asc)) changed++;
-        }
-        return changed;
-      },
+        "Every candidate key in this seed is in the BMP, where UTF-8 byte order, codepoint order and UTF-16 " +
+        "code-unit order PROVABLY coincide — so no BMP vector can discriminate them. The only discriminating " +
+        "input straddles the astral boundary, and there this treaty's oracles genuinely DISAGREE: F# " +
+        "(`String.CompareOrdinal`), C# (`StringComparer.Ordinal`) and TS (default `Array.sort`) order by UTF-16 " +
+        "code unit, while Rust's `BTreeMap<String, _>` orders by UTF-8 bytes. Such a vector would BREAK the " +
+        "treaty rather than tighten it, and the seed is not the place to resolve it. Identical residual to the " +
+        "z-set-merkle `blocked` row and consensus 081M02PEST7087G0R00253HRV0; do not add one until the repo " +
+        "adopts a single canonical collation across the four oracles.",
+      evaluate: (s) => softTieChanged(s, (ks) => ks.slice().sort(utf16Compare)[0]!),
     },
   ],
 };
