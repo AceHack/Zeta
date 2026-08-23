@@ -1,0 +1,12 @@
+{
+  "pr_number": 14224,
+  "archive_path": "docs/history/pr-reviews/PR-14224-research-qec-the-adinkra-quantum-code-bridge-is-closed-at-n-8-and-reopens-at-n-1.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-23T14:48:10.890Z",
+  "schema_version": "v1",
+  "commit_sha": "4ac632b8f75b2333d46a7f3c4382c34809f4372e",
+  "title": "research(qec): the adinkra->quantum-code bridge is CLOSED at N=8 and reopens at N=16 with [[16,6,4]]",
+  "state": "MERGED",
+  "merged_at": "2026-08-23T14:47:30Z",
+  "head_ref": "research/qec-stack-routing"
+}
