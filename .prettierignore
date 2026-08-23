@@ -56,3 +56,12 @@ docs/CHART-CURRENCY.md
 # resting on files the repository could no longer confirm are the real history.
 # The commits, not prettier, own these bytes.
 src/Core.TypeScript/cluster/testdata/inert-valuesobject-history/*.yaml
+
+# Git-native inverted index: a MACHINE-WRITTEN artifact, not authored source
+# (081M0QTXTR3087G0R002R439FH). Rebuilt from an explicit git rev every ~6 hours by
+# `search-index-cadence.yml`, and its defining property is that rebuilding at the
+# same rev produces BYTE-IDENTICAL files (discipline #6, and the reason its diffs
+# are meaningful at all). Prettier would reformat the generator's output and put
+# the FORMATTER and the GENERATOR in a permanent fight — the same reason
+# docs/github/prs/ is excluded above. `renderTermRow` pins the exact bytes.
+db/search-index/

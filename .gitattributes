@@ -262,3 +262,11 @@ docs/github/prs/shards/**/*.json        merge=theirs
 #      with the threads fetched — and this line should be REMOVED when that lands, not kept as
 #      belt-and-braces.
 docs/history/pr-reviews/PR-*.md         merge=theirs
+
+# Git-native inverted index (081M0QTXTR3087G0R002R439FH) — derived, machine-written,
+# regenerate-never-merge. Marked generated so it collapses in review by default:
+# the artifact IS reviewable text (that is why it is JSONL), but 40 shard files of
+# postings should not drown the code changes in a PR that touches both.
+# On conflict: rebuild, never hand-merge.
+db/search-index/inverted/*.jsonl   linguist-generated=true
+db/search-index/inverted/files.txt linguist-generated=true

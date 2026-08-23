@@ -1,0 +1,174 @@
+name: search-index-cadence
+
+# Rebuilds the git-native inverted index (081M0QTXTR3087G0R002R439FH) every ~6 hours and
+# publishes it to main via the staging-branch + PR lane.
+#
+# Cadence is Aaron's: "stores the index in git and updates maybe once every 6
+# hours or so, then our search interface can just use the reverse index".
+#
+# WHY IT DOES NOT PUSH TO MAIN. Ruleset "CI Gate" makes `gate (required)` a
+# required status check on main with `bypass_actors: []`, and a required check is
+# evaluated at PUSH time against the pushed tip — so a commit that has never been
+# through a check run is rejected before any check could start. Telemetry lanes
+# park on `heartbeat/*` and flush via PR; this follows
+# manifesto-citation-snapshot-cadence.yml, which is the worked example.
+#
+# WHY THE BUILD IS PINNED TO origin/main AND NOT TO THIS CHECKOUT. The whole
+# work-item exists because a search answered from a stale working tree. Building
+# from `--rev origin/main` reads the object store, so a slow checkout, a dirty
+# tree or a shifted ref cannot silently change what got indexed. The rev is
+# written into manifest.json and every query checks it.
+#
+# WHY IT MUST FAIL LOUDLY. The drift dashboard sat pinned at an old run for days
+# because its publication step stopped landing and nothing said so — a check that
+# did not run looking exactly like one that passed. So this workflow:
+#   - asserts the manifest's rev is the rev it asked for (a build that silently
+#     indexed something else is a failure, not a warning);
+#   - asserts the artifact is non-trivial (an empty index that publishes cleanly
+#     is the vacuity class);
+#   - lets `flush-via-staging.ts` fail the job rather than swallowing it, and
+#     that tool already emits ::warning when a PR opens without auto-merge.
+#
+# Safe-pattern compliance: SHA-pinned actions, least permissions, pinned
+# runs-on, concurrency group, no user-authored context interpolated into run
+# blocks. Only first-party context (secrets, github.run_id) is used.
+
+on:
+  schedule:
+    # Every 6 hours at :19 past — off-the-hour to dodge the cron thundering herd
+    # (budget-snapshot 16:23, manifesto-citation 06:37, razor-cadence 09:17).
+    - cron: "19 1,7,13,19 * * *"
+  workflow_dispatch: {}
+  pull_request:
+    # Self-test on changes to the indexer or this workflow: the PR run builds and
+    # queries, but never publishes (see the `if` on the flush steps).
+    paths:
+      - "src/Core.TypeScript/search/inverted/**"
+      - ".github/workflows/search-index-cadence.yml"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: search-index-cadence
+  cancel-in-progress: false
+
+jobs:
+  rebuild:
+    name: rebuild the git-native inverted index
+    runs-on: ubuntu-24.04
+    # ~30 s to build at the 2026-08-23 corpus; the rest is the installer, whose
+    # apt wall budget this timeout is the ceiling on (audit-apt-budget-fits-job-
+    # timeout.ts). A timeout is a cap, not a reservation.
+    timeout-minutes: 20
+    permissions:
+      contents: write # push the staging branch
+      pull-requests: write # open and arm the flush PR
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          # Full history: the builder resolves an explicit rev and the query
+          # classifies ancestry. A shallow clone makes both unanswerable, and
+          # "unanswerable" is exactly what this tool refuses to guess about.
+          fetch-depth: 0
+          persist-credentials: true
+          token: ${{ secrets.ZETA_TELEMETRY_FLUSH_TOKEN || secrets.GITHUB_TOKEN }}
+
+      - name: Install toolchain via three-way-parity script (GOVERNANCE §24)
+        env:
+          MISE_GITHUB_TOKEN: ${{ github.token }}
+        run: ./tools/setup/install.sh
+
+      - name: Verify required tooling
+        run: |
+          set -euo pipefail
+          command -v bun >/dev/null
+          command -v git >/dev/null
+
+      - name: Configure committer
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+      # BEFORE the build: `prepare` checks out a fresh branch off origin/main and
+      # would discard an index written ahead of it. It also unions in anything
+      # still parked on the staging branch from a run whose flush PR never landed.
+      - name: Prepare staging working tree
+        if: github.event_name != 'pull_request'
+        run: bun src/Core.TypeScript/forge-host/github/flush-via-staging.ts prepare --lane search-index
+
+      - name: Rebuild the index at origin/main
+        run: |
+          set -euo pipefail
+          git fetch --prune origin main
+          REV="$(git rev-parse origin/main)"
+          echo "building index at rev $REV"
+          bun src/Core.TypeScript/search/inverted/build.ts --rev "$REV" --quiet
+          echo "BUILT_REV=$REV" >> "$GITHUB_ENV"
+
+      # THE FALSIFIERS, RUN IN PRODUCTION ON EVERY TICK.
+      #
+      # A cadence that publishes whatever it produced is not a cadence, it is a
+      # cron job with a commit. These three assertions are what make a green run
+      # mean something. Each exits non-zero, so the job fails and is visible.
+      - name: Assert the artifact says what it should
+        run: |
+          set -euo pipefail
+          MANIFEST=db/search-index/inverted/manifest.json
+          test -f "$MANIFEST" || { echo "::error title=No manifest::the build produced no $MANIFEST"; exit 1; }
+
+          GOT_REV="$(bun --print "JSON.parse(require('fs').readFileSync('$MANIFEST','utf8')).rev")"
+          if [ "$GOT_REV" != "$BUILT_REV" ]; then
+            echo "::error title=Index rev mismatch::asked for $BUILT_REV, manifest says $GOT_REV. The index would answer about a rev nobody requested."
+            exit 1
+          fi
+
+          FILES="$(bun --print "JSON.parse(require('fs').readFileSync('$MANIFEST','utf8')).fileCount")"
+          TERMS="$(bun --print "JSON.parse(require('fs').readFileSync('$MANIFEST','utf8')).termCount")"
+          # An index that publishes cleanly with nothing in it looks exactly like
+          # a healthy one at the call site. Floors, not zero-checks.
+          if [ "$FILES" -lt 1000 ] || [ "$TERMS" -lt 10000 ]; then
+            echo "::error title=Index implausibly small::fileCount=$FILES termCount=$TERMS. Refusing to publish an index that would answer 'not found' for most of the repo."
+            exit 1
+          fi
+          echo "manifest ok: rev=$GOT_REV files=$FILES terms=$TERMS"
+
+      - name: Query the index end-to-end
+        run: |
+          set -euo pipefail
+          # The motivating case, run against the artifact about to be published.
+          # Exit 0 is required: 1 (no matches) and 3 (refused) both mean the
+          # published index cannot answer the query it was built for.
+          bun src/Core.TypeScript/search/inverted/query.ts landauer --rev "$BUILT_REV" --files --limit 5
+          echo "end-to-end query returned matches"
+
+      - name: Flush to main via staging branch + PR
+        if: github.event_name != 'pull_request'
+        env:
+          GH_TOKEN: ${{ secrets.ZETA_TELEMETRY_FLUSH_TOKEN || secrets.ZETA_PR_ARCHIVE_TOKEN || secrets.GITHUB_TOKEN }}
+        run: |
+          bun src/Core.TypeScript/forge-host/github/flush-via-staging.ts flush \
+            --lane search-index \
+            --paths db/search-index/inverted \
+            --message "ops(081M0QTXTR3087G0R002R439FH): rebuild git-native inverted index"
+
+      # A tick that produced nothing to publish is a legitimate no-op (the tree
+      # did not change), and `flush` returns 0 for it. What is NOT legitimate is
+      # this workflow going quiet for days, so the run summary always records
+      # what happened — the drift-dashboard lesson.
+      - name: Record the tick in the run summary
+        if: always()
+        run: |
+          {
+            echo "### search-index-cadence"
+            echo ""
+            echo "- rev: \`${BUILT_REV:-unresolved}\`"
+            echo "- outcome: ${{ job.status }}"
+            if [ -f db/search-index/inverted/manifest.json ]; then
+              echo "- artifact: $(du -sh db/search-index/inverted | cut -f1)"
+            else
+              echo "- artifact: **none produced**"
+            fi
+          } >> "$GITHUB_STEP_SUMMARY"

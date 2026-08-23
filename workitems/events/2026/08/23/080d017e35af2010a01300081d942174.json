@@ -1,0 +1,14 @@
+{
+  "id": "080d017e35af2010a01300081d942174",
+  "at": "2026-08-23T17:59:06.980Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M0QWDDF3087G0R000V7T6BV",
+    "type": "task",
+    "title": "Inverted index follow-ons — BM25 ranking, trigram regex accelerator, incremental segment merge",
+    "slug": "inverted-index-follow-ons-bm25-ranking-trigram-regex-acceler",
+    "priority": "P2",
+    "filename": "081M0QWDDF3087G0R000V7T6BV-inverted-index-follow-ons-bm25-ranking-trigram-regex-acceler.md"
+  }
+}

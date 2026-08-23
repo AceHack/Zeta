@@ -1,0 +1,14 @@
+{
+  "id": "080d017e35adf010a0130008f70df1eb",
+  "at": "2026-08-23T17:59:06.942Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M0QWDDDV087G0R003HM0KYX",
+    "type": "task",
+    "title": "Positional/n-gram index for phrase and proximity queries — the second index type the term index cannot be",
+    "slug": "positional-n-gram-index-for-phrase-and-proximity-queries-the",
+    "priority": "P2",
+    "filename": "081M0QWDDDV087G0R003HM0KYX-positional-n-gram-index-for-phrase-and-proximity-queries-the.md"
+  }
+}

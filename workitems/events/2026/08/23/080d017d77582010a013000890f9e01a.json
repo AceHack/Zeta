@@ -1,0 +1,14 @@
+{
+  "id": "080d017d77582010a013000890f9e01a",
+  "at": "2026-08-23T17:33:07.716Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M0QTXTR3087G0R002R439FH",
+    "type": "task",
+    "title": "Git-native inverted index slice 1 — rev-stamped term postings, stale-refusing query CLI, 6h cadence",
+    "slug": "git-native-inverted-index-slice-1-rev-stamped-term-postings",
+    "priority": "P2",
+    "filename": "081M0QTXTR3087G0R002R439FH-git-native-inverted-index-slice-1-rev-stamped-term-postings.md"
+  }
+}

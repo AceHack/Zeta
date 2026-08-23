@@ -74,6 +74,12 @@
       "migrateTo": "full-ai-cluster/k8s/applications via the validator's existing --apps-dir flag, AND move the validator out of infra/k8s/tests/. MEASURED 2026-08-17: pointed at the live tree it reports 224 passed, 14 failed \u2014 so this is not a one-line repoint. See the work item."
     },
     {
+      "path": "db/search-index/inverted/files.txt",
+      "disposition": "derived",
+      "note": "The git-native inverted index's document list (081M0QTXTR3087G0R002R439FH). It names infra/k8s and infra/nixos because it names EVERY indexed path in the repo \u2014 an index of the tree mentions the whole tree by construction, so any surviving file under those directories puts them here. Machine-written, rebuilt from an explicit git rev every ~6h by search-index-cadence.yml; nothing reads these paths as a target.",
+      "migrateTo": "nothing to do \u2014 the next scheduled rebuild after the deletion drops the lines, and this roster entry then goes stale and fails, which is the roster shrinking as designed."
+    },
+    {
       "path": ".gitignore",
       "disposition": "prose",
       "note": "Comment naming infra/nixos/hosts/<host>/hardware-configuration.nix.",

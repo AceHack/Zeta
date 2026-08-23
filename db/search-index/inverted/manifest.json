@@ -1,0 +1,406 @@
+{
+  "schema": "zeta.search.inverted/v1",
+  "rev": "01050c8b15f81959c8ed16fee5d35045d8bf8e85",
+  "tree": "6e4f581719c23dda91a793b9ab7ca60d1cfd27a0",
+  "tokenizer": {
+    "version": 3,
+    "caseFold": "ascii-lower",
+    "minTokenLength": 2,
+    "maxTokenLength": 64,
+    "stopWords": [
+      "an",
+      "and",
+      "are",
+      "as",
+      "at",
+      "be",
+      "but",
+      "by",
+      "can",
+      "do",
+      "does",
+      "from",
+      "had",
+      "has",
+      "have",
+      "into",
+      "is",
+      "it",
+      "its",
+      "of",
+      "or",
+      "that",
+      "the",
+      "their",
+      "them",
+      "then",
+      "there",
+      "these",
+      "they",
+      "this",
+      "those",
+      "to",
+      "was",
+      "were",
+      "will",
+      "with",
+      "would"
+    ]
+  },
+  "corpus": {
+    "extensions": [
+      "bicep",
+      "c",
+      "cfg",
+      "cjs",
+      "conf",
+      "cpp",
+      "cs",
+      "css",
+      "csproj",
+      "csx",
+      "editorconfig",
+      "env",
+      "fs",
+      "fsi",
+      "fsproj",
+      "fsx",
+      "go",
+      "gradle",
+      "graphql",
+      "h",
+      "hpp",
+      "hs",
+      "html",
+      "ini",
+      "java",
+      "js",
+      "json",
+      "jsonc",
+      "jsonl",
+      "kt",
+      "lean",
+      "lock",
+      "md",
+      "mjs",
+      "nix",
+      "php",
+      "props",
+      "proto",
+      "ps1",
+      "py",
+      "rb",
+      "rs",
+      "scala",
+      "sh",
+      "sql",
+      "svg",
+      "swift",
+      "targets",
+      "tf",
+      "tla",
+      "toml",
+      "ts",
+      "tsx",
+      "txt",
+      "vue",
+      "wat",
+      "xml",
+      "yaml",
+      "yml",
+      "zig"
+    ],
+    "basenames": [
+      "AGENTS.md",
+      "CLAUDE.md",
+      "Dockerfile",
+      "GOVERNANCE.md",
+      "Makefile",
+      "README"
+    ],
+    "excludedTrees": [
+      {
+        "prefix": "docs/github/prs/",
+        "measurement": "9,652 files / 10.53 MiB at 6426eacf (2026-08-23) — machine-generated PR-mirror JSON shards. Indexing them roughly doubles the postings for content nobody searches by term; the PR mirror has its own manifest.jsonl lookup."
+      },
+      {
+        "prefix": "references/",
+        "measurement": "13 tracked files / 1.84 MiB at 6426eacf, but the directory is the mount point for the gitignored multi-gigabyte prior-art mirror (CLAUDE.md: 'a naive grep -r . is a 2-hour runaway'). Excluded so a checkout that HAS the mirror indexes the same corpus as one that does not — otherwise the artifact stops being a function of the rev."
+      },
+      {
+        "prefix": "node_modules/",
+        "measurement": "not tracked in git at 6426eacf, so this excludes nothing today. Kept because a vendored dependency tree is the classic way an index silently triples, and the cost of the guard is one string comparison."
+      }
+    ],
+    "maxBlobBytes": 524288,
+    "skippedOversize": 16,
+    "skippedNotIndexable": 10028,
+    "maxDocumentFrequency": 663,
+    "docIdHexChars": 10
+  },
+  "fileCount": 33107,
+  "termCount": 331178,
+  "postingCount": 2823481,
+  "highDfTermCount": 2316,
+  "shards": [
+    {
+      "shard": "0",
+      "file": "terms-0.jsonl",
+      "terms": 20638,
+      "bytes": 2335871,
+      "sha256": "63ebf2df7fea725a0df2a6fbe8a9193a5c0a88c1dfd7873ab24dbab1d367dd8e"
+    },
+    {
+      "shard": "1",
+      "file": "terms-1.jsonl",
+      "terms": 12988,
+      "bytes": 1705551,
+      "sha256": "88e1545f2b9aba6e2bd2e02d92e422c34a6bced4fd07708af131b31f89885374"
+    },
+    {
+      "shard": "2",
+      "file": "terms-2.jsonl",
+      "terms": 9491,
+      "bytes": 1297997,
+      "sha256": "8babf7418a0f0465ba268c75e49a239bc9241370e200427690f105c7c0ee1cab"
+    },
+    {
+      "shard": "3",
+      "file": "terms-3.jsonl",
+      "terms": 10256,
+      "bytes": 975508,
+      "sha256": "e026484591a43c5296b36bd45502533aeace87901ab59093ddad1e801ccdc98e"
+    },
+    {
+      "shard": "4",
+      "file": "terms-4.jsonl",
+      "terms": 8152,
+      "bytes": 793822,
+      "sha256": "de8fee1cdbc5bc9932fa37a2f9d19eaedb24f59ad98c17ca1f289d77773b6dc1"
+    },
+    {
+      "shard": "5",
+      "file": "terms-5.jsonl",
+      "terms": 7671,
+      "bytes": 736949,
+      "sha256": "6cd2026eb018c32161c0deba936b96440d42fe9b5707fbffa11ec18acf6431ab"
+    },
+    {
+      "shard": "6",
+      "file": "terms-6.jsonl",
+      "terms": 7933,
+      "bytes": 639532,
+      "sha256": "41253593e12fd94c9360ef4f6dbf730b5fcb4b2c2b4d7c2d10d27538c90f0692"
+    },
+    {
+      "shard": "7",
+      "file": "terms-7.jsonl",
+      "terms": 7946,
+      "bytes": 615983,
+      "sha256": "1ac42d9b3cbcd750e5f45f0059dff472c1a1daf4b18b71a48e95841399403421"
+    },
+    {
+      "shard": "8",
+      "file": "terms-8.jsonl",
+      "terms": 7518,
+      "bytes": 569937,
+      "sha256": "4a0c2809b66838143a4bd844cab7b205655a5d849695592d7f1954d8763306ed"
+    },
+    {
+      "shard": "9",
+      "file": "terms-9.jsonl",
+      "terms": 7637,
+      "bytes": 599274,
+      "sha256": "deed7d34ff2d503cfccbc816f705b8085113ca3fe7c776262f8c91aaa0c19e45"
+    },
+    {
+      "shard": "_",
+      "file": "terms-_.jsonl",
+      "terms": 40195,
+      "bytes": 2319838,
+      "sha256": "2f734ec6a41f600641a78270ec52d758955c60e2f4606a50d8442a4bd5831d10"
+    },
+    {
+      "shard": "a",
+      "file": "terms-a.jsonl",
+      "terms": 12279,
+      "bytes": 3133980,
+      "sha256": "187a4b46a221eec88068d9df43300b4f3c796c80022d8afac5bcdee932a1dc26"
+    },
+    {
+      "shard": "b",
+      "file": "terms-b.jsonl",
+      "terms": 10769,
+      "bytes": 2019458,
+      "sha256": "75dc175fb5565f412275f51fea6e14bd65381515227f44109bfdef7e3b04b8b3"
+    },
+    {
+      "shard": "c",
+      "file": "terms-c.jsonl",
+      "terms": 17403,
+      "bytes": 4649312,
+      "sha256": "d16df2535f9cb70a8480be18cb7d735eee07d7c99e1af496fb0171cf2ce4a29d"
+    },
+    {
+      "shard": "d",
+      "file": "terms-d.jsonl",
+      "terms": 11620,
+      "bytes": 2939855,
+      "sha256": "9494cd6171f1b4677754fdb621b38acb43a773464c0de358f520d14b28fdb2ce"
+    },
+    {
+      "shard": "e",
+      "file": "terms-e.jsonl",
+      "terms": 9397,
+      "bytes": 2348125,
+      "sha256": "98b1bdca87510450469e07ebb998be61d075d4756bd105d486e368c41d916a6f"
+    },
+    {
+      "shard": "f",
+      "file": "terms-f.jsonl",
+      "terms": 9961,
+      "bytes": 2042984,
+      "sha256": "61254d6dacbcc753fa1b153f57d0320e6189876602669ebe0d4e1e47b98afa6a"
+    },
+    {
+      "shard": "g",
+      "file": "terms-g.jsonl",
+      "terms": 5418,
+      "bytes": 1121199,
+      "sha256": "74624de5470c6eac4aefaad09f4f124607571c56c33f7914f7fa500aa1ab7a1c"
+    },
+    {
+      "shard": "h",
+      "file": "terms-h.jsonl",
+      "terms": 5291,
+      "bytes": 1182743,
+      "sha256": "12b1d8d4a76c048e7f8b5b85938a901be30b9122a678667ed67c4aef9a359122"
+    },
+    {
+      "shard": "i",
+      "file": "terms-i.jsonl",
+      "terms": 7540,
+      "bytes": 2119423,
+      "sha256": "6e2404797ebc26258f1cac70672c47919f18d8e72fcb80e71c7a706f1f46114a"
+    },
+    {
+      "shard": "j",
+      "file": "terms-j.jsonl",
+      "terms": 1651,
+      "bytes": 307416,
+      "sha256": "22ab3e5a58bdeff4948052e6ccda2a1672330cc416b96b77db91c37a061ddcd0"
+    },
+    {
+      "shard": "k",
+      "file": "terms-k.jsonl",
+      "terms": 2956,
+      "bytes": 570591,
+      "sha256": "41369d8e44cf37a578ab547f43ff542984d0b7fe889e7a825134b62261de7019"
+    },
+    {
+      "shard": "l",
+      "file": "terms-l.jsonl",
+      "terms": 5642,
+      "bytes": 1412706,
+      "sha256": "ad449cad50e4524832c4370e7936b83df07f2c737af87a502e13b6fa9f9607c1"
+    },
+    {
+      "shard": "m",
+      "file": "terms-m.jsonl",
+      "terms": 9825,
+      "bytes": 2181859,
+      "sha256": "8bbba911adbbb11f122ca9a42c6ad977205b020124ae9026e9bd4a62067cc053"
+    },
+    {
+      "shard": "n",
+      "file": "terms-n.jsonl",
+      "terms": 5413,
+      "bytes": 1003422,
+      "sha256": "e50e4a13d763ce950c0a1a648efac333d3227def5999c0b9a8289aee26c42534"
+    },
+    {
+      "shard": "o",
+      "file": "terms-o.jsonl",
+      "terms": 4714,
+      "bytes": 1093910,
+      "sha256": "9281562f5cfd2fe7dac7fab641257e97ae3fa853674d2ba1141f82a05fad08fd"
+    },
+    {
+      "shard": "p",
+      "file": "terms-p.jsonl",
+      "terms": 19088,
+      "bytes": 3546902,
+      "sha256": "0e75e633285cd8679d4b4c766ccef244fbbdd6f51614e7a4155a04f20bc45479"
+    },
+    {
+      "shard": "q",
+      "file": "terms-q.jsonl",
+      "terms": 1754,
+      "bytes": 339264,
+      "sha256": "cc198c0e3e4a0b110b78e5b1d6288db771d16397560f22bca211b02d9a979954"
+    },
+    {
+      "shard": "r",
+      "file": "terms-r.jsonl",
+      "terms": 11265,
+      "bytes": 3236507,
+      "sha256": "884e99e91ad42be151af490103b5655f99f8b83ea7eeab587089f2a0f4864583"
+    },
+    {
+      "shard": "s",
+      "file": "terms-s.jsonl",
+      "terms": 14145,
+      "bytes": 4272932,
+      "sha256": "bdda8b8a295ee5418ef610b040fad8db45091dcbecee311d90a33f94e0b51731"
+    },
+    {
+      "shard": "t",
+      "file": "terms-t.jsonl",
+      "terms": 8288,
+      "bytes": 2142697,
+      "sha256": "0a904849e16c663b86e0d2586ee4a78c038747d096f9e357527c9c1440de6199"
+    },
+    {
+      "shard": "u",
+      "file": "terms-u.jsonl",
+      "terms": 4403,
+      "bytes": 1026485,
+      "sha256": "886286019b568b14b4108a54bbb3368199d495ebadf521130fa9c6dd8b4c16b0"
+    },
+    {
+      "shard": "v",
+      "file": "terms-v.jsonl",
+      "terms": 3323,
+      "bytes": 692270,
+      "sha256": "ce9e4b81131e4d3986d4090c647597ac82aaf1339796845494ef4ee81879bd31"
+    },
+    {
+      "shard": "w",
+      "file": "terms-w.jsonl",
+      "terms": 4104,
+      "bytes": 944186,
+      "sha256": "d7328ce1d3777f95146b7523d28abb7674d5b8da20a33442a68f56e9ace650a4"
+    },
+    {
+      "shard": "x",
+      "file": "terms-x.jsonl",
+      "terms": 1257,
+      "bytes": 173144,
+      "sha256": "8150c6d1a18de0f34eabfcd8cf9c6264c942d25abe2fe7ab396fb5cba81e18df"
+    },
+    {
+      "shard": "y",
+      "file": "terms-y.jsonl",
+      "terms": 1164,
+      "bytes": 205857,
+      "sha256": "dec55478e2e7c6908207a137164b0adeb41bcab8eaf8331215eabe892caf61ba"
+    },
+    {
+      "shard": "z",
+      "file": "terms-z.jsonl",
+      "terms": 2083,
+      "bytes": 261913,
+      "sha256": "759cb0c96f1e28a9fcdf285c4f2317a11d543fdb6b5c61f04e7005ce43dad006"
+    }
+  ]
+}
