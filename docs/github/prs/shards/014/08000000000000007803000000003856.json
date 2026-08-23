@@ -1,0 +1,12 @@
+{
+  "pr_number": 14422,
+  "archive_path": "docs/history/pr-reviews/PR-14422-research-geometry-as-root-the-variance-route-re-derives-the-boundary-rather-than.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-23T20:13:39.190Z",
+  "schema_version": "v1",
+  "commit_sha": "cdc2227156f48a2462b8a766ec982dc97804b956",
+  "title": "research(geometry-as-root): the variance route re-derives the boundary rather than dissolving it",
+  "state": "MERGED",
+  "merged_at": "2026-08-23T20:12:59Z",
+  "head_ref": "docs/geometry-as-root-variance-coarsening"
+}
