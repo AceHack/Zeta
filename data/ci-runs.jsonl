@@ -70,3 +70,7 @@
 {"checkId":"agent-heartbeat","outcome":"green","at":"2026-08-23T09:15:52.458Z","lane":"alexa","runId":"32630408076"}
 {"checkId":"agent-heartbeat","outcome":"green","at":"2026-08-23T09:32:03.756Z","lane":"alexa","runId":"32631160449"}
 {"checkId":"agent-heartbeat","outcome":"green","at":"2026-08-23T09:48:26.410Z","lane":"alexa","runId":"32631919066"}
+{"checkId":"agent-heartbeat","outcome":"green","at":"2026-08-23T09:14:49.485Z","lane":"otto","runId":"32630408076"}
+{"checkId":"agent-heartbeat","outcome":"green","at":"2026-08-23T09:31:25.145Z","lane":"otto","runId":"32631160449"}
+{"checkId":"agent-heartbeat","outcome":"green","at":"2026-08-23T09:47:47.053Z","lane":"otto","runId":"32631919066"}
+{"checkId":"agent-heartbeat","outcome":"green","at":"2026-08-23T10:09:53.453Z","lane":"otto","runId":"32632892362"}
