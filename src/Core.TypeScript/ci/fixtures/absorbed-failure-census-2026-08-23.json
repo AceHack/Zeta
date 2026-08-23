@@ -1,0 +1,901 @@
+{
+  "measuredAt": "2026-08-23",
+  "method": "every completed gate.yml push run on main; a failure is ABSORBED when the job concluded failure and `gate (required)` in the same run concluded success",
+  "window": {
+    "from": "2026-08-18T00:53:11Z",
+    "to": "2026-08-23T16:07:03Z"
+  },
+  "gatePushRuns": 600,
+  "cancelledBeforeJobsRan": 368,
+  "runsInspected": 232,
+  "absorbedFailures": 124,
+  "coveredByPlatformDriftReport": 32,
+  "bySubject": {
+    "job:test (TS hermetic)": 47,
+    "job:lint (bash retirement inventory + hygiene unit tests)": 20,
+    "job:build-and-test (windows-2025)": 18,
+    "job:build-and-test (windows-11-arm)": 13,
+    "job:lint (markdownlint)": 9,
+    "job:lint (no conflict markers)": 3,
+    "job:lint (shellcheck)": 3,
+    "job:lint (tick-history order)": 2,
+    "job:lint (tick-shard relative-paths)": 2,
+    "job:lint (yaml/k8s)": 2,
+    "job:lint (semgrep drift)": 2,
+    "job:lint (TS)": 1,
+    "job:lint (archive header §33)": 1,
+    "job:build-and-test (macos-26)": 1
+  },
+  "stepLevelAbsorptionsFound": 0,
+  "note": "stepLevelAbsorptionsFound is 0 in this window. That is WHY the drift-canary exists: with no natural specimen, `no findings` and `detector broken` are the same output, and only a deliberate always-failing step tells them apart.",
+  "rawAbsorptions": [
+    {
+      "wf": "gate",
+      "run": 32649813169,
+      "job": "build-and-test (windows-2025)",
+      "at": "2026-08-23T15:50:34Z",
+      "sha": "5125dac7b3ba12f8f8496e14e0b053e32fb56cd0"
+    },
+    {
+      "wf": "gate",
+      "run": 32648304330,
+      "job": "test (TS hermetic)",
+      "at": "2026-08-23T15:21:37Z",
+      "sha": "6d68cf9bfbc151551f901bd38db13bbe9fa4ccde"
+    },
+    {
+      "wf": "gate",
+      "run": 32646515868,
+      "job": "lint (markdownlint)",
+      "at": "2026-08-23T14:47:34Z",
+      "sha": "4ac632b8f75b2333d46a7f3c4382c34809f4372e"
+    },
+    {
+      "wf": "gate",
+      "run": 32646515868,
+      "job": "build-and-test (windows-2025)",
+      "at": "2026-08-23T14:47:34Z",
+      "sha": "4ac632b8f75b2333d46a7f3c4382c34809f4372e"
+    },
+    {
+      "wf": "gate",
+      "run": 32645341840,
+      "job": "lint (markdownlint)",
+      "at": "2026-08-23T14:24:41Z",
+      "sha": "c94fd4406d64a4fc9998b8ad15f45970250a84f2"
+    },
+    {
+      "wf": "gate",
+      "run": 32645288515,
+      "job": "lint (markdownlint)",
+      "at": "2026-08-23T14:23:39Z",
+      "sha": "89b0f4c602be01eb1f218bf89a586891ba4eb72d"
+    },
+    {
+      "wf": "gate",
+      "run": 32642063469,
+      "job": "test (TS hermetic)",
+      "at": "2026-08-23T13:20:43Z",
+      "sha": "c3984580c0357fe632a277196884ef4dd2e8f61b"
+    },
+    {
+      "wf": "gate",
+      "run": 32641157957,
+      "job": "test (TS hermetic)",
+      "at": "2026-08-23T13:02:46Z",
+      "sha": "7a2339db36720b8d4c2e1756d357eaa272b431ce"
+    },
+    {
+      "wf": "gate",
+      "run": 32639518654,
+      "job": "test (TS hermetic)",
+      "at": "2026-08-23T12:29:02Z",
+      "sha": "040d35cc66e9320d683eac29df7a9a24d0b9e88a"
+    },
+    {
+      "wf": "gate",
+      "run": 32605525130,
+      "job": "lint (no conflict markers)",
+      "at": "2026-08-22T23:33:05Z",
+      "sha": "07e9530c4569cd97c0e1bd637e2e447a57eaa9d2"
+    },
+    {
+      "wf": "gate",
+      "run": 32603851439,
+      "job": "lint (TS)",
+      "at": "2026-08-22T22:56:38Z",
+      "sha": "9c4aaedc2d8e2ae4fc1c0db6d4f72baedd652677"
+    },
+    {
+      "wf": "gate",
+      "run": 32603409430,
+      "job": "lint (bash retirement inventory + hygiene unit tests)",
+      "at": "2026-08-22T22:47:01Z",
+      "sha": "453ed03e7d4bab8dc6b7688a41e314b568e8dcec"
+    },
+    {
+      "wf": "gate",
+      "run": 32603409430,
+      "job": "test (TS hermetic)",
+      "at": "2026-08-22T22:47:01Z",
+      "sha": "453ed03e7d4bab8dc6b7688a41e314b568e8dcec"
+    },
+    {
+      "wf": "gate",
+      "run": 32602031050,
+      "job": "lint (bash retirement inventory + hygiene unit tests)",
+      "at": "2026-08-22T22:17:41Z",
+      "sha": "9f861ebef5425bcc0cac821d687b57204f6ba660"
+    },
+    {
+      "wf": "gate",
+      "run": 32602031050,
+      "job": "test (TS hermetic)",
+      "at": "2026-08-22T22:17:41Z",
+      "sha": "9f861ebef5425bcc0cac821d687b57204f6ba660"
+    },
+    {
+      "wf": "gate",
+      "run": 32597003225,
+      "job": "test (TS hermetic)",
+      "at": "2026-08-22T20:33:03Z",
+      "sha": "ac403015314b30a14f40720ee2f272246968d9a0"
+    },
+    {
+      "wf": "gate",
+      "run": 32596643681,
+      "job": "test (TS hermetic)",
+      "at": "2026-08-22T20:25:41Z",
+      "sha": "ea101dd22e8c763472d744f9a06d2d7eba61a901"
+    },
+    {
+      "wf": "gate",
+      "run": 32595193059,
+      "job": "test (TS hermetic)",
+      "at": "2026-08-22T19:56:20Z",
+      "sha": "bcd768e1fe619cc4487a58be24a3434ffd3225b3"
+    },
+    {
+      "wf": "gate",
+      "run": 32595054510,
+      "job": "test (TS hermetic)",
+      "at": "2026-08-22T19:53:32Z",
+      "sha": "c9efe5d62e627c11cf10f2cabea6089c1c365d2b"
+    },
+    {
+      "wf": "gate",
+      "run": 32593750621,
+      "job": "test (TS hermetic)",
+      "at": "2026-08-22T19:27:17Z",
+      "sha": "a8ad6e0a73f239aa8a55d3c0f785d5dcc003e795"
+    },
+    {
+      "wf": "gate",
+      "run": 32593064677,
+      "job": "test (TS hermetic)",
+      "at": "2026-08-22T19:13:12Z",
+      "sha": "276bbfe62514e2ecb17222fb90279e42c7bbe8f1"
+    },
+    {
+      "wf": "gate",
+      "run": 32589460482,
+      "job": "test (TS hermetic)",
+      "at": "2026-08-22T18:00:41Z",
+      "sha": "ec29db0b598fca474df66bbba36846fe9717043f"
+    },
+    {
+      "wf": "gate",
+      "run": 32587966659,
+      "job": "lint (bash retirement inventory + hygiene unit tests)",
+      "at": "2026-08-22T17:31:02Z",
+      "sha": "4de7a4ee29156893e6e5f07f09649d7f537a9dac"
+    },
+    {
+      "wf": "gate",
+      "run": 32587966659,
+      "job": "test (TS hermetic)",
+      "at": "2026-08-22T17:31:02Z",
+      "sha": "4de7a4ee29156893e6e5f07f09649d7f537a9dac"
+    },
+    {
+      "wf": "gate",
+      "run": 32587966659,
+      "job": "lint (markdownlint)",
+      "at": "2026-08-22T17:31:02Z",
+      "sha": "4de7a4ee29156893e6e5f07f09649d7f537a9dac"
+    },
+    {
+      "wf": "gate",
+      "run": 32587132916,
+      "job": "lint (bash retirement inventory + hygiene unit tests)",
+      "at": "2026-08-22T17:14:29Z",
+      "sha": "9e706cf11e78dd2c6ea629d04c121bf688914a74"
+    },
+    {
+      "wf": "gate",
+      "run": 32587132916,
+      "job": "test (TS hermetic)",
+      "at": "2026-08-22T17:14:29Z",
+      "sha": "9e706cf11e78dd2c6ea629d04c121bf688914a74"
+    },
+    {
+      "wf": "gate",
+      "run": 32587132916,
+      "job": "lint (markdownlint)",
+      "at": "2026-08-22T17:14:29Z",
+      "sha": "9e706cf11e78dd2c6ea629d04c121bf688914a74"
+    },
+    {
+      "wf": "gate",
+      "run": 32586496867,
+      "job": "lint (bash retirement inventory + hygiene unit tests)",
+      "at": "2026-08-22T17:01:44Z",
+      "sha": "39be808071464b7a68a6f51eec2e238863bb3b56"
+    },
+    {
+      "wf": "gate",
+      "run": 32586496867,
+      "job": "test (TS hermetic)",
+      "at": "2026-08-22T17:01:44Z",
+      "sha": "39be808071464b7a68a6f51eec2e238863bb3b56"
+    },
+    {
+      "wf": "gate",
+      "run": 32585875053,
+      "job": "test (TS hermetic)",
+      "at": "2026-08-22T16:49:35Z",
+      "sha": "63a3cec1aec46ed3da1d214dfbd16af8e3c23e15"
+    },
+    {
+      "wf": "gate",
+      "run": 32585464266,
+      "job": "test (TS hermetic)",
+      "at": "2026-08-22T16:41:24Z",
+      "sha": "2a153b3f4392577560cff155a9d0c4f6011d66bd"
+    },
+    {
+      "wf": "gate",
+      "run": 32584745128,
+      "job": "test (TS hermetic)",
+      "at": "2026-08-22T16:27:14Z",
+      "sha": "2e0d78c1162bed150da31051f1f74d409051a0c0"
+    },
+    {
+      "wf": "gate",
+      "run": 32583085884,
+      "job": "lint (bash retirement inventory + hygiene unit tests)",
+      "at": "2026-08-22T15:53:59Z",
+      "sha": "a23fc4662f381a114feb4028bd3a23593e0108b3"
+    },
+    {
+      "wf": "gate",
+      "run": 32583085884,
+      "job": "test (TS hermetic)",
+      "at": "2026-08-22T15:53:59Z",
+      "sha": "a23fc4662f381a114feb4028bd3a23593e0108b3"
+    },
+    {
+      "wf": "gate",
+      "run": 32582803971,
+      "job": "test (TS hermetic)",
+      "at": "2026-08-22T15:48:22Z",
+      "sha": "fa9f50552f40deaaab03b0bb64ae9adcd507f653"
+    },
+    {
+      "wf": "gate",
+      "run": 32582803971,
+      "job": "lint (bash retirement inventory + hygiene unit tests)",
+      "at": "2026-08-22T15:48:22Z",
+      "sha": "fa9f50552f40deaaab03b0bb64ae9adcd507f653"
+    },
+    {
+      "wf": "gate",
+      "run": 32582180607,
+      "job": "lint (bash retirement inventory + hygiene unit tests)",
+      "at": "2026-08-22T15:35:56Z",
+      "sha": "77915be870c4ffac78514427b2a579bd7fabfae9"
+    },
+    {
+      "wf": "gate",
+      "run": 32582180607,
+      "job": "test (TS hermetic)",
+      "at": "2026-08-22T15:35:56Z",
+      "sha": "77915be870c4ffac78514427b2a579bd7fabfae9"
+    },
+    {
+      "wf": "gate",
+      "run": 32580963279,
+      "job": "test (TS hermetic)",
+      "at": "2026-08-22T15:11:51Z",
+      "sha": "0a77c1f99e8fc07b459f6e371c2c98af06e4a162"
+    },
+    {
+      "wf": "gate",
+      "run": 32571902002,
+      "job": "test (TS hermetic)",
+      "at": "2026-08-22T12:02:16Z",
+      "sha": "3564d7269b5e3017766892754fd9cbefb622cf3c"
+    },
+    {
+      "wf": "gate",
+      "run": 32571240902,
+      "job": "test (TS hermetic)",
+      "at": "2026-08-22T11:47:44Z",
+      "sha": "b9b6366b7260ab03bccdcb305d220fa00f424aad"
+    },
+    {
+      "wf": "gate",
+      "run": 32570401936,
+      "job": "test (TS hermetic)",
+      "at": "2026-08-22T11:29:06Z",
+      "sha": "ef3c4fb573dc818fcb45b38e64f67882c780066e"
+    },
+    {
+      "wf": "gate",
+      "run": 32570293322,
+      "job": "test (TS hermetic)",
+      "at": "2026-08-22T11:26:41Z",
+      "sha": "38fc0d55c7725526c73ce031e39310006578c330"
+    },
+    {
+      "wf": "gate",
+      "run": 32543842863,
+      "job": "lint (bash retirement inventory + hygiene unit tests)",
+      "at": "2026-08-22T01:34:46Z",
+      "sha": "cb3288cf789032d332cdc00a0f6f650ce95c82bc"
+    },
+    {
+      "wf": "gate",
+      "run": 32543842863,
+      "job": "lint (shellcheck)",
+      "at": "2026-08-22T01:34:46Z",
+      "sha": "cb3288cf789032d332cdc00a0f6f650ce95c82bc"
+    },
+    {
+      "wf": "gate",
+      "run": 32543842863,
+      "job": "test (TS hermetic)",
+      "at": "2026-08-22T01:34:46Z",
+      "sha": "cb3288cf789032d332cdc00a0f6f650ce95c82bc"
+    },
+    {
+      "wf": "gate",
+      "run": 32543444932,
+      "job": "lint (shellcheck)",
+      "at": "2026-08-22T01:26:46Z",
+      "sha": "9af704b90c08b0d96c6598d99e2f9c92093a26a0"
+    },
+    {
+      "wf": "gate",
+      "run": 32543444932,
+      "job": "lint (bash retirement inventory + hygiene unit tests)",
+      "at": "2026-08-22T01:26:46Z",
+      "sha": "9af704b90c08b0d96c6598d99e2f9c92093a26a0"
+    },
+    {
+      "wf": "gate",
+      "run": 32543444932,
+      "job": "test (TS hermetic)",
+      "at": "2026-08-22T01:26:46Z",
+      "sha": "9af704b90c08b0d96c6598d99e2f9c92093a26a0"
+    },
+    {
+      "wf": "gate",
+      "run": 32542696805,
+      "job": "lint (bash retirement inventory + hygiene unit tests)",
+      "at": "2026-08-22T01:11:29Z",
+      "sha": "6c59358ec4e2b311e96f4a2699d2cec05dc94434"
+    },
+    {
+      "wf": "gate",
+      "run": 32542696805,
+      "job": "lint (shellcheck)",
+      "at": "2026-08-22T01:11:29Z",
+      "sha": "6c59358ec4e2b311e96f4a2699d2cec05dc94434"
+    },
+    {
+      "wf": "gate",
+      "run": 32542696805,
+      "job": "test (TS hermetic)",
+      "at": "2026-08-22T01:11:29Z",
+      "sha": "6c59358ec4e2b311e96f4a2699d2cec05dc94434"
+    },
+    {
+      "wf": "gate",
+      "run": 32540793369,
+      "job": "build-and-test (windows-2025)",
+      "at": "2026-08-22T00:34:42Z",
+      "sha": "3826276d89b239857533d7e476c129c09cf3297d"
+    },
+    {
+      "wf": "gate",
+      "run": 32538495994,
+      "job": "lint (markdownlint)",
+      "at": "2026-08-21T23:53:42Z",
+      "sha": "d18ca1e8cfb499f9894abba01a28f3beb6a84258"
+    },
+    {
+      "wf": "gate",
+      "run": 32526035661,
+      "job": "test (TS hermetic)",
+      "at": "2026-08-21T20:55:56Z",
+      "sha": "b213b8f89b1cd3c12bf073d4ecc1bf2482b9d49c"
+    },
+    {
+      "wf": "gate",
+      "run": 32526035661,
+      "job": "build-and-test (windows-2025)",
+      "at": "2026-08-21T20:55:56Z",
+      "sha": "b213b8f89b1cd3c12bf073d4ecc1bf2482b9d49c"
+    },
+    {
+      "wf": "gate",
+      "run": 32505181485,
+      "job": "build-and-test (windows-11-arm)",
+      "at": "2026-08-21T16:52:27Z",
+      "sha": "45c89e15161019c9bdb0105bb90cbc4811de89de"
+    },
+    {
+      "wf": "gate",
+      "run": 32456962885,
+      "job": "test (TS hermetic)",
+      "at": "2026-08-21T07:03:27Z",
+      "sha": "3f9a2934c63e533886cbbdf1e62116aaed835996"
+    },
+    {
+      "wf": "gate",
+      "run": 32455743216,
+      "job": "test (TS hermetic)",
+      "at": "2026-08-21T06:46:15Z",
+      "sha": "bb996ecf73c19f5fa31d0592e23f97150dfc1982"
+    },
+    {
+      "wf": "gate",
+      "run": 32454990117,
+      "job": "test (TS hermetic)",
+      "at": "2026-08-21T06:35:07Z",
+      "sha": "d38f3bf711399e7a96a5f6ece6b46b370f0a0d4c"
+    },
+    {
+      "wf": "gate",
+      "run": 32454007482,
+      "job": "lint (archive header §33)",
+      "at": "2026-08-21T06:20:32Z",
+      "sha": "92f8d752a41a141663b2a9ec2088473c871ac0bc"
+    },
+    {
+      "wf": "gate",
+      "run": 32452266539,
+      "job": "build-and-test (macos-26)",
+      "at": "2026-08-21T05:54:00Z",
+      "sha": "2970b64509c30ba0187b4aaa561576ba8de7344f"
+    },
+    {
+      "wf": "gate",
+      "run": 32449690256,
+      "job": "build-and-test (windows-2025)",
+      "at": "2026-08-21T05:12:24Z",
+      "sha": "246329b0416c4b022486c4c2445d353d0010832b"
+    },
+    {
+      "wf": "gate",
+      "run": 32448200253,
+      "job": "test (TS hermetic)",
+      "at": "2026-08-21T04:47:50Z",
+      "sha": "3eb4f879b734188f4e1323efca053bb6eb805edb"
+    },
+    {
+      "wf": "gate",
+      "run": 32446422096,
+      "job": "test (TS hermetic)",
+      "at": "2026-08-21T04:17:34Z",
+      "sha": "5361a416838bfe578316eac883c5c9580a5713dd"
+    },
+    {
+      "wf": "gate",
+      "run": 32402374735,
+      "job": "build-and-test (windows-2025)",
+      "at": "2026-08-20T18:17:31Z",
+      "sha": "3ff380123d5b36771d2f166289496ceb7abebb5a"
+    },
+    {
+      "wf": "gate",
+      "run": 32402374735,
+      "job": "build-and-test (windows-11-arm)",
+      "at": "2026-08-20T18:17:31Z",
+      "sha": "3ff380123d5b36771d2f166289496ceb7abebb5a"
+    },
+    {
+      "wf": "gate",
+      "run": 32400902212,
+      "job": "build-and-test (windows-2025)",
+      "at": "2026-08-20T18:01:43Z",
+      "sha": "ea74433f5c839750ad70d9eaa12e6b6cbeb74290"
+    },
+    {
+      "wf": "gate",
+      "run": 32400902212,
+      "job": "build-and-test (windows-11-arm)",
+      "at": "2026-08-20T18:01:43Z",
+      "sha": "ea74433f5c839750ad70d9eaa12e6b6cbeb74290"
+    },
+    {
+      "wf": "gate",
+      "run": 32397605991,
+      "job": "build-and-test (windows-11-arm)",
+      "at": "2026-08-20T17:26:20Z",
+      "sha": "08bf488aef987190c834854b62c49aa0aa883d62"
+    },
+    {
+      "wf": "gate",
+      "run": 32397605991,
+      "job": "build-and-test (windows-2025)",
+      "at": "2026-08-20T17:26:20Z",
+      "sha": "08bf488aef987190c834854b62c49aa0aa883d62"
+    },
+    {
+      "wf": "gate",
+      "run": 32396099589,
+      "job": "lint (bash retirement inventory + hygiene unit tests)",
+      "at": "2026-08-20T17:10:12Z",
+      "sha": "eebf648a7ee7ed0d9e924796e09da2299c35d1a9"
+    },
+    {
+      "wf": "gate",
+      "run": 32396099589,
+      "job": "test (TS hermetic)",
+      "at": "2026-08-20T17:10:12Z",
+      "sha": "eebf648a7ee7ed0d9e924796e09da2299c35d1a9"
+    },
+    {
+      "wf": "gate",
+      "run": 32396099589,
+      "job": "build-and-test (windows-2025)",
+      "at": "2026-08-20T17:10:12Z",
+      "sha": "eebf648a7ee7ed0d9e924796e09da2299c35d1a9"
+    },
+    {
+      "wf": "gate",
+      "run": 32396099589,
+      "job": "build-and-test (windows-11-arm)",
+      "at": "2026-08-20T17:10:12Z",
+      "sha": "eebf648a7ee7ed0d9e924796e09da2299c35d1a9"
+    },
+    {
+      "wf": "gate",
+      "run": 32395009773,
+      "job": "lint (bash retirement inventory + hygiene unit tests)",
+      "at": "2026-08-20T16:58:36Z",
+      "sha": "d37a9b8eb22af49bd60f41643313a236c5a6b245"
+    },
+    {
+      "wf": "gate",
+      "run": 32395009773,
+      "job": "test (TS hermetic)",
+      "at": "2026-08-20T16:58:36Z",
+      "sha": "d37a9b8eb22af49bd60f41643313a236c5a6b245"
+    },
+    {
+      "wf": "gate",
+      "run": 32395009773,
+      "job": "build-and-test (windows-2025)",
+      "at": "2026-08-20T16:58:36Z",
+      "sha": "d37a9b8eb22af49bd60f41643313a236c5a6b245"
+    },
+    {
+      "wf": "gate",
+      "run": 32395009773,
+      "job": "build-and-test (windows-11-arm)",
+      "at": "2026-08-20T16:58:36Z",
+      "sha": "d37a9b8eb22af49bd60f41643313a236c5a6b245"
+    },
+    {
+      "wf": "gate",
+      "run": 32392861966,
+      "job": "lint (bash retirement inventory + hygiene unit tests)",
+      "at": "2026-08-20T16:35:34Z",
+      "sha": "4eb2553324332cf4a40920a2755fe619b9719ae7"
+    },
+    {
+      "wf": "gate",
+      "run": 32392861966,
+      "job": "test (TS hermetic)",
+      "at": "2026-08-20T16:35:34Z",
+      "sha": "4eb2553324332cf4a40920a2755fe619b9719ae7"
+    },
+    {
+      "wf": "gate",
+      "run": 32392861966,
+      "job": "build-and-test (windows-2025)",
+      "at": "2026-08-20T16:35:34Z",
+      "sha": "4eb2553324332cf4a40920a2755fe619b9719ae7"
+    },
+    {
+      "wf": "gate",
+      "run": 32392861966,
+      "job": "build-and-test (windows-11-arm)",
+      "at": "2026-08-20T16:35:34Z",
+      "sha": "4eb2553324332cf4a40920a2755fe619b9719ae7"
+    },
+    {
+      "wf": "gate",
+      "run": 32391596783,
+      "job": "build-and-test (windows-2025)",
+      "at": "2026-08-20T16:22:12Z",
+      "sha": "baf4b2291306430c5bea00751877979022204d79"
+    },
+    {
+      "wf": "gate",
+      "run": 32391596783,
+      "job": "build-and-test (windows-11-arm)",
+      "at": "2026-08-20T16:22:12Z",
+      "sha": "baf4b2291306430c5bea00751877979022204d79"
+    },
+    {
+      "wf": "gate",
+      "run": 32390723793,
+      "job": "build-and-test (windows-11-arm)",
+      "at": "2026-08-20T16:12:57Z",
+      "sha": "8658b2a8e5b7569b96581008e80af7cca5575a84"
+    },
+    {
+      "wf": "gate",
+      "run": 32390723793,
+      "job": "build-and-test (windows-2025)",
+      "at": "2026-08-20T16:12:57Z",
+      "sha": "8658b2a8e5b7569b96581008e80af7cca5575a84"
+    },
+    {
+      "wf": "gate",
+      "run": 32389827339,
+      "job": "build-and-test (windows-11-arm)",
+      "at": "2026-08-20T16:03:39Z",
+      "sha": "91e6c3eb6b315517f2ba89f98caadbd37ff3ef56"
+    },
+    {
+      "wf": "gate",
+      "run": 32389827339,
+      "job": "build-and-test (windows-2025)",
+      "at": "2026-08-20T16:03:39Z",
+      "sha": "91e6c3eb6b315517f2ba89f98caadbd37ff3ef56"
+    },
+    {
+      "wf": "gate",
+      "run": 32388358731,
+      "job": "build-and-test (windows-2025)",
+      "at": "2026-08-20T15:48:47Z",
+      "sha": "0b4c833ecd2abee093f5bece5f7fa0558b41bbfc"
+    },
+    {
+      "wf": "gate",
+      "run": 32388358731,
+      "job": "build-and-test (windows-11-arm)",
+      "at": "2026-08-20T15:48:47Z",
+      "sha": "0b4c833ecd2abee093f5bece5f7fa0558b41bbfc"
+    },
+    {
+      "wf": "gate",
+      "run": 32387521996,
+      "job": "build-and-test (windows-2025)",
+      "at": "2026-08-20T15:40:20Z",
+      "sha": "125a7b5c870d042bab4b8e2e3af2fbcb69a2c905"
+    },
+    {
+      "wf": "gate",
+      "run": 32387521996,
+      "job": "build-and-test (windows-11-arm)",
+      "at": "2026-08-20T15:40:20Z",
+      "sha": "125a7b5c870d042bab4b8e2e3af2fbcb69a2c905"
+    },
+    {
+      "wf": "gate",
+      "run": 32369831833,
+      "job": "build-and-test (windows-2025)",
+      "at": "2026-08-20T12:37:43Z",
+      "sha": "5f871da7dd66580e2b214b84988cbf317c6c341e"
+    },
+    {
+      "wf": "gate",
+      "run": 32364327987,
+      "job": "test (TS hermetic)",
+      "at": "2026-08-20T11:32:51Z",
+      "sha": "bb7ae9c778ccc7e5044139b5b8ad6d6797df208f"
+    },
+    {
+      "wf": "gate",
+      "run": 32322958839,
+      "job": "lint (markdownlint)",
+      "at": "2026-08-20T01:58:40Z",
+      "sha": "49ac09cdc1228c2d065d28406910d16dddec3c3c"
+    },
+    {
+      "wf": "gate",
+      "run": 32307591084,
+      "job": "lint (markdownlint)",
+      "at": "2026-08-19T22:10:55Z",
+      "sha": "68111962da358ff2ac390650376527e83e0a34be"
+    },
+    {
+      "wf": "gate",
+      "run": 32302934179,
+      "job": "lint (tick-history order)",
+      "at": "2026-08-19T21:15:28Z",
+      "sha": "1527accfe3f65523aeb487ac04f18efa4b617b4b"
+    },
+    {
+      "wf": "gate",
+      "run": 32302934179,
+      "job": "lint (no conflict markers)",
+      "at": "2026-08-19T21:15:28Z",
+      "sha": "1527accfe3f65523aeb487ac04f18efa4b617b4b"
+    },
+    {
+      "wf": "gate",
+      "run": 32302934179,
+      "job": "lint (markdownlint)",
+      "at": "2026-08-19T21:15:28Z",
+      "sha": "1527accfe3f65523aeb487ac04f18efa4b617b4b"
+    },
+    {
+      "wf": "gate",
+      "run": 32297380805,
+      "job": "lint (tick-shard relative-paths)",
+      "at": "2026-08-19T20:13:40Z",
+      "sha": "48743c018f0270ded0d67e90a62dccfc3c4a76b5"
+    },
+    {
+      "wf": "gate",
+      "run": 32297380805,
+      "job": "build-and-test (windows-11-arm)",
+      "at": "2026-08-19T20:13:40Z",
+      "sha": "48743c018f0270ded0d67e90a62dccfc3c4a76b5"
+    },
+    {
+      "wf": "gate",
+      "run": 32297380805,
+      "job": "build-and-test (windows-2025)",
+      "at": "2026-08-19T20:13:40Z",
+      "sha": "48743c018f0270ded0d67e90a62dccfc3c4a76b5"
+    },
+    {
+      "wf": "gate",
+      "run": 32283111665,
+      "job": "test (TS hermetic)",
+      "at": "2026-08-19T17:42:05Z",
+      "sha": "d25f5b7e1f01316c1265634f965c03c3a3c39724"
+    },
+    {
+      "wf": "gate",
+      "run": 32283111665,
+      "job": "lint (no conflict markers)",
+      "at": "2026-08-19T17:42:05Z",
+      "sha": "d25f5b7e1f01316c1265634f965c03c3a3c39724"
+    },
+    {
+      "wf": "gate",
+      "run": 32283111665,
+      "job": "lint (yaml/k8s)",
+      "at": "2026-08-19T17:42:05Z",
+      "sha": "d25f5b7e1f01316c1265634f965c03c3a3c39724"
+    },
+    {
+      "wf": "gate",
+      "run": 32283111665,
+      "job": "lint (bash retirement inventory + hygiene unit tests)",
+      "at": "2026-08-19T17:42:05Z",
+      "sha": "d25f5b7e1f01316c1265634f965c03c3a3c39724"
+    },
+    {
+      "wf": "gate",
+      "run": 32249302156,
+      "job": "lint (semgrep drift)",
+      "at": "2026-08-19T11:47:07Z",
+      "sha": "bbac39f4a7102a27bfc68f3d25cdb2ae61a0a7a5"
+    },
+    {
+      "wf": "gate",
+      "run": 32240608652,
+      "job": "test (TS hermetic)",
+      "at": "2026-08-19T10:01:32Z",
+      "sha": "9673ca7b65291593c2aefa968c391438af7fab1b"
+    },
+    {
+      "wf": "gate",
+      "run": 32240608652,
+      "job": "lint (tick-shard relative-paths)",
+      "at": "2026-08-19T10:01:32Z",
+      "sha": "9673ca7b65291593c2aefa968c391438af7fab1b"
+    },
+    {
+      "wf": "gate",
+      "run": 32240608652,
+      "job": "lint (semgrep drift)",
+      "at": "2026-08-19T10:01:32Z",
+      "sha": "9673ca7b65291593c2aefa968c391438af7fab1b"
+    },
+    {
+      "wf": "gate",
+      "run": 32240608652,
+      "job": "lint (tick-history order)",
+      "at": "2026-08-19T10:01:32Z",
+      "sha": "9673ca7b65291593c2aefa968c391438af7fab1b"
+    },
+    {
+      "wf": "gate",
+      "run": 32197043727,
+      "job": "lint (yaml/k8s)",
+      "at": "2026-08-18T23:24:34Z",
+      "sha": "e93bf4d212cdfd03a0c86bc7babf377acef242ee"
+    },
+    {
+      "wf": "gate",
+      "run": 32197043727,
+      "job": "test (TS hermetic)",
+      "at": "2026-08-18T23:24:34Z",
+      "sha": "e93bf4d212cdfd03a0c86bc7babf377acef242ee"
+    },
+    {
+      "wf": "gate",
+      "run": 32197043727,
+      "job": "lint (bash retirement inventory + hygiene unit tests)",
+      "at": "2026-08-18T23:24:34Z",
+      "sha": "e93bf4d212cdfd03a0c86bc7babf377acef242ee"
+    },
+    {
+      "wf": "gate",
+      "run": 32190826726,
+      "job": "lint (bash retirement inventory + hygiene unit tests)",
+      "at": "2026-08-18T22:02:47Z",
+      "sha": "bce381fa2fb620d4cb613e8ba674e8f2515bda39"
+    },
+    {
+      "wf": "gate",
+      "run": 32190826726,
+      "job": "test (TS hermetic)",
+      "at": "2026-08-18T22:02:47Z",
+      "sha": "bce381fa2fb620d4cb613e8ba674e8f2515bda39"
+    },
+    {
+      "wf": "gate",
+      "run": 32190327254,
+      "job": "test (TS hermetic)",
+      "at": "2026-08-18T21:56:45Z",
+      "sha": "f484dacbb3bd592c9e71a40c4c2a57e4b4e7f1d3"
+    },
+    {
+      "wf": "gate",
+      "run": 32190327254,
+      "job": "lint (bash retirement inventory + hygiene unit tests)",
+      "at": "2026-08-18T21:56:45Z",
+      "sha": "f484dacbb3bd592c9e71a40c4c2a57e4b4e7f1d3"
+    },
+    {
+      "wf": "gate",
+      "run": 32189173555,
+      "job": "test (TS hermetic)",
+      "at": "2026-08-18T21:43:11Z",
+      "sha": "fcc79da6d0b6b3307fd88da4df7bf27badfb2d71"
+    },
+    {
+      "wf": "gate",
+      "run": 32189173555,
+      "job": "lint (bash retirement inventory + hygiene unit tests)",
+      "at": "2026-08-18T21:43:11Z",
+      "sha": "fcc79da6d0b6b3307fd88da4df7bf27badfb2d71"
+    },
+    {
+      "wf": "gate",
+      "run": 32187893578,
+      "job": "lint (bash retirement inventory + hygiene unit tests)",
+      "at": "2026-08-18T21:28:26Z",
+      "sha": "0a4f90f0b8bbed3c83a0b4a1504b9306f0c83a6c"
+    },
+    {
+      "wf": "gate",
+      "run": 32187893578,
+      "job": "test (TS hermetic)",
+      "at": "2026-08-18T21:28:26Z",
+      "sha": "0a4f90f0b8bbed3c83a0b4a1504b9306f0c83a6c"
+    }
+  ]
+}

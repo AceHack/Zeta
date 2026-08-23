@@ -262,5 +262,30 @@ jobs:
               echo "tick bookkeeping lost a push race — next tick re-records (idempotent)"
               exit 0
             fi
-            git push || echo "push race — next tick re-records (idempotent)"
+            # A PUSH RACE AND A RULE REJECTION ARE NOT THE SAME EVENT, and until
+            # 2026-08-23 this line called both of them a race. They differ in the only
+            # way that matters: a race is TRANSIENT and the next tick genuinely does
+            # re-record it; a ruleset rejection is PERMANENT and the next tick fails the
+            # same way forever. Measured — since 2026-08-13 every push here has been
+            # rejected with `GH013 ... Required status check "gate (required)" is
+            # expected` (telemetry lanes no longer push straight to main), and 1,597
+            # `drift-sweep` runs concluded SUCCESS while `docs/drift-events/` stayed
+            # frozen at tick 000247 and `data/platform-drift.json` at run 32232815018.
+            # The sweep computed the correct fold every few minutes and then threw it
+            # away, from behind a green check. That is the exact shape of the defect
+            # this whole surface exists to detect, committed in the detector itself.
+            #
+            # STILL NON-FATAL, deliberately: this is telemetry bookkeeping and a red run
+            # here would be noise, per the note above. What changes is that a permanent
+            # rejection is now LOUD — an `::error::` annotation on the run page naming
+            # the cause and the route — instead of being misfiled as weather.
+            if git push 2>/tmp/push-err; then
+              echo "tick bookkeeping pushed."
+            elif grep -qE 'GH013|repository rule violations|protected branch' /tmp/push-err; then
+              cat /tmp/push-err
+              echo "::error title=drift ledger is not landing::drift-sweep's push to main was REJECTED BY A REPOSITORY RULE, not lost to a race. This is permanent: every tick will recompute the ledger and discard it until the bookkeeping is routed the way the other telemetry lanes are (park on a \`heartbeat/*\` ref, flush via PR). Until then docs/drift-events/ and data/platform-drift.json are FROZEN and every dashboard reading them is showing stale numbers. This annotation is loud on purpose and blocks nothing."
+            else
+              cat /tmp/push-err
+              echo "::warning title=drift ledger push failed::push race — next tick re-records (idempotent)"
+            fi
           fi
