@@ -1,0 +1,14 @@
+{
+  "id": "080d0174f8c3e010a013000869e9cb34",
+  "at": "2026-08-23T12:36:13.564Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M0Q9Y63V087G0R0007RX4E8",
+    "type": "task",
+    "title": "Lean toolchain pinned to v4.30.0-rc1 (a release candidate): move to a stable tag with lake build + axiom audit as evidence",
+    "slug": "lean-toolchain-pinned-to-v4-30-0-rc1-a-release-candidate-mov",
+    "priority": "P2",
+    "filename": "081M0Q9Y63V087G0R0007RX4E8-lean-toolchain-pinned-to-v4-30-0-rc1-a-release-candidate-mov.md"
+  }
+}

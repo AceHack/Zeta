@@ -1,0 +1,14 @@
+{
+  "id": "080d0174f8c83810a01300086f2856f9",
+  "at": "2026-08-23T12:36:13.703Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M0Q9Y686087G0R000QK0H1R",
+    "type": "task",
+    "title": "Dependabot covers only nuget and github-actions: npm, cargo, gomod and pip manifests have no automated currency at all",
+    "slug": "dependabot-covers-only-nuget-and-github-actions-npm-cargo-go",
+    "priority": "P1",
+    "filename": "081M0Q9Y686087G0R000QK0H1R-dependabot-covers-only-nuget-and-github-actions-npm-cargo-go.md"
+  }
+}

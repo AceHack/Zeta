@@ -1,0 +1,14 @@
+{
+  "id": "080d0174f8cab810a01300082b032b9b",
+  "at": "2026-08-23T12:36:13.783Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M0Q9Y6AP087G0R002BV88T7",
+    "type": "task",
+    "title": "Tech radar: bun + TypeScript sits at Trial while the same document names TypeScript an essential center primitive",
+    "slug": "tech-radar-bun-typescript-sits-at-trial-while-the-same-docum",
+    "priority": "P2",
+    "filename": "081M0Q9Y6AP087G0R002BV88T7-tech-radar-bun-typescript-sits-at-trial-while-the-same-docum.md"
+  }
+}

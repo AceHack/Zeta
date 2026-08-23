@@ -1,0 +1,14 @@
+{
+  "id": "080d0176c6f7c810a0130008d006d7fe",
+  "at": "2026-08-23T13:39:19.929Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M0QDHQQQ087G0R002JE1JMA",
+    "type": "bug",
+    "title": "lint (TS) prints 'TypeScript, Prettier, and style checks passed' while running only tsc: eslint, prettier and stylelint are invoked by no CI lane",
+    "slug": "lint-ts-prints-typescript-prettier-and-style-checks-passed-w",
+    "priority": "P1",
+    "filename": "081M0QDHQQQ087G0R002JE1JMA-lint-ts-prints-typescript-prettier-and-style-checks-passed-w.md"
+  }
+}

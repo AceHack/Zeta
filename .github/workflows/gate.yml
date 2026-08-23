@@ -2023,6 +2023,42 @@ jobs:
       - name: Concept registry vs published page (docs/CONCEPT-REGISTRY.md)
         run: bun src/Core.TypeScript/hygiene/audit-concept-registry-drift.ts
 
+      # docs/TECH-RADAR.md is 100+ rows of PROSE asserting facts about this repo, and prose
+      # rots silently -- which is the whole reason it drifted. Soraya found two on 2026-08-22
+      # and both were the same defect: a row asserted something, the repo moved, nothing could
+      # notice. `fast-check` was pinned and imported by five test files with NO ROW AT ALL, so
+      # the only property-testing row ("FsCheck 3 | Adopt") -- which is .NET -- silently stood
+      # in for a TypeScript tool at a different maturity. And two rows cited paths that had
+      # moved (tools/alloy/alloy.jar, tools/invariant-substrates/tally.ts).
+      #
+      # Two mechanically-decidable subclasses, both derived rather than hand-listed:
+      #   A. every backticked repo path the radar cites must exist (`(planned)` opts a
+      #      proposed artifact out);
+      #   B. every root package.json devDependency statically imported by a tracked
+      #      *.test.ts must be named in the radar. devDependencies is the MANIFEST's own
+      #      declaration of "tooling not product"; "imported by a test" is the proxy for
+      #      "part of how we verify". Runtime `dependencies` are deliberately out of scope --
+      #      the radar is an evaluation register, not an SBOM, and a check that demanded a row
+      #      for `pg` is one somebody disables.
+      #
+      # HERE on the cross-verify floor because it is offline (~1s, no sockets, reads only
+      # committed files) and because the radar is edited by every lane -- a path-filtered
+      # workflow would miss the PR that moves the file a row cites. Went red on main when
+      # written -- 7 findings: 4 dead paths (specs/Spine.als, tools/alloy/alloy.jar,
+      # docs/research/scratch-zeta-parity.md, tools/invariant-substrates/tally.ts) and 3
+      # unringed devDependencies (fast-check, quantum-circuit, semver). Green after the
+      # corrections, so no baseline file exists (AUDIT-LIFECYCLE.md's cleanup-to-zero path
+      # -- the surface is a mutable markdown doc, so the residue was editable).
+      #
+      # STATED LIMIT: neither check can tell you a RING is wrong. TLA+ sat at Adopt with a
+      # dark lane for seven weeks and this audit would have stayed green throughout. Lane
+      # liveness is a different measurement.
+      - name: Tech radar claims the repo can still support (paths resolve, in-use tools ringed)
+        run: bun src/Core.TypeScript/hygiene/audit-tech-radar-claims.ts
+
+      - name: Tech-radar audit unit tests (a check that cannot fail is not a check)
+        run: bun test src/Core.TypeScript/hygiene/audit-tech-radar-claims.test.ts
+
       # A filesystem EXISTENCE test whose result gates a later operation on the same
       # path. Check-then-use; TOCTOU; CWE-367. THREE instances landed on 2026-08-20, in
       # one day, from three INDEPENDENT agents, all in code that had already been

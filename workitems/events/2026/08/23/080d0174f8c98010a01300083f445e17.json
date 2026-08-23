@@ -1,0 +1,14 @@
+{
+  "id": "080d0174f8c98010a01300083f445e17",
+  "at": "2026-08-23T12:36:13.744Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M0Q9Y69F087G0R000FBK4JA",
+    "type": "bug",
+    "title": "fast-check property tests in five TypeScript directories are executed by no CI lane",
+    "slug": "fast-check-property-tests-in-five-typescript-directories-are",
+    "priority": "P2",
+    "filename": "081M0Q9Y69F087G0R000FBK4JA-fast-check-property-tests-in-five-typescript-directories-are.md"
+  }
+}

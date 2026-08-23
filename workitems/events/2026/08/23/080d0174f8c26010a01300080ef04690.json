@@ -1,0 +1,14 @@
+{
+  "id": "080d0174f8c26010a01300080ef04690",
+  "at": "2026-08-23T12:36:13.516Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M0Q9Y62A087G0R003FZ6TM7",
+    "type": "bug",
+    "title": "tlaps-proof lane dark since 2026-07-01: 60-minute timeout inside the opam tlapm build, and --check-toolchain passes while tlapm exits 127",
+    "slug": "tlaps-proof-lane-dark-since-2026-07-01-60-minute-timeout-ins",
+    "priority": "P1",
+    "filename": "081M0Q9Y62A087G0R003FZ6TM7-tlaps-proof-lane-dark-since-2026-07-01-60-minute-timeout-ins.md"
+  }
+}

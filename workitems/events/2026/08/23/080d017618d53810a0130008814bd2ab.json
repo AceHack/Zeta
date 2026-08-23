@@ -1,0 +1,14 @@
+{
+  "id": "080d017618d53810a0130008814bd2ab",
+  "at": "2026-08-23T13:15:33.415Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M0QC66N5087G0R003R3ARYH",
+    "type": "bug",
+    "title": "main is red: lint (TS) fails on src/apps/twitch-ai/src/swarm.worker.ts TS2345 since #14159, blocking gate (required) for every PR",
+    "slug": "main-is-red-lint-ts-fails-on-src-apps-twitch-ai-src-swarm-wo",
+    "priority": "P0",
+    "filename": "081M0QC66N5087G0R003R3ARYH-main-is-red-lint-ts-fails-on-src-apps-twitch-ai-src-swarm-wo.md"
+  }
+}

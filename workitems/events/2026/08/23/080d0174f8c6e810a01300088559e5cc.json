@@ -1,0 +1,14 @@
+{
+  "id": "080d0174f8c6e810a01300088559e5cc",
+  "at": "2026-08-23T12:36:13.661Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M0Q9Y66W087G0R003115PN3",
+    "type": "task",
+    "title": "mise toolchain currency: rust 1.87.0 is 11 releases behind 1.98.0, plus zig/uv/go/golangci-lint/semgrep/ruff/mypy drift",
+    "slug": "mise-toolchain-currency-rust-1-87-0-is-11-releases-behind-1",
+    "priority": "P2",
+    "filename": "081M0Q9Y66W087G0R003115PN3-mise-toolchain-currency-rust-1-87-0-is-11-releases-behind-1.md"
+  }
+}
