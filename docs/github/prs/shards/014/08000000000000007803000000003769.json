@@ -1,0 +1,12 @@
+{
+  "pr_number": 14185,
+  "archive_path": "docs/history/pr-reviews/PR-14185-fix-twitch-ai-the-worker-announced-a-remote-llm-endpoint-it-cannot-reach.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-23T13:40:11.434Z",
+  "schema_version": "v1",
+  "commit_sha": "324da722dbe2004dd3a33488818b462eb3b94c8b",
+  "title": "fix(twitch-ai): the worker announced a remote LLM endpoint it cannot reach",
+  "state": "MERGED",
+  "merged_at": "2026-08-23T13:39:35Z",
+  "head_ref": "fix/unblock-main-gate"
+}
