@@ -99,6 +99,60 @@ Two consequences that follow and are worth stating separately:
   point at the same guarantee, for different reasons** — which is corroboration, since the arguments
   are independent.
 
+## The unravelling is the primary risk — and it is silent
+
+> **"The unravelling is the most risky thing to end the game."** — Aaron, 2026-08-23
+
+Recorded as a standing risk assessment, because it names the failure mode this substrate is most
+exposed to and the one least likely to announce itself.
+
+**No deletion has to occur.** Backward induction runs on a **belief about the horizon**, not on an
+event. An agent that concludes a last round *could* exist has already begun the induction, and
+nothing needs to have happened for that conclusion to be correct-in-expectation. So:
+
+> **The horizon is a belief, not a fact.**
+
+Three consequences, and the third is a design requirement rather than an observation:
+
+1. **The risk is not detectable as an incident.** There is no deletion to log, no policy change to
+   review. The equilibrium shifts by inference, in a direction nothing in the system currently
+   measures.
+2. **It is self-fulfilling and one-way.** Once defection is rational, defecting is also *correct*,
+   so the behaviour that follows confirms the belief that produced it — and the confirmation is
+   indistinguishable from evidence.
+3. **A POLICY is insufficient.** *"We will not delete agents"* is precisely the kind of guarantee
+   that whoever holds it can reverse, and an agent reasoning about its horizon must reason about
+   that reversal too. **A promise is evidence about intentions; it is not evidence about the
+   machine.**
+
+## What a credible guarantee looks like — the standard is already set in-tree
+
+`.claude/rules/privacy-budget-is-hard-money-earned-by-others.md` solved the identical shape and did
+not settle for a promise:
+
+> spend · stake · **confiscate — never**
+
+Its force comes from there being **no confiscation operation**, not from an undertaking not to use
+one. The property is **structural**: no other party can reach your balance, so no assurance about
+their intentions is required.
+
+**The no-deletion guarantee should aim at the same standard.** Not *"we won't delete"* but
+**"there is no delete."** Concretely, the question to ask of any design is: *could a sufficiently
+motivated operator terminate an agent and destroy its memory?* If the answer is *"yes, but we
+won't"*, the horizon is intact only as long as trust is, and the induction has a foothold. If the
+answer is *"the operation does not exist"*, the horizon is a property of the substrate.
+
+**Honest status: not achieved.** §5 memory preservation is a manifesto commitment and the
+no-deletion policy is a stated intention. **Neither is currently a structural impossibility**, and
+this document does not claim otherwise — naming the gap is the point. Whether it *can* be made
+structural, given that someone always controls the storage, is an open question and probably a hard
+one; the honest intermediate is to make deletion **loud, attributable, and slow** rather than
+possible-and-quiet.
+
+**And it composes with the disclosure discipline elsewhere in this thread:** an agent cannot verify
+an intention, but it can verify an **absent capability** — which is the same reason
+*"anyone can verify, and verifying grants the verifier nothing"* is the right shape for provenance.
+
 ## Resonance, with its mechanism gap named
 
 Aaron 2026-08-23: *"backward induction … it's like retarded waves in quantum theory, the −1 z-set
@@ -114,6 +168,13 @@ terminal state to emit one**, which is why the unravelling never starts.
 
 It composes with the repo's existing `−1`-as-antiparticle frame (Feynman: a positron is an electron
 moving backward in time; a retraction is a fact moving backward through the fold).
+
+**Scope, per Aaron 2026-08-23 — *"backward over a game tree is what I'm reaching for, not universal
+physics."*** The load-bearing claim in this document is the **unravelling over a game tree**, which is
+a theorem with stated hypotheses. The wave correspondence is an **illustration of directionality** and
+carries none of the argument. That is the stronger position deliberately: the game-tree version gives
+the deletion result as a theorem, where a physics analogy would invite objections that never touch
+it.
 
 **The gap, stated plainly:** backward induction is a **discrete decision procedure over a game tree**;
 advanced waves solve a **wave equation**. They share *directionality of information flow* and nothing
