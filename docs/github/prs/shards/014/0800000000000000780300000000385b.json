@@ -1,0 +1,12 @@
+{
+  "pr_number": 14427,
+  "archive_path": "docs/history/pr-reviews/PR-14427-docs-design-verified-prior-provenance-the-committed-bnn-priors-do-not-reproduce-.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-23T20:57:36.968Z",
+  "schema_version": "v1",
+  "commit_sha": "5166929cc0670383e1c6e6f26843f6714c2e6c80",
+  "title": "docs(design): verified prior provenance — the committed BNN priors do not reproduce, measured",
+  "state": "MERGED",
+  "merged_at": "2026-08-23T20:56:49Z",
+  "head_ref": "docs/verified-prior-provenance"
+}
