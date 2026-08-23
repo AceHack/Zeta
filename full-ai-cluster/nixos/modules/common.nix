@@ -354,18 +354,69 @@
 
   # iter-5.5.0 (B-0848 Phase 2, operator 2026-05-27 ALIGNMENT catch):
   # PATH setup for both mise-managed runtimes AND bun's --global prefix.
-  # mise puts shims at ~/.local/share/mise/shims/ (which mise activation
-  # auto-prepends), AND bun's `bun install --global` lands binaries at
-  # ~/.bun/bin/ (where claude-code ends up). Both need to be on PATH.
+  # mise puts shims at ~/.local/share/mise/shims/ (which activation does
+  # NOT auto-prepend without `--shims` — corrected 2026-08-23, see the
+  # profile.d note below), AND bun's `bun install --global` lands binaries
+  # at ~/.bun/bin/ (where claude-code ends up). Both need to be on PATH.
   environment.sessionVariables = {
     BUN_INSTALL = "$HOME/.bun";
   };
 
   # /etc/profile.d/ snippet: mise activation + bun global bin.
-  # mise activate writes shims to ~/.local/share/mise/shims/ and adds
-  # them to PATH automatically; bun --global writes binaries to
-  # ~/.bun/bin/ which we add explicitly. $HOME expansion happens at
-  # shell-init time when this file sources.
+  # bun --global writes binaries to ~/.bun/bin/ which we add explicitly.
+  # $HOME expansion happens at shell-init time when this file sources.
+  #
+  # CORRECTION 2026-08-23 (measured, Aaron's `op` report). The comment here
+  # and above used to claim "mise activate writes shims to
+  # ~/.local/share/mise/shims/ and adds them to PATH automatically". That is
+  # FALSE for `mise activate` WITHOUT `--shims`: it rewrites PATH per
+  # directory from the nearest .mise.toml and never puts the shims dir on
+  # PATH. Measured in a login shell: the shims dir appeared 0 times in PATH.
+  #
+  # The consequence was Aaron's live report — from `~` on a host, `op` was
+  # "command not found", while inside the checkout it resolved to the pinned
+  # 2.34.1. On a DEVELOPER WORKSTATION that is correct and deliberate (the
+  # pin travels with the project, exactly like a local `dotnet tool` manifest
+  # or node_modules/.bin — Aaron: "it's like local scoped dotnet or npm …
+  # that works great we don't need to global"). tools/setup/common/shellenv.sh
+  # is therefore UNCHANGED.
+  #
+  # A CLUSTER NODE IS THE OTHER HOST CLASS, and here it is a real gap. A node
+  # bootstrapping shared secrets is not sitting in the checkout — it is a
+  # login shell in $HOME or a systemd unit — so project-scoped resolution has
+  # nothing to scope to. Aaron 2026-08-22: "for the linux real hardware we
+  # might need it global for op". The rest of this module already works around
+  # it by hardcoding the shims dir into unit PATHs (zeta-ai-agent.nix,
+  # zeta-creds-restore.nix, zeta-first-session.nix, zeta-install.sh — 11 call
+  # sites); this snippet was the one place still relying on the false belief.
+  #
+  # BOTH lines below are required, and shims alone is NOT enough — measured:
+  #   shims on PATH only          -> `op` runs and FAILS:
+  #                                  "mise ERROR No version is set for shim: op"
+  #   shims + MISE_GLOBAL_CONFIG_FILE -> `op --version` => 2.34.1
+  # The shim dispatches back to mise, and outside a project mise has no config
+  # declaring the tool. Pointing mise's GLOBAL config at the node's own Zeta
+  # checkout supplies one WITHOUT duplicating the pin: the version still comes
+  # from .mise.toml:114 ("1password-cli" = "2.34.1"), the single source of
+  # truth. The rejected alternative is `mise use -g` (or a nixpkgs
+  # `_1password-cli`), either of which forks the version and drifts — the
+  # exact mistake Aaron already caught on this file for bun ("we already do
+  # this we've drifted for nixos for some reason for bun", see the `mise`
+  # entry in systemPackages above).
+  #
+  # Shims are APPENDED, not prepended, so inside the checkout `mise activate`'s
+  # direct install paths still win and keep the fast path (measured 100 x
+  # `op --version`: direct 1.47s vs shim 5.98s, ~4x).
+  #
+  # INTERIM, AND DELIBERATELY LABELLED AS SUCH. This exists because 1Password
+  # is currently how shared secrets reach a node — Aaron: "not sure if that's
+  # how we are going to share shared secrets until we have a decentralized way
+  # of doing it". A node that must route through one vendor to boot has no
+  # exit, which is an APPOINTED HUB under manifesto §1 and
+  # .claude/rules/itron-hub-patent-boundary-p2p-is-the-upgrade.md. The
+  # decentralized replacement is `proposed` only and is NOT designed here; it
+  # belongs to the decentralized-identity-server lane. Tracked:
+  # workitems/081M0QS0ET7087G0R000YBRKNT-*.md (081M0QS0ET7087G0R000YBRKNT)
   environment.etc."profile.d/zeta-user-paths.sh".text = ''
     # iter-5.5.0 (B-0848): mise + bun PATH setup for the zeta user.
     # mise activate sets up shims for all .mise.toml runtimes (bun,
@@ -384,6 +435,17 @@
         (cd "$_zeta_repo" && mise trust --all --yes >/dev/null 2>&1; MISE_ENV=full mise install --yes) >/dev/null 2>&1 || true
       fi
       eval "$(mise activate bash)"
+      # Node-only global resolution (see the CORRECTION note above). Both
+      # lines are load-bearing; neither works alone.
+      if [ -n "$_zeta_repo" ]; then
+        export MISE_GLOBAL_CONFIG_FILE="$_zeta_repo/.mise.toml"
+      fi
+      if [ -d "$HOME/.local/share/mise/shims" ]; then
+        case ":$PATH:" in
+          *":$HOME/.local/share/mise/shims:"*) ;;
+          *) export PATH="$PATH:$HOME/.local/share/mise/shims" ;;
+        esac
+      fi
     fi
     # bun's `bun install --global` writes manifest-driven agent CLI
     # binaries here (claude/codex/gemini today).

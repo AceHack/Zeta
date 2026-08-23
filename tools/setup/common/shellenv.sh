@@ -94,6 +94,32 @@ mkdir -p "$ZETA_ENV_DIR"
   # Ubuntu + macOS matrix. If CI surfaces a step that needs
   # shims, flip back to `mise activate bash --shims` and file
   # a DEBT entry explaining which step failed and why.
+  #
+  # PROJECT-SCOPED RESOLUTION IS INTENTIONAL HERE — NOT A GAP TO CLOSE
+  # (Aaron 2026-08-22). `mise activate` without `--shims` rewrites PATH per
+  # directory from the nearest .mise.toml, so a tool pinned there resolves
+  # INSIDE the repo and deliberately does NOT resolve from `~`. Aaron, shown
+  # that `op` was "command not found" from his home directory: *"it's like
+  # local scoped dotnet or npm or other similar tools, that works great we
+  # don't need to global … i see op when i'm in zeta"*. That is the same
+  # contract as a local `dotnet tool` manifest or node_modules/.bin — the
+  # pinned version travels with the project — and this file is the
+  # DEVELOPER WORKSTATION surface, where a checkout is always present. The
+  # `--shims` escape hatch above is for a CI STEP that needs shims, never
+  # for global reach on a workstation.
+  # Measured 2026-08-22 (100 × `op --version`, Aaron's Mac): direct 1.47s vs
+  # shim 5.98s — ~4x, same direction as the ~10x the docs claim.
+  #
+  # THE OTHER HOST CLASS IS DIFFERENT, so do not generalise this comment. On
+  # LINUX CLUSTER HARDWARE there is no checkout to scope to — a node
+  # bootstrapping shared secrets is a login shell in $HOME or a systemd
+  # unit — and Aaron 2026-08-22: *"for the linux real hardware we might need
+  # it global for op"*. That case is handled in
+  # full-ai-cluster/nixos/modules/common.nix (shims on PATH +
+  # MISE_GLOBAL_CONFIG_FILE pointed at the node's own checkout, so the pin
+  # is still .mise.toml's). Two host classes, two correct answers; the
+  # falsifier that keeps them apart is
+  # full-ai-cluster/nixos/modules/mise-node-path-wiring.test.ts.
   echo "export MISE_PYTHON_GITHUB_ATTESTATIONS=\"\${MISE_PYTHON_GITHUB_ATTESTATIONS:-0}\""
   if command -v mise >/dev/null 2>&1; then
     echo "if [ -n \"\${ZSH_VERSION:-}\" ]; then"

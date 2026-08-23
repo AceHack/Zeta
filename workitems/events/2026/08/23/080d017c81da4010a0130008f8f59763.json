@@ -1,0 +1,14 @@
+{
+  "id": "080d017c81da4010a0130008f8f59763",
+  "at": "2026-08-23T16:59:36.648Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M0QS0ET7087G0R000YBRKNT",
+    "type": "task",
+    "title": "op on a cluster node is an interim appointed hub for shared secrets",
+    "slug": "op-on-a-cluster-node-is-an-interim-appointed-hub-for-shared",
+    "priority": "P2",
+    "filename": "081M0QS0ET7087G0R000YBRKNT-op-on-a-cluster-node-is-an-interim-appointed-hub-for-shared.md"
+  }
+}
