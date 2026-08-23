@@ -1,0 +1,14 @@
+{
+  "id": "080d0185f5e6a010a0130008e2ebb3e6",
+  "at": "2026-08-23T22:30:01.684Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M0RBXF6J087G0R0023EX9X2",
+    "type": "bug",
+    "title": "eslint, prettier and stylelint are configured, pinned and named in CI but never invoked",
+    "slug": "eslint-prettier-and-stylelint-are-configured-pinned-and-name",
+    "priority": "P2",
+    "filename": "081M0RBXF6J087G0R0023EX9X2-eslint-prettier-and-stylelint-are-configured-pinned-and-name.md"
+  }
+}
