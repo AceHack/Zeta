@@ -119,6 +119,9 @@ function createFileImagePort(initial: ZetaDbImageRecord | null): {
   let pending: ZetaDbImageRecord | null = null;
   let closed = false;
   const port: ZetaDbImagePort = {
+    // Successor-only: the first checkpoint must be revision 1 and each save must follow
+    // the stored revision by exactly one (see `save` below).
+    revisionDiscipline: "compare-and-swap",
     load: (nodeId) => {
       if (closed) return Promise.resolve(failed("database-read-failed", "The scheduled database port is closed."));
       if (current !== null && current.nodeId !== nodeId) {

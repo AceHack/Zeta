@@ -63,6 +63,53 @@ describe("ZetaDB content-addressed storage port", () => {
     expect(await primary.read(record.key)).toMatchObject({ ok: true, value: { payload: "fallback content" } });
   });
 
+  // ── 081KZM0FTJM-adjacent · defect 1 · a write that never landed must not report success ──────
+  //
+  // Witnessed on 518499177: with `maxEntries: 2`, the kernel returned the correct
+  // typed backpressure — `ok: true, admission: "backpressured", accepted: 0` with
+  // `database-capacity-exhausted` — and the adapter collapsed it to
+  // `{ ok: true, value: "<key of k3>" }` while the durable image held only k1 and k2.
+  // A content-addressed write returned the address of a record nothing stored.
+  test("refuses a write the admission budget could not admit", async () => {
+    const opened = createZetaDbStoragePort({
+      imagePort: createInMemoryZetaDbImagePort(),
+      databaseNodeId: "browser/global/storage",
+      executorId: "tab-a/storage",
+      limits: { maxDeltas: 8, maxEntries: 2, maxCheckpointBytes: 32 * 1024 },
+      convergencePolicy: { maxAttempts: 3 },
+    });
+    expect(opened.ok).toBe(true);
+    if (!opened.ok) return;
+    const port = opened.value;
+
+    const first = makeStorageRecord("k1");
+    const second = makeStorageRecord("k2");
+    const third = makeStorageRecord("k3");
+    expect((await port.write(first)).ok).toBe(true);
+    expect((await port.write(second)).ok).toBe(true);
+
+    const refused = await port.write(third);
+    expect(refused.ok).toBe(false);
+    if (!refused.ok) {
+      expect(refused.severity).toBe("backpressure");
+      expect(refused.reason).toContain("database-capacity-exhausted");
+    }
+    // The refusal must agree with the store: the record really is not there.
+    expect(await port.read(third.key)).toEqual({ ok: true, value: null });
+    expect(await port.list()).toEqual({ ok: true, value: [first.key, second.key] });
+  });
+
+  // The other half of the same fix: "nothing was accepted" is NOT "nothing could be
+  // accepted". Re-writing a stored record is a duplicate, and content-addressed writes
+  // are idempotent (§12) — a naive `accepted === 0` guard would break this.
+  test("keeps an idempotent re-write successful even though it admits no delta", async () => {
+    const port = open();
+    const record = makeStorageRecord("written once");
+    expect(await port.write(record)).toEqual({ ok: true, value: record.key });
+    expect(await port.write(record)).toEqual({ ok: true, value: record.key });
+    expect(await port.list()).toEqual({ ok: true, value: [record.key] });
+  });
+
   test("rejects records whose address does not match their payload", async () => {
     const port = open();
     const record = makeStorageRecord("original");

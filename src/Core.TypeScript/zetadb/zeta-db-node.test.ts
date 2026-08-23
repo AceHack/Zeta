@@ -270,6 +270,8 @@ describe("event-driven ZetaDB node", () => {
     let loads = 0;
     let revisionConflicts = 0;
     const port: ZetaDbImagePort = {
+      // Inherited, not asserted: this fake only instruments the durable port it wraps.
+      revisionDiscipline: durable.revisionDiscipline,
       load: async (nodeId) => {
         const snapshot = await durable.load(nodeId);
         loads += 1;
@@ -326,6 +328,7 @@ describe("event-driven ZetaDB node", () => {
     let loads = 0;
     let saves = 0;
     const alwaysConflicted: ZetaDbImagePort = {
+      revisionDiscipline: "compare-and-swap",
       load: () => {
         loads += 1;
         return Promise.resolve({ ok: true, value: null });

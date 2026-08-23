@@ -1,0 +1,14 @@
+{
+  "id": "080d01746bc27810a0130008cff4e719",
+  "at": "2026-08-23T12:16:58.447Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M0Q8TY2E087G0R002ES9VW5",
+    "type": "bug",
+    "title": "ZetaDB row-conflict verdict depends on batch order at tick boundaries and is never retried",
+    "slug": "zetadb-row-conflict-verdict-depends-on-batch-order-at-tick-b",
+    "priority": "P2",
+    "filename": "081M0Q8TY2E087G0R002ES9VW5-zetadb-row-conflict-verdict-depends-on-batch-order-at-tick-b.md"
+  }
+}

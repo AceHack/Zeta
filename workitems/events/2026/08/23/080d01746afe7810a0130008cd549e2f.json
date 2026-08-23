@@ -1,0 +1,14 @@
+{
+  "id": "080d01746afe7810a0130008cd549e2f",
+  "at": "2026-08-23T12:16:52.175Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M0Q8TQYE087G0R001WBX1ZC",
+    "type": "task",
+    "title": "Decide the revision discipline for the browser-backed ZetaDbImagePort (monotone LWW vs compare-and-swap)",
+    "slug": "decide-the-revision-discipline-for-the-browser-backed-zetadb",
+    "priority": "P1",
+    "filename": "081M0Q8TQYE087G0R001WBX1ZC-decide-the-revision-discipline-for-the-browser-backed-zetadb.md"
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "id": "080d0175dc5f0810a01300082aaca529",
+  "at": "2026-08-23T13:07:18.113Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M0QBQ2YZ087G0R001S8XJ7S",
+    "type": "bug",
+    "title": "main is red: lint (TS) fails on src/apps/twitch-ai/src/swarm.worker.ts since the post-revert restore",
+    "slug": "main-is-red-lint-ts-fails-on-src-apps-twitch-ai-src-swarm-wo",
+    "priority": "P1",
+    "filename": "081M0QBQ2YZ087G0R001S8XJ7S-main-is-red-lint-ts-fails-on-src-apps-twitch-ai-src-swarm-wo.md"
+  }
+}

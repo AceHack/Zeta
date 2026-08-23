@@ -1,0 +1,14 @@
+{
+  "id": "080d01746bc16810a013000836f39f51",
+  "at": "2026-08-23T12:16:58.413Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M0Q8TY1B087G0R0008CYZJ3",
+    "type": "bug",
+    "title": "ZetaDB convergence fails under binding admission budgets: terminal replica divergence",
+    "slug": "zetadb-convergence-fails-under-binding-admission-budgets-ter",
+    "priority": "P1",
+    "filename": "081M0Q8TY1B087G0R0008CYZJ3-zetadb-convergence-fails-under-binding-admission-budgets-ter.md"
+  }
+}

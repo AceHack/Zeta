@@ -104,6 +104,23 @@ export function createZetaDbStoragePort(options: ZetaDbStoragePortOptions): Stor
     return scheduled;
   };
 
+  /**
+   * Run one database tick and refuse anything the kernel did not COMPLETELY admit.
+   *
+   * `requireComplete: true` is load-bearing, not decoration. Without it the kernel
+   * signals a bound admission budget the way it is designed to — `ok: true` with
+   * `admission: "backpressured"`, `accepted: 0`, and typed `database-capacity-exhausted`
+   * feedback — and this adapter used to collapse that readout with
+   * `result.ok ? succeeded(...) : ...`, reporting a write that never reached the durable
+   * image. A content-addressed `write` then returned the key of a record nothing stored,
+   * and the next `read` missed. The kernel did its job; the adapter dropped the signal.
+   *
+   * Note what this deliberately does NOT do: refuse on `accepted === 0`. A re-write of an
+   * already-stored record is a DUPLICATE — `duplicates: 1, accepted: 0`, admission
+   * "complete" — and it must keep succeeding, because a content-addressed write is
+   * idempotent by construction (§12). "Nothing was accepted" and "nothing could be
+   * accepted" are different facts; only the second is a failure.
+   */
   const tick = async (
     deltas: Parameters<typeof runConvergentZetaDbNodeTick>[1]["deltas"],
   ): Promise<StorageResult<ZetaDbTickReadout>> => {
@@ -113,12 +130,26 @@ export function createZetaDbStoragePort(options: ZetaDbStoragePortOptions): Stor
         nodeId: options.databaseNodeId,
         executorId: options.executorId,
         executorKind: "browser-tab",
+        requireComplete: true,
         deltas,
         limits: options.limits,
       },
       options.convergencePolicy,
     );
-    return result.ok ? succeeded(result.value) : mapFeedback(result.feedback);
+    if (!result.ok) return mapFeedback(result.feedback);
+    // Belt-and-braces: `requireComplete` makes a backpressured readout unreachable today,
+    // so a readout that still carries feedback means the kernel grew a signal this
+    // adapter has never seen. Refuse it rather than report success over it — dropping an
+    // unrecognized signal is the whole defect this method exists to close.
+    const carried = result.value.feedback[0];
+    if (carried !== undefined) return mapFeedback(carried);
+    if (result.value.admission !== "complete") {
+      return failed(
+        `The database tick reported admission "${result.value.admission}" without feedback; refusing to report success.`,
+        "backpressure",
+      );
+    }
+    return succeeded(result.value);
   };
 
   const port: ZetaStoragePort = {
