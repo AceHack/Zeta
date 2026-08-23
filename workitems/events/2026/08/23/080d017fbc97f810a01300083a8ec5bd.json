@@ -1,0 +1,14 @@
+{
+  "id": "080d017fbc97f810a01300083a8ec5bd",
+  "at": "2026-08-23T18:52:29.311Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M0QZF4QY087G0R000WKDYFZ",
+    "type": "bug",
+    "title": "the markdown healer manufactures an ordered list from a year at line-start and edits book prose",
+    "slug": "the-markdown-healer-manufactures-an-ordered-list-from-a-year",
+    "priority": "P2",
+    "filename": "081M0QZF4QY087G0R000WKDYFZ-the-markdown-healer-manufactures-an-ordered-list-from-a-year.md"
+  }
+}
