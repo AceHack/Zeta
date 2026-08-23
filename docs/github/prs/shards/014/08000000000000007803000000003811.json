@@ -1,0 +1,12 @@
+{
+  "pr_number": 14353,
+  "archive_path": "docs/history/pr-reviews/PR-14353-fix-installer-trust-mise-toml-by-default-so-6-95-picker-survives.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-23T18:18:24.769Z",
+  "schema_version": "v1",
+  "commit_sha": "2690c456d98624af874ccf025a9b76709e7b6f7e",
+  "title": "fix(installer): trust .mise.toml by default so 6.95-picker survives",
+  "state": "MERGED",
+  "merged_at": "2026-08-23T18:17:40Z",
+  "head_ref": "riven/mise-trust-default-and-restore-order"
+}
