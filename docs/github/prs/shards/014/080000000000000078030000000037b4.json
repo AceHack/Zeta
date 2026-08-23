@@ -1,0 +1,12 @@
+{
+  "pr_number": 14260,
+  "archive_path": "docs/history/pr-reviews/PR-14260-fix-observe-society-status-verdict-respects-dashboard-ok-otto-review.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-23T15:38:47.911Z",
+  "schema_version": "v1",
+  "commit_sha": "9b2f427c1a8961115aa4378a116aa7e27b0ab810",
+  "title": "fix(observe): society-status verdict respects dashboard.ok (Otto review)",
+  "state": "MERGED",
+  "merged_at": "2026-08-23T15:38:05Z",
+  "head_ref": "alexa/fix-status-verdict"
+}
