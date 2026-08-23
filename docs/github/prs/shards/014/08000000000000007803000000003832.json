@@ -1,0 +1,12 @@
+{
+  "pr_number": 14386,
+  "archive_path": "docs/history/pr-reviews/PR-14386-fix-search-the-index-was-about-to-index-itself-and-a-repaired-stale-answer-could.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-23T19:20:56.428Z",
+  "schema_version": "v1",
+  "commit_sha": "e991df80448eb158ab67981c4579186a62225a3b",
+  "title": "fix(search): the index was about to index itself, and a repaired stale answer could disagree with a fresh one",
+  "state": "MERGED",
+  "merged_at": "2026-08-23T19:20:11Z",
+  "head_ref": "feat/index-excludes-itself"
+}
