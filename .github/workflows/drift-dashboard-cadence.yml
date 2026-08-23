@@ -99,5 +99,23 @@ jobs:
           fi
 
       - name: Fail if dashboard is not OK
+        env:
+          PASS_STATUS: ${{ steps.pass.outputs.pass_status }}
         run: |
-          exit ${{ steps.pass.outputs.pass_status || 0 }}
+          # Interpolating a GH expression straight into `exit` is SC2242: the
+          # expansion is not guaranteed to be an integer in 0-255, and a
+          # non-numeric one makes the shell exit with a status nobody chose.
+          # Read it through the environment and REFUSE what we cannot read,
+          # rather than exiting on a value we did not verify.
+          status="${PASS_STATUS:-0}"
+          case "$status" in
+            ''|*[!0-9]*)
+              echo "::error::[dashboard] pass_status is not a number: '$status'"
+              exit 1
+              ;;
+          esac
+          if [ "$status" -gt 255 ]; then
+            echo "::error::[dashboard] pass_status out of range (0-255): $status"
+            exit 1
+          fi
+          exit "$status"
