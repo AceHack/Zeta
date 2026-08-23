@@ -1,0 +1,12 @@
+{
+  "pr_number": 14311,
+  "archive_path": "docs/history/pr-reviews/PR-14311-feat-zetadb-make-revision-policy-executable.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-23T17:31:10.685Z",
+  "schema_version": "v1",
+  "commit_sha": "6426eacfbe2ddb2529776e264364fdfebc997a30",
+  "title": "feat(zetadb): make revision policy executable",
+  "state": "MERGED",
+  "merged_at": "2026-08-23T17:30:34Z",
+  "head_ref": "claim/task-zetadb-revision-policy-port"
+}
