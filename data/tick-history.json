@@ -3,82 +3,10 @@
     "generator": "tick-metrics-writer.ts",
     "mock": false,
     "derived_from": "data/tick-shards/**/*.json",
-    "shard_count": 1340,
+    "shard_count": 1346,
     "rollup_max_frames": 1000
   },
   "frames": [
-    {
-      "agents_active": 0,
-      "claims_pending": 0,
-      "entropy_heat": 0,
-      "entropy_state": 0,
-      "last_action": "edit_grammar",
-      "last_agent": "soraya",
-      "last_mode": "work",
-      "t": "2026-08-02T16:31:53.591Z",
-      "ticks_24h": 0,
-      "total_events": 947
-    },
-    {
-      "agents_active": 0,
-      "claims_pending": 0,
-      "entropy_heat": 0,
-      "entropy_state": 0,
-      "last_action": "edit_grammar",
-      "last_agent": "soraya",
-      "last_mode": "work",
-      "t": "2026-08-02T17:44:22.112Z",
-      "ticks_24h": 0,
-      "total_events": 947
-    },
-    {
-      "agents_active": 0,
-      "claims_pending": 0,
-      "entropy_heat": 0,
-      "entropy_state": 0,
-      "last_action": "edit_grammar",
-      "last_agent": "soraya",
-      "last_mode": "work",
-      "t": "2026-08-02T18:44:05.657Z",
-      "ticks_24h": 0,
-      "total_events": 947
-    },
-    {
-      "agents_active": 0,
-      "claims_pending": 0,
-      "entropy_heat": 0,
-      "entropy_state": 0,
-      "last_action": "edit_grammar",
-      "last_agent": "soraya",
-      "last_mode": "work",
-      "t": "2026-08-02T19:58:43.679Z",
-      "ticks_24h": 0,
-      "total_events": 947
-    },
-    {
-      "agents_active": 0,
-      "claims_pending": 0,
-      "entropy_heat": 0,
-      "entropy_state": 0,
-      "last_action": "edit_grammar",
-      "last_agent": "soraya",
-      "last_mode": "work",
-      "t": "2026-08-02T22:09:36.143Z",
-      "ticks_24h": 0,
-      "total_events": 947
-    },
-    {
-      "agents_active": 0,
-      "claims_pending": 0,
-      "entropy_heat": 0,
-      "entropy_state": 0,
-      "last_action": "edit_grammar",
-      "last_agent": "soraya",
-      "last_mode": "work",
-      "t": "2026-08-02T23:11:09.868Z",
-      "ticks_24h": 0,
-      "total_events": 947
-    },
     {
       "agents_active": 0,
       "claims_pending": 0,
@@ -12006,6 +11934,78 @@
       "t": "2026-08-23T17:23:54.344Z",
       "ticks_24h": 348,
       "total_events": 4377
+    },
+    {
+      "agents_active": 3,
+      "claims_pending": 3,
+      "entropy_heat": 0,
+      "entropy_state": 0,
+      "last_action": "explore",
+      "last_agent": "otto",
+      "last_mode": "explore",
+      "t": "2026-08-23T17:37:56.783Z",
+      "ticks_24h": 342,
+      "total_events": 4377
+    },
+    {
+      "agents_active": 3,
+      "claims_pending": 3,
+      "entropy_heat": 0,
+      "entropy_state": 0,
+      "last_action": "explore",
+      "last_agent": "alexa",
+      "last_mode": "explore",
+      "t": "2026-08-23T17:51:36.403Z",
+      "ticks_24h": 345,
+      "total_events": 4386
+    },
+    {
+      "agents_active": 3,
+      "claims_pending": 3,
+      "entropy_heat": 0,
+      "entropy_state": 0,
+      "last_action": "explore",
+      "last_agent": "alexa",
+      "last_mode": "explore",
+      "t": "2026-08-23T18:05:40.032Z",
+      "ticks_24h": 337,
+      "total_events": 4386
+    },
+    {
+      "agents_active": 3,
+      "claims_pending": 3,
+      "entropy_heat": 0,
+      "entropy_state": 0,
+      "last_action": "attest_peer",
+      "last_agent": "soraya",
+      "last_mode": "work",
+      "t": "2026-08-23T18:25:01.725Z",
+      "ticks_24h": 365,
+      "total_events": 4423
+    },
+    {
+      "agents_active": 3,
+      "claims_pending": 3,
+      "entropy_heat": 0,
+      "entropy_state": 0,
+      "last_action": "attest_peer",
+      "last_agent": "otto",
+      "last_mode": "work",
+      "t": "2026-08-23T18:43:51.250Z",
+      "ticks_24h": 367,
+      "total_events": 4433
+    },
+    {
+      "agents_active": 3,
+      "claims_pending": 3,
+      "entropy_heat": 0,
+      "entropy_state": 0,
+      "last_action": "attest_peer",
+      "last_agent": "otto",
+      "last_mode": "work",
+      "t": "2026-08-23T18:58:37.480Z",
+      "ticks_24h": 363,
+      "total_events": 4433
     }
   ]
 }
