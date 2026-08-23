@@ -1,0 +1,12 @@
+{
+  "pr_number": 14387,
+  "archive_path": "docs/history/pr-reviews/PR-14387-fix-ci-measure-search-index-cadence-apt-budget.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-23T19:27:57.800Z",
+  "schema_version": "v1",
+  "commit_sha": "c828c4697d5a2e582a49c16b56cba5d59fef685b",
+  "title": "fix(ci): measure search-index cadence apt budget",
+  "state": "MERGED",
+  "merged_at": "2026-08-23T19:27:12Z",
+  "head_ref": "claim/bug-search-index-apt-timing"
+}
