@@ -1,0 +1,12 @@
+{
+  "pr_number": 14435,
+  "archive_path": "docs/history/pr-reviews/PR-14435-fix-hygiene-the-markdown-healer-stops-manufacturing-the-list-it-thought-it-saw.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-23T20:47:32.325Z",
+  "schema_version": "v1",
+  "commit_sha": "51eaaad60ae1b5d76aa86f953f0f52c9b94921c2",
+  "title": "fix(hygiene): the markdown healer stops manufacturing the list it thought it saw",
+  "state": "MERGED",
+  "merged_at": "2026-08-23T20:46:49Z",
+  "head_ref": "fix/healer-does-not-manufacture-lists"
+}
