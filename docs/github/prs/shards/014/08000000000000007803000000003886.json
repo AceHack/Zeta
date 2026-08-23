@@ -1,0 +1,12 @@
+{
+  "pr_number": 14470,
+  "archive_path": "docs/history/pr-reviews/PR-14470-docs-research-adversarial-the-widening-collapse-chain-refuted-four-ways-calm-s-h.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-23T21:35:26.344Z",
+  "schema_version": "v1",
+  "commit_sha": "3cbfaf16b86e64123badf8e167248be1985a1d7e",
+  "title": "docs(research): adversarial — the widening/collapse chain refuted four ways, CALM's hypotheses do not apply, DBSP is CmRDT",
+  "state": "MERGED",
+  "merged_at": "2026-08-23T21:34:43Z",
+  "head_ref": "docs/adversarial-never-collapse-calm"
+}
