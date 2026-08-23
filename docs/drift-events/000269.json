@@ -1,0 +1,10 @@
+{
+  "tick": 269,
+  "at": "2026-08-23T20:41:29.612Z",
+  "findings": [
+    {
+      "path": "docs/design/2026-08-23-clifford-gpu-theory-brief-geometric-root-metered-clock-and-five-questions-for-the-math-team.md",
+      "rule": "MD029"
+    }
+  ]
+}
