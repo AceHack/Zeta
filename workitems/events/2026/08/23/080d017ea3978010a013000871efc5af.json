@@ -1,0 +1,14 @@
+{
+  "id": "080d017ea3978010a013000871efc5af",
+  "at": "2026-08-23T18:14:07.344Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M0QX8WQE087G0R0003N95YX",
+    "type": "bug",
+    "title": "negative-case credential tests: prove a credential is ignored without creating one",
+    "slug": "negative-case-credential-tests-prove-a-credential-is-ignored",
+    "priority": "P2",
+    "filename": "081M0QX8WQE087G0R0003N95YX-negative-case-credential-tests-prove-a-credential-is-ignored.md"
+  }
+}

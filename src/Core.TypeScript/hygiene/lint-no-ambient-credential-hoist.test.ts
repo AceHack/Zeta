@@ -11,7 +11,17 @@
 
 import { describe, expect, test } from "bun:test";
 import { resolve } from "node:path";
-import { MIN_FILES_EXPECTED, isExecutableSurface, isScannableKind, scanRepoDetailed, scanText } from "./lint-no-ambient-credential-hoist.ts";
+import {
+  MIN_FILES_EXPECTED,
+  SELF_EXEMPT,
+  isExecutableSurface,
+  isScannableKind,
+  isTestFile,
+  processEnvAssignment,
+  scanRepoDetailed,
+  scanText,
+  teachingFor,
+} from "./lint-no-ambient-credential-hoist.ts";
 
 const F = "tools/setup/example.sh";
 
@@ -93,11 +103,56 @@ describe("rule process-env-assign-of-credential — the TypeScript form", () => 
     expect(scanText("src/a.ts", 'process.env.NODE_ENV = "test";')).toEqual([]);
   });
 
-  test("does NOT fire when only the VALUE mentions TOKEN (the key is what inherits)", () => {
-    // tools/setup/op-token-setup.test.ts: `process.env.ZETA_TEST_HOIST_PROBE = FAKE_TOKEN`
-    // is a probe that the production path does NOT read process.env. Matching the
-    // whole line would convict the falsifier for naming its dummy.
-    expect(scanText("src/a.ts", "process.env.ZETA_TEST_HOIST_PROBE = FAKE_TOKEN;")).toEqual([]);
+  test("DOES fire when only the VALUE is credential-shaped - REVERSED from #14353, on evidence", () => {
+    // Both readings are recorded here rather than one silently replacing the other.
+    //
+    // #14353 (2026-08-23 18:17Z) narrowed CREDENTIAL_NAME to the assigned KEY,
+    // reasoning "a value named FAKE_TOKEN is not a hoist", and pinned exactly this
+    // line as clean. The general principle is right. The specific line was not
+    // covered by it: `process.env.ZETA_TEST_HOIST_PROBE = FAKE_TOKEN` in
+    // tools/setup/op-token-setup.test.ts really was a hoist, and #14355 (18:20Z)
+    // confirmed that by deleting the mutation outright rather than renaming it.
+    //
+    // So the narrowing was adopted to clear a line that should have stayed red,
+    // and it left the guard evadable by a rename - the author picks the key, so a
+    // key-only test lets the subject choose whether it is inspected.
+    //
+    // MEASURED before restoring: zero occurrences of this shape in the tracked
+    // tree, so this reds nothing. If you are reading this because it reddened
+    // something, the finding is probably real; if it is not, say so here rather
+    // than narrowing the test again.
+    const f = scanText("src/a.ts", "process.env.ZETA_TEST_HOIST_PROBE = FAKE_TOKEN;");
+    expect(f.length).toBe(1);
+    expect(f[0]?.rule).toContain("process-env-assign");
+  });
+
+  test("still does NOT fire on an ordinary config write with a plain value", () => {
+    // The noise case #14353 was protecting stays protected: neither side is
+    // credential-shaped, so nothing fires.
+    expect(scanText("src/a.ts", 'process.env.NODE_ENV = "production";')).toEqual([]);
+    expect(scanText("src/a.ts", "process.env.HOME = tempHome;")).toEqual([]);
+    expect(scanText("src/a.ts", "process.env.PATH = `${bin}:${process.env.PATH ?? \"\"}`;")).toEqual([]);
+  });
+
+  test("A COMPUTED KEY IS ALWAYS REPORTED - unknown must not resolve permissive", () => {
+    // `process.env[key] = secret` walked straight past the old regex, which only
+    // accepted a dot name or a QUOTED bracket key. That is a hole shaped like
+    // coverage. No name test can clear a key that is not knowable at lint time, so
+    // the honest answer is to report it; writing the key as a literal is a free
+    // fix that also makes the crossing greppable.
+    expect(scanText("src/a.ts", "process.env[key] = secret;").length).toBe(1);
+    expect(scanText("src/a.ts", "process.env[varName] = r.secret;").length).toBe(1);
+    expect(scanText("src/a.ts", 'process.env["OP_SERVICE_ACCOUNT_TOKEN"] = t;').length).toBe(1);
+    // MEASURED 2026-08-23: zero computed-key writes in the tracked tree.
+  });
+
+  test("processEnvAssignment splits key from value and admits when the key is unknown", () => {
+    expect(processEnvAssignment("process.env.A = b;")).toEqual({ key: "A", value: "b;" });
+    expect(processEnvAssignment('process.env["A"] = b;')).toEqual({ key: "A", value: "b;" });
+    expect(processEnvAssignment("process.env[k] = b;")?.key).toBe(null);
+    expect(processEnvAssignment("const x = 1;")).toBeUndefined();
+    // A comparison is not a write.
+    expect(processEnvAssignment('if (process.env.A === "b") {')).toBeUndefined();
   });
 
   test("does NOT fire on a child-scoped env object (the permitted form)", () => {
@@ -134,6 +189,95 @@ describe("scannable kinds", () => {
   test("extensionless git hooks are scanned (an earlier survey glob missed these)", () => {
     expect(isScannableKind("githooks/pre-push")).toBe(true);
     expect(isScannableKind("scripts/hooks/commit-msg")).toBe(true);
+  });
+});
+
+describe("THE NEGATIVE-CASE CLASS - a test may not perform the act it forbids", () => {
+  // 2026-08-23: three agents in two hours independently wrote a test that proves
+  // "this code ignores ambient credentials" BY SETTING AN AMBIENT CREDENTIAL. The
+  // resolution was NOT an exemption - the claim is a function of an environment,
+  // so the environment is passed as a value (src/Core.TypeScript/secrets/env-witness.ts).
+  // These pin that the guard still refuses the real thing, in a test file, verbatim.
+
+  test("the exact line that reddened main from tools/setup/op-token-setup.test.ts", () => {
+    const f = scanText("tools/setup/op-token-setup.test.ts", "  process.env.ZETA_TEST_HOIST_PROBE = FAKE_TOKEN;");
+    expect(f.length).toBe(1);
+    expect(f[0]?.rule).toContain("process-env-assign");
+  });
+
+  test("the exact lines that reddened main from measure-lane-footprints.test.ts", () => {
+    const file = "src/Core.TypeScript/cluster/measure-lane-footprints.test.ts";
+    const live = 'process.env.GITHUB_TOKEN = "ghp_ambient_credential_that_must_not_be_used";';
+    expect(scanText(file, live).length).toBe(1);
+    // ...and the `finally` restore is a finding too. That is correct, not
+    // over-reach: the restore is itself an assignment, and a restore that fails to
+    // run leaves the credential behind.
+    expect(scanText(file, "      else process.env.GITHUB_TOKEN = saved.gh;").length).toBe(1);
+  });
+
+  test("THERE IS NO TEST EXEMPTION - the same line in a .test.ts is refused", () => {
+    // An exemption that swallowed every test file would convert this guard into a
+    // decoration, and a test file is exactly where a real hoist can hide: it runs
+    // in CI, in a process that spawns children, with a credential in scope.
+    const line = "process.env.OP_SERVICE_ACCOUNT_TOKEN = secret;";
+    expect(scanText("src/Core.TypeScript/secrets/anything.ts", line).length).toBe(1);
+    expect(scanText("src/Core.TypeScript/secrets/anything.test.ts", line).length).toBe(1);
+    expect(scanText("tools/setup/anything.spec.ts", line).length).toBe(1);
+  });
+
+  test("the sanctioned value form is NOT a finding", () => {
+    const witness = 'const hoisted = withHoistedCredential(process.env, "ZETA_TEST_HOIST_PROBE", FAKE_TOKEN);';
+    expect(scanText("tools/setup/x.test.ts", witness)).toEqual([]);
+    expect(scanText("tools/setup/x.test.ts", "const before = { ...process.env };")).toEqual([]);
+    expect(scanText("tools/setup/x.test.ts", "expect(envDigest(process.env)).toBe(envDigest(before));")).toEqual([]);
+  });
+
+  test("the self-exempt roster is ENUMERABLE and pinned - additions are a visible diff", () => {
+    // The roster is the entire exemption surface of this guard. Pinned as a list
+    // rather than a count so adding a file is a reviewable line, and so the
+    // pattern's claim ("needs no exemption") stays checkable: env-witness.ts is
+    // deliberately absent.
+    expect([...SELF_EXEMPT]).toEqual([
+      "src/Core.TypeScript/hygiene/lint-no-ambient-credential-hoist.ts",
+      "src/Core.TypeScript/hygiene/lint-no-ambient-credential-hoist.test.ts",
+      "src/Core.TypeScript/secrets/credential.ts",
+      "src/Core.TypeScript/secrets/keychain-macos.ts",
+    ]);
+    expect([...SELF_EXEMPT]).not.toContain("src/Core.TypeScript/secrets/env-witness.ts");
+  });
+});
+
+describe("the message TEACHES - an error should hand you the pattern, not a louder no", () => {
+  const inTest = [{ file: "tools/setup/x.test.ts", line: 1, rule: "process-env-assign-of-credential: x", text: "x" }];
+  const inShell = [{ file: "tools/setup/x.sh", line: 1, rule: "export-of-fetch: x", text: "x" }];
+
+  test("a finding in a test file is handed the negative-case pattern", () => {
+    const msg = teachingFor(inTest).join("\n");
+    expect(msg).toContain("secrets/env-witness.ts");
+    expect(msg).toContain("withHoistedCredential");
+    expect(msg).toContain("TESTING THAT A CREDENTIAL IS IGNORED?");
+  });
+
+  test("a finding in a shell script is NOT told it is writing a test", () => {
+    // Teaching that fires everywhere teaches nothing; a hoist in a setup script
+    // needs the point-of-use fetch, not a note about negative-case tests.
+    const msg = teachingFor(inShell).join("\n");
+    expect(msg).not.toContain("env-witness");
+    expect(msg).not.toContain("TESTING THAT A CREDENTIAL IS IGNORED?");
+    expect(msg).toContain("secrets/credential.ts");
+  });
+
+  test("every finding still gets the point-of-use pointer", () => {
+    for (const f of [inTest, inShell]) expect(teachingFor(f).join("\n")).toContain("withCredential / spawnWithCredential");
+  });
+
+  test("isTestFile recognises the kinds bun runs, and nothing else", () => {
+    expect(isTestFile("a/b.test.ts")).toBe(true);
+    expect(isTestFile("a/b.spec.ts")).toBe(true);
+    expect(isTestFile("a/b.test.js")).toBe(true);
+    expect(isTestFile("a/b.ts")).toBe(false);
+    expect(isTestFile("a/test.ts")).toBe(false);
+    expect(isTestFile("tools/setup/x.sh")).toBe(false);
   });
 });
 
