@@ -1,0 +1,12 @@
+{
+  "pr_number": 14328,
+  "archive_path": "docs/history/pr-reviews/PR-14328-fix-ci-drift-loud-reported-itself-as-drift-a-self-amplifying-latch-caught-in-its.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-23T17:56:26.054Z",
+  "schema_version": "v1",
+  "commit_sha": "bb1172304b0ac574069c2db8c1cc56e494c479d9",
+  "title": "fix(ci): drift (loud) reported ITSELF as drift — a self-amplifying latch, caught in its own live output",
+  "state": "MERGED",
+  "merged_at": "2026-08-23T17:55:51Z",
+  "head_ref": "fix/drift-loud-must-not-report-itself"
+}
