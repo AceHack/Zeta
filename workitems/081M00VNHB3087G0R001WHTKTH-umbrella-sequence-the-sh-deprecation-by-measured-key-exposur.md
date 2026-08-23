@@ -35,7 +35,7 @@ not a glob, is the correct denominator.
 | tier                         | n   | scripts                                                                                                            |
 | ---------------------------- | --- | ------------------------------------------------------------------------------------------------------------------ |
 | T4 root-key, confined        | 1   | `tools/setup/persona-keys/keyring.sh`                                                                              |
-| T3 credential, **broadcast** | 3   | `tools/setup/secret-clip.sh` · `tools/setup/op-token-setup.sh` · `tools/setup/common/mise.sh`                      |
+| T3 credential, **broadcast** | 3   | `tools/setup/secret-clip.sh` · the retired OP token shell setup entrypoint · `tools/setup/common/mise.sh`          |
 | T2 credential, on-disk       | 1   | `full-ai-cluster/usb-nixos-installer/zeta-install.sh`                                                              |
 | T1 execution-identity        | 5   | `install-lior-service.sh` · `host-loop-bootstrap.sh` · `profile-edit.sh` · `zeta-first-boot.sh` · `install-zig.sh` |
 | T0 no measured key contact   | 21  | the toolchain installers, smoke tests, git hooks, sourced libraries                                                |

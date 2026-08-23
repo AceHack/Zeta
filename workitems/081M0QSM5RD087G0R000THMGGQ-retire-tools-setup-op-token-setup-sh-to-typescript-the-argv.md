@@ -4,13 +4,13 @@ type: task
 state: backlog
 priority: P2
 slug: retire-tools-setup-op-token-setup-sh-to-typescript-the-argv
-title: "Retire tools/setup/op-token-setup.sh to TypeScript: the argv leak the shell carried is fixed by writing through security -i (stdin), and no-stdout/no-argv/no-env are now falsifiers rather than a header comment"
+title: "Retire the OP token shell setup entrypoint to TypeScript: the argv leak the shell carried is fixed by writing through security -i (stdin), and no-stdout/no-argv/no-env are now falsifiers rather than a header comment"
 created: 2026-08-23T17:10:22.733Z
 depends_on: []
 composes_with: []
 ---
 
-# Retire tools/setup/op-token-setup.sh to TypeScript: the argv leak the shell carried is fixed by writing through security -i (stdin), and no-stdout/no-argv/no-env are now falsifiers rather than a header comment
+# Retire the OP token shell setup entrypoint to TypeScript: the argv leak the shell carried is fixed by writing through security -i (stdin), and no-stdout/no-argv/no-env are now falsifiers rather than a header comment
 
 <!-- Work-item body. ZetaId-keyed (conflict-free, time-sortable). "Backlog" is a
      STATE = this folder; completion moves the file to workitems/done/YYYY/MM/.
@@ -21,17 +21,17 @@ key exposure). This is child #3 of `docs/SHELL-DEPRECATION-SEQUENCE.md`.
 
 ## Why (Aaron, 2026-08-22)
 
-> *"rewrite .sh files into .ts files allows the developer to have one interface, the same
+> _"rewrite .sh files into .ts files allows the developer to have one interface, the same
 > interface for every operating system. One of the overarching goals of Zeta is to completely
 > close over the OS, like an interpreter closing over a compiler, and make every OS look the
-> same."*
+> same."_
 
-So the conversion is an **OS-closure** move, not a language preference. A `.sh` file *is* an
+So the conversion is an **OS-closure** move, not a language preference. A `.sh` file _is_ an
 OS-specific interface — invoking it already commits the caller to a POSIX shell.
 
 ## What landed
 
-- `tools/setup/op-token-setup.ts` replaces `tools/setup/op-token-setup.sh` (deleted; removed
+- `tools/setup/op-token-setup.ts` replaces the retired shell entrypoint (deleted; removed
   from `EXPECTED_RETAINED_SHELL` and `RETAINED_SHELL_CATEGORY_BY_FILE`).
 - `storeGenericPassword` added to `src/Core.TypeScript/secrets/keychain-macos.ts`: the write
   crosses on **stdin** via `security -i`, so the argv is the constant `["security", "-i"]`.

@@ -18,7 +18,8 @@ composes_with: []
 
 ## What was live
 
-`tools/setup/op-token-setup.sh:83` wrote `~/.config/zeta/secrets-env.sh`:
+Line 83 of the retired OP token shell setup entrypoint wrote
+`~/.config/zeta/secrets-env.sh`:
 
 ```
 export OP_SERVICE_ACCOUNT_TOKEN="$(security find-generic-password -s zeta-op-service-account -w 2>/dev/null)"
@@ -36,7 +37,7 @@ is in the environment.
 
 An environment variable crosses `exec` **regardless of the child's code
 identity**. A code signature, a keychain ACL, an IMA appraisal and a TPM seal
-each bind a secret to a *caller*; an inherited variable has already escaped the
+each bind a secret to a _caller_; an inherited variable has already escaped the
 question of who the caller is. So this is the one exposure on the machine that no
 amount of signing work can reach — and the cheapest to fix, because the fix is
 deletion rather than compilation.
@@ -56,35 +57,35 @@ ambient channel instead of a declared, metered one.
   research note that documents it. The only consumer is the `op` CLI reading its
   own environment, ad hoc. So removal breaks no code path — this was a
   convenience channel carrying the machine's highest-value shared credential.
-- **Action:** re-run `tools/setup/op-token-setup.sh` and open a new shell.
+- **Action:** re-run `bun tools/setup/op-token-setup.ts` and open a new shell.
 - **SLA:** repo side landed same day. Operator side is one command whenever
   convenient; already-running shells keep the token until they exit.
 
 ## The fix
 
-| file | change |
-|---|---|
-| `tools/setup/common/shellenv.sh` | no longer emits the `. secrets-env.sh` line; the block now explains why the line must not come back |
-| `tools/setup/op-token-setup.sh` | no longer writes `secrets-env.sh`; **removes** an existing one when the operator runs it, and prints the point-of-use form instead |
-| `src/Core.TypeScript/secrets/credential.ts` | the replacement: `withCredential` (fetch, hand to one callback, drop — never touches `process.env`) and `spawnWithCredential` |
-| `src/Core.TypeScript/secrets/keychain-macos.ts` | in-process Security.framework read; `SecKeychainSetUserInteractionAllowed(false)` makes a prompt structurally impossible |
-| `src/Core.TypeScript/hygiene/lint-no-ambient-credential-hoist.ts` | CI guard against re-introduction |
+| file                                                              | change                                                                                                                                                            |
+| ----------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `tools/setup/common/shellenv.sh`                                  | no longer emits the `. secrets-env.sh` line; the block now explains why the line must not come back                                                               |
+| `tools/setup/op-token-setup.ts`                                   | replaced the shell entrypoint, no longer writes `secrets-env.sh`, **removes** an existing one when the operator runs it, and prints the point-of-use form instead |
+| `src/Core.TypeScript/secrets/credential.ts`                       | the replacement: `withCredential` (fetch, hand to one callback, drop — never touches `process.env`) and `spawnWithCredential`                                     |
+| `src/Core.TypeScript/secrets/keychain-macos.ts`                   | in-process Security.framework read; `SecKeychainSetUserInteractionAllowed(false)` makes a prompt structurally impossible                                          |
+| `src/Core.TypeScript/hygiene/lint-no-ambient-credential-hoist.ts` | CI guard against re-introduction                                                                                                                                  |
 
 ## The one place a credential still reaches an environment, and why
 
 `spawnWithCredential(service, envVar, argv)`. The `op` CLI takes its token from
 `OP_SERVICE_ACCOUNT_TOKEN` in its own environment; that is `op`'s interface, we
 do not control it, and there is no stdin or fd form. So a credential must enter
-*some* environment for `op` to run at all.
+_some_ environment for `op` to run at all.
 
 The distinction that makes it acceptable:
 
-| | hoist | `spawnWithCredential` |
-|---|---|---|
-| who exports | the parent shell | nobody — the parent's `process.env` is never written |
-| who inherits | every descendant, for the session | one child, for one `exec` |
-| lifetime | until the shell exits | until the child exits |
-| legibility | ambient | `grep` finds every crossing |
+|              | hoist                             | `spawnWithCredential`                                |
+| ------------ | --------------------------------- | ---------------------------------------------------- |
+| who exports  | the parent shell                  | nobody — the parent's `process.env` is never written |
+| who inherits | every descendant, for the session | one child, for one `exec`                            |
+| lifetime     | until the shell exits             | until the child exits                                |
+| legibility   | ambient                           | `grep` finds every crossing                          |
 
 `buildChildEnv` is split out as a pure function so "the parent is not mutated"
 is a test that runs in CI without a credential present.
@@ -107,7 +108,7 @@ report success for months (#10712).
 ## Operator step (biometric-gated; the agent does not run it)
 
 ```bash
-bash tools/setup/op-token-setup.sh --clipboard   # or with no flag for the secure dialog
+bun tools/setup/op-token-setup.ts --clipboard   # or with no flag for the secure dialog
 bash tools/setup/common/shellenv.sh              # regenerate the profile fragment
 exec $SHELL -l                                   # or: unset OP_SERVICE_ACCOUNT_TOKEN
 ```
