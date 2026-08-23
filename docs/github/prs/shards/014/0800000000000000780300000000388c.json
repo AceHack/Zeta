@@ -1,0 +1,12 @@
+{
+  "pr_number": 14476,
+  "archive_path": "docs/history/pr-reviews/PR-14476-fix-hygiene-the-closure-law-could-not-see-the-list-the-healer-manufactured.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-23T21:43:43.151Z",
+  "schema_version": "v1",
+  "commit_sha": "148f1167832974e2a316fa776bbfa16f6f301aa0",
+  "title": "fix(hygiene): the closure law could not SEE the list the healer manufactured",
+  "state": "MERGED",
+  "merged_at": "2026-08-23T21:42:58Z",
+  "head_ref": "fix/healer-does-not-manufacture-lists"
+}
