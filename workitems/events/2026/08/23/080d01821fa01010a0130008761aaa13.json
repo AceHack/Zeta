@@ -1,0 +1,14 @@
+{
+  "id": "080d01821fa01010a0130008761aaa13",
+  "at": "2026-08-23T20:15:54.882Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M0R47X01087G0R003RMSCG9",
+    "type": "bug",
+    "title": "Committed CHIP-8 BNN priors do not reproduce from their own recipe — measured 3.3e-14 relative drift, header claims byte-identical",
+    "slug": "committed-chip-8-bnn-priors-do-not-reproduce-from-their-own",
+    "priority": "P2",
+    "filename": "081M0R47X01087G0R003RMSCG9-committed-chip-8-bnn-priors-do-not-reproduce-from-their-own.md"
+  }
+}

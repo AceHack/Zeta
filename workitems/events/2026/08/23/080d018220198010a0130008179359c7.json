@@ -1,0 +1,14 @@
+{
+  "id": "080d018220198010a0130008179359c7",
+  "at": "2026-08-23T20:15:58.768Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M0R480SF087G0R002DD5NRG",
+    "type": "task",
+    "title": "Prior provenance rung 1 — complete the manifest so a stranger can re-derive, and record the reproducibility class",
+    "slug": "prior-provenance-rung-1-complete-the-manifest-so-a-stranger",
+    "priority": "P2",
+    "filename": "081M0R480SF087G0R002DD5NRG-prior-provenance-rung-1-complete-the-manifest-so-a-stranger.md"
+  }
+}
