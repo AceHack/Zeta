@@ -1,0 +1,12 @@
+{
+  "pr_number": 14445,
+  "archive_path": "docs/history/pr-reviews/PR-14445-book-raw-the-shapes-not-the-labels-staged-with-its-qualifiers-welded-on.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-23T21:01:51.192Z",
+  "schema_version": "v1",
+  "commit_sha": "adbaf2d1637187c3711edc0841d9420816ff83c5",
+  "title": "book(raw): the shapes, not the labels — staged with its qualifiers welded on",
+  "state": "MERGED",
+  "merged_at": "2026-08-23T21:01:05Z",
+  "head_ref": "book/the-shapes-not-the-labels"
+}
