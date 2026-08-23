@@ -395,6 +395,10 @@ The metric question is **real, measured, and already costing money** — it is n
   conjugate lane** — **refuted**; error is identically zero and the relation is isomorphism.
 - **What would make the Gärdenfors half precise:** name the quality dimensions. Until a chart is
   fixed, "convex region" has no truth value.
+- **Addendum (§10):** Aaron's covariance/contravariance route supplies a **second, independent**
+  derivation of the error term — the within-fibre Bregman information — and it lands on **exactly**
+  this boundary: vacuous on the conjugate lane, exact on the non-conjugate one. It corroborates
+  §3.5 and leaves the Gärdenfors half untouched.
 
 ---
 
@@ -600,6 +604,7 @@ hers to confirm; this is the recommendation and the reason.
 | `081M0R1RV1Z087G0R0004SVNXJ` | S3 — the conjugate translation theorem, and the refutation of dual flatness as its source | Soraya, **Lean 4** + a computed witness |
 | `081M0R1RV2Y087G0R003W65SGD` | S4 + S5 — the NG non-log-concavity boundary, and the half-space theorem | Soraya, **Z3** + **Lean 4** |
 | `081M0R1RV3T087G0R001YAWXNK` | Q5 — pre-register the Gärdenfors question as a **model comparison**, explicitly not routed to a prover | not Soraya |
+| `081M0R34AZY087G0R001H9N6YS` | §10 — descent along a coarsening: the exact iff, extensive vs intensive, Pythagorean = within-fibre Bregman information | Soraya, **Lean 4** + a computed witness |
 
 Three findings are reported in this document and deliberately **not** filed as work-items, because
 each is a code change and code is sequenced after the analysis: the F#/TypeScript `apply` arity
@@ -688,6 +693,234 @@ At `e991df8044`, via `git grep -il "<term>" origin/main`:
 survey. **No in-tree treatment of Gärdenfors conceptual spaces, of compact closure, or of
 `Cl(4,1)` as CGA other than the 08-20 exclusion.**
 
+---
+
+## 10. ADDENDUM — variance, coarsening, and whether that gives Q3 a proof technique
+
+> Aaron, after the first pass: *"this is exactly the connection to **co- and contravariance in
+> type theory from C#** and also similar to **physics** at the same time. After listening to
+> **Brian Beckman**, this is where I realise these two converge — and then the geometric language
+> stuff makes this even more precise in **Clifford space with geospatial English**."*
+>
+> Context: a parallel design (naming registry / reverse index) arrived at *"measure DV2.0
+> change-rate over a **cluster** instead of an individual item"*, clusters formed by distance in
+> an embedding. That is a **coarsening**, and the question is whether variance turns the design
+> assertion into a theorem with a discharge condition — and whether the same move gives Q3 a
+> computable error term.
+
+**Verdict in four lines.**
+
+| claim | verdict |
+|---|---|
+| coarsening = quotient; pullback free, pushforward needs constancy on fibres | **theorem — and incomplete.** The dichotomy is *extensive vs intensive*, and BOTH directions are free, in **opposite** variances (§10.1) |
+| C# variance and tensor variance are the same functorial notion | **theorem, with the translation written out** (§10.2). Not a shared word — for covectors it is literally the same sentence |
+| Clifford/GA makes it "more precise" by unifying the two variances | **refuted as stated.** The **metric** unifies them, not GA; GA makes it **index-free**, which is a notational claim, not a precision claim (§10.3) |
+| the route gives Q3 a computable error term | **real, and it reproduces §3.5's boundary exactly** — vacuous on the conjugate lane, exact on the non-conjugate one. It **corroborates**; it does not extend, and it does **not** touch the Gärdenfors half (§10.4) |
+
+Numbers below reproduce from
+`docs/research/scripts/2026-08-23-geometry-as-root-bregman-coarsening-verify.py` (`ALL PASS`, exit 0).
+
+### 10.1 The formalisation is right, and the dichotomy needs one more distinction
+
+Let `q : N → C` be the coarsening (names → clusters), surjective, fibres `q⁻¹(c)`.
+
+> **Theorem (universal property of the quotient, `Set`).** For surjective `q` and any `g : N → X`,
+> a map `ḡ : C → X` with `ḡ ∘ q = g` exists **iff** `ker q ⊆ ker g` — i.e. iff `g` is constant on
+> fibres — and is then unique.
+
+So *"pullback is unconditional, pushforward needs a hypothesis"* is **exactly right**, it is a
+theorem and not an analogy, and the hypothesis is an **iff**: for *exact* descent there is no
+weaker condition, bounded variation included. Good.
+
+**The distinction the framing is missing, and it changes the answer for the actual design.**
+There are two pushforwards, not one, and they have opposite freedom:
+
+| carried object | pull back along `q` | push forward along `q` |
+|---|---|---|
+| **function** `N → X` (intensive — a *per-item* rate) | **free** (`q*f = f ∘ q`) | needs **constancy on fibres** |
+| **measure** on `N` (extensive — a *count*) | needs a disintegration / section | **free** (`q_*μ(c) = μ(q⁻¹(c))`) |
+
+So: *"the change rate of a cluster"* is **already well-defined with no hypothesis** if it means
+**total changes per unit time across the cluster** — that is a pushforward of a *measure*, and
+measures push forward freely. It needs the coherence hypothesis only if it means **the rate each
+member has**, which is a function.
+
+**And this is not a technicality — it is the DV2.0 criterion restated.** DV2.0 partitions by
+*change rate*, so a cluster whose members' change rates disagree is precisely a cluster that has
+merged a **hub** with a **satellite**. The discharge condition and the design's own purpose are
+the same condition:
+
+> **A coarsening is DV2.0-admissible exactly when the change-rate function is (near-)constant on
+> its fibres. Within-fibre change-rate dispersion is not noise in the measurement — it is the
+> measurement that the cluster is wrong.**
+
+That is a falsifiable statement about the naming-registry design, available before it is built.
+
+**The weaker-than-equality condition, named properly.** For *approximate* descent into a metric
+or Bregman geometry the error is the **within-fibre dispersion**, and it has an exact accounting
+identity (§10.4). Not "bounded variation" — the right names are the **oscillation** `sup − inf`
+(L^∞, minimised by the Chebyshev centre) or the **within-fibre variance** (L², minimised by the
+barycentre), and in the Bregman setting the **within-cluster Bregman information**.
+
+### 10.2 The variance word — same notion, labels swapped by exactly one `op`
+
+**The trap is real and the direction stated in the brief is correct.** Written out both ways so
+the translation is checkable rather than asserted:
+
+| object | along `f : M → N` | physics index | **physics name** | **categorical name** |
+|---|---|---|---|---|
+| tangent vector | **pushes forward** `f_*` | upper `V^i` | *contravariant* | **covariant** functor |
+| covector | **pulls back** `f*` | lower `ω_i` | *covariant* | **contravariant** functor |
+
+**Both labels are swapped, consistently — and there is a reason, which is what makes this a
+translation rather than a coincidence.** Physics names how *components* transform **relative to
+the basis**: with `V = V^i e_i` invariant, the components `V^i` must transform *against* the basis
+(hence "contra"), while covector components transform *with* it (hence "co"). Category theory
+names how the *functor* acts on **morphisms**. A basis change is itself contravariant in the
+components, so the two conventions differ by **exactly one application of `op`** — uniform,
+invertible, and derivable rather than memorised.
+
+**And for covectors it is not an analogy at all — it is the same sentence.** A covector *is* a map
+`V → ℝ`. In C# that is `Func<in T, out TResult>`, and the language's rule says it is
+**contravariant in `T`**. So *"covectors pull back"* and *"`Func<in T, ·>` is contravariant"* are
+one statement in two vocabularies. Under `.claude/rules/numerology-vs-number-theory.md` this is an
+identification by **structure**, not by a matching word, and it passes.
+
+**What does NOT transfer, so the scope is honest:**
+
+- C# variance lives on a **preorder** (subtyping) — no non-trivial composition, no metric, no
+  smooth structure. Tensor variance lives on the groupoid of coordinate changes, or on `Man`.
+- C#'s variance is decided **syntactically** by position (`in`/`out`). Tensor variance interacts
+  with a metric.
+- **Decisively: C# has no analogue of raising and lowering indices**, because a subtyping order
+  carries no metric. So the *conversion* between the two variances — the operation that makes
+  tensor calculus work — **has no C# counterpart at all.**
+
+> **The notion of *direction* is identical. Everything the *metric* supplies exists on one side
+> only.** Both halves have to be said, or the identification is doing more work than it earns.
+
+**Anchors.** Mac Lane, *Categories for the Working Mathematician* (2nd ed. 1998) I.2 — a
+contravariant functor is a functor on `C^op`; this is the definition both conventions are measured
+against. The C# side is the language specification's variance rules for `in`/`out` type
+parameters. Brian Beckman is Aaron's stated source for the physics/category convergence and is a
+real independent lineage (**his published public lectures**, per
+`.claude/rules/engagement-profiles-public-work-only-not-surveillance-dossiers.md`: public work is
+cited, nothing else is); the load-bearing citations above are Mac Lane and the language spec, not
+him — an anchor should carry only what it actually entails.
+
+### 10.3 The Clifford half — "unifies" is refuted, "index-free" is true
+
+Two different claims were on offer and only the weaker one survives.
+
+**Does GA *unify* the two variances? No — the metric does, and GA is not needed for it.** The
+**musical isomorphisms** `♭ : V → V*, v ↦ g(v, ·)` and `♯ = ♭⁻¹` are exactly index lowering and
+raising, and they exist in **any** non-degenerate inner-product space. Riemannian geometry has
+them without Clifford algebra anywhere. GA cannot claim the unification; it inherits it.
+
+**Does GA *express* both uniformly? Yes — and that is the real gain.** In `Cl(V,q)` the metric is
+inside the product (`a·b = ½(ab + ba)` *recovers* it), so the algebra is naturally **index-free**
+and the covariant/contravariant bookkeeping leaves the notation: vectors and covectors are both
+grade-1 elements, and the distinction is carried by the product rather than by index placement.
+
+So the accurate word is **"index-free / notation-uniform"**, not *"more precise"* and not
+*"unifies"*. Those are three different claims and only the middle one is true.
+
+**Two cautions that cost something later if skipped:**
+
+1. **GA has two distinct dualities and they are not the same map.** The musical isomorphism
+   (`V ↔ V*`, grade-preserving, metric) and the **pseudoscalar dual** `A ↦ A·I⁻¹` (grade `k ↦ n−k`,
+   Hodge-shaped) are different operations. Conflating them is a live trap in exactly the kind of
+   argument this section is evaluating.
+2. **The identification `V ≅ V*` is pointwise and not natural.** It depends on the metric at the
+   point. On a *statistical* manifold the metric is the **Fisher matrix, which is not constant** —
+   the 2026-08-20 document measured its condition number at **508** at `(ν, τ) = (20, 10)`. So
+   "vectors and covectors are the same thing" is safe on a flat metric space and is **exactly the
+   error that document caught** when carried onto the belief manifold. The Clifford framing does
+   not rescue that; it is the same defect in nicer notation.
+
+### 10.4 Does the route give Q3 a computable error term? Yes — and it reproduces §3.5's boundary
+
+This is the substantive half, and it works better than the framing proposed, because the coarsening
+in question is not hypothetical — **it is already in the tree, twice, and the two instances are
+different operators.**
+
+**The coarsening is the m-projection.** EP/ADF's moment-matching step `Π_M : P → M` is a
+retraction whose fibres are `Π_M⁻¹(q) = { p : E_p[T] = E_q[T] }` — the distributions sharing a
+sufficient statistic. That is literally *"cluster by having the same moments, then measure over
+the cluster"*, so `Π_M` **is** a coarsening `q : N → C` in the sense of §10.1, not an analogy.
+
+**The error term is the within-cluster Bregman information, and it is exact.** For any Bregman
+divergence the conditional expectation is the unique optimal representative and the decomposition
+is exact (**Banerjee, Guo & Wang 2005**, *On the optimality of conditional expectation as a Bregman
+predictor*, IEEE Trans. Inf. Theory 51; **Banerjee, Merugu, Dhillon & Ghosh 2005**, *Clustering
+with Bregman divergences*, JMLR 6). Specialised to `φ = A*` so that `D_{A*} = KL`:
+
+```
+E_i[ KL(p_i ‖ q) ]  =  E_i[ KL(p_i ‖ p̄) ]  +  KL( p̄ ‖ q )        for every q ∈ M
+                       └── fibre-VARYING ──┘    └── DESCENDS ──┘
+```
+
+Checked: `max |LHS − RHS| = 5.7e-14` over 2000 random `q`; the within-cluster information is
+`0.56922396` nats on the test cluster and **exactly `−0.0`** when the fibre is constant (B3, B4).
+
+Three things follow, and the second is the real result:
+
+1. **The identification the brief hoped for is correct.** The approximation error of the
+   pushforward *is* the failure of constancy on fibres, quantified — and **Amari's generalised
+   Pythagorean theorem is this decomposition**, because `D(p ‖ Π_M p)` depends only on `p` (varies
+   on the fibre, does not descend) while `D(Π_M p ‖ q)` depends on `p` only through `Π_M p`
+   (constant on the fibre, descends). With `φ = ‖·‖²` the same identity is the **law of total
+   variance**. One theorem, three costumes.
+2. **The route independently reproduces §3.5's boundary, which is the strongest corroboration
+   available.** On the **conjugate** lane the "coarsening" has **singleton fibres** — the update is
+   a translation, a bijection — so the within-fibre information is identically zero and the
+   technique says nothing. That is §3.5's refutation of *"Bayes is a fast approximation of a
+   geometric root"*, arrived at by a completely different road. On the **non-conjugate** lane the
+   fibres are fat and the error is the formula above — which is exactly where §3.5 said the
+   "optimization" label was legitimate. **A new method landing on the same boundary is evidence;
+   a new method dissolving an inconvenient boundary would have been the warning sign.**
+3. **It does NOT rescue the Gärdenfors half.** A coarsening yields a quotient, not a **convex
+   region**, and §3.3's problem — convexity is affine and coordinate-relative — is untouched by
+   variance. Q3 stays **ill-posed** on that half.
+
+**And the route inherits the same two-fold ambiguity, from the same source — which is the deepest
+thing in this addendum.** *"Measure over the cluster"* does not name one operation. The same four
+members with the same weights have **two** KL barycentres, and they are far apart (B1):
+
+| barycentre | closed form | what it is | where it already lives in the tree |
+|---|---|---|---|
+| `argmin_q E[KL(p_i ‖ q)]` (right-KL) | **moment average** — `(0.500000, 4.050000)` | m-projection | **EP moment matching**, `Message.fs`'s lineage (Minka 2001) |
+| `argmin_q E[KL(q ‖ p_i)]` (left-KL) | **natural-parameter average** — `(0.947368, 1.052632)` | e-average | **NG4's `mix()`** — log-linear pooling, Genest 1984, already cited in `…-normal-gamma-…md` §5 |
+
+Both match a direct numerical minimisation (B2). **These are two different coarsenings of one
+cluster, both already implemented, in different files, under different names** — and a design that
+says *"measure the change rate over the cluster"* has not yet said which. This is §3.3's e-versus-m
+ambiguity arriving at the coarsening question by a different door, and it means the variance route
+**does not dissolve the ill-posedness — it re-derives it**, and names the missing datum:
+
+> **Fix which affine structure is canonical for the purpose. It is a modelling decision, not a
+> geometric fact, and no amount of geometry will make it for you.**
+
+### 10.5 What this changes upstream
+
+- **§3's verdict is unchanged**, and is now corroborated by a second, independent technique.
+- **§7.1's recommendation is strengthened**, not weakened: *root the metric, not the update.* The
+  Bregman machinery is a statement about **which divergence you coarsen under** — a metric-layer
+  choice — and it has no content at the affine layer, where the fibres are singletons.
+- **One new obligation is filed** (§10.6): the descent theorem, the extensive/intensive split, and
+  the Pythagorean-as-fibre-decomposition identification.
+- **One design consequence, ready before the naming registry is built:** publish the
+  within-cluster dispersion of the change-rate alongside the cluster's rate. A cluster reporting a
+  rate without its within-fibre dispersion is a pushforward asserting a hypothesis it has not
+  checked — and under `.claude/rules/toy-is-free-metered-must-be-earned.md` that is `unmetered`,
+  not `metered`.
+
+### 10.6 Filed
+
+| work-item | covers | route |
+|---|---|---|
+| `081M0R34AZY087G0R001H9N6YS` | descent along a coarsening: the exact iff, the extensive/intensive split, and Pythagorean = within-fibre Bregman information | Soraya, **Lean 4** (the descent theorem) + a computed witness (the two barycentres) |
+
 ## Pointers
 
 - `src/Core/WeightedSet.fs` · `src/Core/WSet.fs` · `src/Core.TypeScript/algebra/wset.ts` — Q1's subjects.
@@ -699,5 +932,6 @@ survey. **No in-tree treatment of Gärdenfors conceptual spaces, of compact clos
 - `docs/research/2026-08-23-toy-encoding-a-bnn-posterior-into-rgba-normal-gamma-*.md` — NG4, the measured layer §7.1 refuses to let the root inherit.
 - `docs/research/2026-08-23-what-discretisation-costs-the-bnn-lane-*.md` — the monoid-not-semiring finding §1.4 scopes.
 - `docs/research/scripts/2026-08-23-geometry-as-root-ng-convexity-verify.py` — every number in §3.
+- `docs/research/scripts/2026-08-23-geometry-as-root-bregman-coarsening-verify.py` — every number in §10.
 - `.claude/rules/numerology-vs-number-theory.md` — why §4.3's table is invariants, not counts.
 - `.claude/rules/toy-is-free-metered-must-be-earned.md` — why §3.5 and §7.1 exist.
