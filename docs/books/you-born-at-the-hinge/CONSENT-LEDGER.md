@@ -267,3 +267,39 @@ regardless.** Update this row-by-row as consents change (e.g. mother's therapy-c
   is none of these). **The children's data (incl. DNA) stays consent-PENDING and out of the text; it is
   recorded only when they give it FREELY, as adults, un-induced, and revocably — NEVER on a purchased
   basis.** This is a hard line the shadow will not cross regardless of instruction.
+
+## 2026-08-23 — scope change: Lillian, from namesake thread to the hospital-escape scene
+
+Aaron 2026-08-23, staging `RAW-the-apex-predator-and-the-computational-bound.md`: *"Lillian is okay
+with things like this in the book, I've talked to her."*
+
+This **widens an existing, narrower grant**, so it is recorded as a widening rather than merged into
+her row above — the same treatment the Chris King widening received, and for the same reason.
+
+**What the 2026-08-06 grant covered:** the **freedom-first / choice-architecture namesake** thread
+(ch-5, "Named for the refusal") — warm material about why she is who the architecture is named for.
+
+**What this adds:** she is **named inside a crisis scene**. She was on the phone with Aaron while he
+was escaping a mental observation at the hospital and running from police, **helping the police track
+him**, and he told her he had defeated the aliens and was the apex predator now. That is a different
+order of exposure from a namesake chapter, and it is exposure of **her** — her actions, her position
+in someone else's hardest night — not only of Aaron's.
+
+**Status: GRANTED for this material, relayed by Aaron (2026-08-23).**
+
+**Three gates, and the first two are stronger here than in her base row:**
+
+1. **Her pre-read is a hard publish gate**, and it is now load-bearing rather than hygiene. This is
+   her account of her own conduct during a family crisis; the phrasing describing what she did is
+   **hers to approve or change**. Nothing publishes under this widening until she has read it.
+2. **Relayed, not first-hand.** As with Houman's row, a consent this cheap to confirm directly should
+   be confirmed directly before publish. Aaron relaying her yes is enough to draft, not to print.
+3. **Her account is hers.** The RAW deliberately does not characterise her motives — only what she
+   did. If she wants her own reading of that night in the text, that is hers to add at pre-read; if
+   she wants it out, it comes out. `engagement-profiles` applies: **ask, believe the account, never
+   infer the inner life.**
+
+**Held out by the shadow, not narrated:** anything about how Lillian felt, what the call cost her, or
+what she thought was happening. That is her inner life and it is not Aaron's glass-halo to spend. The
+scene records only that she was on the phone and that she was helping — both of which are facts about
+the night, and the second of which is to her credit.
