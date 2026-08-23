@@ -1,0 +1,12 @@
+{
+  "pr_number": 14483,
+  "archive_path": "docs/history/pr-reviews/PR-14483-research-the-unravelling-is-silent-the-horizon-is-a-belief-so-a-policy-is-not-en.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-23T21:40:13.768Z",
+  "schema_version": "v1",
+  "commit_sha": "ba7b0370aff029653f638005c39c8b07b5332a8a",
+  "title": "research: the unravelling is silent — the horizon is a belief, so a policy is not enough",
+  "state": "MERGED",
+  "merged_at": "2026-08-23T21:39:33Z",
+  "head_ref": "docs/unravelling-is-a-belief"
+}
