@@ -1,0 +1,14 @@
+{
+  "id": "080d0178db17d810a013000858df67bd",
+  "at": "2026-08-23T14:51:59.099Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M0QHPRQT087G0R000Y11PK3",
+    "type": "task",
+    "title": "soft-regime: Vision monad and the ISR Kleisli arrow do not compose - no lift exists in either direction",
+    "slug": "soft-regime-vision-monad-and-the-isr-kleisli-arrow-do-not-co",
+    "priority": "P2",
+    "filename": "081M0QHPRQT087G0R000Y11PK3-soft-regime-vision-monad-and-the-isr-kleisli-arrow-do-not-co.md"
+  }
+}

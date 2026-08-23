@@ -1,0 +1,14 @@
+{
+  "id": "080d0178db122810a01300083231bca6",
+  "at": "2026-08-23T14:51:58.917Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M0QHPRJ4087G0R003BCB5V1",
+    "type": "task",
+    "title": "soft-regime: two incompatible StarRing interfaces in src/Core.TypeScript/algebra (wset.ts vs star-ring.ts)",
+    "slug": "soft-regime-two-incompatible-starring-interfaces-in-src-core",
+    "priority": "P2",
+    "filename": "081M0QHPRJ4087G0R003BCB5V1-soft-regime-two-incompatible-starring-interfaces-in-src-core.md"
+  }
+}

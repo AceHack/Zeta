@@ -1,0 +1,14 @@
+{
+  "id": "080d0178db113010a01300086fb3829a",
+  "at": "2026-08-23T14:51:58.886Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M0QHPRH5087G0R000XN827S",
+    "type": "task",
+    "title": "soft-regime: consolidate or declare the three F# weighted-set types (WeightedSet, WSet, ZSetW)",
+    "slug": "soft-regime-consolidate-or-declare-the-three-f-weighted-set",
+    "priority": "P2",
+    "filename": "081M0QHPRH5087G0R000XN827S-soft-regime-consolidate-or-declare-the-three-f-weighted-set.md"
+  }
+}

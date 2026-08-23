@@ -1,0 +1,14 @@
+{
+  "id": "080d0178db150810a0130008c58764ec",
+  "at": "2026-08-23T14:51:59.009Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M0QHPRN0087G0R0039C2NG7",
+    "type": "task",
+    "title": "soft-regime: give Vision.BranchCost an algebraic composition law instead of additive-only sumBranchBytes",
+    "slug": "soft-regime-give-vision-branchcost-an-algebraic-composition",
+    "priority": "P2",
+    "filename": "081M0QHPRN0087G0R0039C2NG7-soft-regime-give-vision-branchcost-an-algebraic-composition.md"
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "id": "080d0178db15f010a0130008c56e2187",
+  "at": "2026-08-23T14:51:59.038Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M0QHPRNX087G0R002Q1KTH3",
+    "type": "task",
+    "title": "soft-regime: turn the complexity registry from a dictionary lookup into a composable cost algebra",
+    "slug": "soft-regime-turn-the-complexity-registry-from-a-dictionary-l",
+    "priority": "P2",
+    "filename": "081M0QHPRNX087G0R002Q1KTH3-soft-regime-turn-the-complexity-registry-from-a-dictionary-l.md"
+  }
+}

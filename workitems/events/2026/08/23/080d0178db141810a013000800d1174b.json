@@ -1,0 +1,14 @@
+{
+  "id": "080d0178db141810a013000800d1174b",
+  "at": "2026-08-23T14:51:58.979Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M0QHPRM2087G0R0036Y8VAB",
+    "type": "task",
+    "title": "soft-regime: add the max-plus tropical dual (worst-case cost) beside the built min-plus TropicalSemiring",
+    "slug": "soft-regime-add-the-max-plus-tropical-dual-worst-case-cost-b",
+    "priority": "P2",
+    "filename": "081M0QHPRM2087G0R0036Y8VAB-soft-regime-add-the-max-plus-tropical-dual-worst-case-cost-b.md"
+  }
+}

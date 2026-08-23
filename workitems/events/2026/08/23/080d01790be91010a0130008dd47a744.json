@@ -1,0 +1,14 @@
+{
+  "id": "080d01790be91010a0130008dd47a744",
+  "at": "2026-08-23T14:58:39.010Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M0QJ2Z91087G0R00061PBQF",
+    "type": "task",
+    "title": "soft-regime: N-parent recombination for the RGB/CMYK genome (crossover and mix are hard-coded to two parents)",
+    "slug": "soft-regime-n-parent-recombination-for-the-rgb-cmyk-genome-c",
+    "priority": "P2",
+    "filename": "081M0QJ2Z91087G0R00061PBQF-soft-regime-n-parent-recombination-for-the-rgb-cmyk-genome-c.md"
+  }
+}

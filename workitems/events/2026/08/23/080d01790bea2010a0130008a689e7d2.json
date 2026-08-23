@@ -1,0 +1,14 @@
+{
+  "id": "080d01790bea2010a0130008a689e7d2",
+  "at": "2026-08-23T14:58:39.044Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M0QJ2ZA3087G0R0034KWF15",
+    "type": "task",
+    "title": "soft-regime: file the CRISPR, polymerase and MacVector directed-mutation anchors in PRIOR-ART-LIST",
+    "slug": "soft-regime-file-the-crispr-polymerase-and-macvector-directe",
+    "priority": "P2",
+    "filename": "081M0QJ2ZA3087G0R0034KWF15-soft-regime-file-the-crispr-polymerase-and-macvector-directe.md"
+  }
+}

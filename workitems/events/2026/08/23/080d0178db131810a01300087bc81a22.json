@@ -1,0 +1,14 @@
+{
+  "id": "080d0178db131810a01300087bc81a22",
+  "at": "2026-08-23T14:51:58.947Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M0QHPRK2087G0R002K5NQG9",
+    "type": "task",
+    "title": "soft-regime: make ByteCost a semiring - add the max-plus branch operation across all four oracles",
+    "slug": "soft-regime-make-bytecost-a-semiring-add-the-max-plus-branch",
+    "priority": "P2",
+    "filename": "081M0QHPRK2087G0R002K5NQG9-soft-regime-make-bytecost-a-semiring-add-the-max-plus-branch.md"
+  }
+}
