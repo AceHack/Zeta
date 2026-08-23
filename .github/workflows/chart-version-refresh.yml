@@ -72,6 +72,9 @@ on:
       - "src/Core.TypeScript/hygiene/audit-chart-target-revisions.ts"
       - "src/Core.TypeScript/hygiene/chart-publish-dates.ts"
       - "src/Core.TypeScript/hygiene/report-chart-currency.ts"
+      # The image-provenance network half rides this lane, so a change to it
+      # must self-test here for the same reason the chart tools do.
+      - "src/Core.TypeScript/cluster/image-source-provenance.ts"
       - ".github/workflows/chart-version-refresh.yml"
 
 permissions:
@@ -162,5 +165,60 @@ jobs:
           path: |
             docs/CHART-CURRENCY.md
             src/Core.TypeScript/hygiene/published-chart-dates.json
+          if-no-files-found: error
+          retention-days: 90
+
+      # THE SECOND NETWORK HALF, riding this lane rather than earning its own schedule.
+      # `src/Core.TypeScript/cluster/image-source-provenance.ts` gates every PR OFFLINE against
+      # `full-ai-cluster/k8s/image-source-provenance.json`; this re-measures every image
+      # reference in the tree as an ANONYMOUS client would -- which is the whole predicate:
+      # can someone who cloned this public repository actually pull what its manifests name?
+      #
+      # Here rather than in its own workflow for the same reason currency is: a second cron buys
+      # nothing. The two answer different questions off different endpoints, but both are "ask
+      # upstream what it publishes", both are non-blocking, and both write a committed snapshot
+      # whose DIFF is the signal.
+      #
+      # `if: always()` IS LOAD-BEARING, and it was learned the expensive way. These two steps
+      # first landed WITHOUT it, sitting immediately after "Refresh the published-version
+      # snapshot" -- which exits 1 by design whenever upstream published anything, i.e. most
+      # runs. Measured on run 32652872721: both steps `skipped`, the job red for the chart
+      # step's reason, and nothing anywhere saying the image half had not run. That is this
+      # repository's own organising failure -- a check that did not run looking exactly like one
+      # that passed -- committed inside a change whose entire purpose is to refuse that shape.
+      # `continue-on-error` does NOT fix it: it governs a step's own failure, never a prior
+      # step's. So they moved to the end of the `if: always()` block, beside the chart lane's
+      # own re-audit.
+      #
+      # No `continue-on-error`, matching this job's stated convention: red here IS the output.
+      # `--refresh` exits 1 when the snapshot CHANGED, which on this lane means "the provenance
+      # moved, commit the diff", and the job is outside the required set so that red blocks
+      # nobody's merge.
+      #
+      # It uses `gh` for the GHCR packages API (the route the original FlowDent investigation
+      # took) and degrades honestly without it: `packagePresence` is recorded `unreadable`,
+      # never `absent`, so an unauthenticated run cannot invent the difference between a private
+      # package and a missing one.
+      - name: Refresh the image-provenance snapshot (network; anonymous pull is the measurement)
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: bun src/Core.TypeScript/cluster/image-source-provenance.ts --refresh
+
+      # The refreshed provenance re-run through the OFFLINE gate. A package that went private,
+      # or an acknowledgement that has outlived its defect, shows up HERE -- in the lane allowed
+      # to be red -- rather than reaching the next contributor to touch an unrelated file.
+      - name: Re-audit image provenance against the freshly refreshed snapshot
+        if: always()
+        run: bun src/Core.TypeScript/cluster/image-source-provenance.ts
+
+      # Uploaded on the failing path too: when the committed provenance is stale, THIS is the
+      # file that replaces it.
+      - name: Upload the refreshed image-provenance snapshot
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: image-source-provenance-${{ github.run_id }}
+          path: full-ai-cluster/k8s/image-source-provenance.json
           if-no-files-found: error
           retention-days: 90

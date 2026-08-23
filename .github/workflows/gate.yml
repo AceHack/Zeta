@@ -1985,6 +1985,41 @@ jobs:
       - name: ArgoCD chart targetRevisions resolve (offline, against the committed snapshot)
         run: bun src/Core.TypeScript/hygiene/audit-chart-target-revisions.ts
 
+      # NO MANIFEST IN THE PUBLIC TREE MAY REFERENCE AN IMAGE NOBODY OUTSIDE CAN PULL.
+      # `applications/platform/blueprints-flowdent.yaml` shipped here for months naming
+      # ghcr.io/flowdent/cloudservice and ghcr.io/flowdent/fd-webclient -- images out of
+      # Flowdent/fd-core (private) and Flowdent/fd-webclient (internal), in an org with
+      # public_repos: 0. An agent wrote to the wrong repository in a multi-repo setup and
+      # nothing caught it; it took months and a partitioner that could not MEASURE the images
+      # to surface it, and a human to remove it (#14250). This is that accident as a red check.
+      #
+      # Aaron 2026-08-23: "zeta should not have any private repo dependencies." The invariant is
+      # ONE-WAY: Flowdent (closed) may depend on Zeta (open); Zeta may never depend on Flowdent.
+      #
+      # HERE, on the floor that runs on EVERY PR, rather than in k8s-lane-partition.yml: that
+      # workflow's path filter watches full-ai-cluster/k8s only, and this check's scope is every
+      # tracked YAML outside docs/references/.github -- infra/k8s, agentic-organization/deploy,
+      # samples/, and whatever directory the next multi-repo accident lands in. A path filter is
+      # exactly the wrong shape for a check whose whole job is to notice a manifest somewhere
+      # nobody declared.
+      #
+      # OFFLINE. It resolves every reference against the committed measurement
+      # `full-ai-cluster/k8s/image-source-provenance.json` and opens no socket; the network half
+      # is `--refresh` and it runs weekly in chart-version-refresh.yml. MEASURED 2026-08-23:
+      # 0.43s, 49 files parsed of 209 scanned.
+      - name: No private-source image dependencies (offline, against the committed provenance)
+        run: bun src/Core.TypeScript/cluster/image-source-provenance.ts
+
+      # The check above is only worth its slot if it can go red. The suite reconstructs the two
+      # FlowDent Blueprints in a throwaway git tree and asserts they are refused with the REMOVE
+      # remedy, asserts bitnami/weaviate/ich777/postgres/kubevirt are NOT tripped, and asserts an
+      # unresolvable package with no source label is refused rather than admitted. 35 cases;
+      # 16 targeted mutants applied and byte-`cmp` verified before reading each result -- 15
+      # landed and were all killed, and the 16th reported PATTERN NOT FOUND rather than a
+      # result, which is the discipline working.
+      - name: Private-source image dependencies — falsifiers (proves it goes red)
+        run: bun test src/Core.TypeScript/cluster/image-source-provenance.test.ts
+
       # ARE THE DEFERRAL REASONS STILL TRUE? Every reasoned-exclusion registry in the cluster
       # tree was audited for a reason being PRESENT and naming a lift condition, and by nothing
       # for the reason being TRUE. Measured twice on 2026-08-21: `temporal`'s reason cited a

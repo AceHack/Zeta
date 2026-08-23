@@ -1,0 +1,343 @@
+{
+  "$comment": "MEASURED image provenance — what an ANONYMOUS client got from each registry, and whose source repository the image names. Written ONLY by `bun src/Core.TypeScript/cluster/image-source-provenance.ts --refresh`; never hand-edited except for `note`. This file is EVIDENCE WITH A DATE, not an oracle: each row says 'as of resolvedAt, an anonymous pull returned this'. The VERDICT is not stored here — it is derived on every run by classify(), because a stored verdict is a hand-written allowlist wearing a measurement's clothes. See the module header for the incident (ghcr.io/flowdent/*, #14250) and the one-way rule this encodes.",
+  "entries": [
+    {
+      "repository": "ghcr.io/acemod/arma-reforger",
+      "tags": {
+        "sha256:90883ce2f3d8b3b5b132ae7f4b3377afdc9e6be7e7c8cb1a290f8bd7b39d079c": 200
+      },
+      "artifact": "public",
+      "sourceRepo": "acemod/docker-reforger",
+      "sourceEvidence": "oci-label",
+      "sourceVisibility": "public",
+      "packagePresence": "found",
+      "resolvedAt": "2026-08-23"
+    },
+    {
+      "repository": "ghcr.io/actions/actions-runner",
+      "tags": {
+        "2.330.0": 200
+      },
+      "artifact": "public",
+      "sourceRepo": "actions/runner",
+      "sourceEvidence": "oci-label",
+      "sourceVisibility": "public",
+      "packagePresence": "found",
+      "resolvedAt": "2026-08-23"
+    },
+    {
+      "repository": "ghcr.io/ich777/steamcmd",
+      "tags": {
+        "garrysmod": 200,
+        "unturned": 200
+      },
+      "artifact": "public",
+      "sourceRepo": "ich777/docker-steamcmd-server",
+      "sourceEvidence": "oci-label",
+      "sourceVisibility": "public",
+      "packagePresence": "found",
+      "resolvedAt": "2026-08-23"
+    },
+    {
+      "repository": "ghcr.io/lucent-financial-group/hat-system-operator",
+      "tags": {
+        "placeholder": 401
+      },
+      "artifact": "denied",
+      "sourceRepo": null,
+      "sourceEvidence": "none",
+      "sourceVisibility": "unknown",
+      "packagePresence": "absent",
+      "resolvedAt": "2026-08-23"
+    },
+    {
+      "repository": "ghcr.io/lucent-financial-group/zeta-orleans-silo",
+      "tags": {
+        "bootstrap": 401,
+        "latest": 401
+      },
+      "artifact": "denied",
+      "sourceRepo": null,
+      "sourceEvidence": "none",
+      "sourceVisibility": "unknown",
+      "packagePresence": "absent",
+      "resolvedAt": "2026-08-23"
+    },
+    {
+      "repository": "ghcr.io/lucent-financial-group/zeta-platform-controller",
+      "tags": {
+        "latest": 200
+      },
+      "artifact": "public",
+      "sourceRepo": "Lucent-Financial-Group/Zeta",
+      "sourceEvidence": "oci-label",
+      "sourceVisibility": "public",
+      "packagePresence": "found",
+      "resolvedAt": "2026-08-23"
+    },
+    {
+      "repository": "ghcr.io/lucent-financial-group/zeta-portal",
+      "tags": {
+        "latest": 200
+      },
+      "artifact": "public",
+      "sourceRepo": "Lucent-Financial-Group/Zeta",
+      "sourceEvidence": "oci-label",
+      "sourceVisibility": "public",
+      "packagePresence": "found",
+      "resolvedAt": "2026-08-23"
+    },
+    {
+      "repository": "ghcr.io/vectorize-io/hindsight",
+      "tags": {
+        "latest": 200
+      },
+      "artifact": "public",
+      "sourceRepo": "vectorize-io/hindsight",
+      "sourceEvidence": "oci-label",
+      "sourceVisibility": "public",
+      "packagePresence": "found",
+      "resolvedAt": "2026-08-23"
+    },
+    {
+      "repository": "quay.io/kubevirt/cdi-operator",
+      "tags": {
+        "v1.65.0": 200
+      },
+      "artifact": "public",
+      "sourceRepo": null,
+      "sourceEvidence": "none",
+      "sourceVisibility": "unknown",
+      "packagePresence": "not-ghcr",
+      "resolvedAt": "2026-08-23"
+    },
+    {
+      "repository": "quay.io/kubevirt/virt-operator",
+      "tags": {
+        "v1.8.4": 200
+      },
+      "artifact": "public",
+      "sourceRepo": null,
+      "sourceEvidence": "none",
+      "sourceVisibility": "unknown",
+      "packagePresence": "not-ghcr",
+      "resolvedAt": "2026-08-23"
+    },
+    {
+      "repository": "registry-1.docker.io/atmoz/sftp",
+      "tags": {
+        "alpine": 200
+      },
+      "artifact": "public",
+      "sourceRepo": "atmoz/sftp",
+      "sourceEvidence": "oci-label",
+      "sourceVisibility": "unknown",
+      "packagePresence": "not-ghcr",
+      "resolvedAt": "2026-08-23"
+    },
+    {
+      "repository": "registry-1.docker.io/bitnamilegacy/kubectl",
+      "tags": {
+        "1.32.3": 200
+      },
+      "artifact": "public",
+      "sourceRepo": "bitnami/containers",
+      "sourceEvidence": "oci-label",
+      "sourceVisibility": "unknown",
+      "packagePresence": "not-ghcr",
+      "resolvedAt": "2026-08-23"
+    },
+    {
+      "repository": "registry-1.docker.io/cm2network/steamcmd",
+      "tags": {
+        "root": 200
+      },
+      "artifact": "public",
+      "sourceRepo": null,
+      "sourceEvidence": "none",
+      "sourceVisibility": "unknown",
+      "packagePresence": "not-ghcr",
+      "resolvedAt": "2026-08-23"
+    },
+    {
+      "repository": "registry-1.docker.io/cockroachdb/cockroach",
+      "tags": {
+        "v26.2.1": 200
+      },
+      "artifact": "public",
+      "sourceRepo": null,
+      "sourceEvidence": "none",
+      "sourceVisibility": "unknown",
+      "packagePresence": "not-ghcr",
+      "resolvedAt": "2026-08-23"
+    },
+    {
+      "repository": "registry-1.docker.io/curlimages/curl",
+      "tags": {
+        "8.11.1": 200
+      },
+      "artifact": "public",
+      "sourceRepo": "curl/curl-container",
+      "sourceEvidence": "oci-label",
+      "sourceVisibility": "unknown",
+      "packagePresence": "not-ghcr",
+      "resolvedAt": "2026-08-23"
+    },
+    {
+      "repository": "registry-1.docker.io/grafana/grafana",
+      "tags": {
+        "11.0.0": 200
+      },
+      "artifact": "public",
+      "sourceRepo": null,
+      "sourceEvidence": "none",
+      "sourceVisibility": "unknown",
+      "packagePresence": "not-ghcr",
+      "resolvedAt": "2026-08-23"
+    },
+    {
+      "repository": "registry-1.docker.io/grafana/loki",
+      "tags": {
+        "3.0.0": 200
+      },
+      "artifact": "public",
+      "sourceRepo": "grafana/loki",
+      "sourceEvidence": "oci-label",
+      "sourceVisibility": "unknown",
+      "packagePresence": "not-ghcr",
+      "resolvedAt": "2026-08-23"
+    },
+    {
+      "repository": "registry-1.docker.io/grafana/mimir",
+      "tags": {
+        "2.12.0": 200
+      },
+      "artifact": "public",
+      "sourceRepo": "grafana/mimir",
+      "sourceEvidence": "oci-label",
+      "sourceVisibility": "unknown",
+      "packagePresence": "not-ghcr",
+      "resolvedAt": "2026-08-23"
+    },
+    {
+      "repository": "registry-1.docker.io/grafana/tempo",
+      "tags": {
+        "2.5.0": 200
+      },
+      "artifact": "public",
+      "sourceRepo": "grafana/tempo",
+      "sourceEvidence": "oci-label",
+      "sourceVisibility": "unknown",
+      "packagePresence": "not-ghcr",
+      "resolvedAt": "2026-08-23"
+    },
+    {
+      "repository": "registry-1.docker.io/library/agentic-org-worker",
+      "tags": {
+        "keepalive": 401
+      },
+      "artifact": "denied",
+      "sourceRepo": null,
+      "sourceEvidence": "none",
+      "sourceVisibility": "unknown",
+      "packagePresence": "not-ghcr",
+      "resolvedAt": "2026-08-23"
+    },
+    {
+      "repository": "registry-1.docker.io/library/busybox",
+      "tags": {
+        "1.36": 200
+      },
+      "artifact": "public",
+      "sourceRepo": null,
+      "sourceEvidence": "none",
+      "sourceVisibility": "unknown",
+      "packagePresence": "not-ghcr",
+      "resolvedAt": "2026-08-23"
+    },
+    {
+      "repository": "registry-1.docker.io/library/nats",
+      "tags": {
+        "2.14.1-alpine": 200
+      },
+      "artifact": "public",
+      "sourceRepo": "nats-io/nats-docker",
+      "sourceEvidence": "oci-label",
+      "sourceVisibility": "unknown",
+      "packagePresence": "not-ghcr",
+      "resolvedAt": "2026-08-23"
+    },
+    {
+      "repository": "registry-1.docker.io/library/nginx",
+      "tags": {
+        "1.27-alpine": 200
+      },
+      "artifact": "public",
+      "sourceRepo": null,
+      "sourceEvidence": "none",
+      "sourceVisibility": "unknown",
+      "packagePresence": "not-ghcr",
+      "resolvedAt": "2026-08-23"
+    },
+    {
+      "repository": "registry-1.docker.io/library/postgres",
+      "tags": {
+        "16-alpine": 200
+      },
+      "artifact": "public",
+      "sourceRepo": null,
+      "sourceEvidence": "none",
+      "sourceVisibility": "unknown",
+      "packagePresence": "not-ghcr",
+      "resolvedAt": "2026-08-23"
+    },
+    {
+      "repository": "registry-1.docker.io/ollama/ollama",
+      "tags": {
+        "0.5.7": 200
+      },
+      "artifact": "public",
+      "sourceRepo": null,
+      "sourceEvidence": "none",
+      "sourceVisibility": "unknown",
+      "packagePresence": "not-ghcr",
+      "resolvedAt": "2026-08-23"
+    },
+    {
+      "repository": "registry-1.docker.io/otel/opentelemetry-collector-contrib",
+      "tags": {
+        "0.101.0": 200
+      },
+      "artifact": "public",
+      "sourceRepo": "open-telemetry/opentelemetry-collector-releases",
+      "sourceEvidence": "oci-label",
+      "sourceVisibility": "unknown",
+      "packagePresence": "not-ghcr",
+      "resolvedAt": "2026-08-23"
+    },
+    {
+      "repository": "registry-1.docker.io/rancher/k3s",
+      "tags": {
+        "v1.36.1-k3s1": 200
+      },
+      "artifact": "public",
+      "sourceRepo": "k3s-io/k3s",
+      "sourceEvidence": "oci-label",
+      "sourceVisibility": "unknown",
+      "packagePresence": "not-ghcr",
+      "resolvedAt": "2026-08-23"
+    },
+    {
+      "repository": "registry-1.docker.io/vllm/vllm-openai",
+      "tags": {
+        "latest": 200
+      },
+      "artifact": "public",
+      "sourceRepo": "vllm-project/vllm",
+      "sourceEvidence": "oci-label",
+      "sourceVisibility": "unknown",
+      "packagePresence": "not-ghcr",
+      "resolvedAt": "2026-08-23"
+    }
+  ]
+}

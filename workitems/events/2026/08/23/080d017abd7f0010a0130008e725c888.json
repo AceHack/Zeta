@@ -1,0 +1,14 @@
+{
+  "id": "080d017abd7f0010a0130008e725c888",
+  "at": "2026-08-23T15:57:50.944Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M0QNFBZ0087G0R000N3RXGF",
+    "type": "task",
+    "title": "publish the two private ghcr packages (zeta-portal, zeta-platform-controller) — two Danger Zone clicks, package visibility is UI-only",
+    "slug": "publish-the-two-private-ghcr-packages-zeta-portal-zeta-platf",
+    "priority": "P2",
+    "filename": "081M0QNFBZ0087G0R000N3RXGF-publish-the-two-private-ghcr-packages-zeta-portal-zeta-platf.md"
+  }
+}

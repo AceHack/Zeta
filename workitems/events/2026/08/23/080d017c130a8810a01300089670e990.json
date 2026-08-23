@@ -1,0 +1,14 @@
+{
+  "id": "080d017c130a8810a01300089670e990",
+  "at": "2026-08-23T16:44:28.881Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M0QR4RA5087G0R00377NZV2",
+    "type": "bug",
+    "title": "skill-tune-up.skill.yaml does not parse — an unquoted colon in a contract: value (found by the image-provenance scan)",
+    "slug": "skill-tune-up-skill-yaml-does-not-parse-an-unquoted-colon-in",
+    "priority": "P2",
+    "filename": "081M0QR4RA5087G0R00377NZV2-skill-tune-up-skill-yaml-does-not-parse-an-unquoted-colon-in.md"
+  }
+}
