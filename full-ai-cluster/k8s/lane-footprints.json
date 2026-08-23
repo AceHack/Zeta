@@ -171,7 +171,7 @@
     "full-ai-cluster/platform": [
       "atmoz/sftp:alpine",
       "busybox:1.36",
-      "ghcr.io/ich777/steamcmd:armareforger",
+      "ghcr.io/acemod/arma-reforger:sha-cd226c0@sha256:90883ce2f3d8b3b5b132ae7f4b3377afdc9e6be7e7c8cb1a290f8bd7b39d079c",
       "ghcr.io/ich777/steamcmd:garrysmod",
       "ghcr.io/ich777/steamcmd:unturned",
       "ghcr.io/lucent-financial-group/zeta-platform-controller:latest",
@@ -366,6 +366,9 @@
     "gcr.io/cockroachlabs-helm-charts/cockroach-self-signer-cert:1.5": {
       "compressedBytes": 170028269
     },
+    "ghcr.io/acemod/arma-reforger:sha-cd226c0@sha256:90883ce2f3d8b3b5b132ae7f4b3377afdc9e6be7e7c8cb1a290f8bd7b39d079c": {
+      "compressedBytes": 55712029
+    },
     "ghcr.io/actions/actions-runner:2.330.0": {
       "compressedBytes": 517658379
     },
@@ -392,10 +395,6 @@
     },
     "ghcr.io/headlamp-k8s/headlamp:v0.30.0": {
       "compressedBytes": 79802688
-    },
-    "ghcr.io/ich777/steamcmd:armareforger": {
-      "compressedBytes": null,
-      "unmeasurableReason": "manifest HTTP 404"
     },
     "ghcr.io/ich777/steamcmd:garrysmod": {
       "compressedBytes": 45334537

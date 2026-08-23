@@ -29,10 +29,25 @@ describe("blueprint agent — game knowledge base", () => {
     const r = build("set up an arma reforger server");
     expect(r.spec).toBeDefined();
     expect(r.spec!.name).toBe("arma-reforger");
-    expect(r.spec!.install).toContain("1874900");
+    // The appid moved from a hand-written steamcmd line into STEAM_APPID,
+    // because the ACE Mod image runs steamcmd itself. Same fact, checked where
+    // it now lives — see the comment on the GAMES entry.
+    expect(r.spec!.env!.STEAM_APPID).toBe("1874900");
     expect(r.spec!.ports!.some((p) => p.port === 2001 && p.protocol === "UDP")).toBe(true);
     expect(r.spec!.variables!.some((v) => v.name === "SCENARIO")).toBe(true);
     expect(r.spec!.resources!.memory).toBe("6Gi");
+  });
+  // The falsifier for the fix, not a restatement of it: overriding the image's
+  // Cmd would skip both its SteamCMD install and its config generation, and the
+  // `/opt/steamcmd/steamcmd.sh` install line this replaced pointed at a path no
+  // image in this catalogue ships. Re-adding either turns this red.
+  test("Arma Reforger issues no install script and no command override, and pins by digest", () => {
+    const spec = build("arma reforger").spec!;
+    expect(spec.install).toBeUndefined();
+    expect(spec.command).toBeUndefined();
+    expect(spec.image).toContain("@sha256:");
+    expect(spec.image.startsWith("ghcr.io/acemod/arma-reforger")).toBe(true);
+    expect(spec.storage!.mountPath).toBe("/reforger");
   });
   test("Unturned → app 1110390, three UDP ports", () => {
     const r = build("I want an unturned server");

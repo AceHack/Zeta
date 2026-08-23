@@ -127,7 +127,56 @@ spec:
     - { name: sftp, image: atmoz/sftp:alpine, mountDataAt: /home/zeta/data }
   defaultExpose: lan
 ---
-# Arma Reforger dedicated server (SteamCMD app 1874900). UDP 2001 game + 17777 query.
+# Arma Reforger dedicated server — Steam app 1874900.
+#
+# THE APP IS REAL AND HAS A LINUX SERVER. Steam app-info for 1874900, read
+# 2026-08-23: name "Arma Reforger Server", type Tool, oslist `windows,linux`,
+# with depot 1874902 declaring `oslist: linux`. So the thing this Blueprint
+# deploys exists; only the container reference was wrong.
+#
+# WAS `ghcr.io/ich777/steamcmd:armareforger`, AND THAT PUBLISHER HAS NO FIX.
+# The sibling `gmod` defect had one (`:gmod` -> `:garrysmod`); this one does
+# not, measured rather than assumed:
+#   GET ghcr.io/v2/ich777/steamcmd/tags/list?n=1000  -> 94 tags, and the only
+#     arma-family entries are `arma3` and `arma3exilemod`
+#   manifests for `armareforger`, `arma-reforger`, `reforger` -> HTTP 404 each
+#   gh api /users/ich777/packages?package_type=container -> 98 packages, none
+#     Arma Reforger; the Docker Hub account carries the same set
+# Substituting a nearby ich777 tag stays REFUSED (workitem
+# 081M0QB1ZCV087G0R001P9YCPX measured that the game tags share only their first
+# two layers, so they are different images, not one base with four entrypoints).
+#
+# THE REPLACEMENT, PINNED BY DIGEST. `ghcr.io/acemod/arma-reforger` is public,
+# pulls anonymously, and measures 55,712,029 compressed bytes on linux/amd64 via
+# `measureImage` in src/Core.TypeScript/cluster/measure-lane-footprints.ts — the
+# same function that priced every other image in lane-footprints.json.
+# Provenance is the image's OWN label, not a README claim:
+#   org.opencontainers.image.source = https://github.com/acemod/docker-reforger
+# (ACE Mod, MIT, 117 stars, active). Tags `latest` and `sha-cd226c0` resolve to
+# the SAME digest, and `cd226c0` is the tip commit of that repo's default branch
+# (2026-07-30) — so this digest is the latest version, and the tag is kept
+# alongside it only so a reader can see which commit built it. The digest is
+# what the registry is asked for; `:latest` alone is unmeasurable in principle.
+# The corroboration that this is the right game: the image's own config sets
+# `STEAM_APPID=1874900`, the identical appid this Blueprint used to hand to
+# steamcmd. Image and Blueprint agree independently — the same check that
+# validated `garrysmod` against `+app_update 4020`.
+#
+# NO `install:`, `command:` OR `args:` — DELIBERATE, NOT AN OMISSION.
+# The old install line ran `/opt/steamcmd/steamcmd.sh`, a path that exists in no
+# image in this file: ich777's images fetch steamcmd at runtime into
+# `/serverdata/steamcmd`, and this one ships it at `/steamcmd/steamcmd.sh`.
+# This image installs and launches itself. Its Cmd is `python3 /app/launch.py`,
+# read out of the layer: it runs `/steamcmd/steamcmd.sh +force_install_dir
+# /reforger +login anonymous +app_update $STEAM_APPID validate +quit`, writes
+# `/reforger/Configs/docker_generated.json` from the environment below, then
+# execs `./ArmaReforgerServer` in `/reforger`. Overriding `command:` would skip
+# both the install and the config generation, so the correct fix for the path
+# mismatch here is to stop issuing the command at all and configure by env.
+# (`gmod` and `unturned` above still carry the wrong `/opt/steamcmd` path and
+# still keep the ich777 images — that half stays open in workitem
+# 081M0QB1ZCV087G0R001P9YCPX, because fixing it is a different change: those
+# images are driven by their own `/opt/scripts/start.sh` + `GAME_ID`.)
 apiVersion: platform.zeta.io/v1alpha1
 kind: Blueprint
 metadata:
@@ -136,22 +185,30 @@ metadata:
 spec:
   category: game
   stateful: true
-  image: ghcr.io/ich777/steamcmd:armareforger
-  install: "/opt/steamcmd/steamcmd.sh +force_install_dir /data +login anonymous +app_update 1874900 validate +quit"
-  command: ["/data/ArmaReforgerServer"]
-  args: ["-config", "/data/configs/${CONFIG}", "-maxFPS", "60", "-bindPort", "${GAME_PORT}"]
+  image: ghcr.io/acemod/arma-reforger:sha-cd226c0@sha256:90883ce2f3d8b3b5b132ae7f4b3377afdc9e6be7e7c8cb1a290f8bd7b39d079c
+  # Every name below is from the image's documented environment contract
+  # (github.com/acemod/docker-reforger README) and its own config blob defaults.
   env:
-    SERVER_NAME: "${SERVERNAME}"
+    STEAM_APPID: "1874900"
+    GAME_NAME: "${SERVERNAME}"
+    GAME_SCENARIO_ID: "${SCENARIO}"
+    GAME_MAX_PLAYERS: "${MAXPLAYERS}"
+    SERVER_BIND_PORT: "${GAME_PORT}"
+    SERVER_PUBLIC_PORT: "${GAME_PORT}"
+    SERVER_A2S_PORT: "17777"
+    ARMA_CONFIG: "${CONFIG}"
   ports:
     - { name: game, port: 2001, protocol: UDP }
     - { name: query, port: 17777, protocol: UDP }
-  storage: { size: "15Gi", mountPath: /data }
+  # /reforger is the image's WorkingDir and its steamcmd `+force_install_dir`;
+  # Configs/ and workshop/ both live under it, so one volume covers the lot.
+  storage: { size: "15Gi", mountPath: /reforger }
   resources: { cpu: "4", memory: "6Gi" }
   variables:
-    - { name: SERVERNAME, default: "Zeta Reforger" }
-    - { name: SCENARIO, default: "Conflict-Everon" }
+    - { name: SERVERNAME, default: "Zeta Reforger", description: "server name in the browser (GAME_NAME)" }
+    - { name: SCENARIO, default: "{ECC61978EDCC2B5A}Missions/23_Campaign.conf", description: "GAME_SCENARIO_ID — the image's own documented default scenario id" }
     - { name: MAXPLAYERS, default: "32" }
-    - { name: CONFIG, default: "server.json" }
+    - { name: CONFIG, default: "docker_generated", description: "ARMA_CONFIG — `docker_generated` regenerates the config from these variables; any other value is a filename under /reforger/Configs used as-is" }
     - { name: GAME_PORT, default: "2001" }
   sidecars:
     - { name: sftp, image: atmoz/sftp:alpine, mountDataAt: /home/zeta/data }

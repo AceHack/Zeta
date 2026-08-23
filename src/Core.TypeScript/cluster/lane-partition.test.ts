@@ -312,7 +312,16 @@ describe("the real tree", () => {
     // nothing to this total in the first place — which is exactly why removing
     // them takes `platform`'s blocker count from 5 to 3 without moving a
     // single byte of the priced figure.
-    expect(all.diskGib).toBeCloseTo(74.26, 2);
+    //
+    // 74.26 -> 74.40 on 2026-08-23, and this is the RISING case again: the
+    // `arma-reforger` Blueprint stopped naming a 404 and started naming
+    // `ghcr.io/acemod/arma-reforger` pinned by digest (workitem
+    // 081M0QB1ZCV087G0R001P9YCPX). The whole of the 0.1385 GiB rise is that one
+    // image at 55712029 compressed x2.67; nothing else was re-measured. An
+    // image that could not be sized was counted as nothing, so making it
+    // sizable can only push the floor up — which is the direction that means
+    // the number got MORE true, not that the tree got bigger.
+    expect(all.diskGib).toBeCloseTo(74.40, 2);
     expect(all.cpuMillis).toBeGreaterThan(budget.cpuMillis);
     expect(all.diskGib).toBeGreaterThan(budget.diskGib);
     // WHICH AXIS BINDS IS NOW A MEASUREMENT, NOT AN ASSERTION. At 14 GiB disk was
