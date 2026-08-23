@@ -1,0 +1,14 @@
+{
+  "id": "080d017c5c3ce810a01300080abe0553",
+  "at": "2026-08-23T16:54:28.509Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M0QRQ1WV087G0R002G1EW7N",
+    "type": "bug",
+    "title": "ProbabilitySemiring Rational int64 overflow diverges three ways across the four oracles and no golden vector reaches it",
+    "slug": "probabilitysemiring-rational-int64-overflow-diverges-three-w",
+    "priority": "P2",
+    "filename": "081M0QRQ1WV087G0R002G1EW7N-probabilitysemiring-rational-int64-overflow-diverges-three-w.md"
+  }
+}

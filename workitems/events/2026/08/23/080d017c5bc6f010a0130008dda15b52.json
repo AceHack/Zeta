@@ -1,0 +1,14 @@
+{
+  "id": "080d017c5bc6f010a0130008dda15b52",
+  "at": "2026-08-23T16:54:24.734Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M0QRPY6W087G0R001K4TE3M",
+    "type": "task",
+    "title": "Gaussian to WeightedSet natural-parameter homomorphism + the log-map negative control",
+    "slug": "gaussian-to-weightedset-natural-parameter-homomorphism-the-l",
+    "priority": "P2",
+    "filename": "081M0QRPY6W087G0R001K4TE3M-gaussian-to-weightedset-natural-parameter-homomorphism-the-l.md"
+  }
+}
