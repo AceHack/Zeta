@@ -1,0 +1,14 @@
+{
+  "id": "080d017a36895810a0130008b01c1e32",
+  "at": "2026-08-23T15:39:25.355Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M0QMDM99087G0R0034D6EQP",
+    "type": "task",
+    "title": "Fisher-metric quantiser for BNN posterior channels — replace the equal-mass grid",
+    "slug": "fisher-metric-quantiser-for-bnn-posterior-channels-replace-t",
+    "priority": "P2",
+    "filename": "081M0QMDM99087G0R0034D6EQP-fisher-metric-quantiser-for-bnn-posterior-channels-replace-t.md"
+  }
+}

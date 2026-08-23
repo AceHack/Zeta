@@ -1,0 +1,14 @@
+{
+  "id": "080d017a368d2010a0130008b6ee4c09",
+  "at": "2026-08-23T15:39:25.476Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M0QMDMD3087G0R000ZTVT1Q",
+    "type": "task",
+    "title": "GPU kernel for NG4 fold + crossover + cone-guarded mutation (toy)",
+    "slug": "gpu-kernel-for-ng4-fold-crossover-cone-guarded-mutation-toy",
+    "priority": "P2",
+    "filename": "081M0QMDMD3087G0R000ZTVT1Q-gpu-kernel-for-ng4-fold-crossover-cone-guarded-mutation-toy.md"
+  }
+}

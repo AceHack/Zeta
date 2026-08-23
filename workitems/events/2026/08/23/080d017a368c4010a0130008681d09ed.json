@@ -1,0 +1,14 @@
+{
+  "id": "080d017a368c4010a0130008681d09ed",
+  "at": "2026-08-23T15:39:25.448Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M0QMDMC7087G0R000W6QRCV",
+    "type": "task",
+    "title": "Round-trip a REAL MinimalBnn layer, not synthetic posteriors — widen the range check",
+    "slug": "round-trip-a-real-minimalbnn-layer-not-synthetic-posteriors",
+    "priority": "P2",
+    "filename": "081M0QMDMC7087G0R000W6QRCV-round-trip-a-real-minimalbnn-layer-not-synthetic-posteriors.md"
+  }
+}

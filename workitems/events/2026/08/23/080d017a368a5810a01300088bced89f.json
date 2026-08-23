@@ -1,0 +1,14 @@
+{
+  "id": "080d017a368a5810a01300088bced89f",
+  "at": "2026-08-23T15:39:25.387Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M0QMDMAA087G0R000MADEEB",
+    "type": "bug",
+    "title": "OracleRGBA WGSL atomicAdd on a non-atomic array<u32> — confirm on a device",
+    "slug": "oraclergba-wgsl-atomicadd-on-a-non-atomic-array-u32-confirm",
+    "priority": "P2",
+    "filename": "081M0QMDMAA087G0R000MADEEB-oraclergba-wgsl-atomicadd-on-a-non-atomic-array-u32-confirm.md"
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "id": "080d017a368b4810a0130008bf04964e",
+  "at": "2026-08-23T15:39:25.417Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M0QMDMB9087G0R003Y8WZMS",
+    "type": "task",
+    "title": "Branchless direction step in the OracleRGBA WGSL walker — remove the if/else chain",
+    "slug": "branchless-direction-step-in-the-oraclergba-wgsl-walker-remo",
+    "priority": "P2",
+    "filename": "081M0QMDMB9087G0R003Y8WZMS-branchless-direction-step-in-the-oraclergba-wgsl-walker-remo.md"
+  }
+}
