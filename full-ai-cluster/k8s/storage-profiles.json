@@ -255,11 +255,13 @@
     "",
     "and on the arm runner (99.02 GiB = 106.3 GB) all 46 fits with 25% to spare.",
     "",
-    "THE DECLARED BOUND IS STILL 14 AND THAT IS ON PURPOSE -- see",
-    "`measuredFreeDiskGib`. `image-footprint.ts --report` therefore prints TWO",
-    "verdicts per cohort, against the declared budget and against the measurement,",
-    "and they disagree loudly. That disagreement is the state of the tree, not a",
-    "bug in either number.",
+    "THE DECLARED BOUND WAS 14 AND IS NOW 70, TAKEN BY THE MAINTAINER 2026-08-23",
+    "-- see `measuredFreeDiskEvidence` for the verbatim authorization and the",
+    "standing tripwire. 70 is a floor beneath BOTH measured runners, not either",
+    "measurement, so `image-footprint.ts --report` still prints TWO verdicts per",
+    "cohort -- declared budget and measurement -- and they still differ. They no",
+    "longer differ by 5x, and the gap that remains (70 declared vs 77.06 / 99.02",
+    "measured) is the slack a portable contract is supposed to carry.",
     "",
     "AND THE x2.67 ESTIMATE IS ITSELF HIGH FOR THE TWO IMAGES THAT DECIDE THIS,",
     "measured on run 32588276375 by PULLING them on a hosted ubuntu-24.04 rather",
@@ -385,6 +387,98 @@
     "not a paraphrase of it. A lift condition stricter than its gate keeps an entry",
     "alive after its defect is gone, which has cost this repo a cycle twice."
   ],
+
+  "$comment_devCpuFloor": [
+    "THE DEV CPU FLOOR -- 25m per pod, taken 2026-08-23, and what it turned out NOT to be.",
+    "",
+    "AARON, VERBATIM: 'cpu is a compressible resource, can we not set the requests",
+    "smaller to make it fit? seems like should be able to test more charts'. That is",
+    "the authorization for this block and it is unchanged.",
+    "",
+    "== WHAT WAS DONE ========================================================",
+    "Every `resourceClaims` row whose `cpuMillis.dev` exceeded 25 AT THE TIME was set",
+    "to 25. 18 rows, -1250m across all 47 Applications, -925m inside the 38 the dev",
+    "root applies. `cpuMillis.metal` was NOT touched on any row, and `memoryMib` was",
+    "not touched at either rung. Rung-scoped, which is what the `dev` rung is for;",
+    "the hardware deployment is byte-for-byte where it was, because Aaron intends to",
+    "test on real hardware and those numbers are load-bearing there.",
+    "",
+    "== THE CLAIM THIS BLOCK USED TO MAKE, AND WHY IT IS WITHDRAWN ============",
+    "WRITTEN 2026-08-23 against a tree where this floor was the ONLY thing standing",
+    "between 3 lanes and 2. RE-MEASURED 2026-08-23 after rebasing onto #14174 and",
+    "#14194, and THAT IS NO LONGER TRUE. The correction is recorded rather than",
+    "overwritten, because a claim that was right about one tree and wrong about this",
+    "one is exactly the kind of thing that silently outlives its arithmetic.",
+    "",
+    "Measured on THIS tree, `lane-partition.ts --rung dev`, margin 0.85, envelope 70:",
+    "",
+    "  floor        lanes   covered   busiest lane CPU   of 2125m budget",
+    "   OFF           2      43/47         1656m              77.9%",
+    "   50m           2      43/47         1506m              70.9%",
+    "   45m           2      43/47         1421m              66.9%",
+    "   25m (taken)   2      43/47         1081m              50.9%",
+    "   10m           2      43/47          826m              38.9%",
+    "",
+    "THE LANE COUNT DOES NOT MOVE AT ANY FLOOR. 3 lanes became 2, and 41/47 became",
+    "43/47, because of TWO OTHER CHANGES: the maintainer's `freeDiskGib` 14 -> 70",
+    "(see `measuredFreeDiskEvidence`), which un-quarantined `hindsight` and `vllm`,",
+    "and #14194 making raw in-repo manifests rung-reachable, which took all-47 dev",
+    "CPU 6166m -> 5191m and gmod 1000m -> 100m at this rung. EVERY ROW OF THE TABLE",
+    "HOLDS `game-hosting/gmod` AT 100m, including the OFF row: it is left at the",
+    "value #14194 chose for it and is deliberately NOT floored here, because",
+    "extending this floor to a row governed after the floor was authorized would be",
+    "extending an authorization rather than inheriting one. A uniform floor that did",
+    "reach gmod would read 75m lower at 25m, and would still not change a lane.",
+    "",
+    "SO WHAT THE FLOOR ACTUALLY BUYS ON THIS TREE IS HEADROOM, NOT A LANE: the",
+    "busiest lane goes from 77.9% of its CPU budget to 50.9%. That is worth having",
+    "and it is what Aaron asked for -- room to test more charts without the next",
+    "workload re-splitting the partition -- but it is a smaller claim than the one",
+    "this block was written to make, and the smaller claim is the true one.",
+    "",
+    "== WHY CPU AND NOT MEMORY ===============================================",
+    "CPU is COMPRESSIBLE and memory is not, and the two failure modes are not",
+    "comparable. An under-requested CPU pod is THROTTLED -- it runs slower, it is",
+    "never killed for it. An under-requested memory pod is OOM-KILLED, which is the",
+    "quiet, arbitrary failure this file already warns about under 'A REQUEST IS A",
+    "RESERVATION, NOT A MEASUREMENT'. So the floor touches only the axis where being",
+    "wrong is recoverable and visible.",
+    "",
+    "And a request is a SCHEDULING input plus a cgroup share, not a ceiling. Nothing",
+    "here lowers a limit -- arc-controller and node-feature-discovery are the two",
+    "rows that even have one, and both keep theirs. What the cut actually spends is",
+    "GUARANTEED share under contention: a 25m pod on a busy runner gets less CPU and",
+    "starts slower, so the real risk is a readiness probe running out of slack. That",
+    "fails LOUDLY (NotReady, CrashLoop, an attributable pod) and is undone by raising",
+    "this floor. It is the trade, stated, not a claim that the cut is free.",
+    "",
+    "== WHY 25 AND NOT SOMETHING SMALLER =====================================",
+    "25m is not a coinage: it is already this catalogue's value for its smaller dev",
+    "rows (mimir/ruler, mimir/query_frontend, mimir/overrides_exporter, temporal/web,",
+    "node-feature-discovery/gc and /worker all sat at 25 before this). The floor",
+    "adopts the file's own number rather than inventing one. Since no floor changes",
+    "the lane count on this tree, 25 is now chosen for the headroom / guaranteed-share",
+    "trade above and NOT because it is the value that buys the partition.",
+    "",
+    "== WHAT THIS FLOOR DOES NOT REACH =======================================",
+    "`gitlab` IS 2525m AND IS THE ONE APPLICATION STILL QUARANTINED. It has no",
+    "`resourceClaims` row at all -- it is glob-excluded from the dev lane and carried",
+    "in `ungovernedRequests` -- so this floor cannot touch it, and 2525m is over the",
+    "2125m per-lane budget on its own. Its DISK half DID clear: at the 70-GiB",
+    "envelope its 11.53Gi closure fits a 56.10Gi lane, so gitlab went from oversize",
+    "on BOTH axes to oversize on CPU alone. Governing it is a separate decision with",
+    "a separate blast radius and is not taken here.",
+    "",
+    "`game-hosting/gmod` is 100m at `dev` since #14194 and 1000m at `metal`. It is",
+    "counted, not excluded; reachability is not removal.",
+    "",
+    "== WHAT IT DID NOT CLOSE, AND WHO DID ===================================",
+    "`acknowledgedLaneBudgetShortfall` is EMPTY, and this block does not get the",
+    "credit. The entry `dev cpu 2906>2500` lifted on `main` in #14194 when the rung",
+    "learned to reach raw manifests and the lane came in at 2006m. This floor took",
+    "the same lane from 2006m to 1081m on top of that. Both are true; only the first",
+    "one lifted the entry."
+  ],
   "acknowledgedLaneBudgetShortfall": [],
   "resourceProfiles": ["dev", "metal"],
 
@@ -392,13 +486,13 @@
     "runner": "github-hosted ubuntu-24.04 standard",
     "cpuMillis": 4000,
     "memoryMib": 15360,
-    "freeDiskGib": 14,
+    "freeDiskGib": 70,
     "measuredFreeDiskGib": 77,
-    "measuredFreeDiskEvidence": "READ, NOT DECLARED, and deliberately NOT the bound above. `runner-disk.ts --measure` on run 32585090483 reported / at 144.26 GiB with 77.06 GiB available on `ubuntu-24.04` and 99.02 GiB on `ubuntu-24.04-arm`, after checkout and toolchain install; one filesystem, no /mnt, images on /var/lib/docker under /. A further 20.72 GiB (x64) / 4.52 GiB (arm) sits in preinstalled toolchains no k8s lane invokes. NOTHING PRICES AGAINST THIS FIELD. It is here so the measurement is first-class and citable while `freeDiskGib` stays where the tree's consumers put it -- `lane-partition.ts` prices every lane against `freeDiskGib - reservedDiskGib`, and raising it moves which Applications come out `oversize`. That conclusion should move as a deliberate decision alongside the partition work, not as a side effect of one agent reading `df`. PROPOSED CORRECTION, for a human to take or refuse: freeDiskGib 14 -> 70 (a conservative floor beneath both runners). MEASURED CONSEQUENCE of taking it, so the trade is visible: three assertions in lane-partition.test.ts flip -- `all applications together do NOT fit one runner`, `hindsight and vllm are the measured self-hosted case`, and the partition it packs. Those are conclusions about the tree, not test bugs, which is exactly why the field did not move on its own.",
+    "measuredFreeDiskEvidence": "READ, NOT DECLARED, and as of 2026-08-23 the bound beside it has been RAISED TO MATCH -- by the maintainer, explicitly, which is the only thing that was ever missing. AARON 2026-08-23, VERBATIM: \"take the 70, unlock hindsight and vllm on hosted runners\". THAT IS THE AUTHORIZATION, and it is written here rather than in a commit message because this field is where the next agent will look. THE MEASUREMENT: `runner-disk.ts --measure` on run 32585090483 reported / at 144.26 GiB with 77.06 GiB available on `ubuntu-24.04` and 99.02 GiB on `ubuntu-24.04-arm`, after checkout and toolchain install; one filesystem, no /mnt, images on /var/lib/docker under /. A further 20.72 GiB (x64) / 4.52 GiB (arm) sits in preinstalled toolchains no k8s lane invokes. 70 is a conservative floor beneath both runners, NOT either measurement: it leaves 7.06 GiB of slack on the smaller of the two, so the bound stays a bound and not a transcription of one `df`. WHAT MOVED, priced before it was taken: `lane-partition.ts` prices every lane against `freeDiskGib - reservedDiskGib`, so the 0.85-margin lane budget goes 8.50 GiB -> 56.10 GiB and `hindsight` (24.06 GiB) and `vllm` (23.35 GiB) stop being `oversize`. Three assertions in lane-partition.test.ts were conclusions about the 14-GiB tree and have been rewritten to derive from the declared bound rather than to restate it -- see that file's `boundDerived` block for which, and for what each one now says at any bound. WHY THIS FIELD IS STILL LOUD, and it must stay loud: it moved four times in under three hours on 2026-08-22 (#13784 -> 70, #13830 -> 14, #13871 -> 70, #13903 -> 14) with NO human decision recorded in either direction; #13871 took it as an agent, deleted the sentence asking for a human, and carried `Human-Review-Evidence: none`. The oscillation is what the tripwire is for, and it is not retired by having been taken once. TRIPWIRE, STANDING: this number is a PORTABLE CONTRACT, not an observation. Any future change to it -- up or down -- needs a named human authorization recorded in this string, dated, alongside the measurement that motivates it. An agent that reads a bigger `df` and edits this field has widened a contract on the strength of one machine; an agent that reverts it without naming who asked has discarded one. Neither is a maintenance commit. `runner-disk.ts --check-envelope` convicts a runner SMALLER than this declares, so raising the bound makes that check STRONGER, and it is now armed at 70 rather than at a figure no machine in this fleet reports.",
     "reservedCpuMillis": 1500,
     "reservedMemoryMib": 6144,
     "reservedDiskGib": 4,
-    "reservationEvidence": "THE CPU AND MEMORY HALVES are GitHub's published spec for a hosted `ubuntu-24.04` standard runner (4 vCPU / 16 GB RAM), checked by `--measure-runner`: run on the runner it reads /proc/cpuinfo and /proc/meminfo and CONVICTS when the real machine is smaller than this record claims. THE DISK HALF IS STILL THE VENDOR SPEC (14 GB free SSD) AND IS NOW KNOWN TO UNDERSTATE THE MACHINE BY MORE THAN 5x -- see `measuredFreeDiskGib` beside it for what two runners actually reported and why the bound did not move with it. `runner-disk.ts --check-envelope` convicts when a runner has LESS than this declares, so an understating bound makes that check weak rather than wrong: it still catches a machine smaller than 14 GiB and it no longer catches much else. That is the honest cost of leaving the field where its consumers put it. 16 GB is recorded as 15360Mi because GB is decimal and Kubernetes quantities are binary. THE RESERVED HALF is 1500m / 6144Mi and splits three ways. (1) ~950m / ~290Mi for the kind control plane and kube-system, which the scheduler subtracts from allocatable before any Application is placed: kubeadm's static-pod defaults (apiserver 250m, controller-manager 200m, scheduler 100m, etcd 100m/100Mi), coredns 2 x 100m/70Mi, kindnet 100m/50Mi. argo-cd 7.7.10 adds nothing -- rendered 2026-08-21, every component's `resources` is unset. (2) ~550m / ~1536Mi ESTIMATED for what lives outside the kind node's cgroup and which the scheduler therefore cannot see at all: the host OS, the Actions runner agent, dockerd/containerd, and the bun harness driving the run. kind imposes no memory limit on its node container, so the kubelet reports the HOST's capacity as the node's -- meaning this slice is real and invisible, and under-reserving it shows up as the runner OOMing rather than as a Pending pod. (3) the remaining ~4300Mi is UNRESERVED HEADROOM for BestEffort pods. 28 of the 45 Applications render pods that request nothing, so the scheduler will admit any number of them and this arithmetic will never see one. That headroom is the only thing standing between them and the kernel OOM killer, and it is the reason this budget is deliberately not tight."
+    "reservationEvidence": "THE CPU AND MEMORY HALVES are GitHub's published spec for a hosted `ubuntu-24.04` standard runner (4 vCPU / 16 GB RAM), checked by `--measure-runner`: run on the runner it reads /proc/cpuinfo and /proc/meminfo and CONVICTS when the real machine is smaller than this record claims. THE DISK HALF WAS THE VENDOR SPEC (14 GB free SSD), which understated the machine by more than 5x; it is now 70 GiB, TAKEN BY THE MAINTAINER 2026-08-23 -- see `measuredFreeDiskEvidence` beside it for the verbatim authorization, the two runners it is a floor beneath, and the standing tripwire on any further change. `runner-disk.ts --check-envelope` convicts when a runner has LESS than this declares, so raising the bound STRENGTHENS that check rather than weakening it: it used to catch only a machine below 14 GiB, which is no machine this fleet runs on, and it now catches any runner that cannot hold what the lanes were planned against. The cost of the raise is stated rather than hidden: a hosted runner that ever ships with less than 70 GiB free will now FAIL this gate, and that failure is the gate working. 16 GB is recorded as 15360Mi because GB is decimal and Kubernetes quantities are binary. THE RESERVED HALF is 1500m / 6144Mi and splits three ways. (1) ~950m / ~290Mi for the kind control plane and kube-system, which the scheduler subtracts from allocatable before any Application is placed: kubeadm's static-pod defaults (apiserver 250m, controller-manager 200m, scheduler 100m, etcd 100m/100Mi), coredns 2 x 100m/70Mi, kindnet 100m/50Mi. argo-cd 7.7.10 adds nothing -- rendered 2026-08-21, every component's `resources` is unset. (2) ~550m / ~1536Mi ESTIMATED for what lives outside the kind node's cgroup and which the scheduler therefore cannot see at all: the host OS, the Actions runner agent, dockerd/containerd, and the bun harness driving the run. kind imposes no memory limit on its node container, so the kubelet reports the HOST's capacity as the node's -- meaning this slice is real and invisible, and under-reserving it shows up as the runner OOMing rather than as a Pending pod. (3) the remaining ~4300Mi is UNRESERVED HEADROOM for BestEffort pods. 28 of the 45 Applications render pods that request nothing, so the scheduler will admit any number of them and this arithmetic will never see one. That headroom is the only thing standing between them and the kernel OOM killer, and it is the reason this budget is deliberately not tight."
   },
 
   "resourceClaims": [
@@ -430,9 +524,9 @@
       "pods": 1,
       "metalSource": "manifest",
       "evidence": "",
-      "consequence": "The ARC controller watches runner scale sets. In the dev lane there is no GitHub App credential to bind, so it reconciles nothing; 64Mi is sized for that idle state and would be too small for a controller managing real runner sets.",
+      "consequence": "The ARC controller watches runner scale sets. In the dev lane there is no GitHub App credential to bind, so it reconciles nothing; 64Mi is sized for that idle state and would be too small for a controller managing real runner sets. DEV CPU FLOORED 2026-08-23, AUTHORIZED BY AARON (\"cpu is a compressible resource, can we not set the requests smaller to make it fit? seems like should be able to test more charts\"): dev 50m -> 25m per pod x 1 pod(s) = -25m. METAL IS UNTOUCHED at 100m -- this is a rung-scoped override, and the hardware deployment does not move. A request is a SCHEDULING reservation and a cgroup share, not a ceiling: nothing here lowers a limit, so the cut costs guaranteed CPU under contention (slower start, a readiness probe with less slack) and NOT headroom. CPU is compressible -- the pod is throttled, never killed -- which is why this floor touches cpuMillis and leaves memoryMib exactly where it was. See $comment_devCpuFloor for the sensitivity curve and what this does not reach.",
       "cpuMillis": {
-        "dev": 50,
+        "dev": 25,
         "metal": 100
       },
       "memoryMib": {
@@ -468,9 +562,9 @@
       "pods": 1,
       "metalSource": "chart-default",
       "evidence": "hindsight 0.3.0 values.yaml api.resources.requests = 500m / 1Gi. Rendered and counted 2026-08-21.",
-      "consequence": "The API pod is the single largest memory reservation in the dev lane after mimir. 512Mi is a working-set bet, not a measurement -- if the real set is larger the pod OOMKills under query load rather than running slower. Its 8.8 GB container image is a far harder constraint than this number (see $comment_resources).",
+      "consequence": "The API pod is the single largest memory reservation in the dev lane after mimir. 512Mi is a working-set bet, not a measurement -- if the real set is larger the pod OOMKills under query load rather than running slower. Its 8.8 GB container image is a far harder constraint than this number (see $comment_resources). DEV CPU FLOORED 2026-08-23, AUTHORIZED BY AARON (\"cpu is a compressible resource, can we not set the requests smaller to make it fit? seems like should be able to test more charts\"): dev 200m -> 25m per pod x 1 pod(s) = -175m. METAL IS UNTOUCHED at 500m -- this is a rung-scoped override, and the hardware deployment does not move. A request is a SCHEDULING reservation and a cgroup share, not a ceiling: nothing here lowers a limit, so the cut costs guaranteed CPU under contention (slower start, a readiness probe with less slack) and NOT headroom. CPU is compressible -- the pod is throttled, never killed -- which is why this floor touches cpuMillis and leaves memoryMib exactly where it was. Second-largest cut (175m). hindsight is also the app the raised disk bound just un-quarantined, so this row and `freeDiskGib: 70` are the two halves of the same unlock: the image now fits a lane and the request now fits beside the rest of it. See $comment_devCpuFloor for the sensitivity curve and what this does not reach.",
       "cpuMillis": {
-        "dev": 200,
+        "dev": 25,
         "metal": 500
       },
       "memoryMib": {
@@ -487,9 +581,9 @@
       "pods": 1,
       "metalSource": "chart-default",
       "evidence": "hindsight 0.3.0 values.yaml controlPlane.resources.requests = 250m / 512Mi. Rendered 2026-08-21.",
-      "consequence": "Control-plane reconciliation loop. At 256Mi a large reconcile batch is OOMKilled and retried from the top, so the cost is reconcile latency and churn, not lost state.",
+      "consequence": "Control-plane reconciliation loop. At 256Mi a large reconcile batch is OOMKilled and retried from the top, so the cost is reconcile latency and churn, not lost state. DEV CPU FLOORED 2026-08-23, AUTHORIZED BY AARON (\"cpu is a compressible resource, can we not set the requests smaller to make it fit? seems like should be able to test more charts\"): dev 100m -> 25m per pod x 1 pod(s) = -75m. METAL IS UNTOUCHED at 250m -- this is a rung-scoped override, and the hardware deployment does not move. A request is a SCHEDULING reservation and a cgroup share, not a ceiling: nothing here lowers a limit, so the cut costs guaranteed CPU under contention (slower start, a readiness probe with less slack) and NOT headroom. CPU is compressible -- the pod is throttled, never killed -- which is why this floor touches cpuMillis and leaves memoryMib exactly where it was. See $comment_devCpuFloor for the sensitivity curve and what this does not reach.",
       "cpuMillis": {
-        "dev": 100,
+        "dev": 25,
         "metal": 250
       },
       "memoryMib": {
@@ -506,9 +600,9 @@
       "pods": 1,
       "metalSource": "chart-default",
       "evidence": "hindsight 0.3.0 values.yaml postgresql.resources.requests = 250m / 256Mi. Rendered 2026-08-21.",
-      "consequence": "Postgres shared buffers plus per-connection work_mem live inside this. At 128Mi the server is fine for a smoke test and will be OOMKilled by any real query mix -- and an OOMKilled database is a crash, not a slowdown. `metal` keeps the chart default.",
+      "consequence": "Postgres shared buffers plus per-connection work_mem live inside this. At 128Mi the server is fine for a smoke test and will be OOMKilled by any real query mix -- and an OOMKilled database is a crash, not a slowdown. `metal` keeps the chart default. DEV CPU FLOORED 2026-08-23, AUTHORIZED BY AARON (\"cpu is a compressible resource, can we not set the requests smaller to make it fit? seems like should be able to test more charts\"): dev 100m -> 25m per pod x 1 pod(s) = -75m. METAL IS UNTOUCHED at 250m -- this is a rung-scoped override, and the hardware deployment does not move. A request is a SCHEDULING reservation and a cgroup share, not a ceiling: nothing here lowers a limit, so the cut costs guaranteed CPU under contention (slower start, a readiness probe with less slack) and NOT headroom. CPU is compressible -- the pod is throttled, never killed -- which is why this floor touches cpuMillis and leaves memoryMib exactly where it was. NAMED RISK, because this row has a history: hindsight-postgresql-0 is the pod that cashed the longhorn reprieve as a real `Insufficient cpu`. A 25m request does not make that recur -- it makes the pod EASIER to schedule, not harder -- but it does mean that on a busy runner Postgres starts slower, and anything with a startup probe waiting on it waits longer. See $comment_devCpuFloor for the sensitivity curve and what this does not reach.",
       "cpuMillis": {
-        "dev": 100,
+        "dev": 25,
         "metal": 250
       },
       "memoryMib": {
@@ -544,9 +638,9 @@
       "pods": 1,
       "metalSource": "chart-default",
       "evidence": "mimir-distributed 5.5.1 values.yaml default; our valuesObject does not set it. Rendered and counted 2026-08-21 with `helm template` against this Application's own valuesObject.",
-      "consequence": "Compaction working set. At 192Mi the compactor can only hold a smaller block set at a time; a tenant whose block set outgrows it stalls compaction and query performance degrades. Nothing is deleted -- the blocks stay in object storage uncompacted.",
+      "consequence": "Compaction working set. At 192Mi the compactor can only hold a smaller block set at a time; a tenant whose block set outgrows it stalls compaction and query performance degrades. Nothing is deleted -- the blocks stay in object storage uncompacted. DEV CPU FLOORED 2026-08-23, AUTHORIZED BY AARON (\"cpu is a compressible resource, can we not set the requests smaller to make it fit? seems like should be able to test more charts\"): dev 50m -> 25m per pod x 1 pod(s) = -25m. METAL IS UNTOUCHED at 100m -- this is a rung-scoped override, and the hardware deployment does not move. A request is a SCHEDULING reservation and a cgroup share, not a ceiling: nothing here lowers a limit, so the cut costs guaranteed CPU under contention (slower start, a readiness probe with less slack) and NOT headroom. CPU is compressible -- the pod is throttled, never killed -- which is why this floor touches cpuMillis and leaves memoryMib exactly where it was. See $comment_devCpuFloor for the sensitivity curve and what this does not reach.",
       "cpuMillis": {
-        "dev": 50,
+        "dev": 25,
         "metal": 100
       },
       "memoryMib": {
@@ -563,9 +657,9 @@
       "pods": 1,
       "metalSource": "chart-default",
       "evidence": "mimir-distributed 5.5.1 values.yaml default; our valuesObject does not set it. Rendered and counted 2026-08-21 with `helm template` against this Application's own valuesObject.",
-      "consequence": "The distributor buffers incoming series before fan-out to ingesters. At 192Mi a write burst that would have been absorbed is instead pushed back on the client (429), and a burst larger than the buffer OOMKills the pod rather than queueing. Acceptable in CI, where write volume is a smoke test; NOT acceptable on metal, which is why `metal` keeps 512Mi.",
+      "consequence": "The distributor buffers incoming series before fan-out to ingesters. At 192Mi a write burst that would have been absorbed is instead pushed back on the client (429), and a burst larger than the buffer OOMKills the pod rather than queueing. Acceptable in CI, where write volume is a smoke test; NOT acceptable on metal, which is why `metal` keeps 512Mi. DEV CPU FLOORED 2026-08-23, AUTHORIZED BY AARON (\"cpu is a compressible resource, can we not set the requests smaller to make it fit? seems like should be able to test more charts\"): dev 50m -> 25m per pod x 1 pod(s) = -25m. METAL IS UNTOUCHED at 100m -- this is a rung-scoped override, and the hardware deployment does not move. A request is a SCHEDULING reservation and a cgroup share, not a ceiling: nothing here lowers a limit, so the cut costs guaranteed CPU under contention (slower start, a readiness probe with less slack) and NOT headroom. CPU is compressible -- the pod is throttled, never killed -- which is why this floor touches cpuMillis and leaves memoryMib exactly where it was. See $comment_devCpuFloor for the sensitivity curve and what this does not reach.",
       "cpuMillis": {
-        "dev": 50,
+        "dev": 25,
         "metal": 100
       },
       "memoryMib": {
@@ -582,9 +676,9 @@
       "pods": 3,
       "metalSource": "chart-default",
       "evidence": "mimir-distributed 5.5.1 values.yaml; zoneAwareReplication.enabled=true over 3 zones and templates/_helpers.tpl:568 replicaPerZone = ceil(replicas/zones), so one `resources` key renders into 3 zone StatefulSets. Rendered and counted 2026-08-21 with `helm template` against this Application's own valuesObject.",
-      "consequence": "The ingester holds the in-flight head block in memory before shipping to object storage. 192Mi bounds how many active series one ingester can hold; past that it OOMKills and the series are re-replayed from the WAL on restart. Data already shipped to MinIO is unaffected. This value is multiplied by 3 zones.",
+      "consequence": "The ingester holds the in-flight head block in memory before shipping to object storage. 192Mi bounds how many active series one ingester can hold; past that it OOMKills and the series are re-replayed from the WAL on restart. Data already shipped to MinIO is unaffected. This value is multiplied by 3 zones. DEV CPU FLOORED 2026-08-23, AUTHORIZED BY AARON (\"cpu is a compressible resource, can we not set the requests smaller to make it fit? seems like should be able to test more charts\"): dev 50m -> 25m per pod x 3 pod(s) = -75m. METAL IS UNTOUCHED at 100m -- this is a rung-scoped override, and the hardware deployment does not move. A request is a SCHEDULING reservation and a cgroup share, not a ceiling: nothing here lowers a limit, so the cut costs guaranteed CPU under contention (slower start, a readiness probe with less slack) and NOT headroom. CPU is compressible -- the pod is throttled, never killed -- which is why this floor touches cpuMillis and leaves memoryMib exactly where it was. See $comment_devCpuFloor for the sensitivity curve and what this does not reach.",
       "cpuMillis": {
-        "dev": 50,
+        "dev": 25,
         "metal": 100
       },
       "memoryMib": {
@@ -677,9 +771,9 @@
       "pods": 1,
       "metalSource": "chart-default",
       "evidence": "mimir-distributed 5.5.1 charts/rollout-operator/values.yaml requests cpu 100m / memory 100Mi (alias `rollout_operator` in Chart.yaml). Rendered and counted 2026-08-21.",
-      "consequence": "Coordinates zone-by-zone StatefulSet rollouts. Cutting it slows or stalls a rolling upgrade; it is not on any read or write path.",
+      "consequence": "Coordinates zone-by-zone StatefulSet rollouts. Cutting it slows or stalls a rolling upgrade; it is not on any read or write path. DEV CPU FLOORED 2026-08-23, AUTHORIZED BY AARON (\"cpu is a compressible resource, can we not set the requests smaller to make it fit? seems like should be able to test more charts\"): dev 50m -> 25m per pod x 1 pod(s) = -25m. METAL IS UNTOUCHED at 100m -- this is a rung-scoped override, and the hardware deployment does not move. A request is a SCHEDULING reservation and a cgroup share, not a ceiling: nothing here lowers a limit, so the cut costs guaranteed CPU under contention (slower start, a readiness probe with less slack) and NOT headroom. CPU is compressible -- the pod is throttled, never killed -- which is why this floor touches cpuMillis and leaves memoryMib exactly where it was. See $comment_devCpuFloor for the sensitivity curve and what this does not reach.",
       "cpuMillis": {
-        "dev": 50,
+        "dev": 25,
         "metal": 100
       },
       "memoryMib": {
@@ -715,9 +809,9 @@
       "pods": 3,
       "metalSource": "chart-default",
       "evidence": "mimir-distributed 5.5.1 values.yaml; zoneAwareReplication.enabled=true over 3 zones and templates/_helpers.tpl:568 replicaPerZone = ceil(replicas/zones), so one `resources` key renders into 3 zone StatefulSets. Rendered and counted 2026-08-21 with `helm template` against this Application's own valuesObject.",
-      "consequence": "The store-gateway keeps block index-headers resident. Shrinking it is a LATENCY cost, never a data-loss one: long-range queries re-fetch index headers from object storage instead of reading them from memory. Multiplied by 3 zones.",
+      "consequence": "The store-gateway keeps block index-headers resident. Shrinking it is a LATENCY cost, never a data-loss one: long-range queries re-fetch index headers from object storage instead of reading them from memory. Multiplied by 3 zones. DEV CPU FLOORED 2026-08-23, AUTHORIZED BY AARON (\"cpu is a compressible resource, can we not set the requests smaller to make it fit? seems like should be able to test more charts\"): dev 50m -> 25m per pod x 3 pod(s) = -75m. METAL IS UNTOUCHED at 100m -- this is a rung-scoped override, and the hardware deployment does not move. A request is a SCHEDULING reservation and a cgroup share, not a ceiling: nothing here lowers a limit, so the cut costs guaranteed CPU under contention (slower start, a readiness probe with less slack) and NOT headroom. CPU is compressible -- the pod is throttled, never killed -- which is why this floor touches cpuMillis and leaves memoryMib exactly where it was. See $comment_devCpuFloor for the sensitivity curve and what this does not reach.",
       "cpuMillis": {
-        "dev": 50,
+        "dev": 25,
         "metal": 100
       },
       "memoryMib": {
@@ -773,9 +867,9 @@
       "metalSource": "manifest",
       "evidence": "",
       "note": "This Application's own valuesObject already sets resources.requests to 100m / 256Mi -- the minio 5.4.0 chart's own default is 16Gi of memory, which is why our tree overrides it at all.",
-      "consequence": "MinIO caches object metadata and buffers multipart uploads in this. At 128Mi a large multipart PUT is OOMKilled mid-upload and has to be retried from the start. Fine for a CI smoke set of objects; `metal` keeps 256Mi.",
+      "consequence": "MinIO caches object metadata and buffers multipart uploads in this. At 128Mi a large multipart PUT is OOMKilled mid-upload and has to be retried from the start. Fine for a CI smoke set of objects; `metal` keeps 256Mi. DEV CPU FLOORED 2026-08-23, AUTHORIZED BY AARON (\"cpu is a compressible resource, can we not set the requests smaller to make it fit? seems like should be able to test more charts\"): dev 50m -> 25m per pod x 1 pod(s) = -25m. METAL IS UNTOUCHED at 100m -- this is a rung-scoped override, and the hardware deployment does not move. A request is a SCHEDULING reservation and a cgroup share, not a ceiling: nothing here lowers a limit, so the cut costs guaranteed CPU under contention (slower start, a readiness probe with less slack) and NOT headroom. CPU is compressible -- the pod is throttled, never killed -- which is why this floor touches cpuMillis and leaves memoryMib exactly where it was. See $comment_devCpuFloor for the sensitivity curve and what this does not reach.",
       "cpuMillis": {
-        "dev": 50,
+        "dev": 25,
         "metal": 100
       },
       "memoryMib": {
@@ -811,9 +905,9 @@
       "pods": 1,
       "metalSource": "manifest",
       "evidence": "",
-      "consequence": "The NFD master holds the feature set of every node. On a one-node kind cluster that is a handful of labels, so 96Mi is generous; on a large fleet it is not, which is why `metal` keeps 128Mi.",
+      "consequence": "The NFD master holds the feature set of every node. On a one-node kind cluster that is a handful of labels, so 96Mi is generous; on a large fleet it is not, which is why `metal` keeps 128Mi. DEV CPU FLOORED 2026-08-23, AUTHORIZED BY AARON (\"cpu is a compressible resource, can we not set the requests smaller to make it fit? seems like should be able to test more charts\"): dev 50m -> 25m per pod x 1 pod(s) = -25m. METAL IS UNTOUCHED at 100m -- this is a rung-scoped override, and the hardware deployment does not move. A request is a SCHEDULING reservation and a cgroup share, not a ceiling: nothing here lowers a limit, so the cut costs guaranteed CPU under contention (slower start, a readiness probe with less slack) and NOT headroom. CPU is compressible -- the pod is throttled, never killed -- which is why this floor touches cpuMillis and leaves memoryMib exactly where it was. See $comment_devCpuFloor for the sensitivity curve and what this does not reach.",
       "cpuMillis": {
-        "dev": 50,
+        "dev": 25,
         "metal": 100
       },
       "memoryMib": {
@@ -849,9 +943,9 @@
       "pods": 1,
       "metalSource": "chart-default",
       "evidence": "gatekeeper 3.18.1 values.yaml audit.resources.requests = 100m / 512Mi. Rendered 2026-08-21.",
-      "consequence": "The audit pod re-scans existing objects against every constraint and holds the working set while it does. At 256Mi a large cluster's audit pass is OOMKilled part-way, so violations on already-admitted objects go unreported. Admission itself is unaffected.",
+      "consequence": "The audit pod re-scans existing objects against every constraint and holds the working set while it does. At 256Mi a large cluster's audit pass is OOMKilled part-way, so violations on already-admitted objects go unreported. Admission itself is unaffected. DEV CPU FLOORED 2026-08-23, AUTHORIZED BY AARON (\"cpu is a compressible resource, can we not set the requests smaller to make it fit? seems like should be able to test more charts\"): dev 50m -> 25m per pod x 1 pod(s) = -25m. METAL IS UNTOUCHED at 100m -- this is a rung-scoped override, and the hardware deployment does not move. A request is a SCHEDULING reservation and a cgroup share, not a ceiling: nothing here lowers a limit, so the cut costs guaranteed CPU under contention (slower start, a readiness probe with less slack) and NOT headroom. CPU is compressible -- the pod is throttled, never killed -- which is why this floor touches cpuMillis and leaves memoryMib exactly where it was. See $comment_devCpuFloor for the sensitivity curve and what this does not reach.",
       "cpuMillis": {
-        "dev": 50,
+        "dev": 25,
         "metal": 100
       },
       "memoryMib": {
@@ -868,9 +962,9 @@
       "pods": 1,
       "metalSource": "chart-default",
       "evidence": "gatekeeper 3.18.1 values.yaml controllerManager.resources.requests = 100m / 512Mi. Rendered 2026-08-21.",
-      "consequence": "Gatekeeper's admission webhook. It is IN THE ADMISSION PATH, so an OOMKill here does not degrade -- with failurePolicy Fail it rejects every governed create until it restarts, and with Ignore it silently stops enforcing policy. 256Mi is sized for the CI constraint set only; `metal` keeps the chart default for exactly this reason.",
+      "consequence": "Gatekeeper's admission webhook. It is IN THE ADMISSION PATH, so an OOMKill here does not degrade -- with failurePolicy Fail it rejects every governed create until it restarts, and with Ignore it silently stops enforcing policy. 256Mi is sized for the CI constraint set only; `metal` keeps the chart default for exactly this reason. DEV CPU FLOORED 2026-08-23, AUTHORIZED BY AARON (\"cpu is a compressible resource, can we not set the requests smaller to make it fit? seems like should be able to test more charts\"): dev 50m -> 25m per pod x 1 pod(s) = -25m. METAL IS UNTOUCHED at 100m -- this is a rung-scoped override, and the hardware deployment does not move. A request is a SCHEDULING reservation and a cgroup share, not a ceiling: nothing here lowers a limit, so the cut costs guaranteed CPU under contention (slower start, a readiness probe with less slack) and NOT headroom. CPU is compressible -- the pod is throttled, never killed -- which is why this floor touches cpuMillis and leaves memoryMib exactly where it was. See $comment_devCpuFloor for the sensitivity curve and what this does not reach.",
       "cpuMillis": {
-        "dev": 50,
+        "dev": 25,
         "metal": 100
       },
       "memoryMib": {
@@ -925,9 +1019,9 @@
       "pods": 1,
       "metalSource": "chart-default",
       "evidence": "bitnami redis 20.5.0 ships master.resourcesPreset: nano, which renders 100m / 128Mi; the chart's own values.yaml documents that an explicit master.resources OVERRIDES the preset. Rendered and counted 2026-08-21. Setting the field therefore takes the value off the preset ladder, which is a behaviour change worth knowing about even though the metal number is identical.",
-      "consequence": "Redis holds its whole dataset in memory. 64Mi is a hard ceiling on the dataset, not a throttle: past it the master is OOMKilled and every key not yet persisted is gone. This is the cut in this ladder with the least margin, and it is only defensible because the dev lane's redis holds a smoke-test dataset.",
+      "consequence": "Redis holds its whole dataset in memory. 64Mi is a hard ceiling on the dataset, not a throttle: past it the master is OOMKilled and every key not yet persisted is gone. This is the cut in this ladder with the least margin, and it is only defensible because the dev lane's redis holds a smoke-test dataset. DEV CPU FLOORED 2026-08-23, AUTHORIZED BY AARON (\"cpu is a compressible resource, can we not set the requests smaller to make it fit? seems like should be able to test more charts\"): dev 50m -> 25m per pod x 1 pod(s) = -25m. METAL IS UNTOUCHED at 100m -- this is a rung-scoped override, and the hardware deployment does not move. A request is a SCHEDULING reservation and a cgroup share, not a ceiling: nothing here lowers a limit, so the cut costs guaranteed CPU under contention (slower start, a readiness probe with less slack) and NOT headroom. CPU is compressible -- the pod is throttled, never killed -- which is why this floor touches cpuMillis and leaves memoryMib exactly where it was. See $comment_devCpuFloor for the sensitivity curve and what this does not reach.",
       "cpuMillis": {
-        "dev": 50,
+        "dev": 25,
         "metal": 100
       },
       "memoryMib": {
@@ -944,9 +1038,9 @@
       "pods": 2,
       "metalSource": "chart-default",
       "evidence": "bitnami redis 20.5.0 replica.resourcesPreset: nano -> 100m / 128Mi, multiplied by this Application's replica.replicaCount: 2. Rendered and counted 2026-08-21.",
-      "consequence": "Each replica holds a full copy of the master's dataset, so the same ceiling applies twice over: a replica that OOMKills re-syncs from scratch, which on a real dataset is a full RDB transfer. Nominal redundancy only on one node -- see acknowledgedFalseRedundancy.",
+      "consequence": "Each replica holds a full copy of the master's dataset, so the same ceiling applies twice over: a replica that OOMKills re-syncs from scratch, which on a real dataset is a full RDB transfer. Nominal redundancy only on one node -- see acknowledgedFalseRedundancy. DEV CPU FLOORED 2026-08-23, AUTHORIZED BY AARON (\"cpu is a compressible resource, can we not set the requests smaller to make it fit? seems like should be able to test more charts\"): dev 50m -> 25m per pod x 2 pod(s) = -50m. METAL IS UNTOUCHED at 100m -- this is a rung-scoped override, and the hardware deployment does not move. A request is a SCHEDULING reservation and a cgroup share, not a ceiling: nothing here lowers a limit, so the cut costs guaranteed CPU under contention (slower start, a readiness probe with less slack) and NOT headroom. CPU is compressible -- the pod is throttled, never killed -- which is why this floor touches cpuMillis and leaves memoryMib exactly where it was. See $comment_devCpuFloor for the sensitivity curve and what this does not reach.",
       "cpuMillis": {
-        "dev": 50,
+        "dev": 25,
         "metal": 100
       },
       "memoryMib": {
@@ -963,9 +1057,9 @@
       "pods": 1,
       "metalSource": "chart-default",
       "evidence": "seaweedfs 4.33.0 values.yaml allInOne.resources.requests = 500m / 1Gi. Rendered 2026-08-21.",
-      "consequence": "One pod carrying master, volume and filer. 512Mi bounds the volume server's needle-map and the filer's metadata cache; past that the pod OOMKills and every in-flight write to that volume fails. Fine for a CI smoke set of objects, not for a real object store.",
+      "consequence": "One pod carrying master, volume and filer. 512Mi bounds the volume server's needle-map and the filer's metadata cache; past that the pod OOMKills and every in-flight write to that volume fails. Fine for a CI smoke set of objects, not for a real object store. DEV CPU FLOORED 2026-08-23, AUTHORIZED BY AARON (\"cpu is a compressible resource, can we not set the requests smaller to make it fit? seems like should be able to test more charts\"): dev 200m -> 25m per pod x 1 pod(s) = -175m. METAL IS UNTOUCHED at 500m -- this is a rung-scoped override, and the hardware deployment does not move. A request is a SCHEDULING reservation and a cgroup share, not a ceiling: nothing here lowers a limit, so the cut costs guaranteed CPU under contention (slower start, a readiness probe with less slack) and NOT headroom. CPU is compressible -- the pod is throttled, never killed -- which is why this floor touches cpuMillis and leaves memoryMib exactly where it was. 175m, tied for second-largest. all-in-one bundles master + volume + filer in one pod, so this single request is three roles' worth; at dev it serves a health check, at metal it serves the cluster. See $comment_devCpuFloor for the sensitivity curve and what this does not reach.",
       "cpuMillis": {
-        "dev": 200,
+        "dev": 25,
         "metal": 500
       },
       "memoryMib": {
@@ -1001,9 +1095,9 @@
       "pods": 1,
       "metalSource": "manifest",
       "evidence": "temporal 0.59.0 templates/server-job.yaml renders ONE Job (`temporal-schema-1`) with SIX init containers -- create/setup/update x {default, visibility} -- and one `done` container, each carrying `.Values.schema.resources`. Init containers run SEQUENTIALLY, so the pod's effective request is max(init) = one unit of this value, NOT six. `pods: 1` is that arithmetic, not a guess. Rendered 2026-08-22.",
-      "consequence": "Transient: the Job runs `temporal-sql-tool` once per sync and then the pod exits (ttlSecondsAfterFinished 86400). A cut starves the schema tool, and its failure mode is a Job that retries to backoffLimit 100 rather than a running service degrading -- loud and bounded. Note this Job is ALSO where the CockroachDB visibility-schema block bites: `update-visibility-store` cannot succeed until that is resolved (see the Application header).",
+      "consequence": "Transient: the Job runs `temporal-sql-tool` once per sync and then the pod exits (ttlSecondsAfterFinished 86400). A cut starves the schema tool, and its failure mode is a Job that retries to backoffLimit 100 rather than a running service degrading -- loud and bounded. Note this Job is ALSO where the CockroachDB visibility-schema block bites: `update-visibility-store` cannot succeed until that is resolved (see the Application header). DEV CPU FLOORED 2026-08-23, AUTHORIZED BY AARON (\"cpu is a compressible resource, can we not set the requests smaller to make it fit? seems like should be able to test more charts\"): dev 50m -> 25m per pod x 1 pod(s) = -25m. METAL IS UNTOUCHED at 100m -- this is a rung-scoped override, and the hardware deployment does not move. A request is a SCHEDULING reservation and a cgroup share, not a ceiling: nothing here lowers a limit, so the cut costs guaranteed CPU under contention (slower start, a readiness probe with less slack) and NOT headroom. CPU is compressible -- the pod is throttled, never killed -- which is why this floor touches cpuMillis and leaves memoryMib exactly where it was. NAMED RISK: this is the schema-init job the server waits on. Throttled, it takes longer, and a lane that times out waiting for temporal to go Ready will fail LOUDLY on the job -- which is the failure mode we want and not the one we are trading away. See $comment_devCpuFloor for the sensitivity curve and what this does not reach.",
       "cpuMillis": {
-        "dev": 50,
+        "dev": 25,
         "metal": 100
       },
       "memoryMib": {
@@ -1020,9 +1114,9 @@
       "pods": 4,
       "metalSource": "manifest",
       "evidence": "FOUR pods from ONE values key, which is exactly the mimir trap this field exists for. temporal 0.59.0 templates/server-deployment.yaml:156 is `toYaml (default $.Values.server.resources $serviceValues.resources)` and the template ranges over frontend, history, matching and worker; no per-service `resources` is set in this Application, so `server.resources` applies to all four. Each is a Deployment at `server.replicaCount: 1`. MEASURED by rendering this Application's own valuesObject 2026-08-22: temporal-frontend, temporal-history, temporal-matching, temporal-worker.",
-      "consequence": "These four ARE Temporal. 256Mi per service is a working-set bet and not a measurement: history is the one that will find the floor first, because it caches mutable workflow state per shard and this deployment runs `numHistoryShards: 512`. Under-request without a limit does not make it smaller -- it moves the failure from a Pending pod to the kernel OOM killer, and an OOMKilled history pod means every workflow on its shards stalls until the shard is re-acquired. The dev rung is safe only because `temporal/**` is glob-excluded from the dev lane (ports.ts DEFAULT_ROOT_DEV_CATALOG.excludeGlob) and never schedules there.",
+      "consequence": "These four ARE Temporal. 256Mi per service is a working-set bet and not a measurement: history is the one that will find the floor first, because it caches mutable workflow state per shard and this deployment runs `numHistoryShards: 512`. Under-request without a limit does not make it smaller -- it moves the failure from a Pending pod to the kernel OOM killer, and an OOMKilled history pod means every workflow on its shards stalls until the shard is re-acquired. The dev rung is safe only because `temporal/**` is glob-excluded from the dev lane (ports.ts DEFAULT_ROOT_DEV_CATALOG.excludeGlob) and never schedules there. DEV CPU FLOORED 2026-08-23, AUTHORIZED BY AARON (\"cpu is a compressible resource, can we not set the requests smaller to make it fit? seems like should be able to test more charts\"): dev 100m -> 25m per pod x 4 pod(s) = -300m. METAL IS UNTOUCHED at 250m -- this is a rung-scoped override, and the hardware deployment does not move. A request is a SCHEDULING reservation and a cgroup share, not a ceiling: nothing here lowers a limit, so the cut costs guaranteed CPU under contention (slower start, a readiness probe with less slack) and NOT headroom. CPU is compressible -- the pod is throttled, never killed -- which is why this floor touches cpuMillis and leaves memoryMib exactly where it was. LARGEST SINGLE CUT IN THIS FLOOR: 4 pods x 75m = 300m, a quarter of everything the floor recovers. temporal's four server roles are idle in a lane that renders and health-checks; they are not idle under load, which is why `metal` keeps 250m. See $comment_devCpuFloor for the sensitivity curve and what this does not reach.",
       "cpuMillis": {
-        "dev": 100,
+        "dev": 25,
         "metal": 250
       },
       "memoryMib": {

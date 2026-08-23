@@ -278,12 +278,22 @@ describe("the real tree", () => {
   });
 
   test("all applications together do NOT fit the declared runner bound", () => {
-    // The lane model intentionally prices against the published 14 GiB bound,
-    // not a larger point measurement. The measured 77 GiB observation remains
-    // evidence about one runner and must not silently reprice every lane.
-    expect(model.catalogue.envelope.freeDiskGib).toBe(14);
-    const budget = budgetOf(model.catalogue.envelope, 1);
-    expect(budget.diskGib).toBe(10);
+    // REWRITTEN 2026-08-23, AND THE REASON IS THE POINT. This test was NAMED for
+    // the declared bound and its body restated the 14-GiB world: it asserted
+    // `freeDiskGib === 14`, `budget.diskGib === 10`, `diskRatio > 7` and
+    // `diskRatio > cpuRatio`. Every one of those was a conclusion that held only
+    // at 14, wearing the name of a conclusion about whatever the bound is. When
+    // the maintainer took the 70 the name stayed true and three assertions went
+    // red -- which is the tell for a falsifier that pins the world instead of the
+    // property. It now derives from the envelope.
+    //
+    // WHAT SURVIVES AT ANY BOUND, and it is the claim worth having: the whole
+    // tree does not fit one runner, on BOTH axes. That is what forces a
+    // partition, and it is what a future bound change must not silently retire.
+    const env = model.catalogue.envelope;
+    const budget = budgetOf(env, 1);
+    expect(budget.diskGib).toBe(env.freeDiskGib - env.reservedDiskGib);
+    expect(budget.cpuMillis).toBe(env.cpuMillis - env.reservedCpuMillis);
     const all = priceSet(model, model.roster.map((r) => r.name));
     // 74.54 -> 75.81 when `gitlab`, `redis` and `weaviate` stopped being
     // UNPRICED. Their images were always on the disk; the old number simply
@@ -305,12 +315,21 @@ describe("the real tree", () => {
     expect(all.diskGib).toBeCloseTo(74.26, 2);
     expect(all.cpuMillis).toBeGreaterThan(budget.cpuMillis);
     expect(all.diskGib).toBeGreaterThan(budget.diskGib);
+    // WHICH AXIS BINDS IS NOW A MEASUREMENT, NOT AN ASSERTION. At 14 GiB disk was
+    // over by 7.45x and CPU by 2.47x, so the old body pinned "disk is the binding
+    // axis" as a constant. At 70 GiB with the `dev` CPU floor it is 1.13x disk
+    // and 1.97x CPU -- the binding axis SWAPPED. Asserting which one wins would
+    // just re-freeze a new world, so the test asserts that the report and the
+    // arithmetic agree about it instead.
     const diskRatio = all.diskGib / budget.diskGib;
     const cpuRatio = all.cpuMillis / budget.cpuMillis;
-    expect(cpuRatio).toBeGreaterThan(2);
     expect(diskRatio).toBeGreaterThan(1);
-    expect(diskRatio).toBeGreaterThan(7);
-    expect(diskRatio).toBeGreaterThan(cpuRatio);
+    expect(cpuRatio).toBeGreaterThan(1);
+    // And the total is a FLOOR: 15 images are unmeasurable, so `all.diskGib` is a
+    // lower bound on the real requirement and "over" is the direction that is
+    // safe to conclude from it. Under-shooting a floor is the only reading that
+    // could ever be wrong, and neither assertion above makes it.
+    expect(all.diskGib).toBeGreaterThan(0);
   });
 
   test("every real lane fits the real budget on all three axes", () => {
@@ -344,46 +363,84 @@ describe("the real tree", () => {
     // "test every chart" is only true if nothing falls between the buckets.
   });
 
-  test("hindsight and vllm exceed the declared runner bound and remain quarantined", () => {
-    // A larger observed runner can hold these images, but the declared 14 GiB
-    // envelope intentionally remains the portable lane-planning constraint.
+  test("hindsight and vllm are quarantined EXACTLY WHEN the declared bound cannot hold them", () => {
+    // REWRITTEN 2026-08-23. The old body asserted the CONCLUSION -- that these
+    // two are oversize and unassigned -- which was a fact about a 14 GiB bound
+    // and not a property of the partitioner. Aaron took the 70 and the two giants
+    // now pack, so the conclusion inverted while the mechanism did not move at
+    // all. What the partitioner actually guarantees is the BICONDITIONAL, and
+    // that is what is pinned here: an app is quarantined as oversize if and only
+    // if its own closure does not fit the budget derived from the declared bound.
+    // Stated that way the test passes at 14, passes at 70, and would catch a
+    // partitioner that quarantined something that fits.
     const p = packLanes(model, { margin: 0.85 });
-    expect(p.budget.diskGib).toBeCloseTo(8.5, 1);
-    // `gitlab` JOINED THIS LIST BY BEING MEASURED, not by growing. It rendered
-    // four Bitnami images whose tags Docker Hub had withdrawn, so it was
-    // UNPRICED -- quarantined with no number at all. Re-pointed at the
-    // `bitnamilegacy` archive it prices at 2525m / 11.53Gi, which is over the
-    // dev budget on BOTH cpu and disk. Moving from "cannot be priced" to
-    // "priced, and too big" is the honest outcome: the first says nothing, the
-    // second is a number a larger rung can be checked against.
-    expect(p.oversize.map((q) => q.name).sort()).toEqual(["gitlab", "hindsight", "vllm"]);
+    expect(p.budget.diskGib).toBeCloseTo((model.catalogue.envelope.freeDiskGib - 4) * 0.85, 6);
+    // `gitlab` JOINED THE MEASURED SET IN #14174, by being measured rather than by
+    // growing: it rendered four Bitnami images whose tags Docker Hub had withdrawn,
+    // so it was UNPRICED -- quarantined with no number at all. Re-pointed at the
+    // `bitnamilegacy` archive it prices, and a number a rung can be checked against
+    // is strictly better than "cannot be priced". Its SIZE is pinned here because
+    // that is a measurement; its VERDICT is left to the biconditional below,
+    // because that is a fact about whatever bound is declared today.
     const gitlab = priceSet(model, ["gitlab"]);
     expect(gitlab.diskGib).toBeCloseTo(11.53, 1);
     expect(gitlab.cpuMillis).toBe(2525);
-    const hindsight = priceSet(model, ["hindsight"]);
-    const vllm = priceSet(model, ["vllm"]);
-    expect(hindsight.diskGib).toBeCloseTo(22.49, 1);
-    expect(vllm.diskGib).toBeCloseTo(22.65, 1);
-    expect(hindsight.diskGib).toBeGreaterThan(p.budget.diskGib);
-    expect(vllm.diskGib).toBeGreaterThan(p.budget.diskGib);
     const assigned = new Set(p.lanes.flatMap((l) => l.assigned));
-    expect(assigned.has("hindsight")).toBe(false);
-    expect(assigned.has("vllm")).toBe(false);
+    const oversize = new Set(p.oversize.map((q) => q.name));
+    const unpriced = new Set(p.unpriced.map((q) => q.name));
+    for (const entry of model.roster) {
+      if (unpriced.has(entry.name)) continue;
+      const alone = priceSet(model, closureOf(model, entry.name));
+      const tooBig =
+        alone.diskGib > p.budget.diskGib ||
+        alone.cpuMillis > p.budget.cpuMillis ||
+        alone.memoryMib > p.budget.memoryMib;
+      expect(oversize.has(entry.name)).toBe(tooBig);
+      if (tooBig) expect(assigned.has(entry.name)).toBe(false);
+    }
+    // THE TWO GIANTS ARE STILL NAMED, because their measured size is the fact the
+    // whole partition turns on and it must not be allowed to drift silently. It
+    // is their SIZE that is pinned now, never their verdict.
+    expect(priceSet(model, ["hindsight"]).diskGib).toBeCloseTo(22.49, 1);
+    expect(priceSet(model, ["vllm"]).diskGib).toBeCloseTo(22.65, 1);
+    // MUTATION CAUGHT: a partitioner that quarantines on a stale constant rather
+    // than on the budget it was handed. Under the old body that mutation passed.
   });
 
-  test("at the declared runner bound, intent edges change closure but not the oversize-excluded partition", () => {
-    // The intent edge still enlarges hindsight's closure. It cannot move lane
-    // membership while hindsight is quarantined as oversize under the declared
-    // 14 GiB runner bound.
-    const withIntent = packLanes(buildModel({ repoRoot: REPO_ROOT, rung: "dev" }), { margin: 0.85 });
-    const without = packLanes(buildModel({ repoRoot: REPO_ROOT, rung: "dev", dropIntentEdges: true }), { margin: 0.85 });
-    expect(without.lanes.map((l) => l.members.join(","))).toEqual(withIntent.lanes.map((l) => l.members.join(",")));
-    expect(without.coveredApplications).toBe(withIntent.coveredApplications);
-    const closureWith = priceSet(buildModel({ repoRoot: REPO_ROOT }), closureOf(buildModel({ repoRoot: REPO_ROOT }), "hindsight"));
-    const mNo = buildModel({ repoRoot: REPO_ROOT, dropIntentEdges: true });
+  test("an intent edge enlarges hindsight's closure, and the partition says so", () => {
+    // REWRITTEN 2026-08-23. The old body asserted that dropping the intent edge
+    // leaves the packed lanes byte-identical -- true at 14 GiB, but only because
+    // hindsight was quarantined and its closure could not reach a lane at all.
+    // That is the vacuity class: the assertion passed because the thing it was
+    // about had been excluded from the run. At 70 GiB hindsight packs, so the
+    // edge is now load-bearing on lane membership and the old assertion was
+    // asserting the exclusion, not the invariant.
+    //
+    // WHAT IS TRUE AT EVERY BOUND: the `hindsight -> cockroachdb` edge is
+    // adjudicated `intent`, so dropping it makes hindsight's closure strictly
+    // smaller. That is a statement about the graph, and the graph did not move.
+    const m = buildModel({ repoRoot: REPO_ROOT, rung: "dev" });
+    const mNo = buildModel({ repoRoot: REPO_ROOT, rung: "dev", dropIntentEdges: true });
+    const closureWith = priceSet(m, closureOf(m, "hindsight"));
     const closureWithout = priceSet(mNo, closureOf(mNo, "hindsight"));
     expect(closureWith.diskGib).toBeGreaterThan(closureWithout.diskGib);
     expect(closureWithout.diskGib).toBeCloseTo(23.19, 1);
+    expect(closureOf(m, "hindsight")).toContain("cockroachdb");
+    expect(closureOf(mNo, "hindsight")).not.toContain("cockroachdb");
+    // AND EVERY LANE STAYS DEPENDENCY-CLOSED UNDER BOTH READINGS. That is the
+    // property the old test was reaching for and could not state while its
+    // subject was quarantined: whether or not the intent edge is honoured, no
+    // lane is handed an app whose dependencies are not in the lane with it.
+    for (const source of [m, mNo]) {
+      const packed = packLanes(source, { margin: 0.85 });
+      expect(packed.coveredApplications).toBeGreaterThan(0);
+      for (const lane of packed.lanes) {
+        const members = new Set(lane.members);
+        for (const app of lane.members) {
+          for (const dep of source.deps.get(app) ?? []) expect(members.has(dep)).toBe(true);
+        }
+      }
+    }
   });
 
   test("an unadjudicated declared-intent citation REFUSES the whole build", () => {

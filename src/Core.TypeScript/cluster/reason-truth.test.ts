@@ -520,7 +520,7 @@ describe("resource-rung / lane-cpu are checked against the ladder, not the prose
     expect(checkCitation(only("[cite: resource-rung hindsight metal 1000]"), EVIDENCE, subject("hindsight", ""))).toBe(
       null,
     );
-    expect(checkCitation(only("[cite: resource-rung hindsight dev 400]"), EVIDENCE, subject("hindsight", ""))).toBe(
+    expect(checkCitation(only("[cite: resource-rung hindsight dev 75]"), EVIDENCE, subject("hindsight", ""))).toBe(
       null,
     );
   });
@@ -556,20 +556,32 @@ describe("resource-rung / lane-cpu are checked against the ladder, not the prose
     expect(verdict?.rule).toBe("cited-rung-unknown");
   });
 
-  // BOTH NUMBERS MOVED ON 2026-08-22, and the second changed VERDICT with it:
-  // `dev` used to cite `1906 fits` and now cites `2906 over`. Nothing shrank or
-  // grew -- `applicationDirs()` started seeing `game-hosting/gmod`, which
-  // ArgoCD had always applied and no enumerator had ever counted. This is the
-  // citation mechanism doing its whole job: the stale pair went red here before
-  // anybody read the prose that quoted it.
+  // THE `dev` CITATION HAS NOW MOVED TWICE, AND BOTH MOVES ARE RECORDED HERE
+  // because the pair of them is the argument for having the citation at all:
+  //
+  //   1906 fits  ->  2906 over   (2026-08-22)  nothing shrank or grew;
+  //                              `applicationDirs()` started seeing
+  //                              `game-hosting/gmod`, which ArgoCD had always
+  //                              applied and no enumerator had ever counted.
+  //   2906 over  ->  1981 fits   (2026-08-23)  something DID shrink: 18
+  //                              governed rows floored at 25m of `dev` CPU,
+  //                              -1250m, on Aaron's observation that CPU is
+  //                              compressible. `metal` did not move, which is
+  //                              why the metal citation beside this one is
+  //                              byte-identical across both events.
+  //
+  // Once the checker caught a stale number, once it caught a real change. It
+  // cannot tell them apart and does not try -- it reports disagreement, and a
+  // human decides which kind it was. That is the whole design.
   test("the lane totals and their fits/over verdicts both hold today", () => {
     expect(checkCitation(only("[cite: lane-cpu metal 5231 over]"), EVIDENCE, subject("hindsight", ""))).toBe(null);
     // `dev` has now cited THREE different pairs, and the sequence is the point:
     //   `1906 fits` -> `2906 over`  (gmod was always applied, never counted)
     //   `2906 over` -> `2006 fits`  (the rung learned to reach raw manifests)
+    //   `2006 fits` -> `1081 fits`  (18 governed dev CPU rows floored at 25m)
     // Neither transition was a number edited to agree with prose; both went red
     // HERE first, which is the entire job of this mechanism.
-    expect(checkCitation(only("[cite: lane-cpu dev 2006 fits]"), EVIDENCE, subject("hindsight", ""))).toBe(null);
+    expect(checkCitation(only("[cite: lane-cpu dev 1081 fits]"), EVIDENCE, subject("hindsight", ""))).toBe(null);
     // The two superseded pairs are still refused, so a revert of the prose
     // without a revert of the ladder cannot pass.
     expect(checkCitation(only("[cite: lane-cpu dev 2906 over]"), EVIDENCE, subject("hindsight", ""))?.rule).toBe(
@@ -590,13 +602,13 @@ describe("resource-rung / lane-cpu are checked against the ladder, not the prose
     expect(wrongWay?.detail).toContain("does NOT fit");
     // The dev side now needs the OTHER polarity to be the wrong one, because
     // the lane fits: right number, wrong verdict.
-    const alsoWrong = checkCitation(only("[cite: lane-cpu dev 2006 over]"), EVIDENCE, subject("hindsight", ""));
+    const alsoWrong = checkCitation(only("[cite: lane-cpu dev 1081 over]"), EVIDENCE, subject("hindsight", ""));
     expect(alsoWrong?.rule).toBe("cited-lane-verdict-disagrees");
     expect(alsoWrong?.detail).toContain("FITS");
   });
 
   test("a verdict word outside the pair is refused rather than ignored", () => {
-    const verdict = checkCitation(only("[cite: lane-cpu dev 2006 tight]"), EVIDENCE, subject("hindsight", ""));
+    const verdict = checkCitation(only("[cite: lane-cpu dev 1081 tight]"), EVIDENCE, subject("hindsight", ""));
     expect(verdict?.rule).toBe("cited-lane-verdict-disagrees");
   });
 
@@ -650,16 +662,16 @@ describe("hindsight is the symptom, and the ladder still says so", () => {
     //   2026-08-22  `dev` no longer closed it  2906m, over by 406m, because
     //               `game-hosting/gmod` is a git-path Application and 1000m of
     //               the lane was outside the ladder's reach entirely
-    //   2026-08-23  `dev` closes it again      2006m, 494m of spare, because
+    //   2026-08-23  `dev` closes it again      1081m, 1419m of spare -- 2006m from
     //               the ladder now reaches raw in-repo manifests
     //
     // The 2026-08-22 note said "no rung can express it". That was true of the
     // render-side reader and FALSE of the applier, which has always addressed
     // an arbitrary manifest by path + docIndex + field.
     const laneAtDev = resourceTotal(catalogue, "dev", EVIDENCE.devLaneDirs);
-    expect(laneAtDev.cpuMillis).toBe(2006);
+    expect(laneAtDev.cpuMillis).toBe(1081);
     expect(laneAtDev.cpuMillis).toBeLessThanOrEqual(budget.cpuMillis);
-    expect(budget.cpuMillis - laneAtDev.cpuMillis).toBe(494);
+    expect(budget.cpuMillis - laneAtDev.cpuMillis).toBe(1419);
     // And gmod is still COUNTED, not excluded -- reachability is not removal.
     // It contributes 100m at `dev` where it contributed 1000m, and the `metal`
     // rung still carries the whole core.

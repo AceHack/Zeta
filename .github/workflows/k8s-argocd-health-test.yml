@@ -763,14 +763,21 @@ jobs:
 
       # WHAT DISK THIS RUNNER ACTUALLY HAS, measured rather than quoted.
       #
-      # `storage-profiles.json`'s runnerEnvelope carries `freeDiskGib: 14`, and
-      # its own evidence string admits the capacity half is "a vendor number,
-      # not one we measured". `--measure-runner` reads /proc for CPU and memory
-      # and reads NO disk -- so the number the image-footprint argument divides
-      # by (~77 GB of images against ~14 GB free) had never been read off a
-      # runner. This step reads it, prints every mount (a hosted runner has a
-      # second disk at /mnt that no arithmetic here has ever counted), and
-      # measures the preinstalled toolchains a k8s lane never invokes.
+      # `storage-profiles.json`'s runnerEnvelope carried `freeDiskGib: 14` when
+      # this step was written -- a vendor number nobody had measured.
+      # `--measure-runner` reads /proc for CPU and memory and reads NO disk, so
+      # the number the image-footprint argument divided by (~77 GB of images
+      # against ~14 GB free) had never been read off a runner. This step reads
+      # it, prints every mount, and measures the preinstalled toolchains a k8s
+      # lane never invokes.
+      #
+      # THE BOUND IS 70 SINCE 2026-08-23, taken by the maintainer against these
+      # very measurements (77.06 GiB x64 / 99.02 GiB arm). That makes this step
+      # MORE load-bearing, not less: `--check-envelope` convicts a runner with
+      # LESS free disk than the envelope declares, and at 14 it could only ever
+      # have caught a machine no hosted runner resembles. At 70 it catches a
+      # runner that cannot hold what the lanes were planned against -- so if
+      # GitHub ever ships a smaller image, this is where it surfaces.
       #
       # ARMED as of run 32585090483, which is what the first (report-only) pass
       # bought. It measured 77.06 GiB available on `ubuntu-24.04` and 99.02 GiB
@@ -1080,14 +1087,21 @@ jobs:
       # Synced+Healthy, sealed-to-unsealed, or the job goes red.
       # WHAT DISK THIS RUNNER ACTUALLY HAS, measured rather than quoted.
       #
-      # `storage-profiles.json`'s runnerEnvelope carries `freeDiskGib: 14`, and
-      # its own evidence string admits the capacity half is "a vendor number,
-      # not one we measured". `--measure-runner` reads /proc for CPU and memory
-      # and reads NO disk -- so the number the image-footprint argument divides
-      # by (~77 GB of images against ~14 GB free) had never been read off a
-      # runner. This step reads it, prints every mount (a hosted runner has a
-      # second disk at /mnt that no arithmetic here has ever counted), and
-      # measures the preinstalled toolchains a k8s lane never invokes.
+      # `storage-profiles.json`'s runnerEnvelope carried `freeDiskGib: 14` when
+      # this step was written -- a vendor number nobody had measured.
+      # `--measure-runner` reads /proc for CPU and memory and reads NO disk, so
+      # the number the image-footprint argument divided by (~77 GB of images
+      # against ~14 GB free) had never been read off a runner. This step reads
+      # it, prints every mount, and measures the preinstalled toolchains a k8s
+      # lane never invokes.
+      #
+      # THE BOUND IS 70 SINCE 2026-08-23, taken by the maintainer against these
+      # very measurements (77.06 GiB x64 / 99.02 GiB arm). That makes this step
+      # MORE load-bearing, not less: `--check-envelope` convicts a runner with
+      # LESS free disk than the envelope declares, and at 14 it could only ever
+      # have caught a machine no hosted runner resembles. At 70 it catches a
+      # runner that cannot hold what the lanes were planned against -- so if
+      # GitHub ever ships a smaller image, this is where it surfaces.
       #
       # ARMED as of run 32585090483, which is what the first (report-only) pass
       # bought. It measured 77.06 GiB available on `ubuntu-24.04` and 99.02 GiB

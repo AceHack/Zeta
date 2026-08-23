@@ -4,12 +4,32 @@
 # THE PROBLEM THIS LANE IS FOR
 # ----------------------------
 # `full-ai-cluster/k8s/storage-profiles.json` measures all 47 Applications at
-# 6166m / 15406Mi / 74.54 GiB of images at the `dev` rung, against a hosted
-# `ubuntu-24.04` runner's 2500m / 9216Mi / 66 GiB of unreserved capacity
-# (envelope freeDiskGib 70, leftover-on-main #13784 — not the vendor 14). CPU
-# is over by 2.47x and disk by 1.13x. So "test every chart" is not reachable on
+# 3941m / 15406Mi / 74.26 GiB of images at the `dev` rung, against a hosted
+# `ubuntu-24.04` runner's 2500m / 9216Mi / 66 GiB of unreserved capacity. CPU
+# is over by 1.58x and disk by 1.13x. So "test every chart" is not reachable on
 # one hosted runner at any CPU ladder — a ladder cannot shrink an image.
-# Sharding is the only route; the binding axis is CPU, not disk.
+# Sharding is the only route.
+#
+# THIS PARAGRAPH'S NUMBERS MOVED TWICE ON 2026-08-23 AND THE PROVENANCE MATTERS,
+# because the previous version cited `envelope freeDiskGib 70, leftover-on-main
+# #13784` — a value that was NOT on main when that sentence was written. The
+# field oscillated 70/14/70/14 across four PRs on 2026-08-22 with no human
+# decision recorded in either direction, and this comment was left describing a
+# world the tree did not carry. It does now, deliberately: Aaron took the 70
+# explicitly on 2026-08-23 ("take the 70, unlock hindsight and vllm on hosted
+# runners"), and the authorization is recorded in the artifact itself. The CPU
+# figure moved with it — 6166m -> 4916m — because 18 governed `dev` rows were
+# floored at 25m under the same decision. THEN THEY MOVED AGAIN ON REBASE, which
+# is why they are written with their history: 6166m -> 4916m (the 25m floor) ->
+# 3941m, because #14194 landed on main in between and made raw in-repo manifests
+# rung-reachable, taking gmod from an unreachable 1000m to a governed 100m. The
+# disk figure moved 74.54 -> 74.26 GiB in the same rebase and NEITHER direction
+# is growth or shrinkage of the tree: #14174 and #14233 made 8 previously
+# unmeasurable images measurable (pushing it UP, to 75.81), and #14250 then took
+# the private FlowDent charts out of the public tree (pushing it back DOWN). What
+# changed is how much of the tree is COUNTED, not how big it is. Neither number here is a bound; both are read out of
+# the catalogue by `lane-partition.ts` on every run, and this comment is prose
+# that has already been wrong once.
 #
 # WHY THE MATRIX IS COMPUTED AND NOT WRITTEN DOWN
 # -----------------------------------------------

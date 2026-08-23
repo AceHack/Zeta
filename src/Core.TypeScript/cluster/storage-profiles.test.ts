@@ -1321,7 +1321,7 @@ describe("the checked-in resource ladder", () => {
   //   2026-08-22  NEITHER FITS     2906m -- `game-hosting/gmod` was applied by
   //                                the dev root all along and a depth-1
   //                                enumerator could not see it. 406m OVER.
-  //   2026-08-23  `dev` FITS AGAIN 2006m -- and NOT by excluding gmod or by
+  //   2026-08-23  `dev` FITS AGAIN 1081m -- and NOT by excluding gmod or by
   //                                widening the envelope. Three git-path
   //                                Applications whose requests no rung could
   //                                reach are now governed rows, so the `dev`
@@ -1342,10 +1342,10 @@ describe("the checked-in resource ladder", () => {
   //
   // `metal` IS UNCHANGED THROUGHOUT and that is asserted below, because the
   // whole point of a rung is that shrinking one does not touch the other.
-  test("`dev` FITS AGAIN at 2006m — because the rung now reaches the raw manifests", () => {
+  test("`dev` FITS AGAIN at 1081m — the rung reaches the raw manifests, and the governed rows are floored", () => {
     const budget = envelopeBudget(catalogue.envelope);
     const dev = resourceTotal(catalogue, "dev", devLaneAppliedDirs());
-    expect(dev.cpuMillis).toBe(2006);
+    expect(dev.cpuMillis).toBe(1081);
     expect(dev.memoryMib).toBe(8255);
     expect(dev.cpuMillis).toBeLessThan(budget.cpuMillis);
     expect(dev.memoryMib).toBeLessThan(budget.memoryMib);

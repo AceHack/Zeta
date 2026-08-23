@@ -94,14 +94,14 @@
         },
         {
           "appId": "full-ai-cluster/arc-controller",
-          "cpuMillis": 50,
+          "cpuMillis": 25,
           "memoryMib": 64,
           "pods": 1,
           "workloads": [
             {
               "workload": "Deployment/arc-controller-gha-rs-controller",
               "replicas": 1,
-              "cpuMillis": 50,
+              "cpuMillis": 25,
               "memoryMib": 64
             }
           ],
@@ -620,26 +620,26 @@
         },
         {
           "appId": "full-ai-cluster/hindsight",
-          "cpuMillis": 400,
+          "cpuMillis": 75,
           "memoryMib": 896,
           "pods": 3,
           "workloads": [
             {
               "workload": "Deployment/hindsight-api",
               "replicas": 1,
-              "cpuMillis": 200,
+              "cpuMillis": 25,
               "memoryMib": 512
             },
             {
               "workload": "Deployment/hindsight-control-plane",
               "replicas": 1,
-              "cpuMillis": 100,
+              "cpuMillis": 25,
               "memoryMib": 256
             },
             {
               "workload": "StatefulSet/hindsight-postgresql",
               "replicas": 1,
-              "cpuMillis": 100,
+              "cpuMillis": 25,
               "memoryMib": 128
             }
           ],
@@ -789,14 +789,14 @@
         },
         {
           "appId": "full-ai-cluster/mimir",
-          "cpuMillis": 635,
+          "cpuMillis": 410,
           "memoryMib": 2272,
           "pods": 19,
           "workloads": [
             {
               "workload": "Deployment/mimir-distributor",
               "replicas": 1,
-              "cpuMillis": 50,
+              "cpuMillis": 25,
               "memoryMib": 192
             },
             {
@@ -832,7 +832,7 @@
             {
               "workload": "Deployment/mimir-rollout-operator",
               "replicas": 1,
-              "cpuMillis": 50,
+              "cpuMillis": 25,
               "memoryMib": 64
             },
             {
@@ -856,43 +856,43 @@
             {
               "workload": "StatefulSet/mimir-compactor",
               "replicas": 1,
-              "cpuMillis": 50,
+              "cpuMillis": 25,
               "memoryMib": 192
             },
             {
               "workload": "StatefulSet/mimir-ingester-zone-a",
               "replicas": 1,
-              "cpuMillis": 50,
+              "cpuMillis": 25,
               "memoryMib": 192
             },
             {
               "workload": "StatefulSet/mimir-ingester-zone-b",
               "replicas": 1,
-              "cpuMillis": 50,
+              "cpuMillis": 25,
               "memoryMib": 192
             },
             {
               "workload": "StatefulSet/mimir-ingester-zone-c",
               "replicas": 1,
-              "cpuMillis": 50,
+              "cpuMillis": 25,
               "memoryMib": 192
             },
             {
               "workload": "StatefulSet/mimir-store-gateway-zone-a",
               "replicas": 1,
-              "cpuMillis": 50,
+              "cpuMillis": 25,
               "memoryMib": 192
             },
             {
               "workload": "StatefulSet/mimir-store-gateway-zone-b",
               "replicas": 1,
-              "cpuMillis": 50,
+              "cpuMillis": 25,
               "memoryMib": 192
             },
             {
               "workload": "StatefulSet/mimir-store-gateway-zone-c",
               "replicas": 1,
-              "cpuMillis": 50,
+              "cpuMillis": 25,
               "memoryMib": 192
             }
           ],
@@ -912,14 +912,14 @@
         },
         {
           "appId": "full-ai-cluster/minio",
-          "cpuMillis": 50,
+          "cpuMillis": 25,
           "memoryMib": 384,
           "pods": 2,
           "workloads": [
             {
               "workload": "Deployment/blob-store",
               "replicas": 1,
-              "cpuMillis": 50,
+              "cpuMillis": 25,
               "memoryMib": 128
             },
             {
@@ -958,7 +958,7 @@
         },
         {
           "appId": "full-ai-cluster/node-feature-discovery",
-          "cpuMillis": 100,
+          "cpuMillis": 75,
           "memoryMib": 192,
           "pods": 4,
           "workloads": [
@@ -977,7 +977,7 @@
             {
               "workload": "Deployment/nfd-node-feature-discovery-master",
               "replicas": 1,
-              "cpuMillis": 50,
+              "cpuMillis": 25,
               "memoryMib": 96
             },
             {
@@ -1010,20 +1010,20 @@
         },
         {
           "appId": "full-ai-cluster/open-policy-agent",
-          "cpuMillis": 100,
+          "cpuMillis": 50,
           "memoryMib": 512,
           "pods": 4,
           "workloads": [
             {
               "workload": "Deployment/gatekeeper-audit",
               "replicas": 1,
-              "cpuMillis": 50,
+              "cpuMillis": 25,
               "memoryMib": 256
             },
             {
               "workload": "Deployment/gatekeeper-controller-manager",
               "replicas": 1,
-              "cpuMillis": 50,
+              "cpuMillis": 25,
               "memoryMib": 256
             },
             {
@@ -1108,20 +1108,20 @@
         },
         {
           "appId": "full-ai-cluster/redis",
-          "cpuMillis": 150,
+          "cpuMillis": 75,
           "memoryMib": 192,
           "pods": 3,
           "workloads": [
             {
               "workload": "StatefulSet/redis-master",
               "replicas": 1,
-              "cpuMillis": 50,
+              "cpuMillis": 25,
               "memoryMib": 64
             },
             {
               "workload": "StatefulSet/redis-replicas",
               "replicas": 2,
-              "cpuMillis": 50,
+              "cpuMillis": 25,
               "memoryMib": 64
             }
           ],
@@ -1147,14 +1147,14 @@
         },
         {
           "appId": "full-ai-cluster/seaweedfs",
-          "cpuMillis": 200,
+          "cpuMillis": 25,
           "memoryMib": 512,
           "pods": 2,
           "workloads": [
             {
               "workload": "Deployment/blob-store-seaweedfs-all-in-one",
               "replicas": 1,
-              "cpuMillis": 200,
+              "cpuMillis": 25,
               "memoryMib": 512
             },
             {
@@ -1220,7 +1220,7 @@
         },
         {
           "appId": "full-ai-cluster/temporal",
-          "cpuMillis": 485,
+          "cpuMillis": 160,
           "memoryMib": 1184,
           "pods": 7,
           "workloads": [
@@ -1233,19 +1233,19 @@
             {
               "workload": "Deployment/temporal-frontend",
               "replicas": 1,
-              "cpuMillis": 100,
+              "cpuMillis": 25,
               "memoryMib": 256
             },
             {
               "workload": "Deployment/temporal-history",
               "replicas": 1,
-              "cpuMillis": 100,
+              "cpuMillis": 25,
               "memoryMib": 256
             },
             {
               "workload": "Deployment/temporal-matching",
               "replicas": 1,
-              "cpuMillis": 100,
+              "cpuMillis": 25,
               "memoryMib": 256
             },
             {
@@ -1257,13 +1257,13 @@
             {
               "workload": "Deployment/temporal-worker",
               "replicas": 1,
-              "cpuMillis": 100,
+              "cpuMillis": 25,
               "memoryMib": 256
             },
             {
               "workload": "Job/temporal-schema-1",
               "replicas": 1,
-              "cpuMillis": 50,
+              "cpuMillis": 25,
               "memoryMib": 64
             }
           ],

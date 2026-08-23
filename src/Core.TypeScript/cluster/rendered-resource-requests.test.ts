@@ -563,10 +563,20 @@ describe("eight mutations against the live validators", () => {
     // the recorded axis past a machine that matches the live record is the
     // same defect class: a claimed machine larger than the one that exists.
     const recorded = loadRecordedEnvelope();
-    // The declared envelope is the portable published runner bound. A distinct
-    // measured observation is stored as evidence, rather than silently raising
-    // this planning input.
-    expect(recorded.freeDiskGib).toBe(14);
+    // THE DECLARED BOUND IS PINNED HERE ON PURPOSE, AND IT IS 70 SINCE
+    // 2026-08-23. This is the tripwire in test form: the field oscillated
+    // 70/14/70/14 across four PRs in under three hours on 2026-08-22 with no
+    // human decision recorded either way, so an assertion that names the exact
+    // value is what forces the next change to be deliberate. Aaron took the 70
+    // explicitly ("take the 70, unlock hindsight and vllm on hosted runners"),
+    // and the authorization is recorded in the artifact itself —
+    // `runnerEnvelope.measuredFreeDiskEvidence` in storage-profiles.json.
+    //
+    // 70 is a FLOOR beneath both measured runners (77.06 GiB x64, 99.02 GiB
+    // arm), not a transcription of either. The measurement stays beside it as
+    // `measuredFreeDiskGib`, so the declaration and the observation remain two
+    // separate things.
+    expect(recorded.freeDiskGib).toBe(70);
     const measured = {
       cpuMillis: recorded.cpuMillis,
       memoryMib: recorded.memoryMib,
@@ -581,7 +591,8 @@ describe("eight mutations against the live validators", () => {
 
   // THE REGISTER IS EMPTY AS OF 2026-08-23. Its one entry -- `dev cpu
   // 2906>2500` -- was retired by the arithmetic moving, not by a deletion:
-  // governing the three git-path Applications we own took the dev lane to 2006m.
+  // governing the three git-path Applications we own took the dev lane to 2006m,
+  // and flooring 18 governed `cpuMillis.dev` rows at 25m took it to 1081m.
   //
   // An empty register is the easiest thing in this file to fake, so the
   // mutation now runs in the other direction: it re-adds an acknowledgement and

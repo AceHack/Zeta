@@ -1317,7 +1317,12 @@ describe("081M0JXXFV0087G0R00...: the four newly-visible non-storage defects", (
     // comfortable version of this claim without restoring the arithmetic has to
     // delete this line to do it, and `reason-truth.ts` checks the number itself
     // against the ladder so the sentence cannot drift from it.
-    expect(reason).toContain("Take the WHOLE lane to `dev` and it is 2006m, which FITS with 494m of spare");
+    expect(reason).toContain("Take the WHOLE lane to `dev` and it is 1081m, which FITS with 1419m of spare");
+    // AND THE TWO SUPERSEDED ANSWERS ARE STILL IN THE PROSE, deliberately, so a
+    // reader meeting "2906/406" or "2006/494" in an older PR can find out what
+    // happened to them instead of concluding the record was quietly tidied.
+    expect(reason).toContain("2906m over by 406m");
+    expect(reason).toContain("then 2006m fits");
     // The superseded claim must be GONE, not merely joined by the new one.
     expect(reason).not.toContain("STILL OVER by 406m. So the only cut");
     // The four capacity citations are the checked half. Their VALUES are
@@ -1326,9 +1331,9 @@ describe("081M0JXXFV0087G0R00...: the four newly-visible non-storage defects", (
     // prose and drops the citations is back to an unattached number.
     for (const cited of [
       "[cite: resource-rung hindsight metal 1000]",
-      "[cite: resource-rung hindsight dev 400]",
+      "[cite: resource-rung hindsight dev 75]",
       "[cite: lane-cpu metal 5231 over]",
-      "[cite: lane-cpu dev 2006 fits]",
+      "[cite: lane-cpu dev 1081 fits]",
     ]) {
       expect(reason).toContain(cited);
     }
