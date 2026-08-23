@@ -172,16 +172,28 @@ test("FALSIFIER: process.env is byte-identical across a full run", () => {
   }
 });
 
+/**
+ * The discrimination case for FALSIFIER 3 runs against a COPY of the environment,
+ * never the real one. Two reasons, and neither is squeamishness:
+ *   - planting a token-shaped value in the live `process.env` of a test runner is
+ *     the very thing the guard `lint-no-ambient-credential-hoist.ts` exists to
+ *     refuse, and a falsifier that must break a security guard to run is not a
+ *     falsifier worth having;
+ *   - the assertion being proved discriminating is a property of the ASSERTION
+ *     SHAPE ("this comparison can go red"), which a copy exercises exactly.
+ * The real-environment evidence is the recorded source mutation: assigning
+ * `process.env.X = capture.secret` inside `main` turns FALSIFIER 3 red. That was
+ * run, observed red, and reverted — twice, once after `main` was refactored.
+ */
 test("FALSIFIER discriminates: the env assertion catches a hoist", () => {
-  const before = JSON.stringify(process.env);
-  process.env.ZETA_TEST_HOIST_PROBE = FAKE_TOKEN;
-  try {
-    expect(JSON.stringify(process.env)).not.toBe(before);
-    expect(process.env.ZETA_TEST_HOIST_PROBE).toContain(FAKE_TOKEN);
-  } finally {
-    delete process.env.ZETA_TEST_HOIST_PROBE;
-  }
-  expect(JSON.stringify(process.env)).toBe(before);
+  const envCopy: Record<string, string> = {};
+  for (const [k, v] of Object.entries(process.env)) if (typeof v === "string") envCopy[k] = v;
+  const before = JSON.stringify(envCopy);
+  envCopy.ZETA_TEST_HOIST_PROBE = FAKE_TOKEN;
+  expect(JSON.stringify(envCopy)).not.toBe(before);
+  expect(Object.values(envCopy).some((v) => v.includes(FAKE_TOKEN))).toBe(true);
+  // and the real environment was never touched to prove it
+  expect(Object.values(process.env).some((v) => typeof v === "string" && v.includes(FAKE_TOKEN))).toBe(false);
 });
 
 // ── the transport's own honesty ──────────────────────────────────────────────
