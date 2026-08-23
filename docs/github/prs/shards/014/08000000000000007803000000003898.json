@@ -1,0 +1,12 @@
+{
+  "pr_number": 14488,
+  "archive_path": "docs/history/pr-reviews/PR-14488-research-correction-the-wave-half-has-an-in-tree-derivation-echolocation-debounc.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-23T21:46:32.334Z",
+  "schema_version": "v1",
+  "commit_sha": "3a0510ddcdfe82edc4d297652eda582d9d3fd8ab",
+  "title": "research: correction — the wave half has an in-tree derivation (echolocation debounce), and it sharpens the horizon risk",
+  "state": "MERGED",
+  "merged_at": "2026-08-23T21:45:48Z",
+  "head_ref": "docs/echolocation-debounce-is-the-wave-anchor"
+}
