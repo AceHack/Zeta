@@ -1,0 +1,14 @@
+{
+  "id": "080d0177dfcec010a0130008eb589bc7",
+  "at": "2026-08-23T14:17:40.568Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M0QFQYEQ087G0R003SW6VD8",
+    "type": "task",
+    "title": "QEC M3: Q# stabilizer-simulation cross-check of the [[16,6,4]] syndrome-extraction circuit (BP-16 second tool)",
+    "slug": "qec-m3-q-stabilizer-simulation-cross-check-of-the-16-6-4-syn",
+    "priority": "P2",
+    "filename": "081M0QFQYEQ087G0R003SW6VD8-qec-m3-q-stabilizer-simulation-cross-check-of-the-16-6-4-syn.md"
+  }
+}

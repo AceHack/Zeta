@@ -1,0 +1,14 @@
+{
+  "id": "080d0177dfcfe010a0130008e6528138",
+  "at": "2026-08-23T14:17:40.604Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M0QFQYFV087G0R00267NRTC",
+    "type": "task",
+    "title": "QEC M4: anti-vacuity witness for the QEC byte-lock -- flip one syndrome bit in one oracle, the lock must go red",
+    "slug": "qec-m4-anti-vacuity-witness-for-the-qec-byte-lock-flip-one-s",
+    "priority": "P2",
+    "filename": "081M0QFQYFV087G0R00267NRTC-qec-m4-anti-vacuity-witness-for-the-qec-byte-lock-flip-one-s.md"
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "id": "080d0177dfcda010a013000855933911",
+  "at": "2026-08-23T14:17:40.532Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M0QFQYDK087G0R0028FQSM2",
+    "type": "task",
+    "title": "QEC M2: syndrome table and decoder for [[16,6,4]] with the exhaustive weight-2 failure witness",
+    "slug": "qec-m2-syndrome-table-and-decoder-for-16-6-4-with-the-exhaus",
+    "priority": "P2",
+    "filename": "081M0QFQYDK087G0R0028FQSM2-qec-m2-syndrome-table-and-decoder-for-16-6-4-with-the-exhaus.md"
+  }
+}

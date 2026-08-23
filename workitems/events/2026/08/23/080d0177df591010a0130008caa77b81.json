@@ -1,0 +1,14 @@
+{
+  "id": "080d0177df591010a0130008caa77b81",
+  "at": "2026-08-23T14:17:36.802Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M0QFQTS1087G0R002WHZFR7",
+    "type": "task",
+    "title": "QEC M1: enumerate the N=8 adinkra CSS closure and the RM(1,4) reopening at N=16, four-oracle",
+    "slug": "qec-m1-enumerate-the-n-8-adinkra-css-closure-and-the-rm-1-4",
+    "priority": "P2",
+    "filename": "081M0QFQTS1087G0R002WHZFR7-qec-m1-enumerate-the-n-8-adinkra-css-closure-and-the-rm-1-4.md"
+  }
+}
