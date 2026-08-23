@@ -212,15 +212,17 @@ export function step(f: Frame): Frame {
             const py = oy + row;
             if (px < W && py < H) {
               const idx = py * W + px;
+              
+              // Global cross-plane collision: if ANY pixel was set here before we draw.
+              const curMono = f.display.get(idx) ?? false;
+              const curExtra = f.extra.get(idx) ?? 0;
+              if (curMono || curExtra > 0) collision = 1;
+              
               if (f.plane & 1) {
-                const cur = f.display.get(idx) ?? false;
-                if (cur) collision = 1;
-                f.display.set(idx, !cur);
+                f.display.set(idx, !curMono);
               }
               if (hiSel !== 0) {
-                const cur = f.extra.get(idx) ?? 0;
-                if ((cur & hiSel) !== 0) collision = 1;
-                const nxt = cur ^ hiSel;
+                const nxt = curExtra ^ hiSel;
                 if (nxt === 0) f.extra.delete(idx);
                 else f.extra.set(idx, nxt);
               }

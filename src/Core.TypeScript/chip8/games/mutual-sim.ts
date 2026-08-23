@@ -161,8 +161,13 @@ export function buildMutualSimRom(): Uint8Array {
     "JMP frame_end",
 
     "ai_collide:",
-    // Collision happened! Reset game entirely.
-    "JMP init",
+    // Collision happened! Undo move (bounce off walls/player)
+    "BYTE 0xF101",
+    "DRW V3, V4, 4", // Erase from new pos
+    "LD V3, VA",
+    "LD V4, VB",
+    "DRW V3, V4, 4", // Draw at old pos
+    "JMP frame_end",
 
     "frame_end:",
     "JMP main_loop",

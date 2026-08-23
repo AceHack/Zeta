@@ -156,14 +156,20 @@ async function loop() {
     if (manualKeys[k]) frame.keys[k] = true;
   }
 
-  // Sniff Gamification Level Transitions (Mutual Sim logic)
-  if (frame.v[8] === 0) {
-    gameLevel = 1;
-    gameObjective = "Hide & Seek: Simulator is 'It'!";
-  } else if (frame.v[8] === 1) {
-    gameLevel = 2;
-    gameObjective = "Tag! You're 'It'!";
+  // Detect Tag (Player V0,V1 and AI V3,V4)
+  const dx = Math.abs((frame.v[0] ?? 0) - (frame.v[3] ?? 0));
+  const dy = Math.abs((frame.v[1] ?? 0) - (frame.v[4] ?? 0));
+  if (dx < 4 && dy < 4 && cycle % 10 === 0) {
+    frame.v[9] = (frame.v[9] ?? 0) + 1; // Increment tags
+    // Teleport AI to random safe-ish spot to reset the chase
+    frame.v[3] = Math.floor(Math.random() * 40) + 10;
+    frame.v[4] = Math.floor(Math.random() * 20) + 5;
   }
+
+  // Sniff Gamification Level Transitions (Mutual Sim logic)
+  const tags = frame.v[9] ?? 0;
+  gameLevel = tags + 1;
+  gameObjective = `Tags: ${tags} | Objective: ${frame.v[8] === 0 ? "Flee!" : "Hunt!"}`;
 
   if (world.history && world.history.length > 0) {
     const lastEvent = world.history[world.history.length - 1];
