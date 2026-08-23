@@ -88,6 +88,7 @@ self.onmessage = async (e: MessageEvent) => {
 };
 
 let gameLevel = 1;
+let lastGameLevel: number | undefined;
 let gameObjective = "Replicate Pattern";
 
 async function loop() {
@@ -169,10 +170,10 @@ async function loop() {
   }
 
   let levelUpEvent = false;
-  if (gameLevel !== (self as any).lastGameLevel && (self as any).lastGameLevel !== undefined) {
+  if (gameLevel !== lastGameLevel && lastGameLevel !== undefined) {
     levelUpEvent = true;
   }
-  (self as any).lastGameLevel = gameLevel;
+  lastGameLevel = gameLevel;
 
   // Pass data directly to the frontend player component over postMessage
   const eventAction = {
@@ -180,8 +181,8 @@ async function loop() {
     display: displayArray,
     cycle: cycle,
     keyPredictions: world.cheatEngine?.keyPredictions || {},
-    activeConcept: (world.cheatEngine as any)?.activeConcept || "Observing...",
-    linguisticToken: (world.cheatEngine as any)?.linguisticToken,
+    activeConcept: (world.cheatEngine as { activeConcept?: string })?.activeConcept ?? "Observing...",
+    linguisticToken: (world.cheatEngine as { linguisticToken?: string })?.linguisticToken,
     gameLevel: gameLevel,
     gameObjective: gameObjective,
     levelUpEvent: levelUpEvent
