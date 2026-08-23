@@ -1,0 +1,12 @@
+{
+  "pr_number": 14233,
+  "archive_path": "docs/history/pr-reviews/PR-14233-refactor-cluster-the-vendoring-audit-33-of-47-applications-already-reference-ups.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-23T15:10:17.174Z",
+  "schema_version": "v1",
+  "commit_sha": "775c1f499be514ba51a33d000849b80bbc9b4a4c",
+  "title": "refactor(cluster): the vendoring audit — 33 of 47 Applications already reference upstream; the 2 that cannot, now hash-checked against it",
+  "state": "MERGED",
+  "merged_at": "2026-08-23T15:09:42Z",
+  "head_ref": "refactor/reference-not-vendor"
+}
