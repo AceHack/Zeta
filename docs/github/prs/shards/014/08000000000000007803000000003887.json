@@ -1,0 +1,12 @@
+{
+  "pr_number": 14471,
+  "archive_path": "docs/history/pr-reviews/PR-14471-feat-chip8-arena-the-hunt-flee-latch-is-learned-not-ruled-modevaluelearner-inver.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-23T21:35:05.240Z",
+  "schema_version": "v1",
+  "commit_sha": "d61e663f6ea0ffd99d8609cd1dc82699a15ae1bd",
+  "title": "feat(chip8-arena): the hunt/flee latch is learned, not ruled — ModeValueLearner + inverted-appearance falsifier",
+  "state": "MERGED",
+  "merged_at": "2026-08-23T21:34:18Z",
+  "head_ref": "claude/otto-learned-mode-latch"
+}
