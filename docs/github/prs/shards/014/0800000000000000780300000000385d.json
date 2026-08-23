@@ -1,0 +1,12 @@
+{
+  "pr_number": 14429,
+  "archive_path": "docs/history/pr-reviews/PR-14429-research-geometry-as-root-the-count-crdt-mapping-is-a-theorem-over-commutative-m.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-23T21:04:32.122Z",
+  "schema_version": "v1",
+  "commit_sha": "f72e89ac341b9c4b0463564f373279e40a0b3771",
+  "title": "research(geometry-as-root): the count/CRDT mapping is a theorem over commutative monoids and parts at idempotence",
+  "state": "MERGED",
+  "merged_at": "2026-08-23T21:03:46Z",
+  "head_ref": "docs/geometry-as-root-crdt-consensus"
+}
