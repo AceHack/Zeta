@@ -1,0 +1,12 @@
+{
+  "pr_number": 14184,
+  "archive_path": "docs/history/pr-reviews/PR-14184-docs-workitems-the-lane-gate-could-only-ever-pass-by-luck-file-it-rather-than-tu.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-23T13:39:28.987Z",
+  "schema_version": "v1",
+  "commit_sha": "57ac6b7862ecf6c37ff386afba222cbd01266d3f",
+  "title": "docs(workitems): the lane gate could only ever pass by luck — file it rather than tune it green",
+  "state": "MERGED",
+  "merged_at": "2026-08-23T13:38:50Z",
+  "head_ref": "docs/lane-budget-passes-by-luck"
+}
