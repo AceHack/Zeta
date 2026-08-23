@@ -79,6 +79,13 @@ on:
 
 permissions:
   contents: read
+  # The image-provenance half reads the GHCR packages API to tell "ours, private"
+  # (flip visibility) from "ours, never published" (build and push it) -- two
+  # opposite remedies. Read-only, and least-privilege: nothing here writes a
+  # package. Without it the step degrades honestly rather than failing, recording
+  # `packagePresence: unreadable` on new rows and preserving what an
+  # authenticated run already measured on existing ones.
+  packages: read
 
 concurrency:
   group: chart-version-refresh-${{ github.ref }}

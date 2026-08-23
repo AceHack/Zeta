@@ -958,10 +958,23 @@ function ghcrPackage(owner: string, name: string): {
   return { presence: "absent", repository: null, repositoryPrivate: null };
 }
 
+/**
+ * Is `gh` present AND carrying a token this API will answer?
+ *
+ * `gh api user` was the first probe and it is WRONG IN CI, measured on run
+ * 32654405529: `${{ github.token }}` is an installation token with no user
+ * behind it, so `/user` fails and the whole packages half reported itself
+ * unavailable on a runner where it was merely asking the wrong endpoint.
+ * `rate_limit` answers for any valid token, user or installation, which is the
+ * question actually being asked.
+ */
 function ghUsable(): boolean {
   try {
     // eslint-disable-next-line sonarjs/no-os-command-from-path
-    execFileSync("gh", ["api", "user", "--jq", ".login"], { encoding: "utf8", stdio: ["ignore", "pipe", "ignore"] });
+    execFileSync("gh", ["api", "rate_limit", "--jq", ".rate.limit"], {
+      encoding: "utf8",
+      stdio: ["ignore", "pipe", "ignore"],
+    });
     return true;
   } catch {
     return false;
@@ -1028,7 +1041,7 @@ function ghcrHalf(
 }
 
 /** Fold one accumulator plus (for ghcr) the packages API into a ledger row. */
-function toLedgerEntry(
+export function toLedgerEntry(
   key: string,
   acc: RepoAccumulator,
   ghAvailable: boolean,
@@ -1036,11 +1049,24 @@ function toLedgerEntry(
   prior: LedgerEntry | undefined,
 ): LedgerEntry {
   const pkg = ghcrHalf(key, ghAvailable);
-  const sourceRepo = acc.sourceRepo ?? pkg.repository;
+  // AN UNAUTHENTICATED RUN MAY NOT UN-KNOW WHAT AN AUTHENTICATED ONE MEASURED.
+  // Without this, a scheduled run without packages access rewrites every ghcr
+  // row from `found`/`absent` to `unreadable`, the snapshot "changes", and the
+  // lane reports a provenance move that did not happen — a signal manufactured
+  // by the measurer. Measured on run 32654405529, which rewrote all 28 rows for
+  // exactly this reason. The freshly-measured half (`artifact`, from the
+  // anonymous pull) is never preserved this way, and it is the half that decides
+  // refusal; `packagePresence` only chooses between two remedy texts.
+  const presence = pkg.presence === "unreadable" && prior !== undefined ? prior.packagePresence : pkg.presence;
+  const sourceRepo = acc.sourceRepo ?? pkg.repository ?? (pkg.presence === "unreadable" ? (prior?.sourceRepo ?? null) : null);
   let sourceEvidence: SourceEvidence = acc.sourceEvidence;
   if (acc.sourceRepo === null && pkg.repository !== null) sourceEvidence = "ghcr-package";
-  const sourceVisibility = pkg.visibility;
-  const packagePresence = pkg.presence;
+  else if (acc.sourceRepo === null && pkg.presence === "unreadable" && prior?.sourceRepo != null) {
+    sourceEvidence = prior.sourceEvidence;
+  }
+  const sourceVisibility =
+    pkg.visibility === "unknown" && pkg.presence === "unreadable" ? (prior?.sourceVisibility ?? "unknown") : pkg.visibility;
+  const packagePresence = presence;
   const tags = Object.fromEntries(Object.entries(acc.tags).sort(([a], [b]) => stringCompare(a, b)));
   return {
     repository: key,
@@ -1065,9 +1091,10 @@ async function refresh(repoRoot: string): Promise<number> {
   const gh = ghUsable();
   if (!gh) {
     process.stderr.write(
-      "WARNING: `gh api user` failed, so the packages API half is unavailable. `packagePresence` will be " +
-        "recorded as `unreadable`, never `absent` — an unauthenticated run must not be able to invent the " +
-        "difference between a private package and a missing one.\n",
+      "WARNING: `gh api rate_limit` failed, so the packages API half is unavailable. New ghcr rows will " +
+        "record `packagePresence: unreadable`, never `absent` — an unauthenticated run must not be able to " +
+        "invent the difference between a private package and a missing one — and EXISTING rows keep the " +
+        "value an authenticated run already measured rather than being downgraded.\n",
     );
   }
 

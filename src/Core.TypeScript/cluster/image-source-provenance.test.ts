@@ -36,6 +36,7 @@ import {
   refuses,
   remedy,
   repositoryKey,
+  toLedgerEntry,
   type Acknowledgement,
   type LedgerEntry,
 } from "./image-source-provenance.ts";
@@ -726,4 +727,80 @@ describe("this repository, right now", () => {
     ]);
     for (const f of acked) expect(f.detail).toContain("LIFTS WHEN:");
   }, 30_000);
+});
+
+// ---------------------------------------------------------------------------
+// 10. The refresh half must not manufacture a change out of its own degradation.
+// ---------------------------------------------------------------------------
+
+describe("no-downgrade under lost packages access", () => {
+  test("an unauthenticated run keeps what an authenticated one measured", () => {
+    // Measured in CI on run 32654405529: `${{ github.token }}` is an
+    // installation token, `gh api user` fails under it, the packages half
+    // reported itself unavailable, and the refresh rewrote all 28 rows from
+    // `found`/`absent` to `unreadable`. The lane then said the provenance had
+    // moved. It had not — the measurer had. `toLedgerEntry` now preserves the
+    // prior value under `unreadable`, and this pins it.
+    const prior: LedgerEntry = {
+      repository: "ghcr.io/lucent-financial-group/zeta-orleans-silo",
+      tags: { latest: 401 },
+      artifact: "denied",
+      sourceRepo: "Lucent-Financial-Group/Zeta",
+      sourceEvidence: "ghcr-package",
+      sourceVisibility: "public",
+      packagePresence: "absent",
+      resolvedAt: "2026-08-23",
+    };
+    const degraded = toLedgerEntry(
+      prior.repository,
+      { tags: { latest: 401 }, sourceRepo: null, sourceEvidence: "none" },
+      /* ghAvailable */ false,
+      "2026-08-24",
+      prior,
+    );
+    expect(degraded.packagePresence).toBe("absent");
+    expect(degraded.sourceRepo).toBe("Lucent-Financial-Group/Zeta");
+    expect(degraded.sourceVisibility).toBe("public");
+    expect(degraded.sourceEvidence).toBe("ghcr-package");
+    // and the classification does not flip remedy under degradation
+    expect(classify(degraded, new Set())).toBe("ours-unpublished");
+  });
+
+  test("the freshly measured half is NEVER preserved — `artifact` always re-measures", () => {
+    // The half that decides refusal must come from this run's anonymous pull, or
+    // a package that went private would keep reading as public forever.
+    const prior: LedgerEntry = {
+      repository: "ghcr.io/lucent-financial-group/zeta-portal",
+      tags: { latest: 200 },
+      artifact: "public",
+      sourceRepo: "Lucent-Financial-Group/Zeta",
+      sourceEvidence: "oci-label",
+      sourceVisibility: "public",
+      packagePresence: "found",
+      resolvedAt: "2026-08-23",
+    };
+    const nowPrivate = toLedgerEntry(
+      prior.repository,
+      { tags: { latest: 401 }, sourceRepo: null, sourceEvidence: "none" },
+      false,
+      "2026-08-24",
+      prior,
+    );
+    expect(nowPrivate.artifact).toBe("denied");
+    expect(classify(nowPrivate, new Set())).toBe("ours-private");
+  });
+
+  test("a brand-new row under degradation is `unreadable`, never `absent`", () => {
+    const fresh = toLedgerEntry(
+      "ghcr.io/someone/brand-new",
+      { tags: { v1: 401 }, sourceRepo: null, sourceEvidence: "none" },
+      false,
+      "2026-08-24",
+      undefined,
+    );
+    expect(fresh.packagePresence).toBe("unreadable");
+    // unreadable is not `absent`, so the remedy stays REMOVE rather than
+    // inventing "build and push it" for someone else's package.
+    expect(classify(fresh, new Set())).toBe("foreign-private");
+  });
 });
