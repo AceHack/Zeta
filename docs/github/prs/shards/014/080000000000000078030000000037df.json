@@ -1,0 +1,12 @@
+{
+  "pr_number": 14303,
+  "archive_path": "docs/history/pr-reviews/PR-14303-fix-deps-regenerate-bun-lock-for-the-twitch-ai-workspace-main-has-been-red-for-e.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-23T17:12:26.850Z",
+  "schema_version": "v1",
+  "commit_sha": "7dbd2b11d2b26aac9f585b4609298492aaa03224",
+  "title": "fix(deps): regenerate bun.lock for the twitch-ai workspace — main has been red for every PR since #14292",
+  "state": "MERGED",
+  "merged_at": "2026-08-23T17:11:49Z",
+  "head_ref": "fix/bun-lock-workspaces"
+}
