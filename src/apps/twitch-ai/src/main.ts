@@ -1,12 +1,28 @@
-if (typeof self !== 'undefined' && typeof (self as any).process === 'undefined') {
-  (self as any).process = { env: {} };
+// Some Core.TypeScript imports probe `process`/`Buffer`; give the page
+// global minimal stand-ins so those probes see defined objects.
+const pageGlobal = self as unknown as {
+  process?: { env: Record<string, string> };
+  Buffer?: { from(str: string): Uint8Array };
+};
+if (typeof pageGlobal.process === "undefined") {
+  pageGlobal.process = { env: {} };
 }
-if (typeof self !== 'undefined' && typeof (self as any).Buffer === 'undefined') {
-  (self as any).Buffer = { from: (str: string) => new TextEncoder().encode(str) };
+if (typeof pageGlobal.Buffer === "undefined") {
+  pageGlobal.Buffer = { from: (str: string) => new TextEncoder().encode(str) };
 }
 import { Chip8TvPlayer } from "./components/Chip8TvPlayer";
+import type { MainToWorkerMessage, WorkerToMainMessage } from "./protocol";
 
-document.querySelector<HTMLDivElement>('#app')!.innerHTML = `
+/** getElementById that throws with the id instead of returning null. */
+function mustGet(id: string): HTMLElement {
+  const el = document.getElementById(id);
+  if (!el) throw new Error(`required element #${id} is missing from the page`);
+  return el;
+}
+
+const app = document.querySelector<HTMLDivElement>("#app");
+if (!app) throw new Error("required element #app is missing from the page");
+app.innerHTML = `
   <header>
     <h1>
       <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -32,24 +48,25 @@ document.querySelector<HTMLDivElement>('#app')!.innerHTML = `
        <div class="mono" style="animation: pulse 2s infinite">Initializing Swarm Engine in Browser...</div>
     </div>
   </main>
-  
+
   <!-- Settings Modal -->
   <div id="settings-modal" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 1000; align-items: center; justify-content: center; backdrop-filter: blur(4px);">
     <div style="background: var(--surface); border: 1px solid var(--border); padding: 2rem; border-radius: 8px; width: 100%; max-width: 400px;">
       <h2 style="margin-top: 0; margin-bottom: 1.5rem; font-size: 1.25rem;">LLM Provider Settings</h2>
-      
+
       <div style="margin-bottom: 1rem;">
         <label style="display: block; margin-bottom: 0.5rem; font-size: 0.875rem; color: var(--text-muted);">OpenAI-Compatible Base URL</label>
         <input type="text" id="api-base-url" placeholder="https://api.openai.com" style="width: 100%; padding: 0.5rem; background: var(--bg); border: 1px solid var(--border); color: var(--text); border-radius: 4px;" />
       </div>
-      
+
       <div style="margin-bottom: 1.5rem;">
         <label style="display: block; margin-bottom: 0.5rem; font-size: 0.875rem; color: var(--text-muted);">API Key (Saved to localStorage)</label>
         <input type="password" id="api-key" placeholder="sk-..." style="width: 100%; padding: 0.5rem; background: var(--bg); border: 1px solid var(--border); color: var(--text); border-radius: 4px;" />
         <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 0.5rem;">Leave empty to use local Mock LLM for free. Using an API Key exposes your key to this static host's localStorage.</div>
       </div>
-      
+
       <div style="display: flex; justify-content: flex-end; gap: 1rem;">
+        <button id="settings-clear-key" class="upload-btn" style="background: transparent; margin-right: auto;">Clear saved key</button>
         <button id="settings-cancel" class="upload-btn" style="background: transparent;">Cancel</button>
         <button id="settings-save" class="upload-btn" style="background: var(--primary);">Save & Reload</button>
       </div>
@@ -58,21 +75,36 @@ document.querySelector<HTMLDivElement>('#app')!.innerHTML = `
 `;
 
 // Setup Settings Modal
-const settingsModal = document.getElementById("settings-modal")!;
-const settingsBtn = document.getElementById("settings-btn")!;
-const settingsCancel = document.getElementById("settings-cancel")!;
-const settingsSave = document.getElementById("settings-save")!;
-const baseUrlInput = document.getElementById("api-base-url") as HTMLInputElement;
-const apiKeyInput = document.getElementById("api-key") as HTMLInputElement;
+const settingsModal = mustGet("settings-modal");
+const settingsBtn = mustGet("settings-btn");
+const settingsCancel = mustGet("settings-cancel");
+const settingsClear = mustGet("settings-clear-key");
+const settingsSave = mustGet("settings-save");
+const baseUrlInput = mustGet("api-base-url") as HTMLInputElement;
+const apiKeyInput = mustGet("api-key") as HTMLInputElement;
 
 settingsBtn.addEventListener("click", () => {
-  baseUrlInput.value = localStorage.getItem("zeta_llm_base_url") || "";
-  apiKeyInput.value = localStorage.getItem("zeta_llm_api_key") || "";
+  baseUrlInput.value = localStorage.getItem("zeta_llm_base_url") ?? "";
+  // The saved API key is never echoed back into the DOM — the field stays
+  // empty and the placeholder says whether one exists. (Round-tripping the
+  // secret through an input value re-exposes it to anything that can read
+  // the page; leaving it in storage only is strictly less surface.)
+  apiKeyInput.value = "";
+  apiKeyInput.placeholder =
+    localStorage.getItem("zeta_llm_api_key") !== null
+      ? "•••••• saved — leave blank to keep, type to replace"
+      : "sk-...";
   settingsModal.style.display = "flex";
 });
 
 settingsCancel.addEventListener("click", () => {
   settingsModal.style.display = "none";
+});
+
+settingsClear.addEventListener("click", () => {
+  localStorage.removeItem("zeta_llm_api_key");
+  apiKeyInput.value = "";
+  apiKeyInput.placeholder = "sk-...";
 });
 
 settingsSave.addEventListener("click", () => {
@@ -81,18 +113,18 @@ settingsSave.addEventListener("click", () => {
   } else {
     localStorage.removeItem("zeta_llm_base_url");
   }
-  
+
+  // Blank keeps the saved key (it is no longer echoed into the field);
+  // clearing is the explicit button above.
   if (apiKeyInput.value.trim()) {
     localStorage.setItem("zeta_llm_api_key", apiKeyInput.value.trim());
-  } else {
-    localStorage.removeItem("zeta_llm_api_key");
   }
-  
+
   settingsModal.style.display = "none";
   window.location.reload(); // Reload to re-initialize SwarmController with new credentials
 });
 
-async function startSwarmSimulation() {
+function startSwarmSimulation(): void {
   const agentId = "browser-node";
   console.log(`[Twitch] Initializing Swarm Engine in PWA mode for ${agentId}...`);
 
@@ -103,14 +135,20 @@ async function startSwarmSimulation() {
 
   // ROM Upload Logic
   const uploadBtn = document.getElementById("upload-btn");
-  const fileInput = document.getElementById("rom-upload") as HTMLInputElement;
+  const fileInput = document.getElementById("rom-upload") as HTMLInputElement | null;
 
   if (uploadBtn && fileInput) {
-    uploadBtn.addEventListener("click", () => fileInput.click());
+    uploadBtn.addEventListener("click", () => {
+      fileInput.click();
+    });
   }
 
   // Instantiate Swarm Web Worker
-  const worker = new Worker(new URL('./swarm.worker.ts', import.meta.url), { type: 'module' });
+  const worker = new Worker(new URL("./swarm.worker.ts", import.meta.url), { type: "module" });
+  const post = (message: MainToWorkerMessage, transfer?: Transferable[]): void => {
+    if (transfer) worker.postMessage(message, transfer);
+    else worker.postMessage(message);
+  };
 
   // Attach Controller Events
   const keyMap: Record<string, number> = {
@@ -129,15 +167,21 @@ async function startSwarmSimulation() {
     [`btn-y-${agentId}`]: 12,
     [`btn-l3-${agentId}`]: 13,
     [`btn-r3-${agentId}`]: 14,
-    [`btn-select-${agentId}`]: 15
+    [`btn-select-${agentId}`]: 15,
   };
 
   Object.entries(keyMap).forEach(([id, key]) => {
     const el = document.getElementById(id);
     if (el) {
-      el.addEventListener('pointerdown', () => worker.postMessage({ type: 'KEY_DOWN', payload: { key } }));
-      el.addEventListener('pointerup', () => worker.postMessage({ type: 'KEY_UP', payload: { key } }));
-      el.addEventListener('pointerleave', () => worker.postMessage({ type: 'KEY_UP', payload: { key } }));
+      el.addEventListener("pointerdown", () => {
+        post({ type: "KEY_DOWN", payload: { key } });
+      });
+      el.addEventListener("pointerup", () => {
+        post({ type: "KEY_UP", payload: { key } });
+      });
+      el.addEventListener("pointerleave", () => {
+        post({ type: "KEY_UP", payload: { key } });
+      });
     }
   });
 
@@ -145,39 +189,42 @@ async function startSwarmSimulation() {
   const savedApiKey = localStorage.getItem("zeta_llm_api_key");
   const savedBaseUrl = localStorage.getItem("zeta_llm_base_url");
 
-  worker.postMessage({
+  post({
     type: "INIT",
     payload: {
       apiKey: savedApiKey,
-      baseUrl: savedBaseUrl
-    }
+      baseUrl: savedBaseUrl,
+    },
   });
 
   if (fileInput) {
-    fileInput.addEventListener("change", async (e) => {
+    fileInput.addEventListener("change", (e) => {
       const file = (e.target as HTMLInputElement).files?.[0];
       if (!file) return;
 
-      const buffer = await file.arrayBuffer();
-      console.log(`[Twitch] Injecting Epigenetic Material to Worker`);
-      worker.postMessage({
-        type: "INJECT_EPIGENETIC_MATERIAL",
-        payload: { buffer }
-      }, [buffer]); // Transfer buffer for performance
+      file
+        .arrayBuffer()
+        .then((buffer) => {
+          console.log("[Twitch] Injecting Epigenetic Material to Worker");
+          post({ type: "INJECT_EPIGENETIC_MATERIAL", payload: { buffer } }, [buffer]); // Transfer buffer for performance
+        })
+        .catch((err: unknown) => {
+          console.error("[Twitch] Failed to read uploaded cart:", err);
+        });
     });
   }
 
-  // Listen for frames from the worker
-  worker.onmessage = (e) => {
-    const { type, payload } = e.data;
-    if (type === "FRAME") {
-      player.updateFrame(payload.display);
-      player.updatePredictions(payload);
-    }
+  // Listen for frames from the worker (FRAME is currently the only variant;
+  // the protocol union will grow with the attention overlay).
+  worker.onmessage = (e: MessageEvent<WorkerToMainMessage>) => {
+    const { payload } = e.data;
+    player.updateFrame(payload.display);
+    player.updatePredictions(payload);
   };
   worker.onerror = (e) => {
     console.error("[SwarmWorker Error]", e.message, e.filename, e.lineno);
   };
 }
 
-startSwarmSimulation().catch(console.error);
+startSwarmSimulation();
+

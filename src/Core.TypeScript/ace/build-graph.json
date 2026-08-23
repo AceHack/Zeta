@@ -2739,6 +2739,23 @@
       }
     },
     {
+      "id": "ts:apps/twitch-ai",
+      "kind": "typescript",
+      "sources": ["src/apps/twitch-ai/**"],
+      "dependsOn": [],
+      "legs": ["gate/lint-twitch-ai"],
+      "origin": "declared",
+      "requiredQuorum": {
+        "tier": "T1",
+        "faultModel": {
+          "faultClass": "omission",
+          "f": 1
+        },
+        "reviewerClasses": ["reviewer:typescript"],
+        "evidence": []
+      }
+    },
+    {
       "id": "ts:cross-verification",
       "kind": "typescript",
       "sources": ["tests/cross-verification/**"],

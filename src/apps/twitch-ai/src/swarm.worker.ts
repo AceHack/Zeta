@@ -1,15 +1,27 @@
 console.log("[SwarmWorker] Worker script evaluating...");
 
-if (typeof self !== 'undefined' && typeof (self as any).process === 'undefined') {
-  (self as any).process = { env: {} };
+// Some Core.TypeScript imports probe `process`/`Buffer`; give the worker
+// global minimal stand-ins so those probes see defined objects.
+const workerGlobal = self as unknown as {
+  process?: { env: Record<string, string> };
+  Buffer?: { from(str: string): Uint8Array };
+};
+if (typeof workerGlobal.process === "undefined") {
+  workerGlobal.process = { env: {} };
 }
-if (typeof self !== 'undefined' && typeof (self as any).Buffer === 'undefined') {
-  (self as any).Buffer = { from: (str: string) => new TextEncoder().encode(str) };
+if (typeof workerGlobal.Buffer === "undefined") {
+  workerGlobal.Buffer = { from: (str: string) => new TextEncoder().encode(str) };
 }
 
 import { SwarmController } from "../../../Core.TypeScript/swarm/swarm-controller";
 import type { World } from "../../../Core.TypeScript/observe/observe";
-import { create as initFrame, loadRom, step, clearCausalMask, compositeInto } from "../../../Core.TypeScript/chip8/chip8";
+import {
+  create as initFrame,
+  loadRom,
+  step,
+  clearCausalMask,
+  compositeInto,
+} from "../../../Core.TypeScript/chip8/chip8";
 
 import { buildMutualSimRom } from "../../../Core.TypeScript/chip8/games/mutual-sim";
 import { createCheatTable, applyCheatTable } from "../../../Core.TypeScript/chip8/cheat-engine";
@@ -21,6 +33,7 @@ import {
 import { mutualSimPriors } from "../../../Core.TypeScript/chip8/priors/mutual-sim.priors";
 import { singleMoverPriors } from "../../../Core.TypeScript/chip8/priors/single-mover.priors";
 import { modeFlipPriors } from "../../../Core.TypeScript/chip8/priors/mode-flip.priors";
+import type { FramePayload, MainToWorkerMessage, WorkerToMainMessage } from "./protocol";
 
 console.log("[SwarmWorker] Imports resolved successfully. Building ROM...");
 
@@ -40,26 +53,30 @@ let isRunning = false;
 
 const STEPS_PER_TICK = 10;
 const agentId = "browser-node";
-const manualKeys: boolean[] = new Array(16).fill(false);
+const manualKeys: boolean[] = new Array(16).fill(false) as boolean[];
 
-self.onmessage = async (e: MessageEvent) => {
-  try {
-    const { type, payload } = e.data;
+const postToMain = (message: WorkerToMainMessage): void => {
+  self.postMessage(message);
+};
 
-    if (type === "INIT") {
-      console.log(`[SwarmWorker] Initializing swarm (LLM host/model come from persona-registry).`);
+async function handleMessage(message: MainToWorkerMessage): Promise<void> {
+  switch (message.type) {
+    case "INIT": {
+      console.log(
+        "[SwarmWorker] Initializing swarm (LLM host/model come from persona-registry).",
+      );
 
-      console.log(`[SwarmWorker] About to instantiate SwarmController`);
+      console.log("[SwarmWorker] About to instantiate SwarmController");
       swarm = new SwarmController();
-      if (payload?.apiKey || payload?.baseUrl || payload?.model) {
+      if (message.payload.apiKey !== null || message.payload.baseUrl !== null) {
         console.warn(
-          `[SwarmWorker] Ignoring the LLM settings in this INIT payload — SwarmController ` +
-            `resolves host and model from persona-registry and exposes no override.`,
+          "[SwarmWorker] Ignoring the LLM settings in this INIT payload — SwarmController " +
+            "resolves host and model from persona-registry and exposes no override.",
         );
       }
-      console.log(`[SwarmWorker] About to call swarm.init()`);
+      console.log("[SwarmWorker] About to call swarm.init()");
       await swarm.init();
-      console.log(`[SwarmWorker] swarm.init() finished`);
+      console.log("[SwarmWorker] swarm.init() finished");
 
       cheatTable = createCheatTable();
       world = {
@@ -68,7 +85,7 @@ self.onmessage = async (e: MessageEvent) => {
         cartography: { scopeLevel: 0, timeOffset: 0 },
       };
 
-      console.log(`[SwarmWorker] About to call initFrame() and loadRom()`);
+      console.log("[SwarmWorker] About to call initFrame() and loadRom()");
       frame = initFrame();
       loadRom(activeRom, frame);
       currentRomRef = activeRom;
@@ -77,18 +94,22 @@ self.onmessage = async (e: MessageEvent) => {
       swarm.setGamePriors(bootPriors?.snapshot ?? null);
       console.log(
         bootPriors
-          ? `[SwarmWorker] 🧠 Priors loaded for cart "${bootPriors.cart}" (${bootPriors.trainedTicks} trained ticks) — not starting from zero.`
-          : `[SwarmWorker] No committed priors for this cart — starting from the fresh prior.`,
+          ? `[SwarmWorker] 🧠 Priors loaded for cart "${bootPriors.cart}" (${String(bootPriors.trainedTicks)} trained ticks) — not starting from zero.`
+          : "[SwarmWorker] No committed priors for this cart — starting from the fresh prior.",
       );
 
       isRunning = true;
-      console.log(`[SwarmWorker] About to start loop()`);
-      loop(); // Kick off the loop
-    } else if (type === "INJECT_EPIGENETIC_MATERIAL") {
-      const uploadedRom = new Uint8Array(payload.buffer);
+      console.log("[SwarmWorker] About to start loop()");
+      void loop(); // Kick off the loop
+      break;
+    }
+    case "INJECT_EPIGENETIC_MATERIAL": {
+      const uploadedRom = new Uint8Array(message.payload.buffer);
       const fingerprint = romFingerprint(uploadedRom);
-      console.log(`[SwarmWorker] 🧬 Received Epigenetic Material. Spectral Fingerprint: ${fingerprint}`);
-      console.log(`[SwarmWorker] Integrating Epigenetic Material into the Soft Value Regime...`);
+      console.log(
+        `[SwarmWorker] 🧬 Received Epigenetic Material. Spectral Fingerprint: ${fingerprint}`,
+      );
+      console.log("[SwarmWorker] Integrating Epigenetic Material into the Soft Value Regime...");
 
       // Game switching stays inside the soft regime: a known fingerprint
       // restores its committed priors; an unknown one starts from the fresh
@@ -103,43 +124,101 @@ self.onmessage = async (e: MessageEvent) => {
             : `[SwarmWorker] Unknown cart ${fingerprint} — fresh prior, structural layers carried over.`,
         );
       }
-    } else if (type === "KEY_DOWN") {
-      manualKeys[payload.key] = true;
-    } else if (type === "KEY_UP") {
-      manualKeys[payload.key] = false;
+      break;
     }
-  } catch (err) {
-    console.error(`[SwarmWorker] Fatal error in onmessage:`, err);
+    case "KEY_DOWN": {
+      setManualKey(message.payload.key, true);
+      break;
+    }
+    case "KEY_UP": {
+      setManualKey(message.payload.key, false);
+      break;
+    }
   }
+}
+
+/**
+ * The CHIP-8 keypad has exactly 16 keys; anything else is not a key. The
+ * written index is the LOOP variable, never the message value — the message
+ * only selects which of the sixteen fixed slots matches, so no
+ * message-derived value ever becomes a property name.
+ */
+function setManualKey(requested: number, down: boolean): void {
+  for (let k = 0; k < 16; k++) {
+    if (k === requested) manualKeys[k] = down;
+  }
+}
+
+const KNOWN_MESSAGE_TYPES: ReadonlySet<string> = new Set([
+  "INIT",
+  "INJECT_EPIGENETIC_MATERIAL",
+  "KEY_DOWN",
+  "KEY_UP",
+]);
+
+/**
+ * Structural gate on everything entering the worker. A dedicated worker has
+ * no `origin` to verify (only the creating page holds its handle), so the
+ * available hardening is shape validation: unknown or malformed messages
+ * are dropped before any handler runs.
+ */
+function isMainToWorkerMessage(data: unknown): data is MainToWorkerMessage {
+  if (typeof data !== "object" || data === null) return false;
+  const candidate = data as { type?: unknown; payload?: unknown };
+  return (
+    typeof candidate.type === "string" &&
+    KNOWN_MESSAGE_TYPES.has(candidate.type) &&
+    typeof candidate.payload === "object" &&
+    candidate.payload !== null
+  );
+}
+
+self.onmessage = (e: MessageEvent<unknown>) => {
+  // Origin check, stated exactly: a DEDICATED worker's messages come only
+  // from the page that constructed it, and their MessageEvent.origin is
+  // always the empty string. A non-empty origin therefore cannot occur on
+  // this channel, and rejecting it asserts that invariant rather than
+  // decorating it.
+  if (e.origin !== "") {
+    console.warn("[SwarmWorker] Dropped message with unexpected origin");
+    return;
+  }
+  if (!isMainToWorkerMessage(e.data)) {
+    console.warn("[SwarmWorker] Dropped malformed message");
+    return;
+  }
+  handleMessage(e.data).catch((err: unknown) => {
+    console.error("[SwarmWorker] Fatal error in onmessage:", err);
+  });
 };
 
 // Game semantic variables stripped for ARC-AGI-3
 
-async function loop() {
-  console.log(`[SwarmWorker] loop() cycle=${cycle}`);
-  if (!isRunning || !swarm) return;
+/** Reboot the emulator when a new cart was injected between ticks. */
+function rebootIfCartSwitched(): void {
+  if (activeRom === currentRomRef) return;
+  console.log(`[CHIP8 Node ${agentId}] ⚡ SPECTRAL SHIFT DETECTED. Rebooting structural bounds...`);
+  frame = initFrame();
+  loadRom(activeRom, frame);
+  currentRomRef = activeRom;
+  cycle = 0;
+  world = {
+    ...world,
+    backlog: [
+      { id: "chip8-play-1", title: "Play Custom CHIP-8 Game", ready: true, ambiguous: false },
+    ],
+  };
+}
 
-  if (activeRom !== currentRomRef) {
-    console.log(`[CHIP8 Node ${agentId}] ⚡ SPECTRAL SHIFT DETECTED. Rebooting structural bounds...`);
-    frame = initFrame();
-    loadRom(activeRom, frame);
-    currentRomRef = activeRom;
-    cycle = 0;
-    world = {
-      ...world,
-      backlog: [{ id: "chip8-play-1", title: "Play Custom CHIP-8 Game", ready: true, ambiguous: false }],
-    };
-  }
-
-  clearCausalMask(frame);
-  applyCheatTable(frame, cheatTable);
-
-  // Run physical simulation, compositing lit pixels across the whole tick
-  // (persistence of vision). A raw end-of-tick snapshot phase-locks onto the
-  // XOR-erase window of game loops whose length divides STEPS_PER_TICK, and
-  // sprites "vanish" for many consecutive frames — the perception layer (and
-  // the viewer) should see what a CRT would show instead.
-  const displayArray: number[] = new Array(64 * 32).fill(0);
+/**
+ * Run the physical simulation for one tick, compositing lit pixels across
+ * the whole tick (persistence of vision). A raw end-of-tick snapshot
+ * phase-locks onto the XOR-erase window of game loops whose length divides
+ * STEPS_PER_TICK, and sprites "vanish" for many consecutive frames — the
+ * perception layer (and the viewer) should see what a CRT would show.
+ */
+function simulateTick(): number[] {
+  const displayArray: number[] = new Array(64 * 32).fill(0) as number[];
   for (let i = 0; i < STEPS_PER_TICK; i++) {
     step(frame);
     if (frame.fault) {
@@ -149,8 +228,36 @@ async function loop() {
     compositeInto(displayArray, frame);
   }
   if (cycle % 30 === 0) {
-    console.log(`[SwarmWorker] cycle=${cycle}, PC=${frame.pc}, I=${frame.i}, display_pixels=${frame.display.size}`);
+    console.log(
+      `[SwarmWorker] cycle=${String(cycle)}, PC=${String(frame.pc)}, I=${String(frame.i)}, display_pixels=${String(frame.display.size)}`,
+    );
   }
+  return displayArray;
+}
+
+/** Press the keys the society's last do_item action named (worm-fusion). */
+function applySwarmKeyActions(): void {
+  if (!world.history || world.history.length === 0) return;
+  const lastEvent = world.history[world.history.length - 1];
+  if (lastEvent?.type !== "do_item" || !lastEvent.actions) return;
+  for (const action of lastEvent.actions) {
+    const rawKey = action.args?.key;
+    if (action.tool === "pressKey" && typeof rawKey === "number" && rawKey >= 0 && rawKey <= 15) {
+      frame.keys[rawKey] = true;
+    }
+  }
+}
+
+async function loop(): Promise<void> {
+  console.log(`[SwarmWorker] loop() cycle=${String(cycle)}`);
+  if (!isRunning || !swarm) return;
+
+  rebootIfCartSwitched();
+
+  clearCausalMask(frame);
+  applyCheatTable(frame, cheatTable);
+
+  const displayArray = simulateTick();
 
   const memArray = new Uint8Array(4096);
   for (const [addr, val] of frame.mem.entries()) {
@@ -167,7 +274,10 @@ async function loop() {
   if (!world.backlog.find((i) => i.id === "chip8-play-1")) {
     world = {
       ...world,
-      backlog: [...world.backlog, { id: "chip8-play-1", title: "Play CHIP-8 Game", ready: true, ambiguous: false }],
+      backlog: [
+        ...world.backlog,
+        { id: "chip8-play-1", title: "Play CHIP-8 Game", ready: true, ambiguous: false },
+      ],
     };
   }
 
@@ -180,37 +290,28 @@ async function loop() {
   // Tag detection, scoring, respawn, and win/lose all live IN THE CART now
   // (games/mutual-sim.ts): the previous out-of-cart hack here used
   // Math.random teleports — ambient entropy the cart's seeded RND replaces.
-
-  if (world.history && world.history.length > 0) {
-    const lastEvent = world.history[world.history.length - 1];
-    if (lastEvent?.type === "do_item" && lastEvent.actions) {
-      for (const action of lastEvent.actions) {
-        if (action.tool === "pressKey" && typeof action.args?.key === "number") {
-          const key = action.args.key;
-          if (key >= 0 && key <= 15) frame.keys[key] = true;
-        }
-      }
-    }
-  }
+  applySwarmKeyActions();
 
   // Level up events removed for ARC-AGI-3
 
   // Pass data directly to the frontend player component over postMessage
-  const eventAction = {
+  const eventAction: FramePayload = {
     kind: "chip8-frame",
     display: displayArray,
-    cycle: cycle,
+    cycle,
     keys: Array.from(frame.keys),
-    keyPredictions: world.cheatEngine?.keyPredictions || {},
+    keyPredictions: world.cheatEngine?.keyPredictions ?? {},
     // The snap (CMYK half) and the forced-perception readout for the overlay.
     chosenKey: world.cheatEngine?.chosenKey ?? -1,
-    arena: world.cheatEngine?.arena ?? null
+    arena: world.cheatEngine?.arena ?? null,
   };
 
-  self.postMessage({ type: "FRAME", payload: eventAction });
+  postToMain({ type: "FRAME", payload: eventAction });
 
   cycle++;
 
   // Throttle to ~30 fps
-  setTimeout(loop, 32);
+  setTimeout(() => {
+    void loop();
+  }, 32);
 }

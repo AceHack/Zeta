@@ -1,11 +1,12 @@
 ---
 id: 081M0QF7ZVY087G0R003Q4Q18D
 type: task
-state: backlog
+state: done
 priority: P2
 slug: twitch-ai-is-a-self-contained-vite-app-with-no-ci-job-its-ow
 title: "twitch-ai is a self-contained vite app with no CI job — its own tsc and vite build run nowhere"
 created: 2026-08-23T14:08:57.726Z
+completed: 2026-08-23T22:40:11.170Z
 depends_on: []
 composes_with: []
 ---
