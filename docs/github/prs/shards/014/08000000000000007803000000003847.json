@@ -1,0 +1,12 @@
+{
+  "pr_number": 14407,
+  "archive_path": "docs/history/pr-reviews/PR-14407-research-geometry-as-root-geometry-cannot-be-the-root-on-the-evidence-but-the-me.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-23T19:51:34.723Z",
+  "schema_version": "v1",
+  "commit_sha": "59c0c158c5359f12e1170cabc359efbcc18dd1fb",
+  "title": "research(geometry-as-root): geometry cannot be the root on the evidence, but the metric can",
+  "state": "MERGED",
+  "merged_at": "2026-08-23T19:50:51Z",
+  "head_ref": "docs/geometry-as-root-formal-analysis"
+}
