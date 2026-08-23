@@ -1,0 +1,14 @@
+{
+  "id": "080d017654861810a0130008a6cd5cdc",
+  "at": "2026-08-23T13:23:42.403Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M0QCN462087G0R000VXKBER",
+    "type": "bug",
+    "title": "The lane packer fills to 100% of its budget and CI asserts the measurement against that same budget — so a lane can only pass by luck",
+    "slug": "the-lane-packer-fills-to-100-of-its-budget-and-ci-asserts-th",
+    "priority": "P1",
+    "filename": "081M0QCN462087G0R000VXKBER-the-lane-packer-fills-to-100-of-its-budget-and-ci-asserts-th.md"
+  }
+}
