@@ -1259,6 +1259,19 @@
       ]
     },
     {
+      "key": "search-index-cadence.yml:rebuild",
+      "samples": 3,
+      "nonAptP90Seconds": 169,
+      "nonAptMaxSeconds": 169,
+      "aptP90Seconds": 96,
+      "window": "2026-08-23T18:13:45Z .. 2026-08-23T18:31:14Z",
+      "runIds": [
+        32658297083,
+        32658048219,
+        32657365004
+      ]
+    },
+    {
       "key": "stryker-mutation.yml:mutation-test",
       "samples": 20,
       "nonAptP90Seconds": 479,

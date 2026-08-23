@@ -1,0 +1,14 @@
+{
+  "id": "080d017fdf7ab810a0130008b40167af",
+  "at": "2026-08-23T18:57:15.095Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M0QZQVTQ087G0R000XSV974",
+    "type": "bug",
+    "title": "Register search-index cadence in the apt timing audit",
+    "slug": "register-search-index-cadence-in-the-apt-timing-audit",
+    "priority": "P2",
+    "filename": "081M0QZQVTQ087G0R000XSV974-register-search-index-cadence-in-the-apt-timing-audit.md"
+  }
+}
