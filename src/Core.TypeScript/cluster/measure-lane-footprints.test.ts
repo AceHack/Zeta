@@ -133,34 +133,47 @@ describe("measureImage — the anonymous token dance is performed, not assumed",
     ]);
   });
 
-  test("the verdict is a property of the IMAGE, not of the runner's credentials", async () => {
-    // If this tool ever reached for an ambient `GITHUB_TOKEN` / docker
-    // credential, "unmeasurable" would mean "unmeasurable BY WHOEVER RAN IT" and
-    // the checked-in footprint would change identity with its author. So: run
-    // the same measurement with a loud credential in the environment and assert
-    // (a) the answer does not move and (b) nothing but the registry's own
-    // anonymous token was ever presented on the wire.
-    const clean = ghcrStub({ kind: "public" });
-    const before = await measureImage(PORTAL, { fetch: clean.fetch, tokens: new Map() });
+  test("the only credential ever presented is the registry's own anonymous grant", async () => {
+    // If this tool reached for an ambient `GITHUB_TOKEN` or a docker credential,
+    // "unmeasurable" would mean "unmeasurable BY WHOEVER RAN IT" — the number
+    // would change identity with its author and two people would get two
+    // answers, both looking like measurements. This pins the wire side of that:
+    // the first request goes out bare, and the ONLY Authorization header in the
+    // whole exchange is the token the registry itself just issued.
+    const stub = ghcrStub({ kind: "public" });
+    await measureImage(PORTAL, { fetch: stub.fetch, tokens: new Map() });
+    expect(stub.log[0]?.authorization).toBeUndefined();
+    expect(stub.log.map((r) => r.authorization).filter((a) => a !== undefined)).toEqual([`Bearer ${ANON_TOKEN}`]);
+  });
 
-    const saved = { gh: process.env.GITHUB_TOKEN, gt: process.env.GH_TOKEN, dc: process.env.DOCKER_CONFIG };
-    process.env.GITHUB_TOKEN = "ghp_ambient_credential_that_must_not_be_used";
-    process.env.GH_TOKEN = "ghp_ambient_credential_that_must_not_be_used";
-    process.env.DOCKER_CONFIG = "/nonexistent/docker";
-    try {
-      const dirty = ghcrStub({ kind: "public" });
-      expect(await measureImage(PORTAL, { fetch: dirty.fetch, tokens: new Map() })).toEqual(before);
-      const presented = dirty.log.map((r) => r.authorization).filter((a) => a !== undefined);
-      expect(presented).toEqual([`Bearer ${ANON_TOKEN}`]);
-      expect(dirty.log[0]?.authorization).toBeUndefined();
-    } finally {
-      if (saved.gh === undefined) delete process.env.GITHUB_TOKEN;
-      else process.env.GITHUB_TOKEN = saved.gh;
-      if (saved.gt === undefined) delete process.env.GH_TOKEN;
-      else process.env.GH_TOKEN = saved.gt;
-      if (saved.dc === undefined) delete process.env.DOCKER_CONFIG;
-      else process.env.DOCKER_CONFIG = saved.dc;
-    }
+  test("the module names no credential environment variable at all", () => {
+    // The source half of the same property, and it is here rather than as an
+    // env-mutation test ON PURPOSE. Setting `GITHUB_TOKEN` in this process to
+    // prove it is ignored would hoist a credential into an environment every
+    // child inherits — which `lint-no-ambient-credential-hoist.ts` refuses, and
+    // rightly: a test that demonstrates a safety property by performing the
+    // unsafe act is not a proof, it is the act.
+    //
+    // So the claim is checked where it can be checked without doing it. An
+    // `if (process.env.GITHUB_TOKEN)` added to the fetch path fails here, which
+    // is the mutation this is for.
+    const source = readFileSync(resolve(import.meta.dir, "measure-lane-footprints.ts"), "utf8");
+    // Comments are stripped, because the module's own header NAMES these vars in
+    // order to say it does not read them. Scanning prose would make the check
+    // fail on the documentation of the property it is checking — and, worse,
+    // would pass the moment someone deleted that paragraph.
+    const code = source
+      .split("\n")
+      .filter((line) => {
+        const t = line.trimStart();
+        return !(t.startsWith("//") || t.startsWith("*") || t.startsWith("/*"));
+      })
+      .join("\n");
+    const forbidden = ["GITHUB_TOKEN", "GH_TOKEN", "DOCKER_CONFIG", "REGISTRY_PASSWORD", "NPM_TOKEN"];
+    expect(forbidden.filter((name) => code.includes(name))).toEqual([]);
+    // And nothing reads the environment by any other name either.
+    expect(code.includes("process.env")).toBe(false);
+    expect(code.includes("Bun.env")).toBe(false);
   });
 
   test("a REFUSED anonymous grant stays a refusal, and says so", async () => {
