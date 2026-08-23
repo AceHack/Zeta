@@ -30,18 +30,34 @@ self.onmessage = async (e: MessageEvent) => {
   const { type, payload } = e.data;
 
   if (type === "INIT") {
-    console.log(`[SwarmWorker] Initializing with LLM settings...`);
+    console.log(`[SwarmWorker] Initializing swarm (LLM host/model come from persona-registry).`);
 
     swarm = new SwarmController();
 
-    if (payload.apiKey) {
-      console.log(`[SwarmWorker] Using remote LLM endpoint: ${payload.baseUrl || "https://api.openai.com"}`);
-    } else {
-      console.log(`[SwarmWorker] Using local mock LLM fallback.`);
-    }
     // SwarmController.init takes a UDP drop-rate number, not LLM settings.
-    // Persona/host config lives in persona-registry; this worker cannot
-    // retarget it by passing an options object.
+    // Every backend it builds is resolved inside init() from persona-registry
+    // (`config.harness.host`, `config.preferredModel`) with a hardcoded
+    // `apiKey: "dummy"` -- there is no seam through which an apiKey/baseUrl/model
+    // arriving on this payload could reach a backend.
+    //
+    // #14159 restored a call passing `{apiKey, baseUrl, model}` here (a type error,
+    // fixed in #14169 by deleting the argument). Deleting the argument left the
+    // BRANCH behind: it still logged "Using remote LLM endpoint: <baseUrl>" for a
+    // remote endpoint this worker cannot reach, and "local mock LLM fallback" for a
+    // backend that is neither local-by-choice nor a mock. Both lines announced a
+    // capability that is absent, which is worse than silence.
+    //
+    // The capability REMAINS ABSENT. Wiring these settings through would mean giving
+    // init() a per-node host/model/key override, i.e. changing the contract that
+    // persona-registry owns -- a design decision for whoever owns twitch-ai, not a
+    // CI-unblock. Until then the honest thing is to say the settings are ignored,
+    // because the page still sends them and dropping them silently is its own lie.
+    if (payload?.apiKey || payload?.baseUrl || payload?.model) {
+      console.warn(
+        `[SwarmWorker] Ignoring the LLM settings in this INIT payload — SwarmController ` +
+          `resolves host and model from persona-registry and exposes no override.`,
+      );
+    }
     await swarm.init();
 
     cheatTable = createCheatTable();
