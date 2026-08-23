@@ -407,19 +407,17 @@
     },
     "ghcr.io/lucent-financial-group/hat-system-operator:placeholder": {
       "compressedBytes": null,
-      "unmeasurableReason": "manifest HTTP 401"
+      "unmeasurableReason": "manifest HTTP 401; the registry REFUSED an anonymous pull token — the repository is private or does not exist, and a registry that answers 401 for an unknown repository cannot distinguish the two"
     },
     "ghcr.io/lucent-financial-group/zeta-orleans-silo:latest": {
       "compressedBytes": null,
-      "unmeasurableReason": "manifest HTTP 401"
+      "unmeasurableReason": "manifest HTTP 401; the registry REFUSED an anonymous pull token — the repository is private or does not exist, and a registry that answers 401 for an unknown repository cannot distinguish the two"
     },
     "ghcr.io/lucent-financial-group/zeta-platform-controller:latest": {
-      "compressedBytes": null,
-      "unmeasurableReason": "manifest HTTP 401"
+      "compressedBytes": 42887187
     },
     "ghcr.io/lucent-financial-group/zeta-portal:latest": {
-      "compressedBytes": null,
-      "unmeasurableReason": "manifest HTTP 401"
+      "compressedBytes": 43241230
     },
     "ghcr.io/spiffe/spiffe-csi-driver:0.2.3": {
       "compressedBytes": 3703909

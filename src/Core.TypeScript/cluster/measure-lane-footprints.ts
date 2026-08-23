@@ -40,8 +40,45 @@
 // containing one is reported UNKNOWN rather than FITS — its measured bytes are
 // a FLOOR. Counting an unsizable image as zero is how a lane that does not fit
 // reads as one that does, which is the failure this whole exercise exists to
-// avoid. 15 of 127 images are in that state today; they are named in the
+// avoid. 3 of 126 images are in that state today; they are named in the
 // output, not summarised.
+//
+// THE MEASUREMENT IS ANONYMOUS ON PURPOSE — AND 401 IS NOT ABSENCE
+// ----------------------------------------------------------------
+// The Docker Registry v2 API answers 401 to an unauthenticated manifest read
+// EVEN FOR A PUBLIC IMAGE. The caller is expected to walk the challenge, fetch
+// a free anonymous pull token from the realm it names, and retry — which
+// `fetchAuthed` does, and which `measure-lane-footprints.test.ts` now proves it
+// does. It presents NO other credential: not `GITHUB_TOKEN`, not a docker
+// config. That is deliberate. A tool that fell back on an ambient credential
+// would produce a footprint that depends on WHO RAN IT — two people, two
+// numbers, both looking like measurements — and "unmeasurable" would stop being
+// a fact about the image.
+//
+// The cost of anonymity is that three realities collapse onto one status, and
+// the reason string is written to keep them apart as far as it honestly can:
+//
+//   private repository        401, anonymous grant REFUSED
+//   repository never existed   401, anonymous grant REFUSED   <- ghcr answers 401,
+//                                                                not 404, so as to
+//                                                                not leak which
+//                                                                names exist
+//   this tool never asked      401, no grant attempted        <- OURS, a defect
+//
+// The first two are genuinely indistinguishable from outside and are reported
+// as one. The third is not, and `refusalReason` names it — because on
+// 2026-08-23 two `lucent-financial-group` packages sat in this file as
+// `manifest HTTP 401` AFTER being made public, and a bare status gave a reader
+// no way to tell a stale row from a private one. (Live consequence, still true:
+// `zeta-orleans-silo` and `hat-system-operator` are not private — the org
+// publishes no such packages at all. Their references dangle.)
+//
+// `:latest` MOVES, AND THAT IS WHY `--check` IS NOT A GATE
+// --------------------------------------------------------
+// Several references in this tree are `:latest` against registries we push to.
+// Two measurements minutes apart legitimately differ (zeta-portal read
+// 43240320 then 43241230 on 2026-08-23 — a rebuild landed between them). A
+// `--check` wired into CI would go red for that. See the section above.
 //
 // `--check` IS A MAINTAINER TOOL AND MUST NOT BECOME A GATE
 // ---------------------------------------------------------
@@ -81,6 +118,39 @@ export interface ImageSize {
   /** Present exactly when `compressedBytes` is null. The tool's own status, never paraphrased. */
   readonly unmeasurableReason?: string;
 }
+
+/**
+ * What happened when the registry demanded a bearer token.
+ *
+ * Recorded, and carried into the refusal string, because the failure this file
+ * exists to prevent has a mirror image: a 401 that was NEVER CHALLENGED is a
+ * defect in this tool, and a 401 that survived a REFUSED anonymous grant is a
+ * fact about the repository. Both read "HTTP 401" at the wire and they are not
+ * the same finding. Without this the artifact cannot tell you which it is, and
+ * on 2026-08-23 that is exactly what happened: two ghcr packages were recorded
+ * `manifest HTTP 401`, were made public, and the checked-in row went on saying
+ * 401 with nothing in it to show whether the tool had even asked.
+ */
+export type AnonymousGrant =
+  /** The registry served the manifest without asking for anything. */
+  | "not-required"
+  /** It asked, we fetched a free anonymous pull token, and presented it. */
+  | "granted"
+  /** It asked, and then refused to issue an anonymous pull token. */
+  | "refused"
+  /** It answered 401 with no parseable `WWW-Authenticate` challenge to walk. */
+  | "no-challenge";
+
+/**
+ * The one network seam.
+ *
+ * Injected rather than reached for, so the token dance has a falsifier: before
+ * this existed nothing could exercise `fetchAuthed` without 129 live registries,
+ * which is why the handshake shipped for months with no test able to catch its
+ * removal. Defaults to the global `fetch`; `measure-lane-footprints.test.ts`
+ * passes a GHCR-shaped stub.
+ */
+export type FetchLike = (url: string, init?: { headers?: Record<string, string> }) => Promise<Response>;
 
 export interface LaneFootprints {
   readonly measuredOn: string;
@@ -145,12 +215,23 @@ export function parseImageRef(ref: string): ParsedRef {
 
 const tokenCache = new Map<string, string>();
 
-async function fetchAuthed(url: string, accept: string, cacheKey: string): Promise<Response> {
-  const cached = tokenCache.get(cacheKey);
+interface AuthedResponse {
+  readonly response: Response;
+  readonly grant: AnonymousGrant;
+}
+
+async function fetchAuthed(
+  url: string,
+  accept: string,
+  cacheKey: string,
+  doFetch: FetchLike,
+  tokens: Map<string, string>,
+): Promise<AuthedResponse> {
+  const cached = tokens.get(cacheKey);
   const headers: Record<string, string> = { Accept: accept };
   if (cached !== undefined) headers.Authorization = `Bearer ${cached}`;
-  const first = await fetch(url, { headers });
-  if (first.status !== 401) return first;
+  const first = await doFetch(url, { headers });
+  if (first.status !== 401) return { response: first, grant: cached === undefined ? "not-required" : "granted" };
 
   // Walk the WWW-Authenticate challenge. Anonymous pull tokens only — this tool
   // never presents a credential, so a private repository stays UNKNOWN rather
@@ -161,7 +242,7 @@ async function fetchAuthed(url: string, accept: string, cacheKey: string): Promi
   // scan gives the same parse with no super-linear path.
   const marker = "bearer ";
   const at = challenge.toLowerCase().indexOf(marker);
-  if (at < 0) return first;
+  if (at < 0) return { response: first, grant: "no-challenge" };
   const params = new Map<string, string>();
   // Bounded quantifiers, not `\w+` / `[^"]*`: a registry-supplied header is
   // remote input, and an unbounded scan over it is a denial-of-service surface
@@ -172,19 +253,48 @@ async function fetchAuthed(url: string, accept: string, cacheKey: string): Promi
     if (key !== undefined && value !== undefined) params.set(key, value);
   }
   const realm = params.get("realm");
-  if (realm === undefined) return first;
+  if (realm === undefined) return { response: first, grant: "no-challenge" };
   const tokenUrl = new URL(realm);
   const service = params.get("service");
   const scope = params.get("scope");
   if (service !== undefined) tokenUrl.searchParams.set("service", service);
   if (scope !== undefined) tokenUrl.searchParams.set("scope", scope);
-  const tokenRes = await fetch(tokenUrl.toString());
-  if (!tokenRes.ok) return first;
+  const tokenRes = await doFetch(tokenUrl.toString());
+  if (!tokenRes.ok) return { response: first, grant: "refused" };
   const body = (await tokenRes.json()) as { token?: string; access_token?: string };
   const token = body.token ?? body.access_token;
-  if (token === undefined || token === "") return first;
-  tokenCache.set(cacheKey, token);
-  return await fetch(url, { headers: { Accept: accept, Authorization: `Bearer ${token}` } });
+  // ghcr.io answers a denied anonymous grant with HTTP 200 and an `errors` body,
+  // not a non-2xx — so `tokenRes.ok` alone does NOT mean a token arrived.
+  if (token === undefined || token === "") return { response: first, grant: "refused" };
+  tokens.set(cacheKey, token);
+  return {
+    response: await doFetch(url, { headers: { Accept: accept, Authorization: `Bearer ${token}` } }),
+    grant: "granted",
+  };
+}
+
+/**
+ * The refusal string, carrying WHY the status is what it is.
+ *
+ * A bare `manifest HTTP 401` is the shape that let a stale verdict stand: it is
+ * equally consistent with "private", "does not exist", and "this tool never
+ * asked for a token". The first two a registry can genuinely not distinguish
+ * for us — ghcr.io answers 401 for an unknown repository on purpose, so it does
+ * not leak which names exist — but the third is ours, and naming it is what
+ * makes a regression to a bare-401 read visible in the checked-in artifact
+ * instead of only in a test.
+ */
+export function refusalReason(stage: string, status: number, grant: AnonymousGrant): string {
+  const base = `${stage} HTTP ${String(status)}`;
+  if (status !== 401) return base;
+  if (grant === "refused") {
+    return (
+      `${base}; the registry REFUSED an anonymous pull token — the repository is private or does not exist, ` +
+      `and a registry that answers 401 for an unknown repository cannot distinguish the two`
+    );
+  }
+  if (grant === "no-challenge") return `${base}; no parseable WWW-Authenticate challenge to walk`;
+  return `${base} WITH an anonymous pull token — the grant succeeded and the manifest was still refused`;
 }
 
 /**
@@ -196,25 +306,41 @@ async function fetchAuthed(url: string, accept: string, cacheKey: string): Promi
  * is; a lane measured on arm64 would be pricing a different set of layers, and
  * "no linux/amd64" is therefore a refusal and not a fallback.
  */
-export async function measureImage(ref: string): Promise<ImageSize> {
+export async function measureImage(
+  ref: string,
+  deps: { readonly fetch?: FetchLike; readonly tokens?: Map<string, string> } = {},
+): Promise<ImageSize> {
+  const doFetch = deps.fetch ?? ((url, init) => globalThis.fetch(url, init));
+  const tokens = deps.tokens ?? tokenCache;
   const { registry, repository, reference } = parseImageRef(ref);
   const cacheKey = `${registry}/${repository}`;
   const base = `https://${registry}/v2/${repository}`;
-  let res = await fetchAuthed(`${base}/manifests/${encodeURIComponent(reference)}`, MANIFEST_ACCEPT, cacheKey);
-  if (!res.ok) return { compressedBytes: null, unmeasurableReason: `manifest HTTP ${String(res.status)}` };
-  let doc = (await res.json()) as {
+  let res = await fetchAuthed(
+    `${base}/manifests/${encodeURIComponent(reference)}`,
+    MANIFEST_ACCEPT,
+    cacheKey,
+    doFetch,
+    tokens,
+  );
+  if (!res.response.ok) {
+    return { compressedBytes: null, unmeasurableReason: refusalReason("manifest", res.response.status, res.grant) };
+  }
+  let doc = (await res.response.json()) as {
     manifests?: { digest: string; platform?: { os?: string; architecture?: string } }[];
     layers?: { size?: number }[];
     config?: { size?: number };
   };
   if (Array.isArray(doc.manifests)) {
-    const amd64 = doc.manifests.find(
-      (m) => m.platform?.os === "linux" && m.platform.architecture === "amd64",
-    );
+    const amd64 = doc.manifests.find((m) => m.platform?.os === "linux" && m.platform.architecture === "amd64");
     if (amd64 === undefined) return { compressedBytes: null, unmeasurableReason: "index has no linux/amd64" };
-    res = await fetchAuthed(`${base}/manifests/${amd64.digest}`, MANIFEST_ACCEPT, cacheKey);
-    if (!res.ok) return { compressedBytes: null, unmeasurableReason: `child manifest HTTP ${String(res.status)}` };
-    doc = (await res.json()) as typeof doc;
+    res = await fetchAuthed(`${base}/manifests/${amd64.digest}`, MANIFEST_ACCEPT, cacheKey, doFetch, tokens);
+    if (!res.response.ok) {
+      return {
+        compressedBytes: null,
+        unmeasurableReason: refusalReason("child manifest", res.response.status, res.grant),
+      };
+    }
+    doc = (await res.response.json()) as typeof doc;
   }
   if (!Array.isArray(doc.layers)) return { compressedBytes: null, unmeasurableReason: "manifest declares no layers" };
   let total = doc.config?.size ?? 0;
@@ -292,7 +418,8 @@ if (import.meta.main) {
     `measured ${String(known)}/${String(total)} images across ${String(Object.keys(measured.imagesByApp).length)} applications`,
   );
   for (const [ref, size] of Object.entries(measured.imageSizes)) {
-    if (size.compressedBytes === null) console.log(`  UNMEASURABLE ${ref} — ${size.unmeasurableReason ?? "(no reason recorded)"}`);
+    if (size.compressedBytes === null)
+      console.log(`  UNMEASURABLE ${ref} — ${size.unmeasurableReason ?? "(no reason recorded)"}`);
   }
   if (check) {
     const onDisk = readFileSync(target, "utf8");

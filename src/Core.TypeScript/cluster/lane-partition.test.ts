@@ -144,7 +144,10 @@ describe("pricing", () => {
 
   test("an application with no catalogue row is unpriced, not free", () => {
     const m = toyModel();
-    const stripped = { ...m, catalogue: { ...m.catalogue, rows: new Map([...m.catalogue.rows].filter(([k]) => k !== "core")) } };
+    const stripped = {
+      ...m,
+      catalogue: { ...m.catalogue, rows: new Map([...m.catalogue.rows].filter(([k]) => k !== "core")) },
+    };
     const f = priceSet(stripped, closureOf(stripped, "a"));
     expect(f.unpricedApps).toEqual(["core"]);
     expect(isFullyPriced(f)).toBe(false);
@@ -155,11 +158,32 @@ describe("pricing", () => {
 describe("budget", () => {
   test("the budget subtracts the runner's reservation before applying the margin", () => {
     const b = budgetOf(
-      { runner: "x", cpuMillis: 4000, memoryMib: 15360, freeDiskGib: 14, reservedCpuMillis: 1500, reservedMemoryMib: 6144, reservedDiskGib: 4 },
+      {
+        runner: "x",
+        cpuMillis: 4000,
+        memoryMib: 15360,
+        freeDiskGib: 14,
+        reservedCpuMillis: 1500,
+        reservedMemoryMib: 6144,
+        reservedDiskGib: 4,
+      },
       1,
     );
     expect(b).toEqual({ cpuMillis: 2500, memoryMib: 9216, diskGib: 10 });
-    expect(budgetOf({ runner: "x", cpuMillis: 4000, memoryMib: 15360, freeDiskGib: 14, reservedCpuMillis: 1500, reservedMemoryMib: 6144, reservedDiskGib: 4 }, 0.85).diskGib).toBeCloseTo(8.5, 6);
+    expect(
+      budgetOf(
+        {
+          runner: "x",
+          cpuMillis: 4000,
+          memoryMib: 15360,
+          freeDiskGib: 14,
+          reservedCpuMillis: 1500,
+          reservedMemoryMib: 6144,
+          reservedDiskGib: 4,
+        },
+        0.85,
+      ).diskGib,
+    ).toBeCloseTo(8.5, 6);
     // MUTATION CAUGHT: using capacity instead of capacity-reserved gives 14.
   });
 
@@ -188,7 +212,11 @@ describe("packing", () => {
   test("a and b do NOT share a lane when their union would exceed the budget", () => {
     // budget disk = (12 - 2) * 1 = 10 GiB. a alone = 10, b alone = 10, a+b = 18.
     const p = packLanes(toyModel(), { margin: 1 });
-    const laneOf = (name: string): string => must(p.lanes.find((l) => l.assigned.includes(name)), `a lane holding ${name}`).id;
+    const laneOf = (name: string): string =>
+      must(
+        p.lanes.find((l) => l.assigned.includes(name)),
+        `a lane holding ${name}`,
+      ).id;
     expect(laneOf("a")).not.toBe(laneOf("b"));
     // MUTATION CAUGHT: pricing a lane as the sum of its members' closures
     // rather than the union of them still separates these two; pricing it as
@@ -294,7 +322,10 @@ describe("the real tree", () => {
     const budget = budgetOf(env, 1);
     expect(budget.diskGib).toBe(env.freeDiskGib - env.reservedDiskGib);
     expect(budget.cpuMillis).toBe(env.cpuMillis - env.reservedCpuMillis);
-    const all = priceSet(model, model.roster.map((r) => r.name));
+    const all = priceSet(
+      model,
+      model.roster.map((r) => r.name),
+    );
     // 74.54 -> 75.81 when `gitlab`, `redis` and `weaviate` stopped being
     // UNPRICED. Their images were always on the disk; the old number simply
     // could not see five of them (four withdrawn Bitnami tags, one registry
@@ -313,15 +344,24 @@ describe("the real tree", () => {
     // them takes `platform`'s blocker count from 5 to 3 without moving a
     // single byte of the priced figure.
     //
-    // 74.26 -> 74.40 on 2026-08-23, and this is the RISING case again: the
-    // `arma-reforger` Blueprint stopped naming a 404 and started naming
-    // `ghcr.io/acemod/arma-reforger` pinned by digest (workitem
-    // 081M0QB1ZCV087G0R001P9YCPX). The whole of the 0.1385 GiB rise is that one
-    // image at 55712029 compressed x2.67; nothing else was re-measured. An
-    // image that could not be sized was counted as nothing, so making it
-    // sizable can only push the floor up — which is the direction that means
-    // the number got MORE true, not that the tree got bigger.
-    expect(all.diskGib).toBeCloseTo(74.40, 2);
+    // 74.26 -> 74.61 on 2026-08-23, RISING TWICE for two independent reasons
+    // that landed the same day, and both are the same shape: an image that
+    // could not be SIZED was contributing nothing, so making it sizable can
+    // only push the floor up. That direction is what "the number got MORE
+    // true" looks like; the tree did not grow.
+    //
+    //   +0.1385 GiB  the `arma-reforger` Blueprint stopped naming a 404 and
+    //                started naming `ghcr.io/acemod/arma-reforger` pinned by
+    //                digest — 55712029 compressed x2.67 (081M0QB1ZCV087G0R001P9YCPX)
+    //   +0.2142 GiB  `zeta-portal` (43241230) and `zeta-platform-controller`
+    //                (42887187) were made public and the checked-in rows were
+    //                never re-measured, so both had been carrying
+    //                `manifest HTTP 401` while being anonymously pullable
+    //
+    // Between them `platform` goes from THREE blockers to ZERO and leaves the
+    // partitioner's quarantine for the first time. `covered by a lane` moves
+    // 43/47 -> 44/47.
+    expect(all.diskGib).toBeCloseTo(74.61, 2);
     expect(all.cpuMillis).toBeGreaterThan(budget.cpuMillis);
     expect(all.diskGib).toBeGreaterThan(budget.diskGib);
     // WHICH AXIS BINDS IS NOW A MEASUREMENT, NOT AN ASSERTION. At 14 GiB disk was
@@ -334,7 +374,7 @@ describe("the real tree", () => {
     const cpuRatio = all.cpuMillis / budget.cpuMillis;
     expect(diskRatio).toBeGreaterThan(1);
     expect(cpuRatio).toBeGreaterThan(1);
-    // And the total is a FLOOR: 15 images are unmeasurable, so `all.diskGib` is a
+    // And the total is a FLOOR: 3 images are unmeasurable, so `all.diskGib` is a
     // lower bound on the real requirement and "over" is the direction that is
     // safe to conclude from it. Under-shooting a floor is the only reading that
     // could ever be wrong, and neither assertion above makes it.
@@ -463,11 +503,14 @@ describe("the real tree", () => {
   test("the graph's adjudication map covers exactly the citations that mention intent", () => {
     const text = readFileSync(resolve(REPO_ROOT, GRAPH_PATH), "utf8");
     const graph = loadGraph(REPO_ROOT);
-    const intent = graph.edges.filter((e) => e.edgeClass === "intent").map((e) => edgeKey(e.from, e.to)).sort();
+    const intent = graph.edges
+      .filter((e) => e.edgeClass === "intent")
+      .map((e) => edgeKey(e.from, e.to))
+      .sort();
     expect(intent).toEqual(["hindsight -> cockroachdb", "spire -> vault"]);
     // temporal's citation contains the phrase and is adjudicated OBSERVED: the
     // case a grep would get backwards.
-    expect(text.includes('temporal -> cockroachdb')).toBe(true);
+    expect(text.includes("temporal -> cockroachdb")).toBe(true);
     const temporalEdge = graph.edges.find((e) => e.from === "temporal" && e.to === "cockroachdb");
     expect(must(temporalEdge, "the temporal -> cockroachdb edge").edgeClass).toBe("observed");
   });
@@ -488,7 +531,9 @@ describe("the real tree", () => {
     const footprints = JSON.parse(readFileSync(resolve(REPO_ROOT, FOOTPRINTS_PATH), "utf8")) as LaneFootprints;
     const withoutLonghorn = {
       ...footprints,
-      imagesByApp: Object.fromEntries(Object.entries(footprints.imagesByApp).filter(([k]) => k !== "full-ai-cluster/longhorn")),
+      imagesByApp: Object.fromEntries(
+        Object.entries(footprints.imagesByApp).filter(([k]) => k !== "full-ai-cluster/longhorn"),
+      ),
     };
     expect(() => buildModel({ repoRoot: REPO_ROOT, footprints: withoutLonghorn })).toThrow(/no entry in/);
     expect(() => buildModel({ repoRoot: REPO_ROOT, footprints: withoutLonghorn })).toThrow(/longhorn/);
@@ -511,9 +556,15 @@ describe("runner envelope assertion", () => {
   const recorded = loadRecordedEnvelope(REPO_ROOT);
 
   test("a runner smaller than the record is CONVICTED, on every short axis", () => {
-    const small = { cpuMillis: recorded.cpuMillis - 1, memoryMib: recorded.memoryMib - 1, freeDiskGib: recorded.freeDiskGib - 1 };
+    const small = {
+      cpuMillis: recorded.cpuMillis - 1,
+      memoryMib: recorded.memoryMib - 1,
+      freeDiskGib: recorded.freeDiskGib - 1,
+    };
     expect(envelopeOverstatements(recorded, small)).toHaveLength(3);
-    expect(envelopeOverstatements(recorded, { ...small, memoryMib: recorded.memoryMib, freeDiskGib: recorded.freeDiskGib })).toHaveLength(1);
+    expect(
+      envelopeOverstatements(recorded, { ...small, memoryMib: recorded.memoryMib, freeDiskGib: recorded.freeDiskGib }),
+    ).toHaveLength(1);
     // MUTATION CAUGHT: an always-empty return, and a disk-only comparison.
   });
 

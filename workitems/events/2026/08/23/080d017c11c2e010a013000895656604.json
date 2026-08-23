@@ -1,0 +1,14 @@
+{
+  "id": "080d017c11c2e010a013000895656604",
+  "at": "2026-08-23T16:44:18.396Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M0QR4E2T087G0R00337NQ46",
+    "type": "bug",
+    "title": "platform's last pricing blocker: ghcr.io/ich777/steamcmd:armareforger is a tag upstream never published",
+    "slug": "platform-s-last-pricing-blocker-ghcr-io-ich777-steamcmd-arma",
+    "priority": "P2",
+    "filename": "081M0QR4E2T087G0R00337NQ46-platform-s-last-pricing-blocker-ghcr-io-ich777-steamcmd-arma.md"
+  }
+}
