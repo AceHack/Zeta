@@ -209,6 +209,18 @@
       "note": "The audit that reads this roster."
     },
     {
+      "path": "src/Core.TypeScript/hygiene/audit-local-helm-charts.test.ts",
+      "disposition": "prose",
+      "note": "One header comment naming infra/k8s/tests/validate-applications.test.ts as the mutation-suite pattern this file follows. A citation of prior art, not a path anything resolves.",
+      "migrateTo": "Re-point the citation at wherever the Application mutation suite lands, or drop the sentence."
+    },
+    {
+      "path": "src/Core.TypeScript/hygiene/audit-local-helm-charts.ts",
+      "disposition": "prose",
+      "note": "Header comments only. Names infra/k8s in two capacities, neither a dependency: (a) to record WHY this validator deliberately does NOT live in infra/k8s/tests/ next to the Application validators \u2014 this roster's own helm-validate.yml entry says 'move the validator out of infra/k8s/tests/', and landing it there was caught by this audit on the first CI run of #14499 and reverted; (b) to state that helm-validate.yml's path filters covered infra/k8s/** but never examples/, which is the measured gap the file closes. It opens no path under infra/; chart discovery walks from the repo root.",
+      "migrateTo": "Drop paragraph (a) with the tree \u2014 once infra/k8s/tests/ is gone there is no alternative home left to justify against. (b) is history by then and can go too."
+    },
+    {
       "path": "src/Core.TypeScript/hygiene/cluster-tree-consumers.json",
       "disposition": "self",
       "note": "This roster."

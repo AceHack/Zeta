@@ -58,6 +58,14 @@ on:
       # the bootstrap without touching infra/k8s/**. validate-bootstrap.ts
       # checks both directions of that roster and needs to see those edits.
       - "infra/nixos/**"
+      # ADDED 2026-08-23: the charts this repo AUTHORS. Everything above is a
+      # manifest that PINS a third-party chart; the two charts we actually own
+      # live under examples/helm-dependency-graph/charts and no workflow in the
+      # tree had `examples/` in a paths filter, so they were never linted,
+      # rendered or parsed. `infra/k8s/tests/**` is here because the validators
+      # themselves changing is a reason to re-run them.
+      - "examples/helm-dependency-graph/**"
+      - "infra/k8s/tests/**"
       - ".github/workflows/helm-validate.yml"
       - ".mise.toml"
       - ".mise.full.toml"
@@ -71,6 +79,14 @@ on:
       - "full-ai-cluster/k8s/**"
       - "full-ai-cluster/nixos/**"
       - "infra/nixos/**"
+      # ADDED 2026-08-23: the charts this repo AUTHORS. Everything above is a
+      # manifest that PINS a third-party chart; the two charts we actually own
+      # live under examples/helm-dependency-graph/charts and no workflow in the
+      # tree had `examples/` in a paths filter, so they were never linted,
+      # rendered or parsed. `infra/k8s/tests/**` is here because the validators
+      # themselves changing is a reason to re-run them.
+      - "examples/helm-dependency-graph/**"
+      - "infra/k8s/tests/**"
       - ".github/workflows/helm-validate.yml"
       - ".mise.toml"
       - ".mise.full.toml"
@@ -168,6 +184,24 @@ jobs:
         # vault manifest each way. Offline, ~0.3 s.
         run: bun infra/k8s/tests/validate-bootstrap.ts --infra-dir full-ai-cluster
 
+      - name: Validate the charts this repo owns (offline)
+        # ADDED 2026-08-23 (Aaron: "we want our k8s helm charts all tested").
+        # MEASURED at 3a0510ddcd before writing it: 2 in-repo charts, 0 covered
+        # by any check, 0 occurrences of `helm lint` anywhere in the tree.
+        # Offline half -- parses Chart.yaml, checks apiVersion/name/version, and
+        # checks that every zeta-deps.yaml version pin agrees with the
+        # Chart.yaml it names. That last coupling was two unbound literals.
+        # Base tier, no helm required, ~0.05 s.
+        run: bun src/Core.TypeScript/hygiene/audit-local-helm-charts.ts
+
+      - name: Prove the chart validator can go red (mutation suite)
+        # 13 cases, one mutation each, asserting exit 1 AND the specific reason,
+        # plus an unmutated control asserting exit 0 and an empty-tree case
+        # asserting that discovering no charts FAILS rather than reporting a
+        # serene "0 failed". Verified 2026-08-23 by stubbing the validator's
+        # non-zero exit: 9 of 13 went red immediately. ~1.3 s.
+        run: bun test src/Core.TypeScript/hygiene/audit-local-helm-charts.test.ts
+
       - name: Prove the bootstrap validator can go red (mutation suite)
         # Same discipline as the step above it: 10 cases, one mutation each,
         # asserting exit 1 AND the specific reason, plus an unmutated control
@@ -245,6 +279,26 @@ jobs:
             sleep $((attempt * 30))
           done
           bun infra/k8s/tests/validate-applications.ts --render
+
+      - name: helm lint + helm template + kubeconform on the charts this repo owns
+        # ADDED 2026-08-23. Same validator, --helm adds `helm lint`, a
+        # `helm template` render and kubeconform over that render.
+        #
+        # WHAT THIS STEP HONESTLY DOES NOT PROVE, stated here and printed by the
+        # tool itself on every run: both owned charts are METADATA-ONLY -- no
+        # templates/ directory, no values.yaml -- so `helm template` renders ZERO
+        # documents and kubeconform therefore schema-checks NOTHING for them.
+        # The validator prints "Schema-validated manifests: 0" and names each
+        # chart under a "NOT SCHEMA-VALIDATED (stated, not silent)" heading
+        # rather than letting a green tick imply a schema check that did not
+        # happen. When either chart grows a templates/ directory the render
+        # count rises and kubeconform starts doing real work with no change
+        # here.
+        #
+        # No pipe: a pipeline would report the exit status of its last stage and
+        # discard the validator's, which is the exact pattern that let a job in
+        # this repo report success for months while its tool exited 1.
+        run: bun src/Core.TypeScript/hygiene/audit-local-helm-charts.ts --helm
 
       - name: Ratchet the full-ai-cluster tree (render + failure ceiling)
         # ADDED 2026-08-20. The 122-file, ~60-Application tree at
