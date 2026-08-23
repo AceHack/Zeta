@@ -102,36 +102,43 @@ describe("the wall regression — furniture is not an adversary", () => {
   });
 
   test("hunt mode steers toward a small prey, flee steers away from a big hunter", () => {
+    // The prey TRAVELS (net displacement is what earns everMoved — a sprite
+    // jittering in place is indistinguishable from brushed furniture and is
+    // deliberately not an adversary candidate any more).
     // Prey to the RIGHT: expect P(right) > P(left) once hunting.
     const hunt = warmed(new BnnSocietyPredictor(3, 4));
+    let preyX = 50;
     for (let i = 0; i < 40; i++) {
       const d = blank();
       paintRect(d, 12, 14, 2, 2, 2); // self
-      paintRect(d, 44 - (i % 3), 14, 2, 2, 1); // small jittering prey → right
+      paintRect(d, preyX, 14, 2, 2, 1); // small prey drifting, stays right
+      if (i % 2 === 0 && preyX > 40) preyX -= 1;
       hunt.predict([...d]);
     }
     expect(hunt.lastMode).toBe("hunt");
     const hp = hunt.predict((() => {
       const d = blank();
       paintRect(d, 12, 14, 2, 2, 2);
-      paintRect(d, 43, 14, 2, 2, 1);
+      paintRect(d, preyX, 14, 2, 2, 1);
       return d;
     })());
     expect(hp[6]!).toBeGreaterThan(hp[4]!); // right beats left
 
-    // Big hollow hunter to the RIGHT: expect flee and P(left) > P(right).
+    // Big hollow hunter closing in from the RIGHT: expect flee, P(left) wins.
     const flee = warmed(new BnnSocietyPredictor(3, 4));
+    let hunterX = 50;
     for (let i = 0; i < 40; i++) {
       const d = blank();
       paintRect(d, 30, 14, 2, 2, 2); // self (mid-screen so left is open)
-      paintHollow(d, 44 - (i % 3), 13, 4, 1); // hunter closing from the right
+      paintHollow(d, hunterX, 13, 4, 1); // hunter closing from the right
+      if (i % 2 === 0 && hunterX > 40) hunterX -= 1;
       flee.predict([...d]);
     }
     expect(flee.lastMode).toBe("flee");
     const fp = flee.predict((() => {
       const d = blank();
       paintRect(d, 30, 14, 2, 2, 2);
-      paintHollow(d, 43, 13, 4, 1);
+      paintHollow(d, hunterX, 13, 4, 1);
       return d;
     })());
     expect(fp[4]!).toBeGreaterThan(fp[6]!); // left beats right

@@ -1,6 +1,21 @@
 import { assemble } from "../assembler";
 
-export function buildMutualSimRom(): Uint8Array {
+export interface MutualSimOptions {
+  /**
+   * Swap which SHAPE each phase wears: the hunter draws the small solid
+   * block and the fleeing AI draws the big hollow ring. Dynamics and scoring
+   * are untouched — only appearance inverts. This is the falsifier cart for
+   * the learned hunt/flee policy: a hardcoded "big shape → flee" rule is
+   * wrong here forever, while a learner must flip after eating the reward.
+   */
+  readonly invertAppearance?: boolean;
+}
+
+export function buildMutualSimRom(options: MutualSimOptions = {}): Uint8Array {
+  const invert = options.invertAppearance === true;
+  // The hunter-phase shape bytes and flee-phase shape bytes, swappable.
+  const huntShape = invert ? ["BYTE 0x0060", "BYTE 0x6000"] : ["BYTE 0xF090", "BYTE 0x90F0"];
+  const fleeShape = invert ? ["BYTE 0xF090", "BYTE 0x90F0"] : ["BYTE 0x0060", "BYTE 0x6000"];
   const code = [
     // --- INIT ---
     // V0: Player X
@@ -38,7 +53,12 @@ export function buildMutualSimRom(): Uint8Array {
     "BYTE 0xF201", // Plane 2 (Player)
     "LD I, shape_p",
     "DRW V0, V1, 2",
-    "BYTE 0xF101", // Plane 1 (AI)
+    // The AI wears BOTH planes (color 3): chromatically distinct from the
+    // walls (color 1) and the player (color 2), so the connected-component
+    // layer can never merge it with a wall it brushes past — a same-color
+    // merge poisons the wall's track with everMoved and the adversary
+    // picker then chases masonry forever.
+    "BYTE 0xF301", // Planes 1+2 (AI, color 3)
     "SNE V8, 1",
     "JMP draw_ai_init_flee",
     "LD I, shape_ai_hunt",
@@ -68,9 +88,38 @@ export function buildMutualSimRom(): Uint8Array {
     "SUB V6, VE",
     "SE V6, 0",
     "JMP timer_done",
-    // Swap Roles!
+    // Swap roles — erase the AI in its OLD costume first, toggle, then
+    // redraw in the NEW one, so the screen never holds a stale shape. (A
+    // mismatched erase XORs ring-over-block, leaving collision debris that
+    // wedges every later draw near it.)
     "LD V6, 255", // Reset swap timer
+    "BYTE 0xF301", // AI color
+    "SNE V8, 1",
+    "JMP swap_erase_flee",
+    "LD I, shape_ai_hunt",
+    "JMP swap_erase_do",
+    "swap_erase_flee:",
+    "LD I, shape_ai_flee",
+    "swap_erase_do:",
+    "DRW V3, V4, 4", // off with the old costume
     "XOR V8, VE", // Toggle V8 between 0 and 1
+    "SNE V8, 1",
+    "JMP swap_draw_flee",
+    "LD I, shape_ai_hunt",
+    "JMP swap_draw_do",
+    "swap_draw_flee:",
+    "LD I, shape_ai_flee",
+    "swap_draw_do:",
+    "DRW V3, V4, 4", // on with the new
+    "SNE VF, 1",
+    "JMP swap_relocate",
+    "JMP timer_done",
+    "swap_relocate:",
+    // The new costume doesn't fit here (it clips a wall or the player) —
+    // erase it and let the respawn loop find a clean spot. I already
+    // points at the new phase's shape, which is what resp_loop draws.
+    "DRW V3, V4, 4",
+    "JMP resp_loop",
     "timer_done:",
     
     // -- PLAYER MOVEMENT --
@@ -99,6 +148,15 @@ export function buildMutualSimRom(): Uint8Array {
     "SKNP V2",
     "ADD V0, VE", // Right
 
+    // Keep REGISTER space == SCREEN space (toroidal wrap). Without this the
+    // registers drift past 64/32 while DRW wraps, and the in-cart tag check
+    // (register distance) diverges from what perception sees — tags never
+    // fire. Masking makes both spaces agree.
+    "LD VE, 63",
+    "AND V0, VE",
+    "LD VE, 31",
+    "AND V1, VE",
+
     // Draw Player at new pos
     "BYTE 0xF201", // Plane 2 (Player)
     "DRW V0, V1, 2",
@@ -122,7 +180,7 @@ export function buildMutualSimRom(): Uint8Array {
     "LD V7, 3", // Reset AI speed timer
     
     // Erase AI
-    "BYTE 0xF101", // Plane 1 (AI)
+    "BYTE 0xF301", // AI color
     "SNE V8, 1",
     "JMP erase_ai_flee",
     "LD I, shape_ai_hunt",
@@ -179,8 +237,13 @@ export function buildMutualSimRom(): Uint8Array {
     "ADD V4, VE",
 
     "ai_draw:",
+    // Same wrap discipline for the AI's registers.
+    "LD VE, 63",
+    "AND V3, VE",
+    "LD VE, 31",
+    "AND V4, VE",
     // Draw AI at new pos
-    "BYTE 0xF101",
+    "BYTE 0xF301", // AI color
     "SNE V8, 1",
     "JMP draw_ai_flee",
     "LD I, shape_ai_hunt",
@@ -194,12 +257,31 @@ export function buildMutualSimRom(): Uint8Array {
     "JMP frame_end",
 
     "ai_collide:",
-    // Collision happened! Undo move (bounce off walls/player)
-    "BYTE 0xF101",
-    "DRW V3, V4, 4", // Erase from new pos
+    // The diagonal step hit something. Undo it, then try the axes one at a
+    // time — X-only, then Y-only — so walls DEFLECT the AI instead of
+    // wedging it forever (a pure undo left it pinned against a wall face
+    // for thousands of frames once register space == screen space).
+    "BYTE 0xF301", // AI color
+    "DRW V3, V4, 4", // erase the failed combined draw
+    "LD VD, V4", // remember attempted Y
+    "LD V4, VB", // Y back to old → try X-only
+    "DRW V3, V4, 4",
+    "SNE VF, 1",
+    "JMP ai_try_y",
+    "JMP frame_end", // X-only move stands
+    "ai_try_y:",
+    "DRW V3, V4, 4", // erase failed X-only draw
+    "LD V3, VA", // X back to old
+    "LD V4, VD", // → try Y-only
+    "DRW V3, V4, 4",
+    "SNE VF, 1",
+    "JMP ai_stay",
+    "JMP frame_end", // Y-only move stands
+    "ai_stay:",
+    "DRW V3, V4, 4", // erase failed Y-only draw
     "LD V3, VA",
     "LD V4, VB",
-    "DRW V3, V4, 4", // Draw at old pos
+    "DRW V3, V4, 4", // back where we started
     "JMP frame_end",
 
     // ── WIN CONDITIONS (in the cart, where they belong) ──────────────────
@@ -263,7 +345,7 @@ export function buildMutualSimRom(): Uint8Array {
     "DRW VA, VB, 5",
     "tag_respawn:",
     // Erase the AI at its old spot (phase-correct shape)…
-    "BYTE 0xF101",
+    "BYTE 0xF301", // AI color
     "SNE V8, 1",
     "JMP resp_erase_flee",
     "LD I, shape_ai_hunt",
@@ -337,15 +419,14 @@ export function buildMutualSimRom(): Uint8Array {
     "shape_p:",
     "BYTE 0xC0C0",
 
-    // AI (Hunt) is a hollow 4x4 square (4 bytes = 2 WORDs)
+    // AI (Hunt) — hollow 4x4 ring normally; the small solid block when
+    // appearance is inverted (the learned-mode falsifier cart).
     "shape_ai_hunt:",
-    "BYTE 0xF090",
-    "BYTE 0x90F0",
+    ...huntShape,
 
-    // AI (Flee) is a solid smaller 2x2 square (4 bytes = 2 WORDs for size parity)
+    // AI (Flee) — small solid block normally; the hollow ring when inverted.
     "shape_ai_flee:",
-    "BYTE 0x0060",
-    "BYTE 0x6000",
+    ...fleeShape,
 
     // Wall is 4x4 solid (4 bytes = 2 WORDs)
     "shape_wall:",

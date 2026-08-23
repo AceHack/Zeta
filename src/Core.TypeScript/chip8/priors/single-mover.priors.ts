@@ -10,7 +10,7 @@ export const singleMoverPriors: GamePriorsFile = {
   "trainedTicks": 400,
   "seed": 4,
   "snapshot": {
-    "version": 1,
+    "version": 2,
     "seed": 4,
     "agentCount": 3,
     "agents": [
@@ -388,6 +388,75 @@ export const singleMoverPriors: GamePriorsFile = {
     "priors": {
       "explorationRate": 0.1,
       "targetTrackingWeight": 0.9
+    },
+    "modeValues": {
+      "version": 1,
+      "cells": [
+        {
+          "bucket": 0,
+          "mode": "hunt",
+          "mu": 0.2,
+          "sigma2": 1,
+          "nu": 4,
+          "obsCount": 0
+        },
+        {
+          "bucket": 0,
+          "mode": "flee",
+          "mu": -0.2,
+          "sigma2": 1,
+          "nu": 4,
+          "obsCount": 0
+        },
+        {
+          "bucket": 1,
+          "mode": "hunt",
+          "mu": 0.2,
+          "sigma2": 1,
+          "nu": 4,
+          "obsCount": 0
+        },
+        {
+          "bucket": 1,
+          "mode": "flee",
+          "mu": -0.2,
+          "sigma2": 1,
+          "nu": 4,
+          "obsCount": 0
+        },
+        {
+          "bucket": 2,
+          "mode": "hunt",
+          "mu": -0.2,
+          "sigma2": 1,
+          "nu": 4,
+          "obsCount": 0
+        },
+        {
+          "bucket": 2,
+          "mode": "flee",
+          "mu": 0.2,
+          "sigma2": 1,
+          "nu": 4,
+          "obsCount": 0
+        },
+        {
+          "bucket": 3,
+          "mode": "hunt",
+          "mu": -0.2,
+          "sigma2": 1,
+          "nu": 4,
+          "obsCount": 0
+        },
+        {
+          "bucket": 3,
+          "mode": "flee",
+          "mu": 0.2,
+          "sigma2": 1,
+          "nu": 4,
+          "obsCount": 0
+        }
+      ]
     }
   }
 };

@@ -10,7 +10,7 @@ export const modeFlipPriors: GamePriorsFile = {
   "trainedTicks": 600,
   "seed": 4,
   "snapshot": {
-    "version": 1,
+    "version": 2,
     "seed": 4,
     "agentCount": 3,
     "agents": [
@@ -18,8 +18,8 @@ export const modeFlipPriors: GamePriorsFile = {
         "beliefs": [
           {
             "key": -1,
-            "mu": 0.2160519597214925,
-            "sigma2": 0.00017936762849414024,
+            "mu": 0.3290787413653672,
+            "sigma2": 0.00018439505918064353,
             "nu": 4,
             "obsCount": 600
           },
@@ -53,8 +53,8 @@ export const modeFlipPriors: GamePriorsFile = {
           },
           {
             "key": 4,
-            "mu": 0.11911212689430617,
-            "sigma2": 0.00022228573606896957,
+            "mu": 0.03710526185614851,
+            "sigma2": 0.0001573423810996257,
             "nu": 4,
             "obsCount": 600
           },
@@ -67,8 +67,8 @@ export const modeFlipPriors: GamePriorsFile = {
           },
           {
             "key": 6,
-            "mu": 0.05157899547976375,
-            "sigma2": 0.00016498141662782054,
+            "mu": 0.039021357058280304,
+            "sigma2": 0.00015621017753093052,
             "nu": 4,
             "obsCount": 600
           },
@@ -141,8 +141,8 @@ export const modeFlipPriors: GamePriorsFile = {
         "beliefs": [
           {
             "key": -1,
-            "mu": 0.2164405348241148,
-            "sigma2": 0.00017894603195435556,
+            "mu": 0.32903442664895055,
+            "sigma2": 0.00018395179276002238,
             "nu": 4,
             "obsCount": 600
           },
@@ -176,8 +176,8 @@ export const modeFlipPriors: GamePriorsFile = {
           },
           {
             "key": 4,
-            "mu": 0.12072124661551839,
-            "sigma2": 0.00022199784782480546,
+            "mu": 0.03823542282552238,
+            "sigma2": 0.00015726046209329865,
             "nu": 4,
             "obsCount": 600
           },
@@ -190,8 +190,8 @@ export const modeFlipPriors: GamePriorsFile = {
           },
           {
             "key": 6,
-            "mu": 0.05100365084802536,
-            "sigma2": 0.00016506369459891177,
+            "mu": 0.038465877017455095,
+            "sigma2": 0.00015627951776996435,
             "nu": 4,
             "obsCount": 600
           },
@@ -264,8 +264,8 @@ export const modeFlipPriors: GamePriorsFile = {
         "beliefs": [
           {
             "key": -1,
-            "mu": 0.21628253462332966,
-            "sigma2": 0.00017908955339769077,
+            "mu": 0.32903951414694027,
+            "sigma2": 0.0001841747735918652,
             "nu": 4,
             "obsCount": 600
           },
@@ -299,8 +299,8 @@ export const modeFlipPriors: GamePriorsFile = {
           },
           {
             "key": 4,
-            "mu": 0.12055992024904276,
-            "sigma2": 0.00022186144208792783,
+            "mu": 0.038206328914234595,
+            "sigma2": 0.0001572679974485426,
             "nu": 4,
             "obsCount": 600
           },
@@ -313,8 +313,8 @@ export const modeFlipPriors: GamePriorsFile = {
           },
           {
             "key": 6,
-            "mu": 0.05045282607594926,
-            "sigma2": 0.0001650359283534471,
+            "mu": 0.0381823314679287,
+            "sigma2": 0.00015622958162460988,
             "nu": 4,
             "obsCount": 600
           },
@@ -388,6 +388,75 @@ export const modeFlipPriors: GamePriorsFile = {
     "priors": {
       "explorationRate": 0.1,
       "targetTrackingWeight": 0.9
+    },
+    "modeValues": {
+      "version": 1,
+      "cells": [
+        {
+          "bucket": 0,
+          "mode": "hunt",
+          "mu": 0.2,
+          "sigma2": 1,
+          "nu": 4,
+          "obsCount": 0
+        },
+        {
+          "bucket": 0,
+          "mode": "flee",
+          "mu": -0.2,
+          "sigma2": 1,
+          "nu": 4,
+          "obsCount": 0
+        },
+        {
+          "bucket": 1,
+          "mode": "hunt",
+          "mu": 0.2,
+          "sigma2": 1,
+          "nu": 4,
+          "obsCount": 0
+        },
+        {
+          "bucket": 1,
+          "mode": "flee",
+          "mu": -0.2,
+          "sigma2": 1,
+          "nu": 4,
+          "obsCount": 0
+        },
+        {
+          "bucket": 2,
+          "mode": "hunt",
+          "mu": -0.2,
+          "sigma2": 1,
+          "nu": 4,
+          "obsCount": 0
+        },
+        {
+          "bucket": 2,
+          "mode": "flee",
+          "mu": 0.2,
+          "sigma2": 1,
+          "nu": 4,
+          "obsCount": 0
+        },
+        {
+          "bucket": 3,
+          "mode": "hunt",
+          "mu": -0.2,
+          "sigma2": 1,
+          "nu": 4,
+          "obsCount": 0
+        },
+        {
+          "bucket": 3,
+          "mode": "flee",
+          "mu": 0.2,
+          "sigma2": 1,
+          "nu": 4,
+          "obsCount": 0
+        }
+      ]
     }
   }
 };

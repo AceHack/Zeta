@@ -56,9 +56,9 @@ export interface ReadNumber {
 }
 
 const GLYPH_W = 4;
-const GLYPH_H = 5;
+export const GLYPH_H = 5;
 /** Digits drawn side by side sit 5px apart (4px glyph + 1px gap). */
-const COL_PITCH = 5;
+export const COL_PITCH = 5;
 const ROW_PITCH = 6;
 
 /** FONTSET rows for glyph g: 5 bytes, glyph in the high nibble. */

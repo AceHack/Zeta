@@ -50,8 +50,17 @@ export interface TrackedObject extends Blob {
   readonly age: number;
   /** True once the track has moved less than STATIC_EPS for STATIC_AGE ticks. */
   readonly isStatic: boolean;
-  /** True if the track has EVER genuinely moved — separates a lurking sprite
-   *  from furniture that has been still since birth (walls). */
+  /** Centroid at birth — the fixed point a glitching wall oscillates around. */
+  readonly originX: number;
+  readonly originY: number;
+  /** Farthest the centroid has ever been from its birth position. */
+  readonly farthest: number;
+  /** True once the track has TRAVELLED — been ≥ MOVED_DIST_MIN px from its
+   *  birth spot. Separates an agent from furniture: a wall brushed by a
+   *  passing sprite (same-color merge, or wall pixels superposed to another
+   *  color for an instruction) wiggles ~1px around a fixed point on every
+   *  brush, and per-tick motion counters therefore accrue at TRAFFIC rate —
+   *  net displacement is the signal traffic cannot fake. */
   readonly everMoved: boolean;
   /**
    * 0 when the object was seen this tick. Sprites are XOR-erased and redrawn
@@ -87,6 +96,7 @@ export interface PerceptionState {
 export const STATIC_EPS = 0.15; // px/tick below which a track counts as still
 export const STATIC_AGE = 8; // ticks of stillness before "static" latches
 export const COAST_GRACE = 2; // ticks a vanished track survives on prediction
+export const MOVED_DIST_MIN = 4; // px from birth spot before everMoved latches
 const VELOCITY_EMA = 0.5; // smoothing for per-tick velocity
 const MATCH_MAX_DIST = 12; // beyond this a blob is a new object, not a move
 
@@ -237,6 +247,7 @@ export function trackBlobs(state: PerceptionState, blobs: readonly Blob[]): Perc
     // isStatic latches on after STATIC_AGE still ticks; any real move clears it.
     const stillRun = still ? Math.min(t.age + 1, STATIC_AGE + 1) : 0;
     const isStatic = still ? t.isStatic || stillRun >= STATIC_AGE : false;
+    const farthest = Math.max(t.farthest, Math.hypot(b.cx - t.originX, b.cy - t.originY));
     nextTracks.push({
       ...b,
       id: t.id,
@@ -244,7 +255,10 @@ export function trackBlobs(state: PerceptionState, blobs: readonly Blob[]): Perc
       vy,
       age: t.age + 1,
       isStatic,
-      everMoved: t.everMoved || !still,
+      originX: t.originX,
+      originY: t.originY,
+      farthest,
+      everMoved: farthest >= MOVED_DIST_MIN,
       coastTicks: 0,
     });
   }
@@ -260,6 +274,9 @@ export function trackBlobs(state: PerceptionState, blobs: readonly Blob[]): Perc
       vy: 0,
       age: 0,
       isStatic: false,
+      originX: b.cx,
+      originY: b.cy,
+      farthest: 0,
       everMoved: false,
       coastTicks: 0,
     });

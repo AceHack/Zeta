@@ -18,7 +18,7 @@
  */
 
 import { compositeInto, create, loadRom, step, type Frame } from "./chip8";
-import { BnnSocietyPredictor } from "../bayesian/bnn-key-predictor";
+import { BnnSocietyPredictor, desiredKeyOf } from "../bayesian/bnn-key-predictor";
 import { romFingerprint, type GamePriorsFile } from "./game-priors";
 import { buildMutualSimRom } from "./games/mutual-sim";
 import {
@@ -55,21 +55,15 @@ export function trainPriors(cartName: string, ticks: number): GamePriorsFile {
       compositeInto(composite, frame);
     }
     if (frame.fault) break;
-    const probs = predictor.predict(composite, lastKey);
-    // Same fusion rule as the controller: commit the argmax when confident.
-    let best = -1;
-    let bestP = -1;
-    for (let k = -1; k <= 0xf; k++) {
-      const p = probs[k] ?? 0;
-      if (p > bestP) {
-        bestP = p;
-        best = k;
-      }
-    }
+    predictor.predict(composite, lastKey);
+    // Press the key the policy's own steering layer names — commitment, so
+    // exploration probes land and the mode policy is actually exercised (a
+    // probability-threshold argmax leaves the trainee idle most ticks).
     frame.keys.fill(false);
-    if (bestP > 0.4 && best >= 0) {
-      frame.keys[best] = true;
-      lastKey = best;
+    const key = desiredKeyOf(predictor);
+    if (key !== undefined) {
+      frame.keys[key] = true;
+      lastKey = key;
     } else {
       lastKey = undefined;
     }

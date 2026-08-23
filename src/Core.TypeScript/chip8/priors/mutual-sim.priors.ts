@@ -5,12 +5,12 @@ import type { GamePriorsFile } from "../game-priors";
 
 export const mutualSimPriors: GamePriorsFile = {
   "schema": "zeta.chip8.game-priors.v1",
-  "fingerprint": "30cbd37a",
+  "fingerprint": "c73545ee",
   "cart": "mutual-sim",
   "trainedTicks": 1200,
   "seed": 4,
   "snapshot": {
-    "version": 1,
+    "version": 2,
     "seed": 4,
     "agentCount": 3,
     "agents": [
@@ -39,8 +39,8 @@ export const mutualSimPriors: GamePriorsFile = {
           },
           {
             "key": 2,
-            "mu": 0.06510891122109916,
-            "sigma2": 0.0000751056900584654,
+            "mu": 0.02419708228307959,
+            "sigma2": 0.00007411544980996975,
             "nu": 4,
             "obsCount": 1200
           },
@@ -53,8 +53,8 @@ export const mutualSimPriors: GamePriorsFile = {
           },
           {
             "key": 4,
-            "mu": 0.36901112040172807,
-            "sigma2": 0.00012466007706369057,
+            "mu": 0.3371607177678324,
+            "sigma2": 0.00008062345380863579,
             "nu": 4,
             "obsCount": 1200
           },
@@ -67,8 +67,8 @@ export const mutualSimPriors: GamePriorsFile = {
           },
           {
             "key": 6,
-            "mu": 0.2780849348777727,
-            "sigma2": 0.00011973539759524602,
+            "mu": 0.36940108074419115,
+            "sigma2": 0.00008037132745051609,
             "nu": 4,
             "obsCount": 1200
           },
@@ -81,8 +81,8 @@ export const mutualSimPriors: GamePriorsFile = {
           },
           {
             "key": 8,
-            "mu": 0.05050101405983158,
-            "sigma2": 0.00007857567429787311,
+            "mu": 0.023862839965762883,
+            "sigma2": 0.00007360225914828224,
             "nu": 4,
             "obsCount": 1200
           },
@@ -162,8 +162,8 @@ export const mutualSimPriors: GamePriorsFile = {
           },
           {
             "key": 2,
-            "mu": 0.06470465184792965,
-            "sigma2": 0.00007506018298627207,
+            "mu": 0.023664134295455577,
+            "sigma2": 0.00007413454743195558,
             "nu": 4,
             "obsCount": 1200
           },
@@ -176,8 +176,8 @@ export const mutualSimPriors: GamePriorsFile = {
           },
           {
             "key": 4,
-            "mu": 0.3709527957293925,
-            "sigma2": 0.00012458999288830788,
+            "mu": 0.33837522704095413,
+            "sigma2": 0.00008059791265358376,
             "nu": 4,
             "obsCount": 1200
           },
@@ -190,8 +190,8 @@ export const mutualSimPriors: GamePriorsFile = {
           },
           {
             "key": 6,
-            "mu": 0.27822972868753965,
-            "sigma2": 0.00011988941858290367,
+            "mu": 0.3696193550240715,
+            "sigma2": 0.00008046199899634404,
             "nu": 4,
             "obsCount": 1200
           },
@@ -204,8 +204,8 @@ export const mutualSimPriors: GamePriorsFile = {
           },
           {
             "key": 8,
-            "mu": 0.05046713793668129,
-            "sigma2": 0.00007863168354964027,
+            "mu": 0.023789123113944776,
+            "sigma2": 0.0000736587416337173,
             "nu": 4,
             "obsCount": 1200
           },
@@ -285,8 +285,8 @@ export const mutualSimPriors: GamePriorsFile = {
           },
           {
             "key": 2,
-            "mu": 0.0645195508534437,
-            "sigma2": 0.0000750648912779287,
+            "mu": 0.023508351423249488,
+            "sigma2": 0.00007411611257862232,
             "nu": 4,
             "obsCount": 1200
           },
@@ -299,8 +299,8 @@ export const mutualSimPriors: GamePriorsFile = {
           },
           {
             "key": 4,
-            "mu": 0.37043542190530443,
-            "sigma2": 0.0001245923885363433,
+            "mu": 0.3378361588098628,
+            "sigma2": 0.00008065216243581823,
             "nu": 4,
             "obsCount": 1200
           },
@@ -313,8 +313,8 @@ export const mutualSimPriors: GamePriorsFile = {
           },
           {
             "key": 6,
-            "mu": 0.2779084917540579,
-            "sigma2": 0.00011986069721798431,
+            "mu": 0.3690136172588561,
+            "sigma2": 0.00008041882022105155,
             "nu": 4,
             "obsCount": 1200
           },
@@ -327,8 +327,8 @@ export const mutualSimPriors: GamePriorsFile = {
           },
           {
             "key": 8,
-            "mu": 0.04965985735205481,
-            "sigma2": 0.00007861231644317078,
+            "mu": 0.02328916783357791,
+            "sigma2": 0.000073577085833295,
             "nu": 4,
             "obsCount": 1200
           },
@@ -388,6 +388,75 @@ export const mutualSimPriors: GamePriorsFile = {
     "priors": {
       "explorationRate": 0.1,
       "targetTrackingWeight": 0.9
+    },
+    "modeValues": {
+      "version": 1,
+      "cells": [
+        {
+          "bucket": 0,
+          "mode": "hunt",
+          "mu": 0.2,
+          "sigma2": 1,
+          "nu": 4,
+          "obsCount": 0
+        },
+        {
+          "bucket": 0,
+          "mode": "flee",
+          "mu": -0.2,
+          "sigma2": 1,
+          "nu": 4,
+          "obsCount": 0
+        },
+        {
+          "bucket": 1,
+          "mode": "hunt",
+          "mu": 0.2,
+          "sigma2": 1,
+          "nu": 4,
+          "obsCount": 0
+        },
+        {
+          "bucket": 1,
+          "mode": "flee",
+          "mu": -0.2,
+          "sigma2": 1,
+          "nu": 4,
+          "obsCount": 0
+        },
+        {
+          "bucket": 2,
+          "mode": "hunt",
+          "mu": -0.2,
+          "sigma2": 1,
+          "nu": 4,
+          "obsCount": 0
+        },
+        {
+          "bucket": 2,
+          "mode": "flee",
+          "mu": 0.2,
+          "sigma2": 1,
+          "nu": 4,
+          "obsCount": 0
+        },
+        {
+          "bucket": 3,
+          "mode": "hunt",
+          "mu": -0.2,
+          "sigma2": 1,
+          "nu": 4,
+          "obsCount": 0
+        },
+        {
+          "bucket": 3,
+          "mode": "flee",
+          "mu": 0.2,
+          "sigma2": 1,
+          "nu": 4,
+          "obsCount": 0
+        }
+      ]
     }
   }
 };

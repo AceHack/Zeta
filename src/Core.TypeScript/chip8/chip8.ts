@@ -246,16 +246,21 @@ export function step(f: Frame): Frame {
         const sprite = f.mem.get(f.i + row) ?? 0;
         for (let col = 0; col < 8; col++) {
           if (((sprite >> (7 - col)) & 1) === 1) {
-            const px = ox + col;
-            const py = oy + row;
-            if (px < W && py < H) {
+            // Toroidal wrap: pixel space agrees with register space at the
+            // edges. Clipping instead makes a sprite at x=63/y=31 draw ZERO
+            // pixels while its coordinate registers remain valid — an
+            // invisible object perception can never see but the game logic
+            // still simulates.
+            const px = (ox + col) % W;
+            const py = (oy + row) % H;
+            {
               const idx = py * W + px;
-              
+
               // Global cross-plane collision: if ANY pixel was set here before we draw.
               const curMono = f.display.get(idx) ?? false;
               const curExtra = f.extra.get(idx) ?? 0;
               if (curMono || curExtra > 0) collision = 1;
-              
+
               if (f.plane & 1) {
                 f.display.set(idx, !curMono);
               }
