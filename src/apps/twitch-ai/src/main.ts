@@ -12,7 +12,7 @@ document.querySelector<HTMLDivElement>('#app')!.innerHTML = `
     <div style="display: flex; gap: 1rem; align-items: center;">
       <button id="upload-btn" class="upload-btn">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
-        Inject Spectral Fingerprint
+        Upload CHIP-8 Cart
       </button>
       <input type="file" id="rom-upload" style="display: none;" accept=".ch8,.bin" />
       <button id="settings-btn" class="upload-btn" style="padding: 0.4rem 0.6rem;" title="API Settings">
