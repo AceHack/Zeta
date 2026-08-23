@@ -1,0 +1,12 @@
+{
+  "pr_number": 14478,
+  "archive_path": "docs/history/pr-reviews/PR-14478-research-the-g-del-einstein-middle-ground-a-paradox-needs-determinacy-stratifica.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-23T21:52:49.043Z",
+  "schema_version": "v1",
+  "commit_sha": "9857036863d0ba4eb7b17ee9bf8c1bdff807ac44",
+  "title": "research: the Gödel–Einstein middle ground — a paradox needs determinacy, stratification is why prediction survives",
+  "state": "MERGED",
+  "merged_at": "2026-08-23T21:52:04Z",
+  "head_ref": "docs/godel-einstein-middle-ground"
+}
