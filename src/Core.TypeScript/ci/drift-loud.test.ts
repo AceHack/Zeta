@@ -31,7 +31,7 @@ import {
   publicationIsStale,
   renderMarkdown,
   ROLLUP_JOB_NAME,
-  isCanary,
+  isInstrument,
   severityOf,
   SWALLOWED_STEP,
   type JobRecord,
@@ -345,11 +345,11 @@ describe("loudness is emitted, and is proportional", () => {
   });
 });
 
-describe("the canary is the instrument, never an alarm", () => {
+describe("instruments are never alarms", () => {
   test("a permanently-failing canary emits NO annotation -- it would be a self-inflicted false alarm", () => {
     const records = Array.from({ length: 6 }, (_, i) => run(20 - i, [greenRollup, canaryJob()]));
     const report = foldAbsorption(records);
-    expect(report.subjects.some(isCanary)).toBe(true);
+    expect(report.subjects.some(isInstrument)).toBe(true);
     expect(annotationLines(report)).toEqual([]);
   });
 
@@ -369,5 +369,38 @@ describe("the canary is the instrument, never an alarm", () => {
   test("the summary does not list the canary as a finding", () => {
     const md = renderMarkdown(foldAbsorption([run(3, [greenRollup, canaryJob()])]), { live: true, reason: "ok" }, null);
     expect(md).toContain("No absorbed failure in the window");
+  });
+});
+
+describe("the reporter must not report itself -- the self-amplifying latch", () => {
+  const REPORTER = "drift (loud)";
+
+  test("this reporter's own failures are not annotated", () => {
+    // Observed live on gate run 32654127165: `drift (loud)` appeared in its own table at
+    // 2/3. Every loud run would raise its own rate, converging on SUSTAINED regardless
+    // of real drift — an ::error:: that is always present is one nobody reads.
+    const records = Array.from({ length: 6 }, (_, i) => run(20 - i, [greenRollup, job(REPORTER, "failure")]));
+    const report = foldAbsorption(records);
+    expect(report.subjects.some((s) => s.job === REPORTER)).toBe(true);
+    expect(annotationLines(report)).toEqual([]);
+  });
+
+  test("and cannot latch this job red by itself", () => {
+    // The exit-code path must agree with the annotation path, or the job goes red with
+    // nothing to show for it — the worst of both halves.
+    const records = Array.from({ length: 6 }, (_, i) => run(20 - i, [greenRollup, job(REPORTER, "failure")]));
+    const report = foldAbsorption(records);
+    expect(report.subjects.filter((s) => !isInstrument(s) && s.band === "SUSTAINED")).toEqual([]);
+  });
+
+  test("a genuinely SUSTAINED non-instrument subject is still loud beside it", () => {
+    // The falsifier for the exclusion: it must remove the self-reference and nothing else.
+    const records = Array.from({ length: 6 }, (_, i) =>
+      run(20 - i, [greenRollup, job(REPORTER, "failure"), job(WIN, "failure")]),
+    );
+    const lines = annotationLines(foldAbsorption(records));
+    expect(lines).toHaveLength(1);
+    expect(lines[0]).toContain("::error ");
+    expect(lines[0]).toContain(WIN);
   });
 });

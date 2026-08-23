@@ -177,6 +177,9 @@ export const ROLLUP_JOB_NAME = "gate (required)";
 /** The deliberate specimen. See "THE FALSIFIER THAT CANNOT BE ARGUED WITH" above. */
 export const CANARY_JOB_NAME = "drift-canary";
 
+/** This reporter's own job name. See `isInstrument`. */
+export const REPORTER_JOB_NAME = "drift (loud)";
+
 /** Steps the runner injects around user steps -- never drift, and never annotated. */
 const RUNNER_STEP_NAMES: ReadonlySet<string> = new Set(["Set up job", "Complete job"]);
 
@@ -594,24 +597,44 @@ const KIND_LABEL: Readonly<Record<AbsorptionKind, string>> = {
 };
 
 /**
- * Is this subject the CANARY -- the instrument rather than a measurement?
+ * Is this subject the INSTRUMENT rather than a measurement?
  *
- * The canary fails on every run by design, so left in the ordinary bands it would climb
- * to `SUSTAINED` and emit an `::error::` forever. That is a permanent false alarm, which
- * is precisely the cry-wolf failure this whole surface is built to avoid -- and it would
- * be self-inflicted, by the instrument. So it is EXCLUDED from annotations and reported
- * on its own line instead. Excluded from the ALARM, never from the CENSUS: it still has
- * to be found, and `assertDetectorLive` still goes red when it is not.
+ * Two jobs are, and both were caught by reading live output rather than by reasoning:
+ *
+ * **The canary** fails on every run by design. Left in the ordinary bands it climbs to
+ * `SUSTAINED` and emits an `::error::` forever -- a permanent false alarm, self-inflicted
+ * by the instrument, which is exactly the cry-wolf failure this surface exists to avoid.
+ *
+ * **This reporter itself.** Observed on gate run 32654127165: `drift (loud)` appeared in
+ * its own table at `2/3 executions failed (66.7%)`. It is a non-floor job that fails
+ * beside a green rollup, so by the fold's own definition it IS an absorbed failure -- the
+ * definition is right and the reading is useless. Its red X *is* the drift display; a row
+ * saying "the drift display went red" reports the same event twice rather than adding
+ * information. Worse, it self-amplifies: every loud run raises its own failure rate, so
+ * it converges on `SUSTAINED` regardless of whether any real drift exists, and an
+ * `::error::` that is always present is an `::error::` nobody reads. The reporter would
+ * have drowned out the signals it was built to carry, and it would have looked like
+ * evidence while doing it.
+ *
+ * THIS IS NOT SILENCING. Nothing is made quieter: both jobs keep their own conclusions,
+ * their own annotations, and their own place in the checks list, and both stay in the
+ * CENSUS -- `assertDetectorLive` still goes red when the canary is missing. What is
+ * removed is a self-referential row that measures the measuring, and whose only effect
+ * on a reader is to raise the noise floor.
+ *
+ * The general rule, and the test for anything added here later: a subject belongs on this
+ * list only when its failure IS the reporting mechanism firing. Anything whose failure is
+ * an independent event stays a finding, however noisy.
  */
-export function isCanary(subject: SubjectStat): boolean {
-  return subject.job === CANARY_JOB_NAME;
+export function isInstrument(subject: SubjectStat): boolean {
+  return subject.job === CANARY_JOB_NAME || subject.job === REPORTER_JOB_NAME;
 }
 
 /** One `::severity::` workflow command per loud subject. Empty when nothing is loud. */
 export function annotationLines(report: DriftLoudReport): readonly string[] {
   const out: string[] = [];
   for (const s of report.subjects) {
-    if (isCanary(s)) continue;
+    if (isInstrument(s)) continue;
     const sev = severityOf(s.band);
     if (sev === null) continue;
     const last = s.lastFailure === null ? "never" : `run ${s.lastFailure.runId}`;
@@ -625,13 +648,13 @@ export function annotationLines(report: DriftLoudReport): readonly string[] {
 }
 
 export function renderMarkdown(report: DriftLoudReport, liveness: LivenessVerdict, stalePublication: string | null): string {
-  const loud = report.subjects.filter((s) => !isCanary(s) && severityOf(s.band) !== null);
-  const sustained = report.subjects.filter((s) => !isCanary(s) && s.band === "SUSTAINED");
+  const loud = report.subjects.filter((s) => !isInstrument(s) && severityOf(s.band) !== null);
+  const sustained = report.subjects.filter((s) => !isInstrument(s) && s.band === "SUSTAINED");
   const out: string[] = [
     "## Drift -- loud, and blocking nothing",
     "",
-    `**${report.totalAbsorbed} absorbed failure(s)** across ${report.subjects.length} subject(s) (one of which is ` +
-      "the canary, the instrument) in the last " +
+    `**${report.totalAbsorbed} absorbed failure(s)** across ${report.subjects.length} subject(s) (of which the ` +
+      "canary and this reporter are instruments, not findings) in the last " +
       `${report.runs} run(s) (window is bounded at ${report.thresholds.windowRuns}). ` +
       `Coverage: ${report.executedRuns}/${report.runs} runs actually executed jobs (${pct(report.coverage)}); ` +
       `${report.cancelledRuns} were cancelled before anything ran. Every rate below is over EXECUTIONS.`,
@@ -640,16 +663,16 @@ export function renderMarkdown(report: DriftLoudReport, liveness: LivenessVerdic
   if (stalePublication !== null) out.push(`> **${stalePublication}**`, "");
   if (!liveness.live) out.push(`> **${liveness.reason}**`, "");
 
-  const findings = report.subjects.filter((s) => !isCanary(s));
+  const findings = report.subjects.filter((s) => !isInstrument(s));
   if (findings.length === 0) {
-    out.push("_No absorbed failure in the window (the canary is the instrument, not a finding)._", "");
+    out.push("_No absorbed failure in the window (the canary and this reporter are instruments, not findings)._", "");
   } else {
     out.push(
       "| subject | band | class | executions | failures | rate | clean streak | last |",
       "| --- | --- | --- | --- | --- | --- | --- | --- |",
     );
     for (const s of report.subjects) {
-      if (isCanary(s)) continue;
+      if (isInstrument(s)) continue;
       out.push(
         `| \`${s.subject}\` | ${BAND_LABEL[s.band]} | ${KIND_LABEL[s.kind]} | ${s.executions} | ${s.failures} | ` +
           `${pct(s.failureRate)} | ${s.cleanStreak} | ${s.lastFailure === null ? "--" : `run ${s.lastFailure.runId}`} |`,
@@ -827,10 +850,11 @@ async function main(): Promise<number> {
     );
   }
 
-  // The canary is excluded here for the same reason it is excluded from annotations:
-  // it fails on purpose, so counting it would make this job red on every run for a
-  // reason that is not drift. Its ONLY job is `assertDetectorLive` below.
-  const sustained = report.subjects.filter((s) => !isCanary(s) && s.band === "SUSTAINED");
+  // Instruments are excluded here for the same reason they are excluded from
+  // annotations: the canary fails on purpose, and counting THIS JOB's own past failures
+  // would make it red on every run for no reason other than that it was red before --
+  // a latch, not a measurement. The canary's only role is `assertDetectorLive` above.
+  const sustained = report.subjects.filter((s) => !isInstrument(s) && s.band === "SUSTAINED");
   const red = sustained.length > 0 || !liveness.live || stale !== null;
   if (red) {
     console.log(
