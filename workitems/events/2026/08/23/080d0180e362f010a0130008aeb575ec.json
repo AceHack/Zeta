@@ -1,0 +1,14 @@
+{
+  "id": "080d0180e362f010a0130008aeb575ec",
+  "at": "2026-08-23T19:32:44.254Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M0R1RV2Y087G0R003W65SGD",
+    "type": "task",
+    "title": "Z3 plus Lean: the Normal-Gamma non-log-concavity boundary and the exponential-family half-space theorem",
+    "slug": "z3-plus-lean-the-normal-gamma-non-log-concavity-boundary-and",
+    "priority": "P2",
+    "filename": "081M0R1RV2Y087G0R003W65SGD-z3-plus-lean-the-normal-gamma-non-log-concavity-boundary-and.md"
+  }
+}

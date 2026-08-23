@@ -1,0 +1,14 @@
+{
+  "id": "080d0180e2c74010a0130008748ece24",
+  "at": "2026-08-23T19:32:39.272Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M0R1RP76087G0R003YFWNYK",
+    "type": "task",
+    "title": "Lean 4: compact closure of Mat(W) for a finite basis, and non-dualizability for an infinite one",
+    "slug": "lean-4-compact-closure-of-mat-w-for-a-finite-basis-and-non-d",
+    "priority": "P2",
+    "filename": "081M0R1RP76087G0R003YFWNYK-lean-4-compact-closure-of-mat-w-for-a-finite-basis-and-non-d.md"
+  }
+}

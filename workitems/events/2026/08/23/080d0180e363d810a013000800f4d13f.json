@@ -1,0 +1,14 @@
+{
+  "id": "080d0180e363d810a013000800f4d13f",
+  "at": "2026-08-23T19:32:44.283Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M0R1RV3T087G0R001YAWXNK",
+    "type": "task",
+    "title": "Pre-register the Gardenfors convexity question as a model comparison not a proof obligation",
+    "slug": "pre-register-the-gardenfors-convexity-question-as-a-model-co",
+    "priority": "P3",
+    "filename": "081M0R1RV3T087G0R001YAWXNK-pre-register-the-gardenfors-convexity-question-as-a-model-co.md"
+  }
+}

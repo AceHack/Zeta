@@ -1,0 +1,14 @@
+{
+  "id": "080d0180e3620810a01300086f887fdf",
+  "at": "2026-08-23T19:32:44.225Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M0R1RV1Z087G0R0004SVNXJ",
+    "type": "task",
+    "title": "Prove the conjugate exponential-family translation theorem and refute dual flatness as its source",
+    "slug": "prove-the-conjugate-exponential-family-translation-theorem-a",
+    "priority": "P2",
+    "filename": "081M0R1RV1Z087G0R0004SVNXJ-prove-the-conjugate-exponential-family-translation-theorem-a.md"
+  }
+}
