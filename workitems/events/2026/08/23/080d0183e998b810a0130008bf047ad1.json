@@ -1,0 +1,14 @@
+{
+  "id": "080d0183e998b810a0130008bf047ad1",
+  "at": "2026-08-23T21:18:26.583Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M0R7TCRP087G0R0010JHRX0",
+    "type": "task",
+    "title": "Prove or refute: no bounded-memory receiver implements exactly-once delivery over an adversarial-reorder channel (TLA+, CA-3)",
+    "slug": "prove-or-refute-no-bounded-memory-receiver-implements-exactl",
+    "priority": "P2",
+    "filename": "081M0R7TCRP087G0R0010JHRX0-prove-or-refute-no-bounded-memory-receiver-implements-exactl.md"
+  }
+}

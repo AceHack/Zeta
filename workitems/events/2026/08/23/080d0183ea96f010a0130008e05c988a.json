@@ -1,0 +1,14 @@
+{
+  "id": "080d0183ea96f010a0130008e05c988a",
+  "at": "2026-08-23T21:18:34.718Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M0R7TMPX087G0R0008SGFZH",
+    "type": "task",
+    "title": "Prove in Lean 4: in a conjugate exponential family every widening is a partial EP cavity and is exactly reversible (NC-7)",
+    "slug": "prove-in-lean-4-in-a-conjugate-exponential-family-every-wide",
+    "priority": "P2",
+    "filename": "081M0R7TMPX087G0R0008SGFZH-prove-in-lean-4-in-a-conjugate-exponential-family-every-wide.md"
+  }
+}
