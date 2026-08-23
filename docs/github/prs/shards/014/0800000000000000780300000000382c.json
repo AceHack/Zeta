@@ -1,0 +1,12 @@
+{
+  "pr_number": 14380,
+  "archive_path": "docs/history/pr-reviews/PR-14380-chore-workitem-the-markdown-healer-manufactures-a-list-from-a-year-in-book-prose.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-23T19:06:29.972Z",
+  "schema_version": "v1",
+  "commit_sha": "58d69c485191e871fa7f6e5715ec1ded7a849d89",
+  "title": "chore(workitem): the markdown healer manufactures a list from a year, in book prose",
+  "state": "MERGED",
+  "merged_at": "2026-08-23T19:05:47Z",
+  "head_ref": "chore/healer-year-list-bug"
+}
