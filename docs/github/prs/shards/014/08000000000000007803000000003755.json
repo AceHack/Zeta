@@ -1,0 +1,12 @@
+{
+  "pr_number": 14165,
+  "archive_path": "docs/history/pr-reviews/PR-14165-fix-society-count-relocated-hook-tests-in-the-mutation-frame.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-23T13:34:16.546Z",
+  "schema_version": "v1",
+  "commit_sha": "3c1a7ca656789678fc647dbfa00a3e157ab25e56",
+  "title": "fix(society): count relocated hook tests in the mutation frame",
+  "state": "MERGED",
+  "merged_at": "2026-08-23T13:33:40Z",
+  "head_ref": "riven/mutation-frame-relocated-hook-tests"
+}
