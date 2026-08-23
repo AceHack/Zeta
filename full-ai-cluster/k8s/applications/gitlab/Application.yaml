@@ -46,6 +46,48 @@ spec:
         gitlab-runner:
           install: true
           runners: { privileged: false, tags: "kubernetes,zeta-cluster" }
+        # THE FOUR BUNDLED BITNAMI IMAGES, RE-POINTED AT `bitnamilegacy`.
+        #
+        # This Application was the largest entry in the partitioner's CANNOT BE
+        # PRICED quarantine: 16 of its 20 rendered images measure fine, and four
+        # -- all from the bundled `postgresql` and `redis` subcharts -- returned
+        # HTTP 404. Bitnami withdrew its free versioned tags from Docker Hub, and
+        # this is the same withdrawal `forgejo/Application.yaml` already records
+        # (chart 13.0.1 rendering `bitnami/postgresql:17.5.0-debian-12-r18`,
+        # likewise a 404). MEASURED 2026-08-23 rather than assumed:
+        # `docker.io/bitnami/postgresql` and `docker.io/bitnami/redis` still
+        # answer `tags/list`, and every entry is `latest`, `latest-metadata`, or
+        # a cosign `sha256-...`/`.sig`/`.att` artifact -- no versioned tags left.
+        #
+        # Each of the four resolves under `bitnamilegacy` at the SAME tag, so
+        # nothing here is a version change -- only the repository path moves:
+        #
+        #   bitnamilegacy/postgresql:14.8.0                     91,714,366 B
+        #   bitnamilegacy/postgres-exporter:0.12.0-debian-11-r86 41,797,683 B
+        #   bitnamilegacy/redis:6.2.16-debian-12-r1             48,916,895 B
+        #   bitnamilegacy/redis-exporter:1.46.0-debian-11-r8    36,654,360 B
+        #
+        # These four are what a GitLab bring-up would have ImagePullBackOff'd on,
+        # so this is a live fix that happens to also make the app measurable.
+        #
+        # HONEST LIMIT, the same one recorded in redis/Application.yaml:
+        # `bitnamilegacy` is an ARCHIVE. It gets no updates and Bitnami reserves
+        # the right to remove it. Moving GitLab onto an external PostgreSQL/Redis
+        # (`global.psql.host` / `global.redis.host`, the production-documented
+        # path anyway) is the durable answer and is a maintainer decision, not
+        # one to make inside a measurement fix.
+        postgresql:
+          image:
+            repository: bitnamilegacy/postgresql
+          metrics:
+            image:
+              repository: bitnamilegacy/postgres-exporter
+        redis:
+          image:
+            repository: bitnamilegacy/redis
+          metrics:
+            image:
+              repository: bitnamilegacy/redis-exporter
   destination:
     server: https://kubernetes.default.svc
     namespace: gitlab

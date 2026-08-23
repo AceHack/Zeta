@@ -1,0 +1,14 @@
+{
+  "id": "080d017587ee4010a0130008a0ebe9af",
+  "at": "2026-08-23T12:55:46.376Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M0QB1ZE7087G0R002A1YMWH",
+    "type": "task",
+    "title": "Leave bitnamilegacy — it is a frozen archive, so redis and gitlab are pinned to images that will stop being updated",
+    "slug": "leave-bitnamilegacy-it-is-a-frozen-archive-so-redis-and-gitl",
+    "priority": "P2",
+    "filename": "081M0QB1ZE7087G0R002A1YMWH-leave-bitnamilegacy-it-is-a-frozen-archive-so-redis-and-gitl.md"
+  }
+}

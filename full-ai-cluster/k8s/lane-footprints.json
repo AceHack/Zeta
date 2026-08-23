@@ -1,5 +1,5 @@
 {
-  "measuredOn": "2026-08-22",
+  "measuredOn": "2026-08-23",
   "compressionRatio": 2.67,
   "imagesByApp": {
     "full-ai-cluster/agent-memory": [
@@ -72,10 +72,10 @@
       "cm2network/steamcmd:root"
     ],
     "full-ai-cluster/gitlab": [
-      "docker.io/bitnami/postgres-exporter:0.12.0-debian-11-r86",
-      "docker.io/bitnami/postgresql:14.8.0",
-      "docker.io/bitnami/redis-exporter:1.46.0-debian-11-r8",
-      "docker.io/bitnami/redis:6.2.16-debian-12-r1",
+      "docker.io/bitnamilegacy/postgres-exporter:0.12.0-debian-11-r86",
+      "docker.io/bitnamilegacy/postgresql:14.8.0",
+      "docker.io/bitnamilegacy/redis-exporter:1.46.0-debian-11-r8",
+      "docker.io/bitnamilegacy/redis:6.2.16-debian-12-r1",
       "minio/mc:RELEASE.2018-07-13T00-53-22Z",
       "minio/minio:RELEASE.2017-12-28T01-21-00Z",
       "registry.gitlab.com/gitlab-org/build/cng/certificates:v17.7.0",
@@ -94,7 +94,7 @@
       "registry.gitlab.com/gitlab-org/gitlab-runner:alpine-v17.6.0"
     ],
     "full-ai-cluster/hat-system": [
-      "bitnami/kubectl:1.32.3",
+      "bitnamilegacy/kubectl:1.32.3",
       "ghcr.io/lucent-financial-group/hat-system-operator:placeholder"
     ],
     "full-ai-cluster/headlamp": [
@@ -174,7 +174,7 @@
       "ghcr.io/flowdent/cloudservice:latest",
       "ghcr.io/flowdent/fd-webclient:latest",
       "ghcr.io/ich777/steamcmd:armareforger",
-      "ghcr.io/ich777/steamcmd:gmod",
+      "ghcr.io/ich777/steamcmd:garrysmod",
       "ghcr.io/ich777/steamcmd:unturned",
       "ghcr.io/lucent-financial-group/zeta-platform-controller:latest",
       "ghcr.io/lucent-financial-group/zeta-portal:latest",
@@ -184,7 +184,7 @@
     ],
     "full-ai-cluster/qwen-coder": [],
     "full-ai-cluster/redis": [
-      "docker.io/bitnami/redis:7.4.1-debian-12-r2"
+      "docker.io/bitnamilegacy/redis:7.4.1-debian-12-r2"
     ],
     "full-ai-cluster/sealed-secrets": [
       "docker.io/bitnami/sealed-secrets-controller:0.39.1"
@@ -220,8 +220,8 @@
       "vllm/vllm-openai:latest"
     ],
     "full-ai-cluster/weaviate": [
-      "cr.weaviate.io/semitechnologies/weaviate:1.32.7",
-      "docker.io/alpine:latest"
+      "docker.io/alpine:latest",
+      "docker.io/semitechnologies/weaviate:1.32.7"
     ],
     "infra/argorollouts": [
       "quay.io/argoproj/argo-rollouts:v1.8.2",
@@ -236,10 +236,10 @@
       "gcr.io/cockroachlabs-helm-charts/cockroach-self-signer-cert:1.5"
     ],
     "infra/gitlab": [
-      "docker.io/bitnami/postgres-exporter:0.12.0-debian-11-r86",
-      "docker.io/bitnami/postgresql:14.8.0",
-      "docker.io/bitnami/redis-exporter:1.46.0-debian-11-r8",
-      "docker.io/bitnami/redis:6.2.16-debian-12-r1",
+      "docker.io/bitnamilegacy/postgres-exporter:0.12.0-debian-11-r86",
+      "docker.io/bitnamilegacy/postgresql:14.8.0",
+      "docker.io/bitnamilegacy/redis-exporter:1.46.0-debian-11-r8",
+      "docker.io/bitnamilegacy/redis:6.2.16-debian-12-r1",
       "minio/mc:RELEASE.2018-07-13T00-53-22Z",
       "minio/minio:RELEASE.2017-12-28T01-21-00Z",
       "registry.gitlab.com/gitlab-org/build/cng/certificates:v17.7.0",
@@ -279,9 +279,8 @@
     "atmoz/sftp:alpine": {
       "compressedBytes": 6913431
     },
-    "bitnami/kubectl:1.32.3": {
-      "compressedBytes": null,
-      "unmeasurableReason": "manifest HTTP 404"
+    "bitnamilegacy/kubectl:1.32.3": {
+      "compressedBytes": 111998161
     },
     "busybox": {
       "compressedBytes": 2226786
@@ -310,10 +309,6 @@
     "code.forgejo.org/forgejo/forgejo:15.0.7-rootless": {
       "compressedBytes": 76740161
     },
-    "cr.weaviate.io/semitechnologies/weaviate:1.32.7": {
-      "compressedBytes": null,
-      "unmeasurableReason": "manifest HTTP 429"
-    },
     "curlimages/curl:7.83.1": {
       "compressedBytes": 6441495
     },
@@ -323,28 +318,23 @@
     "docker.io/bats/bats:v1.4.1": {
       "compressedBytes": 17466404
     },
-    "docker.io/bitnami/postgres-exporter:0.12.0-debian-11-r86": {
-      "compressedBytes": null,
-      "unmeasurableReason": "manifest HTTP 404"
-    },
-    "docker.io/bitnami/postgresql:14.8.0": {
-      "compressedBytes": null,
-      "unmeasurableReason": "manifest HTTP 404"
-    },
-    "docker.io/bitnami/redis-exporter:1.46.0-debian-11-r8": {
-      "compressedBytes": null,
-      "unmeasurableReason": "manifest HTTP 404"
-    },
-    "docker.io/bitnami/redis:6.2.16-debian-12-r1": {
-      "compressedBytes": null,
-      "unmeasurableReason": "manifest HTTP 404"
-    },
-    "docker.io/bitnami/redis:7.4.1-debian-12-r2": {
-      "compressedBytes": null,
-      "unmeasurableReason": "manifest HTTP 404"
-    },
     "docker.io/bitnami/sealed-secrets-controller:0.39.1": {
       "compressedBytes": 29959253
+    },
+    "docker.io/bitnamilegacy/postgres-exporter:0.12.0-debian-11-r86": {
+      "compressedBytes": 41797683
+    },
+    "docker.io/bitnamilegacy/postgresql:14.8.0": {
+      "compressedBytes": 91714366
+    },
+    "docker.io/bitnamilegacy/redis-exporter:1.46.0-debian-11-r8": {
+      "compressedBytes": 36654360
+    },
+    "docker.io/bitnamilegacy/redis:6.2.16-debian-12-r1": {
+      "compressedBytes": 48916895
+    },
+    "docker.io/bitnamilegacy/redis:7.4.1-debian-12-r2": {
+      "compressedBytes": 51672225
     },
     "docker.io/grafana/alloy:v1.5.1": {
       "compressedBytes": 116986542
@@ -369,6 +359,9 @@
     },
     "docker.io/openziti/ziti-controller:1.7.2": {
       "compressedBytes": 180293815
+    },
+    "docker.io/semitechnologies/weaviate:1.32.7": {
+      "compressedBytes": 84940612
     },
     "docker:dind": {
       "compressedBytes": 144715188
@@ -415,9 +408,8 @@
       "compressedBytes": null,
       "unmeasurableReason": "manifest HTTP 404"
     },
-    "ghcr.io/ich777/steamcmd:gmod": {
-      "compressedBytes": null,
-      "unmeasurableReason": "manifest HTTP 404"
+    "ghcr.io/ich777/steamcmd:garrysmod": {
+      "compressedBytes": 45334537
     },
     "ghcr.io/ich777/steamcmd:unturned": {
       "compressedBytes": 44600518

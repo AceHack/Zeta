@@ -16,7 +16,16 @@ metadata:
 spec:
   category: game
   stateful: true
-  image: ghcr.io/ich777/steamcmd:gmod
+  # WAS `:gmod`, WHICH IS A 404 -- THE PUBLISHER'S TAG IS `garrysmod`.
+  # MEASURED 2026-08-23, not guessed: `ghcr.io/v2/ich777/steamcmd/tags/list`
+  # returns 94 tags and `gmod` is not among them; `garrysmod` is, and it is the
+  # only Garry's-Mod-shaped entry there. The `+app_update 4020` below is Steam's
+  # Garry's Mod Dedicated Server appid, so the tag and the install agree. Until
+  # now this Blueprint named an image nobody publishes: a Deployable referencing
+  # it would ImagePullBackOff, and `measure-lane-footprints.ts` could not size
+  # it, which is part of why the whole `platform` Application sat in the
+  # partitioner's CANNOT BE PRICED quarantine.
+  image: ghcr.io/ich777/steamcmd:garrysmod
   install: "/opt/steamcmd/steamcmd.sh +force_install_dir /data +login anonymous +app_update 4020 validate +quit"
   command: ["/data/srcds_run"]
   args: ["-game", "garrysmod", "-port", "${PORT}", "+maxplayers", "${MAXPLAYERS}", "+gamemode", "${GAMEMODE}", "+map", "${MAP}"]

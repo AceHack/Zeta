@@ -285,7 +285,13 @@ describe("the real tree", () => {
     const budget = budgetOf(model.catalogue.envelope, 1);
     expect(budget.diskGib).toBe(10);
     const all = priceSet(model, model.roster.map((r) => r.name));
-    expect(all.diskGib).toBeCloseTo(74.54, 2);
+    // 74.54 -> 75.81 when `gitlab`, `redis` and `weaviate` stopped being
+    // UNPRICED. Their images were always on the disk; the old number simply
+    // could not see five of them (four withdrawn Bitnami tags, one registry
+    // that rate-limits anonymous reads). The total RISING is what a floor
+    // becoming a measurement looks like, and it is the direction that matters:
+    // a floor that moved down would mean an image had gone missing.
+    expect(all.diskGib).toBeCloseTo(75.81, 2);
     expect(all.cpuMillis).toBeGreaterThan(budget.cpuMillis);
     expect(all.diskGib).toBeGreaterThan(budget.diskGib);
     const diskRatio = all.diskGib / budget.diskGib;
@@ -332,7 +338,17 @@ describe("the real tree", () => {
     // envelope intentionally remains the portable lane-planning constraint.
     const p = packLanes(model, { margin: 0.85 });
     expect(p.budget.diskGib).toBeCloseTo(8.5, 1);
-    expect(p.oversize.map((q) => q.name).sort()).toEqual(["hindsight", "vllm"]);
+    // `gitlab` JOINED THIS LIST BY BEING MEASURED, not by growing. It rendered
+    // four Bitnami images whose tags Docker Hub had withdrawn, so it was
+    // UNPRICED -- quarantined with no number at all. Re-pointed at the
+    // `bitnamilegacy` archive it prices at 2525m / 11.53Gi, which is over the
+    // dev budget on BOTH cpu and disk. Moving from "cannot be priced" to
+    // "priced, and too big" is the honest outcome: the first says nothing, the
+    // second is a number a larger rung can be checked against.
+    expect(p.oversize.map((q) => q.name).sort()).toEqual(["gitlab", "hindsight", "vllm"]);
+    const gitlab = priceSet(model, ["gitlab"]);
+    expect(gitlab.diskGib).toBeCloseTo(11.53, 1);
+    expect(gitlab.cpuMillis).toBe(2525);
     const hindsight = priceSet(model, ["hindsight"]);
     const vllm = priceSet(model, ["vllm"]);
     expect(hindsight.diskGib).toBeCloseTo(22.49, 1);

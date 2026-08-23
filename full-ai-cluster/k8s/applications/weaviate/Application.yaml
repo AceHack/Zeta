@@ -17,6 +17,44 @@ spec:
     helm:
       releaseName: weaviate
       valuesObject:
+        # PULL FROM DOCKER HUB DIRECTLY, NOT THROUGH `cr.weaviate.io`.
+        #
+        # `cr.weaviate.io` IS A PULL-THROUGH PROXY FOR DOCKER HUB, and it says so
+        # itself -- that is the evidence, not an inference. Ask it for a manifest
+        # and its `WWW-Authenticate` challenge is:
+        #
+        #   Bearer realm="https://auth.docker.io/token",
+        #          service="registry.docker.io",
+        #          scope="repository:semitechnologies/weaviate:pull"
+        #
+        # It delegates to Docker Hub's token service for the SAME repository
+        # path. So this is not a vendor swap; it is the same image, one hop
+        # shorter.
+        #
+        # WHY THE HOP COSTS US. Anonymous reads through the proxy return HTTP 429
+        # -- measured on 2026-08-22 by `measure-lane-footprints.ts` and again on
+        # 2026-08-23, three attempts, all 429. Docker Hub's anonymous quota is
+        # charged to the PROXY's address, shared across everyone pulling Weaviate
+        # that way, so it is exhausted essentially always. Read the same image
+        # straight from `docker.io/semitechnologies/weaviate:1.32.7` from the same
+        # machine at the same moment and it resolves immediately:
+        # `sha256:b255e62c29510fc6aa5f9374fe2487bf9cf3bd84df383e03e8b433309fcb92ba`,
+        # 84,940,612 compressed bytes. That 429 is what made this Application
+        # UNPRICED and kept it out of every test lane.
+        #
+        # A rate limit that bites a size probe bites an image PULL identically,
+        # so this is not only a measurement fix: the shorter path is the one more
+        # likely to actually start the pod.
+        #
+        # `tag` IS PINNED HERE DELIBERATELY, which is the chart's own advice
+        # (values.yaml: "we strongly recommend you overwrite this value ...
+        # otherwise a mere upgrade of the chart could lead to an unexpected
+        # upgrade of weaviate"). 1.32.7 is what 17.6.0 defaults to today, so this
+        # changes nothing now and stops a chart bump from silently moving it.
+        image:
+          registry: docker.io
+          repo: semitechnologies/weaviate
+          tag: 1.32.7
         replicas: 1 # bump to 3 for HA once cluster has the headroom
         storage:
           # SIZE CUT, NOT A POD CUT: 100Gi -> 32Gi. `replicas: 1` above is

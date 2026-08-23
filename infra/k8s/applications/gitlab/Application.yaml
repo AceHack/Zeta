@@ -52,6 +52,32 @@ spec:
             privileged: false  # explicit denial; safer default
             tags: "kubernetes,zeta-cluster"
 
+        # THE FOUR BUNDLED BITNAMI IMAGES, RE-POINTED AT `bitnamilegacy`.
+        # Same change, same reason, same four tags as the sibling
+        # `full-ai-cluster/k8s/applications/gitlab/Application.yaml` -- see the
+        # long note there. In short: Bitnami withdrew its free versioned tags
+        # from Docker Hub, so chart 8.7.0's bundled postgresql and redis
+        # subcharts render four images that return HTTP 404 (measured
+        # 2026-08-23). Each resolves under `bitnamilegacy` at the SAME tag.
+        #
+        # This tree is NOT in the lane-partition roster, so nothing here moves a
+        # coverage number. It is fixed anyway because it is the identical live
+        # bug -- a GitLab bring-up from this directory would ImagePullBackOff on
+        # all four -- and leaving a diagnosed 404 in place because no counter
+        # watches it is how the counter becomes the only thing that is true.
+        postgresql:
+          image:
+            repository: bitnamilegacy/postgresql
+          metrics:
+            image:
+              repository: bitnamilegacy/postgres-exporter
+        redis:
+          image:
+            repository: bitnamilegacy/redis
+          metrics:
+            image:
+              repository: bitnamilegacy/redis-exporter
+
   destination:
     server: https://kubernetes.default.svc
     namespace: gitlab

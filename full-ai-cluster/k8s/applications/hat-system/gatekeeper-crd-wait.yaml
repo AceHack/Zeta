@@ -81,7 +81,27 @@ spec:
           emptyDir: {}
       containers:
         - name: wait
-          image: bitnami/kubectl:1.32.3
+          # WAS `bitnami/kubectl:1.32.3`, WHICH IS A 404 -- A LIVE BUG, NOT ONLY
+          # A MEASUREMENT ONE. Bitnami withdrew its free versioned tags from
+          # Docker Hub; `docker.io/bitnami/kubectl` still answers `tags/list` but
+          # every entry is `latest`, `latest-metadata`, or a cosign
+          # `sha256-...`/`.sig`/`.att` artifact. So this Job's only container
+          # could not be pulled, and the Job that gates every hat
+          # ConstraintTemplate would have sat in ImagePullBackOff. Measured
+          # 2026-08-23: HTTP 404 for the tag, and `bitnamilegacy/kubectl:1.32.3`
+          # -- the archive Bitnami moved the free catalogue to, same tag --
+          # resolves at 111,998,161 compressed bytes.
+          #
+          # `registry.k8s.io/kubectl:v1.32.3` WAS THE OBVIOUS BETTER PIN AND IS
+          # NOT USABLE HERE, checked rather than assumed. It resolves (18,750,205
+          # bytes, 6x smaller, upstream-maintained rather than a frozen archive),
+          # but its config blob reads `ENTRYPOINT ["/bin/kubectl"]` on the
+          # distroless `go-runner` base -- there is no shell in it. The script
+          # below is `/bin/bash -ec` with arrays, `seq` and `pipefail`, so that
+          # image would trade a pull failure for an exec failure. Moving to it
+          # means rewriting this Job as a shell-free wait, which is a real
+          # improvement and a separate change.
+          image: bitnamilegacy/kubectl:1.32.3
           securityContext:
             allowPrivilegeEscalation: false
             readOnlyRootFilesystem: true

@@ -1,0 +1,14 @@
+{
+  "id": "080d017587ebe810a0130008911f711d",
+  "at": "2026-08-23T12:55:46.301Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M0QB1ZBW087G0R002664EN7",
+    "type": "task",
+    "title": "Publish hat-system-operator — the hat-system Deployment still pins the literal tag placeholder",
+    "slug": "publish-hat-system-operator-the-hat-system-deployment-still",
+    "priority": "P2",
+    "filename": "081M0QB1ZBW087G0R002664EN7-publish-hat-system-operator-the-hat-system-deployment-still.md"
+  }
+}

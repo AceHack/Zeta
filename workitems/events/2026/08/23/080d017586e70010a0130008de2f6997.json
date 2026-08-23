@@ -1,0 +1,14 @@
+{
+  "id": "080d017586e70010a0130008de2f6997",
+  "at": "2026-08-23T12:55:37.952Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M0QB1Q6Z087G0R00091JH3Q",
+    "type": "task",
+    "title": "Publish zeta-orleans-silo — the orleans Application names a container image nobody has ever built",
+    "slug": "publish-zeta-orleans-silo-the-orleans-application-names-a-co",
+    "priority": "P2",
+    "filename": "081M0QB1Q6Z087G0R00091JH3Q-publish-zeta-orleans-silo-the-orleans-application-names-a-co.md"
+  }
+}

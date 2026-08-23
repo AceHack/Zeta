@@ -17,6 +17,44 @@ spec:
     helm:
       releaseName: redis
       valuesObject:
+        # BITNAMI WITHDREW THE VERSIONED TAGS; `bitnamilegacy` IS WHERE THEY WENT.
+        #
+        # MEASURED 2026-08-23, not assumed. `docker.io/bitnami/redis` still
+        # exists on Docker Hub -- a `tags/list` against it returns 474 entries --
+        # but every one of them is `latest`, `latest-metadata`, or a
+        # `sha256-...`/`.sig`/`.att`/`.metadata` cosign artifact. The versioned
+        # tags are gone, so chart 20.5.0's default
+        # `docker.io/bitnami/redis:7.4.1-debian-12-r2` returns HTTP 404 from the
+        # registry: an ImagePullBackOff in the cluster, and an UNMEASURABLE image
+        # to `measure-lane-footprints.ts`, which is why this whole Application sat
+        # in the partitioner's CANNOT BE PRICED quarantine and was never tested.
+        #
+        # `docker.io/bitnamilegacy/redis:7.4.1-debian-12-r2` -- the SAME tag, the
+        # archive repository Bitnami moved the free catalogue to -- resolves and
+        # measures 51,672,225 compressed bytes. Only the repository path changes;
+        # the tag is untouched, so this is a re-point, not a version bump.
+        #
+        # HONEST LIMIT: `bitnamilegacy` is explicitly an ARCHIVE. It receives no
+        # further updates and Bitnami reserves the right to remove it, so this
+        # pin buys a testable chart today and is not a long-term answer. The
+        # long-term answers are a non-Bitnami redis chart or a Bitnami Secure
+        # Images subscription, and both are maintainer calls rather than ones to
+        # make inside a measurement fix.
+        #
+        # `global.security.allowInsecureImages` IS REQUIRED, AND IT IS THE
+        # CHART'S OWN SWITCH FOR EXACTLY THIS MOVE -- not a security control
+        # being turned off. MEASURED: with the repository re-pointed and this
+        # flag absent, `helm template` FAILS outright at
+        # `redis/templates/NOTES.txt:216` with "Original containers have been
+        # substituted for unrecognized ones". That is a chart-side assertion
+        # that the image path is one of Bitnami's own; it gates nothing in the
+        # cluster, admits nothing to it, and its only effect here is to let the
+        # chart render against the archive repository Bitnami itself published.
+        global:
+          security:
+            allowInsecureImages: true
+        image:
+          repository: bitnamilegacy/redis
         architecture: replication
         auth:
           enabled: true

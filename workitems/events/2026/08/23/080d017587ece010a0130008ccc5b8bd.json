@@ -1,0 +1,14 @@
+{
+  "id": "080d017587ece010a0130008ccc5b8bd",
+  "at": "2026-08-23T12:55:46.332Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M0QB1ZCV087G0R001P9YCPX",
+    "type": "bug",
+    "title": "Two platform game Blueprints name images and paths that do not exist — arma-reforger has no publisher image, and every steamcmd blueprint calls the wrong steamcmd path",
+    "slug": "two-platform-game-blueprints-name-images-and-paths-that-do-n",
+    "priority": "P2",
+    "filename": "081M0QB1ZCV087G0R001P9YCPX-two-platform-game-blueprints-name-images-and-paths-that-do-n.md"
+  }
+}
