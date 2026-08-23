@@ -1,0 +1,12 @@
+{
+  "pr_number": 12655,
+  "archive_path": "docs/history/pr-reviews/PR-12655-skip-review-telemetry-flush-society-evolution-tick-2026-08-20t05-44-02z.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-23T21:08:34.768Z",
+  "schema_version": "v1",
+  "commit_sha": "67ef8a33fc7ec52c77e28e160ecf15c77cb0b046",
+  "title": "[skip-review][telemetry-flush] society: evolution tick 2026-08-20T05:44:02Z",
+  "state": "MERGED",
+  "merged_at": "2026-08-20T05:49:30Z",
+  "head_ref": "heartbeat/society"
+}
