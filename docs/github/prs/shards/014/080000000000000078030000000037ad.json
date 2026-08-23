@@ -1,0 +1,12 @@
+{
+  "pr_number": 14253,
+  "archive_path": "docs/history/pr-reviews/PR-14253-fix-twitch-ai-resolve-eslint-strict-typing-errors-and-add-typecheck-script.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-23T15:36:27.639Z",
+  "schema_version": "v1",
+  "commit_sha": "49be35300f06a29a3ff21020f701caeb56ebb571",
+  "title": "fix(twitch-ai): resolve ESLint strict typing errors and add typecheck script",
+  "state": "MERGED",
+  "merged_at": "2026-08-23T15:35:46Z",
+  "head_ref": "fix-twitch-ai-eslint"
+}
