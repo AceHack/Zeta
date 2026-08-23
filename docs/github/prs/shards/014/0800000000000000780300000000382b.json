@@ -1,0 +1,12 @@
+{
+  "pr_number": 14379,
+  "archive_path": "docs/history/pr-reviews/PR-14379-feat-browser-make-indexeddb-revision-policy-explicit.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-23T19:08:15.171Z",
+  "schema_version": "v1",
+  "commit_sha": "75ded3b6da061613d27c77d620cd2d95794e95b1",
+  "title": "feat(browser): make IndexedDB revision policy explicit",
+  "state": "MERGED",
+  "merged_at": "2026-08-23T19:07:24Z",
+  "head_ref": "claim/task-browser-revision-policy-conformance"
+}
