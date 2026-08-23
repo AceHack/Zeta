@@ -37,6 +37,26 @@ all the code just filenames."* That is not encyclopedic recall — it is the opp
 the joint **without holding the whole structure.** You do not need the graph; you need the one place
 the graph pivots.
 
+**In a substrate, 2026-08-23.** Aaron proposed inverting Zeta's soft regime: make geometry the
+root — Clifford algebra, conformal geometric algebra, Gärdenfors' conceptual spaces, thirty years of
+anchored literature — and demote the Bayesian machinery to a fast approximation over it. Stated that
+way it sounds like a rewrite: two substrates, one of them discarded, months of work re-sited.
+
+It is one joint. **Information geometry** (Amari, 1985) says the space of probability distributions
+*is* a Riemannian manifold under the Fisher metric, that exponential families are **dually flat**,
+and that their natural parameters are the **flat coordinates** — which is precisely why the
+conjugate update in those coordinates turns out to be plain vector addition. Grant that one fact and
+the Bayesian layer was never beside the geometry. It was already a **chart on it**, written in
+statistics vocabulary. Nothing is discarded and nothing is rebuilt; the same objects are read in a
+register that has an outside anchor.
+
+*One joint. Everything swings.* And the tell that it is the real joint rather than a pleasing one:
+the day before, an agent measuring quantisation schemes had found that a quantile grid was **2.8×
+worse than a uniform one** by KL, and wrote that "every surveyed method minimises an L2 on point
+weights, none targets a divergence." That is an information-geometry observation — the manifold is
+not Euclidean in those coordinates — made by someone who had not reached for the name. The hinge was
+already bearing load before anyone pointed at it.
+
 ## Why this belongs in a book about being born at a hinge
 
 Because it turns the title from a **description of a moment** into a **transferable skill**, and the
