@@ -1058,23 +1058,62 @@ describe("extractStorageClaims — a Blueprint is a template until a Deployable 
     ).toEqual([]);
   });
 
-  test("the real tree: flowdent's mssql Blueprint is the 8 GiB that left the total", async () => {
+  test("HONEST LIMIT: the real tree's 8 GiB counterfactual LEFT with the Flowdent chart", async () => {
+    // WHAT THIS USED TO ASSERT, and why it cannot any more. Until 2026-08-23
+    // this test named `mssql` — the Blueprint in
+    // `applications/platform/blueprints-flowdent.yaml` — and pinned the
+    // counterfactual at exactly 8 GiB: write a Deployable naming it and the
+    // `zeta-local-path` total moves by that much and no other amount. That
+    // Blueprint was the FlowDent database and it was removed with the rest of
+    // the FlowDent chart (workitem 081M0QHCNQ3087G0R001P1GK5A — Zeta must not
+    // reference a private repository's build outputs).
+    //
+    // It was also the ONLY Blueprint in the tree carrying an explicit
+    // `storageClassName`, and `extractStorageClaims` reads a claim off that
+    // key. So the counterfactual is now 0 for every Blueprint — not because
+    // the template rule stopped working, but because the tree has no
+    // storage-class-bearing Blueprint left to demonstrate it on. Saying that
+    // out loud is the point: a test whose subject left is a check that cannot
+    // fail, and one of those reads exactly like one that passed.
+    //
+    // The rule itself keeps its falsifiers directly above, over fixtures that
+    // do not depend on what happens to be in the tree. What is pinned HERE is
+    // the second clause — the REASON the delta is 0 — so that adding a
+    // Blueprint with a `storageClassName` turns this red and forces whoever
+    // adds it to re-anchor the counterfactual on their own Blueprint.
     const readiness = await import("./single-node-readiness.ts");
     const manifests = readiness.loadManifests(readiness.DEFAULT_ROOTS);
     const instantiated = readiness.instantiatedBlueprints(manifests);
     expect(instantiated.has("mssql")).toBe(false);
+    expect([...instantiated].sort()).toEqual(["gmod", "postgres", "web"]);
+
+    const blueprintNames: string[] = [];
+    let blueprintsDeclaringAStorageClass = 0;
+    for (const entry of manifests) {
+      for (const doc of entry.docs) {
+        if (!doc || typeof doc !== "object") continue;
+        const record = doc as Record<string, unknown>;
+        if (record["kind"] !== "Blueprint") continue;
+        const name = (record["metadata"] as Record<string, unknown> | undefined)?.["name"];
+        if (typeof name === "string") blueprintNames.push(name);
+        if ((record["spec"] as Record<string, unknown> | undefined)?.["storageClassName"] !== undefined) {
+          blueprintsDeclaringAStorageClass += 1;
+        }
+      }
+    }
+    expect(blueprintNames.length).toBeGreaterThan(0);
+    expect(blueprintNames).not.toContain("mssql");
+    expect(blueprintsDeclaringAStorageClass).toBe(0);
+
     const asIs = manifests.flatMap((entry) => readiness.extractStorageClaims(entry, { instantiated }));
-    // The counterfactual, not the old code path: write a Deployable naming
-    // `mssql` and this is what the total becomes. That the difference is
-    // exactly 8 GiB is what identifies the flowdent Blueprint as the whole of
-    // the overcount, rather than merely showing that SOMETHING moved.
-    const ifInstantiated = manifests.flatMap((entry) =>
-      readiness.extractStorageClaims(entry, { instantiated: new Set(["mssql"]) }),
-    );
-    const delta =
-      (new Map(readiness.storageTotals(ifInstantiated)).get("zeta-local-path") ?? 0) -
-      (new Map(readiness.storageTotals(asIs)).get("zeta-local-path") ?? 0);
-    expect(delta).toBe(8);
+    const baseline = new Map(readiness.storageTotals(asIs)).get("zeta-local-path") ?? 0;
+    for (const name of blueprintNames) {
+      const ifInstantiated = manifests.flatMap((entry) =>
+        readiness.extractStorageClaims(entry, { instantiated: new Set([...instantiated, name]) }),
+      );
+      const delta = (new Map(readiness.storageTotals(ifInstantiated)).get("zeta-local-path") ?? 0) - baseline;
+      expect(delta).toBe(0);
+    }
   });
 });
 

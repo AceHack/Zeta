@@ -765,6 +765,9 @@ describe("machinery", () => {
   // render with no class and bind the default. Two errors of opposite sign,
   // which is why the total looked plausible; corrected to 193 GiB on 2026-08-22
   // by deriving it from the snapshot instead of from our own YAML.
+  // (`blueprints-flowdent.yaml` itself left the tree on 2026-08-23 — workitem
+  // 081M0QHCNQ3087G0R001P1GK5A. The rule below is unchanged and so is the
+  // number; the file is named here because it is what the error WAS.)
   test("a platform Blueprint's spec.storage is NOT counted as a PVC", () => {
     expect(
       extractRenderedPvcs("t/platform", [

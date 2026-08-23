@@ -291,7 +291,18 @@ describe("the real tree", () => {
     // that rate-limits anonymous reads). The total RISING is what a floor
     // becoming a measurement looks like, and it is the direction that matters:
     // a floor that moved down would mean an image had gone missing.
-    expect(all.diskGib).toBeCloseTo(75.81, 2);
+    //
+    // 75.81 -> 74.26 on 2026-08-23, and this IS the falling case the sentence
+    // above warns about — checked, not waved through. An image did go missing,
+    // deliberately: `platform`'s FlowDent Blueprints left the tree with
+    // `blueprints-flowdent.yaml` (workitem 081M0QHCNQ3087G0R001P1GK5A). The
+    // whole of the 1.55 GiB fall is `mcr.microsoft.com/mssql/server:2022-latest`
+    // at 624874207 compressed x2.67 = 1.5538 GiB; the other two images that
+    // left were UNMEASURABLE (private ghcr, HTTP 401) and so were contributing
+    // nothing to this total in the first place — which is exactly why removing
+    // them takes `platform`'s blocker count from 5 to 3 without moving a
+    // single byte of the priced figure.
+    expect(all.diskGib).toBeCloseTo(74.26, 2);
     expect(all.cpuMillis).toBeGreaterThan(budget.cpuMillis);
     expect(all.diskGib).toBeGreaterThan(budget.diskGib);
     const diskRatio = all.diskGib / budget.diskGib;

@@ -171,14 +171,11 @@
     "full-ai-cluster/platform": [
       "atmoz/sftp:alpine",
       "busybox:1.36",
-      "ghcr.io/flowdent/cloudservice:latest",
-      "ghcr.io/flowdent/fd-webclient:latest",
       "ghcr.io/ich777/steamcmd:armareforger",
       "ghcr.io/ich777/steamcmd:garrysmod",
       "ghcr.io/ich777/steamcmd:unturned",
       "ghcr.io/lucent-financial-group/zeta-platform-controller:latest",
       "ghcr.io/lucent-financial-group/zeta-portal:latest",
-      "mcr.microsoft.com/mssql/server:2022-latest",
       "nginx:1.27-alpine",
       "postgres:16-alpine"
     ],
@@ -393,14 +390,6 @@
     "ghcr.io/dexidp/dex:v2.41.1": {
       "compressedBytes": 38258814
     },
-    "ghcr.io/flowdent/cloudservice:latest": {
-      "compressedBytes": null,
-      "unmeasurableReason": "manifest HTTP 401"
-    },
-    "ghcr.io/flowdent/fd-webclient:latest": {
-      "compressedBytes": null,
-      "unmeasurableReason": "manifest HTTP 401"
-    },
     "ghcr.io/headlamp-k8s/headlamp:v0.30.0": {
       "compressedBytes": 79802688
     },
@@ -480,9 +469,6 @@
     },
     "longhornio/longhorn-ui:v1.7.2": {
       "compressedBytes": 73138063
-    },
-    "mcr.microsoft.com/mssql/server:2022-latest": {
-      "compressedBytes": 624874207
     },
     "minio/mc:RELEASE.2018-07-13T00-53-22Z": {
       "compressedBytes": 6706444
