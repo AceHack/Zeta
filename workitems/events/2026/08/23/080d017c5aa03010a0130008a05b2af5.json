@@ -1,0 +1,14 @@
+{
+  "id": "080d017c5aa03010a0130008a05b2af5",
+  "at": "2026-08-23T16:54:15.302Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M0QRPN05087G0R00047WBC4",
+    "type": "task",
+    "title": "ARC rung F - calibration falsifier for the pre-commitment display: does the action taken match the mass shown, at the rate it claims",
+    "slug": "arc-rung-f-calibration-falsifier-for-the-pre-commitment-disp",
+    "priority": "P2",
+    "filename": "081M0QRPN05087G0R00047WBC4-arc-rung-f-calibration-falsifier-for-the-pre-commitment-disp.md"
+  }
+}

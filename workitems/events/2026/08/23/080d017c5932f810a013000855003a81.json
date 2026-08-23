@@ -1,0 +1,14 @@
+{
+  "id": "080d017c5932f810a013000855003a81",
+  "at": "2026-08-23T16:54:03.615Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M0QRP9JY087G0R00146V04J",
+    "type": "task",
+    "title": "ARC rung B - ArcTransport + ArcEnvelope over the toolkit's listen_and_serve REST server; one real step in a real ARC-AGI-3 environment",
+    "slug": "arc-rung-b-arctransport-arcenvelope-over-the-toolkit-s-liste",
+    "priority": "P2",
+    "filename": "081M0QRP9JY087G0R00146V04J-arc-rung-b-arctransport-arcenvelope-over-the-toolkit-s-liste.md"
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "id": "080d017c587dd010a0130008b6dca135",
+  "at": "2026-08-23T16:53:57.818Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M0QRP3XR087G0R001NCFG83",
+    "type": "task",
+    "title": "ARC rung A - ControlScheme gains a coordinate-valued action and arcAgi3/atari2600 schemes; the non-embedding is recorded, not papered over",
+    "slug": "arc-rung-a-controlscheme-gains-a-coordinate-valued-action-an",
+    "priority": "P2",
+    "filename": "081M0QRP3XR087G0R001NCFG83-arc-rung-a-controlscheme-gains-a-coordinate-valued-action-an.md"
+  }
+}

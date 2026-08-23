@@ -1,0 +1,14 @@
+{
+  "id": "080d017c5933f010a013000890514bc6",
+  "at": "2026-08-23T16:54:03.646Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M0QRP9KX087G0R0039EGV67",
+    "type": "task",
+    "title": "ARC rung C - IEnvironment seam plus Chip8Adapter, so one agent drives CHIP-8 and ARC with only a scheme id changed",
+    "slug": "arc-rung-c-ienvironment-seam-plus-chip8adapter-so-one-agent",
+    "priority": "P2",
+    "filename": "081M0QRP9KX087G0R0039EGV67-arc-rung-c-ienvironment-seam-plus-chip8adapter-so-one-agent.md"
+  }
+}

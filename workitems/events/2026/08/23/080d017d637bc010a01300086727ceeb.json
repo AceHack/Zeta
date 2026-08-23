@@ -1,0 +1,14 @@
+{
+  "id": "080d017d637bc010a01300086727ceeb",
+  "at": "2026-08-23T17:30:25.016Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M0QTRVVQ087G0R0039J89W4",
+    "type": "task",
+    "title": "ARC rung K - the TAS-on/TAS-off controlled pair: the delta IS the measured value of the assistance, and the closest thing we can build to measuring Chollet's priors",
+    "slug": "arc-rung-k-the-tas-on-tas-off-controlled-pair-the-delta-is-t",
+    "priority": "P2",
+    "filename": "081M0QTRVVQ087G0R0039J89W4-arc-rung-k-the-tas-on-tas-off-controlled-pair-the-delta-is-t.md"
+  }
+}

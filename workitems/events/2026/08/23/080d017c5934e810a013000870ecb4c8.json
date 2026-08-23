@@ -1,0 +1,14 @@
+{
+  "id": "080d017c5934e810a013000870ecb4c8",
+  "at": "2026-08-23T16:54:03.677Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M0QRP9MW087G0R003P83T6D",
+    "type": "task",
+    "title": "ARC rung D - recorded-session replay in the twitch-ai arena: ARC on the published page, offline, no key, no third-party request",
+    "slug": "arc-rung-d-recorded-session-replay-in-the-twitch-ai-arena-ar",
+    "priority": "P2",
+    "filename": "081M0QRP9MW087G0R003P83T6D-arc-rung-d-recorded-session-replay-in-the-twitch-ai-arena-ar.md"
+  }
+}

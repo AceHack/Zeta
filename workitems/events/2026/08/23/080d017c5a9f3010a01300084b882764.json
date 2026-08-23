@@ -1,0 +1,14 @@
+{
+  "id": "080d017c5a9f3010a01300084b882764",
+  "at": "2026-08-23T16:54:15.270Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M0QRPMZ5087G0R000D33Q8M",
+    "type": "task",
+    "title": "ARC rung E - coordinate heat-map glow for ACTION6: the pre-snap distribution drawn over the frame, not over a button",
+    "slug": "arc-rung-e-coordinate-heat-map-glow-for-action6-the-pre-snap",
+    "priority": "P2",
+    "filename": "081M0QRPMZ5087G0R000D33Q8M-arc-rung-e-coordinate-heat-map-glow-for-action6-the-pre-snap.md"
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "id": "080d017d637ac010a0130008568530d2",
+  "at": "2026-08-23T17:30:24.984Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M0QTRVTP087G0R0030RN1C8",
+    "type": "bug",
+    "title": "the cross-run orbit RunKey carries no channel label, so an assisted run and a clean run collide on one key",
+    "slug": "the-cross-run-orbit-runkey-carries-no-channel-label-so-an-as",
+    "priority": "P2",
+    "filename": "081M0QTRVTP087G0R0030RN1C8-the-cross-run-orbit-runkey-carries-no-channel-label-so-an-as.md"
+  }
+}

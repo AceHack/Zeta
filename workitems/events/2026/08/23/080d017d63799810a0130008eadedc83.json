@@ -1,0 +1,14 @@
+{
+  "id": "080d017d63799810a0130008eadedc83",
+  "at": "2026-08-23T17:30:24.947Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M0QTRVSH087G0R000H5XSFW",
+    "type": "task",
+    "title": "ARC rung I - ChannelGrant: the harness mints the TAS channel label, the agent cannot; an unproxied crossing refuses the run",
+    "slug": "arc-rung-i-channelgrant-the-harness-mints-the-tas-channel-la",
+    "priority": "P2",
+    "filename": "081M0QTRVSH087G0R000H5XSFW-arc-rung-i-channelgrant-the-harness-mints-the-tas-channel-la.md"
+  }
+}
