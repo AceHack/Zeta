@@ -885,6 +885,35 @@ jobs:
           # cadence stops repairing at all.
           bun src/Core.TypeScript/forge-host/github/derive-pr-manifest.ts --write             || echo "::warning::[archive] manifest derive failed (non-fatal; shards are the ledger)"
 
+          # WATCHDOG FOR STRANDED ARCHIVE PRs (added 2026-08-22).
+          #
+          # The two archive writers -- pr-archive-on-merge.yml (event-driven) and this backfill
+          # duty -- can archive the SAME PR from different bases. Both are idempotent, so
+          # neither is wrong; but whichever copy lands on main second becomes an unresolvable
+          # add/add conflict on its own shard path, carrying a markdown that is byte-identical
+          # to main's and a shard whose fetched_at is strictly OLDER. It can never merge
+          # anything new.
+          #
+          # Nothing noticed that, and that silence -- not the conflict -- is the accumulation
+          # generator. A stranded archive PR is ARMED, so the "Auto-merge clean PRs" step
+          # filters it out (auto_merge != null); --auto can never merge a CONFLICTING PR; and
+          # no reaper existed. Measured 2026-08-22: PR #13843 (archiving #12059, whose record
+          # landed on main at 18:25:04 via #13850) sat open ~3 hours and was found by hand.
+          # This lane has now accumulated four times; every prior round drained the symptom.
+          #
+          # NON-FATAL BY DESIGN, and the restraint is the point: this reports the condition and
+          # never closes anything. Whether a record is truly redundant is a judgement that
+          # belongs to a reviewer who can diff it -- detection is a measurement, not a verdict.
+          echo "[archive] Auditing the archive lane for stranded PRs..."
+          set +e
+          LANE_OUT=$(bun src/Core.TypeScript/hygiene/audit-archive-pr-lane.ts 2>&1)
+          LANE_RC=$?
+          printf '%s\n' "$LANE_OUT" | tail -20
+          if [ "$LANE_RC" -ne 0 ]; then
+            echo "::warning::[archive] audit-archive-pr-lane.ts exited $LANE_RC -- the lane is now UNAUDITED, which is the condition it exists to prevent"
+          fi
+          set -e
+
           # Stage + commit what the archive wrote. It writes into TRACKED paths
           # (docs/github/prs/ -- shards + the derived manifest) but previously never staged them,
           # and it ran after the push anyway — so its output was written to a runner and destroyed.
