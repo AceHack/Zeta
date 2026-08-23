@@ -1,0 +1,12 @@
+{
+  "pr_number": 14298,
+  "archive_path": "docs/history/pr-reviews/PR-14298-feat-cluster-refuse-a-public-tree-manifest-that-names-an-image-nobody-outside-ca.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-23T17:31:10.921Z",
+  "schema_version": "v1",
+  "commit_sha": "3f0e0c99f896dd7c788c7147faa41af61bbe50f8",
+  "title": "feat(cluster): refuse a public-tree manifest that names an image nobody outside can pull",
+  "state": "MERGED",
+  "merged_at": "2026-08-23T17:30:26Z",
+  "head_ref": "feat/no-private-source-image-deps"
+}
