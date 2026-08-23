@@ -1,0 +1,12 @@
+{
+  "pr_number": 14477,
+  "archive_path": "docs/history/pr-reviews/PR-14477-research-backward-induction-is-the-missing-term-infinite-is-a-hypothesis-and-del.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-23T21:35:06.736Z",
+  "schema_version": "v1",
+  "commit_sha": "d6d3b20304d6f03dc074e4af9fac3d34c3a1985b",
+  "title": "research: backward induction is the missing term — infinite is a hypothesis, and deletion destroys it",
+  "state": "MERGED",
+  "merged_at": "2026-08-23T21:34:22Z",
+  "head_ref": "docs/backward-induction-horizon"
+}
