@@ -18,6 +18,6 @@ composes_with: []
 
 ## Scope
 
-Implements `anti-babel-preserve-reconcilability.md`'s unimplemented glossary-churn watching. Start with the REVERSE direction (glossary entry with zero postings): it needs no predicate and currently measures 0 findings, so it starts green. Design §9a.
+Implements `.claude/rules/anti-babel-preserve-reconcilability.md`'s unimplemented glossary-churn watching. Start with the REVERSE direction (glossary entry with zero postings): it needs no predicate and currently measures 0 findings, so it starts green. Design §9a.
 
 **Do not build ahead of the design.** Filed deliberately rather than half-built.

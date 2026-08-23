@@ -1,0 +1,14 @@
+{
+  "id": "080d0181955c6810a0130008a74f3848",
+  "at": "2026-08-23T19:57:02.221Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M0R35AWB087G0R000BPV3BP",
+    "type": "bug",
+    "title": "Keep telemetry flush PR heads immutable while buffering newer observations",
+    "slug": "keep-telemetry-flush-pr-heads-immutable-while-buffering-newe",
+    "priority": "P1",
+    "filename": "081M0R35AWB087G0R000BPV3BP-keep-telemetry-flush-pr-heads-immutable-while-buffering-newe.md"
+  }
+}

@@ -22,12 +22,12 @@
  *
  * THE ROUTE
  * ---------
- *   1. `prepare` — working tree starts from `origin/main`, then unions in whatever is
- *      already parked on the lane's staging branch (so an unmerged previous run is not
- *      silently dropped when its PR has not landed yet).
+ *   1. `prepare` — working tree starts from `origin/main`, then unions in the lane's
+ *      aggregate buffer (or its active staging branch during migration).
  *   2. the caller's generator runs and writes its files.
- *   3. `flush` — commit, push the lane's staging branch, open/reuse a PR, arm squash
- *      auto-merge. `gate` runs on the PR; when it passes, GitHub squashes to main.
+ *   3. `flush` — when no PR is open, mirror the aggregate to buffer + active refs and
+ *      open a PR. While that immutable head is under test, advance only the buffer.
+ *      After the PR lands, the next tick promotes the buffered aggregate.
  *
  * Staging branches live under `heartbeat/*`, which ruleset "Heartbeat Branch Protection"
  * (16934633) covers with `deletion` ONLY — no required checks, no non-fast-forward rule.
@@ -59,16 +59,14 @@
  *       --paths data/ --message "metrics: append tick frame"
  *
  * Exit codes:
- *   0  landed / PR open + armed / nothing to do (no-op is success)
+ *   0  PR open + armed / buffered behind an open PR / nothing to do
  *   2  argument error
  *   3  git or forge call failed
  */
 
 import { spawnSync } from "node:child_process";
 
-import {
-  openMergePR,
-} from "../../agent-heartbeats/merge-heartbeats-to-main";
+import { findExistingPR, openMergePR } from "../../agent-heartbeats/merge-heartbeats-to-main";
 
 const MAX_BUFFER = 16 * 1024 * 1024;
 
@@ -99,6 +97,42 @@ export function isValidLane(lane: string): boolean {
 
 export function stagingRef(lane: string): string {
   return `heartbeat/${lane}`;
+}
+
+/**
+ * New observations wait here while the lane's active PR head is under test.
+ * The buffer is a disposable aggregate, just like the active staging ref.
+ */
+export function bufferRef(lane: string): string {
+  return `${stagingRef(lane)}-buffer`;
+}
+
+export type FlushRoute =
+  | {
+      readonly kind: "publish";
+      readonly activeRef: string;
+      readonly bufferRef: string;
+    }
+  | {
+      readonly kind: "buffer";
+      readonly activeRef: string;
+      readonly bufferRef: string;
+      readonly blockedBy: { readonly number: number; readonly url: string };
+    };
+
+/**
+ * An open PR owns an immutable head. Updating it restarts every required check,
+ * which can starve a cadence lane whose period is shorter than the full gate.
+ */
+export function chooseFlushRoute(
+  lane: string,
+  existing: { readonly number: number; readonly url: string } | null,
+): FlushRoute {
+  const activeRef = stagingRef(lane);
+  const pendingRef = bufferRef(lane);
+  return existing === null
+    ? { kind: "publish", activeRef, bufferRef: pendingRef }
+    : { kind: "buffer", activeRef, bufferRef: pendingRef, blockedBy: existing };
 }
 
 const SKIP_CI_RE = /\[(skip ci|ci skip|skip actions|actions skip)\]/i;
@@ -207,23 +241,18 @@ export function signedFlushMessage(message: string, lane: string): string {
  * the branch returns to `origin/main` + exactly one commit every run. Simulated over
  * five cycles: 9 commits / 4 merges before, 1 commit / 0 merges after, same payload.
  *
- * NOTE ON HISTORY. This changes only what FUTURE runs push. Nothing here rewrites the
- * existing branch: `flush` already force-pushes `heartbeat/<lane>` every single run by
- * design (see the `--force-with-lease` note below), and the telemetry payload survives
- * the union either way. What stops being republished is the redundant commit history of
- * flushes that already landed on `main` as squashes.
+ * NOTE ON HISTORY. Both refs are disposable one-commit aggregates. The active ref is
+ * force-pushed only when it has no open PR; the buffer is the cadence-owned mutable ref.
+ * What stops being republished is the redundant commit history of flushes that already
+ * landed on `main` as squashes.
  *
  * The union itself is still needed and still correct: the flush PR is asynchronous, so a
  * run can generate telemetry while the previous run's PR is still waiting on `gate`.
- * Without it the next run would reset to main, regenerate, and force-push over content
- * that had not landed yet. `-X ours` only fires on a true overlap: lane payloads are
- * either per-write ZetaId-keyed files (no two writers ever touch one path) or a single
- * regenerated snapshot (latest-wins is the correct resolution).
+ * Without it the next run would reset to main and drop content that had not landed yet.
+ * `-X theirs` keeps the newer buffered aggregate on a true overlap; lane payloads are
+ * either per-write ZetaId-keyed files or regenerated snapshots where latest wins.
  */
-export function accumulatedHistoryError(
-  aheadCount: number,
-  mergeCount: number,
-): { readonly error: string } | null {
+export function accumulatedHistoryError(aheadCount: number, mergeCount: number): { readonly error: string } | null {
   if (aheadCount === 0 && mergeCount === 0) return null;
   return {
     error:
@@ -236,12 +265,12 @@ export function accumulatedHistoryError(
 }
 
 /**
- * Reset the working tree to `origin/main` and union in anything already parked on the
- * lane's staging branch — as INDEX state, leaving no commits. See
+ * Reset the working tree to `origin/main` and union in anything already parked for the
+ * lane — preferring the aggregate buffer, then the active staging branch — as INDEX
+ * state, leaving no commits. See
  * `accumulatedHistoryError` for the defect this shape exists to prevent.
  */
 export function prepare(lane: string): number {
-  const ref = stagingRef(lane);
   const fetchMain = git("fetch", "origin", "main", "--quiet");
   if (fetchMain.status !== 0) {
     process.stderr.write(`flush-via-staging: fetch origin main failed: ${fetchMain.stderr}\n`);
@@ -252,13 +281,35 @@ export function prepare(lane: string): number {
     process.stderr.write(`flush-via-staging: checkout failed: ${co.stderr}\n`);
     return 3;
   }
-  // Staging branch may not exist yet (first run of a lane) — that is not an error.
-  const fetchStaging = git("fetch", "origin", `${ref}:refs/remotes/origin/${ref}`, "--quiet");
-  if (fetchStaging.status !== 0) {
-    process.stdout.write(`[flush] no existing staging branch ${ref} — starting from main\n`);
+  // The buffer is always a superset of the active PR head: a publish mirrors the
+  // same commit to both refs, then backpressured ticks advance only the buffer.
+  // Prefer it so a merged active PR cannot strand observations accumulated later.
+  let ref: string | undefined;
+  for (const candidate of [bufferRef(lane), stagingRef(lane)]) {
+    // Exit 2 means the named ref does not exist. Any other non-zero result is an
+    // unreadable remote, not an empty buffer, and must fail closed: falling back
+    // to the active ref in that case could overwrite observations we failed to see.
+    const probe = git("ls-remote", "--exit-code", "--heads", "origin", candidate);
+    if (probe.status === 2) continue;
+    if (probe.status !== 0) {
+      process.stderr.write(`flush-via-staging: could not inspect ${candidate}: ${probe.stderr || probe.stdout}\n`);
+      return 3;
+    }
+    const fetched = git("fetch", "origin", `${candidate}:refs/remotes/origin/${candidate}`, "--quiet");
+    if (fetched.status !== 0) {
+      process.stderr.write(`flush-via-staging: fetch ${candidate} failed: ${fetched.stderr || fetched.stdout}\n`);
+      return 3;
+    }
+    ref = candidate;
+    break;
+  }
+  if (ref === undefined) {
+    process.stdout.write(`[flush] no existing staging branch for ${lane} — starting from main\n`);
     return 0;
   }
-  const merge = git("merge", "--squash", "-X", "ours", `origin/${ref}`);
+  // Staging is the newer generated aggregate. On an overlapping snapshot, keeping
+  // main (`ours`) silently discards buffered observations after the prior PR lands.
+  const merge = git("merge", "--squash", "-X", "theirs", `origin/${ref}`);
   if (merge.status !== 0) {
     process.stdout.write(
       `[flush] could not union ${ref} onto main (likely already landed and history diverged); ` +
@@ -309,7 +360,7 @@ export function flush(opts: FlushOptions): number {
     process.stderr.write(`flush-via-staging: ${skip.error}\n`);
     return 2;
   }
-  const ref = stagingRef(opts.lane);
+  const activeRef = stagingRef(opts.lane);
 
   const add = git("add", "--", ...opts.paths);
   if (add.status !== 0) {
@@ -325,35 +376,61 @@ export function flush(opts: FlushOptions): number {
   }
   if (opts.dryRun) {
     const names = git("diff", "--cached", "--name-only");
-    process.stdout.write(`DRY RUN — would flush to ${ref}:\n${names.stdout}`);
+    process.stdout.write(`DRY RUN — would route changed paths for ${activeRef}:\n${names.stdout}`);
     return 0;
   }
 
+  // Decide BEFORE changing any remote ref. If this lookup fails, changing the
+  // active ref could invalidate a PR whose existence we failed to observe.
+  const existing = findExistingPR(opts.repo, activeRef, opts.base);
+  if ("error" in existing) {
+    process.stderr.write(`flush-via-staging: could not inspect the active flush PR: ${existing.error}\n`);
+    return 3;
+  }
+  const route = chooseFlushRoute(opts.lane, existing.found);
+
   // Signed at the choke point — see `agencySignatureBlock` for why here and not
   // in each lane's workflow yaml.
-  const commit = git(
-    "commit",
-    "--no-verify",
-    "-m",
-    signedFlushMessage(opts.message, opts.lane),
-  );
+  const commit = git("commit", "--no-verify", "-m", signedFlushMessage(opts.message, opts.lane));
   if (commit.status !== 0) {
     process.stderr.write(`flush-via-staging: commit failed: ${commit.stderr || commit.stdout}\n`);
     return 3;
   }
 
-  // --force-with-lease: the staging branch is scratch, reset from main each run, and the
-  // flush SQUASHES onto main — so the previous tip is never an ancestor of the new one and
-  // a plain push would be rejected as non-fast-forward after the first landing. The lease
-  // still refuses if a peer moved the ref underneath us. Same reasoning as
-  // agent-heartbeat.yml's heartbeat-branch push; `heartbeat/*` deliberately carries no
-  // non_fast_forward rule (ruleset 16934633 is `deletion` only) so this stays legal.
-  const push = git("push", "--force-with-lease", "origin", `HEAD:refs/heads/${ref}`);
-  if (push.status !== 0) {
-    process.stderr.write(`flush-via-staging: push to ${ref} failed: ${push.stderr || push.stdout}\n`);
+  // Buffer first. If publishing the active ref subsequently fails, the payload is
+  // still parked and the next prepare recovers it. A publish mirrors one commit to
+  // both refs; later ticks advance only the buffer until that PR merges.
+  const pushBuffer = git("push", "--force-with-lease", "origin", `HEAD:refs/heads/${route.bufferRef}`);
+  if (pushBuffer.status !== 0) {
+    process.stderr.write(
+      `flush-via-staging: push to ${route.bufferRef} failed: ${pushBuffer.stderr || pushBuffer.stdout}\n`,
+    );
     return 3;
   }
-  process.stdout.write(`[flush] ${opts.lane}: parked on ${ref}\n`);
+
+  if (route.kind === "buffer") {
+    process.stderr.write(
+      `::notice title=Telemetry flush backpressured::lane ${opts.lane}: PR #${String(route.blockedBy.number)} ` +
+        `is still testing immutable head ${route.activeRef}; newer observations are parked on ${route.bufferRef}\n`,
+    );
+    process.stdout.write(
+      `[flush] ${opts.lane}: buffered behind PR #${String(route.blockedBy.number)} ` +
+        `(${route.blockedBy.url}) on ${route.bufferRef}\n`,
+    );
+    return 0;
+  }
+
+  // --force-with-lease: both refs are scratch aggregates reset from main. The
+  // active ref changes only when it has no open PR; the buffer may advance while
+  // the immutable active head completes its checks.
+  const pushActive = git("push", "--force-with-lease", "origin", `HEAD:refs/heads/${route.activeRef}`);
+  if (pushActive.status !== 0) {
+    process.stderr.write(
+      `flush-via-staging: push to ${route.activeRef} failed: ${pushActive.stderr || pushActive.stdout}\n`,
+    );
+    return 3;
+  }
+  process.stdout.write(`[flush] ${opts.lane}: parked on ${route.activeRef}; mirrored on ${route.bufferRef}\n`);
 
   const title = `[skip-review][telemetry-flush] ${opts.message.split("\n")[0] ?? opts.lane}`;
   // The BODY carries the signature too, and that is the load-bearing copy: these
@@ -370,11 +447,11 @@ export function flush(opts: FlushOptions): number {
     `Paths: ${opts.paths.map((p) => `\`${p}\``).join(", ")}\n\n` +
     `${agencySignatureBlock(opts.lane)}\n`;
 
-  const result = openMergePR(opts.repo, ref, opts.base, title, body);
+  const result = openMergePR(opts.repo, route.activeRef, opts.base, title, body);
   if ("error" in result) {
     process.stderr.write(
       `flush-via-staging: ${result.error}\n` +
-        `NOTE: the telemetry is safely parked on ${ref} — nothing is lost. If this is the\n` +
+        `NOTE: the telemetry is safely parked on ${route.activeRef} and ${route.bufferRef} — nothing is lost. If this is the\n` +
         `enterprise PR-creation restriction, supply a fine-grained PAT via GH_TOKEN\n` +
         `(pull_requests: write + metadata: read), as pr-archive-on-merge.yml does.\n`,
     );
@@ -403,13 +480,14 @@ export function flush(opts: FlushOptions): number {
     return 0;
   }
   process.stdout.write(
-    `[flush] ${opts.lane}: PR #${String(result.ok.number)} ${what} ` +
-      `(${result.ok.url}); squash auto-merge armed\n`,
+    `[flush] ${opts.lane}: PR #${String(result.ok.number)} ${what} ` + `(${result.ok.url}); squash auto-merge armed\n`,
   );
   return 0;
 }
 
-export function parseArgv(argv: readonly string[]): { readonly cmd: "prepare" | "flush"; readonly opts: FlushOptions } | { readonly error: string } {
+export function parseArgv(
+  argv: readonly string[],
+): { readonly cmd: "prepare" | "flush"; readonly opts: FlushOptions } | { readonly error: string } {
   const cmd = argv[0];
   if (cmd !== "prepare" && cmd !== "flush") {
     return { error: "first argument must be `prepare` or `flush`" };

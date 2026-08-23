@@ -9,8 +9,11 @@ import {
   accumulatedHistoryError,
   agencySignatureBlock,
   assertNoSkipCi,
+  bufferRef,
+  chooseFlushRoute,
   prepare,
   signedFlushMessage,
+  stagingRef,
 } from "./flush-via-staging";
 
 const WORKFLOW_DIR = join(import.meta.dir, "..", "..", "..", "..", ".github", "workflows");
@@ -83,11 +86,39 @@ describe("accumulatedHistoryError", () => {
   });
 });
 
+describe("telemetry flush routing", () => {
+  test("without an active PR the same aggregate is published and mirrored", () => {
+    expect(chooseFlushRoute("drift-sweep", null)).toEqual({
+      kind: "publish",
+      activeRef: "heartbeat/drift-sweep",
+      bufferRef: "heartbeat/drift-sweep-buffer",
+    });
+  });
+
+  test("an active PR makes its head immutable and routes newer observations to the buffer", () => {
+    const route = chooseFlushRoute("drift-sweep", {
+      number: 14371,
+      url: "https://example.test/pull/14371",
+    });
+    expect(route).toEqual({
+      kind: "buffer",
+      activeRef: "heartbeat/drift-sweep",
+      bufferRef: "heartbeat/drift-sweep-buffer",
+      blockedBy: { number: 14371, url: "https://example.test/pull/14371" },
+    });
+    expect(route.bufferRef).not.toBe(route.activeRef);
+  });
+
+  test("the buffer ref stays inside the protected heartbeat namespace", () => {
+    expect(bufferRef("society")).toBe(`${stagingRef("society")}-buffer`);
+  });
+});
+
 // The integration proof. `prepare` is a git-effect function, so the falsifier has
-// to be real git: run the lane's actual prepare/flush cycle N times against a real
-// origin and assert the branch does not grow. Reverting `--squash` to a plain
-// `merge` in flush-via-staging.ts makes this go red (measured: 9 ahead / 4 merges).
-describe("the flush lane does not accumulate history (real git)", () => {
+// to be real git. This reproduces a gate slower than the telemetry cadence: the
+// active PR holds tick 1 while ticks 2..4 accumulate on the buffer, then tick 5
+// promotes the complete aggregate after the active head lands.
+describe("the flush lane buffers without invalidating an active PR (real git)", () => {
   const tmp = mkdtempSync(join(tmpdir(), "zeta-flush-lane-"));
   afterAll(() => {
     rmSync(tmp, { recursive: true, force: true });
@@ -96,10 +127,13 @@ describe("the flush lane does not accumulate history (real git)", () => {
   const g = (cwd: string, ...args: readonly string[]): string => {
     // eslint-disable-next-line sonarjs/no-os-command-from-path
     const r = spawnSync("git", [...args], { cwd, encoding: "utf8" });
+    if (r.status !== 0) {
+      throw new Error(`git ${args.join(" ")} failed: ${r.stderr || r.stdout}`);
+    }
     return r.stdout.trim();
   };
 
-  test("five prepare/flush cycles leave exactly one commit and zero merges", () => {
+  test("an open PR head is stable, every tick survives, and both refs stay bounded", () => {
     const originDir = join(tmp, "origin.git");
     const workDir = join(tmp, "work");
     const seedDir = join(tmp, "seed");
@@ -118,7 +152,7 @@ describe("the flush lane does not accumulate history (real git)", () => {
     g(workDir, "config", "user.email", "lane@zeta.local");
     g(workDir, "config", "user.name", "lane");
 
-    for (let i = 1; i <= 5; i++) {
+    const appendTick = (i: number, refs: readonly string[]): string => {
       // ANOTHER AGENT lands on main between ticks, with genuinely different
       // governance fields. This is what leaked into PR #11528's commit list.
       g(workDir, "fetch", "--quiet", "origin", "main");
@@ -148,33 +182,59 @@ describe("the flush lane does not accumulate history (real git)", () => {
       expect(prepared).toBe(0);
 
       // --- the generator appends a tick frame
-      const prior = i === 1 ? "" : readFileSync(join(workDir, "telemetry.json"), "utf8");
+      const telemetryPath = join(workDir, "telemetry.json");
+      let prior = "";
+      try {
+        prior = readFileSync(telemetryPath, "utf8");
+      } catch (error) {
+        if ((error as NodeJS.ErrnoException).code !== "ENOENT") {
+          throw error;
+        }
+      }
       writeFileSync(join(workDir, "telemetry.json"), `${prior}tick ${String(i)}\n`);
 
       // --- flush
       g(workDir, "add", "--", "telemetry.json");
-      g(
-        workDir,
-        "commit",
-        "--quiet",
-        "-m",
-        signedFlushMessage("metrics: append tick frame", "tick-metrics"),
-      );
-      g(workDir, "push", "--quiet", "--force-with-lease", "origin", "HEAD:refs/heads/heartbeat/lane");
+      g(workDir, "commit", "--quiet", "-m", signedFlushMessage("metrics: append tick frame", "tick-metrics"));
+      g(workDir, "push", "--quiet", "--force-with-lease", "origin", ...refs.map((ref) => `HEAD:refs/heads/${ref}`));
+      return g(workDir, "rev-parse", "HEAD");
+    };
+
+    // First tick publishes one immutable PR head and mirrors the same aggregate.
+    const firstActive = appendTick(1, ["heartbeat/lane-buffer", "heartbeat/lane"]);
+
+    // While that PR is testing, only the buffer advances. The mutation this test
+    // catches is pushing heartbeat/lane here, which changes firstActive.
+    for (let i = 2; i <= 4; i++) {
+      appendTick(i, ["heartbeat/lane-buffer"]);
+      expect(g(workDir, "ls-remote", "origin", "refs/heads/heartbeat/lane").split(/\s/)[0]).toBe(firstActive);
     }
 
+    // The immutable active PR lands with tick 1. The buffer still carries 1..4.
+    g(workDir, "fetch", "--quiet", "origin", "main", "heartbeat/lane:refs/remotes/origin/heartbeat/lane");
+    g(workDir, "checkout", "--quiet", "-B", "land-active", "origin/main");
+    g(workDir, "merge", "--quiet", "--squash", "-X", "theirs", "origin/heartbeat/lane");
+    g(workDir, "commit", "--quiet", "-m", "merge active telemetry");
+    g(workDir, "push", "--quiet", "origin", "land-active:main");
+
+    // No active PR now: prepare prefers the buffer, and the next publish mirrors
+    // the complete aggregate to a new active head and the buffer.
+    appendTick(5, ["heartbeat/lane-buffer", "heartbeat/lane"]);
+
     g(workDir, "fetch", "--quiet", "origin", "main");
-    const ahead = g(workDir, "rev-list", "--count", "origin/main..origin/heartbeat/lane");
-    const merges = g(workDir, "rev-list", "--count", "--merges", "origin/main..origin/heartbeat/lane");
+    g(workDir, "fetch", "--quiet", "origin", "heartbeat/lane:refs/remotes/origin/heartbeat/lane");
+    g(workDir, "fetch", "--quiet", "origin", "heartbeat/lane-buffer:refs/remotes/origin/heartbeat/lane-buffer");
 
-    // The branch is a DISPOSABLE DELTA, not a growing ledger.
-    expect(ahead).toBe("1");
-    expect(merges).toBe("0");
-    expect(accumulatedHistoryError(Number.parseInt(ahead, 10) - 1, Number.parseInt(merges, 10))).toBeNull();
+    // Both branches are disposable one-commit aggregates, not growing ledgers.
+    for (const ref of ["origin/heartbeat/lane", "origin/heartbeat/lane-buffer"]) {
+      expect(g(workDir, "rev-list", "--count", `origin/main..${ref}`)).toBe("1");
+      expect(g(workDir, "rev-list", "--count", "--merges", `origin/main..${ref}`)).toBe("0");
+    }
 
-    // ... and the telemetry the union exists to protect is preserved in full.
-    // This is the property the fix must not trade away.
-    expect(g(workDir, "show", "origin/heartbeat/lane:telemetry.json")).toBe(
+    // The queued overlap is resolved toward the newer aggregate. Changing
+    // prepare back to `-X ours` loses ticks 2..4 after tick 1 reaches main.
+    expect(g(workDir, "show", "origin/heartbeat/lane:telemetry.json")).toBe("tick 1\ntick 2\ntick 3\ntick 4\ntick 5");
+    expect(g(workDir, "show", "origin/heartbeat/lane-buffer:telemetry.json")).toBe(
       "tick 1\ntick 2\ntick 3\ntick 4\ntick 5",
     );
 
@@ -183,7 +243,7 @@ describe("the flush lane does not accumulate history (real git)", () => {
     const preimage = g(workDir, "log", "origin/main..origin/heartbeat/lane", "--format=%B");
     const modes = [...preimage.matchAll(/^Credential-Mode: (.+)$/gm)].map((m) => m[1]);
     expect([...new Set(modes)]).toEqual(["dedicated-agent"]);
-  }, 60_000);
+  }, 90_000);
 });
 
 // These lanes used to emit UNSIGNED commits, which the post-merge auditor could
@@ -216,24 +276,20 @@ describe("AgencySignature on telemetry flushes", () => {
     expect(agencySignatureBlock("society")).not.toContain("\n\n");
   });
 
-  test.each([...LANES])(
-    "%s: git itself parses every required key out of the flush message",
-    (lane) => {
-      // Not "the string contains the keys" — the PARSER is the witness. A block
-      // that reads correctly and does not parse is the exact failure mode
-      // (Trailer Contiguity Survival Failure).
-      const trailers = parsedTrailers(signedFlushMessage("metrics: append tick frame", lane));
-      for (const key of REQUIRED_KEYS) {
-        expect(trailers).toContain(`${key}:`);
-      }
-    },
-  );
+  test.each([...LANES])("%s: git itself parses every required key out of the flush message", (lane) => {
+    // Not "the string contains the keys" — the PARSER is the witness. A block
+    // that reads correctly and does not parse is the exact failure mode
+    // (Trailer Contiguity Survival Failure).
+    const trailers = parsedTrailers(signedFlushMessage("metrics: append tick frame", lane));
+    for (const key of REQUIRED_KEYS) {
+      expect(trailers).toContain(`${key}:`);
+    }
+  });
 
   test("MUTATION: a blank line inside the block makes git drop the keys above it", () => {
     // The falsifier for the contiguity test above — proves that test is testing
     // something, by constructing the failure it is meant to exclude.
-    const broken =
-      "metrics: append tick frame\n\nAgency-Signature-Version: 1\nAgent: x\n\nTask: none\n";
+    const broken = "metrics: append tick frame\n\nAgency-Signature-Version: 1\nAgent: x\n\nTask: none\n";
     const trailers = parsedTrailers(broken);
     expect(trailers).toContain("Task:");
     expect(trailers).not.toContain("Agency-Signature-Version:");
@@ -360,9 +416,7 @@ describe("telemetry-lane push credential (the held-gate cure)", () => {
         // secret evaluates to "" and falls through to GITHUB_TOKEN. A bare
         // `token: ${{ secrets.ZETA_TELEMETRY_FLUSH_TOKEN }}` would check out with
         // an empty credential and kill the lane — the #10850 outage shape.
-        expect(yaml).toContain(
-          "token: ${{ secrets.ZETA_TELEMETRY_FLUSH_TOKEN || secrets.GITHUB_TOKEN }}",
-        );
+        expect(yaml).toContain("token: ${{ secrets.ZETA_TELEMETRY_FLUSH_TOKEN || secrets.GITHUB_TOKEN }}");
         expect(yaml).toContain("persist-credentials: true");
       });
 
@@ -396,9 +450,7 @@ describe("telemetry-lane push credential (the held-gate cure)", () => {
       test("swaps ONLY on a credential answer", () => {
         // Swapping on ANY failure would let a network blip silently re-point the
         // credential and hide a different fault behind a credential story.
-        expect(preflight).toContain(
-          "denied to|Authentication failed|Invalid username or token|error: 403",
-        );
+        expect(preflight).toContain("denied to|Authentication failed|Invalid username or token|error: 403");
         expect(preflight).toContain("preflight inconclusive");
       });
 

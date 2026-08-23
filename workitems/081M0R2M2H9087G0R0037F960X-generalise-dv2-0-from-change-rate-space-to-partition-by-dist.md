@@ -26,7 +26,7 @@ Proposes that DV2.0's change-rate partition applies at **cluster granularity**, 
 
 Within-cluster change-rate disagreement is NOT a coherence precondition to check
 and refuse on — it is an **etymological lifecycle signal**, and the obstruction
-itself is the readout. Same move `anti-babel-preserve-reconcilability.md` already
+itself is the readout. Same move `.claude/rules/anti-babel-preserve-reconcilability.md` already
 makes for monodromy: _"that difference is information, not error"_. See design
 §2a for the proposed three-state table, its `proposed` register, and the confound
 (file churn / author count) that must be excluded before it is believed.
@@ -62,7 +62,7 @@ authority if freely declared, and **absence of an agenda is never evidence**.
 
 **Open, deliberately not settled here:** is naming attribution
 _required-for-role_ or _personal-and-frostable_
-(`privacy-budget-is-hard-money-earned-by-others.md`)? Frosting it would mean
+(`.claude/rules/privacy-budget-is-hard-money-earned-by-others.md`)? Frosting it would mean
 forgoing credit, since the naming eigenvector is how recognition accrues. A
-governance call on an always-loaded rule — `no-directives.md` says an agent brief
+governance call on an always-loaded rule — `.claude/rules/no-directives.md` says an agent brief
 is not authorization to decide one.
