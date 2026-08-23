@@ -1,0 +1,14 @@
+{
+  "id": "080d017cd80c8810a0130008de92ee48",
+  "at": "2026-08-23T17:11:22.769Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M0QSP0CF087G0R0007895QZ",
+    "type": "bug",
+    "title": "bun is pinned to a floating minor (bun = 1.3) so the resolver can change under an untouched tree",
+    "slug": "bun-is-pinned-to-a-floating-minor-bun-1-3-so-the-resolver-ca",
+    "priority": "P2",
+    "filename": "081M0QSP0CF087G0R0007895QZ-bun-is-pinned-to-a-floating-minor-bun-1-3-so-the-resolver-ca.md"
+  }
+}
