@@ -1,0 +1,12 @@
+{
+  "pr_number": 14261,
+  "archive_path": "docs/history/pr-reviews/PR-14261-research-qec-narrow-the-n-8-closure-to-its-actual-domain-aaron-s-second-adinkra-.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-23T15:51:12.888Z",
+  "schema_version": "v1",
+  "commit_sha": "5125dac7b3ba12f8f8496e14e0b053e32fb56cd0",
+  "title": "research(qec): narrow the N=8 closure to its actual domain -- Aaron's second adinkra family checked",
+  "state": "MERGED",
+  "merged_at": "2026-08-23T15:50:31Z",
+  "head_ref": "soraya/qec-closure-scope-addendum"
+}
