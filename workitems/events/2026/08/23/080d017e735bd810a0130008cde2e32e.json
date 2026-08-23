@@ -1,0 +1,14 @@
+{
+  "id": "080d017e735bd810a0130008cde2e32e",
+  "at": "2026-08-23T18:07:32.219Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M0QWWTVT087G0R0033V64QF",
+    "type": "task",
+    "title": "Prove IndexedDB revision policies in real Chromium tabs",
+    "slug": "prove-indexeddb-revision-policies-in-real-chromium-tabs",
+    "priority": "P2",
+    "filename": "081M0QWWTVT087G0R0033V64QF-prove-indexeddb-revision-policies-in-real-chromium-tabs.md"
+  }
+}

@@ -28,6 +28,7 @@
     "test:typescript": "bun test",
     "install:browser-smoke": "playwright install chromium",
     "test:browser-multitab": "bun ./src/Core.TypeScript/browser-node/browser-multitab-smoke.ts",
+    "test:browser-revision-policy": "bun ./src/Core.TypeScript/browser-node/browser-revision-policy-smoke.ts",
     "test:browser-pwa": "bun ./src/Core.TypeScript/browser-node/browser-pwa-smoke.ts",
     "test:browser-admission": "bun ./src/Core.TypeScript/browser-node/browser-execution-admission-smoke.ts",
     "run:zetadb-node": "bun ./src/Core.TypeScript/zetadb/scheduled-node.ts",

@@ -9,7 +9,7 @@ import {
   type BrowserCheckpointRecord,
   type BrowserCheckpointResult,
 } from "./browser-checkpoint-port";
-import { monotoneLastWriterWinsRevisionPolicy } from "../persistence/revision-policy";
+import { monotoneLastWriterWinsRevisionPolicy, type RevisionPolicyPort } from "../persistence/revision-policy";
 
 export interface NativeIndexedDbCheckpointFeedback {
   readonly severity: "backpressure" | "heat";
@@ -28,6 +28,8 @@ export type NativeIndexedDbCheckpointResult<T> =
 export interface NativeIndexedDbCheckpointOptions {
   readonly databaseName: string;
   readonly storeName: string;
+  /** Defaults to monotone LWW so existing browser checkpoint behavior is unchanged. */
+  readonly revisionPolicy?: RevisionPolicyPort;
 }
 
 interface NativeRequest {
@@ -261,7 +263,7 @@ export function openNativeIndexedDbCheckpointPort(
       }
 
       let closed = false;
-      const revisionPolicy = monotoneLastWriterWinsRevisionPolicy;
+      const revisionPolicy = options.revisionPolicy ?? monotoneLastWriterWinsRevisionPolicy;
       try {
         database.onversionchange = () => {
           try {
