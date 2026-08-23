@@ -1,0 +1,693 @@
+// Zeta PER-PORT rotate — THE REFUSALS, and three defects the happy path hides.
+//
+// `rotate.test.ts` proves the rotation WORKS. This file asks the other question: does it
+// REFUSE when it should, and does the safety property it advertises survive being applied
+// twice? A rotation that proceeds when it should refuse is the dangerous defect; a safety
+// property that holds at N=1 and fails at N=2 is the same defect wearing a green test.
+//
+// ┌─ ABSOLUTE SAFETY (sandbox-only) ──────────────────────────────────────────────────────┐
+// │ EVERY test runs ENTIRELY inside throwaway temp dirs (mktemp HOME + mktemp repoRoot).   │
+// │ The biometric door is ALWAYS a FAKE — `realBiometric()` is never imported here, so no  │
+// │ Touch ID prompt, no `sudo`, no /etc/pam.d read can occur from this file. NOTHING       │
+// │ touches ~/.config/zeta, 1Password, real `git`, or any real key. `ssh-keygen` runs for  │
+// │ real but is aimed wholly at the temp dirs. NO SECRET VALUE IS READ, PRINTED OR         │
+// │ ASSERTED ON — every key is compared by SHA256 FINGERPRINT ONLY.                        │
+// └────────────────────────────────────────────────────────────────────────────────────────┘
+//
+// ── WHAT IS PROVEN HERE (each test carries its own differential arm) ─────────────────────
+//   RR-1  absent biometric door ⇒ fail-closed          (arm: same call WITH a door rotates)
+//   RR-2  ONE approval covers all three ports          (arm: underlying-door call count)
+//   RR-3  a declined approval halts the run; a poisoned session replays without re-prompting
+//   RR-4  DEFECT P0 — ∅-blast-radius holds at N=1, FAILS at N=2 (arm: N=1 vs N=2, same assert)
+//   RR-5  DEFECT P0 — the operator readout asserts ∅-blast-radius on the run where it is false
+//   RR-6  DEFECT P1 — the retired-key slot is a single fixed path; rotate #2 destroys rotate #1's
+//   RR-7  DEFECT P1 — an unrecognised port silently dispatches to device-cert (open default)
+//   RR-8  apply-N: rotate is NOT idempotent across runs BY DESIGN; the key is standby-presence
+//
+// ── THE DEFECT PINS ARE SELF-CLEANING ────────────────────────────────────────────────────
+// RR-4 / RR-5 / RR-6 / RR-7 assert that the defect IS PRESENT. That is deliberate. The moment
+// `rotate.ts` is fixed these tests go RED and force their own inversion, so a fix cannot land
+// while a test still claims the broken behaviour is correct. A pin that could survive its own
+// fix would be the vacuity class. Tracked in `docs/BUGS.md`.
+//
+// ── WHAT THIS FILE CANNOT TEST (loudly, per the honest-limit discipline) ─────────────────
+// Printed at run time by RR-9 as well as stated here, because a limitation only in a comment
+// is a limitation nobody reads:
+//   * A REAL biometric. `macTouchIdAuth` needs a human finger on a sensor and a `sudo`
+//     transaction. Everything here injects a fake door, so what is proven is that the CALLER
+//     honours the door's verdict — never that a real Touch ID happened. `biometric.ts`
+//     `claimsBiometric()` is the repo's own statement of that gap.
+//   * A REAL HSM / PIV token. `open-authenticated-hsm-session` and
+//     `provision-or-reconfigure-hardware-token` are `biometric-ceremony` in `ceremony-gate.ts`
+//     and cannot be exercised without the physical device.
+//   * A REAL sshd. Certificate acceptance is asserted by the rule sshd applies — a cert
+//     verifies iff its signing-CA fingerprint is in `TrustedUserCAKeys` — which is the same
+//     oracle `rotate.ts`'s own header uses. It is not a live `ssh` handshake.
+//   * The LIVE estate. Nothing here rotates, revokes or re-issues any real key. The manual
+//     procedure for the live path is `tools/setup/persona-keys/ONBOARDING-RUNBOOK.md` plus the
+//     `--dry-run` default of `rotate-cli.ts`; it is a ceremony, not an agent action.
+//
+// Run: bun test rotate-refusals.test.ts   (from tools/setup/persona-keys)
+import { test, expect } from "bun:test";
+import { spawnSync } from "node:child_process";
+import { existsSync, mkdtempSync, readFileSync, renameSync, mkdirSync, rmSync, writeFileSync } from "node:fs";
+import { tmpdir } from "node:os";
+import { dirname, join } from "node:path";
+import { fileURLToPath } from "node:url";
+
+import { setupMachine } from "./setup-machine.ts";
+import { realEffects as machineRealFx, deviceKeyPath, machinePubPath } from "./machine.ts";
+import { caPrivateKeyPath, certPath, realEffects as caRealFx } from "./ca.ts";
+import { trustedUserCaKeysPath } from "./setup-cluster.ts";
+import { sessionBiometric, type BiometricAuth } from "./biometric.ts";
+import type { OnboardEffects } from "./onboard.ts";
+import type { GithubTrustEffects } from "./github-trust.ts";
+import {
+  rotate,
+  formatRotate,
+  ROTATE_PORTS,
+  retiredCaKeyPath,
+  retiredMachineKeyPath,
+  standbyMachineKeyPath,
+  type RotateEffects,
+  type RotatePort,
+} from "./rotate.ts";
+
+const USER = "tester";
+const HOST = "refusal-host";
+
+// ── sandbox ──────────────────────────────────────────────────────────────────────────────
+
+interface Sandbox {
+  readonly home: string;
+  readonly repoRoot: string;
+  readonly cleanup: () => void;
+}
+
+function makeSandbox(): Sandbox {
+  const home = mkdtempSync(join(tmpdir(), "zeta-rr-home-"));
+  const repoRoot = mkdtempSync(join(tmpdir(), "zeta-rr-repo-"));
+  return {
+    home,
+    repoRoot,
+    cleanup: () => {
+      rmSync(home, { recursive: true, force: true });
+      rmSync(repoRoot, { recursive: true, force: true });
+    },
+  };
+}
+
+/** Every asserted path MUST be under the sandbox. Drift toward real state ⇒ FAIL LOUD. */
+function assertContained(sb: Sandbox, ...paths: string[]): void {
+  for (const p of paths) {
+    expect(p.startsWith(tmpdir())).toBe(true);
+    expect(p.startsWith(sb.home) || p.startsWith(sb.repoRoot)).toBe(true);
+  }
+}
+
+/** A FAKE approving door. Records prompts so a test can count the human-facing approvals. */
+function approving(prompts: string[]): BiometricAuth {
+  return async (prompt: string) => {
+    prompts.push(prompt);
+    return { ok: true, platform: "macos-touchid", factor: "biometric" };
+  };
+}
+
+/** A FAKE declining door. */
+function declining(prompts: string[]): BiometricAuth {
+  return async (prompt: string) => {
+    prompts.push(prompt);
+    return { ok: false, platform: "macos-touchid", reason: "test decline" };
+  };
+}
+
+function rotateEffects(staged: { repoRoot: string; relPath: string }[]): RotateEffects {
+  const machine = machineRealFx();
+  return {
+    exists: (p) => existsSync(p),
+    readText: (p) => readFileSync(p, "utf8"),
+    writeText: (p, c) => {
+      mkdirSync(dirname(p), { recursive: true });
+      writeFileSync(p, c);
+    },
+    mkdirp: (p) => mkdirSync(p, { recursive: true }),
+    genEd25519: (keyPath, comment) => machine.genEd25519(keyPath, comment),
+    movePrivate: (from, to) => {
+      for (const suffix of ["", ".pub"]) {
+        const src = from + suffix;
+        const dst = to + suffix;
+        if (existsSync(src)) {
+          mkdirSync(dirname(dst), { recursive: true });
+          renameSync(src, dst);
+        }
+      }
+    },
+    ca: caRealFx(),
+    // NEVER shells real git, NEVER pushes — records the path and returns "staged".
+    stageRepoWrite: (repoRoot, relPath) => {
+      staged.push({ repoRoot, relPath });
+      return true;
+    },
+  };
+}
+
+/** Provision a COMPLETE N+M setup (CA + machine key + cert) through the REAL setup path. */
+async function provision(sb: Sandbox): Promise<void> {
+  const session = sessionBiometric(approving([]));
+  const trust: GithubTrustEffects = {
+    exists: () => false,
+    readText: () => "",
+    listDir: () => [],
+    fetchKeys: async () => "",
+    fetchGpg: async () => "",
+  };
+  const fx: OnboardEffects = {
+    machine: { ...machineRealFx(), hostname: () => HOST },
+    trust,
+    ca: caRealFx(),
+    biometricAuth: session.door,
+  };
+  const res = await setupMachine(fx, session, {
+    user: USER,
+    repoRoot: sb.repoRoot,
+    home: sb.home,
+    hostname: HOST,
+    caConfigured: false,
+  });
+  expect(res.onboard.cert?.action).toBe("signed");
+  expect(existsSync(caPrivateKeyPath(sb.home))).toBe(true);
+  expect(existsSync(deviceKeyPath(sb.home))).toBe(true);
+}
+
+// ── fingerprint helpers — PUBLIC halves only, never a secret byte ─────────────────────────
+
+function pubFingerprint(pubPath: string): string {
+  const r = spawnSync("ssh-keygen", ["-l", "-f", pubPath], { encoding: "utf8" });
+  expect(r.status).toBe(0);
+  const m = /SHA256:\S+/.exec(r.stdout);
+  expect(m).not.toBeNull();
+  return m![0];
+}
+
+/** Fingerprint a single pubkey LINE by writing it under the sandbox and running ssh-keygen. */
+function fingerprintOfPubLine(line: string, sb: Sandbox): string {
+  const tmp = join(sb.home, ".rr-fp-probe.pub");
+  writeFileSync(tmp, line.trim() + "\n");
+  const fp = pubFingerprint(tmp);
+  rmSync(tmp, { force: true });
+  return fp;
+}
+
+/** The set sshd would consult: every CA fingerprint in `TrustedUserCAKeys`. */
+function trustedCaFingerprints(sb: Sandbox): string[] {
+  return readFileSync(trustedUserCaKeysPath(sb.repoRoot, USER), "utf8")
+    .split("\n")
+    .filter((l) => l.trim().length > 0 && !l.trimStart().startsWith("#"))
+    .map((l) => fingerprintOfPubLine(l, sb));
+}
+
+/** The rule sshd applies: a cert verifies iff its signing CA is in the trusted set. */
+function certSigningCaFingerprint(certFilePath: string): string {
+  const r = spawnSync("ssh-keygen", ["-L", "-f", certFilePath], { encoding: "utf8" });
+  expect(r.status).toBe(0);
+  const m = /Signing CA:\s+\S+\s+(SHA256:\S+)/.exec(r.stdout);
+  expect(m).not.toBeNull();
+  return m![1]!;
+}
+
+interface RunOpts {
+  readonly ports?: readonly RotatePort[];
+  readonly door?: BiometricAuth | undefined;
+  readonly wireDoor?: boolean;
+}
+
+async function runRotate(
+  sb: Sandbox,
+  o: RunOpts = {},
+): Promise<{ res: Awaited<ReturnType<typeof rotate>>; staged: { repoRoot: string; relPath: string }[] }> {
+  const staged: { repoRoot: string; relPath: string }[] = [];
+  const res = await rotate(rotateEffects(staged), {
+    user: USER,
+    ca: USER,
+    repoRoot: sb.repoRoot,
+    home: sb.home,
+    hostname: HOST,
+    ports: o.ports ?? ROTATE_PORTS,
+    dryRun: false,
+    confirm: true,
+    // `wireDoor:false` OMITS the key entirely — the "operator forgot to wire the gate" case.
+    ...(o.wireDoor === false ? {} : { biometricAuth: o.door ?? approving([]) }),
+  });
+  return { res, staged };
+}
+
+// ══════════════════════════════════════════════════════════════════════════════════════════
+// RR-1 — FAIL-CLOSED ON AN ABSENT DOOR. `rotate.test.ts` covers a door that DECLINES; this is
+// the different path where no door was wired at all. Both arms run in one test, so the
+// assertion cannot pass vacuously: no-door must skip, with-door must rotate.
+// ══════════════════════════════════════════════════════════════════════════════════════════
+test("RR-1: a confirmed rotation with NO biometric door wired rotates nothing (and WITH one, it does)", async () => {
+  const sb = makeSandbox();
+  try {
+    await provision(sb);
+    const caBefore = pubFingerprint(caPrivateKeyPath(sb.home) + ".pub");
+
+    // ARM A — the gate was never wired. Fail-closed.
+    const a = await runRotate(sb, { wireDoor: false });
+    expect(a.res.hadWork).toBe(true);
+    expect(a.res.biometric?.ok).toBe(false);
+    expect(a.res.biometric?.platform).toBe("unsupported");
+    for (const port of ROTATE_PORTS) {
+      expect(a.res.rotations.find((x) => x.port === port)?.action).toBe("skipped-biometric");
+    }
+    expect(a.staged.length).toBe(0);
+    // Nothing moved on disk: the Active CA is byte-for-byte the same key.
+    expect(pubFingerprint(caPrivateKeyPath(sb.home) + ".pub")).toBe(caBefore);
+    expect(existsSync(standbyMachineKeyPath(sb.home))).toBe(false);
+
+    // ARM B — the SAME call with a door wired DOES rotate. This is what makes ARM A a check.
+    const b = await runRotate(sb, { ports: ["ca-key"] });
+    expect(b.res.biometric?.ok).toBe(true);
+    expect(b.res.rotations.find((x) => x.port === "ca-key")?.action).toBe("rotated");
+    expect(pubFingerprint(caPrivateKeyPath(sb.home) + ".pub")).not.toBe(caBefore);
+  } finally {
+    sb.cleanup();
+  }
+});
+
+// ══════════════════════════════════════════════════════════════════════════════════════════
+// RR-2 — ONE FINGERPRINT FOR THE WHOLE ROTATION. `rotate.test.ts` asserts this for a single
+// port; the property that matters is that it holds across ALL THREE, including the device-cert
+// re-sign which is itself a gated sub-op riding the same session door.
+// ══════════════════════════════════════════════════════════════════════════════════════════
+test("RR-2: one approval covers all three ports — the underlying human door is called exactly once", async () => {
+  const sb = makeSandbox();
+  try {
+    await provision(sb);
+    const prompts: string[] = [];
+    const session = sessionBiometric(approving(prompts));
+    const staged: { repoRoot: string; relPath: string }[] = [];
+    const res = await rotate(rotateEffects(staged), {
+      user: USER,
+      ca: USER,
+      repoRoot: sb.repoRoot,
+      home: sb.home,
+      hostname: HOST,
+      ports: ROTATE_PORTS,
+      dryRun: false,
+      confirm: true,
+      biometricAuth: session.door,
+    });
+
+    // All three ports actually did work — otherwise "one prompt" would be trivially true.
+    expect(res.rotations.length).toBe(3);
+    for (const r of res.rotations) expect(["rotated", "in-overlap"]).toContain(r.action);
+    expect(staged.length).toBeGreaterThan(0);
+
+    // THE INVARIANT: the human-facing door fired once, not once per port, not once per sub-op.
+    expect(session.underlyingCalls()).toBe(1);
+    expect(prompts.length).toBe(1);
+    // ...and the one prompt NAMES what is being approved, including the ports.
+    for (const port of ROTATE_PORTS) expect(prompts[0]).toContain(port);
+    expect(prompts[0]).toContain(HOST);
+  } finally {
+    sb.cleanup();
+  }
+});
+
+// ══════════════════════════════════════════════════════════════════════════════════════════
+// RR-3 — A REFUSAL HALTS THE RUN, AND A POISONED SESSION STAYS POISONED.
+//
+// HONEST SCOPE, measured rather than assumed. The first arm proves the top-level halt: a
+// declined approval stops the run before ANY port is touched. It does NOT exercise session
+// poisoning of the device-cert sub-op, because `rotate()` returns before that sub-op is
+// reached — deleting the session cache entirely leaves this arm GREEN (verified by mutation:
+// removing `if (cached !== undefined) return cached` from `sessionBiometric` does not fail
+// it; what does fail it is `rotate()` ignoring the verdict). Claiming the cache was under
+// test here would have been a passing assertion mistaken for a verification.
+//
+// So the second arm exercises the replay directly: a session already declined ONCE is handed
+// to `rotate()`, which must receive the cached refusal WITHOUT a second human dialog.
+// ══════════════════════════════════════════════════════════════════════════════════════════
+test("RR-3: a declined approval halts the run, and an already-declined session replays without re-prompting", async () => {
+  const sb = makeSandbox();
+  try {
+    await provision(sb);
+    const certFile = certPath(machinePubPath(sb.repoRoot, HOST));
+    const certBefore = readFileSync(certFile, "utf8");
+
+    const prompts: string[] = [];
+    const session = sessionBiometric(declining(prompts));
+    const staged: { repoRoot: string; relPath: string }[] = [];
+    const res = await rotate(rotateEffects(staged), {
+      user: USER,
+      ca: USER,
+      repoRoot: sb.repoRoot,
+      home: sb.home,
+      hostname: HOST,
+      ports: ROTATE_PORTS,
+      dryRun: false,
+      confirm: true,
+      biometricAuth: session.door,
+    });
+
+    expect(res.biometric?.ok).toBe(false);
+    for (const port of ROTATE_PORTS) {
+      expect(res.rotations.find((x) => x.port === port)?.action).toBe("skipped-biometric");
+    }
+    // ONE refusal, never a second dialog to get past it.
+    expect(session.underlyingCalls()).toBe(1);
+    expect(prompts.length).toBe(1);
+    // Nothing staged, and the cert on disk is unchanged (not merely "not re-signed").
+    expect(staged.length).toBe(0);
+    expect(readFileSync(certFile, "utf8")).toBe(certBefore);
+    expect(existsSync(standbyMachineKeyPath(sb.home))).toBe(false);
+
+    // ── ARM 2: THE REPLAY. A session declined ONCE, before rotate() is even called. rotate()
+    // must get the cached refusal and the human must not see a second dialog. ──────────────
+    const p2: string[] = [];
+    const poisoned = sessionBiometric(declining(p2));
+    const first = await poisoned.door("some earlier gated op");
+    expect(first.ok).toBe(false);
+    expect(poisoned.underlyingCalls()).toBe(1);
+
+    const staged2: { repoRoot: string; relPath: string }[] = [];
+    const replayed = await rotate(rotateEffects(staged2), {
+      user: USER,
+      ca: USER,
+      repoRoot: sb.repoRoot,
+      home: sb.home,
+      hostname: HOST,
+      ports: ROTATE_PORTS,
+      dryRun: false,
+      confirm: true,
+      biometricAuth: poisoned.door,
+    });
+    expect(replayed.biometric?.ok).toBe(false);
+    expect(staged2.length).toBe(0);
+    // STILL one underlying call: the refusal was replayed, never re-asked.
+    expect(poisoned.underlyingCalls()).toBe(1);
+    expect(p2.length).toBe(1);
+
+    // ── ARM 3: the same suite WITH an approving door does stage and does move the cert — so
+    // the assertions above are discriminating, not describing a run that never got started. ──
+    const ok = await runRotate(sb, { ports: ROTATE_PORTS });
+    expect(ok.staged.length).toBeGreaterThan(0);
+    expect(readFileSync(certFile, "utf8")).not.toBe(certBefore);
+  } finally {
+    sb.cleanup();
+  }
+});
+
+// ══════════════════════════════════════════════════════════════════════════════════════════
+// RR-4 — DEFECT (P0, docs/BUGS.md "the CA overlap window collapses on the second rotation").
+//
+// `rotate.ts`'s stated WHY-IT-IS-SAFE is ∅-blast-radius: "because >=2 keys are valid across the
+// swap, NOTHING the rotated key protects breaks", and for the CA it is concrete — a device cert
+// verifies iff its signing-CA fingerprint is in `TrustedUserCAKeys`, so keeping BOTH CA pubkeys
+// through the overlap keeps every existing cert verifying. That is asserted by rotate.test.ts.
+//
+// It is asserted at N=1 ONLY. `rotateCaKey` writes the trust set as exactly
+// `[oldCaPub, newCaPub]` where `oldCaPub` is read from the CURRENT Active key — it never unions
+// with the CA lines already in the file. So the second rotation writes [CA2, CA3] and CA1 is
+// gone, while the cert it signed is still well inside its validity window.
+//
+// This test carries its own discrimination: THE SAME ASSERTION is made after rotation #1 (where
+// it holds) and after rotation #2 (where it does not). A vacuous version could not do both.
+// ══════════════════════════════════════════════════════════════════════════════════════════
+test("RR-4 DEFECT: the CA overlap holds at N=1 and COLLAPSES at N=2 — a still-valid cert's signer is dropped", async () => {
+  const sb = makeSandbox();
+  try {
+    await provision(sb);
+    const certFile = certPath(machinePubPath(sb.repoRoot, HOST));
+    // The thing protected: a cert signed by CA1, well inside its validity window.
+    const protectedBy = certSigningCaFingerprint(certFile);
+    const ca1 = pubFingerprint(caPrivateKeyPath(sb.home) + ".pub");
+    expect(protectedBy).toBe(ca1);
+
+    // ── ROTATION #1 — the property HOLDS. (This arm is what makes the next arm a finding.) ──
+    const r1 = await runRotate(sb, { ports: ["ca-key"] });
+    expect(r1.res.rotations.find((x) => x.port === "ca-key")?.action).toBe("rotated");
+    const ca2 = pubFingerprint(caPrivateKeyPath(sb.home) + ".pub");
+    expect(ca2).not.toBe(ca1);
+    const after1 = trustedCaFingerprints(sb);
+    expect(after1).toContain(ca1); // the retiring CA, still trusted
+    expect(after1).toContain(ca2); // the new signer
+    expect(after1).toContain(protectedBy); // ∅-blast-radius: the cert still verifies
+
+    // ── ROTATION #2 — the IDENTICAL property FAILS. ─────────────────────────────────────────
+    const r2 = await runRotate(sb, { ports: ["ca-key"] });
+    expect(r2.res.rotations.find((x) => x.port === "ca-key")?.action).toBe("rotated");
+    const ca3 = pubFingerprint(caPrivateKeyPath(sb.home) + ".pub");
+    const after2 = trustedCaFingerprints(sb);
+
+    expect(after2).toContain(ca2);
+    expect(after2).toContain(ca3);
+    // THE DEFECT. CA1 is dropped with no window, no finalize step, and no expiry check on the
+    // certs it signed. `rotate.ts` says the old line "is removed only AFTER the window (a later
+    // teardown / a follow-up `rotate --finalize`)" — this is that removal happening immediately,
+    // as a side effect of an unrelated rotation.
+    expect(after2).not.toContain(ca1);
+    // Stated as the consequence rather than the mechanism: the cert no longer verifies, because
+    // its signing CA is not in the set sshd consults.
+    expect(after2).not.toContain(protectedBy);
+    // Exactly two CA lines survive — "the two most recent", not "the ones in the overlap".
+    expect(after2.length).toBe(2);
+
+    // ...and the run that did this reported success, not a warning.
+    expect(r2.res.rotations.find((x) => x.port === "ca-key")?.detail).toContain("existing certs still verify");
+
+    assertContained(sb, certFile, trustedUserCaKeysPath(sb.repoRoot, USER));
+  } finally {
+    sb.cleanup();
+  }
+});
+
+// ══════════════════════════════════════════════════════════════════════════════════════════
+// RR-5 — DEFECT (P0, same root cause as RR-4, separate because it is the part that costs trust).
+// `formatRotate` prints the ∅-blast-radius guarantee on EVERY approved run. An assertion that
+// cannot be false is not an assertion; here it is printed on the exact run that falsifies it.
+// ══════════════════════════════════════════════════════════════════════════════════════════
+test("RR-5 DEFECT: the operator readout asserts ∅-blast-radius unconditionally — including on the run that breaks it", async () => {
+  const sb = makeSandbox();
+  try {
+    await provision(sb);
+    const certFile = certPath(machinePubPath(sb.repoRoot, HOST));
+    const protectedBy = certSigningCaFingerprint(certFile);
+
+    await runRotate(sb, { ports: ["ca-key"] });
+    const second = await runRotate(sb, { ports: ["ca-key"] });
+    const readout = formatRotate(second.res);
+
+    // The guarantee is printed...
+    expect(readout).toContain("∅-blast-radius");
+    expect(readout).toContain("nothing protected breaks");
+    // ...on a run after which the protected cert's signer is NOT trusted. Both facts, one run.
+    expect(trustedCaFingerprints(sb)).not.toContain(protectedBy);
+
+    // Discrimination: the readout is byte-identical on the FIRST rotation, where the claim is
+    // true. So the line carries no information about whether the property held — which is the
+    // defect. (Same input shape, same output, opposite truth.)
+    const sb2 = makeSandbox();
+    try {
+      await provision(sb2);
+      const first = await runRotate(sb2, { ports: ["ca-key"] });
+      const firstReadout = formatRotate(first.res);
+      const guaranteeLine = (s: string): string =>
+        s.split("\n").find((l) => l.includes("∅-blast-radius")) ?? "";
+      expect(guaranteeLine(firstReadout)).toBe(guaranteeLine(readout));
+      expect(guaranteeLine(readout).length).toBeGreaterThan(0);
+    } finally {
+      sb2.cleanup();
+    }
+  } finally {
+    sb.cleanup();
+  }
+});
+
+// ══════════════════════════════════════════════════════════════════════════════════════════
+// RR-6 — DEFECT (P1, docs/BUGS.md "rotate overwrites the previously retired private key").
+// `retiredCaKeyPath` / `retiredMachineKeyPath` are FIXED single slots, and `movePrivate` renames
+// onto them. Rotation #2 therefore destroys rotation #1's retired private key — irreversibly,
+// unattended, with no ceremony. `ceremony-gate.ts` classifies `export-or-destroy-key` as
+// `biometric-ceremony` precisely because irreversibility is a gated class here; this destruction
+// rides in on an operation classified `rotate-leaf-signing-key` / `rotate-node-root-key`.
+// ══════════════════════════════════════════════════════════════════════════════════════════
+test("RR-6 DEFECT: the retired-key slot is one fixed path — rotation #2 destroys rotation #1's retired key", async () => {
+  const sb = makeSandbox();
+  try {
+    await provision(sb);
+    const ca1 = pubFingerprint(caPrivateKeyPath(sb.home) + ".pub");
+    const mk1 = pubFingerprint(deviceKeyPath(sb.home) + ".pub");
+
+    await runRotate(sb, { ports: ["ca-key", "machine-key"] });
+    // After #1 the retired slots hold the ORIGINAL keys. (The arm that makes #2 meaningful.)
+    expect(pubFingerprint(retiredCaKeyPath(sb.home) + ".pub")).toBe(ca1);
+    expect(pubFingerprint(retiredMachineKeyPath(sb.home) + ".pub")).toBe(mk1);
+    const ca2 = pubFingerprint(caPrivateKeyPath(sb.home) + ".pub");
+    const mk2 = pubFingerprint(deviceKeyPath(sb.home) + ".pub");
+
+    await runRotate(sb, { ports: ["ca-key", "machine-key"] });
+    // THE DEFECT: the slot now holds generation 2. Generation 1 is gone from disk entirely —
+    // there is no `.previous.1`, no timestamped archive, no refusal.
+    expect(pubFingerprint(retiredCaKeyPath(sb.home) + ".pub")).toBe(ca2);
+    expect(pubFingerprint(retiredCaKeyPath(sb.home) + ".pub")).not.toBe(ca1);
+    expect(pubFingerprint(retiredMachineKeyPath(sb.home) + ".pub")).toBe(mk2);
+    expect(pubFingerprint(retiredMachineKeyPath(sb.home) + ".pub")).not.toBe(mk1);
+
+    assertContained(sb, retiredCaKeyPath(sb.home), retiredMachineKeyPath(sb.home));
+  } finally {
+    sb.cleanup();
+  }
+});
+
+// ══════════════════════════════════════════════════════════════════════════════════════════
+// RR-7 — DEFECT (P1, docs/BUGS.md "rotate()'s port dispatch has an open default").
+//
+// `ceremony-gate.ts` earns its closed-command-set property by construction: its `switch` has no
+// `default`, so adding an operation is a TYPE ERROR until it is classified. `rotate.ts` uses
+// if-chains in BOTH `planPort` and `rotatePort` with an implicit device-cert default, so an
+// unrecognised port is not refused — it is silently rotated as a device cert, reported as
+// `rotated`, and staged for a PR. The roster check exists only in `rotate-cli.ts` and
+// `rotate-cluster-cli.ts`; the mechanism itself has none, so any programmatic caller gets it.
+//
+// Discrimination is the two arms: a RECOGNISED port rotates the CA, an UNRECOGNISED one rotates
+// the device cert. Different inputs, different outputs — the test cannot pass by accident.
+// ══════════════════════════════════════════════════════════════════════════════════════════
+test("RR-7 DEFECT: an unrecognised port is not refused — it silently dispatches to device-cert", async () => {
+  const sb = makeSandbox();
+  try {
+    await provision(sb);
+    const caBefore = pubFingerprint(caPrivateKeyPath(sb.home) + ".pub");
+    const certFile = certPath(machinePubPath(sb.repoRoot, HOST));
+    const certBefore = readFileSync(certFile, "utf8");
+
+    // ARM A — a RECOGNISED port. The CA moves; the cert is untouched.
+    const good = await runRotate(sb, { ports: ["ca-key"] });
+    expect(good.res.rotations.map((r) => r.port)).toEqual(["ca-key"]);
+    expect(pubFingerprint(caPrivateKeyPath(sb.home) + ".pub")).not.toBe(caBefore);
+    const caAfterGood = pubFingerprint(caPrivateKeyPath(sb.home) + ".pub");
+
+    // ARM B — an UNRECOGNISED port. A hyphen/underscore typo, or any future union member.
+    const certBeforeB = readFileSync(certFile, "utf8");
+    const bad = await runRotate(sb, { ports: ["ca_key" as RotatePort] });
+
+    // THE DEFECT. Not refused, not reported as unknown — dispatched to a DIFFERENT port.
+    expect([...bad.res.ports] as string[]).toEqual(["ca_key"]);
+    expect(bad.res.rotations.length).toBe(1);
+    expect(bad.res.rotations[0]!.port).toBe("device-cert");
+    expect(bad.res.rotations[0]!.action).toBe("rotated");
+    expect(bad.staged.length).toBeGreaterThan(0);
+
+    // The CA the operator asked for did NOT move — so an operator rotating a suspected-compromised
+    // CA is told "rotated" while the compromised key stays Active.
+    expect(pubFingerprint(caPrivateKeyPath(sb.home) + ".pub")).toBe(caAfterGood);
+    // What actually moved is the device cert.
+    expect(readFileSync(certFile, "utf8")).not.toBe(certBeforeB);
+    expect(certBefore.length).toBeGreaterThan(0);
+
+    // And the ONE biometric prompt named the port the operator asked for, not the one performed —
+    // so the human's approval and the machine's action describe different acts.
+    const prompts: string[] = [];
+    const session = sessionBiometric(approving(prompts));
+    await rotate(rotateEffects([]), {
+      user: USER,
+      ca: USER,
+      repoRoot: sb.repoRoot,
+      home: sb.home,
+      hostname: HOST,
+      ports: ["ca_key" as RotatePort],
+      dryRun: false,
+      confirm: true,
+      biometricAuth: session.door,
+    });
+    expect(prompts.length).toBe(1);
+    expect(prompts[0]).toContain("ca_key"); // approved: "ca_key"
+    expect(prompts[0]).not.toContain("device-cert"); // performed: device-cert
+  } finally {
+    sb.cleanup();
+  }
+});
+
+// ══════════════════════════════════════════════════════════════════════════════════════════
+// RR-8 — APPLY-N, NAMED HONESTLY. Discipline #6 asks apply-N == apply-once EFFECT, "or name the
+// non-idempotence". `rotate` is deliberately NOT idempotent across whole runs: each confirmed run
+// is a FRESH rotation. The idempotency key is the STANDBY's presence — a run that finds a standby
+// RESUMES that overlap instead of minting a second. This pins both halves so neither can be
+// mistaken for the other later.
+// ══════════════════════════════════════════════════════════════════════════════════════════
+test("RR-8: rotate is NOT idempotent across runs BY DESIGN — the idempotency key is standby-presence", async () => {
+  const sb = makeSandbox();
+  try {
+    await provision(sb);
+
+    // ── NOT idempotent across runs: apply-3 yields three DISTINCT Active machine keys. ──
+    const seen: string[] = [pubFingerprint(deviceKeyPath(sb.home) + ".pub")];
+    for (let i = 0; i < 3; i++) {
+      const r = await runRotate(sb, { ports: ["machine-key"] });
+      expect(r.res.rotations[0]!.action).toBe("rotated");
+      seen.push(pubFingerprint(deviceKeyPath(sb.home) + ".pub"));
+    }
+    expect(new Set(seen).size).toBe(4); // original + 3 rotations, all different
+
+    // ── Idempotent ON THE KEY: with a standby present, a re-run RESUMES rather than re-mints. ──
+    const fx = rotateEffects([]);
+    fx.mkdirp(dirname(standbyMachineKeyPath(sb.home)));
+    fx.genEd25519(standbyMachineKeyPath(sb.home), `${HOST} (zeta-machine)`);
+    const stagedStandby = pubFingerprint(standbyMachineKeyPath(sb.home) + ".pub");
+
+    const resume = await runRotate(sb, { ports: ["machine-key"] });
+    expect(resume.res.rotations[0]!.action).toBe("in-overlap");
+    // The promoted Active IS the pre-staged standby — no second standby was minted.
+    expect(pubFingerprint(deviceKeyPath(sb.home) + ".pub")).toBe(stagedStandby);
+    // Discrimination: the immediately preceding run (no standby) minted a NEW key instead.
+    expect(stagedStandby).not.toBe(seen[seen.length - 1]);
+  } finally {
+    sb.cleanup();
+  }
+});
+
+// ══════════════════════════════════════════════════════════════════════════════════════════
+// RR-9 — THE HONEST LIMIT, PRINTED. A limitation that lives only in a comment is a limitation
+// nobody reads, so this emits it on every run. It is not a vacuous test: it ASSERTS the
+// containment that makes the limitation true — this suite never reaches a real door.
+// ══════════════════════════════════════════════════════════════════════════════════════════
+test("RR-9: what this suite CANNOT prove — asserted by construction and printed on every run", () => {
+  const source = readFileSync(fileURLToPath(import.meta.url), "utf8");
+  // The claim "no real door can fire from this file" is CHECKED, not asserted. Only the IMPORT
+  // statements are inspected — prose mentioning a symbol is not a call site, and checking the
+  // whole file would fail on this very comment.
+  const imports = source.split("\n").filter((l) => l.startsWith("import ")).join("\n");
+  expect(imports).toContain("sessionBiometric");
+  // The real doors and every surface that could reach `sudo` / /etc/pam.d are NOT imported.
+  for (const forbidden of ["realBiometric", "macTouchIdAuth", "realSudoGateEffects", "analyzeSudoAuthChain"]) {
+    expect(imports).not.toContain(forbidden);
+  }
+  // Every door this file constructs is a fake returning a literal verdict.
+  expect(source).toContain("platform: \"macos-touchid\"");
+
+  process.stdout.write(
+    [
+      "",
+      "  ┌─ NOT PROVEN BY THIS SUITE (live material / physical device required) ───────────┐",
+      "  │ 1. A REAL biometric. Every door here is a fake; what is proven is that the      │",
+      "  │    CALLER honours the door's verdict, never that a finger touched a sensor.     │",
+      "  │    See biometric.ts `claimsBiometric()` — on a stock macOS sudo stack a         │",
+      "  │    fingerprint, a smart-card PIN and a password are indistinguishable, so even  │",
+      "  │    a live run reports factor `unattributed`, not `biometric`.                   │",
+      "  │    MANUAL: run the rotate CLI with --confirm on a host whose /etc/pam.d/sudo    │",
+      "  │    has pam_tid.so as the ONLY satisfier, and confirm the readout says           │",
+      "  │    `factor established: biometric`. Nothing here can substitute for that.       │",
+      "  │ 2. A REAL HSM / PIV token. `open-authenticated-hsm-session` and                 │",
+      "  │    `provision-or-reconfigure-hardware-token` are biometric-ceremony in          │",
+      "  │    ceremony-gate.ts and need the physical device.                               │",
+      "  │ 3. A REAL sshd handshake. Cert acceptance is asserted by the rule sshd applies  │",
+      "  │    (signing-CA fingerprint present in TrustedUserCAKeys), not by connecting.    │",
+      "  │ 4. THE LIVE ESTATE. Nothing here rotates, revokes or re-issues any real key.    │",
+      "  │    The live path is a ceremony, not an agent action: the rotate CLI defaults to │",
+      "  │    a dry run, and the operator procedure is ONBOARDING-RUNBOOK.md.              │",
+      "  └─────────────────────────────────────────────────────────────────────────────────┘",
+      "",
+    ].join("\n"),
+  );
+});

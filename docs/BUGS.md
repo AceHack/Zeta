@@ -35,13 +35,108 @@ tempted to ship.
 
 ## P0 — ship-blockers
 
-*None currently.* (The `LossyUdpChannel` NACK amplification entry was fixed 2026-08-13 — bounded by
+(The `LossyUdpChannel` NACK amplification entry was fixed 2026-08-13 — bounded by
 `MAX_NACK_GAP`, work-item `081KZYP1S96087G0R002G8XQZP`. Its **unfixed residual** did not vanish with
 it and is filed below as its own P1/P2 rows, not folded into a completed item.)
+
+### A SECOND `rotate --ports ca-key` drops the FIRST CA from the trust set, breaking every cert it signed
+
+- **Site:** `tools/setup/persona-keys/rotate.ts` `rotateCaKey` — the
+  `renderTrustSet(opts.repoRoot, opts.ca, [oldCaPub, newCaPub], peers)` call
+- **Found:** 2026-08-23 by Mateo (security-researcher), auditing the rotation refusal paths
+- **Severity:** P0 — the module's stated reason it is safe to run is false after the first use,
+  and the failure mode is fleet-wide cert rejection during exactly the incident that motivates
+  a second rotation
+- **Symptom:** `rotateCaKey` writes the trust set as literally `[currentActive, new]`. It never
+  unions with the self-CA lines already in `trusted-user-ca-keys.pub`. So rotation #1 yields
+  `[CA1, CA2]` (correct — the overlap) and rotation #2 yields `[CA2, CA3]`, silently evicting
+  **CA1 while device certs it signed are still well inside their `-V` validity window**. A cert
+  verifies iff its signing-CA fingerprint is in `TrustedUserCAKeys`, so every machine that has
+  not re-signed since rotation #1 stops verifying. `rotate.ts`'s own header states the invariant
+  this breaks — *"because >=2 keys are valid across the swap, NOTHING the rotated key protects
+  breaks"* — and its comment says the old line "is removed only AFTER the window (a later
+  teardown / a follow-up `rotate --finalize`)". This is that removal firing immediately, as a
+  side effect of an unrelated rotation, with no window and no expiry check. Reachable from the
+  shipped CLI with no typo and no unusual flags: run `rotate-cli.ts --ports ca-key --confirm`
+  twice. `rotate.test.ts`'s "CA-KEY + ∅-BLAST-RADIUS" test rotates ONCE, so the property is
+  pinned exactly where it holds.
+- **Fix:** union the incoming pair with every self-CA line already present, and give the overlap
+  a **closing** bound rather than an unbounded set — a CA line may be dropped only once no
+  unexpired cert names it as signer (or by an explicit `--finalize` that says so). Both halves
+  are needed: retaining forever turns every retired CA into a permanent trust root, which is the
+  opposite defect.
+- **Repro / pin:** `tools/setup/persona-keys/rotate-refusals.test.ts` RR-4 — asserts the
+  IDENTICAL property after rotation #1 (holds) and rotation #2 (fails), so it cannot pass
+  vacuously. The pin is self-cleaning: it goes RED the moment the fix lands.
+- **Who:** architect (Kenji)
 
 ---
 
 ## P1 — serious
+
+### `formatRotate` prints the ∅-blast-radius guarantee unconditionally — including on the run that falsifies it
+
+- **Site:** `tools/setup/persona-keys/rotate.ts` `formatRotate` — the
+  `"∅-blast-radius: both old + new keys/CAs are valid through the overlap — nothing protected
+  breaks."` line, and the per-port `detail` string in `rotateCaKey`
+- **Found:** 2026-08-23 by Mateo (security-researcher)
+- **Severity:** P1 (the data defect is the P0 above; this is the half that costs trust)
+- **Symptom:** both strings are emitted on every approved run, with no reference to whether the
+  property actually held. On the second CA rotation the readout is byte-identical to the first
+  while the trusted set no longer contains the existing certs' signer. An assertion that cannot
+  be false is not an assertion — this is the vacuity class in an operator-facing surface, which
+  is the specific thing Aaron named as the obstacle to human-AI trust.
+- **Fix:** compute the claim instead of printing it — emit the ∅-blast-radius line only when the
+  post-rotation trusted set is a superset of the pre-rotation one, and say so with the count.
+  Where it is not, say which CA left.
+- **Repro / pin:** `rotate-refusals.test.ts` RR-5 — asserts the guarantee is printed on a run
+  after which the protected cert's signer is absent, and that the line is byte-identical to the
+  run where the claim is true.
+- **Who:** architect (Kenji)
+
+### `rotate` overwrites the previously retired private key — irreversible, unattended, no ceremony
+
+- **Site:** `tools/setup/persona-keys/rotate.ts` `retiredCaKeyPath` / `retiredMachineKeyPath`
+  (fixed single slots) + `realEffects().movePrivate` (`renameSync` onto them)
+- **Found:** 2026-08-23 by Mateo (security-researcher)
+- **Severity:** P1 — irreversible, but the destroyed key is one that was already being retired,
+  so the cost is forensic and archival rather than loss of access
+- **Symptom:** the retired slot is one path (`.../ca/retired/ssh_ca_ed25519.previous`), and
+  `movePrivate` renames onto it. Rotation #2 therefore destroys rotation #1's retired private
+  key with no suffix, no archive and no refusal. `ceremony-gate.ts` classifies
+  `export-or-destroy-key` as `biometric-ceremony` precisely because irreversibility is a gated
+  class here, and manifesto §5 says an identity transition must never silently destroy memory —
+  this destruction rides in unannounced on an operation classified `rotate-leaf-signing-key` /
+  `rotate-node-root-key`.
+- **Fix:** never clobber an occupied retired slot — generation-suffix or content-address it —
+  and route an actual destruction through the ceremony gate rather than a rename.
+- **Repro / pin:** `rotate-refusals.test.ts` RR-6.
+- **Who:** architect (Kenji)
+
+### `rotate()`'s per-port dispatch has an OPEN default — an unrecognised port silently rotates the device cert
+
+- **Site:** `tools/setup/persona-keys/rotate.ts` `planPort` and `rotatePort` — both are if-chains
+  whose fallthrough is `device-cert`
+- **Found:** 2026-08-23 by Mateo (security-researcher)
+- **Severity:** P1 — **not** reachable from the shipped CLIs (`rotate-cli.ts` and
+  `rotate-cluster-cli.ts` each filter against `ROTATE_PORTS` and exit 2), so this is a latent
+  defect for programmatic callers and for the next member added to the union
+- **Symptom:** `rotate(fx, { ports: ["ca_key"] })` — a hyphen/underscore typo, or any future
+  `RotatePort` member — is not refused. It is dispatched to `device-cert`, reported as
+  `action: "rotated"`, and staged for a PR, while the CA the caller asked for stays Active.
+  The single biometric prompt names the port that was **requested** (`ca_key`), not the one
+  **performed**, so the human's approval and the machine's action describe different acts —
+  under the standing "the biometric IS the authorization" position that is an authorization for
+  something that did not happen. Adding a fourth member to `RotatePort` produces **no type
+  error**; it silently inherits device-cert behaviour in both functions. `ceremony-gate.ts`
+  earns the closed-command-set property by construction (a `switch` with no `default`, so a new
+  operation is a compile error until classified); `rotate.ts` is its sibling and does not.
+- **Fix:** exhaustive `switch` with no `default` in both `planPort` and `rotatePort` (matching
+  `ceremonyRequirementFor`), plus a roster check inside `rotate()` so the guard lives in the
+  mechanism rather than in two copies in two CLIs.
+- **Repro / pin:** `rotate-refusals.test.ts` RR-7 — two arms, a recognised port and an
+  unrecognised one, producing different ports rotated.
+- **Who:** architect (Kenji)
 
 ### FROST CA keys and Shamir splits created before 2026-08-14 were generated with `Math.random`
 
