@@ -28,10 +28,16 @@ composes_with: []
 3. `k_q = 2*dim(C1) - n = 6`; `d = min weight in RM(2,4) \\ RM(1,4) = 4`. So [[16,6,4]].
 4. **The N=8 closure, landed as a test** — enumerate every doubly-even self-orthogonal
    binary code of length 8 and pin the best achievable distance at each dimension:
-   dim 1 -> [[8,6,2]], dim 2 -> [[8,4,2]], dim 3 -> [[8,2,2]], dim 4 (self-dual) -> [[8,0,4]].
+   **dim 0 (uncoded, the full 8-cube) -> [[8,8,1]]**, dim 1 -> [[8,6,2]], dim 2 -> [[8,4,2]],
+   dim 3 -> [[8,2,2]], dim 4 (self-dual) -> [[8,0,4]]. The dim-0 row is REQUIRED, not optional:
+   it is the non-coded adinkra family, and omitting it as degenerate is what invited the
+   scope question answered in section 3a of the research doc.
    This is the load-bearing NEGATIVE: no N=8 adinkra CSS code both encodes a qubit and
    corrects an error. Landing it as a test is what makes the "don't build it" verdict
-   metered rather than an opinion.
+   metered rather than an opinion. **State the domain in the test name**: this is closed over
+   CSS(C^perp, C^perp) for C doubly-even self-orthogonal -- the adinkra category -- NOT over all
+   8-qubit stabiliser codes. [[8,3,3]] (CRSS 1997) beats every row but does not split into X and
+   Z parts, so it comes from no binary code and is not an adinkra object.
 5. Golden vectors **hex-in-JSON** per `.claude/rules/no-binary-in-proof-lineage.md`.
 
 ## Falsifier
