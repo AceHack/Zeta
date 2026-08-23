@@ -1,0 +1,12 @@
+{
+  "pr_number": 14414,
+  "archive_path": "docs/history/pr-reviews/PR-14414-feat-bayesian-land-the-studenttstate-normalgamma-adapters-from-the-ng4-bridge-do.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-23T19:58:38.943Z",
+  "schema_version": "v1",
+  "commit_sha": "a8b79f44fb743c043f819035d019e433f79b984f",
+  "title": "feat(bayesian): land the StudentTState ⟷ NormalGamma adapters from the NG4 bridge doc §4.4",
+  "state": "MERGED",
+  "merged_at": "2026-08-23T19:57:56Z",
+  "head_ref": "claude/otto-ng4-bridge-adapters"
+}
