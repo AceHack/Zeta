@@ -144,7 +144,10 @@ describe("pricing", () => {
 
   test("an application with no catalogue row is unpriced, not free", () => {
     const m = toyModel();
-    const stripped = { ...m, catalogue: { ...m.catalogue, rows: new Map([...m.catalogue.rows].filter(([k]) => k !== "core")) } };
+    const stripped = {
+      ...m,
+      catalogue: { ...m.catalogue, rows: new Map([...m.catalogue.rows].filter(([k]) => k !== "core")) },
+    };
     const f = priceSet(stripped, closureOf(stripped, "a"));
     expect(f.unpricedApps).toEqual(["core"]);
     expect(isFullyPriced(f)).toBe(false);
@@ -155,11 +158,32 @@ describe("pricing", () => {
 describe("budget", () => {
   test("the budget subtracts the runner's reservation before applying the margin", () => {
     const b = budgetOf(
-      { runner: "x", cpuMillis: 4000, memoryMib: 15360, freeDiskGib: 14, reservedCpuMillis: 1500, reservedMemoryMib: 6144, reservedDiskGib: 4 },
+      {
+        runner: "x",
+        cpuMillis: 4000,
+        memoryMib: 15360,
+        freeDiskGib: 14,
+        reservedCpuMillis: 1500,
+        reservedMemoryMib: 6144,
+        reservedDiskGib: 4,
+      },
       1,
     );
     expect(b).toEqual({ cpuMillis: 2500, memoryMib: 9216, diskGib: 10 });
-    expect(budgetOf({ runner: "x", cpuMillis: 4000, memoryMib: 15360, freeDiskGib: 14, reservedCpuMillis: 1500, reservedMemoryMib: 6144, reservedDiskGib: 4 }, 0.85).diskGib).toBeCloseTo(8.5, 6);
+    expect(
+      budgetOf(
+        {
+          runner: "x",
+          cpuMillis: 4000,
+          memoryMib: 15360,
+          freeDiskGib: 14,
+          reservedCpuMillis: 1500,
+          reservedMemoryMib: 6144,
+          reservedDiskGib: 4,
+        },
+        0.85,
+      ).diskGib,
+    ).toBeCloseTo(8.5, 6);
     // MUTATION CAUGHT: using capacity instead of capacity-reserved gives 14.
   });
 
@@ -188,7 +212,11 @@ describe("packing", () => {
   test("a and b do NOT share a lane when their union would exceed the budget", () => {
     // budget disk = (12 - 2) * 1 = 10 GiB. a alone = 10, b alone = 10, a+b = 18.
     const p = packLanes(toyModel(), { margin: 1 });
-    const laneOf = (name: string): string => must(p.lanes.find((l) => l.assigned.includes(name)), `a lane holding ${name}`).id;
+    const laneOf = (name: string): string =>
+      must(
+        p.lanes.find((l) => l.assigned.includes(name)),
+        `a lane holding ${name}`,
+      ).id;
     expect(laneOf("a")).not.toBe(laneOf("b"));
     // MUTATION CAUGHT: pricing a lane as the sum of its members' closures
     // rather than the union of them still separates these two; pricing it as
@@ -294,7 +322,10 @@ describe("the real tree", () => {
     const budget = budgetOf(env, 1);
     expect(budget.diskGib).toBe(env.freeDiskGib - env.reservedDiskGib);
     expect(budget.cpuMillis).toBe(env.cpuMillis - env.reservedCpuMillis);
-    const all = priceSet(model, model.roster.map((r) => r.name));
+    const all = priceSet(
+      model,
+      model.roster.map((r) => r.name),
+    );
     // 74.54 -> 75.81 when `gitlab`, `redis` and `weaviate` stopped being
     // UNPRICED. Their images were always on the disk; the old number simply
     // could not see five of them (four withdrawn Bitnami tags, one registry
@@ -312,7 +343,17 @@ describe("the real tree", () => {
     // nothing to this total in the first place — which is exactly why removing
     // them takes `platform`'s blocker count from 5 to 3 without moving a
     // single byte of the priced figure.
-    expect(all.diskGib).toBeCloseTo(74.26, 2);
+    //
+    // 74.26 -> 74.47 on 2026-08-23, and it is the RISING direction again: two
+    // images stopped being unmeasurable. `zeta-portal` (43241230) and
+    // `zeta-platform-controller` (42887187) were made public and the checked-in
+    // row was never re-measured, so they had been carrying `manifest HTTP 401`
+    // and contributing nothing. x2.67 that is 0.2142 GiB, which is the whole of
+    // the move. `platform`'s blockers go 3 -> 1; the one that remains is
+    // `ghcr.io/ich777/steamcmd:armareforger`, a tag that has never existed
+    // upstream (the repository publishes 94 tags, `arma3` and `arma3exilemod`
+    // among them, and no reforger tag at all).
+    expect(all.diskGib).toBeCloseTo(74.47, 2);
     expect(all.cpuMillis).toBeGreaterThan(budget.cpuMillis);
     expect(all.diskGib).toBeGreaterThan(budget.diskGib);
     // WHICH AXIS BINDS IS NOW A MEASUREMENT, NOT AN ASSERTION. At 14 GiB disk was
@@ -325,7 +366,7 @@ describe("the real tree", () => {
     const cpuRatio = all.cpuMillis / budget.cpuMillis;
     expect(diskRatio).toBeGreaterThan(1);
     expect(cpuRatio).toBeGreaterThan(1);
-    // And the total is a FLOOR: 15 images are unmeasurable, so `all.diskGib` is a
+    // And the total is a FLOOR: 3 images are unmeasurable, so `all.diskGib` is a
     // lower bound on the real requirement and "over" is the direction that is
     // safe to conclude from it. Under-shooting a floor is the only reading that
     // could ever be wrong, and neither assertion above makes it.
@@ -454,11 +495,14 @@ describe("the real tree", () => {
   test("the graph's adjudication map covers exactly the citations that mention intent", () => {
     const text = readFileSync(resolve(REPO_ROOT, GRAPH_PATH), "utf8");
     const graph = loadGraph(REPO_ROOT);
-    const intent = graph.edges.filter((e) => e.edgeClass === "intent").map((e) => edgeKey(e.from, e.to)).sort();
+    const intent = graph.edges
+      .filter((e) => e.edgeClass === "intent")
+      .map((e) => edgeKey(e.from, e.to))
+      .sort();
     expect(intent).toEqual(["hindsight -> cockroachdb", "spire -> vault"]);
     // temporal's citation contains the phrase and is adjudicated OBSERVED: the
     // case a grep would get backwards.
-    expect(text.includes('temporal -> cockroachdb')).toBe(true);
+    expect(text.includes("temporal -> cockroachdb")).toBe(true);
     const temporalEdge = graph.edges.find((e) => e.from === "temporal" && e.to === "cockroachdb");
     expect(must(temporalEdge, "the temporal -> cockroachdb edge").edgeClass).toBe("observed");
   });
@@ -479,7 +523,9 @@ describe("the real tree", () => {
     const footprints = JSON.parse(readFileSync(resolve(REPO_ROOT, FOOTPRINTS_PATH), "utf8")) as LaneFootprints;
     const withoutLonghorn = {
       ...footprints,
-      imagesByApp: Object.fromEntries(Object.entries(footprints.imagesByApp).filter(([k]) => k !== "full-ai-cluster/longhorn")),
+      imagesByApp: Object.fromEntries(
+        Object.entries(footprints.imagesByApp).filter(([k]) => k !== "full-ai-cluster/longhorn"),
+      ),
     };
     expect(() => buildModel({ repoRoot: REPO_ROOT, footprints: withoutLonghorn })).toThrow(/no entry in/);
     expect(() => buildModel({ repoRoot: REPO_ROOT, footprints: withoutLonghorn })).toThrow(/longhorn/);
@@ -502,9 +548,15 @@ describe("runner envelope assertion", () => {
   const recorded = loadRecordedEnvelope(REPO_ROOT);
 
   test("a runner smaller than the record is CONVICTED, on every short axis", () => {
-    const small = { cpuMillis: recorded.cpuMillis - 1, memoryMib: recorded.memoryMib - 1, freeDiskGib: recorded.freeDiskGib - 1 };
+    const small = {
+      cpuMillis: recorded.cpuMillis - 1,
+      memoryMib: recorded.memoryMib - 1,
+      freeDiskGib: recorded.freeDiskGib - 1,
+    };
     expect(envelopeOverstatements(recorded, small)).toHaveLength(3);
-    expect(envelopeOverstatements(recorded, { ...small, memoryMib: recorded.memoryMib, freeDiskGib: recorded.freeDiskGib })).toHaveLength(1);
+    expect(
+      envelopeOverstatements(recorded, { ...small, memoryMib: recorded.memoryMib, freeDiskGib: recorded.freeDiskGib }),
+    ).toHaveLength(1);
     // MUTATION CAUGHT: an always-empty return, and a disk-only comparison.
   });
 

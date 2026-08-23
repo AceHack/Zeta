@@ -77,17 +77,25 @@
 //
 // UNPRICED IS A THIRD ANSWER, NEVER A PASS
 // ----------------------------------------
-// Six Applications (`gitlab`, `hat-system`, `orleans`, `platform`, `redis`,
-// `weaviate`) render at least one image whose size cannot be read — private
-// ghcr repositories, Bitnami tags withdrawn from Docker Hub, a rate-limiting
-// registry. `game-hosting/gmod` is priced: `catalogueKey` is the directory
-// itself (`game-hosting/gmod`), which matches the ungoverned row, so last-
-// segment lookup cannot silently UNPRICE it. The six unmeasurable apps are
-// NOT packed. A lane holding one would report a number that is a FLOOR while
-// reading like a total, which is exactly the "a check that did not run looks
-// like one that passed" failure. They are quarantined, each with the artifact
-// that blocks it, so the report says what would have to be fixed rather than
-// quietly rounding it to zero.
+// Three Applications (`hat-system`, `orleans`, `platform`) render at least one
+// image whose size cannot be read. `game-hosting/gmod` is priced:
+// `catalogueKey` is the directory itself (`game-hosting/gmod`), which matches
+// the ungoverned row, so last-segment lookup cannot silently UNPRICE it. The
+// unmeasurable apps are NOT packed. A lane holding one would report a number
+// that is a FLOOR while reading like a total, which is exactly the "a check
+// that did not run looks like one that passed" failure. They are quarantined,
+// each with the artifact that blocks it, so the report says what would have to
+// be fixed rather than quietly rounding it to zero.
+//
+// AND THE QUARANTINE IS ONLY AS HONEST AS THE ARTIFACT UNDER IT. On 2026-08-23
+// `platform` carried three blockers and TWO OF THEM WERE STALE: `zeta-portal`
+// and `zeta-platform-controller` had been made public, the anonymous read
+// prices them, and nothing had re-measured. A resolved blocker still being
+// reported is the same defect class as a check that did not run looking like
+// one that passed — so a re-measure is part of reading this report, not a
+// separate chore. `platform` is down to ONE blocker, and it is a real one:
+// `ghcr.io/ich777/steamcmd:armareforger` is a tag upstream has never published
+// (081M0QR4E2T087G0R00337NQ46).
 //
 // USAGE
 //   bun src/Core.TypeScript/cluster/lane-partition.ts                 # report
