@@ -9,21 +9,25 @@ if (typeof self !== 'undefined' && typeof (self as any).Buffer === 'undefined') 
 
 import { SwarmController } from "../../../Core.TypeScript/swarm/swarm-controller";
 import type { World } from "../../../Core.TypeScript/observe/observe";
-import { create as initFrame, loadRom, step, clearCausalMask, colorAt } from "../../../Core.TypeScript/chip8/chip8";
+import { create as initFrame, loadRom, step, clearCausalMask, compositeInto } from "../../../Core.TypeScript/chip8/chip8";
 
 import { buildMutualSimRom } from "../../../Core.TypeScript/chip8/games/mutual-sim";
 import { createCheatTable, applyCheatTable } from "../../../Core.TypeScript/chip8/cheat-engine";
+import {
+  buildPriorsRegistry,
+  priorsForRom,
+  romFingerprint,
+} from "../../../Core.TypeScript/chip8/game-priors";
+import { mutualSimPriors } from "../../../Core.TypeScript/chip8/priors/mutual-sim.priors";
+import { singleMoverPriors } from "../../../Core.TypeScript/chip8/priors/single-mover.priors";
+import { modeFlipPriors } from "../../../Core.TypeScript/chip8/priors/mode-flip.priors";
 
 console.log("[SwarmWorker] Imports resolved successfully. Building ROM...");
 
-function computeSpectralFingerprint(buf: Uint8Array): string {
-  let hash = 2166136261;
-  for (let i = 0; i < buf.length; i++) {
-    hash ^= buf[i]!;
-    hash = Math.imul(hash, 16777619);
-  }
-  return (hash >>> 0).toString(16).padStart(8, "0");
-}
+// Committed priors: fingerprint → learned society state. A known cart boots
+// already knowing which keys move it; an unknown cart starts from the fresh
+// prior while the structural perception layers transfer for free.
+const PRIORS_REGISTRY = buildPriorsRegistry([mutualSimPriors, singleMoverPriors, modeFlipPriors]);
 
 let activeRom: Uint8Array = buildMutualSimRom();
 let swarm: SwarmController | null = null;
@@ -69,19 +73,36 @@ self.onmessage = async (e: MessageEvent) => {
       loadRom(activeRom, frame);
       currentRomRef = activeRom;
 
+      const bootPriors = priorsForRom(PRIORS_REGISTRY, activeRom);
+      swarm.setGamePriors(bootPriors?.snapshot ?? null);
+      console.log(
+        bootPriors
+          ? `[SwarmWorker] 🧠 Priors loaded for cart "${bootPriors.cart}" (${bootPriors.trainedTicks} trained ticks) — not starting from zero.`
+          : `[SwarmWorker] No committed priors for this cart — starting from the fresh prior.`,
+      );
+
       isRunning = true;
       console.log(`[SwarmWorker] About to start loop()`);
       loop(); // Kick off the loop
     } else if (type === "INJECT_EPIGENETIC_MATERIAL") {
       const uploadedRom = new Uint8Array(payload.buffer);
-      const fingerprint = computeSpectralFingerprint(uploadedRom);
+      const fingerprint = romFingerprint(uploadedRom);
       console.log(`[SwarmWorker] 🧬 Received Epigenetic Material. Spectral Fingerprint: ${fingerprint}`);
       console.log(`[SwarmWorker] Integrating Epigenetic Material into the Soft Value Regime...`);
 
-      // As per Zeta research, we avoid Kinetic Offsets (byte-by-byte corruption of brittle machine code).
-      // The structural bounds of the game are reset to the new fingerprint,
-      // and the Swarm's Bayesian predictors organically adapt to the new causal footprint.
+      // Game switching stays inside the soft regime: a known fingerprint
+      // restores its committed priors; an unknown one starts from the fresh
+      // prior — while the structural perception layers transfer regardless.
       activeRom = uploadedRom;
+      if (swarm) {
+        const switchPriors = priorsForRom(PRIORS_REGISTRY, uploadedRom);
+        swarm.setGamePriors(switchPriors?.snapshot ?? null);
+        console.log(
+          switchPriors
+            ? `[SwarmWorker] 🧠 Priors restored for cart "${switchPriors.cart}".`
+            : `[SwarmWorker] Unknown cart ${fingerprint} — fresh prior, structural layers carried over.`,
+        );
+      }
     } else if (type === "KEY_DOWN") {
       manualKeys[payload.key] = true;
     } else if (type === "KEY_UP") {
@@ -113,13 +134,19 @@ async function loop() {
   clearCausalMask(frame);
   applyCheatTable(frame, cheatTable);
 
-  // Run physical simulation
+  // Run physical simulation, compositing lit pixels across the whole tick
+  // (persistence of vision). A raw end-of-tick snapshot phase-locks onto the
+  // XOR-erase window of game loops whose length divides STEPS_PER_TICK, and
+  // sprites "vanish" for many consecutive frames — the perception layer (and
+  // the viewer) should see what a CRT would show instead.
+  const displayArray: number[] = new Array(64 * 32).fill(0);
   for (let i = 0; i < STEPS_PER_TICK; i++) {
     step(frame);
     if (frame.fault) {
       console.error("[SwarmWorker] CHIP8 FAULT:", frame.fault);
       break;
     }
+    compositeInto(displayArray, frame);
   }
   if (cycle % 30 === 0) {
     console.log(`[SwarmWorker] cycle=${cycle}, PC=${frame.pc}, I=${frame.i}, display_pixels=${frame.display.size}`);
@@ -131,10 +158,6 @@ async function loop() {
   }
   const memorySectors = [memArray];
   const causalMask = Array.from(frame.causalMask);
-  const displayArray = new Array(64 * 32).fill(0);
-  for (let i = 0; i < displayArray.length; i++) {
-    displayArray[i] = colorAt(i % 64, Math.floor(i / 64), frame);
-  }
 
   world = {
     ...world,
@@ -154,17 +177,9 @@ async function loop() {
     if (manualKeys[k]) frame.keys[k] = true;
   }
 
-  // Detect Tag (Player V0,V1 and AI V3,V4)
-  const dx = Math.abs((frame.v[0] ?? 0) - (frame.v[3] ?? 0));
-  const dy = Math.abs((frame.v[1] ?? 0) - (frame.v[4] ?? 0));
-  if (dx < 4 && dy < 4 && cycle % 10 === 0) {
-    frame.v[9] = (frame.v[9] ?? 0) + 1; // Increment tags
-    // Teleport AI to random safe-ish spot to reset the chase
-    frame.v[3] = Math.floor(Math.random() * 40) + 10;
-    frame.v[4] = Math.floor(Math.random() * 20) + 5;
-  }
-
-  // Semantic Gamification Level Transitions removed for ARC-AGI-3
+  // Tag detection, scoring, respawn, and win/lose all live IN THE CART now
+  // (games/mutual-sim.ts): the previous out-of-cart hack here used
+  // Math.random teleports — ambient entropy the cart's seeded RND replaces.
 
   if (world.history && world.history.length > 0) {
     const lastEvent = world.history[world.history.length - 1];
@@ -186,7 +201,10 @@ async function loop() {
     display: displayArray,
     cycle: cycle,
     keys: Array.from(frame.keys),
-    keyPredictions: world.cheatEngine?.keyPredictions || {}
+    keyPredictions: world.cheatEngine?.keyPredictions || {},
+    // The snap (CMYK half) and the forced-perception readout for the overlay.
+    chosenKey: world.cheatEngine?.chosenKey ?? -1,
+    arena: world.cheatEngine?.arena ?? null
   };
 
   self.postMessage({ type: "FRAME", payload: eventAction });

@@ -2,6 +2,9 @@
  * CHIP-8 Emulator - Full Standard Instruction Set
  */
 
+import { COMMON_SEED } from "../observe/phase-clock";
+import { splitmix32Step } from "./seeded-rng";
+
 export const W = 64;
 export const H = 32;
 const PROGRAM_START = 0x200;
@@ -20,9 +23,15 @@ export interface Frame {
   causalMask: boolean[];
   plane: number;
   extra: Map<number, number>;
+  /**
+   * Seeded PRNG state for the RND opcode. Derived from COMMON_SEED so a run
+   * replays deterministically (DST) and two viewers fold identical evidence
+   * (noninterference §13). Never `Math.random()`.
+   */
+  rngState: number;
 }
 
-export function create(): Frame {
+export function create(seed: number = COMMON_SEED): Frame {
   return {
     mem: new Map(),
     v: new Uint8Array(16),
@@ -37,31 +46,39 @@ export function create(): Frame {
     causalMask: new Array(4096).fill(false),
     plane: 1,
     extra: new Map(),
+    rngState: seed | 0,
   };
 }
 
+/**
+ * The standard CHIP-8 hex fontset: 16 glyphs (0-F), 4×5 pixels each, one byte
+ * per row with the glyph in the HIGH nibble. Loaded at 0x000-0x04F by
+ * `loadRom`, addressed by `LD F, Vx`. Exported so the OCR layer matches
+ * against exactly the bitmaps the emulator draws — one source of truth.
+ */
+export const FONTSET: readonly number[] = [
+  0xF0, 0x90, 0x90, 0x90, 0xF0, // 0
+  0x20, 0x60, 0x20, 0x20, 0x70, // 1
+  0xF0, 0x10, 0xF0, 0x80, 0xF0, // 2
+  0xF0, 0x10, 0xF0, 0x10, 0xF0, // 3
+  0x90, 0x90, 0xF0, 0x10, 0x10, // 4
+  0xF0, 0x80, 0xF0, 0x10, 0xF0, // 5
+  0xF0, 0x80, 0xF0, 0x90, 0xF0, // 6
+  0xF0, 0x10, 0x20, 0x40, 0x40, // 7
+  0xF0, 0x90, 0xF0, 0x90, 0xF0, // 8
+  0xF0, 0x90, 0xF0, 0x10, 0xF0, // 9
+  0xF0, 0x90, 0xF0, 0x90, 0x90, // A
+  0xE0, 0x90, 0xE0, 0x90, 0xE0, // B
+  0xF0, 0x80, 0x80, 0x80, 0xF0, // C
+  0xE0, 0x90, 0x90, 0x90, 0xE0, // D
+  0xF0, 0x80, 0xF0, 0x80, 0xF0, // E
+  0xF0, 0x80, 0xF0, 0x80, 0x80, // F
+];
+
 export function loadRom(rom: Uint8Array, f: Frame): Frame {
   rom.forEach((b, idx) => f.mem.set(PROGRAM_START + idx, b));
-  // Load standard fontset at 0x000-0x04F
-  const fontset = [
-    0xF0, 0x90, 0x90, 0x90, 0xF0, // 0
-    0x20, 0x60, 0x20, 0x20, 0x70, // 1
-    0xF0, 0x10, 0xF0, 0x80, 0xF0, // 2
-    0xF0, 0x10, 0xF0, 0x10, 0xF0, // 3
-    0x90, 0x90, 0xF0, 0x10, 0x10, // 4
-    0xF0, 0x80, 0xF0, 0x10, 0xF0, // 5
-    0xF0, 0x80, 0xF0, 0x90, 0xF0, // 6
-    0xF0, 0x10, 0x20, 0x40, 0x40, // 7
-    0xF0, 0x90, 0xF0, 0x90, 0xF0, // 8
-    0xF0, 0x90, 0xF0, 0x10, 0xF0, // 9
-    0xF0, 0x90, 0xF0, 0x90, 0x90, // A
-    0xE0, 0x90, 0xE0, 0x90, 0xE0, // B
-    0xF0, 0x80, 0x80, 0x80, 0xF0, // C
-    0xE0, 0x90, 0x90, 0x90, 0xE0, // D
-    0xF0, 0x80, 0xF0, 0x80, 0xF0, // E
-    0xF0, 0x80, 0xF0, 0x80, 0x80  // F
-  ];
-  fontset.forEach((b, idx) => f.mem.set(idx, b));
+  // Load standard fontset at 0x000-0x04F (single source of truth: FONTSET above)
+  FONTSET.forEach((b, idx) => f.mem.set(idx, b));
   return f;
 }
 
@@ -89,6 +106,24 @@ export function colorAt(x: number, y: number, f: Frame): number {
   const idx = (y % H) * W + (x % W);
   const mono = f.display.get(idx) ? 1 : 0;
   return mono | (f.extra.get(idx) ?? 0);
+}
+
+/**
+ * OR the frame's currently-lit pixels into `target` (length W*H, color-mask
+ * values). Calling this after EVERY emulator step across a tick builds a
+ * persistence-of-vision composite: game loops XOR-erase and redraw sprites
+ * each iteration, so a single end-of-tick snapshot can phase-lock onto the
+ * erased window and a sprite "vanishes" for many consecutive ticks. The
+ * composite is what a CRT (and an eye) would show — every pixel lit at any
+ * point during the tick. Perception should consume THIS, not a raw snapshot.
+ */
+export function compositeInto(target: number[], f: Frame): void {
+  for (const [idx, on] of f.display) {
+    if (on && idx >= 0 && idx < W * H) target[idx] = (target[idx] ?? 0) | 1;
+  }
+  for (const [idx, mask] of f.extra) {
+    if (idx >= 0 && idx < W * H) target[idx] = (target[idx] ?? 0) | mask;
+  }
 }
 
 export function step(f: Frame): Frame {
@@ -195,9 +230,12 @@ export function step(f: Frame): Frame {
     case 0xa000: // LD I, addr
       f.i = nnn;
       break;
-    case 0xc000: // RND Vx, byte
-      f.v[x] = Math.floor(Math.random() * 256) & nn;
+    case 0xc000: { // RND Vx, byte — frame-local seeded stream, never Math.random
+      const r = splitmix32Step(f.rngState);
+      f.rngState = r.next;
+      f.v[x] = (r.u32 & 0xff) & nn;
       break;
+    }
     case 0xd000: { // DRW Vx, Vy, nibble
       const ox = (f.v[x] ?? 0) % W;
       const oy = (f.v[y] ?? 0) % H;

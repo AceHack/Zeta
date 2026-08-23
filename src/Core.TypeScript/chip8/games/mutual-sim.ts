@@ -16,10 +16,12 @@ export function buildMutualSimRom(): Uint8Array {
     "LD V1, 15",
     "LD V3, 50",
     "LD V4, 15",
+    "LD V5, 0",   // AI score (AI tags player). 5 = player LOSES.
     "LD V6, 255", // Swap timer
     "LD V7, 3",   // AI speed
     "LD V8, 0",   // AI starts as Cat (Hunter)
-    
+    "LD V9, 0",   // Player score (player tags fleeing AI). 5 = player WINS.
+
     "CLS",
     // Draw Environment Threat (Wall 1)
     "BYTE 0xF101", // Plane 1 (Environment/AI)
@@ -45,6 +47,19 @@ export function buildMutualSimRom(): Uint8Array {
     "LD I, shape_ai_flee",
     "draw_ai_init_do:",
     "DRW V3, V4, 4",
+
+    // Initial scoreboard: player score (plane 2) top-left, AI score (plane 1)
+    // top-right — fontset glyphs, so the OCR layer reads them as a grid.
+    "BYTE 0xF201",
+    "LD F, V9",
+    "LD VA, 1",
+    "LD VB, 1",
+    "DRW VA, VB, 5",
+    "BYTE 0xF101",
+    "LD F, V5",
+    "LD VA, 58",
+    "LD VB, 1",
+    "DRW VA, VB, 5",
 
     "main_loop:",
     
@@ -187,8 +202,134 @@ export function buildMutualSimRom(): Uint8Array {
     "DRW V3, V4, 4", // Draw at old pos
     "JMP frame_end",
 
+    // ── WIN CONDITIONS (in the cart, where they belong) ──────────────────
+    // Tag = |playerX-aiX| < 3 AND |playerY-aiY| < 3. Who scores depends on
+    // the phase: V8=0 the AI is hunting (a tag means the player LOST the
+    // exchange, AI score V5++); V8=1 the AI is fleeing (the player CAUGHT it,
+    // player score V9++). First to 5 flips the board: win = plane-2 (orange)
+    // background fill; lose = plane-1 (green) background fill; then halt.
+    // The respawn uses RND — the emulator's RND is seeded from COMMON_SEED,
+    // so the whole game, tags included, replays deterministically.
     "frame_end:",
+    // |dx|
+    "LD VC, V0",
+    "SUB VC, V3",
+    "SE VF, 1",
+    "JMP absx_neg",
+    "JMP absx_done",
+    "absx_neg:",
+    "LD VC, V3",
+    "SUB VC, V0",
+    "absx_done:",
+    "LD VE, 3",
+    "SUB VC, VE",
+    "SNE VF, 1",
+    "JMP no_tag",
+    // |dy|
+    "LD VC, V1",
+    "SUB VC, V4",
+    "SE VF, 1",
+    "JMP absy_neg",
+    "JMP absy_done",
+    "absy_neg:",
+    "LD VC, V4",
+    "SUB VC, V1",
+    "absy_done:",
+    "LD VE, 3",
+    "SUB VC, VE",
+    "SNE VF, 1",
+    "JMP no_tag",
+    // TAG! Route by phase.
+    "SE V8, 0",
+    "JMP tag_player",
+    // V8 == 0: the hunter caught the player — AI scores.
+    "BYTE 0xF101",
+    "LD F, V5",
+    "LD VA, 58",
+    "LD VB, 1",
+    "DRW VA, VB, 5", // erase old digit (XOR)
+    "ADD V5, 1",
+    "LD F, V5",
+    "DRW VA, VB, 5", // draw new digit
+    "JMP tag_respawn",
+    "tag_player:",
+    "BYTE 0xF201",
+    "LD F, V9",
+    "LD VA, 1",
+    "LD VB, 1",
+    "DRW VA, VB, 5",
+    "ADD V9, 1",
+    "LD F, V9",
+    "DRW VA, VB, 5",
+    "tag_respawn:",
+    // Erase the AI at its old spot (phase-correct shape)…
+    "BYTE 0xF101",
+    "SNE V8, 1",
+    "JMP resp_erase_flee",
+    "LD I, shape_ai_hunt",
+    "JMP resp_erase_do",
+    "resp_erase_flee:",
+    "LD I, shape_ai_flee",
+    "resp_erase_do:",
+    "DRW V3, V4, 4",
+    // …then draw it somewhere clean (retry on collision; seeded RND).
+    "resp_loop:",
+    "RND V3, 0x3F",
+    "RND V4, 0x1F",
+    "DRW V3, V4, 4",
+    "SNE VF, 1",
+    "JMP resp_undo",
+    "JMP score_check",
+    "resp_undo:",
+    "DRW V3, V4, 4",
+    "JMP resp_loop",
+    "score_check:",
+    "SNE V9, 5",
+    "JMP win",
+    "SNE V5, 5",
+    "JMP lose",
+    "no_tag:",
     "JMP main_loop",
+
+    // Player wins: flood the board with the PLAYER's color (plane 2).
+    "win:",
+    "BYTE 0xF701",
+    "CLS",
+    "BYTE 0xF201",
+    "LD I, shape_fill",
+    "LD VB, 0",
+    "win_y:",
+    "LD VA, 0",
+    "win_x:",
+    "DRW VA, VB, 4",
+    "ADD VA, 8",
+    "SE VA, 64",
+    "JMP win_x",
+    "ADD VB, 4",
+    "SE VB, 32",
+    "JMP win_y",
+    "win_halt:",
+    "JMP win_halt",
+
+    // Player loses: flood the board with the AI's color (plane 1).
+    "lose:",
+    "BYTE 0xF701",
+    "CLS",
+    "BYTE 0xF101",
+    "LD I, shape_fill",
+    "LD VB, 0",
+    "lose_y:",
+    "LD VA, 0",
+    "lose_x:",
+    "DRW VA, VB, 4",
+    "ADD VA, 8",
+    "SE VA, 64",
+    "JMP lose_x",
+    "ADD VB, 4",
+    "SE VB, 32",
+    "JMP lose_y",
+    "lose_halt:",
+    "JMP lose_halt",
 
 
     // --- DATA SECTION ---
@@ -210,6 +351,11 @@ export function buildMutualSimRom(): Uint8Array {
     "shape_wall:",
     "BYTE 0xF0F0",
     "BYTE 0xF0F0",
+
+    // Full 8x4 tile for the win/lose background flood
+    "shape_fill:",
+    "BYTE 0xFFFF",
+    "BYTE 0xFFFF",
   ];
 
   return assemble(code);

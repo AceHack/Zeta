@@ -4,38 +4,50 @@ export class Chip8TvPlayer {
   private ctx: CanvasRenderingContext2D;
   private llmtvOverlay: HTMLElement;
   private screenContainer: HTMLElement;
+  private perceptionOverlay: HTMLElement;
   public agentId: string;
-  
+
   constructor(containerId: string, agentId: string) {
     this.agentId = agentId;
     this.element = document.createElement("div");
     this.element.className = "stream-panel";
-    
+
     // Screen setup
     this.screenContainer = document.createElement("div");
     this.screenContainer.className = "screen-container";
     this.screenContainer.style.position = "relative";
-    
+
     this.canvas = document.createElement("canvas");
     this.canvas.width = 64;
     this.canvas.height = 32;
     this.ctx = this.canvas.getContext("2d")!;
-    
+
     // Clear to black initially
     this.ctx.fillStyle = "#000";
     this.ctx.fillRect(0, 0, 64, 32);
-    
+
     const headerContainer = document.createElement("div");
     headerContainer.className = "screen-header";
     headerContainer.innerHTML = `
       <div style="display:flex; justify-content:space-between; width:100%;">
-        <span><span class="concept-label">🧠 Stimulus:</span> <span class="concept-value" id="concept-${agentId}">[INITIALIZING]</span></span>
-        <span class="objective-header">🎯 Lvl <span id="level-${agentId}">1</span>: <span class="objective-value" id="objective-${agentId}">[WAITING]</span></span>
+        <span><span class="concept-label">🧠 Mode:</span> <span class="concept-value" id="concept-${agentId}">[INITIALIZING]</span></span>
+        <span class="objective-header">🎯 <span class="objective-value" id="objective-${agentId}">[WAITING]</span></span>
       </div>
     `;
-    
+
     this.screenContainer.appendChild(headerContainer);
-    this.screenContainer.appendChild(this.canvas);
+    // The canvas and the perception overlay share one positioned wrapper so
+    // bounding boxes (in % of the 64×32 grid) land exactly on the pixels.
+    const canvasWrap = document.createElement("div");
+    canvasWrap.style.position = "relative";
+    this.canvas.style.display = "block";
+    canvasWrap.appendChild(this.canvas);
+    this.perceptionOverlay = document.createElement("div");
+    this.perceptionOverlay.style.position = "absolute";
+    this.perceptionOverlay.style.inset = "0";
+    this.perceptionOverlay.style.pointerEvents = "none";
+    canvasWrap.appendChild(this.perceptionOverlay);
+    this.screenContainer.appendChild(canvasWrap);
     
     // Xbox Controller Setup
     this.llmtvOverlay = document.createElement("div");
@@ -125,11 +137,64 @@ export class Chip8TvPlayer {
     this.ctx.putImageData(imgData, 0, 0);
   }
 
+  /**
+   * Render the forced-perception readout: bounding boxes over the screen
+   * (self = cyan, adversary = red, scenery = grey, other = amber), the mode
+   * in the header, and the OCR'd scoreboard. This is the "show what it sees"
+   * half of the demo — the glow shows what it thinks.
+   */
+  private renderArena(arena: any) {
+    const concept = document.getElementById(`concept-${this.agentId}`);
+    const objective = document.getElementById(`objective-${this.agentId}`);
+    if (!arena) {
+      if (concept) concept.textContent = "[OBSERVING]";
+      return;
+    }
+
+    if (concept) {
+      const self = (arena.tracks || []).find((t: any) => t.role === "self");
+      const adv = (arena.tracks || []).find((t: any) => t.role === "adversary");
+      const parts = [String(arena.mode || "?").toUpperCase()];
+      if (self) parts.push(`self#${self.id}`);
+      if (adv) parts.push(`adv#${adv.id}`);
+      concept.textContent = parts.join(" · ");
+    }
+    if (objective) {
+      // The cart draws the player score in color 2 (left) and the AI score in
+      // color 1 (right); the OCR grid carries both with their colors.
+      const ocr = arena.ocr || [];
+      const mine = ocr.find((n: any) => n.color === 2);
+      const theirs = ocr.find((n: any) => n.color === 1);
+      objective.textContent =
+        mine || theirs
+          ? `OCR ${mine ? mine.value : "–"}:${theirs ? theirs.value : "–"} (first to 5)`
+          : "[NO GLYPHS]";
+    }
+
+    const boxColor: Record<string, string> = {
+      self: "#22d3ee",
+      adversary: "#f87171",
+      scenery: "#64748b",
+      object: "#eab308",
+    };
+    let html = "";
+    for (const t of arena.tracks || []) {
+      const left = (t.minX / 64) * 100;
+      const top = (t.minY / 32) * 100;
+      const w = ((t.maxX - t.minX + 1) / 64) * 100;
+      const h = ((t.maxY - t.minY + 1) / 32) * 100;
+      const color = boxColor[t.role as string] ?? boxColor["object"];
+      const dash = t.role === "scenery" ? "dashed" : "solid";
+      html += `<div style="position:absolute; left:${left}%; top:${top}%; width:${w}%; height:${h}%; border:1px ${dash} ${color}; box-sizing:border-box;" title="#${t.id} ${t.role}${t.isStatic ? " static" : ""}"></div>`;
+    }
+    this.perceptionOverlay.innerHTML = html;
+  }
+
   public updatePredictions(frame: any) {
     if (!frame) return;
 
-    // Semantic overlays (Level, Objective, Concept, Linguistic Tokens) removed for ARC-AGI-3 opaque tracking
-    
+    this.renderArena(frame.arena);
+
     // Process BNN predictions (RGB probabilities) and committed keys (CMYK)
     const predictions = frame.keyPredictions || {};
     const committedKeys = frame.keys || [];

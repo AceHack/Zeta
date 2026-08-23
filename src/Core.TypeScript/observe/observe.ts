@@ -178,6 +178,29 @@ export interface CheatEngineState {
   readonly memorySectors: Uint8Array[];
   readonly keyPredictions?: Record<number, number>;
   readonly chosenKey?: number;
+  /** Forced-perception readout — what the agent currently sees and intends. */
+  readonly arena?: ArenaReadout;
+}
+
+/** One tracked object, trimmed for the wire (the UI draws these boxes). */
+export interface ArenaTrackReadout {
+  readonly id: number;
+  readonly color: number;
+  readonly minX: number;
+  readonly minY: number;
+  readonly maxX: number;
+  readonly maxY: number;
+  readonly isStatic: boolean;
+  readonly everMoved: boolean;
+  readonly role: "self" | "adversary" | "scenery" | "object";
+}
+
+/** The perception/mode summary the arena page renders alongside the screen. */
+export interface ArenaReadout {
+  readonly mode: string;
+  readonly tracks: readonly ArenaTrackReadout[];
+  readonly ocr: readonly { value: number; row: number; col: number; color: number }[];
+  readonly desired: { dx: number; dy: number } | null;
 }
 
 /** KPI attached to a `do_item` (ARC-AGI grid scoring). */

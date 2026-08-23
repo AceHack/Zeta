@@ -15,7 +15,8 @@ import { getPersona, localLlmPersona } from "../service/persona-registry";
 import { executeSkillSequence } from "../arc-solver/grid-skills";
 import { evaluateGrid } from "../arc-solver/grid-evaluator";
 import { CelegansController, loadFromCsv } from "../chip8/celegans-controller";
-import { BnnSocietyPredictor } from "../bayesian/bnn-key-predictor";
+import { BnnSocietyPredictor, type SocietySnapshot } from "../bayesian/bnn-key-predictor";
+import type { ArenaReadout, ArenaTrackReadout } from "../observe/observe";
 import { ArcExplorer } from "../bayesian/arc-explorer";
 import { cooperate } from "../tri-boolean/tri-boolean";
 import { readKnownSignatures } from "./swarm-known-signatures";
@@ -45,7 +46,7 @@ export class SwarmController {
   private nodes: SwarmNode[] = [];
   private hwRegistry: HardwareRegistry;
   public wormSociety: CelegansController[] = [];
-  public bnnSociety?: BnnSocietyPredictor;
+  public bnnSociety: BnnSocietyPredictor | undefined;
   public arcExplorer?: ArcExplorer;
   private previousDisplay: number[] = [];
   private visualDeltaLog: string[] = [];
@@ -53,16 +54,45 @@ export class SwarmController {
   // CHIP-8 Superorganism State
   private pheromoneField: Map<number, number> = new Map();
   private scarcity: number = 0.8; // High scarcity defaults trigger tower formation
-  
+
+  /** The key committed LAST tick — feeds the predictor's self-identification. */
+  private lastChosenKey: number | undefined;
+  /** Priors to restore into the BNN society when it is (lazily) created. */
+  private pendingGamePriors: SocietySnapshot | null = null;
+  /** Outer-loop LLM tuning fires ONLY on explicit opt-in — never in the browser. */
+  private llmTuningEnabled = false;
+
   constructor() {
     this.hwRegistry = new HardwareRegistry();
     this.hwRegistry.start();
   }
+
+  /**
+   * Install per-cart priors (from a committed priors module) and reset the
+   * live society so the next tick rebuilds it — restored from the snapshot
+   * when one exists, fresh otherwise. Called at boot and on every cart
+   * switch: the learned posteriors are per-cart, while the STRUCTURAL layers
+   * (objects/OCR/roles) are stateless and transfer to any cart — that split
+   * is the soft-regime continual-learning story.
+   */
+  setGamePriors(snapshot: SocietySnapshot | null) {
+    this.pendingGamePriors = snapshot;
+    this.bnnSociety = undefined;
+    this.lastChosenKey = undefined;
+  }
   
   async init(dropRate = 0) {
-    this.arcExplorer = new ArcExplorer(30000); // 30 second exploration phase
+    // 300 TICKS (~10s at 30fps) of exploration — counted on the worker's own
+    // cycle counter, never wall-clock, and drawn from the seeded stream. The
+    // predictor's own layer-5 probing does the purposeful part; this is the
+    // outer safety net.
+    this.arcExplorer = new ArcExplorer(300);
     const meshNodes = createLossyUdpMesh(4, dropRate);
     const useLocalLlm = process.env.ZETA_SWARM_USE_LOCAL_LLM === "1";
+    // The outer-loop tuning fetch previously fired on every orbit shift even
+    // where no LLM can exist (the browser) — a guaranteed-failing request in
+    // the console. It now requires the same explicit opt-in.
+    this.llmTuningEnabled = useLocalLlm;
     
     for (let i = 0; i < 4; i++) {
       const hat = SWARM_HATS[i]!;
@@ -162,7 +192,7 @@ export class SwarmController {
 
         // Ask LLM to optimize worm hyperparameters on orbit shift (Outer Loop)
         const activePilot = this.nodes.find(n => n.hat.name === "Pilot");
-        if (activePilot && this.wormSociety.length > 0) {
+        if (this.llmTuningEnabled && activePilot && this.wormSociety.length > 0) {
           console.log(`[SwarmController] LLM Outer Loop: Analyzing C. elegans performance and tuning hyperparameters...`);
           try {
             const deltaContext = this.visualDeltaLog.length > 0 ? `Recent Visual Deltas:\n${this.visualDeltaLog.join('\\n')}` : `No visual deltas yet.`;
@@ -355,6 +385,10 @@ Output ONLY a valid JSON array of strings representing the sub-tasks. Example: [
           if (!this.bnnSociety) {
             console.log("[SwarmController] Initializing Society of BNN Key Predictors for CHIP-8 (Inner Loop)...");
             this.bnnSociety = new BnnSocietyPredictor(3);
+            if (this.pendingGamePriors) {
+              this.bnnSociety.importSnapshot(this.pendingGamePriors);
+              console.log(`[SwarmController] 🧠 Restored game priors (${this.pendingGamePriors.exploreTicksDone} explore ticks pre-spent).`);
+            }
           }
           
           // Inject display and step Kuramoto oscillator
@@ -368,8 +402,10 @@ Output ONLY a valid JSON array of strings representing the sub-tasks. Example: [
             for (let i = 0; i <= 0xF; i++) this.pheromoneField.set(i, 0.0);
           }
           
-          // BNN Key Predictor computes its consensus separately
-          let bnnPredictions = this.bnnSociety.predict(world.cheatEngine!.display!);
+          // BNN Key Predictor computes its consensus separately. The key we
+          // committed LAST tick closes the action→perception loop: it is how
+          // the predictor learns which on-screen object answers to the keys.
+          let bnnPredictions = this.bnnSociety.predict(world.cheatEngine!.display!, this.lastChosenKey);
           
           if (this.arcExplorer && this.arcExplorer.tick()) {
             // Override with pure uniform exploration if in exploration phase
@@ -426,6 +462,7 @@ Output ONLY a valid JSON array of strings representing the sub-tasks. Example: [
           
           // Simple Fusion Policy: if max BNN prob is strong enough, use BNN consensus; otherwise use biological tower
           const chosenKey = maxProb > 0.4 ? bestBnnKey : wormConsensusKey;
+          this.lastChosenKey = chosenKey >= 0 ? chosenKey : undefined;
 
           if (chosenAction.kind === "do_item") {
             chosenAction.actions = [
@@ -433,6 +470,35 @@ Output ONLY a valid JSON array of strings representing the sub-tasks. Example: [
               {"tool": "pressKey", "args": {"key": chosenKey}}
             ];
           }
+
+          // The forced-perception readout: boxes, roles, mode, OCR — so the
+          // page can SHOW what the agent sees instead of asking for trust.
+          const bnn = this.bnnSociety;
+          const arenaTracks: ArenaTrackReadout[] = bnn.lastPerception.tracks.map((t) => ({
+            id: t.id,
+            color: t.color,
+            minX: Math.round(t.minX),
+            minY: Math.round(t.minY),
+            maxX: Math.round(t.maxX),
+            maxY: Math.round(t.maxY),
+            isStatic: t.isStatic,
+            everMoved: t.everMoved,
+            role:
+              t.id === bnn.lastSelfId
+                ? "self"
+                : t.id === bnn.lastAdversaryId
+                  ? "adversary"
+                  : t.isStatic && !t.everMoved
+                    ? "scenery"
+                    : "object",
+          }));
+          const arena: ArenaReadout = {
+            mode: bnn.lastMode,
+            tracks: arenaTracks,
+            ocr: bnn.lastOcr.map((n) => ({ value: n.value, row: n.row, col: n.col, color: n.color })),
+            desired: bnn.lastDesired ? { dx: bnn.lastDesired.dx, dy: bnn.lastDesired.dy } : null,
+          };
+
           const nextWorld = simulate(world, chosenAction);
           // Attach BNN predictions and the chosen key to cheatEngine so TV can render them
           return {
@@ -440,7 +506,8 @@ Output ONLY a valid JSON array of strings representing the sub-tasks. Example: [
             cheatEngine: {
               ...nextWorld.cheatEngine!,
               keyPredictions: bnnPredictions,
-              chosenKey: chosenKey
+              chosenKey: chosenKey,
+              arena
             }
           };
         }
