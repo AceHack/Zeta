@@ -33,6 +33,19 @@ export interface UdpMeshTransport extends DiscoveryTransport, BroadcastTransport
 /// fires once the socket has joined the group and is sending. The core never sees any of
 /// this — it only holds the DiscoveryTransport/BroadcastTransport interface.
 export function createUdpMeshTransport(cfg: UdpMeshConfig, onReady?: () => void): UdpMeshTransport {
+  if (typeof dgram === 'undefined' || !dgram || typeof dgram.createSocket !== 'function') {
+    console.warn("[udp-transport] dgram.createSocket is not supported. Using mock transport.");
+    const send = (_text: string) => {};
+    if (onReady) setTimeout(onReady, 0);
+    return {
+      broadcast: send,
+      publish: send,
+      onMessage: () => {},
+      onFrame: () => {},
+      close: () => {}
+    };
+  }
+
   const sock = dgram.createSocket({ type: "udp4", reuseAddr: true });
   const handlers: Array<(text: string, from: string) => void> = [];
   let ready = false;

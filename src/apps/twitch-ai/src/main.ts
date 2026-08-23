@@ -1,3 +1,9 @@
+if (typeof self !== 'undefined' && typeof (self as any).process === 'undefined') {
+  (self as any).process = { env: {} };
+}
+if (typeof self !== 'undefined' && typeof (self as any).Buffer === 'undefined') {
+  (self as any).Buffer = { from: (str: string) => new TextEncoder().encode(str) };
+}
 import { Chip8TvPlayer } from "./components/Chip8TvPlayer";
 
 document.querySelector<HTMLDivElement>('#app')!.innerHTML = `

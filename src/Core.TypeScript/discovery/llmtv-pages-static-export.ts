@@ -184,6 +184,7 @@ function copyDirectory(sourcePath: string, outPath: string): void {
   mkdirSync(outPath, { recursive: true });
   for (const name of readdirSync(sourcePath)) {
     const sourceChild = join(sourcePath, name);
+    if (name === ".git" || name === "node_modules") continue;
     const outChild = join(outPath, name);
     const stat = lstatSync(sourceChild);
     if (stat.isDirectory()) {

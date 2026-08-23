@@ -18,7 +18,7 @@ import { CelegansController, loadFromCsv } from "../chip8/celegans-controller";
 import { BnnSocietyPredictor } from "../bayesian/bnn-key-predictor";
 import { cooperate } from "../tri-boolean/tri-boolean";
 import { readKnownSignatures } from "./swarm-known-signatures";
-import * as path from "path";
+// removed path
 
 import { HardwareRegistry } from "../discovery/hardware-registry";
 
@@ -158,18 +158,26 @@ Output a JSON array of tool calls you wish to execute. Example: [{"tool": "setWo
         }
 
         // Persist signature to known-signatures.json
-        const sigFile = path.join(__dirname, "known-signatures.json");
-        // One read, one answer: a separate existsSync gate is a check-then-use
-        // race. The shared reader treats only ENOENT as first-run empty history;
-        // unreadable or malformed persistence remains visible evidence.
-        const known = readKnownSignatures(
-          (filePath) => fs.readFileSync(filePath, "utf-8"),
-          sigFile,
-        );
-        if (!known.includes(sig)) {
-          known.push(sig);
-          fs.writeFileSync(sigFile, JSON.stringify(known, null, 2));
-          console.log(`[SwarmController] 💾 Saved new signature ${sig} to known-signatures.json`);
+        let known: string[] = [];
+        if (typeof fs !== 'undefined' && fs.readFileSync && fs.writeFileSync && typeof __dirname !== 'undefined') {
+          const sigFile = path.join(__dirname, "known-signatures.json");
+          known = readKnownSignatures(
+            (filePath) => fs.readFileSync(filePath, "utf-8"),
+            sigFile,
+          );
+          if (!known.includes(sig)) {
+            known.push(sig);
+            fs.writeFileSync(sigFile, JSON.stringify(known, null, 2));
+            console.log(`[SwarmController] 💾 Saved new signature ${sig} to known-signatures.json`);
+          }
+        } else if (typeof localStorage !== 'undefined') {
+          const stored = localStorage.getItem("zeta_known_signatures");
+          known = stored ? JSON.parse(stored) : [];
+          if (!known.includes(sig)) {
+            known.push(sig);
+            localStorage.setItem("zeta_known_signatures", JSON.stringify(known));
+            console.log(`[SwarmController] 💾 Saved new signature ${sig} to localStorage`);
+          }
         }
       }
       
@@ -301,8 +309,7 @@ Output ONLY a valid JSON array of strings representing the sub-tasks. Example: [
           // Inner Loop: Fast path using Society of C. elegans worms & Society of BNNs
           if (this.wormSociety.length === 0) {
             console.log("[SwarmController] Initializing Society of C. elegans biological substrates (Inner Loop)...");
-            const csvPath = path.resolve(__dirname, "../../Core/data/celegans-connectome-chemical.csv");
-            const connectome = loadFromCsv(csvPath);
+            const connectome = loadFromCsv();
             // Instantiate 5 worms cooperating
             for (let i = 0; i < 5; i++) {
               this.wormSociety.push(new CelegansController(connectome, BigInt(1337 + i)));

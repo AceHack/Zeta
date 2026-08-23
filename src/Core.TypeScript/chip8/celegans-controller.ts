@@ -1,4 +1,4 @@
-import * as fs from 'fs';
+import { connectomeCsv } from '../../Core/data/celegans-connectome-chemical';
 
 // ── Connectome data types ──────────────────────────────────────────────────
 
@@ -106,9 +106,8 @@ export function buildConnectome(synapses: Synapse[]): Connectome {
   return { neurons, indexOf, synapses, k };
 }
 
-export function loadFromCsv(csvPath: string): Connectome {
-  const text = fs.readFileSync(csvPath, 'utf8');
-  return buildConnectome(parseSynapses(text));
+export function loadFromCsv(): Connectome {
+  return buildConnectome(parseSynapses(connectomeCsv));
 }
 
 // ── Oscillator initialization ──────────────────────────────────────────────
