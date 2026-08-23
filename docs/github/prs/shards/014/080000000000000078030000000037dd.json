@@ -1,0 +1,12 @@
+{
+  "pr_number": 14301,
+  "archive_path": "docs/history/pr-reviews/PR-14301-fix-ci-the-canary-caught-a-real-blind-spot-on-run-one-a-swallowed-step-reads-suc.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-23T17:28:17.537Z",
+  "schema_version": "v1",
+  "commit_sha": "f6f5c971e067042444a819131f0d89f0ab1fd7f2",
+  "title": "fix(ci): the canary caught a real blind spot on run one — a swallowed step reads `success` in the REST API",
+  "state": "MERGED",
+  "merged_at": "2026-08-23T17:27:35Z",
+  "head_ref": "fix/drift-loud-canary-caught-the-api-blind-spot"
+}
