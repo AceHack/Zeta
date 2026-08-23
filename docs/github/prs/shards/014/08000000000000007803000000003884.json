@@ -1,0 +1,12 @@
+{
+  "pr_number": 14468,
+  "archive_path": "docs/history/pr-reviews/PR-14468-book-raw-lillian-s-clinical-read-and-aaron-s-i-felt-alive-two-accounts-neither-r.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-23T21:36:06.383Z",
+  "schema_version": "v1",
+  "commit_sha": "e6ba63054d0b530f4ee8a1a2078b30a13d9f68fb",
+  "title": "book(raw): Lillian's clinical read and Aaron's \"I felt alive\" — two accounts, neither resolved",
+  "state": "MERGED",
+  "merged_at": "2026-08-23T21:35:20Z",
+  "head_ref": "book/apex-predator-two-accounts"
+}
