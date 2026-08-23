@@ -1,0 +1,12 @@
+{
+  "pr_number": 14394,
+  "archive_path": "docs/history/pr-reviews/PR-14394-book-hinge-information-geometry-as-the-joint-the-soft-regime-stack-swings-on.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-23T19:20:52.510Z",
+  "schema_version": "v1",
+  "commit_sha": "d4537a814b5b3ac5b0fc443590b40d2078052d9e",
+  "title": "book(hinge): information geometry as the joint the soft-regime stack swings on",
+  "state": "MERGED",
+  "merged_at": "2026-08-23T19:20:07Z",
+  "head_ref": "book/hinge-information-geometry"
+}
