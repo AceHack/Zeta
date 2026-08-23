@@ -51,6 +51,7 @@ import {
 } from "./darkhall-browser-durable-runtime";
 import { DARK_HALL_DATABASE_READOUT_SCHEMA, type DarkHallDatabaseReadout } from "./darkhall-database-readout";
 import type { RoomRunTranscript } from "./darkhall-room";
+import { monotoneLastWriterWinsRevisionPolicy } from "../persistence/revision-policy";
 
 const initialTranscript: RoomRunTranscript = {
   schema: "zeta.darkhall.room-ui.v1",
@@ -124,6 +125,7 @@ function copyRecord(record: BrowserCheckpointRecord): BrowserCheckpointRecord {
 }
 
 class MemoryCheckpointPort implements BrowserCheckpointPort {
+  readonly revisionPolicy = monotoneLastWriterWinsRevisionPolicy;
   private readonly stored = new Map<string, BrowserCheckpointRecord>();
   closeCalls = 0;
   rejectLoad = false;
@@ -168,7 +170,7 @@ class MemoryCheckpointPort implements BrowserCheckpointPort {
 
   save(record: BrowserCheckpointRecord): Promise<BrowserCheckpointResult<BrowserCheckpointRecord>> {
     if (this.saveOverride !== null) return this.saveOverride(record);
-    const decision = decideBrowserCheckpointSave(this.recordFor(record.nodeId), record);
+    const decision = decideBrowserCheckpointSave(this.recordFor(record.nodeId), record, this.revisionPolicy);
     if (!decision.ok) return Promise.resolve(decision);
     this.stored.set(record.nodeId, copyRecord(decision.value.record));
     return Promise.resolve(succeeded(copyRecord(decision.value.record)));

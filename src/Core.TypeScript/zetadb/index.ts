@@ -41,3 +41,14 @@ export {
   type ZetaDbScheduledJournal,
   type ZetaDbScheduledRunReadout,
 } from "./scheduled-node";
+
+export {
+  compareAndSwapRevisionPolicy,
+  monotoneLastWriterWinsRevisionPolicy,
+  type RevisionPolicyDecision,
+  type RevisionPolicyId,
+  type RevisionPolicyPort,
+  type RevisionPolicyRefusal,
+  type RevisionPolicyResult,
+  type RevisionedBytes,
+} from "../persistence/revision-policy";

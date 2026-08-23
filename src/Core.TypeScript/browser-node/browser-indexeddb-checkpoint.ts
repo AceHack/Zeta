@@ -9,6 +9,7 @@ import {
   type BrowserCheckpointRecord,
   type BrowserCheckpointResult,
 } from "./browser-checkpoint-port";
+import { monotoneLastWriterWinsRevisionPolicy } from "../persistence/revision-policy";
 
 export interface NativeIndexedDbCheckpointFeedback {
   readonly severity: "backpressure" | "heat";
@@ -260,6 +261,7 @@ export function openNativeIndexedDbCheckpointPort(
       }
 
       let closed = false;
+      const revisionPolicy = monotoneLastWriterWinsRevisionPolicy;
       try {
         database.onversionchange = () => {
           try {
@@ -405,6 +407,7 @@ export function openNativeIndexedDbCheckpointPort(
             const decision = decideBrowserCheckpointSave(
               getRequest?.result === undefined ? null : getRequest.result,
               candidate.value,
+              revisionPolicy,
             );
             if (!decision.ok) {
               finishSave(decision);
@@ -568,6 +571,7 @@ export function openNativeIndexedDbCheckpointPort(
 
       finish(
         nativeSucceeded({
+          revisionPolicy,
           load,
           save,
           remove,

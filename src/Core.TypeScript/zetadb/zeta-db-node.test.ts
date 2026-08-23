@@ -8,6 +8,7 @@ import {
   type ZetaDbExecutorKind,
   type ZetaDbImagePort,
 } from "./zeta-db-node";
+import { compareAndSwapRevisionPolicy } from "../persistence/revision-policy";
 
 const limits = { maxDeltas: 16, maxEntries: 32, maxCheckpointBytes: 32 * 1024 };
 
@@ -255,7 +256,7 @@ describe("event-driven ZetaDB node", () => {
         feedback: {
           severity: "backpressure",
           code: "database-revision-conflict",
-          detail: "Database revision 1 cannot follow stored revision 1.",
+          detail: "Revision 1 already names different bytes.",
         },
       },
     ]);
@@ -271,7 +272,7 @@ describe("event-driven ZetaDB node", () => {
     let revisionConflicts = 0;
     const port: ZetaDbImagePort = {
       // Inherited, not asserted: this fake only instruments the durable port it wraps.
-      revisionDiscipline: durable.revisionDiscipline,
+      revisionPolicy: durable.revisionPolicy,
       load: async (nodeId) => {
         const snapshot = await durable.load(nodeId);
         loads += 1;
@@ -328,7 +329,7 @@ describe("event-driven ZetaDB node", () => {
     let loads = 0;
     let saves = 0;
     const alwaysConflicted: ZetaDbImagePort = {
-      revisionDiscipline: "compare-and-swap",
+      revisionPolicy: compareAndSwapRevisionPolicy,
       load: () => {
         loads += 1;
         return Promise.resolve({ ok: true, value: null });
@@ -379,7 +380,7 @@ describe("event-driven ZetaDB node", () => {
     });
     let loads = 0;
     const port: ZetaDbImagePort = {
-      revisionDiscipline: durable.revisionDiscipline,
+      revisionPolicy: durable.revisionPolicy,
       load: async (nodeId) => {
         loads += 1;
         if (loads >= 3) await complementarySaveReady;
@@ -434,7 +435,7 @@ describe("event-driven ZetaDB node", () => {
     let loads = 0;
     let saves = 0;
     const port: ZetaDbImagePort = {
-      revisionDiscipline: durable.revisionDiscipline,
+      revisionPolicy: durable.revisionPolicy,
       load: (nodeId) => {
         loads += 1;
         return durable.load(nodeId);

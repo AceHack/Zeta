@@ -1,11 +1,12 @@
 ---
 id: 081M0Q8TQYE087G0R001WBX1ZC
 type: task
-state: backlog
+state: done
 priority: P1
 slug: decide-the-revision-discipline-for-the-browser-backed-zetadb
 title: "Decide the revision discipline for the browser-backed ZetaDbImagePort (monotone LWW vs compare-and-swap)"
 created: 2026-08-23T12:16:52.174Z
+completed: 2026-08-23T17:08:32Z
 depends_on: []
 composes_with: []
 ---
@@ -22,23 +23,22 @@ composes_with: []
 (`src/Core.TypeScript/zetadb/zeta-db-node.ts`, `ZetaDbRevisionDiscipline`). Two shipped
 implementations declare different ones:
 
-| implementation | declares | enforces |
-|---|---|---|
-| `createInMemoryZetaDbImagePort` (reference) | `compare-and-swap` | `existing.revision + 1`; first write must be revision 1 |
-| `createBrowserZetaDbImagePort` (production IndexedDB) | `monotone-last-writer-wins` | refuses only `<` and `===`-with-different-bytes |
-| `createFileImagePort` (`src/Core.TypeScript/zetadb/scheduled-node.ts`) | `compare-and-swap` | successor-only |
+| implementation                                                         | declares                    | enforces                                                |
+| ---------------------------------------------------------------------- | --------------------------- | ------------------------------------------------------- |
+| `createInMemoryZetaDbImagePort` (reference)                            | `compare-and-swap`          | `existing.revision + 1`; first write must be revision 1 |
+| `createBrowserZetaDbImagePort` (production IndexedDB)                  | `monotone-last-writer-wins` | refuses only `<` and `===`-with-different-bytes         |
+| `createFileImagePort` (`src/Core.TypeScript/zetadb/scheduled-node.ts`) | `compare-and-swap`          | successor-only                                          |
 
-Declaring the divergence was the honest, non-unilateral half and it is done. **Choosing**
-which discipline the browser-backed IMAGE store should enforce is the open half, and it
-is an architect's call, not a fixer's.
+Declaring the divergence was the honest, non-unilateral half. The resolution below makes
+the contract executable without pretending every storage adapter needs the same policy.
 
 ## Why the browser port is monotone (evidence — this is DELIBERATE, not drift)
 
 `BrowserCheckpointPort` predates the ZetaDB kernel by 8 days and is not primarily a
 database port:
 
-- PR #9943 (`98984fd59`, 2026-08-01) specified it as *"enforce atomic **monotonic**
-  revisions"*. Intent is on the record.
+- PR #9943 (`98984fd59`, 2026-08-01) specified it as _"enforce atomic **monotonic**
+  revisions"_. Intent is on the record.
 - It serves three non-database record kinds — `"room"`, `"causal-corrections"`,
   `"causal-handoffs"` (`BrowserCheckpointRecordKind`).
 - `browser-multitab-smoke.ts` — the real Chromium proof — saves room revision **250**,
@@ -69,8 +69,8 @@ image store computes `loaded + 1`, so none of them leapfrogs by construction:
   database image node — so the empty-slot path is not reachable for images today either.
 
 This is therefore a **latent contract hole, not live data loss on `main`**. Soraya's
-"reachable, not theoretical" is right about the *port surface* (witnessed: stored 5,
-candidate 9 → ACCEPTED) and overstated about the *current caller graph*. Recording both
+"reachable, not theoretical" is right about the _port surface_ (witnessed: stored 5,
+candidate 9 → ACCEPTED) and overstated about the _current caller graph_. Recording both
 so the next reader does not have to re-derive it.
 
 The risk is that the hole is invisible to anyone adding a writer. One caller that writes
@@ -89,8 +89,28 @@ takes it.
 3. **Accept monotone for images** and re-establish #13929's convergence result against a
    monotone port — or narrow the claim to say it holds only for CAS ports.
 
-Option 2 looks right (the two record classes genuinely want different contracts), but the
-call is not mine to make.
+Option 2 looked right if one global discipline had to be chosen. The landed resolution
+instead makes the policy a required port, so an adapter can provide either behavior without
+changing the database kernel or misreporting what it executes.
+
+## Resolution (2026-08-23)
+
+Revision discipline is now an executable hexagonal port, not a descriptive string:
+
+- `src/Core.TypeScript/persistence/revision-policy.ts` owns `RevisionPolicyPort`, typed
+  decisions/refusals, and the compare-and-swap and monotone implementations.
+- `BrowserCheckpointPort` and `ZetaDbImagePort` both require a `revisionPolicy`. The ZetaDB
+  browser adapter inherits the exact policy supplied by its checkpoint adapter.
+- Native IndexedDB executes its policy inside the existing read-write transaction. The
+  in-memory and scheduled-file stores execute compare-and-swap inside their local write
+  boundary. The policy decides admissibility; the adapter owns atomicity.
+- Native browser checkpoints retain monotone last-writer-wins by default, preserving the
+  Chromium remove/revision-300 proof. No global tightening silently changes room behavior.
+- CP-3b now generates candidates, asks each port's policy for the expected decision, and
+  compares `save` against that executable result. A port cannot pass by naming a string.
+
+Evidence: 495 focused browser/ZetaDB/Dark Hall tests pass, including six direct policy-law
+tests and generated conformance for both shipped policy modes; whole-tree TypeScript is clean.
 
 ## Falsifiers already in place
 

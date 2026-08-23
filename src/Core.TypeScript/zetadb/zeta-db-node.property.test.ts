@@ -35,6 +35,7 @@ import {
   type BrowserCheckpointRecord,
 } from "../browser-node/browser-checkpoint-port";
 import { createBrowserZetaDbImagePort } from "../browser-node/browser-zetadb-image-port";
+import { monotoneLastWriterWinsRevisionPolicy } from "../persistence/revision-policy";
 
 // ── The roster ───────────────────────────────────────────────────────────────
 
@@ -49,6 +50,7 @@ function createDecisionBackedCheckpointPort(): BrowserCheckpointPort {
   const records = new Map<string, BrowserCheckpointRecord>();
   let closed = false;
   return {
+    revisionPolicy: monotoneLastWriterWinsRevisionPolicy,
     load: (nodeId) => {
       if (closed) return Promise.resolve(browserCheckpointFailed("checkpoint-store-closed", "closed"));
       const record = records.get(nodeId);
@@ -58,7 +60,11 @@ function createDecisionBackedCheckpointPort(): BrowserCheckpointPort {
     },
     save: (candidate) => {
       if (closed) return Promise.resolve(browserCheckpointFailed("checkpoint-store-closed", "closed"));
-      const decision = decideBrowserCheckpointSave(records.get(candidate.nodeId) ?? null, candidate);
+      const decision = decideBrowserCheckpointSave(
+        records.get(candidate.nodeId) ?? null,
+        candidate,
+        monotoneLastWriterWinsRevisionPolicy,
+      );
       if (!decision.ok) return Promise.resolve(decision);
       records.set(candidate.nodeId, copyBrowserCheckpointRecord(decision.value.record));
       return Promise.resolve(browserCheckpointSucceeded(copyBrowserCheckpointRecord(decision.value.record)));
@@ -193,9 +199,8 @@ describe("CP-2 · identical re-save is idempotent (§12)", () => {
 //   CP-3a  UNIVERSAL obligations — asserted against every port with NO per-implementation
 //          branch. Both disciplines owe these, so no implementation is graded on its own
 //          curve. This is the part that keeps CP-3b from becoming the vacuity class.
-//   CP-3b  DECLARATION conformance — a port must behave the way it declares. Each branch
-//          is a real falsifier for its own declaration: a port claiming compare-and-swap
-//          that admits a leapfrog fails; a port claiming monotone that refuses one fails.
+//   CP-3b  POLICY conformance — a port must behave like its executable policy. A tag can
+//          lie while still compiling; a generated decision is a direct behavioral oracle.
 //   CP-3c  COVERAGE — the roster must actually contain both declared disciplines, so
 //          CP-3b can never pass because one branch was never reached.
 
@@ -233,9 +238,9 @@ describe("CP-3a · obligations every revision discipline owes (no per-port exemp
   }
 });
 
-describe("CP-3b · a port behaves the way it declares", () => {
+describe("CP-3b · a port executes its revision policy", () => {
   for (const entry of ROSTER) {
-    test(`${entry.name} — declares "${entry.create().revisionDiscipline}"`, async () => {
+    test(`${entry.name} — executes "${entry.create().revisionPolicy.id}"`, async () => {
       await fc.assert(
         fc.asyncProperty(
           fc.integer({ min: 1, max: 4 }),
@@ -244,16 +249,18 @@ describe("CP-3b · a port behaves the way it declares", () => {
           async (stored, leap, seed) => {
             const port = entry.create();
             await seedTo(port, stored);
-            // A LEAPFROG: strictly greater than the stored revision by more than one.
-            const saved = await port.save(record(stored + leap, seed));
+            const existing = await loadedRecord(port);
+            if (existing === null) throw new Error("seeded port returned no record");
+            const candidate = record(stored + leap, seed);
+            const expected = port.revisionPolicy.decide(existing, candidate);
+            const saved = await port.save(candidate);
 
-            if (port.revisionDiscipline === "compare-and-swap") {
+            expect(saved.ok).toBe(expected.ok);
+            if (!expected.ok) {
               expect(saved.ok).toBe(false);
               if (!saved.ok) expect(saved.feedback.code).toBe("database-revision-conflict");
               return;
             }
-            // "monotone-last-writer-wins" — the leapfrog is admitted, and the skipped
-            // revisions are simply gone. Declared, so it can no longer surprise anyone.
             expect(saved.ok).toBe(true);
             const after = await loadedRecord(port);
             expect(after?.revision).toBe(stored + leap);
@@ -264,22 +271,20 @@ describe("CP-3b · a port behaves the way it declares", () => {
     });
   }
 
-  test("an empty store admits a first write only under the declared discipline", async () => {
+  test("an empty store admits a first write exactly when its policy does", async () => {
     for (const entry of ROSTER) {
       const port = entry.create();
-      const first = await port.save(record(7, "first-write-at-seven"));
-      if (port.revisionDiscipline === "compare-and-swap") {
-        expect(first.ok).toBe(false);
-      } else {
-        expect(first.ok).toBe(true);
-      }
+      const candidate = record(7, "first-write-at-seven");
+      const expected = port.revisionPolicy.decide(null, candidate);
+      const first = await port.save(candidate);
+      expect(first.ok).toBe(expected.ok);
     }
   });
 });
 
 describe("CP-3c · the roster covers every declared discipline (anti-vacuity)", () => {
   test("CP-3b's branches are both reached by a real implementation", () => {
-    const declared = new Set(ROSTER.map((entry) => entry.create().revisionDiscipline));
+    const declared = new Set(ROSTER.map((entry) => entry.create().revisionPolicy.id));
     // Without this, CP-3b would pass on a one-sided roster having proved half a contract.
     expect(declared.has("compare-and-swap")).toBe(true);
     expect(declared.has("monotone-last-writer-wins")).toBe(true);

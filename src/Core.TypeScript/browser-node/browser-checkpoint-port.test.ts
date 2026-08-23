@@ -7,6 +7,7 @@ import {
   validateBrowserCheckpointRecord,
   type BrowserCheckpointRecord,
 } from "./browser-checkpoint-port";
+import { compareAndSwapRevisionPolicy } from "../persistence/revision-policy";
 
 function checkpoint(nodeId: string, revision: number, bytes: readonly number[]): BrowserCheckpointRecord {
   return {
@@ -69,6 +70,20 @@ describe("browser checkpoint port", () => {
     });
   });
 
+  test("accepts an injected compare-and-swap policy without changing the checkpoint port", () => {
+    const firstGap = decideBrowserCheckpointSave(null, checkpoint("node-a", 7, [1]), compareAndSwapRevisionPolicy);
+    const first = decideBrowserCheckpointSave(null, checkpoint("node-a", 1, [1]), compareAndSwapRevisionPolicy);
+    const laterGap = decideBrowserCheckpointSave(
+      checkpoint("node-a", 1, [1]),
+      checkpoint("node-a", 3, [3]),
+      compareAndSwapRevisionPolicy,
+    );
+
+    expect(firstGap).toMatchObject({ ok: false, feedback: { code: "checkpoint-revision-conflict" } });
+    expect(first).toMatchObject({ ok: true, value: { action: "write" } });
+    expect(laterGap).toMatchObject({ ok: false, feedback: { code: "checkpoint-revision-conflict" } });
+  });
+
   test("makes an identical revision idempotent and copies its bytes", () => {
     const candidate = checkpoint("node-a", 4, [4, 5]);
     const result = decideBrowserCheckpointSave(checkpoint("node-a", 4, [4, 5]), candidate);
@@ -103,7 +118,7 @@ describe("browser checkpoint port", () => {
       feedback: {
         severity: "heat",
         code: "checkpoint-record-invalid",
-        detail: "Stored checkpoint node node-b does not match candidate node node-a.",
+        detail: "Stored revision node node-b does not match candidate node node-a.",
       },
     });
   });

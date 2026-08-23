@@ -142,6 +142,17 @@ export {
 } from "./browser-checkpoint-port";
 
 export {
+  compareAndSwapRevisionPolicy,
+  monotoneLastWriterWinsRevisionPolicy,
+  type RevisionPolicyDecision,
+  type RevisionPolicyId,
+  type RevisionPolicyPort,
+  type RevisionPolicyRefusal,
+  type RevisionPolicyResult,
+  type RevisionedBytes,
+} from "../persistence/revision-policy";
+
+export {
   openNativeIndexedDbCheckpointPort,
   type NativeIndexedDbCheckpointFeedback,
   type NativeIndexedDbCheckpointOptions,

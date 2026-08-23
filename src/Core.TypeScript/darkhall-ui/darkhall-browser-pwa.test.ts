@@ -2,9 +2,11 @@ import { describe, expect, test } from "bun:test";
 import {
   browserCheckpointSucceeded,
   copyBrowserCheckpointRecord,
+  decideBrowserCheckpointSave,
   type BrowserCheckpointPort,
   type BrowserCheckpointRecord,
 } from "../browser-node/browser-checkpoint-port";
+import { monotoneLastWriterWinsRevisionPolicy } from "../persistence/revision-policy";
 import type { BrowserTabChannelMessage } from "../browser-node/browser-tab-coordinator";
 import { startDurableDarkHallPwa, startNativeDarkHallPwa } from "./darkhall-browser-pwa";
 import type { RoomRunTranscript } from "./darkhall-room";
@@ -86,6 +88,7 @@ class NativeRoot {
 }
 
 class MemoryCheckpointPort implements BrowserCheckpointPort {
+  readonly revisionPolicy = monotoneLastWriterWinsRevisionPolicy;
   readonly records = new Map<string, BrowserCheckpointRecord>();
   closed = false;
 
@@ -97,7 +100,9 @@ class MemoryCheckpointPort implements BrowserCheckpointPort {
   }
 
   save(record: BrowserCheckpointRecord) {
-    const copy = copyBrowserCheckpointRecord(record);
+    const decision = decideBrowserCheckpointSave(this.records.get(record.nodeId) ?? null, record, this.revisionPolicy);
+    if (!decision.ok) return Promise.resolve(decision);
+    const copy = copyBrowserCheckpointRecord(decision.value.record);
     this.records.set(record.nodeId, copy);
     return Promise.resolve(browserCheckpointSucceeded(copyBrowserCheckpointRecord(copy)));
   }

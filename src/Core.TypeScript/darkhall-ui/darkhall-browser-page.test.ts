@@ -3,9 +3,11 @@ import { describe, expect, test } from "bun:test";
 import {
   browserCheckpointSucceeded,
   copyBrowserCheckpointRecord,
+  decideBrowserCheckpointSave,
   type BrowserCheckpointPort,
   type BrowserCheckpointRecord,
 } from "../browser-node/browser-checkpoint-port";
+import { monotoneLastWriterWinsRevisionPolicy } from "../persistence/revision-policy";
 import {
   createInMemoryBrowserDatabaseIntentOutbox,
   type BrowserDatabaseIntentOutboxPort,
@@ -275,6 +277,7 @@ class NativeBrowserRoot {
 }
 
 class SharedMemoryCheckpointPort implements BrowserCheckpointPort {
+  readonly revisionPolicy = monotoneLastWriterWinsRevisionPolicy;
   closed = false;
   private readonly records: Map<string, BrowserCheckpointRecord>;
 
@@ -290,7 +293,9 @@ class SharedMemoryCheckpointPort implements BrowserCheckpointPort {
   }
 
   save(record: BrowserCheckpointRecord) {
-    const copy = copyBrowserCheckpointRecord(record);
+    const decision = decideBrowserCheckpointSave(this.records.get(record.nodeId) ?? null, record, this.revisionPolicy);
+    if (!decision.ok) return Promise.resolve(decision);
+    const copy = copyBrowserCheckpointRecord(decision.value.record);
     this.records.set(record.nodeId, copy);
     return Promise.resolve(browserCheckpointSucceeded(copyBrowserCheckpointRecord(copy)));
   }

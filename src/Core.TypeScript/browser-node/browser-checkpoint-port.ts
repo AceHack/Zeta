@@ -1,3 +1,5 @@
+import { monotoneLastWriterWinsRevisionPolicy, type RevisionPolicyPort } from "../persistence/revision-policy";
+
 export const BROWSER_CHECKPOINT_RECORD_SCHEMA = "zeta.browser-checkpoint-record.v1" as const;
 
 export type BrowserCheckpointRecordKind = "room" | "causal-corrections" | "causal-handoffs";
@@ -33,6 +35,8 @@ export type BrowserCheckpointResult<T> =
 
 /** Technology-neutral checkpoint boundary implemented by browser persistence adapters. */
 export interface BrowserCheckpointPort {
+  /** Executable policy applied in the same transaction as each save. */
+  readonly revisionPolicy: RevisionPolicyPort;
   load(nodeId: string): Promise<BrowserCheckpointResult<BrowserCheckpointRecord | null>>;
   save(record: BrowserCheckpointRecord): Promise<BrowserCheckpointResult<BrowserCheckpointRecord>>;
   remove(nodeId: string, throughRevision: number): Promise<BrowserCheckpointResult<boolean>>;
@@ -57,14 +61,6 @@ function isIdentifier(value: unknown): value is string {
 
 function isRevision(value: unknown): value is number {
   return typeof value === "number" && Number.isSafeInteger(value) && value >= 0;
-}
-
-function samePayload(left: Uint8Array, right: Uint8Array): boolean {
-  if (left.byteLength !== right.byteLength) return false;
-  for (let index = 0; index < left.byteLength; index += 1) {
-    if (left[index] !== right[index]) return false;
-  }
-  return true;
 }
 
 export function browserCheckpointSucceeded<T>(value: T): BrowserCheckpointResult<T> {
@@ -107,45 +103,30 @@ export function validateBrowserCheckpointRecord(value: unknown): BrowserCheckpoi
 }
 
 export function decideBrowserCheckpointSave(
-  existingValue: unknown | null,
+  existingValue: unknown,
   candidateValue: unknown,
+  revisionPolicy: RevisionPolicyPort = monotoneLastWriterWinsRevisionPolicy,
 ): BrowserCheckpointResult<BrowserCheckpointSaveDecision> {
   const candidate = validateBrowserCheckpointRecord(candidateValue);
   if (!candidate.ok) return candidate;
-  if (existingValue === null) {
-    return browserCheckpointSucceeded({ action: "write", record: candidate.value });
-  }
-
-  const existing = validateBrowserCheckpointRecord(existingValue);
-  if (!existing.ok) return existing;
-  if (existing.value.nodeId !== candidate.value.nodeId) {
+  const existing = existingValue === null ? null : validateBrowserCheckpointRecord(existingValue);
+  if (existing !== null && !existing.ok) return existing;
+  const decision = revisionPolicy.decide(existing === null ? null : existing.value, candidate.value);
+  if (!decision.ok) {
     return browserCheckpointFailed(
-      "checkpoint-record-invalid",
-      `Stored checkpoint node ${existing.value.nodeId} does not match candidate node ${candidate.value.nodeId}.`,
+      decision.refusal.reason === "node-mismatch" ? "checkpoint-record-invalid" : "checkpoint-revision-conflict",
+      decision.refusal.detail,
+      decision.refusal.reason === "node-mismatch" ? "heat" : "backpressure",
     );
   }
-  if (candidate.value.revision < existing.value.revision) {
-    return browserCheckpointFailed(
-      "checkpoint-revision-conflict",
-      `Checkpoint revision ${String(candidate.value.revision)} is older than stored revision ${String(existing.value.revision)}.`,
-      "backpressure",
-    );
-  }
-  if (candidate.value.revision === existing.value.revision) {
-    if (!samePayload(candidate.value.payload, existing.value.payload)) {
-      return browserCheckpointFailed(
-        "checkpoint-revision-conflict",
-        `Checkpoint revision ${String(candidate.value.revision)} already names different bytes.`,
-        "backpressure",
-      );
-    }
-    return browserCheckpointSucceeded({ action: "idempotent", record: candidate.value });
-  }
-  return browserCheckpointSucceeded({ action: "write", record: candidate.value });
+  return browserCheckpointSucceeded({
+    action: decision.value.action,
+    record: copyBrowserCheckpointRecord(decision.value.record),
+  });
 }
 
 export function decideBrowserCheckpointRemoval(
-  existingValue: unknown | null,
+  existingValue: unknown,
   nodeId: unknown,
   throughRevision: unknown,
 ): BrowserCheckpointResult<BrowserCheckpointRemovalDecision> {

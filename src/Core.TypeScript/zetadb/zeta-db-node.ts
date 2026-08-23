@@ -1,3 +1,9 @@
+import {
+  compareAndSwapRevisionPolicy,
+  type RevisionPolicyPort,
+  type RevisionPolicyRefusal,
+} from "../persistence/revision-policy";
+
 export const ZETA_DB_IMAGE_SCHEMA = "zeta.db.image.v1" as const;
 export const ZETA_DB_TICK_SCHEMA = "zeta.db.tick.v1" as const;
 
@@ -57,48 +63,14 @@ export type ZetaDbResult<T> =
   | { readonly ok: true; readonly value: T }
   | { readonly ok: false; readonly feedback: ZetaDbFeedback };
 
-/**
- * The revision contract an image port ACTUALLY enforces on `save`.
- *
- * 081M0Q8TQYE087G0R001WBX1ZC — this type exists because two shipped implementations of `ZetaDbImagePort`
- * enforced two different contracts and nothing said so. The in-memory reference
- * demands a successor revision (`existing.revision + 1`, first write at 1) — a genuine
- * compare-and-swap. The browser/IndexedDB path reaches the same interface through
- * `createBrowserZetaDbImagePort` and refuses only `<` and `===`-with-different-bytes,
- * admitting ANY strictly greater revision and any revision at all into an empty slot.
- * That is monotone last-writer-wins.
- *
- * Neither is wrong. The BROWSER one is deliberate and load-bearing: `BrowserCheckpointPort`
- * predates the ZetaDB kernel, serves three non-database record kinds ("room",
- * "causal-corrections", "causal-handoffs"), was specified as "atomic monotonic revisions"
- * in #9943, and the Chromium multi-tab proof depends on it — `browser-multitab-smoke.ts`
- * saves room revision 250, REMOVES it, then saves 300 into the empty slot and requires
- * both to be admitted. Compare-and-swap would refuse both.
- *
- * What was wrong was the SILENCE. `ZetaDbImagePort` carried no contract at all, so the
- * adapter could present a monotone store as an image port and nothing could notice. A
- * port with an unwritten contract has as many contracts as it has implementations.
- *
- * Declaring it is not choosing it. Which discipline the browser-backed IMAGE store ought
- * to enforce is a design decision for the architect (081M0Q8TQYE087G0R001WBX1ZC); this type only makes the
- * divergence impossible to hold accidentally, and lets the conformance suite hold each
- * implementation to what it claims.
- */
-export type ZetaDbRevisionDiscipline =
-  /** `save` admits only `existing.revision + 1` (and a byte-identical re-save). First write is revision 1. */
-  | "compare-and-swap"
-  /** `save` admits any strictly greater revision, and any revision into an empty slot. */
-  | "monotone-last-writer-wins";
-
 export interface ZetaDbImagePort {
   /**
-   * The contract this implementation enforces — declared, never assumed.
+   * Executable revision contract. The adapter applies its decision atomically with `save`.
    *
    * `runConvergentZetaDbNodeTick`'s bounded-retry convergence (#13929) is proved against
-   * `compare-and-swap`. Against a `monotone-last-writer-wins` port that result does not
-   * transfer by argument; it would have to be re-established.
+   * `compareAndSwapRevisionPolicy`. Other policies require their own convergence evidence.
    */
-  readonly revisionDiscipline: ZetaDbRevisionDiscipline;
+  readonly revisionPolicy: RevisionPolicyPort;
   load(nodeId: string): Promise<ZetaDbResult<ZetaDbImageRecord | null>>;
   save(record: ZetaDbImageRecord): Promise<ZetaDbResult<ZetaDbImageRecord>>;
   close(): ZetaDbResult<null>;
@@ -161,6 +133,14 @@ function failed(
   severity: ZetaDbFeedback["severity"] = "heat",
 ): { readonly ok: false; readonly feedback: ZetaDbFeedback } {
   return { ok: false, feedback: { severity, code, detail } };
+}
+
+function revisionRefused(refusal: RevisionPolicyRefusal): { readonly ok: false; readonly feedback: ZetaDbFeedback } {
+  return failed(
+    refusal.reason === "node-mismatch" ? "database-image-invalid" : "database-revision-conflict",
+    refusal.detail,
+    refusal.reason === "node-mismatch" ? "heat" : "backpressure",
+  );
 }
 
 function isRecord(value: unknown): value is Readonly<Record<string, unknown>> {
@@ -724,13 +704,10 @@ export async function runZetaDbNodeTick(
  * concurrent batch can complete, but only within the caller's finite attempt budget.
  *
  * PRECONDITION on the port (081M0Q8TQYE087G0R001WBX1ZC): the convergence this retry provides was established
- * against a `revisionDiscipline: "compare-and-swap"` port, because the retry is driven by
- * the port REFUSING a revision another writer already took. A port declaring
- * `"monotone-last-writer-wins"` refuses strictly fewer writes, so the argument does not
- * transfer to it — it would have to be re-established, not assumed. This is stated rather
- * than enforced on purpose: refusing a monotone port here would silently change the
- * browser path's behaviour, and which discipline that path should hold is the architect's
- * call, not this function's.
+ * against `compareAndSwapRevisionPolicy`, because the retry is driven by the port REFUSING
+ * a revision another writer already took. A policy that refuses fewer writes needs its own
+ * convergence evidence. This remains a documented precondition rather than silently
+ * changing the browser path's established monotone behavior.
  */
 export async function runConvergentZetaDbNodeTick(
   port: ZetaDbImagePort,
@@ -775,7 +752,7 @@ export function createInMemoryZetaDbImagePort(): ZetaDbImagePort {
   const unavailable = (): ZetaDbResult<never> =>
     failed("database-read-failed", "The in-memory database image port is closed.");
   return {
-    revisionDiscipline: "compare-and-swap",
+    revisionPolicy: compareAndSwapRevisionPolicy,
     load: (nodeId) => {
       if (closed) return Promise.resolve(unavailable());
       const value = records.get(nodeId);
@@ -786,30 +763,11 @@ export function createInMemoryZetaDbImagePort(): ZetaDbImagePort {
     save: (candidate) => {
       if (closed)
         return Promise.resolve(failed("database-write-failed", "The in-memory database image port is closed."));
-      const existing = records.get(candidate.nodeId);
-      if (existing === undefined && candidate.revision !== 1) {
-        return Promise.resolve(
-          failed(
-            "database-revision-conflict",
-            "The first durable database image must have revision 1.",
-            "backpressure",
-          ),
-        );
-      }
-      if (existing !== undefined) {
-        if (candidate.revision === existing.revision && sameBytes(candidate.payload, existing.payload)) {
-          return Promise.resolve(succeeded({ ...candidate, payload: new Uint8Array(candidate.payload) }));
-        }
-        if (candidate.revision !== existing.revision + 1) {
-          return Promise.resolve(
-            failed(
-              "database-revision-conflict",
-              `Database revision ${String(candidate.revision)} cannot follow stored revision ${String(existing.revision)}.`,
-              "backpressure",
-            ),
-          );
-        }
-      }
+      const existing = records.get(candidate.nodeId) ?? null;
+      const decision = compareAndSwapRevisionPolicy.decide(existing, candidate);
+      if (!decision.ok) return Promise.resolve(revisionRefused(decision.refusal));
+      if (decision.value.action === "idempotent")
+        return Promise.resolve(succeeded({ ...candidate, payload: new Uint8Array(candidate.payload) }));
       const stored = { ...candidate, payload: new Uint8Array(candidate.payload) };
       records.set(candidate.nodeId, stored);
       return Promise.resolve(succeeded({ ...stored, payload: new Uint8Array(stored.payload) }));

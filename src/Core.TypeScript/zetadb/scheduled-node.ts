@@ -2,6 +2,7 @@
 
 import { existsSync, mkdirSync, readFileSync, renameSync, writeFileSync } from "node:fs";
 import { dirname, resolve } from "node:path";
+import { compareAndSwapRevisionPolicy, type RevisionPolicyRefusal } from "../persistence/revision-policy";
 import {
   runZetaDbNodeTick,
   type ZetaDbDelta,
@@ -55,12 +56,12 @@ function isRecord(value: unknown): value is Readonly<Record<string, unknown>> {
   return value !== null && typeof value === "object" && !Array.isArray(value);
 }
 
-function sameBytes(left: Uint8Array, right: Uint8Array): boolean {
-  if (left.byteLength !== right.byteLength) return false;
-  for (let index = 0; index < left.byteLength; index += 1) {
-    if (left[index] !== right[index]) return false;
-  }
-  return true;
+function revisionRefused(refusal: RevisionPolicyRefusal): { readonly ok: false; readonly feedback: ZetaDbFeedback } {
+  return failed(
+    refusal.reason === "node-mismatch" ? "database-image-invalid" : "database-revision-conflict",
+    refusal.detail,
+    refusal.reason === "node-mismatch" ? "heat" : "backpressure",
+  );
 }
 
 function readJournal(path: string): ZetaDbResult<ZetaDbScheduledJournal> {
@@ -119,9 +120,7 @@ function createFileImagePort(initial: ZetaDbImageRecord | null): {
   let pending: ZetaDbImageRecord | null = null;
   let closed = false;
   const port: ZetaDbImagePort = {
-    // Successor-only: the first checkpoint must be revision 1 and each save must follow
-    // the stored revision by exactly one (see `save` below).
-    revisionDiscipline: "compare-and-swap",
+    revisionPolicy: compareAndSwapRevisionPolicy,
     load: (nodeId) => {
       if (closed) return Promise.resolve(failed("database-read-failed", "The scheduled database port is closed."));
       if (current !== null && current.nodeId !== nodeId) {
@@ -134,25 +133,9 @@ function createFileImagePort(initial: ZetaDbImageRecord | null): {
     },
     save: (candidate) => {
       if (closed) return Promise.resolve(failed("database-write-failed", "The scheduled database port is closed."));
-      if (current === null && candidate.revision !== 1) {
-        return Promise.resolve(
-          failed("database-revision-conflict", "The first scheduled checkpoint must have revision 1.", "backpressure"),
-        );
-      }
-      if (current !== null) {
-        if (candidate.revision === current.revision && sameBytes(candidate.payload, current.payload)) {
-          return Promise.resolve({ ok: true, value: candidate });
-        }
-        if (candidate.revision !== current.revision + 1) {
-          return Promise.resolve(
-            failed(
-              "database-revision-conflict",
-              `Scheduled checkpoint revision ${String(candidate.revision)} cannot follow revision ${String(current.revision)}.`,
-              "backpressure",
-            ),
-          );
-        }
-      }
+      const decision = compareAndSwapRevisionPolicy.decide(current, candidate);
+      if (!decision.ok) return Promise.resolve(revisionRefused(decision.refusal));
+      if (decision.value.action === "idempotent") return Promise.resolve({ ok: true, value: candidate });
       current = { ...candidate, payload: new Uint8Array(candidate.payload) };
       pending = current;
       return Promise.resolve({ ok: true, value: current });

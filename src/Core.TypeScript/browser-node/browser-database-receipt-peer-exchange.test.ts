@@ -27,6 +27,7 @@ import {
   type BrowserDatabaseReceiptPeerTransport,
 } from "./browser-database-receipt-peer-exchange";
 import { createBrowserZetaDbImagePort } from "./browser-zetadb-image-port";
+import { monotoneLastWriterWinsRevisionPolicy } from "../persistence/revision-policy";
 
 const sourcePeerId = "reticulum/source";
 const targetPeerId = "reticulum/target";
@@ -43,6 +44,7 @@ function createCheckpointPort(): BrowserCheckpointPort {
   const records = new Map<string, BrowserCheckpointRecord>();
   let closed = false;
   return {
+    revisionPolicy: monotoneLastWriterWinsRevisionPolicy,
     load: (nodeId) => {
       if (closed) return Promise.resolve(browserCheckpointFailed("checkpoint-store-closed", "closed"));
       const record = records.get(nodeId);
@@ -52,7 +54,11 @@ function createCheckpointPort(): BrowserCheckpointPort {
     },
     save: (candidate) => {
       if (closed) return Promise.resolve(browserCheckpointFailed("checkpoint-store-closed", "closed"));
-      const decision = decideBrowserCheckpointSave(records.get(candidate.nodeId) ?? null, candidate);
+      const decision = decideBrowserCheckpointSave(
+        records.get(candidate.nodeId) ?? null,
+        candidate,
+        monotoneLastWriterWinsRevisionPolicy,
+      );
       if (!decision.ok) return Promise.resolve(decision);
       records.set(candidate.nodeId, copyBrowserCheckpointRecord(decision.value.record));
       return Promise.resolve(browserCheckpointSucceeded(copyBrowserCheckpointRecord(decision.value.record)));

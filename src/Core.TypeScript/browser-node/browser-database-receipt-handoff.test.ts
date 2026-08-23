@@ -21,6 +21,7 @@ import {
 import { createZetaDbBrowserDatabaseReceiptArchive } from "./browser-database-receipt-archive";
 import { createBrowserZetaDbImagePort } from "./browser-zetadb-image-port";
 import { runZetaDbNodeTick } from "../zetadb/zeta-db-node";
+import { monotoneLastWriterWinsRevisionPolicy } from "../persistence/revision-policy";
 
 const archiveLimits = { maxDeltas: 1, maxEntries: 8, maxCheckpointBytes: 32 * 1024 } as const;
 const handoffLimits = { minimumReceipts: 1, maxReceipts: 8, maxBatchBytes: 32 * 1024 } as const;
@@ -48,6 +49,7 @@ function createCheckpointPort(): BrowserCheckpointPort {
   const records = new Map<string, BrowserCheckpointRecord>();
   let closed = false;
   return {
+    revisionPolicy: monotoneLastWriterWinsRevisionPolicy,
     load: (nodeId) => {
       if (closed) return Promise.resolve(browserCheckpointFailed("checkpoint-store-closed", "closed"));
       const record = records.get(nodeId);
@@ -57,7 +59,11 @@ function createCheckpointPort(): BrowserCheckpointPort {
     },
     save: (candidate) => {
       if (closed) return Promise.resolve(browserCheckpointFailed("checkpoint-store-closed", "closed"));
-      const decision = decideBrowserCheckpointSave(records.get(candidate.nodeId) ?? null, candidate);
+      const decision = decideBrowserCheckpointSave(
+        records.get(candidate.nodeId) ?? null,
+        candidate,
+        monotoneLastWriterWinsRevisionPolicy,
+      );
       if (!decision.ok) return Promise.resolve(decision);
       records.set(candidate.nodeId, copyBrowserCheckpointRecord(decision.value.record));
       return Promise.resolve(browserCheckpointSucceeded(copyBrowserCheckpointRecord(decision.value.record)));
