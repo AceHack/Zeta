@@ -83,9 +83,7 @@ independent of the theory: it is true whatever the math team concludes.
 ### 2.1 SPIR-V + SPIRV-Cross
 
 A binary IR plus a transpiler to MSL / HLSL / GLSL — the literal shape of Aaron's ask, shipping since
-
 2016. **The finding that matters here:** the MSL backend **drops synchronization constructs**. Per
-
 the SPIRV-Cross MSL documentation, `OpMemoryBarrier` **has no MSL counterpart**; descriptor sets do
 not exist in Metal so combined image samplers must be split; shared variables cannot have matrix
 type. So the portable IR is not portable in exactly the register §4 cares about: **a memory barrier
