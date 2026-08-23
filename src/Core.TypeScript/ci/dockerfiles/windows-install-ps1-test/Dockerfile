@@ -53,6 +53,24 @@ COPY .mise.toml C:/workspace/.mise.toml
 COPY package.json C:/workspace/package.json
 COPY bun.lock C:/workspace/bun.lock
 
+# EVERY WORKSPACE package.json NAMED IN THE ROOT `workspaces` ARRAY MUST BE COPIED HERE.
+# install.ps1:351 runs `bun install --frozen-lockfile`, and bun resolves the root
+# manifest's workspace list against the build context. Copying package.json + bun.lock
+# without the workspace manifests leaves bun with a lockfile that references a workspace
+# the context does not contain, and it fails closed:
+#   error: Workspace not found "src/apps/twitch-ai"
+# That is exactly what happened when #14303 regenerated bun.lock for the twitch-ai
+# workspace (added by #14200/#14253/#14292): the lockfile fix was correct and unblocked
+# every OTHER lane, and this one turned red instead, because the Dockerfile's
+# "COPY only the install-relevant subset" set was silently no longer sufficient.
+#
+# So this list is COUPLED to package.json's `workspaces` array and a new workspace breaks
+# this lane until a matching COPY lands. The coupling is checked, not trusted --
+# windows-dockerfile-workspaces.test.ts derives the expected set from package.json and
+# fails when the two disagree, so the next workspace is caught at lint time rather than
+# 435 seconds into a Windows container build.
+COPY src/apps/twitch-ai/package.json C:/workspace/src/apps/twitch-ai/package.json
+
 # mise's GitHub-API token (the shield's rate-limit fix; sibling to the 4 Unix shields in #6273).
 # install.ps1 runs `mise install`, which calls the GitHub API to resolve .mise.toml runtime versions
 # from GitHub releases. UNAUTHENTICATED that API is 60 req/hr -> a cold cluster build exhausts it and
