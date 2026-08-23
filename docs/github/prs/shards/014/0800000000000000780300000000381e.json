@@ -1,0 +1,12 @@
+{
+  "pr_number": 14366,
+  "archive_path": "docs/history/pr-reviews/PR-14366-fix-backlog-retire-stale-op-token-shell-references.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-23T18:47:29.419Z",
+  "schema_version": "v1",
+  "commit_sha": "7797405790711fe08de14b4d77db75f7947b5759",
+  "title": "fix(backlog): retire stale op-token shell references",
+  "state": "MERGED",
+  "merged_at": "2026-08-23T18:46:37Z",
+  "head_ref": "claim/bug-op-token-setup-reference-drift"
+}
