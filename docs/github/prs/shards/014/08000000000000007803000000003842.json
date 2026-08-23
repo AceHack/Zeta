@@ -1,0 +1,12 @@
+{
+  "pr_number": 14402,
+  "archive_path": "docs/history/pr-reviews/PR-14402-docs-design-clifford-gpu-theory-brief-geometric-root-metered-clock-five-question.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-23T19:43:02.583Z",
+  "schema_version": "v1",
+  "commit_sha": "552fdf6d1cdc5d93c31c0233314631c0a0b5e8da",
+  "title": "docs(design): Clifford GPU theory brief — geometric root, metered clock, five questions to the math team",
+  "state": "MERGED",
+  "merged_at": "2026-08-23T19:42:14Z",
+  "head_ref": "docs/clifford-gpu-spec-design"
+}
