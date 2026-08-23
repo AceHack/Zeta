@@ -1,0 +1,12 @@
+{
+  "pr_number": 14239,
+  "archive_path": "docs/history/pr-reviews/PR-14239-fix-gamification-progression-and-rendering-issues.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-23T15:00:29.233Z",
+  "schema_version": "v1",
+  "commit_sha": "2c5c3d6ae9ee2dcc95445724f8e6d072625f36a8",
+  "title": "Fix Gamification Progression and rendering issues",
+  "state": "MERGED",
+  "merged_at": "2026-08-23T14:59:42Z",
+  "head_ref": "fix-chip8-gamification"
+}
