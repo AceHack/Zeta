@@ -1,0 +1,12 @@
+{
+  "pr_number": 14214,
+  "archive_path": "docs/history/pr-reviews/PR-14214-fix-tsc-the-root-project-cannot-resolve-twitch-ai-s-bundler-exclude-the-config-n.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-23T14:25:18.633Z",
+  "schema_version": "v1",
+  "commit_sha": "c94fd4406d64a4fc9998b8ad15f45970250a84f2",
+  "title": "fix(tsc): the root project cannot resolve twitch-ai's bundler — exclude the config, not the app",
+  "state": "MERGED",
+  "merged_at": "2026-08-23T14:24:38Z",
+  "head_ref": "fix/main-gate-vite-config-tsc"
+}
