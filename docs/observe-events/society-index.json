@@ -1,7 +1,7 @@
 {
   "schema": "zeta.society.event-index/v1",
-  "eventCount": 523,
-  "headDigest": "e788be9b1ac6869c520b1b682c738421755571d088d238b2b5840b30cc615dc9",
+  "eventCount": 527,
+  "headDigest": "3a3808132ee8ffdfff10ba8c79ddd7e922b9a691f8383de57a7dc1c39e761c12",
   "events": [
     {
       "id": "society-msm7luj6",
@@ -4669,6 +4669,42 @@
       "previousDigest": "aabb6687146c0cc1605b9790184dfe012eff884677f8e0f8132ee30788398804",
       "chainDigest": "e788be9b1ac6869c520b1b682c738421755571d088d238b2b5840b30cc615dc9",
       "sourceRevision": "ecfb7df668b515bd16a970a6a42a8e5c12b3e2d7"
+    },
+    {
+      "id": "society-mt63djmg",
+      "at": "2026-08-23T17:39:25.720Z",
+      "file": "society-mt63djmg.json",
+      "eventDigest": "308fee9b0742879ac778879bbdf59e93e97b37f4954caf4edb3c175b3fe829df",
+      "previousDigest": "e788be9b1ac6869c520b1b682c738421755571d088d238b2b5840b30cc615dc9",
+      "chainDigest": "cf37d299c8f635fc8fcd046395f28fd2725efed0815a99513ed6917e3aceae7a",
+      "sourceRevision": "30bfb5452dd0b46da3c910f58ba3093aa774c807"
+    },
+    {
+      "id": "society-mt64fc27",
+      "at": "2026-08-23T18:08:48.847Z",
+      "file": "society-mt64fc27.json",
+      "eventDigest": "27695adaf3209780cbcc613025d70fc25243b4cc03614780bf36bb19dee9dc86",
+      "previousDigest": "cf37d299c8f635fc8fcd046395f28fd2725efed0815a99513ed6917e3aceae7a",
+      "chainDigest": "14f11737b51a214ba9ce04adcf716c2fd145bb7a8abe9764d54c9eb335eca99f",
+      "sourceRevision": "9413cd061c3299afe94e8bd0410a57b028f7a809"
+    },
+    {
+      "id": "society-mt65qj8f",
+      "at": "2026-08-23T18:45:30.975Z",
+      "file": "society-mt65qj8f.json",
+      "eventDigest": "78f550f12f968acb97f4e2bd0b880cb6198432017f84b383b7e01ce7fd605086",
+      "previousDigest": "14f11737b51a214ba9ce04adcf716c2fd145bb7a8abe9764d54c9eb335eca99f",
+      "chainDigest": "7786d72a45f359d3aa415a700504ca6106fdf1fac048e371dad1c5a4a6bb2f91",
+      "sourceRevision": "c3f8945c9d8af893b4f24c7ed010db0457fdcb7d"
+    },
+    {
+      "id": "society-mt66lxol",
+      "at": "2026-08-23T19:09:56.037Z",
+      "file": "society-mt66lxol.json",
+      "eventDigest": "2faf96fae2aa5e518a4ee36438da40f02b07be267de4511de5aa208a435ba476",
+      "previousDigest": "7786d72a45f359d3aa415a700504ca6106fdf1fac048e371dad1c5a4a6bb2f91",
+      "chainDigest": "3a3808132ee8ffdfff10ba8c79ddd7e922b9a691f8383de57a7dc1c39e761c12",
+      "sourceRevision": "75ded3b6da061613d27c77d620cd2d95794e95b1"
     }
   ]
 }
