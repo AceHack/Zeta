@@ -119,6 +119,19 @@ describe("cluster node: mise-pinned tools resolve outside the checkout", () => {
     expect(COMMON_NIX).toContain("INTERIM");
     expect(COMMON_NIX).toContain("081M0QS0ET7087G0R000YBRKNT");
   });
+
+  test("6. the node login profile trusts .mise.toml by default BEFORE activate", () => {
+    // `mise trust --all` in the recovery arm is HOME-local and only runs when
+    // the bun shim is absent. Activate still reads .mise.toml and refuses an
+    // untrusted file (QEMU 6.95-picker, 2026-08-23). The env-var contract is
+    // the durable default; it must precede `mise activate`.
+    const snippet = profileSnippet();
+    expect(snippet).toMatch(/export MISE_TRUSTED_CONFIG_PATHS="\$_zeta_repo"/);
+    const trustIdx = snippet.indexOf("MISE_TRUSTED_CONFIG_PATHS");
+    const activateIdx = snippet.indexOf("mise activate");
+    expect(trustIdx).toBeGreaterThan(-1);
+    expect(activateIdx).toBeGreaterThan(trustIdx);
+  });
 });
 
 describe("the workstation half must stay project-scoped", () => {
@@ -145,5 +158,39 @@ describe("the workstation half must stay project-scoped", () => {
     const emitted = code.slice(emittedStart, emittedEnd);
     expect(emitted).not.toContain("mise/shims");
     expect(emitted).not.toContain("MISE_GLOBAL_CONFIG_FILE");
+  });
+
+  test("shellenv.sh trusts this checkout's .mise.toml before mise activate", () => {
+    // Trust is not globalisation. Project-scoped resolution stays; the pin
+    // still travels with the checkout. Without the export, `mise activate`
+    // refuses an untrusted .mise.toml in a fresh HOME (install.sh already
+    // exports this for the install process; shellenv persists it).
+    const code = stripComments(SHELLENV);
+    const emittedStart = code.indexOf("{\n  echo \"# Zeta managed shellenv");
+    expect(emittedStart).toBeGreaterThan(-1);
+    const emittedEnd = code.indexOf('} > "$ZETA_ENV_FILE"', emittedStart);
+    expect(emittedEnd).toBeGreaterThan(emittedStart);
+    const emitted = code.slice(emittedStart, emittedEnd);
+    expect(emitted).toContain("MISE_TRUSTED_CONFIG_PATHS");
+    const trustIdx = emitted.indexOf("MISE_TRUSTED_CONFIG_PATHS");
+    const activateIdx = emitted.indexOf("mise activate");
+    expect(trustIdx).toBeGreaterThan(-1);
+    expect(activateIdx).toBeGreaterThan(trustIdx);
+  });
+});
+
+const FIRST_SESSION_PATH = fileURLToPath(
+  new URL("./zeta-first-session.nix", import.meta.url),
+);
+const FIRST_SESSION = readFileSync(FIRST_SESSION_PATH, "utf8");
+const FIRST_SESSION_CODE = stripComments(FIRST_SESSION);
+
+describe("first-session also trusts .mise.toml by default", () => {
+  test("the hook exports MISE_TRUSTED_CONFIG_PATHS before mise install", () => {
+    expect(FIRST_SESSION_CODE).toContain("MISE_TRUSTED_CONFIG_PATHS");
+    const trustIdx = FIRST_SESSION_CODE.indexOf("MISE_TRUSTED_CONFIG_PATHS");
+    const installIdx = FIRST_SESSION_CODE.indexOf("mise install");
+    expect(trustIdx).toBeGreaterThan(-1);
+    expect(installIdx).toBeGreaterThan(trustIdx);
   });
 });

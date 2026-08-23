@@ -3417,6 +3417,13 @@ if [ -d "$ZETA_HOME" ]; then
     # subshell sees (mise installs bun via shims; activate sets PATH).
     # BUN_INSTALL pin matches sibling pattern too.
     #
+    # MISE_TRUSTED_CONFIG_PATHS matches wifi / iSerial / keyfile sudo -u
+    # lines (PR #10226). This is a separate sudo and does not inherit
+    # install.sh's export. Without it, `mise activate` dies:
+    # "Config files in ~/Zeta/.mise.toml are not trusted" (QEMU picker
+    # bind, run 32647553460). HOME-local trust does not survive
+    # /mnt/home/zeta → post-reboot $HOME.
+    #
     # Output path: write the cred-blob to the TARGET ESP mount during
     # install. The target ESP is mounted at /mnt/boot by Step 5
     # ('sudo mount "$ESP_PART" /mnt/boot'). After reboot into the
@@ -3432,6 +3439,7 @@ if [ -d "$ZETA_HOME" ]; then
     # See SECURITY block above for full lifecycle.
     ZETA_CREDS_PASSPHRASE="$ZETA_CREDS_PASSPHRASE_VAL" sudo --preserve-env=ZETA_CREDS_PASSPHRASE -u "#$ZETA_UID" \
       HOME="$ZETA_HOME" BUN_INSTALL="$ZETA_HOME/.bun" \
+      MISE_TRUSTED_CONFIG_PATHS="$ZETA_HOME/Zeta" \
       bash -c "set -o pipefail; export PATH='/run/current-system/sw/bin:/run/current-system/sw/sbin:${ZETA_HOME}/.local/share/mise/shims:${ZETA_HOME}/.bun/bin:/usr/bin:/bin'; eval \"\$(mise activate bash 2>/dev/null || true)\"; cd '$ZETA_HOME/Zeta' && bun src/Core.TypeScript/installer/zeta-creds-picker.ts $PICKER_BIND_FLAG '$PICKER_BIND_VALUE' --output /mnt/boot/zeta-creds.enc --passphrase-env ZETA_CREDS_PASSPHRASE" || \
         echo "[iter-5.5.0]   WARN: picker exited non-zero; cred-blob may be partial"
   else

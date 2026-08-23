@@ -107,7 +107,7 @@ jobs:
     # builds). Keep manual dispatch roomier for hardware-oriented debugging,
     # and give PR/push enough budget to finish a real cold build instead of
     # cancelling useful work at the boundary.
-    timeout-minutes: ${{ github.event_name == 'workflow_dispatch' && 240 || 180 }}
+    timeout-minutes: ${{ fromJSON(github.event_name == 'workflow_dispatch' && '240' || '180') }}
     permissions:
       contents: read
       # 081KSKBP80008QG0R000Y2B7HC.1 cosign keyless OIDC — sigstore/Fulcio CA mints a short-lived
@@ -426,6 +426,40 @@ jobs:
           echo "Serial log out path: $SERIAL_LOG_OUT_PATH"
           bun ../src/Core.TypeScript/zflash/test-harness/run.ts --scenario boot-cluster-up "$iso_abs"
 
+      # Restore decrypt is an independent qemu-full-install-test.ts run
+      # (QEMU_UEFI_KEYFILE_RESTORE=1 does write+picker+decrypt itself). It is
+      # NOT implied by the later wifi / phase-1 write / picker steps, so it
+      # must run with budget left — measured run 32647553460 died with
+      # restore still in_progress after those earlier dispatch jobs ate the
+      # wall clock. Workflow_dispatch only — not on gate.
+      - name: UEFI keyfile restore decrypt (workflow_dispatch only)
+        if: github.event_name == 'workflow_dispatch'
+        timeout-minutes: 90
+        working-directory: full-ai-cluster
+        env:
+          SERIAL_LOG_OUT_PATH: ${{ github.workspace }}/qemu-uefi-keyfile-restore-serial.log
+          QEMU_UEFI_KEYFILE_RESTORE: "1"
+        run: |
+          set -euo pipefail
+          mapfile -t iso_candidates < <(find result/iso -maxdepth 1 -type f \( -name 'zeta-installer-*.iso' -o -name 'nixos-minimal-*.iso' \) | sort)
+          if [ "${#iso_candidates[@]}" -eq 0 ]; then
+            echo "::error::UEFI keyfile restore: No installer ISO under result/iso/" >&2
+            exit 1
+          fi
+          iso_abs=$(readlink -f "${iso_candidates[0]}")
+          echo "UEFI keyfile restore ISO: $iso_abs"
+          echo "Serial log out path: $SERIAL_LOG_OUT_PATH"
+          bun ../src/Core.TypeScript/ci/qemu-full-install-test.ts "$iso_abs"
+
+      - name: Upload UEFI keyfile restore serial log
+        if: always() && github.event_name == 'workflow_dispatch'
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: qemu-uefi-keyfile-restore-serial-log
+          path: qemu-uefi-keyfile-restore-serial.log
+          if-no-files-found: warn
+          retention-days: 7
+
       # Opt-in ESP wifi → NM profile gate (no radio association claim) plus
       # guest USB iSerial (usb-storage serial=ZETA-QEMU-001). Workflow_dispatch
       # only — not on gate. ISO/cdrom cascade-5 does not assert iSerial.
@@ -512,34 +546,6 @@ jobs:
         with:
           name: qemu-uefi-keyfile-picker-serial-log
           path: qemu-uefi-keyfile-picker-serial.log
-          if-no-files-found: warn
-          retention-days: 7
-
-      - name: UEFI keyfile restore decrypt (workflow_dispatch only)
-        if: github.event_name == 'workflow_dispatch'
-        timeout-minutes: 90
-        working-directory: full-ai-cluster
-        env:
-          SERIAL_LOG_OUT_PATH: ${{ github.workspace }}/qemu-uefi-keyfile-restore-serial.log
-          QEMU_UEFI_KEYFILE_RESTORE: "1"
-        run: |
-          set -euo pipefail
-          mapfile -t iso_candidates < <(find result/iso -maxdepth 1 -type f \( -name 'zeta-installer-*.iso' -o -name 'nixos-minimal-*.iso' \) | sort)
-          if [ "${#iso_candidates[@]}" -eq 0 ]; then
-            echo "::error::UEFI keyfile restore: No installer ISO under result/iso/" >&2
-            exit 1
-          fi
-          iso_abs=$(readlink -f "${iso_candidates[0]}")
-          echo "UEFI keyfile restore ISO: $iso_abs"
-          echo "Serial log out path: $SERIAL_LOG_OUT_PATH"
-          bun ../src/Core.TypeScript/ci/qemu-full-install-test.ts "$iso_abs"
-
-      - name: Upload UEFI keyfile restore serial log
-        if: always() && github.event_name == 'workflow_dispatch'
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
-        with:
-          name: qemu-uefi-keyfile-restore-serial-log
-          path: qemu-uefi-keyfile-restore-serial.log
           if-no-files-found: warn
           retention-days: 7
 

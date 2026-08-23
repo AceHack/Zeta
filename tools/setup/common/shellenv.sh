@@ -121,6 +121,18 @@ mkdir -p "$ZETA_ENV_DIR"
   # falsifier that keeps them apart is
   # full-ai-cluster/nixos/modules/mise-node-path-wiring.test.ts.
   echo "export MISE_PYTHON_GITHUB_ATTESTATIONS=\"\${MISE_PYTHON_GITHUB_ATTESTATIONS:-0}\""
+  # Trust this checkout's .mise.toml by default. `mise activate` reads the
+  # nearest config and REFUSES untrusted files (QEMU 6.95-picker, 2026-08-23:
+  # "Config files in ~/Zeta/.mise.toml are not trusted"). A HOME-local
+  # `mise trust` store is not durable across install-time /mnt/home/zeta →
+  # post-reboot $HOME. MISE_TRUSTED_CONFIG_PATHS is the env-var contract
+  # install.sh already uses; persist it here so every later shell inherits
+  # it. Must emit BEFORE `mise activate` below.
+  _zeta_repo_root="$(cd "$(dirname "$0")/../../.." && pwd)"
+  echo "case \":\${MISE_TRUSTED_CONFIG_PATHS:-}:\" in"
+  echo "  *:\"$_zeta_repo_root\":*) ;;"
+  echo "  *) export MISE_TRUSTED_CONFIG_PATHS=\"\${MISE_TRUSTED_CONFIG_PATHS:+\$MISE_TRUSTED_CONFIG_PATHS:}$_zeta_repo_root\" ;;"
+  echo "esac"
   if command -v mise >/dev/null 2>&1; then
     echo "if [ -n \"\${ZSH_VERSION:-}\" ]; then"
     echo "  eval \"\$(mise activate zsh)\""

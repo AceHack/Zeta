@@ -96,6 +96,12 @@ const RULES: readonly { readonly id: string; readonly re: RegExp; readonly why: 
 /** Only the credential-shaped names for the process.env rule — assigning PATH is not a leak. */
 const CREDENTIAL_NAME = /(TOKEN|SECRET|PASSWORD|PASSWD|API_?KEY|CREDENTIAL|PRIVATE_KEY|PASSPHRASE)/i;
 
+/** The env KEY being assigned, not the rest of the line (a value named FAKE_TOKEN is not a hoist). */
+function processEnvAssignedKey(line: string): string {
+  const m = line.match(/process\.env(?:\.([A-Za-z_][A-Za-z0-9_]*)|\[["']([^"']+)["']\])/);
+  return m?.[1] ?? m?.[2] ?? "";
+}
+
 export function scanText(file: string, text: string): Finding[] {
   if ((SELF_EXEMPT as readonly string[]).includes(file)) return [];
   const out: Finding[] = [];
@@ -109,7 +115,7 @@ export function scanText(file: string, text: string): Finding[] {
     if (lead.startsWith("#") || lead.startsWith("//") || lead.startsWith("*")) continue;
     for (const rule of RULES) {
       if (!rule.re.test(raw)) continue;
-      if (rule.id === "process-env-assign-of-credential" && !CREDENTIAL_NAME.test(raw)) continue;
+      if (rule.id === "process-env-assign-of-credential" && !CREDENTIAL_NAME.test(processEnvAssignedKey(raw))) continue;
       out.push({ file, line: i + 1, rule: `${rule.id}: ${rule.why}`, text: raw.trim().slice(0, 160) });
     }
   }

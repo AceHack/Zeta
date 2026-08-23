@@ -660,3 +660,38 @@ describe("restore markers stay coupled to zeta-creds-restore.nix", () => {
     expect(restoreNix).toContain(UEFI_KEYFILE_RESTORE_SERIAL.bindingKeyfile);
   });
 });
+
+describe("ISO workflow: restore decrypt runs with budget left", () => {
+  const workflow = readFileSync(
+    resolve(import.meta.dir, "../../../.github/workflows/build-ai-cluster-iso.yml"),
+    "utf8",
+  );
+
+  it("job timeout is an integer via fromJSON (expression results are strings)", () => {
+    // GitHub casts expression results to strings. `timeout-minutes` wants a
+    // number; without fromJSON the job can ignore 240/180 and die at the old
+    // 90-minute bound (measured: run 32647553460, restore still in_progress).
+    expect(workflow).toMatch(
+      /timeout-minutes:\s*\$\{\{\s*fromJSON\(github\.event_name == 'workflow_dispatch' && '240' \|\| '180'\)\s*\}\}/,
+    );
+  });
+
+  it("restore QEMU is scheduled before wifi / picker / phase-1 write", () => {
+    // Restore is an independent qemu-full-install-test.ts run
+    // (QEMU_UEFI_KEYFILE_RESTORE=1 does write+picker+decrypt itself). Putting
+    // it last meant ISO + scenario 1–2 + wifi + write + picker ate the budget
+    // (run 32647553460: restore started then the job died).
+    const restore = workflow.indexOf('QEMU_UEFI_KEYFILE_RESTORE: "1"');
+    const wifi = workflow.indexOf("QEMU_WIFI_ESP_PHASE1:");
+    const write = workflow.indexOf("QEMU_UEFI_KEYFILE_PHASE1:");
+    const picker = workflow.indexOf("QEMU_UEFI_KEYFILE_PICKER:");
+    expect(restore).toBeGreaterThan(-1);
+    expect(wifi).toBeGreaterThan(-1);
+    expect(write).toBeGreaterThan(-1);
+    expect(picker).toBeGreaterThan(-1);
+    expect(restore).toBeLessThan(wifi);
+    expect(restore).toBeLessThan(write);
+    expect(restore).toBeLessThan(picker);
+    expect(workflow.split('QEMU_UEFI_KEYFILE_RESTORE: "1"').length - 1).toBe(1);
+  });
+});

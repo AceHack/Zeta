@@ -77,6 +77,7 @@ in
                 # attempted) before the marker can be written. Idempotent: only runs
                 # when the mise bun shim is still absent.
                 export MISE_PYTHON_GITHUB_ATTESTATIONS="''${MISE_PYTHON_GITHUB_ATTESTATIONS:-0}"
+                export MISE_TRUSTED_CONFIG_PATHS="${cfg.repoRoot}"
                 if command -v mise >/dev/null 2>&1 && [ ! -x "${bunShimPath}" ]; then
                   _zeta_repo=""
                   if [ -f "${cfg.repoRoot}/.mise.toml" ]; then
@@ -85,6 +86,7 @@ in
                     _zeta_repo="${cfg.home}/Zeta"
                   fi
                   if [ -n "$_zeta_repo" ]; then
+                    export MISE_TRUSTED_CONFIG_PATHS="$_zeta_repo"
                     echo "zeta-first-session: installing runtimes before adventure (mise recovery)..."
                     (cd "$_zeta_repo" && mise trust --all --yes >/dev/null 2>&1; MISE_ENV=full mise install --yes) >/dev/null 2>&1 || true
                   fi

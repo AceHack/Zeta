@@ -93,6 +93,13 @@ describe("rule process-env-assign-of-credential — the TypeScript form", () => 
     expect(scanText("src/a.ts", 'process.env.NODE_ENV = "test";')).toEqual([]);
   });
 
+  test("does NOT fire when only the VALUE mentions TOKEN (the key is what inherits)", () => {
+    // tools/setup/op-token-setup.test.ts: `process.env.ZETA_TEST_HOIST_PROBE = FAKE_TOKEN`
+    // is a probe that the production path does NOT read process.env. Matching the
+    // whole line would convict the falsifier for naming its dummy.
+    expect(scanText("src/a.ts", "process.env.ZETA_TEST_HOIST_PROBE = FAKE_TOKEN;")).toEqual([]);
+  });
+
   test("does NOT fire on a child-scoped env object (the permitted form)", () => {
     expect(scanText("src/a.ts", 'childEnv[envVar] = r.secret;')).toEqual([]);
   });

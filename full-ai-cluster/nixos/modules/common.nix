@@ -429,6 +429,14 @@
       elif [ -f "$HOME/Zeta/.mise.toml" ]; then
         _zeta_repo="$HOME/Zeta"
       fi
+      # Trust before `mise activate`. `mise trust --all` in the recovery
+      # arm below writes a HOME-local store that does not survive
+      # install-time /mnt/home/zeta → post-reboot $HOME, and it only runs
+      # when the bun shim is absent. MISE_TRUSTED_CONFIG_PATHS is the
+      # durable default (same contract as tools/setup/install.sh).
+      if [ -n "$_zeta_repo" ]; then
+        export MISE_TRUSTED_CONFIG_PATHS="$_zeta_repo"
+      fi
       # Recovery: non-interactive install may have skipped mise install (tarball
       # mise is not FHS-compatible on NixOS). Lazy-install runtimes on first login.
       if [ -n "$_zeta_repo" ] && [ ! -x "$HOME/.local/share/mise/shims/bun" ]; then

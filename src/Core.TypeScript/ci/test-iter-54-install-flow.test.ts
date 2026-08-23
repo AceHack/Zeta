@@ -236,6 +236,17 @@ describe("iter-5.5.0 target runtime bootstrap uses canonical install.sh", () => 
     expect(ITER_595_BLOCK).toContain("BUN_INSTALL=\"$ZETA_HOME/.bun\"");
   });
 
+  test("6.95-picker sudo trusts the cloned .mise.toml (same as wifi / iSerial / keyfile)", () => {
+    // Measured QEMU picker bind (run 32647553460): wifi/iSerial/keyfile sudo -u
+    // lines already pass MISE_TRUSTED_CONFIG_PATHS="$ZETA_HOME/Zeta" (PR #10226);
+    // 6.95-picker is a separate sudo and did not inherit install.sh's export.
+    // `mise activate` then died: "Config files in ~/Zeta/.mise.toml are not trusted".
+    const pickerIdx = ITER_595_BLOCK.lastIndexOf("zeta-creds-picker.ts");
+    expect(pickerIdx).toBeGreaterThan(-1);
+    const window = ITER_595_BLOCK.slice(Math.max(0, pickerIdx - 800), pickerIdx);
+    expect(window).toContain('MISE_TRUSTED_CONFIG_PATHS="$ZETA_HOME/Zeta"');
+  });
+
   test("agent CLI package installs are not duplicated in zeta-install.sh", () => {
     expect(ITER_595_BLOCK).toContain("tools/setup/manifests/from-bun-global");
     expect(ITER_595_BLOCK).toContain("tools/setup/manifests/from-installer");
