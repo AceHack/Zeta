@@ -1,0 +1,12 @@
+{
+  "pr_number": 14266,
+  "archive_path": "docs/history/pr-reviews/PR-14266-refactor-softvalue-softvalue-is-a-weightedset-now-and-float-cannot-reach-the-wir.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-23T16:03:08.333Z",
+  "schema_version": "v1",
+  "commit_sha": "5c9c60e3a73e319c2a1cc905923c8dd9d233f308",
+  "title": "refactor(softvalue): SoftValue IS a WeightedSet now, and float cannot reach the wire",
+  "state": "MERGED",
+  "merged_at": "2026-08-23T16:02:26Z",
+  "head_ref": "refactor/softvalue-as-weightedset"
+}
