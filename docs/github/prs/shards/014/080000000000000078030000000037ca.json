@@ -1,0 +1,12 @@
+{
+  "pr_number": 14282,
+  "archive_path": "docs/history/pr-reviews/PR-14282-fix-platform-the-arma-reforger-image-had-provenance-after-all-ace-mod-s-pinned-b.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-23T16:29:45.873Z",
+  "schema_version": "v1",
+  "commit_sha": "10fbd9a4e4a8780b6a5c0a299dcb4c57314b5e8c",
+  "title": "fix(platform): the Arma Reforger image had provenance after all — ACE Mod's, pinned by digest",
+  "state": "MERGED",
+  "merged_at": "2026-08-23T16:29:02Z",
+  "head_ref": "fix/armareforger-provenance"
+}
