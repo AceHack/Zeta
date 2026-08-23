@@ -1,0 +1,10 @@
+{
+  "tick": 260,
+  "at": "2026-08-23T19:43:14.086Z",
+  "findings": [
+    {
+      "path": "src/Core.TypeScript/search/inverted/README.md",
+      "rule": "MD029"
+    }
+  ]
+}

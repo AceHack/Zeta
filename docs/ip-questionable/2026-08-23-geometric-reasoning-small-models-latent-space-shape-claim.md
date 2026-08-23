@@ -1122,7 +1122,7 @@ one place where his methodology and our economics are provably the same idea rat
 
 ---
 
-## 6. The falsifier — what would make the geometric-reasoning claim false?
+## 6. The falsifier — what would make the geometric-reasoning claim false
 
 `.claude/rules/numerology-vs-number-theory.md` prescribes the test, and it is the right one here.
 The claim has to be split, because the three versions have three different answers and collapsing

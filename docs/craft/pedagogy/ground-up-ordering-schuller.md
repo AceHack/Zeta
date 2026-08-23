@@ -187,7 +187,7 @@ hat needs; everything else is inviolable. Apply the identical split here:
 - **Role-conditional makes it non-coercive**, exactly as role-conditional transparency makes mandatory
   broadcast non-coercive. This is the same mechanism, applied to knowledge rather than to visibility.
 
-### The test: who is the last line of correction?
+### The test: who is the last line of correction
 
 The question of *which* nodes are forced was filed open for about ten minutes, and Aaron answered it
 with a better test than the one proposed:

@@ -687,7 +687,7 @@ Does the model return "no causal contact", or does it silently return a finite `
 does not exist? A finite delay for an impossible path would be this session's recurring defect class
 in physical clothing — a check that did not run wearing the name of one that did.
 
-### 2. The generalisation is the point: is the cone PARAMETRIC or hardcoded?
+### 2. The generalisation is the point: is the cone PARAMETRIC or hardcoded
 
 Schuller's construction is **not Maxwell-specific**. Feed it any matter field equations, extract
 *their* principal polynomial, demand predictivity, and the corresponding causal structure follows.

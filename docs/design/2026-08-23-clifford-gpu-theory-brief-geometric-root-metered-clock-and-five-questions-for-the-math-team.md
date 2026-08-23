@@ -83,7 +83,9 @@ independent of the theory: it is true whatever the math team concludes.
 ### 2.1 SPIR-V + SPIRV-Cross
 
 A binary IR plus a transpiler to MSL / HLSL / GLSL — the literal shape of Aaron's ask, shipping since
+
 2016. **The finding that matters here:** the MSL backend **drops synchronization constructs**. Per
+
 the SPIRV-Cross MSL documentation, `OpMemoryBarrier` **has no MSL counterpart**; descriptor sets do
 not exist in Metal so combined image samplers must be split; shared variables cannot have matrix
 type. So the portable IR is not portable in exactly the register §4 cares about: **a memory barrier
@@ -525,7 +527,7 @@ its job is to make them good, and to record the in-tree facts each one starts fr
 
 ---
 
-### Q1 · Is `WeightedSet<'K,'W>` compact closed?
+### Q1 · Is `WeightedSet<'K,'W>` compact closed
 
 **Precise statement.** Let `WeightedSet<'K,'W>` be the shipped type in `src/Core/WeightedSet.fs`:
 finitely-supported maps `'K → 'W` with Zero pruned, over `'W : ISemiring`. Does the category of these
@@ -588,7 +590,7 @@ Abramsky & Coecke (LICS 2004).
 
 ---
 
-### Q2 · Does dual flatness *entail* the vector-addition update, or merely accompany it?
+### Q2 · Does dual flatness *entail* the vector-addition update, or merely accompany it
 
 **Precise statement.** For an exponential family with natural parameters θ, conjugate Bayesian
 updating is addition in θ: `θ_post = θ_prior + Σᵢ T(xᵢ)`. Amari's theory says exponential families are
@@ -624,7 +626,7 @@ exponential families.
 
 ---
 
-### Q3 · Can a Normal-Gamma posterior be exhibited as a region in a conceptual space under a named metric, with a stated approximation error?
+### Q3 · Can a Normal-Gamma posterior be exhibited as a region in a conceptual space under a named metric, with a stated approximation error
 
 **This brief would put this question first.** Everything in §6 is downstream of it.
 
@@ -662,7 +664,7 @@ Gärdenfors (2000) for the conceptual-space side of the join.
 
 ---
 
-### Q4 · Does CGA compose with the Clifford substrate already in-tree, or do they merely share a name?
+### Q4 · Does CGA compose with the Clifford substrate already in-tree, or do they merely share a name
 
 **Precise statement.** `src/Core/ConformalGA.fs` works in **Cl(4,1)**. `src/Core/Cl3.fs` works in
 **Cl(3,0)**. `src/Core/CliffordE8Roots.fs` / `CliffordE8BladeMask.fs` / `CliffordE8Bridge.fs` work in
@@ -707,7 +709,7 @@ self-dual codes.
 
 ---
 
-### Q5 · Is Gärdenfors convexity testable on any embedding we can actually build?
+### Q5 · Is Gärdenfors convexity testable on any embedding we can actually build
 
 **Precise statement.** Gärdenfors (*Conceptual Spaces: The Geometry of Thought*, 2000) holds that
 meanings are **regions** in geometric spaces built from quality dimensions, and that **natural

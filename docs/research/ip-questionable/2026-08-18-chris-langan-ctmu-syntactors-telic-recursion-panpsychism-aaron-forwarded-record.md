@@ -147,7 +147,7 @@ asserted where the evidence supports `toy` — and that the exit is missing.
 
 ---
 
-## 5. The one Aaron asked about: is our attention-as-fundamental the same as panpsychism?
+## 5. The one Aaron asked about: is our attention-as-fundamental the same as panpsychism
 
 **No, and the difference is a worked instance of the rule about recognising sameness.**
 

@@ -681,8 +681,7 @@ That is the mechanism, on the record, twice — xbins cataloguing the tool under
 
 *"Doesn't overwrite your plugins, but instead adds onto it."*
 
-That is **additive-rather-than-destructive**, chosen as the headline property of an installer in
-2007. It rhymes with two other things in this record:
+That is **additive-rather-than-destructive**, chosen as the headline property of an installer in 2007. It rhymes with two other things in this record:
 
 | era | artifact | the shape |
 |---|---|---|

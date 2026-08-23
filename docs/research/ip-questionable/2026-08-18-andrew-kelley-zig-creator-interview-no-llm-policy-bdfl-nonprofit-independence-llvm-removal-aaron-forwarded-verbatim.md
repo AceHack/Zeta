@@ -162,7 +162,7 @@ than C++. I can do better than Rust. I can do better than Go. I can do better th
 4:50
 That was my hubris. Now Zeke, what is Zeke used for? What
 
-### What Is Zig Used For?
+### What Is Zig Used For
 
 4:57
 problems does it solve? Zigg is used when you want to have full control over the computer. You don't
@@ -187,7 +187,7 @@ computer fundamentally do and how can I get it to do this using any possible
 5:57
 tool chain. Maybe even one that I would make. Let's talk about applications. Where is
 
-### Who Uses Zig in Production?
+### Who Uses Zig in Production
 
 6:03
 Zeke used? Uh today one application that comes to mind would be Ghosty. So this is a uh terminal
@@ -248,7 +248,7 @@ Zigg as the C compiler along along with Go. And then now you have cross compilat
 8:45
 that the Go code depends on. By the way, why why is it called zig? Why is it called zig?
 
-### Why Is It Called "Zig"?
+### Why Is It Called "Zig"
 
 8:52
 Uh, I wanted a short word that had zero Google results for
@@ -360,7 +360,7 @@ relationship but just with healthy boundaries between between the business organ
 14:05
 Can someone of your sponsors uh influence how you develop Z? Well, they can influence it in the same
 
-### Can Sponsors Influence Zig Development?
+### Can Sponsors Influence Zig Development
 
 14:11
 way that anyone can influence it. They can participate on the bug tracker. They can send poll requests. Um they can chat
@@ -532,7 +532,7 @@ party. So, you know, if someone stopped donating, I don't say, "Hey, you jerk. W
 22:20
 It's no strings attached, right? And when we make these choices to move off GitHub or do this or that, I find that
 
-### Why Codeberg?
+### Why Codeberg
 
 22:26
 people are very understanding and very gracious. By the way, why why Codeberg specifically, not GitLab, not hosting
@@ -793,7 +793,7 @@ I I would never want to give up what I have in order to get
 35:28
 the results of Genai in general. How do you feel about the future of programming? Like in 10 20
 
-### Will Humans Still Write Code?
+### Will Humans Still Write Code
 
 35:34
 years will humans still write code? People will never stop writing code
@@ -906,7 +906,7 @@ projects being made, but uh you know until those come to fruition, I don't I don
 41:01
 Andrew, Zeke is sometimes positioned as a C replacement, but uh C is everywhere.
 
-### Why Zig better than C?
+### Why Zig better than C
 
 41:07
 Linux kernel, embedded system, 7 million of developers. Uh what makes Zeke better
@@ -946,7 +946,7 @@ you arguably it's being more seike than C is if that makes sense. But uh is it
 42:49
 even possible to replace C? In order to replace C, you have to you
 
-### Will Zig replace C?
+### Will Zig replace C
 
 42:56
 have to be C at its own game. You have to offer people a way to write code that
@@ -1187,7 +1187,7 @@ skyrockets. So that is a very particularly smooth transition I think. But uh the
 54:24
 Should someone learn Zeke as their first programming language? So what do you think about that?
 
-### Should You Learn Zig as Your First Language?
+### Should You Learn Zig as Your First Language
 
 54:29
 I think that that really depends on the person and you know some people they have a functional mindset. They really
@@ -1335,7 +1335,7 @@ the trade-off of lacking the coherent vision for the software project. Don't
 1:01:04
 you feel this model has a risk? Zig, today is you. What happens if you leave
 
-### What Happens If Andrew Kelley Leaves?
+### What Happens If Andrew Kelley Leaves
 
 1:01:10
 tomorrow? Software engineering wise, I think we'll be fine because um my my colleagues are
@@ -1521,7 +1521,7 @@ picked up and, um, I I feel like motivated to keep studying every day. So, I wan
 1:10:31
 How many hours per day? Maybe one every day. What does success look like for Zeke?
 
-### What Does Success Look Like for Zig?
+### What Does Success Look Like for Zig
 
 1:10:38
 I think there's two answers to this. So, in one sense, you could say uh it's already been achieved because we have a

@@ -169,7 +169,7 @@ hole and find out what map is hiding
 behind this double cube.
 ```
 
-### 1. What's up with √7?
+### 1. What's up with √7
 
 ```
 1:45

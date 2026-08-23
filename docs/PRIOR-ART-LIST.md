@@ -314,6 +314,7 @@ EverParse. Closest active ancestor for the refinement-type
 class of checks we would have used LiquidF# for; evaluated
 round 35 and sitting on TECH-RADAR at Assess pending the
 F# extraction backend audit. See`docs/research/liquidfsharp-findings.md`Path A and`docs/research/refinement-type-feature-catalog.md`.
+
 - **LiquidHaskell** — Vazou et al.; canonical refinement-type
   checker for Haskell. Not directly usable from F#, but the
   feature set (measures, termination proofs, totality, bounded

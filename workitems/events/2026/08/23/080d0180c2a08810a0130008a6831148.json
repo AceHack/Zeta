@@ -1,0 +1,14 @@
+{
+  "id": "080d0180c2a08810a0130008a6831148",
+  "at": "2026-08-23T19:28:15.889Z",
+  "by": "drift-sweep",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M0R1GN0H087G0R0029ZZKXM",
+    "type": "bug",
+    "title": "drift SLO breach: MD029 open 2 tick(s) (budget 1, 1 finding(s)) — heal the class",
+    "slug": "drift-slo-breach-md029-open-2-tick-s-budget-1-1-finding-s-he",
+    "priority": "P1",
+    "filename": "081M0R1GN0H087G0R0029ZZKXM-drift-slo-breach-md029-open-2-tick-s-budget-1-1-finding-s-he.md"
+  }
+}

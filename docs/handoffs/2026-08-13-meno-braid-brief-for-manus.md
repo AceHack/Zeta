@@ -108,7 +108,7 @@ Both were checked against the code; treat as settled unless you can refute them 
 
 ## 5. The open questions — this is what we want from you
 
-### Q1 (highest value). Does a non-trivial twist exist, or is Meno provably NOT balanced?
+### Q1 (highest value). Does a non-trivial twist exist, or is Meno provably NOT balanced
 
 Balanced requires a natural `θ` with
 
@@ -131,14 +131,14 @@ is unbuilt.
 with an SMT solver — hours, not weeks — before anyone attempts a general proof. Please state which
 you did.
 
-### Q2. Does the *framed* promotion rescue it?
+### Q2. Does the *framed* promotion rescue it
 
 `Braid.Word` in our code is a bare `Letter list` with **no framing datum**. Writhe is exactly the
 integer that would fill such a field. Question: if `V` is promoted to carry a per-strand integer
 framing (`V × ℤ`, roughly), does the conjugation rack then admit a non-trivial twist and become
 genuinely balanced? If yes, what is the minimal such promotion?
 
-### Q3 (possibly the most important, and it undercuts everything else). Is the braiding a braiding *of Meno*?
+### Q3 (possibly the most important, and it undercuts everything else). Is the braiding a braiding *of Meno*
 
 Mathlib carries `Cartesian ⇒ Symmetric` together with `Subsingleton (SymmetricCategory C)` — a
 cartesian monoidal category has *exactly one* symmetric structure and admits no other.
@@ -151,7 +151,7 @@ So: is the obstruction real? And if so, what is the minimal non-cartesian `⊗` 
 `braidR`? This determines whether the proven results in §2 apply to the system or only to an object
 we have not yet constructed.
 
-### Q4. The honest one: does any of this buy a capability?
+### Q4. The honest one: does any of this buy a capability
 
 We already decide braid isotopy *faithfully* via Artin's action (an implemented, tested `Braid.equal`).
 Ribbon would buy a Markov trace giving a scalar link invariant of a computation history — which looks

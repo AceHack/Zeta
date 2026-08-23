@@ -338,7 +338,7 @@ be what you want; it is not currently a decision anyone made.**
 
 ## 5. Open decisions that are yours
 
-### 5.1 Storage — buy 2 TB, or trim the catalogue?
+### 5.1 Storage — buy 2 TB, or trim the catalogue
 
 | Option | Consequence |
 |---|---|
@@ -350,7 +350,7 @@ be what you want; it is not currently a decision anyone made.**
 **Sub-question:** should the control-plane import `longhorn-disks.nix`, or should the installer stop
 creating that partition on control-plane nodes?
 
-### 5.2 The credential binding — what is the stable key?
+### 5.2 The credential binding — what is the stable key
 
 **The decision that has blocked R8 for 74 days.**
 
@@ -364,14 +364,14 @@ creating that partition on control-plane nodes?
 > **The question underneath: should a re-paved node remember its own credentials (TPM), or should the
 > stick carry them from machine to machine (iSerial)? They are different products.**
 
-### 5.3 Should the USB pin a tag, or track `main`?
+### 5.3 Should the USB pin a tag, or track `main`
 
 Tracking `main` means **flashing the same ISO twice, weeks apart, produces different clusters** — DST
 and replay do not hold across that seam. Pinning makes the USB a reproducible artifact and makes
 upgrades an explicit act. **This interacts with `clone-at-tag-stays-sufficient`: today the cluster half
 of that does not hold.**
 
-### 5.4 Single-ISO `dd`, or the GRUB2 multiboot composite?
+### 5.4 Single-ISO `dd`, or the GRUB2 multiboot composite
 
 **Both exist on `main`. Nothing chooses.** The 2026-06-10 ask argues for multiboot, and the ask **has
 been built** — it is simply not wired to the flasher.
@@ -389,7 +389,7 @@ Your position is recorded. The buy-list still says *"For real custody use the FI
 measured fact: **FIPS-approved mode disables `eck256`**, so you may have the validation or the curve,
 never both. **The buy-list is what someone reads before spending money.**
 
-### 5.7 Which node do we burn first?
+### 5.7 Which node do we burn first
 
 If `/dev/sda` is the USB, the unconditional wipe cannot destroy anything you care about. **If it is an
 internal disk, pick a different node or accept the loss deliberately. One `lsblk` decides it.**

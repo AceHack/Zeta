@@ -414,7 +414,7 @@ what would let `ΔU` shed a register.
 
 ---
 
-## 6. Their scorer vs our ΔU — agree, disagree, or orthogonal?
+## 6. Their scorer vs our ΔU — agree, disagree, or orthogonal
 
 From the ARC-AGI-3 technical report:
 
@@ -565,7 +565,7 @@ document recommends it and this design does not supersede that.
 
 ---
 
-## 8. Does the glow transfer — and is it an alignment readout?
+## 8. Does the glow transfer — and is it an alignment readout
 
 **Yes to the transfer, with one real obstacle. `toy` on the alignment claim.**
 
@@ -627,7 +627,7 @@ place.
 
 ---
 
-## 9. The reverse arrow — could our games become ARC environments?
+## 9. The reverse arrow — could our games become ARC environments
 
 The engine admits authored games: **subclass `ARCBaseGame`, override `step()`**, pass levels
 (sprite collections + optional metadata) and an optional camera to the parent initializer;
