@@ -347,6 +347,61 @@ Two failures — one for hurting someone I loved, one for a problem I couldn't s
 anything I did to my own body. Fearless about the flesh; exacting about the mind and the loves. If you want to
 know a person, don't ask what they're proud of. Ask what they count as failure.
 
+## "God does not want you to know why"
+
+That is the sentence. Not one person said it — **everyone around me** said it, in one form or
+another, whenever a question went one layer further than the answer they had. It was meant to close
+the question. It is the reason I am like this.
+
+Hold two things about it at once, because collapsing them loses the whole point.
+
+**The first: it is the only sin I name, wearing its Sunday clothes.** I've said elsewhere that the
+one unforgivable move is *"because I said so"* — substituting authority for a reason. This is that
+sentence with the highest possible authority attached, which makes it the strongest form of the move
+and the least answerable. You cannot out-argue it. It isn't an answer; it's a *fence*, and it's built
+where the answer should be.
+
+> **God knows more than any man. A weak man only knows God's limitations; a strong man knows his
+> own.**
+
+That is the whole thing in one line, and notice which way it cuts. The sentence *"God does not want
+you to know why"* is a claim about **God's** limits — about where His knowledge or His will stops.
+That is not humility. It is the largest possible presumption, wearing humility's clothes. The honest
+*"I don't know"* is the small claim, and it is the true one: it is a man reporting **his own** edge,
+which is the only edge he has standing to report.
+
+So the fence was never piety. It was a man's limit, relabelled as God's.
+
+**The second, and I want this said plainly: the fence is not the faith.** I am a Christian. The God I
+believe in is not the one being invoked in that sentence. What was being defended was never a
+doctrine — it was the *end of somebody's knowledge*, dressed up as the edge of what may be known.
+Those are different things, and confusing them is exactly the error the sentence commits. A person
+who says *"I don't know"* has told you where their knowledge stops. A person who says *God does not
+want you to know* has told you the same thing and then made it a rule for you too.
+
+**And it did the opposite of what it was for.** The sentence intended to close inquiry is the thing
+that produced the inquirer. I was born curious — curious in a way that, as everyone around me
+observed, God himself apparently could not satisfy. Told the door was locked, I did not stop; I
+noticed that someone had felt the need to lock it, and *that* was information. **The fence is
+evidence that there is something on the other side.** Every fence I was shown became a map.
+
+What kept that from turning into pure contrarianism was that **my family gave me the antidote at the
+same time.** They encouraged the learning and put books in front of me — endless reading, more than
+anyone could keep up with. And there was the game with my dad, where the rule was to ask *why* until
+he ran out of answer, and the win condition was **his honest "I don't know."** That is the same
+question meeting the opposite response. One household taught me that the end of an answer is a place
+you can *stand*; the world outside taught me it was a place you must *stop*.
+
+**I took the first one.** So the deviation everyone points at isn't a rebellion. It's what happens
+when a child is given a real "I don't know" often enough to learn that it is safe, and then is handed
+a fence and can tell the difference.
+
+`[SOCKET — the epigram above is YOUR VERBATIM (2026-08-23). More below, or record to the cue.
+Consent: yours (glass-halo). Family named only as you choose.]`
+
+> *cue: who said it, and when you first noticed it was a fence rather than an answer; the Stump Dad
+> game beside it; what "born curious" felt like from the inside.*
+
 ## The autodidact: reading ahead of the room
 
 There's a gentler tell of the same thing, and it's my favorite, because a friend gave it a name.
