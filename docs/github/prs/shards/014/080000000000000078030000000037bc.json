@@ -1,0 +1,12 @@
+{
+  "pr_number": 14268,
+  "archive_path": "docs/history/pr-reviews/PR-14268-docs-research-toy-a-bnn-posterior-fits-rgba-as-normal-gamma-natural-parameters-s.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-23T16:07:41.169Z",
+  "schema_version": "v1",
+  "commit_sha": "a6a480ff70823e522330bf4cac8e7cea7858fd7f",
+  "title": "docs(research): TOY — a BNN posterior fits RGBA as Normal-Gamma natural parameters; Student-t does not",
+  "state": "MERGED",
+  "merged_at": "2026-08-23T16:07:00Z",
+  "head_ref": "shadow/toy-bnn-posterior-rgba-encoding"
+}
