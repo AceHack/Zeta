@@ -16,6 +16,23 @@
 # k8s/bootstrap/gateway-api-crds.yaml. It creates the `kubevirt`
 # namespace itself, so CreateNamespace is not set.
 #
+# "VERBATIM" IS NOW CHECKED, NOT ASSERTED — and this file's word carried more
+# weight than most, because `full-ai-cluster/k8s/single-node-budget.json`
+# REFUSES to edit the virt-operator replica count on the strength of it
+# ("would make the checked-in copy diverge from the cluster it documents").
+# `src/Core.TypeScript/cluster/vendored-upstream-parity.ts` sha256s
+# kubevirt-operator.yaml against the digest of the pinned release asset above
+# on every CI run of the cluster plan job, so that refusal now rests on a
+# check rather than on a sentence. kubevirt-cr.yaml is classified OURS, and
+# genuinely is: upstream's is a 322-byte stub with no sync-wave annotation.
+#
+# WHY THIS IS NOT A CHART REFERENCE. KubeVirt v1.8.4's release ships virtctl
+# binaries and raw YAML — no Helm chart, no kustomize base (measured
+# 2026-08-23 against the release's asset list). Nor does the CR help: the
+# KubeVirt CRD's `spec.customizeComponents.patches` reaches the components the
+# operator DEPLOYS (virt-api / virt-controller / virt-handler), never
+# virt-operator's own Deployment, which is what this file creates.
+#
 # NO automated sync — DELIBERATE. This adopts an operator with three
 # running production VMs on it. An automated sync (or selfHeal) could
 # roll virt-operator -> virt-handler and disturb live guests on first

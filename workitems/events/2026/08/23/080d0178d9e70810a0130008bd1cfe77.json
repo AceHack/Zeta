@@ -1,0 +1,14 @@
+{
+  "id": "080d0178d9e70810a0130008bd1cfe77",
+  "at": "2026-08-23T14:51:49.345Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M0QHPF6Z087G0R0026RMZ6B",
+    "type": "task",
+    "title": "cdi/kubevirt's 120m is now governable — the divergence objection has a falsifier, and Kustomize is NOT the way to spend it",
+    "slug": "cdi-kubevirt-s-120m-is-now-governable-the-divergence-objecti",
+    "priority": "P2",
+    "filename": "081M0QHPF6Z087G0R0026RMZ6B-cdi-kubevirt-s-120m-is-now-governable-the-divergence-objecti.md"
+  }
+}

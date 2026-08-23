@@ -1,0 +1,14 @@
+{
+  "id": "080d0178d9e7e810a01300086beeed72",
+  "at": "2026-08-23T14:51:49.373Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M0QHPF7W087G0R0017B2GDK",
+    "type": "bug",
+    "title": "K3S bootstrap manifests carry resource requests no Application-based check can see — a fifth latent coordinate at 500m/512Mi",
+    "slug": "k3s-bootstrap-manifests-carry-resource-requests-no-applicati",
+    "priority": "P2",
+    "filename": "081M0QHPF7W087G0R0017B2GDK-k3s-bootstrap-manifests-carry-resource-requests-no-applicati.md"
+  }
+}

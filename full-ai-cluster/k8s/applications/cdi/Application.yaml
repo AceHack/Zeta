@@ -13,6 +13,25 @@
 # quay.io/kubevirt/cdi-operator:v1.65.0, confirmed against the live
 # deployment). It creates the `cdi` namespace itself.
 #
+# "VERBATIM" IS NOW CHECKED, NOT ASSERTED. That word used to be a promise in
+# this comment and nothing re-measured it. `src/Core.TypeScript/cluster/
+# vendored-upstream-parity.ts` sha256s cdi-operator.yaml against the digest of
+# the pinned release asset above on every CI run of the cluster plan job
+# (offline; `--fetch` also re-checks what the URL serves today, because a
+# release asset can be replaced in place). It also refuses any file this
+# Application's `directory.include` glob applies that is not classified as
+# upstream's bytes or ours — cdi-cr.yaml is classified OURS, and it genuinely
+# is: upstream's cdi-cr.yaml is a 309-byte stub.
+#
+# WHY THIS IS NOT A CHART REFERENCE. Aaron's standing preference is to
+# reference upstream and override with our own values rather than vendor.
+# Upstream offers nothing to reference: containerized-data-importer v1.65.0
+# ships two YAML release assets and no Helm chart (measured 2026-08-23 against
+# the release's asset list). Where upstream publishes a chart — 33 of the 47
+# Applications in this tree — we reference it at a pinned version and override
+# via valuesObject. This is the exception, and the parity check is what keeps
+# it a cache of a pinned URL rather than a fork.
+#
 # NO automated sync — DELIBERATE, same reasoning as kubevirt: this adopts
 # a live operator underneath running production guests. Sync by hand once
 # after reading the diff:

@@ -430,6 +430,34 @@ jobs:
       - name: Build kubevirt/cdi emulation proof plan (offline)
         run: bun src/Core.TypeScript/cluster/kubevirt-cdi-emulation-test.ts --dry-run
 
+      # THE VENDORED-BYTES CLAIM, CHECKED. `cdi/cdi-operator.yaml` and
+      # `kubevirt/kubevirt-operator.yaml` are the ONLY two upstream copies in the
+      # tree -- every other Application references a pinned upstream chart and
+      # overrides it with a valuesObject. Both file headers say the copies are
+      # byte-for-byte upstream, and `single-node-budget.json` REFUSES an edit on
+      # the strength of that sentence ("would make the checked-in copy diverge
+      # from the cluster it documents"). Until now the sentence was asserted and
+      # nothing re-measured it, which is the same shape as a rung whose
+      # provenance is a one-time manual render.
+      #
+      # Offline here: sha256 the committed bytes against the pinned upstream
+      # digest, and require every file the Application's own `directory.include`
+      # glob applies to be classified as upstream's or ours. `--fetch` (not run
+      # in this job) re-checks what the pinned URL serves today, which is the
+      # release-asset-replaced-in-place case.
+      #
+      # Mutation-checked in the unit tests, each class reached by mutating a
+      # scratch tree rather than by constructing a Finding: one byte changed in
+      # the copy, a `cpu: 25m` added to it, the copy deleted, the roster URL
+      # moved to a branch, a third file added to the glob, a rostered file
+      # dropped from the glob, upstream serving different bytes, and a fetch
+      # that fails. All eight go red; a file the glob EXCLUDES stays green.
+      - name: Run vendored-upstream parity unit tests
+        run: bun test src/Core.TypeScript/cluster/vendored-upstream-parity.test.ts
+
+      - name: Check the vendored operator manifests against their pinned upstream digests (offline)
+        run: bun src/Core.TypeScript/cluster/vendored-upstream-parity.ts
+
       # THE CILIUM LANE'S OFFLINE HALF. Pure, ~1s, so it rides in this job
       # rather than paying a fresh runner -- same reasoning as the single-node
       # readiness steps below.
