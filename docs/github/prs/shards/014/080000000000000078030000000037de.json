@@ -1,0 +1,12 @@
+{
+  "pr_number": 14302,
+  "archive_path": "docs/history/pr-reviews/PR-14302-docs-research-what-discretisation-costs-the-bnn-lane-and-the-natural-parameter-e.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-23T17:36:24.338Z",
+  "schema_version": "v1",
+  "commit_sha": "c23cd969fefeb59a9bf94355ef7ef321d5c378fd",
+  "title": "docs(research): what discretisation costs the BNN lane, and the natural-parameter embedding that does not truncate",
+  "state": "MERGED",
+  "merged_at": "2026-08-23T17:35:40Z",
+  "head_ref": "shadow/bnn-wset-scope"
+}
