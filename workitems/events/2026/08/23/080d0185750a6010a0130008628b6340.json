@@ -1,0 +1,14 @@
+{
+  "id": "080d0185750a6010a0130008628b6340",
+  "at": "2026-08-23T22:12:26.060Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M0RAX8AC087G0R003NQM7P9",
+    "type": "bug",
+    "title": "NtpNoninterference renderCard purity check is arity-1 standing in for a 2-safety property",
+    "slug": "ntpnoninterference-rendercard-purity-check-is-arity-1-standi",
+    "priority": "P2",
+    "filename": "081M0RAX8AC087G0R003NQM7P9-ntpnoninterference-rendercard-purity-check-is-arity-1-standi.md"
+  }
+}
