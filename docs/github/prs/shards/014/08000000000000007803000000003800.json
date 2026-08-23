@@ -1,0 +1,12 @@
+{
+  "pr_number": 14336,
+  "archive_path": "docs/history/pr-reviews/PR-14336-refactor-setup-retire-op-token-setup-sh-to-typescript-the-token-no-longer-reache.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-23T17:53:34.278Z",
+  "schema_version": "v1",
+  "commit_sha": "114514a6bd4d8cd5a375f183be1fe64d0d9db76d",
+  "title": "refactor(setup): retire op-token-setup.sh to TypeScript — the token no longer reaches an argv, and no-stdout/no-argv/no-env are now falsifiers",
+  "state": "MERGED",
+  "merged_at": "2026-08-23T17:52:50Z",
+  "head_ref": "refactor/retire-op-token-setup-to-ts"
+}
