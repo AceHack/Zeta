@@ -62,3 +62,6 @@
 {"checkId":"agent-heartbeat","outcome":"green","at":"2026-08-23T08:11:19.580Z","lane":"soraya","runId":"32627497399"}
 {"checkId":"agent-heartbeat","outcome":"green","at":"2026-08-23T08:27:31.837Z","lane":"soraya","runId":"32628238997"}
 {"checkId":"agent-heartbeat","outcome":"green","at":"2026-08-23T08:46:29.541Z","lane":"soraya","runId":"32629082871"}
+{"checkId":"agent-heartbeat","outcome":"green","at":"2026-08-23T08:27:19.453Z","lane":"otto","runId":"32628238997"}
+{"checkId":"agent-heartbeat","outcome":"green","at":"2026-08-23T08:46:07.470Z","lane":"otto","runId":"32629082871"}
+{"checkId":"agent-heartbeat","outcome":"green","at":"2026-08-23T09:01:42.769Z","lane":"otto","runId":"32629765475"}
