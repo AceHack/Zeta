@@ -1,0 +1,12 @@
+{
+  "pr_number": 14206,
+  "archive_path": "docs/history/pr-reviews/PR-14206-research-rl-control-of-qec-nature-655-read-against-our-q-lane-our-adinkra-ecc-an.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-23T17:28:56.194Z",
+  "schema_version": "v1",
+  "commit_sha": "60180789ad81f883284071e49289031971269b89",
+  "title": "research: RL control of QEC (Nature 655) read against our Q# lane, our adinkra ECC, and our rho meter",
+  "state": "MERGED",
+  "merged_at": "2026-08-23T17:28:04Z",
+  "head_ref": "research/rl-qec-control-comparison"
+}
