@@ -1,0 +1,12 @@
+{
+  "pr_number": 14363,
+  "archive_path": "docs/history/pr-reviews/PR-14363-fix-ci-the-drift-lanes-computed-a-result-and-threw-it-away-1-597-green-runs-ten-.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-23T18:43:25.007Z",
+  "schema_version": "v1",
+  "commit_sha": "c3f8945c9d8af893b4f24c7ed010db0457fdcb7d",
+  "title": "fix(ci): the drift lanes computed a result and threw it away — 1,597 green runs, ten days of stale numbers",
+  "state": "MERGED",
+  "merged_at": "2026-08-23T18:42:30Z",
+  "head_ref": "fix/drift-publication-lands-via-pr"
+}
