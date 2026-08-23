@@ -29,10 +29,10 @@ That reason rested on a sentence in a YAML comment. It is now a check:
 the pinned upstream release digests on every CI run of the cluster plan job, and both
 were **measured identical** 2026-08-23:
 
-| file                              | sha256             | upstream                                            |
-| --------------------------------- | ------------------ | --------------------------------------------------- |
-| `cdi/cdi-operator.yaml`           | `e96d59ab…a222015` | `containerized-data-importer` v1.65.0 release asset |
-| `kubevirt/kubevirt-operator.yaml` | `d1d8264e…3857eda` | `kubevirt` v1.8.4 release asset                     |
+| file                                                               | sha256             | upstream                                            |
+| ------------------------------------------------------------------ | ------------------ | --------------------------------------------------- |
+| `full-ai-cluster/k8s/applications/cdi/cdi-operator.yaml`           | `e96d59ab…a222015` | `containerized-data-importer` v1.65.0 release asset |
+| `full-ai-cluster/k8s/applications/kubevirt/kubevirt-operator.yaml` | `d1d8264e…3857eda` | `kubevirt` v1.8.4 release asset                     |
 
 So the divergence fear now has a falsifier. **That does not by itself make governing
 them right** — it makes the objection checkable instead of assumed, which is the
@@ -51,7 +51,7 @@ Same shape as the three git-path rows landed 2026-08-23 (`gmod`, `platform`,
 
 **The remaining objection is real and is NOT closed by this PR.** `argocd-health-test.ts`
 records it: `--apply` rewrites the working tree, ArgoCD syncs the committed tree, and
-`bootstrap/root-application.yaml` points the metal cluster at the same path — _"one
+`full-ai-cluster/k8s/bootstrap/root-application.yaml` points the metal cluster at the same path — _"one
 committed tree, two substrates, no override point."_ That is the general
 `acknowledgedRungBudgetGap`, not something specific to these two files. Nothing here
 resolves it; what is resolved is only "would this fork upstream", and the answer is

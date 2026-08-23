@@ -33,6 +33,13 @@ test("extractPointers ignores absolute filesystem paths (node runtime paths, not
   expect(cleans).toContain("db/routing/README.md");
 });
 
+test("extractPointers separates QEC parameter notation from ordinary wikilinks", () => {
+  const text = "The [[16,6,4]] code composes with [[same/grey-gray]] and [[grey]].";
+  const cleans = extractPointers(text).map((pointer) => pointer.clean);
+
+  expect(cleans).toEqual(["same/grey-gray", "grey"]);
+});
+
 test("extractZetaId parses valid Crockford ZetaId", () => {
   const validId = "081KTQX7W6Q08QG0R000XA3220";
   expect(extractZetaId(validId)).toBe(validId);
