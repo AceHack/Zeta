@@ -1,0 +1,12 @@
+{
+  "pr_number": 14238,
+  "archive_path": "docs/history/pr-reviews/PR-14238-chore-soraya-notebook-qec-routing-round-pruned-to-stay-under-the-cap.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-23T15:02:17.899Z",
+  "schema_version": "v1",
+  "commit_sha": "84649d7682d0b76d64594449b0d78fac3f6022d1",
+  "title": "chore(soraya): notebook -- QEC routing round, pruned to stay under the cap",
+  "state": "MERGED",
+  "merged_at": "2026-08-23T15:01:42Z",
+  "head_ref": "soraya/notebook-qec-round"
+}
