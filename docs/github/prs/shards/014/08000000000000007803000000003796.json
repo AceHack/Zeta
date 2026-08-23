@@ -1,0 +1,12 @@
+{
+  "pr_number": 14230,
+  "archive_path": "docs/history/pr-reviews/PR-14230-chore-tsc-drop-my-twitch-ai-vite-config-exclude-14213-made-it-dead-coverage-loss.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-23T14:59:44.101Z",
+  "schema_version": "v1",
+  "commit_sha": "6a5e368c05e626a7cea457d9911382a1bf115ffe",
+  "title": "chore(tsc): drop my twitch-ai vite.config exclude — #14213 made it dead coverage-loss",
+  "state": "MERGED",
+  "merged_at": "2026-08-23T14:59:06Z",
+  "head_ref": "chore/tsc-recheck-vite-config"
+}
