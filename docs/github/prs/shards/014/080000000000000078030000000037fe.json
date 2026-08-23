@@ -1,0 +1,12 @@
+{
+  "pr_number": 14334,
+  "archive_path": "docs/history/pr-reviews/PR-14334-fix-cluster-ci-found-two-defects-in-the-image-provenance-network-half-a-wrong-pr.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-23T17:52:59.063Z",
+  "schema_version": "v1",
+  "commit_sha": "ee05f300d8f4c05b5949904a43f2f4c339c74eea",
+  "title": "fix(cluster): CI found two defects in the image-provenance network half — a wrong probe, and a snapshot that changed because the measurer did",
+  "state": "MERGED",
+  "merged_at": "2026-08-23T17:52:15Z",
+  "head_ref": "fix/image-provenance-refresh-degradation"
+}
