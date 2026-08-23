@@ -1,0 +1,12 @@
+{
+  "pr_number": 13983,
+  "archive_path": "docs/history/pr-reviews/PR-13983-fix-three-conflict-markers-reached-main-in-13980-my-error-and-auto-merge-outran-.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-22T23:43:40.354Z",
+  "schema_version": "v1",
+  "commit_sha": "3d8497afee906b2d6830eb25f062d9eba72e954b",
+  "title": "fix: three conflict markers reached main in #13980 — my error, and auto-merge outran the fix",
+  "state": "MERGED",
+  "merged_at": "2026-08-22T23:43:01Z",
+  "head_ref": "shadow-manifest-markers-followup"
+}
