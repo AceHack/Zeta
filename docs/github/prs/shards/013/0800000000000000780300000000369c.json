@@ -1,0 +1,12 @@
+{
+  "pr_number": 13980,
+  "archive_path": "docs/history/pr-reviews/PR-13980-revert-feat-mutual-simulation-13973-it-deleted-1-063-105-lines-and-half-the-ci-s.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-22T23:33:48.255Z",
+  "schema_version": "v1",
+  "commit_sha": "07e9530c4569cd97c0e1bd637e2e447a57eaa9d2",
+  "title": "Revert \"feat: mutual simulation (#13973)\" — it deleted 1,063,105 lines and half the CI substrate",
+  "state": "MERGED",
+  "merged_at": "2026-08-22T23:33:01Z",
+  "head_ref": "shadow-revert-13973-mass-deletion"
+}
