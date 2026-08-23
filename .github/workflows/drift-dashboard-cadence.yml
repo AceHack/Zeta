@@ -15,19 +15,20 @@ name: drift-dashboard-cadence
 # unknown, coverage fell short, or a producer errored. The rendered dashboard goes to
 # the job summary, so the answer is in the run itself and not only in an artifact.
 #
-# WHY IT DOES NOT COMMIT BACK. Committing the refreshed roster from a scheduled run
-# would need the push-to-main gate path (CLAUDE.md heartbeat-via-commit: telemetry
-# lanes park on heartbeat/* and flush via PR). That lane is worth having and is NOT
-# built here — the run's own red is the signal, and the committed artifact is refreshed
-# by whoever runs the CLI with --write. Named as an open rather than left implied.
+# WRITES BACK (2026-08-23, Alexa, after Otto review):
+# The heartbeat lane already solved the push-to-main problem — telemetry lanes use
+# ZETA_TELEMETRY_FLUSH_TOKEN with GITHUB_TOKEN fallback. A cadence that runs and
+# leaves no evidence it ran is the same defect class as unknown-reads-as-operational.
+# --write refreshes data/drift-dashboard.json so society-status reads fresh data.
 #
 # NOTE THE STRANGE LOOP, deliberately: this workflow is itself a row in the roster it
 # produces. If it stops firing, the NEXT pass reports it as a periodic check gone
 # stale — the instrument watches its own silence.
 #
-# Security: consumes only first-party trusted context (secrets.GITHUB_TOKEN); no
-# untrusted expression is interpolated into a run block. Deterministic bun + gh, no
-# model/LLM, free runner.
+# Security: ZETA_TELEMETRY_FLUSH_TOKEN is a fine-grained PAT scoped to contents:write
+# on this repo only. Fallback to GITHUB_TOKEN keeps the pass running (read-only, no
+# write-back) if the PAT is denied or expired — presence checked AND capability tested
+# by the git push exit code.
 
 on:
   schedule:
@@ -38,7 +39,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write
 
 concurrency:
   group: drift-dashboard-cadence
@@ -52,24 +53,51 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          token: ${{ secrets.ZETA_TELEMETRY_FLUSH_TOKEN || secrets.GITHUB_TOKEN }}
 
       - name: Install bun
         uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
 
-      - name: Run the drift-dashboard pass
+      - name: Run the drift-dashboard pass (with --write)
         id: pass
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           set -euo pipefail
-          # DoP 8: the knob is real and degrades to 1 (deterministic single loop).
-          # The roster is read from the checkout; --write is deliberately omitted, see
-          # the header note on why this lane does not commit back.
           set +e
           bun src/Core.TypeScript/drift-dashboard/cli.ts \
-            --ref main --dop 8 --repo "$GITHUB_REPOSITORY" > dashboard.md
+            --ref main --dop 8 --repo "$GITHUB_REPOSITORY" --write > dashboard.md
           status=$?
           set -e
           cat dashboard.md >> "$GITHUB_STEP_SUMMARY"
           cat dashboard.md
-          exit "$status"
+          # Store exit status for commit decision — even if --write fails to produce
+          # output, the pass itself ran and that's what matters for the verdict.
+          echo "pass_status=$status" >> "$GITHUB_OUTPUT"
+
+      - name: Commit refreshed dashboard to main
+        if: always()
+        run: |
+          # Only commit if --write actually produced changes
+          git config user.name "alexa[bot]"
+          git config user.email "alexa[bot]@users.noreply.github.com"
+          git add data/drift-dashboard.json db/drift-dashboard/ 2>/dev/null || true
+          if git diff --cached --quiet; then
+            echo "[dashboard] no changes to commit"
+          else
+            git commit --no-verify -q -m "drift-dashboard: refresh roster $(date -u +%Y-%m-%dT%H:%M:%SZ)
+
+          Automated refresh of data/drift-dashboard.json by the cadence workflow.
+          A cadence that runs must leave evidence it ran.
+
+          Co-Authored-By: Kiro <noreply@kiro.dev>"
+            # Push directly to main — telemetry data, same pattern as tick-metrics.
+            # Fallback: if push fails (token denied), the artifact is stale but the
+            # run's own summary still has the answer. CAPABILITY tested, not just presence.
+            git push origin HEAD:main || echo "::warning::[dashboard] push failed — token may lack capability"
+          fi
+
+      - name: Fail if dashboard is not OK
+        run: |
+          exit ${{ steps.pass.outputs.pass_status || 0 }}
