@@ -77,6 +77,13 @@ and the CLI prints on stderr with every answer:
 The index returns **no file that `git grep` does not**. The accounting is how
 the two tokenizer defects below were found; the totals alone looked fine.
 
+## Two more defects, found by reading the first post-merge query on `main`
+
+Recorded because both were shipped and then caught by _looking at the output_, which is the same method that found the tokenizer pair below.
+
+3. **The index indexed itself.** 7 of the artifact's own files sit under the 512 KiB blob cap (`high-df.jsonl`, `manifest.json`, `terms-{j,q,x,y,z}.jsonl`), so the next rebuild would have indexed the previous one — every term in the index becoming a term _in_ the index, every path in `files.txt` a hit for itself. The large shards were excluded only by the size cap, which is luck, not design. `db/search-index/` is now an excluded tree.
+4. **A repaired stale index could disagree with a fresh one.** `isIndexablePath` answers from the path alone; the builder _also_ applies a blob-size cap. So the changed set admitted files the index would never contain, the verifier grepped them, and a stale query returned a hit a fresh query did not — the same question with two answers, decided by how stale the index happened to be. Now split in two: `changed` (wider — what to **withdraw**, since a fresh index would not list a deleted or newly-oversize file either) and `verifiable` (what to **read**, matching the builder's corpus exactly). A test asserts the two paths agree.
+
 ## Two defects found by diffing against `git grep`, not by reasoning
 
 Both were the _same failure this work-item exists to remove_, reproduced inside

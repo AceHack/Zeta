@@ -54,6 +54,7 @@ import {
   FILES_FILE,
   HIGH_DF_FILE,
   isIndexablePath,
+  MAX_BLOB_BYTES,
   shardOf,
   shardFile,
   parseTermRow,
@@ -62,7 +63,7 @@ import {
   type DocId,
   type Manifest,
 } from "./format.ts";
-import { hasCommit, isAncestor, resolveRev, changedPaths, commitsBetween } from "./git-corpus.ts";
+import { hasCommit, isAncestor, resolveRev, changedPaths, commitsBetween, blobSizesAt } from "./git-corpus.ts";
 
 /**
  * How many changed files the verifier will re-read from git before refusing.
@@ -84,7 +85,14 @@ export interface Hit {
 
 export type Freshness =
   | { readonly kind: "fresh" }
-  | { readonly kind: "behind"; readonly commits: number; readonly changed: string[] }
+  | {
+      readonly kind: "behind";
+      readonly commits: number;
+      /** every changed path the index could have covered — the RETRACTION set */
+      readonly changed: string[];
+      /** the subset the builder would actually read at the target rev — the VERIFY set */
+      readonly verifiable: string[];
+    }
   | { readonly kind: "divergent" }
   | { readonly kind: "unknown-rev" };
 
@@ -94,7 +102,27 @@ export function classifyFreshness(repoRoot: string, indexRev: string, targetRev:
   if (!isAncestor(repoRoot, indexRev, targetRev)) return { kind: "divergent" };
   const changed = changedPaths(repoRoot, indexRev, targetRev).filter(isIndexablePath);
   if (changed.length === 0) return { kind: "fresh" };
-  return { kind: "behind", commits: commitsBetween(repoRoot, indexRev, targetRev), changed };
+
+  // TWO SETS, AND CONFLATING THEM WAS A REAL BUG (caught 2026-08-23 on the first
+  // post-merge query on main).
+  //
+  // `isIndexablePath` answers from the PATH alone, but the builder also applies a
+  // blob-size cap, which needs the size at the rev. So the changed set admitted
+  // files the index would never contain — and the verifier then git-grepped them
+  // and returned hits a FRESH index does not have. The same query gave different
+  // answers depending on how stale the index was, which is the one thing this CLI
+  // exists to prevent.
+  //
+  // `changed`     — everything to WITHDRAW from the index's claims. Wider on
+  //                 purpose: a file that became oversize, or was deleted, must
+  //                 lose its hit, and a fresh index would not list it either.
+  // `verifiable`  — what to actually READ, matching the builder's corpus exactly.
+  const sizes = blobSizesAt(repoRoot, targetRev, changed);
+  const verifiable = changed.filter((p) => {
+    const size = sizes.get(p);
+    return size !== undefined && size <= MAX_BLOB_BYTES;
+  });
+  return { kind: "behind", commits: commitsBetween(repoRoot, indexRev, targetRev), changed, verifiable };
 }
 
 export interface LoadedIndex {
@@ -316,7 +344,7 @@ export function runQuery(opts: QueryOptions): QueryOutcome {
           kind: "refused",
           reason: "empty result from an index whose corpus has moved",
           detail:
-            `${freshness.changed.length} indexable file(s) changed across the ${freshness.commits} commit(s) between the index rev\n` +
+            `${freshness.verifiable.length} indexable file(s) changed across the ${freshness.commits} commit(s) between the index rev\n` +
             `${indexRev.slice(0, 12)} and ${opts.targetRev.slice(0, 12)}, and --no-verify was passed, so those files were never read.\n` +
             `"Not found" would be a claim about a corpus this run did not look at. That is the 2026-08-22 landauer failure exactly,\n` +
             `and it is refused rather than printed.\n` +
@@ -325,12 +353,12 @@ export function runQuery(opts: QueryOptions): QueryOutcome {
       }
       return { kind: "ok", hits: rank(hits, opts.limit), freshness, verifiedFiles: 0 };
     }
-    if (freshness.changed.length > VERIFY_FILE_BUDGET) {
+    if (freshness.verifiable.length > VERIFY_FILE_BUDGET) {
       return {
         kind: "refused",
         reason: "too far behind to verify",
         detail:
-          `${freshness.changed.length} indexable files changed since the index rev (budget ${VERIFY_FILE_BUDGET}).\n` +
+          `${freshness.verifiable.length} indexable files changed since the index rev (budget ${VERIFY_FILE_BUDGET}).\n` +
           `Reading them all would be the unconstrained scan this repo's tooling exists to refuse, and NOT reading them would\n` +
           `make the answer a guess. Neither is acceptable, so this is a refusal.\n` +
           `FIX: rebuild:  bun src/Core.TypeScript/search/inverted/build.ts --rev ${opts.targetRev}`,
@@ -339,8 +367,8 @@ export function runQuery(opts: QueryOptions): QueryOutcome {
     // The index's claims about changed files are superseded, in BOTH directions:
     // a file that no longer contains the term must lose its hit, not just gain one.
     for (const p of freshness.changed) hits.delete(p);
-    const counts = verifyAtRev(opts.repoRoot, opts.targetRev, analyzed, freshness.changed);
-    verifiedFiles = freshness.changed.length;
+    const counts = verifyAtRev(opts.repoRoot, opts.targetRev, analyzed, freshness.verifiable);
+    verifiedFiles = freshness.verifiable.length;
     let intersected: Map<string, number> | null = null;
     for (const term of analyzed) {
       const c = counts.get(term)!;

@@ -145,6 +145,31 @@ export function readBlobs(
 }
 
 /**
+ * Blob sizes at a rev, for the given paths. Used to apply the SAME size cap the
+ * builder applies, so the two answer paths agree about what is in the corpus.
+ * A path absent from the result was deleted at that rev.
+ */
+export function blobSizesAt(repoRoot: string, rev: string, paths: readonly string[]): Map<string, number> {
+  const out = new Map<string, number>();
+  if (paths.length === 0) return out;
+  const CHUNK = 400;
+  for (let i = 0; i < paths.length; i += CHUNK) {
+    const slice = paths.slice(i, i + CHUNK);
+    const text = git(repoRoot, ["ls-tree", "-r", "-l", "-z", `${rev}^{tree}`, "--", ...slice]);
+    for (const rec of text.split("\0")) {
+      if (rec.length === 0) continue;
+      const tab = rec.indexOf("\t");
+      if (tab < 0) continue;
+      const parts = rec.slice(0, tab).split(/\s+/);
+      if (parts.length < 4 || parts[1] !== "blob") continue;
+      const size = Number.parseInt(parts[3]!, 10);
+      if (Number.isFinite(size)) out.set(rec.slice(tab + 1), size);
+    }
+  }
+  return out;
+}
+
+/**
  * Heuristic binary detection: a NUL byte in the first 8 KiB.
  *
  * The same rule git itself uses to decide whether to print "Binary files

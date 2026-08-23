@@ -495,6 +495,104 @@ test("the df cap scales with the corpus and has a floor", () => {
   expect(documentFrequencyCap(32936)).toBeGreaterThan(447);
 });
 
+// ─────────────────────────────────────────────────────────────────────────────
+// THE TWO DEFECTS FOUND BY READING THE FIRST POST-MERGE QUERY ON main.
+// ─────────────────────────────────────────────────────────────────────────────
+
+test("the index does not index ITSELF — a feedback loop, not a corpus", () => {
+  // 7 of the artifact's own files sit under the blob-size cap, so without this
+  // exclusion the next rebuild indexes the previous one: every term in the index
+  // becomes a term in the index, and every path in files.txt becomes a hit for
+  // itself. The large shards were excluded only by the size cap, which is luck.
+  expect(isIndexablePath("db/search-index/inverted/files.txt")).toBe(false);
+  expect(isIndexablePath("db/search-index/inverted/manifest.json")).toBe(false);
+  expect(isIndexablePath("db/search-index/inverted/high-df.jsonl")).toBe(false);
+  expect(isIndexablePath("db/search-index/inverted/terms-z.jsonl")).toBe(false);
+});
+
+test("a REPAIRED stale index agrees with a FRESH one — the two paths cannot disagree", () => {
+  // The bug this pins: `isIndexablePath` answers from the path alone, but the
+  // builder ALSO applies a blob-size cap. So the changed set admitted files the
+  // index would never contain, the verifier grepped them, and a stale query
+  // returned a hit a fresh query did not. Same question, two answers, decided by
+  // how stale the index happened to be.
+  const dir = tmpDir("agree");
+  build(revA, dir);
+
+  const oversize = "docs/huge.md";
+  const rev = commit(
+    { [oversize]: "landauer ".repeat(80_000), "docs/small.md": "landauer here\n" },
+    "add an oversize blob and a small one",
+  );
+
+  const repaired = runQuery({
+    repoRoot: repo,
+    indexDir: dir,
+    terms: ["landauer"],
+    targetRev: rev,
+    verify: true,
+    limit: 0,
+    filesOnly: false,
+  });
+
+  const freshDir = tmpDir("agree-fresh");
+  build(rev, freshDir);
+  const fresh = runQuery({
+    repoRoot: repo,
+    indexDir: freshDir,
+    terms: ["landauer"],
+    targetRev: rev,
+    verify: true,
+    limit: 0,
+    filesOnly: false,
+  });
+
+  expect(repaired.kind).toBe("ok");
+  expect(fresh.kind).toBe("ok");
+  if (repaired.kind !== "ok" || fresh.kind !== "ok") throw new Error("unreachable");
+  const paths = (o: typeof fresh) => o.hits.map((h) => h.path).sort(compareTerms);
+  // The oversize blob is in NEITHER answer, and the small one is in both.
+  expect(paths(repaired)).toEqual(paths(fresh));
+  expect(paths(fresh)).toContain("docs/small.md");
+  expect(paths(fresh)).not.toContain(oversize);
+
+  git(["reset", "-q", "--hard", revB]);
+  git(["clean", "-qfd"]);
+  rmSync(dir, { recursive: true, force: true });
+  rmSync(freshDir, { recursive: true, force: true });
+});
+
+test("the retraction set stays WIDER than the verify set — a file that grew past the cap loses its hit", () => {
+  const dir = tmpDir("wider");
+  build(revA, dir);
+  // alpha.md is in the index with `landauer`. Grow it past the cap: a fresh index
+  // would drop it, so the repaired answer must drop it too — and it must not be
+  // grepped, because the builder would not have read it either.
+  const rev = commit({ "docs/alpha.md": "landauer ".repeat(80_000) }, "alpha grows past the cap");
+  const f = classifyFreshness(repo, revA, rev);
+  expect(f.kind).toBe("behind");
+  if (f.kind !== "behind") throw new Error("unreachable");
+  expect(f.changed).toContain("docs/alpha.md");
+  expect(f.verifiable).not.toContain("docs/alpha.md");
+
+  const out = runQuery({
+    repoRoot: repo,
+    indexDir: dir,
+    terms: ["landauer"],
+    targetRev: rev,
+    verify: true,
+    limit: 0,
+    filesOnly: false,
+  });
+  expect(out.kind).toBe("ok");
+  if (out.kind !== "ok") throw new Error("unreachable");
+  expect(out.hits.map((h) => h.path)).not.toContain("docs/alpha.md");
+
+  git(["reset", "-q", "--hard", revB]);
+  git(["clean", "-qfd"]);
+  rmSync(dir, { recursive: true, force: true });
+});
+
 test("shard placement is a pure function of the term", () => {
   expect(shardOf("landauer")).toBe("l");
   expect(shardOf("2026")).toBe("2");

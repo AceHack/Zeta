@@ -216,6 +216,11 @@ export const EXCLUDED_TREES: readonly ExcludedTree[] = Object.freeze([
       "13 tracked files / 1.84 MiB at 6426eacf, but the directory is the mount point for the gitignored multi-gigabyte prior-art mirror (CLAUDE.md: 'a naive grep -r . is a 2-hour runaway'). Excluded so a checkout that HAS the mirror indexes the same corpus as one that does not — otherwise the artifact stops being a function of the rev.",
   },
   {
+    prefix: "db/search-index/",
+    measurement:
+      "the index's OWN OUTPUT — 54.96 MiB / 40 files at 01050c8b. Caught 2026-08-23 by reading the first post-merge query on main: 7 of its own files sit UNDER the 512 KiB blob cap (high-df.jsonl 57,366 B, manifest.json 10,165 B, and terms-{j,q,x,y,z}.jsonl at 173-339 KB), so the next rebuild would have indexed the previous rebuild. That is a feedback loop, not a corpus: every term in the index becomes a term IN the index, every path in files.txt becomes a hit for itself, and the artifact grows each cycle for no retrieval value. The large shards were excluded only by the size cap, which is luck rather than design.",
+  },
+  {
     prefix: "node_modules/",
     measurement:
       "not tracked in git at 6426eacf, so this excludes nothing today. Kept because a vendored dependency tree is the classic way an index silently triples, and the cost of the guard is one string comparison.",
