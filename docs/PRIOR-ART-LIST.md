@@ -1553,3 +1553,48 @@ it, not from a summary.
   MIT/LCS/TR-429). The origin of the question _what can a routing protocol still guarantee when
   participating routers lie?_ — and the reason the requirement here is stated as a **bound** rather
   than as correctness. A relay can always decline to forward; no mechanism makes a metric true.
+
+## Extensive vs intensive — the wait-free / consensus boundary (added 2026-08-23, Lumen)
+
+The anchors behind §11 of
+`docs/research/2026-08-23-geometry-as-the-root-of-the-soft-regime-five-questions-*.md`, which asks
+whether Aaron's _"a count is CRDT and a condition is CASPaxos-ish"_ is a theorem. Answer: the two
+conditions are **co-extensive on the examples and separated by idempotence**, and checking these
+anchors is what produced the separation rather than a confirmation.
+
+- **Richard C. Tolman (1917) — "The Measurable Quantities of Physics"** (_Phys. Rev._ **9**, 237).
+  The terms **extensive** and **intensive** are conventionally traced here. Load-bearing for us
+  beyond vocabulary: thermodynamics _defines_ an intensive quantity as a **ratio of extensives**
+  (density = mass/volume, `T = ∂U/∂S`), which is exactly the repair that keeps densities, rates and
+  means on the wait-free tier — carry both measures, divide at read. Measure-theoretic twin:
+  the **Radon–Nikodym derivative** `dν/dμ`. The anchor supplies the _fix_, not just the words.
+- **Marc Shapiro, Nuno Preguiça, Carlos Baquero & Marek Zawirski (2011) — "A comprehensive study of
+  Convergent and Commutative Replicated Data Types"** (INRIA RR-7506; and _"Conflict-free Replicated
+  Data Types"_, SSS 2011). The **CvRDT / CmRDT** split and the **join-semilattice** condition. This
+  is the anchor that **corrected** the mapping: a raw count under `+` is commutative and associative
+  and **not idempotent**, so it is a `CmRDT` and **not** a `CvRDT` state — the `G-Counter`'s
+  per-replica keying + elementwise `max` is a _change of the carried object_, not a property of
+  counting. `src/Core/Crdt.fs` implements exactly that shape (merge = `max`, read = `Σ`), and its
+  header comment misnames the structure (it lists the commutative-monoid axioms under the
+  "join-semilattice" label). Already cited in that file; promoted here because it is now
+  load-bearing for a _criterion_, not only for an implementation.
+- **Denis Rystsov (2018) — "CASPaxos: Replicated State Machines without logs"** (arXiv:1802.07000).
+  Single-decree Paxos as a **replicated CAS register**: clients submit a change function applied
+  under compare-and-swap. The right primitive for the one tier that genuinely needs coordination —
+  and the reason is **non-commutativity of the update** (a read-modify-write result depends on what
+  was already there), _not_ intensiveness of the quantity.
+- **Michael J. Fischer, Nancy A. Lynch & Michael S. Paterson (1985) — "Impossibility of Distributed
+  Consensus with One Faulty Process"** (_JACM_ **32**(2), 374–382). Why the tier boundary is a
+  **computability class** rather than a message count: consensus is impossible in an asynchronous
+  system with a single crash fault, while a commutative merge is wait-free.
+- **Seth Gilbert & Nancy Lynch (2002) — "Brewer's conjecture and the feasibility of consistent,
+  available, partition-tolerant web services"** (_SIGACT News_ **33**(2), 51–59). The other half of
+  the cost: the commutative tier stays available under partition; the consensus tier does not. This
+  is what makes _"prefer the extensive formulation"_ a manifesto §2 (wait-free) requirement rather
+  than a style preference.
+
+Pairs with `.claude/rules/dv2-data-split-discipline-activated.md` (#1 scale-free, #2 lock/wait-free,
+and #6 idempotency) and `.claude/rules/local-time-never-enters-the-shared-fold.md` — a _rate_ carries a
+duration in its denominator, so carrying counts rather than rates satisfies both constraints from
+one argument. **Brian Beckman** is already in this list as REQUIRED READING and is the stated source
+for the physics/category convergence that opened §10.

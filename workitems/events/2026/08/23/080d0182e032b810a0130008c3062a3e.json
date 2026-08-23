@@ -1,0 +1,14 @@
+{
+  "id": "080d0182e032b810a0130008c3062a3e",
+  "at": "2026-08-23T20:42:12.439Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M0R5R1JN087G0R0031FT1C2",
+    "type": "bug",
+    "title": "SoftValue support shrinks by float underflow: a candidate leaves at 324 observations with no zero likelihood",
+    "slug": "softvalue-support-shrinks-by-float-underflow-a-candidate-lea",
+    "priority": "P2",
+    "filename": "081M0R5R1JN087G0R0031FT1C2-softvalue-support-shrinks-by-float-underflow-a-candidate-lea.md"
+  }
+}

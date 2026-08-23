@@ -605,6 +605,8 @@ hers to confirm; this is the recommendation and the reason.
 | `081M0R1RV2Y087G0R003W65SGD` | S4 + S5 — the NG non-log-concavity boundary, and the half-space theorem | Soraya, **Z3** + **Lean 4** |
 | `081M0R1RV3T087G0R001YAWXNK` | Q5 — pre-register the Gärdenfors question as a **model comparison**, explicitly not routed to a prover | not Soraya |
 | `081M0R34AZY087G0R001H9N6YS` | §10 — descent along a coarsening: the exact iff, extensive vs intensive, Pythagorean = within-fibre Bregman information | Soraya, **Lean 4** + a computed witness |
+| `081M0R5E1ZG087G0R001RVAQVR` | §13.5 — evidence-set intake for the belief fold (the "if not" half of Aaron's verification request) | not Soraya — design + a falsifier that fails today |
+| `081M0R5R1JN087G0R0031FT1C2` | §14.6 — **bug**: `SoftValue` support shrinks by float underflow at 324 observations; *when* a key dies is float-dependent, so oracles can diverge | not Soraya — falsifier first, then confirm on the real F# |
 
 Three findings are reported in this document and deliberately **not** filed as work-items, because
 each is a code change and code is sequenced after the analysis: the F#/TypeScript `apply` arity
@@ -921,6 +923,741 @@ ambiguity arriving at the coarsening question by a different door, and it means 
 |---|---|---|
 | `081M0R34AZY087G0R001H9N6YS` | descent along a coarsening: the exact iff, the extensive/intensive split, and Pythagorean = within-fibre Bregman information | Soraya, **Lean 4** (the descent theorem) + a computed witness (the two barycentres) |
 
+---
+
+## 11. ADDENDUM TO THE ADDENDUM — is "a count is CRDT, a condition is CASPaxos" a theorem?
+
+> Aaron, on §10's extensive/intensive split: *"for me **a count is CRDT** and **a condition is
+> CASPaxos or CASRaft**-ish."*
+
+**Verdict: directionally right, off by one refinement in *each* column — and the refinements are
+the useful part. The two conditions are NOT equivalent: they are co-extensive on the examples and
+separated by IDEMPOTENCE**, which belongs to the delivery channel rather than to the statistic
+(§11.2). The correspondence is a **theorem** where it is stated over commutative monoids (§11.8)
+and an **analogy that parts** where it is stated over counts. The left column understates what is needed (a count is a `CmRDT`, not a `CvRDT`);
+the right column overstates it (**most intensive quantities need no consensus at all**). The
+corrected invariant is **commutativity of the update**, and it is the *same* invariant on both
+sides of the correspondence. The four-way agreement is **recorded design recognised in a new place**,
+not a coincidence needing triage — checked, with counts, in §11.6.
+
+Numbers from `docs/research/scripts/2026-08-23-geometry-as-root-extensive-crdt-verify.py`
+(`ALL PASS`, exit 0).
+
+### 11.1 The one distinction, stated once
+
+> **Descent along a coarsening is free exactly when the aggregation is invariant under the
+> symmetries of the fibre.** The fibre is *unordered* ⇒ the aggregation must be **commutative and
+> associative**. The fibre arrives over a channel that may **duplicate** ⇒ additionally
+> **idempotent**. The fibre is *ordered and the order matters* ⇒ you must **agree the order**, and
+> agreeing an order is consensus.
+
+Three tiers, one condition, and everything below is that sentence in a different vocabulary.
+
+### 11.2 Left column — a raw count is a CmRDT, **not** a CvRDT
+
+`+` on counts is commutative and associative and **not idempotent** (`x + x ≠ x`, C1). Those are
+the **commutative monoid** axioms, not the **join-semilattice** axioms — the semilattice needs
+exactly the one that fails. So:
+
+- **extensive ⇒ concurrent operations commute ⇒ `CmRDT` (op-based).** True, unconditionally.
+- **extensive ⇒ `CvRDT` (state-based).** **False** — the state is not a join-semilattice.
+
+The standard repair is the **G-Counter**, and it is *not* a property of counting: it **re-indexes
+the fibre by source**, merges with elementwise `max` (which *is* idempotent, C2), and recovers the
+count only at **read** time as `Σ`. That is a **change of the carried object** — you decline to
+quotient by replica identity — which in §10.1's language is *keeping a section of the coarsening*.
+
+**And `src/Core/Crdt.fs` is the in-tree witness**, exactly this shape: `GCounter` is a `ZSet` keyed
+by `replicaId`, `Merge` is elementwise `max`, `Value` is the sum. **The merge and the aggregation
+are two different operations on two different objects**, which is precisely where the categorical
+condition and the CRDT condition part company.
+
+> **In-tree defect, found by this check.** `src/Core/Crdt.fs:9` reads *"DBSP Z-sets with integer
+> weights are already a **signed-multiset join-semilattice** — commutative, associative, with an
+> identity."* Those three axioms are the **commutative monoid**; a join-semilattice additionally
+> requires **idempotence**, which `ZSet.add` does not have and cannot have (it is a group — it has
+> *inverses*, which is the opposite of idempotent). **The code is correct and the comment names the
+> wrong structure** — and the tell is that `GCounter.Merge` reaches for `max` precisely *because*
+> `+` is not idempotent. Reported for the code phase, not filed as implementation.
+
+**Idempotence is a property of DELIVERY, not of the statistic** (C3): redeliver one increment and
+raw `+` reads `10` where the truth is `5`, while keyed-max reads `5`. This is the cleanest
+statement of the boundary — commutativity/associativity are about **the meter** (does the answer
+depend on how you grouped the fibre?), idempotence is about **the channel** (does it depend on how
+many times you heard it?). Which is Aaron's own split from a different thread: *"reproducibility is
+where the meter and the communications live."* Two conditions, two halves, and only the first is
+what §10's pushforward asks for.
+
+### 11.3 Right column — "intensive ⇒ consensus" is **false**, and the thermodynamics says why
+
+The bigger correction. An intensive quantity that is a **ratio of two extensives** needs **no
+coordination whatsoever**: carry both measures, merge both freely, divide at read.
+
+| | value |
+|---|---|
+| `(sum, count)` merged across two uneven partitions, then divided | **6.2857142857** |
+| direct global mean | **6.2857142857** — equal |
+| average of the two partition averages | **7.7000000000** — wrong by **1.414** |
+
+*"You cannot average averages"* is true and is **not** an argument for consensus; it is an argument
+for **carrying the right pair**. And this is not a trick — it is the thermodynamic definition:
+**an intensive quantity IS a ratio of extensives** (density = mass/volume, `T = ∂U/∂S`). So the
+older anchor supplies the **repair**, not merely the vocabulary, which is what makes it a checked
+anchor rather than a decorative one. Measure-theoretically it is the **Radon–Nikodym derivative**
+`dν/dμ`: §10.1 said measures push forward freely, so *any* density recoverable from two
+freely-pushing measures inherits that freedom.
+
+**So what actually forces consensus?** **Non-commutativity** (C5): `f(g(s)) = 26 ≠ 23 = g(f(s))`
+for a read-modify-write pair, and no merge function repairs an order-dependent result. **CAS is the
+canonical non-commutative operation** — its result depends on what was already there — so
+**CASPaxos (Rystsov 2018) is the right primitive, reached by the right reason.** Aaron's right-hand
+box is correct; its label was.
+
+### 11.4 The corrected table
+
+| | free / wait-free | needs coordination |
+|---|---|---|
+| **categorical** | aggregation invariant under fibre symmetry | order-dependent aggregation |
+| **algebraic** | commutative monoid (+ idempotent ⇒ semilattice) | non-commutative operation |
+| **thermodynamic** | extensive, **or** intensive expressed as a ratio of extensives | a quantity with no ratio-of-extensives form |
+| **distributed** | `CmRDT` (commuting ops); `CvRDT` after per-source keying | **CASPaxos / CASRaft** |
+| **Zeta §2** | **wait-free** | requires coordination |
+
+The one row that changed is the thermodynamic one, and changing it moves a large class of
+quantities — every density, every rate, every mean — from the right column to the left.
+
+### 11.5 The practical payoff survives, and gets a lower bound behind it
+
+*"Prefer the extensive formulation because it is wait-free"* (manifesto §2) is **not** a style
+preference. Merging a commutative aggregation is wait-free and available **under partition**
+(Strong Eventual Consistency, Shapiro et al. 2011). Consensus is **impossible** in an asynchronous
+system with a single crash fault (**Fischer, Lynch & Paterson 1985**) and unavailable under
+partition (**Gilbert & Lynch 2002**). The gap is a **computability class**, not a message count.
+
+**And the naming-registry consequence converges with a rule already resident.** A *rate* is
+`Δcount / Δtime` — the denominator is a **duration**, and agreeing a duration is agreeing a clock,
+which is exactly what
+[`local-time-never-enters-the-shared-fold`](../../.claude/rules/local-time-never-enters-the-shared-fold.md)
+forbids entering the shared fold. So:
+
+> **Carry the count. Never carry the rate.** The count is extensive, merges wait-free, and contains
+> no clock. Let the *reader* divide by an agreed phase interval. One design rule satisfying §10's
+> pushforward condition and the local-time rule simultaneously, from the same argument — and
+> derived from the math rather than imposed on it.
+
+The §10 rider still stands and is now sharper: publish the **within-fibre dispersion** beside the
+cluster's count, because that dispersion is what says whether the cluster merged a hub with a
+satellite. Dispersion is itself a ratio of extensives (`Σx²`, `Σx`, `Σ1`), so it is **also
+wait-free**. Nothing in the DV2.0 measurement needs consensus.
+
+### 11.6 Recognition, not discovery — and the correction I am recording rather than hiding
+
+My first draft of this section triaged the four-way agreement (categorical / algebraic /
+thermodynamic / distributed) as a **dense resonance** needing an independence check, per
+`.claude/rules/numerology-vs-number-theory.md`. **That applied the right rule to the wrong case.**
+
+> Aaron: *"you don't remember this history — this is one of the **primary things we keep checking
+> are correlated, over and over, since the project started**. It's **database and CRDT and DBSP
+> oriented**. **Zeta since its conception is a distributed consensus algorithm that gracefully
+> degrades to slower operations based on trust gradients.**"*
+
+Checked at `cdc2227156` rather than taken on trust:
+
+| measurement | count |
+|---|---|
+| files mentioning `CRDT` | **661** |
+| files mentioning `DBSP` | **1628** |
+| files carrying **both** | **208** |
+| `trust gradient` / `gracefully degrades` | `docs/VISION.md`, `docs/PROVEN-CORE-MAP.md`, `docs/DECISIONS/`, four backlog rows, and `rules.bak/useful-output-is-evidence-not-authority.md` — the **L0–L4 absorption ladder**, Amara 3rd ferry, **2026-05-28** |
+
+The rule says a dense resonance is a prompt to check independence. **Here the independence check has
+been running since inception, across 208 files.** So the register is **recorded design recognised in
+a new place**, not a coincidence requiring triage — and presenting it as evidence would have been
+double-counting a commitment the project already made.
+
+I am recording the correction instead of quietly rewriting, because that rule's own worked example
+is that *an unlabelled coincidence promoted to a belief is the failure* — and an unlabelled
+**correction** is the same defect with the sign flipped.
+
+**What is actually new is small, and it is the part worth having:**
+
+| | status at `cdc2227156` |
+|---|---|
+| the **architecture** — CRDT/DBSP correlation, graceful degradation on trust gradients | **old and pervasive.** 208 files; the ladder dates to 2026-05-28 |
+| the **criterion** — extensive ⇒ wait-free, non-commutative ⇒ consensus | **absent.** `git grep -in "extensive.*intensive"` over `src/`, `docs/`, `.claude/` returns **only this document**; `git grep -in "needs consensus\|requires consensus\|degrade.*consensus"` over `src/` and `.claude/rules/` returns **nothing** |
+
+> **The substrate has been making this call by judgement, and making it well, without a stated
+> test.** The contribution is therefore neither a new architecture nor a new correspondence — it is
+> a **decision procedure** for a choice that was already being made correctly by hand. The
+> architecture being old is what makes the criterion worth writing down, not what makes it
+> redundant.
+
+### 11.7 The degradation tier — what the result is *for*
+
+The operational statement is *"Zeta gracefully degrades to slower operations based on trust
+gradients."* §10's descent condition is then not an analogy to a coordination requirement — in this
+substrate it **selects the degradation tier**:
+
+| statistic | merge | mode | cost | what the trust gradient decides |
+|---|---|---|---|---|
+| **count** (extensive) | unconditional | **CRDT** | **wait-free** (§2) | nothing — always affordable |
+| **ratio of counts** (density / rate / mean / variance) | unconditional, on the pair | **CRDT** | **wait-free** | nothing — §11.3 moved this row *down* |
+| **order-dependent update** (a decision, a CAS, a canonical-name election) | none exists | **CASPaxos / CASRaft** | coordination | **whether you can afford the round** |
+| duplicating channel, any of the above | per-source keying | **CvRDT** | free | orthogonal — costs no coordination |
+
+**The §11.3 correction earns its keep exactly here.** *"Rate ⇒ consensus"* would have pushed every
+density, rate, mean and variance onto the consensus tier. Because most intensive quantities are
+**secretly a pair of extensive ones**, the criterion moves them back to wait-free — which is
+strictly the right direction for an architecture whose stated goal is to degrade *as rarely as
+possible*. A criterion that over-escalates is worse than no criterion, because it spends the
+gradient's budget on work that never needed it.
+
+**The procedure, in the form a designer can apply:**
+
+1. Is the statistic a **count**? → wait-free CRDT. Done.
+2. Is it a **ratio of counts**? → carry numerator and denominator as separate counts and divide at
+   read. **Still wait-free.** Do not reach for consensus here.
+3. Is the update **order-dependent**? → this is the **only** tier that needs CASPaxos/CASRaft, and
+   the trust gradient decides whether the round is affordable.
+4. Can the channel **duplicate**? → per-source keying (G-Counter). Orthogonal to 1–3, free.
+
+Applied to the naming registry: per-agent change **counts** and their **dispersion** are tier 1–2
+and need no coordination at all; only *deciding* something about a cluster — its canonical name,
+its hub-or-satellite classification — reaches tier 3. **Registry measurement is wait-free;
+registry adjudication is not**, and the line between them is now a test rather than a judgement
+call.
+
+*Register: the procedure is **derived** from §10's descent condition; the ladder it selects on is
+**recorded design**; the mathematical tier boundaries are §11.8's `iff`.*
+
+### 11.8 Routing
+
+**Not a new work-item.** The precise half is folded into the existing descent item
+`081M0R34AZY087G0R001H9N6YS` as **D4**, because it is the same theorem family and a sixth
+investigation is not what the evidence asks for. The statement is precise enough to be worth Lean:
+
+> An aggregation `⊕ : Multiset(X) → X` descends along **every** coarsening **iff** it factors
+> through multiset equality — i.e. iff `(X, ⊕)` is a **commutative monoid**. It descends along
+> every coarsening whose fibres arrive with **unknown multiplicity** **iff** it is additionally
+> **idempotent** — i.e. iff `(X, ⊔)` is a **join-semilattice**.
+
+Two tiers, an `iff` each, and they are **exactly** the `CmRDT` and `CvRDT` conditions of Shapiro et
+al. — which is what upgrades the mapping from analogy to theorem in the one place where it is one,
+and simultaneously names the place where it is not (§11.2). Short in Lean 4 (`Multiset`,
+`Multiset.sum`, `Finset.sup`).
+
+**Anchors added to `docs/PRIOR-ART-LIST.md`:** Shapiro–Preguiça–Baquero–Zawirski 2011 (the
+CvRDT/CmRDT split and the semilattice condition — the anchor that **corrected** §11.2 rather than
+confirming it); Rystsov 2018 (CASPaxos); Tolman 1917 (extensive/intensive); FLP 1985 and
+Gilbert–Lynch 2002 (the cost). Beckman was already resident as REQUIRED READING.
+
+---
+
+## 12. CALM settles the open half — in its LATTICE form, and the set form says the opposite
+
+> Aaron: *"I'm almost certain **CALM theorem** is going to apply here."* And, on the underlying
+> question: *"I don't know this answer or even have a thesis. This is very interesting and novel to
+> me — that does not happen often."*
+
+**He is right, and the citation does most of the work. Saying that plainly is the result.** What is
+left after CALM is one question, and it is genuinely ours (§12.5).
+
+### 12.1 The answer to the open question, in four lines
+
+| | |
+|---|---|
+| Is *"freely pushforward-able"* **equivalent** to *"CRDT-mergeable"*? | **No.** `B ⊊ A`, strictly, and the separator is idempotence (T1) |
+| Are they co-extensive on what is **constructible**? | **Yes** — every commutative monoid admits a CvRDT representation via uniquely-tagged ops merged by **union** (T2). The representation is the aggregate's *free form*, not the aggregate |
+| So what is *"a count is CRDT"* actually asserting? | **Compressibility.** The free G-Set is `O(#ops)`; the G-Counter is `O(#sources)`. 500 ops → 500 entries vs **3** (T3). The compression, not the construction, is the content |
+| What has the theorem attached? | **CALM** — and it supplies the direction none of the above does: **necessity** |
+
+**T1, stated as a proof rather than an observation.** Every join-semilattice `(M, ⊔, ⊥)` is a
+commutative monoid, so `⊔` pushes forward freely — `B ⊆ A`. And `(ℕ, +, 0)` pushes forward freely
+while `x + x = x` holds **only at `x = 0`**, so no order on `ℕ` makes `+` a join — `(ℕ,+) ∈ A \ B`.
+The containment is strict, and the asymmetry is total: **there is no statistic that is
+CvRDT-mergeable whose pushforward needs a condition**, because idempotence is an *extra* axiom, not
+a weakening. That was the direction nobody had an intuition for; it is empty, provably.
+
+### 12.2 CALM applies — but only in its lattice generalisation, and this had to be checked
+
+> **CALM (Consistency As Logical Monotonicity).** Conjectured by **Hellerstein**, *The Declarative
+> Imperative* (SIGMOD Record 2010); **proved by Ameloot, Neven & Van den Bussche** (JACM 2013) over
+> relational transducer networks; restated accessibly in **Hellerstein & Alvaro**, *Keeping CALM*
+> (CACM 2020). *A program has a consistent, coordination-free distributed implementation **iff** it
+> is monotonic.*
+
+**Cited naively, CALM gives the wrong answer for counting.** In the original **set** formulation
+monotonicity is set-containment of the *output relation*, and under that reading `COUNT` and `SUM`
+are **non-monotone** — adding an input fact *retracts* the previous answer (`{(5)}` → `{(8)}`, and
+`{(5)} ⊄ {(8)}`). That is why aggregation is a non-monotone operator in Bloom/Dedalus and needs a
+seal. Taken at face value, set-CALM says **a counter needs coordination**, which is the opposite of
+what a G-Counter demonstrates.
+
+**The version that applies is the lattice generalisation** — **Conway, Marczak, Alvaro, Hellerstein
+& Maier, *Logic and Lattices for Distributed Programming* (SoCC 2012)**, i.e. `Bloom^L` — where
+monotonicity means *the value only ascends in a bounded join-semilattice*. There a G-Counter **is**
+monotone and **is** coordination-free.
+
+> This is `anchor-to-human-prior-art`'s *checked, not cited* discipline paying for itself: the two
+> formulations of the same named theorem give **opposite verdicts** on the exact case at hand, and
+> only reading which one has the right hypotheses tells you that.
+
+### 12.3 Idempotence vs monotonicity — not two depths, one condition in two vocabularies
+
+The framing on offer was that idempotence is the shallower answer and monotonicity the deeper one.
+**Neither is deeper. They are related by a standard correspondence and are interderivable:**
+
+> **Semilattice ↔ poset.** A commutative, associative, **idempotent** `⊔` on `M` is *equivalent* to a
+> partial order with least upper bounds, via `x ≤ y ⟺ x ⊔ y = y`. Idempotence is exactly what makes
+> `⊔` a **join** rather than an accumulation; monotonicity is that order's ascent condition.
+
+So you cannot have "monotone ascent in a lattice" without idempotence — **idempotence is the
+algebraic form and monotonicity the order-theoretic form of the same requirement.** The correction
+is worth recording rather than silently overwriting: my §11 named it algebraically, Aaron named it
+order-theoretically, and both are naming the object CALM quantifies over.
+
+**What CALM genuinely adds, and neither §11 nor T1–T3 contains, is the `only if`.** Everything above
+is *sufficiency* — a semilattice merges freely, and a commutative monoid can be constructed into
+one. CALM says **monotonicity is necessary**: a non-monotone query has *no* coordination-free
+implementation at all. That is a lower bound on the problem rather than on the failure model, so it
+is strictly sharper than §11.5's FLP and CAP rows, which bound the *environment*.
+
+### 12.4 The correction CALM forces on my own §11.3 — converge is not act
+
+§11.3 concluded *"intensive ⇒ consensus is false"* because a mean is a ratio of extensives and the
+pair `(sum, count)` merges wait-free. **That stands, and it was answering the smaller question.**
+CALM makes the missing distinction visible:
+
+| question | answer |
+|---|---|
+| Can I compute the mean of what I have seen, wait-free, converging to the right value as data arrives? | **Yes.** The pair is monotone; §11.3 is correct |
+| Can I know the mean I am holding is **final**? | **No**, without a seal — and the seal is the coordination |
+
+Measured (T6): on the stream `[90, 95, 92, 10, 12, 8, 5, 5]` with threshold `50`, the running mean
+reads **above** threshold for six steps and then **falls below**. `count ≥ 4` crosses once and
+**never un-crosses**.
+
+> **A monotone statistic is safe to *act* on the moment it crosses a threshold, because it cannot
+> un-cross. A non-monotone one converges wait-free and is never safe to act on irreversibly without
+> a seal.**
+
+So the trust gradient's real question is not *"can I compute this without coordination"* — usually
+yes — but **"can I act on it without coordination"**, and only monotonicity licenses that. That
+lands exactly on `rules.bak/useful-output-is-evidence-not-authority.md`, whose L0–L4 ladder gates
+**irreversible action** specifically. §11.7's procedure is amended accordingly:
+
+2′. **Ratio of counts** → the *value* is wait-free to compute and converge. **Acting irreversibly on
+    it is tier 3**, because the derived ratio is non-monotone. Measurement is free; the *decision*
+    is not.
+
+### 12.5 The DBSP question — not a third regime, an orthogonal axis
+
+The proposal was a third row: *non-monotone but invertible*, escaping coordination by exactness.
+**It does not escape, and the reason is more useful than the escape would have been.**
+
+Z-sets are explicitly non-monotone — `ZSet.fs:91` calls `(~-)` *"the abelian-group **inverse**"* and
+retraction removes — so **CALM's necessity direction applies and DBSP is not coordination-free.**
+But DBSP never claimed to be. Budiu et al. 2023 is a theorem about **incremental view maintenance**:
+given an input *stream*, `Q^Δ` computes the output deltas exactly. **The agreed stream is a
+hypothesis, not a conclusion.** So:
+
+> **The two rows are orthogonal axes, not rungs of one ladder.**
+> **CALM axis:** do I need coordination to *agree on the answer*? (monotone ⇒ no.)
+> **DBSP axis:** given the input, do I need to *recompute from scratch*? (incremental ⇒ no.)
+> **DBSP buys exactness without recomputation, not consistency without coordination.**
+
+And the coordination it needs is already named in this repo, as a rule:
+[`local-time-never-enters-the-shared-fold`](../../.claude/rules/local-time-never-enters-the-shared-fold.md)
+requires the shared fold to see **only agreed phase / logical order**. *That agreement is the
+coordination.* It was never removed — it was factored out into an ordering assumption and written
+down as a discipline. Honest engineering; simply not filed under "coordination".
+
+**Corollary that splits the row.** δ-CRDT deltas (**Almeida, Shoker & Baquero**, arXiv:1603.01529 —
+already cited in `src/Core/Crdt.fs`'s header) are **join-irreducible lattice elements**, so they are
+monotone and re-delivery-safe, and belong in **row 1**. Z-set deltas are **group** elements and are
+not. Measured (T4): re-applying a δ-CRDT delta leaves `{r1: 5}` unchanged; re-applying a Z-set delta
+takes `8 → 13`. **Two things called "delta" with opposite re-delivery properties**, and `Crdt.fs`
+cites the first while being layered on the second.
+
+### 12.6 The corrected taxonomy
+
+| regime | condition | coordination-free? | what it buys |
+|---|---|---|---|
+| **lattice — CvRDT / δ-CRDT** | monotone in a join-semilattice (≡ idempotent merge) | **yes**, by CALM's `iff` | consistency without coordination |
+| **exact-delta — DBSP / Z-set** | non-monotone but **invertible** | **no** — presupposes an agreed logical order | exactness without **recomputation** (orthogonal axis) |
+| **consensus — CASPaxos / Raft** | non-monotone, not invertible | no | agreement on a single value |
+
+Rows 1 and 2 compose rather than compete — our CRDTs are *built on* Z-sets, which is exactly what
+having two axes predicts.
+
+### 12.7 Register and routing
+
+| claim | register |
+|---|---|
+| `B ⊊ A`, strictly; the converse direction is empty (T1) | **theorem** (short, and now proved above) |
+| every commutative monoid has a free CvRDT representation (T2); its cost is unbounded state (T3) | **theorem** + measured |
+| CALM: monotone ⟺ coordination-free | **borrowed theorem** — Ameloot–Neven–Van den Bussche 2013. **Citation-check obligation, not a Soraya target.** Do not re-prove it |
+| the applicable form is lattice-CALM (`Bloom^L`), and set-CALM gives the opposite verdict on counting | **checked-anchor finding** |
+| idempotence ≡ monotonicity via `x ≤ y ⟺ x ⊔ y = y` | **theorem** (classical order theory) |
+| converge ≠ act; only monotone statistics license irreversible action | **theorem** (CALM necessity) + measured (T6) |
+| DBSP is an orthogonal axis, not a third coordination-free regime | **ours** — argued from Budiu et al.'s hypotheses and this repo's own ordering rule. The one statement here worth a precise treatment |
+| `OrSet.Merge = ZSet.add` is not idempotent on the carrier (T5) | **flagged for audit, not a confirmed defect** — T5 models the F#, it does not run it |
+
+**Soraya:** nothing new is routed. `081M0R34AZY087G0R001H9N6YS` **D5** carries T1–T3, which are
+short and precise. CALM is a **citation check**, filed the same way as the Amari–Nagaoka results in
+§3.5. The DBSP-axis claim is argued rather than proved and is registered as such.
+
+**One in-tree contradiction, now documented on both sides.** `src/Core/Crdt.fs:9` calls Z-sets a
+*"signed-multiset **join-semilattice** — commutative, associative, with an identity"*, while
+`src/Core/ZSet.fs:73` says of the very same operator: *"**SUM, NOT idempotent** — `a + a` doubles
+every weight (the Bag/Z-set step away from G-Set's idempotent union)."* **`ZSet.fs` is right.** The
+files disagree, and §12 is the reason the disagreement matters: it is exactly the row-1/row-2
+boundary.
+
+---
+
+## 13. VERIFICATION — Aaron's four-part claim, checked per lane
+
+> Aaron: *"for us we **preserve uncertainty with Bayesian inference** for now, **we never collapse**,
+> and we also have **ECC to correct missed messages with adinkras** and other ECC codes to **handle
+> out-of-order −1s** too. Please **verify me correct — if not, we need to work towards this.** I've
+> never said it this clearly."*
+
+He invited falsification, so the negatives below are stated as plainly as the positives. **Two parts
+are shipped and metered, one is true of one object and false of another, and one conflates two
+layers.** Nothing here is a re-derivation: it is a read of the code at `cdc2227156`.
+
+| claim | lane | verdict | register |
+|---|---|---|---|
+| preserve uncertainty, never collapse | belief fold | **true in the sense meant** — no argmax, distribution retained. But the retained object is a **summary**, not the evidence set; and the **candidate set is fixed** | **shipped**, with a scope correction |
+| the belief lane is therefore monotone / coordination-free | belief fold | **refuted — and the tree already says so, in its own docstring** | **refuted** |
+| −1 is more evidence, not removal | Z-set state | **false** — inverse, and zero entries are **pruned** | — |
+| " | delta log + transport | **true** — append-only; `retractLoss` withdraws a loss report | **shipped** |
+| adinkra ECC corrects missed messages | UDP transport | **true, implemented and measured** | **shipped / metered** |
+| " | belief fold | **not wired.** The fold's loss/duplication guard is a caller-supplied dedup key | **aspirational** |
+| out-of-order −1s handled | transport | **true** — `cause: "reorder"`, a re-attribution carrying the withdrawn belief | **shipped** |
+
+### 13.1 "Never collapse" — true, and there is a second collapse worth naming
+
+`src/Core/BeliefConvergence.fs` carries belief as an **unnormalized** `int64[]` over a candidate set
+and updates by pointwise multiplication. There is no `argmax`, no thresholding, no hard decision:
+normalization is described as a final step that *"does not change the relative distribution"*. **So
+"we never collapse" is true in the sense Aaron means — uncertainty is carried as a distribution and
+never resolved to a point.** Confirmed.
+
+**Two honest riders.**
+
+1. **The retained object is a summary, not the evidence set.** `observe` keeps the *product of
+   likelihoods*. That is an exact sufficient statistic and a monoid homomorphism from the evidence
+   multiset — which is the good case — but it is **not** the evidence set, and §13.2 is why that
+   distinction decides the CALM question.
+2. **The candidate set is fixed.** `Array.map2 (*) likelihood belief` requires equal lengths, so the
+   support is frozen at construction: a hypothesis not present at the start can never be acquired,
+   and one driven to weight `0` can never return (`0 × l = 0` absorbs). That is not collapse *of
+   uncertainty*; it is **closure of the hypothesis space**, and for an open-world naming registry it
+   is the binding limitation rather than a detail. Register: **shipped, closed-world.**
+
+### 13.2 The monotonicity hypothesis is refuted — and `BeliefConvergence.fs` refutes it itself
+
+The proposed reading was: *evidence accumulation is monotone in the evidence set even though the
+posterior summary is not monotone in value, so "never collapse" puts the belief lane on CALM's
+coordination-free side.* **That does not hold, and the file says why in its own docstring:**
+
+> *"**NOT IDEMPOTENT — stated here because the omission reads as a guarantee.** Pointwise
+> multiplication is commutative and associative, so this is a commutative MONOID, not a
+> join-semilattice … Folding the same evidence twice moves the belief."*
+
+and
+
+> *"the evidence must be **DEDUPLICATED before it gets here** … redelivery double-counts … The dedup
+> key must be supplied by the caller; the operator's algebra does not provide one, and no fold over
+> a non-idempotent operator can."*
+
+So the belief lane is a **commutative monoid, not a lattice** — structurally the *same* class as the
+Z-set lane, not its opposite. **The prior that this claim is "true of the belief lane and false of
+the Z-set lane" is wrong: both lanes sit in row 2 of §12.6**, and neither is coordination-free by
+CALM. The monotone object (the evidence set) exists conceptually and **is not the thing retained**.
+
+**And the tree already contains a sharper form of §12's T1, which I should have found before proving
+it:**
+
+> *"An idempotent group is trivial — `a + a = a ⇒ a = e` — so a single operator cannot be both
+> redelivery-safe and retraction-capable. Auditable divergence lives in the Z-set delta log;
+> redelivery-safety lives in the merge. **Two structures, forced by a one-line theorem, not by
+> taste.**"* — `BeliefConvergence.fs`, found 2026-08-10 by two independently-dispatched reviewers.
+
+§12's T1 separated a *monoid* `(ℕ,+)` from the semilattices. This separates the *group* case in one
+line and is strictly stronger. **Recognition, not discovery** — recorded here per
+`honor-those-that-came-before`, and §12.1 should be read as the weaker restatement it is.
+
+### 13.3 The −1 — removal in the state, evidence in the log, evidence on the wire
+
+Answered per lane rather than averaged, because the lanes genuinely differ.
+
+| lane | what a −1 does | monotone? |
+|---|---|---|
+| **Z-set materialized state** | `(~-)` is *"the abelian-group **inverse**"*; `a + (−a) = Zero` and zero-weight entries are **pruned** (`ZSet.fs:75-89`). The fact is **removed and leaves no trace** | **no** |
+| **Z-set delta log** | append-only; the +1 and the −1 both persist with their order | **yes** |
+| **UDP transport** | `retractLoss` **withdraws** a loss report when the sequence number turns up late, carrying `cause: "reorder"` and *"the belief being withdrawn"* — the header calls it a **re-attribution** | **yes** |
+
+> **So Aaron's reading — a −1 is more evidence, both kept, path recorded — is TRUE of the log and the
+> wire, and FALSE of the materialized fold.** That is not a defect: it is precisely Data Vault's
+> *single version of the facts, never a single version of the truth*, and
+> `anti-babel-preserve-reconcilability`'s *"both branches held, each with its path recorded"*. The
+> architecture already runs the both-held pattern — **in the log, not in the state** — and the two
+> objects should not be described as one.
+
+### 13.4 The ECC — shipped and metered at the transport, absent from the fold
+
+**Shipped.** `src/Core.TypeScript/discovery/udp-lossy-transport.ts` implements the Adinkra `[8,4,4]`
+extended Hamming code as a genuine erasure code: 4 data + 4 parity per block
+(`computeAdinkraParity`), recovery via `recoverAdinkraBlock` / `recoverAdinkraErasure`, **any 3
+erasures per block of 8 recoverable**, and **56 of the 70 four-erasure patterns** recover — *"the 14
+that do not are exactly the weight-4 codeword supports"*. Chaos-tested (`UCH-13 / UCH-13b / UCH-23`).
+On the F# side `AdinkraCode` carries `syndrome`, `isCodeword` and `correct` (≤ 1 bit, `None` if
+uncorrectable). **This is real, and it is metered.**
+
+**Order-independence holds where it is claimed.** Erasure decoding for a linear code depends on the
+**set** of surviving positions, not their arrival order — and the file characterises recoverability
+by exactly that set (which erasure *patterns* recover). Decode commutativity: confirmed, **within a
+block of 8**. There is no cross-block ECC.
+
+**Honest measured caveat, from the file's own table.** At low loss the ECC **loses** to plain
+retransmit — *"the reason is rate, not capability: at low loss goodput → rate, and 7/8 > 4/8 by
+construction, so no decoder can close that gap"* — with a measured crossover. "ECC corrects missed
+messages" is true and is not free.
+
+**The gap, and it is the part of the claim that does not hold.** The ECC is **not wired into the
+belief fold**. `BeliefConvergence.fs` references `AdinkraCode` only for the **Hadamard/MacWilliams
+duality** — a mathematical bridge between `SoftValue.combine` and the code's weight enumerator, not
+error correction. The fold's protection against loss and duplication is the **caller-supplied dedup
+key**, which the file explicitly says the algebra cannot provide.
+
+> **The claim couples two layers that are not coupled.** Transport ECC protects *packets*; nothing
+> protects the *fold*. A packet recovered by the code is then folded by a non-idempotent operator,
+> so a duplicate that the ECC did not cause is still double-counted. **Register: transport ECC
+> shipped/metered; belief-fold ECC aspirational.**
+
+### 13.5 The smallest step toward the aspirational part — and it falls out of §12
+
+Aaron asked for the roadmap if the answer was no. The tree's own one-line theorem (§13.2) says the
+fix **cannot** be a better operator: `observe` cannot be made idempotent while remaining
+retraction-capable. So the step is not to change the operator but to **change what is folded**:
+
+> **Put a G-Set of uniquely-tagged evidence in front of the fold.** Merge evidence by **set union**
+> — idempotent, commutative, associative, therefore monotone, therefore **coordination-free by
+> CALM** — and fold the resulting *set* into the belief. This is exactly §12's T2 free construction,
+> and exactly the `OrSet` pattern already in `src/Core/Crdt.fs`.
+
+What it buys, all four at once:
+
+- **redelivery safety** — union is idempotent, so the dedup key stops being a caller obligation and
+  becomes a structural property;
+- **order independence** — already proved for `observe`, and now for intake too;
+- **out-of-order −1s as evidence** — a retraction becomes a *new tagged element*, not a removal, so
+  the monotone reading of §13.3 becomes true of the belief lane as well;
+- **the monotone object is finally the retained object**, which is what would put the belief lane on
+  CALM's coordination-free side — the thing §13.2 found is currently not the case.
+
+**The cost is exactly the one §12 T3 measured**: state grows with evidence count (`O(#evidence)`
+rather than `O(#candidates)`). That is presumably why it has not been done, and it makes §12's
+**compression** question — when does a tagged-op G-Set compress to a bounded summary, as the
+G-Counter does — the load-bearing open problem rather than a curiosity. **The chain closes: the
+answer to Aaron's ECC gap is the same question as the answer to his CRDT question.**
+
+Filed as `081M0R5E1ZG087G0R001RVAQVR`. **Register corrected in §14.1 from `aspirational` to
+`partial`:** `SoftValue.foldRetained` already implements exactly this construction; the gap is that
+`BeliefConvergence` does not adopt it. Adoption, not invention.
+
+*Smallest shippable slice:* an `EvidenceSet` wrapper carrying `(tag, likelihood)` with union-merge
+and a `fold` into `BeliefConvergence.observeAll`, plus a falsifier that the same tagged evidence
+delivered twice leaves the belief unchanged — which is a test that **fails today** and is the
+honest measure of the gap.
+
+### 13.6 The rule interaction, checked
+
+`.claude/rules/local-time-never-enters-the-shared-fold.md` requires the shared fold to see *"the
+evidence set, phase-ordered"*. **`observeAll` cites that rule by name in its own docstring and
+carries the invariant** — so the rule and the claim are the same commitment stated twice, and to
+that extent they corroborate. But the rule's *"evidence set"* is, in the shipped code, a `list` the
+caller must have deduplicated; the file says so and pins the negative in tests. **So the rule is
+shipped as to ordering and time, and depends on an unenforced caller obligation as to multiplicity.**
+That is worth surfacing on its own: the invariant that IS enforced is about *which order*, and the
+one that is NOT is about *how many times*.
+
+---
+
+## 14. ADVERSARIAL — Aaron's widening/collapse framing, attacked rather than confirmed
+
+> Aaron: *"widening is a **specialization over the retraction −1**… **widening reduces precision
+> while the key stays in the set** — this is the non-collapse. **A full key retraction would be the
+> uncertainty collapse.**"* And then: *"this is **my interpretation** — make sure it's **verified
+> adversarially** too by the math team."*
+
+Attacked, not confirmed. **One link holds, one survived a serious attempt to break it, and two are
+refuted — including the load-bearing one.** Numbers from
+`docs/research/scripts/2026-08-23-geometry-as-root-widening-as-retraction-verify.py` (`ALL PASS`,
+exit 0; the "pass" is that each check reached its stated conclusion, several of which are negative).
+
+| link | verdict | register |
+|---|---|---|
+| widening **is** a restricted retraction | **holds — and is already shipped as the load-bearing operator** | `theorem`-shaped, **implemented** |
+| `SoftValue.widen` is support-preserving | **attacked and survived**, structurally | `theorem` |
+| **collapse = a key leaving the support** | **refuted as a formalisation** — it is a *fourth* meaning that **inverts the shipped labels** | **`coinage-not-discovery`** |
+| never-collapse "as written in the rules and manifesto" | **there is no such text** | **`ill-posed`** |
+| support-monotonicity ⇒ CALM coordination-free | **refuted** — support constant while a confidence query flips | **`refuted`** |
+
+### 14.1 What holds: widening really is a restricted retraction, and it is already the load-bearing operator
+
+`src/Core/SoftValue.fs` contains a section literally headed **"(B) Widening as RETRACTION — the
+commutative route"**, written 2026-08-23 from Aaron's own earlier framing (*"our zsets −1 should be
+able to retract stale priors"*). The mechanism is a retention **multiplicity**: evidence enters the
+fold as `Lᵐ`, and — the file's words — *"dropping `m` from `k` to `0` is literally the `-1`
+retraction."* Widening is lowering `m`. **The specialization is not a proposal; it is in the tree.**
+
+And it commutes. Measured: over all **24** permutations of a 4-element evidence set the belief is
+identical to `5.6e-17`, with a stale item fully retracted (`m = 0`) and its removal a no-op. The
+file's own reason is the right one: *"it changes the evidence SET rather than reading the belief."*
+
+**Correction to my §13.5.** I called an evidence-set intake "the smallest step" and registered it
+**aspirational**. That was wrong: it is **built**, in `SoftValue.foldRetained`. The gap is narrower
+and cheaper than I said — `BeliefConvergence.observeAll` folds a *list* with caller-supplied dedup
+while `SoftValue` folds a retained *set* with recorded retractions. **Adoption, not invention.**
+Work-item `081M0R5E1ZG087G0R001RVAQVR` amended.
+
+### 14.2 What survived attack: `widen` cannot remove a key
+
+The predicted failure was underflow into `WeightedSet`'s zero-pruning. It is *nearly* reachable —
+`5e-324 × 0.001` **is** exactly `0.0` — and it is nonetheless **unreachable**, for a structural
+reason rather than a lucky one:
+
+- a **minimal** key has `v = t·u` exactly, so its post-widen mass is exactly `λ·u = λ/n`;
+- driving `λ/n` to zero needs `λ ≲ 2.5e-321` (at `n = 1000`);
+- but the guard `if t >= lambda then sv` returns early unless `t < λ`, i.e. `n·min(p) < λ`, which
+  forces `min(p)` below the smallest denormal — so the key was already gone.
+
+**The two conditions are mutually exclusive.** Checked at `λ ∈ {5e-324, 1e-320, 1e-310, 1e-8}` on a
+1000-candidate belief spanning 300 decades: **zero keys lost every time.** `widen` is
+support-preserving, and the floor formulation (idempotent, not an increment) is what buys it.
+
+**But the composite claim is still false**, because `foldRetained` calls `observe` internally, and
+`observe` *does* lose keys (§14.4). "Widening preserves support" is true of `widen` in isolation and
+**false of any fold that contains an observation** — which is every real fold.
+
+### 14.3 REFUTED: "collapse = a key leaving the support" inverts the shipped meaning
+
+This is the sharpest negative, and it is not a quibble about words. **`SoftValue.fs` already uses
+"collapse", consistently, and it means something else:**
+
+| line | text | meaning |
+|---|---|---|
+| 7 | *"`resolve` **collapses to a definite value** ONLY when confidence ≥ a threshold"* | the soft→hard **read** |
+| 115 | *"superposition carried through, **never collapsed early**"* | don't snap early |
+| 138 | *"Terminal decision (**the ONE legitimate collapse**)"* | `resolve` |
+| 170–171 | *"A **snap policy**: the soft → hard decision. **Collapse** a soft value to a definite `DynamicValue`… the *only* sanctioned exit"* | `snap` |
+| 183 | *"always **collapse** to the most-likely candidate (argmax)"* | argmax |
+
+**Collapse, in the shipped code, is the distribution → point map. It is a READ, and it does not
+change the support at all** — `resolve` and `snap` return `DynamicValue option` and leave the
+`SoftValue` untouched.
+
+Now apply the two definitions to the same two operations:
+
+| operation | `SoftValue.fs`'s meaning | Aaron's proposed meaning |
+|---|---|---|
+| `resolve` / `snap` (argmax, threshold) | **IS** collapse — "the ONE legitimate collapse" | **NOT** a collapse (support unchanged) |
+| `observe` refuting a candidate to zero | **not** called collapse — "that candidate refuted" | **IS** a collapse |
+
+> **They classify the same two operations oppositely.** So the support definition is not a
+> formalisation of the existing principle — it is a **fourth meaning of the word** (after value-axis
+> snap, ensemble collapse in `YinYangEnsemble.reseedIfCollapsed`, and society-axis `ρ → 1`), and one
+> that **inverts** the labels the shipped file uses.
+
+That is `numerology-vs-number-theory` applied to vocabulary: a resonance between two uses of one
+word, promoted to an identity without checking the invariants. **The definition may still be
+useful** — support-monotonicity is a real property worth checking — but it must be introduced as a
+**new named term**, never as "what never-collapse always meant". A reinterpretation presented as a
+formalisation is how a principle changes meaning with nobody deciding to change it.
+
+### 14.4 ILL-POSED: there is no never-collapse text in the manifesto or the rules
+
+I was asked to check the principle "as written in the rules and manifesto". **It is not written
+there.** `git grep -in "never collapse\|never-collapse\|non-collapse"` over `docs/governance/`,
+`docs/VISION.md` and `.claude/rules/` returns **zero hits** at `cdc2227156`.
+
+The principle exists only in `SoftValue.fs`'s docstrings — *"Composes `DynamicValue` + the
+never-collapse discipline"* — where it means the **snap discipline**: never assert certainty you do
+not have. So both the framing I was handed and my own §13 treated a governance-level commitment as
+existing text. It does not. **Register: `ill-posed` as stated; the honest question is "what does
+`SoftValue.fs` mean by it", and the answer is the snap discipline, not support.**
+
+### 14.5 REFUTED, and this is the load-bearing one: support-monotonicity does not give CALM
+
+The chain's final claim was *"the belief lane is coordination-free exactly as long as no operation
+prunes a key."* **False.** Measured, with the support held constant throughout:
+
+| step | `P(a)` | query `P(a) ≥ 0.5` | support |
+|---|---|---|---|
+| 1 | 0.7500 | **true** | `a b c d` |
+| 2 | 0.4500 | **false** | `a b c d` |
+| 3 | 0.0978 | false | `a b c d` |
+
+**The support never changes and the query flips `true → false`.** CALM's monotonicity is a property
+of the *query*, not of the carrier's support, so a query reading **confidence** is non-monotone
+however well the support is preserved. Support-monotonicity is **necessary at best and nowhere near
+sufficient** — it is the same finding as §12.4's converge-vs-act, reached from the other side.
+
+**So the chain breaks at exactly the link that was carrying it.** Widening being support-preserving
+does *not* put the belief lane on CALM's coordination-free side, and no amount of guarding the
+pruning will make it so.
+
+### 14.6 The two real defects the attack turned up anyway
+
+Attacking the framing was still worth it, because it found things the confirmation would have missed:
+
+1. **`observe` collapses the support intentionally.** `w * max 0.0 (likelihood d)` clamps a
+   non-positive likelihood to zero, and `build → WeightedSet.ofSeq` prunes it. The docstring says
+   *"that candidate refuted"*. Deliberate, documented — and under any support-based reading it is a
+   collapse.
+2. **`observe` collapses the support SILENTLY, by float underflow.** With a likelihood of `0.1` for
+   one candidate — merely unlikely, **never zero, never refuted** — the candidate leaves the support
+   after **324** observations. Nobody asked for that collapse.
+   > **The defect is not that a hopeless candidate dies. It is that *when* it dies is a function of
+   > float rounding**, so two oracles with different float paths prune at different steps, hold
+   > different supports, and **diverge** — which breaks the four-oracle byte-lock. Filed as
+   > `081M0R5R1JN087G0R0031FT1C2`. The fix is not to remove pruning (canonical form needs it) but to
+   > distinguish *refuted* from *underflowed*.
+
+### 14.7 Net
+
+**Never-collapse remains a principle without a mechanical check at the value axis.** That is the
+honest outcome, and it is a real finding rather than a failure to produce one: the check that was
+proposed measures something true and different, contradicts the shipped vocabulary, and would not
+have delivered the CALM property it was wanted for.
+
+What *is* now available, and worth having on its own terms:
+
+- a **support-monotonicity falsifier** — `support(fold(E ∪ {e})) ⊇ support(fold(E))` — which **fails
+  today** on both paths in §14.6, and would pin the underflow defect;
+- the confirmed identity **widening ≡ multiplicity reduction ≡ the `−1`**, already shipped;
+- and the standing correction that the coordination-free property comes from **folding a retained
+  evidence set**, not from any property of widening.
+
+**Anchor, checked.** The widening lineage is abstract interpretation — **Cousot & Cousot, POPL 1977**
+— where a widening operator `∇` is required to be **inflationary** (`x ⊑ x ∇ y`) and is famously
+**not required to be monotone**; that is precisely why *narrowing* exists as a separate operator, and
+precisely the distinction §14.5 turns on. In-tree ferry:
+`docs/research/ip-questionable/2026-06-07-sparta-abstract-interpretation-patricia-trees-fixpoint-widening-meta-redex-verbatim-transcript-aaron-forwarded.md`.
+**Honest limit on provenance:** I cannot confirm that ferry is the specific video Aaron means; it is
+the widening ferry in the tree, and the mathematical anchor carries the claim either way. No
+expression from any source is reproduced here (`cleanroom-two-team-separation`).
+
+**One vacuity instance of my own, recorded rather than quietly fixed.** The first draft of the
+`widen`-does-not-commute witness used `λ = 0.5`, at which `widen` is a **no-op in both orders** — so
+the check passed while testing nothing, and reported "diverges = False" as if it were a result. It
+is the vacuity class, produced by the same hand that has been auditing for it all day. Caught by
+running the falsifier rather than by reading it.
+
 ## Pointers
 
 - `src/Core/WeightedSet.fs` · `src/Core/WSet.fs` · `src/Core.TypeScript/algebra/wset.ts` — Q1's subjects.
@@ -933,5 +1670,12 @@ ambiguity arriving at the coarsening question by a different door, and it means 
 - `docs/research/2026-08-23-what-discretisation-costs-the-bnn-lane-*.md` — the monoid-not-semiring finding §1.4 scopes.
 - `docs/research/scripts/2026-08-23-geometry-as-root-ng-convexity-verify.py` — every number in §3.
 - `docs/research/scripts/2026-08-23-geometry-as-root-bregman-coarsening-verify.py` — every number in §10.
+- `docs/research/scripts/2026-08-23-geometry-as-root-extensive-crdt-verify.py` — every number in §11.
+- `docs/research/scripts/2026-08-23-geometry-as-root-pushforward-vs-crdt-verify.py` — every number in §12.
+- `docs/research/scripts/2026-08-23-geometry-as-root-widening-as-retraction-verify.py` — every number in §14.
+- `src/Core/SoftValue.fs` — §14's subject: `widen` (route A), `foldRetained` (route B), and the shipped meaning of "collapse".
+- `src/Core/Crdt.fs` — §11.2's witness (merge is `max`, read is `Σ`) and its doc-comment defect.
+- `src/Core/BeliefConvergence.fs` — §13's subject, and the source of the one-line theorem §12.1 restates more weakly.
+- `src/Core.TypeScript/discovery/udp-lossy-transport.ts` — the shipped, metered Adinkra [8,4,4] erasure code (§13.4).
 - `.claude/rules/numerology-vs-number-theory.md` — why §4.3's table is invariants, not counts.
 - `.claude/rules/toy-is-free-metered-must-be-earned.md` — why §3.5 and §7.1 exist.
