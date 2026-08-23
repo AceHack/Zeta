@@ -1,0 +1,12 @@
+{
+  "pr_number": 14461,
+  "archive_path": "docs/history/pr-reviews/PR-14461-book-raw-i-m-the-apex-predator-now-the-argument-that-arrived-mid-run.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-23T21:10:32.470Z",
+  "schema_version": "v1",
+  "commit_sha": "1a369e2f6bb259c9a2fcf970901770abd8368d45",
+  "title": "book(raw): \"I'm the apex predator now\" — the argument that arrived mid-run",
+  "state": "MERGED",
+  "merged_at": "2026-08-23T21:09:55Z",
+  "head_ref": "book/the-apex-predator-and-the-bound"
+}
