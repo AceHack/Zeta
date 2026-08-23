@@ -113,7 +113,7 @@ export function buildMutualSimRom(): Uint8Array {
     "ai_do_left:",
     "LD VE, 1",
     "SUB V3, VE",
-    "JMP ai_x_done",
+    "JMP ai_y_logic",
 
     "ai_move_right:",
     "SNE V8, 1",
@@ -122,8 +122,7 @@ export function buildMutualSimRom(): Uint8Array {
     "LD VE, 1",
     "ADD V3, VE",
 
-    "ai_x_done:",
-    
+    "ai_y_logic:",
     // Y Axis Logic
     "LD VC, V4",
     "SUB VC, V1",
@@ -136,7 +135,7 @@ export function buildMutualSimRom(): Uint8Array {
     "ai_do_up:",
     "LD VE, 1",
     "SUB V4, VE",
-    "JMP ai_y_done",
+    "JMP ai_draw",
 
     "ai_move_down:",
     "SNE V8, 1",
@@ -145,8 +144,7 @@ export function buildMutualSimRom(): Uint8Array {
     "LD VE, 1",
     "ADD V4, VE",
 
-    "ai_y_done:",
-    
+    "ai_draw:",
     // Draw AI at new pos
     "LD I, shape_ai",
     "DRW V3, V4, 4",
@@ -163,24 +161,19 @@ export function buildMutualSimRom(): Uint8Array {
 
 
     // --- DATA SECTION ---
-    // Player is a solid 2x2 square
+    // Player is a solid 2x2 square (2 bytes = 1 WORD)
     "shape_p:",
-    "BYTE 0xC0", // 11000000
-    "BYTE 0xC0", // 11000000
+    "BYTE 0xC0C0",
 
-    // AI is a hollow 4x4 square
+    // AI is a hollow 4x4 square (4 bytes = 2 WORDs)
     "shape_ai:",
-    "BYTE 0xF0", // 11110000
-    "BYTE 0x90", // 10010000
-    "BYTE 0x90", // 10010000
-    "BYTE 0xF0", // 11110000
+    "BYTE 0xF090",
+    "BYTE 0x90F0",
 
-    // Wall is 4x4 solid
+    // Wall is 4x4 solid (4 bytes = 2 WORDs)
     "shape_wall:",
-    "BYTE 0xF0", // 11110000
-    "BYTE 0xF0", // 11110000
-    "BYTE 0xF0", // 11110000
-    "BYTE 0xF0", // 11110000
+    "BYTE 0xF0F0",
+    "BYTE 0xF0F0",
   ];
 
   return assemble(code);

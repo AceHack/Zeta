@@ -12,9 +12,16 @@
 // onMessage decodes to null and is dropped, and vice versa). The wire is TEXT (JSON) — no
 // binary in the proof lineage.
 
-import * as dgram from "node:dgram";
+import type * as dgramTypes from "node:dgram";
 import type { DiscoveryTransport } from "./discovery-beacon";
 import type { BroadcastTransport } from "./llmtv-broadcast";
+
+let dgram: any = null;
+if (typeof process !== 'undefined' && process.versions && process.versions.node) {
+  try {
+    dgram = await import("node:dgram");
+  } catch(e) {}
+}
 
 export interface UdpMeshConfig {
   /// The multicast group (e.g. "239.255.42.99" — an admin-scoped IPv4 multicast address).
@@ -50,7 +57,7 @@ export function createUdpMeshTransport(cfg: UdpMeshConfig, onReady?: () => void)
   const handlers: Array<(text: string, from: string) => void> = [];
   let ready = false;
 
-  sock.on("message", (buf: Buffer, rinfo: dgram.RemoteInfo) => {
+  sock.on("message", (buf: Buffer, rinfo: dgramTypes.RemoteInfo) => {
     const text = buf.toString("utf8");
     const from = `${rinfo.address}:${rinfo.port}`;
     for (const h of handlers) h(text, from);

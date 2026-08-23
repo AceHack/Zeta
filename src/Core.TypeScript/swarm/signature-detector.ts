@@ -1,5 +1,11 @@
 
-import { createHash } from "node:crypto";
+let createHash: any = null;
+if (typeof process !== 'undefined' && process.versions && process.versions.node) {
+  try {
+    const crypto = await import("node:crypto");
+    createHash = crypto.createHash;
+  } catch (e) {}
+}
 
 /**
  * Signature Detector

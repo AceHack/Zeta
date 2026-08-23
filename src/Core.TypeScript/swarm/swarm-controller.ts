@@ -101,8 +101,14 @@ export class SwarmController {
     if (world.cheatEngine && world.cheatEngine.memorySectors.length > 0 && world.cheatEngine.causalMask && world.cheatEngine.display) {
       const { detectCausalSignature } = await import("./signature-detector");
       const { renderDisplay } = await import("../chip8/chip8");
-      const fs = await import("fs");
-      const path = await import("path");
+      let fs: any = null;
+      let path: any = null;
+      if (typeof process !== 'undefined' && process.versions && process.versions.node) {
+        try {
+          fs = await import("fs");
+          path = await import("path");
+        } catch(e) {}
+      }
 
       const mem = world.cheatEngine.memorySectors[0]!;
       const mask = world.cheatEngine.causalMask;
@@ -159,7 +165,7 @@ Output a JSON array of tool calls you wish to execute. Example: [{"tool": "setWo
 
         // Persist signature to known-signatures.json
         let known: string[] = [];
-        if (typeof fs !== 'undefined' && fs.readFileSync && fs.writeFileSync && typeof __dirname !== 'undefined') {
+        if (fs && typeof fs !== 'undefined' && fs.readFileSync && fs.writeFileSync && typeof __dirname !== 'undefined') {
           const sigFile = path.join(__dirname, "known-signatures.json");
           known = readKnownSignatures(
             (filePath) => fs.readFileSync(filePath, "utf-8"),

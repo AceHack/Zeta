@@ -30,7 +30,7 @@ export class BnnSocietyPredictor {
       const agentBeliefs: Record<number, StudentTState> = {};
       for (let k = 0; k <= 0xF; k++) {
         const diversityVariance = 1.0 + (Math.random() * 0.5); 
-        agentBeliefs[k] = createStudentTState(0.0, diversityVariance, 4.0, 0.1);
+        agentBeliefs[k] = createStudentTState(4.0, 0.0, diversityVariance, 0.1);
       }
       this.agents.set(`agent_${i}`, agentBeliefs);
     }

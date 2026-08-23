@@ -146,6 +146,9 @@ async function startSwarmSimulation() {
       player.updatePredictions(payload);
     }
   };
+  worker.onerror = (e) => {
+    console.error("[SwarmWorker Error]", e.message, e.filename, e.lineno);
+  };
 }
 
 startSwarmSimulation().catch(console.error);
