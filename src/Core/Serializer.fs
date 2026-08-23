@@ -67,6 +67,29 @@ type SpanSerializer<'K when 'K : comparison and 'K : unmanaged and 'K : struct a
                 let count = BinaryPrimitives.ReadInt32LittleEndian(bytes.Slice(0, 4))
                 if count = 0 then ZSet<'K>.Empty
                 else
+                    // `count` is READ OFF THE BUFFER, so it is an untrusted int32
+                    // even when we wrote the buffer ourselves: a truncated, foreign,
+                    // or corrupted span arrives here as an arbitrary number. Check it
+                    // against what actually follows the header, in int64 so a hostile
+                    // count cannot overflow the multiply into a negative length.
+                    //
+                    // Without this the failure is `bytes.Slice` throwing the
+                    // PARAMETERLESS ArgumentOutOfRangeException, which names neither
+                    // number — measured live on windows-2025 in gate run 32646515868,
+                    // where the whole evidence was `Arg_ArgumentOutOfRangeException`
+                    // at this line. That is a diagnosis-free failure on a wire path
+                    // the byte-lock claims rest on. This is NOT a fix for that
+                    // nondeterministic failure (its mechanism is still unknown —
+                    // 081M0QPAJG3087G0R002BGJG8H); it is the guard that makes the next
+                    // occurrence carry its own evidence, and the fail-closed
+                    // behaviour a deserializer owes an untrusted length prefix.
+                    // Sibling precedent, 100 lines down this file:
+                    // `FsPicklerSerializer.Read` already bounds-checks its length.
+                    let needed = int64 count * int64 sizeof<ZEntry<'K>>
+                    let available = int64 bytes.Length - 4L
+                    if count < 0 || needed > available then
+                        invalidOp
+                            $"span: header claims {count} entries ({needed} B) but only {available} B follow the 4-byte header"
                     let payload = bytes.Slice(4, count * sizeof<ZEntry<'K>>)
                     let typed = MemoryMarshal.Cast<byte, ZEntry<'K>> payload
                     let arr = Array.zeroCreate<ZEntry<'K>> count
@@ -117,6 +140,17 @@ type TlvSerializer<'K when 'K : comparison>() =
                 if magic <> Magic then
                     invalidOp $"TLV: wrong magic 0x{magic:X8}"
                 let count = int (BinaryPrimitives.ReadUInt32LittleEndian(bytes.Slice(4, 4)))
+                // Same untrusted-count discipline as the span tier, and here it is
+                // an ALLOCATION rather than a slice: `Array.zeroCreate count` runs
+                // before any bound on `count` is known, so a 4-byte wire field can
+                // ask for a 2^31-entry array off an 8-byte buffer. The sound cheap
+                // bound is the minimum entry width — 4 B keyLen + 8 B weight = 12 B,
+                // with a zero-length key — so a count that could not possibly fit is
+                // refused before anything is allocated.
+                let minBytesPerEntry = 12L
+                if int64 count * minBytesPerEntry > int64 bytes.Length - 8L then
+                    invalidOp
+                        $"TLV: header claims {count} entries, which cannot fit in {bytes.Length - 8} B of payload"
                 let entries = Array.zeroCreate<ZEntry<'K>> count
                 let mutable pos = 8
                 for i in 0 .. count - 1 do
