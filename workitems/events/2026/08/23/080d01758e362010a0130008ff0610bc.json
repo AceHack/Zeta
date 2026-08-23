@@ -1,0 +1,14 @@
+{
+  "id": "080d01758e362010a0130008ff0610bc",
+  "at": "2026-08-23T12:56:37.828Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M0QB3HP2087G0R0029W97ZZ",
+    "type": "task",
+    "title": "Dedicated ClusterNode ZetaId category slot across the four oracles",
+    "slug": "dedicated-clusternode-zetaid-category-slot-across-the-four-o",
+    "priority": "P2",
+    "filename": "081M0QB3HP2087G0R0029W97ZZ-dedicated-clusternode-zetaid-category-slot-across-the-four-o.md"
+  }
+}

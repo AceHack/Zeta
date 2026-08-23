@@ -1,0 +1,14 @@
+{
+  "id": "080d01761f4c8810a0130008b45e14d0",
+  "at": "2026-08-23T13:16:26.385Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M0QC7TCG087G0R00252NYHW",
+    "type": "bug",
+    "title": "lsblk tree glyphs made repair-mode recognise-self find nothing on every real disk",
+    "slug": "lsblk-tree-glyphs-made-repair-mode-recognise-self-find-nothi",
+    "priority": "P1",
+    "filename": "081M0QC7TCG087G0R00252NYHW-lsblk-tree-glyphs-made-repair-mode-recognise-self-find-nothi.md"
+  }
+}

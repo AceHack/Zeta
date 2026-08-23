@@ -1,0 +1,106 @@
+# Repair mode, against a disk that ALREADY HAS a Zeta install on it.
+#
+# WHY A LANE OF ITS OWN:
+# `multiboot-qemu-uefi-smoke.yml` proves the UEFI menu boots.
+# `installer-unit-tests.yml` proves the ledger / breaker / preflight DECISIONS
+# are right over fixtures. Neither one had ever MOUNTED an existing install —
+# which is the path a real operator depends on (re-pave a node, keep its
+# identity) and the one where getting it wrong destroys data.
+#
+# On its first real run this lane found that repair mode had never worked on
+# any real disk: `lsblk -p -n -o NAME,TYPE` renders a tree and glues UTF-8
+# box-drawing glyphs onto every partition path, so every `blkid` came back
+# empty, every disk carrying a prior Zeta install classified as
+# `indeterminate`, and `mode` never became `repair`. The fix is `-l`; this
+# lane is what keeps it fixed.
+#
+# WHY NOT FOLDED INTO installer-unit-tests:
+#   • it needs `sudo`, loop devices, `sfdisk` and `mkfs.ext4` — a different
+#     execution environment from a pure `bun test`, and a failure here should
+#     name THIS cause rather than reddening the whole installer suite.
+#   • the test file skips when those are absent (the maintainer's machine is
+#     macOS), so the skip has to be turned into a FAILURE somewhere.
+#     ZETA_REPAIR_LOOPBACK_REQUIRED=1 below is that somewhere. A test that
+#     quietly skips in CI is a check that did not run looking like one that
+#     passed — three workflows were found green for exactly that reason on
+#     2026-08-22, one of them since 2026-08-09.
+#
+# WHAT IT DOES NOT CLAIM: it does not run `nixos-install`. A full QEMU install
+# round trip is tens of minutes of runner time per leg and needs a NixOS ISO
+# build. What repair mode actually reads is the partition label and the
+# contents of /etc/zeta, and BOTH ARE REAL HERE — a real GPT table, real ext4
+# filesystems, a real mount. The install that produced them is simulated; the
+# install the code reads is not.
+#
+# Separate workflow (THE FLIP): not on gate (required). Path-filtered.
+#
+# SECURITY: only the SHA-pinned checkout + setup-bun actions are used (per
+# docs/security/GITHUB-ACTIONS-SAFE-PATTERNS.md); no attacker-controlled PR
+# title/body/branch text is interpolated into any `run:` block.
+
+name: installer-repair-mode-existing-install
+
+on:
+  pull_request:
+    types: [opened, reopened, synchronize, ready_for_review]
+    paths:
+      - "full-ai-cluster/usb-nixos-installer/zeta-install.sh"
+      - "src/Core.TypeScript/installer/repair-mode-existing-install.test.ts"
+      - "src/Core.TypeScript/installer/node-zetaid.ts"
+      - "src/Core.TypeScript/installer/force-reformat.ts"
+      - ".github/workflows/installer-repair-mode-existing-install.yml"
+  push:
+    branches: [main]
+    paths:
+      - "full-ai-cluster/usb-nixos-installer/zeta-install.sh"
+      - "src/Core.TypeScript/installer/repair-mode-existing-install.test.ts"
+      - "src/Core.TypeScript/installer/node-zetaid.ts"
+      - "src/Core.TypeScript/installer/force-reformat.ts"
+      - ".github/workflows/installer-repair-mode-existing-install.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  repair-mode-loopback:
+    name: repair mode vs an existing install (loop device)
+    runs-on: ubuntu-24.04
+    timeout-minutes: 12
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Setup bun
+        uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
+        with:
+          bun-version: 1.3
+
+      - name: Install loop-device tooling
+        run: |
+          sudo apt-get update -y
+          sudo DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
+            util-linux fdisk e2fsprogs
+
+      - name: Assert the environment the test needs is actually present
+        # Fail HERE, with a name, rather than letting the test skip. The whole
+        # point of this lane is that the disk legs run.
+        run: |
+          set -euo pipefail
+          missing=""
+          for t in losetup sfdisk mkfs.ext4 blkid lsblk mount umount truncate sha256sum; do
+            command -v "$t" >/dev/null 2>&1 || command -v "/sbin/$t" >/dev/null 2>&1 || missing="$missing $t"
+          done
+          if [ -n "$missing" ]; then echo "missing tools:$missing"; exit 1; fi
+          sudo -n true
+          echo "loop-control:"; ls -l /dev/loop-control
+
+      - name: Repair mode against a real existing install
+        env:
+          # Turns the test's environment skip into a FAILURE.
+          ZETA_REPAIR_LOOPBACK_REQUIRED: "1"
+        run: bun test src/Core.TypeScript/installer/repair-mode-existing-install.test.ts

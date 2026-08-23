@@ -1,0 +1,6 @@
+# ΔU: 081M0QC7TCG087G0R00252NYHW — lsblk tree glyphs made repair-mode recognise-self find nothing on every real disk
+
+- **measure:** Two lsblk call sites in zeta-install.sh (zeta_pf_gather, zeta_pf_recover_identity) read partition names from the default TREE output, so every device path carried box-drawing glyphs, every blkid returned empty, every prior-Zeta disk classified as 'indeterminate', and repair mode never engaged on real hardware. Fixed with -l at both sites.
+- **ΔU > 0 because:** A guard that could never fire was indistinguishable from one that passes: the installer reported 'fresh-install' for a disk it was supposed to recognise, and re-paved nodes with new hostnames on unchanged NICs (HWR-2). The fix converts an unknown-but-assumed-working path into a checked one.
+- **witnessed by:** src/Core.TypeScript/installer/repair-mode-existing-install.test.ts — builds a real GPT/ext4 disk on a loop device and runs the extracted prober and recogniser against it; reverting the -l fix turns 6 of its 11 tests red, including 'the FULL chain runs: probe -> classify -> mode=repair'.
+- **lineage:** Found on the first real run of the new loopback lane, while building the test Aaron asked for ('yes it would be good to have this path tested too').

@@ -92,6 +92,66 @@ sync
    target-machine hosts live in `../full-ai-cluster/flake.nix`.)
 8. Reboot.
 
+## Re-installing on a machine that already has Zeta on it
+
+`zeta-install.sh` recognises its own prior installs. Before anything
+destructive it probes each in-scope disk **read-only** and, if it finds one,
+enters **repair mode**: it mounts the `nixos` partition `-o ro,noload` (a plain
+`-o ro` would replay the ext4 journal, which is a *write* to a disk you have not
+yet consented to touch), reads `/etc/zeta/`, and re-uses the identity it finds —
+hostname, segment addressing, and the node's ZetaId.
+
+Two files carry that identity, and they are siblings with different jobs:
+
+| file | what it is |
+|---|---|
+| `/etc/zeta/cluster-node-id` | the **hostname** — what the network calls this machine. Read by `injected-hostname.nix` at flake-evaluation time; the roster is keyed by it. |
+| `/etc/zeta/node-zetaid` | the node's **128-bit ZetaId** — what the substrate calls it. `Category.InventoryAsset`, the same scheme `inventory/new-item.ts` mints for the asset register. |
+
+A repair **recovers** both. It never re-mints: a node that came back from a
+repair with a new identity would have forgotten itself, and the roster would
+gain a second registration for a NIC it already knows (HWR-2).
+
+Nodes installed before the ZetaId existed have no `node-zetaid` file. That is
+not an error — the repair mints one and says so (`minted-on-repair-legacy`), so
+the log never claims a recovery that did not happen.
+
+### Forcing a reformat (ignoring the install that is already there)
+
+Sometimes you want the opposite: wipe it, forget it, come back as a new
+machine. That is the **most destructive thing this installer can do**, so it is
+the most strongly bounded — three independent factors, and it is refused
+strictly *earlier* than an ordinary install is:
+
+```bash
+# 1. the exact literal REFORMAT -- `1`, `true`, `yes` do nothing
+# 2. the node id the installer just recovered off THIS disk
+#    (or `unreadable`, and only if nothing readable was found)
+# 3. type REFORMAT at the prompt (skipped only on the declared
+#    zero-typing path, ZETA_AUTO_CONFIRM=WIPE)
+ZETA_FORCE_REFORMAT=REFORMAT \
+ZETA_FORCE_REFORMAT_NODE_ID=node-a1b2c3 \
+  zeta-install <host>
+```
+
+Factor 2 is what a stale environment variable cannot satisfy — it names a
+*different* machine — and it makes the override **self-disarming**: once the
+reformat succeeds the node has a new identity, so the same environment on the
+next boot no longer matches and is refused.
+
+The override goes **through** the R9 circuit breaker, not around it. The same
+`zeta_pf_breaker` runs a second time with a tighter bound
+(`ZETA_MAX_REFORMAT_ATTEMPTS`, default **1**, against
+`ZETA_MAX_DESTRUCTIVE_ATTEMPTS`'s 3), and a breaker that is `open` (bound
+already spent) **or** `blind` (the attempt ledger on the USB is unwritable, so
+this attempt cannot be counted) refuses it outright. A destructive attempt that
+cannot be counted is the reboot loop R9 exists to bound.
+
+It also does not weaken consent: the read-only probe still happens first, the
+cancel window is never shortened, and a `default=abort` is never flipped back to
+`proceed`. The attempt is written to the USB's ledger with `stage=reformat`, so
+a later reader can tell a deliberate wipe from a repair that failed into one.
+
 ## What's on the stick
 
 The complete package list lives in
