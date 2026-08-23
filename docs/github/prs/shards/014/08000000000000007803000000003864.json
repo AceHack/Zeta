@@ -1,0 +1,12 @@
+{
+  "pr_number": 14436,
+  "archive_path": "docs/history/pr-reviews/PR-14436-fix-ci-keep-telemetry-flush-pr-heads-immutable.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-23T21:02:35.480Z",
+  "schema_version": "v1",
+  "commit_sha": "2f910891ae99cba771e793576e20bb1735f1085f",
+  "title": "fix(ci): keep telemetry flush PR heads immutable",
+  "state": "MERGED",
+  "merged_at": "2026-08-23T21:01:52Z",
+  "head_ref": "claim/bug-telemetry-flush-stable-head"
+}
