@@ -1,0 +1,12 @@
+{
+  "pr_number": 14359,
+  "archive_path": "docs/history/pr-reviews/PR-14359-feat-search-git-native-inverted-index-that-refuses-to-answer-from-a-stale-corpus.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-23T18:47:29.443Z",
+  "schema_version": "v1",
+  "commit_sha": "f92e86e1dd51a9ce245a9e73238325b5bbcfd893",
+  "title": "feat(search): git-native inverted index that refuses to answer from a stale corpus",
+  "state": "MERGED",
+  "merged_at": "2026-08-23T18:46:34Z",
+  "head_ref": "feat/git-native-reverse-index"
+}
