@@ -1,0 +1,12 @@
+{
+  "pr_number": 14420,
+  "archive_path": "docs/history/pr-reviews/PR-14420-design-search-the-signature-index-over-include-never-under-include-vowel-free-wo.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-23T20:24:44.624Z",
+  "schema_version": "v1",
+  "commit_sha": "8602c0b20f7303abb8f2c8526a4bb9ba27c50a15",
+  "title": "design(search): the signature index — over-include, never under-include; vowel-free word keys, DV2.0 in etymological space",
+  "state": "MERGED",
+  "merged_at": "2026-08-23T20:23:56Z",
+  "head_ref": "feat/signature-index-design"
+}
