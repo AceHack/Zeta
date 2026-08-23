@@ -31,7 +31,9 @@ import {
   publicationIsStale,
   renderMarkdown,
   ROLLUP_JOB_NAME,
+  isCanary,
   severityOf,
+  SWALLOWED_STEP,
   type JobRecord,
   type RunRecord,
   type Thresholds,
@@ -51,13 +53,28 @@ function run(id: number, jobs: readonly JobRecord[], conclusion = "failure"): Ru
 const greenRollup = job(ROLLUP_JOB_NAME, "success");
 const redRollup = job(ROLLUP_JOB_NAME, "failure");
 
-/** The canary as CI actually produces it: green job, one failed step inside. */
+/**
+ * The canary EXACTLY as the live API reports it (gate run 32651748761, 2026-08-23).
+ *
+ * Note what this fixture encodes and why it is not a convenience: every step reads
+ * `success`, INCLUDING the one that exited 1 under `continue-on-error`. The only trace
+ * of the failure is the `failure`-level check-run annotation. A test that gave the step
+ * a `failure` conclusion would be testing a payload GitHub does not produce, and would
+ * have passed against the exact bug the live canary caught on its first run.
+ */
 function canaryJob(failing = true): JobRecord {
-  return job(CANARY_JOB_NAME, "success", [
-    ["Set up job", "success"],
-    ["drift canary -- deliberate non-blocking failure", failing ? "failure" : "success"],
-    ["Complete job", "success"],
-  ]);
+  return {
+    name: CANARY_JOB_NAME,
+    conclusion: "success",
+    id: 97224512630,
+    steps: [
+      { name: "Set up job", conclusion: "success" },
+      { name: "drift canary -- deliberate non-blocking failure", conclusion: "success" },
+      { name: "Explain the green", conclusion: "success" },
+      { name: "Complete job", conclusion: "success" },
+    ],
+    failureAnnotations: failing ? ["Process completed with exit code 1."] : [],
+  };
 }
 
 describe("censusOfRun -- what counts as absorbed", () => {
@@ -71,12 +88,33 @@ describe("censusOfRun -- what counts as absorbed", () => {
     expect(censusOfRun(run(1, [redRollup, job(WIN, "failure")]))).toEqual([]);
   });
 
-  test("STEP-level: a GREEN job hiding a failed step is absorbed -- the class with no red X", () => {
+  test("STEP-level: a green job carrying a FAILURE ANNOTATION is absorbed -- the only visible trace", () => {
+    // The channel that works. Every step conclusion in `canaryJob()` reads `success`;
+    // the annotation is the whole evidence. Delete the annotation branch of
+    // `censusOfRun` and this goes to zero findings, which is precisely the state the
+    // live canary was red about.
     const c = censusOfRun(run(1, [greenRollup, canaryJob()]));
     expect(c).toHaveLength(1);
     expect(c[0]?.kind).toBe("step-red-job-green");
     expect(c[0]?.job).toBe(CANARY_JOB_NAME);
-    expect(c[0]?.step).toBe("drift canary -- deliberate non-blocking failure");
+    expect(c[0]?.step).toBe(SWALLOWED_STEP);
+    expect(c[0]?.detail).toEqual(["Process completed with exit code 1."]);
+  });
+
+  test("step CONCLUSIONS alone find nothing -- the API blind spot, pinned", () => {
+    // This is the falsifier for the header's central claim. If GitHub ever starts
+    // reporting a swallowed step as `failure`, this test goes red and the claim in the
+    // header must be corrected rather than quietly kept.
+    const noAnnotations: JobRecord = { ...canaryJob(), failureAnnotations: [] };
+    expect(censusOfRun(run(1, [greenRollup, noAnnotations]))).toEqual([]);
+  });
+
+  test("the secondary channel still names the STEP when a source does supply it", () => {
+    // Kept live so the branch is not dead code guarded by optimism.
+    const withStep = job("legacy", "success", [["a real failed step", "failure"]]);
+    const c = censusOfRun(run(1, [greenRollup, withStep]));
+    expect(c[0]?.step).toBe("a real failed step");
+    expect(c[0]?.subject).toBe("legacy › a real failed step");
   });
 
   test("a step-level swallow is absorbed even when the rollup is RED -- no job surface can see it", () => {
@@ -85,6 +123,14 @@ describe("censusOfRun -- what counts as absorbed", () => {
     const c = censusOfRun(run(1, [redRollup, canaryJob()]));
     expect(c).toHaveLength(1);
     expect(c[0]?.kind).toBe("step-red-job-green");
+  });
+
+  test("a job whose annotations were NEVER FETCHED yields no finding -- unknown stays unknown", () => {
+    // `undefined` (did not look) must not read as `[]` (looked, found none). Without
+    // this distinction every unfetched run would count as a clean execution and inflate
+    // the clean streaks that demote bands to HEALED.
+    const unfetched: JobRecord = { name: CANARY_JOB_NAME, conclusion: "success", steps: [] };
+    expect(censusOfRun(run(1, [greenRollup, unfetched]))).toEqual([]);
   });
 
   test("runner-injected steps are never drift", () => {
@@ -202,33 +248,46 @@ describe("foldAbsorption", () => {
 });
 
 describe("assertDetectorLive -- falsifier #2, silence fails the check", () => {
-  test("with the canary present and failing, the detector is live", () => {
-    const v = assertDetectorLive(foldAbsorption([run(3, [greenRollup, canaryJob()])]));
+  test("with the canary's annotation present, the detector is live", () => {
+    const v = assertDetectorLive(run(3, [greenRollup, canaryJob()]));
     expect(v.live).toBe(true);
+    expect(v.reason).toContain("annotation channel");
   });
 
-  test("with the canary ABSENT, the detector is declared dead -- not healthy", () => {
-    // This is the shape of the whole rule: a report with nothing in it is exactly what a
-    // broken detector produces, so "no findings" must never be allowed to read as green.
-    const v = assertDetectorLive(foldAbsorption([run(3, [greenRollup, job(WIN, "success")])]));
+  test("with the canary ABSENT from the run, the detector is declared dead -- not healthy", () => {
+    // The shape of the whole rule: a report with nothing in it is exactly what a broken
+    // detector produces, so "no findings" must never be allowed to read as green.
+    const v = assertDetectorLive(run(3, [greenRollup, job(WIN, "success")]));
+    expect(v.live).toBe(false);
+    expect(v.reason).toContain("DETECTOR WENT QUIET");
+    expect(v.reason).toContain("did not appear in run 3");
+  });
+
+  test("a canary that stopped failing also fails liveness, and says so specifically", () => {
+    const v = assertDetectorLive(run(3, [greenRollup, canaryJob(false)]));
+    expect(v.live).toBe(false);
+    expect(v.reason).toContain("carrying 0 failure annotation(s)");
+  });
+
+  test("annotations never fetched is reported as UNVERIFIED, not as clean", () => {
+    const unfetched: JobRecord = { name: CANARY_JOB_NAME, conclusion: "success", steps: [] };
+    const v = assertDetectorLive(run(3, [greenRollup, unfetched]));
+    expect(v.live).toBe(false);
+    expect(v.reason).toContain("never fetched");
+  });
+
+  test("no current run at all is NOT live -- unverified is not working", () => {
+    const v = assertDetectorLive(null);
     expect(v.live).toBe(false);
     expect(v.reason).toContain("DETECTOR WENT QUIET");
   });
 
-  test("a canary that stopped failing also fails liveness", () => {
-    // It cannot appear in the census at all if it passed, so this is the same branch as
-    // above via a different route -- and it is the route CI would actually take if
-    // someone "fixed" the canary.
-    const v = assertDetectorLive(foldAbsorption([run(3, [greenRollup, canaryJob(false)])]));
-    expect(v.live).toBe(false);
-  });
-
-  test("deleting step-level detection would be caught: no class-C subject means no canary", () => {
-    // Simulates the mutation directly -- if `censusOfRun` stopped emitting
-    // `step-red-job-green`, the fold would contain only job-level subjects.
-    const report = foldAbsorption([run(3, [greenRollup, job(MD, "failure")])]);
-    expect(report.subjects.every((s) => s.kind === "job-red-gate-green")).toBe(true);
-    expect(assertDetectorLive(report).live).toBe(false);
+  test("deleting the annotation channel would be caught: this is the live regression", () => {
+    // Simulates the exact defect the canary caught on 2026-08-23 -- a payload in which
+    // every step reads `success` and only the annotation carries the failure. With the
+    // annotation branch removed, `censusOfRun` returns nothing and liveness fails.
+    const stripped: JobRecord = { ...canaryJob(), failureAnnotations: [] };
+    expect(assertDetectorLive(run(3, [greenRollup, stripped])).live).toBe(false);
   });
 });
 
@@ -283,5 +342,32 @@ describe("loudness is emitted, and is proportional", () => {
     const md = renderMarkdown(foldAbsorption(sustainedRecords()), { live: true, reason: "ok" }, null);
     expect(md).toContain("not in the `gate (required)` floor");
     expect(md).toContain("never a merge block");
+  });
+});
+
+describe("the canary is the instrument, never an alarm", () => {
+  test("a permanently-failing canary emits NO annotation -- it would be a self-inflicted false alarm", () => {
+    const records = Array.from({ length: 6 }, (_, i) => run(20 - i, [greenRollup, canaryJob()]));
+    const report = foldAbsorption(records);
+    expect(report.subjects.some(isCanary)).toBe(true);
+    expect(annotationLines(report)).toEqual([]);
+  });
+
+  test("but it is still in the CENSUS, so liveness can depend on it", () => {
+    const report = foldAbsorption([run(3, [greenRollup, canaryJob()])]);
+    expect(report.totalAbsorbed).toBe(1);
+    expect(assertDetectorLive(run(3, [greenRollup, canaryJob()])).live).toBe(true);
+  });
+
+  test("a real drift subject beside the canary is still annotated", () => {
+    const records = Array.from({ length: 6 }, (_, i) => run(20 - i, [greenRollup, canaryJob(), job(WIN, "failure")]));
+    const lines = annotationLines(foldAbsorption(records));
+    expect(lines).toHaveLength(1);
+    expect(lines[0]).toContain(WIN);
+  });
+
+  test("the summary does not list the canary as a finding", () => {
+    const md = renderMarkdown(foldAbsorption([run(3, [greenRollup, canaryJob()])]), { live: true, reason: "ok" }, null);
+    expect(md).toContain("No absorbed failure in the window");
   });
 });

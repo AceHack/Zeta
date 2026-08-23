@@ -2710,6 +2710,19 @@ jobs:
   # This is not decoration and it is not a test double: it is the falsifier that keeps an
   # observability layer from becoming the next thing that quietly stopped working — the
   # class this repo has now rediscovered three times. Do not "fix" the failing step.
+  #
+  # IT PAID FOR ITSELF ON ITS FIRST RUN (run 32651748761, 2026-08-23). `drift (loud)`
+  # went red with DETECTOR WENT QUIET while this job was running two feet away, because
+  # the REST jobs API reports a swallowed step's conclusion as `success` — the failing
+  # step above reads `"conclusion": "success"` in
+  # GET /actions/runs/32651748761/jobs. `outcome` is workflow-local and not on the REST
+  # payload at all, so the class is not merely unsurfaced, it is UNREPRESENTABLE in the
+  # data every earlier surface reads. The note further up this file that "the API reports
+  # a continue-on-error leg's conclusion as `failure`" is true of JOBS and false of STEPS.
+  # The channel that does carry it: GET /check-runs/97224512630/annotations returns
+  # `annotation_level: "failure"` on a check run whose conclusion is `success`. That is
+  # what the reporter reads now. A test would not have found this — only a live specimen
+  # against the live API could.
   drift-canary:
     name: drift-canary
     runs-on: ubuntu-24.04

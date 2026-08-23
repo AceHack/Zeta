@@ -42,8 +42,31 @@
 //     findings" and "detector broken" produce byte-identical output. Eight
 //     `continue-on-error` steps exist in this repo's workflows today (agent-heartbeat
 //     x2, chart-version-refresh, gate's own `Emit scope`, drift-sweep's publish step,
-//     proof-closure-drift x2, github-settings-drift), so the class is real, live, and
-//     currently unmeasured -- it simply had not fired in this window.
+//     proof-closure-drift x2, github-settings-drift), so the class is real and live.
+//
+//     WHY IT WAS ZERO -- and this is the finding the canary was built to produce, caught
+//     on its FIRST live run (gate run 32651748761, 2026-08-23):
+//
+//       **The REST jobs API reports a swallowed step's conclusion as `success`.**
+//
+//     Measured against the canary, whose one step exits 1 under `continue-on-error`:
+//       GET /actions/runs/32651748761/jobs -> drift-canary conclusion `success`, and
+//       its steps read `[Set up job: success, drift canary --- deliberate non-blocking
+//       failure: SUCCESS, Explain the green: success, Complete job: success]`.
+//     The step that failed is reported as having succeeded. `outcome` (the pre-
+//     continue-on-error value) exists only inside the workflow as `steps.<id>.outcome`
+//     and is not on the REST payload at all. So the class was not merely unsurfaced --
+//     from the API every previous surface reads, it is UNREPRESENTABLE. gate.yml's note
+//     that "the API reports a continue-on-error leg's conclusion as `failure`" is true
+//     of JOBS and false of STEPS, and that asymmetry is what hid the class.
+//
+//     THE CHANNEL THAT DOES CARRY IT: the runner still files a check-run ANNOTATION.
+//       GET /check-runs/97224512630/annotations
+//         -> [{ annotation_level: "failure", message: "Process completed with exit code 1." }]
+//       on a check run whose own `conclusion` is `success`.
+//     So the detectable signature of a step-level swallow is **a green check run
+//     carrying a `failure`-level annotation**, and that is what `censusOfRun` now reads.
+//     Job conclusions cannot express it; annotations can.
 //
 //   * THE SURFACES THEMSELVES WENT QUIET. This is the finding that decided the design.
 //     `drift-sweep.yml` computes the drift ledger every few minutes and pushes it to
@@ -157,6 +180,17 @@ export const CANARY_JOB_NAME = "drift-canary";
 /** Steps the runner injects around user steps -- never drift, and never annotated. */
 const RUNNER_STEP_NAMES: ReadonlySet<string> = new Set(["Set up job", "Complete job"]);
 
+/**
+ * Subject suffix for a step-level swallow found via the annotation channel.
+ *
+ * The annotation does NOT carry the step's name (its `message` is the runner's generic
+ * "Process completed with exit code 1."), so the subject is keyed on the JOB. That loses
+ * which step swallowed and keeps the key STABLE, which is the right trade for a rate:
+ * a subject key that changes with the message text would fragment one lane into many.
+ * The messages themselves are carried on the `Absorption` so nothing is discarded.
+ */
+export const SWALLOWED_STEP = "(step swallowed by continue-on-error)";
+
 export interface StepRecord {
   readonly name: string;
   readonly conclusion: string | null;
@@ -166,6 +200,17 @@ export interface JobRecord {
   readonly name: string;
   readonly conclusion: string | null;
   readonly steps?: readonly StepRecord[] | undefined;
+  /**
+   * Check-run id. Equal to the job id -- verified live: job 97224512630 is also check
+   * run 97224512630. Carried so annotations can be fetched without a second lookup.
+   */
+  readonly id?: number | undefined;
+  /**
+   * `failure`-level check-run annotation messages. THE ONLY API-VISIBLE EVIDENCE of a
+   * step-level `continue-on-error` swallow -- see the header. Absent (not empty) when
+   * annotations were never fetched, which is a different claim from "there were none".
+   */
+  readonly failureAnnotations?: readonly string[] | undefined;
 }
 
 /** One completed workflow run reduced to what the fold needs. */
@@ -202,6 +247,8 @@ export interface Absorption {
   readonly step: string | null;
   readonly runId: number;
   readonly at: string;
+  /** Annotation messages behind a step-level absorption; empty otherwise. */
+  readonly detail?: readonly string[] | undefined;
 }
 
 export type Band = "SUSTAINED" | "FLAPPING" | "ONE_OFF" | "HEALED" | "UNOBSERVED";
@@ -296,8 +343,32 @@ export function censusOfRun(run: RunRecord): readonly Absorption[] {
       continue;
     }
     if (job.conclusion !== "success") continue;
-    // Class C. Independent of `permitted`: a green job hides its failed step whether or
-    // not anything else in the run was red, and no job-conclusion surface can see it.
+
+    // Class C, PRIMARY CHANNEL: a green check run carrying a `failure`-level annotation.
+    // This is the only API-visible evidence a step-level swallow leaves -- the step's own
+    // `conclusion` reads `success` (header, "WHY IT WAS ZERO"). Independent of
+    // `permitted`: a green job hides its failed step whether or not anything else in the
+    // run was red, and no job-conclusion surface anywhere can see it.
+    const annotations = job.failureAnnotations ?? [];
+    if (annotations.length > 0) {
+      out.push({
+        kind: "step-red-job-green",
+        subject: `${job.name} › ${SWALLOWED_STEP}`,
+        job: job.name,
+        step: SWALLOWED_STEP,
+        runId: run.id,
+        at: run.at,
+        detail: annotations,
+      });
+    }
+
+    // Class C, SECONDARY CHANNEL, kept deliberately. GitHub does not report a swallowed
+    // step as `failure` TODAY; if that ever changes, or if records arrive from a source
+    // that does carry it (a fixture, a self-hosted runner, a future API version), this
+    // branch reads it directly and names the STEP rather than only the job. It is not
+    // dead code guarded by optimism -- it is covered by its own falsifier in the test
+    // file, and it degrades to zero findings on today's payloads rather than to a wrong
+    // answer.
     for (const step of job.steps ?? []) {
       if (step.conclusion !== "failure") continue;
       if (RUNNER_STEP_NAMES.has(step.name)) continue;
@@ -312,6 +383,16 @@ function subjectExecuted(run: RunRecord, jobName: string, stepName: string | nul
   const job = run.jobs.find((j) => j.name === jobName);
   if (job === undefined || !executed(job)) return false;
   if (stepName === null) return true;
+  // The annotation-derived subject has no step to look up -- the annotation never named
+  // one. Its execution IS the job's, and treating it otherwise would report zero
+  // executions and therefore a meaningless rate.
+  if (stepName === SWALLOWED_STEP) {
+    // ...but only where annotations were actually FETCHED. A run whose annotations were
+    // never queried is not evidence of a clean run, and counting it as an execution
+    // would inflate every clean streak by the runs we did not look at. Unknown stays
+    // unknown -- the four-register discipline applied to an API budget.
+    return job.failureAnnotations !== undefined;
+  }
   const step = (job.steps ?? []).find((s) => s.name === stepName);
   return step !== undefined && (step.conclusion === "success" || step.conclusion === "failure");
 }
@@ -427,22 +508,43 @@ export interface LivenessVerdict {
  * the canary stopped running -- and both are reasons to go red, because in both cases
  * this reporter's green would be a claim it can no longer support.
  */
-export function assertDetectorLive(report: DriftLoudReport): LivenessVerdict {
-  const canary = report.subjects.find((s) => s.kind === "step-red-job-green" && s.job === CANARY_JOB_NAME);
-  if (canary === undefined) {
+export function assertDetectorLive(currentRun: RunRecord | null): LivenessVerdict {
+  // Asserted against THIS RUN, not the window, and that is the stronger claim: it says
+  // step-level detection worked on the very payload being reported, rather than that it
+  // worked at some point recently. It also happens to be the only affordable form --
+  // annotations cost one call per green job, so they are fetched for this run alone.
+  if (currentRun === null) {
     return {
       live: false,
       reason:
-        `DETECTOR WENT QUIET: no step-level absorption was observed for job \`${CANARY_JOB_NAME}\` in the ` +
-        `${report.runs}-run window. That job fails one step on purpose, under \`continue-on-error\`, on every ` +
-        "run. Seeing nothing means step-level detection is broken or the canary stopped running -- not that " +
+        "DETECTOR WENT QUIET: the current run was not available to fold, so step-level detection could not be " +
+        "exercised at all. Unverified is not the same as working, and this reporter does not report green on it.",
+    };
+  }
+  const canary = censusOfRun(currentRun).find((a) => a.kind === "step-red-job-green" && a.job === CANARY_JOB_NAME);
+  if (canary === undefined) {
+    const job = currentRun.jobs.find((j) => j.name === CANARY_JOB_NAME);
+    const why =
+      job === undefined
+        ? `job \`${CANARY_JOB_NAME}\` did not appear in run ${currentRun.id} at all`
+        : job.failureAnnotations === undefined
+          ? `job \`${CANARY_JOB_NAME}\` was found but its check-run annotations were never fetched`
+          : `job \`${CANARY_JOB_NAME}\` concluded \`${job.conclusion}\` carrying ${job.failureAnnotations.length} failure annotation(s)`;
+    return {
+      live: false,
+      reason:
+        `DETECTOR WENT QUIET: no step-level absorption was observed in run ${currentRun.id} (${why}). That job ` +
+        "fails one step on purpose, under `continue-on-error`, on every run, so a working detector cannot miss " +
+        "it. Seeing nothing means step-level detection is broken or the canary stopped running -- NOT that " +
         "there is no drift. A reporter that cannot prove it is looking must not report green.",
     };
   }
-  if (canary.failures === 0) {
-    return { live: false, reason: `DETECTOR WENT QUIET: \`${CANARY_JOB_NAME}\` was observed but recorded zero failures.` };
-  }
-  return { live: true, reason: `detector live: canary observed failing ${canary.failures}/${canary.executions} execution(s)` };
+  return {
+    live: true,
+    reason:
+      `detector live: the canary's swallowed step was observed in run ${currentRun.id} via the annotation ` +
+      `channel (${(canary.detail ?? []).join("; ") || "no message"})`,
+  };
 }
 
 /**
@@ -491,10 +593,25 @@ const KIND_LABEL: Readonly<Record<AbsorptionKind, string>> = {
   "step-red-job-green": "step red, JOB GREEN (no red X anywhere)",
 };
 
+/**
+ * Is this subject the CANARY -- the instrument rather than a measurement?
+ *
+ * The canary fails on every run by design, so left in the ordinary bands it would climb
+ * to `SUSTAINED` and emit an `::error::` forever. That is a permanent false alarm, which
+ * is precisely the cry-wolf failure this whole surface is built to avoid -- and it would
+ * be self-inflicted, by the instrument. So it is EXCLUDED from annotations and reported
+ * on its own line instead. Excluded from the ALARM, never from the CENSUS: it still has
+ * to be found, and `assertDetectorLive` still goes red when it is not.
+ */
+export function isCanary(subject: SubjectStat): boolean {
+  return subject.job === CANARY_JOB_NAME;
+}
+
 /** One `::severity::` workflow command per loud subject. Empty when nothing is loud. */
 export function annotationLines(report: DriftLoudReport): readonly string[] {
   const out: string[] = [];
   for (const s of report.subjects) {
+    if (isCanary(s)) continue;
     const sev = severityOf(s.band);
     if (sev === null) continue;
     const last = s.lastFailure === null ? "never" : `run ${s.lastFailure.runId}`;
@@ -508,12 +625,13 @@ export function annotationLines(report: DriftLoudReport): readonly string[] {
 }
 
 export function renderMarkdown(report: DriftLoudReport, liveness: LivenessVerdict, stalePublication: string | null): string {
-  const loud = report.subjects.filter((s) => severityOf(s.band) !== null);
-  const sustained = report.subjects.filter((s) => s.band === "SUSTAINED");
+  const loud = report.subjects.filter((s) => !isCanary(s) && severityOf(s.band) !== null);
+  const sustained = report.subjects.filter((s) => !isCanary(s) && s.band === "SUSTAINED");
   const out: string[] = [
     "## Drift -- loud, and blocking nothing",
     "",
-    `**${report.totalAbsorbed} absorbed failure(s)** across ${report.subjects.length} subject(s) in the last ` +
+    `**${report.totalAbsorbed} absorbed failure(s)** across ${report.subjects.length} subject(s) (one of which is ` +
+      "the canary, the instrument) in the last " +
       `${report.runs} run(s) (window is bounded at ${report.thresholds.windowRuns}). ` +
       `Coverage: ${report.executedRuns}/${report.runs} runs actually executed jobs (${pct(report.coverage)}); ` +
       `${report.cancelledRuns} were cancelled before anything ran. Every rate below is over EXECUTIONS.`,
@@ -522,14 +640,16 @@ export function renderMarkdown(report: DriftLoudReport, liveness: LivenessVerdic
   if (stalePublication !== null) out.push(`> **${stalePublication}**`, "");
   if (!liveness.live) out.push(`> **${liveness.reason}**`, "");
 
-  if (report.subjects.length === 0) {
-    out.push("_No absorbed failure in the window._", "");
+  const findings = report.subjects.filter((s) => !isCanary(s));
+  if (findings.length === 0) {
+    out.push("_No absorbed failure in the window (the canary is the instrument, not a finding)._", "");
   } else {
     out.push(
       "| subject | band | class | executions | failures | rate | clean streak | last |",
       "| --- | --- | --- | --- | --- | --- | --- | --- |",
     );
     for (const s of report.subjects) {
+      if (isCanary(s)) continue;
       out.push(
         `| \`${s.subject}\` | ${BAND_LABEL[s.band]} | ${KIND_LABEL[s.kind]} | ${s.executions} | ${s.failures} | ` +
           `${pct(s.failureRate)} | ${s.cleanStreak} | ${s.lastFailure === null ? "--" : `run ${s.lastFailure.runId}`} |`,
@@ -564,6 +684,7 @@ interface ApiRun {
 }
 
 interface ApiJob {
+  readonly id?: number | undefined;
   readonly name: string;
   readonly conclusion: string | null;
   readonly steps?: readonly { readonly name: string; readonly conclusion: string | null }[] | undefined;
@@ -581,18 +702,47 @@ async function ghJson<T>(url: string, token: string): Promise<T> {
   return (await res.json()) as T;
 }
 
-async function fetchRun(repo: string, run: ApiRun, token: string): Promise<RunRecord> {
+/**
+ * `failure`-level annotation messages on a check run, or `undefined` when they could not
+ * be read. `undefined` and `[]` are DIFFERENT claims and the fold depends on the
+ * difference: `[]` means "looked, found none", `undefined` means "did not look".
+ */
+async function fetchFailureAnnotations(repo: string, checkRunId: number, token: string): Promise<readonly string[] | undefined> {
+  try {
+    const payload = await ghJson<readonly { readonly annotation_level?: string; readonly message?: string }[]>(
+      `https://api.github.com/repos/${repo}/check-runs/${checkRunId}/annotations?per_page=100`,
+      token,
+    );
+    return payload.filter((a) => a.annotation_level === "failure").map((a) => a.message ?? "(no message)");
+  } catch {
+    return undefined;
+  }
+}
+
+async function fetchRun(repo: string, run: ApiRun, token: string, withAnnotations = false): Promise<RunRecord> {
   const base = { id: run.id, at: run.created_at, sha: run.head_sha, conclusion: run.conclusion ?? "unknown" };
   if (base.conclusion === "cancelled") return { ...base, jobs: [] };
   const payload = await ghJson<{ readonly jobs?: readonly ApiJob[] }>(
     `https://api.github.com/repos/${repo}/actions/runs/${run.id}/jobs?per_page=100`,
     token,
   );
-  const jobs: JobRecord[] = (payload.jobs ?? []).map((j) => ({
-    name: j.name,
-    conclusion: j.conclusion,
-    steps: (j.steps ?? []).map((s) => ({ name: s.name, conclusion: s.conclusion })),
-  }));
+  const jobs: JobRecord[] = [];
+  for (const j of payload.jobs ?? []) {
+    // Annotations are fetched for GREEN jobs only, and only where asked. A red job's
+    // failure is already visible in its conclusion, so paying a call to learn it again
+    // buys nothing; the green ones are the whole point.
+    const annotations =
+      withAnnotations && j.conclusion === "success" && typeof j.id === "number"
+        ? await fetchFailureAnnotations(repo, j.id, token)
+        : undefined;
+    jobs.push({
+      name: j.name,
+      conclusion: j.conclusion,
+      ...(typeof j.id === "number" ? { id: j.id } : {}),
+      steps: (j.steps ?? []).map((s) => ({ name: s.name, conclusion: s.conclusion })),
+      ...(annotations === undefined ? {} : { failureAnnotations: annotations }),
+    });
+  }
   return { ...base, jobs };
 }
 
@@ -639,14 +789,19 @@ async function main(): Promise<number> {
       token,
     );
     for (const r of listed.workflow_runs ?? []) records.push(await fetchRun(repo, r, token));
-    if (thisRunId > 0 && !records.some((r) => r.id === thisRunId)) {
+    if (thisRunId > 0) {
+      // THIS run is refetched WITH annotations even if the listing already carried it,
+      // because the annotation channel is the only thing that can exercise the canary
+      // and the listing's copy was fetched without it.
+      records = records.filter((r) => r.id !== thisRunId);
       const self = await ghJson<ApiRun>(`https://api.github.com/repos/${repo}/actions/runs/${thisRunId}`, token);
-      records.push(await fetchRun(repo, self, token));
+      records.push(await fetchRun(repo, self, token, true));
     }
   }
 
   const report = foldAbsorption(records, thresholds);
-  const liveness = assertDetectorLive(report);
+  const currentRun = thisRunId > 0 ? (records.find((r) => r.id === thisRunId) ?? null) : null;
+  const liveness = assertDetectorLive(currentRun);
   const watermark = publishedWatermark(ledgerPath);
   const stale = publicationIsStale(watermark, oldestRunId(records, thresholds.windowRuns))
     ? `PUBLICATION NOT LANDING: \`${ledgerPath}\` is pinned at run ${watermark}, older than every one of the ` +
@@ -672,7 +827,10 @@ async function main(): Promise<number> {
     );
   }
 
-  const sustained = report.subjects.filter((s) => s.band === "SUSTAINED");
+  // The canary is excluded here for the same reason it is excluded from annotations:
+  // it fails on purpose, so counting it would make this job red on every run for a
+  // reason that is not drift. Its ONLY job is `assertDetectorLive` below.
+  const sustained = report.subjects.filter((s) => !isCanary(s) && s.band === "SUSTAINED");
   const red = sustained.length > 0 || !liveness.live || stale !== null;
   if (red) {
     console.log(
