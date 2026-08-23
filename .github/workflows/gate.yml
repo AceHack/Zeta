@@ -1519,6 +1519,25 @@ jobs:
       - name: Run lint-workflow-job-timeouts (unbounded-runner-slot guard)
         run: bun src/Core.TypeScript/hygiene/lint-workflow-job-timeouts.ts
 
+      # A lane that COMPUTES a drift artifact must be able to PUBLISH it, and must fail when
+      # it cannot. `drift-sweep` pushed its ledger at `main` from 2026-08-13, was refused
+      # every run by the "CI Gate" ruleset, swallowed the refusal with
+      # `git push || echo "push race"`, and concluded SUCCESS 1,597 times while
+      # `docs/drift-events/` stayed frozen at tick 000247 — ten days of dashboard data
+      # served from behind a green check (081M0QPZD9C087G0R002W8QC2A). The `||` is the
+      # sharp part: it misfiled a PERMANENT rule rejection as a TRANSIENT race, so the lane
+      # kept "recovering" from something that could never resolve.
+      #
+      # Three rules over lanes derived from content (never a hand-kept allowlist): no
+      # publication push at `main`, no publish failure routed into a non-fatal handler, and
+      # a real `git push --dry-run` capability probe — presence of a token is not capability,
+      # which is the check that would have caught this on day one instead of day ten. The
+      # `continue-on-error` half cannot be caught downstream at all: the REST jobs API
+      # reports a swallowed STEP's conclusion as `success`, so static text is the only
+      # channel that carries it.
+      - name: Run lint-drift-publication-lands (stale-behind-green guard)
+        run: bun src/Core.TypeScript/hygiene/lint-drift-publication-lands.ts
+
   lint-no-empty-dirs:
     # Fail if a committed directory has no files — almost always a
     # forgotten artefact (an agent-created skill folder without a

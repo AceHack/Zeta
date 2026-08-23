@@ -16,19 +16,30 @@ name: drift-dashboard-cadence
 # the job summary, so the answer is in the run itself and not only in an artifact.
 #
 # WRITES BACK (2026-08-23, Alexa, after Otto review):
-# The heartbeat lane already solved the push-to-main problem — telemetry lanes use
-# ZETA_TELEMETRY_FLUSH_TOKEN with GITHUB_TOKEN fallback. A cadence that runs and
-# leaves no evidence it ran is the same defect class as unknown-reads-as-operational.
-# --write refreshes data/drift-dashboard.json so society-status reads fresh data.
+# A cadence that runs and leaves no evidence it ran is the same defect class as
+# unknown-reads-as-operational. `--write` refreshes data/drift-dashboard.json so
+# society-status reads fresh data.
+#
+# HOW IT LANDS (corrected 2026-08-23). The paragraph above used to say the heartbeat lane
+# "already solved the push-to-main problem ... telemetry lanes use ZETA_TELEMETRY_FLUSH_TOKEN
+# with GITHUB_TOKEN fallback", and this workflow then pushed straight at `main` with that
+# token. Half the pattern was copied and the load-bearing half was not: what the heartbeat
+# lanes actually do is NOT push to `main` at all. Ruleset "CI Gate" requires
+# `gate (required)` at PUSH time with no bypass actors, so no token of any scope can land a
+# commit there — the fix was never a stronger credential, it was a different ROUTE. This
+# lane now parks on `heartbeat/drift-dashboard` and flushes via PR like the rest of them.
 #
 # NOTE THE STRANGE LOOP, deliberately: this workflow is itself a row in the roster it
 # produces. If it stops firing, the NEXT pass reports it as a periodic check gone
 # stale — the instrument watches its own silence.
 #
-# Security: ZETA_TELEMETRY_FLUSH_TOKEN is a fine-grained PAT scoped to contents:write
-# on this repo only. Fallback to GITHUB_TOKEN keeps the pass running (read-only, no
-# write-back) if the PAT is denied or expired — presence checked AND capability tested
-# by the git push exit code.
+# Security: ZETA_TELEMETRY_FLUSH_TOKEN is a fine-grained PAT scoped to contents:write on
+# this repo only. Fallback to GITHUB_TOKEN keeps the pass running if the PAT is denied or
+# expired. Capability is tested by an explicit `git push --dry-run` preflight, NOT inferred
+# from the real push's exit code — this comment used to claim "presence checked AND
+# capability tested by the git push exit code" directly above a push whose exit code was
+# discarded into `|| echo "::warning::"`. Nothing was tested. Presence is not capability,
+# and a claim of testing is not a test.
 
 on:
   schedule:
@@ -54,10 +65,65 @@ jobs:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
+          fetch-depth: 0
+          # This credential pushes `heartbeat/drift-dashboard`, and that push's ACTOR is what
+          # decides whether `gate (required)` ever runs on the flush PR (081M010H4KE). The
+          # `||` ladder covers ABSENCE only; the preflight below covers UNAUTHORIZED.
+          persist-credentials: true
           token: ${{ secrets.ZETA_TELEMETRY_FLUSH_TOKEN || secrets.GITHUB_TOKEN }}
+
+      # THE FALSIFIER FOR THE CREDENTIAL, RUN IN PRODUCTION ON EVERY TICK. A real `git push`
+      # to the real remote with `--dry-run`, which updates nothing: GitHub authorizes
+      # repository-write at the `git-receive-pack` advertisement, before any ref is
+      # considered, so a dry run gets the true 403/200 answer. Probes a `credprobe/` ref so a
+      # permission answer can never be confused with an ancestry answer.
+      - name: Preflight the push credential
+        env:
+          FALLBACK_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -uo pipefail
+
+          probe() { git push --dry-run origin "HEAD:refs/heads/credprobe/drift-dashboard" 2>&1; }
+
+          if OUT=$(probe); then
+            echo "[preflight] drift-dashboard: push credential is authorized for this repository."
+            exit 0
+          fi
+          echo "$OUT"
+
+          if ! printf '%s' "$OUT" | grep -qiE 'denied to|Authentication failed|Invalid username or token|error: 403'; then
+            echo "::warning title=drift-dashboard preflight inconclusive::the probe failed, but not with a credential answer. Leaving the credential as-is; the flush below will report the true error."
+            exit 0
+          fi
+
+          echo "::error title=drift-dashboard PAT cannot push::ZETA_TELEMETRY_FLUSH_TOKEN was denied by the remote. FIX: grant that fine-grained PAT 'Contents: read and write' on Lucent-Financial-Group/Zeta. Falling back to GITHUB_TOKEN: the roster still parks on the staging branch, but 'gate (required)' will NOT start on the flush PR."
+
+          HDR_B64=$(printf 'x-access-token:%s' "$FALLBACK_TOKEN" | base64 | tr -d '\n')
+          echo "::add-mask::$HDR_B64"
+          git config --local --replace-all "http.https://github.com/.extraheader" "AUTHORIZATION: basic $HDR_B64"
+
+          # RE-PROBE: a repair that is applied and never checked looks identical to one that
+          # worked. That is the vacuity class, and this lane has already paid for it once.
+          if OUT2=$(probe); then
+            echo "[preflight] drift-dashboard: fallback credential verified; lane is DEGRADED but alive."
+            exit 0
+          fi
+          echo "$OUT2"
+          echo "::error title=drift-dashboard has no working push credential::BOTH the PAT and GITHUB_TOKEN were denied. The pass still runs so the summary carries the answer, and the flush below will report the authoritative error."
 
       - name: Install bun
         uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
+
+      - name: Configure committer
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+      # Start from origin/main, then union in anything still parked on the staging branch
+      # from a tick whose flush PR has not landed yet — otherwise a fast cadence force-pushes
+      # over a roster refresh that was computed but not yet merged.
+      - name: Prepare staging working tree
+        run: bun src/Core.TypeScript/forge-host/github/flush-via-staging.ts prepare --lane drift-dashboard
 
       - name: Run the drift-dashboard pass (with --write)
         id: pass
@@ -76,27 +142,46 @@ jobs:
           # output, the pass itself ran and that's what matters for the verdict.
           echo "pass_status=$status" >> "$GITHUB_OUTPUT"
 
-      - name: Commit refreshed dashboard to main
+      # THE PUBLICATION. What was here before:
+      #
+      #     git push origin HEAD:main || echo "::warning::[dashboard] push failed — token may lack capability"
+      #
+      # Two independent reasons that could not work, either of which alone is fatal:
+      #
+      #   1. ROUTE. Ruleset "CI Gate" requires `gate (required)` at PUSH time with no bypass
+      #      actors, so a commit that has never been through a check run is refused before
+      #      any check could start. No credential fixes this; it is not a permissions
+      #      problem. The comment it carried — "same pattern as tick-metrics" — named a lane
+      #      that had ALREADY stopped pushing to main for exactly this reason.
+      #   2. SWALLOW. `|| echo "::warning::"` made the refusal non-fatal, so the lane
+      #      reported success while publishing nothing, and the comment above it said the
+      #      artifact going stale was an acceptable fallback because "the run's own summary
+      #      still has the answer". A summary on a run nobody opens is not a publication.
+      #      That is the design that produced ten days of stale dashboard data on the sibling
+      #      lane (`drift-sweep`, 1,597 green runs, 081M0QPZD9C087G0R002W8QC2A).
+      #
+      # Now: park on the ungated `heartbeat/drift-dashboard` ref and land via a PR with
+      # squash auto-merge armed, so `gate` runs on the flush like it does on everything else.
+      # `flush-via-staging.ts` exits non-zero when the staging push or the PR call fails and
+      # this step has no `||` and no `continue-on-error`, so a lane that cannot publish is
+      # RED. A tick with nothing to publish is still a clean no-op (`flush` returns 0 on an
+      # empty index) — idempotent without pretending.
+      #
+      # `prepare` runs BEFORE the pass so the pass writes into the staging tree, and so that
+      # anything parked by a previous tick whose PR has not landed yet is unioned in rather
+      # than force-pushed over.
+      #
+      # Guarded by src/Core.TypeScript/hygiene/lint-drift-publication-lands.ts.
+      - name: Flush the refreshed dashboard to main via staging branch + PR
         if: always()
+        env:
+          GH_TOKEN: ${{ secrets.ZETA_TELEMETRY_FLUSH_TOKEN || secrets.ZETA_PR_ARCHIVE_TOKEN || secrets.GITHUB_TOKEN }}
         run: |
-          # Only commit if --write actually produced changes
-          git config user.name "alexa[bot]"
-          git config user.email "alexa[bot]@users.noreply.github.com"
-          git add data/drift-dashboard.json db/drift-dashboard/ 2>/dev/null || true
-          if git diff --cached --quiet; then
-            echo "[dashboard] no changes to commit"
-          else
-            git commit --no-verify -q -m "drift-dashboard: refresh roster $(date -u +%Y-%m-%dT%H:%M:%SZ)
-
-          Automated refresh of data/drift-dashboard.json by the cadence workflow.
-          A cadence that runs must leave evidence it ran.
-
-          Co-Authored-By: Kiro <noreply@kiro.dev>"
-            # Push directly to main — telemetry data, same pattern as tick-metrics.
-            # Fallback: if push fails (token denied), the artifact is stale but the
-            # run's own summary still has the answer. CAPABILITY tested, not just presence.
-            git push origin HEAD:main || echo "::warning::[dashboard] push failed — token may lack capability"
-          fi
+          set -euo pipefail
+          bun src/Core.TypeScript/forge-host/github/flush-via-staging.ts flush \
+            --lane drift-dashboard \
+            --paths data/drift-dashboard.json db/drift-dashboard \
+            --message "drift-dashboard: refresh roster"
 
       - name: Fail if dashboard is not OK
         env:

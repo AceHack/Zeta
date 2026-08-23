@@ -20,10 +20,15 @@
 # matches .mise.toml). --tracked (git ls-files) keeps path-shaped tool
 # preamble out of the permanent ledger.
 #
-# Loop safety: the commit-back uses the workflow's GITHUB_TOKEN, whose
-# pushes do not trigger workflows, and the message carries [skip ci] —
-# belt and suspenders. Cron is off-minute per the thundering-herd
-# convention.
+# Loop safety (REWRITTEN 2026-08-23, and the old text is worth keeping visible
+# because it was true and stopped being true): it used to read "the commit-back
+# uses the workflow's GITHUB_TOKEN, whose pushes do not trigger workflows, and
+# the message carries [skip ci] — belt and suspenders." Both belts are gone. The
+# bookkeeping no longer pushes at all — it flushes through a PR that SQUASH-MERGES,
+# which is a real push by a real actor — and `[skip ci]` is now forbidden in that
+# message, because on the PR route it would stop `gate` from ever running and leave
+# the PR unmergeable forever. Loop safety is now carried by the `paths-ignore` on
+# the push trigger below. Cron is off-minute per the thundering-herd convention.
 #
 # Safe-pattern compliance (mirrors tick-metrics.yml): SHA-pinned actions,
 # explicit minimal permissions, concurrency without cancel-in-progress,
@@ -34,15 +39,46 @@ name: drift-sweep
 on:
   # EVENT-DRIVEN TICK (Aaron 2026-08-10, "how do we speed it up"): the tick
   # fires on every real push to main — drift is measured the moment it can
-  # exist. Loop-safe by construction: the sweep's own bookkeeping (and the
-  # retraction actuator's pushes) use GITHUB_TOKEN, which never triggers
-  # workflows; only human/agent-credential landings mint ticks. The cron
-  # drops to a twice-hourly HEARTBEAT (catches token-pushed drift + proves
-  # liveness). Because every budget and MTTH is denominated in TICKS, not
-  # wallclock, the whole organism speeds up proportionally with zero
-  # recalibration — the phase-clock design's dividend.
+  # exist. The cron drops to a twice-hourly HEARTBEAT (catches token-pushed
+  # drift + proves liveness). Because every budget and MTTH is denominated in
+  # TICKS, not wallclock, the whole organism speeds up proportionally with
+  # zero recalibration — the phase-clock design's dividend.
+  #
+  # This paragraph used to continue "Loop-safe by construction: the sweep's own
+  # bookkeeping (and the retraction actuator's pushes) use GITHUB_TOKEN, which
+  # never triggers workflows; only human/agent-credential landings mint ticks."
+  # That was true and is now FALSE for the bookkeeping half — it lands by
+  # squash-merging a PR, which is a real push by a real actor. The sentence is
+  # replaced rather than deleted because a stale loop-safety claim reads as a
+  # guarantee and carries none. Loop safety now lives in the `paths-ignore`
+  # below. (The retraction actuator's own push still uses GITHUB_TOKEN, and that
+  # half of the old sentence still holds.)
   push:
     branches: [main]
+    # LOOP GUARD, and it is NEW because the flush route made it necessary.
+    #
+    # The old bookkeeping pushed with GITHUB_TOKEN, whose pushes do not trigger workflows,
+    # so the lane could never re-trigger itself. It now lands by SQUASH-MERGING a PR, and
+    # that merge is a real push to `main` by a real actor — which this trigger would catch.
+    # Since `drift-ledger sweep` mints a tick event on EVERY invocation (tick = max + 1,
+    # unconditionally — there is no "nothing happened" early return), each flush would mint
+    # the tick that produces the next flush, forever, on a quiet repository.
+    #
+    # So the lane ignores its own bookkeeping. `paths-ignore` skips a run only when EVERY
+    # changed path matches, which is exactly right here: a steady-state flush touches only
+    # the tick event and the published folds and is skipped, while a flush that also carried
+    # an SLO filing or a certified heal still mints one tick — and that tick's own flush
+    # carries bookkeeping alone and terminates. Bounded, not suppressed.
+    #
+    # This is the same defect `tick-metrics.yml` avoids with a `paths` filter, arriving here
+    # for the first time because this lane's pushes had never actually landed before.
+    paths-ignore:
+      - 'docs/drift-events/**'
+      - 'data/platform-drift.json'
+      - 'data/drift-mtth.json'
+      - 'data/drift-genome.json'
+      - 'data/drift-evolution.json'
+      - 'data/drift-proposal.json'
   schedule:
     - cron: "7,37 * * * *" # twice-hourly heartbeat, off-minute
   workflow_dispatch: {}
@@ -63,6 +99,18 @@ jobs:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
+          # THIS CHECKOUT'S CREDENTIAL IS THE ONE THAT PUSHES `heartbeat/drift-sweep`, and
+          # that push's actor is what decides whether `gate (required)` ever runs on the
+          # flush PR — a `pull_request` run whose triggering actor is `github-actions[bot]`
+          # is created and then immediately parked (`completed`/`action_required`), so it
+          # never contributes a check to the rollup (081M010H4KE). Same two-rung ladder as
+          # tick-metrics.yml and agent-heartbeat.yml.
+          #
+          # The `||` ladder covers ABSENCE only (secret unset -> empty -> GITHUB_TOKEN). It
+          # cannot cover UNAUTHORIZED — a present-but-powerless token is exactly what #10850
+          # shipped — which is the preflight step's whole job.
+          persist-credentials: true
+          token: ${{ secrets.ZETA_TELEMETRY_FLUSH_TOKEN || secrets.GITHUB_TOKEN }}
           # FULL history. The retraction actuator walks `git rev-list greenHead..redHead` over
           # arbitrary commits, and actions/checkout defaults to a depth-1 clone in which those SHAs
           # do not exist — `fatal: Invalid revision range`. The `git fetch origin main` below does
@@ -70,20 +118,97 @@ jobs:
           # already set `fetch-depth: 0` for the same reason; this one was the exception.
           fetch-depth: 0
 
-      - name: Sync to origin tip (event-driven ticks race pushes)
-        # The checkout is pinned to the TRIGGERING commit, which can predate
-        # the previous sweep's bookkeeping push — reading the ledger from it
-        # double-mints tick numbers (first observed: 000070 add/add race,
-        # the speedup's own first drift). The tick must be computed from
-        # origin's latest ledger.
+      # THE FALSIFIER FOR THE CREDENTIAL, RUN IN PRODUCTION ON EVERY TICK.
+      #
+      # This lane published nothing for TEN DAYS while reporting success, and the reason
+      # nobody caught it on day one is that nothing ever tested whether the push could
+      # succeed — only that a token was present. Presence is not capability. So this is not
+      # a stub and not a mock: a real `git push` to the real remote over the real network,
+      # with `--dry-run` so it updates nothing. GitHub performs repository-write
+      # authorization at the `git-receive-pack` advertisement, before any ref is considered,
+      # so a dry run gets the true 403/200 answer.
+      #
+      # It probes a `credprobe/` ref, never `heartbeat/drift-sweep`: HEAD here is main and
+      # the lane branch has diverged (the flush squashes), so probing the real lane would be
+      # rejected as non-fast-forward and a permission answer would be indistinguishable from
+      # an ancestry answer. A ref that does not exist yet has no ancestry question to get
+      # wrong. `--dry-run` creates nothing.
+      #
+      # It runs BEFORE `prepare`, deliberately: there is nothing to lose by answering the
+      # credential question before any work is in the tree.
+      - name: Preflight the push credential
+        env:
+          FALLBACK_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          git fetch origin main
-          git reset --hard origin/main
+          set -uo pipefail
+
+          probe() { git push --dry-run origin "HEAD:refs/heads/credprobe/drift-sweep" 2>&1; }
+
+          if OUT=$(probe); then
+            echo "[preflight] drift-sweep: push credential is authorized for this repository."
+            exit 0
+          fi
+          echo "$OUT"
+
+          # Only a CREDENTIAL answer is eligible for the swap. A network blip must NOT
+          # silently re-point the credential — that would hide a different failure behind a
+          # credential story, which is the same mistake as calling a rule rejection a race.
+          if ! printf '%s' "$OUT" | grep -qiE 'denied to|Authentication failed|Invalid username or token|error: 403'; then
+            echo "::warning title=drift-sweep preflight inconclusive::the probe failed, but not with a credential answer. Leaving the credential as-is; the real push below will report the true error."
+            exit 0
+          fi
+
+          echo "::error title=drift-sweep PAT cannot push::ZETA_TELEMETRY_FLUSH_TOKEN was denied by the remote. FIX: grant that fine-grained PAT 'Contents: read and write' on Lucent-Financial-Group/Zeta. Falling back to GITHUB_TOKEN: the ledger still parks on the staging branch, but 'gate (required)' will NOT start on the flush PR (081M010H4KE)."
+
+          # Swap the credential the way actions/checkout itself sets it — one
+          # `--replace-all` of the extraheader, which is the key git actually authenticates
+          # with. `git -c http.<url>.extraheader=` APPENDS rather than overrides, and
+          # re-pointing the remote URL alone did not displace it in production (#10913).
+          HDR_B64=$(printf 'x-access-token:%s' "$FALLBACK_TOKEN" | base64 | tr -d '\n')
+          echo "::add-mask::$HDR_B64"
+          git config --local --replace-all "http.https://github.com/.extraheader" "AUTHORIZATION: basic $HDR_B64"
+
+          # RE-PROBE. Without this the fallback is the vacuity class: a repair that is
+          # applied and never checked looks identical to one that worked (#10913's fallback
+          # ran, logged that it ran, and was denied under the same identity).
+          if OUT2=$(probe); then
+            echo "[preflight] drift-sweep: fallback credential verified against the remote; lane is DEGRADED but alive."
+            {
+              echo "### heartbeat/drift-sweep is running on the FALLBACK credential"
+              echo ""
+              echo "\`ZETA_TELEMETRY_FLUSH_TOKEN\` was denied by the remote; \`GITHUB_TOKEN\` is verified and in use."
+              echo "The ledger still parks on the staging branch. \`gate (required)\` will NOT start on the flush PR until the PAT can push."
+              echo "Fix: grant that fine-grained PAT **Contents: read and write** on this repository."
+            } >> "$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
+          echo "$OUT2"
+          echo "::error title=drift-sweep has no working push credential::BOTH the PAT and GITHUB_TOKEN were denied. The tick still computes so the run's summary carries the answer, and the flush below will report the authoritative error."
 
       - name: Install bun
         uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
         with:
           bun-version: latest
+
+      - name: Configure committer
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+      - name: Sync to origin tip (event-driven ticks race pushes)
+        # The checkout is pinned to the TRIGGERING commit, which can predate the previous
+        # sweep's bookkeeping, and reading the ledger from it double-mints tick numbers
+        # (first observed: the 000070 add/add race). The tick must be computed from origin's
+        # latest ledger.
+        #
+        # This stays a plain `reset --hard` and the staging `prepare` happens LATER, after
+        # the retraction actuator. The actuator runs `git revert`, which refuses to operate
+        # with a dirty index — and `prepare` leaves the lane's unlanded payload staged
+        # exactly there. Preparing here would have broken the healer on every tick where a
+        # previous flush PR had not yet landed, which is most of them.
+        run: |
+          git fetch origin main
+          git reset --hard origin/main
 
       - name: Run detectors (findings are data here, not failures)
         run: |
@@ -150,6 +275,22 @@ jobs:
 
       - name: Install dependencies (yaml parser for the SLO registry)
         run: bun install --frozen-lockfile
+
+      # STAGING STARTS HERE, deliberately AFTER the retraction actuator.
+      #
+      # From this point on every step writes files that must reach `main`, so the tree moves
+      # onto the lane's staging branch: start from origin's current tip (which the actuator
+      # may have just moved) and union in whatever is still parked on
+      # `heartbeat/drift-sweep` from a run whose flush PR has not landed yet. Without that
+      # union a fast cadence would force-push over an unlanded tick — and because tick
+      # numbering is `max existing + 1` derived from the ledger itself, it would then mint a
+      # DUPLICATE number for it. The union is what keeps the phase clock monotonic across an
+      # asynchronous flush.
+      #
+      # It cannot run earlier: `prepare` leaves the unlanded payload staged in the index, and
+      # the retraction actuator's `git revert` refuses to run against a dirty index.
+      - name: Prepare staging working tree
+        run: bun src/Core.TypeScript/forge-host/github/flush-via-staging.ts prepare --lane drift-sweep
 
       - name: Record the tick
         run: |
@@ -251,48 +392,59 @@ jobs:
         # registry. Status published to data/drift-proposal.json every tick.
         run: bun src/Core.TypeScript/hygiene/drift-proposer.ts
 
-      - name: Commit and push the tick event (and any SLO filings)
+      # HOW THE TICK LANDS — and why it no longer pushes at `main`.
+      #
+      # From 2026-08-13 to 2026-08-23 this step ran `git push` straight at `main` and was
+      # refused every single time by ruleset "CI Gate", which requires `gate (required)` at
+      # PUSH time with no bypass actors:
+      #
+      #     remote: - Required status check "gate (required)" is expected.
+      #     ! [remote rejected]     main -> main (push declined due to repository rule violations)
+      #
+      # The refusal was swallowed by `git push || echo "push race — next tick re-records
+      # (idempotent)"`, and that one line is the whole defect. It misfiled a PERMANENT rule
+      # rejection as a TRANSIENT race: a race genuinely is re-recorded next tick, a ruleset
+      # rejection fails identically forever. So the lane "recovered" 1,597 times from
+      # something that was never going to resolve, concluding SUCCESS on every one, while
+      # `docs/drift-events/` stayed frozen at tick 000247 and `data/platform-drift.json` at
+      # run 32232815018. Ten days of a dashboard serving stale numbers from behind a green
+      # check — the exact defect this whole surface exists to detect, committed inside the
+      # detector. Filed as 081M0QPZD9C087G0R002W8QC2A.
+      #
+      # THE ROUTE, which is not new and is not invented here: park on the ungated
+      # `heartbeat/drift-sweep` staging ref, then land via a PR with squash auto-merge armed,
+      # so `gate` runs on the flush the way it runs on everything else. `tick-metrics`,
+      # `society` and the three `agent-heartbeat` lanes have been landing this way for
+      # months; `drift-sweep` was simply never migrated. The ruleset is untouched, no bypass
+      # actor is added, and nothing is merged with `--admin`.
+      #
+      # AND IT FAILS NOW. `flush-via-staging.ts` exits 3 when the staging push or the PR call
+      # fails, and this step has no `||` and no `continue-on-error`, so a lane that cannot
+      # publish goes RED instead of green. That is a deliberate reversal of the old comment
+      # here ("red runs would just be noise"): the noise argument is sound for a lost race
+      # and false for a broken route, and treating them alike is what cost ten days. A
+      # genuinely empty tick is still a clean no-op — `flush` returns 0 when nothing is
+      # staged, so idempotency is preserved without pretending.
+      #
+      # NO `[skip ci]` IN THE MESSAGE. It was harmless when the push was rejected anyway;
+      # here it would be fatal, suppressing `gate` on the PR head so the required check never
+      # reports and the PR hangs unmergeable forever. `flush-via-staging.ts` refuses a skip
+      # token rather than open a dead PR — see `assertNoSkipCi`.
+      #
+      # Guarded by `src/Core.TypeScript/hygiene/lint-drift-publication-lands.ts`, which
+      # refuses a publication push at `main`, a swallowed publish failure, and a lane with no
+      # credential capability probe. Prose rots; that lint is what holds this.
+      - name: Flush the tick to main via staging branch + PR
+        env:
+          # The enterprise forbids the Actions identity from creating pull requests, so a
+          # fine-grained PAT is required for the `gh` call (same constraint and same ladder
+          # as tick-metrics.yml). Without one the tick still parks safely on the staging
+          # branch and the step reports the reason and fails.
+          GH_TOKEN: ${{ secrets.ZETA_TELEMETRY_FLUSH_TOKEN || secrets.ZETA_PR_ARCHIVE_TOKEN || secrets.GITHUB_TOKEN }}
         run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add docs/drift-events docs/letters workitems data/drift-mtth.json data/drift-genome.json data/drift-evolution.json data/drift-proposal.json data/platform-drift.json
-          if git diff --cached --quiet; then
-            echo "Nothing staged — no tick recorded."
-          else
-            git commit -m "drift: record sweep tick + certified heals [skip ci]"
-            # Bookkeeping races are NON-FATAL by design: findings are
-            # recomputed and heals are certified-idempotent, so a lost tick
-            # is a skipped heartbeat, not an error — the next tick
-            # re-records everything. Red runs here would just be noise.
-            if ! git pull --rebase origin main; then
-              git rebase --abort || true
-              echo "tick bookkeeping lost a push race — next tick re-records (idempotent)"
-              exit 0
-            fi
-            # A PUSH RACE AND A RULE REJECTION ARE NOT THE SAME EVENT, and until
-            # 2026-08-23 this line called both of them a race. They differ in the only
-            # way that matters: a race is TRANSIENT and the next tick genuinely does
-            # re-record it; a ruleset rejection is PERMANENT and the next tick fails the
-            # same way forever. Measured — since 2026-08-13 every push here has been
-            # rejected with `GH013 ... Required status check "gate (required)" is
-            # expected` (telemetry lanes no longer push straight to main), and 1,597
-            # `drift-sweep` runs concluded SUCCESS while `docs/drift-events/` stayed
-            # frozen at tick 000247 and `data/platform-drift.json` at run 32232815018.
-            # The sweep computed the correct fold every few minutes and then threw it
-            # away, from behind a green check. That is the exact shape of the defect
-            # this whole surface exists to detect, committed in the detector itself.
-            #
-            # STILL NON-FATAL, deliberately: this is telemetry bookkeeping and a red run
-            # here would be noise, per the note above. What changes is that a permanent
-            # rejection is now LOUD — an `::error::` annotation on the run page naming
-            # the cause and the route — instead of being misfiled as weather.
-            if git push 2>/tmp/push-err; then
-              echo "tick bookkeeping pushed."
-            elif grep -qE 'GH013|repository rule violations|protected branch' /tmp/push-err; then
-              cat /tmp/push-err
-              echo "::error title=drift ledger is not landing::drift-sweep's push to main was REJECTED BY A REPOSITORY RULE, not lost to a race. This is permanent: every tick will recompute the ledger and discard it until the bookkeeping is routed the way the other telemetry lanes are (park on a \`heartbeat/*\` ref, flush via PR). Until then docs/drift-events/ and data/platform-drift.json are FROZEN and every dashboard reading them is showing stale numbers. This annotation is loud on purpose and blocks nothing."
-            else
-              cat /tmp/push-err
-              echo "::warning title=drift ledger push failed::push race — next tick re-records (idempotent)"
-            fi
-          fi
+          bun src/Core.TypeScript/forge-host/github/flush-via-staging.ts flush \
+            --lane drift-sweep \
+            --paths docs/drift-events docs/letters workitems memory/MEMORY.md \
+              data/drift-mtth.json data/drift-genome.json data/drift-evolution.json \
+              data/drift-proposal.json data/platform-drift.json \
+            --message "drift: record sweep tick + certified heals"
