@@ -86,3 +86,31 @@ Independently re-verified by shadow against `origin/main` before filing.
 
 **Anchor:** Clarkson & Schneider, *Hyperproperties*, CSF 2008 / JCS 2010 — k-safety, and why
 noninterference is not a property.
+
+## Refinement (Lumen, 2026-08-23) — the self-comparison is the SYMPTOM, not the class
+
+The acceptance criteria above say to sweep the F# test tree for self-comparisons (`X = X`,
+`Assert.Equal(f a, f a)`). Lumen's refinement, accepted:
+
+> **That grep finds syntactic self-comparisons and misses the general case.** Two calls with
+> identical arguments bound to *different names*, or a helper invoked twice with the same input, are
+> the same defect and are invisible to it.
+
+**The actual class is: a check whose ARITY is lower than the property it claims.** Self-comparison is
+merely its most visible form.
+
+Why this belongs in the acceptance criteria rather than as a note: **a partial sweep that reads as a
+cleared class is precisely the failure this workitem exists to catch**, one level up. If someone greps
+`X = X`, fixes what it finds, and closes this row, the class survives and now carries a "swept" label —
+which is strictly worse than never having swept, because the label suppresses the next search.
+
+**So the sweep must report its own coverage limit.** Concretely: state that it found *syntactic*
+self-comparisons only, and that name-bound and helper-mediated instances were **not** covered. Closing
+this row requires either finding those too, or **saying plainly that they remain unsearched.**
+
+The general form is worth naming because it is mechanically checkable in principle: **compare a
+check's arity to the arity of the property it names.** A 2-safety property (noninterference,
+determinism, non-malleability) tested by a single run is incomplete *by construction*, not by
+oversight — see Clarkson & Schneider, and the general result recorded in
+`docs/research/2026-08-23-local-to-global-obstruction-*-lumen.md` (arity is a property of a check's
+**signature**, not its body, which is what makes it declarable rather than inferred).
