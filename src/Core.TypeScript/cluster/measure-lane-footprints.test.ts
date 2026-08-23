@@ -144,7 +144,10 @@ describe("measureImage — the anonymous token dance is performed, not assumed",
     const before = await measureImage(PORTAL, { fetch: clean.fetch, tokens: new Map() });
 
     const saved = { gh: process.env.GITHUB_TOKEN, gt: process.env.GH_TOKEN, dc: process.env.DOCKER_CONFIG };
+    // hoist-guard-exempt: deliberate sentinel plant — this test exists to prove the
+    // measurement IGNORES an ambient credential, which cannot be asked with a fake env.
     process.env.GITHUB_TOKEN = "ghp_ambient_credential_that_must_not_be_used";
+    // hoist-guard-exempt: deliberate sentinel plant, restored in the finally below
     process.env.GH_TOKEN = "ghp_ambient_credential_that_must_not_be_used";
     process.env.DOCKER_CONFIG = "/nonexistent/docker";
     try {
@@ -155,8 +158,10 @@ describe("measureImage — the anonymous token dance is performed, not assumed",
       expect(dirty.log[0]?.authorization).toBeUndefined();
     } finally {
       if (saved.gh === undefined) delete process.env.GITHUB_TOKEN;
+      // hoist-guard-exempt: RESTORES the caller's own value, it does not introduce one
       else process.env.GITHUB_TOKEN = saved.gh;
       if (saved.gt === undefined) delete process.env.GH_TOKEN;
+      // hoist-guard-exempt: RESTORES the caller's own value, it does not introduce one
       else process.env.GH_TOKEN = saved.gt;
       if (saved.dc === undefined) delete process.env.DOCKER_CONFIG;
       else process.env.DOCKER_CONFIG = saved.dc;

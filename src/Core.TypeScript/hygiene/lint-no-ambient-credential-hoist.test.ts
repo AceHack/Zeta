@@ -11,7 +11,7 @@
 
 import { describe, expect, test } from "bun:test";
 import { resolve } from "node:path";
-import { MIN_FILES_EXPECTED, isExecutableSurface, isScannableKind, scanRepoDetailed, scanText } from "./lint-no-ambient-credential-hoist.ts";
+import { MIN_FILES_EXPECTED, isExecutableSurface, isExemptedLine, isScannableKind, scanRepoDetailed, scanText } from "./lint-no-ambient-credential-hoist.ts";
 
 const F = "tools/setup/example.sh";
 
@@ -37,6 +37,45 @@ describe("rule hoist-source — the exact line that was live on main", () => {
 
   test("does NOT fire on sourcing a non-credential env file", () => {
     expect(scanText(F, '. "$HOME/.config/zeta/shellenv.sh"')).toEqual([]);
+  });
+});
+
+describe("the line exemption — a scoped licence needs its own falsifiers", () => {
+  // The plant `measure-lane-footprints.test.ts` genuinely needs: it proves the
+  // measurement IGNORES an ambient credential, which no injected fake can ask.
+  const PLANT = 'process.env.GITHUB_TOKEN = "ghp_sentinel_that_must_not_be_used";';
+  const REASON = "// hoist-guard-exempt: deliberate sentinel plant, restored in the finally below";
+  const TEST_FILE = "src/Core.TypeScript/cluster/example.test.ts";
+
+  test("without the marker, the plant is caught in a test file too", () => {
+    expect(scanText(TEST_FILE, PLANT).length).toBe(1);
+  });
+
+  test("with the marker directly above, it is exempt", () => {
+    expect(scanText(TEST_FILE, `${REASON}\n${PLANT}`)).toEqual([]);
+  });
+
+  test("the marker may sit anywhere in the contiguous comment block above", () => {
+    expect(scanText(TEST_FILE, `${REASON}\n// a second line of rationale\n${PLANT}`)).toEqual([]);
+  });
+
+  test("PRODUCTION CODE CANNOT CLAIM IT — same lines, non-test file, still a finding", () => {
+    expect(scanText("src/Core.TypeScript/cluster/example.ts", `${REASON}\n${PLANT}`).length).toBe(1);
+    expect(scanText("tools/setup/example.ts", `${REASON}\n${PLANT}`).length).toBe(1);
+  });
+
+  test("a marker with no reason (or a token one) does NOT exempt", () => {
+    expect(scanText(TEST_FILE, `// hoist-guard-exempt:\n${PLANT}`).length).toBe(1);
+    expect(scanText(TEST_FILE, `// hoist-guard-exempt: why\n${PLANT}`).length).toBe(1);
+  });
+
+  test("a marker separated from the line by real code does NOT reach it", () => {
+    expect(scanText(TEST_FILE, `${REASON}\nconst x = 1;\n${PLANT}`).length).toBe(1);
+  });
+
+  test("isExemptedLine is false at the top of a file and on an unrelated block", () => {
+    expect(isExemptedLine(TEST_FILE, [PLANT], 0)).toBe(false);
+    expect(isExemptedLine(TEST_FILE, ["// just a note", PLANT], 1)).toBe(false);
   });
 });
 

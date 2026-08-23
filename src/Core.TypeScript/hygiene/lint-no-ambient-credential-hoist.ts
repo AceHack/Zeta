@@ -96,6 +96,58 @@ const RULES: readonly { readonly id: string; readonly re: RegExp; readonly why: 
 /** Only the credential-shaped names for the process.env rule — assigning PATH is not a leak. */
 const CREDENTIAL_NAME = /(TOKEN|SECRET|PASSWORD|PASSWD|API_?KEY|CREDENTIAL|PRIVATE_KEY|PASSPHRASE)/i;
 
+/**
+ * THE ONE EXEMPTION, AND WHY IT IS A LINE MARKER RATHER THAN A FILE ENTRY.
+ * ------------------------------------------------------------------------
+ * A test that proves a tool IGNORES an ambient credential has to plant one — in
+ * the real `process.env`, because "does the code under test read the ambient
+ * environment" is exactly the question, and an injected fake cannot ask it.
+ * `measure-lane-footprints.test.ts` is that case: it sets `GITHUB_TOKEN` to a
+ * loud sentinel and asserts the measurement does not move and that nothing but
+ * the registry's anonymous token reached the wire.
+ *
+ * The obvious accommodation — add the file to `SELF_EXEMPT` — is a licence: the
+ * whole file stops being checked, so a REAL hoist added later hides in a file
+ * nobody is looking at. So the exemption is per LINE, must carry a reason, and
+ * is honoured only in `*.test.ts`. A production surface cannot claim it at all,
+ * and `grep` enumerates every site.
+ */
+export const HOIST_EXEMPT_PREFIX = "// hoist-guard-exempt:";
+/** A marker with no reason is a licence with no argument, so it does not exempt. */
+export const MIN_EXEMPT_REASON = 10;
+
+/** Plain string work, deliberately regex-free: a marker must never be a backtracking hazard. */
+export function exemptReason(line: string): string | undefined {
+  const trimmed = line.trim();
+  if (!trimmed.startsWith(HOIST_EXEMPT_PREFIX)) return undefined;
+  const reason = trimmed.slice(HOIST_EXEMPT_PREFIX.length).trim();
+  return reason.length >= MIN_EXEMPT_REASON ? reason : undefined;
+}
+
+export function isExemptedLine(file: string, lines: readonly string[], index: number): boolean {
+  if (!/\.test\.tsx?$/.test(file)) return false;
+  // Walk up the CONTIGUOUS `//` comment block immediately above the line. The
+  // marker may sit anywhere in that block so a multi-line rationale is allowed;
+  // the moment a non-comment line is reached, the block — and the claim — ends.
+  for (let i = index - 1; i >= 0; i -= 1) {
+    const prior = (lines[i] ?? "").trim();
+    if (prior === "") continue;
+    if (exemptReason(lines[i] ?? "") !== undefined) return true;
+    if (!prior.startsWith("//")) return false;
+  }
+  return false;
+}
+
+function rulesTrippedBy(raw: string): readonly { readonly id: string; readonly why: string }[] {
+  const hit: { readonly id: string; readonly why: string }[] = [];
+  for (const rule of RULES) {
+    if (!rule.re.test(raw)) continue;
+    if (rule.id === "process-env-assign-of-credential" && !CREDENTIAL_NAME.test(raw)) continue;
+    hit.push({ id: rule.id, why: rule.why });
+  }
+  return hit;
+}
+
 export function scanText(file: string, text: string): Finding[] {
   if ((SELF_EXEMPT as readonly string[]).includes(file)) return [];
   const out: Finding[] = [];
@@ -107,9 +159,10 @@ export function scanText(file: string, text: string): Finding[] {
     // is still live.
     const lead = raw.replace(/^\s+/, "");
     if (lead.startsWith("#") || lead.startsWith("//") || lead.startsWith("*")) continue;
-    for (const rule of RULES) {
-      if (!rule.re.test(raw)) continue;
-      if (rule.id === "process-env-assign-of-credential" && !CREDENTIAL_NAME.test(raw)) continue;
+    const tripped = rulesTrippedBy(raw);
+    if (tripped.length === 0) continue;
+    if (isExemptedLine(file, lines, i)) continue;
+    for (const rule of tripped) {
       out.push({ file, line: i + 1, rule: `${rule.id}: ${rule.why}`, text: raw.trim().slice(0, 160) });
     }
   }
