@@ -285,6 +285,33 @@ function display(repoRoot: string, eventDir: string): void {
     const drift = computeDrift(ciRuns, { roster });
     console.log(`\nCI Drift: ${drift.summary}`);
   }
+
+  // Drift dashboard snapshot (forge-agnostic: reads the pre-computed dashboard artifact).
+  // This covers ALL workflows — not just heartbeat self-reports.
+  const dashboardPath = join(repoRoot, "data", "drift-dashboard.json");
+  const dashboard = loadJSON<{
+    at: string;
+    ok: boolean;
+    counts: Record<string, number>;
+    coverage: { expected: number; observed: number; shortfall: number };
+    sources: string[];
+  }>(dashboardPath);
+  if (dashboard) {
+    const c = dashboard.counts;
+    const total = Object.values(c).reduce((s, n) => s + n, 0);
+    const greenPct = total > 0 ? ((c.green ?? 0) / total * 100).toFixed(0) : "?";
+    const redCount = c.red ?? 0;
+    const flapping = c.flapping ?? 0;
+    const unknown = c.unknown ?? 0;
+    const age = Math.round((Date.now() - new Date(dashboard.at).getTime()) / 60000);
+    console.log(`\nWorkflow Roster (all ${total} checks, ${age}min ago):`);
+    console.log(`  ${greenPct}% green (${c.green}), ${redCount} red, ${flapping} flapping, ${unknown} unknown`);
+    console.log(`  Coverage: ${dashboard.coverage.observed}/${dashboard.coverage.expected} observed (shortfall: ${dashboard.coverage.shortfall})`);
+    console.log(`  Sources: ${dashboard.sources.join(", ")}`);
+    if (!dashboard.ok) {
+      console.log(`  ⚠ Dashboard NOT OK — red or unknown checks present`);
+    }
+  }
   // Vault status
   if (vaultState) {
     console.log("\nVaults:");
