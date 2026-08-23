@@ -1,0 +1,12 @@
+{
+  "pr_number": 14163,
+  "archive_path": "docs/history/pr-reviews/PR-14163-feat-cluster-take-the-70-the-human-decision-recorded-and-the-headroom-it-unlocks.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-23T16:01:47.498Z",
+  "schema_version": "v1",
+  "commit_sha": "26ee4561556021c3c79bb1a775f9b82f886dab1b",
+  "title": "feat(cluster): take the 70 — the human decision recorded, and the headroom it unlocks",
+  "state": "MERGED",
+  "merged_at": "2026-08-23T16:01:06Z",
+  "head_ref": "feat/take-the-70-unlock-giants"
+}
