@@ -1,0 +1,12 @@
+{
+  "pr_number": 14329,
+  "archive_path": "docs/history/pr-reviews/PR-14329-fix-ci-the-windows-install-image-never-copyd-the-twitch-ai-workspace-manifest.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-23T17:46:26.228Z",
+  "schema_version": "v1",
+  "commit_sha": "b06f6ea7722d4c306dbb00344572ac7129c33d50",
+  "title": "fix(ci): the Windows install image never COPYd the twitch-ai workspace manifest",
+  "state": "MERGED",
+  "merged_at": "2026-08-23T17:45:41Z",
+  "head_ref": "fix/windows-docker-workspace-manifest"
+}
