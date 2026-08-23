@@ -1,0 +1,12 @@
+{
+  "pr_number": 14201,
+  "archive_path": "docs/history/pr-reviews/PR-14201-fix-zetadb-retry-recoverable-row-prefix-conflicts.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-23T15:22:18.143Z",
+  "schema_version": "v1",
+  "commit_sha": "6d68cf9bfbc151551f901bd38db13bbe9fa4ccde",
+  "title": "fix(zetadb): retry recoverable row-prefix conflicts",
+  "state": "MERGED",
+  "merged_at": "2026-08-23T15:21:34Z",
+  "head_ref": "claim/task-zetadb-row-conflict-backpressure"
+}
