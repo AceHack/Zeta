@@ -62,7 +62,11 @@ describe("the extracted seams are the SAME code the shipped path runs", () => {
     // If this drifts, the historical frame and the live frame are two different universes and every
     // point in the series is measuring a different population from the one `measure()` reports.
     const live = enumerateUniverse(ROOT);
-    const viaList = universeFromFileList([...live, ...live.map((p) => `${p.slice(0, -3)}.test.ts`)]);
+    const siblings = live.map((p) => `${p.slice(0, -3)}.test.ts`);
+    const relocatedHookTests = live
+      .filter((p) => p.startsWith(".claude/hooks/"))
+      .map((p) => `src/Core.TypeScript/claude-hooks/${p.slice(".claude/hooks/".length, -3)}.test.ts`);
+    const viaList = universeFromFileList([...live, ...siblings, ...relocatedHookTests]);
     expect([...viaList]).toEqual([...live]);
   });
 
@@ -81,6 +85,18 @@ describe("the extracted seams are the SAME code the shipped path runs", () => {
 
   test("universeFromFileList refuses a .ts with no sibling test, and .d.ts / .test.ts themselves", () => {
     expect([...universeFromFileList(["a.ts", "a.test.ts", "b.ts", "c.d.ts", "d.test.ts"])]).toEqual(["a.ts"]);
+  });
+
+  test("universeFromFileList includes .claude/hooks sources whose tests were relocated (#10559)", () => {
+    expect([
+      ...universeFromFileList([
+        ".claude/hooks/harness.ts",
+        "src/Core.TypeScript/claude-hooks/harness.test.ts",
+        ".claude/hooks/bare.ts",
+        "a.ts",
+        "a.test.ts",
+      ]),
+    ]).toEqual([".claude/hooks/harness.ts", "a.ts"]);
   });
 });
 

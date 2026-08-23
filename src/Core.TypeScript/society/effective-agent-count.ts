@@ -13,11 +13,11 @@
  *
  * Three agents (alexa, otto, soraya) run mutation probes and append findings to
  * `db/mutation-findings/<agent>.jsonl`. Each finding names a **source file** it sampled. The
- * sampling unit is the SOURCE, not the (source, test, mutation) triple: across the 560 observed
- * (tick, source) cells only 5 carry more than one mutation operator, so the operator is essentially
- * determined by (tick, source) and counting triples would measure the file-change rate rather than
- * the agents' choices. `sourceIsTheSamplingUnit()` re-derives that check from the data every run so
- * the claim cannot rot.
+ * sampling unit is the SOURCE, not the (source, test, mutation) triple. `sourceIsTheSamplingUnit()`
+ * re-derives the ratio every run: a small minority of (tick, source) cells carry more than one
+ * mutation operator, so the operator is essentially determined by (tick, source) and counting
+ * triples would measure the file-change rate rather than the agents' choices. A snapshot count
+ * (560 cells / 5 multi-operator when this file was first written) is not the claim.
  *
  * ## The universe MUST come from outside the agents' own behaviour
  *
@@ -32,9 +32,10 @@
  * agents did not produce.
  *
  * So the frame is enumerated from the committed tree at a named commit: every `.ts` tracked by git
- * that has a **sibling `.test.ts`** — the population a mutation prober can draw from, because a
- * mutation with no test to distinguish it is not a probe. That is `N = 703` at the commit this was
- * written against.
+ * that has a distinguishing test — a sibling `.test.ts`, or (for `.claude/hooks/` only) a relocated
+ * test under `src/Core.TypeScript/claude-hooks/` per #10559, because bun cannot discover tests under
+ * a dot-prefixed path. A mutation with no test to distinguish it is not a probe.
+ * That is `N = 703` at the commit this was written against.
  *
  * **Frame validity check, and a correction to the first measurement.** An earlier pass restricted
  * the frame to `src/Core.TypeScript` and got `N = 616`. That frame is wrong, and provably so from
@@ -298,11 +299,15 @@ export function repoRoot(): string {
 }
 
 /**
- * The external sampling frame: every git-TRACKED `.ts` with a sibling `.test.ts`.
+ * The external sampling frame: every git-TRACKED `.ts` with a distinguishing test.
  *
  * Enumerated from `git ls-files` rather than from a directory walk so the frame is a pure function
  * of a commit — untracked scratch files cannot silently enlarge the universe, and the result
  * replays deterministically from the recorded sha (DST, discipline #4).
+ *
+ * Distinguishing test means a sibling `.test.ts`, except `.claude/hooks/*.ts` whose tests live at
+ * `src/Core.TypeScript/claude-hooks/*.test.ts` (#10559: bun does not discover tests under a
+ * dot-prefixed path, and `unexecuted-test-files` refuses putting them back).
  */
 export function enumerateUniverse(root: string): readonly string[] {
   // sonarjs/no-os-command-from-path suppression rationale: `git` is spawned from PATH, the
@@ -315,6 +320,18 @@ export function enumerateUniverse(root: string): readonly string[] {
     maxBuffer: 256 * 1024 * 1024,
   });
   return universeFromFileList(out.split("\n").filter((l) => l.length > 0));
+}
+
+const CLAUDE_HOOKS_PREFIX = ".claude/hooks/";
+const RELOCATED_HOOK_TEST_DIR = "src/Core.TypeScript/claude-hooks/";
+
+function hasDistinguishingTest(sourcePath: string, tracked: ReadonlySet<string>): boolean {
+  if (tracked.has(`${sourcePath.slice(0, -3)}.test.ts`)) return true;
+  if (sourcePath.startsWith(CLAUDE_HOOKS_PREFIX) && sourcePath.endsWith(".ts")) {
+    const base = sourcePath.slice(CLAUDE_HOOKS_PREFIX.length, -3);
+    return tracked.has(`${RELOCATED_HOOK_TEST_DIR}${base}.test.ts`);
+  }
+  return false;
 }
 
 /**
@@ -330,7 +347,7 @@ export function universeFromFileList(files: readonly string[]): readonly string[
   const tracked = new Set(files);
   return files
     .filter((p) => p.endsWith(".ts") && !p.endsWith(".test.ts") && !p.endsWith(".d.ts"))
-    .filter((p) => tracked.has(`${p.slice(0, -3)}.test.ts`))
+    .filter((p) => hasDistinguishingTest(p, tracked))
     .sort();
 }
 
@@ -507,7 +524,7 @@ export function formatReport(r: Report): string {
   const lines: string[] = [];
   lines.push("effective agent count — inter-agent correlation over db/mutation-findings/");
   lines.push(`  commit                ${r.commit}`);
-  lines.push(`  sampling frame        ${String(r.frameSize)} git-tracked .ts files with a sibling .test.ts`);
+  lines.push(`  sampling frame        ${String(r.frameSize)} git-tracked .ts files with a distinguishing test`);
   lines.push(`                        (enumerated OUTSIDE the agents' behaviour — see module header)`);
   lines.push(
     `  sampling unit         source file; ${String(r.samplingUnit.multiOperator)}/${String(r.samplingUnit.cells)} ` +
