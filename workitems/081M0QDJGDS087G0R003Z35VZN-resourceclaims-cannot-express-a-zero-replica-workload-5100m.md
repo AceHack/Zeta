@@ -25,10 +25,10 @@ shipping `replicas: 0`:
 
 | Application | manifest | request | replicas |
 | --- | --- | --- | --- |
-| `full-ai-cluster/vllm` | `vllm/deployment.yaml` doc 1 | **4000m / 16384Mi** | 0 |
-| `full-ai-cluster/orleans` | `orleans/statefulset.yaml` doc 0 | 500m / 512Mi | 0 |
-| `infra/orleans` | `infra/.../orleans/deployment.yaml` doc 0 | 500m / 512Mi | 0 |
-| `full-ai-cluster/hat-system` | `hat-system/deployment.yaml` doc 0 | 100m / 128Mi | 0 |
+| `full-ai-cluster/vllm` | `full-ai-cluster/k8s/applications/vllm/deployment.yaml` doc 1 | **4000m / 16384Mi** | 0 |
+| `full-ai-cluster/orleans` | `full-ai-cluster/k8s/applications/orleans/statefulset.yaml` doc 0 | 500m / 512Mi | 0 |
+| `infra/orleans` | `infra/k8s/applications/orleans/deployment.yaml` doc 0 | 500m / 512Mi | 0 |
+| `full-ai-cluster/hat-system` | `full-ai-cluster/k8s/applications/hat-system/deployment.yaml` doc 0 | 100m / 128Mi | 0 |
 
 **Total latent: 5100m / 17536Mi.** They schedule nothing today, and that is a
 reprieve rather than a fit — exactly the shape of gmod's gatekeeper-webhook

@@ -39,7 +39,8 @@ pushed yet — see operator/ README for the local build path"), and the Deployme
 ## What was fixed alongside this, and what was not
 
 This item's sibling — `bitnami/kubectl:1.32.3` in
-`hat-system/gatekeeper-crd-wait.yaml` — WAS a live bug and is fixed on
+`full-ai-cluster/k8s/applications/hat-system/gatekeeper-crd-wait.yaml` — WAS a live bug
+and is fixed on
 `fix/unpriced-charts-measurable`: Bitnami withdrew the tag, so the Job that waits for every
 hat ConstraintTemplate could not pull its only container. It now pins
 `bitnamilegacy/kubectl:1.32.3`.

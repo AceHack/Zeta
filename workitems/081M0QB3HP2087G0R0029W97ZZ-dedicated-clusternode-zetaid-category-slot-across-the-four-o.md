@@ -20,14 +20,16 @@ composes_with: []
 
 The USB installer now mints a node identity key at install time
 (`/etc/zeta/node-zetaid`, PR "installer: ZetaId + force-reformat override").
-It uses `Category.InventoryAsset` (10) — the category `inventory/new-item.ts`
+It uses `Category.InventoryAsset` (10) — the category
+`src/Core.TypeScript/inventory/new-item.ts`
 already mints for the register `reconcile-surfaces.ts` calls "identity of
 record". A cluster node IS a physical asset, so that reuse is correct today
 and is deliberately not a parallel id scheme.
 
 What it does not give: a node is not distinguishable from a GPU, a switch or a
 cable **by its key alone** — only by which file it lives in. Every other
-category in `zeta-id/types.ts` earns its slot by exactly that property.
+category in `src/Core.TypeScript/zeta-id/types.ts` earns its slot by exactly that
+property.
 
 ## Size
 
@@ -36,10 +38,11 @@ A new slot is a **four-oracle byte-lock change**, which is the entire cost:
 - `src/Core.TypeScript/zeta-id/types.ts` — the slot (12 is free; 15 is the
   reserved `Extended` escape).
 - `src/Core.CSharp.ZetaId/` and `src/Core.FSharp.ZetaId/` — both already **lag**
-  `InventoryAsset = 10` (noted in `model-backend/multiplexed-duplex-transport.ts`),
+  `InventoryAsset = 10` (noted in
+  `src/Core.TypeScript/model-backend/multiplexed-duplex-transport.ts`),
   so this backfills two oracles before it adds one value.
 - `src/Core.Rust.ZetaId/` — same.
-- `zeta-id/cross-verify.ts` + the golden vectors — a new category is a new
+- `src/Core.TypeScript/zeta-id/cross-verify.ts` + the golden vectors — a new category is a new
   vector in every oracle, or the byte-lock does not cover it.
 
 ## Falsifier for "done"

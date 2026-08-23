@@ -43,7 +43,8 @@ is the one just fixed: a 404 that reads as "unmeasurable" long after it started 
 "unpullable".
 
 The chart-side guard has to be disabled to use it at all
-(`global.security.allowInsecureImages: true` in `redis/Application.yaml`), which is the
+(`global.security.allowInsecureImages: true` in
+`full-ai-cluster/k8s/applications/redis/Application.yaml`), which is the
 chart telling us the same thing in its own voice.
 
 ## The routes, none of which is a lookup
@@ -53,9 +54,10 @@ chart telling us the same thing in its own voice.
   so a maintained redis image is already in this tree.
 - **gitlab** — the production-documented path is external PostgreSQL and Redis
   (`global.psql.host` / `global.redis.host`), which deletes both bundled subcharts and all
-  four pins with them. `forgejo/Application.yaml` already took the equivalent decision for
-  itself and recorded it.
-- **kubectl** (`hat-system/gatekeeper-crd-wait.yaml`) — `registry.k8s.io/kubectl:v1.32.3`
+  four pins with them. `full-ai-cluster/k8s/applications/forgejo/Application.yaml` already
+  took the equivalent decision for itself and recorded it.
+- **kubectl** (`full-ai-cluster/k8s/applications/hat-system/gatekeeper-crd-wait.yaml`) —
+  `registry.k8s.io/kubectl:v1.32.3`
   is upstream-maintained and 18,750,205 bytes against Bitnami's 111,998,161, but its config
   reads `ENTRYPOINT ["/bin/kubectl"]` on the distroless `go-runner` base: **no shell.** The
   Job's `/bin/bash -ec` script has to be rewritten shell-free first. That rewrite is the

@@ -59,15 +59,16 @@ into a 211-line one, which is what an unenforced formatter costs the first time 
 A check that cannot fail is not a check — and this one is worse, because it **announces** three
 passes for one run. It is the same shape as the TLA+ lane's `--check-toolchain` reporting success
 for a `tlapm` that then exits 127, and the same shape as an Adopt ring over a dark lane. An
-unenforced guarantee reads as a guarantee (see
-`feedback_vacuous_claims_and_unimplemented_exceptions_are_the_biggest_obstacle_to_human_ai_trust_aaron.md`).
+unenforced guarantee reads as a guarantee (the prior feedback summarized this as "vacuous claims
+and unimplemented exceptions are the biggest obstacle to human-AI trust").
 
 ## Done when — in this order, and step 1 is the whole point
 
 1. **The message stops lying, immediately and cheaply**: it says what actually ran. Truthful is
    available today; enforcement is not. Do NOT bundle this with step 2.
 2. eslint / prettier / stylelint are each either **added to `STEPS`** (with a baseline or a
-   cleanup pass, `AUDIT-LIFECYCLE.md` step 5 — a repo-wide `prettier --check` will be loud on
+   cleanup pass, `src/Core.TypeScript/hygiene/AUDIT-LIFECYCLE.md` step 5 — a repo-wide
+   `prettier --check` will be loud on
    first landing) or **explicitly removed** from the header and the message with a written reason.
 
 Either resolution is honest. The current state is the only one that is not.

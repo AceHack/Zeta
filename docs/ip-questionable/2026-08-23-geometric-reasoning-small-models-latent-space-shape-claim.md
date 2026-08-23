@@ -675,6 +675,7 @@ The parameter figure is his; the two corrections are the shadow's.
 Correct, and the disclaimer is to his credit. The anchors, since the interview names none:
 
 **Checked this session:**
+
 - **A. d'Avila Garcez & L. C. Lamb**, *Neurosymbolic AI: The 3rd Wave* — arXiv:2012.05876 (2020);
   *Artificial Intelligence Review* (2023). The standard modern survey.
 - **Henry Kautz**, the six-type neurosymbolic taxonomy — AAAI 2020 Robert S. Engelmore Memorial
@@ -682,6 +683,7 @@ Correct, and the disclaimer is to his credit. The anchors, since the interview n
 
 **Named from the standard lineage, not independently re-checked in this session** (flagged so the
 distinction between a checked anchor and a recalled one stays visible):
+
 - **W. McCulloch & W. Pitts** (1943) — the original logic-in-neurons root.
 - **J. Fodor & Z. Pylyshyn** (1988) — the systematicity critique connectionism has been answering ever since.
 - **P. Smolensky** — Tensor Product Representations (1990); structure encoded in vector space, which
