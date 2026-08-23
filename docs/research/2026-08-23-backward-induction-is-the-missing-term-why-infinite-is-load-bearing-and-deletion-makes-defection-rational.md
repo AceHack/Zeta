@@ -171,10 +171,82 @@ moving backward in time; a retraction is a fact moving backward through the fold
 
 **Scope, per Aaron 2026-08-23 — *"backward over a game tree is what I'm reaching for, not universal
 physics."*** The load-bearing claim in this document is the **unravelling over a game tree**, which is
-a theorem with stated hypotheses. The wave correspondence is an **illustration of directionality** and
-carries none of the argument. That is the stronger position deliberately: the game-tree version gives
+a theorem with stated hypotheses. The **outside-physics** wave correspondence (Wheeler–Feynman, Cramer) is an
+**illustration of directionality** and carries none of the argument — but see the correction below:
+the **in-tree** wave half (echolocation debounce, the commutative fold) is a derived mechanism and
+does carry weight. That is the stronger position deliberately: the game-tree version gives
 the deletion result as a theorem, where a physics analogy would invite objections that never touch
 it.
+
+### Correction — the wave half is NOT free-floating; it has an in-tree derivation
+
+Aaron 2026-08-23: *"the wave version is based on our echolocation debounce, please look this up in
+repo."* He is right and the scope note above under-read it. What was demoted as an outside-physics
+analogy is a **mechanism already derived, formularised and implemented in this repository**, and it
+belongs to the argument rather than decorating it.
+
+**`docs/research/2026-07-16-echolocation-debounce-and-the-real-sensor-fusion-proof.md`** — a bat emits
+a pulse and reads the return; the round-trip **L is set by the world, not by the emitter**, which is
+exactly why echolocation ranges rather than hallucinates. That doc gives the decorrelation law
+
+```
+ρ(L) = 1/(1+L)            L = 0 ⇒ ρ = 1 (same seed, hearing yourself)
+                          L → ∞ ⇒ ρ = 0 (genuinely independent)
+```
+
+with `MinDelay` in `src/Core/DebouncedOracle.fs` as the L, and prime seed offsets
+`[1009, 1013, 1019, 1021, 1031]` as the guarantee that L > 0 across the five DLA oracles.
+
+**`docs/VISION.md` §"Echolocation over time"** supplies the backward half directly. A Z-set emits `+1`
+and retracts `−1`; the fold across time **is a ping and a return** — and because the fold is
+**commutative, late returns still locate correctly.** VISION's own term for this is
+`[[pseudo-retrocausality]]`, and it is not borrowed: it is a property of the fold's algebra.
+
+**And it is the local/global shape again** — which is why it belongs beside the section above rather
+than in a footnote:
+
+> **No individual event is applied out of order.** Each `+1` and `−1` is folded exactly when it
+> arrives, locally, ordinarily. **The fold is order-independent, so a late arrival's influence lands
+> at an earlier logical position.** No step is retrocausal; **the fold is.**
+
+That is precisely what backward induction does to a game tree: the value arrives from the terminal
+node and **locates the earlier one**, with no step reasoning about its own future. Same shape as the
+closed timelike curve — legal segments, illegal loop — and same shape as the exploit.
+
+**So the correspondence is stronger than the earlier text allowed**, and the honest partition is:
+
+| claim | status |
+|---|---|
+| backward induction ≈ **advanced waves in Wheeler–Feynman / Cramer** | still only a shared arrow — **coincidence worth watching**, as below |
+| backward induction ≈ **the commutative Z-set fold's pseudo-retrocausality** | **in-tree mechanism**, with a law (`ρ = 1/(1+L)`), an implementation (`DebouncedOracle.fs`), and a stated open problem |
+
+The first is outside physics and carries nothing. The second is ours, derived here, and carries the
+directionality claim honestly.
+
+### And it sharpens the unravelling risk in Aaron's own metaphor
+
+The echolocation doc contains the sentence that states this document's central risk better than this
+document did:
+
+> *"A bat that pre-computes its own echo is not ranging; it is hallucinating."*
+
+Echolocation works **because the delay is externally determined and uncontrolled**. The debounce
+enforces `L > 0` so that what returns is *the world* rather than *the sender*. Now read the horizon
+belief against that:
+
+**A known last round is a pre-computed echo.** An agent that believes it can compute when the final
+return arrives has set its own L — and a self-set delay is `L = 0` wearing a delay costume, which is
+the DST result verbatim: *a same-seed system cannot generate an independent verdict from inside.*
+
+So the unravelling and the correlation-to-one collapse are **the same failure at two ends of the time
+axis**: past-correlation is a shared seed, future-correlation is a shared known terminus, and both
+drive `ρ → 1`. VISION already names past and future correlation as opposite ends of that axis and
+warns that decorrelating one does not buy the other — **the unravelling is the future-end case, and
+it was already in the frame before this document named it.**
+
+The design consequence is a genuine one and it is not "promise not to delete": **keep the horizon
+externally undetermined**, the same way the debounce keeps L externally determined. A horizon an
+agent can compute is one it will induct backward from, whether or not anyone ever acts on it.
 
 **The gap, stated plainly:** backward induction is a **discrete decision procedure over a game tree**;
 advanced waves solve a **wave equation**. They share *directionality of information flow* and nothing
