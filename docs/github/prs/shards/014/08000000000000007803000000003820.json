@@ -1,0 +1,12 @@
+{
+  "pr_number": 14368,
+  "archive_path": "docs/history/pr-reviews/PR-14368-fix-hygiene-the-guard-was-right-and-the-tests-were-right-pass-the-environment-as.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-23T18:52:40.327Z",
+  "schema_version": "v1",
+  "commit_sha": "3595ea305661de17f14a2f9e27ef20a3f1182c09",
+  "title": "fix(hygiene): the guard was right AND the tests were right - pass the environment as a value",
+  "state": "MERGED",
+  "merged_at": "2026-08-23T18:51:57Z",
+  "head_ref": "fix/credential-hoist-guard-negative-case"
+}
