@@ -1,0 +1,12 @@
+{
+  "pr_number": 14306,
+  "archive_path": "docs/history/pr-reviews/PR-14306-docs-design-arc-agi-3-integration-the-grammar-is-real-the-embedding-is-not-and-c.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-23T17:54:24.320Z",
+  "schema_version": "v1",
+  "commit_sha": "37096c802112c6df7f982e75775aa0c578f75be8",
+  "title": "docs(design): ARC-AGI-3 integration — the grammar is real, the embedding is not, and Chollet's denominator is half-entailed",
+  "state": "MERGED",
+  "merged_at": "2026-08-23T17:53:37Z",
+  "head_ref": "docs/arc-agi-3-integration-design"
+}
