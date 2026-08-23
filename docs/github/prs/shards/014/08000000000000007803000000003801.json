@@ -1,0 +1,12 @@
+{
+  "pr_number": 14337,
+  "archive_path": "docs/history/pr-reviews/PR-14337-fix-twitch-ai-collision.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-23T18:37:13.354Z",
+  "schema_version": "v1",
+  "commit_sha": "9714d7ffa626a00f1ae25ddbac97e15f89201930",
+  "title": "fix/twitch ai collision",
+  "state": "MERGED",
+  "merged_at": "2026-08-23T18:36:23Z",
+  "head_ref": "fix/twitch-ai-collision"
+}
