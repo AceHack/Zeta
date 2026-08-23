@@ -1,0 +1,12 @@
+{
+  "pr_number": 14304,
+  "archive_path": "docs/history/pr-reviews/PR-14304-fix-cluster-node-op-never-resolved-outside-the-checkout-the-comment-said-shims-t.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-23T17:27:51.861Z",
+  "schema_version": "v1",
+  "commit_sha": "2627ef96d2148eab6df492fcf372e5bb2824f6be",
+  "title": "fix(cluster-node): `op` never resolved outside the checkout — the comment said shims, the code said otherwise",
+  "state": "MERGED",
+  "merged_at": "2026-08-23T17:27:10Z",
+  "head_ref": "fix/mise-tools-resolve-globally"
+}
