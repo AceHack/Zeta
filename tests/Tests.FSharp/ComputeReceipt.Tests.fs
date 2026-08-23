@@ -104,10 +104,10 @@ let ``CR-5 Entropy equals Shannon entropy of posterior`` () =
 [<Fact>]
 let ``CR-6 compute returns None for empty prior`` () =
     let valid = uniform2 0L 1L
-    // `ofWeighted` refuses to build this; the record constructor does not. The guard
-    // exists for values that arrive by any route, so the test uses the route that
+    // `ofWeighted` refuses to build this; `unnormalized` is the named route that does not.
+    // The guard exists for values that arrive by any route, so the test uses the route that
     // actually produces one.
-    let empty : SoftValue.SoftValue = { Candidates = [] }
+    let empty : SoftValue.SoftValue = SoftValue.unnormalized []
     Assert.True((SoftValue.ofWeighted []).IsNone, "precondition: ofWeighted still refuses the empty list")
     Assert.Equal(None, CR.compute empty valid 10 100L)
 
@@ -115,7 +115,7 @@ let ``CR-6 compute returns None for empty prior`` () =
 [<Fact>]
 let ``CR-7 compute returns None for empty posterior`` () =
     let valid = uniform2 0L 1L
-    let empty : SoftValue.SoftValue = { Candidates = [] }
+    let empty : SoftValue.SoftValue = SoftValue.unnormalized []
     Assert.Equal(None, CR.compute valid empty 10 100L)
 
 // ── CR-6b/CR-7b: the guard is not vacuous — a NON-empty pair does produce a receipt.

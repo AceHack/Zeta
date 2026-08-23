@@ -427,6 +427,8 @@
     <Compile Include="Protobuf.Swap.Tests.fs" />
     <Compile Include="SoftValue.Tests.fs" />
     <Compile Include="SoftValue.CrossVerify.Tests.fs" />
+    <Compile Include="SoftValueWidening.Tests.fs" />
+    <Compile Include="SoftValueWeightedSet.Tests.fs" />
     <Compile Include="TravelerFrame.Tests.fs" />
     <Compile Include="DecorrelationMetrology.Tests.fs" />
     <Compile Include="DecorrelationMeter.Tests.fs" />

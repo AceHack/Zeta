@@ -241,7 +241,7 @@ let ``at quiescence every cell is parked`` () =
 
 // A two-candidate distribution: "A" at 0.6, "B" at 0.4 (confidence = 0.6).
 let private twoWay : SoftValue.SoftValue =
-    { Candidates = [ DynamicValue.String "A", 0.6; DynamicValue.String "B", 0.4 ] }
+    SoftValue.unnormalized [ DynamicValue.String "A", 0.6; DynamicValue.String "B", 0.4 ]
 
 // A pure soft step that adopts the input distribution and emits nothing — enough
 // to show scheduling preserves the distribution (no premature collapse).
@@ -300,7 +300,7 @@ let ``softStep refuses to emit below threshold (holds)`` () =
             [ CellScheduler.OutboxKey,
               DynamicValue.Array [ DynamicValue.Array [ DynamicValue.String "b"; DynamicValue.Int 1L ] ] ]
     let input : SoftValue.SoftValue =
-        { Candidates = [ obj, 0.6; DynamicValue.Null, 0.4 ] }
+        SoftValue.unnormalized [ obj, 0.6; DynamicValue.Null, 0.4 ]
     let state, emitted = step (SoftValue.certain DynamicValue.Null) input
     Assert.Empty(emitted)                                   // refused to collapse
     Assert.Equal(2, List.length state.Candidates)          // but state stays soft, intact

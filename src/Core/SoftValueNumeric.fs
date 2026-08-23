@@ -13,8 +13,17 @@ namespace Zeta.Core
 /// - `Sat` — **shader-lowerable**: total, candidates that go out-of-domain become `Float NaN` and propagate;
 ///   the distribution is always returned.
 ///
-/// `SoftValue` is effectively a `WeightedSet<DynamicValue, float>` over the probability semiring; this is its
-/// arithmetic. Anchors: probability monad / distribution semiring (Giry monad), `DynamicValueNumeric` (the
+/// `SoftValue` **is** a `WeightedSet<CandidateKey, float>` over the local float ring (as of
+/// 2026-08-23) — this line used to say "effectively", which was the gap: `SoftValue` was an
+/// association list and `WeightedSet` needs `'K : comparison`, which `DynamicValue` (declared
+/// `NoComparison`) does not have. `src/Core/CandidateKey.fs` supplies the missing order and
+/// `src/Core/SoftValue.fs` is now the genuine instance. This module is its arithmetic.
+///
+/// The weight is `float` because a posterior here is LOCAL. It cannot reach shared state:
+/// `WeightedSetWire` demands a `WireWeight<'W>` and there is no `WireWeight<float>`
+/// (`src/Core/WireWeight.fs`); `SoftValue.toExact` / `SoftValue.toWire` are the named crossing.
+///
+/// Anchors: probability monad / distribution semiring (Giry monad), `DynamicValueNumeric` (the
 /// per-candidate leaf op), `ProbabilitySemiring`.
 [<RequireQualifiedAccess>]
 module SoftValueNumeric =

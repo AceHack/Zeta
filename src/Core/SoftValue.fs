@@ -1,7 +1,5 @@
 namespace Zeta.Core
 
-open System.Collections.Generic
-
 /// **SoftValue — the value-axis "soft" DynamicValue seed (calibrated / probabilistic).**
 ///
 /// A normalized distribution over candidate `DynamicValue`s. The safety property is NOT
@@ -24,42 +22,85 @@ open System.Collections.Generic
 [<RequireQualifiedAccess>]
 module SoftValue =
 
+    /// **The distribution IS a `WeightedSet` now, not "effectively" one.**
+    ///
+    /// Held as `WeightedSet<CandidateKey, float>` over `LocalFloatRing` — the semiring-generic
+    /// sparse tensor in `src/Core/WeightedSet.fs`, whose `add`/`scale`/`weight`/`inner` this
+    /// module now calls instead of re-implementing them over an association list. The key wrapper
+    /// exists because `WeightedSet` needs `'K : comparison` and `DynamicValue` is `NoComparison`
+    /// (see `src/Core/CandidateKey.fs`); that constraint, not inattention, is why the old comment
+    /// in `SoftValueNumeric.fs` said "effectively" and stopped there.
+    ///
+    /// The weight is `float` **on purpose**: this is a LOCAL posterior. It has no `WireWeight`
+    /// (`src/Core/WireWeight.fs`), so it cannot be encoded into shared state; `toExact` below is
+    /// the one exit, and it is explicit about what it rounds.
+    ///
     /// Invariant (maintained by every constructor): non-empty, all weights > 0, weights sum to 1.
-    type SoftValue = { Candidates: (DynamicValue * float) list }
+    /// The representation is private so that invariant cannot be bypassed by building the record
+    /// directly — `Candidates` is the same read surface it always was.
+    [<NoComparison>]
+    type SoftValue =
+        private
+            { Weights: WeightedSet.WeightedSet<CandidateKey, float> }
+
+        /// The candidate distribution (normalized, sums to 1), in **ordinal candidate order**.
+        ///
+        /// ⚠ CHANGED: this used to be first-seen (arrival) order. A `WeightedSet` is a `Map`, so
+        /// the order is now a property of the value rather than of how it was assembled. Reported,
+        /// not buried — and it is the direction the rest of the fleet already went: the C#, TS and
+        /// Rust `SoftValue` oracles all break `resolve` ties by ascending key, which the old F#
+        /// `List.maxBy` (first maximum in arrival order) did not.
+        member this.Candidates: (DynamicValue * float) list =
+            this.Weights |> WeightedSet.toSeq |> Seq.map (fun (k, w) -> k.Value, w) |> List.ofSeq
 
     [<Literal>]
     let private EPS = 1e-12
 
-    /// Merge equal candidates (first-seen order), drop non-positive weights, normalize.
+    /// The weight ring. `float`, local, and with no `WireWeight` — the boundary in one line.
+    let private R = LocalFloatRing.Instance
+
+    /// Merge equal candidates, drop non-positive weights, normalize.
     /// `None` if nothing positive remains (empty or total ≈ 0) — no fabricated certainty.
+    ///
+    /// Merging is now `WeightedSet.ofSeq` (duplicate coordinates combine via ⊕) and normalizing is
+    /// `WeightedSet.scale`. The total is summed over the MERGED tensor in ordinal order rather
+    /// than over the raw input in arrival order — same value in exact arithmetic, and the ordinal
+    /// one is the reproducible one when the weights are floats.
     let private build (xs: (DynamicValue * float) list) : SoftValue option =
-        let positions = Dictionary<DynamicValue, int>()
-        let merged = ResizeArray<DynamicValue * float>()
-        let mutable total = 0.0
+        let merged =
+            xs
+            |> Seq.filter (fun (_, w) -> w > 0.0)
+            |> Seq.map (fun (d, w) -> CandidateKey d, w)
+            |> WeightedSet.ofSeq R
 
-        for d, w in xs do
-            if w > 0.0 then
-                total <- total + w
-                match positions.TryGetValue d with
-                | true, i ->
-                    let existing, existingWeight = merged.[i]
-                    merged.[i] <- existing, existingWeight + w
-                | false, _ ->
-                    positions.Add(d, merged.Count)
-                    merged.Add(d, w)
+        let total = merged |> WeightedSet.toSeq |> Seq.sumBy snd
 
-        if merged.Count = 0 || total <= EPS then None
+        if WeightedSet.isEmpty merged || total <= EPS then
+            None
         else
-            Some
-                { Candidates =
-                    [ for d, w in merged do
-                          d, w / total ] }
+            Some { Weights = WeightedSet.scale R (1.0 / total) merged }
 
     /// A point mass — fully certain at `dv` (confidence 1).
-    let certain (dv: DynamicValue) : SoftValue = { Candidates = [ dv, 1.0 ] }
+    let certain (dv: DynamicValue) : SoftValue =
+        { Weights = WeightedSet.singleton R (CandidateKey dv) 1.0 }
 
     /// Build from weighted candidates (merged + normalized). `None` if no positive weight.
     let ofWeighted (xs: (DynamicValue * float) list) : SoftValue option = build xs
+
+    /// **Build WITHOUT normalizing — the invariant-violating route, named so it cannot be taken
+    /// by accident.**
+    ///
+    /// Before this change the representation was a public record, so `{ Candidates = [] }` built
+    /// an empty (invariant-violating) `SoftValue` silently, and two downstream suites relied on
+    /// exactly that to test their guards — `ComputeReceipt.Tests.fs` CR-6/CR-7 need a value that
+    /// `ofWeighted` refuses to produce, because "the guard exists for values that arrive by any
+    /// route". Sealing the representation without replacing that route would have deleted a
+    /// falsifier, so the route is kept and given a name that states what it is.
+    ///
+    /// Duplicate candidates still merge (that is the tensor, not the invariant); what is skipped
+    /// is normalization and the non-empty check.
+    let unnormalized (xs: (DynamicValue * float) list) : SoftValue =
+        { Weights = xs |> Seq.map (fun (d, w) -> CandidateKey d, w) |> WeightedSet.ofSeq R }
 
     /// **Functor map** — relabel each candidate by `f`, merging collisions; weights preserved.
     /// `SoftValue` is the finite-support distribution (Giry) monad; `certain` is its unit.
@@ -102,10 +143,10 @@ module SoftValue =
         if p >= threshold then Some best else None
 
     /// The weight `sv` assigns to candidate `d` (0 if `d` is absent from the support).
+    /// (Now a direct `WeightedSet.weight` lookup — `O(log n)` instead of the old linear scan,
+    /// and the semiring supplies the `0` rather than this function hardcoding one.)
     let weightOf (d: DynamicValue) (sv: SoftValue) : float =
-        sv.Candidates
-        |> List.tryPick (fun (c, w) -> if c = d then Some w else None)
-        |> Option.defaultValue 0.0
+        WeightedSet.weight R (CandidateKey d) sv.Weights
 
     /// **combine — independent-evidence product of two soft values.** The commutative + associative
     /// monoid that lets a soft fold **banana-split and fuse in uncertainty space** without ever
@@ -189,3 +230,302 @@ module SoftValue =
             let sd', sd = scores d', scores d
             List.forall2 (>=) sd' sd && List.exists2 (>) sd' sd
         cands |> List.filter (fun d -> not (cands |> List.exists (fun d' -> d' <> d && dominates d' d)))
+
+    // ══════════════════════════════════════════════════════════════════════════
+    // WIDENING — re-opening a posterior under a non-stationary source
+    // ══════════════════════════════════════════════════════════════════════════
+    //
+    // `observe` sharpens monotonically: posterior ∝ prior · L, and a growing set of
+    // consistent evidence concentrates without bound. Under a source that DRIFTS, the
+    // belief therefore locks onto stale evidence and cannot re-open. Sivak/Morvan et al.,
+    // "Reinforcement learning control of quantum error correction", Nature 655, 879–884
+    // (2026), hit the same wall on the policy axis and answer it with a variance floor:
+    // "σ(t)² maintains finite spread to never cease exploring."
+    //
+    // There are TWO ways to re-open a Bayesian posterior, and they are NOT interchangeable —
+    // one of them is safe in the shared fold and one of them is not.
+    //
+    //   (A) WIDEN THE BELIEF     — `widen` below. Untargeted: "everything I know is less
+    //                              reliable now", with no culprit named. State-dependent
+    //                              (it reads the belief it transforms), and therefore it
+    //                              does **NOT** commute with `observe` — the same boundary
+    //                              `BeliefConvergence.sharpen` is documented to mark, of
+    //                              which `widen` is the exact mirror image (sharpen pushes
+    //                              mass toward the peak; widen pushes it toward uniform).
+    //                              LOCAL-DECISION / FOLD-BOUNDARY USE ONLY.
+    //
+    //   (B) RETRACT THE EVIDENCE — `foldRetained` below. Targeted: it names *which*
+    //                              observations are discounted, and the posterior is a fold
+    //                              over the surviving evidence SET. Because a fold over a set
+    //                              is order-independent and `observe` commutes, **(B) commutes
+    //                              by construction, with widening enabled**. It is also the
+    //                              raw-vault-honest form: the discount is a recorded
+    //                              retraction, not an opaque flattening that erases what it
+    //                              discounted.
+    //
+    // (B) is the load-bearing operator; (A) is shipped and labelled to mark the boundary,
+    // exactly as `sharpen` is.
+    //
+    // Anchors (checked, not merely cited):
+    //   • Covariance inflation, ensemble Kalman filtering — Anderson & Anderson, Mon. Wea.
+    //     Rev. 127 (1999). The classical analogue of (A), and the vocabulary preferred here
+    //     ("inflation" / "widening", not "noise"). Their multiplicative inflation P ← (1+δ)P
+    //     is the *increment* form; the floor form below is chosen instead because increment
+    //     inflation is not idempotent and so is unsafe under DST replay and retry.
+    //   • Forgetting factor in recursive least squares (exponential down-weighting of old
+    //     evidence) — this is (B) with a geometric schedule, and is why the schedule below is
+    //     pluggable rather than hardwired to a hard window.
+    //   • Tempering / power posteriors (p ∝ p^β, β<1) — REJECTED as the primitive: p^β is
+    //     irrational for rational p, so it cannot ride the exact-ℚ `RationalRing` weights and
+    //     would put floats in the byte-lock lineage. The integer multiplicity used by (B)
+    //     keeps the whole schedule exact.
+    //   • Entropy regularization (Haarnoja et al., SAC) — the paper's own route. Rejected as
+    //     the primitive for the same reason (A) is not the load-bearing operator: it is a
+    //     belief-reading penalty and does not commute with the evidence fold.
+    //
+    // NO WALL CLOCK ANYWHERE IN HERE. Staleness is measured in agreed PHASE (logical order
+    // carried in the evidence itself), never in elapsed local time
+    // (`.claude/rules/local-time-never-enters-the-shared-fold.md`). See `Phase` below.
+
+    /// The **uniform share** of `sv`: the largest `t ∈ [0,1]` such that `sv` can be written
+    /// `(1-t)·q + t·uniform` for some distribution `q`. Equals `n · min pᵢ`. This is the
+    /// coordinate `widen` floors — the value-axis analogue of the paper's `σ²`.
+    /// `0` iff some candidate has zero mass; `1` iff `sv` is exactly uniform.
+    let uniformShare (sv: SoftValue) : float =
+        let n = List.length sv.Candidates
+        float n * (sv.Candidates |> List.map snd |> List.min)
+
+    /// **widen — the idempotent uniform-share FLOOR (belief axis).**
+    ///
+    /// `uniformShare ← max(uniformShare, lambda)`: if the belief already carries at least
+    /// `lambda` of uniform mass it is returned UNCHANGED; otherwise its pure part is remixed
+    /// with the uniform distribution to bring the share up to exactly `lambda`. Floor, not
+    /// increment — so **applying it twice equals applying it once** (`uniformShare` of the
+    /// result is exactly `lambda`, which then satisfies the guard). An increment form
+    /// (`p ← (1-λ)p + λu` unconditionally, i.e. classical multiplicative inflation) widens
+    /// again on every application and would make DST replay and retry unsafe; that is the
+    /// whole reason for the floor formulation.
+    ///
+    /// Every candidate in the support ends with mass ≥ `lambda/n > 0`, so no candidate is
+    /// ever refuted by widening — widening only ever *restores* optionality, never destroys it.
+    ///
+    /// **`lambda` is a POLICY PARAMETER, deliberately with no default.** No floor constant is
+    /// invented here: the honest value depends on how fast the caller's source drifts, and
+    /// inventing one would be an unearned number (and `YinYangEnsemble.tsirelsonThreshold`
+    /// is `toy` by its own source comment — it is emphatically NOT reused as a floor).
+    /// Register: the OPERATOR is metered (its falsifiers are in `SoftValueWidening.Tests.fs`);
+    /// any particular `lambda` a caller picks is `unmetered` until that caller meters it.
+    ///
+    /// ⚠ **State-dependent: does NOT commute with `observe`.** `widen` reads the belief it
+    /// transforms, so interleaving it with `observe` is order-dependent and two nodes that
+    /// interleave differently WILL diverge. This is the same boundary
+    /// `BeliefConvergence.sharpen` is documented to mark. Use it for LOCAL decisions, or once
+    /// at the fold boundary (`widen λ (fold …)` is order-independent because the fold under
+    /// it is). For re-opening inside a shared fold use `foldRetained`, which commutes.
+    let widen (lambda: float) (sv: SoftValue) : SoftValue =
+        let n = List.length sv.Candidates
+        if n <= 1 || lambda <= 0.0 then sv
+        else
+            let lambda = min lambda 1.0
+            let t = uniformShare sv
+            if t >= lambda then sv
+            else
+                let u = 1.0 / float n
+                let a = (1.0 - lambda) / (1.0 - t)
+                { Weights =
+                    sv.Candidates
+                    |> Seq.map (fun (d, p) -> CandidateKey d, a * (p - t * u) + lambda * u)
+                    |> WeightedSet.ofSeq R }
+
+    // ── (B) Widening as RETRACTION — the commutative route ──
+    //
+    // Aaron 2026-08-23: *"our zsets -1 should be able to retract stale priors … seems like we
+    // could tie these together too."* They do tie together, and the tie is not a convenience —
+    // it is the ONLY formulation that re-opens a posterior without breaking the commutative
+    // fold, because it changes the evidence SET rather than reading the belief.
+    //
+    // MEASURED (2026-08-23), because the whole shape depended on it:
+    //   • `Weight` is `int64` (`src/Core/Algebra.fs`), and `ZSet<'K>` — the hot path — is
+    //     therefore ℤ. A *fractional* retraction (`-0.1`) is NOT expressible there.
+    //   • `ZSetW<'K,'W>` — the generic core — IS ring-generic over `IRing<'W>`, and `IRing`
+    //     carries `Negate`; `ZSetW.negate` / `.difference` are exactly retraction.
+    //   • `ProbabilitySemiring.RationalRing` already implements `IRing<Rational>` over an
+    //     EXACT ℚ. So fractional retraction IS available today, exactly, with no floats —
+    //     the ring generalisation the value axis would need was already built and wired.
+    //
+    // …and then it turned out not to be needed at all, which is the better outcome. A
+    // retention schedule expressed as an integer MULTIPLICITY (evidence counted m times ⇒
+    // likelihood Lᵐ) gives graded forgetting in ℤ, and dropping m from k to 0 is literally
+    // the `-1` retraction. So:
+    //   • no fixed-point rescale of shared `ZSet` weights (which would have rewritten
+    //     committed golden vectors across all four oracles for no gain),
+    //   • no exposure to the `int64` saturation the consolidate path warns about
+    //     (multiplicities are small and bounded by `MAX_MULTIPLICITY` below),
+    //   • ℚ weights remain available if a continuous schedule is ever wanted.
+    // The multiplicity lives inside `SoftValue`'s own fold — smallest blast radius, same result.
+
+    /// **Agreed phase** — a logical sequence position carried BY the evidence, agreed across
+    /// nodes. This is the ONLY ordering coordinate the fold is allowed to see.
+    ///
+    /// This is NOT a new notion of time: it is the phase of the existing phase clock
+    /// (`src/Core.TypeScript/observe/phase-clock.ts` — a monotone logical counter with HLC
+    /// merge `max(local, peer) + 1`, so peers converge on a shared phase across skew without
+    /// any wall clock; Lean semantics in `src/Core.Lean4/ImaginaryStack/PhaseClockErasure.lean`).
+    /// That clock's own `wallClockAt` field is documented as "human readability only — NOT the
+    /// semantics", which is exactly the discipline this operator inherits. Phase ranges are
+    /// already the windowing coordinate elsewhere in the fleet (`observe/attestation-event.ts`
+    /// windows are phase ranges), so a phase-keyed retention window is the established shape,
+    /// not an invention.
+    ///
+    /// It must never be derived from a timestamp: a discount keyed on elapsed local time makes
+    /// two nodes with different receive-times fold different weights from the same evidence,
+    /// and they diverge permanently
+    /// (`.claude/rules/local-time-never-enters-the-shared-fold.md`).
+    type Phase = int64
+
+    /// One piece of evidence: a likelihood, plus the agreed phase at which it was emitted.
+    type Evidence =
+        { Phase: Phase
+          Likelihood: DynamicValue -> float }
+
+    /// How many times a piece of evidence still counts, given the newest phase present in the
+    /// evidence set: `maxPhase -> phase -> multiplicity`. Multiplicity `m` means the
+    /// likelihood enters the fold `m` times (`Lᵐ`) — i.e. it is the evidence's Z-set weight,
+    /// and lowering it is a retraction. `0` is full retraction.
+    ///
+    /// A schedule is a pure function of (agreed phase, agreed phase) — it CANNOT read a clock,
+    /// and it cannot read arrival order, which is what keeps `foldRetained` commutative.
+    type RetentionSchedule = Phase -> Phase -> int
+
+    /// Upper bound on a single piece of evidence's multiplicity. A schedule is caller-supplied,
+    /// so an unbounded multiplicity would be an unbounded fold (and, if these multiplicities
+    /// were ever pushed into shared `ZSet` weights, a route to the `int64` saturation
+    /// `ZSet.consolidateSorted` guards with `Checked.(+)`). Clamped, never trusted.
+    [<Literal>]
+    let MAX_MULTIPLICITY = 1024
+
+    /// The default schedule: a hard window of `horizon` phases back from the newest evidence.
+    /// Multiplicity 1 inside the window, 0 (fully retracted) outside. `horizon <= 0` retains
+    /// NOTHING (every piece of evidence is retracted, leaving the prior untouched) — pass `>= 1`.
+    ///
+    /// `horizon` is a POLICY PARAMETER with no default, for the same reason `lambda` is.
+    let window (horizon: int64) : RetentionSchedule =
+        fun maxPhase phase -> if horizon > 0L && maxPhase - phase < horizon then 1 else 0
+
+    /// The evidence a schedule still retains (multiplicity > 0). **Idempotent** for any
+    /// schedule that retains the newest phase: filtering does not change `maxPhase` (the
+    /// newest element always survives, since `maxPhase - maxPhase = 0`), so re-filtering
+    /// selects the same set. This is "retract TO a target multiplicity", not "retract BY a
+    /// fraction" — the same discipline that makes `widen` a floor rather than an increment.
+    let retain (schedule: RetentionSchedule) (evidence: Evidence list) : Evidence list =
+        match evidence with
+        | [] -> []
+        | _ ->
+            let maxPhase = evidence |> List.map (fun e -> e.Phase) |> List.max
+            evidence |> List.filter (fun e -> schedule maxPhase e.Phase > 0)
+
+    /// **foldRetained — the commutative widening operator.**
+    ///
+    /// Folds `evidence` into `prior` with each piece weighted by its retention multiplicity.
+    /// Stale evidence is RETRACTED (multiplicity 0) rather than the belief being flattened, so:
+    ///
+    ///   • the posterior **re-opens** under a drifting source (the falsifier: remove the
+    ///     schedule and it stays locked on the stale peak);
+    ///   • **commutativity is preserved** — the result is a function of the evidence SET and
+    ///     the phases carried in it, never of arrival order, so two nodes that receive the
+    ///     same evidence in different orders reach the same posterior;
+    ///   • a **stationary** source still converges fully inside the window rather than
+    ///     jittering forever at a floor — which is where this dominates `widen`, whose floor
+    ///     permanently caps confidence at `1 - lambda + lambda/n`.
+    ///
+    /// `None` on contradiction (every candidate refuted), the same honesty as `observe`.
+    let foldRetained
+        (schedule: RetentionSchedule)
+        (evidence: Evidence list)
+        (prior: SoftValue)
+        : SoftValue option =
+        match evidence with
+        | [] -> Some prior
+        | _ ->
+            let maxPhase = evidence |> List.map (fun e -> e.Phase) |> List.max
+            let rec applyN (lik: DynamicValue -> float) n acc =
+                if n <= 0 then acc
+                else applyN lik (n - 1) (acc |> Option.bind (observe lik))
+            evidence
+            |> List.fold
+                (fun acc e ->
+                    let m = min (schedule maxPhase e.Phase) MAX_MULTIPLICITY
+                    applyN e.Likelihood m acc)
+                (Some prior)
+
+    // ══════════════════════════════════════════════════════════════════════════
+    // THE FLOAT / EXACT BOUNDARY — the one sanctioned exit to shared state
+    // ══════════════════════════════════════════════════════════════════════════
+    //
+    // Everything above is float and LOCAL. A `SoftValue` therefore cannot be encoded for the
+    // wire: `WeightedSetWire.toDynamicValue` demands a `WireWeight<'W>`, and `WireWeight<float>`
+    // does not exist (`src/Core/WireWeight.fs`). The crossing has to be an explicit, lossy,
+    // NAMED projection — which is the point. A silent float→wire path is how "floating point
+    // errors become the cause of cross machine communication corruptions."
+
+    /// Why a `SoftValue` could not be projected onto exact weights. Data, never thrown.
+    [<RequireQualifiedAccess>]
+    type ExactError =
+        /// The denominator must be in `[1, 1_000_000_000]`. Above that, products of two
+        /// numerators can exceed `int64` inside `ProbabilitySemiring.rat`, which does not check
+        /// for overflow — an exact ring that silently wraps is worse than an honest float.
+        | DenominatorOutOfRange
+        /// The projected tensor could not be canonically encoded (a candidate whose
+        /// `DynamicValue` has no canonical CBOR form). Surfaced, never thrown.
+        | NotEncodable of EncodeError
+
+    /// **toExact — project the local float posterior onto exact ℚ with a stated denominator.**
+    ///
+    /// Each candidate's weight becomes `nᵢ / denominator` with `nᵢ = round(pᵢ · denominator)`
+    /// (banker's rounding, so the rounding itself is not biased). The residual from rounding is
+    /// then assigned to the largest-weight candidate — ties broken by ordinal candidate order —
+    /// so the projected weights sum to **exactly** `1`, which the floats never quite did.
+    ///
+    /// This is deliberately NOT an exact re-encoding of the float. An exact one is available
+    /// (every finite double IS a rational) and is the wrong choice here: `0.3` is
+    /// `5404319552844595 / 18014398509481984`, and multiplying two such weights overflows `int64`
+    /// on the first step. Bounded denominator, stated in the signature, is the honest version.
+    /// The unbounded version needs a `bigint` rational — which the TypeScript sibling
+    /// `src/Core.TypeScript/algebra/exact-weight.ts` already has, and F# does not yet.
+    let toExact
+        (denominator: int64)
+        (sv: SoftValue)
+        : Result<WeightedSet.WeightedSet<CandidateKey, ProbabilitySemiring.Rational>, ExactError> =
+        if denominator < 1L || denominator > 1_000_000_000L then
+            Error ExactError.DenominatorOutOfRange
+        else
+            let d = float denominator
+
+            let rounded =
+                sv.Candidates
+                |> List.map (fun (c, p) -> CandidateKey c, int64 (System.Math.Round(p * d, System.MidpointRounding.ToEven)))
+
+            let residual = denominator - (rounded |> List.sumBy snd)
+
+            // Give the residual to the heaviest candidate; `List.maxBy` over the ordinal-ordered
+            // list takes the FIRST maximum, so ties resolve by candidate order, not by chance.
+            let anchor = rounded |> List.maxBy snd |> fst
+
+            let adjusted =
+                rounded
+                |> List.map (fun (k, n) -> k, (if k = anchor then n + residual else n))
+                |> List.filter (fun (_, n) -> n > 0L)
+                |> List.map (fun (k, n) -> k, ProbabilitySemiring.rat n denominator)
+
+            Ok(WeightedSet.ofSeq ProbabilitySemiring.RationalRing.Instance adjusted)
+
+    /// **toWire — the complete crossing: local float belief → exact ℚ → canonical bytes.**
+    ///
+    /// The only route from a `SoftValue` into shared state, and every step of it is named.
+    let toWire (denominator: int64) (sv: SoftValue) : Result<byte[], ExactError> =
+        match toExact denominator sv with
+        | Error e -> Error e
+        | Ok exact ->
+            match WeightedSetWire.toCanonicalCbor WireWeight.rational (fun (k: CandidateKey) -> k.Value) exact with
+            | Ok bytes -> Ok bytes
+            | Error e -> Error(ExactError.NotEncodable e)

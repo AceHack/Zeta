@@ -72,6 +72,8 @@
     <Compile Include="PatriciaIntMap.fs" />
     <Compile Include="IndexedZSet.fs" />
     <Compile Include="DynamicValue.fs" />
+    <Compile Include="CandidateKey.fs" />
+    <Compile Include="WireWeight.fs" />
     <Compile Include="ValueTreeEnvelope.fs" />
     <Compile Include="Asn1Der.fs" />
     <Compile Include="ValueTreeCodec.fs" />
