@@ -1,0 +1,14 @@
+{
+  "id": "080d0176887c4010a0130008140c6df0",
+  "at": "2026-08-23T13:30:48.072Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M0QD23W7087G0R001Y0SH7W",
+    "type": "task",
+    "title": "Scope a chat/tool-call/coding comparison for the BNN lane with rho(BNN,human) measured beside every score - the math-not-tokens tension is Aaron's call",
+    "slug": "scope-a-chat-tool-call-coding-comparison-for-the-bnn-lane-wi",
+    "priority": "P2",
+    "filename": "081M0QD23W7087G0R001Y0SH7W-scope-a-chat-tool-call-coding-comparison-for-the-bnn-lane-wi.md"
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "id": "080d017688762810a0130008509b49fc",
+  "at": "2026-08-23T13:30:47.877Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M0QD23P3087G0R002NQ8217",
+    "type": "task",
+    "title": "Activation access for a local open-weights model - Ollama is completion-only, PyTorch/nnsight/TransformerLens is the real requirement (blocks activation patching and rotor tests)",
+    "slug": "activation-access-for-a-local-open-weights-model-ollama-is-c",
+    "priority": "P2",
+    "filename": "081M0QD23P3087G0R002NQ8217-activation-access-for-a-local-open-weights-model-ollama-is-c.md"
+  }
+}
