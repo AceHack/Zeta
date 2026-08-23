@@ -42,6 +42,8 @@ The identity space is a bat. Each oracle is a pulse. The debounce window is the 
 
 This is not a metaphor. Diffusion-Limited Aggregation is literally a ranging mechanism: random walkers probe the boundary of the cluster and return a stick/escape verdict. The fractal boundary is the aggregate of all those verdicts. The Tsirelson threshold (1/(3√2) ≈ 0.2357) is the sticking probability — the probability that a probe returns a "world" verdict rather than a "self" verdict.
 
+> **⚠ Provenance caveat (Soraya audit 2026-08-01) — keep this attached wherever the number appears.** `1/(3√2)` is **NOT** the Tsirelson bound. Tsirelson's bound is `S ≤ 2√2 ≈ 2.828` on the CHSH *correlator* (`src/Core/Tsirelson.fs`). `1/(3√2)` is a **design choice**: the image of `S = 2√2` under the *freely chosen* linear map `ρ = S/12` (pinning `ρ* = 1/3 ↔ S = 4`), which makes the Condorcet ρ-regimes and the Bell S-regimes *homoiconically identical*. Chosen for homoiconicity, not derived — see `docs/research/2026-07-04-rho-t-derivation-attempt-it-is-a-design-choice-chosen-for-homoiconicity.md` and the code peel at `src/Bayesian/YinYangEnsemble.fs`. Legitimate as a design threshold; a physical bound it is not.
+
 ---
 
 ## Debounce as the L in ρ = 1/(1+L)
@@ -126,6 +128,10 @@ At L→∞ (human on their own clock): bonus → 1.0. Full independence. The pro
 
 1. **Is the prime-offset debounce sufficient?** The prime offsets guarantee L > 0 in the seed domain. They do not guarantee L > 0 in the fractal-dimension domain — two different seeds could produce the same D_f by coincidence. The formal claim requires showing that the probability of this collision is negligible for the DLA rule with the Tsirelson threshold.
 
-2. **Is the Tsirelson threshold the right sticking probability?** The 1/(3√2) bound is derived from the 4-directional Grover coin on a 2D lattice. The formal proof obligation (Soraya) is to show that this bound is tight — that no other sticking probability produces a lower D_f spread across the five oracles.
+2. **Is the Tsirelson threshold the right sticking probability?** ~~The 1/(3√2) bound is derived from the 4-directional Grover coin on a 2D lattice.~~
+   **Corrected (Soraya, 2026-08-23):** it is not derived from anything — it is the design choice
+   named in the provenance caveat above (`ρ = S/12` applied to `S = 2√2`). The Grover-coin
+   derivation was asserted, never carried out, and the repo's own derivation attempt concluded
+   the number *cannot* be derived. The open question below stands; its premise does not. The formal proof obligation (Soraya) is to show that this bound is tight — that no other sticking probability produces a lower D_f spread across the five oracles.
 
 3. **Is the human reviewer's independence provable?** The DST result says the external delay must be genuinely uncontrolled. A human reviewer who has seen the seed is not independent — they are inside the system. The formal claim requires that the reviewer has not seen the seed before giving their verdict.

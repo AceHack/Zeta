@@ -141,7 +141,14 @@ export function computePlv(seriesA: readonly number[], seriesB: readonly number[
  * parameter r: if r < ρ* = 1/(3√2) ≈ 0.236, the worm is incoherent and
  * its D_f estimate is unreliable.
  */
-const TSIRELSON = 1 / (3 * Math.SQRT2); // ρ* ≈ 0.236
+// ⚠ NAME IS A MISNOMER (Soraya audit, 2026-08-01). `TSIRELSON` is NOT the Tsirelson bound.
+// Tsirelson's bound is S ≤ 2√2 ≈ 2.828 on the CHSH correlator (see src/Core/Tsirelson.fs).
+// There is no Tsirelson bound on a correlation coefficient. 1/(3√2) is ρ*/√2 — the Condorcet
+// limit ρ* = 1/3 pushed through the FREELY CHOSEN linear map ρ = S/12 — a design parameter
+// chosen for homoiconicity, not derived. See
+// docs/research/2026-07-04-rho-t-derivation-attempt-it-is-a-design-choice-chosen-for-homoiconicity.md
+// Here it is used purely as a coherence cutoff on the Kuramoto order parameter. Not physics.
+const TSIRELSON = 1 / (3 * Math.SQRT2); // ρ* ≈ 0.236 — design choice, not a physical bound
 
 export function ivFuse(bnn: OracleResult, worm: OracleResult): { df: number; sigma2: number } {
   const wBnn = 1 / Math.max(bnn.sigma2, 1e-6);

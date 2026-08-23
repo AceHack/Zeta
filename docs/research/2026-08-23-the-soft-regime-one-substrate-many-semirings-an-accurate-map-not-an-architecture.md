@@ -195,6 +195,8 @@ precisely the confusion this document exists to remove.
 
 ### 3f. Amplitude ladder, ensemble, society
 
+> **⚠ Provenance caveat (Soraya audit 2026-08-01) — keep this attached wherever the number appears.** `1/(3√2)` is **NOT** the Tsirelson bound. Tsirelson's bound is `S ≤ 2√2 ≈ 2.828` on the CHSH *correlator* (`src/Core/Tsirelson.fs`). `1/(3√2)` is a **design choice**: the image of `S = 2√2` under the *freely chosen* linear map `ρ = S/12` (pinning `ρ* = 1/3 ↔ S = 4`), which makes the Condorcet ρ-regimes and the Bell S-regimes *homoiconically identical*. Chosen for homoiconicity, not derived — see `docs/research/2026-07-04-rho-t-derivation-attempt-it-is-a-design-choice-chosen-for-homoiconicity.md` and the code peel at `src/Bayesian/YinYangEnsemble.fs`. Legitimate as a design threshold; a physical bound it is not.
+
 | part | path | register | what is actually true |
 |---|---|---|---|
 | Cayley–Dickson ladder | `src/Core/CayleyDickson.fs`, `AmplitudeEmu.fs`, `HlAmplitudeEmu.fs`, `SoftEmu.fs`, `CyclotomicAmplitude.fs`, `Core.Lean4/ImaginaryStack/` | **built; the plug-in is `built + tested`, with no production consumer** | `CayleyDickson.fs:38` says the doubled algebra is an `ISemiring`, *"so `WeightedSet<'K,'W>` and the rest of the generic semiring substrate carry"* — **and `tests/Tests.FSharp/CayleyWeightedSet.Tests.fs` proves it**: `ImaginaryStack.quaternion :> IRing<Quaternion>` drives quaternion weights through `WeightedSet`, retraction included. So the ladder really does plug in at `'W`. But the *production* amplitude consumers (`CyclotomicAmplitude`, `BipartiteMachZehnder`, `FrequencyMachZehnder`) go through **`WSet`**, not `WeightedSet` — the demonstrated joint and the used joint are on different carriers. §2 again. |

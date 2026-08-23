@@ -1538,6 +1538,36 @@ jobs:
       - name: Run lint-drift-publication-lands (stale-behind-green guard)
         run: bun src/Core.TypeScript/hygiene/lint-drift-publication-lands.ts
 
+      # Tsirelson's bound is S <= 2*sqrt(2) ~= 2.828 on the CHSH correlator, implemented at
+      # src/Core/Tsirelson.fs. 1/(3*sqrt(2)) ~= 0.2357 is a DIFFERENT number: the image of
+      # S = 2*sqrt(2) under the freely chosen linear map rho = S/12, adjudicated as a DESIGN
+      # CHOICE. It is a legitimate design threshold and every current use of it is
+      # behaviourally correct -- but every time the physicist's name got attached to it,
+      # something broke. Z-3 and Z-5 were DEMOTED section-A -> section-B and the
+      # Zeta-Conjecture keystone claim was REFUTED, all over this one constant.
+      # Aaron 2026-08-23: "most 1/(3sqrt2) have turned out to be bugs."
+      #
+      # The 2026-08-01 response was a hand-propagated prose caveat. A prose sweep is a
+      # SNAPSHOT: not idempotent, and it does not survive new files. Measured 2026-08-23, the
+      # two 2026-07-16 sibling docs had drifted into DISAGREEING WITH EACH OTHER -- one
+      # carried the banner, one did not, and neither could know. This guard is that same
+      # correction expressed as a check instead of prose: the repo's own doctrine (prose rots,
+      # a check does not) applied to its own correction.
+      #
+      # It refuses the NAME, never the NUMBER -- no value and no behaviour is in its scope.
+      # Its caveat markers are DERIVED from the provenance doc, which it DISCOVERS by shape
+      # rather than hardcoding, so renaming that doc reddens every stale citation instead of
+      # silently disabling the guard. Sibling from the same 2026-08-01 audit:
+      # lint-discharge-certificate-consistency.ts (in the lint (no empty dirs) job).
+      - name: Run lint-tsirelson-constant-caveat (1/(3√2) is not a Tsirelson bound)
+        run: bun src/Core.TypeScript/hygiene/lint-tsirelson-constant-caveat.ts
+
+      # The guard above is only worth its runtime if it can still FIRE. Two of these tests
+      # exist because earlier drafts of it were VACUOUS on the real tree -- markers that
+      # green-lit the very files they were written for. Pinned so they cannot come back.
+      - name: Tsirelson-caveat guard unit tests (a check that cannot fail is not a check)
+        run: bun test src/Core.TypeScript/hygiene/lint-tsirelson-constant-caveat.test.ts
+
   lint-no-empty-dirs:
     # Fail if a committed directory has no files — almost always a
     # forgotten artefact (an agent-created skill folder without a

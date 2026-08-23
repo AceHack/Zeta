@@ -95,6 +95,53 @@ it should be *named* as such rather than described as "Derived," which overclaim
    derivation of `ρ` as a function of the amp-emu CHSH correlators), ρ_T would move off `1/(3√2)`. The
    current value is correct *for the homoiconic linear model*; that model is the thing on file.
 
+## Follow-up 2026-08-23 — the prose sweep was the wrong shape of fix (Soraya)
+
+Aaron, reading a `1/(3√2)` in passing: *"i hear tsirelson and hear 2sqrt2, why do you hear
+1/(3sqrt2)? this threshold and limit different thresholds, most 1/(3sqrt2) have turned out to be
+bugs."* He is right about the track record — **Z-3 and Z-5 were both DEMOTED §A→§B and the
+Zeta-Conjecture keystone claim was REFUTED**, all over this one constant wearing a physicist's name.
+
+The fact was not in dispute; this document had already established it on 2026-07-04, and the
+2026-08-01 audit had already propagated a caveat banner to the files someone thought of at the time.
+**The remediation is what failed, and it failed structurally rather than through carelessness:**
+
+- **A prose sweep is not idempotent.** Running it again does not converge on the same tree; it
+  converges on whatever the sweeper happened to grep for that day.
+- **It does not survive new files.** Every document written after the sweep starts uncaveated, and
+  nothing anywhere notices.
+- **Measured consequence.** By 2026-08-23 the two 2026-07-16 sibling documents had drifted into
+  *disagreeing with each other* — `2026-07-16-austrian-economics-money-velocity-and-the-rho-formula.md`
+  carried the banner and `2026-07-16-echolocation-debounce-and-the-real-sensor-fusion-proof.md` did
+  not, so the repo asserted and denied the same identification in two files written the same day.
+  Neither file could know, because nothing was comparing them.
+- **A second-order instance in the same file.** The echolocation doc also asserted the number was
+  *"derived from the 4-directional Grover coin on a 2D lattice."* It was not derived from anything —
+  that is this document's whole finding. An uncaveated claim does not merely omit a caveat; it keeps
+  generating new claims that inherit the error.
+
+So the durable fix is not more prose. It is
+**`src/Core.TypeScript/hygiene/lint-tsirelson-constant-caveat.ts`**, which fails when a live surface
+writes the constant within a few lines of the name "Tsirelson" without a caveat. It refuses the
+**name**, never the **number**: `ρ_T = 1/(3√2)` remains a design threshold in good standing and no
+value or behaviour is in the guard's scope.
+
+Its caveat markers are **derived from this document** — the citation of its own path, the verdict
+vocabulary of its emphasized sentences, the map `ρ = S/12` it derives, and the negation it licenses —
+and it **discovers this file by shape rather than hardcoding the path**, so renaming this document
+reddens every stale citation in the tree instead of silently disabling the guard. That is deliberate:
+a hand-maintained list of caveated places is exactly the artifact whose drift caused the problem, so
+the guard is built to have none.
+
+Two of the guard's own markers had to be **measured and thrown away** for being vacuous — each
+green-lit the very file it was written for. A bare `/homoiconic/i` passed
+`src/Core.TypeScript/bayesian/sensor-fusion-oracle.ts`, which carries the defect and merely uses the
+word elsewhere; a "negation near the number" marker passed
+`docs/research/cpt-symmetry-emergent-c-rho-lightcone.md`, the worst offender in the tree, on the
+unrelated sentence *"not ρ\* = 1/3 … but ρ_T ≈ 0.236"*. Both are pinned as regression tests. **The
+general lesson is the repo's own doctrine turned on its own correction: prose rots, a check does not
+— and a check nobody has watched fail is still prose.**
+
 ## Cross-links
 
 - `src/Bayesian/YinYangEnsemble.fs` (`tsirelsonThreshold`) — the ρ_T this answers; comment corrected.

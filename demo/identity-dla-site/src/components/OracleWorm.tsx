@@ -9,8 +9,16 @@
  * oracles — it is a fully independent biological substrate.
  *
  * The Kuramoto order parameter r ∈ [0,1] is the worm's ρ:
- *   r < 0.2357 (Tsirelson threshold) → incoherent, independent
+ *   r < 0.2357 (the "Tsirelson threshold") → incoherent, independent
  *   r > 0.2357 → synchronized, correlated
+ *
+ * ⚠ NAME IS A MISNOMER (Soraya audit, 2026-08-01). 0.2357 = 1/(3√2) is NOT the Tsirelson
+ * bound. Tsirelson's bound is S ≤ 2√2 ≈ 2.828 on the CHSH correlator (src/Core/Tsirelson.fs);
+ * there is no Tsirelson bound on a correlation coefficient. 1/(3√2) is ρ*/√2 — the Condorcet
+ * limit ρ* = 1/3 pushed through the FREELY CHOSEN linear map ρ = S/12 — a design parameter
+ * chosen for homoiconicity, not derived. See
+ * docs/research/2026-07-04-rho-t-derivation-attempt-it-is-a-design-choice-chosen-for-homoiconicity.md
+ * The value is correct as a coherence cutoff; only the name oversells. Do not read it as physics.
  *
  * The DLA cluster grows where the worm's motor neurons are synchronized.
  * The fractal dimension of the resulting cluster is Oracle 7's D_f.

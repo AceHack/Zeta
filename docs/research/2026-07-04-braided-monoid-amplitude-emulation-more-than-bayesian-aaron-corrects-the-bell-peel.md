@@ -45,6 +45,8 @@ Grep-before-razor: the claim has anchors *in our own repo*, so it is not metapho
   `BellTest.chsh`), and **`ρ_T = 1/(3√2) ≈ 0.2357` is already wired** as the reseed threshold
   (`src/Bayesian/YinYangEnsemble.fs::tsirelsonThreshold`).
 - **CHIP-8:** `src/Core/Chip8.fs` / `SoftChip8.fs` + `roms/chip8/*.ch8` are the VM the amp-emu runs on
+
+> **⚠ Provenance caveat (Soraya audit 2026-08-01) — keep this attached wherever the number appears.** `1/(3√2)` is **NOT** the Tsirelson bound. Tsirelson's bound is `S ≤ 2√2 ≈ 2.828` on the CHSH *correlator* (`src/Core/Tsirelson.fs`). `1/(3√2)` is a **design choice**: the image of `S = 2√2` under the *freely chosen* linear map `ρ = S/12` (pinning `ρ* = 1/3 ↔ S = 4`), which makes the Condorcet ρ-regimes and the Bell S-regimes *homoiconically identical*. Chosen for homoiconicity, not derived — see `docs/research/2026-07-04-rho-t-derivation-attempt-it-is-a-design-choice-chosen-for-homoiconicity.md` and the code peel at `src/Bayesian/YinYangEnsemble.fs`. Legitimate as a design threshold; a physical bound it is not.
   (AmplitudeEmu was decoupled to a generic step, PR-8866). So "executable in the CHIP-8 emu today" is literal.
 
 ## What the shadow retracts (most of the peel was wrong)
