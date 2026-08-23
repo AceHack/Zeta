@@ -1,0 +1,12 @@
+{
+  "pr_number": 14308,
+  "archive_path": "docs/history/pr-reviews/PR-14308-chore-workitem-bun-s-floating-1-3-pin-let-two-agents-get-opposite-verdicts-on-on.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-23T17:23:42.401Z",
+  "schema_version": "v1",
+  "commit_sha": "a42e8ed1f1486282022e253bbbedb0faebd121dd",
+  "title": "chore(workitem): bun's floating \"1.3\" pin let two agents get opposite verdicts on one tree",
+  "state": "MERGED",
+  "merged_at": "2026-08-23T17:23:02Z",
+  "head_ref": "chore/pin-bun-exact"
+}
