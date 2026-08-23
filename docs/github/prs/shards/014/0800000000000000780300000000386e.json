@@ -1,0 +1,12 @@
+{
+  "pr_number": 14446,
+  "archive_path": "docs/history/pr-reviews/PR-14446-fix-docs-retract-the-healer-s-manufactured-paragraph-split-in-the-clifford-brief.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-23T20:54:05.458Z",
+  "schema_version": "v1",
+  "commit_sha": "8cf8d29db143649d11022404436211bb25e731af",
+  "title": "fix(docs): retract the healer's manufactured paragraph split in the Clifford brief",
+  "state": "MERGED",
+  "merged_at": "2026-08-23T20:53:18Z",
+  "head_ref": "fix/retract-the-healers-manufactured-paragraph-split"
+}
