@@ -19,7 +19,8 @@ import type { BroadcastTransport } from "./llmtv-broadcast";
 let dgram: any = null;
 if (typeof process !== 'undefined' && process.versions && process.versions.node) {
   try {
-    dgram = await import("node:dgram");
+    const dgramName = "node:dgram";
+    dgram = await import(/* @vite-ignore */ dgramName);
   } catch(e) {}
 }
 

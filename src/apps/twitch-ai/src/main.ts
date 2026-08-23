@@ -112,6 +112,35 @@ async function startSwarmSimulation() {
   // Instantiate Swarm Web Worker
   const worker = new Worker(new URL('./swarm.worker.ts', import.meta.url), { type: 'module' });
 
+  // Attach Controller Events
+  const keyMap: Record<string, number> = {
+    [`btn-start-${agentId}`]: 0,
+    [`btn-lt-${agentId}`]: 1,
+    [`btn-up-${agentId}`]: 2,
+    [`btn-rt-${agentId}`]: 3,
+    [`btn-left-${agentId}`]: 4,
+    [`btn-a-${agentId}`]: 5,
+    [`btn-right-${agentId}`]: 6,
+    [`btn-x-${agentId}`]: 7,
+    [`btn-down-${agentId}`]: 8,
+    [`btn-b-${agentId}`]: 9,
+    [`btn-lb-${agentId}`]: 10,
+    [`btn-rb-${agentId}`]: 11,
+    [`btn-y-${agentId}`]: 12,
+    [`btn-l3-${agentId}`]: 13,
+    [`btn-r3-${agentId}`]: 14,
+    [`btn-select-${agentId}`]: 15
+  };
+
+  Object.entries(keyMap).forEach(([id, key]) => {
+    const el = document.getElementById(id);
+    if (el) {
+      el.addEventListener('pointerdown', () => worker.postMessage({ type: 'KEY_DOWN', payload: { key } }));
+      el.addEventListener('pointerup', () => worker.postMessage({ type: 'KEY_UP', payload: { key } }));
+      el.addEventListener('pointerleave', () => worker.postMessage({ type: 'KEY_UP', payload: { key } }));
+    }
+  });
+
   // Setup ModelBackend Config from LocalStorage
   const savedApiKey = localStorage.getItem("zeta_llm_api_key");
   const savedBaseUrl = localStorage.getItem("zeta_llm_base_url");

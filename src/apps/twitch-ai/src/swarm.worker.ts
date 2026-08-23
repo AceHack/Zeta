@@ -9,7 +9,7 @@ if (typeof self !== 'undefined' && typeof (self as any).Buffer === 'undefined') 
 
 import { SwarmController } from "../../../Core.TypeScript/swarm/swarm-controller";
 import type { World } from "../../../Core.TypeScript/observe/observe";
-import { create as initFrame, loadRom, step, clearCausalMask } from "../../../Core.TypeScript/chip8/chip8";
+import { create as initFrame, loadRom, step, clearCausalMask, colorAt } from "../../../Core.TypeScript/chip8/chip8";
 
 import { buildMutualSimRom } from "../../../Core.TypeScript/chip8/games/mutual-sim";
 import { createCheatTable, applyCheatTable } from "../../../Core.TypeScript/chip8/cheat-engine";
@@ -36,6 +36,7 @@ let isRunning = false;
 
 const STEPS_PER_TICK = 10;
 const agentId = "browser-node";
+const manualKeys: boolean[] = new Array(16).fill(false);
 
 self.onmessage = async (e: MessageEvent) => {
   try {
@@ -81,6 +82,10 @@ self.onmessage = async (e: MessageEvent) => {
       // The structural bounds of the game are reset to the new fingerprint,
       // and the Swarm's Bayesian predictors organically adapt to the new causal footprint.
       activeRom = uploadedRom;
+    } else if (type === "KEY_DOWN") {
+      manualKeys[payload.key] = true;
+    } else if (type === "KEY_UP") {
+      manualKeys[payload.key] = false;
     }
   } catch (err) {
     console.error(`[SwarmWorker] Fatal error in onmessage:`, err);
@@ -128,9 +133,9 @@ async function loop() {
   }
   const memorySectors = [memArray];
   const causalMask = Array.from(frame.causalMask);
-  const displayArray = new Array(64 * 32).fill(false);
+  const displayArray = new Array(64 * 32).fill(0);
   for (let i = 0; i < displayArray.length; i++) {
-    displayArray[i] = frame.display.has(i) && frame.display.get(i)!;
+    displayArray[i] = colorAt(i % 64, Math.floor(i / 64), frame);
   }
 
   world = {
@@ -147,6 +152,9 @@ async function loop() {
 
   world = await swarm.tick(world);
   frame.keys.fill(false);
+  for (let k = 0; k < 16; k++) {
+    if (manualKeys[k]) frame.keys[k] = true;
+  }
 
   // Sniff Gamification Level Transitions (Mutual Sim logic)
   if (frame.v[8] === 0) {
@@ -180,6 +188,7 @@ async function loop() {
     kind: "chip8-frame",
     display: displayArray,
     cycle: cycle,
+    keys: Array.from(frame.keys),
     keyPredictions: world.cheatEngine?.keyPredictions || {},
     activeConcept: (world.cheatEngine as { activeConcept?: string })?.activeConcept ?? "Observing...",
     linguisticToken: (world.cheatEngine as { linguisticToken?: string })?.linguisticToken,

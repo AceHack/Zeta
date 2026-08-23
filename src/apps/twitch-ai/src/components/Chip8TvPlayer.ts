@@ -46,12 +46,19 @@ export class Chip8TvPlayer {
       <div class="xbox-controller">
         <div class="triggers">
           <div class="trigger-btn" id="btn-lt-${agentId}">LT</div>
+          <div class="trigger-btn" id="btn-lb-${agentId}">LB</div>
           <div class="agent-label mono">${agentId}</div>
+          <div class="trigger-btn" id="btn-rb-${agentId}">RB</div>
           <div class="trigger-btn" id="btn-rt-${agentId}">RT</div>
         </div>
         <div class="gamepad-main">
+          <div class="system-buttons" style="display:flex; justify-content:center; gap:10px; margin-bottom:5px;">
+            <div class="face-btn" style="transform:scale(0.6);" id="btn-select-${agentId}">SEL</div>
+            <div class="face-btn" style="transform:scale(0.6);" id="btn-start-${agentId}">STA</div>
+          </div>
           <!-- D-Pad -->
-          <div class="dpad">
+          <div class="dpad" style="position:relative;">
+            <div class="face-btn" style="position:absolute; top:-10px; left:-10px; transform:scale(0.5);" id="btn-l3-${agentId}">L3</div>
             <div class="dpad-row">
               <div class="dpad-btn empty"></div>
               <div class="dpad-btn dir-btn" id="btn-up-${agentId}">▲</div>
@@ -70,7 +77,8 @@ export class Chip8TvPlayer {
           </div>
           
           <!-- Face Buttons -->
-          <div class="face-buttons">
+          <div class="face-buttons" style="position:relative;">
+            <div class="face-btn" style="position:absolute; top:-10px; right:-10px; transform:scale(0.5);" id="btn-r3-${agentId}">R3</div>
             <div class="face-row center-row">
               <div class="face-btn" id="btn-y-${agentId}">Y</div>
             </div>
@@ -90,18 +98,31 @@ export class Chip8TvPlayer {
     document.getElementById(containerId)?.appendChild(this.element);
   }
 
-  public updateFrame(displayArray: boolean[]) {
+  public updateFrame(displayArray: number[]) {
     if (!displayArray || displayArray.length !== 64 * 32) return;
     
     const imgData = this.ctx.createImageData(64, 32);
     for (let i = 0; i < displayArray.length; i++) {
       const idx = i * 4;
-      const on = displayArray[i];
-      // CHIP-8 pixels (glowing green/cyan)
-      imgData.data[idx] = on ? 74 : 0;     // R
-      imgData.data[idx + 1] = on ? 222 : 0; // G
-      imgData.data[idx + 2] = on ? 128 : 0; // B
-      imgData.data[idx + 3] = 255;          // A
+      const colorVal = displayArray[i] ?? 0;
+      let r = 0, g = 0, b = 0, a = 255;
+      
+      if (colorVal === 1) { // Plane 1: Cyan/Green
+        r = 74; g = 222; b = 128;
+      } else if (colorVal === 2) { // Plane 2: Orange
+        r = 251; g = 146; b = 60;
+      } else if (colorVal === 3) { // Plane 1+2: White
+        r = 255; g = 255; b = 255;
+      } else if (colorVal > 0) { // Other planes: Magenta
+        r = 236; g = 72; b = 153;
+      } else {
+        a = 255; // Black
+      }
+
+      imgData.data[idx] = r;
+      imgData.data[idx + 1] = g;
+      imgData.data[idx + 2] = b;
+      imgData.data[idx + 3] = a;
     }
     this.ctx.putImageData(imgData, 0, 0);
   }
@@ -142,19 +163,27 @@ export class Chip8TvPlayer {
       }
     }
     
-    // Process BNN predictions to light up keys
+    // Process BNN predictions (RGB probabilities) and committed keys (CMYK)
     const predictions = frame.keyPredictions || {};
-    const keyMap: Record<string, string> = {
-      '1': `btn-lt-${this.agentId}`,
-      '3': `btn-rt-${this.agentId}`,
-      '2': `btn-up-${this.agentId}`,
-      '8': `btn-down-${this.agentId}`,
-      '4': `btn-left-${this.agentId}`,
-      '6': `btn-right-${this.agentId}`,
-      '5': `btn-a-${this.agentId}`,
-      '9': `btn-b-${this.agentId}`,
-      '7': `btn-x-${this.agentId}`,
-      '12': `btn-y-${this.agentId}`, // '12' is hex key C
+    const committedKeys = frame.keys || [];
+    
+    const keyMap: Record<number, string> = {
+      0: `btn-start-${this.agentId}`,
+      1: `btn-lt-${this.agentId}`,
+      2: `btn-up-${this.agentId}`,
+      3: `btn-rt-${this.agentId}`,
+      4: `btn-left-${this.agentId}`,
+      5: `btn-a-${this.agentId}`,
+      6: `btn-right-${this.agentId}`,
+      7: `btn-x-${this.agentId}`,
+      8: `btn-down-${this.agentId}`,
+      9: `btn-b-${this.agentId}`,
+      10: `btn-lb-${this.agentId}`, // A
+      11: `btn-rb-${this.agentId}`, // B
+      12: `btn-y-${this.agentId}`,  // C
+      13: `btn-l3-${this.agentId}`, // D
+      14: `btn-r3-${this.agentId}`, // E
+      15: `btn-select-${this.agentId}` // F
     };
 
     // Reset all buttons to base style
@@ -164,13 +193,15 @@ export class Chip8TvPlayer {
         btn.style.opacity = '0.2';
         btn.style.boxShadow = 'none';
         btn.style.transform = 'scale(1)';
+        btn.style.background = ''; // reset background
       }
     });
 
-    // Apply glowing effect based on probability
-    for (const [key, probRaw] of Object.entries(predictions)) {
+    // Apply RGB probability bars (using box-shadow/opacity for visual "bar-like" intensity)
+    for (const [keyStr, probRaw] of Object.entries(predictions)) {
+      const key = parseInt(keyStr, 10);
       const prob = probRaw as number;
-      const id = keyMap[key.toLowerCase()];
+      const id = keyMap[key];
       if (id && prob > 0.05) {
         const btn = document.getElementById(id);
         if (btn) {
@@ -178,8 +209,26 @@ export class Chip8TvPlayer {
           btn.style.opacity = (0.2 + (prob * 0.8)).toFixed(2);
           
           if (prob > 0.4) {
-            btn.style.boxShadow = `0 0 ${10 + (prob * 20)}px rgba(34, 211, 238, ${prob})`;
+            // RGB visualization for prediction (Red)
+            btn.style.boxShadow = `0 0 ${10 + (prob * 20)}px rgba(255, 0, 0, ${prob})`;
             btn.style.transform = `scale(${1 + (prob * 0.15)})`;
+          }
+        }
+      }
+    }
+
+    // Override with CMYK for actually committed/pressed keys
+    for (let k = 0; k < 16; k++) {
+      if (committedKeys[k]) {
+        const id = keyMap[k];
+        if (id) {
+          const btn = document.getElementById(id);
+          if (btn) {
+            btn.style.opacity = '1.0';
+            btn.style.transform = 'scale(1.2)';
+            // CMYK visualization for committed (Cyan)
+            btn.style.boxShadow = `0 0 20px rgba(0, 255, 255, 1)`;
+            btn.style.background = 'rgba(0, 255, 255, 0.2)';
           }
         }
       }

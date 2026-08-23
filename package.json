@@ -5,6 +5,9 @@
   "engines": {
     "bun": ">=1.3.13"
   },
+  "workspaces": [
+    "src/apps/twitch-ai"
+  ],
   "scripts": {
     "tally:substrates": "bun ./src/Core.TypeScript/invariant-substrates/tally.ts",
     "build-graph:affected": "bun ./src/Core.TypeScript/ace/build-graph.ts affected",

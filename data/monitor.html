@@ -363,9 +363,10 @@ async function loadPlatformDrift() {
       ? `<b>${l.failures}</b>/${l.executedRuns} failed · ${pct(l.failureRate)} · clean streak ${l.cleanStreak}`
       : `0/${l.executedRuns} failed · clean streak ${l.cleanStreak}`;
     const width = Math.min(100, l.failureRate * 400);
+    const isOpen = l.cleanStreak === 0 && l.failures > 0;
     return `<div class="drift-row">
-      <span class="drift-rule ${l.failures > 0 ? "open" : ""}">${l.name.replace("build-and-test ", "")}</span>
-      <div class="bar-track"><div class="bar ${l.failures > 0 ? "open" : ""}" style="width:${width}%"></div></div>
+      <span class="drift-rule ${isOpen ? "open" : ""}">${l.name.replace("build-and-test ", "")}</span>
+      <div class="bar-track"><div class="bar ${isOpen ? "open" : ""}" style="width:${width}%"></div></div>
       <span class="drift-meta">${chip} ${meta}</span>
     </div>`;
   }).join("");

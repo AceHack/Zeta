@@ -167,14 +167,17 @@ export interface World {
    */
   readonly history?: readonly HistoryEvent[];
   /** The "Cheat Engine" memory map, providing Lensography-like read-only access to toy/environment internals */
-  readonly cheatEngine?: { 
-    readonly memorySectors: Uint8Array[];
-    readonly causalMask?: boolean[];
-    readonly display?: boolean[];
-    readonly keyPredictions?: Record<number, number>;
-  };
+  readonly cheatEngine?: CheatEngineState;
   /** Capability labels restricting what channels this agent/world instance can access */
   readonly agentCapabilities?: string[];
+}
+
+export interface CheatEngineState {
+  readonly display?: any[];
+  readonly causalMask?: boolean[];
+  readonly memorySectors: Uint8Array[];
+  readonly keyPredictions?: Record<number, number>;
+  readonly chosenKey?: number;
 }
 
 /** KPI attached to a `do_item` (ARC-AGI grid scoring). */

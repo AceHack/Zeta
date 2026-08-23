@@ -105,8 +105,10 @@ export class SwarmController {
       let path: any = null;
       if (typeof process !== 'undefined' && process.versions && process.versions.node) {
         try {
-          fs = await import("fs");
-          path = await import("path");
+          const fsName = "fs";
+          const pathName = "path";
+          fs = await import(/* @vite-ignore */ fsName);
+          path = await import(/* @vite-ignore */ pathName);
         } catch(e) {}
       }
 
@@ -398,12 +400,13 @@ Output ONLY a valid JSON array of strings representing the sub-tasks. Example: [
             ];
           }
           const nextWorld = simulate(world, chosenAction);
-          // Attach BNN predictions to cheatEngine so TV can render them
+          // Attach BNN predictions and the chosen key to cheatEngine so TV can render them
           return {
             ...nextWorld,
             cheatEngine: {
               ...nextWorld.cheatEngine!,
-              keyPredictions: bnnPredictions
+              keyPredictions: bnnPredictions,
+              chosenKey: chosenKey
             }
           };
         }
