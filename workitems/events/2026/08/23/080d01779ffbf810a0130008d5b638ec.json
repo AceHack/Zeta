@@ -1,0 +1,14 @@
+{
+  "id": "080d01779ffbf810a0130008d5b638ec",
+  "at": "2026-08-23T14:08:57.727Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M0QF7ZVY087G0R003Q4Q18D",
+    "type": "task",
+    "title": "twitch-ai is a self-contained vite app with no CI job — its own tsc and vite build run nowhere",
+    "slug": "twitch-ai-is-a-self-contained-vite-app-with-no-ci-job-its-ow",
+    "priority": "P2",
+    "filename": "081M0QF7ZVY087G0R003Q4Q18D-twitch-ai-is-a-self-contained-vite-app-with-no-ci-job-its-ow.md"
+  }
+}

@@ -65,6 +65,27 @@
     "src/Core.TypeScript/cursor/**",
     "src/wasm-dla/assemblyscript/assembly/**",
     "demo/identity-dla-site/**",
+    // `src/apps/twitch-ai` is a self-contained vite sub-project: its OWN package.json
+    // declares `vite ^8.2.0`, its OWN bun.lock pins it, and its OWN tsconfig.json builds
+    // it (`build: "tsc && vite build"`). The ROOT install deliberately does not carry a
+    // bundler, so `vite.config.ts`'s one import — `defineConfig` from "vite" — cannot
+    // resolve here and tsc reports TS2307. That is a REAL error, not an unprovisioned
+    // environment: `vite` is absent from the ROOT package.json, so the 081KZKWB1FZ guard
+    // in lint-typescript.ts correctly declines to reclassify it. It went red on main at
+    // 6fdae4d6d (#14200), which is the commit that added the file.
+    //
+    // Only the CONFIG file is excluded, NOT the app. `src/apps/twitch-ai/src/**` stays in
+    // this project on purpose: the root tsc is the ONLY thing that typechecks this app
+    // anywhere, and it is what caught the inert LLM branch in swarm.worker.ts (#14169,
+    // #14185). Excluding the tree — which is how the other three vite apps in this repo
+    // are handled (demo/identity-dla-site, full-ai-cluster/portal/web,
+    // src/Renderers/website) — would delete that check to fix a 9-line config.
+    //
+    // HONEST LIMIT, stated rather than implied: nothing in CI typechecks this file now.
+    // `twitch-ai` appears in no workflow, and the app's own tsconfig is `include: ["src"]`,
+    // which never covered a root-level config file either. That gap is the app's, not this
+    // line's, and it is filed — see workitem 081M0QF7ZVY087G0R003Q4Q18D.
+    "src/apps/twitch-ai/vite.config.ts",
     "db",
     "db/**"
   ]
