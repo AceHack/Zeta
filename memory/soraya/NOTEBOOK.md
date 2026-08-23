@@ -170,76 +170,13 @@ PORTFOLIO NOTE: this adds a cell in the adversarial-input/taint row that is CHEA
 for the allowlist-integrity reason above. The routing table's cheapest-credible-tool column
 should record that the SUPPRESSION SURFACE is part of a tool's cost, not a footnote.
 
-## 2026-08-19 -- distributed identity server: the map existed in pieces, nobody had it on one page
-
-Aaron routed the overall design for the distributed identity server and warned it is the
-most-worked area of Zeta. Correct, and understated. Sweep found 37 TLA+ specs / 54 TLC configs,
-6 Alloy models, 26+ Lean files, 9 Z3 lemmas, 8 Q# oracle modules, 23 identity-named F# modules,
-~80 research docs. The reason there was no overall design is not missing pieces, it is a missing
-MAP -- so every attempt re-derives proven work. Deliverable:
-docs/research/2026-08-19-draft-the-distributed-identity-server-\*.md (DRAFT).
-
-**Routing calls (full table in the doc §5, not restated here).** Headline: C1 -> F# private
-constructor + Alloy, NOT TLA+ (inexpressible beats unreachable). C3a -> Lean on the existing
-FinMutualInfo ladder; TLC categorically wrong (no reals -- QuorumPhaseCancellation precedent).
-C3b -> Z3 UFNRA uninterpreted-monotone. C4-NI -> Semgrep; it is a grep. C6 -> GENERALISE
-RefuseBinding.tla, whose non-penalty clause IS the property.
-
-**C3 formalised, anti-analogy check passed.** "Not embarrassingly parallel" = strength is not a
-functional of the per-claim MARGINALS. Theorem: marginals do not determine the joint (Shannon
-1948; Hoeffding 1940 / Frechet 1951; Sklar 1959). SocietyUsefulWork's rho is the SAME functional
-(N_eff = N/(1+(N-1)rho); Gaussian copula IS the Sklar decomposition) over DIFFERENT random
-variables -- competence over facts, not observation over claims. Theorem transfers, instantiation
-carries no measurement. Recorded as three graded lines, not one confident one.
-
-**Falsifier F3 already fired in production.** QuorumAlgebra bug B3: six agents on one stream,
-precision = 66.0 on a mean wrong by 5.66 -- configuration B scored as A. C3 is the generalisation
-of an observed failure, not a design preference.
-
-**Apparent contradiction with our own shipped proof, resolved.** BeliefConvergence proves the
-fold COMMUTES. C3 is not about order, it is about what the aggregation may DEPEND ON. Both hold.
-The next reader will hit this too.
-
-**Biggest finding is not a proof gap.** G1: no ClaimStrength surface exists. G7: Policy.fs has
-ONE instance and its own docstring says the trust interpreter is not built. The spine's central
-quantity and its evaluator are both absent, so every verification item routed this round verifies
-a function nobody has written. Said so; did not write it -- not my lane.
-
-**Stale-gap hazard, named as a class.** The 2026-08-09 IdP doc lists 4 gaps; 2 closed (KeyCustody
-shipped bounded duration + rotation) and nothing recorded it. A design surface that does not know
-which of its gaps are closed keeps re-proposing closed work.
-
-**Portfolio, identity/trust domain (full table in doc §7).** Metered: 12 artefacts incl. the
-BFT pair, the Quorum/Wager family, RefuseBinding, both Alloy models, whitewash-economics,
-row-15 N_eff. Unmetered: AntiSybil-as-theorem, PrivacyPreservingIdentity, C1, C4, C4-NI, C5,
-frost. Absent (not unmetered): ClaimStrength, the three decision classes.
-
-Filed: 081M0DJSR8N087G0R000QCYBYW (Lean C3a), 081M0DJSY48087G0R001GVG3AT (Z3 C3b),
-081M0DJSY5C087G0R00094DD3Z (FsCheck F3), 081M0DJSY6B087G0R0005PAA25 (Alloy C2),
-081M0DJSY79087G0R002FH5140 (TLA+ C4), 081M0DJSY88087G0R002JTPWKQ (Semgrep C4-NI),
-081M0DJSY9F087G0R002HV7KA7 (G1), 081M0DK2TW6087G0R001GHD9MJ (Alloy C6),
-081M0DK2TXD087G0R003674BAS (G7).
-
-**Three mid-round reframings, all adding sections rather than corrections.** (a) The local
-decision layer -- node-local OPA-like policy trust; C6 (hubs negotiate, never command) turned
-out to be RefuseBinding.tla generalised, non-penalty clause included, which is a routing gift.
-(b) Frost buys decorrelation -- then CORRECTED by Aaron: he runs with zero frost, fully
-public, and is decorrelated anyway. So opacity is ONE of three routes. The invariant is
-I(V;F), predictive mutual information: shrink V (frost), or keep F entropic at decision time
-(mixed strategy -- BitGan already has the meter, discriminatorEdge, and the anchor, von
-Neumann 1928: an optimal mixed strategy is safe to ANNOUNCE), or drift the policy
-(nonstationarity). Mechanisms 2-3 buy axis 1 without spending axis 2; frost spends both. Guard
-against the opposite overclaim: a deterministic stationary public agent IS predictable, so
-"transparency is free" is conditional. Frost was designed by someone who does not use it --
-not self-serving, also not dogfooded. F4 filed (081M0DRH1CW087G0R003Y3CAB6), both readings
-pre-registered. The register-collapse proof establishes privacy > 0 and must NOT be cited for
-the rho-pricing claim -- different falsifiers (G11). (c) The arc: S=4 at the origin, decorrelate without babel.
-Objective is decorrelate SUBJECT TO staying reconcilable. Both axes already instrumented
-(AntiSybil.correlation / largestLyapunov / effectiveN vs byte-lock / Collation / anchor audit)
-and never plotted together -- G13, 081M0DMH30Y087G0R001C2B1PT, composes with the register's
-open rho measurement. ClaimLane is the babel dial already built (G14). Also found an ACTIVE
-trajectory (local-trust-view-decentralized-identity) already carving C5 sharper than I did --
-C5 now defers to it (G10). Lesson: the duplication risk in this domain is real and I hit it.
+## 2026-08-19 -- distributed identity server -- PRUNED 2026-08-23. Conclusions retained:
+the blocker was a missing MAP not missing pieces (37 TLA+ specs / 54 TLC configs, 6 Alloy,
+26+ Lean, 9 Z3, 8 Q# modules, 23 identity F# modules, ~80 docs, none indexed together, so every
+attempt re-derived proven work). Routing headline: C1 -> F# private constructor + Alloy NOT TLA+
+(inexpressible beats unreachable); C3a -> Lean on the existing FinMutualInfo ladder, TLC
+categorically wrong (no reals -- QuorumPhaseCancellation precedent). Full table:
+docs/research/2026-08-19-draft-the-distributed-identity-server-*.md section 5.
 
 ## 2026-08-19 -- forward correlation: the measure cannot be an observation
 
@@ -318,3 +255,65 @@ invent a metric to fill the table, per the brief.
 
 **Correction to the brief:** it stated the echolocation framing is "now on main" in
 PR #12528. It is OPEN, not merged. Built on it as a premise and said so in the doc.
+
+## 2026-08-23 -- QEC stack routing: two declines and a reopening (PR #14224)
+
+Aaron asked for a QEC stack on the premise "we have some adinkra ecc that can run in q#."
+**Premise refuted by grep.** Zero ECC, zero QEC in the Q# tree; all five hits are comments and
+the README's "CSS" is Cascading Style Sheets. Also: every in-tree "stabilizer" outside this work
+is the GROUP-THEORETIC one (ClaimLane.fs, aut-budget.ts). Cl3.fs:11 already flags the collision.
+The ferry before me said "no syndrome anywhere" -- a CLASSICAL mod-2 syndrome does exist
+(AdinkraCode.fs:166, three consumers); what is absent is quantum syndrome extraction.
+
+**k=0 is a theorem, not our code's accident.** k_q = 2*dim(C) - n; self-dual forces dim = n/2;
+so EVERY self-dual code gives k_q = 0 at every length. Worth restating that way because "our code
+happens to encode nothing" and "no code of this kind can" are different roadmap inputs.
+
+**Result 1 (the valuable one): the N=8 adinkra category is EXHAUSTIVELY closed.** Every
+doubly-even self-orthogonal length-8 code: dim1 [[8,6,2]], dim2 [[8,4,2]], dim3 [[8,2,2]],
+dim4 [[8,0,4]]. d=4 with k=0, or k>0 with d=2, no third option. Seconds of compute retired a
+direction permanently. **A cheap negative found before anyone writes a spec is the whole job.**
+
+**Result 2: reopens at N=16.** RM(1,4) is dim 5, weights {0,8,16} -- doubly-even, self-orthogonal,
+a genuine adinkra code -- and RM(1,4)^perp = RM(2,4) exactly, giving [[16,6,4]]. Known code
+(Calderbank-Shor/Steane 1996); ours is the observation it sits INSIDE the category. Also lands on
+the BW_16 rung above the E8 rung we already own (Nebe-Rains-Sloane, cited in REPORT #6).
+
+**Correction to the brief's route:** puncturing [8,4,4] -> [7,4,3] works at any of 8 coordinates
+(AGL(3,2) transitive, so canonical) but the punctured weights are {0,3,4,7} -- odd. The puncture
+EXITS the adinkra category. Provenance, not inheritance. The brief did not say so.
+
+**Declines, all three on the merits.** (1) TLA+: green again yesterday (#14176, prover step had
+not run for seven weeks), prerequisite satisfied, STILL wrong -- no protocol, no concurrency, no
+liveness, and TLC explodes on 2^16. Recorded the decline precisely BECAUSE the tool just came
+back; that is when the pull is strongest. (2) Lean: checked Zeta23/LinAlg (#13913) rather than
+its changelog -- every file opens `variable {k} [RCLike k]`, i.e. R or C. F_2 is not RCLike. A
+real capability with zero applicability here. (3) RL loop: no hardware, no drift; an agent
+optimising a noise model we wrote measures our own assumptions. Vacuity class.
+
+**FsCheck declined too, and this is the tempting mis-route:** L1-L4 are all finite and
+exhaustible (2048 codewords; 48 weight-1 + 1080 weight-2 Paulis). Property testing SAMPLES what
+enumeration EXHAUSTS. Weaker than the trivial loop.
+
+**Falsifier strengthened past the brief.** "Fails on SOME weight-2 error" -> measured on Steane,
+ALL 21 OF 21 weight-2 errors alias onto a weight-1 correction, and that is structure (Hamming is
+perfect, so no syndrome is free to signal weight 2). Milestone now requires the failure set
+enumerated EXACTLY. F1 alone is satisfiable by a decoder that lies.
+
+**BP-16:** L1-L4 are ONE instrument in four hats. M3 (Q# stabiliser sim, Gottesman-Knill) is the
+independent second, and is not optional.
+
+**Method note to keep.** markdownlint returned empty output + exit 0. Ran a deliberate-violation
+probe (EXIT=1, three errors) before believing it. A silent linter and a clean one look identical.
+
+**Filed:** 081M0QFQTS1087G0R002WHZFR7 (M1 + the closure as a test), 081M0QFQYDK087G0R0028FQSM2
+(M2 decoder), 081M0QFQYEQ087G0R003SW6VD8 (M3 Q#), 081M0QFQYFV087G0R00267NRTC (M4 anti-vacuity).
+If only one ships, M1 -- the negative is the durable half.
+
+**Register:** all unmetered until M1; the enumerations ran in a scratch script outside the tree.
+
+**Concurrent round, same day:** docs/research/2026-08-23-toolchain-currency-audit-and-tech-radar-ring-drift.md
+landed on main from another Soraya actor while this one was in flight. Not merged into the
+entry above -- two rounds, two records, both kept. Ring-drift findings there are the
+TECH-RADAR half; the ring note in the QEC doc section 10 (Q# acquires a named job) is this
+half and does not contradict it.
