@@ -1,0 +1,12 @@
+{
+  "pr_number": 14390,
+  "archive_path": "docs/history/pr-reviews/PR-14390-docs-research-student-t-is-not-dropped-it-is-the-marginal-storing-mu-sigma-nu-is.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-23T19:28:01.989Z",
+  "schema_version": "v1",
+  "commit_sha": "2ce9794e8fb4149955effa66e306ff0b569b996d",
+  "title": "docs(research): Student-t is not dropped — it is the marginal; storing (mu,sigma,nu) is the degrade, plus the NG4 API bridge",
+  "state": "MERGED",
+  "merged_at": "2026-08-23T19:27:17Z",
+  "head_ref": "docs/student-t-as-storage-is-the-degrade"
+}
