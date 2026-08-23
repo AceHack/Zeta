@@ -253,6 +253,28 @@ describe("the completed install records its success (R9 write side)", () => {
     expect(r.ledger).toBe("");
   });
 
+  test("open_ledger probes a real write before claiming the ESP writable", () => {
+    const start = SRC.indexOf("zeta_pf_open_ledger()");
+    const end = SRC.indexOf("# ZETA-LEDGER-APPEND-BEGIN");
+    const open = SRC.slice(start, end);
+    const probeIdx = open.indexOf(".zeta-ledger-write-probe");
+    const writableIdx = open.indexOf("ZETA_LEDGER_WRITABLE=1");
+    expect(probeIdx).toBeGreaterThan(0);
+    expect(writableIdx).toBeGreaterThan(probeIdx);
+  });
+
+  test("a write failure on an apparently-writable ledger does not abort under set -e", () => {
+    const r = runLedgerShell(
+      [
+        'chmod a-w "$ZETA_LEDGER_FILE"',
+        "zeta_ledger_append started wipe",
+        "echo survived writable=$ZETA_LEDGER_WRITABLE",
+      ].join("\n"),
+    );
+    expect(r.out).toContain("survived writable=0");
+    expect(r.ledger).toBe("");
+  });
+
   // ── the durability barrier (the seam that made this file deterministic) ──
   //
   // Nothing used to observe this line. It was paid for on every append -- a

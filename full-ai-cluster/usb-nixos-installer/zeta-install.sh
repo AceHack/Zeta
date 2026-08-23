@@ -685,10 +685,17 @@ zeta_pf_open_ledger() {
       [ -b "$part" ] || continue
       sudo mount -t vfat -o rw "$part" "$ZETA_LEDGER_MOUNT" 2>/dev/null || continue
       if sudo test -f "$ZETA_LEDGER_MOUNT/zeta-authorized-keys.pub"; then
-        ZETA_LEDGER_PART="$part"
-        ZETA_LEDGER_FILE="$ZETA_LEDGER_MOUNT/zeta-install-attempts.txt"
-        ZETA_LEDGER_WRITABLE=1
-        return 0
+        # mount -o rw can succeed on a QEMU USB with readonly=on; the first
+        # write then dies EROFS. Claiming WRITABLE from the mount alone is
+        # how wifi-ESP / picker / restore USB-boot installs aborted after
+        # the R7 countdown (run 32638506247). Probe a real write.
+        if sudo sh -c ': > "$1" && rm -f "$1"' _ "$ZETA_LEDGER_MOUNT/.zeta-ledger-write-probe" 2>/dev/null; then
+          ZETA_LEDGER_PART="$part"
+          ZETA_LEDGER_FILE="$ZETA_LEDGER_MOUNT/zeta-install-attempts.txt"
+          ZETA_LEDGER_WRITABLE=1
+          return 0
+        fi
+        echo "[R9-breaker] ESP $part mounted but not writable; breaker stays BLIND"
       fi
       sudo umount "$ZETA_LEDGER_MOUNT" 2>/dev/null || true
     done
@@ -752,8 +759,13 @@ zeta_ledger_append() {
   # the ledger non-contiguous, which the validator then reads as UNTRUSTED.
   n="$(printf %s "$text" | grep -c '|' || true)"
   n=$((n + 1))
-  printf '%s|%s|%s|%s\n' "$n" "$(date -u +%Y-%m-%dT%H:%M:%SZ)" "$outcome" "$stage" \
-    | $ZETA_SUDO tee -a "$ZETA_LEDGER_FILE" >/dev/null
+  if ! printf '%s|%s|%s|%s\n' "$n" "$(date -u +%Y-%m-%dT%H:%M:%SZ)" "$outcome" "$stage" \
+    | $ZETA_SUDO tee -a "$ZETA_LEDGER_FILE" >/dev/null; then
+    # Second belt: even if open_ledger claimed writable, a later EROFS/EACCES
+    # must not abort the install under set -e. Drop to BLIND and continue.
+    ZETA_LEDGER_WRITABLE=0
+    return 0
+  fi
   $ZETA_SUDO $ZETA_LEDGER_SYNC 2>/dev/null || true
   ZETA_ATTEMPT_N="$n"
 }
