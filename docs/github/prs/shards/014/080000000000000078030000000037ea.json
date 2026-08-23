@@ -1,0 +1,12 @@
+{
+  "pr_number": 14314,
+  "archive_path": "docs/history/pr-reviews/PR-14314-fix-ci-drift-dashboard-writes-back-cadence-must-leave-evidence.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-23T17:24:50.943Z",
+  "schema_version": "v1",
+  "commit_sha": "3168e541ec26f24215f755b6d47147b6cfae37ec",
+  "title": "fix(ci): drift-dashboard writes back — cadence must leave evidence",
+  "state": "MERGED",
+  "merged_at": "2026-08-23T17:24:14Z",
+  "head_ref": "alexa/dashboard-writes-back"
+}
