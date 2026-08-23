@@ -1,0 +1,14 @@
+{
+  "id": "080d0176ca0f9810a0130008eb5f3307",
+  "at": "2026-08-23T13:39:45.267Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M0QDJGFJ087G0R000KF1N33",
+    "type": "bug",
+    "title": "inert-valuesobject-keys CLI test flakes past its 5s timeout under full-suite parallel load",
+    "slug": "inert-valuesobject-keys-cli-test-flakes-past-its-5s-timeout",
+    "priority": "P2",
+    "filename": "081M0QDJGFJ087G0R000KF1N33-inert-valuesobject-keys-cli-test-flakes-past-its-5s-timeout.md"
+  }
+}

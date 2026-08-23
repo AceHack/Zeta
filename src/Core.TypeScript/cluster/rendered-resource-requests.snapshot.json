@@ -1,5 +1,5 @@
 {
-  "measuredOn": "2026-08-22",
+  "measuredOn": "2026-08-23",
   "appsDiscovered": [
     "full-ai-cluster/agent-memory",
     "full-ai-cluster/alloy",
@@ -62,18 +62,20 @@
       "apps": [
         {
           "appId": "full-ai-cluster/agent-memory",
-          "cpuMillis": 50,
+          "cpuMillis": 25,
           "memoryMib": 64,
           "pods": 1,
           "workloads": [
             {
               "workload": "StatefulSet/agent-memory",
               "replicas": 1,
-              "cpuMillis": 50,
+              "cpuMillis": 25,
               "memoryMib": 64
             }
           ],
-          "overlaid": []
+          "overlaid": [
+            "full-ai-cluster/agent-memory/memory-keeper"
+          ]
         },
         {
           "appId": "full-ai-cluster/alloy",
@@ -103,7 +105,9 @@
               "memoryMib": 64
             }
           ],
-          "overlaid": ["full-ai-cluster/arc-controller/manager"]
+          "overlaid": [
+            "full-ai-cluster/arc-controller/manager"
+          ]
         },
         {
           "appId": "full-ai-cluster/arc-runner-set",
@@ -437,18 +441,20 @@
         },
         {
           "appId": "full-ai-cluster/game-hosting/gmod",
-          "cpuMillis": 1000,
+          "cpuMillis": 100,
           "memoryMib": 2048,
           "pods": 1,
           "workloads": [
             {
               "workload": "StatefulSet/gmod",
               "replicas": 1,
-              "cpuMillis": 1000,
+              "cpuMillis": 100,
               "memoryMib": 2048
             }
           ],
-          "overlaid": []
+          "overlaid": [
+            "full-ai-cluster/game-hosting/gmod/server"
+          ]
         },
         {
           "appId": "full-ai-cluster/gitlab",
@@ -529,13 +535,13 @@
               "memoryMib": 0
             },
             {
-              "workload": "Job/gitlab-shared-secrets-ce0ab5a",
+              "workload": "Job/gitlab-shared-secrets-f7cfd97",
               "replicas": 1,
               "cpuMillis": 50,
               "memoryMib": 0
             },
             {
-              "workload": "Job/gitlab-shared-secrets-ce0ab5a-selfsign",
+              "workload": "Job/gitlab-shared-secrets-f7cfd97-selfsign",
               "replicas": 1,
               "cpuMillis": 50,
               "memoryMib": 0
@@ -1070,24 +1076,27 @@
         },
         {
           "appId": "full-ai-cluster/platform",
-          "cpuMillis": 100,
+          "cpuMillis": 50,
           "memoryMib": 160,
           "pods": 2,
           "workloads": [
             {
               "workload": "Deployment/platform-controller",
               "replicas": 1,
-              "cpuMillis": 50,
+              "cpuMillis": 25,
               "memoryMib": 64
             },
             {
               "workload": "StatefulSet/portal",
               "replicas": 1,
-              "cpuMillis": 50,
+              "cpuMillis": 25,
               "memoryMib": 96
             }
           ],
-          "overlaid": []
+          "overlaid": [
+            "full-ai-cluster/platform/controller",
+            "full-ai-cluster/platform/portal"
+          ]
         },
         {
           "appId": "full-ai-cluster/qwen-coder",
@@ -1116,7 +1125,10 @@
               "memoryMib": 64
             }
           ],
-          "overlaid": ["full-ai-cluster/redis/master", "full-ai-cluster/redis/replicas"]
+          "overlaid": [
+            "full-ai-cluster/redis/master",
+            "full-ai-cluster/redis/replicas"
+          ]
         },
         {
           "appId": "full-ai-cluster/sealed-secrets",
@@ -1152,7 +1164,9 @@
               "memoryMib": 0
             }
           ],
-          "overlaid": ["full-ai-cluster/seaweedfs/all-in-one"]
+          "overlaid": [
+            "full-ai-cluster/seaweedfs/all-in-one"
+          ]
         },
         {
           "appId": "full-ai-cluster/spire",
@@ -1474,13 +1488,13 @@
               "memoryMib": 0
             },
             {
-              "workload": "Job/gitlab-shared-secrets-2d12cd2",
+              "workload": "Job/gitlab-shared-secrets-9726964",
               "replicas": 1,
               "cpuMillis": 50,
               "memoryMib": 0
             },
             {
-              "workload": "Job/gitlab-shared-secrets-2d12cd2-selfsign",
+              "workload": "Job/gitlab-shared-secrets-9726964-selfsign",
               "replicas": 1,
               "cpuMillis": 50,
               "memoryMib": 0
@@ -1601,7 +1615,9 @@
               "memoryMib": 64
             }
           ],
-          "overlaid": []
+          "overlaid": [
+            "full-ai-cluster/agent-memory/memory-keeper"
+          ]
         },
         {
           "appId": "full-ai-cluster/alloy",
@@ -1631,7 +1647,9 @@
               "memoryMib": 128
             }
           ],
-          "overlaid": ["full-ai-cluster/arc-controller/manager"]
+          "overlaid": [
+            "full-ai-cluster/arc-controller/manager"
+          ]
         },
         {
           "appId": "full-ai-cluster/arc-runner-set",
@@ -1976,7 +1994,9 @@
               "memoryMib": 2048
             }
           ],
-          "overlaid": []
+          "overlaid": [
+            "full-ai-cluster/game-hosting/gmod/server"
+          ]
         },
         {
           "appId": "full-ai-cluster/gitlab",
@@ -2057,13 +2077,13 @@
               "memoryMib": 0
             },
             {
-              "workload": "Job/gitlab-shared-secrets-ce0ab5a",
+              "workload": "Job/gitlab-shared-secrets-f7cfd97",
               "replicas": 1,
               "cpuMillis": 50,
               "memoryMib": 0
             },
             {
-              "workload": "Job/gitlab-shared-secrets-ce0ab5a-selfsign",
+              "workload": "Job/gitlab-shared-secrets-f7cfd97-selfsign",
               "replicas": 1,
               "cpuMillis": 50,
               "memoryMib": 0
@@ -2615,7 +2635,10 @@
               "memoryMib": 96
             }
           ],
-          "overlaid": []
+          "overlaid": [
+            "full-ai-cluster/platform/controller",
+            "full-ai-cluster/platform/portal"
+          ]
         },
         {
           "appId": "full-ai-cluster/qwen-coder",
@@ -2644,7 +2667,10 @@
               "memoryMib": 128
             }
           ],
-          "overlaid": ["full-ai-cluster/redis/master", "full-ai-cluster/redis/replicas"]
+          "overlaid": [
+            "full-ai-cluster/redis/master",
+            "full-ai-cluster/redis/replicas"
+          ]
         },
         {
           "appId": "full-ai-cluster/sealed-secrets",
@@ -2680,7 +2706,9 @@
               "memoryMib": 0
             }
           ],
-          "overlaid": ["full-ai-cluster/seaweedfs/all-in-one"]
+          "overlaid": [
+            "full-ai-cluster/seaweedfs/all-in-one"
+          ]
         },
         {
           "appId": "full-ai-cluster/spire",
@@ -3002,13 +3030,13 @@
               "memoryMib": 0
             },
             {
-              "workload": "Job/gitlab-shared-secrets-2d12cd2",
+              "workload": "Job/gitlab-shared-secrets-9726964",
               "replicas": 1,
               "cpuMillis": 50,
               "memoryMib": 0
             },
             {
-              "workload": "Job/gitlab-shared-secrets-2d12cd2-selfsign",
+              "workload": "Job/gitlab-shared-secrets-9726964-selfsign",
               "replicas": 1,
               "cpuMillis": 50,
               "memoryMib": 0

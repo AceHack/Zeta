@@ -67,7 +67,7 @@ spec:
           volumeMounts:
             - { name: data, mountPath: /data }
           resources:
-            requests: { cpu: "1", memory: "2Gi" }
+            requests: { cpu: "1", memory: "2048Mi" }
             limits: { cpu: "2", memory: "4Gi" }
         # SFTP sidecar — FTP access to the same game files (the FTP root IS the
         # Longhorn PVC). Key-based auth: drop operator/tenant pubkeys into the

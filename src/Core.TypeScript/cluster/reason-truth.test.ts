@@ -564,7 +564,20 @@ describe("resource-rung / lane-cpu are checked against the ladder, not the prose
   // anybody read the prose that quoted it.
   test("the lane totals and their fits/over verdicts both hold today", () => {
     expect(checkCitation(only("[cite: lane-cpu metal 5231 over]"), EVIDENCE, subject("hindsight", ""))).toBe(null);
-    expect(checkCitation(only("[cite: lane-cpu dev 2906 over]"), EVIDENCE, subject("hindsight", ""))).toBe(null);
+    // `dev` has now cited THREE different pairs, and the sequence is the point:
+    //   `1906 fits` -> `2906 over`  (gmod was always applied, never counted)
+    //   `2906 over` -> `2006 fits`  (the rung learned to reach raw manifests)
+    // Neither transition was a number edited to agree with prose; both went red
+    // HERE first, which is the entire job of this mechanism.
+    expect(checkCitation(only("[cite: lane-cpu dev 2006 fits]"), EVIDENCE, subject("hindsight", ""))).toBe(null);
+    // The two superseded pairs are still refused, so a revert of the prose
+    // without a revert of the ladder cannot pass.
+    expect(checkCitation(only("[cite: lane-cpu dev 2906 over]"), EVIDENCE, subject("hindsight", ""))?.rule).toBe(
+      "cited-lane-total-disagrees",
+    );
+    expect(checkCitation(only("[cite: lane-cpu dev 1906 fits]"), EVIDENCE, subject("hindsight", ""))?.rule).toBe(
+      "cited-lane-total-disagrees",
+    );
   });
 
   test("the VERDICT is checked independently of the total", () => {
@@ -575,12 +588,15 @@ describe("resource-rung / lane-cpu are checked against the ladder, not the prose
     const wrongWay = checkCitation(only("[cite: lane-cpu metal 5231 fits]"), EVIDENCE, subject("hindsight", ""));
     expect(wrongWay?.rule).toBe("cited-lane-verdict-disagrees");
     expect(wrongWay?.detail).toContain("does NOT fit");
-    const alsoWrong = checkCitation(only("[cite: lane-cpu dev 2906 fits]"), EVIDENCE, subject("hindsight", ""));
+    // The dev side now needs the OTHER polarity to be the wrong one, because
+    // the lane fits: right number, wrong verdict.
+    const alsoWrong = checkCitation(only("[cite: lane-cpu dev 2006 over]"), EVIDENCE, subject("hindsight", ""));
     expect(alsoWrong?.rule).toBe("cited-lane-verdict-disagrees");
+    expect(alsoWrong?.detail).toContain("FITS");
   });
 
   test("a verdict word outside the pair is refused rather than ignored", () => {
-    const verdict = checkCitation(only("[cite: lane-cpu dev 2906 tight]"), EVIDENCE, subject("hindsight", ""));
+    const verdict = checkCitation(only("[cite: lane-cpu dev 2006 tight]"), EVIDENCE, subject("hindsight", ""));
     expect(verdict?.rule).toBe("cited-lane-verdict-disagrees");
   });
 
@@ -626,21 +642,33 @@ describe("hindsight is the symptom, and the ladder still says so", () => {
     // edit that shrinks hindsight and un-defers it goes red here first.
     expect(withHindsight.cpuMillis).toBeGreaterThan(budget.cpuMillis);
     expect(withoutHindsight.cpuMillis).toBeGreaterThan(budget.cpuMillis);
-    // ...AND THE LANE-WIDE CUT NO LONGER CLOSES IT, which is a change of
-    // answer and is asserted as one rather than deleted. `dev` across the whole
-    // lane is 2906m against 2500m -- still over by 406m -- because
-    // `game-hosting/gmod` is a git-path Application with no valuesObject, so no
-    // rung can express it and 1000m of the lane is outside the ladder's reach
-    // entirely. The reason's "the only cut that closes this is lane-wide" was
-    // true of the numbers it was written against and is now necessary rather
-    // than sufficient.
+    // ...AND THE LANE-WIDE CUT CLOSES IT AGAIN, which is the SECOND change of
+    // answer for this assertion and is written as a sequence rather than as a
+    // replacement:
+    //
+    //   originally  `dev` closed it            1906m <= 2500m
+    //   2026-08-22  `dev` no longer closed it  2906m, over by 406m, because
+    //               `game-hosting/gmod` is a git-path Application and 1000m of
+    //               the lane was outside the ladder's reach entirely
+    //   2026-08-23  `dev` closes it again      2006m, 494m of spare, because
+    //               the ladder now reaches raw in-repo manifests
+    //
+    // The 2026-08-22 note said "no rung can express it". That was true of the
+    // render-side reader and FALSE of the applier, which has always addressed
+    // an arbitrary manifest by path + docIndex + field.
     const laneAtDev = resourceTotal(catalogue, "dev", EVIDENCE.devLaneDirs);
-    expect(laneAtDev.cpuMillis).toBeGreaterThan(budget.cpuMillis);
-    expect(laneAtDev.cpuMillis - budget.cpuMillis).toBe(406);
-    // And it IS gmod, exactly: drop the one Application no rung reaches and the
-    // lane-wide cut closes as it used to.
+    expect(laneAtDev.cpuMillis).toBe(2006);
+    expect(laneAtDev.cpuMillis).toBeLessThanOrEqual(budget.cpuMillis);
+    expect(budget.cpuMillis - laneAtDev.cpuMillis).toBe(494);
+    // And gmod is still COUNTED, not excluded -- reachability is not removal.
+    // It contributes 100m at `dev` where it contributed 1000m, and the `metal`
+    // rung still carries the whole core.
     const withoutGmod = EVIDENCE.devLaneDirs.filter((dir) => dir !== "game-hosting/gmod");
-    expect(resourceTotal(catalogue, "dev", withoutGmod).cpuMillis).toBeLessThanOrEqual(budget.cpuMillis);
+    expect(laneAtDev.cpuMillis - resourceTotal(catalogue, "dev", withoutGmod).cpuMillis).toBe(100);
+    expect(
+      resourceTotal(catalogue, "metal", EVIDENCE.devLaneDirs).cpuMillis -
+        resourceTotal(catalogue, "metal", withoutGmod).cpuMillis,
+    ).toBe(1000);
   });
 
   test("the committed tree carries `metal`, which is the rung that does not fit", () => {

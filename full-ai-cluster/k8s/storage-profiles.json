@@ -381,13 +381,7 @@
     "not a paraphrase of it. A lift condition stricter than its gate keeps an entry",
     "alive after its defect is gone, which has cost this repo a cycle twice."
   ],
-  "acknowledgedLaneBudgetShortfall": [
-    {
-      "key": "dev cpu 2906>2500",
-      "reason": "THE DEV LANE CANNOT HOST EITHER RUNG, AND THIS IS THE SMALLER ONE. MEASURED 2026-08-22 by two independent oracles that agree to the millicore: this catalogue's own arithmetic (`--resource-profile dev --budget`) and a full render of every chart at the `dev` rung (`rendered-resource-requests.ts --measure`) both report 2906m / 8255Mi over the 38 Applications the dev root applies, against a 2500m / 9216Mi budget. Memory fits with 961Mi spare; CPU is over by 406m. The figure was 1906m until 2026-08-22 and the missing 1000m is `game-hosting/gmod`, an in-repo StatefulSet requesting a literal cpu 1 / memory 2Gi that ArgoCD's include glob reaches at depth 2 and this catalogue's enumerator could not see. NO RUNG REACHES IT: gmod is a git-path source with no valuesObject, so no resourceClaim can express it and applying `dev` to the tree does not shrink it. What the arithmetic says, and what it does not: applying `dev` to the committed tree is NECESSARY -- it takes the lane from 5231m to 2906m -- and NOT SUFFICIENT. The remaining 406m has exactly two shapes and both are cheap: shrink gmod's literal request in full-ai-cluster/k8s/applications/game-hosting/gmod/statefulset.yaml (at 500m the lane is 2406m and fits), or add `game-hosting/**` to DEFAULT_ROOT_DEV_CATALOG.excludeGlob so the dev root stops applying a game server (the lane is then 1906m and fits with 594m spare). gmod does not schedule TODAY because its sync fails on gatekeeper's webhook, which is a reprieve and not a fit -- the same shape as the longhorn StorageClass reprieve this file predicted in writing and that hindsight-postgresql-0 eventually cashed as `Insufficient cpu`. This entry is DEBT, not a verdict: which shape to take, and whether the committed tree should carry `dev` at all or grow a per-substrate override point, is the maintainer's call and both options are priced above rather than chosen.",
-      "liftsWhen": "LIFTS WHEN: `storage-profiles.ts --resource-profile dev --budget` exits 0 — that is, the dev-lane total at the `dev` rung is no more than 2500m of CPU. The condition IS the gate and not a paraphrase of it, and the key is pinned to the exact arithmetic (2906>2500), so any change to either number retires this entry automatically and the audit exits 1 until it is deleted."
-    }
-  ],
+  "acknowledgedLaneBudgetShortfall": [],
   "resourceProfiles": ["dev", "metal"],
 
   "runnerEnvelope": {
@@ -405,6 +399,25 @@
 
   "resourceClaims": [
     {
+      "id": "full-ai-cluster/agent-memory/memory-keeper",
+      "dir": "agent-memory",
+      "path": "full-ai-cluster/k8s/applications/agent-memory/statefulset.yaml",
+      "docIndex": 0,
+      "requestsField": "spec.template.spec.containers[0].resources.requests",
+      "pods": 1,
+      "metalSource": "manifest",
+      "evidence": "IN-REPO MANIFEST WE OWN, not a chart value and not vendored. This Application is a `git-path` source: ArgoCD syncs the directory verbatim, so there is no valuesObject and the coordinate above addresses statefulset.yaml itself. Coordinate derived mechanically 2026-08-23 by walking the Application's own `directory.include` glob ({namespace,service,statefulset}.yaml) and reading back `spec.template.spec.containers[0].resources.requests` = 50m / 64Mi on container `memory-keeper`. `metal` reproduces that literal exactly, so applying `metal` to the tree is a no-op and `--resource-profile metal --verify` stays clean.",
+      "consequence": "A single-replica memory keeper that is idle in the dev lane -- nothing writes to it during a bring-up smoke run. CPU is compressible, so 25m throttles a busy keeper rather than failing it, and MEMORY IS UNCHANGED AT BOTH RUNGS because an under-request on the incompressible axis makes this pod the first eviction candidate under node pressure instead of merely slower. Glob-excluded from the dev lane, so this row buys reachability rather than budget.",
+      "cpuMillis": {
+        "dev": 25,
+        "metal": 50
+      },
+      "memoryMib": {
+        "dev": 64,
+        "metal": 64
+      }
+    },
+    {
       "id": "full-ai-cluster/arc-controller/manager",
       "dir": "arc-controller",
       "path": "full-ai-cluster/k8s/applications/arc-controller/Application.yaml",
@@ -421,6 +434,25 @@
       "memoryMib": {
         "dev": 64,
         "metal": 128
+      }
+    },
+    {
+      "id": "full-ai-cluster/game-hosting/gmod/server",
+      "dir": "game-hosting/gmod",
+      "path": "full-ai-cluster/k8s/applications/game-hosting/gmod/statefulset.yaml",
+      "docIndex": 0,
+      "requestsField": "spec.template.spec.containers[0].resources.requests",
+      "pods": 1,
+      "metalSource": "manifest",
+      "evidence": "THE 1000m THAT NO RUNG COULD REACH -- a sixth of the whole tree's CPU. Until this row existed, `game-hosting/gmod` sat in `ungovernedRequests` with an evidence string that stated the defect in its own words: `NO RUNG GOVERNS IT -- it is a git-path source with no valuesObject, so a resourceClaim (which writes into spec.source.helm.valuesObject) cannot express it`. That sentence was true of the RENDER-SIDE READER and false of the applier: `applyResourceProfile` and `verifyResourceProfileApplied` have always addressed `path` + `docIndex` + `requestsField` as a dotted path into an ARBITRARY manifest, and only `overlayRung` required the `spec.source.helm.valuesObject.` prefix. Coordinate derived mechanically 2026-08-23: statefulset.yaml document 0, containers[0] `gmod`. Containers[1] is the sftp sidecar and declares NO requests -- it is BestEffort and contributes nothing at either rung. The literal `memory: 2Gi` was normalised to the IDENTICAL quantity `2048Mi` so the metal rung is byte-verifiable by `--resource-profile metal --verify`; both parse to 2147483648 bytes, so metal scheduling is unchanged.",
+      "consequence": "A Source-engine dedicated server with no players connected. srcds reserves a whole core for tick processing under load; in the dev lane it loads a map and idles, and CPU is compressible so 100m throttles map load rather than failing it -- the container's `limits` are untouched at 2 cores, so it can still burst to exactly what it bursts to today. MEMORY IS UNCHANGED AT BOTH RUNGS AND DELIBERATELY SO: a map's working set is real, memory is incompressible, and cutting this request would trade a Pending pod for an evicted one. On metal the rung is the original whole core. gmod does not schedule today only because its sync fails on gatekeeper's webhook -- a reprieve, not a fit, which is why the 1000m was priced and governed rather than waited out.",
+      "cpuMillis": {
+        "dev": 100,
+        "metal": 1000
+      },
+      "memoryMib": {
+        "dev": 2048,
+        "metal": 2048
       }
     },
     {
@@ -843,6 +875,44 @@
       }
     },
     {
+      "id": "full-ai-cluster/platform/controller",
+      "dir": "platform",
+      "path": "full-ai-cluster/k8s/applications/platform/controller.yaml",
+      "docIndex": 3,
+      "requestsField": "spec.template.spec.containers[0].resources.requests",
+      "pods": 1,
+      "metalSource": "manifest",
+      "evidence": "IN-REPO MANIFEST WE OWN; `git-path` source, no valuesObject. Coordinate derived mechanically 2026-08-23: controller.yaml document 3, containers[0] `controller` = 50m / 64Mi. `metal` reproduces that literal exactly. NOTE a separate and untouched gap: `lane-partition.ts` cannot PRICE this Application because its image `ghcr.io/lucent-financial-group/zeta-platform-controller:latest` is unmeasurable. That is a disk-size quarantine; CPU and memory here are read from our own YAML and were never unknown.",
+      "consequence": "The platform controller reconciles the GameServer/App/Blueprint CRDs. In the dev lane the CRDs exist and no custom resource is ever created, so it watches an empty set. 25m is sized for that idle watch; on metal the rung stays 50m. Memory unchanged at both rungs. Glob-excluded from the dev lane, so this row buys reachability rather than budget.",
+      "cpuMillis": {
+        "dev": 25,
+        "metal": 50
+      },
+      "memoryMib": {
+        "dev": 64,
+        "metal": 64
+      }
+    },
+    {
+      "id": "full-ai-cluster/platform/portal",
+      "dir": "platform",
+      "path": "full-ai-cluster/k8s/applications/platform/portal.yaml",
+      "docIndex": 3,
+      "requestsField": "spec.template.spec.containers[0].resources.requests",
+      "pods": 1,
+      "metalSource": "manifest",
+      "evidence": "IN-REPO MANIFEST WE OWN; `git-path` source, no valuesObject. Coordinate derived mechanically 2026-08-23: portal.yaml document 3, containers[0] `portal` = 50m / 96Mi. `metal` reproduces that literal exactly. Second of two governed rows under `dir: platform`; the first is the controller.",
+      "consequence": "The portal is a web front end nothing drives during a bring-up smoke run -- no browser connects in the dev lane. 25m serves the readiness probe and the idle process; on metal the rung stays 50m. Memory unchanged at both rungs.",
+      "cpuMillis": {
+        "dev": 25,
+        "metal": 50
+      },
+      "memoryMib": {
+        "dev": 96,
+        "metal": 96
+      }
+    },
+    {
       "id": "full-ai-cluster/redis/master",
       "dir": "redis",
       "path": "full-ai-cluster/k8s/applications/redis/Application.yaml",
@@ -979,12 +1049,6 @@
 
   "ungovernedRequests": [
     {
-      "dir": "agent-memory",
-      "cpuMillis": 50,
-      "memoryMib": 64,
-      "evidence": "In-repo manifests under this directory; summed 2026-08-21. Glob-excluded from the dev lane."
-    },
-    {
       "dir": "alloy",
       "cpuMillis": 1,
       "memoryMib": 5,
@@ -1025,12 +1089,6 @@
       "cpuMillis": 0,
       "memoryMib": 0,
       "evidence": "cert-manager v1.16.2 rendered 2026-08-21: chart default resources are unset."
-    },
-    {
-      "dir": "game-hosting/gmod",
-      "cpuMillis": 1000,
-      "memoryMib": 2048,
-      "evidence": "MEASURED 2026-08-22 by rendered-resource-requests.ts, and confirmed by reading the manifest: full-ai-cluster/k8s/applications/game-hosting/gmod/statefulset.yaml line 70 carries a literal `requests: { cpu: \"1\", memory: \"2Gi\" }`. This Application had NO row in this catalogue and could not have had one: applicationDirs() enumerated depth 1 and this file sits at depth 2. The $comment_resources block asserted it 'contributes 0m / 0Mi today (in-repo manifests, no requests)'; that sentence was false when written. NO RUNG GOVERNS IT -- it is a git-path source with no valuesObject, so a resourceClaim (which writes into spec.source.helm.valuesObject) cannot express it; changing its number means editing statefulset.yaml. That is why it is here rather than in resourceClaims, and why applying `dev` to the tree does not shrink it."
     },
     {
       "dir": "cilium",
@@ -1145,12 +1203,6 @@
       "cpuMillis": 0,
       "memoryMib": 0,
       "evidence": "MEASURED 2026-08-21, and no longer null: ziti-controller 3.1.1 (the corrected pin -- 1.4.5 was never published) rendered with this Application's own valuesObject declares `resources: {}` on the controller container (chart values.yaml:426 leaves it unset by design). 0 is the real answer here, not a missing one: the container reserves nothing."
-    },
-    {
-      "dir": "platform",
-      "cpuMillis": 100,
-      "memoryMib": 160,
-      "evidence": "In-repo manifests: platform-controller Deployment 50m/64Mi and the portal StatefulSet 50m/96Mi. Summed 2026-08-21. Glob-excluded from the dev lane."
     },
     {
       "dir": "qwen-coder",

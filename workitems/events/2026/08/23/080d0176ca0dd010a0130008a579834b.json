@@ -1,0 +1,14 @@
+{
+  "id": "080d0176ca0dd010a0130008a579834b",
+  "at": "2026-08-23T13:39:45.210Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M0QDJGDS087G0R003Z35VZN",
+    "type": "task",
+    "title": "resourceClaims cannot express a zero-replica workload — 5100m of latent hardcoded request is acknowledged rather than governed",
+    "slug": "resourceclaims-cannot-express-a-zero-replica-workload-5100m",
+    "priority": "P2",
+    "filename": "081M0QDJGDS087G0R003Z35VZN-resourceclaims-cannot-express-a-zero-replica-workload-5100m.md"
+  }
+}

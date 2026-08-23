@@ -23,7 +23,7 @@
  */
 
 import { describe, expect, test } from "bun:test";
-import { mkdtempSync, rmSync, writeFileSync } from "node:fs";
+import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import {
@@ -44,6 +44,9 @@ import {
   auditExitCode,
   loadSnapshot,
   loadBaseline,
+  claimIsInsideGitPath,
+  unreachableGitPathRequests,
+  gitPathReachabilityFindings,
   type RenderSnapshot,
   type Baseline,
   type ContainerRequest,
@@ -57,7 +60,7 @@ import {
   type ResourceCatalogue,
 } from "./storage-profiles.ts";
 import { envelopeOverstatements, loadRecordedEnvelope } from "./assert-runner-envelope.ts";
-import type { ApplicationSource } from "./rendered-storage-claims.ts";
+import { discoverApplications, renderApplication, type ApplicationSource } from "./rendered-storage-claims.ts";
 
 const container = (
   role: ContainerRequest["role"],
@@ -316,13 +319,27 @@ describe("the live tree", () => {
     expect(devLaneAppliedDirs(undefined, "{game-hosting/**}")).not.toContain("game-hosting/gmod");
   });
 
-  test("the catalogue covers gmod, so no rung total omits it", () => {
+  // WAS `governed: false` UNTIL 2026-08-23, and the flip is the whole point of
+  // this change. `declaredAppTotal` reports `governed` from where the number
+  // came: an `ungovernedRequests` row (a measurement nobody can act on) or a
+  // `resourceClaim` (a coordinate a rung writes into). gmod's 1000m sat in the
+  // first bucket, so every rung priced the same number.
+  test("gmod is GOVERNED now — the same app, priced differently at each rung", () => {
     const catalogue = loadResourceCatalogue();
     expect(declaredAppTotal(catalogue, "dev", "game-hosting/gmod")).toEqual({
+      cpuMillis: 100,
+      memoryMib: 2048,
+      governed: true,
+    });
+    expect(declaredAppTotal(catalogue, "metal", "game-hosting/gmod")).toEqual({
       cpuMillis: 1000,
       memoryMib: 2048,
-      governed: false,
+      governed: true,
     });
+    // METAL IS THE UNTOUCHED NUMBER. 1000m is the literal that has been in
+    // statefulset.yaml since it was written; the row reproduces it rather than
+    // re-deciding it, which is why `--resource-profile metal --verify` is clean.
+    expect(verifyResourceProfileApplied(catalogue, "metal")).toEqual([]);
   });
 });
 
@@ -427,11 +444,21 @@ describe("eight mutations against the live validators", () => {
     }
   }
 
-  test("CONTROL: the live snapshot and baseline audit exit 0", () => {
-    const { result } = auditRenderedResourceRequests({});
-    expect(result.snapshot).not.toBeNull();
-    expect(auditExitCode(result)).toBe(0);
-  });
+  // 30s, not the 5s default: the audit now also walks every `git-path`
+  // Application's own manifests (the reachability check reads the TREE rather
+  // than the snapshot, on purpose — see `unreachableGitPathRequests`). That is
+  // real work and it pushed this control past 5s on 2026-08-23. Raising the
+  // budget is the honest fix; making the check snapshot-dependent to stay fast
+  // would have made it miss the case it exists for.
+  test(
+    "CONTROL: the live snapshot and baseline audit exit 0",
+    () => {
+      const { result } = auditRenderedResourceRequests({});
+      expect(result.snapshot).not.toBeNull();
+      expect(auditExitCode(result)).toBe(0);
+    },
+    30_000,
+  );
 
   test("1 snapshot total bumped — declared-total-mismatch, exit 1", () => {
     const { exit, result } = auditMutated((snapshot, baseline) => ({
@@ -552,22 +579,29 @@ describe("eight mutations against the live validators", () => {
     expect(bad.join(" ")).toContain(String(recorded.freeDiskGib));
   });
 
-  test("7 acknowledgement key detuned by 1m — STALE, and dropping it convicts", () => {
-    expect(liveCatalogue.acknowledgedLaneBudgetShortfall.map((entry) => entry.key)).toEqual(["dev cpu 2906>2500"]);
+  // THE REGISTER IS EMPTY AS OF 2026-08-23. Its one entry -- `dev cpu
+  // 2906>2500` -- was retired by the arithmetic moving, not by a deletion:
+  // governing the three git-path Applications we own took the dev lane to 2006m.
+  //
+  // An empty register is the easiest thing in this file to fake, so the
+  // mutation now runs in the other direction: it re-adds an acknowledgement and
+  // requires it to be convicted as STALE. A gate that accepts a debt entry for
+  // a debt that no longer exists would let the next real one hide behind it.
+  test("7 the lane register is empty, and a revived acknowledgement is convicted STALE", () => {
+    expect(liveCatalogue.acknowledgedLaneBudgetShortfall).toEqual([]);
     expect(auditRunnerBudget(liveCatalogue, "dev")).toEqual([]);
-    const detuned = {
+    const revived = {
       ...liveCatalogue,
-      acknowledgedLaneBudgetShortfall: liveCatalogue.acknowledgedLaneBudgetShortfall.map((entry) =>
-        entry.key === "dev cpu 2906>2500" ? { ...entry, key: "dev cpu 2905>2500" } : entry,
-      ),
+      acknowledgedLaneBudgetShortfall: [
+        { key: "dev cpu 2906>2500", reason: "r".repeat(60), liftsWhen: "LIFTS WHEN: never" },
+      ],
     };
-    const stale = auditRunnerBudget(detuned, "dev");
+    const stale = auditRunnerBudget(revived, "dev");
     expect(stale.some((finding) => finding.problem.includes("outlived"))).toBe(true);
     expect(stale.some((finding) => finding.problem.includes("dev cpu 2906>2500"))).toBe(true);
-    const dropped = { ...liveCatalogue, acknowledgedLaneBudgetShortfall: [] };
-    const convicted = auditRunnerBudget(dropped, "dev");
-    expect(convicted.length).toBeGreaterThan(0);
-    expect(convicted[0]?.problem).toContain("dev cpu 2906>2500");
+    // And `metal` still convicts, unacknowledged — the rung that does not fit
+    // must go on saying so.
+    expect(auditRunnerBudget(liveCatalogue, "metal").length).toBeGreaterThan(0);
   });
 
   test("8 activeResourceProfile flipped to a rung the tree does not carry", () => {
@@ -579,5 +613,298 @@ describe("eight mutations against the live validators", () => {
     expect(verifyResourceProfileApplied(liveCatalogue, "metal")).toEqual([]);
     const flipped = verifyResourceProfileApplied(liveCatalogue, "dev");
     expect(flipped.length).toBeGreaterThan(0);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// THE FALSIFIER — a git-path Application's RENDERED request must move with the rung
+// ---------------------------------------------------------------------------
+//
+// This whole describe fails on the commit before it. Not "would be weaker" —
+// FAILS, and it was RUN that way rather than reasoned about: a worktree at
+// origin/main (ba965f8636) rendering gmod at both rungs reported
+//
+//     gmod rendered CPU at "dev"   = 1000m
+//     gmod rendered CPU at "metal" = 1000m
+//     overlayRung has manifestOverlays? false
+//
+// because `renderGitPath` read the committed YAML verbatim and nothing was
+// written into it. 1000m — a sixth of the whole tree's CPU — was outside the
+// override mechanism entirely.
+//
+// It is stated three ways on purpose: hermetically (so it keeps testing the
+// MECHANISM after the tree moves on), against the live tree (so it keeps
+// testing the 1000m that was actually found), and as a refusal (so a coordinate
+// that misses cannot render the committed value and look like a rung).
+describe("a rung reaches a raw in-repo manifest", () => {
+  const catalogue = loadResourceCatalogue();
+
+  function gitPathSource(appId: string): ApplicationSource {
+    const found = discoverApplications().find((source) => source.appId === appId);
+    if (found === undefined) throw new Error(`no Application ${appId}`);
+    return found;
+  }
+
+  function renderedCpu(appId: string, rung: string): number {
+    const source = gitPathSource(appId);
+    const overlay = overlayRung(source, catalogue, rung);
+    const rendered = renderApplication(overlay.source, { manifestOverlays: overlay.manifestOverlays });
+    if (!rendered.ok) throw new Error(`${appId} @ ${rung}: ${rendered.reason} ${rendered.detail}`);
+    let cpu = 0;
+    for (const spec of extractRenderedRequests(appId, rendered.documents)) cpu += spec.cpuMillis * spec.replicas;
+    return cpu;
+  }
+
+  // THE ONE THAT WAS ASKED FOR.
+  test("gmod renders 100m at dev and 1000m at metal — the SAME manifest", () => {
+    expect(renderedCpu("full-ai-cluster/game-hosting/gmod", "dev")).toBe(100);
+    expect(renderedCpu("full-ai-cluster/game-hosting/gmod", "metal")).toBe(1000);
+  });
+
+  // METAL IS THE CONSTRAINT, so it gets its own assertion rather than riding
+  // along inside another test: every governed git-path app must render at
+  // `metal` exactly what the committed manifest says, because that hardware is
+  // where these numbers are load-bearing.
+  test("metal renders the committed literal, unchanged, for every governed git-path app", () => {
+    expect(renderedCpu("full-ai-cluster/game-hosting/gmod", "metal")).toBe(1000);
+    expect(renderedCpu("full-ai-cluster/agent-memory", "metal")).toBe(50);
+    expect(renderedCpu("full-ai-cluster/platform", "metal")).toBe(100);
+    // ...and the tree itself still IS `metal`, byte for byte.
+    expect(verifyResourceProfileApplied(catalogue, "metal")).toEqual([]);
+  });
+
+  // THE REFUSAL, PINNED. `cdi` and `kubevirt` ARE reachable by this mechanism —
+  // both were governed for one draft — and are deliberately left ungoverned
+  // because their manifests are vendored byte-for-byte from upstream and
+  // `--apply` would rewrite them. 120m was available there and refused. This
+  // asserts the refusal rather than leaving it as prose, so a later
+  // "finish the job" edit has to argue with a test.
+  test("the vendored manifests are reachable and deliberately NOT governed", () => {
+    for (const dir of ["cdi", "kubevirt"]) {
+      expect(catalogue.claims.some((claim) => claim.dir === dir)).toBe(false);
+      expect(catalogue.ungoverned.some((app) => app.dir === dir)).toBe(true);
+    }
+    // Unchanged at both rungs, because nothing writes into them.
+    expect(renderedCpu("full-ai-cluster/cdi", "dev")).toBe(renderedCpu("full-ai-cluster/cdi", "metal"));
+    expect(renderedCpu("full-ai-cluster/kubevirt", "dev")).toBe(renderedCpu("full-ai-cluster/kubevirt", "metal"));
+  });
+
+  test("every governed git-path app moves at dev, and none of them is unoverlayable", () => {
+    for (const appId of [
+      "full-ai-cluster/game-hosting/gmod",
+      "full-ai-cluster/agent-memory",
+      "full-ai-cluster/platform",
+    ]) {
+      const overlay = overlayRung(gitPathSource(appId), catalogue, "dev");
+      expect(overlay.unoverlayable).toEqual([]);
+      expect(overlay.manifestOverlays.length).toBeGreaterThan(0);
+      expect(renderedCpu(appId, "dev")).toBeLessThan(renderedCpu(appId, "metal"));
+    }
+  });
+
+  // HERMETIC. Builds a two-file tree from scratch — an Application syncing a
+  // raw path plus a Deployment with a literal request — so the mechanism stays
+  // pinned even if every real app is later converted to a chart.
+  test("hermetic: a synthetic git-path app renders two different numbers", () => {
+    const root = mkdtempSync(join(tmpdir(), "zeta-gitpath-"));
+    try {
+      const appDir = join(root, "full-ai-cluster/k8s/applications/toy");
+      mkdirSync(appDir, { recursive: true });
+      writeFileSync(
+        join(appDir, "Application.yaml"),
+        [
+          "apiVersion: argoproj.io/v1alpha1",
+          "kind: Application",
+          "metadata: { name: toy }",
+          "spec:",
+          "  source:",
+          "    repoURL: https://example.invalid/repo",
+          "    targetRevision: main",
+          "    path: full-ai-cluster/k8s/applications/toy",
+          "    directory: { include: '{deployment}.yaml' }",
+          "  destination: { namespace: toy }",
+          "",
+        ].join("\n"),
+        "utf8",
+      );
+      writeFileSync(
+        join(appDir, "deployment.yaml"),
+        [
+          "apiVersion: apps/v1",
+          "kind: Deployment",
+          "metadata: { name: toy }",
+          "spec:",
+          "  replicas: 1",
+          "  template:",
+          "    spec:",
+          "      containers:",
+          "        - name: toy",
+          "          resources:",
+          '            requests: { cpu: "800m", memory: "256Mi" }',
+          "",
+        ].join("\n"),
+        "utf8",
+      );
+      const source = discoverApplications(root).find((entry) => entry.appId === "full-ai-cluster/toy");
+      expect(source).toBeDefined();
+      if (source === undefined) return;
+      expect(source.kind).toBe("git-path");
+
+      const toyClaim = {
+        id: "full-ai-cluster/toy/toy",
+        dir: "toy",
+        path: "full-ai-cluster/k8s/applications/toy/deployment.yaml",
+        docIndex: 0,
+        requestsField: "spec.template.spec.containers[0].resources.requests",
+        pods: 1,
+        metalSource: "manifest" as const,
+        evidence: "hermetic fixture",
+        consequence: "hermetic fixture",
+        cpuMillis: { dev: 50, metal: 800 },
+        memoryMib: { dev: 256, metal: 256 },
+      };
+      const toyCatalogue: ResourceCatalogue = { ...catalogue, claims: [toyClaim], ungoverned: [] };
+
+      const at = (rung: string): number => {
+        const overlay = overlayRung(source, toyCatalogue, rung);
+        expect(overlay.unoverlayable).toEqual([]);
+        const rendered = renderApplication(overlay.source, {
+          repoRoot: root,
+          manifestOverlays: overlay.manifestOverlays,
+        });
+        if (!rendered.ok) throw new Error(`${rung}: ${rendered.reason} ${rendered.detail}`);
+        let cpu = 0;
+        for (const spec of extractRenderedRequests("full-ai-cluster/toy", rendered.documents)) {
+          cpu += spec.cpuMillis * spec.replicas;
+        }
+        return cpu;
+      };
+      expect(at("dev")).toBe(50);
+      expect(at("metal")).toBe(800);
+
+      // AND A ROW THAT MISSES IS NOT SILENTLY IGNORED. A coordinate whose
+      // container index does not exist must FAIL the render, not render the
+      // committed value and look like a rung that was applied — that is the
+      // vacuity class, and it would agree with every rung equally.
+      const wrong = overlayRung(
+        source,
+        {
+          ...toyCatalogue,
+          claims: [{ ...toyClaim, requestsField: "spec.template.spec.containers[7].resources.requests" }],
+        },
+        "dev",
+      );
+      const missed = renderApplication(source, { repoRoot: root, manifestOverlays: wrong.manifestOverlays });
+      expect(missed.ok).toBe(false);
+      if (!missed.ok) expect(missed.reason).toBe("manifest-overlay-missed");
+    } finally {
+      rmSync(root, { recursive: true, force: true });
+    }
+  });
+
+  // Segment-boundary, not `startsWith`: `.../orleans` must not claim
+  // `.../orleans-legacy/x.yaml`.
+  test("claimIsInsideGitPath is segment-bounded", () => {
+    expect(claimIsInsideGitPath("a/b/c.yaml", "a/b")).toBe(true);
+    expect(claimIsInsideGitPath("a/b-legacy/c.yaml", "a/b")).toBe(false);
+    expect(claimIsInsideGitPath("a/b.yaml", "")).toBe(false);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// THE CLASS-CLOSER — a new raw manifest with a request nothing governs
+// ---------------------------------------------------------------------------
+describe("unreachable git-path requests", () => {
+  const catalogue = loadResourceCatalogue();
+
+  // SIX remain, in TWO classes, and the classes are different refusals:
+  //   - four are `replicas: 0` and CANNOT be governed (`pods >= 1` in the schema)
+  //   - two are vendored byte-for-byte and are DELIBERATELY not governed
+  // The set is asserted whole, so a seventh appearing fails here even if
+  // somebody also remembers to baseline it.
+  test("exactly six remain, in two named classes, all acknowledged", () => {
+    const open = unreachableGitPathRequests(catalogue);
+    expect(open.map((entry) => entry.appId).sort()).toEqual([
+      "full-ai-cluster/cdi",
+      "full-ai-cluster/hat-system",
+      "full-ai-cluster/kubevirt",
+      "full-ai-cluster/orleans",
+      "full-ai-cluster/vllm",
+      "infra/orleans",
+    ]);
+    expect(
+      open
+        .filter((entry) => entry.replicas === 0)
+        .map((entry) => entry.appId)
+        .sort(),
+    ).toEqual([
+      "full-ai-cluster/hat-system",
+      "full-ai-cluster/orleans",
+      "full-ai-cluster/vllm",
+      "infra/orleans",
+    ]);
+    expect(
+      open
+        .filter((entry) => entry.replicas > 0)
+        .map((entry) => entry.appId)
+        .sort(),
+    ).toEqual(["full-ai-cluster/cdi", "full-ai-cluster/kubevirt"]);
+
+    const keys = new Set(loadBaseline().entries.map((entry) => entry.key));
+    for (const finding of gitPathReachabilityFindings(catalogue)) {
+      expect(keys.has(findingKey(finding))).toBe(true);
+    }
+  });
+
+  test("the zero-replica four carry 5100m of LATENT request; the vendored two cost 120m TODAY", () => {
+    const open = unreachableGitPathRequests(catalogue);
+    // LATENT: schedules nothing while `replicas: 0`. 4000 (vllm) + 500
+    // (orleans) + 500 (infra/orleans) + 100 (hat-system).
+    //
+    // The first draft of this assertion said 5000m / 17408Mi -- I added that
+    // list by hand and dropped hat-system. The check caught it, which is the
+    // only reason the number here is measured rather than asserted.
+    const latent = open.filter((entry) => entry.replicas === 0);
+    expect(latent.reduce((sum, entry) => sum + entry.cpuMillis, 0)).toBe(5100);
+    expect(latent.reduce((sum, entry) => sum + entry.memoryMib, 0)).toBe(17536);
+    expect(open.find((entry) => entry.appId === "full-ai-cluster/vllm")?.cpuMillis).toBe(4000);
+
+    // SCHEDULED: the vendored pair reserves this today, at every rung, and no
+    // rung may move it. 100m (cdi x1) + 10m x 2 replicas (kubevirt).
+    const scheduled = open.filter((entry) => entry.replicas > 0);
+    expect(scheduled.reduce((sum, entry) => sum + entry.cpuMillis * entry.replicas, 0)).toBe(120);
+  });
+
+  // THE ACKNOWLEDGEMENT EXPIRES ON ITS OWN. Scaling a zero-replica workload up
+  // changes the finding key, so the baseline entry stops matching (the new key
+  // is OPEN) and simultaneously matches nothing (the old key is STALE).
+  test("scaling a baselined workload to 1 replica breaks its acknowledgement both ways", () => {
+    const vllm = gitPathReachabilityFindings(catalogue).find((finding) => finding.claimId.includes("/vllm/"));
+    expect(vllm).toBeDefined();
+    if (vllm === undefined) return;
+    const baseline = loadBaseline();
+    expect(adjudicate([vllm], baseline).open).toEqual([]);
+
+    const scaled = { ...vllm, claimId: vllm.claimId.replace("@x0", "@x1") };
+    const verdict = adjudicate([scaled], baseline);
+    expect(verdict.open.length).toBe(1);
+    expect(verdict.stale).toContain(findingKey(vllm));
+  });
+
+  // The red case for the check itself: a governed coordinate that stops being
+  // governed must be reported.
+  test("dropping gmod's row makes its 1000m unreachable again", () => {
+    const ungoverned: ResourceCatalogue = {
+      ...catalogue,
+      claims: catalogue.claims.filter((claim) => claim.dir !== "game-hosting/gmod"),
+    };
+    const gmod = unreachableGitPathRequests(ungoverned).find(
+      (entry) => entry.appId === "full-ai-cluster/game-hosting/gmod",
+    );
+    expect(gmod).toBeDefined();
+    expect(gmod?.cpuMillis).toBe(1000);
+    expect(gmod?.replicas).toBe(1);
+    // and it is NOT in the baseline, so it convicts
+    expect(adjudicate(gitPathReachabilityFindings(ungoverned), loadBaseline()).open.length).toBeGreaterThan(0);
   });
 });

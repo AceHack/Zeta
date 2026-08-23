@@ -77,13 +77,16 @@
 // to disagree about. Absence is not agreement. `snapshotDrift` below compares
 // the APP-ID SET per rung first and only then the rows.
 
-import { readFileSync, writeFileSync } from "node:fs";
-import { resolve } from "node:path";
+import { readFileSync, readdirSync, writeFileSync, type Dirent } from "node:fs";
+import { join, resolve } from "node:path";
+import { parseAllDocuments } from "yaml";
 import { stringCompare } from "../collation/collation.ts";
 import {
   discoverApplications,
+  includeMatcher,
   renderApplication,
   type ApplicationSource,
+  type ManifestOverlay,
   type RenderOptions,
 } from "./rendered-storage-claims.ts";
 import { loadResourceCatalogue, type ResourceCatalogue, type ProfileFinding } from "./storage-profiles.ts";
@@ -357,6 +360,15 @@ export interface OverlayResult {
   readonly source: ApplicationSource;
   readonly applied: readonly string[];
   readonly unoverlayable: readonly string[];
+  /**
+   * Rung values destined for a `git-path` source's own manifests.
+   *
+   * The SAME catalogue row, the same two-rung ladder, the same `--apply` verb —
+   * only the coordinate's address space differs, and it differs because ArgoCD
+   * forces it to: an Application that syncs a raw directory has no values file
+   * to write into. Empty for every helm-remote source.
+   */
+  readonly manifestOverlays: readonly ManifestOverlay[];
 }
 
 export function overlayRung(source: ApplicationSource, catalogue: ResourceCatalogue, profile: string): OverlayResult {
@@ -364,34 +376,74 @@ export function overlayRung(source: ApplicationSource, catalogue: ResourceCatalo
   const values = deepClone(source.valuesObject) as Record<string, unknown>;
   const applied: string[] = [];
   const unoverlayable: string[] = [];
+  const manifestOverlays: ManifestOverlay[] = [];
   for (const claim of catalogue.claims) {
     if (claim.dir !== dir) continue;
-    if (!claim.requestsField.startsWith(VALUES_PREFIX)) {
-      unoverlayable.push(claim.id);
-      continue;
-    }
     const cpu = claim.cpuMillis[profile];
     const memory = claim.memoryMib[profile];
     if (cpu === undefined || memory === undefined) {
       unoverlayable.push(claim.id);
       continue;
     }
-    const base = claim.requestsField.slice(VALUES_PREFIX.length).split(".");
-    for (const [suffix, millis, text] of [
+    const pairs = [
       ["cpu", cpu, formatCpuQuantity(cpu)],
       ["memory", memory, `${String(memory)}Mi`],
-    ] as const) {
-      const path = [...base, suffix];
-      if (millis === 0) deleteIn(values, path);
-      else setIn(values, path, text);
+    ] as const;
+
+    if (claim.requestsField.startsWith(VALUES_PREFIX)) {
+      const base = claim.requestsField.slice(VALUES_PREFIX.length).split(".");
+      for (const [suffix, millis, text] of pairs) {
+        const path = [...base, suffix];
+        if (millis === 0) deleteIn(values, path);
+        else setIn(values, path, text);
+      }
+      applied.push(claim.id);
+      continue;
     }
-    applied.push(claim.id);
+
+    // NOT a values coordinate. On a git-path Application that is not a defect —
+    // it is the only coordinate there is, and the row is expressed as an
+    // in-manifest overlay. `renderGitPath` writes it into the parsed document
+    // before the render, so the two rungs produce two different renders exactly
+    // as `valuesObject` does for a chart.
+    if (source.kind === "git-path" && claimIsInsideGitPath(claim.path, source.gitPath)) {
+      for (const [suffix, millis, text] of pairs) {
+        manifestOverlays.push({
+          path: claim.path,
+          docIndex: claim.docIndex,
+          field: `${claim.requestsField}.${suffix}`,
+          value: millis === 0 ? null : text,
+        });
+      }
+      applied.push(claim.id);
+      continue;
+    }
+
+    // Neither a values coordinate nor a manifest this Application syncs. A rung
+    // written nowhere would agree with every rung equally.
+    unoverlayable.push(claim.id);
   }
   return {
     source: { ...source, valuesObject: values },
     applied: applied.sort((a, b) => stringCompare(a, b)),
     unoverlayable: unoverlayable.sort((a, b) => stringCompare(a, b)),
+    manifestOverlays: manifestOverlays.sort((a, b) =>
+      stringCompare(`${a.path}#${String(a.docIndex)}.${a.field}`, `${b.path}#${String(b.docIndex)}.${b.field}`),
+    ),
   };
+}
+
+/**
+ * Is `claimPath` a manifest the Application at `gitPath` actually syncs?
+ *
+ * Prefix equality on a SEGMENT boundary, never `startsWith` alone: `startsWith`
+ * would match `.../applications/orleans-legacy/x.yaml` against a gitPath of
+ * `.../applications/orleans`, and an overlay attributed to the wrong
+ * Application is a finding the checker manufactured.
+ */
+export function claimIsInsideGitPath(claimPath: string, gitPath: string): boolean {
+  if (gitPath === "") return false;
+  return claimPath.startsWith(`${gitPath}/`);
 }
 
 // ---------------------------------------------------------------------------
@@ -445,7 +497,10 @@ export function measureProfile(
   for (const source of discoverApplications(repoRoot)) {
     const overlay = overlayRung(source, catalogue, profile);
     for (const id of overlay.unoverlayable) unoverlayable.add(id);
-    const rendered = renderApplication(overlay.source, options);
+    const rendered = renderApplication(overlay.source, {
+      ...options,
+      manifestOverlays: overlay.manifestOverlays,
+    });
     if (!rendered.ok) {
       unrenderable.push({ appId: source.appId, reason: rendered.reason, detail: rendered.detail });
       continue;
@@ -576,10 +631,177 @@ export function snapshotCoverageDrift(
 // Comparison — declared ladder vs measured render
 // ---------------------------------------------------------------------------
 
+/**
+ * A hardcoded request in an in-repo manifest that NO RUNG CAN REACH.
+ *
+ * THIS IS THE CLASS-CLOSER, and it is deliberately independent of the snapshot.
+ * Every other check in this file reads `rendered-resource-requests.snapshot.json`,
+ * which means a new Application only gets checked once somebody re-runs
+ * `--measure`. A git-path Application needs no helm and no network to render —
+ * it is a directory of YAML — so this one reads the TREE, every time, and a new
+ * raw manifest carrying `resources.requests` fails on the PR that adds it
+ * rather than on the next measurement.
+ *
+ * The coordinate granularity is per CONTAINER, not per Application: a second
+ * container growing a request inside an already-governed Application is the
+ * same defect as a new Application growing one, and an Application-level check
+ * would pass it.
+ *
+ * WHAT IT DOES NOT DO: it says nothing about whether the rung's NUMBER is
+ * right. A row with `dev` equal to `metal` satisfies this check completely.
+ * That is correct — the defect this closes is unreachability, not miscalibration,
+ * and `inert-rung` already covers a rung that moves on paper and not in the
+ * render.
+ */
+export interface UnreachableCoordinate {
+  readonly appId: string;
+  /** Repo-relative manifest the request literal lives in. */
+  readonly path: string;
+  readonly docIndex: number;
+  readonly workload: string;
+  readonly container: string;
+  readonly requestsField: string;
+  readonly cpuMillis: number;
+  readonly memoryMib: number;
+  readonly replicas: number;
+}
+
+/** `spec.template.spec` / `spec.jobTemplate.spec.template.spec`, or null for a kind with no pod template. */
+function podTemplateBase(kind: string): string | null {
+  if (kind === "CronJob") return "spec.jobTemplate.spec.template.spec";
+  return POD_TEMPLATE_AT[kind] === undefined ? null : "spec.template.spec";
+}
+
+/**
+ * Every container in every `git-path` Application whose manifest declares a
+ * nonzero request, paired with the catalogue coordinate that would govern it.
+ *
+ * Reads the files the Application's own `directory.include` glob selects — the
+ * same selection `renderGitPath` makes — so a manifest ArgoCD does not apply is
+ * not reported as one it does.
+ */
+export function unreachableGitPathRequests(
+  catalogue: ResourceCatalogue,
+  repoRoot = REPO_ROOT,
+): readonly UnreachableCoordinate[] {
+  const governed = new Set<string>();
+  for (const claim of catalogue.claims) {
+    governed.add(`${claim.path}#${String(claim.docIndex)}|${claim.requestsField}`);
+  }
+  const out: UnreachableCoordinate[] = [];
+  for (const source of discoverApplications(repoRoot)) {
+    if (source.kind !== "git-path" || source.gitPath === "") continue;
+    const abs = resolve(repoRoot, source.gitPath);
+    const matches = includeMatcher(source.includeGlob);
+    let entries: readonly Dirent[];
+    try {
+      entries = readdirSync(abs, { withFileTypes: true });
+    } catch (error) {
+      if ((error as NodeJS.ErrnoException).code === "ENOENT") continue;
+      throw error;
+    }
+    for (const entry of [...entries].sort((a, b) => stringCompare(a.name, b.name))) {
+      if (!entry.isFile() || !matches(entry.name)) continue;
+      const relative = `${source.gitPath}/${entry.name}`;
+      const text = readIfPresent(join(abs, entry.name));
+      if (text === null) continue;
+      parseAllDocuments(text).forEach((parsed, docIndex) => {
+        const doc = parsed.toJS() as Record<string, unknown> | null;
+        if (doc === null || typeof doc !== "object") return;
+        const kind = typeof doc.kind === "string" ? doc.kind : "";
+        const base = podTemplateBase(kind);
+        if (base === null) return;
+        const template = getIn(doc, POD_TEMPLATE_AT[kind] ?? []);
+        const podSpec = asRecord(asRecord(template).spec);
+        const name = typeof asRecord(doc.metadata).name === "string" ? String(asRecord(doc.metadata).name) : "";
+        const rawReplicas = kind === "DaemonSet" ? 1 : asRecord(doc.spec).replicas;
+        const replicas = typeof rawReplicas === "number" && Number.isFinite(rawReplicas) ? rawReplicas : 1;
+        for (const [key, list] of [
+          ["containers", asArray(podSpec.containers)],
+          ["initContainers", asArray(podSpec.initContainers)],
+        ] as const) {
+          list.forEach((raw, index) => {
+            const container = asRecord(raw);
+            const requests = asRecord(asRecord(container.resources).requests);
+            const cpuRaw = requests.cpu;
+            const memRaw = requests.memory;
+            const cpuMillis =
+              typeof cpuRaw === "string" ? (cpuToMillis(cpuRaw) ?? 0) : typeof cpuRaw === "number" ? cpuRaw * 1000 : 0;
+            const memoryMib =
+              typeof memRaw === "string"
+                ? (memoryToMib(memRaw) ?? 0)
+                : typeof memRaw === "number"
+                  ? memRaw / 1024 ** 2
+                  : 0;
+            if (cpuMillis === 0 && memoryMib === 0) return;
+            const requestsField = `${base}.${key}[${String(index)}].resources.requests`;
+            if (governed.has(`${relative}#${String(docIndex)}|${requestsField}`)) return;
+            out.push({
+              appId: source.appId,
+              path: relative,
+              docIndex,
+              workload: `${kind}/${name}`,
+              container: typeof container.name === "string" ? container.name : "(unnamed)",
+              requestsField,
+              cpuMillis,
+              memoryMib,
+              replicas,
+            });
+          });
+        }
+      });
+    }
+  }
+  return out.sort((a, b) =>
+    stringCompare(
+      `${a.path}#${String(a.docIndex)}|${a.requestsField}`,
+      `${b.path}#${String(b.docIndex)}|${b.requestsField}`,
+    ),
+  );
+}
+
+/**
+ * The unreachable coordinates as findings, so they adjudicate against the same
+ * baseline as everything else — with a reason and a lift condition, never a
+ * silent exclusion list.
+ *
+ * `claimId` is the coordinate rather than a catalogue id BECAUSE THERE IS NO
+ * CATALOGUE ID: the whole finding is that nothing in the catalogue names this
+ * place.
+ */
+export function gitPathReachabilityFindings(
+  catalogue: ResourceCatalogue,
+  repoRoot = REPO_ROOT,
+): readonly ResourceFinding[] {
+  return unreachableGitPathRequests(catalogue, repoRoot).map((entry) => ({
+    kind: "unreachable-git-path-request" as const,
+    // THE REPLICA COUNT IS IN THE KEY ON PURPOSE. Four of these coordinates sit
+    // on workloads with `replicas: 0` — real hardcoded requests that schedule
+    // nothing today. They cannot be expressed as a resourceClaim at all, because
+    // `pods` is validated `>= 1` and a claim for a zero-replica workload would
+    // add a whole pod to every rung total. So they are acknowledged in the
+    // baseline — and putting `x<replicas>` in the key means that scaling one of
+    // them to 1 CHANGES THE KEY: the acknowledgement stops matching (a new open
+    // finding) and simultaneously goes stale (the old entry matches nothing).
+    // Both halves fail the audit, so the 4000m that vllm would land the moment
+    // somebody bumps its replica count cannot arrive quietly.
+    claimId: `${entry.path}#${String(entry.docIndex)}|${entry.requestsField}@x${String(entry.replicas)}`,
+    profile: "*",
+    problem:
+      `${entry.appId} syncs this manifest from a raw git path, and ${entry.workload} container ` +
+      `"${entry.container}" hardcodes ${String(entry.cpuMillis)}m / ${String(Math.round(entry.memoryMib))}Mi ` +
+      `x${String(entry.replicas)} replica(s). NO RUNG REACHES IT — there is no resourceClaim naming this ` +
+      `coordinate, so \`--resource-profile <rung> --apply\` cannot move it and every rung prices the same ` +
+      `number. Add a resourceClaim with path "${entry.path}", docIndex ${String(entry.docIndex)} and ` +
+      `requestsField "${entry.requestsField}"`,
+  }));
+}
+
 export type ResourceMismatchKind =
   | "declared-total-mismatch"
   | "uncovered-application"
   | "inert-rung"
+  | "unreachable-git-path-request"
   | "unrenderable"
   | "unoverlayable-row";
 
@@ -880,7 +1102,13 @@ export function auditRenderedResourceRequests(options: {
   }
   const discovered = discoverApplications(repoRoot).map((source) => source.appId);
   const coverageDrift = snapshotCoverageDrift(snapshot, discovered, catalogue.profiles);
-  const findings = compareRenderedToDeclared({ catalogue, snapshot, repoRoot });
+  // The reachability findings come from the TREE, not the snapshot, so they are
+  // computed even when the snapshot is stale or absent. A raw manifest that
+  // grew a request between measurements must not wait for the next one.
+  const findings = [
+    ...compareRenderedToDeclared({ catalogue, snapshot, repoRoot }),
+    ...gitPathReachabilityFindings(catalogue, repoRoot),
+  ];
   const baseline = loadBaseline(options.baselinePath ?? DEFAULT_BASELINE_PATH, repoRoot);
   return { result: { findings, adjudicated: adjudicate(findings, baseline), coverageDrift, snapshot }, catalogue };
 }

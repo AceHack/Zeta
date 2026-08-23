@@ -1,0 +1,14 @@
+{
+  "id": "080d0176ca0eb810a0130008c64df1f6",
+  "at": "2026-08-23T13:39:45.239Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M0QDJGEP087G0R000N6MATX",
+    "type": "bug",
+    "title": "tsc fails on main: swarm.worker.ts passes an object where a number is expected",
+    "slug": "tsc-fails-on-main-swarm-worker-ts-passes-an-object-where-a-n",
+    "priority": "P2",
+    "filename": "081M0QDJGEP087G0R000N6MATX-tsc-fails-on-main-swarm-worker-ts-passes-an-object-where-a-n.md"
+  }
+}

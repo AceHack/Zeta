@@ -127,7 +127,13 @@ import { spawnSync } from "node:child_process";
 import { parseAllDocuments, stringify as yamlStringify } from "yaml";
 import { stringCompare } from "../collation/collation.ts";
 import { quantityToGib } from "./single-node-readiness.ts";
-import { loadCatalogue, type ProfileCatalogue, type ProfileClaim, type ProfileFinding } from "./storage-profiles.ts";
+import {
+  loadCatalogue,
+  parseFieldPath,
+  type ProfileCatalogue,
+  type ProfileClaim,
+  type ProfileFinding,
+} from "./storage-profiles.ts";
 import { clusterDefaultStorageClass, effectiveStorageClass } from "./cluster-default-storage-class.ts";
 
 const REPO_ROOT = resolve(import.meta.dir, "../../..");
@@ -325,6 +331,12 @@ export interface RenderOptions {
   readonly timeoutMs?: number | undefined;
   /** Injected for tests: replaces the real `helm` invocation. */
   readonly runHelm?: (args: readonly string[], cwd: string) => { status: number; stdout: string; stderr: string };
+  /**
+   * Rung values to write into a `git-path` source's own manifests before
+   * parsing them — the git-path analogue of `valuesObject`. Ignored for
+   * `helm-remote`, which has a values surface of its own.
+   */
+  readonly manifestOverlays?: readonly ManifestOverlay[] | undefined;
 }
 
 function defaultRunHelm(
@@ -370,7 +382,77 @@ export function includeMatcher(glob: string): (baseName: string) => boolean {
   return (name) => regexes.some((re) => re.test(name));
 }
 
-function renderGitPath(source: ApplicationSource, repoRoot: string): RenderResult {
+/**
+ * One overlay onto an in-repo manifest, applied at RENDER time and never on disk.
+ *
+ * A helm-remote Application has a `valuesObject` a rung can be written into
+ * before templating. A git-path Application has no such surface — ArgoCD reads
+ * the committed YAML verbatim — so the only place a rung can enter its render
+ * is here, at exactly the coordinate the catalogue row names.
+ *
+ * `value: null` means DELETE the key. A zero reservation in Kubernetes is an
+ * absent request, not `cpu: 0`, and `applyResourceProfile` reads zero the same
+ * way; the two readings have to agree or the checker and the applier would
+ * disagree about a rung neither of them got wrong.
+ */
+export interface ManifestOverlay {
+  /** Repo-relative path of the manifest the coordinate lives in. */
+  readonly path: string;
+  /** Index of the YAML document WITHIN that file. */
+  readonly docIndex: number;
+  /** Dotted/bracketed field path, as `parseFieldPath` reads it. */
+  readonly field: string;
+  readonly value: string | null;
+}
+
+interface OverlayableDocument {
+  setIn: (path: readonly (string | number)[], value: unknown) => void;
+  deleteIn: (path: readonly (string | number)[]) => void;
+  getIn: (path: readonly (string | number)[], keepScalar?: boolean) => unknown;
+}
+
+/**
+ * Apply the overlays for one file to its parsed documents, in memory.
+ *
+ * Returns the coordinates that MISSED — a field path addressing nothing. A miss
+ * is returned rather than swallowed because an overlay that lands nowhere is
+ * the vacuity class exactly: the render would agree with every rung equally and
+ * would look like a rung that had been applied.
+ */
+function applyManifestOverlays(
+  docs: readonly OverlayableDocument[],
+  overlays: readonly ManifestOverlay[],
+): string[] {
+  const missed: string[] = [];
+  for (const overlay of overlays) {
+    const doc = docs[overlay.docIndex];
+    if (doc === undefined) {
+      missed.push(`${overlay.path}#${String(overlay.docIndex)}: no document at that index`);
+      continue;
+    }
+    const fieldPath = parseFieldPath(overlay.field);
+    if (overlay.value === null) {
+      doc.deleteIn(fieldPath);
+      continue;
+    }
+    // The PARENT must exist. Creating one would invent a `resources.requests`
+    // on a container the manifest never gave one, which is a request the
+    // cluster will never see reported as a request it will.
+    const parent = fieldPath.slice(0, -1);
+    if (parent.length > 0 && doc.getIn(parent) === undefined) {
+      missed.push(`${overlay.path}#${String(overlay.docIndex)} has nothing at ${parent.join(".")}`);
+      continue;
+    }
+    doc.setIn(fieldPath, overlay.value);
+  }
+  return missed;
+}
+
+function renderGitPath(
+  source: ApplicationSource,
+  repoRoot: string,
+  overlays: readonly ManifestOverlay[],
+): RenderResult {
   const abs = resolve(repoRoot, source.gitPath);
   const entries = readdirIfPresent(abs);
   if (entries === null) {
@@ -378,14 +460,39 @@ function renderGitPath(source: ApplicationSource, repoRoot: string): RenderResul
   }
   const matches = includeMatcher(source.includeGlob);
   const documents: Record<string, unknown>[] = [];
+  const missed: string[] = [];
+  const applied = new Set<string>();
   for (const entry of entries.sort((a, b) => stringCompare(a.name, b.name))) {
     if (!entry.isFile() || !matches(entry.name)) continue;
+    const relative = `${source.gitPath}/${entry.name}`;
     const text = readIfPresent(join(abs, entry.name));
     if (text === null) continue;
-    for (const doc of parseAllDocuments(text)) {
+    const docs = parseAllDocuments(text);
+    const mine = overlays.filter((overlay) => overlay.path === relative);
+    if (mine.length > 0) {
+      applied.add(relative);
+      missed.push(...applyManifestOverlays(docs, mine));
+    }
+    for (const doc of docs) {
       const obj = doc.toJS() as Record<string, unknown> | null;
       if (obj !== null && typeof obj === "object") documents.push(obj);
     }
+  }
+  // An overlay whose FILE was never read is a worse miss than one whose field
+  // missed: the file is outside the Application's `directory.include` glob, so
+  // ArgoCD does not apply it either and the catalogue is pricing a manifest the
+  // cluster never gets.
+  for (const overlay of overlays) {
+    if (!applied.has(overlay.path)) {
+      missed.push(`${overlay.path} is not among the files ${source.gitPath} syncs (directory.include)`);
+    }
+  }
+  if (missed.length > 0) {
+    return {
+      ok: false,
+      reason: "manifest-overlay-missed",
+      detail: [...new Set(missed)].sort((a, b) => stringCompare(a, b)).join(" / "),
+    };
   }
   return { ok: true, documents };
 }
@@ -405,7 +512,7 @@ function chartArchivePath(cacheDir: string, source: ApplicationSource): string {
  */
 export function renderApplication(source: ApplicationSource, options: RenderOptions = {}): RenderResult {
   const repoRoot = options.repoRoot ?? REPO_ROOT;
-  if (source.kind === "git-path") return renderGitPath(source, repoRoot);
+  if (source.kind === "git-path") return renderGitPath(source, repoRoot, options.manifestOverlays ?? []);
 
   const cacheDir = options.cacheDir ?? join(repoRoot, ".helm-render-cache");
   mkdirSync(cacheDir, { recursive: true });

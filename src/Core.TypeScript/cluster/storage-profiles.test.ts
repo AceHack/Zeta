@@ -1313,54 +1313,73 @@ describe("the checked-in resource ladder", () => {
   // runners." This is that, and it is a test so it cannot drift upward without
   // somebody deciding to let it.
   //
-  // THIS TEST INVERTED ON 2026-08-22 AND THE INVERSION IS THE FINDING. It used
-  // to assert that `dev` FITS the runner (1906m / 6207Mi against 2500m /
-  // 9216Mi, 594m of spare). Counting `game-hosting/gmod` -- applied by the dev
-  // root since it was written, invisible to a depth-1 enumerator -- puts the
-  // lane at 2906m, which is 406m OVER on CPU while memory still fits with
-  // 961Mi to spare. So the honest statement is no longer "dev fits and metal
-  // does not"; it is that NEITHER RUNG FITS, and dev misses by 406m rather
-  // than by 2731m. The old assertion is kept in the name so the change of
-  // answer is legible instead of quietly rewritten.
+  // THIS TEST HAS INVERTED TWICE AND BOTH INVERSIONS ARE KEPT IN THE NAME,
+  // because the sequence is the finding and a quietly-rewritten assertion would
+  // erase it.
   //
-  // No rung reaches gmod: it is a git-path source with no valuesObject, so
-  // `applyResourceProfile` cannot express it and the 1000m is a literal in
-  // `game-hosting/gmod/statefulset.yaml`. Closing the 406m is a decision, not
-  // a rung, and it is carried as debt in `acknowledgedLaneBudgetShortfall` with
-  // both options priced. The withdrawn `acknowledgedBudgetShortfall` key is
-  // gone; this is the catalogue list, not the ledger's `acknowledgedRungBudgetGap`.
-  test("NEITHER rung fits the runner — dev misses by 406m, not by nothing", () => {
+  //   originally  `dev` FITS       1906m against 2500m, 594m of spare
+  //   2026-08-22  NEITHER FITS     2906m -- `game-hosting/gmod` was applied by
+  //                                the dev root all along and a depth-1
+  //                                enumerator could not see it. 406m OVER.
+  //   2026-08-23  `dev` FITS AGAIN 2006m -- and NOT by excluding gmod or by
+  //                                widening the envelope. Three git-path
+  //                                Applications whose requests no rung could
+  //                                reach are now governed rows, so the `dev`
+  //                                rung reaches them. THREE, not five: `cdi`
+  //                                and `kubevirt` are reachable by the same
+  //                                mechanism and are deliberately left alone,
+  //                                because their manifests are vendored
+  //                                byte-for-byte and `--apply` would rewrite
+  //                                them. 120m was available there and refused.
+  //
+  // The 2026-08-22 comment said "No rung reaches gmod: it is a git-path source
+  // with no valuesObject, so `applyResourceProfile` cannot express it". The
+  // first half was true and the second half was FALSE ABOUT ITS OWN MODULE:
+  // `applyResourceProfile` addresses `path` + `docIndex` + `requestsField` as a
+  // dotted path into an ARBITRARY manifest and always could write into
+  // statefulset.yaml. Only the render-side reader (`overlayRung`) demanded the
+  // `spec.source.helm.valuesObject.` prefix.
+  //
+  // `metal` IS UNCHANGED THROUGHOUT and that is asserted below, because the
+  // whole point of a rung is that shrinking one does not touch the other.
+  test("`dev` FITS AGAIN at 2006m — because the rung now reaches the raw manifests", () => {
     const budget = envelopeBudget(catalogue.envelope);
     const dev = resourceTotal(catalogue, "dev", devLaneAppliedDirs());
-    expect(dev.cpuMillis).toBe(2906);
+    expect(dev.cpuMillis).toBe(2006);
     expect(dev.memoryMib).toBe(8255);
-    expect(dev.cpuMillis).toBeGreaterThan(budget.cpuMillis);
+    expect(dev.cpuMillis).toBeLessThan(budget.cpuMillis);
     expect(dev.memoryMib).toBeLessThan(budget.memoryMib);
-    // `dev` is SILENT only because the shortfall is acknowledged with its
-    // arithmetic pinned. Strip the acknowledgement and it convicts — which is
-    // the difference between a debt that is written down and a budget widened
-    // to agree with a machine nobody has.
+
+    // THE REGISTER IS EMPTY, and it is empty because the arithmetic moved --
+    // not because anyone deleted a row they found inconvenient.
+    expect(catalogue.acknowledgedLaneBudgetShortfall).toEqual([]);
     expect(auditRunnerBudget(catalogue, "dev")).toEqual([]);
-    const unacknowledged = { ...catalogue, acknowledgedLaneBudgetShortfall: [] };
-    const convicted = auditRunnerBudget(unacknowledged, "dev");
-    expect(convicted.length).toBeGreaterThan(0);
-    expect(convicted[0]?.problem).toContain('acknowledge with "dev cpu 2906>2500"');
-    // And a stale acknowledgement — one whose arithmetic has moved — is a
-    // finding in its own right, so it cannot outlive the shortfall.
-    const detuned = {
+
+    // An acknowledgement re-added now would be STALE: it describes a shortfall
+    // that no longer exists, and outliving its defect is how a baseline becomes
+    // a lie. This is the falsifier for the deletion above.
+    const revived = {
       ...catalogue,
       acknowledgedLaneBudgetShortfall: [
-        { key: "dev cpu 2905>2500", reason: "r".repeat(60), liftsWhen: "LIFTS WHEN: never" },
+        { key: "dev cpu 2906>2500", reason: "r".repeat(60), liftsWhen: "LIFTS WHEN: never" },
       ],
     };
-    expect(auditRunnerBudget(detuned, "dev").some((finding) => finding.problem.includes("outlived"))).toBe(true);
-    expect(auditRunnerBudget(catalogue, "metal").length).toBeGreaterThan(0);
+    expect(auditRunnerBudget(revived, "dev").some((finding) => finding.problem.includes("outlived"))).toBe(true);
 
-    // And the gap is exactly gmod, which is what makes the two options in the
-    // acknowledgement priceable rather than guessed.
+    // `metal` still does not fit, and MUST NOT have moved. The dev-rung cuts
+    // are rung-scoped; a change that shrank both rungs would have quietly
+    // re-sized the hardware this rung exists to describe.
+    expect(auditRunnerBudget(catalogue, "metal").length).toBeGreaterThan(0);
+    const metal = resourceTotal(catalogue, "metal", devLaneAppliedDirs());
+    expect(metal.cpuMillis).toBe(5231);
+    expect(metal.memoryMib).toBe(13475);
+
+    // gmod is still COUNTED -- reachability is not exclusion. It contributes
+    // 100m at `dev` where it used to contribute 1000m, and 1000m at `metal`
+    // where it always did.
     const withoutGmod = devLaneAppliedDirs().filter((dir) => dir !== "game-hosting/gmod");
-    expect(resourceTotal(catalogue, "dev", withoutGmod).cpuMillis).toBe(1906);
-    expect(resourceTotal(catalogue, "dev", withoutGmod).cpuMillis).toBeLessThan(budget.cpuMillis);
+    expect(dev.cpuMillis - resourceTotal(catalogue, "dev", withoutGmod).cpuMillis).toBe(100);
+    expect(metal.cpuMillis - resourceTotal(catalogue, "metal", withoutGmod).cpuMillis).toBe(1000);
   });
 
   // Stated because it is the honest answer to the question that was asked, and

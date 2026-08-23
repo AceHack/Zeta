@@ -1309,12 +1309,17 @@ describe("081M0JXXFV0087G0R00...: the four newly-visible non-storage defects", (
     const reason = APPLIED_BUT_UNASSERTED_REASONS.get("hindsight") ?? "";
     expect(reason).toContain("HINDSIGHT IS THE SYMPTOM, NOT THE CAUSE");
     expect(reason).toContain("Take hindsight to ZERO and the lane is still 4231m");
-    // AND THE SECOND HALF OF THE SENTENCE, which changed answer on 2026-08-22
-    // and is pinned separately for exactly that reason: the lane-wide cut used
-    // to close the gap and no longer does. A future edit that restores the
+    // AND THE SECOND HALF OF THE SENTENCE, which has changed answer TWICE and
+    // is pinned separately for exactly that reason: the lane-wide cut closed
+    // the gap (1906m), then did not (2906m, over by 406m), and now closes it
+    // again (2006m) -- not by excluding anything, but because the rung learned
+    // to reach raw in-repo manifests. A future edit that restores the
     // comfortable version of this claim without restoring the arithmetic has to
-    // delete this line to do it.
-    expect(reason).toContain("Take the WHOLE lane to `dev` and it is 2906m, which is STILL OVER by 406m");
+    // delete this line to do it, and `reason-truth.ts` checks the number itself
+    // against the ladder so the sentence cannot drift from it.
+    expect(reason).toContain("Take the WHOLE lane to `dev` and it is 2006m, which FITS with 494m of spare");
+    // The superseded claim must be GONE, not merely joined by the new one.
+    expect(reason).not.toContain("STILL OVER by 406m. So the only cut");
     // The four capacity citations are the checked half. Their VALUES are
     // verified by reason-truth.test.ts against the ladder; what is pinned here
     // is that the reason still binds them at all -- a reason that keeps the
@@ -1323,7 +1328,7 @@ describe("081M0JXXFV0087G0R00...: the four newly-visible non-storage defects", (
       "[cite: resource-rung hindsight metal 1000]",
       "[cite: resource-rung hindsight dev 400]",
       "[cite: lane-cpu metal 5231 over]",
-      "[cite: lane-cpu dev 2906 over]",
+      "[cite: lane-cpu dev 2006 fits]",
     ]) {
       expect(reason).toContain(cited);
     }
