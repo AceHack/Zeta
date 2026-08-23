@@ -194,6 +194,15 @@ export function composeHealers(name: string, healers: readonly Healer[]): Healer
 
 const LIST_START = /^\s*(?:[-*+]|\d+\.)\s/;
 
+// Ordered-list marker, CommonMark 0.31.2 §List items: 1--9 arabic digits, then
+// `.` or `)`, then a space/tab (or end of line for an empty item). Group 2 is
+// the item's first-line content — empty content is what "an empty list item
+// cannot interrupt a paragraph" turns on.
+const ORDERED_MARKER = /^ {0,3}(\d{1,9})[.)](?:[ \t](.*)|())$/;
+const FENCE_LINE = /^ {0,3}(`{3,}|~{3,})/;
+const INDENTED_CONTINUATION = /^ {2,}\S/;
+const HEADING_LINE = /^ {0,3}#{1,6}(?:\s|$)/;
+
 /** MD032-shaped: a list start must have a blank (or list) line above. */
 export const blanksAroundListsDetector: Detector = {
   name: "blanks-around-lists",
@@ -250,6 +259,103 @@ export const memoryIndexDetector: Detector = {
   },
 };
 
+/**
+ * MD029-shaped (`ol-prefix`): an ordered list may not start at a number other
+ * than 0 or 1.
+ *
+ * WHY THIS DETECTOR EXISTS, AND WHY ITS ABSENCE WAS THE REAL DEFECT
+ * (081M0QZF4QY087G0R000WKDYFZ, 2026-08-23). The closure law already said
+ * exactly the right thing — `d(heal(t)) ⊆ d(t)`, a healer may never MINT
+ * drift — and the healer that manufactured an ordered list numbered `2007`
+ * out of an author's hard-wrapped sentence passed certification anyway. Not
+ * because the law was wrong: because **no detector in this set could see
+ * MD029**. A law quantified over detectors is only as strong as the detector
+ * set, so `∀ d` was satisfied vacuously and the gate granted write access to a
+ * transform that was minting the exact drift the gate exists to refuse. That
+ * is the vacuity class in its purest form — a check that cannot fail is not a
+ * check. The predicate fix (`canInterruptParagraph`) closed the instance; this
+ * detector closes the hole the instance came through.
+ *
+ * IT MODELS COMMONMARK'S INTERRUPTION RULE, WHICH IS LOAD-BEARING HERE, NOT
+ * PEDANTRY. A detector that flagged every `<digits>. ` line-start regardless of
+ * context would report the finding on the input as well as the output — the
+ * minted set would be empty and closure would pass again, vacuously, in a new
+ * way. It only discriminates because a hard-wrapped numeral inside a paragraph
+ * is NOT a list (0.31.2 §Lists: "we allow only lists starting with `1` to
+ * interrupt paragraphs"), so the finding genuinely appears for the first time
+ * in the healer's output. Verified against the real linter, not just the spec
+ * text: markdownlint-cli2 0.22.1 / markdownlint 0.40.0 reports
+ * `MD029/ol-prefix [Expected: 1; Actual: 2007]` on the healed shape and
+ * nothing on the authored one; it accepts `0.` and `1.` starts and both `.`
+ * and `)` delimiters, which is what the numbers and the marker class below
+ * are.
+ *
+ * Toy-scale like its siblings — block structure only, no inline parsing, no
+ * lists nested inside blockquotes. It is a reference detector, not a linter.
+ */
+export const orderedListPrefixDetector: Detector = {
+  name: "ol-prefix",
+  detect: (t) => {
+    const out: Finding[] = [];
+    for (const [path, content] of t) {
+      if (!path.endsWith(".md")) continue;
+      const lines = content.split("\n");
+      let fence: string | null = null;
+      let paragraphOpen = false;
+      let inOrderedList = false;
+      for (let i = 0; i < lines.length; i++) {
+        const line = lines[i] ?? "";
+        const fenceOpen = FENCE_LINE.exec(line);
+        if (fence !== null) {
+          if (fenceOpen !== null && (fenceOpen[1] ?? "").startsWith(fence)) fence = null;
+          continue;
+        }
+        if (fenceOpen !== null) {
+          fence = fenceOpen[1] ?? "```";
+          paragraphOpen = false;
+          inOrderedList = false;
+          continue;
+        }
+        if (line.trim() === "") {
+          // A blank ends a paragraph but NOT a list (loose lists are lists).
+          paragraphOpen = false;
+          continue;
+        }
+        const ordered = ORDERED_MARKER.exec(line);
+        if (ordered !== null) {
+          const start = Number.parseInt(ordered[1] ?? "", 10);
+          const hasContent = (ordered[2] ?? "").trim() !== "";
+          if (inOrderedList) {
+            // A sibling marker joins the open list; MD029's sequence rule for
+            // interior items is out of this reference detector's scope.
+            paragraphOpen = false;
+          } else if (!paragraphOpen) {
+            inOrderedList = true;
+            paragraphOpen = false;
+            if (start !== 0 && start !== 1) {
+              out.push({ path, rule: "ol-prefix", detail: `line ${String(i + 1)} starts an ordered list at ${String(start)}` });
+            }
+          } else if (start === 1 && hasContent) {
+            inOrderedList = true; // the only marker allowed to interrupt a paragraph
+            paragraphOpen = false;
+          }
+          // else: a hard-wrapped numeral inside a paragraph. It is prose, and
+          // — this is the part that is easy to get wrong — THE PARAGRAPH IS
+          // STILL OPEN. Clearing the flag here would make a SECOND wrapped
+          // numeral two lines later look like a fresh list start and mint a
+          // finding on the author's untouched text, which is the detector
+          // committing the very error it exists to catch.
+          continue;
+        }
+        if (inOrderedList && INDENTED_CONTINUATION.test(line)) continue; // item body
+        inOrderedList = false;
+        paragraphOpen = !HEADING_LINE.test(line);
+      }
+    }
+    return out;
+  },
+};
+
 export const trailingSpaceDetector: Detector = {
   name: "trailing-space",
   detect: (t) => {
@@ -269,6 +375,9 @@ export const REFERENCE_DETECTORS: readonly Detector[] = [
   codeSpanIntegrityDetector,
   memoryIndexDetector,
   trailingSpaceDetector,
+  // Added 2026-08-23. The set is the quantifier of the closure law: a class no
+  // detector here can see is a class the gate cannot refuse.
+  orderedListPrefixDetector,
 ];
 
 // ---------------------------------------------------------------------------

@@ -1,7 +1,13 @@
 import { describe, expect, test } from "bun:test";
 
 import { canInterruptParagraph, fixMarkdownText } from "../fix-markdown-md032-md026";
-import { tree } from "../healer-harness";
+import {
+  certify,
+  orderedListPrefixDetector,
+  REFERENCE_DETECTORS,
+  resplitterHealer,
+  tree,
+} from "../healer-harness";
 import { certifyMdFixer, MD_FIXER_FIXTURES, mdFixerHealer } from "./md-fixer-certified";
 
 // Workitem 081KX3KA3F0 final scope: the PRODUCTION MD032/MD026 fixer goes
@@ -191,6 +197,74 @@ describe("hard-wrapped numerals are prose, not lists (CommonMark interruption ru
   });
 
   test("certification (all three laws) still holds with the fix in place", () => {
+    expect(certifyMdFixer().pass).toBe(true);
+  });
+});
+
+// ─── THE GATE, NOT ONLY THE PREDICATE ───────────────────────────────────────
+//
+// The tests above pin the transform. These pin the WRITE GATE: certification
+// is what grants the healer write access on every drift-sweep tick, and it
+// granted it to the defective transform. Not because the closure law was
+// wrong — `d(heal(t)) ⊆ d(t)` is exactly the right law — but because the
+// detector set it quantifies over had no MD029 member, so "no detector saw new
+// drift" was true and meaningless. `orderedListPrefixDetector` is that member.
+describe("the closure law can now SEE the manufactured list (081M0QZF4QY087G0R000WKDYFZ)", () => {
+  const incident = MD_FIXER_FIXTURES.find(
+    (f) => f.name === "md029-hard-wrapped-numeral-is-prose-not-a-list",
+  );
+
+  test("the incident fixture is in the corpus the gate certifies over", () => {
+    expect(incident).toBeDefined();
+  });
+
+  test("DISCRIMINATION: the pre-fix behaviour now FAILS the gate on ol-prefix", () => {
+    // `resplitterHealer` is the harness's own named reproduction of the naive
+    // MD032 fix — insert a blank above every list-shaped line following prose —
+    // which is precisely what the production fixer did before this repair.
+    // Against the incident fixture it mints the ordered list, and the closure
+    // law now catches it.
+    //
+    // MEASURED, because "it would have caught it" is a claim: with the old
+    // four-detector set, `certify(resplitterHealer, OLD, [incidentFixture])`
+    // returns pass=TRUE. With `ol-prefix` in the set it returns pass=false
+    // with 2 minted findings (docs/books/authored.md, docs/design/brief.md).
+    // Over the FULL md corpus the re-splitter fails either way — on
+    // `fenced-code-untouchable`, for the unrelated 2026-07-08 code-span
+    // reason — so the fixture-scoped verdict above is the honest one to
+    // quote, and it is the one this test asserts.
+    const verdict = certify(resplitterHealer, REFERENCE_DETECTORS, MD_FIXER_FIXTURES);
+    expect(verdict.pass).toBe(false);
+    const olClosure = verdict.violations.filter(
+      (v) => v.law === "closure" && v.detail.includes("ol-prefix"),
+    );
+    expect(olClosure.length).toBeGreaterThan(0);
+    expect(olClosure.some((v) => v.fixture === "md029-hard-wrapped-numeral-is-prose-not-a-list")).toBe(true);
+  });
+
+  test("the DETECTOR is what discriminates, and it is not blind in the other direction", () => {
+    // Authored prose: no finding — a hard-wrapped numeral inside a paragraph is
+    // not a list, so there is nothing for the healer's output to be compared
+    // against unless the healer creates it.
+    const authored = tree({
+      "docs/a.md": "chosen as the headline property of an installer in\n2007. It rhymes with:\n",
+    });
+    expect(orderedListPrefixDetector.detect(authored)).toEqual([]);
+
+    // The healer's OLD output: the blank line is what makes it a list, and the
+    // finding appears for the first time there.
+    const manufactured = tree({
+      "docs/a.md": "chosen as the headline property of an installer in\n\n2007. It rhymes with:\n",
+    });
+    expect(orderedListPrefixDetector.detect(manufactured).map((f) => f.rule)).toEqual(["ol-prefix"]);
+  });
+
+  test("the fixed production healer mints nothing the detector can see", () => {
+    for (const fixture of MD_FIXER_FIXTURES) {
+      const before = orderedListPrefixDetector.detect(fixture.tree);
+      const after = orderedListPrefixDetector.detect(mdFixerHealer.heal(fixture.tree));
+      expect(after.length).toBeLessThanOrEqual(before.length);
+    }
     expect(certifyMdFixer().pass).toBe(true);
   });
 });

@@ -9,6 +9,7 @@ import {
   memoryFixture,
   memoryToucherHealer,
   newFindings,
+  orderedListPrefixDetector,
   resplitterHealer,
   runBuiltinCorpus,
   trailingSpaceHealer,
@@ -127,5 +128,68 @@ describe("built-in corpus self-check", () => {
     const { ok, lines } = runBuiltinCorpus();
     expect(ok).toBe(true);
     expect(lines.every((l) => l.startsWith("OK "))).toBe(true);
+  });
+});
+
+// ─── orderedListPrefixDetector (081M0QZF4QY087G0R000WKDYFZ) ─────────────────
+//
+// The detector's whole value is that it agrees with the parser markdownlint
+// actually runs (micromark / CommonMark 0.31.2), because a detector that
+// over-reports would see the finding on the INPUT too and closure would be
+// satisfied vacuously again — the same defect wearing the opposite sign.
+// Every expectation below was checked against markdownlint-cli2 0.22.1
+// (markdownlint 0.40.0) with this repository's config before being written.
+describe("orderedListPrefixDetector — MD029-shaped, CommonMark-faithful", () => {
+  const detect = (md: string): readonly string[] =>
+    orderedListPrefixDetector.detect(tree({ "docs/d.md": md })).map((f) => f.detail);
+
+  test("a hard-wrapped numeral inside a paragraph is PROSE — no finding", () => {
+    expect(detect("shipping since\n2016. The finding that matters:\n")).toEqual([]);
+    expect(detect("The number of windows in my house is\n14.  The number of doors is 6.\n")).toEqual([]);
+  });
+
+  test("a SECOND wrapped numeral in the same paragraph is still prose", () => {
+    // The paragraph does not close just because one of its lines began with a
+    // numeral. Getting this wrong makes the detector report on untouched
+    // authored text — a false positive on the INPUT, which would also let
+    // minting hide inside it.
+    expect(detect("prose wrapping to\n2007. and wrapping again to\n2016. and still going\n")).toEqual([]);
+  });
+
+  test("the same numeral with a blank line above IS a list — one finding", () => {
+    expect(detect("shipping since\n\n2016. The finding that matters:\n")).toHaveLength(1);
+  });
+
+  test("0 and 1 starts are accepted; anything else is not", () => {
+    expect(detect("# H\n\n0. zero\n1. one\n")).toEqual([]);
+    expect(detect("# H\n\n1. one\n2. two\n")).toEqual([]);
+    expect(detect("# H\n\n2. two\n3. three\n")).toHaveLength(1);
+  });
+
+  test("`)` is a marker too, and an empty item cannot interrupt a paragraph", () => {
+    expect(detect("# H\n\n2007) item\n")).toHaveLength(1);
+    expect(detect("prose wrapping to\n1.\nand on it goes\n")).toEqual([]);
+  });
+
+  test("a numeral line inside a fenced block is not a list", () => {
+    expect(detect("# H\n\n```text\n2007. not a list\n```\n")).toEqual([]);
+  });
+
+  test("a heading closes the paragraph, so a numeral under one really is a list", () => {
+    expect(detect("## Head\n\n2007. item\n")).toHaveLength(1);
+  });
+
+  test("DISCRIMINATION at the corpus level: the re-splitter now mints ol-prefix", () => {
+    const numeralFixture = {
+      name: "hard-wrapped-numeral",
+      tree: tree({ "docs/p.md": "chosen as the headline property of an installer in\n2007. It rhymes with:\n" }),
+    };
+    const bad = certify(resplitterHealer, REFERENCE_DETECTORS, [numeralFixture]);
+    expect(bad.pass).toBe(false);
+    expect(bad.violations.some((v) => v.law === "closure" && v.detail.includes("ol-prefix"))).toBe(true);
+
+    // …and the detector is not simply always-on: the lawful healer is clean on
+    // the same fixture, so the failure above is the healer's, not the fixture's.
+    expect(certify(trailingSpaceHealer, REFERENCE_DETECTORS, [numeralFixture]).pass).toBe(true);
   });
 });

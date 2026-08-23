@@ -70,3 +70,39 @@ Sub-questions worth separating:
 ## Not in scope
 
 The healer defect itself (fixed) and the lint profile's rule selection.
+
+## Input (not a decision) — the warrant argument, after the detector landed
+
+Recorded by the follow-on hardening (`orderedListPrefixDetector`, same branch
+name, PR against `main`). This does **not** close the item; it supplies the
+piece the original filing could not have, because the mechanism did not exist
+yet.
+
+The filing's third bullet says a formatter that rewrites an author's paragraphs
+"needs a stronger warrant than *the linter said so*". There is now a candidate
+warrant that is not a scope carve-out:
+
+> The healer's write access is granted per-invocation by a certification whose
+> closure law is `d(heal(t)) ⊆ d(t)` — it may never MINT drift. That law was
+> already the right one; what it lacked was a detector able to see the class
+> that mangles prose. With `ol-prefix` in `REFERENCE_DETECTORS`, the naive
+> re-splitter now FAILS the gate on the incident fixture (measured: pass=true
+> before, pass=false after). The warrant for touching authored prose is
+> therefore "an executable law refuses the edit that would damage it", not
+> "the linter said so".
+
+Two honest limits on that argument, so it is not read as an answer:
+
+1. **The warrant is only as wide as the detector set.** It is now five
+   detectors, not one linter. The next prose-damaging class with no detector is
+   in exactly the position MD029 was in this morning. The general fix would be
+   a detector derived from the linter itself rather than hand-written siblings;
+   nobody has costed that.
+2. **No gate can require a heal.** Idempotence, closure and convergence are all
+   satisfied by a healer that does nothing, so certification can only ever say
+   "this edit is not damaging" — never "this file needed editing". Whether an
+   author's paragraph *should* be edited at all is untouched by any of this,
+   and remains the open question.
+
+The sub-question the filing separates — REPORTING on book prose vs WRITING to
+it — is still the sharp one, and still unanswered.

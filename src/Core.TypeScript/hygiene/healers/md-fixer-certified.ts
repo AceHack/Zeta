@@ -85,6 +85,35 @@ export const MD_FIXER_FIXTURES: readonly Fixture[] = [
       "docs/md022.md": "Prose right before.\n## The Heading\nProse right after.\n\n# Top\n## Stacked heading\ntail\n",
     }),
   },
+  {
+    // 081M0QZF4QY087G0R000WKDYFZ — the incident, as a GOLDEN VECTOR for the
+    // write gate rather than only as a unit test of the predicate.
+    //
+    // Both hard-wrapped numerals are the real ones the sweep edited on
+    // 2026-08-23 (`docs/books/…RAW-2026-08-18-*.md:686` and
+    // `docs/design/2026-08-23-clifford-gpu-theory-brief-*.md:87`). Certifying
+    // over this fixture is what makes the naive re-splitter
+    // (`resplitterHealer` — the harness's own reproduction of the pre-fix
+    // behaviour) FAIL closure against `ol-prefix`, which it did not before the
+    // detector existed.
+    //
+    // The third file is a genuine list missing its blanks. Stated honestly,
+    // because the opposite is tempting to write: it does NOT make a
+    // do-nothing healer fail certification — the three laws are idempotence,
+    // closure and convergence, and a healer that heals nothing satisfies all
+    // three trivially. No gate can require a fix; only a test can. The
+    // "STILL HEALS" assertions in md-fixer-certified.test.ts are that check,
+    // and this file is here so the incident fixture carries the same shape
+    // the gate is blind to rather than pretending the gate covers it.
+    name: "md029-hard-wrapped-numeral-is-prose-not-a-list",
+    tree: tree({
+      "docs/books/authored.md":
+        "## Provenance\n\nchosen as the headline property of an installer in\n2007. It rhymes with two other things in this record:\n",
+      "docs/design/brief.md":
+        "# Brief\n\nthe geometric-algebra formulation of that pipeline was published in\n2016. The measured consequence is the one that matters here.\n",
+      "docs/genuine-list.md": "Intro line\n1. item one\n2. item two\nOutro line\n",
+    }),
+  },
 ];
 
 export function certifyMdFixer(): Verdict {
