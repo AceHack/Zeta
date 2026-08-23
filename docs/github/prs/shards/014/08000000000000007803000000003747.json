@@ -1,0 +1,12 @@
+{
+  "pr_number": 14151,
+  "archive_path": "docs/history/pr-reviews/PR-14151-feat-installer-opt-in-qemu-uefi-keyfile-restore-decrypt-via-fw-cfg.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-23T12:29:41.702Z",
+  "schema_version": "v1",
+  "commit_sha": "040d35cc66e9320d683eac29df7a9a24d0b9e88a",
+  "title": "feat(installer): opt-in QEMU UEFI keyfile restore decrypt via fw_cfg",
+  "state": "MERGED",
+  "merged_at": "2026-08-23T12:28:59Z",
+  "head_ref": "riven/qemu-uefi-keyfile-restore"
+}
