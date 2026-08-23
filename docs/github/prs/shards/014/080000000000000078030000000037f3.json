@@ -1,0 +1,12 @@
+{
+  "pr_number": 14323,
+  "archive_path": "docs/history/pr-reviews/PR-14323-fix-ci-actionlint-is-red-on-main-exit-took-an-unverified-gh-expression.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-23T17:42:57.505Z",
+  "schema_version": "v1",
+  "commit_sha": "bc6770c77894fae9d2484c5c836600c1c65e1761",
+  "title": "fix(ci): actionlint is red on main — `exit` took an unverified GH expression",
+  "state": "MERGED",
+  "merged_at": "2026-08-23T17:42:10Z",
+  "head_ref": "fix/actionlint-cadence-exit"
+}
