@@ -271,9 +271,12 @@ GitHub-forever APIs into Nix modules. CI uses `mock`; metal may use
    restore decrypt. Opt-in `QEMU_UEFI_KEYFILE_PICKER=1` (dedicated; not
    implied by PHASE1) also bakes `/zeta-qemu-creds-passphrase` (QEMU test
    secret; never logged) so non-interactive 6.95-picker binds the blob to
-   the keyfile. That is the restore-decrypt *precondition*. Live phase-2
-   restore decrypt (`passphraseMode=file` + `/run` staging) is a later
-   slice. Default wifi/iSerial phase-1 must stay UUID and must not bake
+   the keyfile. That is the restore-decrypt *precondition*. Opt-in
+   `QEMU_UEFI_KEYFILE_RESTORE=1` (dedicated; not implied by PICKER)
+   injects the QEMU test passphrase via `-fw_cfg file=` on disk boot
+   (not argv `string=`; not copied onto the installed ESP) and asserts
+   phase-2 restore decrypt against the UEFI keyfile. Default wifi/iSerial
+   phase-1 must stay UUID and must not bake
    the bind marker or the passphrase file. `workflow_dispatch` only; not
    on `gate (required)`. No TPM / Touch ID claim.
 4. **USB iSerial probe** — sysfs injectable probe landed

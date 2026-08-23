@@ -152,6 +152,11 @@ in
   };
 
   config = lib.mkIf cfg.enable {
+    # QEMU guests expose fw_cfg via this module. Metal probe is a no-op.
+    # Needed so phase-2 restore can stage /run/zeta-creds-passphrase from
+    # `-fw_cfg file=` without persisting the QEMU test secret on the ESP.
+    boot.kernelModules = [ "qemu_fw_cfg" ];
+
     systemd.services.zeta-creds-restore = {
       description = "Zeta credential restore from ESP at boot (B-0852.4a)";
       wantedBy = [ "multi-user.target" ];
@@ -190,10 +195,7 @@ in
           # fires on ANY exit path — success or failure.
           cleanup() {
             rm -f /run/zeta-creds-passphrase-temp
-            ${lib.optionalString (cfg.passphraseMode == "file") ''
-              # File-mode: also delete the operator-staged passphrase
-              rm -f ${cfg.passphraseFile}
-            ''}
+            rm -f ${cfg.passphraseFile}
           }
           trap cleanup EXIT
 
@@ -213,6 +215,18 @@ in
               echo "$1" >> "$_serial" || true
             fi
           }
+
+          # QEMU-only staging: hypervisor `-fw_cfg name=opt/org.zeta/creds-passphrase,file=`
+          # copies into ${cfg.passphraseFile}. Never log the contents. Metal has
+          # no such sysfs node, so interactive ask-password is unchanged.
+          ${pkgs.kmod}/bin/modprobe qemu_fw_cfg >/dev/null 2>&1 || true
+          FWCFG_RAW="/sys/firmware/qemu_fw_cfg/by_name/opt/org.zeta/creds-passphrase/raw"
+          if [ -r "$FWCFG_RAW" ]; then
+            umask 0177
+            head -c 4096 "$FWCFG_RAW" > ${cfg.passphraseFile}
+            chmod 0400 ${cfg.passphraseFile}
+            log_restore "zeta-creds-restore: passphrase staged from qemu fw_cfg"
+          fi
 
           log_restore "zeta-creds-restore: reading preserved ESP blob"
 
@@ -256,30 +270,31 @@ in
             log_restore "zeta-creds-restore: binding-factor usbUuid (default)"
           fi
 
-          ${
-            if cfg.passphraseMode == "file" then ''
-              PASSPHRASE_PATH="${cfg.passphraseFile}"
-              if [ ! -f "$PASSPHRASE_PATH" ]; then
-                log_restore "zeta-creds-restore: passphrase file $PASSPHRASE_PATH missing (passphraseMode=file)"
+          if [ -s ${cfg.passphraseFile} ]; then
+            PASSPHRASE_PATH="${cfg.passphraseFile}"
+          else
+            ${
+              if cfg.passphraseMode == "file" then ''
+                log_restore "zeta-creds-restore: passphrase file ${cfg.passphraseFile} missing (passphraseMode=file)"
                 exit 1
-              fi
-            '' else ''
-              # interactive mode: prompt operator via systemd-ask-password
-              # Write to temp file (root-readable) so restore CLI can consume
-              PASSPHRASE_PATH="/run/zeta-creds-passphrase-temp"
-              PASSPHRASE="$(${pkgs.systemd}/bin/systemd-ask-password \
-                --timeout=300 \
-                "Zeta cred-blob passphrase: ")"
-              if [ -z "$PASSPHRASE" ]; then
-                log_restore "zeta-creds-restore: empty passphrase from systemd-ask-password"
-                exit 1
-              fi
-              umask 0177
-              echo -n "$PASSPHRASE" > "$PASSPHRASE_PATH"
-              chmod 0400 "$PASSPHRASE_PATH"
-              unset PASSPHRASE
-            ''
-          }
+              '' else ''
+                # interactive mode: prompt operator via systemd-ask-password
+                # unless QEMU (or an operator) already staged passphraseFile.
+                PASSPHRASE_PATH="/run/zeta-creds-passphrase-temp"
+                PASSPHRASE="$(${pkgs.systemd}/bin/systemd-ask-password \
+                  --timeout=300 \
+                  "Zeta cred-blob passphrase: ")"
+                if [ -z "$PASSPHRASE" ]; then
+                  log_restore "zeta-creds-restore: empty passphrase from systemd-ask-password"
+                  exit 1
+                fi
+                umask 0177
+                echo -n "$PASSPHRASE" > "$PASSPHRASE_PATH"
+                chmod 0400 "$PASSPHRASE_PATH"
+                unset PASSPHRASE
+              ''
+            }
+          fi
 
           PERSONA_ARGS=""
           ${lib.optionalString (cfg.persona != null) ''

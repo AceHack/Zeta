@@ -1,7 +1,7 @@
 # Trajectory - USB / zflash Installer
 
 Status: active — shipped + iterating; first surfaced as a trajectory 2026-05-29 from substrate inventory (the flashing mechanism works on `origin/main`; this surface was missing, so the workstream lived head-only)
-Last refreshed: 2026-08-22
+Last refreshed: 2026-08-23
 Type: workstream (current-focus) — a trajectory the operator is *actively powering*. Many trajectories can be tracked; only a few are workstreams at once (finite-focus / WIP-bounded — a workstream is a trajectory under sustained thrust, and thrust budget is finite, so most trajectories coast). (Genus = "trajectory"; "workstream" is the species: a trajectory under sustained thrust toward a deliverable, vs. emergent-posture trajectories like `anti-infection`. See [`factory-trajectory-surface`](../factory-trajectory-surface/RESUME.md) for the genus/species taxonomy.) One of the operator's three current cluster workstreams (encryption / usb-zflash / ts-workflow-engine).
 Eventual encoding (design-stage — the human maintainer 2026-05-23 genetic-ID substrate + Clifford/HKT): this trajectory's state is trackable as a 128-bit genetic-ID seed (discrete, reversible via parser-combinator ↔ generator-function) → Clifford-space path (continuous, eventual). Mirrors the three-lane I8-lattice / I9-manifold split.
 Current blocker: none for software/QEMU deepen slices landed 2026-07-31
@@ -40,7 +40,11 @@ bakes `/zeta-bind-uefi-keyfile` and asserts the **install-time** keyfile
 write. It does **not** prove picker bind. Opt-in
 `QEMU_UEFI_KEYFILE_PICKER=1` (dedicated; not implied by PHASE1) also
 bakes `/zeta-qemu-creds-passphrase` so 6.95-picker binds the blob to the
-keyfile (restore-decrypt precondition; not phase-2 decrypt). Default
+keyfile (restore-decrypt precondition; not phase-2 decrypt). Opt-in
+`QEMU_UEFI_KEYFILE_RESTORE=1` (dedicated; not implied by PICKER) injects
+the QEMU test passphrase via `-fw_cfg file=` on disk boot and asserts
+restore decrypt against the keyfile. The secret is not copied onto the
+installed ESP. Default
 wifi/iSerial phase-1 must not bake that marker or the passphrase file.
 Not on `gate (required)`.
 See `docs/security/USB-IDENTITY-THREAT-MODEL.md` <!-- STALE-REF: ../../security/USB-IDENTITY-THREAT-MODEL.md -->:

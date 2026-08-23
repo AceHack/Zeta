@@ -10,6 +10,7 @@ import {
   assertGeneratedNodeHostnameContract,
   assertUefiKeyfilePhase1Contract,
   assertUefiKeyfilePickerContract,
+  assertUefiKeyfileRestoreContract,
   assertUsbISerialPhase1Contract,
   assertWifiEspPhase1Contract,
   buildQemuDiskBootArgsPure,
@@ -22,6 +23,8 @@ import {
   NODE_HEX_HOSTNAME_RE,
   OVMF_FIRMWARE_CANDIDATES,
   PHASE2_SERIAL_SEPARATOR,
+  QEMU_CREDS_PASSPHRASE_FWCFG_NAME,
+  UEFI_KEYFILE_RESTORE_SERIAL,
 } from "./qemu-full-install-test.ts";
 import { QEMU_USB_TEST_SERIAL } from "../installer/qemu-usb-storage.ts";
 import { UEFI_KEYFILE_SERIAL } from "../installer/uefi-keyfile-esp.ts";
@@ -86,6 +89,23 @@ describe("qemu-full-install-test phase 2 disk boot QEMU args", () => {
     expect(args.join(" ")).not.toContain("netdev");
     expect(args).toContain("-vga");
     expect(args).toContain("none");
+    expect(args.join(" ")).not.toContain("-fw_cfg");
+  });
+
+  it("injects fw_cfg file= without putting the secret in argv", () => {
+    const args = buildQemuDiskBootArgsPure(
+      "/tmp/disk.qcow2",
+      "/tmp/serial.log",
+      "/usr/share/OVMF/OVMF_CODE_4M.fd",
+      "/tmp/OVMF_VARS.fd",
+      true,
+      "/tmp/qemu-creds-passphrase.fwcfg",
+    );
+    expect(args.join(" ")).toContain(
+      `-fw_cfg name=${QEMU_CREDS_PASSPHRASE_FWCFG_NAME},file=/tmp/qemu-creds-passphrase.fwcfg`,
+    );
+    expect(args.join(" ")).not.toContain("string=");
+    expect(args.join(" ")).not.toContain(DEFAULT_QEMU_PASSPHRASE);
   });
 });
 
@@ -348,6 +368,58 @@ describe("qemu-full-install-test UEFI keyfile picker contract", () => {
   });
 });
 
+describe("qemu-full-install-test UEFI keyfile restore contract", () => {
+  const restoreSerial = [
+    UEFI_KEYFILE_RESTORE_SERIAL.stagedFromFwcfg,
+    UEFI_KEYFILE_RESTORE_SERIAL.bindingKeyfile,
+    `${UEFI_KEYFILE_RESTORE_SERIAL.wrotePrefix}3 creds (target-root: /)`,
+    "node-qemu-keyfile-restore login:",
+  ].join("\n");
+
+  it("accepts fw_cfg staging plus uefiKeyfile bind plus wrote", () => {
+    expect(assertUefiKeyfileRestoreContract(restoreSerial).ok).toBe(true);
+  });
+
+  it("accepts already-present in place of wrote", () => {
+    const serial = [
+      UEFI_KEYFILE_RESTORE_SERIAL.stagedFromFwcfg,
+      UEFI_KEYFILE_RESTORE_SERIAL.bindingKeyfile,
+      UEFI_KEYFILE_RESTORE_SERIAL.alreadyPresent,
+    ].join("\n");
+    expect(assertUefiKeyfileRestoreContract(serial).ok).toBe(true);
+  });
+
+  it("fails when restore falls back to usbUuid", () => {
+    const serial = [
+      UEFI_KEYFILE_RESTORE_SERIAL.stagedFromFwcfg,
+      UEFI_KEYFILE_RESTORE_SERIAL.uuidBinding,
+      `${UEFI_KEYFILE_RESTORE_SERIAL.wrotePrefix}3 creds (target-root: /)`,
+    ].join("\n");
+    const result = assertUefiKeyfileRestoreContract(serial);
+    expect(result.ok).toBe(false);
+    if (!result.ok) {
+      expect(result.reason).toContain("usbUuid");
+    }
+  });
+
+  it("fails when the serial leaks the QEMU test passphrase", () => {
+    const result = assertUefiKeyfileRestoreContract(`${restoreSerial}\n${DEFAULT_QEMU_PASSPHRASE}\n`);
+    expect(result.ok).toBe(false);
+    if (!result.ok) {
+      expect(result.reason).toContain("leaked");
+    }
+  });
+
+  it("detectPhase2Success requires restore markers when the restore flag is set", () => {
+    const loginOnly = "node-qemu-keyfile-restore login:\n";
+    expect(detectPhase2Success(loginOnly, "node-qemu-keyfile-restore", false, false).ok).toBe(true);
+    expect(detectPhase2Success(loginOnly, "node-qemu-keyfile-restore", false, true).ok).toBe(false);
+    expect(
+      detectPhase2Success(`${restoreSerial}\n`, "node-qemu-keyfile-restore", false, true).ok,
+    ).toBe(true);
+  });
+});
+
 describe("qemu-full-install-test wifi ESP phase-1 contract", () => {
   it("accepts found + wrote + association-deferred markers", () => {
     const serial = [
@@ -567,5 +639,24 @@ describe("provisioning markers stay coupled to zeta-install.sh (081KZETP6AT)", (
     const result = assertFirstBootProvisioningContract("ZETA CLUSTER NODE INSTALL COMPLETE\n");
     expect(result.ok).toBe(false);
     if (!result.ok) expect(result.reason).toContain("never reached the install.sh step");
+  });
+});
+
+describe("restore markers stay coupled to zeta-creds-restore.nix", () => {
+  const restoreNix = readFileSync(
+    resolve(import.meta.dir, "../../../full-ai-cluster/nixos/modules/zeta-creds-restore.nix"),
+    "utf8",
+  );
+
+  it("the module still emits the fw_cfg staging marker the contract requires", () => {
+    expect(restoreNix).toContain(UEFI_KEYFILE_RESTORE_SERIAL.stagedFromFwcfg);
+  });
+
+  it("the module still uses the fw_cfg name the QEMU args inject", () => {
+    expect(restoreNix).toContain(QEMU_CREDS_PASSPHRASE_FWCFG_NAME);
+  });
+
+  it("the module still emits the uefiKeyfile bind marker", () => {
+    expect(restoreNix).toContain(UEFI_KEYFILE_RESTORE_SERIAL.bindingKeyfile);
   });
 });

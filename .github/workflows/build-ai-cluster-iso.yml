@@ -515,6 +515,34 @@ jobs:
           if-no-files-found: warn
           retention-days: 7
 
+      - name: UEFI keyfile restore decrypt (workflow_dispatch only)
+        if: github.event_name == 'workflow_dispatch'
+        timeout-minutes: 90
+        working-directory: full-ai-cluster
+        env:
+          SERIAL_LOG_OUT_PATH: ${{ github.workspace }}/qemu-uefi-keyfile-restore-serial.log
+          QEMU_UEFI_KEYFILE_RESTORE: "1"
+        run: |
+          set -euo pipefail
+          mapfile -t iso_candidates < <(find result/iso -maxdepth 1 -type f \( -name 'zeta-installer-*.iso' -o -name 'nixos-minimal-*.iso' \) | sort)
+          if [ "${#iso_candidates[@]}" -eq 0 ]; then
+            echo "::error::UEFI keyfile restore: No installer ISO under result/iso/" >&2
+            exit 1
+          fi
+          iso_abs=$(readlink -f "${iso_candidates[0]}")
+          echo "UEFI keyfile restore ISO: $iso_abs"
+          echo "Serial log out path: $SERIAL_LOG_OUT_PATH"
+          bun ../src/Core.TypeScript/ci/qemu-full-install-test.ts "$iso_abs"
+
+      - name: Upload UEFI keyfile restore serial log
+        if: always() && github.event_name == 'workflow_dispatch'
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: qemu-uefi-keyfile-restore-serial-log
+          path: qemu-uefi-keyfile-restore-serial.log
+          if-no-files-found: warn
+          retention-days: 7
+
       - name: 081KSNY2Z0008QG0R0008PN7RQ scenario 3 — reformat with retention (workflow_dispatch only)
         if: github.event_name == 'workflow_dispatch'
         timeout-minutes: 90
