@@ -1,0 +1,12 @@
+{
+  "pr_number": 14213,
+  "archive_path": "docs/history/pr-reviews/PR-14213-fix-ci-install-vite-for-root-typescript-lint.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-23T14:24:17.972Z",
+  "schema_version": "v1",
+  "commit_sha": "89b0f4c602be01eb1f218bf89a586891ba4eb72d",
+  "title": "fix(ci): install Vite for root TypeScript lint",
+  "state": "MERGED",
+  "merged_at": "2026-08-23T14:23:36Z",
+  "head_ref": "codex/twitch-vite-root-dependency"
+}
