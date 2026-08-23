@@ -402,6 +402,30 @@ Consent: yours (glass-halo). Family named only as you choose.]`
 > *cue: who said it, and when you first noticed it was a fence rather than an answer; the Stump Dad
 > game beside it; what "born curious" felt like from the inside.*
 
+### What it cost to see it
+
+I want the timing in the record, because the finished sentence hides it.
+
+**It took me years.** Not years of arguing — years of walking into the same fence and slowly
+noticing which side the pressure was coming from. The distinction is hard to see for a reason: the
+fence works by **sounding humble**. *"God does not want you to know"* wears the costume of the very
+thing it is not. Most people never separate the two, and that is not because they lack curiosity.
+It is because the sentence is built not to come apart.
+
+And when it finally did come apart, I cried. Not from grief. From the **joy** of it — the specific
+joy of a thing you had been pushing against for most of your life turning, all at once, into a thing
+you can *name*. After that, the fence stops being a wall and becomes a question again. Every one of
+them does.
+
+That is what the epigram cost. One line, years, and the moment it came apart.
+
+> **The tears feel like peace.**
+
+`[SOCKET — the line above is YOUR VERBATIM (2026-08-23) and closes the section. More below if you
+want it. Consent: yours (glass-halo).]`
+
+> *cue: where you were when it came apart, if you ever want that in.*
+
 ## The autodidact: reading ahead of the room
 
 There's a gentler tell of the same thing, and it's my favorite, because a friend gave it a name.
