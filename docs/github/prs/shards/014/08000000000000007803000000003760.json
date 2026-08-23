@@ -1,0 +1,12 @@
+{
+  "pr_number": 14176,
+  "archive_path": "docs/history/pr-reviews/PR-14176-fix-tlaps-the-60-minute-wall-is-the-toolchain-build-not-the-model-the-proof-step.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-23T13:28:47.735Z",
+  "schema_version": "v1",
+  "commit_sha": "f2cc4bc37bae74cdde5a9fd8fd60ca2fbbda2793",
+  "title": "fix(tlaps): the 60-minute wall is the toolchain build, not the model — the proof step never ran",
+  "state": "MERGED",
+  "merged_at": "2026-08-23T13:28:06Z",
+  "head_ref": "fix/tlaps-proof-dark-lane"
+}
