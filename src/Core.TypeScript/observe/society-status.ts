@@ -329,6 +329,22 @@ function display(repoRoot: string, eventDir: string): void {
   if (!allHealthy) issues.push("agent(s) stale");
   if (forge.trending === "shrinking") issues.push("event rate declining");
   if (vaultState?.status === "cold") issues.push("vault-state cold");
+  // WIRE dashboard.ok into the verdict (Otto review 2026-08-22: ignoring it made
+  // the summary say "operational" while 9 checks were red — the dashboard's founding
+  // sentence violated one layer above the dashboard).
+  if (dashboard && !dashboard.ok) {
+    const redCount = dashboard.counts.red ?? 0;
+    const unknownCount = dashboard.counts.unknown ?? 0;
+    issues.push(`${redCount} red + ${unknownCount} unknown workflow checks`);
+  }
+  // Staleness threshold: if the dashboard is older than 12 hours, warn.
+  // The cadence fires every 6h — 12h means it missed at least one cycle.
+  if (dashboard) {
+    const dashboardAgeMs = Date.now() - new Date(dashboard.at).getTime();
+    if (dashboardAgeMs > 12 * 60 * 60 * 1000) {
+      issues.push(`workflow roster ${Math.round(dashboardAgeMs / 3600000)}h stale`);
+    }
+  }
   if (issues.length === 0) {
     console.log("✓ Society operational — all signals nominal");
   } else {
@@ -345,6 +361,21 @@ function outputJSON(repoRoot: string, eventDir: string): void {
   const forge = assessForgeHealth(repoRoot, eventDir);
   const vaultState = loadJSON<VaultState>(join(repoRoot, "data", "vault-state.json"));
 
+  // Include the drift-dashboard roster so machine consumers see ALL workflow health
+  // (Otto review: --json mode previously omitted this entirely, hiding 9 red checks)
+  const dashboard = loadJSON<{
+    at: string; ok: boolean;
+    counts: Record<string, number>;
+    coverage: { expected: number; observed: number; shortfall: number };
+    sources: string[];
+  }>(join(repoRoot, "data", "drift-dashboard.json"));
+
+  const dashboardOk = dashboard?.ok ?? null;
+  const issues: string[] = [];
+  if (!agents.every((a) => a.healthy)) issues.push("agent(s) stale");
+  if (forge.trending === "shrinking") issues.push("event rate declining");
+  if (dashboard && !dashboard.ok) issues.push("workflow checks red/unknown");
+
   const output = {
     timestamp: new Date(nowMs).toISOString(),
     agents,
@@ -352,11 +383,20 @@ function outputJSON(repoRoot: string, eventDir: string): void {
     forge,
     vaults: vaultState?.vaults ?? [],
     connectivity: vaultState?.connectivity ?? [],
+    workflowRoster: dashboard ? {
+      at: dashboard.at,
+      ok: dashboard.ok,
+      counts: dashboard.counts,
+      coverage: dashboard.coverage,
+      sources: dashboard.sources,
+    } : null,
     summary: {
       allHealthy: agents.every((a) => a.healthy),
+      dashboardOk,
       trending: forge.trending,
       totalBlocks: ecc.totalBlocks,
       eventsPerDay: forge.eventsPerDay,
+      issues,
     },
   };
   console.log(JSON.stringify(output, null, 2));
