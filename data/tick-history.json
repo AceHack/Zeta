@@ -3,34 +3,10 @@
     "generator": "tick-metrics-writer.ts",
     "mock": false,
     "derived_from": "data/tick-shards/**/*.json",
-    "shard_count": 1322,
+    "shard_count": 1324,
     "rollup_max_frames": 1000
   },
   "frames": [
-    {
-      "agents_active": 1,
-      "claims_pending": 0,
-      "entropy_heat": 0,
-      "entropy_state": 0,
-      "last_action": "decompose",
-      "last_agent": "alexa",
-      "last_mode": "work",
-      "t": "2026-08-01T14:13:22.502Z",
-      "ticks_24h": 1,
-      "total_events": 8
-    },
-    {
-      "agents_active": 1,
-      "claims_pending": 0,
-      "entropy_heat": 0,
-      "entropy_state": 0,
-      "last_action": "decompose",
-      "last_agent": "alexa",
-      "last_mode": "work",
-      "t": "2026-08-01T14:55:56.027Z",
-      "ticks_24h": 1,
-      "total_events": 8
-    },
     {
       "agents_active": 1,
       "claims_pending": 0,
@@ -12006,6 +11982,30 @@
       "t": "2026-08-23T12:25:38.098Z",
       "ticks_24h": 427,
       "total_events": 4313
+    },
+    {
+      "agents_active": 3,
+      "claims_pending": 3,
+      "entropy_heat": 0,
+      "entropy_state": 0,
+      "last_action": "explore",
+      "last_agent": "otto",
+      "last_mode": "explore",
+      "t": "2026-08-23T12:46:27.345Z",
+      "ticks_24h": 434,
+      "total_events": 4330
+    },
+    {
+      "agents_active": 3,
+      "claims_pending": 3,
+      "entropy_heat": 0,
+      "entropy_state": 0,
+      "last_action": "explore",
+      "last_agent": "otto",
+      "last_mode": "explore",
+      "t": "2026-08-23T13:14:54.529Z",
+      "ticks_24h": 424,
+      "total_events": 4330
     }
   ]
 }
