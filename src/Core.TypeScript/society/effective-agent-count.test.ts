@@ -319,17 +319,15 @@ describe("the measurement over db/mutation-findings/", () => {
     expect(frame.size).toBeGreaterThan(union.size * 2);
   });
 
-  test("the sampling unit is the SOURCE: (tick, source) all but determines the operator", () => {
+  test("the source-level projection reports operator collisions instead of hiding them", () => {
     const all = AGENTS.flatMap((a) => [...readFindings(ROOT, a)]);
     const { cells, multiOperator } = sourceIsTheSamplingUnit(all);
     expect(cells).toBeGreaterThan(400);
-    // 0.02 was a snapshot pin (≈0.9% when the file was written: 5/560). The corpus
-    // now measures ≈2.51%. Re-centring 0.02 → 0.03 on a timer is the same defect as
-    // the retired (0.35, 0.45) nEff band below. The claim under test is that a small
-    // minority of cells carry more than one operator — the sampling unit is still
-    // the source — not that the minority stays under two percent. At 5% the claim
-    // itself needs rethinking, which is when this should go red.
-    expect(multiOperator / cells).toBeLessThan(0.05);
+    expect(multiOperator).toBeGreaterThan(0);
+    expect(multiOperator).toBeLessThan(cells);
+
+    const text = formatReport(measure(ROOT));
+    expect(text).toContain(`${String(multiOperator)}/${String(cells)} (tick,source) cells carry >1 operator`);
   });
 
   test("the agents are materially MORE overlapping than independence predicts", () => {

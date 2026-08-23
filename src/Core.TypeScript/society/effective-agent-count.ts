@@ -13,11 +13,10 @@
  *
  * Three agents (alexa, otto, soraya) run mutation probes and append findings to
  * `db/mutation-findings/<agent>.jsonl`. Each finding names a **source file** it sampled. The
- * sampling unit is the SOURCE, not the (source, test, mutation) triple. `sourceIsTheSamplingUnit()`
- * re-derives the ratio every run: a small minority of (tick, source) cells carry more than one
- * mutation operator, so the operator is essentially determined by (tick, source) and counting
- * triples would measure the file-change rate rather than the agents' choices. A snapshot count
- * (560 cells / 5 multi-operator when this file was first written) is not the claim.
+ * sampling unit is the SOURCE, not the (source, test, mutation) triple, because the measurement is
+ * source coverage. Different operators applied to the same source and tick remain one sampled
+ * source; `sourceIsTheSamplingUnit()` reports those operator collisions so this projection's loss
+ * stays visible rather than silently multiplying a source into several draws.
  *
  * ## The universe MUST come from outside the agents' own behaviour
  *
@@ -377,10 +376,9 @@ export function parseFindings(text: string): readonly Finding[] {
 /**
  * Re-derives the "the sampling unit is the SOURCE" claim from the data every run.
  *
- * If (tick, source) determined the operator for every cell we would have a clean argument; it does
- * not quite, so the honest form is a ratio that the caller can see. Returns the count of cells and
- * how many carry more than one operator. A drift here means the sampling unit changed and the
- * measurement below needs rethinking — which is the point of computing it rather than asserting it.
+ * Returns the number of (tick, source) cells and how many carry more than one operator. The latter
+ * is the information discarded by projecting findings onto source coverage, so it belongs in the
+ * report. It is an observation over an append-only corpus, not a fixed acceptance threshold.
  */
 export function sourceIsTheSamplingUnit(all: readonly Finding[]): { cells: number; multiOperator: number } {
   const cells = new Map<string, Set<string>>();

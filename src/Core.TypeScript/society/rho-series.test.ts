@@ -83,7 +83,7 @@ describe("the extracted seams are the SAME code the shipped path runs", () => {
     }
   });
 
-  test("universeFromFileList refuses a .ts with no sibling test, and .d.ts / .test.ts themselves", () => {
+  test("universeFromFileList refuses a .ts with no companion test, and .d.ts / .test.ts themselves", () => {
     expect([...universeFromFileList(["a.ts", "a.test.ts", "b.ts", "c.d.ts", "d.test.ts"])]).toEqual(["a.ts"]);
   });
 
