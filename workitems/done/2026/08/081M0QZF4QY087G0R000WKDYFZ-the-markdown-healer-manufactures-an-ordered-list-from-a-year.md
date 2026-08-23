@@ -1,11 +1,12 @@
 ---
 id: 081M0QZF4QY087G0R000WKDYFZ
 type: bug
-state: backlog
+state: done
 priority: P2
 slug: the-markdown-healer-manufactures-an-ordered-list-from-a-year
 title: "the markdown healer manufactures an ordered list from a year at line-start and edits book prose"
 created: 2026-08-23T18:52:29.310Z
+completed: 2026-08-23T20:30:03.097Z
 depends_on: []
 composes_with: []
 ---
@@ -83,3 +84,38 @@ that an automated editor changes it.
 - `.github/workflows/drift-sweep.yml` — the lane that runs the heal
 - `.claude/rules/toy-is-free-metered-must-be-earned.md` — the falsifier above is
   what would move this from "believed fixed" to "checked"
+
+## Resolution (branch `fix/healer-does-not-manufacture-lists`)
+
+**CommonMark already settled the predicate**, and names this exact failure mode
+while doing so (0.31.2 §Lists): "`Markdown.pl` does not allow this, through fear
+of triggering a list via a numeral in a hard-wrapped line … In order to solve
+the problem of unwanted lists in paragraphs with hard-wrapped numerals, we allow
+only lists starting with `1` to interrupt paragraphs." Plus §List items: "an
+empty list item cannot interrupt a paragraph", and the marker itself is "1--9
+arabic digits".
+
+So the rule as filed ("preceded by a line that ends mid-sentence") is **not**
+what shipped: terminal punctuation is a heuristic, and a heuristic that
+disagrees with micromark — the parser markdownlint actually runs — would be a
+worse bug than the one being fixed. `canInterruptParagraph` in
+`src/Core.TypeScript/hygiene/fix-markdown-md032-md026.ts` implements the spec
+rule instead.
+
+**The after-pass was implicated too**, which the filing did not know: on the
+design brief the healer inserted blank lines on BOTH sides of the `2016.` line.
+Guarding only `insertBlanksBefore` would have moved the split, not removed it.
+
+**A third, unobserved instance** turned up when the whole heal scope was run
+before/after: `docs/PRIOR-ART-LIST.md`. Confirms the class statement — this was
+never a `docs/books/` problem.
+
+**Measured over the real scope** (2,837 healable files): the fixed healer's
+output is a strict subset of the old one's — 3 blank-line insertions removed,
+every other heal byte-identical. Both reported errors reproduce at their exact
+line numbers under the old code (`:686` MD029 Actual 2007, `:87` MD029 Actual
+2016) and are gone under the new.
+
+The third bullet — whether an auto-fixer should touch `docs/books/` at all — is
+**not** answered here. It survives the fix and is filed as
+081M0R50J09087G0R000AN2QAT with the reasons it was kept separate.

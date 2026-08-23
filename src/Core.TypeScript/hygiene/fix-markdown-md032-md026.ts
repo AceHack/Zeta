@@ -47,6 +47,25 @@ import { readFile, writeFile } from "node:fs/promises";
 const LIST_LINE = /^( {2})*(?:[-*+] |\d+\. )/;
 const INDENTED_LINE = /^ {2,}\S/;
 
+// The same marker set as LIST_LINE, split into indent / marker / first-line
+// content so the CommonMark interruption rule below can be asked about it.
+// Deliberately NOT widened to `)` markers: this tool has never recognized them,
+// and widening recognition here would make the healer insert MORE blanks, not
+// fewer — the opposite of the correction being made.
+const LIST_MARKER = /^(?: {2})*([-*+]|\d+\.) (.*)$/;
+
+// CommonMark 0.31.2 §List items: an ordered list marker "is a sequence of 1--9
+// arabic digits (`0-9`), followed by either a `.` character or a `)` character.
+// (The reason for the length limit is that with 10 digits we start seeing
+// integer overflows in some browsers.)" Ten digits is therefore not a marker at
+// all — it is prose that happens to start with a number.
+const MAX_ORDERED_MARKER_DIGITS = 9;
+
+// ATX heading shape, shared by fixMd022 and the list-item classifier. A heading
+// line closes its block, so the line after one starts fresh and CANNOT be a
+// lazy continuation.
+const ATX_HEADING = /^#{1,6}\s/;
+
 // ATX heading test. Trailing-punctuation stripping is done procedurally
 // in stripHeadingPunctuation — no regex for the punctuation match. The
 // procedural form (a) avoids ReDoS shapes (sonarjs/slow-regex) and
@@ -92,6 +111,7 @@ interface FenceState {
 interface BlanksBeforePass {
   out: string[];
   outInside: boolean[];
+  outIsItem: boolean[];
 }
 
 interface Args {
@@ -309,14 +329,124 @@ function classifyLines(lines: readonly string[]): boolean[] {
   return inside;
 }
 
+/**
+ * Can this list-shaped line INTERRUPT a paragraph — i.e. legitimately begin a
+ * list on the line immediately after running prose?
+ *
+ * THE DEFECT THIS ANSWERS (081M0QZF4QY087G0R000WKDYFZ; twice on 2026-08-23, on
+ * two unrelated documents). A hard-wrapped sentence
+ *
+ *     chosen as the headline property of an installer in
+ *     2007. It rhymes with two other things in this record:
+ *
+ * has a second line matching LIST_LINE. MD032 read it as a list missing its
+ * blank line and inserted one — and the inserted blank is what MADE it a list:
+ * markdownlint then parsed an ordered list starting at 2007 and failed
+ * MD029 (`Expected: 1; Actual: 2007`). The fix manufactured the defect it
+ * believed it was repairing, and did it to an author's prose. Both observed
+ * cases — `docs/books/you-born-at-the-hinge/RAW-2026-08-18-*.md:686` (`2007.`)
+ * and `docs/design/2026-08-23-clifford-gpu-theory-brief-*.md:87` (`2016.`) —
+ * are instances of ONE class: every hard-wrapped line whose first token is
+ * digits followed by `. ` is vulnerable. Years, dates, version numbers, RFC
+ * numbers (`... per RFC` / `2119. Which says ...`), page and paragraph refs.
+ *
+ * THIS IS NOT A HEURISTIC — COMMONMARK ALREADY SETTLES IT, and names this
+ * exact failure mode while doing so (0.31.2 §Lists):
+ *
+ *     "`Markdown.pl` does not allow this, through fear of triggering a list
+ *      via a numeral in a hard-wrapped line:
+ *          The number of windows in my house is
+ *          14.  The number of doors is 6."
+ *     […]
+ *     "In order to solve the problem of unwanted lists in paragraphs with
+ *      hard-wrapped numerals, we allow only lists starting with `1` to
+ *      interrupt paragraphs."
+ *
+ * plus §List items: "However, an empty list item cannot interrupt a paragraph."
+ * Conforming to the spec rather than inventing a predicate (e.g. "the previous
+ * line ends mid-sentence") is the load-bearing choice: markdownlint parses with
+ * micromark, so a healer that disagrees with CommonMark heals documents into
+ * shapes the linter rejects — which is precisely what happened.
+ *
+ * THE RESIDUAL, stated because the spec states its own: a wrapped line
+ * beginning exactly `1. ` DOES start a list under CommonMark, so the healer
+ * will still insert a blank there. The spec admits this ("We may still get an
+ * unintended result in cases like … but this rule should prevent most spurious
+ * list captures") and so do we — the alternative is disagreeing with the
+ * parser, which is the worse bug.
+ */
+export function canInterruptParagraph(line: string): boolean {
+  const m = LIST_MARKER.exec(line);
+  if (m === null) return false;
+  const marker = m[1] ?? "";
+  const content = m[2] ?? "";
+  // §List items: "an empty list item cannot interrupt a paragraph".
+  if (content.trim() === "") return false;
+  // A bullet with content always may.
+  if (!marker.endsWith(".")) return true;
+  const digits = marker.slice(0, -1);
+  // Ten or more digits is not an ordered list marker at all — it is prose.
+  if (digits.length > MAX_ORDERED_MARKER_DIGITS) return false;
+  return Number.parseInt(digits, 10) === 1;
+}
+
+/**
+ * Which lines are REAL list items, as opposed to paragraph text that merely
+ * LOOKS like one because a hard wrap put a numeral at the start of a line.
+ *
+ * Two pieces of state, both straight out of CommonMark's block-parsing rules:
+ *
+ *  - `continuable` — the previous line is a non-blank line that a following
+ *    line may LAZILY CONTINUE. When it is set, a list-shaped line only starts a
+ *    list if `canInterruptParagraph` says so.
+ *  - `inItem` — the previous line is an open list item's marker line or an
+ *    indented continuation of one. A sibling marker JOINS an already-open list
+ *    rather than interrupting a paragraph, so `2.` directly under `1.` is a
+ *    real item even though 2 ≠ 1.
+ *
+ * Both are cleared by a blank line, by an untouchable region (fence /
+ * frontmatter / wrapped code span), and `continuable` additionally by an ATX
+ * heading, which closes its own block.
+ *
+ * Where the two disagree the classifier chooses NOT-an-item, which is the
+ * conservative direction for a healer: a missed heal leaves pre-existing drift
+ * for the next tick to report, while a wrong heal MINTS drift — and minting is
+ * what the harness's closure law forbids.
+ */
+function classifyListItems(
+  lines: readonly string[],
+  inside: readonly boolean[],
+): boolean[] {
+  const isItem = new Array<boolean>(lines.length).fill(false);
+  let continuable = false;
+  let inItem = false;
+  for (let i = 0; i < lines.length; i += 1) {
+    const line = lines[i];
+    if (line === undefined) continue;
+    if (inside[i] || line.trim() === "") {
+      continuable = false;
+      inItem = false;
+      continue;
+    }
+    if (isList(line)) {
+      isItem[i] = !continuable || inItem || canInterruptParagraph(line);
+    }
+    inItem = (isItem[i] ?? false) || (inItem && INDENTED_LINE.test(line));
+    continuable = !ATX_HEADING.test(line);
+  }
+  return isItem;
+}
+
 // Insert blank lines before list blocks (where the previous line is
 // non-blank and not itself a list/continuation).
 function insertBlanksBefore(
   lines: readonly string[],
   inside: readonly boolean[],
+  isItem: readonly boolean[],
 ): BlanksBeforePass {
   const out: string[] = [];
   const outInside: boolean[] = [];
+  const outIsItem: boolean[] = [];
   for (let i = 0; i < lines.length; i += 1) {
     const line = lines[i];
     if (line === undefined) continue;
@@ -324,7 +454,11 @@ function insertBlanksBefore(
     const prevInside = outInside.at(-1) ?? false;
     if (
       !inside[i] &&
-      isList(line) &&
+      // `isItem`, not `isList`: a line that merely LOOKS like a list item
+      // because a hard wrap put a numeral at column 0 gets no blank, because
+      // inserting one is what would turn it into a list. See
+      // canInterruptParagraph.
+      (isItem[i] ?? false) &&
       prev !== undefined &&
       prev.trim() !== "" &&
       !prevInside &&
@@ -332,11 +466,13 @@ function insertBlanksBefore(
     ) {
       out.push("");
       outInside.push(false);
+      outIsItem.push(false);
     }
     out.push(line);
     outInside.push(inside[i] ?? false);
+    outIsItem.push(isItem[i] ?? false);
   }
-  return { out, outInside };
+  return { out, outInside, outIsItem };
 }
 
 // Insert blank lines after list blocks (where the next line is
@@ -344,6 +480,7 @@ function insertBlanksBefore(
 function insertBlanksAfter(
   lines: readonly string[],
   inside: readonly boolean[],
+  isItem: readonly boolean[],
 ): string[] {
   const out: string[] = [];
   for (let i = 0; i < lines.length; i += 1) {
@@ -354,7 +491,11 @@ function insertBlanksAfter(
     const nxtInside = inside[i + 1] ?? false;
     if (
       !inside[i] &&
-      isList(line) &&
+      // Same correction as the before-pass, and it is NOT redundant: on
+      // `…installer in / 2007. It rhymes with:` the before-pass is suppressed
+      // but this pass would still have split the paragraph after the numeral
+      // line. Half a fix here is still an edit to an author's sentence.
+      (isItem[i] ?? false) &&
       nxt !== undefined &&
       nxt.trim() !== "" &&
       !nxtInside &&
@@ -372,8 +513,9 @@ function insertBlanksAfter(
 function fixMd032(text: string): string {
   const lines = text.split("\n");
   const inside = classifyLines(lines);
-  const before = insertBlanksBefore(lines, inside);
-  return insertBlanksAfter(before.out, before.outInside).join("\n");
+  const isItem = classifyListItems(lines, inside);
+  const before = insertBlanksBefore(lines, inside, isItem);
+  return insertBlanksAfter(before.out, before.outInside, before.outIsItem).join("\n");
 }
 
 // Strip trailing punctuation (with optional trailing whitespace) from
@@ -403,7 +545,7 @@ function fixMd022(text: string): string {
   for (let i = 0; i < lines.length; i += 1) {
     const line = lines[i];
     if (line === undefined) continue;
-    const isHeading = !inside[i] && /^#{1,6}\s/.test(line);
+    const isHeading = !inside[i] && ATX_HEADING.test(line);
     const prev = out.at(-1);
     const prevInside = outInside.at(-1) ?? false;
     if (isHeading && prev !== undefined && prev.trim() !== "" && !prevInside) {

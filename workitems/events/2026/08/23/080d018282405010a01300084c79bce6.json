@@ -1,0 +1,14 @@
+{
+  "id": "080d018282405010a01300084c79bce6",
+  "at": "2026-08-23T20:29:22.826Z",
+  "by": "shadow",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M0R50J09087G0R000AN2QAT",
+    "type": "task",
+    "title": "should an auto-fixer rewrite authored book prose at all — the standing question the healer defect raised",
+    "slug": "should-an-auto-fixer-rewrite-authored-book-prose-at-all-the",
+    "priority": "P2",
+    "filename": "081M0R50J09087G0R000AN2QAT-should-an-auto-fixer-rewrite-authored-book-prose-at-all-the.md"
+  }
+}
