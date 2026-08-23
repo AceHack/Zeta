@@ -1,0 +1,68 @@
+# bunfig.hardware-lane.toml -- the config that makes the HARDWARE lanes reachable.
+#
+# WHY THIS FILE EXISTS. MEASURED 2026-08-23 on darwin-arm64, on a clean checkout
+# of main:
+#
+#   $ ZETA_FROST_HARDWARE_LANE=pkcs11 \
+#       bun test ./tools/setup/persona-keys/frost-share-adapter.hardware.test.ts
+#   The following filters did not match any test files
+#   rc=1
+#
+# That is the command the hardware test file's own header documented, and it did
+# not run the lane. bunfig.toml lists that file in `pathIgnorePatterns` to keep it
+# out of the whole-suite gate, and bun applies pathIgnorePatterns even to an
+# EXPLICIT path filter -- so the exclusion that keeps the lane out of CI also kept
+# it out of the operator's hands.
+#
+# The failure is the repo's named worst defect class wearing its best disguise.
+# Both outcomes exit 1:
+#
+#   opted in, no token attached  -> HW-1 and HW-2 fail   (the lane ran, correctly)
+#   opted in, WITH token attached -> filters did not match (the lane never ran)
+#
+# An operator reading only the exit status cannot tell them apart, and the one
+# that looks like diligence is the one where nothing was checked. The registry
+# entry for that file argues its non-vacuity from "opting in without hardware
+# FAILS rather than skips" -- true, and true only in a configuration that the
+# documented command did not reach.
+#
+# HOW TO USE IT. The `--config=` flag must come BEFORE the `test` subcommand.
+# `bun test --config=X` parses without complaint and IGNORES X, which is the
+# second half of the same trap:
+#
+#   ZETA_FROST_HARDWARE_LANE=pkcs11 \
+#   ZETA_FROST_PKCS11_LIB=/opt/homebrew/lib/ykcs11.dylib \
+#   ZETA_FROST_PKCS11_PIN=... \
+#   bun --config=bunfig.hardware-lane.toml test \
+#     ./tools/setup/persona-keys/frost-share-adapter.hardware.test.ts
+#
+# This config is NOT wired into any CI job and must not be: no runner has the
+# silicon, and the exclusion in bunfig.toml is correct for the gate. It exists so
+# that an operator holding the hardware can actually run the lane the hardware is
+# for. Guarded by usb-hardware-manual-lane.test.ts, which fails if this file stops
+# omitting the hardware paths or if bunfig.toml stops excluding them.
+
+[install]
+auto = "disable"
+exact = true
+saveTextLockfile = true
+
+[test]
+coverageSkipTestFiles = true
+# The hardware test files are DELIBERATELY absent from this list -- that omission
+# is the entire content of this file.
+pathIgnorePatterns = [
+  "**/BenchmarkDotNet.Artifacts/**",
+  "**/TestResults/**",
+  "**/artifacts/**",
+  "**/node_modules/**",
+  "**/docs/recovered-orphan-branches-2026-05/**",
+  "**/references/prior-art/**",
+  "**/bin/**",
+  "**/obj/**",
+  "**/.lake/**",
+  "**/.git/**",
+  "tools/lean4/.lake/**",
+  "tools/alloy/**",
+  "tools/tla/**",
+]

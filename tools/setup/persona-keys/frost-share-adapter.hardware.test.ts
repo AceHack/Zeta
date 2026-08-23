@@ -14,14 +14,34 @@
 //      tests fail loudly. Without that, an opt-in lane that skips itself is the
 //      classic green-because-nothing-ran result.
 //
-// HOW TO RUN
+// HOW TO RUN -- READ THIS LINE FIRST
 //
+//   The `--config=bunfig.hardware-lane.toml` flag is REQUIRED, and it must come
+//   BEFORE the `test` subcommand. Without it the commands below match NO test
+//   files and the lane does not run.
+//
+//   MEASURED 2026-08-23 on darwin-arm64. This file is listed in bunfig.toml's
+//   pathIgnorePatterns to keep it out of the whole-suite gate, and bun applies
+//   pathIgnorePatterns even to an EXPLICIT path filter. The commands in this
+//   header previously omitted the flag, so:
+//
+//     ZETA_FROST_HARDWARE_LANE=pkcs11 bun test ./...hardware.test.ts
+//     -> "The following filters did not match any test files"   rc=1
+//
+//   rc=1 is also what a correctly-running lane returns when the token is absent.
+//   So the exit status could not distinguish "the token is missing" from "the
+//   lane never ran", and the second reading is the one where nothing was checked.
+//   Note also that `bun test --config=X` parses fine and IGNORES X; only
+//   `bun --config=X test` honours it.
+//
+
 //   PKCS#11 (macOS or Linux, needs a token holding an AES-256 key labelled
 //   zeta-frost-wrap):
 //     ZETA_FROST_HARDWARE_LANE=pkcs11 \
 //     ZETA_FROST_PKCS11_LIB=/opt/homebrew/lib/ykcs11.dylib \
 //     ZETA_FROST_PKCS11_PIN=... \
-//     bun test ./tools/setup/persona-keys/frost-share-adapter.hardware.test.ts
+//     bun --config=bunfig.hardware-lane.toml test \
+//       ./tools/setup/persona-keys/frost-share-adapter.hardware.test.ts
 //
 //   PKCS#11 MULTI-TOKEN (the one that tests the property a token PACK buys). Plug in
 //   two or more tokens, provision each with an AES-256 key labelled zeta-frost-wrap,
@@ -39,7 +59,8 @@
 //     ZETA_FROST_PKCS11_LIB=/opt/homebrew/lib/ykcs11.dylib \
 //     ZETA_FROST_PKCS11_PIN=... \
 //     ZETA_FROST_PKCS11_TOKENS='house-a#12345678,house-b#87654321' \
-//     bun test ./tools/setup/persona-keys/frost-share-adapter.hardware.test.ts
+//     bun --config=bunfig.hardware-lane.toml test \
+//       ./tools/setup/persona-keys/frost-share-adapter.hardware.test.ts
 //
 //   Optionally add a BACKUP token for participant 1, to exercise duplication. A share may
 //   live on N devices and is still ONE participant; the roster check is what enforces
@@ -52,7 +73,8 @@
 //     tpm2_create -C primary.ctx -i k.bin -u k.pub -r k.priv
 //     tpm2_load -C primary.ctx -u k.pub -r k.priv -c sealed.key
 //     ZETA_FROST_HARDWARE_LANE=tpm2 ZETA_FROST_TPM_SEALED_KEY=$PWD/sealed.key \
-//     bun test ./tools/setup/persona-keys/frost-share-adapter.hardware.test.ts
+//     bun --config=bunfig.hardware-lane.toml test \
+//       ./tools/setup/persona-keys/frost-share-adapter.hardware.test.ts
 
 import { describe, expect, test } from "bun:test";
 import { existsSync, mkdtempSync } from "node:fs";

@@ -27,7 +27,7 @@ const REPO_ROOT = join(import.meta.dir, "..", "..", "..");
 // reappear -- a guard scoped to one filename would go quietly vacuous the moment the lane
 // people actually gate on stops being the file it reads. Adding a bunfig without adding it
 // here is caught by the manifest test below.
-const CONFIGS = ["bunfig.toml", "bunfig.hermetic.toml"] as const;
+const CONFIGS = ["bunfig.toml", "bunfig.hermetic.toml", "bunfig.hardware-lane.toml"] as const;
 
 test("the guard covers every bunfig in the repo root", () => {
   const present = readdirSync(REPO_ROOT).filter((f) => /^bunfig(\..+)?\.toml$/.test(f)).sort();

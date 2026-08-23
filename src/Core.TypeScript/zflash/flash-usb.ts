@@ -106,7 +106,7 @@ import { MAX_ISO_BYTES, MAX_USB_BYTES, MIN_ISO_BYTES, MIN_USB_BYTES } from "./si
  * nothing else. cli.ts matches this line to answer it in --agent mode, so the
  * two-space indent it is printed with is part of the contract.
  */
-const HALF_PROVISIONED_ACK = "ack half-provisioned";
+export const HALF_PROVISIONED_ACK = "ack half-provisioned";
 
 
 
@@ -115,7 +115,7 @@ function bail(code: number, msg: string): never {
   process.exit(code);
 }
 
-function human(bytes: number): string {
+export function human(bytes: number): string {
   const u = ["B", "KiB", "MiB", "GiB", "TiB"];
   let i = 0;
   let n = bytes;
@@ -124,6 +124,293 @@ function human(bytes: number): string {
     i++;
   }
   return `${n.toFixed(2)} ${u[i]}`;
+}
+
+// ============================================================================
+// PURE DECISION SURFACE -- the safety rails, as values rather than as control
+// flow buried in main().
+// ============================================================================
+//
+// WHY THIS BLOCK EXISTS. Every rail below was already implemented in this file;
+// none of it was reachable from a test. The rails lived inline in a 660-line
+// `main()` that calls `process.exit` and `sudo dd`, in a module that ran itself
+// on import. The Linux arm (flash-usb-linux.ts) and the Windows arm
+// (flash-usb-windows.ts) had each already been written this way and each has a
+// test file; the macOS arm -- the one the maintainer's own laptop uses -- did
+// not, and appeared in NO coverage report because no test ever loaded it.
+//
+// These are EXTRACTIONS, not a second copy. `main()` below calls each one. A
+// mirrored rail that drifts from the rail actually enforced is worse than no
+// test at all, because it reports green about code that no longer runs.
+
+export const ALLOWED_FLAGS: readonly string[] = [
+  "--short",
+  "--no-eject",
+  "--accept-unrecognized",
+  "--accept-half-provisioned",
+  "-h",
+  "--help",
+];
+
+/** Flags carrying a value as `--name=value`: the caller's STATED target pin. */
+export const VALUE_FLAGS: readonly string[] = [
+  "--expect-device",
+  "--expect-size",
+  "--expect-model",
+];
+
+export interface ParsedFlags {
+  readonly short: boolean;
+  readonly noEject: boolean;
+  readonly acceptUnrecognized: boolean;
+  readonly acceptHalfProvisioned: boolean;
+  readonly help: boolean;
+  readonly expectDevice: string | null;
+  readonly expectModel: string | null;
+  readonly expectSize: number | null;
+  readonly positional: readonly string[];
+}
+
+export type FlagParse =
+  | { readonly ok: true; readonly flags: ParsedFlags }
+  | { readonly ok: false; readonly code: 2; readonly message: string };
+
+export function flagName(f: string): string {
+  return f.includes("=") ? f.slice(0, f.indexOf("=")) : f;
+}
+
+/**
+ * Parse argv under a strict allowlist.
+ *
+ * The allowlist is the rail, not a nicety: silently accepting an unrecognised
+ * flag on a destructive tool means a mistyped `--dry-run` or `--shrot` proceeds
+ * all the way to `sudo dd` while the operator believes they asked for something
+ * else. Likewise a value flag given with no `=value` is a REFUSAL rather than a
+ * silent null -- an operator who meant to pin the target and mistyped the syntax
+ * must not be handed the unpinned path by accident.
+ */
+export function parseFlags(argv: readonly string[]): FlagParse {
+  const rawFlags = argv.filter((a) => a.startsWith("-"));
+  const positional = argv.filter((a) => !a.startsWith("-"));
+  const allowed = new Set(ALLOWED_FLAGS);
+  const valued = new Set(VALUE_FLAGS);
+
+  const unknown = rawFlags.filter((f) => !allowed.has(f) && !valued.has(flagName(f)));
+  if (unknown.length > 0) {
+    return {
+      ok: false,
+      code: 2,
+      message:
+        `unknown flag(s): ${unknown.join(", ")}\n` +
+        `Allowed flags: ${ALLOWED_FLAGS.join(", ")}\n` +
+        `Refusing to proceed - destructive tool requires exact flag match.`,
+    };
+  }
+
+  let bad: string | null = null;
+  const valueOf = (name: string): string | null => {
+    const hit = rawFlags.find((f) => flagName(f) === name);
+    if (hit === undefined) return null;
+    const eq = hit.indexOf("=");
+    const v = eq < 0 ? "" : hit.slice(eq + 1);
+    if (v.length === 0) {
+      bad ??= `flag ${name} needs a value, as ${name}=VALUE`;
+      return null;
+    }
+    return v;
+  };
+
+  const expectDevice = valueOf("--expect-device");
+  const expectModel = valueOf("--expect-model");
+  const expectSizeRaw = valueOf("--expect-size");
+  if (bad !== null) return { ok: false, code: 2, message: bad };
+
+  const expectSize = expectSizeRaw === null ? null : Number(expectSizeRaw);
+  if (expectSize !== null && !Number.isSafeInteger(expectSize)) {
+    return {
+      ok: false,
+      code: 2,
+      message: `--expect-size must be a whole number of bytes, got ${String(expectSizeRaw)}`,
+    };
+  }
+
+  const has = (f: string): boolean => rawFlags.includes(f);
+  return {
+    ok: true,
+    flags: {
+      short: has("--short"),
+      noEject: has("--no-eject"),
+      acceptUnrecognized: has("--accept-unrecognized"),
+      acceptHalfProvisioned: has("--accept-half-provisioned"),
+      help: has("-h") || has("--help"),
+      expectDevice,
+      expectModel,
+      expectSize,
+      positional,
+    },
+  };
+}
+
+/** Whitelist of safe whole-disk paths. diskutil produces these itself; the
+ *  check is belt-and-suspenders against a partition path (/dev/disk4s1) or a
+ *  crafted string reaching an argv array. */
+export function isSafeDevicePath(device: string): boolean {
+  return /^\/dev\/disk\d+$/u.test(device);
+}
+
+/** The raw character device is the ONLY handle the privileged reader accepts.
+ *  Kept a separate predicate because the two shapes are not interchangeable:
+ *  /dev/diskN is buffered, /dev/rdiskN is raw and ~10x faster. */
+export function isSafeRawDevicePath(device: string): boolean {
+  return /^\/dev\/rdisk\d+$/u.test(device);
+}
+
+export function rawDevicePathFor(device: string): string {
+  return `/dev/r${device.replace("/dev/", "")}`;
+}
+
+/** Parse `diskutil list -plist external physical` (already plutil-converted to
+ *  JSON) into whole-disk paths. The plist read needs macOS; this parse does not,
+ *  which is the whole reason it is a separate function. */
+export function parseExternalDevices(listJson: unknown): string[] {
+  if (listJson === null || typeof listJson !== "object") return [];
+  const disks = (listJson as { AllDisksAndPartitions?: unknown }).AllDisksAndPartitions;
+  if (!Array.isArray(disks)) return [];
+  return disks
+    .map((d: unknown) => (d as { DeviceIdentifier?: unknown }).DeviceIdentifier)
+    .filter((id: unknown): id is string => typeof id === "string" && id.length > 0)
+    .map((id: string) => `/dev/${id}`);
+}
+
+/** The bus filter. USB-C is a distinct BusProtocol string on macOS and both
+ *  count; anything Internal is refused whatever the bus says. */
+export function isUsbCandidate(busProtocol: string, internal: boolean): boolean {
+  return (busProtocol === "USB" || busProtocol === "USB-C") && !internal;
+}
+
+export interface UsbCandidate {
+  readonly device: string;
+  readonly sizeBytes: number;
+  readonly model: string;
+}
+
+export type UsbSelection =
+  | { readonly kind: "selected"; readonly device: string }
+  | { readonly kind: "none"; readonly message: string }
+  | { readonly kind: "ambiguous"; readonly message: string };
+
+/**
+ * Zero, one, or many.
+ *
+ * The `many` arm is a REFUSAL, not a picker. A tool that picks "the external
+ * disk" is one plugged-in phone away from destroying it, and the operator's
+ * mental model of which stick is "the" stick is exactly what cannot be checked
+ * from inside the process.
+ */
+export function selectUsbTarget(candidates: readonly UsbCandidate[]): UsbSelection {
+  if (candidates.length === 0) {
+    return {
+      kind: "none",
+      message:
+        "no USB devices found.\n" +
+        "Plug in the USB stick, then re-run. If you already plugged it in,\n" +
+        "give the OS a few seconds and try again.",
+    };
+  }
+  if (candidates.length > 1) {
+    const listing = candidates
+      .map((c) => `  ${c.device}  ${human(c.sizeBytes)}  ${c.model}`)
+      .join("\n");
+    return {
+      kind: "ambiguous",
+      message:
+        `multiple USB devices found:\n${listing}\n` +
+        "refusing to pick one. Unplug all but the target USB and re-run, OR\n" +
+        "use manual flow: sudo dd if=<iso> of=/dev/rdiskN bs=4m",
+    };
+  }
+  const only = candidates[0];
+  if (only === undefined) return { kind: "none", message: "internal: empty after length check" };
+  return { kind: "selected", device: only.device };
+}
+
+export type RailCheck = { readonly ok: true } | { readonly ok: false; readonly message: string };
+
+/** The ISO gate: exists, named *.iso, is a regular file, size in range. */
+export function validateIso(isoPath: string, sizeBytes: number, exists: boolean, isFile: boolean): RailCheck {
+  if (!exists) return { ok: false, message: `ISO file does not exist: ${isoPath}` };
+  if (!isoPath.endsWith(".iso")) return { ok: false, message: `expected *.iso file, got: ${isoPath}` };
+  if (!isFile) return { ok: false, message: `ISO path is not a file: ${isoPath}` };
+  if (sizeBytes < MIN_ISO_BYTES || sizeBytes > MAX_ISO_BYTES) {
+    return {
+      ok: false,
+      message:
+        `ISO size ${human(sizeBytes)} outside sane range ` +
+        `[${human(MIN_ISO_BYTES)}, ${human(MAX_ISO_BYTES)}]; refusing`,
+    };
+  }
+  return { ok: true };
+}
+
+/** The size bound is what stands between this tool and an external SSD. */
+export function validateUsbSize(device: string, sizeBytes: number): RailCheck {
+  if (sizeBytes < MIN_USB_BYTES || sizeBytes > MAX_USB_BYTES) {
+    return {
+      ok: false,
+      message:
+        `device ${device} size ${human(sizeBytes)} outside USB range ` +
+        `[${human(MIN_USB_BYTES)}, ${human(MAX_USB_BYTES)}]; refusing\n` +
+        `(this protects against pointing at an external SSD by mistake)`,
+    };
+  }
+  return { ok: true };
+}
+
+/** Parse `mount` output for the disk backing `/`. Split out from the shell-out
+ *  so the parse can be tested against real macOS `mount` text. Returns "" when
+ *  no row mounts `/`, and "" is treated as "unknown", never as "safe". */
+export function parseBootDiskIdentifier(mountOutput: string): string {
+  const rootMount = mountOutput.split("\n").find((l) => / on \/ \(/u.test(l));
+  if (rootMount === undefined) return "";
+  const m = /^\/dev\/(disk\d+)/u.exec(rootMount);
+  return m?.[1] ?? "";
+}
+
+/** True when the target IS the boot disk. An empty bootDisk means the root row
+ *  could not be parsed, and an unknown answer must not read as a pass -- but it
+ *  cannot refuse either without bricking every host whose `mount` we misparse,
+ *  so the caller pairs this with the size + bus + internal rails. */
+export function targetIsBootDisk(device: string, bootDisk: string): boolean {
+  if (bootDisk === "") return false;
+  return device.replace("/dev/", "") === bootDisk;
+}
+
+/** Nonce width is the consent strength knob: 8 hex chars long-form, 4 short. */
+export function makeNonce(short: boolean, rand: (n: number) => Buffer = randomBytes): string {
+  return rand(short ? 2 : 4).toString("hex");
+}
+
+export function buildLongChallenge(device: string, nonce: string): string {
+  return `accept-destroy ${device} ${nonce}`;
+}
+
+export function buildShortChallenge(nonce: string): string {
+  return `yes ${nonce}`;
+}
+
+export function buildChallenge(short: boolean, device: string, nonce: string): string {
+  return short ? buildShortChallenge(nonce) : buildLongChallenge(device, nonce);
+}
+
+/**
+ * The acceptance comparison. EXACT, on purpose.
+ *
+ * readline has already stripped the trailing newline and there is deliberately
+ * no .trim(): whitespace tolerance would let a piped answer with stray padding
+ * satisfy a gate whose entire job is to prove a human read THIS run's nonce.
+ */
+export function acceptanceMatches(typed: string, expected: string): boolean {
+  return typed === expected;
 }
 
 // Convert plist XML stdin to JSON via plutil. Safe pipeline because
@@ -173,12 +460,9 @@ function readIdentity(device: string): DeviceIdentity {
 }
 
 function bootDiskIdentifier(): string {
-  // `mount` output -> find row mounting `/` -> extract diskN.
-  const mountOut = execFileSync("mount", [], { encoding: "utf8" });
-  const rootMount = mountOut.split("\n").find((l) => / on \/ \(/.test(l));
-  if (!rootMount) return "";
-  const m = rootMount.match(/^\/dev\/(disk\d+)/);
-  return m?.[1] ?? "";
+  // Shell-out here; the PARSE is parseBootDiskIdentifier above, so it can be
+  // tested against real `mount` text on any host.
+  return parseBootDiskIdentifier(execFileSync("mount", [], { encoding: "utf8" }));
 }
 
 /**
@@ -197,7 +481,7 @@ function bootDiskIdentifier(): string {
  * against the /dev/rdiskN shape on the way in.
  */
 function privilegedDeviceReader(rawDevicePath: string, blockBytes: number): ChunkReader {
-  if (!/^\/dev\/rdisk\d+$/.test(rawDevicePath)) {
+  if (!isSafeRawDevicePath(rawDevicePath)) {
     bail(2, `unsafe raw device path: ${rawDevicePath}`);
   }
   if (!Number.isSafeInteger(blockBytes) || blockBytes <= 0) {
@@ -233,7 +517,7 @@ function privilegedDeviceReader(rawDevicePath: string, blockBytes: number): Chun
 // Whitelist of safe device-identifier shapes. Belt-and-suspenders
 // even though diskutil produces these strings itself.
 function assertSafeDevicePath(device: string): void {
-  if (!/^\/dev\/disk\d+$/.test(device)) {
+  if (!isSafeDevicePath(device)) {
     bail(2, `unsafe device path: ${device}`);
   }
 }
@@ -250,56 +534,21 @@ async function main() {
   // accepting unknown flags like `--dry-run` or a misspelled `--short`
   // would proceed to sudo dd despite operator intent. Bail explicitly
   // on any unrecognized flag.
-  const ALLOWED_FLAGS = new Set([
-    "--short",
-    "--no-eject",
-    "--accept-unrecognized",
-    "--accept-half-provisioned",
-    "-h",
-    "--help",
-  ]);
-  // Flags that carry a value as --name=value. These are the caller's stated
-  // expectation about the target device (see section 4b).
-  const VALUE_FLAGS = new Set(["--expect-device", "--expect-size", "--expect-model"]);
-  const rawFlags = argv.filter((a) => a.startsWith("-"));
-  const positional = argv.filter((a) => !a.startsWith("-"));
-  const flagName = (f: string): string =>
-    f.includes("=") ? f.slice(0, f.indexOf("=")) : f;
-  const unknownFlags = rawFlags.filter(
-    (f) => !ALLOWED_FLAGS.has(f) && !VALUE_FLAGS.has(flagName(f)),
-  );
-  if (unknownFlags.length > 0) {
-    bail(
-      2,
-      `unknown flag(s): ${unknownFlags.join(", ")}\n` +
-        `Allowed flags: ${[...ALLOWED_FLAGS].join(", ")}\n` +
-        `Refusing to proceed — destructive tool requires exact flag match.`,
-    );
-  }
-  const flags = new Set(rawFlags);
-  const acceptUnrecognized = flags.has("--accept-unrecognized");
-  const acceptHalfProvisioned = flags.has("--accept-half-provisioned");
-  // Value-flag extraction. A value flag with no "=value" is a refusal rather
-  // than a silent null -- an operator who meant to pin the target and
-  // mistyped the syntax must not get the unpinned path by accident.
-  const valueOf = (name: string): string | null => {
-    const hit = rawFlags.find((f) => flagName(f) === name);
-    if (hit === undefined) return null;
-    const eq = hit.indexOf("=");
-    const v = eq < 0 ? "" : hit.slice(eq + 1);
-    if (v.length === 0) bail(2, "flag " + name + " needs a value, as " + name + "=VALUE");
-    return v;
-  };
-  const expectDevice = valueOf("--expect-device");
-  const expectModel = valueOf("--expect-model");
-  const expectSizeRaw = valueOf("--expect-size");
-  const expectSize = expectSizeRaw === null ? null : Number(expectSizeRaw);
-  if (expectSize !== null && !Number.isSafeInteger(expectSize)) {
-    bail(2, "--expect-size must be a whole number of bytes, got " + String(expectSizeRaw));
-  }
-  const useShortChallenge = flags.has("--short");
-  const noEject = flags.has("--no-eject");
-  const isHelp = flags.has("-h") || flags.has("--help");
+  // The allowlist, the value-flag syntax check and the refusal texts all live in
+  // parseFlags() above -- one definition, called here, asserted in the test file.
+  const parsed = parseFlags(argv);
+  if (!parsed.ok) bail(parsed.code, parsed.message);
+  const {
+    acceptUnrecognized,
+    acceptHalfProvisioned,
+    expectDevice,
+    expectModel,
+    expectSize,
+    positional,
+    short: useShortChallenge,
+    noEject,
+    help: isHelp,
+  } = parsed.flags;
   if (isHelp || positional.length !== 1) {
     process.stdout.write(
       "Usage: bun src/Core.TypeScript/zflash/flash-usb.ts [flags] <path-to-iso>\n" +
@@ -340,18 +589,20 @@ async function main() {
   }
 
   // ── 2. ISO gate ────────────────────────────────────────────
-  if (!existsSync(isoPath)) bail(2, `ISO file does not exist: ${isoPath}`);
-  if (!isoPath.endsWith(".iso")) bail(2, `expected *.iso file, got: ${isoPath}`);
-  const isoStat = statSync(isoPath);
-  if (!isoStat.isFile()) bail(2, `ISO path is not a file: ${isoPath}`);
-  if (isoStat.size < MIN_ISO_BYTES || isoStat.size > MAX_ISO_BYTES) {
-    bail(
-      2,
-      `ISO size ${human(isoStat.size)} outside sane range ` +
-        `[${human(MIN_ISO_BYTES)}, ${human(MAX_ISO_BYTES)}]; refusing`,
-    );
-  }
-  process.stdout.write(`ISO: ${isoPath} (${human(isoStat.size)})\n`);
+  const isoExists = existsSync(isoPath);
+  const isoStat = isoExists ? statSync(isoPath) : null;
+  const isoCheck = validateIso(
+    isoPath,
+    isoStat?.size ?? 0,
+    isoExists,
+    isoStat?.isFile() ?? false,
+  );
+  if (!isoCheck.ok) bail(2, isoCheck.message);
+  // validateIso returning ok implies exists && isFile, so isoStat is non-null.
+  // Re-checked rather than asserted: an `as` here would be the vacuity class.
+  if (isoStat === null) bail(2, `internal: ISO gate passed but stat is absent for ${isoPath}`);
+  const isoBytes: number = isoStat.size;
+  process.stdout.write(`ISO: ${isoPath} (${human(isoBytes)})\n`);
 
   // ── 2b. VERIFY BEFORE WRITE ────────────────────────────────
   //
@@ -386,45 +637,30 @@ async function main() {
       Content?: string;
     }[];
   };
-  const externalDevices = list.AllDisksAndPartitions.map(
-    (d) => `/dev/${d.DeviceIdentifier}`,
-  );
+  const externalDevices = parseExternalDevices(list);
 
   const usbCandidates: { device: string; info: Record<string, unknown> }[] = [];
   for (const device of externalDevices) {
     assertSafeDevicePath(device);
     const info = diskutilInfo(device);
-    const proto = String(info.BusProtocol ?? "");
-    const internal = info.Internal === true;
-    if ((proto === "USB" || proto === "USB-C") && !internal) {
+    if (isUsbCandidate(String(info.BusProtocol ?? ""), info.Internal === true)) {
       usbCandidates.push({ device, info });
     }
   }
 
-  if (usbCandidates.length === 0) {
-    bail(
-      2,
-      "no USB devices found.\n" +
-        "Plug in the USB stick, then re-run. If you already plugged it in,\n" +
-        "give the OS a few seconds and try again.",
-    );
-  }
-  if (usbCandidates.length > 1) {
-    process.stderr.write("flash-usb: multiple USB devices found:\n");
-    for (const c of usbCandidates) {
-      const size = Number(c.info.TotalSize ?? 0);
-      const model = String(c.info.MediaName ?? "?");
-      process.stderr.write(`  ${c.device}  ${human(size)}  ${model}\n`);
-    }
-    bail(
-      2,
-      "refusing to pick one. Unplug all but the target USB and re-run, OR\n" +
-        "use manual flow: sudo dd if=<iso> of=/dev/rdiskN bs=4m",
-    );
-  }
+  // Zero / one / many, decided by selectUsbTarget above. `many` is a refusal,
+  // never a picker -- see that function's comment for why.
+  const selection = selectUsbTarget(
+    usbCandidates.map((c) => ({
+      device: c.device,
+      sizeBytes: Number(c.info.TotalSize ?? 0),
+      model: String(c.info.MediaName ?? "?"),
+    })),
+  );
+  if (selection.kind !== "selected") bail(2, selection.message);
 
-  const candidate = usbCandidates[0];
-  if (candidate === undefined) bail(2, "internal: no USB candidate after length check");
+  const candidate = usbCandidates.find((c) => c.device === selection.device);
+  if (candidate === undefined) bail(2, "internal: selected device not in candidate list");
   const { device, info } = candidate;
   assertSafeDevicePath(device);
   const size = Number(info.TotalSize ?? 0);
@@ -433,23 +669,17 @@ async function main() {
     info.RemovableMedia === true || info.RemovableMediaOrExternalDevice === true;
 
   // ── 4. Per-device safety gates ─────────────────────────────
-  if (size < MIN_USB_BYTES || size > MAX_USB_BYTES) {
-    bail(
-      2,
-      `device ${device} size ${human(size)} outside USB range ` +
-        `[${human(MIN_USB_BYTES)}, ${human(MAX_USB_BYTES)}]; refusing\n` +
-        `(this protects against pointing at an external SSD by mistake)`,
-    );
-  }
+  const sizeCheck = validateUsbSize(device, size);
+  if (!sizeCheck.ok) bail(2, sizeCheck.message);
 
   const bootDisk = bootDiskIdentifier();
-  const deviceShort = device.replace("/dev/", "");
+
   // /dev/rdiskN is the raw character device -- ~10x faster than the buffered
   // /dev/diskN on macOS, and the only handle the privileged reader accepts.
   // Declared here rather than at the write step because the head-digest sample
   // below reads from it BEFORE any consent is asked for.
-  const rawDevice = `/dev/r${deviceShort}`;
-  if (bootDisk && deviceShort === bootDisk) {
+  const rawDevice = rawDevicePathFor(device);
+  if (targetIsBootDisk(device, bootDisk)) {
     bail(2, `device ${device} IS the boot disk; refusing to overwrite`);
   }
 
@@ -530,11 +760,8 @@ async function main() {
   //   typed consent (not a stray Enter). Device path is implicit (the
   //   sanity-rail block above already enforces single-USB; only one device
   //   can be the target).
-  const nonceBytes = useShortChallenge ? 2 : 4;
-  const nonce = randomBytes(nonceBytes).toString("hex");
-  const acceptancePhrase = useShortChallenge
-    ? `yes ${nonce}`
-    : `accept-destroy ${device} ${nonce}`;
+  const nonce = makeNonce(useShortChallenge);
+  const acceptancePhrase = buildChallenge(useShortChallenge, device, nonce);
 
   // Extra-detail fields (best-effort — diskutil may omit any of these
   // depending on the USB controller; show "?" rather than fail).
@@ -778,7 +1005,7 @@ async function main() {
   const typed = await rl.question("> ");
   rl.close();
 
-  if (typed !== acceptancePhrase) {
+  if (!acceptanceMatches(typed, acceptancePhrase)) {
     bail(
       1,
       `confirmation mismatch — runner did NOT accept responsibility.\n` +
@@ -818,7 +1045,7 @@ async function main() {
 
   process.stdout.write(
     `\nFlashing ${isoPath} → ${rawDevice} ` +
-      `(${human(isoStat.size)}; this takes a few minutes) ...\n\n`,
+      `(${human(isoBytes)}; this takes a few minutes) ...\n\n`,
   );
 
   const dd = spawn(
@@ -863,7 +1090,7 @@ async function main() {
     const deviceReader = privilegedDeviceReader(rawDevice, DEFAULT_READBACK_CHUNK_BYTES);
     let verdict;
     try {
-      verdict = verifyReadBack(isoReader, deviceReader, isoStat.size, DEFAULT_READBACK_CHUNK_BYTES);
+      verdict = verifyReadBack(isoReader, deviceReader, isoBytes, DEFAULT_READBACK_CHUNK_BYTES);
     } finally {
       isoReader.close();
     }
@@ -875,7 +1102,7 @@ async function main() {
           "\n  Compared " +
           String(verdict.bytesCompared) +
           " of " +
-          String(isoStat.size) +
+          String(isoBytes) +
           " bytes. Treat this USB as unusable and re-flash.",
       );
     }
@@ -903,6 +1130,15 @@ async function main() {
   process.stdout.write("\nFlash complete.\n");
 }
 
-main().catch((err) => {
-  bail(1, err instanceof Error ? err.message : String(err));
-});
+// ENTRY GUARD -- the Linux and Windows arms have carried this since they were
+// written; this arm did not, and that omission is why it had no test file.
+// A bare `main()` at module scope means ANY import of this module -- including
+// from a test -- enumerates disks, prompts, and on a satisfied challenge runs
+// `sudo dd`. So the file was not merely untested, it was UNTESTABLE: importing
+// it to assert on its safety rails would have fired the destructive path the
+// rails exist to gate. Pinned by flash-usb.test.ts ("module import is inert").
+if (import.meta.main) {
+  main().catch((err: unknown) => {
+    bail(1, err instanceof Error ? err.message : String(err));
+  });
+}
