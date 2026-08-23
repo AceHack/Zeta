@@ -1,0 +1,12 @@
+{
+  "pr_number": 14398,
+  "archive_path": "docs/history/pr-reviews/PR-14398-docs-search-md029-the-index-readme-s-two-defect-lists-are-one-list-of-four.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-23T19:49:46.057Z",
+  "schema_version": "v1",
+  "commit_sha": "afdacbdae3657f33dc8dd6c5a17a0d4eec75fced",
+  "title": "docs(search): MD029 — the index README's two defect lists are one list of four",
+  "state": "MERGED",
+  "merged_at": "2026-08-23T19:49:02Z",
+  "head_ref": "fix/apt-timings-search-index"
+}
