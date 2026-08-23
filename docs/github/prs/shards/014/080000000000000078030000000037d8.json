@@ -1,0 +1,12 @@
+{
+  "pr_number": 14296,
+  "archive_path": "docs/history/pr-reviews/PR-14296-test-soft-value-a-tie-in-the-seed-the-byte-lock-could-not-see-the-divergence-it-.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-23T17:24:47.404Z",
+  "schema_version": "v1",
+  "commit_sha": "5e035ef296d04cbff74568da507e2a3514fa1b0a",
+  "title": "test(soft-value): a tie in the seed — the byte-lock could not see the divergence it was supposed to hold",
+  "state": "MERGED",
+  "merged_at": "2026-08-23T17:24:07Z",
+  "head_ref": "fix/resolve-tie-golden-vector"
+}
