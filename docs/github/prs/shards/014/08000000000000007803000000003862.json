@@ -1,0 +1,12 @@
+{
+  "pr_number": 14434,
+  "archive_path": "docs/history/pr-reviews/PR-14434-book-formation-god-does-not-want-you-to-know-why-the-fence-that-made-the-inquire.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-23T20:40:02.190Z",
+  "schema_version": "v1",
+  "commit_sha": "da3fbc813429670dad391bd097fe16a67b3ee35f",
+  "title": "book(formation): \"God does not want you to know why\" — the fence that made the inquirer",
+  "state": "MERGED",
+  "merged_at": "2026-08-23T20:39:19Z",
+  "head_ref": "book/god-does-not-want-you-to-know-why"
+}
