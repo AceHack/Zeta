@@ -1,0 +1,12 @@
+{
+  "pr_number": 14169,
+  "archive_path": "docs/history/pr-reviews/PR-14169-fix-installer-probe-r9-ledger-writes-on-readonly-qemu-usb.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-23T13:03:24.184Z",
+  "schema_version": "v1",
+  "commit_sha": "7a2339db36720b8d4c2e1756d357eaa272b431ce",
+  "title": "fix(installer): probe R9 ledger writes on readonly QEMU USB",
+  "state": "MERGED",
+  "merged_at": "2026-08-23T13:02:44Z",
+  "head_ref": "riven/r9-ledger-readonly-usb"
+}
