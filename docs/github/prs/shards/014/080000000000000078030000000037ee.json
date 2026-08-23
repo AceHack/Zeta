@@ -1,0 +1,12 @@
+{
+  "pr_number": 14318,
+  "archive_path": "docs/history/pr-reviews/PR-14318-fix-backlog-distinguish-notation-from-references.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-23T17:43:16.430Z",
+  "schema_version": "v1",
+  "commit_sha": "b17ef38056212605e3d93a6a22b60ea00f7100e0",
+  "title": "fix(backlog): distinguish notation from references",
+  "state": "MERGED",
+  "merged_at": "2026-08-23T17:42:32Z",
+  "head_ref": "claim/bug-auto-vivify-reference-classification"
+}
