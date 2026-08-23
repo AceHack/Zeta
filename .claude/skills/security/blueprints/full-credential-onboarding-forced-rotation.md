@@ -20,7 +20,7 @@ PendingInactive · Inactive · Standby). Rotation is then a state transition, ne
 2. **Vaults (CA → Org → User)** — the generic tier hierarchy (CA=trust root; Org=Lucent/Zeta
    instances; User=aaron/etc.), modeled as the tracked Merkle-over-Z-set OU directory. Each vault
    gets **two** service accounts (Active + Standby) at creation.
-3. **Token custody** — capture each token via `op-token-setup.sh` / `secret-clip.sh` (secure
+3. **Token custody** — capture each token via `op-token-setup.ts` / `secret-clip.sh` (secure
    dialog/clipboard/masked → Keychain, never echoed; opt-in vs auto-export per scope). See
    `op-service-account-token-provisioning.md`.
 4. **Keys** — one seed → full HD keychain (SSH/PGP/Nostr/ETH/Solana + PQ); `setup-machine`
@@ -48,5 +48,5 @@ Blueprints: `onboarding-prerequisites-github-1password.md`,
 `op-service-account-token-provisioning.md`. Decisions/research (2026-06-21): hexagonal ports,
 identity+crypto synthesis, crypto-agile PQ keychain, Itron-KeyState zero-downtime rotation,
 identity-directory Merkle-OU graph (CA→Org→User), Durable-Functions-AS-the-DB. Code: `derive.ts`,
-`setup-machine`, `ca.ts`, `secret-clip.sh`, `op-token-setup.sh`, `teardown.ts`. Builds:
+`setup-machine`, `ca.ts`, `secret-clip.sh`, `op-token-setup.ts`, `teardown.ts`. Builds:
 081KVNXBR4S0 (identity+crypto unify), 081KVNYZXQ60 (crypto-agile), 081KVNTNTDQ0 (vault separation).

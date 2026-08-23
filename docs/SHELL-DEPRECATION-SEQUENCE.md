@@ -84,57 +84,81 @@ then ordinal path. No tie is broken by judgement.
 
 <!-- BEGIN GENERATED: bun run hygiene:measure-shell-key-exposure -- --markdown -->
 
-| #   | script                                                   | tier                       | material           | channel   | witnesses (kind@lines)                                                                                                    |
-| --- | -------------------------------------------------------- | -------------------------- | ------------------ | --------- | ------------------------------------------------------------------------------------------------------------------------- |
-| 1   | `tools/setup/persona-keys/keyring.sh`                    | T4-root-key-confined       | root-key           | on-disk   | `secure-interactive-read@100,114` `secret-store-remote@160,164`                                                           |
-| 2   | `tools/setup/secret-clip.sh`                             | T3-credential-broadcast    | stored-credential  | broadcast | `clipboard-secret-read@54` `secure-interactive-read@64` `argv-secret@93` `keystore-write@93` `keystore-read@110`          |
-| 3   | `tools/setup/op-token-setup.sh`                          | T3-credential-broadcast    | stored-credential  | broadcast | `clipboard-secret-read@65` `argv-secret@83` `keystore-write@83`                                                           |
-| 4   | `tools/setup/common/mise.sh`                             | T3-credential-broadcast    | stored-credential  | broadcast | `argv-secret@149`                                                                                                         |
-| 5   | `full-ai-cluster/usb-nixos-installer/zeta-install.sh`    | T2-credential-confined     | stored-credential  | on-disk   | `privileged-operation@219,220,227,228,+105` `key-file-touch@584,586,588,594,+4` `secure-interactive-read@716,719,804,807` |
-| 6   | `.gemini/service/install-lior-service.sh`                | T1-execution-identity      | execution-identity | on-disk   | `execution-identity-write@5,6` `privileged-operation@6`                                                                   |
-| 7   | `tools/setup/host-loop-bootstrap.sh`                     | T1-execution-identity      | execution-identity | on-disk   | `execution-identity-write@71,189` `privileged-operation@253,255`                                                          |
-| 8   | `tools/setup/common/profile-edit.sh`                     | T1-execution-identity      | execution-identity | on-disk   | `execution-identity-write@86`                                                                                             |
-| 9   | `full-ai-cluster/usb-nixos-installer/zeta-first-boot.sh` | T1-execution-identity      | execution-identity | none      | `privileged-operation@308`                                                                                                |
-| 10  | `tools/setup/common/install-zig.sh`                      | T1-execution-identity      | execution-identity | none      | `privileged-operation@58,59,60`                                                                                           |
-| 11  | `.gemini/service/lior-loop.sh`                           | T0-no-measured-key-contact | none               | none      | —                                                                                                                         |
-| 12  | `githooks/pre-push`                                      | T0-no-measured-key-contact | none               | none      | —                                                                                                                         |
-| 13  | `scripts/hooks/commit-msg`                               | T0-no-measured-key-contact | none               | none      | —                                                                                                                         |
-| 14  | `scripts/hooks/install-git-hooks.sh`                     | T0-no-measured-key-contact | none               | none      | —                                                                                                                         |
-| 15  | `scripts/hooks/pre-push`                                 | T0-no-measured-key-contact | none               | none      | —                                                                                                                         |
-| 16  | `tools/installer/zeta-self-register.sh`                  | T0-no-measured-key-contact | none               | none      | —                                                                                                                         |
-| 17  | `tools/setup/common/agda-cubical.sh`                     | T0-no-measured-key-contact | none               | none      | —                                                                                                                         |
-| 18  | `tools/setup/common/curl-fetch.sh`                       | T0-no-measured-key-contact | none               | none      | —                                                                                                                         |
-| 19  | `tools/setup/common/fd-limits.sh`                        | T0-no-measured-key-contact | none               | none      | —                                                                                                                         |
-| 20  | `tools/setup/common/host-tier.sh`                        | T0-no-measured-key-contact | none               | none      | —                                                                                                                         |
-| 21  | `tools/setup/common/install-rust-wasm32.sh`              | T0-no-measured-key-contact | none               | none      | —                                                                                                                         |
-| 22  | `tools/setup/common/shellenv.sh`                         | T0-no-measured-key-contact | none               | none      | —                                                                                                                         |
-| 23  | `tools/setup/common/smoke-10-toolchains.sh`              | T0-no-measured-key-contact | none               | none      | —                                                                                                                         |
-| 24  | `tools/setup/common/smoke-13-toolchains.sh`              | T0-no-measured-key-contact | none               | none      | —                                                                                                                         |
-| 25  | `tools/setup/common/smoke-7-toolchains.sh`               | T0-no-measured-key-contact | none               | none      | —                                                                                                                         |
-| 26  | `tools/setup/common/sync-prior-art.sh`                   | T0-no-measured-key-contact | none               | none      | —                                                                                                                         |
-| 27  | `tools/setup/common/tlaps.sh`                            | T0-no-measured-key-contact | none               | none      | —                                                                                                                         |
-| 28  | `tools/setup/doctor.sh`                                  | T0-no-measured-key-contact | none               | none      | —                                                                                                                         |
-| 29  | `tools/setup/install.sh`                                 | T0-no-measured-key-contact | none               | none      | —                                                                                                                         |
-| 30  | `tools/setup/linux.sh`                                   | T0-no-measured-key-contact | none               | none      | —                                                                                                                         |
-| 31  | `tools/setup/macos.sh`                                   | T0-no-measured-key-contact | none               | none      | —                                                                                                                         |
+| #   | script                                                   | tier                       | material           | channel   | witnesses (kind@lines)                                                                                                           |
+| --- | -------------------------------------------------------- | -------------------------- | ------------------ | --------- | -------------------------------------------------------------------------------------------------------------------------------- |
+| 1   | `tools/setup/persona-keys/keyring.sh`                    | T4-root-key-confined       | root-key           | on-disk   | `secure-interactive-read@100,114` `secret-store-remote@160,164`                                                                  |
+| 2   | `tools/setup/secret-clip.sh`                             | T3-credential-broadcast    | stored-credential  | broadcast | `clipboard-secret-read@54` `secure-interactive-read@64` `argv-secret@93` `keystore-write@93` `keystore-read@110`                 |
+| 3   | `tools/setup/common/mise.sh`                             | T3-credential-broadcast    | stored-credential  | broadcast | `argv-secret@149`                                                                                                                |
+| 4   | `full-ai-cluster/usb-nixos-installer/zeta-install.sh`    | T2-credential-confined     | stored-credential  | on-disk   | `privileged-operation@768,785,786,791,+150` `key-file-touch@788,1302,1306,1884,+8` `secure-interactive-read@2091,2094,2179,2182` |
+| 5   | `.gemini/service/install-lior-service.sh`                | T1-execution-identity      | execution-identity | on-disk   | `execution-identity-write@5,6` `privileged-operation@6`                                                                          |
+| 6   | `tools/setup/host-loop-bootstrap.sh`                     | T1-execution-identity      | execution-identity | on-disk   | `execution-identity-write@71,189` `privileged-operation@253,255`                                                                 |
+| 7   | `.cursor/install.sh`                                     | T1-execution-identity      | execution-identity | on-disk   | `execution-identity-write@136,138`                                                                                               |
+| 8   | `tools/setup/common/profile-edit.sh`                     | T1-execution-identity      | execution-identity | on-disk   | `execution-identity-write@86`                                                                                                    |
+| 9   | `full-ai-cluster/usb-nixos-installer/zeta-first-boot.sh` | T1-execution-identity      | execution-identity | none      | `privileged-operation@540`                                                                                                       |
+| 10  | `tools/setup/common/install-zig.sh`                      | T1-execution-identity      | execution-identity | none      | `privileged-operation@58,59,60`                                                                                                  |
+| 11  | `.gemini/service/lior-loop.sh`                           | T0-no-measured-key-contact | none               | none      | —                                                                                                                                |
+| 12  | `githooks/pre-push`                                      | T0-no-measured-key-contact | none               | none      | —                                                                                                                                |
+| 13  | `scripts/hooks/commit-msg`                               | T0-no-measured-key-contact | none               | none      | —                                                                                                                                |
+| 14  | `scripts/hooks/install-git-hooks.sh`                     | T0-no-measured-key-contact | none               | none      | —                                                                                                                                |
+| 15  | `scripts/hooks/pre-push`                                 | T0-no-measured-key-contact | none               | none      | —                                                                                                                                |
+| 16  | `tools/installer/zeta-self-register.sh`                  | T0-no-measured-key-contact | none               | none      | —                                                                                                                                |
+| 17  | `tools/setup/common/agda-cubical.sh`                     | T0-no-measured-key-contact | none               | none      | —                                                                                                                                |
+| 18  | `tools/setup/common/curl-fetch.sh`                       | T0-no-measured-key-contact | none               | none      | —                                                                                                                                |
+| 19  | `tools/setup/common/fd-limits.sh`                        | T0-no-measured-key-contact | none               | none      | —                                                                                                                                |
+| 20  | `tools/setup/common/host-tier.sh`                        | T0-no-measured-key-contact | none               | none      | —                                                                                                                                |
+| 21  | `tools/setup/common/install-rust-wasm32.sh`              | T0-no-measured-key-contact | none               | none      | —                                                                                                                                |
+| 22  | `tools/setup/common/shellenv.sh`                         | T0-no-measured-key-contact | none               | none      | —                                                                                                                                |
+| 23  | `tools/setup/common/smoke-10-toolchains.sh`              | T0-no-measured-key-contact | none               | none      | —                                                                                                                                |
+| 24  | `tools/setup/common/smoke-13-toolchains.sh`              | T0-no-measured-key-contact | none               | none      | —                                                                                                                                |
+| 25  | `tools/setup/common/smoke-7-toolchains.sh`               | T0-no-measured-key-contact | none               | none      | —                                                                                                                                |
+| 26  | `tools/setup/common/sync-prior-art.sh`                   | T0-no-measured-key-contact | none               | none      | —                                                                                                                                |
+| 27  | `tools/setup/common/tlaps.sh`                            | T0-no-measured-key-contact | none               | none      | —                                                                                                                                |
+| 28  | `tools/setup/doctor.sh`                                  | T0-no-measured-key-contact | none               | none      | —                                                                                                                                |
+| 29  | `tools/setup/hsm/dkek-ceremony-preflight.sh`             | T0-no-measured-key-contact | none               | none      | —                                                                                                                                |
+| 30  | `tools/setup/install.sh`                                 | T0-no-measured-key-contact | none               | none      | —                                                                                                                                |
+| 31  | `tools/setup/linux.sh`                                   | T0-no-measured-key-contact | none               | none      | —                                                                                                                                |
+| 32  | `tools/setup/macos.sh`                                   | T0-no-measured-key-contact | none               | none      | —                                                                                                                                |
 
 <!-- END GENERATED -->
 
-Measured `2026-08-16` against `EXPECTED_RETAINED_SHELL` (31 entries: 28 `.sh` plus three
-extensionless git hooks). The 36 `git ls-files '*.sh'` hits minus 2 markdown carved-sentence
-stubs under `db/` and 6 frozen archive files under `docs/recovered-orphan-branches-2026-05/`
-give the same 28 — verified, the allowlist already excludes all 8.
+Re-measured `2026-08-22` against `EXPECTED_RETAINED_SHELL` (32 entries). The previous
+measurement (`2026-08-16`, 31 entries: 28 `.sh` plus three extensionless git hooks) is
+superseded; the allowlist has since gained entries and **lost one** — see below.
+
+**Row 3 is gone because the script is gone.** `tools/setup/op-token-setup.sh` was converted to
+`tools/setup/op-token-setup.ts` and removed from the allowlist. Its `argv-secret@83` finding —
+item 1 of "what the children should do with it" — was carried out rather than deferred: the
+TypeScript writes through `security -i`, so the token crosses on **stdin** and the argv is the
+constant `["security", "-i"]`. That property is now held by three falsifiers in
+`tools/setup/op-token-setup.test.ts`, each shown to go red under a deliberate mutation, rather
+than by a sentence in a file header. **`tools/setup/secret-clip.sh` still carries the identical
+leak at line 93 and is still row 2** — the sibling was not swept along, and saying so is the
+point of a generated table.
 
 ## What the children should do with it
 
-1. **`tools/setup/secret-clip.sh:93` and `tools/setup/op-token-setup.sh:83` — fix the argv
-   leak before, or as part of, any conversion.** Both call
+1. **`tools/setup/secret-clip.sh:93` — fix the argv leak before, or as part of, any
+   conversion.** (`op-token-setup.sh:83` was the other half of this item and is **done**:
+   converted 2026-08-22, argv now secret-free, guarded by falsifiers.) Both call
    `security add-generic-password … -U -w "$VALUE"`, and `security(1)` is an external
    binary, so the credential is in `ps` output for the life of the call. `-w` without an
    operand makes `security` prompt instead; the point-of-use helper
    `src/Core.TypeScript/secrets/credential.ts` is the typed replacement. This is a
    one-line class of fix that does not need a compiled binary, a signature, or a policy —
    which is why it outranks work that does.
+
+   **Correction from carrying it out (2026-08-22):** the recommended `-w`-with-no-operand form
+   does _not_ fit a programmatic caller. `add-generic-password` requires the target keychain as
+   a **positional** argument, `security` refuses `-w` placed after it, and the prompt is a
+   `readpassphrase` on `/dev/tty` rather than a stdin read — so "prompt instead" means "a human
+   is at a terminal", which an agent-driven capture is not. The form that works is `security -i`
+   (interactive mode reads _commands_ from stdin and builds their argv in its own address
+   space). It carries a cost that had to be **measured, not assumed**: `security -i` **exits 0
+   even when the command fails** — a write to a nonexistent keychain returned status 0 with
+   empty stdout and empty stderr. So that transport's exit status carries no information and is
+   never read; success is decided by reading the item back. Verified against a throwaway
+   keychain, never the login keychain.
+
 2. **`tools/setup/common/mise.sh:149` is not a toolchain script for this purpose.** It
    runs `env -u GITHUB_TOKEN MISE_GITHUB_TOKEN="$GITHUB_TOKEN" mise install`. The `env(1)`
    form puts the token value in argv; the bare `MISE_GITHUB_TOKEN="$GITHUB_TOKEN" mise …`
@@ -161,7 +185,7 @@ the parse, and each correction is in the same direction: reading under-rates arg
 | §2.4 row                           | claim                                                             | measured                                                                                                                                                                                                                                                                                                                                              |
 | ---------------------------------- | ----------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | #1 `~/.config/zeta/secrets-env.sh` | "the ambient hoist — convert first"                               | **already gone.** `op-token-setup.sh` now _deletes_ the file, `shellenv.sh:106-122` no longer emits the source line, and `lint-no-ambient-credential-hoist.ts` guards it on every PR. The work-item `081M00VMWTB087G0R0026XSWT6` is still in `workitems/` (backlog state) although the code fix has landed — a state drift the umbrella should close. |
-| #3 `op-token-setup.sh`             | "token is passed in-process, **never argv**"                      | **false at line 83.** `security add-generic-password -a "$USER" -s "$SERVICE" -U -w "$TOKEN"`; `$TOKEN` is proven-tainted (captured from `pbpaste`/`osascript … hidden answer`) and `security` forks.                                                                                                                                                 |
+| #3 `op-token-setup.sh`             | "token is passed in-process, **never argv**"                      | **false at line 83.** `security add-generic-password -a "$USER" -s "$SERVICE" -U -w "$TOKEN"`; `$TOKEN` is proven-tainted (captured from `pbpaste`/`osascript … hidden answer`) and `security` forks. **Fixed 2026-08-22** by the conversion; the claim is now a test rather than a header sentence.                                                  |
 | #9 `mise.sh`                       | grouped with "no credential access measured … **last, or never**" | **T3-credential-broadcast.** `mise.sh:149` puts a GitHub token in `env(1)`'s argv.                                                                                                                                                                                                                                                                    |
 
 The first correction is the important one methodologically: the top of a hand-ranking had
@@ -210,6 +234,11 @@ from the ordering on purpose: detection is dual-use, the oracle decides
   the §2.4 #1 exposure from coming back
 - `src/Core.TypeScript/secrets/credential.ts` — `withCredential` / `spawnWithCredential`,
   the point-of-use replacement the argv fixes should target
+- `src/Core.TypeScript/secrets/keychain-macos.ts` §WRITE — `storeGenericPassword`, the
+  argv-free write the first conversion produced; `tools/setup/op-token-setup.ts` is its caller
+- `docs/research/2026-08-22-closing-over-the-os-is-the-point-of-bash-retirement-carbon-on-windows-and-linux-is-the-anchor.md`
+  — why the retirement is an OS-closure programme rather than a language preference, and the
+  ledger of what each conversion leaves unclosed
 - `docs/research/2026-08-14-shell-deprecation-sequenced-by-key-exposure-the-interpreter-is-the-identity-gap-not-the-shell.md`
   — the note this operationalises; its §0.2 correction (the interpreter, not the `.sh`, is
   the identity gap) still stands and is not weakened by anything here

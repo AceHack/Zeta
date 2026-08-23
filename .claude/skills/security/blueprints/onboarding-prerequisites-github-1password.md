@@ -23,7 +23,7 @@ PKI/identity) is future (see end).
 1. **Install** — `tools/setup/install.sh` (macOS: `macos.sh`). mise pins `1password-cli` (`op`)
    cross-OS; brew-cask framework for any mac GUI app.
 2. **1Password access** — create a scoped **service account** per vault on 1password.com; capture
-   the token with `tools/setup/op-token-setup.sh` (secure dialog / clipboard → Keychain, never
+   the token with `bun tools/setup/op-token-setup.ts` (secure dialog / clipboard → Keychain, never
    echoed) or the generic `secret-clip.sh set <name>`. Token encrypted at rest; opt-in or
    auto-exported via `~/.config/zeta/secrets-env.sh`.
 3. **Keys** — `setup-machine` (one fingerprint): realizes a CA if missing, generates the machine
@@ -54,6 +54,6 @@ agent-readable vault; per-secret-class scoping; mirrored on Bitwarden).
 
 ## Anchors / reuse
 
-`tools/setup/op-token-setup.sh`, `tools/setup/secret-clip.sh`, `setup-machine`/`setup-cluster`,
+`tools/setup/op-token-setup.ts`, `tools/setup/secret-clip.sh`, `setup-machine`/`setup-cluster`,
 `publish-cli.ts`, `ONBOARDING-RUNBOOK.md`. Blueprints: `op-service-account-token-provisioning.md`,
 `key-onboarding.md`. Trajectory: cluster-encryption-credential-substrate.

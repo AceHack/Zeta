@@ -1,6 +1,11 @@
 /**
- * keychain-macos.ts — read a macOS Keychain generic-password IN-PROCESS, via
- * Security.framework, without spawning `security(1)`.
+ * keychain-macos.ts — the macOS Keychain seam. READ a generic-password
+ * IN-PROCESS via Security.framework, without spawning `security(1)`; WRITE one
+ * through `security -i` so the value crosses on stdin and never on an argv.
+ *
+ * The two halves are asymmetric on purpose and the asymmetry is measured, not
+ * assumed: the read has an in-process path today, the write does not, and the
+ * write section's header says exactly what that costs and what would close it.
  *
  * WHY THIS EXISTS (the confused deputy, measured)
  * ------------------------------------------------------------------------
@@ -275,4 +280,169 @@ export function probeGenericPassword(service: string, options: ReadOptions = {})
   return r.ok
     ? { present: true, length: r.secret.length, status: errSecSuccess, via: r.via }
     : { present: false, length: 0, status: r.status, via: r.via };
+}
+
+// ── WRITE: store a generic-password item WITHOUT putting it on an argv ───────
+//
+// THE DEFECT THIS SIDE REPLACES
+// ------------------------------------------------------------------------
+// `tools/setup/op-token-setup.sh:83` and `tools/setup/secret-clip.sh:93` both
+// ran `security add-generic-password … -U -w "$TOKEN"`. `security(1)` is an
+// external binary, so the token was in that process's argv — readable by any
+// same-uid process through `ps` for the life of the call.
+// `docs/SHELL-DEPRECATION-SEQUENCE.md` measured it (`argv-secret@83`) and
+// named the fix as the first thing any conversion must carry.
+//
+// The transport used here is `security -i`: interactive mode reads COMMANDS
+// from stdin and builds their argv inside its own address space. `ps` shows
+// `security -i` and nothing else. Verified on this machine 2026-08-22 against a
+// throwaway keychain (never the login keychain): the value round-tripped byte
+// for byte, and argv held two elements.
+//
+// WHAT `security -i` COSTS, MEASURED, NOT ASSUMED
+// ------------------------------------------------------------------------
+// It ALWAYS EXITS 0. A write to a nonexistent keychain path exits 0 with empty
+// stdout and empty stderr — the same observable result as a success. So the
+// exit status of this transport carries no information and is never read here.
+// The write is confirmed by READING THE ITEM BACK and comparing; an unverified
+// write is reported as a refusal, never as a success. (This is the same class as
+// the `decide-by-grep` gate defect: a check whose failure looks like a pass.)
+//
+// WHY NOT `SecItemAdd` IN-PROCESS. It would remove the subprocess entirely and
+// return a real OSStatus. It would also give the new item an ACL naming the
+// CREATING binary (`bun`), which would break every existing
+// `security find-generic-password` consumer in the repo and re-prompt on each
+// `bun` upgrade. That re-store ceremony is tracked separately as
+// `081M00VN3FX087G0R0006ZGRWG`; until it lands, the write stays on the same
+// deputy the reads already use, and says so.
+
+/** The result of one `security(1)` invocation. `status` is reported, never trusted — see above. */
+export interface SecuritySpawnResult {
+  readonly status: number;
+  readonly stdout: string;
+  readonly stderr: string;
+}
+
+/**
+ * The injected door to `security(1)`. Tests pass a fake; nothing in a test run
+ * may reach a real keychain. `argv` is asserted secret-free by the caller's
+ * falsifier — that assertion is the whole point of this seam being a parameter.
+ */
+export type SecuritySpawn = (argv: readonly string[], stdin: string) => SecuritySpawnResult;
+
+/** The complete argv. It is a CONSTANT: no interpolation, so no secret can reach it. */
+export const SECURITY_INTERACTIVE_ARGV: readonly string[] = ["security", "-i"];
+
+/**
+ * Characters a secret may contain and still cross the `security -i` command
+ * line unambiguously. Whitespace, quotes, backslash and `#` are excluded
+ * because the interactive parser resolves them, so carrying them would risk
+ * storing a DIFFERENT value than the operator typed. Refusing is honest;
+ * silently storing a mangled token is not.
+ */
+export const TRANSPORTABLE_SECRET = /^[A-Za-z0-9._~:/+=-]+$/;
+
+/** Service and account names are ours, not the operator's prose. Same reasoning. */
+export const KEYCHAIN_NAME_SHAPE = /^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$/;
+
+export type KeychainWriteRefusal =
+  | "not-macos"
+  | "malformed-service"
+  | "malformed-account"
+  | "empty-secret"
+  | "untransportable-secret"
+  | "write-not-verified";
+
+export type KeychainWrite =
+  | { readonly ok: true; readonly length: number; readonly via: ReadVia }
+  | { readonly ok: false; readonly refusal: KeychainWriteRefusal; readonly detail: string };
+
+/**
+ * The one line handed to `security -i` on STDIN. Exported so a test can prove
+ * the secret travels HERE and not in `SECURITY_INTERACTIVE_ARGV`.
+ * Callers must validate first; this function does not.
+ */
+export function buildInteractiveAddCommand(account: string, service: string, secret: string): string {
+  return `add-generic-password -a ${account} -s ${service} -U -w ${secret}\n`;
+}
+
+/**
+ * True when any argv element carries the secret. The positive case exists so the
+ * falsifier that uses it can itself be falsified: fed the OLD bash argv shape it
+ * must return true, fed ours it must return false. A guard with only a negative
+ * case is a guard that cannot fail.
+ */
+export function argvCarriesSecret(argv: readonly string[], secret: string): boolean {
+  return secret.length > 0 && argv.some((arg) => arg.includes(secret));
+}
+
+function realSecuritySpawn(argv: readonly string[], stdin: string): SecuritySpawnResult {
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
+  const { spawnSync } = require("node:child_process") as typeof import("node:child_process");
+  const [command, ...args] = argv;
+  if (command === undefined) throw new Error("realSecuritySpawn: empty argv");
+  const r = spawnSync(command, args, { input: stdin, encoding: "utf8", timeout: 30_000 });
+  return {
+    status: r.status ?? -1,
+    stdout: typeof r.stdout === "string" ? r.stdout : "",
+    stderr: typeof r.stderr === "string" ? r.stderr : "",
+  };
+}
+
+export interface StoreOptions {
+  readonly spawn?: SecuritySpawn;
+  /** How the write is confirmed. Defaults to reading the item back. */
+  readonly verify?: (service: string) => KeychainRead;
+  readonly platform?: string;
+}
+
+/**
+ * Store (or update, `-U`) a generic-password item. The secret crosses on stdin.
+ * It is never an argv element, never returned, and never logged — the caller
+ * gets a length and a refusal reason.
+ */
+export function storeGenericPassword(
+  account: string,
+  service: string,
+  secret: string,
+  options: StoreOptions = {},
+): KeychainWrite {
+  const platform = options.platform ?? process.platform;
+  if (platform !== "darwin") {
+    return { ok: false, refusal: "not-macos", detail: `platform is ${platform}, not darwin` };
+  }
+  if (!KEYCHAIN_NAME_SHAPE.test(service)) {
+    return { ok: false, refusal: "malformed-service", detail: `service name is not ${String(KEYCHAIN_NAME_SHAPE)}` };
+  }
+  if (!KEYCHAIN_NAME_SHAPE.test(account)) {
+    return { ok: false, refusal: "malformed-account", detail: `account name is not ${String(KEYCHAIN_NAME_SHAPE)}` };
+  }
+  if (secret.length === 0) {
+    return { ok: false, refusal: "empty-secret", detail: "nothing to store" };
+  }
+  if (!TRANSPORTABLE_SECRET.test(secret)) {
+    return {
+      ok: false,
+      refusal: "untransportable-secret",
+      detail: `the value contains a character this transport cannot carry unambiguously (length ${String(secret.length)})`,
+    };
+  }
+
+  const spawn = options.spawn ?? realSecuritySpawn;
+  // The status is deliberately discarded: `security -i` exits 0 on failure.
+  spawn(SECURITY_INTERACTIVE_ARGV, buildInteractiveAddCommand(account, service, secret));
+
+  const verify = options.verify ?? ((s: string): KeychainRead => readGenericPassword(s));
+  const back = verify(service);
+  if (!back.ok) {
+    return { ok: false, refusal: "write-not-verified", detail: `read-back failed: ${back.reason}` };
+  }
+  if (back.secret !== secret) {
+    return {
+      ok: false,
+      refusal: "write-not-verified",
+      detail: `read-back returned a different value (stored ${String(secret.length)} bytes, read ${String(back.secret.length)})`,
+    };
+  }
+  return { ok: true, length: secret.length, via: back.via };
 }

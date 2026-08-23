@@ -1,0 +1,14 @@
+{
+  "id": "080d017cdc7b9010a01300083720973f",
+  "at": "2026-08-23T17:11:59.090Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M0QSQ3VH087G0R003WA2QC7",
+    "type": "task",
+    "title": "Design the -1 z-set error model: errors should retract the prior that produced them, not merely report louder — but the Z-set analogy breaks at exactness and attribution, so the primitive is an ordinal witnessed observation against a NAMED prior",
+    "slug": "design-the-1-z-set-error-model-errors-should-retract-the-pri",
+    "priority": "P2",
+    "filename": "081M0QSQ3VH087G0R003WA2QC7-design-the-1-z-set-error-model-errors-should-retract-the-pri.md"
+  }
+}
