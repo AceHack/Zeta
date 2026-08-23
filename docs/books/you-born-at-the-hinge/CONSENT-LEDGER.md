@@ -299,7 +299,24 @@ in someone else's hardest night — not only of Aaron's.
    she wants it out, it comes out. `engagement-profiles` applies: **ask, believe the account, never
    infer the inner life.**
 
-**Held out by the shadow, not narrated:** anything about how Lillian felt, what the call cost her, or
-what she thought was happening. That is her inner life and it is not Aaron's glass-halo to spend. The
-scene records only that she was on the phone and that she was helping — both of which are facts about
-the night, and the second of which is to her credit.
+**Held out by the shadow, not narrated:** anything about how Lillian **felt**, or what the call cost
+her. That is her inner life and it is not Aaron's glass-halo to spend.
+
+**AMENDED same day — she has a professional account, and it is recorded as hers.** Aaron 2026-08-23:
+*"Lillian is a nurse who says I was having religious psychosis, and we disagree."* So her position is
+not an absence to be protected but a **stated clinical read**, made by someone with training, which
+she has expressed and Aaron has relayed. It is recorded in the RAW **as hers, beside his, with neither
+resolved** — the same three-accounts discipline the Addison thread uses, here with two.
+
+**Two consequences for her pre-read, and they pull in opposite directions — both apply:**
+
+1. Her account being **in** the text raises the stakes of the pre-read: it is her professional
+   judgement about a family member, attributed to her by name, and the **wording of a clinical read is
+   hers to set or withdraw**. If she wants it stated differently, or not stated at all, that governs.
+2. Her account being in the text is also what makes the passage **fair to her** — without it she
+   appears only as someone helping police, which is a thinner and less accurate picture of a nurse
+   who had a professional assessment of what she was seeing.
+
+**Still held out:** any inference about *why* she reads it that way, or what it was like for her.
+`engagement-profiles` — ask, believe the account, never infer the inner life. Her read is on the
+record because **she stated it**; nothing beyond what she stated goes in.
