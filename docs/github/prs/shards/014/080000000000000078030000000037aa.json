@@ -1,0 +1,12 @@
+{
+  "pr_number": 14250,
+  "archive_path": "docs/history/pr-reviews/PR-14250-fix-platform-the-flowdent-chart-leaves-the-public-tree-zeta-must-not-depend-on-a.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-23T15:30:49.913Z",
+  "schema_version": "v1",
+  "commit_sha": "664913200be56eb5fe07187ac7a83cb11c60369f",
+  "title": "fix(platform): the FlowDent chart leaves the public tree — Zeta must not depend on a private repo",
+  "state": "MERGED",
+  "merged_at": "2026-08-23T15:30:08Z",
+  "head_ref": "fix/flowdent-out-of-zeta"
+}
