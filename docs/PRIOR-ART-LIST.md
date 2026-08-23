@@ -1598,3 +1598,106 @@ and #6 idempotency) and `.claude/rules/local-time-never-enters-the-shared-fold.m
 duration in its denominator, so carrying counts rather than rates satisfies both constraints from
 one argument. **Brian Beckman** is already in this list as REQUIRED READING and is the stated source
 for the physics/category convergence that opened §10.
+
+## Exploitability, weird machines, and decidable fragments — the langsec lineage (added 2026-08-23, shadow, per Aaron: "yes lets save these human anchors i think they might be new")
+
+Added after Aaron refused the claim _"restrict the local move set until the exploit path cannot be
+assembled"_ and asked for proof: _"I think it can always be assembled in expressive systems, but it
+can be detected and routed around."_ He was right, and this is the literature that establishes it.
+
+**Measured before adding** (`git grep -licE <term> origin/main`, 2026-08-23): Shacham **0**, Dullien
+**0**, `weird machine` **0**, Presburger **0**, `constructible universe` **0**; `langsec` **3**
+(thin), `return-oriented` **1**. **Rice's theorem was already at 15 files** — so the gap was never
+Rice's absence but its **disconnection** from exploitability, which is the harder gap to notice
+because nothing looks missing.
+
+### The refutation — exploitation as computation
+
+- **Shacham, Hovav.** _The Geometry of Innocent Flesh on the Bone: Return-into-libc without Function
+  Calls (on the x86)._ ACM CCS 2007. — **The counterexample to prevention-by-restriction.** The
+  attacker **defines no new code**; every gadget is a pre-existing legal instruction sequence ending
+  in `ret`. That is exactly _may name, may never define_ — and the libc gadget set is shown
+  **Turing-complete**. Establishes that a closed command set is safe only under an additional,
+  usually unstated condition: **non-composability**.
+- **Dullien, Thomas (Halvar Flake).** _Weird Machines, Exploitability, and Provable Unexploitability._
+  IEEE Transactions on Emerging Topics in Computing, 2020. — Formalises exploitation as **programming
+  a weird machine out of legal state transitions**, and gives conditions under which unexploitability
+  is _provable_. They are strong and rarely met. This is the security literature independently
+  arriving at the local-legal / global-illegal shape.
+- **Bratus, Locasto, Patterson, Sassaman, Shubina.** _Exploit Programming: From Buffer Overflows to
+  Weird Machines and Theory of Computation._ ;login: 36(6), 2011. — Names the weird machine and
+  positions exploitation as a computation-theory problem rather than a bug-hunting one.
+- **Sassaman, Patterson, Bratus, Locasto.** _Security Applications of Formal Language Theory._ IEEE
+  Systems Journal 7(3), 2013 (and _The Halting Problems of Network Stack Insecurity_, ;login: 2011).
+  — **LANGSEC.** Confine the _input language_ to a decidable class and reject everything else,
+  because an input language expressive enough to be undecidable **is** a weird machine by
+  construction. Full recogniser before any semantic action.
+- **Rice, Henry Gordon.** _Classes of Recursively Enumerable Sets and Their Decision Problems._
+  Transactions of the AMS 74(2), 1953. — **Already in-tree (15 files), listed here for the
+  connection that was missing:** every non-trivial semantic property of a Turing-complete system is
+  undecidable, so once the _compositions_ of a restricted move set are Turing-complete, no decision
+  procedure separates the benign composition from the exploit. Prevention is not hard — it is
+  unavailable, and detection must therefore be probabilistic and iterated.
+
+### The pigeonhole — restrictions that make the pathology decidable
+
+Aaron 2026-08-23: _"local moves can't eliminate it, he proved that — but then you can pigeonhole it
+into a limited known subset that is avoided or played within."_
+
+- **Presburger, Mojżesz.** _Über die Vollständigkeit eines gewissen Systems der Arithmetik ganzer
+  Zahlen, in welchem die Addition als einzige Operation hervortritt._ 1929. — Drop multiplication;
+  arithmetic becomes **complete and decidable**. Localises the pathology to `×`.
+- **Tarski, Alfred.** _A Decision Method for Elementary Algebra and Geometry._ RAND, 1951. —
+  **Already well covered in-tree (58 files)**; listed here for the specific result that matters to
+  this lineage: real closed fields are decidable by quantifier elimination, so the undecidability
+  was never "arithmetic" — it was **ℤ**.
+- **Gödel, Kurt.** _The Consistency of the Axiom of Choice and of the Generalized Continuum Hypothesis
+  with the Axioms of Set Theory._ Princeton, 1940 (results announced 1938). — **The constructible
+  universe `L`**: restrict the universe and CH is settled. Gödel's own pigeonhole, a decade after his
+  own incompleteness theorem, which is why he is the anchor for both halves of the pattern.
+- **Gödel, Kurt.** _Die Vollständigkeit der Axiome des logischen Funktionenkalküls_ (1929,
+  completeness) · _Über formal unentscheidbare Sätze…_ (1931, incompleteness) · _An Example of a New
+  Type of Cosmological Solution…_ Rev. Mod. Phys. 21, 1949 (rotating cosmology, CTCs). — The
+  boundary marker, the obstruction, and the closed timelike curve. Aaron 2026-08-23: _"Gödel taught
+  me this."_
+
+### Why the detector must be plural
+
+- **Demers, Greene, Hauser, Irish, Larson, Shenker, Sturgis, Swinehart, Terry.** _Epidemic Algorithms
+  for Replicated Database Maintenance._ PODC 1987. — **Already in-tree (19 files)**; the connection
+  recorded here is that gossip is the right substrate for detection **because it has no coordinator**,
+  and a central detector would be both a §1 central point of control and the single most valuable
+  node to compromise.
+- **Condorcet, Marquis de.** _Essai sur l'application de l'analyse à la probabilité des décisions…_
+  1785. — **Already load-bearing in-tree**; listed here for the step that makes it structural rather
+  than statistical: a jury of _correlated_ jurors is no better than **one** juror, so a fleet of
+  correlated detectors cannot exceed a single static detector — **which Rice already ruled out.**
+  Decorrelation is therefore not an improvement to the ensemble; it is the reason the ensemble can
+  see anything past the barrier at all.
+
+### Why the connection was missed — a taxonomy was substituted for a theorem
+
+Aaron 2026-08-23, on learning Rice was already at 15 files: **"yes we put in Wolfram automata instead
+of Rice."**
+
+That names the mechanism, and it generalises past this instance. Wolfram's **class 4 / computational
+irreducibility** and Rice's theorem point at the same territory and are **different kinds of object**:
+
+| | what it is | what it gives you |
+|---|---|---|
+| **Wolfram class 4 / PCE** | an **empirical taxonomy** of observed behaviour, resting on the Principle of Computational Equivalence — a **conjecture** | a vocabulary: _this looks irreducible_ |
+| **Rice 1953** | a **theorem** | a **bound**: the property is undecidable, so no amount of engineering produces the decider |
+
+**Reaching for the taxonomy where the theorem applied cost the impossibility result.** A taxonomy
+describes; it never tells you that prevention is _unavailable_, so the design question stays open
+("build a better detector") when the theorem had already closed it ("no such detector exists —
+build an ensemble instead"). And by this repo's own register discipline, substituting a **conjecture**
+(PCE) for a **theorem** (Rice) is a promotion in the wrong direction: it reads as the stronger claim
+while carrying less.
+
+**Generalised, this is a search failure with a specific shape and worth watching for:** when a
+concept has both an empirical-taxonomy form and a theorem form, the taxonomy is usually the more
+memorable and gets indexed first — so the theorem sits in the tree, cited, and never reached from
+the place that needed it.
+
+**Cross-reference:** `docs/research/2026-08-23-local-interactions-global-norms-acehack-godel-and-the-local-to-global-obstruction.md` — where these are used, with the register of each claim stated.
