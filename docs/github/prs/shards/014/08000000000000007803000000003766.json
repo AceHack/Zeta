@@ -1,0 +1,12 @@
+{
+  "pr_number": 14182,
+  "archive_path": "docs/history/pr-reviews/PR-14182-installer-mint-recover-a-node-zetaid-a-breaker-bounded-force-reformat-override-a.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-23T13:37:16.737Z",
+  "schema_version": "v1",
+  "commit_sha": "611cde36725da59feec381702f2b16305b09a90c",
+  "title": "installer: mint+recover a node ZetaId, a breaker-bounded force-reformat override, and repair mode tested against a real existing install",
+  "state": "MERGED",
+  "merged_at": "2026-08-23T13:36:34Z",
+  "head_ref": "feat/installer-zetaid-and-reformat-override"
+}
