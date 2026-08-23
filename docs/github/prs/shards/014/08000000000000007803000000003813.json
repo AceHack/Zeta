@@ -1,0 +1,12 @@
+{
+  "pr_number": 14355,
+  "archive_path": "docs/history/pr-reviews/PR-14355-fix-hygiene-my-own-falsifier-hoisted-a-token-into-the-live-process-env-main-went.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-23T18:21:37.199Z",
+  "schema_version": "v1",
+  "commit_sha": "57f09b1fb26d5c5178d71c944febed204a0fa641",
+  "title": "fix(hygiene): my own falsifier hoisted a token into the live process.env — main went red on the guard, in the file arguing against hoists",
+  "state": "MERGED",
+  "merged_at": "2026-08-23T18:20:54Z",
+  "head_ref": "fix/op-token-test-no-live-env-write"
+}
