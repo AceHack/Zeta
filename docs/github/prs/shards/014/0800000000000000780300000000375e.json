@@ -1,0 +1,12 @@
+{
+  "pr_number": 14174,
+  "archive_path": "docs/history/pr-reviews/PR-14174-fix-cluster-three-of-the-six-unpriced-charts-were-unmeasurable-for-three-differe.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-23T13:21:23.704Z",
+  "schema_version": "v1",
+  "commit_sha": "c3984580c0357fe632a277196884ef4dd2e8f61b",
+  "title": "fix(cluster): three of the six unpriced charts were unmeasurable for three different reasons — 39/47 → 41/47",
+  "state": "MERGED",
+  "merged_at": "2026-08-23T13:20:40Z",
+  "head_ref": "fix/unpriced-charts-measurable"
+}
