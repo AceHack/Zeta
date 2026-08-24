@@ -1,0 +1,14 @@
+{
+  "id": "080d01a296e05010a0130008cf543dd8",
+  "at": "2026-08-24T15:10:40.650Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M0T55Q09087G0R0039QASD1",
+    "type": "task",
+    "title": "Rx joins and ShivaGc wiring: stated as built, measured absent -- either build the seam or restate the claim",
+    "slug": "rx-joins-and-shivagc-wiring-stated-as-built-measured-absent",
+    "priority": "P2",
+    "filename": "081M0T55Q09087G0R0039QASD1-rx-joins-and-shivagc-wiring-stated-as-built-measured-absent.md"
+  }
+}

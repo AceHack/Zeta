@@ -317,3 +317,45 @@ landed on main from another Soraya actor while this one was in flight. Not merge
 entry above -- two rounds, two records, both kept. Ring-drift findings there are the
 TECH-RADAR half; the ring note in the QEC doc section 10 (Q# acquires a named job) is this
 half and does not contradict it.
+
+## 2026-08-24 -- mu-F/nu-F "observably infinite" (PR #14800)
+
+**The anchor check paid, and it inverted the claim.** nu-F is not "provably infinite":
+greatest fixed point carries finite behaviours; Bananas is CPO where mu-F = nu-F; and by
+finality equality in nu-F IS bisimilarity. nu-F was never intensional. StreamPolicy.fs
+already said "potentially-infinite" -- our code was right before the sentence was made.
+Real distinction lives one layer down, on the implementation coalgebra.
+
+**Formalisation:** reclaim sound iff the reclaim relation is a WEAK F-bisimulation, AND
+the envelope is a noninterfering (high) input (Goguen-Meseguer, the citation section 13
+already carries). Both are DEFINITION MATCHES, not encodings we invented -- which is the
+step-0 anchor check doing its job (tautology risk collapses when the encoding IS the
+published definition).
+
+**I withdrew my own finding mid-round and it was the best part.** Drafted timing as the
+fatal leak. local-time-never-enters-the-shared-fold (2026-07-11, written for multi-planet
+convergence) already closes it: the fold sees only phase order and regeneration advances
+no phase. Measured zero wall-clock reads on the path. A rule written for a different
+problem entailing what a later claim needs is REAL corroboration -- nobody could tune it.
+That is the opposite of the resonance-density warning and gets MORE weight, not less.
+
+**Routing removed a tool.** Before the rule was checked, timing looked like a real-time
+model-checker job. It is a Semgrep rule (Scheduler.Default on a reclaim-bearing Rx path).
+Celebrate the cheaper tool: R1 FsCheck two-envelope falsifier + mandatory negative control
+(widen F to ReferenceEquals -> MUST fail), R4 Semgrep, R2 Alloy, R3 TLA+ for
+single-activation under partition. BP-16: R1 alone is single-tool.
+
+**Measurement discipline held.** git ls-tree survey first. Findings: Rx.fs has NO join
+operators and documents disposal NOT ShivaGc; ShivaGc has zero non-test consumers;
+FrameDelta.fs already DECLINED the Lorentz claim and named the abelian translation group.
+Two of my checks cut against the claim -- that is the control on a survey.
+
+**Sharpest measured item:** SchedulerZeta.Tests.fs already narrowed its observation set to
+make regeneration pass (Assert.Same resident, keys after Unload). Implicit choice of
+observation functor in the one place the claim is tested. Named it.
+
+**Method:** markdownlint on a copy OUTSIDE docs/research/2026-*-*.md (rc=0) with sabotage
+control (rc=1, 5 errors). Empty output + exit 0 is indistinguishable from a silent linter.
+
+**Register:** all toy until R1 runs. Portfolio: this round added 4 routed properties, 0
+gated artefacts -- denominator grew, numerator did not. That is the honest number.
