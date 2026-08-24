@@ -78,6 +78,7 @@ import {
   type CoverageEnv,
 } from "./agencysignature-commit-coverage.ts";
 import {
+  ACCOUNTABILITY_KEYS,
   CANONICAL_VERSION_KEY,
   ENUMS,
   MISSPELLED_VERSION_KEY,
@@ -579,24 +580,45 @@ function emitPass(
   process.stdout.write(
     `  Credential-Mode:          ${getValue(trailers, "Credential-Mode")}\n`,
   );
-  process.stdout.write(
-    `  Human-Review:             ${getValue(trailers, "Human-Review")}\n`,
-  );
-  process.stdout.write(
-    `  Human-Review-Evidence:    ${getValue(trailers, "Human-Review-Evidence")}\n`,
-  );
-  const actionMode = reconciliations.find((r) => r.key === "Action-Mode");
-  process.stdout.write(
-    `  Action-Mode:              ${actionMode?.resolved ?? getValue(trailers, "Action-Mode")}\n`,
-  );
-  if (actionMode !== undefined) {
+  // EVERY reconcilable key reports its RESOLVED value, not the last block's — the
+  // #14594 lesson, which generalises the moment a second key becomes reconcilable.
+  // Printing `trailers`' own `Human-Review` for an anchored squash would report
+  // `explicit` for a change the canonical rule resolved as unreviewed: the exact
+  // manufacture the reconciliation exists to prevent, re-entering through the report.
+  const reconciled = (key: string): Reconciliation | undefined =>
+    reconciliations.find((r) => r.key === key);
+  const note = (r: Reconciliation | undefined): void => {
+    if (r === undefined) return;
     process.stdout.write(
-      `    RECONCILED from ${actionMode.from.map((v) => `'${v}'`).join(" + ")} to the WEAKEST ` +
+      `    RECONCILED from ${r.from.map((v) => `'${v}'`).join(" + ")} to the WEAKEST ` +
         "claim present. The squash mixes commits made different ways; the value reported above is " +
         "the one reading that cannot overstate human involvement.\n",
     );
-  }
+  };
+  const humanReview = reconciled("Human-Review");
+  const reviewEvidence = reconciled("Human-Review-Evidence");
+  const actionMode = reconciled("Action-Mode");
+  process.stdout.write(
+    `  Human-Review:             ${humanReview?.resolved ?? getValue(trailers, "Human-Review")}\n`,
+  );
+  note(humanReview);
+  process.stdout.write(
+    `  Human-Review-Evidence:    ${reviewEvidence?.resolved ?? getValue(trailers, "Human-Review-Evidence")}\n`,
+  );
+  note(reviewEvidence);
+  process.stdout.write(
+    `  Action-Mode:              ${actionMode?.resolved ?? getValue(trailers, "Action-Mode")}\n`,
+  );
+  note(actionMode);
   process.stdout.write(`  Task:                     ${getValue(trailers, "Task")}\n`);
+  // Optional; printed only when recorded, because printing `Accountable-Party: ` on
+  // a v1 block would render silence as an empty answer to a question that was asked.
+  for (const key of ACCOUNTABILITY_KEYS) {
+    const value = getValue(trailers, key);
+    if (value !== "") {
+      process.stdout.write(`  ${key}:${" ".repeat(Math.max(1, 25 - key.length))}${value}\n`);
+    }
+  }
   if (getValue(trailers, "Agency-Signature-Version") === "2") {
     const persona = getValue(trailers, "Persona");
     if (persona !== "") process.stdout.write(`  Persona:                  ${persona}\n`);

@@ -55,12 +55,42 @@
      only the body is not sufficient — `validate-agencysignature-pr-body.ts`
      passed while `audit-agencysignature-main-tip.ts` failed on the result.
 
-     Enums:
-       Credential-Mode        shared | dedicated-agent | human-only | unknown
+     Enums (this list was stale; `operator-delegated` and
+     `autonomous-fail-closed` have been valid since 2026-08-17):
+       Credential-Mode        shared | dedicated-agent | operator-delegated
+                              | human-only | unknown
        Human-Review           explicit | not-implied-by-credential | none
        Human-Review-Evidence  chat | pr-review | pr-comment | signed-policy | none
-       Action-Mode            autonomous-fail-open | human-directed | supervised
+       Action-Mode            autonomous-fail-open | autonomous-fail-closed
+                              | human-directed | supervised
        Task                   none | #NNNN | Otto-NN | ABC-NN
+
+     TWO OPTIONAL KEYS — the accountability pair (2026-08-24). NOT in the block
+     below, because they are optional and nothing is being mandated here:
+
+       Accountable-Party      acehack | lucent-financial-group
+       Authority-Basis        standing-grant | per-act | gated-class-approval
+
+     They answer WHO CARRIES BLAME and WHAT AUTHORISED THE ACT — which
+     `Human-Review` has been answering by proxy, badly: 99.17% of blocks on
+     main say `not-implied-by-credential`, a negation of the word in its own
+     key, and none of them names anybody. Record BOTH or NEITHER; a block that
+     omits them is read as SILENT, never as a default.
+
+     REACH FOR THEM WHEN A MULTI-COMMIT SQUASH GOES RED ON `Human-Review`.
+     That red is usually not a contradiction — it is one branch under one
+     standing grant whose commits honestly differ about whether a human read
+     each diff. Add the same `Accountable-Party` + `Authority-Basis` to every
+     commit's block and the review keys reconcile to the WEAKEST claim
+     present, printed with what was discarded. Two DIFFERENT accountable
+     parties never reconcile: a change with two accountable parties has no
+     accountable party, and that red means the commits should not have been
+     squashed together.
+
+     DO NOT COPY ANOTHER COMMIT'S GOVERNANCE FIELDS TO GO GREEN. Five commits
+     on main say in prose that they did exactly that, and
+     .claude/rules/maintenance-commit-on-another-agents-branch-carries-no-block.md
+     forbids it precisely because the parser can never detect it.
 
      Checked pre-merge by `validate-agencysignature-pr-body.ts` and post-merge
      by `audit-agencysignature-main-tip.ts` (.github/workflows/agencysignature-enforcement.yml).

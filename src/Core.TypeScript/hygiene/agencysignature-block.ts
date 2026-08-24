@@ -62,7 +62,12 @@ export const CANONICAL_SHAPE =
   "When a message carries several complete blocks the LAST one is authoritative, and " +
   "blocks that disagree on a governance-critical field are an error, not a pick — except " +
   "`Action-Mode`, which describes ONE COMMIT rather than the change and is resolved to the " +
-  "weakest claim present, never the strongest, and never to a claim of human involvement.";
+  "weakest claim present, never the strongest, and never to a claim of human involvement. " +
+  "The two OPTIONAL accountability keys — `Accountable-Party` and `Authority-Basis` — say who " +
+  "carries blame and what authorised the act; they never reconcile and never layer, and a " +
+  "block that omits them is read as SILENT, never as a default. When every block carries the " +
+  "same rostered pair, `Human-Review` stops being the accountability claim and is reconciled " +
+  "to the weakest review claim present, the same way and in the same direction as `Action-Mode`.";
 
 /** The ten v1 keys, in canonical (spec Section 7.4) order. */
 export const REQUIRED_KEYS: readonly string[] = [
@@ -140,6 +145,108 @@ export const ENUMS: readonly {
       "supervised",
     ],
   },
+];
+
+// ---------------------------------------------------------------------------
+// THE ACCOUNTABILITY KEYS (added 2026-08-24, additive, optional)
+// ---------------------------------------------------------------------------
+// `Human-Review` does TWO jobs in ONE field, and every governance deadlock this
+// module has produced is an artifact of that:
+//
+//   (a) A NAMED PARTY IS ACCOUNTABLE for what lands here. Constant across every
+//       commit of a branch, because it follows from a standing grant.
+//   (b) A HUMAN READ THIS DIFF. Legitimately varies per commit.
+//
+// Job (a) is why the field is governance-critical and why a disagreement in it
+// must be loud. Job (b) is a per-commit causal fact of exactly the kind
+// `Action-Mode` carries. Sharing one field, they make honest per-commit records
+// read as contradictions about authority. Measured, on `origin/main`:
+//
+//   * `Human-Review: not-implied-by-credential` is 15,387 of 15,516 blocks over
+//     the last 3,000 commits — 99.17%. THE CENTRAL GOVERNANCE FIELD SPENDS 99% OF
+//     ITS RECORDS SAYING WHAT DID NOT HAPPEN, phrased as a negation of the word in
+//     its own key. The steady state has no affirmative spelling.
+//   * `.claude/rules/no-directives.md` §"Source ≠ authorization" already names the
+//     invariant the schema lacks — *"only a human may attach, **for now** (until
+//     legal entities can hold AI-side responsibility). 'This should happen,'
+//     carries **blame**."* Three things are encoded there and absent here: the
+//     tracked property is BLAME, human-only is explicitly PROVISIONAL, and the
+//     release condition is named. The rule is time-aware; the schema hardcodes the
+//     present moment.
+//   * The same rule's standing-authorization clause has NO SPELLING AT ALL here.
+//     An agent acting inside a standing grant must currently record that as an
+//     ABSENCE (`not-implied-by-credential`) because the vocabulary has no word for
+//     inheritance. `Authority-Basis: standing-grant` is that missing word.
+//
+// So: name the accountable party directly, and say what authorised the act.
+// Diagnosis + measurements: docs/research/2026-08-24-liability-is-the-invariant-
+// human-ness-is-its-current-binding-and-the-squash-carrier-already-layers.md
+//
+// BOTH KEYS ARE OPTIONAL, IN v1 AND v2 ALIKE, AND THAT IS DELIBERATE. Requiring
+// them would invalidate 17,087 v1 blocks in one commit and force every producer to
+// change at once. Every previously-valid block stays valid; a block that omits
+// them is exactly as valid as it is today, and it is READ AS SILENT — never as a
+// default. Inferring an accountable party from `not-implied-by-credential` is
+// impossible (the information was never captured) and asserting one anyway would
+// be the manufacture-an-authorisation failure this whole module exists to prevent.
+
+/** The two keys that carry the accountability claim. Optional; never inferred. */
+export const ACCOUNTABILITY_KEYS: readonly string[] = ["Accountable-Party", "Authority-Basis"];
+
+/**
+ * `Accountable-Party` — WHO CARRIES BLAME if this change is wrong.
+ *
+ * An identity, not an actor class, which is the point: it accommodates a human, a
+ * company, or — if some jurisdiction ever recognises one — an AI, with no rename.
+ * `Human-Review` would need one. Aaron 2026-08-24: *"the only thing that has to be
+ * human held for now is liability or at least a company like Lucent Financial Group
+ * because of the legal jurisdiction and it's rules where it lives. That is not
+ * something i expect to be forever like that."*
+ *
+ * A ROSTER, NOT A FREE STRING, and the roster is short on purpose. `Accountable-Party:
+ * nobody` or `: the-team` would pass a shape check while naming no one who could have
+ * withheld the act — a field that cannot fail. The two values below are the two Aaron
+ * named: LFG for LFG repos, himself for AceHack repos. Additions are maintainer-
+ * authorized, exactly like every other enum addition in this file.
+ *
+ * WHAT THIS DOES NOT CHECK, stated so the gap is not mistaken for coverage: nothing
+ * here verifies that the named party ACCEPTED the accountability. A block may name
+ * LFG on a commit LFG never saw. That is the same limit `Human-Review: explicit` has
+ * always had, and the same one the `Human-Review` claim-verification job was added to
+ * close from the other side; it is not made worse here.
+ */
+export const ACCOUNTABLE_PARTIES: readonly string[] = ["acehack", "lucent-financial-group"];
+
+/**
+ * `Authority-Basis` — WHAT MAKES THIS ACT AUTHORISED. The three values are
+ * `.claude/rules/no-directives.md`'s own three cases, not a fresh taxonomy:
+ *
+ *   standing-grant       acting inside authority already given, broadly and
+ *                        indefinitely ("Standing authorization is already given …
+ *                        do NOT per-action ask"). THE 99% CASE, and the word the
+ *                        schema has been missing — the shadow may INHERIT authority,
+ *                        and inheritance currently has to be recorded as an absence.
+ *   per-act              a fresh, specific authorization for this change.
+ *   gated-class-approval a gated class was opened (budget, WONT-DO, HARD LIMITS,
+ *                        non-reversible, force-push, large external-repo change).
+ */
+export const AUTHORITY_BASES: readonly string[] = [
+  "standing-grant",
+  "per-act",
+  "gated-class-approval",
+];
+
+/**
+ * Enums checked ONLY WHEN THE KEY IS PRESENT. Kept separate from `ENUMS` rather
+ * than flagged inside it: `ENUMS` reads an absent key as `""` and would fail every
+ * v1 block on the empty value, which is the opposite of additive.
+ */
+export const OPTIONAL_ENUMS: readonly {
+  readonly key: string;
+  readonly allowed: readonly string[];
+}[] = [
+  { key: "Accountable-Party", allowed: ACCOUNTABLE_PARTIES },
+  { key: "Authority-Basis", allowed: AUTHORITY_BASES },
 ];
 
 const BLANK_LINE_RE = /^[\t ]*$/;
@@ -411,6 +518,11 @@ export const GOVERNANCE_KEYS: readonly string[] = [
   "Human-Review", // THE accountability claim
   "Human-Review-Evidence", // where that claim's evidence lives (spec Section 5.3)
   "Action-Mode", // autonomous vs supervised vs human-directed — RECONCILABLE, see above
+  // THE TWO ACCOUNTABILITY KEYS. Governance-critical and NEVER reconcilable — see
+  // `accountabilityAnchor`. Adding them here can only ADD failures: no block on
+  // `main` carries either key (measured: 0 of 17,162), so nothing existing changes.
+  "Accountable-Party",
+  "Authority-Basis",
 ];
 
 /**
@@ -474,6 +586,141 @@ export function reconcileActionMode(values: readonly string[]): string | null {
   return ACTION_MODE_BY_HUMAN_AUTHORITY[min] ?? null;
 }
 
+// ---------------------------------------------------------------------------
+// ACCOUNTABILITY DOES NOT LAYER — and that is what buys the rest
+// ---------------------------------------------------------------------------
+// A CHANGE WITH TWO ACCOUNTABLE PARTIES HAS NO ACCOUNTABLE PARTY. So
+// `Accountable-Party` and `Authority-Basis` are governance keys with NO
+// reconciliation and no last-wins: two different named parties in one squash is
+// LOUD, permanently, and there is no rule that resolves it. If the accountable
+// party genuinely differs across a squash's constituents, that is not a layering
+// opportunity — it is a signal the commits should not have been squashed together,
+// and surfacing that is the check doing its job rather than failing at it.
+//
+// SILENCE IS NOT A COMPETING CLAIM. A block that omits the key is compared as
+// absent, not as a value: a squash where one constituent names `acehack` and
+// another says nothing is quiet, and the named claim survives. Two reasons, both
+// necessary:
+//
+//   * It is the only way the migration can be incremental. Treating absence as a
+//     value would make every branch red the moment its newest commit adopted the
+//     key, which is a schema change disguised as a gate.
+//   * The escalation argument runs the OTHER WAY for this field. `Human-Review`
+//     must be loud on partial claims because picking one manufactures an
+//     authorization nobody gave. `Accountable-Party` names who carries BLAME —
+//     accepting liability for work whose other constituent named nobody is not a
+//     privilege escalation, it is the opposite of one. The direction of the error
+//     is what licenses the tolerance, exactly as it does for `Action-Mode`.
+
+/**
+ * The single accountability claim every block in `blocks` shares, or `null`.
+ *
+ * Requires FULL coverage — every block carries the same non-empty
+ * `Accountable-Party` AND the same non-empty `Authority-Basis`. The asymmetry with
+ * the silence-tolerance above is deliberate and is the whole safety argument:
+ * partial coverage is tolerated where it costs nothing (the disagreement check),
+ * and full coverage is REQUIRED where a check is being relaxed (below). A
+ * partial-coverage anchor would let a squash buy the relaxation with one commit's
+ * claim about the others — which is the manufacture, wearing the new field.
+ */
+export function accountabilityAnchor(
+  blocks: readonly (readonly string[])[],
+): { readonly party: string; readonly basis: string } | null {
+  if (blocks.length === 0) return null;
+  const parties = new Set(blocks.map((b) => blockValue(b.join("\n"), "Accountable-Party")));
+  const bases = new Set(blocks.map((b) => blockValue(b.join("\n"), "Authority-Basis")));
+  if (parties.size !== 1 || bases.size !== 1) return null;
+  const party = [...parties][0] ?? "";
+  const basis = [...bases][0] ?? "";
+  if (party === "" || basis === "") return null;
+  if (!ACCOUNTABLE_PARTIES.includes(party) || !AUTHORITY_BASES.includes(basis)) return null;
+  return { party, basis };
+}
+
+/**
+ * The `Human-Review` vocabulary ordered by HOW MUCH HUMAN BACKING IT CLAIMS,
+ * weakest first — the same construction as `ACTION_MODE_BY_HUMAN_AUTHORITY`.
+ *
+ *   0 `none`                       no human review. The flat denial: claims the
+ *                                  least of the three, so recording it can never
+ *                                  flatter anyone.
+ *   1 `not-implied-by-credential`  declines to claim review. Above `none` because
+ *                                  it is a narrower denial — it says the credential
+ *                                  does not IMPLY a review, not that none happened.
+ *   2 `explicit`                   a human reviewed this.
+ *
+ * The `none` / `not-implied-by-credential` ordering is only ever reachable by a
+ * squash carrying both, which is rare (240 and 16,130 blocks respectively across
+ * all of `main`); the pair is near-synonymous and either order understates.
+ */
+export const HUMAN_REVIEW_BY_HUMAN_AUTHORITY: readonly string[] = [
+  "none",
+  "not-implied-by-credential",
+  "explicit",
+];
+
+/**
+ * Resolve several `Human-Review` values to the single weakest claim, or `null`.
+ *
+ * ONLY MEANINGFUL BEHIND AN `accountabilityAnchor` — the callers gate on one and
+ * this function does not, because a pure function that silently depended on its
+ * caller's context would be the worse of the two designs. Read it as "what is the
+ * weakest of these", not "may this be resolved".
+ *
+ * A NOTE ON THE GUARD THAT IS NOT HERE, because a check that cannot fail is worse
+ * than no check and this file has been burned by exactly that. `reconcileActionMode`
+ * refuses any set whose minimum still claims a human was involved, and that refusal
+ * has teeth because `Action-Mode` has TWO presence values (`supervised`,
+ * `human-directed`) neither of which implies the other. `Human-Review` has exactly
+ * ONE presence value and it is the MAXIMUM, so the minimum of a disagreeing set can
+ * never be a presence claim. Writing the same guard here would be a line that can
+ * never fire, dressed as safety. THE TEETH FOR THIS KEY ARE THE COVERAGE GATE
+ * INSTEAD: without a full, agreeing, rostered accountability anchor, nothing here
+ * runs and the disagreement stays as loud as it is today.
+ *
+ * What DOES refuse, non-vacuously and measurably: a value outside the enum has no
+ * rank and is not ordered. `main` carries 25 out-of-enum `Human-Review` spellings
+ * over 273 blocks (`pending` x77, `EXPLICIT` x38, `implied-by-interactive-session`
+ * x60, and free text such as `aaron-lets-do-it`). None of those is guessed into
+ * position; a set containing one stays loud.
+ */
+export function reconcileHumanReview(values: readonly string[]): string | null {
+  const distinct = [...new Set(values)];
+  if (distinct.length === 0) return null;
+  if (distinct.length === 1) return distinct[0] ?? null;
+  const ranks = distinct.map((v) => HUMAN_REVIEW_BY_HUMAN_AUTHORITY.indexOf(v));
+  if (ranks.some((r) => r < 0)) return null;
+  return HUMAN_REVIEW_BY_HUMAN_AUTHORITY[Math.min(...ranks)] ?? null;
+}
+
+/**
+ * Resolve `Human-Review-Evidence` — but ONLY as a consequence of a `Human-Review`
+ * reconciliation, never on its own. Three refusals, each with a falsifier:
+ *
+ *   * the review values must actually have DISAGREED. Blocks that all claim the
+ *     same review state but cite different evidence are NOT reconciled: that shape
+ *     is either two live evidence pointers (both true, and collapsing them to
+ *     `none` would assert there is no evidence when there is) or a block violating
+ *     the cross-field constraint. Either way it stays loud.
+ *   * the resolved review must be non-`explicit`. `Human-Review: explicit` requires
+ *     evidence `!= 'none'` (`validateReviewConsistency`), so resolving evidence to
+ *     `none` under an explicit review would manufacture an invalid block.
+ *   * `none` must be a value some constituent ACTUALLY WROTE. Property 1 of the
+ *     `Action-Mode` reconciliation, unchanged: this only ever discards values, it
+ *     never invents one.
+ */
+export function reconcileReviewEvidence(
+  reviewValues: readonly string[],
+  evidenceValues: readonly string[],
+): string | null {
+  if (new Set(reviewValues).size < 2) return null;
+  const review = reconcileHumanReview(reviewValues);
+  if (review === null || review === "explicit") return null;
+  const distinct = [...new Set(evidenceValues)];
+  if (distinct.length <= 1) return distinct[0] ?? null;
+  return distinct.includes("none") ? "none" : null;
+}
+
 /** A governance key whose differing values were resolved rather than refused. */
 export interface Reconciliation {
   readonly key: string;
@@ -495,10 +742,38 @@ export interface Reconciliation {
 export function detectReconciliations(text: string): readonly Reconciliation[] {
   const blocks = findAllSignatureBlocks(text);
   if (blocks.length < 2) return [];
-  const values = [...new Set(blocks.map((b) => blockValue(b.join("\n"), "Action-Mode")))];
-  if (values.length < 2) return [];
-  const resolved = reconcileActionMode(values);
-  return resolved === null ? [] : [{ key: "Action-Mode", resolved, from: values }];
+  const out: Reconciliation[] = [];
+  const distinct = (key: string): readonly string[] => [
+    ...new Set(blocks.map((b) => blockValue(b.join("\n"), key))),
+  ];
+
+  const actionModes = distinct("Action-Mode");
+  if (actionModes.length >= 2) {
+    const resolved = reconcileActionMode(actionModes);
+    if (resolved !== null) out.push({ key: "Action-Mode", resolved, from: actionModes });
+  }
+
+  // The two review keys are reconcilable ONLY behind a full, agreeing, rostered
+  // accountability anchor. Without one this is dead code and the disagreement
+  // check stays exactly as loud as it is today — which is the whole safety
+  // argument, and is why 17,087 v1 blocks are untouched by this.
+  if (accountabilityAnchor(blocks) !== null) {
+    const reviews = distinct("Human-Review");
+    if (reviews.length >= 2) {
+      const resolved = reconcileHumanReview(reviews);
+      if (resolved !== null) out.push({ key: "Human-Review", resolved, from: reviews });
+      const evidence = distinct("Human-Review-Evidence");
+      const resolvedEvidence = reconcileReviewEvidence(reviews, evidence);
+      if (resolved !== null && resolvedEvidence !== null && evidence.length >= 2) {
+        out.push({
+          key: "Human-Review-Evidence",
+          resolved: resolvedEvidence,
+          from: evidence,
+        });
+      }
+    }
+  }
+  return out;
 }
 
 export const INCIDENTAL_KEYS: readonly string[] = REQUIRED_KEYS.filter(
@@ -528,14 +803,31 @@ export function detectBlockDisagreement(text: string): BlockDisagreement | null 
   if (blocks.length < 2) return null;
   const keys: string[] = [];
   const details: string[] = [];
+  const anchor = accountabilityAnchor(blocks);
+  const reviewValues = [...new Set(blocks.map((b) => blockValue(b.join("\n"), "Human-Review")))];
   for (const key of GOVERNANCE_KEYS) {
-    const values = [...new Set(blocks.map((b) => blockValue(b.join("\n"), key)))];
+    let values = [...new Set(blocks.map((b) => blockValue(b.join("\n"), key)))];
+    // SILENCE IS NOT A COMPETING CLAIM — for the accountability keys only, and for
+    // the reason given above `accountabilityAnchor`: absence of a blame claim is
+    // not a rival blame claim, and treating it as one would make the migration
+    // impossible. Two DIFFERENT named parties still land in `keys` below, loudly.
+    if (ACCOUNTABILITY_KEYS.includes(key)) values = values.filter((v) => v !== "");
     if (values.length <= 1) continue;
-    // The ONE reconcilable key. Everything else here is untouched: a differing
-    // `Human-Review`, `Human-Review-Evidence`, `Credential-Mode` or
-    // `Agency-Signature-Version` is still an error, and `reconcileActionMode`
-    // itself refuses the sets that would manufacture a claim.
+    // The reconcilable keys. Everything else here is untouched: a differing
+    // `Credential-Mode`, `Agency-Signature-Version`, `Accountable-Party` or
+    // `Authority-Basis` is still an error, and each reconciler itself refuses the
+    // sets that would manufacture a claim.
     if (key === "Action-Mode" && reconcileActionMode(values) !== null) continue;
+    if (anchor !== null && key === "Human-Review" && reconcileHumanReview(values) !== null) {
+      continue;
+    }
+    if (
+      anchor !== null &&
+      key === "Human-Review-Evidence" &&
+      reconcileReviewEvidence(reviewValues, values) !== null
+    ) {
+      continue;
+    }
     keys.push(key);
     const quoted = values.map((v) => "'" + v + "'").join(" vs ");
     details.push(`${key}: ${quoted}`);
@@ -557,6 +849,7 @@ export interface Violation {
     | "v2-missing-cell"
     | "v2-persona-mismatch"
     | "v2-invalid-cell"
+    | "accountability-half-recorded"
     | "block-disagreement";
   /** The key at fault, or `""` when the violation spans fields. */
   readonly key: string;
@@ -616,6 +909,26 @@ export function validateBlock(blockText: string): readonly Violation[] {
       return violations;
     }
   }
+
+  // OPTIONAL enums — checked only when the key is present, so a v1 block that
+  // omits both is exactly as valid as it is today.
+  for (const { key, allowed } of OPTIONAL_ENUMS) {
+    const value = blockValue(blockText, key);
+    if (value === "") continue;
+    if (!allowed.includes(value)) {
+      return [
+        {
+          code: "invalid-enum",
+          key,
+          found: value,
+          message: `invalid enum value for ${key}: '${value}' — expected one of: ${allowed.join(", ")}`,
+        },
+      ];
+    }
+  }
+
+  const accountability = validateAccountabilityPair(blockText);
+  if (accountability !== null) return [accountability];
 
   const v2 = validateV2(blockText);
   if (v2 !== null) return [v2];
@@ -740,6 +1053,36 @@ export function validateReviewConsistency(blockText: string): Violation | null {
     };
   }
   return null;
+}
+
+/**
+ * The accountability pair is all-or-nothing.
+ *
+ * `Accountable-Party` with no `Authority-Basis` names who carries blame without
+ * saying what made the act authorised; `Authority-Basis` with no
+ * `Accountable-Party` claims an authorisation with nobody behind it — the second is
+ * strictly worse, since `standing-grant` with no named grantor is an authority
+ * asserting itself. Half a record is not a cheap partial record here, it is a claim
+ * that reads as complete. Same shape as the `Human-Review` / `Human-Review-Evidence`
+ * constraint one function down, and for the same reason.
+ */
+export function validateAccountabilityPair(blockText: string): Violation | null {
+  const party = blockValue(blockText, "Accountable-Party");
+  const basis = blockValue(blockText, "Authority-Basis");
+  if (party === "" && basis === "") return null; // silent, and silence is legal
+  if (party !== "" && basis !== "") return null;
+  const present = party === "" ? "Authority-Basis" : "Accountable-Party";
+  const absent = party === "" ? "Accountable-Party" : "Authority-Basis";
+  return {
+    code: "accountability-half-recorded",
+    key: absent,
+    found: party === "" ? basis : party,
+    message:
+      `${present} is present but ${absent} is missing — the accountability claim is ` +
+      "all-or-nothing: naming a party without a basis says who is blamed but not what " +
+      "authorised the act, and naming a basis without a party is an authority asserting " +
+      "itself. Record both, or record neither and be read as silent.",
+  };
 }
 
 function validateV2(blockText: string): Violation | null {
