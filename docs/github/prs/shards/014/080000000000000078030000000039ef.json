@@ -1,0 +1,12 @@
+{
+  "pr_number": 14831,
+  "archive_path": "docs/history/pr-reviews/PR-14831-research-shivagc-the-missing-half-is-a-regenerability-oracle-not-a-database-and-.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-24T16:16:02.651Z",
+  "schema_version": "v1",
+  "commit_sha": "ca3f5300ad6ef2a1bdc473a5948307f8642aa078",
+  "title": "research(shivagc): the missing half is a regenerability oracle, not a database — and no F# type provider exists",
+  "state": "MERGED",
+  "merged_at": "2026-08-24T16:15:16Z",
+  "head_ref": "shivagc-substrate-wiring"
+}
