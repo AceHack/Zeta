@@ -1,0 +1,12 @@
+{
+  "pr_number": 14508,
+  "archive_path": "docs/history/pr-reviews/PR-14508-bug-file-the-ntpnoninterference-arity-1-finding-a-1-safety-check-standing-in-for.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-23T22:27:54.180Z",
+  "schema_version": "v1",
+  "commit_sha": "787b3887903b6323c9d1c5b3f0b626869975e0c6",
+  "title": "bug: file the NtpNoninterference arity-1 finding — a 1-safety check standing in for a 2-safety property",
+  "state": "MERGED",
+  "merged_at": "2026-08-23T22:27:09Z",
+  "head_ref": "fix/ntp-noninterference-arity-1-check"
+}
