@@ -1,10 +1,14 @@
 import { describe, expect, test } from "bun:test";
 import {
+  DEFAULT_PR_LIST_LIMIT,
+  HEARTBEAT_REF_PREFIX,
   REQUIRED_GATE_NAME,
   classifyMissingRequiredCheck,
   heartbeatPrsMissingRequiredCheck,
   isTransientHostFailure,
   listWithTransientRetry,
+  listingWasTruncated,
+  prsMissingRequiredCheck,
   requiredCheckStarted,
 } from "./required-check-started";
 
@@ -145,5 +149,69 @@ describe("listWithTransientRetry", () => {
     expect(isTransientHostFailure("HTTP 502: bad gateway")).toBe(true);
     expect(isTransientHostFailure("ECONNRESET")).toBe(true);
     expect(isTransientHostFailure("HTTP 401: bad credentials")).toBe(false);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// REPO-WIDE SCOPE (081M0TK8DE8087G0R0001HSKHF)
+//
+// These are the falsifiers for the widening, and each fails against the pre-change
+// file: `prsMissingRequiredCheck` did not exist, and the only selector hard-coded
+// `headRef.startsWith("heartbeat/")` so the ordinary-PR case below returned [].
+// ---------------------------------------------------------------------------
+
+/** An ordinary PR, old enough to judge, whose rollup carries everything BUT the gate. */
+const ORDINARY_PR_WITHOUT_GATE = {
+  number: 14858,
+  createdAt: "2026-08-15T14:00:00.000Z",
+  headRef: "ouroboros-bootstrap",
+  headSha: "58a43245d650253576014ef999e12da74e6f445e",
+  // Verbatim from `gh pr checks 14858 --json name` on 2026-08-24: six passing checks,
+  // no gate. The bare `gh pr checks` reported rc=0 / fail=0 / pend=0 on this exact set.
+  rollup: [
+    { name: "submit-nuget" },
+    { name: "Analyze (csharp)" },
+    { name: "Analyze (go)" },
+    { name: "Analyze (java-kotlin)" },
+    { name: "Analyze (javascript-typescript)" },
+    { name: "Analyze (python)" },
+  ],
+} as const;
+
+describe("prsMissingRequiredCheck — the class is not heartbeat-shaped", () => {
+  test("an ordinary PR with six green checks and no gate is FOUND at repo-wide scope", () => {
+    expect(prsMissingRequiredCheck([ORDINARY_PR_WITHOUT_GATE], T0, 10 * 60_000, "")).toEqual([14858]);
+  });
+
+  test("...and is INVISIBLE at the heartbeat scope — which is the defect, stated as a test", () => {
+    expect(prsMissingRequiredCheck([ORDINARY_PR_WITHOUT_GATE], T0, 10 * 60_000, HEARTBEAT_REF_PREFIX)).toEqual([]);
+  });
+
+  test("the heartbeat entry point is unchanged by the widening", () => {
+    const heartbeat = { ...ORDINARY_PR_WITHOUT_GATE, number: 11369, headRef: "heartbeat/otto-flush-abc" };
+    expect(heartbeatPrsMissingRequiredCheck([heartbeat, ORDINARY_PR_WITHOUT_GATE], T0, 10 * 60_000)).toEqual([11369]);
+  });
+
+  test("repo-wide scope still respects the age floor — a fresh PR is queued, not stalled", () => {
+    const fresh = { ...ORDINARY_PR_WITHOUT_GATE, createdAt: "2026-08-15T14:59:00.000Z" };
+    expect(prsMissingRequiredCheck([fresh], T0, 10 * 60_000, "")).toEqual([]);
+  });
+
+  test("repo-wide scope does not flag a PR whose gate is merely pending", () => {
+    const gated = { ...ORDINARY_PR_WITHOUT_GATE, rollup: [{ name: REQUIRED_GATE_NAME }] };
+    expect(prsMissingRequiredCheck([gated], T0, 10 * 60_000, "")).toEqual([]);
+  });
+});
+
+describe("listingWasTruncated — a full page is unmeasured, not clean", () => {
+  test("a page filled to the limit is truncated", () => {
+    // The live shape this guards: 42 open PRs today against the old hard-coded
+    // `--limit 50`. Eight more and the detector would have measured a subset.
+    expect(listingWasTruncated(50, 50)).toBe(true);
+    expect(listingWasTruncated(42, 50)).toBe(false);
+  });
+
+  test("the default limit leaves real headroom over the measured open-PR count", () => {
+    expect(DEFAULT_PR_LIST_LIMIT).toBeGreaterThan(50);
   });
 });

@@ -1,0 +1,14 @@
+{
+  "id": "080d01a9a1ae4810a013000849a8c224",
+  "at": "2026-08-24T19:16:49.225Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M0TK8DE8087G0R0001HSKHF",
+    "type": "bug",
+    "title": "gate (required) absent from a PR reads as green: bare gh pr checks returns rc=0 with zero required checks",
+    "slug": "gate-required-absent-from-a-pr-reads-as-green-bare-gh-pr-che",
+    "priority": "P2",
+    "filename": "081M0TK8DE8087G0R0001HSKHF-gate-required-absent-from-a-pr-reads-as-green-bare-gh-pr-che.md"
+  }
+}

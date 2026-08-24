@@ -35,6 +35,38 @@
  * published) is reported and tolerated. This is strictly SHARPER than the age
  * threshold, not weaker: it still fails every genuine hang, on the first check
  * past `--min-age-min`, with no waiting.
+ *
+ * ---------------------------------------------------------------------------
+ * THE CLASS IS NOT HEARTBEAT-SHAPED (2026-08-24, 081M0TK8DE8087G0R0001HSKHF).
+ *
+ * Everything above was derived from heartbeat lanes and then SCOPED to them:
+ * `heartbeatPrsMissingRequiredCheck` filtered `headRef.startsWith("heartbeat/")`,
+ * so the one detector this repo has for "the required check will never report"
+ * was blind to every ordinary pull request. MEASURED on 2026-08-24 across all 42
+ * open PRs: FOUR carried zero `gate (required)` — #12058, #12066, #12321, #14858 —
+ * and none of them is a heartbeat lane. #14858 had ZERO `gate.yml` runs for its
+ * branch, ever.
+ *
+ * What that costs is exact, and it is the vacuity class at the rollup-of-rollups
+ * level. On #14858, MEASURED the same day, exit codes captured directly:
+ *
+ *     gh pr checks 14858              -> rc=0, 6 pass / 0 fail / 0 pending
+ *     gh pr checks 14858 --required   -> rc=1, "no required checks reported"
+ *
+ * The bare form is what a reader reaches for and it answers a DIFFERENT QUESTION
+ * than the one being asked: "did everything that reported, pass" rather than "did
+ * everything that must report, pass". With zero required checks reported the two
+ * answers diverge completely, and the wrong one is green.
+ *
+ * So the ref-prefix is now a PARAMETER with `heartbeat/` as its default — the
+ * heartbeat lane's verdict is byte-for-byte unchanged — and `--ref-prefix ''`
+ * asks the same question of every open PR.
+ *
+ * AND THE LISTING IS NOW ITS OWN FALSIFIER. `gh pr list --limit 50` against 42
+ * open PRs was eight PRs from silently measuring a subset and reporting a clean
+ * sheet: a truncated listing is a check that did not run, wearing the face of one
+ * that passed, in the detector built to name exactly that. A full page now exits 2
+ * (unmeasured) rather than 0 (clean).
  */
 export const REQUIRED_GATE_NAME = "gate (required)";
 
@@ -121,18 +153,59 @@ export async function listWithTransientRetry(
   return result;
 }
 
-/** Heartbeat PRs old enough that gate should have started, but did not. */
+/** The lane this detector was built for. Kept as a named constant, not a literal. */
+export const HEARTBEAT_REF_PREFIX = "heartbeat/";
+
+/**
+ * Open PRs, on branches matching `refPrefix`, old enough that the required check
+ * should have started, whose rollup does not carry it.
+ *
+ * `refPrefix === ""` matches every branch — that is the repo-wide question, and
+ * `String.prototype.startsWith("")` is true for every string, so the empty prefix
+ * needs no special case.
+ */
+export function prsMissingRequiredCheck(
+  prs: readonly HeartbeatPrSnapshot[],
+  nowMs: number,
+  minAgeMs: number,
+  refPrefix: string = HEARTBEAT_REF_PREFIX,
+  requiredName = REQUIRED_GATE_NAME,
+): readonly number[] {
+  return prs
+    .filter((pr) => pr.headRef.startsWith(refPrefix))
+    .filter((pr) => nowMs - Date.parse(pr.createdAt) >= minAgeMs)
+    .filter((pr) => !requiredCheckStarted(pr.rollup, requiredName))
+    .map((pr) => pr.number);
+}
+
+/**
+ * Heartbeat PRs old enough that gate should have started, but did not.
+ *
+ * Retained as the heartbeat lane's entry point so widening the general function
+ * above cannot change that lane's verdict by accident.
+ */
 export function heartbeatPrsMissingRequiredCheck(
   prs: readonly HeartbeatPrSnapshot[],
   nowMs: number,
   minAgeMs: number,
   requiredName = REQUIRED_GATE_NAME,
 ): readonly number[] {
-  return prs
-    .filter((pr) => pr.headRef.startsWith("heartbeat/"))
-    .filter((pr) => nowMs - Date.parse(pr.createdAt) >= minAgeMs)
-    .filter((pr) => !requiredCheckStarted(pr.rollup, requiredName))
-    .map((pr) => pr.number);
+  return prsMissingRequiredCheck(prs, nowMs, minAgeMs, HEARTBEAT_REF_PREFIX, requiredName);
+}
+
+/** Default page size for the open-PR listing. See `listingWasTruncated`. */
+export const DEFAULT_PR_LIST_LIMIT = 200;
+
+/**
+ * A listing that filled its page measured a SUBSET and cannot report a clean sheet.
+ *
+ * `gh pr list --limit N` returns at most N and says nothing about how many it
+ * dropped, so `returned === limit` is the only signal available. Treating it as a
+ * complete answer is the exact defect this file exists to name, committed by this
+ * file, so it is an error rather than a warning.
+ */
+export function listingWasTruncated(returned: number, limit: number): boolean {
+  return returned >= limit;
 }
 
 async function main(argv: readonly string[]): Promise<number> {
@@ -140,6 +213,21 @@ async function main(argv: readonly string[]): Promise<number> {
   const minAgeMin = minIdx >= 0 ? Number(argv[minIdx + 1]) : 10;
   if (!Number.isFinite(minAgeMin) || minAgeMin < 0) {
     process.stderr.write("required-check-started: --min-age-min must be a non-negative number\n");
+    return 2;
+  }
+  // `--ref-prefix ''` is the repo-wide scope. Absent flag keeps the heartbeat default,
+  // so every existing invocation's verdict is unchanged.
+  const prefixIdx = argv.indexOf("--ref-prefix");
+  const refPrefix = prefixIdx >= 0 ? (argv[prefixIdx + 1] ?? "") : HEARTBEAT_REF_PREFIX;
+  if (prefixIdx >= 0 && argv[prefixIdx + 1] === undefined) {
+    process.stderr.write("required-check-started: --ref-prefix needs a value (use '' for every branch)\n");
+    return 2;
+  }
+  const scope = refPrefix === "" ? "every open PR" : `PRs on ${refPrefix}*`;
+  const limitIdx = argv.indexOf("--limit");
+  const limit = limitIdx >= 0 ? Number(argv[limitIdx + 1]) : DEFAULT_PR_LIST_LIMIT;
+  if (!Number.isInteger(limit) || limit < 1) {
+    process.stderr.write("required-check-started: --limit must be a positive integer\n");
     return 2;
   }
   const { spawnSync } = await import("node:child_process");
@@ -154,7 +242,7 @@ async function main(argv: readonly string[]): Promise<number> {
         "--json",
         "number,createdAt,headRefName,headRefOid,statusCheckRollup",
         "--limit",
-        "50",
+        String(limit),
       ],
       { encoding: "utf8" },
     );
@@ -175,6 +263,15 @@ async function main(argv: readonly string[]): Promise<number> {
     headRefOid?: string;
     statusCheckRollup?: readonly NamedCheck[];
   }[];
+  if (listingWasTruncated(raw.length, limit)) {
+    // A full page is an UNMEASURED result, not a clean one. Exiting 0 here would be
+    // this detector committing the defect it was written to name.
+    process.stderr.write(
+      `required-check-started: gh pr list returned ${raw.length} of --limit ${limit} — ` +
+        `the listing is truncated and the scope is unmeasured. Raise --limit.\n`,
+    );
+    return 2;
+  }
   const snapshots = raw.map((p) => ({
     number: p.number,
     createdAt: p.createdAt,
@@ -182,10 +279,11 @@ async function main(argv: readonly string[]): Promise<number> {
     headSha: p.headRefOid ?? "",
     rollup: p.statusCheckRollup ?? [],
   }));
-  const missing = heartbeatPrsMissingRequiredCheck(snapshots, Date.now(), minAgeMin * 60_000);
+  const missing = prsMissingRequiredCheck(snapshots, Date.now(), minAgeMin * 60_000, refPrefix);
   if (missing.length === 0) {
     process.stdout.write(
-      `required-check-started: all heartbeat PRs older than ${minAgeMin}m have ${REQUIRED_GATE_NAME}\n`,
+      `required-check-started: all ${scope} older than ${minAgeMin}m have ${REQUIRED_GATE_NAME} ` +
+        `(scanned ${raw.length} open PR(s))\n`,
     );
     return 0;
   }
@@ -239,9 +337,17 @@ async function main(argv: readonly string[]): Promise<number> {
     );
   }
   if (stalled.length === 0) return 0;
+  const list = stalled.map((n) => `#${n}`).join(", ");
+  // ::error:: so the absence is LOUD in the run itself, per the drift-loud discipline —
+  // this lane blocks nothing, so an unannotated line in a log is the same as silence.
   process.stderr.write(
-    `required-check-started: no ${workflowFile} run exists for heartbeat PR(s): ` +
-      `${stalled.map((n) => `#${n}`).join(", ")} — ${REQUIRED_GATE_NAME} can never report\n`,
+    `::error::required-check-started: no ${workflowFile} run exists for ${list} — ` +
+      `${REQUIRED_GATE_NAME} can never report on ${stalled.length === 1 ? "it" : "them"}. ` +
+      `Note that a bare \`gh pr checks\` reads this as green; \`--required\` does not.\n`,
+  );
+  process.stderr.write(
+    `required-check-started: no ${workflowFile} run exists for ${scope}: ${list} — ` +
+      `${REQUIRED_GATE_NAME} can never report\n`,
   );
   return 1;
 }

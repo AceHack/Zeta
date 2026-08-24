@@ -2248,9 +2248,20 @@ jobs:
     # ORACLES assert COMMITTED outputs (no dotnet/rust/QDK toolchain needed); the ace suite installs
     # npm deps (z3-solver) + uses the runner node for its solver Z3 differential. This is the
     # ENFORCEMENT half of the canonical-primitive gate (proof + 4-language byte-lock); the proof half
-    # is the formal-coverage cadence / lean-proof lane. NOTE: promoting this to a REQUIRED check
-    # (branch protection) is a separate operator/devops step — until then it runs + shows on every PR
-    # but does not block auto-merge.
+    # is the formal-coverage cadence / lean-proof lane.
+    #
+    # THIS JOB IS IN THE REQUIRED FLOOR. It is named in `gate-required.needs` below, and
+    # `CI Gate` requires `gate (required)`, so a red here does block a merge. The note that
+    # stood here until 2026-08-24 said the opposite — "promoting this to a REQUIRED check is
+    # a separate operator/devops step ... it does not block auto-merge" — and it was false
+    # for long enough to be believed: it was read on 2026-08-24 as evidence that the ace
+    # drift gate was ungated, when a sabotage control proved the opposite. Adding a
+    # `ProjectReference` to `clis/Zeta.Clis.fsproj` without regenerating
+    # `src/Core.TypeScript/ace/build-graph.json` takes `bun test src/Core.TypeScript/ace/`
+    # from 703 pass / 0 fail to 701 / 2, rc=1, and the two failures are the DRIFT GATE pair
+    # — inside this job, inside the floor. A comment claiming a gate does not gate is the
+    # same defect class as a gate that does not run, pointed the other way, so it is
+    # corrected rather than left as folklore (081M0TK8DE8087G0R0001HSKHF).
     name: cross-verify (trust-core oracles + ace suite)
     timeout-minutes: 12
     runs-on: ubuntu-24.04
