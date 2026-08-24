@@ -1,0 +1,12 @@
+{
+  "pr_number": 14738,
+  "archive_path": "docs/history/pr-reviews/PR-14738-fix-bnn-the-agent-was-structurally-unable-to-act-remove-the-unreachable-gate-giv.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-24T12:44:30.343Z",
+  "schema_version": "v1",
+  "commit_sha": "5b39e31b086660e74d3cfd4d74a5eac66a9a546e",
+  "title": "fix(bnn): the agent was structurally unable to act — remove the unreachable gate, give the key beliefs a memory that fades",
+  "state": "MERGED",
+  "merged_at": "2026-08-24T12:43:40Z",
+  "head_ref": "claude/otto-unfreeze-agent-thompson-forgetting"
+}
