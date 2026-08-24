@@ -1,0 +1,17 @@
+{
+  "pr_number": 14499,
+  "archive_path": "docs/history/pr-reviews/PR-14499-test-helm-the-2-charts-this-repo-owns-had-zero-checks-lint-render-and-pin-couple.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7k3Wpv",
+    "comment:PRRC_kwDOSF9kNM7k3ZXs",
+    "thread:PRRT_kwDOSF9kNM6bickb",
+    "thread:PRRT_kwDOSF9kNM6biecp"
+  ],
+  "fetched_at": "2026-08-23T22:39:00.735Z",
+  "schema_version": "v1",
+  "commit_sha": "d38c48db29c864456a6d1268c3f4411824639a7e",
+  "title": "test(helm): the 2 charts this repo owns had zero checks; lint, render and pin-couple them",
+  "state": "MERGED",
+  "merged_at": "2026-08-23T22:38:15Z",
+  "head_ref": "dejan/helm-charts-tested"
+}
