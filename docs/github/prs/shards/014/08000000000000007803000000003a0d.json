@@ -1,0 +1,12 @@
+{
+  "pr_number": 14861,
+  "archive_path": "docs/history/pr-reviews/PR-14861-fix-shivagc-pin-byte-identity-to-a-golden-vector-delete-a-textual-self-compariso.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-24T17:20:31.122Z",
+  "schema_version": "v1",
+  "commit_sha": "39b8fd06f0366a6712467475876a77ab1b616e60",
+  "title": "fix(shivagc): pin byte-identity to a golden vector; delete a textual self-comparison",
+  "state": "MERGED",
+  "merged_at": "2026-08-24T17:19:45Z",
+  "head_ref": "fix/shivagc-byte-identity-golden-vector"
+}
