@@ -4,7 +4,7 @@
 
 import { describe, expect, it } from "bun:test";
 import { existsSync } from "node:fs";
-import { parseArgs, runPicker, buildVerifyArgs, buildPersistArgs } from "./zeta-creds-picker";
+import { parseArgs, runPicker, buildVerifyArgs, buildPersistArgs, shouldDeferAllPrompts } from "./zeta-creds-picker";
 
 describe("parseArgs", () => {
   it("accepts well-formed args with --passphrase-env", () => {
@@ -84,6 +84,24 @@ describe("parseArgs", () => {
     const r = parseArgs(["--usb-uuid", "u1", "--output", "/o", "--passphrase-env", "P", "--verify"]);
     if ("error" in r) throw new Error(r.error);
     expect(r.verify).toBe(true);
+  });
+
+  it("--defer-all is off by default and parsed when passed", () => {
+    const off = parseArgs(["--usb-uuid", "u1", "--output", "/o", "--passphrase-env", "P"]);
+    if ("error" in off) throw new Error(off.error);
+    expect(off.deferAll).toBe(false);
+    const on = parseArgs(["--usb-uuid", "u1", "--output", "/o", "--passphrase-env", "P", "--defer-all"]);
+    if ("error" in on) throw new Error(on.error);
+    expect(on.deferAll).toBe(true);
+  });
+});
+
+describe("shouldDeferAllPrompts", () => {
+  it("is true for the flag or a non-TTY, false only for an interactive TTY without the flag", () => {
+    expect(shouldDeferAllPrompts(true, true)).toBe(true);
+    expect(shouldDeferAllPrompts(false, false)).toBe(true);
+    expect(shouldDeferAllPrompts(true, false)).toBe(true);
+    expect(shouldDeferAllPrompts(false, true)).toBe(false);
   });
 });
 
@@ -181,6 +199,20 @@ describe("runPicker", () => {
     ]);
     const args = await runPicker(rl, null);
     expect(args.length).toBe(0);
+  });
+
+  it("--defer-all returns no bake-args and never asks", async () => {
+    let asked = 0;
+    const rl = {
+      question: () => {
+        asked += 1;
+        return Promise.resolve("b");
+      },
+      close: () => {},
+    } as unknown as Parameters<typeof runPicker>[0];
+    const args = await runPicker(rl, null, true);
+    expect(args).toEqual([]);
+    expect(asked).toBe(0);
   });
 
   it("bakes gh-cli with literal value when chosen", async () => {

@@ -247,6 +247,14 @@ describe("iter-5.5.0 target runtime bootstrap uses canonical install.sh", () => 
     expect(window).toContain('MISE_TRUSTED_CONFIG_PATHS="$ZETA_HOME/Zeta"');
   });
 
+  test("6.95-picker passes --defer-all on non-TTY / QEMU passphrase file (no bake hang)", () => {
+    // QEMU restore (run 32724820159): picker started, then hung on
+    // readline.question for [b]/[d]/[s] until the 1800s phase-1 timeout.
+    expect(ITER_595_BLOCK).toContain('PICKER_DEFER="--defer-all"');
+    expect(ITER_595_BLOCK).toContain("$PICKER_DEFER");
+    expect(ITER_595_BLOCK).toContain("[ ! -t 0 ]");
+  });
+
   test("agent CLI package installs are not duplicated in zeta-install.sh", () => {
     expect(ITER_595_BLOCK).toContain("tools/setup/manifests/from-bun-global");
     expect(ITER_595_BLOCK).toContain("tools/setup/manifests/from-installer");

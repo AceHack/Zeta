@@ -21,11 +21,10 @@
 //     --output /mnt/boot/zeta-creds.enc \
 //     ( --passphrase-file <path> | --passphrase-env <VAR> ) \
 //     [--persona <name>] \
-//     [--verify]   (post-persist: re-decrypt the blob with the same
-//                   passphrase + dry-run-restore to verify it's
-//                   actually usable BEFORE the operator reboots and
-//                   discovers a bad blob at first boot)
-//     [--dry-run]  (print persist invocation; don't exec)
+//     [--verify]
+//     [--dry-run]
+//     [--defer-all]  (every cred defers; no TTY prompts; never bake.
+//                    QEMU / non-TTY also take this path even without the flag.)
 //
 // Per .claude/rules/non-coercion-invariant.md HC-8: operator authority over
 // own creds; no default-bake (operator must explicitly pick bake for each);
@@ -59,6 +58,8 @@ interface PickerArgs {
   readonly persona: string | null;
   readonly dryRun: boolean;
   readonly verify: boolean;
+  /** HC-8: every cred defers. No bake. QEMU / non-TTY path. */
+  readonly deferAll: boolean;
 }
 
 function hasPresent(value: string | null): value is string {
@@ -87,6 +88,7 @@ export function parseArgs(argv: readonly string[]): PickerArgs | { readonly erro
   let persona: string | null = null;
   let dryRun = false;
   let verify = false;
+  let deferAll = false;
   for (let i = 0; i < argv.length; i++) {
     const arg = argv[i]!;
     const next = (): string => {
@@ -103,6 +105,7 @@ export function parseArgs(argv: readonly string[]): PickerArgs | { readonly erro
       else if (arg === "--persona") persona = next();
       else if (arg === "--dry-run") dryRun = true;
       else if (arg === "--verify") verify = true;
+      else if (arg === "--defer-all") deferAll = true;
       else return { error: `unknown flag: ${arg}` };
     } catch (err) {
       return { error: err instanceof Error ? err.message : String(err) };
@@ -128,7 +131,13 @@ export function parseArgs(argv: readonly string[]): PickerArgs | { readonly erro
     persona,
     dryRun,
     verify,
+    deferAll,
   };
+}
+
+/** Prompts hang with no TTY (QEMU serial). Empty bake is defer, never bake. */
+export function shouldDeferAllPrompts(flag: boolean, stdinIsTTY: boolean): boolean {
+  return flag || !stdinIsTTY;
 }
 
 /**
@@ -194,7 +203,12 @@ export function buildPersistArgs(
 export async function runPicker(
   rl: ReturnType<typeof createInterface>,
   persona: string | null,
+  deferAll = false,
 ): Promise<string[]> {
+  if (deferAll) {
+    console.log("\n=== Credential picker: --defer-all (every cred defers to device-flow; no bake) ===");
+    return [];
+  }
   const bakeArgs: string[] = [];
   console.log("\n=== Credential picker (081KSKBP80008QG0R003AX2A69.3a setup-time integration) ===");
   console.log("For each declared credential: bake-in NOW, defer to device-flow at runtime, or skip.");
@@ -279,16 +293,22 @@ async function main(): Promise<number> {
     console.error(`zeta-creds-picker: ${parsed.error}`);
     return 2;
   }
-  const rl = createInterface({ input, output });
+  const skipPrompts = shouldDeferAllPrompts(parsed.deferAll, Boolean(input.isTTY));
   let bakeArgs: string[] = [];
-  try {
-    bakeArgs = await runPicker(rl, parsed.persona);
-  } catch (err) {
-    rl.close();
-    console.error(`zeta-creds-picker: aborted: ${err instanceof Error ? err.message : String(err)}`);
-    return 3;
-  } finally {
-    rl.close();
+  if (skipPrompts) {
+    console.log("zeta-creds-picker: non-TTY or --defer-all; every cred defers (HC-8: no default-bake)");
+    bakeArgs = [];
+  } else {
+    const rl = createInterface({ input, output });
+    try {
+      bakeArgs = await runPicker(rl, parsed.persona);
+    } catch (err) {
+      rl.close();
+      console.error(`zeta-creds-picker: aborted: ${err instanceof Error ? err.message : String(err)}`);
+      return 3;
+    } finally {
+      rl.close();
+    }
   }
   console.log(`\n=== Picker complete: ${bakeArgs.length} cred(s) selected for bake-in ===`);
   for (const a of bakeArgs) {

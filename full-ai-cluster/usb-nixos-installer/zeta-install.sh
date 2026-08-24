@@ -3412,6 +3412,13 @@ if [ -d "$ZETA_HOME" ]; then
     echo "[iter-5.5.0] ── 6.95-picker: 081KSKBP80008QG0R003AX2A69.3a cred-picker (DEFAULT-ON per 081KSKBP80008QG0R003AX2A69.3c) ──"
     echo "[iter-5.5.0]   passphrase from Step 6.56; binding $PICKER_BIND_FLAG (default FAT UUID; iSerial/keyfile only if the matching ZETA_BIND_* opt-in succeeded)"
     echo "[iter-5.5.0]   to opt out: set ZETA_CREDS_PICKER=0 OR touch /etc/zeta/no-picker"
+    # QEMU serial has no TTY. readline.question hangs until the 1800s phase-1
+    # timeout (run 32724820159). --defer-all is HC-8: empty bake, never bake.
+    PICKER_DEFER=""
+    if [ ! -t 0 ] || [ -n "${QEMU_PP_FILE:-}" ]; then
+      PICKER_DEFER="--defer-all"
+      echo "[iter-5.5.0]   non-TTY or QEMU passphrase file: picker --defer-all (no bake)"
+    fi
     # mise activate inside bash -c matches sibling 6.95a-claude/gemini/codex
     # patterns at lines 1119-1141; without it, bun is not on the PATH the
     # subshell sees (mise installs bun via shims; activate sets PATH).
@@ -3440,7 +3447,7 @@ if [ -d "$ZETA_HOME" ]; then
     ZETA_CREDS_PASSPHRASE="$ZETA_CREDS_PASSPHRASE_VAL" sudo --preserve-env=ZETA_CREDS_PASSPHRASE -u "#$ZETA_UID" \
       HOME="$ZETA_HOME" BUN_INSTALL="$ZETA_HOME/.bun" \
       MISE_TRUSTED_CONFIG_PATHS="$ZETA_HOME/Zeta" \
-      bash -c "set -o pipefail; export PATH='/run/current-system/sw/bin:/run/current-system/sw/sbin:${ZETA_HOME}/.local/share/mise/shims:${ZETA_HOME}/.bun/bin:/usr/bin:/bin'; eval \"\$(mise activate bash 2>/dev/null || true)\"; cd '$ZETA_HOME/Zeta' && bun src/Core.TypeScript/installer/zeta-creds-picker.ts $PICKER_BIND_FLAG '$PICKER_BIND_VALUE' --output /mnt/boot/zeta-creds.enc --passphrase-env ZETA_CREDS_PASSPHRASE" || \
+      bash -c "set -o pipefail; export PATH='/run/current-system/sw/bin:/run/current-system/sw/sbin:${ZETA_HOME}/.local/share/mise/shims:${ZETA_HOME}/.bun/bin:/usr/bin:/bin'; eval \"\$(mise activate bash 2>/dev/null || true)\"; cd '$ZETA_HOME/Zeta' && bun src/Core.TypeScript/installer/zeta-creds-picker.ts $PICKER_BIND_FLAG '$PICKER_BIND_VALUE' --output /mnt/boot/zeta-creds.enc --passphrase-env ZETA_CREDS_PASSPHRASE $PICKER_DEFER" || \
         echo "[iter-5.5.0]   WARN: picker exited non-zero; cred-blob may be partial"
   else
     echo "[iter-5.5.0]   SKIP 6.95-picker: $PICKER_SKIP_REASON"
