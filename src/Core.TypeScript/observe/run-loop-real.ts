@@ -41,7 +41,6 @@ import { codegenExecuteItem } from "./codegen-executor";
 import { realWorkspacePort, type WorkspacePort } from "./workspace-port";
 import type { DoItemOptions } from "./do-item";
 import {
-  observeWithParticipant,
   oracleParticipant,
   localLlmParticipant,
   cloudPersonaParticipant,
@@ -177,7 +176,15 @@ async function main(): Promise<number> {
   const reasoning: TickReasoning = {
     agent: args.by,
     model: participant.name,
-    context: `backlog=${observeWorld.backlog.length}, mode=${observeWorld.mode ?? "unset"}`,
+    // `observeWorld` is a union: the codegen branch above DELIBERATELY strips `mode`,
+    // so one arm has no such property and a direct read does not typecheck. The `in`
+    // guard is not a workaround for the type -- it reports what the participant
+    // ACTUALLY SAW. When the field was stripped, the participant saw no mode, and
+    // "unset" is the true record of the tick rather than a value recovered from a
+    // world the chooser was never shown.
+    context: `backlog=${observeWorld.backlog.length}, mode=${
+      "mode" in observeWorld ? (observeWorld.mode ?? "unset") : "unset"
+    }`,
     options: menu.map(actionLabel),
     chosenIndex: chooseResult.index,
     chosen: actionLabel(action),
