@@ -1,0 +1,10 @@
+{
+  "id": "080d01a479cc2810a0130008afdafddd",
+  "at": "2026-08-24T16:16:36.741Z",
+  "by": "otto-cli",
+  "kind": "closed",
+  "payload": {
+    "workItemId": "081M0T8XF3N087G0R002YNFVD9",
+    "reason": "rung 4 built and metered; rung 5 substitute metered; mod-8 clock origin settled (Clifford, not code) and its period measured at 4"
+  }
+}
