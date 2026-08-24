@@ -1,0 +1,12 @@
+{
+  "pr_number": 13948,
+  "archive_path": "docs/history/pr-reviews/PR-13948-fix-archive-lane-a-stranded-archive-pr-had-no-detector-the-silence-was-the-gener.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-23T16:51:43.346Z",
+  "schema_version": "v1",
+  "commit_sha": "a3b7f458c1205257bf2be20fdb2b059e5b6cefc2",
+  "title": "fix(archive-lane): a stranded archive PR had no detector — the silence was the generator",
+  "state": "MERGED",
+  "merged_at": "2026-08-23T16:51:00Z",
+  "head_ref": "fix/archive-lane-backlog"
+}
