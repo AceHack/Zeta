@@ -1,0 +1,12 @@
+{
+  "pr_number": 14193,
+  "archive_path": "docs/history/pr-reviews/PR-14193-ferry-ip-questionable-geometric-reasoning-claim-julian-michels-sophontic-checked.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-23T13:57:37.425Z",
+  "schema_version": "v1",
+  "commit_sha": "38c732bdce3e83573e0169374998d7369d2009ba",
+  "title": "ferry(ip-questionable): geometric reasoning claim — Julian Michels / Sophontic, checked against our Clifford, BNN and ρ work",
+  "state": "MERGED",
+  "merged_at": "2026-08-23T13:56:56Z",
+  "head_ref": "ferry/geometric-reasoning-claim"
+}
