@@ -1,0 +1,12 @@
+{
+  "pr_number": 13935,
+  "archive_path": "docs/history/pr-reviews/PR-13935-fix-drift-rate-land-the-telemetry-refuse-the-trend-it-has-not-earned.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-22T21:13:54.820Z",
+  "schema_version": "v1",
+  "commit_sha": "e041cc030514d49196b28191e54a551dfa9d9a0d",
+  "title": "fix(drift-rate): land the telemetry, refuse the trend it has not earned",
+  "state": "MERGED",
+  "merged_at": "2026-08-22T21:13:13Z",
+  "head_ref": "fix/drift-rate-honest-trends"
+}
