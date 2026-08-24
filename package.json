@@ -32,6 +32,8 @@
     "test:browser-revision-policy": "bun ./src/Core.TypeScript/browser-node/browser-revision-policy-smoke.ts",
     "test:browser-pwa": "bun ./src/Core.TypeScript/browser-node/browser-pwa-smoke.ts",
     "test:browser-admission": "bun ./src/Core.TypeScript/browser-node/browser-execution-admission-smoke.ts",
+    "setup:touchid-sudo": "bun ./tools/setup/touchid-sudo.ts --apply",
+    "setup:touchid-sudo-verify": "bun ./tools/setup/touchid-sudo.ts --verify",
     "run:zetadb-node": "bun ./src/Core.TypeScript/zetadb/scheduled-node.ts",
     "run:proposal-device-relay": "bun ./src/Core.TypeScript/browser-node/browser-delegated-device-proposal-relay-host.ts",
     "hygiene:sort-tick-history": "bun ./src/Core.TypeScript/hygiene/sort-tick-history-canonical.ts",

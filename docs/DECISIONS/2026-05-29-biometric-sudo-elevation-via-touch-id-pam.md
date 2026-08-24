@@ -17,7 +17,7 @@ How do we grant necessary execution privileges to system commands in macOS secur
 ## Considered Options
 
 * **Option 1: Require `sudo` wrapper for the whole script (Status Quo)** — Run entire installation or build tasks with `sudo command`.
-* **Option 2: Biometric Sudo Elevation via Touch ID PAM (`pam_tid.so`)** — Enable macOS Touch ID PAM integration (`pam_tid.so`) inside `/etc/pam.d/sudo`. Regular users run setup scripts in user-space, and individual commands requiring privileges call `sudo` which elevates cleanly via a quick biometric Touch ID press rather than password input, while avoiding permission ownership leaks.
+* **Option 2: Biometric Sudo Elevation via Touch ID PAM (`pam_tid.so`)** — Enable macOS Touch ID PAM integration (`pam_tid.so`) via `/etc/pam.d/sudo_local` (see the 2026-08-24 correction below; this originally read `/etc/pam.d/sudo`, which OS updates replace). Regular users run setup scripts in user-space, and individual commands requiring privileges call `sudo` which elevates cleanly via a quick biometric Touch ID press rather than password input, while avoiding permission ownership leaks.
 
 ## Pros & Cons of the Options
 
@@ -57,13 +57,33 @@ How do we grant necessary execution privileges to system commands in macOS secur
 To enable this on a macOS development machine:
 
 1. **Configure PAM Sudo:**
-   Add `auth sufficient pam_tid.so` to the top of `/etc/pam.d/sudo`.
+
    ```bash
-   # Add the module at the top of the file
-   sudo sed -i '' '2i\
-   auth sufficient pam_tid.so
-   ' /etc/pam.d/sudo
+   bun tools/setup/touchid-sudo.ts --apply     # writes /etc/pam.d/sudo_local
+   bun tools/setup/touchid-sudo.ts --verify    # read-only; raises no prompt
    ```
+
+   > **Correction, 2026-08-24 (Dejan).** This step used to prescribe
+   > `sudo sed -i '' '2i\ auth sufficient pam_tid.so' /etc/pam.d/sudo` — editing
+   > `/etc/pam.d/sudo` **directly**. That instruction is the origin of the defect
+   > measured on the fleet Mac the same day: `grep -c pam_tid /etc/pam.d/sudo`
+   > returned 1 while `/etc/pam.d/sudo_local` did not exist.
+   >
+   > **macOS replaces `/etc/pam.d/sudo` on OS updates.** Apple ships
+   > `/etc/pam.d/sudo_local.template` for exactly this reason; its own first line
+   > reads *"local config file which survives system update"*, and the stock
+   > `/etc/pam.d/sudo` already carries `auth include sudo_local`. So the direct
+   > edit reverts to password-only at some future update, silently and with no
+   > announcement — the house failure mode, a protection that stops applying
+   > without saying so.
+   >
+   > The tool above writes `sudo_local` and never touches `/etc/pam.d/sudo`. It
+   > is idempotent (re-running is a no-op), and `--verify` is the standing check
+   > for the revert; `tools/setup/doctor.sh` runs it on every doctor pass.
+   >
+   > **`pam_reattach`** is handled by the same tool: without it the Touch ID
+   > prompt does not appear inside `tmux`/`screen`, which is where agent work
+   > usually runs. `brew install pam-reattach`, then re-run `--apply`.
 2. **Terminal Integration:**
    Ensure terminal apps (like iTerm2 or VS Code) allow Touch ID PAM elevation.
    - For iTerm2: Preferences → Advanced → "Allow programs on this computer to monitor your keyboard" (if using specific keyboard shortcuts) or simply ensuring pam_tid is not blocked.

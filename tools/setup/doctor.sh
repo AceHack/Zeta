@@ -215,6 +215,45 @@ if [ -r "$(dirname "$0")/common/fd-limits.sh" ]; then
   echo
 fi
 
+# ── Touch ID for sudo: configured DURABLY? (macOS only) ─────────────
+# Same shape as the fd-limits block above: read-only, reports, never applies.
+#
+# The failure this catches is a silent one. `pam_tid.so` added to
+# /etc/pam.d/sudo works until the next macOS update REPLACES that file, at which
+# point sudo drops to password-only with no announcement. Apple ships
+# /etc/pam.d/sudo_local.template so the customisation can survive; the verifier
+# checks that the durable file -- not the fragile edit -- is what is in force.
+#
+# It raises NO sudo or Touch ID prompt: it reads configuration and never
+# exercises the gate. That matters because an operator trained to approve
+# prompts reflexively is the weakness the biometric gate exists to avoid.
+if [ "$(uname -s)" = "Darwin" ]; then
+  echo "[extra] Touch ID for sudo (durable across OS updates)"
+  if command -v bun >/dev/null 2>&1; then
+    # `set -e` is on: a bare `var=$(cmd)` whose cmd exits non-zero would abort
+    # the whole doctor. Capture the status directly on the same statement.
+    touchid_rc=0
+    touchid_out="$(bun "$(dirname "$0")/touchid-sudo.ts" --verify 2>&1)" || touchid_rc=$?
+    if [ "$touchid_rc" -eq 0 ]; then
+      pass "Touch ID sudo is configured in /etc/pam.d/sudo_local (survives OS updates)"
+    else
+      warn "Touch ID sudo is NOT durably configured"
+      # Indent each line without `sed s/^/.../` (SC2001): read the captured
+      # output line by line so the whole report stays attributable to this check.
+      while IFS= read -r _touchid_line; do
+        echo "    $_touchid_line"
+      done <<EOF_TOUCHID
+$touchid_out
+EOF_TOUCHID
+      echo "    Fix (needs sudo once; this script deliberately does not change system settings):"
+      echo "      bun tools/setup/touchid-sudo.ts --apply"
+    fi
+  else
+    warn "bun not on PATH — cannot check Touch ID sudo configuration"
+  fi
+  echo
+fi
+
 # ── Summary ─────────────────────────────────────────────────────────
 echo "=== Summary ==="
 echo "✓ ok: $OK   ⚠ warn: $WARN   ✗ fail: $FAIL"
