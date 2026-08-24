@@ -229,8 +229,21 @@ jobs:
             sleep 1
           done
 
-          # Tiny model for heartbeat (fast, 400MB)
-          ollama pull qwen2.5:0.5b
+          # STRUCTURAL DECORRELATION (2026-08-24, Alexa): each agent uses a different
+          # model family so their errors are orthogonal. The decorrelation meter
+          # (decorrelation-meter.ts) measures whether this actually helps — if all three
+          # used the same model, S ≈ 2 (correlated, useless redundancy). With different
+          # families, S should exceed 2 (genuinely independent).
+          #
+          # All three fit in ~2GB RAM (well within the 7GB runner limit).
+          # The 7b codegen model is pulled separately for the work tick.
+          HEARTBEAT_MODELS_alexa="qwen2.5:0.5b"
+          HEARTBEAT_MODELS_otto="llama3.2:1b"
+          HEARTBEAT_MODELS_soraya="gemma2:2b"
+          HEARTBEAT_MODEL_VAR="HEARTBEAT_MODELS_${AGENT}"
+          HEARTBEAT_MODEL="${!HEARTBEAT_MODEL_VAR}"
+          echo "[models] $AGENT heartbeat model: $HEARTBEAT_MODEL"
+          ollama pull "$HEARTBEAT_MODEL"
           # Smart model for codegen/decompose work (5GB, fits in 7GB runner)
           ollama pull qwen2.5:7b
           ollama list
@@ -268,14 +281,22 @@ jobs:
         env:
           ZETA_FIRST_SESSION_MARKER: /tmp/zeta-first-session-complete
           ZETA_AGENT_ID: ${{ matrix.agent }}
-          ZETA_PARTICIPANT: local-llm
           ZETA_SINK_MODE: local
+          AGENT: ${{ matrix.agent }}
         run: |
+          # Each agent uses its own model family (structural decorrelation)
+          HEARTBEAT_MODELS_alexa="qwen2.5:0.5b"
+          HEARTBEAT_MODELS_otto="llama3.2:1b"
+          HEARTBEAT_MODELS_soraya="gemma2:2b"
+          MODEL_VAR="HEARTBEAT_MODELS_${AGENT}"
+          MODEL="${!MODEL_VAR}"
+
           mkdir -p /tmp && echo "2026-07-08" > /tmp/zeta-first-session-complete
+          export ZETA_PARTICIPANT="local-llm:${MODEL}"
           bun src/Core.TypeScript/observe/run-loop-real.ts \
             --by "$ZETA_AGENT_ID" \
             --event-dir docs/observe-events \
-            --participant local-llm || echo "[heartbeat] tick failed (non-fatal)"
+            --participant "local-llm:${MODEL}" || echo "[heartbeat] tick failed (non-fatal)"
 
       - name: Commit accumulated heartbeat tick
         env:
