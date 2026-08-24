@@ -1,0 +1,14 @@
+{
+  "id": "080d01a460079010a013000803691008",
+  "at": "2026-08-24T16:13:05.650Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M0T8R07H087G0R0032KNMW6",
+    "type": "bug",
+    "title": "loop-liveness gather() reports not-installed on Windows when the check never ran",
+    "slug": "loop-liveness-gather-reports-not-installed-on-windows-when-t",
+    "priority": "P2",
+    "filename": "081M0T8R07H087G0R0032KNMW6-loop-liveness-gather-reports-not-installed-on-windows-when-t.md"
+  }
+}
