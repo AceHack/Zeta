@@ -1,0 +1,12 @@
+{
+  "pr_number": 13929,
+  "archive_path": "docs/history/pr-reviews/PR-13929-fix-zetadb-converge-concurrent-journal-ticks.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-22T21:05:29.721Z",
+  "schema_version": "v1",
+  "commit_sha": "ae7c0f683202775976fec9d236d6da69240d25f6",
+  "title": "fix(zetadb): converge concurrent journal ticks",
+  "state": "MERGED",
+  "merged_at": "2026-08-22T21:04:46Z",
+  "head_ref": "codex/zetadb-concurrent-journal"
+}
