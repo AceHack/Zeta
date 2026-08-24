@@ -15,7 +15,7 @@ import { getPersona, localLlmPersona } from "../service/persona-registry";
 import { executeSkillSequence } from "../arc-solver/grid-skills";
 import { evaluateGrid } from "../arc-solver/grid-evaluator";
 import { CelegansController, loadFromCsv } from "../chip8/celegans-controller";
-import { ATTENTION_TOP_K, BnnSocietyPredictor, type SocietySnapshot } from "../bayesian/bnn-key-predictor";
+import { ATTENTION_TOP_K, BnnSocietyPredictor, thompsonKeyOf, type SocietySnapshot } from "../bayesian/bnn-key-predictor";
 import type { ArenaReadout, ArenaTrackReadout, AttentionReadoutWire } from "../observe/observe";
 import { ArcExplorer } from "../bayesian/arc-explorer";
 import { cooperate } from "../tri-boolean/tri-boolean";
@@ -413,10 +413,11 @@ Output ONLY a valid JSON array of strings representing the sub-tasks. Example: [
           }
           
           // If BNN is highly uncertain (max prob < 0.2), scarcity is high!
+          // (The argmax key itself is no longer read here — the committed key
+          // comes from posterior sampling below, not from a thresholded peak.)
           let maxProb = -1;
-          let bestBnnKey = -1;
-          for (const [key, prob] of Object.entries(bnnPredictions)) {
-            if (prob > maxProb) { maxProb = prob; bestBnnKey = parseInt(key, 10); }
+          for (const prob of Object.values(bnnPredictions)) {
+            if (prob > maxProb) maxProb = prob;
           }
           this.scarcity = maxProb < 0.2 ? 0.9 : 0.4;
           
@@ -460,8 +461,18 @@ Output ONLY a valid JSON array of strings representing the sub-tasks. Example: [
           let wormConsensusKey = towerCount >= 2 ? towerKey : -1;
           
           
-          // Simple Fusion Policy: if max BNN prob is strong enough, use BNN consensus; otherwise use biological tower
-          const chosenKey = maxProb > 0.4 ? bestBnnKey : wormConsensusKey;
+          // Fusion policy: POSTERIOR SAMPLING, not an absolute confidence gate.
+          //
+          // This line used to read `maxProb > 0.4 ? bestBnnKey : wormConsensusKey`.
+          // Measured 2026-08-24: the consensus over 17 keys peaks at 0.3818
+          // (p50 0.3433), so that gate was crossed 0 times in 900 ticks and the
+          // agent committed NOTHING once its 300-tick explorer expired — the
+          // "buttons go random for a while, then it stops moving" report. See
+          // `thompsonKeyOf` for why the fix deletes the constant instead of
+          // lowering it. The worm tower stays as the tie-break for when the
+          // distribution is degenerate and sampling names nothing.
+          const sampledKey = thompsonKeyOf(bnnPredictions, () => this.bnnSociety!.gaussianDraw());
+          const chosenKey = sampledKey >= 0 ? sampledKey : wormConsensusKey;
           this.lastChosenKey = chosenKey >= 0 ? chosenKey : undefined;
 
           if (chosenAction.kind === "do_item") {

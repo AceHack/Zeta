@@ -1,5 +1,5 @@
 import { describe, expect, test } from "bun:test";
-import { BnnSocietyPredictor, EXPLORE_TICKS } from "./bnn-key-predictor";
+import { BnnSocietyPredictor, EXPLORE_TICKS, thompsonKeyOf } from "./bnn-key-predictor";
 import { WHY_TERMINAL, whyChain, type WhyContext } from "./why-chain";
 
 const W = 64;
@@ -311,5 +311,60 @@ describe("WHY chain payload (D5 of #14503)", () => {
       const isBoundary = answer.includes("where my reasons stop");
       expect(cites || isBoundary).toBe(true);
     }
+  });
+});
+
+describe("the agent can act at all (the frozen-agent regression)", () => {
+  const named: Record<number, string> = { 2: "UP", 8: "DOWN", 4: "LEFT", 6: "RIGHT" };
+
+  test("posterior sampling commits a key without any absolute confidence gate", () => {
+    // The live fusion asked `maxProb > 0.4`; the consensus over 17 keys peaks
+    // near 0.38, so the gate was crossed ZERO times and the agent froze. A
+    // rule with no constant in it cannot have that failure mode: sampling
+    // always names a key.
+    const flat: Record<number, number> = {};
+    for (let k = -1; k <= 0xf; k++) flat[k] = 1 / 17;
+    let draws = 0;
+    const key = thompsonKeyOf(flat, () => {
+      draws += 1;
+      return 0;
+    });
+    expect(key).toBeGreaterThanOrEqual(-1);
+    expect(draws).toBe(17); // every key got its own sample
+  });
+
+  test("a decisive belief still wins: sampling is not a coin flip", () => {
+    const sharp: Record<number, number> = {};
+    for (let k = -1; k <= 0xf; k++) sharp[k] = 0.001;
+    sharp[6] = 0.9;
+    // Zero-noise draw ⇒ pure argmax of the means.
+    expect(thompsonKeyOf(sharp, () => 0)).toBe(6);
+  });
+
+  test("the key beliefs FORGET, so a stale habit cannot outlive its evidence", () => {
+    // Feed one direction hard, then the opposite. Without forgetting the
+    // posterior mean is an all-history average and the first direction wins
+    // forever — measured live as RIGHT μ=0.391 vs UP μ=0.062, with vertical
+    // intent honoured 0 times in 188 asks.
+    const p = warmed(new BnnSocietyPredictor(3, 4));
+    const paint = (x: number, y: number): number[] => {
+      const d = blank();
+      paintRect(d, 12, 14, 2, 2, 2); // self
+      paintRect(d, x, y, 2, 2, 1); // adversary
+      return d;
+    };
+    // 150 ticks with the adversary far to the RIGHT (horizontal pull).
+    for (let i = 0; i < 150; i++) p.predict(paint(50, 14));
+    const afterRight = p.predict(paint(50, 14));
+    // Now 150 ticks with it directly BELOW (purely vertical pull).
+    for (let i = 0; i < 150; i++) p.predict(paint(12, 30));
+    const afterDown = p.predict(paint(12, 30));
+
+    const rightPull = (afterRight[6] ?? 0) - (afterRight[8] ?? 0);
+    const downPull = (afterDown[8] ?? 0) - (afterDown[6] ?? 0);
+    // The distribution must have MOVED with the geometry, not stayed put.
+    expect(rightPull).toBeGreaterThan(0);
+    expect(downPull).toBeGreaterThan(0);
+    expect(named[8]).toBe("DOWN");
   });
 });

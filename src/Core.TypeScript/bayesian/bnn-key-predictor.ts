@@ -110,6 +110,28 @@ const USEFUL_WORK_EPS = 0.5;
 const FIXATION_MIN_DELAY = 6;
 /** Obstacle lookahead distance (pixels) for steering penalties. */
 const LOOKAHEAD = 6;
+/**
+ * Exponential forgetting on the per-key beliefs — the fix for a HABIT that
+ * outlived its evidence.
+ *
+ * MEASURED DEFECT (2026-08-24). `updateStudentT` accumulates with no decay, so
+ * a key's posterior mean is an average over ALL history. The arena is 64×32 —
+ * twice as wide as it is tall — so the desired vector's |dx| (mean 0.863)
+ * dominates its |dy| (mean 0.395) permanently, and the society converged to
+ * RIGHT μ=0.391, LEFT μ=0.302, DOWN μ=0.118, UP μ=0.062. Over 1461 decision
+ * ticks the steering layer asked for a VERTICAL move 188 times and the
+ * consensus committed vertical ZERO times. The agent had learned "right is
+ * usually good" and could no longer answer the geometry in front of it.
+ *
+ * Inflating the posterior variance before each absorption is the standard
+ * fading-memory filter (Jazwinski 1970, *Stochastic Processes and Filtering
+ * Theory* §7.3 — exponential age-weighting of past data): old evidence stays,
+ * but it grows less certain, so present evidence can move the mean. Same
+ * discipline the tile attention field already earned (FORGET there = 0.98).
+ */
+const KEY_BELIEF_FORGET = 0.90;
+/** Never let a belief's variance inflate past this — forgetting, not amnesia. */
+const KEY_BELIEF_MAX_SIGMA2 = 4.0;
 
 /** Serializable snapshot of the society — the priors that live in source. */
 export interface SocietySnapshot {
@@ -390,6 +412,17 @@ export class BnnSocietyPredictor {
       this.fixationCandidate = top;
       this.fixationCharge = 1;
     }
+  }
+
+  /**
+   * One standard-normal draw from the society's own seeded stream
+   * (Box–Muller). Exposed so the live fusion can Thompson-sample without
+   * reaching for ambient entropy — same seed, same run, same keys.
+   */
+  public gaussianDraw(): number {
+    const u1 = Math.max(1e-9, this.rng.next());
+    const u2 = this.rng.next();
+    return Math.sqrt(-2 * Math.log(u1)) * Math.cos(2 * Math.PI * u2);
   }
 
   /** Measured belief-similarity between society members (never assumed). */
@@ -728,7 +761,17 @@ export class BnnSocietyPredictor {
       for (let k = -1; k <= 0xf; k++) {
         const obsValue = observations[k] ?? 0.0;
         const y = obsValue + (this.rng.next() - 0.5) * 0.05;
-        const result = updateStudentT(beliefs[k]!, y);
+        // Forget before absorbing: age the belief's certainty so the present
+        // observation can still move it (see KEY_BELIEF_FORGET).
+        const aged = beliefs[k]!;
+        const faded: StudentTState = {
+          ...aged,
+          posterior: {
+            mu: aged.posterior.mu,
+            sigma2: Math.min(KEY_BELIEF_MAX_SIGMA2, aged.posterior.sigma2 / KEY_BELIEF_FORGET),
+          },
+        };
+        const result = updateStudentT(faded, y);
         beliefs[k] = result.state;
         const weight = Math.max(0, result.state.posterior.mu);
         wsetEntries.push({ key: k, weight });
@@ -770,11 +813,57 @@ export class BnnSocietyPredictor {
 }
 
 /**
+ * Commit to a key by POSTERIOR SAMPLING (Thompson 1933; Russo, Van Roy,
+ * Kazerouni, Osband & Wen, *A Tutorial on Thompson Sampling*, FnT ML 2018,
+ * arXiv:1707.02038) — draw one score per key from that key's own belief and
+ * take the argmax OF THE DRAW.
+ *
+ * WHY THIS REPLACES A THRESHOLD, rather than tuning one. The live fusion asked
+ * `maxProb > 0.4`, and the consensus distribution over 17 keys is bounded far
+ * below that: measured over 900 post-exploration ticks the max was 0.3818
+ * (p50 0.3433), so the gate was crossed **0 times** and the agent committed
+ * nothing at all once its 300-tick explorer expired. The agent was six times
+ * more confident than uniform (0.0588) and still structurally forbidden to
+ * act. Lowering the constant would only move the cliff to the next cart; a
+ * decision rule with no constant in it cannot have a cliff.
+ *
+ * It is also the honest JUMPSTART. Sampling spreads in proportion to the
+ * belief's own uncertainty, so a cold agent explores because it is unsure and
+ * a warm one commits because it is not — one rule, annealing itself, with no
+ * explore/exploit switch to schedule and no game knowledge injected. The
+ * spread is drawn from the predictor's seeded stream, so replay stays
+ * byte-identical (noninterference §13: no ambient entropy).
+ */
+export function thompsonKeyOf(
+  probs: Readonly<Record<number, number>>,
+  draw: () => number,
+): number {
+  let bestScore = -Infinity;
+  let bestKey = -1;
+  for (let k = -1; k <= 0xf; k++) {
+    const p = probs[k] ?? 0;
+    // Bernoulli-style spread: a key's uncertainty is widest at p≈0.5 and
+    // vanishes as the society approaches agreement either way.
+    const sd = Math.sqrt(Math.max(1e-9, p * (1 - p)));
+    const score = p + sd * draw();
+    if (score > bestScore) {
+      bestScore = score;
+      bestKey = k;
+    }
+  }
+  return bestKey;
+}
+
+/**
  * The direction key the predictor's own steering intent names, if any —
- * what a headless harness (trainer, tests) should press. Mirrors the live
- * fusion's behaviour where the worm-tower fallback keeps the agent moving:
- * without it a bare argmax over 17 normalized keys rarely clears a
- * confidence threshold and the agent stands still.
+ * what a headless harness (trainer, tests) should press.
+ *
+ * HISTORICAL NOTE, kept because it names the defect this file now fixes: this
+ * helper existed because "a bare argmax over 17 normalized keys rarely clears
+ * a confidence threshold and the agent stands still". That was true, it was
+ * measured, and the workaround was handed to the trainer while the LIVE agent
+ * was left standing still. The gate is gone (see `thompsonKeyOf`); this stays
+ * as the steering-intent accessor the WHY chain and the tests read.
  */
 export function desiredKeyOf(p: BnnSocietyPredictor): number | undefined {
   const d = p.lastDesired;

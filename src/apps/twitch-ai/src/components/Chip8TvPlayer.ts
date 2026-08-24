@@ -270,7 +270,14 @@ export class Chip8TvPlayer {
     }
     const mineText = mine ? String(mine.value) : "–";
     const theirsText = theirs ? String(theirs.value) : "–";
-    objective.textContent = `OCR ${mineText}:${theirsText} (first to 5)`;
+    // WIN_SCORE lives in the cart (mutual-sim.ts: "5 = player WINS"); saying
+    // "first to 5" without the running total left viewers asking what the
+    // target even was.
+    objective.textContent = `agent ${mineText} — ${theirsText} rival · first to 5 wins`;
+    objective.title =
+      "The two digits are drawn INSIDE the playfield and are solid: a sprite " +
+      "that touches them is blocked, exactly like a wall. The agent reads its " +
+      "own score off those pixels — that is its only reward channel.";
   }
 
   /** One bounding box, positioned in % of the 64×32 grid. */
