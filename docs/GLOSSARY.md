@@ -1455,6 +1455,95 @@ obligations.
 
 ---
 
+## Data Vault 2.0 terms
+
+Data Vault 2.0 (Dan Linstedt) is one of the seven always-active
+substrate-engineering disciplines
+(`.claude/rules/dv2-data-split-discipline-activated.md` §5). These are
+the DV terms the repo corpus **actually uses** — each was measured with
+`git grep -l` before being given an entry, because a glossary entry the
+corpus never picks up is a coinage that did not take. Full construct
+taxonomy: `docs/DATA-VAULT-2-STANDARDS.md`.
+
+### Hub / link / satellite (the DV2.0 triad)
+
+The three shapes DV2.0 decomposes an entity into, partitioned by how
+fast each part changes:
+
+- **Hub** — the stable business key, and nothing else. No context, no
+  history. Changes almost never.
+- **Link** — that two or more hubs stand in a relationship. No context,
+  no history. Always physically many-to-many.
+- **Satellite** — the context and its history, hanging off exactly one
+  hub or link. Changes constantly.
+
+3NF and dimensional modelling mix all three in one table. Separating
+them is what buys parallel loading (no order dependencies), cheap
+history (only the changing part is duplicated), and additive schema
+change. Zeta uses the triad as a *change-rate lens* well beyond
+databases — repo-split, skill design, master data.
+
+### Business key
+
+The identifier the business actually uses for a thing, as opposed to a
+database's internal row id. DV2.0 ranks them by **scope**, worst to
+best: application surrogate → application business → organisation-wide →
+globally unique. A hub keyed at the top of that ladder survives having
+its source system replaced; one keyed at the bottom does not. This is
+what "hubs are stable" means operationally.
+
+### Raw vault / business vault
+
+Two layers, split by whether a transformation can be undone.
+
+- **Raw vault** — source-faithful. Only **hard rules** (reversible: type
+  alignment, hashing). Every source's claim is kept in its own
+  satellite, and conflicting claims are **not** reconciled. *A single
+  version of the facts, never a single version of the truth.*
+- **Business vault** — where **soft rules** (one-way: aggregation,
+  cleansing, deduplication, exclusion) are applied, and where any
+  reconciliation happens.
+
+The direction of reconstructability is the test: staging must be
+rebuildable from the raw vault; the raw vault need **not** be rebuildable
+from the business vault. Zeta leans on the raw layer's conflict
+retention directly — see
+`.claude/rules/anti-babel-preserve-reconcilability.md` (reintegration is
+not reconvergence).
+
+### Record source
+
+A mandatory column on every row naming where it came from — a source
+system and table, or a marker such as `Generated Data`, or an identifier
+pointing at the business rule that produced it. Provenance as a required
+column rather than an optional audit log. It is what makes "auditable"
+a property of the schema instead of a promise.
+
+### Load date
+
+A mandatory column: when the row entered the vault. Not the source's
+timestamp — a source-supplied date is *context* and lives in a
+satellite, because it may be in any time zone and is outside the
+warehouse's control. The load date also **replaces batch identifiers**:
+the timestamp is the batch key.
+
+### Hash diff
+
+A hash over a satellite's descriptive columns only (as distinct from the
+hash key, which is over the business key). Change detection becomes one
+comparison rather than a column-by-column diff, and a satellite load
+where the hash diff is unchanged is a **no-op** — which is what makes
+satellite loading idempotent by construction.
+
+### PIT table (point-in-time table)
+
+A **derived, disposable** query-assist structure holding the current key
+and timestamp from each of one hub's or link's satellites, so reading
+across many satellites is one join instead of many. A bridge table is
+the same idea across many hubs and links. Both are performance
+structures: they may be dropped and rebuilt, and a PIT table that starts
+*computing* values has become a computed satellite instead.
+
 ## Git-native Agile mapping (Vera 2026-05-07)
 
 The original Agile Manifesto's collaboration concepts mapped

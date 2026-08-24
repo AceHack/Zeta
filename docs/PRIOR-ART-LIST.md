@@ -1701,3 +1701,86 @@ memorable and gets indexed first — so the theorem sits in the tree, cited, and
 the place that needed it.
 
 **Cross-reference:** `docs/research/2026-08-23-local-interactions-global-norms-acehack-godel-and-the-local-to-global-obstruction.md` — where these are used, with the register of each claim stated.
+
+## Data Vault 2.0 — the six books behind the always-active DV2.0 discipline (added 2026-08-24, Kenji, per Aaron: "it all points to public and published books on the data vault 2.0 subject")
+
+The reading list Aaron worked through in 2016 before writing the standards synthesis now
+at `docs/DATA-VAULT-2-STANDARDS.md`. His `ref-N.N` markers resolve into exactly this list,
+which is what makes that document a **secondary source pointing at primary ones** rather
+than an unanchored coinage.
+
+**Measured before adding** (`git grep -l -i <term> origin/main`, 2026-08-24, control term
+`Codd` = **29** files so the query is known to work): Linstedt **32** files, Kimball **19**,
+Graziano **12**, Inmon **8**, Olschimke **7**, **Hultgren 0**. In
+`docs/PRIOR-ART-LIST.md` itself: **all six authors, zero.**
+
+So the gap here is unusual and worth naming precisely. DV2.0 is not an under-cited
+discipline in this repository — it is a _carved rule_
+(`.claude/rules/dv2-data-split-discipline-activated.md` §5), a skill blueprint, and a live
+lens for repo-split and skill design, with Linstedt named across 32 files. **What was
+missing is that none of it had ever been written down as prior art.** The anchor was
+load-bearing everywhere and curated nowhere, which is the failure mode that looks like
+health: every consumer cites the name, no consumer can reach the work.
+
+**Genuinely new human anchor: Hans Hultgren only.** The other five were already present
+in the corpus and are promoted here rather than introduced.
+
+- **Daniel Linstedt & Michael Olschimke (2015) — _Building a Scalable Data Warehouse with
+  Data Vault 2.0_** (Morgan Kaufmann, ISBN 978-0-12-802510-9). The canonical 2.0 text and
+  the source's `ref-7.1` — the most-cited of the six by a wide margin. Carries the
+  definitions this repo's rule compresses: hub/link/satellite, hash keys, the raw/business
+  split, PIT and bridge tables, the satellite-splitting rules. Already named in
+  `.claude/skills/data-modeling-and-ontology/blueprints/data-vault-expert.md`; promoted
+  here because the carved rule leans on it directly.
+- **Hans Hultgren (2012) — _Modeling the Agile Data Warehouse with Data Vault_** (Brighton
+  Hamilton, ISBN 978-0-615-72308-2). `ref-7.2`. **The one genuinely new anchor** — zero
+  prior mentions anywhere in the repo. Source of the **colour category analysis** (keys /
+  relationships / context as three colours), which is the cleanest available argument that
+  3NF, dimensional and Data Vault differ by _separation of concerns_ rather than by taste,
+  and of **concept constellations** (the ensemble of tables around one business concept).
+  Also the origin of the "Unified Decomposition" framing. Worth reading for the colour
+  lens alone: it is a _visual_ discriminator between modelling methods, which makes it a
+  candidate carrier under
+  [`anti-babel-preserve-reconcilability`](../.claude/rules/anti-babel-preserve-reconcilability.md)
+  — shape agreement that does not route through words.
+- **Dan Linstedt (2011), Kent Graziano ed. — _Super Charge Your Data Warehouse: Invaluable
+  Data Modeling Rules to Implement Your Data Vault_** (CreateSpace, ISBN
+  978-1-4637-7868-2). `ref-7.3`. The rule-by-rule reference; the source cites it for the
+  _common attributes_ (load dates, record sources, last-seen dates) and for the full
+  entity taxonomy. This is where the specialisation zoo — same-as links, exploration
+  links, effectivity/record-tracking/status-tracking satellites — is enumerated.
+- **Kent Graziano (2015) — _Better Data Modeling: An Introduction to Agile Data
+  Engineering Using Data Vault 2.0_** (ISBN 978-1-7965-8493-6). `ref-7.4`. The short
+  on-ramp. Graziano is already cited in the DV skill blueprint as a practitioner source;
+  this is the book behind that citation.
+- **Bill Inmon (2016) — _Data Lake Architecture: Designing the Data Lake and Avoiding the
+  Garbage Dump_** (Technics Publications, ISBN 978-1-63462-117-5). `ref-7.5`. The pond
+  taxonomy — **raw / analog / application / textual / archival** ponds — and **textual
+  disambiguation**. Load-bearing for one distinction the source leans on hard: the **"great
+  divide"** between repetitive and non-repetitive data, the claim being that
+  non-repetitive data carries most of the information value and almost none of the
+  tooling. Register: that is Inmon's claim, restated by Aaron, and unchecked here.
+- **W. H. Inmon & Daniel Linstedt (2014) — _Data Architecture: A Primer for the Data
+  Scientist: Big Data, Data Warehouse and Data Vault_** (Morgan Kaufmann, ISBN
+  978-0-12-802044-9). `ref-7.6`. The two lineages in one volume — this is the book where
+  the Inmon EDW tradition and the Data Vault tradition are reconciled by their own
+  authors, which is why it is the right citation for "DV resolves Inmon vs Kimball"
+  rather than either author's solo work.
+
+**Citations checked, not merely cited** (author, title, year, publisher, ISBN verified
+2026-08-24). The source workbook lists these six by title and retailer URL only; the
+bibliographic detail above was reconstructed and verified independently, per
+[`anchor-to-human-prior-art`](../.claude/rules/anchor-to-human-prior-art.md) — an anchor
+must be _checked_, and a retailer link is the weakest possible form of one.
+
+**Honest limit on the count.** Aaron's framing was _"after reading like 10 books on the
+subject"_; the workbook's References sheet lists **six**, and six is what is verifiable.
+The remaining reading is not recoverable from these documents and is not guessed at here.
+
+**Not in this list, deliberately:** Kimball and Inmon's own foundational warehouse texts.
+Kimball is at 19 files and Inmon at 8, both already load-bearing in
+`.claude/skills/data-modeling-and-ontology/`, and adding them here would be a separate
+curation pass on the dimensional/CIF lineage rather than part of this one.
+
+**Cross-reference:** `docs/DATA-VAULT-2-STANDARDS.md` — the synthesis these six anchor,
+with every claim's register stated and the maintainer's own extensions flagged as his.

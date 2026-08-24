@@ -54,6 +54,17 @@ Aaron's observation (2026-08-24) that it belongs in the DV docs.
 split, and the *facts vs truth* formulation that distinguishes DV from the
 single-version-of-the-truth warehouse tradition (Inmon, Kimball).
 
+## Hub stability in one line
+
+> **A hub is only as stable as the SCOPE of the key you chose for it.**
+
+Business keys rank worst-to-best: application surrogate -> application business ->
+organisation-wide -> globally unique. A hub keyed at the top survives its source
+system being replaced; one keyed at the bottom is a rename waiting to happen. So
+"hubs are the stable part" is earned by key choice, never automatic — pick the
+widest-scoped key the domain actually has. Detail, the full construct taxonomy,
+and the maintainer's own extensions: `docs/DATA-VAULT-2-STANDARDS.md`.
+
 ## Idempotency in one line
 
 `f(f(x)) = f(x)`. Set-union, max/min, upsert-by-key, CAS, content-address

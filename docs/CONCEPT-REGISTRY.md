@@ -781,7 +781,14 @@ their owners.
    independent route this thread has taken to the same line.
 
    *(The **"+"** in *"Data Vault 2.0+"* is Aaron's and he did not say what it extends.
-   Recorded unexpanded rather than guessed at.)*
+   Recorded unexpanded rather than guessed at. **Candidate evidence, added 2026-08-24
+   and still not an answer:** his 2016 Data Vault standards workbook enumerates eight
+   constructs it explicitly labels *"not part of the standard data vault model"* —
+   `docs/DATA-VAULT-2-STANDARDS.md` §7.1. That is a self-labelled list of his own
+   extensions to DV2.0, which is suggestively the shape of a "+". It is also ten years
+   earlier than the remark, and he was not asked. Matching "his extensions" to "the +"
+   is a plausible correspondence, not a demonstrated one, so this entry stays
+   unexpanded until he says otherwise.)*
 
    **Aaron then inverts the rule's own priority, and the inversion holds up:**
 

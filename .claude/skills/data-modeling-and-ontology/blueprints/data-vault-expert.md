@@ -362,6 +362,14 @@ skill catalog.
 
 ## Reference patterns
 
+- `docs/DATA-VAULT-2-STANDARDS.md` — the maintainer's 2016
+  six-book synthesis: the full specialisation taxonomy (7 hub
+  types, 9 link types, 15 satellite types), the business-key
+  scope ladder, the area/schema architecture, and his own
+  flagged extensions. Extends this skill; does not replace it.
+  Register: `unmetered`.
+- `docs/PRIOR-ART-LIST.md` §"Data Vault 2.0" — the six books
+  with checked citations.
 - Dan Linstedt & Michael Olschimke, *Building a Scalable Data
   Warehouse with Data Vault 2.0* (2015, Morgan Kaufmann). The
   canonical 2.0 book.
