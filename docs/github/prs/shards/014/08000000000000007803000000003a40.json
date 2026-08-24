@@ -1,0 +1,17 @@
+{
+  "pr_number": 14912,
+  "archive_path": "docs/history/pr-reviews/PR-14912-fix-observe-decorrelation-meter-remove-the-chsh-framing-fix-five-scoring-inversi.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7lSM_H",
+    "comment:PRRC_kwDOSF9kNM7lSOTl",
+    "thread:PRRT_kwDOSF9kNM6b0yaM",
+    "thread:PRRT_kwDOSF9kNM6b0zUa"
+  ],
+  "fetched_at": "2026-08-24T20:08:12.038Z",
+  "schema_version": "v1",
+  "commit_sha": "7f25202d6b261269ecf5b2346f933456522d87e9",
+  "title": "fix(observe): decorrelation-meter — remove the CHSH framing, fix five scoring inversions, add the 38 falsifiers it shipped without",
+  "state": "MERGED",
+  "merged_at": "2026-08-24T20:07:20Z",
+  "head_ref": "fix/decorrelation-meter-falsifiers-and-chsh-framing"
+}
