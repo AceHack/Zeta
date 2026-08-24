@@ -1,0 +1,12 @@
+{
+  "pr_number": 14868,
+  "archive_path": "docs/history/pr-reviews/PR-14868-fix-observe-decorrelation-meter-sorted-by-localecompare-culture-sensitive.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-24T17:02:57.126Z",
+  "schema_version": "v1",
+  "commit_sha": "11f5b8539ad536840b74ea913afc0148ba6ad388",
+  "title": "fix(observe): decorrelation-meter sorted by localeCompare — culture-SENSITIVE",
+  "state": "MERGED",
+  "merged_at": "2026-08-24T17:02:07Z",
+  "head_ref": "fix/decorrelation-meter-ordinal-collation"
+}
