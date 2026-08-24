@@ -1066,6 +1066,34 @@ jobs:
         # the detector a deliberately-introduced ambient-time test and requires it to go red,
         # in both ratchet directions.
         run: bun run hygiene:no-ambient-time-in-tests
+      - name: A check may not claim a property of higher arity than it tests
+        # 081M0RAX8AC087G0R003NQM7P9. Noninterference is a HYPERPROPERTY -- a predicate over PAIRS
+        # of executions, and 2-safety (Clarkson & Schneider, CSF 2008 / JCS 18(6):1157). No
+        # single-run check can decide one; that is a theorem, not a coverage gap. Manifesto s13 IS
+        # noninterference, so the repo has committed to a discipline no arity-1 test can witness.
+        #
+        # The class is A CHECK WHOSE ARITY IS LOWER THAN THE PROPERTY IT CLAIMS. Self-comparison is
+        # its most visible form and not its definition: a grep for `X = X` misses two calls with
+        # identical arguments bound to DIFFERENT names, which is how the live instance in
+        # Properties/Policy.Relocation.Tests.fs survived every prior sweep -- a 1000-case FsCheck
+        # property that compared `delta` to itself, in a file no .fsproj compiled.
+        #
+        # Three rules. R1 gates: a test whose NAME declares independence of a named variable may
+        # not resolve to a self-comparison (arity is DECLARED, never inferred -- Rice 1953 makes
+        # the semantic version undecidable, and sampled read-set tracing is unsound in both
+        # directions). R2 is a counted census ratchet, failing when a file's count goes UP and
+        # equally when it goes DOWN, same mechanism as the ambient-time audit above. R3 fails on an
+        # F# test source no project compiles: arity ZERO, the floor of the class -- the `*.test.ts`
+        # half of that check has existed since 2026-08-13 and the F# half did not.
+        #
+        # Deliberately NOT a ban on self-comparison: most in this tree are correct (`f x = f x`
+        # evaluated twice IS two executions; mutation-mediated pairs differ in what happened
+        # between them; separately-constructed equal values are the point of an equality law).
+        # Rounding those up to "vacuous" is the same error in the opposite direction.
+        #
+        # Its own falsifier runs in the step below: audit-check-arity.test.ts feeds each rule a
+        # deliberately-broken fixture and requires it to go red, R2 in both ratchet directions.
+        run: bun run hygiene:check-arity
       - name: Hygiene unit-test suite (closes the per-PR coverage gap)
         # Runs every src/Core.TypeScript/hygiene/*.test.ts. These are
         # fixture/in-memory tests (no MEMORY.md / user-scope deps), so they

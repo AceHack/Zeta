@@ -48,11 +48,49 @@ let ``noninterference: the render clock changes ONLY the clock line, never the m
     // pages may differ only inside the clock line; everything else (cards, grounding) is identical
     stripClock page1 = stripClock page2
 
+/// Extract the grid region EXACTLY rather than by containment: a mutant that appends anything after
+/// the cards inside the grid still CONTAINS them, so containment passes on a tampered page. Hoisted
+/// to module scope 2026-08-23 so the generative property below can use the same extractor as the
+/// [<Fact>] at the bottom of the file; the two were duplicating it.
+let private gridOf (html: string) : string =
+    let openTag = "<div class=\"grid\">"
+    let closeTag = "</div><footer>"
+    let i = html.IndexOf(openTag, StringComparison.Ordinal)
+    let j = html.IndexOf(closeTag, StringComparison.Ordinal)
+    if i < 0 || j <= i then
+        failwith "the page must carry exactly one grid region"
+
+    html.Substring(i + openTag.Length, j - (i + openTag.Length))
+
 [<Property>]
-let ``renderCard (the minted content) is a pure function of the link — no clock input`` (a: int) (b: int) (s: int) =
+let ``the minted card content is invariant under the render clock — the ARITY-2 form`` (a: int) (b: int) (s: int) (p1: int64) (u1: int64) (p2: int64) (u2: int64) (utc1: int) (utc2: int) =
+    // REWRITTEN 2026-08-23 (Soraya), workitem 081M0RAX8AC087G0R003NQM7P9. This property used to be
+    // named "renderCard (the minted content) is a pure function of the link — no clock input" and
+    // used to read
+    //     let l = mintedLink a b s
+    //     MP.renderCard l = MP.renderCard l
+    // a value compared to itself. NONINTERFERENCE IS NOT A PROPERTY, IT IS A HYPERPROPERTY: a
+    // predicate over PAIRS of executions, and specifically 2-safety (Clarkson & Schneider,
+    // Hyperproperties, CSF 2008 / JCS 18(6):1157, 2010). No single-run check can decide it — that is
+    // a theorem, not a coverage gap. The pair here shared its ambient clock, i.e. it was degenerate
+    // in exactly the variable whose influence was being denied, so its failure probability under its
+    // own target bug was ~0 while its name claimed the stronger property.
+    //
+    // Honest scope of the OLD line, stated so this is not rounded up: it was not strictly vacuous —
+    // an impure `renderCard` reading a fine-grained ambient clock could have made the two
+    // evaluations differ. It was near-vacuous, which is a different disposition and a different fix.
+    //
+    // `renderCard` cannot be handed a clock, so the arity-2 statement is made at the surface that
+    // CAN see one: the card block `renderPage` emits must equal the standalone card under BOTH
+    // clocks. That goes red the instant `renderPage` interpolates any clock datum into a card, which
+    // is precisely the leak this file exists to forbid. The sibling property above already had this
+    // shape (two clocks, `stripClock page1 = stripClock page2`); this one now matches it.
     let l = mintedLink a b s
-    // signature takes no clock; rendering twice is identical regardless of any ambient "now"
-    MP.renderCard l = MP.renderCard l
+    let c1 = clock p1 (sprintf "2026-06-%02dT00:00:00Z" (abs (utc1 % 27) + 1)) u1
+    let c2 = clock p2 (sprintf "2026-06-%02dT00:00:00Z" (abs (utc2 % 27) + 1)) u2
+    let card = MP.renderCard l
+    gridOf (MP.renderPage "imdb" true c1 [ l ]) = card
+    && gridOf (MP.renderPage "imdb" true c2 [ l ]) = card
 
 [<Property>]
 let ``the minted card content carries no clock data (phase/UTC/uncertainty markers never appear)`` (a: int) (b: int) (s: int) =
@@ -85,19 +123,13 @@ let ``a post-mint clock cannot re-rate or re-identify a minted link (quarantine)
     let cardsOf (ls: CostarFederations.MintedLink list) =
         ls |> List.map MP.renderCard |> String.concat ""
 
-    // Extract the grid region EXACTLY rather than testing for containment. An earlier
+    // The grid region is extracted EXACTLY rather than tested for containment. An earlier
     // draft of this fix used Assert.Contains and was itself too weak: a mutant that
     // appends anything after the cards inside the grid still contains them, so
     // containment passed on a page that had been tampered with. Measured, not argued —
     // the mutant `cards + "<!--x-->"` survived Contains and dies against this.
-    let gridOf (html: string) : string =
-        let openTag = "<div class=\"grid\">"
-        let closeTag = "</div><footer>"
-        let i = html.IndexOf(openTag, StringComparison.Ordinal)
-        let j = html.IndexOf(closeTag, StringComparison.Ordinal)
-        Assert.True(i >= 0 && j > i, "the page must carry exactly one grid region")
-        html.Substring(i + openTag.Length, j - (i + openTag.Length))
-
+    // The extractor is now the module-level `gridOf` (2026-08-23): the generative property above
+    // needs the same one, and two copies of an extractor is two chances to weaken one of them.
     let cards = cardsOf links
     Assert.Equal<string>(cards, gridOf (MP.renderPage "imdb" true early links))
     Assert.Equal<string>(cards, gridOf (MP.renderPage "imdb" true later links))

@@ -4,6 +4,7 @@ module Zeta.Tests.Properties.PolicyRelocationTests
 open System
 open FsCheck
 open FsCheck.FSharp
+open FsCheck.Xunit
 open FsUnit.Xunit
 open global.Xunit
 open Zeta.Core
@@ -155,3 +156,46 @@ let ``policy relocation: GroupByCount aggregate on same delta stream produces id
         c1.Step(); c2.Step()
         if not (out1.Current.Equals out2.Current) then allEqual <- false
     allEqual
+
+
+// ── identity-query relocation, stated over a PAIR of executions ──────────────────────────────────
+//
+// MOVED HERE 2026-08-23 (Soraya), workitem 081M0RAX8AC087G0R003NQM7P9, from
+// `tests/Tests.FSharp/Properties/Policy.Relocation.Tests.fs` — which was DELETED in the same commit
+// for two independent reasons, and the second one is the worse:
+//
+//   1. Its single property read
+//          let localResult = delta          // "Local execution" of identity query on delta
+//          let centralResult = delta        // "Central execution" + reintegration via same algebra
+//          localResult = centralResult
+//      Both names were bound to the SAME value. It compared `delta` to itself and could not fail for
+//      any implementation of anything. A `X = X` grep never sees it: the self-comparison is
+//      NAME-BOUND, which is exactly the form that survives a syntactic sweep.
+//
+//   2. THE FILE WAS NEVER IN `Tests.FSharp.fsproj`. Added by #2329 and never compiled since, so its
+//      header claim "1000+ inputs via FsCheck default" was not weakly true — it was zero runs. An
+//      uncompiled test file is a check of arity ZERO wearing a coverage number.
+//
+// What is kept is the claim, now made over two executions. CENTRAL folds every row in one location.
+// LOCAL splits the same rows at a generated cut, folds each site independently, and reintegrates
+// with `ZSet.add`. Their equality IS the statement that `ZSet.ofSeq` is a monoid homomorphism from
+// list concatenation to `ZSet.add` — what identity-query relocation rests on, and what
+// 081KT07NV0008QG0R001YDB73K broke once already (a collation mismatch inside consolidation made the
+// fold non-associative on special keys).
+
+[<Property(MaxTest = 1000)>]
+let ``identity policy relocation preserves DBSP delta semantics`` (pairs: (int * int64) list) (cut: int) =
+    let clamp w =
+        if w > 1000000L then 1000000L
+        elif w < -1000000L then -1000000L
+        else w
+
+    let rows = pairs |> List.map (fun (k, w) -> (k, clamp w))
+    // CENTRAL: one location sees every row.
+    let central = ZSet.ofSeq rows
+    // LOCAL: the same rows relocated across two sites at an arbitrary cut, each site folding only
+    // what it holds, then reintegrated by the algebra itself.
+    let at = if List.isEmpty rows then 0 else abs (cut % (List.length rows + 1))
+    let here, there = List.splitAt at rows
+    let local = ZSet.add (ZSet.ofSeq here) (ZSet.ofSeq there)
+    local = central

@@ -106,7 +106,22 @@ let ``severity correction is identically zero because no rubric exists`` () =
     // Zeta has P0..P3 labels with no criteria, so no severity claim here is falsifiable. The type
     // has one inhabitant naming the blocker; this pins that no silent correction is being applied.
     Assert.Equal(0.0, ReportTriage.severityCorrection ReportTriage.NoRubricExists)
-    Assert.Equal(ReportTriage.Blocked "severity rubric", ReportTriage.Blocked "severity rubric")
+    // REWRITTEN 2026-08-23 (Soraya), workitem 081M0RAX8AC087G0R003NQM7P9. This line used to read
+    //     Assert.Equal(ReportTriage.Blocked "severity rubric", ReportTriage.Blocked "severity rubric")
+    // Both sides were the same literal constructor application. No code under test was invoked at
+    // all, so the assertion could not fail for any implementation of anything — and the value it
+    // named is one `ReportTriage` never produces (`computabilityOf Severity` is `Placeholder`, not
+    // `Blocked`). The two claims the comment above actually makes are now made, and both can go red:
+    //   (1) the adjudication type still has exactly ONE inhabitant — adding a rubric-checked case
+    //       fails here, which is what a typed hole is for;
+    //   (2) Severity is DECLARED non-computable rather than silently corrected.
+    Assert.Equal(
+        1,
+        Microsoft.FSharp.Reflection.FSharpType
+            .GetUnionCases(typeof<ReportTriage.SeverityAdjudication>)
+            .Length
+    )
+    Assert.Equal<ReportTriage.Computability>(ReportTriage.Placeholder, ReportTriage.computabilityOf ReportTriage.Severity)
 
 [<Fact>]
 let ``severity and validity stay separate: an inflated claim is not laundered by a good record`` () =
@@ -235,14 +250,24 @@ let ``a malformed claim teaches nothing rather than scoring infinite`` () =
     Assert.Equal(0.0, ReportTriage.infoGainTerm zeroVar)
 
 [<Fact>]
-let ``recency reads only the supplied age — the module holds no clock`` () =
+let ``recency reads the supplied age, and scoring repeats within a run`` () =
     let priorFor _ = None
     let fresh = { signal "a" "unknown" None 0.5 with ReportTriage.Age = 0.0 }
     let old = { signal "b" "unknown" None 0.5 with ReportTriage.Age = 100.0 }
     let sf = ReportTriage.score ReportTriage.defaultWeights TravelerRankLedger.empty priorFor fresh
     let so = ReportTriage.score ReportTriage.defaultWeights TravelerRankLedger.empty priorFor old
     Assert.True(sf.Score > so.Score)
-    // Scoring the same signal twice gives the same answer — no wall-clock leaked in.
+    // CLAIM LOWERED 2026-08-23 (Soraya), workitem 081M0RAX8AC087G0R003NQM7P9. The test name used to
+    // end "— the module holds no clock" and this line used to carry the comment "no wall-clock
+    // leaked in". Absence of an ambient clock is 2-SAFETY (Clarkson & Schneider 2008): it quantifies
+    // over PAIRS of executions under DIFFERENT wall clocks. Two calls microseconds apart share
+    // theirs, so the pair is degenerate in exactly the variable being quantified, and this check
+    // discriminates only against a clock finer than the inter-call gap — near-zero power against the
+    // coarse clock a real leak would read. Faking the pair is not available (`score` cannot be
+    // handed a clock), so the claim is lowered rather than the check dressed up.
+    //
+    // What is honestly checked: scoring repeats within one run. The AGE dependence the name does
+    // claim is checked by `sf.Score > so.Score` above, which varies the declared Age across the pair.
     let again = ReportTriage.score ReportTriage.defaultWeights TravelerRankLedger.empty priorFor fresh
     Assert.Equal(sf.Score, again.Score, 12)
 

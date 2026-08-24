@@ -28,7 +28,12 @@ let ``solid ground is the OTHER channel: certainty peaks are where the field was
     Assert.True(List.length ground > 0)
 
 [<Fact>]
-let ``the sweep is deterministic and total (zero clocks — every focus independent)`` () =
+let ``the sweep repeats within a run and is total (every focus visited)`` () =
+    // CLAIM LOWERED 2026-08-23 (Soraya), workitem 081M0RAX8AC087G0R003NQM7P9. The name used to read
+    // "deterministic and total (zero clocks — every focus independent)". "Zero clocks" is a 2-safety
+    // claim: it quantifies over pairs of executions under DIFFERENT ambient clocks. Two calls
+    // microseconds apart share theirs, so this pair cannot witness a clock leak, and `sweep` takes
+    // no clock to vary. The repeatability and totality below are real and are what the name now says.
     let needle = Array.create 64 0xABuy
     let a = SoftLens.sweep read conf needle 32 16 8 8
     Assert.Equal<SoftLens.Focus list>(a, SoftLens.sweep read conf needle 32 16 8 8)
