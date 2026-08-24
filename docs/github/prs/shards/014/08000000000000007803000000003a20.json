@@ -1,0 +1,12 @@
+{
+  "pr_number": 14880,
+  "archive_path": "docs/history/pr-reviews/PR-14880-ci-iso-keep-dispatch-qemu-siblings-running-after-restore-red.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-24T17:57:33.759Z",
+  "schema_version": "v1",
+  "commit_sha": "02169a883867e419a58051cc0e6062394eb37283",
+  "title": "ci(iso): keep dispatch QEMU siblings running after restore red",
+  "state": "MERGED",
+  "merged_at": "2026-08-24T17:56:38Z",
+  "head_ref": "riven/qemu-sibling-always"
+}
