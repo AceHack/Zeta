@@ -9,6 +9,7 @@
  * workitems/081M0QF7ZVY087G0R003Q4Q18D-*).
  */
 import type { ArenaReadout } from "../../../Core.TypeScript/observe/observe";
+import type { WhyContext } from "../../../Core.TypeScript/bayesian/why-chain";
 
 /**
  * The attention field on the wire (D1 of #14503). The per-tile arrays are
@@ -64,6 +65,12 @@ export interface FramePayload {
   readonly arena: ArenaReadout | null;
   /** The attention field — where the agent is SPENDING perception. */
   readonly attention: AttentionFramePayload | null;
+  /**
+   * D5: the state that drove this tick's decision. The WHY button's answers
+   * are generated FROM THIS OBJECT — the same one the wire carried — so an
+   * answer can only cite what the frame actually knew.
+   */
+  readonly why: WhyContext | null;
 }
 
 export interface WorkerToMainMessage {

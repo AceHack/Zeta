@@ -71,6 +71,7 @@ import {
 } from "./mode-value-learner";
 import { TILE_COUNT, TileAttentionField, type AttentionSnapshot } from "./attention-field";
 import { societyRho as computeSocietyRho, type SocietyRho } from "./society-rho";
+import type { WhyContext } from "./why-chain";
 
 export interface BnnPriors {
   explorationRate: number; // 0.0 - 1.0 (how uniform the distribution is)
@@ -188,6 +189,12 @@ export class BnnSocietyPredictor {
   private committedSelfColor: number | null = null;
   /** The context bucket the last mode decision was made in (UI + tests). */
   public lastModeBucket: ModeBucket | null = null;
+  /**
+   * D5: the self↔adversary relation AS USED by the last mode decision —
+   * stored at the decision site so the WHY chain cites the numbers that
+   * actually drove the latch, not a later recomputation.
+   */
+  public lastRelation: { readonly dist: number; readonly closingSpeed: number } | null = null;
 
   /**
    * The tile attention field (D1 of #14503) — per-tile uncertainty on the
@@ -397,6 +404,35 @@ export class BnnSocietyPredictor {
   }
 
   /**
+   * D5 (#14503): the state that drove THIS tick's decision, assembled for
+   * the WHY chain. Every value is read from the live deciding state — the
+   * latch's mode and bucket, the learner's posterior means and reward
+   * count, the relation stored AT the decision site, the fixation tile
+   * with its current predictive variance. Plain data: it rides the frame
+   * payload verbatim, so the UI's answers cite exactly what the wire
+   * carried (the acceptance test asserts the round-trip).
+   */
+  public whyContext(): WhyContext {
+    const bucket = this.lastModeBucket;
+    return {
+      mode: this.lastMode,
+      bucket: bucket ? { bigAdversary: bucket.bigAdversary, closing: bucket.closing } : null,
+      huntValue: bucket ? this.modeLearner.valueOf(bucket, "hunt") : null,
+      fleeValue: bucket ? this.modeLearner.valueOf(bucket, "flee") : null,
+      rewardEvents: this.modeLearner.rewardEvents,
+      adversary: this.lastRelation,
+      explore: { done: Math.min(this.exploreTicksDone, EXPLORE_TICKS), total: EXPLORE_TICKS },
+      fixation:
+        this.lastFixationTile !== null
+          ? {
+              tile: this.lastFixationTile,
+              variance: this.attentionField.varianceAt(this.lastFixationTile),
+            }
+          : null,
+    };
+  }
+
+  /**
    * Layer 4 informing layer 5: tracks whose centroid sits inside an
    * OCR-recognised number's glyph box are READOUT, not agents — they can
    * never be self or the adversary. (Before this, a scoreboard digit that
@@ -520,11 +556,13 @@ export class BnnSocietyPredictor {
   private updateMode(self: TrackedObject | null, adversary: TrackedObject | null): void {
     if (this.exploreTicksDone < EXPLORE_TICKS) {
       this.lastMode = "explore";
+      this.lastRelation = null;
       return;
     }
     if (!self || !adversary) {
       // Nothing to hunt or flee; hold the previous non-explore mode.
       this.lastModeBucket = null;
+      this.lastRelation = null;
       if (this.lastMode === "explore") this.lastMode = "hunt";
       return;
     }
@@ -534,6 +572,7 @@ export class BnnSocietyPredictor {
     // hardcoded rule (big→flee, small→hunt) persists only as the learner's
     // prior, so a cart with no score events behaves as before.
     const rel = relationBetween(this.lastPerception, self.id, adversary.id);
+    this.lastRelation = rel ? { dist: rel.dist, closingSpeed: rel.closingSpeed } : null;
     const closing = rel ? rel.closingSpeed : 0;
     const bucket: ModeBucket = {
       bigAdversary: adversary.area >= HUNTER_AREA_MIN,

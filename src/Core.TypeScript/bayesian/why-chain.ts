@@ -89,8 +89,13 @@ function modeChain(ctx: WhyContext, mode: ModeChoice): string[] {
       : `Those worths are still my starting guess — I have read 0 score changes off the board so far.`,
   );
   if (ctx.fixation) {
+    // The frame is conditional ON THE STATE: a settled field must not claim
+    // to be surprised (caught live — "keeps surprising me (variance 0.00)").
+    const v = fmt(ctx.fixation.variance);
     chain.push(
-      `I watch where I predict worst — tile ${fmt(ctx.fixation.tile)} keeps surprising me (variance ${fmt(ctx.fixation.variance)}).`,
+      v === "0.00"
+        ? `My gaze rests on tile ${fmt(ctx.fixation.tile)} — nothing on screen is surprising me right now (variance ${v}).`
+        : `I watch where I predict worst — tile ${fmt(ctx.fixation.tile)} keeps surprising me (variance ${v}).`,
     );
   }
   chain.push(`Why the score should matter to me at all — that is where my reasons stop.`);

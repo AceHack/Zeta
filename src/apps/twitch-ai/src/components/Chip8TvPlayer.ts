@@ -2,6 +2,11 @@ import type {
   ArenaReadout,
   ArenaTrackReadout,
 } from "../../../../Core.TypeScript/observe/observe";
+import {
+  WHY_TERMINAL,
+  whyAnswer,
+  type WhyContext,
+} from "../../../../Core.TypeScript/bayesian/why-chain";
 import type { AttentionFramePayload, FramePayload } from "../protocol";
 
 export class Chip8TvPlayer {
@@ -15,6 +20,13 @@ export class Chip8TvPlayer {
   private readonly tileDivs: HTMLDivElement[] = [];
   private fixationRing: HTMLDivElement;
   private lastFixation: number | null = null;
+  /** D5: the WHY strip below the screen; −1 = closed, else the chain depth. */
+  private whyStrip: HTMLDivElement;
+  private whyDepth = -1;
+  /** The deciding state of the LATEST frame — what open answers re-render from. */
+  private lastWhy: WhyContext | null = null;
+  /** Cycle of the latest frame; a backwards jump means the cart was switched. */
+  private lastCycle = -1;
   public agentId: string;
 
   constructor(containerId: string, agentId: string) {
@@ -45,8 +57,12 @@ export class Chip8TvPlayer {
         <span><span class="concept-label">🧠 Mode:</span> <span class="concept-value" id="concept-${agentId}">[INITIALIZING]</span></span>
         <span class="attention-header">👁 <span class="attention-value" id="attention-${agentId}">[--]</span></span>
         <span class="objective-header">🎯 <span class="objective-value" id="objective-${agentId}">[WAITING]</span></span>
+        <span class="why-btn" id="why-${agentId}" title="Ask the agent why (click again for the next reason down)">WHY?</span>
       </div>
     `;
+    headerContainer.querySelector(`#why-${agentId}`)?.addEventListener("click", () => {
+      this.descendWhy();
+    });
 
     this.screenContainer.appendChild(headerContainer);
     // The canvas and the perception overlay share one positioned wrapper so
@@ -79,7 +95,21 @@ export class Chip8TvPlayer {
     this.perceptionOverlay.style.inset = "0";
     this.perceptionOverlay.style.pointerEvents = "none";
     canvasWrap.appendChild(this.perceptionOverlay);
+    // D5: clicking the agent's screen is the literal "click the agent" of the
+    // spec — same handler as the WHY? chip (the overlays are pointer-inert).
+    canvasWrap.style.cursor = "pointer";
+    canvasWrap.title = "Click the agent to ask why";
+    canvasWrap.addEventListener("click", () => {
+      this.descendWhy();
+    });
     this.screenContainer.appendChild(canvasWrap);
+    this.whyStrip = document.createElement("div");
+    this.whyStrip.className = "why-strip";
+    this.whyStrip.style.display = "none";
+    this.whyStrip.addEventListener("click", () => {
+      this.descendWhy();
+    });
+    this.screenContainer.appendChild(this.whyStrip);
 
     // Xbox Controller Setup
     this.llmtvOverlay = document.createElement("div");
@@ -380,7 +410,52 @@ export class Chip8TvPlayer {
     return `K=${String(att.topK)} useful ${useful} ρ̄ ${att.rho.mean.toFixed(2)}`;
   }
 
+  /**
+   * D5 (#14503): one click, one sentence; the next click, the next reason
+   * down; the chain saturates at "I don't know." and the click after the
+   * terminal closes the strip. Answers are regenerated EVERY FRAME from
+   * that frame's own `why` payload — the state that drove the decision —
+   * so the sentence on screen tracks the live decision, never a cache.
+   */
+  private descendWhy(): void {
+    if (this.whyDepth === -1) {
+      this.whyDepth = 0;
+    } else if (this.lastWhy === null || whyAnswer(this.lastWhy, this.whyDepth) === WHY_TERMINAL) {
+      this.whyDepth = -1;
+    } else {
+      this.whyDepth += 1;
+    }
+    this.renderWhy();
+  }
+
+  private renderWhy(): void {
+    if (this.whyDepth === -1) {
+      this.whyStrip.style.display = "none";
+      return;
+    }
+    this.whyStrip.style.display = "block";
+    if (this.lastWhy === null) {
+      this.whyStrip.classList.add("terminal");
+      this.whyStrip.textContent = "— no decision on this frame yet —";
+      return;
+    }
+    const answer = whyAnswer(this.lastWhy, this.whyDepth);
+    this.whyStrip.classList.toggle("terminal", answer === WHY_TERMINAL);
+    this.whyStrip.textContent = `why${"?".repeat(this.whyDepth + 1)} ${answer}`;
+    this.whyStrip.title =
+      answer === WHY_TERMINAL ? "That is the bottom — click to close" : "Click for the next reason down";
+  }
+
   public updatePredictions(frame: FramePayload): void {
+    // A backwards cycle jump = the cart was switched and the worker rebooted;
+    // the open WHY chain belonged to the old cart's decision, so it closes.
+    if (frame.cycle < this.lastCycle) {
+      this.whyDepth = -1;
+    }
+    this.lastCycle = frame.cycle;
+    this.lastWhy = frame.why;
+    this.renderWhy();
+
     this.renderArena(frame.arena);
     this.renderAttention(frame.attention);
 

@@ -150,6 +150,12 @@ export class TileAttentionField {
     }
   }
 
+  /** Predictive variance of one tile (the WHY chain cites the fixation's). */
+  varianceAt(tile: number): number {
+    const c = this.cells[tile];
+    return c ? predictiveVariance(c) : 0;
+  }
+
   /** The exported field for this tick (plain arrays — see protocol note). */
   readout(): AttentionReadout {
     const variance: number[] = [];

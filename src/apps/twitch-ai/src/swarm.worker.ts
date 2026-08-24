@@ -328,6 +328,8 @@ async function loop(): Promise<void> {
     chosenKey: world.cheatEngine?.chosenKey ?? -1,
     arena: world.cheatEngine?.arena ?? null,
     attention,
+    // D5: the deciding state rides the same message as the frame it explains.
+    why: world.cheatEngine?.why ?? null,
   };
 
   const transfer: ArrayBuffer[] = attention

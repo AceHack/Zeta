@@ -97,4 +97,16 @@ describe("the WHY chain (D5)", () => {
     expect(chain.some((s) => s.includes("0 score changes"))).toBe(true);
     expect(chain.some((s) => s.includes("starting guess"))).toBe(true);
   });
+
+  test("a settled field does not claim to be surprised (caught live at variance 0.00)", () => {
+    const settled: WhyContext = { ...huntCtx, fixation: { tile: 20, variance: 0.0004 } };
+    const chain = whyChain(settled);
+    const rung = chain.find((s) => s.includes("tile 20")) ?? "";
+    expect(rung).not.toBe("");
+    expect(rung).not.toContain("surprising me (");
+    expect(rung).toContain("nothing on screen is surprising me");
+    // The live-variance rung still appears when the field IS surprising.
+    const surprised = whyChain(huntCtx).find((s) => s.includes("tile 22")) ?? "";
+    expect(surprised).toContain("keeps surprising me");
+  });
 });

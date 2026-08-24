@@ -514,6 +514,11 @@ Output ONLY a valid JSON array of strings representing the sub-tasks. Example: [
             topK: ATTENTION_TOP_K,
           };
 
+          // D5 (#14503): the WHY chain's input — the deciding state itself,
+          // assembled by the predictor so the UI's answers cite the numbers
+          // that actually drove this tick.
+          const why = bnn.whyContext();
+
           const nextWorld = simulate(world, chosenAction);
           // Attach BNN predictions and the chosen key to cheatEngine so TV can render them
           return {
@@ -523,7 +528,8 @@ Output ONLY a valid JSON array of strings representing the sub-tasks. Example: [
               keyPredictions: bnnPredictions,
               chosenKey: chosenKey,
               arena,
-              attention
+              attention,
+              why
             }
           };
         }

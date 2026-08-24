@@ -507,3 +507,38 @@ main {
 .attention-value {
   font-variant-numeric: tabular-nums;
 }
+
+/* ── The WHY button (D5 of #14503) ────────────────────────────────────────
+   Click the agent, get one sentence; click again, the next reason down;
+   the chain bottoms out at "I don't know." — which renders dimmer, because
+   the honest bottom is a feature, not an error. */
+.why-btn {
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  color: #67e8f9;
+  border: 1px solid rgba(103, 232, 249, 0.5);
+  border-radius: 3px;
+  padding: 0 0.35em;
+  cursor: pointer;
+  user-select: none;
+}
+.why-btn:hover {
+  background: rgba(103, 232, 249, 0.15);
+}
+.why-strip {
+  font-family: var(--mono, monospace);
+  font-size: 0.72rem;
+  line-height: 1.35;
+  color: #e2e8f0;
+  background: rgba(8, 14, 26, 0.92);
+  border-left: 2px solid rgba(103, 232, 249, 0.7);
+  padding: 0.3em 0.55em;
+  cursor: pointer;
+  user-select: none;
+}
+.why-strip.terminal {
+  color: #94a3b8;
+  border-left-color: rgba(148, 163, 184, 0.6);
+  font-style: italic;
+}

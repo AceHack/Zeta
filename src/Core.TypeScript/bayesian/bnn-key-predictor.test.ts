@@ -1,5 +1,6 @@
 import { describe, expect, test } from "bun:test";
 import { BnnSocietyPredictor, EXPLORE_TICKS } from "./bnn-key-predictor";
+import { WHY_TERMINAL, whyChain, type WhyContext } from "./why-chain";
 
 const W = 64;
 const H = 32;
@@ -246,5 +247,69 @@ describe("attention wiring (D1–D4 of #14503)", () => {
     const c = new BnnSocietyPredictor(3, 4);
     c.importSnapshot(v2Record as unknown as Parameters<typeof c.importSnapshot>[0]);
     expect(c.exportSnapshot().agents).toEqual(snap.agents);
+  });
+});
+
+describe("WHY chain payload (D5 of #14503)", () => {
+  const fmt = (x: number): string => (Number.isInteger(x) ? String(x) : x.toFixed(2));
+
+  /** Every number the payload holds, formatted exactly as the generator does. */
+  function payloadNumbers(ctx: WhyContext): string[] {
+    const out: string[] = [];
+    if (ctx.huntValue !== null) out.push(fmt(ctx.huntValue));
+    if (ctx.fleeValue !== null) out.push(fmt(ctx.fleeValue));
+    out.push(fmt(ctx.rewardEvents));
+    if (ctx.adversary) out.push(fmt(ctx.adversary.dist));
+    out.push(fmt(ctx.explore.done), fmt(ctx.explore.total));
+    if (ctx.fixation) out.push(fmt(ctx.fixation.tile), fmt(ctx.fixation.variance));
+    return out;
+  }
+
+  /** Drive the flee scenario until the latch holds a REAL decision. */
+  function fleeDecision(): BnnSocietyPredictor {
+    const p = warmed(new BnnSocietyPredictor(3, 4));
+    let hunterX = 50;
+    for (let i = 0; i < 40; i++) {
+      const d = blank();
+      paintRect(d, 30, 14, 2, 2, 2); // self
+      paintHollow(d, hunterX, 13, 4, 1); // big hunter closing from the right
+      if (i % 2 === 0 && hunterX > 40) hunterX -= 1;
+      p.predict([...d]);
+    }
+    return p;
+  }
+
+  test("the payload IS the deciding state — same mode, bucket, relation, fixation", () => {
+    const p = fleeDecision();
+    expect(p.lastMode).toBe("flee");
+    const why = p.whyContext();
+    expect(why.mode).toBe(p.lastMode);
+    expect(why.bucket).toEqual(p.lastModeBucket);
+    expect(why.adversary).toEqual(p.lastRelation);
+    expect(why.adversary).not.toBeNull();
+    expect(p.lastFixationTile).not.toBeNull();
+    expect(why.fixation?.tile).toBe(p.lastFixationTile ?? -1);
+    expect(why.rewardEvents).toBe(p.modeLearner.rewardEvents);
+  });
+
+  test("the payload survives the worker boundary verbatim (structured clone)", () => {
+    const why = fleeDecision().whyContext();
+    // postMessage structured-clones the frame; the WHY answers on the main
+    // thread are generated from the CLONE, so the clone must be the context.
+    expect(structuredClone(why)).toEqual(why);
+  });
+
+  test("for a real decision the chain terminates at the unknown state, and every non-terminal answer cites a payload value", () => {
+    const why = structuredClone(fleeDecision().whyContext());
+    const chain = whyChain(why);
+    expect(chain[chain.length - 1]).toBe(WHY_TERMINAL);
+    const numbers = payloadNumbers(why);
+    for (const answer of chain.slice(0, -1)) {
+      const cites = numbers.some((n) => answer.includes(n));
+      // The penultimate rung states where the reasons stop — the boundary
+      // itself, not a number; the terminal follows it.
+      const isBoundary = answer.includes("where my reasons stop");
+      expect(cites || isBoundary).toBe(true);
+    }
   });
 });

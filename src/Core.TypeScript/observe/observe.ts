@@ -66,6 +66,7 @@ import {
   type NodeSessionState,
 } from "./first-session";
 import type { FourCornerOwnership } from "../workflow-engine/types";
+import type { WhyContext } from "../bayesian/why-chain";
 
 /** One backlog item, classified to just what the controller needs to decide. */
 export interface BacklogItem {
@@ -182,6 +183,8 @@ export interface CheatEngineState {
   readonly arena?: ArenaReadout;
   /** The attention field — where the agent is SPENDING perception. */
   readonly attention?: AttentionReadoutWire;
+  /** D5: the state that drove this tick's decision — the WHY chain's input. */
+  readonly why?: WhyContext;
 }
 
 /** One tracked object, trimmed for the wire (the UI draws these boxes). */
