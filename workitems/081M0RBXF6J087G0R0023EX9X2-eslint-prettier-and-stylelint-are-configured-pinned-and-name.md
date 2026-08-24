@@ -755,7 +755,8 @@ LINT_ESLINT_RC=0
 
 **3 — a brand-new file in an enrolled directory.** This is the case directory-level enforcement
 exists for: a file that did not exist when the roster was measured must still be caught.
-`src/Core.TypeScript/g-set/sabotage-new-file.ts`, created fresh:
+a temporary file named `sabotage-new-file.ts` in the enrolled `src/Core.TypeScript/g-set/`
+directory, created fresh:
 
 ```text
 LINT_ESLINT_RC=1
@@ -870,9 +871,12 @@ Two things triaged and **dismissed with reasoning**, because the reflex answer i
 
 The decisive evidence is **recall, not noise**. A full inventory of live `sudo` invocations
 (`git grep '"sudo"' -- '*.ts'`, minus dead `docs/recovered-orphan-branches` trees and tests) finds
-~15 sites across `zflash/cli.ts`, `zflash/setup.ts`, `zflash/flash-usb*.ts`,
-`persona-keys/biometric.ts`, `ace/install-pinned-artifact.ts`, `ace/setup-realizers/from-deb.ts`,
-`cluster/runner-disk.ts`. The rule flags **10**. It misses `setup.ts:106` (suppressed — the single
+~15 sites across `src/Core.TypeScript/zflash/cli.ts`, `src/Core.TypeScript/zflash/setup.ts`,
+`src/Core.TypeScript/zflash/flash-usb*.ts`, `tools/setup/persona-keys/biometric.ts`,
+`src/Core.TypeScript/ace/install-pinned-artifact.ts`,
+`src/Core.TypeScript/ace/setup-realizers/from-deb.ts`, and
+`src/Core.TypeScript/cluster/runner-disk.ts`. The rule flags **10**. It misses
+`src/Core.TypeScript/zflash/setup.ts:106` (suppressed — the single
 most sensitive one, it `sudo tee`s `/etc/pam.d/sudo`), and it cannot see `sudo` reached through a
 variable (`install-pinned-artifact.ts:85`), an array (`from-deb.ts:28`), or a `run()` wrapper
 (`runner-disk.ts:315`).

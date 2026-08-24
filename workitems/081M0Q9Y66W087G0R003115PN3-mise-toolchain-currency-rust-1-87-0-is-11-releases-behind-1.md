@@ -107,7 +107,7 @@ The zig half is guarded by a recorded `(version, sha256)` pairing in
 `audit-mise-toolchain-couplings.provenance.json`, checked **both** ways. The failure it closes
 is the quiet one: the committed `.wasm` does not move when the compiler pin does, so the
 byte-lock keeps passing while the artifact stops being reproducible from the pinned toolchain
-— condition 3 of the `no-binary-in-proof-lineage.md` exception.
+— condition 3 of the `.claude/rules/no-binary-in-proof-lineage.md` exception.
 
 ### Sizing for the three that were not taken
 
