@@ -316,3 +316,4 @@ data/ARC-AGI/
 src/Arc.Python/.venv/
 src/Arc.Python/recordings/
 src/Arc.Python/environment_files/
+.reaper-cache/
