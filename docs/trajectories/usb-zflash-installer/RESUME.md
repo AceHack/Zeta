@@ -1,14 +1,12 @@
 # Trajectory - USB / zflash Installer
 
 Status: active — shipped + iterating; first surfaced as a trajectory 2026-05-29 from substrate inventory (the flashing mechanism works on `origin/main`; this surface was missing, so the workstream lived head-only)
-Last refreshed: 2026-08-23
+Last refreshed: 2026-08-24
 Type: workstream (current-focus) — a trajectory the operator is *actively powering*. Many trajectories can be tracked; only a few are workstreams at once (finite-focus / WIP-bounded — a workstream is a trajectory under sustained thrust, and thrust budget is finite, so most trajectories coast). (Genus = "trajectory"; "workstream" is the species: a trajectory under sustained thrust toward a deliverable, vs. emergent-posture trajectories like `anti-infection`. See [`factory-trajectory-surface`](../factory-trajectory-surface/RESUME.md) for the genus/species taxonomy.) One of the operator's three current cluster workstreams (encryption / usb-zflash / ts-workflow-engine).
 Eventual encoding (design-stage — the human maintainer 2026-05-23 genetic-ID substrate + Clifford/HKT): this trajectory's state is trackable as a 128-bit genetic-ID seed (discrete, reversible via parser-combinator ↔ generator-function) → Clifford-space path (continuous, eventual). Mirrors the three-lane I8-lattice / I9-manifold split.
-Current blocker: none for software/QEMU deepen slices landed 2026-07-31
-(mock identity-auth, scenarios 3–4 markers, ESP wifi→NM profile without
-radio claim, hostname uniqueness contract, multiboot FAT assemble + EFI
-embed path, credential-binding model tests). Physical S6 UX feel + real
-WiFi association remain metal-gated.
+Current blocker: software — 6.95-picker hangs in QEMU on a TTY prompt
+(measured [run 32724820159](https://github.com/Lucent-Financial-Group/Zeta/actions/runs/32724820159);
+handoff below). Physical S6 UX feel + real WiFi association remain metal-gated.
 2026-08-18: `zflash` ISO acquisition is now architecture-aware (`--iso-arch`,
 default x86_64). Before this a run carrying both the x86_64 and aarch64 ISOs
 was resolved by `readdirSync` order — a coin flip whose only symptom was "no
@@ -16,6 +14,15 @@ bootable device" after a full flash-and-walk-to-the-box cycle, and whose
 untagged cache name made a wrong pick win every later auto-discovery. Closes
 known-unknown #2 of the first-metal preflight; that runbook no longer asks the
 operator to hand-download and hand-rename an ISO.
+**Session handoff (2026-08-24):**
+[`docs/handoffs/2026-08-24-riven-usb-zflash-qemu-restore-next.md`](../../handoffs/2026-08-24-riven-usb-zflash-qemu-restore-next.md)
+— mise-trust landed ([#14353](https://github.com/Lucent-Financial-Group/Zeta/pull/14353));
+live restore QEMU
+([run 32724820159](https://github.com/Lucent-Financial-Group/Zeta/actions/runs/32724820159))
+proved picker `mise activate` then hung on the interactive `[b]/[d]/[s]` prompt.
+Next software slice is a non-interactive (defer-all) picker path, then re-dispatch.
+Not metal.
+
 Next concrete action: **minimize metal** — S6 physical first-login +
 WiFi radio / Touch ID / TPM (human-gated). Software deepen landed:
 per-federation threat-model stub + optional QEMU UEFI menu-boot smoke
@@ -119,7 +126,13 @@ bringup.
 
 ## Current Next Action
 
-QEMU scenarios 1–4 green; scenario 2 asserts first-session serial markers on **push** (phase-3 promoted after [run 27862943618](https://github.com/Lucent-Financial-Group/Zeta/actions/runs/27862943618)). Optional multiboot UEFI menu smoke on installer/multiboot path PRs. **Post-login:** [FIRST-SESSION.md](./FIRST-SESSION.md) slices 1–4 landed; S6 paper/mock accepted (physical boot still human-gated). Slice 5 CODEOWNERS when teams are confirmed.
+**Software P0:** non-interactive 6.95-picker for QEMU restore — see
+[`docs/handoffs/2026-08-24-riven-usb-zflash-qemu-restore-next.md`](../../handoffs/2026-08-24-riven-usb-zflash-qemu-restore-next.md).
+Scenario 2 still asserts first-session serial markers on **push**. Optional
+multiboot UEFI menu smoke on installer/multiboot path PRs. **Post-login:**
+[FIRST-SESSION.md](./FIRST-SESSION.md) slices 1–4 landed; S6 paper/mock
+accepted (physical boot still human-gated). Slice 5 CODEOWNERS when teams
+are confirmed.
 
 - ESP hostname + credential injection now has QEMU-testable planning/serial-marker assertions; WiFi radio association remains physical-gated, but a future ESP WiFi blob can reuse the same write-plan + serial-marker pattern.
 

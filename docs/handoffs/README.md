@@ -9,6 +9,10 @@ the LAST hop of a ferry, never as the home.
 
 Current:
 
+- [`2026-08-24-riven-usb-zflash-qemu-restore-next.md`](./2026-08-24-riven-usb-zflash-qemu-restore-next.md)
+  — Riven USB/zflash QEMU restore: mise-trust is on `main`; next slice is
+  non-interactive 6.95-picker (live hang on
+  [run 32724820159](https://github.com/Lucent-Financial-Group/Zeta/actions/runs/32724820159)).
 - `vera-qsharp-verification-package.txt` — the Q# verification hand-off (brief REVISION 2 +
   claim-bearing sources + known-answer table). Vera's verdict lines remain hers to write.
 - `kestrel-shape-validation-bundle.txt` — the faithful-renderer port bundle (sources + cartridges
