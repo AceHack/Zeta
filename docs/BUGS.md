@@ -51,34 +51,16 @@ inverted pins in `rotate-refusals.test.ts` RR-4/RR-5/RR-6.)
 
 ## P1 — serious
 
-### `rotate()`'s per-port dispatch has an OPEN default — an unrecognised port silently rotates the device cert
-
-- **Site:** `tools/setup/persona-keys/rotate.ts` `planPort` and `rotatePort` — both are if-chains
-  whose fallthrough is `device-cert`
-- **Found:** 2026-08-23 by Mateo (security-researcher)
-- **Severity:** P1 — **not** reachable from the shipped CLIs (`rotate-cli.ts` and
-  `rotate-cluster-cli.ts` each filter against `ROTATE_PORTS` and exit 2), so this is a latent
-  defect for programmatic callers and for the next member added to the union
-- **Symptom:** `rotate(fx, { ports: ["ca_key"] })` — a hyphen/underscore typo, or any future
-  `RotatePort` member — is not refused. It is dispatched to `device-cert`, reported as
-  `action: "rotated"`, and staged for a PR, while the CA the caller asked for stays Active.
-  The single biometric prompt names the port that was **requested** (`ca_key`), not the one
-  **performed**, so the human's approval and the machine's action describe different acts —
-  under the standing "the biometric IS the authorization" position that is an authorization for
-  something that did not happen. Adding a fourth member to `RotatePort` produces **no type
-  error**; it silently inherits device-cert behaviour in both functions. `ceremony-gate.ts`
-  earns the closed-command-set property by construction (a `switch` with no `default`, so a new
-  operation is a compile error until classified); `rotate.ts` is its sibling and does not.
-- **Fix:** exhaustive `switch` with no `default` in both `planPort` and `rotatePort` (matching
-  `ceremonyRequirementFor`), plus a roster check inside `rotate()` so the guard lives in the
-  mechanism rather than in two copies in two CLIs.
-- **Repro / pin:** `rotate-refusals.test.ts` RR-7 — two arms, a recognised port and an
-  unrecognised one, producing different ports rotated. Still asserting the LIVE defect.
-- **Deliberately NOT folded into the 2026-08-23 trust-set fix** (Nazar): this is a dispatch-closure
-  defect — a type-level change to `planPort`/`rotatePort` — with no interaction with the trust-set
-  arithmetic, and it is not reachable from either shipped CLI. Landing both in one change would have
-  made each harder to review. It stays open with its pin green.
-- **Who:** architect (Kenji)
+(The `rotate()` per-port dispatch entry — `planPort`/`rotatePort` falling through to `device-cert`,
+so an unrecognised port rotated the CERT while the biometric prompt named the port REQUESTED, found
+by Mateo 2026-08-23 — was fixed 2026-08-24 by Nazar. Both functions are now `default`-less switches
+over a per-port DISCRIMINATED `PortPlan`, so a new `RotatePort` member is a compile error and a case
+wired to the wrong handler is a compile error too; a roster check inside `rotate()` refuses a value
+cast into the union, whole-run and before the gate; and the one prompt is rendered from the same
+classified plans the dispatcher consumes, so it names what is PERFORMED rather than what was
+requested. Proofs: `rotate-refusals.test.ts` RR-7 (inverted in place — the pin went red on the fix)
+and RR-7b (the consent property, two arms). The compile-rejection proof is in PR #14694: the same
+scratch union member compiles clean on the old code and is TS2366 on the new.)
 
 ### FROST CA keys and Shamir splits created before 2026-08-14 were generated with `Math.random`
 

@@ -21,21 +21,23 @@
 //   RR-4  FIXED (was P0) — ∅-blast-radius holds at N=1 AND N=2 (arm: N=1 vs N=2, same assert)
 //   RR-5  FIXED (was P1) — the readout MEASURES the guarantee; the line differs when the truth does
 //   RR-6  FIXED (was P1) — retired keys are generational; rotate #2 preserves rotate #1's
-//   RR-7  DEFECT P1 — an unrecognised port silently dispatches to device-cert (open default)
+//   RR-7  an unrecognised port is REFUSED WHOLE — nothing rotates, nothing stages, no prompt
+//   RR-7b the ONE prompt names the ports PERFORMED, not the ports requested (the consent property)
 //   RR-8  apply-N: rotate is NOT idempotent across runs BY DESIGN; the key is standby-presence
 //
 // ── THE DEFECT PINS ARE SELF-CLEANING, AND THREE OF THEM HAVE NOW CLEANED ────────────────
 // RR-4 / RR-5 / RR-6 / RR-7 were written to assert that the defect IS PRESENT, so that a fix could
-// not land while a test still claimed the broken behaviour was correct. On 2026-08-23 Nazar fixed
-// the first three; each went RED exactly as designed and is INVERTED below — the same scenario, the
-// same two arms, now asserting the repaired property. The fix and the closing bound it required are
-// proven in `rotate-ca-closing-bound.test.ts` (CB-1..CB-8); these three stay here because the
-// inversion is the record that the pin fired.
+// not land while a test still claimed the broken behaviour was correct. ALL FOUR HAVE NOW FIRED.
+// On 2026-08-23 Nazar fixed the first three; each went RED exactly as designed and is INVERTED
+// below — the same scenario, the same two arms, now asserting the repaired property. The fix and
+// the closing bound it required are proven in `rotate-ca-closing-bound.test.ts` (CB-1..CB-8).
 //
-// RR-7 is UNCHANGED and still asserts a live defect: the port dispatch remains an open default
-// (`docs/BUGS.md`). It was left alone deliberately — it is a different defect class (dispatch
-// closure, a type-level change to `planPort`/`rotatePort`) with no interaction with the trust-set
-// arithmetic, and folding it into a trust-correctness fix would make both harder to review.
+// RR-7 was deliberately left LIVE in that round: a different defect class (dispatch closure, a
+// type-level change to `planPort`/`rotatePort`) with no interaction with the trust-set arithmetic,
+// and folding it into a trust-correctness fix would have made both harder to review. It was closed
+// on 2026-08-24, went red on the same run that fixed it, and is inverted in place below alongside a
+// new RR-7b for the consent half. None of the four was deleted: the inversion IS the record that
+// the pin fired, and a deleted pin leaves no evidence that it ever did.
 //
 // ── WHAT THIS FILE CANNOT TEST (loudly, per the honest-limit discipline) ─────────────────
 // Printed at run time by RR-9 as well as stated here, because a limitation only in a comment
@@ -574,19 +576,28 @@ test("RR-6 FIXED: retired keys are generational — rotation #2 preserves rotati
 });
 
 // ══════════════════════════════════════════════════════════════════════════════════════════
-// RR-7 — DEFECT (P1, docs/BUGS.md "rotate()'s port dispatch has an open default").
+// RR-7 — INVERTED 2026-08-24 (the pin fired). It asserted the LIVE defect: an unrecognised port
+// was not refused, it was silently dispatched to `device-cert`, reported `rotated`, staged for a
+// PR, and approved by a prompt naming the port that did NOT move. Fixing the defect turned this
+// test RED exactly as a self-cleaning pin should, and it is inverted here rather than deleted —
+// same scenario, same two arms, now asserting the repaired property.
 //
-// `ceremony-gate.ts` earns its closed-command-set property by construction: its `switch` has no
-// `default`, so adding an operation is a TYPE ERROR until it is classified. `rotate.ts` uses
-// if-chains in BOTH `planPort` and `rotatePort` with an implicit device-cert default, so an
-// unrecognised port is not refused — it is silently rotated as a device cert, reported as
-// `rotated`, and staged for a PR. The roster check exists only in `rotate-cli.ts` and
-// `rotate-cluster-cli.ts`; the mechanism itself has none, so any programmatic caller gets it.
+// WHAT THE FIX IS. Two guards that are complements, not substitutes:
+//   * TYPE — `planPort` and `rotatePort` are now `default`-less switches (the shape
+//     `ceremony-gate.ts` `ceremonyRequirementFor` already earns), so a new `RotatePort` member is a
+//     compile error until it is classified. `PortPlan` is discriminated per port and each handler
+//     takes only its own member, so wiring a case to the wrong handler is a compile error too —
+//     exhaustiveness alone does NOT catch that, and it is the same wrong-port rotation by a
+//     different route. Neither property is testable from here: a type error is not a runtime
+//     observation, so the discrimination proof for it is in the PR body, not in this file.
+//   * VALUE — a roster check inside `rotate()` (not in two copies in two CLIs) refuses a value cast
+//     into the union. That is the half this test CAN observe, and the half it pins.
 //
-// Discrimination is the two arms: a RECOGNISED port rotates the CA, an UNRECOGNISED one rotates
-// the device cert. Different inputs, different outputs — the test cannot pass by accident.
+// Discrimination is still the two arms: a RECOGNISED port rotates the CA, an UNRECOGNISED one now
+// rotates NOTHING AT ALL. Different inputs, different outcomes — it cannot pass by accident. Arm C
+// pins the consent property directly: the prompt names what is PERFORMED, not what was REQUESTED.
 // ══════════════════════════════════════════════════════════════════════════════════════════
-test("RR-7 DEFECT: an unrecognised port is not refused — it silently dispatches to device-cert", async () => {
+test("RR-7 FIXED: an unrecognised port is REFUSED whole — nothing rotates, nothing stages, nobody is prompted", async () => {
   const sb = makeSandbox();
   try {
     await provision(sb);
@@ -594,48 +605,122 @@ test("RR-7 DEFECT: an unrecognised port is not refused — it silently dispatche
     const certFile = certPath(machinePubPath(sb.repoRoot, HOST));
     const certBefore = readFileSync(certFile, "utf8");
 
-    // ARM A — a RECOGNISED port. The CA moves; the cert is untouched.
+    // ARM A — a RECOGNISED port. Unchanged from the defect version: the CA moves.
     const good = await runRotate(sb, { ports: ["ca-key"] });
     expect(good.res.rotations.map((r) => r.port)).toEqual(["ca-key"]);
     expect(pubFingerprint(caPrivateKeyPath(sb.home) + ".pub")).not.toBe(caBefore);
     const caAfterGood = pubFingerprint(caPrivateKeyPath(sb.home) + ".pub");
-
-    // ARM B — an UNRECOGNISED port. A hyphen/underscore typo, or any future union member.
-    const certBeforeB = readFileSync(certFile, "utf8");
-    const bad = await runRotate(sb, { ports: ["ca_key" as RotatePort] });
-
-    // THE DEFECT. Not refused, not reported as unknown — dispatched to a DIFFERENT port.
-    expect([...bad.res.ports] as string[]).toEqual(["ca_key"]);
-    expect(bad.res.rotations.length).toBe(1);
-    expect(bad.res.rotations[0]!.port).toBe("device-cert");
-    expect(bad.res.rotations[0]!.action).toBe("rotated");
-    expect(bad.staged.length).toBeGreaterThan(0);
-
-    // The CA the operator asked for did NOT move — so an operator rotating a suspected-compromised
-    // CA is told "rotated" while the compromised key stays Active.
-    expect(pubFingerprint(caPrivateKeyPath(sb.home) + ".pub")).toBe(caAfterGood);
-    // What actually moved is the device cert.
-    expect(readFileSync(certFile, "utf8")).not.toBe(certBeforeB);
     expect(certBefore.length).toBeGreaterThan(0);
 
-    // And the ONE biometric prompt named the port the operator asked for, not the one performed —
-    // so the human's approval and the machine's action describe different acts.
+    // ARM B — an UNRECOGNISED port. A hyphen/underscore typo, or a value cast into the union by a
+    // programmatic caller. It USED to rotate the device cert and report success.
+    const certBeforeB = readFileSync(certFile, "utf8");
     const prompts: string[] = [];
-    const session = sessionBiometric(approving(prompts));
-    await rotate(rotateEffects([]), {
-      user: USER,
-      ca: USER,
-      repoRoot: sb.repoRoot,
-      home: sb.home,
-      hostname: HOST,
-      ports: ["ca_key" as RotatePort],
-      dryRun: false,
-      confirm: true,
-      biometricAuth: session.door,
-    });
-    expect(prompts.length).toBe(1);
-    expect(prompts[0]).toContain("ca_key"); // approved: "ca_key"
-    expect(prompts[0]).not.toContain("device-cert"); // performed: device-cert
+    const staged: { repoRoot: string; relPath: string }[] = [];
+    let refusal: unknown;
+    try {
+      await rotate(rotateEffects(staged), {
+        user: USER,
+        ca: USER,
+        repoRoot: sb.repoRoot,
+        home: sb.home,
+        hostname: HOST,
+        ports: ["ca_key" as RotatePort],
+        dryRun: false,
+        confirm: true,
+        biometricAuth: sessionBiometric(approving(prompts)).door,
+      });
+    } catch (e) {
+      refusal = e;
+    }
+
+    // THE REPAIRED PROPERTY. Refused, by name, before anything happened.
+    expect(refusal).toBeInstanceOf(Error);
+    expect((refusal as Error).message).toContain("ca_key");
+    expect((refusal as Error).message).toContain("machine-key, device-cert, ca-key");
+
+    // The CA the operator asked for did not move — but neither did anything ELSE. That second half
+    // is the fix: under the defect the cert moved instead, which is what made "rotated" a lie.
+    expect(pubFingerprint(caPrivateKeyPath(sb.home) + ".pub")).toBe(caAfterGood);
+    expect(readFileSync(certFile, "utf8")).toBe(certBeforeB);
+    expect(staged.length).toBe(0);
+
+    // And NO prompt was raised. The refusal is BEFORE the gate, so a human is never asked to
+    // approve an act the mechanism cannot name. Under the defect this fired once, naming `ca_key`
+    // while `device-cert` was performed.
+    expect(prompts.length).toBe(0);
+
+    // A dry run is refused on the same input too — the readout is a claim about what WOULD happen,
+    // and "would rotate device-cert" for a requested `ca_key` is the same lie without the writes.
+    let dryRefusal: unknown;
+    try {
+      await rotate(rotateEffects([]), {
+        user: USER,
+        ca: USER,
+        repoRoot: sb.repoRoot,
+        home: sb.home,
+        hostname: HOST,
+        ports: ["ca_key" as RotatePort],
+        dryRun: true,
+      });
+    } catch (e) {
+      dryRefusal = e;
+    }
+    expect(dryRefusal).toBeInstanceOf(Error);
+  } finally {
+    sb.cleanup();
+  }
+});
+
+// ══════════════════════════════════════════════════════════════════════════════════════════
+// RR-7b — THE CONSENT PROPERTY, ON ITS OWN. RR-7's arm B proves an unnameable port raises no
+// prompt. This proves the positive form for ports that ARE recognised: the ONE prompt names the
+// ports that will actually be rotated, not the ports that were requested.
+//
+// The two lists differ whenever a requested port is not set up on this host. The old prompt was
+// rendered from `opts.ports` (the REQUEST) and said "machine-key, device-cert, ca-key" while only
+// machine-key moved. It is now rendered from the same classified plans the dispatcher consumes.
+//
+// Discrimination: ARM A is a host missing its CA (requested 3, performs 1) and ARM B is a complete
+// host (requested 3, performs 3). Same request, different prompts, each matching what was done —
+// so a prompt that just echoed the request would fail arm A, and one that named a fixed list would
+// fail arm B.
+// ══════════════════════════════════════════════════════════════════════════════════════════
+test("RR-7b: the ONE biometric prompt names the ports PERFORMED, never the ports requested", async () => {
+  const sb = makeSandbox();
+  try {
+    await provision(sb);
+
+    // ARM A — remove the CA private key. `ca-key` and `device-cert` both become absent (the cert
+    // re-sign needs a CA to sign with), so of the three requested only `machine-key` can rotate.
+    const caPriv = caPrivateKeyPath(sb.home);
+    const parked = join(sb.home, "ca-priv.parked");
+    renameSync(caPriv, parked);
+
+    const promptsA: string[] = [];
+    const a = await runRotate(sb, { ports: ROTATE_PORTS, door: approving(promptsA) });
+    const performedA = a.res.rotations.filter((r) => r.action === "rotated").map((r) => r.port);
+    expect(performedA).toEqual(["machine-key"]);
+    expect(promptsA.length).toBe(1);
+    // Names what it did.
+    expect(promptsA[0]).toContain("machine-key");
+    // Does NOT name what it did not do, though both were REQUESTED.
+    expect(promptsA[0]).not.toContain("ca-key");
+    expect(promptsA[0]).not.toContain("device-cert");
+    expect([...a.res.ports] as string[]).toEqual([...ROTATE_PORTS] as string[]); // the request is still reported
+
+    // ARM B — restore the CA. Now all three are present, so all three are named.
+    renameSync(parked, caPriv);
+    const promptsB: string[] = [];
+    const b = await runRotate(sb, { ports: ROTATE_PORTS, door: approving(promptsB) });
+    const performedB = b.res.rotations.filter((r) => r.action === "rotated").map((r) => r.port);
+    expect(new Set(performedB)).toEqual(new Set(ROTATE_PORTS));
+    expect(promptsB.length).toBe(1);
+    for (const port of ROTATE_PORTS) {
+      expect(promptsB[0]).toContain(port);
+    }
+    // The two prompts differ — the discrimination. A prompt echoing the request would be identical.
+    expect(promptsA[0]).not.toBe(promptsB[0]);
   } finally {
     sb.cleanup();
   }

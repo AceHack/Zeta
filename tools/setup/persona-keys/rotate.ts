@@ -382,6 +382,27 @@ export async function rotate(fx: RotateEffects, opts: RotateOptions): Promise<Ro
   const confirmed = opts.confirm === true;
   const ports = opts.ports ?? ROTATE_PORTS;
 
+  // ── ROSTER CHECK — in the MECHANISM, not in two copies in two CLIs ────────────────────
+  // The dispatch below is TOTAL over `RotatePort` (two `default`-less switches), so an UNCLASSIFIED
+  // member is a compile error. That closes the TYPE; it cannot close the VALUES. A value cast into
+  // the union (`"ca_key" as RotatePort`) matches no case and would fall out of a total switch as
+  // `undefined` — so the two guards are complements, and neither substitutes for the other.
+  // `rotate-cli.ts` and `rotate-cluster-cli.ts` each carried their own copy of this filter; the
+  // mechanism carried none, so every programmatic caller ran unguarded.
+  //
+  // The WHOLE RUN is refused, never just the offending port: a run that silently dropped one
+  // requested port would raise one prompt for an act and perform a smaller one — the same
+  // approval/action mismatch this refusal exists to prevent. Fail-closed and BEFORE the plan, so on
+  // an input we cannot name nothing is read, nothing is staged, and no prompt is ever raised.
+  const unknownPorts = ports.filter((p) => !ROTATE_PORTS.includes(p));
+  if (unknownPorts.length > 0) {
+    throw new Error(
+      `unknown rotate port(s): ${unknownPorts.join(", ")}. Known ports: ${ROTATE_PORTS.join(", ")}. ` +
+        "Refusing the WHOLE run: dispatching an unrecognised port to a different one would report a " +
+        "rotation that did not happen, under a biometric approval naming the port that did not move.",
+    );
+  }
+
   // ── PLAN (pure presence checks — no side effects, no prompt) ──────────────────────────────
   // A port is rotatable iff it was set up (its current Active artifact exists). The plan also
   // notes whether a STANDBY already exists (idempotent mid-overlap resume).
@@ -450,10 +471,23 @@ export async function rotate(fx: RotateEffects, opts: RotateOptions): Promise<Ro
   // human prompt; every gated sub-op (the device-cert re-sign in ca.ts `signMachineCert`) rides the
   // SAME `session.door`, replaying this decision — so the whole rotation is ONE fingerprint, never
   // N. FAIL-CLOSED: a declined approval poisons the session, so the cert sub-op aborts too.
+  //
+  // THE PROMPT NAMES WHAT WILL BE PERFORMED, NOT WHAT WAS REQUESTED. It used to render
+  // `opts.ports` — the REQUEST — which is a second, independent derivation of "which port", and two
+  // derivations can disagree. They did: an unrecognised port was requested, `device-cert` was
+  // performed, and the prompt named the request. Under the standing position that the biometric IS
+  // the authorization, an approval whose text describes a different act is not an authorization for
+  // the act performed (`describeFinalizePlan` says exactly this on the finalize side).
+  //
+  // `performing` is read off the SAME classified `plans` the dispatcher consumes below, so there is
+  // now ONE derivation feeding both. It also drops absent ports, which the old text kept: rotating
+  // `--ports machine-key,ca-key` on a host with no CA set up used to prompt for a CA swap that
+  // never happened. `hadWork` above guarantees this list is non-empty here.
   const session = sessionBiometric(opts.biometricAuth);
+  const performing = plans.filter((p) => p.present).map((p) => p.port);
   const biometric = await requireBiometric(
     session.door,
-    `Approve Zeta ROTATE for host ${hostname} (overlap-window swap of: ${ports.join(", ")})`,
+    `Approve Zeta ROTATE for host ${hostname} (overlap-window swap of: ${performing.join(", ")})`,
   );
   if (!biometric.ok) {
     return finalize({
@@ -482,7 +516,7 @@ export async function rotate(fx: RotateEffects, opts: RotateOptions): Promise<Ro
       rotations.push(emptyRotation(p, "absent"));
       continue;
     }
-    rotations.push(await rotatePort(fx, p, opts, hostname, session.door));
+    rotations.push(await rotatePort(fx, p, opts, session.door));
   }
 
   return finalize({
@@ -818,8 +852,7 @@ async function runFinalize(
 
 // ── Per-port PLAN ──────────────────────────────────────────────────────────────────────────────
 
-interface PortPlan {
-  readonly port: RotatePort;
+interface PortPlanFields {
   /** Is the CURRENT (Active) artifact present (i.e. was this port set up)? */
   readonly present: boolean;
   /** Is a STANDBY already staged (a prior rotate is mid-overlap)? */
@@ -829,6 +862,28 @@ interface PortPlan {
   readonly ctx: PortCtx;
 }
 
+/**
+ * A plan, DISCRIMINATED by the port it was classified as. The union member — not a `RotatePort`
+ * field — is what lets `rotatePort` hand each handler a plan only that handler accepts, so wiring
+ * `case "ca-key"` to the device-cert handler is a TYPE ERROR rather than the silent wrong-port
+ * rotation this file used to allow. `port` is written as a LITERAL at each classification site in
+ * `planPort`, never echoed from the parameter: the plan states what was CLASSIFIED, not what was
+ * ASKED FOR, and the biometric prompt is rendered from these.
+ */
+interface MachineKeyPlan extends PortPlanFields {
+  readonly port: "machine-key";
+}
+interface DeviceCertPlan extends PortPlanFields {
+  readonly port: "device-cert";
+}
+interface CaKeyPlan extends PortPlanFields {
+  readonly port: "ca-key";
+}
+type PortPlan = MachineKeyPlan | DeviceCertPlan | CaKeyPlan;
+
+/** A rotation outcome pinned to ONE port — the return type that binds a handler to its case. */
+type RotationOf<P extends RotatePort> = PortRotation & { readonly port: P };
+
 interface PortCtx {
   readonly home: string;
   readonly hostname: string;
@@ -836,57 +891,92 @@ interface PortCtx {
   readonly repoRoot: string;
 }
 
+/**
+ * TOTAL classifier — the pattern `ceremony-gate.ts` `ceremonyRequirementFor` already earns in this
+ * codebase, applied to its sibling. The `switch` has NO `default`, and the declared return type is
+ * not `undefined`-inhabited, so a new `RotatePort` member is a TYPE ERROR (TS2366, "function lacks
+ * ending return statement") until it is classified here. It used to be an if-chain whose fallthrough
+ * was `device-cert`: a fourth member would have silently inherited device-cert behaviour in both
+ * this function and `rotatePort` with no type error anywhere — that was the defect, and the
+ * not-reachable-from-the-CLIs `"ca_key"` typo was only its most visible symptom.
+ *
+ * Each case writes its `port` as a LITERAL rather than passing the narrowed parameter through, so
+ * the plan carries what the classifier DECIDED. The prompt and the dispatch both read that.
+ */
 function planPort(fx: RotateEffects, port: RotatePort, ctx: PortCtx): PortPlan {
-  if (port === "machine-key") {
-    const active = deviceKeyPath(ctx.home);
-    const standby = standbyMachineKeyPath(ctx.home);
-    return {
-      port,
-      present: fx.exists(active),
-      standbyPresent: fx.exists(standby),
-      newArtifactPath: standby,
-      retiredArtifactPath: retiredMachineKeyPath(ctx.home),
-      ctx,
-    };
+  switch (port) {
+    case "machine-key": {
+      const active = deviceKeyPath(ctx.home);
+      const standby = standbyMachineKeyPath(ctx.home);
+      return {
+        port: "machine-key",
+        present: fx.exists(active),
+        standbyPresent: fx.exists(standby),
+        newArtifactPath: standby,
+        retiredArtifactPath: retiredMachineKeyPath(ctx.home),
+        ctx,
+      };
+    }
+    case "ca-key": {
+      const active = caPrivateKeyPath(ctx.home);
+      const standby = standbyCaKeyPath(ctx.home);
+      return {
+        port: "ca-key",
+        present: fx.exists(active),
+        standbyPresent: fx.exists(standby),
+        newArtifactPath: standby,
+        retiredArtifactPath: retiredCaKeyPath(ctx.home),
+        ctx,
+      };
+    }
+    case "device-cert": {
+      // present iff BOTH the machine pubkey (to certify) and the CA private (to sign) exist.
+      const devPub = machinePubPath(ctx.repoRoot, ctx.hostname);
+      const cert = certPath(devPub);
+      const caPriv = caPrivateKeyPath(ctx.home);
+      return {
+        port: "device-cert",
+        present: fx.exists(devPub) && fx.exists(caPriv),
+        standbyPresent: false, // a cert re-sign is idempotent in place (overwrites the same -cert.pub)
+        newArtifactPath: cert,
+        retiredArtifactPath: cert, // re-signed in place; old cert validity overlaps the new (-V window)
+        ctx,
+      };
+    }
   }
-  if (port === "ca-key") {
-    const active = caPrivateKeyPath(ctx.home);
-    const standby = standbyCaKeyPath(ctx.home);
-    return {
-      port,
-      present: fx.exists(active),
-      standbyPresent: fx.exists(standby),
-      newArtifactPath: standby,
-      retiredArtifactPath: retiredCaKeyPath(ctx.home),
-      ctx,
-    };
-  }
-  // device-cert: present iff BOTH the machine pubkey (to certify) and the CA private (to sign) exist.
-  const devPub = machinePubPath(ctx.repoRoot, ctx.hostname);
-  const cert = certPath(devPub);
-  const caPriv = caPrivateKeyPath(ctx.home);
-  return {
-    port,
-    present: fx.exists(devPub) && fx.exists(caPriv),
-    standbyPresent: false, // a cert re-sign is idempotent in place (overwrites the same -cert.pub)
-    newArtifactPath: cert,
-    retiredArtifactPath: cert, // re-signed in place; old cert validity overlaps the new (-V window)
-    ctx,
-  };
 }
 
 // ── Per-port ROTATION (post-gate) ────────────────────────────────────────────────────────────────
 
+/**
+ * TOTAL dispatcher, and it is total in BOTH directions.
+ *
+ * DOWN — no `default`: a new `RotatePort` member is a type error here too, so it cannot inherit
+ * device-cert behaviour by falling off the end of an if-chain.
+ *
+ * ACROSS — each handler takes the NARROWED plan type and returns `RotationOf<its own port>`, so
+ * `case "ca-key": return rotateDeviceCert(...)` does not compile. Exhaustiveness alone would NOT
+ * have caught that mis-wiring: a `default`-less switch whose cases point at the wrong handlers
+ * type-checks perfectly and rotates the wrong thing under an approval that named the right one.
+ *
+ * The handlers read their paths from `plan` — the object the biometric prompt was rendered from —
+ * so the act performed is the act that was named, by construction rather than by agreement between
+ * two independent computations.
+ */
 async function rotatePort(
   fx: RotateEffects,
   plan: PortPlan,
   opts: RotateOptions,
-  hostname: string,
   sessionDoor: BiometricAuth,
 ): Promise<PortRotation> {
-  if (plan.port === "machine-key") return rotateMachineKey(fx, opts, hostname);
-  if (plan.port === "ca-key") return rotateCaKey(fx, opts);
-  return rotateDeviceCert(fx, opts, hostname, sessionDoor);
+  switch (plan.port) {
+    case "machine-key":
+      return await rotateMachineKey(fx, plan, opts);
+    case "ca-key":
+      return await rotateCaKey(fx, plan, opts);
+    case "device-cert":
+      return await rotateDeviceCert(fx, plan, opts, sessionDoor);
+  }
 }
 
 /**
@@ -896,15 +986,18 @@ async function rotatePort(
  */
 async function rotateMachineKey(
   fx: RotateEffects,
+  plan: MachineKeyPlan,
   opts: RotateOptions,
-  hostname: string,
-): Promise<PortRotation> {
-  const home = opts.home;
+): Promise<RotationOf<"machine-key">> {
+  const home = plan.ctx.home;
+  const hostname = plan.ctx.hostname;
   const active = deviceKeyPath(home);
-  const standby = standbyMachineKeyPath(home);
+  // The APPROVED plan's paths, not a second computation of them. The prompt the operator answered
+  // was rendered from this object; re-deriving here would reopen the two-derivations gap.
+  const standby = plan.newArtifactPath;
   // FIRST FREE retired slot — never onto an occupied one. Rotation #2 used to rename over rotation
   // #1's retired private key (docs/BUGS.md; rotate-refusals.test.ts RR-6).
-  const retired = allocateRetiredSlot(fx, retiredMachineKeyPath(home));
+  const retired = allocateRetiredSlot(fx, plan.retiredArtifactPath);
   const staged: string[] = [];
 
   // OVERLAP: mint the new STANDBY key beside the active one (idempotent: do NOT re-mint if present).
@@ -950,11 +1043,12 @@ async function rotateMachineKey(
  */
 async function rotateDeviceCert(
   fx: RotateEffects,
+  plan: DeviceCertPlan,
   opts: RotateOptions,
-  hostname: string,
   sessionDoor: BiometricAuth,
-): Promise<PortRotation> {
-  const devPub = machinePubPath(opts.repoRoot, hostname);
+): Promise<RotationOf<"device-cert">> {
+  const hostname = plan.ctx.hostname;
+  const devPub = machinePubPath(plan.ctx.repoRoot, hostname);
   const res: CertResult = await signMachineCert(fx.ca, {
     user: opts.user, // N+M: principal = USER (the user × machine pair lives in the principal)
     machineId: hostname, // N+M: Key ID = MACHINE only (never user@machine)
@@ -966,7 +1060,7 @@ async function rotateDeviceCert(
   });
 
   const staged: string[] = [];
-  const out = certPath(devPub);
+  const out = plan.newArtifactPath; // the cert path the plan named and the prompt was rendered from
   if (res.action === "signed") {
     if (fx.stageRepoWrite(opts.repoRoot, relUnder(opts.repoRoot, out))) {
       staged.push(relUnder(opts.repoRoot, out));
@@ -1000,10 +1094,14 @@ async function rotateDeviceCert(
  * The set therefore only GROWS here. It shrinks only under `--finalize`, on census evidence, with
  * an approval that names each CA it drops.
  */
-async function rotateCaKey(fx: RotateEffects, opts: RotateOptions): Promise<PortRotation> {
-  const home = opts.home;
+async function rotateCaKey(
+  fx: RotateEffects,
+  plan: CaKeyPlan,
+  opts: RotateOptions,
+): Promise<RotationOf<"ca-key">> {
+  const home = plan.ctx.home;
   const active = caPrivateKeyPath(home);
-  const standby = standbyCaKeyPath(home);
+  const standby = plan.newArtifactPath; // the approved plan's path, not a re-derivation
   const staged: string[] = [];
 
   // Read the OLD CA pubkey BEFORE promotion (it must remain in the trust set through the overlap).
@@ -1062,7 +1160,7 @@ async function rotateCaKey(fx: RotateEffects, opts: RotateOptions): Promise<Port
   // PROMOTE: new CA private → Active (signs going forward); old CA private → the FIRST FREE retired
   // slot (never onto an occupied one — a previously retired key is memory, and destroying it is a
   // ceremony, not a rename).
-  const retired = allocateRetiredSlot(fx, retiredCaKeyPath(home));
+  const retired = allocateRetiredSlot(fx, plan.retiredArtifactPath);
   fx.mkdirp(dirOf(retired));
   promoteFile(fx, active, retired);
   promoteFile(fx, standby, active);
