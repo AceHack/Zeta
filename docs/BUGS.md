@@ -62,6 +62,77 @@ requested. Proofs: `rotate-refusals.test.ts` RR-7 (inverted in place — the pin
 and RR-7b (the consent property, two arms). The compile-rejection proof is in PR #14694: the same
 scratch union member compiles clean on the old code and is TS2366 on the new.)
 
+### The biometric approval gate is forgeable by a `PATH` entry — `sudo` is resolved by name
+
+- **Site:** `tools/setup/persona-keys/biometric.ts:271,280` (`realSudoGateEffects`) — the gate itself.
+  Same root cause, same fix: `src/Core.TypeScript/zflash/setup.ts:106` (writes `/etc/pam.d/sudo`),
+  `src/Core.TypeScript/zflash/cli.ts:657,680,793,802,898,928`, `src/Core.TypeScript/zflash/flash-usb.ts:502,1052`
+- **Found:** 2026-08-24 by Mateo (security-researcher), triaging the 785 `sonarjs` security-shaped
+  sites deferred from work-item `081M0RBXF6J087G0R0023EX9X2`
+- **Severity:** P1 (precondition is code execution as the operator's user; impact is forged human
+  approval on every persona-key ceremony, plus root)
+- **Symptom:** `macTouchIdAuth` establishes operator approval as `spawnSync("sudo", ["-p","","true"]).status === 0`,
+  with `sudo` resolved through `PATH`. `realBiometric()` is — in `publish.ts:254`'s own words — *"the one
+  gate every op shares"*: CA creation, Shamir custody, machine onboarding, rotation, revocation, publish.
+  A `sudo` earlier on `PATH` makes the gate return `ok: true` with **no Touch ID prompt and no human**.
+  The repo's own setup creates the precondition: `export PATH="$HOME/.local/bin:$PATH"` prepends a
+  **user-writable** directory ahead of `/usr/bin`, so planting the shim needs no root and leaves **no
+  git diff** — it is invisible to review, AgencySignature, and byte-lock, all of which watch the repo.
+
+  **Reproduction** (run on the operator's own host, 2026-08-24; the shim executes nothing and obtains
+  no privilege — it records its argv and exits 0):
+
+  ```text
+  $ cat > "$R/shim/sudo" <<'SH'
+  #!/bin/sh
+  echo "SHIM-REACHED argv: $*" >> "$SHIM_LOG"; exit 0
+  SH
+  $ chmod +x "$R/shim/sudo"
+  $ PATH="$R/shim:$PATH" bun probe2.ts        # calls the REAL macTouchIdAuth
+  host pam chain: touchIdConfigured = true | touchIdIsOnlySatisfier = false
+  🔐 Touch ID: Mateo audit probe — NO key material touched
+  macTouchIdAuth => {"ok":true,"platform":"macos-touchid","factor":"unattributed",
+                     "reason":"...Approval established..."}
+  probe2_rc=0
+  --- shim log (proves no real sudo ran) ---
+  SHIM-REACHED argv: -k
+  SHIM-REACHED argv: -p  true
+  ```
+
+  **The existing suppression at `zflash/setup.ts:105` argues this is safe, and both halves of its
+  rationale are false.** It reads: *"`sudo` MUST be resolved via PATH because its location varies
+  (/usr/bin/sudo on most Macs, /opt/homebrew/bin/sudo on others)"* and *"the only remaining attack
+  surface is `sudo` being shadowed in PATH, which would already compromise the operator's machine
+  regardless."* Measured on the same host:
+
+  ```text
+  $ ls -lO /usr/bin/sudo
+  -r-s--x--x  1 root  wheel  restricted,compressed 1580368 Jun 24 22:29 /usr/bin/sudo
+  $ ls -l /opt/homebrew/bin/sudo
+  ls: /opt/homebrew/bin/sudo: No such file or directory
+  $ brew info sudo
+  Error: No available formula with the name "sudo".
+  $ csrutil status
+  System Integrity Protection status: enabled.
+  ```
+
+  Homebrew ships no `sudo` formula, and macOS `sudo` is at `/usr/bin/sudo` marked `restricted` — SIP
+  forbids replacing it even as root. So the portability premise does not hold. And "would already
+  compromise the machine" conflates *user* compromise with *root* compromise: shadowing `sudo` is the
+  **escalation across that boundary**, not a consequence of having already crossed it. That matters
+  most at `setup.ts:106` specifically, which `sudo tee`s **`/etc/pam.d/sudo`** — the very file
+  `analyzeSudoAuthChain` later reads to decide whether the gate is trustworthy.
+- **Fix:** two parts, and the second is a design change with real cost — do not let it block the first.
+  (a) Resolve the elevator from an **absolute-path allowlist** (`/usr/bin/sudo`, `/run/wrappers/bin/sudo`,
+  `/usr/local/bin/sudo`) and require the chosen file be root-owned and setuid before spawning; refuse
+  otherwise. Roughly 15 call sites, no behaviour change on a healthy host, and it closes the
+  leaves-no-diff channel. (b) `status === 0` from a child process is **not** proof of physical
+  presence, and absolute-pathing does not make it one — a caller with code execution can still stub
+  `SudoGateEffects`. The sound form is an attested result (`LAContext.evaluatePolicy`) or a hardware
+  touch, which the YubiHSM/`frost-hardware-probe` work is already heading toward. Name the honest
+  register in the meantime: the gate proves *an operator factor answered*, never *a human was present*.
+- **Who:** Nazar (security-operations-engineer) for (a); (b) is a design row for Aminata + Kenji.
+
 ### FROST CA keys and Shamir splits created before 2026-08-14 were generated with `Math.random`
 
 - **Site:** `tools/setup/persona-keys/frost.ts` (`randScalar`), `frost-dkg.ts` (`randScalar`),
@@ -532,6 +603,53 @@ Eclipse), so **routing security reduces to announce authenticity**.
 ---
 
 ## P2 — nice to have
+
+### `from-deb` fetches a `.deb` to a predictable temp path and `sudo dpkg -i`s it, unverified
+
+- **Site:** `src/Core.TypeScript/ace/setup-realizers/from-deb.ts:70` (the path) and `:75` (the root
+  install); the fetch primitive is `curl-fetch.ts:134` `curlFetchToFile` → `curl -o`
+- **Found:** 2026-08-24 by Mateo (security-researcher), same triage pass
+- **Severity:** P2 — **latent, not live.** `tools/setup/manifests/from-deb` has zero non-comment
+  entries, so the realizer installs nothing today. Filed because the shape is a root-privilege
+  escalation the moment someone adds a line to that manifest, which is exactly what
+  `081M0B5V6Z5087G0R0026RANJ3` contemplates.
+- **Symptom:** the sequence is `tmpDeb = ${TMPDIR ?? "/tmp"}/zeta-deb-${name}-${Date.now()}.deb` →
+  `curl -o tmpDeb <url>` → `sudo env PATH=… dpkg -i tmpDeb`. Three properties compose badly:
+  the path is **predictable** (`name` is public, `Date.now()` is a millisecond a co-located
+  attacker can pre-create a range of); `curl -o` opens **without `O_EXCL` and without `O_NOFOLLOW`**;
+  and there is **no digest pin**, though `curl-fetch.ts` exports `verifySha256File` and the sibling
+  `from-autotools-tarball.ts` imports it. `dpkg -i` then runs the package's maintainer scripts **as
+  root**, so whoever controls those bytes controls the machine.
+
+  **Reproduction of the symlink half** (local, no network, no privilege obtained):
+
+  ```text
+  $ ln -s "$R/attacker/evil.deb" "$R/zeta-deb-demo-1756000000000.deb"
+  $ curl -sS -o "$R/zeta-deb-demo-1756000000000.deb" "file://$R/fakepub/real.deb"
+  curl_rc=0
+  target still a symlink? YES
+  contents of attacker/evil.deb now: LEGITIMATE-UPSTREAM-PACKAGE
+  ```
+
+  `curl -o` followed the pre-planted symlink and wrote **through** it — an arbitrary-write primitive
+  to any path the invoking user can reach. The substitution half is the sibling: an attacker who wins
+  the create race owns the file and may therefore unlink and replace it (the `/tmp` sticky bit stops
+  non-owners, not owners) in the window before `dpkg -i` opens it.
+
+  **Scope note, because the obvious dismissal is wrong here in one direction and right in the other.**
+  On this single-user machine there is no second OS *user* — but there are many concurrent *agents*,
+  and they all share one uid, so the OS gives them zero isolation from each other. That does **not**
+  make every `/tmp` site a finding: a co-uid agent already has total access to everything the user
+  owns, so path predictability grants it nothing new. It matters at exactly the sites where the file
+  is consumed **across a privilege boundary the co-uid attacker does not already hold** — and of the
+  16 non-test `publicly-writable-directories` sites, this is the only one that crosses into root.
+  `from-installer.ts:82` has the identical shape but `exec`s as the same uid, so no boundary is
+  crossed and it is a pinning question (no digest on six live installer URLs), not a temp-path one.
+- **Fix:** create the file with `mkdtempSync` (0700, unguessable) rather than composing a name, or
+  open with `O_EXCL|O_NOFOLLOW`; and pin the artefact — `verifySha256File` already exists and the
+  manifest already carries per-entry attrs, so a `sha256=` attr is the cheap version. Doing only the
+  path half leaves the unverified-root-install open, and only the digest half leaves the race.
+- **Who:** Malik (supply-chain) for the digest pin; Nazar for the temp-path handling.
 
 ### `LossyUdpChannel` has one global `expectedSeq` across all peers on a broadcast transport
 

@@ -790,3 +790,112 @@ exit status of the same command, on the same commit, against the same lockfile.
 - [x] Documentation matches behaviour — the gate step is named for exactly what it runs, and the
       roster is in a script both CI and a laptop invoke.
 - [x] Discrimination proof for eslint: RED → restore → GREEN, three sabotages, real output above.
+
+## MATEO TRIAGE 2026-08-24 — the 784 deferred security-shaped sites: **2 findings, and neither rule should go in CI**
+
+Dejan deferred `sonarjs/no-os-command-from-path` (442) and `sonarjs/publicly-writable-directories`
+(342) with *"that review is Mateo's, not a CI change I get to make."* This closes it.
+
+### 1. Re-measured, independently, at `b276dd37a5501319d85d918c76caac7ba704d2a3`
+
+```text
+$ bun install --frozen-lockfile          # install_rc=0
+$ bunx eslint <dejan's 15 roots> --no-error-on-unmatched-pattern --format json > all.json
+  eslint_rc=1
+  2514 files, 19835 errors, 1 warning
+    443  sonarjs/no-os-command-from-path
+    342  sonarjs/publicly-writable-directories
+```
+
+Both counts hold (442 → **443**; 342 unchanged). Two corrections to the measurement itself:
+
+**(a) The root list was over-narrow — 528 files went unlinted.** `git ls-files '*.ts' '*.js' …`
+grouped by top-level directory shows `agentic-organization` (522 files), `.design-sync`, `db`, and
+three root-level `.js` files are absent from the 15 roots. Linting them separately:
+
+```text
+  eslint_missed_rc=1 — FILES 528, ERRORS 562
+  0 sonarjs/no-os-command-from-path
+  0 sonarjs/publicly-writable-directories
+```
+
+So the two security counts are unaffected — but **the repo-wide total is 20,397, not 19,685**, and
+the clearing-cost figure in the table above is understated by 712.
+
+**(b) 236 sites are already suppressed and therefore not in the 443.** `eslint-disable`s naming
+`sonarjs/no-os-command-from-path`: **236**; naming `publicly-writable-directories`: **0**. The
+command rule's true footprint is ~679 sites, 236 of which someone has already triaged by hand.
+
+### 2. Classified by exploitability, not by rule
+
+| rule | total | test-only | non-test | crosses a privilege boundary |
+|---:|---:|---:|---:|---:|
+| `no-os-command-from-path` | 443 | 151 | 292 | **10** (all `sudo`) |
+| `publicly-writable-directories` | 342 | **326** | 16 | **1** (`from-deb` → root `dpkg -i`) |
+
+**The `/tmp` rule is 95% test fixtures.** Of the 16 non-test sites, most are the *correct* pattern
+(`process.env.TMPDIR ?? "/tmp"` as a fallback), and the rule fires on the fallback.
+
+**The command rule is dominated by toolchain:** `git` 148, `bun` 61, `gh` 39, `bash` 22, plus
+`dotnet`/`cargo`/`go`/`npx`. These are true positives for the rule and **non-findings for security**:
+their absolute paths genuinely vary per platform (`/usr/bin/git` vs `/run/current-system/sw/bin/git`),
+pinning them would break `clone-at-tag-stays-sufficient`, and an attacker who can plant a fake `git`
+on the PATH already has execution as that user — the fake buys nothing.
+
+**`sudo` is the one class where that dismissal fails**, because `sudo` *is* the privilege boundary:
+the caller does not have root, so shadowing it is the escalation rather than a consequence of one.
+
+Filed: `docs/BUGS.md` P1 (biometric approval gate forgeable via `PATH`-resolved `sudo`, reproduced
+end-to-end on the operator's host) and P2 (`from-deb` predictable temp path + no digest + root
+install; latent — the manifest has zero entries).
+
+Two things triaged and **dismissed with reasoning**, because the reflex answer is wrong both ways:
+
+- **`/tmp` and the agent fleet.** "Single-user machine, so it's fine" is the wrong reason for the
+  right conclusion. There is no second OS *user*, but there are many concurrent *agents* on one uid
+  and the OS isolates them from each other not at all. What follows is not that every `/tmp` site is
+  a finding — it is that path predictability grants a co-uid agent **nothing it does not already
+  have**, since it can read, write and ptrace everything the user owns regardless. Predictability
+  bites only where the file crosses into a privilege the attacker lacks. Exactly one site does.
+  `/tmp/zeta-bus` is separately fine on its merits: `bus.ts:28` creates it `0o700`, `lstat`s it,
+  contains `envelopePath` against traversal and names envelopes with `randomUUID()`. Residual (not
+  filed, worth knowing): `ensureDir` accepts a **pre-existing** directory without checking its owner
+  or mode, which matters on the NixOS cluster and not here.
+- **`shred` in `teardown.ts:485` / `teardown-cluster.ts:547`.** Looks alarming — secure erase of key
+  material via a `PATH` binary that does not exist on macOS. It is correct: the call is guarded by
+  `status === 0 && !existsSync(path)` and falls back to overwrite-then-unlink, verified by a final
+  `!existsSync`. Non-finding.
+
+### 3. CI recommendation — **enable neither**; ship a targeted lint instead
+
+The decisive evidence is **recall, not noise**. A full inventory of live `sudo` invocations
+(`git grep '"sudo"' -- '*.ts'`, minus dead `docs/recovered-orphan-branches` trees and tests) finds
+~15 sites across `zflash/cli.ts`, `zflash/setup.ts`, `zflash/flash-usb*.ts`,
+`persona-keys/biometric.ts`, `ace/install-pinned-artifact.ts`, `ace/setup-realizers/from-deb.ts`,
+`cluster/runner-disk.ts`. The rule flags **10**. It misses `setup.ts:106` (suppressed — the single
+most sensitive one, it `sudo tee`s `/etc/pam.d/sudo`), and it cannot see `sudo` reached through a
+variable (`install-pinned-artifact.ts:85`), an array (`from-deb.ts:28`), or a `run()` wrapper
+(`runner-disk.ts:315`).
+
+> **Turning this rule on in CI would not have caught the P1 filed today.** It costs 443 triage
+> decisions and has roughly two-thirds recall on the only class that matters.
+
+And it is structurally blind to 174 `sudo` invocations across 37 `.sh` files, which eslint cannot
+parse at all.
+
+| option | clearing cost | recommendation |
+|---|---:|---|
+| `no-os-command-from-path` repo-wide | 443 | **No** — see above |
+| `no-os-command-from-path` on the 28 clean paths | 0 | Already covered by the path strategy |
+| `publicly-writable-directories` repo-wide | 342 | **No** — 326 are test fixtures; it fires on the correct `TMPDIR ?? "/tmp"` fallback |
+| `publicly-writable-directories`, non-test only | 16 | **No** — 1 real site, and the rule pressures correct code |
+| **new `lint-no-path-resolved-privilege-elevator.ts`** | **~15** | **Yes** — the recommendation |
+
+The targeted lint refuses a privilege-elevating binary (`sudo`, `doas`, `pkexec`, `su`, `runas`)
+invoked by bare name in any spawn form, across `.ts` **and** `.sh`, resolving through variables and
+wrapper arrays. High recall on the class that matters, near-zero false positives, ~15 sites to clear,
+and it fits the existing `src/Core.TypeScript/hygiene/lint-*.ts` tradition rather than adding a
+repo-wide rule nobody can clear. Filing it is Dejan's call; the triage debt is discharged.
+
+**Honest limit of this whole pass:** eslint sees TypeScript and JavaScript only. F#, C#, Python,
+shell, and GitHub Actions `run:` blocks all shell out and are outside every number above.
