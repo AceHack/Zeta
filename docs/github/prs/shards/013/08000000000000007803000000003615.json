@@ -1,0 +1,27 @@
+{
+  "pr_number": 13845,
+  "archive_path": "docs/history/pr-reviews/PR-13845-feat-society-of-agents-student-t-bnn-worms-for-chip-8-llmtv.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7krxi-",
+    "comment:PRRC_kwDOSF9kNM7krxi4",
+    "comment:PRRC_kwDOSF9kNM7krxi8",
+    "comment:PRRC_kwDOSF9kNM7krxjA",
+    "comment:PRRC_kwDOSF9kNM7krxjG",
+    "comment:PRRC_kwDOSF9kNM7krxjJ",
+    "comment:PRRC_kwDOSF9kNM7kry19",
+    "thread:PRRT_kwDOSF9kNM6bab4V",
+    "thread:PRRT_kwDOSF9kNM6bab4X",
+    "thread:PRRT_kwDOSF9kNM6bab4a",
+    "thread:PRRT_kwDOSF9kNM6bab4c",
+    "thread:PRRT_kwDOSF9kNM6bab4h",
+    "thread:PRRT_kwDOSF9kNM6bab4j",
+    "thread:PRRT_kwDOSF9kNM6bacxy"
+  ],
+  "fetched_at": "2026-08-22T18:27:53.069Z",
+  "schema_version": "v1",
+  "commit_sha": "83bd2f844df334f9c34d6cdfefcde4a6646ef1e6",
+  "title": "feat: Society of Agents (Student-t BNN & Worms) for CHIP-8 LLMTV",
+  "state": "MERGED",
+  "merged_at": "2026-08-22T18:27:06Z",
+  "head_ref": "feature-chip8-swarm-causal-orbits"
+}
