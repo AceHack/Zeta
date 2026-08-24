@@ -1,0 +1,12 @@
+{
+  "pr_number": 13805,
+  "archive_path": "docs/history/pr-reviews/PR-13805-cluster-every-chart-at-both-rungs-each-budgeted-against-its-own-machine-and-dev-.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-22T18:33:13.001Z",
+  "schema_version": "v1",
+  "commit_sha": "8cec12d059a560b55dabef6eba14d39405526d03",
+  "title": "cluster: every chart at BOTH rungs, each budgeted against its own machine — and `dev` does not fit either",
+  "state": "MERGED",
+  "merged_at": "2026-08-22T18:32:25Z",
+  "head_ref": "shadow/helm-rungs-both-profiles"
+}
