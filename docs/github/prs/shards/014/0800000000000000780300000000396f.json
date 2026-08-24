@@ -1,0 +1,12 @@
+{
+  "pr_number": 14703,
+  "archive_path": "docs/history/pr-reviews/PR-14703-fix-ci-sweep-the-vacuity-class-a-configured-linter-must-be-an-invoked-one-and-an.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-24T11:13:50.142Z",
+  "schema_version": "v1",
+  "commit_sha": "c44091a1eed20f5cca6158d5b12fc07a1bd55e4d",
+  "title": "fix(ci): sweep the vacuity class — a configured linter must be an invoked one, and an invoked one must examine files",
+  "state": "MERGED",
+  "merged_at": "2026-08-24T11:13:02Z",
+  "head_ref": "dejan/audit-linter-coverage-vs-invocation"
+}
