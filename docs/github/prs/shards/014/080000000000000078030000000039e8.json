@@ -1,0 +1,12 @@
+{
+  "pr_number": 14824,
+  "archive_path": "docs/history/pr-reviews/PR-14824-ferry-the-four-colour-connection-is-jurisdictional-agreement-the-bound-is-topolo.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-24T15:56:54.761Z",
+  "schema_version": "v1",
+  "commit_sha": "19f25b4b77afbe482df793860a784ec98950fb32",
+  "title": "ferry: the four-colour connection is jurisdictional agreement — the bound is topological, not four",
+  "state": "MERGED",
+  "merged_at": "2026-08-24T15:56:03Z",
+  "head_ref": "ferry/four-colour-is-jurisdictional-agreement-and-the-bound-is-topological"
+}
