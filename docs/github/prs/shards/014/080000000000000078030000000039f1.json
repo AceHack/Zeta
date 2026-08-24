@@ -1,0 +1,12 @@
+{
+  "pr_number": 14833,
+  "archive_path": "docs/history/pr-reviews/PR-14833-feat-observe-tick-reasoning-make-small-llm-decisions-visible.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-24T16:06:37.803Z",
+  "schema_version": "v1",
+  "commit_sha": "28e2c47b05735a076fd8b33f8b2823a892a8ee5c",
+  "title": "feat(observe): tick-reasoning — make small LLM decisions visible",
+  "state": "MERGED",
+  "merged_at": "2026-08-24T16:05:46Z",
+  "head_ref": "alexa/tick-reasoning"
+}
