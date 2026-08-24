@@ -311,6 +311,7 @@
     <Compile Include="Ball.Tests.fs" />
     <Compile Include="Resolution.Tests.fs" />
     <Compile Include="RxAdapter.Tests.fs" />
+    <Compile Include="RxJoin.Tests.fs" />
     <Compile Include="WaveSim.Tests.fs" />
     <Compile Include="AdinkraViz.Tests.fs" />
     <Compile Include="CptSymmetry.Tests.fs" />
