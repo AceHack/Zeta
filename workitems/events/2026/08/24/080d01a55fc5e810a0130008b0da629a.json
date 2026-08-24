@@ -1,0 +1,14 @@
+{
+  "id": "080d01a55fc5e810a0130008b0da629a",
+  "at": "2026-08-24T16:48:00.701Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M0TAQY5X087G0R000N681C6",
+    "type": "task",
+    "title": "ace one-liner installer: runtime selection by declared cost model",
+    "slug": "ace-one-liner-installer-runtime-selection-by-declared-cost-m",
+    "priority": "P2",
+    "filename": "081M0TAQY5X087G0R000N681C6-ace-one-liner-installer-runtime-selection-by-declared-cost-m.md"
+  }
+}
