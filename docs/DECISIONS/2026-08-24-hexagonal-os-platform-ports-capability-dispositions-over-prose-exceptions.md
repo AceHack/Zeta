@@ -106,7 +106,7 @@ The brief proposed (a) package names, (b) genuine capability absences like PAM-v
 - **The largest category is in nobody's hypothesis.** `TestGate` is 20 of 53 real sites (38%)
   and it must **not** be ported — see §9.
 
-### 2.3 Is `when.ts` already a partial port?
+### 2.3 Is `when.ts` already a partial port
 
 Partially, and the shape of what it is missing is the design.
 `src/Core.TypeScript/ace/setup-realizers/when.ts` implements `when=` clauses
