@@ -33,6 +33,27 @@ skill design (carved sentence=hub, knowledge in docs=satellite),
 master-data (HKT-MDM hub/satellite is a natural HKT instance), and
 substrate-landing (memory? rule? skill? ADR? — ask the change rate).
 
+## Raw vault in one line
+
+> **A single version of the FACTS, never a single version of the TRUTH.**
+
+The **raw vault** stores what was asserted, as sourced, unfiltered — no business
+rules, no reconciliation, no winner picked. Interpretation happens later and
+downstream (business vault / marts), where there may be *many* truths over one set
+of facts. So a merge that produces one surviving value has **collapsed**, not
+merged: it destroyed the facts to manufacture a truth.
+
+This is the DV2.0 sentence the rest of this repo already leans on — see
+[`anti-babel-preserve-reconcilability.md`](anti-babel-preserve-reconcilability.md)
+(*reintegration is NOT reconvergence*, both branches held with their paths) and
+`docs/books/you-born-at-the-hinge/CONSENT-LEDGER.md` (both accounts held). It was
+load-bearing in three places while living in none of them; recorded here on
+Aaron's observation (2026-08-24) that it belongs in the DV docs.
+
+**Anchor (Beacon):** Dan Linstedt, Data Vault 2.0 — the raw-vault/business-vault
+split, and the *facts vs truth* formulation that distinguishes DV from the
+single-version-of-the-truth warehouse tradition (Inmon, Kimball).
+
 ## Idempotency in one line
 
 `f(f(x)) = f(x)`. Set-union, max/min, upsert-by-key, CAS, content-address
