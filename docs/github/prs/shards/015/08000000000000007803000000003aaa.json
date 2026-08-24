@@ -1,0 +1,12 @@
+{
+  "pr_number": 15018,
+  "archive_path": "docs/history/pr-reviews/PR-15018-fix-ci-lockfile-healer-could-never-land-and-both-lane-audits-never-ran.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-24T23:27:38.084Z",
+  "schema_version": "v1",
+  "commit_sha": "ce10db014529cb8a350843d78386cfc5ee94db59",
+  "title": "fix(ci): lockfile-healer could never land, and both lane audits never ran",
+  "state": "MERGED",
+  "merged_at": "2026-08-24T23:26:47Z",
+  "head_ref": "fix/lockfile-healer-cannot-land-under-ci-gate"
+}
