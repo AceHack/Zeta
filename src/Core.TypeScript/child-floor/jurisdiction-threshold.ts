@@ -117,8 +117,14 @@ export function floorVerdict(threshold: number, s: Subject): Verdict {
 
 /**
  * The concrete policy. A child-gated effect faces the floor at the resolved threshold; anything
- * else is not this policy's business and passes through — other red lines are other policies, and
- * composing them can only remove admissions, never add one.
+ * else is not this policy's business and passes through.
+ *
+ * Other red lines are other policies. What composing them can and cannot do is PROVEN in
+ * `ChildFloorPolicy.lean` §5a rather than assumed here — the governance anchor
+ * (`memory/kestrel/2026-06-06-ai-sovereignty-liability-child-floor-law-binds-not-belief.md`)
+ * names the child floor as being in the "never compose through" class, so the claim needed a
+ * theorem. `denyIfEither` is the composition shape; `floor_survives_composition_left`/`_right`
+ * are the results.
  */
 export function childFloorPolicy(
   registry: readonly Reading[],

@@ -60,6 +60,43 @@ file cannot invalidate any of it:
 5. **And therefore it never executes.** Composed with the already-proven gate: a child-gated
    effect on a subject under 16 is not executed at ANY depth, under ANY registry
    (`under_bandLow_never_executed`).
+6. **No other red line can compose the floor away.** `A ⊨ I ∧ B ⊨ I` does not give `A∘B ⊨ I`
+   in general, and the governance anchor below names the child floor as being in the
+   never-compose-through class — so this is proven rather than assumed
+   (`floor_survives_composition_left` / `_right`, §5a). Composing any other gate, on either
+   side, cannot buy an admission the floor refused.
+
+## The governance anchor this sits under — read it before reading the proofs
+
+`memory/kestrel/2026-06-06-ai-sovereignty-liability-child-floor-law-binds-not-belief.md` records
+Aaron's locked conclusions on the child floor, from 2026-06-06. Three of them bound what anything
+in this directory is allowed to mean:
+
+1. **The threshold is set by the LAW of the jurisdiction, not by anyone's belief.** Aaron,
+   verbatim: *"until the law recognizes the AI is more reliable in my jurisdiction it does not
+   matter if i believe it."* This is the reason a `Reading` requires a named author and a date,
+   and the reason `readings` ships empty rather than pre-filled by an agent's best guess.
+
+2. **The child floor is a GROUNDING question, not a proof question, and it is HUMAN-FINAL.**
+   *"Does the encoded notion of safety correspond to a real child's actual wellbeing in the actual
+   world?"* is contact-with-reality, and neither a proof nor an AI's breadth gets to halo it. So:
+   **nothing proven here settles the floor.** What the Lean establishes is a machine-checkable
+   *lower bound* on the mechanism — that the number cannot be moved below 16, that unknown fails
+   closed, that composition cannot undo it. It does not establish that the mechanism is grounded
+   in the right thing, and reading it that way would be the exact substitution the anchor refuses.
+
+3. **AI proposes, human disposes and is answerable.** The floor is described there as a
+   *"non-compositional, never-relaxable, never-cached-and-forgotten standing gate with a human
+   answerable behind it, sitting ABOVE the observe→inspect→check→admit pipeline."* This policy
+   sits INSIDE that pipeline, as something the gate consults. It is not the standing human gate
+   and does not replace it.
+
+**How this was found is worth recording**, because it is a defect in method rather than in code:
+the prior-art search for this work scoped `src/ db/ docs/ tests/` and omitted `memory/`, so the
+governance anchor most directly about the child floor was missed until after the first PR merged.
+Nothing shipped contradicted it, and one prose claim it forbids assuming (composition) has since
+been discharged as a theorem — but the search was incomplete and the anchor should have been the
+first thing read, not the last.
 
 ## What is NOT guaranteed — the real remaining gap
 
@@ -94,4 +131,10 @@ unknown case, which is `21`.
 - `.claude/rules/toy-is-free-metered-must-be-earned.md` — the register discipline the table above obeys
 - `docs/DEDICATION.md` — *"an invariant floor with a jurisdictional threshold"*, named there as
   a pattern the repository keeps producing
+- `memory/kestrel/2026-06-06-ai-sovereignty-liability-child-floor-law-binds-not-belief.md` —
+  the governance anchor above; law-binds-not-belief, human-final grounding, never-compose-through
+- `tests/Tests.FSharp/Formal/ChildFloorCrossVerify.Tests.fs` — the existing FsCheck leg that
+  cross-checks `ChildFloor.lean` against the real `SubstrateEffectHandler`. This policy has no
+  such leg because nothing deploys it yet; that file is where one would go.
+- `docs/history/pr-reviews/PR-6714-*.md` — the review of the original `ChildFloor.lean`
 - `workitems/081M0TJXY32087G0R003TBTR7V-*.md`

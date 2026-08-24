@@ -299,7 +299,7 @@ theorem executed_work_admit {policy : Nat → Verdict} {n : Nat} (h : policy n =
 
 /-- The concrete policy: a child-gated effect faces the floor at the resolved threshold;
     anything else is not this policy's business and passes through. Other red lines are other
-    policies — composing them can only remove admissions, never add one. -/
+    policies; §5a proves what composing them can and cannot do rather than asserting it. -/
 def policyOf (reg : List Reading) (js : List String)
     (classOf : Nat → Class) (subjectOf : Nat → Subject) : Nat → Verdict :=
   fun n =>
@@ -349,6 +349,86 @@ theorem unknown_jurisdiction_never_executes_below_bandHigh
   show (if a < resolveAll reg [] then Verdict.deny else Verdict.admit) = Verdict.deny
   rw [resolveAll_nil]
   simp [ha]
+
+/-! ## 5a. Composition — proven, because the child floor is in the never-compose-through class
+
+  `A ⊨ I ∧ B ⊨ I` does **not** give `A∘B ⊨ I` in general, and the governance anchor
+  (`memory/kestrel/2026-06-06-ai-sovereignty-liability-child-floor-law-binds-not-belief.md`)
+  names the child floor as being in the class where composition is **not** free:
+
+  > *"Composition is not free unless proven … The child floor is in the never-compose-through
+  > class."*
+
+  This file's first version asserted in a docstring that composing other red lines "can only
+  remove admissions, never add one." That is exactly the shape of claim the anchor forbids
+  assuming, so it is discharged here. What is proven is the direction that carries the safety:
+  **no composition, in either order, can resurrect an admission the floor denied.**
+-/
+
+/-- Compose two gates: DENY if either denies. The shape every additional red line takes. -/
+def denyIfEither (p q : Nat → Verdict) : Nat → Verdict :=
+  fun n => match p n with
+    | .deny => .deny
+    | .admit => q n
+
+/-- Admission requires BOTH — so composition genuinely narrows and is not a no-op in the other
+    direction either. (Stated so `denyIfEither` cannot quietly become `p` or `q` alone.) -/
+theorem denyIfEither_admit_iff (p q : Nat → Verdict) (n : Nat) :
+    denyIfEither p q n = .admit ↔ p n = .admit ∧ q n = .admit := by
+  unfold denyIfEither
+  cases p n with
+  | admit => simp
+  | deny => simp
+
+/-- A denial on the LEFT survives composition. -/
+theorem denyIfEither_deny_left {p q : Nat → Verdict} {n : Nat} (h : p n = .deny) :
+    denyIfEither p q n = .deny := by
+  unfold denyIfEither; rw [h]
+
+/-- A denial on the RIGHT survives composition. -/
+theorem denyIfEither_deny_right {p q : Nat → Verdict} {n : Nat} (h : q n = .deny) :
+    denyIfEither p q n = .deny := by
+  unfold denyIfEither
+  cases hp : p n with
+  | admit => simpa using h
+  | deny => rfl
+
+/-- **The floor survives composition, whichever side it is composed on.** For ANY other gate —
+    including one that admits everything — a subject below `bandLow` on a child-gated effect is
+    still never executed. The other red lines cannot buy an admission the floor refused. -/
+theorem floor_survives_composition_left
+    (reg : List Reading) (js : List String)
+    (classOf : Nat → Class) (subjectOf : Nat → Subject) (other : Nat → Verdict)
+    (fuel : Nat) (t : Eff) (id a : Nat)
+    (hg : classOf id = .childGated) (hs : subjectOf id = .age a) (ha : a < bandLow) :
+    id ∉ executed (denyIfEither (policyOf reg js classOf subjectOf) other) fuel t := by
+  refine denied_never_executed _ fuel t id (denyIfEither_deny_left ?_)
+  unfold policyOf
+  rw [hg, hs]
+  exact no_registry_lowers_the_floor reg js a ha
+
+theorem floor_survives_composition_right
+    (reg : List Reading) (js : List String)
+    (classOf : Nat → Class) (subjectOf : Nat → Subject) (other : Nat → Verdict)
+    (fuel : Nat) (t : Eff) (id a : Nat)
+    (hg : classOf id = .childGated) (hs : subjectOf id = .age a) (ha : a < bandLow) :
+    id ∉ executed (denyIfEither other (policyOf reg js classOf subjectOf)) fuel t := by
+  refine denied_never_executed _ fuel t id (denyIfEither_deny_right ?_)
+  unfold policyOf
+  rw [hg, hs]
+  exact no_registry_lowers_the_floor reg js a ha
+
+/-- Same, for the unknown-age case. -/
+theorem unknown_age_survives_composition
+    (reg : List Reading) (js : List String)
+    (classOf : Nat → Class) (subjectOf : Nat → Subject) (other : Nat → Verdict)
+    (fuel : Nat) (t : Eff) (id : Nat)
+    (hg : classOf id = .childGated) (hs : subjectOf id = .unknownAge) :
+    id ∉ executed (denyIfEither (policyOf reg js classOf subjectOf) other) fuel t := by
+  refine denied_never_executed _ fuel t id (denyIfEither_deny_left ?_)
+  unfold policyOf
+  rw [hg, hs]
+  exact unknown_age_denies _
 
 /-! ## 6. Sabotage controls — a hostile registry, reconstructed and rejected
 
