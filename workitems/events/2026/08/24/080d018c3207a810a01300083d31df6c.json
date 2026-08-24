@@ -1,0 +1,10 @@
+{
+  "id": "080d018c3207a810a01300083d31df6c",
+  "at": "2026-08-24T02:07:57.173Z",
+  "by": "otto-cli",
+  "kind": "closed",
+  "payload": {
+    "workItemId": "081M0RN9FW3087G0R000EBT0HH",
+    "reason": "Delivered by #14606: gate job lint (identity-dla site) runs the deploy's own build entry at PR time, claimed in build-graph, discrimination proven break-red/restore-green in the PR's own history"
+  }
+}
