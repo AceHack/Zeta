@@ -1,0 +1,12 @@
+{
+  "pr_number": 13339,
+  "archive_path": "docs/history/pr-reviews/PR-13339-fix-sealed-secrets-the-chart-repourl-404s-correct-it-and-take-the-current-chart.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-21T20:28:05.235Z",
+  "schema_version": "v1",
+  "commit_sha": "d1e4c9f7920c058973ba9f41bacf5c8536518e30",
+  "title": "fix(sealed-secrets): the chart repoURL 404s — correct it, and take the current chart",
+  "state": "MERGED",
+  "merged_at": "2026-08-21T20:24:36Z",
+  "head_ref": "fix/sealed-secrets-repourl-and-latest"
+}
