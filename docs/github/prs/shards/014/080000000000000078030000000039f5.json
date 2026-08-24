@@ -1,0 +1,12 @@
+{
+  "pr_number": 14837,
+  "archive_path": "docs/history/pr-reviews/PR-14837-bug-liveness-a-windows-host-reports-not-installed-for-a-check-that-never-ran.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-24T16:43:35.798Z",
+  "schema_version": "v1",
+  "commit_sha": "f9618f657bffc4a594ed484d989d5239dd1651f6",
+  "title": "bug(liveness): a Windows host reports \"not-installed\" for a check that never ran",
+  "state": "MERGED",
+  "merged_at": "2026-08-24T16:42:46Z",
+  "head_ref": "fix/liveness-windows-vacuity-workitem"
+}
