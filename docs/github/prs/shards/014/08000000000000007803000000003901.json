@@ -1,0 +1,12 @@
+{
+  "pr_number": 14593,
+  "archive_path": "docs/history/pr-reviews/PR-14593-docs-workitem-the-eslint-roster-s-ci-cost-as-minutes-run-x-runs-month.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-24T01:04:07.730Z",
+  "schema_version": "v1",
+  "commit_sha": "50289a35337e1dc6078c5bde4400c84b17181da2",
+  "title": "docs(workitem): the eslint roster's CI cost, as minutes/run x runs/month",
+  "state": "MERGED",
+  "merged_at": "2026-08-24T01:03:25Z",
+  "head_ref": "ci/eslint-roster-cost-estimate"
+}
