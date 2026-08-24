@@ -1,0 +1,12 @@
+{
+  "pr_number": 14790,
+  "archive_path": "docs/history/pr-reviews/PR-14790-research-zetadb-is-bit-accurate-per-frame-or-it-is-a-bug-and-the-compression-is-.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-24T14:47:06.332Z",
+  "schema_version": "v1",
+  "commit_sha": "36c2ff5594a466c105799297e6b1fd65be1be8e4",
+  "title": "research: zetadb is bit-accurate per frame or it is a bug — and the compression is object generators, not pixel deltas",
+  "state": "MERGED",
+  "merged_at": "2026-08-24T14:46:20Z",
+  "head_ref": "docs/zetadb-frame-invariant"
+}
