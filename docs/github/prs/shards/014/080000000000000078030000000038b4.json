@@ -1,0 +1,12 @@
+{
+  "pr_number": 14516,
+  "archive_path": "docs/history/pr-reviews/PR-14516-bug-eslint-prettier-and-stylelint-are-configured-pinned-and-named-in-ci-and-neve.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-23T23:01:48.748Z",
+  "schema_version": "v1",
+  "commit_sha": "11e5ebfd25c75a28f901ce5b2906cf29de56a340",
+  "title": "bug: eslint, prettier and stylelint are configured, pinned and named in CI — and never invoked",
+  "state": "MERGED",
+  "merged_at": "2026-08-23T23:01:02Z",
+  "head_ref": "bug/eslint-prettier-stylelint-never-invoked"
+}
