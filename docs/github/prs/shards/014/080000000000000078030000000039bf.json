@@ -1,0 +1,12 @@
+{
+  "pr_number": 14783,
+  "archive_path": "docs/history/pr-reviews/PR-14783-fix-lint-lex-regex-literals-a-quote-inside-one-silenced-the-elevator-guard.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-24T14:20:20.298Z",
+  "schema_version": "v1",
+  "commit_sha": "0dcae7845328668d2260630a6242258d967a5c1e",
+  "title": "fix(lint): lex regex literals — a quote inside one silenced the elevator guard",
+  "state": "MERGED",
+  "merged_at": "2026-08-24T14:19:35Z",
+  "head_ref": "fix/nazar-dangling-suppression-xref"
+}
