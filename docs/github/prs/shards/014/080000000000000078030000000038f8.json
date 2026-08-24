@@ -1,0 +1,12 @@
+{
+  "pr_number": 14584,
+  "archive_path": "docs/history/pr-reviews/PR-14584-fix-hygiene-action-mode-reconciles-to-the-weakest-claim-never-the-strongest.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-24T00:42:48.145Z",
+  "schema_version": "v1",
+  "commit_sha": "4071e558ee50552778dcdcaba4f3e4ba349cf031",
+  "title": "fix(hygiene): Action-Mode reconciles to the WEAKEST claim, never the strongest",
+  "state": "MERGED",
+  "merged_at": "2026-08-24T00:42:03Z",
+  "head_ref": "fix/agencysignature-reconcile-action-mode-to-the-weakest-claim"
+}
