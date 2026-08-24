@@ -1,0 +1,14 @@
+{
+  "id": "080d017971a85010a01300086d23c63f",
+  "at": "2026-08-23T15:12:32.522Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M0QJWD89087G0R001FSQJP5",
+    "type": "task",
+    "title": "src/Core.Python has no [tool.ruff] config, so the lint rule set drifts with the tool — ruff 0.16.4 turns 0 findings into 65",
+    "slug": "src-core-python-has-no-tool-ruff-config-so-the-lint-rule-set",
+    "priority": "P2",
+    "filename": "081M0QJWD89087G0R001FSQJP5-src-core-python-has-no-tool-ruff-config-so-the-lint-rule-set.md"
+  }
+}

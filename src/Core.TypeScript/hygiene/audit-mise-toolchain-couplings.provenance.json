@@ -1,0 +1,9 @@
+{
+  "//": "The (compiler version, artifact sha256) pairing that audit-mise-toolchain-couplings.ts checks in BOTH directions. A COMMITTED byte-lock artifact does not move when its compiler pin moves, so nothing else in the repo can see that pairing go stale: the byte-lock compares artifact to golden vectors and both are unchanged. What breaks is condition 3 of the no-binary-in-proof-lineage exception -- 'reproducible from committed source' -- silently. This file is what makes it loud.",
+  "zig": {
+    "version": "0.13.0",
+    "artifact": "src/wasm-dla/bytelock/dla-canonical-zig.wasm",
+    "sha256": "c28210dc4e1b33f63058d7a580410503e62be786477401e5d63c42fb97b8dbfe",
+    "note": "1,314 bytes. Verified byte-identical on rebuild under zig 0.13.0 on 2026-08-17; sha re-measured 2026-08-23 on main and unchanged. Regenerate with `node src/wasm-dla/bytelock/build-substrates.mjs` (the exact zig command lives there), re-run the byte-lock, and update BOTH fields here in the same commit as the .mise.toml zig bump."
+  }
+}

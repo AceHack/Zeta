@@ -55,3 +55,17 @@ use. That is one datapoint, not a proof — it is why this is P2 and not P1.
 **Deliberately NOT done in the radar/currency PR** (`docs/radar-ring-drift-and-currency`): a
 toolchain move without a build + axiom audit beside it is exactly the unwitnessed claim the
 radar drift was made of.
+
+---
+
+## Re-confirmed 2026-08-23 (currency sweep, `deps/security-roll-and-ecosystem-coverage`)
+
+Deliberately **not taken** in that PR, and the sizing above stands unchanged. One thing to
+add to the evidence list in "Done when": the `Zeta23/LinAlg` port landed on 2026-08-22, so a
+toolchain move now has to **re-verify that port specifically**, not just `lake build` in
+aggregate — it is the newest and least-settled thing riding on the pin, and "the build was
+green" would not distinguish "the port still holds" from "the port still compiles".
+
+Order preference is unchanged and worth restating because it is the cheap win: `v4.30.0-rc1`
+-> `v4.30.0` removes "we ship a release candidate of a superseded version" for one minor's
+worth of risk, and can land even if the full `v4.33.1` move stalls on Mathlib churn.

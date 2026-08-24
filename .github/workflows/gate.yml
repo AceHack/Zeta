@@ -2056,6 +2056,31 @@ jobs:
       - name: Proof-lineage binary exception (no-binary-in-proof-lineage.md)
         run: bun src/Core.TypeScript/hygiene/audit-proof-lineage-binaries.ts
 
+      # The .NET SDK version is declared in TWO files and, until 2026-08-23, nothing checked
+      # that they agreed: `global.json` carried `rollForward: latestPatch` (which reads like
+      # automatic security uptake and is not — it only selects among ALREADY-INSTALLED SDKs)
+      # while `.mise.toml`, the file that actually acquires the SDK, pinned it exactly. A
+      # reader of one believed a property only the other could grant. `.mise.toml` is now the
+      # single declared source and `global.json` a checked restatement, so the two can no
+      # longer disagree silently. Text-only and offline — it runs where no SDK is installed,
+      # unlike its runtime sibling `audit-codeanalysis-sdk-match.ts`, which reads the SDK's
+      # own `csc -version` in the build job.
+      - name: .NET SDK pin declared once (.mise.toml canonical, global.json restates)
+        run: bun src/Core.TypeScript/hygiene/audit-dotnet-pin-parity.ts
+
+      # The `.mise.toml` pins that OTHER files silently depend on. Two couplings, both of
+      # which fail by being quiet: a stale `~/.rustup/toolchains/<v>-*` cache glob degrades
+      # the offline path to a CDN fetch, a stale `.mise.full.toml` gives full-tier hosts a
+      # different compiler from slim ones, and a zig bump leaves the COMMITTED byte-lock
+      # `.wasm` unchanged — so the byte-lock still passes while the artifact stops being
+      # reproducible from the pinned toolchain. Neither is reachable by a Dependabot
+      # `ignore:`: `.mise.toml` is a manifest of no supported ecosystem, so an `ignore:`
+      # naming them would suppress nothing while reading as protection. The site list is
+      # discovered from the operative surfaces, so a new workflow with a stale glob is
+      # caught the day it lands.
+      - name: mise toolchain couplings (rust restatements · zig byte-lock provenance)
+        run: bun src/Core.TypeScript/hygiene/audit-mise-toolchain-couplings.ts
+
       # Every zflash host arm must reach the ISO integrity gate before it writes to a block
       # device. Measured on main 2026-08-21: the manifest check existed in the macOS arm and
       # NOWHERE ELSE, so flash-usb-linux.ts and flash-usb-windows.ts wrote an image with no

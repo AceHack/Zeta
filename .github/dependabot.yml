@@ -136,3 +136,227 @@ updates:
         update-types:
           - "patch"
           - "minor"
+
+  # ---------------------------------------------------------------------------
+  # ECOSYSTEM COVERAGE, added 2026-08-23 (workitem 081M0Q9Y686087G0R000QK0H1R).
+  #
+  # Until this commit Dependabot pointed at TWO ecosystems, `nuget` and
+  # `github-actions`, and the toolchain-currency audit
+  # (docs/research/2026-08-23-toolchain-currency-audit-and-tech-radar-ring-drift.md)
+  # found the shape of the consequence: §2.5 checked every NuGet pin against
+  # api.nuget.org and they were ALL at latest, while §2.4 found `typescript` a
+  # whole MAJOR behind, `z3-solver` a major behind, and two crypto packages two
+  # minors behind. Where the bot was pointed, nothing drifted. Where it was not,
+  # everything did. That is as clean a control as this repo has produced, and it
+  # says the mechanism works and was simply not aimed.
+  #
+  # `directory:` (singular) is kept on the two pre-existing entries so their
+  # history and grouping are untouched; the new entries use `directories:`
+  # (plural, glob-capable) because the alternative is 36 near-identical cargo
+  # blocks that drift from each other.
+  # ---------------------------------------------------------------------------
+
+  # bun — the four directories that actually carry a `bun.lock`. Every CI lane
+  # installs with `bun install --frozen-lockfile`, so `bun.lock` is the
+  # authoritative lockfile and the `bun` ecosystem (not `npm`) is the one that
+  # maintains it.
+  #
+  # Known, pre-existing, NOT fixed here: the repo ROOT carries THREE lockfiles
+  # for one manifest — `bun.lock`, `bun.lockb` and `package-lock.json`. Only
+  # `bun.lock` is read by CI; the other two are vestigial and will now visibly
+  # fall behind. That is a real inconsistency and it is better seen than hidden,
+  # but resolving it is a separate change with its own verification.
+  - package-ecosystem: "bun"
+    directories:
+      - "/"
+      - "/full-ai-cluster/platform-controller"
+      - "/full-ai-cluster/portal"
+      - "/full-ai-cluster/portal/web"
+    schedule:
+      interval: "weekly"
+    labels:
+      - "dependencies"
+    commit-message:
+      prefix: "deps:"
+    groups:
+      bun-minor-patch:
+        patterns:
+          - "*"
+        update-types:
+          - "patch"
+          - "minor"
+    ignore:
+      # typescript 6.0.3 -> 7.0.2 is a MAJOR and it is not a dependency chore:
+      # every `bun test`, every `tsc` invocation in `lint (TS)`, and the four-
+      # oracle TypeScript byte-lock all run through it. It is held here so the
+      # minor/patch group can flow WITHOUT dragging a compiler major behind it —
+      # which is the same failure the FsCheck entry below records.
+      #
+      # LIFTS WHEN: the TS 7 migration is done as its own change, with the
+      # byte-lock vectors re-verified. Tracked: 081M0QJYR80087G0R000F2YVF5.
+      - dependency-name: "typescript"
+        update-types:
+          - "version-update:semver-major"
+
+  # npm — the package.json directories whose lockfile is npm's or pnpm's, plus
+  # the ones that carry no lockfile at all (the `npm` ecosystem reads a bare
+  # manifest; the `bun` ecosystem is documented against `bun.lock`, so pointing
+  # it at a lockless directory would be a declaration that quietly does nothing).
+  - package-ecosystem: "npm"
+    directories:
+      - "/agentic-organization"
+      - "/demo/identity-dla-site"
+      - "/genesis/_src"
+      - "/src/Core.TypeScript/*"
+      - "/src/Renderers/website"
+      - "/src/apps/twitch-ai"
+      - "/tools/setup/persona-keys"
+    schedule:
+      interval: "weekly"
+    labels:
+      - "dependencies"
+    commit-message:
+      prefix: "deps:"
+    groups:
+      npm-minor-patch:
+        patterns:
+          - "*"
+        update-types:
+          - "patch"
+          - "minor"
+
+  # cargo — 36 independent crates under src/Core.Rust.*, each with its own
+  # Cargo.toml and Cargo.lock. One glob rather than 36 blocks.
+  #
+  # NOTE ON SCOPE, because it is the thing most likely to be misread: this
+  # updates CRATE DEPENDENCIES. It does not, and cannot, touch the rust
+  # COMPILER pin — that lives in `.mise.toml`, which is not a manifest of any
+  # ecosystem Dependabot supports. See the note at the bottom of this file.
+  - package-ecosystem: "cargo"
+    directories:
+      - "/src/Core.Rust.*"
+    schedule:
+      interval: "weekly"
+    labels:
+      - "dependencies"
+    commit-message:
+      prefix: "deps:"
+    groups:
+      cargo-minor-patch:
+        patterns:
+          - "*"
+        update-types:
+          - "patch"
+          - "minor"
+
+  # gomod — three modules.
+  #
+  # `/src/wasm-dla/bytelock` is BYTE-LOCK COUPLED and is the one to read twice:
+  # `bytelock.yml` BUILDS the Go substrate in CI rather than committing it (the
+  # `.claude/rules/no-binary-in-proof-lineage.md` preference), then compares its
+  # trajectory against `testdata/golden-seed-*.json`. So a dependency bump that
+  # changes the emitted wasm turns that lane RED — loudly, pre-merge, on the PR
+  # that caused it. It is deliberately NOT ignored: the coupling here already
+  # has a working falsifier, and adding an `ignore:` would trade a loud failure
+  # for a silent stale pin. Contrast the zig substrate, whose module is
+  # COMMITTED and therefore does not move when its compiler pin does — that one
+  # needs a check, and now has one (see the bottom note).
+  - package-ecosystem: "gomod"
+    directories:
+      - "/src/Core.Go"
+      - "/src/wasm-dla/bytelock"
+      - "/full-ai-cluster/k8s/applications/hat-system/operator"
+    schedule:
+      interval: "weekly"
+    labels:
+      - "dependencies"
+    commit-message:
+      prefix: "deps:"
+    groups:
+      gomod-minor-patch:
+        patterns:
+          - "*"
+        update-types:
+          - "patch"
+          - "minor"
+
+  # uv — `src/Core.Python/` uses uv with a committed `uv.lock`, so the correct
+  # ecosystem is `uv` and NOT `pip`: the pip ecosystem would edit
+  # `pyproject.toml` and leave `uv.lock` behind it, and `uv sync --frozen`
+  # would then refuse the tree. (GA for version updates 2025-03, for security
+  # updates 2025-12.)
+  - package-ecosystem: "uv"
+    directory: "/src/Core.Python"
+    schedule:
+      interval: "weekly"
+    labels:
+      - "dependencies"
+    commit-message:
+      prefix: "deps:"
+    groups:
+      uv-minor-patch:
+        patterns:
+          - "*"
+        update-types:
+          - "patch"
+          - "minor"
+
+  # dotnet-sdk — watches `global.json`.
+  #
+  # This entry exists because the claim "global.json is not a package manifest,
+  # so no bot can watch it" is FALSE, and acting on it is what let a 10-CVE
+  # security roll sit unnoticed for twelve days. `dotnet-sdk` is a documented
+  # Dependabot ecosystem (>= .NET Core 3.1) and `global.json` is exactly what it
+  # reads. The claim was checked before it was written down here.
+  #
+  # READ THIS BEFORE "FIXING" ITS PR: a Dependabot PR from this entry will be
+  # RED, by construction, and that is the design rather than a defect. As of
+  # 2026-08-23 `.mise.toml` is the SINGLE DECLARED SOURCE of the SDK version and
+  # `global.json` is a restatement held equal by
+  # `src/Core.TypeScript/hygiene/audit-dotnet-pin-parity.ts`. Dependabot can
+  # edit `global.json` and cannot edit `.mise.toml`, so its PR will move one
+  # half of a two-file fact and the parity check will say so by name.
+  #
+  # That is worth more than silence: the bot supplies the NOTIFICATION and the
+  # exact version, a human or agent supplies the coupled one-line edit, and the
+  # check refuses to let the half-fix merge. The alternative on offer was
+  # nothing watching at all, which is how this bump was found by hand.
+  - package-ecosystem: "dotnet-sdk"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    labels:
+      - "dependencies"
+    commit-message:
+      prefix: "deps:"
+
+  # ---------------------------------------------------------------------------
+  # WHAT NO DEPENDABOT ENTRY CAN COVER — and why there is no `ignore:` for it.
+  #
+  # The brief for this change asked for `ignore:` entries guarding two
+  # semver-invisible couplings: rust <-> the `1.87.0-*` rustup cache globs, and
+  # zig <-> the byte-locked `.wasm` under `src/wasm-dla/bytelock/`. They are not
+  # here, and the reason is that they could not do anything.
+  #
+  # An `ignore:` suppresses an update DEPENDABOT WOULD OTHERWISE PROPOSE. Both
+  # of those pins live in `.mise.toml`, which is not a manifest of any supported
+  # ecosystem — there is no `mise` ecosystem, and while SchemaStore lists a
+  # `rust-toolchain` ecosystem it reads `rust-toolchain.toml`, a file this repo
+  # does not have. So Dependabot proposes nothing for either, and an `ignore:`
+  # naming them would suppress nothing: a guard that cannot fire, sitting where
+  # a reader would take it for protection. That is the vacuity class this repo
+  # lints for elsewhere, and writing one here to satisfy the request would have
+  # been the request satisfied and the coupling still unguarded.
+  #
+  # The guard is therefore a CHECK, where it can actually fail:
+  # `src/Core.TypeScript/hygiene/audit-mise-toolchain-couplings.ts`, on the
+  # `cross-verify` floor. It derives every restatement of the rust and zig pins
+  # from `.mise.toml` itself and reddens when they disagree — including
+  # `.mise.full.toml`, which independently pins rust and which the audit's
+  # two-file description of this coupling did not mention.
+  #
+  # The other uncoverable pins — `src/Core.Lean4/lean-toolchain`, and the mise
+  # tool versions generally — have no ecosystem either. The answer for those is
+  # a scheduled currency report that prints the delta, not a bot that does not
+  # exist; tracked in 081M0Q9Y686087G0R000QK0H1R.
+  # ---------------------------------------------------------------------------

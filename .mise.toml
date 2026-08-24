@@ -22,12 +22,43 @@
 min_version = "2026.6.12"
 
 [tools]
-# .NET 10 SDK (latest). Kept in sync with `global.json` — Zeta's
-# own `.NET`-native pin contract. Round-34 flip from
-# Microsoft's dotnet-install.sh to mise (see header).
-dotnet = "10.0.302"
+# .NET 10 SDK. THIS LINE IS THE SINGLE DECLARED SOURCE of the SDK
+# version; `global.json` restates it and is held in agreement by
+# `src/Core.TypeScript/hygiene/audit-dotnet-pin-parity.ts`.
+#
+# Why this file and not `global.json`: mise is the only one of the two
+# that ACQUIRES an SDK. `global.json`'s `rollForward` is a RESOLUTION
+# policy over already-installed SDKs — it has never downloaded one — so
+# `rollForward: latestPatch` was never an update mechanism and reading it
+# as one is the belief this split existed to create. The exact pin here
+# is also what keeps installs deterministic across laptops + CI (§7 DST);
+# a loose pin would trade that away for an uptake it still would not get.
+#
+# 10.0.302 -> 10.0.303 (2026-08-11): SECURITY roll, runtime 10.0.10 ->
+# 10.0.11, 10 CVEs (CVE-2026-62871/62886/62897/62898/62899/62900/62901/
+# 62902/62909, CVE-2026-70354). Verified locally, not inferred: the
+# bundled Roslyn is UNCHANGED at 5.6.0 across the roll --
+#   10.0.302 -> 5.6.0-2.26329.109
+#   10.0.303 -> 5.6.0-2.26377.103
+# so the `Microsoft.CodeAnalysis.*` ceiling in Directory.Packages.props
+# (5.6.0) and its dependabot `ignore:` entry both stay exactly as they
+# are. A patch-band roll keeps the Roslyn minor; a FEATURE-band roll
+# (10.0.3xx -> 10.0.4xx, currently 10.0.400) is what moves it, and that
+# is the change that must carry the CodeAnalysis + FSharp.Core bumps
+# with it in one commit.
+#
+# macOS trap, measured 2026-08-23: `mise install dotnet@<newer>` replaces
+# the shared host binary at `~/.local/share/mise/dotnet-root/dotnet` IN
+# PLACE, and the kernel keeps the previous binary's code-signature cache
+# entry for that vnode -- every later `dotnet` invocation is then SIGKILLed
+# (exit 137, no stdout, no stderr). mise's own post-install `dotnet
+# --version` probe fails the same way ("exited with non-zero status: no
+# exit status"). It is not a bad download: `codesign -v` passes and a
+# copy of the same bytes at a new path runs. Fix is to give the file a new
+# vnode -- `cp` it aside, `rm`, `cp` back.
+dotnet = "10.0.303"
 go = "1.26.4"
-golangci-lint = "2.12.2"
+golangci-lint = "2.13.1"
 # Rust stable. Edition 2024 requires >=1.85. The mise `core:rust`
 # backend wraps rustup and passes `components`/`targets` straight
 # through to `rustup toolchain install`, so ONE declaration
@@ -52,15 +83,38 @@ golangci-lint = "2.12.2"
 # rust-std-wasm32-unknown-unknown, and that toolchain compiled a
 # real `--target wasm32-unknown-unknown` binary.
 #
-# A version bump must also move the `1.87.0-*` rustup-toolchain
-# cache globs in `.github/workflows/gate.yml` +
-# `installer-unit-tests.yml`; a stale glob silently degrades the
-# offline path to a CDN fetch.
+# A version bump must also move every OTHER site that restates this
+# version. That used to read "the `1.87.0-*` rustup-toolchain cache
+# globs in `.github/workflows/gate.yml` + `installer-unit-tests.yml`",
+# which was true and short by an order of magnitude: measured
+# 2026-08-23 there are 17 operative restatements, and one of them is
+# `.mise.full.toml`, which carries its OWN `rust = { version = ... }`
+# pin -- so a bump here alone leaves full-tier hosts (dev laptops,
+# cluster nodes, the k8s CI lanes) on a different compiler from
+# slim/standard hosts. Nothing in the tree said that.
+#
+# Every one of these fails SILENTLY: a stale cache glob degrades the
+# offline path to a CDN fetch, and a stale second mise config just
+# provisions the wrong thing. So the constraint is no longer prose --
+# `src/Core.TypeScript/hygiene/audit-mise-toolchain-couplings.ts`
+# discovers the sites and reddens on disagreement, on the
+# `cross-verify` floor. Bump this line and run it; it names every
+# file and line that still has to move.
 rust = { version = "1.87.0", components = ["rustfmt", "clippy"], targets = ["wasm32-unknown-unknown"] }
 # Zig 0.13.0 -- wasm32-freestanding compiler substrate (Oracle 11).
 # Builds the 1,314-byte `src/wasm-dla/bytelock/dla-canonical-zig.wasm` byte-lock
 # substrate; the exact command lives in `bytelock/build-substrates.mjs`. Verified
 # byte-identical on rebuild under this pin (sha256 c28210dc..., 2026-08-17).
+# THE COMMITTED ARTIFACT DOES NOT MOVE WHEN THIS PIN DOES, and that is the quiet
+# failure: the byte-lock compares the artifact to its golden vectors, both are
+# unchanged, every check stays green, and the module has silently stopped being
+# reproducible from the pinned toolchain -- condition 3 of the
+# no-binary-in-proof-lineage exception. So the (version, sha256) pairing is
+# recorded in
+# `src/Core.TypeScript/hygiene/audit-mise-toolchain-couplings.provenance.json`
+# and checked BOTH ways. To bump zig: regenerate via
+# `node src/wasm-dla/bytelock/build-substrates.mjs`, re-run the byte-lock, and
+# move the provenance record in the SAME commit.
 # The 951-byte figure quoted here previously was a SECOND, non-canonical Zig module
 # under `src/wasm-dla/zig/`, removed 2026-08-17: it was in no byte-lock roster, was
 # pinned by no golden vector, and returned cluster size 1 at every seed.
@@ -93,7 +147,7 @@ bun = "1.3"
 # latest` (both authoritative; tag_name = "0.11.16",
 # published_at = 2026-05-21T22:11:32Z). Source:
 # https://github.com/astral-sh/uv/releases/tag/0.11.16
-uv = "0.11.21"
+uv = "0.12.5"
 # actionlint: GitHub Actions workflow linter. Declarative install
 # (GOVERNANCE §24 three-way-parity) so dev laptops + CI runners
 # (including ubuntu-slim which doesn't ship with it) have identical
@@ -149,7 +203,7 @@ node = "24"
 # + #18 (pip install --upgrade pip + pip install semgrep — the
 # unpinned pip-bootstrap surface goes away entirely once mise
 # owns this tool).
-"pipx:semgrep" = "1.161.0"
+"pipx:semgrep" = "1.174.0"
 # yamllint: YAML syntax/indentation/duplicate-key linter for the k8s manifests
 # under full-ai-cluster/k8s/** (the `lint (yaml/k8s)` gate job). Same three-way-
 # parity rationale as semgrep — mac/linux/windows all get it through mise, so
@@ -159,8 +213,25 @@ node = "24"
 # pip (the uv-canonical ADR; identical to `pipx:semgrep` above). No pip anywhere.
 # Pin per dep-pin-search-first (PyPI 2026-06-10: 1.38.0).
 "pipx:yamllint" = "1.38.0"
+# HELD at 0.15.17, deliberately, measured 2026-08-23. Latest is 0.16.4 and the
+# bump is NOT a version change, it is a lint-policy change: against this tree
+#   ruff 0.15.17 -> "All checks passed!"
+#   ruff 0.16.4  -> "Found 65 errors."
+# I001, RUF022 and PLC0105 among them, and PLC0105 asks for TypeVar RENAMES
+# (`A` -> `A_contra`) across the Python byte-lock oracle. Sixty-five findings and
+# an oracle-shaped rename do not belong inside a dependency sweep.
+#
+# THE REAL DEFECT IS UNDERNEATH IT and outlives the bump:
+# `src/Core.Python/pyproject.toml` carries NO `[tool.ruff]` section, so the
+# effective rule set is "whatever ruff defaults to this month". That is an
+# unpinned POLICY behind a pinned tool — the lint equivalent of an unpinned
+# dependency, and the reason a patch-looking bump moved 0 -> 65. Pin the rule set
+# first, then the tool version means something.
+#
+# LIFTS WHEN: `[tool.ruff]` declares the rule set explicitly and the resulting
+# findings are fixed (not suppressed) in their own change.
 "pipx:ruff" = "0.15.17"
-"pipx:mypy" = "2.1.0"
+"pipx:mypy" = "2.3.1"
 
 [settings]
 # Explicit: use astral-sh/python-build-standalone precompiled binaries (fast

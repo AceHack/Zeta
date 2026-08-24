@@ -38,6 +38,8 @@
     "hygiene:check-bash-retirement-inventory": "bun ./src/Core.TypeScript/hygiene/check-bash-retirement-inventory.ts --enforce",
     "hygiene:measure-shell-key-exposure": "bun ./src/Core.TypeScript/hygiene/measure-shell-key-exposure.ts",
     "hygiene:mise-pin-parity": "bun ./src/Core.TypeScript/hygiene/mise-pin-parity.ts",
+    "hygiene:dotnet-pin-parity": "bun ./src/Core.TypeScript/hygiene/audit-dotnet-pin-parity.ts",
+    "hygiene:mise-toolchain-couplings": "bun ./src/Core.TypeScript/hygiene/audit-mise-toolchain-couplings.ts",
     "hygiene:no-ambient-credential-hoist": "bun ./src/Core.TypeScript/hygiene/lint-no-ambient-credential-hoist.ts",
     "hygiene:no-culture-sensitive-collation": "bun ./src/Core.TypeScript/hygiene/lint-no-culture-sensitive-collation.ts",
     "hygiene:no-decide-by-grep": "bun ./src/Core.TypeScript/hygiene/lint-no-decide-by-grep.ts",

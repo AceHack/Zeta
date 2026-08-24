@@ -1,0 +1,14 @@
+{
+  "id": "080d01797b080810a013000805b0d473",
+  "at": "2026-08-23T15:13:49.313Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M0QJYR80087G0R000F2YVF5",
+    "type": "task",
+    "title": "typescript 6.0.3 -> 7.0.2 is a compiler major under every bun test, lint (TS) and the TypeScript byte-lock oracle",
+    "slug": "typescript-6-0-3-7-0-2-is-a-compiler-major-under-every-bun-t",
+    "priority": "P2",
+    "filename": "081M0QJYR80087G0R000F2YVF5-typescript-6-0-3-7-0-2-is-a-compiler-major-under-every-bun-t.md"
+  }
+}

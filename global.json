@@ -1,6 +1,7 @@
 {
+  "//": "SDK version is DERIVED from .mise.toml's `dotnet` pin, which is the single declared source (mise is the only one of the two that ACQUIRES an SDK). Kept in agreement by src/Core.TypeScript/hygiene/audit-dotnet-pin-parity.ts. rollForward stays latestPatch for the no-mise clone-at-a-tag path: it selects among ALREADY-INSTALLED SDKs and never downloads one, so it is tolerance, not an update mechanism.",
   "sdk": {
-    "version": "10.0.302",
+    "version": "10.0.303",
     "rollForward": "latestPatch"
   }
 }
