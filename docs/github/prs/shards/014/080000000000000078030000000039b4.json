@@ -1,0 +1,12 @@
+{
+  "pr_number": 14772,
+  "archive_path": "docs/history/pr-reviews/PR-14772-docs-data-vault-land-aaron-s-2016-dv2-0-standards-synthesis-six-anchors-curated-.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-24T14:08:57.135Z",
+  "schema_version": "v1",
+  "commit_sha": "02ade893cc8d1011ac77e476b57acb78b700954e",
+  "title": "docs(data-vault): land Aaron's 2016 DV2.0 standards synthesis — six anchors curated, taxonomy extracted, Itron labels stripped",
+  "state": "MERGED",
+  "merged_at": "2026-08-24T14:08:09Z",
+  "head_ref": "docs/data-vault-2-standards-aaron-synthesis"
+}
