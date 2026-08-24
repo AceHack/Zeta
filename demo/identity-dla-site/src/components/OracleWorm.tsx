@@ -14,7 +14,7 @@
  *
  * ⚠ NAME IS A MISNOMER (Soraya audit, 2026-08-01). 0.2357 = 1/(3√2) is NOT the Tsirelson
  * bound. Tsirelson's bound is S ≤ 2√2 ≈ 2.828 on the CHSH correlator (src/Core/Tsirelson.fs);
- * there is no Tsirelson bound on a correlation coefficient. 1/(3√2) is ρ*/√2 — the Condorcet
+ * there is no Tsirelson bound on a correlation coefficient. 1/(3√2) is ρ* / √2 — the Condorcet
  * limit ρ* = 1/3 pushed through the FREELY CHOSEN linear map ρ = S/12 — a design parameter
  * chosen for homoiconicity, not derived. See
  * docs/research/2026-07-04-rho-t-derivation-attempt-it-is-a-design-choice-chosen-for-homoiconicity.md

@@ -1,0 +1,14 @@
+{
+  "id": "080d018aa5fc2010a01300082bb921f6",
+  "at": "2026-08-24T01:13:52.772Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M0RN9FW3087G0R000EBT0HH",
+    "type": "task",
+    "title": "identity-dla-site has no PR-blocking typecheck — a merged block-comment break rode main for 2h and killed every Pages deploy",
+    "slug": "identity-dla-site-has-no-pr-blocking-typecheck-a-merged-bloc",
+    "priority": "P2",
+    "filename": "081M0RN9FW3087G0R000EBT0HH-identity-dla-site-has-no-pr-blocking-typecheck-a-merged-bloc.md"
+  }
+}
