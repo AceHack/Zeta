@@ -67,6 +67,7 @@
 
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
+import { stringCompare } from "../collation/collation";
 
 // ═══ Types ════════════════════════════════════════════════════════════════════
 
@@ -138,7 +139,13 @@ function groupConcurrentTicks(
   windowMs: number = 120_000, // 2 minutes — within a single tick cycle
 ): Map<string, TickDecision[]> {
   const groups = new Map<string, TickDecision[]>();
-  const sorted = [...decisions].sort((a, b) => a.at.localeCompare(b.at));
+  // ORDINAL, never `localeCompare` -- `.claude/rules/culture-invariant-by-default.md`.
+  // `localeCompare` with no locale is culture-SENSITIVE and ICU-dependent, so two machines
+  // can order the same decisions differently and the fold stops being DST-replayable.
+  // `stringCompare` is the repo's treaty collation (code point == UTF-8 byte order), not the
+  // `<`/`>` fallback: the fallback is UTF-16 code-unit order, which is deterministic but
+  // DIVERGES from the other oracles above the BMP, and this fold is a cross-oracle surface.
+  const sorted = [...decisions].sort((a, b) => stringCompare(a.at, b.at));
 
   for (const d of sorted) {
     const t = new Date(d.at).getTime();
