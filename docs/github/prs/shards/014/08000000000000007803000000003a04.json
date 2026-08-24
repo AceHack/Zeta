@@ -1,0 +1,12 @@
+{
+  "pr_number": 14852,
+  "archive_path": "docs/history/pr-reviews/PR-14852-fix-installer-picker-defer-all-so-qemu-cannot-hang-on-readline.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-24T16:54:49.954Z",
+  "schema_version": "v1",
+  "commit_sha": "4a1df27bfcfd5d1345991cef7916d4e764355f97",
+  "title": "fix(installer): picker --defer-all so QEMU cannot hang on readline",
+  "state": "MERGED",
+  "merged_at": "2026-08-24T16:53:00Z",
+  "head_ref": "riven/picker-defer-all"
+}
