@@ -1,0 +1,12 @@
+{
+  "pr_number": 13864,
+  "archive_path": "docs/history/pr-reviews/PR-13864-feat-observe-society-status-cli-one-screen-health-dashboard.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-22T18:43:42.941Z",
+  "schema_version": "v1",
+  "commit_sha": "25da1aea7845962c560d7e250beffe8a256fc7f2",
+  "title": "feat(observe): society-status CLI — one-screen health dashboard",
+  "state": "MERGED",
+  "merged_at": "2026-08-22T18:43:09Z",
+  "head_ref": "alexa/society-status"
+}
