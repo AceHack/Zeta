@@ -85,7 +85,15 @@ export type FederatedIdentityOperation =
   | "x402-authorize-exceeding-standing-budget"
   | "export-or-destroy-key"
   | "open-authenticated-hsm-session"
-  | "provision-or-reconfigure-hardware-token";
+  | "provision-or-reconfigure-hardware-token"
+  // ── gated: added 2026-08-24 for the persona-keys ceremonies, which were raising
+  //    biometric prompts while being absent from this — the repo's ONLY ceremony
+  //    classification. An operation that prompts a human but is unclassified here is
+  //    unclassified authority: nobody ever wrote down why it needs a person, so nobody
+  //    can review the judgement. Both rows PIN EXISTING BEHAVIOUR (publish.ts and
+  //    revoke.ts already prompt); they change no gate, they record one.
+  | "publish-own-public-key-to-github"
+  | "revoke-device-cert-into-krl";
 
 export type CeremonyRequirement = "unattended" | "biometric-ceremony";
 
@@ -221,6 +229,16 @@ export function ceremonyRequirementFor(operation: FederatedIdentityOperation): C
         "biometric-ceremony",
         "writes to a device that may hold keys with no backup; never authorized to an agent here",
       );
+    case "publish-own-public-key-to-github":
+      return at(
+        "biometric-ceremony",
+        "an AUTHENTICATION key added to a GitHub account is a credential that can act as that account from then on. `publish-own-bundle` above is unattended because publishing a public ROOT grants nobody anything; this one does, and the difference is the account, not the key material",
+      );
+    case "revoke-device-cert-into-krl":
+      return at(
+        "biometric-ceremony",
+        "revocation only ever REMOVES authority, so it is safe in direction — but a KRL is monotone and a serial revoked into it does not come back out, which puts it in the irreversible class regardless of subject. The cost of a mistaken revocation is landing on the wrong fleet, not on the wrong side of a trust boundary",
+      );
   }
 }
 
@@ -249,6 +267,8 @@ export const ALL_OPERATIONS: readonly FederatedIdentityOperation[] = [
   "export-or-destroy-key",
   "open-authenticated-hsm-session",
   "provision-or-reconfigure-hardware-token",
+  "publish-own-public-key-to-github",
+  "revoke-device-cert-into-krl",
 ];
 
 /** Convenience predicate for callers that want to branch, not read prose. */

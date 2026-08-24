@@ -19,11 +19,19 @@ import { existsSync, mkdirSync } from "node:fs";
 import { join } from "node:path";
 import { caPublicKeyPath } from "./ca.ts";
 import { requireBiometric, type BiometricAuth, type BiometricResult } from "./biometric.ts";
+import {
+  ceremonyPromptLine,
+  realBriefEffects,
+  renderCeremonyBrief,
+  requestedBy,
+  type CeremonyBrief,
+  type CeremonyBriefEffects,
+} from "./ceremony-brief.ts";
 import { machineCertPath } from "./teardown.ts";
 
 export type { BiometricAuth, BiometricResult } from "./biometric.ts";
 
-export interface RevokeEffects {
+export interface RevokeEffects extends CeremonyBriefEffects {
   readonly exists: (path: string) => boolean;
   /** Update/create KRL at `krlPath` to revoke `certPath` signed by CA at `caPubPath`. */
   readonly revokeCertInKrl: (req: { krlPath: string; caPubPath: string; certPath: string }) => boolean;
@@ -46,13 +54,7 @@ export interface RevokeOptions {
 export interface RevokeResult {
   readonly dryRun: boolean;
   readonly confirmed: boolean;
-  readonly action:
-    | "revoked"
-    | "would-revoke"
-    | "absent"
-    | "skipped-not-confirmed"
-    | "skipped-biometric"
-    | "failed";
+  readonly action: "revoked" | "would-revoke" | "absent" | "skipped-not-confirmed" | "skipped-biometric" | "failed";
   readonly certPath: string;
   readonly caPubPath: string;
   readonly krlPath: string;
@@ -139,7 +141,30 @@ export async function revokeCert(fx: RevokeEffects, opts: RevokeOptions): Promis
 
   let biometric: BiometricResult | undefined;
   if (opts.biometricAuth) {
-    biometric = await requireBiometric(opts.biometricAuth, "revoke SSH device cert (KRL)");
+    // THE BRIEF — built from the SAME paths the revocation below consumes (`cert`, `caPub`,
+    // `krl`) and the operator's own stated reason, so the sentence approved and the act
+    // performed cannot describe different things.
+    //
+    // WHAT THIS REPLACED, verbatim: `"revoke SSH device cert (KRL)"` — a bare constant. Every
+    // value named below was already in scope four lines above it, and none of them reached the
+    // operator, so revoking your own laptop's cert and revoking a cert you believe an attacker
+    // holds produced BYTE-IDENTICAL prompts. There is no finger-press that tells those apart.
+    const brief: CeremonyBrief = {
+      operation: "revoke-device-cert-into-krl",
+      summary: "Revoke an SSH device certificate",
+      subjects: [
+        { label: "certificate", value: cert },
+        { label: "signing CA", value: caPub },
+        { label: "KRL", value: krl },
+        { label: "reason", value: opts.reason ?? "(none given)" },
+      ],
+      ifDeclined:
+        "the KRL is not written and nothing is staged; the certificate stays VALID and this " +
+        "command exits reporting 'skipped-biometric'. Re-run when you are ready.",
+      ...requestedBy(fx.requester),
+    };
+    fx.notify?.(renderCeremonyBrief(brief));
+    biometric = await requireBiometric(opts.biometricAuth, ceremonyPromptLine(brief));
     if (!biometric.ok) {
       return {
         dryRun,
@@ -191,10 +216,7 @@ export async function revokeCert(fx: RevokeEffects, opts: RevokeOptions): Promis
 }
 
 export function formatRevoke(r: RevokeResult): string {
-  const lines = [
-    `revoke: action=${r.action} cert=${r.certPath}`,
-    `  krl=${r.krlPath} staged=${r.staged}`,
-  ];
+  const lines = [`revoke: action=${r.action} cert=${r.certPath}`, `  krl=${r.krlPath} staged=${r.staged}`];
   if (r.reason) lines.push(`  reason: ${r.reason}`);
   for (const w of r.warnings) lines.push(`  warn: ${w}`);
   return lines.join("\n");
@@ -202,6 +224,7 @@ export function formatRevoke(r: RevokeResult): string {
 
 export function realEffects(): RevokeEffects {
   return {
+    ...realBriefEffects(),
     exists: existsSync,
     revokeCertInKrl: ({ krlPath: krl, caPubPath, certPath }) => {
       mkdirSync(join(krl, ".."), { recursive: true });

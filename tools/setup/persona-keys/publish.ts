@@ -50,6 +50,15 @@ import {
   type BiometricResult,
 } from "./biometric.ts";
 
+import {
+  ceremonyPromptLine,
+  realBriefEffects,
+  renderCeremonyBrief,
+  requestedBy,
+  type CeremonyBrief,
+  type CeremonyBriefEffects,
+} from "./ceremony-brief.ts";
+
 export type { BiometricPlatform, BiometricResult } from "./biometric.ts";
 
 /** Re-exported for back-compat with publish.ts's existing importers (CLI + tests). The
@@ -60,7 +69,7 @@ export function detectBiometricPlatform(plat?: string): BiometricPlatform {
 
 /** The doors for ambient influence — the ONLY channel for biometric + filesystem + the
  *  GitHub write (noninterference §13). Tests/dry-run inject fakes; the CLI injects real. */
-export interface PublishEffects {
+export interface PublishEffects extends CeremonyBriefEffects {
   /** Require a biometric physical-presence confirmation. MUST be called and MUST return
    *  ok:true before any GitHub write. Reused machinery: Touch ID (pam_tid) on macOS;
    *  Windows Hello on Windows. NEVER prompts in tests/dry-run (a fake is injected). */
@@ -104,18 +113,17 @@ export interface PublishResult {
   readonly title: string;
   /** "would-publish" (dry-run) | "published" | "aborted-no-key" | "aborted-biometric"
    *  | "aborted-private-material". Only "published" implies `gh` was invoked. */
-  readonly action:
-    | "would-publish"
-    | "published"
-    | "aborted-no-key"
-    | "aborted-biometric"
-    | "aborted-private-material";
+  readonly action: "would-publish" | "published" | "aborted-no-key" | "aborted-biometric" | "aborted-private-material";
   /** The biometric outcome (absent on dry-run — dry-run NEVER prompts). */
   readonly biometric?: BiometricResult;
   /** A stable public-derived fingerprint, for the readout. Never the key bytes. */
   readonly fingerprint?: string;
   /** Present when the run aborted — the operator-facing reason. */
   readonly error?: string;
+  /** The EXACT one-line prompt the operator was (or on a dry-run, would be) shown. Present
+   *  whenever the brief was computed. Recorded so a dry-run readout and an audit trail can
+   *  quote the real sentence rather than re-typing an imitation of it. */
+  readonly wouldPrompt?: string;
 }
 
 /** Marker substrings that mean "this is private material" — refuse to upload if present.
@@ -204,26 +212,59 @@ export async function publishKey(fx: PublishEffects, opts: PublishOptions): Prom
   }
   const fingerprint = publicKeyFingerprint(publicKey);
 
+  // THE BRIEF is built HERE — above the dry-run return — so that `--dry-run` reports the
+  // EXACT sentence a real run would show, rather than a hand-written imitation of it. The
+  // old dry-run readout re-typed the prompt as a literal, which is a second source of truth
+  // for what is being authorised: it could (and would) drift from the real one silently.
+  //
+  // It names the FINGERPRINT, which was already computed one line above and was NOT in the
+  // old prompt. That omission is the whole defect: the old text was `Publish ${title} to
+  // GitHub`, and `title` is an operator-supplied label, not the key. Publishing key A and
+  // publishing key B under the same title produced BYTE-IDENTICAL prompts — so the one fact
+  // distinguishing "my key" from "some other key" was in hand, in scope, and withheld from
+  // the person being asked to approve it.
+  //
+  // Same object, not a second derivation: `fingerprint` and `keyType` are the values handed
+  // to `fx.ghAddKey` at step 5.
+  const brief: CeremonyBrief = {
+    operation: "publish-own-public-key-to-github",
+    summary: "Add a PUBLIC key to a GitHub account",
+    subjects: [
+      { label: "fingerprint", value: fingerprint },
+      { label: "key type", value: keyType },
+      { label: "GitHub account", value: opts.user },
+      { label: "title", value: title },
+      { label: "read from", value: keyPath },
+    ],
+    ifDeclined:
+      "nothing is sent to GitHub and the account is unchanged; this command exits reporting " +
+      "'aborted-biometric'. The key file on disk is untouched either way.",
+    ...requestedBy(fx.requester),
+  };
+  const wouldPrompt = ceremonyPromptLine(brief);
+
   // 3. Dry-run: report intent. NO biometric prompt, NO GitHub write.
   if (dryRun) {
-    return { ...base, action: "would-publish", fingerprint };
+    return { ...base, action: "would-publish", fingerprint, wouldPrompt };
   }
 
   // 4. BIOMETRIC GATE — fail-closed. No `gh` path past this point without ok:true.
-  const biometric = await fx.biometricAuth(`Publish ${title} to GitHub`);
+  fx.notify?.(renderCeremonyBrief(brief));
+  const biometric = await fx.biometricAuth(wouldPrompt);
   if (!biometric.ok) {
     return {
       ...base,
       action: "aborted-biometric",
       biometric,
       fingerprint,
+      wouldPrompt,
       error: `biometric confirmation ${biometric.reason ? `failed: ${biometric.reason}` : "was not granted"} — publish aborted (fail-closed)`,
     };
   }
 
   // 5. Gate passed → upload the PUBLIC key. The ONLY GitHub-write door.
   await fx.ghAddKey({ publicKey, title, keyType });
-  return { ...base, action: "published", biometric, fingerprint };
+  return { ...base, action: "published", biometric, fingerprint, wouldPrompt };
 }
 
 /** Clean, "smooth" readout (the operator-facing line). Public-only, safe to print. */
@@ -233,7 +274,7 @@ export function formatResult(res: PublishResult): string {
     case "would-publish":
       return [
         `[dry-run] would publish ${fp} to github:${res.user} (${res.keyType})`,
-        `[dry-run] would prompt biometric: "Publish ${res.title} to GitHub"`,
+        `[dry-run] would prompt biometric: "${res.wouldPrompt ?? "(prompt not computed)"}"`,
         "[dry-run] NO biometric prompt performed, NO GitHub write performed.",
       ].join("\n");
     case "published":
@@ -254,6 +295,7 @@ export function formatResult(res: PublishResult): string {
  *  public-only. The biometric door is `realBiometric()` — the one gate every op shares. */
 export function realEffects(): PublishEffects {
   return {
+    ...realBriefEffects(),
     biometricAuth: realBiometric(),
     exists: (p) => existsSync(p),
     readText: (p) => readFileSync(p, "utf8"),
@@ -265,15 +307,11 @@ export function realEffects(): PublishEffects {
       }
       // Pass the PUBLIC key on stdin (no key file path, no secret on argv). `gh ssh-key
       // add -` reads the key from stdin.
-      const r = spawnSync(
-        "gh",
-        ["ssh-key", "add", "-", "--title", title, "--type", keyType],
-        {
-          input: publicKey.endsWith("\n") ? publicKey : publicKey + "\n",
-          encoding: "utf8",
-          stdio: ["pipe", "inherit", "inherit"],
-        },
-      );
+      const r = spawnSync("gh", ["ssh-key", "add", "-", "--title", title, "--type", keyType], {
+        input: publicKey.endsWith("\n") ? publicKey : publicKey + "\n",
+        encoding: "utf8",
+        stdio: ["pipe", "inherit", "inherit"],
+      });
       if (r.status !== 0) {
         throw new Error(`gh ssh-key add failed (status ${r.status ?? "signal"})`);
       }

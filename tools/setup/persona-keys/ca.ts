@@ -43,12 +43,21 @@ import { join } from "node:path";
 // Windows Hello is the AUTHORIZATION (Aaron 2026-06-21). Both sensitive ops (generate CA key,
 // sign a cert with the CA private key) are gated FAIL-CLOSED behind a biometric confirm.
 import { requireBiometric, type BiometricAuth, type BiometricResult } from "./biometric.ts";
+import {
+  assertGatedCeremony,
+  ceremonyPromptLine,
+  realBriefEffects,
+  renderCeremonyBrief,
+  requestedBy,
+  type CeremonyBrief,
+  type CeremonyBriefEffects,
+} from "./ceremony-brief.ts";
 export type { BiometricAuth, BiometricResult } from "./biometric.ts";
 
 /** The host-environment doors — the ONLY channel for ambient influence (noninterference).
  *  Every door is PUBLIC-safe by construction: `genCa`/`signCert` return only public text,
  *  the private/CA key is written to a local file by the runner and never read back here. */
-export interface CaEffects {
+export interface CaEffects extends CeremonyBriefEffects {
   /** True iff a path exists (presence checks — never reads the contents of a secret). */
   readonly exists: (path: string) => boolean;
   /** Read a PUBLIC text artifact (a pubkey / a cert). Never used on a private path. */
@@ -354,7 +363,34 @@ export async function ensureCa(
     action = "exists";
   } else {
     // BIOMETRIC GATE — fail-closed. A real keygen creates private material; require approval.
-    biometric = await requireBiometric(opts.biometricAuth, `Approve: generate SSH CA keypair for ${opts.ca}`);
+    //
+    // WHAT THIS REPLACED: `Approve: generate SSH CA keypair for ${opts.ca}` — which named the
+    // CA and nothing else. It did not say that a PRIVATE key was about to be written, where,
+    // that this is the trust anchor every device cert in the fleet chains to, or that
+    // declining leaves the machine exactly as it was. `caPrivatePath` was in scope and the
+    // operator was not told the path being created.
+    //
+    // `assertGatedCeremony` is the OTHER half of this file's job: it refuses to raise a
+    // prompt for an operation `ceremony-gate.ts` classifies as routine. It cannot fire here
+    // (root-key generation is gated) and it is present so that a future RECLASSIFICATION of
+    // this operation stops the prompt instead of silently leaving a routine one in place.
+    assertGatedCeremony("generate-node-root-key");
+    const brief: CeremonyBrief = {
+      operation: "generate-node-root-key",
+      summary: "Create a NEW SSH certificate-authority keypair (private key written to disk)",
+      subjects: [
+        { label: "CA name", value: opts.ca },
+        { label: "private key", value: caPrivatePath },
+        { label: "public key", value: caPrivatePath + ".pub" },
+      ],
+      ifDeclined:
+        "no keypair is generated and no file is written; this command exits reporting " +
+        "'aborted-biometric' and the machine is exactly as it was. Nothing that already " +
+        "trusts an existing CA is affected.",
+      ...requestedBy(fx.requester),
+    };
+    fx.notify?.(renderCeremonyBrief(brief));
+    biometric = await requireBiometric(opts.biometricAuth, ceremonyPromptLine(brief));
     if (!biometric.ok) {
       return {
         dryRun: false,
@@ -491,10 +527,37 @@ export async function signMachineCert(
   }
 
   // BIOMETRIC GATE — fail-closed. A real sign consumes the CA private key; require approval.
-  const biometric = await requireBiometric(
-    opts.biometricAuth,
-    `Approve: sign cert for machine ${opts.machineId} (principals=${principal})`,
-  );
+  // The cert-signing brief. `principal` and `validity` below are the SAME values handed to
+  // `fx.signCert` — the prompt is derived from them, never authored beside them.
+  //
+  // NOTE THE CLASSIFICATION, and do not "fix" it by relabelling: signing a leaf certificate
+  // under a CA this node already holds IS `issue-leaf-svid`, which `ceremony-gate.ts`
+  // classifies UNATTENDED — "adds no party and no capability". So this call site raises a
+  // biometric prompt for work the repo's own policy says needs no human, and the brief will
+  // say so out loud on the prompt (the NOT GATED / MISMATCH arm of `renderCeremonyBrief`).
+  //
+  // That is deliberate. Prompting for routine work is the mechanism that teaches an operator
+  // to approve reflexively, and the honest label is what makes the mismatch reviewable
+  // instead of invisible. Whether to keep the prompt, or drop it and let the certificate be
+  // issued unattended under the one approval the CALLER already took, is a policy call for
+  // whoever owns this gate — not something a display layer may quietly decide.
+  const certBrief: CeremonyBrief = {
+    operation: "issue-leaf-svid",
+    summary: "Sign a device certificate with the CA private key",
+    subjects: [
+      { label: "machine", value: opts.machineId },
+      { label: "principals", value: principal },
+      { label: "device key", value: opts.devicePubPath },
+      { label: "signing CA", value: caPrivatePath },
+      { label: "validity", value: validity },
+    ],
+    ifDeclined:
+      "no certificate is signed and nothing is written; this command exits reporting " +
+      "'aborted-biometric'. Any certificate this machine already holds keeps working.",
+    ...requestedBy(fx.requester),
+  };
+  fx.notify?.(renderCeremonyBrief(certBrief));
+  const biometric = await requireBiometric(opts.biometricAuth, ceremonyPromptLine(certBrief));
   if (!biometric.ok) {
     return { ...base, dryRun: false, action: "aborted-biometric", biometric };
   }
@@ -518,6 +581,7 @@ function dirOf(p: string): string {
  *  PRIVATE key file is created under umask 077 by ssh-keygen and is never read by us. */
 export function realEffects(): CaEffects {
   return {
+    ...realBriefEffects(),
     exists: (p) => existsSync(p),
     readText: (p) => readFileSync(p, "utf8"),
     writeText: (p, c) => writeFileSync(p, c, { mode: 0o644 }),

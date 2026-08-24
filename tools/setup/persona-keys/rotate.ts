@@ -87,22 +87,9 @@ import {
   type CaEffects,
   type CertResult,
 } from "./ca.ts";
-import {
-  machinePubPath,
-  deviceKeyPath,
-  sanitizeHostname,
-  realEffects as machineRealEffects,
-} from "./machine.ts";
-import {
-  parseTrustSet,
-  renderTrustSet,
-  trustedUserCaKeysPath,
-} from "./setup-cluster.ts";
-import {
-  censusOfCertificates,
-  sshPublicKeyFingerprint,
-  type CertificateCensus,
-} from "./ssh-cert-census.ts";
+import { machinePubPath, deviceKeyPath, sanitizeHostname, realEffects as machineRealEffects } from "./machine.ts";
+import { parseTrustSet, renderTrustSet, trustedUserCaKeysPath } from "./setup-cluster.ts";
+import { censusOfCertificates, sshPublicKeyFingerprint, type CertificateCensus } from "./ssh-cert-census.ts";
 import {
   establishedFactor,
   requireBiometric,
@@ -110,6 +97,14 @@ import {
   type BiometricAuth,
   type BiometricResult,
 } from "./biometric.ts";
+import {
+  ceremonyPromptLine,
+  realBriefEffects,
+  renderCeremonyBrief,
+  requestedBy,
+  type CeremonyBrief,
+  type CeremonyBriefEffects,
+} from "./ceremony-brief.ts";
 export type { BiometricAuth, BiometricResult } from "./biometric.ts";
 
 /** The ports a per-port rotate covers. Each rotates on the SAME overlap-window lifecycle. */
@@ -129,7 +124,7 @@ export type KeyLifecycle = "active" | "standby" | "pending-inactive" | "inactive
  * Composed from the existing port modules' effects so a rotate reuses the SAME genuine ssh-keygen
  * paths (machine.ts / ca.ts realEffects) — it does not re-implement key generation or signing.
  */
-export interface RotateEffects {
+export interface RotateEffects extends CeremonyBriefEffects {
   /** True iff a path exists (presence checks — never reads the contents of a secret). */
   readonly exists: (path: string) => boolean;
   /** Read a PUBLIC text artifact (a pubkey / cert / the trusted-CA-keys file). Never a private path. */
@@ -485,10 +480,33 @@ export async function rotate(fx: RotateEffects, opts: RotateOptions): Promise<Ro
   // never happened. `hadWork` above guarantees this list is non-empty here.
   const session = sessionBiometric(opts.biometricAuth);
   const performing = plans.filter((p) => p.present).map((p) => p.port);
-  const biometric = await requireBiometric(
-    session.door,
-    `Approve Zeta ROTATE for host ${hostname} (overlap-window swap of: ${performing.join(", ")})`,
-  );
+  //
+  // THE BRIEF derives from `performing` — the SAME array the dispatcher consumes below, and
+  // the same one the paragraph above explains. The operation id is chosen by what is
+  // ACTUALLY being swapped: a rotation that includes `ca-key` moves the trust anchor
+  // (`rotate-node-root-key`, gated); one that does not is leaf work
+  // (`rotate-leaf-signing-key`, which `ceremony-gate.ts` classifies UNATTENDED — and the
+  // brief will say so on the prompt rather than let a routine approval pass for a root one).
+  // Reading the id off `performing` keeps the ONE-derivation property this block already
+  // earned: there is still no path by which the request could name the operation while the
+  // dispatcher performs another.
+  const rotateBrief: CeremonyBrief = {
+    operation: performing.includes("ca-key") ? "rotate-node-root-key" : "rotate-leaf-signing-key",
+    summary: "Rotate this host's keys on the overlap window (mint standby, promote, retire old)",
+    subjects: [
+      { label: "host", value: hostname },
+      { label: "user", value: opts.user },
+      { label: "CA", value: opts.ca },
+      { label: "swapping", value: performing.join(", ") },
+    ],
+    ifDeclined:
+      "nothing is swapped, minted, promoted or retired; the keys currently in use stay in " +
+      "use and this command exits reporting the rotation as not confirmed. Declining is " +
+      "safe at this point precisely because no port has been touched yet.",
+    ...requestedBy(fx.requester),
+  };
+  fx.notify?.(renderCeremonyBrief(rotateBrief));
+  const biometric = await requireBiometric(session.door, ceremonyPromptLine(rotateBrief));
   if (!biometric.ok) {
     return finalize({
       dryRun: false,
@@ -697,7 +715,8 @@ function judgeFinalizeCandidate(
   if (activeFingerprint === undefined) {
     return {
       eligible: false,
-      reason: "the ACTIVE CA private key is absent on this host, so the signer of record cannot be excluded from the sweep",
+      reason:
+        "the ACTIVE CA private key is absent on this host, so the signer of record cannot be excluded from the sweep",
     };
   }
   if (fingerprint === activeFingerprint) {
@@ -706,7 +725,8 @@ function judgeFinalizeCandidate(
   if (census === undefined) {
     return {
       eligible: false,
-      reason: "no certificate census available (no listCerts/nowEpochSeconds door wired) — trust is never narrowed on absent evidence",
+      reason:
+        "no certificate census available (no listCerts/nowEpochSeconds door wired) — trust is never narrowed on absent evidence",
     };
   }
   if (!census.complete) {
@@ -771,9 +791,7 @@ async function runFinalize(
     ca: opts.ca,
     ports,
   };
-  const others = plans
-    .filter((p) => p.port !== "ca-key")
-    .map((p) => emptyRotation(p, "skipped-finalize"));
+  const others = plans.filter((p) => p.port !== "ca-key").map((p) => emptyRotation(p, "skipped-finalize"));
   const hadWork = caPlan !== undefined && plan.candidates.length > 0;
 
   // Nothing to sweep, or the CA port was not requested: a clean, prompt-free no-op.
@@ -783,10 +801,7 @@ async function runFinalize(
       dryRun,
       confirmed,
       hadWork: false,
-      rotations: [
-        ...(caPlan !== undefined ? [finalizeReport(caPlan, plan, "finalize-noop")] : []),
-        ...others,
-      ],
+      rotations: [...(caPlan !== undefined ? [finalizeReport(caPlan, plan, "finalize-noop")] : []), ...others],
     });
   }
 
@@ -798,10 +813,7 @@ async function runFinalize(
       dryRun: true,
       confirmed,
       hadWork,
-      rotations: [
-        finalizeReport(caPlan, plan, nothingEligible ? "finalize-refused" : "would-finalize"),
-        ...others,
-      ],
+      rotations: [finalizeReport(caPlan, plan, nothingEligible ? "finalize-refused" : "would-finalize"), ...others],
     });
   }
   if (!confirmed) {
@@ -1094,11 +1106,7 @@ async function rotateDeviceCert(
  * The set therefore only GROWS here. It shrinks only under `--finalize`, on census evidence, with
  * an approval that names each CA it drops.
  */
-async function rotateCaKey(
-  fx: RotateEffects,
-  plan: CaKeyPlan,
-  opts: RotateOptions,
-): Promise<RotationOf<"ca-key">> {
+async function rotateCaKey(fx: RotateEffects, plan: CaKeyPlan, opts: RotateOptions): Promise<RotationOf<"ca-key">> {
   const home = plan.ctx.home;
   const active = caPrivateKeyPath(home);
   const standby = plan.newArtifactPath; // the approved plan's path, not a re-derivation
@@ -1122,8 +1130,13 @@ async function rotateCaKey(
   // one after it; `renderTrustSet` de-duplicates while preserving order.
   const before = readTrustSet(fx, opts.repoRoot, opts.ca);
   const selfKeys = [...before.self, oldCaPub, newCaPub];
-  const trustFile = renderTrustSet(opts.repoRoot, opts.ca, selfKeys, before.peers, before.unclassified)
-    .trustedUserCaKeysFile;
+  const trustFile = renderTrustSet(
+    opts.repoRoot,
+    opts.ca,
+    selfKeys,
+    before.peers,
+    before.unclassified,
+  ).trustedUserCaKeysFile;
   const trustPath = before.path;
   fx.mkdirp(dirOf(trustPath));
   fx.writeText(trustPath, trustFile);
@@ -1190,8 +1203,13 @@ function finalizeCaTrustSet(
   const before = readTrustSet(fx, opts.repoRoot, opts.ca);
   const dropped = new Set(plan.dropLines);
   const keptSelf = before.self.filter((line) => !dropped.has(line));
-  const trustFile = renderTrustSet(opts.repoRoot, opts.ca, keptSelf, before.peers, before.unclassified)
-    .trustedUserCaKeysFile;
+  const trustFile = renderTrustSet(
+    opts.repoRoot,
+    opts.ca,
+    keptSelf,
+    before.peers,
+    before.unclassified,
+  ).trustedUserCaKeysFile;
   fx.writeText(before.path, trustFile);
   const staged: string[] = [];
   if (fx.stageRepoWrite(opts.repoRoot, relUnder(opts.repoRoot, before.path))) {
@@ -1220,11 +1238,7 @@ function finalizeCaTrustSet(
 }
 
 /** The PortRotation for a finalize run that did NOT drop anything (dry-run, refusal, or no-op). */
-function finalizeReport(
-  planned: PortPlan,
-  plan: FinalizePlan,
-  action: PortRotation["action"],
-): PortRotation {
+function finalizeReport(planned: PortPlan, plan: FinalizePlan, action: PortRotation["action"]): PortRotation {
   const refusals = plan.candidates.filter((c) => !c.eligible);
   const detail =
     action === "would-finalize"
@@ -1388,7 +1402,7 @@ function trustSetLines(res: RotateResult): readonly string[] {
         t.census === undefined
           ? "  Evidence: NONE — this should be unreachable; a finalize without a census cannot drop."
           : `  Evidence: census of ${t.census.certificatesFound} certificate(s), complete — none of them ` +
-            "unexpired and naming a dropped CA.",
+              "unexpired and naming a dropped CA.",
       );
       continue;
     }
@@ -1449,6 +1463,7 @@ function censusLines(t: TrustSetDelta): readonly string[] {
  *  (shared-checkout-is-view-only; Otto verify-gates). NO door returns or prints private bytes. */
 export function realEffects(): RotateEffects {
   return {
+    ...realBriefEffects(),
     exists: (p) => existsSync(p),
     readText: (p) => readFileSync(p, "utf8"),
     writeText: (p, c) => writeFileSync(p, c, { mode: 0o644 }),
