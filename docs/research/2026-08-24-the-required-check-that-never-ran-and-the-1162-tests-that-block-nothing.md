@@ -75,6 +75,56 @@ diverge completely, with the wrong one green.
 `gate.yml` runs for their head SHA; #12321 has a run that has not published the name yet
 (queued, not stalled — the distinction `required-check-started.ts` already draws).
 
+## 2b. A SECOND false-green, caught live on this PR's own run
+
+Measured on run `32767938815` — the gate run for the pull request that carries this
+document — at 2026-08-24T19:29Z:
+
+| job                            | result                                                |
+| ------------------------------ | ----------------------------------------------------- |
+| `path filter`                  | **cancelled** (5m4s; its cap is `timeout-minutes: 5`) |
+| `build-and-test`               | **skipped**                                           |
+| `full-verify`                  | **skipped**                                           |
+| `cross-verify`                 | success                                               |
+| `lint (TS)` / `lint (semgrep)` | success                                               |
+| **`gate (required)`**          | **SUCCESS**                                           |
+
+`build-and-test` and `full-verify` both declare `needs: path-filter`. When `path-filter`
+does not succeed, GitHub marks them `skipped` — and the `gate (required)` verdict step
+treats `skipped` as acceptable, with the comment _"Skipped is acceptable (path-filter
+gated)"_. That reasoning assumes `skipped` means **path-filter decided the PR was
+docs-only**. It does not distinguish that from **path-filter died**. So two of the five
+floor jobs never ran on a code-touching PR, and the only required check published success:
+`gh pr checks 14914 --required` returned rc=0.
+
+**AND IT MERGED ON THAT GREEN.** PR #14914 was armed with `--auto --squash` and GitHub
+merged it at head `6ccb4916` on exactly the reduced-scope verdict described above, while
+`build-and-test` and `full-verify` had never run. This paragraph is not a projection of
+what could happen; it is the record of what did, to this document's own pull request,
+minutes after it was written. Nothing was broken by it — `cross-verify`, `lint (TS)` and
+`lint (semgrep)` were green and the change is detection-only — but the merge is the
+falsifier for any reading of §2b as theoretical.
+
+**The mitigation already in place did its job and is not sufficient.** The `Emit scope`
+step published exactly what it was built to publish —
+`##[notice]gate scope=reduced: 3/5 floor jobs ran. Skipped: build-and-test, full-verify.`
+— so this green _does_ carry its scope. But the **verdict** is still success, and armed
+auto-merge reads the verdict, not the annotation.
+
+**How often, and why the cap is not the cause.** Across the last 40 completed
+`pull_request` gate runs, `path filter` ran 39 times and succeeded 39 times, with
+durations n=39, min=27s, p50=33s, p90=36s, max=57s. A 5-minute cap is roughly 9x p90 —
+generous. This run's 5m4s is a hang, which is the class `rerun-cancelled-gate.yml` exists
+for, so **raising the timeout would be the wrong fix** and is not proposed here.
+
+**The remedy is floor semantics, and it costs zero additional runner minutes** — which is
+why it is a question rather than a change. `path-filter` already runs on every PR, so
+adding `- path-filter` to `gate-required.needs` adds no job and no minutes, and turns a
+cancelled path-filter from a silent green into a red. The real cost runs the other way:
+PRs would then block on a rare infrastructure hang instead of sailing past it, and
+`rerun-cancelled-gate.yml` is what would have to clear them. That is a genuine tradeoff
+and it is Q7.
+
 ## 3. The survey: which tests does CI run, and which of those block anything
 
 Two different questions, and only the second one was open.
@@ -211,6 +261,14 @@ promote` | `promote a named subset`._ My recommendation: **not now** — first m
 6. **Cadence of the new watchdog.** Hourly at `:23` was chosen off a measured 8.7s runtime
    and this repo's demonstrated 16% scheduled-run drop rate. Faster costs queue, not money
    (public repo). _Shape: `hourly is right` | `every 15m` | `every 6h`._
+7. **`path-filter` in the floor (§2b).** A cancelled `path-filter` skips `build-and-test`
+   and `full-verify`, and `gate (required)` still reports success — measured live on this
+   PR's own run. Adding `- path-filter` to `gate-required.needs` costs **zero additional
+   runner minutes** (the job already runs on every PR) and converts that false green into
+   a red. _Shape: `add it` | `leave it, the scope annotation is enough` | `distinguish
+skipped-by-decision from skipped-by-failure instead`._ My recommendation: **add it** —
+   it is a narrowing of what counts as green rather than a widening of what is tested,
+   which is the cheapest kind of floor change there is.
 
 ## 7. What the accompanying PR actually lands
 
