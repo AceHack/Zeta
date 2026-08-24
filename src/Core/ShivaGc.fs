@@ -117,6 +117,55 @@ module ShivaGc =
         let paused = objects h |> List.filter (inReach >> not)
         DynamicValue.Array resident, DynamicValue.Array paused
 
+    /// **Three-way split under an injected REGENERABILITY oracle** — the retention predicate widened
+    /// from `reachable` to **`reachable OR NOT regenerable`**.
+    ///
+    /// `partition` above is exactly the case `regenerable = fun _ -> false`: with no oracle, *every*
+    /// unreachable object must be PAUSED, because nothing can rebuild it. That is maximally
+    /// conservative, always safe, and the reason `partition` frees nothing at all. Supply a real
+    /// oracle and a third class appears — the objects that are genuinely free to drop:
+    ///
+    /// | class | condition | disposition |
+    /// |---|---|---|
+    /// | **resident** | reachable | the working set |
+    /// | **droppable** | unreachable AND regenerable | free — rebuild from the generator on demand |
+    /// | **paused** | unreachable AND NOT regenerable | MUST persist (Memory Preservation, §5) |
+    ///
+    /// **The oracle is INJECTED rather than a field on the object, and that is structural, not
+    /// stylistic.** `Core.fsproj` compiles `ShivaGc.fs` at position 92, while every mechanism that
+    /// could answer "is this regenerable?" compiles later — `ContentStore.fs` 184, `DvKey.fs` 195,
+    /// `GeneratorIrRegistry.fs` 366. Under F#'s compile order this module *cannot* reference any of
+    /// them, so a built-in regenerability check is not merely undesirable here, it is unexpressible.
+    /// Injection is also what preserves the properties the collector already has: it stays a pure
+    /// `DynamicValue -> DynamicValue` function, so it remains DST-replayable (§7), and the oracle is a
+    /// **declared, metered channel** rather than an ambient dependency on a live store, a clock, or
+    /// the host GC (§13 noninterference).
+    ///
+    /// **This function destroys nothing.** It returns all three populations as full objects.
+    /// `droppable` is a *permission* to drop, granted by the oracle — not an act of dropping. Whoever
+    /// acts on that permission owes the byte-identity obligation: what comes back from the generator
+    /// must equal what was dropped, bit for bit (`docs/research/2026-08-24-zetadb-is-bit-accurate-*`).
+    /// That obligation is discharged for the reified-mix generator in `ShivaGcRegen.Tests.fs`, and is
+    /// NOT discharged in general — the oracle is only as sound as its caller.
+    ///
+    /// Deterministic: each class keeps the heap's order. An object with no `id` is never regenerable
+    /// (it cannot be named to an oracle), so it pauses — matching `partition`'s treatment exactly.
+    let partition3
+        (regenerable: string -> bool)
+        (roots: string list)
+        (h: DynamicValue)
+        : DynamicValue * DynamicValue * DynamicValue =
+        let reachable = mark roots h
+        // 0 = resident · 1 = droppable · 2 = paused. Total and mutually exclusive by construction, so
+        // the three outputs partition the heap: nothing is duplicated and nothing is lost.
+        let classify o =
+            match objId o with
+            | Some id when Set.contains id reachable -> 0
+            | Some id when regenerable id -> 1
+            | _ -> 2
+        let pick k = objects h |> List.filter (fun o -> classify o = k)
+        DynamicValue.Array(pick 0), DynamicValue.Array(pick 1), DynamicValue.Array(pick 2)
+
     /// Resume a paused object (or heap of them) back into a resident heap — the actor restarts from
     /// what remained. Idempotent by id (resuming an already-resident object is a no-op, keeping the
     /// resident copy). This is the replay-from-the-log made explicit: a "collected" object was never
