@@ -725,6 +725,71 @@ describe("ACTION-MODE RECONCILIATION: weakest claim, never the strongest", () =>
     });
   });
 
+  test("the AUDITOR must not report a reconciled squash as an AGREEING one — BOTH paths", () => {
+    // The report defect this reconciliation introduced, and its falsifier. The
+    // multi-block CORRECT line said "they agree on every governance field",
+    // which stops being true the moment a field is RESOLVED instead of matched —
+    // a report claiming more than was checked, on the one field where
+    // overclaiming is the hazard.
+    //
+    // Both classification paths are driven, because which one a commit takes is
+    // decided by the FORGE (whether its blank line left the block git-parseable)
+    // and has nothing to do with whether a value was discarded. The landed
+    // squash of #14251 takes the canonical-scan path; a locally-authored one
+    // takes the strict path.
+    const first = block({ [AM]: "human-directed" });
+    const last = block({ [AM]: "autonomous-fail-open" });
+    const mixed = `deps: roll\n\n${first}\n\n* fix\n\n${last}\n`;
+    const paths: readonly (readonly [string, string])[] = [
+      ["git-parseable (strict)", `${last}\n`],
+      ["canonical scan (layout-tolerant)", ""],
+    ];
+    for (const [name, trailers] of paths) {
+      const record = classifyCommitRecord(
+        {
+          trailers,
+          message: mixed,
+          timestamp: Date.parse("2026-08-20T00:00:00Z") / 1000,
+          isoDate: "2026-08-20T00:00:00Z",
+          authorEmail: "aaron_bond@yahoo.com",
+          committerEmail: "noreply@github.com",
+        },
+        Date.parse("2026-05-28T20:22:11Z") / 1000,
+        "2026-05-28T20:22:11Z",
+        Date.parse("2026-08-15T00:00:00Z") / 1000,
+        loadIdentityRoster(),
+      );
+      expect(`${name}: ${record.status}`).toBe(`${name}: CORRECT`);
+      expect(record.reason).not.toContain("agree on every governance field");
+      expect(record.reason).toContain("RECONCILED to the weakest claim");
+      expect(record.reason).toContain("'autonomous-fail-open'");
+    }
+  });
+
+  test("an UNreconciled multi-block CORRECT still says they agree — the note is not always-on", () => {
+    // The other half of the falsifier: a note that appeared on every multi-block
+    // commit would carry no information. This one is emitted only when something
+    // was really discarded.
+    const b = block({ [AM]: "human-directed" });
+    const record = classifyCommitRecord(
+      {
+        trailers: "",
+        message: `deps: roll\n\n${b}\n\n* more\n\n${b}\n`,
+        timestamp: Date.parse("2026-08-20T00:00:00Z") / 1000,
+        isoDate: "2026-08-20T00:00:00Z",
+        authorEmail: "aaron_bond@yahoo.com",
+        committerEmail: "noreply@github.com",
+      },
+      Date.parse("2026-05-28T20:22:11Z") / 1000,
+      "2026-05-28T20:22:11Z",
+      Date.parse("2026-08-15T00:00:00Z") / 1000,
+      loadIdentityRoster(),
+    );
+    expect(record.status).toBe("CORRECT");
+    expect(record.reason).toContain("agree on every governance field");
+    expect(record.reason).not.toContain("RECONCILED");
+  });
+
   test("an unmixed Action-Mode reports no reconciliation at all", () => {
     const b = block({ [AM]: "human-directed" });
     expect(detectReconciliations(`x\n\n${b}\n\ny\n\n${b}\n`)).toEqual([]);

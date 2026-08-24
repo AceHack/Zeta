@@ -549,6 +549,33 @@ export interface Classification {
  *   * `BLOCK-DISAGREEMENT` — several complete blocks making mutually exclusive
  *     governance claims. Never resolved by picking; see `detectBlockDisagreement`.
  */
+/**
+ * A RECONCILED squash must never be reported as an AGREEING one.
+ *
+ * Since 2026-08-23 `Action-Mode` is RESOLVED to the weakest claim rather than
+ * refused (`agencysignature-block.ts` §THE THIRD CASE: RECONCILABLE). The
+ * multi-block CORRECT line used to say "they agree on every governance field",
+ * which stops being true the moment a field is resolved instead of matched — a
+ * report claiming more than was checked, on exactly the field where overclaiming
+ * is the hazard the reconciliation exists to prevent. Emitted on BOTH `CORRECT`
+ * paths, because which one a commit takes is decided by the forge's blank line
+ * and has nothing to do with whether a value was discarded.
+ *
+ * Returns `""` when nothing was reconciled, so the ordinary line is unchanged.
+ */
+function reconciliationNote(
+  reconciliations: readonly { key: string; resolved: string; from: readonly string[] }[],
+): string {
+  if (reconciliations.length === 0) return "";
+  return ` ${reconciliations
+    .map(
+      (r) =>
+        `${r.key} differed (${r.from.map((v) => `'${v}'`).join(" vs ")}) and was ` +
+        `RECONCILED to the weakest claim, '${r.resolved}'.`,
+    )
+    .join(" ")}`;
+}
+
 function firstViolation(blockText: string): Violation | null {
   const violations = validateBlock(blockText);
   return violations.length === 0 ? null : (violations[0] ?? null);
@@ -587,7 +614,12 @@ function classifySigned(record: CommitRecord): Classification | null {
           "valid on main. Both now call the same rule.",
       };
     }
-    return { status: "CORRECT", reason: `trailer present (${version}), git-parseable` };
+    return {
+      status: "CORRECT",
+      reason:
+        `trailer present (${version}), git-parseable` +
+        reconciliationNote(verdict.reconciliations),
+    };
   }
 
   if (!hasAgencySignature(record.message)) return null;
@@ -603,7 +635,10 @@ function classifySigned(record: CommitRecord): Classification | null {
     }
     const multi =
       verdict.blockCount > 1
-        ? ` ${String(verdict.blockCount)} complete blocks present; the LAST is authoritative and they agree on every governance field.`
+        ? ` ${String(verdict.blockCount)} complete blocks present; the LAST is authoritative` +
+          (verdict.reconciliations.length === 0
+            ? " and they agree on every governance field."
+            : `.${reconciliationNote(verdict.reconciliations)} Every other governance field agrees.`)
         : "";
     return {
       status: "CORRECT",
