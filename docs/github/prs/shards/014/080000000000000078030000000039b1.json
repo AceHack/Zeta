@@ -1,0 +1,12 @@
+{
+  "pr_number": 14769,
+  "archive_path": "docs/history/pr-reviews/PR-14769-fix-hygiene-accountability-is-the-invariant-split-it-out-of-human-review-and-it-.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-24T14:14:55.682Z",
+  "schema_version": "v1",
+  "commit_sha": "4480dc93f3064ec6133778f03b733929c5d4146f",
+  "title": "fix(hygiene): accountability is the invariant — split it out of Human-Review, and it never layers",
+  "state": "MERGED",
+  "merged_at": "2026-08-24T14:13:58Z",
+  "head_ref": "soraya/accountability-is-the-invariant"
+}
