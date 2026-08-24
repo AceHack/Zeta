@@ -1,0 +1,12 @@
+{
+  "pr_number": 14760,
+  "archive_path": "docs/history/pr-reviews/PR-14760-rules-dv2-the-raw-vault-saying-goes-where-it-belongs-a-single-version-of-the-fac.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-24T13:22:09.891Z",
+  "schema_version": "v1",
+  "commit_sha": "051c4ab4c37bb6e0b1dccc8db417fb0a58508742",
+  "title": "rules(dv2): the raw-vault saying goes where it belongs — a single version of the FACTS",
+  "state": "MERGED",
+  "merged_at": "2026-08-24T13:21:11Z",
+  "head_ref": "rules/dv2-raw-vault-saying"
+}
