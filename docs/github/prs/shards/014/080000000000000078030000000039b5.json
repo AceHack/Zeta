@@ -1,0 +1,12 @@
+{
+  "pr_number": 14773,
+  "archive_path": "docs/history/pr-reviews/PR-14773-docs-handoffs-riven-usb-zflash-qemu-restore-next-for-the-following-session.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-24T13:53:59.395Z",
+  "schema_version": "v1",
+  "commit_sha": "44ecd62e3b022eeeb1f9c12f1a14e20c8d5e2c62",
+  "title": "docs(handoffs): Riven USB/zflash QEMU restore next for the following session",
+  "state": "MERGED",
+  "merged_at": "2026-08-24T13:53:12Z",
+  "head_ref": "riven/usb-zflash-qemu-handoff"
+}
