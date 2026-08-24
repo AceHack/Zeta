@@ -16,11 +16,15 @@
 import { describe, expect, test } from "bun:test";
 
 import {
+  ACTION_MODE_BY_HUMAN_AUTHORITY,
   CANONICAL_SHAPE,
   ENUMS,
+  GOVERNANCE_KEYS,
   REQUIRED_KEYS,
   blockValue,
   detectBlockDisagreement,
+  detectReconciliations,
+  reconcileActionMode,
   findAllSignatureBlocks,
   findSignatureBlock,
   missingRequiredKeys,
@@ -347,9 +351,14 @@ describe("BLOCK-DISAGREEMENT: contradictory governance claims are loud", () => {
     expect(preMergeAccepts(text)).toBe(false);
   });
 
-  test("FALSIFIER: Action-Mode disagreement is an error", () => {
+  // CHANGED 2026-08-23. This case used to pair `supervised` with
+  // `autonomous-fail-open`, which now RECONCILES (both directions collapse to a
+  // claim of absence, so nothing is manufactured). The pair kept here is the one
+  // that must stay loud forever: two claims of human PRESENCE, neither implied by
+  // the other. See §ACTION-MODE RECONCILIATION below for the full boundary.
+  test("FALSIFIER: an Action-Mode disagreement between two human-presence claims is an error", () => {
     const a = block({ "Action-Mode": "supervised" });
-    const z = block({ "Action-Mode": "autonomous-fail-open" });
+    const z = block({ "Action-Mode": "human-directed" });
     expect(detectBlockDisagreement(`x\n\n${a}\n\ny\n\n${z}\n`)).not.toBeNull();
   });
 
@@ -563,5 +572,162 @@ describe("validateBlock", () => {
     // Co-authored-by goes; that omission is the upstream cause of 551 commits.
     expect(CANONICAL_SHAPE).toContain("Co-authored-by");
     expect(CANONICAL_SHAPE).toContain("blank line");
+  });
+});
+
+
+// ---------------------------------------------------------------------------
+// ACTION-MODE RECONCILIATION — the falsifiers for the 2026-08-23 carve-out.
+// ---------------------------------------------------------------------------
+// Aaron: *"accept the mixed Action-Mode (shadow*)"*. The carve-out is only as
+// good as its scope, so the scope is machine-checked here rather than asserted in
+// a comment. Four properties, in the order the module's doc-comment names them:
+//
+//   1. resolves only to a value a constituent actually wrote,
+//   2. resolves only DOWNWARD (never above the minimum present),
+//   3. refuses to resolve to a claim of human presence,
+//   4. refuses to order a value outside the enum,
+//
+// plus the one that keeps it narrow: NO OTHER GOVERNANCE KEY changed.
+
+describe("ACTION-MODE RECONCILIATION: weakest claim, never the strongest", () => {
+  const AM = "Action-Mode";
+
+  /** Every subset of the enum with two or more members — 11 of them. */
+  function subsets(): readonly (readonly string[])[] {
+    const out: string[][] = [];
+    const n = ACTION_MODE_BY_HUMAN_AUTHORITY.length;
+    for (let mask = 0; mask < 1 << n; mask++) {
+      const pick = ACTION_MODE_BY_HUMAN_AUTHORITY.filter((_, i) => (mask & (1 << i)) !== 0);
+      if (pick.length >= 2) out.push([...pick]);
+    }
+    return out;
+  }
+
+  test("THE FALSIFIER: human-directed + autonomous-fail-open NEVER resolves to human-directed", () => {
+    // The live shape of PR #14251: six commits a human asked for, one later
+    // autonomous maintenance fix. If this ever comes out `human-directed`, the
+    // check has manufactured a human direction nobody gave.
+    const mixed = ["human-directed", "autonomous-fail-open"];
+    expect(reconcileActionMode(mixed)).toBe("autonomous-fail-open");
+    expect(reconcileActionMode([...mixed].reverse())).toBe("autonomous-fail-open");
+    expect(reconcileActionMode(mixed)).not.toBe("human-directed");
+
+    // ...and end to end, through the actual gate, in BOTH commit orders. Order
+    // must not matter: last-wins is exactly what this replaces.
+    const human = block({ [AM]: "human-directed" });
+    const auto = block({ [AM]: "autonomous-fail-open" });
+    for (const text of [
+      `deps: roll\n\n${human}\n\n* fix\n\n${auto}\n`,
+      `deps: roll\n\n${auto}\n\n* fix\n\n${human}\n`,
+    ]) {
+      expect(detectBlockDisagreement(text)).toBeNull();
+      expect(validateText(text).violations).toEqual([]);
+      expect(preMergeAccepts(text)).toBe(true);
+      expect(detectReconciliations(text)[0]?.resolved).toBe("autonomous-fail-open");
+    }
+  });
+
+  test("EXHAUSTIVE: every resolution is a member of its input and never above the minimum", () => {
+    for (const values of subsets()) {
+      const resolved = reconcileActionMode(values);
+      if (resolved === null) continue;
+      // (1) nothing is invented
+      expect(values).toContain(resolved);
+      // (2) nothing is strengthened
+      const ranks = values.map((v) => ACTION_MODE_BY_HUMAN_AUTHORITY.indexOf(v));
+      expect(ACTION_MODE_BY_HUMAN_AUTHORITY.indexOf(resolved)).toBe(Math.min(...ranks));
+      // (3) never a claim of human presence
+      expect(resolved.startsWith("autonomous-")).toBe(true);
+    }
+  });
+
+  test("REFUSED: two claims of human PRESENCE stay loud — neither implies the other", () => {
+    expect(reconcileActionMode(["supervised", "human-directed"])).toBeNull();
+    const text = `x\n\n${block({ [AM]: "supervised" })}\n\ny\n\n${block({ [AM]: "human-directed" })}\n`;
+    expect(detectBlockDisagreement(text)?.keys).toContain(AM);
+    expect(preMergeAccepts(text)).toBe(false);
+  });
+
+  test("REFUSED: a value outside the enum has no rank, so it is not ordered", () => {
+    // 58 commits on main carry the retired `autonomous` / `agent-chosen`
+    // spellings. Unknown vocabulary fails CLOSED rather than being guessed in.
+    expect(reconcileActionMode(["autonomous", "human-directed"])).toBeNull();
+    expect(reconcileActionMode(["agent-chosen", "autonomous-fail-open"])).toBeNull();
+    expect(reconcileActionMode(["human-directed", ""])).toBeNull();
+  });
+
+  test("fail-open beats fail-closed — a squash never reads SAFER than a commit in it", () => {
+    expect(reconcileActionMode(["autonomous-fail-closed", "autonomous-fail-open"])).toBe(
+      "autonomous-fail-open",
+    );
+  });
+
+  test("SCOPE: no OTHER governance key became reconcilable", () => {
+    // The narrowing falsifier. If a later edit generalises the carve-out into a
+    // table, this goes red for whichever key was added.
+    const others = GOVERNANCE_KEYS.filter((k) => k !== AM);
+    expect(others.length).toBe(4);
+    const alt: Readonly<Record<string, readonly [string, string]>> = {
+      "Agency-Signature-Version": ["1", "2"],
+      "Credential-Mode": ["shared", "dedicated-agent"],
+      "Human-Review": ["explicit", "none"],
+      "Human-Review-Evidence": ["chat", "none"],
+    };
+    for (const key of others) {
+      const pair = alt[key];
+      expect(pair).toBeDefined();
+      const a = block({ [key]: pair?.[0] ?? "" });
+      const z = block({ [key]: pair?.[1] ?? "" });
+      const text = `x\n\n${a}\n\ny\n\n${z}\n`;
+      expect(detectBlockDisagreement(text)?.keys).toContain(key);
+      expect(validateText(text).violations[0]?.code).toBe("block-disagreement");
+    }
+  });
+
+  test("DISCRIMINATION: the #14430 shape stays BLOCKED on Human-Review", () => {
+    // Same mixed Action-Mode as #14251, but its constituents also disagree about
+    // whether a human reviewed the change. That half must NOT be unblocked here:
+    // `Human-Review` is a claim about THE CHANGE, and one change cannot have been
+    // both reviewed and not reviewed.
+    const reviewed = block({
+      "Human-Review": "explicit",
+      "Human-Review-Evidence": "chat",
+      [AM]: "human-directed",
+    });
+    const not = block({
+      "Human-Review": "not-implied-by-credential",
+      "Human-Review-Evidence": "none",
+      [AM]: "autonomous-fail-closed",
+    });
+    const text = `feat: agendas\n\n${reviewed}\n\n* later\n\n${not}\n`;
+    const d = detectBlockDisagreement(text);
+    expect(d).not.toBeNull();
+    expect(d?.keys).toContain("Human-Review");
+    expect(d?.keys).toContain("Human-Review-Evidence");
+    // ...and Action-Mode is no longer among the reasons, which is the whole
+    // point: the diagnosis now names only the fields that are really in conflict.
+    expect(d?.keys).not.toContain(AM);
+    expect(preMergeAccepts(text)).toBe(false);
+  });
+
+  test("the verdict CARRIES the resolution, so a report cannot print the stronger value", () => {
+    // The last block is the human-directed one. A caller reading
+    // `verdict.block`'s Action-Mode would print `human-directed` for a squash
+    // resolved as autonomous.
+    const text = `x\n\n${block({ [AM]: "autonomous-fail-open" })}\n\ny\n\n${block({ [AM]: "human-directed" })}\n`;
+    const verdict = validateText(text);
+    expect(blockValue((verdict.block ?? []).join("\n"), AM)).toBe("human-directed");
+    expect(verdict.reconciliations[0]).toEqual({
+      key: AM,
+      resolved: "autonomous-fail-open",
+      from: ["autonomous-fail-open", "human-directed"],
+    });
+  });
+
+  test("an unmixed Action-Mode reports no reconciliation at all", () => {
+    const b = block({ [AM]: "human-directed" });
+    expect(detectReconciliations(`x\n\n${b}\n\ny\n\n${b}\n`)).toEqual([]);
+    expect(validateText(`x\n\n${b}\n`).reconciliations).toEqual([]);
   });
 });

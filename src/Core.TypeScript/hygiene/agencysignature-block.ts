@@ -60,7 +60,9 @@ export const CANONICAL_SHAPE =
   "otherwise free: the block need NOT be the final paragraph, and text after it — an " +
   "IDE tagline, a forge footer, a `Co-authored-by:` the forge re-emitted — is fine. " +
   "When a message carries several complete blocks the LAST one is authoritative, and " +
-  "blocks that disagree on a governance-critical field are an error, not a pick.";
+  "blocks that disagree on a governance-critical field are an error, not a pick — except " +
+  "`Action-Mode`, which describes ONE COMMIT rather than the change and is resolved to the " +
+  "weakest claim present, never the strongest, and never to a claim of human involvement.";
 
 /** The ten v1 keys, in canonical (spec Section 7.4) order. */
 export const REQUIRED_KEYS: readonly string[] = [
@@ -254,6 +256,12 @@ export function missingRequiredKeys(blockText: string): readonly string[] {
  * `block-disagreement` (see `detectBlockDisagreement`), because a squash whose
  * constituents claim `Human-Review: none` and `Human-Review: explicit` cannot be
  * resolved by a parser preferring one end of the message.
+ *
+ * ONE governance key is resolved rather than refused — `Action-Mode`, and NOT by
+ * last-wins. See the RECONCILABLE section above `GOVERNANCE_KEYS`: it is ordered
+ * by claimed human authority and the MINIMUM wins, so the resolution can only
+ * weaken a claim. Last-wins is still forbidden for it, precisely because it would
+ * let commit ordering decide whether a squash reads as human-directed.
  */
 export function findSignatureBlock(text: string): readonly string[] | null {
   const all = findAllSignatureBlocks(text);
@@ -317,13 +325,181 @@ export function findAllSignatureBlocks(text: string): readonly (readonly string[
 // constituents' attribution detail. It is the right trade only because the
 // alternative — erroring on every multi-author squash — makes the check useless.
 
+// ---------------------------------------------------------------------------
+// THE THIRD CASE: RECONCILABLE (added 2026-08-23, Aaron: *"accept the mixed
+// Action-Mode (shadow*)"*)
+// ---------------------------------------------------------------------------
+// The two-way split above is not exhaustive, and the gap was found by the PRs it
+// blocked for something that is not a contradiction. PR #14251 (a .NET SDK roll
+// closing 10 CVEs) carries six commits at `Action-Mode: human-directed` and one
+// LATER maintenance commit at `autonomous-fail-open` — an agent fixing a
+// check-then-use race the PR itself had introduced. PR #14430 has the same shape
+// with `autonomous-fail-closed`. In #14251 every other governance field agrees
+// across all seven blocks; the squash is red on `Action-Mode` alone.
+//
+// `Human-Review` and `Action-Mode` are DIFFERENT IN KIND, and the split above
+// treated them as one thing. The rationale written for the split is entirely
+// about the first:
+//
+//   `Human-Review` is a claim about THE CHANGE — who is accountable for what
+//   lands. One change cannot have been both reviewed and not reviewed, so two
+//   values are a genuine contradiction and no parser may pick between them.
+//
+//   `Action-Mode` is a claim about HOW ONE COMMIT WAS MADE. Six commits a human
+//   asked for plus one autonomous maintenance fix is not a contradiction — each
+//   value is TRUE OF ITS OWN COMMIT, in exactly the sense that makes `Agent:` and
+//   `Task:` incidental. What the squash still needs is a single answer for the
+//   whole, and unlike `Human-Review` there is a defensible one.
+//
+// SO `Action-Mode` STAYS A GOVERNANCE KEY AND IS RECONCILED TO THE WEAKEST CLAIM,
+// NEVER THE STRONGEST. Dropping it from `GOVERNANCE_KEYS` would be the easy
+// change and the wrong one: it would make `human-directed` vs `autonomous-*`
+// resolve by last-wins, so a squash whose final commit happened to be the
+// human-directed one would RECORD human direction on autonomous work — the
+// escalation shape, reintroduced through the back door. Ordering the vocabulary
+// by how much human authority it claims and taking the MINIMUM inverts the
+// failure mode: mixing can lose a claim of human direction and can never
+// acquire one.
+//
+// WHY THIS CANNOT BE USED TO MANUFACTURE AUTHORITY. Four properties, each with a
+// falsifier in `agencysignature-block.test.ts` §ACTION-MODE RECONCILIATION —
+// this is the whole of what separates a reconciliation from a waiver:
+//
+//   1. The resolved value is always one a constituent commit ACTUALLY WROTE.
+//      The reconciliation only ever DISCARDS values; it never invents one.
+//   2. The resolved value is always the LEAST human-backed of the values present.
+//      `min` is the entire mechanism, and it is the reason the error can only
+//      ever run in the understating direction.
+//   3. Reconciliation is REFUSED unless the result claims no human involvement at
+//      all. `supervised` and `human-directed` are claims of PRESENCE — that a
+//      human watched, that a human asked — and neither is implied by the other,
+//      so a set holding only those two has no resolution some constituent does
+//      not deny. That set stays LOUD. Only the `autonomous-*` values are claims
+//      of ABSENCE, and a claim of absence is the one thing a parser may assert on
+//      an author's behalf. It is the same move as the house rule that a block
+//      degrades to `unknown` rather than assert a convenient value.
+//   4. A value outside the enum has no rank, so it is not ordered and not
+//      reconciled. 58 commits on `main` carry the retired `autonomous` /
+//      `agent-chosen` spellings; an unknown vocabulary stays loud rather than
+//      being guessed into position.
+//
+// WHAT IS GIVEN UP — real, and not small, so it is stated rather than implied.
+// A squash mixing human-directed work with one autonomous maintenance commit is
+// now READ as `autonomous-*` for the whole. Aaron's six human-directed commits in
+// #14251 land under an authoritative reading that says no human directed them.
+// That understates the human involvement in the change, permanently, and there is
+// no per-commit attribution left to recover it from — the squash discards the
+// constituents' authority exactly the way incidental last-wins already discards
+// the other authors' `Agent:` values.
+//
+// It is accepted for the reason the incidental case was accepted, one line up in
+// this file: the alternative is a check that fires on correct work. The two exits
+// available to an author facing that red are force-pushing the branch to re-sign
+// it (a separately gated class) or writing a value nobody earned — and a check
+// whose only exits are "rewrite history" or "lie" does not protect the invariant,
+// it prices it. Dejan, holding this exact red on #14251: *"I'd rather leave this
+// red and visible than have a green build that records a human direction nobody
+// gave."* That instinct is the one preserved here; what changes is that the
+// honest reading is now available without a force-push.
+//
+// The DIRECTION of the loss is the whole justification. The record may understate
+// human backing. It may never overstate it.
+
 export const GOVERNANCE_KEYS: readonly string[] = [
   "Agency-Signature-Version", // schema discriminator: changes how all the rest is read
   "Credential-Mode", // whether the credential implies a human at all
   "Human-Review", // THE accountability claim
   "Human-Review-Evidence", // where that claim's evidence lives (spec Section 5.3)
-  "Action-Mode", // autonomous vs supervised vs human-directed
+  "Action-Mode", // autonomous vs supervised vs human-directed — RECONCILABLE, see above
 ];
+
+/**
+ * The `Action-Mode` vocabulary ordered by HOW MUCH HUMAN AUTHORITY IT CLAIMS,
+ * weakest first. The order is not a ranking of quality; it answers one question —
+ * *which of these is the safest thing to record about a squash that contains
+ * several of them?*
+ *
+ *   0 `autonomous-fail-open`    no human, and it PROCEEDS past error — the widest
+ *                               machine reach the vocabulary can express, so it is
+ *                               the floor. Recording it can never flatter anyone.
+ *   1 `autonomous-fail-closed`  no human, and it HALTS at error. Above fail-open
+ *                               because it claims strictly less reach (the reason
+ *                               the value was added at all, see ENUMS above), and
+ *                               taking the min therefore never lets a squash
+ *                               containing a fail-open commit read as the safer
+ *                               fail-closed.
+ *   2 `supervised`              a human was PRESENT.
+ *   3 `human-directed`          a human ASKED for this specific change.
+ *
+ * 2 and 3 are both claims of presence and neither implies the other, which is why
+ * `reconcileActionMode` refuses to resolve a set that contains only those two
+ * rather than picking the smaller index. The order is total; the reconciliation
+ * deliberately is not.
+ */
+export const ACTION_MODE_BY_HUMAN_AUTHORITY: readonly string[] = [
+  "autonomous-fail-open",
+  "autonomous-fail-closed",
+  "supervised",
+  "human-directed",
+];
+
+/**
+ * The first rank that asserts a human was involved at all. Everything BELOW this
+ * is a claim of absence and may be asserted on an author's behalf; everything at
+ * or above it is a claim of presence and may not be.
+ */
+const FIRST_HUMAN_CLAIMING_RANK = ACTION_MODE_BY_HUMAN_AUTHORITY.indexOf("supervised");
+
+/**
+ * Resolve several `Action-Mode` values to the single weakest claim, or `null` when
+ * they cannot be resolved without manufacturing one.
+ *
+ * Returns `null` — meaning "stay loud" — when:
+ *   * any value is outside the enum (no rank, so no order);
+ *   * the weakest value present still claims a human was involved (`supervised` /
+ *     `human-directed` only), because resolving that set would assert of the whole
+ *     squash something one of its own commits does not say.
+ *
+ * Never returns a value that was not in `values`. Never returns a value ranked
+ * above the minimum of `values`. Both are pinned by falsifiers.
+ */
+export function reconcileActionMode(values: readonly string[]): string | null {
+  const distinct = [...new Set(values)];
+  if (distinct.length === 0) return null;
+  if (distinct.length === 1) return distinct[0] ?? null;
+  const ranks = distinct.map((v) => ACTION_MODE_BY_HUMAN_AUTHORITY.indexOf(v));
+  if (ranks.some((r) => r < 0)) return null;
+  const min = Math.min(...ranks);
+  if (min >= FIRST_HUMAN_CLAIMING_RANK) return null;
+  return ACTION_MODE_BY_HUMAN_AUTHORITY[min] ?? null;
+}
+
+/** A governance key whose differing values were resolved rather than refused. */
+export interface Reconciliation {
+  readonly key: string;
+  /** The single value the squash is read as carrying. */
+  readonly resolved: string;
+  /** Every distinct value the constituent blocks carried, in document order. */
+  readonly from: readonly string[];
+}
+
+/**
+ * The reconciliations applied to a text, so the instruments can PRINT what the
+ * squash is being read as instead of quietly reporting the last block's value.
+ *
+ * `Action-Mode` is the only reconcilable key and is named literally rather than
+ * looked up in a table. A table is an invitation: the next key added to it would
+ * inherit this exemption without inheriting the argument for it, and the argument
+ * is specific to a field that describes a COMMIT rather than THE CHANGE.
+ */
+export function detectReconciliations(text: string): readonly Reconciliation[] {
+  const blocks = findAllSignatureBlocks(text);
+  if (blocks.length < 2) return [];
+  const values = [...new Set(blocks.map((b) => blockValue(b.join("\n"), "Action-Mode")))];
+  if (values.length < 2) return [];
+  const resolved = reconcileActionMode(values);
+  return resolved === null ? [] : [{ key: "Action-Mode", resolved, from: values }];
+}
 
 export const INCIDENTAL_KEYS: readonly string[] = REQUIRED_KEYS.filter(
   (k) => !GOVERNANCE_KEYS.includes(k),
@@ -354,11 +530,15 @@ export function detectBlockDisagreement(text: string): BlockDisagreement | null 
   const details: string[] = [];
   for (const key of GOVERNANCE_KEYS) {
     const values = [...new Set(blocks.map((b) => blockValue(b.join("\n"), key)))];
-    if (values.length > 1) {
-      keys.push(key);
-      const quoted = values.map((v) => "'" + v + "'").join(" vs ");
-      details.push(`${key}: ${quoted}`);
-    }
+    if (values.length <= 1) continue;
+    // The ONE reconcilable key. Everything else here is untouched: a differing
+    // `Human-Review`, `Human-Review-Evidence`, `Credential-Mode` or
+    // `Agency-Signature-Version` is still an error, and `reconcileActionMode`
+    // itself refuses the sets that would manufacture a claim.
+    if (key === "Action-Mode" && reconcileActionMode(values) !== null) continue;
+    keys.push(key);
+    const quoted = values.map((v) => "'" + v + "'").join(" vs ");
+    details.push(`${key}: ${quoted}`);
   }
   if (keys.length === 0) return null;
   return { keys, details, blockCount: blocks.length };
@@ -475,6 +655,17 @@ export interface TextVerdict {
   readonly violations: readonly Violation[];
   /** How many complete blocks the text carried. */
   readonly blockCount: number;
+  /**
+   * Governance keys resolved rather than refused (today: `Action-Mode` only).
+   *
+   * Carried on the verdict, not left to each caller to recompute, because the
+   * authoritative BLOCK still literally contains whatever the last commit wrote.
+   * An instrument that printed `verdict.block`'s `Action-Mode` for a reconciled
+   * squash would report `human-directed` for a squash this module resolved as
+   * autonomous — the manufacture the reconciliation exists to prevent, leaking
+   * back in through the report. Callers print `resolved`.
+   */
+  readonly reconciliations: readonly Reconciliation[];
 }
 
 /**
@@ -490,11 +681,13 @@ export interface TextVerdict {
 export function validateText(text: string): TextVerdict {
   const blocks = findAllSignatureBlocks(text);
   const block = blocks.length === 0 ? null : (blocks[blocks.length - 1] ?? null);
+  const reconciliations = detectReconciliations(text);
   const disagreement = detectBlockDisagreement(text);
   if (disagreement !== null) {
     return {
       block,
       blockCount: blocks.length,
+      reconciliations,
       violations: [
         {
           code: "block-disagreement",
@@ -509,8 +702,13 @@ export function validateText(text: string): TextVerdict {
       ],
     };
   }
-  if (block === null) return { block: null, blockCount: 0, violations: [] };
-  return { block, blockCount: blocks.length, violations: validateBlock(block.join("\n")) };
+  if (block === null) return { block: null, blockCount: 0, violations: [], reconciliations };
+  return {
+    block,
+    blockCount: blocks.length,
+    reconciliations,
+    violations: validateBlock(block.join("\n")),
+  };
 }
 
 /**

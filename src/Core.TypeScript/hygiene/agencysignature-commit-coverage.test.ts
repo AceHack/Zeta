@@ -185,7 +185,17 @@ describe("resolveCoverageFacts — which lane am I?", () => {
 // the ceiling, which is exactly where a heartbeat lane's hand-corrected tail
 // lands. The proposal is invalid; the prefix looks perfect.
 // ---------------------------------------------------------------------------
-function block(actionMode: string, n: number): string {
+//
+// THE DIVERGING FIELD IS `Human-Review`, and it was changed from `Action-Mode`
+// on 2026-08-23. `Action-Mode` stopped being a valid carrier for this mutation
+// when it became reconcilable (a mixed `human-directed` / `autonomous-*` squash
+// now resolves to the weakest claim instead of erroring — see
+// `agencysignature-block.ts` §THE THIRD CASE: RECONCILABLE). Keeping it here
+// would have made the FULL list textually clean, so the mutation would have
+// stopped mutating and this suite would have measured only itself. `Human-Review`
+// carries the property the mutation is actually about: a cross-commit violation
+// that is REAL, unresolvable by any parser, and invisible behind the ceiling.
+function block(reviewDiverges: boolean, n: number): string {
   return [
     `metrics: append tick frame ${String(n)}`,
     "",
@@ -195,9 +205,9 @@ function block(actionMode: string, n: number): string {
     "Agent-Model: claude-opus-5",
     "Credential-Identity: acehack00@gmail.com",
     "Credential-Mode: shared",
-    "Human-Review: not-implied-by-credential",
-    "Human-Review-Evidence: none",
-    `Action-Mode: ${actionMode}`,
+    reviewDiverges ? "Human-Review: explicit" : "Human-Review: not-implied-by-credential",
+    reviewDiverges ? "Human-Review-Evidence: chat" : "Human-Review-Evidence: none",
+    "Action-Mode: autonomous-fail-closed",
     "Task: agencysignature-250-commit-underscan",
   ].join("\n");
 }
@@ -206,7 +216,7 @@ function block(actionMode: string, n: number): string {
 function preimage(n: number, divergeAt: number): string {
   const out: string[] = [];
   for (let i = 1; i <= n; i++) {
-    out.push(block(i === divergeAt ? "human-directed" : "autonomous-fail-closed", i));
+    out.push(block(i === divergeAt, i));
   }
   return `${out.join("\n")}\n`;
 }

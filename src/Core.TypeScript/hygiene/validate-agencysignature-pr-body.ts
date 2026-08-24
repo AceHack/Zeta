@@ -86,6 +86,7 @@ import {
   hasMisspelledVersionKey,
   isUnfilledPlaceholder,
   validateText,
+  type Reconciliation,
   type Violation,
 } from "./agencysignature-block.ts";
 
@@ -544,7 +545,22 @@ function emitViolation(v: Violation, body: string, source: TrailerSource): ExitC
   return 1;
 }
 
-function emitPass(trailers: string): ExitCode {
+/**
+ * THE PASS REPORT.
+ *
+ * `reconciliations` is threaded in rather than read off `trailers` for the reason
+ * stated on `TextVerdict.reconciliations`: for a squash whose constituents mixed
+ * `Action-Mode`, the authoritative block still literally carries whatever the LAST
+ * commit wrote. Printing that value would report `human-directed` for a squash the
+ * canonical rule resolved as autonomous — the manufacture the reconciliation
+ * exists to prevent, re-entering through the report. The resolved value is printed
+ * instead, and the values it was resolved FROM are printed beside it so the reader
+ * can see that something was discarded and what.
+ */
+function emitPass(
+  trailers: string,
+  reconciliations: readonly Reconciliation[] = [],
+): ExitCode {
   const version = getValue(trailers, "Agency-Signature-Version");
   process.stdout.write(`PASS: AgencySignature v${version} trailer block valid\n`);
   process.stdout.write(
@@ -569,9 +585,17 @@ function emitPass(trailers: string): ExitCode {
   process.stdout.write(
     `  Human-Review-Evidence:    ${getValue(trailers, "Human-Review-Evidence")}\n`,
   );
+  const actionMode = reconciliations.find((r) => r.key === "Action-Mode");
   process.stdout.write(
-    `  Action-Mode:              ${getValue(trailers, "Action-Mode")}\n`,
+    `  Action-Mode:              ${actionMode?.resolved ?? getValue(trailers, "Action-Mode")}\n`,
   );
+  if (actionMode !== undefined) {
+    process.stdout.write(
+      `    RECONCILED from ${actionMode.from.map((v) => `'${v}'`).join(" + ")} to the WEAKEST ` +
+        "claim present. The squash mixes commits made different ways; the value reported above is " +
+        "the one reading that cannot overstate human involvement.\n",
+    );
+  }
   process.stdout.write(`  Task:                     ${getValue(trailers, "Task")}\n`);
   if (getValue(trailers, "Agency-Signature-Version") === "2") {
     const persona = getValue(trailers, "Persona");
@@ -991,7 +1015,7 @@ export function main(
     return 3;
   }
 
-  return emitPass(verdict.block.join("\n"));
+  return emitPass(verdict.block.join("\n"), verdict.reconciliations);
 }
 
 /**
