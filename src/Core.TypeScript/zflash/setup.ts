@@ -179,10 +179,25 @@ function addShellAlias(): void {
   // future-proofs against an `addShellAlias()` that needs sudo for
   // system-wide rc, even though current scope is per-user).
   //
-  // sonarjs/no-os-command-from-path: same rationale as the sudo spawn
-  // above — `tee` MUST resolve via PATH for portability across macOS
-  // (/usr/bin/tee) + Homebrew-coreutils variants + Linux. Fixed argv
-  // array; no shell interpolation; attack surface is `tee` shadowing.
+  // sonarjs/no-os-command-from-path: this suppression stands on its OWN reasoning.
+  // It used to say "same rationale as the sudo spawn above", and that rationale was
+  // deleted on 2026-08-24 for being false (see the PAM-write path, which now carries the
+  // measurements that refute it). A cross-reference to a deleted argument is worse than
+  // no argument: it reads as though someone checked.
+  //
+  // Why this one is genuinely different, and it is not a matter of degree. The spawn above
+  // was a PRIVILEGE ELEVATOR: shadowing it hands an attacker root, which is an escalation
+  // ACROSS the user/root boundary. This `tee` runs unprivileged and writes the invoking
+  // user's own rc file. Shadowing it buys an attacker the ability to do, as the user, a
+  // thing they could already do as the user — no boundary is crossed. It is therefore
+  // deliberately OUT of scope for lint-no-path-resolved-privilege-elevator.ts, which
+  // guards elevators (`sudo`/`doas`/`pkexec`) and not every PATH-resolved command.
+  //
+  // Honest limit, stated because the suppression is otherwise a claim nobody can check:
+  // this reasoning holds only while the call stays unprivileged. The comment above already
+  // anticipates "an addShellAlias() that needs sudo for system-wide rc" — if that ever
+  // lands, this becomes an elevator call site and must move to `resolveElevator`.
+  // Fixed argv array; no shell interpolation.
   const newRc = `${rc}\n# Installed by zflash-setup ${new Date().toISOString()}\n${aliasLine}\n`;
   // eslint-disable-next-line sonarjs/no-os-command-from-path
   const r = spawnSync("tee", [rcPath], {

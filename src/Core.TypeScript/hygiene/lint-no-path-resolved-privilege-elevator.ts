@@ -64,21 +64,64 @@ export interface ElevatorFinding {
   readonly why: string;
 }
 
+/** Whether a `/` at this point starts a REGEX rather than a division. The standard
+ *  heuristic: a regex may not follow a value, so anything that can END an expression
+ *  (identifier char, digit, `)`, `]`) means division. Everything else — `(`, `,`, `=`, `:`,
+ *  the start of the file — means regex. */
+export function regexAllowedAfter(lastSignificant: string): boolean {
+  if (lastSignificant === "") return true;
+  return !/[A-Za-z0-9_$)\]]/.test(lastSignificant);
+}
+
 /** Blank out `//` and block comments so a literal inside prose is never a finding, while
- *  keeping every byte offset (and therefore every line number) exactly where it was. */
+ *  keeping every byte offset (and therefore every line number) exactly where it was.
+ *
+ *  REGEX LITERALS ARE LEXED, and they must be. Without a regex state this function walked
+ *  into `path.replace(/(["\\$`])/g, "\\$1")` in `zflash/setup.ts:154`, read the `"` inside
+ *  the character class as a string opener, and never recovered — every comment after it in
+ *  the file was then scanned as code. That surfaced as a false POSITIVE on the very comment
+ *  documenting this rule, which is how it was found. The direction that matters is the
+ *  other one: a desynchronised lexer also shifts which quotes read as openers, so a real
+ *  `spawnSync("sudo", …)` placed after any regex containing a quote could stop matching.
+ *  A security lint silenced by an unrelated regex earlier in the file is a bypass, so this
+ *  is lexed rather than approximated. Both directions are pinned by tests. */
 export function blankComments(src: string): string {
   const out = src.split("");
   let i = 0;
-  let state: "code" | "line" | "block" | "s" | "d" | "t" = "code";
+  let state: "code" | "line" | "block" | "s" | "d" | "t" | "r" = "code";
+  let lastSignificant = "";
+  let inCharClass = false;
   while (i < src.length) {
     const c = src[i] ?? "";
     const n = src[i + 1] ?? "";
     if (state === "code") {
       if (c === "/" && n === "/") state = "line";
       else if (c === "/" && n === "*") state = "block";
-      else if (c === "'") state = "s";
+      else if (c === "/" && regexAllowedAfter(lastSignificant)) {
+        state = "r";
+        inCharClass = false;
+      } else if (c === "'") state = "s";
       else if (c === '"') state = "d";
       else if (c === "`") state = "t";
+      if (state === "code" && !/\s/.test(c)) lastSignificant = c;
+      i += 1;
+      continue;
+    }
+    if (state === "r") {
+      // A `/` inside a character class does not close the regex: /[/]/ is legal.
+      if (c === "\\") {
+        i += 2;
+        continue;
+      }
+      if (c === "[") inCharClass = true;
+      else if (c === "]") inCharClass = false;
+      else if (c === "/" && !inCharClass) {
+        state = "code";
+        lastSignificant = "/";
+      } else if (c === "\n") {
+        // An unterminated regex is not a regex — recover rather than swallow the file.
+        state = "code";
+      }
       i += 1;
       continue;
     }
@@ -107,6 +150,8 @@ export function blankComments(src: string): string {
     }
     if ((state === "s" && c === "'") || (state === "d" && c === '"') || (state === "t" && c === "`")) {
       state = "code";
+      // A closing quote ENDS a value, so a `/` after it is division, not a regex.
+      lastSignificant = c;
     }
     i += 1;
   }

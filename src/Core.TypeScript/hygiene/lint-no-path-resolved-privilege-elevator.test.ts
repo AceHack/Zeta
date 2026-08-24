@@ -9,6 +9,7 @@ import { join } from "node:path";
 import {
   blankComments,
   collectFiles,
+  regexAllowedAfter,
   commandPositionReason,
   main,
   MIN_SCANNED_FILES,
@@ -170,5 +171,60 @@ describe("the corpus cannot silently collapse", () => {
     const acc: string[] = [];
     for (const r of ["src", "tools"]) collectFiles(r, "", acc);
     expect(acc.length).toBeGreaterThan(MIN_SCANNED_FILES);
+  });
+});
+
+// ── REGEX LITERALS: the lexer bug that let the lint be silenced ─────────────────────────
+// Found 2026-08-24 by running the lint against the very comment that documents its scope.
+// A regex literal is not a string, and treating one as a string desynchronises the lexer
+// for the rest of the file. Both directions are pinned: the false POSITIVE that surfaced
+// it, and the false NEGATIVE that makes it a bypass rather than a nuisance.
+
+describe("regex literals are lexed, not mistaken for strings", () => {
+  test("FALSE NEGATIVE — a char class containing `/*` must not blank real code", () => {
+    // MEASURED: with no regex state, `/[/*]/` reads as a block-comment opener, and the
+    // whole `spawnSync("sudo", ...)` line below it was blanked -- the lint reported OK on
+    // a file containing the exact defect it exists to find. That is a bypass: an attacker
+    // adds one innocuous-looking regex and the guard goes quiet.
+    const src = 'const re = /[/*]/;\nconst r = spawnSync("sudo", ["-p", "", "true"]);\nconst d = 1; /* x */\n';
+    const f = scanSource("f.ts", src);
+    expect(f.length).toBe(1);
+    expect(f[0]?.line).toBe(2);
+  });
+
+  test("FALSE POSITIVE — a quote inside a regex must not swallow the rest of the file", () => {
+    // The real line from zflash/setup.ts:154 that surfaced this.
+    const src =
+      'const escaped = path.replace(/(["\\\\$`])/g, "\\\\$1");\n' +
+      '// a comment mentioning spawnSync("sudo", []) — prose, not code\n' +
+      "const ok = 1;\n";
+    expect(scanSource("f.ts", src)).toEqual([]);
+  });
+
+  test("a real elevator AFTER a quote-bearing regex is still caught", () => {
+    const src = 'const escaped = path.replace(/(["\\\\$`])/g, "\\\\$1");\n' + 'const r = spawnSync("sudo", ["-k"]);\n';
+    expect(scanSource("f.ts", src).length).toBe(1);
+  });
+
+  test("DIVISION is not a regex — `a / b` must not open one", () => {
+    const src = 'const q = total / count;\nconst r = run("sudo", ["rm"]);\n';
+    expect(scanSource("f.ts", src).length).toBe(1);
+  });
+
+  test("regexAllowedAfter: a value ends an expression, so `/` after it is division", () => {
+    for (const v of ["a", "1", ")", "]", "_", "$"]) expect(regexAllowedAfter(v)).toBe(false);
+    for (const v of ["", "(", ",", "=", ":", "&", "|", "!", "{", ";", "?"]) {
+      expect(regexAllowedAfter(v)).toBe(true);
+    }
+  });
+
+  test("an unterminated regex recovers at the newline rather than swallowing the file", () => {
+    const src = 'const bad = /oops\nconst r = run("sudo", ["rm"]);\n';
+    expect(scanSource("f.ts", src).length).toBe(1);
+  });
+
+  test("blankComments still preserves length after the regex state was added", () => {
+    const src = 'const re = /[/*]/; // "sudo"\nconst x = "pkexec";\n';
+    expect(blankComments(src).length).toBe(src.length);
   });
 });
