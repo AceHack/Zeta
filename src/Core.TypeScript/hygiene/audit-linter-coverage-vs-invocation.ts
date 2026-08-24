@@ -325,6 +325,14 @@ export const TOOLS: readonly ToolRow[] = [
  * missing from it fails, and a listed script that has started being invoked fails too.
  * The second direction is what stops it becoming a suppression list -- a ledger you can
  * only add to is a place findings go to be forgotten.
+ *
+ * PROVEN IN ANGER, 2026-08-24. Two rows left here as `A GENUINE HOLE` --
+ * `hygiene:no-culture-sensitive-collation` and `hygiene:mise-pin-parity` -- were wired into
+ * gate.yml's `lint-bash-retirement-inventory` job. This audit did NOT go stale: the second
+ * direction went red (exit 3) naming both, and stayed red until the rows were deleted. That
+ * is the whole point of checking both ways, and it is the first time it fired on a real fix
+ * rather than on a fixture. A coverage audit that does not notice its own findings being
+ * closed is the vacuity class it was built to catch, one level up.
  */
 export const DECLARED_UNINVOKED: Readonly<Record<string, string>> = {
   "format:check": "prettier -- see the TOOLS row; turning it on reddens main on 20,354 files",
@@ -337,17 +345,6 @@ export const DECLARED_UNINVOKED: Readonly<Record<string, string>> = {
   "hygiene:fix-markdown": "a fixer, not a check; the healer workflow calls its path, not this name",
   "hygiene:sort-tick-history": "a canonicalizer, not a check",
   "hygiene:measure-shell-key-exposure": "a measurement, no pass/fail verdict to gate on",
-  "hygiene:mise-pin-parity":
-    "A GENUINE HOLE, recorded rather than fixed here. This is a three-way-parity pin audit " +
-    "(GOVERNANCE 24) that runs in no workflow -- neither by script name nor by its path. " +
-    "Wiring it on is a separate, measured change; naming it here is what stops it staying " +
-    "invisible. Its sibling `hygiene:dotnet-pin-parity` IS invoked, by path.",
-  "hygiene:no-culture-sensitive-collation":
-    "A GENUINE HOLE. This is the mechanical enforcement of " +
-    "`.claude/rules/culture-invariant-by-default.md` -- the rule whose live failure was " +
-    "081KT07NV0008QG0R001YDB73K -- and no workflow runs it. It has a baseline file, so a " +
-    "cold start would not redden main, which makes this the cheapest of the three holes to " +
-    "close. Not closed here: this audit does not widen checks.",
 };
 
 /**
