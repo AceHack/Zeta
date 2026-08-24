@@ -1,0 +1,12 @@
+{
+  "pr_number": 14914,
+  "archive_path": "docs/history/pr-reviews/PR-14914-fix-ci-the-required-check-that-never-ran-reads-as-green-and-1-162-of-1-219-tests.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-24T19:30:15.950Z",
+  "schema_version": "v1",
+  "commit_sha": "49a16f6accd80ec55f8b7daa83eb8df9626ae184",
+  "title": "fix(ci): the required check that never ran reads as green — and 1,162 of 1,219 tests block nothing",
+  "state": "MERGED",
+  "merged_at": "2026-08-24T19:29:29Z",
+  "head_ref": "dejan/gate-required-absent-reads-as-green"
+}
