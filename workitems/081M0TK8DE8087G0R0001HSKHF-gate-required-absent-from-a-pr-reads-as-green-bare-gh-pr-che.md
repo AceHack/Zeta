@@ -29,7 +29,7 @@ Measured 2026-08-24 on PR #14858 (`ouroboros-bootstrap`), exit codes captured di
     gh pr checks 14858 --required  -> rc=1   "no required checks reported on the branch"
 
 Population: of 42 open PRs, FOUR carry no `gate (required)` — #12058, #12066, #12321,
-#14858. Three have zero gate runs ever; #12321 is queued, not stalled.
+PR #14858. Three have zero gate runs ever; #12321 is queued, not stalled.
 
 ## What this is NOT
 
@@ -59,3 +59,48 @@ never ran.
 §6 carries six numbered questions for the maintainer. The one that matters most: of 1,219
 bun-discoverable test files, **57 are executed by a job whose red blocks a merge and 1,162
 are not**.
+
+## Narrowing observation — it arrives in SIMULTANEOUS PAIRS (shadow, 2026-08-24)
+
+Root cause is still open. This does not close it; it narrows where to look, and
+records two hypotheses that were **tested and refuted** so nobody re-runs them.
+
+**The pattern, from tick-loop sampling:**
+
+| pair | created | checks each |
+|---|---|---|
+| `#15002` / `#15003` | 22:13, same minute | 8 |
+| `#14951` / `#14952` | 20:36, same minute | 8 |
+
+Older members of the class — `#14858`, `#12321`, `#12066`, `#12058` — carry
+**6–7** checks. A PR that *did* get a gate carries **40+**.
+
+Two things follow:
+
+1. **The gate is not dying mid-run; it is never dispatched.** A cancelled or
+   crashed gate would still leave the check present with a non-success
+   conclusion. Absent-entirely is a dispatch failure, not an execution failure.
+2. **It correlates with near-simultaneous PR creation** by the flush lane —
+   twice observed as a same-minute pair.
+
+**Refuted hypothesis 1 — the concurrency group.** `gate.yml:106-108` is
+`group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}`,
+which is **per-PR**. Two distinct PRs get distinct groups, so `cancel-in-progress`
+cannot cancel one PR's gate on account of another's. Checked, not assumed.
+
+**Refuted hypothesis 2 — workflow-created PRs.** GitHub does not trigger
+`on: pull_request` workflows for PRs opened with `GITHUB_TOKEN`, which would fit
+perfectly. It does not hold here: `gh api .../pulls/N --jq .user.login` returns
+**`AceHack` / type `User`** for both the no-gate PRs and a PR that *did* get a
+gate. Same creator on both sides, so creator identity does not discriminate.
+
+**Where to look next**, in the order a next investigator should try:
+`on:` trigger filters in `gate.yml` (paths/branches) against these branch names;
+whether a rate limit or dispatch-concurrency ceiling applies to near-simultaneous
+`pull_request` events; and whether the flush lane opens PRs by an API path whose
+events differ from a normal push (e.g. created from an existing ref with no new
+push event).
+
+Detection is unaffected either way — `pr-gate-presence.yml` names the class
+hourly regardless of cause, and the class is visible rather than silent, which
+was the point of the original fix.
