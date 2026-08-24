@@ -1,0 +1,12 @@
+{
+  "pr_number": 13495,
+  "archive_path": "docs/history/pr-reviews/PR-13495-fix-hygiene-register-dkek-ceremony-preflight-sh-main-is-red-for-everyone.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-22T01:57:09.579Z",
+  "schema_version": "v1",
+  "commit_sha": "3bec5f4017b5b7d35699c178a0279b20111d096d",
+  "title": "fix(hygiene): register dkek-ceremony-preflight.sh — main is red for everyone",
+  "state": "MERGED",
+  "merged_at": "2026-08-22T01:56:30Z",
+  "head_ref": "fix/register-dkek-preflight-in-bash-inventory"
+}
