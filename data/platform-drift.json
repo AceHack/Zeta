@@ -1,5 +1,5 @@
 {
-  "asOf": "2026-08-24T20:34:25Z",
+  "asOf": "2026-08-24T20:48:03Z",
   "report": {
     "runs": 500,
     "executedRuns": 137,
@@ -13,7 +13,7 @@
         "failures": 1,
         "nonBlockingFailures": 0,
         "failureRate": 0.0072992700729927005,
-        "cleanStreak": 135,
+        "cleanStreak": 136,
         "lastFailure": {
           "runId": 32138908732,
           "at": "2026-08-18T12:49:42Z",
@@ -27,7 +27,7 @@
         "failures": 1,
         "nonBlockingFailures": 0,
         "failureRate": 0.0072992700729927005,
-        "cleanStreak": 52,
+        "cleanStreak": 53,
         "lastFailure": {
           "runId": 32669399955,
           "at": "2026-08-23T22:03:21Z",
@@ -51,7 +51,7 @@
         "failures": 6,
         "nonBlockingFailures": 5,
         "failureRate": 0.043795620437956206,
-        "cleanStreak": 3,
+        "cleanStreak": 4,
         "lastFailure": {
           "runId": 32768459115,
           "at": "2026-08-24T19:29:33Z",
@@ -65,7 +65,7 @@
         "failures": 9,
         "nonBlockingFailures": 8,
         "failureRate": 0.06569343065693431,
-        "cleanStreak": 3,
+        "cleanStreak": 4,
         "lastFailure": {
           "runId": 32768459115,
           "at": "2026-08-24T19:29:33Z",
@@ -73,9 +73,55 @@
         }
       }
     ],
-    "latestRunId": 32774648354
+    "latestRunId": 32775940697
   },
   "records": [
+    {
+      "id": 32775940697,
+      "at": "2026-08-24T20:48:03Z",
+      "sha": "a304f5e2afc6fdc4dce56ed99ba9fd7f952362cd",
+      "conclusion": "cancelled",
+      "rollup": "absent",
+      "legs": {}
+    },
+    {
+      "id": 32775588278,
+      "at": "2026-08-24T20:44:22Z",
+      "sha": "02668449e7cedb5a683c0761640414a9546bfaf2",
+      "conclusion": "cancelled",
+      "rollup": "absent",
+      "legs": {}
+    },
+    {
+      "id": 32775444798,
+      "at": "2026-08-24T20:42:51Z",
+      "sha": "cae718d1e6b5ca0ae57d7d4e882cec59f7c8528f",
+      "conclusion": "cancelled",
+      "rollup": "absent",
+      "legs": {}
+    },
+    {
+      "id": 32775117391,
+      "at": "2026-08-24T20:39:21Z",
+      "sha": "8873185a2b0dd9168ac3b312395083234ec8d0fd",
+      "conclusion": "cancelled",
+      "rollup": "absent",
+      "legs": {}
+    },
+    {
+      "id": 32774912152,
+      "at": "2026-08-24T20:37:09Z",
+      "sha": "bfed0b50003ebd0e17bc63519e04bbc0e62be91d",
+      "conclusion": "success",
+      "rollup": "success",
+      "legs": {
+        "build-and-test (windows-2025)": "success",
+        "build-and-test (ubuntu-24.04)": "success",
+        "build-and-test (macos-26)": "success",
+        "build-and-test (windows-11-arm)": "success",
+        "build-and-test (ubuntu-24.04-arm)": "success"
+      }
+    },
     {
       "id": 32774648354,
       "at": "2026-08-24T20:34:25Z",
@@ -4848,52 +4894,6 @@
       "id": 32128569738,
       "at": "2026-08-18T10:48:21Z",
       "sha": "a2e204509f278c0a0733736f64e613aaea29c5ea",
-      "conclusion": "cancelled",
-      "rollup": "absent",
-      "legs": {}
-    },
-    {
-      "id": 32128508646,
-      "at": "2026-08-18T10:47:37Z",
-      "sha": "8e213492f303cb6dd92d70402d21f78bd6cd633f",
-      "conclusion": "cancelled",
-      "rollup": "absent",
-      "legs": {}
-    },
-    {
-      "id": 32128235609,
-      "at": "2026-08-18T10:44:20Z",
-      "sha": "66298fef8246188254365573ebc70474e8e90341",
-      "conclusion": "cancelled",
-      "rollup": "absent",
-      "legs": {}
-    },
-    {
-      "id": 32126818048,
-      "at": "2026-08-18T10:27:07Z",
-      "sha": "a944770c7cd4f7bb9d395e66019396a88308d196",
-      "conclusion": "success",
-      "rollup": "success",
-      "legs": {
-        "build-and-test (macos-26)": "success",
-        "build-and-test (ubuntu-24.04-arm)": "success",
-        "build-and-test (windows-11-arm)": "success",
-        "build-and-test (ubuntu-24.04)": "success",
-        "build-and-test (windows-2025)": "success"
-      }
-    },
-    {
-      "id": 32126308927,
-      "at": "2026-08-18T10:21:01Z",
-      "sha": "aa1a43c455aedd67abb3cf7cfd21a5d24f692bc3",
-      "conclusion": "cancelled",
-      "rollup": "absent",
-      "legs": {}
-    },
-    {
-      "id": 32126294346,
-      "at": "2026-08-18T10:20:50Z",
-      "sha": "94ea6a7ac027e0e9633fe6c68bbc99f199813953",
       "conclusion": "cancelled",
       "rollup": "absent",
       "legs": {}
