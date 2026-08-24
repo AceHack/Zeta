@@ -1,0 +1,12 @@
+{
+  "pr_number": 14813,
+  "archive_path": "docs/history/pr-reviews/PR-14813-ferry-demarcation-is-the-first-act-and-spencer-brown-is-the-anchor-we-never-name.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-24T15:36:23.362Z",
+  "schema_version": "v1",
+  "commit_sha": "ef51caa6d94fd91627637bee88c379c661bb0985",
+  "title": "ferry: demarcation is the first act — and Spencer-Brown is the anchor we never named",
+  "state": "MERGED",
+  "merged_at": "2026-08-24T15:34:07Z",
+  "head_ref": "ferry/demarcation-is-the-first-act-spencer-brown-anchor"
+}
