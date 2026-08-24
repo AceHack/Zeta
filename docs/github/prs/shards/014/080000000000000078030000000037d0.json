@@ -1,0 +1,12 @@
+{
+  "pr_number": 14288,
+  "archive_path": "docs/history/pr-reviews/PR-14288-serializer-the-wire-count-is-untrusted-check-it-and-say-what-disagreed.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-23T16:50:27.406Z",
+  "schema_version": "v1",
+  "commit_sha": "f2dcd82c502ae89dfd630e53afa7255a8fd75539",
+  "title": "serializer: the wire count is untrusted — check it, and say what disagreed",
+  "state": "MERGED",
+  "merged_at": "2026-08-23T16:49:43Z",
+  "head_ref": "fix/span-serializer-windows-race"
+}
