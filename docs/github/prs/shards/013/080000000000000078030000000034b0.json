@@ -1,0 +1,12 @@
+{
+  "pr_number": 13488,
+  "archive_path": "docs/history/pr-reviews/PR-13488-fix-cluster-spire-reaches-synced-healthy-in-the-kind-lane-the-crds-it-renders-no.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-22T02:03:30.005Z",
+  "schema_version": "v1",
+  "commit_sha": "b5784929a4cb5d8189667eecdba0fdac35d8bb0d",
+  "title": "fix(cluster): spire reaches Synced+Healthy in the kind lane — the CRDs it renders now have a source",
+  "state": "MERGED",
+  "merged_at": "2026-08-22T02:02:47Z",
+  "head_ref": "shadow/spire-crds-kind-lane"
+}
