@@ -1,0 +1,12 @@
+{
+  "pr_number": 14710,
+  "archive_path": "docs/history/pr-reviews/PR-14710-security-triage-the-785-deferred-sonarjs-sites-are-2-findings-and-neither-rule-b.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-24T11:34:37.566Z",
+  "schema_version": "v1",
+  "commit_sha": "4e648410f671b27766ea75d086c5cc1db11e85ea",
+  "title": "security(triage): the 785 deferred sonarjs sites are 2 findings, and neither rule belongs in CI",
+  "state": "MERGED",
+  "merged_at": "2026-08-24T11:33:47Z",
+  "head_ref": "security-mateo-triage-path-and-tmp-sonarjs-785-sites"
+}
