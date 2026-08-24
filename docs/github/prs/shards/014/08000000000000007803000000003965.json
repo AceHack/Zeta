@@ -1,0 +1,12 @@
+{
+  "pr_number": 14693,
+  "archive_path": "docs/history/pr-reviews/PR-14693-security-twitch-ai-delete-the-dead-llm-credential-sink-purge-what-it-already-sto.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-24T10:43:26.240Z",
+  "schema_version": "v1",
+  "commit_sha": "2b7df2fc8dc10847927d3a41a4dcaec50c689df0",
+  "title": "security(twitch-ai): delete the dead LLM credential sink, purge what it already stored",
+  "state": "MERGED",
+  "merged_at": "2026-08-24T10:42:37Z",
+  "head_ref": "security/twitch-ai-remove-dead-llm-credential-sink"
+}
