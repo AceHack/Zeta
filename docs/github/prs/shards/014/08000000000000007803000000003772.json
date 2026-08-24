@@ -1,0 +1,12 @@
+{
+  "pr_number": 14194,
+  "archive_path": "docs/history/pr-reviews/PR-14194-feat-cluster-make-in-repo-manifest-resource-requests-reachable-by-a-rung-gmod-s-.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-23T13:58:20.863Z",
+  "schema_version": "v1",
+  "commit_sha": "7f220e1775925fcd3dbb26f362e76d5ab1d2cf87",
+  "title": "feat(cluster): make in-repo manifest resource requests reachable by a rung — gmod's 1000m was outside the mechanism entirely",
+  "state": "MERGED",
+  "merged_at": "2026-08-23T13:57:39Z",
+  "head_ref": "feat/rung-reachable-raw-manifests"
+}
