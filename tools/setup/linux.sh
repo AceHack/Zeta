@@ -259,7 +259,7 @@ elif [ -f "$APT_MANIFEST" ]; then
     apt_update_rc=0
     # shellcheck disable=SC2086
     if timeout --signal=TERM --kill-after="${apt_kill_after}s" "$apt_update_slice" \
-         $SUDO apt-get update -y 2>&1 | tee "$apt_log"; then :; else apt_update_rc="${PIPESTATUS[0]}"; fi
+         $SUDO env DEBIAN_FRONTEND=noninteractive apt-get update -y 2>&1 | tee "$apt_log"; then :; else apt_update_rc="${PIPESTATUS[0]}"; fi
     if [ "$apt_update_rc" -eq 124 ]; then
       echo "⚠ apt-get update exceeded its ${apt_update_slice}s slice of the" >&2
       echo "  ${apt_budget}s apt budget — stalled mirror. Continuing to install;" >&2
@@ -300,8 +300,15 @@ elif [ -f "$APT_MANIFEST" ]; then
       if [ "$apt_slice" -lt 1 ]; then apt_slice=1; fi
       apt_install_rc=0
       # shellcheck disable=SC2086
+      # DEBIAN_FRONTEND=noninteractive + confdef/confold keep dpkg from stalling
+      # on a conffile prompt (e.g. fuse3's fuse.conf) when this runs headless —
+      # on a dev laptop, CI runner, devcontainer, or a fresh Cloud Agent base
+      # image where the package is installed for the first time. Without it the
+      # install dies with "end of file on stdin at conffile prompt" (rc=100).
       timeout --signal=TERM --kill-after="${apt_kill_after}s" "$apt_slice" \
-        $SUDO apt-get install -y --no-install-recommends \
+        $SUDO env DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
+          -o Dpkg::Options::=--force-confdef \
+          -o Dpkg::Options::=--force-confold \
           -o Acquire::Retries=3 \
           -o Acquire::http::Timeout=30 \
           -o Acquire::https::Timeout=30 \
@@ -360,9 +367,13 @@ elif [ -f "$APT_MANIFEST" ]; then
           apt_dpkg_left=$(( apt_dpkg_deadline - $(date +%s) ))
           [ "$apt_dpkg_left" -le 0 ] && break
           apt_dpkg_rc=0
+          # DEBIAN_FRONTEND=noninteractive + confdef/confold so a conffile prompt
+          # (e.g. fuse3's fuse.conf on a fresh headless base image) is answered
+          # with the default instead of stalling on "end of file on stdin at
+          # conffile prompt" — the same non-interactive guard as the install above.
           # shellcheck disable=SC2086
           timeout --signal=TERM --kill-after="${apt_kill_after}s" "$apt_dpkg_left" \
-            $SUDO dpkg --configure -a >"$apt_dpkg_log" 2>&1 || apt_dpkg_rc=$?
+            $SUDO env DEBIAN_FRONTEND=noninteractive dpkg --force-confdef --force-confold --configure -a >"$apt_dpkg_log" 2>&1 || apt_dpkg_rc=$?
           if [ "$apt_dpkg_rc" -eq 0 ]; then
             if [ "$apt_dpkg_waited" -gt 0 ]; then
               echo "✓ dpkg database repaired after waiting ${apt_dpkg_waited}s for the lock" >&2
