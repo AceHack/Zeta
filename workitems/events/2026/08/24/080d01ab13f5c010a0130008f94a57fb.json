@@ -1,0 +1,14 @@
+{
+  "id": "080d01ab13f5c010a0130008f94a57fb",
+  "at": "2026-08-24T20:07:22.552Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M0TP4ZNQ087G0R001F1HKTB",
+    "type": "bug",
+    "title": "the local-LLM chooser is not a function — same model, same seed, same prompts, different answer",
+    "slug": "the-local-llm-chooser-is-not-a-function-same-model-same-seed",
+    "priority": "P2",
+    "filename": "081M0TP4ZNQ087G0R001F1HKTB-the-local-llm-chooser-is-not-a-function-same-model-same-seed.md"
+  }
+}
