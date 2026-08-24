@@ -1,0 +1,12 @@
+{
+  "pr_number": 14555,
+  "archive_path": "docs/history/pr-reviews/PR-14555-ci-lint-widen-eslint-from-one-path-to-the-24-that-measure-zero-and-correct-the-w.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-24T00:41:12.336Z",
+  "schema_version": "v1",
+  "commit_sha": "83ee5b1e4e808fe33264d9f4572f1ffe3900c235",
+  "title": "ci(lint): widen eslint from one path to the 24 that measure zero — and correct the workitem the tree outran",
+  "state": "MERGED",
+  "merged_at": "2026-08-24T00:40:27Z",
+  "head_ref": "ci/eslint-widen-to-measured-clean-paths"
+}
