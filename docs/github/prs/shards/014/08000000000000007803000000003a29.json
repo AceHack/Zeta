@@ -1,0 +1,12 @@
+{
+  "pr_number": 14889,
+  "archive_path": "docs/history/pr-reviews/PR-14889-ferry-time-can-be-bought-with-a-correlated-seed-so-decorrelation-is-the-anti-mon.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-24T17:59:06.707Z",
+  "schema_version": "v1",
+  "commit_sha": "fb1630e38cee59e13eff455e0160af719a39c5ab",
+  "title": "ferry: time can be bought with a correlated seed — so decorrelation is the anti-money",
+  "state": "MERGED",
+  "merged_at": "2026-08-24T17:58:19Z",
+  "head_ref": "ferry/time-can-be-bought-decorrelation-is-the-anti-money"
+}
