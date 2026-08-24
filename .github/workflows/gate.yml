@@ -1728,6 +1728,36 @@ jobs:
         # A step name is read as a claim about what ran; keep it to what runs.
         run: bun src/Core.TypeScript/lint/lint-typescript.ts
 
+      # ESLint over the paths MEASURED CLEAN, and only those
+      # (workitem 081M0RBXF6J087G0R0023EX9X2). eslint has been configured,
+      # pinned and named in this workflow since day one while running nowhere;
+      # `lint (twitch-ai app)` (b1967172d, 2026-08-23T23:24:02Z) was the first
+      # path it actually ran on. This is the second, chosen by measurement
+      # rather than taste.
+      #
+      # Repo-wide the config finds 19,685 errors over 2,500 files, so a blanket
+      # `eslint .` would redden main by five figures. The roster in
+      # `lint:eslint` is every directory that measured EXACTLY ZERO on
+      # 6fb8f3149, minus `infra/k8s` — 102 files. `infra/k8s` measured zero too,
+      # but it is the STALE cluster declaration awaiting deletion
+      # (081M00QCHWA087G0R000GKKRXD): `audit-cluster-tree-consumers` went red on
+      # this very PR because naming it in package.json was new coupling to a tree
+      # whose roster must only SHRINK. Dropped rather than rostered — a lint
+      # roster is not a reason to keep a doomed tree alive. It locks the standard in where it already holds
+      # and costs nothing to satisfy today; the other ~19.6k errors stay a
+      # measured list in the workitem, not a silenced one. No rule is disabled,
+      # no path is ignored, nothing is downgraded to a warning.
+      #
+      # Widening = add a path to `lint:eslint` once it measures zero. The same
+      # script is what a laptop and a devcontainer run (`bun run lint:eslint`),
+      # so the three surfaces cannot drift.
+      #
+      # Cost: ~13s on this machine over 107 files (the typed-linting program
+      # load dominates, not the file count), inside a job already provisioned
+      # with bun + the eslint stack. No new job, no new runner, no new install.
+      - name: ESLint over the measured-clean path roster
+        run: bun run lint:eslint
+
   lint-twitch-ai:
     # twitch-ai is a self-contained Vite workspace (own tsconfig: lib DOM +
     # vite/client types, own bun.lock) that NO CI job ran — the app's real

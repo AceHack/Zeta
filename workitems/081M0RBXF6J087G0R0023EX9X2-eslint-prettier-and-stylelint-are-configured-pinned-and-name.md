@@ -12,6 +12,15 @@ composes_with: []
 
 # eslint, prettier and stylelint are configured, pinned and named in CI but never invoked
 
+> **SUPERSEDED IN PART, 2026-08-24 — read this before the finding below.** The title's "never
+> invoked" was **true when filed (2026-08-23T22:30:01.682Z)** and stopped being true **54 minutes
+> later**, when `b1967172d` (2026-08-23T23:24:02Z, PR #14522) put `bunx eslint
+> src/apps/twitch-ai/src` into `gate.yml`. **Corrected claim: eslint runs on ONE narrow path and
+> no other; prettier and stylelint still run nowhere.** The original measurement is left verbatim —
+> it was accurate when made, and a measurement that the tree outran is a supersession, not an error.
+> Full timeline, the repo-wide per-path measurement, and what landed: [§ SUPERSESSION
+> 2026-08-24](#supersession-2026-08-24-dejan--never-invoked-anywhere-in-the-repo-was-true-when-filed-and-is-stale-now).
+
 <!-- Work-item body. ZetaId-keyed (conflict-free, time-sortable). "Backlog" is a
      STATE = this folder; completion moves the file to workitems/done/YYYY/MM/.
      Identity is the zetaid prefix — resolve cross-refs by `081M0RBXF6J087G0R0023EX9X2-*.md` glob. -->
@@ -289,3 +298,472 @@ Found by shadow on an autonomous tick, 2026-08-23, while diagnosing `lint (TS)` 
 doc>` also exits 0 without linting — **two independent instances of "the linter is present and does
 not examine the file" found in one day**, which suggests the class deserves a sweep rather than two
 point fixes.
+
+---
+
+## SUPERSESSION 2026-08-24 (dejan) — "never invoked anywhere in the repo" was TRUE when filed and is STALE now
+
+This workitem's central measurement was accurate for **54 minutes**, and the record should say so
+rather than read as an error.
+
+| event | timestamp (UTC) | evidence |
+|---|---|---|
+| this workitem filed, claiming eslint is invoked nowhere | **2026-08-23T22:30:01.682Z** | frontmatter `created:` |
+| `bunx eslint src/apps/twitch-ai/src` enters `.github/workflows/gate.yml`, job `lint (twitch-ai app)` | **2026-08-23T23:24:02Z** | commit `b1967172d8f9ed95b10751756f1e95102e2c5046`, PR #14522 — *"ci(twitch-ai): the app gets a CI job — its own tsc, the repo eslint, the real vite build (D0 of #14503)"* |
+
+So: **the finding was not wrong; the tree moved under it.** eslint now runs on exactly one path,
+`src/apps/twitch-ai/src` (4 `.ts` files), and that job's own comment names this workitem as the
+reason it exists. Everything else in the finding stands — the config still targets `**/*.ts`, and
+everything outside that one directory is still unexamined.
+
+The corrected claim, for the next reader: **eslint is invoked on one narrow path and no other**;
+prettier and stylelint are still invoked nowhere.
+
+**A fourth, incidental confirmation that `prettier` is not a gate — this very file:**
+
+```text
+$ git checkout -- workitems/   # pristine, exactly as it sits on origin/main
+$ bunx prettier --check workitems/081M0RBXF6J087G0R0023EX9X2-*.md
+$ echo "rc=$?"
+Checking formatting...
+[warn] workitems/081M0RBXF6J087G0R0023EX9X2-eslint-prettier-and-stylelint-are-configured-pinned-and-name.md
+[warn] Code style issues found in the above file. Run Prettier with --write to fix.
+rc=1
+```
+
+The workitem reporting that prettier never runs is **itself unformatted on `main`** and nothing
+noticed. Left unformatted deliberately: reformatting it would put 29 lines of reflow into this diff
+and edit a record this PR is only appending to. When `format:check` is eventually wired up, that is
+the moment to normalise it — not before, and not as a side effect of an unrelated change.
+
+## THE BLAST RADIUS OF ONE FALSE LOG LINE — measured, and deliberately not repaired
+
+`✓ TypeScript, Prettier, and style checks passed successfully!` is quoted in the PR-review archive
+**as evidence that a run was clean**:
+
+```text
+$ git grep -l 'Prettier, and style' origin/main -- 'docs/history/pr-reviews/*' | wc -l
+23
+$ git grep -l 'style checks passed successfully' origin/main -- 'docs/history/pr-reviews/*' | wc -l
+15
+$ git grep -l 'Run TypeScript Lint Script' origin/main | wc -l
+5
+```
+
+Typical shape, from `PR-11488-feat-receipt-…md`:
+
+```text
+$ bun src/Core.TypeScript/lint/lint-typescript.ts
+✓ TypeScript, Prettier, and style checks passed successfully!
+```
+
+**These are not being rewritten.** Each one is an accurate record of what the runner printed on that
+day; editing them would replace a true record of a false statement with a false record of a true one.
+They are left as the measurement of the defect's reach: **one wrong string in one `console.log`
+propagated into 23 archived reviews before anyone read it as a claim.**
+
+That is the argument for treating this as a *class* needing a sweep rather than two point fixes — a
+false success line is not contained by the file that prints it, because the whole purpose of a CI log
+is to be quoted downstream.
+
+(The string itself is fixed in PR #14545, which derives the message from `STEPS` so it cannot drift
+back. That PR is decoupled from everything below.)
+
+## MEASURED PER-PATH 2026-08-24 (dejan) — the repo, not one directory
+
+Method — one `eslint` invocation over every candidate root, JSON output, aggregated by directory.
+Exit status captured directly, never through a pipe:
+
+```text
+$ git rev-parse HEAD
+6fb8f314916d51b7cf1ac8d41b4063e58e287142
+$ bunx eslint src tools tests demo docs vocab inventory infra samples genesis full-ai-cluster \
+    .claude .codex .gemini .kiro eslint.config.ts \
+    --no-error-on-unmatched-pattern --format json > /tmp/dejan-eslint-all.json 2> /tmp/dejan-eslint-all.err
+$ echo "rc=$?"
+rc=1
+```
+
+**Totals: 2,500 files linted, 19,685 errors, 1 warning.** 165 of those errors are parse failures
+(`ruleId: null`) on files that `tsconfig.json` excludes but `eslint.config.ts` does not — a real
+config divergence, listed below rather than fixed here.
+
+**198 directory groups. 28 measured exactly zero. 170 did not.**
+
+### Top rule classes, repo-wide (supersedes the `src/Core.TypeScript`-only table above)
+
+| count | rule |
+|---:|---|
+| 3,922 | `@typescript-eslint/no-non-null-assertion` |
+| 3,583 | `@typescript-eslint/restrict-template-expressions` |
+| 988 | `@typescript-eslint/no-unsafe-member-access` |
+| 679 | `sonarjs/cognitive-complexity` |
+| 618 | `no-undef` |
+| 593 | `@typescript-eslint/no-unsafe-assignment` |
+| 586 | `@typescript-eslint/no-unnecessary-condition` |
+| 527 | `@typescript-eslint/dot-notation` |
+| 494 | `sonarjs/no-nested-conditional` |
+| 463 | `@typescript-eslint/array-type` |
+| **442** | **`sonarjs/no-os-command-from-path`** |
+| 427 | `@typescript-eslint/require-await` |
+| 369 | `sonarjs/no-unenclosed-multiline-block` |
+| 353 | `@typescript-eslint/no-explicit-any` |
+| **342** | **`sonarjs/publicly-writable-directories`** |
+| 165 | *(parse errors — files outside the tsconfig project)* |
+
+## WHICH STRATEGY THE DATA CHOSE: **the path strategy**
+
+The workitem offered two shapes — narrow *path*, or a small near-zero-false-positive *rule set*
+repo-wide. The measurement decides it, and it decides against the rule set:
+
+1. **Clean paths exist, and there are 28 of them.** The path strategy is not a compromise here; it is
+   available today at zero remediation cost, and it locks the full strict profile — every rule, no
+   subsetting — in where the codebase already satisfies it.
+2. **The two security-shaped rules are the wrong first move, on their own evidence.**
+   `sonarjs/no-os-command-from-path` is 442 and `sonarjs/publicly-writable-directories` is 342 — 784
+   sites. Both are heuristics with real false-positive rates. Enabling them repo-wide would either
+   redden `main` by 784, or require 784 triage decisions before a single one lands. **Neither of those
+   is a decision I get to make: triage of a security-shaped finding belongs to a security persona
+   (Mateo), not to CI.** The honest claim about those 784 is *"these sites deserve review"*, never
+   *"784 vulnerabilities"* — and a claim awaiting review is not a claim CI can gate on.
+3. **The rule strategy is also the weaker enforcement.** A repo-wide two-rule set says nothing about
+   the 3,922 non-null assertions. The path strategy says everything about 102 files and is honest
+   about saying nothing about the rest.
+
+So the rule strategy is **deferred to Mateo with the counts attached**, not rejected. It becomes
+attractive the moment someone with security context has triaged the 784.
+
+## WHAT LANDED (this PR)
+
+`package.json` gains `lint:eslint`, and the existing `lint (TS)` gate job gains one step that runs it.
+**No new job, no new runner, no new install** — `lint (TS)` already provisions bun and the eslint
+stack for `tsc`. Cost measured at **~13 s** locally and **20 s** in CI for the roster (typed-linting program
+load dominates, not the 102 files).
+
+The roster is exactly the directories that measured **zero**, minus three deliberate exclusions:
+
+| path | files |
+|---|---:|
+| `eslint.config.ts` | 1 |
+| `src/Core.QSharp.ReferenceOracle` | 10 |
+| `src/Core.TypeScript/agent-bus` | 8 |
+| `src/Core.TypeScript/ansi` | 3 |
+| `src/Core.TypeScript/audit-packages` | 1 |
+| `src/Core.TypeScript/byte-cost` | 2 |
+| `src/Core.TypeScript/claude-hooks` | 2 |
+| `src/Core.TypeScript/enforcement` | 2 |
+| `src/Core.TypeScript/federated-identity` | 20 |
+| `src/Core.TypeScript/fuzz` | 1 |
+| `src/Core.TypeScript/g-set` | 5 |
+| `src/Core.TypeScript/git` | 5 |
+| `src/Core.TypeScript/io-boundary` | 3 |
+| `src/Core.TypeScript/lanes` | 3 |
+| `src/Core.TypeScript/mixin` | 2 |
+| `src/Core.TypeScript/pam` | 2 |
+| `src/Core.TypeScript/persistence` | 4 |
+| `src/Core.TypeScript/resource-planner` | 4 |
+| `src/Core.TypeScript/splitmix64` | 2 |
+| `src/Core.TypeScript/tradition-density` | 9 |
+| `src/Core.TypeScript/watermark` | 2 |
+| `src/Core.TypeScript/z-set` | 3 |
+| `src/Core.TypeScript/zetadb` | 8 |
+| **total** | **102** |
+
+Widening is a one-token diff: add a path to `lint:eslint` once it measures zero. The same script is
+what a laptop and a devcontainer run (`bun run lint:eslint`), so the three surfaces cannot drift —
+there is no CI-only invocation to fall out of sync (GOVERNANCE §24).
+
+### `infra/k8s` measured zero and was still dropped — CI caught it, on this PR
+
+The first push of this change enrolled `infra/k8s` (5 files, 0 errors). Two gate jobs went red:
+
+```text
+lint (yaml/k8s)                                        -> FAILURE
+lint (bash retirement inventory + hygiene unit tests)  -> FAILURE
+
+cluster-tree consumers: 32 file(s) outside infra/ name infra/k8s or infra/nixos
+1 finding(s):
+  [unrostered-consumer] package.json
+      names the stale tree (infra/k8s | infra/nixos) but is not in the roster.
+```
+
+`infra/k8s` is the **stale** cluster declaration awaiting deletion
+(081M00QCHWA087G0R000GKKRXD) — it collides with `full-ai-cluster/` on
+`Application/argocd/zeta-root`, and its consumer roster is designed to only ever **shrink**.
+
+**Dropped, not rostered.** The roster offers a documented escape hatch — add the path with a
+disposition and a migration target — and taking it would have been the wrong call: a lint roster is
+not a reason to keep a doomed tree alive, and adding a consumer to a tree scheduled for deletion is
+new coupling bought for five files. `full-ai-cluster/` is not a substitute either; it measured
+dirty (portal 455, platform-controller 175, tools 73, nixos 45).
+
+Worth stating plainly: **the failing check was right and I was wrong.** "This directory measures
+zero" was a sufficient reason to enrol under my own criterion, and my criterion was incomplete — it
+had no term for whether the directory should exist at all. Recorded rather than quietly fixed,
+because a criterion that needed a red build to find its missing term is the interesting artefact
+here, not the five files.
+
+### Clean but deliberately NOT enrolled
+
+| path | files | why not |
+|---|---:|---|
+| `docs/research/scripts` | 2 | **The profile-boundary question, and it is not mine to answer.** It measured zero — Lumen's restructure cleared all 72 — so it is *mechanically* free to enrol, which is exactly why enrolling it would silently settle the disagreement recorded above. shadow and Lumen hold different positions; the maintainer decides. Untouched. |
+| `src/apps` | 5 | Already enforced by `lint (twitch-ai app)`, under the app's own context. Enrolling it here would pay for the same 4 files twice. |
+| `src/Core/data`, `samples/FactoryDemo.Db` | 1 each | A single `.ts` file inside a large F#/C# tree. Enrolling a lone file makes the roster read as a file list rather than a directory policy, and its siblings in `samples/` are dirty (71 and 55). Free to add later if either tree grows TypeScript. |
+
+## WHAT DID NOT LAND — the remaining list, with counts
+
+Every group below is a path eslint would fail on today. This is the debt, itemised; nothing here is
+disabled, ignored, downgraded, or excluded — it is simply not yet enrolled.
+
+**73 of these 170 groups are at 15 errors or fewer** — those are the cheap next slices, and they are
+visible at a glance in the table.
+
+| `src/Core.TypeScript/hygiene` | 283 | 2107 | 4 |
+| `tests/cross-verification` | 109 | 1355 |  |
+| `genesis/assets` | 1 | 1348 |  |
+| `src/Core.TypeScript/observe` | 168 | 1182 |  |
+| `src/Core.TypeScript/ace` | 87 | 1103 |  |
+| `src/Core.TypeScript/discovery` | 91 | 940 | 5 |
+| `tools/setup` | 116 | 793 |  |
+| `src/Core.TypeScript/zflash` | 62 | 639 | 1 |
+| `src/Core.TypeScript/cluster` | 70 | 588 | 2 |
+| `docs/design` | 9 | 457 |  |
+| `full-ai-cluster/portal` | 33 | 455 | 3 |
+| `src/Core.TypeScript/forge-host` | 52 | 455 | 10 |
+| `src/Core.TypeScript/planning` | 63 | 431 |  |
+| `src/Core.TypeScript/installer` | 53 | 400 |  |
+| `src/Core.TypeScript/ci` | 48 | 363 |  |
+| `src/Core.TypeScript/workflow-engine` | 50 | 312 | 1 |
+| `src/Core.TypeScript/ferry-throttler` | 26 | 301 |  |
+| `src/Core.TypeScript/algebra` | 43 | 295 |  |
+| `src/Core.TypeScript/bg` | 11 | 239 | 17 |
+| `src/Core.TypeScript/bus` | 9 | 216 |  |
+| `src/Core.TypeScript/swarm` | 11 | 215 |  |
+| `src/Core.TypeScript/backlog` | 32 | 205 | 1 |
+| `src/Core.TypeScript/substrate-claim-checker` | 15 | 201 |  |
+| `src/Core.TypeScript/chip8` | 20 | 196 |  |
+| `full-ai-cluster/platform-controller` | 14 | 175 |  |
+| `src/wasm-dla` | 12 | 171 | 4 |
+| `src/Core.TypeScript/browser-node` | 107 | 162 |  |
+| `src/Core.TypeScript/bayesian` | 23 | 157 |  |
+| `src/Core.TypeScript/peer-call` | 15 | 153 | 3 |
+| `src/Core.TypeScript/costume-rho` | 5 | 137 |  |
+| `src/Core.TypeScript/inventory` | 6 | 134 |  |
+| `src/Core.TypeScript/zeta-id` | 11 | 134 |  |
+| `src/Core.TypeScript/shadow` | 7 | 120 | 4 |
+| `src/Core.TypeScript/health` | 2 | 119 |  |
+| `src/Core.TypeScript/service` | 20 | 117 |  |
+| `src/Core.TypeScript/search` | 17 | 114 |  |
+| `src/Core.TypeScript/file-type-plugin` | 7 | 100 |  |
+| `src/Core.TypeScript/research` | 17 | 99 |  |
+| `src/Core.TypeScript/agent-heartbeats` | 10 | 95 | 6 |
+| `src/Core.TypeScript/oracle` | 12 | 92 |  |
+| `src/Core.TypeScript/cover-acyclicity` | 6 | 85 |  |
+| `docs/recovered-orphan-branches-2026-05` | 66 | 84 | 64 |
+| `src/Renderers` | 7 | 78 | 6 |
+| `src/Core.TypeScript/dynamic-value` | 22 | 77 |  |
+| `src/Core.TypeScript/ops` | 2 | 74 |  |
+| `full-ai-cluster/tools` | 5 | 73 |  |
+| `samples/FactoryDemo.Api.CSharp` | 1 | 71 |  |
+| `src/Core.TypeScript/drift-dashboard` | 6 | 70 |  |
+| `src/Core.TypeScript/darkhall-ui` | 32 | 69 | 1 |
+| `src/Core.TypeScript/chip9-cart` | 6 | 67 |  |
+| `src/Core.TypeScript/resonance` | 4 | 66 |  |
+| `src/Core.TypeScript/model-backend` | 43 | 60 |  |
+| `inventory/lib` | 4 | 57 |  |
+| `src/Core.TypeScript/arc-solver` | 3 | 57 |  |
+| `src/Core.TypeScript/scaffold` | 2 | 57 | 6 |
+| `samples/FactoryDemo.Api.FSharp` | 1 | 55 |  |
+| `tools/Z3Verify` | 13 | 50 | 1 |
+| `src/Core.TypeScript/migrations` | 4 | 47 |  |
+| `src/Core.TypeScript/memory` | 3 | 46 |  |
+| `full-ai-cluster/nixos` | 12 | 45 |  |
+| `src/Core.TypeScript/bootstrap-razor` | 2 | 44 | 1 |
+| `src/Core.TypeScript/alignment` | 21 | 41 |  |
+| `src/Core.TypeScript/residual` | 10 | 41 |  |
+| `src/Core.TypeScript/bonsai` | 5 | 39 |  |
+| `src/Core.TypeScript/roms` | 6 | 39 |  |
+| `src/Core.TypeScript/crypto` | 13 | 38 |  |
+| `src/Core.TypeScript/moral-gym` | 3 | 38 |  |
+| `src/Core.TypeScript/playwright` | 15 | 38 |  |
+| `src/Core.TypeScript/eve-translation` | 2 | 35 |  |
+| `src/Core.TypeScript/merkle` | 4 | 35 |  |
+| `src/Core.TypeScript/key-custody` | 2 | 33 |  |
+| `src/Core.TypeScript/shadow-outlet` | 3 | 33 |  |
+| `src/Core.TypeScript/openspec` | 2 | 31 |  |
+| `docs/books` | 6 | 30 |  |
+| `src/Core.TypeScript/authorization` | 6 | 30 |  |
+| `src/Core.TypeScript/yaml` | 8 | 30 |  |
+| `tools` | 3 | 30 |  |
+| `src/Core.TypeScript/indexed-z-set` | 3 | 29 |  |
+| `src/Core.TypeScript/z-set-merkle` | 4 | 29 |  |
+| `src/Core.TypeScript/claude-code-recovery` | 1 | 27 |  |
+| `src/Core.TypeScript/save-ai-memory` | 2 | 27 |  |
+| `demo/identity-dla-site` | 16 | 26 | 15 |
+| `src/Core.TypeScript/dashboard` | 3 | 25 |  |
+| `vocab/gen` | 6 | 24 |  |
+| `src/Core.TypeScript/audit` | 4 | 23 |  |
+| `src/Core.TypeScript/formal-verification` | 7 | 23 |  |
+| `src/Core.TypeScript/protocol` | 6 | 23 |  |
+| `src/Core.TypeScript/invariant-substrates` | 1 | 22 |  |
+| `src/Core.TypeScript/tools` | 1 | 22 |  |
+| `src/Core.TypeScript/accelerator` | 3 | 21 |  |
+| `src/Core.TypeScript/bridge-transfer` | 4 | 20 |  |
+| `src/Core.TypeScript/mesh-pong` | 3 | 18 |  |
+| `src/Core.TypeScript/tri-boolean` | 5 | 18 |  |
+| `inventory/proofs` | 2 | 17 |  |
+| `src/Core.TypeScript/ledger` | 2 | 17 |  |
+| `src/Core.TypeScript/dla` | 2 | 16 |  |
+| `src/Core.TypeScript/dora-classify` | 3 | 16 |  |
+| `genesis/_src` | 3 | 15 |  |
+| `src/Core.TypeScript/chip9` | 7 | 15 |  |
+| `src/Core.TypeScript/orchestrator-checks` | 6 | 15 | 1 |
+| `src/Core.TypeScript/range-set` | 3 | 14 |  |
+| `.claude/hooks` | 8 | 13 | 6 |
+| `src/Core.TypeScript/bootstrap-validator` | 2 | 13 |  |
+| `src/Core.TypeScript/cold-start` | 1 | 13 |  |
+| `src/Core.TypeScript/four-corner` | 3 | 13 |  |
+| `src/Core.TypeScript/metric` | 3 | 13 |  |
+| `src/Core.TypeScript/recorded-source` | 3 | 13 |  |
+| `src/Core.TypeScript/economy` | 8 | 12 |  |
+| `src/Core.TypeScript/lint` | 12 | 12 |  |
+| `src/Core.TypeScript/collation` | 2 | 11 |  |
+| `src/Core.TypeScript/society` | 12 | 11 |  |
+| `src/Core.TypeScript/work-items` | 11 | 11 |  |
+| `src/Core.TypeScript/auth` | 1 | 10 |  |
+| `src/Core.TypeScript/claims` | 2 | 10 |  |
+| `src/Core.TypeScript/identity` | 3 | 10 |  |
+| `src/Core.TypeScript/quantum` | 2 | 10 |  |
+| `src/Core.TypeScript/sha256` | 3 | 10 |  |
+| `src/Core.TypeScript/concordance` | 1 | 9 |  |
+| `src/Core.TypeScript/durability` | 5 | 9 |  |
+| `src/Core.TypeScript/orchestrator` | 1 | 9 |  |
+| `src/Core.TypeScript/probability-semiring` | 2 | 9 |  |
+| `src/Core.TypeScript/uncertain-clock` | 2 | 9 |  |
+| `src/Core.TypeScript/verify` | 2 | 9 |  |
+| `src/Core.TypeScript/perf` | 5 | 8 |  |
+| `src/Core.TypeScript/riven` | 1 | 8 |  |
+| `src/Core.TypeScript/routines` | 2 | 8 |  |
+| `src/Core.TypeScript/braid` | 2 | 7 |  |
+| `src/Core.TypeScript/skill-catalog` | 2 | 7 |  |
+| `src/Core.TypeScript/soft-value` | 2 | 7 |  |
+| `src/Core.TypeScript/schema-codegen` | 2 | 6 |  |
+| `src/Core.TypeScript/secrets` | 5 | 6 |  |
+| `src/Core.TypeScript/tick-dial` | 2 | 6 |  |
+| `src/Core.TypeScript/traveler-frame` | 3 | 6 |  |
+| `src/Core.TypeScript/clock` | 4 | 5 |  |
+| `src/Core.TypeScript/decision-archaeology` | 1 | 5 |  |
+| `src/Core.TypeScript/profile` | 2 | 5 |  |
+| `src/Core.TypeScript/security` | 1 | 5 |  |
+| `src/Core.TypeScript/testing` | 1 | 5 |  |
+| `tools/dora` | 1 | 5 |  |
+| `src/Core.TypeScript/budget` | 3 | 4 |  |
+| `src/Core.TypeScript/complexity` | 2 | 4 |  |
+| `src/Core.TypeScript/fastcdc` | 2 | 4 |  |
+| `src/Core.TypeScript/graph-coloring` | 1 | 4 |  |
+| `src/Core.TypeScript/i18n` | 1 | 4 |  |
+| `src/Core.TypeScript/messagepack` | 1 | 4 |  |
+| `src/Core.TypeScript/trajectories` | 2 | 4 |  |
+| `src/Core.TypeScript/tri-boolean-float` | 6 | 4 |  |
+| `tools/book-build` | 1 | 4 |  |
+| `src/Core.TypeScript/canonical-json` | 1 | 3 |  |
+| `src/Core.TypeScript/delta-log-entry` | 1 | 3 |  |
+| `src/Core.TypeScript/edge-claims` | 1 | 3 |  |
+| `src/Core.TypeScript/frame-delta` | 2 | 3 |  |
+| `src/Core.TypeScript/mythology-resonance` | 1 | 3 |  |
+| `src/Core.TypeScript/skill-carver` | 1 | 3 |  |
+| `src/Core.TypeScript/blake3` | 3 | 2 |  |
+| `src/Core.TypeScript/broadcast-local` | 2 | 2 |  |
+| `src/Core.TypeScript/cursor` | 2 | 2 | 2 |
+| `src/Core.TypeScript/economics` | 1 | 2 |  |
+| `src/Core.TypeScript/experience` | 1 | 2 |  |
+| `src/Core.TypeScript/resonance-schemas` | 2 | 2 |  |
+| `tools/codegen` | 1 | 2 |  |
+| `.kiro` | 1 | 1 | 1 |
+| `genesis` | 1 | 1 |  |
+| `src/Core.TypeScript/bag` | 3 | 1 |  |
+| `src/Core.TypeScript/bungie` | 1 | 1 |  |
+| `src/Core.TypeScript/consensus` | 2 | 1 |  |
+| `src/Core.TypeScript/consistent-hash` | 2 | 1 |  |
+| `src/Core.TypeScript/crc32c` | 2 | 1 |  |
+| `src/Core.TypeScript/curve` | 2 | 1 |  |
+| `src/Core.TypeScript/quantum-observable` | 10 | 1 |  |
+
+### Two structural notes on that table
+
+- **`genesis/assets` — 1 file, 1,348 errors.** A single vendored/generated asset. It is not authored
+  TypeScript and should almost certainly be excluded at the `eslint.config.ts` `ignores` level the way
+  `references/prior-art/**` is — but that is an ignore entry, and this PR adds none. Filed as an
+  observation, not acted on.
+- **165 parse errors are a config divergence, not lint findings.** `tsconfig.json` excludes
+  `agentic-organization`, `docs/recovered-orphan-branches-2026-05`, `demo/identity-dla-site`,
+  `full-ai-cluster/portal/web`, `src/Renderers/website`, `src/Core.TypeScript/cursor`,
+  `src/Core.TypeScript/qsharp-oracle` and `src/wasm-dla`; `eslint.config.ts`'s `ignores` list does
+  not. Typed linting therefore cannot parse them at all. Two exclusion lists that must agree and are
+  maintained separately is its own drift surface — worth a follow-up, out of scope here.
+
+## DISCRIMINATION PROOF — the check was seen to fail, three ways
+
+`bun run lint:eslint`, exit status captured directly on the following line, never through a pipe.
+
+**1 — existing file, `src/Core.TypeScript/*`** (`@typescript-eslint/no-non-null-assertion`) and
+**2 — existing file, `src/Core.QSharp.ReferenceOracle`** (`sonarjs/publicly-writable-directories`), both
+sabotaged at once:
+
+```text
+LINT_ESLINT_RC=1
+
+/…/src/Core.QSharp.ReferenceOracle/generate-treaty-transcript.ts
+  282:32  error  Make sure publicly writable directories are used safely here  sonarjs/publicly-writable-directories
+
+/…/src/Core.TypeScript/splitmix64/splitmix64.ts
+  23:14  error  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+
+✖ 2 problems (2 errors, 0 warnings)
+error: script "lint:eslint" exited with code 1
+```
+
+Restored, `git diff --stat` empty for both files, re-run:
+
+```text
+LINT_ESLINT_RC=0
+```
+
+**3 — a brand-new file in an enrolled directory.** This is the case directory-level enforcement
+exists for: a file that did not exist when the roster was measured must still be caught.
+`src/Core.TypeScript/g-set/sabotage-new-file.ts`, created fresh:
+
+```text
+LINT_ESLINT_RC=1
+
+/…/src/Core.TypeScript/g-set/sabotage-new-file.ts
+  3:19  error  'value' will use Object's default stringification format ('[object Object]') when stringified  @typescript-eslint/no-base-to-string
+  3:19  error  Invalid type "object" of template literal expression                                           @typescript-eslint/restrict-template-expressions
+
+✖ 2 problems (2 errors, 0 warnings)
+error: script "lint:eslint" exited with code 1
+```
+
+Deleted, re-run:
+
+```text
+LINT_ESLINT_RC=0
+```
+
+**How "does not redden main" was verified:** the roster was run against a clean checkout of
+`6fb8f314916d51b7cf1ac8d41b4063e58e287142` (the `origin/main` tip at the time of writing) using the
+exact command CI will run — `bun run lint:eslint` — with `rc` captured on the next line. `rc=0`, zero
+bytes of output. The green state is not inferred from the absence of a failure; it is the recorded
+exit status of the same command, on the same commit, against the same lockfile.
+
+## ACCEPTANCE — status after this PR
+
+- [x] Repo-wide counts reported per tool for **eslint** (19,685 / 2,500 files, per-path table above).
+      `format:check` and `lint:css` are still **unmeasured** — out of scope for this slice, still owed.
+- [ ] **Profile boundary NOT decided.** Two positions on the record; `docs/research/scripts/` left
+      untouched on purpose. Maintainer's call.
+- [x] Landed incrementally — 102 files, zero remediation, no PR holding unrelated fixes.
+- [x] Documentation matches behaviour — the gate step is named for exactly what it runs, and the
+      roster is in a script both CI and a laptop invoke.
+- [x] Discrimination proof for eslint: RED → restore → GREEN, three sabotages, real output above.
