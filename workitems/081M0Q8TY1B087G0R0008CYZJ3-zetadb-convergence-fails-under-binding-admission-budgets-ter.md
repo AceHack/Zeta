@@ -83,3 +83,20 @@ The plugin boundary also contains thrown exceptions, unnamed implementations, an
 decisions as `database-admission-policy-failed` heat. No policy failure reaches persistence and no
 exception escapes the tick API. This closes the safety precondition for experimenting with richer
 policies; it still does not change the BIND convergence boundary above.
+
+## Progress 2026-08-24 - reserved headroom has an executable receipt
+
+`createReservedCapacityAdmissionPolicy` now turns fixed retained-event and checkpoint-byte
+reservations into a production policy. Reservations are non-negative safe integers, capped at the
+caller's hard limit for each proposal, and configuration failures are typed results rather than
+exceptions. A reservation can only lower the effective limit; the kernel-owned hard-limit guard
+still executes first.
+
+Backpressure from this policy carries structured accounting through `ZetaDbFeedback`: policy ID,
+resource, current and candidate amounts, hard and effective limits, and the amount actually
+reserved. The kernel validates that receipt against the proposal and rejects inconsistent plugin
+accounting as `database-admission-policy-failed` heat. Scheduled runs, browser wakes, and the
+browser content-addressed storage adapter can all receive the same owned policy port.
+
+This remains capacity planning, not a fix for terminal replica divergence. It reserves deterministic
+headroom without evicting history or making an order-dependent admitted prefix converge.

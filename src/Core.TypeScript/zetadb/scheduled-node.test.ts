@@ -2,6 +2,7 @@ import { afterEach, describe, expect, test } from "bun:test";
 import { mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
+import { createReservedCapacityAdmissionPolicy } from "./admission-policy";
 import { runScheduledZetaDbNode } from "./scheduled-node";
 
 const directories: string[] = [];
@@ -45,6 +46,56 @@ describe("scheduled ZetaDB node", () => {
       schema: "zeta.db.file-checkpoint.v1",
       nodeId: "global/browser",
       revision: 1,
+    });
+  });
+
+  test("executes an injected reservation policy and preserves its accounting", async () => {
+    const directory = mkdtempSync(join(tmpdir(), "zeta-scheduled-reservation-"));
+    directories.push(directory);
+    const journalPath = join(directory, "journal.json");
+    const checkpointPath = join(directory, "checkpoint.json");
+    writeFileSync(
+      journalPath,
+      JSON.stringify({
+        schema: "zeta.db.scheduled-journal.v1",
+        nodeId: "global/browser",
+        deltas: [
+          { eventId: "event/1", rowKey: "system/a", payload: "a", weight: 1 },
+          { eventId: "event/2", rowKey: "system/b", payload: "b", weight: 1 },
+        ],
+      }),
+    );
+    const created = createReservedCapacityAdmissionPolicy({ retainedEvents: 1, checkpointBytes: 0 });
+    expect(created.ok).toBe(true);
+    if (!created.ok) return;
+
+    const result = await runScheduledZetaDbNode({
+      journalPath,
+      checkpointPath,
+      executorId: "actions/reserved-capacity",
+      maxDeltas: 8,
+      maxEntries: 2,
+      maxCheckpointBytes: 16 * 1024,
+      admissionPolicy: created.value,
+    });
+
+    expect(result.ok && result.value).toMatchObject({
+      changed: true,
+      tick: {
+        admission: "backpressured",
+        accepted: 1,
+        feedback: [
+          {
+            admissionReceipt: {
+              policyId: "reserved-capacity",
+              resource: "retained-events",
+              hardLimit: 2,
+              effectiveLimit: 1,
+              reserved: 1,
+            },
+          },
+        ],
+      },
     });
   });
 

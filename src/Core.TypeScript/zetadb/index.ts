@@ -22,11 +22,17 @@ export {
 } from "./zeta-db-node";
 
 export {
+  createReservedCapacityAdmissionPolicy,
   noForgetBackpressureAdmissionPolicy,
+  type ZetaDbAdmissionAccounting,
   type ZetaDbAdmissionDecision,
+  type ZetaDbAdmissionPolicyConfigurationFeedback,
+  type ZetaDbAdmissionPolicyConfigurationResult,
   type ZetaDbAdmissionPolicyPort,
   type ZetaDbAdmissionProposal,
+  type ZetaDbAdmissionReceipt,
   type ZetaDbAdmissionResource,
+  type ZetaDbReservedCapacity,
 } from "./admission-policy";
 
 export {
@@ -47,6 +53,7 @@ export {
   ZETA_DB_SCHEDULED_JOURNAL_SCHEMA,
   runScheduledZetaDbNode,
   type ZetaDbScheduledJournal,
+  type ZetaDbScheduledNodeOptions,
   type ZetaDbScheduledRunReadout,
 } from "./scheduled-node";
 

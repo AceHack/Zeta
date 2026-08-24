@@ -6,6 +6,7 @@ import {
   type ZetaDbTickLimits,
   type ZetaDbTickReadout,
 } from "../zetadb/zeta-db-node";
+import { noForgetBackpressureAdmissionPolicy, type ZetaDbAdmissionPolicyPort } from "../zetadb/admission-policy";
 import {
   hashPayload,
   merkleToHex,
@@ -22,6 +23,7 @@ export interface ZetaDbStoragePortOptions {
   readonly executorId: string;
   readonly limits: ZetaDbTickLimits;
   readonly convergencePolicy: ZetaDbConvergencePolicy;
+  readonly admissionPolicy?: ZetaDbAdmissionPolicyPort;
 }
 
 function succeeded<T>(value: T): StorageResult<T> {
@@ -135,6 +137,7 @@ export function createZetaDbStoragePort(options: ZetaDbStoragePortOptions): Stor
         limits: options.limits,
       },
       options.convergencePolicy,
+      options.admissionPolicy ?? noForgetBackpressureAdmissionPolicy,
     );
     if (!result.ok) return mapFeedback(result.feedback);
     // Belt-and-braces: `requireComplete` makes a backpressured readout unreachable today,

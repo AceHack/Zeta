@@ -1,4 +1,5 @@
 import { describe, expect, test } from "bun:test";
+import { createReservedCapacityAdmissionPolicy } from "../zetadb/admission-policy";
 import { createInMemoryZetaDbImagePort } from "../zetadb/zeta-db-node";
 import { createZetaDbStoragePort } from "./zeta-db-storage-port";
 import { InMemoryStoragePort, ZetaStorageCell, makeStorageRecord } from "./zeta-storage-cell";
@@ -97,6 +98,30 @@ describe("ZetaDB content-addressed storage port", () => {
     // The refusal must agree with the store: the record really is not there.
     expect(await port.read(third.key)).toEqual({ ok: true, value: null });
     expect(await port.list()).toEqual({ ok: true, value: [first.key, second.key] });
+  });
+
+  test("forwards reserved headroom through the browser storage adapter", async () => {
+    const policy = createReservedCapacityAdmissionPolicy({ retainedEvents: 1, checkpointBytes: 0 });
+    expect(policy.ok).toBe(true);
+    if (!policy.ok) return;
+    const opened = createZetaDbStoragePort({
+      imagePort: createInMemoryZetaDbImagePort(),
+      databaseNodeId: "browser/global/storage",
+      executorId: "tab-a/reserved-storage",
+      limits: { maxDeltas: 8, maxEntries: 2, maxCheckpointBytes: 32 * 1024 },
+      convergencePolicy: { maxAttempts: 3 },
+      admissionPolicy: policy.value,
+    });
+    expect(opened.ok).toBe(true);
+    if (!opened.ok) return;
+    const first = makeStorageRecord("reserved/first");
+    const held = makeStorageRecord("reserved/held");
+
+    expect((await opened.value.write(first)).ok).toBe(true);
+    const refused = await opened.value.write(held);
+    expect(refused).toMatchObject({ ok: false, severity: "backpressure" });
+    if (!refused.ok) expect(refused.reason).toContain("reserved-capacity policy held 1 entries");
+    expect(await opened.value.list()).toEqual({ ok: true, value: [first.key] });
   });
 
   // The other half of the same fix: "nothing was accepted" is NOT "nothing could be

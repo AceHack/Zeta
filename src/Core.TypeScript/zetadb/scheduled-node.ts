@@ -3,6 +3,7 @@
 import { existsSync, mkdirSync, readFileSync, renameSync, writeFileSync } from "node:fs";
 import { dirname, resolve } from "node:path";
 import { compareAndSwapRevisionPolicy, type RevisionPolicyRefusal } from "../persistence/revision-policy";
+import { noForgetBackpressureAdmissionPolicy, type ZetaDbAdmissionPolicyPort } from "./admission-policy";
 import {
   runZetaDbNodeTick,
   type ZetaDbDelta,
@@ -35,13 +36,14 @@ interface FileCheckpointEnvelope {
   readonly payloadBase64: string;
 }
 
-interface ScheduledNodeOptions {
+export interface ZetaDbScheduledNodeOptions {
   readonly journalPath: string;
   readonly checkpointPath: string;
   readonly executorId: string;
   readonly maxDeltas: number;
   readonly maxEntries: number;
   readonly maxCheckpointBytes: number;
+  readonly admissionPolicy?: ZetaDbAdmissionPolicyPort;
 }
 
 function failed(
@@ -167,24 +169,28 @@ function writeCheckpoint(path: string, record: ZetaDbImageRecord): ZetaDbResult<
 }
 
 export async function runScheduledZetaDbNode(
-  options: ScheduledNodeOptions,
+  options: ZetaDbScheduledNodeOptions,
 ): Promise<ZetaDbResult<ZetaDbScheduledRunReadout>> {
   const journal = readJournal(options.journalPath);
   if (!journal.ok) return journal;
   const checkpoint = readCheckpoint(options.checkpointPath);
   if (!checkpoint.ok) return checkpoint;
   const filePort = createFileImagePort(checkpoint.value);
-  const tick = await runZetaDbNodeTick(filePort.port, {
-    nodeId: journal.value.nodeId,
-    executorId: options.executorId,
-    executorKind: "github-actions",
-    deltas: journal.value.deltas,
-    limits: {
-      maxDeltas: options.maxDeltas,
-      maxEntries: options.maxEntries,
-      maxCheckpointBytes: options.maxCheckpointBytes,
+  const tick = await runZetaDbNodeTick(
+    filePort.port,
+    {
+      nodeId: journal.value.nodeId,
+      executorId: options.executorId,
+      executorKind: "github-actions",
+      deltas: journal.value.deltas,
+      limits: {
+        maxDeltas: options.maxDeltas,
+        maxEntries: options.maxEntries,
+        maxCheckpointBytes: options.maxCheckpointBytes,
+      },
     },
-  });
+    options.admissionPolicy ?? noForgetBackpressureAdmissionPolicy,
+  );
   filePort.port.close();
   if (!tick.ok) return tick;
   const pending = filePort.pending();
