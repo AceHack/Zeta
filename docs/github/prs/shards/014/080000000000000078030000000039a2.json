@@ -1,0 +1,12 @@
+{
+  "pr_number": 14754,
+  "archive_path": "docs/history/pr-reviews/PR-14754-design-agencysignature-liability-is-the-invariant-human-ness-is-its-current-bind.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-24T13:25:03.908Z",
+  "schema_version": "v1",
+  "commit_sha": "91a8fadaaa653b9b4449c6c8e25bf3c92e543207",
+  "title": "design(agencysignature): liability is the invariant, human-ness is its current binding — and the squash carrier already layers",
+  "state": "MERGED",
+  "merged_at": "2026-08-24T13:24:09Z",
+  "head_ref": "design/liability-is-the-invariant-causation-layers"
+}
