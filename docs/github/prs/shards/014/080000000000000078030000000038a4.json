@@ -1,0 +1,12 @@
+{
+  "pr_number": 14500,
+  "archive_path": "docs/history/pr-reviews/PR-14500-research-attention-density-and-legibility-are-one-constraint-foveation-frost-and.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-23T22:04:05.699Z",
+  "schema_version": "v1",
+  "commit_sha": "70560eb9ee9118a629ba50ff0275fa0226b9f7d8",
+  "title": "research: attention density and legibility are one constraint — foveation, frost, and the child-prediction falsifier",
+  "state": "MERGED",
+  "merged_at": "2026-08-23T22:03:18Z",
+  "head_ref": "docs/attention-density-legible-by-construction"
+}
