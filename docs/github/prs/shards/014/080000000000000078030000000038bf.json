@@ -1,0 +1,12 @@
+{
+  "pr_number": 14527,
+  "archive_path": "docs/history/pr-reviews/PR-14527-bug-refine-the-arity-workitem-a-partial-sweep-that-reads-as-a-cleared-class-is-t.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-23T23:01:12.027Z",
+  "schema_version": "v1",
+  "commit_sha": "2b7c2a805e00824ed9293a295365fc4bda6d72c9",
+  "title": "bug: refine the arity workitem — a partial sweep that reads as a cleared class is the failure it exists to catch",
+  "state": "MERGED",
+  "merged_at": "2026-08-23T23:00:27Z",
+  "head_ref": "fix/arity-sweep-refinement"
+}
