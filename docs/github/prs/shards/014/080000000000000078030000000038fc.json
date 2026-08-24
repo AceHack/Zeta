@@ -1,0 +1,12 @@
+{
+  "pr_number": 14588,
+  "archive_path": "docs/history/pr-reviews/PR-14588-feat-twitch-ai-the-why-button-click-the-agent-descend-its-reasons-reach-i-don-t-.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-24T00:44:56.794Z",
+  "schema_version": "v1",
+  "commit_sha": "cf65bb3a2ada50ed711c7b18b115c32e2f1db3da",
+  "title": "feat(twitch-ai): the WHY button — click the agent, descend its reasons, reach \"I don't know.\" (D5 of #14503)",
+  "state": "MERGED",
+  "merged_at": "2026-08-24T00:44:10Z",
+  "head_ref": "claude/otto-attention-d5-why-button"
+}
