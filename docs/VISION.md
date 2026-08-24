@@ -17,6 +17,45 @@
 > ambition stayed: all DB technologies in one big playground,
 > built retraction-native from the ground up.
 
+## The question — what Zeta is for
+
+**Aaron, 2026-08-24, asked for the cleanest one-sentence statement of the vision:**
+
+> **"How do humans and agents trust each other and interact, once agents are
+> allowed to move at agent speed and not be artificially bounded by humans?"**
+
+It is a **question**, deliberately. Zeta is an attempt at an answer, not the
+answer — and stating it as a question is what keeps the attempt falsifiable.
+
+**Read "artificially bounded" precisely.** The bound that is artificial is the
+**speed limit imposed by human review capacity** — not human participation, which
+is the point of the thing (humans and AI both consuming it, for memory
+preservation and curation). The bound that is **not** artificial is **liability**,
+which is jurisdictional, currently human-or-corporate-held, and expected to vary
+by jurisdiction and over time (Aaron, same day; see
+[`no-directives`](../.claude/rules/no-directives.md) — *"only a human may attach,
+**for now** (until legal entities can hold AI-side responsibility)… carries
+blame"*). So the two halves compose:
+
+> **The artificial bounds go. The real ones get properly modeled, instead of being
+> approximated by "a human looked at it."**
+
+**This is why the repository is built out of falsifiers rather than reviews.**
+Trust at agent speed has to be *mechanical*, because human attention does not
+scale — and a check that did not run looks exactly like a check that passed to
+anyone who does not have time to look. That failure mode is not incidental to the
+vision; **it is the vision's central difficulty, met on every ordinary working
+day.** Measured on 2026-08-24 alone: 19,685 lint findings on a rule configured
+repo-wide and enforced on ~25 paths; 16,847 of 19,612 markdown files never
+examined by a linter that reported success; and a sweep of 160 assertions that
+separated 152 sound checks from 8 that could not fail. None of those were
+reachable by reading.
+
+**And it is why `Human-Review` is the wrong primitive.** It is a proxy for
+accountability that stops working at speed — the habituation case is the proof:
+keep a human in a loop faster than they can evaluate, and approval becomes
+reflexive, which is the *form* of trust with none of the substance.
+
 ## The definition — Zeta = bounded good
 
 **Zeta = bounded good.** Two words the rest of this document unpacks.
