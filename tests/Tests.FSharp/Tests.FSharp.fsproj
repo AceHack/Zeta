@@ -461,6 +461,7 @@
     <Compile Include="SoftRegimeStability.Tests.fs" />
     <Compile Include="SoftRegimeEquivariance.Tests.fs" />
     <Compile Include="AdinkraCode.Tests.fs" />
+    <Compile Include="CssCode.Tests.fs" />
     <Compile Include="CliffordPeriodicity.Tests.fs" />
     <Compile Include="AdinkraIdentity.Tests.fs" />
     <Compile Include="AdinkraOrbits.Tests.fs" />

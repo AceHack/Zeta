@@ -2974,8 +2974,8 @@
           {
             "rule": "treaty-transcript",
             "kind": "treaty-transcript",
-            "witness": "src/Core.QSharp.ReferenceOracle/generate-treaty-transcript.ts",
-            "count": 3,
+            "witness": "src/Core.QSharp.ReferenceOracle/css-stabilizer-treaty.json",
+            "count": 4,
             "holder": "unit:qsharp"
           }
         ]

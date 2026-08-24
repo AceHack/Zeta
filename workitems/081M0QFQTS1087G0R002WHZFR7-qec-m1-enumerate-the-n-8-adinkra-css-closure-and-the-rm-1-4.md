@@ -1,7 +1,7 @@
 ---
 id: 081M0QFQTS1087G0R002WHZFR7
 type: task
-state: backlog
+state: in-progress
 priority: P2
 slug: qec-m1-enumerate-the-n-8-adinkra-css-closure-and-the-rm-1-4
 title: "QEC M1: enumerate the N=8 adinkra CSS closure and the RM(1,4) reopening at N=16, four-oracle"
@@ -50,3 +50,23 @@ enumeration is broken, since `k_q = 2*dim(C) - n` and self-duality forces dim = 
 The quantum layer (M2/M3), and any N=8 or Steane [[7,1,3]] stack as a destination.
 
 Compute cost: milliseconds. If only one QEC milestone ever ships, ship this one.
+
+## Progress 2026-08-24 (Lumen) — items 1-5 landed; the oracle count is SHORT of four
+
+Landed: `src/Core/CssCode.fs` (RM from the monomial definition, CSS parameters, the length-8
+closure, puncture, reduced-echelon bases, syndromes, hex+SHA-256), `tests/Tests.FSharp/CssCode.Tests.fs`
+(25 exhaustive tests), `src/Core.QSharp.ReferenceOracle/css-stabilizer-treaty.json` (hex-in-JSON),
+`CssStabilizerCodes.qs`, and `css-stabilizer.test.ts` (an independent TypeScript re-derivation).
+
+**The falsifier named above is discharged:** the dim-4 self-dual row comes back `k_q = 0`, and the
+test asserts it for *every* self-dual doubly-even code of length 8, not only ours.
+
+**Still open, and the reason this row is `in-progress` rather than closed:** the title says
+**four-oracle** and what exists is **two independent implementations (F#, TypeScript) plus one
+declaration cross-checked as text (Q#)**. Rust and Go are unwritten. The Q# surface is the weakest of
+the three because QDK is an opt-in install, so the `.qs` is checked by parsing its declared stabiliser
+rows and comparing them rather than by executing the circuit — which is genuinely a check (it caught a
+wrong Steane row on the first draft) and is genuinely not an execution.
+
+Detail, including the 14-mutation report and its three named equivalent mutants:
+`docs/research/2026-08-23-qec-stack-routing-*-soraya.md` §11.

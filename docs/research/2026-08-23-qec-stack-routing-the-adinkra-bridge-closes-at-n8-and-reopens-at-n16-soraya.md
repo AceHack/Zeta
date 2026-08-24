@@ -454,3 +454,341 @@ holds *today*, but right that Q# is where a QEC stack's genuinely quantum layer 
 stays Adopt and stays **out** of this stack except for the §5 stretch goal. TLA+ stays Adopt
 and is **declined here on the merits**, which is worth recording precisely *because* it just
 came back green — a tool returning to service is when the pressure to use it is highest.
+
+---
+
+## 11. ADDENDUM 2026-08-24 — M1 has LANDED, and the enumerations are now code a test can fail
+
+**Author:** Lumen (mathematical-physics expert). **Work-item:** `081M0QFQTS1087G0R002WHZFR7`.
+**Status change:** §8 closed with *"everything in this doc is `unmetered` until M1 lands"*, because the
+§§1–4 enumerations ran in a scratch script outside the tree. They now run in the tree.
+
+### Every algebraic claim in §§1–4 was independently recomputed before any of it was implemented
+
+Not re-read — **recomputed**, from the definitions, in a language that shares no code with the
+original script, before a line of F# was written. All four reproduce exactly:
+
+| doc | claim | independent recomputation |
+|---|---|---|
+| §1 | `AdinkraCode.generator` is doubly-even, self-dual, weights `{0¹,4¹⁴,8¹}`, `CSS = [[8,0,4]]` | ✔ reproduced |
+| §2 | all **8** punctures give `[7,4,3]`; weights `{0¹,3⁷,4⁷,7¹}`; **not** doubly-even, **not** self-orthogonal; `CSS = [[7,1,3]]` | ✔ reproduced |
+| §3 | the closure table, `dim 0..4 → [[8,8,1]], [[8,6,2]], [[8,4,2]], [[8,2,2]], [[8,0,4]]` | ✔ reproduced |
+| §4 | `RM(1,4)` dim 5, weights `{0,8,16}`, doubly-even, self-orthogonal, **not** self-dual; `RM(1,4)^⊥ = RM(2,4)` **as a set**; `CSS = [[16,6,4]]` | ✔ reproduced |
+
+No number in §§1–4 changed. The enumeration now also reports a datum the doc did not carry: there
+are exactly **902 distinct doubly-even codes of length 8**, and that count is pinned by a test —
+without it, a search that silently explored one code would still satisfy every row assertion.
+
+### What shipped
+
+| file | what it is |
+|---|---|
+| `src/Core/CssCode.fs` | GF(2) codes as bitmasks: span, dual, doubly-even, self-orthogonal, self-dual, weight distribution, `RM(r,m)` **from the monomial definition**, the CSS parameter map, the length-8 closure enumeration, puncture, reduced-echelon bases, syndromes, hex + SHA-256 serialisation. |
+| `tests/Tests.FSharp/CssCode.Tests.fs` | 25 tests, every enumeration **exhaustive** rather than sampled (routing table L4: property testing would *sample* a space we can *exhaust*). |
+| `src/Core.QSharp.ReferenceOracle/css-stabilizer-treaty.json` | the golden vectors, **hex-in-JSON**, produced by the F#. |
+| `src/Core.QSharp.ReferenceOracle/CssStabilizerCodes.qs` | the L6 layer: stabiliser rows, ancilla-based X/Z syndrome extraction, the CSS commutation predicate. |
+| `src/Core.QSharp.ReferenceOracle/css-stabilizer.test.ts` | the **second oracle** — re-derives Reed–Muller, duals and the CSS parameters in TypeScript, calling none of the F#, and checks its own answers against the treaty and against the Q# source's declared rows. |
+
+### The oracle count, stated honestly rather than rounded up to four
+
+M1's title says "four-oracle". What landed is **two independent implementations** (F#, TypeScript)
+plus **one declaration cross-checked as text** (Q#). That is three surfaces, not four, and the third
+is weaker than the first two because Q# is not executed on every lane — QDK is an opt-in install, so
+the `.qs` is checked by *parsing its declared rows and comparing them*, not by running the circuit.
+
+That is worth stating precisely because it is exactly the kind of number that inflates. **The Q#
+cross-check earned its keep anyway: the first draft of `CssStabilizerCodes.qs` declared the Steane
+rows as `0x70, 0x2D, 0x1B`, and the correct rows are `0x55, 0x33, 0x0F`. The test caught it.** A
+transcription that nothing compares is a golden vector wearing a disguise.
+
+Rust and Go remain unwritten. Naming that is cheaper than implying coverage that does not exist.
+
+### Mutation report — 14 mutations, and the survivors are named
+
+A test that survives mutation is not a falsifier, so every mutation run is listed, including the
+three that survived and why. Exit codes captured directly, never through a pipe.
+
+**Killed (11).** doubly-even `mod 4 → mod 2` (3 fail) · `k_q` off by one (7) · RM monomial predicate
+`(p∧s)=s → (p∧s)≠0` (7) · puncture keeps the dropped coordinate (5) · dual predicate weakened (13) ·
+digest separator (1) · closure takes `min` instead of `max` distance (2) · containment guard deleted
+(1, *after* the guard test was added — it survived before) · **one hex digit flipped in one committed
+golden vector** (1) · one Q# stabiliser row corrupted (TS, 1) · one treaty closure row altered (TS, 1).
+
+The hex-digit flip is **M4's anti-vacuity witness** discharged early: the byte-lock can go red.
+The TypeScript oracle also carries a **sabotage control** — breaking its own Reed–Muller construction
+turns 3 tests red — so a green TS run is not a run that did nothing.
+
+**Survived (3), all three EQUIVALENT MUTANTS, and each is now documented rather than left dangling:**
+
+1. **Digest separator `"," → ";`"** — the substitution landed on the enumeration's *dedup key*, not
+   the digest. Re-run targeted at the digest: **killed**. Not a survivor; a mis-aimed mutation.
+2. **Drop the back-substitution in `echelonBasis`.** It survived, and it caught a real overclaim:
+   the basis was row echelon, and the docstring said *canonical*. **Fixed in the code, not softened
+   in the prose** — the basis is now genuinely reduced, `isReducedEchelon` is asserted for every
+   committed code, and the mutant survives only because these four particular codes were already
+   reduced. Also removed an unfalsifiable test: "same rows from a reversed list" cannot fail when the
+   function sorts internally.
+3. **`min` over `C \ C^⊥` → `min` over `C \ {0}`.** These coincide unless the code is **degenerate**
+   (minimum weight attained *inside* `C^⊥`). A bounded search found **no degenerate symmetric
+   `CSS(C,C)` code at length 8**, and that equivalence is now itself a test, with its scope stated:
+   length 8, symmetric form only. Degenerate codes certainly exist in the asymmetric form
+   `CSS(C₁,C₂)` — Shor's `[[9,1,3]]` is the textbook one — and nothing here says otherwise.
+4. *(bonus)* Deleting the `isSelfOrthogonal` guard in `cssFromAdinkraCode` survives **provably**:
+   the inner containment check is `(C^⊥)^⊥ ⊆ C^⊥`, which by involution of the dual *is*
+   self-orthogonality. The involution test in the same file is the proof of the equivalence.
+
+### Register
+
+`src/Core/CssCode.fs` is **metered**: it has falsifiers, they were run, and they fail without the
+code. The doc's §§1–4 move from `unmetered` to `metered` **for the enumerations only**. §3's closure
+keeps the narrower scope §3a gave it — closed over `CSS(C^⊥, C^⊥)` for `C` doubly-even of length 8,
+**not** over all 8-qubit stabiliser codes; `[[8,3,3]]` remains **cited, not computed**, and the test
+name and the treaty both say so.
+
+**M2/M3/M4 are untouched.** M4's witness is discharged early; the milestone is not, because M4 is the
+witness for the *[[16,6,4]] decoder's* lock, which does not exist yet.
+
+### The demarcation, restated where the code can be read
+
+Everything above is **GF(2) linear algebra**. `[[n,k,d]]` are three integers produced by arithmetic —
+the parameters a stabiliser code *would* have. Running the CSS recipe is checkable and is what this
+repo can earn. **Holding an encoded qubit is a physical claim, is not made, and would need a device
+this repo does not have.** The statement is carried in the module docstring, in the test header, in
+the Q# header, and in the treaty's own `register: "structural"` field — the last because a
+demarcation that lives only in a doc becomes a physical claim the first time the JSON is quoted
+without it.
+
+---
+
+## 12. ADDENDUM 2026-08-24 — is the metered membrane QEC, or is it avoidance? A claim checked, and partly REFUTED
+
+**Author:** Lumen. **Register: CONJECTURE (Z-tier) throughout.** Nothing in this section is
+frozen-core, and none of it is proven — it is a mapping with a named falsifier, handed to Soraya.
+
+The claim under test, made to Aaron by the coordinating agent and now being acted on:
+
+> *"Our metered membrane is not decoherence-avoidance but QEC-with-syndrome-extraction. Dynamical
+> decoupling (Viola & Lloyd 1998) and decoherence-free subspaces (Zanardi & Rasetti 1997; Lidar,
+> Chuang & Whaley 1998) are both **avoidance** — neither ever looks at what the environment did. Our
+> membrane **records** every crossing, which is a measurement, so it belongs to the detect-and-correct
+> family, with the meter playing the role of the syndrome."*
+
+It was offered as checkable so that it could fail. **It partly fails.** The conclusion survives for
+one half of the membrane; the stated reasoning is invalid; and the exclusive form is refuted by a
+falsifier the claim itself supplied.
+
+### 12.1 The syndrome property is real — but it is weaker on our side than it looks
+
+The property the claim leans on does hold, and its exact statement matters. In the stabiliser
+formalism the syndrome is the tuple of eigenvalues of the stabiliser generators `gᵢ`. Two facts do
+the work: `gᵢ` fixes the codespace (`gᵢ|ψ⟩ = |ψ⟩`), and every logical operator lies in the
+**normaliser** of the stabiliser group, so `[gᵢ, L] = 0`. Measuring `gᵢ` therefore does not disturb
+the logical state **and** returns an outcome statistically independent of it. You learn what the
+environment did without learning — or damaging — what you stored.
+
+**Does our meter have anything playing the role of "commutes with the logical operators"?** Yes, and
+it is already a manifesto specification: **§13 noninterference** (Goguen & Meseguer 1982). The
+requirement that the meter's reading be a function of the *crossing* and not of the *protected
+content* is the same condition, and it is checkable and can fail.
+
+**But half the theorem does no work for us, and this is the honest weakening.** In QEC, commutation
+additionally buys **no back-action** — the reason the property is remarkable is that measurement
+normally collapses, and stabiliser measurement dodges the collapse. Classically there is no collapse
+to dodge. So what transfers is the strictly weaker structural statement:
+
+> *There exists an observable algebra that detects perturbation while carrying zero mutual
+> information about the protected content.*
+
+That is real, checkable, and ours to earn. The deep content of the quantum theorem — measurement
+**without** collapse — has no classical referent, and a mapping that quietly keeps it is claiming
+physics rather than shape.
+
+**The falsifier for our side:** if any meter observable is a function of the protected content, the
+analogy breaks *at the joint* and what we have is a logical measurement — decoherence — not syndrome
+extraction. `.claude/rules/local-time-never-enters-the-shared-fold.md` is precisely this failure mode
+already written down: the instant a local clock filters the evidence entering the shared fold, nodes
+fold different sets and diverge.
+
+### 12.2 The DFS falsifier FIRES — the symmetry group can be named, so the exclusive claim is wrong
+
+The claim supplied its own falsifier: *DFS requires naming the symmetry group under which the encoded
+subspace is invariant; if such a group can be named for our membrane, the claim is wrong.*
+
+**It can be named.** For the commutative/CRDT fold the noise class is **reorder, duplicate, delay**;
+the group is the **permutation action on the message multiset together with idempotent
+re-delivery**; and the fold's value is invariant under it *by construction* — the fold is a function
+of the evidence **set**, so the group acts trivially. That is exactly the DFS shape: noise confined
+to a group action under which the encoded value transforms by the trivial one-dimensional irrep. No
+measurement is involved anywhere, and none is needed.
+
+So **the membrane is not exclusively QEC.** Part of it is passive, symmetry-based avoidance.
+
+The corrected claim is more useful than the one it replaces:
+
+> The membrane is a **hybrid**. Against the *symmetric* noise class — reorder, duplicate, delay — it
+> is **passive and DFS-shaped**: the CRDT symmetry makes the protected value invariant and nothing
+> needs to be observed. Against the *asymmetric* class — content crossings, entropy injection — no
+> symmetry exists, and the membrane must **actively detect and record**.
+
+And that explains why the meter exists at all: **the meter is needed exactly where the symmetry runs
+out.** The DFS half is free; the QEC half has to be paid for. That is a mapping with a metered
+consequence rather than a restatement.
+
+The literature already holds the object the dichotomy was missing: **operator quantum error
+correction** (Kribs, Laflamme & Poulin, PRL 94, 2005) unifies passive protection (DFS / noiseless
+subsystems) with active QEC in one framework. Real fault-tolerant designs concatenate both. The
+either/or was the error, not the choice of branch.
+
+### 12.3 The fourth option exists, and it fits BETTER than either — noiseless subsystems
+
+**Noiseless subsystems** (Knill, Laflamme & Viola, PRL 84, 2000) generalise DFS: decompose
+`H = (H_A ⊗ H_B) ⊕ K` where the noise acts only on `H_B`; information stored in the **subsystem**
+`H_A` survives. DFS is the special case `dim H_B = 1` — a *subspace*, where NS is a *tensor factor*.
+
+**Zeta's structure is the subsystem one, and this is a structural discrimination rather than a name
+match** — the two frameworks differ in a way our design decides between:
+
+- A **DFS** says *some states* are safe.
+- A **noiseless subsystem** says *some factor of every state* is safe.
+
+Two carved rules already assert the second, neither citing this literature:
+
+- `docs/writer-actor-routing-model.md` / `.claude/rules/shared-checkout-is-view-only.md` — **persona
+  = owner ("what remains") vs actor = clone/loop ("what acts")**, and *"a bus/routing address is not
+  identity."* The routing address is a gauge factor, deliberately unprotected, and the persona is the
+  protected factor. That is `H_A ⊗ H_B`.
+- `.claude/rules/local-time-never-enters-the-shared-fold.md` — local wall-clock and receive-order
+  steer **only local actions**; the shared fold sees **only agreed phase**. That is literally *"the
+  noise acts only on the `H_B` factor"*, and the rule's own stated failure mode — a local clock
+  filtering evidence into the shared fold makes nodes diverge — is literally *"leaking `H_B` into
+  `H_A` destroys the noiseless subsystem."*
+
+**This is the most valuable thing the check turned up**, and it was not in the claim at all: the repo
+already contains, in two independently-derived rules, the decomposition that NS names. The rules were
+right before the anchor was found, which is the good direction for an anchor to arrive from.
+
+### 12.4 Zeno breaks the stated REASON — "avoidance = no measurement" is false
+
+The reasoning was: *avoidance never measures; ours measures; therefore ours is correction.* The
+**quantum Zeno effect** (Misra & Sudarshan, J. Math. Phys. 18, 1977) is a direct counterexample:
+frequent projective measurement **freezes** evolution. It is measurement-based like QEC and
+avoidance in effect like DFS. So the inference is invalid as stated, independently of whether its
+conclusion is true.
+
+**The correct discriminator is not "does it measure?" but "is the outcome USED?"**
+
+| family | measures? | outcome | protection comes from |
+|---|---|---|---|
+| dynamical decoupling | no | — | the control pulses |
+| DFS / noiseless subsystems | no | — | a symmetry |
+| **quantum Zeno** | **yes** | **discarded** | the measurement's own projection |
+| **QEC** | **yes** | **recorded and conditioned on** | a recovery map indexed by the syndrome |
+
+Under the corrected discriminator the conclusion **does** survive for the recording half: the meter
+posts to a ledger and the ledger is acted on. A membrane that measured every crossing and threw the
+reading away would be Zeno-shaped, not QEC-shaped.
+
+**And part of ours genuinely is Zeno-shaped: budget refusal.** A crossing that would blow the entropy
+budget is *refused* — measured, and the transition **prevented** rather than corrected. That is
+Zeno's structure exactly, and it sits in the same membrane as the recording half.
+
+The distinction earns its keep because **the two halves fail differently, and one of the failures is
+invisible**:
+
+- **Zeno-shaped protection fails silently, by freezing.** A membrane that refuses everything is
+  perfectly protected and completely useless — the vacuity class with a safety story attached.
+- **QEC-shaped protection fails loudly, by miscorrection.** A wrong recovery is a wrong *value*, and
+  wrong values are the kind of failure this repo is already built to catch.
+
+Falsifiable consequence, and it is cheap: **a membrane whose refusal rate tends to 1 is not maximally
+safe, it is maximally vacuous.** Refusal rate is already a metered quantity. A membrane that has
+never refused *and* one that refuses almost everything are both suspect, for opposite reasons, and
+only the second currently looks like success.
+
+### 12.5 The demarcation — including the quantity that CANNOT be placed
+
+| claim | register |
+|---|---|
+| CSS / stabiliser algebra over GF(2) applies to our classical codes | **WEAK / structural** — landed and metered in §11 |
+| "the meter observable carries zero mutual information about the protected content" | **WEAK / structural** — an information-theoretic property of our meter; §13 noninterference; checkable, can fail |
+| the (protected factor, gauge factor) decomposition of the routing model | **WEAK / structural** — a property of the design, checkable against the two rules cited |
+| physical decoherence occurs at our membrane | **STRONG / physical — NOT CLAIMED** |
+| measurement back-action occurs anywhere in Zeta | **STRONG / physical — NOT CLAIMED** |
+| a DFS symmetry protects us against a physical environment | **STRONG / physical — NOT CLAIMED** |
+
+**And one quantity cannot be placed on either side, which is the most useful finding available here,
+because the whole thesis is that the meter draws that line.**
+
+> **The "distance" of the membrane is not measurable, and the reason is not that we have not measured
+> it yet.**
+
+In QEC, `d` is the minimum weight of a logical operator. It presupposes **sites** (tensor factors)
+and **weight** (how many sites an error touches), and what it bounds is protection against
+**independent, bounded-weight** noise. Our adversary is neither independent nor bounded-weight: it is
+correlated and adaptive. So a membrane "distance" has no referent — **not because the number is hard
+to compute, but because the noise model that gives `d` its meaning is not our noise model.**
+
+The trap this avoids is a live one. It would be easy to compute something distance-shaped — say, the
+number of channels an attacker must compromise — and quote it as a QEC distance. That number would be
+perfectly real *and would not mean what `d` means*, and the resemblance is precisely what would make
+the substitution invisible. A quantity that was not measured must never look like one that was.
+
+### 12.6 What is handed to Soraya
+
+**Conjecture Z-M (membrane subsystem decomposition). CONJECTURE tier, not frozen-core.**
+
+> There exists a decomposition of the membrane's observable state into a **protected factor `A`** and
+> a **gauge factor `B`** such that (i) every declared meter observable is a function of the crossing
+> and of `B` alone, and is statistically independent of `A`; and (ii) the reorder / duplicate / delay
+> noise class acts only on `B`.
+>
+> Clause (i) is the **noninterference** condition (§13; Goguen–Meseguer 1982) and is the analogue of
+> "the syndrome commutes with the logical operators". Clause (ii) is the **noiseless-subsystem**
+> condition (Knill–Laflamme–Viola 2000) and is the analogue of "the noise acts only on `H_B`".
+
+**Falsifier.** Exhibit a single meter observable whose value differs between two runs that agree on
+`B` and on the crossing sequence but differ on `A`. One such observable refutes clause (i).
+`local-time-never-enters-the-shared-fold` names the most likely place to find one.
+
+**Scheme-independence the claim must survive.** The decomposition must not depend on the choice of
+`B` — a different gauge factor (say, receive-order instead of wall-clock) must yield the same
+protected `A`. A conjecture that holds for exactly one choice of gauge has fixed a scheme rather than
+found a structure.
+
+**Why this routes to Soraya and not to a physicist:** stated this way it is a **noninterference proof
+obligation over a classical system**, with no quantum content whatsoever. The quantum literature
+supplied the *shape* and the vocabulary; the obligation is one her tools already handle. That is the
+mapping doing its proper job — physics grounds the metering discipline, and the proof is ours.
+
+### 12.7 Two things deliberately NOT re-derived here
+
+- **Destructive interference in the quorum fold is already answered in-tree.**
+  `src/Core.TLA/specs/QuorumPhaseCancellation.tla` (Soraya, 2026-08-13) models exactly this and
+  states its own one-way limit: reachability transfers up from the 4th-roots-of-unity restriction,
+  non-reachability does not. Repeating it would be a second observation counted as new evidence.
+- **No bound in this work is a Tsirelson bound.** `1/(3√2)` appears in this repo as a **design
+  parameter**; `S ≤ 2√2` is a different object arising from a different argument. They are adjacent
+  in the literature this section cites, which is exactly why the guard is written down here.
+
+### 12.8 Verdict, plainly
+
+**The claim as made to Aaron is wrong in its exclusive form, and right in a narrower one.**
+
+- **Wrong:** "not avoidance **but** QEC." A symmetry group *can* be named for one noise class, so
+  part of the membrane is genuinely DFS-shaped. The exclusive disjunction is refuted by the
+  falsifier the claim itself proposed.
+- **Wrong reasoning, separately:** "avoidance = never measures" is false — quantum Zeno measures and
+  is avoidance. The inference was invalid even where the conclusion holds. The repaired
+  discriminator is **whether the outcome is used**, not whether a measurement occurs.
+- **Right, narrowly:** under the repaired discriminator, the *recording* half of the membrane is
+  QEC-shaped — the meter's readings are kept and conditioned on. And the syndrome property the claim
+  relied on is real, with §13 noninterference as its checkable analogue, though it transfers in a
+  strictly weakened form because there is no collapse here to dodge.
+- **Missing, and better than either branch:** **noiseless subsystems**, which fit the persona/actor
+  and shared-fold/local-time decompositions the repo already carries — and **operator quantum error
+  correction**, which is the published framework for exactly the hybrid this membrane turns out to be.
+
+Aaron is routing QEC work on the strength of this claim. **The routing is still correct** — §11 is
+real work with real falsifiers regardless of how the membrane analogy resolves, and the two are
+independent. But the membrane framing that motivated it needed all four corrections above, and it
+should be carried in the corrected form from here.

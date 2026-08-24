@@ -16,6 +16,16 @@ Files:
 - `DarkHallRoomTranscript.fs` emits `heatReadout` rows that point back to this
   treaty, so CSS/LLMTV room frames and Q# labels agree on the finite meaning of
   heat without putting Q# in the runtime loop.
+- `CssStabilizerCodes.qs` is the QEC syndrome-extraction layer: the stabiliser rows for Steane
+  [[7,1,3]] and the quantum Reed-Muller [[16,6,4]], ancilla-based X/Z stabiliser measurement, and
+  the CSS commutation predicate. Its parameters are computed in `src/Core/CssCode.fs`; **the file
+  writes down a circuit and makes no claim that Zeta holds an encoded qubit.**
+- `css-stabilizer-treaty.json` is the golden vector set for that layer, hex-in-JSON, produced by the
+  F#. It carries `register: "structural"` in its own body, because a demarcation that lives only in
+  a doc becomes a physical claim the first time the JSON is quoted without it.
+- `css-stabilizer.test.ts` is the **second oracle**: it re-derives Reed-Muller, duals and the CSS
+  parameters in TypeScript without calling the F#, then checks its answers against the treaty and
+  against the rows the Q# source declares. It runs on every lane; QDK is not required.
 - `generate-qsharp-golden.py` loads those operations through Microsoft QDK and
   emits observable golden vectors.
 - `qsharp-golden.json` is the committed reference fixture ordinary CI checks.
