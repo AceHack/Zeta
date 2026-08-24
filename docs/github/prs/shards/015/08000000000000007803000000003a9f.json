@@ -1,0 +1,12 @@
+{
+  "pr_number": 15007,
+  "archive_path": "docs/history/pr-reviews/PR-15007-obs-gate-absence-it-arrives-in-simultaneous-pairs-and-two-hypotheses-are-refuted.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-24T22:35:33.826Z",
+  "schema_version": "v1",
+  "commit_sha": "5223ce9128dd29a9432842cf3268fa484f0996af",
+  "title": "obs(gate-absence): it arrives in SIMULTANEOUS PAIRS — and two hypotheses are refuted",
+  "state": "MERGED",
+  "merged_at": "2026-08-24T22:32:13Z",
+  "head_ref": "obs/gate-absence-arrives-in-pairs"
+}
