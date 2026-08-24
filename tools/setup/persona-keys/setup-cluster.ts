@@ -113,6 +113,56 @@ export function trustedUserCaKeysPath(repoRoot: string, ca: string): string {
 }
 
 /**
+ * The FULL classification of an existing trust-set file. Rotation must write a SUPERSET of what it
+ * read, and it can only do that if it can name everything it read — including lines it does not
+ * recognise. A trust root silently dropped because its comment marker was unfamiliar is the same
+ * defect as one dropped on purpose, and it is invisible in a diff of fingerprints nobody took.
+ */
+export interface ParsedTrustSet {
+  /** THIS cluster's own CA public keys, in file order — one per rotation generation in the overlap. */
+  readonly self: readonly string[];
+  /** PEER cluster CAs (cross-cluster trust), by source name. */
+  readonly peers: readonly PeerCa[];
+  /** Public-key lines carrying NO recognised marker — hand-added roots, a future format, a marker
+   *  typo. Never interpreted, never dropped: preserved verbatim so the superset property is total. */
+  readonly unclassified: readonly string[];
+}
+
+/**
+ * Parse a trust-set file into self / peer / unclassified public-key lines (PUBLIC text only).
+ * Recognises setup-cluster's `# <source> cluster CA` markers and rotate's `# CA '<name>' #N`
+ * self-overlap markers. Total over the file: every line that looks like a public key lands in
+ * exactly one bucket.
+ */
+export function parseTrustSet(trustSetText: string): ParsedTrustSet {
+  const self: string[] = [];
+  const peers: PeerCa[] = [];
+  const unclassified: string[] = [];
+  let pendingSource: string | undefined;
+  for (const raw of trustSetText.split("\n")) {
+    const line = raw.trim();
+    const sourceMark = /^#\s+(\S+)\s+cluster CA\s*$/.exec(line);
+    if (sourceMark) {
+      pendingSource = sourceMark[1];
+      continue;
+    }
+    // Rotate-format self markers (`# CA 'foo' #1`) name THIS cluster's CA, not a peer.
+    if (/^#\s+CA\s+'/.test(line)) {
+      pendingSource = "self";
+      continue;
+    }
+    if (line.startsWith("#") || line.length === 0) continue;
+    if (looksLikePublicKey(line)) {
+      if (pendingSource === "self") self.push(line);
+      else if (pendingSource !== undefined) peers.push({ name: pendingSource, publicKey: line });
+      else unclassified.push(line);
+    }
+    pendingSource = undefined;
+  }
+  return { self, peers, unclassified };
+}
+
+/**
  * Parse PEER cluster CA entries from an existing trust-set file (PUBLIC text only).
  * Recognises setup-cluster's `# <source> cluster CA` markers; ignores `self` and rotate's
  * `# CA '<name>' #N` self-overlap markers. Used so CA rotation preserves cross-cluster trust.
@@ -155,6 +205,11 @@ export function looksLikePrivateKey(text: string): boolean {
   return text.includes(header) || /^-----BEGIN (OPENSSH|RSA|EC|DSA) /m.test(text);
 }
 
+/** The marker written for a preserved-but-unrecognised trust root. Deliberately NOT of the form
+ *  `# <name> cluster CA`, so a re-parse puts it back in the `unclassified` bucket rather than
+ *  promoting it to a peer this cluster never agreed to. */
+export const UNCLASSIFIED_SOURCE = "unclassified-preserved";
+
 /**
  * RENDER the node-side multi-CA trust set: this cluster's CA public key(s) first, then each PEER
  * cluster's CA public key — the value sshd's `TrustedUserCAKeys` points at. PURE: no IO, no
@@ -172,6 +227,9 @@ export function renderTrustSet(
   ca: string,
   selfCaPublicKey: string | readonly string[],
   peers: readonly PeerCa[],
+  /** Public-key lines that carried no recognised marker when the file was read. Preserved verbatim
+   *  so a re-render is a SUPERSET of what was parsed; validated like a peer (PUBLIC-only). */
+  unclassified: readonly string[] = [],
 ): RenderedTrustSet {
   const lines: TrustedCaLine[] = [];
   const selfKeys = (typeof selfCaPublicKey === "string" ? [selfCaPublicKey] : selfCaPublicKey)
@@ -197,9 +255,28 @@ export function renderTrustSet(
     }
     lines.push({ source: peer.name, publicKey: pk });
   }
+  const seenAll = new Set(lines.map((l) => l.publicKey));
+  for (const raw of unclassified) {
+    const pk = raw.trim();
+    if (pk.length === 0 || seenAll.has(pk)) continue;
+    if (looksLikePrivateKey(pk)) {
+      throw new Error("unclassified line: refused — input looks like PRIVATE-key material (trust set is PUBLIC-only)");
+    }
+    if (!looksLikePublicKey(pk)) {
+      throw new Error("unclassified line: input does not look like an SSH PUBLIC key");
+    }
+    seenAll.add(pk);
+    lines.push({ source: UNCLASSIFIED_SOURCE, publicKey: pk });
+  }
 
   const body = lines
-    .map((l) => `# ${l.source} cluster CA\n${l.publicKey}`)
+    .map((l) =>
+      l.source === UNCLASSIFIED_SOURCE
+        ? // NOT rendered as `# <name> cluster CA`: a re-parse must put this back in `unclassified`,
+          // never promote an unrecognised line to a PEER this cluster never agreed to.
+          `# unclassified trust root (preserved verbatim by rotate; marker unrecognised)\n${l.publicKey}`
+        : `# ${l.source} cluster CA\n${l.publicKey}`,
+    )
     .join("\n");
   const header =
     "# Zeta TrustedUserCAKeys — multi-CA trust set (one CA public key per line).\n" +

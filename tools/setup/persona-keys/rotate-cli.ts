@@ -10,13 +10,22 @@
 // Idempotent-aware: re-running mid-overlap RESUMES the same overlap (no second standby minted).
 //
 // OVERLAP-WINDOW MODEL: each port mints a new key as STANDBY, overlaps (old + new both valid), then
-// promotes the standby to Active and retires the old. Because ≥2 keys are valid across the swap,
-// nothing the rotated key protects breaks (∅-blast-radius). For the CA, BOTH CA pubkeys stay in
-// `TrustedUserCAKeys` during the window so existing certs still verify.
+// promotes the standby to Active and retires the old. For the CA the trust SET is the unit: EVERY
+// CA pubkey already in `TrustedUserCAKeys` stays, so every existing cert still verifies. The set
+// only GROWS on this path — the readout reports the measured before/after counts rather than
+// claiming ∅-blast-radius unconditionally.
+//
+// --finalize IS THE CLOSING BOUND, and the only way a CA leaves the set. It rotates nothing: it
+// sweeps the trust set and drops each retired CA that a CERTIFICATE CENSUS of `<repo>/machines`
+// proves no unexpired certificate still names. Anything else is refused with its reason, and the
+// one biometric prompt NAMES every CA it would drop. Without it the union above would make each
+// retired CA a permanent trust root — the opposite defect, so both halves ship together.
 //
 // Usage:
 //   bun rotate-cli.ts --user aaron --ca aaron                         # DRY RUN (default — nothing touched)
 //   bun rotate-cli.ts --user aaron --ca aaron --confirm               # REAL rotate, all ports (one fingerprint)
+//   bun rotate-cli.ts --user aaron --ca aaron --ports ca-key --finalize          # DRY RUN of the sweep
+//   bun rotate-cli.ts --user aaron --ca aaron --ports ca-key --finalize --confirm # retire closed CAs
 //   bun rotate-cli.ts --user aaron --ca aaron --confirm --shamir 2-of-3  # + split new active CA key into shares
 //   bun rotate-cli.ts --user aaron --ca aaron --ports machine-key,device-cert --confirm
 //   bun rotate-cli.ts --user aaron --ca aaron --host mymac --confirm  # explicit hostname
@@ -58,6 +67,7 @@ const home = opt("--home") ?? homedir();
 const certValidity = opt("--validity");
 const confirm = flag("--confirm");
 const dryRun = !confirm; // DEFAULT-safe: only an explicit --confirm makes it a real run
+const finalizeSweep = flag("--finalize");
 const shamirSpec = opt("--shamir");
 
 const portsArg = opt("--ports");
@@ -73,8 +83,11 @@ function usage(): void {
       "  DEFAULT-SAFE: no --confirm => DRY RUN (reports what WOULD rotate; nothing touched, no prompt).\n" +
       `  --ports => any of: ${ROTATE_PORTS.join(", ")} (default: all).\n` +
       "  --confirm => REAL rotate on the overlap-window lifecycle: mint standby → promote → retire old,\n" +
-      "               re-sign the device cert (N+M), keep BOTH CA pubkeys trusted through the overlap.\n" +
-      "               Requires ONE biometric approval (fail-closed). NEVER pushes — stages for a PR.\n",
+      "               re-sign the device cert (N+M), keep EVERY trusted CA pubkey through the overlap.\n" +
+      "               Requires ONE biometric approval (fail-closed). NEVER pushes — stages for a PR.\n" +
+      "  --finalize => rotate NOTHING; sweep the CA trust set and drop each retired CA that the\n" +
+      "               certificate census proves no UNEXPIRED cert still names. The one approval names\n" +
+      "               every CA it drops. This is the ONLY way a CA leaves the trusted set.\n",
   );
 }
 
@@ -105,6 +118,7 @@ async function main(): Promise<number> {
     dryRun,
     confirm,
     biometricAuth: session.door,
+    ...(finalizeSweep ? { finalize: true } : {}),
     ...(certValidity !== undefined ? { certValidity } : {}),
   };
 
@@ -113,6 +127,7 @@ async function main(): Promise<number> {
 
   if (
     shamirSpec !== undefined &&
+    !finalizeSweep && // a finalize rotates NO key, so there is no new active CA to split
     confirm &&
     !dryRun &&
     ports.includes("ca-key") &&

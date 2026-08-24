@@ -18,17 +18,24 @@
 //   RR-1  absent biometric door ⇒ fail-closed          (arm: same call WITH a door rotates)
 //   RR-2  ONE approval covers all three ports          (arm: underlying-door call count)
 //   RR-3  a declined approval halts the run; a poisoned session replays without re-prompting
-//   RR-4  DEFECT P0 — ∅-blast-radius holds at N=1, FAILS at N=2 (arm: N=1 vs N=2, same assert)
-//   RR-5  DEFECT P0 — the operator readout asserts ∅-blast-radius on the run where it is false
-//   RR-6  DEFECT P1 — the retired-key slot is a single fixed path; rotate #2 destroys rotate #1's
+//   RR-4  FIXED (was P0) — ∅-blast-radius holds at N=1 AND N=2 (arm: N=1 vs N=2, same assert)
+//   RR-5  FIXED (was P1) — the readout MEASURES the guarantee; the line differs when the truth does
+//   RR-6  FIXED (was P1) — retired keys are generational; rotate #2 preserves rotate #1's
 //   RR-7  DEFECT P1 — an unrecognised port silently dispatches to device-cert (open default)
 //   RR-8  apply-N: rotate is NOT idempotent across runs BY DESIGN; the key is standby-presence
 //
-// ── THE DEFECT PINS ARE SELF-CLEANING ────────────────────────────────────────────────────
-// RR-4 / RR-5 / RR-6 / RR-7 assert that the defect IS PRESENT. That is deliberate. The moment
-// `rotate.ts` is fixed these tests go RED and force their own inversion, so a fix cannot land
-// while a test still claims the broken behaviour is correct. A pin that could survive its own
-// fix would be the vacuity class. Tracked in `docs/BUGS.md`.
+// ── THE DEFECT PINS ARE SELF-CLEANING, AND THREE OF THEM HAVE NOW CLEANED ────────────────
+// RR-4 / RR-5 / RR-6 / RR-7 were written to assert that the defect IS PRESENT, so that a fix could
+// not land while a test still claimed the broken behaviour was correct. On 2026-08-23 Nazar fixed
+// the first three; each went RED exactly as designed and is INVERTED below — the same scenario, the
+// same two arms, now asserting the repaired property. The fix and the closing bound it required are
+// proven in `rotate-ca-closing-bound.test.ts` (CB-1..CB-8); these three stay here because the
+// inversion is the record that the pin fired.
+//
+// RR-7 is UNCHANGED and still asserts a live defect: the port dispatch remains an open default
+// (`docs/BUGS.md`). It was left alone deliberately — it is a different defect class (dispatch
+// closure, a type-level change to `planPort`/`rotatePort`) with no interaction with the trust-set
+// arithmetic, and folding it into a trust-correctness fix would make both harder to review.
 //
 // ── WHAT THIS FILE CANNOT TEST (loudly, per the honest-limit discipline) ─────────────────
 // Printed at run time by RR-9 as well as stated here, because a limitation only in a comment
@@ -67,10 +74,12 @@ import {
   formatRotate,
   ROTATE_PORTS,
   retiredCaKeyPath,
+  retiredKeyPathForGeneration,
   retiredMachineKeyPath,
   standbyMachineKeyPath,
   type RotateEffects,
   type RotatePort,
+  type RotateResult,
 } from "./rotate.ts";
 
 const USER = "tester";
@@ -400,22 +409,22 @@ test("RR-3: a declined approval halts the run, and an already-declined session r
 });
 
 // ══════════════════════════════════════════════════════════════════════════════════════════
-// RR-4 — DEFECT (P0, docs/BUGS.md "the CA overlap window collapses on the second rotation").
+// RR-4 — WAS A DEFECT PIN (P0), NOW THE REPAIRED PROPERTY. Fixed 2026-08-23 by Nazar.
 //
-// `rotate.ts`'s stated WHY-IT-IS-SAFE is ∅-blast-radius: "because >=2 keys are valid across the
-// swap, NOTHING the rotated key protects breaks", and for the CA it is concrete — a device cert
-// verifies iff its signing-CA fingerprint is in `TrustedUserCAKeys`, so keeping BOTH CA pubkeys
-// through the overlap keeps every existing cert verifying. That is asserted by rotate.test.ts.
+// `rotate.ts`'s stated WHY-IT-IS-SAFE is ∅-blast-radius: a device cert verifies iff its signing-CA
+// fingerprint is in `TrustedUserCAKeys`, so a rotation is safe exactly when the trusted set AFTER
+// is a SUPERSET of the set BEFORE. `rotateCaKey` used to write the set as literally
+// `[currentActive, new]` — never unioning with the CA lines already in the file — so rotation #1
+// gave `[CA1, CA2]` (correct) and rotation #2 gave `[CA2, CA3]`, evicting CA1 while the cert it
+// signed was well inside its validity window. This test asserted that eviction; it now asserts its
+// absence, with the SAME assertion made after rotation #1 and rotation #2.
 //
-// It is asserted at N=1 ONLY. `rotateCaKey` writes the trust set as exactly
-// `[oldCaPub, newCaPub]` where `oldCaPub` is read from the CURRENT Active key — it never unions
-// with the CA lines already in the file. So the second rotation writes [CA2, CA3] and CA1 is
-// gone, while the cert it signed is still well inside its validity window.
-//
-// This test carries its own discrimination: THE SAME ASSERTION is made after rotation #1 (where
-// it holds) and after rotation #2 (where it does not). A vacuous version could not do both.
+// The closing bound the union required (a CA may still LEAVE, but only via `--finalize`, only on
+// certificate-census evidence, only with an approval that names it) is proven in
+// `rotate-ca-closing-bound.test.ts`. Union without a closing bound would have traded this P0 for a
+// slower one: every retired CA a permanent trust root.
 // ══════════════════════════════════════════════════════════════════════════════════════════
-test("RR-4 DEFECT: the CA overlap holds at N=1 and COLLAPSES at N=2 — a still-valid cert's signer is dropped", async () => {
+test("RR-4 FIXED: the CA overlap holds at N=1 AND at N=2 — a still-valid cert's signer is never dropped", async () => {
   const sb = makeSandbox();
   try {
     await provision(sb);
@@ -425,7 +434,7 @@ test("RR-4 DEFECT: the CA overlap holds at N=1 and COLLAPSES at N=2 — a still-
     const ca1 = pubFingerprint(caPrivateKeyPath(sb.home) + ".pub");
     expect(protectedBy).toBe(ca1);
 
-    // ── ROTATION #1 — the property HOLDS. (This arm is what makes the next arm a finding.) ──
+    // ── ROTATION #1 — the property holds. ─────────────────────────────────────────────────────
     const r1 = await runRotate(sb, { ports: ["ca-key"] });
     expect(r1.res.rotations.find((x) => x.port === "ca-key")?.action).toBe("rotated");
     const ca2 = pubFingerprint(caPrivateKeyPath(sb.home) + ".pub");
@@ -435,27 +444,24 @@ test("RR-4 DEFECT: the CA overlap holds at N=1 and COLLAPSES at N=2 — a still-
     expect(after1).toContain(ca2); // the new signer
     expect(after1).toContain(protectedBy); // ∅-blast-radius: the cert still verifies
 
-    // ── ROTATION #2 — the IDENTICAL property FAILS. ─────────────────────────────────────────
+    // ── ROTATION #2 — the IDENTICAL property STILL HOLDS. This is the line that used to fail. ──
     const r2 = await runRotate(sb, { ports: ["ca-key"] });
     expect(r2.res.rotations.find((x) => x.port === "ca-key")?.action).toBe("rotated");
     const ca3 = pubFingerprint(caPrivateKeyPath(sb.home) + ".pub");
     const after2 = trustedCaFingerprints(sb);
 
+    expect(after2).toContain(ca1); // <- the eviction this pin was written for
     expect(after2).toContain(ca2);
     expect(after2).toContain(ca3);
-    // THE DEFECT. CA1 is dropped with no window, no finalize step, and no expiry check on the
-    // certs it signed. `rotate.ts` says the old line "is removed only AFTER the window (a later
-    // teardown / a follow-up `rotate --finalize`)" — this is that removal happening immediately,
-    // as a side effect of an unrelated rotation.
-    expect(after2).not.toContain(ca1);
-    // Stated as the consequence rather than the mechanism: the cert no longer verifies, because
-    // its signing CA is not in the set sshd consults.
-    expect(after2).not.toContain(protectedBy);
-    // Exactly two CA lines survive — "the two most recent", not "the ones in the overlap".
-    expect(after2.length).toBe(2);
+    expect(after2).toContain(protectedBy);
+    expect(after2.length).toBe(3); // the whole overlap, not "the two most recent"
+    // Every CA trusted after rotation #1 is still trusted after rotation #2.
+    for (const fp of after1) expect(after2).toContain(fp);
 
-    // ...and the run that did this reported success, not a warning.
-    expect(r2.res.rotations.find((x) => x.port === "ca-key")?.detail).toContain("existing certs still verify");
+    // ...and the run MEASURED it rather than asserting it: the readout's claim comes from here.
+    const trust = r2.res.rotations.find((x) => x.port === "ca-key")?.trust;
+    expect(trust?.supersetOfBefore).toBe(true);
+    expect([...(trust?.dropped ?? [])]).toEqual([]);
 
     assertContained(sb, certFile, trustedUserCaKeysPath(sb.repoRoot, USER));
   } finally {
@@ -464,56 +470,75 @@ test("RR-4 DEFECT: the CA overlap holds at N=1 and COLLAPSES at N=2 — a still-
 });
 
 // ══════════════════════════════════════════════════════════════════════════════════════════
-// RR-5 — DEFECT (P0, same root cause as RR-4, separate because it is the part that costs trust).
-// `formatRotate` prints the ∅-blast-radius guarantee on EVERY approved run. An assertion that
-// cannot be false is not an assertion; here it is printed on the exact run that falsifies it.
+// RR-5 — WAS A DEFECT PIN (P1), NOW THE REPAIRED PROPERTY. `formatRotate` used to print the
+// ∅-blast-radius guarantee on EVERY approved run, byte-identically, including the run that
+// falsified it. An assertion that cannot be false is not an assertion, and on an operator surface
+// it is the specific thing Aaron named as the obstacle to human-AI trust.
+//
+// The line is now COMPUTED from the measured `TrustSetDelta`. The discrimination that used to
+// expose the defect — comparing the line across two runs with different truth values — is the same
+// comparison that now proves the repair, so this test kept its shape and flipped its expectation.
 // ══════════════════════════════════════════════════════════════════════════════════════════
-test("RR-5 DEFECT: the operator readout asserts ∅-blast-radius unconditionally — including on the run that breaks it", async () => {
+test("RR-5 FIXED: the readout states the MEASURED guarantee, and says something different when it does not hold", async () => {
   const sb = makeSandbox();
   try {
     await provision(sb);
     const certFile = certPath(machinePubPath(sb.repoRoot, HOST));
     const protectedBy = certSigningCaFingerprint(certFile);
 
-    await runRotate(sb, { ports: ["ca-key"] });
+    const first = await runRotate(sb, { ports: ["ca-key"] });
     const second = await runRotate(sb, { ports: ["ca-key"] });
     const readout = formatRotate(second.res);
 
-    // The guarantee is printed...
-    expect(readout).toContain("∅-blast-radius");
-    expect(readout).toContain("nothing protected breaks");
-    // ...on a run after which the protected cert's signer is NOT trusted. Both facts, one run.
-    expect(trustedCaFingerprints(sb)).not.toContain(protectedBy);
+    // The claim is stated as a MEASUREMENT...
+    expect(readout).toContain("∅-blast-radius VERIFIED (measured, not asserted)");
+    expect(readout).toContain("0 dropped");
+    // ...on a run after which the protected cert's signer IS still trusted. Both facts, one run.
+    expect(trustedCaFingerprints(sb)).toContain(protectedBy);
 
-    // Discrimination: the readout is byte-identical on the FIRST rotation, where the claim is
-    // true. So the line carries no information about whether the property held — which is the
-    // defect. (Same input shape, same output, opposite truth.)
-    const sb2 = makeSandbox();
-    try {
-      await provision(sb2);
-      const first = await runRotate(sb2, { ports: ["ca-key"] });
-      const firstReadout = formatRotate(first.res);
-      const guaranteeLine = (s: string): string =>
-        s.split("\n").find((l) => l.includes("∅-blast-radius")) ?? "";
-      expect(guaranteeLine(firstReadout)).toBe(guaranteeLine(readout));
-      expect(guaranteeLine(readout).length).toBeGreaterThan(0);
-    } finally {
-      sb2.cleanup();
-    }
+    // DISCRIMINATION 1 — the line is NOT a constant. It carries this run's counts, so the same
+    // guarantee on a different run reads differently. (Byte-identical was the defect.)
+    const guaranteeLine = (str: string): string =>
+      str.split("\n").find((l) => l.includes("∅-blast-radius")) ?? "";
+    expect(guaranteeLine(formatRotate(first.res)).length).toBeGreaterThan(0);
+    expect(guaranteeLine(formatRotate(first.res))).not.toBe(guaranteeLine(readout));
+
+    // DISCRIMINATION 2 — a run that did NOT touch the trust set makes NO claim about it. The old
+    // line printed on every approved run, including ones that never opened the trust file.
+    const machineOnly = await runRotate(sb, { ports: ["machine-key"] });
+    expect(formatRotate(machineOnly.res)).not.toContain("∅-blast-radius");
+
+    // DISCRIMINATION 3 — the NOT-ESTABLISHED wording exists and is reachable, so "VERIFIED" is a
+    // choice between two outcomes rather than the only string the function can emit.
+    expect(formatRotate(second.res)).not.toContain("NOT ESTABLISHED");
+    const narrowed: RotateResult = {
+      ...second.res,
+      rotations: second.res.rotations.map((r) =>
+        r.trust === undefined
+          ? r
+          : { ...r, trust: { ...r.trust, dropped: ["SHA256:pretend"], supersetOfBefore: false } },
+      ),
+    };
+    expect(formatRotate(narrowed)).toContain("∅-blast-radius NOT ESTABLISHED");
+    expect(formatRotate(narrowed)).toContain("SHA256:pretend");
   } finally {
     sb.cleanup();
   }
 });
 
 // ══════════════════════════════════════════════════════════════════════════════════════════
-// RR-6 — DEFECT (P1, docs/BUGS.md "rotate overwrites the previously retired private key").
-// `retiredCaKeyPath` / `retiredMachineKeyPath` are FIXED single slots, and `movePrivate` renames
-// onto them. Rotation #2 therefore destroys rotation #1's retired private key — irreversibly,
-// unattended, with no ceremony. `ceremony-gate.ts` classifies `export-or-destroy-key` as
-// `biometric-ceremony` precisely because irreversibility is a gated class here; this destruction
-// rides in on an operation classified `rotate-leaf-signing-key` / `rotate-node-root-key`.
+// RR-6 — WAS A DEFECT PIN (P1), NOW THE REPAIRED PROPERTY. `retiredCaKeyPath` /
+// `retiredMachineKeyPath` were FIXED single slots and `movePrivate` renamed onto them, so rotation
+// #2 destroyed rotation #1's retired private key — irreversibly, unattended, with no ceremony,
+// while `ceremony-gate.ts` classifies `export-or-destroy-key` as `biometric-ceremony` and manifesto
+// §5 forbids an identity transition silently destroying memory.
+//
+// Retirement now allocates the FIRST FREE generation (`…previous`, `…previous.2`, …) and REFUSES
+// once the archive is full rather than choosing which key to destroy. The refusal path is unit-
+// tested in `rotate-ca-closing-bound.test.ts` CB-8; this test keeps the original two-rotation
+// scenario and asserts that generation 1 survived it.
 // ══════════════════════════════════════════════════════════════════════════════════════════
-test("RR-6 DEFECT: the retired-key slot is one fixed path — rotation #2 destroys rotation #1's retired key", async () => {
+test("RR-6 FIXED: retired keys are generational — rotation #2 preserves rotation #1's retired key", async () => {
   const sb = makeSandbox();
   try {
     await provision(sb);
@@ -521,21 +546,28 @@ test("RR-6 DEFECT: the retired-key slot is one fixed path — rotation #2 destro
     const mk1 = pubFingerprint(deviceKeyPath(sb.home) + ".pub");
 
     await runRotate(sb, { ports: ["ca-key", "machine-key"] });
-    // After #1 the retired slots hold the ORIGINAL keys. (The arm that makes #2 meaningful.)
+    // After #1 the generation-1 slots hold the ORIGINAL keys.
     expect(pubFingerprint(retiredCaKeyPath(sb.home) + ".pub")).toBe(ca1);
     expect(pubFingerprint(retiredMachineKeyPath(sb.home) + ".pub")).toBe(mk1);
     const ca2 = pubFingerprint(caPrivateKeyPath(sb.home) + ".pub");
     const mk2 = pubFingerprint(deviceKeyPath(sb.home) + ".pub");
 
-    await runRotate(sb, { ports: ["ca-key", "machine-key"] });
-    // THE DEFECT: the slot now holds generation 2. Generation 1 is gone from disk entirely —
-    // there is no `.previous.1`, no timestamped archive, no refusal.
-    expect(pubFingerprint(retiredCaKeyPath(sb.home) + ".pub")).toBe(ca2);
-    expect(pubFingerprint(retiredCaKeyPath(sb.home) + ".pub")).not.toBe(ca1);
-    expect(pubFingerprint(retiredMachineKeyPath(sb.home) + ".pub")).toBe(mk2);
-    expect(pubFingerprint(retiredMachineKeyPath(sb.home) + ".pub")).not.toBe(mk1);
+    const second = await runRotate(sb, { ports: ["ca-key", "machine-key"] });
 
-    assertContained(sb, retiredCaKeyPath(sb.home), retiredMachineKeyPath(sb.home));
+    // THE REPAIR: generation 1 is STILL THERE (this is what used to be overwritten)...
+    expect(pubFingerprint(retiredCaKeyPath(sb.home) + ".pub")).toBe(ca1);
+    expect(pubFingerprint(retiredMachineKeyPath(sb.home) + ".pub")).toBe(mk1);
+    // ...and generation 2 landed in its own slot, which the result NAMES rather than implying.
+    const caGen2 = retiredKeyPathForGeneration(retiredCaKeyPath(sb.home), 2);
+    const mkGen2 = retiredKeyPathForGeneration(retiredMachineKeyPath(sb.home), 2);
+    expect(pubFingerprint(caGen2 + ".pub")).toBe(ca2);
+    expect(pubFingerprint(mkGen2 + ".pub")).toBe(mk2);
+    expect(second.res.rotations.find((r) => r.port === "ca-key")?.retiredArtifactPath).toBe(caGen2);
+    expect(second.res.rotations.find((r) => r.port === "machine-key")?.retiredArtifactPath).toBe(mkGen2);
+    // Four distinct retired keys on disk after two rotations — nothing was destroyed to make room.
+    expect(new Set([ca1, ca2, mk1, mk2]).size).toBe(4);
+
+    assertContained(sb, retiredCaKeyPath(sb.home), retiredMachineKeyPath(sb.home), caGen2, mkGen2);
   } finally {
     sb.cleanup();
   }
