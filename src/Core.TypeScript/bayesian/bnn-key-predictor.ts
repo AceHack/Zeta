@@ -56,13 +56,21 @@ import {
   type PerceptionState,
   type TrackedObject,
 } from "../chip8/perception";
-import { readScreen, COL_PITCH as OCR_COL_PITCH, GLYPH_H as OCR_GLYPH_H, type ReadNumber } from "../chip8/ocr";
+import {
+  readScreenFoveated,
+  COL_PITCH as OCR_COL_PITCH,
+  GLYPH_H as OCR_GLYPH_H,
+  type GlyphGrid,
+  type ReadNumber,
+} from "../chip8/ocr";
 import {
   ModeValueLearner,
   type ModeBucket,
   type ModeChoice,
   type ModeValueSnapshot,
 } from "./mode-value-learner";
+import { TILE_COUNT, TileAttentionField, type AttentionSnapshot } from "./attention-field";
+import { societyRho as computeSocietyRho, type SocietyRho } from "./society-rho";
 
 export interface BnnPriors {
   explorationRate: number; // 0.0 - 1.0 (how uniform the distribution is)
@@ -93,13 +101,19 @@ const MODE_HYSTERESIS = 8;
 const HUNTER_AREA_MIN = 10;
 /** Closing-speed (px/tick) above which the gap counts as shrinking. */
 const CLOSING_SPEED_MIN = 0.05;
+/** D2: tiles granted full perception per tick (tunable, displayed on the page). */
+export const ATTENTION_TOP_K = 8;
+/** D2: a reading change below this is noise, not useful work. */
+const USEFUL_WORK_EPS = 0.5;
+/** D4: ticks a candidate must hold top rank before the fixation moves. */
+const FIXATION_MIN_DELAY = 6;
 /** Obstacle lookahead distance (pixels) for steering penalties. */
 const LOOKAHEAD = 6;
 
 /** Serializable snapshot of the society — the priors that live in source. */
 export interface SocietySnapshot {
-  /** v1: keys only. v2: adds the learned hunt/flee value table. */
-  readonly version: 1 | 2;
+  /** v1: keys only. v2: + the learned hunt/flee table. v3: + the tile attention field. */
+  readonly version: 1 | 2 | 3;
   readonly seed: number;
   readonly agentCount: number;
   /** Per agent, per key (-1..15): the EP posterior. */
@@ -117,6 +131,8 @@ export interface SocietySnapshot {
   readonly priors: BnnPriors;
   /** v2: the learned mode policy (absent in v1 snapshots — fresh prior then). */
   readonly modeValues?: ModeValueSnapshot;
+  /** v3: the tile attention field (absent before v3 — fresh prior then). */
+  readonly attention?: AttentionSnapshot;
 }
 
 export class BnnSocietyPredictor {
@@ -173,6 +189,36 @@ export class BnnSocietyPredictor {
   /** The context bucket the last mode decision was made in (UI + tests). */
   public lastModeBucket: ModeBucket | null = null;
 
+  /**
+   * The tile attention field (D1 of #14503) — per-tile uncertainty on the
+   * same Student-t carrier as every other belief, part of this society's
+   * snapshot (v3). Its posterior variance is the frost channel; its top-K
+   * is where the foveated OCR spends full perception.
+   */
+  public readonly attentionField = new TileAttentionField();
+  /** The tiles fully attended this tick (top-K by variance + the sweep tile). */
+  public lastAttendedTiles: readonly number[] = [];
+  /**
+   * D2's meter: OCR match attempts that CHANGED a reading, over attempts —
+   * or "ambiguous" when the variance field is flat and the allocator had no
+   * signal (the loud half: a quiet fallback would report the attentive
+   * system and the blind one identically).
+   */
+  public lastUsefulWork: number | "ambiguous" = "ambiguous";
+  /** Per-cell previous OCR reading ("x,y" → glyph value), for the meter. */
+  private prevGlyphAt = new Map<string, number>();
+  /** Tiles that have ever held a recognised glyph — instruments, always read. */
+  private readonly knownGlyphTiles = new Set<number>();
+  /**
+   * D4: the fixation tile — top-variance tile held through a dwell latch.
+   * The same suppress-inside-MinDelay shape as src/Core/DebouncedOracle.fs:
+   * a candidate must hold top rank for FIXATION_MIN_DELAY consecutive ticks
+   * before the fixation MOVES (the move is the saccade the UI sweeps).
+   */
+  public lastFixationTile: number | null = null;
+  private fixationCandidate: number | null = null;
+  private fixationCharge = 0;
+
   constructor(agentCount: number = 3, seed: number = COMMON_SEED) {
     this.agentCount = agentCount;
     this.seed = seed | 0;
@@ -218,13 +264,14 @@ export class BnnSocietyPredictor {
       agents.push({ beliefs: rows });
     }
     return {
-      version: 2,
+      version: 3,
       seed: this.seed,
       agentCount: this.agentCount,
       agents,
       exploreTicksDone: this.exploreTicksDone,
       priors: { ...this.priors },
       modeValues: this.modeLearner.exportSnapshot(),
+      attention: this.attentionField.exportSnapshot(),
     };
   }
 
@@ -234,7 +281,7 @@ export class BnnSocietyPredictor {
    * whole point of priors in source: never starting from zero.
    */
   public importSnapshot(snap: SocietySnapshot): void {
-    if (snap.version !== 1 && snap.version !== 2) throw new RangeError(`unknown SocietySnapshot version ${String((snap as { version: unknown }).version)}`);
+    if (snap.version !== 1 && snap.version !== 2 && snap.version !== 3) throw new RangeError(`unknown SocietySnapshot version ${String((snap as { version: unknown }).version)}`);
     const agentEntries = [...this.agents.values()];
     for (let i = 0; i < Math.min(agentEntries.length, snap.agents.length); i++) {
       const beliefs = agentEntries[i]!;
@@ -258,6 +305,7 @@ export class BnnSocietyPredictor {
     // v1 snapshots carry no mode table: the learner stays at its prior,
     // which reproduces the retired hardcoded rule exactly.
     if (snap.modeValues) this.modeLearner.importSnapshot(snap.modeValues);
+    if (snap.attention) this.attentionField.importSnapshot(snap.attention);
   }
 
   // ── Layer 4→6 bridge: the OCR scoreboards are the reward sensor ──────────
@@ -282,6 +330,70 @@ export class BnnSocietyPredictor {
     }
     if (mine !== null) this.prevMyScore = mine;
     if (theirs !== null) this.prevTheirScore = theirs;
+  }
+
+  /**
+   * D2's meter, both halves of Aaron's meter spec: measure precisely (a
+   * reading-change fraction over actual match attempts) and fail loudly
+   * (a flat variance field gives the allocator NO signal, so the meter says
+   * `ambiguous` instead of quietly printing a number over uniform sampling).
+   * "Useful" = an attempted cell whose recognised value appeared or changed;
+   * disappearances are not counted (the cell is simply absent), which is
+   * stated here so the meter's blind spot is on the record.
+   */
+  private updateUsefulWorkMeter(scan: { readonly grid: GlyphGrid; readonly attempts: number }): void {
+    if (this.attentionField.isFlat()) {
+      this.lastUsefulWork = "ambiguous";
+      return;
+    }
+    let changed = 0;
+    for (const cell of scan.grid.cells) {
+      const key = `${String(cell.x)},${String(cell.y)}`;
+      const val = parseInt(cell.char, 16);
+      const prev = this.prevGlyphAt.get(key);
+      if (prev === undefined || Math.abs(val - prev) >= USEFUL_WORK_EPS) changed += 1;
+      this.prevGlyphAt.set(key, val);
+    }
+    this.lastUsefulWork = scan.attempts > 0 ? changed / scan.attempts : 0;
+  }
+
+  /**
+   * D4: fixation moves only after a new top-variance tile holds its rank
+   * for FIXATION_MIN_DELAY consecutive ticks — the suppress-inside-MinDelay
+   * split of src/Core/DebouncedOracle.fs, one granularity down: readings
+   * inside the delay are the SACCADE (prediction step, the UI's fast dim
+   * sweep); the accepted move is the FIXATION (update step, bright settle).
+   */
+  private updateFixation(): void {
+    const top = this.attentionField.topK(1)[0];
+    if (top === undefined) return;
+    if (top === this.lastFixationTile) {
+      this.fixationCandidate = null;
+      this.fixationCharge = 0;
+      return;
+    }
+    if (top === this.fixationCandidate) {
+      this.fixationCharge += 1;
+      if (this.fixationCharge >= FIXATION_MIN_DELAY || this.lastFixationTile === null) {
+        this.lastFixationTile = top; // the saccade lands
+        this.fixationCandidate = null;
+        this.fixationCharge = 0;
+      }
+    } else {
+      this.fixationCandidate = top;
+      this.fixationCharge = 1;
+    }
+  }
+
+  /** Measured belief-similarity between society members (never assumed). */
+  public societyRho(): SocietyRho {
+    const vectors: number[][] = [];
+    for (const beliefs of this.agents.values()) {
+      const v: number[] = [];
+      for (let k = -1; k <= 0xf; k++) v.push(beliefs[k]!.posterior.mu);
+      vectors.push(v);
+    }
+    return computeSocietyRho(vectors);
   }
 
   /**
@@ -479,10 +591,36 @@ export class BnnSocietyPredictor {
   public predict(display: number[], pressedKey?: number): Record<number, number> {
     this.tickCount += 1;
 
-    // Layers 1–3: objects, tracks, relations.
+    // Layers 1–3: objects, tracks, relations. The connected-component pass
+    // stays GLOBAL deliberately: field coherence is a global property and a
+    // local check cannot see it (#14503 session-context §1) — foveation
+    // applies one layer up, where work is per-tile.
     this.lastPerception = perceive(this.lastPerception, display);
+
+    // D1: the tile attention field absorbs the same composite every tick
+    // (the cheap path runs everywhere; only FULL perception is rationed).
+    this.attentionField.observe(display);
+    // D2: full OCR on the top-K variance tiles, plus one deterministic
+    // peripheral-sweep tile per tick so no tile can starve into a stale
+    // belief (tick-indexed, no ambient entropy), plus every tile that has
+    // EVER held a recognised glyph: a discovered scoreboard is an
+    // INSTRUMENT, and an instrument sampled one tick in thirty-two cannot
+    // produce the consecutive readings the reward channel's two-tick
+    // agreement requires. The sweep discovers instruments; stickiness keeps
+    // them read.
+    const attended = new Set<number>(this.attentionField.topK(ATTENTION_TOP_K));
+    attended.add(this.tickCount % TILE_COUNT);
+    for (const t of this.knownGlyphTiles) attended.add(t);
+    this.lastAttendedTiles = [...attended].sort((a, b) => a - b);
+
     // Layer 4: symbols — and the reward channel: score deltas grade the mode.
-    this.lastOcr = readScreen(display).numbers;
+    const scan = readScreenFoveated(display, attended);
+    this.lastOcr = scan.numbers;
+    for (const cell of scan.grid.cells) {
+      this.knownGlyphTiles.add(((cell.y / 8) | 0) * 8 + ((cell.x / 8) | 0));
+    }
+    this.updateUsefulWorkMeter(scan);
+    this.updateFixation();
     this.absorbScoreboardReward();
     this.markScoreboardTracks();
     // Layer 5: roles.

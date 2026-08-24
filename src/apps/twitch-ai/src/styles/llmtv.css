@@ -452,3 +452,58 @@ main {
     transform: translate(-50%, -100px);
   }
 }
+
+/* ── Attention overlay (D3/D4 of the attention-density spec, #14503) ──────
+   Frost = the uncertainty channel: clear is known, frosted is not known
+   yet, bright motion is being attended right now. The fixation ring's
+   left/top TRANSITION is the saccade sweep; the settle pulse is the
+   fixation landing. */
+.attention-tile {
+  position: absolute;
+  width: 12.5%;
+  height: 25%;
+  background: rgba(226, 236, 255, 0.85);
+  box-shadow: inset 0 0 6px rgba(255, 255, 255, 0.5);
+  opacity: 0;
+  transition: opacity 180ms linear;
+  pointer-events: none;
+}
+.attention-tile.attended {
+  box-shadow: inset 0 0 0 1px rgba(103, 232, 249, 0.55);
+}
+.fixation-ring {
+  position: absolute;
+  width: 12.5%;
+  height: 25%;
+  border: 2px solid rgba(250, 204, 21, 0.95);
+  box-sizing: border-box;
+  /* The SWEEP: a fast dim glide between fixations (the saccade). */
+  transition:
+    left 120ms ease-out,
+    top 120ms ease-out;
+  pointer-events: none;
+}
+.fixation-ring.settling {
+  animation: fixation-settle 420ms ease-out;
+}
+@keyframes fixation-settle {
+  0% {
+    box-shadow: 0 0 2px rgba(250, 204, 21, 0.2);
+    border-color: rgba(250, 204, 21, 0.35);
+  }
+  60% {
+    box-shadow: 0 0 14px rgba(250, 204, 21, 0.9);
+    border-color: rgba(250, 204, 21, 1);
+  }
+  100% {
+    box-shadow: 0 0 6px rgba(250, 204, 21, 0.5);
+    border-color: rgba(250, 204, 21, 0.95);
+  }
+}
+.attention-header {
+  font-size: 0.75rem;
+  color: var(--text-muted, #94a3b8);
+}
+.attention-value {
+  font-variant-numeric: tabular-nums;
+}

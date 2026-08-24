@@ -10,6 +10,30 @@
  */
 import type { ArenaReadout } from "../../../Core.TypeScript/observe/observe";
 
+/**
+ * The attention field on the wire (D1 of #14503). The per-tile arrays are
+ * Float32Arrays whose buffers ride the postMessage TRANSFER LIST — moved,
+ * not copied — and they ride the SAME message as the frame they label.
+ */
+export interface AttentionFramePayload {
+  readonly cols: number;
+  readonly rows: number;
+  /** Predictive variance per tile, row-major — the frost channel. */
+  readonly variance: Float32Array;
+  /** Posterior mean change-fraction per tile. */
+  readonly mean: Float32Array;
+  /** Tiles granted full perception this tick (top-K + sweep + instruments). */
+  readonly attended: readonly number[];
+  /** The fixation tile (bright settle); a move is the saccade (fast sweep). */
+  readonly fixation: number | null;
+  /** D2 meter: reading-changes over match attempts — or the LOUD flat state. */
+  readonly usefulWork: number | "ambiguous";
+  /** Measured society belief-similarity (never assumed decorrelated). */
+  readonly rho: { readonly mean: number; readonly max: number; readonly pairs: number };
+  /** K, displayed per the spec ("a constant, tunable, and displayed"). */
+  readonly topK: number;
+}
+
 /** main → worker. */
 export type MainToWorkerMessage =
   | {
@@ -38,6 +62,8 @@ export interface FramePayload {
   readonly chosenKey: number;
   /** Forced-perception readout: tracks, roles, mode, OCR, intent vector. */
   readonly arena: ArenaReadout | null;
+  /** The attention field — where the agent is SPENDING perception. */
+  readonly attention: AttentionFramePayload | null;
 }
 
 export interface WorkerToMainMessage {

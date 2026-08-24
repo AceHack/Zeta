@@ -180,6 +180,8 @@ export interface CheatEngineState {
   readonly chosenKey?: number;
   /** Forced-perception readout — what the agent currently sees and intends. */
   readonly arena?: ArenaReadout;
+  /** The attention field — where the agent is SPENDING perception. */
+  readonly attention?: AttentionReadoutWire;
 }
 
 /** One tracked object, trimmed for the wire (the UI draws these boxes). */
@@ -201,6 +203,26 @@ export interface ArenaReadout {
   readonly tracks: readonly ArenaTrackReadout[];
   readonly ocr: readonly { value: number; row: number; col: number; color: number }[];
   readonly desired: { dx: number; dy: number } | null;
+}
+
+/** The attention field on the wire (D1–D4 of the attention-density spec, #14503). */
+export interface AttentionReadoutWire {
+  readonly cols: number;
+  readonly rows: number;
+  /** Predictive variance per tile, row-major — the frost channel. */
+  readonly variance: readonly number[];
+  /** Posterior mean change-fraction per tile. */
+  readonly mean: readonly number[];
+  /** Tiles granted full perception this tick (top-K + sweep + instruments). */
+  readonly attended: readonly number[];
+  /** The fixation tile (bright settle); a move is the saccade (fast sweep). */
+  readonly fixation: number | null;
+  /** D2 meter: reading-changes over match attempts — or the LOUD flat state. */
+  readonly usefulWork: number | "ambiguous";
+  /** Measured society belief-similarity (never assumed decorrelated). */
+  readonly rho: { readonly mean: number; readonly max: number; readonly pairs: number };
+  /** K, displayed per the spec ("a constant, tunable, and displayed"). */
+  readonly topK: number;
 }
 
 /** KPI attached to a `do_item` (ARC-AGI grid scoring). */

@@ -2,7 +2,7 @@ import type {
   ArenaReadout,
   ArenaTrackReadout,
 } from "../../../../Core.TypeScript/observe/observe";
-import type { FramePayload } from "../protocol";
+import type { AttentionFramePayload, FramePayload } from "../protocol";
 
 export class Chip8TvPlayer {
   private element: HTMLElement;
@@ -11,6 +11,10 @@ export class Chip8TvPlayer {
   private llmtvOverlay: HTMLElement;
   private screenContainer: HTMLElement;
   private perceptionOverlay: HTMLElement;
+  private attentionOverlay: HTMLElement;
+  private readonly tileDivs: HTMLDivElement[] = [];
+  private fixationRing: HTMLDivElement;
+  private lastFixation: number | null = null;
   public agentId: string;
 
   constructor(containerId: string, agentId: string) {
@@ -39,6 +43,7 @@ export class Chip8TvPlayer {
     headerContainer.innerHTML = `
       <div style="display:flex; justify-content:space-between; width:100%;">
         <span><span class="concept-label">🧠 Mode:</span> <span class="concept-value" id="concept-${agentId}">[INITIALIZING]</span></span>
+        <span class="attention-header">👁 <span class="attention-value" id="attention-${agentId}">[--]</span></span>
         <span class="objective-header">🎯 <span class="objective-value" id="objective-${agentId}">[WAITING]</span></span>
       </div>
     `;
@@ -50,6 +55,25 @@ export class Chip8TvPlayer {
     canvasWrap.style.position = "relative";
     this.canvas.style.display = "block";
     canvasWrap.appendChild(this.canvas);
+    // D3/D4 (#14503): the frost layer (uncertainty) and the fixation ring
+    // (saccade sweep / fixation settle) sit UNDER the perception boxes.
+    this.attentionOverlay = document.createElement("div");
+    this.attentionOverlay.style.position = "absolute";
+    this.attentionOverlay.style.inset = "0";
+    this.attentionOverlay.style.pointerEvents = "none";
+    for (let t = 0; t < 32; t++) {
+      const tile = document.createElement("div");
+      tile.className = "attention-tile";
+      tile.style.left = `${String((t % 8) * 12.5)}%`;
+      tile.style.top = `${String(Math.floor(t / 8) * 25)}%`;
+      this.tileDivs.push(tile);
+      this.attentionOverlay.appendChild(tile);
+    }
+    this.fixationRing = document.createElement("div");
+    this.fixationRing.className = "fixation-ring";
+    this.fixationRing.style.display = "none";
+    this.attentionOverlay.appendChild(this.fixationRing);
+    canvasWrap.appendChild(this.attentionOverlay);
     this.perceptionOverlay = document.createElement("div");
     this.perceptionOverlay.style.position = "absolute";
     this.perceptionOverlay.style.inset = "0";
@@ -294,8 +318,71 @@ export class Chip8TvPlayer {
     }
   }
 
+  /**
+   * D3: frost is the uncertainty channel — clear = known, frosted = not
+   * known yet, bright = attended right now. D4: the fixation ring MOVES
+   * with a fast CSS sweep (the saccade) and settles bright (the fixation);
+   * the split is DebouncedOracle's, rendered.
+   */
+  private renderAttention(att: AttentionFramePayload | null): void {
+    const meter = document.getElementById(`attention-${this.agentId}`);
+    if (!att) {
+      if (meter) meter.textContent = "[--]";
+      for (const tile of this.tileDivs) tile.style.opacity = "0";
+      this.fixationRing.style.display = "none";
+      return;
+    }
+    this.renderFrostTiles(att);
+    this.renderFixation(att);
+    if (meter) meter.textContent = this.meterText(att);
+  }
+
+  /** Frost thickens with uncertainty; an attended tile reads as clearing. */
+  private renderFrostTiles(att: AttentionFramePayload): void {
+    let maxV = 0;
+    for (const v of att.variance) if (v > maxV) maxV = v;
+    const attended = new Set(att.attended);
+    for (let t = 0; t < this.tileDivs.length && t < att.variance.length; t++) {
+      const tile = this.tileDivs[t];
+      if (!tile) continue;
+      const variance = att.variance[t] ?? 0;
+      const norm = maxV > 0 ? variance / maxV : 0;
+      const isAttended = attended.has(t);
+      const strength = isAttended ? 0.25 : 0.55;
+      const alpha = norm < 0.08 ? 0 : norm * strength;
+      tile.style.opacity = alpha.toFixed(3);
+      tile.classList.toggle("attended", isAttended);
+    }
+  }
+
+  /** The ring's left/top transition IS the saccade; the pulse is the settle. */
+  private renderFixation(att: AttentionFramePayload): void {
+    if (att.fixation === null) {
+      this.fixationRing.style.display = "none";
+      return;
+    }
+    this.fixationRing.style.display = "block";
+    this.fixationRing.style.left = `${String((att.fixation % att.cols) * 12.5)}%`;
+    this.fixationRing.style.top = `${String(Math.floor(att.fixation / att.cols) * 25)}%`;
+    if (att.fixation !== this.lastFixation) {
+      // Restart the settle pulse (forced reflow between class toggles).
+      this.fixationRing.classList.remove("settling");
+      this.fixationRing.getBoundingClientRect();
+      this.fixationRing.classList.add("settling");
+      this.lastFixation = att.fixation;
+    }
+  }
+
+  private meterText(att: AttentionFramePayload): string {
+    let useful: string;
+    if (att.usefulWork === "ambiguous") useful = "ambiguous";
+    else useful = `${(att.usefulWork * 100).toFixed(0)}%`;
+    return `K=${String(att.topK)} useful ${useful} ρ̄ ${att.rho.mean.toFixed(2)}`;
+  }
+
   public updatePredictions(frame: FramePayload): void {
     this.renderArena(frame.arena);
+    this.renderAttention(frame.attention);
 
     // Process BNN predictions (RGB probabilities) and committed keys (CMYK)
     const keyMap = this.buttonIds();

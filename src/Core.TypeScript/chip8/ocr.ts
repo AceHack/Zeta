@@ -87,7 +87,35 @@ const HEX_CHARS = "0123456789ABCDEF";
  * a claimed cell cannot anchor a second glyph.
  */
 export function recognizeGlyphs(display: readonly number[], w = 64, h = 32): GlyphHit[] {
+  return scanGlyphs(display, w, h, null).hits;
+}
+
+/** A foveated glyph scan: hits found plus how many windows were actually matched. */
+export interface FoveatedScan {
+  readonly hits: GlyphHit[];
+  /** Windows that reached template matching — the useful-work meter's denominator. */
+  readonly attempts: number;
+}
+
+/** The attention grid's geometry, mirrored from attention-field (8×8 tiles). */
+const FOVEA_TILE = 8;
+const FOVEA_COLS = 8;
+
+/**
+ * The glyph walk, optionally restricted to windows whose ORIGIN pixel falls
+ * in an allowed attention tile (`null` = scan everything). A glyph whose
+ * origin sits in an attended tile is read wholly even where it overhangs the
+ * tile edge; one whose origin is unattended is skipped this tick — the
+ * caller's peripheral sweep guarantees every tile is revisited.
+ */
+export function scanGlyphs(
+  display: readonly number[],
+  w: number,
+  h: number,
+  allowedTiles: ReadonlySet<number> | null,
+): FoveatedScan {
   const hits: GlyphHit[] = [];
+  let attempts = 0;
   const claimed = new Set<number>(); // pixel indices already inside a hit
 
   const litAt = (x: number, y: number): number => {
@@ -98,6 +126,12 @@ export function recognizeGlyphs(display: readonly number[], w = 64, h = 32): Gly
   for (let y = 0; y + GLYPH_H <= h; y++) {
     for (let x = 0; x + GLYPH_W <= w; x++) {
       if (claimed.has(y * w + x)) continue;
+      if (
+        allowedTiles !== null &&
+        !allowedTiles.has(((y / FOVEA_TILE) | 0) * FOVEA_COLS + ((x / FOVEA_TILE) | 0))
+      ) {
+        continue;
+      }
       // Build the window's 4-bit row masks once, reuse against all 16 glyphs.
       const winRows: number[] = [];
       let anyLit = false;
@@ -125,6 +159,7 @@ export function recognizeGlyphs(display: readonly number[], w = 64, h = 32): Gly
       }
       if (!borderClear) continue;
 
+      attempts += 1;
       for (let g = 0; g < 16; g++) {
         const pat = GLYPH_PATTERNS[g]!;
         let match = true;
@@ -161,7 +196,7 @@ export function recognizeGlyphs(display: readonly number[], w = 64, h = 32): Gly
       }
     }
   }
-  return hits;
+  return { hits, attempts };
 }
 
 /**
@@ -231,4 +266,16 @@ export function readScreen(
 ): { readonly grid: GlyphGrid; readonly numbers: readonly ReadNumber[] } {
   const grid = snapToGrid(recognizeGlyphs(display, w, h));
   return { grid, numbers: readNumbers(grid) };
+}
+
+/** readScreen restricted to attention tiles, reporting match attempts (D2). */
+export function readScreenFoveated(
+  display: readonly number[],
+  allowedTiles: ReadonlySet<number>,
+  w = 64,
+  h = 32,
+): { readonly grid: GlyphGrid; readonly numbers: readonly ReadNumber[]; readonly attempts: number } {
+  const scan = scanGlyphs(display, w, h, allowedTiles);
+  const grid = snapToGrid(scan.hits);
+  return { grid, numbers: readNumbers(grid), attempts: scan.attempts };
 }

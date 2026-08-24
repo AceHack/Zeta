@@ -189,3 +189,62 @@ describe("priors in source — snapshot round-trip", () => {
     expect(() => p.importSnapshot(corrupt)).toThrow(RangeError);
   });
 });
+
+describe("attention wiring (D1–D4 of #14503)", () => {
+  test("a churning region frosts less than it clears: variance discriminates and topK finds it", () => {
+    const p = warmed(new BnnSocietyPredictor(3, 4));
+    for (let i = 0; i < 80; i++) {
+      const d = blank();
+      paintRect(d, 12, 14, 2, 2, 2); // self, parked
+      paintRect(d, 48 + (i % 4), 20, 3, 3, 1); // churn in tile (row2, col6) = 22
+      p.predict([...d]);
+    }
+    const readout = p.attentionField.readout();
+    const churnTile = 2 * 8 + 6;
+    const quietTile = 1 * 8 + 1;
+    const churnVar = readout.variance[churnTile] ?? 0;
+    const quietVar = readout.variance[quietTile] ?? Infinity;
+    expect(churnVar).toBeGreaterThan(quietVar);
+    expect(p.attentionField.topK(4)).toContain(churnTile);
+    // The attended set carries top-K + the sweep tile at minimum.
+    expect(p.lastAttendedTiles.length).toBeGreaterThan(0);
+    // The meter is numeric (the field is not flat) and the fixation latched.
+    expect(p.lastUsefulWork).not.toBe("ambiguous");
+    expect(p.lastFixationTile).not.toBeNull();
+  });
+
+  test("societyRho reports a full pairwise panel with sane bounds", () => {
+    const p = warmed(new BnnSocietyPredictor(3, 4));
+    for (let i = 0; i < 30; i++) {
+      const d = blank();
+      paintRect(d, 10 + (i % 6), 10, 2, 2, 2);
+      p.predict([...d]);
+    }
+    const rho = p.societyRho();
+    expect(rho.pairs).toBe(3); // 3 agents → 3 pairs
+    expect(rho.mean).toBeGreaterThanOrEqual(-1);
+    expect(rho.max).toBeLessThanOrEqual(1);
+    expect(rho.max).toBeGreaterThanOrEqual(rho.mean);
+  });
+
+  test("v3 snapshots round-trip the attention field; v2 snapshots still import", () => {
+    const a = warmed(new BnnSocietyPredictor(3, 4));
+    for (let i = 0; i < 40; i++) {
+      const d = blank();
+      paintRect(d, (i * 2) % 56, 8, 3, 3, 1);
+      a.predict([...d]);
+    }
+    const snap = a.exportSnapshot();
+    expect(snap.version).toBe(3);
+    expect(snap.attention).toBeDefined();
+    const b = new BnnSocietyPredictor(3, 4);
+    b.importSnapshot(snap);
+    expect(b.attentionField.exportSnapshot()).toEqual(a.attentionField.exportSnapshot());
+    // A v2 snapshot (no attention) imports without error — fresh field prior.
+    const v2Record: Record<string, unknown> = { ...snap, version: 2 };
+    delete v2Record["attention"];
+    const c = new BnnSocietyPredictor(3, 4);
+    c.importSnapshot(v2Record as unknown as Parameters<typeof c.importSnapshot>[0]);
+    expect(c.exportSnapshot().agents).toEqual(snap.agents);
+  });
+});

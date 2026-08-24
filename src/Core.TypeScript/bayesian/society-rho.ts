@@ -33,8 +33,8 @@ export function pearson(a: readonly number[], b: readonly number[]): number {
   let sa = 0;
   let sb = 0;
   for (let i = 0; i < n; i++) {
-    sa += a[i]!;
-    sb += b[i]!;
+    sa += a[i] ?? 0;
+    sb += b[i] ?? 0;
   }
   const ma = sa / n;
   const mb = sb / n;
@@ -42,8 +42,8 @@ export function pearson(a: readonly number[], b: readonly number[]): number {
   let va = 0;
   let vb = 0;
   for (let i = 0; i < n; i++) {
-    const da = a[i]! - ma;
-    const db = b[i]! - mb;
+    const da = (a[i] ?? 0) - ma;
+    const db = (b[i] ?? 0) - mb;
     cov += da * db;
     va += da * da;
     vb += db * db;
@@ -63,7 +63,7 @@ export function societyRho(memberBeliefs: readonly (readonly number[])[]): Socie
   let pairs = 0;
   for (let i = 0; i < memberBeliefs.length; i++) {
     for (let j = i + 1; j < memberBeliefs.length; j++) {
-      const r = pearson(memberBeliefs[i]!, memberBeliefs[j]!);
+      const r = pearson(memberBeliefs[i] ?? [], memberBeliefs[j] ?? []);
       sum += r;
       if (r > max) max = r;
       pairs += 1;

@@ -15,8 +15,8 @@ import { getPersona, localLlmPersona } from "../service/persona-registry";
 import { executeSkillSequence } from "../arc-solver/grid-skills";
 import { evaluateGrid } from "../arc-solver/grid-evaluator";
 import { CelegansController, loadFromCsv } from "../chip8/celegans-controller";
-import { BnnSocietyPredictor, type SocietySnapshot } from "../bayesian/bnn-key-predictor";
-import type { ArenaReadout, ArenaTrackReadout } from "../observe/observe";
+import { ATTENTION_TOP_K, BnnSocietyPredictor, type SocietySnapshot } from "../bayesian/bnn-key-predictor";
+import type { ArenaReadout, ArenaTrackReadout, AttentionReadoutWire } from "../observe/observe";
 import { ArcExplorer } from "../bayesian/arc-explorer";
 import { cooperate } from "../tri-boolean/tri-boolean";
 import { readKnownSignatures } from "./swarm-known-signatures";
@@ -499,6 +499,21 @@ Output ONLY a valid JSON array of strings representing the sub-tasks. Example: [
             desired: bnn.lastDesired ? { dx: bnn.lastDesired.dx, dy: bnn.lastDesired.dy } : null,
           };
 
+          // D1-D4 (#14503): the attention field, fixation, meter and measured
+          // society-rho ride the same readout as the frame they label.
+          const fieldReadout = bnn.attentionField.readout();
+          const attention: AttentionReadoutWire = {
+            cols: fieldReadout.cols,
+            rows: fieldReadout.rows,
+            variance: fieldReadout.variance,
+            mean: fieldReadout.mean,
+            attended: bnn.lastAttendedTiles,
+            fixation: bnn.lastFixationTile,
+            usefulWork: bnn.lastUsefulWork,
+            rho: bnn.societyRho(),
+            topK: ATTENTION_TOP_K,
+          };
+
           const nextWorld = simulate(world, chosenAction);
           // Attach BNN predictions and the chosen key to cheatEngine so TV can render them
           return {
@@ -507,7 +522,8 @@ Output ONLY a valid JSON array of strings representing the sub-tasks. Example: [
               ...nextWorld.cheatEngine!,
               keyPredictions: bnnPredictions,
               chosenKey: chosenKey,
-              arena
+              arena,
+              attention
             }
           };
         }

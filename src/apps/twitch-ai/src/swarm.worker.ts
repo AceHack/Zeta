@@ -55,8 +55,14 @@ const STEPS_PER_TICK = 10;
 const agentId = "browser-node";
 const manualKeys: boolean[] = new Array(16).fill(false) as boolean[];
 
-const postToMain = (message: WorkerToMainMessage): void => {
-  self.postMessage(message);
+// In a dedicated worker `self.postMessage(message, transfer)` is the
+// two-arg worker-scope form; the app tsconfig types `self` as Window
+// (no webworker lib), so the worker-scope shape is asserted locally.
+const workerScope = self as unknown as {
+  postMessage(message: unknown, transfer: ArrayBuffer[]): void;
+};
+const postToMain = (message: WorkerToMainMessage, transfer: ArrayBuffer[] = []): void => {
+  workerScope.postMessage(message, transfer);
 };
 
 async function handleMessage(message: MainToWorkerMessage): Promise<void> {
@@ -294,6 +300,23 @@ async function loop(): Promise<void> {
 
   // Level up events removed for ARC-AGI-3
 
+  // D1 (#14503): the attention field crosses on the SAME message as the
+  // frame it labels, its tile arrays as transferables (moved, not copied).
+  const att = world.cheatEngine?.attention;
+  const attention = att
+    ? {
+        cols: att.cols,
+        rows: att.rows,
+        variance: Float32Array.from(att.variance),
+        mean: Float32Array.from(att.mean),
+        attended: att.attended,
+        fixation: att.fixation,
+        usefulWork: att.usefulWork,
+        rho: att.rho,
+        topK: att.topK,
+      }
+    : null;
+
   // Pass data directly to the frontend player component over postMessage
   const eventAction: FramePayload = {
     kind: "chip8-frame",
@@ -304,9 +327,13 @@ async function loop(): Promise<void> {
     // The snap (CMYK half) and the forced-perception readout for the overlay.
     chosenKey: world.cheatEngine?.chosenKey ?? -1,
     arena: world.cheatEngine?.arena ?? null,
+    attention,
   };
 
-  postToMain({ type: "FRAME", payload: eventAction });
+  const transfer: ArrayBuffer[] = attention
+    ? [attention.variance.buffer, attention.mean.buffer]
+    : [];
+  postToMain({ type: "FRAME", payload: eventAction }, transfer);
 
   cycle++;
 
