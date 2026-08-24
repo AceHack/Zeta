@@ -1,0 +1,12 @@
+{
+  "pr_number": 14742,
+  "archive_path": "docs/history/pr-reviews/PR-14742-feat-arc-the-arc-agi-3-lane-runs-a-real-environment-played-offline-scored-by-arc.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-24T13:00:09.416Z",
+  "schema_version": "v1",
+  "commit_sha": "6e93724ce6d1e2faec147eb489aa0a6e11fbda00",
+  "title": "feat(arc): the ARC-AGI-3 lane runs — a real environment, played offline, scored by ARC's own formula",
+  "state": "MERGED",
+  "merged_at": "2026-08-24T12:59:19Z",
+  "head_ref": "claude/otto-arc3-lane-first-runnable"
+}
