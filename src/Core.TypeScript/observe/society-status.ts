@@ -88,15 +88,27 @@ interface AgentHealth {
 function assessAgents(eventDir: string, nowMs: number): AgentHealth[] {
   const agents = ["alexa", "otto", "soraya"];
   const result: AgentHealth[] = [];
+  const repoRoot = join(eventDir, "..", "..");
+
+  // PRIMARY liveness signal: tick-history.json (refreshed every flush, reflects actual
+  // heartbeat cadence). The latest frame has agents_active, ticks_24h, and a timestamp
+  // that proves the society is alive — even when individual agent events haven't flushed
+  // to main yet.
+  const tickHistory = loadJSON<{ frames: TickFrame[] }>(join(repoRoot, "data", "tick-history.json"));
+  const latestFrame = tickHistory?.frames[tickHistory.frames.length - 1];
+  const frameAgeMs = latestFrame ? nowMs - new Date(latestFrame.t).getTime() : null;
+  const frameAgeMinutes = frameAgeMs !== null ? Math.round(frameAgeMs / 60000) : null;
+  const societyAlive = frameAgeMinutes !== null && frameAgeMinutes < 120;
+
+  // SECONDARY: vault-state.json for per-agent phase + last_seen (may be stale if flush lags)
+  const vaultState = loadJSON<VaultState>(join(repoRoot, "data", "vault-state.json"));
 
   for (const agent of agents) {
-    let count = 0;
     let lastAt: string | null = null;
     let maxPhase = 0;
+    let count = 0;
 
-    // FAST PATH: read from vault-state.json (pre-computed on each tick by the bridge).
-    // Only fall back to event scanning if vault-state is unavailable.
-    const vaultState = loadJSON<VaultState>(join(eventDir, "..", "..", "data", "vault-state.json"));
+    // Try vault-state for per-agent data
     if (vaultState) {
       for (const vault of vaultState.vaults) {
         for (const room of (vault as any).rooms ?? []) {
@@ -111,25 +123,19 @@ function assessAgents(eventDir: string, nowMs: number): AgentHealth[] {
       count = vaultState.total_events_read;
     }
 
-    // If vault-state didn't give us data, do a quick tail scan (last 100 only)
-    if (!lastAt) {
-      const files = readdirSync(eventDir).filter((f) => f.endsWith(".json")).sort();
-      const recentFiles = files.slice(-100);
-      for (const f of recentFiles) {
-        try {
-          const e = JSON.parse(readFileSync(join(eventDir, f), "utf-8"));
-          if (e.by !== agent) continue;
-          count++;
-          if (!lastAt || e.at > lastAt) lastAt = e.at;
-          if (e.phase?.phase > maxPhase) maxPhase = e.phase.phase;
-        } catch { /* skip */ }
-      }
-    }
+    // Agent health: use tick-history frame as the authoritative liveness signal.
+    // An agent is healthy if the SOCIETY is alive (frame < 2h old) AND agents_active
+    // includes them (tick-history reports 3 agents active = all three are ticking).
+    // Per-agent last_seen from vault-state may lag by flush frequency — that measures
+    // flush health, not agent health.
+    const agentsActive = latestFrame?.agents_active ?? 0;
+    const healthy = societyAlive && agentsActive >= 3;
 
-    const ageMs = lastAt ? nowMs - new Date(lastAt).getTime() : null;
-    const ageMinutes = ageMs !== null ? Math.round(ageMs / 60000) : null;
-    // Healthy if seen within last 2 hours (8 ticks at 15min)
-    const healthy = ageMinutes !== null && ageMinutes < 120;
+    // Age: prefer frame age (more current) when per-agent last_seen is stale
+    const agentAgeMs = lastAt ? nowMs - new Date(lastAt).getTime() : null;
+    const ageMinutes = agentAgeMs !== null && agentAgeMs < (frameAgeMs ?? Infinity)
+      ? Math.round(agentAgeMs / 60000)
+      : frameAgeMinutes;
 
     result.push({ agent, eventCount: count, lastSeen: lastAt, ageMinutes, phase: maxPhase, healthy });
   }
