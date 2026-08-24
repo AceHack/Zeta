@@ -1,0 +1,12 @@
+{
+  "pr_number": 14857,
+  "archive_path": "docs/history/pr-reviews/PR-14857-feat-qec-land-m1-the-css-classical-layer-and-a-claim-about-the-membrane-partly-r.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-24T17:36:22.316Z",
+  "schema_version": "v1",
+  "commit_sha": "d43edd644f932ae5fa449d2461b2af461c3d9d15",
+  "title": "feat(qec): land M1 — the CSS classical layer, and a claim about the membrane partly REFUTED",
+  "state": "MERGED",
+  "merged_at": "2026-08-24T17:35:32Z",
+  "head_ref": "qec-m1"
+}
