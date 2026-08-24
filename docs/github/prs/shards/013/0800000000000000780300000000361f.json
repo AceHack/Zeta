@@ -1,0 +1,12 @@
+{
+  "pr_number": 13855,
+  "archive_path": "docs/history/pr-reviews/PR-13855-fix-hygiene-the-last-whole-tree-tripwire-with-a-budget-that-its-own-host-outruns.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-22T18:28:46.434Z",
+  "schema_version": "v1",
+  "commit_sha": "ff02a6c5df2dbf84c96a6c4e7b0e51b136f30407",
+  "title": "fix(hygiene): the last whole-tree tripwire with a budget that its own host outruns",
+  "state": "MERGED",
+  "merged_at": "2026-08-22T18:28:04Z",
+  "head_ref": "fix/lane-partition-ordinal-collation"
+}
