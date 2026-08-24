@@ -1094,6 +1094,40 @@ jobs:
         # Its own falsifier runs in the step below: audit-check-arity.test.ts feeds each rule a
         # deliberately-broken fixture and requires it to go red, R2 in both ratchet directions.
         run: bun run hygiene:check-arity
+
+      - name: Linter coverage vs CI invocation (a configured linter must be an invoked one)
+        # THE CLASS: a linter is present, configured, believed to be checking a file, and does
+        # not examine it -- while the invocation exits 0. Every instance produces a check that
+        # did not run and looks like a check that passed. Three were found by hand on
+        # 2026-08-24 (the markdownlint research/workitem carve-outs, prettier+stylelint
+        # invoked nowhere, 81 unformatted files under tools/setup/persona-keys/), which is the
+        # argument for a machine rather than a fourth point fix. #10712 -- `lint:markdown`
+        # linting ZERO files and exiting 0 for months -- is the same class, already paid for.
+        #
+        # Four checks: every lint-family package.json script is invoked or declared uninvoked
+        # WITH ITS REASON (both directions -- a ledger you can only add to is a suppression
+        # list); every linter discovered in the tree through three independent routes is
+        # claimed by a ledger row whose declared disposition matches the workflows; every
+        # GATED tool asserts a floor on the corpus its invocation actually reaches, so exit 0
+        # over zero files stops being indistinguishable from exit 0 over 2,843; and
+        # tsconfig.json#exclude vs eslint.config.ts#ignorePatterns -- two lists of one fact,
+        # maintained separately, 11 divergences covering 619 .ts files -- must match the
+        # declared set exactly.
+        #
+        # It turns NOTHING on and removes NO carve-out. Every carve-out may be deliberate;
+        # this step makes the blindness legible and fails when it CHANGES.
+        #
+        # Cost: 21 s MEASURED ON THE RUNNER (job 97406378383, 10:53:56Z -> 10:54:17Z), not
+        # the 13 s the same command takes on a dev laptop -- the laptop number was the first
+        # one written here and it was replaced rather than kept, because a cost estimate that
+        # quotes the wrong machine is the same defect as a check that quotes the wrong file.
+        # Nearly all of it is the markdownlint-cli2 probe that asks the linter itself which
+        # files it opens; reimplementing its ignore semantics here would drift from the gate
+        # within a release. Runs in this job because bun and the locked dependency graph are
+        # already provisioned four steps up -- no new job, no new runner, no new install. At
+        # ~1,100 gate runs/month that is ~6.4 runner-hours/month, against the ~95 the eslint
+        # roster already costs. It scales with `.md` count, not with rule count.
+        run: bun run hygiene:linter-coverage
       - name: Hygiene unit-test suite (closes the per-PR coverage gap)
         # Runs every src/Core.TypeScript/hygiene/*.test.ts. These are
         # fixture/in-memory tests (no MEMORY.md / user-scope deps), so they

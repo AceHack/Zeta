@@ -48,6 +48,7 @@
     "hygiene:no-ambient-time-in-tests": "bun ./src/Core.TypeScript/hygiene/audit-ambient-time-in-tests.ts",
     "hygiene:check-arity": "bun ./src/Core.TypeScript/hygiene/audit-check-arity.ts",
     "hygiene:scan-floor-routes": "bun ./src/Core.TypeScript/hygiene/audit-scan-floor-routes.ts",
+    "hygiene:linter-coverage": "bun ./src/Core.TypeScript/hygiene/audit-linter-coverage-vs-invocation.ts",
     "hygiene:tech-radar-claims": "bun ./src/Core.TypeScript/hygiene/audit-tech-radar-claims.ts",
     "inventory:items": "bun ./src/Core.TypeScript/inventory/generate-items-json.ts",
     "inventory:items-check": "bun ./src/Core.TypeScript/inventory/generate-items-json.ts --check",
