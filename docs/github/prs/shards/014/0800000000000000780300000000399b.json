@@ -1,0 +1,12 @@
+{
+  "pr_number": 14747,
+  "archive_path": "docs/history/pr-reviews/PR-14747-consent-ux-p1-make-the-biometric-prompt-evaluable-and-measure-what-can-reach-it.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-24T13:09:23.330Z",
+  "schema_version": "v1",
+  "commit_sha": "e0d3029a17ce046f684ec5c977780a38df8282b4",
+  "title": "consent-ux(P1): make the biometric prompt evaluable, and measure what can reach it",
+  "state": "MERGED",
+  "merged_at": "2026-08-24T13:08:26Z",
+  "head_ref": "iris/ceremony-brief-evaluable-consent"
+}
