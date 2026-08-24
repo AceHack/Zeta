@@ -1,0 +1,12 @@
+{
+  "pr_number": 14550,
+  "archive_path": "docs/history/pr-reviews/PR-14550-research-adjudicating-pr-14218-the-four-refutations-hold-and-the-identification-.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-24T00:08:19.818Z",
+  "schema_version": "v1",
+  "commit_sha": "c77d5e711288f5608c529573efa3d718f254d5dd",
+  "title": "research: adjudicating PR #14218 — the four refutations hold, and the identification fails in BOTH directions",
+  "state": "MERGED",
+  "merged_at": "2026-08-24T00:07:32Z",
+  "head_ref": "research/lumen-adjudicate-widening-retraction-pr14218"
+}
