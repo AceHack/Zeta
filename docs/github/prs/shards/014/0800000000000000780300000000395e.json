@@ -1,0 +1,12 @@
+{
+  "pr_number": 14686,
+  "archive_path": "docs/history/pr-reviews/PR-14686-fix-twitch-ai-the-screen-fills-its-box-again-the-why-strip-speaks-from-below-it-.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-24T10:26:08.292Z",
+  "schema_version": "v1",
+  "commit_sha": "1b4bf429f78f85aa032ff4b63f922fb5b1118d4f",
+  "title": "fix(twitch-ai): the screen fills its box again, the WHY strip speaks from below it with a name, and the buttons stop strobing",
+  "state": "MERGED",
+  "merged_at": "2026-08-24T10:24:39Z",
+  "head_ref": "claude/otto-fix-screen-size-and-polish"
+}
