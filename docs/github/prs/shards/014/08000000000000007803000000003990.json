@@ -1,0 +1,12 @@
+{
+  "pr_number": 14736,
+  "archive_path": "docs/history/pr-reviews/PR-14736-fix-ci-wire-the-culture-collation-lint-that-exists-and-never-ran-it-would-have-c.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-24T12:51:52.336Z",
+  "schema_version": "v1",
+  "commit_sha": "ccef8b21bb2350075fc73edf9a2fb5950e0b0305",
+  "title": "fix(ci): wire the culture-collation lint that exists and never ran — it would have caught today's regression",
+  "state": "MERGED",
+  "merged_at": "2026-08-24T12:51:02Z",
+  "head_ref": "dejan/wire-culture-collation-and-mise-pin-checks"
+}
