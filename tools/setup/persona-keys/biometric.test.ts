@@ -16,6 +16,7 @@ import {
   type BiometricAuth,
   type BiometricResult,
   type SudoGateEffects,
+  type ElevatorGate,
 } from "./biometric.ts";
 
 test("detectBiometricPlatform: darwin→touchid, win32→hello, else→unsupported", () => {
@@ -141,7 +142,13 @@ interface FakeHost {
   readonly calls: { invalidated: number; authenticated: number; notices: string[] };
 }
 
-function fakeHost(files: Record<string, string>, sudoStatus: number | null): FakeHost {
+function fakeHost(
+  files: Record<string, string>,
+  sudoStatus: number | null,
+  // Default: a host whose elevator resolved cleanly, so the pre-existing cases below keep
+  // testing what they were written to test. The refusal path gets its own cases.
+  elevator: ElevatorGate = { ok: true, path: "/usr/bin/sudo" },
+): FakeHost {
   const calls = { invalidated: 0, authenticated: 0, notices: [] as string[] };
   const fx: SudoGateEffects = {
     readFile: (p) => {
@@ -149,6 +156,7 @@ function fakeHost(files: Record<string, string>, sudoStatus: number | null): Fak
       if (body === undefined) throw new Error(`ENOENT ${p}`);
       return body;
     },
+    elevator: () => elevator,
     invalidateTimestamp: () => {
       calls.invalidated += 1;
     },
@@ -308,6 +316,55 @@ test("a sudo killed by a signal (status null) is a failure, not a pass", () => {
   const r = macTouchIdAuth("Approve: x", fx);
   expect(r.ok).toBe(false);
   expect(r.reason).toContain("signal");
+});
+
+// ── THE PATH-SHIM P1 (docs/BUGS.md, 2026-08-24) ─────────────────────────────────────────
+// The gate used to establish approval as `spawnSync("sudo", ["-p","","true"]).status === 0`
+// with `sudo` resolved through `PATH`. A file named `sudo` earlier on `PATH`, executing
+// nothing and exiting 0, returned `ok:true` with no Touch ID prompt and no human. It needed
+// no root and left NO GIT DIFF, so review, AgencySignature and byte-lock could not see it.
+// These are the falsifiers: each one goes red if the elevator check is removed.
+
+test("P1: an UNRESOLVABLE elevator refuses the gate — and spawns NOTHING", () => {
+  const { fx, calls } = fakeHost({ "/etc/pam.d/sudo": TID_ONLY_POLICY }, 0, {
+    ok: false,
+    reason: "no usable 'sudo' found at an allowlisted absolute path",
+  });
+  const r = macTouchIdAuth("Approve: sign persona cert", fx);
+  expect(r.ok).toBe(false);
+  expect(r.factor).toBe("none");
+  expect(r.reason).toContain("refused to run");
+  // The sharp part: a status-0 shim cannot help, because nothing is ever spawned.
+  expect(calls.authenticated).toBe(0);
+  expect(calls.invalidated).toBe(0);
+});
+
+test("P1: the elevator is checked BEFORE the PAM chain — an unreadable /etc cannot mask it", () => {
+  // No policy files at all: `readFile` throws. The elevator refusal must still be the
+  // reason reported, which pins the ordering rather than trusting it.
+  const { fx } = fakeHost({}, 0, { ok: false, reason: "elevator gone" });
+  const r = macTouchIdAuth("Approve: x", fx);
+  expect(r.ok).toBe(false);
+  expect(r.reason).toContain("elevator gone");
+});
+
+test("P1: a resolved elevator still has to satisfy PAM — resolution is not approval", () => {
+  const { fx } = fakeHost({ "/etc/pam.d/sudo": TID_ONLY_POLICY }, 1, {
+    ok: true,
+    path: "/usr/bin/sudo",
+  });
+  const r = macTouchIdAuth("Approve: x", fx);
+  expect(r.ok).toBe(false);
+  expect(r.factor).toBe("none");
+});
+
+test("P1: the refusal reason names WHY, so an operator can act on it", () => {
+  const { fx } = fakeHost({ "/etc/pam.d/sudo": TID_ONLY_POLICY }, 0, {
+    ok: false,
+    reason: "no usable 'sudo' … /usr/bin/sudo (not root-owned (uid 501))",
+  });
+  const r = macTouchIdAuth("Approve: x", fx);
+  expect(r.reason).toContain("not root-owned");
 });
 
 test("macTouchIdAuth NEVER carries a secret and adds no key-bearing field", () => {

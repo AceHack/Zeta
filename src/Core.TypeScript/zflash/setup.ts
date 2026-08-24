@@ -53,6 +53,7 @@ import { existsSync, readFileSync } from "node:fs";
 import { homedir, platform } from "node:os";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
+import { resolveElevator } from "../privilege/elevator.ts";
 
 const PAM_SUDO = "/etc/pam.d/sudo";
 const PAM_TID_LINE = "auth       sufficient     pam_tid.so";
@@ -95,15 +96,31 @@ function installPamTid(): void {
   // `sudo tee` rewrites the file in place (truncate + write). Not
   // crash-atomic; see header for the trade-off rationale.
   //
-  // sonarjs/no-os-command-from-path: this spawn is intentional —
-  // `sudo` MUST be resolved via PATH because its location varies
-  // (/usr/bin/sudo on most Macs, /opt/homebrew/bin/sudo on others,
-  // distro-specific on Linux). Hardcoding a path breaks portability.
-  // Args are a fixed argv array (no shell interpolation); the only
-  // remaining attack surface is `sudo` being shadowed in PATH, which
-  // would already compromise the operator's machine regardless.
-  // eslint-disable-next-line sonarjs/no-os-command-from-path
-  const r = spawnSync("sudo", ["tee", PAM_SUDO], {
+  // THE SUPPRESSION THAT USED TO STAND HERE WAS FALSE, AND ITS ARGUMENT IS
+  // RECORDED SO IT IS NOT RE-DERIVED. It read: "`sudo` MUST be resolved via
+  // PATH because its location varies (/usr/bin/sudo on most Macs,
+  // /opt/homebrew/bin/sudo on others) … the only remaining attack surface is
+  // `sudo` being shadowed in PATH, which would already compromise the
+  // operator's machine regardless."
+  //
+  // Both halves were measured false on 2026-08-24 (macOS 26.5.2):
+  //   * `brew info sudo` -> "No available formula with the name \"sudo\"", and
+  //     `ls -lO /usr/bin/sudo` -> `restricted` with SIP enabled. Homebrew ships
+  //     no `sudo`, so the stated portability need does not exist; portability
+  //     across Linux is bought with an ALLOWLIST of root-owned absolute paths
+  //     (see privilege/elevator.ts), never with PATH.
+  //   * "would already compromise the machine" conflates USER compromise with
+  //     ROOT compromise. Shadowing `sudo` is the escalation ACROSS that
+  //     boundary, not a consequence of having already crossed it. It bit
+  //     hardest right here: this call `sudo tee`s /etc/pam.d/sudo — the exact
+  //     file `analyzeSudoAuthChain` later reads to decide whether the biometric
+  //     gate can be trusted. A shimmed `sudo` here writes the policy that
+  //     judges the gate.
+  //
+  // Resolved absolute, root-owned, setuid, non-world-writable, or refused.
+  const elevator = resolveElevator("sudo");
+  if (!elevator.ok) bail(1, elevator.reason);
+  const r = spawnSync(elevator.path, ["tee", PAM_SUDO], {
     input: newContents,
     stdio: ["pipe", "ignore", "inherit"],
   });

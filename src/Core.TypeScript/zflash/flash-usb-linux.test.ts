@@ -499,8 +499,8 @@ describe("planEscalation — degrade, never bypass", () => {
 
 describe("escalationArgv", () => {
   test("sudo terminates option parsing with `--`, so a path can never be read as a flag", () => {
-    expect(escalationArgv("sudo", "/usr/bin/dd", ["if=/tmp/a.iso"])).toEqual([
-      "sudo",
+    expect(escalationArgv("sudo", "/usr/bin/dd", ["if=/tmp/a.iso"], "/usr/bin/sudo")).toEqual([
+      "/usr/bin/sudo",
       "--",
       "/usr/bin/dd",
       "if=/tmp/a.iso",
@@ -508,16 +508,30 @@ describe("escalationArgv", () => {
   });
 
   test("pkexec takes the resolved path directly (it defines no `--` terminator)", () => {
-    expect(escalationArgv("pkexec", "/usr/bin/umount", ["/media/u"])).toEqual([
-      "pkexec",
+    expect(escalationArgv("pkexec", "/usr/bin/umount", ["/media/u"], "/usr/bin/pkexec")).toEqual([
+      "/usr/bin/pkexec",
       "/usr/bin/umount",
       "/media/u",
     ]);
   });
 
   test("a RELATIVE command path throws — pkexec resolves its polkit action by path", () => {
-    expect(() => escalationArgv("pkexec", "dd", [])).toThrow();
-    expect(() => escalationArgv("sudo", "dd", [])).toThrow();
+    expect(() => escalationArgv("pkexec", "dd", [], "/usr/bin/pkexec")).toThrow();
+    expect(() => escalationArgv("sudo", "dd", [], "/usr/bin/sudo")).toThrow();
+  });
+
+  // The falsifier for the P1 (docs/BUGS.md 2026-08-24): the ELEVATOR half must be absolute
+  // too. A bare name here is what let a `PATH` entry forge the whole escalation, so the
+  // builder refuses it rather than trusting its caller to have resolved it.
+  test("a BARE ELEVATOR NAME throws — a by-name elevator is PATH-forgeable", () => {
+    expect(() => escalationArgv("sudo", "/usr/bin/dd", [], "sudo")).toThrow();
+    expect(() => escalationArgv("pkexec", "/usr/bin/dd", [], "pkexec")).toThrow();
+  });
+
+  test("the elevator path is used VERBATIM — the argv never contains a bare name", () => {
+    const argv = escalationArgv("sudo", "/usr/bin/dd", [], "/run/wrappers/bin/sudo");
+    expect(argv[0]).toBe("/run/wrappers/bin/sudo");
+    expect(argv).not.toContain("sudo");
   });
 });
 

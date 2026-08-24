@@ -95,6 +95,7 @@ import {
   type StatedTargetPin,
 } from "./verify.ts";
 import { MAX_ISO_BYTES, MAX_USB_BYTES, MIN_ISO_BYTES, MIN_USB_BYTES } from "./size-bounds.ts";
+import { resolveElevatorPathOrThrow } from "../privilege/elevator.ts";
 
 
 /**
@@ -109,6 +110,15 @@ import { MAX_ISO_BYTES, MAX_USB_BYTES, MIN_ISO_BYTES, MIN_USB_BYTES } from "./si
 export const HALF_PROVISIONED_ACK = "ack half-provisioned";
 
 
+
+/** The privilege elevator, resolved to an ABSOLUTE, root-owned, setuid, non-world-writable
+ *  path — never through `PATH`. Resolving an elevator by name lets any writable directory
+ *  earlier on `PATH` substitute a program of the attacker's choosing, with no git diff for
+ *  review to see (docs/BUGS.md P1, 2026-08-24). Throws on a host with no conforming
+ *  elevator, which is the correct outcome: there is nothing safe to fall back to. */
+function sudoProgram(): string {
+  return resolveElevatorPathOrThrow("sudo");
+}
 
 function bail(code: number, msg: string): never {
   process.stderr.write(`flash-usb: ${msg}\n`);
@@ -499,7 +509,7 @@ function privilegedDeviceReader(rawDevicePath: string, blockBytes: number): Chun
       }
       const blocks = Math.ceil(length / blockBytes);
       const out = execFileSync(
-        "sudo",
+        sudoProgram(),
         [
           "dd",
           `if=${rawDevicePath}`,
@@ -1049,7 +1059,7 @@ async function main() {
   );
 
   const dd = spawn(
-    "sudo",
+    sudoProgram(),
     [
       "dd",
       `if=${isoPath}`,

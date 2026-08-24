@@ -516,8 +516,10 @@ const CREDENTIAL_FILE_RE = /(?:creds\.enc|agent\/token$|k3s\/.*token|secrets-env
 const EXECUTION_IDENTITY_RE =
   /(?:LaunchAgents|LaunchDaemons|\.plist$|systemd\/system|\.service$|\.zprofile|\.bash_profile|\.bashrc|\.zshrc|\/\.profile$|githooks|\.git\/hooks)/;
 
+// zeta-elevator-not-argv: shell-parser vocabulary — names this scanner LOOKS FOR in other
+// people's scripts. Nothing here is ever spawned.
 const PRIVILEGED_COMMANDS: ReadonlySet<string> = new Set([
-  "sudo",
+  "sudo", // zeta-elevator-not-argv: parser vocabulary, never spawned (see the comment above)
   "doas",
   "mkfs",
   "sgdisk",
@@ -820,6 +822,8 @@ export function keyFileMaterial(text: string): Material | undefined {
   return undefined;
 }
 
+// zeta-elevator-not-argv: shell-parser vocabulary — wrapper names to strip while parsing
+// someone else's script. Nothing here is ever spawned.
 const ENV_WRAPPERS: ReadonlySet<string> = new Set(["sudo", "doas", "command", "exec", "time", "retry"]);
 const ENV_FLAGS_WITH_OPERAND: ReadonlySet<string> = new Set([
   "-u",

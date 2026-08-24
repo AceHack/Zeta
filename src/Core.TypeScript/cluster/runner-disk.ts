@@ -34,6 +34,7 @@
 import { spawnSync } from "node:child_process";
 import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
+import { resolveElevatorPathOrThrow } from "../privilege/elevator.ts";
 
 const REPO_ROOT = resolve(import.meta.dir, "../../..");
 
@@ -312,7 +313,12 @@ export function reclaim(run: Runner = defaultRunner, now: () => number = Date.no
   const deleted = before.candidates
     .filter((candidate) => candidate.bytes !== null)
     .map((candidate) => {
-      const result = run("sudo", ["rm", "-rf", candidate.path]);
+      // `rm -rf` as root, so the elevator is resolved ABSOLUTE + root-owned + setuid and
+      // never through PATH (docs/BUGS.md P1, 2026-08-24). Note the eslint rule that guards
+      // this class cannot see this line at all: the command reaches a `run()` wrapper, not
+      // a `spawn*` call, which is exactly why the repo lint below matches on the ARGUMENT
+      // rather than on the callee.
+      const result = run(resolveElevatorPathOrThrow("sudo"), ["rm", "-rf", candidate.path]);
       return { path: candidate.path, bytes: candidate.bytes, status: result.status };
     });
   const elapsedMs = now() - started;

@@ -117,8 +117,18 @@ import {
 } from "../../../tools/setup/persona-keys/machine.ts";
 import { realEffects as realTrustEffects } from "../../../tools/setup/persona-keys/github-trust.ts";
 import { onboard, formatOnboard } from "../../../tools/setup/persona-keys/onboard.ts";
+import { resolveElevatorPathOrThrow } from "../privilege/elevator.ts";
 
 const DEFAULT_SSH_KEY = join(homedir(), ".ssh", "id_ed25519.pub");
+
+/** The privilege elevator, resolved to an ABSOLUTE, root-owned, setuid, non-world-writable
+ *  path — never through `PATH`. Resolving an elevator by name lets any writable directory
+ *  earlier on `PATH` substitute a program of the attacker's choosing, with no git diff for
+ *  review to see (docs/BUGS.md P1, 2026-08-24). Throws on a host with no conforming
+ *  elevator, which is the correct outcome: there is nothing safe to fall back to. */
+function sudoProgram(): string {
+  return resolveElevatorPathOrThrow("sudo");
+}
 
 function bail(code: number, msg: string): never {
   process.stderr.write(`zflash: ${msg}\n`);
@@ -654,7 +664,7 @@ function mountEsp(espPart: string): EspMountResult {
   // sudo; PAM gates via Touch ID like the dd step did.
   const tmp = mkdtempSync(join(tmpdir(), "zeta-esp-mount-"));
   try {
-    execFileSync("sudo", ["mount_msdos", "-o", "nodev,nosuid", espPart, tmp], {
+    execFileSync(sudoProgram(), ["mount_msdos", "-o", "nodev,nosuid", espPart, tmp], {
       stdio: ["inherit", "inherit", "inherit"],
     });
     return { mountPoint: tmp, method: "mount_msdos", tmpdir: tmp };
@@ -677,7 +687,7 @@ function unmountEsp(espPart: string, result: EspMountResult): void {
     }
   } else {
     try {
-      execFileSync("sudo", ["umount", result.mountPoint], { stdio: "inherit" });
+      execFileSync(sudoProgram(), ["umount", result.mountPoint], { stdio: "inherit" });
     } catch {
       /* unmount errors are usually safe to ignore */
     }
@@ -790,7 +800,7 @@ function writeCredBlobToEsp(mountPoint: string, espPart: string, credBake: CredB
   const blob = buildBlob(bundle, parsed.usbUuid, parsed.passphrase);
 
   try {
-    execFileSync("sudo", ["tee", target], {
+    execFileSync(sudoProgram(), ["tee", target], {
       input: blob,
       stdio: ["pipe", "ignore", "inherit"],
     });
@@ -799,7 +809,7 @@ function writeCredBlobToEsp(mountPoint: string, espPart: string, credBake: CredB
     throw new Error(`sudo tee ${target} failed: ${e instanceof Error ? e.message : String(e)}`);
   }
   try {
-    execFileSync("sudo", ["chmod", "600", target], { stdio: "ignore" });
+    execFileSync(sudoProgram(), ["chmod", "600", target], { stdio: "ignore" });
   } catch {
     process.stdout.write(`081KSKBP80008QG0R003AX2A69: chmod 600 not honored for ${target}; continuing because some FAT mounts ignore POSIX modes\n`);
   }
@@ -895,7 +905,7 @@ async function injectPubkeyToUsb(
   // for the diskutil path (target is operator-writable anyway).
   const target = join(mountPoint, "zeta-authorized-keys.pub");
   try {
-    execFileSync("sudo", ["tee", target], {
+    execFileSync(sudoProgram(), ["tee", target], {
       input: authorizedKeysContent,
       stdio: ["pipe", "ignore", "inherit"],
     });
@@ -925,7 +935,7 @@ async function injectPubkeyToUsb(
     }
     const hostnameTarget = join(mountPoint, "zeta-hostname.txt");
     try {
-      execFileSync("sudo", ["tee", hostnameTarget], {
+      execFileSync(sudoProgram(), ["tee", hostnameTarget], {
         input: hostOverride + "\n",
         stdio: ["pipe", "ignore", "inherit"],
       });

@@ -18,6 +18,7 @@ import { accessSync, constants, mkdtempSync, rmSync, writeFileSync } from "node:
 import { tmpdir } from "node:os";
 import { dirname, join } from "node:path";
 import { installPinnedArtifact, type InstallEffects } from "./pinned-artifact.ts";
+import { resolveElevatorPathOrThrow } from "../privilege/elevator.ts";
 
 interface Args {
   readonly pin: string;
@@ -82,7 +83,12 @@ function realEffects(): InstallEffects {
       // `tar --zstd` (GNU tar >= 1.31) — one process, no shell, no pipeline. sudo only when
       // we are not already root; the CI runner is not.
       const needsSudo = typeof process.getuid === "function" && process.getuid() !== 0;
-      const cmd = needsSudo ? "sudo" : "tar";
+      // Resolved ABSOLUTE, root-owned, setuid — never through PATH. A privilege elevator
+      // resolved by name is substitutable by any writable directory earlier on `PATH`, and
+      // this one unpacks an archive as root (docs/BUGS.md P1, 2026-08-24). `tar` itself is
+      // left on PATH deliberately: it runs unprivileged on the root branch, and the
+      // elevated branch passes it as an ARGUMENT to sudo, whose secure_path applies.
+      const cmd = needsSudo ? resolveElevatorPathOrThrow("sudo") : "tar";
       const args = needsSudo
         ? ["tar", "--zstd", "-xf", archivePath, "-C", destDir]
         : ["--zstd", "-xf", archivePath, "-C", destDir];

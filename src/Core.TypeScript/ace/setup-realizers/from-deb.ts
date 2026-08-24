@@ -9,6 +9,7 @@ import {
   runCommand,
   type SetupRealizer,
 } from "./shared.ts";
+import { resolveElevatorPathOrThrow } from "../../privilege/elevator.ts";
 
 const MANIFEST = "tools/setup/manifests/from-deb";
 const DPKG_PATH = "/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin";
@@ -25,7 +26,10 @@ export const realizeFromDeb: SetupRealizer = async (ctx) => {
   }
 
   const isRoot = typeof process.getuid === "function" && process.getuid() === 0;
-  const sudoPrefix = isRoot ? [] as const : ["sudo"] as const;
+  // Resolved ABSOLUTE, root-owned, setuid — never through PATH. This prefix fronts `dpkg`
+  // installs, so a `PATH`-shimmed elevator here chooses what gets installed as root, with
+  // no git diff for review to see (docs/BUGS.md P1, 2026-08-24).
+  const sudoPrefix = isRoot ? ([] as readonly string[]) : ([resolveElevatorPathOrThrow("sudo")] as readonly string[]);
 
   for (const entry of parseMechanismManifest(text)) {
     const name = entry.tokens[0];

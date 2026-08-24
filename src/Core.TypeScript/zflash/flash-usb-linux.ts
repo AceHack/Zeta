@@ -65,6 +65,7 @@ import { establishIsoIntegrity, realIsoIntegrityIo } from "./iso-integrity.ts";
 // ── Bounds — one contract, three hosts, and now literally one definition ─────────
 
 import { MAX_ISO_BYTES, MAX_USB_BYTES, MIN_ISO_BYTES, MIN_USB_BYTES } from "./size-bounds.ts";
+import { resolveElevator, resolveElevatorPathOrThrow } from "../privilege/elevator.ts";
 export { MAX_ISO_BYTES, MAX_USB_BYTES, MIN_ISO_BYTES, MIN_USB_BYTES };
 
 /** Mount points that mark a disk as the running system's. Hosting any of these is fatal. */
@@ -74,6 +75,7 @@ export const SYSTEM_MOUNTPOINTS: readonly string[] = ["/", "/boot", "/boot/efi",
 export const FPRINTD_MODULE = "pam_fprintd.so";
 
 /** PAM services consulted for the fingerprint gate, one per escalation mechanism. */
+// zeta-elevator-not-argv: a PAM service name (the basename under /etc/pam.d), never a program to spawn.
 export const SUDO_PAM_SERVICE = "sudo";
 export const POLKIT_PAM_SERVICE = "polkit-1";
 
@@ -510,13 +512,23 @@ export function escalationArgv(
   mechanism: EscalationMechanism,
   commandPath: string,
   args: readonly string[],
+  elevatorPath: string,
 ): string[] {
   if (!commandPath.startsWith("/")) {
     throw new Error(`escalation requires an absolute command path, got: ${commandPath}`);
   }
+  // The ELEVATOR must be absolute for the same reason the target command is, and the
+  // reason is sharper: an elevator resolved by name is substitutable by any writable
+  // directory earlier on `PATH`, which is the P1 in docs/BUGS.md (2026-08-24). The caller
+  // gets it from `resolveElevator`, which additionally requires root ownership, the setuid
+  // bit, and no group/other write. This parameter is REQUIRED rather than defaulted so a
+  // future call site cannot silently reacquire the PATH lookup by omitting it.
+  if (!elevatorPath.startsWith("/")) {
+    throw new Error(`escalation requires an absolute elevator path, got: ${elevatorPath}`);
+  }
   return mechanism === "sudo"
-    ? ["sudo", "--", commandPath, ...args]
-    : ["pkexec", commandPath, ...args];
+    ? [elevatorPath, "--", commandPath, ...args]
+    : [elevatorPath, commandPath, ...args];
 }
 
 /** GNU `dd` arguments. `conv=fsync` makes the exit status mean the bytes reached the device. */
@@ -708,7 +720,12 @@ async function requireTypedConsent(target: LinuxBlockDevice, useShort: boolean):
 }
 
 /** Release every mount on the target, deepest first, through the chosen escalation. */
-function unmountAll(fx: LinuxFlashEffects, target: LinuxBlockDevice, mechanism: EscalationMechanism): void {
+function unmountAll(
+  fx: LinuxFlashEffects,
+  target: LinuxBlockDevice,
+  mechanism: EscalationMechanism,
+  elevatorPath: string,
+): void {
   const targets = unmountTargets(target);
   if (targets.length === 0) return;
   const umount = fx.which("umount");
@@ -716,7 +733,7 @@ function unmountAll(fx: LinuxFlashEffects, target: LinuxBlockDevice, mechanism: 
   for (const mountpoint of targets) {
     process.stdout.write(`Unmounting ${mountpoint} ...\n`);
     try {
-      runInherit(escalationArgv(mechanism, umount, [mountpoint]));
+      runInherit(escalationArgv(mechanism, umount, [mountpoint], elevatorPath));
     } catch {
       bail(2, `failed to unmount ${mountpoint}; refusing to write to a mounted device`);
     }
@@ -774,8 +791,11 @@ async function main(): Promise<void> {
   const target = selection.device;
 
   const plan = planEscalation({
-    sudoAvailable: fx.which("sudo") !== null,
-    pkexecAvailable: fx.which("pkexec") !== null,
+    // Availability is decided by the SAME resolver that execution will use, so the plan
+    // and the spawn cannot disagree. `fx.which` was used here before and is the wrong
+    // question: it reports what `PATH` says, and `PATH` is a value the attacker controls.
+    sudoAvailable: resolveElevator("sudo").ok,
+    pkexecAvailable: resolveElevator("pkexec").ok,
     sudoChain: chainFor(fx, SUDO_PAM_SERVICE),
     polkitChain: chainFor(fx, POLKIT_PAM_SERVICE),
     enrollment: readEnrollment(fx),
@@ -791,11 +811,15 @@ async function main(): Promise<void> {
   }
 
   await requireTypedConsent(target, useShort);
-  unmountAll(fx, target, plan.mechanism);
+  // Resolve the chosen elevator ONCE, by absolute path, and use the same one for the
+  // unmounts and for the write — resolving twice would leave a window in which they
+  // differ, and resolving by name would leave the PATH-shim hole this closes.
+  const elevatorPath = resolveElevatorPathOrThrow(plan.mechanism);
+  unmountAll(fx, target, plan.mechanism, elevatorPath);
 
   const ddPath = fx.which("dd");
   if (ddPath === null) bail(2, "dd is not on PATH (install coreutils)");
-  const [ddProgram, ...ddRest] = escalationArgv(plan.mechanism, ddPath, ddArgs(isoPath, target.path));
+  const [ddProgram, ...ddRest] = escalationArgv(plan.mechanism, ddPath, ddArgs(isoPath, target.path), elevatorPath);
   if (ddProgram === undefined) bail(1, "internal: escalationArgv produced an empty argv");
   process.stdout.write(`\nFlashing ${isoPath} → ${target.path} (${human(isoStat.size)}) ...\n`);
   process.stdout.write(`${plan.rationale}\n\n`);

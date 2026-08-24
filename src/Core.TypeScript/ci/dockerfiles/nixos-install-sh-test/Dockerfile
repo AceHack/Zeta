@@ -121,6 +121,12 @@ COPY .mise.toml /workspace/.mise.toml
 COPY package.json bun.lock* /workspace/
 # src/Core.TypeScript/ace — Bun setup realizers (setup-realize.ts + setup-realizers/)
 COPY src/Core.TypeScript/ace /workspace/src/Core.TypeScript/ace
+# src/Core.TypeScript/privilege — the elevator resolver the setup realizers import.
+# `from-deb.ts` and `install-pinned-artifact.ts` must resolve `sudo` to an absolute,
+# root-owned, setuid path rather than through PATH (docs/BUGS.md P1, 2026-08-24), so the
+# resolver is now part of the install-relevant subset. Omitting it does not silently weaken
+# the install -- the import fails and the build stops, which is how this line got written.
+COPY src/Core.TypeScript/privilege /workspace/src/Core.TypeScript/privilege
 # src/Core.TypeScript/accelerator carries the local-LLM primitive's validator + tests
 # (validate-local-llm.ts + local-llm.test.ts) for validation step 4 below.
 COPY src/Core.TypeScript/accelerator /workspace/src/Core.TypeScript/accelerator

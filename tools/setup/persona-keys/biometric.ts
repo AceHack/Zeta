@@ -33,6 +33,7 @@ import { spawnSync } from "node:child_process";
 import { readFileSync } from "node:fs";
 import { platform as osPlatform } from "node:os";
 import { analyzePamAuthChain } from "../../../src/Core.TypeScript/pam/auth-chain.ts";
+import { resolveElevator } from "../../../src/Core.TypeScript/privilege/elevator.ts";
 
 /** The biometric platforms we know how to gate on. `unsupported` ⇒ fail-closed. */
 export type BiometricPlatform = "macos-touchid" | "windows-hello" | "unsupported";
@@ -232,6 +233,8 @@ export interface SudoAuthChainAnalysis {
  */
 export function analyzeSudoAuthChain(
   read: (path: string) => string,
+  // zeta-elevator-not-argv: a PAM service name (the basename under /etc/pam.d), never a
+  // program to spawn. The program this module spawns is resolved by `resolveElevator`.
   service = "sudo",
 ): SudoAuthChainAnalysis {
   const analysis = analyzePamAuthChain(read, {
@@ -249,12 +252,23 @@ export function analyzeSudoAuthChain(
   };
 }
 
+/** The elevator this gate will spawn — an absolute, structurally-verified path, or a
+ *  refusal carrying the resolver's reason. Injectable so a test can describe a host with a
+ *  shimmed / missing / non-setuid elevator without needing one. */
+export type ElevatorGate =
+  | { readonly ok: true; readonly path: string }
+  | { readonly ok: false; readonly reason: string };
+
 /** The ONLY door through which the macOS gate touches the outside world (§13
  *  noninterference) — so a test can describe a host's PAM stack and sudo outcome and get a
  *  deterministic result, with no real `sudo` and no real fingerprint. */
 export interface SudoGateEffects {
   /** Read a file; THROWS when it is absent (an absent policy is an unknown chain). */
   readonly readFile: (path: string) => string;
+  /** WHERE the elevator was resolved to, or why it could not be. Checked FIRST, before
+   *  anything is spawned — an elevator this process cannot vouch for is not one whose
+   *  exit status may be read as an operator approval. */
+  readonly elevator: () => ElevatorGate;
   /** Invalidate the cached sudo timestamp so a fresh confirmation is required. */
   readonly invalidateTimestamp: () => void;
   /** Run the no-op sudo transaction; returns its exit status (null on signal). */
@@ -263,12 +277,61 @@ export interface SudoGateEffects {
   readonly notify: (line: string) => void;
 }
 
-/** The real host — the only place in this module that runs `sudo` or reads /etc. */
+/** The real host — the only place in this module that runs the elevator or reads /etc.
+ *
+ *  THE ELEVATOR IS RESOLVED ONCE, BY ABSOLUTE PATH, AND THE SAME PATH IS USED FOR BOTH
+ *  SPAWNS. Resolving twice would leave a window in which `-k` and the authenticating
+ *  transaction ran different programs; resolving by NAME is the P1 this factory was
+ *  rewritten to close (docs/BUGS.md 2026-08-24). `resolveElevator` refuses anything that
+ *  is not root-owned, setuid and non-world-writable at an allowlisted absolute path, and
+ *  never consults `PATH`.
+ *
+ *  WHY `sudo` AT ALL, GIVEN THE ALTERNATIVE — because the next reader will ask, and the
+ *  question was measured rather than waved away (2026-08-24, macOS 26.5.2):
+ *
+ *  `LAContext.evaluatePolicy(.deviceOwnerAuthenticationWithBiometrics)` is the mechanism
+ *  that would prove a BIOMETRIC specifically, which `sudo` provably cannot (see the
+ *  `unattributed` register below). It is reachable: a Swift CLI built with `/usr/bin/swiftc`
+ *  and only ad-hoc/linker-signed reports `canEvaluatePolicy(biometrics) = true`,
+ *  `biometryType = 1` (Touch ID) on this host. It was NOT adopted here, for three reasons:
+ *
+ *   1. IT DOES NOT FIX THIS BUG. LAContext returns its answer through the same in-process
+ *      seam as `sudo` does. Both are an injected effect a caller with code execution can
+ *      stub. What this P1 was about is the channel that needed NO code in the repo at all —
+ *      a file on `PATH`. An absolute, structurally-checked path closes exactly that channel;
+ *      LAContext closes none of it.
+ *   2. IT WOULD ADD A TOOLCHAIN TO A CEREMONY PATH. There is no stock macOS binary that
+ *      evaluates an LAPolicy, so the gate would have to ship or build a helper. Building it
+ *      needs a Swift toolchain present at ceremony time; shipping it puts an unsigned
+ *      executable in the repo whose integrity has no better guarantee than the
+ *      SIP-`restricted` `/usr/bin/sudo` it would replace — and a helper compiled to a
+ *      temporary directory is writable by the same attacker who was planting `PATH` shims.
+ *      Compare `.claude/rules/clone-at-tag-stays-sufficient.md`: a bootstrap surface that
+ *      needs a resolver present is a surface that fails on a host without one.
+ *   3. WHAT IT WOULD BUY IS ATTRIBUTION, AND ATTRIBUTION IS A DIFFERENT, ALREADY-TRACKED
+ *      ROW (081M06DSQ0Q087G0R000H91391). This module already reports that honestly as
+ *      `factor: "unattributed"` instead of claiming a fingerprint it cannot see.
+ *
+ *  So `sudo` stays, hardened — and the honest register stays with it: this gate proves that
+ *  AN OPERATOR FACTOR ANSWERED on this host, never that a human was physically present. The
+ *  attested form (LAContext, or a hardware touch on the YubiHSM/FROST lane) is a design row
+ *  for Aminata + Kenji, not a patch. */
 export function realSudoGateEffects(): SudoGateEffects {
+  const resolved = resolveElevator("sudo");
+  const gate: ElevatorGate = resolved.ok
+    ? { ok: true, path: resolved.path }
+    : { ok: false, reason: resolved.reason };
+  // A non-conforming host must never reach a spawn at all — `macTouchIdAuth` checks
+  // `elevator()` first and returns before `invalidateTimestamp`/`authenticate` are called.
+  // These two therefore only ever run with a resolved absolute path; the fallback string is
+  // unreachable and is a deliberate non-path ("") so that a future caller that skipped the
+  // check fails loudly at spawn rather than silently re-acquiring the PATH lookup.
+  const program = resolved.ok ? resolved.path : "";
   return {
     readFile: (p) => readFileSync(p, "utf8"),
+    elevator: () => gate,
     invalidateTimestamp: () => {
-      spawnSync("sudo", ["-k"], { stdio: "ignore" });
+      spawnSync(program, ["-k"], { stdio: "ignore" });
     },
     // `sudo -p ''` suppresses the prompt text; pam_tid pops the Touch ID dialog out of
     // band. NOTE: stdin being "ignore" does NOT close the password path — `man sudo`
@@ -277,7 +340,7 @@ export function realSudoGateEffects(): SudoGateEffects {
     // leaves it open. The gate does fail closed where there is no tty at all (CI, an
     // agent-run shell), which is why the old comment's claim went unnoticed: it was true
     // in exactly the environment nobody was watching.
-    authenticate: () => spawnSync("sudo", ["-p", "", "true"], { stdio: ["ignore", "ignore", "inherit"] }).status,
+    authenticate: () => spawnSync(program, ["-p", "", "true"], { stdio: ["ignore", "ignore", "inherit"] }).status,
     notify: (line) => {
       process.stderr.write(line);
     },
@@ -300,6 +363,19 @@ export function macTouchIdAuth(
   prompt: string,
   fx: SudoGateEffects = realSudoGateEffects(),
 ): BiometricResult {
+  // FIRST, before any spawn and before the PAM read: is there an elevator this process is
+  // willing to vouch for? A gate that reads the exit status of whichever file happened to
+  // be named `sudo` is not a gate — it is a coin flip an attacker owns (docs/BUGS.md P1,
+  // 2026-08-24). Fail closed, and say which candidates were rejected and why.
+  const elevator = fx.elevator();
+  if (!elevator.ok) {
+    return {
+      ok: false,
+      platform: "macos-touchid",
+      factor: "none",
+      reason: `operator-approval gate refused to run: ${elevator.reason}`,
+    };
+  }
   const chain = analyzeSudoAuthChain(fx.readFile);
   if (!chain.touchIdConfigured) {
     return {

@@ -118,9 +118,18 @@ describe("reclaim", () => {
   test("deletes ONLY allowlisted paths that exist, and nothing else", () => {
     const { run, seen } = fakeRunner({ "/opt/ghc": 3 * GIB, "/usr/share/swift": 1 * GIB });
     const outcome = reclaim(run, () => 0);
-    const removed = seen.filter((call) => call[0] === "sudo" && call[1] === "rm").map((call) => call[3]);
+    // The elevator is now an ABSOLUTE resolved path, never the bare name — a by-name
+    // elevator is substitutable by any writable directory earlier on `PATH`
+    // (docs/BUGS.md P1, 2026-08-24). Matching on `endsWith("/sudo")` keeps the assertion
+    // portable across /usr/bin and /run/wrappers/bin while still refusing a bare name.
+    const removed = seen
+      .filter((call) => (call[0] ?? "").endsWith("/sudo") && call[1] === "rm")
+      .map((call) => call[3]);
     expect(removed.toSorted()).toEqual(["/opt/ghc", "/usr/share/swift"]);
     expect(outcome.deleted.length).toBe(2);
+    // The falsifier: a bare `sudo` would satisfy the old assertion and must not satisfy
+    // this one. Nothing spawned here may be resolved through PATH.
+    for (const call of seen) expect(call[0]).not.toBe("sudo");
   });
 
   test("no refused path is ever a delete target", () => {
