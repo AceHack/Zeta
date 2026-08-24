@@ -389,6 +389,15 @@ describe("qemu-full-install-test UEFI keyfile restore contract", () => {
     expect(assertUefiKeyfileRestoreContract(serial).ok).toBe(true);
   });
 
+  it("accepts wrote 0 creds (empty bake / picker --defer-all)", () => {
+    const serial = [
+      UEFI_KEYFILE_RESTORE_SERIAL.stagedFromFwcfg,
+      UEFI_KEYFILE_RESTORE_SERIAL.bindingKeyfile,
+      `${UEFI_KEYFILE_RESTORE_SERIAL.wrotePrefix}0 creds (target-root: /)`,
+    ].join("\n");
+    expect(assertUefiKeyfileRestoreContract(serial).ok).toBe(true);
+  });
+
   it("fails when restore falls back to usbUuid", () => {
     const serial = [
       UEFI_KEYFILE_RESTORE_SERIAL.stagedFromFwcfg,
@@ -414,9 +423,7 @@ describe("qemu-full-install-test UEFI keyfile restore contract", () => {
     const loginOnly = "node-qemu-keyfile-restore login:\n";
     expect(detectPhase2Success(loginOnly, "node-qemu-keyfile-restore", false, false).ok).toBe(true);
     expect(detectPhase2Success(loginOnly, "node-qemu-keyfile-restore", false, true).ok).toBe(false);
-    expect(
-      detectPhase2Success(`${restoreSerial}\n`, "node-qemu-keyfile-restore", false, true).ok,
-    ).toBe(true);
+    expect(detectPhase2Success(`${restoreSerial}\n`, "node-qemu-keyfile-restore", false, true).ok).toBe(true);
   });
 });
 
@@ -693,5 +700,31 @@ describe("ISO workflow: restore decrypt runs with budget left", () => {
     expect(restore).toBeLessThan(write);
     expect(restore).toBeLessThan(picker);
     expect(workflow.split('QEMU_UEFI_KEYFILE_RESTORE: "1"').length - 1).toBe(1);
+  });
+
+  it("dispatch QEMU siblings after restore keep running when restore is red", () => {
+    // GitHub skips later steps after a failure unless if: always().
+    // Run 32724820159: restore failed → wifi/write/picker/scenarios 3–4 skipped.
+    // Restore itself stays a hard fail (no always(), no continue-on-error).
+    const stepBlock = (name: string): string => {
+      const start = workflow.indexOf(`- name: ${name}`);
+      expect(start).toBeGreaterThan(-1);
+      const next = workflow.indexOf("\n      - name:", start + 1);
+      return workflow.slice(start, next === -1 ? undefined : next);
+    };
+
+    const restore = stepBlock("UEFI keyfile restore decrypt (workflow_dispatch only)");
+    expect(restore).toContain("if: github.event_name == 'workflow_dispatch'");
+    expect(restore).not.toContain("if: always()");
+
+    for (const name of [
+      "081KSGS9H0008QG0R003V23XNZ wifi ESP acceptance (workflow_dispatch only)",
+      "UEFI keyfile install-time write (workflow_dispatch only)",
+      "UEFI keyfile picker bind (workflow_dispatch only)",
+      "081KSNY2Z0008QG0R0008PN7RQ scenario 3 — reformat with retention (workflow_dispatch only)",
+      "081KSNY2Z0008QG0R0008PN7RQ scenario 4 — path-fork migrate vs fresh (workflow_dispatch only)",
+    ]) {
+      expect(stepBlock(name)).toMatch(/if:\s*always\(\)\s*&&\s*github\.event_name == 'workflow_dispatch'/);
+    }
   });
 });

@@ -123,6 +123,13 @@ describe("composeBundle", () => {
     const result = composeBundle(args);
     expect("error" in result).toBe(true);
   });
+
+  it("empty bake list is a valid empty envelope (QEMU --defer-all)", () => {
+    const bundle = composeBundle({ persona: null, bakeCredArgs: [] });
+    if ("error" in bundle) throw new Error(bundle.error);
+    expect(Object.keys(bundle.globalCreds)).toEqual([]);
+    expect(Object.keys(bundle.personaCreds)).toEqual([]);
+  });
 });
 
 describe("resolveCredPaths", () => {
@@ -315,6 +322,32 @@ describe("persist → restore round-trip via tmpdir", () => {
     const plan = planRestore(tampered, UUID, PASS, null, "/tmp/dontcare");
     if (!("error" in plan)) throw new Error("expected error from tampered blob");
     expect(plan.code).toBe(5);
+  });
+
+  it("empty bake bound to uefi keyfile still decrypts (wrote 0 creds)", () => {
+    const dir = mkdtempSync(join(tmpdir(), "zcreds-empty-bake-"));
+    const keyfile = join(dir, "keyfile");
+    const output = join(dir, "zeta-creds.enc");
+    writeFileSync(keyfile, Buffer.alloc(32, 0xab));
+    const parsed = parsePersistArgs(["--uefi-keyfile", keyfile, "--output", output, "--passphrase-env", "TP"], {
+      TP: PASS,
+    });
+    if ("error" in parsed) throw new Error(parsed.error);
+    expect(parsed.bakeCredArgs).toEqual([]);
+    expect(parsed.bindingFactor).toBe("uefiKeyfile");
+    const bundle = composeBundle(parsed);
+    if ("error" in bundle) throw new Error(bundle.error);
+    const blob = buildBlob(bundle, parsed.bindingMaterial, parsed.passphrase);
+    writePersistOutputs(output, blob, parsed.bindingFactor);
+    expect(readFileSync(bindingFactorSidecarPath(output), "utf8")).toBe("uefiKeyfile\n");
+
+    const plan = planRestore(blob, parsed.bindingMaterial, PASS, null, join(dir, "root"));
+    if ("error" in plan) throw new Error(plan.error);
+    expect(plan.writes).toHaveLength(0);
+    expect(applyPlan(plan)).toBe(0);
+
+    const wrong = planRestore(blob, "00".repeat(32), PASS, null, join(dir, "root-wrong"));
+    expect("error" in wrong).toBe(true);
   });
 
   it("planRestore reports invalid magic header as code 4", () => {

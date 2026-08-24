@@ -463,8 +463,13 @@ jobs:
       # Opt-in ESP wifi → NM profile gate (no radio association claim) plus
       # guest USB iSerial (usb-storage serial=ZETA-QEMU-001). Workflow_dispatch
       # only — not on gate. ISO/cdrom cascade-5 does not assert iSerial.
+      #
+      # always(): restore sits BEFORE these siblings and is a hard fail
+      # (measured run 32724820159: restore hung on picker TTY → wifi / write /
+      # picker / scenarios 3–4 skipped). Keep restore itself without always()
+      # so a restore red still fails the job. Keep all of this off gate.
       - name: 081KSGS9H0008QG0R003V23XNZ wifi ESP acceptance (workflow_dispatch only)
-        if: github.event_name == 'workflow_dispatch'
+        if: always() && github.event_name == 'workflow_dispatch'
         timeout-minutes: 90
         working-directory: full-ai-cluster
         env:
@@ -494,7 +499,7 @@ jobs:
           retention-days: 7
 
       - name: UEFI keyfile install-time write (workflow_dispatch only)
-        if: github.event_name == 'workflow_dispatch'
+        if: always() && github.event_name == 'workflow_dispatch'
         timeout-minutes: 90
         working-directory: full-ai-cluster
         env:
@@ -522,7 +527,7 @@ jobs:
           retention-days: 7
 
       - name: UEFI keyfile picker bind (workflow_dispatch only)
-        if: github.event_name == 'workflow_dispatch'
+        if: always() && github.event_name == 'workflow_dispatch'
         timeout-minutes: 90
         working-directory: full-ai-cluster
         env:
@@ -550,7 +555,7 @@ jobs:
           retention-days: 7
 
       - name: 081KSNY2Z0008QG0R0008PN7RQ scenario 3 — reformat with retention (workflow_dispatch only)
-        if: github.event_name == 'workflow_dispatch'
+        if: always() && github.event_name == 'workflow_dispatch'
         timeout-minutes: 90
         working-directory: full-ai-cluster
         env:
@@ -570,7 +575,7 @@ jobs:
           bun ../src/Core.TypeScript/zflash/test-harness/run.ts --scenario reformat-with-retention "$iso_abs"
 
       - name: 081KSNY2Z0008QG0R0008PN7RQ scenario 4 — path-fork migrate vs fresh (workflow_dispatch only)
-        if: github.event_name == 'workflow_dispatch'
+        if: always() && github.event_name == 'workflow_dispatch'
         timeout-minutes: 90
         working-directory: full-ai-cluster
         env:
@@ -622,7 +627,7 @@ jobs:
           retention-days: 7
 
       - name: Locate ISO + capture metadata
-        if: ${{ !cancelled() }}   # run even if the flaky QEMU full-install gate failed — a built ISO must still upload
+        if: ${{ !cancelled() }} # run even if the flaky QEMU full-install gate failed — a built ISO must still upload
         id: iso
         working-directory: full-ai-cluster
         run: |
@@ -720,7 +725,7 @@ jobs:
       # of THIS workflow (no github.event.* interpolation). Same discipline
       # as the QEMU boot-test step above.
       - name: Install cosign
-        if: ${{ !cancelled() && steps.iso.outcome == 'success' }}   # run only after a built ISO was located
+        if: ${{ !cancelled() && steps.iso.outcome == 'success' }} # run only after a built ISO was located
         uses: sigstore/cosign-installer@6f9f17788090df1f26f669e9d70d6ae9567deba6 # v4.1.2
         # Pin verified via gh API 2026-05-27:
         #   gh api repos/sigstore/cosign-installer/releases/latest
@@ -728,7 +733,7 @@ jobs:
         # Per .claude/rules/dep-pin-search-first-authority.md
 
       - name: Sign ISO with cosign (keyless OIDC + Fulcio + Rekor)
-        if: ${{ !cancelled() && steps.iso.outcome == 'success' }}   # run only after a built ISO was located
+        if: ${{ !cancelled() && steps.iso.outcome == 'success' }} # run only after a built ISO was located
         id: sign
         env:
           # Pass ISO path via env (not direct ${{ }} interpolation in run:)
@@ -767,7 +772,7 @@ jobs:
           } >> "$GITHUB_STEP_SUMMARY"
 
       - name: Upload ISO as workflow artifact
-        if: ${{ !cancelled() && steps.iso.outcome == 'success' }}   # run only after a built ISO was located
+        if: ${{ !cancelled() && steps.iso.outcome == 'success' }} # run only after a built ISO was located
         # Available for download from the workflow run page for ~90 days.
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
@@ -793,7 +798,7 @@ jobs:
           retention-days: 90
 
       - name: Upload cosign bundle as workflow artifact
-        if: ${{ !cancelled() && steps.sign.outcome == 'success' }}   # run only after signing produced a bundle
+        if: ${{ !cancelled() && steps.sign.outcome == 'success' }} # run only after signing produced a bundle
         # 081KSKBP80008QG0R000Y2B7HC.1 sibling upload — bundle alongside the ISO for consumers.
         # Separate artifact (not bundled with ISO) so consumers downloading
         # just the ISO do not pay the small extra cost; verifiers can grab it.

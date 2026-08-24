@@ -2,11 +2,13 @@
 
 Status: active — shipped + iterating; first surfaced as a trajectory 2026-05-29 from substrate inventory (the flashing mechanism works on `origin/main`; this surface was missing, so the workstream lived head-only)
 Last refreshed: 2026-08-24
-Type: workstream (current-focus) — a trajectory the operator is *actively powering*. Many trajectories can be tracked; only a few are workstreams at once (finite-focus / WIP-bounded — a workstream is a trajectory under sustained thrust, and thrust budget is finite, so most trajectories coast). (Genus = "trajectory"; "workstream" is the species: a trajectory under sustained thrust toward a deliverable, vs. emergent-posture trajectories like `anti-infection`. See [`factory-trajectory-surface`](../factory-trajectory-surface/RESUME.md) for the genus/species taxonomy.) One of the operator's three current cluster workstreams (encryption / usb-zflash / ts-workflow-engine).
+Type: workstream (current-focus) — a trajectory the operator is _actively powering_. Many trajectories can be tracked; only a few are workstreams at once (finite-focus / WIP-bounded — a workstream is a trajectory under sustained thrust, and thrust budget is finite, so most trajectories coast). (Genus = "trajectory"; "workstream" is the species: a trajectory under sustained thrust toward a deliverable, vs. emergent-posture trajectories like `anti-infection`. See [`factory-trajectory-surface`](../factory-trajectory-surface/RESUME.md) for the genus/species taxonomy.) One of the operator's three current cluster workstreams (encryption / usb-zflash / ts-workflow-engine).
 Eventual encoding (design-stage — the human maintainer 2026-05-23 genetic-ID substrate + Clifford/HKT): this trajectory's state is trackable as a 128-bit genetic-ID seed (discrete, reversible via parser-combinator ↔ generator-function) → Clifford-space path (continuous, eventual). Mirrors the three-lane I8-lattice / I9-manifold split.
-Current blocker: software — 6.95-picker hangs in QEMU on a TTY prompt
-(measured [run 32724820159](https://github.com/Lucent-Financial-Group/Zeta/actions/runs/32724820159);
-handoff below). Physical S6 UX feel + real WiFi association remain metal-gated.
+Current blocker: software — live restore QEMU not yet re-dispatched after
+picker `--defer-all` ([#14852](https://github.com/Lucent-Financial-Group/Zeta/pull/14852);
+measured hang [run 32724820159](https://github.com/Lucent-Financial-Group/Zeta/actions/runs/32724820159)).
+Sibling dispatch QEMU steps still skip when restore is red (P1). Physical
+S6 UX feel + real WiFi association remain metal-gated.
 2026-08-18: `zflash` ISO acquisition is now architecture-aware (`--iso-arch`,
 default x86_64). Before this a run carrying both the x86_64 and aarch64 ISOs
 was resolved by `readdirSync` order — a coin flip whose only symptom was "no
@@ -17,11 +19,12 @@ operator to hand-download and hand-rename an ISO.
 **Session handoff (2026-08-24):**
 [`docs/handoffs/2026-08-24-riven-usb-zflash-qemu-restore-next.md`](../../handoffs/2026-08-24-riven-usb-zflash-qemu-restore-next.md)
 — mise-trust landed ([#14353](https://github.com/Lucent-Financial-Group/Zeta/pull/14353));
-live restore QEMU
+`--defer-all` landed ([#14852](https://github.com/Lucent-Financial-Group/Zeta/pull/14852)).
+Live restore QEMU
 ([run 32724820159](https://github.com/Lucent-Financial-Group/Zeta/actions/runs/32724820159))
-proved picker `mise activate` then hung on the interactive `[b]/[d]/[s]` prompt.
-Next software slice is a non-interactive (defer-all) picker path, then re-dispatch.
-Not metal.
+proved picker `mise activate` then hung on `[b]/[d]/[s]` (pre-`--defer-all`).
+Next software slice is P1 (sibling dispatch steps `if: always()` after a
+restore red), then re-dispatch on idle `main`. Not metal.
 
 Next concrete action: **minimize metal** — S6 physical first-login +
 WiFi radio / Touch ID / TPM (human-gated). Software deepen landed:
@@ -79,12 +82,12 @@ teams confirmed; system mise pinned via Nix overlay (same release as
 The "usb/zflash" workstream is the **flashing mechanism** for getting NixOS
 onto cluster hardware: the USB NixOS installer + the `zflash` tool (Touch ID +
 random nonce + SSH-key auto-inject + control-plane/worker role-picker). It is
-the sibling of `cluster-encryption-credential-substrate` (which owns *what*
-secrets get injected); this trajectory owns *how the bits get onto the metal
-and boot into a joinable node*.
+the sibling of `cluster-encryption-credential-substrate` (which owns _what_
+secrets get injected); this trajectory owns _how the bits get onto the metal
+and boot into a joinable node_.
 
 **Deeper purpose — self-healing hardware (the human maintainer 2026-05-29):**
-the USB is not only first-install; it is the *self-healing repair* mechanism for
+the USB is not only first-install; it is the _self-healing repair_ mechanism for
 the local accelerator cluster. A human's only job is to plug in the USB — any
 failed node in the K8s / GPU-accelerator cluster re-images, re-joins, and
 re-credentials itself. This gives Zeta **local + free-cloud both**: the
