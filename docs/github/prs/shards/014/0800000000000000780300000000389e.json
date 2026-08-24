@@ -1,0 +1,12 @@
+{
+  "pr_number": 14494,
+  "archive_path": "docs/history/pr-reviews/PR-14494-research-local-interactions-global-norms-the-exploit-shape-godel-s-proof-shape-a.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-23T22:14:15.145Z",
+  "schema_version": "v1",
+  "commit_sha": "cb45ada6345a59324b1d4fb74e6d66184754f6b5",
+  "title": "research: local interactions, global norms — the exploit shape, Godel's proof shape, and the local-to-global obstruction",
+  "state": "MERGED",
+  "merged_at": "2026-08-23T22:13:27Z",
+  "head_ref": "docs/local-interactions-global-norms"
+}
