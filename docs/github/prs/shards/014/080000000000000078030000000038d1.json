@@ -1,0 +1,12 @@
+{
+  "pr_number": 14545,
+  "archive_path": "docs/history/pr-reviews/PR-14545-fix-ci-the-lint-runner-named-three-tools-and-ran-one-derive-the-success-line-fro.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-24T00:09:39.717Z",
+  "schema_version": "v1",
+  "commit_sha": "26d1063a8990b6d8a0564de60af940228285b179",
+  "title": "fix(ci): the lint runner named three tools and ran one — derive the success line from STEPS",
+  "state": "MERGED",
+  "merged_at": "2026-08-24T00:08:53Z",
+  "head_ref": "fix/lint-ts-success-line-derived-from-steps"
+}
