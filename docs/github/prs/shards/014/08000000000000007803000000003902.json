@@ -1,0 +1,12 @@
+{
+  "pr_number": 14594,
+  "archive_path": "docs/history/pr-reviews/PR-14594-fix-hygiene-the-auditor-must-not-report-a-reconciled-squash-as-an-agreeing-one.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-24T01:04:07.722Z",
+  "schema_version": "v1",
+  "commit_sha": "9adce9069d0b7e733e147572e47c22271c82de31",
+  "title": "fix(hygiene): the auditor must not report a RECONCILED squash as an AGREEING one",
+  "state": "MERGED",
+  "merged_at": "2026-08-24T01:03:19Z",
+  "head_ref": "fix/auditor-must-not-claim-agreement-on-a-reconciled-squash"
+}
