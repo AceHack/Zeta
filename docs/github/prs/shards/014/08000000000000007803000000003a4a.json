@@ -1,0 +1,12 @@
+{
+  "pr_number": 14922,
+  "archive_path": "docs/history/pr-reviews/PR-14922-docs-ci-the-gate-green-that-merged-14914-covered-3-of-5-floor-jobs-q7-for-the-fl.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-24T19:48:24.939Z",
+  "schema_version": "v1",
+  "commit_sha": "4bc84524a73c510e0846b4dd9bd1107cacefbd51",
+  "title": "docs(ci): the gate green that merged #14914 covered 3 of 5 floor jobs — Q7 for the floor",
+  "state": "MERGED",
+  "merged_at": "2026-08-24T19:47:34Z",
+  "head_ref": "dejan/gate-green-covered-three-of-five-floor-jobs"
+}
