@@ -1,0 +1,12 @@
+{
+  "pr_number": 14935,
+  "archive_path": "docs/history/pr-reviews/PR-14935-bug-dst-the-local-llm-chooser-is-not-a-function-7-does-not-hold-on-that-path.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-24T20:29:20.658Z",
+  "schema_version": "v1",
+  "commit_sha": "ce8e73cba4cfa6939fafb265506e7469db0e4816",
+  "title": "bug(dst): the local-LLM chooser is not a function — §7 does not hold on that path",
+  "state": "MERGED",
+  "merged_at": "2026-08-24T20:22:57Z",
+  "head_ref": "bug/llm-chooser-is-not-a-function-dst"
+}
