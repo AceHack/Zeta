@@ -1,0 +1,15 @@
+{
+  "pr_number": 14501,
+  "archive_path": "docs/history/pr-reviews/PR-14501-research-the-local-to-global-obstruction-byte-lock-is-h-0-not-h-1-nerve-cohomolo.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7k3Yeq",
+    "thread:PRRT_kwDOSF9kNM6bid2O"
+  ],
+  "fetched_at": "2026-08-23T22:38:47.518Z",
+  "schema_version": "v1",
+  "commit_sha": "cf0eed7d2ef01b69a2adb0c1824c4c6a960166de",
+  "title": "research: the local-to-global obstruction — byte-lock is H^0 not H^1, nerve cohomology convicts but never acquits, and arity is the shippable instrument",
+  "state": "MERGED",
+  "merged_at": "2026-08-23T22:37:58Z",
+  "head_ref": "research/local-to-global-obstruction-arity-gap-lumen"
+}
