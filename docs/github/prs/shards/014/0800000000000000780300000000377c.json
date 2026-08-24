@@ -1,0 +1,12 @@
+{
+  "pr_number": 14204,
+  "archive_path": "docs/history/pr-reviews/PR-14204-feat-observe-society-status-shows-full-workflow-roster.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-23T13:56:11.844Z",
+  "schema_version": "v1",
+  "commit_sha": "ab206fa112276711da0dce89e29919d36353f569",
+  "title": "feat(observe): society-status shows full workflow roster",
+  "state": "MERGED",
+  "merged_at": "2026-08-23T13:55:28Z",
+  "head_ref": "alexa/wire-dashboard"
+}
