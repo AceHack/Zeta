@@ -1,0 +1,12 @@
+{
+  "pr_number": 14202,
+  "archive_path": "docs/history/pr-reviews/PR-14202-docs-workitem-platform-s-5-blockers-are-3-different-problems-measure-each-publis.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-24T11:17:53.509Z",
+  "schema_version": "v1",
+  "commit_sha": "c880c3165afde179ad68cdf990af2df9b1807652",
+  "title": "docs(workitem): platform's 5 blockers are 3 different problems — measure each, publish neither Flowdent image",
+  "state": "MERGED",
+  "merged_at": "2026-08-24T11:17:06Z",
+  "head_ref": "fix/publish-platform-packages"
+}
