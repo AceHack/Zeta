@@ -26,7 +26,7 @@ with an expiry date — the toolkit is pre-1.0.
 
 from __future__ import annotations
 
-from arcengine import ARCBaseGame, ActionInput, FrameData, GameAction
+from arcengine import ActionInput, ARCBaseGame, FrameData, GameAction
 
 
 def advance(game: ARCBaseGame, action_id: GameAction, **data: object) -> FrameData:

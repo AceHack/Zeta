@@ -119,6 +119,12 @@ const LOOKAHEAD = 6;
  */
 const SELF_LATCH_MARGIN = 1.0;
 /**
+ * The most a score may move in one reading. Not a tuned threshold — it is the
+ * cart's own arithmetic: `ADD V5, 1` / `ADD V9, 1`, counters that never reset
+ * and never decrement. See `absorbScoreboardReward`.
+ */
+const SCORE_MAX_STEP = 1;
+/**
  * Exponential forgetting on the per-key beliefs — the fix for a HABIT that
  * outlived its evidence.
  *
@@ -348,6 +354,14 @@ export class BnnSocietyPredictor {
   // ── Layer 4→6 bridge: the OCR scoreboards are the reward sensor ──────────
 
   private absorbScoreboardReward(): void {
+    /**
+     * A score is a COUNTER: it may hold, or rise by exactly one. It can never
+     * fall and never leap. A reading that violates that is a corrupted glyph,
+     * not a score. (`null` on either side means "no reading", which is not a
+     * violation — the caller already skips those.)
+     */
+    const plausibleScoreStep = (now: number | null, prev: number | null): boolean =>
+      now === null || prev === null || (now - prev >= 0 && now - prev <= SCORE_MAX_STEP);
     // The cart draws MY score in color 2 and THEIRS in color 1 (and the OCR
     // grid carries colors). Missing readings (mid-tag redraw, win flood) skip
     // the tick rather than fabricate a delta.
@@ -361,6 +375,27 @@ export class BnnSocietyPredictor {
     const theirs = theirsRaw !== null && theirsRaw === this.pendingTheirScore ? theirsRaw : null;
     this.pendingMyScore = mineRaw;
     this.pendingTheirScore = theirsRaw;
+    // MEASURED DEFECT (2026-08-24): the two-tick agreement above catches a
+    // one-tick flicker and is BLIND TO A TWO-TICK ONE — a stable misread is
+    // "seen twice in a row" and is therefore certified as the score. Live on
+    // main: with the true score sitting at 0:3 for a thousand ticks, the AI
+    // brushing the top-right digit made it template-match 9 for exactly two
+    // ticks, so the learner absorbed r = -6 and then +6 about every sixteen
+    // ticks. The pair sums to zero and does NOT cancel, because each half is
+    // credited against different eligibility-trace contents. Measured over
+    // 12 runs at shipped settings: 2 fabricated 8 and 2 phantom rewards
+    // against 5 and 3 real ones. 3 and 9 differ by one stroke in a 3x5 glyph,
+    // which is why that pair is the one that shows up.
+    //
+    // The guard is the cart's OWN arithmetic, not a tuned threshold: both
+    // scores are counters (`ADD V5, 1` / `ADD V9, 1` in mutual-sim.ts), never
+    // reset and never decremented, so a delta outside {0, +1} did not come
+    // from the game. Distrust the READING rather than believe an impossible
+    // score — and crucially do not let it become the new baseline, or the
+    // return to the true value reads as a second impossible jump.
+    if (!plausibleScoreStep(mine, this.prevMyScore) || !plausibleScoreStep(theirs, this.prevTheirScore)) {
+      return;
+    }
     if (mine !== null && this.prevMyScore !== null && theirs !== null && this.prevTheirScore !== null) {
       const r = mine - this.prevMyScore - (theirs - this.prevTheirScore);
       if (r !== 0) this.modeLearner.reward(r);

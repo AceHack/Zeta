@@ -85,7 +85,8 @@ The first driver reimplemented the engine's action loop by hand and deadlocked.
 A level-clearing action sets `_next_level`, and
 
 ```python
-def is_action_complete(self): return not self._next_level and self._action_complete
+def is_action_complete(self):
+    return not self._next_level and self._action_complete
 ```
 
 so a loop that only calls `step()` can never finish the action that **wins** a

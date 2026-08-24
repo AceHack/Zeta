@@ -1,0 +1,14 @@
+{
+  "id": "080d01a5aa6c3810a013000844f2e45d",
+  "at": "2026-08-24T16:58:12.231Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M0TBAKC6087G0R001YB7C1D",
+    "type": "bug",
+    "title": "The reward sensor fabricates rewards: a two-tick glyph misread is certified as a score change",
+    "slug": "the-reward-sensor-fabricates-rewards-a-two-tick-glyph-misrea",
+    "priority": "P2",
+    "filename": "081M0TBAKC6087G0R001YB7C1D-the-reward-sensor-fabricates-rewards-a-two-tick-glyph-misrea.md"
+  }
+}

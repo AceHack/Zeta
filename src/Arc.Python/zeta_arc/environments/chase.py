@@ -92,7 +92,9 @@ def _build_level(index: int) -> Level:
                 tags=["wall"],
             )
         )
-    return Level(sprites=sprites, grid_size=(GRID * CELL, GRID * CELL), name=f"chase-{index}")
+    return Level(
+        sprites=sprites, grid_size=(GRID * CELL, GRID * CELL), name=f"chase-{index}"
+    )
 
 
 class ZetaChase(ARCBaseGame):

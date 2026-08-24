@@ -123,6 +123,52 @@ durable record — and because a pile of agreeing numbers being a warning rather
 than a confirmation is precisely the rule that caught it
 (`.claude/rules/numerology-vs-number-theory.md` §"too many correlations").
 
+### SECOND CORRECTION (2026-08-24, later) — the behavioural claim is WITHDRAWN
+
+Everything above was measured through harnesses that did this:
+
+```ts
+const p = new BnnSocietyPredictor(3, seed);
+(p as any).rng = createSeededStream(seed, 1);   // rewinds 51 draws
+```
+
+`initializeSociety()` consumes 3 agents × 17 keys = **51 draws**, so replacing
+the stream afterwards rewinds it. Those are real deterministic trajectories but
+not the arena's. Re-measured on the arena's exact construction
+(`new BnnSocietyPredictor(3)` → COMMON_SEED, `importSnapshot(mutualSimPriors)`,
+Thompson fusion) and with the fabricated-reward defect
+`081M0TBAKC6087G0R001YB7C1D` fixed:
+
+| | arena trajectory | sensitivity range |
+|---|---|---|
+| self is the actual player body | **74.2%** | 41.5 – 78.8% |
+| adversary is the actual opponent | 76.1% | 67.8 – 76.1% |
+| distance from the hunter | 21.85 px | 19.16 – 27.27 |
+| distance to the prey | 32.55 px | 25.81 – 42.56 |
+| reward events / real score changes | 3 / 3 | honest on every seed |
+
+Two things follow, and the second is the important one.
+
+**The self-identification result stands.** 74.2% against a predecessor that was
+*structurally* 0% — a wall committed on tick 1, every run — and that 0% does not
+depend on any instrument, so the comparison survives.
+
+**The "flee is decisively fixed" claim does not, and is withdrawn.** On the
+arena's own trajectory the agent sits nearer its hunter (21.85) than its prey
+(32.55), on every seed measured.
+
+But the sharper correction is that **the distance metric was never sound in
+either direction.** When the AI is Cat it closes on the player; when it is Mouse
+it runs away. So those distances are driven largely by the OPPONENT's policy,
+and a do-nothing agent would show the same inversion. It cannot carry a verdict
+about our steering — which means it should not have been used to claim the
+improvement in the first place. The retraction is of the method, not just the
+number.
+
+What survives from this work-item: a real defect, found and fixed, with
+self-identification demonstrably repaired — and **no demonstrated improvement in
+how well the agent plays.**
+
 ## What this EXPOSED (not caused) — follow-on, not part of this item
 
 The game score got **worse**: mean final player:ai went 1.00:0.50 → 0.17:0.83.

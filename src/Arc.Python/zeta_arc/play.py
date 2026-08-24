@@ -30,8 +30,9 @@ from collections import deque
 from arc_agi import Arcade, OperationMode
 from arcengine import GameAction
 
-from zeta_arc.driver import advance
-from zeta_arc.environments.chase import CELL, GRID, _MOVES, _STARTS, _WALLS, ZetaChase
+from zeta_arc.agent import PixelAgent
+from zeta_arc.driver import advance, reset
+from zeta_arc.environments.chase import _MOVES, _STARTS, _WALLS, CELL, GRID, ZetaChase
 
 #: Fixed action order, so a "random" agent is reproducible from its seed.
 _ACTION_ORDER: tuple[GameAction, ...] = tuple(_MOVES.keys())
@@ -68,7 +69,13 @@ def _cell_of(game: ZetaChase, tag: str) -> tuple[int, int]:
     return sprite.x // CELL, sprite.y // CELL
 
 
-def choose(agent: str, game: ZetaChase, rng_state: list[int]) -> GameAction:
+def choose(
+    agent: str,
+    game: ZetaChase,
+    rng_state: list[int],
+    pixel: PixelAgent | None = None,
+    grid: list[list[int]] | None = None,
+) -> GameAction:
     """Pick one action.
 
     `random` steps a seeded LCG over the fixed action order — no `random`
@@ -76,6 +83,12 @@ def choose(agent: str, game: ZetaChase, rng_state: list[int]) -> GameAction:
     axis gap first and has NO wall model on purpose: the score should report
     something real, not a maze that was solved in the scorer.
     """
+    if agent == "pixel":
+        # The ONLY agent here that does not read sprite coordinates out of the
+        # engine. It sees `grid` and nothing else.
+        assert pixel is not None and grid is not None
+        return pixel.act(grid)
+
     if agent == "random":
         rng_state[0] = (rng_state[0] * 1103515245 + 12345) & 0x7FFFFFFF
         return _ACTION_ORDER[rng_state[0] % len(_ACTION_ORDER)]
@@ -90,13 +103,17 @@ def choose(agent: str, game: ZetaChase, rng_state: list[int]) -> GameAction:
     return GameAction.ACTION4
 
 
-def play(agent: str = "greedy", seed: int = 0, max_actions_per_level: int = 300) -> dict:
+def play(
+    agent: str = "greedy", seed: int = 0, max_actions_per_level: int = 300
+) -> dict:
     """One full episode. Returns per-level and aggregate scores."""
     # Constructed to prove the toolkit's own offline path initialises with no
     # key and no network — the fact this whole lane rests on.
     arcade = Arcade(operation_mode=OperationMode.OFFLINE)
     game = ZetaChase(seed=seed)
 
+    pixel = PixelAgent()
+    frame = reset(game)
     rng_state = [seed | 1]
     levels: list[dict] = []
     level_index = game.level_index
@@ -116,7 +133,8 @@ def play(agent: str = "greedy", seed: int = 0, max_actions_per_level: int = 300)
             )
             break
 
-        advance(game, choose(agent, game, rng_state))
+        grid = frame.frame[0] if frame.frame else []
+        frame = advance(game, choose(agent, game, rng_state, pixel, grid))
         actions += 1
 
         solved_this_level = game.level_index != level_index or (
@@ -156,7 +174,9 @@ def play(agent: str = "greedy", seed: int = 0, max_actions_per_level: int = 300)
 
 def main() -> None:
     parser = argparse.ArgumentParser(description="Play ZetaChase offline and score it.")
-    parser.add_argument("--agent", choices=("greedy", "random"), default="greedy")
+    parser.add_argument(
+        "--agent", choices=("pixel", "greedy", "random"), default="greedy"
+    )
     parser.add_argument("--seed", type=int, default=0)
     args = parser.parse_args()
     print(json.dumps(play(agent=args.agent, seed=args.seed), indent=2))

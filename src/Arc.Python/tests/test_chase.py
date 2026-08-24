@@ -12,7 +12,7 @@ import pytest
 from arcengine import GameAction
 
 from zeta_arc.driver import advance
-from zeta_arc.environments.chase import CELL, _STARTS, _WALLS, ZetaChase
+from zeta_arc.environments.chase import _STARTS, _WALLS, CELL, ZetaChase
 from zeta_arc.play import optimal_actions, play
 
 
