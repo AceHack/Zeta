@@ -26,7 +26,14 @@
  * REJECTS one thing POSIX does: POSIX says "leaving [the constant] undefined has the
  * same meaning as defining it as -1", i.e. silence means absent. Silence is exactly what
  * the symmetry check exists to refuse, so here an undeclared cell is a GAP that fails
- * the check -- never a quiet `unsupported`.
+ * the check -- never a quiet `unsupported`. Aaron 2026-08-24: unknown include is better
+ * than unknown exclude; fail on an unknown dependency from code rather than miss one.
+ * That cut is safe only because the factory has an immune system of standardized math
+ * (laws, tests, verification, retraction) -- without it, extras would be something to
+ * fear, and silence-as-absent would look prudent. PowerBuilder is the degenerate
+ * case of the same cut in TIME: ancestor vs descendant scripts override each other
+ * without disclosing which ran. Last-wins without naming the discarded side is
+ * that defect; a duplicate capability row is a collision, never a Map overwrite.
  *
  * Anchors (Beacon), each checked against what it actually says:
  *  - Cockburn, "Hexagonal Architecture" (ports & adapters, 2005). Stated intent: run the
@@ -151,6 +158,34 @@ export function symmetryGaps(rows: readonly CapabilityRow[], oses: readonly Know
     }
   }
   return gaps;
+}
+
+/**
+ * PowerBuilder's visual inheritance is unknown-exclude in time: earlier silently
+ * replaces later, or later replaces earlier, and the reader cannot see which
+ * script ran. Two rows with the same capability are that collision. Report BOTH
+ * indices -- a Map last-wins or first-wins would drop one without disclosure.
+ */
+export interface SilentOverride {
+  readonly capability: string;
+  readonly earlierIndex: number;
+  readonly laterIndex: number;
+}
+
+export function silentOverrides(rows: readonly CapabilityRow[]): readonly SilentOverride[] {
+  const firstAt = new Map<string, number>();
+  const out: SilentOverride[] = [];
+  for (let i = 0; i < rows.length; i++) {
+    const cap = rows[i]?.capability;
+    if (cap === undefined) continue;
+    const earlier = firstAt.get(cap);
+    if (earlier === undefined) {
+      firstAt.set(cap, i);
+      continue;
+    }
+    out.push({ capability: cap, earlierIndex: earlier, laterIndex: i });
+  }
+  return out;
 }
 
 /**

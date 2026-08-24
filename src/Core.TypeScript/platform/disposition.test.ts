@@ -1,6 +1,12 @@
 import { test, expect } from "bun:test";
 import { classifyOs, osId, type KnownOs } from "./host-os.ts";
-import { dispositionOn, mechanismNounIn, symmetryGaps, type CapabilityRow } from "./disposition.ts";
+import {
+  dispositionOn,
+  mechanismNounIn,
+  silentOverrides,
+  symmetryGaps,
+  type CapabilityRow,
+} from "./disposition.ts";
 
 // The work-item this design was filed under; used as the owner-bearing debt reference.
 const WORKITEM = "081M0T694EG087G0R002SJST5K";
@@ -71,6 +77,37 @@ test("SABOTAGE CONTROL: a missing cell fails, and the failure names the cell", (
     return { ...row, by: by as CapabilityRow["by"] };
   });
   expect(symmetryGaps(sabotaged)).toEqual([{ capability: "elevation-consent", os: "win32", why: "undeclared" }]);
+});
+
+test("unknown include is better than unknown exclude: undeclared is a Gap, never silent unsupported", () => {
+  // POSIX undefined = -1 (silence means absent = unknown exclude).
+  // Zeta: missing cell stays IN the failure set until a fact is written.
+  const row: CapabilityRow = {
+    capability: "synthetic-include-default",
+    intent: "names a capability the code needs; the missing OS must not vanish",
+    by: {
+      linux: { kind: "builtin", component: "c" },
+      win32: { kind: "builtin", component: "c" },
+    },
+  };
+  expect(dispositionOn(row, "darwin")).toBeNull();
+  expect(symmetryGaps([row])).toEqual([{ capability: "synthetic-include-default", os: "darwin", why: "undeclared" }]);
+});
+
+test("PowerBuilder is the degenerate case: earlier/later collision is disclosed, never a silent Map overwrite", () => {
+  const green = REGISTRY[0];
+  if (green === undefined) throw new Error("REGISTRY[0] missing");
+  const earlier: CapabilityRow = { ...green, intent: "first declaration" };
+  const later: CapabilityRow = { ...green, intent: "second declaration" };
+  const lastWins = new Map<string, CapabilityRow>();
+  lastWins.set(earlier.capability, earlier);
+  lastWins.set(later.capability, later);
+  expect(lastWins.size).toBe(1);
+  expect(lastWins.get(earlier.capability)?.intent).toBe("second declaration");
+  expect(silentOverrides([earlier, later])).toEqual([
+    { capability: earlier.capability, earlierIndex: 0, laterIndex: 1 },
+  ]);
+  expect(silentOverrides(REGISTRY)).toEqual([]);
 });
 
 test("SABOTAGE CONTROL: undetermined without a real work-item fails", () => {

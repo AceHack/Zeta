@@ -18,6 +18,24 @@ the port is the free interface, each adapter is earned). It reuses cleanly and n
 needed. One thing the PKI decision does not supply is added here and named as new: **a way to
 say a capability is ABSENT on a platform** — see §5.
 
+## Carved sentence — unknown include (Aaron 2026-08-24)
+
+> _"it's always better to fail on unknown dependency from code than missi a dpenedncy, either can
+> be fixed but only on makes forward movement guarenteed"_
+>
+> _"unknown include is bettern than unknow exclude"_
+>
+> _"only cause we have immune system standardize math, without this you'd have to be scared of
+> the includes"_
+
+POSIX's default is the other cut: undefined means `-1`, silence means absent — **unknown
+exclude**. A missed dependency never appears, so nothing forces the next fact. Zeta inverts it:
+an unclassified name stays **in** the check set as a `Gap` until someone writes a disposition.
+Extra includes are cheap here because the factory already has an immune system of standardized
+math ([`docs/VISION.md`](../VISION.md) — verification stack, algebraic laws, retraction). Without
+that stack, includes would be an attack surface and the safe default would be fear. With it, the
+unrecoverable direction is the miss.
+
 ## 1. The trigger, measured
 
 `src/Core.TypeScript/ci/manifest-symmetry.test.ts` asserts that every tool in `manifests/apt`
@@ -238,6 +256,29 @@ is an essay, which is why there are 7134 bytes of them. Under the model the fail
 exact cell and the five values it accepts, so writing the fact is less work than writing the
 excuse. Honest debt costs an **owner and a work-item ZetaId**, not a paragraph — priced, not
 free, and not open-ended.
+
+**N3.1 — unknown include is better than unknown exclude.** An undeclared cell is a `Gap`
+(included in the failure set), never a quiet `unsupported` (excluded from the world). Code that
+names a tool is the include; a missing Windows sentence is the exclude. Both mistakes can be
+fixed. Only the include-default guarantees the next green is a fact, and that default is safe
+**because** the immune system (tests, algebraic laws, formal verification, retraction) can
+reject extras. `when.ts` still does the POSIX cut — unknown clause → `return false` — and that
+is named remaining unknown-exclude, not a second opinion.
+
+**N3.2 — PowerBuilder is the degenerate case (Aaron 2026-08-24).**
+
+> _"powerbuildr is the degenerate case of this where eariler sliently override later or vice
+> versa without disclosure"_
+
+Visual inheritance (ancestor vs descendant event scripts, Override vs Extend) lets one
+declaration drop the other without the reader seeing which script ran. That is unknown-exclude
+**in time**: earlier or later vanishes, and nothing forces a fact. Last-wins is legal in this
+repo only when the discarded side is named (AgencySignature last-wins; Action-Mode takes `min()`,
+precisely so a later human-directed commit cannot launder earlier autonomy). A second registry
+row for the same capability is a disclosed collision (`silentOverrides`), never a `Map` overwrite.
+The in-repo cousin is `.mise.full.toml` silently disarming the base rust pin
+([research 2026-08-20](../research/2026-08-20-the-surface-declaration-format-one-more-qualifier-not-a-new-grammar.md)
+§7).
 
 **N4 — asymmetry is a complete answer, not a deviation.** A capability present on one OS and
 absent on another is a _closed_ row. The current design cannot express this: the word
