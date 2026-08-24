@@ -1,0 +1,12 @@
+{
+  "pr_number": 14484,
+  "archive_path": "docs/history/pr-reviews/PR-14484-docs-research-the-arena-the-bnn-and-the-exact-gpu-mapping-belief-update-is-alpha.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-23T21:42:05.557Z",
+  "schema_version": "v1",
+  "commit_sha": "511e1a40e1fab9df79cca986f9d761178c2b91b3",
+  "title": "docs(research): the arena, the BNN, and the exact GPU mapping — belief update is alpha blending, and the RGBA coincidence that isn't",
+  "state": "MERGED",
+  "merged_at": "2026-08-23T21:41:20Z",
+  "head_ref": "claude/otto-arena-gpu-mapping-doc"
+}
