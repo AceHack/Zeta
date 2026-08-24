@@ -1,0 +1,12 @@
+{
+  "pr_number": 14820,
+  "archive_path": "docs/history/pr-reviews/PR-14820-design-platform-the-os-is-hexagonal-too-capability-dispositions-over-a-prose-exc.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-24T16:09:39.139Z",
+  "schema_version": "v1",
+  "commit_sha": "fc166f08620db75a2f6cad9b578b92a236ee7020",
+  "title": "design(platform): the OS is hexagonal too — capability dispositions over a prose exception map",
+  "state": "MERGED",
+  "merged_at": "2026-08-24T15:59:15Z",
+  "head_ref": "design/os-platform-hexagonal-port"
+}
