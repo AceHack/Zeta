@@ -1,0 +1,12 @@
+{
+  "pr_number": 14152,
+  "archive_path": "docs/history/pr-reviews/PR-14152-test-browser-prove-committed-intent-recovery.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-23T12:35:31.594Z",
+  "schema_version": "v1",
+  "commit_sha": "20b0a76639567cd4bd4bbfcbda519e631b15d675",
+  "title": "test(browser): prove committed intent recovery",
+  "state": "MERGED",
+  "merged_at": "2026-08-23T12:34:49Z",
+  "head_ref": "codex/browser-committed-intent-recovery"
+}
