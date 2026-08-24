@@ -1,0 +1,12 @@
+{
+  "pr_number": 14911,
+  "archive_path": "docs/history/pr-reviews/PR-14911-research-society-the-accurate-meter-is-four-measurements-and-the-convergence-was.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-24T19:32:23.637Z",
+  "schema_version": "v1",
+  "commit_sha": "1dacaa44338fba31d2de541bf63a9583e8f4273e",
+  "title": "research(society): the \"accurate meter\" is FOUR measurements, and the convergence was a citation cascade",
+  "state": "MERGED",
+  "merged_at": "2026-08-24T19:24:18Z",
+  "head_ref": "soraya/is-the-accurate-meter-one-measurement-or-four"
+}
