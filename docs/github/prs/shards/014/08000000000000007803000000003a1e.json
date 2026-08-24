@@ -1,0 +1,12 @@
+{
+  "pr_number": 14878,
+  "archive_path": "docs/history/pr-reviews/PR-14878-feat-society-structural-decorrelation-different-model-per-agent.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-24T17:32:08.376Z",
+  "schema_version": "v1",
+  "commit_sha": "ed65a238f890268e51d27b9928657fdd634b23e8",
+  "title": "feat(society): structural decorrelation — different model per agent",
+  "state": "MERGED",
+  "merged_at": "2026-08-24T17:31:20Z",
+  "head_ref": "alexa/model-rotation"
+}
