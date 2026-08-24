@@ -496,6 +496,13 @@ export interface SupersedingVerdict {
   readonly detail: string;
 }
 
+/** One attempt that established a verdict, and when. */
+export interface ConcludedOutcome {
+  /** ISO-8601 of when the verdict was established. */
+  readonly at: string;
+  readonly passed: boolean;
+}
+
 /** What a producer saw while looking for one check's verdict. */
 export interface AttemptSummary {
   /** Recent attempts the producer inspected. */
@@ -508,10 +515,20 @@ export interface AttemptSummary {
   readonly newerSpanSeconds: number;
   /** The newest attempt is still in flight — annotate, never overwrite. */
   readonly recheckInFlight: boolean;
-  /** Concluded attempts in the window that PASSED. */
-  readonly concludedGreen: number;
-  /** Concluded attempts in the window that FAILED. Both > 0 ⇒ the lane is flapping. */
-  readonly concludedRed: number;
+  /**
+   * Every attempt in the inspected slice that ESTABLISHED a verdict, newest first,
+   * **with its timestamp**.
+   *
+   * Timestamps rather than counts, and that is the whole point. A bare
+   * `concludedRed: 12` is time-blind: for an hourly lane it describes the last hour,
+   * and for a rarely-run one it can reach back a quarter. `vocab-hygiene` was reported
+   * broken off "12 of the last 20 concluded runs failed" when **every one of those
+   * failures was from June** and the lane had passed every run since 2026-06-10.
+   *
+   * Reporting the outcomes and letting the FOLD do the windowing is also the right
+   * split: the producer says what it saw, the policy decides what counts as recent.
+   */
+  readonly concluded: readonly ConcludedOutcome[];
 }
 
 /**

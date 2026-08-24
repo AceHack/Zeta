@@ -319,3 +319,60 @@ a fallback whenever a token cannot be resolved, so nothing that worked stops wor
 The transport recognises only the exact `gh api <path>` shape; anything with a flag,
 method or body keeps the subprocess. A transport swap that quietly changed the semantics
 of another call would be a worse bug than the latency it saved.
+
+## The rate rule shipped time-blind, and produced two false positives on day one
+
+`MOSTLY FAILING` counted the last N concluded runs with **no bound on the span they
+cover**. For a high-frequency lane 20 runs is an hour and the rate means what it says;
+for a rarely-run one 20 runs can be a quarter, and a single old incident then dominates
+the verdict **permanently** — passing runs arrive too slowly to dilute the window before
+someone stops trusting the dashboard.
+
+| check | reported | actually |
+|---|---|---|
+| `vocab-hygiene` | RED, "12 of 20 concluded runs failed" | **every failure from June**; fixed, and passing every run since 2026-06-10 |
+| `agent-proposal-gated-commit` | RED, "2 of 3 failed", "red for 5d" | its **entire history** is failure, failure, success inside about an hour on 08-17 — a fix landing |
+
+This is `not-yet-due` on the other axis. That one refuses to call a trigger dead before
+it has had an opportunity to fire; this one refuses to call a lane broken off evidence
+that has stopped describing it.
+
+### The bound
+
+1. **Time-bounded window.** The rate is over concluded runs inside `rateWindowSeconds`
+   (7d), not "the last N whenever they happened".
+2. **Insufficient data is not a verdict.** Below `minConcludedForRate` (5) concluded
+   runs inside the window there is a small sample, not a rate — reported as no rate
+   claim, never as a clean bill of health. The row keeps its own latest verdict.
+3. **Recency can clear it.** `recoveryPassStreak` (5) consecutive passes since the last
+   failure clears a rate finding: a lane that broke, was fixed, and has passed that many
+   times running has earned its way out.
+4. **The window is printed in the row**, the way coverage is:
+   `MOSTLY FAILING over 7d (15 of 20 concluded runs failed, 2026-08-18T00:36Z .. 2026-08-22T18:3…, 0 consecutive pass(es) since the last failure)`.
+
+The producer now reports **timestamped outcomes** (`concluded: {at, passed}[]`) rather
+than bare counts, and the fold owns all the windowing. That is the right split: the
+producer says what it saw, the policy decides what counts as recent.
+
+### An error inside the fix
+
+My first `recovered` definition was *"every failure predates the newest pass"* — which
+is true of **any** lane whose most recent run passed, and since the rate rules only run
+when the newest verdict is green, that definition **nullified the entire rule**. Four of
+its own tests went red and caught it. Recovery is now a **streak**, which is what was
+actually meant.
+
+### Verified against the live repo
+
+Both false positives cleared, both real findings survive:
+
+| check | before | after |
+|---|---|---|
+| `vocab-hygiene` | RED | **green** |
+| `agent-proposal-gated-commit` | RED | **green** |
+| `pr-manifest-integrity` | RED | **RED**, window printed |
+| `gate` | RED | **RED** |
+| `build-ai-cluster-iso` | flapping | **flapping**, 3 of 17, window printed |
+| `tlaps-proof` | RED | **RED** |
+
+Totals moved RED 9→7, FLAPPING 9→6, green 45→50.

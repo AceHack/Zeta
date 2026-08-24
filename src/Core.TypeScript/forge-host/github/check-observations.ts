@@ -164,10 +164,12 @@ export function observationForRuns(
         ? 0
         : Math.round((Math.max(...newerTimes) - Math.min(...newerTimes, Date.parse(chosen.updated_at ?? chosen.created_at))) / 1000),
     recheckInFlight: runs[0] !== undefined && runs[0].status !== "completed",
-    concludedGreen: runs.filter((r) => r.status === "completed" && r.conclusion === "success").length,
-    concludedRed: runs.filter(
-      (r) => r.status === "completed" && ["failure", "timed_out", "startup_failure", "action_required"].includes(r.conclusion ?? ""),
-    ).length,
+    // Outcomes WITH their timestamps, newest first. Counts alone are time-blind: for a
+    // rarely-run lane a 20-run window can reach back a quarter, and one old incident
+    // then dominates the verdict permanently. The fold owns the windowing policy.
+    concluded: runs
+      .filter((r) => r.status === "completed" && isConclusive(r.conclusion) && r.conclusion !== "skipped" && r.conclusion !== "neutral")
+      .map((r) => ({ at: r.updated_at ?? r.created_at, passed: r.conclusion === "success" })),
   };
 
   return {

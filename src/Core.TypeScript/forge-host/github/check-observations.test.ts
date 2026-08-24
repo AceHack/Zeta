@@ -265,8 +265,10 @@ describe("attempt counts feed the flapping detector", () => {
       run({ id: 5, conclusion: "success", updated_at: "2026-08-22T20:37:03Z" }),
       run({ id: 4, conclusion: "failure", updated_at: "2026-08-22T19:07:46Z" }),
     ], "github-actions");
-    expect(o?.attempts?.concludedGreen).toBe(2);
-    expect(o?.attempts?.concludedRed).toBe(2);
+    expect(o?.attempts?.concluded.filter((c) => c.passed)).toHaveLength(2);
+    expect(o?.attempts?.concluded.filter((c) => !c.passed)).toHaveLength(2);
+    // timestamps, not just counts — the fold cannot window without them
+    expect(o?.attempts?.concluded[0]).toEqual({ at: "2026-08-22T21:53:34Z", passed: true });
     expect(o?.attempts?.recheckInFlight).toBe(true);
     // the verdict is still the newest CONCLUDED one
     expect(o?.verdict.kind).toBe("green");

@@ -36,6 +36,7 @@ import type {
   CheckId,
   AttemptSummary,
   CheckObservation,
+  ConcludedOutcome,
   CheckObservationFailure,
   TriggerClass,
   SupersedingVerdict,
@@ -76,6 +77,37 @@ export interface FoldConfig {
    * hours, which is the shape this is for.
    */
   readonly flappingMinRed: number;
+  /**
+   * A failure RATE is only a finding over a window recent enough to describe the
+   * PRESENT. Concluded runs older than this do not enter the rate.
+   *
+   * The rule this bounds went out time-blind and produced two false positives on its
+   * first day. `vocab-hygiene`: "12 of the last 20 concluded runs failed" — every
+   * failure from June, the lane fixed and passing every run since 2026-06-10, and the
+   * 20-run window still reaching back two months. For a high-frequency lane 20 runs is
+   * an hour and the rate means what it says; for a rarely-run one it can be a quarter,
+   * and a single old incident then dominates the verdict FOREVER because passing runs
+   * arrive too slowly to dilute the window.
+   *
+   * This is `not-yet-due` on the other axis. That one refuses to call a trigger dead
+   * before it has had an opportunity to fire; this one refuses to call a lane broken
+   * off evidence that has stopped describing it.
+   */
+  readonly rateWindowSeconds: number;
+  /**
+   * Below this many concluded runs inside the window there is no rate, only a small
+   * sample. Reported as insufficient data — never as a clean bill of health, and never
+   * as a verdict.
+   */
+  readonly minConcludedForRate: number;
+  /**
+   * Consecutive passes since the last failure that clear a rate finding.
+   *
+   * "Recency should be able to clear it" — a lane that broke, was fixed, and has passed
+   * this many times running has earned its way out, and a rule that never lets it is
+   * the cries-wolf generator with extra steps.
+   */
+  readonly recoveryPassStreak: number;
 }
 
 export const DEFAULT_FOLD_CONFIG: FoldConfig = {
@@ -83,6 +115,9 @@ export const DEFAULT_FOLD_CONFIG: FoldConfig = {
   darkSpanSeconds: 6 * 3600,
   darkMinAttempts: 2,
   flappingMinRed: 2,
+  rateWindowSeconds: 7 * 86_400,
+  minConcludedForRate: 5,
+  recoveryPassStreak: 5,
 };
 
 // ─── Report shape ───────────────────────────────────────────────────────────
@@ -374,6 +409,78 @@ export function firstOpportunityPassed(
   return { passed: true, why: `its definition has existed for ${humanDuration(age)}` };
 }
 
+/** The concluded outcomes that are recent enough to describe the present, and what they say. */
+export interface RateWindow {
+  /** Concluded outcomes inside the window, newest first. */
+  readonly considered: readonly ConcludedOutcome[];
+  readonly passed: number;
+  readonly failed: number;
+  readonly oldestAt: string | null;
+  readonly newestAt: string | null;
+  /** Enough concluded runs inside the window to speak of a rate at all. */
+  readonly sufficient: boolean;
+  /** Consecutive passes at the newest end of the window, before the first failure. */
+  readonly passStreak: number;
+  /**
+   * The lane has passed enough times IN A ROW since its last failure to have earned
+   * its way out.
+   *
+   * **A streak, not merely "the newest run passed".** The first version of this rule
+   * defined recovery as "every failure predates the newest pass", which is true of
+   * ANY lane whose most recent run passed — and since the rate rules only run when the
+   * newest verdict is green, that definition nullified the entire rule. It was caught
+   * by four of its own tests going red, which is the tests doing their job.
+   *
+   * A run of consecutive passes is evidence and must be able to clear a rate finding;
+   * one pass after four failures is not that evidence.
+   */
+  readonly recovered: boolean;
+}
+
+/**
+ * Restrict the concluded history to what still describes the present, and read it.
+ *
+ * Pure and total. Everything the rate rules decide is decided from this, so the window
+ * is computed in exactly one place and can be printed in the row that used it.
+ */
+export function rateWindow(
+  attempts: AttemptSummary | undefined,
+  now: string,
+  config: FoldConfig,
+): RateWindow | null {
+  if (attempts === undefined) return null;
+  const cutoffMs = Date.parse(now) - config.rateWindowSeconds * 1000;
+  const considered = attempts.concluded.filter((c) => {
+    const t = Date.parse(c.at);
+    return Number.isFinite(t) && t >= cutoffMs;
+  });
+  const passed = considered.filter((c) => c.passed).length;
+  const failed = considered.length - passed;
+  const times = considered.map((c) => c.at).sort(ordinal);
+  // `considered` is newest-first, so the leading run of passes is the current streak.
+  let passStreak = 0;
+  for (const c of considered) {
+    if (!c.passed) break;
+    passStreak += 1;
+  }
+  return {
+    considered,
+    passed,
+    failed,
+    oldestAt: times[0] ?? null,
+    newestAt: times.at(-1) ?? null,
+    sufficient: considered.length >= config.minConcludedForRate,
+    passStreak,
+    recovered: failed > 0 && passStreak >= config.recoveryPassStreak,
+  };
+}
+
+/** How the window reads in a row, so nobody has to re-derive it to judge the claim. */
+export function describeWindow(w: RateWindow): string {
+  if (w.considered.length === 0) return "no concluded runs inside the rate window";
+  return `${w.failed} of ${w.considered.length} concluded runs failed, ${w.oldestAt} .. ${w.newestAt}, ${w.passStreak} consecutive pass(es) since the last failure`;
+}
+
 /**
  * **Is this lane FLAPPING?** — its recent concluded history contains both outcomes.
  *
@@ -394,28 +501,40 @@ export function verdictForFlapping(
   verdict: Verdict,
   attempts: AttemptSummary | undefined,
   config: FoldConfig,
+  now: string,
 ): Verdict | null {
   if (verdict.kind !== "green") return null;
-  if (attempts === undefined) return null;
-  if (attempts.concludedRed < config.flappingMinRed) return null;
-  const total = attempts.concludedGreen + attempts.concludedRed;
+  const w = rateWindow(attempts, now, config);
+  if (w === null) return null;
 
-  // **A MAJORITY of failures is RED, not flapping.** Measured on the first live pass:
-  // one band lumped `pr-manifest-integrity` (15 of 20 concluded runs failed) together
-  // with `agencysignature-enforcement` (2 of 20). Those are not the same claim. When
-  // most concluded runs fail, the newest passing run is the OUTLIER, and calling that
-  // "unstable" undersells a lane that is simply broken — which would make the red list
-  // less actionable, the opposite of the point.
-  if (attempts.concludedRed > attempts.concludedGreen) {
+  // Four refusals before any rate claim, and each one is a false positive this rule
+  // already produced or would have produced. A guard that cries wolf gets muted, and a
+  // muted guard is worse than none — the same reasoning that made `not-yet-due` its own
+  // state rather than a threshold tweak.
+  //
+  // 1. Too few runs inside the window is a small sample, not a rate.
+  if (!w.sufficient) return null;
+  // 2. A sustained streak of passes since the last failure has earned its way out.
+  if (w.recovered) return null;
+  // 3. Below the flake floor there is nothing to say.
+  if (w.failed < config.flappingMinRed) return null;
+
+  const span = `over ${humanDuration(config.rateWindowSeconds)} (${describeWindow(w)})`;
+
+  // **A MAJORITY of failures is RED, not flapping.** One band lumped
+  // `pr-manifest-integrity` (15 of 20) with `agencysignature-enforcement` (2 of 20).
+  // Those are not the same claim: when most concluded runs fail, the newest passing run
+  // is the OUTLIER, and calling that "unstable" undersells a lane that is broken.
+  if (w.failed > w.passed) {
     return {
       kind: "red",
-      detail: `MOSTLY FAILING: ${attempts.concludedRed} of the last ${total} CONCLUDED runs failed. The newest run passed, and it is the outlier — a majority-failing lane is broken, not flaky.`,
+      detail: `MOSTLY FAILING ${span}. The newest run passed and is the outlier — a majority-failing lane is broken, not flaky.`,
     };
   }
 
   return {
     kind: "flapping",
-    detail: `FLAPPING: ${attempts.concludedRed} of the last ${total} CONCLUDED runs failed, and the newest passed. The latest verdict is green; the lane's next verdict is not predictable from it.`,
+    detail: `FLAPPING ${span}, and the newest passed. The latest verdict is green; the lane's next verdict is not predictable from it.`,
   };
 }
 
@@ -540,7 +659,7 @@ export function foldDashboard(input: FoldInput): DashboardReport {
       const base = applyStaleness(obs.verdict, entry.expectation, obs.observedAt, now, config);
       verdict =
         verdictForDarkLane(obs.attempts, config) ??
-        verdictForFlapping(base, obs.attempts, config) ??
+        verdictForFlapping(base, obs.attempts, config, now) ??
         verdictForNeverFiredTrigger(
           entry.expectation, entry.lastDeclaredTriggerAt, viaDeclared, true, entry.definitionSince, now,
         ) ??
