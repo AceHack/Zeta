@@ -1,0 +1,12 @@
+{
+  "pr_number": 14251,
+  "archive_path": "docs/history/pr-reviews/PR-14251-deps-net-sdk-security-roll-10-cves-dependabot-ecosystem-coverage-2-8-and-the-rus.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-24T00:17:53.122Z",
+  "schema_version": "v1",
+  "commit_sha": "452410b37209f7c39b68d3253472b49597846f6e",
+  "title": "deps: .NET SDK security roll (10 CVEs), Dependabot ecosystem coverage 2→8, and the rust/zig couplings become checks",
+  "state": "MERGED",
+  "merged_at": "2026-08-24T00:17:02Z",
+  "head_ref": "deps/security-roll-and-ecosystem-coverage"
+}
