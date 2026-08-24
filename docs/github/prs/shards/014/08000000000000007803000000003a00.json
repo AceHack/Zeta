@@ -1,0 +1,12 @@
+{
+  "pr_number": 14848,
+  "archive_path": "docs/history/pr-reviews/PR-14848-feat-observe-decorrelation-meter-chsh-inspired-independence-measurement.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-24T16:21:19.443Z",
+  "schema_version": "v1",
+  "commit_sha": "c32a2c2671f43ef191d27fd104a4036e8d82b21a",
+  "title": "feat(observe): decorrelation meter — CHSH-inspired independence measurement",
+  "state": "MERGED",
+  "merged_at": "2026-08-24T16:20:30Z",
+  "head_ref": "alexa/decorrelation-meter"
+}
