@@ -1,0 +1,12 @@
+{
+  "pr_number": 14753,
+  "archive_path": "docs/history/pr-reviews/PR-14753-feat-setup-touch-id-sudo-written-where-macos-updates-cannot-silently-revert-it.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-24T13:39:23.907Z",
+  "schema_version": "v1",
+  "commit_sha": "a5facad8364a1d13da2aec5885a91fb1232c4b3c",
+  "title": "feat(setup): Touch ID sudo written where macOS updates cannot silently revert it",
+  "state": "MERGED",
+  "merged_at": "2026-08-24T13:38:22Z",
+  "head_ref": "feat/dejan-touchid-sudo-durable"
+}
