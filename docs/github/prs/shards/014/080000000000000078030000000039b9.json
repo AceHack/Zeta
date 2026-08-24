@@ -1,0 +1,15 @@
+{
+  "pr_number": 14777,
+  "archive_path": "docs/history/pr-reviews/PR-14777-ops-branches-census-3-631-branches-by-pr-state-fail-closed-content-gate.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7lIV3v",
+    "thread:PRRT_kwDOSF9kNM6buGfM"
+  ],
+  "fetched_at": "2026-08-24T16:15:42.403Z",
+  "schema_version": "v1",
+  "commit_sha": "34e5c430507707bec7b5dd6e59cabf29a7bf40a7",
+  "title": "ops(branches): census 3,631 branches by PR state; fail-closed content gate",
+  "state": "MERGED",
+  "merged_at": "2026-08-24T16:14:47Z",
+  "head_ref": "dejan/branch-reaper-census"
+}
