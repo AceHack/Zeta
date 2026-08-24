@@ -1,0 +1,12 @@
+{
+  "pr_number": 14159,
+  "archive_path": "docs/history/pr-reviews/PR-14159-feat-restore-twitch-ai-and-mutual-sim-after-revert.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-23T12:33:04.895Z",
+  "schema_version": "v1",
+  "commit_sha": "3d40e45891d71d9314240265fe2608d7b944b57c",
+  "title": "feat: restore twitch-ai and mutual-sim after revert",
+  "state": "MERGED",
+  "merged_at": "2026-08-23T12:32:22Z",
+  "head_ref": "feat/twitch-ai-restore"
+}
