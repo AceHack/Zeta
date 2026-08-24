@@ -1,0 +1,15 @@
+{
+  "pr_number": 14869,
+  "archive_path": "docs/history/pr-reviews/PR-14869-fix-bnn-the-reward-sensor-fabricated-rewards-and-feat-arc-an-agent-that-plays-fr.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7lO_hB",
+    "thread:PRRT_kwDOSF9kNM6bynmK"
+  ],
+  "fetched_at": "2026-08-24T20:10:26.988Z",
+  "schema_version": "v1",
+  "commit_sha": "178674e3ae0be8f41f83df126fc6fe174042f8f3",
+  "title": "fix(bnn): the reward sensor fabricated rewards — and feat(arc): an agent that plays from pixels",
+  "state": "MERGED",
+  "merged_at": "2026-08-24T20:09:01Z",
+  "head_ref": "claude/tender-hawking-xmcs6m"
+}
