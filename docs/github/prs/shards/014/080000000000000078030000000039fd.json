@@ -1,0 +1,12 @@
+{
+  "pr_number": 14845,
+  "archive_path": "docs/history/pr-reviews/PR-14845-e8-rung-4-build-the-lie-algebra-the-chain-never-had-and-settle-the-mod-8-clock-o.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-24T16:55:58.506Z",
+  "schema_version": "v1",
+  "commit_sha": "562063a01abbbf7804a05a9307b300cb2808b335",
+  "title": "e8(rung-4): build the Lie algebra the chain never had, and settle the mod-8 clock origin by experiment",
+  "state": "MERGED",
+  "merged_at": "2026-08-24T16:55:08Z",
+  "head_ref": "e8-three-derivations"
+}
