@@ -1,0 +1,12 @@
+{
+  "pr_number": 14930,
+  "archive_path": "docs/history/pr-reviews/PR-14930-child-floor-prove-the-composition-claim-and-land-the-governance-anchor-i-missed.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-24T20:04:26.484Z",
+  "schema_version": "v1",
+  "commit_sha": "c6133983cc7a11bdd332294edad0162231110f94",
+  "title": "child-floor: prove the composition claim, and land the governance anchor I missed",
+  "state": "MERGED",
+  "merged_at": "2026-08-24T20:03:30Z",
+  "head_ref": "childfloor-composition-and-governance-anchor"
+}
