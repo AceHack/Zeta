@@ -1,0 +1,12 @@
+{
+  "pr_number": 13928,
+  "archive_path": "docs/history/pr-reviews/PR-13928-fix-observe-society-status-fast-path-drift-rate-integration.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-22T20:52:00.795Z",
+  "schema_version": "v1",
+  "commit_sha": "b9f96ddd1dced65156f1ad0370dbb4dd28a50399",
+  "title": "fix(observe): society-status fast path + drift-rate integration",
+  "state": "MERGED",
+  "merged_at": "2026-08-22T20:51:19Z",
+  "head_ref": "alexa/status-drift-integration"
+}
