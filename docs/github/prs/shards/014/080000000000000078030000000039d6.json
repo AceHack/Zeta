@@ -1,0 +1,12 @@
+{
+  "pr_number": 14806,
+  "archive_path": "docs/history/pr-reviews/PR-14806-fix-cursor-skip-prior-art-and-lean-lake-from-indexing.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-24T15:20:44.936Z",
+  "schema_version": "v1",
+  "commit_sha": "c40afcb81bba61e91c0d779ddadf978999c62656",
+  "title": "fix(cursor): skip prior-art and Lean lake from indexing",
+  "state": "MERGED",
+  "merged_at": "2026-08-24T15:19:10Z",
+  "head_ref": "riven/cursor-ignore-prior-art"
+}
