@@ -1,0 +1,12 @@
+{
+  "pr_number": 14768,
+  "archive_path": "docs/history/pr-reviews/PR-14768-fix-bnn-the-agent-had-committed-a-wall-as-its-own-body-a-clock-was-doing-evidenc.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-24T13:57:42.497Z",
+  "schema_version": "v1",
+  "commit_sha": "bc2d43b39c41ea0f74f0c8e2ff3e7099f0082f56",
+  "title": "fix(bnn): the agent had committed a WALL as its own body — a clock was doing evidence's job",
+  "state": "MERGED",
+  "merged_at": "2026-08-24T13:56:55Z",
+  "head_ref": "claude/tender-hawking-xmcs6m"
+}
