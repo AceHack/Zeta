@@ -1,0 +1,12 @@
+{
+  "pr_number": 14884,
+  "archive_path": "docs/history/pr-reviews/PR-14884-fix-observe-a-proposal-receipt-landed-in-the-events-folder-move-it-where-the-cod.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-24T17:53:05.431Z",
+  "schema_version": "v1",
+  "commit_sha": "ecdcd9cc1e1d7c18b882b436cdb6f5ec87546227",
+  "title": "fix(observe): a proposal RECEIPT landed in the events folder — move it where the code says",
+  "state": "MERGED",
+  "merged_at": "2026-08-24T17:52:26Z",
+  "head_ref": "fix/misplaced-agent-proposal-receipt"
+}
