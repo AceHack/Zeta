@@ -1,0 +1,14 @@
+{
+  "id": "080d01a971543010a013000897d73e98",
+  "at": "2026-08-24T19:10:13.126Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M0TJWAM4087G0R003Z59N49",
+    "type": "bug",
+    "title": "decorrelation-meter: no falsifiers, CHSH framing not constructible, and five scoring inversions",
+    "slug": "decorrelation-meter-no-falsifiers-chsh-framing-not-construct",
+    "priority": "P2",
+    "filename": "081M0TJWAM4087G0R003Z59N49-decorrelation-meter-no-falsifiers-chsh-framing-not-construct.md"
+  }
+}
