@@ -27,10 +27,16 @@ export const CANDIDATES: readonly RuntimeCandidate[] = [
     requires: ["bun"],
     cost: {
       register: "metered",
-      addedBytes: 0,
+      addedBytes: 889_457,
       method:
-        "bun already present; `bun src/Core.TypeScript/ace/ace.ts list` -> rc=0 with no install step. " +
-        "Nothing is added to the host, so the added-byte cost is exactly zero.",
+        "CORRECTED 2026-08-24 (second measurement). The first measurement recorded 0 and said " +
+        "'no install step'; it was taken with a populated `node_modules` already on disk and is " +
+        "the classic check-that-did-not-run. Re-measured from a clean tree with `node_modules` " +
+        "moved aside: `bun src/Core.TypeScript/ace/ace.ts list` -> rc=1, " +
+        "\"Cannot find module '@noble/hashes/blake3.js'\". ace's runtime closure needs exactly ONE " +
+        "npm package and it has zero transitive dependencies (MIT, pinned 2.2.0): with only " +
+        "`node_modules/@noble/hashes` present (98 files, 889,457 apparent bytes, 1,072 KiB on disk) " +
+        "both bun AND node reach rc=0. So this is the cost of the SOURCE rung, not of any one runtime.",
       measuredOn: MEASUREMENT_HOST,
       measuredAt: ON,
     },
@@ -45,26 +51,36 @@ export const CANDIDATES: readonly RuntimeCandidate[] = [
     },
     trust: {
       rank: 0,
-      mustTrust: ["the committed TypeScript source", "the bun runtime already on the host"],
+      mustTrust: [
+        "the committed TypeScript source",
+        "the bun runtime already on the host",
+        "@noble/hashes 2.2.0 from npm (ace's only runtime dependency; see the corrected cost above)",
+      ],
       derivedByUser: true,
     },
     buildable: {
       state: "yes",
       evidence:
         "`bun src/Core.TypeScript/ace/ace.ts list` -> rc=0 ('No DLC packages installed.'); " +
-        "keygen/trust/registry subcommands exercised, 2026-08-24.",
+        "keygen/trust/registry subcommands exercised, 2026-08-24. Requires @noble/hashes on disk " +
+        "(see cost) — 'works' here means 'works after one package install', never 'works from a bare clone'.",
     },
   },
   {
-    // RUNG 1b — same source, different runtime already here. Measured, and BLOCKED.
+    // RUNG 1b — same source, different runtime already here. Measured, and NOW UNBLOCKED.
     id: "source-on-node",
     requires: ["node"],
     cost: {
-      register: "unmetered",
-      reason:
-        "Not measurable as a shippable rung today: it does not work from a clean checkout. " +
-        "The added-byte cost of `@noble/hashes` alone was not isolated because the rung is blocked " +
-        "upstream of that by the specifier problem below.",
+      register: "metered",
+      addedBytes: 889_457,
+      method:
+        "Now measurable, because the rung works (see `buildable`). The cost is IDENTICAL to " +
+        "`source-on-bun`: the same one npm package, `@noble/hashes` 2.2.0 (98 files, 889,457 apparent " +
+        "bytes). Verified by running ace under BOTH runtimes against a `node_modules` containing " +
+        "nothing but that package — rc=0 under each. node itself adds nothing: the rung only applies " +
+        "when node is already on the host.",
+      measuredOn: MEASUREMENT_HOST,
+      measuredAt: ON,
     },
     enablement: {
       score: 0.5,
@@ -81,16 +97,23 @@ export const CANDIDATES: readonly RuntimeCandidate[] = [
       derivedByUser: true,
     },
     buildable: {
-      state: "no",
-      blocker:
-        "MEASURED 2026-08-24: `node src/Core.TypeScript/ace/ace.ts list` -> rc=1, ERR_MODULE_NOT_FOUND on './store'. " +
-        "The ace.ts import closure is 24 files with 47 extension-qualified and 16 EXTENSIONLESS relative " +
-        "specifiers; node ESM requires explicit extensions and bun does not. Rewriting exactly those 16 made " +
-        "node run it: rc=0, same output as bun, with keygen/trust/registry/verify all exercised. " +
-        "Separately the closure needs the npm package `@noble/hashes` (pinned 2.2.0) — proven by an isolated " +
-        "run with no node_modules ancestor: rc=1, 'Cannot find package @noble/hashes'. " +
-        "So this rung is a 16-specifier repo change away from real, not a rewrite. It is NOT claimed as " +
-        "working until that change lands.",
+      state: "yes",
+      evidence:
+        "UNBLOCKED 2026-08-24 (work-item 081M0TKBDXN087G0R003HTKSAZ). The 16 extensionless relative " +
+        "specifiers in ace's import closure now carry explicit `.ts` extensions, which node's ESM " +
+        "resolver requires and bun's does not. `node src/Core.TypeScript/ace/ace.ts list` -> rc=0. " +
+        "Output identity is PROVEN, not asserted: `ace-node-runtime-parity.test.ts` runs the same " +
+        "commands under bun and node in an identical sandbox and compares stdout BYTE-FOR-BYTE — " +
+        "help, empty store, error paths, and an install/list/verify/registry transcript carrying " +
+        "BLAKE3 digests and an Ed25519 signature. Ablation measured which specifiers were load-bearing: " +
+        "of the 16, ELEVEN break node when reverted; the other five sit behind `import type` and are " +
+        "erased by node's type-stripping. All 16 are fixed anyway — leaving five as a trap for the next " +
+        "reader is how the rung rots back to broken. ONE MEASURED LIMIT, stated because a rung's " +
+        "limits must be as legible as its capabilities: `ace deps` on a graph using out-of-subset " +
+        "YAML (flow sequences, folded block scalars) routes through `yaml/vendor.ts`, whose adapter " +
+        "is the Bun built-in `Bun.YAML`. On node that path REFUSES BY NAME (rc=1, 'Bun.YAML is " +
+        "unavailable on this runtime') rather than crashing or answering differently. Subset-YAML " +
+        "graphs validate identically on both. Every other ace surface is at full parity.",
     },
   },
   {

@@ -4,8 +4,8 @@
 // reader.ts scans once and emits events; this module folds that flat event stream into a
 // value tree. It does not re-scan text — it consumes `readEvents`/`tryReadEvents` output.
 
-import { tryReadEvents } from "./reader";
-import type { YamlEvent, YamlFeedback } from "./reader";
+import { tryReadEvents } from "./reader.ts";
+import type { YamlEvent, YamlFeedback } from "./reader.ts";
 
 export type YamlValue =
   | { t: "Null" }

@@ -3,9 +3,9 @@
 // Sits above Helm and below Flux/ArgoCD. Resolves dependency graphs,
 // calculates topo-sort & sync-waves, and generates manifests with variable-flow bindings.
 
-import { parseWithFallback } from "../yaml/vendor";
-import { encode as yamlEncode } from "../yaml/encoder";
-import type { YamlValue } from "../yaml/dom";
+import { parseWithFallback } from "../yaml/vendor.ts";
+import { encode as yamlEncode } from "../yaml/encoder.ts";
+import type { YamlValue } from "../yaml/dom.ts";
 import { readFileSync, existsSync, mkdirSync, writeFileSync } from "node:fs";
 import { join, resolve as toAbsolutePath } from "node:path";
 

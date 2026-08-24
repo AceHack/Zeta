@@ -7,7 +7,7 @@ import type { RevocationMap } from "./signing.ts";
 import type { IndexSignableContent } from "./index-signature.ts";
 import { signIndex } from "./index-signature.ts";
 import type { IndexDoc } from "./registry-remote.ts";
-import { stringCompare } from "../collation/collation";
+import { stringCompare } from "../collation/collation.ts";
 
 /** Join a base url + filename with exactly one separator (trailing slashes normalized). */
 export function joinUrl(base: string, file: string): string {

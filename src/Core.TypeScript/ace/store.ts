@@ -2,7 +2,7 @@ import { chmodSync, existsSync, mkdirSync, readdirSync, readFileSync, statSync, 
 import type { Dirent } from "node:fs";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
-import { stringCompare } from "../collation/collation";
+import { stringCompare } from "../collation/collation.ts";
 
 export type AceDependency =
   | { readonly kind: "inline"; readonly name: string; readonly version: string; readonly url: string; readonly package_hash: string }
@@ -36,7 +36,7 @@ export function defaultStorePath(): string {
   return join(home, ".ace", "store");
 }
 
-import { ContentHash256 } from "../blake3/blake3";
+import { ContentHash256 } from "../blake3/blake3.ts";
 
 /** Content hash of raw bytes, in the `blake3:<hex>` form Ace manifests use. */
 export function contentHash(bytes: Uint8Array): string {

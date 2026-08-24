@@ -109,18 +109,30 @@ describe("the report covers every rung, not just the winner", () => {
 describe("a rung that does not build is never selected", () => {
   test("known-broken rungs are excluded even when their toolchain is present", () => {
     const chosen = rank(CANDIDATES, RICH, 0.5).map((c) => c.id);
-    // Measured 2026-08-24: all three fail to build. See runtime-candidates.ts for evidence.
-    expect(chosen).not.toContain("source-on-node");
+    // Measured 2026-08-24: both still fail to build. See runtime-candidates.ts for evidence.
     expect(chosen).not.toContain("portable-wasm");
     expect(chosen).not.toContain("native-dotnet-aot");
+    // `source-on-node` was in this list until 081M0TKBDXN087G0R003HTKSAZ landed the 16
+    // extension rewrites. It is now buildable, so it belongs on the OTHER side of the
+    // assertion — an exclusion nobody re-checks is how a stale fact survives as a test.
+    expect(chosen).toContain("source-on-node");
   });
 
-  test("node-only host yields NO selection today, because the node rung is blocked", () => {
-    // This is the honest consequence of rung 1b being unbuildable. If someone fixes the 16
-    // specifiers and flips `buildable` to yes, THIS TEST MUST BE UPDATED — which is the
-    // point: the blocked rung is visible in the suite rather than hidden in a comment.
+  test("a node-only host now SELECTS the node source rung — rung 1b is no longer blocked", () => {
+    // The prior version of this test asserted `toolchain-missing` here and carried a standing
+    // instruction: "if someone fixes the 16 specifiers and flips `buildable` to yes, THIS TEST
+    // MUST BE UPDATED". That happened (081M0TKBDXN087G0R003HTKSAZ): `node ace.ts list` -> rc=0
+    // with output byte-identical to bun's, proven in `ace-node-runtime-parity.test.ts`.
+    //
+    // The assertion is kept STRONG rather than relaxed to "not toolchain-missing": a node-only
+    // host must land on the source rung specifically. Aaron's ladder puts recompile-from-source
+    // above download-a-binary, so a node-only host quietly selecting a prebuilt binary would be
+    // the ladder inverting — exactly the failure this suite exists to catch.
     const s = choose(CANDIDATES, NODE_ONLY, 0.5);
-    expect(s.kind).toBe("toolchain-missing");
+    expect(s.kind).toBe("selected");
+    if (s.kind !== "selected") return;
+    expect(s.candidate.id).toBe("source-on-node");
+    expect(s.candidate.trust.derivedByUser).toBe(true);
   });
 });
 

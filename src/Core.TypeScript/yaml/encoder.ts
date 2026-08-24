@@ -7,7 +7,7 @@
 // INSERTION ORDER; strings + keys ALWAYS double-quoted (escapes \\ \" \n \t \r \0,
 // rest literal); null/bool/int plain; float invariant with a forced "." so it
 // resolves back to Float. Culture-invariant throughout.
-import type { YamlValue } from "./dom";
+import type { YamlValue } from "./dom.ts";
 
 function quote(s: string): string {
   let out = '"';

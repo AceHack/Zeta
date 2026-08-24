@@ -40,9 +40,9 @@
 // fallback sits strictly ABOVE the port, and `parseWithFallback` reports which
 // reader answered so a caller can never mistake one for the other.
 
-import { parse as parseSubset } from "./dom";
-import type { YamlValue } from "./dom";
-import type { YamlFeedback } from "./reader";
+import { parse as parseSubset } from "./dom.ts";
+import type { YamlValue } from "./dom.ts";
+import type { YamlFeedback } from "./reader.ts";
 
 /** Which reader produced a value. Reported, never inferred. */
 export type ParseVia = "subset" | "vendor";

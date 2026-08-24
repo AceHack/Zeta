@@ -34,11 +34,11 @@ import {
   removeRegistryRemote,
   readRegistriesConfig,
   type AcePackage,
-} from "./store";
-import { generateKeypair, signManifest, verifySignature, keyId, publicKeyInfoFromPrivatePem } from "./signing";
+} from "./store.ts";
+import { generateKeypair, signManifest, verifySignature, keyId, publicKeyInfoFromPrivatePem } from "./signing.ts";
 import { verifyIndexSignature, signIndex } from "./index-signature.ts";
 import { authorizedCapabilities, capabilityPermitted, validateCapabilities, INSTALL_TIME_VS_RUNTIME } from "./capability-manifest.ts";
-import type { RevocationMap } from "./signing";
+import type { RevocationMap } from "./signing.ts";
 import type { IndexSignableContent } from "./index-signature.ts";
 import { applyRevoke, applyQuarantine, applyUnquarantine } from "./registry-revoke.ts";
 import { resolve } from "./resolve.ts";
@@ -77,7 +77,7 @@ import {
   generateMigrationRunbook,
   type AppDependencyGraphSpec,
   type UpgradeScheduleSpec,
-} from "./deps";
+} from "./deps.ts";
 
 interface ListArgs {
   readonly command: "list";

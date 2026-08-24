@@ -162,6 +162,84 @@ Verified, with a control proving the check can fail:
   image, running the one-liner and asserting the three outcomes. That does not exist and the design
   should not be called validated until it does.
 
+## 10. ADDENDUM 2026-08-24 — the node rung landed, and two of §5's numbers did not survive re-measurement
+
+Appended rather than edited in place: the §5 table is a dated record of what was measured then,
+and overwriting it would delete the path. Work-item **081M0TKBDXN087G0R003HTKSAZ**.
+
+### 10.1 `source-on-node` is now `buildable: yes`
+
+The 16 extensionless specifiers now carry explicit `.ts` extensions. `node
+src/Core.TypeScript/ace/ace.ts list` → **rc=0**, and output identity is **proven rather than
+asserted**: `ace-node-runtime-parity.test.ts` runs the same commands under bun and node in an
+identical sandbox and compares stdout **byte-for-byte** — help, empty store, error paths, and an
+install/list/verify/registry transcript carrying BLAKE3 digests and an Ed25519 signature. So the
+installer's source rung is real on any host with node, not only on one with bun.
+
+### 10.2 Only ELEVEN of the 16 were load-bearing
+
+Measured by ablation — revert one specifier at a time, run node, record `rc` directly:
+
+|                   | count  | why                                                                     |
+| ----------------- | ------ | ----------------------------------------------------------------------- |
+| load-bearing      | **11** | node's ESM resolver fails: `ERR_MODULE_NOT_FOUND`, rc=1                 |
+| erased at runtime | **5**  | reached only through `import type`, which node's type-stripping deletes |
+
+All 16 are fixed regardless. Leaving five that happen to be invisible today is a trap for whoever
+next converts one of those type imports to a value import. (The closure is **25** files, not 24.)
+
+### 10.3 §5's `source-on-bun` row was a check that did not run
+
+§5 records `source-on-bun` as **works** with `addedBytes: 0` and "no install step", and files
+`@noble/hashes` as a cost of the _node_ rung. Re-measured with `node_modules` moved aside:
+
+- `bun src/Core.TypeScript/ace/ace.ts list` → **rc=1**, `Cannot find module '@noble/hashes/blake3.js'`
+- `node …` → **rc=1**, `Cannot find package '@noble/hashes'`
+
+**Both runtimes fail identically.** The dependency belongs to the **source rung**, not to node.
+The original 0 was measured on a tree that already had `node_modules` — the same trap this doc
+warns about elsewhere, hit by this doc's own headline row.
+
+The corrected figure is small and worth stating exactly, because it is the whole gap between
+"clone and run" and "clone, fetch one package, run": ace's runtime closure needs **exactly one**
+npm package, `@noble/hashes` 2.2.0 (MIT, **zero transitive dependencies**) — 98 files, **889,457
+apparent bytes**, 1,072 KiB on disk. With a `node_modules` containing that and nothing else, both
+runtimes reach rc=0. Not the 773-package dev install.
+
+`runtime-candidates.ts` now carries both corrections with their methods.
+
+### 10.4 One measured limit: `ace deps` + out-of-subset YAML is bun-only
+
+Found by measurement, not predicted, and recorded because a rung's limits must be as legible as
+its capabilities. `ace deps validate` on a graph that uses flow sequences (`needs: [cilium]`) or
+folded block scalars (`>-`) falls out of the hand-rolled subset reader and into `yaml/vendor.ts`,
+whose adapter is **`Bun.YAML`** — a Bun built-in with no node equivalent.
+
+| input                                  | bun                   | node                                                               |
+| -------------------------------------- | --------------------- | ------------------------------------------------------------------ |
+| graph inside the YAML subset           | rc=0                  | rc=0, **stdout byte-identical**                                    |
+| graph using flow style / block scalars | rc=0 (vendor adapter) | **rc=1, named refusal**: `Bun.YAML is unavailable on this runtime` |
+
+This is the adapter behaving as designed — it _probes_ for the built-in and returns a named
+refusal rather than a `TypeError` — and it is pinned by a test that asserts the refusal is named
+and that stdout stays empty. It is not closed here: widening the TS subset unilaterally is
+explicitly forbidden (081KT7YW00008QG0R002T1XNWT — the six-oracle byte-lock rests on every oracle
+declining the _same_ inputs), so closing it properly means a node-side vendor adapter, which is
+its own decision. Every other ace surface is at full parity.
+
+### 10.5 What this does NOT resolve
+
+- **`clone-at-tag` is not violated** — that rule is about `ace`-as-resolver, and the repo's own
+  bootstrap already runs `bun install --frozen-lockfile`. But §5's implied story ("run the source
+  you already have") is one npm fetch weaker than it reads. Vendoring a pure-TS BLAKE3 would close
+  the gap; not attempted here, because it is crypto in the proof tier and deserves its own decision.
+- **node prints a 4-line `MODULE_TYPELESS_PACKAGE_JSON` advisory on stderr** each run (the root
+  `package.json` has no `"type"`). stdout is unaffected and parity holds. Setting `"type": "module"`
+  repo-wide would silence it and was deliberately not attempted — it changes resolution for every
+  `.js` in the tree.
+- **§7's four publish questions are untouched**, and §7.4 now has a second option worth naming:
+  with node working, "ship source" no longer means "ship source and hope bun is present".
+
 ## Pointers
 
 - `src/Core.TypeScript/ace/runtime-cost.ts` · `runtime-candidates.ts` · `runtime-probe.ts` · `runtime-plan.ts`

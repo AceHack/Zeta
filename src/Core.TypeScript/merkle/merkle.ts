@@ -6,7 +6,7 @@
 // Hi/Lo halves and re-hashing. A tree over the same leaves yields a BYTE-IDENTICAL root in
 // F#, C#, Rust, and TS — verified by merkle.test.ts against vectors generated from F#.
 
-import { xxh3_128 } from "./xxh3";
+import { xxh3_128 } from "./xxh3.ts";
 
 const MASK64 = 0xffffffffffffffffn;
 

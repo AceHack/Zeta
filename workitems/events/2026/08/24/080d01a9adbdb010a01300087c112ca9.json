@@ -1,0 +1,14 @@
+{
+  "id": "080d01a9adbdb010a01300087c112ca9",
+  "at": "2026-08-24T19:18:28.022Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M0TKBDXN087G0R003HTKSAZ",
+    "type": "task",
+    "title": "ace runs on plain node: 16 extensionless ESM specifiers + byte-identical output proof",
+    "slug": "ace-runs-on-plain-node-16-extensionless-esm-specifiers-byte",
+    "priority": "P2",
+    "filename": "081M0TKBDXN087G0R003HTKSAZ-ace-runs-on-plain-node-16-extensionless-esm-specifiers-byte.md"
+  }
+}

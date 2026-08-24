@@ -14,7 +14,7 @@
 // whitespace, non-minimal escapes, leading zeros / '+' signs) as `NonCanonical`.
 // "The compilers don't lie."
 
-import { type Tagged, type EncodeError, type DecodeError, type EncodeResult, type DecodeResult, MAX_NESTING_DEPTH } from "./types";
+import { type Tagged, type EncodeError, type DecodeError, type EncodeResult, type DecodeResult, MAX_NESTING_DEPTH } from "./types.ts";
 export { type Tagged, type EncodeError, type DecodeError, type EncodeResult, type DecodeResult, MAX_NESTING_DEPTH };
 
 const I64_MAX = 9223372036854775807n;

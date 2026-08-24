@@ -1,5 +1,5 @@
 import { blake3 } from "@noble/hashes/blake3.js";
-import type { MerkleHash } from "../merkle/merkle";
+import type { MerkleHash } from "../merkle/merkle.ts";
 
 /**
  * **ContentHash256** — the full 256-bit raw BLAKE3 digest (the proof tier; treaty `081KTH59TVZ`).
