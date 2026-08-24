@@ -1,0 +1,14 @@
+{
+  "id": "080d01a3248e9010a01300088f14e97b",
+  "at": "2026-08-24T15:30:01.298Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M0T694EG087G0R002SJST5K",
+    "type": "task",
+    "title": "OS/platform hexagonal port: capability dispositions replace the prose exception map",
+    "slug": "os-platform-hexagonal-port-capability-dispositions-replace-t",
+    "priority": "P2",
+    "filename": "081M0T694EG087G0R002SJST5K-os-platform-hexagonal-port-capability-dispositions-replace-t.md"
+  }
+}
