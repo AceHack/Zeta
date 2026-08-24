@@ -262,8 +262,24 @@ main {
   font-size: 0.85rem;
   font-weight: 800;
   color: #fff;
-  transition: all 0.1s ease-out;
+  /* The glow inputs update every ~32 ms frame; a transition shorter than a
+     few frames just relays the flicker. 250 ms integrates it into a pulse. */
+  transition:
+    opacity 250ms linear,
+    transform 250ms ease-out,
+    box-shadow 250ms linear,
+    background 250ms linear;
   box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+}
+
+/* Same smoothing for the pads and triggers, which had none at all. */
+.dpad-btn,
+.trigger-btn {
+  transition:
+    opacity 250ms linear,
+    transform 250ms ease-out,
+    box-shadow 250ms linear,
+    background 250ms linear;
 }
 
 .face-btn.action-btn {
@@ -528,12 +544,13 @@ main {
 }
 .why-strip {
   font-family: var(--mono, monospace);
-  font-size: 0.72rem;
-  line-height: 1.35;
+  font-size: 0.8rem;
+  line-height: 1.4;
   color: #e2e8f0;
   background: rgba(8, 14, 26, 0.92);
-  border-left: 2px solid rgba(103, 232, 249, 0.7);
-  padding: 0.3em 0.55em;
+  border-left: 3px solid rgba(103, 232, 249, 0.8);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  padding: 0.45em 0.7em;
   cursor: pointer;
   user-select: none;
 }

@@ -1,0 +1,14 @@
+{
+  "id": "080d0199f3218810a01300080b31d067",
+  "at": "2026-08-24T10:08:42.033Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M0SKWS1B087G0R0016VSQM2",
+    "type": "bug",
+    "title": "Flaky: Clifford Cl(3,0) cross-language byte-lock fails at ~15s on busy runners (TS/Python/Go subprocess spawn)",
+    "slug": "flaky-clifford-cl-3-0-cross-language-byte-lock-fails-at-15s",
+    "priority": "P2",
+    "filename": "081M0SKWS1B087G0R0016VSQM2-flaky-clifford-cl-3-0-cross-language-byte-lock-fails-at-15s.md"
+  }
+}

@@ -84,8 +84,13 @@ export class Chip8TvPlayer {
     this.screenContainer.appendChild(headerContainer);
     // The canvas and the perception overlay share one positioned wrapper so
     // bounding boxes (in % of the 64×32 grid) land exactly on the pixels.
+    // The wrapper MUST fill the 16:9 screen box: the canvas is sized
+    // 100%×100% of its parent, and an unsized wrapper collapses the whole
+    // screen to the canvas's intrinsic 64×32 (shipped briefly; caught live).
     const canvasWrap = document.createElement("div");
     canvasWrap.style.position = "relative";
+    canvasWrap.style.width = "100%";
+    canvasWrap.style.height = "100%";
     this.canvas.style.display = "block";
     canvasWrap.appendChild(this.canvas);
     // D3/D4 (#14503): the frost layer (uncertainty) and the fixation ring
@@ -120,13 +125,15 @@ export class Chip8TvPlayer {
       this.descendWhy();
     });
     this.screenContainer.appendChild(canvasWrap);
+    // The WHY strip lives BELOW the screen, not inside it: the screen box is
+    // a fixed 16:9 flex container with overflow:hidden, and an in-flow child
+    // there fights the canvas for space instead of speaking under it.
     this.whyStrip = document.createElement("div");
     this.whyStrip.className = "why-strip";
     this.whyStrip.style.display = "none";
     this.whyStrip.addEventListener("click", () => {
       this.descendWhy();
     });
-    this.screenContainer.appendChild(this.whyStrip);
 
     // Xbox Controller Setup
     this.llmtvOverlay = document.createElement("div");
@@ -183,6 +190,7 @@ export class Chip8TvPlayer {
     `;
 
     this.element.appendChild(this.screenContainer);
+    this.element.appendChild(this.whyStrip);
     this.element.appendChild(this.llmtvOverlay);
     document.getElementById(containerId)?.appendChild(this.element);
   }
@@ -506,7 +514,9 @@ export class Chip8TvPlayer {
     }
     const answer = whyAnswer(this.lastWhy, this.whyDepth);
     this.whyStrip.classList.toggle("terminal", answer === WHY_TERMINAL);
-    this.whyStrip.textContent = `why${"?".repeat(this.whyDepth + 1)} ${answer}`;
+    // Say WHO is speaking — an unlabelled sentence under a game screen reads
+    // as a glitch, not as the agent answering the question it was asked.
+    this.whyStrip.textContent = `🧠 ${this.agentId} · why${"?".repeat(this.whyDepth + 1)} ${answer}`;
     this.whyStrip.title =
       answer === WHY_TERMINAL ? "That is the bottom — click to close" : "Click for the next reason down";
   }
