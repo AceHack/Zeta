@@ -1,0 +1,12 @@
+{
+  "pr_number": 14890,
+  "archive_path": "docs/history/pr-reviews/PR-14890-feat-zetadb-add-reserved-capacity-admission.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-24T18:44:07.670Z",
+  "schema_version": "v1",
+  "commit_sha": "9e7f3b3b8cb8c4bf5e01bf327fca3e193c3f2b51",
+  "title": "feat(zetadb): add reserved capacity admission",
+  "state": "MERGED",
+  "merged_at": "2026-08-24T18:37:48Z",
+  "head_ref": "claim/081M0Q8TY1B-reserved-capacity-policy"
+}
