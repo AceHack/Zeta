@@ -4,6 +4,12 @@
 # renderer were holding multiple GB with these in the corpus.
 #
 # Do not add memory/ or docs/research/ or docs/backlog/ here.
+#
+# Also listed in .cursorignore (Agent Grep skip). Kept here so the
+# indexer stays off these trees if .cursorignore is later narrowed.
+references/prior-art/
+.lake/
+lake-packages/
 
 docs/github/
 docs/history/

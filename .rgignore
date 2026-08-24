@@ -1,3 +1,9 @@
 # ripgrep (terminal + Cursor Grep). Tracked fixture; git must keep it.
 # See .cursorignore for why this path is a cycle.
 tests/cross-verification/experience/fixtures/tree1/subdir1/link_to_parent
+
+# Same bulky trees as .cursorignore. gitignore already skips them for
+# default `rg`; this covers `rg --no-ignore-vcs`.
+references/prior-art/
+.lake/
+lake-packages/

@@ -7,3 +7,13 @@
 # walk recursed 64 levels / 793 characters until PATH_MAX. Cursor's
 # Grep/Glob already abort with "File system loop found".
 tests/cross-verification/experience/fixtures/tree1/subdir1/link_to_parent
+
+# Gitignored bulky trees Cursor still indexes unless named here.
+# `references/prior-art/` is regenerable upstream clones (AGENTS.md:
+# explicit-target search only; naive walk is a multi-hour runaway).
+# `.lake/` / `lake-packages/` are Lean build artifacts (Mathlib ~6.8 GB).
+# Not our code. Agent should not Grep/Glob them; targeted Read of a
+# named file still works via an explicit path in the shell.
+references/prior-art/
+.lake/
+lake-packages/

@@ -9,11 +9,15 @@ describe("Cursor / rg ignore files keep the fixture cycle out of search", () => 
   test(".cursorignore names the link_to_parent cycle", () => {
     const text = readFileSync(resolve(REPO_ROOT, ".cursorignore"), "utf8");
     expect(text).toContain(CYCLE);
+    expect(text).toContain("references/prior-art/");
+    expect(text).toContain(".lake/");
+    expect(text).toContain("lake-packages/");
   });
 
   test(".rgignore names the same cycle so terminal rg does not abort", () => {
     const text = readFileSync(resolve(REPO_ROOT, ".rgignore"), "utf8");
     expect(text).toContain(CYCLE);
+    expect(text).toContain("references/prior-art/");
   });
 
   test(".cursorindexingignore excludes archive dumps, not memory or backlog", () => {
@@ -26,6 +30,9 @@ describe("Cursor / rg ignore files keep the fixture cycle out of search", () => 
     expect(patterns).toContain("docs/history/");
     expect(patterns).toContain("docs/observe-events/");
     expect(patterns).toContain("data/tick-shards/");
+    expect(patterns).toContain("references/prior-art/");
+    expect(patterns).toContain(".lake/");
+    expect(patterns).toContain("lake-packages/");
     expect(patterns).not.toContain("memory/");
     expect(patterns).not.toContain("docs/backlog/");
     expect(patterns).not.toContain("docs/research/");
