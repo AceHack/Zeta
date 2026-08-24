@@ -11,6 +11,7 @@ if (typeof pageGlobal.Buffer === "undefined") {
   pageGlobal.Buffer = { from: (str: string) => new TextEncoder().encode(str) };
 }
 import { Chip8TvPlayer } from "./components/Chip8TvPlayer";
+import { StudyRunner } from "./study";
 import type { MainToWorkerMessage, WorkerToMainMessage } from "./protocol";
 
 /** getElementById that throws with the id instead of returning null. */
@@ -214,12 +215,21 @@ function startSwarmSimulation(): void {
     });
   }
 
+  // D6 (?study=1): the prediction falsifier — pauses at probe points, asks
+  // "where next?", grades against the agent's actual displacement, and
+  // counterbalances full/none/placebo/arrow-only conditions.
+  const study =
+    new URLSearchParams(window.location.search).get("study") === "1"
+      ? new StudyRunner(post, player)
+      : null;
+
   // Listen for frames from the worker (FRAME is currently the only variant;
   // the protocol union will grow with the attention overlay).
   worker.onmessage = (e: MessageEvent<WorkerToMainMessage>) => {
     const { payload } = e.data;
     player.updateFrame(payload.display);
     player.updatePredictions(payload);
+    study?.onFrame(payload);
   };
   worker.onerror = (e) => {
     console.error("[SwarmWorker Error]", e.message, e.filename, e.lineno);

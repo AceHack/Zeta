@@ -7,7 +7,18 @@ import {
   whyAnswer,
   type WhyContext,
 } from "../../../../Core.TypeScript/bayesian/why-chain";
+import {
+  placeboAttention,
+  type StudyCondition,
+} from "../../../../Core.TypeScript/chip8/study-protocol";
 import type { AttentionFramePayload, FramePayload } from "../protocol";
+
+/** Dominant-axis arrow for an intent vector; null when there is no intent. */
+function intentArrow(dx: number, dy: number): string | null {
+  if (dx === 0 && dy === 0) return null;
+  if (Math.abs(dx) >= Math.abs(dy)) return dx >= 0 ? "→" : "←";
+  return dy >= 0 ? "↓" : "↑";
+}
 
 export class Chip8TvPlayer {
   private element: HTMLElement;
@@ -27,6 +38,12 @@ export class Chip8TvPlayer {
   private lastWhy: WhyContext | null = null;
   /** Cycle of the latest frame; a backwards jump means the cart was switched. */
   private lastCycle = -1;
+  /**
+   * D6: what the overlay may show this trial. "full" is the shipped page;
+   * the other three exist only under ?study=1 — the study gates what the
+   * viewer SEES, never what the payload carries (scoring reads the payload).
+   */
+  private overlayCondition: StudyCondition = "full";
   public agentId: string;
 
   constructor(containerId: string, agentId: string) {
@@ -213,7 +230,7 @@ export class Chip8TvPlayer {
     this.ctx.putImageData(imgData, 0, 0);
   }
 
-  /** The mode header: "HUNT · self#1 · adv#4". */
+  /** The mode header: "HUNT · self#1 · adv#4" — or "HUNT →" in arrow-only. */
   private renderModeHeader(arena: ArenaReadout): void {
     const concept = document.getElementById(`concept-${this.agentId}`);
     if (!concept) return;
@@ -222,6 +239,12 @@ export class Chip8TvPlayer {
     const parts = [arena.mode.toUpperCase()];
     if (selfTrack) parts.push(`self#${String(selfTrack.id)}`);
     if (adv) parts.push(`adv#${String(adv.id)}`);
+    // D6 arrow-only: with the tracks stripped, the intent vector renders as
+    // a bare arrow — mode + intent is ALL this condition may show.
+    if (arena.tracks.length === 0 && arena.desired) {
+      const glyph = intentArrow(arena.desired.dx, arena.desired.dy);
+      if (glyph) parts.push(glyph);
+    }
     concept.textContent = parts.join(" · ");
   }
 
@@ -269,6 +292,11 @@ export class Chip8TvPlayer {
     if (!arena) {
       const concept = document.getElementById(`concept-${this.agentId}`);
       if (concept) concept.textContent = "[OBSERVING]";
+      const objective = document.getElementById(`objective-${this.agentId}`);
+      if (objective) objective.textContent = "[--]";
+      // Clear, don't linger: stale boxes over a null arena were invisible
+      // before the study's "none" condition made the path reachable.
+      this.perceptionOverlay.innerHTML = "";
       return;
     }
     this.renderModeHeader(arena);
@@ -417,7 +445,44 @@ export class Chip8TvPlayer {
    * that frame's own `why` payload — the state that drove the decision —
    * so the sentence on screen tracks the live decision, never a cache.
    */
+  /**
+   * D6: apply a study condition. Leaving "full" hides the WHY chip and
+   * closes an open chain — the overlay family is what the study meters,
+   * so a non-full trial must not leak any of it.
+   */
+  public setOverlayCondition(c: StudyCondition): void {
+    this.overlayCondition = c;
+    const chip = document.getElementById(`why-${this.agentId}`);
+    if (chip) chip.style.display = c === "full" ? "" : "none";
+    if (c !== "full" && this.whyDepth !== -1) {
+      this.whyDepth = -1;
+      this.renderWhy();
+    }
+  }
+
+  /**
+   * The placebo payload: the real frame's SCALAR readouts (meter, ρ — they
+   * carry no direction) under fake SPATIAL content (frost, attended set,
+   * fixation) that is a pure function of the cycle. Visually a live field;
+   * informationally decoupled from the screen.
+   */
+  private placeboPayload(real: AttentionFramePayload, cycle: number): AttentionFramePayload {
+    const fake = placeboAttention(cycle, this.tileDivs.length, real.topK);
+    return {
+      cols: real.cols,
+      rows: real.rows,
+      variance: Float32Array.from(fake.variance),
+      mean: real.mean,
+      attended: fake.attended,
+      fixation: fake.fixation,
+      usefulWork: real.usefulWork,
+      rho: real.rho,
+      topK: real.topK,
+    };
+  }
+
   private descendWhy(): void {
+    if (this.overlayCondition !== "full") return;
     if (this.whyDepth === -1) {
       this.whyDepth = 0;
     } else if (this.lastWhy === null || whyAnswer(this.lastWhy, this.whyDepth) === WHY_TERMINAL) {
@@ -453,11 +518,27 @@ export class Chip8TvPlayer {
       this.whyDepth = -1;
     }
     this.lastCycle = frame.cycle;
-    this.lastWhy = frame.why;
+    this.lastWhy = this.overlayCondition === "full" ? frame.why : null;
     this.renderWhy();
 
-    this.renderArena(frame.arena);
-    this.renderAttention(frame.attention);
+    // D6: gate what each study condition may SHOW (the payload itself is
+    // untouched — the study's scoring reads it regardless of rendering).
+    let arena = frame.arena;
+    let attention = frame.attention;
+    if (this.overlayCondition === "none") {
+      arena = null;
+      attention = null;
+    } else if (this.overlayCondition === "arrow-only") {
+      arena = frame.arena
+        ? { mode: frame.arena.mode, tracks: [], ocr: [], desired: frame.arena.desired }
+        : null;
+      attention = null;
+    } else if (this.overlayCondition === "placebo") {
+      attention = frame.attention ? this.placeboPayload(frame.attention, frame.cycle) : null;
+    }
+
+    this.renderArena(arena);
+    this.renderAttention(attention);
 
     // Process BNN predictions (RGB probabilities) and committed keys (CMYK)
     const keyMap = this.buttonIds();

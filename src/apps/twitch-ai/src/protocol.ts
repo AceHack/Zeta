@@ -46,7 +46,10 @@ export type MainToWorkerMessage =
       readonly payload: { readonly buffer: ArrayBuffer };
     }
   | { readonly type: "KEY_DOWN"; readonly payload: { readonly key: number } }
-  | { readonly type: "KEY_UP"; readonly payload: { readonly key: number } };
+  | { readonly type: "KEY_UP"; readonly payload: { readonly key: number } }
+  /** D6 (?study=1): freeze the sim at a probe point / release it after. */
+  | { readonly type: "PAUSE"; readonly payload: Record<string, never> }
+  | { readonly type: "RESUME"; readonly payload: Record<string, never> };
 
 /**
  * worker → main: one frame per tick. Everything the overlay labels rides on

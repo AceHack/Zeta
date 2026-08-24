@@ -50,6 +50,8 @@ let cheatTable: ReturnType<typeof createCheatTable>;
 let currentRomRef: Uint8Array;
 let cycle = 0;
 let isRunning = false;
+/** D6: a paused loop stops SCHEDULING ticks; RESUME restarts the chain. */
+let paused = false;
 
 const STEPS_PER_TICK = 10;
 const agentId = "browser-node";
@@ -140,6 +142,19 @@ async function handleMessage(message: MainToWorkerMessage): Promise<void> {
       setManualKey(message.payload.key, false);
       break;
     }
+    case "PAUSE": {
+      paused = true;
+      break;
+    }
+    case "RESUME": {
+      // Only a paused loop restarts — a spurious RESUME must not fork a
+      // second setTimeout chain next to the one already running.
+      if (paused) {
+        paused = false;
+        void loop();
+      }
+      break;
+    }
   }
 }
 
@@ -160,6 +175,8 @@ const KNOWN_MESSAGE_TYPES: ReadonlySet<string> = new Set([
   "INJECT_EPIGENETIC_MATERIAL",
   "KEY_DOWN",
   "KEY_UP",
+  "PAUSE",
+  "RESUME",
 ]);
 
 /**
@@ -256,7 +273,9 @@ function applySwarmKeyActions(): void {
 
 async function loop(): Promise<void> {
   console.log(`[SwarmWorker] loop() cycle=${String(cycle)}`);
-  if (!isRunning || !swarm) return;
+  // A pending setTimeout may still fire once after PAUSE lands; it exits
+  // here without simulating or rescheduling, and RESUME restarts the chain.
+  if (!isRunning || !swarm || paused) return;
 
   rebootIfCartSwitched();
 

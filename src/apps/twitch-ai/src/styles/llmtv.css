@@ -542,3 +542,63 @@ main {
   border-left-color: rgba(148, 163, 184, 0.6);
   font-style: italic;
 }
+
+/* ── The study panel (D6 of #14503, ?study=1) ─────────────────────────────
+   The prediction falsifier's cockpit: current trial + condition, the
+   four-way probe (shown only while the sim is frozen), and the running
+   per-condition tallies against chance. */
+.study-panel {
+  position: fixed;
+  left: 50%;
+  bottom: 0.75rem;
+  transform: translateX(-50%);
+  z-index: 900;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.45rem 0.8rem;
+  background: rgba(8, 14, 26, 0.95);
+  border: 1px solid rgba(103, 232, 249, 0.4);
+  border-radius: 6px;
+  font-family: var(--mono, monospace);
+  font-size: 0.75rem;
+  color: #e2e8f0;
+}
+.study-status {
+  color: #67e8f9;
+  white-space: nowrap;
+}
+.study-prompt {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+.study-arrow {
+  width: 2rem;
+  height: 2rem;
+  font-size: 1rem;
+  color: #e2e8f0;
+  background: rgba(103, 232, 249, 0.12);
+  border: 1px solid rgba(103, 232, 249, 0.5);
+  border-radius: 4px;
+  cursor: pointer;
+}
+.study-arrow:hover {
+  background: rgba(103, 232, 249, 0.3);
+}
+.study-skip {
+  font-size: 0.7rem;
+  color: #94a3b8;
+  background: transparent;
+  border: 1px solid rgba(148, 163, 184, 0.4);
+  border-radius: 4px;
+  padding: 0.2rem 0.45rem;
+  cursor: pointer;
+}
+.study-skip:hover {
+  color: #e2e8f0;
+}
+.study-results {
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
