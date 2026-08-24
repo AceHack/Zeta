@@ -140,6 +140,53 @@ export default defineConfig(
       "sonarjs/no-alphabetical-sort": "off",
     },
   },
+  // ── No credential may be written to Web Storage ────────────────────────
+  //
+  // `localStorage` / `sessionStorage` are plain text, readable synchronously by
+  // ANY script running on the origin, and `localStorage` additionally survives
+  // the tab, the browser restart, and the user's memory that they ever typed
+  // the secret. There is no expiry, no HttpOnly equivalent, and no per-script
+  // gate: one XSS, one bad dependency, or one browser extension with host
+  // permissions reads the whole store. So a credential does not belong there,
+  // and this rule refuses the write instead of trusting each new browser
+  // surface to rediscover why.
+  //
+  // WHY A LINT AND NOT A REVIEW NOTE: the defect this replaces
+  // (`zeta_llm_api_key` in src/apps/twitch-ai/src/main.ts) was written
+  // carefully — the key was never echoed back into the DOM, clearing was an
+  // explicit button, and the label said out loud that it went to localStorage.
+  // Care at the call site did not help, because the problem was the LOCATION,
+  // not the handling. A tripwire catches the location.
+  //
+  // HONEST LIMITS, stated so nobody reads this as a proof:
+  //  - It matches STRING LITERAL key names only. A key passed as a variable
+  //    (`setItem(CREDENTIAL_STORAGE_KEY, …)`) is invisible to it.
+  //  - Bare "key" is deliberately NOT in the pattern: `sortKey`, `cacheKey`
+  //    and friends would drown the signal. Compound forms (`api_key`,
+  //    `apiKey`, `privateKey`) are matched.
+  //  - It says nothing about the VALUE. Storing a secret under the name
+  //    "preferences" passes this rule and is still wrong.
+  // It is a tripwire on the cheapest, most common shape, not a guarantee.
+  //
+  // The direction credentials should go instead is
+  // `src/Core.TypeScript/secrets/credential.ts`: fetched at point of use,
+  // handed to one consumer, never parked in an ambient store. That is the
+  // browser-side statement of the same §13 noninterference discipline
+  // `lint-no-ambient-credential-hoist.ts` enforces for shell environments.
+  {
+    files: typeScriptFilePatterns,
+    rules: {
+      "no-restricted-syntax": [
+        "error",
+        {
+          selector:
+            'CallExpression[callee.object.name=/^(localStorage|sessionStorage)$/][callee.property.name="setItem"][arguments.0.value=/(token|secret|passwd|password|credential|api[-_]?key|apikey|auth|bearer|private[-_]?key|privatekey)/i]',
+          message:
+            "Do not write a credential to Web Storage: it is clear text, readable by any script on the origin, and localStorage outlives the tab. Fetch it at point of use instead (src/Core.TypeScript/secrets/credential.ts), or do not collect it at all. See src/apps/twitch-ai/src/main.ts for the worked removal.",
+        },
+      ],
+    },
+  },
   ...typeCheckedConfigOverrides,
   {
     files: typeScriptFilePatterns,

@@ -10,6 +10,34 @@ if (typeof pageGlobal.process === "undefined") {
 if (typeof pageGlobal.Buffer === "undefined") {
   pageGlobal.Buffer = { from: (str: string) => new TextEncoder().encode(str) };
 }
+/**
+ * PURGE THE DEAD CREDENTIAL SINK.
+ *
+ * Until this change the page collected an LLM API key, persisted it to
+ * `localStorage` in clear text, and posted it to the swarm worker \u2014 which
+ * logged a warning and dropped it. `SwarmController` builds all three of its
+ * backends with the literal string "dummy" and resolves its host from the
+ * persona-registry, so the key authenticated nothing. It carried 100% of the
+ * exposure of a stored secret and 0% of the function. (CodeQL
+ * js/clear-text-storage-of-sensitive-data, main.ts:120 as it stood.)
+ *
+ * Deleting the collection code is NOT sufficient on its own: a visitor who
+ * already saved a key keeps it in their browser forever, orphaned and still
+ * readable by any script on the origin. Removal without a purge would close the
+ * alert and leave every existing viewer's secret exactly where it was. So the
+ * key is actively destroyed on load, on every load, permanently \u2014 this is
+ * not a migration step to delete later.
+ */
+const LEGACY_API_KEY_STORAGE_KEY = "zeta_llm_api_key";
+const purgedLegacyApiKey = localStorage.getItem(LEGACY_API_KEY_STORAGE_KEY) !== null;
+if (purgedLegacyApiKey) {
+  localStorage.removeItem(LEGACY_API_KEY_STORAGE_KEY);
+  console.warn(
+    "[Twitch] Removed an LLM API key stored by an earlier version of this page. " +
+      "It was never used by the engine. If it is still valid, rotate it.",
+  );
+}
+
 import { Chip8TvPlayer } from "./components/Chip8TvPlayer";
 import { StudyRunner } from "./study";
 import type { MainToWorkerMessage, WorkerToMainMessage } from "./protocol";
@@ -58,16 +86,21 @@ app.innerHTML = `
       <div style="margin-bottom: 1rem;">
         <label style="display: block; margin-bottom: 0.5rem; font-size: 0.875rem; color: var(--text-muted);">OpenAI-Compatible Base URL</label>
         <input type="text" id="api-base-url" placeholder="https://api.openai.com" style="width: 100%; padding: 0.5rem; background: var(--bg); border: 1px solid var(--border); color: var(--text); border-radius: 4px;" />
+        <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 0.5rem;">Saved in this browser as a preference. The engine does not read it yet &mdash; <code>SwarmController</code> resolves host and model from the persona-registry and exposes no override.</div>
       </div>
 
-      <div style="margin-bottom: 1.5rem;">
-        <label style="display: block; margin-bottom: 0.5rem; font-size: 0.875rem; color: var(--text-muted);">API Key (Saved to localStorage)</label>
-        <input type="password" id="api-key" placeholder="sk-..." style="width: 100%; padding: 0.5rem; background: var(--bg); border: 1px solid var(--border); color: var(--text); border-radius: 4px;" />
-        <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 0.5rem;">Leave empty to use local Mock LLM for free. Using an API Key exposes your key to this static host's localStorage.</div>
+      <div style="margin-bottom: 1.5rem; padding: 0.75rem; border: 1px solid var(--border); border-radius: 4px; font-size: 0.75rem; color: var(--text-muted); line-height: 1.5;">
+        <strong style="color: var(--text);">This page does not ask for an API key.</strong>
+        The arena runs fully offline: the CHIP-8 path bypasses the LLM, and the
+        engine builds every backend with a placeholder credential. There is
+        nothing a key would authenticate, so collecting one would store a secret
+        in exchange for no capability.
       </div>
+
+      <div id="storage-disclosure" style="margin-bottom: 1.5rem; font-size: 0.75rem; color: var(--text-muted);"></div>
 
       <div style="display: flex; justify-content: flex-end; gap: 1rem;">
-        <button id="settings-clear-key" class="upload-btn" style="background: transparent; margin-right: auto;">Clear saved key</button>
+        <button id="settings-clear-key" class="upload-btn" style="background: transparent; margin-right: auto;">Clear stored settings</button>
         <button id="settings-cancel" class="upload-btn" style="background: transparent;">Cancel</button>
         <button id="settings-save" class="upload-btn" style="background: var(--primary);">Save & Reload</button>
       </div>
@@ -82,19 +115,87 @@ const settingsCancel = mustGet("settings-cancel");
 const settingsClear = mustGet("settings-clear-key");
 const settingsSave = mustGet("settings-save");
 const baseUrlInput = mustGet("api-base-url") as HTMLInputElement;
-const apiKeyInput = mustGet("api-key") as HTMLInputElement;
+const storageDisclosure = mustGet("storage-disclosure");
+
+/**
+ * Ordinal (UTF-16 code-unit) comparison, never `localeCompare` \u2014 the
+ * repo's collation treaty forbids linguistic comparison because it varies by
+ * locale and ICU version (.claude/rules/culture-invariant-by-default.md).
+ */
+function ordinalCompare(a: string, b: string): number {
+  if (a < b) return -1;
+  if (a > b) return 1;
+  return 0;
+}
+
+/**
+ * Render what this origin ACTUALLY holds, read back out of `localStorage` at
+ * the moment the panel opens.
+ *
+ * This is a readout, not a promise. A hardcoded list of "what we store" is a
+ * claim that goes stale the moment some other module writes a key; enumerating
+ * the live store cannot go stale, because it *is* the store. Key names and byte
+ * lengths only \u2014 never values. That is the discipline the rest of the repo
+ * applies to secrets (prove presence, never print the value), kept here even
+ * though nothing this page writes is a credential any more, because this is the
+ * pattern the next browser surface will copy.
+ */
+function renderStorageDisclosure(): void {
+  const entries: { readonly key: string; readonly bytes: number }[] = [];
+  for (let i = 0; i < localStorage.length; i++) {
+    const key = localStorage.key(i);
+    if (key?.startsWith("zeta") !== true) continue;
+    entries.push({ key, bytes: (localStorage.getItem(key) ?? "").length });
+  }
+  entries.sort((a, b) => ordinalCompare(a.key, b.key));
+
+  // Built with textContent, never innerHTML: these strings come back out of a
+  // store that any script on the origin can write, so they are treated as data.
+  storageDisclosure.replaceChildren();
+
+  const heading = document.createElement("div");
+  heading.style.cssText = "color: var(--text); font-weight: 600; margin-bottom: 0.4rem;";
+  heading.textContent = "Stored by this page, in this browser";
+  storageDisclosure.appendChild(heading);
+
+  if (purgedLegacyApiKey) {
+    const purged = document.createElement("div");
+    purged.style.cssText =
+      "margin-bottom: 0.5rem; padding: 0.5rem; border-left: 2px solid var(--primary); color: var(--text);";
+    purged.textContent =
+      "An API key saved by an earlier version of this page was found in this " +
+      "browser and has been deleted. It was never used \u2014 the engine " +
+      "ignored it. If that key is still valid, rotate it: it sat in clear text, " +
+      "readable by any script on this origin.";
+    storageDisclosure.appendChild(purged);
+  }
+
+  if (entries.length === 0) {
+    const none = document.createElement("div");
+    none.textContent = "Nothing. No keys are set.";
+    storageDisclosure.appendChild(none);
+    return;
+  }
+
+  const list = document.createElement("ul");
+  list.style.cssText = "margin: 0; padding-left: 1.1rem;";
+  for (const entry of entries) {
+    const item = document.createElement("li");
+    item.className = "mono";
+    item.textContent = `${entry.key} \u2014 ${String(entry.bytes)} bytes`;
+    list.appendChild(item);
+  }
+  storageDisclosure.appendChild(list);
+
+  const note = document.createElement("div");
+  note.style.cssText = "margin-top: 0.4rem;";
+  note.textContent = "Names and sizes only \u2014 values are never displayed.";
+  storageDisclosure.appendChild(note);
+}
 
 settingsBtn.addEventListener("click", () => {
   baseUrlInput.value = localStorage.getItem("zeta_llm_base_url") ?? "";
-  // The saved API key is never echoed back into the DOM — the field stays
-  // empty and the placeholder says whether one exists. (Round-tripping the
-  // secret through an input value re-exposes it to anything that can read
-  // the page; leaving it in storage only is strictly less surface.)
-  apiKeyInput.value = "";
-  apiKeyInput.placeholder =
-    localStorage.getItem("zeta_llm_api_key") !== null
-      ? "•••••• saved — leave blank to keep, type to replace"
-      : "sk-...";
+  renderStorageDisclosure();
   settingsModal.style.display = "flex";
 });
 
@@ -103,9 +204,9 @@ settingsCancel.addEventListener("click", () => {
 });
 
 settingsClear.addEventListener("click", () => {
-  localStorage.removeItem("zeta_llm_api_key");
-  apiKeyInput.value = "";
-  apiKeyInput.placeholder = "sk-...";
+  localStorage.removeItem("zeta_llm_base_url");
+  baseUrlInput.value = "";
+  renderStorageDisclosure();
 });
 
 settingsSave.addEventListener("click", () => {
@@ -115,14 +216,8 @@ settingsSave.addEventListener("click", () => {
     localStorage.removeItem("zeta_llm_base_url");
   }
 
-  // Blank keeps the saved key (it is no longer echoed into the field);
-  // clearing is the explicit button above.
-  if (apiKeyInput.value.trim()) {
-    localStorage.setItem("zeta_llm_api_key", apiKeyInput.value.trim());
-  }
-
   settingsModal.style.display = "none";
-  window.location.reload(); // Reload to re-initialize SwarmController with new credentials
+  window.location.reload(); // Reload to re-initialize the swarm with the new setting
 });
 
 function startSwarmSimulation(): void {
@@ -186,14 +281,16 @@ function startSwarmSimulation(): void {
     }
   });
 
-  // Setup ModelBackend Config from LocalStorage
-  const savedApiKey = localStorage.getItem("zeta_llm_api_key");
+  // `apiKey` stays in the INIT payload SHAPE because `swarm.worker.ts` still
+  // reads the field in order to warn that it is ignored, but this page has no
+  // key to put in it and never will: it is pinned `null` at the only call site.
+  // Dropping the field from the protocol is the worker owner's follow-up.
   const savedBaseUrl = localStorage.getItem("zeta_llm_base_url");
 
   post({
     type: "INIT",
     payload: {
-      apiKey: savedApiKey,
+      apiKey: null,
       baseUrl: savedBaseUrl,
     },
   });
