@@ -503,6 +503,29 @@ had no term for whether the directory should exist at all. Recorded rather than 
 because a criterion that needed a red build to find its missing term is the interesting artefact
 here, not the five files.
 
+### Cost estimate — minutes/run x runs/month, measured after landing
+
+Stating this properly, because "no new job, ~20 s" is a per-run number and a per-run number is not a
+cost estimate.
+
+| term | value | source |
+|---|---|---|
+| added wall-clock per run | **20 s** | `lint (TS)` step `ESLint over the measured-clean path roster`, run 32676220081: 00:18:19Z -> 00:18:39Z |
+| runs/day | **594** and **529** on the two days sampled | `search/issues?q=repo:...+is:pr+created:>=...`, 24 h windows ending 2026-08-24T00:40Z and 2026-08-23T00:40Z |
+| is `lint (TS)` path-gated? | **no** — no `if:`, no `needs:` | it runs on every gate run, plus every push that re-triggers one |
+| **added runner time** | **~=3.1 h/day, ~=95 h/month** at 560 runs/day | 20 s x 560 x 30 |
+
+**95 runner-hours a month is not a rounding error, and it should not be presented as one.** What
+makes it acceptable here is that the repo is **public**, so GitHub-hosted standard runners are billed
+at zero; the real cost is 20 s of added latency on a job whose `tsc` step already takes ~27 s, and
+the concurrency pressure that adds to the runner pool at 560 runs/day.
+
+**The number that should worry a future widener is the slope.** The 20 s is almost entirely
+typed-linting program load, not the 102 files — the repo-wide run over 2,500 files took roughly 3-4
+minutes on a developer laptop. So widening the roster is close to free until it is not, and the
+inflection is somewhere well below "the whole repo". Anyone taking the roster past a few hundred
+files should re-measure the step rather than assume the load term still dominates.
+
 ### Clean but deliberately NOT enrolled
 
 | path | files | why not |
