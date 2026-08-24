@@ -1,0 +1,12 @@
+{
+  "pr_number": 14694,
+  "archive_path": "docs/history/pr-reviews/PR-14694-fix-persona-keys-close-rr-7-total-port-dispatch-and-the-biometric-prompt-names-t.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-24T10:50:44.130Z",
+  "schema_version": "v1",
+  "commit_sha": "4020d08af948f32c1534d927321c3dd24d765442",
+  "title": "fix(persona-keys): close RR-7 — total port dispatch, and the biometric prompt names the port PERFORMED",
+  "state": "MERGED",
+  "merged_at": "2026-08-24T10:49:58Z",
+  "head_ref": "nazar/rr7-close-rotate-port-dispatch"
+}
