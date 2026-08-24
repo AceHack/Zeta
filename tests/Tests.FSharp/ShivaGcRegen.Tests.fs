@@ -125,8 +125,12 @@ let ``CONSERVATION: the three classes partition the heap — nothing duplicated,
               ShivaGc.object' "" (v "id-less") [] ]
     let resident, droppable, paused = ShivaGc.partition3 (fun id -> id = "derived") [ "root" ] h
     let all = ids resident @ ids droppable @ ids paused |> List.sort
-    Assert.Equal<string list>(ids h, all) // every object exactly once
-    Assert.Equal(List.length (ids h), List.length all) // no duplication
+    // Every object exactly once. The list equality below ALREADY discharges "no
+    // duplication": equal lists have equal lengths, so a separate length assertion is
+    // strictly implied by this one and constrains nothing. It was here and is deleted
+    // rather than registered in the arity census -- recording a redundant assertion as
+    // a legitimate check is the vacuity class acquiring a permanent home.
+    Assert.Equal<string list>(ids h, all)
 
 // ── 4. THE FALSIFIER — byte-identity across an actual drop ──────────────────────────────────────
 

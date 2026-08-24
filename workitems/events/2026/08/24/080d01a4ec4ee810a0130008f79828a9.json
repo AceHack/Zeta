@@ -1,0 +1,14 @@
+{
+  "id": "080d01a4ec4ee810a0130008f79828a9",
+  "at": "2026-08-24T16:32:14.813Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M0T9V2EV087G0R0000YYPDK",
+    "type": "bug",
+    "title": "ShivaGc byte-identity falsifier compares run recipe to itself — tests determinism, not regeneration fidelity",
+    "slug": "shivagc-byte-identity-falsifier-compares-run-recipe-to-itsel",
+    "priority": "P2",
+    "filename": "081M0T9V2EV087G0R0000YYPDK-shivagc-byte-identity-falsifier-compares-run-recipe-to-itsel.md"
+  }
+}
