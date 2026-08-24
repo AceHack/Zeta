@@ -1,0 +1,12 @@
+{
+  "pr_number": 14808,
+  "archive_path": "docs/history/pr-reviews/PR-14808-fix-zetadb-contain-admission-policy-failures.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-24T15:24:11.989Z",
+  "schema_version": "v1",
+  "commit_sha": "8a8d011de110dd327039e491b02fb6e75f139436",
+  "title": "fix(zetadb): contain admission policy failures",
+  "state": "MERGED",
+  "merged_at": "2026-08-24T15:23:22Z",
+  "head_ref": "claim/081M0Q8TY1B-admission-policy-safety"
+}
