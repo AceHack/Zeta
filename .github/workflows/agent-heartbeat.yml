@@ -237,11 +237,19 @@ jobs:
           #
           # All three fit in ~2GB RAM (well within the 7GB runner limit).
           # The 7b codegen model is pulled separately for the work tick.
-          HEARTBEAT_MODELS_alexa="qwen2.5:0.5b"
-          HEARTBEAT_MODELS_otto="llama3.2:1b"
-          HEARTBEAT_MODELS_soraya="gemma2:2b"
-          HEARTBEAT_MODEL_VAR="HEARTBEAT_MODELS_${AGENT}"
-          HEARTBEAT_MODEL="${!HEARTBEAT_MODEL_VAR}"
+          # Heterogeneous by design: three model FAMILIES, so a wrong answer from one
+          # agent is not automatically the wrong answer from the others. Selected by
+          # `case` rather than indirect expansion (`${!VAR}`) -- shellcheck cannot follow
+          # an indirect reference and reports the roster as unused (SC2034), and the
+          # honest fix is to stop being indirect rather than to silence the rule.
+          case "$AGENT" in
+            alexa)  HEARTBEAT_MODEL="qwen2.5:0.5b" ;;
+            otto)   HEARTBEAT_MODEL="llama3.2:1b" ;;
+            soraya) HEARTBEAT_MODEL="gemma2:2b" ;;
+            # FAIL-CLOSED. Indirect expansion yielded "" for an unknown agent and the
+            # failure surfaced later as `ollama pull ""`. An unknown agent halts here.
+            *) echo "::error::no heartbeat model declared for agent '$AGENT'" >&2; exit 1 ;;
+          esac
           echo "[models] $AGENT heartbeat model: $HEARTBEAT_MODEL"
           ollama pull "$HEARTBEAT_MODEL"
           # Smart model for codegen/decompose work (5GB, fits in 7GB runner)
@@ -285,11 +293,13 @@ jobs:
           AGENT: ${{ matrix.agent }}
         run: |
           # Each agent uses its own model family (structural decorrelation)
-          HEARTBEAT_MODELS_alexa="qwen2.5:0.5b"
-          HEARTBEAT_MODELS_otto="llama3.2:1b"
-          HEARTBEAT_MODELS_soraya="gemma2:2b"
-          MODEL_VAR="HEARTBEAT_MODELS_${AGENT}"
-          MODEL="${!MODEL_VAR}"
+          # Same roster as the pull step above; same `case` for the same reason.
+          case "$AGENT" in
+            alexa)  MODEL="qwen2.5:0.5b" ;;
+            otto)   MODEL="llama3.2:1b" ;;
+            soraya) MODEL="gemma2:2b" ;;
+            *) echo "::error::no heartbeat model declared for agent '$AGENT'" >&2; exit 1 ;;
+          esac
 
           mkdir -p /tmp && echo "2026-07-08" > /tmp/zeta-first-session-complete
           export ZETA_PARTICIPANT="local-llm:${MODEL}"
