@@ -42,9 +42,15 @@
 # touches package.json or bun.lock — so the common case heals in one build cycle
 # rather than waiting for the next tick.
 #
-# Loop safety: the push uses the workflow's GITHUB_TOKEN, whose pushes do not
-# trigger workflows, and the commit message carries [skip ci]. Belt and suspenders,
-# matching drift-sweep.yml.
+# HOW THE HEAL LANDS (changed 2026-08-18). This lane used to commit "[skip ci]" and
+# push straight at main. Ruleset "CI Gate" evaluates `gate (required)` at PUSH time,
+# and "[skip ci]" guarantees that check is never scheduled — so the push was rejected
+# deterministically, not transiently. The heal therefore could never land, and the
+# summary said "**Healed.** ... and pushed" regardless, because it read the DETECTOR's
+# exit code and never the push result: an outcome reported without being observed.
+# Same defect family as drift-sweep.yml, same remedy — park on
+# `heartbeat/lockfile-healer` and flush via a checked PR — and the summary is now
+# derived from the flush step's own outcome.
 
 name: lockfile-healer
 
@@ -60,7 +66,8 @@ on:
   workflow_dispatch: {}
 
 permissions:
-  contents: write # commits the regenerated lockfile
+  contents: write      # push the lane's heartbeat/lockfile-healer staging branch
+  pull-requests: write # open + arm the flush PR that lands the heal on main
 
 concurrency:
   group: lockfile-healer
@@ -74,9 +81,23 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          # THIS CHECKOUT'S CREDENTIAL IS THE ONE THAT PUSHES `heartbeat/lockfile-healer`.
+          # Same leftover PAT ladder as tick-metrics / #13808 cadence lanes: a
+          # GITHUB_TOKEN-actored synchronize parks `gate (required)` and the
+          # summary would then print Healed while the write sat unmergeable.
+          persist-credentials: true
+          token: ${{ secrets.ZETA_TELEMETRY_FLUSH_TOKEN || secrets.GITHUB_TOKEN }}
 
       - name: Install bun
         uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
+
+      - name: Prepare the staging working tree (flush-via-staging lane)
+        # Runs BEFORE detect so every later step — detect, heal, the safety
+        # refusal, and the verify — operates on exactly the tree that will be
+        # flushed. It also fetches `heartbeat/lockfile-healer`, which is what
+        # gives the flush's `--force-with-lease` a defined expectation.
+        run: bun src/Core.TypeScript/forge-host/github/flush-via-staging.ts prepare --lane lockfile-healer
 
       - name: Detect (authoritative — the same command every consumer runs)
         id: detect
@@ -103,7 +124,11 @@ jobs:
           # ever rewrite the lockfile; if it has touched package.json or anything
           # else, the situation is not the one this healer was built for and a human
           # should look.
-          changed=$(git diff --name-only)
+          # vs HEAD, not the index: `prepare` may have staged an unlanded previous
+          # heal, and an index-relative diff would then report "nothing" for a
+          # perfectly good lockfile — a false refusal. HEAD-relative sees every
+          # modification either way, so the safety property is unchanged.
+          changed=$(git diff --name-only HEAD)
           if [ "$changed" != "bun.lock" ]; then
             echo "::error::expected only bun.lock to change, got: ${changed:-<nothing>}"
             exit 1
@@ -116,23 +141,22 @@ jobs:
           # very condition that summoned the healer.
           bun install --frozen-lockfile
 
-      - name: Commit and push
+      - name: Flush the heal to main via staging branch + PR
+        id: flush
         if: steps.detect.outputs.code == '1'
+        # No "[skip ci]" in the message: the flush commit is the PR head, and a skip
+        # token there would stop `gate` reporting and hang the PR forever.
+        # This step fails the job if the heal does not land — the summary below
+        # reads THIS step's outcome, so an unlanded heal can never print "Healed".
+        env:
+          GH_TOKEN: ${{ secrets.ZETA_TELEMETRY_FLUSH_TOKEN || secrets.ZETA_PR_ARCHIVE_TOKEN || secrets.GITHUB_TOKEN }}
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add bun.lock
-          git commit -m "fix(deps): regenerate bun.lock (LD001 auto-heal) [skip ci]
-
-          package.json dependencies moved without a regenerated lockfile, so
-          \`bun install --frozen-lockfile\` was failing for every consumer.
-
-          Healed automatically: bun.lock only, verified with --frozen-lockfile
-          before pushing. package.json untouched."
-          # Rebase: the fleet pushes to main constantly and this lane only ever
-          # appends one regenerated file.
-          git pull --rebase --autostash origin main
-          git push origin HEAD:main
+          bun src/Core.TypeScript/forge-host/github/flush-via-staging.ts flush \
+            --lane lockfile-healer \
+            --paths bun.lock \
+            --message "fix(deps): regenerate bun.lock (LD001 auto-heal)"
 
       - name: Summary
         if: always()
@@ -142,7 +166,14 @@ jobs:
             echo
             case "${{ steps.detect.outputs.code }}" in
               0) echo "In sync — no action." ;;
-              1) echo "**Healed.** bun.lock regenerated, verified, and pushed." ;;
+              1)
+                # Derived from the flush's OBSERVED outcome, never from the detector's.
+                if [ "${{ steps.flush.outcome }}" = "success" ]; then
+                  echo "**Healed.** bun.lock regenerated, verified, and flushed via \`heartbeat/lockfile-healer\` for a checked merge."
+                else
+                  echo "**Heal did NOT land** (flush outcome: \`${{ steps.flush.outcome }}\`). bun.lock was regenerated and verified, but it is not on main — \`bun install --frozen-lockfile\` is still failing for consumers."
+                fi
+                ;;
               *) echo "**Indeterminate** — bun could not determine sync state. Refused to act; no lockfile was written." ;;
             esac
           } >> "$GITHUB_STEP_SUMMARY"

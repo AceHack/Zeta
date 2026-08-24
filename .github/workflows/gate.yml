@@ -2335,6 +2335,25 @@ jobs:
       - name: Proof-lineage binary exception (no-binary-in-proof-lineage.md)
         run: bun src/Core.TypeScript/hygiene/audit-proof-lineage-binaries.ts
 
+      # Two commit-back-lane audits, both of which existed as code and NEITHER of which any
+      # workflow invoked. `audit-push-without-rebase.ts` (AH001) shipped 2026-08-10 with a
+      # named live instance and zero callers — the guard against a lane erasing its own
+      # commit had never once executed in CI. An audit nothing runs is the vacuity class in
+      # its purest form: it reads as protection and constrains nothing, which is exactly the
+      # property both of these audits exist to refuse in other people's code.
+      #
+      # AH002 is the newer half. The `[skip ci]` refusal already lived inside
+      # `flush-via-staging.ts`, where it protects every lane that ALREADY adopted the safe
+      # route and is invisible to every lane that did not — so `lockfile-healer` pushed a
+      # skip-token commit at `main` for eleven days while reporting 40/40 green, because its
+      # `Commit and push` step is gated on drift being detected and no drift occurred. The
+      # load-bearing path had never run under ruleset "CI Gate".
+      - name: Commit-back lane can re-express its work (AH001)
+        run: bun src/Core.TypeScript/hygiene/audit-push-without-rebase.ts
+
+      - name: Commit-back lane can actually land (AH002)
+        run: bun src/Core.TypeScript/hygiene/audit-skip-token-cannot-land.ts
+
       # The .NET SDK version is declared in TWO files and, until 2026-08-23, nothing checked
       # that they agreed: `global.json` carried `rollForward: latestPatch` (which reads like
       # automatic security uptake and is not — it only selects among ALREADY-INSTALLED SDKs)
