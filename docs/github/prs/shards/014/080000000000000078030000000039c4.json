@@ -1,0 +1,12 @@
+{
+  "pr_number": 14788,
+  "archive_path": "docs/history/pr-reviews/PR-14788-research-the-etymology-attack-and-the-supply-chain-substitution-are-one-attack-a.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-24T14:20:52.796Z",
+  "schema_version": "v1",
+  "commit_sha": "9f55e850c491866847fc3abf22efb0429d29ff00",
+  "title": "research: the etymology attack and the supply-chain substitution are one attack — and only a metric catches drift",
+  "state": "MERGED",
+  "merged_at": "2026-08-24T14:20:06Z",
+  "head_ref": "docs/name-stable-referent-swapped"
+}
