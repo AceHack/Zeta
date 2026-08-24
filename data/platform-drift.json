@@ -1,19 +1,19 @@
 {
-  "asOf": "2026-08-24T14:20:09Z",
+  "asOf": "2026-08-24T15:50:49Z",
   "report": {
     "runs": 500,
-    "executedRuns": 129,
-    "cancelledRuns": 371,
-    "coverage": 0.258,
+    "executedRuns": 131,
+    "cancelledRuns": 369,
+    "coverage": 0.262,
     "legs": [
       {
         "name": "build-and-test (macos-26)",
         "classification": "blocking",
-        "executedRuns": 129,
+        "executedRuns": 131,
         "failures": 1,
         "nonBlockingFailures": 0,
-        "failureRate": 0.007751937984496124,
-        "cleanStreak": 113,
+        "failureRate": 0.007633587786259542,
+        "cleanStreak": 116,
         "lastFailure": {
           "runId": 32138908732,
           "at": "2026-08-18T12:49:42Z",
@@ -23,11 +23,11 @@
       {
         "name": "build-and-test (ubuntu-24.04)",
         "classification": "blocking",
-        "executedRuns": 129,
+        "executedRuns": 131,
         "failures": 2,
         "nonBlockingFailures": 0,
-        "failureRate": 0.015503875968992248,
-        "cleanStreak": 30,
+        "failureRate": 0.015267175572519083,
+        "cleanStreak": 33,
         "lastFailure": {
           "runId": 32669399955,
           "at": "2026-08-23T22:03:21Z",
@@ -37,21 +37,21 @@
       {
         "name": "build-and-test (ubuntu-24.04-arm)",
         "classification": "unobserved",
-        "executedRuns": 129,
+        "executedRuns": 131,
         "failures": 0,
         "nonBlockingFailures": 0,
         "failureRate": 0,
-        "cleanStreak": 129,
+        "cleanStreak": 131,
         "lastFailure": null
       },
       {
         "name": "build-and-test (windows-11-arm)",
         "classification": "non-blocking",
-        "executedRuns": 129,
+        "executedRuns": 131,
         "failures": 5,
         "nonBlockingFailures": 4,
-        "failureRate": 0.03875968992248062,
-        "cleanStreak": 23,
+        "failureRate": 0.03816793893129771,
+        "cleanStreak": 26,
         "lastFailure": {
           "runId": 32675661332,
           "at": "2026-08-24T00:07:36Z",
@@ -61,11 +61,11 @@
       {
         "name": "build-and-test (windows-2025)",
         "classification": "non-blocking",
-        "executedRuns": 129,
+        "executedRuns": 131,
         "failures": 7,
         "nonBlockingFailures": 6,
-        "failureRate": 0.05426356589147287,
-        "cleanStreak": 13,
+        "failureRate": 0.05343511450381679,
+        "cleanStreak": 16,
         "lastFailure": {
           "runId": 32718143365,
           "at": "2026-08-24T10:42:40Z",
@@ -73,9 +73,235 @@
         }
       }
     ],
-    "latestRunId": 32738057808
+    "latestRunId": 32747335931
   },
   "records": [
+    {
+      "id": 32747335931,
+      "at": "2026-08-24T15:50:49Z",
+      "sha": "2b9571e8901009d69ec938bf505bc9d5a6653a52",
+      "conclusion": "cancelled",
+      "rollup": "absent",
+      "legs": {}
+    },
+    {
+      "id": 32746975777,
+      "at": "2026-08-24T15:47:16Z",
+      "sha": "fe194f79357498c6c10f0ed1d2bce2078398734a",
+      "conclusion": "cancelled",
+      "rollup": "absent",
+      "legs": {}
+    },
+    {
+      "id": 32746942155,
+      "at": "2026-08-24T15:46:57Z",
+      "sha": "72d044a390393f2c19c3632e0ecc16cfb6e1993e",
+      "conclusion": "cancelled",
+      "rollup": "absent",
+      "legs": {}
+    },
+    {
+      "id": 32746909089,
+      "at": "2026-08-24T15:46:37Z",
+      "sha": "f78ce16faf603e4838303f3e57f58146f7c9f9d3",
+      "conclusion": "cancelled",
+      "rollup": "absent",
+      "legs": {}
+    },
+    {
+      "id": 32746895706,
+      "at": "2026-08-24T15:46:29Z",
+      "sha": "45b946148c17552d6adf8ebb386bcf077faad182",
+      "conclusion": "cancelled",
+      "rollup": "absent",
+      "legs": {}
+    },
+    {
+      "id": 32746877240,
+      "at": "2026-08-24T15:46:18Z",
+      "sha": "41a8c8ef59bb936306583198af5bc39bfe7c12e8",
+      "conclusion": "cancelled",
+      "rollup": "absent",
+      "legs": {}
+    },
+    {
+      "id": 32746870916,
+      "at": "2026-08-24T15:46:14Z",
+      "sha": "d4dbe64b3f268e6ce5e43f21f787206f67655a15",
+      "conclusion": "cancelled",
+      "rollup": "absent",
+      "legs": {}
+    },
+    {
+      "id": 32746833636,
+      "at": "2026-08-24T15:45:52Z",
+      "sha": "b24f144b9a5ddfef42dea2714c678ad82ccc7f37",
+      "conclusion": "cancelled",
+      "rollup": "absent",
+      "legs": {}
+    },
+    {
+      "id": 32746777375,
+      "at": "2026-08-24T15:45:21Z",
+      "sha": "7b8684b5b8e4fcbbd90eecbd73c5d3745bd1f11c",
+      "conclusion": "cancelled",
+      "rollup": "absent",
+      "legs": {}
+    },
+    {
+      "id": 32746768489,
+      "at": "2026-08-24T15:45:15Z",
+      "sha": "2374068fb1e06ad276c8e8317b76ab57c7b18616",
+      "conclusion": "cancelled",
+      "rollup": "absent",
+      "legs": {}
+    },
+    {
+      "id": 32746694854,
+      "at": "2026-08-24T15:44:32Z",
+      "sha": "8d77593453fd25b8ffc7e317ce0833113f68c8df",
+      "conclusion": "cancelled",
+      "rollup": "absent",
+      "legs": {}
+    },
+    {
+      "id": 32746687644,
+      "at": "2026-08-24T15:44:28Z",
+      "sha": "fdea58dabff83bff2b647bfac049d45a6fc37b57",
+      "conclusion": "cancelled",
+      "rollup": "absent",
+      "legs": {}
+    },
+    {
+      "id": 32746520347,
+      "at": "2026-08-24T15:42:49Z",
+      "sha": "a43186107179b12b69e6b0c8e5d918a3076da246",
+      "conclusion": "cancelled",
+      "rollup": "absent",
+      "legs": {}
+    },
+    {
+      "id": 32746288547,
+      "at": "2026-08-24T15:40:30Z",
+      "sha": "bb07239b8b3c57163dd3d7b309957c29e99aa07f",
+      "conclusion": "cancelled",
+      "rollup": "absent",
+      "legs": {}
+    },
+    {
+      "id": 32746229368,
+      "at": "2026-08-24T15:39:54Z",
+      "sha": "e22ab0a6c1a0b6376776ae042f997fa93d2b44a3",
+      "conclusion": "cancelled",
+      "rollup": "absent",
+      "legs": {}
+    },
+    {
+      "id": 32746090004,
+      "at": "2026-08-24T15:38:28Z",
+      "sha": "bc0771857ede487f5cd0cf9a9e21c0253538eeed",
+      "conclusion": "cancelled",
+      "rollup": "absent",
+      "legs": {}
+    },
+    {
+      "id": 32746082601,
+      "at": "2026-08-24T15:38:24Z",
+      "sha": "0b17c5940d19f29a795104d782bb9698cfe55093",
+      "conclusion": "cancelled",
+      "rollup": "absent",
+      "legs": {}
+    },
+    {
+      "id": 32745652434,
+      "at": "2026-08-24T15:34:10Z",
+      "sha": "ef51caa6d94fd91627637bee88c379c661bb0985",
+      "conclusion": "failure",
+      "rollup": "success",
+      "legs": {
+        "build-and-test (macos-26)": "success",
+        "build-and-test (ubuntu-24.04)": "success",
+        "build-and-test (windows-2025)": "success",
+        "build-and-test (windows-11-arm)": "success",
+        "build-and-test (ubuntu-24.04-arm)": "success"
+      }
+    },
+    {
+      "id": 32745414514,
+      "at": "2026-08-24T15:31:51Z",
+      "sha": "2a5ff022b131c2d6a69d752c6dbc336d55c8b041",
+      "conclusion": "cancelled",
+      "rollup": "absent",
+      "legs": {}
+    },
+    {
+      "id": 32744920205,
+      "at": "2026-08-24T15:27:00Z",
+      "sha": "1d13f130fcf300c6a8d92f5e2322974ce8c4236f",
+      "conclusion": "cancelled",
+      "rollup": "absent",
+      "legs": {}
+    },
+    {
+      "id": 32744720517,
+      "at": "2026-08-24T15:25:04Z",
+      "sha": "fd1b181913f6c1c6d6523b0cb2e8404897771295",
+      "conclusion": "cancelled",
+      "rollup": "absent",
+      "legs": {}
+    },
+    {
+      "id": 32744551265,
+      "at": "2026-08-24T15:23:25Z",
+      "sha": "8a8d011de110dd327039e491b02fb6e75f139436",
+      "conclusion": "cancelled",
+      "rollup": "absent",
+      "legs": {}
+    },
+    {
+      "id": 32744125890,
+      "at": "2026-08-24T15:19:13Z",
+      "sha": "c40afcb81bba61e91c0d779ddadf978999c62656",
+      "conclusion": "cancelled",
+      "rollup": "absent",
+      "legs": {}
+    },
+    {
+      "id": 32744073156,
+      "at": "2026-08-24T15:18:42Z",
+      "sha": "91f6d24e18c68ad0ebca7ff9e48970a8c884020f",
+      "conclusion": "cancelled",
+      "rollup": "absent",
+      "legs": {}
+    },
+    {
+      "id": 32740768420,
+      "at": "2026-08-24T14:46:24Z",
+      "sha": "36c2ff5594a466c105799297e6b1fd65be1be8e4",
+      "conclusion": "failure",
+      "rollup": "success",
+      "legs": {
+        "build-and-test (ubuntu-24.04)": "success",
+        "build-and-test (macos-26)": "success",
+        "build-and-test (ubuntu-24.04-arm)": "success",
+        "build-and-test (windows-2025)": "success",
+        "build-and-test (windows-11-arm)": "success"
+      }
+    },
+    {
+      "id": 32738179608,
+      "at": "2026-08-24T14:21:20Z",
+      "sha": "a2a159542a4ea6356dfe04f33a6915ad1f2b52e6",
+      "conclusion": "failure",
+      "rollup": "success",
+      "legs": {
+        "build-and-test (windows-11-arm)": "success",
+        "build-and-test (ubuntu-24.04)": "success",
+        "build-and-test (windows-2025)": "success",
+        "build-and-test (ubuntu-24.04-arm)": "success",
+        "build-and-test (macos-26)": "success"
+      }
+    },
     {
       "id": 32738057808,
       "at": "2026-08-24T14:20:09Z",
@@ -4632,220 +4858,6 @@
       "id": 32083962440,
       "at": "2026-08-18T00:17:58Z",
       "sha": "9d64394e09669993d8a85bf1ff63ae9995dc207f",
-      "conclusion": "cancelled",
-      "rollup": "absent",
-      "legs": {}
-    },
-    {
-      "id": 32083174890,
-      "at": "2026-08-18T00:06:04Z",
-      "sha": "26196af1ff7163d0249766fd9f323f153368531a",
-      "conclusion": "cancelled",
-      "rollup": "absent",
-      "legs": {}
-    },
-    {
-      "id": 32082876178,
-      "at": "2026-08-18T00:01:38Z",
-      "sha": "abb52772d7efc52b86c3c6516a347badfca5e51b",
-      "conclusion": "cancelled",
-      "rollup": "absent",
-      "legs": {}
-    },
-    {
-      "id": 32082784738,
-      "at": "2026-08-18T00:00:27Z",
-      "sha": "614272cec6db16cee4259fbe6022dffc5070b0cd",
-      "conclusion": "cancelled",
-      "rollup": "absent",
-      "legs": {}
-    },
-    {
-      "id": 32082724964,
-      "at": "2026-08-17T23:59:28Z",
-      "sha": "c0d993991bcbfd02f5255edc1c22c1b14dc7708c",
-      "conclusion": "cancelled",
-      "rollup": "absent",
-      "legs": {}
-    },
-    {
-      "id": 32082674912,
-      "at": "2026-08-17T23:58:39Z",
-      "sha": "2a70ae908386dc2a3844479a9bf8b095254fd8eb",
-      "conclusion": "cancelled",
-      "rollup": "absent",
-      "legs": {}
-    },
-    {
-      "id": 32082533212,
-      "at": "2026-08-17T23:56:28Z",
-      "sha": "6b754645ae3c79ebc7eededea61df5bffe5e26d2",
-      "conclusion": "cancelled",
-      "rollup": "absent",
-      "legs": {}
-    },
-    {
-      "id": 32082518156,
-      "at": "2026-08-17T23:56:15Z",
-      "sha": "47f76a68af4a6015ec2437e5a657bb8fbbe07db5",
-      "conclusion": "cancelled",
-      "rollup": "absent",
-      "legs": {}
-    },
-    {
-      "id": 32082457029,
-      "at": "2026-08-17T23:55:25Z",
-      "sha": "e5f13702f1b268f5bb7f758540dd01b986a6e17c",
-      "conclusion": "cancelled",
-      "rollup": "absent",
-      "legs": {}
-    },
-    {
-      "id": 32082272975,
-      "at": "2026-08-17T23:52:42Z",
-      "sha": "91794d94c5ae48d88510267b19bc7c54b64a5751",
-      "conclusion": "cancelled",
-      "rollup": "absent",
-      "legs": {}
-    },
-    {
-      "id": 32082253014,
-      "at": "2026-08-17T23:52:24Z",
-      "sha": "5f21c2849ed8d0e3812eb03a3ed3d175dea7c908",
-      "conclusion": "cancelled",
-      "rollup": "absent",
-      "legs": {}
-    },
-    {
-      "id": 32082083649,
-      "at": "2026-08-17T23:49:55Z",
-      "sha": "402037f8f9c2bc971256cea1c124fa0006885596",
-      "conclusion": "cancelled",
-      "rollup": "absent",
-      "legs": {}
-    },
-    {
-      "id": 32081997224,
-      "at": "2026-08-17T23:48:40Z",
-      "sha": "766a4cbea679acbbdcff36b4ec5bbf8507a9bf91",
-      "conclusion": "cancelled",
-      "rollup": "absent",
-      "legs": {}
-    },
-    {
-      "id": 32081772405,
-      "at": "2026-08-17T23:45:20Z",
-      "sha": "d805c91d1b843b0f4240d421e81db569e7be3480",
-      "conclusion": "cancelled",
-      "rollup": "absent",
-      "legs": {}
-    },
-    {
-      "id": 32081742944,
-      "at": "2026-08-17T23:44:59Z",
-      "sha": "3c467ff9b2e7bef3a670c6c0c97fcfc516617d07",
-      "conclusion": "cancelled",
-      "rollup": "absent",
-      "legs": {}
-    },
-    {
-      "id": 32081649275,
-      "at": "2026-08-17T23:43:40Z",
-      "sha": "544aa297f2163d9340e38016e1642b5111a90651",
-      "conclusion": "cancelled",
-      "rollup": "absent",
-      "legs": {}
-    },
-    {
-      "id": 32081430318,
-      "at": "2026-08-17T23:40:32Z",
-      "sha": "f3b21be7e78ac94f0e9332d38c1f6ea7090a0974",
-      "conclusion": "cancelled",
-      "rollup": "absent",
-      "legs": {}
-    },
-    {
-      "id": 32080131314,
-      "at": "2026-08-17T23:22:16Z",
-      "sha": "a2de0f84ce5eacbc44bc8bb0fffcb911157fa0bc",
-      "conclusion": "cancelled",
-      "rollup": "absent",
-      "legs": {}
-    },
-    {
-      "id": 32079917505,
-      "at": "2026-08-17T23:19:12Z",
-      "sha": "99cc1c906658252666439e5e312e9812673334d7",
-      "conclusion": "cancelled",
-      "rollup": "absent",
-      "legs": {}
-    },
-    {
-      "id": 32079757873,
-      "at": "2026-08-17T23:16:50Z",
-      "sha": "04dbd556283f3380324df764bc6af77190a5faeb",
-      "conclusion": "cancelled",
-      "rollup": "absent",
-      "legs": {}
-    },
-    {
-      "id": 32079459248,
-      "at": "2026-08-17T23:12:39Z",
-      "sha": "37635914528e21d52d177b8abbcb37b1ff85faea",
-      "conclusion": "cancelled",
-      "rollup": "absent",
-      "legs": {}
-    },
-    {
-      "id": 32079360100,
-      "at": "2026-08-17T23:11:14Z",
-      "sha": "1065f9b4d6ec734ca659205ca21bc52c030479e0",
-      "conclusion": "success",
-      "rollup": "success",
-      "legs": {
-        "build-and-test (windows-11-arm)": "success",
-        "build-and-test (macos-26)": "success",
-        "build-and-test (windows-2025)": "success",
-        "build-and-test (ubuntu-24.04)": "success",
-        "build-and-test (ubuntu-24.04-arm)": "success"
-      }
-    },
-    {
-      "id": 32079327277,
-      "at": "2026-08-17T23:10:47Z",
-      "sha": "c18f74d8cddba0bf7c4b93c6fc97f6a33e4759b2",
-      "conclusion": "cancelled",
-      "rollup": "absent",
-      "legs": {}
-    },
-    {
-      "id": 32078878759,
-      "at": "2026-08-17T23:04:38Z",
-      "sha": "2d1ae50d1d72100cb9c23ed3f7a5a3c268ac07c6",
-      "conclusion": "cancelled",
-      "rollup": "absent",
-      "legs": {}
-    },
-    {
-      "id": 32078757598,
-      "at": "2026-08-17T23:03:00Z",
-      "sha": "d0d7d73cb5853613d3ad853949d4fe4d1295bc60",
-      "conclusion": "cancelled",
-      "rollup": "absent",
-      "legs": {}
-    },
-    {
-      "id": 32078664537,
-      "at": "2026-08-17T23:01:44Z",
-      "sha": "24210fb9de11dc148f77ad13769c747f036ca12f",
-      "conclusion": "cancelled",
-      "rollup": "absent",
-      "legs": {}
-    },
-    {
-      "id": 32078521404,
-      "at": "2026-08-17T22:59:56Z",
-      "sha": "f3ad3414eb8ea6bcf5caa29b3f46cb10f2387eff",
       "conclusion": "cancelled",
       "rollup": "absent",
       "legs": {}

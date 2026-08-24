@@ -1784,4 +1784,5 @@ curation pass on the dimensional/CIF lineage rather than part of this one.
 
 **Cross-reference:** `docs/DATA-VAULT-2-STANDARDS.md` — the synthesis these six anchor,
 with every claim's register stated and the maintainer's own extensions flagged as his.
+
 - **G. Spencer-Brown, _Laws of Form_ (1969)** — distinction as the primitive operation ("Draw a distinction"); the **mark**; imaginary values from **re-entry**. The unnamed source under our 42 files of "re-entry" and under Varela/Kauffman, both of whom built directly on it. Added 2026-08-24.
