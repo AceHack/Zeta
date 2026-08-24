@@ -1,0 +1,12 @@
+{
+  "pr_number": 14604,
+  "archive_path": "docs/history/pr-reviews/PR-14604-fix-pages-inside-a-block-comment-two-characters-of-prose-were-parsing-as-code-an.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-24T01:29:08.452Z",
+  "schema_version": "v1",
+  "commit_sha": "61694b975e930922cedbb7fb6d3a9e1505b16479",
+  "title": "fix(pages): */ inside a block comment — two characters of prose were parsing as code, and every Pages deploy since 23:10 was red",
+  "state": "MERGED",
+  "merged_at": "2026-08-24T01:28:21Z",
+  "head_ref": "claude/otto-fix-pages-deploy-blockcomment"
+}
