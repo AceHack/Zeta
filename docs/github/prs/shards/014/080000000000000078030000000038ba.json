@@ -1,0 +1,27 @@
+{
+  "pr_number": 14522,
+  "archive_path": "docs/history/pr-reviews/PR-14522-ci-twitch-ai-the-app-gets-a-ci-job-its-own-tsc-the-repo-eslint-the-real-vite-bui.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7k32Ln",
+    "comment:PRRC_kwDOSF9kNM7k32Lt",
+    "comment:PRRC_kwDOSF9kNM7k32Lw",
+    "comment:PRRC_kwDOSF9kNM7k3x2r",
+    "comment:PRRC_kwDOSF9kNM7k3x2s",
+    "comment:PRRC_kwDOSF9kNM7k3x2v",
+    "comment:PRRC_kwDOSF9kNM7k3x2z",
+    "thread:PRRT_kwDOSF9kNM6bivPN",
+    "thread:PRRT_kwDOSF9kNM6bivPO",
+    "thread:PRRT_kwDOSF9kNM6bivPQ",
+    "thread:PRRT_kwDOSF9kNM6bivPS",
+    "thread:PRRT_kwDOSF9kNM6biyNO",
+    "thread:PRRT_kwDOSF9kNM6biyNU",
+    "thread:PRRT_kwDOSF9kNM6biyNW"
+  ],
+  "fetched_at": "2026-08-23T23:24:51.996Z",
+  "schema_version": "v1",
+  "commit_sha": "b1967172d8f9ed95b10751756f1e95102e2c5046",
+  "title": "ci(twitch-ai): the app gets a CI job — its own tsc, the repo eslint, the real vite build (D0 of #14503)",
+  "state": "MERGED",
+  "merged_at": "2026-08-23T23:24:03Z",
+  "head_ref": "claude/otto-attention-density"
+}
