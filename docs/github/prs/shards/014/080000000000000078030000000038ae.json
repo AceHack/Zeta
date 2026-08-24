@@ -1,0 +1,12 @@
+{
+  "pr_number": 14510,
+  "archive_path": "docs/history/pr-reviews/PR-14510-security-rotation-pin-the-refusals-p0-ca-overlap-collapses-on-the-second-rotatio.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-23T22:33:23.008Z",
+  "schema_version": "v1",
+  "commit_sha": "d8a149bd911bfdb0a7816a65a8b133032b2ddaf0",
+  "title": "security(rotation): pin the refusals — P0 CA overlap collapses on the second rotation, plus three P1s",
+  "state": "MERGED",
+  "merged_at": "2026-08-23T22:32:41Z",
+  "head_ref": "mateo/rotation-refusal-pins"
+}
