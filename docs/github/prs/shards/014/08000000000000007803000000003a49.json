@@ -1,0 +1,12 @@
+{
+  "pr_number": 14921,
+  "archive_path": "docs/history/pr-reviews/PR-14921-child-floor-declare-the-jurisdictional-threshold-the-proven-gate-was-missing.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-24T20:01:44.162Z",
+  "schema_version": "v1",
+  "commit_sha": "6b63544ef275e226d1d6091e1ac0545fde54ceb1",
+  "title": "child-floor: declare the jurisdictional threshold the proven gate was missing",
+  "state": "MERGED",
+  "merged_at": "2026-08-24T19:52:05Z",
+  "head_ref": "childfloor-policy-jurisdiction-threshold"
+}
