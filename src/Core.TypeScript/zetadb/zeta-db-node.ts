@@ -3,7 +3,12 @@ import {
   type RevisionPolicyPort,
   type RevisionPolicyRefusal,
 } from "../persistence/revision-policy";
-import { noForgetBackpressureAdmissionPolicy, type ZetaDbAdmissionPolicyPort } from "./admission-policy";
+import {
+  noForgetBackpressureAdmissionPolicy,
+  type ZetaDbAdmissionDecision,
+  type ZetaDbAdmissionPolicyPort,
+  type ZetaDbAdmissionProposal,
+} from "./admission-policy";
 
 export const ZETA_DB_IMAGE_SCHEMA = "zeta.db.image.v1" as const;
 export const ZETA_DB_TICK_SCHEMA = "zeta.db.tick.v1" as const;
@@ -54,6 +59,7 @@ export interface ZetaDbFeedback {
     | "database-row-conflict"
     | "database-weight-overflow"
     | "database-capacity-exhausted"
+    | "database-admission-policy-failed"
     | "database-read-failed"
     | "database-write-failed"
     | "database-revision-conflict";
@@ -552,6 +558,46 @@ function candidateRowCount(state: ZetaDbAdmissionState, transition: ZetaDbRowTra
   return count;
 }
 
+function validAdmissionDecision(value: unknown): value is ZetaDbAdmissionDecision {
+  if (!isRecord(value)) return false;
+  if (value.action === "admit") return true;
+  return value.action === "backpressure" && typeof value.detail === "string" && value.detail.length > 0;
+}
+
+function decideAdmission(
+  policy: ZetaDbAdmissionPolicyPort,
+  proposal: ZetaDbAdmissionProposal,
+): ZetaDbResult<ZetaDbAdmissionDecision> {
+  const hardLimit = noForgetBackpressureAdmissionPolicy.decide(proposal);
+  if (hardLimit.action === "backpressure") return succeeded(hardLimit);
+
+  let policyId = "<unreadable>";
+  try {
+    if (!isRecord(policy) || typeof policy.id !== "string" || policy.id.length === 0) {
+      return failed(
+        "database-admission-policy-failed",
+        "The injected database admission policy does not implement a named decide function.",
+      );
+    }
+    policyId = policy.id;
+    if (typeof policy.decide !== "function") {
+      return failed(
+        "database-admission-policy-failed",
+        "The injected database admission policy does not implement a named decide function.",
+      );
+    }
+    const decision: unknown = policy.decide(proposal);
+    return validAdmissionDecision(decision)
+      ? succeeded(decision)
+      : failed(
+          "database-admission-policy-failed",
+          `Database admission policy ${policyId} returned an invalid decision.`,
+        );
+  } catch (error) {
+    return failed("database-admission-policy-failed", `Database admission policy ${policyId} failed: ${String(error)}`);
+  }
+}
+
 function admitNewDelta(
   state: ZetaDbAdmissionState,
   delta: ZetaDbDelta,
@@ -559,13 +605,14 @@ function admitNewDelta(
   limits: ZetaDbTickLimits,
   policy: ZetaDbAdmissionPolicyPort,
 ): ZetaDbResult<string | null> {
-  const entryDecision = policy.decide({
+  const entryDecision = decideAdmission(policy, {
     resource: "retained-events",
     current: state.entries.length,
     candidate: state.entries.length + 1,
     limit: limits.maxEntries,
   });
-  if (entryDecision.action === "backpressure") return succeeded(entryDecision.detail);
+  if (!entryDecision.ok) return entryDecision;
+  if (entryDecision.value.action === "backpressure") return succeeded(entryDecision.value.detail);
 
   const transition = planRowTransition(state, delta);
   if (!transition.ok) return transition;
@@ -582,13 +629,14 @@ function admitNewDelta(
     baseBytes +
     collectionByteLength(nextEntryItemBytes, state.entries.length + 1) +
     collectionByteLength(nextRowItemBytes, nextRowCount);
-  const checkpointDecision = policy.decide({
+  const checkpointDecision = decideAdmission(policy, {
     resource: "checkpoint-bytes",
     current: currentBytes,
     candidate: candidateBytes,
     limit: limits.maxCheckpointBytes,
   });
-  if (checkpointDecision.action === "backpressure") return succeeded(checkpointDecision.detail);
+  if (!checkpointDecision.ok) return checkpointDecision;
+  if (checkpointDecision.value.action === "backpressure") return succeeded(checkpointDecision.value.detail);
 
   state.entries.push(delta);
   state.existingEvents.set(delta.eventId, delta);

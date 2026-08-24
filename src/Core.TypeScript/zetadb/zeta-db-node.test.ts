@@ -230,6 +230,111 @@ describe("event-driven ZetaDB node", () => {
     });
   });
 
+  test("keeps hard capacity limits authoritative over an always-admit policy", async () => {
+    let decisions = 0;
+    const alwaysAdmit: ZetaDbAdmissionPolicyPort = {
+      id: "test-always-admit",
+      decide: () => {
+        decisions += 1;
+        return { action: "admit" };
+      },
+    };
+    const port = createInMemoryZetaDbImagePort();
+    const result = await runZetaDbNodeTick(
+      port,
+      {
+        nodeId: "global-browser-db",
+        executorId: "tab/hard-limit",
+        executorKind: "browser-tab",
+        deltas: deltas.slice(0, 2),
+        limits: { ...limits, maxEntries: 1 },
+      },
+      alwaysAdmit,
+    );
+
+    expect(result.ok && result.value).toMatchObject({
+      admission: "backpressured",
+      accepted: 1,
+      nextDeltaIndex: 1,
+      feedback: [{ code: "database-capacity-exhausted" }],
+    });
+    expect(decisions).toBe(2);
+    const stored = await port.load("global-browser-db");
+    expect(stored.ok && stored.value?.revision).toBe(1);
+
+    const byteResult = await runZetaDbNodeTick(
+      createInMemoryZetaDbImagePort(),
+      {
+        nodeId: "global-browser-db",
+        executorId: "tab/hard-byte-limit",
+        executorKind: "browser-tab",
+        deltas: [firstDelta],
+        limits: { ...limits, maxCheckpointBytes: 1 },
+      },
+      alwaysAdmit,
+    );
+    expect(byteResult.ok && byteResult.value).toMatchObject({
+      admission: "backpressured",
+      accepted: 0,
+      nextDeltaIndex: 0,
+      feedback: [{ code: "database-capacity-exhausted" }],
+    });
+    expect(decisions).toBe(3);
+  });
+
+  test("contains throwing and malformed policies as typed feedback", async () => {
+    const throwing: ZetaDbAdmissionPolicyPort = {
+      id: "test-throwing",
+      decide: (proposal) => {
+        if (proposal.resource === "retained-events") return { action: "admit" };
+        throw new Error("deliberate failure");
+      },
+    };
+    const malformed = {
+      id: "test-malformed",
+      decide: () => ({ action: "unknown" }),
+    } as unknown as ZetaDbAdmissionPolicyPort;
+    const unnamed: ZetaDbAdmissionPolicyPort = { id: "", decide: () => ({ action: "admit" }) };
+    const request = {
+      nodeId: "global-browser-db",
+      executorId: "tab/policy-failure",
+      executorKind: "browser-tab" as const,
+      deltas: [firstDelta],
+      limits,
+    };
+
+    const throwingPort = createInMemoryZetaDbImagePort();
+    const thrownResult = await runZetaDbNodeTick(throwingPort, request, throwing);
+    expect(thrownResult).toMatchObject({
+      ok: false,
+      feedback: {
+        severity: "heat",
+        code: "database-admission-policy-failed",
+        detail: "Database admission policy test-throwing failed: Error: deliberate failure",
+      },
+    });
+    const afterThrow = await throwingPort.load("global-browser-db");
+    expect(afterThrow.ok && afterThrow.value).toBeNull();
+    const malformedResult = await runZetaDbNodeTick(createInMemoryZetaDbImagePort(), request, malformed);
+    expect(malformedResult).toMatchObject({
+      ok: false,
+      feedback: {
+        severity: "heat",
+        code: "database-admission-policy-failed",
+        detail: "Database admission policy test-malformed returned an invalid decision.",
+      },
+    });
+    const unnamedResult = await runZetaDbNodeTick(createInMemoryZetaDbImagePort(), request, unnamed);
+    expect(unnamedResult).toMatchObject({
+      ok: false,
+      feedback: {
+        severity: "heat",
+        code: "database-admission-policy-failed",
+        detail: "The injected database admission policy does not implement a named decide function.",
+      },
+    });
+  });
+
   test("rejects conflicting reuse of an event identifier", async () => {
     const port = createInMemoryZetaDbImagePort();
     await run(port, "browser-tab", [firstDelta]);
