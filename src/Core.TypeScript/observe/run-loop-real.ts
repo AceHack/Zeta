@@ -47,6 +47,8 @@ import {
   cloudPersonaParticipant,
   type Participant,
 } from "./participant";
+import { buildMenu, actionLabel } from "./observe";
+import { recordReasoning, formatReasoning, type TickReasoning } from "./tick-reasoning";
 import { PersonaSummoner } from "../peer-call/summon";
 import { createPhaseClock, stampPhase, type PhaseClock } from "./phase-clock";
 import { createRSAccumulator } from "./rs-phase-accumulator";
@@ -160,7 +162,31 @@ async function main(): Promise<number> {
   // 2. Pick the next action (via Participant — configurable chooser)
   const participant = resolveParticipant(args.participant);
   console.log(`[participant] ${participant.kind}:${participant.name}`);
-  const action = await observeWithParticipant(observeWorld, participant);
+
+  // Capture the reasoning alongside the action — makes the small LLM's intelligence visible.
+  const menu = buildMenu(observeWorld);
+  let chooseResult: { index: number; raw: string; fallback: boolean };
+  try {
+    chooseResult = await participant.choose(observeWorld, menu);
+  } catch {
+    chooseResult = { index: 0, raw: "choose-threw", fallback: true };
+  }
+  const action = menu[chooseResult.index] ?? menu[0]!;
+
+  // Record + log the reasoning (non-fatal)
+  const reasoning: TickReasoning = {
+    agent: args.by,
+    model: participant.name,
+    context: `backlog=${observeWorld.backlog.length}, mode=${observeWorld.mode ?? "unset"}`,
+    options: menu.map(actionLabel),
+    chosenIndex: chooseResult.index,
+    chosen: actionLabel(action),
+    raw: chooseResult.raw,
+    fallback: chooseResult.fallback,
+    at: new Date().toISOString(),
+  };
+  recordReasoning(args.repoRoot, reasoning);
+  console.log(formatReasoning(reasoning));
 
   console.log(`[observe] ${renderAction(action)}`);
 
