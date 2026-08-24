@@ -1,0 +1,12 @@
+{
+  "pr_number": 14503,
+  "archive_path": "docs/history/pr-reviews/PR-14503-design-twitch-ai-attention-density-implementation-spec-foveation-frost-the-why-b.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-23T22:20:05.879Z",
+  "schema_version": "v1",
+  "commit_sha": "1274795edbc0e264f20c7555cd6980a3e371f8d5",
+  "title": "design: twitch-ai attention-density implementation spec — foveation, frost, the WHY button, and the prediction falsifier",
+  "state": "MERGED",
+  "merged_at": "2026-08-23T22:19:18Z",
+  "head_ref": "docs/twitch-ai-attention-spec"
+}
