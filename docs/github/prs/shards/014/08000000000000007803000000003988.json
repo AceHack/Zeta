@@ -1,0 +1,12 @@
+{
+  "pr_number": 14728,
+  "archive_path": "docs/history/pr-reviews/PR-14728-feat-zetadb-inject-bounded-admission-policy.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-24T12:27:40.984Z",
+  "schema_version": "v1",
+  "commit_sha": "ad6ff6dab42f871c7a5b917585bd60235790a942",
+  "title": "feat(zetadb): inject bounded admission policy",
+  "state": "MERGED",
+  "merged_at": "2026-08-24T12:26:54Z",
+  "head_ref": "claim/081M0Q8TY1B-admission-policy-port"
+}
