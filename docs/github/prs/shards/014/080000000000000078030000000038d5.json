@@ -1,0 +1,12 @@
+{
+  "pr_number": 14549,
+  "archive_path": "docs/history/pr-reviews/PR-14549-feat-twitch-ai-attention-density-lands-ng4-tile-field-foveated-ocr-frost-saccade.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-24T00:17:53.685Z",
+  "schema_version": "v1",
+  "commit_sha": "ba93a651511d9cf6f518a80bf2569bf68e738265",
+  "title": "feat(twitch-ai): attention density lands — NG4 tile field, foveated OCR, frost, saccade/fixation, measured ρ (D1–D4 of #14503)",
+  "state": "MERGED",
+  "merged_at": "2026-08-24T00:17:08Z",
+  "head_ref": "claude/otto-attention-density-d1"
+}
