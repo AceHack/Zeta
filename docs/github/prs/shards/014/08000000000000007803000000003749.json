@@ -1,0 +1,12 @@
+{
+  "pr_number": 14153,
+  "archive_path": "docs/history/pr-reviews/PR-14153-ci-pin-the-last-actions-checkout-leftover-to-v7-0-1-fleet-sha.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-24T16:16:55.795Z",
+  "schema_version": "v1",
+  "commit_sha": "f345129a4e30a4be0753d46ac59e729ce6d519dd",
+  "title": "ci: pin the last actions/checkout leftover to v7.0.1 fleet SHA",
+  "state": "MERGED",
+  "merged_at": "2026-08-24T16:15:52Z",
+  "head_ref": "cursor/checkout-v7-fleet-e06b"
+}
