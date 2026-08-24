@@ -1,0 +1,12 @@
+{
+  "pr_number": 14804,
+  "archive_path": "docs/history/pr-reviews/PR-14804-design-shapes-the-tiebreaker-was-guarded-by-byte-identity-two-readers-two-confus.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-24T15:19:16.411Z",
+  "schema_version": "v1",
+  "commit_sha": "91f6d24e18c68ad0ebca7ff9e48970a8c884020f",
+  "title": "design(shapes): the tiebreaker was guarded by byte identity — two readers, two confusable sets",
+  "state": "MERGED",
+  "merged_at": "2026-08-24T15:18:18Z",
+  "head_ref": "design/shape-confusability-two-readers"
+}
