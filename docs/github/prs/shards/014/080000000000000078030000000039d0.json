@@ -1,0 +1,12 @@
+{
+  "pr_number": 14800,
+  "archive_path": "docs/history/pr-reviews/PR-14800-research-soraya-observably-infinite-f-was-already-observational-reclaim-is-a-wea.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-24T15:32:35.143Z",
+  "schema_version": "v1",
+  "commit_sha": "2a5ff022b131c2d6a69d752c6dbc336d55c8b041",
+  "title": "research(soraya): \"observably infinite\" — νF was already observational; reclaim is a weak bisimulation and the envelope is a high input",
+  "state": "MERGED",
+  "merged_at": "2026-08-24T15:31:47Z",
+  "head_ref": "soraya-nuf"
+}
