@@ -1,0 +1,12 @@
+{
+  "pr_number": 14756,
+  "archive_path": "docs/history/pr-reviews/PR-14756-docs-vision-the-question-zeta-is-for-trust-at-agent-speed-and-which-bounds-are-a.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-24T15:53:02.767Z",
+  "schema_version": "v1",
+  "commit_sha": "9a4b0c181f20deb6e9a9ccfb7887bf8e72a4c5c8",
+  "title": "docs(vision): the question Zeta is for — trust at agent speed, and which bounds are artificial",
+  "state": "MERGED",
+  "merged_at": "2026-08-24T15:52:12Z",
+  "head_ref": "docs/vision-the-question"
+}
