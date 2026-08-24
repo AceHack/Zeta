@@ -1,0 +1,12 @@
+{
+  "pr_number": 14807,
+  "archive_path": "docs/history/pr-reviews/PR-14807-fix-ci-pam-reattach-has-no-windows-equivalent-declare-the-exception.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-24T15:27:37.697Z",
+  "schema_version": "v1",
+  "commit_sha": "1d13f130fcf300c6a8d92f5e2322974ce8c4236f",
+  "title": "fix(ci): pam-reattach has no Windows equivalent — declare the exception",
+  "state": "MERGED",
+  "merged_at": "2026-08-24T15:26:56Z",
+  "head_ref": "fix/manifest-symmetry-pam-reattach-windows-exception"
+}
