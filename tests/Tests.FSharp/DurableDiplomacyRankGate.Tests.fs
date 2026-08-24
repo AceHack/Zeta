@@ -8,6 +8,16 @@ let private makeCell (shape: string) : YinYang.Cell =
     { YinYang.Remains = DynamicValue.String shape
       YinYang.Acts = Bonsai.Const Bonsai.CNull }
 
+/// A cell that actually EXPOSES capabilities: `Bonsai.Call` names ARE the capability surface
+/// (`Diplomacy.capabilitiesOf`). `makeCell` above builds a `Bonsai.Const`, whose surface is
+/// EMPTY -- which is why every gate result it produces is `RefusedNoExit`.
+let private makeCellWithCaps (shape: string) (names: string list) : YinYang.Cell =
+    let acts =
+        names
+        |> List.fold (fun acc n -> Bonsai.Binary(Bonsai.Add, Bonsai.Call(n, []), acc)) (Bonsai.Const Bonsai.CNull)
+    { YinYang.Remains = DynamicValue.String shape
+      YinYang.Acts = acts }
+
 let private ZID = "traveler-gate-test"
 let private DOMAIN = "hat-coding"
 
@@ -104,16 +114,34 @@ let ``DDRG-8 Domain isolation — low trust in domain A does not block domain B`
 // ── DDRG-9: Allowed result carries the outcome and event ─────────────────────────────────────────
 [<Fact>]
 let ``DDRG-9 Allowed result carries outcome and event`` () =
-    let a = makeCell "circle"
-    let b = makeCell "square"
+    // ARITY. This test used to build capability-LESS cells (`makeCell`), so the gate could only
+    // ever return `Allowed(RefusedNoExit …, _)` and the `Negotiated caps` arm below was NEVER
+    // EXECUTED. What sat in that arm was `Assert.True(Set.count caps >= 0)` -- a tautology
+    // (`Set.count` is non-negative by construction) whose comment claimed "not empty", i.e. a
+    // property it did not test -- and the `| RefusedNoExit _ -> ()` arm beside it meant EITHER
+    // outcome passed. So the match constrained nothing, and the dead arm made it arity ZERO
+    // rather than merely weak. Measured, not supposed: sabotaging `negotiateFreedomFirst` to
+    // stop excluding `ExitCapability` left this test GREEN.
+    // Capability-bearing cells make the Allowed -> Negotiated path the one actually taken.
+    let a = makeCellWithCaps "circle" [ Diplomacy.ExitCapability; "trade" ]
+    let b = makeCellWithCaps "square" [ Diplomacy.ExitCapability; "trade" ]
     let result = DurableDiplomacyRankGate.recordEventGatedDefault a b ZID DOMAIN None
     match result with
     | DurableDiplomacyRankGate.Allowed(outcome, event) ->
         Assert.NotNull(event)
         Assert.True(event.Length > 0)
-        // Outcome should be a valid NegotiationOutcome (not empty)
         match outcome with
-        | Diplomacy.Negotiated caps -> Assert.True(Set.count caps >= 0)
-        | Diplomacy.RefusedNoExit _ -> () // also valid
+        | Diplomacy.Negotiated caps ->
+            // The gate passes the negotiated set through UNCHANGED: the shared capabilities
+            // minus the `ExitCapability` freedom precondition.
+            Assert.Equal<Set<string>>(Set.singleton "trade", caps)
+        | Diplomacy.RefusedNoExit(aExit, bExit) ->
+            Assert.Fail(
+                sprintf
+                    "both cells expose %s, so the gate must negotiate; got RefusedNoExit(%b,%b)"
+                    Diplomacy.ExitCapability
+                    aExit
+                    bExit
+            )
     | DurableDiplomacyRankGate.RefusedLowTrust _ ->
         Assert.Fail("Expected Allowed")

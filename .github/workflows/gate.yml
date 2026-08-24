@@ -1095,6 +1095,43 @@ jobs:
         # deliberately-broken fixture and requires it to go red, R2 in both ratchet directions.
         run: bun run hygiene:check-arity
 
+      - name: Check arity -- the NON-EQUALITY half (a taint claim is not a string search)
+        # The step above inspects EQUALITY only. Its own PR named the gap and declined to size
+        # it: "Non-equality checks are entirely outside the detector ... Largest unsearched
+        # region, unsized." It is now sized -- 24,805 non-equality assertion sites across 1,928
+        # test files -- and two live instances were fixed:
+        #
+        #   * tools/setup/persona-keys/machine.test.ts claimed "no private bytes anywhere in it"
+        #     and discharged it with `not.toContain("PRIVATE")` plus a PEM-armor regex.
+        #     Publishing the COMPLETE private key base64-encoded passed all of it: 27 tests,
+        #     128 expect() calls, green. That is a 2-safety property tested by a one-run string
+        #     search, and it sat on a key-publication path.
+        #   * DurableDiplomacyRankGate.Tests.fs asserted `Set.count caps >= 0`, which is
+        #     non-negative by construction -- and the match arm holding it was never reached,
+        #     so it was arity ZERO rather than merely vacuous.
+        #
+        # Two rules, and only one of them gates. R4 gates provably-unfalsifiable comparisons:
+        # every pattern is a THEOREM about the expression's type (a length is non-negative;
+        # `X >= X` is reflexivity), so Rice does not bite -- nothing semantic is decided.
+        # R5 is a census ratchet over absence-assertions discharging a taint / 2-safety claim,
+        # failing when a file's count goes UP and equally when it goes DOWN.
+        #
+        # R5 is deliberately NOT a gate: of the 10 sites where an absence assertion sits under a
+        # 2-safety name, SIX are correct -- backed by an exact-equality pin on the whole output
+        # or by a positive capability assertion. A gate at 60% false positives is not a gate, it
+        # is a nuisance that gets suppressed. `Assert.True(true)` is likewise NOT flagged: all 8
+        # live instances are the success leg of a discriminating match whose other leg is
+        # `Assert.True(false, ...)`, so the enclosing check can fail.
+        #
+        # Scanned REPO-WIDE, unlike the step above whose SCAN_ROOTS is ["tests"]: 1,194 of the
+        # tree's 1,230 *.test.ts files -- 97% -- live outside tests/, and BOTH bugs above were
+        # in that region.
+        #
+        # Its own falsifier runs in the step below: audit-check-arity-nonequality.test.ts feeds
+        # each rule a broken fixture and requires it to go red, R5 in both ratchet directions,
+        # plus controls asserting the shapes that must NOT be flagged.
+        run: bun run hygiene:check-arity-nonequality
+
       - name: Linter coverage vs CI invocation (a configured linter must be an invoked one)
         # THE CLASS: a linter is present, configured, believed to be checking a file, and does
         # not examine it -- while the invocation exits 0. Every instance produces a check that

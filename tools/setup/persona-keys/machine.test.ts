@@ -131,7 +131,12 @@ test("PURE LABEL: machine key comment is the MACHINE only — NO user@ anywhere"
     // The published pubkey comment carries the same pure label (the fake echoes the comment).
     const published = readFileSync(r.devicePublicPath, "utf8");
     expect(published).toContain("(zeta-machine)");
+    // ARITY. `not.toContain("tester@")` searches for ONE spelling of an owner leak; the claim
+    // beside it is that the owner never enters the registered key at all. The equality below is
+    // the claim: the registered artifact is byte-identical to the public half, so no rendering
+    // of the owner -- or of anything else -- can be in it.
     expect(published).not.toContain("tester@"); // no user@host hybrid in the registered key
+    expect(published.trim()).toBe(readFileSync(r.devicePrivatePath + ".pub", "utf8").trim());
     // machineKeyLabel is the single source of the label shape.
     expect(machineKeyLabel("studio-7")).toBe("studio-7 (zeta-machine)");
   } finally {
@@ -155,9 +160,19 @@ test("USER-INDEPENDENT REGISTRY: public key registers under machines/<host>.pub,
     // the registry holds ONLY the public key — no private bytes anywhere in it
     const published = readFileSync(registryPath, "utf8");
     expect(published).toContain("ssh-ed25519");
+    // ARITY. The two lines below witness ONE RENDERING of a leak, not the absence of one:
+    // a claim of "no private bytes anywhere in it" discharged by searching for the ASCII
+    // token `PRIVATE`. The whole private key, base64-encoded, carries no such token and
+    // passes both -- measured, not supposed (see the sabotage note on the equality below).
+    // They are kept because they are cheap and they do constrain the armored rendering.
     expect(published).not.toContain("PRIVATE");
     // The marker is assembled at runtime so NO key-shaped header literal appears in this file.
     expect(published).not.toMatch(new RegExp("BEGIN .*" + "PRIVATE" + " " + "KEY"));
+    // ...and THIS is the check that carries the claim. The registered artifact must be
+    // BYTE-IDENTICAL to the public half the generator produced -- so no extra byte, in any
+    // encoding, can ride along. An absence search enumerates leak shapes and always misses
+    // one; equality against the intended artifact admits none.
+    expect(published.trim()).toBe(readFileSync(r.devicePrivatePath + ".pub", "utf8").trim());
     // the private key file stays at the LOCAL path, NOT under maintainers/ or machines/
     expect(r.devicePrivatePath.includes("maintainers")).toBe(false);
     expect(r.devicePrivatePath.includes("/machines/")).toBe(false);
@@ -260,7 +275,14 @@ test("real ssh-keygen into a temp dir produces a valid ed25519 pubkey, private s
     // registered artifact is the PUBLIC key only, at the user-independent machines/<host>.pub
     const published = readFileSync(machinePubPath(tmp, fx.hostname()), "utf8");
     expect(published).toContain("ssh-ed25519");
+    // ARITY (same class as above, and here the key is a REAL one). `/PRIVATE/` matches the
+    // PEM armor only. Strip the armor -- the base64 body ALONE is the entire private key --
+    // and this line passes while the secret is published in full.
     expect(published).not.toMatch(/PRIVATE/);
+    // The claim is "the registered artifact is the PUBLIC key only". That is an equality,
+    // and stating it as one is what makes it unfalsifiable-proof: byte-identical to the
+    // `.pub` file ssh-keygen itself wrote, so nothing else can be in the file.
+    expect(published.trim()).toBe(readFileSync(priv + ".pub", "utf8").trim());
     // the REAL ssh-keygen comment is the PURE machine label — no user@ in the registered key
     expect(published).toContain("(zeta-machine)");
     expect(published).not.toMatch(/\S+@\S+\s+\(zeta-/); // no `user@host (zeta-...)` hybrid

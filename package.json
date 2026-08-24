@@ -47,6 +47,7 @@
     "hygiene:no-check-then-use-file-races": "bun ./src/Core.TypeScript/hygiene/lint-check-then-use-file-races.ts src/Core.TypeScript --min-files 1500 --baseline src/Core.TypeScript/hygiene/lint-check-then-use-file-races.baseline.json",
     "hygiene:no-ambient-time-in-tests": "bun ./src/Core.TypeScript/hygiene/audit-ambient-time-in-tests.ts",
     "hygiene:check-arity": "bun ./src/Core.TypeScript/hygiene/audit-check-arity.ts",
+    "hygiene:check-arity-nonequality": "bun ./src/Core.TypeScript/hygiene/audit-check-arity-nonequality.ts",
     "hygiene:scan-floor-routes": "bun ./src/Core.TypeScript/hygiene/audit-scan-floor-routes.ts",
     "hygiene:linter-coverage": "bun ./src/Core.TypeScript/hygiene/audit-linter-coverage-vs-invocation.ts",
     "hygiene:tech-radar-claims": "bun ./src/Core.TypeScript/hygiene/audit-tech-radar-claims.ts",

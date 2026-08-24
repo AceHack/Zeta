@@ -1,0 +1,14 @@
+{
+  "id": "080d019ed441a010a0130008d4a909fb",
+  "at": "2026-08-24T12:59:14.868Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M0SXN21K087G0R001KSQ9B6",
+    "type": "task",
+    "title": "Size and sweep the non-equality assertion region named unsized by the arity sweep",
+    "slug": "size-and-sweep-the-non-equality-assertion-region-named-unsiz",
+    "priority": "P2",
+    "filename": "081M0SXN21K087G0R001KSQ9B6-size-and-sweep-the-non-equality-assertion-region-named-unsiz.md"
+  }
+}
