@@ -1,0 +1,12 @@
+{
+  "pr_number": 14864,
+  "archive_path": "docs/history/pr-reviews/PR-14864-feat-ace-runtime-selection-is-a-declared-cost-model-not-a-preference-list.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-24T17:19:59.901Z",
+  "schema_version": "v1",
+  "commit_sha": "e0b1cefef972024dd6206f1dacc2ba8831764a80",
+  "title": "feat(ace): runtime selection is a declared cost model, not a preference list",
+  "state": "MERGED",
+  "merged_at": "2026-08-24T17:19:12Z",
+  "head_ref": "dejan/ace-one-liner-cost-model"
+}
