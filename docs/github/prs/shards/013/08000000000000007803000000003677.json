@@ -1,0 +1,12 @@
+{
+  "pr_number": 13943,
+  "archive_path": "docs/history/pr-reviews/PR-13943-feat-observe-session-fix-verification-script.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-22T21:14:17.712Z",
+  "schema_version": "v1",
+  "commit_sha": "db4613d43af123e64ba2cae9ebdf23b332083244",
+  "title": "feat(observe): session fix verification script",
+  "state": "MERGED",
+  "merged_at": "2026-08-22T21:13:36Z",
+  "head_ref": "alexa/verify-script"
+}
