@@ -51,6 +51,7 @@
 // prove a given sudo invocation was satisfied biometrically.
 
 import { spawnSync } from "node:child_process";
+import { join } from "node:path";
 import {
   closeSync,
   existsSync,
@@ -64,6 +65,7 @@ import {
 } from "node:fs";
 import {
   assess,
+  brewManifestDeclares,
   denyingControlLines,
   hasActiveAuthModule,
   includesSudoLocal,
@@ -89,10 +91,17 @@ const PAM_SUDO_LOCAL = `${PAM_ROOT}/etc/pam.d/sudo_local`;
 const PAM_TID_MODULE = `${PAM_ROOT}/usr/lib/pam/pam_tid.so.2`;
 /** Absolute, never resolved through PATH -- see the PR #14727 note in the header. */
 const SUDO_BIN = "/usr/bin/sudo";
+/** The declarative manifest that OWNS the pam-reattach dependency. */
+const BREW_MANIFEST = `${repoRootFromHere()}/tools/setup/manifests/brew`;
 const REATTACH_CANDIDATES = [
   `${PAM_ROOT}/opt/homebrew/lib/pam/pam_reattach.so`, // Apple Silicon Homebrew
   `${PAM_ROOT}/usr/local/lib/pam/pam_reattach.so`, // Intel Homebrew
 ];
+
+/** Repo root, derived from this file's own location (tools/setup/ -> ../..). */
+function repoRootFromHere(): string {
+  return join(import.meta.dir, "..", "..");
+}
 
 function readIfPresent(path: string): string | null {
   try {
@@ -133,6 +142,7 @@ export function liveEnv(): TouchIdEnv {
     pamDir: PAM_DIR,
     pamTidModulePath: PAM_TID_MODULE,
     reattachCandidates: REATTACH_CANDIDATES,
+    reattachDeclared: brewManifestDeclares(readIfPresent(BREW_MANIFEST) ?? "", "pam-reattach"),
     insideMultiplexer: Boolean(process.env.TMUX) || (process.env.TERM ?? "").startsWith("screen"),
   };
 }
@@ -144,6 +154,7 @@ function printAssessment(a: Assessment): void {
   console.log(`  /etc/pam.d/sudo_local     : ${a.sudoLocalPresent ? "present" : "absent"}`);
   console.log(`  include in /etc/pam.d/sudo: ${a.sudoLocalIncluded ? "yes" : "NO"}`);
   console.log(`  pam_reattach (tmux)       : ${a.reattachModulePath ?? "not installed"}`);
+  console.log(`  Touch ID works in tmux    : ${a.multiplexerReady ? "yes" : "NO"}`);
   for (const f of a.findings) console.log(`  [${SEVERITY_GLYPH[f.severity] ?? "-"}] ${f.message}`);
 }
 

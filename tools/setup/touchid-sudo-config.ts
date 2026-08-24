@@ -78,6 +78,14 @@ export interface TouchIdEnv {
   readonly pamTidModulePath: string;
   /** Absolute paths where a Homebrew pam_reattach may live, most-preferred first. */
   readonly reattachCandidates: readonly string[];
+  /**
+   * Whether `tools/setup/manifests/brew` DECLARES pam-reattach.
+   *
+   * This is what turns the manifest row from a hope into a check. Declared-and-
+   * missing is install drift and goes RED; undeclared-and-missing is only an
+   * observation, because nothing promised it would be there.
+   */
+  readonly reattachDeclared: boolean;
   readonly insideMultiplexer: boolean;
 }
 
@@ -97,6 +105,15 @@ export interface Assessment {
   readonly sudoLocalIncluded: boolean;
   /** True when /etc/pam.d/sudo_local exists at all. */
   readonly sudoLocalPresent: boolean;
+  /**
+   * True when a Touch ID prompt can actually appear inside tmux/screen -- i.e.
+   * pam_reattach is installed AND wired into sudo_local ahead of pam_tid.
+   *
+   * Reported separately from `status` on purpose. A machine can be perfectly
+   * durable and still have Touch ID do nothing in the shell agent work runs in,
+   * and a verdict that collapses those two into one word tells half the truth.
+   */
+  readonly multiplexerReady: boolean;
 }
 
 const WS = /\s+/u;
@@ -142,6 +159,26 @@ export function includesSudoLocal(sudoContent: string | null): boolean {
 /** Every active line whose control could DENY authentication. Must always be empty in our file. */
 export function denyingControlLines(content: string): readonly PamLine[] {
   return parsePamFile(content).filter((l) => l.active && !NON_DENYING_CONTROLS.includes(l.control));
+}
+
+/**
+ * Does `tools/setup/manifests/brew` declare pam-reattach?
+ *
+ * Parsed the SAME way tools/setup/macos.sh parses it -- strip an inline `#`
+ * comment, trim, take the first whitespace-delimited field (which drops any
+ * `tier=` token). Reading the manifest with a different parser than the
+ * installer uses would be two views of one fact that can silently disagree.
+ */
+export function brewManifestDeclares(manifestText: string, formula: string): boolean {
+  return manifestText.split("\n").some((line) => {
+    // indexOf/slice rather than /#.*$/ -- a greedy `.*$` backtracks, and a
+    // linter that flags super-linear regexes is right to: this parses a file
+    // whose length is not bounded by anything we control.
+    const hash = line.indexOf("#");
+    const withoutComment = (hash === -1 ? line : line.slice(0, hash)).trim();
+    if (withoutComment.length === 0) return false;
+    return withoutComment.split(WS)[0] === formula;
+  });
 }
 
 export const MANAGED_MARKER = "# Managed by Zeta: tools/setup/touchid-sudo.ts";
@@ -200,7 +237,49 @@ function unsupported(message: string, red: boolean): Assessment {
     reattachModulePath: null,
     sudoLocalIncluded: false,
     sudoLocalPresent: false,
+    multiplexerReady: false,
   };
+}
+
+interface StatusInputs {
+  readonly durableTid: boolean;
+  readonly directTid: boolean;
+  readonly effectiveTid: boolean;
+  readonly included: boolean;
+  readonly pamTidModuleExists: boolean;
+}
+
+/** The status decision, lifted out of `assess` so each half stays readable. */
+function classifyStatus(i: StatusInputs): TouchIdStatus {
+  if (i.durableTid && i.included && i.pamTidModuleExists) return "durable";
+  if (i.directTid || (i.effectiveTid && !i.durableTid)) return "fragile";
+  return "absent";
+}
+
+function statusFinding(status: TouchIdStatus, sudoLocalPresent: boolean): Finding {
+  if (status === "durable") {
+    return {
+      severity: "info",
+      message: "Touch ID for sudo is configured in /etc/pam.d/sudo_local, which survives macOS updates.",
+    };
+  }
+  if (status === "fragile") {
+    return {
+      severity: "error",
+      message:
+        "Touch ID works right now ONLY because pam_tid.so was added directly to /etc/pam.d/sudo. macOS replaces that file on OS updates, so this reverts to password-only silently. Fix: bun tools/setup/touchid-sudo.ts --apply",
+    };
+  }
+  return sudoLocalPresent
+    ? {
+        severity: "error",
+        message:
+          "/etc/pam.d/sudo_local exists but has no active pam_tid.so line. This is the shape a silent OS-update revert leaves behind, or a hand-edit that commented the line out.",
+      }
+    : {
+        severity: "error",
+        message: "Touch ID for sudo is not configured. Fix: bun tools/setup/touchid-sudo.ts --apply",
+      };
 }
 
 /** Classify the machine. Pure over the injected doors. This is the verifier's whole brain. */
@@ -249,35 +328,8 @@ export function assess(env: TouchIdEnv): Assessment {
     });
   }
 
-  let status: TouchIdStatus;
-  if (durableTid && included && pamTidModuleExists) {
-    status = "durable";
-    findings.push({
-      severity: "info",
-      message: "Touch ID for sudo is configured in /etc/pam.d/sudo_local, which survives macOS updates.",
-    });
-  } else if (directTid || (effectiveTid && !durableTid)) {
-    status = "fragile";
-    findings.push({
-      severity: "error",
-      message:
-        "Touch ID works right now ONLY because pam_tid.so was added directly to /etc/pam.d/sudo. macOS replaces that file on OS updates, so this reverts to password-only silently. Fix: bun tools/setup/touchid-sudo.ts --apply",
-    });
-  } else {
-    status = "absent";
-    findings.push(
-      sudoLocalContent !== null
-        ? {
-            severity: "error",
-            message:
-              "/etc/pam.d/sudo_local exists but has no active pam_tid.so line. This is the shape a silent OS-update revert leaves behind, or a hand-edit that commented the line out.",
-          }
-        : {
-            severity: "error",
-            message: "Touch ID for sudo is not configured. Fix: bun tools/setup/touchid-sudo.ts --apply",
-          },
-    );
-  }
+  const status = classifyStatus({ durableTid, directTid, effectiveTid, included, pamTidModuleExists });
+  findings.push(statusFinding(status, sudoLocalContent !== null));
 
   if (status === "durable" && directTid) {
     findings.push({
@@ -288,15 +340,21 @@ export function assess(env: TouchIdEnv): Assessment {
   }
 
   const reattachModulePath = resolveReattach(env);
-  addReattachFindings(env, findings, status, reattachModulePath, sudoLocalContent);
+  const multiplexerReady = addReattachFindings(env, findings, status, reattachModulePath, sudoLocalContent);
+
+  // RED is not only about sudo_local. A declared-and-missing pam_reattach means
+  // the gate does nothing in tmux, which is a real failure of the property the
+  // operator believes they have -- so it fails the check rather than warning.
+  const declaredButMissing = env.reattachDeclared && reattachModulePath === null;
 
   return {
     status,
-    red: status !== "durable",
+    red: status !== "durable" || declaredButMissing,
     findings,
     reattachModulePath,
     sudoLocalIncluded: included,
     sudoLocalPresent: sudoLocalContent !== null,
+    multiplexerReady,
   };
 }
 
@@ -318,34 +376,57 @@ function addReattachFindings(
   status: TouchIdStatus,
   reattachModulePath: string | null,
   sudoLocalContent: string | null,
-): void {
+): boolean {
   if (reattachModulePath === null) {
-    findings.push({
-      severity: env.insideMultiplexer ? "warn" : "info",
-      message:
-        "pam_reattach is not installed, so the Touch ID prompt will NOT appear inside tmux or screen (it falls back to the password). Install with: brew install pam-reattach, then re-run --apply.",
-    });
-    return;
+    // DECLARED-AND-MISSING IS DRIFT, and drift is an error rather than a note.
+    // tools/setup/manifests/brew declares pam-reattach, so the host is supposed
+    // to have it; not having it means the declarative setup has not been run or
+    // has drifted, and Touch ID sudo is silently inert in tmux/screen -- the
+    // shell agent work actually runs in. Certifying sudo_local as durable while
+    // saying nothing about that is telling half the truth.
+    findings.push(
+      env.reattachDeclared
+        ? {
+            severity: "error",
+            message:
+              "pam_reattach is DECLARED in tools/setup/manifests/brew and is NOT installed. Touch ID cannot prompt inside tmux/screen without it -- sudo silently falls back to the password there. Fix by re-running the declarative setup: tools/setup/install.sh",
+          }
+        : {
+            severity: env.insideMultiplexer ? "warn" : "info",
+            message:
+              "pam_reattach is not installed and not declared, so the Touch ID prompt will not appear inside tmux or screen.",
+          },
+    );
+    return false;
   }
-  if (!hasActiveAuthModule(sudoLocalContent, "pam_reattach.so") && status === "durable") {
-    findings.push({
-      severity: "warn",
-      message: `pam_reattach is installed at ${reattachModulePath} but is not referenced in sudo_local. Re-run --apply to wire it.`,
-    });
-    return;
-  }
+
   let archs: readonly string[];
   try {
     archs = machoArchs(env.readBytes(reattachModulePath));
   } catch {
-    return;
+    archs = [];
   }
   if (archs.length > 0 && !archs.includes(env.arch)) {
     findings.push({
       severity: "warn",
       message: `pam_reattach at ${reattachModulePath} is built for [${archs.join(", ")}] but this machine is ${env.arch}; PAM cannot load it. It is optional, so sudo still works -- but tmux gets no Touch ID prompt.`,
     });
+    return false;
   }
+
+  if (!hasActiveAuthModule(sudoLocalContent, "pam_reattach.so")) {
+    findings.push({
+      severity: status === "durable" ? "warn" : "info",
+      message: `pam_reattach is installed at ${reattachModulePath} but is not referenced in sudo_local. Re-run --apply to wire it.`,
+    });
+    return false;
+  }
+
+  findings.push({
+    severity: "info",
+    message: `pam_reattach wired from ${reattachModulePath}; the Touch ID prompt works inside tmux/screen.`,
+  });
+  return true;
 }
 
 // ---------------------------------------------------------------------------

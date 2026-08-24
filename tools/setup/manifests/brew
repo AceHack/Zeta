@@ -201,3 +201,47 @@ yubico-piv-tool   # PIV slot + attestation tooling
 # a contributor is not locked to one vendor's CLI to exercise either device.
 # Verified against the Homebrew API 2026-08-20: formula `opensc` 0.27.1, LGPL-2.1-or-later.
 opensc            # pkcs11-tool + PKCS#11 module — vendor-neutral smartcard/HSM CLI
+
+# ── pam_reattach — Touch ID for sudo inside tmux/screen (2026-08-24) ──────────
+# Aaron 2026-08-24: "we need to add this to our ace package manager dependency
+# tracking and make sure it's part of our declarative setup ... then i can run
+# the 2nd part, that one liner is simple enough for a vibe coder."
+#
+# This row exists to DELETE a hand-typed command. tools/setup/touchid-sudo.ts
+# used to tell the operator to run `brew install pam-reattach` themselves, which
+# is precisely the manual step a declarative setup is for. The verifier now
+# treats this row as the expectation and goes RED when the formula is declared
+# here and absent on the host, so the declaration is CHECKED rather than hoped
+# for (touchid-sudo-config.ts, `reattachDeclared`).
+#
+# WHAT IT DOES. Without it, sudo's Touch ID prompt cannot appear inside tmux or
+# screen: the multiplexer's session is not the user's Aqua GUI session, so
+# pam_tid has nothing to draw on and silently falls back to the password.
+# pam_reattach re-attaches the process to that GUI session first, which is why
+# touchid-sudo.ts emits it BEFORE pam_tid in /etc/pam.d/sudo_local. MEASURED
+# ABSENT on the maintainer's host 2026-08-24 (no .so at either Homebrew prefix)
+# while pam_tid was configured -- so Touch ID sudo was already inert in the
+# shell agent work actually runs in, and nothing said so.
+#
+# Verified against the Homebrew API 2026-08-24, not from memory:
+#   https://formulae.brew.sh/api/formula/pam-reattach.json
+#   name pam-reattach | tap homebrew/core | version 1.3 | license MIT
+#   upstream https://github.com/fabianishere/pam_reattach | dependencies: []
+#   bottled arm64_tahoe/sequoia/sonoma/ventura/monterey/big_sur + x86_64
+# Installs the module at <brew --prefix>/lib/pam/pam_reattach.so. touchid-sudo.ts
+# PROBES both /opt/homebrew and /usr/local rather than assuming a prefix, and
+# reads the Mach-O header to check the slice matches the host arch -- an
+# x86_64-only module on an Apple Silicon Mac is present and unloadable.
+#
+# NOT tier-tagged (so: slim, every host), deliberately. It is a single ~50 KB
+# bottled module with no dependencies, and the hosts most likely to be tiered
+# down are exactly the headless/CI ones where a silent password fallback is
+# hardest to notice. A tier= token here would buy no measurable disk and would
+# make macos-install-sh-test skip the row.
+#
+# macOS-ONLY BY NATURE, and it is NOT mirrored into manifests/apt or
+# manifests/windows. PAM-module-for-Aqua has no Linux or Windows meaning; a row
+# that silently no-ops on another OS is a declaration that constrains nothing --
+# the vacuity class wearing a manifest's clothes. The asymmetry is the honest
+# record, the same way the YubiKey block above is deliberately shorter than apt's.
+pam-reattach  # PAM module: re-attach to the Aqua session so Touch ID sudo works in tmux/screen

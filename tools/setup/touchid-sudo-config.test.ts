@@ -13,6 +13,7 @@
 import { describe, expect, test } from "bun:test";
 import {
   assess,
+  brewManifestDeclares,
   denyingControlLines,
   hasActiveAuthModule,
   includesSudoLocal,
@@ -62,7 +63,7 @@ const X64_MACHO = machoHeader(0x01000007);
  */
 function envOver(
   files: Readonly<Record<string, string>>,
-  bins: Readonly<Record<string, Uint8Array>> = { [PAM_TID]: ARM64_MACHO },
+  bins: Readonly<Record<string, Uint8Array>> = { [PAM_TID]: ARM64_MACHO, [REATTACH]: ARM64_MACHO },
   over: Partial<TouchIdEnv> = {},
 ): TouchIdEnv {
   return {
@@ -81,6 +82,7 @@ function envOver(
     pamDir: "/etc/pam.d",
     pamTidModulePath: PAM_TID,
     reattachCandidates: [REATTACH, "/usr/local/lib/pam/pam_reattach.so"],
+    reattachDeclared: true,
     insideMultiplexer: false,
     ...over,
   };
@@ -89,7 +91,7 @@ function envOver(
 const DURABLE_FILES = {
   "/etc/pam.d/sudo": STOCK_SUDO,
   "/etc/pam.d/sudo_local.template": TEMPLATE_CONTENT,
-  "/etc/pam.d/sudo_local": renderSudoLocal({}),
+  "/etc/pam.d/sudo_local": renderSudoLocal({ reattachModulePath: REATTACH }),
 };
 
 describe("literal-line helpers (a different question from chain resolution)", () => {
@@ -298,5 +300,78 @@ describe("no-prompt guarantee -- structural, not observational", () => {
     for (const forbidden of ["sudo -n", "sfltool", "bioutil", "osascript", "security "]) {
       expect(builder.includes(forbidden)).toBe(false);
     }
+  });
+});
+
+describe("pam_reattach -- the declared dependency, and the tmux half-truth", () => {
+  const BASE = {
+    "/etc/pam.d/sudo": STOCK_SUDO,
+    "/etc/pam.d/sudo_local.template": TEMPLATE_CONTENT,
+    "/etc/pam.d/sudo_local": renderSudoLocal({ reattachModulePath: REATTACH }),
+  };
+
+  test("DECLARED and MISSING is drift -- RED even though sudo_local is perfect", () => {
+    // This is the state measured on the maintainer's host 2026-08-24: pam_tid
+    // configured, no pam_reattach .so at either Homebrew prefix. Touch ID sudo
+    // is silently inert in tmux, which is where agent work runs.
+    const a = assess(envOver(BASE, { [PAM_TID]: ARM64_MACHO }));
+    expect(a.status).toBe("durable");
+    expect(a.red).toBe(true);
+    expect(a.multiplexerReady).toBe(false);
+    expect(
+      a.findings.some((f) => f.severity === "error" && f.message.includes("DECLARED in tools/setup/manifests/brew")),
+    ).toBe(true);
+  });
+
+  test("UNDECLARED and missing is only an observation -- not RED", () => {
+    // Nothing promised the module would be there, so its absence is not drift.
+    const a = assess(envOver(BASE, { [PAM_TID]: ARM64_MACHO }, { reattachDeclared: false }));
+    expect(a.red).toBe(false);
+    expect(a.multiplexerReady).toBe(false);
+    expect(a.findings.some((f) => f.severity === "error")).toBe(false);
+  });
+
+  test("installed AND wired -> multiplexerReady, GREEN", () => {
+    const a = assess(envOver(BASE));
+    expect(a.status).toBe("durable");
+    expect(a.red).toBe(false);
+    expect(a.multiplexerReady).toBe(true);
+  });
+
+  test("installed but NOT wired into sudo_local -> not ready, and says re-run --apply", () => {
+    const a = assess(envOver({ ...BASE, "/etc/pam.d/sudo_local": renderSudoLocal({}) }));
+    expect(a.multiplexerReady).toBe(false);
+    expect(a.findings.some((f) => f.message.includes("not referenced in sudo_local"))).toBe(true);
+  });
+
+  test("wrong-arch module is present but unloadable -> not ready", () => {
+    const a = assess(envOver(BASE, { [PAM_TID]: ARM64_MACHO, [REATTACH]: X64_MACHO }));
+    expect(a.multiplexerReady).toBe(false);
+    expect(a.findings.some((f) => f.message.includes("PAM cannot load it"))).toBe(true);
+  });
+});
+
+describe("brewManifestDeclares -- parsed the way macos.sh parses it", () => {
+  test("matches a bare row, ignores comments, and drops a tier= token", () => {
+    const manifest = [
+      "# a comment mentioning pam-reattach should NOT count",
+      "",
+      "opam tier=standard  # OCaml package manager",
+      "pam-reattach  # PAM module: re-attach to the Aqua session",
+    ].join("\n");
+    expect(brewManifestDeclares(manifest, "pam-reattach")).toBe(true);
+    expect(brewManifestDeclares(manifest, "opam")).toBe(true);
+    expect(brewManifestDeclares(manifest, "never-declared")).toBe(false);
+  });
+
+  test("a commented-out row does not count as declared", () => {
+    expect(brewManifestDeclares("# pam-reattach", "pam-reattach")).toBe(false);
+  });
+
+  test("THE REAL MANIFEST declares pam-reattach -- the row and the verifier agree", async () => {
+    // Parity: if someone deletes the manifest row, this fails rather than the
+    // verifier quietly downgrading drift to an observation.
+    const text = await Bun.file(new URL("./manifests/brew", import.meta.url)).text();
+    expect(brewManifestDeclares(text, "pam-reattach")).toBe(true);
   });
 });
