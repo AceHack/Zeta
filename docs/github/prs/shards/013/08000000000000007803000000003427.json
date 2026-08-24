@@ -1,0 +1,12 @@
+{
+  "pr_number": 13351,
+  "archive_path": "docs/history/pr-reviews/PR-13351-research-s3-minio-is-archived-upstream-seaweedfs-is-already-running-here.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-21T20:37:34.116Z",
+  "schema_version": "v1",
+  "commit_sha": "38da9c8877279ad8f9f875c366bbfabda2411a56",
+  "title": "research(s3): MinIO is archived upstream — SeaweedFS is already running here",
+  "state": "MERGED",
+  "merged_at": "2026-08-21T20:36:49Z",
+  "head_ref": "research/s3-object-store-successor-to-minio"
+}
