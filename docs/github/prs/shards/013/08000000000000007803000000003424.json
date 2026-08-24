@@ -1,0 +1,12 @@
+{
+  "pr_number": 13348,
+  "archive_path": "docs/history/pr-reviews/PR-13348-feat-cluster-a-dev-cpu-memory-rung-that-fits-the-runner-and-the-measurement-behi.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-21T20:36:29.997Z",
+  "schema_version": "v1",
+  "commit_sha": "20f3bf41d7b354b04cf38136ab3c0cbfb6c56639",
+  "title": "feat(cluster): a `dev` CPU/memory rung that fits the runner, and the measurement behind it",
+  "state": "MERGED",
+  "merged_at": "2026-08-21T20:35:51Z",
+  "head_ref": "feat/dev-resource-profile-fits-the-runner"
+}
