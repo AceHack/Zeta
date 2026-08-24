@@ -1,0 +1,14 @@
+{
+  "id": "080d01a978685010a0130008f1e69d00",
+  "at": "2026-08-24T19:11:11.114Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M0TJY389087G0R000TTF41C",
+    "type": "task",
+    "title": "M4 re-run costume-rho at the PRODUCTION model roster (0.5b/1b/2b), not 7b/8b/9b",
+    "slug": "m4-re-run-costume-rho-at-the-production-model-roster-0-5b-1b",
+    "priority": "P2",
+    "filename": "081M0TJY389087G0R000TTF41C-m4-re-run-costume-rho-at-the-production-model-roster-0-5b-1b.md"
+  }
+}

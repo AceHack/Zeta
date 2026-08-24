@@ -1,0 +1,14 @@
+{
+  "id": "080d01a978664810a013000805a77a42",
+  "at": "2026-08-24T19:11:11.049Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M0TJY368087G0R000DVSWMM",
+    "type": "task",
+    "title": "M1 detection-resolution ROC for AntiSybil -- minimum detectable correlation at (n, delta)",
+    "slug": "m1-detection-resolution-roc-for-antisybil-minimum-detectable",
+    "priority": "P2",
+    "filename": "081M0TJY368087G0R000DVSWMM-m1-detection-resolution-roc-for-antisybil-minimum-detectable.md"
+  }
+}

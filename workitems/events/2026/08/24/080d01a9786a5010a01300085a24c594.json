@@ -1,0 +1,14 @@
+{
+  "id": "080d01a9786a5010a01300085a24c594",
+  "at": "2026-08-24T19:11:11.178Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M0TJY3A9087G0R00116ZB6K",
+    "type": "task",
+    "title": "decorrelation-meter.ts is dead code with an invented CHSH rescale and a wrong null",
+    "slug": "decorrelation-meter-ts-is-dead-code-with-an-invented-chsh-re",
+    "priority": "P2",
+    "filename": "081M0TJY3A9087G0R00116ZB6K-decorrelation-meter-ts-is-dead-code-with-an-invented-chsh-re.md"
+  }
+}
