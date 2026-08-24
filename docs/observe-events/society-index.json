@@ -1,7 +1,7 @@
 {
   "schema": "zeta.society.event-index/v1",
-  "eventCount": 562,
-  "headDigest": "b129acd94ccefcfe264d1841b3611c50b2a6906b80d46de049cf62c9c9e0c6f8",
+  "eventCount": 566,
+  "headDigest": "d75070357c230b60f50cdebe5e298798905e7233acf2f099a3485b513bef11bf",
   "events": [
     {
       "id": "society-msm7luj6",
@@ -5020,6 +5020,42 @@
       "previousDigest": "cd2427021b6f7e12e1ea5b0257b88229db1126beb8b210527dc2e706f22f46cd",
       "chainDigest": "b129acd94ccefcfe264d1841b3611c50b2a6906b80d46de049cf62c9c9e0c6f8",
       "sourceRevision": "21ddffdf75067ae3537ebc8fac3370d95d6c2c61"
+    },
+    {
+      "id": "society-mt7bosth",
+      "at": "2026-08-24T14:19:53.957Z",
+      "file": "society-mt7bosth.json",
+      "eventDigest": "5aa942144541a29a970c59066a77bb3cd6455d9e2c181b3e0303173493f19b33",
+      "previousDigest": "b129acd94ccefcfe264d1841b3611c50b2a6906b80d46de049cf62c9c9e0c6f8",
+      "chainDigest": "d8a1d6a3b637c2396444009f08f3ec8b6e5b7f122282a16e18d9e94b025ff46f",
+      "sourceRevision": "1fc93622ad0fc4cc1970b13bbe909a20793faf92"
+    },
+    {
+      "id": "society-mt7cpxoi",
+      "at": "2026-08-24T14:48:46.530Z",
+      "file": "society-mt7cpxoi.json",
+      "eventDigest": "e34ca75842423f493a06698ec6a3f8a6c6ea393de779277ec1192f534469766b",
+      "previousDigest": "d8a1d6a3b637c2396444009f08f3ec8b6e5b7f122282a16e18d9e94b025ff46f",
+      "chainDigest": "b9ca3020dd6fba52f9324867faea041f3aaec84012138b8ea48c6cd4fdac76b6",
+      "sourceRevision": "36c2ff5594a466c105799297e6b1fd65be1be8e4"
+    },
+    {
+      "id": "society-mt7dsx7z",
+      "at": "2026-08-24T15:19:05.519Z",
+      "file": "society-mt7dsx7z.json",
+      "eventDigest": "98f3d1ef1657df9e86f7bc58e1b9910dbd596953d251ceb361de1fe5d274a8ac",
+      "previousDigest": "b9ca3020dd6fba52f9324867faea041f3aaec84012138b8ea48c6cd4fdac76b6",
+      "chainDigest": "74a37e8ba3d59e187707dc163b856f23c98894bfb120bc32c532a8215222024d",
+      "sourceRevision": "7d6da9e416dc6e2ee1cb038e5258414014f682e6"
+    },
+    {
+      "id": "society-mt7eupmi",
+      "at": "2026-08-24T15:48:28.602Z",
+      "file": "society-mt7eupmi.json",
+      "eventDigest": "fd168c803030b8275ae703ae074df23398359e4a2667533d2895a6f2fd44b809",
+      "previousDigest": "74a37e8ba3d59e187707dc163b856f23c98894bfb120bc32c532a8215222024d",
+      "chainDigest": "d75070357c230b60f50cdebe5e298798905e7233acf2f099a3485b513bef11bf",
+      "sourceRevision": "b585b1abbcda339076ca4a47e7377ae2a8d340d2"
     }
   ]
 }
