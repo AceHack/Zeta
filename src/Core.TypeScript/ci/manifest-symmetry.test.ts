@@ -82,6 +82,15 @@ const WINDOWS_EXCEPTIONS: Record<string, string> = {
     "R statistical runtime (charting/grammar-of-graphics lens-finder); covered on Windows by the `r` manifest line (scoop r / winget RProject.R / choco R.Project). apt names the package r-base; brew + scoop name it r.",
   tailscale:
     "mesh VPN client; on Windows, Tailscale installs natively via MSI/installer or winget (Tailscale.Tailscale).",
+  // macOS-only PAM module (brew only -- absent from manifests/apt). It re-attaches the PAM
+  // stack to the Aqua GUI session so `pam_tid.so` (Touch ID) can reach the fingerprint
+  // sensor from tmux/screen/ssh, which is the whole reason Touch-ID-for-sudo is usable in
+  // a terminal multiplexer. Windows has no PAM stack at all and no `sudo` in this sense --
+  // elevation is UAC, and biometric elevation is Windows Hello via a wholly separate API
+  // (no per-command PAM module is involved). So there is nothing to name on the Windows
+  // side: this is a genuine platform absence, not a deferred packaging decision.
+  "pam-reattach":
+    "macOS-only PAM module for Touch-ID sudo under tmux/screen (tools/setup/touchid-sudo.ts); Windows uses UAC + Windows Hello, which has no PAM equivalent",
   agda: "cubical Agda proof lane is Unix-only for now (081KX1VE4G808QG0R003DCK3GV named debt, tlaps/Isabelle precedent); Windows disposition (choco agda / ghcup) deferred until the lane needs a Windows leg.",
   // The multi-compiler WASM lane added these Unix packages in 1dd36bad2. Windows currently has no
   // host-tier filter in manifests/windows, so forcing the large compiler stack into that base
