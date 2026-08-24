@@ -1800,6 +1800,26 @@ jobs:
         # refusal of rows that contradict (or are missing) their cited evidence.
         run: bun src/Core.TypeScript/hygiene/lint-discharge-certificate-consistency.ts
 
+      - name: Guard — the child-floor jurisdiction registry (081M0TJXY32087G0R003TBTR7V)
+        # The PREDICATE (protect children) is invariant; the THRESHOLD (~16-21) is a
+        # jurisdictional parameter. `Safety/ChildFloorPolicy.lean` proves, for EVERY
+        # registry, that no reading can lower the floor and that an unknown jurisdiction
+        # denies — so a bad entry cannot break safety, it is simply refused and the
+        # resolver falls through to the protective bound. That silence is why this lint
+        # exists: a jurisdiction that believes it declared 15 would get 21 and never learn.
+        # It also byte-locks the band across its three copies (Lean / TypeScript / JSON),
+        # because three copies of a safety constant is a drift bug waiting to happen.
+        run: bun src/Core.TypeScript/hygiene/lint-child-floor-registry.ts
+
+      - name: Child-floor policy falsifiers (081M0TJXY32087G0R003TBTR7V)
+        # The resolver's own test suite. It lives outside src/Core.TypeScript/hygiene/, so
+        # the hygiene suite does not reach it and only the non-blocking bare `bun test` job
+        # would — which is too far from the change for a SAFETY floor. Named here so it runs
+        # on every PR beside the lint it belongs to. Its sabotage registries are the same
+        # ones ChildFloorPolicy.lean §6 refuses, so the two oracles refuse the same attacks
+        # rather than each passing their own.
+        run: bun test src/Core.TypeScript/child-floor/
+
       - name: Guard — a golden-vector treaty may not claim a rule its vectors do not pin
         # PR #10759 was filed on the premise "the tie-break behaviour is byte-locked into
         # the four-oracle treaty." Measured, that premise was false: first-occurrence and

@@ -104,6 +104,17 @@ unbypassable; KSK's `red_lines` names the **policy**. Nothing connects a jurisdi
 parameter to that policy. The floor is proven; the threshold is a constant nobody has
 declared. That is the one piece of real work this ferry identifies.
 
+> **[Added 2026-08-24, after this ferry landed]** Closed by
+> **081M0TJXY32087G0R003TBTR7V** — `src/Core.Lean4/Safety/ChildFloorPolicy.lean` (proven,
+> `sorry`-free, universally quantified over the registry),
+> `src/Core.TypeScript/child-floor/jurisdiction-threshold.ts` (the running mirror),
+> `db/child-floor/jurisdiction-readings.json` (the declared table, attributed and dated —
+> legal *readings*, not verified law). `ChildFloor.lean` is unchanged: every result
+> instantiates its `denied_never_executed` rather than restating it. **Two halves of the gap
+> remain open and are named rather than papered over:** the classifier (`classOf` /
+> `subjectOf`) is not proven correct, and no deployed gate consumes the policy yet — the
+> ObserveBridge `Effect` taxonomy carries no subject and no age. See `db/child-floor/README.md`.
+
 ## 7. Register
 
 `unmetered` — no code changed and nothing here was executed. The convergences in §4 are

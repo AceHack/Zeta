@@ -1,0 +1,14 @@
+{
+  "id": "080d01a977c32010a0130008a4041f6d",
+  "at": "2026-08-24T19:11:05.828Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M0TJXY32087G0R003TBTR7V",
+    "type": "task",
+    "title": "Child-floor policy: jurisdiction-indexed age threshold plugged into the proven ChildFloor gate (invariant predicate, jurisdictional parameter, fail-closed on unknown)",
+    "slug": "child-floor-policy-jurisdiction-indexed-age-threshold-plugge",
+    "priority": "P2",
+    "filename": "081M0TJXY32087G0R003TBTR7V-child-floor-policy-jurisdiction-indexed-age-threshold-plugge.md"
+  }
+}

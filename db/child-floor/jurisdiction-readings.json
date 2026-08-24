@@ -1,0 +1,28 @@
+{
+  "schema": "zeta.child-floor.jurisdiction-readings/v1",
+  "register": "DECLARED — not proven, not verified law, NOT LEGAL ADVICE. Every entry under `readings` is one named party's reading of one jurisdiction at one date, and is revisable. See README.md before adding, removing, or trusting an entry.",
+  "band": {
+    "low": 16,
+    "high": 21,
+    "source": "Aaron 2026-08-24: \"the fixed moral floor is always protect children and disagree on their age around 16-21.\"",
+    "byteLock": "Must equal `bandLow` / `bandHigh` in src/Core.Lean4/Safety/ChildFloorPolicy.lean and BAND_LOW / BAND_HIGH in src/Core.TypeScript/child-floor/jurisdiction-threshold.ts. lint-child-floor-registry.ts fails if the three disagree."
+  },
+  "effectiveWithNoReadings": {
+    "threshold": 21,
+    "why": "An empty `readings` list is not an absent policy — it resolves every jurisdiction to the protective bound. A registry with no attributed legal review SHOULD be at its most protective setting, and this is what that looks like."
+  },
+  "readings": [],
+  "candidates": [
+    {
+      "jurisdiction": "world/us/oh",
+      "status": "needs-attributed-reading",
+      "note": "The repo's own accountable regime (see docs/research/2026-08-24-liability-is-the-invariant-*.md, `Accountable-Regime: us-oh-2026`). Listed as the first place a reading would be wanted, NOT as a claim about Ohio law."
+    },
+    {
+      "jurisdiction": "world/us",
+      "status": "needs-attributed-reading",
+      "note": "Federal scope. Carries no number and asserts nothing until someone named supplies one."
+    }
+  ],
+  "candidatesAreNotReadings": "Entries under `candidates` carry no `threshold` and are never consulted by the resolver. They record where a reading is wanted. Promoting one means moving it into `readings` WITH `threshold`, `attributedTo`, `dated`, and `basis` — which is a legal judgement, not a data-entry task."
+}

@@ -184,6 +184,14 @@ jobs:
             | cat Privacy/UnboundedNeedsInfinitePrivacy.lean - > /tmp/unbounded_axiom_audit.lean
           printf '#print axioms Zeta.ChildFloor.denied_never_executed\n#print axioms Zeta.ChildFloor.executed_admit\n#print axioms Zeta.ChildFloor.binding_denied_never_executed\n#print axioms Zeta.ChildFloor.binding_respects_gate\n' \
             | cat Safety/ChildFloor.lean - > /tmp/childfloor_axiom_audit.lean
+          # ── Added 2026-08-24 (081M0TJXY32087G0R003TBTR7V): the child-floor POLICY —
+          # the jurisdiction-indexed threshold that instantiates ChildFloor's proven gate.
+          # It lands WITH its gate, per the MenoBalancedTwist precedent: a new proof file
+          # that is built but unaudited is a regression to `sorry` waiting to type-check
+          # green. `no_registry_lowers_the_floor` and `unknown_denies_superset` are the two
+          # load-bearing ones (no jurisdiction can disable the floor; unknown fails closed).
+          printf '#print axioms Zeta.ChildFloorPolicy.resolve_lower_bound\n#print axioms Zeta.ChildFloorPolicy.resolve_upper_bound\n#print axioms Zeta.ChildFloorPolicy.resolve_unknown\n#print axioms Zeta.ChildFloorPolicy.resolveAll_lower_bound\n#print axioms Zeta.ChildFloorPolicy.resolveAll_upper_bound\n#print axioms Zeta.ChildFloorPolicy.resolveAll_ge_each\n#print axioms Zeta.ChildFloorPolicy.resolveAll_singleton\n#print axioms Zeta.ChildFloorPolicy.unknown_age_denies\n#print axioms Zeta.ChildFloorPolicy.deny_monotone\n#print axioms Zeta.ChildFloorPolicy.no_registry_lowers_the_floor\n#print axioms Zeta.ChildFloorPolicy.unknown_denies_superset\n#print axioms Zeta.ChildFloorPolicy.unknown_jurisdiction_denies_below_bandHigh\n#print axioms Zeta.ChildFloorPolicy.under_bandLow_never_executed\n#print axioms Zeta.ChildFloorPolicy.unknown_age_never_executed\n#print axioms Zeta.ChildFloorPolicy.unknown_jurisdiction_never_executes_below_bandHigh\n' \
+            | cat Safety/ChildFloorPolicy.lean - > /tmp/childfloorpolicy_axiom_audit.lean
           printf '#print axioms Zeta.Bifurcation.reconcile_converges\n#print axioms Zeta.Bifurcation.reconcile_absorb\n' \
             | cat Safety/Bifurcation.lean - > /tmp/bifurcation_axiom_audit.lean
           printf '#print axioms Zeta.NonRegisterCollapse.non_collapse\n#print axioms Zeta.NonRegisterCollapse.distinctness_forces_standing\n#print axioms Zeta.NonRegisterCollapse.no_register_collapses\n' \
@@ -270,6 +278,10 @@ jobs:
             --label "childfloor axiom audit" --deny 'sorryAx' \
             --message "ChildFloor depends on sorryAx — the child-floor proof regressed to sorry/admit" \
             -- lake env lean /tmp/childfloor_axiom_audit.lean
+          bun ../Core.TypeScript/hygiene/run-checked.ts \
+            --label "childfloorpolicy axiom audit" --deny 'sorryAx' --deny 'ofReduceBool' \
+            --message "ChildFloorPolicy depends on sorryAx or ofReduceBool — the child-floor policy's floor-cannot-be-disabled / unknown-fails-closed proofs regressed to sorry, or a witness switched to native_decide (which puts a compiler-trusting axiom in a SAFETY proof's axiom set)" \
+            -- lake env lean /tmp/childfloorpolicy_axiom_audit.lean
           bun ../Core.TypeScript/hygiene/run-checked.ts \
             --label "bifurcation axiom audit" --deny 'sorryAx' \
             --message "Bifurcation depends on sorryAx — the reconciliation-convergence proof regressed to sorry/admit" \
