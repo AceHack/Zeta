@@ -1,0 +1,12 @@
+{
+  "pr_number": 14606,
+  "archive_path": "docs/history/pr-reviews/PR-14606-ci-identity-dla-the-site-gets-a-pr-time-check-the-deploy-s-own-build-entry-run-b.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-24T02:08:38.185Z",
+  "schema_version": "v1",
+  "commit_sha": "c3265d9cf34ee525f856fdbbb433e9aa35ee38e9",
+  "title": "ci(identity-dla): the site gets a PR-time check — the deploy's own build entry, run before merge (081M0RN9FW3087G0R000EBT0HH)",
+  "state": "MERGED",
+  "merged_at": "2026-08-24T02:07:39Z",
+  "head_ref": "claude/otto-identity-dla-ci-job"
+}
