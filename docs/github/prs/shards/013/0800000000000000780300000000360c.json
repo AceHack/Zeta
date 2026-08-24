@@ -1,0 +1,12 @@
+{
+  "pr_number": 13836,
+  "archive_path": "docs/history/pr-reviews/PR-13836-fix-ci-narrow-live-heartbeat-gate-bootstrap.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-22T20:59:35.785Z",
+  "schema_version": "v1",
+  "commit_sha": "89eaadf167755612ee72623fa626810af54b7f30",
+  "title": "fix(ci): narrow live heartbeat gate bootstrap",
+  "state": "MERGED",
+  "merged_at": "2026-08-22T20:59:00Z",
+  "head_ref": "fix/heartbeat-gate-narrow-bootstrap-live"
+}
