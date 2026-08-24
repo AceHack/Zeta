@@ -213,12 +213,71 @@ markdownlint research carve-out that made `rc=0` meaningless on this repo's rese
 than being currently satisfied — with no index there is nothing to assert. That is the difference
 between a fix and a patch, and it is the shape to prefer wherever these 3,429 assertions get touched.
 
+## CLOSED (2026-08-23, dejan) — the false assertion, and only that
+
+The decoupled half is landed. **The runner no longer names a tool it did not invoke, and cannot
+regain the ability to.** Nothing else in this workitem moved; the numbered decisions below are open
+exactly as filed.
+
+**What changed (`src/Core.TypeScript/lint/lint-typescript.ts`):**
+
+- `main()` printed a hardcoded `✓ TypeScript, Prettier, and style checks passed successfully!`.
+  It now prints `successMessage(STEPS)` — **derived from the step list**, so the message is a
+  function of what ran. Today that is `✓ 1 check passed: tsc`. A step added to `STEPS` appears in
+  the message for free; a step removed cannot leave its name behind.
+- `Step` gained a `tool` field — the one place a tool name may enter the success line — and `STEPS`
+  is exported so a test can assert against the real list rather than a copy of it.
+- The header no longer describes the file as orchestrating "tsc, eslint, prettier, stylelint". It
+  states that `STEPS` holds `tsc` alone, names the three tools that are configured but **not
+  invoked** as not invoked, and points here.
+- **Empty `STEPS` is now a failure, not a silent pass.** Commenting the last step out would
+  previously have produced exit 0 with zero checks executed — the same defect one step further
+  along. `main()` returns 1 and says `NOTHING RAN`.
+
+**What changed (`.github/workflows/gate.yml`, job `lint (TS)`):** the step named *"Run TypeScript
+Lint Script"*, commented *"Type check and lint checks"*, is now *"Run TypeScript type check (tsc
+--noEmit, via the orchestrator)"* with a comment saying plainly that no eslint/prettier/stylelint
+runs in this job and why that is a separate decision. The job's own `name: lint (TS)` is a required
+status check and was **not** touched.
+
+**Falsifier (`lint-typescript.test.ts`, 5 new tests, 16 pass total).** The load-bearing one runs
+`successMessage(STEPS)` against a roster of claimable tools and asserts that none absent from
+`STEPS` appears. Discrimination proof, both directions:
+
+| mutation | result |
+|---|---|
+| baseline | `TEST_RC=0` — 16 pass, 0 fail |
+| message appends `, Prettier, stylelint` (the original claim) | `TEST_RC=1` — **2 fail**, offender list `["prettier", "stylelint"]` |
+| message drops the roster (`✓ 1 check passed successfully!`) | `TEST_RC=1` — **2 fail**, "names EVERY tool it did run" |
+| restored | `TEST_RC=0` — 16 pass, 0 fail |
+
+The second mutation matters: a test that only forbade extra names would accept a message that says
+nothing, which is how the vacuous version of this fix would look.
+
+**`package.json` deliberately untouched.** `lint:typescript` names no tool — it is the entry point's
+name, consistent with the `lint (F#) / (C#) / (TS)` family — so it asserts nothing false. Renaming it
+would be churn across ~20 referencing docs for no gain in honesty.
+
+### Still open — nothing here was decided
+
+1. **Measure the repo-wide counts** per tool. `src/Core.TypeScript` alone is 14,218 eslint errors;
+   `format:check` and `lint:css` are still unmeasured.
+2. **The profile boundary** (shadow vs Lumen, above) — the maintainer's call, untouched.
+3. **Wiring eslint / prettier / stylelint in.** Not done, and correctly not done here.
+4. **The sweep this suggests** — the markdownlint research carve-out is the same class ("the linter
+   is present and does not examine the file"); two instances in one day still argues for a sweep.
+
+One narrow-path slice already exists independently: `lint (twitch-ai app)` does run
+`bunx eslint src/apps/twitch-ai/src`. So eslint is invoked *somewhere* in CI — just not by the job
+whose step name claimed it.
+
 ## Acceptance
 
 - Repo-wide counts reported per tool, **before** any invocation is wired in.
 - The profile boundary decided and written down with its reasoning.
-- Whatever ships, **the documentation matches the behaviour** — no tool named in the header or in a CI
-  step name that is not invoked.
+- ~~Whatever ships, **the documentation matches the behaviour** — no tool named in the header or in a
+  CI step name that is not invoked.~~ **DONE 2026-08-23 (dejan)** — header, success line and gate.yml
+  step name; the success line is now derived from `STEPS` so it cannot drift back.
 - Discrimination proof: introduce a deliberate violation of each newly-enforced tool, show the job go
   **RED**, then restore.
 

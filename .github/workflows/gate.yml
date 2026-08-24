@@ -1718,8 +1718,14 @@ jobs:
         # discipline as bun's own CI patterns.
         run: bun install --frozen-lockfile
 
-      - name: Run TypeScript Lint Script
-        # Type check and lint checks for TypeScript files via dedicated orchestrator
+      - name: Run TypeScript type check (tsc --noEmit, via the orchestrator)
+        # tsc ONLY. This step used to be named "Run TypeScript Lint Script" and
+        # commented "Type check and lint checks" — no eslint, prettier or
+        # stylelint runs here or anywhere in this job, and the runner itself used
+        # to print that they had passed. Both statements are removed rather than
+        # made true: wiring eslint on is a separate, measured decision
+        # (workitem 081M0RBXF6J087G0R0023EX9X2 — 14,218 errors in one directory).
+        # A step name is read as a claim about what ran; keep it to what runs.
         run: bun src/Core.TypeScript/lint/lint-typescript.ts
 
   lint-twitch-ai:

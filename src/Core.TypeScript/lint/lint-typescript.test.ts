@@ -12,6 +12,10 @@ import { describe, expect, it } from "bun:test";
 import {
   missingInstalledDeps,
   packageBaseName,
+  STEPS,
+  type Step,
+  successMessage,
+  toolsRun,
   TYPESCRIPT_COMPILER_COMMAND,
 } from "./lint-typescript.ts";
 
@@ -99,5 +103,77 @@ describe("missingInstalledDeps (081KZKWB1FZ)", () => {
       "@scope/pkg",
       "playwright",
     ]);
+  });
+});
+
+// ── 081M0RBXF6J087G0R0023EX9X2 — the success line may not name a tool that did
+// not run. `main()` printed "✓ TypeScript, Prettier, and style checks passed
+// successfully!" on every green run while STEPS held tsc alone: two tools
+// announced as passed that never executed. A corrected string is one edit away
+// from drifting back, so the message is now derived from STEPS and these are the
+// falsifiers for that derivation.
+//
+// The load-bearing test is `never names a tool it did not run` — it is written
+// against the REAL, exported STEPS, so it goes red the moment the message and the
+// step list disagree, in either direction.
+
+/**
+ * Tools this repo has configured, pinned, or named in CI. eslint / prettier /
+ * stylelint are the three that were being announced without running; the rest are
+ * plausible future additions. A tool absent from STEPS must not appear in the
+ * message, and this roster is what makes that assertion able to fail.
+ */
+const CLAIMABLE_TOOLS = [
+  "tsc",
+  "eslint",
+  "prettier",
+  "stylelint",
+  "markdownlint",
+  "oxlint",
+  "biome",
+  "dprint",
+] as const;
+
+const fakeStep = (tool: string): Step => ({
+  label: `fake: ${tool}`,
+  tool,
+  cmd: [tool, "--version"],
+});
+
+describe("successMessage (081M0RBXF6J087G0R0023EX9X2)", () => {
+  it("never names a tool it did not run — against the real STEPS", () => {
+    const message = successMessage(STEPS).toLowerCase();
+    const ran = new Set(toolsRun(STEPS).map((tool) => tool.toLowerCase()));
+    const announcedButNotRun = CLAIMABLE_TOOLS.filter(
+      (tool) => !ran.has(tool) && message.includes(tool),
+    );
+    // Empty array, not `false` — a failure then prints WHICH tool was claimed.
+    expect(announcedButNotRun).toEqual([]);
+  });
+
+  it("names EVERY tool it did run — a step cannot be silently dropped", () => {
+    const message = successMessage(STEPS);
+    expect(toolsRun(STEPS).length).toBeGreaterThan(0);
+    for (const tool of toolsRun(STEPS)) expect(message).toContain(tool);
+  });
+
+  it("is a function of the step list, so a new step updates it for free", () => {
+    expect(successMessage([fakeStep("tsc")])).toBe("✓ 1 check passed: tsc");
+    expect(successMessage([fakeStep("tsc"), fakeStep("eslint")])).toBe(
+      "✓ 2 checks passed: tsc, eslint",
+    );
+    expect(successMessage([fakeStep("tsc"), fakeStep("tsc")])).toBe("✓ 1 check passed: tsc");
+  });
+
+  it("refuses to call an empty step list a pass", () => {
+    // Zero checks executed is the vacuity class: it must not read as green.
+    expect(successMessage([])).not.toContain("✓");
+    expect(successMessage([])).toContain("NOTHING RAN");
+  });
+
+  it("declares a tool the command actually invokes", () => {
+    // Guards the other end: a step could otherwise declare `tool: "eslint"` and
+    // shell out to something else, putting a true-looking name in the message.
+    for (const step of STEPS) expect(step.cmd.join(" ")).toContain(step.tool);
   });
 });

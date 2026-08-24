@@ -1,8 +1,21 @@
 #!/usr/bin/env bun
-// lint-typescript.ts — TypeScript type checking, formatting, and linting checks.
+// lint-typescript.ts — runs the checks in `STEPS`, and says exactly which ones ran.
 //
-// Post-install orchestration of TypeScript tools (tsc, eslint, prettier, stylelint)
-// — it runs in CI where Bun is already available, so it is OUR CODE, not shell.
+// TODAY `STEPS` HOLDS ONE CHECK: `tsc --noEmit`. This header used to describe the
+// file as orchestrating "tsc, eslint, prettier, stylelint" and `main()` used to
+// print "✓ TypeScript, Prettier, and style checks passed successfully!" — naming
+// three tools while running one. eslint / prettier / stylelint are configured and
+// pinned in package.json but are NOT invoked from here (workitem
+// 081M0RBXF6J087G0R0023EX9X2). Their absence is a real gap; announcing them as
+// passed was worse than the gap, because the CI log is where a reader goes to
+// confirm what ran, and it told them something false on every green run.
+//
+// So the success line is DERIVED from `STEPS` (`successMessage`), never written
+// out by hand: a step added to `STEPS` appears in the message for free, and a step
+// removed cannot leave its name behind. `lint-typescript.test.ts` fails if the
+// message names any tool that is not in `STEPS`.
+//
+// Do not re-describe this file by the tools it could run — only by the ones it does.
 //
 // Usage:
 //   bun src/Core.TypeScript/lint/lint-typescript.ts
@@ -92,8 +105,15 @@ function reportUnprovisionedEnvironment(tscOutput: string): boolean {
   return true;
 }
 
-interface Step {
+export interface Step {
   readonly label: string;
+  /**
+   * The tool this step actually executes — the ONLY source the success line is
+   * allowed to name a tool from. Keep it the name a reader would grep the CI log
+   * for (`tsc`, not `node`), and keep it a substring of `cmd`: the test asserts
+   * that tie, so a step cannot declare one tool and shell out to another.
+   */
+  readonly tool: string;
   readonly cmd: readonly [string, ...string[]];
 }
 
@@ -109,7 +129,28 @@ export const TYPESCRIPT_COMPILER_COMMAND: readonly [string, ...string[]] = [
   "tsconfig.json",
 ];
 
-const STEPS: readonly Step[] = [{ label: "TypeScript type check: tsc", cmd: TYPESCRIPT_COMPILER_COMMAND }];
+export const STEPS: readonly Step[] = [
+  { label: "TypeScript type check: tsc", tool: "tsc", cmd: TYPESCRIPT_COMPILER_COMMAND },
+];
+
+/** The tools `steps` executes, first-appearance order, deduplicated. */
+export function toolsRun(steps: readonly Step[]): readonly string[] {
+  return [...new Set(steps.map((step) => step.tool))];
+}
+
+/**
+ * The line printed when every step passed — a FUNCTION OF WHAT RAN, not a
+ * hand-maintained roster. An empty `STEPS` is not a pass and must not read like
+ * one: nothing was checked, so the caller is told so and `main()` fails.
+ */
+export function successMessage(steps: readonly Step[]): string {
+  const tools = toolsRun(steps);
+  if (tools.length === 0) {
+    return "✗ NOTHING RAN: STEPS is empty, so no check was performed. This is not a pass.";
+  }
+  const noun = tools.length === 1 ? "check" : "checks";
+  return `✓ ${tools.length} ${noun} passed: ${tools.join(", ")}`;
+}
 
 function run(step: Step): boolean {
   console.log(`=== ${step.label} ===`);
@@ -167,10 +208,16 @@ function run(step: Step): boolean {
 }
 
 function main(): number {
+  // A run that executed no check is not a green run. Guarding it here means the
+  // only way to reach exit 0 is to have actually run something.
+  if (STEPS.length === 0) {
+    console.error(successMessage(STEPS));
+    return 1;
+  }
   for (const step of STEPS) {
     if (!run(step)) return 1;
   }
-  console.log("✓ TypeScript, Prettier, and style checks passed successfully!");
+  console.log(successMessage(STEPS));
   return 0;
 }
 
