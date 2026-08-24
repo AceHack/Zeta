@@ -1,0 +1,12 @@
+{
+  "pr_number": 14853,
+  "archive_path": "docs/history/pr-reviews/PR-14853-bug-shivagc-the-byte-identity-falsifier-compares-run-recipe-to-itself.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-24T16:40:10.248Z",
+  "schema_version": "v1",
+  "commit_sha": "14aad1d141facdb0259ce6fea227f9d1bec27237",
+  "title": "bug(shivagc): the byte-identity falsifier compares `run recipe` to itself",
+  "state": "MERGED",
+  "merged_at": "2026-08-24T16:38:56Z",
+  "head_ref": "fix/shivagc-regen-near-vacuous-length-assert"
+}
