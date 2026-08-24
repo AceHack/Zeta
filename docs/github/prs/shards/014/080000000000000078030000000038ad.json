@@ -1,0 +1,12 @@
+{
+  "pr_number": 14509,
+  "archive_path": "docs/history/pr-reviews/PR-14509-test-usb-the-macos-flasher-had-no-tests-and-could-not-have-had-any-the-token-lan.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-23T22:35:19.210Z",
+  "schema_version": "v1",
+  "commit_sha": "8c554719940b998e193c113144960cd9318eee4c",
+  "title": "test(usb): the macOS flasher had no tests and could not have had any; the token lane was unreachable",
+  "state": "MERGED",
+  "merged_at": "2026-08-23T22:34:42Z",
+  "head_ref": "nazar/usb-hardware-setup-tested"
+}
