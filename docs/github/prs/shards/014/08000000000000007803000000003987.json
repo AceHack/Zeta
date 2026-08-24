@@ -1,0 +1,12 @@
+{
+  "pr_number": 14727,
+  "archive_path": "docs/history/pr-reviews/PR-14727-security-p1-resolve-every-privilege-elevator-by-absolute-path-never-by-name.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-24T13:58:49.070Z",
+  "schema_version": "v1",
+  "commit_sha": "7fcae2f287fb4c0dab12559d5fa95b1aeb785c13",
+  "title": "security(P1): resolve every privilege elevator by absolute path, never by name",
+  "state": "MERGED",
+  "merged_at": "2026-08-24T13:57:58Z",
+  "head_ref": "fix/nazar-path-forgeable-privilege-elevator"
+}
