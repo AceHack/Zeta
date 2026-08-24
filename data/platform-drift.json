@@ -1,5 +1,5 @@
 {
-  "asOf": "2026-08-24T22:37:15Z",
+  "asOf": "2026-08-24T22:52:32Z",
   "report": {
     "runs": 500,
     "executedRuns": 140,
@@ -69,9 +69,17 @@
         }
       }
     ],
-    "latestRunId": 32785525928
+    "latestRunId": 32786728823
   },
   "records": [
+    {
+      "id": 32786728823,
+      "at": "2026-08-24T22:52:32Z",
+      "sha": "7e5504d57b683a4344dcd772edbdf92623c3f1fc",
+      "conclusion": "cancelled",
+      "rollup": "absent",
+      "legs": {}
+    },
     {
       "id": 32785525928,
       "at": "2026-08-24T22:37:15Z",
@@ -4903,14 +4911,6 @@
         "build-and-test (windows-2025)": "success",
         "build-and-test (windows-11-arm)": "success"
       }
-    },
-    {
-      "id": 32151321768,
-      "at": "2026-08-18T14:55:36Z",
-      "sha": "d2ba5b0003638ea8e787f804e15cc80723a3cfcc",
-      "conclusion": "cancelled",
-      "rollup": "absent",
-      "legs": {}
     }
   ]
 }
