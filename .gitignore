@@ -311,3 +311,8 @@ data/ARC-AGI/
 # FOR -- one directory per clone, ignored so it can never be staged, and deleted
 # with the clone rather than outliving it in a shared tmpdir.
 .shadow-scratch/
+
+# The ARC lane's local venv (its own uv project; never committed).
+src/Arc.Python/.venv/
+src/Arc.Python/recordings/
+src/Arc.Python/environment_files/
