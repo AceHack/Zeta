@@ -1832,6 +1832,42 @@ jobs:
         run: bun run build
         working-directory: src/apps/twitch-ai
 
+  lint-identity-dla:
+    # demo/identity-dla-site is a self-contained pnpm/Vite workspace (own
+    # tsconfig, own pnpm-lock.yaml, packageManager pin) that NO PR-time job
+    # checked — its tsc lived solely inside pages-deploy.yml, which is not a
+    # required check. Measured cost of that gap: PR #14523 merged `*/` inside
+    # a block comment in OracleWorm.tsx, every Pages deploy went red for ~2h
+    # (10 consecutive failures across unrelated shas) and the live page
+    # silently served a stale bundle. Workitem 081M0RN9FW3087G0R000EBT0HH;
+    # the break itself was fixed in #14604 — this job is the standing half.
+    # It runs the DEPLOY'S OWN build entry (install → check → pages vite
+    # build), so the job and the deploy cannot drift apart; pnpm resolves
+    # from the site's own packageManager pin inside that script. The Go WASM
+    # oracle step degrades to a logged skip here (no ZETA_PAGES_REQUIRE_GO):
+    # this job's subject is the site's TypeScript, and pages-deploy still
+    # enforces the Go half where its setup-go step guarantees the toolchain.
+    # Drift check, not floor: adding a job to `gate (required)`'s needs is a
+    # treaty amendment (see the floor comment there); that decision stays
+    # with the consent path.
+    name: lint (identity-dla site)
+    timeout-minutes: 12
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Setup pinned Bun
+        uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
+        with:
+          bun-version: "1.3.13"
+
+      - name: Install root dependencies (the builder's imports)
+        run: bun install --frozen-lockfile
+
+      - name: Build the site exactly as pages-deploy does (install + check + pages build)
+        run: bun ./src/Core.TypeScript/discovery/identity-dla-pages-build.ts
+
   # Per-language lint jobs (split from the former single sequential
   # "lint (F#, C#, Go, Python, Rust)" job, 2026-06-13). The combined job ran the
   # five lint scripts in sequence and SHORT-CIRCUITED at the first failure, so a

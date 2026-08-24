@@ -1,0 +1,14 @@
+{
+  "id": "080d018bbf7c4010a01300080a90032b",
+  "at": "2026-08-24T01:52:18.824Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M0RQFVW7087G0R003T9XP1R",
+    "type": "bug",
+    "title": "Flaky on macos-26: MixinTests WeakMap GC test asserts nondeterministic collection",
+    "slug": "flaky-on-macos-26-mixintests-weakmap-gc-test-asserts-nondete",
+    "priority": "P2",
+    "filename": "081M0RQFVW7087G0R003T9XP1R-flaky-on-macos-26-mixintests-weakmap-gc-test-asserts-nondete.md"
+  }
+}

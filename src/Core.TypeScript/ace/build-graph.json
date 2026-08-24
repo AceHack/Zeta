@@ -2796,6 +2796,23 @@
       }
     },
     {
+      "id": "ts:demo/identity-dla-site",
+      "kind": "typescript",
+      "sources": ["demo/identity-dla-site/**"],
+      "dependsOn": [],
+      "legs": ["gate/lint-identity-dla"],
+      "origin": "declared",
+      "requiredQuorum": {
+        "tier": "T1",
+        "faultModel": {
+          "faultClass": "omission",
+          "f": 1
+        },
+        "reviewerClasses": ["reviewer:typescript"],
+        "evidence": []
+      }
+    },
+    {
       "id": "ts:hygiene",
       "kind": "typescript",
       "sources": ["src/Core.TypeScript/hygiene/**"],
