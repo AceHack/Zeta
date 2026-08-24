@@ -1,0 +1,12 @@
+{
+  "pr_number": 12058,
+  "archive_path": "docs/history/pr-reviews/PR-12058-design-ci-forge-agnostic-drift-checks-the-honesty-contract-and-the-gate-that-has.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-24T23:34:53.761Z",
+  "schema_version": "v1",
+  "commit_sha": "00ac401200b0e8985b11145e886b6c013a0b5835",
+  "title": "design(ci): forge-agnostic drift checks -- the honesty contract, and the gate that has been rejecting the drift ledger's writes for five days",
+  "state": "MERGED",
+  "merged_at": "2026-08-24T23:34:15Z",
+  "head_ref": "design/forge-agnostic-drift-checks"
+}
