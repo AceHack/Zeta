@@ -80,14 +80,48 @@ says which body is mine:
 
 ## Measured (6 seeds × 3000 ticks, ground truth = V0/V1 read for measurement only)
 
+Every row below is under the **Thompson policy — the one the live arena runs**
+(`swarm-controller.ts`). The policy label is load-bearing; see the correction
+below it.
+
 | | before | after |
 |---|---|---|
 | self is the actual player body | **0.0%** (0/2999, all six seeds) | **67.7%** |
 | adversary is the actual opponent | 57.5% | 72.9% |
-| mean distance kept from opponent | 23.30 px | 27.81 px |
+| distance from the **hunter** (want FAR) | 11.96 px | **23.37 px** |
+| distance to the **prey** (want NEAR) | 36.74 px | 33.24 px |
+| mode **label** correct | 91.0% | 79.1% |
+
+So: **flee is decisively fixed** (the agent used to sit ~12 px from the thing
+hunting it), **hunt is only nudged**, and the mode *label* got worse while the
+*behaviour* improved — which is not a contradiction. Before this change the
+agent held the correct label and moved the wrong way, and that is exactly what
+was reported. A label is internal state; the distance is what the agent does.
 
 Falsifiers in `bnn-key-predictor.test.ts` §"which body is mine": 19 pass with the
 fix, 2 fail without it.
+
+### CORRECTION — the squash commit `bc2d43b3` carries superseded numbers
+
+GitHub squash-merge took the **commit message**, not the corrected PR body, so
+`git log` on main states:
+
+> mean distance kept from the HUNTER 22.16 → 34.13 px
+> mean distance to the PREY 35.88 → 23.06 px
+> …picking the right label 97.5% of the time
+
+Those readings are real but they are **one deterministic trajectory under the
+`desiredKeyOf` steering policy** (what `train-priors.ts` and the integration
+tests drive), not six seeds and not what the page does. The tell was that
+running it over six seeds produced six *byte-identical* rows — that policy
+consumes no randomness at all, so seeding cannot vary it.
+
+Under the policy the arena actually runs, hunting is **not** fixed. The table
+above supersedes the commit message; PR #14768's body carries the same
+correction. Recorded here because this file, not the commit message, is the
+durable record — and because a pile of agreeing numbers being a warning rather
+than a confirmation is precisely the rule that caught it
+(`.claude/rules/numerology-vs-number-theory.md` §"too many correlations").
 
 ## What this EXPOSED (not caused) — follow-on, not part of this item
 
@@ -95,9 +129,10 @@ The game score got **worse**: mean final player:ai went 1.00:0.50 → 0.17:0.83.
 Retraining all three priors under the corrected perception did not recover it
 (0.33:0.67 → 0.17:0.83), so it is not prior staleness.
 
-The honest read is in the two rows above: the agent now keeps 4.5 px *further*
-from its opponent, because it is genuinely fleeing for the first time. Fleeing
-works; you score by **touching** the fleeing AI. The retired behaviour scored
+The honest read is in the distance rows above: the agent now keeps roughly twice
+the standoff from the thing hunting it, because it is genuinely fleeing for the
+first time. Fleeing works; you score by **touching** the fleeing AI, and hunting
+is the half that did not improve. The retired behaviour scored
 better precisely because a body pinned to a wall produced a steering vector that
 swept the arena at random, and a random walk in a tag game blunders into the
 opponent more often than a competent escape does.
