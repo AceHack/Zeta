@@ -1,0 +1,12 @@
+{
+  "pr_number": 14838,
+  "archive_path": "docs/history/pr-reviews/PR-14838-feat-observe-model-efficiency-intelligence-per-watt-at-scale.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-24T16:15:38.680Z",
+  "schema_version": "v1",
+  "commit_sha": "71656b1833a76b7041592dfebeed934344cd46a2",
+  "title": "feat(observe): model-efficiency — intelligence-per-watt at scale",
+  "state": "MERGED",
+  "merged_at": "2026-08-24T16:14:27Z",
+  "head_ref": "alexa/model-efficiency"
+}
