@@ -1,0 +1,12 @@
+{
+  "pr_number": 14612,
+  "archive_path": "docs/history/pr-reviews/PR-14612-chore-workitems-close-081m0rn9fw3087g0r000ebt0hh-the-identity-dla-pr-time-check-.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-24T02:18:55.215Z",
+  "schema_version": "v1",
+  "commit_sha": "4542cc1724682ebfc8c3047e57fbf48aef9b7b58",
+  "title": "chore(workitems): close 081M0RN9FW3087G0R000EBT0HH — the identity-dla PR-time check is live (#14606)",
+  "state": "MERGED",
+  "merged_at": "2026-08-24T02:18:03Z",
+  "head_ref": "claude/otto-close-dla-workitem"
+}
