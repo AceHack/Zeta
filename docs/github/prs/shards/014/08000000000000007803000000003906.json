@@ -1,0 +1,12 @@
+{
+  "pr_number": 14598,
+  "archive_path": "docs/history/pr-reviews/PR-14598-feat-twitch-ai-the-study-1-prediction-falsifier-with-the-placebo-and-arrow-only-.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-24T01:10:14.613Z",
+  "schema_version": "v1",
+  "commit_sha": "267f43d085e70246c9b3ab8c56cbdada4be521e3",
+  "title": "feat(twitch-ai): the ?study=1 prediction falsifier — with the placebo and arrow-only controls (D6 of #14503)",
+  "state": "MERGED",
+  "merged_at": "2026-08-24T01:09:24Z",
+  "head_ref": "claude/otto-attention-d6-study"
+}
