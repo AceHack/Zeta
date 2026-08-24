@@ -1,0 +1,12 @@
+{
+  "pr_number": 14805,
+  "archive_path": "docs/history/pr-reviews/PR-14805-research-wset-carries-the-bnn-and-the-factor-graph-and-the-texel-is-a-residual-p.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-24T15:25:51.447Z",
+  "schema_version": "v1",
+  "commit_sha": "fd1b181913f6c1c6d6523b0cb2e8404897771295",
+  "title": "research: WSet carries the BNN and the factor graph — and the texel is a residual program nobody generated",
+  "state": "MERGED",
+  "merged_at": "2026-08-24T15:25:00Z",
+  "head_ref": "lumen-wset-futamura"
+}
