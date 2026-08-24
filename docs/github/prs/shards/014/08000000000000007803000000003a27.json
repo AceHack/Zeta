@@ -1,0 +1,12 @@
+{
+  "pr_number": 14887,
+  "archive_path": "docs/history/pr-reviews/PR-14887-fix-ci-stop-being-indirect-actionlint-red-on-main-and-a-silent-unknown-agent-hol.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-24T18:15:59.449Z",
+  "schema_version": "v1",
+  "commit_sha": "80b270ce99c06b7edbd5870a3742c1240b2d4bf5",
+  "title": "fix(ci): stop being indirect — actionlint red on main, and a silent unknown-agent hole",
+  "state": "MERGED",
+  "merged_at": "2026-08-24T18:15:00Z",
+  "head_ref": "fix/actionlint-sc2034-indirect-expansion"
+}
