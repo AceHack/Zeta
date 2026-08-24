@@ -18,8 +18,8 @@ export const modeFlipPriors: GamePriorsFile = {
         "beliefs": [
           {
             "key": -1,
-            "mu": 0.4982568930973994,
-            "sigma2": 0.008500712609131489,
+            "mu": 0.14461861439532536,
+            "sigma2": 0.01054071228948413,
             "nu": 4,
             "obsCount": 1200
           },
@@ -53,8 +53,8 @@ export const modeFlipPriors: GamePriorsFile = {
           },
           {
             "key": 4,
-            "mu": 0.0027464475446743273,
-            "sigma2": 0.008506627145050186,
+            "mu": 0.0027921801652780456,
+            "sigma2": 0.00851048868246928,
             "nu": 4,
             "obsCount": 1200
           },
@@ -67,8 +67,8 @@ export const modeFlipPriors: GamePriorsFile = {
           },
           {
             "key": 6,
-            "mu": -0.00004442219799736518,
-            "sigma2": 0.008499742121310523,
+            "mu": 0.7750857215802074,
+            "sigma2": 0.013114334832188443,
             "nu": 4,
             "obsCount": 1200
           },
@@ -141,8 +141,8 @@ export const modeFlipPriors: GamePriorsFile = {
         "beliefs": [
           {
             "key": -1,
-            "mu": 0.5064201364270215,
-            "sigma2": 0.008501103375520092,
+            "mu": 0.1526572134148438,
+            "sigma2": 0.010512971531166301,
             "nu": 4,
             "obsCount": 1200
           },
@@ -176,8 +176,8 @@ export const modeFlipPriors: GamePriorsFile = {
           },
           {
             "key": 4,
-            "mu": 0.011607342292645846,
-            "sigma2": 0.008505056566401657,
+            "mu": 0.011655097319699569,
+            "sigma2": 0.008508894975710776,
             "nu": 4,
             "obsCount": 1200
           },
@@ -190,8 +190,8 @@ export const modeFlipPriors: GamePriorsFile = {
           },
           {
             "key": 6,
-            "mu": 0.008382319621120958,
-            "sigma2": 0.008505040836594183,
+            "mu": 0.7814620167458302,
+            "sigma2": 0.013135449863305436,
             "nu": 4,
             "obsCount": 1200
           },
@@ -264,8 +264,8 @@ export const modeFlipPriors: GamePriorsFile = {
         "beliefs": [
           {
             "key": -1,
-            "mu": 0.5033557375417541,
-            "sigma2": 0.008507492565433365,
+            "mu": 0.14997608713924873,
+            "sigma2": 0.010509949603412751,
             "nu": 4,
             "obsCount": 1200
           },
@@ -299,8 +299,8 @@ export const modeFlipPriors: GamePriorsFile = {
           },
           {
             "key": 4,
-            "mu": 0.009129292667104442,
-            "sigma2": 0.008504012050012038,
+            "mu": 0.009177251293300952,
+            "sigma2": 0.008507878573244105,
             "nu": 4,
             "obsCount": 1200
           },
@@ -313,8 +313,8 @@ export const modeFlipPriors: GamePriorsFile = {
           },
           {
             "key": 6,
-            "mu": 0.008363247601435763,
-            "sigma2": 0.008505948656187846,
+            "mu": 0.786103178245211,
+            "sigma2": 0.013330985021061609,
             "nu": 4,
             "obsCount": 1200
           },

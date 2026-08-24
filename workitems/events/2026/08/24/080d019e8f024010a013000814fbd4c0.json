@@ -1,0 +1,14 @@
+{
+  "id": "080d019e8f024010a013000814fbd4c0",
+  "at": "2026-08-24T12:49:47.592Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M0SX3R27087G0R002TJZTYJ",
+    "type": "bug",
+    "title": "The agent identifies a WALL as its own body: track labelled 'self static' sits on wall 1 at (32,10)",
+    "slug": "the-agent-identifies-a-wall-as-its-own-body-track-labelled-s",
+    "priority": "P2",
+    "filename": "081M0SX3R27087G0R002TJZTYJ-the-agent-identifies-a-wall-as-its-own-body-track-labelled-s.md"
+  }
+}

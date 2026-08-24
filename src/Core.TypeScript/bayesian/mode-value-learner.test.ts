@@ -106,11 +106,31 @@ function play(invertAppearance: boolean, ticks: number): BnnSocietyPredictor {
   return p;
 }
 
+/**
+ * A NOTE ON THE WINDOW LENGTHS (raised 2000/2600 → 4000, 2026-08-24).
+ *
+ * These runs are scored by the cart's own scoreboard, so their evidence is
+ * however many tags the episode happens to contain. On the normal cart the
+ * 2000-tick window used to contain **exactly one** event, at t1633 — one lucky
+ * tag away from red, and far too thin to carry a sentence about what the
+ * learner "survived".
+ *
+ * Fixing self-identification (the wall-as-self defect) made the agent
+ * competent at the half of the game that AVOIDS contact: it now keeps 34 px
+ * from the hunter where it used to hug it at 22 px. A better escape means
+ * fewer tags per tick, so the same single event no longer lands inside 2000
+ * ticks. The assertions are untouched; only the observation window grew, and
+ * it now carries THREE events (t2906, t3058, t3137) instead of one. Longer and
+ * denser is the opposite of weakening — a broken reward channel still fires
+ * zero at any window length, which is what these tests exist to catch.
+ */
+const PLAY_TICKS = 4000;
+
 describe("integration — the inverted-cart falsifier", () => {
   test(
     "the OCR reward channel actually fires during play (signal exists)",
     () => {
-      const p = play(false, 2000);
+      const p = play(false, PLAY_TICKS);
       expect(p.modeLearner.rewardEvents).toBeGreaterThan(0);
     },
     120_000,
@@ -123,7 +143,7 @@ describe("integration — the inverted-cart falsifier", () => {
       // the learner's prior) says small → hunt: approach it, get tagged.
       // The learner must discover from its own scoreboard that hunting the
       // small-shape adversary in this world costs points.
-      const p = play(true, 2600);
+      const p = play(true, PLAY_TICKS);
       expect(p.modeLearner.rewardEvents).toBeGreaterThan(0);
       const preferHuntSmall =
         p.modeLearner.valueOf(SMALL_CLOSING, "hunt") > p.modeLearner.valueOf(SMALL_CLOSING, "flee");
@@ -139,7 +159,7 @@ describe("integration — the inverted-cart falsifier", () => {
       // what SCORES. The learner must keep (or strengthen) the prior there.
       // rewardEvents > 0 keeps this non-vacuous: the prior survived EVIDENCE,
       // not an eventless run.
-      const p = play(false, 2600);
+      const p = play(false, PLAY_TICKS);
       expect(p.modeLearner.rewardEvents).toBeGreaterThan(0);
       const preferHuntSmall =
         p.modeLearner.valueOf(SMALL_CLOSING, "hunt") > p.modeLearner.valueOf(SMALL_CLOSING, "flee");

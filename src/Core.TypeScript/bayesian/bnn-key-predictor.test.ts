@@ -368,3 +368,85 @@ describe("the agent can act at all (the frozen-agent regression)", () => {
     expect(named[8]).toBe("DOWN");
   });
 });
+
+describe("which body is mine (the wall-as-self regression)", () => {
+  const KEY_RIGHT = 6;
+
+  test("a wall drawn before the movers does not become the body", () => {
+    // The EXACT live sequence. mutual-sim draws its two walls one frame before
+    // the player and the AI exist, and `mutual-sim.priors` bakes
+    // exploreTicksDone: 240 into its snapshot — so the retired clock-gated
+    // election ("commit once exploration ends") was already satisfied on the
+    // first frame that had any track at all, and that frame contains ONLY
+    // walls. It committed to wall 1 and set committedSelfColor = 1, after
+    // which `elect(committedSelfColor) ?? elect(null)` could never fall
+    // through, because a wall is always on screen. Measured on the merged
+    // arena: the body was correct on 0 of 2999 ticks, on every one of 6 seeds.
+    const p = warmed(new BnnSocietyPredictor(3, 4));
+    const wallsOnly = (): number[] => {
+      const d = blank();
+      paintRect(d, 32, 10, 4, 4, 1);
+      paintRect(d, 32, 20, 4, 4, 1);
+      return d;
+    };
+    // Frames 0–1: walls only. This is where the old election was decided.
+    p.predict(wallsOnly());
+    p.predict(wallsOnly());
+
+    // Then the movers appear and the body answers to the key it is given.
+    let bodyX = 8;
+    for (let i = 0; i < 60; i++) {
+      const d = wallsOnly();
+      paintRect(d, bodyX, 15, 2, 2, 2); // the body — moves under RIGHT
+      paintRect(d, 50, 25, 2, 2, 3); // the opponent, elsewhere
+      p.predict(d, KEY_RIGHT);
+      if (bodyX < 26) bodyX += 1;
+    }
+
+    const self = p.lastPerception.tracks.find((t) => t.id === p.lastSelfId);
+    expect(self).toBeDefined();
+    // A wall is a 4×4 block pinned at column 32; the body is a 2×2 that has
+    // travelled. Both assertions, because either alone could pass by accident.
+    expect(self!.area).toBe(4);
+    expect(Math.abs(self!.cx - bodyX)).toBeLessThanOrEqual(3);
+    expect(self!.cx).toBeLessThan(30);
+  });
+
+  test("the null action is evidence: a pursuer that moves when I command nothing is not me", () => {
+    // Agreement alone cannot separate my body from something that CHASES it —
+    // when I go right, my pursuer goes right too, and scores just as well.
+    // Contingency can: my body moves when I command it AND holds still when I
+    // do not. Here the pursuer is deliberately the BETTER match on agreement
+    // (the body is blocked every 4th key tick, as a real body against a wall
+    // is), so a test that passes on agreement-only evidence cannot exist.
+    const p = warmed(new BnnSocietyPredictor(3, 4));
+    let bodyX = 6;
+    let pursuerX = 40;
+    // The pursuer is painted on the UPPER row deliberately: tracks are born in
+    // scan order, so it takes the lower id and therefore wins every tie. The
+    // retired election welded itself to that first-past-the-post winner and
+    // never revisited it, so without a revisable latch this test cannot pass
+    // by luck — the body has to actually out-evidence the pursuer and TAKE the
+    // identity back.
+    const paint = (): number[] => {
+      const d = blank();
+      paintRect(d, pursuerX, 8, 2, 2, 1); // same colour: no plane prior to lean on
+      paintRect(d, bodyX, 24, 2, 2, 1);
+      return d;
+    };
+    for (let i = 0; i < 80; i++) {
+      const commanded = i % 2 === 0;
+      p.predict(paint(), commanded ? KEY_RIGHT : undefined);
+      // The pursuer drifts right EVERY tick — including the ones where I
+      // commanded nothing at all. That is the tell, and it is the only one.
+      if (pursuerX < 58) pursuerX += 1;
+      // The body moves only when commanded, and not even always.
+      if (commanded && i % 8 !== 0 && bodyX < 28) bodyX += 1;
+    }
+
+    const self = p.lastPerception.tracks.find((t) => t.id === p.lastSelfId);
+    expect(self).toBeDefined();
+    // The pursuer sits on row 8; the body on row 24. Rows are the identity here.
+    expect(self!.cy).toBeGreaterThan(16);
+  });
+});

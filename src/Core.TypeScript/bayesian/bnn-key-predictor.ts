@@ -111,6 +111,14 @@ const FIXATION_MIN_DELAY = 6;
 /** Obstacle lookahead distance (pixels) for steering penalties. */
 const LOOKAHEAD = 6;
 /**
+ * Hysteresis on the IDENTITY latch: a challenger must out-score the held body
+ * by this margin before it takes over. Same Schmitt-trigger idiom as
+ * MODE_HYSTERESIS, and bought for the same reason — motor smoothing, not
+ * policy. Without it the self flickers between two near-tied tracks and the
+ * steering vector thrashes every tick.
+ */
+const SELF_LATCH_MARGIN = 1.0;
+/**
  * Exponential forgetting on the per-key beliefs — the fix for a HABIT that
  * outlived its evidence.
  *
@@ -490,54 +498,118 @@ export class BnnSocietyPredictor {
 
   // ── Layer 5: which object is me? (empowerment probe) ────────────────────
 
+  /**
+   * The empowerment probe, BOTH branches.
+   *
+   * What separates my body from everything else is CONTINGENCY, not
+   * correlation: it moves when I command it *and holds still when I do not*.
+   * Measuring only the commanded branch measures half a channel, and the half
+   * it drops is the half that matters here — the AI opponent CHASES me, so
+   * when I move right it moves right too and scores as well as I do on
+   * agreement alone. It cannot fake the other branch: it keeps moving on the
+   * ticks I command nothing, and I do not. (Measured: with the commanded
+   * branch only, track #69 — the c3 opponent — held the body at t2999 while
+   * the real player sat at evidence 6.99, labelled adversary.)
+   *
+   * Anchors: Klyubin, Polani & Nehaniv, *Empowerment: A Universal
+   * Agent-Centric Measure of Control* (IEEE CEC 2005) — empowerment is the
+   * channel capacity from actuators to sensors, and a channel is defined by
+   * what it does across ALL inputs including the null one; Watson (1966,
+   * 1994) on contingency detection as the infant's self-recognition cue.
+   */
   private updateSelfEvidence(pressedKey: number | undefined): void {
-    if (pressedKey === undefined) return;
-    const dir = DIRECTION_KEYS.find((d) => d.key === pressedKey);
-    if (!dir) return;
+    const dir =
+      pressedKey === undefined ? undefined : DIRECTION_KEYS.find((d) => d.key === pressedKey);
+    // A non-direction key commands nothing about movement — no reading either
+    // way. Distinct from `undefined`, which is the null action and IS a reading.
+    if (pressedKey !== undefined && !dir) return;
     for (const t of this.lastPerception.tracks) {
       const speed = Math.hypot(t.vx, t.vy);
-      if (speed < 1e-3) continue;
-      const dot = (t.vx / speed) * dir.dx + (t.vy / speed) * dir.dy;
-      // Reward agreement, decay disagreement — a leaky accumulator.
+      if (speed < 1e-3) continue; // held still: expected under the null action,
+      // and unreadable under a commanded one (a wall I pushed into looks the
+      // same as a body that ignored me). Either way, no evidence.
       const prev = this.selfEvidence.get(t.id) ?? 0;
-      this.selfEvidence.set(t.id, prev * 0.95 + dot);
+      // Reward agreement, decay disagreement — a leaky accumulator. Motion
+      // under the NULL action is full disagreement: nothing I did caused it.
+      const reading = dir ? (t.vx / speed) * dir.dx + (t.vy / speed) * dir.dy : -1;
+      this.selfEvidence.set(t.id, prev * 0.95 + reading);
     }
   }
 
+  /**
+   * MEASURED DEFECT (2026-08-24), and the reason this reads the way it does.
+   *
+   * The previous version committed the body on a CLOCK
+   * (`exploreTicksDone >= EXPLORE_TICKS`) and `mutual-sim.priors` bakes
+   * `exploreTicksDone: 240` into its snapshot — so exploration was already
+   * spent before tick 0 and the election was final on the FIRST tick that had
+   * any track at all. On tick 1 the only things drawn are the two walls (the
+   * player and the AI first appear on tick 2), so the agent committed to
+   * WALL 1 at (34,12), with `committedSelfColor = 1`. That second field then
+   * sealed it: `elect(committedSelfColor) ?? elect(null)` only falls through
+   * when the colour-filtered election finds NOTHING, and a wall is always on
+   * screen — so the unfiltered election was unreachable for the rest of the
+   * run. At t239 the real player carried empowerment evidence 15.06 and was
+   * labelled the ADVERSARY while a wall with evidence 0.00 stayed "self", and
+   * every hunt/flee vector for 3000 ticks was steered from a wall's position.
+   *
+   * Three changes, all the same correction — the probe, not a clock or a
+   * costume, says which body is mine:
+   *   1. commit only once `selfEvidence` is actually POSITIVE;
+   *   2. colour is a tie-break BONUS, never a filter, so a wrong commitment
+   *      can be escaped;
+   *   3. the latch is revisable — a challenger that out-scores the held body
+   *      by SELF_LATCH_MARGIN takes it, and since the evidence accumulator
+   *      leaks (×0.95) a wrong self decays out on its own.
+   */
   private pickSelf(): TrackedObject | null {
-    // Committed identity persists while its track lives (coasting included).
-    if (this.committedSelfId !== null) {
-      const alive = this.lastPerception.tracks.find((t) => t.id === this.committedSelfId);
-      if (alive) return alive;
-      this.committedSelfId = null; // track died — re-elect below
-    }
-    const elect = (colorFilter: number | null): TrackedObject | null => {
-      let best: TrackedObject | null = null;
-      let bestScore = -Infinity;
-      for (const t of this.lastPerception.tracks) {
-        if (this.scoreboardTrackIds.has(t.id)) continue; // readout, not an agent
-        if (colorFilter !== null && t.color !== colorFilter) continue;
-        // Correlation evidence (the empowerment probe), plus a small prior on
-        // the player plane (color 2) so the first frames are not rudderless,
-        // minus a nudge against furniture (static since birth, no evidence).
-        // A STILL self stays selectable — standing still is a legal move.
-        const evidence = this.selfEvidence.get(t.id) ?? 0;
-        const score =
-          evidence + (t.color === 2 ? 0.5 : 0) - (t.isStatic && !t.everMoved ? 0.25 : 0);
-        if (score > bestScore || (score === bestScore && best !== null && t.id < best.id)) {
-          bestScore = score;
-          best = t;
-        }
+    const candidates = this.lastPerception.tracks.filter(
+      (t) => !this.scoreboardTrackIds.has(t.id), // readout, not an agent
+    );
+    if (candidates.length === 0) return null;
+
+    // Snapshot the continuity colour so the mutations below cannot change
+    // this tick's scoring under it.
+    const continuityColor = this.committedSelfColor;
+    // Correlation evidence (the empowerment probe) leads. The plane-2 prior
+    // and the appearance-continuity bonus are PRIORS: they break ties before
+    // any evidence exists and are dominated by it afterwards. A STILL self
+    // stays selectable — standing still is a legal move.
+    const scoreOf = (t: TrackedObject): number =>
+      (this.selfEvidence.get(t.id) ?? 0) +
+      (t.color === 2 ? 0.5 : 0) +
+      (continuityColor !== null && t.color === continuityColor ? 0.25 : 0) -
+      (t.isStatic && !t.everMoved ? 0.25 : 0);
+
+    let best = candidates[0]!;
+    let bestScore = scoreOf(best);
+    for (const t of candidates) {
+      const score = scoreOf(t);
+      if (score > bestScore || (score === bestScore && t.id < best.id)) {
+        best = t;
+        bestScore = score;
       }
-      return best;
-    };
-    // Appearance continuity: after death (a seam crossing, a win flood), the
-    // returning self WEARS THE SAME COLOR — prefer it before free election.
-    const best =
-      (this.committedSelfColor !== null ? elect(this.committedSelfColor) : null) ?? elect(null);
-    // Elections stay open while the probe rota runs; the winner is committed
-    // once exploration ends (chases are correlation-degenerate — see above).
-    if (best && this.exploreTicksDone >= EXPLORE_TICKS) {
+    }
+
+    if (this.committedSelfId !== null) {
+      const held = candidates.find((t) => t.id === this.committedSelfId);
+      if (held) {
+        // Latched while it remains the best-supported body (coasting included).
+        if (bestScore < scoreOf(held) + SELF_LATCH_MARGIN) return held;
+        // Out-evidenced: the appearance we were following was wrong too, so
+        // the continuity bonus goes with it.
+        this.committedSelfId = null;
+        this.committedSelfColor = null;
+      } else {
+        // The track merely DIED (a seam crossing, a win flood). Keep the
+        // colour — the returning body wears the same costume.
+        this.committedSelfId = null;
+      }
+    }
+
+    // Commit only once the probe has SPOKEN. A clock cannot know which body
+    // is mine; only motion that answered to my own keys can.
+    if ((this.selfEvidence.get(best.id) ?? 0) > 0) {
       this.committedSelfId = best.id;
       this.committedSelfColor = best.color;
     }
