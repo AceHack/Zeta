@@ -1,0 +1,8 @@
+{
+  "schema": "zeta.agent-proposal-receipt.v1",
+  "proposalId": "30684619-fae9-41a6-b4b1-c6f6b4b67664",
+  "baseSha": "65ee94e68b3f95df6892b82789f62936664d9a8f",
+  "patchDigest": "eda88449fe124959f875f26ee55602d72df3437573467985f51b0b1b3deed959",
+  "workflowRef": "Lucent-Financial-Group/Zeta/.github/workflows/agent-proposal-gated-commit.yml@refs/heads/main",
+  "stagedAt": "2026-08-17T13:23:57.534Z"
+}
