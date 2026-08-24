@@ -1,0 +1,12 @@
+{
+  "pr_number": 14781,
+  "archive_path": "docs/history/pr-reviews/PR-14781-feat-setup-declare-pam-reattach-and-report-the-tmux-half-truth-it-exposes.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-24T14:22:03.985Z",
+  "schema_version": "v1",
+  "commit_sha": "a2a159542a4ea6356dfe04f33a6915ad1f2b52e6",
+  "title": "feat(setup): declare pam-reattach, and report the tmux half-truth it exposes",
+  "state": "MERGED",
+  "merged_at": "2026-08-24T14:21:15Z",
+  "head_ref": "feat/dejan-declare-pam-reattach"
+}
