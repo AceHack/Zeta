@@ -1,0 +1,14 @@
+{
+  "id": "080d0176ff183810a013000845a5bbf5",
+  "at": "2026-08-23T13:46:59.719Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M0QDZRR7087G0R003A3VBN4",
+    "type": "task",
+    "title": "platform lane stays quarantined: two ours (UI-only flip), two private-sourced (must NOT publish), one nonexistent upstream",
+    "slug": "platform-lane-stays-quarantined-two-ours-ui-only-flip-two-pr",
+    "priority": "P2",
+    "filename": "081M0QDZRR7087G0R003A3VBN4-platform-lane-stays-quarantined-two-ours-ui-only-flip-two-pr.md"
+  }
+}
