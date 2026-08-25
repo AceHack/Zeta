@@ -219,7 +219,8 @@
     <Compile Include="SpineAsync.fs" />
     <Compile Include="BalancedSpine.fs" />
     <Compile Include="SpineSelector.fs" />
-    <Compile Include="SimdMerge.fs" />
+    <Compile Include="ScalarMerge.fs" />
+    <Compile Include="ColumnZSet.fs" />
     <Compile Include="TimeSeries.fs" />
     <Compile Include="Upsert.fs" />
     <Compile Include="Transaction.fs" />
@@ -285,6 +286,7 @@
     <Compile Include="Serializer.fs" />
     <Compile Include="ZetaSqlBuilder.fs" />
     <Compile Include="ArrowSerializer.fs" />
+    <Compile Include="ColumnZSetArrow.fs" />
     <Compile Include="DynamicValueArrow.fs" />
     <Compile Include="DeltaCrdt.fs" />
     <Compile Include="SignalQuality.fs" />
