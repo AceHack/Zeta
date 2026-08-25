@@ -1,0 +1,12 @@
+{
+  "pr_number": 15226,
+  "archive_path": "docs/history/pr-reviews/PR-15226-chore-branches-recovery-record-for-649-merged-branch-deletions-and-the-1-265-orp.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-25T05:09:17.737Z",
+  "schema_version": "v1",
+  "commit_sha": "ea73629e6788711cd4f9908457b2f014b8e6948d",
+  "title": "chore(branches): recovery record for 649 merged-branch deletions — and the 1,265 orphans that must NOT be deleted",
+  "state": "MERGED",
+  "merged_at": "2026-08-25T05:08:31Z",
+  "head_ref": "otto/branch-cleanup-2026-08-25"
+}
