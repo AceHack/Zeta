@@ -1,0 +1,95 @@
+
+### ANCHOR balanced-tree(3,6)
+    n=1093  m=1092  lcc=1093  diam>=12  delta_max_obs=0
+    d_rel      = 0.000   vs ER 0.483[0.400-0.556]   vs CFG 0.181[0.000-0.410]
+    d_meanRel  = 0.0000   vs ER 0.0383[0.0297-0.0425]   vs CFG 0.0055[0.0000-0.0156]
+    degree fit = 2.14 (KS=0.250, xmin=1)
+    diam       : graph 12   ER 20.3[18.0-25.0]   CFG 60.7[44.0-77.0]
+    VERDICT    : INCOMPARABLE - null diameter differs by 0.2x; delta/diam is not a valid comparator here
+    cut-vertices: 364/1093 (33.3% are must-route-through hubs; the rest are routable-around oracles)
+    top-degree  : 4 (r.2) -- IS a cut vertex
+    anchor-scale: d_rel 0.000 -> tree-like (0.00)   [tree 0.000 | grid 0.821 | cycle 0.980]
+
+### ANCHOR grid(30)
+    n=900  m=1740  lcc=900  diam>=56  delta_max_obs=23
+    d_rel      = 0.821   vs ER 0.536[0.455-0.600]   vs CFG 0.760[0.667-0.875]
+    d_meanRel  = 0.0392   vs ER 0.0444[0.0421-0.0463]   vs CFG 0.0662[0.0645-0.0739]
+    degree fit = 2.12 (KS=0.473, xmin=2)
+    diam       : graph 56   ER 10.4[10.0-11.0]   CFG 8.9[8.0-9.0]
+    VERDICT    : INCOMPARABLE - null diameter differs by 6.3x; delta/diam is not a valid comparator here
+    cut-vertices: 0/900 (0.0% are must-route-through hubs; the rest are routable-around oracles)
+    top-degree  : 4 (27,1) -- is NOT a cut vertex
+    anchor-scale: d_rel 0.821 -> grid/cycle-like (flat, NOT hyperbolic)   [tree 0.000 | grid 0.821 | cycle 0.980]
+
+### ANCHOR cycle(200)
+    n=200  m=200  lcc=200  diam>=100  delta_max_obs=49
+    d_rel      = 0.980   vs ER 0.475[0.316-0.571]   vs CFG 0.985[0.977-1.000]
+    d_meanRel  = 0.0645   vs ER 0.0348[0.0268-0.0437]   vs CFG 0.0661[0.0645-0.0676]
+    degree fit = refused (degenerate tail)
+    diam       : graph 100   ER 15.3[14.0-19.0]   CFG 64.4[44.0-96.0]
+    VERDICT    : INCOMPARABLE - null diameter differs by 1.6x; delta/diam is not a valid comparator here
+    cut-vertices: 0/200 (0.0% are must-route-through hubs; the rest are routable-around oracles)
+    top-degree  : 2 (0) -- is NOT a cut vertex
+    anchor-scale: d_rel 0.980 -> grid/cycle-like (flat, NOT hyperbolic)   [tree 0.000 | grid 0.821 | cycle 0.980]
+
+### ts-imports
+    n=1805  m=2119  lcc=930  diam>=19  delta_max_obs=4.5
+    d_rel      = 0.474   vs ER 0.614[0.500-0.667]   vs CFG 0.427[0.364-0.444]
+    d_meanRel  = 0.0223   vs ER 0.0484[0.0460-0.0517]   vs CFG 0.0346[0.0292-0.0369]
+    degree fit = 2.83 (KS=0.035, xmin=4)
+    diam       : graph 19   ER 9.6[9.0-10.0]   CFG 9.4[9.0-11.0]
+    VERDICT    : INCOMPARABLE - null diameter differs by 2.0x; delta/diam is not a valid comparator here
+    cut-vertices: 206/930 (22.2% are must-route-through hubs; the rest are routable-around oracles)
+    top-degree  : 43 (src/Core.TypeScript/observe/observe.ts) -- IS a cut vertex
+    anchor-scale: d_rel 0.474 -> between tree and grid, middle   [tree 0.000 | grid 0.821 | cycle 0.980]
+
+### fs-modules
+    n=570  m=1004  lcc=478  diam>=12  delta_max_obs=2.5
+    d_rel      = 0.417   vs ER 0.597[0.556-0.667]   vs CFG 0.454[0.400-0.500]
+    d_meanRel  = 0.0284   vs ER 0.0485[0.0472-0.0541]   vs CFG 0.0296[0.0272-0.0326]
+    degree fit = 3.25 (KS=0.068, xmin=6)
+    diam       : graph 12   ER 8.9[8.0-9.0]   CFG 8.9[8.0-10.0]
+    VERDICT    : INSIDE the null band - the degree sequence explains it; hyperbolicity adds nothing
+    cut-vertices: 74/478 (15.5% are must-route-through hubs; the rest are routable-around oracles)
+    top-degree  : 69 (src/Core/DynamicValue.fs) -- IS a cut vertex
+    anchor-scale: d_rel 0.417 -> between tree and grid, middle   [tree 0.000 | grid 0.821 | cycle 0.980]
+
+### docs-links
+    n=14668  m=2114  lcc=1501  diam>=14  delta_max_obs=1.5
+    d_rel      = 0.214   vs ER 0.506[0.471-0.533]   vs CFG 0.280[0.167-0.333]
+    d_meanRel  = 0.0001   vs ER 0.0410[0.0385-0.0438]   vs CFG 0.0001[0.0001-0.0003]
+    degree fit = 2.52 (KS=0.010, xmin=1)
+    diam       : graph 14   ER 16.1[15.0-17.0]   CFG 6.7[6.0-9.0]
+    VERDICT    : INCOMPARABLE - null diameter differs by 2.1x; delta/diam is not a valid comparator here
+    cut-vertices: 142/1501 (9.5% are must-route-through hubs; the rest are routable-around oracles)
+    top-degree  : 1140 (docs/BACKLOG.md) -- IS a cut vertex
+    anchor-scale: d_rel 0.214 -> between tree and grid, tree side   [tree 0.000 | grid 0.821 | cycle 0.980]
+
+### skills+rules
+    n=338  m=295  lcc=25  diam>=2  delta_max_obs=0
+    d_rel      = 0.000   vs ER 0.347[0.222-0.500]   vs CFG 0.000[0.000-0.000]
+    d_meanRel  = 0.0000   vs ER 0.0163[0.0077-0.0275]   vs CFG 0.0000[0.0000-0.0000]
+    degree fit = refused (degenerate tail)
+    diam       : graph 2   ER 8.4[6.0-12.0]   CFG 2.0[2.0-2.0]
+    VERDICT    : DEGENERATE - delta is identically 0 in graph AND null; no information
+    cut-vertices: 1/25 (4.0% are must-route-through hubs; the rest are routable-around oracles)
+    top-degree  : 24 (.claude/skills/storage-and-query-engines/SKILL.md) -- IS a cut vertex
+    anchor-scale: d_rel 0.000 -> tree-like (0.00)   [tree 0.000 | grid 0.821 | cycle 0.980]
+
+### commit-dag
+    n=13541  m=13540  lcc=13541  diam>=13535  delta_max_obs=0
+    d_rel      = 0.000   vs ER 0.441[0.400-0.478]   vs CFG 0.423[0.000-0.992]
+    d_meanRel  = 0.0000   vs ER 0.0360[0.0338-0.0392]   vs CFG 0.0268[0.0000-0.0633]
+    degree fit = refused (degenerate tail)
+    diam       : graph 13535   ER 25.3[23.0-27.0]   CFG 7318.7[2596.0-13213.0]
+    VERDICT    : INCOMPARABLE - null diameter differs by 1.8x; delta/diam is not a valid comparator here
+    cut-vertices: 13539/13541 (100.0% are must-route-through hubs; the rest are routable-around oracles)
+    top-degree  : 2 (f0c3ba3ab6) -- IS a cut vertex
+    anchor-scale: d_rel 0.000 -> tree-like (0.00)   [tree 0.000 | grid 0.821 | cycle 0.980]
+
+samples/graph = 400000, null replicates = 7, seed = 0x5e3da20260820
+DETERMINISM, stated precisely: the ESTIMATOR is seeded and replays exactly on a FIXED graph.
+The INPUT is the live repo, which grows -- so n, m and the commit-DAG rows move between runs.
+Pin results to a commit SHA when quoting them. This run: 809ee500ca
+d_rel = 2*delta_max/diam (extreme-value, noisy). d_meanRel = delta_mean/diam (stable; the verdict uses this).
+Sampled delta is a LOWER BOUND on delta_max: a large value CONVICTS, a small value never ACQUITS.
