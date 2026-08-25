@@ -1,0 +1,15 @@
+{
+  "pr_number": 14430,
+  "archive_path": "docs/history/pr-reviews/PR-14430-feat-agendas-zetaid-keyed-agenda-declarations-one-file-per-declaration-no-shared.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7k2pX_",
+    "thread:PRRT_kwDOSF9kNM6bh9M-"
+  ],
+  "fetched_at": "2026-08-25T04:13:51.860Z",
+  "schema_version": "v1",
+  "commit_sha": "673afbd730cfc8536a676a77cb7e15ac60e420eb",
+  "title": "feat(agendas): ZetaId-keyed agenda declarations — one file per declaration, no shared document",
+  "state": "MERGED",
+  "merged_at": "2026-08-25T04:13:04Z",
+  "head_ref": "docs/zetaid-keyed-agendas"
+}
