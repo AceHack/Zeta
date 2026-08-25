@@ -46,46 +46,48 @@ where behaviour is only knowable on metal it says so.
 | B3 | **Pre-wipe disk probe** (#13107, "R6") | `zeta-install` step 2.5 | `── Pre-format probe (R6): what is on these disks RIGHT NOW ──` and one block per disk | **Read it.** This is your last look at what is about to be destroyed |
 | B4 | **Circuit breaker** (#13107, "R9") | step 2.6 | `[R9-breaker] verdict=… state=closed\|open\|blind bound=3` | `closed`/`blind` → nothing. `open` → see below |
 | B5 | **Repair mode** (#13107, "R4") | step 2.7 | `[R4-repair] a prior Zeta install was recognised…` + an identity verdict | Only on a re-pave. A failed verdict flips B6's default to ABORT |
-| B6 | **Cancel window** (#13107, "R7") | step 2.9, **the last gate before `wipefs`** | `Formatting the disks listed above in 60s.` + a `60s remaining ...` countdown | **See the warning below** |
+| B6 | **Cancel window** (#13107, "R7") | step 2.9, **the last gate before `wipefs`** | `── ABOUT TO DESTROY EVERY DEVICE IN THIS LIST ──` + the roster + a `60s remaining ...` countdown | **Any key cancels.** Default is PROCEED on a blank/re-pave box, **ABORT** if any in-scope disk carries foreign data or could not be read |
 
 ### The five things that will actually bite you at 2am
 
-**1. Enter does NOT cancel the cancel window — and mashing it makes things worse.**
-The prompt says *"Press any key to CANCEL"*. The loop is
-`read -r -n 1 -s -t 1 ZETA_CANCEL_KEY` followed by `if [ -n "$ZETA_CANCEL_KEY" ]; then break; fi`.
-`read -n 1` consumes Return as its *delimiter* and leaves the variable **empty**, so Enter does not
-break — and because each Enter satisfies `read` immediately, the loop never waits its second.
-Rehearsed on this Mac with a faithful copy of the loop (GNU bash 3.2.57; the installer runs bash 5,
-where `read -n 1` behaves the same, but that is **unverified on metal**):
+> **RE-MEASURED 2026-08-25 against `zeta-install.sh` at `main`. Items 1, 2 and 3 below were all
+> TRUE when written and are all FIXED now.** They are kept with their corrections attached rather
+> than deleted, because a 2am operator who half-remembers this page needs to know which half. The
+> corrections are what to act on; the original text is why the page said otherwise. Item 6 is new.
+
+**1. ~~Enter does NOT cancel the cancel window~~ — FIXED. Any key cancels, Return included.**
+The original defect, and it was two compounding bugs: the loop tested `[ -n "$ZETA_CANCEL_KEY" ]`,
+and `read -n 1` consumes Return as its *delimiter* leaving the variable **empty**, so Enter did not
+break; and because each Enter satisfied `read` immediately the countdown decremented per *iteration*
+rather than per second, so mashing Enter spent the whole window in milliseconds. Measured then:
 
 ```text
 5 Enters into a 5-second window  ->  remain=0  cancelled=NO  elapsed=0s
 one 'x' into a 5-second window   ->  remain=5  cancelled=YES
 ```
 
-**Press a printable key — `x`, or the space bar. Never Return.**
+**Now:** the loop tests whether `read` **succeeded** (`if read -r -n 1 -s -t 1 …; then
+ZETA_CANCEL_PRESSED=1`), and the deadline is wall-clock (`ZETA_CANCEL_END=$(( $(date +%s) +
+ZETA_WINDOW ))`), so an early return cannot spend time it did not wait. A successful `read` **is** a
+keypress. Press anything.
 
-**2. A successful cancel reports "Install complete" and reboots the box in 10 seconds.**
-Both abort branches of `zeta-install.sh` `exit 0`, and `zeta-first-boot.sh` treats a zero exit as
-success: `if /run/current-system/sw/bin/zeta-install "$HOST"; then … "[zeta-first-boot] Install
-complete. Rebooting in 10s (Ctrl-C to cancel) ..." ; systemctl reboot`. So after you correctly stop
-a wrong-disk wipe you will be told it worked, and ten seconds later you are back at the same
-countdown. **Hit Ctrl-C inside those 10 seconds** to stay put; `getty@tty1` is `mkForce false`, so
-for a login use **Ctrl-Alt-F2**. None of this is printed on screen.
+**2. ~~A successful cancel reports "Install complete" and reboots the box~~ — FIXED. It exits 10.**
+Both abort branches used to `exit 0`, which `zeta-first-boot.sh` read as success and announced as
+`Install complete. Rebooting in 10s`. **Now** the operator-cancel branch exits **10**, and
+`zeta-first-boot.sh` has a third branch for it: `CANCELLED at the pre-wipe window. Nothing was
+wiped.` followed by `drop_to_shell` — **no reboot**. `getty@tty1` is still `mkForce false`, so for a
+login use **Ctrl-Alt-F2**.
 
-**3. The fourth install from one USB stick will refuse to wipe.**
-The attempt ledger (`zeta-install-attempts.txt`, written to the boot stick's FAT ESP) records
-`<n>|<utc>|started|wipe` before each destructive run. **Nothing anywhere writes an `ok` record** —
-that `printf` is the only ledger write in the entire script — and the validator counts `started` as
-a failure (`started|failed) fails=$((fails + 1))`). With `bound=3`, node 4 flashed from the same
-stick gets `state=open`, the window flips to `default=abort`, and on the zero-typing path it aborts,
-"completes", reboots, and does it again forever.
-**Do:** press a key at the gated window to proceed deliberately, **or** mount the stick on your Mac
-and delete `zeta-install-attempts.txt` from its FAT partition before each node.
-The remedy the console prints — `ZETA_MAX_DESTRUCTIVE_ATTEMPTS=<n> zeta-install <HOST>` — is
-correct only for the count trigger; for an *untrusted* (corrupt) ledger `zeta_pf_breaker` returns
-`open` before it consults the bound, so raising it does nothing. Deleting the file is the remedy
-that always works, and it is printed nowhere.
+**3. ~~The fourth install from one USB stick will refuse to wipe~~ — FIXED. An `ok` record is written.**
+The claim rested on *"nothing anywhere writes an `ok` record"*, which was true when written and is
+false now: `zeta_ledger_append ok complete` runs at the end of a successful run (grep it — it is the
+last ledger write in the file), and an `ok` resets the consecutive-failure count, so the bound now
+counts real **failures** rather than counting installs. A stick that installs three nodes
+successfully no longer opens the breaker.
+**Still true, and still printed nowhere:** for an *untrusted* (corrupt) ledger `zeta_pf_breaker`
+returns `open` **before** it consults the bound, so the console's own remedy
+(`ZETA_MAX_DESTRUCTIVE_ATTEMPTS=<n>`) does nothing in that case. Deleting
+`zeta-install-attempts.txt` from the stick's FAT partition is the remedy that always works.
 
 **4. `breaker is BLIND` is harmless, and nothing on screen says so.**
 `blind` means the ledger surface was not writable, so *this attempt cannot be counted*. It is not a
@@ -103,6 +105,26 @@ Consequences you should expect rather than debug: the node comes up with the **d
 `zeta-change-me`**, with **no** `/zeta-creds.enc`, and with **no** GitHub auth. Do those after first
 login, over SSH. The typed `Type WIPE to confirm:` prompt is skipped by the same mechanism — the
 cancel window (B6) is the only consent gate that survives on this path.
+
+**6. NEW 2026-08-25 — the internal-disk filter is *"not known to be USB"*, not *"known to be internal"*.**
+Step 1 enumerates with
+`lsblk -d -p -n -o NAME,TYPE,RM,RO,TRAN | awk '$2=="disk" && $3==0 && $4==0 && $5!="usb"'`.
+A device whose **TRAN column is empty** produces a 4-field row, so `$5` is the empty string, `$5 !=
+"usb"` is true, and **the device is admitted to the wipe scope**. Measured against a fixture:
+
+```text
+/dev/nvme0n1   NF=5   $5=[nvme]     admitted
+/dev/vda       NF=4   $5=[]         admitted   <- transport unknown
+/dev/sda       (RM=1, usb)          excluded
+```
+
+This is deliberately **not** tightened, because `/dev/vda` is exactly that case and every QEMU
+install depends on it being admitted — refusing unknown transports would turn the whole emulation
+lane red for no gain on metal. What guards you instead: the `ZETA_INSTALL` volume-label refusal
+(a Zeta stick behind an adapter is removed from scope by its label, not by its transport), the
+`foreign-data` ABORT default added the same day, and the gate roster now printing
+`transport=unknown` for these devices so you can see it.
+**The reliable mitigation is physical: unplug external drives before first boot.**
 
 ### And one dead end to know about before you hit it
 
@@ -468,6 +490,19 @@ a DATA disk and **is wiped**. USB-transport disks are filtered out before the pr
 **Your control point is A6.4, not this step.** The enumeration is printed, then the pre-format
 probe shows you exactly what is on each disk, then the cancel window is your chance to stop it.
 
+**On a multi-disk box, read A6.4's default carefully.** Since 081M0WS33AK087G0R000BG9R8X a DATA disk
+that probes as `foreign-data` or `indeterminate` flips the cancel default to ABORT, so an unattended
+first boot stops rather than destroying it. That is the intended behaviour, not a failure.
+
+**One known fail-open in this step, stated because it is not fixed here.** The enumeration filter is
+`lsblk -d -p -n -o NAME,TYPE,RM,RO,TRAN | awk '$2=="disk" && $3==0 && $4==0 && $5!="usb"'`. That
+predicate is *"not known to be USB"*, not *"known to be internal"* — a device whose TRAN column is
+**empty** yields `NF=4`, so `$5` is the empty string, and the device is admitted. Measured against a
+fixture 2026-08-25. This is load-bearing for QEMU (`/dev/vda` reports no transport and must be
+admitted), so it is deliberately not tightened. The mitigations are the `ZETA_INSTALL` volume-label
+refusal, and the gate roster in A6.4 now printing `transport=unknown` for exactly these devices.
+**Before booting metal with an external enclosure attached, unplug it.**
+
 **Failure signature:** `ERROR: BOOT_DISK <x> not in internal-disk set` (only reachable if you ran
 `zeta-install` by hand with an explicit `BOOT_DISK`).
 
@@ -527,21 +562,49 @@ carried forward**. Nothing prompts about it.
 ### A6.4 — The cancel window (NEW, "R7") — the last gate before `wipefs`
 
 ```text
-  Formatting the disks listed above in 60s.
+  ── ABOUT TO DESTROY EVERY DEVICE IN THIS LIST ──
+    /dev/nvme0n1   931.5G   transport=nvme   Samsung SSD 990 PRO 1TB   [blank]
+
+  Formatting the devices listed above in 60s.
   Press any key to CANCEL and drop to a shell.
   Do nothing and the install proceeds (headless default).
   60s remaining ...
 ```
 
+**The roster is reprinted at the gate** (081M0WS33AK087G0R000BG9R8X). It used to say "the disks
+listed above", which names nothing once a console has scrolled past the probe. Every in-scope device
+is now named by **path, size, transport, model and disposition** while the clock is running. A
+device the kernel reports **no size** for prints `SIZE UNREADABLE` and **forces the default to
+ABORT** — an enumeration we cannot account for refuses rather than guesses. An empty MODEL is not
+that case (virtio and many NVMe controllers report none) and does not flip anything.
+
 60 s normally; **10 s only when every in-scope disk classified `blank`**; always 60 s if the breaker
 is `open` or `blind`. Zero typing ⇒ it proceeds and prints
 `[R7] No keypress; proceeding (headless default preserved).`
 
-**Press `x` (or space) to cancel — NOT Return.** Enter does not cancel and burns the countdown
-instantly; the mechanism and the rehearsal are in item 1 of "the five things" above. And read item 2
-before you cancel: a successful cancel prints `[R7] CANCELLED by operator keypress. Nothing was
-wiped.` and exits 0, which `zeta-first-boot.sh` reports as **"Install complete. Rebooting in 10s"**.
-Hit **Ctrl-C** inside those 10 s.
+**THE DEFAULT IS NOT ALWAYS PROCEED, and this is the part to read before booting a box with a second
+disk.** As of 081M0WS33AK087G0R000BG9R8X the default flips to **ABORT** whenever any in-scope disk
+classified `foreign-data` or `indeterminate`:
+
+```text
+[R7] /dev/sdb carries FOREIGN DATA -> the cancel default is ABORT; a keypress is required to destroy it
+  !! DESTRUCTIVE STEP GATED. Default is ABORT.
+  !! Press any key within 60s to PROCEED with the wipe.
+  !! Do nothing and this install stops and drops to a shell.
+```
+
+The disk is still *in scope* — you may still choose to destroy it — but on the unattended path
+(`ZETA_AUTO_CONFIRM=WIPE`, nobody at the keyboard) **the install now stops instead of wiping it**.
+`blank` and `prior-zeta-install` keep the greedy PROCEED default, so a fresh box and a re-pave are
+unchanged and still need zero typing.
+
+**Any key cancels, including Return.** The earlier warning in this runbook that Enter does not
+cancel *and accelerates the countdown* described two real bugs that are now fixed: the loop tests
+whether `read` **succeeded** rather than whether it set a variable, and the deadline is wall-clock
+so an early return cannot spend time it did not wait. A successful cancel prints
+`[R7] CANCELLED by operator keypress. Nothing was wiped.` and **exits 10**, which
+`zeta-first-boot.sh` reports as `CANCELLED at the pre-wipe window. Nothing was wiped.` and drops to
+a shell. It no longer announces an abort as a finished install, and it no longer reboots.
 
 If the default was flipped to ABORT and you do nothing:
 `[R7/R9] No keypress and the default is ABORT. Not wiping anything.` — note its `Reason:` line is a

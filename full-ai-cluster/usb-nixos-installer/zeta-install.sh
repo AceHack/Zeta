@@ -389,7 +389,7 @@ zeta_pf_breaker() {
 zeta_pf_decide_scope() {
   local bstate="$1" full="$2" blank="$3"
   local line dev disp mode window dflt allblank inscope
-  local wipes="" refuseds=""
+  local wipes="" refuseds="" databearing="" unreadable=""
   mode="fresh-install"
   allblank=1
   inscope=0
@@ -405,10 +405,23 @@ zeta_pf_decide_scope() {
     wipes="$wipes $dev"
     [ "$disp" != "blank" ] && allblank=0
     [ "$disp" = "prior-zeta-install" ] && mode="repair"
+    [ "$disp" = "foreign-data" ] && databearing="$databearing $dev"
+    [ "$disp" = "indeterminate" ] && unreadable="$unreadable $dev"
   done
   [ "$inscope" -eq 0 ] && allblank=0
   if [ "$allblank" -eq 1 ]; then window="$blank"; else window="$full"; fi
   dflt="proceed"
+  # 081M0WS33AK087G0R000BG9R8X: the greedy default is scoped to a FRESH box.
+  # A window whose default is PROCEED is consent only where somebody is present
+  # to withhold it, and this runs on the path defined by nobody being at the
+  # keyboard. foreign-data and indeterminate flip it; blank and
+  # prior-zeta-install do not, so the zero-typing install and the re-pave are
+  # byte-for-byte unchanged. Additive with the breaker: proceed -> abort only.
+  # Full reasoning: src/Core.TypeScript/installer/disk-preflight.ts decideWipeScope.
+  if [ -n "$databearing" ] || [ -n "$unreadable" ]; then
+    dflt="abort"
+    window="$full"
+  fi
   if [ "$bstate" = "open" ]; then
     dflt="abort"
     window="$full"
@@ -420,6 +433,8 @@ zeta_pf_decide_scope() {
   echo "default=$dflt"
   for dev in $wipes; do echo "wipe=$dev"; done
   for dev in $refuseds; do echo "refused=$dev"; done
+  for dev in $databearing; do echo "databearing=$dev"; done
+  for dev in $unreadable; do echo "unreadable=$dev"; done
 }
 
 # ── Force-reformat override (R4-reformat, 2026-08-23) ─────────────
@@ -1160,7 +1175,15 @@ ZETA_MODE="$(printf %s "$ZETA_SCOPE" | sed -n "s/^mode=//p")"
 ZETA_WINDOW="$(printf %s "$ZETA_SCOPE" | sed -n "s/^window=//p")"
 ZETA_CANCEL_DEFAULT="$(printf %s "$ZETA_SCOPE" | sed -n "s/^default=//p")"
 ZETA_REFUSED="$(printf %s "$ZETA_SCOPE" | sed -n "s/^refused=//p")"
+ZETA_DATABEARING="$(printf %s "$ZETA_SCOPE" | sed -n "s/^databearing=//p")"
+ZETA_UNREADABLE="$(printf %s "$ZETA_SCOPE" | sed -n "s/^unreadable=//p")"
 echo "[R6/R7] mode=$ZETA_MODE window=${ZETA_WINDOW}s default=$ZETA_CANCEL_DEFAULT"
+for d in $ZETA_DATABEARING; do
+  echo "[R7] $d carries FOREIGN DATA -> the cancel default is ABORT; a keypress is required to destroy it"
+done
+for d in $ZETA_UNREADABLE; do
+  echo "[R7] $d could not be read (indeterminate) -> the cancel default is ABORT; an uncertain enumeration refuses"
+done
 
 # Drop refused devices from the wipe scope. A device carrying the ZETA_INSTALL
 # volume label is the medium we booted from. Measured 2026-08-21: the ONLY
@@ -1352,13 +1375,53 @@ assert_boot_disk_large_enough "$BOOT_DISK"
 # is 10 s, because there is nothing on those disks to consent to losing.
 # Foreign data, a prior Zeta install, or a probe that FAILED all get the full
 # 60 s. Failure-closed: an unreadable disk is treated as a full disk.
+#
+# THE ROSTER IS REPRINTED HERE, at the gate, and not left to the Step 1 table.
+# The operator watching a countdown must not have to scroll back through a
+# preflight probe to learn what is about to be destroyed, and "the disks listed
+# above" names nothing on a console that has already scrolled. Every in-scope
+# device is named by PATH, SIZE and MODEL at the moment the clock is running.
+#
+# FAIL CLOSED ON AN UNSIZEABLE DEVICE. A device the kernel will not report a
+# size for is a device we cannot account for, so the default flips to ABORT
+# rather than being destroyed on a description we could not produce. An empty
+# MODEL is NOT that case -- virtio and many NVMe controllers report none, and
+# treating a missing marketing string as an unreadable device would refuse
+# every QEMU install for no safety gain. Size is the discriminator; model is
+# for the human.
+echo
+echo "  ── ABOUT TO DESTROY EVERY DEVICE IN THIS LIST ──"
+for d in "$BOOT_DISK" "${DATA_DISKS[@]+"${DATA_DISKS[@]}"}"; do
+  # `|| true` IS LOAD-BEARING, and its absence was a bug in the first draft of
+  # this block. `set -euo pipefail` is in force, so a failing lsblk (the device
+  # disappeared, the kernel errored) makes the command substitution non-zero and
+  # aborts the whole script HERE -- which means the SIZE-UNREADABLE branch below,
+  # the entire point of the check, would be unreachable in exactly the case it
+  # was written for. Swallow the status, keep the empty string, and let the
+  # branch decide. A check that cannot run is worse than one that fails.
+  zeta_gate_size="$(lsblk -d -n -o SIZE "$d" 2>/dev/null | tr -d " " || true)"
+  zeta_gate_model="$(lsblk -d -n -o MODEL "$d" 2>/dev/null | tr -s " " | sed "s/^ *//;s/ *$//" || true)"
+  zeta_gate_tran="$(lsblk -d -n -o TRAN "$d" 2>/dev/null | tr -d " " || true)"
+  # Exact device match, not a prefix match: /dev/sda must not read /dev/sdaa.
+  zeta_gate_disp="$(awk -F"|" -v dev="$d" "\$1==dev {print \$2}" "$ZETA_PF_DISPFILE" 2>/dev/null | head -1 || true)"
+  [ -z "$zeta_gate_model" ] && zeta_gate_model="(no model reported)"
+  [ -z "$zeta_gate_tran" ] && zeta_gate_tran="unknown"
+  if [ -z "$zeta_gate_size" ]; then
+    echo "    $d   SIZE UNREADABLE   transport=$zeta_gate_tran   $zeta_gate_model   [$zeta_gate_disp]"
+    echo "      !! the kernel reports no size for this device: it cannot be accounted for"
+    ZETA_CANCEL_DEFAULT=abort
+    ZETA_WINDOW="$ZETA_CANCEL_WINDOW_SECS"
+  else
+    echo "    $d   $zeta_gate_size   transport=$zeta_gate_tran   $zeta_gate_model   [$zeta_gate_disp]"
+  fi
+done
 echo
 if [ "$ZETA_CANCEL_DEFAULT" = "abort" ]; then
   echo "  !! DESTRUCTIVE STEP GATED. Default is ABORT."
   echo "  !! Press any key within ${ZETA_WINDOW}s to PROCEED with the wipe."
   echo "  !! Do nothing and this install stops and drops to a shell."
 else
-  echo "  Formatting the disks listed above in ${ZETA_WINDOW}s."
+  echo "  Formatting the devices listed above in ${ZETA_WINDOW}s."
   echo "  Press any key to CANCEL and drop to a shell."
   echo "  Do nothing and the install proceeds (headless default)."
 fi

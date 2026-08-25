@@ -376,6 +376,7 @@ describe("qemu-full-install-test UEFI keyfile restore contract", () => {
   const restoreSerial = [
     UEFI_KEYFILE_RESTORE_SERIAL.stagedFromFwcfg,
     UEFI_KEYFILE_RESTORE_SERIAL.bindingKeyfile,
+    UEFI_KEYFILE_RESTORE_SERIAL.transportFwcfgNotMetal,
     `${UEFI_KEYFILE_RESTORE_SERIAL.wrotePrefix}3 creds (target-root: /)`,
     "node-qemu-keyfile-restore login:",
   ].join("\n");
@@ -388,6 +389,7 @@ describe("qemu-full-install-test UEFI keyfile restore contract", () => {
     const serial = [
       UEFI_KEYFILE_RESTORE_SERIAL.stagedFromFwcfg,
       UEFI_KEYFILE_RESTORE_SERIAL.bindingKeyfile,
+      UEFI_KEYFILE_RESTORE_SERIAL.transportFwcfgNotMetal,
       UEFI_KEYFILE_RESTORE_SERIAL.alreadyPresent,
     ].join("\n");
     expect(assertUefiKeyfileRestoreContract(serial).ok).toBe(true);
@@ -397,9 +399,46 @@ describe("qemu-full-install-test UEFI keyfile restore contract", () => {
     const serial = [
       UEFI_KEYFILE_RESTORE_SERIAL.stagedFromFwcfg,
       UEFI_KEYFILE_RESTORE_SERIAL.bindingKeyfile,
+      UEFI_KEYFILE_RESTORE_SERIAL.transportFwcfgNotMetal,
       `${UEFI_KEYFILE_RESTORE_SERIAL.wrotePrefix}0 creds (target-root: /)`,
     ].join("\n");
     expect(assertUefiKeyfileRestoreContract(serial).ok).toBe(true);
+  });
+
+  // 081M0WS33AK087G0R000BG9R8X -- fw_cfg does not exist on metal, so a green run
+  // of this contract must SAY so on the same line as its success.
+  it("fails when the run does not declare its passphrase transport", () => {
+    const serial = [
+      UEFI_KEYFILE_RESTORE_SERIAL.stagedFromFwcfg,
+      UEFI_KEYFILE_RESTORE_SERIAL.bindingKeyfile,
+      `${UEFI_KEYFILE_RESTORE_SERIAL.wrotePrefix}3 creds (target-root: /)`,
+    ].join("\n");
+    const result = assertUefiKeyfileRestoreContract(serial);
+    expect(result.ok).toBe(false);
+    if (!result.ok) {
+      expect(result.reason).toContain("transport");
+      expect(result.reason).toContain("metal");
+    }
+  });
+
+  it("fails when a QEMU run claims the metal-capable interactive transport", () => {
+    const serial = [
+      UEFI_KEYFILE_RESTORE_SERIAL.stagedFromFwcfg,
+      UEFI_KEYFILE_RESTORE_SERIAL.bindingKeyfile,
+      UEFI_KEYFILE_RESTORE_SERIAL.transportFwcfgNotMetal,
+      UEFI_KEYFILE_RESTORE_SERIAL.transportInteractive,
+      `${UEFI_KEYFILE_RESTORE_SERIAL.wrotePrefix}3 creds (target-root: /)`,
+    ].join("\n");
+    const result = assertUefiKeyfileRestoreContract(serial);
+    expect(result.ok).toBe(false);
+    if (!result.ok) {
+      expect(result.reason).toContain("INTERACTIVE");
+    }
+  });
+
+  it("the declared transport marker says metal-capable=no in so many words", () => {
+    expect(UEFI_KEYFILE_RESTORE_SERIAL.transportFwcfgNotMetal).toContain("metal-capable=no");
+    expect(UEFI_KEYFILE_RESTORE_SERIAL.transportInteractive).toContain("metal-capable=yes");
   });
 
   it("fails when restore falls back to usbUuid", () => {
@@ -661,6 +700,11 @@ describe("restore markers stay coupled to zeta-creds-restore.nix", () => {
 
   it("the module still emits the fw_cfg staging marker the contract requires", () => {
     expect(restoreNix).toContain(UEFI_KEYFILE_RESTORE_SERIAL.stagedFromFwcfg);
+    // 081M0WS33AK087G0R000BG9R8X: a marker the harness demands but the unit never
+    // prints would make the whole restore contract unsatisfiable; a marker the
+    // unit prints under a different wording would make it vacuous. Both sides.
+    expect(restoreNix).toContain(UEFI_KEYFILE_RESTORE_SERIAL.transportFwcfgNotMetal);
+    expect(restoreNix).toContain(UEFI_KEYFILE_RESTORE_SERIAL.transportInteractive);
   });
 
   it("the module still uses the fw_cfg name the QEMU args inject", () => {

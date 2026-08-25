@@ -1,0 +1,14 @@
+{
+  "id": "080d01cc8c6aa010a01300086a7c6fe8",
+  "at": "2026-08-25T15:37:15.348Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M0WS33AK087G0R000BG9R8X",
+    "type": "bug",
+    "title": "unattended first boot defaults to PROCEED over a data-bearing second disk",
+    "slug": "unattended-first-boot-defaults-to-proceed-over-a-data-bearin",
+    "priority": "P2",
+    "filename": "081M0WS33AK087G0R000BG9R8X-unattended-first-boot-defaults-to-proceed-over-a-data-bearin.md"
+  }
+}

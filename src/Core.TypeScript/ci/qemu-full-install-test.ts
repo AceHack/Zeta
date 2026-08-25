@@ -208,6 +208,22 @@ export const QEMU_CREDS_PASSPHRASE_FWCFG_NAME = "opt/org.zeta/creds-passphrase";
 /** Serial markers from zeta-creds-restore.nix. Never include the passphrase. */
 export const UEFI_KEYFILE_RESTORE_SERIAL = {
   stagedFromFwcfg: "zeta-creds-restore: passphrase staged from qemu fw_cfg",
+  /**
+   * 081M0WS33AK087G0R000BG9R8X -- the transport the restore actually used, on
+   * the success line rather than inferred from a staging line.
+   *
+   * `fw_cfg` DOES NOT EXIST ON METAL. On hardware zeta-creds-restore.nix falls
+   * back to systemd-ask-password on tty1, which nothing in this harness can
+   * exercise. So a green run of this contract proves the DECRYPT and the
+   * BINDING, and proves nothing whatever about the metal passphrase path. The
+   * marker below is asserted precisely so that green cannot be quoted as metal
+   * evidence: it carries `metal-capable=no` in the same line as the success.
+   */
+  transportFwcfgNotMetal:
+    "zeta-creds-restore: passphrase transport=qemu-fw_cfg metal-capable=no",
+  /** The metal transport. Asserted ABSENT here -- QEMU must not claim it. */
+  transportInteractive:
+    "zeta-creds-restore: passphrase transport=interactive-ask-password metal-capable=yes",
   bindingKeyfile: "zeta-creds-restore: binding-factor uefiKeyfile (ESP file; not copied to /etc)",
   wrotePrefix: "zeta-creds-restore: wrote ",
   alreadyPresent: "zeta-creds-restore: already-present, skipping credential rewrite",
@@ -485,6 +501,27 @@ export function assertUefiKeyfileRestoreContract(phase2Serial: string):
     return {
       ok: false,
       reason: `UEFI keyfile restore bind marker missing ("${UEFI_KEYFILE_RESTORE_SERIAL.bindingKeyfile}").`,
+    };
+  }
+  // 081M0WS33AK087G0R000BG9R8X: the run must SAY which transport it proved.
+  // Without this, "wrote N credentials" on the serial reads identically whether
+  // the passphrase came from the hypervisor or from a human at tty1, and the
+  // hypervisor one is the only one this lane can ever produce.
+  if (!phase2Serial.includes(UEFI_KEYFILE_RESTORE_SERIAL.transportFwcfgNotMetal)) {
+    return {
+      ok: false,
+      reason:
+        "restore did not declare its passphrase transport " +
+        `("${UEFI_KEYFILE_RESTORE_SERIAL.transportFwcfgNotMetal}"). A restore that does not name ` +
+        "its transport reads as a metal proof it is not.",
+    };
+  }
+  if (phase2Serial.includes(UEFI_KEYFILE_RESTORE_SERIAL.transportInteractive)) {
+    return {
+      ok: false,
+      reason:
+        "restore claimed the INTERACTIVE (metal-capable) transport inside QEMU. " +
+        "fw_cfg staging must never be reported as the systemd-ask-password path.",
     };
   }
   const wrote =

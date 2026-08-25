@@ -263,6 +263,51 @@ export function decideWipeScope(input: WipeScopeInput): WipeScopeDecision {
   }
 
   let cancelDefault: CancelDefault = "proceed";
+
+  // 081M0WS33AK087G0R000BG9R8X -- THE GREEDY DEFAULT IS SCOPED TO A FRESH BOX.
+  //
+  // The window above was the 2026-08-21 fix for a Ctrl-C abort that had no
+  // sleep in it. It is real and it is measured. But a window whose default is
+  // PROCEED is consent only where somebody is present to withhold it, and the
+  // path this runs on -- zeta-first-boot.sh exporting ZETA_AUTO_CONFIRM=WIPE
+  // and BOOT_DISK=auto -- is defined by nobody being at the keyboard. So on a
+  // node with a second disk carrying data, the pre-2026-08-21 outcome was
+  // unchanged by the window: destruction, now 60 seconds later.
+  //
+  // The split that fixes it is the one the classifier already computes:
+  //
+  //   blank                 nothing to consent to losing. PROCEED.
+  //   prior-zeta-install    ours, and re-paving it is the declared intent of a
+  //                         re-flash. PROCEED.
+  //   foreign-data          data nobody put there for us. ABORT.
+  //   indeterminate         a disk we could not read. ABORT -- an enumeration
+  //                         we are unsure of must refuse, never guess.
+  //
+  // WHAT THIS COSTS, STATED: a headless install onto a box with a pre-existing
+  // foreign partition now stops and waits for a human. That is the intent, not
+  // a regression -- it is the only case where proceeding is unrecoverable and
+  // unwitnessed. The zero-typing property is preserved exactly where it was
+  // designed for (a blank box) and for a re-pave.
+  //
+  // It is additive with the breaker: this can only turn PROCEED into ABORT,
+  // never the reverse, so no path that refused before now proceeds.
+  const dataBearing = inScope.filter((c) => c.disposition === "foreign-data");
+  const unreadable = inScope.filter((c) => c.disposition === "indeterminate");
+  if (dataBearing.length > 0 || unreadable.length > 0) {
+    cancelDefault = "abort";
+    secs = full;
+    for (const c of dataBearing) {
+      rationale.push(
+        "in-scope disk " + c.device + " carries FOREIGN DATA: default flips to ABORT (a keypress is required to destroy it)",
+      );
+    }
+    for (const c of unreadable) {
+      rationale.push(
+        "in-scope disk " + c.device + " could not be read (indeterminate): default flips to ABORT -- an uncertain enumeration refuses",
+      );
+    }
+  }
+
   if (input.breaker.state === "open") {
     cancelDefault = "abort";
     secs = full;

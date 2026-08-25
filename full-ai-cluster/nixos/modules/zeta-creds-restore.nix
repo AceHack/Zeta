@@ -219,12 +219,34 @@ in
           # QEMU-only staging: hypervisor `-fw_cfg name=opt/org.zeta/creds-passphrase,file=`
           # copies into ${cfg.passphraseFile}. Never log the contents. Metal has
           # no such sysfs node, so interactive ask-password is unchanged.
+          #
+          # 081M0WS33AK087G0R000BG9R8X -- THE SUCCESS LINE MUST NAME ITS TRANSPORT.
+          #
+          # This unit has three ways to obtain the passphrase and only one of
+          # them exists on hardware:
+          #
+          #   qemu-fw_cfg              the hypervisor hands it over through a
+          #                            sysfs node the guest reads. HYPERVISOR
+          #                            ONLY -- metal has no such node, ever.
+          #   pre-staged-file          something already wrote passphraseFile.
+          #   interactive-ask-password systemd-ask-password on tty1. THIS is
+          #                            the metal path.
+          #
+          # Until now the terminal markers -- "wrote N" and "already-present" --
+          # named none of them, so a green CI restore and a green metal restore
+          # printed the SAME success. A check that ran against the hypervisor
+          # transport must not be readable as one that ran against tty1, so the
+          # transport is now carried on the success line itself rather than left
+          # to be inferred from an earlier staging line that only sometimes
+          # appears. THE MECHANISM IS UNCHANGED; only the claim is now honest.
+          PASSPHRASE_TRANSPORT="none"
           ${pkgs.kmod}/bin/modprobe qemu_fw_cfg >/dev/null 2>&1 || true
           FWCFG_RAW="/sys/firmware/qemu_fw_cfg/by_name/opt/org.zeta/creds-passphrase/raw"
           if [ -r "$FWCFG_RAW" ]; then
             umask 0177
             head -c 4096 "$FWCFG_RAW" > ${cfg.passphraseFile}
             chmod 0400 ${cfg.passphraseFile}
+            PASSPHRASE_TRANSPORT="qemu-fw_cfg"
             log_restore "zeta-creds-restore: passphrase staged from qemu fw_cfg"
           fi
 
@@ -272,6 +294,9 @@ in
 
           if [ -s ${cfg.passphraseFile} ]; then
             PASSPHRASE_PATH="${cfg.passphraseFile}"
+            if [ "$PASSPHRASE_TRANSPORT" = "none" ]; then
+              PASSPHRASE_TRANSPORT="pre-staged-file"
+            fi
           else
             ${
               if cfg.passphraseMode == "file" then ''
@@ -291,9 +316,22 @@ in
                 umask 0177
                 echo -n "$PASSPHRASE" > "$PASSPHRASE_PATH"
                 chmod 0400 "$PASSPHRASE_PATH"
+                PASSPHRASE_TRANSPORT="interactive-ask-password"
                 unset PASSPHRASE
               ''
             }
+          fi
+
+          # Emitted BEFORE the restore CLI runs, so it is present on the serial
+          # log whether the restore then succeeds, fails, or is skipped as
+          # already-present. `metal-capable` is the property that matters to a
+          # reader deciding what a green run proved.
+          if [ "$PASSPHRASE_TRANSPORT" = "qemu-fw_cfg" ]; then
+            log_restore "zeta-creds-restore: passphrase transport=qemu-fw_cfg metal-capable=no (hypervisor-only; this run proves NOTHING about the tty1 path on hardware)"
+          elif [ "$PASSPHRASE_TRANSPORT" = "interactive-ask-password" ]; then
+            log_restore "zeta-creds-restore: passphrase transport=interactive-ask-password metal-capable=yes"
+          else
+            log_restore "zeta-creds-restore: passphrase transport=$PASSPHRASE_TRANSPORT metal-capable=unknown"
           fi
 
           PERSONA_ARGS=""

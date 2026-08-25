@@ -97,6 +97,44 @@ describe("R7: the greedy default and the real abort", () => {
     expect(decideWipeScope({ classifications: [ind], breaker: closed }).cancelWindowSecs).toBe(DEFAULT_CANCEL_WINDOW_SECS);
   });
 
+  // 081M0WS33AK087G0R000BG9R8X -- the window was necessary and was not sufficient.
+  //
+  // These are the falsifiers for the claim "first boot cannot destroy a second
+  // disk holding data". Before this block, decideWipeScope returned
+  // cancelDefault="proceed" for a foreign-data disk, so the unattended path
+  // (ZETA_AUTO_CONFIRM=WIPE, nobody at the keyboard) destroyed it 60 seconds
+  // later than it used to, which is not a different outcome.
+  test("a FOREIGN-DATA disk in scope flips the default to ABORT", () => {
+    const d = decideWipeScope({ classifications: [blank, foreign], breaker: closed });
+    expect(d.cancelDefault).toBe("abort");
+    expect(d.cancelWindowSecs).toBe(DEFAULT_CANCEL_WINDOW_SECS);
+    expect(d.rationale.join("\n")).toContain("/dev/sda");
+    expect(d.rationale.join("\n")).toContain("FOREIGN DATA");
+    // The disk is still IN SCOPE -- the operator may still choose to destroy
+    // it. What changed is that the choice now has to be made, not defaulted.
+    expect(d.wipe).toContain("/dev/sda");
+  });
+
+  test("an INDETERMINATE disk flips the default to ABORT: an uncertain enumeration refuses", () => {
+    const ind = { device: "/dev/sdb", disposition: "indeterminate" as const, evidence: [] };
+    const d = decideWipeScope({ classifications: [blank, ind], breaker: closed });
+    expect(d.cancelDefault).toBe("abort");
+    expect(d.rationale.join("\n")).toContain("/dev/sdb");
+  });
+
+  test("the zero-typing install is PRESERVED: blank and prior-zeta-install still default to PROCEED", () => {
+    const prior = { device: "/dev/nvme0n1", disposition: "prior-zeta-install" as const, evidence: [] };
+    expect(decideWipeScope({ classifications: [blank], breaker: closed }).cancelDefault).toBe("proceed");
+    expect(decideWipeScope({ classifications: [prior], breaker: closed }).cancelDefault).toBe("proceed");
+    expect(decideWipeScope({ classifications: [blank, prior], breaker: closed }).cancelDefault).toBe("proceed");
+  });
+
+  test("the flip is one-way: it can turn PROCEED into ABORT, never the reverse", () => {
+    // An open breaker over a foreign disk must still abort, not be un-aborted.
+    const d = decideWipeScope({ classifications: [foreign], breaker: { state: "open", reason: "3 consecutive" } });
+    expect(d.cancelDefault).toBe("abort");
+  });
+
   test("an OPEN breaker flips the default to ABORT and forces the full window", () => {
     const d = decideWipeScope({ classifications: [blank], breaker: { state: "open", reason: "3 consecutive" } });
     expect(d.cancelDefault).toBe("abort");

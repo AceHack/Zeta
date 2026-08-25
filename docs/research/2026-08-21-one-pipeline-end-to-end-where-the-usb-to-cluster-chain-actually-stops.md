@@ -4,6 +4,26 @@
 hardware setup."* So this treats **CI → ISO → USB → boot → k3s → ArgoCD → cluster** as one chain and
 finds where it breaks. **Nothing applied to a cluster; no device touched.**
 
+## RE-MEASURED 2026-08-25, before the first real burn (081M0WS33AK087G0R000BG9R8X)
+
+**Three of this report's findings were closed between 08-21 and 08-25 and one was not.** A report
+that keeps asserting a fixed defect is a false claim of the same class it exists to catch, so the
+status is recorded here rather than left to the reader to re-derive. Nothing below edits the
+findings themselves; they were all correct on the day.
+
+| finding | status 2026-08-25 | evidence |
+|---|---|---|
+| **R2** the Ctrl-C window is zero-width | **FIXED, then extended** | `zeta-install.sh` Step 2.9 is a real wall-clock countdown (60 s; 10 s only when every in-scope disk probes blank), any keypress aborts, and a cancel now exits **10** instead of 0 so `zeta-first-boot.sh` stops reporting an abort as a finished install. **What was still open on 08-25:** the countdown's *default* was PROCEED even over a disk full of somebody's data, so the unattended path destroyed a second disk 60 seconds later rather than not at all. `foreign-data` / `indeterminate` now flip the default to ABORT. |
+| **R3** nothing has ever applied the roster | **FIXED** | `nixos/tests/k3s-first-boot-roster.nix` applies all 11 with no `mkForce` (manual/nightly, needs internet + KVM); `k3s-first-boot-apply-order-eval-test.nix` is the eval-only half wired into `nix flake check` on every PR. |
+| **R5** `no blockers` against an unsigned 2048 GiB aspiration | **FIXED** | `single-node-readiness.ts` now runs a `capacity-provenance` check against MEASURED hardware in `maintainers/*/cluster-nodes/*/node.yaml` and **refuses** when no registration carries a measurable `spec.hardware.storage`; `nodeDiskGib` is labelled ASPIRATIONAL in the output. Measured on 08-25: `node-ad1efd 1047 GiB`, declared 967 GiB, **fits**. |
+| **fw_cfg does not exist on metal** | **STILL OPEN as a claim; now stated** | `zeta-creds-restore.nix` still stages the passphrase from QEMU `fw_cfg` and still falls back to `systemd-ask-password` on tty1 on hardware. That mechanism is unchanged and this is not a metal proof. What changed is that the run now **names its transport on the success line** (`transport=qemu-fw_cfg metal-capable=no`) and the harness **refuses a restore that does not**, so a green CI restore can no longer be quoted as metal evidence. |
+
+**One fail-open found on 08-25 and deliberately not closed:** Step 1's internal-disk filter is
+`$5 != "usb"`, i.e. *not known to be USB* rather than *known to be internal*. A device with an empty
+TRAN column yields a 4-field row and is admitted. `/dev/vda` is exactly that case, so tightening it
+would red the entire QEMU lane; it is documented in the bringup runbook (item 6) with the physical
+mitigation, which is to unplug external drives before first boot.
+
 ## Stage verdicts
 
 | # | Stage | Verdict |
