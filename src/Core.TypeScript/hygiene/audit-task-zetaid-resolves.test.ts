@@ -1,4 +1,4 @@
-// Falsifiers for AH005. Each case pins a behaviour whose removal turns it red — a test
+// Falsifiers for AH006. Each case pins a behaviour whose removal turns it red — a test
 // that survives a stubbed-out audit is not a falsifier.
 //
 // The live instance these exist for: `Task: 081M0X0JQGY087G0R000EBCPQ3` was written into a

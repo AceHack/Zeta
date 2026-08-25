@@ -2524,6 +2524,18 @@ jobs:
       - name: Step outputs have writers (a step that cannot succeed)
         run: bun src/Core.TypeScript/hygiene/audit-workflow-step-output-has-writer.ts
 
+      # A REAL SHA THAT NOBODY CHOSE.
+      #
+      # Every third-party action is pinned to a SHA, which reads as supply-chain discipline
+      # until you ask who checked the SHA. A 40-hex string is indistinguishable from a
+      # fabricated one by shape, and two sites can pin one action at two SHAs indefinitely
+      # while every review of either looks clean. Both happened here on 2026-08-25: an agent
+      # nearly shipped an invented SHA for an action this repo does not use, and
+      # `ruleset-apply.yml` landed `actions/upload-artifact` at a SHA a YEAR older than the
+      # ten other sites. The roster makes the pin a value someone committed, not remembered.
+      - name: Third-party actions match the SHA roster (AH007)
+        run: bun src/Core.TypeScript/hygiene/audit-action-sha-roster.ts
+
       # A TASK ID THAT IS WELL-FORMED AND IDENTIFIES NOTHING.
       #
       # The AgencySignature gate validates `Task:` for placeholder-ness and SHAPE, never

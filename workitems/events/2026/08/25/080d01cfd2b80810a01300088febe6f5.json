@@ -1,0 +1,14 @@
+{
+  "id": "080d01cfd2b80810a01300088febe6f5",
+  "at": "2026-08-25T17:31:42.721Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M0WZMNR0087G0R0002BH1ST",
+    "type": "task",
+    "title": "Pin every third-party GitHub Action to a rostered SHA (AH007)",
+    "slug": "pin-every-third-party-github-action-to-a-rostered-sha-ah007",
+    "priority": "P2",
+    "filename": "081M0WZMNR0087G0R0002BH1ST-pin-every-third-party-github-action-to-a-rostered-sha-ah007.md"
+  }
+}
