@@ -1,0 +1,14 @@
+{
+  "id": "080d01cb705cd010a01300088f354049",
+  "at": "2026-08-25T14:58:28.378Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M0WPW2WS087G0R0028KXDYS",
+    "type": "task",
+    "title": "record the heartbeat ruleset's live conditions in the expected settings snapshot",
+    "slug": "record-the-heartbeat-ruleset-s-live-conditions-in-the-expect",
+    "priority": "P2",
+    "filename": "081M0WPW2WS087G0R0028KXDYS-record-the-heartbeat-ruleset-s-live-conditions-in-the-expect.md"
+  }
+}

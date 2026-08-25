@@ -149,9 +149,11 @@
     {
       "conditions": {
         "ref_name": {
-          "exclude": [],
+          "exclude": [
+            "refs/heads/heartbeat/*-flush-*"
+          ],
           "include": [
-            "refs/heads/agent-heartbeats"
+            "refs/heads/heartbeat/*"
           ]
         }
       },
