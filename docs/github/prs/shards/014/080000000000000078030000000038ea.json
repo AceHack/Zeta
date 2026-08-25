@@ -1,0 +1,12 @@
+{
+  "pr_number": 14570,
+  "archive_path": "docs/history/pr-reviews/PR-14570-deps-bump-lucide-react-from-0-469-0-to-1-33-0-in-full-ai-cluster-portal-web.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-25T07:12:42.963Z",
+  "schema_version": "v1",
+  "commit_sha": "67caa449fd87ed0a8119e06f95985dc8b40fbd5d",
+  "title": "deps: Bump lucide-react from 0.469.0 to 1.33.0 in /full-ai-cluster/portal/web",
+  "state": "MERGED",
+  "merged_at": "2026-08-25T07:11:57Z",
+  "head_ref": "dependabot/bun/full-ai-cluster/portal/web/lucide-react-1.33.0"
+}
