@@ -1,0 +1,12 @@
+{
+  "pr_number": 15190,
+  "archive_path": "docs/history/pr-reviews/PR-15190-fix-security-close-seven-codeql-findings-by-removing-the-pattern-not-the-alert.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-25T04:05:25.752Z",
+  "schema_version": "v1",
+  "commit_sha": "30c61868922a989fe6390f014e9ccf54042afe6a",
+  "title": "fix(security): close seven CodeQL findings by removing the pattern, not the alert",
+  "state": "MERGED",
+  "merged_at": "2026-08-25T04:04:39Z",
+  "head_ref": "codeql-real-defects"
+}
