@@ -1,0 +1,12 @@
+{
+  "pr_number": 15277,
+  "archive_path": "docs/history/pr-reviews/PR-15277-fix-dashboard-refuse-stale-metrics-snapshots.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-25T07:03:23.528Z",
+  "schema_version": "v1",
+  "commit_sha": "eb8fcd3696ac52df61add6df41e23b346967581f",
+  "title": "fix(dashboard): refuse stale metrics snapshots",
+  "state": "MERGED",
+  "merged_at": "2026-08-25T07:02:34Z",
+  "head_ref": "fix/dashboard-metrics-freshness"
+}
