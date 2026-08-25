@@ -16,6 +16,9 @@
     "**/.claude/**",
     "**/.kiro/**",
     "**/.pytest_cache/**",
+    // Python virtual environments are generated dependency trees. Their package
+    // Markdown is upstream content, not repository-authored prose.
+    "src/Arc.Python/.venv/**",
     "**/.lake/**",
     "BenchmarkDotNet.Artifacts/**",
     "TestResults/**",
