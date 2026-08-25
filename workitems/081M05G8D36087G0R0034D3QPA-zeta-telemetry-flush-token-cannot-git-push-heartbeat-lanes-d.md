@@ -16,6 +16,41 @@ composes_with: []
      STATE = this folder; completion moves the file to workitems/done/YYYY/MM/.
      Identity is the zetaid prefix — resolve cross-refs by `081M05G8D36087G0R0034D3QPA-*.md` glob. -->
 
+## UPDATE 2026-08-25 — the `contents` half is FIXED; a SECOND scope is now the blocker
+
+Measured today on heartbeat run `2026-08-25T14:30:17Z`, not inferred. The two halves fail
+differently, which is what makes this conclusive rather than a guess:
+
+| capability | scope required | status today | evidence |
+|---|---|---|---|
+| `git push` the snapshot ref | `Contents: read and write` | **WORKING** | `origin/heartbeat/alexa` == `origin/heartbeat/alexa-flush` == `7eba3a909`; same for soraya at `9562cb42d`. The push landed. |
+| `gh pr create` the flush PR | **`Pull requests: read and write`** | **403 — THE CURRENT BLOCKER** | `merge-heartbeats-to-main: PR create failed: gh: Resource not accessible by personal access token (HTTP 403)` |
+
+So the original finding above is resolved and this item is NOT closed: the same token now
+needs one more scope. The operator asked directly whether `Contents R/W + Metadata R` was
+sufficient. It is not, and the split above is the answer — a token that can push a branch and
+cannot open a PR produces exactly this pair of outcomes.
+
+**`GITHUB_TOKEN` cannot substitute.** The workflow's fallback chain ends at it, but an org
+policy forbids Actions from creating pull requests — the failure mode `agent-heartbeat.yml`
+already documents at length as the reason the PR ceremony was removed in SOVEREIGN MODE and
+the reason a PAT exists here at all.
+
+**Why this surfaced only now, six hours after the token was rotated.** It was masked by a
+different fault. Every lane had been backpressured behind stale flush PRs since 08:21, so no
+tick ever REACHED `gh pr create` — the job failed earlier, at a guard reading an output that
+the backpressure path never wrote (fixed in #15348). Clearing those blockers made this the
+first PR-create attempt in six hours, and it 403'd immediately. One defect hiding behind
+another is why the last successfully created flush PR is #15326 at 08:21:52.
+
+**Nothing is lost, and that is by construction rather than luck.** The lane holds unlanded
+work, not the ref: 3 commits unflushed on alexa, 5 on soraya, both parked on immutable
+snapshots. The flush is idempotent (G-Set union), so re-merging an already-landed event set is
+a no-op whenever the scope is granted.
+
+**Operator action:** grant `Pull requests: Read and write` to `ZETA_TELEMETRY_FLUSH_TOKEN` on
+`Lucent-Financial-Group/Zeta`. No repo change is required or possible for this half.
+
 ## NEEDS THE OPERATOR — this half cannot be fixed from inside the repo
 
 `ZETA_TELEMETRY_FLUSH_TOKEN` is a fine-grained PAT that authenticates as **AceHack** and
