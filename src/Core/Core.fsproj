@@ -275,6 +275,7 @@
     <Compile Include="RoomAdmission.fs" />
     <Compile Include="RoomBoundary.fs" />
     <Compile Include="Query.fs" />
+    <Compile Include="QuerySurface.fs" />
     <Compile Include="Injection.fs" />
     <Compile Include="InjectionExt.fs" />
     <Compile Include="SpeculativeWatermark.fs" />

@@ -1,0 +1,47 @@
+{
+  "_comment": [
+    "Golden vectors for the query-surface prototype (toy).",
+    "TEXT, never a binary blob \u2014 .claude/rules/no-binary-in-proof-lineage.md.",
+    "Each entry is the canonical form of ONE logical plan. Every front end that",
+    "claims to express the query must canonicalize to the byte-identical string.",
+    "This file is the SHARED referent: the F# CE test and the C# LINQ tests all",
+    "read it, so a drift in either front end fails against the same artifact",
+    "rather than against a constant copied into two places.",
+    "Regenerate by printing ToyPlan.canonical for the plan in question."
+  ],
+  "vectors": {
+    "filter-project-join": {
+      "sql": "SELECT c.Name, o.Amount FROM orders o JOIN customers c ON o.Cust = c.Id WHERE o.Amount > 100",
+      "canonical": [
+        "Select Name := customers.Name, Amount := orders.Amount",
+        "  Where (orders.Amount > i:100)",
+        "    Join ON orders.Cust = customers.Id",
+        "      Source orders [Id, Cust, Amount]",
+        "      Source customers [Id, Name]",
+        ""
+      ]
+    },
+    "stream-table-join": {
+      "sql": "SELECT c.Name, o.Amount FROM orders o JOIN <TABLE>customers</TABLE> c ON o.Cust = c.Id",
+      "canonical": [
+        "Select Name := customers.Name, Amount := orders.Amount",
+        "  Join ON orders.Cust = customers.Id",
+        "    Source orders [Id, Cust, Amount]",
+        "    AsTable (I)",
+        "      Source customers [Id, Name]",
+        ""
+      ]
+    },
+    "join-project": {
+      "sql": "SELECT c.Name, o.Amount FROM orders o JOIN customers c ON o.Cust = c.Id",
+      "_comment": "No WHERE between join and select, so C# fuses the projection into the join's result selector. Unfused back to Codd join-then-project, this is the plan the F# CE produces for `join` followed by `select`.",
+      "canonical": [
+        "Select Name := customers.Name, Amount := orders.Amount",
+        "  Join ON orders.Cust = customers.Id",
+        "    Source orders [Id, Cust, Amount]",
+        "    Source customers [Id, Name]",
+        ""
+      ]
+    }
+  }
+}

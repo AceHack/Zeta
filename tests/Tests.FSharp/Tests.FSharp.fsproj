@@ -700,6 +700,7 @@
     <Compile Include="AdinkraClock.Tests.fs" />
     <Compile Include="AppFreeFragment.Tests.fs" />
     <Compile Include="ClaimLane.Tests.fs" />
+    <Compile Include="QuerySurface.Equivalence.Tests.fs" />
   </ItemGroup>
 
   <ItemGroup>
