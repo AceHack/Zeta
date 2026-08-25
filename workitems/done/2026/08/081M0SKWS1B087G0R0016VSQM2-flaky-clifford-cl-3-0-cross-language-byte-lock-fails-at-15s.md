@@ -1,13 +1,13 @@
 ---
 id: 081M0SKWS1B087G0R0016VSQM2
 type: bug
-state: backlog
+state: done
 priority: P2
 slug: flaky-clifford-cl-3-0-cross-language-byte-lock-fails-at-15s
 title: "Flaky: Clifford Cl(3,0) cross-language byte-lock fails at ~15s on busy runners (TS/Python/Go subprocess spawn)"
 created: 2026-08-24T10:08:42.027Z
 depends_on: []
-composes_with: []
+composes_with: [081M0WPD312087G0R0006DXEJG]
 ---
 
 # Flaky: Clifford Cl(3,0) cross-language byte-lock fails at ~15s on busy runners (TS/Python/Go subprocess spawn)
@@ -49,3 +49,16 @@ Same class as 081M0QDJGFJ (a CLI test flaking past its 5 s timeout):
 - PR #14686 — the unrelated PR it failed on (re-kicked).
 - `tests/cross-verification/` — the byte-lock suites.
 - workitems/081M0QDJGFJ* — the sibling timeout-flake class.
+
+## Resolution
+
+PR #15358 confirmed the timeout rather than a value divergence. A local cold
+`go run` took 22.2 seconds, above the former shared 15-second process limit.
+The repair uses direct process execution, preserves subprocess failures,
+isolates each generated program in a cleaned temporary directory, and gives Go
+a measured 60-second compilation allowance while retaining 15-second limits
+for TypeScript and Python.
+
+The formerly failing hermetic TypeScript job completed successfully in 11
+minutes 33 seconds after the repair. Squash commit
+`ef221b1904a46d9cc301ec67dd4058e13bfcc5aa` is an ancestor of `origin/main`.

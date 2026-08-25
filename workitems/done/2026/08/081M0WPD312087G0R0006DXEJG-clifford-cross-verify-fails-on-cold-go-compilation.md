@@ -7,7 +7,7 @@ slug: clifford-cross-verify-fails-on-cold-go-compilation
 title: "Clifford cross-verify fails on cold Go compilation"
 created: 2026-08-25T14:50:16.994Z
 depends_on: []
-composes_with: []
+composes_with: [081M0SKWS1B087G0R0016VSQM2]
 ---
 
 # Clifford cross-verify fails on cold Go compilation
@@ -15,6 +15,10 @@ composes_with: []
 <!-- Work-item body. ZetaId-keyed (conflict-free, time-sortable). "Backlog" is a
      STATE = this folder; completion moves the file to workitems/done/YYYY/MM/.
      Identity is the zetaid prefix — resolve cross-refs by `081M0WPD312087G0R0006DXEJG-*.md` glob. -->
+
+This measured repair closes the earlier report
+`081M0SKWS1B087G0R0016VSQM2`; both identities are retained so references to
+either work item resolve to the same incident.
 
 ## Finding
 
