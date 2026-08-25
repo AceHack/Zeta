@@ -1,0 +1,14 @@
+{
+  "id": "080d01d2b64c0010a01300082641dae6",
+  "at": "2026-08-25T19:12:41.344Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M0X5DJBZ087G0R003F53T52",
+    "type": "bug",
+    "title": "AH006 exits 2 on every push to main because PR_BODY is empty outside a pull request",
+    "slug": "ah006-exits-2-on-every-push-to-main-because-pr-body-is-empty",
+    "priority": "P2",
+    "filename": "081M0X5DJBZ087G0R003F53T52-ah006-exits-2-on-every-push-to-main-because-pr-body-is-empty.md"
+  }
+}

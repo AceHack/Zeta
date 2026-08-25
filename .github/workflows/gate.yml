@@ -2547,6 +2547,15 @@ jobs:
       # Live instance the day this landed: `Task: 081M0X0JQGY087G0R000EBCPQ3`, written by
       # hand instead of minted, caught only because its author re-read his own trailer.
       - name: Task ZetaIds resolve to work-items (AH006)
+        # PULL-REQUEST ONLY, and the `if:` is load-bearing rather than cosmetic.
+        # `github.event.pull_request.body` is EMPTY on a push to `main`, and this audit
+        # deliberately exits 2 on empty input ("NO INPUT — This is NOT a pass") so that a
+        # check with nothing to check can never read as a check that passed. That refusal is
+        # correct; wiring it into a job that also runs on push was not. The result was a
+        # cross-verify red on every push to main whose exit code (2, not 1) said plainly it
+        # was a check that never ran — and it was read as a pre-existing failure for hours.
+        # A push has no PR body to validate; the commit trailer is validated separately.
+        if: github.event_name == 'pull_request'
         env:
           # The PR body carries the AgencySignature block, and unlike `git log` it is present
           # on a SHALLOW checkout. The first wiring of this step piped `git log -50`, CI checks
