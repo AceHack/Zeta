@@ -1,0 +1,12 @@
+{
+  "pr_number": 15188,
+  "archive_path": "docs/history/pr-reviews/PR-15188-meter-analyzer-github-code-quality-resolves-141-of-its-own-269-threads-so-resolu.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-25T04:02:12.257Z",
+  "schema_version": "v1",
+  "commit_sha": "e8d1de949e483cd977be322eedb62d71e2bd57a9",
+  "title": "meter(analyzer): github-code-quality resolves 141 of its own 269 threads — so resolution cannot be the metric",
+  "state": "MERGED",
+  "merged_at": "2026-08-25T04:01:29Z",
+  "head_ref": "meter-code-quality-analyzer-ledger"
+}
