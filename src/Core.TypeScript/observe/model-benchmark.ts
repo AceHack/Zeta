@@ -253,7 +253,7 @@ async function main(): Promise<void> {
   console.log("Summary:");
   for (const r of results) {
     const efficiency = r.correctRate / (r.avgLatencyMs / 1000 * 12); // decisions/joule proxy
-    console.log(`  ${r.model:}: ${r.avgLatencyMs.toFixed(0)}ms, ${(r.correctRate*100).toFixed(0)}% correct, ~${efficiency.toFixed(3)} decisions/joule`);
+    console.log(`  ${r.model}: ${r.avgLatencyMs.toFixed(0)}ms, ${(r.correctRate*100).toFixed(0)}% correct, ~${efficiency.toFixed(3)} decisions/joule`);
   }
 
   const report: BenchmarkReport = {
