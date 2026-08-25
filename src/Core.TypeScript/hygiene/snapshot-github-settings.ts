@@ -125,6 +125,24 @@ export const ADMIN_READ_CREDENTIAL_NOTE =
   "Webhooks: read, Dependabot secrets: read. Wire it as repository secret DRIFT_DETECTOR_PAT " +
   "(081KQ8P5D0008QG0R000JHD7AB). Configuring it is the operator's call, not this tool's.";
 
+/**
+ * The endpoint that produced a snapshot path, for an unreadable-field report.
+ *
+ * Array indices are stripped before lookup so `rulesets[1].bypass_actors`
+ * resolves to the rulesets endpoint rather than falling through to
+ * "(endpoint unmapped)" — and that path is not a corner case, it is where the
+ * single most safety-relevant field lives.
+ */
+export function endpointForPath(path: string, repo: string): string {
+  const noIndex = path.replace(/\[\d+\]/g, "");
+  const candidates = [path, noIndex, noIndex.split(".")[0] ?? ""];
+  for (const c of candidates) {
+    const hit = FIELD_SOURCE_ENDPOINT[c];
+    if (hit !== undefined) return hit.replace("{repo}", repo);
+  }
+  return "(endpoint unmapped)";
+}
+
 /** Codepoint-ordinal comparator. Never `localeCompare`: a snapshot that sorts
  *  differently per machine is not a snapshot, it is noise. */
 export function ordinal(a: string, b: string): number {
@@ -141,16 +159,28 @@ export function isSkippedSentinel(v: unknown): boolean {
 }
 
 /**
- * Every dot-joined path in `obj` whose value is the unreadable sentinel.
+ * Every path in `obj` whose value is the unreadable sentinel.
  *
  * Pure, so the drift check can reuse it and so it is testable without a
- * network. Recurses into plain objects only: an array element carrying a
- * sentinel would mean a partially-read list, which this snapshot never
- * produces (a list read either succeeds whole or is a sentinel whole).
+ * network.
+ *
+ * DESCENDS INTO ARRAYS (`rulesets[1].bypass_actors`), which is not
+ * incidental: the one field a non-admin credential silently cannot read
+ * lives inside an array element, so a walk over objects alone would report
+ * zero unreadable fields on exactly the run where the most important one was
+ * missed.
  */
 export function unreadablePaths(obj: unknown, prefix = ""): string[] {
-  if (obj === null || typeof obj !== "object" || Array.isArray(obj)) return [];
+  if (obj === null || typeof obj !== "object") return [];
   const out: string[] = [];
+  if (Array.isArray(obj)) {
+    obj.forEach((el, i) => {
+      const path = `${prefix}[${i}]`;
+      if (isSkippedSentinel(el)) out.push(path);
+      else out.push(...unreadablePaths(el, path));
+    });
+    return out;
+  }
   for (const key of Object.keys(obj as Record<string, unknown>).sort(ordinal)) {
     const path = prefix.length > 0 ? `${prefix}.${key}` : key;
     const val = (obj as Record<string, unknown>)[key];
@@ -313,14 +343,36 @@ function str(v: unknown): string {
 }
 
 /**
- * Canonical projection of one ruleset's bypass actors.
+ * Canonical projection of one ruleset's bypass actors, or `null` when the
+ * credential was not allowed to see them.
+ *
+ * ABSENT IS NOT EMPTY, and conflating them is the whole bug this file is
+ * about. `GET /repos/{o}/{r}/rulesets/{id}` OMITS the `bypass_actors` key
+ * entirely for a reader without admin rights — it does not 403, and it does
+ * not return `[]`. Verified unauthenticated against this repo's ruleset
+ * 16134995 on 2026-08-25: the response carries
+ * `[_links, conditions, created_at, enforcement, id, name, node_id, rules,
+ * source, source_type, target, updated_at]` and no `bypass_actors`, while the
+ * same call with an admin credential returns one admin PR-bypass actor.
+ *
+ * So a coercion of missing-to-`[]` would make a credential that CANNOT SEE
+ * the bypass list report "nobody may bypass this ruleset" — absence reading
+ * as the safe value, which is exactly the failure this whole change exists to
+ * remove. It was written that way here first, and the CI run of PR #15369
+ * caught it: under `GITHUB_TOKEN` the check reported the admin bypass as
+ * having been REMOVED, and the cheapest way to make that green would have
+ * been to record `[]` and erase the finding.
+ *
+ * `null` therefore means unreadable and is lifted to the
+ * `insufficient-token-scope` sentinel by the caller; `[]` keeps its real
+ * meaning of "read successfully, nobody bypasses".
  *
  * Sorted ordinally on the whole triple so the snapshot is byte-stable: the
  * API does not promise an order, and an unstable order would make every run
  * report drift, which is how a detector gets muted.
  */
-export function normalizeBypassActors(raw: unknown): Array<Record<string, unknown>> {
-  if (!Array.isArray(raw)) return [];
+export function normalizeBypassActors(raw: unknown): Array<Record<string, unknown>> | null {
+  if (!Array.isArray(raw)) return null;
   return raw
     .map((a) => {
       const o = asRecord(a);
@@ -533,12 +585,16 @@ export async function snapshot(repo: string): Promise<string> {
     for (const rid of ids) {
       const oneRaw = await ghApi(
         `/repos/${repo}/rulesets/${rid}`,
+        // `bypass_actors` on a key the API omitted projects to `null` here, NOT
+        // to `[]` — which is what lets `normalizeBypassActors` tell "not
+        // allowed to see it" from "nobody bypasses".
         "{id, name, target, enforcement, bypass_actors, conditions, rules: [.rules[] | {type, parameters}]}"
       );
       const one = parseJsonSafe(oneRaw);
       if (one !== null) {
         const o = asRecord(one);
-        rulesetDetails.push({ ...o, bypass_actors: normalizeBypassActors(o.bypass_actors) });
+        const actors = normalizeBypassActors(o.bypass_actors);
+        rulesetDetails.push({ ...o, bypass_actors: actors ?? insufficientTokenScope });
       }
     }
   }
@@ -688,8 +744,7 @@ export async function main(argv: readonly string[]): Promise<number> {
           `(recorded in band as {"_skipped":"${INSUFFICIENT_TOKEN_SCOPE}"}):\n`,
       );
       for (const path of unreadable) {
-        const src = FIELD_SOURCE_ENDPOINT[path] ?? FIELD_SOURCE_ENDPOINT[path.split(".")[0] ?? ""] ?? "(endpoint unmapped)";
-        process.stderr.write(`  ${path}  <-  ${src.replace("{repo}", parsed.args.repo)}\n`);
+        process.stderr.write(`  ${path}  <-  ${endpointForPath(path, parsed.args.repo)}\n`);
       }
       process.stderr.write(`${ADMIN_READ_CREDENTIAL_NOTE}\n`);
     }

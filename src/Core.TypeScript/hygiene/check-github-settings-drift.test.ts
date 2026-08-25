@@ -105,8 +105,14 @@ describe("parseArgs", () => {
 // ---------------------------------------------------------------------------
 
 describe("countLeaves", () => {
-  test("counts scalars, and an array as one leaf", () => {
-    expect(countLeaves({ a: 1, b: "x", c: [1, 2, 3] })).toBe(3);
+  test("counts scalars, and a populated array by its elements", () => {
+    expect(countLeaves({ a: 1, b: "x", c: [1, 2, 3] })).toBe(5);
+  });
+
+  test("an EMPTY array is one leaf — it is a real compared value", () => {
+    // `"topics": []` means "no topics" and confirming it is work. Scoring it
+    // zero would let a legitimate run be called INDETERMINATE.
+    expect(countLeaves({ topics: [] })).toBe(1);
   });
 
   test("an empty object has zero leaves — the case that must not read as success", () => {
@@ -211,5 +217,55 @@ describe("parseArgs — --live-from", () => {
     const result = await parseArgs(["--live-from"]);
     expect(result.kind).toBe("error");
     if (result.kind === "error") expect(result.message).toContain("--live-from requires PATH argument");
+  });
+});
+
+describe("partitionByReadability — inside arrays", () => {
+  test("finds an unreadable bypass_actors inside rulesets[i]", () => {
+    // The exact CI condition of PR #15369: GITHUB_TOKEN reads the rulesets but
+    // NOT their bypass actors. Without the array descent this sentinel is
+    // diffed literally and reported as "the admin bypass was REMOVED" — a
+    // false finding whose cheapest fix is to record [] and erase the true one.
+    const live: Record<string, unknown> = {
+      rulesets: [{ id: 1, enforcement: "active", bypass_actors: SENTINEL }],
+    };
+    const exp: Record<string, unknown> = {
+      rulesets: [
+        {
+          id: 1,
+          enforcement: "active",
+          bypass_actors: [{ actor_id: 5, actor_type: "RepositoryRole", bypass_mode: "pull_request" }],
+        },
+      ],
+    };
+    const part = partitionByReadability(live, exp);
+
+    expect(part.unreadableLive).toEqual(["rulesets[0].bypass_actors"]);
+    expect(JSON.stringify(live)).toBe(JSON.stringify(exp));
+    expect(part.comparedLeaves).toBe(2); // id + enforcement; bypass_actors was stripped
+  });
+
+  test("does NOT strip inside arrays of unequal length — that is real drift", () => {
+    // A ruleset added or removed must reach the diff whole. A mis-aligned
+    // element-wise walk would delete fields off both sides at shifted indices
+    // and could make a genuine addition look partly reconciled.
+    const live: Record<string, unknown> = { rulesets: [{ id: 1 }, { id: 2 }] };
+    const exp: Record<string, unknown> = { rulesets: [{ id: 1 }] };
+    const part = partitionByReadability(live, exp);
+
+    expect(part.unreadableLive).toEqual([]);
+    expect(live["rulesets"]).toEqual([{ id: 1 }, { id: 2 }]);
+    expect(exp["rulesets"]).toEqual([{ id: 1 }]);
+  });
+
+  test("the report resolves an indexed path to its endpoint", () => {
+    const lines = formatReadabilityReport(
+      { unreadableLive: ["rulesets[1].bypass_actors"], unreadableExpected: [], comparedLeaves: 4 },
+      "o/r",
+    ).join("\n");
+
+    expect(lines).toContain("rulesets[1].bypass_actors");
+    expect(lines).not.toContain("(endpoint unmapped)");
+    expect(lines).toContain("/repos/o/r/rulesets");
   });
 });

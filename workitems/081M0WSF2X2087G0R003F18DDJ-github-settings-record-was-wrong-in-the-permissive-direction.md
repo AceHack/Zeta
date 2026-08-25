@@ -57,6 +57,29 @@ origin/main@ba92c40373: unfixed exit 0, fixed exit 3.
   `docs/GITHUB-SETTINGS.md`; contested rows recorded as facts and filed as
   bugs rather than ratified.
 
+## Two more defects, both found BY the first CI run of the fix
+
+**Absent read as empty, inside the fix itself.** `GET /rulesets/{id}` OMITS the
+`bypass_actors` key for a reader without admin rights — it does not 403 and it
+does not return `[]`. The first draft of `normalizeBypassActors` coerced the
+missing key to `[]`, so under `GITHUB_TOKEN` the check reported the live admin
+bypass as REMOVED, and the cheapest way to green that would have been to record
+`[]` and erase the finding. Absence reading as the safe value: the exact class
+this work-item is about, reproduced inside its own remedy. Now `null` ->
+sentinel, and `[]` keeps its real meaning. Verified unauthenticated against
+ruleset 16134995: the response carries no `bypass_actors` key at all.
+
+**`rc=$?` was dead code.** GitHub's default shell is `bash -e {0}`, and
+`set -uo pipefail` does not clear a `-e` that arrived on the command line. A
+bare call followed by `rc=$?` therefore aborts the step on any non-zero exit,
+making every line after it unreachable — including the `case` that exists
+solely to distinguish DID-NOT-RUN from FAILED. It could never see the only
+case it was written for. Present in this workflow's new step and, worse,
+already present in the sibling `ruleset-plan` job, whose reconciler has five
+meaningful exit codes (1 DRIFT / 2 DID-NOT-RUN / 3 REFUSED / 4 APPLIED-BUT-
+UNVERIFIED) all silently collapsed into a bare red step. Both now use
+`rc=0; cmd || rc=$?`.
+
 ## Still open (operator's call, not an agent's)
 
 - Remove or document the CI Gate admin bypass (`docs/BUGS.md` P0).
