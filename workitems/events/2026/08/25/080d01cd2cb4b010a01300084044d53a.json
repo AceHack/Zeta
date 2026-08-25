@@ -1,0 +1,14 @@
+{
+  "id": "080d01cd2cb4b010a01300084044d53a",
+  "at": "2026-08-25T15:59:08.438Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M0WTB5MN087G0R001WA07PC",
+    "type": "bug",
+    "title": "UEFI keyfile restore: blob not on phase-2 ESP and the ConditionPathExists skip hides which path is missing",
+    "slug": "uefi-keyfile-restore-blob-not-on-phase-2-esp-and-the-conditi",
+    "priority": "P2",
+    "filename": "081M0WTB5MN087G0R001WA07PC-uefi-keyfile-restore-blob-not-on-phase-2-esp-and-the-conditi.md"
+  }
+}

@@ -167,14 +167,13 @@ in
       # B-0855.1 zeta-self-register.service declares
       # `after = "zeta-creds-restore.service"`; ordering enforced there.
 
-      unitConfig = {
-        ConditionPathExists = [
-          cfg.blobPath
-          cfg.usbUuidPath
-          cfg.scriptPath
-          bunShimPath
-        ];
-      };
+      # 081M0WTB5MN: the four preconditions used to live in
+      # unitConfig.ConditionPathExists, which makes systemd SKIP the unit with
+      # ZERO serial output — a skip and a real failure were indistinguishable in
+      # CI (run 32816110015 booted to a login prompt with not one
+      # zeta-creds-restore line). They are now checked inside ExecStart (below),
+      # which NAMES any missing path on serial and then exits 0, preserving the
+      # original non-fatal skip. The mechanism is unchanged; the skip is legible.
 
       serviceConfig = {
         Type = "oneshot";
@@ -215,6 +214,23 @@ in
               echo "$1" >> "$_serial" || true
             fi
           }
+
+          # 081M0WTB5MN: precondition gate, moved here from
+          # unitConfig.ConditionPathExists so a missing path is NAMED on serial
+          # rather than skipping the unit silently. The four paths: the ESP blob,
+          # the recorded USB UUID, the restore CLI in the cloned repo, and the
+          # zeta user's mise bun shim. Exit 0 on a miss keeps the original skip
+          # semantics (non-fatal boot, no Restart="on-failure" retry storm).
+          _missing=""
+          for _req in ${cfg.blobPath} ${cfg.usbUuidPath} ${cfg.scriptPath} ${bunShimPath}; do
+            if [ ! -e "$_req" ]; then
+              _missing="$_missing $_req"
+              log_restore "zeta-creds-restore: MISSING precondition $_req; skipping restore"
+            fi
+          done
+          if [ -n "$_missing" ]; then
+            exit 0
+          fi
 
           # QEMU-only staging: hypervisor `-fw_cfg name=opt/org.zeta/creds-passphrase,file=`
           # copies into ${cfg.passphraseFile}. Never log the contents. Metal has

@@ -25,6 +25,7 @@ import {
   OVMF_FIRMWARE_CANDIDATES,
   PHASE2_SERIAL_SEPARATOR,
   QEMU_CREDS_PASSPHRASE_FWCFG_NAME,
+  missingRestorePreconditions,
   reclaimLargeTempArtifacts,
   RESTORE_UNIT_CONDITION_PATHS,
   restoreServiceNeverRan,
@@ -866,27 +867,55 @@ describe("restoreServiceNeverRan / restore contract diagnosis", () => {
     "node-qemu-keyfile-restore login: ",
   ].join("\n");
 
-  it("detects a unit systemd skipped entirely", () => {
+  it("detects a unit that produced no output at all (did not start)", () => {
     expect(restoreServiceNeverRan(skippedUnitSerial)).toBe(true);
   });
 
   it("does NOT fire once the unit's own unconditional marker is present", () => {
-    // readingBlob is emitted after the optional fw_cfg block, so this is a
-    // guest where the unit RAN and fw_cfg staging genuinely failed.
+    // readingBlob is emitted after the precondition gate + optional fw_cfg block,
+    // so this is a guest where the unit RAN and fw_cfg staging genuinely failed.
     expect(restoreServiceNeverRan(`${skippedUnitSerial}\n${UEFI_KEYFILE_RESTORE_SERIAL.readingBlob}`)).toBe(false);
   });
 
-  it("blames the ConditionPathExists gate, not fw_cfg, when nothing ran", () => {
+  it("names the exact missing precondition instead of guessing (081M0WTB5MN)", () => {
+    // The unit now checks its preconditions inside ExecStart and logs which
+    // path is absent, so the blob-not-on-ESP case (run 32816110015) is legible.
+    const serial = [
+      "zeta-creds-restore: MISSING precondition /boot/zeta-creds.enc; skipping restore",
+      "node-qemu-keyfile-restore login: ",
+    ].join("\n");
+    expect(missingRestorePreconditions(serial)).toEqual(["/boot/zeta-creds.enc"]);
+    // The named path is one of the canonical four the unit checks.
+    expect(RESTORE_UNIT_CONDITION_PATHS).toContain("/boot/zeta-creds.enc");
+    const result = assertUefiKeyfileRestoreContract(serial);
+    expect(result.ok).toBe(false);
+    if (result.ok) throw new Error("unreachable");
+    expect(result.reason).toContain("/boot/zeta-creds.enc");
+    expect(result.reason).toContain("missing precondition");
+    // A named precondition miss must not read as a fw_cfg bug or a total no-run.
+    expect(result.reason).not.toContain("fw_cfg staging marker missing");
+    expect(result.reason).not.toContain("never ran");
+  });
+
+  it("collects every missing precondition the unit named", () => {
+    const serial = [
+      "zeta-creds-restore: MISSING precondition /boot/zeta-creds.enc; skipping restore",
+      "zeta-creds-restore: MISSING precondition /home/zeta/.local/share/mise/shims/bun; skipping restore",
+    ].join("\n");
+    expect(missingRestorePreconditions(serial)).toEqual([
+      "/boot/zeta-creds.enc",
+      "/home/zeta/.local/share/mise/shims/bun",
+    ]);
+  });
+
+  it("blames unit start (not fw_cfg, not a precondition miss) when nothing ran", () => {
     const result = assertUefiKeyfileRestoreContract(skippedUnitSerial);
     expect(result.ok).toBe(false);
     if (result.ok) throw new Error("unreachable");
     expect(result.reason).toContain("never ran");
-    expect(result.reason).toContain("ConditionPathExists");
-    // The lead an operator needs: every path that can silently skip the unit.
-    for (const path of RESTORE_UNIT_CONDITION_PATHS) {
-      expect(result.reason).toContain(path);
-    }
-    // The old message pointed at the wrong subsystem.
+    expect(result.reason).toContain("did not start");
+    // The old message pointed at the wrong subsystem; the new one must not
+    // resurrect either mis-blame.
     expect(result.reason).not.toContain("fw_cfg staging marker missing");
   });
 
@@ -899,14 +928,19 @@ describe("restoreServiceNeverRan / restore contract diagnosis", () => {
     expect(result.reason).not.toContain("never ran");
   });
 
-  it("the four condition paths match zeta-creds-restore.nix's declared defaults", () => {
+  it("the four precondition paths are checked in-ExecStart in zeta-creds-restore.nix", () => {
     // Checked, not asserted: drift in the module must break this test rather
-    // than silently hand operators a stale list to go looking at.
+    // than silently hand operators a stale list to go looking at. The checks
+    // moved out of unitConfig.ConditionPathExists into ExecStart (081M0WTB5MN)
+    // so a missing path is named on serial.
     const nix = readFileSync(
       resolve(import.meta.dir, "../../../full-ai-cluster/nixos/modules/zeta-creds-restore.nix"),
       "utf8",
     );
-    expect(nix).toContain("ConditionPathExists");
+    // The gate assignment is gone (prose may still reference the old name).
+    expect(nix).not.toContain("ConditionPathExists = [");
+    expect(nix).toContain("MISSING precondition");
+    expect(nix).toContain("for _req in ${cfg.blobPath} ${cfg.usbUuidPath} ${cfg.scriptPath} ${bunShimPath}");
     expect(nix).toContain('default = "/boot/zeta-creds.enc"');
     expect(nix).toContain('default = "/etc/zeta/usb-uuid"');
     expect(nix).toContain('bunShimPath = "${cfg.home}/.local/share/mise/shims/bun"');

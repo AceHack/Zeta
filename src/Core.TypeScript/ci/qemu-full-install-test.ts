@@ -230,36 +230,63 @@ export const UEFI_KEYFILE_RESTORE_SERIAL = {
   missingKeyfile: "zeta-creds-restore: uefiKeyfile recorded but ESP keyfile missing",
   uuidBinding: "zeta-creds-restore: binding-factor usbUuid (default)",
   /**
+   * Emitted once per absent precondition by the unit's ExecStart (081M0WTB5MN),
+   * naming the exact missing path — the ESP blob, /etc/zeta/usb-uuid, the cloned
+   * restore CLI, or the mise bun shim — instead of skipping the unit silently.
+   * See `missingRestorePreconditions`.
+   */
+  missingPrecondition: "zeta-creds-restore: MISSING precondition",
+  /**
    * Emitted unconditionally by the unit's ExecStart, immediately after the
-   * optional fw_cfg block (`zeta-creds-restore.nix`). Its ABSENCE therefore
-   * means the ExecStart body never ran at all — see `restoreServiceNeverRan`.
+   * precondition gate + optional fw_cfg block (`zeta-creds-restore.nix`). Its
+   * ABSENCE therefore means the ExecStart body never ran at all — see
+   * `restoreServiceNeverRan`.
    */
   readingBlob: "zeta-creds-restore: reading preserved ESP blob",
 } as const;
 
 /**
- * `zeta.credsRestore`'s unit carries `unitConfig.ConditionPathExists` over FOUR
- * paths (`zeta-creds-restore.nix`): the ESP blob, the recorded USB UUID, the
- * restore CLI inside the cloned repo, and the zeta user's mise `bun` shim. When
- * any one is absent systemd SKIPS the unit — it does not fail it — so the guest
- * boots to a login prompt with an empty journal and a serial log that looks
- * exactly like a healthy boot.
+ * `zeta.credsRestore`'s unit checks FOUR preconditions
+ * (`zeta-creds-restore.nix`): the ESP blob, the recorded USB UUID, the restore
+ * CLI inside the cloned repo, and the zeta user's mise `bun` shim.
  *
- * That made the failure undiagnosable from CI: run 32816110015's phase-2 serial
- * contained ZERO `zeta-creds-restore:` lines, and the only thing the contract
- * could report was "fw_cfg staging marker missing" — which reads as a fw_cfg
- * bug and is not one. A skipped check and a broken check produced the same
- * message.
+ * These used to be a `unitConfig.ConditionPathExists`, so when any was absent
+ * systemd SKIPPED the unit with ZERO serial output — run 32816110015 booted to
+ * a login prompt with not one `zeta-creds-restore:` line, and the contract could
+ * only report "fw_cfg staging marker missing", which reads as a fw_cfg bug and
+ * is not one. 081M0WTB5MN moved the checks into `ExecStart`, which now logs
+ * `MISSING precondition <path>` for each absent one — so the exact gap is named
+ * (see `missingRestorePreconditions`), not guessed.
  *
- * This predicate separates them. It cannot say WHICH of the four paths was
- * missing (only the guest knows), but "the unit never ran, here are the four
- * preconditions to check" is a lead; "a marker is missing" is not.
+ * This predicate survives for the residual case: a serial with NO
+ * `zeta-creds-restore` line at all now means the unit did not start (e.g.
+ * `zeta.credsRestore.enable` off, or a start failure before ExecStart) — a
+ * stronger, rarer condition than a precondition miss.
  */
 export function restoreServiceNeverRan(phase2Serial: string): boolean {
   return !phase2Serial.includes("zeta-creds-restore");
 }
 
-/** The four `ConditionPathExists` paths, verbatim from zeta-creds-restore.nix defaults. */
+/**
+ * Preconditions the unit named as MISSING on serial (081M0WTB5MN), in order.
+ * Each is one of `RESTORE_UNIT_CONDITION_PATHS`. Empty when the unit ran with
+ * all preconditions present (the happy path) or did not run at all.
+ */
+export function missingRestorePreconditions(phase2Serial: string): readonly string[] {
+  const out: string[] = [];
+  const re = /zeta-creds-restore: MISSING precondition (\S+); skipping restore/g;
+  let m: RegExpExecArray | null;
+  while ((m = re.exec(phase2Serial)) !== null) {
+    if (m[1] !== undefined) out.push(m[1]);
+  }
+  return out;
+}
+
+/**
+ * The four precondition paths, verbatim from zeta-creds-restore.nix defaults.
+ * Now checked inside the unit's `ExecStart` (081M0WTB5MN), not
+ * `unitConfig.ConditionPathExists`.
+ */
 export const RESTORE_UNIT_CONDITION_PATHS = [
   "/boot/zeta-creds.enc",
   "/etc/zeta/usb-uuid",
@@ -468,14 +495,26 @@ export function assertUefiKeyfileRestoreContract(phase2Serial: string):
       readonly ok: true;
     }
   | { readonly ok: false; readonly reason: string } {
+  const missingPreconditions = missingRestorePreconditions(phase2Serial);
+  if (missingPreconditions.length > 0) {
+    return {
+      ok: false,
+      reason:
+        "zeta-creds-restore skipped — missing precondition(s) on the installed guest: " +
+        `${missingPreconditions.join(", ")}. The unit named them on serial (081M0WTB5MN); ` +
+        "fix the producer for that path — ESP blob delivery (/mnt/boot→/boot), " +
+        "/etc/zeta/usb-uuid, the cloned restore CLI, or the mise bun shim.",
+    };
+  }
   if (restoreServiceNeverRan(phase2Serial)) {
     return {
       ok: false,
       reason:
         "zeta-creds-restore.service never ran — phase-2 serial carries no " +
-        "'zeta-creds-restore' line at all, so systemd skipped the unit on an unmet " +
-        "ConditionPathExists rather than the restore failing. Check these four paths " +
-        `on the installed guest: ${RESTORE_UNIT_CONDITION_PATHS.join(", ")}.`,
+        "'zeta-creds-restore' line at all. With preconditions now checked inside " +
+        "ExecStart (they log 'MISSING precondition <path>' when absent, 081M0WTB5MN), " +
+        "a blank serial means the unit did not start: zeta.credsRestore.enable is off, " +
+        "or it failed before ExecStart.",
     };
   }
   if (!phase2Serial.includes(UEFI_KEYFILE_RESTORE_SERIAL.stagedFromFwcfg)) {
