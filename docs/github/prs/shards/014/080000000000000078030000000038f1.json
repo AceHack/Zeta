@@ -1,0 +1,12 @@
+{
+  "pr_number": 14577,
+  "archive_path": "docs/history/pr-reviews/PR-14577-deps-bump-lucide-react-from-0-453-0-to-1-33-0-in-demo-identity-dla-site.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-25T07:13:42.778Z",
+  "schema_version": "v1",
+  "commit_sha": "17b3cb3aed553dd1187c83f03b4c5ff9be6a6ec4",
+  "title": "deps: Bump lucide-react from 0.453.0 to 1.33.0 in /demo/identity-dla-site",
+  "state": "MERGED",
+  "merged_at": "2026-08-25T07:12:53Z",
+  "head_ref": "dependabot/npm_and_yarn/demo/identity-dla-site/lucide-react-1.33.0"
+}
