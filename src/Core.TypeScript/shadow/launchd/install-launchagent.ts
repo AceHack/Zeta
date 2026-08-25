@@ -39,6 +39,7 @@ import { readFileSync, writeFileSync, existsSync, renameSync, mkdirSync, mkdtemp
 import { homedir, tmpdir } from "node:os";
 import { join, isAbsolute, resolve } from "node:path";
 import { execFileSync } from "node:child_process";
+import { createLaunchctlControl } from "../../service/service-control-port";
 
 export interface Args {
   bunPath: string;
@@ -327,20 +328,18 @@ export function main(): void {
   }
 
   if (args.bootstrap) {
-    // eslint-disable-next-line sonarjs/no-os-command-from-path -- `id`,
-    // `launchctl` are macOS-standard system binaries; same convention
-    // as tools/github/poll-pr-gate.ts.
+    // eslint-disable-next-line sonarjs/no-os-command-from-path -- `id` is a
+    // macOS-standard system binary; same convention as tools/github/poll-pr-gate.ts.
+    // `launchctl` is NO LONGER in this suppression: it resolves through
+    // ServiceControlPort to an allowlisted absolute path.
     const uid = execFileSync("id", ["-u"], { encoding: "utf-8" }).trim();
     const domain = `gui/${uid}`;
-    // bootout first (idempotent — fine if not loaded)
-    try {
-      // eslint-disable-next-line sonarjs/no-os-command-from-path
-      execFileSync("launchctl", ["bootout", domain, destPath], { stdio: "pipe" });
-    } catch {
-      // Not loaded — fine.
-    }
-    // eslint-disable-next-line sonarjs/no-os-command-from-path
-    execFileSync("launchctl", ["bootstrap", domain, destPath], { stdio: "inherit" });
+    const resolved = createLaunchctlControl();
+    if (!resolved.ok) throw new Error(`launchctl unavailable: ${resolved.reason}`);
+    // bootout first (idempotent by port contract — fine if not loaded)
+    resolved.port.bootout(domain, destPath);
+    const booted = resolved.port.bootstrap(domain, destPath);
+    if (!booted.ok) throw new Error(booted.reason);
     console.error(`Bootstrapped com.zeta.shadow-observer in ${domain}`);
   } else {
     console.error("Next: complete Step 2 (accessibility permission) per README, then:");

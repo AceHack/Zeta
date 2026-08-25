@@ -18,6 +18,7 @@
 import { existsSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { spawnSync } from "node:child_process";
+import { createLaunchctlControl } from "../service/service-control-port";
 
 // --- Cell state ---
 
@@ -55,11 +56,11 @@ export function readCellState(repoRoot: string): CellState {
     }
   }
 
-  const result = spawnSync("launchctl", ["list"], { encoding: "utf8", timeout: 5000 });
-  const running = (result.status === 0 ? result.stdout : "")
-    .split("\n")
+  const resolved = createLaunchctlControl();
+  const labels = resolved.ok ? resolved.port.listLabels() : null;
+  const running = (labels ?? [])
     .filter((l) => l.includes("com.lucent.zeta."))
-    .map((l) => l.split("\t").pop()?.replace("com.lucent.zeta.", "") || "")
+    .map((l) => l.replace("com.lucent.zeta.", ""))
     .filter(Boolean);
 
   const missing = declared.filter((c) => !running.includes(c.agent));

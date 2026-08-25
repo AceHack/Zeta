@@ -84,6 +84,7 @@ import { join } from "node:path";
 import { spawnSync } from "node:child_process";
 import { listPersonas, getPersona } from "./persona-registry";
 import { defaultPaths } from "./env-schema";
+import { createLaunchctlControl, parsePrintOutput } from "./service-control-port";
 
 // ---------------------------------------------------------------------------
 // Pure core — classification over already-gathered facts.
@@ -209,17 +210,16 @@ export function isFailure(reports: readonly CellReport[]): boolean {
 // IO shell
 // ---------------------------------------------------------------------------
 
-/** Parse the fields we care about out of `launchctl print` output. */
+/** Parse the fields we care about out of `launchctl print` output.
+ *
+ *  DELEGATES to the port's parser so there is exactly ONE launchctl-print parser in the
+ *  tree. Kept as a named export because its tests carry the real captured fixtures. */
 export function parseLaunchctlPrint(stdout: string): {
   lastExitCode: number | undefined;
   launchdState: string | undefined;
 } {
-  const exitMatch = /last exit code = (\d+)/.exec(stdout);
-  const stateMatch = /^\s*state = (.+)$/m.exec(stdout);
-  return {
-    lastExitCode: exitMatch ? Number(exitMatch[1]) : undefined,
-    launchdState: stateMatch ? stateMatch[1]!.trim() : undefined,
-  };
+  const parsed = parsePrintOutput(stdout);
+  return { lastExitCode: parsed.lastExitCode, launchdState: parsed.launchdState };
 }
 
 /**
@@ -361,6 +361,10 @@ export function gather(persona: string, now: number): CellFacts {
 /** Gather facts for one persona from a live launchd machine. */
 export function gatherLaunchd(persona: string, now: number): CellFacts {
   const paths = defaultPaths(persona);
+  // FAIL-CLOSED: no admitted launchctl means "I could not look", reported as unitFound
+  // false rather than as a confident absence produced by a forgeable PATH lookup.
+  const resolved = createLaunchctlControl();
+  const ctl = resolved.ok ? resolved.port : null;
 
   // Probe every candidate label; the first launchd actually knows about wins.
   let label = candidateLabels(persona)[0]!;
@@ -369,11 +373,12 @@ export function gatherLaunchd(persona: string, now: number): CellFacts {
   let launchdState: string | undefined;
 
   for (const candidate of candidateLabels(persona)) {
-    const printed = spawnSync("launchctl", ["print", `gui/${uid()}/${candidate}`], { encoding: "utf8" });
-    if (printed.status === 0) {
+    const d = ctl === null ? { found: false as const } : ctl.describe(`gui/${uid()}`, candidate);
+    if (d.found === true) {
       label = candidate;
       unitFound = true;
-      ({ lastExitCode, launchdState } = parseLaunchctlPrint(printed.stdout ?? ""));
+      lastExitCode = d.lastExitCode;
+      launchdState = d.launchdState;
       break;
     }
   }

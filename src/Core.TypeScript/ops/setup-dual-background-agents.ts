@@ -11,6 +11,19 @@
 import { mkdirSync, writeFileSync, existsSync } from "node:fs";
 import { join } from "node:path";
 import { spawnSync } from "node:child_process";
+import { createLaunchctlControl, type ServiceControlPort } from "../service/service-control-port";
+
+/** FAIL-CLOSED: this script installs login-persistent agents, so an unadmitted launchctl
+ *  stops it rather than letting it report success it cannot have achieved. */
+let ctlCache: ServiceControlPort | null = null;
+function launchctl(): ServiceControlPort {
+    if (ctlCache === null) {
+        const r = createLaunchctlControl();
+        if (!r.ok) throw new Error(`launchctl unavailable: ${r.reason}`);
+        ctlCache = r.port;
+    }
+    return ctlCache;
+}
 
 // Every argument this script understands. No positionals, no value-taking flags.
 const ACCEPTED_FLAGS = ["--dry-run"];
@@ -135,10 +148,10 @@ for (const cfg of agents) {
     // Unload old if exists, then bootstrap
     console.log(`  bootstrapping launchd service`);
     if (!dryRun) {
-        spawnSync("launchctl", ["bootout", `gui/${uid}/${cfg.label}`]);
-        spawnSync("launchctl", [
-            "bootstrap", `gui/${uid}`, plistPath,
-        ]);
+        const c = launchctl();
+        c.bootout(`gui/${uid}`, cfg.label);
+        const r = c.bootstrap(`gui/${uid}`, plistPath);
+        if (!r.ok) throw new Error(r.reason);
     }
 }
 
@@ -148,7 +161,7 @@ if (existsSync(oldPlist)) {
     console.log(`\n=== Unloading old single-agent service ===`);
     console.log(`  bootout com.zeta.claude-loop`);
     if (!dryRun) {
-        spawnSync("launchctl", ["bootout", `gui/${uid}/com.zeta.claude-loop`]);
+        launchctl().bootout(`gui/${uid}`, "com.zeta.claude-loop");
     }
     console.log(`  Old plist kept at ${oldPlist} (delete manually if desired)`);
 }
