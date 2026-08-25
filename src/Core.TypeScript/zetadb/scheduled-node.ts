@@ -4,6 +4,7 @@ import { existsSync, mkdirSync, readFileSync, renameSync, writeFileSync } from "
 import { dirname, resolve } from "node:path";
 import { compareAndSwapRevisionPolicy, type RevisionPolicyRefusal } from "../persistence/revision-policy";
 import { noForgetBackpressureAdmissionPolicy, type ZetaDbAdmissionPolicyPort } from "./admission-policy";
+import { resolveZetaDbRetentionMode, type ZetaDbRetentionPolicyPort } from "./retention-policy";
 import {
   runZetaDbNodeTick,
   type ZetaDbDelta,
@@ -44,6 +45,7 @@ export interface ZetaDbScheduledNodeOptions {
   readonly maxEntries: number;
   readonly maxCheckpointBytes: number;
   readonly admissionPolicy?: ZetaDbAdmissionPolicyPort;
+  readonly retentionPolicy?: ZetaDbRetentionPolicyPort;
 }
 
 function failed(
@@ -190,6 +192,7 @@ export async function runScheduledZetaDbNode(
       },
     },
     options.admissionPolicy ?? noForgetBackpressureAdmissionPolicy,
+    options.retentionPolicy,
   );
   filePort.port.close();
   if (!tick.ok) return tick;
@@ -214,6 +217,11 @@ function argument(args: readonly string[], name: string, fallback: string): stri
 }
 
 export async function main(args: readonly string[]): Promise<number> {
+  const retention = resolveZetaDbRetentionMode(argument(args, "--retention-policy", "no-forget-backpressure"));
+  if (!retention.ok) {
+    process.stderr.write(`${JSON.stringify({ severity: "heat", ...retention.feedback })}\n`);
+    return 1;
+  }
   const result = await runScheduledZetaDbNode({
     journalPath: resolve(argument(args, "--journal", "data/zetadb/journal.json")),
     checkpointPath: resolve(argument(args, "--checkpoint", "data/zetadb/checkpoint.json")),
@@ -221,6 +229,7 @@ export async function main(args: readonly string[]): Promise<number> {
     maxDeltas: 1024,
     maxEntries: 100_000,
     maxCheckpointBytes: 16 * 1024 * 1024,
+    ...(retention.value.retentionPolicy === undefined ? {} : { retentionPolicy: retention.value.retentionPolicy }),
   });
   if (!result.ok) {
     process.stderr.write(`${JSON.stringify(result.feedback)}\n`);
