@@ -18,6 +18,11 @@ import { loadWorkItemDoraMetrics } from "./work-item-metrics.ts";
 const OWNER = "Lucent-Financial-Group";
 const REPO = "Zeta";
 const API = `https://api.github.com/repos/${OWNER}/${REPO}`;
+// The GitHub Pages deploy refreshes this snapshot every 15 minutes. The browser
+// must not present an older file as current operational telemetry: after this
+// horizon it falls back to the live public GitHub API and labels the snapshot
+// historical if that fallback is unavailable.
+const METRICS_FRESHNESS_MAX_AGE_MINUTES = 30;
 
 type GitHubCommit = {
   sha: string;
@@ -280,7 +285,11 @@ async function main() {
 
   const metrics = {
     generated: new Date().toISOString(),
-    schema_version: "0.2.0",
+    schema_version: "0.3.0",
+    freshness: {
+      mode: "github-api-snapshot",
+      max_age_minutes: METRICS_FRESHNESS_MAX_AGE_MINUTES,
+    },
     metrics: {
       prs_merged_24h: mergedToday.length,
       prs_merged_1h: mergedLastHour.length,

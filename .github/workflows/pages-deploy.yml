@@ -49,6 +49,14 @@ jobs:
           cache: false
       - name: Install dependencies
         run: bun install --frozen-lockfile
+      # The dashboard formerly deployed the last committed metrics.json without
+      # regeneration. That allowed a May snapshot to appear as present-tense
+      # operations in August. Produce a fresh artifact at deploy time; this is
+      # deliberately not committed back to main because Pages is the consumer.
+      - name: Regenerate Factory dashboard metrics
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: bun src/Core.TypeScript/dashboard/generate-metrics.ts
       - name: Build static Pages artifact
         env:
           # The anti-vacuity switch. Without it the Go build degrades to a skip when no

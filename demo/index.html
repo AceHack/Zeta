@@ -1165,6 +1165,21 @@
         const OWNER = 'Lucent-Financial-Group';
         const REPO = 'Zeta';
         const API = `https://api.github.com/repos/${OWNER}/${REPO}`;
+        const DEFAULT_STATIC_METRICS_MAX_AGE_MS = 30 * 60 * 1000;
+        let lastHistoricalSnapshotLabel = null;
+
+        function formatMetricsAge(ageMs) {
+            const minutes = Math.max(0, Math.floor(ageMs / 60000));
+            if (minutes < 1) return 'just now';
+            if (minutes < 60) return `${minutes}m ago`;
+            return `${Math.floor(minutes / 60)}h ago`;
+        }
+
+        function setHistoricalSnapshotNotice(label) {
+            const refreshEl = document.getElementById('refresh-info');
+            refreshEl.textContent = `Historical snapshot · ${label} · retrieving live GitHub data…`;
+            refreshEl.style.color = 'var(--danger)';
+        }
 
         function switchTab(tabId, element) {
             document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
@@ -1463,6 +1478,14 @@
             const resp = await fetch('./metrics.json', { cache: 'no-cache' });
             if (!resp.ok) throw new Error('metrics.json not available');
             const data = await resp.json();
+            const generatedAt = new Date(data.generated).getTime();
+            if (!Number.isFinite(generatedAt)) throw new Error('metrics.json has no valid generated timestamp');
+            const configuredMaxAgeMinutes = Number(data.freshness?.max_age_minutes);
+            const maxAgeMs = Number.isFinite(configuredMaxAgeMinutes) && configuredMaxAgeMinutes > 0
+                ? configuredMaxAgeMinutes * 60 * 1000
+                : DEFAULT_STATIC_METRICS_MAX_AGE_MS;
+            const snapshotAgeMs = Math.max(0, Date.now() - generatedAt);
+            const snapshotIsStale = snapshotAgeMs > maxAgeMs;
 
             animateValue('merge-velocity', data.metrics.prs_merged_24h);
             const mergeEl = document.getElementById('merge-velocity');
@@ -1526,16 +1549,16 @@
                 </div>`;
             }).join('');
 
-            const generatedAgo = (() => {
-                const mins = Math.floor((Date.now() - new Date(data.generated)) / 60000);
-                if (mins < 1) return 'just now';
-                if (mins < 60) return `${mins}m ago`;
-                return `${Math.floor(mins / 60)}h ago`;
-            })();
+            const generatedAgo = formatMetricsAge(snapshotAgeMs);
             const refreshEl = document.getElementById('refresh-info');
-            refreshEl.textContent =
-                `Static metrics · generated ${generatedAgo} · ${new Date().toLocaleTimeString()}`;
-            refreshEl.style.color = ''; // reset danger color from any prior API error
+            if (snapshotIsStale) {
+                lastHistoricalSnapshotLabel = `generated ${generatedAgo}`;
+                setHistoricalSnapshotNotice(lastHistoricalSnapshotLabel);
+                throw new Error(`metrics.json is stale (${generatedAgo}; max ${Math.round(maxAgeMs / 60000)}m)`);
+            }
+            lastHistoricalSnapshotLabel = null;
+            refreshEl.textContent = `Snapshot current · generated ${generatedAgo} · ${new Date().toLocaleTimeString()}`;
+            refreshEl.style.color = '';
         }
 
         const DASHBOARD_REFRESH_NORMAL_MS = 120000;  // 2 min
@@ -1691,12 +1714,15 @@
                 const refreshEl = document.getElementById('refresh-info');
                 refreshEl.textContent = `Sync: ${new Date().toLocaleTimeString()} · Connected`;
                 refreshEl.style.color = ''; // reset danger color from prior error
+                lastHistoricalSnapshotLabel = null;
                 restoreNormalCadence(); // API load succeeded; reset any backoff
 
             } catch (e) {
                 const errMsg = e instanceof Error ? e.message : String(e);
                 const refreshEl = document.getElementById('refresh-info');
-                refreshEl.textContent = 'Sync Failed';
+                refreshEl.textContent = lastHistoricalSnapshotLabel
+                    ? `Live sync unavailable · showing ${lastHistoricalSnapshotLabel}`
+                    : 'Sync Failed';
                 refreshEl.style.color = 'var(--danger)';
                 document.getElementById('timeline').innerHTML = `<div class="error-state fade-in">
                     <svg style="width:32px;height:32px;margin:0 auto 1rem;display:block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
