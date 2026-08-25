@@ -18,11 +18,31 @@
          flip the switch by adding one ItemGroup line. -->
     <!-- Microsoft.CodeAnalysis.CSharp: Roslyn compiler API, referenced PrivateAssets="all" by the
          C# source-generator (approach A) in src/Core.CSharp.TypeProvider. Pinned to match the
-         Roslyn bundled in the .NET SDK (10.0.203 ships csc 5.3.0, verified via the SDK's
-         Roslyn/bincore/csc.dll). An analyzer/generator must not reference a NEWER Roslyn than
-         the host compiler can load. Exact-pinned per supply-chain doctrine. -->
-    <PackageVersion Include="Microsoft.CodeAnalysis.CSharp" Version="5.6.0" />
-    <PackageVersion Include="Microsoft.CodeAnalysis.Analyzers" Version="5.6.0" />
+         Roslyn bundled in the .NET SDK, verified by executing the SDK's own
+         Roslyn/bincore/csc.dll; never inferred from the SDK's version number. An
+         analyzer/generator must not reference a NEWER Roslyn than the host compiler can
+         load (CS9057, a BUILD failure, not a runtime one). Exact-pinned per supply-chain
+         doctrine.
+
+         The pin moves ONLY on a FEATURE-band SDK roll, because only a feature band moves the
+         bundled Roslyn minor. Measured history, each row read off csc.dll:
+           SDK 10.0.203 -> 5.3.0
+           SDK 10.0.302 -> 5.6.0-2.26329.109
+           SDK 10.0.303 -> 5.6.0-2.26377.103   (patch roll: minor UNCHANGED, pin held)
+           SDK 10.0.400 -> 5.9.0-1.26379.115   (feature-band roll: minor MOVED, pin moves)
+         Enforced by src/Core.TypeScript/hygiene/audit-codeanalysis-sdk-match.ts (the CI job
+         whose name is the phrase "CodeAnalysis pins <= SDK Roslyn"), which MEASURES the SDK
+         rather than trusting this comment.
+
+         NOTE for whoever edits this block next: an XML comment may not contain a double
+         hyphen, which is why the guard's CI job name is spelled out above rather than
+         quoted verbatim. Getting it wrong does not fail where you would look: the file
+         stops parsing, ManagePackageVersionsCentrally silently stops applying, and every
+         F# project fails restore with NU1504 duplicate FSharp.Core, which reads exactly
+         like an SDK regression. Measured 2026-08-25 by making the mistake during the
+         10.0.400 roll; a control build on the OLD SDK reproduced it and cleared the SDK. -->
+    <PackageVersion Include="Microsoft.CodeAnalysis.CSharp" Version="5.9.0" />
+    <PackageVersion Include="Microsoft.CodeAnalysis.Analyzers" Version="5.9.0" />
     <PackageVersion Include="Microsoft.ML.Probabilistic.Compiler" Version="0.4.2504.701" />
     <PackageVersion Include="SonarAnalyzer.CSharp" Version="10.19.0.132793" />
     <PackageVersion Include="xunit.v3" Version="3.2.2" />

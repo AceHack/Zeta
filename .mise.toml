@@ -41,22 +41,51 @@ min_version = "2026.6.12"
 #   10.0.302 -> 5.6.0-2.26329.109
 #   10.0.303 -> 5.6.0-2.26377.103
 # so the `Microsoft.CodeAnalysis.*` ceiling in Directory.Packages.props
-# (5.6.0) and its dependabot `ignore:` entry both stay exactly as they
-# are. A patch-band roll keeps the Roslyn minor; a FEATURE-band roll
-# (10.0.3xx -> 10.0.4xx, currently 10.0.400) is what moves it, and that
-# is the change that must carry the CodeAnalysis + FSharp.Core bumps
-# with it in one commit.
+# (5.6.0) and its dependabot `ignore:` entry both stayed exactly as they
+# were. A patch-band roll keeps the Roslyn minor; a FEATURE-band roll
+# (10.0.3xx -> 10.0.4xx) is what moves it, and that is the change that
+# must carry the CodeAnalysis + FSharp.Core bumps with it in one commit.
 #
-# macOS trap, measured 2026-08-23: `mise install dotnet@<newer>` replaces
-# the shared host binary at `~/.local/share/mise/dotnet-root/dotnet` IN
-# PLACE, and the kernel keeps the previous binary's code-signature cache
-# entry for that vnode -- every later `dotnet` invocation is then SIGKILLed
+# 10.0.303 -> 10.0.400 (2026-08-25): the FEATURE-BAND roll the paragraph
+# above was written for. It moved the Roslyn MINOR, as predicted, and the
+# prediction is the reason this comment exists. Measured the same way as
+# the entries above -- `dotnet exec <sdk>/Roslyn/bincore/csc.dll -version`,
+# the method audit-codeanalysis-sdk-match.ts itself uses -- and validated
+# against the two rows above as a control before the new SDK was read:
+#   10.0.303 -> 5.6.0-2.26377.103   (control, reproduced exactly)
+#   10.0.400 -> 5.9.0-1.26379.115   <-- the minor moved, 5.6 -> 5.9
+# So the CodeAnalysis CEILING MOVED, 5.6.0 -> 5.9.0, and the pins in
+# Directory.Packages.props move with it in this same commit. That 5.9.0
+# is exactly the version dependabot proposed on PR #13590 and the guard
+# refused when the SDK was still on 5.6.0: the refusal was correct then
+# and the same pin is correct now, because the SDK moved underneath it.
+# The `ignore:` entry's LIFTS-WHEN condition is now MET; its comment is
+# corrected in the same commit rather than left standing as a stale
+# justification for an entry that is now load-bearing for a new reason.
+#
+# FSharp.Core needed NO edit, and that is a measurement rather than an
+# omission. Each SDK declares its implicit FSharp.Core as
+# `<FSCorePackageVersion>` under `<sdk>/FSharp/`:
+#   10.0.303 -> 10.1.303
+#   10.0.400 -> 10.1.400
+# Directory.Packages.props already pinned 10.1.400, i.e. it was pinned
+# AHEAD of the SDK it ran on. This roll does not bump FSharp.Core; it
+# makes the existing pin correct for the first time.
+#
+# macOS trap, measured 2026-08-23, HIT AGAIN AND CONFIRMED 2026-08-25 on
+# the 10.0.400 install: `mise install dotnet@<newer>` replaces the shared
+# host binary at `~/.local/share/mise/dotnet-root/dotnet` IN PLACE, and
+# the kernel keeps the previous binary's code-signature cache entry for
+# that vnode -- every later `dotnet` invocation is then SIGKILLed
 # (exit 137, no stdout, no stderr). mise's own post-install `dotnet
 # --version` probe fails the same way ("exited with non-zero status: no
-# exit status"). It is not a bad download: `codesign -v` passes and a
-# copy of the same bytes at a new path runs. Fix is to give the file a new
-# vnode -- `cp` it aside, `rm`, `cp` back.
-dotnet = "10.0.303"
+# exit status"), so the install REPORTS FAILURE after having succeeded --
+# `dotnet-install: Installation finished successfully` is in the same
+# output, and the SDK is on disk. It is not a bad download: `codesign -v`
+# passes and a copy of the same bytes at a new path runs. Fix is to give
+# the file a new vnode -- `cp` it aside, `rm`, `cp` back. Do NOT revert
+# the pin on this signature; the roll is fine, the host binary is stale.
+dotnet = "10.0.400"
 go = "1.26.4"
 golangci-lint = "2.13.1"
 # Rust stable. Edition 2024 requires >=1.85. The mise `core:rust`

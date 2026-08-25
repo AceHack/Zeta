@@ -1,0 +1,14 @@
+{
+  "id": "080d01ca97d11010a0130008d06d59ff",
+  "at": "2026-08-25T14:28:54.434Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M0WN5YH1087G0R003BMSK9R",
+    "type": "task",
+    "title": "Roll .NET SDK 10.0.303 -> 10.0.400 (feature band) with the coupled Roslyn/CodeAnalysis bump",
+    "slug": "roll-net-sdk-10-0-303-10-0-400-feature-band-with-the-coupled",
+    "priority": "P2",
+    "filename": "081M0WN5YH1087G0R003BMSK9R-roll-net-sdk-10-0-303-10-0-400-feature-band-with-the-coupled.md"
+  }
+}

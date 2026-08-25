@@ -60,9 +60,9 @@ updates:
           - "minor"
 
     # Microsoft.CodeAnalysis.* is NOT an ordinary dependency: it is coupled to
-    # the SDK pinned in global.json. A generator built against a Roslyn newer
-    # than the SDK's cannot be LOADED -- CS9057 -- so the bump does not fail at
-    # runtime, it fails the build outright.
+    # the SDK pinned in `.mise.toml` (restated in global.json). A generator built
+    # against a Roslyn newer than the SDK's cannot be LOADED -- CS9057 -- so the
+    # bump does not fail at runtime, it fails the build outright.
     #
     # Measured 2026-08-22 on PR #13590: the SDK's Roslyn was 5.6.0 and the
     # group proposed Microsoft.CodeAnalysis.CSharp and .Analyzers at 5.9.0.
@@ -70,12 +70,31 @@ updates:
     # taking nine unrelated and perfectly good bumps down with it, because the
     # group lands as one PR.
     #
+    # RESOLVED 2026-08-25 -- and read this before concluding the entry is spent.
+    # The SDK moved 10.0.303 -> 10.0.400, a FEATURE-band roll, and its bundled
+    # Roslyn moved with it: 5.6.0-2.26377.103 -> 5.9.0-1.26379.115 (measured off
+    # `<sdk>/Roslyn/bincore/csc.dll`, not inferred). The pins are now 5.9.0 --
+    # the very version #13590 proposed. So the bot was proposing the RIGHT
+    # version at the WRONG time, which is exactly the failure this entry exists
+    # to catch: it could see the package feed and could not see the SDK.
+    #
+    # THE ENTRY THEREFORE STAYS, and its rationale is now stronger rather than
+    # spent. "LIFTS WHEN the SDK's Roslyn >= the pin you want" was never a
+    # one-shot condition to be discharged and deleted -- it recurs at every
+    # feature band. The next Roslyn minor (5.10 / 6.x) will reach the feed
+    # before the SDK that can load it reaches this repo, and the bot will
+    # propose it with the same confidence and the same wrongness. What the
+    # 2026-08-25 roll demonstrated is the intended lifecycle completing once:
+    # bot notifies, guard refuses the half-fix, human carries SDK + pins in ONE
+    # commit. Deleting the entry now would remove the refusal and keep only the
+    # notification.
+    #
     # Patches inside the SDK's Roslyn line stay allowed -- those are the safe
     # half and there is no reason to hand-carry them.
     #
-    # LIFTS WHEN: global.json's SDK moves to a Roslyn line >= the pin you want.
-    # That bump is deliberate and belongs with the SDK change in one commit, so
-    # the two can never disagree -- which is precisely what this ignore stops a
+    # HOW TO LIFT IT FOR A SPECIFIC BUMP: move the SDK in `.mise.toml` first,
+    # measure the new csc version, and raise these pins in the SAME commit. The
+    # two can then never disagree -- which is precisely what this ignore stops a
     # bot from doing on its own schedule.
     ignore:
       - dependency-name: "Microsoft.CodeAnalysis.*"
