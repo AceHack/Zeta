@@ -390,22 +390,65 @@ describe("the measurement over db/mutation-findings/", () => {
 
   test("the independent union-coverage estimator corroborates without restating", () => {
     const r = measure(ROOT);
+    // THE LEVEL BAND IS REMOVED, NOT WIDENED. `(0.3, 0.6)` entered at #12548 as a +/-0.13 sanity
+    // window around a then-observed 0.4729, was never derived, and went red at 0.6012 — an
+    // excursion of 0.0012 against a bootstrap sd of 0.0256, i.e. inside the noise.
+    //
+    // It is removed rather than re-centred because #13753 showed this statistic cannot carry a
+    // fixed upper bound at all: `rho-series.ts --null-model` holds the agents' sampling
+    // distribution CONSTANT and cumulative rho still climbs 0.156 -> 0.949 as the corpus grows.
+    // Any level pin re-expires on a timer, and re-centring one each time is widening a claim
+    // until it can no longer be false.
+    //
+    // AND THE LEVEL IS NOT EVEN THE RIGHT MEASURAND YET. `mutation-runner` draws from the
+    // source+test pairs among files changed in the LAST 24 HOURS (4-176, typically 30-70), not
+    // the 757-file universe this module's header declares, and `assertFrameContainsDraws` cannot
+    // catch that because the churn list is a SUBSET of the frame. Measured: corr(poolFraction,
+    // rhoIcc) = -0.8555 over the 741-point series. So a bound on this level — rho*, a re-derived
+    // window, anything — would be a correct bound on the wrong quantity. Everything asserted
+    // below is therefore about ESTIMATOR CONSISTENCY, which is frame-independent.
 
-    // This statistic is computed over an append-only corpus, so a fixed level band expires as the
-    // corpus grows even when agent behaviour is held constant. The stable claim is relational:
-    // both estimators remain non-degenerate and same-scale, while the union estimator is biased
-    // upward because it assumes identical agents and these agents have unequal draw rates.
+    // NON-DEGENERACY, and NOT vacuous — checked, because it looks vacuous. `rhoFromUnionCoverage`
+    // returns `(independentUnion - observedCoverage) / spread` with NO clamp; the `Math.min/max`
+    // clamps in this module are in `effectiveTrialCount` and `unionEquivalentAgentCount` and do
+    // not touch it. So `observedCoverage > independentUnion` returns negative and
+    // `observedCoverage < c` returns > 1. Both bounds can genuinely fire on a broken estimator.
     expect(r.rhoFromUnion).toBeGreaterThan(0);
     expect(r.rhoFromUnion).toBeLessThan(1);
-    expect(r.rhoFromUnion).toBeGreaterThan(r.rhoIcc);
-    expect(r.rhoFromUnion / r.rhoIcc).toBeLessThan(2.5);
 
-    // The estimators corroborate without merely restating one another.
+    // THE DURABLE ONE — relational, so it survives the corpus drift that expired the level band:
+    // 741/741 in BOTH the cumulative and windowed series, while rho itself moved 0.156 -> 0.63.
+    //
+    // LABELLED EMPIRICAL, NOT STRUCTURAL — an owned correction, and it also corrects the comment
+    // this replaces (#13817), which said the union estimator "is biased upward because it assumes
+    // identical agents and these agents have unequal draw rates". I wrote the same thing here and
+    // it is BACKWARDS: the independent union is convex in the per-agent rates (AM-GM on
+    // `prod(1-p_i)` at fixed sum), so unequal rates RAISE coverage, which pushes this estimator
+    // DOWN. Computed at the live rates 197/198/171 of 757: unequal 0.577127 vs equal-at-mean
+    // 0.576823 — wrong direction, and 3e-4 against an observed gap of ~0.06.
+    //
+    // So the mechanism is NOT established. What is established: the two are different functionals
+    // of the same tables — one inverts a LINEAR interpolation in rho between the independent and
+    // fully-correlated unions, the other is an ANOVA ratio — and the ordering has held at every
+    // point measured. A strong regularity with an unexplained cause is worth asserting and worth
+    // not dressing up as a theorem. If it fires, the finding is the mechanism, not a bad test.
+    expect(r.rhoFromUnion).toBeGreaterThan(r.rhoIcc);
+
+    // A `rhoFromUnion / rhoIcc < 2.5` ceiling stood here (#13817) and is REMOVED, measured rather
+    // than argued: with it and without it the same four mutants on the union estimator die 4/4. It
+    // carried no discriminating power, and an inert numeric ceiling inside a change whose whole
+    // argument is that numeric ceilings on this statistic are unsupportable is the move being
+    // refused — #12548's band is what that looks like a month later.
+
+    // Does NOT restate: the gap is real. Observed minimum across the series is 0.0314.
     expect(Math.abs(r.rhoFromUnion - r.rhoIcc)).toBeGreaterThan(0.01);
 
-    // This deliberately does not detect both estimators drifting together, or the union estimate
-    // drifting alone while it remains inside the ratio bound. Absolute-level surveillance belongs
-    // in rho-series.ts, which has a windowed instrument and a stationary null model.
+    // HONEST LIMIT: this deliberately does not detect both estimators drifting together, or the
+    // union estimate drifting alone. That is the price of dropping a bound the statistic cannot
+    // carry. Absolute-level surveillance belongs in `rho-series.ts`, which has a windowed
+    // instrument and a stationary null model to compare against.
+    // Mutation-verified 2026-08-22: 4 mutants on the union estimator (sign flip, spread sign,
+    // exponent off-by-one, aliasing rhoFromUnion to rhoIcc) — 4/4 killed.
   });
 
   test("the report states its own register limit — backward-looking, not a forward claim", () => {
