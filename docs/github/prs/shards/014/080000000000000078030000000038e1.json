@@ -1,0 +1,12 @@
+{
+  "pr_number": 14561,
+  "archive_path": "docs/history/pr-reviews/PR-14561-deps-bump-github-com-onsi-gomega-from-1-35-1-to-1-42-1-in-full-ai-cluster-k8s-ap.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-25T07:05:08.134Z",
+  "schema_version": "v1",
+  "commit_sha": "6365f701ab6e44619823dd84466109a313bb2106",
+  "title": "deps: Bump github.com/onsi/gomega from 1.35.1 to 1.42.1 in /full-ai-cluster/k8s/applications/hat-system/operator",
+  "state": "MERGED",
+  "merged_at": "2026-08-25T07:04:21Z",
+  "head_ref": "dependabot/go_modules/full-ai-cluster/k8s/applications/hat-system/operator/github.com/onsi/gomega-1.42.1"
+}
