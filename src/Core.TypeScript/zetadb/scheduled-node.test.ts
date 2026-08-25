@@ -105,7 +105,7 @@ describe("scheduled ZetaDB node", () => {
     directories.push(directory);
     const journalPath = join(directory, "journal.json");
     const checkpointPath = join(directory, "checkpoint.json");
-    const writeJournal = (eventIds: readonly string[]) =>
+    const writeJournal = (eventIds: readonly string[]): void => {
       writeFileSync(
         journalPath,
         JSON.stringify({
@@ -114,6 +114,7 @@ describe("scheduled ZetaDB node", () => {
           deltas: eventIds.map((eventId) => ({ eventId, rowKey: `row/${eventId}`, payload: eventId, weight: 1 })),
         }),
       );
+    };
     const options = {
       journalPath,
       checkpointPath,
