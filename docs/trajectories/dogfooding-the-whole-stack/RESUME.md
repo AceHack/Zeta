@@ -1,16 +1,18 @@
 # Dogfooding the whole stack — running Zeta on Zeta
 
 Status: ACTIVE — declared the next big trajectory by the human maintainer 2026-08-09
-Last refreshed: 2026-08-16
-Current blocker: **the society's own tick lanes are down, and the remaining half needs the
-operator.** Since PR #10850 merged (2026-08-15T23:01Z) every `agent-heartbeat` branch push has
-failed with `403 … Permission to Lucent-Financial-Group/Zeta.git denied to AceHack` —
-`ZETA_TELEMETRY_FLUSH_TOKEN` carries no `contents: write` — so `heartbeat/{alexa,otto,soraya}`
-have been frozen at 2026-08-15T22:55Z and flush PRs #10709/#10710/#10711 have never had
-`gate (required)` start. Workitem `081M05G8D36087G0R0034D3QPA`. The artifact half (a
-credential fallback so the lane keeps recording) has shipped; granting the PAT
-`contents: write` is operator-only.
-(Prior blocker line, retained: none for first-boot provisioning — 081KZETP6AT, 081KZHJPJCF fixed 2026-08-09.)
+Last refreshed: 2026-08-25
+Current blocker: **NONE for the society runtime — cleared 2026-08-25.** The lanes flush again.
+The blocker recorded here (PAT lacking `contents: write` since #10850) was only HALF the story,
+and the recorded half had already been fixed: `git push` on the flush token works. What kept the
+lanes down afterwards was a DIFFERENT scope on a DIFFERENT credential — `gh pr create` returned
+`HTTP 403 Resource not accessible by personal access token`, because the step held the
+BRANCH-PUSH credential while doing PR-CREATE work. #15351 separated the three token roles and
+routed PR-create to `ZETA_PR_ARCHIVE_TOKEN`; soraya's flush merged at 15:32Z and alexa's re-cut
+and armed, both on 2026-08-25. Three further faults were fixed in the same window: a healthy
+backpressured tick reporting as a broken flush (#15348), a backpressure deadlock with no escape
+from an unmergeable blocker (#15348), and the credential probe testing a repo READ while the step
+does a PR WRITE (#15364). Workitem `081M05G8D36087G0R0034D3QPA` carries the measured split.
 Next concrete action: pick the highest-leverage NOT-YET row below (candidates: ACE meta-resolver, ZetaDB-as-types, or the cross-substrate fold guard 081KZM0FTJM which gates simultaneous runner+local dogfooding)
 Evidence links: 081KZM0FTJM (fold race — gates runner+local at once) · 081KZKV16YF (from-installer hash pin) · `docs/research/2026-08-09-zetadb-as-compiler-of-compilers-…` (the audit this ledger extends) · `docs/ZETA-ARCHITECTURE-UNIFIED.md` (Replacement Roadmap) · `docs/ZETA-CORE-TECHNOLOGY-FOR-MAX.md` (layer map)
 
@@ -51,7 +53,7 @@ the real dependency. `○ not started` = no surface in-tree.
 
 | # | Layer | Running on our own thing? | Evidence |
 |---|---|---|---|
-| 1 | **Agents on free models** | ⚠️ **dogfooded but DOWN since 2026-08-15T23:06Z** | `agent-heartbeat.yml`, matrix `[alexa, otto, soraya]`, free-tier Ollama (`qwen2.5:0.5b` / `7b`). The "green every ~45 min" claim was true on 2026-08-09 and false from 2026-08-15T23:06Z: 48 consecutive red runs on `main`, refs frozen. Re-check before citing — `gh run list --workflow agent-heartbeat.yml --branch main`, and `git log -1 origin/heartbeat/otto`. See Current blocker + `081M05G8D36087G0R0034D3QPA` |
+| 1 | **Agents on free models** | ✅ **dogfooded — recovered 2026-08-25** | `agent-heartbeat.yml`, matrix `[alexa, otto, soraya]`, free-tier Ollama (`qwen2.5:0.5b` / `7b`). Down 2026-08-15T23:06Z -> 2026-08-25; recovered when the three-role token split (#15351) let `gh pr create` succeed. Still re-check before citing — the honest test is `gh run list --workflow agent-heartbeat.yml --branch main` plus `git log -1 origin/heartbeat/otto`, not this row. See `081M05G8D36087G0R0034D3QPA` |
 | 2 | **Agent cells (local)** | ✅ **dogfooded** | 4 launchd cells (otto/vera/lior/alexa) provisioned by `install.sh` on the maintainer's laptop |
 | 3 | **Society evolution loop** | ✅ **dogfooded** | `society-heartbeat.yml` (cron `*/30`); first tick 2026-08-09 committed `society-msmaqqb7` — 4 agents, mean fitness 0.1860, diversity 8.3508 |
 | 4 | **Tick sources — GitHub Actions** | ✅ **dogfooded** | the reference implementation; staleness impossible by construction (branch reset from main) |
@@ -63,7 +65,7 @@ the real dependency. `○ not started` = no surface in-tree.
 
 | # | We depend on | Zeta replacement | State | Evidence |
 |---|---|---|---|---|
-| 8 | npm/bun deps, brew, apt, uv, dotnet… | **ACE realizers** | ✅ **dogfooded** | `install.sh` delegates to `ace/setup-realize.ts`; **17 classes**, incl. `from-bun-workspace` added 2026-08-09 |
+| 8 | npm/bun deps, brew, apt, uv, dotnet… | **ACE realizers** | ✅ **dogfooded** | `src/Core.TypeScript/ace/setup-realize.ts` + `setup-realizers/` (**23 files**, 17 of them `from-*` classes incl. `from-uv-venv`, `from-uv-tool`, `from-bun-workspace`). Invoked by **workflows** — `gate.yml`, `lean-proof.yml`, `low-memory.yml`, `macos-install-sh-test.yml`, `tlaps-proof.yml`, `accelerator-local-llm-validate.yml`. **Corrected 2026-08-25:** this row said `install.sh` delegates to it and gave the path as `ace/setup-realize.ts`; `install.sh` does not reference it at all, and the path is under `src/Core.TypeScript/`. Verify with `git grep -l setup-realize -- tools src .github` before citing. |
 | 9 | manual/ad-hoc distribution | **ACE meta-package-manager** | ○ **not started** | only `Core.FSharp.AceCanonical`; N-dimensional resolver + AI-rate negotiation are design-stage. **The single biggest gap.** |
 | 10 | CockroachDB (k8s: temporal, hindsight, longhorn) | **ZetaDB** | ◐ **partial** | `zetadb-scheduled-node.yml` folds a journal + commits checkpoints; but Cockroach is still the real store |
 | 11 | OS filesystem | **ZetaFS** (`DagFs`) | ◐ **partial** | `DagFs.fs` content-addressed multi-parent tree consumed by `Db.fs`/`File.fs`/`ZetaToolStore.fs`; not the OS FS |

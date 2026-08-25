@@ -1,0 +1,14 @@
+{
+  "id": "080d01cd43c62810a01300080645b4a9",
+  "at": "2026-08-25T16:02:17.413Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M0WTGY63087G0R00349T2VV",
+    "type": "task",
+    "title": "the dogfooding trajectory's recorded blocker was half the story and nine days stale",
+    "slug": "the-dogfooding-trajectory-s-recorded-blocker-was-half-the-st",
+    "priority": "P2",
+    "filename": "081M0WTGY63087G0R00349T2VV-the-dogfooding-trajectory-s-recorded-blocker-was-half-the-st.md"
+  }
+}
