@@ -59,7 +59,7 @@
  *       --paths data/ --message "metrics: append tick frame"
  *
  * Exit codes:
- *   0  PR open + armed / buffered behind an open PR / nothing to do
+ *   0  PR open + armed / buffered behind a live open PR / dead head superseded / nothing to do
  *   2  argument error
  *   3  git or forge call failed
  */
@@ -67,6 +67,8 @@
 import { spawnSync } from "node:child_process";
 
 import { findExistingPR, openMergePR } from "../../agent-heartbeats/merge-heartbeats-to-main";
+
+const ghCli = (...args: readonly string[]): RunResult => run("gh", args);
 
 const MAX_BUFFER = 16 * 1024 * 1024;
 
@@ -118,21 +120,90 @@ export type FlushRoute =
       readonly activeRef: string;
       readonly bufferRef: string;
       readonly blockedBy: { readonly number: number; readonly url: string };
+    }
+  | {
+      readonly kind: "supersede";
+      readonly activeRef: string;
+      readonly bufferRef: string;
+      /** The PR whose head is terminally red; force-pushing `activeRef` replaces its head. */
+      readonly supersedes: { readonly number: number; readonly url: string };
     };
 
 /**
- * An open PR owns an immutable head. Updating it restarts every required check,
- * which can starve a cadence lane whose period is shorter than the full gate.
+ * Is the lane's current PR head STILL UNDER TEST, or is it DEAD?
+ *
+ * "Under test" is the premise the whole immutable-head design rests on, and it expires.
+ * A head is under test while any check is queued or running, or while every completed
+ * check has passed. It is DEAD the moment a check reaches a terminal non-success
+ * conclusion: nothing will re-run it, auto-merge will never fire, and the lane behind it
+ * waits forever.
+ *
+ * `cancelled` and `timed_out` count as DEAD, deliberately. They are the shapes a check
+ * that NEVER RAN takes — an apt mirror stall inside the toolchain install, a job killed by
+ * `timeout-minutes` — and treating "did not run" as "still running" is exactly how this
+ * surface goes dark behind a green cadence.
+ *
+ * `action_required` and `stale` are DEAD too: a `pull_request` run parked as
+ * `action_required` (the `github-actions[bot]` triggering-actor case, 081M010H4KE) never
+ * contributes a verdict, and a `stale` run has been superseded already.
+ *
+ * A head with NO completed checks at all is under test, not dead — the run may not have
+ * been scheduled yet, and calling that dead would supersede a head one second after
+ * opening it, which is the starvation the buffer exists to prevent.
+ */
+export type HeadVerdict = "under-test" | "dead";
+
+const TERMINAL_NON_SUCCESS = new Set(["failure", "timed_out", "cancelled", "action_required", "stale"]);
+
+export function classifyHeadVerdict(
+  checks: readonly { readonly name: string; readonly status: string; readonly conclusion: string | null }[],
+): HeadVerdict {
+  // LATEST RUN PER CHECK NAME. A re-run adds a second check-run with the same name and
+  // the old failing one is still in the list; reading every entry would call a head dead
+  // that has just been repaired. Later entries win, matching the caller's ordering by
+  // `started_at`.
+  const latest = new Map<string, { readonly status: string; readonly conclusion: string | null }>();
+  for (const c of checks) latest.set(c.name, { status: c.status, conclusion: c.conclusion });
+
+  for (const c of latest.values()) {
+    if (c.status !== "completed") continue;
+    if (c.conclusion !== null && TERMINAL_NON_SUCCESS.has(c.conclusion)) return "dead";
+  }
+  return "under-test";
+}
+
+/**
+ * An open PR owns an immutable head WHILE THAT HEAD IS UNDER TEST. Updating it restarts
+ * every required check, which can starve a cadence lane whose period is shorter than the
+ * full gate — so a healthy head is waited on, and new observations park in the buffer.
+ *
+ * Once that head is DEAD the premise is gone and waiting is no longer backpressure, it is
+ * deadlock. Measured 2026-08-25 (081M0X15SKR087G0R001RJP5V6): ALL FOUR telemetry-flush
+ * lanes were wedged simultaneously — `drift-sweep` for 11h behind three lint shards whose
+ * apt install timed out at rc=124 (the lints never ran), `tick-metrics` behind a head cut
+ * inside a 10-minute window when `main` itself had a TypeScript syntax error, and
+ * `society` behind an audit that was itself reporting the `pr-archive` lane's wedge. Three
+ * unrelated causes, one shared defect: nothing ever replaces a dead head. The dashboard
+ * served numbers from 11 hours earlier from behind a green cadence.
+ *
+ * So a dead head is SUPERSEDED: the fresh aggregate is force-pushed onto the active ref,
+ * which moves the existing PR's head and starts `gate` from scratch on it. That is not a
+ * check being widened or waived — the new head runs the full gate exactly like any other,
+ * and a lane whose CONTENT genuinely fails stays visibly red on a fresh head every tick
+ * instead of hiding behind one stale red from hours ago.
  */
 export function chooseFlushRoute(
   lane: string,
   existing: { readonly number: number; readonly url: string } | null,
+  headVerdict: HeadVerdict = "under-test",
 ): FlushRoute {
   const activeRef = stagingRef(lane);
   const pendingRef = bufferRef(lane);
-  return existing === null
-    ? { kind: "publish", activeRef, bufferRef: pendingRef }
-    : { kind: "buffer", activeRef, bufferRef: pendingRef, blockedBy: existing };
+  if (existing === null) return { kind: "publish", activeRef, bufferRef: pendingRef };
+  if (headVerdict === "dead") {
+    return { kind: "supersede", activeRef, bufferRef: pendingRef, supersedes: existing };
+  }
+  return { kind: "buffer", activeRef, bufferRef: pendingRef, blockedBy: existing };
 }
 
 const SKIP_CI_RE = /\[(skip ci|ci skip|skip actions|actions skip)\]/i;
@@ -345,6 +416,53 @@ export function prepare(lane: string): number {
   return 0;
 }
 
+/**
+ * Ask the forge whether the lane's current PR head is still under test.
+ *
+ * `gh pr view --json statusCheckRollup` is NOT used here and must not be: it under-reports
+ * (measured on this repo — 6 checks against the check-runs API's 43 on the same SHA), and a
+ * probe that under-reports would call a dead head healthy and re-arm the exact deadlock this
+ * exists to break. The check-runs API is the source of truth.
+ *
+ * FAILS CLOSED. If the probe cannot be answered — no SHA on the PR, a forge error, an
+ * unparseable body — the answer is `under-test`, i.e. keep buffering. Superseding on an
+ * unreadable answer would force-push over a head that might be mid-gate, which is the
+ * starvation the buffer exists to prevent. Waiting on a false negative costs one tick of
+ * latency; superseding on a false positive costs a restarted gate on every lane, every tick.
+ */
+export function probeHeadVerdict(repo: string, headSha: string): HeadVerdict {
+  if (headSha === "") return "under-test";
+  const result = ghCli(
+    "api",
+    "--paginate",
+    `repos/${repo}/commits/${headSha}/check-runs`,
+    "--jq",
+    "[.check_runs[] | {name, status, conclusion, started_at}] | sort_by(.started_at) | .[]",
+  );
+  if (result.status !== 0) {
+    process.stderr.write(
+      `[flush] head-verdict probe failed (treating head as under test): ${result.stderr || result.stdout}\n`,
+    );
+    return "under-test";
+  }
+  const checks: { name: string; status: string; conclusion: string | null }[] = [];
+  for (const line of result.stdout.split("\n")) {
+    const trimmed = line.trim();
+    if (trimmed === "") continue;
+    try {
+      const parsed = JSON.parse(trimmed);
+      if (typeof parsed?.name === "string" && typeof parsed?.status === "string") {
+        checks.push({ name: parsed.name, status: parsed.status, conclusion: parsed.conclusion ?? null });
+      }
+    } catch {
+      process.stderr.write("[flush] head-verdict probe returned an unparseable line; treating head as under test\n");
+      return "under-test";
+    }
+  }
+  if (checks.length === 0) return "under-test";
+  return classifyHeadVerdict(checks);
+}
+
 export interface FlushOptions {
   readonly lane: string;
   readonly paths: readonly string[];
@@ -387,7 +505,10 @@ export function flush(opts: FlushOptions): number {
     process.stderr.write(`flush-via-staging: could not inspect the active flush PR: ${existing.error}\n`);
     return 3;
   }
-  const route = chooseFlushRoute(opts.lane, existing.found);
+  // A head that is still under test is waited on; a head that is terminally red is
+  // superseded rather than waited on forever (081M0X15SKR087G0R001RJP5V6).
+  const headVerdict = existing.found === null ? "under-test" : probeHeadVerdict(opts.repo, existing.found.headSha);
+  const route = chooseFlushRoute(opts.lane, existing.found, headVerdict);
 
   // Signed at the choke point — see `agencySignatureBlock` for why here and not
   // in each lane's workflow yaml.
@@ -420,9 +541,18 @@ export function flush(opts: FlushOptions): number {
     return 0;
   }
 
+  if (route.kind === "supersede") {
+    process.stderr.write(
+      `::warning title=Telemetry flush head superseded::lane ${opts.lane}: PR #${String(route.supersedes.number)} ` +
+        `(${route.supersedes.url}) had a terminally-red head that nothing was going to re-run, so this tick ` +
+        `REPLACES it. The full gate runs from scratch on the new head — no check is waived. If this repeats ` +
+        `every tick, the lane's CONTENT is failing and that is the thing to fix.\n`,
+    );
+  }
+
   // --force-with-lease: both refs are scratch aggregates reset from main. The
-  // active ref changes only when it has no open PR; the buffer may advance while
-  // the immutable active head completes its checks.
+  // active ref changes only when it has no open PR (or when its head is dead and is being
+  // superseded); the buffer may advance while a live active head completes its checks.
   const pushActive = git("push", "--force-with-lease", "origin", `HEAD:refs/heads/${route.activeRef}`);
   if (pushActive.status !== 0) {
     process.stderr.write(

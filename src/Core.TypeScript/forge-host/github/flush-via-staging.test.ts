@@ -11,6 +11,7 @@ import {
   assertNoSkipCi,
   bufferRef,
   chooseFlushRoute,
+  classifyHeadVerdict,
   prepare,
   signedFlushMessage,
   stagingRef,
@@ -111,6 +112,83 @@ describe("telemetry flush routing", () => {
 
   test("the buffer ref stays inside the protected heartbeat namespace", () => {
     expect(bufferRef("society")).toBe(`${stagingRef("society")}-buffer`);
+  });
+
+  // THE FALSIFIERS FOR 081M0X15SKR087G0R001RJP5V6.
+  //
+  // Measured 2026-08-25: all four telemetry-flush lanes were wedged at once behind heads
+  // that had gone terminally red hours earlier and that nothing was ever going to re-run.
+  // `drift-sweep` sat 11h; `data/platform-drift.json` on `main` was pinned at run
+  // 32816944713 while the dashboard read green. Waiting on a dead head is deadlock, not
+  // backpressure, and before this fix `chooseFlushRoute` could not tell the two apart --
+  // it only ever asked "is a PR open".
+  const DEAD_PR = { number: 15276, url: "https://example.test/pull/15276" };
+
+  test("a TERMINALLY RED head is superseded, not waited on forever", () => {
+    expect(chooseFlushRoute("drift-sweep", DEAD_PR, "dead")).toEqual({
+      kind: "supersede",
+      activeRef: "heartbeat/drift-sweep",
+      bufferRef: "heartbeat/drift-sweep-buffer",
+      supersedes: DEAD_PR,
+    });
+  });
+
+  test("a live head is still waited on -- superseding is the exception, not the default", () => {
+    expect(chooseFlushRoute("drift-sweep", DEAD_PR, "under-test").kind).toBe("buffer");
+    // The default argument must be the SAFE one: a caller that cannot answer the verdict
+    // must not accidentally acquire force-push behaviour.
+    expect(chooseFlushRoute("drift-sweep", DEAD_PR).kind).toBe("buffer");
+  });
+});
+
+describe("head verdict -- when is an open PR head still under test", () => {
+  const check = (name: string, status: string, conclusion: string | null) => ({ name, status, conclusion });
+
+  test("a queued or running check means the head is under test", () => {
+    expect(classifyHeadVerdict([check("gate (required)", "queued", null)])).toBe("under-test");
+    expect(classifyHeadVerdict([check("gate (required)", "in_progress", null)])).toBe("under-test");
+  });
+
+  test("all-green is under test -- a passing head is waited on, never replaced", () => {
+    expect(
+      classifyHeadVerdict([
+        check("gate (required)", "completed", "success"),
+        check("lint (TS)", "completed", "skipped"),
+      ]),
+    ).toBe("under-test");
+  });
+
+  test("no checks at all is under test, NOT dead", () => {
+    // A head one second old has no scheduled runs yet. Calling that dead would supersede
+    // every head immediately and reintroduce the starvation the buffer exists to prevent.
+    expect(classifyHeadVerdict([])).toBe("under-test");
+  });
+
+  test("a failing check makes the head dead", () => {
+    expect(classifyHeadVerdict([check("gate (required)", "completed", "failure")])).toBe("dead");
+  });
+
+  test("CANCELLED and TIMED_OUT are dead -- a check that never ran must not read as one still running", () => {
+    // The measured cause on #15276: three lint shards exited 124 when the apt mirror
+    // stalled inside the toolchain install. The lints themselves never executed.
+    expect(classifyHeadVerdict([check("lint (semgrep)", "completed", "cancelled")])).toBe("dead");
+    expect(classifyHeadVerdict([check("lint (semgrep)", "completed", "timed_out")])).toBe("dead");
+  });
+
+  test("a parked action_required run is dead -- it never contributes a verdict (081M010H4KE)", () => {
+    expect(classifyHeadVerdict([check("gate (required)", "completed", "action_required")])).toBe("dead");
+  });
+
+  test("only the LATEST run per check name counts -- a repaired head is not still dead", () => {
+    // A re-run appends a second check-run with the same name; the failing one stays in the
+    // list. Reading every entry would supersede a head that has just gone green, which is
+    // both wasteful and hides the repair.
+    expect(
+      classifyHeadVerdict([
+        check("gate (required)", "completed", "failure"),
+        check("gate (required)", "completed", "success"),
+      ]),
+    ).toBe("under-test");
   });
 });
 

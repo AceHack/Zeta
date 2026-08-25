@@ -1,0 +1,14 @@
+{
+  "id": "080d01d09733c810a0130008194019af",
+  "at": "2026-08-25T17:58:32.313Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M0X15SKR087G0R001RJP5V6",
+    "type": "bug",
+    "title": "telemetry-flush lanes head-of-line block forever behind a terminally-red immutable PR head",
+    "slug": "telemetry-flush-lanes-head-of-line-block-forever-behind-a-te",
+    "priority": "P2",
+    "filename": "081M0X15SKR087G0R001RJP5V6-telemetry-flush-lanes-head-of-line-block-forever-behind-a-te.md"
+  }
+}

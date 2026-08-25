@@ -339,18 +339,35 @@ export function verifySnapshotRef(
  * idempotent (GitHub returns 422 "A pull request already exists" on dup
  * create; we'd rather re-use the existing PR + re-arm auto-merge).
  */
+export interface ExistingPR {
+  readonly number: number;
+  readonly url: string;
+  /**
+   * The PR's current head SHA. Carried because a caller deciding whether to WAIT on this
+   * PR needs to ask whether its head is still under test, and the check-runs API is keyed
+   * by commit — see `classifyHeadVerdict` in `flush-via-staging.ts`.
+   */
+  readonly headSha: string;
+}
+
 export function findExistingPR(
   repo: string,
   head: string,
   base: string,
-): { readonly found: { readonly number: number; readonly url: string } | null } | { readonly error: string } {
+): { readonly found: ExistingPR | null } | { readonly error: string } {
   const owner = repo.split("/")[0]!;
   const result = gh(["api", `repos/${repo}/pulls?state=open&head=${owner}:${head}&base=${base}`]);
   if (result.status !== 0) return { error: `list pulls failed: ${result.stderr || result.stdout}` };
   try {
     const parsed = JSON.parse(result.stdout);
     if (Array.isArray(parsed) && parsed.length > 0 && parsed[0]) {
-      return { found: { number: parsed[0].number, url: parsed[0].html_url } };
+      return {
+        found: {
+          number: parsed[0].number,
+          url: parsed[0].html_url,
+          headSha: typeof parsed[0].head?.sha === "string" ? parsed[0].head.sha : "",
+        },
+      };
     }
     return { found: null };
   } catch (err) {
