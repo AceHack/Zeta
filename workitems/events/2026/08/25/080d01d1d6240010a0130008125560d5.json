@@ -1,0 +1,14 @@
+{
+  "id": "080d01d1d6240010a0130008125560d5",
+  "at": "2026-08-25T18:42:05.056Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M0X3NH3Y087G0R0020VKK2V",
+    "type": "task",
+    "title": "Adversarial review: the lattice/Cayley-Dickson/adinkra/hexagon synthesis is eight objects sharing an index and a word",
+    "slug": "adversarial-review-the-lattice-cayley-dickson-adinkra-hexago",
+    "priority": "P2",
+    "filename": "081M0X3NH3Y087G0R0020VKK2V-adversarial-review-the-lattice-cayley-dickson-adinkra-hexago.md"
+  }
+}
