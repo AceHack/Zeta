@@ -1736,8 +1736,36 @@ jobs:
           SOURCE_SHA=$(git rev-parse "origin/heartbeat/$AGENT")
           SNAPSHOT_REF="heartbeat/$AGENT-flush"
 
-          OPEN_FLUSH_PR=$(gh pr list --repo "$GITHUB_REPOSITORY" --state open \
-            --head "$SNAPSHOT_REF" --base main --json number --jq '.[0].number // empty' 2>/dev/null || true)
+          # A DENIED CREDENTIAL MUST NOT READ AS A CLEAR RUNWAY.
+          #
+          # This was `... 2>/dev/null || true`, which made a FAILED query indistinguishable
+          # from a successful one that found nothing. Both produced an empty
+          # `OPEN_FLUSH_PR`, and empty means "no PR is open, proceed" — so a 403 here does
+          # not merely blind the check, it INVERTS it: the lane concludes the runway is
+          # clear and force-pushes `$SNAPSHOT_REF` over the head of a PR that is still
+          # under test. That is the precise hazard backpressure exists to prevent, reached
+          # by the guard against it failing quietly.
+          #
+          # Not hypothetical. On 2026-08-25 this exact job ran with a token that could not
+          # perform PR operations (`gh pr create` → HTTP 403), and the only reason no ref
+          # was clobbered is that the failure happened to land on the create rather than on
+          # this list. The credential was equally denied for both.
+          #
+          # So: capture stderr, read the status DIRECTLY (never through a pipe — `$?` after
+          # a pipeline is the last command's), and treat a failed query as fatal. Refusing
+          # to flush costs one tick; the lane re-accumulates and the next flush carries it.
+          # Guessing costs another agent's in-flight work.
+          PR_LIST_ERR="$(mktemp)"
+          OPEN_FLUSH_PR="$(gh pr list --repo "$GITHUB_REPOSITORY" --state open \
+            --head "$SNAPSHOT_REF" --base main --json number --jq '.[0].number // empty' 2>"$PR_LIST_ERR")"
+          PR_LIST_RC=$?
+          if [ "$PR_LIST_RC" -ne 0 ]; then
+            echo "::error title=Heartbeat backpressure state unknown::$AGENT: could not list open PRs for $SNAPSHOT_REF (rc=$PR_LIST_RC). REFUSING to flush rather than assume the runway is clear — proceeding could force-push over an in-flight PR's head. No events are lost; heartbeat/$AGENT keeps them and the next flush carries this tick too."
+            sed 's/^/[flush] gh: /' "$PR_LIST_ERR" || true
+            rm -f "$PR_LIST_ERR"
+            exit 1
+          fi
+          rm -f "$PR_LIST_ERR"
 
           # BACKPRESSURE NEEDS AN ESCAPE, OR IT IS A DEADLOCK.
           #

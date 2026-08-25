@@ -1,0 +1,14 @@
+{
+  "id": "080d01cbc8b03010a01300080cac9f93",
+  "at": "2026-08-25T15:10:31.942Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M0WQJ5G5087G0R0018S2XX2",
+    "type": "bug",
+    "title": "a denied credential in the backpressure query reads as a clear runway, inverting the guard",
+    "slug": "a-denied-credential-in-the-backpressure-query-reads-as-a-cle",
+    "priority": "P2",
+    "filename": "081M0WQJ5G5087G0R0018S2XX2-a-denied-credential-in-the-backpressure-query-reads-as-a-cle.md"
+  }
+}
