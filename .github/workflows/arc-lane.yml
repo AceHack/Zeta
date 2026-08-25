@@ -116,7 +116,7 @@ jobs:
           # makes the unbound variable exit non-zero, so the check cannot be
           # removed by accident without the job going red. (Measured: with the
           # variable unset the step exits 1.)
-          ARC_MIN_TESTS: "41"
+          ARC_MIN_TESTS: "87"
         run: |
           set -euo pipefail
           uv run --project src/Arc.Python pytest src/Arc.Python/tests -q --junitxml=/tmp/arc-junit.xml
@@ -202,5 +202,131 @@ jobs:
               sys.exit(
                   f"::error::a pull_request run obtained mode {mode!r} — the credential is "
                   "reaching unreviewed code, which the env guard above exists to prevent."
+              )
+          PY
+
+  arc-hosted-sweep:
+    name: arc lane (hosted sweep)
+    # A SEPARATE JOB, not another step on `arc-tests`, for two reasons that are
+    # both about not letting this one hurt the other. It downloads and plays up
+    # to 25 environments, so its runtime is bounded by a network we do not own —
+    # sharing `arc-tests`'s 15-minute budget would let a slow roster turn the
+    # drift check red for a reason that has nothing to do with drift. And it
+    # cannot run at all on `pull_request`, where the credential is withheld, so
+    # as a step it would be a permanently-skipped block inside a job that does
+    # run.
+    #
+    # Still not a gate: `arc-lane` appears in no `needs:` list anywhere, and
+    # adding a job to it does not change that. Red here is information.
+    if: github.event_name != 'pull_request'
+    timeout-minutes: 30
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Cache install.sh outputs (mise runtimes + dotnet tools + verifier jars)
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: |
+            ~/.local/bin/mise
+            ~/.local/share/mise
+            ~/.cache/mise
+            ~/.dotnet/tools
+            ~/.elan
+            ~/.config/zeta
+            ~/.rustup/toolchains/1.87.0-*
+            ~/.rustup/settings.toml
+            ~/.rustup/update-hashes
+            ~/.cargo
+            ~/.cache/zeta/from-autotools-tarball/*.tgz
+          key: install-v2-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('.mise.toml', 'tools/setup/**', 'global.json') }}
+
+      - name: Install toolchain via three-way-parity script (GOVERNANCE §24)
+        env:
+          ZETA_HOST_TIER: full
+        run: |
+          set -euo pipefail
+          for attempt in 1 2 3 4 5; do
+            if ./tools/setup/install.sh; then exit 0; fi
+            [ "$attempt" = "5" ] && { echo "install.sh failed after 5 attempts"; exit 1; }
+            case "$attempt" in
+              1) backoff=10 ;;
+              2) backoff=30 ;;
+              3) backoff=60 ;;
+              4) backoff=120 ;;
+            esac
+            echo "install.sh attempt $attempt failed; retrying in ${backoff}s..." >&2
+            sleep "$backoff"
+          done
+
+      - name: Sync the ARC lane's own uv project
+        run: uv sync --project src/Arc.Python
+
+      - name: Play every hosted environment this key can see
+        env:
+          ARC_API_KEY: ${{ secrets.ARC_API_KEY }}
+          # THE PER-LEVEL CEILING, AND WHY IT IS NOT 800. The published
+          # references run to 578 actions (DC22), so a full-budget sweep of 25
+          # environments is tens of thousands of engine steps plus 25 downloads,
+          # against a 30-minute wall. 200 is what fits, and it is BELOW the
+          # largest reference — which means these are NOT leaderboard scores.
+          #
+          # That is stated in the output itself (`comparability`), not only
+          # here, so the caveat travels with the number instead of being
+          # reconstructable only by whoever reads this file. A truncated budget
+          # does not measure an agent on a level it never reached; it prevents
+          # it from reaching it, and those are different claims.
+          ARC_SWEEP_MAX_ACTIONS: "200"
+        run: |
+          set -euo pipefail
+          uv run --project src/Arc.Python python -m zeta_arc.play --play-hosted \
+            --seed 4 --max-actions-per-level "${ARC_SWEEP_MAX_ACTIONS}" \
+            | tee /tmp/arc-sweep.json
+          python3 - <<'PY'
+          import json, sys
+          text = open("/tmp/arc-sweep.json").read()
+          sweep = json.loads(text[text.index("{"):])
+          seen, played = sweep["environments_seen"], sweep["environments_played"]
+          print(
+              f"mode={sweep['mode']} seen={seen} played={played} "
+              f"failed={sweep['environments_failed']} "
+              f"levels_cleared={sweep['levels_cleared_total']} "
+              f"mean_score={sweep['mean_environment_score']}"
+          )
+          # WHY EACH LEVEL ENDED, counted across the whole roster. This is the
+          # read that says whether the CEILINGS are wrong rather than the agent:
+          # `level-budget` heavy means levels are defeating the policy, while
+          # `episode-budget` heavy means runs are being cut off before the
+          # levels ever get a fair attempt and raising the per-level budget
+          # would change nothing.
+          print(f"  ended: {sweep['ended_breakdown']}")
+          for row in sweep["results"]:
+              if "error" in row:
+                  print(f"  {row['game_id']}: FAILED {row['error']} {row.get('detail','')}")
+              else:
+                  print(
+                      f"  {row['game_id']}: cleared {row['levels_cleared']}"
+                      f"/{row['levels_declared']} score {row['environment_score']}"
+                      f" ({row['terminated']}; {row.get('ended_breakdown', {})})"
+                  )
+          # LIVENESS, the same failure this lane already guards against once.
+          # A sweep that sees zero environments prints a tidy zero and exits 0 —
+          # identical in shape to a sweep that played them all and scored
+          # nothing. This job only runs where the credential IS supposed to
+          # arrive, so an empty roster here is a wiring fault, not a result.
+          if seen == 0:
+              sys.exit(
+                  "::error::the hosted roster is EMPTY on a run that has the "
+                  "credential. Nothing was played, and without this check the "
+                  "job would have reported that as a clean zero. Check the "
+                  "ARC_API_KEY repository secret."
+              )
+          # A sweep where every environment errored is the second false-green:
+          # 25 rows, all failures, mean score 0.0, exit 0.
+          if played == 0:
+              sys.exit(
+                  f"::error::all {seen} environments failed to play. See the "
+                  "per-environment errors above."
               )
           PY

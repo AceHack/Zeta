@@ -1,0 +1,14 @@
+{
+  "id": "080d01cfea104810a0130008124e4f61",
+  "at": "2026-08-25T17:34:53.961Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M0WZTGG8087G0R0028CRRQG",
+    "type": "task",
+    "title": "Play the hosted ARC-AGI-3 roster: read the action space off the frame",
+    "slug": "play-the-hosted-arc-agi-3-roster-read-the-action-space-off-t",
+    "priority": "P2",
+    "filename": "081M0WZTGG8087G0R0028CRRQG-play-the-hosted-arc-agi-3-roster-read-the-action-space-off-t.md"
+  }
+}

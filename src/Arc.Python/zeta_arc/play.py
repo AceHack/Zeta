@@ -44,6 +44,10 @@ from arcengine import ARCBaseGame, GameAction, GameState
 from zeta_arc.agent import PixelAgent
 from zeta_arc.driver import advance, reset
 from zeta_arc.environments.chase import _MOVES, _STARTS, _WALLS, CELL, GRID, ZetaChase
+from zeta_arc.hosted import (
+    MAX_ACTIONS_PER_LEVEL as HOSTED_MAX_ACTIONS_PER_LEVEL,
+)
+from zeta_arc.hosted import play_roster
 
 #: Fixed action order, so a "random" agent is reproducible from its seed.
 _ACTION_ORDER: tuple[GameAction, ...] = tuple(_MOVES.keys())
@@ -324,9 +328,43 @@ def main() -> None:
         action="store_true",
         help="report the hosted environments this key can see, and play nothing",
     )
+    parser.add_argument(
+        "--play-hosted",
+        action="store_true",
+        help="play every hosted environment this key can see and report the sweep",
+    )
+    parser.add_argument(
+        "--max-environments",
+        type=int,
+        default=None,
+        help="cap how many hosted environments the sweep plays (default: all)",
+    )
+    parser.add_argument(
+        "--max-actions-per-level",
+        type=int,
+        default=HOSTED_MAX_ACTIONS_PER_LEVEL,
+        help=(
+            "per-level action ceiling for the hosted sweep. Below the largest "
+            "published baseline (578) the scores stop being comparable, and the "
+            "output says so rather than leaving it to the reader."
+        ),
+    )
     args = parser.parse_args()
     if args.list_environments:
         print(json.dumps(list_environments(), indent=2))
+        return
+    if args.play_hosted:
+        # `open_arcade` is the same degrade-never-fail door the rest of the lane
+        # uses: no key means OFFLINE, which means an empty roster and a sweep
+        # that reports zero environments and exits 0.
+        arcade, mode = open_arcade()
+        sweep = play_roster(
+            arcade,
+            max_environments=args.max_environments,
+            max_actions_per_level=args.max_actions_per_level,
+            seed=args.seed,
+        )
+        print(json.dumps({"mode": mode, **sweep}, indent=2))
         return
     print(json.dumps(play(agent=args.agent, seed=args.seed), indent=2))
 

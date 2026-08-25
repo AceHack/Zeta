@@ -132,7 +132,12 @@ class PixelAgent:
         )
 
     def _route_plan(
-        self, me: Component, targets: list[Component], width: int, height: int
+        self,
+        me: Component,
+        targets: list[Component],
+        width: int,
+        height: int,
+        legal: tuple[GameAction, ...],
     ) -> list[GameAction]:
         """Breadth-first ROUTE to the nearest target that is not known-blocked.
 
@@ -163,7 +168,8 @@ class PixelAgent:
         found: tuple[int, int] | None = None
         while queue and found is None:
             cur = queue.popleft()
-            for action, (dx, dy) in ACTION_VECTORS.items():
+            for action in legal:
+                dx, dy = ACTION_VECTORS[action]
                 nxt = (cur[0] + dx, cur[1] + dy)
                 if not (0 <= nxt[0] < cols and 0 <= nxt[1] < rows):
                     continue
@@ -241,8 +247,31 @@ class PixelAgent:
         if moved > 1e-6:
             self._step_px = moved
 
-    def act(self, grid: Grid) -> GameAction:
-        """One action, from pixels."""
+    def act(self, grid: Grid, legal: frozenset[GameAction] | None = None) -> GameAction:
+        """One action, from pixels, drawn ONLY from the offered set.
+
+        `legal` defaults to all four directions, which is what every caller
+        written before hosted environments existed assumed. It is a parameter
+        rather than an assumption because `available_actions` is per-frame and
+        an environment may offer a SUBSET — measured failure, on code written
+        the same day: pointed at a frame offering only `ACTION1`/`ACTION2`, this
+        agent emitted `ACTION4` on every tick of the episode. Not a crash. The
+        whole budget spent on a move the environment never offered, scoring zero
+        with nothing in the output to say why.
+
+        That is the same defect the rest of this package exists to avoid, made
+        by the package itself: an action space assumed instead of read.
+        """
+        moves = tuple(
+            a
+            for a in sorted(ACTION_VECTORS, key=lambda a: a.value)
+            if legal is None or a in legal
+        )
+        if not moves:
+            # The caller routed here with no direction on offer. Nothing this
+            # agent models applies; say so by returning the lowest-id legal
+            # action rather than inventing a direction.
+            return min(legal, key=lambda a: a.value) if legal else GameAction.ACTION4
         now = components(grid)
         self._update_evidence(now)
         me = self._elect_self(now)
@@ -255,7 +284,9 @@ class PixelAgent:
             # wall in the body's place in the CHIP-8 arena, so the rule here is
             # the same — when the world is not fully there, probe, do not decide.
             action = (
-                GameAction.ACTION4 if self._last_action is None else self._last_action
+                moves[0]
+                if self._last_action is None or self._last_action not in moves
+                else self._last_action
             )
             self._previous, self._last_action = now, action
             return action
@@ -273,24 +304,56 @@ class PixelAgent:
             self._plan.clear()  # the map changed under the route; replan
         self._last_self_cell = self._cell_of(me) if self._step_px else None
 
-        targets = [c for c in now if self._key(c) != self._key(me)]
+        # EVERYTHING THAT IS NOT ME, BY OBJECT IDENTITY — never by `_key`.
+        #
+        # `_key` is colour*100003 + area, and two identical sprites therefore
+        # share one key by construction: a frame holding two 1-pixel blobs of
+        # the same colour keys BOTH as the elected body, `targets` comes back
+        # empty, and the greedy fallback below calls `min()` on nothing and
+        # raises. Measured, not reasoned about — three tests in
+        # `test_hosted_lane.py` crashed here on a grid with two identical
+        # objects, which is an ordinary ARC frame rather than a contrived one.
+        #
+        # `me` is returned by `_elect_self` out of `now`, so `is not` is exact
+        # and total: with `len(now) >= 2` guaranteed above, at least one
+        # component is not the body, so `targets` can no longer be empty.
+        #
+        # HONEST LIMIT, LEFT STANDING RATHER THAN PAPERED OVER. `_key` still
+        # collides for indistinguishable objects in `_update_evidence`, where
+        # `before` is a dict keyed by it and one twin therefore overwrites the
+        # other — so displacement gets scored against the wrong twin and the
+        # body evidence is noisy on frames with duplicate sprites. That is the
+        # slot-binding problem (`docs/research/2026-08-14-slot-binding-is-
+        # addressing-token-identity-is-the-roster-and-a-duplicate-is-not-a-
+        # position.md`), not a typo, and it wants position-aware identity
+        # rather than a wider hash. Noisy evidence degrades; an empty `min()`
+        # ends the episode — so the crash is fixed here and the identity
+        # question is named where it lives.
+        targets = [c for c in now if c is not me]
         # Route around what has been learned to be solid. Falls through to the
         # greedy heading while the occupancy map is still empty — which is most
         # of level 0, where there is nothing to route around.
         if not self._plan:
-            self._plan = self._route_plan(me, targets, len(grid[0]), len(grid))
+            self._plan = self._route_plan(me, targets, len(grid[0]), len(grid), moves)
         if self._plan:
             action = self._plan.pop(0)
         else:
-            # Greedy heading toward the nearest non-self component.
+            # Greedy heading toward the nearest non-self component, PROJECTED
+            # onto the offered set. The desired direction may simply not be on
+            # offer, and then the best available move is the legal one pointing
+            # most nearly toward the target — never a hardcoded direction, which
+            # is what silently burned whole episodes.
+            #
+            # `moves` is sorted by action id and `max` returns the FIRST maximal
+            # element, so a tie (the target is orthogonal to every legal move)
+            # resolves the same way on every replay. Determinism here is not
+            # decoration: an episode that cannot be replayed cannot be debugged.
             target = min(targets, key=me.distance_to)
             dx, dy = target.cx - me.cx, target.cy - me.cy
-            if abs(dx) >= abs(dy) and abs(dx) > 1e-9:
-                action = GameAction.ACTION4 if dx > 0 else GameAction.ACTION3
-            elif abs(dy) > 1e-9:
-                action = GameAction.ACTION2 if dy > 0 else GameAction.ACTION1
-            else:
-                action = GameAction.ACTION4
+            action = max(
+                moves,
+                key=lambda a: ACTION_VECTORS[a][0] * dx + ACTION_VECTORS[a][1] * dy,
+            )
 
         self._previous, self._last_action = now, action
         return action

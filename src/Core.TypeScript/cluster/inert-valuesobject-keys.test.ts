@@ -355,7 +355,14 @@ describe("THE BAR — red on all four instances as they stood before their fixes
     const missing = [...new Set(provenance.map(([, sha]) => sha))].filter(
       (sha) => git(["cat-file", "-e", sha], 30_000).status !== 0,
     );
-    if (missing.length > 0) git(["fetch", "--no-tags", "--depth=1", "origin", ...missing], 300_000);
+    // 20s, not 300s. The 300s it used to grant itself could NEVER fire: bun
+    // killed the whole test at 5s, so the author's own "unverifiable" path —
+    // the one that reports a missing object by name instead of failing — was
+    // unreachable, and a slow mirror produced a hard timeout instead of the
+    // designed degradation. Under the 30_000 test budget above, 20s leaves room
+    // for the local `cat-file` and four `git show` calls and lets that path
+    // actually run.
+    if (missing.length > 0) git(["fetch", "--no-tags", "--depth=1", "origin", ...missing], 20_000);
 
     const unverifiable: string[] = [];
     let verified = 0;
@@ -385,7 +392,21 @@ describe("THE BAR — red on all four instances as they stood before their fixes
     for (const [app] of provenance) {
       expect(readFileSync(join(HISTORY, `${app}.Application.yaml`), "utf8").length).toBeGreaterThan(500);
     }
-  });
+    // EXPLICIT TIMEOUT, because this test is slow BY NATURE and `bunfig.toml`
+    // says so in as many words: "A test that is slow BY NATURE carries its own
+    // explicit timeout. A test that is slow BY ACCIDENT gets made fast." This
+    // one reaches the NETWORK — on CI's shallow clone the four provenance
+    // objects are absent and it fetches them — so it is the first kind, and it
+    // was declaring nothing.
+    //
+    // MEASURED, not guessed: it timed out twice on `test (TS hermetic)` at
+    // 5376ms and 5572ms against bun's 5000ms default, and passed in between.
+    // A ~10% overshoot on a network call is the definition of intermittent, and
+    // that job entered the REQUIRED floor on 2026-08-25 (#15398), so the flake
+    // now blocks merges. 30_000 matches the convention its siblings already use
+    // (`audit_retractibility.test.ts`) and leaves ~5x headroom over what was
+    // observed, without letting a genuinely hung test sit for minutes.
+  }, 30_000);
 });
 
 describe("false positives — the four legitimate sources of a key absent from the parent values.yaml", () => {

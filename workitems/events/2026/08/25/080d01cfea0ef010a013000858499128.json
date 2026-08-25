@@ -1,0 +1,14 @@
+{
+  "id": "080d01cfea0ef010a013000858499128",
+  "at": "2026-08-25T17:34:53.918Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M0WZTGEX087G0R000VRRANV",
+    "type": "task",
+    "title": "Categorical SoftMessage for the factor graph: bounded influence plus distinctness-priced correlation",
+    "slug": "categorical-softmessage-for-the-factor-graph-bounded-influen",
+    "priority": "P2",
+    "filename": "081M0WZTGEX087G0R000VRRANV-categorical-softmessage-for-the-factor-graph-bounded-influen.md"
+  }
+}
