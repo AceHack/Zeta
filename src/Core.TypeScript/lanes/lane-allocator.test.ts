@@ -35,6 +35,7 @@ afterAll(() => {
 });
 
 test("mise is on PATH — it is an OS-closure primitive here, not an optional convenience", () => {
+  // eslint-disable-next-line sonarjs/no-os-command-from-path -- same delegation as lane-allocator.ts: this test drives the real toolchain, which is the point of it.
   expect(spawnSync("mise", ["--version"], { encoding: "utf8" }).status).toBe(0);
 });
 
@@ -45,6 +46,7 @@ test("allocating a lane grants mise trust at the new worktree path", () => {
   const root = join(parent, "repo");
   mkdirSync(root, { recursive: true });
 
+  // eslint-disable-next-line sonarjs/no-os-command-from-path -- same delegation as lane-allocator.ts: this test drives the real toolchain, which is the point of it.
   const git = (...args: string[]) => spawnSync("git", args, { cwd: root, encoding: "utf8" });
   git("init", "-q", "-b", "main");
   git("config", "user.email", "test@example.invalid");
@@ -54,6 +56,7 @@ test("allocating a lane grants mise trust at the new worktree path", () => {
   git("add", "-A");
   git("commit", "-q", "-m", "seed");
 
+  // eslint-disable-next-line sonarjs/no-os-command-from-path -- same delegation as lane-allocator.ts: this test drives the real toolchain, which is the point of it.
   const alloc = spawnSync("bun", [ALLOCATOR, "allocate", "doc", "lane-test-branch"], {
     cwd: root,
     encoding: "utf8",
