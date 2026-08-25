@@ -59,15 +59,11 @@ let ``OAB-6 deltaMaxMs is non-negative for all links`` () =
     Assert.True(OrbitalAsymmetryBudget.marsPhobos jd >= 0.0)
     Assert.True(OrbitalAsymmetryBudget.marsDeimos jd >= 0.0)
 
-// ── OAB-7: δ_max Earth-Mars is in physically plausible range ──────────────────────────────────────
-// Mars orbital velocity ≈ 24.1 km/s. RTT at mean distance ≈ 1500 s.
-// δ ≈ 24.1 * 1500 / 299792 * 1000 ≈ 120 ms. With 20% margin ≈ 144 ms.
-// At opposition (RTT ≈ 364 s): δ ≈ 24.1 * 364 / 299792 * 1000 * 1.2 ≈ 35 ms.
-// At conjunction (RTT ≈ 2674 s): δ ≈ 24.1 * 2674 / 299792 * 1000 * 1.2 ≈ 258 ms.
+// ── OAB-7: Earth-Mars uses the conservative all-epoch endpoint-speed envelope ─────────────────────
 [<Fact>]
-let ``OAB-7 deltaMaxMs Earth-Mars at J2000 is between 1ms and 300ms`` () =
+let ``OAB-7 deltaMaxMs Earth-Mars is the all-epoch conservative envelope`` () =
     let delta = OrbitalAsymmetryBudget.earthMars j2000
-    Assert.InRange(delta, 1.0, 300.0)
+    Assert.Equal(253.6008, delta, 4)
 
 // ── OAB-8: δ_max Earth-Moon is small (low orbital velocity) ──────────────────────────────────────
 // Moon orbital velocity ≈ 1.022 km/s. RTT at mean ≈ 2564 ms ≈ 2.564 s.
@@ -77,16 +73,15 @@ let ``OAB-8 deltaMaxMs Earth-Moon at J2000 is below 5ms`` () =
     let delta = OrbitalAsymmetryBudget.earthMoon j2000
     Assert.InRange(delta, 0.0, 5.0)
 
-// ── OAB-9: δ_max varies with orbital phase (not constant) ─────────────────────────────────────────
-// At different JDs, the Earth-Mars distance changes, so δ_max should vary.
+// ── OAB-9: Earth-Mars cone widening is epoch-free ─────────────────────────────────────────────────
+// This is intentional: the consumer needs a conservative bound, not a phase-sensitive estimate.
 [<Fact>]
-let ``OAB-9 deltaMaxMs Earth-Mars varies with orbital phase`` () =
+let ``OAB-9 deltaMaxMs Earth-Mars is invariant across orbital phase`` () =
     let d1 = OrbitalAsymmetryBudget.earthMars j2000
     let d2 = OrbitalAsymmetryBudget.earthMars (j2000 + 180.0)  // 6 months later
     let d3 = OrbitalAsymmetryBudget.earthMars (j2000 + 365.0)  // 1 year later
-    // They should not all be equal (orbital phase changes)
-    let allEqual = (abs (d1 - d2) < 0.001) && (abs (d2 - d3) < 0.001)
-    Assert.False(allEqual, sprintf "δ_max should vary with orbital phase: %.3f %.3f %.3f" d1 d2 d3)
+    Assert.Equal(d1, d2, 12)
+    Assert.Equal(d2, d3, 12)
 
 // ── OAB-10: unixMsToJd round-trip ─────────────────────────────────────────────────────────────────
 [<Fact>]
@@ -146,3 +141,18 @@ let ``OAB-15 Earth-Mars distance spans opposition-to-conjunction range over one 
     // Min should be below 150M km (opposition-ish), max above 250M km (conjunction-ish)
     Assert.True(minD < 150_000_000.0, sprintf "min distance should be below 150M km, got %.0f km" minD)
     Assert.True(maxD > 250_000_000.0, sprintf "max distance should be above 250M km, got %.0f km" maxD)
+
+// ── OAB-16: the generic envelope is non-cancelling ─────────────────────────────────────────────────
+[<Fact>]
+let ``OAB-16 endpoint speed envelope remains positive without any projection input`` () =
+    // A projected-velocity estimator can be zero at a velocity-projection crossing.
+    // This envelope accepts only endpoint speed norms, so that cancellation path is absent.
+    let envelope = OrbitalAsymmetryBudget.endpointSpeedEnvelopeMs 1_000_000.0 30.0 24.0
+    Assert.True(envelope > 0.0, sprintf "speed-norm envelope must remain positive: %.12f ms" envelope)
+
+// ── OAB-17: invalid superluminal inputs fail rather than silently widen/narrow a cone ──────────────
+[<Fact>]
+let ``OAB-17 endpoint speed envelope rejects nonphysical speed bounds`` () =
+    Assert.Throws<System.ArgumentException>(fun () ->
+        OrbitalAsymmetryBudget.endpointSpeedEnvelopeMs 1_000_000.0 299_792.458 24.0 |> ignore
+    ) |> ignore

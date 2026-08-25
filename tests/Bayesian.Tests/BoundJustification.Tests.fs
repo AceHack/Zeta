@@ -146,23 +146,29 @@ let ``BJ-5 deltaMaxMs is bit-identical to the value of its bound`` () =
                 (viaFloat = viaBound),
                 sprintf "%s-%s at JD %f: float path %.17g, bound path %.17g" a b jd viaFloat viaBound)
 
-// ── BJ-6: the shipped bound declares its own register, and that register is `Assumption` ──────────
+// ── BJ-6: Earth-Mars is backed by two named checked terms ──────────────────────────────────────────
 [<Fact>]
-let ``BJ-6 the shipped orbital budget is a single Assumption-justified term`` () =
+let ``BJ-6 Earth-Mars orbital budget is fully checked and additive`` () =
     let bound = OrbitalAsymmetryBudget.deltaMaxBound "earth" "mars" j2000
     let terms = Bound.terms bound
-    Assert.Equal(1, List.length terms)
+    Assert.Equal(2, List.length terms)
+    Assert.True(Bound.isFullyChecked bound, "Earth-Mars must not retain an unproved multiplier")
+    Assert.Empty(Bound.assumed bound)
+    Assert.All(terms, fun term ->
+        match term.Why with
+        | Derivation _ -> ()
+        | _ -> Assert.Fail(sprintf "Earth-Mars term is not derivation-backed: %s" term.Name))
 
-    match (List.head terms).Why with
-    | Assumption reason -> Assert.Contains("1.2", reason)
-    | Derivation _ -> Assert.Fail "the shipped budget has no derivation — it must not claim one"
-    | Measurement _ -> Assert.Fail "the shipped budget is not a measurement"
-
-    Assert.False(Bound.isFullyChecked bound, "the shipped budget is not checked, and says so")
-
-// ── BJ-7: a cited certificate must resolve — a proof nobody can open is not evidence ─────────────
+// ── BJ-7: other pairs do not inherit Earth-Mars evidence ───────────────────────────────────────────
 [<Fact>]
-let ``BJ-7 the Derivation certificate paths exist in the repository`` () =
+let ``BJ-7 non-Earth-Mars pairs remain explicitly assumption-grade`` () =
+    let bound = OrbitalAsymmetryBudget.deltaMaxBound "earth" "moon" j2000
+    Assert.False(Bound.isFullyChecked bound, "Earth-Moon needs its own envelope; it must not borrow Earth-Mars provenance")
+    Assert.Single(Bound.assumed bound) |> ignore
+
+// ── BJ-8: a cited certificate must resolve — a proof nobody can open is not evidence ─────────────
+[<Fact>]
+let ``BJ-8 the Derivation certificate paths exist in the repository`` () =
     match repoRoot () with
     | None -> Assert.Fail "could not locate the repository root (Zeta.sln) from the test working directory"
     | Some root ->
