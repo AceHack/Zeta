@@ -58,18 +58,18 @@ function main(): number {
 
   for (const tomlPath of cargoTomls) {
     const crateName = dirname(tomlPath).split("/").pop() ?? tomlPath;
-    
+
     const fmtOk = runCommand(
       "cargo",
       ["fmt", "--check", "--manifest-path", tomlPath],
-      `Formatting check for Rust crate: ${crateName}`
+      `Formatting check for Rust crate: ${crateName}`,
     );
     if (!fmtOk) return 1;
 
     const clippyOk = runCommand(
       "cargo",
-      ["clippy", "--manifest-path", tomlPath, "--all-targets", "--", "-D", "warnings"],
-      `Clippy lint checks for Rust crate: ${crateName}`
+      ["clippy", "--locked", "--manifest-path", tomlPath, "--all-targets", "--", "-D", "warnings"],
+      `Clippy lint checks for Rust crate: ${crateName}`,
     );
     if (!clippyOk) return 1;
   }
