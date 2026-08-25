@@ -1,7 +1,7 @@
 ---
 id: 081M0Q8TY1B087G0R0008CYZJ3
 type: bug
-state: backlog
+state: done
 priority: P1
 slug: zetadb-convergence-fails-under-binding-admission-budgets-ter
 title: "ZetaDB convergence fails under binding admission budgets: terminal replica divergence"
@@ -169,3 +169,19 @@ This policy is deterministic, not globally optimal: it selects the ordinally-fir
 subset and may skip an event whose inclusion would require a later compensating event. Each
 measurement performs the real fold and encoding, so the opt-in planner trades bounded extra work
 for an honest byte decision rather than estimating additive per-event costs that do not exist.
+
+## Completed 2026-08-25 - runtime selection closes the boundary
+
+The three supported choices now have one typed runtime registry:
+`no-forget-backpressure`, `canonical-event-id`, and `canonical-checkpoint-byte`. Unknown
+configuration is refused as a value before it can become executable policy. The scheduled node
+accepts the selected port and its CLI exposes `--retention-policy`; the generic browser wake also
+forwards an injected retained-set port through its finite convergence runner. Tests execute actual
+scheduled and browser-owned checkpoint mutations, including durable displacement heat.
+
+The default remains `no-forget-backpressure`. That mode deliberately preserves the original
+order-dependent admitted prefix when a finite bound binds; it chooses history preservation plus
+backpressure rather than claiming impossible bounded, coordination-free, append-only availability.
+The canonical modes are the explicit convergent alternatives and make every displacement visible.
+The content-addressed storage adapter remains no-forget because evicting a previously acknowledged
+content record would violate its write/read contract.

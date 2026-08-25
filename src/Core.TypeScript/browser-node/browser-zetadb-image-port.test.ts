@@ -7,8 +7,9 @@ import {
   type BrowserCheckpointRecord,
 } from "./browser-checkpoint-port";
 import { createBrowserZetaDbImagePort, openBrowserZetaDbImagePort } from "./browser-zetadb-image-port";
-import { runZetaDbNodeTick } from "../zetadb/zeta-db-node";
+import { runConvergentZetaDbNodeTick, runZetaDbNodeTick } from "../zetadb/zeta-db-node";
 import { monotoneLastWriterWinsRevisionPolicy } from "../persistence/revision-policy";
+import { canonicalEventIdRetentionPolicy } from "../zetadb/retention-policy";
 
 function fakeCheckpointPort(): BrowserCheckpointPort {
   let stored: BrowserCheckpointRecord | null = null;
@@ -59,6 +60,48 @@ describe("browser ZetaDB image port", () => {
         severity: "backpressure",
         code: "database-revision-conflict",
         detail: "Revision 1 already names different bytes.",
+      },
+    });
+  });
+
+  test("executes retained-set selection through the browser-owned image port", async () => {
+    const port = createBrowserZetaDbImagePort(fakeCheckpointPort());
+    const request = (eventIds: readonly string[]) => ({
+      nodeId: "browser/global",
+      executorId: "tab/retention",
+      executorKind: "browser-tab" as const,
+      deltas: eventIds.map((eventId) => ({ eventId, rowKey: `row/${eventId}`, payload: eventId, weight: 1 })),
+      limits: { maxDeltas: 8, maxEntries: 2, maxCheckpointBytes: 16 * 1024 },
+    });
+
+    expect(
+      (
+        await runConvergentZetaDbNodeTick(
+          port,
+          request(["e3", "e4"]),
+          { maxAttempts: 2 },
+          undefined,
+          canonicalEventIdRetentionPolicy,
+        )
+      ).ok,
+    ).toBe(true);
+    const result = await runConvergentZetaDbNodeTick(
+      port,
+      request(["e1", "e2"]),
+      { maxAttempts: 2 },
+      undefined,
+      canonicalEventIdRetentionPolicy,
+    );
+
+    expect(result.ok && result.value).toMatchObject({
+      revision: 2,
+      rows: [
+        { rowKey: "row/e1", payload: "e1", weight: 1 },
+        { rowKey: "row/e2", payload: "e2", weight: 1 },
+      ],
+      retentionReceipt: {
+        policyId: "canonical-event-id",
+        displacedEventIds: ["e3", "e4"],
       },
     });
   });

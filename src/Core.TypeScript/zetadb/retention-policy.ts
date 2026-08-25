@@ -69,6 +69,29 @@ export interface ZetaDbCheckpointByteRetentionPolicyPort {
 
 export type ZetaDbRetentionPolicyPort = ZetaDbEventCountRetentionPolicyPort | ZetaDbCheckpointByteRetentionPolicyPort;
 
+export const ZETA_DB_RETENTION_MODE_IDS = [
+  "no-forget-backpressure",
+  "canonical-event-id",
+  "canonical-checkpoint-byte",
+] as const;
+
+export type ZetaDbRetentionModeId = (typeof ZETA_DB_RETENTION_MODE_IDS)[number];
+
+export interface ZetaDbRetentionModeSelection {
+  readonly id: ZetaDbRetentionModeId;
+  /** Omitted for the kernel's existing incremental no-forget path. */
+  readonly retentionPolicy?: ZetaDbRetentionPolicyPort;
+}
+
+export interface ZetaDbRetentionModeFeedback {
+  readonly code: "database-retention-mode-invalid";
+  readonly detail: string;
+}
+
+export type ZetaDbRetentionModeResult =
+  | { readonly ok: true; readonly value: ZetaDbRetentionModeSelection }
+  | { readonly ok: false; readonly feedback: ZetaDbRetentionModeFeedback };
+
 function isRecord(value: unknown): value is Readonly<Record<string, unknown>> {
   return value !== null && typeof value === "object" && !Array.isArray(value);
 }
@@ -395,3 +418,23 @@ export const canonicalCheckpointByteRetentionPolicy: ZetaDbCheckpointByteRetenti
     return { retainedEventIds };
   },
 };
+
+/** Resolve untrusted runtime configuration without letting a string become an executable policy. */
+export function resolveZetaDbRetentionMode(value: unknown): ZetaDbRetentionModeResult {
+  switch (value) {
+    case "no-forget-backpressure":
+      return { ok: true, value: { id: value } };
+    case "canonical-event-id":
+      return { ok: true, value: { id: value, retentionPolicy: canonicalEventIdRetentionPolicy } };
+    case "canonical-checkpoint-byte":
+      return { ok: true, value: { id: value, retentionPolicy: canonicalCheckpointByteRetentionPolicy } };
+    default:
+      return {
+        ok: false,
+        feedback: {
+          code: "database-retention-mode-invalid",
+          detail: `Database retention mode must be one of: ${ZETA_DB_RETENTION_MODE_IDS.join(", ")}.`,
+        },
+      };
+  }
+}

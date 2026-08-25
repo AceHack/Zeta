@@ -6,6 +6,7 @@ import {
   canonicalEventIdRetentionPolicy,
   evaluateZetaDbRetentionPolicy,
   noForgetBackpressureRetentionPolicy,
+  resolveZetaDbRetentionMode,
   type ZetaDbRetentionPolicyPort,
 } from "./retention-policy";
 
@@ -26,6 +27,29 @@ function applyBatches(
 }
 
 describe("ZetaDB retention policy port", () => {
+  test("resolves the complete runtime mode registry and rejects unknown configuration", () => {
+    expect(resolveZetaDbRetentionMode("no-forget-backpressure")).toEqual({
+      ok: true,
+      value: { id: "no-forget-backpressure" },
+    });
+    expect(resolveZetaDbRetentionMode("canonical-event-id")).toEqual({
+      ok: true,
+      value: { id: "canonical-event-id", retentionPolicy: canonicalEventIdRetentionPolicy },
+    });
+    expect(resolveZetaDbRetentionMode("canonical-checkpoint-byte")).toEqual({
+      ok: true,
+      value: { id: "canonical-checkpoint-byte", retentionPolicy: canonicalCheckpointByteRetentionPolicy },
+    });
+    expect(resolveZetaDbRetentionMode("latest-wins")).toEqual({
+      ok: false,
+      feedback: {
+        code: "database-retention-mode-invalid",
+        detail:
+          "Database retention mode must be one of: no-forget-backpressure, canonical-event-id, canonical-checkpoint-byte.",
+      },
+    });
+  });
+
   test("no-forget preserves admitted history and reports only cold refusals", () => {
     expect(
       evaluateZetaDbRetentionPolicy(noForgetBackpressureRetentionPolicy, {
