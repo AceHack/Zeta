@@ -1,0 +1,14 @@
+{
+  "id": "080d01d031231810a013000864f04933",
+  "at": "2026-08-25T17:44:36.195Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M0X0C932087G0R001SWQQVQ",
+    "type": "task",
+    "title": "host-tier helper emits the measured capability vector alongside the chosen tier",
+    "slug": "host-tier-helper-emits-the-measured-capability-vector-alongs",
+    "priority": "P2",
+    "filename": "081M0X0C932087G0R001SWQQVQ-host-tier-helper-emits-the-measured-capability-vector-alongs.md"
+  }
+}

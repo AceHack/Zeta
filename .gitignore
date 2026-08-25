@@ -321,3 +321,11 @@ src/Interp.Python/.venv/
 src/Arc.Python/recordings/
 src/Arc.Python/environment_files/
 .reaper-cache/
+
+# Per-host capability vector recorded by tools/setup/common/host-tier.sh
+# (081M0X0C932087G0R001SWQQVQ). Measured hardware facts about THIS machine, so it
+# is host-local by nature and would churn on every clone if tracked. Text/JSON,
+# never binary (.claude/rules/no-binary-in-proof-lineage.md). Redirect it
+# somewhere collectable with ZETA_CAPABILITY_VECTOR_OUT (CI can upload it as a
+# workflow artifact without it ever entering the tree).
+.zeta/

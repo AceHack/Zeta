@@ -12,6 +12,10 @@
 #   . "$(dirname "$0")/host-tier.sh"
 #   req="$(zeta_tier_of_line "$line")"; line="$(zeta_strip_tier "$line")"
 #   if ! zeta_tier_allows "$req"; then echo "→ $name skipped: requires tier=$req, host is $ZETA_HOST_TIER"; continue; fi
+#
+# Sourcing this file also RECORDS the measured host capability vector beside the
+# tier it chose (081M0X0C932087G0R001SWQQVQ) — see zeta_emit_capability_vector
+# below. That is measurement only; the enum above still drives every install.
 
 zeta_tier_rank() {
   case "$1" in
@@ -50,6 +54,58 @@ else
 fi
 ZETA_HOST_RANK="$(zeta_tier_rank "$ZETA_HOST_TIER")"
 export ZETA_HOST_TIER ZETA_HOST_RANK ZETA_HOST_TIER_SOURCE
+
+# ── Capability-vector emission — MEASUREMENT ONLY, GATES NOTHING ─────────────
+# Workitem 081M0X0C932087G0R001SWQQVQ. Aaron 2026-08-25: "in a perfect world i
+# imagine some matrix for cpus, memory, solid state, and rotational disk and
+# picking the right dependence to install based on those results."
+#
+# The tier above is a TOTAL ORDER and therefore cannot express "rotational disk
+# but 128GB RAM"; two tiers also do not compose. The capability VECTOR is the
+# shape that can. The redesign is blocked on hardware that is not installed, so
+# this does the unblocked half: RECORD the pair (measured vector, chosen tier)
+# so a later design can check whether the tier followed from the hardware or was
+# a guess.
+#
+# NOTHING ABOUT INSTALL BEHAVIOUR CHANGES HERE. ZETA_HOST_TIER still decides
+# every package. This function is pure side-record and is fail-open by design:
+# a missing bun, a missing emitter, or a non-zero emit must never fail a setup
+# run, because a measurement that can break an install would be worse than no
+# measurement.
+#
+# Cost: one bun invocation per install run (~0.3s measured on darwin/arm64),
+# spent once — ZETA_CAPABILITY_VECTOR_EMITTED is exported so the three sourcing
+# sites (mise.sh, linux.sh, macos.sh) do not each pay it.
+#
+# Opt out with ZETA_CAPABILITY_VECTOR=0. Redirect with ZETA_CAPABILITY_VECTOR_OUT.
+zeta_emit_capability_vector() {
+  [ "${ZETA_CAPABILITY_VECTOR:-1}" = "0" ] && return 0
+  [ -n "${ZETA_CAPABILITY_VECTOR_EMITTED:-}" ] && return 0
+
+  local _here _repo _emitter
+  _here="$(cd "$(dirname "${BASH_SOURCE[0]:-$0}")" && pwd)" || return 0
+  _repo="$(cd "$_here/../../.." && pwd)" || return 0
+  _emitter="$_repo/src/Core.TypeScript/installer/host-capability-vector.ts"
+
+  if [ ! -f "$_emitter" ]; then
+    echo "→ capability vector not emitted: $_emitter absent (tier=$ZETA_HOST_TIER still drives installs)" >&2
+    return 0
+  fi
+  if ! command -v bun >/dev/null 2>&1; then
+    # Expected during early bootstrap, before the toolchain exists. Loud, not fatal.
+    echo "→ capability vector not emitted: bun not on PATH yet (tier=$ZETA_HOST_TIER still drives installs)" >&2
+    return 0
+  fi
+
+  ZETA_CAPABILITY_VECTOR_EMITTED=1
+  export ZETA_CAPABILITY_VECTOR_EMITTED
+  if ! (cd "$_repo" && bun "$_emitter"); then
+    echo "→ capability vector emit failed; continuing (measurement never gates a setup run)" >&2
+  fi
+  return 0
+}
+
+zeta_emit_capability_vector
 
 # tier of a manifest line (default slim).
 zeta_tier_of_line() {
