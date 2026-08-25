@@ -1,0 +1,14 @@
+{
+  "id": "080d01d505598810a0130008eac74c79",
+  "at": "2026-08-25T20:33:23.249Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M0XA1ASH087G0R000R0ZR6R",
+    "type": "task",
+    "title": "Rho is a layer stack not a scalar; trainset is the decorrelation floor",
+    "slug": "rho-is-a-layer-stack-not-a-scalar-trainset-is-the-decorrelat",
+    "priority": "P2",
+    "filename": "081M0XA1ASH087G0R000R0ZR6R-rho-is-a-layer-stack-not-a-scalar-trainset-is-the-decorrelat.md"
+  }
+}

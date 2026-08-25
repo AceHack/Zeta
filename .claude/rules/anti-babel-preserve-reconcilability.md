@@ -54,5 +54,9 @@ what needs repair, not the vocabulary.
 - [`anchor-to-human-prior-art.md`](anchor-to-human-prior-art.md) — anchors must be **checked**, not merely cited
 - [`numerology-vs-number-theory.md`](numerology-vs-number-theory.md) — an unanchored coincidence promoted to a belief is how a private vocabulary starts
 - [`dv2-data-split-discipline-activated.md`](dv2-data-split-discipline-activated.md) — raw vault: reintegration without collapse
+- `docs/research/2026-08-25-rho-is-a-layer-stack-not-a-scalar-and-the-trainset-is-the-floor.md`
+  — ρ decomposed into nesting layers (context · memory-on-load · vendor · trainset); the
+  trainset is a floor an all-LLM society cannot get below. **Heuristic, completeness
+  disproven in the doc.**
 - `docs/VISION.md` — the two-sided `ρ` band this rule is the `ρ → 0` guard for
 - `docs/research/2026-08-20-harmonious-division-is-our-unorthodox-division-*` §monodromy — why persistent disagreement is load-bearing
