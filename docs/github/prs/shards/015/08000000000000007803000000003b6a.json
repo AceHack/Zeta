@@ -1,0 +1,12 @@
+{
+  "pr_number": 15210,
+  "archive_path": "docs/history/pr-reviews/PR-15210-chore-references-upstream-claimed-a-lineage-the-clean-room-rule-forbids-46-sense.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-25T04:37:10.819Z",
+  "schema_version": "v1",
+  "commit_sha": "332f3bdf3b641b8338e322488d1ff2589130d64e",
+  "title": "chore(references): \"upstream\" claimed a lineage the clean-room rule forbids — 46 sense-[A] occurrences renamed, GOVERNANCE §23's contribute-back sense untouched",
+  "state": "MERGED",
+  "merged_at": "2026-08-25T04:36:24Z",
+  "head_ref": "chore/prior-art-not-upstream-naming"
+}
