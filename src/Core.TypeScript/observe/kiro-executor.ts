@@ -84,6 +84,20 @@ function readItemFile(repoRoot: string, item: BacklogItem): string | null {
  * For now, the script is a diagnostic that proves the loop works end-to-end.
  * Real work dispatch (invoking the agent with a focused prompt) is Phase 2.
  */
+/**
+ * A YAML double-quoted scalar. The BACKSLASH is escaped, not only the quote.
+ *
+ * Was `title.replace(/"/g, '\\"')` (CodeQL `js/incomplete-sanitization`): escaping the
+ * quote while leaving the backslash alone means a title ending in `\` emitted
+ * `title: "...\"`, whose closing quote is now escaped -- the scalar runs on into the rest
+ * of the front matter and the claim file stops parsing. YAML's double-quoted style
+ * recognises `\` as its escape character, so the escape character must be escaped first,
+ * which one character class does in a single pass.
+ */
+export function yamlDoubleQuoted(value: string): string {
+  return `"${value.replace(/[\\"]/g, "\\$&")}"`;
+}
+
 function generateScript(item: BacklogItem, itemContent: string | null, opts: Required<KiroExecutorOptions>): string {
   const branch = claimBranchName(item, opts.agentId);
   const itemContextComment =
@@ -112,7 +126,7 @@ function generateScript(item: BacklogItem, itemContent: string | null, opts: Req
     `id: ${item.id}`,
     `claimed_by: ${opts.agentId}`,
     `claimed_at: ${new Date().toISOString()}`,
-    `title: "${item.title.replace(/"/g, '\\"')}"`,
+    `title: ${yamlDoubleQuoted(item.title)}`,
     `status: in-progress`,
     `branch: ${branch}`,
     `---`,

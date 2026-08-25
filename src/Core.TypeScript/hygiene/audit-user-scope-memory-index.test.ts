@@ -135,3 +135,40 @@ describe("renderReport", () => {
         expect(md).toContain("| 5 | 620 |");
     });
 });
+
+// CodeQL `js/incomplete-sanitization` on the preview cell: it escaped `|` but not the
+// BACKSLASH, so a preview whose window ends in `\` emitted `\\|` -- markdown reads that
+// as a literal backslash followed by an UNESCAPED separator, and the row splits.
+
+/**
+ * The cells markdown actually sees. A `|` is escaped only when preceded by an ODD run of
+ * backslashes; splitting on `" | "` would pass under both escapes and prove nothing.
+ */
+function markdownCells(row: string): string[] {
+    const cells: string[] = [];
+    let cur = "";
+    let slashes = 0;
+    for (const ch of row) {
+        if (ch === "\\") { slashes += 1; cur += ch; continue; }
+        if (ch === "|" && slashes % 2 === 0) { cells.push(cur); cur = ""; slashes = 0; continue; }
+        cur += ch;
+        slashes = 0;
+    }
+    cells.push(cur);
+    return cells;
+}
+
+describe("renderReport — a preview cannot break the markdown table", () => {
+    test("a backslash before a pipe stays inside its cell", () => {
+        // The 100-char preview window ends with `\` immediately before a `|`.
+        const hook = "x".repeat(64) + "\\" + "|" + "y".repeat(140);
+        const content = ["# header", "", `- [T](a.md) \u2014 ${hook}`, ""].join("\n");
+        withTempMemory(content, (path) => {
+            const md = renderReport(audit(path), new Date("2026-08-24T00:00:00Z"));
+            const rows = md.split("\n").filter((l) => l.startsWith("| ") && !l.startsWith("| ---"));
+            expect(rows.length).toBeGreaterThan(0);
+            // Three columns => leading and trailing empty cell plus three, on EVERY row.
+            for (const row of rows) expect(markdownCells(row).length).toBe(5);
+        });
+    });
+});

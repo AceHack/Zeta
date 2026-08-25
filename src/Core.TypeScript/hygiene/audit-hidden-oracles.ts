@@ -311,13 +311,27 @@ export function valueShape(code: string): ValueShape {
 }
 
 /**
+ * A literal, safe to splice into a `RegExp` source.
+ *
+ * Both regex builders below used to escape `$` ALONE (CodeQL `js/incomplete-sanitization`).
+ * That happened to hold for names produced by `TS_DECL`/`FS_DECL`, whose alphabets contain
+ * no other metacharacter -- but `findGating` is EXPORTED and its signature promises
+ * `name: string`, not "an identifier this file's own two regexes produced". A `.` alone
+ * would make the pattern match any character and silently widen the audit's evidence.
+ * Escaping the whole metacharacter class removes the coupling instead of documenting it.
+ */
+export function escapeRegExp(value: string): string {
+  return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+
+/**
  * Gating evidence: the identifier stands on one side of a relational comparison.
  * One occurrence is the boundary between "decides something" and "does not" — there is
  * deliberately no count threshold here (see header note 2). Returns every occurrence,
  * because WHICH occurrence gates decides the tier.
  */
 export function findGating(lines: readonly string[], name: string): { line: number; text: string }[] {
-  const esc = name.replace(/[$]/g, "\\$&");
+  const esc = escapeRegExp(name);
   const re = new RegExp(String.raw`(?:[<>]=?|===|!==|==|!=)\s*${esc}\b|\b${esc}\s*(?:[<>]=?|===|!==|==|!=)`);
   const out: { line: number; text: string }[] = [];
   for (let i = 0; i < lines.length; i++) {
@@ -385,7 +399,7 @@ export function attributionWindow(lines: readonly string[], declIdx: number, nam
     i--;
   }
 
-  const named = lines.filter((l) => isComment(l) && new RegExp(String.raw`\b${name.replace(/[$]/g, "\\$&")}\b`).test(l));
+  const named = lines.filter((l) => isComment(l) && new RegExp(String.raw`\b${escapeRegExp(name)}\b`).test(l));
   parts.push(...named);
 
   return parts.join("\n");
