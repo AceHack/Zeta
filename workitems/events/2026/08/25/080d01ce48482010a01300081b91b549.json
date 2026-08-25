@@ -1,0 +1,14 @@
+{
+  "id": "080d01ce48482010a01300081b91b549",
+  "at": "2026-08-25T16:37:51.492Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M0WWJ283087G0R002C4K1W5",
+    "type": "bug",
+    "title": "two of the last forty merges landed without a passing gate, because the only required check has an admin bypass every agent inherits",
+    "slug": "two-of-the-last-forty-merges-landed-without-a-passing-gate-b",
+    "priority": "P2",
+    "filename": "081M0WWJ283087G0R002C4K1W5-two-of-the-last-forty-merges-landed-without-a-passing-gate-b.md"
+  }
+}
