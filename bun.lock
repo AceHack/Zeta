@@ -14,7 +14,7 @@
         "@scure/base": "2.2.0",
         "@scure/bip32": "2.2.0",
         "@scure/bip39": "2.2.0",
-        "cborg": "5.1.1",
+        "cborg": "6.1.1",
         "epub-gen-memory": "^1.1.2",
         "micro-key-producer": "0.8.6",
         "pg": "8.21.0",
@@ -261,7 +261,7 @@
 
     "callsites": ["callsites@3.1.0", "", {}, "sha512-P8BjAsXvZS+VIDUI11hHCQEv74YT67YUi5JJFNWIqL235sBmjX4+qx9Muvls5ivyNENctx46xQLQ3aTuE7ssaQ=="],
 
-    "cborg": ["cborg@5.1.1", "", { "bin": { "cborg": "lib/bin.js" } }, "sha512-BDbSRIp6XrQXkTc7g+DN0RB9RrDPTUfals2ecWUlt3juPLjbAvy/V72mJcXY0Ehu0Dq/3WpNCOCT68HUTbW+lw=="],
+    "cborg": ["cborg@6.1.1", "", { "bin": { "cborg": "lib/bin.js" } }, "sha512-Ci8+V1OMFtqea8EXicsATqV+3kEqCGXCicM+5MEzpKTxqy58WMzhJUjtUqAjfWpKPZ0wpG8F+u5mC8Xy/0Zevg=="],
 
     "character-entities": ["character-entities@2.0.2", "", {}, "sha512-shx7oQ0Awen/BRIdkjkvz54PnEEI/EjwXDSIZp86/KKdbafHh1Df/RYGBhn4hbe2+uKC9FnT5UCEdyPz3ai9hQ=="],
 

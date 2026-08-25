@@ -100,7 +100,7 @@
     "@scure/base": "2.2.0",
     "@scure/bip32": "2.2.0",
     "@scure/bip39": "2.2.0",
-    "cborg": "5.1.1",
+    "cborg": "6.1.1",
     "epub-gen-memory": "^1.1.2",
     "micro-key-producer": "0.8.6",
     "pg": "8.21.0",
