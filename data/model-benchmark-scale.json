@@ -1,0 +1,27 @@
+{
+  "at": "2026-08-25T20:17:29.697Z",
+  "trials": 200,
+  "models": [
+    "qwen2.5:0.5b",
+    "llama3.2:1b",
+    "gemma2:2b"
+  ],
+  "scenarios": 200,
+  "results": {
+    "qwen2.5:0.5b": {
+      "correct": 107,
+      "parsed": 200,
+      "avgMs": 162.8413877149999
+    },
+    "llama3.2:1b": {
+      "correct": 117,
+      "parsed": 200,
+      "avgMs": 195.1801122949997
+    },
+    "gemma2:2b": {
+      "correct": 119,
+      "parsed": 200,
+      "avgMs": 255.96519705999978
+    }
+  }
+}
