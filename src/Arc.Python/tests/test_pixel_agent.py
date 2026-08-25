@@ -298,3 +298,42 @@ def test_the_wall_model_improves_the_score() -> None:
     greedy = play(agent="greedy", seed=4)
     assert pixel["levels_cleared"] > greedy["levels_cleared"]
     assert pixel["environment_score"] > greedy["environment_score"]
+
+
+def test_the_environment_advertises_the_actions_it_actually_accepts() -> None:
+    """`_get_valid_actions()` must list the four moves, not an empty list.
+
+    THIS CAUGHT A REAL BUG, and it is worth stating what kind. `GameAction` is a
+    plain `Enum`, NOT an `IntEnum`, so `GameAction.ACTION1 == 1` is False. The
+    engine dispatches `available_actions` through `match action: case 1 | 2 | 3
+    | 4 | 5:` — literal patterns compared by `==` — so passing enum MEMBERS made
+    every case fall through and this environment advertised NO legal actions at
+    all. Measured before the fix: `_get_valid_actions()` returned `[]`.
+
+    Our own agents never asked, which is exactly why it went unnoticed: they
+    carry their own action vectors. It would have surfaced the moment a generic
+    ARC agent — or the toolkit's own server — asked the environment what it may
+    do and was told "nothing".
+
+    Non-vacuous: pass `GameAction` members instead of `a.value` in
+    `ZetaChase.__init__` and this returns `[]` while every other test passes.
+    """
+    from arcengine import GameAction
+
+    from zeta_arc.environments.chase import _MOVES
+
+    game = ZetaChase(seed=4)
+    reset(game)
+    advertised = [a.id for a in game._get_valid_actions()]
+    assert advertised, "the environment advertises no legal actions at all"
+    assert set(advertised) == set(_MOVES), (
+        f"advertised {advertised} but accepts {list(_MOVES)}"
+    )
+    # The list handed to the engine must be plain ints, not enum members —
+    # the whole point of the bug.
+    assert all(type(a) is int for a in game._available_actions), (
+        f"available_actions must be plain ints, got {game._available_actions}"
+    )
+    assert GameAction.ACTION1 != 1, (
+        "GameAction became an IntEnum; this test's premise is stale"
+    )

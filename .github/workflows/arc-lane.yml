@@ -1,0 +1,150 @@
+name: arc-lane
+
+# ARC-AGI-3 LANE TESTS — a drift check, NOT a gate.
+#
+# WHY THIS IS NOT A GATE, and why that is a design constraint rather than a
+# preference. `docs/design/2026-08-23-arc-agi-3-integration-design-chip8-chip9-
+# atari-and-the-arena.md` §3.2 constraint 2 states it outright: "No gate job
+# depends on it ... never a required check. `main`'s gate is green and this must
+# not touch it." The reason is constraint 1: `arc-agi`/`arcengine` are a separate
+# uv project precisely so that A RESOLUTION FAILURE IN THIS LANE CANNOT BREAK
+# `uv sync --project src/Core.Python`. A required job here would hand that lane
+# the power to block every PR in the repo — the exact coupling the split exists
+# to prevent.
+#
+# So this workflow appears in NO `needs:` list, and `gate (required)` (gate.yml,
+# floor = build-and-test / lint / lint-typescript / cross-verify / full-verify)
+# neither waits for it nor sees it. Red here is information, not a stop —
+# the same posture as `bytelock` and `drift (loud)`.
+#
+# ONE DEPARTURE FROM §3.2, STATED RATHER THAN SLIPPED IN. The design doc names
+# the triggers as "workflow_dispatch (+ optional cron)". This also runs on
+# `pull_request`, path-filtered to the lane. The doc's stated REASON is that the
+# gate must not be touched, and a workflow outside every `needs:` list does not
+# touch it — while post-merge-only feedback means a broken lane is found after
+# it lands rather than before. If the maintainer wants the literal reading,
+# delete the `pull_request:` block; nothing else changes.
+#
+# WHAT IS HARD HERE — LIVENESS, not the result. The hazard is this job going
+# GREEN WHILE RUNNING NOTHING: a pytest that collects 0 tests exits 5, and a
+# `uv sync` that silently resolves an empty project would leave a passing job
+# that verified nothing. That is the false-green shape this repo has been bitten
+# by before (the byte-lock "verified 0 of 10"). So the run asserts a floor on
+# the collected-test count and fails when it is not met.
+
+on:
+  pull_request:
+    paths:
+      - "src/Arc.Python/**"
+      - ".github/workflows/arc-lane.yml"
+  push:
+    branches: [main]
+    paths:
+      - "src/Arc.Python/**"
+      - ".github/workflows/arc-lane.yml"
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+
+concurrency:
+  group: arc-lane-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  arc-tests:
+    name: arc lane (drift check)
+    timeout-minutes: 15
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Cache install.sh outputs (mise runtimes + dotnet tools + verifier jars)
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: |
+            ~/.local/bin/mise
+            ~/.local/share/mise
+            ~/.cache/mise
+            ~/.dotnet/tools
+            ~/.elan
+            ~/.config/zeta
+            ~/.rustup/toolchains/1.87.0-*
+            ~/.rustup/settings.toml
+            ~/.rustup/update-hashes
+            ~/.cargo
+            ~/.cache/zeta/from-autotools-tarball/*.tgz
+          key: install-v2-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('.mise.toml', 'tools/setup/**', 'global.json') }}
+
+      - name: Install toolchain via three-way-parity script (GOVERNANCE §24)
+        run: |
+          set -euo pipefail
+          for attempt in 1 2 3 4 5; do
+            if ./tools/setup/install.sh; then exit 0; fi
+            [ "$attempt" = "5" ] && { echo "install.sh failed after 5 attempts"; exit 1; }
+            case "$attempt" in
+              1) backoff=10 ;;
+              2) backoff=30 ;;
+              3) backoff=60 ;;
+              4) backoff=120 ;;
+            esac
+            echo "install.sh attempt $attempt failed; retrying in ${backoff}s..." >&2
+            sleep "$backoff"
+          done
+
+      - name: Sync the ARC lane's own uv project
+        # `--project src/Arc.Python`, never a dependency of zeta-core: design
+        # §3.2 constraint 1. If this resolution fails, only this job goes red.
+        run: uv sync --project src/Arc.Python
+
+      - name: Run the ARC lane tests
+        env:
+          # The floor that makes a green here mean something. Raise it when the
+          # suite grows; a DROP is the signal — tests silently stopping to run
+          # is the failure this exists to catch, and it looks exactly like
+          # success without this check.
+          #
+          # FAIL-CLOSED, and verified rather than assumed: deleting this env
+          # entry does NOT quietly disable the floor. `set -u` in the step below
+          # makes the unbound variable exit non-zero, so the check cannot be
+          # removed by accident without the job going red. (Measured: with the
+          # variable unset the step exits 1.)
+          ARC_MIN_TESTS: "23"
+        run: |
+          set -euo pipefail
+          uv run --project src/Arc.Python pytest src/Arc.Python/tests -q --junitxml=/tmp/arc-junit.xml
+          collected=$(python3 - <<'PY'
+          import xml.etree.ElementTree as ET
+          root = ET.parse("/tmp/arc-junit.xml").getroot()
+          suites = root.findall("testsuite") or [root]
+          print(sum(int(s.get("tests", 0)) for s in suites))
+          PY
+          )
+          echo "collected ${collected} tests (floor ${ARC_MIN_TESTS})"
+          if [ "${collected}" -lt "${ARC_MIN_TESTS}" ]; then
+            echo "::error::LIVENESS FAILURE — only ${collected} tests ran, floor is ${ARC_MIN_TESTS}." >&2
+            echo "A suite that stops running looks identical to a suite that passes." >&2
+            exit 2
+          fi
+
+      - name: Play a scored episode (the lane's end-to-end smoke)
+        # The unit tests can all pass while the loop itself is broken. This is
+        # the whole pipeline — environment, perception, agent, scoring — and it
+        # asserts the agent still clears every level rather than merely running.
+        run: |
+          set -euo pipefail
+          uv run --project src/Arc.Python python -m zeta_arc.play --agent pixel --seed 4 \
+            | tee /tmp/arc-play.json
+          python3 - <<'PY'
+          import json, sys
+          # play.py logs to stderr; stdout is the JSON object.
+          text = open("/tmp/arc-play.json").read()
+          start = text.index("{")
+          result = json.loads(text[start:])
+          cleared, levels = result["levels_cleared"], result["levels"]
+          print(f"levels_cleared={cleared} score={result['environment_score']}")
+          if cleared < len(levels) or not all(l["solved"] for l in levels):
+              unsolved = [l["level"] for l in levels if not l["solved"]]
+              sys.exit(f"::error::the pixel agent no longer clears every level; unsolved={unsolved}")
+          PY

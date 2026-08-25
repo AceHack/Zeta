@@ -30,8 +30,19 @@ from arcengine import ActionInput, ARCBaseGame, FrameData, GameAction
 
 
 def advance(game: ARCBaseGame, action_id: GameAction, **data: object) -> FrameData:
-    """Apply one action and return the frame it produced."""
-    return game.perform_action(ActionInput(id=action_id, data=dict(data)))
+    """Apply one action and return the frame it produced.
+
+    `perform_action` is declared `FrameData | FrameDataRaw` because it has a
+    `raw: bool = False` switch. We never pass `raw`, so the `FrameData` branch
+    is the only reachable one — asserted rather than cast, so that if the
+    engine ever changes which branch the default takes, this fails loudly here
+    instead of surfacing as an attribute error somewhere downstream.
+    """
+    frame = game.perform_action(ActionInput(id=action_id, data=dict(data)))
+    assert isinstance(frame, FrameData), (
+        f"engine returned {type(frame).__name__}, not FrameData"
+    )
+    return frame
 
 
 def reset(game: ARCBaseGame) -> FrameData:

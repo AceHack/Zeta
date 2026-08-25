@@ -25,3 +25,13 @@ build-backend = "hatchling.build"
 
 [tool.hatch.build.targets.wheel]
 packages = ["zeta_arc"]
+
+# Same dev toolchain as src/Core.Python, so `lint-python.ts` can run this
+# project through the identical ruff/mypy/pytest steps rather than special-
+# casing it. No ruff config here either: defaults are the repo's standard.
+[dependency-groups]
+dev = [
+    "mypy>=2.1.0",
+    "pytest>=9.1.0",
+    "ruff>=0.9.0",
+]
