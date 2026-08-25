@@ -1,0 +1,14 @@
+{
+  "id": "080d01ce84f29010a013000872a42296",
+  "at": "2026-08-25T16:46:08.466Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M0WX17JH087G0R000DN2Q4G",
+    "type": "bug",
+    "title": "the model benchmark is won by a constant, and it runs itself on import",
+    "slug": "the-model-benchmark-is-won-by-a-constant-and-it-runs-itself",
+    "priority": "P2",
+    "filename": "081M0WX17JH087G0R000DN2Q4G-the-model-benchmark-is-won-by-a-constant-and-it-runs-itself.md"
+  }
+}

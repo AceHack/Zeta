@@ -46,7 +46,7 @@ import { join, dirname } from "node:path";
 
 // ═══ Test Scenarios (real observe-loop decision prompts) ═══════════════════════
 
-interface Scenario {
+export interface Scenario {
   readonly name: string;
   readonly context: string;
   readonly options: readonly string[];
@@ -54,7 +54,7 @@ interface Scenario {
   readonly acceptableIndices: readonly number[];
 }
 
-const SCENARIOS: readonly Scenario[] = [
+export const SCENARIOS: readonly Scenario[] = [
   {
     name: "empty-backlog-explore",
     context: "Backlog: empty | Mode: unset",
@@ -92,6 +92,53 @@ const SCENARIOS: readonly Scenario[] = [
     acceptableIndices: [0], // work mode + ready item = should work
   },
 ];
+
+/**
+ * A scenario DISCRIMINATES when at least one option would be wrong.
+ *
+ * Three of the six scenarios accept EVERY option by design — "sovereign choice —
+ * all valid" is a real property of the observe loop, and they are kept because a
+ * model that refuses to answer at all should still be visible. But folding them
+ * into a correctness RATE inflates it with questions nobody can get wrong.
+ *
+ * Measured 2026-08-25, which is why this exists: a model emitting the constant
+ * "0" scores **6/6 = 100%** on the full suite. Three scenarios accept anything,
+ * and all three that discriminate happen to accept index 0. The published run
+ * reported qwen2.5:0.5b and gemma2:2b at "100% correct" — both answered "0" to
+ * every prompt — while llama3.2:1b, the only model that VARIED its answer,
+ * scored worst. A benchmark on which a `console.log("0")` ties for first place
+ * cannot rank the thing it claims to rank.
+ */
+export function isDiscriminating(scenario: Scenario): boolean {
+  return scenario.acceptableIndices.length < scenario.options.length;
+}
+
+/**
+ * What a constant-index responder would score. The benchmark's own falsifier: if
+ * any constant matches the best real model, the suite is not measuring judgement.
+ */
+export function constantBaselineRate(
+  scenarios: readonly Scenario[],
+  index: number,
+): number {
+  const disc = scenarios.filter(isDiscriminating);
+  if (disc.length === 0) return 1;
+  return disc.filter((s) => s.acceptableIndices.includes(index)).length / disc.length;
+}
+
+/** The best score any constant achieves — the floor a real model must beat. */
+export function bestConstantBaseline(scenarios: readonly Scenario[]): {
+  readonly index: number;
+  readonly rate: number;
+} {
+  const width = Math.max(0, ...scenarios.map((s) => s.options.length));
+  let best = { index: 0, rate: -1 };
+  for (let i = 0; i < width; i++) {
+    const rate = constantBaselineRate(scenarios, i);
+    if (rate > best.rate) best = { index: i, rate };
+  }
+  return best;
+}
 
 // ═══ Ollama Interface ═════════════════════════════════════════════════════════
 
@@ -251,9 +298,28 @@ async function main(): Promise<void> {
   // Summary
   console.log("\n" + "─".repeat(60));
   console.log("Summary:");
+  const baseline = bestConstantBaseline(SCENARIOS);
+  const discCount = SCENARIOS.filter(isDiscriminating).length;
+  console.log(
+    `  scoring over ${discCount}/${SCENARIOS.length} DISCRIMINATING scenarios ` +
+      `(${SCENARIOS.length - discCount} accept every option and are excluded from the rate)`,
+  );
+  console.log(
+    `  constant-"${baseline.index}" baseline scores ${(baseline.rate * 100).toFixed(0)}% — a real model must BEAT this`,
+  );
   for (const r of results) {
-    const efficiency = r.correctRate / (r.avgLatencyMs / 1000 * 12); // decisions/joule proxy
-    console.log(`  ${r.model}: ${r.avgLatencyMs.toFixed(0)}ms, ${(r.correctRate*100).toFixed(0)}% correct, ~${efficiency.toFixed(3)} decisions/joule`);
+    // NOT an energy measurement. No wattmeter, no RAPL, no powermetrics — this is
+    // correctRate / (seconds x 12W assumed), i.e. a restatement of latency and
+    // correctness under a constant. Reported as a PROXY so nobody quotes it as
+    // joules; comparing it against an unmeasured model's imagined value is not a
+    // comparison at all.
+    const proxy = r.correctRate / ((r.avgLatencyMs / 1000) * 12);
+    const beatsBaseline = r.correctRate > baseline.rate;
+    console.log(
+      `  ${r.model}: ${r.avgLatencyMs.toFixed(0)}ms, ${(r.correctRate * 100).toFixed(0)}% correct` +
+        `${beatsBaseline ? "" : "  <- DOES NOT BEAT THE CONSTANT BASELINE"}` +
+        `, ~${proxy.toFixed(3)} decisions/joule (PROXY: 12W assumed, not measured)`,
+    );
   }
 
   const report: BenchmarkReport = {
@@ -272,7 +338,14 @@ async function main(): Promise<void> {
   }
 }
 
-main().catch((err) => {
-  console.error(`[benchmark] fatal: ${err}`);
-  process.exit(1);
-});
+// GUARD THE ENTRYPOINT. Without this the module RUNS A BENCHMARK AND REWRITES
+// `data/model-benchmark.json` on plain import — which it did to me while I was
+// merely introspecting its exports. A module that mutates measurement data as a
+// side effect of being imported cannot be unit-tested, and its data files cannot
+// be trusted to reflect a deliberate run.
+if (import.meta.main) {
+  main().catch((err) => {
+    console.error(`[benchmark] fatal: ${err}`);
+    process.exit(1);
+  });
+}
