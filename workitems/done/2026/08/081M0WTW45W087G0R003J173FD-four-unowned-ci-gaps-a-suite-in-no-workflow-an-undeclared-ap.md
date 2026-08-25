@@ -1,7 +1,7 @@
 ---
 id: 081M0WTW45W087G0R003J173FD
 type: task
-state: backlog
+state: done
 priority: P2
 slug: four-unowned-ci-gaps-a-suite-in-no-workflow-an-undeclared-ap
 title: "four unowned CI gaps: a suite in no workflow, an undeclared apt payload, a frozen ledger, and a reporter that could go green without looking"
@@ -23,10 +23,10 @@ check that passed. Two were confirmed as reported; two were NOT, and the disconf
 is recorded here because it is as much of the result as the fixes are.
 
 **1. CONFIRMED. The `agentic-organization` suite ran in no workflow.** 1,595 tests whose
-only invoker was `agentic-organization/.github/workflows/ci.yml` -- nested, and GitHub
-Actions reads workflows only from the repository root, so it had never executed. The root
-`.github/workflows/` referenced `agentic-organization` three times and all three were
-yamllint/find over `agentic-organization/deploy`, never the code.
+only invoker was the nested `ci.yml` file under that package's former workflow directory.
+GitHub Actions reads workflows only from the repository root, so it had never executed. The
+suite now runs from `.github/workflows/agentic-organization-tests.yml`; the other root
+workflow references had only checked `agentic-organization/deploy`, never the code.
 
 **2. CONFIRMED, and worse than reported.** `ci-cache-paths-lint.yml` failed **5 of its last
 20** completed runs (25%, not 20%), and **all five** failed inside "Install toolchain via

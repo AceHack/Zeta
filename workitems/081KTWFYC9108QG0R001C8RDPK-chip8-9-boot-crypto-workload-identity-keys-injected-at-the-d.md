@@ -72,7 +72,8 @@ Landed:
   `deriveNodeWorkloadSpiffeId` composes the already-injected `/zeta-hostname.txt` into the identity
   treaty's Article 3 form and validates by round-trip through `parseSpiffe`.
 
-Found while doing it — **an unrecorded divergence, not an exception**: `INJECTION-POINTS.md` §4
+Found while doing it — **an unrecorded divergence, not an exception**:
+`full-ai-cluster/INJECTION-POINTS.md` §4
 says WiFi credentials are secret material and NEVER on the USB ESP; `planFileBackedZflashImage`
 writes the SSID and PSK to the ESP as plaintext JSON whenever `--wifi-ssid`/`--wifi-password` is
 passed, and three existing tests assert that as expected behaviour. Recorded at §4a and in
@@ -92,7 +93,8 @@ stays open.** Nothing in the revival handles key material either.
 `/zeta-qemu-creds-passphrase`, both from the zflash/USB lane, #15346), and
 `satisfies Record<EspDestination, …>` turned the two unclassified arrivals into a compile
 error rather than a silent gap. Under the prose-only rail they would simply have shipped
-unclassified — which is exactly what INJECTION-POINTS.md §4a records happening to the WiFi PSK.
+unclassified — which is exactly what `full-ai-cluster/INJECTION-POINTS.md` §4a records happening
+to the WiFi PSK.
 
 - `/zeta-bind-uefi-keyfile` → **`public-identifier`**, classified by reading its bytes:
   `planFileBackedZflashImage` writes the literal string `"1\n"` and nothing else. Pinned by a
@@ -106,7 +108,8 @@ unclassified — which is exactly what INJECTION-POINTS.md §4a records happenin
 
 **What it carries, factually.** The plaintext passphrase for `/zeta-creds.enc`. Written by
 `planFileBackedZflashImage` when `--qemu-creds-passphrase-file` is passed; read back off the boot
-USB ESP by `installer/uefi-keyfile-esp.ts` (`QEMU_CREDS_PASSPHRASE_IMAGE_PATH`) so a
+USB ESP by `src/Core.TypeScript/installer/uefi-keyfile-esp.ts`
+(`QEMU_CREDS_PASSPHRASE_IMAGE_PATH`) so a
 non-interactive QEMU run can bind the blob. `lib.ts` documents it as a QEMU-only test secret, not
 a production operator path.
 
