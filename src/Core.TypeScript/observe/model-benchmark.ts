@@ -121,7 +121,7 @@ async function queryOllama(
     if (!res.ok) {
       return { response: "", durationMs: performance.now() - start, error: `HTTP ${res.status}` };
     }
-    const data = await res.json() as { response: string };
+    const data = (await res.json()) as { response: string };
     return { response: data.response.trim(), durationMs: performance.now() - start };
   } catch (err) {
     return { response: "", durationMs: performance.now() - start, error: String(err) };
@@ -148,8 +148,8 @@ interface ModelResult {
   readonly model: string;
   readonly scenarios: readonly ScenarioResult[];
   readonly avgLatencyMs: number;
-  readonly parseRate: number;      // fraction that produced a valid index
-  readonly correctRate: number;    // fraction that picked an acceptable choice
+  readonly parseRate: number; // fraction that produced a valid index
+  readonly correctRate: number; // fraction that picked an acceptable choice
   readonly consistencyRate: number; // fraction that gave same answer on retry
   readonly totalDurationMs: number;
 }
@@ -161,11 +161,7 @@ interface BenchmarkReport {
   readonly summary: string;
 }
 
-async function benchmarkModel(
-  model: string,
-  scenarios: readonly Scenario[],
-  host: string,
-): Promise<ModelResult> {
+async function benchmarkModel(model: string, scenarios: readonly Scenario[], host: string): Promise<ModelResult> {
   const results: ScenarioResult[] = [];
   let totalMs = 0;
 
@@ -216,9 +212,7 @@ async function main(): Promise<void> {
   const scenarios = quick ? SCENARIOS.slice(0, 3) : SCENARIOS;
 
   // Determine which models to benchmark
-  const models = specificModel
-    ? [specificModel]
-    : ["qwen2.5:0.5b", "llama3.2:1b", "gemma2:2b"]; // the three we actually use
+  const models = specificModel ? [specificModel] : ["qwen2.5:0.5b", "llama3.2:1b", "gemma2:2b"]; // the three we actually use
 
   console.log(`Model Benchmark (${scenarios.length} scenarios, ${models.length} models)`);
   console.log("─".repeat(60));
@@ -252,15 +246,19 @@ async function main(): Promise<void> {
   console.log("\n" + "─".repeat(60));
   console.log("Summary:");
   for (const r of results) {
-    const efficiency = r.correctRate / (r.avgLatencyMs / 1000 * 12); // decisions/joule proxy
-    console.log(`  ${r.model:}: ${r.avgLatencyMs.toFixed(0)}ms, ${(r.correctRate*100).toFixed(0)}% correct, ~${efficiency.toFixed(3)} decisions/joule`);
+    const efficiency = r.correctRate / ((r.avgLatencyMs / 1000) * 12); // decisions/joule proxy
+    console.log(
+      `  ${r.model}: ${r.avgLatencyMs.toFixed(0)}ms, ${(r.correctRate * 100).toFixed(0)}% correct, ~${efficiency.toFixed(3)} decisions/joule`,
+    );
   }
 
   const report: BenchmarkReport = {
     at: new Date().toISOString(),
     host,
     models: results,
-    summary: results.map((r) => `${r.model}:${(r.correctRate*100).toFixed(0)}%@${r.avgLatencyMs.toFixed(0)}ms`).join(", "),
+    summary: results
+      .map((r) => `${r.model}:${(r.correctRate * 100).toFixed(0)}%@${r.avgLatencyMs.toFixed(0)}ms`)
+      .join(", "),
   };
 
   if (!dryRun && results.length > 0) {
