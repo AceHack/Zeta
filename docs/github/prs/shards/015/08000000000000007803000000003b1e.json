@@ -1,0 +1,12 @@
+{
+  "pr_number": 15134,
+  "archive_path": "docs/history/pr-reviews/PR-15134-skip-review-telemetry-flush-drift-record-sweep-tick-certified-heals.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-25T01:57:54.488Z",
+  "schema_version": "v1",
+  "commit_sha": "adc36b577193a624eb3cf9850a6ff213c52960b3",
+  "title": "[skip-review][telemetry-flush] drift: record sweep tick + certified heals",
+  "state": "MERGED",
+  "merged_at": "2026-08-25T01:57:06Z",
+  "head_ref": "heartbeat/drift-sweep"
+}
