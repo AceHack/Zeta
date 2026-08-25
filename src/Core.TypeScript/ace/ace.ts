@@ -21,20 +21,17 @@ import { chmodSync, existsSync, mkdirSync, readdirSync, readFileSync, writeFileS
 import { createPublicKey, createPrivateKey } from "node:crypto";
 import {
   defaultStorePath,
-  listInstalled,
-  installPackage,
   contentHash,
-  loadTrustStore,
-  addTrustedKey,
-  listTrustedKeys,
   validatePackagePaths,
-  addRegistryEntry,
-  listRegistry,
-  writeRegistryRemote,
-  removeRegistryRemote,
-  readRegistriesConfig,
+  trustStorePath,
+  bundledTrustPath,
+  registryPath,
+  bundledRegistryPath,
+  registriesPath,
   type AcePackage,
 } from "./store.ts";
+import { storage, setStorage } from "./storage/index.ts";
+import { ZetaStorage } from "./storage/ZetaStorage.ts";
 import { generateKeypair, signManifest, verifySignature, keyId, publicKeyInfoFromPrivatePem } from "./signing.ts";
 import { verifyIndexSignature, signIndex } from "./index-signature.ts";
 import { authorizedCapabilities, capabilityPermitted, validateCapabilities, INSTALL_TIME_VS_RUNTIME } from "./capability-manifest.ts";
@@ -715,7 +712,7 @@ async function checkLockedMarks(
   let revoked: RevocationMap;
   let quarantined: RevocationMap;
   try {
-    const loaded = await loadRegistries({ trustStore: loadTrustStore(), offline });
+    const loaded = await loadRegistries({ trustStore: await storage.loadTrustStore(bundledTrustPath(), trustStorePath()), offline });
     revoked = loaded.revoked;
     quarantined = loaded.quarantined;
   } catch {
@@ -823,7 +820,7 @@ export async function main(argv: readonly string[]): Promise<number> {
   // trust
   if (parsed.command === "trust") {
     if (parsed.sub === "list") {
-      const rows = listTrustedKeys();
+      const rows = await storage.listTrustedKeys(bundledTrustPath(), trustStorePath());
       if (rows.length === 0) {
         console.log("No trusted keys. (add one: ace trust add <pub>)");
         return 0;
@@ -876,7 +873,7 @@ export async function main(argv: readonly string[]): Promise<number> {
     const kid = keyId(canonicalB64);
     const entry: { key_id: string; public_key: string; label?: string } = { key_id: kid, public_key: canonicalB64 };
     if (parsed.label !== undefined) entry.label = parsed.label;
-    const res = addTrustedKey(entry);
+    const res = await storage.addTrustedKey(entry, trustStorePath());
     console.log(
       res.added
         ? `ace: trusted ${kid}${parsed.label ? " (" + parsed.label + ")" : ""} [${inputForm}]`
@@ -888,7 +885,7 @@ export async function main(argv: readonly string[]): Promise<number> {
   // registry
   if (parsed.command === "registry") {
     if (parsed.sub === "remote-list") {
-      const remotes = readRegistriesConfig().remotes;
+      const remotes = (await storage.readRegistriesConfig(registriesPath())).remotes;
       if (remotes.length === 0) {
         console.log("No remote registries. (add: ace registry remote add <url> --key <keyid>)");
         return 0;
@@ -900,7 +897,7 @@ export async function main(argv: readonly string[]): Promise<number> {
       return 0;
     }
     if (parsed.sub === "remote-rm") {
-      const { removed } = removeRegistryRemote(parsed.remoteUrl!);
+      const { removed } = await storage.removeRegistryRemote(parsed.remoteUrl!, registriesPath());
       console.log(removed ? `ace: removed remote ${parsed.remoteUrl}` : `ace: no such remote ${parsed.remoteUrl}`);
       return 0;
     }
@@ -909,12 +906,12 @@ export async function main(argv: readonly string[]): Promise<number> {
         parsed.remoteMaxStaleness !== undefined
           ? { url: parsed.remoteUrl!, key_id: parsed.remoteKey!, max_staleness_days: parsed.remoteMaxStaleness }
           : { url: parsed.remoteUrl!, key_id: parsed.remoteKey! };
-      const { added, updated } = writeRegistryRemote(entry);
+      const { added, updated } = await storage.writeRegistryRemote(entry, registriesPath());
       console.log(`ace: ${updated ? "updated" : added ? "added" : "noop"} remote ${parsed.remoteUrl}`);
       return 0;
     }
     if (parsed.sub === "list") {
-      const rows = listRegistry();
+      const rows = await storage.listRegistry(bundledRegistryPath(), registryPath());
       if (rows.length === 0) {
         console.log("No registry entries. (add one: ace registry add <name> <version> <url>)");
         return 0;
@@ -1294,7 +1291,7 @@ export async function main(argv: readonly string[]): Promise<number> {
       }
       pkgHash = phr.hash;
     }
-    const res = addRegistryEntry(parsed.regName!, parsed.regVersion!, { url: storedUrl, package_hash: pkgHash });
+    const res = await storage.addRegistryEntry(parsed.regName!, parsed.regVersion!, { url: storedUrl, package_hash: pkgHash }, registryPath());
     console.log(
       res.added
         ? `ace: registered ${parsed.regName}@${parsed.regVersion}`
@@ -1306,7 +1303,7 @@ export async function main(argv: readonly string[]): Promise<number> {
   }
 
   if (parsed.command === "list") {
-    const packages = listInstalled(parsed.storePath);
+    const packages = await storage.listInstalled(parsed.storePath);
 
     if (parsed.json) {
       console.log(JSON.stringify(packages, null, 2));
@@ -1358,7 +1355,7 @@ export async function main(argv: readonly string[]): Promise<number> {
     }
     // Signature gate (same policy as install): hard-refuse a present-but-invalid signature;
     // no-signature is only overridable with --allow-no-signature.
-    const v = verifySignature(pkg.manifest, loadTrustStore());
+    const v = verifySignature(pkg.manifest, await storage.loadTrustStore(bundledTrustPath(), trustStorePath()));
     if (!v.ok && v.reason !== "no-signature") {
       console.error(`ace: update refused: ${v.reason}`);
       return 1;
@@ -1385,7 +1382,7 @@ export async function main(argv: readonly string[]): Promise<number> {
       const fetchPackage = async (u: string): Promise<string> =>
         u.startsWith("http://") || u.startsWith("https://") ? await (await fetch(u)).text() : readFileSync(u, "utf8");
       const { registry, warnings, errors } = await loadRegistries({
-        trustStore: loadTrustStore(),
+        trustStore: await storage.loadTrustStore(bundledTrustPath(), trustStorePath()),
         offline: parsed.offline === true,
       });
       for (const w of warnings) console.error(`ace: ${w}`);
@@ -1400,7 +1397,7 @@ export async function main(argv: readonly string[]): Promise<number> {
         );
         return 1;
       }
-      const res = await resolve(pkg, fetchPackage, loadTrustStore(), registry, solveResult.versions, {
+      const res = await resolve(pkg, fetchPackage, await storage.loadTrustStore(bundledTrustPath(), trustStorePath()), registry, solveResult.versions, {
         allowNoSignature: parsed.allowNoSignature,
       });
       if (!res.ok) {
@@ -1467,7 +1464,7 @@ export async function main(argv: readonly string[]): Promise<number> {
     // AUTHENTICITY GATE (design §6) — before extraction.
     // Only `no-signature` is --allow-no-signature-overridable.
     // `bad-signature` and `untrusted-key` are ALWAYS hard-refused (even with --allow-no-signature).
-    const v = verifySignature(pkg.manifest, loadTrustStore());
+    const v = verifySignature(pkg.manifest, await storage.loadTrustStore(bundledTrustPath(), trustStorePath()));
     let signer: { key_id: string; label?: string } | undefined;
     if (v.ok) {
       signer = { key_id: v.key_id };
@@ -1551,7 +1548,7 @@ export async function main(argv: readonly string[]): Promise<number> {
           console.error(`ace: install refused: ${fr}`);
           return 1;
         }
-        const trust = loadTrustStore();
+        const trust = await storage.loadTrustStore(bundledTrustPath(), trustStorePath());
         // PASS 1 (verify-all, install NOTHING) — mirrors the default-path preflight: fetch → parse →
         // verify pin + content_hash + signature + path-safety + store-key collision across the WHOLE
         // graph before any extract, so a verify failure on a later node cannot orphan earlier ones.
@@ -1641,14 +1638,14 @@ export async function main(argv: readonly string[]): Promise<number> {
         for (let i = 0; i < verified.length; i++) {
           const np = verified[i]!;
           const node = lf.nodes[i]!;
-          const ir = installPackage(parsed.storePath, np);
+          const ir = await storage.installPackage(parsed.storePath, np);
           if (!ir.ok) {
             console.error(`ace: install refused: ${node.name}@${node.version}: ${ir.error}`);
             return 1;
           }
         }
         // Install the root last (already signature+content_hash verified above).
-        const rootIr = installPackage(parsed.storePath, pkg);
+        const rootIr = await storage.installPackage(parsed.storePath, pkg);
         if (!rootIr.ok) {
           console.error(`ace: install refused: ${pkg.manifest.name} (root): ${rootIr.error}`);
           return 1;
@@ -1659,7 +1656,7 @@ export async function main(argv: readonly string[]): Promise<number> {
       const fetchPackage = async (u: string): Promise<string> =>
         u.startsWith("http://") || u.startsWith("https://") ? await (await fetch(u)).text() : readFileSync(u, "utf8");
       const { registry, revoked, quarantined, warnings, errors } = await loadRegistries({
-        trustStore: loadTrustStore(),
+        trustStore: await storage.loadTrustStore(bundledTrustPath(), trustStorePath()),
         offline: parsed.offline === true,
       });
       for (const w of warnings) console.error(`ace: ${w}`);
@@ -1680,7 +1677,7 @@ export async function main(argv: readonly string[]): Promise<number> {
           console.log(`  ${n}@${v}`);
         }
       }
-      const res = await resolve(pkg, fetchPackage, loadTrustStore(), registry, solveResult.versions, {
+      const res = await resolve(pkg, fetchPackage, await storage.loadTrustStore(bundledTrustPath(), trustStorePath()), registry, solveResult.versions, {
         allowNoSignature: parsed.allowNoSignature,
         allowQuarantined: parsed.allowQuarantined === true,
         revoked,
@@ -1726,7 +1723,7 @@ export async function main(argv: readonly string[]): Promise<number> {
       }
       // EXTRACT all, leaves first.
       for (const node of res.order) {
-        const out = installPackage(parsed.storePath, node);
+        const out = await storage.installPackage(parsed.storePath, node);
         if (!out.ok) {
           console.error(`ace: install failed mid-graph: ${out.error}`);
           return 1;
@@ -1802,7 +1799,7 @@ export async function main(argv: readonly string[]): Promise<number> {
       }
     }
     // INTEGRITY + extract (slice 2, unchanged)
-    const result = installPackage(parsed.storePath, pkg);
+    const result = await storage.installPackage(parsed.storePath, pkg);
     if (!result.ok) {
       console.error(`ace: install refused: ${result.error}`);
       return 1;
@@ -1834,14 +1831,14 @@ export async function main(argv: readonly string[]): Promise<number> {
     // it can. The store is ordinary files under the same user as every agent on the box, so
     // "verified at install" does not survive to the next read; re-verification has to happen here
     // or nowhere.
-    const pkgs = listInstalled(parsed.storePath);
+    const pkgs = await storage.listInstalled(parsed.storePath);
     const found = pkgs.find((p) => p.hash === parsed.hash || p.manifest.content_hash === parsed.hash);
     if (!found) {
       console.error(`ace: no installed package with hash ${parsed.hash}`);
       return 1;
     }
     const label = `${found.manifest.name}@${found.manifest.version}`;
-    const auth = authorizedCapabilities(found.manifest, loadTrustStore());
+    const auth = authorizedCapabilities(found.manifest, await storage.loadTrustStore(bundledTrustPath(), trustStorePath()));
 
     if (!auth.ok) {
       if (auth.reason === "no-signature") {
@@ -2022,6 +2019,9 @@ export async function main(argv: readonly string[]): Promise<number> {
 }
 
 if (import.meta.main) {
+  if (process.env.ZETA_AVAILABLE === "1") {
+    setStorage(new ZetaStorage());
+  }
   // .catch() closes the unhandled-promise surface from the async main(): an unexpected throw
   // inside an async main() exits 1 with a diagnostic instead of an UnhandledPromiseRejection.
   main(process.argv.slice(2))
