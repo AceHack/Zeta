@@ -44,6 +44,39 @@ function isDirectory(path: string): boolean {
   }
 }
 
+/**
+ * `mise trust` the freshly-created worktree.
+ *
+ * mise refuses to read a config it has not been trusted at THAT PATH, and a worktree is a new path
+ * every time. `tools/setup/common/mise.sh` trusts the clone it installed into, once — so a lane
+ * allocated afterwards inherits nothing, and mise fails closed on every command run inside it.
+ *
+ * The failure is quiet in the worst way: mise reports the untrusted state as
+ * `error parsing config file`, which reads as a malformed pin file rather than a missing grant, and
+ * the tools still resolve from whatever is already on PATH. So the lane keeps working, appears to
+ * be inside the pinned closure, and is not — until a host where PATH differs silently disagrees
+ * with CI. Measured 2026-08-25: 34 of 56 live worktrees were untrusted.
+ *
+ * Non-fatal by design. A lane that cannot be trusted is still a usable lane, and failing allocation
+ * over it would turn a degraded closure into no lane at all.
+ */
+function trustMiseConfig(wt: string): void {
+  // eslint-disable-next-line sonarjs/no-os-command-from-path -- same delegation as the git call above.
+  const trust = spawnSync("mise", ["trust", "--all", "--yes"], { cwd: wt, stdio: "inherit" });
+  if (trust.error !== undefined) {
+    process.stderr.write("warning: mise not on PATH; worktree left untrusted (tools resolve from PATH)\n");
+    return;
+  }
+  if (trust.status !== 0) {
+    process.stderr.write(`warning: mise trust failed in ${wt}; run it there by hand\n`);
+    return;
+  }
+  // Our own line, not mise's. `mise trust` prints nothing when the config was already auto-trusted
+  // (which is every CI runner), so its output cannot tell an operator — or a test — whether the
+  // grant step ran at all.
+  process.stdout.write(`  mise:   trusted ${wt}\n`);
+}
+
 function allocate(root: string, lane: Lane, branch: string): void {
   const wt = lanePath(root, lane);
   if (isDirectory(wt)) {
@@ -62,6 +95,7 @@ function allocate(root: string, lane: Lane, branch: string): void {
     process.stderr.write("error: git worktree add failed\n");
     process.exit(3);
   }
+  trustMiseConfig(wt);
   process.stdout.write(`OK: ${lane}-lane allocated at ${wt} on branch ${branch}\n`);
 }
 
