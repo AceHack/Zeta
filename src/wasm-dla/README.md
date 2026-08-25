@@ -22,7 +22,33 @@ the evidence base for **Conjecture Z-7** in the frozen core register.
 The 1,600× size difference between WAT and Go with identical D_f is the
 core claim. Compiler is irrelevant to the fractal dimension.
 
-> **Honest note on the `1.322` figure (2026-08-09).** The `1.322` in the table
+> **Register:** Z-7 was **DEMOTED §A → §B on 2026-08-01** and remains a conjecture.
+> Note it survives the 2026-08-25 correction below: the *independence* claim never
+> depended on the *value*. Every substrate reports the same D_f whatever that number
+> is, because the byte-lock guarantees byte-identical trajectories. What the
+> correction removes is the **1.322** in the table, not the ⊥.
+
+> **Honest note on the `1.322` figure (2026-08-09; corrected by Lumen 2026-08-25).**
+> The `1.322` in the table above **was typed in and never computed** — no code path
+> in this repo has ever produced it from a measurement. Two corrections to the
+> 2026-08-09 version of this note, both measured:
+>
+> 1. It is **not** "a hardcoded constant in `dla.wat` l.191". The `* 1.322` appears
+>    only in a **comment**. The function body was always `csize / (maxr * maxr)` —
+>    a number **density**, not a dimension — which measures **0.248–0.450** on the
+>    eight byte-locked seeds, a factor of 3–5 from its own comment. It is now
+>    renamed `toy_density_proxy` and pinned by a test.
+> 2. The ≈1.30 box-counting reading is **not** explained by "800 walkers is too small
+>    for the asymptote". That diagnosis is wrong: the Witten–Sander **mass-radius**
+>    estimator on the *same* clusters returns **1.668**, within 2.5% of 1.71. The
+>    ≈1.30 is an **estimator artifact** — the same box-counting code returns
+>    **1.0001** on a Sierpinski gasket (true dimension 1.58496, exactly self-similar,
+>    no finite-size physics) subsampled to the same ~330 points.
+>
+> Full analysis, calibration and anchors:
+> `docs/research/2026-08-25-does-the-dla-meter-measure-a-fractal-dimension-four-estimators-one-typed-in-constant-lumen.md`
+>
+> *(the original note, retained for the record:)* The `1.322` in the table
 > above is each substrate's `get_df()` **mass-radius proxy** — a hardcoded
 > constant (`dla.wat` l.191: `… * 1.322 as a proxy`), not a measured dimension.
 > A *real* box-counting (Minkowski–Bouligand) estimator now lives host-side in

@@ -65,8 +65,24 @@ function runDLAV8(seed: number): { df: number; cluster: Uint8Array; maxR: number
     }
   }
 
-  const df = clusterSize < 2 ? 1.322 : Math.log(clusterSize) / Math.log(Math.sqrt(clusterSize) + 1);
-  return { df, cluster: grid, maxR: Math.sqrt(maxR2) };
+  // TOY (Lumen 2026-08-25) — `toyDfFromClusterSizeOnly` is NOT a fractal dimension.
+  //
+  // It never reads a particle coordinate. Substituting R = sqrt(N) into D = ln N / ln R
+  // PRESUPPOSES N proportional to R^2, i.e. D = 2 — so this expression tends to 2 as N
+  // grows, and at this site's cluster sizes (N ~ 300) it returns ~1.96. It would return
+  // exactly the same value for a solid disc, a straight line, or a random dust of the
+  // same particle count. A dimension estimator invariant under rearranging every
+  // particle is not measuring geometry.
+  //
+  // The `1.322` fallback is a typed-in literal with no computed provenance anywhere in
+  // this repo (it entered as a constant in the commit that created wat/dla.wat).
+  //
+  // Kept rather than deleted — demoting is the point. For a calibrated estimator see
+  // src/wasm-dla/bytelock/reference.mjs `boxCountingDimension` (+ its CALIB-1..4 tests).
+  // Analysis: docs/research/2026-08-25-does-the-dla-meter-measure-a-fractal-dimension-four-estimators-one-typed-in-constant-lumen.md
+  const toyDfFromClusterSizeOnly =
+    clusterSize < 2 ? 1.322 : Math.log(clusterSize) / Math.log(Math.sqrt(clusterSize) + 1);
+  return { df: toyDfFromClusterSizeOnly, cluster: grid, maxR: Math.sqrt(maxR2) };
 }
 
 interface Props {

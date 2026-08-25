@@ -862,6 +862,60 @@ The three supporting checks, each settled: (1) **no phase to add** — this repo
 
 *Register discipline on the adjacent metering claim:* the **weak** version (*the mathematical structure of QM applies to any system with linear evolution, metered boundaries, and observables-as-norms*) is defensible and partially satisfied **by construction** in `AmplitudeEmu.fs`/`ZSetISA.qs`. The **strong** version (*physical quantum effects occur*) is **not bought by metering** and must not be implied. The measurement narrows even the weak version: the shared fold has neither observables-as-norms nor signed superposition. Full derivation: `docs/research/2026-08-24-the-evidence-observation-gap-is-not-complex-the-fold-never-interferes-lumen.md`.
 
+### B-dla-meter. The DLA "fractal dimension" was four different quantities, and 1.322 was never one of them (Lumen 2026-08-25)
+
+**Status: `toy` for the number, `metered` for the estimator.** Audit of whether Zeta's
+DLA meter measures a fractal dimension at all. Findings, each measured:
+
+- **`1.322` was typed in and never computed.** It entered as a literal with
+  `dfa6085455` (the Oracle 10 WASM sources) and propagated as prose. No code path in
+  the repo has ever produced it from a measurement, and no physical quantity in the
+  DLA problem has been identified that it equals. Near-coincidences with **4/3**
+  (the planar Brownian frontier / SLE(8/3), Lawler–Schramm–Werner 2001) and with the
+  plastic number **1.32472** are recorded as **coincidences under
+  `numerology-vs-number-theory.md` and explicitly NOT promoted** — the number being
+  "explained" was never measured, so there is nothing to explain.
+- **Four functions named `D_f`, computing four different things.** `dla.wat get_df()`
+  returned `N/R²` — a number **density** (= R^(D−2), not scale-invariant, therefore
+  not a dimension), measured 0.248–0.450; now renamed **`toy_density_proxy`**.
+  `OracleV8Bytecode` computed `ln N / ln(√N+1)`, which reads **no particle position
+  at all** and tends to 2 by construction; now renamed **`toyDfFromClusterSizeOnly`**.
+  Two real box-counting implementations differ only in window.
+- **The ≈1.30 box-counting reading is an estimator artifact, not small-cluster
+  physics.** The prior explanation ("800 walkers is too small for the 1.71
+  asymptote") is refuted by a control: the same estimator returns **1.0001** on a
+  Sierpinski gasket — exactly self-similar, true dimension **1.58496**, no
+  finite-size physics — subsampled to the DLA cluster's ~330 points. Definitionally
+  (Falconer), the box dimension of any finite point set is **0**, so only "the slope
+  over a stated window" is well-posed.
+- **The clusters ARE scaling like DLA.** The Witten–Sander mass-radius estimator on
+  the same byte-locked clusters returns a mean of **1.668**, within 2.5% of the
+  accepted **1.71** (Witten & Sander 1981, PRL **47** 1400; Halsey 2000, Physics
+  Today **53**(11) 36).
+- **A detector that could not detect.** `runCommitPairProbe.isExcess` had no positive
+  control anywhere: mutating it to a hardcoded `false` left the suites at **41 pass,
+  0 fail**. Root cause is the same defect — every fixture pinned `fractalDim: 1.322`,
+  and a constant has zero variance, so mutual information is identically 0 and the
+  assertion is trivially satisfied. Positive **and** negative controls added; both
+  mutation directions now die.
+
+**Bearing on §A: none.** No §A row depends on D_f or DLA. The whole DLA batch
+(Z-2 … Z-7) was already demoted to §B on 2026-08-01, and `F = D_f² − 3.42·D_f + 0.5`
+(Z-6) was quarantined then — **there was no false discharge left to correct.** The
+register worked; this row records the deeper defect underneath the numbers it demoted.
+
+**Z-7 (`binary_size ⊥ D_f`) survives the correction** — the independence claim never
+depended on the *value*. Every substrate reports the same D_f whatever it is, because
+the byte-lock guarantees byte-identical trajectories. What the correction removes is
+the **1.322** in Z-7's table, not the ⊥.
+
+**Falsifiers now in the tree:** `src/wasm-dla/bytelock/box-counting.test.ts`
+CALIB-1..4 (known-dimension controls: square → 2.000, line → 1.000, dense gasket →
+1.530, sparse gasket → 1.000), the mass-radius cross-check, the density pin, and
+`src/Core.TypeScript/oracle/dla-meter.probe.test.ts` DMP-9.
+
+**Doc:** `docs/research/2026-08-25-does-the-dla-meter-measure-a-fractal-dimension-four-estimators-one-typed-in-constant-lumen.md`
+
 ### B-other. The rest of the penumbra (each open, each one-directional on §A)
 
 | Conjecture | State | Discharge = |

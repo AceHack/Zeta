@@ -123,11 +123,36 @@ export function runDLA(seed) {
  * Real box-counting (Minkowski–Bouligand) fractal dimension of the DLA cluster,
  * computed HOST-SIDE from the byte-locked trajectory. Because every substrate
  * produces a byte-identical trajectory (that is exactly what the byte-lock
- * verifies), this yields the SAME dimension for all substrates for free — the
- * honest fractal dimension, replacing the ad-hoc `get_df()` mass-radius proxy
- * (which returns a hardcoded ~1.322; see `../wat/dla.wat` l.191). For 2-D DLA the
- * asymptotic value is ≈ 1.71 (Halsey 2000; arXiv:2607.02216) and it approaches
- * that as the cluster (N_WALKERS) grows.
+ * verifies), this yields the SAME dimension for all substrates for free —
+ * replacing the ad-hoc `get_df()` proxy in `../wat/dla.wat` (now renamed
+ * `toy_density_proxy`, because it returns `csize / maxR²` — a number DENSITY, not
+ * a dimension; the "~1.322 constant" attributed to it was only ever in a comment,
+ * never in its body). For 2-D DLA the asymptotic value is ≈ 1.71 (Witten & Sander
+ * 1981, Phys. Rev. Lett. 47, 1400; Halsey 2000, Physics Today 53(11), 36).
+ *
+ * ⚠ CORRECTION (Lumen 2026-08-25) — READ BEFORE QUOTING THE NUMBER BELOW.
+ * The ≈1.30 this returns at the byte-lock's cluster size is NOT "the honest small-N
+ * dimension". It is dominated by an ESTIMATOR ARTIFACT, and the artifact is now
+ * pinned by calibration tests (`box-counting.test.ts` CALIB-1..4):
+ *
+ *   - Run this same code on a SIERPINSKI GASKET — exactly self-similar, true
+ *     dimension log3/log2 = 1.58496, NO finite-size physics at all — densely
+ *     sampled, and it returns 1.530. Subsample the SAME object to ~330 points
+ *     (the DLA cluster's occupancy) and it returns 1.0001.
+ *   - Mechanism: at ε=2 it finds ~292 boxes for ~330 points, so nearly every point
+ *     is alone in its box. The small-ε end of the fit has SATURATED, which drags
+ *     the slope toward isolated-point behaviour. The window {2,4,8,16} puts half
+ *     its fit points in that regime.
+ *   - Definitionally (Falconer, *Fractal Geometry*): the box-counting dimension of
+ *     ANY finite point set is exactly 0. These clusters are ~330 cells, so there is
+ *     no ε→0 limit to converge to — only a slope over a stated window.
+ *   - The Witten–Sander mass-radius estimator on these SAME clusters returns a mean
+ *     of 1.668, within 2.5% of 1.71 (see `massRadiusDimension` in the tests). The
+ *     cluster IS scaling like DLA; this window was not measuring it.
+ *
+ * So: report this as "the slope over ε ∈ {2,4,8,16}", never as "the fractal
+ * dimension". Growing the cluster does NOT fix it — the saturated points stay in
+ * the fit at every size (measured: 1.249 at N=339, plateauing ≈1.43 by N=4992).
  *
  * Scales 2/4/8/16 px, least-squares slope of ln N(ε) vs ln(1/ε) — the same
  * estimator the web app's OracleV8Bytecode oracle uses, so repo substrate, web

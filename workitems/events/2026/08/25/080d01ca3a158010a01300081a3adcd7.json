@@ -1,0 +1,14 @@
+{
+  "id": "080d01ca3a158010a01300081a3adcd7",
+  "at": "2026-08-25T14:16:06.576Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M0WMEGNE087G0R000V25RW1",
+    "type": "bug",
+    "title": "the DLA meter's D_f was typed in, never computed, and its mutual-information detector could not fail",
+    "slug": "the-dla-meter-s-d-f-was-typed-in-never-computed-and-its-mutu",
+    "priority": "P2",
+    "filename": "081M0WMEGNE087G0R000V25RW1-the-dla-meter-s-d-f-was-typed-in-never-computed-and-its-mutu.md"
+  }
+}

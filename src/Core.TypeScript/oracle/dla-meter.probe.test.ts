@@ -263,3 +263,56 @@ describe("DMP-9: loadPriorReadings", () => {
     rmSync(tmpRoot, { recursive: true, force: true });
   });
 });
+
+// ── DMP-9: POSITIVE CONTROL — isExcess CAN be true ────────────────────────────
+// (Lumen 2026-08-25.) Before this block, every assertion about `isExcess` in this
+// file and in dla-meter.e2e.test.ts asserted FALSE, or asserted that two runs
+// agreed. The detector's positive branch was never exercised.
+//
+// Mechanically confirmed by mutation on 2026-08-25: replacing
+//     isExcess: excessPairs > 0,   ->   isExcess: false,
+// in dla-meter.ts left the suites at "41 pass, 0 fail". A detector hardcoded to
+// never detect passed its entire test suite — the vacuity class exactly as
+// `.claude/rules/toy-is-free-metered-must-be-earned.md` names it.
+//
+// ROOT CAUSE, and it is the same defect as the typed-in constant: every fixture
+// above pins `fractalDim: 1.322`. With zero variance in the input, the mutual
+// information is identically 0 for BOTH the real pairing and the permutation null,
+// so `isExcess` is structurally false and the assertions are trivially satisfied.
+// A number that never varies cannot exercise a correlator.
+//
+// Analysis: docs/research/2026-08-25-does-the-dla-meter-measure-a-fractal-dimension-four-estimators-one-typed-in-constant-lumen.md
+describe("DMP-9: runCommitPairProbe — positive control (the falsifier)", () => {
+  it("two PERFECTLY correlated oracle streams with real variance → isExcess = true", () => {
+    // Two distinct buckets (13 and 14), locked in phase across both oracles.
+    // Real MI is maximal; the permutation null breaks the phase lock, so the
+    // real MI exceeds the 95th-percentile null threshold.
+    const readings: Array<{ oracleIndex: number; fractalDim: number }> = [];
+    for (let i = 0; i < 12; i++) {
+      const df = i % 2 === 0 ? 1.32 : 1.45; // dfBucket -> 13, 14
+      readings.push({ oracleIndex: 0, fractalDim: df });
+      readings.push({ oracleIndex: 1, fractalDim: df });
+    }
+    const result = runCommitPairProbe(readings, 42);
+    expect(result.meteredPairs).toBeGreaterThan(0);
+    // THE assertion that kills the `isExcess: false` mutant.
+    expect(result.isExcess).toBe(true);
+    expect(result.excessFraction).toBe(1);
+  });
+
+  it("the SAME variance with the streams decorrelated → isExcess = false (negative control)", () => {
+    // Same two buckets, same counts, same everything — only the phase relationship
+    // is destroyed. Pairing this against the test above is what makes either one
+    // informative: together they show the probe tracks CORRELATION, not variance.
+    const readings: Array<{ oracleIndex: number; fractalDim: number }> = [];
+    const a = [1.32, 1.45, 1.32, 1.45, 1.32, 1.45, 1.32, 1.45, 1.32, 1.45, 1.32, 1.45];
+    const b = [1.32, 1.32, 1.45, 1.32, 1.45, 1.45, 1.32, 1.45, 1.45, 1.32, 1.32, 1.45];
+    for (let i = 0; i < a.length; i++) {
+      readings.push({ oracleIndex: 0, fractalDim: a[i]! });
+      readings.push({ oracleIndex: 1, fractalDim: b[i]! });
+    }
+    const result = runCommitPairProbe(readings, 42);
+    expect(result.meteredPairs).toBeGreaterThan(0);
+    expect(result.isExcess).toBe(false);
+  });
+});

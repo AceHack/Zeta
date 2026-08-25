@@ -171,10 +171,30 @@
         (br $loop_outer)))
     (i32.load (global.get $CSIZE_OFFSET)))
 
-  ;; get_df() — return D_f estimate = log(cluster_size) / log(max_radius)
-  ;; Uses the box-counting proxy: D_f ~ ln(N) / ln(R)
-  ;; Returns 1.322 for a well-grown DLA cluster
-  (func (export "get_df") (result f64)
+  ;; toy_density_proxy() — returns csize / maxR², a NUMBER DENSITY. NOT a dimension.
+  ;;
+  ;; RENAMED + CORRECTED by Lumen 2026-08-25. This was exported as `get_df` and
+  ;; commented "Returns 1.322 for a well-grown DLA cluster" / "* 1.322 as a proxy".
+  ;; Both statements were false about this very function:
+  ;;
+  ;;   * There is no 1.322 anywhere in the body. The `* 1.322` was only ever in the
+  ;;     comment. The expression is, and always was, `csize / (maxr * maxr)`.
+  ;;   * Measured on the eight byte-locked seeds it returns 0.248–0.450 — a factor
+  ;;     of 3–5 from the 1.322 the comment claimed. Pinned by
+  ;;     `bytelock/box-counting.test.ts` ("get_df()'s actual expression is a DENSITY").
+  ;;
+  ;; Why it cannot be a dimension: for any object obeying N ~ R^D, the quantity
+  ;; N/R² equals R^(D−2), which for D < 2 decays without bound as the cluster grows.
+  ;; It is not scale-invariant, so it has no fixed point to converge to. This is a
+  ;; mislabel, not a poor approximation.
+  ;;
+  ;; REGISTER: `toy` (`.claude/rules/toy-is-free-metered-must-be-earned.md`).
+  ;; Zero callers — nothing in the tree imports this export. Kept, not deleted:
+  ;; demoting is the point. For a real estimator see `bytelock/reference.mjs`
+  ;; (`boxCountingDimension`, calibrated) and `massRadiusDimension` in its tests.
+  ;;
+  ;; Analysis: docs/research/2026-08-25-does-the-dla-meter-measure-a-fractal-dimension-four-estimators-one-typed-in-constant-lumen.md
+  (func (export "toy_density_proxy") (result f64)
     (local $csize f64)
     (local $maxr2 f64)
     (local $maxr f64)
@@ -183,14 +203,8 @@
     (if (f64.le (local.get $maxr2) (f64.const 1.0))
       (then (return (f64.const 1.0))))
     (local.set $maxr (f64.sqrt (local.get $maxr2)))
-    ;; D_f = ln(csize) / ln(maxr)
-    ;; WAT does not have f64.log; approximate with the identity:
-    ;; ln(x) ~ (x-1)/x * correction for small x, but for large x we
-    ;; use the Newton series. Instead, use the known DLA scaling:
-    ;; D_f ~ 2 * ln(csize) / ln(csize^2 / maxr2) when csize >> 1
-    ;; Simplified: return csize / (maxr * maxr) * 1.322 as a proxy
-    ;; This is the mass-radius relation: N ~ R^D_f => D_f ~ ln(N)/ln(R)
-    ;; We return the ratio directly; the JS host computes the log.
+    ;; Behaviour deliberately UNCHANGED — this commit renames and documents, it does
+    ;; not alter what the function computes.
     (f64.div (local.get $csize) (f64.mul (local.get $maxr) (local.get $maxr))))
 
   ;; get_cell(x, y) — exported version
