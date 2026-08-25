@@ -1,0 +1,160 @@
+{
+  "$comment": [
+    "heartbeat-lane-allowlist.json — the blast radius of the PR-free heartbeat lane, as DATA.",
+    "",
+    "Design: docs/research/2026-08-25-pr-free-heartbeat-lane-attestation-instead-of-gate.md",
+    "Enforcer: src/Core.TypeScript/hygiene/audit-heartbeat-lane-attestations.ts",
+    "",
+    "THIS FILE IS NOT ENFORCEMENT. GitHub rulesets scope by REF, never by PATH, so no forge-side",
+    "mechanism confines a bypass actor to these prefixes (design doc section 2). This registry is",
+    "read by the lane BEFORE it pushes (refusal) and by the post-hoc audit AFTER it pushes",
+    "(detection). A compromised credential ignores both. What bounds the damage is that the",
+    "`Branch Safety` ruleset (16189060: deletion + non_fast_forward) carries ZERO bypass actors, so",
+    "the lane can APPEND badly and can never ERASE — and an append is compensatable by revert."
+  ],
+  "version": 1,
+  "cutoverIso": "2099-01-01T00:00:00Z",
+  "$cutoverComment": [
+    "Lane commits BEFORE this instant are classified PRE-CUTOVER-LEGACY and never fail the audit —",
+    "the same grandfathering audit-agencysignature-main-tip.ts uses, and for the same reason: arming",
+    "a check must not retroactively redden history it was never in force for.",
+    "",
+    "The far-future default means the audit is ARMED AND GREEN until the maintainer runs the ruleset",
+    "change in design-doc section 6 and moves this field to that date. `--cutover <ISO>` overrides it,",
+    "which is how the audit is proven able to fail against real history rather than only synthetics."
+  ],
+  "laneIdentities": {
+    "$comment": [
+      "Commit author/committer emails that MARK a commit as lane-produced. Offline heuristic only —",
+      "a commit object's author field is attacker-chosen. The authoritative record of who bypassed a",
+      "ruleset is the forge's own rule-suites ledger (`--online`), which is why bypass_mode MUST be",
+      "`always` and never `exempt`: `exempt` writes no audit entry."
+    ],
+    "emails": [
+      "heartbeat-lane[bot]@users.noreply.github.com"
+    ],
+    "forgeActors": [
+      "heartbeat-lane"
+    ],
+    "$forgeActorsComment": [
+      "Used only by `--online`. Any actor recorded BYPASSING a ruleset on main that is NOT listed",
+      "here is a finding in its own right, independent of what its commit contains. This is the one",
+      "input in the whole audit that the pusher does not author."
+    ]
+  },
+  "subjectPrefixes": {
+    "$comment": "A lane commit's subject must start with one of these. Cosmetic; identity decides.",
+    "prefixes": [
+      "[heartbeat-batch-merge]",
+      "heartbeat:",
+      "telemetry:"
+    ]
+  },
+  "requiredChecks": {
+    "$comment": [
+      "Every check name the lane MUST list in `Verification-Checks` for the attestation to count.",
+      "A lane that runs fewer cannot pass by naming fewer — the required set lives here, not in the",
+      "attestation. Semantics of each: design doc section 4."
+    ],
+    "names": [
+      "path-allowlist",
+      "append-only",
+      "schema-parse",
+      "size-budget",
+      "author-roster"
+    ]
+  },
+  "knownChecks": {
+    "$comment": "Superset of requiredChecks. A name outside this set is UNKNOWN-CHECK: the lane invented vocabulary the audit cannot evaluate.",
+    "names": [
+      "path-allowlist",
+      "append-only",
+      "schema-parse",
+      "size-budget",
+      "author-roster",
+      "ancestry",
+      "no-submodule",
+      "no-symlink"
+    ]
+  },
+  "paths": {
+    "$comment": [
+      "Derived by enumerating the last 40 `[heartbeat-batch-merge]` commits on origin/main",
+      "(2026-08-25) and generalising each concrete file to its containing lane prefix.",
+      "",
+      "mode = the change classes permitted for a path:",
+      "  add-only      new files only; modifying or deleting one is a violation",
+      "  append-only   modification permitted iff the pre-image is a byte PREFIX of the post-image.",
+      "                Strictly stronger than `deletions == 0` in a unified diff, which permits",
+      "                interleaving a rewrite among surviving lines.",
+      "  mutable       whole-file rewrite permitted (a folded state file). The WEAKEST mode; every",
+      "                entry here is a place the lane can destroy prior content, so the list is",
+      "                explicit, short, and deliberately not a glob over a directory."
+    ],
+    "$orderComment": "FIRST MATCH WINS, so specific patterns precede the directory globs that would otherwise swallow them. `.rs-buffer-*.json` must sit above `docs/observe-events/**` or it inherits add-only and the lane's own buffer rewrite reads as a violation.",
+    "allow": [
+      { "pattern": "docs/observe-events/.rs-buffer-*.json", "mode": "mutable" },
+      { "pattern": "docs/agent-heartbeats/**", "mode": "add-only" },
+      { "pattern": "docs/observe-events/**", "mode": "add-only" },
+      { "pattern": "docs/drift-events/**", "mode": "add-only" },
+      { "pattern": "docs/hygiene-history/ticks/**", "mode": "add-only" },
+      { "pattern": "docs/history/pr-reviews/**", "mode": "add-only" },
+      { "pattern": "data/ci-runs.jsonl", "mode": "append-only" },
+      { "pattern": "db/mutation-findings/*.jsonl", "mode": "append-only" },
+      { "pattern": "docs/github/prs/manifest.jsonl", "mode": "mutable" },
+      { "pattern": "docs/github/prs/shards/**", "mode": "mutable" },
+      { "pattern": "data/drift-mtth.json", "mode": "mutable" },
+      { "pattern": "data/vault-state.json", "mode": "mutable" }
+    ],
+    "$mutableComment": [
+      "`mutable` is the WEAKEST mode and every entry is a place the lane may overwrite prior bytes.",
+      "Five, and each earned its place by measurement rather than by convenience:",
+      "  data/vault-state.json, docs/observe-events/.rs-buffer-*.json  — `.gitattributes` gives both",
+      "      `merge=theirs`, i.e. the repo already declares them last-writer-wins.",
+      "  data/drift-mtth.json                                          — the published MTTH roll-up, a fold.",
+      "  docs/github/prs/manifest.jsonl, docs/github/prs/shards/**     — MEASURED, not assumed. Over the",
+      "      last 40 flush commits the manifest failed prefix-preservation 13 times and two shards were",
+      "      modified in place. Its rows are inserted in sorted order, so the diff shows ZERO deletions",
+      "      while the pre-image is NOT a byte prefix — which is exactly why the check is prefix",
+      "      preservation and not `deletions == 0`. Reclassifying them to `mutable` is the honest",
+      "      record of what the producer does; tightening the PRODUCER to a true append log, and then",
+      "      tightening this row back, is the open follow-up (design doc section 9)."
+    ],
+    "$denyComment": [
+      "Belt-and-braces over the allowlist above, which already excludes these. Listed separately so",
+      "that a future widening of `allow` cannot silently swallow an executable surface: a path",
+      "matching `deny` is a violation even if some `allow` pattern also matches it."
+    ],
+    "deny": [
+      ".github/**",
+      "src/**",
+      "clis/**",
+      "tests/**",
+      "tools/**",
+      "registry/**",
+      ".claude/**",
+      "*.sln",
+      "*.fsproj",
+      "*.csproj",
+      "package.json",
+      "bun.lock",
+      "flake.nix",
+      "CLAUDE.md",
+      "AGENTS.md",
+      "GOVERNANCE.md"
+    ]
+  },
+  "budget": {
+    "$comment": [
+      "Refuse a runaway lane. The unit is ADDED bytes, never blob size: docs/github/prs/manifest.jsonl",
+      "is 5.6 MB and grows ~9 lines a tick, so a blob-size cap is either useless or permanently red.",
+      "The file-count cap catches a fan-out bug the byte cap would not. Measured over the last 40",
+      "`[heartbeat-batch-merge]` commits on origin/main (2026-08-25): max 58 files/commit and max",
+      "98,257 ADDED bytes/commit. Both caps sit ~7-20x above observed — loose enough not to redden",
+      "on an ordinary busy tick, tight enough that a runaway loop trips before it fills the repo."
+    ],
+    "maxFilesPerCommit": 400,
+    "maxAddedBytesPerCommit": 2097152,
+    "maxAddedBytesPerFile": 524288
+  }
+}
