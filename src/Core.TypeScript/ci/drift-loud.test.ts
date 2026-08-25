@@ -28,6 +28,7 @@ import {
   foldAbsorption,
   oldestRunId,
   orderNewestFirst,
+  CANARY_STEP_NAME,
   publicationIsStale,
   readPublishedWatermark,
   renderMarkdown,
@@ -340,7 +341,7 @@ describe("loudness is emitted, and is proportional", () => {
   });
 
   test("the summary states the non-blocking half, so the surface cannot be misread as a gate", () => {
-    const md = renderMarkdown(foldAbsorption(sustainedRecords()), { live: true, reason: "ok" }, null);
+    const md = renderMarkdown(foldAbsorption(sustainedRecords()), { live: true, status: "live" as const, reason: "ok" }, null);
     expect(md).toContain("not in the `gate (required)` floor");
     expect(md).toContain("never a merge block");
   });
@@ -368,7 +369,7 @@ describe("instruments are never alarms", () => {
   });
 
   test("the summary does not list the canary as a finding", () => {
-    const md = renderMarkdown(foldAbsorption([run(3, [greenRollup, canaryJob()])]), { live: true, reason: "ok" }, null);
+    const md = renderMarkdown(foldAbsorption([run(3, [greenRollup, canaryJob()])]), { live: true, status: "live" as const, reason: "ok" }, null);
     expect(md).toContain("No absorbed failure in the window");
   });
 });
@@ -468,5 +469,154 @@ describe("an unreadable ledger is not a ledger reporting zero", () => {
     // 32816944713 while the oldest of the 60 folded gate runs on main was 32818935566,
     // and `drift (loud)` printed `::error title=drift publication not landing::`.
     expect(publicationIsStale(32816944713, 32818935566)).toBe(true);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// THE CANARY DOES GO QUIET -- ON EVERY RE-RUN ATTEMPT
+// ---------------------------------------------------------------------------
+//
+// MEASURED 2026-08-25 against the live API. GitHub does not reproduce a step-level
+// failure annotation on a re-run attempt:
+//
+//     run_attempt == 1   7 of 7 canary check-runs carried exactly 1 failure annotation
+//     run_attempt >  1   8 of 8 carried ZERO  (32870525290 a2, 32869359742 a2,
+//                        32868648119 a2, 32868481016 a2, 32868231883 a2,
+//                        32867917835 a2, 32867661654 a3, 32865656489 a2)
+//
+// The canary still ran and its step still failed on all eight. Since
+// `rerun-cancelled-gate.yml` re-runs every cancelled gate run and cancellation sits above
+// 60%, the reporter was emitting DETECTOR WENT QUIET on a large share of runs while
+// detection worked perfectly -- and the false alarm was eating the true one.
+//
+// These falsifiers pin BOTH halves: the re-run reading is allowed, and it is allowed only
+// on the exact evidence that supports it. Widen any clause and the second block goes red.
+
+describe("liveness on a re-run attempt", () => {
+  const canaryPresentNoAnnotations = (): JobRecord => ({
+    name: CANARY_JOB_NAME,
+    conclusion: "success",
+    id: 97881286491,
+    steps: [
+      { name: "Set up job", conclusion: "success" },
+      // The API reports the FAILED step as `success`. That asymmetry is the whole class.
+      { name: CANARY_STEP_NAME, conclusion: "success" },
+      { name: "Explain the green", conclusion: "success" },
+      { name: "Complete job", conclusion: "success" },
+    ],
+    failureAnnotations: [], // fetched, and genuinely empty -- not `undefined`
+  });
+
+  const runAt = (attempt: number, jobs: readonly JobRecord[]): RunRecord => ({
+    id: 32870525290,
+    at: "2026-08-25T16:12:12Z",
+    sha: "deadbeef",
+    conclusion: "failure",
+    attempt,
+    jobs,
+  });
+
+  test("attempt 2 with the canary present and no annotation is UNVERIFIABLE, not quiet", () => {
+    const v = assertDetectorLive(runAt(2, [canaryPresentNoAnnotations()]));
+    expect(v.status).toBe("unverifiable");
+    expect(v.live).toBe(false); // unverified is NEVER reported as working
+    expect(v.reason).toContain("UNVERIFIABLE ON A RE-RUN");
+    expect(v.reason).toContain("attempt 2");
+  });
+
+  test("the SAME evidence on attempt 1 is still QUIET and still red", () => {
+    // The falsifier for the exemption: it must turn on the attempt number and nothing
+    // else. On a first attempt an empty annotation set genuinely means detection broke.
+    const v = assertDetectorLive(runAt(1, [canaryPresentNoAnnotations()]));
+    expect(v.status).toBe("quiet");
+    expect(v.reason).toContain("DETECTOR WENT QUIET");
+  });
+
+  test("an ABSENT canary is quiet on a re-run too -- a re-run excuses nothing", () => {
+    const v = assertDetectorLive(runAt(3, []));
+    expect(v.status).toBe("quiet");
+    expect(v.reason).toContain("did not appear in run");
+  });
+
+  test("a canary GUTTED of its deliberate step is quiet on a re-run", () => {
+    // Without this clause, "annotations empty on attempt 2" would also excuse somebody
+    // deleting the failing step and leaving a job that proves nothing.
+    const gutted: JobRecord = {
+      ...canaryPresentNoAnnotations(),
+      steps: [{ name: "Set up job", conclusion: "success" }],
+    };
+    expect(assertDetectorLive(runAt(2, [gutted])).status).toBe("quiet");
+  });
+
+  test("annotations NEVER FETCHED is quiet on a re-run -- absent is not empty", () => {
+    // `undefined` means the call was not made; `[]` means it was made and returned
+    // nothing. Only the second supports the re-run reading.
+    const notFetched: JobRecord = { ...canaryPresentNoAnnotations(), failureAnnotations: undefined };
+    expect(assertDetectorLive(runAt(2, [notFetched])).status).toBe("quiet");
+  });
+
+  test("an attempt-1 run that DID carry the annotation is still live", () => {
+    // The no-regression falsifier: the ordinary path must be untouched.
+    const withAnn: JobRecord = {
+      ...canaryPresentNoAnnotations(),
+      failureAnnotations: ["Process completed with exit code 1."],
+    };
+    const v = assertDetectorLive(runAt(1, [withAnn]));
+    expect(v.status).toBe("live");
+    expect(v.live).toBe(true);
+  });
+
+  test("a missing `attempt` is read as attempt 1 -- the strict reading, never the lenient one", () => {
+    const { attempt: _drop, ...noAttempt } = runAt(2, [canaryPresentNoAnnotations()]);
+    expect(assertDetectorLive(noAttempt as RunRecord).status).toBe("quiet");
+  });
+});
+
+describe("the exit line cannot claim more than the verdict supports", () => {
+  // This file's own defect, one layer up: a summary sentence asserting a check that did
+  // not run. `EXIT 0 -- ... detector live` was printed on an `unverifiable` verdict until
+  // 2026-08-25, which is exactly the shape the whole file exists to refuse.
+  test("`live` is claimed only when the verdict says live", () => {
+    const live = assertDetectorLive({
+      id: 1,
+      at: "2026-08-25T00:00:00Z",
+      sha: "a",
+      conclusion: "success",
+      attempt: 1,
+      jobs: [
+        {
+          name: CANARY_JOB_NAME,
+          conclusion: "success",
+          id: 7,
+          steps: [{ name: CANARY_STEP_NAME, conclusion: "success" }],
+          failureAnnotations: ["Process completed with exit code 1."],
+        },
+      ],
+    });
+    expect(live.status).toBe("live");
+    expect(renderMarkdown(foldAbsorption([]), live, null)).toContain("Detector liveness: OK");
+  });
+
+  test("`unverifiable` renders as its own state, never as OK and never as FAILED", () => {
+    const v = assertDetectorLive({
+      id: 2,
+      at: "2026-08-25T00:00:00Z",
+      sha: "b",
+      conclusion: "failure",
+      attempt: 2,
+      jobs: [
+        {
+          name: CANARY_JOB_NAME,
+          conclusion: "success",
+          id: 8,
+          steps: [{ name: CANARY_STEP_NAME, conclusion: "success" }],
+          failureAnnotations: [],
+        },
+      ],
+    });
+    const md = renderMarkdown(foldAbsorption([]), v, null);
+    expect(md).toContain("UNVERIFIABLE (not a failure)");
+    expect(md).not.toContain("Detector liveness: OK");
+    expect(md).not.toContain("Detector liveness: **FAILED**");
   });
 });
