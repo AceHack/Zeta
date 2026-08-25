@@ -1,0 +1,14 @@
+{
+  "id": "080d01d1e81d3810a013000807d310e6",
+  "at": "2026-08-25T18:44:32.295Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M0X3T0X7087G0R0030966WV",
+    "type": "task",
+    "title": "Adjudicate the triforce-hexagon-doubling synthesis: which legs are structural, which are name collisions",
+    "slug": "adjudicate-the-triforce-hexagon-doubling-synthesis-which-leg",
+    "priority": "P2",
+    "filename": "081M0X3T0X7087G0R0030966WV-adjudicate-the-triforce-hexagon-doubling-synthesis-which-leg.md"
+  }
+}
