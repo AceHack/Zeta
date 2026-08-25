@@ -2,7 +2,7 @@
 
 **📌 Fast path: read `CURRENT-aaron.md`, `CURRENT-amara.md`, `CURRENT-ani.md`, `CURRENT-vera.md`, `CURRENT-riven.md`, and `CURRENT-otto.md` first.**
 
-> **Stack-vs-heap framing (Aaron 2026-05-12):** This file is the **STACK** — indexed, ordered, traversable canonical view. Recent memory files in `memory/` with timestamps newer than the most-current entries here may be **HEAP** — floating cache, not yet indexed, accessible by direct path. Both are easily accessible: stack via traversal, heap via timestamp/filename. Indexing (heap→stack promotion) happens on cadence via `src/Core.TypeScript/memory/reindex-memory-md.ts` (081KRCQQF0008QG0R0037YYP1A), callable from the autonomous-loop tick. Last reindex: 2026-08-24.
+> **Stack-vs-heap framing (Aaron 2026-05-12):** This file is the **STACK** — indexed, ordered, traversable canonical view. Recent memory files in `memory/` with timestamps newer than the most-current entries here may be **HEAP** — floating cache, not yet indexed, accessible by direct path. Both are easily accessible: stack via traversal, heap via timestamp/filename. Indexing (heap→stack promotion) happens on cadence via `src/Core.TypeScript/memory/reindex-memory-md.ts` (081KRCQQF0008QG0R0037YYP1A), callable from the autonomous-loop tick. Last reindex: 2026-08-25.
 
 <!-- BEGIN AUTO-INDEX (081KRCQQF0008QG0R0037YYP1A reindex-memory-md.ts) -->
 
