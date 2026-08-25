@@ -66,6 +66,29 @@ jobs:
       pull-requests: write # open and arm the flush PR
 
     steps:
+      # ABSENCE IS A NAMED REFUSAL, NOT A SUBSTITUTION.
+      #
+      # The checkout below carries the BRANCH-PUSH role credential, and that role has no
+      # substitute. The `|| secrets.GITHUB_TOKEN` rung this step replaces selected on the
+      # secret being EMPTY and handed the lane a credential with DIFFERENT authority: the
+      # push still succeeded, so the lane looked alive, and the failure surfaced later
+      # under an error naming the wrong subject. It also trips GitHub's recursion guard —
+      # actions taken with GITHUB_TOKEN do not trigger other workflows — so the degraded
+      # lane silently stopped producing the events downstream jobs wait on.
+      #
+      # COST: one `test -z` on a bare runner, no checkout, no network. It buys one legible
+      # line naming the exact secret and the exact scope instead of a downstream misread.
+      - name: Assert the branch-push credential is present
+        if: github.event_name != 'pull_request'
+        env:
+          BRANCH_PUSH_TOKEN: ${{ secrets.ZETA_TELEMETRY_FLUSH_TOKEN }}
+        run: |
+          if [ -z "${BRANCH_PUSH_TOKEN:-}" ]; then
+            echo "::error title=Missing ZETA_TELEMETRY_FLUSH_TOKEN::This lane holds the BRANCH-PUSH role and its credential is absent. There is no substitute: GITHUB_TOKEN carries different authority and its pushes do not trigger workflows. FIX: set repository secret ZETA_TELEMETRY_FLUSH_TOKEN on Lucent-Financial-Group/Zeta to a fine-grained PAT with Contents: read and write, Pull requests: read and write, Metadata: read. Role table: docs/security/2026-08-17-society-heartbeat-token-boundary-and-gate-start-failure.md"
+            exit 1
+          fi
+          echo "branch-push credential present (role=branch-push secret=ZETA_TELEMETRY_FLUSH_TOKEN)"
+
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -73,8 +96,28 @@ jobs:
           # classifies ancestry. A shallow clone makes both unanswerable, and
           # "unanswerable" is exactly what this tool refuses to guess about.
           fetch-depth: 0
+          # ROLE: BRANCH-PUSH. One role, one secret. docs/security/2026-08-17-society-heartbeat-token-boundary-and-gate-start-failure.md
+          # assigns ZETA_TELEMETRY_FLUSH_TOKEN this role and only this role; the
+          # PR-create role is ZETA_PR_ARCHIVE_TOKEN and the dispatch role is
+          # ZETA_SOCIETY_DISPATCH_TOKEN. A `||` chain collapsed all three into one
+          # variable, which is why the rung below is gone.
+          #
+          # WHAT THE REMOVED `|| secrets.GITHUB_TOKEN` RUNG COST. It selected on the
+          # secret being EMPTY and silently substituted a credential with DIFFERENT
+          # authority, so the lane kept running and failed somewhere downstream under an
+          # error naming the wrong subject. Compounding it, GitHub's recursion guard means
+          # actions taken with GITHUB_TOKEN do not trigger other workflows — so a degraded
+          # lane ALSO stopped producing the events downstream jobs wait on, silently.
+          # ABSENCE is now the assert step above: loud, and it names the secret and scope.
+          #
+          # AND THE `pull_request` SELF-TEST NEEDS NO PUSH CREDENTIAL AT ALL. That run builds
+          # and queries the index and is barred from publishing by the `if:` on the flush
+          # step, so it gets the Actions identity — least privilege, and it keeps the
+          # fork case (where repository secrets are empty by design) working without a
+          # silent substitution. One `secrets.` reference, selected on the EVENT, not on a
+          # credential being empty.
           persist-credentials: true
-          token: ${{ secrets.ZETA_TELEMETRY_FLUSH_TOKEN || secrets.GITHUB_TOKEN }}
+          token: ${{ github.event_name == 'pull_request' && github.token || secrets.ZETA_TELEMETRY_FLUSH_TOKEN }}
 
       - name: Install toolchain via three-way-parity script (GOVERNANCE §24)
         env:
@@ -147,7 +190,23 @@ jobs:
       - name: Flush to main via staging branch + PR
         if: github.event_name != 'pull_request'
         env:
-          GH_TOKEN: ${{ secrets.ZETA_TELEMETRY_FLUSH_TOKEN || secrets.ZETA_PR_ARCHIVE_TOKEN || secrets.GITHUB_TOKEN }}
+          # ROLE: PR-CREATE. One role, one secret.
+          #
+          # The enterprise forbids the Actions identity from creating pull requests, so the
+          # `gh` calls in this step authenticate as ZETA_PR_ARCHIVE_TOKEN — the credential the
+          # role table in
+          # docs/security/2026-08-17-society-heartbeat-token-boundary-and-gate-start-failure.md
+          # assigns to `gh pr create`. The BRANCH PUSH is a different role and is already
+          # authenticated by the persisted checkout credential (ZETA_TELEMETRY_FLUSH_TOKEN);
+          # the `||` chain that stood here collapsed both roles plus GITHUB_TOKEN into one
+          # variable and silently substituted whichever happened to be set.
+          #
+          # ABSENCE IS A NAMED REFUSAL, NOT A SUBSTITUTION. `openMergePR` refuses an empty
+          # GH_TOKEN and names the secret and the exact scope
+          # (src/Core.TypeScript/agent-heartbeats/merge-heartbeats-to-main.ts). The payload
+          # still parks safely on the staging branch — nothing is lost — and the step goes
+          # red rather than landing under the wrong authority.
+          GH_TOKEN: ${{ secrets.ZETA_PR_ARCHIVE_TOKEN }}
         run: |
           bun src/Core.TypeScript/forge-host/github/flush-via-staging.ts flush \
             --lane search-index \

@@ -10,7 +10,10 @@ import {
   heartbeatMergePrTitle,
   heartbeatSnapshot,
   heartbeatSnapshotOutput,
+  hasPrCreateCredential,
+  openMergePR,
   parseArgs,
+  PR_CREATE_CREDENTIAL_ABSENT,
 } from "./merge-heartbeats-to-main";
 import { main as validateAgencySignature } from "../hygiene/validate-agencysignature-pr-body";
 
@@ -202,17 +205,48 @@ describe("heartbeat workflow credential split", () => {
   // exact split that cost the fleet ~16.75h in #10850, so it is re-aimed at the
   // properties that are load-bearing NOW. Each assertion below names the specific
   // regression it exists to catch.
-  it("degrades when the PAT is absent instead of dying", () => {
+  // RE-AIMED AGAIN 2026-08-25, and this time the assertion below was PINNING THE
+  // DEFECT. It required the `||` ladder verbatim, on the reasoning that "a bare
+  // `token: ${{ secrets.ZETA_TELEMETRY_FLUSH_TOKEN }}` would check out with an empty
+  // credential and kill every lane". Two things were wrong with that.
+  //
+  // First, the ladder does not prevent the outage it names -- it RENAMES it. Checking
+  // out under GITHUB_TOKEN succeeds, so the lane looks alive while pushing as
+  // `github-actions[bot]`, whose `pull_request` run is parked in `action_required` and
+  // never contributes `gate (required)`. That is the 081M010H4KE failure the paragraph
+  // directly above this one describes, produced by the very expression this test
+  // required. A dead lane is loud; that one is silent, which is strictly worse.
+  //
+  // Second, "would kill every lane" was an argument for a LOUD REFUSAL, not for a silent
+  // substitution -- and there was never a third option on the table. There is now: the
+  // assert step below names the missing secret and the exact scope, and the lane fails
+  // with an actionable line instead of running under an authority nobody chose.
+  //
+  // Recorded rather than quietly deleted, because a test that requires a defect is the
+  // most expensive kind of green.
+  it("REFUSES an absent branch-push credential by name instead of substituting one", () => {
     const tickCheckout = HEARTBEAT_WORKFLOW.slice(
-      HEARTBEAT_WORKFLOW.indexOf("- name: Checkout"),
+      HEARTBEAT_WORKFLOW.indexOf("- name: Assert the branch-push credential is present"),
       HEARTBEAT_WORKFLOW.indexOf("- name: Preflight the push credential"),
     );
 
-    // The `||` ladder is the ABSENCE half of degrade-don't-halt: an unset secret
-    // evaluates to "" and falls through to GITHUB_TOKEN. A bare
-    // `token: ${{ secrets.ZETA_TELEMETRY_FLUSH_TOKEN }}` would check out with an
-    // empty credential and kill every lane -- which is the #10850 outage shape.
-    expect(tickCheckout).toContain("token: ${{ secrets.ZETA_TELEMETRY_FLUSH_TOKEN || secrets.GITHUB_TOKEN }}");
+    // ONE role, ONE secret. No chain.
+    expect(tickCheckout).toContain("token: ${{ secrets.ZETA_TELEMETRY_FLUSH_TOKEN }}");
+    expect(tickCheckout).not.toMatch(/token: \$\{\{[^}]*\|\|/);
+
+    // ABSENCE is handled, and handled LOUDLY -- the half the ladder was defended for.
+    expect(tickCheckout).toContain('if [ -z "${BRANCH_PUSH_TOKEN:-}" ]; then');
+    expect(tickCheckout).toContain("::error title=Missing ZETA_TELEMETRY_FLUSH_TOKEN");
+    // Actionable: the operator must be able to act from the log line alone.
+    expect(tickCheckout).toContain("Contents: read and write");
+    expect(tickCheckout).toContain("exit 1");
+
+    // ORDERING is load-bearing: the assertion must precede the checkout that uses the
+    // credential, or it reports on a step that has already failed for another reason.
+    const assertAt = HEARTBEAT_WORKFLOW.indexOf("- name: Assert the branch-push credential is present");
+    const checkoutAt = HEARTBEAT_WORKFLOW.indexOf("- name: Checkout");
+    expect(assertAt).toBeGreaterThanOrEqual(0);
+    expect(assertAt).toBeLessThan(checkoutAt);
   });
 
   it("probes the real remote and RE-PROBES after falling back", () => {
@@ -424,5 +458,47 @@ describe("heartbeatMergePrBody", () => {
     expect(lines[start - 1]).toBe("");
     for (const line of lines.slice(start)) expect(line).not.toBe("");
     expect(lines.at(-1)).toStartWith("Task: ");
+  });
+});
+
+describe("PR-CREATE credential — absence is a named refusal, never a substitution", () => {
+  // These pin the refusal that replaced the `||` chains in `.github/workflows/`. Eleven
+  // flush lanes funnel through `openMergePR`, so this is the one place the whole fleet's
+  // "absent PR-create credential" case can be made loud exactly once.
+
+  it("refuses an empty GH_TOKEN and names the secret AND the scope", () => {
+    const r = openMergePR("o/r", "heartbeat/x", "main", "t", "b", {} as NodeJS.ProcessEnv);
+    expect("error" in r).toBe(true);
+    if (!("error" in r)) throw new Error("unreachable");
+    expect(r.code).toBe(3);
+    // Actionable, not merely non-zero: an operator must be able to act from this line
+    // alone without opening the workflow.
+    expect(r.error).toContain("ZETA_PR_ARCHIVE_TOKEN");
+    expect(r.error).toContain("Pull requests: read and write");
+    expect(r.error).toContain("docs/security/2026-08-17-society-heartbeat-token-boundary");
+  });
+
+  it("names the BRANCH-PUSH credential as the thing it must NOT silently become", () => {
+    // The defect was substitution across roles, so the message says which role's
+    // credential was being borrowed. Without this the fix is invisible in the log.
+    expect(PR_CREATE_CREDENTIAL_ABSENT).toContain("ZETA_TELEMETRY_FLUSH_TOKEN");
+    expect(PR_CREATE_CREDENTIAL_ABSENT).toContain("different authority");
+  });
+
+  it("treats whitespace-only as absent — a blank secret is not a credential", () => {
+    expect(hasPrCreateCredential({ GH_TOKEN: "   " } as NodeJS.ProcessEnv)).toBe(false);
+    expect(hasPrCreateCredential({} as NodeJS.ProcessEnv)).toBe(false);
+  });
+
+  it("accepts a present credential — the refusal is not unconditional", () => {
+    // The falsifier for the falsifier: a guard that refuses everything would make every
+    // lane red and would still pass the three tests above.
+    expect(hasPrCreateCredential({ GH_TOKEN: "ghp_x" } as NodeJS.ProcessEnv)).toBe(true);
+    expect(hasPrCreateCredential({ GITHUB_TOKEN: "ghs_x" } as NodeJS.ProcessEnv)).toBe(true);
+  });
+
+  it("agent-heartbeat.yml carries NO multi-secret chain in any expression", () => {
+    // The workflow-side half, pinned in the file that already reads this workflow.
+    expect(HEARTBEAT_WORKFLOW).not.toMatch(/\$\{\{[^}]*\bsecrets\.[A-Za-z_][A-Za-z0-9_]*[^}]*\|\|[^}]*\bsecrets\./);
   });
 });

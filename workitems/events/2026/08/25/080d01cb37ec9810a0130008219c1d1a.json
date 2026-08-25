@@ -1,0 +1,14 @@
+{
+  "id": "080d01cb37ec9810a0130008219c1d1a",
+  "at": "2026-08-25T14:50:46.035Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M0WPDZCJ087G0R00215KRZS",
+    "type": "bug",
+    "title": "workflow credential role separation: 25 multi-secret || chains collapse dispatch/branch-push/PR-create into one variable",
+    "slug": "workflow-credential-role-separation-25-multi-secret-chains-c",
+    "priority": "P2",
+    "filename": "081M0WPDZCJ087G0R00215KRZS-workflow-credential-role-separation-25-multi-secret-chains-c.md"
+  }
+}

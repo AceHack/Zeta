@@ -232,10 +232,23 @@ jobs:
       # PR"), which is how it stayed green through four accumulations.
       - name: Archive the PR and land it via the shared staging lane
         env:
-          # Same credential ladder as the other lanes that flush through this tool. A PAT is
-          # required because the enterprise forbids the Actions identity from CREATING pull
-          # requests; the restriction is on the identity, not the operation.
-          GH_TOKEN: ${{ secrets.ZETA_TELEMETRY_FLUSH_TOKEN || secrets.ZETA_PR_ARCHIVE_TOKEN || secrets.GITHUB_TOKEN }}
+          # ROLE: PR-CREATE. One role, one secret.
+          #
+          # The enterprise forbids the Actions identity from creating pull requests, so the
+          # `gh` calls in this step authenticate as ZETA_PR_ARCHIVE_TOKEN — the credential the
+          # role table in
+          # docs/security/2026-08-17-society-heartbeat-token-boundary-and-gate-start-failure.md
+          # assigns to `gh pr create`. The BRANCH PUSH is a different role and is already
+          # authenticated by the persisted checkout credential (ZETA_TELEMETRY_FLUSH_TOKEN);
+          # the `||` chain that stood here collapsed both roles plus GITHUB_TOKEN into one
+          # variable and silently substituted whichever happened to be set.
+          #
+          # ABSENCE IS A NAMED REFUSAL, NOT A SUBSTITUTION. `openMergePR` refuses an empty
+          # GH_TOKEN and names the secret and the exact scope
+          # (src/Core.TypeScript/agent-heartbeats/merge-heartbeats-to-main.ts). The payload
+          # still parks safely on the staging branch — nothing is lost — and the step goes
+          # red rather than landing under the wrong authority.
+          GH_TOKEN: ${{ secrets.ZETA_PR_ARCHIVE_TOKEN }}
           PR_NUMBER: ${{ github.event.pull_request.number }}
           GITHUB_SHA_OVERRIDE: ${{ github.sha }}
         run: |

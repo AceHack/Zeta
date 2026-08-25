@@ -2488,6 +2488,30 @@ jobs:
       - name: Step outputs have writers (a step that cannot succeed)
         run: bun src/Core.TypeScript/hygiene/audit-workflow-step-output-has-writer.ts
 
+      # THE FALSIFIER FOR CREDENTIAL-ROLE COLLAPSE (AH003, 2026-08-25).
+      #
+      # `docs/security/2026-08-17-society-heartbeat-token-boundary-and-gate-start-failure.md`
+      # names THREE credential roles with three secrets: dispatch, branch-push, PR-create. A
+      # `${{ secrets.A || secrets.B || secrets.GITHUB_TOKEN }}` expression erases that table at
+      # the point of use -- `||` selects on the left secret being EMPTY, so an absent scoped
+      # credential is silently replaced by one with DIFFERENT authority and the step then fails
+      # somewhere downstream naming the wrong subject. 25 such chains across 12 workflows had
+      # accumulated behind per-step comments that described the ladder as the SAFE half.
+      #
+      # It is the SILENT selection this refuses, never the degradation itself: a probe + an
+      # explicit `::warning` naming the secret and scope inside a `run:` block is good design
+      # and is untouched (agent-heartbeat.yml keeps three of them).
+      #
+      # Distinct from `audit-workflow-write-token-consistency.ts` above, which asks whether a
+      # forge-write step reaches A PAT. This asks whether it reaches THE RIGHT ONE, and only
+      # that one. A step can satisfy that audit and still be a role collapse -- all 25 sites
+      # did, which is why one check does not subsume the other.
+      #
+      # Offline (reads only committed workflow text, no sockets), so it belongs on the
+      # pre-merge floor rather than post-merge.
+      - name: Workflow credential role separation (one role, one secret)
+        run: bun src/Core.TypeScript/hygiene/audit-workflow-credential-role-separation.ts
+
       # THE FALSIFIER FOR THE PR-ARCHIVE COVERAGE COLLAPSE (2026-08-25).
       #
       # `agent-heartbeat.yml`'s auto-merge steps hardcoded `secrets.GITHUB_TOKEN` while every

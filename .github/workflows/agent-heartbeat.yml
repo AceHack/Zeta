@@ -38,6 +38,28 @@ jobs:
         agent: [alexa, otto, soraya]
 
     steps:
+      # ABSENCE IS A NAMED REFUSAL, NOT A SUBSTITUTION.
+      #
+      # The checkout below carries the BRANCH-PUSH role credential, and that role has no
+      # substitute. The `|| secrets.GITHUB_TOKEN` rung this step replaces selected on the
+      # secret being EMPTY and handed the lane a credential with DIFFERENT authority: the
+      # push still succeeded, so the lane looked alive, and the failure surfaced later
+      # under an error naming the wrong subject. It also trips GitHub's recursion guard —
+      # actions taken with GITHUB_TOKEN do not trigger other workflows — so the degraded
+      # lane silently stopped producing the events downstream jobs wait on.
+      #
+      # COST: one `test -z` on a bare runner, no checkout, no network. It buys one legible
+      # line naming the exact secret and the exact scope instead of a downstream misread.
+      - name: Assert the branch-push credential is present
+        env:
+          BRANCH_PUSH_TOKEN: ${{ secrets.ZETA_TELEMETRY_FLUSH_TOKEN }}
+        run: |
+          if [ -z "${BRANCH_PUSH_TOKEN:-}" ]; then
+            echo "::error title=Missing ZETA_TELEMETRY_FLUSH_TOKEN::This lane holds the BRANCH-PUSH role and its credential is absent. There is no substitute: GITHUB_TOKEN carries different authority and its pushes do not trigger workflows. FIX: set repository secret ZETA_TELEMETRY_FLUSH_TOKEN on Lucent-Financial-Group/Zeta to a fine-grained PAT with Contents: read and write, Pull requests: read and write, Metadata: read. Role table: docs/security/2026-08-17-society-heartbeat-token-boundary-and-gate-start-failure.md"
+            exit 1
+          fi
+          echo "branch-push credential present (role=branch-push secret=ZETA_TELEMETRY_FLUSH_TOKEN)"
+
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -69,11 +91,23 @@ jobs:
           # wrong, so a mis-scoped or revoked PAT costs a degraded lane, never a dead
           # one. `.claude/rules/tick-must-never-stop.md`.
           #
-          # The `||` ladder covers ABSENCE (secret unset -> empty string -> default
-          # GITHUB_TOKEN). It cannot cover UNAUTHORIZED — a present-but-powerless token
-          # is exactly what #10850 shipped — which is the preflight's whole job.
+          # ROLE: BRANCH-PUSH. One role, one secret. docs/security/2026-08-17-society-heartbeat-token-boundary-and-gate-start-failure.md
+          # assigns ZETA_TELEMETRY_FLUSH_TOKEN this role and only this role; the
+          # PR-create role is ZETA_PR_ARCHIVE_TOKEN and the dispatch role is
+          # ZETA_SOCIETY_DISPATCH_TOKEN. A `||` chain collapsed all three into one
+          # variable, which is why the rung below is gone.
+          #
+          # WHAT THE REMOVED `|| secrets.GITHUB_TOKEN` RUNG COST. It selected on the
+          # secret being EMPTY and silently substituted a credential with DIFFERENT
+          # authority, so the lane kept running and failed somewhere downstream under an
+          # error naming the wrong subject. Compounding it, GitHub's recursion guard means
+          # actions taken with GITHUB_TOKEN do not trigger other workflows — so a degraded
+          # lane ALSO stopped producing the events downstream jobs wait on, silently.
+          # ABSENCE is now the assert step above: loud, and it names the secret and scope.
+          # DENIAL remains the preflight's job below. Two distinct conditions, two
+          # distinct reports — that separation is the fix.
           persist-credentials: true
-          token: ${{ secrets.ZETA_TELEMETRY_FLUSH_TOKEN || secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.ZETA_TELEMETRY_FLUSH_TOKEN }}
 
       # THE FALSIFIER FOR THE CREDENTIAL, RUN IN PRODUCTION ON EVERY TICK.
       #
@@ -679,11 +713,17 @@ jobs:
           #    than the bug it was meant to repair.
           #
           # So: PREFER the PAT, and degrade to GITHUB_TOKEN on a refusal, ONCE
-          # per run, loudly, naming the exact missing scope. Today that is
-          # byte-for-byte the current behaviour plus a warning that says what is
-          # missing; the day the PAT carries `Pull requests: read and write`,
-          # archive coverage repairs itself with no further edit here.
-          GH_TOKEN: ${{ secrets.ZETA_TELEMETRY_FLUSH_TOKEN || secrets.ZETA_PR_ARCHIVE_TOKEN || secrets.GITHUB_TOKEN }}
+          # per run, loudly, naming the exact missing scope. The day the PAT carries
+          # `Pull requests: read and write`, archive coverage repairs itself with no
+          # further edit here.
+          #
+          # ROLE: PR-CREATE — ZETA_PR_ARCHIVE_TOKEN, per the role table in
+          # docs/security/2026-08-17-society-heartbeat-token-boundary-and-gate-start-failure.md.
+          # The `||` chain that stood here named three secrets in one variable, so "which
+          # authority is this step running under" had no answer visible anywhere in the log.
+          # FALLBACK_GH_TOKEN stays, because the degradation below is DELIBERATE, EXPLICIT
+          # and LOGGED — that is the distinction being drawn, not a ban on ever degrading.
+          GH_TOKEN: ${{ secrets.ZETA_PR_ARCHIVE_TOKEN }}
           FALLBACK_GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           AGENT: ${{ matrix.agent }}
         run: |
@@ -775,10 +815,22 @@ jobs:
           # before the `$?` check can run, which would turn one unarmable PR into
           # a dead merge duty for the whole tick.
           set +e
+          # THE SELECTION IS EXPLICIT NOW, AND IT NAMES THE SECRET. This used to compare
+          # GH_TOKEN against FALLBACK_GH_TOKEN, which worked only because a `||` chain had
+          # already collapsed the absent case onto GITHUB_TOKEN somewhere out of sight in the
+          # `env:` block. With one role and one secret the absent case is an EMPTY string, so
+          # the test is emptiness and the report says which secret is missing and what it needs.
+          #
+          # The DEGRADATION here is deliberate and is kept: arming is an optimisation, an
+          # unarmed PR is merged by the next duty cycle, and a credential fault must never
+          # stall the merge queue (.claude/rules/tick-must-never-stop.md). What was wrong was
+          # never the fallback — it was that the fallback happened SILENTLY, in an expression,
+          # with no line in the log saying a different authority had been substituted.
           ARM_MODE=pat
-          if [ "$GH_TOKEN" = "$FALLBACK_GH_TOKEN" ]; then
+          if [ -z "${GH_TOKEN:-}" ]; then
             ARM_MODE=workflow-token-only
-            echo "::warning title=Auto-merge arming has no PAT::Neither ZETA_TELEMETRY_FLUSH_TOKEN nor ZETA_PR_ARCHIVE_TOKEN is set, so PRs are armed by GITHUB_TOKEN and their merges do NOT trigger pr-archive-on-merge.yml. Archive coverage then rests on the backfill sweep alone."
+            echo "::warning title=Auto-merge arming has no PR-CREATE credential::ZETA_PR_ARCHIVE_TOKEN is absent, so PRs are armed by GITHUB_TOKEN and their merges do NOT trigger pr-archive-on-merge.yml — archive coverage then rests on the backfill sweep alone. FIX: set repository secret ZETA_PR_ARCHIVE_TOKEN on Lucent-Financial-Group/Zeta to a fine-grained PAT with 'Pull requests: read and write' + 'Metadata: read'. Role table: docs/security/2026-08-17-society-heartbeat-token-boundary-and-gate-start-failure.md"
+            export GH_TOKEN="$FALLBACK_GH_TOKEN"
           fi
 
           ARMED=0
@@ -797,7 +849,7 @@ jobs:
             # set is repairing.
             if [ "$MERGE_RC" -ne 0 ] && [ "$ARM_MODE" = "pat" ] \
                && printf '%s' "$MERGE_OUT" | grep -q "not accessible by personal access token"; then
-              echo "::warning title=Auto-merge arming PAT lacks enablePullRequestAutoMerge::The flush PAT was refused the GraphQL mutation, so arming falls back to GITHUB_TOKEN and pr-archive-on-merge.yml will not fire for these merges. FIX: grant that fine-grained PAT 'Pull requests: read and write' on Lucent-Financial-Group/Zeta. This is a DIFFERENT scope from the 'Contents: read and write' denial tracked by 081M05G8D36087G0R0034D3QPA."
+              echo "::warning title=Auto-merge arming PAT lacks enablePullRequestAutoMerge::ZETA_PR_ARCHIVE_TOKEN (the PR-create role credential) was refused the GraphQL mutation, so arming falls back to GITHUB_TOKEN and pr-archive-on-merge.yml will not fire for these merges. FIX: grant that fine-grained PAT 'Pull requests: read and write' on Lucent-Financial-Group/Zeta. This is a DIFFERENT scope from the 'Contents: read and write' denial tracked by 081M05G8D36087G0R0034D3QPA."
               ARM_MODE=degraded-to-workflow-token
               export GH_TOKEN="$FALLBACK_GH_TOKEN"
               MERGE_OUT=$(gh pr merge "$PR" --squash --auto --delete-branch 2>&1)
@@ -1543,11 +1595,20 @@ jobs:
           AGENT: ${{ matrix.agent }}
           # The Actions identity is forbidden from creating pull requests, so the PR is
           # opened by a fine-grained PAT (pull_requests: write + metadata: read). If the
-          # secret is absent this degrades to GITHUB_TOKEN, `gh pr create` fails, and the
-          # events wait safely on the staging branch — same posture as before, just red.
+          # secret is absent the step now REFUSES BY NAME in the preamble below, and the
+          # events wait safely on the staging branch — nothing is lost, and the log says
+          # which secret is missing instead of degrading to a different authority.
           #
-          # "ABSENT" IS NOT THE CONDITION THAT OCCURS (2026-08-17). `||` in this expression
-          # selects on the secret being EMPTY, never on it being DENIED, and the production
+          # ROLE: PR-CREATE — ZETA_PR_ARCHIVE_TOKEN, per the role table in
+          # docs/security/2026-08-17-society-heartbeat-token-boundary-and-gate-start-failure.md.
+          # The `||` chain that stood here named three secrets in one variable, so "which
+          # authority is this step running under" had no answer visible anywhere in the log.
+          # FALLBACK_GH_TOKEN stays, because the degradation below is DELIBERATE, EXPLICIT
+          # and LOGGED — that is the distinction being drawn, not a ban on ever degrading.
+          #
+          # "ABSENT" IS NOT THE CONDITION THAT OCCURS (2026-08-17). The `||` chain removed
+          # from this expression selected on the secret being EMPTY, never on it being
+          # DENIED, and the production
           # failure is denial: the PAT is set and unauthorized. On 2026-08-17 that put every
           # lane — otto, alexa AND soraya — into `compare failed: gh: Not Found (HTTP 404)`
           # at 13:46 and again at 14:10. GitHub answers 404, not 403, for a resource the
@@ -1564,7 +1625,7 @@ jobs:
           # denied PAT, which is why the log shows the snapshot branch pushing successfully
           # and the very next compare 404ing. The preamble below extends that same
           # discipline to the API credential.
-          GH_TOKEN: ${{ secrets.ZETA_TELEMETRY_FLUSH_TOKEN || secrets.ZETA_PR_ARCHIVE_TOKEN || secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.ZETA_PR_ARCHIVE_TOKEN }}
           FALLBACK_GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           # Probe → swap → RE-PROBE, mirroring the git preflight. The re-probe is the part
@@ -1610,10 +1671,21 @@ jobs:
           # worse failure than the vacuous probe it replaced: a check that cannot pass is as
           # useless as one that cannot fail, and it does damage on the way. Both directions
           # were therefore checked against a real credential before this shipped.
+          # ABSENT IS NOT DENIED, AND THE PROBE CANNOT TELL THEM APART. With an empty
+          # GH_TOKEN, `gh` fails before it reaches the network with "gh: To use GitHub CLI in a
+          # GitHub Actions workflow, set the GH_TOKEN environment variable" — no HTTP status at
+          # all — so the probe below would classify a MISSING SECRET as "inconclusive" and
+          # leave it alone. That is a true sentence about the wrong subject, which is the exact
+          # failure mode this whole change set exists to remove. So absence is tested first,
+          # named, and reported as itself.
+          if [ -z "${GH_TOKEN:-}" ]; then
+            echo "::error title=Missing ZETA_PR_ARCHIVE_TOKEN::$AGENT: this step holds the PR-CREATE role and its credential is absent. FIX: set repository secret ZETA_PR_ARCHIVE_TOKEN on Lucent-Financial-Group/Zeta to a fine-grained PAT with 'Pull requests: read and write' + 'Contents: read and write' + 'Metadata: read'. Role table: docs/security/2026-08-17-society-heartbeat-token-boundary-and-gate-start-failure.md"
+            exit 1
+          fi
           probe_api() { { gh api "repos/$GITHUB_REPOSITORY/commits?per_page=1" --jq '.[0].sha' >/dev/null; } 2>&1; }
           if ! OUT=$(probe_api); then
             if printf '%s' "$OUT" | grep -qE 'HTTP (401|403|404)'; then
-              echo "::warning title=Heartbeat API credential denied::$AGENT: ZETA_TELEMETRY_FLUSH_TOKEN cannot read this repository over the API; falling back to GITHUB_TOKEN. FIX: grant that fine-grained PAT 'Contents: read and write' on Lucent-Financial-Group/Zeta (081M010H4KE)."
+              echo "::warning title=Heartbeat API credential denied::$AGENT: ZETA_PR_ARCHIVE_TOKEN cannot read this repository over the API; falling back to GITHUB_TOKEN. FIX: grant that fine-grained PAT 'Contents: read and write' on Lucent-Financial-Group/Zeta (081M010H4KE)."
               export GH_TOKEN="$FALLBACK_GH_TOKEN"
               if OUT2=$(probe_api); then
                 echo "[flush] $AGENT: fallback API credential verified; lane is DEGRADED but alive."
@@ -1923,7 +1995,14 @@ jobs:
           # Same repair as the merge-duty step: prefer the PAT, degrade ONCE on a
           # refusal with the missing scope named, never stall the flush over a
           # credential.
-          GH_TOKEN: ${{ secrets.ZETA_TELEMETRY_FLUSH_TOKEN || secrets.ZETA_PR_ARCHIVE_TOKEN || secrets.GITHUB_TOKEN }}
+          #
+          # ROLE: PR-CREATE — ZETA_PR_ARCHIVE_TOKEN, per the role table in
+          # docs/security/2026-08-17-society-heartbeat-token-boundary-and-gate-start-failure.md.
+          # The `||` chain that stood here named three secrets in one variable, so "which
+          # authority is this step running under" had no answer visible anywhere in the log.
+          # FALLBACK_GH_TOKEN stays, because the degradation below is DELIBERATE, EXPLICIT
+          # and LOGGED — that is the distinction being drawn, not a ban on ever degrading.
+          GH_TOKEN: ${{ secrets.ZETA_PR_ARCHIVE_TOKEN }}
           FALLBACK_GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           if [ -z "$PR" ]; then
@@ -1935,12 +2014,20 @@ jobs:
           # bare `gh pr merge` this replaced was. Without it the step dies on the
           # PAT refusal before the fallback can run. The explicit `exit "$ARM_RC"`
           # below restores the original fail-closed behaviour.
+          # Absence named explicitly, for the same reason as the merge-duty step: the `||`
+          # chain used to fold "secret unset" onto GITHUB_TOKEN inside the `env:` expression,
+          # where no log line could ever mention it. The degradation itself is deliberate and
+          # kept — an unarmed flush PR is a queue delay, not lost telemetry.
+          if [ -z "${GH_TOKEN:-}" ]; then
+            echo "::warning title=Heartbeat arming has no PR-CREATE credential::$AGENT: ZETA_PR_ARCHIVE_TOKEN is absent, so PR #$PR is armed by GITHUB_TOKEN and its merge will not trigger pr-archive-on-merge.yml. FIX: set repository secret ZETA_PR_ARCHIVE_TOKEN on Lucent-Financial-Group/Zeta to a fine-grained PAT with 'Pull requests: read and write'."
+            export GH_TOKEN="$FALLBACK_GH_TOKEN"
+          fi
           set +e
           ARM_OUT=$(gh pr merge "$PR" --repo "$GITHUB_REPOSITORY" --squash --auto --delete-branch 2>&1)
           ARM_RC=$?
           if [ "$ARM_RC" -ne 0 ] && [ "$GH_TOKEN" != "$FALLBACK_GH_TOKEN" ] \
              && printf '%s' "$ARM_OUT" | grep -q "not accessible by personal access token"; then
-            echo "::warning title=Heartbeat arming PAT lacks enablePullRequestAutoMerge::$AGENT: the flush PAT was refused the GraphQL mutation, so this PR is armed by GITHUB_TOKEN and its merge will not trigger pr-archive-on-merge.yml. FIX: grant that fine-grained PAT 'Pull requests: read and write' on Lucent-Financial-Group/Zeta. Different scope from the 'Contents: read and write' denial tracked by 081M05G8D36087G0R0034D3QPA."
+            echo "::warning title=Heartbeat arming PAT lacks enablePullRequestAutoMerge::$AGENT: ZETA_PR_ARCHIVE_TOKEN (the PR-create role credential) was refused the GraphQL mutation, so this PR is armed by GITHUB_TOKEN and its merge will not trigger pr-archive-on-merge.yml. FIX: grant that fine-grained PAT 'Pull requests: read and write' on Lucent-Financial-Group/Zeta. Different scope from the 'Contents: read and write' denial tracked by 081M05G8D36087G0R0034D3QPA."
             export GH_TOKEN="$FALLBACK_GH_TOKEN"
             ARM_OUT=$(gh pr merge "$PR" --repo "$GITHUB_REPOSITORY" --squash --auto --delete-branch 2>&1)
             ARM_RC=$?
@@ -1956,14 +2043,23 @@ jobs:
       - name: Fail if a heartbeat PR is old and gate never started
         if: always() && matrix.agent == 'alexa'
         env:
-          # Same denied-vs-absent defect as the flush step above, and the same repair. This
-          # one matters differently: the check's whole job is to READ a PR's check rollup, so
-          # a denied credential does not merely degrade it — it makes the instrument report
-          # on nothing while still going red, which is how a credential fault gets misread as
-          # a gate fault. The rollup tool distinguishes "unavailable" (rc=2) from "absent",
-          # but it cannot distinguish either from "I was handed a token that sees no repo."
-          GH_TOKEN: ${{ secrets.ZETA_TELEMETRY_FLUSH_TOKEN || secrets.ZETA_PR_ARCHIVE_TOKEN || secrets.GITHUB_TOKEN }}
-          FALLBACK_GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # ROLE: READ-ONLY — so this step gets the ACTIONS IDENTITY and no PAT at all.
+          #
+          # This step's whole job is to READ a heartbeat PR's check rollup. It pushes
+          # nothing, creates nothing and dispatches nothing, so under least privilege it has
+          # no business holding a write-scoped PAT — and holding one is what made it
+          # dangerous: a DENIED PAT makes the instrument report on nothing while still going
+          # red, which is exactly how a credential fault gets misread as a gate fault. That
+          # misreading happened again on 2026-08-25 (three agents, one heartbeat failure,
+          # all three blaming auto-merge token scope), which is what prompted this change.
+          #
+          # FALLBACK_GH_TOKEN IS GONE FROM THIS STEP, deliberately. With GH_TOKEN already the
+          # Actions token, a "fall back to the Actions token" branch is a swap of a value for
+          # itself: a repair that cannot repair, sitting under a warning that reads as if it
+          # could. That is the vacuity class, so the probe below now REPORTS denial instead
+          # of pretending to fix it. The rollup tool still distinguishes "unavailable" (rc=2)
+          # from "absent"; the probe is what stops a credential answer being read as either.
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           # Authorization answers only — see the flush step for why a bare 404 is not
           # sufficient evidence of denial during a GitHub degradation.
@@ -1996,10 +2092,7 @@ jobs:
           probe_api() { { gh api "repos/$GITHUB_REPOSITORY/commits?per_page=1" --jq '.[0].sha' >/dev/null; } 2>&1; }
           if ! OUT=$(probe_api); then
             if printf '%s' "$OUT" | grep -qE 'HTTP (401|403|404)'; then
-              echo "::warning title=Heartbeat gate-check credential denied::ZETA_TELEMETRY_FLUSH_TOKEN cannot read this repository over the API; falling back to GITHUB_TOKEN before judging gate state."
-              export GH_TOKEN="$FALLBACK_GH_TOKEN"
-              probe_api >/dev/null \
-                || echo "::error title=Gate check has no working credential::BOTH credentials were refused; the verdict below is about the credential, not about the gate."
+              echo "::error title=Gate check has no working credential::the Actions token was refused a Contents-scope read of this repository, so the verdict below is about the CREDENTIAL, not about the gate. Do not read it as gate absence."
             else
               echo "$OUT"
               echo "::warning title=Gate-check API probe inconclusive::the probe failed without an authorization answer; leaving the credential alone."

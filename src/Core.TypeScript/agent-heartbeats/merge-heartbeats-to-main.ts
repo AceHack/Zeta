@@ -425,6 +425,36 @@ export function armOutcome(
   return { ...pr, armed: false, armError: armMessage.trim() };
 }
 
+/**
+ * The refusal that replaced the `||` chains in `.github/workflows/`.
+ *
+ * Every telemetry lane used to hand this function
+ * `${{ secrets.ZETA_TELEMETRY_FLUSH_TOKEN || secrets.ZETA_PR_ARCHIVE_TOKEN || secrets.GITHUB_TOKEN }}`.
+ * That expression selects on a secret being EMPTY, so an absent PR-create credential was
+ * silently replaced by one carrying DIFFERENT authority — and the lane then failed further
+ * downstream under an error naming the wrong subject. Worse, the GITHUB_TOKEN rung trips
+ * GitHub's recursion guard (actions taken with it do not trigger other workflows), so a
+ * degraded lane also stopped producing the events downstream jobs wait on, silently.
+ *
+ * PR creation is the one role with no substitute here: the enterprise forbids the Actions
+ * identity from creating pull requests at all. So an empty credential is refused BY NAME,
+ * once, at the one place all eleven flush lanes funnel through. The payload is already
+ * parked on the staging branch by the time this runs — nothing is lost by refusing.
+ */
+export const PR_CREATE_CREDENTIAL_ABSENT =
+  "PR-create credential absent: GH_TOKEN is empty. This is the PR-CREATE role and it has no " +
+  "substitute — the enterprise forbids the Actions identity from creating pull requests, and " +
+  "the branch-push credential (ZETA_TELEMETRY_FLUSH_TOKEN) carries different authority. " +
+  "FIX: set repository secret ZETA_PR_ARCHIVE_TOKEN on Lucent-Financial-Group/Zeta to a " +
+  "fine-grained PAT with 'Pull requests: read and write' + 'Contents: read and write' + " +
+  "'Metadata: read', and pass it as GH_TOKEN on the step. Role table: " +
+  "docs/security/2026-08-17-society-heartbeat-token-boundary-and-gate-start-failure.md";
+
+/** True when the process holds SOME forge credential for `gh`. Pure, so it has a falsifier. */
+export function hasPrCreateCredential(env: NodeJS.ProcessEnv = process.env): boolean {
+  return (env["GH_TOKEN"] ?? env["GITHUB_TOKEN"] ?? "").trim() !== "";
+}
+
 export function openMergePR(
   repo: string,
   head: string,
@@ -433,6 +463,9 @@ export function openMergePR(
   body: string,
   env: NodeJS.ProcessEnv = process.env,
 ): { readonly ok: OpenedPR } | { readonly error: string; readonly code: 3 } {
+  if (!hasPrCreateCredential(env)) {
+    return { error: PR_CREATE_CREDENTIAL_ABSENT, code: 3 };
+  }
   // Idempotency: re-use existing open PR if one is already open head→base
   const existing = findExistingPR(repo, head, base);
   if ("error" in existing) {

@@ -411,13 +411,42 @@ describe("telemetry-lane push credential (the held-gate cure)", () => {
       const yaml = workflow(file);
       const preflight = preflightOf(yaml);
 
-      test("the checkout that pushes carries the PAT, with an absence ladder", () => {
-        // The `||` ladder is the ABSENCE half of degrade-don't-halt: an unset
-        // secret evaluates to "" and falls through to GITHUB_TOKEN. A bare
-        // `token: ${{ secrets.ZETA_TELEMETRY_FLUSH_TOKEN }}` would check out with
-        // an empty credential and kill the lane — the #10850 outage shape.
-        expect(yaml).toContain("token: ${{ secrets.ZETA_TELEMETRY_FLUSH_TOKEN || secrets.GITHUB_TOKEN }}");
+      // RE-AIMED 2026-08-25: this assertion PINNED THE DEFECT. It required the `||`
+      // ladder verbatim, on the reasoning that a bare secret "would check out with an
+      // empty credential and kill the lane". The ladder does not prevent that outage —
+      // it RENAMES it. Checkout under GITHUB_TOKEN succeeds, so the lane looks alive
+      // while pushing as `github-actions[bot]`, whose `pull_request` gate run is parked
+      // in `action_required` and never contributes `gate (required)` — which is the
+      // exact held-gate failure THIS DESCRIBE BLOCK IS NAMED AFTER, produced by the
+      // very expression the test required. A dead lane is loud; that one is silent.
+      //
+      // "Would kill the lane" was an argument for a LOUD REFUSAL, and there was no third
+      // option on the table then. There is now: an assert step ahead of the checkout
+      // names the missing secret and the exact scope, so absence is handled without
+      // handing the lane an authority nobody chose.
+      test("the checkout that pushes carries the PAT — one role, one secret", () => {
+        expect(yaml).toContain("token: ${{ secrets.ZETA_TELEMETRY_FLUSH_TOKEN }}");
         expect(yaml).toContain("persist-credentials: true");
+        // No chain. This is the property the ladder assertion used to invert.
+        expect(yaml).not.toMatch(/token: \$\{\{[^}]*secrets\.[A-Za-z_]\w*[^}]*\|\|[^}]*secrets\./);
+      });
+
+      test("ABSENCE is refused BY NAME, ahead of the checkout that would use it", () => {
+        // The half the ladder was defended for, done loudly instead of silently.
+        const assertAt = yaml.indexOf("      - name: Assert the branch-push credential is present");
+        const checkoutAt = yaml.indexOf("      - name: Checkout");
+        expect(assertAt).toBeGreaterThanOrEqual(0);
+        // Ordering is load-bearing: after the checkout it would report on a step that
+        // has already failed for another reason.
+        expect(assertAt).toBeLessThan(checkoutAt);
+
+        const guard = yaml.slice(assertAt, checkoutAt);
+        expect(guard).toContain('if [ -z "${BRANCH_PUSH_TOKEN:-}" ]; then');
+        expect(guard).toContain("::error title=Missing ZETA_TELEMETRY_FLUSH_TOKEN");
+        // Actionable from the log line alone — the operator should not have to open
+        // the workflow to learn which grant is missing.
+        expect(guard).toContain("Contents: read and write");
+        expect(guard).toContain("exit 1");
       });
 
       test("the preflight probes the REAL remote, not a stub", () => {

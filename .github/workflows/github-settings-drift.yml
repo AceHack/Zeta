@@ -117,13 +117,28 @@ jobs:
       - name: plan ruleset reconciliation
         env:
           # First-party trusted context only, as above.
-          # GITHUB_TOKEN cannot read rulesets; RULESET_READER_TOKEN is an
-          # optional read-scoped credential. When it is absent the plan exits
-          # 2 (INDETERMINATE) and says so — it does not report success.
-          GH_TOKEN: ${{ secrets.RULESET_READER_TOKEN || secrets.GITHUB_TOKEN }}
+          #
+          # ROLE: READ (rulesets). One role, one secret. `GITHUB_TOKEN` CANNOT read
+          # rulesets — the line above this one says so — so the
+          # `|| secrets.GITHUB_TOKEN` rung that stood here was a substitution onto a
+          # credential known in advance to be incapable of the work. That is the
+          # role-collapse shape AH003 refuses
+          # (audit-workflow-credential-role-separation.ts): the fallback did not
+          # rescue the read, it only moved the failure downstream where the error
+          # names `gh` rather than the missing secret.
+          #
+          # The ADVISORY semantics are unchanged and are the good part: absence is
+          # INDETERMINATE ("this check DID NOT RUN"), never success, and it never
+          # blocks the merge. It is now reported by name, before the call, instead of
+          # being inferred from a doomed one.
+          GH_TOKEN: ${{ secrets.RULESET_READER_TOKEN }}
           GH_REPO: ${{ github.repository }}
         run: |
           set -uo pipefail
+          if [ -z "${GH_TOKEN:-}" ]; then
+            echo "::warning::ruleset plan INDETERMINATE — RULESET_READER_TOKEN is not set, so live ruleset state could not be read and this check DID NOT RUN. GITHUB_TOKEN is not a substitute: it cannot read rulesets at all. FIX (optional, advisory lane): set repository secret RULESET_READER_TOKEN to a fine-grained PAT with 'Administration: read' on Lucent-Financial-Group/Zeta."
+            exit 0
+          fi
           bun src/Core.TypeScript/hygiene/reconcile-rulesets.ts --repo "$GH_REPO"
           rc=$?
           case "$rc" in
