@@ -1,0 +1,21 @@
+{
+  "pr_number": 12807,
+  "archive_path": "docs/history/pr-reviews/PR-12807-research-geometry-hyperbolic-geometry-is-not-the-home-of-our-tower-a-measured-ne.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7j3HV_",
+    "comment:PRRC_kwDOSF9kNM7j3HWP",
+    "comment:PRRC_kwDOSF9kNM7j3HWh",
+    "comment:PRRC_kwDOSF9kNM7j3HWv",
+    "thread:PRRT_kwDOSF9kNM6a3D0s",
+    "thread:PRRT_kwDOSF9kNM6a3D0z",
+    "thread:PRRT_kwDOSF9kNM6a3D1D",
+    "thread:PRRT_kwDOSF9kNM6a3D1O"
+  ],
+  "fetched_at": "2026-08-25T00:25:22.357Z",
+  "schema_version": "v1",
+  "commit_sha": "b08db32024025a5cf7473cf2cb6b211445f6ad17",
+  "title": "research(geometry): hyperbolic geometry is NOT the home of our tower — a measured negative, and the signature that would carry it",
+  "state": "MERGED",
+  "merged_at": "2026-08-25T00:24:26Z",
+  "head_ref": "research/hyperbolic-geometry-tower-signature-lumen"
+}
