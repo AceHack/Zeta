@@ -12,7 +12,7 @@
  * Contents:
  *   CP-1..CP-5  port-conformance suite — parameterised over an implementation ROSTER
  *   PERM        permutation invariance of a tick under SLACK admission budgets
- *   BIND        the budget-binding divergence, captured as a witness, NOT fixed here
+ *   BIND        default no-forget divergence plus explicit canonical-retention closure
  */
 
 import { describe, expect, test } from "bun:test";
@@ -36,6 +36,7 @@ import {
 } from "../browser-node/browser-checkpoint-port";
 import { createBrowserZetaDbImagePort } from "../browser-node/browser-zetadb-image-port";
 import { monotoneLastWriterWinsRevisionPolicy } from "../persistence/revision-policy";
+import { canonicalEventIdRetentionPolicy } from "./retention-policy";
 
 // ── The roster ───────────────────────────────────────────────────────────────
 
@@ -595,7 +596,7 @@ describe("PREFIX · a tick-boundary row conflict makes batch order observable", 
   });
 });
 
-// ── BIND · the budget-binding divergence — CAPTURED, not fixed ───────────────
+// ── BIND · default divergence and explicit retained-set closure ──────────────
 //
 // Soraya, 2026-08-22: the semilattice convergence law holds only while the admission
 // budgets are SLACK. Under a binding budget the same union in opposite arrival order
@@ -603,11 +604,11 @@ describe("PREFIX · a tick-boundary row conflict makes batch order observable", 
 // divergence is TERMINAL — the ledger is full, so no retry recovers the dropped
 // events. That is permanent silent replica divergence, not eventual consistency.
 //
-// This is a DESIGN decision, not a defect to patch under a fix PR. It is pinned here
-// so the boundary of the convergence claim is visible in the test output, and filed as
-// workitem 081M0Q8TY1B087G0R0008CYZJ3 for the architect.
+// The default remains a deliberate no-forget choice, so this witness stays load-bearing.
+// The second test executes the opt-in canonical retained-set policy through the real node:
+// it closes this event-count witness by paying explicit displacement heat.
 
-describe("BIND · convergence is claimed only under slack budgets (captured, not fixed)", () => {
+describe("BIND · no-forget diverges while canonical retention converges", () => {
   test("a binding maxEntries budget makes arrival order observable and the loss terminal", async () => {
     const limits: ZetaDbTickLimits = { maxDeltas: 8, maxEntries: 3, maxCheckpointBytes: 8192 };
     const batchA: readonly ZetaDbDelta[] = [
@@ -645,5 +646,54 @@ describe("BIND · convergence is claimed only under slack budgets (captured, not
     // Neither replica is a superset of the other — so this is divergence, not lag.
     expect(aThenB.every((id) => bThenA.includes(id))).toBe(false);
     expect(bThenA.every((id) => aThenB.includes(id))).toBe(false);
+  });
+
+  test("canonical retention makes the binding witness converge and reports displacement heat", async () => {
+    const limits: ZetaDbTickLimits = { maxDeltas: 8, maxEntries: 3, maxCheckpointBytes: 8192 };
+    const batchA: readonly ZetaDbDelta[] = [
+      { eventId: "e1", rowKey: "row/1", payload: "1", weight: 1 },
+      { eventId: "e2", rowKey: "row/2", payload: "2", weight: 1 },
+    ];
+    const batchB: readonly ZetaDbDelta[] = [
+      { eventId: "e3", rowKey: "row/3", payload: "3", weight: 1 },
+      { eventId: "e4", rowKey: "row/4", payload: "4", weight: 1 },
+    ];
+
+    const ledger = async (
+      batches: readonly (readonly ZetaDbDelta[])[],
+    ): Promise<{ readonly eventIds: readonly string[]; readonly heatCodes: readonly string[] }> => {
+      const port = createInMemoryZetaDbImagePort();
+      const heatCodes: string[] = [];
+      for (const batch of batches) {
+        const result = await runZetaDbNodeTick(
+          port,
+          {
+            nodeId: NODE,
+            executorId: "bind/canonical",
+            executorKind: "local-process",
+            deltas: batch,
+            limits,
+          },
+          undefined,
+          canonicalEventIdRetentionPolicy,
+        );
+        expect(result.ok).toBe(true);
+        if (result.ok) heatCodes.push(...result.value.feedback.map((feedback) => feedback.code));
+      }
+      const stored = await loadedRecord(port);
+      if (stored === null) return { eventIds: [], heatCodes };
+      const parsed = JSON.parse(new TextDecoder().decode(stored.payload)) as {
+        readonly entries: readonly { readonly eventId: string }[];
+      };
+      return { eventIds: parsed.entries.map((entry) => entry.eventId), heatCodes };
+    };
+
+    const aThenB = await ledger([batchA, batchB]);
+    const bThenA = await ledger([batchB, batchA]);
+
+    expect(aThenB.eventIds).toEqual(["e1", "e2", "e3"]);
+    expect(bThenA.eventIds).toEqual(aThenB.eventIds);
+    expect(aThenB.heatCodes).not.toContain("database-retention-displaced");
+    expect(bThenA.heatCodes).toContain("database-retention-displaced");
   });
 });

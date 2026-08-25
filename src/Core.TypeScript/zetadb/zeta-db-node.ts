@@ -11,6 +11,13 @@ import {
   type ZetaDbAdmissionProposal,
   type ZetaDbAdmissionReceipt,
 } from "./admission-policy";
+import {
+  evaluateZetaDbRetentionPolicy,
+  type ZetaDbRetentionFeedback,
+  type ZetaDbRetentionHeatReceipt,
+  type ZetaDbRetentionPolicyPort,
+  type ZetaDbRetentionReceipt,
+} from "./retention-policy";
 
 export const ZETA_DB_IMAGE_SCHEMA = "zeta.db.image.v1" as const;
 export const ZETA_DB_TICK_SCHEMA = "zeta.db.tick.v1" as const;
@@ -62,12 +69,17 @@ export interface ZetaDbFeedback {
     | "database-weight-overflow"
     | "database-capacity-exhausted"
     | "database-admission-policy-failed"
+    | "database-retention-request-invalid"
+    | "database-retention-policy-failed"
+    | "database-retention-displaced"
     | "database-read-failed"
     | "database-write-failed"
     | "database-revision-conflict";
   readonly detail: string;
   /** Exact resource accounting when an admission policy produced the feedback. */
   readonly admissionReceipt?: ZetaDbAdmissionReceipt;
+  /** Exact loss accounting when an applied retention decision displaced durable history. */
+  readonly retentionHeatReceipt?: ZetaDbRetentionHeatReceipt;
 }
 
 export type ZetaDbResult<T> =
@@ -117,6 +129,8 @@ export interface ZetaDbTickReadout {
   readonly nextDeltaIndex: number;
   readonly rows: readonly ZetaDbRow[];
   readonly feedback: readonly ZetaDbFeedback[];
+  /** Present only when this tick executed an explicit retained-set policy. */
+  readonly retentionReceipt?: ZetaDbRetentionReceipt;
 }
 
 export interface ZetaDbConvergencePolicy {
@@ -471,6 +485,7 @@ interface ZetaDbAdmissionReadout {
   readonly nextDeltaIndex: number;
   readonly capacityDetail: string | null;
   readonly capacityReceipt: ZetaDbAdmissionReceipt | null;
+  readonly retentionReceipt: ZetaDbRetentionReceipt | null;
 }
 
 interface ZetaDbAdmissionRefusal {
@@ -547,6 +562,7 @@ function admissionReadout(
     nextDeltaIndex: state.nextDeltaIndex,
     capacityDetail: refusal?.detail ?? null,
     capacityReceipt: refusal?.receipt ?? null,
+    retentionReceipt: null,
   });
 }
 
@@ -776,24 +792,209 @@ function admitZetaDbDeltas(
   return admissionReadout(state, capacityRefusal);
 }
 
+function retentionFailure(feedback: ZetaDbRetentionFeedback): ZetaDbResult<never> {
+  return failed(feedback.code, feedback.detail);
+}
+
+function unappliedRetentionReadout(
+  image: ZetaDbImage,
+  refusal: ZetaDbAdmissionRefusal,
+): ZetaDbResult<ZetaDbAdmissionReadout> {
+  return succeeded({
+    entries: image.entries,
+    rows: image.rows,
+    accepted: 0,
+    duplicates: 0,
+    nextDeltaIndex: 0,
+    capacityDetail: refusal.detail,
+    capacityReceipt: refusal.receipt,
+    retentionReceipt: null,
+  });
+}
+
+function retentionCapacityDetail(
+  receipt: ZetaDbRetentionReceipt,
+  processed: number,
+  total: number,
+  maxDeltas: number,
+): string | null {
+  const details: string[] = [];
+  if (receipt.refusedEventIds.length > 0) {
+    details.push(
+      `Retention policy ${receipt.policyId} refused ${String(receipt.refusedEventIds.length)} novel event(s) at the ${String(receipt.limit)}-entry bound.`,
+    );
+  }
+  if (processed < total) details.push(`The tick spent its ${String(maxDeltas)}-delta execution budget.`);
+  return details.length === 0 ? null : details.join(" ");
+}
+
+interface ZetaDbRetentionCandidates {
+  readonly observed: ReadonlyMap<string, ZetaDbDelta>;
+  readonly novelEventIds: ReadonlySet<string>;
+  readonly duplicates: number;
+}
+
+function collectRetentionCandidates(
+  image: ZetaDbImage,
+  processed: readonly ZetaDbDelta[],
+): ZetaDbResult<ZetaDbRetentionCandidates> {
+  const observed = new Map(image.entries.map((entry) => [entry.eventId, entry]));
+  const novelEventIds = new Set<string>();
+  let duplicates = 0;
+  for (const delta of processed) {
+    const existing = observed.get(delta.eventId);
+    if (existing === undefined) {
+      observed.set(delta.eventId, delta);
+      novelEventIds.add(delta.eventId);
+      continue;
+    }
+    if (!sameDelta(existing, delta)) {
+      return failed("database-event-conflict", `Event identifier ${delta.eventId} already names a different delta.`);
+    }
+    duplicates += 1;
+  }
+  return succeeded({ observed, novelEventIds, duplicates });
+}
+
+function materializeRetainedEntries(
+  receipt: ZetaDbRetentionReceipt,
+  observed: ReadonlyMap<string, ZetaDbDelta>,
+): ZetaDbResult<readonly ZetaDbDelta[]> {
+  const entries: ZetaDbDelta[] = [];
+  for (const eventId of receipt.retainedEventIds) {
+    const entry = observed.get(eventId);
+    if (entry === undefined) {
+      return failed(
+        "database-retention-policy-failed",
+        `Database retention policy ${receipt.policyId} selected unavailable event ${eventId}.`,
+      );
+    }
+    entries.push(entry);
+  }
+  return succeeded(entries);
+}
+
+function decideRetentionMutationAdmission(
+  image: ZetaDbImage,
+  entries: readonly ZetaDbDelta[],
+  rows: readonly ZetaDbRow[],
+  limits: ZetaDbTickLimits,
+  policy: ZetaDbAdmissionPolicyPort,
+): ZetaDbResult<ZetaDbAdmissionRefusal | null> {
+  const entryDecision = decideAdmission(policy, {
+    resource: "retained-events",
+    current: image.entries.length,
+    candidate: entries.length,
+    limit: limits.maxEntries,
+  });
+  if (!entryDecision.ok) return entryDecision;
+  const entryRefusal = admissionRefusal(entryDecision.value);
+  if (entryRefusal !== null) return succeeded(entryRefusal);
+
+  const nextRevision = image.revision + 1;
+  const currentPayload = encodeZetaDbImage({ ...image, revision: nextRevision });
+  if (!currentPayload.ok) return currentPayload;
+  const candidatePayload = encodeZetaDbImage({ ...image, revision: nextRevision, entries, rows });
+  if (!candidatePayload.ok) return candidatePayload;
+  const checkpointDecision = decideAdmission(policy, {
+    resource: "checkpoint-bytes",
+    current: currentPayload.value.byteLength,
+    candidate: candidatePayload.value.byteLength,
+    limit: limits.maxCheckpointBytes,
+  });
+  if (!checkpointDecision.ok) return checkpointDecision;
+  return succeeded(admissionRefusal(checkpointDecision.value));
+}
+
+/**
+ * Apply an explicit retained-set policy as one finite batch. The policy owns event-count
+ * selection; the admission policy still enforces its final entry reservation and exact encoded
+ * checkpoint-byte budget. A byte refusal leaves the durable image and continuation untouched.
+ */
+function retainZetaDbDeltas(
+  image: ZetaDbImage,
+  deltas: readonly ZetaDbDelta[],
+  limits: ZetaDbTickLimits,
+  admissionPolicy: ZetaDbAdmissionPolicyPort,
+  retentionPolicy: ZetaDbRetentionPolicyPort,
+): ZetaDbResult<ZetaDbAdmissionReadout> {
+  const processThrough = Math.min(deltas.length, limits.maxDeltas);
+  const processed = deltas.slice(0, processThrough);
+  const candidates = collectRetentionCandidates(image, processed);
+  if (!candidates.ok) return candidates;
+
+  const planned = evaluateZetaDbRetentionPolicy(retentionPolicy, {
+    currentEventIds: image.entries.map((entry) => entry.eventId),
+    candidateEventIds: processed.map((delta) => delta.eventId),
+    limit: limits.maxEntries,
+  });
+  if (!planned.ok) return retentionFailure(planned.feedback);
+
+  const entries = materializeRetainedEntries(planned.value, candidates.value.observed);
+  if (!entries.ok) return entries;
+  const rows = foldRows(entries.value);
+  if (!rows.ok) return rows;
+  const accepted = planned.value.retainedEventIds.filter((eventId) =>
+    candidates.value.novelEventIds.has(eventId),
+  ).length;
+  const changed = accepted > 0 || planned.value.displacedEventIds.length > 0;
+
+  if (changed) {
+    const mutationAdmission = decideRetentionMutationAdmission(
+      image,
+      entries.value,
+      rows.value,
+      limits,
+      admissionPolicy,
+    );
+    if (!mutationAdmission.ok) return mutationAdmission;
+    if (mutationAdmission.value !== null) return unappliedRetentionReadout(image, mutationAdmission.value);
+  }
+
+  return succeeded({
+    entries: entries.value,
+    rows: rows.value,
+    accepted,
+    duplicates: candidates.value.duplicates,
+    nextDeltaIndex: processThrough,
+    capacityDetail: retentionCapacityDetail(planned.value, processThrough, deltas.length, limits.maxDeltas),
+    capacityReceipt: null,
+    retentionReceipt: planned.value,
+  });
+}
+
 function admissionFeedback(value: ZetaDbAdmissionReadout): readonly ZetaDbFeedback[] {
-  if (value.capacityDetail === null) return [];
-  const feedback: ZetaDbFeedback = {
-    severity: "backpressure",
-    code: "database-capacity-exhausted",
-    detail: value.capacityDetail,
-  };
-  return value.capacityReceipt === null ? [feedback] : [{ ...feedback, admissionReceipt: value.capacityReceipt }];
+  const feedback: ZetaDbFeedback[] = [];
+  if (value.capacityDetail !== null) {
+    const capacity: ZetaDbFeedback = {
+      severity: "backpressure",
+      code: "database-capacity-exhausted",
+      detail: value.capacityDetail,
+    };
+    feedback.push(value.capacityReceipt === null ? capacity : { ...capacity, admissionReceipt: value.capacityReceipt });
+  }
+  for (const receipt of value.retentionReceipt?.heatReceipts ?? []) {
+    feedback.push({
+      severity: "heat",
+      code: "database-retention-displaced",
+      detail: receipt.detail,
+      retentionHeatReceipt: receipt,
+    });
+  }
+  return feedback;
 }
 
 /**
  * Execute one finite database wake-up. The executor may disappear after this promise resolves;
  * all continuity is carried by the image port and the returned continuation index.
+ * Supplying a retention policy opts this tick into batch retained-set selection; omitting it
+ * preserves the append-only no-forget behavior and its exact prefix continuation semantics.
  */
 export async function runZetaDbNodeTick(
   port: ZetaDbImagePort,
   request: ZetaDbTickRequest,
   admissionPolicy: ZetaDbAdmissionPolicyPort = noForgetBackpressureAdmissionPolicy,
+  retentionPolicy?: ZetaDbRetentionPolicyPort,
 ): Promise<ZetaDbResult<ZetaDbTickReadout>> {
   const validated = validateRequest(request);
   if (!validated.ok) return validated;
@@ -806,7 +1007,10 @@ export async function runZetaDbNodeTick(
       "backpressure",
     );
   }
-  const admission = admitZetaDbDeltas(image.value, validated.value, request.limits, admissionPolicy);
+  const admission =
+    retentionPolicy === undefined
+      ? admitZetaDbDeltas(image.value, validated.value, request.limits, admissionPolicy)
+      : retainZetaDbDeltas(image.value, validated.value, request.limits, admissionPolicy, retentionPolicy);
   if (!admission.ok) return admission;
   if (request.requireComplete === true && admission.value.capacityDetail !== null) {
     return failed(
@@ -818,7 +1022,7 @@ export async function runZetaDbNodeTick(
   }
 
   let revision = image.value.revision;
-  if (admission.value.accepted > 0) {
+  if (admission.value.accepted > 0 || (admission.value.retentionReceipt?.displacedEventIds.length ?? 0) > 0) {
     revision += 1;
     const nextImage: ZetaDbImage = {
       schema: ZETA_DB_IMAGE_SCHEMA,
@@ -834,6 +1038,8 @@ export async function runZetaDbNodeTick(
   }
 
   const feedback = admissionFeedback(admission.value);
+  const retentionReadout =
+    admission.value.retentionReceipt === null ? {} : { retentionReceipt: admission.value.retentionReceipt };
   return succeeded({
     schema: ZETA_DB_TICK_SCHEMA,
     nodeId: request.nodeId,
@@ -846,6 +1052,7 @@ export async function runZetaDbNodeTick(
     nextDeltaIndex: admission.value.nextDeltaIndex,
     rows: admission.value.rows.map(copyRow),
     feedback,
+    ...retentionReadout,
   });
 }
 
@@ -868,6 +1075,7 @@ export async function runConvergentZetaDbNodeTick(
   request: ZetaDbTickRequest,
   policy: ZetaDbConvergencePolicy,
   admissionPolicy: ZetaDbAdmissionPolicyPort = noForgetBackpressureAdmissionPolicy,
+  retentionPolicy?: ZetaDbRetentionPolicyPort,
 ): Promise<ZetaDbResult<ZetaDbTickReadout>> {
   if (
     !isRecord(policy) ||
@@ -884,7 +1092,7 @@ export async function runConvergentZetaDbNodeTick(
   const maxAttempts = policy.maxAttempts;
   let lastConflict: ZetaDbFeedback | null = null;
   for (let attempt = 1; attempt <= maxAttempts; attempt += 1) {
-    const result = await runZetaDbNodeTick(port, request, admissionPolicy);
+    const result = await runZetaDbNodeTick(port, request, admissionPolicy, retentionPolicy);
     if (result.ok) return result;
     if (result.feedback.code !== "database-revision-conflict" && result.feedback.code !== "database-row-conflict")
       return result;

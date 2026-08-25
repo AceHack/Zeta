@@ -11,9 +11,11 @@ import {
 import { compareAndSwapRevisionPolicy } from "../persistence/revision-policy";
 import {
   createReservedCapacityAdmissionPolicy,
+  noForgetBackpressureAdmissionPolicy,
   type ZetaDbAdmissionPolicyPort,
   type ZetaDbAdmissionProposal,
 } from "./admission-policy";
+import { canonicalEventIdRetentionPolicy, type ZetaDbRetentionPolicyPort } from "./retention-policy";
 
 const limits = { maxDeltas: 16, maxEntries: 32, maxCheckpointBytes: 32 * 1024 };
 
@@ -348,6 +350,112 @@ describe("event-driven ZetaDB node", () => {
       feedback: [{ code: "database-capacity-exhausted" }],
     });
     expect(decisions).toBe(3);
+  });
+
+  test("does not let event-count retention bypass the checkpoint-byte limit", async () => {
+    const port = createInMemoryZetaDbImagePort();
+    const result = await runZetaDbNodeTick(
+      port,
+      {
+        nodeId: "global-browser-db",
+        executorId: "tab/retention-byte-limit",
+        executorKind: "browser-tab",
+        deltas: [firstDelta],
+        limits: { ...limits, maxCheckpointBytes: 1 },
+      },
+      noForgetBackpressureAdmissionPolicy,
+      canonicalEventIdRetentionPolicy,
+    );
+
+    expect(result.ok && result.value).toMatchObject({
+      revision: 0,
+      admission: "backpressured",
+      accepted: 0,
+      nextDeltaIndex: 0,
+      feedback: [
+        {
+          code: "database-capacity-exhausted",
+          admissionReceipt: { resource: "checkpoint-bytes", hardLimit: 1 },
+        },
+      ],
+    });
+    const stored = await port.load("global-browser-db");
+    expect(stored.ok && stored.value).toBeNull();
+  });
+
+  test("keeps complete-required retention atomic when a novel event is refused", async () => {
+    const port = createInMemoryZetaDbImagePort();
+    const result = await runZetaDbNodeTick(
+      port,
+      {
+        nodeId: "global-browser-db",
+        executorId: "tab/retention-complete",
+        executorKind: "browser-tab",
+        requireComplete: true,
+        deltas,
+        limits: { ...limits, maxEntries: 3 },
+      },
+      noForgetBackpressureAdmissionPolicy,
+      canonicalEventIdRetentionPolicy,
+    );
+
+    expect(result).toMatchObject({
+      ok: false,
+      feedback: { severity: "backpressure", code: "database-capacity-exhausted" },
+    });
+    const stored = await port.load("global-browser-db");
+    expect(stored.ok && stored.value).toBeNull();
+  });
+
+  test("persists displacement-only retention and emits exact loss heat", async () => {
+    const port = createInMemoryZetaDbImagePort();
+    const initial = await run(port, "browser-tab", [firstDelta]);
+    expect(initial.ok).toBe(true);
+    const dropAll: ZetaDbRetentionPolicyPort = {
+      id: "test-drop-all",
+      plan: () => ({ retainedEventIds: [] }),
+    };
+
+    const result = await runZetaDbNodeTick(
+      port,
+      {
+        nodeId: "global-browser-db",
+        executorId: "tab/retention-drop-all",
+        executorKind: "browser-tab",
+        deltas: [],
+        limits,
+      },
+      noForgetBackpressureAdmissionPolicy,
+      dropAll,
+    );
+
+    expect(result.ok && result.value).toMatchObject({
+      revision: 2,
+      admission: "complete",
+      accepted: 0,
+      retentionReceipt: {
+        policyId: "test-drop-all",
+        retainedEventIds: [],
+        displacedEventIds: ["event-1"],
+      },
+      feedback: [
+        {
+          severity: "heat",
+          code: "database-retention-displaced",
+          retentionHeatReceipt: {
+            signal: "forgotten",
+            kind: "database-retention.forgotten",
+            units: 1,
+            displacedEventIds: ["event-1"],
+          },
+        },
+      ],
+    });
+    const stored = await port.load("global-browser-db");
+    expect(stored.ok && stored.value?.revision).toBe(2);
+    if (!stored.ok || stored.value === null) return;
+    const decoded = decodeZetaDbImage(stored.value.payload);
+    expect(decoded.ok && decoded.value).toMatchObject({ entries: [], rows: [] });
   });
 
   test("contains throwing and malformed policies as typed feedback", async () => {
@@ -687,6 +795,37 @@ describe("event-driven ZetaDB node", () => {
       feedback: [{ detail: "The test policy refused this proposal." }],
     });
     expect(decisions).toBe(1);
+  });
+
+  test("forwards an injected retention policy through the bounded-retry runner", async () => {
+    let plans = 0;
+    const retainObserved: ZetaDbRetentionPolicyPort = {
+      id: "test-retain-observed",
+      plan: (proposal) => {
+        plans += 1;
+        return { retainedEventIds: [...proposal.currentEventIds, ...proposal.candidateEventIds] };
+      },
+    };
+    const result = await runConvergentZetaDbNodeTick(
+      createInMemoryZetaDbImagePort(),
+      {
+        nodeId: "global-browser-db",
+        executorId: "tab/retention-policy",
+        executorKind: "browser-tab",
+        deltas: [firstDelta],
+        limits,
+      },
+      { maxAttempts: 3 },
+      noForgetBackpressureAdmissionPolicy,
+      retainObserved,
+    );
+
+    expect(result.ok && result.value).toMatchObject({
+      admission: "complete",
+      accepted: 1,
+      retentionReceipt: { policyId: "test-retain-observed", retainedEventIds: ["event-1"] },
+    });
+    expect(plans).toBe(1);
   });
 
   test("retries a row-prefix conflict after a concurrent complementary batch lands", async () => {

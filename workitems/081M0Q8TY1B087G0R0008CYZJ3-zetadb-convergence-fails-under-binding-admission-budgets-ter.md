@@ -120,3 +120,24 @@ This slice is a planner and law pack, not kernel wiring. It proves the event-cou
 allowing it to mutate durable images. It also makes no checkpoint-byte convergence claim: actual
 encoded size depends on the retained Z-set fold, so byte-bounded selection needs a separate
 falsifier and policy instead of borrowing the event-count proof.
+
+## Progress 2026-08-25 - explicit retention now reaches the durable node
+
+`runZetaDbNodeTick` and `runConvergentZetaDbNodeTick` now accept an optional
+`ZetaDbRetentionPolicyPort`. Omitting it preserves the existing append-only, no-forget prefix
+semantics. Supplying it evaluates one bounded batch, persists the selected event set, returns the
+full retention receipt, and emits `database-retention-displaced` heat only after displaced history
+has actually reached the durable image. A policy decision that changes only retained history still
+increments the image revision; it can no longer be mistaken for `accepted: 0` no-op success.
+
+The admission policy remains authoritative around the retention policy. It validates the final
+retained-event count and the exact encoded checkpoint bytes at the next revision. If either
+proposal is refused, no planned displacement is applied, no loss heat is emitted, and the
+continuation remains at zero. `requireComplete` also rejects a retained-set plan atomically when
+any novel event was refused.
+
+The original BIND witness remains green for the default no-forget behavior. A second test now runs
+the canonical policy through the real in-memory image port and reaches `e1,e2,e3` in both batch
+orders; the reverse order carries exact displacement heat for `e4`. This closes the opt-in
+event-count path. Checkpoint-byte convergence remains open: this slice refuses an oversized image
+honestly but does not claim that a byte-bounded retained-set policy is order-independent.
