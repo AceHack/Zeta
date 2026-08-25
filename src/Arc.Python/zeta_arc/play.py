@@ -226,13 +226,61 @@ def play(
     }
 
 
+def list_environments() -> dict:
+    """The hosted environments this key can see. Reconnaissance, not play.
+
+    WHY THIS EXISTS SEPARATELY FROM `play`. The lane now DISCOVERS real ARC
+    environments but still plays ZetaChase, our own stand-in. Before writing a
+    play loop against 25 environments it is worth knowing what they are — how
+    many actions they take, what their level structure looks like — rather than
+    guessing and discovering the mismatch inside a scoring loop.
+
+    `private_tags` IS DELIBERATELY NOT REPORTED. `EnvironmentInfo` carries both
+    `tags` and `private_tags`; the second is named by its author as not for
+    publication, and this output goes into CI logs that anyone with read access
+    can see. Publishing a field called private because it happened to be in the
+    struct is exactly the kind of thing that is obvious in hindsight. `tags`,
+    `game_id` and `title` are the public identity of a public benchmark.
+
+    Degrades like everything else here: no key means OFFLINE, which means an
+    empty roster and exit 0, not a failure.
+    """
+    arcade, mode = open_arcade()
+    found = arcade.get_environments()
+    return {
+        "mode": mode,
+        "count": len(found),
+        "environments": [
+            {
+                "game_id": env.game_id,
+                "title": env.title,
+                "tags": env.tags or [],
+                # How many actions the environment declares it accepts — the
+                # first thing a generic agent needs and the first thing that
+                # could differ from ZetaChase's four.
+                "baseline_actions": env.baseline_actions or [],
+                "levels": len(env.level_tags or []),
+            }
+            for env in sorted(found, key=lambda e: e.game_id)
+        ],
+    }
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description="Play ZetaChase offline and score it.")
     parser.add_argument(
         "--agent", choices=("pixel", "greedy", "random"), default="greedy"
     )
     parser.add_argument("--seed", type=int, default=0)
+    parser.add_argument(
+        "--list-environments",
+        action="store_true",
+        help="report the hosted environments this key can see, and play nothing",
+    )
     args = parser.parse_args()
+    if args.list_environments:
+        print(json.dumps(list_environments(), indent=2))
+        return
     print(json.dumps(play(agent=args.agent, seed=args.seed), indent=2))
 
 

@@ -110,7 +110,7 @@ jobs:
           # makes the unbound variable exit non-zero, so the check cannot be
           # removed by accident without the job going red. (Measured: with the
           # variable unset the step exits 1.)
-          ARC_MIN_TESTS: "31"
+          ARC_MIN_TESTS: "33"
         run: |
           set -euo pipefail
           uv run --project src/Arc.Python pytest src/Arc.Python/tests -q --junitxml=/tmp/arc-junit.xml
@@ -127,6 +127,16 @@ jobs:
             echo "A suite that stops running looks identical to a suite that passes." >&2
             exit 2
           fi
+
+      - name: Report the hosted environments this key can see
+        # RECONNAISSANCE, not play. The lane discovers real ARC environments but
+        # still plays ZetaChase; before writing a play loop against 25 of them
+        # it is worth seeing what they are. Keyless runs (every `pull_request`)
+        # print an empty roster and pass — the same degradation as everything
+        # else here, so this step is safe on the credential-free path.
+        env:
+          ARC_API_KEY: ${{ github.event_name != 'pull_request' && secrets.ARC_API_KEY || '' }}
+        run: uv run --project src/Arc.Python python -m zeta_arc.play --list-environments
 
       - name: Play a scored episode (the lane's end-to-end smoke)
         # The unit tests can all pass while the loop itself is broken. This is

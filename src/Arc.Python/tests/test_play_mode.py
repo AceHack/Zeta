@@ -18,7 +18,7 @@ import pytest
 # Same reason as play.py: arc_agi ships no py.typed marker.
 from arc_agi import OperationMode  # type: ignore[import-untyped]
 
-from zeta_arc.play import open_arcade, operation_mode_for, play
+from zeta_arc.play import list_environments, open_arcade, operation_mode_for, play
 
 
 @pytest.mark.parametrize("blank", ["", "   ", "\t\n", None])
@@ -90,4 +90,36 @@ def test_the_reported_mode_is_the_one_actually_obtained(
     _, normal = open_arcade()
     assert offline != normal, (
         "the reported mode does not vary with the key — it is a hardcode"
+    )
+
+
+def test_listing_environments_without_a_key_is_empty_and_does_not_fail(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """Reconnaissance degrades exactly like play does: no key, no roster, no error."""
+    monkeypatch.delenv("ARC_API_KEY", raising=False)
+    listed = list_environments()
+    assert listed["mode"] == "OFFLINE"
+    assert listed["count"] == 0
+    assert listed["environments"] == []
+
+
+def test_the_roster_never_reports_private_tags() -> None:
+    """`EnvironmentInfo` carries `private_tags` alongside `tags`, and this output
+    goes into CI logs. Publishing a field whose author named it private, purely
+    because it was in the struct, is the mistake this guards.
+
+    Non-vacuous: it asserts on the KEY SET the reporter emits, so adding
+    `private_tags` to `list_environments` fails here even with no key present
+    and no hosted environment to test against — which is the only condition
+    this test can ever run under offline.
+    """
+    import inspect
+
+    from zeta_arc import play as play_module
+
+    source = inspect.getsource(play_module.list_environments)
+    body = source.split('"""', 2)[-1]  # skip the docstring, which discusses it
+    assert "private_tags" not in body, (
+        "list_environments emits private_tags — that field is not ours to publish"
     )
