@@ -227,8 +227,8 @@ async function main(): Promise<void> {
           else if (a[k]!.correct && !b[k]!.correct) aRightBWrong++;
           else bothRight++;
         }
-        // Phi coefficient (correlation for binary variables)
-        const n = trials;
+        // Phi coefficient (correlation for binary variables). `trials` is not needed:
+        // phi is computed from the 2x2 cell counts alone.
         const phi = (bothRight * bothWrong - aWrongBRight * aRightBWrong) /
           Math.sqrt((bothRight + aWrongBRight) * (bothRight + aRightBWrong) * (bothWrong + aWrongBRight) * (bothWrong + aRightBWrong) || 1);
         console.log(`    ${models[i]} × ${models[j]}: φ=${phi.toFixed(3)} (bothWrong=${bothWrong}, aOnly=${aWrongBRight}, bOnly=${aRightBWrong}, bothRight=${bothRight})`);
@@ -251,7 +251,8 @@ async function main(): Promise<void> {
       if (majority) ensembleCorrect++;
     }
 
-    const bestEnergy = 1; // relative
+    // Energy is expressed RELATIVE to one model: the best single model is 1x by
+    // definition, so only the ensemble's multiple needs a name.
     const ensembleEnergy = models.length;
     console.log(`    Best single (${bestSingle[0]}): ${bestCorrect}/${trials} (${(bestCorrect/trials*100).toFixed(1)}%) @ 1× energy`);
     console.log(`    Ensemble (${models.length} models): ${ensembleCorrect}/${trials} (${(ensembleCorrect/trials*100).toFixed(1)}%) @ ${ensembleEnergy}× energy`);

@@ -1,0 +1,14 @@
+{
+  "id": "080d01d53eef0010a013000841803bfc",
+  "at": "2026-08-25T20:41:14.976Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M0XAFQEZ087G0R001R2E1KQ",
+    "type": "bug",
+    "title": "main red on tsc: two unused bindings in model-benchmark-scale block every PR based on current main",
+    "slug": "main-red-on-tsc-two-unused-bindings-in-model-benchmark-scale",
+    "priority": "P2",
+    "filename": "081M0XAFQEZ087G0R001R2E1KQ-main-red-on-tsc-two-unused-bindings-in-model-benchmark-scale.md"
+  }
+}
