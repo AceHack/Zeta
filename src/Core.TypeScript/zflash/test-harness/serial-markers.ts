@@ -18,10 +18,18 @@ export const B0891_RETENTION_USB_SERIAL_MARKERS: readonly string[] = [
 export const B0891_FRESH_USB_SERIAL_MARKER =
   "[081KSNY2Z0008QG0R0008PN7RQ-retention]   no pre-baked zeta-creds.enc on boot USB ESP; Step 6.95-picker remains normal";
 
-/** Post-install first-boot cred restore markers (installed OS path). */
+/**
+ * Post-install first-boot cred restore markers (installed OS path).
+ *
+ * Every element must be present for retention to be proven, so an element that
+ * is a SUBSTRING of another element can never fail on its own — it is a check
+ * that cannot fail. `"zeta-creds-restore:"` sat here until 2026-08-25 doing
+ * exactly that: a strict prefix of the line above it, contributing a marker
+ * count and zero discrimination. Deleted rather than reworded; the substring
+ * falsifier in `serial-markers.test.ts` now refuses a replacement.
+ */
 export const INSTALLED_OS_RETENTION_SERIAL_MARKERS: readonly string[] = [
   "zeta-creds-restore: reading preserved ESP blob",
-  "zeta-creds-restore:",
   "already-present",
 ];
 

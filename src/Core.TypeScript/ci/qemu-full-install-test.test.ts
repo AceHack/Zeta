@@ -1,6 +1,7 @@
 import { describe, expect, it } from "bun:test";
-import { readFileSync } from "node:fs";
-import { resolve } from "node:path";
+import { existsSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
+import { tmpdir } from "node:os";
+import { join, resolve } from "node:path";
 import { DEFAULT_QEMU_PASSPHRASE, DEFAULT_QEMU_WIFI_PASSWORD } from "../zflash/test-harness/prepare-boot-image";
 import { validateSelfRegCiCoherent } from "./self-reg-serial.ts";
 import {
@@ -24,6 +25,9 @@ import {
   OVMF_FIRMWARE_CANDIDATES,
   PHASE2_SERIAL_SEPARATOR,
   QEMU_CREDS_PASSPHRASE_FWCFG_NAME,
+  reclaimLargeTempArtifacts,
+  RESTORE_UNIT_CONDITION_PATHS,
+  restoreServiceNeverRan,
   UEFI_KEYFILE_RESTORE_SERIAL,
 } from "./qemu-full-install-test.ts";
 import { QEMU_USB_TEST_SERIAL } from "../installer/qemu-usb-storage.ts";
@@ -726,5 +730,142 @@ describe("ISO workflow: restore decrypt runs with budget left", () => {
     ]) {
       expect(stepBlock(name)).toMatch(/if:\s*always\(\)\s*&&\s*github\.event_name == 'workflow_dispatch'/);
     }
+  });
+});
+
+// ---------------------------------------------------------------------------
+// DISK RECLAIM (081KSNY2Z0008QG0R0008PN7RQ / run 32816110015 ENOSPC)
+//
+// Falsifiers for the temp-image reclaim added after workflow_dispatch run
+// 32816110015 killed its runner worker with "No space left on device" the
+// instant scenario 3 started. Four sequential qemu-full-install-test.ts
+// invocations had each leaked a 20G qcow2; nothing ever deleted them, so the
+// job never reached `Locate ISO` / `Sign ISO with cosign` / `Upload ISO` and
+// produced no x86_64 ISO artifact at all.
+// ---------------------------------------------------------------------------
+describe("reclaimLargeTempArtifacts", () => {
+  it("deletes the files it is given and reports the bytes reclaimed", () => {
+    const dir = mkdtempSync(join(tmpdir(), "zeta-reclaim-test-"));
+    const disk = join(dir, "install-target.qcow2");
+    const usb = join(dir, "zflash-uefi-keyfile-boot.img");
+    writeFileSync(disk, "x".repeat(4096));
+    writeFileSync(usb, "y".repeat(2048));
+
+    const { removed, bytesReclaimed } = reclaimLargeTempArtifacts([disk, usb]);
+
+    expect(removed).toEqual([disk, usb]);
+    expect(bytesReclaimed).toBe(6144);
+    expect(existsSync(disk)).toBe(false);
+    expect(existsSync(usb)).toBe(false);
+    rmSync(dir, { recursive: true, force: true });
+  });
+
+  it("never touches a file it was not given — the serial log must survive", () => {
+    const dir = mkdtempSync(join(tmpdir(), "zeta-reclaim-test-"));
+    const disk = join(dir, "install-target.qcow2");
+    const serial = join(dir, "serial.log");
+    writeFileSync(disk, "x");
+    writeFileSync(serial, "phase-1 boot output");
+
+    reclaimLargeTempArtifacts([disk]);
+
+    // reportResult prints "Full serial log preserved at: <path>" for exactly
+    // this file when SERIAL_LOG_OUT_PATH is unset. Reclaiming it would make
+    // that line a lie.
+    // Read it directly rather than existsSync-then-read: the pre-check is a
+    // check-then-use race and buys nothing here — a reclaimed log makes
+    // readFileSync throw, which fails this test just as loudly.
+    expect(readFileSync(serial, "utf8")).toBe("phase-1 boot output");
+    rmSync(dir, { recursive: true, force: true });
+  });
+
+  it("is total over absent paths — a run that exited before createVirtualDisk still exits 0", () => {
+    const dir = mkdtempSync(join(tmpdir(), "zeta-reclaim-test-"));
+    const never = join(dir, "install-target.qcow2");
+
+    const { removed, bytesReclaimed } = reclaimLargeTempArtifacts([never]);
+
+    expect(removed).toEqual([]);
+    expect(bytesReclaimed).toBe(0);
+    rmSync(dir, { recursive: true, force: true });
+  });
+
+  it("is wired to process.on('exit'), not to a finally block", () => {
+    // reportResult() calls process.exit(), which does NOT unwind `finally`.
+    // A try/finally reclaim would therefore never fire on the failing path —
+    // which is precisely the path that leaks (a failed scenario still wrote a
+    // full 20G qcow2). Pin the hook so a future refactor cannot regress it.
+    const source = readFileSync(resolve(import.meta.dir, "qemu-full-install-test.ts"), "utf8");
+    expect(source).toContain('process.on("exit"');
+    expect(source).toContain("reclaimLargeTempArtifacts(largeTempArtifacts)");
+    // The disk is registered before it is created, so an early exit reclaims.
+    expect(source.indexOf("const largeTempArtifacts")).toBeLessThan(source.indexOf("createVirtualDisk(diskPath)"));
+    // The boot image is the second multi-GB artifact; it must be registered too.
+    expect(source).toContain("largeTempArtifacts.push(usbImagePath)");
+  });
+});
+
+// ---------------------------------------------------------------------------
+// SKIPPED-vs-BROKEN (run 32816110015 step 20, "UEFI keyfile restore decrypt")
+//
+// The unit is guarded by four ConditionPathExists paths. systemd SKIPS on an
+// unmet condition, so a guest that never restored anything boots to a normal
+// login prompt. Before this discrimination the contract blamed fw_cfg for it.
+// ---------------------------------------------------------------------------
+describe("restoreServiceNeverRan / restore contract diagnosis", () => {
+  // Verbatim shape of run 32816110015's phase-2 serial: a clean boot, first
+  // session, login prompt, and not one zeta-creds-restore line.
+  const skippedUnitSerial = [
+    "[    0.000000] Linux version 6.12.90 (nixbld@localhost)",
+    "zeta-first-session: begin",
+    "zeta-first-session: complete canSelfRegister=true",
+    "node-qemu-keyfile-restore login: ",
+  ].join("\n");
+
+  it("detects a unit systemd skipped entirely", () => {
+    expect(restoreServiceNeverRan(skippedUnitSerial)).toBe(true);
+  });
+
+  it("does NOT fire once the unit's own unconditional marker is present", () => {
+    // readingBlob is emitted after the optional fw_cfg block, so this is a
+    // guest where the unit RAN and fw_cfg staging genuinely failed.
+    expect(restoreServiceNeverRan(`${skippedUnitSerial}\n${UEFI_KEYFILE_RESTORE_SERIAL.readingBlob}`)).toBe(false);
+  });
+
+  it("blames the ConditionPathExists gate, not fw_cfg, when nothing ran", () => {
+    const result = assertUefiKeyfileRestoreContract(skippedUnitSerial);
+    expect(result.ok).toBe(false);
+    if (result.ok) throw new Error("unreachable");
+    expect(result.reason).toContain("never ran");
+    expect(result.reason).toContain("ConditionPathExists");
+    // The lead an operator needs: every path that can silently skip the unit.
+    for (const path of RESTORE_UNIT_CONDITION_PATHS) {
+      expect(result.reason).toContain(path);
+    }
+    // The old message pointed at the wrong subsystem.
+    expect(result.reason).not.toContain("fw_cfg staging marker missing");
+  });
+
+  it("still blames fw_cfg when the unit ran and staging really did fail", () => {
+    const ranButNoFwcfg = `${skippedUnitSerial}\n${UEFI_KEYFILE_RESTORE_SERIAL.readingBlob}`;
+    const result = assertUefiKeyfileRestoreContract(ranButNoFwcfg);
+    expect(result.ok).toBe(false);
+    if (result.ok) throw new Error("unreachable");
+    expect(result.reason).toContain("fw_cfg staging marker missing");
+    expect(result.reason).not.toContain("never ran");
+  });
+
+  it("the four condition paths match zeta-creds-restore.nix's declared defaults", () => {
+    // Checked, not asserted: drift in the module must break this test rather
+    // than silently hand operators a stale list to go looking at.
+    const nix = readFileSync(
+      resolve(import.meta.dir, "../../../full-ai-cluster/nixos/modules/zeta-creds-restore.nix"),
+      "utf8",
+    );
+    expect(nix).toContain("ConditionPathExists");
+    expect(nix).toContain('default = "/boot/zeta-creds.enc"');
+    expect(nix).toContain('default = "/etc/zeta/usb-uuid"');
+    expect(nix).toContain('bunShimPath = "${cfg.home}/.local/share/mise/shims/bun"');
+    expect(nix).toContain("installer/zeta-creds-restore.ts");
   });
 });

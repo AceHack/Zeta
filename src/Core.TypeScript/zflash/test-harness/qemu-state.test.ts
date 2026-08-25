@@ -220,8 +220,12 @@ describe("081KSNY2Z0008QG0R0008PN7RQ QEMU state-preservation planner", () => {
 
     expect("ok" in result).toBe(true);
     if ("ok" in result) {
-      expect(result.ok.matchedMarkers).toContain("zeta-creds-restore:");
+      // Was `"zeta-creds-restore:"` until 2026-08-25 — a strict prefix of the
+      // line below it, so it matched whenever the real marker did and could
+      // never fail on its own. Pin the discriminating marker instead.
+      expect(result.ok.matchedMarkers).toContain("zeta-creds-restore: reading preserved ESP blob");
       expect(result.ok.matchedMarkers).toContain("already-present");
+      expect(result.ok.matchedMarkers).not.toContain("zeta-creds-restore:");
     }
   });
 

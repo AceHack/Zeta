@@ -3,7 +3,10 @@ import {
   assertHappyPathFirstSessionSerial,
   assertMockIdentityAuthFirstSessionSerial,
   assertSkipGhFirstSessionSerial,
+  B0891_RETENTION_USB_SERIAL_MARKERS,
+  INSTALLED_OS_RETENTION_SERIAL_MARKERS,
   serialFirstBootInProgress,
+  WIFI_ESP_INSTALL_SERIAL_MARKERS,
 } from "./serial-markers";
 
 describe("serialFirstBootInProgress", () => {
@@ -139,5 +142,48 @@ describe("usb iSerial guest serial markers", () => {
     }).join("\n");
     const result = assertUsbISerialGuestSerial(serial, "ZETA-QEMU-001");
     expect(result.ok).toBe(false);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// NO MARKER MAY BE A SUBSTRING OF ANOTHER IN THE SAME ALL-REQUIRED SET
+//
+// These sets are consumed with "every element must appear in the serial log"
+// semantics (qemu-state.ts allMarkersPresent). A element that is a substring of
+// a sibling therefore cannot fail independently: satisfying the longer line
+// satisfies it for free. That is the vacuity class — a check that cannot fail
+// is not a check — and it shipped for real in
+// INSTALLED_OS_RETENTION_SERIAL_MARKERS ("zeta-creds-restore:" under
+// "zeta-creds-restore: reading preserved ESP blob").
+// ---------------------------------------------------------------------------
+describe("all-required marker sets carry no redundant element", () => {
+  const allRequiredSets: ReadonlyArray<readonly [string, readonly string[]]> = [
+    ["B0891_RETENTION_USB_SERIAL_MARKERS", B0891_RETENTION_USB_SERIAL_MARKERS],
+    ["INSTALLED_OS_RETENTION_SERIAL_MARKERS", INSTALLED_OS_RETENTION_SERIAL_MARKERS],
+    ["WIFI_ESP_INSTALL_SERIAL_MARKERS", WIFI_ESP_INSTALL_SERIAL_MARKERS],
+  ];
+
+  for (const [name, markers] of allRequiredSets) {
+    test(`${name}: no element is a substring of a sibling`, () => {
+      for (const candidate of markers) {
+        const covering = markers.filter((other) => other !== candidate && other.includes(candidate));
+        expect(
+          covering,
+          `"${candidate}" is already implied by ${JSON.stringify(covering)}; it can never fail on its own`,
+        ).toEqual([]);
+      }
+    });
+
+    test(`${name}: every element is non-empty`, () => {
+      // An empty string is included in every log — the limiting case of the above.
+      for (const marker of markers) {
+        expect(marker.trim().length).toBeGreaterThan(0);
+      }
+    });
+  }
+
+  test("the retention set kept the discriminating half of the deleted pair", () => {
+    expect(INSTALLED_OS_RETENTION_SERIAL_MARKERS).toContain("zeta-creds-restore: reading preserved ESP blob");
+    expect(INSTALLED_OS_RETENTION_SERIAL_MARKERS).not.toContain("zeta-creds-restore:");
   });
 });
