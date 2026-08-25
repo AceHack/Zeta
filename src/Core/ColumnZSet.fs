@@ -31,38 +31,56 @@ open System.Runtime.CompilerServices
 ///
 /// ## What was measured (Apple M2 Ultra, arm64/NEON, `Vector<int64>.Count = 2`)
 ///
-/// The result is **not** uniformly "SIMD is faster", and the parts that lose
-/// are stated first:
+/// The honest headline is that **one number does not exist**, because a scalar
+/// predicate scan costs whatever its *branch predictor* costs. The same kernel
+/// over the same element count measures ~6x apart depending only on whether
+/// the column is sorted:
 ///
-/// | operation | scalar | vector | verdict |
+/// | operation, n = 1 000 000 | scalar | vector | ratio |
 /// |---|---|---|---|
-/// | `SumWeights`, n = 8 192 (in L1/L2) | 9 760 ns | 3 124 ns | vector **3.1× faster** |
-/// | `SumWeights`, n = 1 000 000 (8 MB, out of cache) | 257 µs | 386 µs | vector **0.67× — slower** |
-/// | `CountWhereKeyInRange`, n = 256 | 181 ns | 85 ns | vector **2.1× faster** |
-/// | `CountWhereKeyInRange`, n = 1 000 000 | 3 175 µs | 295 µs | vector **10.8× faster** |
-/// | `SumWeightsWhereKeyInRange`, n = 1 000 000 | 3 329 µs | 574 µs | vector **5.8× faster** |
+/// | range count, **shuffled** column | 3 387 µs | 341 µs | **9.9x** |
+/// | range count, **sorted** column | 594 µs | 341 µs | **1.75x** |
+/// | weight sum, in cache (n = 4 096) | 1 055 ns | 1 549 ns | **0.68x — slower** |
+/// | weight sum, out of cache | 166 µs | 248 µs | **0.67x — slower** |
 ///
-/// Two different regimes, and the difference is *not* the vector width:
+/// Note the vector column: **341 µs either way.** The branchless kernel does
+/// not care how the data is ordered; only the scalar twin does. That is the
+/// actual claim, and it is why the ratio moves.
 ///
-/// - **Unpredicated `SumWeights` is bandwidth-bound** once the column leaves
-///   cache. At 1 M × 8 B = 8 MB the loop is waiting on memory, so issuing
-///   fewer, wider instructions buys nothing and the extra signed-overflow
-///   bookkeeping (3 vector ops per add, below) makes it a net loss. `Sum` is
-///   therefore **scalar by default** here — see `SumWeights`.
-/// - **Predicated scans are branch-bound.** The scalar form has a
-///   data-dependent branch per element; on keys the predictor cannot memorise
-///   that costs ~11 cycles/element. The vector form is branchless
-///   (compare → mask → `ConditionalSelect`), so it wins ~9–10× — far more
-///   than the 2 lanes NEON gives. This is why the predicated kernels **are**
-///   vectorised by default: the win comes from removing branches, not from
-///   width, so it does not depend on a wide ISA.
+/// Which regime applies matters, so it is stated rather than averaged away:
 ///
-/// Register: `metered` for the three kernels below — each has a scalar twin
-/// checked for equality by property tests, and `ColumnZSetBench` is the
-/// falsifier for the speed claim (`ColumnZSet vectorised predicate scan beats
-/// the scalar scan` fails if the vector path is bypassed). The cache/branch
-/// *explanations* above are `unmetered`: the timings are measured, the causal
-/// account of them is inference from standard architecture, not from counters.
+/// - A `ColumnZSet` **key** column is **sorted by construction** (a Z-set is a
+///   sorted run), so a range predicate on it is highly predictable and the
+///   realistic win there is ~1.75x. And on a sorted column you would not
+///   linear-scan at all — you would binary-search the two boundaries. **The
+///   vectorised scan earns its keep on columns that are not the sort key**:
+///   weight predicates, and key columns after an order-destroying projection.
+/// - **Unpredicated `SumWeights` is bandwidth-bound** out of cache (8 MB at
+///   n = 1 000 000). Wider instructions buy nothing when the loop waits on
+///   memory, so `SumWeights` dispatches to **scalar**. This refutes the
+///   starting hypothesis that SoA would unlock a fast `weightedCount` via
+///   `MemoryMarshal.Cast` + `TensorPrimitives.Sum`: `TensorPrimitives.Sum`
+///   measured 0.84x against the scalar twin at n = 1 000 000. The vector
+///   version is kept and benchmarked because the measurement is the result.
+///
+/// **The layout change alone bought nothing.** AoS-vs-SoA *scalar* range count
+/// at n = 1 000 000 measured 3 228 µs vs 3 387 µs — inside noise. Vectorising
+/// it bought ~10x. That is Abadi et al. 2013's central claim reproduced in
+/// miniature (column storage without column *execution* buys little), and it
+/// is why the column store and the vectorised kernel are one piece of work.
+///
+/// Register: `metered` for the three kernels below. Correctness has a real
+/// falsifier — each kernel's scalar twin must agree with it on every input,
+/// including the overflow class, checked by a 5 000-trial extreme-magnitude
+/// differential test. The *speed* claim has one too: the 1.5x gate in
+/// `ColumnZSet.Tests.fs`, which was mutation-checked (replacing the vector body
+/// with the scalar loop drops it to 0.94x and fails) — while all correctness
+/// tests still pass, which is precisely why the timing gate has to exist.
+/// `ColumnZSetBench` reports both data regimes.
+///
+/// The cache/branch *explanations* above are `unmetered`: the timings are
+/// measured, the causal account of them is inference from standard computer
+/// architecture, not from performance counters.
 ///
 /// Anchors (Beacon): Abadi, Boncz & Harizopoulos, *The Design and
 /// Implementation of Modern Column-Oriented Database Systems* (FnT Databases
@@ -82,6 +100,13 @@ type ColumnZSet =
     /// lengths. Use `ColumnZSet.ofZSet` / `ColumnZSet.ofSeq` for arbitrary
     /// input.
     new(keys: ImmutableArray<int64>, weights: ImmutableArray<int64>) =
+        // Length agreement is checked because a mismatch does not fail here —
+        // it fails much later as an ArgumentOutOfRangeException from a Slice
+        // inside a kernel, or worse, truncates silently.
+        let kn = if keys.IsDefault then 0 else keys.Length
+        let wn = if weights.IsDefault then 0 else weights.Length
+        if kn <> wn then
+            invalidArg "weights" $"ColumnZSet columns must be parallel: {kn} keys but {wn} weights"
         { keyCol = keys; weightCol = weights }
 
     static member Empty: ColumnZSet =
@@ -102,19 +127,38 @@ type ColumnZSet =
 
 
 /// Vectorised kernels over `ColumnZSet` columns. Every kernel ships as a
-/// matched pair — `*Scalar` and `*Vectorized` — that must agree on every
-/// input; the pairing *is* the correctness falsifier, and it is what lets a
-/// benchmark compare the two paths on identical data.
+/// matched pair — `*Scalar` and `*Vectorized` — that agree on **every** input,
+/// including the overflow class. The pairing is the correctness falsifier.
 ///
-/// **Overflow.** `ZSet` sums weights with `Checked.(+)` on the stated grounds
-/// that silent corruption is worse than a crash, and the vector paths keep
-/// that guarantee rather than trading it for speed. Signed overflow is
-/// detected branchlessly per lane with the standard identity — for
-/// `s = a + b`, overflow occurred iff `((a XOR s) AND (b XOR s))` has its sign
-/// bit set — OR-accumulated across the loop and inspected once at the end.
-/// Semantics match `ZSet.weightedCount`, which likewise accumulates into
-/// several independent checked accumulators, so a partial sum can overflow
-/// even when the total would not.
+/// ## Overflow: exact, and identical on every host
+///
+/// `ZSet.weightedCount` sums with `Checked.(+)` into **four** unrolled
+/// accumulators, so whether it raises depends on where an element sits modulo
+/// 4. A vector kernel partitions into `Vector<int64>.Count` lanes instead — 2
+/// on NEON, 4 on AVX2, 8 on AVX-512. Those are *different partitions*, so a
+/// naive "checked per lane" vector kernel raises on inputs its scalar twin
+/// sums fine, and vice versa, **and the answer changes with the host ISA**:
+///
+/// ```
+/// [MaxValue; MaxValue; -MaxValue; -MaxValue]  NEON: throws   AVX2: returns 0
+/// [MaxValue; -MaxValue; MaxValue; -MaxValue]  NEON: returns 0  AVX2: throws
+/// ```
+///
+/// Same bytes, same code, different behaviour per machine. That is a DST
+/// replay violation (§7) and a four-oracle byte-lock violation, so it is not
+/// documented — it is removed.
+///
+/// **The contract instead:** these kernels compute the **exact mathematical
+/// sum** and raise `OverflowException` **iff that true sum does not fit in
+/// `int64`**. No partial-sum artefact, no lane-width dependence, no silent
+/// wraparound. Accumulation runs in `int64` at full speed and folds into an
+/// `Int128` running total only at the moments it would actually have wrapped
+/// (detected branchlessly with `((a XOR s) AND (b XOR s)) < 0`, which is exact
+/// for two's-complement addition including `Int64.MinValue`).
+///
+/// This is strictly better-defined than `ZSet.weightedCount`, which remains
+/// position-dependent; `ColumnZSet.weightedCount` therefore succeeds on a few
+/// inputs where `ZSet.weightedCount` raises. Both refuse to wrap silently.
 [<AbstractClass; Sealed>]
 type ColumnKernel =
 
@@ -124,66 +168,86 @@ type ColumnKernel =
     static member IsAccelerated: bool = Vector.IsHardwareAccelerated
 
     /// Lanes per `Vector<int64>` — 2 on ARM NEON, 4 on AVX2, 8 on AVX-512.
+    /// Affects speed only; never the result, and never whether one is raised.
     static member VectorWidth: int = Vector<int64>.Count
+
+    /// Sign-extend `int64` into `Int128`.
+    static member inline private Widen(x: int64) : Int128 =
+        Int128((if x < 0L then UInt64.MaxValue else 0UL), uint64 x)
+
+    /// Narrow an exact wide total back to `int64`, raising iff it does not fit.
+    static member private Narrow(total: Int128, what: string) : int64 =
+        if total > ColumnKernel.Widen Int64.MaxValue
+           || total < ColumnKernel.Widen Int64.MinValue then
+            raise (OverflowException $"ColumnZSet {what} overflowed int64")
+        else
+            int64 total
+
+    /// Exact scalar sum of a span, folding into `Int128` only on real wrap.
+    static member private WideSum(values: ReadOnlySpan<int64>) : Int128 =
+        let mutable total = Int128.Zero
+        let mutable acc = 0L
+        for i in 0 .. values.Length - 1 do
+            let v = values.[i]
+            let s = acc + v
+            if ((acc ^^^ s) &&& (v ^^^ s)) < 0L then
+                // Would have wrapped: bank the accumulator, restart at `v`.
+                total <- total + ColumnKernel.Widen acc
+                acc <- v
+            else
+                acc <- s
+        total + ColumnKernel.Widen acc
 
     // ─────────────────────────── sum of a column ───────────────────────────
 
-    /// Sum a weight column, 4-way unrolled so the JIT can schedule
-    /// independent adders. Checked.
+    /// Sum a weight column. Exact; raises iff the true sum exceeds `int64`.
     static member SumWeightsScalar(weights: ReadOnlySpan<int64>) : int64 =
-        let mutable a0 = 0L
-        let mutable a1 = 0L
-        let mutable a2 = 0L
-        let mutable a3 = 0L
-        let n = weights.Length
-        let mutable i = 0
-        while i + 4 <= n do
-            a0 <- Checked.(+) a0 weights.[i]
-            a1 <- Checked.(+) a1 weights.[i + 1]
-            a2 <- Checked.(+) a2 weights.[i + 2]
-            a3 <- Checked.(+) a3 weights.[i + 3]
-            i <- i + 4
-        let mutable total = Checked.(+) (Checked.(+) a0 a1) (Checked.(+) a2 a3)
-        while i < n do
-            total <- Checked.(+) total weights.[i]
-            i <- i + 1
-        total
+        ColumnKernel.Narrow(ColumnKernel.WideSum weights, "weight sum")
 
-    /// Sum a weight column with `Vector<int64>` accumulation and branchless
-    /// per-lane overflow detection. **Measured 3.1× faster than
-    /// `SumWeightsScalar` in cache and 0.67× — i.e. slower — out of cache**;
-    /// `SumWeights` therefore does not call this. Kept, tested and benchmarked
-    /// because the *measurement* is the deliverable: it is what turns "SoA
-    /// unlocks a fast `weightedCount`" from a plausible claim into a checked
-    /// one, and the answer was no for the size that matters.
+    /// Sum a weight column with `Vector<int64>` lanes, chunked so a lane that
+    /// would wrap is recomputed exactly rather than reported as an overflow.
+    /// Result and raise-behaviour are identical to `SumWeightsScalar` on every
+    /// input and every vector width.
+    ///
+    /// **Measured slower than the scalar twin out of cache** (see the table on
+    /// `ColumnZSet`); `SumWeights` does not call it. It is kept, tested and
+    /// benchmarked because the measurement is the deliverable.
     static member SumWeightsVectorized(weights: ReadOnlySpan<int64>) : int64 =
         let width = Vector<int64>.Count
-        let mutable acc = Vector<int64>.Zero
-        let mutable ovf = Vector<int64>.Zero
+        let mutable total = Int128.Zero
         let mutable i = 0
-        while i + width <= weights.Length do
-            let v = Vector<int64>(weights.Slice(i, width))
-            let s = acc + v
-            // Signed-overflow mask: sign bit set in ((acc^s) & (v^s)).
-            ovf <- Vector.BitwiseOr(ovf, Vector.BitwiseAnd(Vector.Xor(acc, s), Vector.Xor(v, s)))
-            acc <- s
-            i <- i + width
-        for lane in 0 .. width - 1 do
-            if ovf.[lane] < 0L then
-                raise (OverflowException "ColumnZSet weight sum overflowed int64")
-        let mutable total = 0L
-        for lane in 0 .. width - 1 do
-            total <- Checked.(+) total acc.[lane]
         while i < weights.Length do
-            total <- Checked.(+) total weights.[i]
-            i <- i + 1
-        total
+            let take = min 4096 (weights.Length - i)
+            let chunk = weights.Slice(i, take)
+            let mutable acc = Vector<int64>.Zero
+            let mutable ovf = Vector<int64>.Zero
+            let mutable j = 0
+            // `j <= take - width`, never `j + width <= take`: the latter can
+            // overflow int on a near-Int32.MaxValue span and pass the guard.
+            while j <= take - width do
+                let v = Vector<int64>(chunk.Slice(j, width))
+                let s = acc + v
+                ovf <- Vector.BitwiseOr(ovf, Vector.BitwiseAnd(Vector.Xor(acc, s), Vector.Xor(v, s)))
+                acc <- s
+                j <- j + width
+            let mutable wrapped = false
+            for lane in 0 .. width - 1 do
+                if ovf.[lane] < 0L then wrapped <- true
+            if wrapped then
+                // A lane wrapped: redo this chunk's vector span exactly. Rare,
+                // and it is what keeps the answer host-independent.
+                total <- total + ColumnKernel.WideSum(chunk.Slice(0, j))
+            else
+                for lane in 0 .. width - 1 do
+                    total <- total + ColumnKernel.Widen acc.[lane]
+            total <- total + ColumnKernel.WideSum(chunk.Slice j)
+            i <- i + take
+        ColumnKernel.Narrow(total, "weight sum")
 
     /// Sum of all weights — the columnar twin of `ZSet.weightedCount`.
-    /// **Scalar on purpose**: see the measured table on `ColumnZSet`. The
-    /// vector path is a documented loss on out-of-cache columns and only a
-    /// 3× win while the column is resident, and dispatching on a cache-size
-    /// threshold would be an invented constant tuned to one machine.
+    /// **Scalar on purpose**: the vector path is a measured loss on
+    /// out-of-cache columns, and dispatching on a cache-size threshold would
+    /// be an invented constant tuned to one machine.
     static member SumWeights(weights: ReadOnlySpan<int64>) : int64 =
         ColumnKernel.SumWeightsScalar weights
 
@@ -201,10 +265,11 @@ type ColumnKernel =
 
     /// Count keys in `[lo, hi)`, branchlessly: compare both bounds into masks,
     /// AND them, AND with one, accumulate. No branch depends on the data, so
-    /// the cost is independent of selectivity and of how predictable the keys
-    /// are. **Measured 2.1× (n = 256, branches predictable) to 10.8×
-    /// (n = 1 000 000, branches not predictable) faster than the scalar twin.**
-    /// This is the operation AoS cannot express: it needs the keys contiguous.
+    /// the cost is independent of selectivity and of key order — which is the
+    /// entire claim, since the scalar twin's cost is not.
+    ///
+    /// Cannot overflow: the accumulator counts at most `keys.Length` (an
+    /// `int`) spread across lanes of `int64`.
     static member CountWhereKeyInRangeVectorized
         (keys: ReadOnlySpan<int64>, lo: int64, hi: int64) : int =
         let width = Vector<int64>.Count
@@ -213,7 +278,7 @@ type ColumnKernel =
         let ones = Vector<int64>.One
         let mutable acc = Vector<int64>.Zero
         let mutable i = 0
-        while i + width <= keys.Length do
+        while i <= keys.Length - width do
             let v = Vector<int64>(keys.Slice(i, width))
             let mask =
                 Vector.BitwiseAnd(Vector.GreaterThanOrEqual(v, vlo), Vector.LessThan(v, vhi))
@@ -241,50 +306,80 @@ type ColumnKernel =
 
     // ──────────── fused select + aggregate: sum weights over a range ────────────
 
-    /// `SELECT sum(weight) WHERE key >= lo AND key < hi`, scalar.
-    static member SumWeightsWhereKeyInRangeScalar
-        (keys: ReadOnlySpan<int64>, weights: ReadOnlySpan<int64>, lo: int64, hi: int64) : int64 =
-        let mutable total = 0L
+    /// `SELECT sum(weight) WHERE key >= lo AND key < hi`, scalar. Exact;
+    /// raises iff the true sum exceeds `int64`.
+    static member private WideSumWhereKeyInRange
+        (keys: ReadOnlySpan<int64>, weights: ReadOnlySpan<int64>, lo: int64, hi: int64) : Int128 =
+        let mutable total = Int128.Zero
+        let mutable acc = 0L
         for i in 0 .. keys.Length - 1 do
             let k = keys.[i]
-            if k >= lo && k < hi then total <- Checked.(+) total weights.[i]
-        total
+            if k >= lo && k < hi then
+                let v = weights.[i]
+                let s = acc + v
+                if ((acc ^^^ s) &&& (v ^^^ s)) < 0L then
+                    total <- total + ColumnKernel.Widen acc
+                    acc <- v
+                else
+                    acc <- s
+        total + ColumnKernel.Widen acc
+
+    static member SumWeightsWhereKeyInRangeScalar
+        (keys: ReadOnlySpan<int64>, weights: ReadOnlySpan<int64>, lo: int64, hi: int64) : int64 =
+        ColumnKernel.Narrow(
+            ColumnKernel.WideSumWhereKeyInRange(keys, weights, lo, hi), "ranged weight sum")
 
     /// `SELECT sum(weight) WHERE key >= lo AND key < hi`, fused and
     /// branchless: the range mask selects the weight lane or zero via
     /// `ConditionalSelect`, and the selected lanes accumulate directly — the
-    /// filter never materialises a selection vector. Checked, per the overflow
-    /// note on this type. **Measured 5.8× faster than the scalar twin at
-    /// n = 1 000 000.**
+    /// filter never materialises a selection vector. Chunked so a wrapping
+    /// lane is recomputed exactly, giving identical results and identical
+    /// raise-behaviour to the scalar twin on every host.
     static member SumWeightsWhereKeyInRangeVectorized
         (keys: ReadOnlySpan<int64>, weights: ReadOnlySpan<int64>, lo: int64, hi: int64) : int64 =
         let width = Vector<int64>.Count
         let vlo = Vector<int64>(lo)
         let vhi = Vector<int64>(hi)
-        let mutable acc = Vector<int64>.Zero
-        let mutable ovf = Vector<int64>.Zero
+        let mutable total = Int128.Zero
         let mutable i = 0
-        while i + width <= keys.Length do
-            let vk = Vector<int64>(keys.Slice(i, width))
-            let vw = Vector<int64>(weights.Slice(i, width))
-            let mask =
-                Vector.BitwiseAnd(Vector.GreaterThanOrEqual(vk, vlo), Vector.LessThan(vk, vhi))
-            let selected = Vector.ConditionalSelect(mask, vw, Vector<int64>.Zero)
-            let s = acc + selected
-            ovf <- Vector.BitwiseOr(ovf, Vector.BitwiseAnd(Vector.Xor(acc, s), Vector.Xor(selected, s)))
-            acc <- s
-            i <- i + width
-        for lane in 0 .. width - 1 do
-            if ovf.[lane] < 0L then
-                raise (OverflowException "ColumnZSet ranged weight sum overflowed int64")
-        let mutable total = 0L
-        for lane in 0 .. width - 1 do
-            total <- Checked.(+) total acc.[lane]
         while i < keys.Length do
-            let k = keys.[i]
-            if k >= lo && k < hi then total <- Checked.(+) total weights.[i]
-            i <- i + 1
-        total
+            let take = min 4096 (keys.Length - i)
+            let mutable acc = Vector<int64>.Zero
+            let mutable ovf = Vector<int64>.Zero
+            let mutable j = 0
+            while j <= take - width do
+                let vk = Vector<int64>(keys.Slice(i + j, width))
+                let vw = Vector<int64>(weights.Slice(i + j, width))
+                let mask =
+                    Vector.BitwiseAnd(Vector.GreaterThanOrEqual(vk, vlo), Vector.LessThan(vk, vhi))
+                let selected = Vector.ConditionalSelect(mask, vw, Vector<int64>.Zero)
+                let s = acc + selected
+                ovf <- Vector.BitwiseOr(ovf, Vector.BitwiseAnd(Vector.Xor(acc, s), Vector.Xor(selected, s)))
+                acc <- s
+                j <- j + width
+            let mutable wrapped = false
+            for lane in 0 .. width - 1 do
+                if ovf.[lane] < 0L then wrapped <- true
+            if wrapped then
+                // WIDE, never `SumWeightsWhereKeyInRangeScalar`: narrowing here
+                // would raise whenever a single 4096-element chunk exceeds
+                // int64, even when the whole sum fits comfortably. That was a
+                // real divergence, invisible to any test whose n fits in one
+                // chunk.
+                total <-
+                    total
+                    + ColumnKernel.WideSumWhereKeyInRange(
+                        keys.Slice(i, j), weights.Slice(i, j), lo, hi)
+            else
+                for lane in 0 .. width - 1 do
+                    total <- total + ColumnKernel.Widen acc.[lane]
+            // Chunk tail (< width elements).
+            for k in j .. take - 1 do
+                let key = keys.[i + k]
+                if key >= lo && key < hi then
+                    total <- total + ColumnKernel.Widen weights.[i + k]
+            i <- i + take
+        ColumnKernel.Narrow(total, "ranged weight sum")
 
     /// `SELECT sum(weight) WHERE key >= lo AND key < hi`. Vectorised when
     /// hardware-backed, for the same branch-elimination reason as

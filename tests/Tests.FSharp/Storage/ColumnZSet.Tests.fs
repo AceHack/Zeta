@@ -3,6 +3,7 @@ module Zeta.Tests.Storage.ColumnZSetTests
 
 open System
 open System.Buffers
+open System.Buffers.Binary
 open System.Diagnostics
 open System.Numerics
 open FsUnit.Xunit
@@ -124,29 +125,120 @@ let ``ColumnZSet range predicates agree with a row-store scan`` () =
         ColumnZSet.weightedCountInRange lo hi c |> should equal expectedSum
 
 
-// ─── the checked-arithmetic guarantee survives vectorisation ─────────
+// ─── overflow: EXACT, and identical on every vector width ───────────
+//
+// The first version of these kernels checked overflow per lane and diverged
+// from its scalar twin in BOTH directions -- and the divergence depended on
+// Vector<int64>.Count, so the same bytes threw on NEON and returned 0 on AVX2.
+// These witnesses are the ones that caught it; they are pinned so it cannot
+// come back. Nothing in the rest of the suite reaches this magnitude class.
 
 [<Fact>]
-let ``ColumnZSet vectorized sums raise on int64 overflow rather than wrapping`` () =
-    // Every lane gets a huge positive weight, so whichever lane the vector
-    // path accumulates into overflows. The scalar twin must agree.
-    let weights = Array.create 64 (Int64.MaxValue / 4L)
-    // The span is rebuilt inside each lambda: a byref-like cannot be captured.
-    (fun () -> ColumnKernel.SumWeightsVectorized(ReadOnlySpan weights) |> ignore)
-    |> should throw typeof<OverflowException>
-    (fun () -> ColumnKernel.SumWeightsScalar(ReadOnlySpan weights) |> ignore)
-    |> should throw typeof<OverflowException>
+let ``ColumnZSet sums are exact where partial sums would wrap`` () =
+    let mx = Int64.MaxValue
+    let mn = Int64.MinValue
+    // Every one of these has a true sum that FITS in int64, reached only by
+    // passing through a partial sum that does not. Neither path may raise.
+    for (name, weights, expected) in
+        [ "[MX; MX; -MX; -MX]", [| mx; mx; -mx; -mx |], 0L
+          "[MX; -MX; MX; -MX]", [| mx; -mx; mx; -mx |], 0L
+          "[MX/2+1; MX/2+1; -MX; 0]", [| mx / 2L + 1L; mx / 2L + 1L; -mx; 0L |], 1L
+          "[MN; MN; MX; MX]", [| mn; mn; mx; mx |], -2L ] do
+        let scalar = ColumnKernel.SumWeightsScalar(ReadOnlySpan weights)
+        let vector = ColumnKernel.SumWeightsVectorized(ReadOnlySpan weights)
+        Assert.True((scalar = expected), $"{name}: scalar gave {scalar}, expected {expected}")
+        Assert.True((vector = expected), $"{name}: vector gave {vector}, expected {expected}")
 
 
 [<Fact>]
-let ``ColumnZSet vectorized ranged sum raises on int64 overflow`` () =
-    let keys = Array.init 64 int64
-    let weights = Array.create 64 (Int64.MaxValue / 4L)
-    (fun () ->
-        ColumnKernel.SumWeightsWhereKeyInRangeVectorized(
-            ReadOnlySpan keys, ReadOnlySpan weights, 0L, 64L)
-        |> ignore)
-    |> should throw typeof<OverflowException>
+let ``ColumnZSet sums still raise when the TRUE sum exceeds int64`` () =
+    // The exactness above must not have cost the no-silent-wraparound guarantee.
+    for weights in
+        [ Array.create 64 (Int64.MaxValue / 4L)
+          [| Int64.MinValue; -1L |]
+          [| Int64.MaxValue; 1L |]
+          [| Int64.MinValue; Int64.MinValue |] ] do
+        (fun () -> ColumnKernel.SumWeightsScalar(ReadOnlySpan weights) |> ignore)
+        |> should throw typeof<OverflowException>
+        (fun () -> ColumnKernel.SumWeightsVectorized(ReadOnlySpan weights) |> ignore)
+        |> should throw typeof<OverflowException>
+
+
+/// The exact witness for the chunk-narrowing bug: two 4 096-element chunks
+/// that individually blow past int64 in opposite directions, whose true sum is
+/// 0. Any implementation that narrows per chunk raises here.
+[<Fact>]
+let ``ColumnZSet ranged sum spanning chunks is exact when chunks individually overflow`` () =
+    let half = 4096
+    let big = Int64.MaxValue / 2L
+    let n = half * 2
+    let keys = Array.init n int64
+    let weights = Array.init n (fun i -> if i < half then big else -big)
+    let expected = 0L
+    ColumnKernel.SumWeightsWhereKeyInRangeScalar(
+        ReadOnlySpan keys, ReadOnlySpan weights, 0L, int64 n)
+    |> should equal expected
+    ColumnKernel.SumWeightsWhereKeyInRangeVectorized(
+        ReadOnlySpan keys, ReadOnlySpan weights, 0L, int64 n)
+    |> should equal expected
+    // Same shape for the unpredicated sum.
+    ColumnKernel.SumWeightsScalar(ReadOnlySpan weights) |> should equal expected
+    ColumnKernel.SumWeightsVectorized(ReadOnlySpan weights) |> should equal expected
+
+
+[<Fact>]
+let ``ColumnZSet ranged sums are exact and raise identically`` () =
+    let mx = Int64.MaxValue
+    let keys = [| 0L; 1L; 2L; 3L |]
+    for (weights, expected) in
+        [ [| mx; -mx; mx; -mx |], Some 0L
+          [| mx; mx; -mx; -mx |], Some 0L
+          [| mx; mx; mx; mx |], None ] do
+        let run (f: unit -> int64) = try Some(f ()) with :? OverflowException -> None
+        let scalar =
+            run (fun () ->
+                ColumnKernel.SumWeightsWhereKeyInRangeScalar(
+                    ReadOnlySpan keys, ReadOnlySpan weights, 0L, 4L))
+        let vector =
+            run (fun () ->
+                ColumnKernel.SumWeightsWhereKeyInRangeVectorized(
+                    ReadOnlySpan keys, ReadOnlySpan weights, 0L, 4L))
+        scalar |> should equal expected
+        vector |> should equal expected
+
+
+/// Differential test over the magnitude class the fixed-seed tests never
+/// reach. Weights are drawn deliberately from {near MaxValue, near MinValue,
+/// tiny, MaxValue/k} so that partial sums wrap constantly — that is the only
+/// region where the two paths could disagree, and the contract says they never
+/// do, on either the value or the raise.
+///
+/// `n` deliberately spans the 4 096-element CHUNK boundary of the vectorised
+/// kernels. An earlier version of this test capped n at 40 — one chunk — and
+/// therefore could not see a real bug where the wrapping-lane fallback
+/// narrowed each chunk to int64 and raised whenever a single chunk exceeded
+/// int64, even though the whole sum fit. Multi-chunk coverage is the point.
+[<Fact>]
+let ``ColumnZSet scalar and vector sums agree under extreme magnitudes`` () =
+    let mx = Int64.MaxValue
+    let mn = Int64.MinValue
+    let rng = Random 99
+    let run (f: unit -> int64) = try Ok(f ()) with :? OverflowException -> Error "overflow"
+    let mutable disagreements = 0
+    for trial in 1 .. 5000 do
+        // Mostly small, but every 50th trial straddles the chunk boundary.
+        let n = if trial % 50 = 0 then rng.Next(4000, 9000) else rng.Next(0, 40)
+        let weights =
+            Array.init n (fun _ ->
+                match rng.Next 4 with
+                | 0 -> mx - int64 (rng.Next 4)
+                | 1 -> mn + int64 (rng.Next 4)
+                | 2 -> int64 (rng.Next(-5, 5))
+                | _ -> (if rng.Next 2 = 0 then 1L else -1L) * (mx / int64 (rng.Next(1, 5))))
+        let scalar = run (fun () -> ColumnKernel.SumWeightsScalar(ReadOnlySpan weights))
+        let vector = run (fun () -> ColumnKernel.SumWeightsVectorized(ReadOnlySpan weights))
+        if scalar <> vector then disagreements <- disagreements + 1
+    disagreements |> should equal 0
 
 
 // ─── the vectorisation falsifier ────────────────────────────────────
@@ -242,7 +334,48 @@ let ``ColumnZSet Arrow round-trip preserves negative weights`` () =
 let ``ColumnZSet Arrow round-trips the empty Z-set`` () =
     let bytes = ColumnZSetArrow.WriteIpc ColumnZSet.empty
     ColumnZSetArrow.ReadIpc(ReadOnlySpan bytes) |> ColumnZSet.isEmpty |> should equal true
+    // A zero-length span means "nothing was written" -- the one benign case.
     ColumnZSetArrow.ReadIpc(ReadOnlySpan [||]) |> ColumnZSet.isEmpty |> should equal true
+
+
+[<Fact>]
+let ``ColumnZSet Arrow REFUSES malformed bytes instead of reading them as empty`` () =
+    // Returning Empty here would make a corrupt checkpoint indistinguishable
+    // from a legitimately empty one: a silent failure that reads as success.
+    let good = ColumnZSetArrow.WriteIpc(ColumnZSet.ofZSet (ZSet.ofSeq [ 1L, 2L; 3L, 4L ]))
+    (fun () -> ColumnZSetArrow.ReadIpc(ReadOnlySpan [| 1uy; 2uy |]) |> ignore)
+    |> should throw typeof<IO.InvalidDataException>          // shorter than the header
+    (fun () -> ColumnZSetArrow.ReadIpc(ReadOnlySpan(Array.sub good 0 12)) |> ignore)
+    |> should throw typeof<IO.InvalidDataException>          // truncated payload
+    let negLen = Array.copy good
+    BinaryPrimitives.WriteInt32LittleEndian(Span<byte>(negLen, 0, 4), -5)
+    (fun () -> ColumnZSetArrow.ReadIpc(ReadOnlySpan negLen) |> ignore)
+    |> should throw typeof<IO.InvalidDataException>          // negative declared length
+
+
+[<Fact>]
+let ``ColumnZSet Arrow REFUSES a batch that violates the Z-set invariant`` () =
+    // The ColumnZSet ctor documents that the CALLER owns "keys strictly
+    // ascending, weights non-zero". OfRecordBatch is where untrusted bytes
+    // cross that line, so it is where the invariant is enforced -- otherwise
+    // toZSet hands the engine a ZSet whose binary search silently lies.
+    let batchOf (keys: int64 array) (weights: int64 array) =
+        ColumnZSetArrow.ToRecordBatch(
+            ColumnZSet(Pool.Freeze(Array.copy keys), Pool.Freeze(Array.copy weights)))
+    use unsorted = batchOf [| 5L; 1L |] [| 1L; 1L |]
+    (fun () -> ColumnZSetArrow.OfRecordBatch unsorted |> ignore) |> should throw typeof<ArgumentException>
+    use duplicate = batchOf [| 2L; 2L |] [| 1L; 1L |]
+    (fun () -> ColumnZSetArrow.OfRecordBatch duplicate |> ignore) |> should throw typeof<ArgumentException>
+    use zeroWeight = batchOf [| 1L; 2L |] [| 1L; 0L |]
+    (fun () -> ColumnZSetArrow.OfRecordBatch zeroWeight |> ignore) |> should throw typeof<ArgumentException>
+
+
+[<Fact>]
+let ``ColumnZSet refuses columns of unequal length`` () =
+    // Mismatched columns do not fail here; without this check they fail much
+    // later, deep inside a kernel Slice, or truncate silently.
+    (fun () -> ColumnZSet(Pool.Freeze [| 1L; 2L |], Pool.Freeze [| 1L |]) |> ignore)
+    |> should throw typeof<ArgumentException>
 
 
 /// The strongest Arrow check available without a second Arrow library: the
