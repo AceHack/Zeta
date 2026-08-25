@@ -296,6 +296,11 @@
       "state": "active"
     },
     {
+      "name": "agentic-organization-tests",
+      "path": ".github/workflows/agentic-organization-tests.yml",
+      "state": "active"
+    },
+    {
       "name": "arc-lane",
       "path": ".github/workflows/arc-lane.yml",
       "state": "active"

@@ -58,7 +58,7 @@ import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import {
   ADMIN_READ_CREDENTIAL_NOTE,
-  FIELD_SOURCE_ENDPOINT,
+  endpointForPath,
   isSkippedSentinel,
   ordinal,
   snapshot,
@@ -99,13 +99,23 @@ export type ParseResult =
 /**
  * How many values actually survived to be compared.
  *
- * Arrays count as one leaf: the question this answers is "did the comparison
- * have any subject at all", not "how many bytes". Zero is the case that must
- * never be reported as success.
+ * The question this answers is "did the comparison have any subject at all",
+ * so zero is the case that must never be reported as success.
+ *
+ * An EMPTY array counts as one leaf, a non-empty one as the sum of its
+ * elements. Empty is a real compared value (`"topics": []` means "no topics",
+ * and verifying that is work), so scoring it zero would risk calling a
+ * legitimate run INDETERMINATE. Scoring a populated array as one, which this
+ * did at first, hides the opposite case: after `bypass_actors` is stripped
+ * out of every element the `rulesets` array can be emptied of everything that
+ * mattered while still scoring 1.
  */
 export function countLeaves(v: unknown): number {
   if (v === null || typeof v !== "object") return 1;
-  if (Array.isArray(v)) return 1;
+  if (Array.isArray(v)) {
+    if (v.length === 0) return 1;
+    return v.reduce<number>((n, el) => n + countLeaves(el), 0);
+  }
   let n = 0;
   for (const key of Object.keys(v as Record<string, unknown>)) {
     n += countLeaves((v as Record<string, unknown>)[key]);
@@ -158,7 +168,27 @@ export function partitionByReadability(
         delete e[key];
         continue;
       }
-      if (
+      if (Array.isArray(lv) && Array.isArray(ev) && lv.length === ev.length) {
+        // Element-wise, and ONLY at equal length. The snapshot sorts
+        // `rulesets` by id, so equal lengths align; unequal lengths mean a
+        // ruleset was added or removed, which is real drift and must reach
+        // the diff intact rather than being partly stripped by a
+        // mis-aligned walk.
+        //
+        // This descent is load-bearing rather than tidy: `bypass_actors` is
+        // the one field a non-admin credential silently cannot read, and it
+        // lives inside an array element. Without this, that sentinel would
+        // be diffed literally and reported as "the admin bypass was removed"
+        // — a false finding whose cheapest fix is to record `[]` and erase
+        // the real one.
+        for (let i = 0; i < lv.length; i += 1) {
+          const le = lv[i];
+          const ee = ev[i];
+          if (le !== null && typeof le === "object" && !Array.isArray(le) && ee !== null && typeof ee === "object" && !Array.isArray(ee)) {
+            walk(le as Record<string, unknown>, ee as Record<string, unknown>, `${path}[${i}]`);
+          }
+        }
+      } else if (
         lv !== null &&
         typeof lv === "object" &&
         !Array.isArray(lv) &&
@@ -188,9 +218,7 @@ export function formatReadabilityReport(part: ReadabilityPartition, repo: string
       `github-settings-drift: RECORDED BUT NOT CHECKED — ${part.unreadableLive.length} field(s) this credential could not read:`,
     );
     for (const path of part.unreadableLive) {
-      const src =
-        FIELD_SOURCE_ENDPOINT[path] ?? FIELD_SOURCE_ENDPOINT[path.split(".")[0] ?? ""] ?? "(endpoint unmapped)";
-      lines.push(`    ${path}  <-  ${src.replace("{repo}", repo)}`);
+      lines.push(`    ${path}  <-  ${endpointForPath(path, repo)}`);
     }
   }
   if (part.unreadableExpected.length > 0) {

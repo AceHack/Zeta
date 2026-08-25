@@ -129,6 +129,17 @@ jobs:
           DRIFT_DETECTOR_PAT: ${{ secrets.DRIFT_DETECTOR_PAT }}
           FALLBACK_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GH_REPO: ${{ github.repository }}
+        # `rc=0; cmd || rc=$?` and NOT `cmd` then `rc=$?`.
+        #
+        # GitHub's default shell here is `bash -e {0}` — visible in every job
+        # log's `shell:` line — and `set -uo pipefail` does not clear a `-e`
+        # that arrived on the command line; only `set +e` or an `||` list does.
+        # So `cmd` followed by `rc=$?` aborts the step the instant `cmd` is
+        # non-zero, and every line after it, including the `case` that
+        # distinguishes DID-NOT-RUN from FAILED, is unreachable. The reporting
+        # exists precisely for the non-zero case, which is the only case it
+        # could never see. Caught on this workflow's own first run (job
+        # 97868684543, exit 1 with no annotation emitted).
         run: |
           set -uo pipefail
           if [ -n "${DRIFT_DETECTOR_PAT:-}" ]; then
@@ -138,8 +149,8 @@ jobs:
             export GH_TOKEN="$FALLBACK_TOKEN"
             echo "::warning::github-settings-drift using GITHUB_TOKEN — it holds no 'administration' scope, so the admin-only fields (branch protection, actions permissions, CodeQL default setup, security_and_analysis, merge settings) are RECORDED IN-TREE AND NOT CHECKED by this run. The field list is printed below. FIX (operator): set repository secret DRIFT_DETECTOR_PAT to a fine-grained PAT with Administration/Secrets/Variables/Webhooks read on this repo (081KQ8P5D0008QG0R000JHD7AB)."
           fi
-          bun src/Core.TypeScript/hygiene/check-github-settings-drift.ts --repo "$GH_REPO"
-          rc=$?
+          rc=0
+          bun src/Core.TypeScript/hygiene/check-github-settings-drift.ts --repo "$GH_REPO" || rc=$?
           case "$rc" in
             0) echo "::notice::github-settings settings match the committed record across every field this credential could read" ;;
             1) echo "::warning::github-settings DRIFT — live differs from src/Core.TypeScript/hygiene/github-settings.expected.json" ;;
@@ -147,12 +158,14 @@ jobs:
             3) echo "::error::github-settings check INDETERMINATE — the credential could read NOTHING, so ZERO fields were compared. This check DID NOT RUN; it did not pass." ;;
             *) echo "::error::github-settings check unexpected exit $rc" ;;
           esac
-          # Advisory lane: surface the signal, never block the merge. The exit
-          # code is preserved in the annotations above rather than in the step
-          # status, because `continue-on-error` erases the distinction between
-          # 1, 2 and 3 in the checks list — and 3 is the one that must not be
-          # mistaken for either of the others.
-          exit 0
+          # The exit code is PROPAGATED, not swallowed. `continue-on-error` at
+          # the job level already makes this advisory, so `exit 0` here would
+          # buy nothing and would cost the `drift (loud)` reporter its signal:
+          # that job escalates absorbed continue-on-error failures, and a step
+          # that always exits 0 has nothing to absorb. The annotations add the
+          # distinction between 1, 2 and 3 that the step status cannot carry;
+          # they do not replace it.
+          exit "$rc"
 
   # ---------------------------------------------------------------------------
   # Ruleset reconciliation — the DETECT (plan) half only.
@@ -203,8 +216,14 @@ jobs:
             echo "::warning::ruleset plan INDETERMINATE — RULESET_READER_TOKEN is not set, so live ruleset state could not be read and this check DID NOT RUN. GITHUB_TOKEN is not a substitute: it cannot read rulesets at all. FIX (optional, advisory lane): set repository secret RULESET_READER_TOKEN to a fine-grained PAT with 'Administration: read' on Lucent-Financial-Group/Zeta."
             exit 0
           fi
-          bun src/Core.TypeScript/hygiene/reconcile-rulesets.ts --repo "$GH_REPO"
-          rc=$?
+          # `|| rc=$?`, not a bare call followed by `rc=$?` — see the note on
+          # the sibling job above. Under `bash -e {0}` the bare form made this
+          # entire `case` unreachable, and this reconciler has FIVE exit codes
+          # whose whole purpose is to be told apart: 1 DRIFT, 2 DID-NOT-RUN,
+          # 3 REFUSED, 4 APPLIED-BUT-VERIFICATION-FAILED. Every one of them
+          # was silently collapsed into a bare red step.
+          rc=0
+          bun src/Core.TypeScript/hygiene/reconcile-rulesets.ts --repo "$GH_REPO" || rc=$?
           case "$rc" in
             0) echo "::notice::rulesets in sync with committed desired state" ;;
             1) echo "::warning::ruleset DRIFT — live differs from docs/operations/rulesets/" ;;

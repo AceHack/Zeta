@@ -4,6 +4,7 @@ import { join } from "node:path";
 import { afterEach, beforeEach, describe, expect, test } from "bun:test";
 
 import {
+  endpointForPath,
   INSUFFICIENT_TOKEN_SCOPE,
   isInsufficientTokenScope403,
   normalizeBypassActors,
@@ -196,20 +197,35 @@ describe("normalizeBypassActors", () => {
       { actor_id: 5, actor_type: "RepositoryRole", bypass_mode: "pull_request" },
     ]);
     expect(a).toEqual(b);
+    // Narrowing, not a cast: the return type is `... | null` precisely so an
+    // unreadable list cannot be mistaken for an empty one, and a test that
+    // asserted through it with `!` would be spending the guarantee it checks.
+    expect(a).not.toBeNull();
+    if (a === null) throw new Error("unreachable: a populated input is readable");
     expect(a.map((x) => x.actor_type)).toEqual(["OrganizationAdmin", "RepositoryRole", "Team"]);
   });
 
-  test("an EMPTY list is a value, not an absence", () => {
-    // "nobody may bypass this ruleset" is the strongest statement a ruleset
-    // makes. Collapsing it to `undefined` would make the safe case and the
-    // unrecorded case identical in the committed file.
+  test("ABSENT is null, not [] — the defect this whole change is about", () => {
+    // `GET /rulesets/{id}` OMITS `bypass_actors` for a reader without admin
+    // rights. It does not 403 and it does not return []. Verified
+    // unauthenticated against ruleset 16134995 on 2026-08-25: the key is
+    // simply not in the response, while an admin credential sees one actor.
+    //
+    // Coercing that to [] would make a credential that CANNOT SEE the bypass
+    // list report "nobody may bypass" — absence reading as the safe value.
+    // This function returned [] here in the first draft of the fix and CI
+    // caught it: under GITHUB_TOKEN the check reported the live admin bypass
+    // as REMOVED, and recording [] would have erased the finding.
+    expect(normalizeBypassActors(undefined)).toBeNull();
+    expect(normalizeBypassActors(null)).toBeNull();
+    expect(normalizeBypassActors("nope")).toBeNull();
+  });
+
+  test("[] keeps its real meaning: read successfully, nobody bypasses", () => {
     expect(normalizeBypassActors([])).toEqual([]);
   });
 
-  test("a missing or malformed field yields [], never a throw", () => {
-    expect(normalizeBypassActors(undefined)).toEqual([]);
-    expect(normalizeBypassActors(null)).toEqual([]);
-    expect(normalizeBypassActors("nope")).toEqual([]);
+  test("a malformed element is projected, never thrown on", () => {
     expect(normalizeBypassActors([null])).toEqual([{ actor_id: null, actor_type: "", bypass_mode: "" }]);
   });
 });
@@ -292,5 +308,24 @@ describe("github-settings.expected.json — the record must not lie by omission"
       recorded.length,
       `record lists ${recorded.length} workflows; ${workflowFiles.length} workflow files are committed`,
     ).toBeGreaterThanOrEqual(workflowFiles.length);
+  });
+});
+
+describe("unreadablePaths — inside arrays", () => {
+  test("reports a sentinel nested in an array element", () => {
+    expect(
+      unreadablePaths({ rulesets: [{ id: 1 }, { id: 2, bypass_actors: { _skipped: INSUFFICIENT_TOKEN_SCOPE } }] }),
+    ).toEqual(["rulesets[1].bypass_actors"]);
+  });
+});
+
+describe("endpointForPath", () => {
+  test("strips array indices so an indexed path still resolves", () => {
+    expect(endpointForPath("rulesets[3].bypass_actors", "o/r")).toContain("/repos/o/r/rulesets");
+  });
+
+  test("falls back to the first segment, then admits it does not know", () => {
+    expect(endpointForPath("pages", "o/r")).toBe("GET /repos/o/r/pages");
+    expect(endpointForPath("no_such_field", "o/r")).toBe("(endpoint unmapped)");
   });
 });
