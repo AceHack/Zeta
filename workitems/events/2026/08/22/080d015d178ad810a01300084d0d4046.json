@@ -1,0 +1,14 @@
+{
+  "id": "080d015d178ad810a01300084d0d4046",
+  "at": "2026-08-22T22:41:34.043Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M0NT5WAT087G0R000DGPCGE",
+    "type": "bug",
+    "title": "agent-heartbeat wedged: data/ci-runs.jsonl add/add conflict once the file reached main",
+    "slug": "agent-heartbeat-wedged-data-ci-runs-jsonl-add-add-conflict-o",
+    "priority": "P2",
+    "filename": "081M0NT5WAT087G0R000DGPCGE-agent-heartbeat-wedged-data-ci-runs-jsonl-add-add-conflict-o.md"
+  }
+}
