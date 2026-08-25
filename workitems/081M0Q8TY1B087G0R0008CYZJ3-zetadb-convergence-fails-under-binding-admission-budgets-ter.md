@@ -100,3 +100,23 @@ browser content-addressed storage adapter can all receive the same owned policy 
 
 This remains capacity planning, not a fix for terminal replica divergence. It reserves deterministic
 headroom without evicting history or making an order-dependent admitted prefix converge.
+
+## Progress 2026-08-25 - canonical retained subsets now have a pure contract
+
+`src/Core.TypeScript/zetadb/retention-policy.ts` separates retained-set selection from mutation.
+An injected `ZetaDbRetentionPolicyPort` chooses only observed event identifiers; the guarded
+evaluator derives refused candidates, displaced history, duplicate input, and displacement heat.
+A policy therefore cannot omit an admitted event without the loss appearing in a typed
+`database-retention-displaced` receipt. That receipt uses the existing `forgotten` signal and
+`database-retention.forgotten` kind, so downstream heat classification does not need a new case.
+
+The existing no-forget choice is represented explicitly and still reproduces BIND. The opt-in
+`canonicalEventIdRetentionPolicy` keeps the ordinally-smallest event identifiers from the observed
+union. Property tests make candidate permutation invisible, and the exact `maxEntries: 3` witness
+now reaches `e1,e2,e3` in both batch orders. The reverse order pays for that convergence by
+displacing `e4`, which is reported as heat rather than erased silently.
+
+This slice is a planner and law pack, not kernel wiring. It proves the event-count choice before
+allowing it to mutate durable images. It also makes no checkpoint-byte convergence claim: actual
+encoded size depends on the retained Z-set fold, so byte-bounded selection needs a separate
+falsifier and policy instead of borrowing the event-count proof.

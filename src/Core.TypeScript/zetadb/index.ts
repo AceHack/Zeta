@@ -36,6 +36,19 @@ export {
 } from "./admission-policy";
 
 export {
+  canonicalEventIdRetentionPolicy,
+  evaluateZetaDbRetentionPolicy,
+  noForgetBackpressureRetentionPolicy,
+  type ZetaDbRetentionDecision,
+  type ZetaDbRetentionFeedback,
+  type ZetaDbRetentionHeatReceipt,
+  type ZetaDbRetentionPolicyPort,
+  type ZetaDbRetentionProposal,
+  type ZetaDbRetentionReceipt,
+  type ZetaDbRetentionResult,
+} from "./retention-policy";
+
+export {
   ZETA_DB_PROCEDURE_READOUT_SCHEMA,
   ZETA_DB_PROCEDURE_REQUEST_SCHEMA,
   createNativeZetaDbWasmHost,
