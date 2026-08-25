@@ -1,0 +1,12 @@
+{
+  "pr_number": 15216,
+  "archive_path": "docs/history/pr-reviews/PR-15216-refactor-setup-port-sync-prior-art-to-typescript-the-sh-reported-a-partial-sync-.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-25T05:09:34.674Z",
+  "schema_version": "v1",
+  "commit_sha": "32b36a366959d9045e014569426c6bae3fc55061",
+  "title": "refactor(setup): port sync-prior-art to TypeScript — the .sh reported a partial sync and a clean sync in the same shape",
+  "state": "MERGED",
+  "merged_at": "2026-08-25T05:08:51Z",
+  "head_ref": "otto/port-sync-prior-art-to-typescript"
+}
