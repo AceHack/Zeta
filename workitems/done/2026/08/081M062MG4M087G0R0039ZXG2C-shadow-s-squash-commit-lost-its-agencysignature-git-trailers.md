@@ -1,7 +1,7 @@
 ---
 id: 081M062MG4M087G0R0039ZXG2C
 type: bug
-state: backlog
+state: done
 priority: P2
 slug: shadow-s-squash-commit-lost-its-agencysignature-git-trailers
 title: "shadow's squash commit lost its AgencySignature git trailers: GitHub appended a co-author section after the block"
@@ -109,3 +109,26 @@ them. `is` stays unearned; `consistent with` is what the evidence supports.
   passes; `validate-agencysignature-pr-body.ts` — the pre-merge check that also passed.
 - #11002 — the sibling failure (invented namespace: structurally perfect, semantically empty). This
   is its mirror image: semantically perfect, structurally split.
+
+## Resolution 2026-08-25
+
+The two questions above are now settled by the current source contract and its measured research
+record. GitHub recomputes the squash co-author set and may append it after a separator; authors
+cannot control that layout. The supported reader is therefore the canonical complete-block scan in
+`agencysignature-block.ts`, while the audit separately reports whether git's trailer parser can
+see the block. Layout is not classified as a field defect.
+
+PR #15332 provided a stronger live witness. Its squash `ae9f2f1de3cc` contains two complete,
+agreeing AgencySignature blocks followed by GitHub's separator and a resolvable Codex co-author.
+This falsifies the earlier narrower hypothesis that an unresolvable co-author address was required.
+The canonical auditor reports the squash `CORRECT`, names both blocks, and states that git's
+trailer parser does not see them.
+
+An initial audit in the Codex session incorrectly reported that squash as unsigned because the
+`git fetch` that introduced the object and the audit were launched concurrently. The audit read
+before the fetch completed and received no commit message. Running the dependent operations in
+sequence produced the correct verdict. That was an invocation race, not a repository regression.
+
+No source change is required. The workitem is complete because the producer behavior is measured,
+the supported parser is explicit, the unresolved-address hypothesis is retired, and the current
+post-merge audit accepts the actual squash while remaining strict about missing or invalid fields.
