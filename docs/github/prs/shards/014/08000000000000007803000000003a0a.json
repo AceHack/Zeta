@@ -1,0 +1,12 @@
+{
+  "pr_number": 14858,
+  "archive_path": "docs/history/pr-reviews/PR-14858-fix-bootstrap-ouroboros-bootstrapping-stage-0-strict-ts-types-and-isolation-proo.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-25T05:00:07.318Z",
+  "schema_version": "v1",
+  "commit_sha": "e5c419ceaff858455428709e9bb59a7a600a2877",
+  "title": "fix(bootstrap): Ouroboros bootstrapping stage-0, strict TS types, and isolation proofs",
+  "state": "MERGED",
+  "merged_at": "2026-08-25T04:59:15Z",
+  "head_ref": "ouroboros-bootstrap"
+}
