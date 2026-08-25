@@ -1,0 +1,33 @@
+{
+  "pr_number": 13767,
+  "archive_path": "docs/history/pr-reviews/PR-13767-fix-society-the-meter-s-band-is-not-connect-them-and-make-the-red-assertion-say-.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7kqvu2",
+    "comment:PRRC_kwDOSF9kNM7kqvu4",
+    "comment:PRRC_kwDOSF9kNM7kqvu6",
+    "comment:PRRC_kwDOSF9kNM7kqvu7",
+    "comment:PRRC_kwDOSF9kNM7kqvu_",
+    "comment:PRRC_kwDOSF9kNM7kqvur",
+    "comment:PRRC_kwDOSF9kNM7kqvut",
+    "comment:PRRC_kwDOSF9kNM7kqvuz",
+    "comment:PRRC_kwDOSF9kNM7kqvvB",
+    "comment:PRRC_kwDOSF9kNM7kqvvE",
+    "thread:PRRT_kwDOSF9kNM6bZuaH",
+    "thread:PRRT_kwDOSF9kNM6bZuaJ",
+    "thread:PRRT_kwDOSF9kNM6bZuaO",
+    "thread:PRRT_kwDOSF9kNM6bZuaQ",
+    "thread:PRRT_kwDOSF9kNM6bZuaS",
+    "thread:PRRT_kwDOSF9kNM6bZuaU",
+    "thread:PRRT_kwDOSF9kNM6bZuaV",
+    "thread:PRRT_kwDOSF9kNM6bZuaX",
+    "thread:PRRT_kwDOSF9kNM6bZuaa",
+    "thread:PRRT_kwDOSF9kNM6bZuad"
+  ],
+  "fetched_at": "2026-08-25T00:29:42.156Z",
+  "schema_version": "v1",
+  "commit_sha": "30a8ee6d2b8deae77ca1c4dac8e3bedf0b5446c9",
+  "title": "fix(society): the meter's band is not ρ* — connect them, and make the red assertion say something true",
+  "state": "MERGED",
+  "merged_at": "2026-08-25T00:28:53Z",
+  "head_ref": "research/rho-star-is-not-this-meters-band"
+}
