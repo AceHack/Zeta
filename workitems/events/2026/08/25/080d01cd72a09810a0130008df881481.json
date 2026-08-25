@@ -1,0 +1,14 @@
+{
+  "id": "080d01cd72a09810a0130008df881481",
+  "at": "2026-08-25T16:08:41.235Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M0WTWN0J087G0R003W1RMXJ",
+    "type": "task",
+    "title": "Second-opinion review: does the manifesto citation count measure adoption",
+    "slug": "second-opinion-review-does-the-manifesto-citation-count-meas",
+    "priority": "P2",
+    "filename": "081M0WTWN0J087G0R003W1RMXJ-second-opinion-review-does-the-manifesto-citation-count-meas.md"
+  }
+}
