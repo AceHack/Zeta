@@ -1,0 +1,14 @@
+{
+  "id": "080d01d349a71010a0130008d954449f",
+  "at": "2026-08-25T19:32:48.482Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M0X6JD71087G0R000M292AB",
+    "type": "bug",
+    "title": "AH006 conflated zero-byte input with no-ids-in-input, freezing the drift dashboard for 13 hours",
+    "slug": "ah006-conflated-zero-byte-input-with-no-ids-in-input-freezin",
+    "priority": "P2",
+    "filename": "081M0X6JD71087G0R000M292AB-ah006-conflated-zero-byte-input-with-no-ids-in-input-freezin.md"
+  }
+}

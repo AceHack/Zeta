@@ -63,7 +63,10 @@ export interface Finding {
 export interface AuditResult {
   workItemsIndexed: number;
   /** Distinguishes "checked N and all resolved" from "was handed nothing to check". */
+  /** ZERO BYTES arrived — the caller handed us nothing. A broken caller, exit 2. */
   inputWasEmpty: boolean;
+  /** Input arrived and carried no Task ids. A legitimate PR shape, NOT a caller fault. */
+  noIdsInInput: boolean;
   idsChecked: number;
   findings: Finding[];
 }
@@ -133,11 +136,20 @@ export function auditIds(ids: readonly string[], known: ReadonlySet<string>): Fi
   return ids.filter((id) => !known.has(id)).map((id) => ({ id, reason: "no-such-workitem" as const }));
 }
 
-export function runAudit(ids: readonly string[]): AuditResult {
+export function runAudit(ids: readonly string[], inputHadContent = true): AuditResult {
   const known = indexWorkItems(repoRoot());
   return {
     workItemsIndexed: known.size,
-    inputWasEmpty: ids.length === 0,
+    // THE DISTINCTION THIS FILE GOT WRONG UNTIL 2026-08-25.
+    // "no ids" and "no input" are different events and only the first is a caller fault.
+    // Conflating them made every MACHINE-GENERATED telemetry-flush PR exit 2 — those have
+    // no work-item and legitimately carry no Task id — which reddened `cross-verify`, which
+    // blocked the flush PR, which head-of-line blocked its lane, which froze the drift
+    // dashboard for 13 hours behind a green check. The guard was right; its predicate was
+    // too broad. PRESENCE of a Task key is enforced by the AgencySignature check; this file
+    // enforces RESOLVABILITY. That division is the whole reason this can be narrowed safely.
+    inputWasEmpty: !inputHadContent,
+    noIdsInInput: ids.length === 0,
     idsChecked: ids.length,
     findings: auditIds(ids, known),
   };
@@ -145,6 +157,14 @@ export function runAudit(ids: readonly string[]): AuditResult {
 
 function renderHuman(r: AuditResult): string {
   const head = `${r.idsChecked} Task id(s) against ${r.workItemsIndexed} work-item(s)`;
+  if (!r.inputWasEmpty && r.noIdsInInput) {
+    return (
+      `task-zetaid-resolves: no Task ids in the input (index: ${String(r.workItemsIndexed)} work-items). ` +
+      `Input WAS received, so this is not a broken caller — a machine-generated flush PR carries no ` +
+      `work-item and legitimately has none. Presence of a Task key is the AgencySignature check's job; ` +
+      `this audit only checks that ids which ARE present resolve.`
+    );
+  }
   if (r.inputWasEmpty) {
     return (
       `task-zetaid-resolves: NO INPUT — found no Task ids to check (index: ${String(r.workItemsIndexed)} work-items). ` +
@@ -176,12 +196,14 @@ if (import.meta.main) {
   const positional = argv.filter((a) => !a.startsWith("--"));
 
   let ids: string[] = positional;
+  let stdinHadContent = true;
   if (wantStdin || positional.length === 0) {
     const text = await Bun.stdin.text().catch(() => "");
+    stdinHadContent = text.trim().length > 0;
     ids = extractTaskIds(text);
   }
 
-  const result = runAudit(ids);
+  const result = runAudit(ids, positional.length > 0 ? true : stdinHadContent);
 
   // A scan that indexed nothing did not run. Reporting "all resolve" over an empty index
   // would be the exact failure this file exists to refuse.
@@ -195,9 +217,10 @@ if (import.meta.main) {
   if (json) console.log(JSON.stringify({ driftClass: DRIFT_CLASS, ...result }, null, 2));
   else console.log(renderHuman(result));
 
-  // Exit 2, not 0, when handed nothing. Reporting "all resolve" over zero subjects is the
-  // vacuity this audit exists to refuse, and it happened on this file's OWN first CI run:
-  // the wiring piped a shallow `git log` and the check passed having examined 0 ids.
+  // Exit 2 when ZERO BYTES arrived — the caller handed us nothing, which is the shallow-CI-
+  // checkout fault this exit path was built for and which bit this file on its own first run.
+  // NOT exit 2 merely because the input carried no ids: input that arrived and contains none
+  // is a real answer about a real PR, not a broken caller. See runAudit's note.
   if (result.inputWasEmpty) process.exit(2);
   process.exit(result.findings.length === 0 ? 0 : 1);
 }

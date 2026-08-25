@@ -133,14 +133,40 @@ describe("runAudit against the real repository", () => {
   });
 });
 
-describe("empty input is NOT a pass", () => {
-  test("runAudit reports inputWasEmpty so the caller can refuse it", () => {
+describe("empty input is NOT a pass — but NO IDS is a different event", () => {
+  // TEST CHANGED 2026-08-25, AND IT WAS PASSING WHEN CHANGED — flagged loudly because
+  // altering a green test to admit new behaviour is normally the thing we forbid.
+  //
+  // It pinned `runAudit([]).inputWasEmpty === true`, i.e. it asserted the CONFLATION of two
+  // distinct events: "zero bytes arrived" and "input arrived carrying no ids". Only the
+  // first is a broken caller. The second is a real answer about a real PR — a
+  // machine-generated telemetry flush has no work-item and legitimately has no Task id.
+  //
+  // The conflation had a measured cost: every flush PR exited 2, reddening `cross-verify`,
+  // blocking the flush, head-of-line blocking its lane, and freezing the drift dashboard
+  // for 13 hours behind a green check. The guard was right; its predicate was too broad.
+  //
+  // PRESENCE of a Task key is the AgencySignature check's job. THIS file checks
+  // RESOLVABILITY. That division is why narrowing here loses no coverage.
+  test("ZERO BYTES is a broken caller — the shallow-checkout fault this exit path exists for", () => {
     // This file's OWN first CI run passed having examined zero ids: the wiring piped a
     // shallow `git log`, which on a depth-1 checkout is one merge commit with no trailer.
     // "OK — 0 Task id(s); all resolve" is the vacuity class, produced by the audit written
-    // to refuse it. The runner now exits 2 on this.
-    expect(runAudit([]).inputWasEmpty).toBe(true);
-    expect(runAudit([REAL]).inputWasEmpty).toBe(false);
+    // to refuse it. That case still exits 2.
+    expect(runAudit([], false).inputWasEmpty).toBe(true);
+  });
+
+  test("input that ARRIVED but carried no ids is NOT a broken caller", () => {
+    const r = runAudit([], true);
+    expect(r.inputWasEmpty).toBe(false);
+    expect(r.noIdsInInput).toBe(true);
+    expect(r.findings).toHaveLength(0);
+  });
+
+  test("the two flags are independent — a real id sets neither", () => {
+    const r = runAudit([REAL], true);
+    expect(r.inputWasEmpty).toBe(false);
+    expect(r.noIdsInInput).toBe(false);
   });
 
   test("extractTaskIds on text with no trailer yields nothing — which the caller must treat as absence of INPUT, not absence of DEFECT", () => {
