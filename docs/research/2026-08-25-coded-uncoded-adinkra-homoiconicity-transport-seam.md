@@ -5,7 +5,7 @@
 
 ## Key recommendation
 
-Treat **homoiconicity preservation** as a module-and-representation property with a separately tested transport-commutation property. Do not call an Adinkra/ECC channel agent-homoiconic merely because it losslessly recovers a serialized agent receipt. The immediate experiment should prove three narrower facts independently: the uncoded module is regular, a nontrivial code has the measured representation defect, and ECC recovery commutes with durable receipt folding without restoring the quotient’s lost pre-image.
+Treat **homoiconicity preservation** as a module-and-representation property with a separately tested transport-commutation property. Do not call an Adinkra/ECC channel agent-homoiconic merely because it losslessly recovers a serialized agent receipt. The correct architectural conclusion is **not** that one must choose self-representation *or* protection: multiple representation lanes can coexist, each retaining its own properties, costs, provenance, and validation route. The immediate experiment proves only three narrower facts independently: the uncoded module is regular, a nontrivial code has the measured representation defect, and ECC recovery commutes with durable receipt folding without restoring the quotient’s lost pre-image.
 
 ## Scope and terminology
 
@@ -16,6 +16,30 @@ The external literature supports only the classification connection used here: D
 > **Operational definition.** A representation is fully homoiconic only if its data/module carrier `M` is the regular representation of its own operator algebra `A`: `M ≅ A` as `A`-modules. In particular, the algebra-to-carrier reflection must be injective enough to recover its own description. A distinct-type serialization boundary is an engineering type break; a non-injective quotient is the mathematical obstruction.
 
 This distinction follows the current repository seam audit. It is compatible with the standard literature’s code-quotient classification, but it is not a claim that network agents are supersymmetry multiplets.[1] [2]
+
+## Correction: a plurality of lanes, not a global trade-off
+
+The measured `N=4/d4` quotient defect is a property of **that coded representation**. It is not a theorem that all protection requires the same quotient or that every route to an E8-related construction loses regularity. In particular, the current `CliffordPeriodicity.fs` documentation records a non-quotient bivector-plus-spinor route, `e₈ = so(16) ⊕ Δ⁺₁₆`. That source comment is a repository design claim and dimension construction, not a completed proof that it preserves the repository’s operational homoiconicity predicate. The claimed CSS-code phrase (`"homoiconic, non-coded, C=0"`) could not be located in the current tree and is therefore **unverified** rather than used as evidence here.
+
+| Lane | Representation operation | Preserves under current evidence | Cost or boundary | What is not established |
+|---|---|---|---|---|
+| **Uncoded cube** | No code quotient, `C={0}` | Rank-1 regularity in the checked edge-algebra experiment | No error-correction guarantee follows from this algebraic result | General agent-level homoiconicity |
+| **Coded `[8,4,4]` lane** | Doubly-even code quotient plus ECC framing | Concrete correction/recovery at the transport layer; selected colored-subalgebra residues | Full quotient module is not rank-1 regular | Recovery of a discarded quotient pre-image |
+| **Bivector/spinor lane** | `so(16)` bivectors plus a chiral spinor, with no binary-code quotient in the stated construction | A separate E8 dimension decomposition is documented | No transport/ECC semantics have been attached | A proof of the operational homoiconicity predicate or a Q# correspondence |
+
+These lanes must be kept as a family of observable representations rather than collapsed to one winner. A reintegration is sound only when it retains the lane identity and the property being reported; selecting a single surviving value would erase the disagreement that the comparison is intended to measure.
+
+## Provisional Q# linkage: motivation is not a result
+
+The current Q# reference oracle implements CSS stabilizer rows and syndrome-extraction circuits. It independently checks row commutation and keeps circuit semantics separate from GF(2) arithmetic, but it does **not** implement the bivector/spinor E8 construction or a map from a non-quotient Clifford route into Q# operators. Therefore, neither the current Q# code nor the present Adinkra experiment establishes that quantum error correction avoids the module defect measured for a particular coded quotient.
+
+| Proposed test | Would support | Falsifier or refusal condition |
+|---|---|---|
+| **Q-B1: explicit bivector operator map** | A named map from each required bivector generator into Q# operators preserves the declared commutator table on a finite independent basis. | Any failed commutator, non-injective generator map, or hidden quotient/projection prevents the claimed correspondence. |
+| **Q-B2: carrier comparison** | The implemented Q# carrier and operator algebra dimensions meet the operational regularity predicate for the declared finite model. | A dimension mismatch proves only that model is not regular; it does not invalidate another lane. |
+| **Q-B3: CSS separation control** | Existing syndrome extraction commutes with declared logical operators while reporting an error coset. | Passing this test is **not** evidence of regularity or a bivector route; it is an intentional negative control against conflating protection with self-representation. |
+
+Until Q-B1 and Q-B2 have an executable implementation, “the quantum route avoids the coded cost” remains a hypothesis motivated by the non-quotient construction, not a repository finding.
 
 ## Competing hypotheses
 
