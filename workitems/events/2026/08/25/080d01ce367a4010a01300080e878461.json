@@ -1,0 +1,14 @@
+{
+  "id": "080d01ce367a4010a01300080e878461",
+  "at": "2026-08-25T16:35:25.640Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M0WWDKT6087G0R002NYV37V",
+    "type": "bug",
+    "title": "the pre-merge moves the snapshot ref but leaves SOURCE_SHA behind, so verification refuses by construction",
+    "slug": "the-pre-merge-moves-the-snapshot-ref-but-leaves-source-sha-b",
+    "priority": "P2",
+    "filename": "081M0WWDKT6087G0R002NYV37V-the-pre-merge-moves-the-snapshot-ref-but-leaves-source-sha-b.md"
+  }
+}

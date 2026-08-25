@@ -1985,6 +1985,20 @@ jobs:
               git push --force-with-lease="refs/heads/$SNAPSHOT_REF:$SOURCE_SHA" \
                 origin "HEAD:refs/heads/$SNAPSHOT_REF"
               echo "[flush] $AGENT: pre-merged origin/main into $SNAPSHOT_REF ($SOURCE_SHA -> $MERGED_SHA); GitHub now only fast-forwards."
+              # THE SNAPSHOT REF IS NOW THE MERGED COMMIT, SO THAT IS THE SOURCE.
+              #
+              # `merge-heartbeats-to-main.ts` is handed `--source-sha "$SOURCE_SHA"` below and
+              # refuses when the ref does not point at it — "snapshot ref collision". The
+              # pre-merge moves the ref, so leaving SOURCE_SHA at the pre-merge value makes
+              # the verification fail BY CONSTRUCTION, and only on the ticks where the
+              # pre-merge actually did something. Measured: alexa failed rc=3 at 16:23 while
+              # soraya passed, because soraya's lane already contained main and its pre-merge
+              # was a no-op. The fix bit exactly when it was working.
+              #
+              # Safe to reassign here: the immutable park is upstream of this point —
+              # $SOURCE_SHA was pushed AND verified against the ref before the merge ran — so
+              # the "no events lost" guarantee does not depend on this variable afterwards.
+              SOURCE_SHA="$MERGED_SHA"
             else
               echo "[flush] $AGENT: $SNAPSHOT_REF already contains origin/main; no pre-merge needed."
             fi
