@@ -1,0 +1,12 @@
+{
+  "pr_number": 14564,
+  "archive_path": "docs/history/pr-reviews/PR-14564-deps-bump-the-cargo-minor-patch-group-across-26-directories-with-4-updates.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-25T07:04:53.855Z",
+  "schema_version": "v1",
+  "commit_sha": "03ab4e7cf20722c0178c48cc588b4aef96d6baff",
+  "title": "deps: Bump the cargo-minor-patch group across 26 directories with 4 updates",
+  "state": "MERGED",
+  "merged_at": "2026-08-25T07:04:09Z",
+  "head_ref": "dependabot/cargo/src/Core.Rust.Algebra/cargo-minor-patch-96782857c5"
+}
