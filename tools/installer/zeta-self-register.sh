@@ -443,6 +443,16 @@ if ! gh auth status >/dev/null 2>&1; then
 fi
 
 MAINTAINER="$(gh api /user --jq .login)"
+# The NUMERIC id, not just the login. `<login>@users.noreply.github.com` is the LEGACY
+# plain form: GitHub resolves it to whoever owns that username today, so a login that is
+# also a common first name attributes this commit to a stranger. `<id>+<login>@...` is
+# checked by GitHub against the login and cannot be squatted. Enforced by
+# src/Core.TypeScript/hygiene/audit-coauthor-identity-collides.ts (AH005).
+# `|| true` on purpose: `set -e` would abort here with only gh's own "Not Found" on
+# stderr, which does not say why the registration stopped. The refusal belongs at the
+# commit, where the reason can be stated -- and where the already-converged path, which
+# needs no identity at all, has already exited 0.
+MAINTAINER_ID="$(gh api /user --jq .id 2>/dev/null || true)"
 NODE_PATH="maintainers/${MAINTAINER}/cluster-nodes/${HOST}/node.yaml"
 log "maintainer=${MAINTAINER} host=${HOST}"
 
@@ -581,7 +591,12 @@ git checkout -b "$BRANCH" >/dev/null
 git add "$NODE_PATH"
 # Guard: never push an empty commit (the Step 6.9 / node-09485d failure mode).
 if git diff --cached --quiet; then log "ERROR: nothing staged — aborting (not registering)"; exit 1; fi
-git -c user.name="${MAINTAINER}" -c user.email="${MAINTAINER}@users.noreply.github.com" \
+# Refuse rather than guess: an unresolved id would leave only the colliding plain form,
+# and a commit attributed to the wrong human is worse than a registration that retries.
+case "${MAINTAINER_ID}" in
+  ''|*[!0-9]*) log "ERROR: could not resolve numeric GitHub id for '${MAINTAINER}' — refusing to commit under an ambiguous identity"; exit 1 ;;
+esac
+git -c user.name="${MAINTAINER}" -c user.email="${MAINTAINER_ID}+${MAINTAINER}@users.noreply.github.com" \
     commit -q -m "feat(node-register): ${HOST} self-registers (post-boot, 081KDWYJVN008QG0R001XPR5X4)"
 log "pushing ${BRANCH}…"
 git push -u origin "$BRANCH" >/dev/null 2>&1

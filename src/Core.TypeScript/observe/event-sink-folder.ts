@@ -202,7 +202,7 @@ export function coauthorFor(by: string): string {
   for (const [surface, trailer] of TRAILERS) {
     if (id === surface || id.startsWith(`${surface}-`)) return trailer;
   }
-  return `Co-Authored-By: ${by} <noreply@zeta.local>`;
+  return `Co-Authored-By: ${by}[bot] <${by}[bot]@users.noreply.github.com>`;
 }
 
 /**

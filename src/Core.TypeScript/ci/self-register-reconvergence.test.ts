@@ -53,9 +53,16 @@ interface World {
   readonly prListFails?: boolean;
   /** Emit pretty-printed `gh --json` output (what gh does on a TTY). */
   readonly prettyJson?: boolean;
+  /**
+   * What `gh api /user --jq .id` returns. The script needs the NUMERIC id to build
+   * `<id>+<login>@users.noreply.github.com`; the plain `<login>@users.noreply.github.com`
+   * form resolves to whoever owns that username on github.com (AH005). `""` models the
+   * read failing, and the script must then REFUSE rather than fall back to the plain form.
+   */
+  readonly userId?: string;
 }
 
-const DEFAULT_WORLD: World = { authed: true, registeredOnMain: false, openPrs: [] };
+const DEFAULT_WORLD: World = { authed: true, registeredOnMain: false, openPrs: [], userId: "4242" };
 
 interface RunResult {
   readonly status: number;
@@ -88,7 +95,18 @@ appendFileSync(process.env.ZETA_TEST_CALLS, "gh " + argv.join(" ") + "\\n");
 const sub = argv.join(" ");
 if (sub.startsWith("auth status")) process.exit(world.authed ? 0 : 1);
 if (sub.startsWith("auth setup-git")) process.exit(0);
-if (sub.startsWith("api /user")) { process.stdout.write(world.login + "\\n"); process.exit(0); }
+if (sub.startsWith("api /user")) {
+  // Two DIFFERENT reads share this path. \`--jq .id\` yields the numeric account id,
+  // \`--jq .login\` the username; collapsing them is what made the stub answer a
+  // question it had not been asked.
+  if (sub.includes(".id")) {
+    if (!world.userId) { process.stderr.write("gh: Not Found (HTTP 404)\\n"); process.exit(1); }
+    process.stdout.write(world.userId + "\\n");
+    process.exit(0);
+  }
+  process.stdout.write(world.login + "\\n");
+  process.exit(0);
+}
 if (argv[0] === "api" && argv[1]?.includes("/contents/")) {
   if (world.contentsUnreachable) {
     process.stderr.write("dial tcp: lookup api.github.com: no such host\\n");
@@ -201,6 +219,35 @@ describe("zeta-self-register level-triggered convergence (081M0BTFK85087G0R000A7
     expect(r.status).toBe(0);
     expect(createdPr(r)).toBe(true);
     expect(r.receipt?.state).toBe("pr-opened");
+  });
+
+  it("commits under the id-verified noreply address, never the plain-username form", () => {
+    // AH005. `<login>@users.noreply.github.com` is the LEGACY form and GitHub resolves it
+    // to whoever owns that username TODAY — for a login that is also an ordinary first
+    // name, that is a stranger. `<id>+<login>@…` is checked by GitHub against the login.
+    const r = run({ registeredOnMain: false, openPrs: [], userId: "4242" });
+    expect(r.status).toBe(0);
+    const commit = r.calls.find((c) => c.split(/\s+/).includes("commit")) ?? "";
+    const configured = /(?:^|\s)-c\s+user\.email=(\S+)/.exec(commit)?.[1];
+    expect(configured).toBe(`4242+${LOGIN}@users.noreply.github.com`);
+  });
+
+  it("REFUSES when the numeric id cannot be resolved — it does not fall back to the plain form", () => {
+    // The falsifier for the fix. Guessing here would attribute the commit to whoever owns
+    // the login, which is worse than a registration that retries on the next tick.
+    const r = run({ registeredOnMain: false, openPrs: [], userId: "" });
+    expect(r.status).toBe(1);
+    expect(r.stdout + r.stderr).toContain("ambiguous identity");
+    // Assert on the `user.email=` FLAG, not on a bare substring of the host. A plain
+    // `.includes("users.noreply.github.com")` is `js/incomplete-url-substring-sanitization`
+    // -- the host can sit anywhere in a longer string -- and CodeQL is right to flag the
+    // shape even here: this assertion is only meaningful if it is bound to the position
+    // that decides the identity.
+    const configuredEmail = /(?:^|\s)-c\s+user\.email=(\S+)/;
+    expect(r.calls.some((c) => configuredEmail.test(c))).toBe(false);
+    // And nothing was committed at all -- the refusal happens before the commit.
+    expect(r.calls.some((c) => c.split(/\s+/).includes("commit"))).toBe(false);
+    expect(createdPr(r)).toBe(false);
   });
 
   it("stands down when already converged — and does not touch git at all", () => {

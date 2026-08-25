@@ -219,10 +219,13 @@ describe("coauthorFor — harness-specific trailer from the acting agent (shared
     expect(coauthorFor("riven-cursor")).toBe("Co-Authored-By: Grok <noreply@x.ai>");
     expect(coauthorFor("vera-codex")).toBe("Co-Authored-By: Codex <noreply@openai.com>");
     expect(coauthorFor("lior-antigravity")).toBe("Co-Authored-By: Gemini <noreply@google.com>");
-    expect(coauthorFor("addison")).toBe("Co-Authored-By: addison <noreply@zeta.local>");
+    // The fallback names the sender in the `[bot]` form, never `<sender>@users.noreply…`:
+    // a GitHub username cannot contain `[`, so the address can never resolve to a real
+    // person who is not us. AH005 / audit-coauthor-identity-collides.ts.
+    expect(coauthorFor("addison")).toBe("Co-Authored-By: addison[bot] <addison[bot]@users.noreply.github.com>");
     // bare-prefix near-misses must NOT be mis-stamped (exact-or-hyphen only)
-    expect(coauthorFor("ottobot")).toBe("Co-Authored-By: ottobot <noreply@zeta.local>");
-    expect(coauthorFor("liorx")).toBe("Co-Authored-By: liorx <noreply@zeta.local>");
+    expect(coauthorFor("ottobot")).toBe("Co-Authored-By: ottobot[bot] <ottobot[bot]@users.noreply.github.com>");
+    expect(coauthorFor("liorx")).toBe("Co-Authored-By: liorx[bot] <liorx[bot]@users.noreply.github.com>");
   });
 });
 

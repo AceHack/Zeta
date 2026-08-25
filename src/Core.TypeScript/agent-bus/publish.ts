@@ -82,7 +82,7 @@ function coauthorFor(from: string): string {
     ["lior", "Co-Authored-By: Gemini <noreply@google.com>"],
   ];
   const match = byPrefix.find(([p]) => from === p || from.startsWith(`${p}-`));
-  return match ? match[1] : `Co-Authored-By: ${from} <noreply@zeta.local>`;
+  return match ? match[1] : `Co-Authored-By: ${from}[bot] <${from}[bot]@users.noreply.github.com>`;
 }
 
 function gitPushEnvelope(path: string, from: SenderAgentId, topic: string): void {

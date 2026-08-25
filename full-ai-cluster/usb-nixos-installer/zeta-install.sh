@@ -2860,8 +2860,33 @@ if [ "$GH_AUTH_OK" = 1 ]; then
         # commit-author = gh-auth'd operator (no shipped credentials;
         # clean attribution chain). Configure user.{name,email} from gh.
         OP_NAME=$(gh api /user --jq .name 2>/dev/null || echo "$MAINTAINER")
-        OP_EMAIL=$(gh api /user/emails --jq '.[] | select(.primary == true) | .email' 2>/dev/null \
-                   | head -1 || echo "${MAINTAINER}@users.noreply.github.com")
+        # The fallback address is `<id>+<login>@users.noreply.github.com`, NEVER the legacy
+        # plain `<login>@users.noreply.github.com`: GitHub resolves the plain form to
+        # whoever owns that username today, so a login that is also a common first name
+        # attributes the commit to an unrelated real person. AH005
+        # (src/Core.TypeScript/hygiene/audit-coauthor-identity-collides.ts) enforces this.
+        #
+        # The old `|| echo` fallback was ALSO broken, and it reached main: `gh api` prints
+        # its 404 BODY to stdout, `2>/dev/null` hides only stderr, so under `pipefail` the
+        # fallback fires while the JSON is already captured — and the two CONCATENATE.
+        # Commits bb581641 and 5144b5be carry the result verbatim:
+        #   Co-authored-by: ... <{"message":"Not Found",...}Addisons820@users.noreply.github.com>
+        # A fallback appended to a failure's output is not a fallback. Capture, then
+        # validate the value, instead of branching on an exit status.
+        OP_ID=$(gh api /user --jq .id 2>/dev/null || true)
+        OP_EMAIL=$(gh api /user/emails --jq '.[] | select(.primary == true) | .email' 2>/dev/null | head -1)
+        case "$OP_EMAIL" in
+          *@*.*) : ;;                       # a plausible address; use it
+          *) OP_EMAIL="" ;;                 # anything else (404 body, empty) is not an address
+        esac
+        if [ -z "$OP_EMAIL" ]; then
+          case "$OP_ID" in
+            ''|*[!0-9]*)
+              echo "[iter-5.4.1]   ERROR: no primary email and no numeric GitHub id for '$MAINTAINER' — refusing to commit under an ambiguous identity." >&2
+              exit 1 ;;
+            *) OP_EMAIL="${OP_ID}+${MAINTAINER}@users.noreply.github.com" ;;
+          esac
+        fi
         git config user.name "$OP_NAME"
         git config user.email "$OP_EMAIL"
         git checkout -b "$REG_BRANCH" 2>&1 | tail -3

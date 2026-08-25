@@ -1,0 +1,14 @@
+{
+  "id": "080d01c9f4a40810a01300081dec66b2",
+  "at": "2026-08-25T14:06:37.697Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M0WKX53Z087G0R002MF19WY",
+    "type": "bug",
+    "title": "co-author trailers use the plain-username GitHub noreply form and misattribute to unrelated real accounts",
+    "slug": "co-author-trailers-use-the-plain-username-github-noreply-for",
+    "priority": "P2",
+    "filename": "081M0WKX53Z087G0R002MF19WY-co-author-trailers-use-the-plain-username-github-noreply-for.md"
+  }
+}

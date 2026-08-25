@@ -17,7 +17,7 @@ function coauthorFor(by: string): string {
     ["lior", "Co-Authored-By: Gemini <noreply@google.com>"],
   ];
   const match = byPrefix.find(([p]) => by === p || by.startsWith(`${p}-`));
-  return match ? match[1] : `Co-Authored-By: ${by} <noreply@zeta.local>`;
+  return match ? match[1] : `Co-Authored-By: ${by}[bot] <${by}[bot]@users.noreply.github.com>`;
 }
 
 export function buildEventCommitMessage(

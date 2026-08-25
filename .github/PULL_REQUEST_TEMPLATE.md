@@ -106,4 +106,4 @@ Human-Review: not-implied-by-credential
 Human-Review-Evidence: none
 Action-Mode: autonomous-fail-open
 Task: none
-Co-authored-by: <persona> <persona@zeta.agents>
+Co-authored-by: <persona>[bot] <<persona>[bot]@users.noreply.github.com>

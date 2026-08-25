@@ -2512,6 +2512,29 @@ jobs:
       - name: Workflow credential role separation (one role, one secret)
         run: bun src/Core.TypeScript/hygiene/audit-workflow-credential-role-separation.ts
 
+      # AH005 — a committed identity that GitHub resolves to somebody who is not us.
+      #
+      # `<username>@users.noreply.github.com` is the LEGACY plain noreply form and GitHub
+      # resolves it DIRECTLY to whoever owns that username today. Two of our personas
+      # shipped under it (15 commits and 2 commits), and both local-parts are live accounts
+      # belonging to uninvolved private individuals. They are rendered in this repository's
+      # Contributors sidebar, which aggregates trailer co-authors — note the REST
+      # `/contributors` endpoint does NOT, which is why an earlier check of that endpoint
+      # came back clean and under-reported the problem.
+      #
+      # The audit scans the SOURCES THAT GENERATE identities, never git history. The
+      # offending commits are on `main` and correcting them would mean force-pushing the
+      # default branch, so they stay. An audit pointed at history would be permanently red
+      # over commits nobody may fix, and a check that can never go green gets disabled.
+      #
+      # HERE on the cross-verify floor because it is offline (reads only committed text, no
+      # sockets, no DNS — the fabricated-namespace list is a closed enumeration rather than
+      # a resolver for exactly that reason). Measured: ~1.4 s warm over 2,028 generator
+      # files. Proven able to fail before it was wired: run against the pre-fix contents of
+      # the same seven files it reports 7 findings and exits 1.
+      - name: Co-author identity collision (AH005 — plain-username GitHub noreply form)
+        run: bun src/Core.TypeScript/hygiene/audit-coauthor-identity-collides.ts
+
       # THE FALSIFIER FOR THE PR-ARCHIVE COVERAGE COLLAPSE (2026-08-25).
       #
       # `agent-heartbeat.yml`'s auto-merge steps hardcoded `secrets.GITHUB_TOKEN` while every

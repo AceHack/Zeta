@@ -155,7 +155,7 @@ export function createGatedReviewPullRequest(
         "--title",
         `proposal: ${input.proposalId}`,
         "--body",
-        `Proposal from ${input.issueNumber === undefined ? "an authorized Pages device or trusted workflow" : `issue #${input.issueNumber}`}. The branch was created by the bounded verifier; required gates must pass before any merge.\n\nAgency-Signature-Version: 1\nAgent: zeta-pages-operator\nAgent-Runtime: github-actions\nAgent-Model: bounded-patch-runner\nCredential-Identity: zeta-society-heartbeat\nCredential-Mode: shared\nHuman-Review: not-implied-by-credential\nHuman-Review-Evidence: none\nAction-Mode: autonomous-fail-open\nTask: none\nCo-authored-by: zeta-pages-operator <zeta-pages-operator@zeta.agents>`,
+        `Proposal from ${input.issueNumber === undefined ? "an authorized Pages device or trusted workflow" : `issue #${input.issueNumber}`}. The branch was created by the bounded verifier; required gates must pass before any merge.\n\nAgency-Signature-Version: 1\nAgent: zeta-pages-operator\nAgent-Runtime: github-actions\nAgent-Model: bounded-patch-runner\nCredential-Identity: zeta-society-heartbeat\nCredential-Mode: shared\nHuman-Review: not-implied-by-credential\nHuman-Review-Evidence: none\nAction-Mode: autonomous-fail-open\nTask: none\nCo-authored-by: zeta-pages-operator[bot] <zeta-pages-operator[bot]@users.noreply.github.com>`,
       ],
       { env: { ...process.env, GH_TOKEN: input.token }, stdio: "pipe" },
     );
