@@ -1,0 +1,23 @@
+{
+  "pr_number": 14750,
+  "archive_path": "docs/history/pr-reviews/PR-14750-forensics-macos-unclean-reboot-capture-harness-and-the-panic-logs-were-in-retire.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7lGix2",
+    "comment:PRRC_kwDOSF9kNM7lGiyE",
+    "comment:PRRC_kwDOSF9kNM7lGvZ-",
+    "comment:PRRC_kwDOSF9kNM7lH8va",
+    "comment:PRRC_kwDOSF9kNM7lHOs9",
+    "thread:PRRT_kwDOSF9kNM6bs33j",
+    "thread:PRRT_kwDOSF9kNM6bs33u",
+    "thread:PRRT_kwDOSF9kNM6bt1Pz",
+    "thread:PRRT_kwDOSF9kNM6btAlj",
+    "thread:PRRT_kwDOSF9kNM6btV6f"
+  ],
+  "fetched_at": "2026-08-25T00:40:47.490Z",
+  "schema_version": "v1",
+  "commit_sha": "e8020d425660a456283954945884f333052616d8",
+  "title": "forensics(macos): unclean-reboot capture harness -- and the panic logs were in Retired/ all along",
+  "state": "MERGED",
+  "merged_at": "2026-08-25T00:39:58Z",
+  "head_ref": "dejan/macos-crash-capture"
+}
