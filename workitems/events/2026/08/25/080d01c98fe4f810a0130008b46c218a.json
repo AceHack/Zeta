@@ -1,0 +1,14 @@
+{
+  "id": "080d01c98fe4f810a0130008b46c218a",
+  "at": "2026-08-25T13:52:52.383Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M0WK3Z4Y087G0R0005PXY4A",
+    "type": "task",
+    "title": "findings register 2026-08-25: fourteen defects surfaced in one session, with disposition and owner for each",
+    "slug": "findings-register-2026-08-25-fourteen-defects-surfaced-in-on",
+    "priority": "P2",
+    "filename": "081M0WK3Z4Y087G0R0005PXY4A-findings-register-2026-08-25-fourteen-defects-surfaced-in-on.md"
+  }
+}
