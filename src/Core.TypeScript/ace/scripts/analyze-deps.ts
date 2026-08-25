@@ -21,8 +21,16 @@ function getBoundary(relPath: string): string | null {
 }
 
 function analyzeFile(filePath: string, currentBoundary: string) {
-  if (!fs.existsSync(filePath)) return;
-  const content = fs.readFileSync(filePath, 'utf-8');
+  // One syscall, one answer. An existsSync/readFileSync pair is check-then-use
+  // (CWE-367): the path can be created, deleted or replaced between the two, so
+  // the check reads as defensive and prevents nothing.
+  let content: string;
+  try {
+    content = fs.readFileSync(filePath, 'utf-8');
+  } catch (e) {
+    if ((e as NodeJS.ErrnoException).code === 'ENOENT') return;
+    throw e;
+  }
   const ext = path.extname(filePath);
   
   if (ext === '.ts' || ext === '.tsx') {
@@ -77,11 +85,22 @@ function analyzeFile(filePath: string, currentBoundary: string) {
 }
 
 function walkDir(dir: string) {
-  if (!fs.existsSync(dir)) return;
-  const files = fs.readdirSync(dir);
-  for (const file of files) {
+  // `withFileTypes` carries each entry's kind along with the listing, so there is
+  // no second statSync to race against (readdir-then-stat). ENOENT/ENOTDIR here
+  // means the directory went away or was never one — the same answer the old
+  // existsSync gate returned, without the window.
+  let entries: import('fs').Dirent[];
+  try {
+    entries = fs.readdirSync(dir, { withFileTypes: true });
+  } catch (e) {
+    const code = (e as NodeJS.ErrnoException).code;
+    if (code === 'ENOENT' || code === 'ENOTDIR') return;
+    throw e;
+  }
+  for (const entry of entries) {
+    const file = entry.name;
     const fullPath = path.join(dir, file);
-    if (fs.statSync(fullPath).isDirectory()) {
+    if (entry.isDirectory()) {
       if (file !== 'node_modules' && file !== 'dist' && file !== 'bin' && file !== 'obj' && !file.startsWith('.')) {
         walkDir(fullPath);
       } else if (file === '.github') {
