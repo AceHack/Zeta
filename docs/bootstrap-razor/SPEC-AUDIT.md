@@ -98,7 +98,8 @@ a profile (spec only, no overlay).
 | Serializer | serialization |
 | SignalQuality | quality |
 | Simd | SIMD |
-| SimdMerge | SIMD |
+| ScalarMerge | merge (was `SimdMerge`; never SIMD) |
+| ColumnZSet | columnar / SIMD |
 | Sketch | probabilistic |
 | SpeculativeWatermark | streaming |
 | SpineSelector | storage |

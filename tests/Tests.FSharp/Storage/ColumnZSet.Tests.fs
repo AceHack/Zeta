@@ -131,18 +131,21 @@ let ``ColumnZSet vectorized sums raise on int64 overflow rather than wrapping`` 
     // Every lane gets a huge positive weight, so whichever lane the vector
     // path accumulates into overflows. The scalar twin must agree.
     let weights = Array.create 64 (Int64.MaxValue / 4L)
-    let span = ReadOnlySpan weights
-    (fun () -> ColumnKernel.SumWeightsVectorized span |> ignore) |> should throw typeof<OverflowException>
-    (fun () -> ColumnKernel.SumWeightsScalar span |> ignore) |> should throw typeof<OverflowException>
+    // The span is rebuilt inside each lambda: a byref-like cannot be captured.
+    (fun () -> ColumnKernel.SumWeightsVectorized(ReadOnlySpan weights) |> ignore)
+    |> should throw typeof<OverflowException>
+    (fun () -> ColumnKernel.SumWeightsScalar(ReadOnlySpan weights) |> ignore)
+    |> should throw typeof<OverflowException>
 
 
 [<Fact>]
 let ``ColumnZSet vectorized ranged sum raises on int64 overflow`` () =
     let keys = Array.init 64 int64
     let weights = Array.create 64 (Int64.MaxValue / 4L)
-    let ks = ReadOnlySpan keys
-    let ws = ReadOnlySpan weights
-    (fun () -> ColumnKernel.SumWeightsWhereKeyInRangeVectorized(ks, ws, 0L, 64L) |> ignore)
+    (fun () ->
+        ColumnKernel.SumWeightsWhereKeyInRangeVectorized(
+            ReadOnlySpan keys, ReadOnlySpan weights, 0L, 64L)
+        |> ignore)
     |> should throw typeof<OverflowException>
 
 

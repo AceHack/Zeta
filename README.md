@@ -82,8 +82,11 @@ runtime primitives built on top:
   [src/Core/ConsistentHash.fs](src/Core/ConsistentHash.fs),
   [src/Core/ChaosEnv.fs](src/Core/ChaosEnv.fs).
 - **Wire + SIMD.** Arrow IPC serializer, FsPickler serializer,
-  hardware-CRC, SIMD merge / dispatch. See
+  hardware-CRC, and vectorised columnar scans over a struct-of-arrays
+  `ColumnZSet` (the merge path is *not* vectorised — see
+  [src/Core/ScalarMerge.fs](src/Core/ScalarMerge.fs)). See
   [src/Core/ArrowSerializer.fs](src/Core/ArrowSerializer.fs),
+  [src/Core/ColumnZSet.fs](src/Core/ColumnZSet.fs),
   [src/Core/Simd.fs](src/Core/Simd.fs).
 - **Plugins.** [src/Bayesian/BayesianAggregate.fs](src/Bayesian/BayesianAggregate.fs)
   — online Bayesian posteriors (Beta / Normal-Inverse-Gamma /

@@ -234,7 +234,10 @@ Gaps: **fsync floor** (unshipped), **multi-key ACID/isolation** (only single-str
 ### Performance
 
 - ArrayPool on every rented workspace ✅
-- SIMD merge (AVX2 / ARM NEON) ✅
+- ~~SIMD merge (AVX2 / ARM NEON)~~ ❌ **never shipped** — `SimdMerge.fs` claimed vector
+  instructions it did not contain; renamed `ScalarMerge.fs`. See its header for why a
+  sorted merge resists vectorisation.
+- Vectorised columnar scan over a struct-of-arrays `ColumnZSet` ✅ (measured; `ColumnZSet.fs`)
 - ZSet.sum O(n log k) with PriorityQueue ✅
 - BalancedSpine MaxSAT-inspired scheduler + ZSet.sum + BitOps.Log2 ✅
 - HLL + Count-Min sketches, zero-alloc inner loops ✅
