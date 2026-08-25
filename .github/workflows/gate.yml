@@ -2425,6 +2425,23 @@ jobs:
       - name: Proof-lineage binary exception (no-binary-in-proof-lineage.md)
         run: bun src/Core.TypeScript/hygiene/audit-proof-lineage-binaries.ts
 
+      # THE FALSIFIER FOR THE PR-ARCHIVE COVERAGE COLLAPSE (2026-08-25).
+      #
+      # `agent-heartbeat.yml`'s auto-merge steps hardcoded `secrets.GITHUB_TOKEN` while every
+      # other credentialed step in that file used the PAT fallback chain. A merge armed with
+      # GITHUB_TOKEN lands as `github-actions[bot]`; GitHub suppresses workflow triggers for
+      # GITHUB_TOKEN-driven events, so `pull_request: closed` never fires and
+      # pr-archive-on-merge.yml never runs — with NO failure anywhere, which is why it was
+      # misdiagnosed as a credential problem several times. Measured 2026-08-21..25: 747 of
+      # 765 (97.6%) eligible unarchived PRs were bot-merged; 530 of 539 (98.3%) archived ones
+      # were user-merged.
+      #
+      # The defect is the INCONSISTENCY, not the instance — one step out of nine disagreeing
+      # with its neighbours, which prose cannot hold. Offline (reads only committed workflow
+      # text, no sockets), so it belongs on the pre-merge floor rather than post-merge.
+      - name: Workflow write-token consistency (forge writes must reach the PAT)
+        run: bun src/Core.TypeScript/hygiene/audit-workflow-write-token-consistency.ts
+
       # The falsifier for the PR-free heartbeat lane. Design:
       # docs/research/2026-08-25-pr-free-heartbeat-lane-attestation-instead-of-gate.md
       #

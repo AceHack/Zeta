@@ -644,7 +644,47 @@ jobs:
 
       - name: Auto-merge clean PRs (agent-to-agent value transfer)
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # ── WHO ARMS THE MERGE DECIDES WHETHER IT IS EVER ARCHIVED ─────────
+          #
+          # This step hardcoded `secrets.GITHUB_TOKEN` while every other
+          # credentialed step in this file used the PAT fallback chain. That one
+          # inconsistency is the root cause of the PR-archive coverage collapse,
+          # and it is invisible because NOTHING FAILS:
+          #
+          #   arm with GITHUB_TOKEN -> auto-merge fires as `github-actions[bot]`
+          #   -> GitHub suppresses workflow triggers for GITHUB_TOKEN-driven
+          #      events (the recursion guard) -> no `pull_request: closed`
+          #   -> pr-archive-on-merge.yml NEVER RUNS -> the PR is never archived.
+          #
+          # No run is created, so no run is red. Measured 2026-08-21..25: of 765
+          # eligible unarchived PRs, 747 (97.6%) were bot-merged; of 539 archived
+          # in the same window, 530 (98.3%) were user-merged. Per-SHA: bot-merged
+          # -> 0 workflow runs; user-merged -> 1 run, success. Daily coverage held
+          # at 100.00% from 08-11 to 08-20 and collapsed on 08-21, exactly as the
+          # bot-merge share crossed over (9/40 -> 11/40 -> 29/40).
+          #
+          # THIS IS WHY GRANTING THE PAT MORE PERMISSIONS NEVER HELPED: the step
+          # never read the PAT. It is a workflow defect, NOT the credential
+          # denial tracked by 081M05G8D36087G0R0034D3QPA.
+          #
+          # AND SWAPPING THE TOKEN ALONE IS NOT SUFFICIENT. `gh pr merge --auto`
+          # is the GraphQL mutation `enablePullRequestAutoMerge`, and the scoped
+          # flush PAT has been measured being refused it on every call:
+          #   `GraphQL: Resource not accessible by personal access token
+          #    (enablePullRequestAutoMerge)`
+          # -- src/Core.TypeScript/agent-heartbeats/merge-heartbeats-to-main.ts
+          #    and docs/research/2026-08-13-graphql-is-the-scarce-budget-and-
+          #    automerge-is-graphql-only.md. A blind swap would therefore have
+          #    armed NOTHING and stalled the merge queue outright, which is worse
+          #    than the bug it was meant to repair.
+          #
+          # So: PREFER the PAT, and degrade to GITHUB_TOKEN on a refusal, ONCE
+          # per run, loudly, naming the exact missing scope. Today that is
+          # byte-for-byte the current behaviour plus a warning that says what is
+          # missing; the day the PAT carries `Pull requests: read and write`,
+          # archive coverage repairs itself with no further edit here.
+          GH_TOKEN: ${{ secrets.ZETA_TELEMETRY_FLUSH_TOKEN || secrets.ZETA_PR_ARCHIVE_TOKEN || secrets.GITHUB_TOKEN }}
+          FALLBACK_GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           AGENT: ${{ matrix.agent }}
         run: |
           # Only the first agent in the matrix (alexa) does merge duty to avoid races
@@ -720,6 +760,27 @@ jobs:
           # otherwise occupy a slot on every tick and re-create the starvation from the head
           # instead of the tail. So the cap counts SUCCESSES, not attempts: a failure costs an
           # API call and moves on. ATTEMPT_LIMIT bounds the blast radius when many are stuck.
+          # THE ARMING CREDENTIAL IS CHOSEN ONCE PER RUN, NOT PER PR. A refusal
+          # costs a GraphQL point, and GraphQL is the budget that actually binds
+          # this repo (measured 2026-08-14: 1147/5000 GraphQL points against
+          # 33/5000 REST requests). Re-probing on every candidate would spend
+          # three times that for no information the first probe did not give.
+          #
+          # `set +e` AROUND THE LOOP IS REQUIRED, not stylistic. No `shell:` is
+          # declared anywhere in this workflow, so GitHub runs each `run:` block
+          # under its default `bash -e`. The previous form was errexit-safe by
+          # accident — `if gh pr merge ...; then` puts the command in a condition,
+          # which errexit exempts. Capturing output into a variable does not get
+          # that exemption: `OUT=$(cmd)` with a failing `cmd` aborts the step
+          # before the `$?` check can run, which would turn one unarmable PR into
+          # a dead merge duty for the whole tick.
+          set +e
+          ARM_MODE=pat
+          if [ "$GH_TOKEN" = "$FALLBACK_GH_TOKEN" ]; then
+            ARM_MODE=workflow-token-only
+            echo "::warning title=Auto-merge arming has no PAT::Neither ZETA_TELEMETRY_FLUSH_TOKEN nor ZETA_PR_ARCHIVE_TOKEN is set, so PRs are armed by GITHUB_TOKEN and their merges do NOT trigger pr-archive-on-merge.yml. Archive coverage then rests on the backfill sweep alone."
+          fi
+
           ARMED=0
           ATTEMPTS=0
           CAP=3
@@ -728,14 +789,30 @@ jobs:
             [ "$ARMED" -ge "$CAP" ] && break
             [ "$ATTEMPTS" -ge "$ATTEMPT_LIMIT" ] && break
             ATTEMPTS=$((ATTEMPTS + 1))
-            if gh pr merge "$PR" --squash --auto --delete-branch 2>&1; then
+            MERGE_OUT=$(gh pr merge "$PR" --squash --auto --delete-branch 2>&1)
+            MERGE_RC=$?
+            # A PAT refused the mutation: degrade ONCE, name the exact scope, and
+            # keep arming. A credential fault must not stall the queue, and it
+            # must not be silent either — the silence is what this whole change
+            # set is repairing.
+            if [ "$MERGE_RC" -ne 0 ] && [ "$ARM_MODE" = "pat" ] \
+               && printf '%s' "$MERGE_OUT" | grep -q "not accessible by personal access token"; then
+              echo "::warning title=Auto-merge arming PAT lacks enablePullRequestAutoMerge::The flush PAT was refused the GraphQL mutation, so arming falls back to GITHUB_TOKEN and pr-archive-on-merge.yml will not fire for these merges. FIX: grant that fine-grained PAT 'Pull requests: read and write' on Lucent-Financial-Group/Zeta. This is a DIFFERENT scope from the 'Contents: read and write' denial tracked by 081M05G8D36087G0R0034D3QPA."
+              ARM_MODE=degraded-to-workflow-token
+              export GH_TOKEN="$FALLBACK_GH_TOKEN"
+              MERGE_OUT=$(gh pr merge "$PR" --squash --auto --delete-branch 2>&1)
+              MERGE_RC=$?
+            fi
+            printf '%s\n' "$MERGE_OUT"
+            if [ "$MERGE_RC" -eq 0 ]; then
               ARMED=$((ARMED + 1))
-              echo "[merge] armed auto-merge on PR #$PR"
+              echo "[merge] armed auto-merge on PR #$PR (credential: $ARM_MODE)"
             else
               echo "[merge] PR #$PR could not be armed (non-fatal) — not consuming a slot"
             fi
           done
-          echo "[merge] armed $ARMED of $CAP (attempted $ATTEMPTS, $(echo "$CANDIDATES" | wc -l) unarmed in queue)"
+          set -e
+          echo "[merge] armed $ARMED of $CAP (attempted $ATTEMPTS, $(echo "$CANDIDATES" | wc -l) unarmed in queue, credential: $ARM_MODE)"
 
       - name: Archive PR review history (git-native backup)
         env:
@@ -1771,16 +1848,50 @@ jobs:
         env:
           AGENT: ${{ matrix.agent }}
           PR: ${{ steps.flush.outputs.pr_number }}
-          # The workflow token has contents:write and is already proven by the
-          # earlier merge-duty step to arm automation-only PRs. The scoped PAT
-          # intentionally cannot perform enablePullRequestAutoMerge.
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # SIBLING OF THE MERGE-DUTY STEP, AND THE SAME DEFECT. The comment here
+          # used to read "the scoped PAT intentionally cannot perform
+          # enablePullRequestAutoMerge", which is a true MEASUREMENT dressed up as
+          # a DESIGN INTENT. Nobody chose it: the PAT is refused the mutation
+          # because it was never granted the scope, and writing that down as
+          # deliberate is how a credential gap became invisible.
+          #
+          # It matters here for the same reason it matters there: a heartbeat
+          # flush PR armed by GITHUB_TOKEN merges as `github-actions[bot]`, the
+          # `pull_request: closed` event is suppressed, and pr-archive-on-merge.yml
+          # never runs on it. Every telemetry-lane PR the society opens has been
+          # landing outside the archive for that reason.
+          #
+          # Same repair as the merge-duty step: prefer the PAT, degrade ONCE on a
+          # refusal with the missing scope named, never stall the flush over a
+          # credential.
+          GH_TOKEN: ${{ secrets.ZETA_TELEMETRY_FLUSH_TOKEN || secrets.ZETA_PR_ARCHIVE_TOKEN || secrets.GITHUB_TOKEN }}
+          FALLBACK_GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           if [ -z "$PR" ]; then
             echo "::error title=Heartbeat flush PR missing::$AGENT snapshot produced no PR number"
             exit 1
           fi
-          gh pr merge "$PR" --repo "$GITHUB_REPOSITORY" --squash --auto --delete-branch
+          # `set +e`: the default shell is `bash -e` (no `shell:` is declared in
+          # this workflow), and `OUT=$(cmd)` is NOT errexit-exempt the way the
+          # bare `gh pr merge` this replaced was. Without it the step dies on the
+          # PAT refusal before the fallback can run. The explicit `exit "$ARM_RC"`
+          # below restores the original fail-closed behaviour.
+          set +e
+          ARM_OUT=$(gh pr merge "$PR" --repo "$GITHUB_REPOSITORY" --squash --auto --delete-branch 2>&1)
+          ARM_RC=$?
+          if [ "$ARM_RC" -ne 0 ] && [ "$GH_TOKEN" != "$FALLBACK_GH_TOKEN" ] \
+             && printf '%s' "$ARM_OUT" | grep -q "not accessible by personal access token"; then
+            echo "::warning title=Heartbeat arming PAT lacks enablePullRequestAutoMerge::$AGENT: the flush PAT was refused the GraphQL mutation, so this PR is armed by GITHUB_TOKEN and its merge will not trigger pr-archive-on-merge.yml. FIX: grant that fine-grained PAT 'Pull requests: read and write' on Lucent-Financial-Group/Zeta. Different scope from the 'Contents: read and write' denial tracked by 081M05G8D36087G0R0034D3QPA."
+            export GH_TOKEN="$FALLBACK_GH_TOKEN"
+            ARM_OUT=$(gh pr merge "$PR" --repo "$GITHUB_REPOSITORY" --squash --auto --delete-branch 2>&1)
+            ARM_RC=$?
+          fi
+          set -e
+          printf '%s\n' "$ARM_OUT"
+          if [ "$ARM_RC" -ne 0 ]; then
+            echo "::error title=Heartbeat flush PR could not be armed::$AGENT: PR #$PR"
+            exit "$ARM_RC"
+          fi
           echo "[flush] $AGENT: armed auto-merge on PR #$PR"
 
       - name: Fail if a heartbeat PR is old and gate never started
